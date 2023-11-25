@@ -8,3 +8,21 @@
 .kb-footer-status p {
     margin: 0;
 }
+.kadence_blocks_home_main .components-editor-notices__snackbar {
+    bottom: 40px;
+    padding-left: 16px;
+    padding-right: 16px;
+    position: fixed;
+    right: 0;
+    left: 0;
+}
+@media (min-width: 783px) {
+    .kadence_blocks_home_main .components-editor-notices__snackbar {
+        left: 160px;
+    }
+}
+@media (min-width: 783px) {
+    .folded .kadence_blocks_home_main.components-editor-notices__snackbar {
+        left: 36px;
+    }
+}

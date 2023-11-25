@@ -159,8 +159,9 @@ function GenerateHeader( { context, contextLabel, contextState, generateContext 
 					className='kadence-generate-copy-button'
 					iconPosition='right'
 					icon={ aiIcon }
-					text={ __('Activate Kadence AI Required', 'kadence-blocks') }
+					text={ __('Activate Kadence AI', 'kadence-blocks') }
 					disabled={ activateLink ? false : true }
+					target={ activateLink ? '_blank' : ''}
 					href={ activateLink ? activateLink : '' }
 				/>
 			) }
@@ -181,8 +182,9 @@ function GenerateHeader( { context, contextLabel, contextState, generateContext 
 							className='kadence-generate-copy-button'
 							iconPosition='right'
 							icon={ aiIcon }
-							text={ __('Activate Kadence AI Required', 'kadence-blocks') }
+							text={ __('Activate Kadence AI', 'kadence-blocks') }
 							disabled={ activateLink ? false : true }
+							target={ activateLink ? '_blank' : ''}
 							href={ activateLink ? activateLink : '' }
 						/>
 					)}
@@ -374,6 +376,7 @@ function PatternList( {
  } ) {
 	const [ failedAI, setFailedAI ] = useState( false );
 	const [ failedAIType, setFailedAIType ] = useState( 'general' );
+	const [rootScroll, setRootScroll] = useState();
 	const [ categoryFilter, setCategoryFilter ] = useState( [] );
 	const debouncedSpeak = useDebounce( speak, 500 );
 	const { sendEvent } = getAsyncData();
@@ -544,7 +547,6 @@ function PatternList( {
 	}, [ filterValue, selectedCategory, thePatterns, aiContext, contextTab, contextStatesRef, imageCollection, useImageReplace, aINeedsData, categoryFilter ] );
 
 	const updateFilters = (categoryList) => {
-		console.log('cat list', categoryList);
 		setCategoryFilter(categoryList.map((cat) => cat.value) ?? []);
 	};
 
@@ -682,7 +684,7 @@ function PatternList( {
 	const hasItems = !! filteredBlockPatterns?.length;
 
 	return (
-		<div className="block-editor-block-patterns-explorer__wrap">
+		<div ref={ setRootScroll } className="block-editor-block-patterns-explorer__wrap">
 			<div className={ `block-editor-block-patterns-explorer__list${ contextTab === 'context' ? ' kb-ai-patterns-explorer' : '' }`}>
 				{ hasItems && (
 					<PatternsListHeader
@@ -722,6 +724,7 @@ function PatternList( {
 						previewMode={ previewMode }
 						selectedStyle={ selectedStyle }
 						renderType={ hasHTml ? 'shadow' : 'iframe' }
+						rootScroll={ rootScroll }
 					/>
 				) }
 			</div>

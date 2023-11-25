@@ -58,12 +58,12 @@ function KadenceBlockPattern( {
 	shadowStyles,
 	baseCompatStyles,
 	neededCompatStyles,
-	patternType
+	patternType,
+	rootScroll,
 } ) {
 	const { content, viewportWidth, pro, locked, proRender, image, imageHeight, imageWidth, html } = pattern;
 	const instanceId = useInstanceId( KadenceBlockPattern );
 	const descriptionId = `block-editor-block-patterns-list__item-description-${ instanceId }`;
-
 	function getFooter() {
 		if ('page' === patternType) {
 			return (
@@ -146,6 +146,7 @@ function KadenceBlockPattern( {
 							baseCompatStyles={ baseCompatStyles }
 							neededCompatStyles={ neededCompatStyles }
 							patternType={ patternType }
+							rootScroll={ rootScroll }
 						/>
 					) }
 					{ 'image' === previewMode && (
@@ -187,6 +188,7 @@ function KadenceBlockPatternListIframe( {
 	previewMode = 'iframe',
 	selectedStyle = 'light',
 	patternType='pattern',
+	rootScroll,
 } ) {
 	const { styles, assets } = useSelect( ( select ) => {
 		const settings = select( blockEditorStore ).getSettings();
@@ -235,6 +237,7 @@ function KadenceBlockPatternListIframe( {
 						selectedStyle={ selectedStyle }
 						editorStyles={ editorStyles }
 						shadowStyles={ '' }
+						rootScroll={ rootScroll }
 						baseCompatStyles={ undefined !== baseCompatStyles ? baseCompatStyles : [] }
 						neededCompatStyles={ undefined !== neededCompatStyles ? neededCompatStyles : [] }
 						patternType={ patternType }
@@ -299,6 +302,7 @@ function KadenceBlockPatternList( {
 	selectedStyle = 'light',
 	patternType='pattern',
 	renderType='shadow',
+	rootScroll
 } ) {
 	if ( renderType === 'iframe' ) {
 		return (
@@ -311,6 +315,7 @@ function KadenceBlockPatternList( {
 				breakpointCols={ breakpointCols }
 				previewMode={ previewMode }
 				selectedStyle={ selectedStyle }
+				rootScroll={ rootScroll }
 			/>
 		);
 	}
@@ -361,6 +366,7 @@ function KadenceBlockPatternList( {
 						previewMode={ previewMode }
 						selectedStyle={ selectedStyle }
 						editorStyles={ '' }
+						rootScroll={ rootScroll }
 						baseCompatStyles={ undefined !== baseCompatStyles ? baseCompatStyles : [] }
 						neededCompatStyles={ undefined !== neededCompatStyles ? neededCompatStyles : [] }
 						patternType={ patternType }

@@ -1056,21 +1056,28 @@ button.components-button.kb-trigger-ai.has-icon {
     height: 100%;
     max-height: calc(95vh - 284px);
 }
-button.components-button.kadence-ai-wizard-button {
-	text-align: left;
-    font-weight: normal;
-    width: 100%;
-    justify-content: flex-start;
-    padding: 6px;
-	gap:8px;
-}
 .kb-wizard-advanced-text {
 	flex-grow: 1;
 }
-button.components-button.kadence-ai-wizard-button.has-icon svg {
-	font-size: 20px;
-    width: 1em;
-    height: 1em;
+.kb-library-extra-settings {
+	.components-button.kadence-ai-wizard-button {
+		text-align: left;
+		font-weight: normal;
+		width: 100%;
+		justify-content: flex-start;
+		padding: 6px;
+		gap:8px;
+	}
+	.components-button.kadence-ai-wizard-button.has-icon svg {
+		font-size: 20px;
+		width: 1em;
+		height: 1em;
+	}
+	.kadence-ai-wizard-button.is-pressed.components-button:disabled {
+		opacity: 1;
+		color: var(--wp-components-color-foreground, #1e1e1e);
+		background: #F5F5F5;
+	}
 }
 .components-toggle-control.kb-toggle-align-right {
 	--wp-components-color-accent:var(--kadence-ui-color, #0073E6);
@@ -1256,7 +1263,7 @@ h2.components-heading.kb-patterns-banner-notice.kb-page-notice-above {
     font-size: 15px;
 }
 .kb-patterns-banner-generate-notice {
-	button.components-button.kadence-generate-copy-button.has-icon {
+	.components-button.kadence-generate-copy-button.has-icon {
 		color: white;
 		background: var(--kadence-ui-color, #0073E6);
 		border-color: var(--kadence-ui-color, #0073E6);
@@ -1265,7 +1272,7 @@ h2.components-heading.kb-patterns-banner-notice.kb-page-notice-above {
 		font-size: 16px;
 		line-height: 1.4;
 	}
-	button.components-button.kadence-generate-copy-button.has-icon svg {
+	.components-button.kadence-generate-copy-button.has-icon svg {
 		width: 1em;
 		height: 1em;
 		margin-left: .8em;
@@ -1621,4 +1628,13 @@ a.components-external-link.kadence-upgrade-to-pro-btn {
 		}
 
 	}
+}
+.block-editor-block-patterns-list__item .block-editor-block-preview__container {
+	align-items: flex-start;
+}
+.block-editor-block-patterns-list__list-item {
+.LazyLoad {
+    min-width: 1px;
+    min-height: 1px;
+}
 }

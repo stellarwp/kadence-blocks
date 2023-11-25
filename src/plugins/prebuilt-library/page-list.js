@@ -101,7 +101,7 @@ function PageListNotice( { type } ) {
 		</Heading>
 	);
 }
-function ProOnlyHeader( launchWizard ) {
+function ProOnlyHeader( {launchWizard } ) {
 	const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
 	const data_key = ( window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '' );
 	const activateLink = ( window?.kadence_blocks_params?.homeLink ? kadence_blocks_params.homeLink : '' );
@@ -121,7 +121,8 @@ function ProOnlyHeader( launchWizard ) {
 					className='kadence-generate-copy-button'
 					iconPosition='right'
 					icon={ aiIcon }
-					text={ __('Activate Kadence AI Required', 'kadence-blocks') }
+					text={ __('Activate Kadence AI', 'kadence-blocks') }
+					target={ activateLink ? '_blank' : ''}
 					disabled={ activateLink ? false : true }
 					href={ activateLink ? activateLink : '' }
 				/>
@@ -143,7 +144,8 @@ function ProOnlyHeader( launchWizard ) {
 							className='kadence-generate-copy-button'
 							iconPosition='right'
 							icon={ aiIcon }
-							text={ __('Activate Kadence AI Required', 'kadence-blocks') }
+							text={ __('Activate Kadence AI', 'kadence-blocks') }
+							target={ activateLink ? '_blank' : ''}
 							disabled={ activateLink ? false : true }
 							href={ activateLink ? activateLink : '' }
 						/>
@@ -157,7 +159,7 @@ function ProOnlyHeader( launchWizard ) {
 					icon={ aiIcon }
 					text={__( 'Generate Content AI Content', 'kadence-blocks' ) }
 					onClick={ () => {
-						launchWizard( true );
+						launchWizard();
 					}}
 				/>
 			)}
@@ -287,8 +289,10 @@ function PageList( {
 	launchWizard
 } ) {
 	const debouncedSpeak = useDebounce( speak, 500 );
-	const hasPro = ( kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false );
-	const data_key = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_key ?  kadence_blocks_params.proData.api_key : '' );
+	const [rootScroll, setRootScroll] = useState();
+	const hasPro = ( window?.kadence_blocks_params?.pro && kadence_blocks_params.pro === 'true' ? true : false );
+	const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
+	const data_key = ( window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '' );
 	const onSelectBlockPattern = ( info ) => {
 		const pageSend = {
 			id: info.id,
@@ -357,7 +361,7 @@ function PageList( {
 	}, [ pages, imageCollection, useImageReplace, contextTab ] );
 	const filteredBlockPatterns = useMemo( () => {
 		let allPatterns = thePages;
-		if ( contextTab === 'context' && ( !hasPro || ! data_key ) ) {
+		if ( contextTab === 'context' && ( ! isAuthorized || ! data_key ) ) {
 			return [];
 		}
 		if ( ! filterValue && selectedCategory && 'all' !== selectedCategory ) {
@@ -554,7 +558,7 @@ function PageList( {
 	const hasItems = !! filteredBlockPatterns?.length;
 	const allPageContext = hasAllPageContext();
 	return (
-		<div className="block-editor-block-patterns-explorer__wrap">
+		<div ref={ setRootScroll } className="block-editor-block-patterns-explorer__wrap">
 			<div className="block-editor-block-patterns-explorer__list">
 				{ hasItems && (
 					<PatternsListHeader
@@ -562,10 +566,10 @@ function PageList( {
 						filteredBlockPatternsLength={ filteredBlockPatterns.length }
 					/>
 				) }
-				{ contextTab === 'context' && hasPro && data_key && ! allPageContext && (
+				{ contextTab === 'context' && isAuthorized && data_key && ! allPageContext && (
 					<PageListNotice type={ 'mising-context' } />
 				)}
-				{ contextTab === 'context' && ( ! hasPro || ! data_key ) && (
+				{ contextTab === 'context' && ( ! isAuthorized || ! data_key ) && (
 					<ProOnlyHeader launchWizard={ launchWizard } />
 				)}
 				{ hasItems && (
@@ -579,6 +583,7 @@ function PageList( {
 						customShadowStyles={ customShadowStyles }
 						breakpointCols={ breakpointCols }
 						patternType={ 'page' }
+						rootScroll={ rootScroll }
 					/>
 				) }
 			</div>

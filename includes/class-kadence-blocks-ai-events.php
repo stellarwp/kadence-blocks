@@ -48,6 +48,8 @@ class Kadence_Blocks_AI_Events {
 		$container     = UplinkConfig::get_container();
 		$token_manager = $container->get( Token_Manager::class );
 		$token         = $token_manager->get();
+		$data          = $container->get( Data::class );
+		$license_key   = kadence_blocks_get_current_license_key();
 		$is_authorized = false;
 		if ( $token ) {
 			$is_authorized = is_authorized( $license_key, $token, $data->get_domain() );
