@@ -250,19 +250,20 @@ function KadenceCountdown( props ) {
 			const futureMonth = futureDayOfMonth >= dayOfMonth ? currentDate.getMonth() + 1 : currentDate.getMonth();
 			let futureYear = currentDate.getMonth() === 11 ? currentDate.getFullYear() + 1 : currentDate.getFullYear();
 			const nextMonthDays = daysInMonth(futureYear, futureMonth);
+			const daysPassed = (currentDate.getTime() - initialDate.getTime()) / (1000 * 3600 * 24);
 			let offsetDays = 0;
 
 			switch(repeatFrecuency) {
 				case 'daily':
-					offsetDays = futureDayOfMonth - dayOfMonth + 1;
-					futureDate.setDate(dayOfMonth + offsetDays);
+					offsetDays = daysPassed + 1;
+					futureDate.setDate(initialDate.getDate() + offsetDays);
 					futureDate.setHours(hours);
 					futureDate.setMinutes(minutes);
 					futureDate.setSeconds(seconds);
 					break;
 				case 'weekly':
-					offsetDays = futureDayOfMonth - dayOfMonth + (7 - ((futureDayOfMonth - dayOfMonth) % 7));
-					futureDate.setDate(dayOfMonth + offsetDays);
+					offsetDays = daysPassed + (7 - (daysPassed) % 7);
+					futureDate.setDate(initialDate.getDate() + offsetDays);
 					futureDate.setHours(hours);
 					futureDate.setMinutes(minutes);
 					futureDate.setSeconds(seconds);
