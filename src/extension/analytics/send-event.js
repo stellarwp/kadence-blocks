@@ -6,7 +6,7 @@ import apiFetch from '@wordpress/api-fetch';
  * @param {string} event_label
  * @param {object} event_data
  *
- * @return {Promise<object>} Promise returns object
+ * @return {string | Promise<object>} Promise returns object
  */
 export async function sendEvent(event_label, event_data) {
 	try {
