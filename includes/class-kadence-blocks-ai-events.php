@@ -85,7 +85,7 @@ class Kadence_Blocks_AI_Events {
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
-	 * @return bool|WP_Error True if the request has search access, WP_Error object otherwise.
+	 * @return bool
 	 */
 	public function verify_user_can_edit() {
 		return current_user_can( 'edit_posts' );
