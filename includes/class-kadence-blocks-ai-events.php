@@ -81,9 +81,7 @@ class Kadence_Blocks_AI_Events {
 	}
 
 	/**
-	 * Checks if a given request has access to search content.
-	 *
-	 * @param WP_REST_Request $request Full details about the request.
+	 * Checks if the current user has access to edit posts.
 	 *
 	 * @return bool
 	 */
