@@ -40,6 +40,7 @@
 			let offsetDays = 0;
 			let repeatTimeStamp = 0;
 			let dayOfMonth = initialDate.getDate();
+			const futureDayOfMonth = currentDate.getDate();
 			const futureMonth = futureDayOfMonth >= dayOfMonth ? currentDate.getMonth() + 1 : currentDate.getMonth();
 			let futureYear = currentDate.getMonth() === 11 ? currentDate.getFullYear() + 1 : currentDate.getFullYear();
 			const nextMonthDays = new Date(futureYear, futureMonth + 1, 0).getDate();
@@ -48,11 +49,17 @@
 				case 'daily':
 					offsetDays = daysPassed + 1;
 					futureDate.setDate(initialDate.getDate() + offsetDays);
+					futureDate.setHours(hours);
+					futureDate.setMinutes(minutes);
+					futureDate.setSeconds(seconds);
 					repeatTimeStamp = futureDate.getTime();
 					break;
 				case 'weekly':
 					offsetDays = daysPassed + (7 - (daysPassed) % 7);
 					futureDate.setDate(initialDate.getDate() + offsetDays);
+					futureDate.setHours(hours);
+					futureDate.setMinutes(minutes);
+					futureDate.setSeconds(seconds);
 					repeatTimeStamp = futureDate.getTime();
 					break;
 				case 'monthly':
@@ -74,9 +81,9 @@
 				case 'yearly':
 					const datePassed = currentDate.getMonth() <= initialDate.getMonth() 
 						&& currentDate.getDate() <= initialDate.getDate()
-						&& currentDate.getHours() <= initialDate.getHours()
-						&& currentDate.getMinutes() <= initialDate.getMinutes()
-						&& currentDate.getSeconds() <= initialDate.getSeconds();
+						&& currentDate.getHours() <= hours
+						&& currentDate.getMinutes() <= minutes
+						&& currentDate.getSeconds() <= seconds;
 					futureYear = datePassed
 						? currentDate.getFullYear()
 						: currentDate.getFullYear() + 1;
@@ -177,10 +184,9 @@
 				total = Math.floor( window.kadenceCountdown.timers[ id ].timestamp - currentTimeStamp.getTime() );
 			}
 
-			if(window.kadenceCountdown.timers[ id ].repeat && total < 0) {
+			if(window.kadenceCountdown.timers[ id ].repeat && total < 0 ) {
 				const futureTimeStamp = window.kadenceCountdown.getRepeaterTimeStamp(id);
 				total = Math.floor( futureTimeStamp -  currentTimeStamp.getTime());
-				console.log(total);
 			}
 			// Check if completed.
 			if ( total && total < 0  ) {

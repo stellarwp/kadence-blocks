@@ -308,7 +308,7 @@ function KadenceCountdown( props ) {
 				timeOffset: theTimeOffset,
 			});
 			
-			setRepeatDate(futureDate);
+			setRepeatDate(futureDate);	
 		}
 	};
 	
