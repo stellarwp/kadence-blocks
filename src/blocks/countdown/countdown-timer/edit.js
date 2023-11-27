@@ -187,19 +187,23 @@ function KadenceCoundownTimer( props ) {
 	const calculateDate = () => {
 		const currentDate = new Date();
 		const initialDate = new Date(parentBlock[ 0 ].attributes.timestamp);
-		const seconds = initialDate.getSeconds();
-		const minutes = initialDate.getMinutes();
-		const hours = initialDate.getHours();
-		let futureDate = new Date();
-		let daysPassed = Math.floor((currentDate.getTime() - initialDate.getTime()) / (1000 * 3600 * 24));
-		let offsetDays = 0;
-		let dayOfMonth = initialDate.getDate();
-		const futureDayOfMonth = currentDate.getDate();
-		const initialMonth = initialDate.getMonth();
-		const futureMonth = futureDayOfMonth >= dayOfMonth ? currentDate.getMonth() + 1 : currentDate.getMonth();
-		let futureYear = currentDate.getMonth() === 11 ? currentDate.getFullYear() + 1 : currentDate.getFullYear();
-		const nextMonthDays = new Date(futureYear, futureMonth + 1, 0).getDate();
-		if(currentDate >= initialDate && parentBlock[ 0 ].attributes.repeat && parentBlock[ 0 ].attributes.frecuency !== '') {
+		console.log(typeof parentBlock[ 0 ].attributes.stopRepeating);
+		//const stopRepeating = parentBlock[ 0 ].attributes.stopRepeating && new Date(parentBlock[ 0 ].attributes.endDate) >= new Date(currentDate) ? true : !parentBlock[ 0 ].attributes.stopRepeating ? true : new Date(parentBlock[ 0 ].attributes.endDate) >= new Date(currentDate);
+		const stopRepeating = !parentBlock[ 0 ].attributes.stopRepeating ? true : (new Date(parentBlock[ 0 ].attributes.endDate) <= new Date(currentDate) ? false : true);
+		if(currentDate >= initialDate && parentBlock[ 0 ].attributes.repeat && parentBlock[ 0 ].attributes.frecuency !== '' && stopRepeating) {
+			const seconds = initialDate.getSeconds();
+			const minutes = initialDate.getMinutes();
+			const hours = initialDate.getHours();
+			let futureDate = new Date();
+			let daysPassed = Math.floor((currentDate.getTime() - initialDate.getTime()) / (1000 * 3600 * 24));
+			let offsetDays = 0;
+			let dayOfMonth = initialDate.getDate();
+			const futureDayOfMonth = currentDate.getDate();
+			const initialMonth = initialDate.getMonth();
+			const futureMonth = futureDayOfMonth >= dayOfMonth ? currentDate.getMonth() + 1 : currentDate.getMonth();
+			let futureYear = currentDate.getMonth() === 11 ? currentDate.getFullYear() + 1 : currentDate.getFullYear();
+			const nextMonthDays = new Date(futureYear, futureMonth + 1, 0).getDate();
+		
 			switch(parentBlock[ 0 ].attributes.frecuency) {
 				case 'daily':
 					offsetDays = daysPassed + 1;
