@@ -186,7 +186,7 @@
 
 			if(window.kadenceCountdown.timers[ id ].repeat && total < 0 ) {
 				const futureTimeStamp = window.kadenceCountdown.getRepeaterTimeStamp(id);
-				total = Math.floor( futureTimeStamp -  currentTimeStamp.getTime());
+				total = Math.floor( futureTimeStamp - currentTimeStamp.getTime());
 			}
 			// Check if completed.
 			if ( total && total < 0  ) {

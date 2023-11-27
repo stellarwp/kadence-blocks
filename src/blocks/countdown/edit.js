@@ -219,12 +219,12 @@ function KadenceCountdown( props ) {
 		[ clientId ]
 	);
 
-	const handleFrecuencyChange = (value) => {
+	/*const handleFrecuencyChange = (value) => {
 		setAttributes({frecuency: value});
 		getRepeatDate(value);
 	};
 
-	const daysInMonth = (year, month) => {
+	/*const daysInMonth = (year, month) => {
 		return new Date(year, month + 1, 0).getDate();
 	}
 	
@@ -310,14 +310,14 @@ function KadenceCountdown( props ) {
 			
 			setRepeatDate(futureDate);	
 		}
-	};
+	};*/
 	
 	/*
 	** Updates the date when the repeater is active 
 	** or starts the countdown when the block is placed 
 	** for the first time.
 	*/
-	const updateEndDate = () => {
+	/*const updateEndDate = () => {
 		
 		const newDate = new Date();
 		
@@ -331,7 +331,7 @@ function KadenceCountdown( props ) {
 		} else {
 			getRepeatDate(frecuency);
 		}
-	};
+	};*/
 
 	useEffect( () => {
 		setBlockDefaults( 'kadence/countdown', attributes);
@@ -352,7 +352,18 @@ function KadenceCountdown( props ) {
 			setBorderRadiusControl( 'individual' );
 		}
 
-		updateEndDate(frecuency);
+		if ( !date ) {
+			dateSettings = getDateSettings();
+			const { timezone } = dateSettings;
+			const today = new Date();
+			const newDate = new Date();
+			newDate.setDate( today.getDate() + 2 );
+			const theTimeOffset = ( timezone && timezone.offset ? timezone.offset : 0 );
+			const theSiteTimezoneTimestamp = getTimestamp( newDate, theTimeOffset );
+			setAttributes( { date: newDate, timestamp: theSiteTimezoneTimestamp, timezone: ( timezone && timezone.string ? timezone.string : '' ), timeOffset: theTimeOffset } );
+		}
+
+		//updateEndDate(frecuency);
 	}, [] );
 
 	const [ borderWidthControl, setBorderWidthControl ] = useState( 'individual' );
@@ -364,7 +375,7 @@ function KadenceCountdown( props ) {
 	const [ itemPaddingControl, setItemPaddingControl ] = useState( 'linked' );
 	const [ previewExpired, setPreviewExpired ] = useState( false );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
-	const [ repeatDate, setRepeatDate ] = useState('');
+	//const [ repeatDate, setRepeatDate ] = useState('');
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
@@ -414,7 +425,20 @@ function KadenceCountdown( props ) {
 			units: newUpdate,
 		} );
 	};
+
 	const saveDate = ( value ) => {
+		const theTimezone = get( dateSettings, ['timezone', 'string' ], '');
+		const theTimeOffset = get( dateSettings, ['timezone', 'offset' ], 0);
+
+		const theSiteTimezoneTimestamp = getTimestamp( value, theTimeOffset );
+		setAttributes( {
+			date      : value,
+			timestamp : theSiteTimezoneTimestamp,
+			timezone  : theTimezone,
+			timeOffset: theTimeOffset,
+		} );
+	};
+	/*const saveDate = ( value ) => {
 		const theTimezone = get( dateSettings, ['timezone', 'string' ], '');
 		const theTimeOffset = get( dateSettings, ['timezone', 'offset' ], 0);
 		const theSiteTimezoneTimestamp = getTimestamp( value, theTimeOffset );
@@ -427,7 +451,7 @@ function KadenceCountdown( props ) {
 		});
 
 		getRepeatDate(frecuency);
-	};
+	};*/
 	const getEverGreenTimestamp = ( value ) => {
 		const newDate = new Date();
 		newDate.setTime( newDate.getTime() + ( Number( value ) * 60 * 60 * 1000 ) );
@@ -806,13 +830,7 @@ function KadenceCountdown( props ) {
 											{'date' === countdownType && (
 												<div className="components-base-control kb-datepicker-fix">
 													<DateTimePicker
-														currentDate={( 
-															repeat && repeatDate !== '' && new Date() >= new Date(date) 
-																? repeatDate 
-																: !date 
-																	? undefined 
-																	: date 
-														)}
+														currentDate={( !date ? undefined : date )}
 														onChange={value => {
 															saveDate( value );
 														}}
@@ -919,9 +937,7 @@ function KadenceCountdown( props ) {
 														label={__( 'Repeat Countdown Frecuency', 'kadence-blocks' )}
 														options={frecuencyOptions}
 														value={frecuency}
-														onChange={( value ) => {
-															handleFrecuencyChange(value)
-														}}
+														onChange={( value ) => setAttributes( { frecuency: value } )}
 													/>
 
 													<ToggleControl
