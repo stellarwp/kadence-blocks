@@ -17,14 +17,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Kadence_Blocks_AI_Events {
 
 	/**
-	 * Event Label.
+	 * The label property key for the event request.
 	 */
-	const PROP_EVENT_LABEL = 'event_label';
+	public const PROP_EVENT_LABEL = 'event_label';
 
 	/**
-	 * Event Value.
+	 * The data property key for the event request.
 	 */
-	const PROP_EVENT_DATA = 'event_data';
+	public const PROP_EVENT_DATA = 'event_data';
 
 	/**
 	 * The event endpoint.
