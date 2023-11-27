@@ -11,7 +11,7 @@ import apiFetch from '@wordpress/api-fetch';
 export async function sendEvent(event_label, event_data) {
 	try {
 		return await apiFetch({
-			path: '/kb-design-library/v1/handle_event?XDEBUG_SESSION_START',
+			path: '/kb-design-library/v1/handle_event',
 			method: 'POST',
 			data: {
 				event_label: event_label,
