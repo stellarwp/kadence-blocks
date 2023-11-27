@@ -187,8 +187,6 @@ function KadenceCoundownTimer( props ) {
 	const calculateDate = () => {
 		const currentDate = new Date();
 		const initialDate = new Date(parentBlock[ 0 ].attributes.timestamp);
-		console.log(typeof parentBlock[ 0 ].attributes.stopRepeating);
-		//const stopRepeating = parentBlock[ 0 ].attributes.stopRepeating && new Date(parentBlock[ 0 ].attributes.endDate) >= new Date(currentDate) ? true : !parentBlock[ 0 ].attributes.stopRepeating ? true : new Date(parentBlock[ 0 ].attributes.endDate) >= new Date(currentDate);
 		const stopRepeating = !parentBlock[ 0 ].attributes.stopRepeating ? true : (new Date(parentBlock[ 0 ].attributes.endDate) <= new Date(currentDate) ? false : true);
 		if(currentDate >= initialDate && parentBlock[ 0 ].attributes.repeat && parentBlock[ 0 ].attributes.frecuency !== '' && stopRepeating) {
 			const seconds = initialDate.getSeconds();

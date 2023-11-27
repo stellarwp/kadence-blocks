@@ -183,7 +183,7 @@
 			} else {
 				total = Math.floor( window.kadenceCountdown.timers[ id ].timestamp - currentTimeStamp.getTime() );
 			}
-			//const stopRepeating = !parentBlock[ 0 ].attributes.stopRepeating ? true : (new Date(parentBlock[ 0 ].attributes.endDate) <= new Date(currentDate) ? false : true);
+			
 			const stopRepeating = !window.kadenceCountdown.timers[ id ].stopCount ? true : (new Date(window.kadenceCountdown.timers[ id ].endDate) <= new Date() ? false : true);
 			
 			if(window.kadenceCountdown.timers[ id ].repeat && total <= 0 && stopRepeating) {
