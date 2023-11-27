@@ -14,6 +14,7 @@ export function PatternPreview( {
 	baseCompatStyles,
 	neededCompatStyles,
 	patternType,
+	rootScroll,
 } ) {
 	if ( ! html ) {
 		return null;
@@ -31,6 +32,7 @@ export function PatternPreview( {
 			baseCompatStyles={ baseCompatStyles }
 			neededCompatStyles={ neededCompatStyles }
 			patternType={ patternType }
+			rootScroll={ rootScroll }
 		/>
 	);
 }

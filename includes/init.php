@@ -9,6 +9,11 @@
 // Exit if accessed directly.
 use KadenceWP\KadenceBlocks\App;
 use KadenceWP\KadenceBlocks\StellarWP\ContainerContract\ContainerInterface;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_authorization_token;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
+use KadenceWP\KadenceBlocks\StellarWP\Uplink\Auth\Token\Contracts\Token_Manager;
+use KadenceWP\KadenceBlocks\StellarWP\Uplink\Config as UplinkConfig;
+use KadenceWP\KadenceBlocks\StellarWP\Uplink\Site\Data;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -231,6 +236,14 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 	if ( ! empty( $pro_data['email'] ) ) {
 		$pro_data['api_email'] = $pro_data['email'];
 	}
+	$container     = UplinkConfig::get_container();
+	$data          = $container->get( Data::class );
+	$token_manager = $container->get( Token_Manager::class );
+	$token         = $token_manager->get();
+	$is_authorized = false;
+	if ( $token && ! empty( $pro_data['key'] ) ) {
+		$is_authorized = is_authorized( $pro_data['key'], $token, $data->get_domain() );
+	}
 	$font_sizes = apply_filters( 'kadence_blocks_variable_font_sizes', $font_sizes );
 	$subscribed = class_exists( 'Kadence_Blocks_Pro' ) ? true : get_option( 'kadence_blocks_wire_subscribe' );
 	$gfonts_path      = KADENCE_BLOCKS_PATH . 'includes/gfonts-array.php';
@@ -257,6 +270,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'settings'       => get_option( 'kadence_blocks_settings_blocks' ),
 			'userrole'       => $userrole,
 			'proData'        => $pro_data,
+			'isAuthorized'   => $is_authorized,
 			'homeLink'       => admin_url( 'admin.php?page=kadence-blocks-home' ),
 			'pro'            => ( class_exists( 'Kadence_Blocks_Pro' ) ? 'true' : 'false' ),
 			'colors'         => get_option( 'kadence_blocks_colors' ),

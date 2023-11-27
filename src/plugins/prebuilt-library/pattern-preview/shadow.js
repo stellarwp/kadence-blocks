@@ -9,8 +9,8 @@ import {
 import { Disabled, Spinner } from '@wordpress/components';
 import root from 'react-shadow';
 
-import LazyLoad from 'react-lazy-load';
-
+// import LazyLoad from 'react-lazy-load';
+import LazyLoad from './lazyload.js'
 
 const MAX_HEIGHT = 1600;
 
@@ -26,6 +26,7 @@ function ScaledPatternShadowPreview( {
 	baseCompatStyles,
 	shadowStyles,
 	patternType = 'pattern',
+	rootScroll,
 } ) {
 	if ( ! viewportWidth ) {
 		viewportWidth = containerWidth;
@@ -89,7 +90,7 @@ function ScaledPatternShadowPreview( {
 	const transitionSpeed = `transform ${trans_scroll_speed}ms linear !important`;
 	return (
 		<>
-			<LazyLoad onContentVisible={() => {resizeClear()}}>
+			<LazyLoad offset={200} rootScroll={rootScroll} onContentVisible={() => {resizeClear()}}>
 				<Disabled
 					className="block-editor-block-preview__content"
 					style={ {

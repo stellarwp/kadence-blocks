@@ -208,6 +208,8 @@ function PatternLibrary( {
 		}
 		return true;
 	}
+	const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
+	const activateLink = ( window?.kadence_blocks_params?.homeLink ? kadence_blocks_params.homeLink : '' );
 	const activeStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 	const savedStyle = ( undefined !== activeStorage?.style && '' !== activeStorage?.style ? activeStorage.style : 'light' );
 	const savedTab = ( undefined !== activeStorage?.subTab && '' !== activeStorage?.subTab ? activeStorage.subTab : 'patterns' );
@@ -566,12 +568,12 @@ function PatternLibrary( {
 	}
 	useEffect(() => {
 		getAIUserData();
-		if ( currentCredits === 'fetch' ) {
+		if ( isAuthorized && currentCredits === 'fetch' ) {
 			getRemoteAvailableCredits();
 		}
 	}, [aiDataState]);
 	useEffect(() => {
-		if ( aIUserData && ! hasInitialAI ) {
+		if ( isAuthorized && aIUserData && ! hasInitialAI ) {
 			getAILocalData();
 		}
 	}, [aIUserData]);
@@ -673,20 +675,33 @@ function PatternLibrary( {
 									onClose={ debounce( toggleVisible, 100 ) }
 									anchor={ popoverAnchor }
 								>
-									<Button
-										className='kadence-ai-wizard-button'
-										iconPosition='left'
-										icon={ aiIcon }
-										text={ __('Update Kadence AI Details', 'kadence-blocks') }
-										onClick={ () => {
-											setIsVisible( false );
-											getRemoteAvailableCredits();
-											setWizardState( {
-												visible: true,
-												photographyOnly: false
-											} );
-										}}
-									/>
+									{ isAuthorized && (
+										<Button
+											className='kadence-ai-wizard-button'
+											iconPosition='left'
+											icon={ aiIcon }
+											text={ __('Update Kadence AI Details', 'kadence-blocks') }
+											onClick={ () => {
+												setIsVisible( false );
+												getRemoteAvailableCredits();
+												setWizardState( {
+													visible: true,
+													photographyOnly: false
+												} );
+											}}
+										/>
+ 									) }
+									{ ! isAuthorized && (
+										<Button
+											className='kadence-ai-wizard-button'
+											iconPosition='left'
+											icon={ aiIcon }
+											text={ __('Activate Kadence AI', 'kadence-blocks') }
+											disabled={ activateLink ? false : true }
+											target={ activateLink ? '_blank' : ''}
+											href={ activateLink ? activateLink : '' }
+										/>
+ 									) }
 									<Button
 										icon={ image }
 										iconPosition='left'
@@ -895,7 +910,7 @@ function PatternLibrary( {
 									) : (
 										<>
 											{ contextListOptions.map( ( contextCategory, index ) =>
-												<div key={ `${ contextCategory.value }-${ index }` } className={`context-category-wrap${ ( localContexts && localContexts.includes( contextCategory.value ) ? ' has-content' : '' )}`}>
+												<div key={ `${ contextCategory.value }-${ index }` } className={`context-category-wrap${ ( ( localContexts && localContexts.includes( contextCategory.value ) || isContextRunning( contextCategory.value ) ) ? ' has-content' : '' )}`}>
 													<Button
 														className={ `kb-category-button${ ( selectedContext === contextCategory.value ? ' is-pressed' : '' )}` }
 														aria-pressed={ selectedContext === contextCategory.value }
@@ -1100,6 +1115,13 @@ function PatternLibrary( {
 							imageCollection={ imageCollection }
 							useImageReplace={ selectedReplaceImages }
 							onSelect={ ( pattern ) => onInsertContent( pattern ) }
+							launchWizard={ () => {
+								sendEvent( 'ai_wizard_started' );
+								setWizardState( {
+									visible: true,
+									photographyOnly: false
+								} );
+							} }
 						/>
 					) }
 				</>

@@ -129,6 +129,8 @@ function GenerateHeader( { context, contextLabel, contextState, generateContext 
 	}, [ context, contextState ] );
 	const hasPro = ( kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false );
 	const data_key = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_key ?  kadence_blocks_params.proData.api_key : '' );
+	const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
+	const activateLink = ( window?.kadence_blocks_params?.homeLink ? kadence_blocks_params.homeLink : '' );
 	return (
 		<div className="kb-patterns-banner-generate-notice">
 			<Icon className='kadence-generate-icons' icon={ aiIcon } />
@@ -152,19 +154,43 @@ function GenerateHeader( { context, contextLabel, contextState, generateContext 
 				contextLabel,
 				) }
 			</p>
-			{ ! hasPro && ! data_key && (
-				<ExternalLink className='kadence-upgrade-to-pro-btn' href={ 'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=ai-content' }>{ __( 'Upgrade to Pro', 'kadence-blocks' ) }</ExternalLink>
-			)}
-			{ hasPro && ! data_key && (
+			{ ! isAuthorized && ! loading && (
 				<Button
 					className='kadence-generate-copy-button'
 					iconPosition='right'
 					icon={ aiIcon }
-					text={ __('Activate Kadence Blocks Pro Required', 'kadence-blocks') }
-					disabled={ true }
+					text={ __('Activate Kadence AI', 'kadence-blocks') }
+					disabled={ activateLink ? false : true }
+					target={ activateLink ? '_blank' : ''}
+					href={ activateLink ? activateLink : '' }
 				/>
-			)}
-			{ hasPro && data_key && ! loading && (
+			) }
+			{ isAuthorized && ! data_key && ! loading && (
+				<>
+					{ hasPro && (
+						<Button
+							className='kadence-generate-copy-button'
+							iconPosition='right'
+							icon={ aiIcon }
+							text={ __('Activate Kadence Blocks Pro Required', 'kadence-blocks') }
+							disabled={ activateLink ? false : true }
+							href={ activateLink ? activateLink : '' }
+						/>
+					) }
+					{ ! hasPro && (
+						<Button
+							className='kadence-generate-copy-button'
+							iconPosition='right'
+							icon={ aiIcon }
+							text={ __('Activate Kadence AI', 'kadence-blocks') }
+							disabled={ activateLink ? false : true }
+							target={ activateLink ? '_blank' : ''}
+							href={ activateLink ? activateLink : '' }
+						/>
+					)}
+				</>
+			) }
+			{ isAuthorized && data_key && ! loading && (
 				<Button
 					className='kadence-generate-copy-button'
 					iconPosition='right'
@@ -350,6 +376,7 @@ function PatternList( {
  } ) {
 	const [ failedAI, setFailedAI ] = useState( false );
 	const [ failedAIType, setFailedAIType ] = useState( 'general' );
+	const [rootScroll, setRootScroll] = useState();
 	const [ categoryFilter, setCategoryFilter ] = useState( [] );
 	const debouncedSpeak = useDebounce(speak, 500);
 	const { getContextState, getContextContent, getAllContext } = useSelect(
@@ -519,7 +546,6 @@ function PatternList( {
 	}, [ filterValue, selectedCategory, thePatterns, aiContext, contextTab, contextStatesRef, imageCollection, useImageReplace, aINeedsData, categoryFilter ] );
 
 	const updateFilters = (categoryList) => {
-		console.log('cat list', categoryList);
 		setCategoryFilter(categoryList.map((cat) => cat.value) ?? []);
 	};
 
@@ -657,7 +683,7 @@ function PatternList( {
 	const hasItems = !! filteredBlockPatterns?.length;
 
 	return (
-		<div className="block-editor-block-patterns-explorer__wrap">
+		<div ref={ setRootScroll } className="block-editor-block-patterns-explorer__wrap">
 			<div className={ `block-editor-block-patterns-explorer__list${ contextTab === 'context' ? ' kb-ai-patterns-explorer' : '' }`}>
 				{ hasItems && (
 					<PatternsListHeader
@@ -697,6 +723,7 @@ function PatternList( {
 						previewMode={ previewMode }
 						selectedStyle={ selectedStyle }
 						renderType={ hasHTml ? 'shadow' : 'iframe' }
+						rootScroll={ rootScroll }
 					/>
 				) }
 			</div>

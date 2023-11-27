@@ -24,6 +24,7 @@ import { useEffect, useState } from "@wordpress/element";
 import { __, _n, sprintf } from "@wordpress/i18n";
 import { store as noticesStore } from "@wordpress/notices";
 import { useDispatch } from "@wordpress/data";
+import { Button } from "@wordpress/components";
 
 export default function KadenceBlocksHome() {
 	const [wizardState, setWizardState] = useState(false);
@@ -49,7 +50,7 @@ export default function KadenceBlocksHome() {
 			setWizardState(true);
 		}
 	}, []);
-	const { createErrorNotice, createSuccessNotice } = useDispatch(noticesStore);
+	const { createErrorNotice, createSuccessNotice, createNotice } = useDispatch(noticesStore);
 	const closeAiWizard = (info) => {
 		setWizardState(false);
 		if (info && info === "saved") {
@@ -59,16 +60,16 @@ export default function KadenceBlocksHome() {
 	const handleAiWizardPrimaryAction = (event, rebuild) => {
 		if (rebuild) {
 			getAllNewData();
+			setTimeout(() => {
+				createNotice('info', __("Generating AI Content, this happens in the background, you can leave this page. You can find AI content in your design library in the editor."), { type: "default" });
+			}, 400 );
 		}
-		console.log(
-			"handleAiWizardPrimaryAction - Need to trigger something",
-			event,
-			rebuild
-		);
 	};
 
 	async function getAllNewData() {
+		createSuccessNotice(__("Generating AI Content"), { type: "snackbar" });
 		const response = await getAIContentRemaining(true);
+		console.log("response", response);
 		if (response === "error" || response === "failed") {
 			createErrorNotice(__("Error generating AI content, Please Retry"), {
 				type: "snackbar",
@@ -93,6 +94,7 @@ export default function KadenceBlocksHome() {
 				onUpdateWizard={() => setWizardState(true)}
 				isUserAuthenticated={authenticated}
 			/>
+			<Notices />
 			<div className="kb-container">
 				<div className="kb-section">
 					{content.actionCards.title}
@@ -123,9 +125,7 @@ export default function KadenceBlocksHome() {
 						isFullScreen={true}
 					/>
 				)}
-				<Notices />
 			</div>
-
 			<div className="kb-section kb-section--dark">
 				<div className="kb-container">
 					<SectionTitle title={content.knowledgeBase.heading} variant="white" />
