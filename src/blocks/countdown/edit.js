@@ -227,14 +227,6 @@ function KadenceCountdown( props ) {
 	const daysInMonth = (year, month) => {
 		return new Date(year, month + 1, 0).getDate();
 	}
-
-	const isLeapYear = (year) => {
-		const leap = new Date(year, 1, 29).getDate() === 29;
-		if (leap) {
-			return true;
-		} 
-		return false;
-	}
 	
 	const getRepeatDate = (repeatFrecuency) => {
 		const currentDate = new Date();
