@@ -654,7 +654,7 @@ class Kadence_Blocks_Settings {
 				'licenseKey'          => $license_key,
 				'authUrl'             => esc_url( $auth_url ),
 				'disconnectUrl'       => esc_url( $disconnect_url ),
-				'isPro'               => class_exists( 'Kadence_Blocks_Pro' ),
+				'pro'                 => ( class_exists( 'Kadence_Blocks_Pro' ) ? 'true' : 'false' ),
 				'apiKey'              => $license_key,
 			)
 		);
