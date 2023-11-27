@@ -17,6 +17,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Kadence_Blocks_AI_Events {
 
 	/**
+	 * Event Label.
+	 */
+	const PROP_EVENT_LABEL = 'event_label';
+
+	/**
+	 * Event Value.
+	 */
+	const PROP_EVENT_DATA = 'event_data';
+
+	/**
 	 * The event endpoint.
 	 */
 	public const ENDPOINT = '/wp-json/prophecy/v1/analytics/event';
@@ -35,10 +45,56 @@ class Kadence_Blocks_AI_Events {
 	 */
 	public function register() {
 		add_action( 'stellarwp/analytics/event', [ $this, 'handle_event' ], 10, 2 );
+		add_action( 'rest_api_init', [ $this, 'register_route' ], 10, 0 );
+	}
+
+	/**
+	 * Registers the analytics/event endpoint in the REST API.
+	 *
+	 * @action rest_api_init
+	 *
+	 * @return void
+	 */
+	public function register_route() {
+		register_rest_route(
+			'kb-design-library/v1',
+			'/handle_event',
+			array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'handle_event_endpoint' ),
+					'permission_callback' => array( $this, 'verify_user_can_edit' ),
+					'args'                => [
+						self::PROP_EVENT_LABEL => [
+							'description'       => __( 'The Event Label', 'kadence-blocks' ),
+							'type'              => 'string',
+							'sanitize_callback' => 'sanitize_text_field',
+						],
+						self::PROP_EVENT_DATA  => [
+							'description' => __( 'The Event Data', 'kadence-blocks' ),
+							'type'        => 'object',
+						],
+					],
+				)
+			)
+		);
+	}
+
+	/**
+	 * Checks if a given request has access to search content.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 *
+	 * @return bool|WP_Error True if the request has search access, WP_Error object otherwise.
+	 */
+	public function verify_user_can_edit() {
+		return current_user_can( 'edit_posts' );
 	}
 
 	/**
 	 * Sends events to Prophecy WP (if the user has installed and activated Kadence Blocks Pro).
+	 *
+	 * @action stellarwp/analytics/event
 	 *
 	 * @return void
 	 */
@@ -109,5 +165,72 @@ class Kadence_Blocks_AI_Events {
 		$parsed_args = wp_parse_args( $args, $defaults );
 
 		return base64_encode( json_encode( $parsed_args ) );
+	}
+
+	/**
+	 * Configures various event requests to the /analytics/event endpoint
+	 * and sends them to ProphecyWP.
+	 *
+	 * @param WP_REST_Request $request The request to the endpoint.
+	 */
+	public function handle_event_endpoint( $request ) {
+		$event_label = $request->get_param( self::PROP_EVENT_LABEL );
+		$event_data  = $request->get_param( self::PROP_EVENT_DATA );
+
+		$event       = '';
+		$context     = array();
+
+		switch ( $event_label ) {
+			case 'ai_wizard_started':
+				$event = 'AI Wizard Started';
+				break;
+
+			case 'ai_wizard_update':
+				$event = 'AI Wizard Update';
+				$context = [
+					'organization_type' => $event_data['entityType'] ?? '',
+					'location_type'     => $event_data['locationType'] ?? '',
+					'location'          => $event_data['location'] ?? '',
+					'industry'          => $event_data['industry'] ?? '',
+					'mission_statement' => $event_data['missionStatement'] ?? '',
+					'keywords'          => $event_data['keywords'] ?? '',
+					'tone'              => $event_data['tone'] ?? '',
+					'collections'       => $event_data['customCollections'] ?? '',
+				];
+				break;
+			case 'ai_wizard_complete':
+				$event = 'AI Wizard Complete';
+				$context = [
+					'organization_type' => $event_data['entityType'] ?? '',
+					'location_type'     => $event_data['locationType'] ?? '',
+					'location'          => $event_data['location'] ?? '',
+					'industry'          => $event_data['industry'] ?? '',
+					'mission_statement' => $event_data['missionStatement'] ?? '',
+					'keywords'          => $event_data['keywords'] ?? '',
+					'tone'              => $event_data['tone'] ?? '',
+					'collections'       => $event_data['customCollections'] ?? '',
+				];
+				break;
+			case 'pattern_added_to_page':
+				$event = 'Pattern Added to Page';
+				$context = [
+					'pattern_id'         => $event_data['id'] ?? '',
+					'pattern_slug'       => $event_data['slug'] ?? '',
+					'pattern_name'       => $event_data['name'] ?? '',
+					'pattern_style'      => $event_data['style'] ?? '',
+					'pattern_is_ai'      => $event_data['is_ai'] ?? false,
+					'pattern_context'    => $event_data['context'] ?? '',
+					'pattern_categories' => $event_data['categories'] ?? [],
+				];
+				break;
+		}
+
+		if ( strlen( $event ) !== 0 ) {
+			do_action( 'stellarwp/analytics/event', $event, $context );
+
+			return new WP_REST_Response( [ 'message' => 'Event handled.' ], 200 );
+		}
+
+		return new WP_REST_Response( array( 'message' => 'Event not handled.' ), 500 );
 	}
 }
