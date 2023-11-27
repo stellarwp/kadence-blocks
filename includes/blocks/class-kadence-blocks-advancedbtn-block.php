@@ -57,7 +57,6 @@ class Kadence_Blocks_Advancedbtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
-
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 		$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ', .site .entry-content .wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ', .wp-block-kadence-advancedbtn.kb-btns' . $unique_id . ', .site .entry-content .wp-block-kadence-advancedbtn.kb-btns' . $unique_id );
 

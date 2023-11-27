@@ -741,15 +741,17 @@ class Kadence_Blocks_CSS {
 	 * @param array $font an array of font settings.
 	 * @return string
 	 */
-	public function render_font_weight( $weight ) {
+	public function render_font_weight( $weight, $google = true ) {
 		if ( empty( $weight ) ) {
 			return false;
 		}
 		if ( 'inherit' === $weight ) {
 			return false;
 		}
-		if ( 'regular' === $weight ) {
+		if ( 'regular' === $weight && $google ) {
 			$weight_string = 'normal';
+		} elseif ( 'regular' === $weight && ! $google ) {
+			$weight_string = false;
 		} else {
 			$weight_string = $weight;
 		}
@@ -784,12 +786,6 @@ class Kadence_Blocks_CSS {
 		if ( isset( $font[0] ) && is_array( $font[0] ) && ! empty( $font[0] ) ) {
 			$font = $font[0];
 		}
-		if ( isset( $font['style'] ) && ! empty( $font['style'] ) ) {
-			$this->add_property( 'font-style', $font['style'] );
-		}
-		if ( isset( $font['weight'] ) && ! empty( $font['weight'] ) ) {
-			$this->add_property( 'font-weight', $this->render_font_weight( $font['weight'] ) );
-		}
 		$size_type = ( isset( $font['sizeType'] ) && ! empty( $font['sizeType'] ) ? $font['sizeType'] : 'px' );
 		$line_type = ( isset( $font['lineType'] ) ? $font['lineType'] : '' );
 		$line_type = ( '-' !== $line_type ? $line_type : '' );
@@ -815,10 +811,17 @@ class Kadence_Blocks_CSS {
 			$this->add_property( 'letter-spacing', $font['letterSpacing'] . $letter_type );
 		}
 		$family = ( isset( $font['family'] ) && ! empty( $font['family'] ) && 'inherit' !== $font['family'] ? $font['family'] : '' );
+		$is_google = false;
 		if ( ! empty( $family ) ) {
-			$google = isset( $font['google'] ) && $font['google'] ? true : false;
-			$google = $google && ( isset( $font['loadGoogle'] ) && $font['loadGoogle'] || ! isset( $font['loadGoogle'] ) ) ? true : false;
+			$is_google = isset( $font['google'] ) && $font['google'] ? true : false;
+			$google    = $is_google && ( isset( $font['loadGoogle'] ) && $font['loadGoogle'] || ! isset( $font['loadGoogle'] ) ) ? true : false;
 			$this->add_property( 'font-family', $this->render_font_family( $font['family'], $google, ( isset( $font['variant'] ) ? $font['variant'] : '' ), ( isset( $font['subset'] ) ? $font['subset'] : '' ) ) );
+			if ( isset( $font['style'] ) && ! empty( $font['style'] ) && 'normal' !== $font['style'] ) {
+				$this->add_property( 'font-style', $font['style'] );
+			}
+		}
+		if ( isset( $font['weight'] ) && ! empty( $font['weight'] ) ) {
+			$this->add_property( 'font-weight', $this->render_font_weight( $font['weight'], $is_google ) );
 		}
 		if ( isset( $font['textTransform'] ) && ! empty( $font['textTransform'] ) ) {
 			$this->add_property( 'text-transform', $font['textTransform'] );
