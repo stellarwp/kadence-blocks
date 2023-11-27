@@ -219,120 +219,6 @@ function KadenceCountdown( props ) {
 		[ clientId ]
 	);
 
-	/*const handleFrecuencyChange = (value) => {
-		setAttributes({frecuency: value});
-		getRepeatDate(value);
-	};
-
-	/*const daysInMonth = (year, month) => {
-		return new Date(year, month + 1, 0).getDate();
-	}
-	
-	const getRepeatDate = (repeatFrecuency) => {
-		const currentDate = new Date();
-		const initialDate = new Date(date);
-		if(repeat && currentDate >= initialDate) {
-			let futureDate = new Date();
-			const seconds = initialDate.getSeconds();
-			const minutes = initialDate.getMinutes();
-			const hours = initialDate.getHours();
-			let dayOfMonth = initialDate.getDate();
-			const futureDayOfMonth = currentDate.getDate();
-			const initialMonth = initialDate.getMonth();
-			const futureMonth = futureDayOfMonth >= dayOfMonth ? currentDate.getMonth() + 1 : currentDate.getMonth();
-			let futureYear = currentDate.getMonth() === 11 ? currentDate.getFullYear() + 1 : currentDate.getFullYear();
-			const nextMonthDays = daysInMonth(futureYear, futureMonth);
-			const daysPassed = (currentDate.getTime() - initialDate.getTime()) / (1000 * 3600 * 24);
-			let offsetDays = 0;
-
-			switch(repeatFrecuency) {
-				case 'daily':
-					offsetDays = daysPassed + 1;
-					futureDate.setDate(initialDate.getDate() + offsetDays);
-					futureDate.setHours(hours);
-					futureDate.setMinutes(minutes);
-					futureDate.setSeconds(seconds);
-					break;
-				case 'weekly':
-					offsetDays = daysPassed + (7 - (daysPassed) % 7);
-					futureDate.setDate(initialDate.getDate() + offsetDays);
-					futureDate.setHours(hours);
-					futureDate.setMinutes(minutes);
-					futureDate.setSeconds(seconds);
-					break;
-				case 'monthly':
-					if(dayOfMonth === 31 && nextMonthDays === 30 ) {
-						dayOfMonth = 30;
-					} else if(futureMonth === 0 && dayOfMonth >= 29) {
-						dayOfMonth = dayOfMonth === 29 ? dayOfMonth : 28;
-					}
-
-					futureDate = new Date(
-						futureYear, 
-						futureMonth,
-						dayOfMonth,
-						hours, 
-						minutes,
-						seconds
-					);
-					break;
-				case 'yearly':
-					const datePassed = currentDate.getMonth() <= initialDate.getMonth() 
-						&& currentDate.getDate() <= initialDate.getDate()
-						&& currentDate.getHours() <= initialDate.getHours()
-						&& currentDate.getMinutes() <= initialDate.getMinutes()
-						&& currentDate.getSeconds() <= initialDate.getSeconds();
-					futureYear = datePassed
-						? currentDate.getFullYear()
-						: currentDate.getFullYear() + 1;
-					futureDate = new Date(
-						futureYear, 
-						initialMonth,
-						dayOfMonth,
-						hours, 
-						minutes,
-						seconds
-					);
-					break;
-				default:
-					break;
-			}
-
-			const theTimezone = get( dateSettings, ['timezone', 'string' ], '');
-			const theTimeOffset = get( dateSettings, ['timezone', 'offset' ], 0);
-			const theSiteTimezoneTimestamp = getTimestamp( futureDate, theTimeOffset );
-
-			setAttributes({
-				timestamp : theSiteTimezoneTimestamp,
-				timezone  : theTimezone,
-				timeOffset: theTimeOffset,
-			});
-			
-			setRepeatDate(futureDate);	
-		}
-	};*/
-	
-	/*
-	** Updates the date when the repeater is active 
-	** or starts the countdown when the block is placed 
-	** for the first time.
-	*/
-	/*const updateEndDate = () => {
-		
-		const newDate = new Date();
-		
-		if ( !date ) {
-			const { timezone } = dateSettings;
-			const today = new Date();
-			newDate.setDate( today.getDate() + 2 );
-			const theTimeOffset = ( timezone && timezone.offset ? timezone.offset : 0 );
-			const theSiteTimezoneTimestamp = getTimestamp( newDate, theTimeOffset );
-			setAttributes( { date: newDate, timestamp: theSiteTimezoneTimestamp, timezone: ( timezone && timezone.string ? timezone.string : '' ), timeOffset: theTimeOffset } );
-		} else {
-			getRepeatDate(frecuency);
-		}
-	};*/
-
 	useEffect( () => {
 		setBlockDefaults( 'kadence/countdown', attributes);
 
@@ -362,8 +248,6 @@ function KadenceCountdown( props ) {
 			const theSiteTimezoneTimestamp = getTimestamp( newDate, theTimeOffset );
 			setAttributes( { date: newDate, timestamp: theSiteTimezoneTimestamp, timezone: ( timezone && timezone.string ? timezone.string : '' ), timeOffset: theTimeOffset } );
 		}
-
-		//updateEndDate(frecuency);
 	}, [] );
 
 	const [ borderWidthControl, setBorderWidthControl ] = useState( 'individual' );
@@ -375,7 +259,6 @@ function KadenceCountdown( props ) {
 	const [ itemPaddingControl, setItemPaddingControl ] = useState( 'linked' );
 	const [ previewExpired, setPreviewExpired ] = useState( false );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
-	//const [ repeatDate, setRepeatDate ] = useState('');
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
@@ -438,20 +321,6 @@ function KadenceCountdown( props ) {
 			timeOffset: theTimeOffset,
 		} );
 	};
-	/*const saveDate = ( value ) => {
-		const theTimezone = get( dateSettings, ['timezone', 'string' ], '');
-		const theTimeOffset = get( dateSettings, ['timezone', 'offset' ], 0);
-		const theSiteTimezoneTimestamp = getTimestamp( value, theTimeOffset );
-
-		setAttributes({
-			date      : value,
-			timestamp : theSiteTimezoneTimestamp,
-			timezone  : theTimezone,
-			timeOffset: theTimeOffset,
-		});
-
-		getRepeatDate(frecuency);
-	};*/
 	const getEverGreenTimestamp = ( value ) => {
 		const newDate = new Date();
 		newDate.setTime( newDate.getTime() + ( Number( value ) * 60 * 60 * 1000 ) );
