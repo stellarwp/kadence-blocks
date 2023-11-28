@@ -67,7 +67,7 @@
 	},
 	"extra": {
 		"strauss": {
-			"target_directory": "vendor-prefixed",
+			"target_directory": "vendor/vendor-prefixed",
 			"classmap_prefix": "Kadence_Blocks_",
 			"constant_prefix": "KADENCE_BLOCKS_",
 			"namespace_prefix": "KadenceWP\\KadenceBlocks\\",
@@ -76,21 +76,7 @@
 			  "file_patterns": [
 				  "/symfony\\/polyfill-(.*)/"
 			  ]
-			},
-			"packages": [
-				"psr/container",
-				"adbario/php-dot-notation",
-				"stellarwp/container-contract",
-				"stellarwp/telemetry",
-				"stellarwp/uplink",
-				"stellarwp/prophecy-monorepo",
-				"stellarwp/prophecy-image-downloader",
-				"stellarwp/prophecy-storage",
-				"lucatume/di52",
-				"symfony/filesystem",
-				"symfony/http-client",
-				"symfony/translation-contracts"
-			]
+			}
 		}
 	}
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "86a2f8f0929c3e4d74883a991fa38d6c",
+    "content-hash": "dc16dcbd159700787c2e6434a42274cf",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -704,12 +704,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/uplink.git",
-                "reference": "0da95a8cb8e5d99fa7a6d39a8d79429763b4a7c7"
+                "reference": "5557bac22c82fa0091efd34b3438a4936f65d53d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/uplink/zipball/0da95a8cb8e5d99fa7a6d39a8d79429763b4a7c7",
-                "reference": "0da95a8cb8e5d99fa7a6d39a8d79429763b4a7c7",
+                "url": "https://api.github.com/repos/stellarwp/uplink/zipball/5557bac22c82fa0091efd34b3438a4936f65d53d",
+                "reference": "5557bac22c82fa0091efd34b3438a4936f65d53d",
                 "shasum": ""
             },
             "require": {
@@ -762,7 +762,7 @@
                 "issues": "https://github.com/stellarwp/uplink/issues",
                 "source": "https://github.com/stellarwp/uplink/tree/feature/base64-encoded-callback"
             },
-            "time": "2023-11-21T19:28:08+00:00"
+            "time": "2023-11-21T21:12:57+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -1901,5 +1901,5 @@
     "platform-overrides": {
         "php": "7.2.34"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }
