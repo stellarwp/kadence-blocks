@@ -380,7 +380,7 @@
 			if ( ! input ) {
 				return;
 			}
-			if ( ! input.value || 'block-unknown' === input.value ) {
+			if ( ! input.value || 'block-unknown' === input.value || '0' === input.value ) {
 				var theID = window.kadenceForm.checkParentClass( form.parentNode, 'widget_block' );
 				if ( theID ) {
 					input.value = theID;
