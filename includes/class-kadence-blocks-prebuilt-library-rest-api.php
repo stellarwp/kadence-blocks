@@ -89,14 +89,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * Handle image Industry.
 	 */
 	const PROP_INDUSTRY = 'industry';
-	/**
-	 * Event Label.
-	 */
-	const PROP_EVENT_LABEL = 'event_label';
-	/**
-	 * Event Value.
-	 */
-	const PROP_EVENT_DATA = 'event_data';
+
 	/**
 	 * The library folder.
 	 *
@@ -513,18 +506,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				),
 			)
 		);
-		register_rest_route(
-			$this->namespace,
-			'/handle_event',
-			array(
-				array(
-					'methods'             => WP_REST_Server::CREATABLE,
-					'callback'            => array( $this, 'handle_event' ),
-					'permission_callback' => array( $this, 'get_items_permission_check' ),
-					'args'                => $this->get_collection_params(),
-				)
-			)
-		);
 	}
 	/**
 	 * Checks if a given request has access to search content.
@@ -714,7 +695,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 
 		return rest_ensure_response( $response );
 	}
-	/** 
+	/**
 	 * Get the license data for submitting Ai calls.
 	 */
 	public function get_license_keys() {
@@ -733,69 +714,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$container     = UplinkConfig::get_container();
 		$data          = $container->get( Data::class );
 		return $data->get_domain();
-	}
-	/**
-	 * Handle the event and maybe send to Prophecy WP.
-	 */
-	public function handle_event( $request ) {
-		$event_label = $request->get_param( self::PROP_EVENT_LABEL );
-		$event_data  = $request->get_param( self::PROP_EVENT_DATA );
-
-		$event       = '';
-		$context     = array();
-
-		switch ( $event_label ) {
-			case 'ai_wizard_started':
-				$event = 'AI Wizard Started';
-				break;
-
-			case 'ai_wizard_update':
-				$event = 'AI Wizard Update';
-				$context = [
-					'organization_type' => $event_data['entityType'] ?? '',
-					'location_type'     => $event_data['locationType'] ?? '',
-					'location'          => $event_data['location'] ?? '',
-					'industry'          => $event_data['industry'] ?? '',
-					'mission_statement' => $event_data['missionStatement'] ?? '',
-					'keywords'          => $event_data['keywords'] ?? '',
-					'tone'              => $event_data['tone'] ?? '',
-					'collections'       => $event_data['customCollections'] ?? '',
-				];
-				break;
-			case 'ai_wizard_complete':
-				$event = 'AI Wizard Complete';
-				$context = [
-					'organization_type' => $event_data['entityType'] ?? '',
-					'location_type'     => $event_data['locationType'] ?? '',
-					'location'          => $event_data['location'] ?? '',
-					'industry'          => $event_data['industry'] ?? '',
-					'mission_statement' => $event_data['missionStatement'] ?? '',
-					'keywords'          => $event_data['keywords'] ?? '',
-					'tone'              => $event_data['tone'] ?? '',
-					'collections'       => $event_data['customCollections'] ?? '',
-				];
-				break;
-			case 'pattern_added_to_page':
-				$event = 'Pattern Added to Page';
-				$context = [
-					'pattern_id'         => $event_data['id'] ?? '',
-					'pattern_slug'       => $event_data['slug'] ?? '',
-					'pattern_name'       => $event_data['name'] ?? '',
-					'pattern_style'      => $event_data['style'] ?? '',
-					'pattern_is_ai'      => $event_data['is_ai'] ?? false,
-					'pattern_context'    => $event_data['context'] ?? '',
-					'pattern_categories' => $event_data['categories'] ?? [],
-				];
-				break;
-		}
-
-		if ( strlen( $event ) !== 0 ) {
-			do_action( 'stellarwp/analytics/event', $event, $context );
-
-			return new WP_REST_Response( [ 'message' => 'Event handled.' ], 200 );
-		}
-
-		return new WP_REST_Response( array( 'message' => 'Event not handled.' ), 500 );
 	}
 
 	/**
@@ -2070,15 +1988,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'description'       => __( 'The Image type to return', 'kadence-blocks' ),
 			'type'              => 'array',
 			'sanitize_callback' => array( $this, 'sanitize_image_sizes_array' ),
-		);
-		$query_params[ self::PROP_EVENT_LABEL ] = array(
-			'description'       => __( 'The Event Label', 'kadence-blocks' ),
-			'type'              => 'string',
-			'sanitize_callback' => 'sanitize_text_field',
-		);
-		$query_params[ self::PROP_EVENT_DATA ] = array(
-			'description'       => __( 'The Event Data', 'kadence-blocks' ),
-			'type'              => 'object',
 		);
 		return $query_params;
 	}

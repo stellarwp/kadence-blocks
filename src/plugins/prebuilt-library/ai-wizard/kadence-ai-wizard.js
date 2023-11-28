@@ -13,6 +13,7 @@ import { useKadenceAi } from './context/kadence-ai-provider';
 import { useAiWizardHelper } from './hooks/use-ai-wizard-helper';
 import { useDatabase } from './hooks/use-database';
 import { getAsyncData } from '../data-fetch/get-async-data';
+import { sendEvent } from '../../../extension/analytics/send-event';
 
 const pages = [
 	{
@@ -89,8 +90,6 @@ export function KadenceAiWizard( props ) {
 		isFinishButtonDisabled
 	} = useAiWizardHelper(state, getPages(photographyOnly));
 	const { saveAiWizardData, getAiWizardData } = useDatabase();
-
-	const { sendEvent } = getAsyncData();
 
 	async function handleSave() {
 		const saveStatus = await saveAiWizardData({

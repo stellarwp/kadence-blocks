@@ -75,6 +75,7 @@ import { SafeParseJSON } from '@kadence/helpers';
 import { kadenceNewIcon, aiIcon, aiSettings, eye } from '@kadence/icons';
 import { AiWizard } from './ai-wizard';
 import { PAGE_CATEGORIES, PATTERN_CONTEXTS, PATTERN_CATEGORIES, CONTEXTS_STATES, CONTEXT_PROMPTS } from './data-fetch/constants';
+import { sendEvent } from '../../extension/analytics/send-event';
 
 // @todo: Get page style terms dynamically.
 const styleTerms = ['Typographic', 'Image Heavy', 'Content Dense', 'Minimalist'];
@@ -266,7 +267,7 @@ function PatternLibrary( {
 
 		setPageStyles( activePageStyles );
 	}, [ filterChoices ])
-	const { getAIContentData, getAIContentDataReload, getAIWizardData, getCollectionByIndustry, getPatterns, getPattern, processPattern, getLocalAIContexts, getLocalAIContentData, getAIContentRemaining, getInitialAIContent, getAvailableCredits, sendEvent } = getAsyncData();
+	const { getAIContentData, getAIContentDataReload, getAIWizardData, getCollectionByIndustry, getPatterns, getPattern, processPattern, getLocalAIContexts, getLocalAIContentData, getAIContentRemaining, getInitialAIContent, getAvailableCredits } = getAsyncData();
 	async function getLibraryContent( tempSubTab, tempReload ) {
 		setIsLoading( true );
 		setIsError( false );
