@@ -38,10 +38,13 @@
 
             .kb-css-masonry {
                 margin-left: -10px;
-
-                .kb-css-masonry_column {
-                    padding-left: 10px;
-                }
+                display: flex;
+                width: auto;
+                margin-top: 15px;
+             }
+             .kb-css-masonry_column {
+                padding-left: 10px;
+                background-clip: padding-box;
             }
 
             .result {
