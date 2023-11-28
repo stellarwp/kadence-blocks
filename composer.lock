@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "86a2f8f0929c3e4d74883a991fa38d6c",
+    "content-hash": "f520ec1c93ca31123c88a237f05cd562",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -700,16 +700,16 @@
         },
         {
             "name": "stellarwp/uplink",
-            "version": "dev-feature/base64-encoded-callback",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/uplink.git",
-                "reference": "0da95a8cb8e5d99fa7a6d39a8d79429763b4a7c7"
+                "reference": "fe4aa43"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/uplink/zipball/0da95a8cb8e5d99fa7a6d39a8d79429763b4a7c7",
-                "reference": "0da95a8cb8e5d99fa7a6d39a8d79429763b4a7c7",
+                "url": "https://api.github.com/repos/stellarwp/uplink/zipball/fe4aa43",
+                "reference": "fe4aa43",
                 "shasum": ""
             },
             "require": {
@@ -735,6 +735,7 @@
                 "symfony/string": "^5.4",
                 "szepeviktor/phpstan-wordpress": "^1.1"
             },
+            "default-branch": true,
             "bin": [
                 "bin/stellar-uplink"
             ],
@@ -760,9 +761,9 @@
             "description": "A library that integrates a WordPress product with the StellarWP Licensing system.",
             "support": {
                 "issues": "https://github.com/stellarwp/uplink/issues",
-                "source": "https://github.com/stellarwp/uplink/tree/feature/base64-encoded-callback"
+                "source": "https://github.com/stellarwp/uplink/tree/main"
             },
-            "time": "2023-11-21T19:28:08+00:00"
+            "time": "2023-11-28T20:51:01+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -1901,5 +1902,5 @@
     "platform-overrides": {
         "php": "7.2.34"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }
