@@ -797,7 +797,7 @@ function KadenceCountdown( props ) {
 										label={__( 'Repeat Countdown Concurrently?', 'kadence-blocks' )}
 										checked={repeat}
 										onChange={value => setAttributes( { repeat: value } )}
-										help={__( 'This will give the option to restart the conuntdown concurrently.', 'kadence-blocks' )}
+										help={__( 'This will give the option to restart the countdown concurrently.', 'kadence-blocks' )}
 									/>
 										{
 											repeat && (
