@@ -32,6 +32,7 @@ viewBox="0 0 1600 240"
 export function LargeBanner({
 	heading,
 	subHeading,
+	subHeadingPro,
 	imageSrc,
 	buttonText,
 	isUserAuthenticated,
@@ -39,6 +40,7 @@ export function LargeBanner({
 	onUpdateWizard,
 	siteName = '',
 }) {
+	const hasPro = ( window?.kadenceHomeParams?.pro && kadenceHomeParams.pro === 'true' ? true : false );
 	const [ isVisible, setIsVisible ] = useState( false );
 	const [availableCredits, setAvailableCredits] = useState(false);
     const toggleVisible = () => {
@@ -75,7 +77,7 @@ export function LargeBanner({
 				<div className="kb-large-banner__heading">{heading}{addedHeading}</div>
 				{!isUserAuthenticated && (
 					<>
-						<div className="kb-large-banner__subheading">{subHeading}</div>
+						<div className="kb-large-banner__subheading">{hasPro ? subHeadingPro : subHeading}</div>
 						<a className="uplink-authorize" href={activateUrl} >{buttonText}</a>
 					</>
 				)}

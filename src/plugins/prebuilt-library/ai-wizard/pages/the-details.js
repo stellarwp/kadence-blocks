@@ -124,7 +124,7 @@ export function TheDetails() {
 			description: missionStatement,
 		})
 			.then((response) => {
-				console.log("REPSEONSE IMAGE SEARCH");
+				console.log("Image Search AI Terms");
 				console.log(response);
 				if ( response?.query ) {
 					dispatch({

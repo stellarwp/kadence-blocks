@@ -215,7 +215,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		'industries',
 		'location',
 		'mission',
-		'news',
+		// 'news',
 		// 'partners',
 		// 'podcast',
 		'pricing-table',
@@ -223,7 +223,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		'products-services',
 		// 'profile',
 		'subscribe-form',
-		'support',
+		// 'support',
 		'team',
 		'testimonials',
 		'value-prop',
@@ -328,11 +328,11 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		);
 		register_rest_route(
 			$this->namespace,
-			'/get_initial_jobs',
+			'/get-all-ai',
 			array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_initial_jobs' ),
+					'callback'            => array( $this, 'get_all_ai_items' ),
 					'permission_callback' => array( $this, 'get_items_permission_check' ),
 					'args'                => $this->get_collection_params(),
 				),
@@ -516,6 +516,55 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function get_items_permission_check( $request ) {
 		return current_user_can( 'edit_posts' );
+	}
+	/**
+	 * Retrieves all the currently available ai content.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 */
+	public function get_all_ai_items( $request ) {
+		$this->get_license_keys();
+		$reload = $request->get_param( self::PROP_FORCE_RELOAD );
+		$available_prompts = get_option( 'kb_design_library_prompts', array() );
+		if ( ! $reload ) {
+			$contexts = $this->all_contexts;
+		} else {
+			$contexts = $this->initial_contexts;
+		}
+		$return_data = array();
+		$has_error = false;
+		$ready = true;
+		if ( ! empty( $contexts ) && is_array( $contexts ) ) {
+			foreach ( $contexts as $key => $context ) {
+				// Check local cache.
+				try {
+					$return_data[ $context ] = json_decode( $this->ai_cache->get( $available_prompts[ $context ] ), true );
+				} catch ( NotFoundException $e ) {
+					// Check if we have a remote file.
+					$response = $this->get_remote_contents( $available_prompts[ $context ] );
+					$data     = json_decode( $response, true );
+					if ( $response === 'error' ) {
+						$has_error = true;
+					} else if ( $response === 'processing' || isset( $data['data']['status'] ) && 409 === $data['data']['status'] ) {
+						$ready = false;
+					} else if ( isset( $data['data']['status'] ) ) {
+						$has_error = true;
+					} else {
+						$this->ai_cache->cache( $available_prompts[ $context ], $response );
+
+						$return_data[ $context ] = $data;
+					}
+				}
+			}
+		}
+		if ( $has_error ) {
+			return rest_ensure_response( 'error' );
+		} elseif ( $ready ) {
+			return rest_ensure_response( $return_data );
+		} else {
+			return rest_ensure_response( 'loading' );
+		}
 	}
 
 	/**
@@ -1217,7 +1266,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$body['mission'] = ! empty( $prophecy_data['missionStatement'] ) ? $prophecy_data['missionStatement'] : '';
 		$body['tone'] = ! empty( $prophecy_data['tone'] ) ? $prophecy_data['tone'] : '';
 		$body['keywords'] = ! empty( $prophecy_data['keywords'] ) ? $prophecy_data['keywords'] : '';
-
 		switch ( $context ) {
 			case 'about':
 				$body['prompts'] = array(

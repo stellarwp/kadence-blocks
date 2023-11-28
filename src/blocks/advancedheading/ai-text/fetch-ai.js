@@ -28,7 +28,7 @@ export function getAIContentHelper() {
 			const domain = url.hostname;
 			const token = {
 				domain: domain,
-				key: kadence_blocks_params?.proData?.api_key
+				key: window?.kadence_blocks_params?.proData?.api_key
 					? kadence_blocks_params.proData.api_key
 					: "",
 			};
@@ -66,7 +66,7 @@ export function getAIContentHelper() {
 			const domain = url.hostname;
 			const token = {
 				domain: domain,
-				key: kadence_blocks_params?.proData?.api_key
+				key: window?.kadence_blocks_params?.proData?.api_key
 					? kadence_blocks_params.proData.api_key
 					: "",
 			};
@@ -104,7 +104,7 @@ export function getAIContentHelper() {
 			const domain = url.hostname;
 			const token = {
 				domain: domain,
-				key: kadence_blocks_params?.proData?.api_key
+				key: window?.kadence_blocks_params?.proData?.api_key
 					? kadence_blocks_params.proData.api_key
 					: "",
 			};

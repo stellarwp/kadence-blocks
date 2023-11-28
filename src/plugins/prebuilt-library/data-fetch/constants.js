@@ -106,7 +106,7 @@ export const PATTERN_CATEGORIES = {
 	'work': false,
 	//'faq': false,
 	'welcome': false,
-	'news': false,
+	// 'news': false,
 	//'blog': false,
 	'contact-form': false,
 	'subscribe-form': false,
@@ -116,7 +116,7 @@ export const PATTERN_CATEGORIES = {
 	//'partners': false,
 	'industries': false,
 	//'volunteer': false,
-	'support': false,
+	// 'support': false,
  };
  export const PAGE_CATEGORIES = { 
 	'category': __( 'Category', 'kadence-blocks' ),

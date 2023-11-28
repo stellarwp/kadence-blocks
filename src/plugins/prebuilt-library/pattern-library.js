@@ -375,6 +375,7 @@ function PatternLibrary( {
 			updateContextState( tempContext, false );
 		} else if ( response === 'error' ) {
 			console.log( 'Error getting AI Content.' );
+			createErrorNotice( __('Error generating AI content, Please Retry'), { type: 'snackbar' } );
 			updateContext( tempContext, 'failed' );
 			setTimeout( () => {
 				forceRefreshLibrary();
@@ -450,6 +451,10 @@ function PatternLibrary( {
 		if ( ! response ) {
 			setAINeedsData( true );
 		} else if ( ! hasCorrectUserData( response ) ) {
+			const data = response ? SafeParseJSON(response) : {};
+			if ( data?.photoLibrary && data?.customCollections ) {
+				getJustImageCollection( data );
+			}
 			console.log( 'User Data is not correct' );
 			setAINeedsData( true );
 		} else {
@@ -461,7 +466,7 @@ function PatternLibrary( {
 	async function getAllNewData() {
 		setIsLoading( true );
 		const response = await getInitialAIContent( true );
-		console.log( response );
+		//console.log( response );
 		if ( response === 'error' || response === 'failed' ) {
 			createErrorNotice( __('Error generating AI content, Please Retry'), { type: 'snackbar' } );
 			console.log( 'Error getting AI Content.' );
@@ -495,7 +500,24 @@ function PatternLibrary( {
 			setIsLoading( false );
 		}
 	}
-
+	/**
+	 * @returns {Promise<void>}
+	 */
+	async function getJustImageCollection( tempUserData ) {
+		const tempUser = JSON.parse(JSON.stringify( tempUserData ) );
+		tempUser.photoLibrary = 'Other';
+		const teamResponse = await getCollectionByIndustry( tempUser );
+		if ( ! isEqual( teamResponse, teamCollection ) ) {
+			console.log( 'Image Team Collection Updating' );
+			setTeamCollection(teamResponse);
+		}
+		const response = await getCollectionByIndustry( tempUserData );
+		if ( ! isEqual( response, imageCollection ) ) {
+			console.log( 'Image Collection Updating' );
+			setImageCollection(response);
+			forceRefreshLibrary();
+		}
+	}
 	/**
 	 * @returns {Promise<void>}
 	 */

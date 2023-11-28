@@ -549,3 +549,18 @@ button.components-button.components-icon-button.kt-font-clear-btn, button.compon
     text-overflow: ellipsis;
     border: 1px solid #fc8181;
 }
+.kb-ai-dropdown-container-content.kb-activation-ai-needed .components-popover__content {
+    width: 300px;
+}
+
+.kb-ai-dropdown-container-content-wrap.activation-needed {
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.kb-ai-dropdown-container-content-wrap.activation-needed .components-button.kadence-generate-copy-button.has-icon svg {
+    width: 1em;
+    height: 1em;
+    margin-left: 0.8em;
+}

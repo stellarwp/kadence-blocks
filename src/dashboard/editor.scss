@@ -8,6 +8,16 @@
 .kb-footer-status p {
     margin: 0;
 }
+.kadence-ai-notice.components-notice {
+    padding: 12px;
+    .components-spinner {
+        margin: 0 10px 0 0;
+    }
+    .components-notice__content {
+        display: flex;
+        align-items: center;
+    }
+}
 .kadence_blocks_home_main .components-editor-notices__snackbar {
     bottom: 40px;
     padding-left: 16px;

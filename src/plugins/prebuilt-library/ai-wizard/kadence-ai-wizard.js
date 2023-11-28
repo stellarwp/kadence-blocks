@@ -106,8 +106,9 @@ export function KadenceAiWizard( props ) {
 
 	async function handleEvent( event ) {
 		const wizardData = await getAiWizardData();
-
-		sendEvent( event, JSON.parse( wizardData ) );
+		if ( wizardData ) {
+			sendEvent( event, JSON.parse( wizardData ) );
+		}
 	}
 
 	function handleOnPrimaryClick(event) {

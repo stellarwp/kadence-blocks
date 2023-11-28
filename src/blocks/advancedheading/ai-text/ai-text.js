@@ -45,6 +45,10 @@ export const AIText = {
 	keywords  : [ __( 'ai' ), __( 'kadence' ) ],
 	attributes: {},
 	edit( { activeAttributes, isActive, value, onChange, contentRef } ) {
+		const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
+		const data_key = ( window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '' );
+		const activateLink = ( window?.kadence_blocks_params?.homeLink ? kadence_blocks_params.homeLink : '' );
+		const hasPro = ( kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false );
 		const selectedBlock = useSelect( ( select ) => {
 			return select( 'core/block-editor' ).getSelectedBlock();
 		}, [] );
@@ -243,7 +247,31 @@ export const AIText = {
 						aria-expanded={ isToggled }
 						ref={ setPopoverMainAnchor }
 					/>
-					{ isToggled && (
+					{ isToggled && !isAuthorized && (
+						<Popover
+							onClose={ () => {
+								setIsToggled( false );
+							}}
+							flip={false}
+							placement="bottom"
+							anchor={popoverMainAnchor}
+							className={ 'kb-ai-dropdown-container-content kb-activation-ai-needed' }
+						>
+							<div className="kb-ai-dropdown-container-content-wrap activation-needed">
+								<Button
+									className='kadence-generate-copy-button'
+									iconPosition='right'
+									variant='primary'
+									icon={ aiIcon }
+									text={ __('Activate Kadence AI', 'kadence-blocks') }
+									target={ activateLink ? '_blank' : ''}
+									disabled={ activateLink ? false : true }
+									href={ activateLink ? activateLink : '' }
+								/>
+							</div>
+						</Popover>
+					) }
+					{ isToggled && isAuthorized && (
 						<Popover
 							onClose={ () => {
 								setIsToggled( false );

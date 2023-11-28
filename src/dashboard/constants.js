@@ -206,6 +206,7 @@ export const UNAUTHENTICATED_CONTENT = {
 	largeBanner: {
 		heading: <>{ __( 'Kadence is better with AI.', 'kadence-blocks' ) } {aiIcon}</>,
 		subHeading: __( "Elevate your web development game with Kadence AI. Supercharge your pattern and page library's potential with tailored content - get building pages in no time. Try Kadence AI today with 250 free credits!", 'kadence-blocks' ),
+		subHeadingPro: __( "Elevate your web development game with Kadence AI. Supercharge your pattern and page library's potential with tailored content - get building pages in no time. Connect to your account to use Kadence AI with Kadence Blocks Pro", 'kadence-blocks' ),
 		buttonText: __("Activate Kadence AI", "kadence-blocks"),
 	},
 	actionCards: {
