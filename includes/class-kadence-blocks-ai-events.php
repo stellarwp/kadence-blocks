@@ -43,7 +43,7 @@ class Kadence_Blocks_AI_Events {
 	 *
 	 * @return void
 	 */
-	public function register() {
+	public function register(): void {
 		add_action( 'stellarwp/analytics/event', [ $this, 'handle_event' ], 10, 2 );
 		add_action( 'rest_api_init', [ $this, 'register_route' ], 10, 0 );
 	}
@@ -55,7 +55,7 @@ class Kadence_Blocks_AI_Events {
 	 *
 	 * @return void
 	 */
-	public function register_route() {
+	public function register_route(): void {
 		register_rest_route(
 			'kb-design-library/v1',
 			'/handle_event',
@@ -85,7 +85,7 @@ class Kadence_Blocks_AI_Events {
 	 *
 	 * @return bool
 	 */
-	public function verify_user_can_edit() {
+	public function verify_user_can_edit(): bool {
 		return current_user_can( 'edit_posts' );
 	}
 
@@ -96,7 +96,7 @@ class Kadence_Blocks_AI_Events {
 	 *
 	 * @return void
 	 */
-	public function handle_event( string $name, array $context ) {
+	public function handle_event( string $name, array $context ): void {
 
 		// Only pass tracking events if AI has been activated through Opt in.
 		$container     = UplinkConfig::get_container();
@@ -171,7 +171,7 @@ class Kadence_Blocks_AI_Events {
 	 *
 	 * @param WP_REST_Request $request The request to the endpoint.
 	 */
-	public function handle_event_endpoint( $request ) {
+	public function handle_event_endpoint( WP_REST_Request $request ): WP_REST_Response {
 		$event_label = $request->get_param( self::PROP_EVENT_LABEL );
 		$event_data  = $request->get_param( self::PROP_EVENT_DATA );
 
