@@ -30,7 +30,7 @@
 		"psr/container": "^1.0",
 		"lucatume/di52": "^3.3",
 		"stellarwp/telemetry": "^2.3",
-		"stellarwp/uplink": "dev-main#fe4aa43",
+		"stellarwp/uplink": "dev-bugfix/dynamic-asset-loading",
 		"stellarwp/container-contract": "^1.0",
 		"stellarwp/prophecy-image-downloader": "^1.1",
 		"stellarwp/prophecy-storage": "^1.1",
@@ -67,7 +67,7 @@
 	},
 	"extra": {
 		"strauss": {
-			"target_directory": "vendor-prefixed",
+			"target_directory": "vendor/vendor-prefixed",
 			"classmap_prefix": "Kadence_Blocks_",
 			"constant_prefix": "KADENCE_BLOCKS_",
 			"namespace_prefix": "KadenceWP\\KadenceBlocks\\",
@@ -76,21 +76,7 @@
 			  "file_patterns": [
 				  "/symfony\\/polyfill-(.*)/"
 			  ]
-			},
-			"packages": [
-				"psr/container",
-				"adbario/php-dot-notation",
-				"stellarwp/container-contract",
-				"stellarwp/telemetry",
-				"stellarwp/uplink",
-				"stellarwp/prophecy-monorepo",
-				"stellarwp/prophecy-image-downloader",
-				"stellarwp/prophecy-storage",
-				"lucatume/di52",
-				"symfony/filesystem",
-				"symfony/http-client",
-				"symfony/translation-contracts"
-			]
+			}
 		}
 	}
 }

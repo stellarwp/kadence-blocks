@@ -22,7 +22,7 @@ define( 'KADENCE_BLOCKS_PATH', realpath( plugin_dir_path( __FILE__ ) ) . DIRECTO
 define( 'KADENCE_BLOCKS_URL', plugin_dir_url( __FILE__ ) );
 define( 'KADENCE_BLOCKS_VERSION', '3.2.5' );
 
-require_once plugin_dir_path( __FILE__ ) . 'vendor-prefixed/autoload.php';
+require_once plugin_dir_path( __FILE__ ) . 'vendor/vendor-prefixed/autoload.php';
 require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 
 
@@ -142,7 +142,7 @@ function kadence_blocks_init() {
 		Kadence_Blocks::class,
 	);
 }
-add_action( 'plugins_loaded', 'kadence_blocks_init' );
+add_action( 'plugins_loaded', 'kadence_blocks_init', 1 );
 
 /**
  * Load the plugin textdomain
