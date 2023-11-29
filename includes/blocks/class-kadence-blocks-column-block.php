@@ -289,6 +289,9 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		// Gap.
 		$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 		if ( ! $is_version_two && 'horizontal' === $desktop_direction ) {
+			if ( empty( $attributes['gutterVariable'] ) ) {
+				$attributes['gutterVariable'] = array( 'custom', 'custom', 'custom' );
+			}
 			$css->render_row_gap( $attributes, 'gutterVariable', 'gap', 'gutter', 'gutterUnit' );
 		} else {
 			$css->render_row_gap( $attributes, 'rowGapVariable', 'row-gap', 'rowGap', 'rowGapUnit' );
