@@ -704,12 +704,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/uplink.git",
-                "reference": "35d7044bb81fb6412a3de0a02ed09bbfd5f08858"
+                "reference": "c1bdec46bcd765f5aaee14843ae3244b2319b55b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/uplink/zipball/35d7044bb81fb6412a3de0a02ed09bbfd5f08858",
-                "reference": "35d7044bb81fb6412a3de0a02ed09bbfd5f08858",
+                "url": "https://api.github.com/repos/stellarwp/uplink/zipball/c1bdec46bcd765f5aaee14843ae3244b2319b55b",
+                "reference": "c1bdec46bcd765f5aaee14843ae3244b2319b55b",
                 "shasum": ""
             },
             "require": {
@@ -735,7 +735,6 @@
                 "symfony/string": "^5.4",
                 "szepeviktor/phpstan-wordpress": "^1.1"
             },
-            "default-branch": true,
             "bin": [
                 "bin/stellar-uplink"
             ],
@@ -763,7 +762,7 @@
                 "issues": "https://github.com/stellarwp/uplink/issues",
                 "source": "https://github.com/stellarwp/uplink/tree/bugfix/dynamic-asset-loading"
             },
-            "time": "2023-11-29T17:44:50+00:00"
+            "time": "2023-11-29T21:55:40+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -1902,5 +1901,5 @@
     "platform-overrides": {
         "php": "7.2.34"
     },
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.3.0"
 }
