@@ -105,6 +105,15 @@ Release Date: October 5th, 2023
 * Add: New Flex control options in section block.
 * Add: New auto option for margin controls.
 
+= 3.1.26 =
+Release Date: November 15th, 2023
+* Fix: Text (Adv) not showing link format option.
+
+= 3.1.25 =
+Release Date: November 14th, 2023
+* Update: Add hooks for dynamic replace control.
+* Fix: Form field custon name not saving.
+
 = 3.1.24 =
 Release Date: November 8th, 2023
 * Update: Add option to allow decimals in Advanced Form number field.

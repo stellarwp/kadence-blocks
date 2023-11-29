@@ -11,6 +11,7 @@ import apiFetch from '@wordpress/api-fetch';
 import KadencePostSelectTerms from '../post-select-terms-control';
 import { useInstanceId } from '@wordpress/compose';
 import { isArrayLike, has, isEmpty } from 'lodash';
+import { tryParseJSON } from '@kadence/helpers';
 
 export default function TaxonomySelect( {
 		label,
@@ -44,7 +45,7 @@ export default function TaxonomySelect( {
 		let theSource = source ? source : contextPost;
 		if ( wp.data.select( 'core/editor' ) && ! theSource ) {
 			if ( kadence_blocks_params.isKadenceE && kadenceElementParams.previewPostID ) {
-				const postId = TryParseJSON( kadenceElementParams.previewPostID );
+				const postId = tryParseJSON( kadenceElementParams.previewPostID );
 				theSource = postId && postId.id ? postId.id : '';
 			} else {
 				theSource = wp.data.select( 'core/editor' ).getCurrentPostId();

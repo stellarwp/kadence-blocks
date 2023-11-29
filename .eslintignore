@@ -7,3 +7,4 @@ coverage
 cypress
 node_modules
 vendor
+bin
