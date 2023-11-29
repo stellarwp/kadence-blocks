@@ -71,7 +71,7 @@ class Kadence_Blocks_File_Block extends Kadence_Blocks_Advanced_Form_Input_Block
 		$type          = 'file';
 		$is_required   = $this->is_required( $attributes );
 		$class_id = $this->class_id( $attributes );
-		$outer_classes = array( 'kb-adv-form-field', 'kb-adv-form-infield-type-input', 'kb-field' . $class_id );
+		$outer_classes = array( 'kb-adv-form-field', 'kb-adv-form-file-type-input', 'kb-adv-form-infield-type-input', 'kb-field' . $class_id );
 		$is_multiple = ( isset( $attributes['multiple'] ) && $attributes['multiple'] ? true : false );
 		if ( ! empty( $attributes['className'] ) ) {
 			$outer_classes[] = $attributes['className'];

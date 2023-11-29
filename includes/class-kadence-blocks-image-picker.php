@@ -55,7 +55,7 @@ class Kadence_Blocks_Image_Picker {
 
 		// Block CSS Scripts & Styles.
 		$kadence_image_picker_meta = kadence_blocks_get_asset_file( 'dist/extension-image-picker' );
-		wp_register_script( 'kadence-extension-image-picker', KADENCE_BLOCKS_URL . 'dist/extension-image-picker.js', $kadence_image_picker_meta['dependencies'], $kadence_image_picker_meta['version'], true );
+		wp_register_script( 'kadence-extension-image-picker', KADENCE_BLOCKS_URL . 'dist/extension-image-picker.js', array_merge( $kadence_image_picker_meta['dependencies'], array( 'wp-api', 'kadence-extension-stores' ) ), $kadence_image_picker_meta['version'], true );
 		wp_register_style( 'kadence-extension-image-picker', KADENCE_BLOCKS_URL . 'dist/extension-image-picker.css', array(), $kadence_image_picker_meta['version'] );
 	}
 

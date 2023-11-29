@@ -5,6 +5,7 @@ export { default as getBorderWidth } from './get-border-width';
 export { default as advancedGetPreviewSize } from './advanced-get-preview-size';
 export { default as showSettings } from './show-settings';
 export { default as hexToRGBA } from './hex-to-rgba';
+export { default as tryParseJSON } from './try-parse-json';
 export { default as KadenceColorOutput } from './kadence-color-output';
 export { default as ConvertColor } from './convert-color';
 export { default as DeprecatedKadenceColorOutput } from './deprecated-kadence-color-output';
