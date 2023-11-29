@@ -365,7 +365,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $field_style['isDark'] ) && $field_style['isDark'] ) {
 			$outer_classes[] = 'kb-form-is-dark';
 		}
-		if( !empty( $form_attributes['className'] ) ) {
+		if( ! empty( $form_attributes['className'] ) ) {
 			$outer_classes[] = $form_attributes['className'];
 		}
 		$background_type = ( ! empty( $background_style['backgroundType'] ) ? $background_style['backgroundType'] : 'normal' );

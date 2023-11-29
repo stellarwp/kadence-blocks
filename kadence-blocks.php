@@ -142,7 +142,7 @@ function kadence_blocks_init() {
 		Kadence_Blocks::class,
 	);
 }
-add_action( 'plugins_loaded', 'kadence_blocks_init' );
+add_action( 'plugins_loaded', 'kadence_blocks_init', 1 );
 
 /**
  * Load the plugin textdomain
