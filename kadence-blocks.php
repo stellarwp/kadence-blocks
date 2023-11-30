@@ -141,6 +141,8 @@ function kadence_blocks_init() {
 		'kadence-blocks/kadence-blocks.php',
 		Kadence_Blocks::class,
 	);
+
+	do_action( 'kadence_blocks_uplink_loaded' );
 }
 add_action( 'plugins_loaded', 'kadence_blocks_init', 1 );
 
