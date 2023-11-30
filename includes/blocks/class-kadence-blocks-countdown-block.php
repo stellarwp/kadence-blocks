@@ -604,7 +604,7 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 			'action'       => ( isset( $attributes['expireAction'] ) ? $attributes['expireAction'] : 'none' ),
 			'redirect'     => ( isset( $attributes['redirectURL'] ) ? $attributes['redirectURL'] : '' ),
 			'repeat'	   => ( isset( $attributes['repeat'] ) ? $attributes['repeat'] : '' ),
-			'frecuency'	   => ( isset( $attributes['frecuency'] ) ? $attributes['frecuency'] : '' ),
+			'frequency'	   => ( isset( $attributes['frequency'] ) ? $attributes['frequency'] : '' ),
 			'stopCount'    => ( isset( $attributes['stopRepeating'] ) ? $attributes['stopRepeating'] : false ),
 			'endDate'	   => ( isset( $attributes['endDate'] ) ? $attributes['endDate'] : '' ),
 			'reset'        => $reset_days,

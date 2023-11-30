@@ -67,7 +67,7 @@
 		"type": "boolean",
 		"default": false
 	},
-	"frecuency": {
+	"frequency": {
 		"type": "string",
 		"default": ""
 	},

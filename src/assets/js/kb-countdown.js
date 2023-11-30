@@ -45,7 +45,7 @@
 			let futureYear = currentDate.getMonth() === 11 ? currentDate.getFullYear() + 1 : currentDate.getFullYear();
 			const nextMonthDays = new Date(futureYear, futureMonth + 1, 0).getDate();
 			
-			switch(window.kadenceCountdown.timers[ id ].frecuency) {
+			switch(window.kadenceCountdown.timers[ id ].frequency) {
 				case 'daily':
 					offsetDays = daysPassed + 1;
 					futureDate.setDate(initialDate.getDate() + offsetDays);

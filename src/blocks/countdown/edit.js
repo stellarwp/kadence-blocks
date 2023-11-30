@@ -120,7 +120,7 @@ const actionOptions = [
 	{ value: 'message', label: __( 'Replace with Content (Pro addon)', 'kadence-blocks' ), disabled: true },
 	{ value: 'redirect', label: __( 'Redirect (Pro addon)', 'kadence-blocks' ), disabled: true },
 ];
-const frecuencyOptions = [
+const frequencyOptions = [
 	{ value: 'daily', label: __( 'Daily', 'kadence-blocks' ), disabled: false },
 	{ value: 'weekly', label: __( 'Weekly', 'kadence-blocks' ), disabled: false },
 	{ value: 'monthly', label: __( 'Monthly', 'kadence-blocks' ), disabled: false },
@@ -143,7 +143,7 @@ function KadenceCountdown( props ) {
 		evergreenMinutes,
 		repeat,
 		stopRepeating,
-		frecuency,
+		frequency,
 		redirectURL,
 		timerLayout,
 		date,
@@ -803,10 +803,10 @@ function KadenceCountdown( props ) {
 											repeat && (
 												<>
 													<SelectControl
-														label={__( 'Repeat Countdown Frecuency', 'kadence-blocks' )}
-														options={frecuencyOptions}
-														value={frecuency}
-														onChange={( value ) => setAttributes( { frecuency: value } )}
+														label={__( 'Repeat Countdown Frequency', 'kadence-blocks' )}
+														options={frequencyOptions}
+														value={frequency}
+														onChange={( value ) => setAttributes( { frequency: value } )}
 													/>
 
 													<ToggleControl

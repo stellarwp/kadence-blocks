@@ -188,7 +188,7 @@ function KadenceCoundownTimer( props ) {
 		const currentDate = new Date();
 		const initialDate = new Date(parentBlock[ 0 ].attributes.timestamp);
 		const stopRepeating = !parentBlock[ 0 ].attributes.stopRepeating ? true : (new Date(parentBlock[ 0 ].attributes.endDate) <= new Date(currentDate) ? false : true);
-		if(currentDate >= initialDate && parentBlock[ 0 ].attributes.repeat && parentBlock[ 0 ].attributes.frecuency !== '' && stopRepeating) {
+		if(currentDate >= initialDate && parentBlock[ 0 ].attributes.repeat && parentBlock[ 0 ].attributes.frequency !== '' && stopRepeating) {
 			const seconds = initialDate.getSeconds();
 			const minutes = initialDate.getMinutes();
 			const hours = initialDate.getHours();
@@ -202,7 +202,7 @@ function KadenceCoundownTimer( props ) {
 			let futureYear = currentDate.getMonth() === 11 ? currentDate.getFullYear() + 1 : currentDate.getFullYear();
 			const nextMonthDays = new Date(futureYear, futureMonth + 1, 0).getDate();
 		
-			switch(parentBlock[ 0 ].attributes.frecuency) {
+			switch(parentBlock[ 0 ].attributes.frequency) {
 				case 'daily':
 					offsetDays = daysPassed + 1;
 					futureDate.setDate(initialDate.getDate() + offsetDays);
