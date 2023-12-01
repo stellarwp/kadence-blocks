@@ -198,9 +198,18 @@
             width: 18px;
         }
     }
+    
     .result.is-selected {
         .kb-image-selection-button {
             opacity: 1;
         }
     }
+}
+.kadence-blocks-image-picker .kadence-blocks-image-picker-contents .kadence-blocks-image-picker-scroll-container .result .download-button.btn-download-error {
+    background: red;
+    color: white;
+}
+.kadence-blocks-image-picker .kadence-blocks-image-picker-contents .kadence-blocks-image-picker-sidebar .download-button.btn-download-error {
+    background: red;
+    color: white;
 }

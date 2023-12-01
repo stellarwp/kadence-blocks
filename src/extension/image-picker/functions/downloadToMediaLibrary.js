@@ -8,6 +8,7 @@ import apiFetch from '@wordpress/api-fetch';
  * @return {Promise<object>} Promise returns object
  */
 async function downloadImage( images ) {
+	console.log(`images: ${ JSON.stringify(images) }`);
 	try {
 		return await apiFetch({
 			path: '/kb-image-picker/v1/process_images',
@@ -27,7 +28,7 @@ async function downloadImage( images ) {
  * @param {Object} data The API results object.
  * @return {Array} 	 The results as an array.
  */
-export default async function downloadToMediaLibrary( result, setIsDownloading, setIsDownloaded, imagePickerDownloadedImages, setImagePickerDownloadedImages ) {
+export default async function downloadToMediaLibrary( result, setIsDownloading, setIsDownloaded, imagePickerDownloadedImages, setImagePickerDownloadedImages, setDownloadError ) {
 	if ( ! result ) {
 		return [];
 	}
@@ -35,7 +36,8 @@ export default async function downloadToMediaLibrary( result, setIsDownloading, 
 
 	// Dispatch API fetch request.
 	const response = await downloadImage(result);
-	if ( response !== false ) {
+
+	if ( response?.[0]?.id ) {
 		setIsDownloaded(true);
 		setIsDownloading(false);
 
@@ -52,6 +54,7 @@ export default async function downloadToMediaLibrary( result, setIsDownloading, 
 	} else {
 		setIsDownloaded(false);
 		setIsDownloading(false);
+		setDownloadError(true);
 	}
 }
 

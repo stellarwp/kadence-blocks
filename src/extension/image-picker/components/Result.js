@@ -4,7 +4,7 @@ import {
 	download as DownloadIcon,
 	check as CheckIcon
 } from "@wordpress/icons";
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import downloadToMediaLibrary from "../functions/downloadToMediaLibrary";
 import { __ } from '@wordpress/i18n';
@@ -36,6 +36,7 @@ export default function Result(props) {
 
     const [downloadComplete, setDownloadComplete] = useState( false );
 	const [localIsDownloading, setLocalIsDownloading] = useState( false );
+	const [downloadError, setDownloadError] = useState( false );
 	
 	const { imagePickerDownloadedImages } = useSelect(
         ( select ) => {
@@ -54,6 +55,11 @@ export default function Result(props) {
 	}
 	const handleOnBlur = () => {
 	}
+	useEffect( () => {
+      if ( ! isDownloading && downloadError ) {
+		setLocalIsDownloading( false );
+	  }
+	}, [ isDownloading ] );
 	const resultButton = React.useRef(null)
 
 	const isCurrent = index == currentUserSelectionIndex;
@@ -67,11 +73,12 @@ export default function Result(props) {
 	} );
 	const buttonClass = classNames( 'download-button', {
 		'btn-already-downloaded': isDownloaded,
+		'btn-download-error': downloadError,
 	} );
 	const handleDownload = () => {
 		if ( ! isDownloading ) {
 			setLocalIsDownloading( true );
-			downloadToMediaLibrary( [result], setIsDownloading, setDownloadComplete, imagePickerDownloadedImages, setImagePickerDownloadedImages)
+			downloadToMediaLibrary( [result], setIsDownloading, setDownloadComplete, imagePickerDownloadedImages, setImagePickerDownloadedImages, setDownloadError);
 		}
 	}
 	const handleSelection = () => {
@@ -91,6 +98,7 @@ export default function Result(props) {
 	} else {
 		imageSrc = imageSrc.src;
 	}
+	const downloadLabel = downloadError ? __( 'Download Error', 'kadence-blocks' ) : __( 'Download Image', 'kadence-blocks' );
 	return (
 		<article className={itemClass}>
 			<div className="result-wrap">
@@ -110,7 +118,7 @@ export default function Result(props) {
 				<Button 
 					icon={downloadComplete || isDownloaded ? CheckIcon : DownloadIcon}
 					size={'small'}
-					label={ isDownloaded ? __( 'Already Downloaded', 'kadence-blocks' ) : __( 'Download Image', 'kadence-blocks' ) }
+					label={ isDownloaded ? __( 'Already Downloaded', 'kadence-blocks' ) : downloadLabel }
 					onClick={handleDownload}
 					className={buttonClass}
 					isBusy={localIsDownloading}
