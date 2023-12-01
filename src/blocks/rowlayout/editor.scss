@@ -491,6 +491,10 @@ div.kb-blocks-bg-video {
 		column-gap: var(--global-row-gutter-md, 2rem);
 		row-gap: var(--global-row-gutter-md, 2rem);
 	}
+
+	&:has(.wp-block-kadence-modal .preview-active){
+		z-index: 1000;
+	}
 }
 // Three Columns
 .wp-block-kadence-rowlayout.kt-has-2-columns.kt-row-layout-equal > .innerblocks-wrap {

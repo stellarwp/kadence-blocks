@@ -337,7 +337,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 		$titleTagType = !empty( $attributes['titleTagType'] ) ? $attributes['titleTagType'] : 'heading';
 		$titleTag = 'heading' === $titleTagType ? 'h' . ( !empty( $attributes['titleFont'][0]['level'] ) ? $attributes['titleFont'][0]['level'] : '2' ) : $titleTagType;
 		if ( isset( $attributes['titleColor'] ) || isset( $attributes['titleFont'] ) ) {
-			$css->set_selector( $base_selector . ' ' . $titleTag . '.kt-blocks-info-box-title' );
+			$css->set_selector( $base_selector . ' .kt-infobox-textcontent ' . $titleTag . '.kt-blocks-info-box-title' );
 			if ( isset( $attributes['titleColor'] ) && ! empty( $attributes['titleColor'] ) ) {
 				$css->add_property( 'color', $css->render_color( $attributes['titleColor'] ) );
 			}
