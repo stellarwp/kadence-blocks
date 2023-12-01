@@ -85,7 +85,12 @@ export default function Result(props) {
 			setImagePickerMultiSelection( imagePickerMultiSelection.filter( item => item !== index ) )
 		}
 	}
-	const imageSrc = sizes?.[1]?.src || sizes?.[0]?.src || '';
+	let imageSrc = sizes.find(image => image.name === 'medium_large');
+	if ( ! imageSrc ) {
+		imageSrc = sizes?.[1]?.src || sizes?.[0]?.src || '';
+	} else {
+		imageSrc = imageSrc.src;
+	}
 	return (
 		<article className={itemClass}>
 			<div className="result-wrap">
