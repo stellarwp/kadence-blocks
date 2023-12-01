@@ -704,12 +704,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/uplink.git",
-                "reference": "8cd9e9b18fcac6f92d9447ae45cee5c21c4ee869"
+                "reference": "4b65acf2baafcc6e7e69dcd7798af975cfd205bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/uplink/zipball/8cd9e9b18fcac6f92d9447ae45cee5c21c4ee869",
-                "reference": "8cd9e9b18fcac6f92d9447ae45cee5c21c4ee869",
+                "url": "https://api.github.com/repos/stellarwp/uplink/zipball/4b65acf2baafcc6e7e69dcd7798af975cfd205bf",
+                "reference": "4b65acf2baafcc6e7e69dcd7798af975cfd205bf",
                 "shasum": ""
             },
             "require": {
@@ -762,7 +762,7 @@
                 "issues": "https://github.com/stellarwp/uplink/issues",
                 "source": "https://github.com/stellarwp/uplink/tree/bugfix/plugin-collection-support"
             },
-            "time": "2023-11-30T23:51:44+00:00"
+            "time": "2023-12-01T17:28:12+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
