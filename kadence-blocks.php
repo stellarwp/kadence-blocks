@@ -143,6 +143,12 @@ function kadence_blocks_init() {
 	);
 
 	do_action( 'kadence_blocks_uplink_loaded' );
+	add_filter(
+		'stellarwp/uplink/kadence-blocks/api_get_base_url',
+		function( $url ) {
+			return 'https://licensing.kadencewp.com';
+		}
+	);
 }
 add_action( 'plugins_loaded', 'kadence_blocks_init', 1 );
 
@@ -154,18 +160,4 @@ function kadence_blocks_lang() {
 }
 add_action( 'init', 'kadence_blocks_lang' );
 
-/**
- * Beta Plugin Updates
- */
-function kt_blocks_beta_updating() {
-	if ( file_exists( KADENCE_BLOCKS_PATH . 'kadence-update-checker/kadence-update-checker.php' ) ) {
-		require_once KADENCE_BLOCKS_PATH . 'kadence-update-checker/kadence-update-checker.php';
-		$kadence_blocks_beta_update_checker = Kadence_Update_Checker::buildUpdateChecker(
-			'https://kernl.us/api/v1/updates/639a3259e11b4fa99448e87f/',
-			__FILE__,
-			'kadence-blocks'
-		);
-	}
-}
-add_action( 'after_setup_theme', 'kt_blocks_beta_updating', 1 );
 
