@@ -198,7 +198,7 @@ function KadenceCoundownTimer( props ) {
 			let dayOfMonth = initialDate.getDate();
 			const futureDayOfMonth = currentDate.getDate();
 			const initialMonth = initialDate.getMonth();
-			const futureMonth = futureDayOfMonth >= dayOfMonth ? currentDate.getMonth() + 1 : currentDate.getMonth();
+			const futureMonth = currentDate.getMonth() === 11 ? 0 : futureDayOfMonth >= dayOfMonth ? currentDate.getMonth() + 1 : currentDate.getMonth();
 			let futureYear = currentDate.getMonth() === 11 ? currentDate.getFullYear() + 1 : currentDate.getFullYear();
 			const nextMonthDays = new Date(futureYear, futureMonth + 1, 0).getDate();
 		

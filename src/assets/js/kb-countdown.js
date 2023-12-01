@@ -41,7 +41,8 @@
 			let repeatTimeStamp = 0;
 			let dayOfMonth = initialDate.getDate();
 			const futureDayOfMonth = currentDate.getDate();
-			const futureMonth = futureDayOfMonth >= dayOfMonth ? currentDate.getMonth() + 1 : currentDate.getMonth();
+			const initialMonth = initialDate.getMonth();
+			const futureMonth = currentDate.getMonth() === 11 ? 0 : futureDayOfMonth >= dayOfMonth ? currentDate.getMonth() + 1 : currentDate.getMonth();
 			let futureYear = currentDate.getMonth() === 11 ? currentDate.getFullYear() + 1 : currentDate.getFullYear();
 			const nextMonthDays = new Date(futureYear, futureMonth + 1, 0).getDate();
 			
@@ -52,7 +53,6 @@
 					futureDate.setHours(hours);
 					futureDate.setMinutes(minutes);
 					futureDate.setSeconds(seconds);
-					repeatTimeStamp = futureDate.getTime();
 					break;
 				case 'weekly':
 					offsetDays = daysPassed + (7 - (daysPassed) % 7);
@@ -60,7 +60,6 @@
 					futureDate.setHours(hours);
 					futureDate.setMinutes(minutes);
 					futureDate.setSeconds(seconds);
-					repeatTimeStamp = futureDate.getTime();
 					break;
 				case 'monthly':
 					if(dayOfMonth === 31 && nextMonthDays === 30 ) {
@@ -79,16 +78,16 @@
 					);
 					break;
 				case 'yearly':
-					const datePassed = currentDate.getMonth() <= initialDate.getMonth() 
-						&& currentDate.getDate() <= initialDate.getDate()
-						&& currentDate.getHours() <= hours
-						&& currentDate.getMinutes() <= minutes
-						&& currentDate.getSeconds() <= seconds;
-					futureYear = datePassed
+					const datePassed = currentDate.getMonth() >= initialDate.getMonth() 
+						&& currentDate.getDate() >= initialDate.getDate()
+						&& currentDate.getHours() >= hours
+						&& currentDate.getMinutes() >= minutes
+						&& currentDate.getSeconds() >= seconds;
+					const nextYear = datePassed
 						? currentDate.getFullYear()
 						: currentDate.getFullYear() + 1;
 					futureDate = new Date(
-						futureYear, 
+						nextYear, 
 						initialMonth,
 						dayOfMonth,
 						hours, 
@@ -100,7 +99,7 @@
 					break;
 			}
 
-			return repeatTimeStamp;
+			return futureDate.getTime();
 		},
 		updateTimerInterval( element, id, parent ) {
 			var currentTimeStamp = new Date;
