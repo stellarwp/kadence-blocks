@@ -69,7 +69,7 @@
 	},
 	"frequency": {
 		"type": "string",
-		"default": ""
+		"default": "daily"
 	},
 	"enableTimer": {
 	  "type": "boolean",
