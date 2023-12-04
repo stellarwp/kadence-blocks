@@ -117,9 +117,9 @@ const actionOptions = [
 ];
 const frequencyOptions = [
 	{ value: 'daily', label: __( 'Daily', 'kadence-blocks' ), disabled: false },
-	{ value: 'weekly', label: __( 'Weekly (Pro addon)', 'kadence-blocks' ), disabled: true },
-	{ value: 'monthly', label: __( 'Monthly (Pro addon)', 'kadence-blocks' ), disabled: true },
-	{ value: 'yearly', label: __( 'Yearly (Pro addon)', 'kadence-blocks' ), disabled: true },
+	{ value: 'weekly', label: __( 'Weekly', 'kadence-blocks' ), disabled: false },
+	{ value: 'monthly', label: __( 'Monthly', 'kadence-blocks' ), disabled: false },
+	{ value: 'yearly', label: __( 'Yearly', 'kadence-blocks' ), disabled: false },
 ];
 const ANCHOR_REGEX = /[\s#]/g;
 
@@ -287,7 +287,6 @@ function KadenceCountdown( props ) {
 
 	const countdownTypes = applyFilters( 'kadence.countdownTypes', typeOptions );
 	const countdownActions = applyFilters( 'kadence.countdownActions', actionOptions );
-	const repeaterFrequencies = applyFilters( 'kadence.countdownRepeaterFrequencies', frequencyOptions );
 	dateSettings = getDateSettings();
 	// To know if the current timezone is a 12 hour time with look for "a" in the time format
 	// We also make sure this a is not escaped by a "/"
@@ -806,7 +805,7 @@ function KadenceCountdown( props ) {
 												<>
 													<SelectControl
 														label={__( 'Repeat Countdown Frequency', 'kadence-blocks' )}
-														options={repeaterFrequencies}
+														options={frequencyOptions}
 														value={frequency}
 														onChange={( value ) => setAttributes( { frequency: value } )}
 													/>
