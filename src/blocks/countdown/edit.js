@@ -677,7 +677,7 @@ function KadenceCountdown( props ) {
 								<Panel
 									className={'components-panel__body is-opened'}
 								>
-									{isNested && (
+									{1 === isNested && (
 										<>
 											<h2>{__( 'Countdown Time Settings Synced to Parent Block', 'kadence-blocks' )}</h2>
 											<Button
