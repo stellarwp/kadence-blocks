@@ -573,8 +573,19 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! empty( $attributes['maxWidth'][1] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id );
 			$css->add_property( 'max-width', $attributes['maxWidth'][1] . ( isset( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
-			$css->set_selector( '.wp-block-kadence-column>.kt-inside-inner-col>.kadence-column' . $unique_id );
-			$css->add_property( 'flex', '1 ' . $attributes['maxWidth'][1] . ( isset( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
+			$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal:not(.kb-section-md-dir-vertical)>.kt-inside-inner-col>.kadence-column' . $unique_id );
+			$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal:not(.kb-section-md-dir-vertical)>.kt-inside-inner-col>.kadence-column' . $unique_id );
+			$css->add_property( 'flex', '0 1 ' . $attributes['maxWidth'][1] . ( isset( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
+
+			if ( apply_filters( 'kadence_blocks_css_output_media_queries', true ) ) {
+				$css->set_media_state( 'tabletOnly' );
+				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal>.kt-inside-inner-col>.kadence-column' . $unique_id );
+				$css->add_property( 'flex', '0 1 ' . $attributes['maxWidth'][1] . ( isset( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
+				$css->add_property( 'max-width', 'unset' );
+				$css->add_property( 'margin-left', 'unset' );
+				$css->add_property( 'margin-right', 'unset' );
+				$css->set_media_state( 'tablet' );
+			}
 		}
 		if ( isset( $attributes['collapseOrder'] ) ) {
 			$css->set_selector( '.kt-row-column-wrap.kt-tab-layout-three-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-tab-layout-two-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-tab-layout-row > .kadence-column' . $unique_id );
