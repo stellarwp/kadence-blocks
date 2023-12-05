@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "63316ffa4a72b6c2fc8fd0382c355484",
+    "content-hash": "c7882a4488250451a1af41c12950f619",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -700,16 +700,16 @@
         },
         {
             "name": "stellarwp/uplink",
-            "version": "dev-bugfix/multisite-token-logic",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/uplink.git",
-                "reference": "a65371d50142e86e02fa09972d42af97962192b4"
+                "reference": "c9e1829080a805e3068d61ee519007598e89fcbe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/uplink/zipball/a65371d50142e86e02fa09972d42af97962192b4",
-                "reference": "a65371d50142e86e02fa09972d42af97962192b4",
+                "url": "https://api.github.com/repos/stellarwp/uplink/zipball/c9e1829080a805e3068d61ee519007598e89fcbe",
+                "reference": "c9e1829080a805e3068d61ee519007598e89fcbe",
                 "shasum": ""
             },
             "require": {
@@ -735,6 +735,7 @@
                 "symfony/string": "^5.4",
                 "szepeviktor/phpstan-wordpress": "^1.1"
             },
+            "default-branch": true,
             "bin": [
                 "bin/stellar-uplink"
             ],
@@ -760,9 +761,9 @@
             "description": "A library that integrates a WordPress product with the StellarWP Licensing system.",
             "support": {
                 "issues": "https://github.com/stellarwp/uplink/issues",
-                "source": "https://github.com/stellarwp/uplink/tree/bugfix/multisite-token-logic"
+                "source": "https://github.com/stellarwp/uplink/tree/v1.3.0"
             },
-            "time": "2023-12-04T18:39:22+00:00"
+            "time": "2023-12-01T18:34:48+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",

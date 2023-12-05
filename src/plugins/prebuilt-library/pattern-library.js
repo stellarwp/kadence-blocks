@@ -387,7 +387,7 @@ function PatternLibrary( {
 			if ( false !== localContexts ) {
 				tempLocalContexts = localContexts;
 			}
-			if ( tempLocalContexts.indexOf( tempContext ) !== -1 ) {
+			if ( ! tempLocalContexts.includes( tempContext ) ) {
 				tempLocalContexts.push( tempContext );
 				setLocalContexts( tempLocalContexts );
 			}
@@ -404,7 +404,7 @@ function PatternLibrary( {
 		if ( false !== localContexts ) {
 			tempLocalContexts = localContexts;
 		}
-		if ( tempLocalContexts.indexOf( tempContext ) !== -1 ) {
+		if ( ! tempLocalContexts.includes( tempContext ) ) {
 			tempLocalContexts.push( tempContext );
 			setLocalContexts( tempLocalContexts );
 		}
