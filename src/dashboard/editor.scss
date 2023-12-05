@@ -1,0 +1,38 @@
+.kadence_page_kadence-blocks-home #wpcontent {
+    padding: 0;
+}
+.kb-footer-status {
+    margin-top: 1em;
+}
+
+.kb-footer-status p {
+    margin: 0;
+}
+.kadence-ai-notice.components-notice {
+    padding: 12px;
+    .components-spinner {
+        margin: 0 10px 0 0;
+    }
+    .components-notice__content {
+        display: flex;
+        align-items: center;
+    }
+}
+.kadence_blocks_home_main .components-editor-notices__snackbar {
+    bottom: 40px;
+    padding-left: 16px;
+    padding-right: 16px;
+    position: fixed;
+    right: 0;
+    left: 0;
+}
+@media (min-width: 783px) {
+    .kadence_blocks_home_main .components-editor-notices__snackbar {
+        left: 160px;
+    }
+}
+@media (min-width: 783px) {
+    .folded .kadence_blocks_home_main.components-editor-notices__snackbar {
+        left: 36px;
+    }
+}

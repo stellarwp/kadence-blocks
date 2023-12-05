@@ -185,6 +185,7 @@ class Kadence_Blocks_CSS {
 	 * Spacing variables used in string based padding / margin.
 	 */
 	protected $spacing_sizes = array(
+		'ss-auto' => 'var(--global-kb-spacing-auto, auto)',
 		'xxs' => 'var(--global-kb-spacing-xxs, 0.5rem)',
 		'xs' => 'var(--global-kb-spacing-xs, 1rem)',
 		'sm' => 'var(--global-kb-spacing-sm, 1.5rem)',
@@ -740,15 +741,17 @@ class Kadence_Blocks_CSS {
 	 * @param array $font an array of font settings.
 	 * @return string
 	 */
-	public function render_font_weight( $weight ) {
+	public function render_font_weight( $weight, $google = true ) {
 		if ( empty( $weight ) ) {
 			return false;
 		}
 		if ( 'inherit' === $weight ) {
 			return false;
 		}
-		if ( 'regular' === $weight ) {
+		if ( 'regular' === $weight && $google ) {
 			$weight_string = 'normal';
+		} elseif ( 'regular' === $weight && ! $google ) {
+			$weight_string = false;
 		} else {
 			$weight_string = $weight;
 		}
@@ -783,12 +786,6 @@ class Kadence_Blocks_CSS {
 		if ( isset( $font[0] ) && is_array( $font[0] ) && ! empty( $font[0] ) ) {
 			$font = $font[0];
 		}
-		if ( isset( $font['style'] ) && ! empty( $font['style'] ) ) {
-			$this->add_property( 'font-style', $font['style'] );
-		}
-		if ( isset( $font['weight'] ) && ! empty( $font['weight'] ) ) {
-			$this->add_property( 'font-weight', $this->render_font_weight( $font['weight'] ) );
-		}
 		$size_type = ( isset( $font['sizeType'] ) && ! empty( $font['sizeType'] ) ? $font['sizeType'] : 'px' );
 		$line_type = ( isset( $font['lineType'] ) ? $font['lineType'] : '' );
 		$line_type = ( '-' !== $line_type ? $line_type : '' );
@@ -814,10 +811,17 @@ class Kadence_Blocks_CSS {
 			$this->add_property( 'letter-spacing', $font['letterSpacing'] . $letter_type );
 		}
 		$family = ( isset( $font['family'] ) && ! empty( $font['family'] ) && 'inherit' !== $font['family'] ? $font['family'] : '' );
+		$is_google = false;
 		if ( ! empty( $family ) ) {
-			$google = isset( $font['google'] ) && $font['google'] ? true : false;
-			$google = $google && ( isset( $font['loadGoogle'] ) && $font['loadGoogle'] || ! isset( $font['loadGoogle'] ) ) ? true : false;
+			$is_google = isset( $font['google'] ) && $font['google'] ? true : false;
+			$google    = $is_google && ( isset( $font['loadGoogle'] ) && $font['loadGoogle'] || ! isset( $font['loadGoogle'] ) ) ? true : false;
 			$this->add_property( 'font-family', $this->render_font_family( $font['family'], $google, ( isset( $font['variant'] ) ? $font['variant'] : '' ), ( isset( $font['subset'] ) ? $font['subset'] : '' ) ) );
+			if ( isset( $font['style'] ) && ! empty( $font['style'] ) && 'normal' !== $font['style'] ) {
+				$this->add_property( 'font-style', $font['style'] );
+			}
+		}
+		if ( isset( $font['weight'] ) && ! empty( $font['weight'] ) ) {
+			$this->add_property( 'font-weight', $this->render_font_weight( $font['weight'], $is_google ) );
 		}
 		if ( isset( $font['textTransform'] ) && ! empty( $font['textTransform'] ) ) {
 			$this->add_property( 'text-transform', $font['textTransform'] );
@@ -1288,7 +1292,7 @@ class Kadence_Blocks_CSS {
 			return false;
 		}
 		$unit = ! empty( $attributes[ $unit_name ] ) ? $attributes[ $unit_name ] : 'px';
-		if ( ! empty( $attributes[ $name[0] ] ) ) {
+		if ( is_array( $name ) && ! empty( $attributes[ $name[0] ] ) ) {
 			if ( $attributes[ $name[0] ] === 'custom' ) {
 				if ( $this->is_number( $attributes[ $custom ][0] ) ) {
 					$this->add_property( $property, $attributes[ $custom ][0] . $unit );
@@ -1296,18 +1300,35 @@ class Kadence_Blocks_CSS {
 			} else {
 				$this->add_property( $property, $this->get_variable_gap_value( $attributes[ $name[0] ] ) );
 			}
+		} elseif ( ! is_array( $name ) && ! empty( $attributes[ $name ][0] ) ) {
+			if ( $attributes[ $name ][0] === 'custom' ) {
+				if ( $this->is_number( $attributes[ $custom ][0] ) ) {
+					$this->add_property( $property, $attributes[ $custom ][0] . $unit );
+				}
+			} else {
+				$this->add_property( $property, $this->get_variable_gap_value( $attributes[ $name ][0] ) );
+			}
 		}
 		if ( ! empty( $attributes[ $name[1] ] ) ) {
 			$this->set_media_state( 'tablet' );
-			if ( $attributes[ $name[1] ] === 'custom' ) {
+			if ( is_array( $name ) && $attributes[ $name[1] ] === 'custom' ) {
 				if ( $this->is_number( $attributes[ $custom ][1] ) ) {
 					$this->add_property( $property, $attributes[ $custom ][1] . $unit );
 				}
 			} else {
 				$this->add_property( $property, $this->get_variable_gap_value( $attributes[ $name[1] ] ) );
 			}
+		} elseif ( ! is_array( $name ) && ! empty( $attributes[ $name ][1] ) ) {
+			$this->set_media_state( 'tablet' );
+			if ( $attributes[ $name ][1] === 'custom' ) {
+				if ( $this->is_number( $attributes[ $custom ][1] ) ) {
+					$this->add_property( $property, $attributes[ $custom ][1] . $unit );
+				}
+			} else {
+				$this->add_property( $property, $this->get_variable_gap_value( $attributes[ $name ][1] ) );
+			}
 		}
-		if ( ! empty( $attributes[ $name[2] ] ) ) {
+		if ( is_array( $name ) && ! empty( $attributes[ $name[2] ] ) ) {
 			$this->set_media_state( 'mobile' );
 			if ( $attributes[ $name[2] ] === 'custom' ) {
 				if ( $this->is_number( $attributes[ $custom ][2] ) ) {
@@ -1315,6 +1336,15 @@ class Kadence_Blocks_CSS {
 				}
 			} else {
 				$this->add_property( $property, $this->get_variable_gap_value( $attributes[ $name[2] ] ) );
+			}
+		} elseif ( ! is_array( $name ) && ! empty( $attributes[ $name ][2] ) ) {
+			$this->set_media_state( 'mobile' );
+			if ( $attributes[ $name ][2] === 'custom' ) {
+				if ( $this->is_number( $attributes[ $custom ][2] ) ) {
+					$this->add_property( $property, $attributes[ $custom ][2] . $unit );
+				}
+			} else {
+				$this->add_property( $property, $this->get_variable_gap_value( $attributes[ $name ][2] ) );
 			}
 		}
 		$this->set_media_state( 'desktop' );

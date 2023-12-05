@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.4
-Stable tag: 3.1.26
+Stable tag: 3.2.5
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -96,6 +96,25 @@ assist you with verification, CVE assignment, and notify the
 developers of this plugin.
 
 == Changelog ==
+
+= 3.2.5 Pre Release =
+Release Date: December 4th, 2023
+* Add: AI options in design library.
+* Add: Inline AI for Text (adv) block.
+* Add: New Image placeholder options for design library.
+* Add: New caching system for design library and pexels.
+* Add: New optimized image downloader.
+* Add: New home page and activation for AI.
+* Fix: Possible tablet css issue with sections.
+* Fix: Advanced form missing pre submit custom error.
+* Fix: Issue with info box text content styling.
+* Fix: Issue with modal in editor.
+* Fix: Form data sometimes not clearing after submit.
+
+= 3.2.0 Beta Version 1 =
+Release Date: October 5th, 2023
+* Add: New Flex control options in section block.
+* Add: New auto option for margin controls.
 
 = 3.1.26 =
 Release Date: November 15th, 2023

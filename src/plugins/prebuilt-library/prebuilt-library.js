@@ -47,7 +47,7 @@ import PatternLibrary from './pattern-library';
 import CloudSections from './cloud-library';
 import TemplateLibrary from './template-library';
 import CloudConnect from './cloud-connect';
-import WireframeLibrary from './wire-library';
+import './stores';
 
 const normal_actions =[
 	{
@@ -60,11 +60,6 @@ const normal_actions =[
 		title: __( 'Kadence', 'kadence-blocks' ),
 		key: 'kb-sections-tab',
 	},
-	// {
-	// 	slug: 'wire',
-	// 	title: 'Wireframe',
-	// 	key: 'kb-wire-tab',
-	// },
 	{
 		slug: 'cloud',
 		title: '',
@@ -82,11 +77,6 @@ const no_connect_actions = [
 		title: __( 'Kadence', 'kadence-blocks' ),
 		key: 'kb-sections-tab',
 	},
-	// {
-	// 	slug: 'wire',
-	// 	title: __( 'Wireframe', 'kadence-blocks' ),
-	// 	key: 'kb-wire-tab',
-	// },
 ];
 class PrebuiltModal extends Component {
 	constructor() {
@@ -166,7 +156,12 @@ class PrebuiltModal extends Component {
 					<Modal
 						className="kt-prebuilt-modal kb-prebuilt-library-modal"
 						title={ __( 'Design Library', 'kadence-blocks' ) }
-						onRequestClose={ () => {
+						onRequestClose={ (event) => {
+							// No action on blur event (prevents AI modal from closing when Media Library modal opens).
+							if (event.type === 'blur') {
+								return;
+							}
+
 							this.setState( { modalOpen: false } );
 							if ( this.state.onlyModal ) {
                                 this.props.removeBlock( this.props.clientId );
@@ -175,10 +170,6 @@ class PrebuiltModal extends Component {
 					>
 						<div className="kb-prebuilt-section">
 							<div className="kb-prebuilt-header kb-prebuilt-library-header">
-								<div className="kb-prebuilt-header kb-prebuilt-library-logo">
-									<span className="kb-prebuilt-header-logo">{ kadenceCatNewIcon }</span>
-									<h2>{ __( 'Library', 'Kadence Blocks' ) }</h2>
-								</div>
 								{ this.state.reloadActions && (
 									<div className="kb-prebuilt-library-actions">
 										<Spinner />
@@ -222,22 +213,6 @@ class PrebuiltModal extends Component {
 														{ action.slug === 'cloud' ? undefined : <span> { action.title } </span> }
 													</Button>
 												) }
-												{/* { action.slug === 'wire' && showSettings( 'wire', 'kadence/designlibrary' ) && kadence_blocks_params.showWire && ( ( ! kadence_blocks_params.subscribed && ( 'editor' === this.state.user || 'admin' === this.state.user ) ) || kadence_blocks_params.subscribed ) && (
-													<Button
-														key={ `${ action.slug }-${ index }` }
-														className={ 'kb-action-button' + ( active_tab === action.slug ? ' is-pressed' : '' ) }
-														aria-pressed={ active_tab === action.slug }
-														icon={ action.slug === 'cloud' ? plusCircle : undefined }
-														onClick={ () => {
-															const activeTab = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-															activeTab['activeTab'] = action.slug;
-															localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeTab ) );
-															this.setState( { section: action.slug } );
-														} }
-													>
-														{ action.slug === 'cloud' ? undefined : <span> { action.title } <span className="new-notice">{ __( 'New', 'kadence-blocks' ) }</span></span> }
-													</Button>
-												) } */}
 											</>
 										) }
 									</div>
@@ -281,21 +256,13 @@ class PrebuiltModal extends Component {
 									onReload={ () => this.setState( { reload: false } ) }
 								/>
 							) }
-							{ 'wire' === active_tab && (
-								<WireframeLibrary
-									clientId={ this.props.clientId }
-									tab={ active_tab }
-									reload={ this.state.reload }
-									onReload={ () => this.setState( { reload: false } ) }
-								/>
-							) }
 							{ 'cloud' === active_tab && (
 								<CloudConnect
 									clientId={ this.props.clientId }
 									onReload={ () => this.setState( { reloadActions: true } ) }
 								/>
 							) }
-							{ 'templates' !== active_tab && 'cloud' !== active_tab && 'section' !== active_tab && 'wire' !== active_tab && (
+							{ 'templates' !== active_tab && 'cloud' !== active_tab && 'section' !== active_tab && (
 								<CloudSections
 									clientId={ this.props.clientId }
 									tab={ active_tab }

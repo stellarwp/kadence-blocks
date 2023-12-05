@@ -80,10 +80,12 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$align = ( ! empty( $attributes['align'] ) ? $attributes['align'] : '' );
 		if ( $align !== 'wide' && $align !== 'full' ) {
-			$css->set_selector( '.kb-image' . $unique_id . '.kb-image-is-ratio-size, .kb-image' . $unique_id . ' .kb-image-is-ratio-size' );
 			if ( isset( $attributes['imgMaxWidth'] ) && is_numeric( $attributes['imgMaxWidth'] ) ) {
+				$css->set_selector( '.kb-image' . $unique_id . '.kb-image-is-ratio-size, .kb-image' . $unique_id . ' .kb-image-is-ratio-size' );
 				$css->add_property( 'max-width', $attributes['imgMaxWidth'] . 'px' );
 				$css->add_property( 'width', '100%' );
+				$css->set_selector( '.wp-block-kadence-column > .kt-inside-inner-col > .kb-image' . $unique_id . '.kb-image-is-ratio-size, .wp-block-kadence-column > .kt-inside-inner-col > .kb-image' . $unique_id . ' .kb-image-is-ratio-size' );
+				$css->add_property( 'align-self', 'unset' );
 			}
 		}
 		if ( $align === 'center' || $align === 'right' || $align === 'left' ) {

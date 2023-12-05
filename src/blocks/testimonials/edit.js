@@ -1531,6 +1531,7 @@ function KadenceTestimonials( props ) {
 													unit={iconMarginUnit}
 													units={[ 'px', 'em', 'rem' ]}
 													onUnit={( value ) => setAttributes( { iconMarginUnit: value } )}
+                                                    allowAuto={ true }
 												/>
                                             </Fragment>
                                         )}
@@ -1623,6 +1624,7 @@ function KadenceTestimonials( props ) {
 													unit={titleMarginUnit}
 													units={[ 'px', 'em', 'rem' ]}
 													onUnit={( value ) => setAttributes( { titleMarginUnit: value } )}
+                                                    allowAuto={ true }
 												/>
                                                 <ResponsiveRangeControls
                                                     label={__('Title Min Height', 'kadence-blocks')}
@@ -1699,6 +1701,7 @@ function KadenceTestimonials( props ) {
 													unit={ratingMarginUnit}
 													units={[ 'px', 'em', 'rem' ]}
 													onUnit={( value ) => setAttributes( { ratingMarginUnit: value } )}
+                                                    allowAuto={ true }
 												/>
                                             </Fragment>
                                         )}
@@ -1871,6 +1874,7 @@ function KadenceTestimonials( props ) {
 													unit={mediaMarginUnit}
 													units={[ 'px', 'em', 'rem' ]}
 													onUnit={( value ) => setAttributes( { mediaMarginUnit: value } )}
+                                                    allowAuto={ true }
 												/>
                                                 {'card' === style && (
                                                     <Fragment>
@@ -2160,6 +2164,7 @@ function KadenceTestimonials( props ) {
 											unit={wrapperMarginUnit}
 											units={[ 'px', 'em', 'rem' ]}
 											onUnit={( value ) => setAttributes( { wrapperMarginUnit: value } )}
+                                            allowAuto={ true }
 										/>
                                     </KadencePanelBody>
                                 )}

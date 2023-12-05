@@ -9,10 +9,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+use KadenceWP\KadenceBlocks\Traits\Image_Size_Trait;
+
 /**
  * Class to create a minified css output.
  */
 class Kadence_Blocks_Image_Picker {
+
+	use Image_Size_Trait;
+
 	/**
 	 * The singleton instance
 	 *
@@ -81,37 +86,11 @@ class Kadence_Blocks_Image_Picker {
 				'kadence-extension-image-picker',
 				'kadenceExtensionImagePicker',
 				array(
-					'image_sizes' => $this->get_image_sizes(),
+					'image_sizes'      => $this->get_image_sizes(),
 					'default_provider' => 'pexels',
 				)
 			);
 		}
-	}
-
-	/**
-	 * Enqueue block plugin for backend editor.
-	 */
-	public function get_image_sizes() {
-		return array(
-			array(
-				'id' => 'thumbnail',
-				'width' => 150,
-				'height' => 150,
-				'crop' => true,
-			),
-			array(
-				'id' => 'medium_large',
-				'width' => 768,
-				'height' => 0,
-				'crop' => false,
-			),
-			array(
-				'id' => 'download',
-				'width' => 2048,
-				'height' => 2048,
-				'crop' => false,
-			),
-		);
 	}
 
 	/**

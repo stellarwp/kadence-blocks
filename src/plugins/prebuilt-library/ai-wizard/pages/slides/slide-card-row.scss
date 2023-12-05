@@ -1,0 +1,43 @@
+@import '../../scss/variables.scss';
+
+.slide-card-row {
+  white-space: normal;
+
+  &__headline {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+  }
+
+  &__content {
+    font-size: 16px;
+  }
+
+  &__content p {
+    margin: 0;
+    font-size: clamp(13px, -0.75rem + 3vh, 16px);
+    color: $color-disabled;
+
+    + p {
+      margin-top: 16px;
+    }
+  }
+
+  &--tone {
+    white-space: normal;
+
+    .chip {
+      margin-bottom: 8px;
+    }
+
+    .slide-card-row__headline {
+      margin: 0 0 8px 0;
+      font-size: 18px;
+    }
+
+    .slide-card-row__content {
+      margin: 0;
+      font-size: 12px;
+    }
+  }
+}
+

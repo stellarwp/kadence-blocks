@@ -8,17 +8,17 @@ import apiFetch from '@wordpress/api-fetch';
  * @return {Promise<object>} Promise returns object
  */
 async function downloadImage( images ) {
+	console.log(`images: ${ JSON.stringify(images) }`);
 	try {
-		const response = await apiFetch( {
+		return await apiFetch({
 			path: '/kb-image-picker/v1/process_images',
 			method: 'POST',
 			data: {
 				images: images,
 			},
-		} );
-		return response;
+		});
 	} catch (error) {
-		console.log(`ERROR: ${ error }`);
+		console.log(`ERROR: ${ JSON.stringify(error) }`);
 		return false;
 	}
 }
@@ -28,15 +28,16 @@ async function downloadImage( images ) {
  * @param {Object} data The API results object.
  * @return {Array} 	 The results as an array.
  */
-export default async function downloadToMediaLibrary( result, setIsDownloading, setIsDownloaded, imagePickerDownloadedImages, setImagePickerDownloadedImages ) {
+export default async function downloadToMediaLibrary( result, setIsDownloading, setIsDownloaded, imagePickerDownloadedImages, setImagePickerDownloadedImages, setDownloadError ) {
 	if ( ! result ) {
 		return [];
 	}
     setIsDownloading(true);
-	
+
 	// Dispatch API fetch request.
 	const response = await downloadImage(result);
-	if ( response !== false ) {
+
+	if ( response?.[0]?.id ) {
 		setIsDownloaded(true);
 		setIsDownloading(false);
 
@@ -48,11 +49,12 @@ export default async function downloadToMediaLibrary( result, setIsDownloading, 
 			}
 		}
 		setImagePickerDownloadedImages(imagePickerDownloadedImages.concat(tempIDs));
-		
+
 		refreshMediaModal(wpAttachmentId);
 	} else {
 		setIsDownloaded(false);
 		setIsDownloading(false);
+		setDownloadError(true);
 	}
 }
 

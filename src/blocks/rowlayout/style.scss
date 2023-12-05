@@ -37,6 +37,9 @@
 }
 .kt-inner-column-height-full:not(.kt-row-layout-row) {
 	grid-auto-rows: minmax(0, 1fr);
+	> .wp-block-kadence-column {
+		height: 100%;
+	}
 	> .wp-block-kadence-column > .kt-inside-inner-col {
 		height: 100%;
 	}

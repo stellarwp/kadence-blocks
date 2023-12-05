@@ -62,6 +62,7 @@ import {
  */
 import './formats/markformat';
 import './formats/typed-text';
+import AIText from './ai-text/ai-text.js';
 
 import Typed from 'typed.js';
 
@@ -232,7 +233,7 @@ function KadenceAdvancedHeading( props ) {
 	} = attributes;
 
 	const [ activeTab, setActiveTab ] = useState( 'style' );
-
+	const [ contentRef, setContentRef ] = useState();
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
 	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		( select ) => {
@@ -1294,6 +1295,7 @@ function KadenceAdvancedHeading( props ) {
 											onUnit={(value) => setAttributes({marginType: value})}
 											onMouseOver={marginMouseOver.onMouseOver}
 											onMouseOut={marginMouseOver.onMouseOut}
+											allowAuto={ true }
 										/>
 									</KadencePanelBody>
 

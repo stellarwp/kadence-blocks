@@ -3556,6 +3556,7 @@ function KadenceForm( props ) {
 								onUnit={( value ) => setAttributes( { containerMarginType: value } )}
 								onMouseOver={ marginMouseOver.onMouseOver }
 								onMouseOut={ marginMouseOver.onMouseOut }
+								allowAuto={ true }
 							/>
 							<ToggleControl
 								label={__( 'Align field labels with submit alignment?', 'kadence-blocks' )}

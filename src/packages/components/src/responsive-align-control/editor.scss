@@ -18,3 +18,10 @@
 		}
 	}
 }
+.kb-responsive-align-justify-column .components-toolbar .components-button.has-icon, .kb-responsive-align-justify-vertical .components-toolbar .components-button.has-icon {
+	min-width: 28px;
+	&:before {
+		left:4px;
+		right:4px;
+	}
+}

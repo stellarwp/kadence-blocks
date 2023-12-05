@@ -50,8 +50,6 @@ const roundAccurately = (number, decimalPlaces) => Number(Math.round(Number(numb
 function KadenceBlockPattern( {
 	pattern,
 	onClick,
-	onHover,
-	composite,
 	showTooltip,
 	customStyles,
 	previewMode,
@@ -60,53 +58,76 @@ function KadenceBlockPattern( {
 	shadowStyles,
 	baseCompatStyles,
 	neededCompatStyles,
-	patternType
+	patternType,
+	rootScroll,
 } ) {
 	const { content, viewportWidth, pro, locked, proRender, image, imageHeight, imageWidth, html } = pattern;
-	const blocks = parse( content, {
-		__unstableSkipMigrationLogs: true
-	});
 	const instanceId = useInstanceId( KadenceBlockPattern );
 	const descriptionId = `block-editor-block-patterns-list__item-description-${ instanceId }`;
+	function getFooter() {
+		if ('page' === patternType) {
+			return (
+				<div className="block-editor-block-patterns-list__item-title kb-pattern-type-page">
+					<div className="kb-pattern-footer-top">
+						<span className="kb-pattern-title" dangerouslySetInnerHTML={{ __html:pattern.title }}>
+						</span>
+						{ ( pattern?.pageStyles && pattern.pageStyles.length ) &&
+							Object.values(pattern.pageStyles).map((style) =>
+								<span className="kb-pattern-style-tag">{ style }</span>
+							)
+						}
+					</div>
+					{ pattern.description ? (
+						<div className="kb-pattern-description">
+							{ pattern.description }
+						</div>
+					) : null }
+				</div>
+			)
+		} else {
+			return (
+				<div className="block-editor-block-patterns-list__item-title">
+					<span className="kb-pattern-inline-title" dangerouslySetInnerHTML={{__html:pattern.title}}></span>
+					{ undefined !== pro && pro && (
+						<span className="kb-pattern-pro-item">{ __( 'Pro', 'kadence-blocks' ) }</span>
+					) }
+				</div>
+			)
+		}
+	}
+
 	return (
-		<div
-			className={ `block-editor-block-patterns-list__list-item kb-pattern-style-${selectedStyle}`}
-		>
+		<div key={ instanceId } className={ `block-editor-block-patterns-list__list-item kb-pattern-style-${selectedStyle}`}>
 			<WithToolTip
 				showTooltip={ showTooltip }
 				title={ pattern.title }
 			>
-				<CompositeItem
+				<div
 					role="option"
-					as="div"
-					{ ...composite }
 					className={ `block-editor-block-patterns-list__item${ locked ? ' kb-pattern-item-locked' : '' }` }
 					onClick={ () => {
 						if ( ! locked ) {
-							onClick( pattern, blocks );
+							onClick( pattern, content );
 						} else {
 							console.log( 'Can not install' );
 						}
-						onHover?.( null );
 					} }
 					aria-disabled={ locked ? true : undefined }
-					onMouseEnter={ () => {
-						onHover?.( pattern );
-					} }
-					onMouseLeave={ () => onHover?.( null ) }
 					aria-label={ pattern.title }
 					aria-describedby={
 						pattern.description ? descriptionId : undefined
 					}
 				>
-					{ proRender && 'image' !== previewMode && (
+					{ proRender && 'image' !== previewMode && ! html && (
 						<div className="kb-pattern-requires-pro-item-wrap block-editor-block-preview__container">
 							<span className="kb-pattern-requires-pro-item">{ __( 'Requires Kadence Blocks Pro to Render Preview', 'kadence-blocks' ) }</span>
 						</div>
 					) }
-					{ ! proRender && 'image' !== previewMode && ! html && (
+					{ content && ! proRender && 'image' !== previewMode && ! html && (
 						<BlockPreview
-							blocks={ blocks }
+							blocks={ parse( content, {
+								__unstableSkipMigrationLogs: true
+							}) }
 							viewportWidth={ viewportWidth }
 							additionalStyles={ customStyles }
 							editorStyles={ editorStyles }
@@ -114,7 +135,7 @@ function KadenceBlockPattern( {
 							neededCompatStyles={ neededCompatStyles }
 						/>
 					) }
-					{ ! proRender && 'image' !== previewMode && html && (
+					{ 'image' !== previewMode && html && (
 						<PatternPreview
 							html={ html }
 							title={pattern.title}
@@ -125,6 +146,7 @@ function KadenceBlockPattern( {
 							baseCompatStyles={ baseCompatStyles }
 							neededCompatStyles={ neededCompatStyles }
 							patternType={ patternType }
+							rootScroll={ rootScroll }
 						/>
 					) }
 					{ 'image' === previewMode && (
@@ -142,41 +164,31 @@ function KadenceBlockPattern( {
 							<span className="kb-pattern-requires-active-pro-item"><ExternalLink href={ 'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=patterns' }>{ __( 'Requires Kadence Blocks Pro', 'kadence-blocks' ) }</ExternalLink></span>
 						</div>
 					) }
-					{ ! showTooltip && (
-						<div className="block-editor-block-patterns-list__item-title">
-							{ pattern.title }
-							{ undefined !== pro && pro && (
-								<span className="kb-pattern-pro-item">{ __( 'Pro', 'kadence-blocks' ) }</span>
-							) }
-						</div>
-					) }
+					{ ! showTooltip && getFooter() }
 					{ !! pattern.description && (
 						<VisuallyHidden id={ descriptionId }>
 							{ pattern.description }
 						</VisuallyHidden>
 					) }
-				</CompositeItem>
+				</div>
 			</WithToolTip>
 		</div>
 	);
 }
 
-function KadenceBlockPatternList( {
+function KadenceBlockPatternListIframe( {
 	blockPatterns,
 	selectedCategory,
 	filterValue,
-	onHover,
 	onClickPattern,
-	orientation,
 	label = __( 'Block Patterns', 'kadence-blocks' ),
 	showTitlesAsTooltip,
 	customStyles,
-	customShadowStyles,
 	breakpointCols,
 	previewMode = 'iframe',
 	selectedStyle = 'light',
 	patternType='pattern',
-	renderType='shadow',
+	rootScroll,
 } ) {
 	const { styles, assets } = useSelect( ( select ) => {
 		const settings = select( blockEditorStore ).getSettings();
@@ -187,7 +199,6 @@ function KadenceBlockPatternList( {
 	}, [] );
 	const parsedStyles = useParsedAssets( assets?.styles );
 	const styleIds = parsedStyles.map( ( style ) => style.id );
-	//console.log( styleIds );
 	const styleIdsTest = [ 'kadence-blocks-global-editor-styles-inline-css', 'kadence-editor-global-inline-css', 'wp-block-library-css', 'wc-blocks-vendors-style-css', 'wc-blocks-style-css' ];
 	const styleIdsExclude = [ 'yoast-seo-metabox-css-css' ];
 	const baseCompatStyles = parsedStyles.filter(
@@ -211,21 +222,6 @@ function KadenceBlockPatternList( {
 
 		return styles;
 	}, [ styles, customStyles ] );
-	const shadowStyles = useMemo( () => {
-		if ( styles ) {
-			return [
-				...styles,
-				{
-					css: '.single-iframe-content{--wp--style--global--content-size:var(--wp--style--global--wide-size )}',
-					__unstableType: 'presets',
-				},
-				...customShadowStyles,
-			];
-		}
-
-		return styles;
-	}, [ styles, customShadowStyles ] );
-	const composite = useCompositeState( { orientation } );
 	const showItems = (patterns) => {
 		var items = [];
 		for (var i = 0; i < records; i++) {
@@ -235,40 +231,13 @@ function KadenceBlockPatternList( {
 						key={ patterns[i]?.name || i }
 						pattern={ patterns[i] }
 						onClick={ onClickPattern }
-						onHover={ onHover }
-						composite={ composite }
 						showTooltip={ showTitlesAsTooltip }
 						customStyles={ customStyles }
 						previewMode={ previewMode }
 						selectedStyle={ selectedStyle }
 						editorStyles={ editorStyles }
-						shadowStyles={ shadowStyles }
-						baseCompatStyles={ undefined !== baseCompatStyles ? baseCompatStyles : [] }
-						neededCompatStyles={ undefined !== neededCompatStyles ? neededCompatStyles : [] }
-						patternType={ patternType }
-					/>
-				);
-			}
-		}
-		return items;
-	};
-	const showAllItems = (patterns) => {
-		var items = [];
-		for (var i = 0; i < shadowRecords; i++) {
-			if ( undefined !== patterns[i]?.name ) {
-				items.push(
-					<KadenceBlockPattern
-						key={ patterns[i]?.name || i }
-						pattern={ patterns[i] }
-						onClick={ onClickPattern }
-						onHover={ onHover }
-						composite={ composite }
-						showTooltip={ showTitlesAsTooltip }
-						customStyles={ customStyles }
-						shadowStyles={ shadowStyles }
-						previewMode={ previewMode }
-						selectedStyle={ selectedStyle }
-						editorStyles={ editorStyles }
+						shadowStyles={ '' }
+						rootScroll={ rootScroll }
 						baseCompatStyles={ undefined !== baseCompatStyles ? baseCompatStyles : [] }
 						neededCompatStyles={ undefined !== neededCompatStyles ? neededCompatStyles : [] }
 						patternType={ patternType }
@@ -280,21 +249,14 @@ function KadenceBlockPatternList( {
 	};
 	const itemsPerPage = previewMode === 'image' ? 16 : 4;
 	const [hasMore, setHasMore] = useState(true);
-	const [hasMoreShadow, setHasMoreShadow] = useState(true);
 	const [records, setrecords] = useState(itemsPerPage);
-	const [shadowRecords, setShadowRecords] = useState(40);
 	const debounceSetRecords = debounce( ( newRecord ) => {
 		setrecords( newRecord );
 	}, 500 );
-	const debounceSeShadowRecords = debounce( ( newRecord ) => {
-		setShadowRecords( newRecord );
-	}, 100 );
 	// clear lazy when category change
 	useEffect( () => {
 		setrecords(itemsPerPage);
 		setHasMore(true);
-		setHasMoreShadow(true);
-		setShadowRecords(30);
 	}, [ selectedCategory, filterValue, blockPatterns ] );
 	const loadMore = () => {
 		if ( records >= blockPatterns.length ) {
@@ -303,36 +265,6 @@ function KadenceBlockPatternList( {
 			debounceSetRecords( records + itemsPerPage );
 		}
 	};
-	const loadMoreShadow = () => {
-		if ( shadowRecords >= blockPatterns.length ) {
-			setHasMoreShadow(false);
-		} else {
-			debounceSeShadowRecords( shadowRecords + 30 );
-		}
-	};
-	if ( renderType === 'shadow' ) {
-		return ( 
-			<div className="block-editor-block-patterns-list">
-				<InfiniteScroll
-					className="block-editor-block-patterns-list-wrap"
-					pageStart={0}
-					loadMore={loadMoreShadow}
-					hasMore={hasMoreShadow}
-					loader={<Spinner />}
-					useWindow={false}
-					threshold={800}
-				>
-						<Masonry
-							breakpointCols={breakpointCols}
-							className={ `kb-css-masonry kb-core-section-library` }
-							columnClassName="kb-css-masonry_column"
-						>
-							{showAllItems(blockPatterns)}
-						</Masonry>
-				</InfiniteScroll>
-			</div>
-		);
-	}
 	return ( 
 		<div className="block-editor-block-patterns-list">
 			<InfiniteScroll
@@ -349,6 +281,136 @@ function KadenceBlockPatternList( {
   						columnClassName="kb-css-masonry_column"
 					>
 						{showItems(blockPatterns)}
+					</Masonry>
+			</InfiniteScroll>
+		</div>
+	);
+}
+
+function KadenceBlockPatternList( {
+	blockPatterns,
+	selectedCategory,
+	selectedPageStyles,
+	filterValue,
+	onClickPattern,
+	label = __( 'Block Patterns', 'kadence-blocks' ),
+	showTitlesAsTooltip,
+	customStyles,
+	customShadowStyles,
+	breakpointCols,
+	previewMode = 'iframe',
+	selectedStyle = 'light',
+	patternType='pattern',
+	renderType='shadow',
+	rootScroll
+} ) {
+	if ( renderType === 'iframe' ) {
+		return (
+			<KadenceBlockPatternListIframe
+				selectedCategory={ selectedCategory }
+				blockPatterns={ filteredBlockPatterns }
+				onClickPattern={ onSelectBlockPattern }
+				showTitlesAsTooltip={ false }
+				customStyles={ customStyles }
+				breakpointCols={ breakpointCols }
+				previewMode={ previewMode }
+				selectedStyle={ selectedStyle }
+				rootScroll={ rootScroll }
+			/>
+		);
+	}
+	const { styles, assets } = useSelect( ( select ) => {
+		const settings = select( blockEditorStore ).getSettings();
+		return {
+			styles: settings.styles,
+			assets: settings.__unstableResolvedAssets,
+		};
+	}, [] );
+	const parsedStyles = useParsedAssets( assets?.styles );
+	const styleIds = parsedStyles.map( ( style ) => style.id );
+	const styleIdsTest = [ 'kadence-blocks-global-editor-styles-inline-css', 'kadence-editor-global-inline-css', 'wp-block-library-css', 'wc-blocks-vendors-style-css', 'wc-blocks-style-css' ];
+	const styleIdsExclude = [ 'yoast-seo-metabox-css-css' ];
+	const baseCompatStyles = parsedStyles.filter(
+		( style ) => styleIdsTest.includes( style.id )
+	);
+	const compatStyles = useCompatibilityStyles();;
+	const neededCompatStyles = compatStyles.filter(
+		( style ) => style.id && ! styleIds.includes( style.id ) && ! styleIdsExclude.includes( style.id )
+	);
+	const shadowStyles = useMemo( () => {
+		if ( styles ) {
+			return [
+				...styles,
+				{
+					css: '.single-iframe-content{--wp--style--global--content-size:var(--wp--style--global--wide-size )}',
+					__unstableType: 'presets',
+				},
+				...customShadowStyles,
+			];
+		}
+
+		return styles;
+	}, [ styles, customShadowStyles ] );
+	const showAllItems = (patterns) => {
+		var items = [];
+		for (var i = 0; i < shadowRecords; i++) {
+			if ( undefined !== patterns[i]?.name ) {
+				items.push(
+					<KadenceBlockPattern
+						key={ patterns[i]?.name || i }
+						pattern={ patterns[i] }
+						onClick={ onClickPattern }
+						showTooltip={ showTitlesAsTooltip }
+						customStyles={ customStyles }
+						shadowStyles={ shadowStyles }
+						previewMode={ previewMode }
+						selectedStyle={ selectedStyle }
+						editorStyles={ '' }
+						rootScroll={ rootScroll }
+						baseCompatStyles={ undefined !== baseCompatStyles ? baseCompatStyles : [] }
+						neededCompatStyles={ undefined !== neededCompatStyles ? neededCompatStyles : [] }
+						patternType={ patternType }
+					/>
+				);
+			}
+		}
+		return items;
+	};
+	const [hasMoreShadow, setHasMoreShadow] = useState(true);
+	const [shadowRecords, setShadowRecords] = useState(40);
+	const debounceSeShadowRecords = debounce( ( newRecord ) => {
+		setShadowRecords( newRecord );
+	}, 100 );
+	// clear lazy when category change
+	useEffect( () => {
+		setHasMoreShadow(true);
+		setShadowRecords(30);
+	}, [ selectedCategory, selectedPageStyles, filterValue, blockPatterns ] );
+
+	const loadMoreShadow = () => {
+		if ( shadowRecords >= blockPatterns.length ) {
+			setHasMoreShadow(false);
+		} else {
+			debounceSeShadowRecords( shadowRecords + 30 );
+		}
+	};
+	return ( 
+		<div className="block-editor-block-patterns-list">
+			<InfiniteScroll
+				className="block-editor-block-patterns-list-wrap"
+				pageStart={0}
+				loadMore={loadMoreShadow}
+				hasMore={hasMoreShadow}
+				loader={<Spinner />}
+				useWindow={false}
+				threshold={800}
+			>
+					<Masonry
+						breakpointCols={breakpointCols}
+						className={ `kb-css-masonry kb-core-section-library` }
+						columnClassName="kb-css-masonry_column"
+					>
+						{showAllItems(blockPatterns)}
 					</Masonry>
 			</InfiniteScroll>
 		</div>
