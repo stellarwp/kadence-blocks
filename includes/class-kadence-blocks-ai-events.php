@@ -100,8 +100,7 @@ class Kadence_Blocks_AI_Events {
 
 		// Only pass tracking events if AI has been activated through Opt in.
 		$container     = UplinkConfig::get_container();
-		$token_manager = $container->get( Token_Manager::class );
-		$token         = $token_manager->get();
+		$token         = get_authorization_token( apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ) );
 		$data          = $container->get( Data::class );
 		$license_key   = kadence_blocks_get_current_license_key();
 		$is_authorized = false;

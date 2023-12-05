@@ -238,8 +238,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 	}
 	$container     = UplinkConfig::get_container();
 	$data          = $container->get( Data::class );
-	$token_manager = $container->get( Token_Manager::class );
-	$token         = $token_manager->get();
+	$token         = get_authorization_token( apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ) );
 	$is_authorized = false;
 	if ( $token && ! empty( $pro_data['key'] ) ) {
 		$is_authorized = is_authorized( $pro_data['key'], $token, $data->get_domain() );
