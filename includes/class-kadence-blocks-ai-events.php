@@ -224,9 +224,8 @@ class Kadence_Blocks_AI_Events {
 			case 'ai_inline_completed':
 				$event   = 'AI Inline Completed';
 				$context = [
-					'page_id'        => $event_data['page_id'],
-					'page_title'     => get_the_title( $event_data['page_id'] ),
 					'tool_name'      => $event_data['tool_name'],
+					'type'           => $event_data['type'],
 					'initial_text'   => $event_data['initial_text'],
 					'result'         => $event_data['result'],
 					'credits_before' => $event_data['credits_before'],

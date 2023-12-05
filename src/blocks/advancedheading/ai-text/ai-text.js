@@ -81,8 +81,7 @@ export const AIText = {
 		const [ isToneOpen, setIsToneOpen ] = useState(false);
 		const activeStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 		const savedCredits = ( undefined !== activeStorage?.credits && '' !== activeStorage?.credits && null !== activeStorage?.credits ? activeStorage.credits : 'fetch' );
-		const currentCredits = ( '' !== credits ? credits : savedCredits );
-		const currentPostId = parseInt((new URLSearchParams(window.location.search)).get('post')) ?? 0;
+		const currentCredits = ('' !== credits ? credits : savedCredits);
 		async function getRemoteAvailableCredits() {
 			const response = await getAvailableCredits();
 			const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
@@ -139,9 +138,8 @@ export const AIText = {
 							setTempCredits(parseInt( currentCredits ) - 1);
 							setCredits( 'fetch' );
 							sendEvent('ai_inline_completed', {
-								page_id: currentPostId,
-								page_title: '',
-								tool_name: AIText.title,
+								tool_name: name,
+								type: 'get_new_content',
 								initial_text: '',
 								result: AIContent,
 								credits_before: parseInt(currentCredits),
@@ -175,6 +173,8 @@ export const AIText = {
 		}
 		function handleEditingContent(value, prompt, type) {
 			let AIContent = '';
+			let initial_text = value;
+			let action_type = type;
 			setIsLoading(true);
 			setAiSuggestion( '' );
 			setError('');
@@ -190,10 +190,9 @@ export const AIText = {
 							setCredits( 'fetch' );
 							setIsOpen( true );
 							sendEvent('ai_inline_completed', {
-								page_id: currentPostId,
-								page_title: '',
-								tool_name: AIText.title,
-								initial_text: '',
+								tool_name: name,
+								type: action_type,
+								initial_text: initial_text,
 								result: AIContent,
 								credits_before: parseInt(currentCredits),
 								credits_after: parseInt(currentCredits) - 1,
@@ -226,6 +225,8 @@ export const AIText = {
 		}
 		function handleTransformingContent(value, type) {
 			let AIContent = '';
+			let initial_text = value;
+			let action_type = type;
 			setIsLoading(true);
 			setAiSuggestion( '' );
 			setError('');
@@ -241,10 +242,9 @@ export const AIText = {
 							setTempCredits(parseInt( currentCredits ) - 1);
 							setCredits( 'fetch' );
 							sendEvent('ai_inline_completed', {
-								page_id: currentPostId,
-								page_title: '',
-								tool_name: AIText.title,
-								initial_text: '',
+								tool_name: name,
+								type: action_type,
+								initial_text: initial_text,
 								result: AIContent,
 								credits_before: parseInt(currentCredits),
 								credits_after: parseInt(currentCredits) - 1,
