@@ -574,7 +574,6 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.kadence-column' . $unique_id );
 			$css->add_property( 'max-width', $attributes['maxWidth'][1] . ( isset( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
 			$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal:not(.kb-section-md-dir-vertical)>.kt-inside-inner-col>.kadence-column' . $unique_id );
-			$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal:not(.kb-section-md-dir-vertical)>.kt-inside-inner-col>.kadence-column' . $unique_id );
 			$css->add_property( 'flex', '0 1 ' . $attributes['maxWidth'][1] . ( isset( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
 
 			if ( apply_filters( 'kadence_blocks_css_output_media_queries', true ) ) {
