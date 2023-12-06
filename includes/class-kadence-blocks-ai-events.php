@@ -7,9 +7,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_authorization_token;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_original_domain;
-use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_token;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
 
 /**
@@ -99,7 +99,7 @@ class Kadence_Blocks_AI_Events {
 	 */
 	public function handle_event( string $name, array $context ): void {
 		// Only pass tracking events if AI has been activated through Opt in.
-		$token         = get_token( 'kadence-blocks' );
+		$token         = get_authorization_token( 'kadence-blocks' );
 		$license_key   = kadence_blocks_get_current_license_key();
 		$is_authorized = false;
 		if ( $token ) {

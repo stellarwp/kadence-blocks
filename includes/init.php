@@ -15,7 +15,7 @@ use KadenceWP\KadenceBlocks\App;
 use KadenceWP\KadenceBlocks\StellarWP\ContainerContract\ContainerInterface;
 
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
-use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_token;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_authorization_token;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
 
 /**
@@ -235,7 +235,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 	if ( ! empty( $pro_data['email'] ) ) {
 		$pro_data['api_email'] = $pro_data['email'];
 	}
-	$token         = get_token( 'kadence-blocks' );
+	$token         = get_authorization_token( 'kadence-blocks' );
 	$is_authorized = false;
 	if ( $token && ! empty( $pro_data['key'] ) ) {
 		$is_authorized = is_authorized( $pro_data['key'], $token, get_license_domain() );
