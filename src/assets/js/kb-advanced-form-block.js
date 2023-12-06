@@ -378,10 +378,9 @@
 							window.location.replace( response.redirect );
 						} else {
 							window.kadenceAdvancedForm.insertAfter( window.kadenceAdvancedForm.createElementFromHTML( response.html ), form );
+							window.kadenceAdvancedForm.clearForm( form );
 							if ( response?.hide ) {
 								form.remove();
-							} else {
-								window.kadenceAdvancedForm.clearForm( form );
 							}
 						}
 					} else {

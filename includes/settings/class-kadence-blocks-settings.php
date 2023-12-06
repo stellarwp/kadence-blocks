@@ -1049,15 +1049,6 @@ class Kadence_Blocks_Settings {
 	 */
 	public function home_page() {
 		do_action( 'stellarwp/telemetry/kadence-blocks/optin' );
-		$token         = get_token( 'kadence-blocks' );
-		$license_key   = kadence_blocks_get_current_license_key();
-		$is_authorized = false;
-
-		if ( self::$authorized_cache !== null ) {
-			$is_authorized = self::$authorized_cache;
-		} elseif ( $token ) {
-			$is_authorized = self::$authorized_cache = is_authorized( $license_key, $token, get_license_domain() );
-		}
 		?>
 		<div class="wrap kadence_blocks_dash">
 			<div class="kadence_blocks_dash_head_container">
@@ -1067,13 +1058,6 @@ class Kadence_Blocks_Settings {
 					</div>
 				</div>
 			</div>
-			<?php
-				// $data = UplinkConfig::get_container()->get( Data::class );
-
-				// echo '<div class="authorize-button-container">';
-				// render_authorize_button( apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ), $data->get_domain() );
-				// echo '</div>';
-			?>
 		</div>
 		<?php
 	}

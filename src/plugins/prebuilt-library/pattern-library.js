@@ -439,7 +439,6 @@ function PatternLibrary( {
 			if ( hasContextContent( selectedContext ) ) {
 				forceRefreshLibrary();
 			} else if ( localContexts && localContexts.includes( selectedContext ) ) {
-				console.log( selectedContext);
 				getAIContent( selectedContext );
 			} else {
 				forceRefreshLibrary();
@@ -540,6 +539,7 @@ function PatternLibrary( {
 		const localContent = await getLocalAIContentData();
 		const localPrompts = await getLocalAIContexts();
 		const tempContextStates = [];
+		let hasLocalContent = false;
 		if ( 'empty' === localContent ) {
 			console.log( 'No Local AI Content' );
 			setHasInitialAI( true );
@@ -547,6 +547,7 @@ function PatternLibrary( {
 			console.log( 'Failed to load Local' );
 			setHasInitialAI( true );
 		} else {
+			hasLocalContent = true;
 			Object.keys( localContent ).forEach( key => {
 				if ( localContent?.[key]?.content?.length > 0 ) {
 					tempContextStates.push(key);
@@ -561,7 +562,7 @@ function PatternLibrary( {
 		}
 		if ( 'failed' === localPrompts ) {
 			console.log( 'No Local Prompts' );
-		} else if ( localPrompts && localPrompts.length > 0 && localContent ) {
+		} else if ( localPrompts && localPrompts.length > 0 && hasLocalContent ) {
 			localPrompts.forEach( key => {
 				if ( tempContextStates.indexOf( key ) === -1 ) {
 					getAIContent( key, true );

@@ -1,4 +1,5 @@
 import { __ } from '@wordpress/i18n';
+import classNames from "classnames";
 import { useState, useEffect, Fragment } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import downloadToMediaLibrary from "../functions/downloadToMediaLibrary";
@@ -29,6 +30,7 @@ export default function Result(props) {
 		photographer_url,
 	} = result;
     const [downloadComplete, setDownloadComplete] = useState( false );
+    const [downloadError, setDownloadError] = useState( false );
     const [altValue, setAltValue] = useState( alt );
     const [filenameValue, setFilenameValue] = useState( '' );
     const isMultiSelected = imagePickerMultiSelection?.length && imagePickerMultiSelection.length > 1 && imagePickerMultiSelection.includes( index );
@@ -64,15 +66,21 @@ export default function Result(props) {
 		if ( ! isDownloading ) {
             if ( isMultiSelected ) {
                 const multiResultData = mergeArrays( multiResult, [resultData ] );
-			    downloadToMediaLibrary(multiResultData, setIsDownloading, setDownloadComplete, imagePickerDownloadedImages, setImagePickerDownloadedImages);
+			    downloadToMediaLibrary(multiResultData, setIsDownloading, setDownloadComplete, imagePickerDownloadedImages, setImagePickerDownloadedImages, setDownloadError);
             } else {
-                downloadToMediaLibrary([resultData], setIsDownloading, setDownloadComplete, imagePickerDownloadedImages, setImagePickerDownloadedImages);
+                downloadToMediaLibrary([resultData], setIsDownloading, setDownloadComplete, imagePickerDownloadedImages, setImagePickerDownloadedImages, setDownloadError);
             }
 		}
 	}
+    const buttonClass = classNames( 'download-button', {
+		'btn-download-error': downloadError,
+	} );
     const isDownloaded = imagePickerDownloadedImages?.length && imagePickerDownloadedImages.includes( id ) ? true : false;
     const donloadImageText = isMultiSelected ? __('Download Selected Images', 'kadence-blocks') : __('Download Image', 'kadence-blocks');
-    const downloadedText = downloadComplete ? __('Download Complete', 'kadence-blocks') : donloadImageText;
+    let downloadedText = downloadComplete ? __('Download Complete', 'kadence-blocks') : donloadImageText;
+    if ( downloadError ) {
+        downloadedText = __('Download Error', 'kadence-blocks');
+    }
     if ( result && sizes ) {
         return (
             <>
@@ -118,7 +126,7 @@ export default function Result(props) {
                     text={downloadedText}
                     disabled={downloadComplete}
                     variant={'primary'}
-                    className={'download-button'}
+                    className={buttonClass}
                 />
             </>
         );

@@ -98,13 +98,18 @@ developers of this plugin.
 == Changelog ==
 
 = 3.2.5 Pre Release =
-Release Date: November 30th, 2023
+Release Date: December 4th, 2023
 * Add: AI options in design library.
 * Add: Inline AI for Text (adv) block.
 * Add: New Image placeholder options for design library.
 * Add: New caching system for design library and pexels.
 * Add: New optimized image downloader.
 * Add: New home page and activation for AI.
+* Fix: Possible tablet css issue with sections.
+* Fix: Advanced form missing pre submit custom error.
+* Fix: Issue with info box text content styling.
+* Fix: Issue with modal in editor.
+* Fix: Form data sometimes not clearing after submit.
 
 = 3.2.0 Beta Version 1 =
 Release Date: October 5th, 2023
