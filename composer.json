@@ -30,7 +30,7 @@
 		"psr/container": "^1.0",
 		"lucatume/di52": "^3.3",
 		"stellarwp/telemetry": "^2.3",
-		"stellarwp/uplink": "dev-bugfix/multisite-token-logic",
+		"stellarwp/uplink": "dev-main",
 		"stellarwp/container-contract": "^1.0",
 		"stellarwp/prophecy-image-downloader": "^1.1",
 		"stellarwp/prophecy-storage": "^1.1",

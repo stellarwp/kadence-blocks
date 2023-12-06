@@ -6,6 +6,7 @@
 use KadenceWP\KadenceBlocks\StellarWP\Uplink\Config as UplinkConfig;
 use KadenceWP\KadenceBlocks\StellarWP\Uplink\Site\Data;
 use KadenceWP\KadenceBlocks\StellarWP\Uplink\Auth\Token\Contracts\Token_Manager;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_authorization_token;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
 
 if ( ! defined( 'ABSPATH' ) ) {

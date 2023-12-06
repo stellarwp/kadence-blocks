@@ -213,12 +213,12 @@ export function Autocomplete(props) {
                   icon={ closeSmall }
                 />
               ) }
-              <span className="aa-InputSeparator" />
+              {/* <span className="aa-InputSeparator" />
               <Button
                 className="aa-Chevron"
                 onClick={ () => inputRef.current.focus() }
                 icon={ chevronDown }
-              />
+              /> */}
             </div>
           </form>
           <div
