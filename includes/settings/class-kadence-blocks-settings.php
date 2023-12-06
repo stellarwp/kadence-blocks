@@ -8,14 +8,13 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_authorization_token;
-use function KadenceWP\KadenceBlocks\StellarWP\Uplink\render_authorize_button;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_disconnect_url;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_token;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\build_auth_url;
-use KadenceWP\KadenceBlocks\StellarWP\Uplink\Config as UplinkConfig;
-use KadenceWP\KadenceBlocks\StellarWP\Uplink\Site\Data;
-use KadenceWP\KadenceBlocks\StellarWP\Uplink\Auth\Token\Contracts\Token_Manager;
-use KadenceWP\KadenceBlocks\StellarWP\Uplink\Auth\Admin\Disconnect_Controller;
 
 /**
  * Build Welcome Page class
@@ -44,6 +43,15 @@ class Kadence_Blocks_Settings {
 	 * @var null
 	 */
 	private static $editor_width = null;
+
+	/**
+	 * Used to cache token authorization to prevent multiple
+	 * remote requests to the licensing server in the same
+	 * request lifecycle.
+	 *
+	 * @var null|bool
+	 */
+	private static $authorized_cache = null;
 
 	/**
 	 * Instance Control
@@ -605,18 +613,20 @@ class Kadence_Blocks_Settings {
 	 * Loads admin style sheets and scripts
 	 */
 	public function home_scripts() {
-		$container     = UplinkConfig::get_container();
-		$data          = $container->get( Data::class );
-		$token         = get_authorization_token();
-		$is_authorized = false;
-		$auth_url      = build_auth_url( apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ), $data->get_domain() );
-		$license_key   = kadence_blocks_get_current_license_key();
+		$token          = get_authorization_token( 'kadence-blocks' );
+		$auth_url       = build_auth_url( apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ), get_license_domain() );
+		$license_key    = kadence_blocks_get_current_license_key();
 		$disconnect_url = '';
-		if ( $token ) {
-			$is_authorized = is_authorized( $license_key, $token, $data->get_domain() );
+		$is_authorized  = false;
+
+		if ( self::$authorized_cache !== null ) {
+			$is_authorized = self::$authorized_cache;
+		} elseif ( $token ) {
+			$is_authorized = self::$authorized_cache = is_authorized( $license_key, $token, get_license_domain() );
 		}
+
 		if ( $is_authorized ) {
-			$disconnect_url = wp_nonce_url( add_query_arg( array( Disconnect_Controller::ARG => true ), get_admin_url( get_current_blog_id() ) ), Disconnect_Controller::ARG );
+			$disconnect_url = get_disconnect_url( 'kadence-blocks' );
 		}
 		// Icons Scripts & Styles.
 		$kadence_icons_meta = kadence_blocks_get_asset_file( 'dist/icons' );
@@ -1039,14 +1049,14 @@ class Kadence_Blocks_Settings {
 	 */
 	public function home_page() {
 		do_action( 'stellarwp/telemetry/kadence-blocks/optin' );
-		$container     = UplinkConfig::get_container();
-		$data          = $container->get( Data::class );
-		$token_manager = $container->get( Token_Manager::class );
-		$token         = $token_manager->get();
-		$is_authorized = false;
+		$token         = get_token( 'kadence-blocks' );
 		$license_key   = kadence_blocks_get_current_license_key();
-		if ( $token ) {
-			$is_authorized = is_authorized( $license_key, $token, $data->get_domain() );
+		$is_authorized = false;
+
+		if ( self::$authorized_cache !== null ) {
+			$is_authorized = self::$authorized_cache;
+		} elseif ( $token ) {
+			$is_authorized = self::$authorized_cache = is_authorized( $license_key, $token, get_license_domain() );
 		}
 		?>
 		<div class="wrap kadence_blocks_dash">

@@ -3,14 +3,15 @@
  * Class responsible for sending events AI Events to Stellar Prophecy WP AI.
  */
 
-use KadenceWP\KadenceBlocks\StellarWP\Uplink\Config as UplinkConfig;
-use KadenceWP\KadenceBlocks\StellarWP\Uplink\Site\Data;
-use KadenceWP\KadenceBlocks\StellarWP\Uplink\Auth\Token\Contracts\Token_Manager;
-use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_original_domain;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_token;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
+
 /**
  * Class responsible for sending events AI Events to Stellar Prophecy WP AI.
  */
@@ -97,16 +98,12 @@ class Kadence_Blocks_AI_Events {
 	 * @return void
 	 */
 	public function handle_event( string $name, array $context ): void {
-
 		// Only pass tracking events if AI has been activated through Opt in.
-		$container     = UplinkConfig::get_container();
-		$token_manager = $container->get( Token_Manager::class );
-		$token         = $token_manager->get();
-		$data          = $container->get( Data::class );
+		$token         = get_token( 'kadence-blocks' );
 		$license_key   = kadence_blocks_get_current_license_key();
 		$is_authorized = false;
 		if ( $token ) {
-			$is_authorized = is_authorized( $license_key, $token, $data->get_domain() );
+			$is_authorized = is_authorized( $license_key, $token, get_license_domain() );
 		}
 		if ( ! $is_authorized ) {
 			return;
@@ -144,10 +141,7 @@ class Kadence_Blocks_AI_Events {
 	 * @return string The base64 encoded string.
 	 */
 	public static function get_prophecy_token_header( $args = [] ) {
-		$container     = UplinkConfig::get_container();
-		$data          = $container->get( Data::class );
-
-		$site_url     = $data->get_domain();
+		$site_url     = get_original_domain();
 		$site_name    = get_bloginfo( 'name' );
 		$license_data = kadence_blocks_get_current_license_data();
 

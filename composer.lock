@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3783cbaffca0258ba0c88f8c1be5eab7",
+    "content-hash": "63316ffa4a72b6c2fc8fd0382c355484",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -700,16 +700,16 @@
         },
         {
             "name": "stellarwp/uplink",
-            "version": "dev-bugfix/plugin-collection-support",
+            "version": "dev-bugfix/multisite-token-logic",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/uplink.git",
-                "reference": "8cd9e9b18fcac6f92d9447ae45cee5c21c4ee869"
+                "reference": "f1fad44492f0857e72193133720edca329c18505"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/uplink/zipball/8cd9e9b18fcac6f92d9447ae45cee5c21c4ee869",
-                "reference": "8cd9e9b18fcac6f92d9447ae45cee5c21c4ee869",
+                "url": "https://api.github.com/repos/stellarwp/uplink/zipball/f1fad44492f0857e72193133720edca329c18505",
+                "reference": "f1fad44492f0857e72193133720edca329c18505",
                 "shasum": ""
             },
             "require": {
@@ -760,9 +760,9 @@
             "description": "A library that integrates a WordPress product with the StellarWP Licensing system.",
             "support": {
                 "issues": "https://github.com/stellarwp/uplink/issues",
-                "source": "https://github.com/stellarwp/uplink/tree/bugfix/plugin-collection-support"
+                "source": "https://github.com/stellarwp/uplink/tree/bugfix/multisite-token-logic"
             },
-            "time": "2023-11-30T23:51:44+00:00"
+            "time": "2023-12-06T22:27:27+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -1901,5 +1901,5 @@
     "platform-overrides": {
         "php": "7.2.34"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }

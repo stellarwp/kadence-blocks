@@ -8,6 +8,7 @@ use KadenceWP\KadenceBlocks\Image_Downloader\Image_Downloader_Provider;
 use KadenceWP\KadenceBlocks\Shutdown\Shutdown_Provider;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Container;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Providable;
+use KadenceWP\KadenceBlocks\Uplink\Uplink_Provider;
 use RuntimeException;
 
 /**
@@ -30,6 +31,7 @@ final class App {
 	 * @var class-string<Providable>
 	 */
 	private $providers = array(
+		Uplink_Provider::class,
 		Image_Downloader_Provider::class,
 		Cache_Provider::class,
 		Shutdown_Provider::class,
