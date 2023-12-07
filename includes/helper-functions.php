@@ -144,20 +144,18 @@ function kadence_blocks_get_current_license_key() {
  * Get the current license key for the plugin.
  */
 function kadence_blocks_get_current_license_email() {
-	// Check if we have pro active.
-	if ( class_exists( 'Kadence_Blocks_Pro' ) ) {
-		$license_key = get_option( 'stellarwp_uplink_license_key_kadence-blocks-pro', '' );
-		if ( ! empty( $license_key ) ) {
-			return '';
-		} else {
-			$license_data = kadence_blocks_get_deprecated_pro_license_data();
-			if ( $license_data && ! empty( $license_data['api_email'] ) ) {
-				return $license_data['api_email'];
-			}
+	if ( ! empty( get_license_key( 'kadence-blocks-pro' ) ) ) {
+		return '';
+	} else {
+		$license_data = kadence_blocks_get_deprecated_pro_license_data();
+		if ( $license_data && ! empty( $license_data['api_email'] ) ) {
+			return $license_data['api_email'];
 		}
 	}
+
 	return '';
 }
+
 /**
  * Get the current license key for the plugin.
  */
