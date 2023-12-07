@@ -158,13 +158,22 @@ function kadence_blocks_get_current_license_email() {
 
 /**
  * Get the current license key for the plugin.
+ *
+ * @return array{key: string, email: string}
  */
-function kadence_blocks_get_current_license_data() {
+function kadence_blocks_get_current_license_data(): array {
+	static $cache;
+
+	if ( is_array( $cache ) ) {
+		return $cache;
+	}
+
 	$license_data = array(
 		'key'   => kadence_blocks_get_current_license_key(),
 		'email' => kadence_blocks_get_current_license_email(),
 	);
-	return $license_data;
+
+	return $cache = $license_data;
 }
 /**
  * Get the license information.
