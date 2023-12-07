@@ -704,12 +704,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/uplink.git",
-                "reference": "158dff999ddfab6f735f2c631b76f2244c078d41"
+                "reference": "d6cbf16fba19a62d0fcc2a3c3927a5f07fcefcbd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/uplink/zipball/158dff999ddfab6f735f2c631b76f2244c078d41",
-                "reference": "158dff999ddfab6f735f2c631b76f2244c078d41",
+                "url": "https://api.github.com/repos/stellarwp/uplink/zipball/d6cbf16fba19a62d0fcc2a3c3927a5f07fcefcbd",
+                "reference": "d6cbf16fba19a62d0fcc2a3c3927a5f07fcefcbd",
                 "shasum": ""
             },
             "require": {
@@ -762,7 +762,7 @@
                 "issues": "https://github.com/stellarwp/uplink/issues",
                 "source": "https://github.com/stellarwp/uplink/tree/bugfix/multisite-token-logic"
             },
-            "time": "2023-12-07T23:21:50+00:00"
+            "time": "2023-12-07T23:30:01+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
