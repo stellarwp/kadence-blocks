@@ -478,8 +478,9 @@ function PatternList( {
 			slug: info.slug,
 			name: info.name,
 			style: selectedStyle ? selectedStyle : 'light',
-			context: contextLabel,
 			is_ai: contextTab === 'context',
+			// Only send context when using AI patterns.
+			context: contextTab === 'context' ? contextLabel : '',
 		} );
 
 		let newInfo = info.content;
