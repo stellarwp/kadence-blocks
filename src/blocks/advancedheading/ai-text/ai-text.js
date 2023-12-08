@@ -36,6 +36,7 @@ import {
 	toggleFormat,
 	applyFormat,
 } from '@wordpress/rich-text';
+import { sendEvent } from '../../../extension/analytics/send-event';
 const name = 'kadence/ai-text';
 const allowedBlocks = [ 'kadence/advancedheading' ];
 export const AIText = {
@@ -80,7 +81,7 @@ export const AIText = {
 		const [ isToneOpen, setIsToneOpen ] = useState(false);
 		const activeStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 		const savedCredits = ( undefined !== activeStorage?.credits && '' !== activeStorage?.credits && null !== activeStorage?.credits ? activeStorage.credits : 'fetch' );
-		const currentCredits = ( '' !== credits ? credits : savedCredits );
+		const currentCredits = ('' !== credits ? credits : savedCredits);
 		async function getRemoteAvailableCredits() {
 			const response = await getAvailableCredits();
 			const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
@@ -121,6 +122,7 @@ export const AIText = {
 			}
 		}, [ value ] );
 		function handleGettingContent(value) {
+			let AIContent = '';
 			setIsLoading(true);
 			setAiSuggestion( '' );
 			setError('');
@@ -135,16 +137,27 @@ export const AIText = {
 							setIsOpen( true );
 							setTempCredits(parseInt( currentCredits ) - 1);
 							setCredits( 'fetch' );
+							sendEvent('ai_inline_completed', {
+								tool_name: name,
+								type: 'get_new_content',
+								initial_text: '',
+								result: AIContent,
+								credits_before: parseInt(currentCredits),
+								credits_after: parseInt(currentCredits) - 1,
+								credits_used: 1,
+							});
 							return;
 						}
 
 						const eventData = convertStreamDataToJson(value);
-						
+
 						if (eventData?.content) {
+							AIContent = AIContent + eventData.content
 							setAiSuggestion((previousValue) => {
 								return previousValue + eventData.content;
 							});
 						}
+
 						return reader.read().then(processText);
 					});
 				})
@@ -159,6 +172,9 @@ export const AIText = {
 				});
 		}
 		function handleEditingContent(value, prompt, type) {
+			let AIContent = '';
+			let initial_text = value;
+			let action_type = type;
 			setIsLoading(true);
 			setAiSuggestion( '' );
 			setError('');
@@ -173,16 +189,27 @@ export const AIText = {
 							setTempCredits(parseInt( currentCredits ) - 1);
 							setCredits( 'fetch' );
 							setIsOpen( true );
+							sendEvent('ai_inline_completed', {
+								tool_name: name,
+								type: action_type,
+								initial_text: initial_text,
+								result: AIContent,
+								credits_before: parseInt(currentCredits),
+								credits_after: parseInt(currentCredits) - 1,
+								credits_used: 1,
+							});
 							return;
 						}
 
 						const eventData = convertStreamDataToJson(value);
-						
+
 						if (eventData?.content) {
+							AIContent = AIContent + eventData.content;
 							setAiSuggestion((previousValue) => {
 								return previousValue + eventData.content;
 							});
 						}
+
 						return reader.read().then(processText);
 					});
 				})
@@ -197,6 +224,9 @@ export const AIText = {
 				});
 		}
 		function handleTransformingContent(value, type) {
+			let AIContent = '';
+			let initial_text = value;
+			let action_type = type;
 			setIsLoading(true);
 			setAiSuggestion( '' );
 			setError('');
@@ -211,11 +241,21 @@ export const AIText = {
 							setIsOpen( true );
 							setTempCredits(parseInt( currentCredits ) - 1);
 							setCredits( 'fetch' );
+							sendEvent('ai_inline_completed', {
+								tool_name: name,
+								type: action_type,
+								initial_text: initial_text,
+								result: AIContent,
+								credits_before: parseInt(currentCredits),
+								credits_after: parseInt(currentCredits) - 1,
+								credits_used: 1,
+							});
 							return;
 						}
 
 						const eventData = convertStreamDataToJson(value);
 						if (eventData?.content) {
+							AIContent = AIContent + eventData.content;
 							setAiSuggestion((previousValue) => {
 								return previousValue + eventData.content;
 							});

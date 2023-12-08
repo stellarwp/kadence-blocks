@@ -221,6 +221,17 @@ class Kadence_Blocks_AI_Events {
 					'pattern_categories' => $event_data['categories'] ?? [],
 				];
 				break;
+			case 'ai_inline_completed':
+				$event   = 'AI Inline Completed';
+				$context = [
+					'tool_name'      => $event_data['tool_name'],
+					'type'           => $event_data['type'],
+					'initial_text'   => $event_data['initial_text'],
+					'result'         => $event_data['result'],
+					'credits_before' => $event_data['credits_before'],
+					'credits_after'  => $event_data['credits_after'],
+					'credits_used'   => $event_data['credits_used'],
+				];
 		}
 
 		if ( strlen( $event ) !== 0 ) {
