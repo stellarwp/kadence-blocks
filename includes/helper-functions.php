@@ -175,6 +175,17 @@ function kadence_blocks_get_current_license_data(): array {
 
 	return $cache = $license_data;
 }
+
+/**
+ * Check if network activation is enabled.
+ */
+function kadence_blocks_is_network_authorize_enabled() {
+	$network_enabled = ! apply_filters( 'kadence_activation_individual_multisites', true );
+	if ( ! $network_enabled && defined( 'KADENCE_ACTIVATION_NETWORK_ENABLED' ) && KADENCE_ACTIVATION_NETWORK_ENABLED ) {
+		$network_enabled = true;
+	}
+	return $network_enabled;
+}
 /**
  * Get the license information.
  *
@@ -202,7 +213,7 @@ function kadence_blocks_get_deprecated_pro_license_data() {
 			$data['api_email'] = $pro_data['activation_email'];
 		}
 	} else {
-		if ( is_multisite() && ! apply_filters( 'kadence_activation_individual_multisites', true ) ) {
+		if ( is_multisite() && kadence_blocks_is_network_authorize_enabled() ) {
 			$data = get_site_option( 'kt_api_manager_kadence_gutenberg_pro_data' );
 		} else {
 			$data = get_option( 'kt_api_manager_kadence_gutenberg_pro_data' );

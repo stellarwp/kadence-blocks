@@ -22,10 +22,7 @@ final class Uplink_Provider extends Provider {
 	 */
 	private function register_multisite_configuration(): void {
 		add_action( 'init', static function(): void {
-			$network_enabled = ! apply_filters( 'kadence_activation_individual_multisites', true );
-			if ( ! $network_enabled && defined( 'KADENCE_ACTIVATION_NETWORK_ENABLED' ) && KADENCE_ACTIVATION_NETWORK_ENABLED ) {
-				$network_enabled = true;
-			}
+			$network_enabled = kadence_blocks_is_network_authorize_enabled();
 			add_filter( 'stellarwp/uplink/kadence-blocks/allows_network_subfolder_license',
 				static function () use ( $network_enabled ): bool {
 					return $network_enabled;

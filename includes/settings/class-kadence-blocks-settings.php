@@ -515,10 +515,7 @@ class Kadence_Blocks_Settings {
 	 * Add option page menu
 	 */
 	public function add_network_menu() {
-		$network_enabled = ! apply_filters( 'kadence_activation_individual_multisites', true );
-		if ( ! $network_enabled && defined( 'KADENCE_ACTIVATION_NETWORK_ENABLED' ) && KADENCE_ACTIVATION_NETWORK_ENABLED ) {
-			$network_enabled = true;
-		}
+		$network_enabled = kadence_blocks_is_network_authorize_enabled();
 		if ( $network_enabled && function_exists( 'is_plugin_active_for_network' ) && is_plugin_active_for_network( 'kadence-blocks/kadence-blocks.php' ) ) {
 			add_menu_page( __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Kadence', 'kadence-blocks' ), $this->settings_user_capabilities(), 'kadence-blocks-home', null, $this->get_icon_svg() );
 			$home_page = add_submenu_page( 'kadence-blocks', __( 'Kadence Blocks', 'kadence-blocks' ), __( 'Home' ), $this->settings_user_capabilities(), 'kadence-blocks-home', array( $this, 'home_page' ), 0 );
@@ -629,10 +626,7 @@ class Kadence_Blocks_Settings {
 	public function home_scripts() {
 		$using_network_enabled = false;
 		$is_network_admin      = is_multisite() && is_network_admin() ? true : false;
-		$network_enabled = ! apply_filters( 'kadence_activation_individual_multisites', true );
-		if ( ! $network_enabled && defined( 'KADENCE_ACTIVATION_NETWORK_ENABLED' ) && KADENCE_ACTIVATION_NETWORK_ENABLED ) {
-			$network_enabled = true;
-		}
+		$network_enabled = kadence_blocks_is_network_authorize_enabled();
 		if ( $network_enabled && function_exists( 'is_plugin_active_for_network' ) && is_plugin_active_for_network( 'kadence-blocks/kadence-blocks.php' ) ) {
 			$using_network_enabled = true;
 		}
