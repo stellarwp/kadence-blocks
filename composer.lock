@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "63316ffa4a72b6c2fc8fd0382c355484",
+    "content-hash": "c7882a4488250451a1af41c12950f619",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -700,7 +700,7 @@
         },
         {
             "name": "stellarwp/uplink",
-            "version": "dev-bugfix/multisite-token-logic",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/uplink.git",
@@ -735,6 +735,7 @@
                 "symfony/string": "^5.4",
                 "szepeviktor/phpstan-wordpress": "^1.1"
             },
+            "default-branch": true,
             "bin": [
                 "bin/stellar-uplink"
             ],
@@ -760,7 +761,7 @@
             "description": "A library that integrates a WordPress product with the StellarWP Licensing system.",
             "support": {
                 "issues": "https://github.com/stellarwp/uplink/issues",
-                "source": "https://github.com/stellarwp/uplink/tree/bugfix/multisite-token-logic"
+                "source": "https://github.com/stellarwp/uplink/tree/v1.3.0"
             },
             "time": "2023-12-08T23:12:09+00:00"
         },

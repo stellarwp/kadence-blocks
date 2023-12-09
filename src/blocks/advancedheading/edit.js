@@ -623,11 +623,11 @@ function KadenceAdvancedHeading( props ) {
 			if ( contentHtml.querySelectorAll( '.kt-typed-text' )[ 0 ] ) {
 				let typedElement = contentHtml.querySelectorAll( '.kt-typed-text' )[ 0 ];
 				let dataStrings = typedElement.getAttribute('data-strings');
-				let strings = dataStrings ? JSON.parse( dataStrings ) : [];
+				let strings = dataStrings ? JSON.parse( dataStrings.replaceAll('&', '&amp;') ) : [];
 
 				// Adding the default/existing string twice is required for displaying properly
-				strings.unshift( typedElement.textContent );
-				strings.unshift( typedElement.textContent );
+				strings.unshift( typedElement.textContent.replaceAll('&', '&amp;') );
+				strings.unshift( typedElement.textContent.replaceAll('&', '&amp;') );
 
 				let options = {
 					strings: strings,
