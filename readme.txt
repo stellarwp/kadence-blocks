@@ -98,9 +98,14 @@ developers of this plugin.
 == Changelog ==
 
 = 3.2.8 Pre Release =
-Release Date: December 8th, 2023
+Release Date: December 11th, 2023
 * Fix: Issue with typed text and & symbol.
 * Fix: Issue with tab units
+* Add: Repeatable Countdown
+* Fix: Time zone issue with countdown.
+* Fix: Network activated UI.
+* Fix: Logo color logic in design library.
+* Fix: Issue with design library file not being updated.
 
 = 3.2.7 Pre Release =
 Release Date: December 5th, 2023
