@@ -553,7 +553,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					} else if ( isset( $data['data']['status'] ) ) {
 						$has_error = true;
 					} else {
-						$this->ai_cache->cache( $available_prompts[ $context ], $response, (bool) $reload );
+						$this->ai_cache->cache( $available_prompts[ $context ], $response );
 
 						$return_data[ $context ] = $data;
 					}
@@ -641,7 +641,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 
 		if ( $store ) {
 			// Create a cache file.
-			$this->block_library_cache->cache( $identifier, $response, (bool) $reload );
+			$this->block_library_cache->cache( $identifier, $response );
 		}
 
 		// Prime the cache for all image sizes for potential download.
@@ -675,7 +675,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			return rest_ensure_response( 'error' );
 		}
 
-		$this->block_library_cache->cache( $identifier, $response, (bool) $reload );
+		$this->block_library_cache->cache( $identifier, $response );
 
 		return rest_ensure_response( $response );
 	}
@@ -734,7 +734,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			return rest_ensure_response( 'error' );
 		}
 
-		$this->block_library_cache->cache( $identifier, $response, (bool) $reload );
+		$this->block_library_cache->cache( $identifier, $response );
 
 		return rest_ensure_response( $response );
 	}
@@ -971,7 +971,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			return rest_ensure_response( 'error' );
 		}
 
-		$this->block_library_cache->cache( $identifier, $response, (bool) $reload );
+		$this->block_library_cache->cache( $identifier, $response );
 
 		return rest_ensure_response( $response );
 	}
@@ -1083,7 +1083,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				}
 				return rest_ensure_response( 'error' );
 			} else {
-				$this->ai_cache->cache( $available_prompts[ $context ], $response, (bool) $reload );
+				$this->ai_cache->cache( $available_prompts[ $context ], $response );
 				// Log event for successful context generation.
 				do_action( 'stellarwp/analytics/event', 'Context Generation Completed', [
 					'context-name'    => $context,
