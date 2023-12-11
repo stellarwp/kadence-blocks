@@ -48,7 +48,7 @@ export default function replaceColors( content, style ) {
 	if ( 'dark' !== style && 'highlight' !== style ) {
 		return content;
 	}
-	// Swap Logos
+	// Swap Logos (old deprecated).
 	content = content.replace(/Logo-ploaceholder.png/g, "Logo-ploaceholder-white.png");
 	content = content.replace(/Logo-ploaceholder-1.png/g, "Logo-ploaceholder-1-white.png");
 	content = content.replace(/Logo-ploaceholder-2.png/g, "Logo-ploaceholder-2-white.png");
@@ -58,6 +58,15 @@ export default function replaceColors( content, style ) {
 	content = content.replace(/Logo-ploaceholder-6.png/g, "Logo-ploaceholder-6-white.png");
 	content = content.replace(/Logo-ploaceholder-7.png/g, "Logo-ploaceholder-7-white.png");
 	content = content.replace(/Logo-ploaceholder-8.png/g, "Logo-ploaceholder-8-white.png");
+
+	// Swap Logos (NEW).
+	content = content.replace(/logo-placeholder.png/g, "logo-placeholder-white.png");
+	content = content.replace(/logo-placeholder-1.png/g, "logo-placeholder-1-white.png");
+	content = content.replace(/logo-placeholder-2.png/g, "logo-placeholder-2-white.png");
+	content = content.replace(/logo-placeholder-3.png/g, "logo-placeholder-3-white.png");
+	content = content.replace(/logo-placeholder-4.png/g, "logo-placeholder-4-white.png");
+	content = content.replace(/logo-placeholder-5.png/g, "logo-placeholder-5-white.png");
+	content = content.replace(/logo-placeholder-6.png/g, "logo-placeholder-6-white.png");
 
 	let replacements = [];
 

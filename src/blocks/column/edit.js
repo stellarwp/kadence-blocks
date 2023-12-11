@@ -276,7 +276,6 @@ function SectionEdit( props ) {
 			setAttributes( { mobileBorderHoverStyle: tempMobileBorderHoverWidth, mobileBorderWidth:[ '', '', '', '' ] } );
 		}
 		if ( ! kbVersion || kbVersion < 2 ) {
-			console.log( 'update to V2' );
 			// Update Align and Text Align settings for 3.2.0
 			let deskJustifyAlign = ( justifyContent?.[0] ? justifyContent[0] : '' );
 			let tabletJustifyAlign = ( justifyContent?.[1] ? justifyContent[1] : '' );

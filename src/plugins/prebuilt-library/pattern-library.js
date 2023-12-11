@@ -26,11 +26,6 @@ import {
  * WordPress dependencies
  */
 import { parse, rawHandler } from '@wordpress/blocks';
-import apiFetch from '@wordpress/api-fetch';
-import { addQueryArgs } from '@wordpress/url';
-import {
-	Component,
-} from '@wordpress/element';
 import { debounce, isEqual } from 'lodash';
 import {
 	Button,
