@@ -608,6 +608,7 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 			'stopCount'    => ( isset( $attributes['stopRepeating'] ) ? $attributes['stopRepeating'] : false ),
 			'endDate'	   => ( isset( $attributes['endDate'] ) ? $attributes['endDate'] : '' ),
 			'reset'        => $reset_days,
+			'time_offset'  => get_option( 'gmt_offset' ),
 			'campaign_id'  => $campaign_id,
 			'evergreen'    => ( 'evergreen' === $countdown_type ? apply_filters( 'kadence_blocks_countdown_evergreen_config', 'query', $campaign_id, $site_slug, $reset_days ) : '' ),
 			'strict'       => ( isset( $attributes['evergreenStrict'] ) && $attributes['evergreenStrict'] ? true : false ),
