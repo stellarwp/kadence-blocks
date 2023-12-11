@@ -30,8 +30,18 @@
 			return '';
 		},
 		getRepeaterTimeStamp(id) {
-			const currentDate = new Date();
-			const initialDate = new Date(window.kadenceCountdown.timers[ id ].timestamp);
+			var currentDate = new Date();
+			var userTimezoneOffset = -1 * ( new Date().getTimezoneOffset() / 60 );
+			if ( Number( window.kadenceCountdown.timers[ id ].time_offset ) === userTimezoneOffset ) {
+				var initialDate = new Date(window.kadenceCountdown.timers[ id ].timestamp);
+			} else {
+				// Get the difference in offset from the sites set timezone.
+				var shiftDiff = ( userTimezoneOffset - window.kadenceCountdown.timers[ id ].time_offset );
+				// Get the date in the timezone of the user.
+				var expiresTime = new Date( window.kadenceCountdown.timers[ id ].timestamp );
+				// Shift that date the difference in timezones from the user to the site.
+				var initialDate = new Date( expiresTime.getTime() + ( shiftDiff * 60 * 60 * 1000 ) );
+			}
 			const seconds = initialDate.getSeconds();
 			const minutes = initialDate.getMinutes();
 			const hours = initialDate.getHours();
