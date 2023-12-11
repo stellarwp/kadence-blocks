@@ -102,9 +102,9 @@
 			return futureDate.getTime();
 		},
 		updateTimerInterval( element, id, parent ) {
-			var currentTimeStamp = new Date;
+			var currentTimeStamp = new Date();
+			var userTimezoneOffset = -1 * ( new Date().getTimezoneOffset() / 60 );
 			var total = '';
-
 			if ( window.kadenceCountdown.timers[ id ].type === 'evergreen' ) {
 				//Check for cookie.
 				if ( '' !== window.kadenceCountdown.cache[ id ].cookie ) {
@@ -180,7 +180,17 @@
 					request.send( 'action=kadence_evergreen_timestamp&nonce=' + kadence_blocks_countdown.ajax_nonce + '&site_slug=' + kadence_blocks_countdown.site_slug + '&timestamp=' + window.kadenceCountdown.cache[ id ].evergreen + '&countdown_id=' + window.kadenceCountdown.timers[ id ].campaign_id );
 				}
 			} else {
-				total = Math.floor( window.kadenceCountdown.timers[ id ].timestamp - currentTimeStamp.getTime() );
+				if ( Number( window.kadenceCountdown.timers[ id ].time_offset ) === userTimezoneOffset ) {
+					var expiresTimeStamp = new Date( window.kadenceCountdown.timers[ id ].timestamp );
+				} else {
+					// Get the difference in offset from the sites set timezone.
+					var shiftDiff = ( userTimezoneOffset - window.kadenceCountdown.timers[ id ].time_offset );
+					// Get the date in the timezone of the user.
+					var expiresTime = new Date( window.kadenceCountdown.timers[ id ].timestamp );
+					// Shift that date the difference in timezones from the user to the site.
+					var expiresTimeStamp = new Date( expiresTime.getTime() + ( shiftDiff * 60 * 60 * 1000 ) );
+				}
+				total = Math.floor( ( expiresTimeStamp.getTime() ) - ( currentTimeStamp.getTime() ) );
 			}
 			
 			const stopRepeating = !window.kadenceCountdown.timers[ id ].stopCount ? true : (new Date(window.kadenceCountdown.timers[ id ].endDate) <= new Date() ? false : true);
