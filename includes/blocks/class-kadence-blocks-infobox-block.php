@@ -511,7 +511,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $attributes['textColor'] ) && ! empty( $attributes['textColor'] ) ) {
 				$css->add_property( 'color', $css->render_color( $attributes['textColor'] ) );
 			}
-			$css->set_selector( $base_selector . ' .kt-blocks-info-box-text' );
+			$css->set_selector('.wp-block-kadence-infobox' . $base_selector . ' .kt-blocks-info-box-text' );
 			if ( isset( $attributes['textFont'] ) && is_array( $attributes['textFont'] ) && is_array( $attributes['textFont'][0] ) ) {
 				$text_font = $attributes['textFont'][0];
 				if ( isset( $text_font['size'] ) && is_array( $text_font['size'] ) && ! empty( $text_font['size'][0] ) ) {

@@ -67,19 +67,15 @@ import { applyFilters } from '@wordpress/hooks';
 import { useSelect, useDispatch } from '@wordpress/data';
 
 import {
-	Component,
 	useEffect,
 	useState,
 } from '@wordpress/element';
 
-import { withSelect, withDispatch } from '@wordpress/data';
-import { compose } from '@wordpress/compose';
 import {
 	InnerBlocks,
 	BlockControls,
 	AlignmentToolbar,
 	InspectorControls,
-	store as blockEditorStore,
 	useBlockProps,
 } from '@wordpress/block-editor';
 import {
@@ -109,7 +105,6 @@ const COUNTDOWN_NO_TIMER_WITH_MESSAGE = [
 const COUNTDOWN_NO_TIMER = [
 	[ 'kadence/countdown-inner', { location: 'first' } ],
 ];
-const ALLOWED_BLOCKS = [ 'kadence/countdown-timer', 'kadence/countdown-inner' ];
 const typeOptions = [
 	{ value: 'date', label: __( 'Date', 'kadence-blocks' ), disabled: false },
 	{ value: 'evergreen', label: __( 'Evergreen (Pro addon)', 'kadence-blocks' ), disabled: true },
@@ -120,6 +115,12 @@ const actionOptions = [
 	{ value: 'message', label: __( 'Replace with Content (Pro addon)', 'kadence-blocks' ), disabled: true },
 	{ value: 'redirect', label: __( 'Redirect (Pro addon)', 'kadence-blocks' ), disabled: true },
 ];
+const frequencyOptions = [
+	{ value: 'daily', label: __( 'Daily', 'kadence-blocks' ), disabled: false },
+	{ value: 'weekly', label: __( 'Weekly', 'kadence-blocks' ), disabled: false },
+	{ value: 'monthly', label: __( 'Monthly', 'kadence-blocks' ), disabled: false },
+	{ value: 'yearly', label: __( 'Yearly', 'kadence-blocks' ), disabled: false },
+];
 const ANCHOR_REGEX = /[\s#]/g;
 
 /**
@@ -127,7 +128,7 @@ const ANCHOR_REGEX = /[\s#]/g;
  */
 function KadenceCountdown( props ) {
 
-	const { attributes, setAttributes, className, clientId, isNested, parentBlock, getPreviewDevice } = props;
+	const { attributes, setAttributes, className, clientId } = props;
 	const {
 		uniqueID,
 		expireAction,
@@ -135,9 +136,13 @@ function KadenceCountdown( props ) {
 		enableTimer,
 		evergreenHours,
 		evergreenMinutes,
+		repeat,
+		stopRepeating,
+		frequency,
 		redirectURL,
 		timerLayout,
 		date,
+		endDate,
 		timestamp,
 		evergreenReset,
 		timezone,
@@ -193,17 +198,25 @@ function KadenceCountdown( props ) {
 	} = attributes;
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, parentData } = useSelect(
+	const { selectBlock } = useDispatch( 'core/block-editor' );
+
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData, isNested, parentBlock } = useSelect(
 		( select ) => {
+			const { getBlock, getBlockParentsByBlockName } = select( 'core/block-editor' );
+			const parentBlocks = getBlockParentsByBlockName( clientId, 'kadence/countdown' );
+			const nested = ( parentBlocks.length && undefined !== parentBlocks[ 0 ] && '' !== parentBlocks[ 0 ] );
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
-				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				isUniqueBlock: ( value ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 				parentData: {
 					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
 					postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
 					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
 					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
-				}
+				},
+				isNested: nested,
+				parentBlock     : ( nested ? getBlock( parentBlocks[ 0 ] ) : '' ),
 			};
 		},
 		[ clientId ]
@@ -242,8 +255,6 @@ function KadenceCountdown( props ) {
 
 	const [ borderWidthControl, setBorderWidthControl ] = useState( 'individual' );
 	const [ borderRadiusControl, setBorderRadiusControl ] = useState( 'linked' );
-	const [ paddingControl, setPaddingControl ] = useState( 'individual' );
-	const [ marginControl, setMarginControl ] = useState( 'individual' );
 	const [ itemBorderWidthControl, setItemBorderWidthControl ] = useState( 'individual' );
 	const [ itemBorderRadiusControl, setItemBorderRadiusControl ] = useState( 'linked' );
 	const [ itemPaddingControl, setItemPaddingControl ] = useState( 'linked' );
@@ -298,6 +309,7 @@ function KadenceCountdown( props ) {
 			units: newUpdate,
 		} );
 	};
+
 	const saveDate = ( value ) => {
 		const theTimezone = get( dateSettings, ['timezone', 'string' ], '');
 		const theTimeOffset = get( dateSettings, ['timezone', 'offset' ], 0);
@@ -418,52 +430,52 @@ function KadenceCountdown( props ) {
 	const itemPaddingStep = ( itemPaddingType === 'em' || itemPaddingType === 'rem' ? 0.1 : 1 );
 	const previewItemPaddingType = ( undefined !== itemPaddingType ? itemPaddingType : 'px' );
 	const previewMarginType = ( undefined !== marginType ? marginType : 'px' );
-	const previewMarginTop = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 0 ] ? containerMargin[ 0 ] : '' ), ( undefined !== containerTabletMargin && undefined !== containerTabletMargin[ 0 ] ? containerTabletMargin[ 0 ] : '' ), ( undefined !== containerMobileMargin && undefined !== containerMobileMargin[ 0 ] ? containerMobileMargin[ 0 ] : '' ) );
-	const previewMarginRight = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 1 ] ? containerMargin[ 1 ] : '' ), ( undefined !== containerTabletMargin && undefined !== containerTabletMargin[ 1 ] ? containerTabletMargin[ 1 ] : '' ), ( undefined !== containerMobileMargin && undefined !== containerMobileMargin[ 1 ] ? containerMobileMargin[ 1 ] : '' ) );
-	const previewMarginBottom = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 2 ] ? containerMargin[ 2 ] : '' ), ( undefined !== containerTabletMargin && undefined !== containerTabletMargin[ 2 ] ? containerTabletMargin[ 2 ] : '' ), ( undefined !== containerMobileMargin && undefined !== containerMobileMargin[ 2 ] ? containerMobileMargin[ 2 ] : '' ) );
-	const previewMarginLeft = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 3 ] ? containerMargin[ 3 ] : '' ), ( undefined !== containerTabletMargin && undefined !== containerTabletMargin[ 3 ] ? containerTabletMargin[ 3 ] : '' ), ( undefined !== containerMobileMargin && undefined !== containerMobileMargin[ 3 ] ? containerMobileMargin[ 3 ] : '' ) );
-	const previewPaddingTop = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 0 ] ? containerPadding[ 0 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 0 ] ? containerTabletPadding[ 0 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 0 ] ? containerMobilePadding[ 0 ] : '' ) );
-	const previewPaddingRight = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 1 ] ? containerPadding[ 1 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 1 ] ? containerTabletPadding[ 1 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 1 ] ? containerMobilePadding[ 1 ] : '' ) );
-	const previewPaddingBottom = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 2 ] ? containerPadding[ 2 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 2 ] ? containerTabletPadding[ 2 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 2 ] ? containerMobilePadding[ 2 ] : '' ) );
-	const previewPaddingLeft = getPreviewSize( getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 3 ] ? containerPadding[ 3 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 3 ] ? containerTabletPadding[ 3 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 3 ] ? containerMobilePadding[ 3 ] : '' ) );
-	const previewBorderTop = getPreviewSize( getPreviewDevice, ( undefined !== borderWidth ? borderWidth[ 0 ] : '' ), ( undefined !== tabletBorderWidth ? tabletBorderWidth[ 0 ] : '' ), ( undefined !== mobileBorderWidth ? mobileBorderWidth[ 0 ] : '' ) );
-	const previewBorderRight = getPreviewSize( getPreviewDevice, ( undefined !== borderWidth ? borderWidth[ 1 ] : '' ), ( undefined !== tabletBorderWidth ? tabletBorderWidth[ 1 ] : '' ), ( undefined !== mobileBorderWidth ? mobileBorderWidth[ 1 ] : '' ) );
-	const previewBorderBottom = getPreviewSize( getPreviewDevice, ( undefined !== borderWidth ? borderWidth[ 2 ] : '' ), ( undefined !== tabletBorderWidth ? tabletBorderWidth[ 2 ] : '' ), ( undefined !== mobileBorderWidth ? mobileBorderWidth[ 2 ] : '' ) );
-	const previewBorderLeft = getPreviewSize( getPreviewDevice, ( undefined !== borderWidth ? borderWidth[ 3 ] : '' ), ( undefined !== tabletBorderWidth ? tabletBorderWidth[ 3 ] : '' ), ( undefined !== mobileBorderWidth ? mobileBorderWidth[ 3 ] : '' ) );
+	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 0 ] ? containerMargin[ 0 ] : '' ), ( undefined !== containerTabletMargin && undefined !== containerTabletMargin[ 0 ] ? containerTabletMargin[ 0 ] : '' ), ( undefined !== containerMobileMargin && undefined !== containerMobileMargin[ 0 ] ? containerMobileMargin[ 0 ] : '' ) );
+	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 1 ] ? containerMargin[ 1 ] : '' ), ( undefined !== containerTabletMargin && undefined !== containerTabletMargin[ 1 ] ? containerTabletMargin[ 1 ] : '' ), ( undefined !== containerMobileMargin && undefined !== containerMobileMargin[ 1 ] ? containerMobileMargin[ 1 ] : '' ) );
+	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 2 ] ? containerMargin[ 2 ] : '' ), ( undefined !== containerTabletMargin && undefined !== containerTabletMargin[ 2 ] ? containerTabletMargin[ 2 ] : '' ), ( undefined !== containerMobileMargin && undefined !== containerMobileMargin[ 2 ] ? containerMobileMargin[ 2 ] : '' ) );
+	const previewMarginLeft = getPreviewSize( previewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 3 ] ? containerMargin[ 3 ] : '' ), ( undefined !== containerTabletMargin && undefined !== containerTabletMargin[ 3 ] ? containerTabletMargin[ 3 ] : '' ), ( undefined !== containerMobileMargin && undefined !== containerMobileMargin[ 3 ] ? containerMobileMargin[ 3 ] : '' ) );
+	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 0 ] ? containerPadding[ 0 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 0 ] ? containerTabletPadding[ 0 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 0 ] ? containerMobilePadding[ 0 ] : '' ) );
+	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 1 ] ? containerPadding[ 1 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 1 ] ? containerTabletPadding[ 1 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 1 ] ? containerMobilePadding[ 1 ] : '' ) );
+	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 2 ] ? containerPadding[ 2 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 2 ] ? containerTabletPadding[ 2 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 2 ] ? containerMobilePadding[ 2 ] : '' ) );
+	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 3 ] ? containerPadding[ 3 ] : '' ), ( undefined !== containerTabletPadding && undefined !== containerTabletPadding[ 3 ] ? containerTabletPadding[ 3 ] : '' ), ( undefined !== containerMobilePadding && undefined !== containerMobilePadding[ 3 ] ? containerMobilePadding[ 3 ] : '' ) );
+	const previewBorderTop = getPreviewSize( previewDevice, ( undefined !== borderWidth ? borderWidth[ 0 ] : '' ), ( undefined !== tabletBorderWidth ? tabletBorderWidth[ 0 ] : '' ), ( undefined !== mobileBorderWidth ? mobileBorderWidth[ 0 ] : '' ) );
+	const previewBorderRight = getPreviewSize( previewDevice, ( undefined !== borderWidth ? borderWidth[ 1 ] : '' ), ( undefined !== tabletBorderWidth ? tabletBorderWidth[ 1 ] : '' ), ( undefined !== mobileBorderWidth ? mobileBorderWidth[ 1 ] : '' ) );
+	const previewBorderBottom = getPreviewSize( previewDevice, ( undefined !== borderWidth ? borderWidth[ 2 ] : '' ), ( undefined !== tabletBorderWidth ? tabletBorderWidth[ 2 ] : '' ), ( undefined !== mobileBorderWidth ? mobileBorderWidth[ 2 ] : '' ) );
+	const previewBorderLeft = getPreviewSize( previewDevice, ( undefined !== borderWidth ? borderWidth[ 3 ] : '' ), ( undefined !== tabletBorderWidth ? tabletBorderWidth[ 3 ] : '' ), ( undefined !== mobileBorderWidth ? mobileBorderWidth[ 3 ] : '' ) );
 
-	const previewItemPaddingTop = getPreviewSize( getPreviewDevice, ( undefined !== itemPadding && undefined !== itemPadding[ 0 ] ? itemPadding[ 0 ] : '' ), ( undefined !== itemTabletPadding && undefined !== itemTabletPadding[ 0 ] ? itemTabletPadding[ 0 ] : '' ), ( undefined !== itemMobilePadding && undefined !== itemMobilePadding[ 0 ] ? itemMobilePadding[ 0 ] : '' ) );
-	const previewItemPaddingRight = getPreviewSize( getPreviewDevice, ( undefined !== itemPadding && undefined !== itemPadding[ 1 ] ? itemPadding[ 1 ] : '' ), ( undefined !== itemTabletPadding && undefined !== itemTabletPadding[ 1 ] ? itemTabletPadding[ 1 ] : '' ), ( undefined !== itemMobilePadding && undefined !== itemMobilePadding[ 1 ] ? itemMobilePadding[ 1 ] : '' ) );
-	const previewItemPaddingBottom = getPreviewSize( getPreviewDevice, ( undefined !== itemPadding && undefined !== itemPadding[ 2 ] ? itemPadding[ 2 ] : '' ), ( undefined !== itemTabletPadding && undefined !== itemTabletPadding[ 2 ] ? itemTabletPadding[ 2 ] : '' ), ( undefined !== itemMobilePadding && undefined !== itemMobilePadding[ 2 ] ? itemMobilePadding[ 2 ] : '' ) );
-	const previewItemPaddingLeft = getPreviewSize( getPreviewDevice, ( undefined !== itemPadding && undefined !== itemPadding[ 3 ] ? itemPadding[ 3 ] : '' ), ( undefined !== itemTabletPadding && undefined !== itemTabletPadding[ 3 ] ? itemTabletPadding[ 3 ] : '' ), ( undefined !== itemMobilePadding && undefined !== itemMobilePadding[ 3 ] ? itemMobilePadding[ 3 ] : '' ) );
-	const previewItemBorderTop = getPreviewSize( getPreviewDevice, ( undefined !== itemBorderWidth ? itemBorderWidth[ 0 ] : '' ), ( undefined !== itemTabletBorderWidth ? itemTabletBorderWidth[ 0 ] : '' ), ( undefined !== itemMobileBorderWidth ? itemMobileBorderWidth[ 0 ] : '' ) );
-	const previewItemBorderRight = getPreviewSize( getPreviewDevice, ( undefined !== itemBorderWidth ? itemBorderWidth[ 1 ] : '' ), ( undefined !== itemTabletBorderWidth ? itemTabletBorderWidth[ 1 ] : '' ), ( undefined !== itemMobileBorderWidth ? itemMobileBorderWidth[ 1 ] : '' ) );
-	const previewItemBorderBottom = getPreviewSize( getPreviewDevice, ( undefined !== itemBorderWidth ? itemBorderWidth[ 2 ] : '' ), ( undefined !== itemTabletBorderWidth ? itemTabletBorderWidth[ 2 ] : '' ), ( undefined !== itemMobileBorderWidth ? itemMobileBorderWidth[ 2 ] : '' ) );
-	const previewItemBorderLeft = getPreviewSize( getPreviewDevice, ( undefined !== itemBorderWidth ? itemBorderWidth[ 3 ] : '' ), ( undefined !== itemTabletBorderWidth ? itemTabletBorderWidth[ 3 ] : '' ), ( undefined !== itemMobileBorderWidth ? itemMobileBorderWidth[ 3 ] : '' ) );
+	const previewItemPaddingTop = getPreviewSize( previewDevice, ( undefined !== itemPadding && undefined !== itemPadding[ 0 ] ? itemPadding[ 0 ] : '' ), ( undefined !== itemTabletPadding && undefined !== itemTabletPadding[ 0 ] ? itemTabletPadding[ 0 ] : '' ), ( undefined !== itemMobilePadding && undefined !== itemMobilePadding[ 0 ] ? itemMobilePadding[ 0 ] : '' ) );
+	const previewItemPaddingRight = getPreviewSize( previewDevice, ( undefined !== itemPadding && undefined !== itemPadding[ 1 ] ? itemPadding[ 1 ] : '' ), ( undefined !== itemTabletPadding && undefined !== itemTabletPadding[ 1 ] ? itemTabletPadding[ 1 ] : '' ), ( undefined !== itemMobilePadding && undefined !== itemMobilePadding[ 1 ] ? itemMobilePadding[ 1 ] : '' ) );
+	const previewItemPaddingBottom = getPreviewSize( previewDevice, ( undefined !== itemPadding && undefined !== itemPadding[ 2 ] ? itemPadding[ 2 ] : '' ), ( undefined !== itemTabletPadding && undefined !== itemTabletPadding[ 2 ] ? itemTabletPadding[ 2 ] : '' ), ( undefined !== itemMobilePadding && undefined !== itemMobilePadding[ 2 ] ? itemMobilePadding[ 2 ] : '' ) );
+	const previewItemPaddingLeft = getPreviewSize( previewDevice, ( undefined !== itemPadding && undefined !== itemPadding[ 3 ] ? itemPadding[ 3 ] : '' ), ( undefined !== itemTabletPadding && undefined !== itemTabletPadding[ 3 ] ? itemTabletPadding[ 3 ] : '' ), ( undefined !== itemMobilePadding && undefined !== itemMobilePadding[ 3 ] ? itemMobilePadding[ 3 ] : '' ) );
+	const previewItemBorderTop = getPreviewSize( previewDevice, ( undefined !== itemBorderWidth ? itemBorderWidth[ 0 ] : '' ), ( undefined !== itemTabletBorderWidth ? itemTabletBorderWidth[ 0 ] : '' ), ( undefined !== itemMobileBorderWidth ? itemMobileBorderWidth[ 0 ] : '' ) );
+	const previewItemBorderRight = getPreviewSize( previewDevice, ( undefined !== itemBorderWidth ? itemBorderWidth[ 1 ] : '' ), ( undefined !== itemTabletBorderWidth ? itemTabletBorderWidth[ 1 ] : '' ), ( undefined !== itemMobileBorderWidth ? itemMobileBorderWidth[ 1 ] : '' ) );
+	const previewItemBorderBottom = getPreviewSize( previewDevice, ( undefined !== itemBorderWidth ? itemBorderWidth[ 2 ] : '' ), ( undefined !== itemTabletBorderWidth ? itemTabletBorderWidth[ 2 ] : '' ), ( undefined !== itemMobileBorderWidth ? itemMobileBorderWidth[ 2 ] : '' ) );
+	const previewItemBorderLeft = getPreviewSize( previewDevice, ( undefined !== itemBorderWidth ? itemBorderWidth[ 3 ] : '' ), ( undefined !== itemTabletBorderWidth ? itemTabletBorderWidth[ 3 ] : '' ), ( undefined !== itemMobileBorderWidth ? itemMobileBorderWidth[ 3 ] : '' ) );
 
 	const previewNumberSizeType = ( undefined !== numberFont && undefined !== numberFont[ 0 ] && '' !== numberFont[ 0 ].sizeType ? numberFont[ 0 ].sizeType : 'px' );
 	const previewNumberLineType = ( undefined !== numberFont && undefined !== numberFont[ 0 ] && '' !== numberFont[ 0 ].lineType ? numberFont[ 0 ].lineType : 'px' );
 	const previewNumberLetterType = ( undefined !== numberFont && undefined !== numberFont[ 0 ] && '' !== numberFont[ 0 ].letterType ? numberFont[ 0 ].letterType : 'px' );
-	const previewNumberFontSize = getPreviewSize( getPreviewDevice, ( undefined !== numberFont && undefined !== numberFont[ 0 ] && undefined !== numberFont[ 0 ].size && undefined !== numberFont[ 0 ].size[ 0 ] && '' !== numberFont[ 0 ].size[ 0 ] ? numberFont[ 0 ].size[ 0 ] : '' ), ( undefined !== numberFont && undefined !== numberFont[ 0 ] && undefined !== numberFont[ 0 ].size && undefined !== numberFont[ 0 ].size[ 1 ] && '' !== numberFont[ 0 ].size[ 1 ] ? numberFont[ 0 ].size[ 1 ] : '' ), ( undefined !== numberFont && undefined !== numberFont[ 0 ] && undefined !== numberFont[ 0 ].size && undefined !== numberFont[ 0 ].size[ 2 ] && '' !== numberFont[ 0 ].size[ 2 ] ? numberFont[ 0 ].size[ 2 ] : '' ) );
-	const previewNumberLineSize = getPreviewSize( getPreviewDevice, ( undefined !== numberFont && undefined !== numberFont[ 0 ] && undefined !== numberFont[ 0 ].lineHeight && undefined !== numberFont[ 0 ].lineHeight[ 0 ] && '' !== numberFont[ 0 ].lineHeight[ 0 ] ? numberFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== numberFont && undefined !== numberFont[ 0 ] && undefined !== numberFont[ 0 ].lineHeight && undefined !== numberFont[ 0 ].lineHeight[ 1 ] && '' !== numberFont[ 0 ].lineHeight[ 1 ] ? numberFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== numberFont && undefined !== numberFont[ 0 ] && undefined !== numberFont[ 0 ].lineHeight && undefined !== numberFont[ 0 ].lineHeight[ 2 ] && '' !== numberFont[ 0 ].lineHeight[ 2 ] ? numberFont[ 0 ].lineHeight[ 2 ] : '' ) );
-	const previewNumberLetterSize = getPreviewSize( getPreviewDevice, ( undefined !== numberFont && undefined !== numberFont[ 0 ] && undefined !== numberFont[ 0 ].letterSpacing && undefined !== numberFont[ 0 ].letterSpacing[ 0 ] && '' !== numberFont[ 0 ].letterSpacing[ 0 ] ? numberFont[ 0 ].letterSpacing[ 0 ] : '' ), ( undefined !== numberFont && undefined !== numberFont[ 0 ] && undefined !== numberFont[ 0 ].letterSpacing && undefined !== numberFont[ 0 ].letterSpacing[ 1 ] && '' !== numberFont[ 0 ].letterSpacing[ 1 ] ? numberFont[ 0 ].letterSpacing[ 1 ] : '' ), ( undefined !== numberFont && undefined !== numberFont[ 0 ] && undefined !== numberFont[ 0 ].letterSpacing && undefined !== numberFont[ 0 ].letterSpacing[ 2 ] && '' !== numberFont[ 0 ].letterSpacing[ 2 ] ? numberFont[ 0 ].letterSpacing[ 2 ] : '' ) );
+	const previewNumberFontSize = getPreviewSize( previewDevice, ( undefined !== numberFont && undefined !== numberFont[ 0 ] && undefined !== numberFont[ 0 ].size && undefined !== numberFont[ 0 ].size[ 0 ] && '' !== numberFont[ 0 ].size[ 0 ] ? numberFont[ 0 ].size[ 0 ] : '' ), ( undefined !== numberFont && undefined !== numberFont[ 0 ] && undefined !== numberFont[ 0 ].size && undefined !== numberFont[ 0 ].size[ 1 ] && '' !== numberFont[ 0 ].size[ 1 ] ? numberFont[ 0 ].size[ 1 ] : '' ), ( undefined !== numberFont && undefined !== numberFont[ 0 ] && undefined !== numberFont[ 0 ].size && undefined !== numberFont[ 0 ].size[ 2 ] && '' !== numberFont[ 0 ].size[ 2 ] ? numberFont[ 0 ].size[ 2 ] : '' ) );
+	const previewNumberLineSize = getPreviewSize( previewDevice, ( undefined !== numberFont && undefined !== numberFont[ 0 ] && undefined !== numberFont[ 0 ].lineHeight && undefined !== numberFont[ 0 ].lineHeight[ 0 ] && '' !== numberFont[ 0 ].lineHeight[ 0 ] ? numberFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== numberFont && undefined !== numberFont[ 0 ] && undefined !== numberFont[ 0 ].lineHeight && undefined !== numberFont[ 0 ].lineHeight[ 1 ] && '' !== numberFont[ 0 ].lineHeight[ 1 ] ? numberFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== numberFont && undefined !== numberFont[ 0 ] && undefined !== numberFont[ 0 ].lineHeight && undefined !== numberFont[ 0 ].lineHeight[ 2 ] && '' !== numberFont[ 0 ].lineHeight[ 2 ] ? numberFont[ 0 ].lineHeight[ 2 ] : '' ) );
+	const previewNumberLetterSize = getPreviewSize( previewDevice, ( undefined !== numberFont && undefined !== numberFont[ 0 ] && undefined !== numberFont[ 0 ].letterSpacing && undefined !== numberFont[ 0 ].letterSpacing[ 0 ] && '' !== numberFont[ 0 ].letterSpacing[ 0 ] ? numberFont[ 0 ].letterSpacing[ 0 ] : '' ), ( undefined !== numberFont && undefined !== numberFont[ 0 ] && undefined !== numberFont[ 0 ].letterSpacing && undefined !== numberFont[ 0 ].letterSpacing[ 1 ] && '' !== numberFont[ 0 ].letterSpacing[ 1 ] ? numberFont[ 0 ].letterSpacing[ 1 ] : '' ), ( undefined !== numberFont && undefined !== numberFont[ 0 ] && undefined !== numberFont[ 0 ].letterSpacing && undefined !== numberFont[ 0 ].letterSpacing[ 2 ] && '' !== numberFont[ 0 ].letterSpacing[ 2 ] ? numberFont[ 0 ].letterSpacing[ 2 ] : '' ) );
 	const previewLabelSizeType = ( undefined !== labelFont && undefined !== labelFont[ 0 ] && '' !== labelFont[ 0 ].sizeType ? labelFont[ 0 ].sizeType : 'px' );
 	const previewLabelLineType = ( undefined !== labelFont && undefined !== labelFont[ 0 ] && '' !== labelFont[ 0 ].lineType ? labelFont[ 0 ].lineType : 'px' );
 	const previewLabelLetterType = ( undefined !== labelFont && undefined !== labelFont[ 0 ] && '' !== labelFont[ 0 ].letterType ? labelFont[ 0 ].letterType : 'px' );
-	const previewLabelFontSize = getPreviewSize( getPreviewDevice, ( undefined !== labelFont && undefined !== labelFont[ 0 ] && undefined !== labelFont[ 0 ].size && undefined !== labelFont[ 0 ].size[ 0 ] && '' !== labelFont[ 0 ].size[ 0 ] ? labelFont[ 0 ].size[ 0 ] : '' ), ( undefined !== labelFont && undefined !== labelFont[ 0 ] && undefined !== labelFont[ 0 ].size && undefined !== labelFont[ 0 ].size[ 1 ] && '' !== labelFont[ 0 ].size[ 1 ] ? labelFont[ 0 ].size[ 1 ] : '' ), ( undefined !== labelFont && undefined !== labelFont[ 0 ] && undefined !== labelFont[ 0 ].size && undefined !== labelFont[ 0 ].size[ 2 ] && '' !== labelFont[ 0 ].size[ 2 ] ? labelFont[ 0 ].size[ 2 ] : '' ) );
-	const previewLabelLineSize = getPreviewSize( getPreviewDevice, ( undefined !== labelFont && undefined !== labelFont[ 0 ] && undefined !== labelFont[ 0 ].lineHeight && undefined !== labelFont[ 0 ].lineHeight[ 0 ] && '' !== labelFont[ 0 ].lineHeight[ 0 ] ? labelFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== labelFont && undefined !== labelFont[ 0 ] && undefined !== labelFont[ 0 ].lineHeight && undefined !== labelFont[ 0 ].lineHeight[ 1 ] && '' !== labelFont[ 0 ].lineHeight[ 1 ] ? labelFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== labelFont && undefined !== labelFont[ 0 ] && undefined !== labelFont[ 0 ].lineHeight && undefined !== labelFont[ 0 ].lineHeight[ 2 ] && '' !== labelFont[ 0 ].lineHeight[ 2 ] ? labelFont[ 0 ].lineHeight[ 2 ] : '' ) );
-	const previewLabelLetterSize = getPreviewSize( getPreviewDevice, ( undefined !== labelFont && undefined !== labelFont[ 0 ] && undefined !== labelFont[ 0 ].letterSpacing && undefined !== labelFont[ 0 ].letterSpacing[ 0 ] && '' !== labelFont[ 0 ].letterSpacing[ 0 ] ? labelFont[ 0 ].letterSpacing[ 0 ] : '' ), ( undefined !== labelFont && undefined !== labelFont[ 0 ] && undefined !== labelFont[ 0 ].letterSpacing && undefined !== labelFont[ 0 ].letterSpacing[ 1 ] && '' !== labelFont[ 0 ].letterSpacing[ 1 ] ? labelFont[ 0 ].letterSpacing[ 1 ] : '' ), ( undefined !== labelFont && undefined !== labelFont[ 0 ] && undefined !== labelFont[ 0 ].letterSpacing && undefined !== labelFont[ 0 ].letterSpacing[ 2 ] && '' !== labelFont[ 0 ].letterSpacing[ 2 ] ? labelFont[ 0 ].letterSpacing[ 2 ] : '' ) );
+	const previewLabelFontSize = getPreviewSize( previewDevice, ( undefined !== labelFont && undefined !== labelFont[ 0 ] && undefined !== labelFont[ 0 ].size && undefined !== labelFont[ 0 ].size[ 0 ] && '' !== labelFont[ 0 ].size[ 0 ] ? labelFont[ 0 ].size[ 0 ] : '' ), ( undefined !== labelFont && undefined !== labelFont[ 0 ] && undefined !== labelFont[ 0 ].size && undefined !== labelFont[ 0 ].size[ 1 ] && '' !== labelFont[ 0 ].size[ 1 ] ? labelFont[ 0 ].size[ 1 ] : '' ), ( undefined !== labelFont && undefined !== labelFont[ 0 ] && undefined !== labelFont[ 0 ].size && undefined !== labelFont[ 0 ].size[ 2 ] && '' !== labelFont[ 0 ].size[ 2 ] ? labelFont[ 0 ].size[ 2 ] : '' ) );
+	const previewLabelLineSize = getPreviewSize( previewDevice, ( undefined !== labelFont && undefined !== labelFont[ 0 ] && undefined !== labelFont[ 0 ].lineHeight && undefined !== labelFont[ 0 ].lineHeight[ 0 ] && '' !== labelFont[ 0 ].lineHeight[ 0 ] ? labelFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== labelFont && undefined !== labelFont[ 0 ] && undefined !== labelFont[ 0 ].lineHeight && undefined !== labelFont[ 0 ].lineHeight[ 1 ] && '' !== labelFont[ 0 ].lineHeight[ 1 ] ? labelFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== labelFont && undefined !== labelFont[ 0 ] && undefined !== labelFont[ 0 ].lineHeight && undefined !== labelFont[ 0 ].lineHeight[ 2 ] && '' !== labelFont[ 0 ].lineHeight[ 2 ] ? labelFont[ 0 ].lineHeight[ 2 ] : '' ) );
+	const previewLabelLetterSize = getPreviewSize( previewDevice, ( undefined !== labelFont && undefined !== labelFont[ 0 ] && undefined !== labelFont[ 0 ].letterSpacing && undefined !== labelFont[ 0 ].letterSpacing[ 0 ] && '' !== labelFont[ 0 ].letterSpacing[ 0 ] ? labelFont[ 0 ].letterSpacing[ 0 ] : '' ), ( undefined !== labelFont && undefined !== labelFont[ 0 ] && undefined !== labelFont[ 0 ].letterSpacing && undefined !== labelFont[ 0 ].letterSpacing[ 1 ] && '' !== labelFont[ 0 ].letterSpacing[ 1 ] ? labelFont[ 0 ].letterSpacing[ 1 ] : '' ), ( undefined !== labelFont && undefined !== labelFont[ 0 ] && undefined !== labelFont[ 0 ].letterSpacing && undefined !== labelFont[ 0 ].letterSpacing[ 2 ] && '' !== labelFont[ 0 ].letterSpacing[ 2 ] ? labelFont[ 0 ].letterSpacing[ 2 ] : '' ) );
 	const previewPreLabelSizeType = ( undefined !== preLabelFont && undefined !== preLabelFont[ 0 ] && '' !== preLabelFont[ 0 ].sizeType ? preLabelFont[ 0 ].sizeType : 'px' );
 	const previewPreLabelLineType = ( undefined !== preLabelFont && undefined !== preLabelFont[ 0 ] && '' !== preLabelFont[ 0 ].lineType ? preLabelFont[ 0 ].lineType : 'px' );
 	const previewPreLabelLetterType = ( undefined !== preLabelFont && undefined !== preLabelFont[ 0 ] && '' !== preLabelFont[ 0 ].letterType ? preLabelFont[ 0 ].letterType : 'px' );
-	const previewPreLabelFontSize = getPreviewSize( getPreviewDevice, ( undefined !== preLabelFont && undefined !== preLabelFont[ 0 ] && undefined !== preLabelFont[ 0 ].size && undefined !== preLabelFont[ 0 ].size[ 0 ] && '' !== preLabelFont[ 0 ].size[ 0 ] ? preLabelFont[ 0 ].size[ 0 ] : '' ), ( undefined !== preLabelFont && undefined !== preLabelFont[ 0 ] && undefined !== preLabelFont[ 0 ].size && undefined !== preLabelFont[ 0 ].size[ 1 ] && '' !== preLabelFont[ 0 ].size[ 1 ] ? preLabelFont[ 0 ].size[ 1 ] : '' ), ( undefined !== preLabelFont && undefined !== preLabelFont[ 0 ] && undefined !== preLabelFont[ 0 ].size && undefined !== preLabelFont[ 0 ].size[ 2 ] && '' !== preLabelFont[ 0 ].size[ 2 ] ? preLabelFont[ 0 ].size[ 2 ] : '' ) );
-	const previewPreLabelLineSize = getPreviewSize( getPreviewDevice, ( undefined !== preLabelFont && undefined !== preLabelFont[ 0 ] && undefined !== preLabelFont[ 0 ].lineHeight && undefined !== preLabelFont[ 0 ].lineHeight[ 0 ] && '' !== preLabelFont[ 0 ].lineHeight[ 0 ] ? preLabelFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== preLabelFont && undefined !== preLabelFont[ 0 ] && undefined !== preLabelFont[ 0 ].lineHeight && undefined !== preLabelFont[ 0 ].lineHeight[ 1 ] && '' !== preLabelFont[ 0 ].lineHeight[ 1 ] ? preLabelFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== preLabelFont && undefined !== preLabelFont[ 0 ] && undefined !== preLabelFont[ 0 ].lineHeight && undefined !== preLabelFont[ 0 ].lineHeight[ 2 ] && '' !== preLabelFont[ 0 ].lineHeight[ 2 ] ? preLabelFont[ 0 ].lineHeight[ 2 ] : '' ) );
-	const previewPreLabelLetterSize = getPreviewSize( getPreviewDevice, ( undefined !== preLabelFont && undefined !== preLabelFont[ 0 ] && undefined !== preLabelFont[ 0 ].letterSpacing && undefined !== preLabelFont[ 0 ].letterSpacing[ 0 ] && '' !== preLabelFont[ 0 ].letterSpacing[ 0 ] ? preLabelFont[ 0 ].letterSpacing[ 0 ] : '' ), ( undefined !== preLabelFont && undefined !== preLabelFont[ 0 ] && undefined !== preLabelFont[ 0 ].letterSpacing && undefined !== preLabelFont[ 0 ].letterSpacing[ 1 ] && '' !== preLabelFont[ 0 ].letterSpacing[ 1 ] ? preLabelFont[ 0 ].letterSpacing[ 1 ] : '' ), ( undefined !== preLabelFont && undefined !== preLabelFont[ 0 ] && undefined !== preLabelFont[ 0 ].letterSpacing && undefined !== preLabelFont[ 0 ].letterSpacing[ 2 ] && '' !== preLabelFont[ 0 ].letterSpacing[ 2 ] ? preLabelFont[ 0 ].letterSpacing[ 2 ] : '' ) );
+	const previewPreLabelFontSize = getPreviewSize( previewDevice, ( undefined !== preLabelFont && undefined !== preLabelFont[ 0 ] && undefined !== preLabelFont[ 0 ].size && undefined !== preLabelFont[ 0 ].size[ 0 ] && '' !== preLabelFont[ 0 ].size[ 0 ] ? preLabelFont[ 0 ].size[ 0 ] : '' ), ( undefined !== preLabelFont && undefined !== preLabelFont[ 0 ] && undefined !== preLabelFont[ 0 ].size && undefined !== preLabelFont[ 0 ].size[ 1 ] && '' !== preLabelFont[ 0 ].size[ 1 ] ? preLabelFont[ 0 ].size[ 1 ] : '' ), ( undefined !== preLabelFont && undefined !== preLabelFont[ 0 ] && undefined !== preLabelFont[ 0 ].size && undefined !== preLabelFont[ 0 ].size[ 2 ] && '' !== preLabelFont[ 0 ].size[ 2 ] ? preLabelFont[ 0 ].size[ 2 ] : '' ) );
+	const previewPreLabelLineSize = getPreviewSize( previewDevice, ( undefined !== preLabelFont && undefined !== preLabelFont[ 0 ] && undefined !== preLabelFont[ 0 ].lineHeight && undefined !== preLabelFont[ 0 ].lineHeight[ 0 ] && '' !== preLabelFont[ 0 ].lineHeight[ 0 ] ? preLabelFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== preLabelFont && undefined !== preLabelFont[ 0 ] && undefined !== preLabelFont[ 0 ].lineHeight && undefined !== preLabelFont[ 0 ].lineHeight[ 1 ] && '' !== preLabelFont[ 0 ].lineHeight[ 1 ] ? preLabelFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== preLabelFont && undefined !== preLabelFont[ 0 ] && undefined !== preLabelFont[ 0 ].lineHeight && undefined !== preLabelFont[ 0 ].lineHeight[ 2 ] && '' !== preLabelFont[ 0 ].lineHeight[ 2 ] ? preLabelFont[ 0 ].lineHeight[ 2 ] : '' ) );
+	const previewPreLabelLetterSize = getPreviewSize( previewDevice, ( undefined !== preLabelFont && undefined !== preLabelFont[ 0 ] && undefined !== preLabelFont[ 0 ].letterSpacing && undefined !== preLabelFont[ 0 ].letterSpacing[ 0 ] && '' !== preLabelFont[ 0 ].letterSpacing[ 0 ] ? preLabelFont[ 0 ].letterSpacing[ 0 ] : '' ), ( undefined !== preLabelFont && undefined !== preLabelFont[ 0 ] && undefined !== preLabelFont[ 0 ].letterSpacing && undefined !== preLabelFont[ 0 ].letterSpacing[ 1 ] && '' !== preLabelFont[ 0 ].letterSpacing[ 1 ] ? preLabelFont[ 0 ].letterSpacing[ 1 ] : '' ), ( undefined !== preLabelFont && undefined !== preLabelFont[ 0 ] && undefined !== preLabelFont[ 0 ].letterSpacing && undefined !== preLabelFont[ 0 ].letterSpacing[ 2 ] && '' !== preLabelFont[ 0 ].letterSpacing[ 2 ] ? preLabelFont[ 0 ].letterSpacing[ 2 ] : '' ) );
 	const previewPostLabelSizeType = ( undefined !== postLabelFont && undefined !== postLabelFont[ 0 ] && '' !== postLabelFont[ 0 ].sizeType ? postLabelFont[ 0 ].sizeType : 'px' );
 	const previewPostLabelLineType = ( undefined !== postLabelFont && undefined !== postLabelFont[ 0 ] && '' !== postLabelFont[ 0 ].lineType ? postLabelFont[ 0 ].lineType : 'px' );
 	const previewPostLabelLetterType = ( undefined !== postLabelFont && undefined !== postLabelFont[ 0 ] && '' !== postLabelFont[ 0 ].letterType ? postLabelFont[ 0 ].letterType : 'px' );
-	const previewPostLabelFontSize = getPreviewSize( getPreviewDevice, ( undefined !== postLabelFont && undefined !== postLabelFont[ 0 ] && undefined !== postLabelFont[ 0 ].size && undefined !== postLabelFont[ 0 ].size[ 0 ] && '' !== postLabelFont[ 0 ].size[ 0 ] ? postLabelFont[ 0 ].size[ 0 ] : '' ), ( undefined !== postLabelFont && undefined !== postLabelFont[ 0 ] && undefined !== postLabelFont[ 0 ].size && undefined !== postLabelFont[ 0 ].size[ 1 ] && '' !== postLabelFont[ 0 ].size[ 1 ] ? postLabelFont[ 0 ].size[ 1 ] : '' ), ( undefined !== postLabelFont && undefined !== postLabelFont[ 0 ] && undefined !== postLabelFont[ 0 ].size && undefined !== postLabelFont[ 0 ].size[ 2 ] && '' !== postLabelFont[ 0 ].size[ 2 ] ? postLabelFont[ 0 ].size[ 2 ] : '' ) );
-	const previewPostLabelLineSize = getPreviewSize( getPreviewDevice, ( undefined !== postLabelFont && undefined !== postLabelFont[ 0 ] && undefined !== postLabelFont[ 0 ].lineHeight && undefined !== postLabelFont[ 0 ].lineHeight[ 0 ] && '' !== postLabelFont[ 0 ].lineHeight[ 0 ] ? postLabelFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== postLabelFont && undefined !== postLabelFont[ 0 ] && undefined !== postLabelFont[ 0 ].lineHeight && undefined !== postLabelFont[ 0 ].lineHeight[ 1 ] && '' !== postLabelFont[ 0 ].lineHeight[ 1 ] ? postLabelFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== postLabelFont && undefined !== postLabelFont[ 0 ] && undefined !== postLabelFont[ 0 ].lineHeight && undefined !== postLabelFont[ 0 ].lineHeight[ 2 ] && '' !== postLabelFont[ 0 ].lineHeight[ 2 ] ? postLabelFont[ 0 ].lineHeight[ 2 ] : '' ) );
-	const previewPostLabelLetterSize = getPreviewSize( getPreviewDevice, ( undefined !== postLabelFont && undefined !== postLabelFont[ 0 ] && undefined !== postLabelFont[ 0 ].letterSpacing && undefined !== postLabelFont[ 0 ].letterSpacing[ 0 ] && '' !== postLabelFont[ 0 ].letterSpacing[ 0 ] ? postLabelFont[ 0 ].letterSpacing[ 0 ] : '' ), ( undefined !== postLabelFont && undefined !== postLabelFont[ 0 ] && undefined !== postLabelFont[ 0 ].letterSpacing && undefined !== postLabelFont[ 0 ].letterSpacing[ 1 ] && '' !== postLabelFont[ 0 ].letterSpacing[ 1 ] ? postLabelFont[ 0 ].letterSpacing[ 1 ] : '' ), ( undefined !== postLabelFont && undefined !== postLabelFont[ 0 ] && undefined !== postLabelFont[ 0 ].letterSpacing && undefined !== postLabelFont[ 0 ].letterSpacing[ 2 ] && '' !== postLabelFont[ 0 ].letterSpacing[ 2 ] ? postLabelFont[ 0 ].letterSpacing[ 2 ] : '' ) );
+	const previewPostLabelFontSize = getPreviewSize( previewDevice, ( undefined !== postLabelFont && undefined !== postLabelFont[ 0 ] && undefined !== postLabelFont[ 0 ].size && undefined !== postLabelFont[ 0 ].size[ 0 ] && '' !== postLabelFont[ 0 ].size[ 0 ] ? postLabelFont[ 0 ].size[ 0 ] : '' ), ( undefined !== postLabelFont && undefined !== postLabelFont[ 0 ] && undefined !== postLabelFont[ 0 ].size && undefined !== postLabelFont[ 0 ].size[ 1 ] && '' !== postLabelFont[ 0 ].size[ 1 ] ? postLabelFont[ 0 ].size[ 1 ] : '' ), ( undefined !== postLabelFont && undefined !== postLabelFont[ 0 ] && undefined !== postLabelFont[ 0 ].size && undefined !== postLabelFont[ 0 ].size[ 2 ] && '' !== postLabelFont[ 0 ].size[ 2 ] ? postLabelFont[ 0 ].size[ 2 ] : '' ) );
+	const previewPostLabelLineSize = getPreviewSize( previewDevice, ( undefined !== postLabelFont && undefined !== postLabelFont[ 0 ] && undefined !== postLabelFont[ 0 ].lineHeight && undefined !== postLabelFont[ 0 ].lineHeight[ 0 ] && '' !== postLabelFont[ 0 ].lineHeight[ 0 ] ? postLabelFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== postLabelFont && undefined !== postLabelFont[ 0 ] && undefined !== postLabelFont[ 0 ].lineHeight && undefined !== postLabelFont[ 0 ].lineHeight[ 1 ] && '' !== postLabelFont[ 0 ].lineHeight[ 1 ] ? postLabelFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== postLabelFont && undefined !== postLabelFont[ 0 ] && undefined !== postLabelFont[ 0 ].lineHeight && undefined !== postLabelFont[ 0 ].lineHeight[ 2 ] && '' !== postLabelFont[ 0 ].lineHeight[ 2 ] ? postLabelFont[ 0 ].lineHeight[ 2 ] : '' ) );
+	const previewPostLabelLetterSize = getPreviewSize( previewDevice, ( undefined !== postLabelFont && undefined !== postLabelFont[ 0 ] && undefined !== postLabelFont[ 0 ].letterSpacing && undefined !== postLabelFont[ 0 ].letterSpacing[ 0 ] && '' !== postLabelFont[ 0 ].letterSpacing[ 0 ] ? postLabelFont[ 0 ].letterSpacing[ 0 ] : '' ), ( undefined !== postLabelFont && undefined !== postLabelFont[ 0 ] && undefined !== postLabelFont[ 0 ].letterSpacing && undefined !== postLabelFont[ 0 ].letterSpacing[ 1 ] && '' !== postLabelFont[ 0 ].letterSpacing[ 1 ] ? postLabelFont[ 0 ].letterSpacing[ 1 ] : '' ), ( undefined !== postLabelFont && undefined !== postLabelFont[ 0 ] && undefined !== postLabelFont[ 0 ].letterSpacing && undefined !== postLabelFont[ 0 ].letterSpacing[ 2 ] && '' !== postLabelFont[ 0 ].letterSpacing[ 2 ] ? postLabelFont[ 0 ].letterSpacing[ 2 ] : '' ) );
 	const classes = classnames( {
 		'kb-countdown-container'                            : true,
 		[ `kb-countdown-container-${uniqueID}` ]            : uniqueID,
@@ -614,6 +626,7 @@ function KadenceCountdown( props ) {
 				{( previewItemPaddingBottom ? `padding-bottom: ${previewItemPaddingBottom + previewItemPaddingType};` : '' )}
 				{'}'}
 			</style>
+
 			{showSettings( 'allSettings', 'kadence/countdown' ) && (
 				<>
 					<BlockControls>
@@ -664,7 +677,7 @@ function KadenceCountdown( props ) {
 								<Panel
 									className={'components-panel__body is-opened'}
 								>
-									{isNested && (
+									{1 === isNested && (
 										<>
 											<h2>{__( 'Countdown Time Settings Synced to Parent Block', 'kadence-blocks' )}</h2>
 											<Button
@@ -749,6 +762,7 @@ function KadenceCountdown( props ) {
 													/>
 												</>
 											)}
+
 											<SelectControl
 												label={__( 'Action on Expire', 'kadence-blocks' )}
 												options={countdownActions}
@@ -775,6 +789,54 @@ function KadenceCountdown( props ) {
 										</>
 									)}
 								</Panel>
+								{
+									kadence_blocks_params.pro === 'true' && 'evergreen' !== countdownType &&
+										<KadencePanelBody
+											title={__( 'Countdown Auto Repeater', 'kadence-blocks' )}
+											initialOpen={false}
+											panelName={'kb-countdown-repeater'}
+										>
+											<ToggleControl
+												label={__( 'Repeat Countdown Concurrently?', 'kadence-blocks' )}
+												checked={repeat}
+												onChange={value => setAttributes( { repeat: value } )}
+												help={__( 'This will give the option to restart the countdown concurrently.', 'kadence-blocks' )}
+											/>
+											{
+												repeat && (
+													<>
+														<SelectControl
+															label={__( 'Repeat Countdown Frequency', 'kadence-blocks' )}
+															options={frequencyOptions}
+															value={frequency}
+															onChange={( value ) => setAttributes( { frequency: value } )}
+														/>
+
+														<ToggleControl
+															label={__( 'Stop Repeating the Countdown', 'kadence-blocks' )}
+															checked={stopRepeating}
+															onChange={value => setAttributes( { stopRepeating: value } )}
+															help={__( 'This will give the option to stop repeating the countdown at a specific date.', 'kadence-blocks' )}
+														/>
+
+														{
+															stopRepeating &&
+																<div className="components-base-control kb-datepicker-fix">
+																	<h2>{__( 'End Date for Recurrent Countdown', 'kadence-blocks' )}</h2>
+																	<DateTimePicker
+																		currentDate={( !endDate ? undefined : endDate )}
+																		onChange={ value => setAttributes({ endDate: value}) }
+																		is12Hour={is12HourTime}
+																		help={__( 'Pick a date to stop recurrent repetition of the countdown.', 'kadence-blocks' )}
+																	/>
+																</div>
+														}
+													</>
+												)
+											}
+										</KadencePanelBody>
+								}
+								
 								<KadencePanelBody
 									title={__( 'Countdown Layout', 'kadence-blocks' )}
 									initialOpen={false}
@@ -1335,28 +1397,4 @@ function KadenceCountdown( props ) {
 	);
 }
 
-export default compose( [
-	withSelect( ( select, ownProps ) => {
-		const { clientId } = ownProps;
-		let isNested = false;
-		const {
-			getBlock,
-			getBlockParentsByBlockName,
-		} = select( 'core/block-editor' );
-		const parentBlocks = getBlockParentsByBlockName( clientId, 'kadence/countdown' );
-		if ( parentBlocks.length && undefined !== parentBlocks[ 0 ] && '' !== parentBlocks[ 0 ] ) {
-			isNested = true;
-		}
-		return {
-			isNested        : isNested,
-			parentBlock     : ( isNested ? getBlock( parentBlocks[ 0 ] ) : '' ),
-			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-		};
-	} ),
-	withDispatch( ( dispatch, { clientId } ) => {
-		const { selectBlock } = dispatch( blockEditorStore );
-		return {
-			selectBlock: ( id ) => selectBlock( id ),
-		};
-	} ),
-] )( KadenceCountdown );
+export default KadenceCountdown ;
