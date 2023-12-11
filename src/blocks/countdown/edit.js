@@ -790,7 +790,7 @@ function KadenceCountdown( props ) {
 									)}
 								</Panel>
 								{
-									kadence_blocks_params.pro === 'true' &&
+									kadence_blocks_params.pro === 'true' && 'evergreen' !== countdownType &&
 										<KadencePanelBody
 											title={__( 'Countdown Auto Repeater', 'kadence-blocks' )}
 											initialOpen={false}
