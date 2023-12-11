@@ -44,7 +44,7 @@ class Block_Library_Cache implements Terminable {
 	/**
 	 * The data to be cached on shutdown, indexed by a filename.
 	 *
-	 * @var array<string, mixed>
+	 * @var array<string, array{data: mixed, overwrite: bool}>
 	 */
 	protected $items;
 
@@ -79,17 +79,19 @@ class Block_Library_Cache implements Terminable {
 	/**
 	 * Prime data to be cached when the WordPress shutdown action occurs.
 	 *
-	 * @param mixed $identifier Unique data to identify this file.
-	 * @param mixed $data       The data to store.
+	 * @param  mixed  $identifier  Unique data to identify this file.
+	 * @param  mixed  $data        The data to store.
+	 * @param  bool   $overwrite   Whether to force update the cache.
 	 *
 	 * @return void
-	 * @throws InvalidArgumentException
-	 * @throws \RuntimeException
 	 */
-	public function cache( $identifier, $data ): void {
+	public function cache( $identifier, $data, bool $overwrite = false ): void {
 		$identifier = $this->filename( $identifier );
 
-		$this->items[ $identifier ] = $data;
+		$this->items[ $identifier ] = [
+			'data'      => $data,
+			'overwrite' => $overwrite,
+		];
 	}
 
 	/**
@@ -115,26 +117,34 @@ class Block_Library_Cache implements Terminable {
 			return;
 		}
 
-		foreach ( $this->items as $filename => $data ) {
+		foreach ( $this->items as $filename => $cache ) {
 			if ( $this->storage->has( $filename ) ) {
-				$this->logger->debug( 'Filename already exists, deleting file...', [
-					'filename' => $filename,
-				] );
-
-				try {
-					$this->storage->delete( $filename );
-				} catch ( StorageException $e ) {
-					$this->logger->error( 'Error deleting existing cache file', [
-						'filename'  => $filename,
-						'exception' => $e->getMessage(),
+				if ( $cache['overwrite'] ) {
+					$this->logger->debug( 'Filename already exists, deleting file...', [
+						'filename' => $filename,
 					] );
+
+					try {
+						$this->storage->delete( $filename );
+					} catch ( StorageException $e ) {
+						$this->logger->error( 'Error deleting existing cache file', [
+							'filename'  => $filename,
+							'exception' => $e->getMessage(),
+						] );
+					}
+				} else {
+					$this->logger->warning( 'Filename already exists, skipping...', [
+						'filename' => $filename,
+					] );
+
+					continue;
 				}
 			}
 
 			try {
 				$this->logger->debug( sprintf( 'Writing cache file: %s', $filename ) );
 
-				$this->storage->put( $filename, $data );
+				$this->storage->put( $filename, $cache['data'] );
 			} catch ( StorageException $e ) {
 				$this->logger->error( 'Error saving cache file', [
 					'filename'  => $filename,
