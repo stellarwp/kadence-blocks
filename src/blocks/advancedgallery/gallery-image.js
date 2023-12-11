@@ -293,8 +293,8 @@ function GalleryImage( props ) {
 				)}
 			</figure>
 			{! thumbnail && linkTo === 'custom' && isSelected && ! dynamicSource && (
-				<>
-					<div className="kb-gallery-custom-link block-editor-url-popover__row" onClick={ () => toggleSettingsVisibility()}>
+				<div className="kb-gallery-custom-options">
+					<div className="block-editor-url-popover__row kb-gallery-custom-link" onClick={ () => toggleSettingsVisibility()}>
 						<URLInput
 							aria-label={__( 'URL', 'kadence-blocks' )}
 							placeholder={__( 'Paste or type URL', 'kadence-blocks' )}
@@ -326,7 +326,7 @@ function GalleryImage( props ) {
 							/>
 						</div>
 					)}
-				</>
+				</div>
 			)}
 		</>
 	);

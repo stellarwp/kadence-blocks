@@ -603,6 +603,10 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 			'dividers'     => ( isset( $attributes['countdownDivider'] ) && $attributes['countdownDivider'] ? true : false ),
 			'action'       => ( isset( $attributes['expireAction'] ) ? $attributes['expireAction'] : 'none' ),
 			'redirect'     => ( isset( $attributes['redirectURL'] ) ? $attributes['redirectURL'] : '' ),
+			'repeat'	   => ( isset( $attributes['repeat'] ) ? $attributes['repeat'] : '' ),
+			'frequency'	   => ( isset( $attributes['frequency'] ) ? $attributes['frequency'] : '' ),
+			'stopCount'    => ( isset( $attributes['stopRepeating'] ) ? $attributes['stopRepeating'] : false ),
+			'endDate'	   => ( isset( $attributes['endDate'] ) ? $attributes['endDate'] : '' ),
 			'reset'        => $reset_days,
 			'campaign_id'  => $campaign_id,
 			'evergreen'    => ( 'evergreen' === $countdown_type ? apply_filters( 'kadence_blocks_countdown_evergreen_config', 'query', $campaign_id, $site_slug, $reset_days ) : '' ),
@@ -625,7 +629,7 @@ class Kadence_Blocks_Countdown_Block extends Kadence_Blocks_Abstract_Block {
 			'minutesLabel' => ( isset( $attributes['minutesLabel'] ) && ! empty( $attributes['minutesLabel'] ) ? $attributes['minutesLabel'] : esc_attr__( 'Mins', 'kadence-blocks' ) ),
 			'secondsLabel' => ( isset( $attributes['secondsLabel'] ) && ! empty( $attributes['secondsLabel'] ) ? $attributes['secondsLabel'] : esc_attr__( 'Secs', 'kadence-blocks' ) ),
 		);
-
+		
 		wp_localize_script(
 			'kadence-blocks-countdown',
 			'kadence_blocks_countdown',
