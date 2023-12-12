@@ -280,35 +280,43 @@ function LoadingFailedHeader( { type } ) {
 		</Heading>
 	);
 }
-function PatternFilterDropdown( { categories, selectedCategories } ) {
-	const [options, setOptions] = useState(categories.filter((pattern) => pattern.label !== 'All'));
-	const [selectedPatterns, setSelectedPatterns] = useState([]);
+
+function PatternFilterDropdown( { label, items, selectedItems } ) {
+	const [ options, setOptions ] = useState( items.filter( ( pattern ) => pattern.label !== 'All' ) );
+	const [ selectedPatterns, setSelectedPatterns ] = useState( [] );
 
 	useEffect(() => {
 		if(options && options.length) {
 			const temp = options.filter((pattern) => pattern.checked);
+			console.log("🚀 ~ file: pattern-list.js:292 ~ useEffect ~ temp:", temp)
 			setSelectedPatterns(temp);
 
-			if(selectedCategories) {
-				selectedCategories(temp);
+			if(selectedItems) {
+				selectedItems(temp);
 			}
 		}
 	}, [options]);
 
-	const filterIcon = (<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-		<path d="M8.33333 15H11.6667V13.3333H8.33333V15ZM2.5 5V6.66667H17.5V5H2.5ZM5 10.8333H15V9.16667H5V10.8333Z" fill="currentColor"/>
-	</svg>);
+	const filterIcon = ( <svg width="10" height="7" viewBox="0 0 10 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.175 0.158203L5 3.97487L8.825 0.158203L10 1.3332L5 6.3332L0 1.3332L1.175 0.158203Z" fill="#020129" /></svg> );
 
 	const clearFilter = () => {
-		setOptions(options.map((pattern) => ({...pattern, checked: false})))
-	}
+		setOptions( options.map( ( pattern ) => ( { ...pattern, checked: false } ) ) );
+	};
 
-	const updateSelection = (bool, index) => {
-		const cloned = [...options];
-		cloned[index].checked = bool;
-		setOptions(cloned);
+	const updateSelection = ( bool, index ) => {
+		const cloned = [ ...options ];
+		cloned[ index ].checked = bool;
+		setOptions( cloned );
 
-	}
+		// Update selectedPatterns state
+		const patternSelections = cloned.filter( ( pattern ) => pattern.checked );
+		setSelectedPatterns( patternSelections );
+
+		// Notify parent component about selected items
+		if ( selectedItems ) {
+			selectedItems( selectedPatterns );
+		}
+	};
 
 	return (
 		<Dropdown
@@ -322,9 +330,9 @@ function PatternFilterDropdown( { categories, selectedCategories } ) {
 					aria-expanded={ isOpen }
 					className="kb-toggle-button"
 				>
-					<div className='kb-toggle-button-wrapper'>
+					<div className="kb-toggle-button-wrapper">
 						<span>
-							Filters {selectedPatterns.length > 0 ? `(${selectedPatterns.length})` : ''}
+							{ label } { selectedPatterns.length > 0 ? `(${ selectedPatterns.length })` : '' }
 						</span>
 						{ filterIcon }
 					</div>
@@ -333,16 +341,18 @@ function PatternFilterDropdown( { categories, selectedCategories } ) {
 			renderContent={ () => (
 				<div>
 					<div className="kb-patterns-filter-dropdown-content-inner">
-						{options && options.map((pattern, i) => (
-							<div className='kb-pattern-filter-item' key={ pattern.value }>
-								<CheckboxControl
-									checked={ pattern.checked }
-									id={ pattern.value }
-									label={ pattern.label }
-									onChange={(bool) => updateSelection(bool, i) }
-								/>
-							</div>
-						))}
+						{ options && options.map( ( pattern, i ) => (
+							pattern.value && (
+								<div className="kb-pattern-filter-item" key={ pattern.value }>
+									<CheckboxControl
+										checked={ pattern.checked }
+										id={ pattern.value }
+										label={ pattern.label }
+										onChange={ ( bool ) => updateSelection( bool, i ) }
+									/>
+								</div>
+							)
+						) ) }
 					</div>
 					<div className='kb-pattern-filter-dropdown-content-clear' onClick={(_e) => clearFilter()}>
 						Clear
@@ -444,12 +454,14 @@ function PatternList( {
 	generateContext,
 	contextLabel,
 	launchWizard,
-	categories
- } ) {
+	categories,
+	styles,
+} ) {
 	const [ failedAI, setFailedAI ] = useState( false );
 	const [ failedAIType, setFailedAIType ] = useState( 'general' );
 	const [rootScroll, setRootScroll] = useState();
 	const [ categoryFilter, setCategoryFilter ] = useState( [] );
+	const [ styleFilter, setStyleFilter ] = useState( [] );
 	const debouncedSpeak = useDebounce(speak, 500);
 	const { getContextState, getContextContent, getAllContext } = useSelect(
 		( select ) => {
@@ -498,27 +510,28 @@ function PatternList( {
 		let allPatterns = [];
 		Object.keys( patterns ).map( function( key, index ) {
 			const temp = [];
-			temp['title'] = patterns[key].name;
-			temp['name'] = patterns[key].name;
-			temp['image'] = patterns[key].image;
-			temp['imageWidth'] = patterns[key].imageW;
-			temp['imageHeight'] = patterns[key].imageH;
-			temp['id'] = patterns[key].id;
-			temp['slug'] = patterns[key].slug;
-			temp['categories'] = patterns[key].categories ? Object.keys( patterns[key].categories ) : [];
-			temp['contexts'] = patterns[key].contexts ? Object.keys( patterns[key].contexts ) : [];
-			temp['hpcontexts'] = patterns[key].hpcontexts ? Object.keys( patterns[key].hpcontexts ) : [];
-			temp['keywords'] = patterns[key].keywords ? patterns[key].keywords : [];
-			if ( patterns[key]?.html) {
-				temp['html'] = replaceMasks( patterns[key].html );
+			temp.title = patterns[ key ].name;
+			temp.name = patterns[ key ].name;
+			temp.image = patterns[ key ].image;
+			temp.imageWidth = patterns[ key ].imageW;
+			temp.imageHeight = patterns[ key ].imageH;
+			temp.id = patterns[ key ].id;
+			temp.slug = patterns[ key ].slug;
+			temp.categories = patterns[ key ].categories ? Object.keys( patterns[ key ].categories ) : [];
+			temp.styles = patterns[ key ].styles ? Object.keys( patterns[ key ].styles ) : [];
+			temp.contexts = patterns[ key ].contexts ? Object.keys( patterns[ key ].contexts ) : [];
+			temp.hpcontexts = patterns[ key ].hpcontexts ? Object.keys( patterns[ key ].hpcontexts ) : [];
+			temp.keywords = patterns[ key ].keywords ? patterns[ key ].keywords : [];
+			if ( patterns[ key ]?.html ) {
+				temp.html = replaceMasks( patterns[ key ].html );
 			}
-			temp['content'] = patterns[key]?.content || '';
-			temp['pro'] = patterns[key].pro;
-			temp['locked'] = ( patterns[key].pro && 'true' !== kadence_blocks_params.pro ? true : false );
-			temp['proRender'] = false;
-			temp['viewportWidth'] = 1200;
+			temp.content = patterns[ key ]?.content || '';
+			temp.pro = patterns[ key ].pro;
+			temp.locked = ( patterns[ key ].pro && 'true' !== kadence_blocks_params.pro ? true : false );
+			temp.proRender = false;
+			temp.viewportWidth = 1200;
 			allPatterns.push( temp );
-		});
+		} );
 		return allPatterns;
 	}, [ patterns ] );
 
@@ -530,37 +543,36 @@ function PatternList( {
 			if ( aINeedsData ) {
 				console.log( 'AI Needed' );
 				return [];
-			} else if ( ! getContextState(aiContext) ) {
+			} else if ( ! getContextState( aiContext ) ) {
 				console.log( 'AI Needed' );
 				return [];
-			} else if ( 'loading' === getContextState(aiContext) ) {
+			} else if ( 'loading' === getContextState( aiContext ) ) {
 				console.log( 'Loading AI Content' );
 				setFailedAI( false );
 				return [];
-			} else if ( 'processing' === getContextState(aiContext) ) {
+			} else if ( 'processing' === getContextState( aiContext ) ) {
 				console.log( 'Generating AI Content' );
 				setFailedAI( false );
 				return [];
-			} else if ( 'error' === getContextState(aiContext) ) {
+			} else if ( 'error' === getContextState( aiContext ) ) {
 				console.log( 'Error Generating AI Content' );
 				setFailedAI( true );
 				setFailedAIType( 'license' );
-			} else if ( 'credits' === getContextState(aiContext) ) {
+			} else if ( 'credits' === getContextState( aiContext ) ) {
 				console.log( 'Error not enough credits' );
 				setFailedAI( true );
 				setFailedAIType( 'credits' );
-			} else if ( getContextContent(aiContext) === 'failed' ){
+			} else if ( getContextContent( aiContext ) === 'failed' ) {
 				console.log( 'AI Content has failed' );
 				setFailedAI( true );
 				setFailedAIType( 'general' );
-			} else if ( getContextContent(aiContext) === 'failedReload' ){
+			} else if ( getContextContent( aiContext ) === 'failedReload' ) {
 				console.log( 'AI Content has failed, reload page required.' );
 				setFailedAI( true );
 				setFailedAIType( 'reload' );
 			}
 		}
 		let allPatterns = thePatterns;
-
 
 		if ( ! filterValue && contextTab === 'design' && selectedCategory && 'all' !== selectedCategory ) {
 			allPatterns = allPatterns.filter( ( pattern ) =>
@@ -578,10 +590,16 @@ function PatternList( {
 			);
 		}
 
-		if(categoryFilter && categoryFilter.length > 0) {
-			allPatterns = allPatterns.filter((pattern) => {
-				return pattern.categories.some((cat) => categoryFilter.includes(cat))
-			});
+		if ( ( categoryFilter && categoryFilter.length > 0 ) || ( styleFilter && styleFilter.length > 0 ) ) {
+			const foundCategories = allPatterns.filter( ( pattern ) => {
+				return pattern.categories.some( ( cat ) => categoryFilter.includes( cat ) );
+			} );
+
+			const foundStyles = allPatterns.filter( ( pattern ) => {
+				return pattern.styles.some( ( style ) => styleFilter.includes( style ) );
+			} );
+
+			allPatterns = [ ...foundCategories, ...foundStyles ];
 		}
 		if ( useImageReplace === 'all' && imageCollection ) {
 			let variation = 0;
@@ -617,10 +635,16 @@ function PatternList( {
 			} );
 		}
 		return searchItems( allPatterns, filterValue );
-	}, [ filterValue, selectedCategory, thePatterns, aiContext, contextTab, contextStatesRef, imageCollection, useImageReplace, aINeedsData, categoryFilter ] );
+	}, [ filterValue, selectedCategory, thePatterns, aiContext, contextTab, contextStatesRef, imageCollection, useImageReplace, aINeedsData, categoryFilter, styleFilter ] );
 
-	const updateFilters = (categoryList) => {
-		setCategoryFilter(categoryList.map((cat) => cat.value) ?? []);
+	const updateCategoryFilter = ( categoryList ) => {
+		const selectedCategoryValues = categoryList.map( ( category ) => category.value );
+		setCategoryFilter( selectedCategoryValues );
+	};
+
+	const updateStyleFilter = ( stylesList ) => {
+		const selectedStyleValues = stylesList.map( ( style ) => style.value );
+		setStyleFilter( selectedStyleValues );
 	};
 
 	const hasHTml = useMemo( () => {
@@ -785,8 +809,12 @@ function PatternList( {
 				{ contextTab === 'context' && ! aINeedsData && ( ! getContextState(aiContext) || 'credits' === getContextState(aiContext) ) && (
 					<GenerateHeader context={ aiContext } contextLabel={ contextLabel } contextState={ getContextState(aiContext) } generateContext={ ( tempCon ) => generateContext( tempCon ) } />
 				) }
-				{ contextTab === 'context' && !failedAI && !filterValue && (
-					<PatternFilterDropdown categories={ categories } selectedCategories={ updateFilters } />
+				{ contextTab === 'context' && ! failedAI && ! filterValue && (
+					<div className="kb-patterns-filter-wrapper">
+						<span className="kb-pattern-filter-label">Filter by:</span>
+						{ categories.length > 0 && <PatternFilterDropdown label="Categories" items={ categories } selectedItems={ updateCategoryFilter } /> }
+						{ styles.length > 0 && <PatternFilterDropdown label="Styles" items={ styles } selectedItems={ updateStyleFilter } /> }
+					</div>
 				) }
 				{ hasItems && !failedAI && (
 					<KadenceBlockPatternList
