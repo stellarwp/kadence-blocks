@@ -1,0 +1,130 @@
+.kb-patterns-filter-wrapper {
+	display: flex;
+	gap: 14px;
+	align-items: center;
+	margin: 16px 48px 32px;
+}
+
+.kb-pattern-filter-label {
+	font-size: 13px;
+	color: #000;
+	font-weight: bold;
+	margin-right: 14px;
+}
+
+.kb-patterns-filter-dropdown {
+
+	.kb-toggle-button {
+		color: #000;
+		background: white;
+		border: 1px solid;
+		border-color: #DFDFDF;
+		padding: 8px 16px;
+		height: auto;
+		font-size: 13px;
+		line-height: 1.4;
+		border-radius: 4px;
+		font-weight: 500;
+
+		.kb-toggle-button-wrapper {
+			display: flex;
+			gap: 8px;
+			align-items: center;
+
+			> svg {
+				transform: rotate(0deg);
+
+				path {
+					fill: #000;
+				}
+			}
+		}
+
+		&:focus:not(:disabled) {
+			box-shadow: none;
+		}
+
+		&:hover {
+			color: #000;
+			background: #F5F5F5;
+			border-color: #DFDFDF;
+		}
+
+		&[aria-expanded='true'] {
+			color: white;
+			background: var(--kadence-ui-color, #0073E6);
+			border-color: var(--kadence-ui-color, #0073E6);
+
+			.kb-toggle-button-wrapper {
+				> svg {
+					transform: rotate(180deg);
+
+					path {
+						fill: white;
+					}
+				}
+			}
+		}
+	}
+}
+
+.kb-patterns-filter-dropdown-content {
+	box-shadow: 0px 0px 32px 0px #0000001A;
+	background-color: white;
+	border-radius: 4px;
+	border: 1px solid #e8e8e8;
+
+	.kb-pattern-filter-item {
+		white-space: nowrap;
+
+		.components-checkbox-control {
+			padding: 8px 32px 8px 12px;
+		}
+
+		.components-base-control__field {
+			margin-bottom: 0px;
+		}
+
+		.components-checkbox-control__label {
+			font-size: 15px;
+			color: #333;
+			white-space: nowrap;
+		}
+
+		.components-checkbox-control__input[type=checkbox]:checked {
+			background: #020129;
+			border-color: #020129;
+		}
+
+		&:hover {
+			background: #FAFAFA;
+		}
+	}
+
+	.components-popover__content {
+		padding: 0px;
+		position: relative;
+		background-color: white;
+		border-radius: 4px;
+
+		.kb-patterns-filter-dropdown-content-inner {
+			height: 300px;
+			overflow: scroll;
+    		padding-bottom: 42px;
+		}
+
+		.kb-pattern-filter-dropdown-content-clear {
+			position: absolute;
+			bottom: 0px;
+			background-color: white;
+			padding: 12px 8px 12px 12px;
+			font-size: 13px;
+			width: 100%;
+			border-top: 1px solid #DFDFDF;
+			cursor: pointer;
+			color: var(--kadence-ui-color, #0073E6);
+			font-weight: 500;
+		}
+
+	}
+}
