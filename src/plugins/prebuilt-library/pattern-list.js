@@ -590,17 +590,21 @@ function PatternList( {
 			);
 		}
 
-		if ( ( categoryFilter && categoryFilter.length > 0 ) || ( styleFilter && styleFilter.length > 0 ) ) {
-			const foundCategories = allPatterns.filter( ( pattern ) => {
+		if ( ( categoryFilter && categoryFilter.length > 0 ) && ( styleFilter && styleFilter.length > 0 ) ) {
+			allPatterns = allPatterns.filter( ( pattern ) => {
+				return pattern.categories.some( ( cat ) => categoryFilter.includes( cat ) ) &&
+							pattern.styles.some( ( style ) => styleFilter.includes( style ) );
+			} );
+		} else if ( categoryFilter && categoryFilter.length > 0 ) {
+			allPatterns = allPatterns.filter( ( pattern ) => {
 				return pattern.categories.some( ( cat ) => categoryFilter.includes( cat ) );
 			} );
-
-			const foundStyles = allPatterns.filter( ( pattern ) => {
+		} else if ( styleFilter && styleFilter.length > 0 ) {
+			allPatterns = allPatterns.filter( ( pattern ) => {
 				return pattern.styles.some( ( style ) => styleFilter.includes( style ) );
 			} );
-
-			allPatterns = [ ...foundCategories, ...foundStyles ];
 		}
+
 		if ( useImageReplace === 'all' && imageCollection ) {
 			let variation = 0;
 			allPatterns = allPatterns.map( ( item, index ) => {
@@ -831,6 +835,11 @@ function PatternList( {
 						rootScroll={ rootScroll }
 					/>
 				) }
+				{ !hasItems && !failedAI && (
+					<div className="kb-patterns-filter-wrapper">
+						{__( 'No patterns were found based on the selected filters.', 'kadence-blocks' )}
+					</div>
+				)}
 			</div>
 		</div>
 	);

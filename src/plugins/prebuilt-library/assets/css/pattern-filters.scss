@@ -2,7 +2,7 @@
 	display: flex;
 	gap: 14px;
 	align-items: center;
-	margin: 16px 48px 32px;
+	margin: 16px var(--kb-patterns-outer-wrap-spacing, 48px) 32px;
 }
 
 .kb-pattern-filter-label {
