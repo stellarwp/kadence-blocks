@@ -84,6 +84,15 @@ export default function replaceColors( content, style ) {
 			content = content.replace( tab_content_org, tab_content );
 		}
 
+		// Handle Dividers.
+		let row_divider_content = getStringBetween( content, 'wp:kadence/rowlayout', 'wp:kadence/rowlayout', 'kb-divider-static' );
+		if ( row_divider_content ) {
+			let row_divider_content_org = row_divider_content;
+			row_divider_content =  row_divider_content.replace( /"bottomSepColor":"palette9"/g, '"bottomSepColor":"ph-kb-pal9"' );
+			row_divider_content =  row_divider_content.replace( /"topSepColor":"palette9"/g, '"topSepColor":"ph-kb-pal9"' );
+			content = content.replace( row_divider_content_org, row_divider_content );
+		}
+
 		// Special testimonial issue.
 		let white_text_content = getStringBetweenWhen( content, '<!-- wp:kadence/column', 'kt-inside-inner-col', 'kb-pattern-light-color', 0 );
 		if ( white_text_content ) {
