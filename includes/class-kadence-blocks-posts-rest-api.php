@@ -211,6 +211,9 @@ class Kadence_Blocks_Post_Rest_Controller extends WP_REST_Controller {
 			$query_args['post_status']         = 'publish';
 			$query_args['ignore_sticky_posts'] = $request->get_param( self::PROP_ALLOW_STICKY );
 			$current_post_id                   = $request->get_param( self::PROP_POST_ID );
+			if( !empty( $request->get_param( self::PROP_INCLUDE ) ) ) {
+				$query_args['post__in']            = $request->get_param( self::PROP_INCLUDE );
+			}
 			if ( ! empty( $current_post_id ) ) {
 				$query_args['post__not_in']        = array( $current_post_id );
 			}
