@@ -117,7 +117,6 @@ function kadence_blocks_init() {
 	Config::set_hook_prefix( 'kadence-blocks' );
 	Config::set_stellar_slug( 'kadence-blocks' );
 	Telemetry::instance()->init( __FILE__ );
-
 	/**
 	 * AI-specific usage tracking. Only track if AI is opted in by user.
 	 */
