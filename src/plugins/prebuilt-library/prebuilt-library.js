@@ -158,7 +158,7 @@ class PrebuiltModal extends Component {
 						title={ __( 'Design Library', 'kadence-blocks' ) }
 						onRequestClose={ (event) => {
 							// No action on blur event (prevents AI modal from closing when Media Library modal opens).
-							if (event.type === 'blur') {
+							if ( event?.type && event.type === 'blur') {
 								return;
 							}
 
