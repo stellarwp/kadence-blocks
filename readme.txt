@@ -102,6 +102,7 @@ Release Date: December 13th, 2023
 * Fix: Issue with some logo items in library
 * Fix: Issue with some content in design lirbary.
 * Fix: Possible php notice with image import.
+* Fix: Issue with possible company description length.
 
 = 3.2.8 Pre Release =
 Release Date: December 11th, 2023

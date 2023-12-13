@@ -123,9 +123,7 @@ export const PATTERN_CATEGORIES = {
 	'home': __( 'Home', 'kadence-blocks' ),
 	'about': __( 'About', 'kadence-blocks' ),
 	'contact': __( 'Contact', 'kadence-blocks' ),
-	'pricing': __( 'Pricing', 'kadence-blocks' ),
 	'services': __( 'Services', 'kadence-blocks' ),
-	'blog': __( 'Blog', 'kadence-blocks' ),
 };
 export const CONTEXT_PROMPTS = {
 	'value-prop': '6',

@@ -39,7 +39,8 @@ export function getAsyncData() {
 			} );
 			return response;
 		} catch (error) {
-			console.log(`ERROR: ${ error }`);
+			const message = error?.message ? error.message : error;
+			console.log(`ERROR: ${ message }`);
 			return 'error';
 		}
 	}
@@ -65,7 +66,8 @@ export function getAsyncData() {
 				return true;
 			}
 		} catch (error) {
-			console.log(`ERROR: ${ error }`);
+			const message = error?.message ? error.message : error;
+			console.log(`ERROR: ${ message }`);
 			setLoadingWizard(false);
 			setError(true);
 
@@ -96,7 +98,8 @@ export function getAsyncData() {
 				}
 			}
 		} catch (error) {
-			console.log(`ERROR: ${ error }`);
+			const message = error?.message ? error.message : error;
+			console.log(`ERROR: ${ message }`);
 			setLoadingWizard(false);
 			setError(true);
 
@@ -163,7 +166,8 @@ export function getAsyncData() {
 				}
 				return [];
 			} catch (error) {
-				console.log(`ERROR: ${ error }`);
+				const message = error?.message ? error.message : error;
+				console.log(`ERROR: ${ message }`);
 			}
 		}
 		const industries = Array.isArray(userData.photoLibrary) ? userData?.photoLibrary : [ userData.photoLibrary ];
@@ -180,7 +184,8 @@ export function getAsyncData() {
 			}
 			return [];
 		} catch (error) {
-			console.log(`ERROR: ${ error }`);
+			const message = error?.message ? error.message : error;
+			console.log(`ERROR: ${ message }`);
 		}
 	}
 
@@ -200,7 +205,8 @@ export function getAsyncData() {
 			} );
 			return response;
 		} catch (error) {
-			console.log(`ERROR: ${ error }`);
+			const message = error?.message ? error.message : error;
+			console.log(`ERROR: ${ message }`);
 			return 'failed';
 		}
 	}
@@ -219,7 +225,8 @@ export function getAsyncData() {
 			} );
 			return response;
 		} catch (error) {
-			console.log(`ERROR: ${ error }`);
+			const message = error?.message ? error.message : error;
+			console.log(`ERROR: ${ message }`);
 			return 'failed';
 		}
 	}
@@ -237,7 +244,8 @@ export function getAsyncData() {
 			} );
 			return response;
 		} catch (error) {
-			console.log(`ERROR: ${ error }`);
+			const message = error?.message ? error.message : error;
+			console.log(`ERROR: ${ message }`);
 			return 'failed';
 		}
 	}
@@ -281,7 +289,8 @@ export function getAsyncData() {
 			} );
 			return response;
 		} catch (error) {
-			console.log(`ERROR: ${ error }`);
+			const message = error?.message ? error.message : error;
+			console.log(`ERROR: ${ message }`);
 			return 'failed';
 		}
 	}
@@ -302,7 +311,8 @@ export function getAsyncData() {
 			} );
 			return response;
 		} catch (error) {
-			console.log(`ERROR: ${ error }`);
+			const message = error?.message ? error.message : error;
+			console.log(`ERROR: ${ message }`);
 			return 'failed';
 		}
 	}
@@ -323,7 +333,8 @@ export function getAsyncData() {
 			} );
 			return response;
 		} catch (error) {
-			console.log(`ERROR: ${ error }`);
+			const message = error?.message ? error.message : error;
+			console.log(`ERROR: ${ message }`);
 			return 'failed';
 		}
 	}
@@ -346,7 +357,8 @@ export function getAsyncData() {
 			} );
 			return response;
 		} catch (error) {
-			console.log(`ERROR: ${ error }`);
+			const message = error?.message ? error.message : error;
+			console.log(`ERROR: ${ message }`);
 			return 'failed';
 		}
 	}
@@ -374,7 +386,8 @@ export function getAsyncData() {
 			} );
 			return response;
 		} catch (error) {
-			console.log(`ERROR: ${ error }`);
+			const message = error?.message ? error.message : error;
+			console.log(`ERROR: ${ message }`);
 			return 'failed';
 		}
 	}
@@ -392,7 +405,8 @@ export function getAsyncData() {
 			} );
 			return response;
 		} catch (error) {
-			console.log(`ERROR: ${ error }`);
+			const message = error?.message ? error.message : error;
+			console.log(`ERROR: ${ message }`);
 			return 'failed';
 		}
 	}
@@ -415,7 +429,8 @@ export function getAsyncData() {
 			} );
 			return response;
 		} catch (error) {
-			console.log(`ERROR: ${ error }`);
+			const message = error?.message ? error.message : error;
+			console.log(`ERROR: ${ message }`);
 			return 'failed';
 		}
 	}

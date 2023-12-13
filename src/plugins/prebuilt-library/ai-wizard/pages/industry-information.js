@@ -176,9 +176,13 @@ export function IndustryInformation() {
 									autoFocus
 									placeholder={getNameInputText("placeholder")}
 									value={companyName}
-									onChange={(value) =>
-										dispatch({ type: "SET_COMPANY_NAME", payload: value })
-									}
+									onChange={(value) => {
+										// Prevent a super long string.
+										if ( value && value.length > 120 ) {
+											value = value.substring(0, 120);
+										}
+										dispatch({ type: "SET_COMPANY_NAME", payload: value });
+									}}
 								/>
 								<LocationSelectControl
 									label={__("Where are you based?", "kadence-blocks")}

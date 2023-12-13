@@ -33,7 +33,8 @@ async function downloadImages( images ) {
 		} );
 		return response;
 	} catch (error) {
-		console.log(`ERROR: ${ error }`);
+		const message = error?.message ? error.message : error;
+		console.log(`ERROR: ${ message }`);
 		return false;
 	}
 }

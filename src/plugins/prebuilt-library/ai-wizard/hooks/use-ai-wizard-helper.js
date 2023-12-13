@@ -61,7 +61,8 @@ export function useAiWizardHelper(state, pages) {
 			currentPageIndex,
 			locationType,
 			locationInput,
-			keywords
+			keywords,
+			missionStatement,
 		} = state;
 		const missing = getMissingFields();
 		const pageId = pages?.[currentPageIndex]?.id;
@@ -69,6 +70,10 @@ export function useAiWizardHelper(state, pages) {
 		switch(pageId) {
 			case 'industry-information':
 				return (missing.length > 0 || locationType !== LOCATION_ONLINE_ONLY && ! locationInput);
+			case 'about-your-site':
+				const missionLength = missionStatement.length >= 200 && missionStatement.length < 1500 ? false : true;
+
+				return (missionLength || missing.length > 0) ? true : false;
 			case 'the-details':
 				const missingKeywords = keywords.length >= 5 ? false : true;
 

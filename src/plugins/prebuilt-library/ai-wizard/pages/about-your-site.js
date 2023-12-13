@@ -109,25 +109,33 @@ export function AboutYourSite() {
 	const { getMissionStatement } = missionStatementHelper();
 
 	useEffect(() => {
-		const progress = Math.round(
+		const tempProgress = Math.round(
 			(missionStatement.length / MISSION_STATEMENT_GOAL) * 100
 		);
-		const statementProgress = progress >= 100 ? 100 : progress;
-
-		if (statementProgress == 0) {
+		console.log("lendth", missionStatement.length);
+		if (tempProgress == 0) {
 			setIndicator("initial");
 		}
-		if (statementProgress < 50 && statementProgress > 0) {
+		if (tempProgress < 50 && tempProgress > 0) {
 			setIndicator("weak");
 		}
-		if (statementProgress >= 50) {
+		if (tempProgress >= 50 && tempProgress < 100) {
 			setIndicator("medium");
 		}
-		if (statementProgress == 100) {
+		if (tempProgress >= 100 && tempProgress < 200 ) {
 			setIndicator("strong");
 		}
+		if (tempProgress >= 200 && tempProgress < 500) {
+			setIndicator("enough");
+		}
+		if (tempProgress >= 400 && tempProgress < 500) {
+			setIndicator("less");
+		}
+		if (tempProgress >= 500 ) {
+			setIndicator("muchLess");
+		}
 
-		setProgress(statementProgress);
+		setProgress(tempProgress);
 	}, [missionStatement]);
 
 	function getPlaceholderText() {
@@ -193,7 +201,7 @@ export function AboutYourSite() {
 										dispatch({ type: "SET_IMAGE_SEARCH_QUERY", payload: '' });
 									}}
 									progressBarProps={{
-										value: progress,
+										value: progress >= 100 ? 100 : progress,
 										color: MISSION_STATEMENT_STATUS?.[indicator]?.color
 											? MISSION_STATEMENT_STATUS[indicator].color
 											: "red",
@@ -240,7 +248,7 @@ export function AboutYourSite() {
 								) }
 								<Flex justify="space-between">
 									<FlexItem>
-										{progress == 100 && (
+										{ ( progress >= 100 ) && ( progress < 400 ) && (
 											<Button
 												className="stellarwp-ai-improve-button"
 												icon={Ai}
