@@ -2122,16 +2122,18 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @param string $target_src the image url.
 	 */
 	public function get_image_info( $images, $target_src ) {
-		foreach ( $images['data'] as $image_group ) {
-			foreach ( $image_group['images'] as $image ) {
-				foreach ( $image['sizes'] as $size ) {
-					if ( $size['src'] === $target_src ) {
-						return array(
-							'alt'              => ! empty( $image['alt'] ) ? $image['alt'] : '',
-							'photographer'     => ! empty( $image['photographer'] ) ? $image['photographer'] : '',
-							'url'              => ! empty( $image['url'] ) ? $image['url'] : '',
-							'photographer_url' => ! empty( $image['photographer_url'] ) ? $image['photographer_url'] : '',
-						);
+		if ( isset( $images['data'] ) && is_array( $images['data'] ) ) {
+			foreach ( $images['data'] as $image_group ) {
+				foreach ( $image_group['images'] as $image ) {
+					foreach ( $image['sizes'] as $size ) {
+						if ( $size['src'] === $target_src ) {
+							return array(
+								'alt'              => ! empty( $image['alt'] ) ? $image['alt'] : '',
+								'photographer'     => ! empty( $image['photographer'] ) ? $image['photographer'] : '',
+								'url'              => ! empty( $image['url'] ) ? $image['url'] : '',
+								'photographer_url' => ! empty( $image['photographer_url'] ) ? $image['photographer_url'] : '',
+							);
+						}
 					}
 				}
 			}

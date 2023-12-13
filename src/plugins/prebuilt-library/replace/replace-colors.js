@@ -67,6 +67,10 @@ export default function replaceColors( content, style ) {
 	content = content.replace(/logo-placeholder-4.png/g, "logo-placeholder-4-white.png");
 	content = content.replace(/logo-placeholder-5.png/g, "logo-placeholder-5-white.png");
 	content = content.replace(/logo-placeholder-6.png/g, "logo-placeholder-6-white.png");
+	content = content.replace(/logo-placeholder-7.png/g, "logo-placeholder-7-white.png");
+	content = content.replace(/logo-placeholder-8.png/g, "logo-placeholder-8-white.png");
+	content = content.replace(/logo-placeholder-9.png/g, "logo-placeholder-9-white.png");
+	content = content.replace(/logo-placeholder-10.png/g, "logo-placeholder-10-white.png");
 
 	let replacements = [];
 

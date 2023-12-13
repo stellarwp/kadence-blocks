@@ -97,6 +97,10 @@ developers of this plugin.
 
 == Changelog ==
 
+= 3.2.9 Pre Release =
+Release Date: December 11th, 2023
+* Fix: Issue with some logo items in library
+
 = 3.2.8 Pre Release =
 Release Date: December 11th, 2023
 * Fix: Issue with typed text and & symbol.
