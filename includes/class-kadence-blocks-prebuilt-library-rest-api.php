@@ -539,23 +539,25 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$ready = true;
 		if ( ! empty( $contexts ) && is_array( $contexts ) ) {
 			foreach ( $contexts as $key => $context ) {
-				// Check local cache.
-				try {
-					$return_data[ $context ] = json_decode( $this->ai_cache->get( $available_prompts[ $context ] ), true );
-				} catch ( NotFoundException $e ) {
-					// Check if we have a remote file.
-					$response = $this->get_remote_contents( $available_prompts[ $context ] );
-					$data     = json_decode( $response, true );
-					if ( $response === 'error' ) {
-						$has_error = true;
-					} else if ( $response === 'processing' || isset( $data['data']['status'] ) && 409 === $data['data']['status'] ) {
-						$ready = false;
-					} else if ( isset( $data['data']['status'] ) ) {
-						$has_error = true;
-					} else {
-						$this->ai_cache->cache( $available_prompts[ $context ], $response );
+				if ( isset( $available_prompts[ $context ] ) ) {
+					// Check local cache.
+					try {
+						$return_data[ $context ] = json_decode( $this->ai_cache->get( $available_prompts[ $context ] ), true );
+					} catch ( NotFoundException $e ) {
+						// Check if we have a remote file.
+						$response = $this->get_remote_contents( $available_prompts[ $context ] );
+						$data     = json_decode( $response, true );
+						if ( $response === 'error' ) {
+							$has_error = true;
+						} else if ( $response === 'processing' || isset( $data['data']['status'] ) && 409 === $data['data']['status'] ) {
+							$ready = false;
+						} else if ( isset( $data['data']['status'] ) ) {
+							$has_error = true;
+						} else {
+							$this->ai_cache->cache( $available_prompts[ $context ], $response );
 
-						$return_data[ $context ] = $data;
+							$return_data[ $context ] = $data;
+						}
 					}
 				}
 			}
