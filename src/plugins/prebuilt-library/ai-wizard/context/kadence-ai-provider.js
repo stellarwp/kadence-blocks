@@ -9,6 +9,7 @@ import { __ } from '@wordpress/i18n';
 import { ENTITY_TYPE_INDIVIDUAL } from "../constants";
 
 const initialState = {
+	isComplete: false,
 	firstTime: true,
 	isSubmitted: false,
 	context: "kadence",

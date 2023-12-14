@@ -7,17 +7,16 @@
  */
 
 // Exit if accessed directly.
-use KadenceWP\KadenceBlocks\App;
-use KadenceWP\KadenceBlocks\StellarWP\ContainerContract\ContainerInterface;
-use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_authorization_token;
-use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
-use KadenceWP\KadenceBlocks\StellarWP\Uplink\Auth\Token\Contracts\Token_Manager;
-use KadenceWP\KadenceBlocks\StellarWP\Uplink\Config as UplinkConfig;
-use KadenceWP\KadenceBlocks\StellarWP\Uplink\Site\Data;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+use KadenceWP\KadenceBlocks\App;
+use KadenceWP\KadenceBlocks\StellarWP\ContainerContract\ContainerInterface;
+
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_authorization_token;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
 
 /**
  * Enqueue block assets for backend editor.
@@ -236,12 +235,10 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 	if ( ! empty( $pro_data['email'] ) ) {
 		$pro_data['api_email'] = $pro_data['email'];
 	}
-	$container     = UplinkConfig::get_container();
-	$data          = $container->get( Data::class );
-	$token         = get_authorization_token( apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ) );
+	$token         = get_authorization_token( 'kadence-blocks' );
 	$is_authorized = false;
 	if ( $token && ! empty( $pro_data['key'] ) ) {
-		$is_authorized = is_authorized( $pro_data['key'], $token, $data->get_domain() );
+		$is_authorized = is_authorized( $pro_data['key'], $token, get_license_domain() );
 	}
 	$font_sizes = apply_filters( 'kadence_blocks_variable_font_sizes', $font_sizes );
 	$subscribed = class_exists( 'Kadence_Blocks_Pro' ) ? true : get_option( 'kadence_blocks_wire_subscribe' );

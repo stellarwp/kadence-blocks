@@ -5,7 +5,7 @@
  * Description: Advanced Page Building Blocks for Gutenberg. Create custom column layouts, backgrounds, dual buttons, icons etc.
  * Author: Kadence WP
  * Author URI: https://www.kadencewp.com
- * Version: 3.2.7
+ * Version: 3.2.9
  * Requires PHP: 7.2
  * Text Domain: kadence-blocks
  * License: GPL2+
@@ -20,11 +20,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 define( 'KADENCE_BLOCKS_PATH', realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR );
 define( 'KADENCE_BLOCKS_URL', plugin_dir_url( __FILE__ ) );
-define( 'KADENCE_BLOCKS_VERSION', '3.2.7' );
+define( 'KADENCE_BLOCKS_VERSION', '3.2.9' );
 
 require_once plugin_dir_path( __FILE__ ) . 'vendor/vendor-prefixed/autoload.php';
 require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
-
 
 use KadenceWP\KadenceBlocks\App;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\ContainerAdapter;
@@ -118,7 +117,6 @@ function kadence_blocks_init() {
 	Config::set_hook_prefix( 'kadence-blocks' );
 	Config::set_stellar_slug( 'kadence-blocks' );
 	Telemetry::instance()->init( __FILE__ );
-
 	/**
 	 * AI-specific usage tracking. Only track if AI is opted in by user.
 	 */
@@ -139,15 +137,17 @@ function kadence_blocks_init() {
 		'Kadence Blocks',
 		KADENCE_BLOCKS_VERSION,
 		'kadence-blocks/kadence-blocks.php',
-		Kadence_Blocks::class,
+		Kadence_Blocks::class
 	);
 
 	do_action( 'kadence_blocks_uplink_loaded' );
 	add_filter(
 		'stellarwp/uplink/kadence-blocks/api_get_base_url',
-		function( $url ) {
+		static function() {
 			return 'https://licensing.kadencewp.com';
-		}
+		},
+		10,
+		0
 	);
 }
 add_action( 'plugins_loaded', 'kadence_blocks_init', 1 );
@@ -159,5 +159,3 @@ function kadence_blocks_lang() {
 	load_plugin_textdomain( 'kadence-blocks', false, basename( dirname( __FILE__ ) ) . '/languages' );
 }
 add_action( 'init', 'kadence_blocks_lang' );
-
-

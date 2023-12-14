@@ -36,6 +36,7 @@ import {
 	toggleFormat,
 	applyFormat,
 } from '@wordpress/rich-text';
+import { sendEvent } from '../../../extension/analytics/send-event';
 const name = 'kadence/ai-text';
 const allowedBlocks = [ 'kadence/advancedheading' ];
 export const AIText = {
@@ -66,6 +67,7 @@ export const AIText = {
 		const [ isLoading, setIsLoading ] = useState(false);
 		const [ dynamicRows, setDynamicRows ] = useState(1);
 		const [ aiDynamicRows, setAIDynamicRows ] = useState(2);
+		const [ promptCost, setPromptCost ] = useState(1);
 		const [ isToggled, setIsToggled ] = useState(false);
 		const [ credits, setCredits ] = useState( '' );
 		const [ tempCredits, setTempCredits ] = useState( '' );
@@ -80,7 +82,7 @@ export const AIText = {
 		const [ isToneOpen, setIsToneOpen ] = useState(false);
 		const activeStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 		const savedCredits = ( undefined !== activeStorage?.credits && '' !== activeStorage?.credits && null !== activeStorage?.credits ? activeStorage.credits : 'fetch' );
-		const currentCredits = ( '' !== credits ? credits : savedCredits );
+		const currentCredits = ('' !== credits ? credits : savedCredits);
 		async function getRemoteAvailableCredits() {
 			const response = await getAvailableCredits();
 			const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
@@ -103,15 +105,21 @@ export const AIText = {
 			}
 		}, [credits]);
 		useEffect( () => {
-			if ( value?.text && value?.text.length > 0 && value?.end && value.start !== value.end ) {
+			if ( value?.text && value?.text.length > 0 && value?.text.length < 800 && value?.end && value.start !== value.end ) {
+				console.log( value.text.substring(value.start, value.end) );
 				setSelectedContent( value.text.substring(value.start, value.end) );
 				if ( ! isOpen && value?.text.length > 30 ) {
 					setIsOpen( true );
 				}
-			} else if ( value?.text && value?.text.length > 0 && value.start === value.end && value?.text.length !== value.start ) {
+			} else if ( value?.text && value?.text.length > 0 && value?.text.length < 800 && value.start === value.end && value?.text.length !== value.start ) {
 				setSelectedContent( value.text );
 				if ( ! isOpen && value?.text.length > 30 ) {
 					setIsOpen( true );
+				}
+			} else if ( value?.text && value?.text.length >= 800 ) {
+				setSelectedContent( '' );
+				if ( isOpen ) {
+					setIsOpen( false );
 				}
 			} else if ( selectedContent && selectedContent.length > 0 ) {
 				setSelectedContent( '' );
@@ -119,8 +127,14 @@ export const AIText = {
 					setIsOpen( false );
 				}
 			}
+			if ( value?.text && value?.text.length > 400 ) {
+				setPromptCost( 2 );
+			} else {
+				setPromptCost( 1 );
+			}
 		}, [ value ] );
 		function handleGettingContent(value) {
+			let AIContent = '';
 			setIsLoading(true);
 			setAiSuggestion( '' );
 			setError('');
@@ -133,18 +147,29 @@ export const AIText = {
 							setIsLoading(false);
 							setPrompt('');
 							setIsOpen( true );
-							setTempCredits(parseInt( currentCredits ) - 1);
+							setTempCredits(parseInt( currentCredits ) - promptCost);
 							setCredits( 'fetch' );
+							sendEvent('ai_inline_completed', {
+								tool_name: name,
+								type: 'get_new_content',
+								initial_text: '',
+								result: AIContent,
+								credits_before: parseInt(currentCredits),
+								credits_after: parseInt(currentCredits) - 1,
+								credits_used: 1,
+							});
 							return;
 						}
 
 						const eventData = convertStreamDataToJson(value);
-						
+
 						if (eventData?.content) {
+							AIContent = AIContent + eventData.content
 							setAiSuggestion((previousValue) => {
 								return previousValue + eventData.content;
 							});
 						}
+
 						return reader.read().then(processText);
 					});
 				})
@@ -159,6 +184,9 @@ export const AIText = {
 				});
 		}
 		function handleEditingContent(value, prompt, type) {
+			let AIContent = '';
+			let initial_text = value;
+			let action_type = type;
 			setIsLoading(true);
 			setAiSuggestion( '' );
 			setError('');
@@ -170,19 +198,30 @@ export const AIText = {
 						if (done) {
 							setIsLoading(false);
 							setPrompt('');
-							setTempCredits(parseInt( currentCredits ) - 1);
+							setTempCredits(parseInt( currentCredits ) - promptCost);
 							setCredits( 'fetch' );
 							setIsOpen( true );
+							sendEvent('ai_inline_completed', {
+								tool_name: name,
+								type: action_type,
+								initial_text: initial_text,
+								result: AIContent,
+								credits_before: parseInt(currentCredits),
+								credits_after: parseInt(currentCredits) - 1,
+								credits_used: 1,
+							});
 							return;
 						}
 
 						const eventData = convertStreamDataToJson(value);
-						
+
 						if (eventData?.content) {
+							AIContent = AIContent + eventData.content;
 							setAiSuggestion((previousValue) => {
 								return previousValue + eventData.content;
 							});
 						}
+
 						return reader.read().then(processText);
 					});
 				})
@@ -197,6 +236,9 @@ export const AIText = {
 				});
 		}
 		function handleTransformingContent(value, type) {
+			let AIContent = '';
+			let initial_text = value;
+			let action_type = type;
 			setIsLoading(true);
 			setAiSuggestion( '' );
 			setError('');
@@ -209,13 +251,23 @@ export const AIText = {
 							setIsLoading(false);
 							setPrompt('');
 							setIsOpen( true );
-							setTempCredits(parseInt( currentCredits ) - 1);
+							setTempCredits(parseInt( currentCredits ) - promptCost);
 							setCredits( 'fetch' );
+							sendEvent('ai_inline_completed', {
+								tool_name: name,
+								type: action_type,
+								initial_text: initial_text,
+								result: AIContent,
+								credits_before: parseInt(currentCredits),
+								credits_after: parseInt(currentCredits) - 1,
+								credits_used: 1,
+							});
 							return;
 						}
 
 						const eventData = convertStreamDataToJson(value);
 						if (eventData?.content) {
+							AIContent = AIContent + eventData.content;
 							setAiSuggestion((previousValue) => {
 								return previousValue + eventData.content;
 							});

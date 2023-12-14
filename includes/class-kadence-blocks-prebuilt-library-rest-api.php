@@ -3,6 +3,10 @@
  * REST API for Kadence prebuilt library.
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 use KadenceWP\KadenceBlocks\Cache\Ai_Cache;
 use KadenceWP\KadenceBlocks\Cache\Block_Library_Cache;
 use KadenceWP\KadenceBlocks\Image_Downloader\Image_Downloader;
@@ -10,12 +14,10 @@ use KadenceWP\KadenceBlocks\Image_Downloader\Cache_Primer;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\ImageDownloader\Exceptions\ImageDownloadException;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Storage\Exceptions\NotFoundException;
 use KadenceWP\KadenceBlocks\Traits\Rest\Image_Trait;
-use KadenceWP\KadenceBlocks\StellarWP\Uplink\Config as UplinkConfig;
-use KadenceWP\KadenceBlocks\StellarWP\Uplink\Site\Data;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_original_domain;
+
 /**
  * REST API prebuilt library.
  */
@@ -537,23 +539,25 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$ready = true;
 		if ( ! empty( $contexts ) && is_array( $contexts ) ) {
 			foreach ( $contexts as $key => $context ) {
-				// Check local cache.
-				try {
-					$return_data[ $context ] = json_decode( $this->ai_cache->get( $available_prompts[ $context ] ), true );
-				} catch ( NotFoundException $e ) {
-					// Check if we have a remote file.
-					$response = $this->get_remote_contents( $available_prompts[ $context ] );
-					$data     = json_decode( $response, true );
-					if ( $response === 'error' ) {
-						$has_error = true;
-					} else if ( $response === 'processing' || isset( $data['data']['status'] ) && 409 === $data['data']['status'] ) {
-						$ready = false;
-					} else if ( isset( $data['data']['status'] ) ) {
-						$has_error = true;
-					} else {
-						$this->ai_cache->cache( $available_prompts[ $context ], $response );
+				if ( isset( $available_prompts[ $context ] ) ) {
+					// Check local cache.
+					try {
+						$return_data[ $context ] = json_decode( $this->ai_cache->get( $available_prompts[ $context ] ), true );
+					} catch ( NotFoundException $e ) {
+						// Check if we have a remote file.
+						$response = $this->get_remote_contents( $available_prompts[ $context ] );
+						$data     = json_decode( $response, true );
+						if ( $response === 'error' ) {
+							$has_error = true;
+						} else if ( $response === 'processing' || isset( $data['data']['status'] ) && 409 === $data['data']['status'] ) {
+							$ready = false;
+						} else if ( isset( $data['data']['status'] ) ) {
+							$has_error = true;
+						} else {
+							$this->ai_cache->cache( $available_prompts[ $context ], $response );
 
-						$return_data[ $context ] = $data;
+							$return_data[ $context ] = $data;
+						}
 					}
 				}
 			}
@@ -707,14 +711,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			$this->api_email = $data['email'];
 		}
 	}
-	/**
-	 * Get the site domain.
-	 */
-	public static function get_site_domain() {
-		$container     = UplinkConfig::get_container();
-		$data          = $container->get( Data::class );
-		return $data->get_domain();
-	}
 
 	/**
 	 * Retrieves a collection of objects.
@@ -860,7 +856,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				'type'    => ( ! empty( $pattern_type ) ? $pattern_type : 'pattern' ),
 				'key'     => $key,
 				'id'      => $pattern_id,
-				'site'    => $this->get_site_domain(),
+				'site'    => get_original_domain(),
 			);
 			if ( ! empty( $pattern_style ) ) {
 				$args['style'] = $pattern_style;
@@ -1578,7 +1574,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return string Returns the remote URL contents.
 	 */
 	public function get_remote_library_contents( $library, $library_url, $key ) {
-		$site_url = $this->get_site_domain();
+		$site_url = get_original_domain();
 		$args = array(
 			'key'  => $key,
 			'site' => $site_url,
@@ -1739,7 +1735,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function get_remote_remaining_credits() {
 		$args = array(
-			'site'  => $this->get_site_domain(),
+			'site'  => get_license_domain(),
 			'key'   => $this->api_key,
 		);
 		if ( ! empty( $this->api_email ) ) {
@@ -2128,16 +2124,18 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @param string $target_src the image url.
 	 */
 	public function get_image_info( $images, $target_src ) {
-		foreach ( $images['data'] as $image_group ) {
-			foreach ( $image_group['images'] as $image ) {
-				foreach ( $image['sizes'] as $size ) {
-					if ( $size['src'] === $target_src ) {
-						return array(
-							'alt'              => ! empty( $image['alt'] ) ? $image['alt'] : '',
-							'photographer'     => ! empty( $image['photographer'] ) ? $image['photographer'] : '',
-							'url'              => ! empty( $image['url'] ) ? $image['url'] : '',
-							'photographer_url' => ! empty( $image['photographer_url'] ) ? $image['photographer_url'] : '',
-						);
+		if ( isset( $images['data'] ) && is_array( $images['data'] ) ) {
+			foreach ( $images['data'] as $image_group ) {
+				foreach ( $image_group['images'] as $image ) {
+					foreach ( $image['sizes'] as $size ) {
+						if ( $size['src'] === $target_src ) {
+							return array(
+								'alt'              => ! empty( $image['alt'] ) ? $image['alt'] : '',
+								'photographer'     => ! empty( $image['photographer'] ) ? $image['photographer'] : '',
+								'url'              => ! empty( $image['url'] ) ? $image['url'] : '',
+								'photographer_url' => ! empty( $image['photographer_url'] ) ? $image['photographer_url'] : '',
+							);
+						}
 					}
 				}
 			}
@@ -2205,7 +2203,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function get_token_header( $args = array() ) {
 
-		$site_url     = self::get_site_domain();
+		$site_url     = get_original_domain();
 		$site_name    = get_bloginfo( 'name' );
 		$license_data = kadence_blocks_get_current_license_data();
 

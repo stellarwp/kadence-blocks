@@ -74,5 +74,6 @@
     "gulp-rename": "^2.0.0",
     "gulp-sass": "^5.1.0",
     "install": "^0.13.0"
-  }
+  },
+  "postcss": {}
 }

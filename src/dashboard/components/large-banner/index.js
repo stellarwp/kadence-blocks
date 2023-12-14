@@ -38,6 +38,8 @@ export function LargeBanner({
 	isUserAuthenticated,
 	activateUrl,
 	onUpdateWizard,
+	showControls,
+	isNetworkAdmin,
 	siteName = '',
 }) {
 	const hasPro = ( window?.kadenceHomeParams?.pro && kadenceHomeParams.pro === 'true' ? true : false );
@@ -78,10 +80,15 @@ export function LargeBanner({
 				{!isUserAuthenticated && (
 					<>
 						<div className="kb-large-banner__subheading">{hasPro ? subHeadingPro : subHeading}</div>
-						<a className="uplink-authorize" href={activateUrl} >{buttonText}</a>
+						{ showControls && (
+							<a className="uplink-authorize" href={activateUrl} >{buttonText}</a>
+						) }
+						{ ! showControls && (
+							<p className="uplink-authorize-note">{__('Authorization needed from network admin', 'kadence-blocks')}</p>
+						) }
 					</>
 				)}
-				{isUserAuthenticated && (
+				{isUserAuthenticated && ! isNetworkAdmin && (
 					<>
 						<Button
 							onClick={ onUpdateWizard }

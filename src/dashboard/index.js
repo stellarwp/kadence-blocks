@@ -34,7 +34,11 @@ export default function KadenceBlocksHome() {
 	const [aiStatus, setAIStatus] = useState('start');
 	const [triggerNotice, setShouldTriggerNotice] = useState(false);
 	// Get if user is authenticated
-	const authenticated = kadenceHomeParams.isAuthorized ? true : false;
+	const authenticated    = kadenceHomeParams.isAuthorized ? true : false;
+	const isNetworkAdmin   = kadenceHomeParams.isNetworkAdmin ? true : false;
+	const isNetworkEnabled = kadenceHomeParams.isNetworkEnabled ? true : false;
+	const showControls     = ( isNetworkAdmin && isNetworkEnabled ) || ( ! isNetworkAdmin && ! isNetworkEnabled ) ? true : false;
+
 	const content = authenticated
 		? AUTHENTICATED_CONTENT
 		: UNAUTHENTICATED_CONTENT;
@@ -134,6 +138,8 @@ export default function KadenceBlocksHome() {
 				activateUrl={ kadenceHomeParams.authUrl }
 				onUpdateWizard={() => setWizardState(true)}
 				isUserAuthenticated={authenticated}
+				showControls={showControls}
+				isNetworkAdmin={isNetworkAdmin}
 			/>
 			{ aiStatus === 'getInitial' && (
 				<div className="components-notice kadence-ai-notice is-info"><div className="components-notice__content">
@@ -163,7 +169,7 @@ export default function KadenceBlocksHome() {
 						);
 					})}
 
-				{wizardState && (
+				{ ! isNetworkAdmin && wizardState && (
 					<AiWizard
 						onClose={closeAiWizard}
 						onPrimaryAction={handleAiWizardPrimaryAction}
@@ -180,7 +186,12 @@ export default function KadenceBlocksHome() {
 				</div>
 			</div>
 			<div className="kb-footer-status">
-				<p>{ authenticated ? footerText : __( 'AI access is not authorized.')}</p>
+				{ showControls && (
+					<p>{ authenticated ? footerText : __( 'AI access is not authorized.', 'kadence-blocks' ) }</p>
+				) }
+				{ ! showControls && (
+					<p>{ authenticated ? __( 'AI access authorized.', 'kadence-blocks' ) : __( 'AI access is not authorized.', 'kadence-blocks' ) }</p>
+				) }
 			</div>
 		</>
 	);

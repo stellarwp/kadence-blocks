@@ -48,7 +48,7 @@ export default function replaceColors( content, style ) {
 	if ( 'dark' !== style && 'highlight' !== style ) {
 		return content;
 	}
-	// Swap Logos
+	// Swap Logos (old deprecated).
 	content = content.replace(/Logo-ploaceholder.png/g, "Logo-ploaceholder-white.png");
 	content = content.replace(/Logo-ploaceholder-1.png/g, "Logo-ploaceholder-1-white.png");
 	content = content.replace(/Logo-ploaceholder-2.png/g, "Logo-ploaceholder-2-white.png");
@@ -58,6 +58,19 @@ export default function replaceColors( content, style ) {
 	content = content.replace(/Logo-ploaceholder-6.png/g, "Logo-ploaceholder-6-white.png");
 	content = content.replace(/Logo-ploaceholder-7.png/g, "Logo-ploaceholder-7-white.png");
 	content = content.replace(/Logo-ploaceholder-8.png/g, "Logo-ploaceholder-8-white.png");
+
+	// Swap Logos (NEW).
+	content = content.replace(/logo-placeholder.png/g, "logo-placeholder-white.png");
+	content = content.replace(/logo-placeholder-1.png/g, "logo-placeholder-1-white.png");
+	content = content.replace(/logo-placeholder-2.png/g, "logo-placeholder-2-white.png");
+	content = content.replace(/logo-placeholder-3.png/g, "logo-placeholder-3-white.png");
+	content = content.replace(/logo-placeholder-4.png/g, "logo-placeholder-4-white.png");
+	content = content.replace(/logo-placeholder-5.png/g, "logo-placeholder-5-white.png");
+	content = content.replace(/logo-placeholder-6.png/g, "logo-placeholder-6-white.png");
+	content = content.replace(/logo-placeholder-7.png/g, "logo-placeholder-7-white.png");
+	content = content.replace(/logo-placeholder-8.png/g, "logo-placeholder-8-white.png");
+	content = content.replace(/logo-placeholder-9.png/g, "logo-placeholder-9-white.png");
+	content = content.replace(/logo-placeholder-10.png/g, "logo-placeholder-10-white.png");
 
 	let replacements = [];
 
@@ -69,6 +82,15 @@ export default function replaceColors( content, style ) {
 			tab_content =  tab_content.replace( /"titleColorActive":"palette9"/g, '"titleColorActive":"ph-kb-pal9"' );
 			tab_content =  tab_content.replace( /"titleColorHover":"palette9"/g, '"titleColorHover":"ph-kb-pal9"' );
 			content = content.replace( tab_content_org, tab_content );
+		}
+
+		// Handle Dividers.
+		let row_divider_content = getStringBetween( content, 'wp:kadence/rowlayout', 'wp:kadence/rowlayout', 'kb-divider-static' );
+		if ( row_divider_content ) {
+			let row_divider_content_org = row_divider_content;
+			row_divider_content =  row_divider_content.replace( /"bottomSepColor":"palette9"/g, '"bottomSepColor":"ph-kb-pal9"' );
+			row_divider_content =  row_divider_content.replace( /"topSepColor":"palette9"/g, '"topSepColor":"ph-kb-pal9"' );
+			content = content.replace( row_divider_content_org, row_divider_content );
 		}
 
 		// Special testimonial issue.

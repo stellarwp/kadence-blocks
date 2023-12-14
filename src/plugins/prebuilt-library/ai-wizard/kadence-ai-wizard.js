@@ -77,6 +77,7 @@ export function KadenceAiWizard( props ) {
 
 	const { state, dispatch } = useKadenceAi();
 	const {
+		isComplete,
 		firstTime,
 		isSubmitted,
 		currentPageIndex,
@@ -95,12 +96,26 @@ export function KadenceAiWizard( props ) {
 		const saveStatus = await saveAiWizardData({
 			firstTime: false,
 			isSubmitted: true,
+			isComplete: isComplete,
 			...rest
 		});
 
 		if (saveStatus) {
 			onWizardClose( 'saved' );
 			handleEvent( 'ai_wizard_update' );
+		}
+	}
+
+	async function handleComplete() {
+		const complete = await saveAiWizardData({
+			firstTime: false,
+			isSubmitted: true,
+			isComplete: true,
+			...rest
+		});
+
+		if (complete) {
+			handleEvent('ai_wizard_complete');
 		}
 	}
 
@@ -120,9 +135,9 @@ export function KadenceAiWizard( props ) {
 		// Submit wizard data on finish buttton click.
 		if (event.type === 'click' && event.target.classList.contains('components-wizard__primary-button')) {
 			handleSave();
-			handleEvent( 'ai_wizard_complete' );
 
 			if ( ! photographyOnly ) {
+				handleComplete();
 				onPrimaryAction(event, true);
 			}
 

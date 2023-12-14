@@ -189,6 +189,27 @@ export const MISSION_STATEMENT_STATUS = {
 			"kadence-blocks"
 		),
 	},
+	enough: {
+		color: "#1B8F6D",
+		message: __(
+			"Excellent work! You have added enough information.",
+			"kadence-blocks"
+		),
+	},
+	less: {
+		color: "#B35F00",
+		message: __(
+			"ok, you've added a lot of information. Try removing some to get better results.",
+			"kadence-blocks"
+		),
+	},
+	muchLess: {
+		color: "#DF3416",
+		message: __(
+			"You've added too much information. Remove some to move forward.",
+			"kadence-blocks"
+		),
+	},
 };
 
 export const INDUSTRY_BACKGROUNDS = [SpaBg, BusinessBg, TaxesBg, EducationBg];

@@ -114,14 +114,20 @@ class Block_Library_Cache implements Terminable {
 		if ( ! isset( $this->items ) ) {
 			return;
 		}
-
 		foreach ( $this->items as $filename => $data ) {
 			if ( $this->storage->has( $filename ) ) {
-				$this->logger->warning( 'Filename already exists', [
+				$this->logger->debug( 'Filename already exists, deleting file...', [
 					'filename' => $filename,
 				] );
 
-				continue;
+				try {
+					$this->storage->delete( $filename );
+				} catch ( StorageException $e ) {
+					$this->logger->error( 'Error deleting existing cache file', [
+						'filename'  => $filename,
+						'exception' => $e->getMessage(),
+					] );
+				}
 			}
 
 			try {
