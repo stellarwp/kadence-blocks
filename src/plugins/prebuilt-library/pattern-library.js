@@ -101,6 +101,7 @@ function PatternLibrary( {
 	const [ teamCollection, setTeamCollection ] = useState( {} );
 	const [ categories, setCategories ] = useState( PATTERN_CATEGORIES );
 	const [ categoryListOptions, setCategoryListOptions ] = useState( [] );
+	const [ styleListOptions, setStyleListOptions ] = useState( [] );
 	const [ contextOptions, setContextOptions ] = useState( PATTERN_CONTEXTS );
 	const [ contextStatesRef, setContextStatesRef ] = useState( false );
 	const [ contextListOptions, setContextListOptions ] = useState( [] );
@@ -232,11 +233,46 @@ function PatternLibrary( {
 	const { createErrorNotice } = useDispatch(
 		noticesStore
 	);
+
+	// Setting category options
 	useEffect( () => {
 		setCategoryListOptions( Object.keys( categories ).map( function( key, index ) {
 			return { value: ( 'category' === key ? 'all' : key ), label: ( 'category' === key ? __( 'All', 'kadence-blocks' ) : categories[key] ) }
 		} ) );
 	}, [ categories ] );
+
+	// Setting style options
+	useEffect( () => {
+		const patternStyles = Object.keys( patterns ).map( function( key ) {
+			return patterns[ key ].styles;
+		} );
+
+		// If array is empty, return
+		if ( ! patternStyles.length ) {
+			return;
+		}
+
+		// Clear duplicates
+		const uniqueMap = new Map();
+		patternStyles.forEach( ( item ) => {
+			if ( ! item ) {
+				return;
+			}
+			const key = Object.keys( item )[ 0 ];
+			const value = item[ key ];
+			uniqueMap.set( value, item );
+		} );
+
+		const uniqueArray = Array.from( uniqueMap.values() );
+		const styleOptions = uniqueArray.map( function( key ) {
+			const keyValue = Object.keys( key )[ 0 ];
+			const keyName = key[ keyValue ];
+			return { value: keyValue, label: keyName };
+		} );
+
+		setStyleListOptions( styleOptions );
+	}, [ patterns ] );
+
 	useEffect( () => {
 		setPageCategoryListOptions( Object.keys( pagesCategories ).map( function( key, index ) {
 			return { value: ( 'category' === key ? 'all' : key ), label: ( 'category' === key ? __( 'All', 'kadence-blocks' ) : pagesCategories[key] ) }
@@ -1210,6 +1246,7 @@ function PatternLibrary( {
 								} );
 							} }
 							categories={ categoryListOptions }
+							styles={ styleListOptions }
 						/>
 					) }
 				</>
