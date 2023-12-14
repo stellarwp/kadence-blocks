@@ -284,11 +284,9 @@ function LoadingFailedHeader( { type } ) {
 function PatternFilterDropdown( { label, items, selectedItems } ) {
 	const [ options, setOptions ] = useState( items.filter( ( pattern ) => pattern.label !== 'All' ) );
 	const [ selectedPatterns, setSelectedPatterns ] = useState( [] );
-
 	useEffect(() => {
 		if(options && options.length) {
 			const temp = options.filter((pattern) => pattern.checked);
-			console.log("🚀 ~ file: pattern-list.js:292 ~ useEffect ~ temp:", temp)
 			setSelectedPatterns(temp);
 
 			if(selectedItems) {
@@ -355,7 +353,7 @@ function PatternFilterDropdown( { label, items, selectedItems } ) {
 						) ) }
 					</div>
 					<div className='kb-pattern-filter-dropdown-content-clear' onClick={(_e) => clearFilter()}>
-						Clear
+						{ __('Clear', 'kadence-blocks' ) }
 					</div>
 				</div>
 			) }
@@ -590,16 +588,16 @@ function PatternList( {
 			);
 		}
 
-		if ( ( categoryFilter && categoryFilter.length > 0 ) && ( styleFilter && styleFilter.length > 0 ) ) {
+		if ( contextTab === 'context' && ( categoryFilter && categoryFilter.length > 0 ) && ( styleFilter && styleFilter.length > 0 ) ) {
 			allPatterns = allPatterns.filter( ( pattern ) => {
 				return pattern.categories.some( ( cat ) => categoryFilter.includes( cat ) ) &&
 							pattern.styles.some( ( style ) => styleFilter.includes( style ) );
 			} );
-		} else if ( categoryFilter && categoryFilter.length > 0 ) {
+		} else if ( contextTab === 'context' && categoryFilter && categoryFilter.length > 0 ) {
 			allPatterns = allPatterns.filter( ( pattern ) => {
 				return pattern.categories.some( ( cat ) => categoryFilter.includes( cat ) );
 			} );
-		} else if ( styleFilter && styleFilter.length > 0 ) {
+		} else if ( contextTab === 'context' && styleFilter && styleFilter.length > 0 ) {
 			allPatterns = allPatterns.filter( ( pattern ) => {
 				return pattern.styles.some( ( style ) => styleFilter.includes( style ) );
 			} );
@@ -817,7 +815,10 @@ function PatternList( {
 					<div className="kb-patterns-filter-wrapper">
 						<span className="kb-pattern-filter-label">Filter by:</span>
 						{ categories.length > 0 && <PatternFilterDropdown label="Categories" items={ categories } selectedItems={ updateCategoryFilter } /> }
-						{ styles.length > 0 && <PatternFilterDropdown label="Styles" items={ styles } selectedItems={ updateStyleFilter } /> }
+						{
+						/* Hold off until starter templates are ready */
+						// styles.length > 0 && <PatternFilterDropdown label="Styles" items={ styles } selectedItems={ updateStyleFilter } /> 
+						}
 					</div>
 				) }
 				{ hasItems && !failedAI && (
