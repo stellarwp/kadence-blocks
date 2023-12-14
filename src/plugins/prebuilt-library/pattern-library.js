@@ -1076,7 +1076,8 @@ function PatternLibrary( {
 								</Button>
 							) }
 						</div>
-						{ styleTerms && styleTerms.length ? (
+						{ /* Temp removal as we are not using */ }
+						{ false && styleTerms && styleTerms.length ? (
 							<div className="kb-styles-filter-popover">
 								<Button
 									className={ 'kb-trigger-filter-settings' }
