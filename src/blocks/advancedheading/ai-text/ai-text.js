@@ -67,6 +67,7 @@ export const AIText = {
 		const [ isLoading, setIsLoading ] = useState(false);
 		const [ dynamicRows, setDynamicRows ] = useState(1);
 		const [ aiDynamicRows, setAIDynamicRows ] = useState(2);
+		const [ promptCost, setPromptCost ] = useState(1);
 		const [ isToggled, setIsToggled ] = useState(false);
 		const [ credits, setCredits ] = useState( '' );
 		const [ tempCredits, setTempCredits ] = useState( '' );
@@ -104,21 +105,32 @@ export const AIText = {
 			}
 		}, [credits]);
 		useEffect( () => {
-			if ( value?.text && value?.text.length > 0 && value?.end && value.start !== value.end ) {
+			if ( value?.text && value?.text.length > 0 && value?.text.length < 800 && value?.end && value.start !== value.end ) {
+				console.log( value.text.substring(value.start, value.end) );
 				setSelectedContent( value.text.substring(value.start, value.end) );
 				if ( ! isOpen && value?.text.length > 30 ) {
 					setIsOpen( true );
 				}
-			} else if ( value?.text && value?.text.length > 0 && value.start === value.end && value?.text.length !== value.start ) {
+			} else if ( value?.text && value?.text.length > 0 && value?.text.length < 800 && value.start === value.end && value?.text.length !== value.start ) {
 				setSelectedContent( value.text );
 				if ( ! isOpen && value?.text.length > 30 ) {
 					setIsOpen( true );
+				}
+			} else if ( value?.text && value?.text.length >= 800 ) {
+				setSelectedContent( '' );
+				if ( isOpen ) {
+					setIsOpen( false );
 				}
 			} else if ( selectedContent && selectedContent.length > 0 ) {
 				setSelectedContent( '' );
 				if ( isOpen ) {
 					setIsOpen( false );
 				}
+			}
+			if ( value?.text && value?.text.length > 400 ) {
+				setPromptCost( 2 );
+			} else {
+				setPromptCost( 1 );
 			}
 		}, [ value ] );
 		function handleGettingContent(value) {
@@ -135,7 +147,7 @@ export const AIText = {
 							setIsLoading(false);
 							setPrompt('');
 							setIsOpen( true );
-							setTempCredits(parseInt( currentCredits ) - 1);
+							setTempCredits(parseInt( currentCredits ) - promptCost);
 							setCredits( 'fetch' );
 							sendEvent('ai_inline_completed', {
 								tool_name: name,
@@ -186,7 +198,7 @@ export const AIText = {
 						if (done) {
 							setIsLoading(false);
 							setPrompt('');
-							setTempCredits(parseInt( currentCredits ) - 1);
+							setTempCredits(parseInt( currentCredits ) - promptCost);
 							setCredits( 'fetch' );
 							setIsOpen( true );
 							sendEvent('ai_inline_completed', {
@@ -239,7 +251,7 @@ export const AIText = {
 							setIsLoading(false);
 							setPrompt('');
 							setIsOpen( true );
-							setTempCredits(parseInt( currentCredits ) - 1);
+							setTempCredits(parseInt( currentCredits ) - promptCost);
 							setCredits( 'fetch' );
 							sendEvent('ai_inline_completed', {
 								tool_name: name,

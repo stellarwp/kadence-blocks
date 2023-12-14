@@ -11,6 +11,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_key;
+
 /**
  * Check if we are in AMP Mode.
  */
@@ -135,48 +137,54 @@ function kadence_blocks_wc_clean( $var ) {
  * Get the current license key for the plugin.
  */
 function kadence_blocks_get_current_license_key() {
-	// Check if we have pro active.
-	if ( class_exists( 'Kadence_Blocks_Pro' ) ) {
-		$license_key = get_option( 'stellarwp_uplink_license_key_kadence-blocks-pro', '' );
-		if ( ! empty( $license_key ) ) {
-			return $license_key;
-		} else {
-			$license_data = kadence_blocks_get_deprecated_pro_license_data();
-			if ( $license_data && ! empty( $license_data['api_key'] ) ) {
-				return $license_data['api_key'];
-			}
-		}
-	}
-	$license_key = get_option( 'stellarwp_uplink_license_key_kadence-blocks', '' );
-	return $license_key;
+	return get_license_key( 'kadence-blocks-pro' ) ?: get_license_key( 'kadence-blocks' );
 }
+
 /**
  * Get the current license key for the plugin.
  */
 function kadence_blocks_get_current_license_email() {
-	// Check if we have pro active.
-	if ( class_exists( 'Kadence_Blocks_Pro' ) ) {
-		$license_key = get_option( 'stellarwp_uplink_license_key_kadence-blocks-pro', '' );
-		if ( ! empty( $license_key ) ) {
-			return '';
-		} else {
-			$license_data = kadence_blocks_get_deprecated_pro_license_data();
-			if ( $license_data && ! empty( $license_data['api_email'] ) ) {
-				return $license_data['api_email'];
-			}
+	if ( ! empty( get_license_key( 'kadence-blocks-pro' ) ) ) {
+		return '';
+	} else {
+		$license_data = kadence_blocks_get_deprecated_pro_license_data();
+		if ( $license_data && ! empty( $license_data['api_email'] ) ) {
+			return $license_data['api_email'];
 		}
 	}
+
 	return '';
 }
+
 /**
  * Get the current license key for the plugin.
+ *
+ * @return array{key: string, email: string}
  */
-function kadence_blocks_get_current_license_data() {
+function kadence_blocks_get_current_license_data(): array {
+	static $cache;
+
+	if ( is_array( $cache ) ) {
+		return $cache;
+	}
+
 	$license_data = array(
 		'key'   => kadence_blocks_get_current_license_key(),
 		'email' => kadence_blocks_get_current_license_email(),
 	);
-	return $license_data;
+
+	return $cache = $license_data;
+}
+
+/**
+ * Check if network activation is enabled.
+ */
+function kadence_blocks_is_network_authorize_enabled() {
+	$network_enabled = ! apply_filters( 'kadence_activation_individual_multisites', true );
+	if ( ! $network_enabled && defined( 'KADENCE_ACTIVATION_NETWORK_ENABLED' ) && KADENCE_ACTIVATION_NETWORK_ENABLED ) {
+		$network_enabled = true;
+	}
+	return $network_enabled;
 }
 /**
  * Get the license information.
@@ -205,7 +213,7 @@ function kadence_blocks_get_deprecated_pro_license_data() {
 			$data['api_email'] = $pro_data['activation_email'];
 		}
 	} else {
-		if ( is_multisite() && ! apply_filters( 'kadence_activation_individual_multisites', true ) ) {
+		if ( is_multisite() && kadence_blocks_is_network_authorize_enabled() ) {
 			$data = get_site_option( 'kt_api_manager_kadence_gutenberg_pro_data' );
 		} else {
 			$data = get_option( 'kt_api_manager_kadence_gutenberg_pro_data' );

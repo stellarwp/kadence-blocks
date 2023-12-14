@@ -5,10 +5,10 @@ const getStringBetween = (str, start, end, from ) => {
 	// Check if form is there?
 	if ( ! str.includes( 'kb-pattern-delete-block' ) ) {
 		return '';
-	}	
-	// get the start of the submit button.
+	}
+	// get the start of the container.
 	const startpos = str.indexOf( start, from );
-	if ( ! startpos ) {
+	if ( -1 === startpos ) {
 		return '';
 	}
 	const pos = startpos + start.length;

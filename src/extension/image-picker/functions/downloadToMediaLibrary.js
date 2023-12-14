@@ -18,7 +18,8 @@ async function downloadImage( images ) {
 			},
 		});
 	} catch (error) {
-		console.log(`ERROR: ${ JSON.stringify(error) }`);
+		const message = error?.message ? error.message : error;
+		console.log(`ERROR: ${ message }`);
 		return false;
 	}
 }

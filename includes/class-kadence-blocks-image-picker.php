@@ -75,9 +75,12 @@ class Kadence_Blocks_Image_Picker {
 		if ( $is_option_enabled && isset( $kadence_blocks_settings['enable_image_picker'] ) && false === $kadence_blocks_settings['enable_image_picker'] ) {
 			$is_option_enabled = false;
 		}
-		$current_screen = is_admin() && function_exists( 'get_current_screen' ) ? get_current_screen()->base : '';
 
-		if ( $this->image_picker_has_access() && $is_option_enabled && 'upload' !== $current_screen ) {
+		$current_screen = is_admin() && function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+
+		$current_screen_base = is_object( $current_screen ) ? $current_screen->base : '';
+
+		if ( $this->image_picker_has_access() && $is_option_enabled && 'upload' !== $current_screen_base ) {
 
 			wp_enqueue_script( 'kadence-extension-image-picker' );
 			wp_enqueue_style( 'kadence-extension-image-picker' );

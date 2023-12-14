@@ -1706,6 +1706,7 @@ function KadenceTabs( props ) {
 							</div> */}
 							<ul className={ `kt-tabs-title-list${ ( 'tabs' === layout && widthType === 'percent' ? ' kb-tabs-list-columns kb-tab-title-columns-' + tabWidth[ 0 ] : '' ) }` } style={{
 								width: 'vtabs' === previewLayout ? previewVerticalTabWidth + previewVerticalTabWidthUnit : undefined,
+								marginRight: ( 'tabs' === layout && widthType === 'percent' ? -gutter[ 0 ] + 'px' : undefined ),
 							}}>
 								{ renderPreviewArray }
 							</ul>

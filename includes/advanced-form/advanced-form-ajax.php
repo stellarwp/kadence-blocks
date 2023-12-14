@@ -99,7 +99,7 @@ class KB_Ajax_Advanced_Form {
 				}
 			}
 
-			$processed_fields = $this->process_fields( $form_args['fields'] );
+			$processed_fields = apply_filters( 'kadence_blocks_advanced_form_processed_fields', $this->process_fields( $form_args['fields'] ) );
 
 			do_action( 'kadence_blocks_advanced_form_submission', $form_args, $processed_fields, $post_id );
 

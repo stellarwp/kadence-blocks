@@ -8,14 +8,12 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_authorization_token;
-use function KadenceWP\KadenceBlocks\StellarWP\Uplink\render_authorize_button;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_disconnect_url;
+use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\build_auth_url;
-use KadenceWP\KadenceBlocks\StellarWP\Uplink\Config as UplinkConfig;
-use KadenceWP\KadenceBlocks\StellarWP\Uplink\Site\Data;
-use KadenceWP\KadenceBlocks\StellarWP\Uplink\Auth\Token\Contracts\Token_Manager;
-use KadenceWP\KadenceBlocks\StellarWP\Uplink\Auth\Admin\Disconnect_Controller;
 
 /**
  * Build Welcome Page class
@@ -46,6 +44,15 @@ class Kadence_Blocks_Settings {
 	private static $editor_width = null;
 
 	/**
+	 * Used to cache token authorization to prevent multiple
+	 * remote requests to the licensing server in the same
+	 * request lifecycle.
+	 *
+	 * @var null|bool
+	 */
+	private static $authorized_cache = null;
+
+	/**
 	 * Instance Control
 	 */
 	public static function get_instance() {
@@ -61,6 +68,7 @@ class Kadence_Blocks_Settings {
 		// only load if admin.
 		if ( is_admin() ) {
 			add_action( 'admin_menu', array( $this, 'add_menu' ) );
+			add_action( 'network_admin_menu', array( $this, 'add_network_menu' ), 1 );
 			add_filter( 'plugin_action_links_kadence-blocks/kadence-blocks.php', array( $this, 'add_settings_link' ) );
 			add_action( 'in_plugin_update_message-kadence-blocks/kadence-blocks.php', array( $this, 'plugin_update_message' ), 10, 2 );
 		}
@@ -506,6 +514,17 @@ class Kadence_Blocks_Settings {
 	/**
 	 * Add option page menu
 	 */
+	public function add_network_menu() {
+		$network_enabled = kadence_blocks_is_network_authorize_enabled();
+		if ( $network_enabled && function_exists( 'is_plugin_active_for_network' ) && is_plugin_active_for_network( 'kadence-blocks/kadence-blocks.php' ) ) {
+			add_menu_page( __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Kadence', 'kadence-blocks' ), $this->settings_user_capabilities(), 'kadence-blocks-home', null, $this->get_icon_svg() );
+			$home_page = add_submenu_page( 'kadence-blocks', __( 'Kadence Blocks', 'kadence-blocks' ), __( 'Home' ), $this->settings_user_capabilities(), 'kadence-blocks-home', array( $this, 'home_page' ), 0 );
+			add_action( 'admin_print_styles-' . $home_page, array( $this, 'home_scripts' ) );
+		}
+	}
+	/**
+	 * Add option page menu
+	 */
 	public function add_menu() {
 		add_menu_page( __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Kadence', 'kadence-blocks' ), $this->settings_user_capabilities(), 'kadence-blocks', null, $this->get_icon_svg() );
 		$home_page = add_submenu_page( 'kadence-blocks', __( 'Kadence Blocks', 'kadence-blocks' ), __( 'Home' ), $this->settings_user_capabilities(), 'kadence-blocks-home', array( $this, 'home_page' ), 0 );
@@ -605,18 +624,26 @@ class Kadence_Blocks_Settings {
 	 * Loads admin style sheets and scripts
 	 */
 	public function home_scripts() {
-		$container     = UplinkConfig::get_container();
-		$data          = $container->get( Data::class );
-		$token         = get_authorization_token( apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ) );
-		$is_authorized = false;
-		$auth_url      = build_auth_url( apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ), $data->get_domain() );
-		$license_key   = kadence_blocks_get_current_license_key();
-		$disconnect_url = '';
-		if ( $token ) {
-			$is_authorized = is_authorized( $license_key, $token, $data->get_domain() );
+		$using_network_enabled = false;
+		$is_network_admin      = is_multisite() && is_network_admin() ? true : false;
+		$network_enabled = kadence_blocks_is_network_authorize_enabled();
+		if ( $network_enabled && function_exists( 'is_plugin_active_for_network' ) && is_plugin_active_for_network( 'kadence-blocks/kadence-blocks.php' ) ) {
+			$using_network_enabled = true;
 		}
+		$token          = get_authorization_token( 'kadence-blocks' );
+		$auth_url       = build_auth_url( apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ), get_license_domain() );
+		$license_key    = kadence_blocks_get_current_license_key();
+		$disconnect_url = '';
+		$is_authorized  = false;
+
+		if ( self::$authorized_cache !== null ) {
+			$is_authorized = self::$authorized_cache;
+		} elseif ( $token ) {
+			$is_authorized = self::$authorized_cache = is_authorized( $license_key, $token, get_license_domain() );
+		}
+
 		if ( $is_authorized ) {
-			$disconnect_url = wp_nonce_url( add_query_arg( array( Disconnect_Controller::ARG => true ), get_admin_url( get_current_blog_id() ) ), Disconnect_Controller::ARG );
+			$disconnect_url = get_disconnect_url( 'kadence-blocks' );
 		}
 		// Icons Scripts & Styles.
 		$kadence_icons_meta = kadence_blocks_get_asset_file( 'dist/icons' );
@@ -656,6 +683,8 @@ class Kadence_Blocks_Settings {
 				'disconnectUrl'       => esc_url( $disconnect_url ),
 				'pro'                 => ( class_exists( 'Kadence_Blocks_Pro' ) ? 'true' : 'false' ),
 				'apiKey'              => $license_key,
+				'isNetworkAdmin'      => $is_network_admin,
+				'isNetworkEnabled'    => $using_network_enabled,
 			)
 		);
 		wp_enqueue_style( 'kadence-blocks-admin-css', KADENCE_BLOCKS_URL . 'includes/assets/css/admin-dashboard.min.css', array( 'wp-jquery-ui-dialog', 'wp-color-picker' ), KADENCE_BLOCKS_VERSION, 'all' );

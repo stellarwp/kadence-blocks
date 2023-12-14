@@ -17,7 +17,8 @@ export function getAIContentHelper() {
 			} );
 			return response;
 		} catch (error) {
-			console.log(`ERROR: ${ error }`);
+			const message = error?.message ? error.message : error;
+			console.log(`ERROR: ${ message }`);
 			return 'error';
 		}
 	}

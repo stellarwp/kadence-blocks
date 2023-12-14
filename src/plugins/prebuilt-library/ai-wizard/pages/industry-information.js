@@ -100,6 +100,9 @@ export function IndustryInformation() {
 	}, [locationInput, locationType]);
 
 	function handleIndustryChange(industry) {
+		if ( industry && industry.length > 75 ) {
+			industry = industry.substring(0, 75);
+		}
 		dispatch({ type: 'SET_INDUSTRY', payload: industry });
 	}
 
@@ -176,9 +179,13 @@ export function IndustryInformation() {
 									autoFocus
 									placeholder={getNameInputText("placeholder")}
 									value={companyName}
-									onChange={(value) =>
-										dispatch({ type: "SET_COMPANY_NAME", payload: value })
-									}
+									onChange={(value) => {
+										// Prevent a super long string.
+										if ( value && value.length > 75 ) {
+											value = value.substring(0, 75);
+										}
+										dispatch({ type: "SET_COMPANY_NAME", payload: value });
+									}}
 								/>
 								<LocationSelectControl
 									label={__("Where are you based?", "kadence-blocks")}
@@ -191,9 +198,12 @@ export function IndustryInformation() {
 										label="Location"
 										placeholder={getLocationPlaceholderText()}
 										value={locationInput}
-										onChange={(value) =>
+										onChange={(value) => {
+											if ( value && value.length > 140 ) {
+												value = value.substring(0, 140);
+											}
 											dispatch({ type: "SET_LOCATION_INPUT", payload: value })
-										}
+										}}
 										help={getLocationHelpText()}
 									/>
 						 		) : null }
@@ -205,7 +215,7 @@ export function IndustryInformation() {
 									currentValue={ industry ? industry : '' }
 									initialState={{
 										isOpen: false,
-									  query: industry ? industry : '',
+									  	query: industry ? industry : '',
 										params: {
 											hitsPerPage: 8,
 											highlightPreTag: '<mark>',

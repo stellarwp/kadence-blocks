@@ -19,7 +19,8 @@ export async function sendEvent(event_label, event_data) {
 			},
 		});
 	} catch (error) {
-		console.log(`ERROR: ${JSON.stringify(error)}`);
+		const message = error?.message ? error.message : error;
+		console.log(`ERROR: ${message}`);
 		return 'failed';
 	}
 }
