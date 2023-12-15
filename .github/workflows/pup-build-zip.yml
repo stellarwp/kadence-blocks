@@ -21,6 +21,10 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
 
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
       - name: install pup
         run: composer -- pup
 

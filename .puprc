@@ -1,14 +1,16 @@
 {
 	"build": [
+		"rm -rf vendor",
 		"composer install --no-dev",
-		"npm install --legacy-peer-deps",
-		"npm run build",
+		"bun install --frozen-lockfile",
+		"bun run build",
 		"composer wp"
 	],
 	"build_dev": [
+		"rm -rf vendor",
 		"composer install --no-dev",
-		"npm install --legacy-peer-deps",
-		"npm run build"
+		"bun install --frozen-lockfile",
+		"bun run build"
 	],
 	"checks": {
 		"version-conflict": {
