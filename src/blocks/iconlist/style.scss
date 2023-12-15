@@ -12,6 +12,13 @@
 .wp-block-kadence-iconlist ul.kt-svg-icon-list li.kt-svg-icon-list-item-wrap:not(.this-prevents-issues):not(.this-stops-third-party-issues):not(.tijsloc) {
     display: flex;
 }
+
+.kt-svg-icon-list-text {
+	color: var(--global-palette5, #444444);
+}
+.kt-svg-icon-list-single {
+	color: var(--global-palette5, #444444);
+}
 .wp-block-kadence-iconlist ul.kt-svg-icon-list {
     padding: 0;
     list-style: none;
@@ -36,6 +43,7 @@
 			justify-content: center;
 			align-items: center;
 		}
+
 		.kt-svg-icon-link {
 			display: flex;
 			align-items: center;
