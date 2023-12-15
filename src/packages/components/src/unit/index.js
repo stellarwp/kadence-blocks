@@ -117,17 +117,17 @@ export default function UnitControl( {
 								</option>
 							) ) }
 						</select>
-						{
-							<h4>
-								{ 
-									preventMobileUnitSelection &&
-										<>
-											{ __('Units for tablet and mobile can only be edited in desktop view. ', 'kadence-blocks' ) }
-										</>
-								}
-							</h4>
-						}
 					</div>
+				</div>
+				<div>
+					<p>
+						{ 
+							preventMobileUnitSelection &&
+								<>
+									{ __('Units can only be edited in desktop view', 'kadence-blocks') }
+								</>
+						}
+					</p>
 				</div>
 			</div>
 		),
