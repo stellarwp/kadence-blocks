@@ -260,6 +260,8 @@ class TypographyControls extends Component {
 			otherTags = [],
 			onLetterSpacingType,
 			reset,
+			disableLineHeightUnits,
+			disableLetterSpacingUnits,
 			defaultValue = {
 				size: [ '', '', '' ],
 				sizeType: 'px',
@@ -277,6 +279,7 @@ class TypographyControls extends Component {
 				loadGoogle: true,
 			}
 		 } = this.props;
+		
 		const { controlSize, typographySelectOptions, typographyOptions, typographySubsets, typographyStyles, typographyWeights, fontFamilyValue } = this.state;
 		const createhtmlTagControl = ( targetLevel ) => {
 			return [ {
@@ -562,6 +565,7 @@ class TypographyControls extends Component {
 							unit={ ( lineHeightType ? lineHeightType : '-' ) }
 							onUnit={ ( value ) => onLineHeightType( value ) }
 							units={ [ '-', 'px', 'em', 'rem' ] }
+							disableMobileUnits = { undefined !== disableLineHeightUnits && disableLineHeightUnits ? true : false }
 						/>
 					)}
 					{ onTextTransform && onLineHeight && onLineHeightType && (
@@ -581,6 +585,7 @@ class TypographyControls extends Component {
 								onUnit={ ( value ) => onLineHeightType( value ) }
 								units={ [  '-', 'px', 'em', 'rem' ] }
 								compressedDevice={ true }
+								disableMobileUnits = { undefined !== disableLineHeightUnits && disableLineHeightUnits ? true : false }
 							/>
 							<KadenceRadioButtons
 								label={__( 'Letter Case', 'kadence-blocks' )}
@@ -678,6 +683,7 @@ class TypographyControls extends Component {
 									unit={ ( onLetterSpacingType ? letterSpacingType : 'px' ) }
 									onUnit={ ( value ) => onLetterSpacingType( value ) }
 									units={ ( onLetterSpacingType ? [ 'px', 'em', 'rem' ] : [ 'px' ] ) }
+									disableMobileUnits = { disableLetterSpacingUnits }
 								/>
 							) }
 							{ onLetterSpacing && ! reLetterSpacing && (
