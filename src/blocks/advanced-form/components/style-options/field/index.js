@@ -90,7 +90,7 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 				min={0}
 				max={( style?.rowGapUnit === 'px' ? 200 : 12 )}
 				step={( style?.rowGapUnit === 'px' ? 1 : 0.1 )}
-				unit={ style?.rowGapUnit ? rowGapUnit : 'px' }
+				unit={ style?.rowGapUnit ? style.rowGapUnit : 'px' }
 				onUnit={( value ) => {
 					saveStyle( { rowGapUnit: value } );
 				}}
