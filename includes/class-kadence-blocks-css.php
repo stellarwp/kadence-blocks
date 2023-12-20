@@ -364,10 +364,10 @@ class Kadence_Blocks_CSS {
 		if ( ! isset( $this->media_queries[ $device ] ) ) {
 			$media_query            = array();
 			$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
-			$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
+			$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px), only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (-webkit-min-device-pixel-ratio: 1.5) and (orientation: landscape)' );
 			$media_query['desktop'] = apply_filters( 'kadence_desktop_media_query', '(min-width: 1025px)' );
 			$media_query['mobileReverse'] = apply_filters( 'kadence_mobile_reverse_media_query', '(min-width: 768px)' );
-			$media_query['tabletOnly']    = apply_filters( 'kadence_tablet_only_media_query', '(min-width: 768px) and (max-width: 1024px)' );
+			$media_query['tabletOnly']    = apply_filters( 'kadence_tablet_only_media_query', '(min-width: 768px) and (max-width: 1024px), only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (-webkit-min-device-pixel-ratio: 1.5) and (orientation: landscape)' );
 			$this->media_queries    = $media_query;
 		}
 		return isset( $this->media_queries[ $device ] ) ? $this->media_queries[ $device ] : '';
