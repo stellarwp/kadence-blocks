@@ -495,7 +495,17 @@ class Kadence_Blocks_Prebuilt_Library {
 			// Send JSON Error response to the AJAX call.
 			wp_send_json( esc_html__( 'No Connection data', 'kadence-blocks' ) );
 		} else {
-			wp_send_json( $get_data );
+			// Sanitize the connection data.
+			$temp_data  = json_decode( $get_data, true );
+			$final_data = array();
+			$final_data['name']    = ! empty( $temp_data['name'] ) ? sanitize_text_field( $temp_data['name'] ) : '';
+			$final_data['slug']    = ! empty( $temp_data['slug'] ) ? sanitize_text_field( $temp_data['slug'] ) : '';
+			$final_data['refresh'] = ! empty( $temp_data['refresh'] ) ? sanitize_text_field( $temp_data['refresh'] ) : '';
+			$final_data['expires'] = ! empty( $temp_data['expires'] ) ? sanitize_text_field( $temp_data['expires'] ) : '';
+			if ( ! empty( $final_data['name'] ) ) {
+				wp_send_json( $final_data );
+			}
+			wp_send_json( esc_html__( 'No Connection data', 'kadence-blocks' ) );
 		}
 		die;
 	}
