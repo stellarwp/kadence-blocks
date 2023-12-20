@@ -98,11 +98,14 @@ developers of this plugin.
 == Changelog ==
 
 = 3.2.9 Pre Release =
-Release Date: December 13th, 2023
+Release Date: December 20th, 2023
 * Fix: Issue with some logo items in library
-* Fix: Issue with some content in design lirbary.
+* Fix: Issue with some content in design lirbrary.
 * Fix: Possible php notice with image import.
 * Fix: Issue with possible company description length.
+* Fix: Issue with php error in dynamic links for gallery.
+* Fix: Issue with Ipad Pro media queries.
+* Fix: Issue with images in flex layouts missing width.
 
 = 3.2.8 Pre Release =
 Release Date: December 11th, 2023
