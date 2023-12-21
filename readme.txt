@@ -97,6 +97,10 @@ developers of this plugin.
 
 == Changelog ==
 
+= 3.2.10 Pre Release =
+Release Date: December 21st, 2023
+* Update: Advanced text icons, title option.
+
 = 3.2.9 Pre Release =
 Release Date: December 20th, 2023
 * Fix: Issue with some logo items in library

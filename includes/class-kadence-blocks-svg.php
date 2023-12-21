@@ -132,7 +132,7 @@ class Kadence_Blocks_Svg_Render {
 			if ( $typeL && 'fas' !== $typeL && 'fe_' !== $typeL && 'ic_' !== $typeL && ( ( isset( $vb_array[0] ) && absint( $vb_array[0] ) > 0 ) || ( isset( $vb_array[1] ) && absint( $vb_array[1] ) > 0 ) ) ) {
 				$preserve = 'preserveAspectRatio="xMinYMin meet"';
 			}
-			$svg .= '<svg viewBox="' . $vb . '" ' . $preserve . ' fill="' . esc_attr( $fill ) . '"' . ( ! empty( $stroke_width ) ? ' stroke="currentColor" stroke-width="' . esc_attr( $stroke_width ) . '" stroke-linecap="round" stroke-linejoin="round"' : '' ) . ' xmlns="http://www.w3.org/2000/svg" ' . ( ! empty( $extras ) ? ' ' . $extras : '' ) . ( $hidden ? ' aria-hidden="true"' : '' ) . '>';
+			$svg .= '<svg viewBox="' . $vb . '" ' . $preserve . ' fill="' . esc_attr( $fill ) . '"' . ( ! empty( $stroke_width ) ? ' stroke="currentColor" stroke-width="' . esc_attr( $stroke_width ) . '" stroke-linecap="round" stroke-linejoin="round"' : '' ) . ' xmlns="http://www.w3.org/2000/svg" ' . ( ! empty( $extras ) ? ' ' . $extras : '' ) . ( $hidden ? ' aria-hidden="true"' : ' role="img"' ) . '>';
 			if ( ! empty( $title ) ) {
 				$svg .= '<title>' . $title . '</title>';
 			}

@@ -532,6 +532,10 @@
 	"borderRadiusUnit": {
 	  "type": "string",
 	  "default": "px"
+	},
+	"iconTitle": {
+		"type": "string",
+		"default": ""
 	}
   },
   "usesContext": [

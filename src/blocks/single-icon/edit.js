@@ -333,7 +333,8 @@ function KadenceSingleIcon( props ) {
                                 context={ context }
                             />
                             <TextControl
-                                label={__( 'Title for Accessibility', 'kadence-blocks' )}
+                                label={__( 'Title for screen readers', 'kadence-blocks' )}
+                                help={__( 'If no title added screen readers will ignore, good if the icon is purely decorative.', 'kadence-blocks' )}
                                 value={title}
                                 onChange={value => {
                                     setAttributes( { title: value } );
