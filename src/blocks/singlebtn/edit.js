@@ -255,6 +255,7 @@ export default function KadenceButtonEdit( props ) {
 		kadenceAOSOptions,
 		kadenceAnimation,
 		hideLink,
+		iconTitle,
 		textUnderline,
 		inQueryBlock,
 		kadenceDynamic,
@@ -1074,6 +1075,14 @@ export default function KadenceButtonEdit( props ) {
 											unit={iconPaddingUnit}
 											units={[ 'px', 'em', 'rem' ]}
 											onUnit={( value ) => setAttributes( { iconPaddingUnit: value } )}
+										/>
+										<TextControl
+											label={__( 'Title for screen readers', 'kadence-blocks' )}
+											help={__( 'If no title added screen readers will ignore, good if the icon is purely decorative.', 'kadence-blocks' )}
+											value={ iconTitle }
+											onChange={ value => {
+												setAttributes( { iconTitle: value } );
+											} }
 										/>
 									</KadencePanelBody>
 								)}

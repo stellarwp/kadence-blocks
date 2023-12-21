@@ -1167,7 +1167,7 @@ function KadenceAdvancedHeading( props ) {
 										units={[ 'px', 'em', 'rem' ]}
 										onUnit={( value ) => setAttributes( { iconPaddingUnit: value } )}
 									/>
-									 <TextControl
+									<TextControl
 										label={__( 'Title for screen readers', 'kadence-blocks' )}
 										help={__( 'If no title added screen readers will ignore, good if the icon is purely decorative.', 'kadence-blocks' )}
 										value={ iconTitle }

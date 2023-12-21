@@ -358,6 +358,10 @@
 	"noCustomDefaults": {
 		"type": "boolean",
 		"default": false
+	},
+	"iconTitle": {
+		"type": "string",
+		"default": ""
 	}
   },
   "supports": {

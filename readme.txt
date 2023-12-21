@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.4
-Stable tag: 3.2.9
+Stable tag: 3.2.10
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -99,7 +99,10 @@ developers of this plugin.
 
 = 3.2.10 Pre Release =
 Release Date: December 21st, 2023
-* Update: Advanced text icons, title option.
+* Update: Advanced text icon title option.
+* Update: Icon list icon title option.
+* Update: Button icon title option.
+* Fix: Issue with icon list link color.
 
 = 3.2.9 Pre Release =
 Release Date: December 20th, 2023
