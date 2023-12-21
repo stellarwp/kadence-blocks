@@ -845,6 +845,7 @@ return array(
 		'fa_y-combinator',
 		'fa_yahoo',
 		'fa_yandex',
+		'fa_yandex_zen',
 		'fa_yandex-international',
 		'fa_yelp',
 		'fa_yoast',
