@@ -126,6 +126,11 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'margin-right', '0px' );
 				$css->add_property( 'margin-left', '0px' );
 			}
+			
+			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li:last-child' );
+			if( !isset($attributes['layout'] ) || ( isset($attributes['layout'] ) && 'tabs' === $attributes['layout'] ) ) {
+				$css->add_property( 'margin-right', '0px' );
+			}
 		}
 		if ( 'vtabs' === $layout && ! empty( $attributes['verticalTabWidth'][0] ) ) {
 			$css->set_media_state( 'desktopOnly' );
