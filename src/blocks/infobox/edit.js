@@ -356,6 +356,8 @@ function KadenceInfoBox( props ) {
 	const previewHoverRadiusBottom = getPreviewSize( previewDevice, ( undefined !== borderHoverRadius ? borderHoverRadius[ 2 ] : '' ), ( undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[ 2 ] : '' ), ( undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[ 2 ] : '' ) );
 	const previewHoverRadiusLeft = getPreviewSize( previewDevice, ( undefined !== borderHoverRadius ? borderHoverRadius[ 3 ] : '' ), ( undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[ 3 ] : '' ), ( undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[ 3 ] : '' ) );
 
+	const previewMaxWidth = getPreviewSize( previewDevice, ( '' !== maxWidth ? maxWidth : '' ), ( '' !== tabletMaxWidth ? tabletMaxWidth : '' ), ( '' !== mobileMaxWidth ? mobileMaxWidth : '' ) );
+
 	const previewTitleFontSize = getPreviewSize( previewDevice, ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 0 ] ? titleFont[ 0 ].size[ 0 ] : '' ), ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 1 ] ? titleFont[ 0 ].size[ 1 ] : '' ), ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 2 ] ? titleFont[ 0 ].size[ 2 ] : '' ) );
 	const previewTitleLineHeight = getPreviewSize( previewDevice, ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 1 ] ? titleFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 2 ] ? titleFont[ 0 ].lineHeight[ 2 ] : '' ) );
 	const previewTitleMinHeight = getPreviewSize( previewDevice, ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ? titleMinHeight[ 0 ] : '' ), ( undefined !== titleMinHeight[ 1 ] && undefined !== titleMinHeight[ 1 ] ? titleMinHeight[ 1 ] : '' ), ( undefined !== titleMinHeight[ 2 ] && undefined !== titleMinHeight[ 2 ] ? titleMinHeight[ 2 ] : '' ) );
@@ -2595,7 +2597,7 @@ function KadenceInfoBox( props ) {
 					paddingRight : ( '' !== previewContainerPaddingRight ? getSpacingOptionOutput( previewContainerPaddingRight, previewPaddingType ) : undefined ),
 					paddingBottom: ( '' !== previewContainerPaddingBottom ? getSpacingOptionOutput( previewContainerPaddingBottom, previewPaddingType ) : undefined ),
 					paddingLeft  : ( '' !== previewContainerPaddingLeft ? getSpacingOptionOutput( previewContainerPaddingLeft, previewPaddingType ) : undefined ),
-					maxWidth     : ( maxWidth ? maxWidth + maxWidthUnit : undefined ),
+					maxWidth     : ( previewMaxWidth ? previewMaxWidth + ( maxWidthUnit ? maxWidthUnit : 'px' ) : undefined ),
 					marginTop    : ( '' !== previewContainerMarginTop ? getSpacingOptionOutput( previewContainerMarginTop, containerMarginUnit ) : undefined ),
 					marginRight  : ( '' !== previewContainerMarginRight ? getSpacingOptionOutput( previewContainerMarginRight, containerMarginUnit ) : undefined ),
 					marginBottom : ( '' !== previewContainerMarginBottom ? getSpacingOptionOutput( previewContainerMarginBottom, containerMarginUnit ) : undefined ),
