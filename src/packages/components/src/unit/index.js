@@ -46,7 +46,7 @@ export default function UnitControl( {
 	units = [ 'px', 'em', 'rem' ],
 	parentLabel = null,
 	reset = true,
-	preventMobileUnitSelection = false,
+	preventUnitSelection = false,
 } ) {
 	const onChangeCustom = ( newSize ) => {
 		const isNumeric = ! isNaN( parseFloat( newSize ) );
@@ -110,24 +110,22 @@ export default function UnitControl( {
 								}
 							} }
 							value={ unit }
+							disabled={ preventUnitSelection ? true : false }
 						>
 							{ units.map( ( option ) => (
-								<option value={ option } selected={ unit === option || ( unit === '' && '-' === option ) ? true : undefined } key={ option } disabled={preventMobileUnitSelection && unit !== option ? true : null}>
-									{ option }
-								</option>
+								!preventUnitSelection
+									? 
+										<option value={ option } selected={ unit === option || ( unit === '' && '-' === option ) ? true : undefined } key={ option }>
+											{ option }
+										</option>
+									: 
+										unit === option &&
+											<option value={ option } selected={ unit === option || ( unit === '' && '-' === option ) ? true : undefined } key={ option }>
+												{ option }
+											</option>
 							) ) }
 						</select>
 					</div>
-				</div>
-				<div>
-					<p>
-						{ 
-							preventMobileUnitSelection &&
-								<>
-									{ __('Units can only be edited in desktop view', 'kadence-blocks') }
-								</>
-						}
-					</p>
 				</div>
 			</div>
 		),
