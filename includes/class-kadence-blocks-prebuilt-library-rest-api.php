@@ -18,6 +18,10 @@ use KadenceWP\KadenceBlocks\Traits\Rest\Image_Trait;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_original_domain;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * REST API prebuilt library.
  */

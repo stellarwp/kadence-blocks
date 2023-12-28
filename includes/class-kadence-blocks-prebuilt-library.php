@@ -6,6 +6,10 @@
  * @package Kadence Blocks
  */
 
+ if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Class for pulling in template database and saving locally
  */
