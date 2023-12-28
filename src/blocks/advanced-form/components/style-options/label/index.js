@@ -73,6 +73,7 @@ export default function LabelOptions( { setAttributes, styleAttribute, labelFont
 				onLineHeight={( value ) => saveLabelFont( { lineHeight: value } )}
 				lineHeightType={labelFont.lineType}
 				onLineHeightType={( value ) => saveLabelFont( { lineType: value } )}
+				disableLineHeightUnits={true}
 			/>
 			<KadencePanelBody
 				title={__( 'Advanced Label Settings', 'kadence-blocks' )}
@@ -116,6 +117,7 @@ export default function LabelOptions( { setAttributes, styleAttribute, labelFont
 					onMargin={( value ) => saveLabelFont( { margin: value } )}
 					marginControl={labelMarginControl}
 					onMarginControl={( value ) => setLabelMarginControl( value )}
+					disableLetterSpacingUnits={true}
 				/>
 			</KadencePanelBody>
 		</>
