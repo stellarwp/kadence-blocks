@@ -315,18 +315,29 @@ function SectionEdit( props ) {
 			if ( '' !== textAlign?.[2] && ( mobileDirection === 'horizontal' || ( mobileDirection === '' && tabletDirection === 'horizontal' ) || ( mobileDirection === '' && tabletDirection === '' && deskDirection === 'horizontal' ) ) && deskJustifyAlign === '' ) {
 				switch ( textAlign[2] ) {
 					case 'center':
-						mobileDirection = 'center';
+						mobileJustifyAlign = 'center';
 						break;
 					case 'left':
-						mobileDirection = 'flex-start';
+						mobileJustifyAlign = 'flex-start';
 						break;
 					case 'right':
-						mobileDirection = 'flex-end';
+						mobileJustifyAlign = 'flex-end';
 						break;
 				}
 				updateJustify = true;
 			}
-			
+			if ( deskDirection === 'vertical' && deskJustifyAlign !== '' ) {
+				deskJustifyAlign = '';
+				updateJustify = true;
+			}
+			if ( ( tabletDirection === 'vertical' || ( tabletDirection === '' && deskDirection === 'vertical' ) ) && tabletJustifyAlign !== '' ) {
+				tabletJustifyAlign = '';
+				updateJustify = true;
+			}
+			if ( ( mobileDirection === 'vertical' || ( mobileDirection === '' && tabletDirection === 'vertical' ) || ( mobileDirection === '' && tabletDirection === '' && deskDirection === 'vertical' ) ) && mobileJustifyAlign !== '' ) {
+				mobileJustifyAlign = '';
+				updateJustify = true;
+			}
 			if ( updateJustify ) {
 				console.log( 'updateJustify', deskJustifyAlign, tabletJustifyAlign, mobileJustifyAlign );
 				setAttributes( { justifyContent: [ deskJustifyAlign, tabletJustifyAlign, mobileJustifyAlign ] } );
