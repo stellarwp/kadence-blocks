@@ -239,7 +239,9 @@ function GalleryImage( props ) {
 
 	return (
 		<>
-			<figure className={className}>
+			<figure className={className} style={{
+					maxWidth: ( ( 'below' === captionStyle && width && height ) ? width + 'px' : undefined ),
+				}}>
 				<div className="kb-gal-image-radius" style={{
 					maxWidth: ( ( type === 'masonry' && width && height ) ? width + 'px' : undefined ),
 				}}>
