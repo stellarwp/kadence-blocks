@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.4
-Stable tag: 3.2.10
+Stable tag: 3.2.11
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -96,6 +96,11 @@ assist you with verification, CVE assignment, and notify the
 developers of this plugin.
 
 == Changelog ==
+
+= 3.2.11 Pre Release =
+Release Date: December 28th, 2023
+* Fix: Possible layout issue with justify content in vertical layouts.
+* Fix: Max width issue with info box and mobile/tablet.
 
 = 3.2.10 Pre Release =
 Release Date: December 21st, 2023
