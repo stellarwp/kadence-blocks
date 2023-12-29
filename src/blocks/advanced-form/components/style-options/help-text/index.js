@@ -36,7 +36,6 @@ export default function HelpTextOptions( { setAttributes, helpFont } ) {
 				onLineHeight={( value ) => saveHelpFont( { lineHeight: value } )}
 				lineHeightType={helpFont.lineType}
 				onLineHeightType={( value ) => saveHelpFont( { lineType: value } )}
-				disableLineHeightUnits={ true }
 			/>
 			<KadencePanelBody
 				title={__( 'Advanced Help Text Settings', 'kadence-blocks' )}
@@ -80,7 +79,6 @@ export default function HelpTextOptions( { setAttributes, helpFont } ) {
 					onMargin={( value ) => saveHelpFont( { margin: value } )}
 					marginControl={labelMarginControl}
 					onMarginControl={( value ) => setLabelMarginControl( value )}
-					disableLetterSpacingUnits={ true }
 				/>
 			</KadencePanelBody>
 		</>
