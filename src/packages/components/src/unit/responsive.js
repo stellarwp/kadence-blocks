@@ -40,7 +40,6 @@
 		defaultValue = [ '', '', '' ],
 		compressedDevice = false,
 		reset = true,
-		disableMobileUnits = false,
 	 } ) {
 	 const ref = useRef();
 	 const [ deviceType, setDeviceType ] = useState( 'Desktop' );
@@ -116,7 +115,7 @@
 			 max={ max }
 			 min={ min }
 			 unit={ unit }
-			 preventUnitSelection={ disableMobileUnits }
+			 preventUnitSelection={ true }
 		 />
 	 );
 	 output.Tablet = (
@@ -130,7 +129,7 @@
 			max={ max }
 			min={ min }
 			unit={ unit }
-			preventUnitSelection={ disableMobileUnits }
+			preventUnitSelection={ true }
 		 />
 	 );
 	 output.Desktop = (
