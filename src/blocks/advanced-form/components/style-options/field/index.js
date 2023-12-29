@@ -302,7 +302,6 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 							onLineHeight={( value ) => saveInputFont( { lineHeight: value } )}
 							lineHeightType={inputFont.lineType}
 							onLineHeightType={( value ) => saveInputFont( { lineType: value } )}
-							disableLineHeightUnits={ true }
 						/>
 						<KadencePanelBody
 							title={__( 'Advanced Field Settings', 'kadence-blocks' )}
@@ -338,7 +337,6 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 								onFontStyle={( value ) => saveInputFont( { style: value } )}
 								fontSubset={inputFont.subset}
 								onFontSubset={( value ) => saveInputFont( { subset: value } )}
-								disableLetterSpacingUnits={ true }
 							/>
 							<ResponsiveMeasurementControls
 								label={__( 'Input Padding', 'kadence-blocks' )}
