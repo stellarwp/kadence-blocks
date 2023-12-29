@@ -256,6 +256,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		 * Help Text
 		 *
 		 */
+		
 		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-adv-form-help' );
 		$tmp_help_font = array( 'typography' => $help_style );
 		$css->render_typography( $tmp_help_font, 'typography' );

@@ -111,7 +111,6 @@ export default function MessageStyling( { setMetaAttribute, useFormMeta } ) {
 				onLineHeightType={( value ) => saveMessageFont( { lineType: value } )}
 				textTransform={messageFont[0].textTransform}
 				onTextTransform={( value ) => saveMessageFont( { textTransform: value } )}
-				disableLineHeightUnits={ true }
 			/>
 			<ResponsiveMeasurementControls
 				label={__( 'Border Radius', 'kadence-blocks' )}
@@ -162,7 +161,6 @@ export default function MessageStyling( { setMetaAttribute, useFormMeta } ) {
 					onFontStyle={( value ) => saveMessageFont( { style: value } )}
 					fontSubset={messageFont[0].subset}
 					onFontSubset={( value ) => saveMessageFont( { subset: value } )}
-					disableLetterSpacingUnits={ true }
 				/>
 			</KadencePanelBody>
 			<ResponsiveMeasureRangeControl
