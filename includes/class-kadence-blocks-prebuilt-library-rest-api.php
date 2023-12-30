@@ -1065,13 +1065,11 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				return rest_ensure_response( $this->ai_cache->get( $available_prompts[ $context ] ) );
 			} catch ( NotFoundException $e ) {
 			}
-
 			// Log event for context generation request.
 			do_action( 'stellarwp/analytics/event', 'Context Generation Requested', [
 				'context_name'    => $context,
 				'is_regeneration' => true,
 			] );
-
 			// Check if we have a remote file.
 			$response = $this->get_remote_contents( $available_prompts[ $context ] );
 			$data     = json_decode( $response, true );
