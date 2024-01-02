@@ -226,6 +226,11 @@ class Kadence_Blocks_AI_Events {
 					'credits_after'  => $event_data['credits_after'],
 					'credits_used'   => $event_data['credits_used'],
 				];
+			case 'collection_updated':
+				$event = 'Collection Updated';
+				$context = [
+					'collection_name' => $this->get_custom_collection_name_by_id( $event_data['customCollections'], $event_data['photoLibrary'] ),
+				];
 		}
 
 		if ( strlen( $event ) !== 0 ) {
@@ -235,5 +240,23 @@ class Kadence_Blocks_AI_Events {
 		}
 
 		return new WP_REST_Response( array( 'message' => 'Event not handled.' ), 500 );
+	}
+
+	/**
+	 * Searches an array of collections for the name of a collection with a specific ID.
+	 *
+	 * @param array $collections An array of collections.
+	 * @param string $id The ID of a collection.
+	 *
+	 * @return array
+	 */
+	private function get_custom_collection_name_by_id( array $collections, string $id ): string {
+		foreach ( $collections as $collection ) {
+			if ( $collection['value'] === $id ) {
+				return $collection['label'] ?? '';
+			}
+
+			return '';
+		}
 	}
 }
