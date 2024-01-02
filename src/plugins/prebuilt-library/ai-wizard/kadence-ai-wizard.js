@@ -137,6 +137,7 @@ export function KadenceAiWizard( props ) {
 
 			if (photographyOnly) {
 				handleEvent('collection_updated');
+				onWizardClose();
 			} else {
 				handleSave();
 				handleComplete();
