@@ -250,7 +250,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 	$current_user     = wp_get_current_user();
 	$user_email       = $current_user->user_email;
 	$recent_posts     = wp_get_recent_posts( array( 'numberposts' => '1' ) );
-	$product          = get_posts( array( 'numberposts' => 1, 'post_type' => 'product' ) );
+	$products          = get_posts( array( 'numberposts' => 4, 'post_type' => 'product', 'fields' => 'ids' ) );
 	wp_localize_script(
 		'kadence-blocks-js',
 		'kadence_blocks_params',
@@ -312,7 +312,8 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'hasPosts' => ( ! empty( $recent_posts[0]['ID'] ) ? true : false ),
 			'addPostsLink' => admin_url( 'post-new.php' ),
 			'hasWoocommerce' => ( class_exists( 'woocommerce' ) ? true : false ),
-			'hasProducts' => ( class_exists( 'woocommerce' ) && ! empty( $product ) ? true : false ),
+			'hasProducts' => ( class_exists( 'woocommerce' ) && ! empty( $products ) ? true : false ),
+			'replaceProducts' => ( class_exists( 'woocommerce' ) && ! empty( $products ) ? $products : '' ),
 			'addProductsLink' => ( class_exists( 'woocommerce' ) ? admin_url( 'product-new.php' ) : 'https://wordpress.org/plugins/woocommerce/' ),
 			'hasKadenceCaptcha' => ( is_plugin_active( 'kadence-recaptcha/kadence-recaptcha.php' ) ? true : false ),
 			'adminUrl' => get_admin_url(),

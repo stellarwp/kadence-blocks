@@ -89,7 +89,9 @@ export default function replaceColors( content, style ) {
 		if ( row_divider_content ) {
 			let row_divider_content_org = row_divider_content;
 			row_divider_content =  row_divider_content.replace( /"bottomSepColor":"palette9"/g, '"bottomSepColor":"ph-kb-pal9"' );
+			row_divider_content =  row_divider_content.replace( /"bottomSepColor":"palette8"/g, '"bottomSepColor":"ph-kb-pal8"' );
 			row_divider_content =  row_divider_content.replace( /"topSepColor":"palette9"/g, '"topSepColor":"ph-kb-pal9"' );
+			row_divider_content =  row_divider_content.replace( /"topSepColor":"palette8"/g, '"topSepColor":"ph-kb-pal8"' );
 			content = content.replace( row_divider_content_org, row_divider_content );
 		}
 
@@ -143,10 +145,20 @@ export default function replaceColors( content, style ) {
 			form_content =  form_content.replace( /"backgroundHover":""/g, '"backgroundHover":"ph-kb-pal4"' );
 			content = content.replace( form_content_org, form_content );
 		}
+		// Handle Dividers.
+		let row_divider_content = getStringBetween( content, 'wp:kadence/rowlayout', 'wp:kadence/rowlayout', 'kb-divider-static' );
+		if ( row_divider_content ) {
+			let row_divider_content_org = row_divider_content;
+			row_divider_content =  row_divider_content.replace( /"bottomSepColor":"palette9"/g, '"bottomSepColor":"ph-kb-pal9"' );
+			row_divider_content =  row_divider_content.replace( /"bottomSepColor":"palette8"/g, '"bottomSepColor":"ph-kb-pal8"' );
+			row_divider_content =  row_divider_content.replace( /"topSepColor":"palette9"/g, '"topSepColor":"ph-kb-pal9"' );
+			row_divider_content =  row_divider_content.replace( /"topSepColor":"palette8"/g, '"topSepColor":"ph-kb-pal8"' );
+			content = content.replace( row_divider_content_org, row_divider_content );
+		}
 		// Handle Buttons differently.
 		content = content.replace( /"inheritStyles":"inherit"/g, '"color":"ph-kb-pal9","background":"ph-kb-pal3","colorHover":"ph-kb-pal9","backgroundHover":"ph-kb-pal4","inheritStyles":"inherit"' );
 		// // Outline Buttons.
-		content = content.replace( /"inheritStyles":"outline"/g, '"color":"ph-kb-pal3","colorHover":"ph-kb-pal4","borderStyle":[{"top":["ph-kb-pal3","",""],"right":["ph-kb-pal3","",""],"bottom":["ph-kb-pal3","",""],"left":["ph-kb-pal3","",""],"unit":"px"}],"borderHoverStyle":[{"top":["ph-kb-pal4","",""],"right":["ph-kb-pal4","",""],"bottom":["ph-kb-pal4","",""],"left":["ph-kb-pal4","",""],"unit":"px"}],"inheritStyles":"outline"' );
+		content = content.replace( /"inheritStyles":"outline"/g, '"color":"ph-kb-pal9","colorHover":"ph-kb-pal9","borderStyle":[{"top":["ph-kb-pal9","",""],"right":["ph-kb-pal9","",""],"bottom":["ph-kb-pal9","",""],"left":["ph-kb-pal9","",""],"unit":"px"}],"borderHoverStyle":[{"top":["ph-kb-pal9","",""],"right":["ph-kb-pal9","",""],"bottom":["ph-kb-pal9","",""],"left":["ph-kb-pal9","",""],"unit":"px"}],"inheritStyles":"outline"' );
 
 		// Color Map Switch
 		// 1 => 9
