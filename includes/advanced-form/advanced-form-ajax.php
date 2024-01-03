@@ -163,6 +163,11 @@ class KB_Ajax_Advanced_Form {
 			case 'accept':
 				$value = !empty( $value) ? esc_html__( 'Accept', 'kadence-blocks' ) : esc_html__( 'Did not accept', 'kadence-blocks' ) ;
 				break;
+			case 'number':
+				// Prevent '0' to be evaluated as empty
+				if($value === '0') {
+					$value = ' 0';
+				}
 			default:
 				/**
 				 * Sanitize field value.
@@ -245,7 +250,7 @@ class KB_Ajax_Advanced_Form {
 		foreach ( $fields as $index => $field ) {
 			$expected_field = ! empty( $field['inputName'] ) ? $field['inputName'] : 'field' . $field['uniqueID'];
 			// Skip proccessing this field if it's misssing (usually because hidden frontend).
-			if ( empty( $_POST[ $expected_field ] ) &&  empty( $_FILES[ $expected_field ] ) ) {
+			if ( empty( $_POST[ $expected_field ] ) &&  $_POST[ $expected_field ] !== '0' && empty( $_FILES[ $expected_field ] ) ) {
 				if ( ! empty( $field['required'] ) && $field['required'] ) {
 					if ( ! empty( $field['kadenceFieldConditional']['conditionalData']['enable'] ) ) {
 						continue;
