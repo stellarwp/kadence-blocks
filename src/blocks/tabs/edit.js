@@ -647,7 +647,7 @@ function KadenceTabs( props ) {
 			} );
 		}
 
-		const renderTitles = ( index ) => {
+		const renderTitles = ( index, isLast = false) => {
 			const subFont = ( subtitleFont && subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].sizeType ? subtitleFont : [ {
 				size: [ '', '', '' ],
 				sizeType: 'px',
@@ -671,7 +671,7 @@ function KadenceTabs( props ) {
 				<Fragment>
 					<li className={ `kt-title-item kt-title-item-${ index } kt-tabs-svg-show-${ ( titles[ index ] && titles[ index ].onlyIcon ? 'only' : 'always' ) } kt-tabs-icon-side-${ ( titles[ index ] && titles[ index ].iconSide ? titles[ index ].iconSide : 'right' ) } kt-tabs-has-icon-${ ( titles[ index ] && titles[ index ].icon ? 'true' : 'false' ) } kt-tab-title-${ ( 1 + index === currentTab ? 'active' : 'inactive' ) }${ ( enableSubtitle ? ' kb-tabs-have-subtitle' : '' ) }` } style={ {
 						marginTop: ( '' !== previewTitleMarginTop ? getSpacingOptionOutput( previewTitleMarginTop, previewTitleMarginUnit ) : '' ),
-						marginRight: ( 'tabs' === layout && widthType === 'percent' ? '0px' : ( '' !== previewTitleMarginRight ? getSpacingOptionOutput( previewTitleMarginRight, previewTitleMarginUnit ) : '' ) ),
+						marginRight: ( (isLast && 'vtabs' !== layout) || ('tabs' === layout && widthType === 'percent') ? '0px' : ( '' !== previewTitleMarginRight ? getSpacingOptionOutput( previewTitleMarginRight, previewTitleMarginUnit ) : '' ) ),
 						marginBottom: ( '' !== previewTitleMarginBottom ? getSpacingOptionOutput( previewTitleMarginBottom, previewTitleMarginUnit ) : '' ),
 						marginLeft: ( 'tabs' === layout && widthType === 'percent' ? '0px' : ( '' !== previewTitleMarginLeft ? getSpacingOptionOutput( previewTitleMarginLeft, previewTitleMarginUnit ) : '' ) ),
 					} }>
@@ -819,7 +819,7 @@ function KadenceTabs( props ) {
 		};
 		const renderPreviewArray = (
 			<Fragment>
-				{ times( tabCount, n => renderTitles( n ) ) }
+				{ times( tabCount, n => renderTitles( n, tabCount - 1 === n ) ) }
 			</Fragment>
 		);
 		const renderAnchorSettings = ( index ) => {
