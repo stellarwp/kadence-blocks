@@ -7,6 +7,10 @@
  * @version  1.9
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Class to create a minified css output.
  */

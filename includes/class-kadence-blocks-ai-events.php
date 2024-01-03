@@ -226,11 +226,21 @@ class Kadence_Blocks_AI_Events {
 					'credits_after'  => $event_data['credits_after'],
 					'credits_used'   => $event_data['credits_used'],
 				];
+				break;
 			case 'collection_updated':
 				$event = 'Collection Updated';
 				$context = [
 					'collection_name' => $this->get_custom_collection_name_by_id( $event_data['customCollections'], $event_data['photoLibrary'] ),
 				];
+				break;
+			case 'ai_inline_requested':
+				$event   = 'AI Inline Requested';
+				$context = [
+					'tool_name'    => $event_data['tool_name'],
+					'type'         => $event_data['type'],
+					'initial_text' => $event_data['initial_text'],
+				];
+				break;
 		}
 
 		if ( strlen( $event ) !== 0 ) {

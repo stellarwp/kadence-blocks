@@ -923,6 +923,30 @@ export default function replaceContent( content, aiContent, categories, context,
 			if ( baseContent?.sentence?.short ) {
 				content = content.replace( /Use a brief and inviting sentence to encourage visitors to get in touch./g, baseContent?.sentence?.short );
 			}
+			// Headline.
+			if ( baseContent?.heading?.short ) {
+				content = content.replace( /Write a short headline/g, baseContent?.heading?.short );
+			}
+			// Headline.
+			if ( baseContent?.heading?.medium ) {
+				content = content.replace( /Compose a captivating title for this section./g, baseContent?.heading?.medium );
+			}
+			// Paragraph
+			if ( baseContent?.sentence?.short ) {
+				content = content.replace( /Support your idea with a clear, descriptive sentence or phrase that has a consistent writing style./g, baseContent?.sentence?.short );
+			}
+			if ( columnsContent?.columns ) {
+				for (let index = 0; index < columnsContent?.columns.length; index++) {
+					// Title.
+					if ( columnsContent?.columns?.[index]?.['title-medium'] ) {
+						content = content.replace( "Add a descriptive title for the column.", columnsContent?.columns?.[index]?.['title-medium'] );
+					}
+					// Paragraph.
+					if ( columnsContent?.columns?.[index]?.['sentence-short'] ) {
+						content = content.replace( "Add context to your column. Help visitors understand the value they can get from your products and services.", columnsContent?.columns?.[index]?.['sentence-short'] );
+					}
+				}
+			}
 			break;
 		case "gallery":
 			// Headline.
@@ -977,6 +1001,12 @@ export default function replaceContent( content, aiContent, categories, context,
 			}
 			break;
 		case "form":
+			let textContent = '';
+			const aboutContent = aiContent?.['about']?.content;
+			if ( aboutContent ) {
+				textContent = aboutContent.find( x => x.id === 'about' );
+			}
+			console.log( textContent );
 			// Headline.
 			if ( baseContent?.heading?.short ) {
 				content = content.replace( /Add A Title For Your Form/g, baseContent?.heading?.short );
@@ -985,6 +1015,10 @@ export default function replaceContent( content, aiContent, categories, context,
 			// Sentence.
 			if ( baseContent?.sentence?.short ) {
 				content = content.replace( /Briefly describe what the form is for or provide additional context if required. Use inviting language./g, baseContent?.sentence?.short );
+			}
+			// Paragraph long
+			if ( textContent?.sentence?.long ) {
+				content = content.replace( /Use this paragraph section to get your website visitors to know you. Write about you or your organization, the products or services you offer, or why you exist. Keep a consistent communication style. Consider using this if you need to provide more context on why you do what you do. Be engaging. Focus on delivering value to your visitors./g, textContent?.sentence?.long );
 			}
 			break;
 		case "table-of-contents":

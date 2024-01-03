@@ -82,6 +82,10 @@
     "level": {
       "type": "number",
       "default": 0
+    },
+    "iconTitle": {
+      "type": "string",
+      "default": ""
     }
   },
   "usesContext": [

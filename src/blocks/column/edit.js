@@ -315,18 +315,29 @@ function SectionEdit( props ) {
 			if ( '' !== textAlign?.[2] && ( mobileDirection === 'horizontal' || ( mobileDirection === '' && tabletDirection === 'horizontal' ) || ( mobileDirection === '' && tabletDirection === '' && deskDirection === 'horizontal' ) ) && deskJustifyAlign === '' ) {
 				switch ( textAlign[2] ) {
 					case 'center':
-						mobileDirection = 'center';
+						mobileJustifyAlign = 'center';
 						break;
 					case 'left':
-						mobileDirection = 'flex-start';
+						mobileJustifyAlign = 'flex-start';
 						break;
 					case 'right':
-						mobileDirection = 'flex-end';
+						mobileJustifyAlign = 'flex-end';
 						break;
 				}
 				updateJustify = true;
 			}
-			
+			if ( deskDirection === 'vertical' && deskJustifyAlign !== '' ) {
+				deskJustifyAlign = '';
+				updateJustify = true;
+			}
+			if ( ( tabletDirection === 'vertical' || ( tabletDirection === '' && deskDirection === 'vertical' ) ) && tabletJustifyAlign !== '' ) {
+				tabletJustifyAlign = '';
+				updateJustify = true;
+			}
+			if ( ( mobileDirection === 'vertical' || ( mobileDirection === '' && tabletDirection === 'vertical' ) || ( mobileDirection === '' && tabletDirection === '' && deskDirection === 'vertical' ) ) && mobileJustifyAlign !== '' ) {
+				mobileJustifyAlign = '';
+				updateJustify = true;
+			}
 			if ( updateJustify ) {
 				console.log( 'updateJustify', deskJustifyAlign, tabletJustifyAlign, mobileJustifyAlign );
 				setAttributes( { justifyContent: [ deskJustifyAlign, tabletJustifyAlign, mobileJustifyAlign ] } );
@@ -528,7 +539,7 @@ function SectionEdit( props ) {
 	const previewJustify = getPreviewSize( previewDevice, ( justifyContent && '' !== justifyContent[ 0 ] ? justifyContent[ 0 ] : '' ) , ( justifyContent && '' !== justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ), ( justifyContent && '' !== justifyContent[ 2 ] ? justifyContent[ 2 ] : '' ) );
 	const previewWrap = getPreviewSize( previewDevice, ( wrapContent && '' !== wrapContent[ 0 ] ? wrapContent[ 0 ] : '' ) , ( wrapContent && '' !== wrapContent[ 1 ] ? wrapContent[ 1 ] : '' ), ( wrapContent && '' !== wrapContent[ 2 ] ? wrapContent[ 2 ] : '' ) );
 	const backgroundString = ( background ? KadenceColorOutput( background, backgroundOpacity ) : undefined );
-	const previewFlexBasis = getPreviewSize( previewDevice, ( flexBasis && '' !== flexBasis[ 0 ] ? flexBasis[ 0 ] : '' ) , ( flexBasis && '' !== flexBasis[ 1 ] ? flexBasis[ 1 ] : '' ), ( flexBasis && '' !== flexBasis[ 2 ] ? flexBasis[ 2 ] : '' ) );
+	const previewFlexBasis = getPreviewSize( previewDevice, ( ( previewDirection === 'horizontal' || previewDirection === 'horizontal-reverse' ) && flexBasis && '' !== flexBasis[ 0 ] ? flexBasis[ 0 ] : '' ) , ( ( previewDirection === 'horizontal' || previewDirection === 'horizontal-reverse' ) && flexBasis && '' !== flexBasis[ 1 ] ? flexBasis[ 1 ] : '' ), ( ( previewDirection === 'horizontal' || previewDirection === 'horizontal-reverse' ) && flexBasis && '' !== flexBasis[ 2 ] ? flexBasis[ 2 ] : '' ) );
 
 	const previewMaxWidth = getPreviewSize( previewDevice, ( maxWidth && maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ) , ( maxWidth && maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), ( maxWidth && maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) );
 	const previewMinHeight = getPreviewSize( previewDevice, ( height && '' !== height[ 0 ] ? height[ 0 ] : '' ) , ( height && '' !== height[ 1 ] ? height[ 1 ] : '' ), ( height && '' !== height[ 2 ] ? height[ 2 ] : '' ) );
@@ -635,11 +646,14 @@ function SectionEdit( props ) {
 				{ ( '' !== previewFlexBasis ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal > .wp-block-kadence-image:not(:last-child), .kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal-reverse > .wp-block-kadence-image:not(:last-child) { margin-bottom: unset; }` : '' ) }
 				{ ( '' == previewFlexBasis ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal > .kb-image-is-ratio-size:not(.kb-image-max-width-set), .kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal-reverse > .kb-image-is-ratio-size:not(.kb-image-max-width-set) { flex-grow: 1; }` : '' ) }
 				{ ( '' == previewFlexBasis ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-vertical > .kb-image-is-ratio-size:not(.kb-image-max-width-set), .kadence-column-${ uniqueID } > .kadence-inner-column-direction-vertical-reverse > .kb-image-is-ratio-size:not(.kb-image-max-width-set) { align-self: stretch; }` : '' ) }
+				{ ( '' == previewFlexBasis ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-vertical > .kb-image-is-ratio-size:not(.kb-image-max-width-set), .kadence-column-${ uniqueID } > .kadence-inner-column-direction-vertical-reverse > .kb-image-is-ratio-size:not(.kb-image-max-width-set) { align-self: stretch; }` : '' ) }
 
 				{ ( '' !== verticalGap ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner { row-gap: ${ verticalGap }; }` : '' ) }
 
 				{ ( previewJustify ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal, .kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal-reverse { justify-content: ${ previewJustify }; }` : '' ) }
 				{ ( previewJustify ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-vertical, .kadence-column-${ uniqueID } > .kadence-inner-column-direction-vertical-reverse { align-items: ${ previewJustify }; }` : '' ) }
+
+				{ ( previewJustify ? `.kadence-column-${ uniqueID }.wp-block-kadence-column > .kadence-inner-column-direction-vertical > *, .kadence-column-${ uniqueID }.wp-block-kadence-column > .kadence-inner-column-direction-vertical-reverse > * { max-width: 100%; }` : '' ) }
 
 				{ ( previewVerticalAlignCSS ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-vertical, .kadence-column-${ uniqueID } > .kadence-inner-column-direction-vertical-reverse { justify-content: ${ previewVerticalAlignCSS }; }` : '' ) }
 				{ ( previewVerticalAlignCSS ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal, .kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal-reverse { align-items: ${ previewVerticalAlignCSS }; }` : '' ) }

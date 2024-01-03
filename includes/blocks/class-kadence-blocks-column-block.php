@@ -605,19 +605,11 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			if ( ! empty( $tablet_horizontal_align ) ) {
 				$css->add_property( 'align-items', $tablet_horizontal_align );
-			} else if ( ! $is_version_two && ! empty( $tablet_text_align ) ) {
-				switch ( $tablet_text_align ) {
-					case 'left':
-						$justify = 'flex-start';
-						break;
-					case 'right':
-						$justify = 'flex-end';
-						break;
-					default:
-						$justify = 'center';
-						break;
-				}
-				$css->add_property( 'align-items', $justify );
+			}
+			if ( ( 'horizontal' === $desktop_direction || 'horizontal-reverse' === $desktop_direction ) && ! empty( $attributes['flexBasis'][0] ) ) {
+				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *' );
+				$css->add_property( 'flex', '1' );
+				$css->add_property( 'max-width', '100%' );
 			}
 		} elseif ( 'horizontal' === $tablet_direction || 'horizontal-reverse' === $tablet_direction ) {
 			if ( ! empty( $attributes['flexBasis'][1] ) ) {
@@ -715,19 +707,11 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			if ( ! empty( $mobile_horizontal_align ) ) {
 				$css->add_property( 'align-items', $mobile_horizontal_align );
-			} elseif ( ! $is_version_two && ! empty( $mobile_text_align ) ) {
-				switch ( $mobile_text_align ) {
-					case 'left':
-						$justify = 'flex-start';
-						break;
-					case 'right':
-						$justify = 'flex-end';
-						break;
-					default:
-						$justify = 'center';
-						break;
-				}
-				$css->add_property( 'align-items', $justify );
+			}
+			if ( ( ( 'horizontal' === $tablet_direction || 'horizontal-reverse' === $tablet_direction ) && ! empty( $attributes['flexBasis'][1] ) ) || ( ( 'horizontal' === $desktop_direction || 'horizontal-reverse' === $desktop_direction ) && ! empty( $attributes['flexBasis'][0] ) && empty( $attributes['flexBasis'][1] ) ) ) {
+				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *' );
+				$css->add_property( 'flex', '1' );
+				$css->add_property( 'max-width', '100%' );
 			}
 		} elseif ( 'horizontal' === $mobile_direction || 'horizontal-reverse' === $mobile_direction ) {
 
