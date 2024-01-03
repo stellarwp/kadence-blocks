@@ -139,10 +139,11 @@ export function KadenceAiWizard( props ) {
 				handleEvent('collection_updated');
 				onWizardClose();
 			} else {
-				handleSave();
 				handleComplete();
 				onPrimaryAction(event, true);
 			}
+
+			handleSave();
 
 			return;
 		}
