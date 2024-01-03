@@ -134,19 +134,23 @@ export function KadenceAiWizard( props ) {
 
 		// Submit wizard data on finish buttton click.
 		if (event.type === 'click' && event.target.classList.contains('components-wizard__primary-button')) {
-			handleSave();
 
-			if ( ! photographyOnly ) {
+			if (photographyOnly) {
+				handleEvent('collection_updated');
+				onWizardClose();
+			} else {
 				handleComplete();
 				onPrimaryAction(event, true);
 			}
+
+			handleSave();
 
 			return;
 		}
 
 		onWizardClose();
 	}
-	
+
 	function handleOnSecondaryClick(event) {
 		// No action on blur or escape keydown.
 		if (event.type === 'blur' || (event.keyCode === 27 && event.type === 'keydown')) {
@@ -157,7 +161,7 @@ export function KadenceAiWizard( props ) {
 		if (event.type === 'click' && event.target.classList.contains('components-wizard__secondary-button')) {
 			handleSave();
 		}
-	
+
 		onWizardClose();
 	}
 
