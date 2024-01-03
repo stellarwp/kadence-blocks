@@ -98,9 +98,11 @@ developers of this plugin.
 == Changelog ==
 
 = 3.2.11 Pre Release =
-Release Date: December 28th, 2023
+Release Date: January 3rd, 2024
 * Fix: Possible layout issue with justify content in vertical layouts.
 * Fix: Max width issue with info box and mobile/tablet.
+* Fix: Issue with tab layout and last tab.
+* Fix: Issue with tab title margin
 
 = 3.2.10 Pre Release =
 Release Date: December 21st, 2023

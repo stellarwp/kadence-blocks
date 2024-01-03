@@ -1006,7 +1006,6 @@ export default function replaceContent( content, aiContent, categories, context,
 			if ( aboutContent ) {
 				textContent = aboutContent.find( x => x.id === 'about' );
 			}
-			console.log( textContent );
 			// Headline.
 			if ( baseContent?.heading?.short ) {
 				content = content.replace( /Add A Title For Your Form/g, baseContent?.heading?.short );

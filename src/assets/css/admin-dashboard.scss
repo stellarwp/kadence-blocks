@@ -1017,3 +1017,43 @@ h5.kt-main-subtitle {
 	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 	grid-gap: 24px;
 }
+.license-section h2 {
+    display: -webkit-flex;
+    display: flex;
+    margin-top: 0;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: space-between;
+    justify-content: space-between
+}
+
+.license-section table.form-table {
+    display: block
+}
+
+.license-section table.form-table tbody {
+    display: block
+}
+
+.license-section table.form-table td,.license-section table.form-table tr {
+    display: block;
+    padding: 0;
+    width: 100%
+}
+
+.license-section .form-table th {
+    padding: 0;
+    width: 100%;
+    margin-bottom: 4px;
+    display: block;
+    color: #4A5568
+}
+
+.license-section p.submit {
+    padding: 0;
+    margin-top: 10px
+}
+
+.license-section table.form-table input[type="text"] {
+    width: 100%
+}

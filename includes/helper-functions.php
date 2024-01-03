@@ -180,6 +180,9 @@ function kadence_blocks_get_current_license_data(): array {
  * Check if network activation is enabled.
  */
 function kadence_blocks_is_network_authorize_enabled() {
+	if ( ! is_multisite() ) {
+		return false;
+	}
 	$network_enabled = ! apply_filters( 'kadence_activation_individual_multisites', true );
 	if ( ! $network_enabled && defined( 'KADENCE_ACTIVATION_NETWORK_ENABLED' ) && KADENCE_ACTIVATION_NETWORK_ENABLED ) {
 		$network_enabled = true;
