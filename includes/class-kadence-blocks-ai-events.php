@@ -226,6 +226,15 @@ class Kadence_Blocks_AI_Events {
 					'credits_after'  => $event_data['credits_after'],
 					'credits_used'   => $event_data['credits_used'],
 				];
+				break;
+			case 'ai_inline_requested':
+				$event   = 'AI Inline Requested';
+				$context = [
+					'tool_name'    => $event_data['tool_name'],
+					'type'         => $event_data['type'],
+					'initial_text' => $event_data['initial_text'],
+				];
+				break;
 		}
 
 		if ( strlen( $event ) !== 0 ) {
