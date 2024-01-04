@@ -250,7 +250,7 @@ class KB_Ajax_Advanced_Form {
 		foreach ( $fields as $index => $field ) {
 			$expected_field = ! empty( $field['inputName'] ) ? $field['inputName'] : 'field' . $field['uniqueID'];
 			// Skip proccessing this field if it's misssing (usually because hidden frontend).
-			if ( empty( $_POST[ $expected_field ] ) &&  $_POST[ $expected_field ] !== '0' && empty( $_FILES[ $expected_field ] ) ) {
+			if ( ( !isset( $_POST[ $expected_field ] ) || ( isset( $_POST[ $expected_field ] ) && $_POST[ $expected_field ] === '' ) ) && empty( $_FILES[ $expected_field ] ) ) {
 				if ( ! empty( $field['required'] ) && $field['required'] ) {
 					if ( ! empty( $field['kadenceFieldConditional']['conditionalData']['enable'] ) ) {
 						continue;
