@@ -98,6 +98,10 @@ developers of this plugin.
 == Changelog ==
 
 = 3.2.11 Pre Release =
+Release Date: January 4th, 2024
+* Fix: Issue with RTL Carousels.
+
+= 3.2.11 Pre Release =
 Release Date: January 3rd, 2024
 * Fix: Possible layout issue with justify content in vertical layouts.
 * Fix: Max width issue with info box and mobile/tablet.
