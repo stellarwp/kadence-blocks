@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.4
-Stable tag: 3.2.11
+Stable tag: 3.2.12
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -97,9 +97,10 @@ developers of this plugin.
 
 == Changelog ==
 
-= 3.2.11 Pre Release =
+= 3.2.12 Pre Release =
 Release Date: January 4th, 2024
 * Fix: Issue with RTL Carousels.
+* Fix: Possible issue with event tickets.
 
 = 3.2.11 Pre Release =
 Release Date: January 3rd, 2024
