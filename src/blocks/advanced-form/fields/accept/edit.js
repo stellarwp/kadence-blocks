@@ -146,20 +146,6 @@ function FieldAccept( { attributes, setAttributes, isSelected, clientId, context
 									checked={( undefined !== isChecked ? isChecked : false )}
 									onChange={( value ) => setAttributes( { isChecked: value } )}
 								/>
-								<FormInputControl
-									label={__( 'Default Value', 'kadence-blocks' )}
-									value={defaultValue}
-									preview={ defaultPreview }
-									onChange={( value ) => setAttributes( { defaultValue: value } )}
-									dynamicAttribute={'defaultValue'}
-									allowClear={true}
-									isSelected={ isSelected }
-									attributes={ attributes }
-									setAttributes={ setAttributes }
-									name={ name }
-									clientId={ clientId }
-									context={ context }
-								/>
 							</KadencePanelBody>
 						</>
 					}
