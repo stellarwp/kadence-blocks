@@ -1372,7 +1372,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				'src' => $src_base . $video_id . $src_query_string,
 			);
 		}
-		if ( ! empty( $attributes['bgImg'] ) ) {
+		if ( ! empty( $attributes['bgImg'] ) && 'local' === $attributes['backgroundVideoType'] ) {
 			$video_args['poster'] = $attributes['bgImg'];
 		}
 		if ( $prevent_preload ) {
