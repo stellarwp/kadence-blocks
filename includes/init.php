@@ -283,6 +283,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'termEndpoint'   => '/kbp/v1/term-select',
 			'taxonomiesEndpoint' => '/kbp/v1/taxonomies-select',
 			'postTypes'      => kadence_blocks_get_post_types(),
+			'postTypesQueryable' => kadence_blocks_get_post_types( array( 'publicly_queryable' => true ) ),
 			'taxonomies'     => array(),
 			'g_fonts'        => file_exists( $gfonts_path ) ? include $gfonts_path : array(),
 			'g_font_names'   => file_exists( $gfont_names_path ) ? include $gfont_names_path : array(),
@@ -372,11 +373,14 @@ function kadence_blocks_get_asset_file( $filepath ) {
  *
  * @return array
  */
-function kadence_blocks_get_post_types() {
+function kadence_blocks_get_post_types( $otherArgs = array() ) {
 	$args = array(
 		'public'       => true,
 		'show_in_rest' => true,
 	);
+	if( !empty( $otherArgs ) ) {
+		$args = array_merge( $args, $otherArgs );
+	}
 	$post_types = get_post_types( $args, 'objects' );
 	$output = array();
 	foreach ( $post_types as $post_type ) {
