@@ -130,6 +130,7 @@ function kadence_blocks_init() {
 	UplinkConfig::set_container( $container );
 	UplinkConfig::set_hook_prefix( 'kadence-blocks' );
 	UplinkConfig::set_token_auth_prefix( 'kadence' );
+	UplinkConfig::set_auth_cache_expiration( WEEK_IN_SECONDS );
 	Uplink::init();
 
 	Register::plugin(

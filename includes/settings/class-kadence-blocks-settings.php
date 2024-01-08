@@ -635,11 +635,8 @@ class Kadence_Blocks_Settings {
 		$license_key    = kadence_blocks_get_current_license_key();
 		$disconnect_url = '';
 		$is_authorized  = false;
-
-		if ( self::$authorized_cache !== null ) {
-			$is_authorized = self::$authorized_cache;
-		} elseif ( $token ) {
-			$is_authorized = self::$authorized_cache = is_authorized( $license_key, $token, get_license_domain() );
+		if ( $token ) {
+			$is_authorized = is_authorized( $license_key, $token, get_license_domain() );
 		}
 
 		if ( $is_authorized ) {
