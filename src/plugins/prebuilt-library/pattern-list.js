@@ -41,6 +41,7 @@ import replaceColors from './replace/replace-colors';
 import replaceImages from './replace/replace-images';
 import replaceContent from './replace/replace-content';
 import deleteContent from './replace/remove-content';
+import replaceAddressContent from './replace/replace-address-content';
 import wooContent from './replace/woo-content';
 import replaceMasks from './replace/replace-masks';
 import KadenceBlockPatternList from './block-pattern-list';
@@ -454,6 +455,7 @@ function PatternList( {
 	contextLabel,
 	launchWizard,
 	categories,
+	userData,
 	styles,
 } ) {
 	const [ failedAI, setFailedAI ] = useState( false );
@@ -496,6 +498,9 @@ function PatternList( {
 
 		let newInfo = info.content;
 		newInfo = wooContent( newInfo );
+		if ( userData?.locationType && 'Online Only' !== userData?.locationType && userData?.locationInput ) {
+			newInfo = replaceAddressContent( newInfo, userData.locationInput );
+		}
 		newInfo = deleteContent( newInfo );
 		if ( ! selectedStyle || 'light' === selectedStyle ) {
 			// Perhaps do something later.
@@ -632,6 +637,9 @@ function PatternList( {
 				if ( item?.html) {
 					item['html'] = replaceContent( item.html, allContext, item.categories, aiContext, item.name, true );
 					item['content'] = replaceContent( item.content, allContext, item.categories, aiContext, item.name );
+					if ( userData?.locationType && 'Online Only' !== userData?.locationType && userData?.locationInput ) {
+						item['html'] = replaceAddressContent( item['html'], userData.locationInput );
+					}
 				} else {
 					item['content'] = replaceContent( item.content, allContext, item.categories, aiContext, variation );
 				}

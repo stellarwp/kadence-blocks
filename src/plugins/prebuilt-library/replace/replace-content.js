@@ -260,6 +260,15 @@ export default function replaceContent( content, aiContent, categories, context,
 						content = content.replace( "Add a list item", listContent?.list?.[index]?.['list-item-short']);
 					}
 				}
+				for (let index = 0; index < listContent?.list.length; index++) {
+					// List Item.
+					if ( listContent?.list?.[index]?.['list-item-short'] ) {
+						if ( ! isHTML ) {
+							content = content.replace( `"text":"Add a list item"`, `"text":"${ listContent?.list?.[index]?.['list-item-short'] }"` );
+						}
+						content = content.replace( "Add a list item", listContent?.list?.[index]?.['list-item-short']);
+					}
+				}
 			}
 			// Columns
 			if ( columnsContent?.columns ) {
@@ -467,6 +476,27 @@ export default function replaceContent( content, aiContent, categories, context,
 					// Title.
 					if ( videoContent?.videos?.[index]?.['title-short'] ) {
 						content = content.replace( "Short title", videoContent?.videos?.[index]?.['title-short']);
+					}
+				}
+			}
+			// List
+			if ( listContent?.list ) {
+				for (let index = 0; index < listContent?.list.length; index++) {
+					// List Item.
+					if ( listContent?.list?.[index]?.['list-item-short'] ) {
+						if ( ! isHTML ) {
+							content = content.replace( `"text":"Add a list item"`, `"text":"${ listContent?.list?.[index]?.['list-item-short'] }"` );
+						}
+						content = content.replace( "Add a list item", listContent?.list?.[index]?.['list-item-short']);
+					}
+				}
+				for (let index = 0; index < listContent?.list.length; index++) {
+					// List Item.
+					if ( listContent?.list?.[index]?.['list-item-short'] ) {
+						if ( ! isHTML ) {
+							content = content.replace( `"text":"Add a list item"`, `"text":"${ listContent?.list?.[index]?.['list-item-short'] }"` );
+						}
+						content = content.replace( "Add a list item", listContent?.list?.[index]?.['list-item-short']);
 					}
 				}
 			}
@@ -685,6 +715,9 @@ export default function replaceContent( content, aiContent, categories, context,
 				for (let index = 0; index < counterContent?.metrics.length; index++) {
 					// Title.
 					if ( counterContent?.metrics?.[index]?.['title-short'] ) {
+						if ( ! isHTML ) {
+							content = content.replace( `"title":"Stat title"`, `"title":"${ listContent?.list?.[index]?.['list-item-short'] }"` );
+						}
 						content = content.replace( "Stat title", counterContent?.metrics?.[index]?.['title-short'] );
 					}
 					// Price.
@@ -959,6 +992,7 @@ export default function replaceContent( content, aiContent, categories, context,
 			}
 			break;
 		case "featured-products":
+		case "featured-product":
 			const featuredContent = contextAI.find( x => x.id === context + '-single' );
 			// Headline.
 			if ( featuredContent?.heading?.medium ) {
@@ -996,6 +1030,57 @@ export default function replaceContent( content, aiContent, categories, context,
 						if ( featuredContent?.['product-features-and-benefits']?.[index]?.['list-item-short'] ) {
 							content = content.replace( "Short feature description", featuredContent?.['product-features-and-benefits']?.[index]?.['list-item-short'] );
 						}
+					}
+				}
+			}
+			break;
+		case "product-loop":
+			// Headline Short.
+			if ( baseContent?.heading?.short ) {
+				content = content.replace( /Type a short headline/g, baseContent?.heading?.short );
+			}
+			// Headline.
+			if ( baseContent?.heading?.medium ) {
+				content = content.replace( /Briefly and concisely explain what you do for your audience./g, baseContent?.heading?.medium );
+			}
+			// Paragraph long
+			if ( baseContent?.sentence?.long ) {
+				content = content.replace( /Use this paragraph section to get your website visitors to know you. Write about you or your organization, the products or services you offer, or why you exist. Keep a consistent communication style. Consider using this if you need to provide more context on why you do what you do. Be engaging. Focus on delivering value to your visitors./g, baseContent?.sentence?.long );
+			}
+			// Paragraph Medium
+			if ( baseContent?.sentence?.medium ) {
+				content = content.replace( /Consider using this if you need to provide more context on why you do what you do. Be engaging. Focus on delivering value to your visitors./g, baseContent?.sentence?.medium );
+			}
+
+			// Paragraph
+			if ( baseContent?.sentence?.short ) {
+				content = content.replace( /Consider using this if you need to provide more context on why you do what you do./g, baseContent?.sentence?.short );
+				content = content.replace( /Consider using this if you need to provide more context on why you do what you do. Be engaging./g, baseContent?.sentence?.short );
+			}
+			// overline
+			if ( baseContent?.overline?.short ) {
+				content = content.replace( /2018 - Current/g, baseContent?.overline?.short );
+				content = content.replace( /Add an overline text/g, baseContent?.overline?.short );
+				content = content.replace( /Overline/g, baseContent?.overline?.short );
+			}
+			// Button
+			if ( baseContent?.button?.short ) {
+				content = content.replace( /Call To Action/g, baseContent?.button?.short );
+				content = content.replace( /Call to Action/g, baseContent?.button?.short );
+			}
+			if ( columnsContent?.columns ) {
+				for (let index = 0; index < columnsContent?.columns.length; index++) {
+					// Title.
+					if ( columnsContent?.columns?.[index]?.['title-short'] ) {
+						content = content.replace( "Add a short title", columnsContent?.columns?.[index]?.['title-short'] );
+					}
+					// Paragraph.
+					if ( columnsContent?.columns?.[index]?.['sentence-short'] ) {
+						content = content.replace( "Use this space to add a short description.", columnsContent?.columns?.[index]?.['sentence-short'] );
+					}
+					// Paragraph medium.
+					if ( columnsContent?.columns?.[index]?.['sentence-medium'] ) {
+						content = content.replace( "Use this space to add a medium length description. Be brief and give enough information to earn their attention.", columnsContent?.columns?.[index]?.['sentence-medium'] );
 					}
 				}
 			}

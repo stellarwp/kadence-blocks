@@ -97,10 +97,13 @@ developers of this plugin.
 
 == Changelog ==
 
-= 3.2.12 Pre Release =
-Release Date: January 4th, 2024
+= 3.2.12 =
+Release Date: January 9th, 2024
+* Update: Improve location context imports.
+* Fix: Remove adv form accept field default input
 * Fix: Issue with RTL Carousels.
 * Fix: Possible issue with event tickets.
+* Fix: Better caching with auth.
 
 = 3.2.11 Pre Release =
 Release Date: January 3rd, 2024
