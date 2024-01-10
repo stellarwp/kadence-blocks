@@ -100,7 +100,7 @@ developers of this plugin.
 = 3.2.13 =
 Release Date: January 10th, 2024
 * Update: Change limits on typography field.
-* Update: 
+* Update: Fix Possible spacing issue in columns.
 
 = 3.2.12 =
 Release Date: January 9th, 2024
