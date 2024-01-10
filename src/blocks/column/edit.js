@@ -339,7 +339,6 @@ function SectionEdit( props ) {
 				updateJustify = true;
 			}
 			if ( updateJustify ) {
-				console.log( 'updateJustify', deskJustifyAlign, tabletJustifyAlign, mobileJustifyAlign );
 				setAttributes( { justifyContent: [ deskJustifyAlign, tabletJustifyAlign, mobileJustifyAlign ] } );
 			}
 			// Update Gutter settings for 3.2.0.

@@ -51,7 +51,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 		// Style.
-		$is_version_two = ( isset( $attributes['kbVersion'] ) && 2 < $attributes['kbVersion'] ? true : false );
+		$is_version_two = ( isset( $attributes['kbVersion'] ) && 1 < $attributes['kbVersion'] ? true : false );
 		$desktop_vertical_align = ! empty( $attributes['verticalAlignment'] ) ? $attributes['verticalAlignment'] : '';
 		$tablet_vertical_align = ! empty( $attributes['verticalAlignmentTablet'] ) ? $attributes['verticalAlignmentTablet'] : $desktop_vertical_align;
 		$mobile_vertical_align = ! empty( $attributes['verticalAlignmentMobile'] ) ? $attributes['verticalAlignmentMobile'] : $tablet_vertical_align;
@@ -289,11 +289,20 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		// Gap.
 		$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 		if ( ! $is_version_two && 'horizontal' === $desktop_direction ) {
+			$gutter = isset( $attributes['gutter'] ) && is_array( $attributes['gutter'] ) && isset( $attributes['gutter'][0] ) && is_numeric( $attributes['gutter'][0] ) ? $attributes['gutter'][0] : null;
+			if ( null === $gutter ) {
+				$attributes['gutter'][0] = 10;
+			}
 			if ( empty( $attributes['gutterVariable'] ) ) {
 				$attributes['gutterVariable'] = array( 'custom', 'custom', 'custom' );
 			}
 			$css->render_row_gap( $attributes, 'gutterVariable', 'gap', 'gutter', 'gutterUnit' );
 		} else {
+			if ( 'horizontal' === $desktop_direction ) {
+				if ( empty( $attributes['gutterVariable'][0] ) ) {
+					$attributes['gutterVariable'][0] = 'sm';
+				}
+			}
 			$css->render_row_gap( $attributes, 'rowGapVariable', 'row-gap', 'rowGap', 'rowGapUnit' );
 			$css->render_row_gap( $attributes, 'gutterVariable', 'column-gap', 'gutter', 'gutterUnit' );
 		}
