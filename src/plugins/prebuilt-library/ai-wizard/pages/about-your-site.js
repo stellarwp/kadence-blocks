@@ -112,7 +112,7 @@ export function AboutYourSite() {
 		const tempProgress = Math.round(
 			(missionStatement.length / MISSION_STATEMENT_GOAL) * 100
 		);
-		console.log("lendth", missionStatement.length);
+		// console.log("lendth", missionStatement.length);
 		if (tempProgress == 0) {
 			setIndicator("initial");
 		}
@@ -125,7 +125,7 @@ export function AboutYourSite() {
 		if (tempProgress >= 100 && tempProgress < 200 ) {
 			setIndicator("strong");
 		}
-		if (tempProgress >= 200 && tempProgress < 500) {
+		if (tempProgress >= 200 && tempProgress < 400) {
 			setIndicator("enough");
 		}
 		if (tempProgress >= 400 && tempProgress < 500) {
