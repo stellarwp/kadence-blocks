@@ -260,6 +260,15 @@ export default function replaceContent( content, aiContent, categories, context,
 						content = content.replace( "Add a list item", listContent?.list?.[index]?.['list-item-short']);
 					}
 				}
+				for (let index = 0; index < listContent?.list.length; index++) {
+					// List Item.
+					if ( listContent?.list?.[index]?.['list-item-short'] ) {
+						if ( ! isHTML ) {
+							content = content.replace( `"text":"Add a list item"`, `"text":"${ listContent?.list?.[index]?.['list-item-short'] }"` );
+						}
+						content = content.replace( "Add a list item", listContent?.list?.[index]?.['list-item-short']);
+					}
+				}
 			}
 			// Columns
 			if ( columnsContent?.columns ) {
@@ -467,6 +476,27 @@ export default function replaceContent( content, aiContent, categories, context,
 					// Title.
 					if ( videoContent?.videos?.[index]?.['title-short'] ) {
 						content = content.replace( "Short title", videoContent?.videos?.[index]?.['title-short']);
+					}
+				}
+			}
+			// List
+			if ( listContent?.list ) {
+				for (let index = 0; index < listContent?.list.length; index++) {
+					// List Item.
+					if ( listContent?.list?.[index]?.['list-item-short'] ) {
+						if ( ! isHTML ) {
+							content = content.replace( `"text":"Add a list item"`, `"text":"${ listContent?.list?.[index]?.['list-item-short'] }"` );
+						}
+						content = content.replace( "Add a list item", listContent?.list?.[index]?.['list-item-short']);
+					}
+				}
+				for (let index = 0; index < listContent?.list.length; index++) {
+					// List Item.
+					if ( listContent?.list?.[index]?.['list-item-short'] ) {
+						if ( ! isHTML ) {
+							content = content.replace( `"text":"Add a list item"`, `"text":"${ listContent?.list?.[index]?.['list-item-short'] }"` );
+						}
+						content = content.replace( "Add a list item", listContent?.list?.[index]?.['list-item-short']);
 					}
 				}
 			}
@@ -685,6 +715,9 @@ export default function replaceContent( content, aiContent, categories, context,
 				for (let index = 0; index < counterContent?.metrics.length; index++) {
 					// Title.
 					if ( counterContent?.metrics?.[index]?.['title-short'] ) {
+						if ( ! isHTML ) {
+							content = content.replace( `"title":"Stat title"`, `"title":"${ listContent?.list?.[index]?.['list-item-short'] }"` );
+						}
 						content = content.replace( "Stat title", counterContent?.metrics?.[index]?.['title-short'] );
 					}
 					// Price.
@@ -923,6 +956,30 @@ export default function replaceContent( content, aiContent, categories, context,
 			if ( baseContent?.sentence?.short ) {
 				content = content.replace( /Use a brief and inviting sentence to encourage visitors to get in touch./g, baseContent?.sentence?.short );
 			}
+			// Headline.
+			if ( baseContent?.heading?.short ) {
+				content = content.replace( /Write a short headline/g, baseContent?.heading?.short );
+			}
+			// Headline.
+			if ( baseContent?.heading?.medium ) {
+				content = content.replace( /Compose a captivating title for this section./g, baseContent?.heading?.medium );
+			}
+			// Paragraph
+			if ( baseContent?.sentence?.short ) {
+				content = content.replace( /Support your idea with a clear, descriptive sentence or phrase that has a consistent writing style./g, baseContent?.sentence?.short );
+			}
+			if ( columnsContent?.columns ) {
+				for (let index = 0; index < columnsContent?.columns.length; index++) {
+					// Title.
+					if ( columnsContent?.columns?.[index]?.['title-medium'] ) {
+						content = content.replace( "Add a descriptive title for the column.", columnsContent?.columns?.[index]?.['title-medium'] );
+					}
+					// Paragraph.
+					if ( columnsContent?.columns?.[index]?.['sentence-short'] ) {
+						content = content.replace( "Add context to your column. Help visitors understand the value they can get from your products and services.", columnsContent?.columns?.[index]?.['sentence-short'] );
+					}
+				}
+			}
 			break;
 		case "gallery":
 			// Headline.
@@ -935,6 +992,7 @@ export default function replaceContent( content, aiContent, categories, context,
 			}
 			break;
 		case "featured-products":
+		case "featured-product":
 			const featuredContent = contextAI.find( x => x.id === context + '-single' );
 			// Headline.
 			if ( featuredContent?.heading?.medium ) {
@@ -976,7 +1034,63 @@ export default function replaceContent( content, aiContent, categories, context,
 				}
 			}
 			break;
+		case "product-loop":
+			// Headline Short.
+			if ( baseContent?.heading?.short ) {
+				content = content.replace( /Type a short headline/g, baseContent?.heading?.short );
+			}
+			// Headline.
+			if ( baseContent?.heading?.medium ) {
+				content = content.replace( /Briefly and concisely explain what you do for your audience./g, baseContent?.heading?.medium );
+			}
+			// Paragraph long
+			if ( baseContent?.sentence?.long ) {
+				content = content.replace( /Use this paragraph section to get your website visitors to know you. Write about you or your organization, the products or services you offer, or why you exist. Keep a consistent communication style. Consider using this if you need to provide more context on why you do what you do. Be engaging. Focus on delivering value to your visitors./g, baseContent?.sentence?.long );
+			}
+			// Paragraph Medium
+			if ( baseContent?.sentence?.medium ) {
+				content = content.replace( /Consider using this if you need to provide more context on why you do what you do. Be engaging. Focus on delivering value to your visitors./g, baseContent?.sentence?.medium );
+			}
+
+			// Paragraph
+			if ( baseContent?.sentence?.short ) {
+				content = content.replace( /Consider using this if you need to provide more context on why you do what you do./g, baseContent?.sentence?.short );
+				content = content.replace( /Consider using this if you need to provide more context on why you do what you do. Be engaging./g, baseContent?.sentence?.short );
+			}
+			// overline
+			if ( baseContent?.overline?.short ) {
+				content = content.replace( /2018 - Current/g, baseContent?.overline?.short );
+				content = content.replace( /Add an overline text/g, baseContent?.overline?.short );
+				content = content.replace( /Overline/g, baseContent?.overline?.short );
+			}
+			// Button
+			if ( baseContent?.button?.short ) {
+				content = content.replace( /Call To Action/g, baseContent?.button?.short );
+				content = content.replace( /Call to Action/g, baseContent?.button?.short );
+			}
+			if ( columnsContent?.columns ) {
+				for (let index = 0; index < columnsContent?.columns.length; index++) {
+					// Title.
+					if ( columnsContent?.columns?.[index]?.['title-short'] ) {
+						content = content.replace( "Add a short title", columnsContent?.columns?.[index]?.['title-short'] );
+					}
+					// Paragraph.
+					if ( columnsContent?.columns?.[index]?.['sentence-short'] ) {
+						content = content.replace( "Use this space to add a short description.", columnsContent?.columns?.[index]?.['sentence-short'] );
+					}
+					// Paragraph medium.
+					if ( columnsContent?.columns?.[index]?.['sentence-medium'] ) {
+						content = content.replace( "Use this space to add a medium length description. Be brief and give enough information to earn their attention.", columnsContent?.columns?.[index]?.['sentence-medium'] );
+					}
+				}
+			}
+			break;
 		case "form":
+			let textContent = '';
+			const aboutContent = aiContent?.['about']?.content;
+			if ( aboutContent ) {
+				textContent = aboutContent.find( x => x.id === 'about' );
+			}
 			// Headline.
 			if ( baseContent?.heading?.short ) {
 				content = content.replace( /Add A Title For Your Form/g, baseContent?.heading?.short );
@@ -985,6 +1099,10 @@ export default function replaceContent( content, aiContent, categories, context,
 			// Sentence.
 			if ( baseContent?.sentence?.short ) {
 				content = content.replace( /Briefly describe what the form is for or provide additional context if required. Use inviting language./g, baseContent?.sentence?.short );
+			}
+			// Paragraph long
+			if ( textContent?.sentence?.long ) {
+				content = content.replace( /Use this paragraph section to get your website visitors to know you. Write about you or your organization, the products or services you offer, or why you exist. Keep a consistent communication style. Consider using this if you need to provide more context on why you do what you do. Be engaging. Focus on delivering value to your visitors./g, textContent?.sentence?.long );
 			}
 			break;
 		case "table-of-contents":

@@ -75,7 +75,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		// Style.
-		if ( ! empty( $attributes['containerBackground'] ) || $css->is_number( $attributes['containerBackgroundOpacity'] ) || ! empty( $attributes['maxWidth'] ) ) {
+		if ( ! empty( $attributes['containerBackground'] ) || $css->is_number( $attributes['containerBackgroundOpacity'] ) || ! empty( $attributes['maxWidth'] ) || ! empty( $attributes['tabletMaxWidth'] ) || ! empty( $attributes['mobileMaxWidth'] ) ) {
 			if ( isset( $attributes['containerBackground'] ) && ! empty( $attributes['containerBackground'] ) ) {
 				$alpha = ( isset( $attributes['containerBackgroundOpacity'] ) && is_numeric( $attributes['containerBackgroundOpacity'] ) ? $attributes['containerBackgroundOpacity'] : 1 );
 				$css->add_property( 'background', $css->render_color( $attributes['containerBackground'], $alpha ) );
@@ -83,10 +83,19 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 				$alpha = ( isset( $attributes['containerBackgroundOpacity'] ) && is_numeric( $attributes['containerBackgroundOpacity'] ) ? $attributes['containerBackgroundOpacity'] : 1 );
 				$css->add_property( 'background', $css->render_color( '#f2f2f2', $alpha ) );
 			}
-			if ( isset( $attributes['maxWidth'] ) && ! empty( $attributes['maxWidth'] ) ) {
-				$unit = ( isset( $attributes['maxWidthUnit'] ) && ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' );
-				$css->add_property( 'max-width', $attributes['maxWidth'] . $unit );
+			$max_width_unit = ( isset( $attributes['maxWidthUnit'] ) && ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' );
+			if ( ! empty( $attributes['maxWidth'] ) ) {
+				$css->add_property( 'max-width', $attributes['maxWidth'] . $max_width_unit );
 			}
+			if ( ! empty( $attributes['tabletMaxWidth'] ) ) {
+				$css->set_media_state( 'tablet' );
+				$css->add_property( 'max-width', $attributes['tabletMaxWidth'] . $max_width_unit );
+			}
+			if ( ! empty( $attributes['mobileMaxWidth'] ) ) {
+				$css->set_media_state( 'mobile' );
+				$css->add_property( 'max-width', $attributes['mobileMaxWidth'] . $max_width_unit );
+			}
+			$css->set_media_state( 'desktop' );
 		}
 		$css->render_measure_output( $attributes, 'containerPadding', 'padding', array( 'tablet_key' => 'containerTabletPadding', 'mobile_key' => 'containerMobilePadding' ) );
 		$css->render_measure_output( $attributes, 'containerMargin', 'margin', array( 'unit_key' => 'containerMarginUnit' ) );

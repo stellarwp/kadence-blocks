@@ -89,7 +89,7 @@ import {
 
 function KadenceIconLists( props ) {
 	const { attributes, className, setAttributes, isSelected, insertListItem, insertListItems, listBlock, container, clientId, updateBlockAttributes, onDelete } = props;
-	const { listCount, items, listStyles, columns, listLabelGap, listGap, tabletListGap, mobileListGap, columnGap, tabletColumnGap, mobileColumnGap, blockAlignment, uniqueID, listMargin, tabletListMargin, mobileListMargin, listMarginType, listPadding, tabletListPadding, mobileListPadding, listPaddingType, iconAlign, tabletColumns, mobileColumns, icon, iconSize, width, color, background, border, borderRadius, padding, borderWidth, style, linkUnderline, linkColor, linkHoverColor } = attributes;
+	const { listCount, items, listStyles, columns, listLabelGap, listGap, tabletListGap, mobileListGap, columnGap, tabletColumnGap, mobileColumnGap, blockAlignment, uniqueID, listMargin, tabletListMargin, mobileListMargin, listMarginType, listPadding, tabletListPadding, mobileListPadding, listPaddingType, iconAlign, tabletColumns, mobileColumns, icon, iconSize, width, color, background, border, borderRadius, padding, borderWidth, style, linkUnderline, linkColor, linkHoverColor, iconTitle } = attributes;
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );

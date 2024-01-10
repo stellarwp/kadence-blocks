@@ -530,7 +530,9 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			if ( $line_icon ) {
 				$stroke_width = 2;
 			}
-			$svg_icon = Kadence_Blocks_Svg_Render::render( $attributes['icon'], $fill, $stroke_width );
+			$title = ( ! empty ( $attributes['iconTitle'] ) ? $attributes['iconTitle'] : '' );
+			$hidden = ( empty( $title ) ? true : false );
+			$svg_icon = Kadence_Blocks_Svg_Render::render( $attributes['icon'], $fill, $stroke_width, $title, $hidden );
 		}
 		return '<span class="kb-svg-icon-wrap kb-adv-heading-icon kb-svg-icon-' . esc_attr( $attributes['icon'] ) . ' kb-adv-heading-icon-side-' . esc_attr( $icon_side ) . '">' . $svg_icon . '</span>';
 	}

@@ -38,7 +38,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"KadenceWP\\KadenceBlocks\\": "includes/vendor"
+			"KadenceWP\\KadenceBlocks\\": "includes/resources"
 		}
 	},
 	"scripts": {

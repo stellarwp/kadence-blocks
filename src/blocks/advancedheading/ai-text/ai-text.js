@@ -138,6 +138,11 @@ export const AIText = {
 			setIsLoading(true);
 			setAiSuggestion( '' );
 			setError('');
+			sendEvent('ai_inline_requested', {
+				tool_name: name,
+				type: 'get_new_content',
+				initial_text: '',
+			});
 			getAIContent(value)
 				.then((readableStream) => {
 					const reader = readableStream.getReader();
@@ -190,6 +195,11 @@ export const AIText = {
 			setIsLoading(true);
 			setAiSuggestion( '' );
 			setError('');
+			sendEvent('ai_inline_requested', {
+				tool_name: name,
+				type: action_type,
+				initial_text: initial_text,
+			});
 			getAIEdit(value, prompt, type)
 				.then((readableStream) => {
 					const reader = readableStream.getReader();
@@ -242,6 +252,11 @@ export const AIText = {
 			setIsLoading(true);
 			setAiSuggestion( '' );
 			setError('');
+			sendEvent('ai_inline_requested', {
+				tool_name: name,
+				type: action_type,
+				initial_text: initial_text,
+			});
 			getAITransform(value, type)
 				.then((readableStream) => {
 					const reader = readableStream.getReader();

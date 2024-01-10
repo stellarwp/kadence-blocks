@@ -88,11 +88,11 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 				mobileValue={( undefined !== style?.gap?.[2] ? style.gap[2] : '' )}
 				onChangeMobile={( value ) => saveStyle( { gap: [( undefined !== style?.gap?.[0] ? style.gap[0] : '' ),( undefined !== style?.gap?.[1] ? style.gap[1] : '' ),value] } )}
 				min={0}
-				max={( style?.rowGapUnit === 'px' ? 200 : 12 )}
-				step={( style?.rowGapUnit === 'px' ? 1 : 0.1 )}
-				unit={ style?.rowGapUnit ? rowGapUnit : 'px' }
+				max={( style?.gapUnit === 'px' ? 200 : 12 )}
+				step={( style?.gapUnit === 'px' ? 1 : 0.1 )}
+				unit={ style?.gapUnit ? style.gapUnit : 'px' }
 				onUnit={( value ) => {
-					saveStyle( { rowGapUnit: value } );
+					saveStyle( { gapUnit: value } );
 				}}
 				units={[ 'px', 'em', 'rem' ]}
 			/>

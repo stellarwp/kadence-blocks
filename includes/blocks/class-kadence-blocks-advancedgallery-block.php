@@ -733,7 +733,12 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 						'relate'       => ( isset( $blockattr['kadenceDynamic']['link']['relate'] ) ? $blockattr['kadenceDynamic']['link']['relate'] : '' ),
 						'relcustom'    => ( isset( $blockattr['kadenceDynamic']['link']['relcustom'] ) ? $blockattr['kadenceDynamic']['link']['relcustom'] : '' ),
 					);
-					$href = $this->get_content( $args );
+					if ( class_exists( 'Kadence_Blocks_Pro_Dynamic_Content' ) ) {
+						$dynamic_content_class = Kadence_Blocks_Pro_Dynamic_Content::get_instance();
+						$href                  = $dynamic_content_class->get_content( $args );
+					} else {
+						$href = ( ! empty( $image['customLink'] ) ? $image['customLink'] : '' );
+					}
 				} else {
 					$href = ( ! empty( $image['customLink'] ) ? $image['customLink'] : '' );
 				}

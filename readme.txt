@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.4
-Stable tag: 3.2.9
+Stable tag: 3.2.13
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -97,12 +97,43 @@ developers of this plugin.
 
 == Changelog ==
 
+= 3.2.13 =
+Release Date: January 10th, 2024
+* Update: Change limits on typography field.
+* Update: Fix Possible spacing issue in columns.
+
+= 3.2.12 =
+Release Date: January 9th, 2024
+* Update: Improve location context imports.
+* Fix: Remove adv form accept field default input
+* Fix: Issue with RTL Carousels.
+* Fix: Possible issue with event tickets.
+* Fix: Better caching with auth.
+
+= 3.2.11 Pre Release =
+Release Date: January 3rd, 2024
+* Fix: Possible layout issue with justify content in vertical layouts.
+* Fix: Max width issue with info box and mobile/tablet.
+* Fix: Issue with tab layout and last tab.
+* Fix: Issue with tab title margin
+
+= 3.2.10 Pre Release =
+Release Date: December 21st, 2023
+* Update: Advanced text icon title option.
+* Update: Icon list icon title option.
+* Update: Button icon title option.
+* Fix: Issue with icon list link color.
+
 = 3.2.9 Pre Release =
-Release Date: December 13th, 2023
+Release Date: December 20th, 2023
 * Fix: Issue with some logo items in library
-* Fix: Issue with some content in design lirbary.
+* Fix: Issue with some content in design library.
 * Fix: Possible php notice with image import.
 * Fix: Issue with possible company description length.
+* Fix: Issue with php error in dynamic links for gallery.
+* Fix: Issue with Ipad Pro media queries.
+* Fix: Issue with images in flex layouts missing width.
+* Fix: Issue with icons and screen readers.
 
 = 3.2.8 Pre Release =
 Release Date: December 11th, 2023

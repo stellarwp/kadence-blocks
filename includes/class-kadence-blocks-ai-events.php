@@ -45,7 +45,7 @@ class Kadence_Blocks_AI_Events {
 	 * @return void
 	 */
 	public function register(): void {
-		add_action( 'stellarwp/analytics/event', [ $this, 'handle_event' ], 10, 2 );
+		add_action( 'kadenceblocks/ai/event', [ $this, 'handle_event' ], 10, 2 );
 		add_action( 'rest_api_init', [ $this, 'register_route' ], 10, 0 );
 	}
 
@@ -91,9 +91,9 @@ class Kadence_Blocks_AI_Events {
 	}
 
 	/**
-	 * Sends events to Prophecy WP (if the user has installed and activated Kadence Blocks Pro).
+	 * Sends events to Prophecy WP (if the user has opted in through AI auth).
 	 *
-	 * @action stellarwp/analytics/event
+	 * @action kadenceblocks/ai/event
 	 *
 	 * @return void
 	 */
@@ -114,7 +114,7 @@ class Kadence_Blocks_AI_Events {
 		 *
 		 * @param string The URL to use when sending events.
 		 */
-		$url = apply_filters( 'stellarwp/analytics/event_url', self::DOMAIN . self::ENDPOINT );
+		$url = apply_filters( 'kadenceblocks/ai/event_url', self::DOMAIN . self::ENDPOINT );
 
 		wp_remote_post(
 			$url,
@@ -226,14 +226,47 @@ class Kadence_Blocks_AI_Events {
 					'credits_after'  => $event_data['credits_after'],
 					'credits_used'   => $event_data['credits_used'],
 				];
+				break;
+			case 'collection_updated':
+				$event = 'Collection Updated';
+				$context = [
+					'collection_name' => $this->get_custom_collection_name_by_id( $event_data['customCollections'], $event_data['photoLibrary'] ),
+				];
+				break;
+			case 'ai_inline_requested':
+				$event   = 'AI Inline Requested';
+				$context = [
+					'tool_name'    => $event_data['tool_name'],
+					'type'         => $event_data['type'],
+					'initial_text' => $event_data['initial_text'],
+				];
+				break;
 		}
 
 		if ( strlen( $event ) !== 0 ) {
-			do_action( 'stellarwp/analytics/event', $event, $context );
+			do_action( 'kadenceblocks/ai/event', $event, $context );
 
 			return new WP_REST_Response( [ 'message' => 'Event handled.' ], 200 );
 		}
 
 		return new WP_REST_Response( array( 'message' => 'Event not handled.' ), 500 );
+	}
+
+	/**
+	 * Searches an array of collections for the name of a collection with a specific ID.
+	 *
+	 * @param array $collections An array of collections.
+	 * @param string $id The ID of a collection.
+	 *
+	 * @return array
+	 */
+	private function get_custom_collection_name_by_id( array $collections, string $id ): string {
+		foreach ( $collections as $collection ) {
+			if ( $collection['value'] === $id ) {
+				return $collection['label'] ?? '';
+			}
+
+			return '';
+		}
 	}
 }

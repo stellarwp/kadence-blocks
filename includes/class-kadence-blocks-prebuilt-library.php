@@ -6,6 +6,10 @@
  * @package Kadence Blocks
  */
 
+ if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Class for pulling in template database and saving locally
  */
@@ -409,7 +413,7 @@ class Kadence_Blocks_Prebuilt_Library {
 		// Get the response.
 		$api_url  = add_query_arg( $args, $this->url );
 
-		$response = wp_remote_get(
+		$response = wp_safe_remote_get(
 			$api_url,
 			array(
 				'timeout' => 20,
@@ -495,7 +499,17 @@ class Kadence_Blocks_Prebuilt_Library {
 			// Send JSON Error response to the AJAX call.
 			wp_send_json( esc_html__( 'No Connection data', 'kadence-blocks' ) );
 		} else {
-			wp_send_json( $get_data );
+			// Sanitize the connection data.
+			$temp_data  = json_decode( $get_data, true );
+			$final_data = array();
+			$final_data['name']    = ! empty( $temp_data['name'] ) ? sanitize_text_field( $temp_data['name'] ) : '';
+			$final_data['slug']    = ! empty( $temp_data['slug'] ) ? sanitize_text_field( $temp_data['slug'] ) : '';
+			$final_data['refresh'] = ! empty( $temp_data['refresh'] ) ? sanitize_text_field( $temp_data['refresh'] ) : '';
+			$final_data['expires'] = ! empty( $temp_data['expires'] ) ? sanitize_text_field( $temp_data['expires'] ) : '';
+			if ( ! empty( $final_data['name'] ) ) {
+				wp_send_json( $final_data );
+			}
+			wp_send_json( esc_html__( 'No Connection data', 'kadence-blocks' ) );
 		}
 		die;
 	}
@@ -519,7 +533,7 @@ class Kadence_Blocks_Prebuilt_Library {
 		);
 		// Get the response.
 		$api_url  = add_query_arg( $args, $this->url );
-		$response = wp_remote_get(
+		$response = wp_safe_remote_get(
 			$api_url,
 			array(
 				'timeout' => 20,
@@ -707,7 +721,7 @@ class Kadence_Blocks_Prebuilt_Library {
 			);
 			// Get the response.
 			$api_url  = add_query_arg( $args, 'https://www.kadencewp.com/kadence-blocks/wp-json/kadence-subscribe/v1/subscribe/' );
-			$response = wp_remote_get(
+			$response = wp_safe_remote_get(
 				$api_url,
 				array(
 					'timeout' => 20,
@@ -1110,7 +1124,7 @@ class Kadence_Blocks_Prebuilt_Library {
 			);
 			// Get the response.
 			$api_url  = add_query_arg( $args, 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/single/' );
-			$response = wp_remote_get(
+			$response = wp_safe_remote_get(
 				$api_url,
 				array(
 					'timeout' => 20,

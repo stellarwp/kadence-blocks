@@ -51,7 +51,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 		// Style.
-		$is_version_two = ( isset( $attributes['kbVersion'] ) && 2 < $attributes['kbVersion'] ? true : false );
+		$is_version_two = ( isset( $attributes['kbVersion'] ) && 1 < $attributes['kbVersion'] ? true : false );
 		$desktop_vertical_align = ! empty( $attributes['verticalAlignment'] ) ? $attributes['verticalAlignment'] : '';
 		$tablet_vertical_align = ! empty( $attributes['verticalAlignmentTablet'] ) ? $attributes['verticalAlignmentTablet'] : $desktop_vertical_align;
 		$mobile_vertical_align = ! empty( $attributes['verticalAlignmentMobile'] ) ? $attributes['verticalAlignmentMobile'] : $tablet_vertical_align;
@@ -289,11 +289,20 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		// Gap.
 		$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 		if ( ! $is_version_two && 'horizontal' === $desktop_direction ) {
+			$gutter = isset( $attributes['gutter'] ) && is_array( $attributes['gutter'] ) && isset( $attributes['gutter'][0] ) && is_numeric( $attributes['gutter'][0] ) ? $attributes['gutter'][0] : null;
+			if ( null === $gutter ) {
+				$attributes['gutter'][0] = 10;
+			}
 			if ( empty( $attributes['gutterVariable'] ) ) {
 				$attributes['gutterVariable'] = array( 'custom', 'custom', 'custom' );
 			}
 			$css->render_row_gap( $attributes, 'gutterVariable', 'gap', 'gutter', 'gutterUnit' );
 		} else {
+			if ( 'horizontal' === $desktop_direction ) {
+				if ( empty( $attributes['gutterVariable'][0] ) ) {
+					$attributes['gutterVariable'][0] = 'sm';
+				}
+			}
 			$css->render_row_gap( $attributes, 'rowGapVariable', 'row-gap', 'rowGap', 'rowGapUnit' );
 			$css->render_row_gap( $attributes, 'gutterVariable', 'column-gap', 'gutter', 'gutterUnit' );
 		}
@@ -605,19 +614,11 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			if ( ! empty( $tablet_horizontal_align ) ) {
 				$css->add_property( 'align-items', $tablet_horizontal_align );
-			} else if ( ! $is_version_two && ! empty( $tablet_text_align ) ) {
-				switch ( $tablet_text_align ) {
-					case 'left':
-						$justify = 'flex-start';
-						break;
-					case 'right':
-						$justify = 'flex-end';
-						break;
-					default:
-						$justify = 'center';
-						break;
-				}
-				$css->add_property( 'align-items', $justify );
+			}
+			if ( ( 'horizontal' === $desktop_direction || 'horizontal-reverse' === $desktop_direction ) && ! empty( $attributes['flexBasis'][0] ) ) {
+				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *' );
+				$css->add_property( 'flex', '1' );
+				$css->add_property( 'max-width', '100%' );
 			}
 		} elseif ( 'horizontal' === $tablet_direction || 'horizontal-reverse' === $tablet_direction ) {
 			if ( ! empty( $attributes['flexBasis'][1] ) ) {
@@ -715,19 +716,11 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			if ( ! empty( $mobile_horizontal_align ) ) {
 				$css->add_property( 'align-items', $mobile_horizontal_align );
-			} elseif ( ! $is_version_two && ! empty( $mobile_text_align ) ) {
-				switch ( $mobile_text_align ) {
-					case 'left':
-						$justify = 'flex-start';
-						break;
-					case 'right':
-						$justify = 'flex-end';
-						break;
-					default:
-						$justify = 'center';
-						break;
-				}
-				$css->add_property( 'align-items', $justify );
+			}
+			if ( ( ( 'horizontal' === $tablet_direction || 'horizontal-reverse' === $tablet_direction ) && ! empty( $attributes['flexBasis'][1] ) ) || ( ( 'horizontal' === $desktop_direction || 'horizontal-reverse' === $desktop_direction ) && ! empty( $attributes['flexBasis'][0] ) && empty( $attributes['flexBasis'][1] ) ) ) {
+				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *' );
+				$css->add_property( 'flex', '1' );
+				$css->add_property( 'max-width', '100%' );
 			}
 		} elseif ( 'horizontal' === $mobile_direction || 'horizontal-reverse' === $mobile_direction ) {
 

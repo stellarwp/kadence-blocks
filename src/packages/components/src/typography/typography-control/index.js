@@ -466,10 +466,10 @@ class TypographyControls extends Component {
 			{ value: 'capitalize', label: __( 'Ab', 'kadence-blocks' ), tooltip: __( 'Capitalize', 'kadence-blocks' ) },
 		];
 		const fontMin = ( fontSizeType !== 'px' ? 0.2 : 5 );
-		const fontMax = ( fontSizeType !== 'px' ? 12 : 300 );
+		const fontMax = ( fontSizeType !== 'px' ? 120 : 3000 );
 		const fontStep = ( fontSizeType !== 'px' ? 0.001 : 1 );
 		const lineMin = ( lineHeightType !== 'px' ? 0.2 : 5 );
-		const lineMax = ( lineHeightType !== 'px' ? 12 : 200 );
+		const lineMax = ( lineHeightType !== 'px' ? 120 : 3000 );
 		const lineStep = ( lineHeightType !== 'px' ? 0.001 : 1 );
 		const usingReg = typographyWeights.some(function(el) {
 			return el.value === 'regular';

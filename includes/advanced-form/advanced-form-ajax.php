@@ -161,7 +161,7 @@ class KB_Ajax_Advanced_Form {
 				$value = sanitize_email( trim( $value ) );
 				break;
 			case 'accept':
-				$value = !empty( $value) ? esc_html__( 'Accept', 'kadence-blocks' ) : esc_html__( 'Did not accept', 'kadence-blocks' ) ;
+				$value = !empty( $value ) ? esc_html__( 'Accept', 'kadence-blocks' ) : esc_html__( 'Did not accept', 'kadence-blocks' );
 				break;
 			default:
 				/**

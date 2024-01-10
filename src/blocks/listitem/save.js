@@ -32,7 +32,8 @@ function Save( props ) {
         style,
         level,
 		showIcon,
-		size
+		size,
+		iconTitle,
     } = attributes;
 
     const classes = classnames( {
@@ -50,8 +51,11 @@ function Save( props ) {
 
     const iconWidth = icon && width ? width : 'USE_PARENT_DEFAULT_WIDTH';
 
+	const iconTitleOutput = ( icon && iconTitle ? iconTitle : '' );
+	const iconHidden = ( icon && iconTitle ? 'false' : 'true' );
+
 	const iconSpan = (
-		<IconSpanTag extraClass={ 'kt-svg-icon-list-single' } name={ iconName } strokeWidth={ iconWidth } ariaHidden={ 'true' } />
+		<IconSpanTag extraClass={ 'kt-svg-icon-list-single' } name={ iconName } strokeWidth={ iconWidth } title={ iconTitleOutput } ariaHidden={ iconHidden } />
 	);
 
 	const emptyIcon = ( size === 0 ?

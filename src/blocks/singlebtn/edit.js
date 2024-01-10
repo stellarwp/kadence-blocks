@@ -190,7 +190,7 @@ import {
 
 
 export default function KadenceButtonEdit( props ) {
-	const { attributes, setAttributes, className, isSelected, context, clientId, name } = props;
+	const { attributes, setAttributes, isSelected, context, clientId, name } = props;
 	const {
 		uniqueID,
 		text,
@@ -255,9 +255,11 @@ export default function KadenceButtonEdit( props ) {
 		kadenceAOSOptions,
 		kadenceAnimation,
 		hideLink,
+		iconTitle,
 		textUnderline,
 		inQueryBlock,
 		kadenceDynamic,
+		className,
 	} = attributes;
 
 	// Support rank math content analysis.
@@ -469,14 +471,14 @@ export default function KadenceButtonEdit( props ) {
 		[ `kb-btn-only-icon` ]               : previewOnlyIcon,
 		[ `kt-btn-size-${( sizePreset ? sizePreset : 'standard' )}` ]  : true,
 		[ `kb-btn-underline-${textUnderline}` ] : textUnderline,
-		className                  : className,
+		[`${className}`]                  : className,
 	} );
-	const classes = classnames( {
+	const wrapClasses = classnames( {
 		[ `kb-single-btn-${uniqueID}` ]  : true,
 		[ `kt-btn-width-type-${( widthType ? widthType : 'auto' )}` ]   : true,
 	} );
 	const blockProps = useBlockProps( {
-		className: classes,
+		className: wrapClasses,
 		style: {
 			width        : ( undefined !== widthType && 'fixed' === widthType && '%' === ( undefined !== widthUnit ? widthUnit : 'px' ) && '' !== previewFixedWidth ? previewFixedWidth + ( undefined !== widthUnit ? widthUnit : 'px' ) : undefined ),
 		},
@@ -1074,6 +1076,14 @@ export default function KadenceButtonEdit( props ) {
 											unit={iconPaddingUnit}
 											units={[ 'px', 'em', 'rem' ]}
 											onUnit={( value ) => setAttributes( { iconPaddingUnit: value } )}
+										/>
+										<TextControl
+											label={__( 'Title for screen readers', 'kadence-blocks' )}
+											help={__( 'If no title added screen readers will ignore, good if the icon is purely decorative.', 'kadence-blocks' )}
+											value={ iconTitle }
+											onChange={ value => {
+												setAttributes( { iconTitle: value } );
+											} }
 										/>
 									</KadencePanelBody>
 								)}

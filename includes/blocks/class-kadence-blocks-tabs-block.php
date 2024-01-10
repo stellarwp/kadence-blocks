@@ -126,6 +126,11 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'margin-right', '0px' );
 				$css->add_property( 'margin-left', '0px' );
 			}
+			
+			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li:last-child' );
+			if( !isset($attributes['layout'] ) || ( isset($attributes['layout'] ) && 'tabs' === $attributes['layout'] ) ) {
+				$css->add_property( 'margin-right', '0px' );
+			}
 		}
 		if ( 'vtabs' === $layout && ! empty( $attributes['verticalTabWidth'][0] ) ) {
 			$css->set_media_state( 'desktopOnly' );
@@ -253,6 +258,13 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		if ( isset( $attributes['titleBg'] ) && ! empty( $attributes['titleBg'] ) ) {
 			$css->add_property( 'background', $css->sanitize_color( $attributes['titleBg'] ) );
+		}
+		if ( ( ! empty( $attributes['titleMargin'] ) && is_array( $attributes['titleMargin'] ) ) || ( ! empty( $attributes['tabletTitleMargin'] ) && is_array( $attributes['tabletTitleMargin'] ) ) || ( ! empty( $attributes['mobileTitleMargin'] ) && is_array( $attributes['mobileTitleMargin'] ) ) ) {
+			$css->render_measure_output( $attributes, 'titleMargin', 'margin', array( 'unit_key' => 'titleMarginUnit' ) );
+			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title, .wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap .kt-tab-inner-content' );
+			$css->render_measure_output( $attributes, 'titleMargin', 'margin', array( 'unit_key' => 'titleMarginUnit' ) );
+			$css->add_property( 'margin-top', '0' );
+			$css->add_property( 'margin-bottom', '0' );
 		}
 
 		/*

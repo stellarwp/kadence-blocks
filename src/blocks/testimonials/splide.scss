@@ -176,10 +176,6 @@
 	.splide--rtl {
 		direction: rtl;
 
-		& >.splide__track> .splide__list {
-			direction: rtl;
-			flex-direction: row-reverse;
-		}
 	}
 
 	.splide--ttb.is-active > .splide__slider > .splide__track > .splide__list,

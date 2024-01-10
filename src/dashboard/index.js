@@ -78,7 +78,7 @@ export default function KadenceBlocksHome() {
 	};
 	async function checkAIStatus() {
 		const localContent = await getAllAIContentData( true );
-		console.log( 'localContent', localContent );
+		//console.log( 'localContent', localContent );
 		if ( 'empty' === localContent ) {
 			console.log( 'No Local AI Content' );
 			setAIStatus( 'empty' );

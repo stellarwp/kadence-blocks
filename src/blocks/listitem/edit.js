@@ -49,7 +49,8 @@ import {
     ToggleControl,
     SelectControl,
     ToolbarGroup,
-    ToolbarButton
+    ToolbarButton,
+    TextControl,
 } from '@wordpress/components';
 
 import { useSelect, useDispatch } from '@wordpress/data';
@@ -68,6 +69,7 @@ function KadenceListItem( props ) {
         width,
         text,
         color,
+        iconTitle,
         background,
         border,
         borderRadius,
@@ -192,19 +194,31 @@ function KadenceListItem( props ) {
 
 						<ToggleControl
 							label={ __( 'Hide icon', 'kadence-blocks' ) }
-							checked={ !showIcon }
+							checked={ ! showIcon }
 							onChange={ ( value ) => { setAttributes( { showIcon: !value } ); } }
 						/>
 
 						{ showIcon && (
-							<KadenceIconPicker
-								value={icon}
-								onChange={value => {
-									setAttributes({icon: value});
-								}}
-								allowClear={ true }
-								placeholder={ __( 'Select Icon', 'kadence-blocks' ) }
-							/>
+                            <>
+                                <KadenceIconPicker
+                                    value={icon}
+                                    onChange={value => {
+                                        setAttributes({icon: value});
+                                    }}
+                                    allowClear={ true }
+                                    placeholder={ __( 'Select Icon', 'kadence-blocks' ) }
+                                />
+                                { icon && (
+                                    <TextControl
+                                        label={__( 'Title for screen readers', 'kadence-blocks' )}
+                                        help={__( 'If no title added screen readers will ignore, good if the icon is purely decorative.', 'kadence-blocks' )}
+                                        value={ iconTitle }
+                                        onChange={ value => {
+                                            setAttributes( { iconTitle: value } );
+                                        } }
+                                    />
+                                ) }
+                            </>
 						) }
                     </KadencePanelBody>
                 ) }

@@ -67,6 +67,32 @@ export default function replaceImages( content, images, categories, context, var
 		p8:pRoll?.[pvariation + 7]?.sizes?.[0]?.src || pRoll?.[7]?.sizes?.[0]?.src || pRoll?.[6]?.sizes?.[0]?.src || pRoll?.[5]?.sizes?.[0]?.src || pRoll?.[0]?.sizes?.[0]?.src,
 		p9:pRoll?.[pvariation + 8]?.sizes?.[0]?.src || pRoll?.[8]?.sizes?.[0]?.src || pRoll?.[7]?.sizes?.[0]?.src || pRoll?.[6]?.sizes?.[0]?.src || pRoll?.[1]?.sizes?.[0]?.src,
 	};
+	if ( context && context.toString() === '14499' ) {
+		// Cards 21.
+		content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-scaled.jpg", imgs['a1'] );
+		content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-scaled.jpg", imgs['a1'] );
+		content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-scaled.jpg", imgs['a2'] );
+		content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-scaled.jpg", imgs['a2'] );
+		content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-scaled.jpg", imgs['a3'] );
+		content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-scaled.jpg", imgs['a3'] );
+		content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-scaled.jpg", imgs['a4'] );
+		content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-scaled.jpg", imgs['a4'] );
+	}
+	if ( context && ( context.toString() === '15379' || context.toString() === '14885' ) ) {
+		// Team 19. Team 21
+		content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-scaled.jpg", imgs['p1'] );
+		content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-scaled.jpg", imgs['p1'] );
+		content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-scaled.jpg", imgs['p2'] );
+		content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-scaled.jpg", imgs['p2'] );
+		content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-scaled.jpg", imgs['p3'] );
+		content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-scaled.jpg", imgs['p3'] );
+		content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-scaled.jpg", imgs['p4'] );
+		content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-scaled.jpg", imgs['p4'] );
+		content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-scaled.jpg", imgs['p5'] );
+		content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-scaled.jpg", imgs['p5'] );
+		content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-scaled.jpg", imgs['p6'] );
+		content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-scaled.jpg", imgs['p6'] );
+	}
 	// Background.
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-scaled.jpg", imgs['a1'] );
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-scaled.jpg", imgs['a2'] );
@@ -171,6 +197,11 @@ export default function replaceImages( content, images, categories, context, var
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-1024x683.jpg", imgs['p8'] );
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-1024x683.jpg", imgs['p9'] );
 
+	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-150x150.jpg", imgs['p1'] );
+	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-150x150.jpg", imgs['p2'] );
+	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-150x150.jpg", imgs['p3'] );
+	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-150x150.jpg", imgs['p4'] );
+
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-1024x683.jpg", imgs['p1'] );
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-1024x683.jpg", imgs['p2'] );
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-1024x683.jpg", imgs['p3'] );
@@ -208,6 +239,7 @@ export default function replaceImages( content, images, categories, context, var
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/03/Example-Portrait-Image-scaled-1-300x200.jpg", imgs['p4'] );
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/03/Example-Portrait-Image-scaled-1-300x200.jpg", imgs['p5'] );
 	content = content.replace( "https://patterns.startertemplatecloud.com/wp-content/uploads/2023/03/Example-Portrait-Image-scaled-1-300x200.jpg", imgs['p6'] );
+	
 
 
 	// FTC 

@@ -1169,6 +1169,7 @@ function PatternLibrary( {
 							contextTab={ selectedContextTab }
 							imageCollection={ imageCollection }
 							useImageReplace={ selectedReplaceImages }
+							userData={ aIUserData }
 							onSelect={ ( pattern ) => onInsertContent( pattern ) }
 							launchWizard={ () => {
 								sendEvent( 'ai_wizard_started' );
@@ -1235,6 +1236,7 @@ function PatternLibrary( {
 							onSelect={ ( pattern ) => onInsertContent( pattern ) }
 							contextStatesRef={ contextStatesRef }
 							useImageReplace={ selectedReplaceImages }
+							userData={ aIUserData }
 							generateContext={ ( tempCon ) => {
 								setIsContextReloadVisible(false);
 								reloadAI( tempCon );

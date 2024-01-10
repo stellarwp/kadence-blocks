@@ -18,6 +18,10 @@ use KadenceWP\KadenceBlocks\Traits\Rest\Image_Trait;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_original_domain;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * REST API prebuilt library.
  */
@@ -209,9 +213,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		'call-to-action',
 		// 'careers',
 		'contact-form',
-		// 'donate',
-		// 'events',
-		// 'faq',
+		'donate',
+		'events',
+		'faq',
 		'get-started',
 		// 'history',
 		'industries',
@@ -221,7 +225,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		// 'partners',
 		// 'podcast',
 		'pricing-table',
-		// 'product-details',
+		'product-details',
 		'products-services',
 		// 'profile',
 		'subscribe-form',
@@ -1061,19 +1065,26 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				return rest_ensure_response( $this->ai_cache->get( $available_prompts[ $context ] ) );
 			} catch ( NotFoundException $e ) {
 			}
-
+			// Log event for context generation request.
+			do_action( 'kadenceblocks/ai/event', 'Context Generation Requested', [
+				'context_name'    => $context,
+				'is_regeneration' => true,
+			] );
 			// Check if we have a remote file.
 			$response = $this->get_remote_contents( $available_prompts[ $context ] );
 			$data     = json_decode( $response, true );
 
 			if ( $response === 'error' ) {
 				$current_prompts = get_option( 'kb_design_library_prompts', array() );
-
 				if ( isset( $current_prompts[ $context ] ) ) {
 					unset( $current_prompts[ $context ] );
 					update_option( 'kb_design_library_prompts', $current_prompts );
 				}
-
+				// Log event for failed context generation.
+				do_action( 'kadenceblocks/ai/event', 'Context Generation Failed', [
+					'context_name'    => $context,
+					'is_regeneration' => true,
+				] );
 				return rest_ensure_response( 'error' );
 			} else if ( $response === 'processing' || isset( $data['data']['status'] ) && 409 === $data['data']['status'] ) {
 				return rest_ensure_response( 'processing' );
@@ -1083,11 +1094,17 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					unset( $current_prompts[ $context ] );
 					update_option( 'kb_design_library_prompts', $current_prompts );
 				}
+				// Log event for failed context generation.
+				do_action( 'kadenceblocks/ai/event', 'Context Generation Failed', [
+					'context_name'    => $context,
+					'error_id'        => $data['data']['status'],
+					'is_regeneration' => true,
+				] );
 				return rest_ensure_response( 'error' );
 			} else {
 				$this->ai_cache->cache( $available_prompts[ $context ], $response );
 				// Log event for successful context generation.
-				do_action( 'stellarwp/analytics/event', 'Context Generation Completed', [
+				do_action( 'kadenceblocks/ai/event', 'Context Generation Completed', [
 					'context-name'    => $context,
 					'credits-after'   => $this->get_remote_remaining_credits(),
 					'is_regeneration' => true,

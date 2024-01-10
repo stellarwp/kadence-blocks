@@ -65,6 +65,7 @@ export function TextareaProgress(props) {
 				{...rest}
 				value={aiSuggestion || value}
 			/>
+			{ !(aiSuggestion || aiLoading) && <div className="stellarwp-ai-about-character-limits">{value.length}/1000</div> }
 			{!aiSuggestion && <ProgressBar {...progressBarProps} />}
 			{(aiSuggestion || aiLoading) && (
 				<Flex className="stellarwp-textarea-progress__actions">

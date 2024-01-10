@@ -250,7 +250,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 	$current_user     = wp_get_current_user();
 	$user_email       = $current_user->user_email;
 	$recent_posts     = wp_get_recent_posts( array( 'numberposts' => '1' ) );
-	$product          = get_posts( array( 'numberposts' => 1, 'post_type' => 'product' ) );
+	$products          = get_posts( array( 'numberposts' => 4, 'post_type' => 'product', 'fields' => 'ids' ) );
 	wp_localize_script(
 		'kadence-blocks-js',
 		'kadence_blocks_params',
@@ -283,6 +283,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'termEndpoint'   => '/kbp/v1/term-select',
 			'taxonomiesEndpoint' => '/kbp/v1/taxonomies-select',
 			'postTypes'      => kadence_blocks_get_post_types(),
+			'postTypesQueryable' => kadence_blocks_get_post_types( array( 'publicly_queryable' => true ) ),
 			'taxonomies'     => array(),
 			'g_fonts'        => file_exists( $gfonts_path ) ? include $gfonts_path : array(),
 			'g_font_names'   => file_exists( $gfont_names_path ) ? include $gfont_names_path : array(),
@@ -312,7 +313,8 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'hasPosts' => ( ! empty( $recent_posts[0]['ID'] ) ? true : false ),
 			'addPostsLink' => admin_url( 'post-new.php' ),
 			'hasWoocommerce' => ( class_exists( 'woocommerce' ) ? true : false ),
-			'hasProducts' => ( class_exists( 'woocommerce' ) && ! empty( $product ) ? true : false ),
+			'hasProducts' => ( class_exists( 'woocommerce' ) && ! empty( $products ) ? true : false ),
+			'replaceProducts' => ( class_exists( 'woocommerce' ) && ! empty( $products ) ? $products : '' ),
 			'addProductsLink' => ( class_exists( 'woocommerce' ) ? admin_url( 'product-new.php' ) : 'https://wordpress.org/plugins/woocommerce/' ),
 			'hasKadenceCaptcha' => ( is_plugin_active( 'kadence-recaptcha/kadence-recaptcha.php' ) ? true : false ),
 			'adminUrl' => get_admin_url(),
@@ -371,11 +373,14 @@ function kadence_blocks_get_asset_file( $filepath ) {
  *
  * @return array
  */
-function kadence_blocks_get_post_types() {
+function kadence_blocks_get_post_types( $otherArgs = array() ) {
 	$args = array(
 		'public'       => true,
 		'show_in_rest' => true,
 	);
+	if( !empty( $otherArgs ) ) {
+		$args = array_merge( $args, $otherArgs );
+	}
 	$post_types = get_post_types( $args, 'objects' );
 	$output = array();
 	foreach ( $post_types as $post_type ) {
