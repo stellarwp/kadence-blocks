@@ -111,6 +111,7 @@ export default function FontSizeControl( {
 	parentLabel = null,
 	reset = true,
 	radio = true,
+	preventUnitSelection = false,
 } ) {
 	const [ isCustom, setIsCustom ] = useState( false );
 	useEffect( () => {
@@ -257,12 +258,20 @@ export default function FontSizeControl( {
 									onUnit( event.target.value );
 								} }
 								value={ unit }
+								disabled={ preventUnitSelection ? true : false }
 							>
-								{ units.map( ( option ) => (
-									<option value={ option } selected={ unit === option ? true : undefined } key={ option }>
-										{ option }
+								{ ! preventUnitSelection &&
+									units.map( ( option ) => (
+										<option value={ option } selected={ unit === option ? true : undefined } key={ option }>
+											{ option }
+										</option>
+									) )
+								}
+								{ preventUnitSelection &&
+									<option value={ unit } selected={ true } key={ unit }>
+										{ '' === unit ? '-' : unit }
 									</option>
-								) ) }
+								}
 							</select>
 						</div>
 						{ ! disableCustomSizes && (
