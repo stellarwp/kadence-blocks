@@ -793,7 +793,7 @@ class Kadence_Blocks_CSS {
 		$size_type = ( isset( $font['sizeType'] ) && ! empty( $font['sizeType'] ) ? $font['sizeType'] : 'px' );
 		$line_type = ( isset( $font['lineType'] ) ? $font['lineType'] : '' );
 		$line_type = ( '-' !== $line_type ? $line_type : '' );
-		$letter_type = ( isset( $font['letterSpacingType'] ) && ! empty( $font['letterSpacingType'] ) ? $font['letterSpacingType'] : 'px' );
+		$letter_type = ( isset( $font['letterSpacingType'] ) && ! empty( $font['letterSpacingType'] ) ? $font['letterSpacingType'] : isset( $font['letterType'] ) && ! empty( $font['letterType'] ) ) ? $font['letterType'] : 'px';
 		if ( isset( $font['size'] ) && isset( $font['size'][0] ) && ! empty( $font['size'][0] ) ) {
 			$this->add_property( 'font-size', $this->get_font_size( $font['size'][0], $size_type ) );
 		}

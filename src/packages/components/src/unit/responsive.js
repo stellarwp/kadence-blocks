@@ -115,6 +115,7 @@
 			 max={ max }
 			 min={ min }
 			 unit={ unit }
+			 preventUnitSelection={ true }
 		 />
 	 );
 	 output.Tablet = (
@@ -128,6 +129,7 @@
 			max={ max }
 			min={ min }
 			unit={ unit }
+			preventUnitSelection={ true }
 		 />
 	 );
 	 output.Desktop = (

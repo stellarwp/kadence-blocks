@@ -149,7 +149,7 @@ export default function BackendStyles( { uniqueID, previewDevice, fieldStyle, la
 					${radioLabelStyles?.fontStyle ? 'font-style:' + radioLabelStyles.fontStyle + ';' : '' }
 					${radioLabelStyles?.lineHeight ? 'line-height:' + radioLabelStyles.lineHeight + ';' : '' }
 					${radioLabelStyles?.fontWeight ? 'font-weight:' + radioLabelStyles.fontWeight + ';' : '' }
-					${radioLabelStyles?.letterSpacing ? 'letter-spacing:' + radioLabelStyles.letterSpacing + 'px;' : '' }
+					${radioLabelStyles?.letterSpacing ? 'letter-spacing:' + radioLabelStyles.letterSpacing + ';' : '' }
 					${radioLabelStyles?.textTransform ? 'text-transform:' + radioLabelStyles.textTransform + ';' : '' }
 					${radioLabelStyles?.fontFamily ? 'font-family:' + radioLabelStyles.fontFamily + ';' : '' }
 
