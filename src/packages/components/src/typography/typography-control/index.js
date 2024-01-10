@@ -277,7 +277,6 @@ class TypographyControls extends Component {
 				loadGoogle: true,
 			}
 		 } = this.props;
-		
 		const { controlSize, typographySelectOptions, typographyOptions, typographySubsets, typographyStyles, typographyWeights, fontFamilyValue } = this.state;
 		const createhtmlTagControl = ( targetLevel ) => {
 			return [ {
