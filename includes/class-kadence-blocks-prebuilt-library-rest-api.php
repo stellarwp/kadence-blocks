@@ -213,9 +213,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		'call-to-action',
 		// 'careers',
 		'contact-form',
-		// 'donate',
-		// 'events',
-		// 'faq',
+		'donate',
+		'events',
+		'faq',
 		'get-started',
 		// 'history',
 		'industries',
@@ -225,7 +225,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		// 'partners',
 		// 'podcast',
 		'pricing-table',
-		// 'product-details',
+		'product-details',
 		'products-services',
 		// 'profile',
 		'subscribe-form',
@@ -1066,7 +1066,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			} catch ( NotFoundException $e ) {
 			}
 			// Log event for context generation request.
-			do_action( 'stellarwp/analytics/event', 'Context Generation Requested', [
+			do_action( 'kadenceblocks/ai/event', 'Context Generation Requested', [
 				'context_name'    => $context,
 				'is_regeneration' => true,
 			] );
@@ -1081,7 +1081,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					update_option( 'kb_design_library_prompts', $current_prompts );
 				}
 				// Log event for failed context generation.
-				do_action( 'stellarwp/analytics/event', 'Context Generation Failed', [
+				do_action( 'kadenceblocks/ai/event', 'Context Generation Failed', [
 					'context_name'    => $context,
 					'is_regeneration' => true,
 				] );
@@ -1095,7 +1095,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					update_option( 'kb_design_library_prompts', $current_prompts );
 				}
 				// Log event for failed context generation.
-				do_action( 'stellarwp/analytics/event', 'Context Generation Failed', [
+				do_action( 'kadenceblocks/ai/event', 'Context Generation Failed', [
 					'context_name'    => $context,
 					'error_id'        => $data['data']['status'],
 					'is_regeneration' => true,
@@ -1104,7 +1104,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			} else {
 				$this->ai_cache->cache( $available_prompts[ $context ], $response );
 				// Log event for successful context generation.
-				do_action( 'stellarwp/analytics/event', 'Context Generation Completed', [
+				do_action( 'kadenceblocks/ai/event', 'Context Generation Completed', [
 					'context-name'    => $context,
 					'credits-after'   => $this->get_remote_remaining_credits(),
 					'is_regeneration' => true,

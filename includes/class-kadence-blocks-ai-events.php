@@ -45,7 +45,7 @@ class Kadence_Blocks_AI_Events {
 	 * @return void
 	 */
 	public function register(): void {
-		add_action( 'stellarwp/analytics/event', [ $this, 'handle_event' ], 10, 2 );
+		add_action( 'kadenceblocks/ai/event', [ $this, 'handle_event' ], 10, 2 );
 		add_action( 'rest_api_init', [ $this, 'register_route' ], 10, 0 );
 	}
 
@@ -91,9 +91,9 @@ class Kadence_Blocks_AI_Events {
 	}
 
 	/**
-	 * Sends events to Prophecy WP (if the user has installed and activated Kadence Blocks Pro).
+	 * Sends events to Prophecy WP (if the user has opted in through AI auth).
 	 *
-	 * @action stellarwp/analytics/event
+	 * @action kadenceblocks/ai/event
 	 *
 	 * @return void
 	 */
@@ -114,7 +114,7 @@ class Kadence_Blocks_AI_Events {
 		 *
 		 * @param string The URL to use when sending events.
 		 */
-		$url = apply_filters( 'stellarwp/analytics/event_url', self::DOMAIN . self::ENDPOINT );
+		$url = apply_filters( 'kadenceblocks/ai/event_url', self::DOMAIN . self::ENDPOINT );
 
 		wp_remote_post(
 			$url,
@@ -244,7 +244,7 @@ class Kadence_Blocks_AI_Events {
 		}
 
 		if ( strlen( $event ) !== 0 ) {
-			do_action( 'stellarwp/analytics/event', $event, $context );
+			do_action( 'kadenceblocks/ai/event', $event, $context );
 
 			return new WP_REST_Response( [ 'message' => 'Event handled.' ], 200 );
 		}
