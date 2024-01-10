@@ -540,7 +540,7 @@ function KadenceAccordionComponent( props ) {
 					backgroundHover : '#eeeeee',
 					borderHover     : [ '', '', '', '' ],
 					colorActive     : '#ffffff',
-					backgroundActive: '#f3690e',
+					backgroundActive: '#BE530B',
 					borderActive    : [ '', '', '', '' ],
 					textTransform   : titleStyles[ 0 ].textTransform,
 				} ],
@@ -560,10 +560,10 @@ function KadenceAccordionComponent( props ) {
 					unit: 'px'
 				}],
 				titleBorderActive: [{
-					top: [ '#f3690e', '', '' ],
-					right: [ '#f3690e', '', '' ],
-					bottom: [ '#f3690e', '', '' ],
-					left: [ '#f3690e', '', '' ],
+					top: [ '#BE530B', '', '' ],
+					right: [ '#BE530B', '', '' ],
+					bottom: [ '#BE530B', '', '' ],
+					left: [ '#BE530B', '', '' ],
 					unit: 'px'
 				}],
 			} );
