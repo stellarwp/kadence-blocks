@@ -894,25 +894,27 @@ import { __ } from '@wordpress/i18n';
 						onChange={ value => setAttributes( { bgColor: value } ) }
 						onClassChange={ value => setAttributes( { bgColorClass: value } ) }
 					/>
-					<KadenceImageControl
-						label={__( 'Select Video Poster', 'kadence-blocks' )}
-						hasImage={( bgImg ? true : false )}
-						imageURL={( bgImg ? bgImg : '' )}
-						imageID={( bgImgID ? bgImgID : '' )}
-						onRemoveImage={ () => {
-							setAttributes( {
-								bgImgID: null,
-								bgImg: null,
-							} );
-						} }
-						onSaveImage={ ( img ) => {
-							setAttributes( {
-								bgImgID: img.id,
-								bgImg: img.url,
-							} );
-						} }
-						disableMediaButtons={ ( bgImg ? true : false ) }
-					/>
+					{ undefined !== backgroundVideoType && 'local' === backgroundVideoType &&
+						<KadenceImageControl
+							label={__( 'Select Video Poster', 'kadence-blocks' )}
+							hasImage={( bgImg ? true : false )}
+							imageURL={( bgImg ? bgImg : '' )}
+							imageID={( bgImgID ? bgImgID : '' )}
+							onRemoveImage={ () => {
+								setAttributes( {
+									bgImgID: null,
+									bgImg: null,
+								} );
+							} }
+							onSaveImage={ ( img ) => {
+								setAttributes( {
+									bgImgID: img.id,
+									bgImg: img.url,
+								} );
+							} }
+							disableMediaButtons={ ( bgImg ? true : false ) }
+						/>
+					}
 				</>
 			) }
 			{ 'gradient' === backgroundSettingTab && (
