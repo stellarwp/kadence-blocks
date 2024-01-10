@@ -99,8 +99,11 @@ developers of this plugin.
 
 = 3.2.13 =
 Release Date: January 10th, 2024
-* Update: Change limits on typography field.
-* Update: Fix Possible spacing issue in columns.
+* Update: Change limits on typography font size field.
+* Update: Prevent changing unit for typography sizes in tablet, mobile.
+* Fix: Possible spacing issue in columns, flex layouts.
+* Fix: Default color in accordion example for better accessibility.
+* Fix: Possible issue with captions below images in gallery not centered
 
 = 3.2.12 =
 Release Date: January 9th, 2024

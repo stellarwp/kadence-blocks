@@ -298,10 +298,8 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			$css->render_row_gap( $attributes, 'gutterVariable', 'gap', 'gutter', 'gutterUnit' );
 		} else {
-			if ( 'horizontal' === $desktop_direction ) {
-				if ( empty( $attributes['gutterVariable'][0] ) ) {
-					$attributes['gutterVariable'][0] = 'sm';
-				}
+			if ( empty( $attributes['gutterVariable'][0] ) ) {
+				$attributes['gutterVariable'][0] = 'sm';
 			}
 			$css->render_row_gap( $attributes, 'rowGapVariable', 'row-gap', 'rowGap', 'rowGapUnit' );
 			$css->render_row_gap( $attributes, 'gutterVariable', 'column-gap', 'gutter', 'gutterUnit' );
