@@ -64,6 +64,31 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		$desktop_text_align = ! empty( $attributes['textAlign'][0] ) ? $attributes['textAlign'][0] : '';
 		$tablet_text_align = ! empty( $attributes['textAlign'][1] ) ? $attributes['textAlign'][1] : $desktop_text_align;
 		$mobile_text_align = ! empty( $attributes['textAlign'][2] ) ? $attributes['textAlign'][2] : $tablet_text_align;
+		$is_desktop_flex = in_array( $desktop_direction, array( 'horizontal', 'horizontal-reverse', 'vertical-reverse' ) ) || ! empty( $desktop_vertical_align ) || ! empty( $desktop_horizontal_align ) || ! empty( $attributes['rowGapVariable'][0] ) ? true : false;
+		$is_tablet_flex = false;
+		$is_mobile_flex = false;
+		if ( $is_desktop_flex ) {
+			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+			$css->add_property( 'display', 'flex' );
+		}
+		if ( ! $is_desktop_flex ) {
+			$is_tablet_flex = in_array( $tablet_direction, array( 'horizontal', 'horizontal-reverse', 'vertical-reverse' ) ) || ! empty( $tablet_vertical_align ) || ! empty( $tablet_horizontal_align ) || ! empty( $attributes['rowGapVariable'][1] ) ? true : false;
+			if ( $is_tablet_flex ) {
+				$css->set_media_state( 'tablet' );
+				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+				$css->add_property( 'display', 'flex' );
+				$css->set_media_state( 'desktop' );
+			}
+		}
+		if ( ! $is_desktop_flex && ! $is_tablet_flex ) {
+			$is_mobile_flex = in_array( $mobile_direction, array( 'horizontal', 'horizontal-reverse', 'vertical-reverse' ) ) || ! empty( $mobile_vertical_align ) || ! empty( $mobile_horizontal_align ) || ! empty( $attributes['rowGapVariable'][2] ) ? true : false;
+			if ( $is_mobile_flex ) {
+				$css->set_media_state( 'mobile' );
+				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+				$css->add_property( 'display', 'flex' );
+				$css->set_media_state( 'desktop' );
+			}
+		}
 		if ( ! empty( $attributes['maxWidth'][0] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id );
 			$css->add_property( 'max-width', $attributes['maxWidth'][0] . ( isset( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );

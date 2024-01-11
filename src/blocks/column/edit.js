@@ -532,6 +532,7 @@ function SectionEdit( props ) {
 
 	const previewRowGap = getPreviewSize( previewDevice, ( rowGap && '' !== rowGap[ 0 ] ? rowGap[ 0 ] : '' ) , ( rowGap && '' !== rowGap[ 1 ] ? rowGap[ 1 ] : '' ), ( rowGap && '' !== rowGap[ 2 ] ? rowGap[ 2 ] : '' ) );
 	const previewRowGapVariable = getPreviewSize( previewDevice, ( rowGapVariable && '' !== rowGapVariable[ 0 ] ? rowGapVariable[ 0 ] : 'none' ) , ( rowGapVariable && '' !== rowGapVariable[ 1 ] ? rowGapVariable[ 1 ] : '' ), ( rowGapVariable && '' !== rowGapVariable[ 2 ] ? rowGapVariable[ 2 ] : '' ) );
+	const flexRowGapVariable = getPreviewSize( previewDevice, ( rowGapVariable && '' !== rowGapVariable[ 0 ] ? rowGapVariable[ 0 ] : '' ) , ( rowGapVariable && '' !== rowGapVariable[ 1 ] ? rowGapVariable[ 1 ] : '' ), ( rowGapVariable && '' !== rowGapVariable[ 2 ] ? rowGapVariable[ 2 ] : '' ) );
 
 	const verticalGap = getPreviewGutterSize( previewDevice, previewRowGapVariable, rowGap, rowGapUnit );
 	const previewDirection = getPreviewSize( previewDevice, ( direction && '' !== direction[ 0 ] ? direction[ 0 ] : 'vertical' ) , ( direction && '' !== direction[ 1 ] ? direction[ 1 ] : '' ), ( direction && '' !== direction[ 2 ] ? direction[ 2 ] : '' ) );
@@ -578,6 +579,7 @@ function SectionEdit( props ) {
 		[ `kadence-inner-column-direction-${ ( previewDirection ? previewDirection : 'vertical' ) }` ]: true,
 		[ `kadence-inner-column-text-align-${ ( previewAlign ? previewAlign : 'normal' ) }` ]: true,
 		[ `kadence-inner-column-vertical-align-${ ( previewVerticalAlign ? previewVerticalAlign : 'inherit' ) }` ]: true,
+		'section-is-flex': ( previewDirection === 'horizontal' || previewDirection === 'horizontal-reverse' || previewDirection === 'vertical-reverse' || previewJustify || previewFlexBasis || flexRowGapVariable || previewVerticalAlign ),
 	} );
 	const blockProps = useBlockProps( {
 		className: classes,
@@ -960,6 +962,9 @@ function SectionEdit( props ) {
 														setAttributes( { rowGapUnit: value } );
 													}}
 													units={[ 'px', 'em', 'rem', '%', 'vh' ]}
+													reset={ () => {
+														setAttributes( { rowGapVariable: [ '', '', '' ], rowGap: [ '', '', '' ] } );
+													}}
 												/>
 												<SmallResponsiveControl
 													label={__( 'Wrap Content', 'kadence-blocks' )}
@@ -1052,6 +1057,9 @@ function SectionEdit( props ) {
 														setAttributes( { rowGapUnit: value } );
 													}}
 													units={[ 'px', 'em', 'rem', '%', 'vh' ]}
+													reset={ () => {
+														setAttributes( { rowGapVariable: [ '', '', '' ], rowGap: [ '', '', '' ] } );
+													}}
 												/>
 											</>
 										)}
