@@ -701,7 +701,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		// Tablet Background.
 		$tablet_background = ( isset( $attributes['tabletBackground'][0] ) && is_array( $attributes['tabletBackground'][0] ) ? $attributes['tabletBackground'][0] : array() );
 		if ( isset( $tablet_background['enable'] ) && $tablet_background['enable'] ) {
-			$css->set_media_state( 'tablet' );
+			$css->set_media_state( 'tabletPro' );
 			$css->set_selector( $margin_selector );
 			$tablet_background_type = ! empty( $tablet_background['type'] ) ? $tablet_background['type'] : 'normal';
 			switch ( $tablet_background_type ) {

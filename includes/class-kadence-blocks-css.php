@@ -100,6 +100,22 @@ class Kadence_Blocks_CSS {
 	 * @access protected
 	 * @var array
 	 */
+	protected $_tablet_pro_media_query = array();
+
+	/**
+	 * The array that holds all of the css to output inside of the tablet media query
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $_tablet_only_pro_media_query = array();
+
+	/**
+	 * The array that holds all of the css to output inside of the tablet media query
+	 *
+	 * @access protected
+	 * @var array
+	 */
 	protected $_desktop_only_media_query = array();
 
 	/**
@@ -368,10 +384,12 @@ class Kadence_Blocks_CSS {
 		if ( ! isset( $this->media_queries[ $device ] ) ) {
 			$media_query            = array();
 			$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
-			$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px), only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape) and (hover: none)' );
+			$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
+			$media_query['tabletPro']  = apply_filters( 'kadence_tablet_pro_media_query', '(max-width: 1024px), only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape) and (hover: none)' );
 			$media_query['desktop'] = apply_filters( 'kadence_desktop_media_query', '(min-width: 1025px)' );
 			$media_query['mobileReverse'] = apply_filters( 'kadence_mobile_reverse_media_query', '(min-width: 768px)' );
-			$media_query['tabletOnly']    = apply_filters( 'kadence_tablet_only_media_query', '(min-width: 768px) and (max-width: 1024px), only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape) and (hover: none)' );
+			$media_query['tabletOnlyPro']    = apply_filters( 'kadence_tablet_only_pro_media_query', '(min-width: 768px) and (max-width: 1024px), only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape) and (hover: none)' );
+			$media_query['tabletOnly']    = apply_filters( 'kadence_tablet_only_media_query', '(min-width: 768px) and (max-width: 1024px)' );
 			$this->media_queries    = $media_query;
 		}
 		return isset( $this->media_queries[ $device ] ) ? $this->media_queries[ $device ] : '';
@@ -475,11 +493,21 @@ class Kadence_Blocks_CSS {
 					$this->_tablet_media_query[ $this->_selector ] = '';
 				}
 				$this->_tablet_media_query[ $this->_selector ] .= sprintf( $format, $property, $value, $prefix );
+			} elseif ( 'tabletPro' === $this->_media_state ) {
+				if ( ! isset( $this->_tablet_pro_media_query[ $this->_selector ] ) ) {
+					$this->_tablet_pro_media_query[ $this->_selector ] = '';
+				}
+				$this->_tablet_pro_media_query[ $this->_selector ] .= sprintf( $format, $property, $value, $prefix );
 			} elseif ( 'tabletOnly' === $this->_media_state ) {
 				if ( ! isset( $this->_tablet_only_media_query[ $this->_selector ] ) ) {
 					$this->_tablet_only_media_query[ $this->_selector ] = '';
 				}
 				$this->_tablet_only_media_query[ $this->_selector ] .= sprintf( $format, $property, $value, $prefix );
+			} elseif ( 'tabletOnlyPro' === $this->_media_state ) {
+				if ( ! isset( $this->_tablet_only_pro_media_query[ $this->_selector ] ) ) {
+					$this->_tablet_only_pro_media_query[ $this->_selector ] = '';
+				}
+				$this->_tablet_only_pro_media_query[ $this->_selector ] .= sprintf( $format, $property, $value, $prefix );
 			} elseif ( 'desktopOnly' === $this->_media_state ) {
 				if ( ! isset( $this->_desktop_only_media_query[ $this->_selector ] ) ) {
 					$this->_desktop_only_media_query[ $this->_selector ] = '';
@@ -2278,9 +2306,25 @@ class Kadence_Blocks_CSS {
 			}
 			$this->stop_media_query();
 		}
+		if ( isset( $this->_tablet_pro_media_query ) && is_array( $this->_tablet_pro_media_query ) && ! empty( $this->_tablet_pro_media_query ) ) {
+			foreach ( $this->_tablet_pro_media_query as $selector => $string ) {
+				$this->start_media_query( $this->get_media_queries( 'tabletPro' ) );
+				$this->set_selector( $selector );
+				$this->_css .= $string;
+			}
+			$this->stop_media_query();
+		}
 		if ( isset( $this->_tablet_media_query ) && is_array( $this->_tablet_media_query ) && ! empty( $this->_tablet_media_query ) ) {
 			foreach ( $this->_tablet_media_query as $selector => $string ) {
 				$this->start_media_query( $this->get_media_queries( 'tablet' ) );
+				$this->set_selector( $selector );
+				$this->_css .= $string;
+			}
+			$this->stop_media_query();
+		}
+		if ( isset( $this->_tablet_only_pro_media_query ) && is_array( $this->_tablet_only_pro_media_query ) && ! empty( $this->_tablet_only_pro_media_query ) ) {
+			$this->start_media_query( $this->get_media_queries( 'tabletOnlyPro' ) );
+			foreach ( $this->_tablet_only_pro_media_query as $selector => $string ) {
 				$this->set_selector( $selector );
 				$this->_css .= $string;
 			}
