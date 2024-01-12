@@ -468,7 +468,7 @@ export default function KadenceButtonEdit( props ) {
 		[ `kt-button-${uniqueID}` ]  : true,
 		[ `kb-btn-global-${inheritStyles}` ] : inheritStyles,
 		'wp-block-button__link'              : inheritStyles && 'inherit' === inheritStyles,
-		[ `kb-btn-has-icon` ]                : icon,
+		[ `kb-btn-has-icon` ]                : (undefined !== previewOnlyText && previewOnlyText ? false : icon),
 		[ `kt-btn-svg-show-${( !iconHover ? 'always' : 'hover' )}` ]   : icon,
 		[ `kb-btn-only-icon` ]               : previewOnlyIcon,
 		[ `kb-btn-only-text` ]               : previewOnlyText,
