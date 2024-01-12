@@ -983,7 +983,7 @@ export default function KadenceButtonEdit( props ) {
 												}}
 											/>}
 											tabletChildren={<SelectControl
-												value={( undefined !== onlyIcon?.[1] && onlyIcon[1] ? 'true' : ( undefined !== onlyIcon?.[1] && false === onlyIcon[1] ? 'false' : '' ) )}
+												value={( undefined !== onlyText?.[0] && onlyText[0] ? 'text' : ( undefined !== onlyIcon?.[1] && onlyIcon[1] ? 'true' : ( undefined !== onlyIcon?.[1] && false === onlyIcon[1] ? 'false' : '' ) ) )}
 												options={[
 													{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
 													{ value: 'false', label: __( 'Show Icon and Text', 'kadence-blocks' ) },
