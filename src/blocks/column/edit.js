@@ -536,7 +536,10 @@ function SectionEdit( props ) {
 
 	const verticalGap = getPreviewGutterSize( previewDevice, previewRowGapVariable, rowGap, rowGapUnit );
 	const previewDirection = getPreviewSize( previewDevice, ( direction && '' !== direction[ 0 ] ? direction[ 0 ] : 'vertical' ) , ( direction && '' !== direction[ 1 ] ? direction[ 1 ] : '' ), ( direction && '' !== direction[ 2 ] ? direction[ 2 ] : '' ) );
-	const previewJustify = getPreviewSize( previewDevice, ( justifyContent && '' !== justifyContent[ 0 ] ? justifyContent[ 0 ] : '' ) , ( justifyContent && '' !== justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ), ( justifyContent && '' !== justifyContent[ 2 ] ? justifyContent[ 2 ] : '' ) );
+
+	const previewJustify = getPreviewSize( previewDevice, ( undefined !== justifyContent?.[0] && '' !== justifyContent?.[0] ? justifyContent[ 0 ] : '' ) , ( undefined !== justifyContent?.[1] && '' !== justifyContent?.[1] ? justifyContent[ 1 ] : ( 'horizontal' == direction?.[ 0 ] && 'vertical' == direction?.[ 1 ] ? 'stretch' : '' ) ), ( undefined !== justifyContent?.[2] && '' !== justifyContent?.[2] ? justifyContent[ 2 ] : ( 'horizontal' == direction?.[ 1 ] && 'vertical' == direction?.[ 2 ] ? 'stretch' : '' ) ) );
+
+
 	const previewWrap = getPreviewSize( previewDevice, ( wrapContent && '' !== wrapContent[ 0 ] ? wrapContent[ 0 ] : '' ) , ( wrapContent && '' !== wrapContent[ 1 ] ? wrapContent[ 1 ] : '' ), ( wrapContent && '' !== wrapContent[ 2 ] ? wrapContent[ 2 ] : '' ) );
 	const backgroundString = ( background ? KadenceColorOutput( background, backgroundOpacity ) : undefined );
 	const previewFlexBasis = getPreviewSize( previewDevice, ( ( previewDirection === 'horizontal' || previewDirection === 'horizontal-reverse' ) && flexBasis && '' !== flexBasis[ 0 ] ? flexBasis[ 0 ] : '' ) , ( ( previewDirection === 'horizontal' || previewDirection === 'horizontal-reverse' ) && flexBasis && '' !== flexBasis[ 1 ] ? flexBasis[ 1 ] : '' ), ( ( previewDirection === 'horizontal' || previewDirection === 'horizontal-reverse' ) && flexBasis && '' !== flexBasis[ 2 ] ? flexBasis[ 2 ] : '' ) );
