@@ -23,6 +23,7 @@ import {
 	URLInputControl,
 	VerticalAlignmentIcon,
 	KadenceRadioButtons,
+	KadenceFormConditionals,
 	ResponsiveRadioRangeControls,
 	ResponsiveAlignControls,
 	BoxShadowControl,
@@ -1325,7 +1326,9 @@ function SectionEdit( props ) {
 										onChange={( value ) => setAttributes( { vsmobile: value } )}
 									/>
 								</KadencePanelBody>
-
+								{ inFormBlock && (
+									<KadenceFormConditionals { ...props } />
+								)}
 								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs }  />
 
 							</>

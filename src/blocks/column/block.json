@@ -643,6 +643,9 @@
 	  	"hoverOverlayBlendMode": {
 			"type": "string"
 	  	},
+		"kadenceFieldConditional": {
+			"type": "object"
+		},
 		"kbVersion": {
 			"type": "number",
 			"default": ""
