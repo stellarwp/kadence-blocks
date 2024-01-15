@@ -185,7 +185,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	 */
 	public function get_default( $attributes ) {
 		$default = '';
-		if ( ! empty( $attributes['defaultValue'] ) ) {
+		if ( isset( $attributes['defaultValue'] ) && $attributes['defaultValue'] !== '' ) {
 			$default = do_shortcode( $attributes['defaultValue'] );
 		}
 
