@@ -97,6 +97,10 @@ developers of this plugin.
 
 == Changelog ==
 
+= 3.2.17 =
+Release Date: January TBD, 2024
+* Fix: Issue when using Kadence Conversions banner templates.
+
 = 3.2.16 =
 Release Date: January 12th, 2024
 * Fix: Some css around horizontal to vertical layout switching.

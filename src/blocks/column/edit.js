@@ -349,7 +349,7 @@ function SectionEdit( props ) {
 				setAttributes( { rowGapVariable: [ ( '' !== rowGap?.[0] ? 'custom' : '' ), ( '' !== rowGap?.[1] ? 'custom' : '' ), ( '' !== rowGap?.[2] ? 'custom' : '' ) ] } );
 			}
 			// Update row gap to match gutter if layout is horizontal.
-			if ( ( deskDirection === 'horizontal' ) || tabletDirection === 'horizontal' || mobileDirection === 'horizontal' ) {
+			if ( undefined !== rowGap && ( ( deskDirection === 'horizontal' ) || tabletDirection === 'horizontal' || mobileDirection === 'horizontal' ) ) {
 				let tempRowGap = JSON.parse( JSON.stringify( rowGap ) );
 				if ( deskDirection  === 'horizontal' ) {
 					tempRowGap[0] = ( '' !== gutter?.[0] ? gutter[0] : 10 );
