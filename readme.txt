@@ -100,7 +100,8 @@ developers of this plugin.
 = 3.2.17 =
 Release Date: January 15th, 2024
 * Fix: Issue when using Kadence Conversions banner templates.
-* Fix: Possible issue with events custom excerpts. 
+* Fix: Possible issue with events custom excerpts.
+* Fix: Deprecation warning on PHP 8.2
 
 = 3.2.16 =
 Release Date: January 12th, 2024
