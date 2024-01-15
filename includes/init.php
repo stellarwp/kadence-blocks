@@ -1128,6 +1128,20 @@ function kadence_blocks_skip_lazy_load( $value, $image, $context ) {
 add_filter( 'wp_img_tag_add_loading_attr', 'kadence_blocks_skip_lazy_load', 10, 3 );
 
 /**
+ * Filter to remove block rendering when events builds their custom excerpts.
+ * 
+ * @param bool $remove_blocks Whether to remove blocks or not.
+ * @param WP_Post $post The post object.
+ */
+function kadence_blocks_events_custom_excerpt_fix( $remove_blocks, $post ) {
+	if ( $remove_blocks && ! is_singular() ) {
+		add_filter( 'kadence_blocks_render_inline_css', '__return_false' );
+	}
+	return $remove_blocks;
+}
+add_filter( 'tribe_events_excerpt_blocks_removal', 'kadence_blocks_events_custom_excerpt_fix', 99, 2 );
+
+/**
  * The Kadence Blocks Application Container.
  *
  * @see kadence_blocks_init()
