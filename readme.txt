@@ -99,6 +99,8 @@ developers of this plugin.
 
 = 3.2.17 =
 Release Date: January 15th, 2024
+* Add: Border Radius Controls to Adv Text Highlight.
+* Fix: Gradient Button transition.
 * Fix: Issue when using Kadence Conversions banner templates.
 * Fix: Possible issue with events custom excerpts. 
 

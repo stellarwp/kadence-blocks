@@ -299,6 +299,15 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( 'border-style', $attributes['markBorderStyle'] );
 		}
 		$css->render_border_styles( $attributes, 'markBorderStyles' );
+		$css->render_border_radius( $attributes, 'markBorderRadius', ( ! empty( $attributes['markBorderRadiusUnit'] ) ? $attributes['markBorderRadiusUnit'] : 'px' ) );
+
+		$css->set_media_state( 'tablet' );
+		$css->render_border_radius( $attributes, 'tabletMarkBorderRadius', ( ! empty( $attributes['markBorderRadiusUnit'] ) ? $attributes['markBorderRadiusUnit'] : 'px' ) );
+		$css->set_media_state( 'desktop' );
+
+		$css->set_media_state( 'mobile' );
+		$css->render_border_radius( $attributes, 'mobileMarkBorderRadius', ( ! empty( $attributes['markBorderRadiusUnit'] ) ? $attributes['markBorderRadiusUnit'] : 'px' ) );
+		$css->set_media_state( 'desktop' );
 		$mark_padding_args = array(
 			'desktop_key' => 'markPadding',
 			'tablet_key'  => 'markTabPadding',
