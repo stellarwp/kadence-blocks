@@ -10,9 +10,24 @@ export function missionStatementHelper() {
 			if ( ! key ) {
 				key = window?.kadenceHomeParams?.apiKey ? window.kadenceHomeParams.apiKey : '';
 			}
+			let site_name = window?.kadence_blocks_params?.site_name ? window.kadence_blocks_params.site_name : '';
+			if ( ! site_name ) {
+				site_name = window?.kadenceHomeParams?.site_name ? window.kadenceHomeParams.site_name : '';
+			}
+			let product_slug = window?.kadence_blocks_params?.pSlug ? window.kadence_blocks_params.pSlug : '';
+			if ( ! product_slug ) {
+				product_slug = window?.kadenceHomeParams?.pSlug ? window.kadenceHomeParams.pSlug : '';
+			}
+			let product_version = window?.kadence_blocks_params?.pVersion ? window.kadence_blocks_params.pVersion : '';
+			if ( ! product_version ) {
+				product_version = window?.kadenceHomeParams?.pVersion ? window.kadenceHomeParams.pVersion : '';
+			}
 			const token = {
 				domain: domain,
 				key: key,
+				site_name: site_name,
+				product_slug: product_slug,
+				product_version: product_version,
 			};
 			const response = await fetch(
 				`${API_URL}proxy/intake/improve-mission-statement`,

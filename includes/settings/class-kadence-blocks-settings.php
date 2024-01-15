@@ -674,6 +674,9 @@ class Kadence_Blocks_Settings {
 			array(
 				'ajaxurl'             => admin_url( 'admin-ajax.php' ),
 				'wpnonce'             => wp_create_nonce( 'kadence-blocks-manage' ),
+				'site_name'           => get_bloginfo( 'name' ),
+				'pSlug'               => apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ),
+				'pVersion'            => KADENCE_BLOCKS_VERSION,
 				'isAuthorized'        => $is_authorized,
 				'licenseKey'          => $license_key,
 				'authUrl'             => esc_url( $auth_url ),

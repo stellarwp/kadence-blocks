@@ -37,6 +37,7 @@ export default function KadenceBlocksHome() {
 	const authenticated    = kadenceHomeParams.isAuthorized ? true : false;
 	const isNetworkAdmin   = kadenceHomeParams.isNetworkAdmin ? true : false;
 	const isNetworkEnabled = kadenceHomeParams.isNetworkEnabled ? true : false;
+	const hasPro = ( window?.kadenceHomeParams?.pro && kadenceHomeParams.pro === 'true' ? true : false );
 	const showControls     = ( isNetworkAdmin && isNetworkEnabled ) || ( ! isNetworkAdmin && ! isNetworkEnabled ) ? true : false;
 
 	const content = authenticated
@@ -160,7 +161,7 @@ export default function KadenceBlocksHome() {
 					)}
 				</div>
 
-				{content.upsellContents.length > 0 &&
+				{ ! hasPro && content.upsellContents.length > 0 &&
 					content.upsellContents.map((upsellContent) => {
 						return (
 							<div className="kb-section" key={upsellContent.heading}>

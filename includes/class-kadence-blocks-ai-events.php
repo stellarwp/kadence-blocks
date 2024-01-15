@@ -148,11 +148,11 @@ class Kadence_Blocks_AI_Events {
 		$defaults = [
 			'domain'          => $site_url,
 			'key'             => ! empty( $license_data['key'] ) ? $license_data['key'] : '',
-			'email'           => ! empty( $license_data['email'] ) ? $license_data['email'] : '',
 			'site_name'       => $site_name,
 			'product_slug'    => apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ),
 			'product_version' => KADENCE_BLOCKS_VERSION,
 		];
+
 
 		$parsed_args = wp_parse_args( $args, $defaults );
 
