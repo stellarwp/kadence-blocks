@@ -155,15 +155,13 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		// Hover before.
 		if ( 'gradient' === $bg_type && 'normal' === $bg_hover_type && ! empty( $attributes['backgroundHover'] ) ) {
-			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
-			$css->add_property( 'background', $css->render_color( $attributes['backgroundHover'] ) );
 			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button::before' );
+			$css->add_property( 'background', $css->render_color( $attributes['backgroundHover'] ) );
 			$css->add_property( 'transition', 'opacity .3s ease-in-out' );
 		}
 		if ( 'gradient' === $bg_hover_type && ! empty( $attributes['gradientHover'] ) ) {
-			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
-			$css->add_property( 'background', $attributes['gradientHover'] );
 			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button::before' );
+			$css->add_property( 'background', $attributes['gradientHover'] );
 			$css->add_property( 'transition', 'opacity .3s ease-in-out' );
 		}
 		// Only Icon.
