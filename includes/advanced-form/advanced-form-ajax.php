@@ -163,11 +163,6 @@ class KB_Ajax_Advanced_Form {
 			case 'accept':
 				$value = !empty( $value) ? esc_html__( 'Accept', 'kadence-blocks' ) : esc_html__( 'Did not accept', 'kadence-blocks' ) ;
 				break;
-			case 'number':
-				// Prevent '0' to be evaluated as empty
-				if($value === '0') {
-					$value = ' 0';
-				}
 			default:
 				/**
 				 * Sanitize field value.
