@@ -6,6 +6,12 @@
  */
 class Kadence_Blocks_Advanced_Form_Submit_Actions {
 
+	public $form_args;
+
+	public $responses;
+
+	public $post_id;
+
 	public function __construct( $form_args, $responses, $post_id ) {
 		$this->form_args = $form_args;
 		$this->responses = $responses;
