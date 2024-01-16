@@ -97,6 +97,10 @@ developers of this plugin.
 
 == Changelog ==
 
+= 3.2.18 =
+Release Date: January TBD, 2024
+* Fix: Transforming advanced gallery into core galleries.
+
 = 3.2.17 =
 Release Date: January 15th, 2024
 * Add: Border Radius Controls to Adv Text Highlight.
