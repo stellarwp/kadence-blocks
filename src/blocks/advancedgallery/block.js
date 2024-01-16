@@ -70,10 +70,21 @@ registerBlockType( 'kadence/advancedgallery', {
 					return createBlock( 'core/gallery', {
 						align: attributes.align,
 						columns: attributes.columns[ 2 ],
-						images: attributes.images.map( ( image ) => pickRelevantMediaFilesCore( image ) ),
 						linkTo: attributes.linkTo,
-						ids: attributes.ids,
-					} );
+						ids: [],
+						images: []
+					}, [
+						...attributes.imagesDynamic.map( ( image ) => {
+							const attrs = pickRelevantMediaFilesCore( image );
+							return createBlock( 'core/image', {
+								id: attrs.id,
+								alt: attrs.alt,
+								caption: attrs.caption,
+								url: attrs.url,
+								link: attrs.link
+							} );
+						} ),
+					] );
 				},
 			},
 		],
