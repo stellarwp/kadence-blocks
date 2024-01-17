@@ -12,6 +12,7 @@ import {
 	UpsellContent,
 } from "./components";
 import { AUTHENTICATED_CONTENT, UNAUTHENTICATED_CONTENT } from "./constants";
+import { DisabledBanner } from "./components/large-banner/disabled-banner";
 
 /**
  * Import Css
@@ -37,6 +38,7 @@ export default function KadenceBlocksHome() {
 	const authenticated    = kadenceHomeParams.isAuthorized ? true : false;
 	const isNetworkAdmin   = kadenceHomeParams.isNetworkAdmin ? true : false;
 	const isNetworkEnabled = kadenceHomeParams.isNetworkEnabled ? true : false;
+	const isAIDisabled	   = kadenceHomeParams.isAIDisabled ? true : false;
 	const hasPro = ( window?.kadenceHomeParams?.pro && kadenceHomeParams.pro === 'true' ? true : false );
 	const showControls     = ( isNetworkAdmin && isNetworkEnabled ) || ( ! isNetworkAdmin && ! isNetworkEnabled ) ? true : false;
 
@@ -132,6 +134,20 @@ export default function KadenceBlocksHome() {
 	const footerText = <>
 		{ __( 'AI access authorized.','kadence-blocks' ) } <a href={ kadenceHomeParams.disconnectUrl }>{ __( 'Disconnect?', 'kadence-blocks' ) }</a>
 	</>;
+	if ( isAIDisabled ) {
+		return (
+			<>
+				<DisabledBanner />
+				
+				<div className="kb-section kb-section--dark">
+					<div className="kb-container">
+						<SectionTitle title={content.knowledgeBase.heading} variant="white" />
+						<ArticleSlider articles={content.knowledgeBase.articles} />
+					</div>
+				</div>
+			</>
+		);
+	}
 	return (
 		<>
 			<LargeBanner

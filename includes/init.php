@@ -270,6 +270,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'userrole'       => $userrole,
 			'proData'        => $pro_data,
 			'isAuthorized'   => $is_authorized,
+			'isAIDisabled'   => kadence_blocks_is_ai_disabled(),
 			'homeLink'       => admin_url( 'admin.php?page=kadence-blocks-home' ),
 			'pro'            => ( class_exists( 'Kadence_Blocks_Pro' ) ? 'true' : 'false' ),
 			'colors'         => get_option( 'kadence_blocks_colors' ),

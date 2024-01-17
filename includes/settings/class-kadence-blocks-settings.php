@@ -676,6 +676,7 @@ class Kadence_Blocks_Settings {
 				'wpnonce'             => wp_create_nonce( 'kadence-blocks-manage' ),
 				'site_name'           => get_bloginfo( 'name' ),
 				'pSlug'               => apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ),
+				'isAIDisabled'        => kadence_blocks_is_ai_disabled(),
 				'pVersion'            => KADENCE_BLOCKS_VERSION,
 				'isAuthorized'        => $is_authorized,
 				'licenseKey'          => $license_key,

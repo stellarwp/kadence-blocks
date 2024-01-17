@@ -292,6 +292,7 @@ function PageList( {
 	const [rootScroll, setRootScroll] = useState();
 	const hasPro = ( window?.kadence_blocks_params?.pro && kadence_blocks_params.pro === 'true' ? true : false );
 	const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
+	const isAIDisabled	   = window?.kadence_blocks_params?.isAIDisabled ? true : false;
 	const data_key = ( window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '' );
 	const onSelectBlockPattern = ( info ) => {
 		const pageSend = {
@@ -557,6 +558,13 @@ function PageList( {
 	}, [ selectedStyle ] );
 	const hasItems = !! filteredBlockPatterns?.length;
 	const allPageContext = hasAllPageContext();
+	if ( isAIDisabled && contextTab === 'context' ) {
+		return (
+			<div className="kb-ai-dropdown-container-content-wrap activation-needed">
+				<p className="kb-disabled-authorize-note">{__('Kadence AI is disabled by site admin.', 'kadence-blocks')}</p>
+			</div>
+		);
+	}
 	return (
 		<div ref={ setRootScroll } className="block-editor-block-patterns-explorer__wrap">
 			<div className="block-editor-block-patterns-explorer__list">

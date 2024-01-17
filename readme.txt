@@ -99,10 +99,12 @@ developers of this plugin.
 
 = 3.2.18 =
 Release Date: January 17th, 2024
+* Add: Constant to allow disabling AI in site config.
 * Fix: Transforming advanced gallery into core galleries.
 * Fix: Prevent HTML in labels from showing in advanced for emails
 * Fix: Issue with view details.
 * Fix: Issue with mobile background override.
+* Fix: Issue with flex layout maxWidth on mobile.
 
 = 3.2.17 =
 Release Date: January 15th, 2024
