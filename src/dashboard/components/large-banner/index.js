@@ -81,7 +81,7 @@ export function LargeBanner({
 					<>
 						<div className="kb-large-banner__subheading">{hasPro ? subHeadingPro : subHeading}</div>
 						{ showControls && (
-							<a className="uplink-authorize" href={activateUrl} >{buttonText}</a>
+							<a className="uplink-authorize" href={activateUrl}>{ hasPro ?__('Activate Kadence Blocks Pro', 'kadence-blocks') : buttonText }</a>
 						) }
 						{ ! showControls && (
 							<p className="uplink-authorize-note">{__('Authorization needed from network admin', 'kadence-blocks')}</p>

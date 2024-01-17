@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.4
-Stable tag: 3.2.17
+Stable tag: 3.2.18
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -98,9 +98,11 @@ developers of this plugin.
 == Changelog ==
 
 = 3.2.18 =
-Release Date: January TBD, 2024
+Release Date: January 17th, 2024
 * Fix: Transforming advanced gallery into core galleries.
 * Fix: Prevent HTML in labels from showing in advanced for emails
+* Fix: Issue with view details.
+* Fix: Issue with mobile background override.
 
 = 3.2.17 =
 Release Date: January 15th, 2024
