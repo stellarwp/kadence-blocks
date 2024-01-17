@@ -151,7 +151,7 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 				if ( is_array( $data['value'] ) ) {
 					$data['value'] = explode( ', ', $data['value'] );
 				}
-				$email_content .= $data['label'] . ': ' . $data['value'] . "\n\n";
+				$email_content .= strip_tags( $data['label'] ) . ': ' . $data['value'] . "\n\n";
 			}
 			$headers = 'Content-Type: text/plain; charset=UTF-8' . "\r\n";
 		}

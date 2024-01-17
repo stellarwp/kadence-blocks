@@ -349,7 +349,7 @@ class KB_Ajax_Advanced_Form {
 			}
 
 			$processed_fields[] = array(
-				'label'    => ( ! empty( $field['label'] ) ? $field['label'] : '' ),
+				'label'    => ( ! empty( $field['label'] ) ? strip_tags( $field['label'] ) : '' ),
 				'type'     => $field['type'],
 				'required' => empty( $field['required'] ) ? false : $field['required'],
 				'value'    => 'file' === $field['type'] ? implode( ', ', $file_array ) : $value,

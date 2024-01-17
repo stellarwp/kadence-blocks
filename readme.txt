@@ -100,6 +100,7 @@ developers of this plugin.
 = 3.2.18 =
 Release Date: January TBD, 2024
 * Fix: Transforming advanced gallery into core galleries.
+* Fix: Prevent HTML in labels from showing in advanced for emails
 
 = 3.2.17 =
 Release Date: January 15th, 2024
