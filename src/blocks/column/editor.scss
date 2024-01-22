@@ -43,6 +43,9 @@
 		&.kadence-inner-column-text-align-right {
 			text-align: right;
 		}
+		> .kb-image-is-ratio-size {
+			flex-grow:1;
+		}
 	}
 }
 .wp-block-kadence-column * {

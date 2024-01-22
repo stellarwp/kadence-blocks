@@ -1421,6 +1421,7 @@ export default function Image( {
 				{ ( overlayOpacity !== undefined && overlayOpacity !== '' ? `.kadence-image${ uniqueID } .kb-image-has-overlay:after { opacity: ${ overlayOpacity } }` : '' ) }
 				{ ( overlayBlendMode ? `.kadence-image${ uniqueID } .kb-image-has-overlay:after { mix-blend-mode: ${overlayBlendMode}; }` : '' ) }
 				{ ( previewOverlay ? `.kadence-image${ uniqueID } .kb-image-has-overlay:after { background:${ previewOverlay }; }` : '' ) }
+				{ ( previewMaxWidth ? `.kadence-inner-column-inner:where(.section-is-flex) > .kadence-image${ uniqueID } { max-width: ${ previewMaxWidth }px; }` : '' ) }
 			</style>
 			{ /* Hide controls during upload to avoid component remount,
 				which causes duplicated image upload. */ }
