@@ -260,15 +260,15 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			);
 		}
 		$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
-		if ( $css->is_number( $attributes['height'][0] ) ) {
+		if ( isset( $attributes['height'][0] ) && $css->is_number( $attributes['height'][0] ) ) {
 			$css->add_property( 'min-height', $attributes['height'][0] . ( ! empty( $attributes['heightUnit'] ) ? $attributes['heightUnit'] : 'px' ) );
 		}
 		$css->set_media_state( 'tablet' );
-		if ( $css->is_number( $attributes['height'][1] ) ) {
+		if ( isset( $attributes['height'][1] ) && $css->is_number( $attributes['height'][1] ) ) {
 			$css->add_property( 'min-height', $attributes['height'][1] . ( ! empty( $attributes['heightUnit'] ) ? $attributes['heightUnit'] : 'px' ) );
 		}
 		$css->set_media_state( 'mobile' );
-		if ( $css->is_number( $attributes['height'][2] ) ) {
+		if ( isset( $attributes['height'][2] ) && $css->is_number( $attributes['height'][2] ) ) {
 			$css->add_property( 'min-height', $attributes['height'][2] . ( ! empty( $attributes['heightUnit'] ) ? $attributes['heightUnit'] : 'px' ) );
 		}
 		$css->set_media_state( 'desktop' );
