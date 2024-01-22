@@ -718,6 +718,9 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *, .kadence-column' . $unique_id . ' > .kt-inside-inner-col > figure.wp-block-image, .kadence-column' . $unique_id . ' > .kt-inside-inner-col > figure.wp-block-kadence-image' );
 			$css->add_property( 'margin-top', '0px' );
 			$css->add_property( 'margin-bottom', '0px' );
+			// Handle Ratio Images.
+			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > .kb-image-is-ratio-size' );
+			$css->add_property( 'flex-grow', 1 );
 		}
 		$css->set_media_state( 'mobile' );
 		if ( ! empty( $attributes['maxWidth'][2] ) ) {
@@ -826,6 +829,9 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *, .kadence-column' . $unique_id . ' > .kt-inside-inner-col > figure.wp-block-image, .kadence-column' . $unique_id . ' > .kt-inside-inner-col > figure.wp-block-kadence-image' );
 			$css->add_property( 'margin-top', '0px' );
 			$css->add_property( 'margin-bottom', '0px' );
+			// Handle Ratio Images.
+			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > .kb-image-is-ratio-size' );
+			$css->add_property( 'flex-grow', 1 );
 		}
 		$css->set_media_state( 'desktop' );
 		if ( isset( $attributes['kadenceBlockCSS'] ) && ! empty( $attributes['kadenceBlockCSS'] ) ) {
