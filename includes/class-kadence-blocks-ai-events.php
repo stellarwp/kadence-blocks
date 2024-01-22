@@ -102,8 +102,8 @@ class Kadence_Blocks_AI_Events {
 		$token         = get_authorization_token( 'kadence-blocks' );
 		$license_key   = kadence_blocks_get_current_license_key();
 		$is_authorized = false;
-		if ( $token ) {
-			$is_authorized = is_authorized( $license_key, $token, get_license_domain() );
+		if ( ! empty( $license_key ) ) {
+			$is_authorized = is_authorized( $license_key, ( ! empty( $token ) ? $token : '' ), get_license_domain() );
 		}
 		if ( ! $is_authorized ) {
 			return;
@@ -148,7 +148,7 @@ class Kadence_Blocks_AI_Events {
 		$defaults = [
 			'domain'          => $site_url,
 			'key'             => ! empty( $license_data['key'] ) ? $license_data['key'] : '',
-			'site_name'       => $site_name,
+			'site_name'       => sanitize_title( $site_name ),
 			'product_slug'    => apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ),
 			'product_version' => KADENCE_BLOCKS_VERSION,
 		];
