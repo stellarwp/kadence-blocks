@@ -63,9 +63,9 @@ export default function ImagePicker(props) {
         return indices.map(index => sourceArray[index]);
     }
 
-    const totalImages = 'undefined' != typeof( imagePickerResults.total ) ? imagePickerResults.total : 0;
-    const page = 'undefined' != typeof( imagePickerResults.page ) ? imagePickerResults.page : 1;
-    const hasMore = 'undefined' != typeof( imagePickerResults.images ) ? imagePickerResults.images.length < totalImages : false;
+    const totalImages = 'undefined' != typeof( imagePickerResults?.total ) ? imagePickerResults.total : 0;
+    const page = 'undefined' != typeof( imagePickerResults?.page ) ? imagePickerResults.page : 1;
+    const hasMore = 'undefined' != typeof( imagePickerResults?.images ) ? imagePickerResults.images.length < totalImages : false;
 
     const currentSelectedImage = imagePickerResults?.images?.length && ! isNaN( imagePickerSelection ) && imagePickerResults?.images?.[imagePickerSelection] ? imagePickerResults.images[imagePickerSelection] : ( imagePickerResults?.images?.length && imagePickerResults?.images?.[0] ? imagePickerResults.images[0] : {} );
     const currentSelectedMulti = imagePickerResults?.images?.length && imagePickerMultiSelection?.length ? extractByIndices( imagePickerResults.images, imagePickerMultiSelection ) : [];
@@ -139,7 +139,7 @@ export default function ImagePicker(props) {
                     />
                 </div>
                 <div className="kadence-blocks-image-picker-scroll-container">
-                    { 'undefined' != typeof( imagePickerResults.images ) && ! isSearching && (
+                    { 'undefined' != typeof( imagePickerResults?.images ) && ! isSearching && (
                         <InfiniteScroll
                             className="block-editor-block-patterns-list-wrap"
                             pageStart={0}
@@ -171,7 +171,7 @@ export default function ImagePicker(props) {
                                 </Masonry>
                         </InfiniteScroll>
                     )}
-                    { 'undefined' == typeof( imagePickerResults.images ) && ! isSearching && (
+                    { 'undefined' == typeof( imagePickerResults?.images ) && ! isSearching && (
                         <div>No Results found for this search</div>
                     )}
                     { isSearching && (
