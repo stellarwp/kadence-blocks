@@ -438,11 +438,10 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		$grid_layout = $this->get_template_columns( $css, $columns, $layout, $inner_selector, $column1, $column2 );
 		$css->add_property( 'grid-template-columns', $grid_layout );
 		if ( ! empty( $attributes['collapseOrder'] ) && 'left-to-right' !== $attributes['collapseOrder'] && in_array( $layout, $collapse_layouts ) ) {
+			$css->set_media_state( 'tablet' );
 			foreach ( range( 1, $columns ) as $item_count ) {
 				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . $item_count . ')' );
-				$css->set_media_state( 'tablet' );
 				$css->add_property( 'order', ( $columns - $item_count + 1 ) );
-				$css->set_media_state( 'desktop' );
 			}
 			// Row Two.
 			foreach ( range( 1, $columns ) as $item_count ) {
@@ -459,6 +458,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns + $columns + $columns ) . ')' );
 				$css->add_property( 'order', ( $columns - $item_count + 31 ) );
 			}
+			$css->set_media_state( 'desktop' );
 		}
 		if ( ! empty( $attributes['tabletLayout'] ) ) {
 			$css->set_media_state( 'tablet' );
