@@ -2376,7 +2376,7 @@ class Kadence_Blocks_CSS {
 		$this->_tablet_pro_media_query = array();
 		$this->_desktop_only_media_query = array();
 		$this->_tablet_only_media_query = array();
-		$this->_tablet_pro_only_media_query = array();
+		$this->_tablet_only_pro_media_query = array();
 		$this->_mobile_media_query = array();
 		$this->_media_state = 'desktop';
 		$this->_css = '';

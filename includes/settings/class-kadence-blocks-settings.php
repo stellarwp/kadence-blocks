@@ -635,8 +635,8 @@ class Kadence_Blocks_Settings {
 		$license_key    = kadence_blocks_get_current_license_key();
 		$disconnect_url = '';
 		$is_authorized  = false;
-		if ( $token ) {
-			$is_authorized = is_authorized( $license_key, $token, get_license_domain() );
+		if ( ! empty( $license_key ) ) {
+			$is_authorized = is_authorized( $license_key, ( ! empty( $token ) ? $token : '' ), get_license_domain() );
 		}
 
 		if ( $is_authorized ) {
@@ -674,7 +674,7 @@ class Kadence_Blocks_Settings {
 			array(
 				'ajaxurl'             => admin_url( 'admin-ajax.php' ),
 				'wpnonce'             => wp_create_nonce( 'kadence-blocks-manage' ),
-				'site_name'           => get_bloginfo( 'name' ),
+				'site_name'           => sanitize_title( get_bloginfo( 'name' ) ),
 				'pSlug'               => apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ),
 				'isAIDisabled'        => kadence_blocks_is_ai_disabled(),
 				'pVersion'            => KADENCE_BLOCKS_VERSION,

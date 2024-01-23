@@ -111,7 +111,7 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $attributes['dividerHeight'] ) && ! empty( $attributes['dividerHeight'] ) ) {
 				$css->add_property( 'border-top-width', $attributes['dividerHeight'] . 'px' );
 				// Adding this prevents a blur when browsers are rendering. 
-				if( ! empty( $attributes['dividerHeight'] ) && $attributes['dividerHeight'] % 2 != 0 ){
+				if( ! empty( $attributes['dividerHeight'] ) && intval( absint( $attributes['dividerHeight'] ) % 2 ) != 0 ){
 					$css->add_property( 'height', '1px' );
 				}
 			}

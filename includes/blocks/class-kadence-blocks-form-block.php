@@ -381,7 +381,7 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 					$css->add_property( 'height', '1em' );
 					$css->add_property( 'margin-top', '0' );
 				}
-
+				$css->set_media_state( 'desktop' );
 			}
 			if ( ( isset( $label_font['size'] ) && is_array( $label_font['size'] ) && is_numeric( $label_font['size'][2] ) ) || ( isset( $label_font['lineHeight'] ) && is_array( $label_font['lineHeight'] ) && is_numeric( $label_font['lineHeight'][2] ) ) ) {
 				$css->set_media_state( 'mobile' );
@@ -400,7 +400,7 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 					$css->add_property( 'margin-top', '0' );
 
 				}
-
+				$css->set_media_state( 'desktop' );
 			}
 		}
 		if ( isset( $attributes['submit'] ) && is_array( $attributes['submit'] ) && isset( $attributes['submit'][0] ) && is_array( $attributes['submit'][0] ) ) {

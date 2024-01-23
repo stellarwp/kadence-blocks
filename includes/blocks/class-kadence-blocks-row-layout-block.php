@@ -690,6 +690,11 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 					$css->add_property( 'background-position', ( isset( $attributes['bgImgPosition'] ) ? $attributes['bgImgPosition'] : 'center center' ) );
 					$css->add_property( 'background-attachment', $bg_attach );
 					$css->add_property( 'background-repeat', ( isset( $attributes['bgImgRepeat'] ) ? $attributes['bgImgRepeat'] : 'no-repeat' ) );
+					if ( 'fixed' === $bg_attach && ! apply_filters( 'kadence_blocks_attachment_fixed_on_mobile', false ) ) {
+						$css->set_media_state( 'tabletPro' );
+						$css->add_property( 'background-attachment', 'scroll' );
+						$css->set_media_state( 'desktop' );
+					}
 				}
 				break;
 			case 'gradient':
@@ -863,6 +868,11 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 						$css->add_property( 'background-position', ( isset( $attributes['overlayBgImgPosition'] ) ? $attributes['overlayBgImgPosition'] : 'center center' ) );
 						$css->add_property( 'background-attachment', $overbg_attach );
 						$css->add_property( 'background-repeat', ( isset( $attributes['overlayBgImgRepeat'] ) ? $attributes['overlayBgImgRepeat'] : 'no-repeat' ) );
+						if ( 'fixed' === $overbg_attach && ! apply_filters( 'kadence_blocks_attachment_fixed_on_mobile', false ) ) {
+							$css->set_media_state( 'tabletPro' );
+							$css->add_property( 'background-attachment', 'scroll' );
+							$css->set_media_state( 'desktop' );
+						}
 					}
 					break;
 				case 'gradient':
