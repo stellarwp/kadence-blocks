@@ -1091,7 +1091,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					update_option( 'kb_design_library_prompts', $current_prompts );
 				}
 				// Log event for failed context generation.
-				do_action( 'kadenceblocks/ai/event', 'Context Generation Failed', [
+				do_action( 'kadenceblocks/ai/event', 'Context Generation Failed: kadence-blocks', [
 					'context_name'    => $context,
 					'is_regeneration' => true,
 					'errors'          => $response->get_error_messages(),
