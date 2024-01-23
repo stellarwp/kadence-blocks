@@ -98,8 +98,13 @@ developers of this plugin.
 == Changelog ==
 
 = 3.2.19 =
-Release Date: January TBD, 2024
-* Fix: Border radius on submit button in Form block
+Release Date: January 23rd, 2024
+* Add: Dynamic loading of alt option for image block.
+* Fix: Timezone calculation issue in countdown block.
+* Fix: Border radius on submit button in Form block.
+* Fix: Issue with width on images in some patterns.
+* Fix: Possible php undefined.
+* Fix: Possible issue with pexels and third party plugin.
 
 = 3.2.18 =
 Release Date: January 17th, 2024
