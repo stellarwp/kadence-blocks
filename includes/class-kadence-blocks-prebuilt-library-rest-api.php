@@ -1094,7 +1094,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				do_action( 'kadenceblocks/ai/event', 'Context Generation Failed', [
 					'context_name'    => $context,
 					'is_regeneration' => true,
-					'errors'          => $response->get_all_error_data(),
+					'errors'          => $response->get_error_messages(),
 				] );
 
 				return rest_ensure_response( 'error' );
