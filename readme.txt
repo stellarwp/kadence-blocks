@@ -97,6 +97,10 @@ developers of this plugin.
 
 == Changelog ==
 
+= 3.2.19 =
+Release Date: January TBD, 2024
+* Fix: Border radius on submit button in Form block
+
 = 3.2.18 =
 Release Date: January 17th, 2024
 * Add: Constant to allow disabling AI in site config.
