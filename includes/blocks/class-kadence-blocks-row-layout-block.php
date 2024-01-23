@@ -440,7 +440,9 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! empty( $attributes['collapseOrder'] ) && 'left-to-right' !== $attributes['collapseOrder'] && in_array( $layout, $collapse_layouts ) ) {
 			foreach ( range( 1, $columns ) as $item_count ) {
 				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . $item_count . ')' );
+				$css->set_media_state( 'tablet' );
 				$css->add_property( 'order', ( $columns - $item_count + 1 ) );
+				$css->set_media_state( 'desktop' );
 			}
 			// Row Two.
 			foreach ( range( 1, $columns ) as $item_count ) {
