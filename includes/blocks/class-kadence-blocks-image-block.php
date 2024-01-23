@@ -316,7 +316,27 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 
 		return $css->css_output();
 	}
-
+	/**
+	 * Build HTML for dynamic blocks
+	 *
+	 * @param $attributes
+	 * @param $unique_id
+	 * @param $content
+	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
+	 *
+	 * @return mixed
+	 */
+	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
+		$update_alt_globally = isset( $attributes['globalAlt'] ) && true === $attributes['globalAlt'] ? true : false;
+		if ( apply_filters( 'kadence_blocks_update_alt_text_globally', $update_alt_globally, $attributes ) && ! empty( $attributes['id'] ) ) {
+			// Check if we can get the alt text.
+			$alt = get_post_meta( $attributes['id'], '_wp_attachment_image_alt', true );
+			if ( ! empty( $alt ) ) {
+				$content = str_replace( 'alt=""', 'alt="' . esc_attr( $alt ) . '"', $content );
+			}
+		}
+		return $content;
+	}
 
 }
 

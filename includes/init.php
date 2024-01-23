@@ -302,7 +302,6 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'user_email' => $user_email,
 			'prebuilt_libraries' => apply_filters( 'kadence_blocks_custom_prebuilt_libraries', array() ),
 			'showDesignLibrary' => apply_filters( 'kadence_blocks_design_library_enabled', true ),
-			'autoUpdateAltText' => apply_filters( 'kadence_blocks_update_alt_text_globally', true ),
 			'postQueryEndpoint'  => '/kbp/v1/post-query',
 			'icon_names' => file_exists( $icon_names_path ) ? include $icon_names_path : array(),
 			'rest_url' => get_rest_url(),
