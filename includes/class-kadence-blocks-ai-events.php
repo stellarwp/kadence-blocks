@@ -103,7 +103,7 @@ class Kadence_Blocks_AI_Events {
 		$license_key   = kadence_blocks_get_current_license_key();
 		$is_authorized = false;
 		if ( ! empty( $license_key ) ) {
-			$is_authorized = is_authorized( $license_key, ( ! empty( $token ) ? $token : '' ), get_license_domain() );
+			$is_authorized = is_authorized( $license_key, 'kadence-blocks', ( ! empty( $token ) ? $token : '' ), get_license_domain() );
 		}
 		if ( ! $is_authorized ) {
 			return;
