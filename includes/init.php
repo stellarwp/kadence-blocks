@@ -238,7 +238,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 	$token         = get_authorization_token( 'kadence-blocks' );
 	$is_authorized = false;
 	if ( ! empty( $pro_data['key'] ) ) {
-		$is_authorized = is_authorized( $pro_data['key'], ( ! empty( $token ) ? $token : '' ), get_license_domain() );
+		$is_authorized = is_authorized( $pro_data['key'], 'kadence-blocks', ( ! empty( $token ) ? $token : '' ), get_license_domain() );
 	}
 	$font_sizes = apply_filters( 'kadence_blocks_variable_font_sizes', $font_sizes );
 	$subscribed = class_exists( 'Kadence_Blocks_Pro' ) ? true : get_option( 'kadence_blocks_wire_subscribe' );
