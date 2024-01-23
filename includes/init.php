@@ -237,8 +237,8 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 	}
 	$token         = get_authorization_token( 'kadence-blocks' );
 	$is_authorized = false;
-	if ( $token && ! empty( $pro_data['key'] ) ) {
-		$is_authorized = is_authorized( $pro_data['key'], $token, get_license_domain() );
+	if ( ! empty( $pro_data['key'] ) ) {
+		$is_authorized = is_authorized( $pro_data['key'], ( ! empty( $token ) ? $token : '' ), get_license_domain() );
 	}
 	$font_sizes = apply_filters( 'kadence_blocks_variable_font_sizes', $font_sizes );
 	$subscribed = class_exists( 'Kadence_Blocks_Pro' ) ? true : get_option( 'kadence_blocks_wire_subscribe' );
@@ -258,7 +258,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'ajax_url'       => admin_url( 'admin-ajax.php' ),
 			'ajax_nonce'     => wp_create_nonce( 'kadence-blocks-ajax-verification' ),
 			'ajax_loader'    => KADENCE_BLOCKS_URL . 'includes/assets/images/ajax-loader.gif',
-			'site_name'      => get_bloginfo( 'name' ),
+			'site_name'      => sanitize_title( get_bloginfo( 'name' ) ),
 			'pSlug'          => apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ),
 			'pVersion'       => KADENCE_BLOCKS_VERSION,
 			'sidebar_size'   => $sidebar_size,

@@ -58,7 +58,7 @@ const kadenceImagePickerInit = () => {
 			initialMediaFrameSelect.prototype.browseRouter.apply(this, arguments);
 			routerView.set({
 				kadenceimagepicker: {
-					text: __( 'Pexels' ), // eslint-disable-line no-undef
+					text: __( 'Pexels', 'kadence-blocks' ), // eslint-disable-line no-undef
 					priority: 120,
 				},
 			});
@@ -120,7 +120,7 @@ const getMediaModalProvider = async (element) => {
 	const provider = getProvider();
 
 	// Build URL.
-	const options = getQueryOptions(provider);
+	const options = getQueryOptions();
 	const url = buildURL("search");
 
 	// Get session storage.

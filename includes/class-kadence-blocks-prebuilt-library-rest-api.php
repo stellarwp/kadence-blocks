@@ -2227,7 +2227,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$defaults = [
 			'domain'          => $site_url,
 			'key'             => ! empty( $license_data['key'] ) ? $license_data['key'] : '',
-			'site_name'       => $site_name,
+			'site_name'       => sanitize_title( $site_name ),
 			'product_slug'    => apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ),
 			'product_version' => KADENCE_BLOCKS_VERSION,
 		];
