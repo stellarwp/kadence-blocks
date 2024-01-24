@@ -463,7 +463,6 @@ function RowLayoutEditContainer( props ) {
 	const layoutClass = ( ! colLayout ? 'equal' : colLayout );
 	const tabLayoutClass = ( ! tabletLayout ? 'inherit' : tabletLayout );
 	const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
-	console.log(previewDevice);
 	const classes = classnames( {
 		'kt-row-column-wrap': true,
 		[ `align${ align }` ]: align,
