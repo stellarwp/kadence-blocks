@@ -535,14 +535,10 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$this->get_license_keys();
 		$reload            = $request->get_param( self::PROP_FORCE_RELOAD );
 		$available_prompts = get_option( 'kb_design_library_prompts', array() );
-		if ( ! $reload ) {
-			$contexts = $this->all_contexts;
-		} else {
-			$contexts = $this->initial_contexts;
-		}
-		$return_data = array();
-		$has_error   = false;
-		$ready       = true;
+		$contexts          = $reload ? $this->initial_contexts : $this->all_contexts;
+		$return_data       = array();
+		$has_error         = false;
+		$ready             = true;
 		if ( ! empty( $contexts ) && is_array( $contexts ) ) {
 			foreach ( $contexts as $key => $context ) {
 				if ( ! isset( $available_prompts[ $context ] ) ) {
