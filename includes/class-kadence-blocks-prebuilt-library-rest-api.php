@@ -1156,7 +1156,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			// Log event for successful context generation.
 			do_action( 'kadenceblocks/ai/event', 'Context Generation Completed', [
 				'context_name'    => $context,
-				'credits-after'   => $this->get_remote_remaining_credits(),
+				'credits_after'   => $this->get_remote_remaining_credits(),
 				'is_regeneration' => true,
 			] );
 
