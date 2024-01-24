@@ -783,7 +783,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( empty( $all_urls ) ) {
 			return $content;
 		}
-
 		$map_urls    = array();
 		$image_urls  = array();
 		// Find all the images.
@@ -820,16 +819,48 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					}
 				}
 				$downloaded_image       = $this->import_image( $image );
-				$map_urls[ $image_url ] = $downloaded_image['url'];
+				$map_urls[ $image_url ] = array(
+					'url' => $downloaded_image['url'],
+					'id'  => $downloaded_image['id'],
+				);
 			}
 		}
-		// Replace images in content.
-		foreach ( $map_urls as $old_url => $new_url ) {
-			$content = str_replace( $old_url, $new_url, $content );
+		// Regex to find wp:kadence/image blocks with id and src.
+		$pattern = '/<!-- wp:kadence\/image .*?"id":(\d+),.*?"uniqueID":"[^"]+".*?-->(.*?)<img src="([^"]+)".*?<!-- \/wp:kadence\/image -->/s';
+
+		// Use preg_match_all to find all matches
+		if ( preg_match_all( $pattern, $content, $block_matches, PREG_SET_ORDER ) ) {
+			foreach ( $block_matches as $block_match ) {
+				// $block_match[0] is the entire block
+				// $block_match[1] is the id
+				// $block_match[2] is the content before <img src
+				// $block_match[3] is the src
+				$old_id            = ( isset( $block_match[1] ) ? $block_match[1] : '' );
+				$old_src           = ( isset( $block_match[3] ) ? $block_match[3] : '' );
+				$block_replacement = ( isset( $block_match[0] ) ? $block_match[0] : '' );
+				// Replace old id if it exists in the map
+				if ( isset( $map_urls[ $old_src ]['id'] ) ) {
+					$new_id = $map_urls[ $old_src ]['id'];
+					$block_replacement = preg_replace( '/"id":' . $old_id . '/', '"id":' . $new_id, $block_replacement );
+					$block_replacement = str_replace( 'wp-image-' . strval( $old_id ), 'wp-image-' . strval( $new_id ), $block_replacement );
+				}
+				// Replace old src with new one if it exists in the map.
+				if ( isset( $map_urls[ $old_src ]['url'] ) ) {
+					$new_src = $map_urls[ $old_src ]['url'];
+					$block_replacement = str_replace( $old_src, $new_src, $block_replacement );
+				}
+
+				// Replace the old block with the new one.
+				$content = str_replace( $block_match[0], $block_replacement, $content );
+			}
+		}
+		// Replace the rest of images in content.
+		foreach ( $map_urls as $old_url => $new_image ) {
+			$content = str_replace( $old_url, $new_image['url'], $content );
 			// Replace the slashed URLs if any exist.
 			$old_url = str_replace( '/', '/\\', $old_url );
-			$new_url = str_replace( '/', '/\\', $new_url );
-			$content = str_replace( $old_url, $new_url, $content );
+			$new_image['url'] = str_replace( '/', '/\\', $new_image['url'] );
+			$content = str_replace( $old_url, $new_image['url'], $content );
 		}
 		return $content;
 	}
