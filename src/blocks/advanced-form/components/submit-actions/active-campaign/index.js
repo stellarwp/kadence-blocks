@@ -187,7 +187,7 @@ function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, sav
 				theAttributes.push( { value: 'lastName', label: __( 'Last Name', 'kadence-blocks' ) } );
 				theAttributes.push( { value: 'phone', label: __('Phone', 'kadence-blocks' ) } );
 
-				list.fields.map( ( item, index ) => {
+				list.map( ( item, index ) => {
 					theAttributes.push( { value: item.id, label: item.title } );
 				} );
 
