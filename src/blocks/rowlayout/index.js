@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, _x } from '@wordpress/i18n';
 /**
  * Import Icons
  */
@@ -23,7 +23,7 @@ import deprecated from './deprecated';
 
 registerBlockType( 'kadence/rowlayout', {
 	...metadata,
-	title: __( 'Row Layout', 'kadence-blocks' ),
+	title: _x( 'Row Layout', 'block title', 'kadence-blocks' ),
 	description: __( 'A container to hold a grid layout.', 'kadence-blocks' ),
 	keywords: [
 		__( 'column', 'kadence-blocks' ),

@@ -12,11 +12,11 @@ import { tableOfContentsIcon } from '@kadence/icons';
  */
 import './editor.scss';
 import './style.scss';
-import { __ } from '@wordpress/i18n';
+import { __, _x } from '@wordpress/i18n';
 
 registerBlockType( 'kadence/tableofcontents', {
 	...metadata,
-	title: __( 'Table of Contents', 'kadence-blocks' ),
+	title: _x( 'Table of Contents', 'block title', 'kadence-blocks' ),
 	keywords: [
 		__( 'table of contents', 'kadence-blocks' ),
 		__( 'summary', 'kadence-blocks' ),

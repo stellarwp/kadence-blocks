@@ -28,7 +28,7 @@ import { times } from 'lodash';
  * Internal block libraries
  */
 import { registerBlockType } from '@wordpress/blocks';
-import { __ } from '@wordpress/i18n';
+import { __, _x } from '@wordpress/i18n';
 
 /**
  * Register: a Gutenberg Block.
@@ -41,8 +41,8 @@ import { __ } from '@wordpress/i18n';
  */
 registerBlockType( 'kadence/iconlist', {
 	...metadata,
-	title: __( 'Icon List', 'kadence-blocks' ),
-	description: __( 'Create engaging lists with icons for bullets.', 'kadence-blocks' ),
+	title: _x( 'Icon List', 'block title', 'kadence-blocks' ),
+	description: _x( 'Create engaging lists with icons for bullets.', 'block description', 'kadence-blocks' ),
 	keywords: [
 		__( 'icon', 'kadence-blocks' ),
 		__( 'svg', 'kadence-blocks' ),

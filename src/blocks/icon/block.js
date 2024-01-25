@@ -28,7 +28,7 @@ import deprecated from './deprecated';
 import {
 	registerBlockType,
 } from '@wordpress/blocks';
-import { __ } from '@wordpress/i18n';
+import { __, _x } from '@wordpress/i18n';
 
 /**
  * Register: a Gutenberg Block.
@@ -41,7 +41,7 @@ import { __ } from '@wordpress/i18n';
  */
 registerBlockType( 'kadence/icon', {
 	...metadata,
-	title: __( 'Icon', 'kadence-blocks' ),
+	title: _x( 'Icon', 'block title', 'kadence-blocks' ),
 	description: __( 'Create engaging lists with icons for bullets.', 'kadence-blocks' ),
 	keywords: [
 		__( 'icon', 'kadence-blocks' ),

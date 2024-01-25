@@ -29,7 +29,7 @@ import metadata from './block.json';
  * WordPress dependencies
  */
 import { registerBlockType } from '@wordpress/blocks';
-import { __ } from '@wordpress/i18n';
+import { __, _x } from '@wordpress/i18n';
 
 /**
  * Register: a Gutenberg Block.
@@ -42,7 +42,7 @@ import { __ } from '@wordpress/i18n';
  */
 registerBlockType( 'kadence/countdown', {
 	...metadata,
-	title: __( 'Countdown', 'kadence-blocks' ),
+	title: _x( 'Countdown', 'block title', 'kadence-blocks' ),
 	description: __( 'The countdown timer', 'kadence-blocks' ),
 	keywords: [
 		__( 'countdown', 'kadence-blocks' ),
