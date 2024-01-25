@@ -100,6 +100,7 @@ developers of this plugin.
 = 3.2.20 =
 Release Date: January TBD, 2024
 * Fix: Infobox number field wrapping on frontend.
+* Fix: Issue with Row Layout collapse order on desktop.
 
 = 3.2.19 =
 Release Date: January 23rd, 2024
