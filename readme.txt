@@ -97,6 +97,10 @@ developers of this plugin.
 
 == Changelog ==
 
+= 3.2.20 =
+Release Date: January TBD, 2024
+* Fix: Infobox number field wrapping on frontend.
+
 = 3.2.19 =
 Release Date: January 23rd, 2024
 * Add: Dynamic loading of alt option for image block.
