@@ -110,6 +110,10 @@
 	"useBlockQuoteTags": {
 	  "type": "boolean",
 	  "default": true
+	},
+	"anchor": {
+		"type": "string",
+		"default": ""
 	}
   },
   "usesContext": [
@@ -132,7 +136,6 @@
 	"kadence/testimonials-containerVAlign"
   ],
   "supports": {
-	"anchor": true,
 	"html": false,
 	"kbMetadata": true,
 	"kbContentLabel": "title"
