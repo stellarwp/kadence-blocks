@@ -364,6 +364,10 @@ function SectionEdit( props ) {
 			}
 			setAttributes( { kbVersion: 2 } );
 		}
+
+		if( inRowBlock && align !== '' ) {
+			setAttributes( { align: '' } );
+		}
 	}, [] );
 
 	//set the dynamic image state
