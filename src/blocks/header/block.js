@@ -16,7 +16,7 @@ import { blockTabsIcon } from '@kadence/icons';
 /**
  * Internal block libraries
  */
-const { _x } = wp.i18n;
+const { __, _x } = wp.i18n;
 import { registerBlockType } from '@wordpress/blocks';
 import ServerSideRender from '@wordpress/server-side-render';
 import { useBlockProps } from '@wordpress/block-editor';

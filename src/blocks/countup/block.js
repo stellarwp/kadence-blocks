@@ -48,7 +48,7 @@ import { __, _x } from '@wordpress/i18n';
  */
 registerBlockType( 'kadence/countup', {
 	...metadata,
-	title: _x( 'Count Up', 'block title' 'kadence-blocks' ),
+	title: _x( 'Count Up', 'block title', 'kadence-blocks' ),
 	description: _x( 'An animated count up or down to a specific value.', 'block description', 'kadence-blocks' ),
 	keywords: [
 		__( 'count down', 'kadence-blocks' ),
