@@ -579,7 +579,7 @@ class Kadence_Blocks_Table_Of_Contents {
 						$level = 6;
 						break;
 				}
-				$heading->textContent = $heading->getAttribute('toc') ? $heading->getAttribute('toc') : $heading->textContent;
+				$heading->textContent = $heading->getAttribute('data-alt-title') ? $heading->getAttribute('data-alt-title') : $heading->textContent;
 				if ( $anchor_string ) {
 					$add = true;
 					foreach ( self::$headings as $v ) {
