@@ -80,7 +80,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			return;
 		}
 
-		$form_fields     = $this->get_form_fields( $attributes['id'] );
+		// $form_fields     = $this->get_form_fields( $attributes['id'] );
 		$form_attributes = $this->get_form_attributes( $attributes['id'] );
 
 		$form_attributes = json_decode( json_encode( $form_attributes ), true );
@@ -389,8 +389,11 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			'class' => implode( ' ', $inner_classes ),
 			'method' => 'post',
 		);
-		if ( isset($form_attributes['messages']['preError']) && ! empty($form_attributes['messages']['preError'])) {
+		if ( isset( $form_attributes['messages']['preError'] ) && ! empty( $form_attributes['messages']['preError'] ) ) {
 			$inner_args['data-error-message'] = $form_attributes['messages']['preError'];
+		}
+		if ( isset( $form_attributes['enableAnalytics'] ) && $form_attributes['enableAnalytics'] && class_exists( 'Kadence_Blocks_Pro' ) ) {
+			$inner_args['data-kb-events'] = 'yes';
 		}
 		if ( isset( $form_attributes['browserValidation'] ) && ! $form_attributes['browserValidation'] ) {
 			$inner_args['novalidate'] = 'true';
