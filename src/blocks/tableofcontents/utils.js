@@ -50,7 +50,7 @@ export function getHeadingsFromHeadingElements( headingElements ) {
 				break;
 		}
 
-		return { anchor, content: heading.hasAttribute( 'data-alt-title' ) ? heading.getAttribute( 'data-alt-title' ) : heading.textContent, level };
+		return { anchor, content: heading.textContent, level };
 	} );
 }
 

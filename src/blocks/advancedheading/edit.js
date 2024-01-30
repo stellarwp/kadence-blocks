@@ -235,7 +235,6 @@ function KadenceAdvancedHeading( props ) {
 		tabletMarkBorderRadius,
 		mobileMarkBorderRadius,
 		markBorderRadiusUnit,
-		altTitle,
 	} = attributes;
 
 	const [ activeTab, setActiveTab ] = useState( 'style' );
@@ -535,7 +534,6 @@ function KadenceAdvancedHeading( props ) {
 	const headingContent = (
 			<TagHTML
 			className={classes}
-			data-alt-title={ altTitle ? altTitle : undefined }
 			style={{
 				display: icon ? 'flex' : undefined,
 				alignItems: icon ? iconVerticalAlign : undefined,
@@ -622,7 +620,7 @@ function KadenceAdvancedHeading( props ) {
 		'kb-is-heading' : htmlTag && htmlTag === 'heading',
 		'kb-adv-text'   : true,
 	});
-	const nonTransAttrs = [ 'content', 'altTitle' ];
+	const nonTransAttrs = [ 'content' ];
 	const blockProps = useBlockProps( {
 		className: wrapperClasses,
 	} );
@@ -1354,16 +1352,6 @@ function KadenceAdvancedHeading( props ) {
 			<DynamicInlineReplaceControl dynamicAttribute={'content'} {...props} />
 
 			<InspectorAdvancedControls>
-				{ htmlTag === 'heading' && (
-					<TextControl
-						label={__( 'Alterative title for table of contents', 'kadence-blocks' )}
-						help={__( 'If using table of contents block you can define a custom title here.', 'kadence-blocks' )}
-						value={ altTitle }
-						onChange={ value => {
-							setAttributes( { altTitle: value } );
-						} }
-					/>
-				)}
 				<TextControl
 					label={__( 'HTML Anchor', 'kadence-blocks' )}
 					help={__( 'Anchors lets you link directly to a section on a page.', 'kadence-blocks' )}

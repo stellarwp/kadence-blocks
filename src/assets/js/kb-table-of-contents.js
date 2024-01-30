@@ -22,8 +22,7 @@
 				for ( let n = 0; n < heading_items.length; n++ ) {
 					var second_string = heading_items[ n ].textContent.replace(/×/g, 'x').replace(/–/g, '-').replace(/—/g, '-').replace(/…/g, '...').replace(/′/g, "'" ).replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, '"').replace(/”/g, '"');
 					second_string = encodeURIComponent( second_string ).toString().normalize().replace(/[^\w\s]/gi, '');
-					var alt_string = encodeURIComponent( heading_items[ n ].getAttribute("data-alt-title")).toString().normalize().replace(/[^\w\s]/gi,"");
-					if ( first_string === second_string || first_string === alt_string ) {
+					if ( first_string === second_string ) {
 						if ( ! heading_items[ n ].getAttribute( 'id' ) ) {
 							heading_items[ n ].setAttribute( 'id', headings[ i ].anchor );
 							break;

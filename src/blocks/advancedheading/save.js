@@ -30,7 +30,6 @@ function Save( { attributes } ) {
 		backgroundColorClass,
 		linkStyle,
 		icon,
-		altTitle
 	} = attributes;
 	const tagName = htmlTag && htmlTag !== 'heading' ? htmlTag : 'h' + level;
 	const textColorClass = getColorClassName( 'color', colorClass );
@@ -69,7 +68,6 @@ function Save( { attributes } ) {
 			data-aos-delay={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].delay ? kadenceAOSOptions[ 0 ].delay : undefined ) }
 			data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) }
 			data-aos-once={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && undefined !== kadenceAOSOptions[ 0 ].once && '' !== kadenceAOSOptions[ 0 ].once ? kadenceAOSOptions[ 0 ].once : undefined ) }
-			data-alt-title={ altTitle ? altTitle : undefined }
 			value={ content }
 		/>
 	);
