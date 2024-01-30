@@ -374,6 +374,7 @@
 						} );
 						// Dispatch the event.
 						window.document.body.dispatchEvent( event );
+						window.kadenceAdvancedForm.event( 'submitted', form );
 						if ( response.redirect ) {
 							window.location.replace( response.redirect );
 						} else {
@@ -385,6 +386,7 @@
 						}
 					} else {
 						if ( response.data ) {
+							window.kadenceAdvancedForm.event( 'failed', form );
 							window.kadenceAdvancedForm.insertAfter( window.kadenceAdvancedForm.createElementFromHTML( response.data.html ), form );
 							if ( response.data.required ) {
 								if ( form.querySelector( '[name="' + response.data.required + '"]' ) ) {
@@ -401,10 +403,38 @@
 			}
 
 		},
+		event( type, form ) {
+			if ( form.getAttribute( 'data-kb-events' ) === 'yes' ) {
+				let event_data = new FormData();
+				event_data.set( 'action', 'kadence_adv_form_event' );
+				event_data.set( 'type', type );
+				event_data.set( '_kb_form_verify', kb_adv_form_params.nonce );
+				event_data.set( '_kb_adv_form_post_id', form.querySelector( 'input[name="_kb_adv_form_post_id"]' ).value );
+				let fetchOptions = {
+					method: 'POST',
+					body  : event_data,
+				};
+				fetch( kb_adv_form_params.ajaxurl, fetchOptions ).then( ( response ) => {
+					//console.log( 'event_response', response );
+					if ( response.status >= 200 && response.status < 400 ) {
+						return response.json();
+					}
+				} ).then( ( body ) => {
+					//console.log( 'event_body', body );
+				} ).catch( function( error ) {
+					console.log( 'Connection error' );
+				} );
+			}
+		},
 		initForms() {
 			var forms = document.querySelectorAll( 'form.kb-advanced-form' );
 			if ( ! forms.length ) {
 				return;
+			}
+			var start_function = function( form ) {
+				return function curried_func(e) {
+					window.kadenceAdvancedForm.event( 'started', form );
+				}
 			}
 			var click_function = function( form ) {
 				return function curried_func(e) {
@@ -412,6 +442,8 @@
 				}
 			}
 			for ( var n = 0; n < forms.length; n++ ) {
+				window.kadenceAdvancedForm.event( 'viewed', forms[n]);
+				forms[n].addEventListener('change', start_function( forms[n] ), {'once': true} );
 				forms[n].addEventListener('submit', click_function( forms[n] ) );
 			}
 		},

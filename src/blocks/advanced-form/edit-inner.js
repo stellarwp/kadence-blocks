@@ -16,6 +16,7 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import { size, get, isEqual } from 'lodash';
 import { addQueryArgs } from '@wordpress/url';
+import { applyFilters } from '@wordpress/hooks';
 import {
 	useEntityBlockEditor,
 	useEntityProp,
@@ -163,6 +164,7 @@ export function EditInner( props ) {
 	const [ maxWidthUnit ] = useFormMeta( '_kad_form_maxWidthUnit');
 	const [ submitHide ] = useFormMeta( '_kad_form_submitHide' );
 	const [ browserValidation ] = useFormMeta( '_kad_form_browserValidation' );
+	const [ enableAnalytics ] = useFormMeta( '_kad_form_enableAnalytics' );
 
 	const [ className ] = useFormMeta( '_kad_form_className' );
 	const [ anchor ] = useFormMeta( '_kad_form_anchor' );
@@ -253,6 +255,10 @@ export function EditInner( props ) {
 			}
 		}
 	}, [formInnerBlocks] );
+
+	const showAnalytics = useMemo( () => {
+		return applyFilters( 'kadence.analyticsOptionAdvancedForm', false );
+	}, [] );
 
 	const [ isAdding, addNew ] = useEntityPublish( 'kadence_form', id );
 	const onAdd = async( title, template, style, initialDescription ) => {
@@ -904,6 +910,20 @@ export function EditInner( props ) {
 								help={ __( 'This will use the browsers default validation for required fields. If disabled, custom error message will be displayed.', 'kadence-blocks' ) }
 							/>
 						</KadencePanelBody>
+						{ showAnalytics && (
+							<KadencePanelBody
+								title={__( 'Analytics', 'kadence-blocks' )}
+								initialOpen={false}
+								panelName={ 'kb-adv-form-enable-analytics' }
+							>
+								<ToggleControl
+									label={ __( 'Enable Form Analytics', 'kadence-blocks' ) }
+									checked={ enableAnalytics }
+									onChange={ ( value ) => { setMetaAttribute( value, 'enableAnalytics' ) } }
+									help={ __( 'This will capture how many times the form is loaded, started, and submitted so you can have conversion analytics.', 'kadence-blocks' ) }
+								/>
+							</KadencePanelBody>
+						) }
 					</>
 				}
 

@@ -121,7 +121,7 @@ class Kadence_MailerLite_REST_Controller extends WP_REST_Controller {
 				$url = $base_url . $end_point;
 			}
 		}
-		$response = wp_remote_get( $url, $request_args );
+		$response = wp_safe_remote_get( $url, $request_args );
 		if ( is_wp_error( $response ) || 200 != (int) wp_remote_retrieve_response_code( $response ) ) {
 			if (  401 === wp_remote_retrieve_response_code( $response ) ) {
 				return 'Unauthorized';

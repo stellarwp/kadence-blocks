@@ -24,7 +24,7 @@ import metadata from './block.json';
  * Internal block libraries
  */
 import { registerBlockType } from '@wordpress/blocks';
-import { __ } from '@wordpress/i18n';
+import { __, _x } from '@wordpress/i18n';
 
 /**
  * Register: a Gutenberg Block.
@@ -37,7 +37,7 @@ import { __ } from '@wordpress/i18n';
  */
 registerBlockType( 'kadence/advancedbtn', {
 	...metadata,
-	title: __( 'Buttons (Adv)', 'kadence-blocks' ),
+	title: _x( 'Buttons (Adv)', 'block title', 'kadence-blocks' ),
 	description: __( 'Create an advanced button or a row of buttons. Style each one, including hover controls', 'kadence-blocks' ),
 	keywords: [
 		__( 'button', 'kadence-blocks' ),

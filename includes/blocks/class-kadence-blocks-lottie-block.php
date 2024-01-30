@@ -179,6 +179,10 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 
 			if( $attributes['loop'] ){
 				$playerProps['loop'] = 'true';
+
+				if( !empty( $attributes['loopLimit'] ) ){
+					$playerProps['count'] = ( $attributes['loopLimit'] - 1);
+				}
 			}
 
 			if( $attributes['playbackSpeed'] ){

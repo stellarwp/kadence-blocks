@@ -592,7 +592,7 @@ class KB_Ajax_Advanced_Form {
 		$blocks    = '';
 
 		$post_data = get_post( absint( $post_id ) );
-		if ( is_object( $post_data ) ) {
+		if ( is_object( $post_data ) && 'kadence_form' === $post_data->post_type && is_post_publicly_viewable( $post_data ) ) {
 			$blocks = parse_blocks( $post_data->post_content );
 		}
 
