@@ -25,7 +25,7 @@ import {
 	registerBlockType,
 	createBlock
 } from '@wordpress/blocks';
-import { __ } from '@wordpress/i18n';
+import { __, _x } from '@wordpress/i18n';
 /**
  * Register: a Gutenberg Block.
  *
@@ -37,7 +37,7 @@ import { __ } from '@wordpress/i18n';
  */
 registerBlockType( 'kadence/advancedheading', {
 	...metadata,
-	title: __( 'Text (Adv)', 'kadence-blocks' ),
+	title: _x( 'Text (Adv)', 'block title', 'kadence-blocks' ),
 	description: __( 'Create a heading or paragraph and define sizes for desktop, tablet and mobile along with font family, colors, etc.', 'kadence-blocks' ),
 	keywords: [
 		__( 'text', 'kadence-blocks' ),

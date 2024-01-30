@@ -38,7 +38,7 @@ import save from './save';
 /**
  * Internal block libraries
  */
-import { __ } from '@wordpress/i18n';
+import { __, _x } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 
 /**
@@ -52,7 +52,7 @@ import { registerBlockType } from '@wordpress/blocks';
  */
 registerBlockType( 'kadence/tabs', {
 	...metadata,
-	title: __( 'Tabs', 'kadence-blocks' ),
+	title: _x( 'Tabs', 'block title', 'kadence-blocks' ),
 	keywords: [
 		__( 'tabs', 'kadence-blocks' ),
 		__( 'tab', 'kadence-blocks' ),

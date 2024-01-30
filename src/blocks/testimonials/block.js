@@ -15,14 +15,14 @@ import deprecated from './deprecated';
 
 const { name } = metadata;
 import { testimonialBlockIcon } from '@kadence/icons';
-import { __ } from '@wordpress/i18n';
+import { __, _x } from '@wordpress/i18n';
 import './style.scss';
 
 export { metadata, name };
 
 registerBlockType( 'kadence/testimonials', {
 	...metadata,
-	title   : __( 'Testimonials', 'kadence-blocks' ),
+	title   : _x( 'Testimonials', 'block title', 'kadence-blocks' ),
 	keywords: [
 		__( 'testimonials', 'kadence-blocks' ),
 		__( 'rating', 'kadence-blocks' ),
