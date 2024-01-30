@@ -268,7 +268,7 @@ ul.menu .wp-block-kadence-tabs .kt-tabs-wrap {
             width: 100%;
         }
     }
-    ul.menu .wp-block-kadence-tabs .kt-tabs-tablet-layout-accordion {
+    .kt-tabs-tablet-layout-accordion {
         > .kt-tabs-title-list {
             display:none;
         }
@@ -344,7 +344,7 @@ ul.menu .wp-block-kadence-tabs .kt-tabs-wrap {
             width: 100%;
         }
     }
-    ul.menu .wp-block-kadence-tabs .kt-tabs-mobile-layout-accordion {
+    .kt-tabs-mobile-layout-accordion {
         > .kt-tabs-title-list {
             display:none;
         }
