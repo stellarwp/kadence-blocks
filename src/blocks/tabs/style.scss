@@ -3,7 +3,7 @@
  *
  * CSS for both Frontend+Backend.
  */
-// Item
+ // CSS specific for when tabs are used inside of a menu.
 ul.menu .wp-block-kadence-tabs .kt-tabs-wrap {
     .kt-tabs-title-list {
         margin:0;
@@ -19,6 +19,7 @@ ul.menu .wp-block-kadence-tabs .kt-tabs-wrap {
         }
     }
 }
+// Normal Tabs css.
 .wp-block-kadence-tabs {
     .kt-tabs-title-list {
         margin:0;
@@ -269,7 +270,7 @@ ul.menu .wp-block-kadence-tabs .kt-tabs-wrap {
         }
     }
     .kt-tabs-tablet-layout-accordion {
-        > .kt-tabs-title-list {
+        > .kt-tabs-title-list:not(.asfo):not(.amsfo):not(.aemsfo) {
             display:none;
         }
         > .kt-tabs-content-wrap > .kt-tabs-accordion-title {
@@ -345,7 +346,7 @@ ul.menu .wp-block-kadence-tabs .kt-tabs-wrap {
         }
     }
     .kt-tabs-mobile-layout-accordion {
-        > .kt-tabs-title-list {
+        > .kt-tabs-title-list:not(.asfo):not(.amsfo):not(.aemsfo) {
             display:none;
         }
         > .kt-tabs-content-wrap > .kt-tabs-accordion-title {
