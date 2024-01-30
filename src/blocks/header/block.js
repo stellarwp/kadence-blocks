@@ -16,7 +16,7 @@ import { blockTabsIcon } from '@kadence/icons';
 /**
  * Internal block libraries
  */
-const { __, sprintf } = wp.i18n;
+const { __, _x } = wp.i18n;
 import { registerBlockType } from '@wordpress/blocks';
 import ServerSideRender from '@wordpress/server-side-render';
 import { useBlockProps } from '@wordpress/block-editor';
@@ -30,7 +30,7 @@ import { useBlockProps } from '@wordpress/block-editor';
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/theme-header', {
-	title: __( 'Theme Header', 'kadence-blocks' ),
+	title: _x( 'Theme Header', 'block title', 'kadence-blocks' ),
 	icon: {
 		src: blockTabsIcon,
 	},
