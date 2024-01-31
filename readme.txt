@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.4
-Stable tag: 3.2.19
+Stable tag: 3.2.20
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -98,10 +98,14 @@ developers of this plugin.
 == Changelog ==
 
 = 3.2.20 =
-Release Date: January TBD, 2024
+Release Date: January 30th, 2024
+* Add: Option to set a custom title for TOC block inside advanced text block.
+* Update: Translation strings for block titles with context.
+* Fix: ActiveCampaign fields issue.
 * Fix: Infobox number field wrapping on frontend.
 * Fix: Issue with Row Layout collapse order on desktop.
 * Fix: Lottie animation loop limit not applying.
+* Fix: Tab issue when accordion in a menu.
 
 = 3.2.19 =
 Release Date: January 23rd, 2024

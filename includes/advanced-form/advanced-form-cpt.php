@@ -130,7 +130,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			'archives'           => __( 'Form Archives', 'kadence_blocks' ),
 			'attributes'         => __( 'Form Attributes', 'kadence_blocks' ),
 			'parent_item_colon'  => __( 'Parent Form:', 'kadence_blocks' ),
-			'all_items'          => __( 'All Forms', 'kadence_blocks' ),
+			'all_items'          => __( 'Forms', 'kadence_blocks' ),
 			'add_new_item'       => __( 'Add New Form', 'kadence_blocks' ),
 			'new_item'           => __( 'New Form', 'kadence_blocks' ),
 			'edit_item'          => __( 'Edit Form', 'kadence_blocks' ),
