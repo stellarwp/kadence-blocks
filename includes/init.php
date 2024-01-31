@@ -1069,6 +1069,8 @@ function kadence_blocks_register_api_endpoints() {
 	$posts_controller->register_routes();
 	$mailerlite_controller = new Kadence_MailerLite_REST_Controller();
 	$mailerlite_controller->register_routes();
+	$getresponse_controller = new Kadence_GetResponse_REST_Controller();
+	$getresponse_controller->register_routes();
 	$fluentcrm_controller = new Kadence_FluentCRM_REST_Controller();
 	$fluentcrm_controller->register_routes();
 	$lottieanimation_controller_get = new Kadence_LottieAnimation_get_REST_Controller();
