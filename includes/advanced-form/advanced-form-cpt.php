@@ -440,6 +440,46 @@ class Kadence_Blocks_Form_CPT_Controller {
 
 		register_post_meta(
 			'kadence_form',
+			'_kad_form_getresponse',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'object',
+				'default'       => array(
+					'automation' => array(),
+					'tags' => array(),
+					'map' => array(),
+					'listMulti' => array(),
+					'doubleOptin' => false,
+				),
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'object',
+						'properties' => array(
+							'automation' => array(
+								'type' => 'object',
+								'properties' => array(
+									'value' => array( 'type' => 'string' ),
+									'label' => array( 'type' => 'string' ),
+								),
+							),
+							'tags'  => array( 'type' => 'array' ),
+							'map'  => array(
+								'type' => 'object',
+								'additionalProperties' => array(
+									'type' => 'string',
+								),
+							),
+							'listMulti'  => array( 'type' => 'array' ),
+							'doubleOptin'  => array( 'type' => 'boolean' ),
+						),
+					),
+				),
+			)
+		);
+
+		register_post_meta(
+			'kadence_form',
 			'_kad_form_convertkit',
 			array(
 				'single'        => true,

@@ -71,6 +71,7 @@ import {
 	MailchimpOptions,
 	ConvertKitOptions,
 	ActiveCampaignOptions,
+	GetResponseOptions,
 	FormTitle,
 	WebhookOptions,
 	AutoEmailOptions,
@@ -134,6 +135,7 @@ export function EditInner( props ) {
 	const [ mailchimp ] = useFormMeta( '_kad_form_mailchimp' );
 	const [ convertkit ] = useFormMeta( '_kad_form_convertkit' );
 	const [ activecampaign ] = useFormMeta( '_kad_form_activecampaign' );
+	const [ getresponse ] = useFormMeta( '_kad_form_getresponse' );
 
 	const [ redirect ] = useFormMeta( '_kad_form_redirect' );
 	const [ description ] = useFormMeta( '_kad_form_description' );
@@ -694,6 +696,15 @@ export function EditInner( props ) {
 								formInnerBlocks={formInnerBlocks}
 								settings={activecampaign}
 								save={( value ) => setMetaAttribute( { ...activecampaign, ...value }, 'activecampaign' )}
+							/>
+						)}
+
+						{actions.includes( 'getresponse' ) && (
+							<GetResponseOptions
+								parentClientId={clientId}
+								formInnerBlocks={formInnerBlocks}
+								settings={getresponse}
+								save={( value ) => setMetaAttribute( { ...getresponse, ...value }, 'getresponse' )}
 							/>
 						)}
 
