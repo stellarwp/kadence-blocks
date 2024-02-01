@@ -25,6 +25,7 @@ const initialState = {
 	tone: "NEUTRAL",
 	privacyAgreement: false,
 	photoLibrary: 'aiGenerated',
+	photoCollectionChanged: false,
 	featuredImages: [],
 	backgroundImages: [],
 	customCollections: [ { label: __('My Images', 'kadence-blocks-pro'), value: 'my-images', galleries: [{ name: 'featured', isLocal: true, images: [] },{ name: 'background', isLocal: true, images: [] } ] } ],
@@ -99,6 +100,11 @@ function kadenceAiReducer(state, action) {
 			return {
 				...state,
 				photoLibrary: action.payload,
+			};
+		case "SET_PHOTO_LIBRARY_CHANGED":
+			return {
+				...state,
+				photoCollectionChanged: action.payload,
 			};
 		case "SET_FEATURED_IMAGES":
 			return {
