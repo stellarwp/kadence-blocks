@@ -98,14 +98,16 @@ developers of this plugin.
 == Changelog ==
 
 = 3.2.20 =
-Release Date: January 30th, 2024
+Release Date: February 2nd, 2024
 * Add: Option to set a custom title for TOC block inside advanced text block.
 * Update: Translation strings for block titles with context.
 * Fix: ActiveCampaign fields issue.
 * Fix: Infobox number field wrapping on frontend.
 * Fix: Issue with Row Layout collapse order on desktop.
+* Fix: Issue with custom column widths in row layout block not being calculated correctly.
 * Fix: Lottie animation loop limit not applying.
 * Fix: Tab issue when accordion in a menu.
+* Fix: Tab title margin issue.
 
 = 3.2.19 =
 Release Date: January 23rd, 2024
