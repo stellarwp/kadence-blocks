@@ -200,7 +200,11 @@ function GetResponseOptions( { formInnerBlocks, parentClientId, settings, save }
 		} ).then( () => {
 			setApi( value );
 			setIsSaving( false );
-			setIsSavedApi( true );
+			if ( '' === value ) {
+				setIsSavedApi( false );
+			} else {
+				setIsSavedApi( true );
+			}
 		} );
 	};
 
