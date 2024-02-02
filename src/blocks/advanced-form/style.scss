@@ -238,7 +238,9 @@
 			display: none;
 		}
 	}
-
+	.wp-block-kadence-column[hidden] {
+		display: none;
+	}
 	select {
 		max-width: unset;
 	}
