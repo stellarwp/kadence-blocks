@@ -243,13 +243,16 @@ function GetResponseOptions( { formInnerBlocks, parentClientId, settings, save }
 						onChange={ value => saveAPI( value ) }
 						isSaving={ isSaving }
 					/>
-					<ObfuscateTextControl
-						label={ __( 'API URL', 'kadence-blocks-pro' ) }
-						value={ apiBase  }
-						obfuscate={ false }
-						placeholder={'https://youaccount.api-us1.com'}
+
+					<SelectControl
+						label={ __( 'Select API Endpoint', 'kadence-blocks-pro' ) }
+						value={ apiBase }
+						options={ [
+							{ value: 'https://api.getresponse.com/v3', label: 'https://api.getresponse.com/v3' },
+							{ value: 'https://api3.getresponse360.com/v3', label: 'https://api3.getresponse360.com/v3' },
+							{ value: 'https://api3.getresponse360.pl/v3', label: 'https://api3.getresponse360.pl/v3' },
+						] }
 						onChange={ value => saveAPIBase( value )}
-						isSaving={ isSavingBase }
 					/>
 				</>
 			) }
