@@ -523,56 +523,63 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	public function get_items_permission_check( $request ) {
 		return current_user_can( 'edit_posts' );
 	}
+
 	/**
-	 * Retrieves all the currently available ai content.
+	 * Retrieves all the currently available AI content.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
+	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_all_ai_items( $request ) {
 		$this->get_license_keys();
-		$reload = $request->get_param( self::PROP_FORCE_RELOAD );
+		$reload            = $request->get_param( self::PROP_FORCE_RELOAD );
 		$available_prompts = get_option( 'kb_design_library_prompts', array() );
-		if ( ! $reload ) {
-			$contexts = $this->all_contexts;
-		} else {
-			$contexts = $this->initial_contexts;
-		}
-		$return_data = array();
-		$has_error = false;
-		$ready = true;
+		$contexts          = $reload ? $this->initial_contexts : $this->all_contexts;
+		$return_data       = array();
+		$has_error         = false;
+		$ready             = true;
 		if ( ! empty( $contexts ) && is_array( $contexts ) ) {
 			foreach ( $contexts as $key => $context ) {
-				if ( isset( $available_prompts[ $context ] ) ) {
-					// Check local cache.
-					try {
-						$return_data[ $context ] = json_decode( $this->ai_cache->get( $available_prompts[ $context ] ), true );
-					} catch ( NotFoundException $e ) {
-						// Check if we have a remote file.
-						$response = $this->get_remote_contents( $available_prompts[ $context ] );
-						$data     = json_decode( $response, true );
-						if ( $response === 'error' ) {
-							$has_error = true;
-						} else if ( $response === 'processing' || isset( $data['data']['status'] ) && 409 === $data['data']['status'] ) {
-							$ready = false;
-						} else if ( isset( $data['data']['status'] ) ) {
-							$has_error = true;
-						} else {
-							$this->ai_cache->cache( $available_prompts[ $context ], $response );
+				if ( ! isset( $available_prompts[ $context ] ) ) {
+					continue;
+				}
 
-							$return_data[ $context ] = $data;
+				// Check local cache.
+				try {
+					$return_data[ $context ] = json_decode( $this->ai_cache->get( $available_prompts[ $context ] ), true );
+				} catch ( NotFoundException $e ) {
+					// Check if we have a remote file.
+					$response = $this->get_remote_contents( $available_prompts[ $context ] );
+					$body     = wp_remote_retrieve_body( $response );
+
+					if ( $this->is_response_code_error( $response ) ) {
+						// The remote job hasn't started, is still processing or is retrying.
+						if ( $this->is_ai_job_processing( $response ) ) {
+							$ready = false;
+						} else {
+							$has_error = true;
 						}
+
+						continue;
 					}
+
+					$this->ai_cache->cache( $available_prompts[ $context ], $body );
+
+					$return_data[ $context ] = json_decode( $body, true );
 				}
 			}
 		}
+
 		if ( $has_error ) {
 			return rest_ensure_response( 'error' );
-		} elseif ( $ready ) {
-			return rest_ensure_response( $return_data );
-		} else {
-			return rest_ensure_response( 'loading' );
 		}
+
+		if ( $ready ) {
+			return rest_ensure_response( $return_data );
+		}
+
+		return rest_ensure_response( 'loading' );
 	}
 
 	/**
@@ -783,7 +790,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( empty( $all_urls ) ) {
 			return $content;
 		}
-
 		$map_urls    = array();
 		$image_urls  = array();
 		// Find all the images.
@@ -820,16 +826,48 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					}
 				}
 				$downloaded_image       = $this->import_image( $image );
-				$map_urls[ $image_url ] = $downloaded_image['url'];
+				$map_urls[ $image_url ] = array(
+					'url' => $downloaded_image['url'],
+					'id'  => $downloaded_image['id'],
+				);
 			}
 		}
-		// Replace images in content.
-		foreach ( $map_urls as $old_url => $new_url ) {
-			$content = str_replace( $old_url, $new_url, $content );
+		// Regex to find wp:kadence/image blocks with id and src.
+		$pattern = '/<!-- wp:kadence\/image .*?"id":(\d+),.*?"uniqueID":"[^"]+".*?-->(.*?)<img src="([^"]+)".*?<!-- \/wp:kadence\/image -->/s';
+
+		// Use preg_match_all to find all matches
+		if ( preg_match_all( $pattern, $content, $block_matches, PREG_SET_ORDER ) ) {
+			foreach ( $block_matches as $block_match ) {
+				// $block_match[0] is the entire block
+				// $block_match[1] is the id
+				// $block_match[2] is the content before <img src
+				// $block_match[3] is the src
+				$old_id            = ( isset( $block_match[1] ) ? $block_match[1] : '' );
+				$old_src           = ( isset( $block_match[3] ) ? $block_match[3] : '' );
+				$block_replacement = ( isset( $block_match[0] ) ? $block_match[0] : '' );
+				// Replace old id if it exists in the map
+				if ( isset( $map_urls[ $old_src ]['id'] ) ) {
+					$new_id = $map_urls[ $old_src ]['id'];
+					$block_replacement = preg_replace( '/"id":' . $old_id . '/', '"id":' . $new_id, $block_replacement );
+					$block_replacement = str_replace( 'wp-image-' . strval( $old_id ), 'wp-image-' . strval( $new_id ), $block_replacement );
+				}
+				// Replace old src with new one if it exists in the map.
+				if ( isset( $map_urls[ $old_src ]['url'] ) ) {
+					$new_src = $map_urls[ $old_src ]['url'];
+					$block_replacement = str_replace( $old_src, $new_src, $block_replacement );
+				}
+
+				// Replace the old block with the new one.
+				$content = str_replace( $block_match[0], $block_replacement, $content );
+			}
+		}
+		// Replace the rest of images in content.
+		foreach ( $map_urls as $old_url => $new_image ) {
+			$content = str_replace( $old_url, $new_image['url'], $content );
 			// Replace the slashed URLs if any exist.
 			$old_url = str_replace( '/', '/\\', $old_url );
-			$new_url = str_replace( '/', '/\\', $new_url );
-			$content = str_replace( $old_url, $new_url, $content );
+			$new_image['url'] = str_replace( '/', '/\\', $new_image['url'] );
+			$content = str_replace( $old_url, $new_image['url'], $content );
 		}
 		return $content;
 	}
@@ -878,7 +916,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			}
 			// Get the response.
 			$api_url  = add_query_arg( $args, $library_url );
-			$response = wp_remote_get(
+			$response = wp_safe_remote_get(
 				$api_url,
 				array(
 					'timeout' => 20,
@@ -1011,6 +1049,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * Retrieves all the currently available AI content.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
+	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_all_items( WP_REST_Request $request ) {
@@ -1025,20 +1064,16 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				} catch ( NotFoundException $e ) {
 					// Check if we have a remote file.
 					$response = $this->get_remote_contents( $prompt );
-					$data     = json_decode( $response, true );
+					$body     = wp_remote_retrieve_body( $response );
 
-					// TODO: these variables aren't actually used for anything? What is supposed to be happening here.
-					if ( $response === 'error' ) {
-						$has_error = true;
-					} else if ( $response === 'processing' || isset( $data['data']['status'] ) && 409 === $data['data']['status'] ) {
-						$ready = false;
-					} else if ( isset( $data['data']['status'] ) ) {
-						$has_error = true;
-					} else {
-						$this->ai_cache->cache( $prompt, $response );
-
-						$return_data[ $context ] = $data;
+					// TODO: Should verify later that we shouldn't actually wait for jobs to complete.
+					if ( $this->is_response_code_error( $response ) ) {
+						continue;
 					}
+
+					$this->ai_cache->cache( $prompt, $body );
+
+					$return_data[ $context ] = json_decode( $body, true );
 				}
 			}
 		}
@@ -1065,16 +1100,18 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				return rest_ensure_response( $this->ai_cache->get( $available_prompts[ $context ] ) );
 			} catch ( NotFoundException $e ) {
 			}
+
 			// Log event for context generation request.
 			do_action( 'kadenceblocks/ai/event', 'Context Generation Requested', [
 				'context_name'    => $context,
 				'is_regeneration' => true,
 			] );
+
 			// Check if we have a remote file.
 			$response = $this->get_remote_contents( $available_prompts[ $context ] );
-			$data     = json_decode( $response, true );
+			$body     = wp_remote_retrieve_body( $response );
 
-			if ( $response === 'error' ) {
+			if ( is_wp_error( $response ) ) {
 				$current_prompts = get_option( 'kb_design_library_prompts', array() );
 				if ( isset( $current_prompts[ $context ] ) ) {
 					unset( $current_prompts[ $context ] );
@@ -1084,33 +1121,42 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				do_action( 'kadenceblocks/ai/event', 'Context Generation Failed', [
 					'context_name'    => $context,
 					'is_regeneration' => true,
+					'errors'          => $response->get_error_messages(),
 				] );
+
 				return rest_ensure_response( 'error' );
-			} else if ( $response === 'processing' || isset( $data['data']['status'] ) && 409 === $data['data']['status'] ) {
-				return rest_ensure_response( 'processing' );
-			} else if ( isset( $data['data']['status'] ) ) {
-				$current_prompts = get_option( 'kb_design_library_prompts', array() );
-				if ( isset( $current_prompts[ $context ] ) ) {
-					unset( $current_prompts[ $context ] );
-					update_option( 'kb_design_library_prompts', $current_prompts );
-				}
-				// Log event for failed context generation.
-				do_action( 'kadenceblocks/ai/event', 'Context Generation Failed', [
-					'context_name'    => $context,
-					'error_id'        => $data['data']['status'],
-					'is_regeneration' => true,
-				] );
-				return rest_ensure_response( 'error' );
-			} else {
-				$this->ai_cache->cache( $available_prompts[ $context ], $response );
-				// Log event for successful context generation.
-				do_action( 'kadenceblocks/ai/event', 'Context Generation Completed', [
-					'context-name'    => $context,
-					'credits-after'   => $this->get_remote_remaining_credits(),
-					'is_regeneration' => true,
-				] );
-				return rest_ensure_response( $response );
 			}
+
+			// Server returned an error response code.
+			if ( $this->is_response_code_error( $response ) ) {
+				// The remote job hasn't started, is still processing or is retrying.
+				if ( $this->is_ai_job_processing( $response ) ) {
+					return rest_ensure_response( 'processing' );
+				}
+
+				// The remote job failed.
+				$current_prompts = get_option( 'kb_design_library_prompts', array() );
+
+				if ( isset( $current_prompts[ $context ] ) ) {
+					unset( $current_prompts[ $context ] );
+					update_option( 'kb_design_library_prompts', $current_prompts );
+				}
+
+				// Note: This event is logged on an external server.
+				return rest_ensure_response( 'error' );
+			}
+
+			// Cache the AI content.
+			$this->ai_cache->cache( $available_prompts[ $context ], $body );
+
+			// Log event for successful context generation.
+			do_action( 'kadenceblocks/ai/event', 'Context Generation Completed', [
+				'context_name'    => $context,
+				'credits_after'   => $this->get_remote_remaining_credits(),
+				'is_regeneration' => true,
+			] );
+
+			return rest_ensure_response( $body );
 		} else {
 			// Create a job.
 			$response = $this->get_new_remote_contents( $context );
@@ -1535,26 +1581,29 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	/**
 	 * Check if a response code is an error.
 	 *
-	 * @access public
-	 * @return string Returns the remote URL contents.
+	 * @param array $response
+	 *
+	 * @return bool
 	 */
 	public function is_response_code_error( $response ) {
 		$response_code = (int) wp_remote_retrieve_response_code( $response );
-		if ( $response_code >= 200 && $response_code < 300 ) {
-			return false;
-		} else {
-			return true;
-		}
+
+		return $response_code >= 400;
 	}
+
 	/**
-	 * Get remote file contents.
+	 * Checks if an AI job is complete and returns the AI JSON content.
 	 *
-	 * @access public
-	 * @return string Returns the remote URL contents.
+	 * @note If the remote job is still processing or retrying, you'll receive a 409 (Conflict) HTTP status code.
+	 *
+	 * @param int $job The job ID.
+	 *
+	 * @return \WP_Error|array{headers: array, body: string, response: array{code: int, message: string}, cookies: \WP_HTTP_Cookie[]} Return the job response.
 	 */
 	public function get_remote_contents( $job ) {
 		$api_url  = $this->remote_ai_url . 'content/job/' . $job;
-		$response = wp_remote_get(
+
+		return wp_safe_remote_get(
 			$api_url,
 			array(
 				'timeout' => 20,
@@ -1563,27 +1612,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				),
 			)
 		);
-		// Early exit if there was an error.
-		if ( is_wp_error( $response ) ) {
-			return 'error';
-		}
-		$response_code = (int) wp_remote_retrieve_response_code( $response );
-		if ( 409 === $response_code ) {
-			return 'processing';
-		}
-		if ( $this->is_response_code_error( $response ) ) {
-			return 'error';
-		}
-
-		// Get the CSS from our response.
-		$contents = wp_remote_retrieve_body( $response );
-		// Early exit if there was an error.
-		if ( is_wp_error( $contents ) ) {
-			return 'error';
-		}
-
-		return $contents;
 	}
+
 	/**
 	 * Get remote file contents.
 	 *
@@ -1610,7 +1640,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		// Get the response.
 		$api_url  = add_query_arg( $args, $library_url );
-		$response = wp_remote_get(
+		$response = wp_safe_remote_get(
 			$api_url,
 			array(
 				'timeout' => 30,
@@ -1760,7 +1790,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			$args['email'] = $this->api_email;
 		}
 		$api_url  = add_query_arg( $args, $this->remote_credits_url . 'get-remaining' );
-		$response = wp_remote_get(
+		$response = wp_safe_remote_get(
 			$api_url,
 			array(
 				'timeout' => 20,
@@ -1788,7 +1818,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function get_remote_image_collections() {
 		$api_url  = $this->remote_ai_url . 'images/collections';
-		$response = wp_remote_get(
+		$response = wp_safe_remote_get(
 			$api_url,
 			array(
 				'timeout' => 20,
@@ -1897,7 +1927,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function get_remote_industry_verticals() {
 		$api_url  = $this->remote_ai_url . 'verticals';
-		$response = wp_remote_get(
+		$response = wp_safe_remote_get(
 			$api_url,
 			array(
 				'timeout' => 20,
@@ -2227,8 +2257,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$defaults = [
 			'domain'          => $site_url,
 			'key'             => ! empty( $license_data['key'] ) ? $license_data['key'] : '',
-			'email'           => ! empty( $license_data['email'] ) ? $license_data['email'] : '',
-			'site_name'       => $site_name,
+			'site_name'       => sanitize_title( $site_name ),
 			'product_slug'    => apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ),
 			'product_version' => KADENCE_BLOCKS_VERSION,
 		];
@@ -2236,6 +2265,24 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$parsed_args = wp_parse_args( $args, $defaults );
 
 		return base64_encode( json_encode( $parsed_args ) );
+	}
+
+	/**
+	 * Checks if an AI content job is still generating the content. When checking jobs, any 409 (Conflict) HTTP status
+	 * code means it's still trying to generate the content.
+	 *
+	 * @param array{headers: array, body: string, response: array{code: int, message: string}, cookies: \WP_HTTP_Cookie[]} $response
+	 *
+	 * @return bool
+	 */
+	private function is_ai_job_processing( array $response ): bool {
+		if ( ! isset( $response['response']['code'] ) ) {
+			return false;
+		}
+
+		$status = (int) $response['response']['code'];
+
+		return $status === WP_Http::CONFLICT;
 	}
 
 }

@@ -16,12 +16,11 @@ export default async function getImageData( provider, currentDataState, setImage
 	if ( 'function' == typeof( setIsSearching ) ) {
 		setIsSearching( true );
 	}
-	const queryOptions = getQueryOptions(provider, options);
+	const queryOptions = getQueryOptions( options );
 	const url = buildURL("search");
 	
 	// Dispatch API fetch request.
 	const response = await fetch(url, queryOptions);
-	const { status, headers } = response;
 
 	try {
 		const results = await response.json();

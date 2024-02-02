@@ -177,6 +177,16 @@ function kadence_blocks_get_current_license_data(): array {
 }
 
 /**
+ * Check if ai is enabled.
+ */
+function kadence_blocks_is_ai_disabled() {
+	if ( defined( 'KADENCE_BLOCKS_AI_DISABLED' ) && KADENCE_BLOCKS_AI_DISABLED ) {
+		return true;
+	}
+	return false;
+}
+
+/**
  * Check if network activation is enabled.
  */
 function kadence_blocks_is_network_authorize_enabled() {

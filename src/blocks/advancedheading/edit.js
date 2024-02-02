@@ -231,6 +231,11 @@ function KadenceAdvancedHeading( props ) {
 		tabletBorderRadius,
 		mobileBorderRadius,
 		borderRadiusUnit,
+		markBorderRadius,
+		tabletMarkBorderRadius,
+		mobileMarkBorderRadius,
+		markBorderRadiusUnit,
+		altTitle,
 	} = attributes;
 
 	const [ activeTab, setActiveTab ] = useState( 'style' );
@@ -413,6 +418,12 @@ function KadenceAdvancedHeading( props ) {
 	const previewBorderRadiusRight = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 1 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 1 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 1 ] : '' ) );
 	const previewBorderRadiusBottom = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 2 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 2 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 2 ] : '' ) );
 	const previewBorderRadiusLeft = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 3 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 3 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 3 ] : '' ) );
+
+	const previewMarkBorderRadiusTop = getPreviewSize( previewDevice, ( undefined !== markBorderRadius ? markBorderRadius[ 0 ] : '' ), ( undefined !== tabletMarkBorderRadius ? tabletMarkBorderRadius[ 0 ] : '' ), ( undefined !== mobileMarkBorderRadius ? mobileMarkBorderRadius[ 0 ] : '' ) );
+	const previewMarkBorderRadiusRight = getPreviewSize( previewDevice, ( undefined !== markBorderRadius ? markBorderRadius[ 1 ] : '' ), ( undefined !== tabletMarkBorderRadius ? tabletMarkBorderRadius[ 1 ] : '' ), ( undefined !== mobileMarkBorderRadius ? mobileMarkBorderRadius[ 1 ] : '' ) );
+	const previewMarkBorderRadiusBottom = getPreviewSize( previewDevice, ( undefined !== markBorderRadius ? markBorderRadius[ 2 ] : '' ), ( undefined !== tabletMarkBorderRadius ? tabletMarkBorderRadius[ 2 ] : '' ), ( undefined !== mobileMarkBorderRadius ? mobileMarkBorderRadius[ 2 ] : '' ) );
+	const previewMarkBorderRadiusLeft = getPreviewSize( previewDevice, ( undefined !== markBorderRadius ? markBorderRadius[ 3 ] : '' ), ( undefined !== tabletMarkBorderRadius ? tabletMarkBorderRadius[ 3 ] : '' ), ( undefined !== mobileMarkBorderRadius ? mobileMarkBorderRadius[ 3 ] : '' ) );
+	const markBorderRadiusUnitPreview = ( undefined !== markBorderRadiusUnit ? markBorderRadiusUnit : 'px' );
 	let backgroundIgnoreClass = backgroundColorClass ? false : true;
 	if ( ! backgroundIgnoreClass && ! kadence_blocks_params.isKadenceT && background && background.startsWith( 'palette' ) ) {
 		backgroundIgnoreClass = true;
@@ -524,6 +535,7 @@ function KadenceAdvancedHeading( props ) {
 	const headingContent = (
 			<TagHTML
 			className={classes}
+			data-alt-title={ altTitle ? altTitle : undefined }
 			style={{
 				display: icon ? 'flex' : undefined,
 				alignItems: icon ? iconVerticalAlign : undefined,
@@ -610,7 +622,7 @@ function KadenceAdvancedHeading( props ) {
 		'kb-is-heading' : htmlTag && htmlTag === 'heading',
 		'kb-adv-text'   : true,
 	});
-	const nonTransAttrs = [ 'content' ];
+	const nonTransAttrs = [ 'content', 'altTitle' ];
 	const blockProps = useBlockProps( {
 		className: wrapperClasses,
 	} );
@@ -686,6 +698,10 @@ function KadenceAdvancedHeading( props ) {
 						padding-right: ${( previewMarkPaddingRight ? getSpacingOptionOutput( previewMarkPaddingRight, markPaddingType ) : '0' )};
 						padding-bottom: ${( previewMarkPaddingBottom ? getSpacingOptionOutput( previewMarkPaddingBottom, markPaddingType ) : '0' )};
 						padding-left: ${( previewMarkPaddingLeft ? getSpacingOptionOutput( previewMarkPaddingLeft, markPaddingType ) : '0' )};
+						${ '' !== previewMarkBorderRadiusTop ? 'border-top-left-radius:' + previewMarkBorderRadiusTop + markBorderRadiusUnitPreview + ';' : '' }
+						${ '' !== previewMarkBorderRadiusRight ? 'border-top-right-radius:' + previewMarkBorderRadiusRight + markBorderRadiusUnitPreview + ';' : '' }
+						${ '' !== previewMarkBorderRadiusBottom ? 'border-bottom-right-radius:' + previewMarkBorderRadiusBottom + markBorderRadiusUnitPreview + ';' : '' }
+						${ '' !== previewMarkBorderRadiusLeft ? 'border-bottom-left-radius:' + previewMarkBorderRadiusLeft + markBorderRadiusUnitPreview + ';' : '' }
 					}`}
 				{ ( previewMaxWidth ? `.editor-styles-wrapper *:not(.kadence-inner-column-direction-horizontal) > .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID }, .editor-styles-wrapper .kadence-inner-column-direction-horizontal > .wp-block-kadence-advancedheading[data-block="${clientId}"] { max-width:${ previewMaxWidth + ( maxWidthType ? maxWidthType : 'px' ) } !important; }` : '' ) }
 				{ ( previewMaxWidth && previewAlign === 'center' ? `.editor-styles-wrapper *:not(.kadence-inner-column-direction-horizontal) > .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID }, .editor-styles-wrapper .kadence-inner-column-direction-horizontal > .wp-block-kadence-advancedheading[data-block="${clientId}"] { margin-left: auto; margin-right:auto; }` : '' ) }
@@ -1207,6 +1223,23 @@ function KadenceAdvancedHeading( props ) {
 										onChangeTablet={( value ) => setAttributes( { tabletMarkBorderStyles: value } )}
 										onChangeMobile={( value ) => setAttributes( { mobileMarkBorderStyles: value } )}
 									/>
+									<ResponsiveMeasurementControls
+										label={__( 'Border Radius', 'kadence-blocks' )}
+										value={markBorderRadius}
+										tabletValue={tabletMarkBorderRadius}
+										mobileValue={mobileMarkBorderRadius}
+										onChange={( value ) => setAttributes( { markBorderRadius: value } )}
+										onChangeTablet={( value ) => setAttributes( { tabletMarkBorderRadius: value } )}
+										onChangeMobile={( value ) => setAttributes( { mobileMarkBorderRadius: value } )}
+										unit={markBorderRadiusUnit}
+										units={[ 'px', 'em', 'rem', '%' ]}
+										onUnit={( value ) => setAttributes( { markBorderRadiusUnit: value } )}
+										max={(markBorderRadiusUnit === 'em' || markBorderRadiusUnit === 'rem' ? 24 : 500)}
+										step={(markBorderRadiusUnit === 'em' || markBorderRadiusUnit === 'rem' ? 0.1 : 1)}
+										min={ 0 }
+										isBorderRadius={ true }
+										allowEmpty={true}
+									/>
 									<TypographyControls
 										fontGroup={'heading'}
 										fontSize={markSize}
@@ -1321,6 +1354,16 @@ function KadenceAdvancedHeading( props ) {
 			<DynamicInlineReplaceControl dynamicAttribute={'content'} {...props} />
 
 			<InspectorAdvancedControls>
+				{ htmlTag === 'heading' && (
+					<TextControl
+						label={__( 'Alterative title for table of contents', 'kadence-blocks' )}
+						help={__( 'If using table of contents block you can define a custom title here.', 'kadence-blocks' )}
+						value={ altTitle }
+						onChange={ value => {
+							setAttributes( { altTitle: value } );
+						} }
+					/>
+				)}
 				<TextControl
 					label={__( 'HTML Anchor', 'kadence-blocks' )}
 					help={__( 'Anchors lets you link directly to a section on a page.', 'kadence-blocks' )}

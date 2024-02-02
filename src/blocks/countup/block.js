@@ -35,7 +35,7 @@ import './editor.scss';
  * Internal block libraries
  */
 import { registerBlockType } from '@wordpress/blocks';
-import { __ } from '@wordpress/i18n';
+import { __, _x } from '@wordpress/i18n';
 
 /**
  * Register: a Gutenberg Block.
@@ -48,8 +48,8 @@ import { __ } from '@wordpress/i18n';
  */
 registerBlockType( 'kadence/countup', {
 	...metadata,
-	title: __( 'Count Up', 'kadence-blocks' ),
-	description: __( 'An animated count up or down to a specific value.', 'kadence-blocks' ),
+	title: _x( 'Count Up', 'block title', 'kadence-blocks' ),
+	description: _x( 'An animated count up or down to a specific value.', 'block description', 'kadence-blocks' ),
 	keywords: [
 		__( 'count down', 'kadence-blocks' ),
 		__( 'count up', 'kadence-blocks' ),

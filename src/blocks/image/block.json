@@ -280,6 +280,10 @@
 			"type": "boolean",
 			"default": false
 		},
+		"globalAlt": {
+			"type": "boolean",
+			"default": false
+		},
 	  	"borderStyle": {
 			"type": "array",
 			"default": [ { 

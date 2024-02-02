@@ -1,5 +1,5 @@
 /**
- * Active Campaign Controls
+ * GetResponse Controls
  *
  */
 
@@ -29,15 +29,14 @@ import {
 	ExternalLink,
 } from '@wordpress/components';
 import { KadencePanelBody, ObfuscateTextControl } from '@kadence/components';
-import TagSearch from './tag-search';
 
-const HELP_URL = 'https://help.activecampaign.com/hc/en-us/articles/207317590-Getting-started-with-the-API/';
+const HELP_URL = 'https://apidocs.getresponse.com/v3/case-study/getting-started';
 
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.
  */
-function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, save } ) {
+function GetResponseOptions( { formInnerBlocks, parentClientId, settings, save } ) {
 
 	const [ api, setApi ] = useState( '' );
 	const [ isSavedApi, setIsSavedApi ] = useState( false );
@@ -52,23 +51,21 @@ function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, sav
 	const [ isFetchingAttributes, setIsFetchingAttributes ] = useState( false );
 	const [ listAttr, setListAttr ] = useState( false );
 	const [ listAttrLoaded, setListAttrLoaded ] = useState( false );
-	const [ isFetchingGroups, setIsFetchingAutomations ] = useState( false );
-	const [ automations, setAutomations ] = useState( false );
-	const [ automationLoaded, setAutomationsLoaded ] = useState( false );
 	const [ isFetchingTags, setIsFetchingTags ] = useState( false );
 	const [ tags, setTags ] = useState( false );
 	const [ tagSearch, setTagSearch ] = useState( '' );
 	const [ tagsLoaded, setTagsLoaded ] = useState( false );
+
 
 	useEffect( () => {
 		apiFetch( {
 			path: '/wp/v2/settings',
 			method: 'GET',
 		} ).then( ( response ) => {
-			setApi( response.kadence_blocks_activecampaign_api_key );
-			setApiBase( response.kadence_blocks_activecampaign_api_base );
+			setApi( response.kadence_blocks_getresponse_api_key );
+			setApiBase( response.kadence_blocks_getresponse_api_endpoint );
 			setIsLoadingSettings( false );
-			if ( '' !== response.kadence_blocks_activecampaign_api_key && '' !== response.kadence_blocks_activecampaign_api_base ) {
+			if ( '' !== response.kadence_blocks_getresponse_api_key && '' !== response.kadence_blocks_getresponse_api_endpoint ) {
 				setIsSavedApi( true );
 				setIsSavedApiBase( true );
 			}
@@ -95,14 +92,14 @@ function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, sav
 
 		apiFetch( {
 			path: addQueryArgs(
-				'/kb-activecampaign/v1/get',
-				{ endpoint: 'lists', queryargs: [ 'limit=200' ] },
+				'/kb-getresponse/v1/get',
+				{ endpoint: 'campaigns', queryargs: [ 'perPage=200' ] },
 			),
 		} )
 			.then( ( lists ) => {
 				const theLists = [];
 				lists.map( ( item ) => {
-					theLists.push( { value: item.id, label: item.name } );
+					theLists.push( { value: item.campaignId, label: item.name } );
 				} );
 
 				setLists( theLists );
@@ -116,46 +113,20 @@ function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, sav
 			} );
 	};
 
-	const getAutomations = () => {
-		setIsFetchingAutomations( true );
-
-		apiFetch( {
-			path: addQueryArgs(
-				'/kb-activecampaign/v1/get',
-				{ endpoint: 'automations' },
-			),
-		} )
-			.then( ( automations ) => {
-				const theAutomations = [];
-				automations.map( ( item ) => {
-					theAutomations.push( { value: item.id, label: item.name } );
-				} );
-
-				setAutomations( theAutomations );
-				setAutomationsLoaded( true );
-				setIsFetchingAutomations( false );
-			} )
-			.catch( (err) => {
-				setAutomations( [] );
-				setAutomationsLoaded( true );
-				setIsFetchingAutomations( false );
-			} );
-	};
-
 	const getTags = () => {
 		setIsFetchingTags( true );
 
 		apiFetch( {
 			path: addQueryArgs(
-				'/kb-activecampaign/v1/get',
-				{ endpoint: 'tags', queryargs: [ 'search=' + tagSearch ] },
+				'/kb-getresponse/v1/get',
+				{ endpoint: 'tags' },
 			),
 		} )
 			.then( ( tags ) => {
 				const theTags = [];
 				if ( tags ) {
 					tags.map( ( item ) => {
-						theTags.push( { value: item.id, label: item.tag } );
+						theTags.push( { value: item.tagId, label: item.name } );
 					} );
 				}
 
@@ -169,26 +140,23 @@ function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, sav
 				setIsFetchingTags( false );
 			} );
 	};
-
 	const getAttributes = () => {
 		setIsFetchingAttributes( true );
 
 		apiFetch( {
 			path: addQueryArgs(
-				'/kb-activecampaign/v1/get',
-				{ endpoint: 'fields', queryargs: [ 'count=300', 'offset=0' ] },
+				'/kb-getresponse/v1/get',
+				{ endpoint: 'custom-fields', queryargs: [ 'perPage=300' ] },
 			),
 		} )
 			.then( ( list ) => {
 				const theAttributes = [];
 				theAttributes.push( { value: null, label: 'None' } );
 				theAttributes.push( { value: 'email', label: __('Email', 'kadence-blocks' ) + ' *' } );
-				theAttributes.push( { value: 'firstName', label: __('First Name', 'kadence-blocks' ) } );
-				theAttributes.push( { value: 'lastName', label: __( 'Last Name', 'kadence-blocks' ) } );
-				theAttributes.push( { value: 'phone', label: __('Phone', 'kadence-blocks' ) } );
+				theAttributes.push( { value: 'name', label: __('Name', 'kadence-blocks' ) } );
 
 				list.map( ( item, index ) => {
-					theAttributes.push( { value: item.id, label: item.title } );
+					theAttributes.push( { value: item.customFieldId, label: item.name } );
 				} );
 
 				setListAttr( theAttributes );
@@ -199,9 +167,7 @@ function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, sav
 				const theAttributes = [];
 				theAttributes.push( { value: null, label: 'None' } );
 				theAttributes.push( { value: 'email', label: __('Email', 'kadence-blocks' ) + ' *' } );
-				theAttributes.push( { value: 'firstName', label: __('First Name', 'kadence-blocks' ) } );
-				theAttributes.push( { value: 'lastName', label: __( 'Last Name', 'kadence-blocks' ) } );
-				theAttributes.push( { value: 'phone', label: __('Phone', 'kadence-blocks' ) } );
+				theAttributes.push( { value: 'name', label: __('Name', 'kadence-blocks' ) } );
 
 				setListAttr( theAttributes );
 				setListAttrLoaded( true );
@@ -215,8 +181,8 @@ function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, sav
 		setIsSaving( true );
 
 		const settingModel = new wp.api.models.Settings( {
-			kadence_blocks_activecampaign_api_key : '',
-			kadence_blocks_activecampaign_api_base: '',
+			kadence_blocks_getresponse_api_key : '',
+			kadence_blocks_getresponse_api_endpoint: '',
 		} );
 		settingModel.save().then( () => {
 			setIsSavedApi( false );
@@ -231,7 +197,7 @@ function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, sav
 		apiFetch( {
 			path: '/wp/v2/settings',
 			method: 'POST',
-			data: { kadence_blocks_activecampaign_api_key: value },
+			data: { kadence_blocks_getresponse_api_key: value },
 		} ).then( () => {
 			setApi( value );
 			setIsSaving( false );
@@ -244,7 +210,7 @@ function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, sav
 		apiFetch( {
 			path: '/wp/v2/settings',
 			method: 'POST',
-			data: { kadence_blocks_activecampaign_api_base: value },
+			data: { kadence_blocks_getresponse_api_endpoint: value },
 		} ).then( () => {
 			setApiBase( value );
 			setIsSavingBase( false );
@@ -254,14 +220,14 @@ function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, sav
 
 	const hasLists = Array.isArray( lists ) && lists.length > 0;
 	const hasAttr = Array.isArray( listAttr ) && listAttr.length > 0;
-	const hasAutomations = Array.isArray( automations ) && automations.length > 0;
 	const hasTags = Array.isArray( tags ) && tags.length > 0;
-	const listValue = ( undefined !== settings.listMulti && settings.listMulti ? settings.listMulti : ( undefined !== settings.list && settings.list ? [ settings.list ] : '' ) );
+	const listValue = undefined !== settings.listMulti && settings.listMulti ? settings.listMulti : '';
+
 	return (
 		<KadencePanelBody
-			title={__( 'ActiveCampaign Settings', 'kadence-blocks' )}
+			title={__( 'GetResponse Settings', 'kadence-blocks' )}
 			initialOpen={false}
-			panelName={'kb-activecampaign-settings'}
+			panelName={'kb-getresponse-settings'}
 		>
 			<p>
 				<ExternalLink href={HELP_URL}>{__( 'Get help', 'kadence-blocks' )}</ExternalLink>
@@ -309,48 +275,18 @@ function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, sav
 								<Select
 									value={listValue}
 									onChange={( value ) => {
-										save( { listMulti: ( value ? value : [] ), list: {} } );
+										save( { listMulti: ( value ? value : [] ) } );
 									}}
 									id={'mc-list-selection'}
 									isClearable={true}
 									options={lists}
-									isMulti={true}
+									isMulti={false}
 									maxMenuHeight={200}
 									placeholder={__( 'Select List', 'kadence-blocks' )}
 								/>
 							</div>
 
 							<>
-								{isFetchingGroups && (
-									<Spinner/>
-								)}
-								{!isFetchingGroups && !hasAutomations && (
-									<>
-										<h2 className="kt-heading-size-title">{__( 'Select Automation (Optional)', 'kadence-blocks' )}</h2>
-										{( !automationLoaded ? getAutomations() : '' )}
-										{!Array.isArray( automations ) ?
-											<Spinner/> :
-											__( 'No Groups found.', 'kadence-blocks' )}
-									</>
-								)}
-								{ ! isFetchingGroups && hasAutomations && (
-									<>
-										<div className='components-base-control'>
-											<span className="kt-heading-size-title">{__( 'Select Automation (Optional)', 'kadence-blocks' )}</span>
-											<Select
-												value={( undefined !== settings && undefined !== settings && undefined !== settings.automation ? settings.automation : '' )}
-												onChange={( value ) => {
-													save( { automation: ( value ? value : [] ) } );
-												}}
-												id={'mc-automation-selection'}
-												isClearable={true}
-												options={automations}
-												maxMenuHeight={200}
-												placeholder={__( 'Select Automation' )}
-											/>
-										</div>
-									</>
-								)}
 								{isFetchingTags && (
 									<Spinner/>
 								)}
@@ -368,15 +304,6 @@ function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, sav
 									<div className='components-base-control'>
 										<div className='kadence-select-tags-title-wrap'>
 											<span className="kt-heading-size-title">{ __( 'Select Tags (Optional)', 'kadence-blocks-pro' ) }</span>
-											<TagSearch
-												value={ tagSearch }
-												onChange={ ( value ) => {
-													setTagSearch( value );
-												} }
-												onAction={ () => {
-													getTags();
-												} }
-											/>
 										</div>
 										<Select
 											value={ ( undefined !== settings && undefined !== settings.tags ? settings.tags : '' ) }
@@ -436,7 +363,7 @@ function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, sav
 							<div style={ { height: '10px' } }></div>
 							<ToggleControl
 								label={ __( 'Require Double Opt In?', 'kadence-blocks-pro' ) }
-								help={ __( 'This will set the status of the contact to unconfirmed, you must setup an automation in ActiveCampaign to email the contact and update the status after confirmation.', 'kadence-blocks-pro' ) }
+								help={ __( 'This will set the status of the contact to unconfirmed, you must setup an automation in GetResponse to email the contact and update the status after confirmation.', 'kadence-blocks-pro' ) }
 								checked={ ( undefined !== settings.doubleOptin ? settings.doubleOptin : false ) }
 								onChange={ ( value ) => {
 									save( { doubleOptin: value } );
@@ -450,4 +377,4 @@ function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, sav
 	);
 }
 
-export default ( ActiveCampaignOptions );
+export default ( GetResponseOptions );

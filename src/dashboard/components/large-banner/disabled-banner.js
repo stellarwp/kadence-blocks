@@ -29,111 +29,17 @@ viewBox="0 0 1600 240"
 </g>
 </svg>;
 
-export function LargeBanner({
-	heading,
-	subHeading,
-	subHeadingPro,
-	imageSrc,
-	buttonText,
-	isUserAuthenticated,
-	activateUrl,
-	onUpdateWizard,
-	showControls,
-	isNetworkAdmin,
-	siteName = '',
-}) {
-	const hasPro = ( window?.kadenceHomeParams?.pro && kadenceHomeParams.pro === 'true' ? true : false );
-	const [ isVisible, setIsVisible ] = useState( false );
-	const [availableCredits, setAvailableCredits] = useState(false);
-    const toggleVisible = () => {
-		if ( availableCredits === false ) {
-			getRemoteAvailableCredits();
-		}
-        setIsVisible( ( state ) => ! state );
-    };
-	const { getAIContentRemaining, getAvailableCredits } = getAsyncData();
-	async function getRemoteAvailableCredits() {
-		const response = await getAvailableCredits();
-		const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-		if ( response === 'error' ) {
-			console.log( 'Error getting credits' );
-			tempActiveStorage['credits'] = 'fetch';
-			localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-			setAvailableCredits(0);
-		} else if ( response === '' ) {
-			tempActiveStorage['credits'] = 0;
-			localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-			setAvailableCredits( 0 );
-		} else {
-			tempActiveStorage['credits'] = parseInt( response );
-			localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-			setAvailableCredits( parseInt( response ) );
-		}
-	}
-	const companyName = siteName || __('Something Great!', 'kadence-blocks');
-	const addedHeading = ( isUserAuthenticated ? <div> {companyName }</div> : '' );
+export function DisabledBanner() {
 	return (
 		<div className="kb-large-banner">
 			<div className="kb-large-banner__logo">{kbLogo}</div>
 			<div className="kb-large-banner__content">
-				<div className="kb-large-banner__heading">{heading}{addedHeading}</div>
-				{!isUserAuthenticated && (
-					<>
-						<div className="kb-large-banner__subheading">{hasPro ? subHeadingPro : subHeading}</div>
-						{ showControls && (
-							<a className="uplink-authorize" href={activateUrl}>{ hasPro ?__('Activate Kadence Blocks Pro', 'kadence-blocks') : buttonText }</a>
-						) }
-						{ ! showControls && (
-							<p className="uplink-authorize-note">{__('Authorization needed from network admin', 'kadence-blocks')}</p>
-						) }
-					</>
-				)}
-				{isUserAuthenticated && ! isNetworkAdmin && (
-					<>
-						<Button
-							onClick={ onUpdateWizard }
-							iconPosition='left'
-							icon={ aiIcon }
-							text={ __('Update Kadence AI Details', 'kadence-blocks') }
-							className="kadence-update-ai-wizard"
-							variant="link"
-						/>
-					</>
-				)}
+				<div className="kb-large-banner__heading">{ __( 'Kadence is better with AI.', 'kadence-blocks' ) } {aiIcon}</div>
+				<>
+					<div className="kb-large-banner__subheading">{__( 'Elevate your web development game with Kadence AI. Supercharge your pattern and page library\'s potential with tailored content - get building pages in no time.', 'kadence-blocks' )}</div>
+					<p className="disabled-authorize-note">{__('Kadence AI is disabled by site admin.', 'kadence-blocks')}</p>
+				</>
 			</div>
-
-			{/* {isUserAuthenticated && (
-				<div className="kb-large-banner__media">
-					<img src={imageSrc} />
-				</div>
-			)} */}
-			{isUserAuthenticated && (
-				<div className="kb-large-banner__tooltip">
-					<Button onClick={ toggleVisible } variant="link"
-						icon={ <SVG
-							xmlns="http://www.w3.org/2000/svg"
-							width="24"
-							height="24"
-							viewBox="0 0 24 24"
-							fill="none"
-						>
-							<path
-								d="M11 7H13V9H11V7ZM11 11H13V17H11V11ZM12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"
-								fill="white"
-							/>
-						</SVG> }>
-						{ isVisible && (
-							<Popover className="kb-large-banner__tooltip_popup" placement={ 'left' } onClose={ () => {
-								console.log( 'close' );
-								setIsVisible( false );
-							}}>
-								{ availableCredits === false ? <Spinner /> : '' }
-								{ availableCredits === false ? __( 'Fetching Available Credits' ) : availableCredits + ' ' + __( 'Credits Available', 'kadence-blocks' ) }
-							</Popover> 
-						) }
-					</Button>
-				</div>
-			) }
 		</div>
 	);
 }

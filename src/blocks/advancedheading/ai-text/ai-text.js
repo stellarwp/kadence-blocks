@@ -47,6 +47,7 @@ export const AIText = {
 	attributes: {},
 	edit( { activeAttributes, isActive, value, onChange, contentRef } ) {
 		const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
+		const isAIDisabled	   = window?.kadence_blocks_params?.isAIDisabled ? true : false;
 		const data_key = ( window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '' );
 		const activateLink = ( window?.kadence_blocks_params?.homeLink ? kadence_blocks_params.homeLink : '' );
 		const hasPro = ( kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false );
@@ -54,6 +55,9 @@ export const AIText = {
 			return select( 'core/block-editor' ).getSelectedBlock();
 		}, [] );
 		if ( undefined === selectedBlock?.name ) {
+			return null;
+		}
+		if ( isAIDisabled ) {
 			return null;
 		}
 		if ( selectedBlock && !allowedBlocks.includes( selectedBlock.name ) ) {

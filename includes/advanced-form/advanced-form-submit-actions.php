@@ -6,6 +6,12 @@
  */
 class Kadence_Blocks_Advanced_Form_Submit_Actions {
 
+	public $form_args;
+
+	public $responses;
+
+	public $post_id;
+
 	public function __construct( $form_args, $responses, $post_id ) {
 		$this->form_args = $form_args;
 		$this->responses = $responses;
@@ -145,7 +151,7 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 				if ( is_array( $data['value'] ) ) {
 					$data['value'] = explode( ', ', $data['value'] );
 				}
-				$email_content .= $data['label'] . ': ' . $data['value'] . "\n\n";
+				$email_content .= strip_tags( $data['label'] ) . ': ' . $data['value'] . "\n\n";
 			}
 			$headers = 'Content-Type: text/plain; charset=UTF-8' . "\r\n";
 		}

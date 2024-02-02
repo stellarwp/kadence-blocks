@@ -237,7 +237,8 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		$content .= $this->get_label( $attributes, 'above' );
 
 		// aria-valuenow="50".
-		$content .= '<div id="kb-progress-bar' . $unique_id . '" class="kb-progress-bar" role="progressbar" aria-label="' . $attributes['label'] . '" aria-valuemin="' . esc_attr( $progress_min ) . '" aria-valuemax="' . ( $is_relative ? 100 : $progress_max ) . '">' . ( $this->get_label( $attributes, 'inside' ) ) . '</div>';
+		
+		$content .= '<div id="kb-progress-bar' . $unique_id . '" class="kb-progress-bar" role="progressbar" aria-label="' . esc_attr( strip_tags( $attributes['label'] ) ) . '" aria-valuemin="' . esc_attr( $progress_min ) . '" aria-valuemax="' . ( $is_relative ? 100 : $progress_max ) . '">' . ( $this->get_label( $attributes, 'inside' ) ) . '</div>';
 
 		$content .= $this->get_label( $attributes, 'below' );
 

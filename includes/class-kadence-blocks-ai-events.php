@@ -102,8 +102,8 @@ class Kadence_Blocks_AI_Events {
 		$token         = get_authorization_token( 'kadence-blocks' );
 		$license_key   = kadence_blocks_get_current_license_key();
 		$is_authorized = false;
-		if ( $token ) {
-			$is_authorized = is_authorized( $license_key, $token, get_license_domain() );
+		if ( ! empty( $license_key ) ) {
+			$is_authorized = is_authorized( $license_key, 'kadence-blocks', ( ! empty( $token ) ? $token : '' ), get_license_domain() );
 		}
 		if ( ! $is_authorized ) {
 			return;
@@ -148,11 +148,11 @@ class Kadence_Blocks_AI_Events {
 		$defaults = [
 			'domain'          => $site_url,
 			'key'             => ! empty( $license_data['key'] ) ? $license_data['key'] : '',
-			'email'           => ! empty( $license_data['email'] ) ? $license_data['email'] : '',
-			'site_name'       => $site_name,
+			'site_name'       => sanitize_title( $site_name ),
 			'product_slug'    => apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ),
 			'product_version' => KADENCE_BLOCKS_VERSION,
 		];
+
 
 		$parsed_args = wp_parse_args( $args, $defaults );
 
@@ -184,7 +184,7 @@ class Kadence_Blocks_AI_Events {
 					'location_type'     => $event_data['locationType'] ?? '',
 					'location'          => $event_data['location'] ?? '',
 					'industry'          => $event_data['industry'] ?? '',
-					'mission_statement' => $event_data['missionStatement'] ?? '',
+					'description'       => $event_data['missionStatement'] ?? '',
 					'keywords'          => $event_data['keywords'] ?? '',
 					'tone'              => $event_data['tone'] ?? '',
 					'collections'       => $event_data['customCollections'] ?? '',
@@ -197,7 +197,7 @@ class Kadence_Blocks_AI_Events {
 					'location_type'     => $event_data['locationType'] ?? '',
 					'location'          => $event_data['location'] ?? '',
 					'industry'          => $event_data['industry'] ?? '',
-					'mission_statement' => $event_data['missionStatement'] ?? '',
+					'description'       => $event_data['missionStatement'] ?? '',
 					'keywords'          => $event_data['keywords'] ?? '',
 					'tone'              => $event_data['tone'] ?? '',
 					'collections'       => $event_data['customCollections'] ?? '',
@@ -228,10 +228,8 @@ class Kadence_Blocks_AI_Events {
 				];
 				break;
 			case 'collection_updated':
-				$event = 'Collection Updated';
-				$context = [
-					'collection_name' => $this->get_custom_collection_name_by_id( $event_data['customCollections'], $event_data['photoLibrary'] ),
-				];
+				$event   = 'Collection Updated';
+				$context = $this->build_collection_updated_event_data( $event_data['customCollections'], $event_data['photoLibrary'] );
 				break;
 			case 'ai_inline_requested':
 				$event   = 'AI Inline Requested';
@@ -253,20 +251,29 @@ class Kadence_Blocks_AI_Events {
 	}
 
 	/**
-	 * Searches an array of collections for the name of a collection with a specific ID.
+	 * Get the collection name of custom made collections, otherwise return the prepared collection name.
 	 *
-	 * @param array $collections An array of collections.
-	 * @param string $id The ID of a collection.
+	 * @param  array<array{label?: string, value: string}>  $collections  An array of custom collections.
+	 * @param  string                                        $id_or_name   The ID of a custom collection, or the name
+	 *                                                                     of a prepared collection.
 	 *
 	 * @return array
 	 */
-	private function get_custom_collection_name_by_id( array $collections, string $id ): string {
-		foreach ( $collections as $collection ) {
-			if ( $collection['value'] === $id ) {
-				return $collection['label'] ?? '';
-			}
+	private function build_collection_updated_event_data( array $collections, string $id_or_name ): array {
+		$event = [
+			'collection_name' => $id_or_name,
+			'is_custom'       => false,
+		];
 
-			return '';
+		foreach ( $collections as $collection ) {
+			if ( $collection['value'] === $id_or_name ) {
+				return [
+					'collection_name' => $collection['label'] ?? '',
+					'is_custom'       => true,
+				];
+			}
 		}
+
+		return $event;
 	}
 }

@@ -49,6 +49,10 @@ export function Photography(props) {
 	const [ isSearchQueryCleared, setIsSearchQueryCleared ] = useState( false );
 	const [popoverAnchor, setPopoverAnchor] = useState();
 
+	useEffect( () => {
+		dispatch({ type: 'SET_PHOTO_LIBRARY_CHANGED', payload: false });
+	}, [] );
+
 	useEffect(() => {
 		if ( preMadeCollections && wordpressCollections ) {
 			setAllVerticals([
@@ -95,9 +99,11 @@ export function Photography(props) {
 		}
 		if ( newSlug !== photoLibrary ) {
 			dispatch({ type: 'SET_PHOTO_LIBRARY', payload: newSlug });
+			dispatch({ type: 'SET_PHOTO_LIBRARY_CHANGED', payload: true });
 			setSelectedCollection([{}, {}]);
 			getSelectedGalleries( newSlug );
 		} else {
+			dispatch({ type: 'SET_PHOTO_LIBRARY_CHANGED', payload: false });
 			getSelectedGalleries( newSlug );
 		}
 	}
@@ -108,6 +114,7 @@ export function Photography(props) {
 		}
 		if ( newSlug !== photoLibrary ) {
 			dispatch({ type: 'SET_PHOTO_LIBRARY', payload: newSlug });
+			dispatch({ type: 'SET_PHOTO_LIBRARY_CHANGED', payload: true });
 			setSelectedCollection([{}, {}]);
 		} else {
 			getSelectedGalleries( newSlug );
@@ -168,8 +175,8 @@ export function Photography(props) {
 							label= { __('Use Images From:', 'kadence-blocks') }
 							options={ allVerticals || [] }
 							value={ allVerticals?.length > 0 ? findOptionWithValue( allVerticals, photoLibrary ) : '' }
-							onChange={ ( value ) => {
-								handlePhotoLibraryChange( value.value );
+							onChange={ ( collection ) => {
+								handlePhotoLibraryChange( collection.value );
 							} }
 							createRecord={ createNewCollection }
 							updateRecord={ updateCollection }

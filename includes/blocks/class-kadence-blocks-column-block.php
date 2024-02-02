@@ -260,15 +260,15 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			);
 		}
 		$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
-		if ( $css->is_number( $attributes['height'][0] ) ) {
+		if ( isset( $attributes['height'][0] ) && $css->is_number( $attributes['height'][0] ) ) {
 			$css->add_property( 'min-height', $attributes['height'][0] . ( ! empty( $attributes['heightUnit'] ) ? $attributes['heightUnit'] : 'px' ) );
 		}
 		$css->set_media_state( 'tablet' );
-		if ( $css->is_number( $attributes['height'][1] ) ) {
+		if ( isset( $attributes['height'][1] ) && $css->is_number( $attributes['height'][1] ) ) {
 			$css->add_property( 'min-height', $attributes['height'][1] . ( ! empty( $attributes['heightUnit'] ) ? $attributes['heightUnit'] : 'px' ) );
 		}
 		$css->set_media_state( 'mobile' );
-		if ( $css->is_number( $attributes['height'][2] ) ) {
+		if ( isset( $attributes['height'][2] ) && $css->is_number( $attributes['height'][2] ) ) {
 			$css->add_property( 'min-height', $attributes['height'][2] . ( ! empty( $attributes['heightUnit'] ) ? $attributes['heightUnit'] : 'px' ) );
 		}
 		$css->set_media_state( 'desktop' );
@@ -466,10 +466,15 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				}
 				if ( ! empty( $attributes['backgroundImg'][0]['bgImg'] ) ) {
 					$css->add_property( 'background-image', sprintf( "url('%s')", $attributes['backgroundImg'][0]['bgImg'] ) );
-					$css->add_property( 'background-size', ( isset( $attributes['backgroundImg'][0]['bgImgSize'] ) ? $attributes['backgroundImg'][0]['bgImgSize'] : 'cover' ) );
-					$css->add_property( 'background-position', ( isset( $attributes['backgroundImg'][0]['bgImgPosition'] ) ? $attributes['backgroundImg'][0]['bgImgPosition'] : 'center center' ) );
-					$css->add_property( 'background-attachment', ( isset( $attributes['backgroundImg'][0]['bgImgAttachment'] ) ? $attributes['backgroundImg'][0]['bgImgAttachment'] : 'scroll' ) );
-					$css->add_property( 'background-repeat', ( isset( $attributes['backgroundImg'][0]['bgImgRepeat'] ) ? $attributes['backgroundImg'][0]['bgImgRepeat'] : 'no-repeat' ) );
+					$css->add_property( 'background-size', ( ! empty( $attributes['backgroundImg'][0]['bgImgSize'] ) ? $attributes['backgroundImg'][0]['bgImgSize'] : 'cover' ) );
+					$css->add_property( 'background-position', ( ! empty( $attributes['backgroundImg'][0]['bgImgPosition'] ) ? $attributes['backgroundImg'][0]['bgImgPosition'] : 'center center' ) );
+					$css->add_property( 'background-attachment', ( ! empty( $attributes['backgroundImg'][0]['bgImgAttachment'] ) ? $attributes['backgroundImg'][0]['bgImgAttachment'] : 'scroll' ) );
+					$css->add_property( 'background-repeat', ( ! empty( $attributes['backgroundImg'][0]['bgImgRepeat'] ) ? $attributes['backgroundImg'][0]['bgImgRepeat'] : 'no-repeat' ) );
+					if ( ! empty( $attributes['backgroundImg'][0]['bgImgAttachment'] ) && 'fixed' === $attributes['backgroundImg'][0]['bgImgAttachment'] && ! apply_filters( 'kadence_blocks_attachment_fixed_on_mobile', false ) ) {
+						$css->set_media_state( 'tabletPro' );
+						$css->add_property( 'background-attachment', 'scroll' );
+						$css->set_media_state( 'desktop' );
+					}
 				}
 				break;
 			case 'gradient':
@@ -489,10 +494,15 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				}
 				if ( ! empty( $attributes['backgroundImgHover'][0]['bgImg'] ) ) {
 					$css->add_property( 'background-image', sprintf( "url('%s')", $attributes['backgroundImgHover'][0]['bgImg'] ) );
-					$css->add_property( 'background-size', ( isset( $attributes['backgroundImgHover'][0]['bgImgSize'] ) ? $attributes['backgroundImgHover'][0]['bgImgSize'] : 'cover' ) );
-					$css->add_property( 'background-position', ( isset( $attributes['backgroundImgHover'][0]['bgImgPosition'] ) ? $attributes['backgroundImgHover'][0]['bgImgPosition'] : 'center center' ) );
-					$css->add_property( 'background-attachment', ( isset( $attributes['backgroundImgHover'][0]['bgImgAttachment'] ) ? $attributes['backgroundImgHover'][0]['bgImgAttachment'] : 'scroll' ) );
-					$css->add_property( 'background-repeat', ( isset( $attributes['backgroundImgHover'][0]['bgImgRepeat'] ) ? $attributes['backgroundImgHover'][0]['bgImgRepeat'] : 'no-repeat' ) );
+					$css->add_property( 'background-size', ( ! empty( $attributes['backgroundImgHover'][0]['bgImgSize'] ) ? $attributes['backgroundImgHover'][0]['bgImgSize'] : 'cover' ) );
+					$css->add_property( 'background-position', ( ! empty( $attributes['backgroundImgHover'][0]['bgImgPosition'] ) ? $attributes['backgroundImgHover'][0]['bgImgPosition'] : 'center center' ) );
+					$css->add_property( 'background-attachment', ( ! empty( $attributes['backgroundImgHover'][0]['bgImgAttachment'] ) ? $attributes['backgroundImgHover'][0]['bgImgAttachment'] : 'scroll' ) );
+					$css->add_property( 'background-repeat', ( ! empty( $attributes['backgroundImgHover'][0]['bgImgRepeat'] ) ? $attributes['backgroundImgHover'][0]['bgImgRepeat'] : 'no-repeat' ) );
+					if ( ! empty( $attributes['backgroundImgHover'][0]['bgImgAttachment'] ) && 'fixed' === $attributes['backgroundImgHover'][0]['bgImgAttachment'] && ! apply_filters( 'kadence_blocks_attachment_fixed_on_mobile', false ) ) {
+						$css->set_media_state( 'tabletPro' );
+						$css->add_property( 'background-attachment', 'scroll' );
+						$css->set_media_state( 'desktop' );
+					}
 				}
 				break;
 			case 'gradient':
@@ -522,6 +532,11 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 					$css->add_property( 'background-position', ( ! empty( $bg_img['bgImgPosition'] ) ? $bg_img['bgImgPosition'] : 'center center' ) );
 					$css->add_property( 'background-attachment', ( ! empty( $bg_img['bgImgAttachment'] ) ? $bg_img['bgImgAttachment'] : 'scroll' ) );
 					$css->add_property( 'background-repeat', ( ! empty( $bg_img['bgImgRepeat'] ) ? $bg_img['bgImgRepeat'] : 'no-repeat' ) );
+					if ( ! empty( $bg_img['bgImgAttachment'] ) && 'fixed' === $bg_img['bgImgAttachment'] && ! apply_filters( 'kadence_blocks_attachment_fixed_on_mobile', false ) ) {
+						$css->set_media_state( 'tabletPro' );
+						$css->add_property( 'background-attachment', 'scroll' );
+						$css->set_media_state( 'desktop' );
+					}
 				}
 				break;
 			case 'gradient':
@@ -553,6 +568,11 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 					$css->add_property( 'background-position', ( ! empty( $bg_img_hover['bgImgPosition'] ) ? $bg_img_hover['bgImgPosition'] : 'center center' ) );
 					$css->add_property( 'background-attachment', ( ! empty( $bg_img_hover['bgImgAttachment'] ) ? $bg_img_hover['bgImgAttachment'] : 'scroll' ) );
 					$css->add_property( 'background-repeat', ( ! empty( $bg_img_hover['bgImgRepeat'] ) ? $bg_img_hover['bgImgRepeat'] : 'no-repeat' ) );
+					if ( ! empty( $bg_img_hover['bgImgAttachment'] ) && 'fixed' === $bg_img_hover['bgImgAttachment'] && ! apply_filters( 'kadence_blocks_attachment_fixed_on_mobile', false ) ) {
+						$css->set_media_state( 'tabletPro' );
+						$css->add_property( 'background-attachment', 'scroll' );
+						$css->set_media_state( 'desktop' );
+					}
 				}
 				break;
 			case 'gradient':
@@ -698,11 +718,15 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *, .kadence-column' . $unique_id . ' > .kt-inside-inner-col > figure.wp-block-image, .kadence-column' . $unique_id . ' > .kt-inside-inner-col > figure.wp-block-kadence-image' );
 			$css->add_property( 'margin-top', '0px' );
 			$css->add_property( 'margin-bottom', '0px' );
+			// Handle Ratio Images.
+			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > .kb-image-is-ratio-size' );
+			$css->add_property( 'flex-grow', 1 );
 		}
 		$css->set_media_state( 'mobile' );
 		if ( ! empty( $attributes['maxWidth'][2] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id . ', .wp-block-kadence-column.kb-section-sm-dir-vertical:not(.kb-section-sm-dir-horizontal):not(.kb-section-sm-dir-specificity)>.kt-inside-inner-col>.kadence-column' . $unique_id );
 			$css->add_property( 'max-width', $attributes['maxWidth'][2] . ( isset( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
+			$css->add_property( 'flex', '1' );
 			$css->add_property( 'margin-left', 'auto' );
 			$css->add_property( 'margin-right', 'auto' );
 			$css->set_selector( '.wp-block-kadence-column>.kt-inside-inner-col>.kadence-column' . $unique_id );
@@ -715,11 +739,13 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		} else if ( ! empty( $attributes['maxWidth'][1] ) ) {
 			$css->set_selector( '.wp-block-kadence-column.kb-section-sm-dir-vertical:not(.kb-section-sm-dir-horizontal):not(.kb-section-sm-dir-specificity)>.kt-inside-inner-col>.kadence-column' . $unique_id );
 			$css->add_property( 'max-width', $attributes['maxWidth'][1] . ( isset( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
+			$css->add_property( 'flex', '1' );
 			$css->add_property( 'margin-left', 'auto' );
 			$css->add_property( 'margin-right', 'auto' );
 		} else if ( ! empty( $attributes['maxWidth'][0] ) ) {
 			$css->set_selector( '.wp-block-kadence-column.kb-section-sm-dir-vertical:not(.kb-section-sm-dir-horizontal):not(.kb-section-sm-dir-specificity)>.kt-inside-inner-col>.kadence-column' . $unique_id );
 			$css->add_property( 'max-width', $attributes['maxWidth'][0] . ( isset( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
+			$css->add_property( 'flex', '1' );
 			$css->add_property( 'margin-left', 'auto' );
 			$css->add_property( 'margin-right', 'auto' );
 		}
@@ -803,6 +829,9 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *, .kadence-column' . $unique_id . ' > .kt-inside-inner-col > figure.wp-block-image, .kadence-column' . $unique_id . ' > .kt-inside-inner-col > figure.wp-block-kadence-image' );
 			$css->add_property( 'margin-top', '0px' );
 			$css->add_property( 'margin-bottom', '0px' );
+			// Handle Ratio Images.
+			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > .kb-image-is-ratio-size' );
+			$css->add_property( 'flex-grow', 1 );
 		}
 		$css->set_media_state( 'desktop' );
 		if ( isset( $attributes['kadenceBlockCSS'] ) && ! empty( $attributes['kadenceBlockCSS'] ) ) {

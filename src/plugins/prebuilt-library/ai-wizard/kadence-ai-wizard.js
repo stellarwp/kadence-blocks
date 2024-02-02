@@ -132,20 +132,17 @@ export function KadenceAiWizard( props ) {
 			return;
 		}
 
-		// Submit wizard data on finish buttton click.
+		// Submit wizard data on finish button click.
 		if (event.type === 'click' && event.target.classList.contains('components-wizard__primary-button')) {
-
 			if (photographyOnly) {
-				handleEvent('collection_updated');
-				onWizardClose();
+				// Fire off collection_updated event after data has saved.
+				handleSave().then( () => {
+					handleEvent( 'collection_updated' );
+				} );
 			} else {
 				handleComplete();
 				onPrimaryAction(event, true);
 			}
-
-			handleSave();
-
-			return;
 		}
 
 		onWizardClose();
@@ -157,9 +154,16 @@ export function KadenceAiWizard( props ) {
 			return;
 		}
 
-		// Submit wizard data on finish buttton click.
+		// Submit wizard data on finish button click.
 		if (event.type === 'click' && event.target.classList.contains('components-wizard__secondary-button')) {
-			handleSave();
+			if (state.photoCollectionChanged) {
+				// Fire off collection_updated event after data has saved.
+				handleSave().then( () => {
+					handleEvent( 'collection_updated' );
+				} );
+			} else {
+				handleSave();
+			}
 		}
 
 		onWizardClose();

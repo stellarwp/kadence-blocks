@@ -84,6 +84,7 @@ function PatternLibrary( {
 	reload = false,
 	onReload,
  } ) {
+	const isAIDisabled	   = window?.kadence_blocks_params?.isAIDisabled ? true : false;
 	const [ category, setCategory ] = useState( '' );
 	const [ pageCategory, setPageCategory ] = useState( '' );
 	const [ pageStyles, setPageStyles ] = useState( styleTerms );
@@ -729,7 +730,7 @@ function PatternLibrary( {
 									onClose={ debounce( toggleVisible, 100 ) }
 									anchor={ popoverAnchor }
 								>
-									{ isAuthorized && (
+									{ ! isAIDisabled && isAuthorized && (
 										<Button
 											className='kadence-ai-wizard-button'
 											iconPosition='left'
@@ -745,7 +746,7 @@ function PatternLibrary( {
 											}}
 										/>
  									) }
-									{ ! isAuthorized && (
+									{ ! isAIDisabled && ! isAuthorized && (
 										<Button
 											className='kadence-ai-wizard-button'
 											iconPosition='left'
@@ -964,7 +965,7 @@ function PatternLibrary( {
 									) : (
 										<>
 											{ contextListOptions.map( ( contextCategory, index ) =>
-												<div key={ `${ contextCategory.value }-${ index }` } className={`context-category-wrap${ ( ( localContexts && localContexts.includes( contextCategory.value ) || isContextRunning( contextCategory.value ) ) ? ' has-content' : '' )}`}>
+												<div key={ `${ contextCategory.value }-${ index }` } className={`context-category-wrap${ ( ( ( !isAIDisabled && localContexts && localContexts.includes( contextCategory.value ) ) || ( ! isAIDisabled && isContextRunning( contextCategory.value ) ) ) ? ' has-content' : '' )}`}>
 													<Button
 														className={ `kb-category-button${ ( selectedContext === contextCategory.value ? ' is-pressed' : '' )}` }
 														aria-pressed={ selectedContext === contextCategory.value }
@@ -978,7 +979,7 @@ function PatternLibrary( {
 														{ isContextRunning( contextCategory.value ) ? <Spinner /> : ''}
 														{ contextCategory.label }
 													</Button>
-													{ selectedContext === contextCategory.value && (
+													{ ! isAIDisabled && selectedContext === contextCategory.value && (
 														<>
 															<Button
 																className={ 'kb-reload-context-popover-toggle' + ( isContextReloadVisible ? ' is-pressed' : '' ) }

@@ -6,7 +6,16 @@
  */
  // Controls
  @import './kadence-colors.scss';
-
+ .kb-disabled-authorize-note {
+    background: #fffaf0;
+    padding: 0.5em;
+    margin: 0;
+    font-size: 14px;
+    border: 1px solid #ed8936;
+    border-radius: 3px;
+    font-weight: 600;
+    color: #c05621;
+}
 .kb-advanced-heading-svg-icon svg {
     display: block !important;
 }

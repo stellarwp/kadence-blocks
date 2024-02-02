@@ -35,6 +35,7 @@ export default function save( { attributes } ) {
 		overlayOpacity,
 		overlayGradient,
 		overlayType,
+		globalAlt,
 	} = attributes;
 
 	const classes = classnames( {
@@ -87,7 +88,7 @@ export default function save( { attributes } ) {
 	let image = (
 		<img
 			src={ url }
-			alt={ alt }
+			alt={ globalAlt ? '' : alt }
 			className={ imgClasses }
 			width={ width }
 			height={ height }

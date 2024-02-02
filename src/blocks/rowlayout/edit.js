@@ -474,7 +474,7 @@ function RowLayoutEditContainer( props ) {
 		// [ `kt-mobile-layout-${ mobileLayoutClass }` ]: mobileLayoutClass,
 		[ `current-tab-${ currentTab }` ]: currentTab,
 		[ `kt-v-gutter-${ collapseGutter }` ]: collapseGutter,
-		[ `kt-m-colapse-${ collapseOrder }` ]: collapseOrder,
+		[ `kt-m-colapse-${ collapseOrder }` ]: previewDevice !== 'Desktop' ? collapseOrder : false,
 		[ `kt-custom-first-width-${ widthString }` ]: widthString,
 		[ `kt-custom-second-width-${ secondWidthString }` ]: secondWidthString,
 		[ `kt-custom-third-width-${ thirdWidthNumber }` ]: thirdWidthNumber,
@@ -946,7 +946,7 @@ function RowLayoutEditContainer( props ) {
 							{ ( widthNumber && secondWidthNumber && thirdWidthNumber ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-3.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ parseFloat( widthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) ) minmax(0, calc( ${ parseFloat( secondWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) )  minmax(0, calc( ${ parseFloat( thirdWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) ) }` : '' ) }
 						</>
 					) }
-					{ 'right-to-left' === collapseOrder && ( 'grid-layout' === previewLayout || 'row' === previewLayout || 'last-row' === previewLayout || 'first-row' === previewLayout ) && (
+					{ 'Desktop' !== previewDevice && 'right-to-left' === collapseOrder && ( 'grid-layout' === previewLayout || 'row' === previewLayout || 'last-row' === previewLayout || 'first-row' === previewLayout ) && (
 						<>
 						{ times( columns, n => {
 								const item = n + 1;

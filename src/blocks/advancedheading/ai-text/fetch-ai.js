@@ -32,6 +32,9 @@ export function getAIContentHelper() {
 				key: window?.kadence_blocks_params?.proData?.api_key
 					? kadence_blocks_params.proData.api_key
 					: "",
+				site_name: window?.kadence_blocks_params?.site_name ? window.kadence_blocks_params.site_name : '',
+				product_slug: window?.kadence_blocks_params?.pSlug ? window.kadence_blocks_params.pSlug : '',
+				product_version: window?.kadence_blocks_params?.pVersion ? window.kadence_blocks_params.pVersion : '',
 			};
 			const response = await fetch(
 				`${API_URL}proxy/generate/content`,
@@ -70,6 +73,9 @@ export function getAIContentHelper() {
 				key: window?.kadence_blocks_params?.proData?.api_key
 					? kadence_blocks_params.proData.api_key
 					: "",
+				site_name: window?.kadence_blocks_params?.site_name ? window.kadence_blocks_params.site_name : '',
+				product_slug: window?.kadence_blocks_params?.pSlug ? window.kadence_blocks_params.pSlug : '',
+				product_version: window?.kadence_blocks_params?.pVersion ? window.kadence_blocks_params.pVersion : '',
 			};
 			const response = await fetch(
 				`${API_URL}proxy/transform/${type}`,
@@ -108,6 +114,9 @@ export function getAIContentHelper() {
 				key: window?.kadence_blocks_params?.proData?.api_key
 					? kadence_blocks_params.proData.api_key
 					: "",
+				site_name: window?.kadence_blocks_params?.site_name ? window.kadence_blocks_params.site_name : '',
+				product_slug: window?.kadence_blocks_params?.pSlug ? window.kadence_blocks_params.pSlug : '',
+				product_version: window?.kadence_blocks_params?.pVersion ? window.kadence_blocks_params.pVersion : '',
 			};
 			const body = {
 				text: content,

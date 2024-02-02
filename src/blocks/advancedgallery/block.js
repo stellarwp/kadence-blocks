@@ -22,7 +22,7 @@ import metadata from './block.json';
  * Internal block libraries
  */
 import { registerBlockType, createBlock } from '@wordpress/blocks';
-import { __ } from '@wordpress/i18n';
+import { __, _x } from '@wordpress/i18n';
 
 import { pickRelevantMediaFiles, pickRelevantMediaFilesCore, columnConvert } from './shared';
 /**
@@ -36,8 +36,8 @@ import { pickRelevantMediaFiles, pickRelevantMediaFilesCore, columnConvert } fro
  */
 registerBlockType( 'kadence/advancedgallery', {
 	...metadata,
-	title: __( 'Gallery (Adv)', 'kadence-blocks' ),
-	description: __( 'Photo galleries, carousels, and sliders! Enable custom links, captions, and more.', 'kadence-blocks' ),
+	title: _x( 'Gallery (Adv)', 'block title', 'kadence-blocks' ),
+	description: _x( 'Photo galleries, carousels, and sliders! Enable custom links, captions, and more.', 'block description', 'kadence-blocks' ),
 	keywords: [
 		__( 'gallery', 'kadence-blocks' ),
 		__( 'image', 'kadence-blocks' ),
@@ -70,10 +70,21 @@ registerBlockType( 'kadence/advancedgallery', {
 					return createBlock( 'core/gallery', {
 						align: attributes.align,
 						columns: attributes.columns[ 2 ],
-						images: attributes.images.map( ( image ) => pickRelevantMediaFilesCore( image ) ),
 						linkTo: attributes.linkTo,
-						ids: attributes.ids,
-					} );
+						ids: [],
+						images: []
+					}, [
+						...attributes.imagesDynamic.map( ( image ) => {
+							const attrs = pickRelevantMediaFilesCore( image );
+							return createBlock( 'core/image', {
+								id: attrs.id,
+								alt: attrs.alt,
+								caption: attrs.caption,
+								url: attrs.url,
+								link: attrs.link
+							} );
+						} ),
+					] );
 				},
 			},
 		],

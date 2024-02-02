@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.1
 Tested up to: 6.4
-Stable tag: 3.2.15
+Stable tag: 3.2.20
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -96,6 +96,49 @@ assist you with verification, CVE assignment, and notify the
 developers of this plugin.
 
 == Changelog ==
+
+= 3.2.20 =
+Release Date: February 2nd, 2024
+* Add: Option to set a custom title for TOC block inside advanced text block.
+* Update: Translation strings for block titles with context.
+* Fix: ActiveCampaign fields issue.
+* Fix: Infobox number field wrapping on frontend.
+* Fix: Issue with Row Layout collapse order on desktop.
+* Fix: Issue with custom column widths in row layout block not being calculated correctly.
+* Fix: Lottie animation loop limit not applying.
+* Fix: Tab issue when accordion in a menu.
+* Fix: Tab title margin issue.
+
+= 3.2.19 =
+Release Date: January 23rd, 2024
+* Add: Dynamic loading of alt option for image block.
+* Fix: Timezone calculation issue in countdown block.
+* Fix: Border radius on submit button in Form block.
+* Fix: Issue with width on images in some patterns.
+* Fix: Possible php undefined.
+* Fix: Possible issue with pexels and third party plugin.
+
+= 3.2.18 =
+Release Date: January 17th, 2024
+* Add: Constant to allow disabling AI in site config.
+* Fix: Transforming advanced gallery into core galleries.
+* Fix: Prevent HTML in labels from showing in advanced for emails
+* Fix: Issue with view details.
+* Fix: Issue with mobile background override.
+* Fix: Issue with flex layout maxWidth on mobile.
+
+= 3.2.17 =
+Release Date: January 15th, 2024
+* Add: Border Radius Controls to Adv Text Highlight.
+* Fix: Gradient Button transition.
+* Fix: Issue when using Kadence Conversions banner templates.
+* Fix: Possible issue with events custom excerpts.
+* Fix: Deprecation warning on PHP 8.2
+
+= 3.2.16 =
+Release Date: January 12th, 2024
+* Fix: Some css around horizontal to vertical layout switching.
+* Fix: Issue with info box tablet and mobile font size.
 
 = 3.2.15 =
 Release Date: January 11th, 2024

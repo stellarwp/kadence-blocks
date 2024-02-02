@@ -190,29 +190,29 @@ import classnames from 'classnames';
 			const { btnCount, btns, hAlign, uniqueID, letterSpacing, forceFullwidth, thAlign, mhAlign, collapseFullwidth } = attributes;
 			const renderSaveBtns = ( index ) => {
 				let relAttr;
-				if ( '_blank' === btns[ index ].target ) {
+				if ( '_blank' === btns?.[ index ]?.target ) {
 					relAttr = 'noreferrer noopener';
 				}
-				if ( true === btns[ index ].noFollow ) {
+				if ( true === btns?.[ index ]?.noFollow ) {
 					relAttr = ( relAttr ? relAttr.concat( ' nofollow' ) : 'nofollow' );
 				}
-				if ( undefined !== btns[ index ].sponsored && true === btns[ index ].sponsored ) {
+				if ( undefined !== btns?.[ index ]?.sponsored && true === btns?.[ index ]?.sponsored ) {
 					relAttr = ( relAttr ? relAttr.concat( ' sponsored' ) : 'sponsored' );
 				}
 				let btnSize;
-				if ( undefined !== btns[ index ].paddingLR || undefined !== btns[ index ].paddingBT ) {
+				if ( undefined !== btns?.[ index ]?.paddingLR || undefined !== btns?.[ index ]?.paddingBT ) {
 					btnSize = 'custom';
 				} else {
 					btnSize = 'standard';
 				}
 				let globalStyles;
-				if ( undefined !== btns[ index ].inheritStyles && '' !== btns[ index ].inheritStyles ) {
+				if ( undefined !== btns?.[ index ]?.inheritStyles && '' !== btns?.[ index ]?.inheritStyles ) {
 					globalStyles = 'kb-btn-global-' + btns[ index ].inheritStyles;
 				} else {
 					globalStyles = '';
 				}
 				let themeStyles;
-				if ( undefined !== btns[ index ].inheritStyles && 'inherit' === btns[ index ].inheritStyles ) {
+				if ( undefined !== btns?.[ index ]?.inheritStyles && 'inherit' === btns?.[ index ]?.inheritStyles ) {
 					themeStyles = 'wp-block-button__link';
 				} else {
 					themeStyles = '';
@@ -221,35 +221,35 @@ import classnames from 'classnames';
 					'kt-button': true,
 					'button': true,
 					[ `kt-btn-${ index }-action` ]: true,
-					[ `kt-btn-size-${ ( btns[ index ].btnSize ? btns[ index ].btnSize : btnSize ) }` ]: true,
-					[ `kt-btn-style-${ ( btns[ index ].btnStyle ? btns[ index ].btnStyle : 'basic' ) }` ]: true,
-					[ `kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) }` ]: true,
-					[ `kt-btn-has-text-${ ( ! btns[ index ].text ? 'false' : 'true' ) }` ] : true,
-					[ `kt-btn-has-svg-${ ( ! btns[ index ].icon ? 'false' : 'true' ) }` ]: true,
-					'ktblocksvideopop': 'video' === btns[ index ].target,
-					[ btns[ index ].cssClass ]: btns[ index ].cssClass,
+					[ `kt-btn-size-${ ( btns?.[ index ]?.btnSize ? btns[ index ].btnSize : btnSize ) }` ]: true,
+					[ `kt-btn-style-${ ( btns?.[ index ]?.btnStyle ? btns[ index ].btnStyle : 'basic' ) }` ]: true,
+					[ `kt-btn-svg-show-${ ( ! btns?.[ index ]?.iconHover ? 'always' : 'hover' ) }` ]: true,
+					[ `kt-btn-has-text-${ ( ! btns?.[ index ]?.text ? 'false' : 'true' ) }` ] : true,
+					[ `kt-btn-has-svg-${ ( ! btns?.[ index ]?.icon ? 'false' : 'true' ) }` ]: true,
+					'ktblocksvideopop': 'video' === btns?.[ index ]?.target,
+					[ btns?.[ index ]?.cssClass ]: btns?.[ index ]?.cssClass,
 					[ globalStyles ]: globalStyles,
 					[ themeStyles ]: themeStyles,
-					[ `kb-btn-only-icon` ]: ( btns[ index ].icon && btns[ index ].onlyIcon && btns[ index ].onlyIcon[0] ),
-					[ `kb-btn-tablet-only-icon` ]:( btns[ index ].icon && btns[ index ].onlyIcon && btns[ index ].onlyIcon[1] ),
-					[ `kb-btn-mobile-only-icon` ]: ( btns[ index ].icon && btns[ index ].onlyIcon && btns[ index ].onlyIcon[2] ),
+					[ `kb-btn-only-icon` ]: ( btns?.[ index ]?.icon && btns?.[ index ]?.onlyIcon && btns?.[ index ]?.onlyIcon[0] ),
+					[ `kb-btn-tablet-only-icon` ]:( btns?.[ index ]?.icon && btns?.[ index ]?.onlyIcon && btns?.[ index ]?.onlyIcon[1] ),
+					[ `kb-btn-mobile-only-icon` ]: ( btns?.[ index ]?.icon && btns?.[ index ]?.onlyIcon && btns?.[ index ]?.onlyIcon[2] ),
 				} );
 				return (
 					<div className={ `kt-btn-wrap kt-btn-wrap-${ index }` }>
-						<a id={ btns[ index ].anchor ? btns[ index ].anchor : undefined } className={ btnClasses } aria-label={ btns[ index ].label ? btns[ index ].label : undefined } download={ ( undefined !== btns[ index ].download && true === btns[ index ].download ? '' : undefined ) } href={ ( ! btns[ index ].link ? '#' : btns[ index ].link ) } target={ ( '_blank' === btns[ index ].target ? btns[ index ].target : undefined ) } rel={ relAttr } style={ {
-							borderRadius: ( undefined !== btns[ index ].borderRadius && '' !== btns[ index ].borderRadius ? btns[ index ].borderRadius + 'px' : undefined ),
-							borderWidth: ( undefined !== btns[ index ].borderWidth && '' !== btns[ index ].borderWidth ? btns[ index ].borderWidth + 'px' : undefined ),
+						<a id={ btns?.[ index ]?.anchor ? btns[ index ].anchor : undefined } className={ btnClasses } aria-label={ btns?.[ index ]?.label ? btns[ index ].label : undefined } download={ ( undefined !== btns?.[ index ]?.download && true === btns[ index ].download ? '' : undefined ) } href={ ( ! btns?.[ index ]?.link ? '#' : btns[ index ].link ) } target={ ( '_blank' === btns?.[ index ]?.target ? btns[ index ].target : undefined ) } rel={ relAttr } style={ {
+							borderRadius: ( undefined !== btns?.[ index ]?.borderRadius && '' !== btns[ index ].borderRadius ? btns[ index ].borderRadius + 'px' : undefined ),
+							borderWidth: ( undefined !== btns?.[ index ]?.borderWidth && '' !== btns[ index ].borderWidth ? btns[ index ].borderWidth + 'px' : undefined ),
 							letterSpacing: ( undefined !== letterSpacing && '' !== letterSpacing ? letterSpacing + 'px' : undefined ),
 						} } >
-							{ btns[ index ].icon && 'left' === btns[ index ].iconSide && (
+							{ btns?.[ index ]?.icon && 'left' === btns?.[ index ]?.iconSide && (
 								<IconSpanTag extraClass={ `kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon }/>
 							) }
 							<RichText.Content
 								tagName={ 'span' }
 								className="kt-btn-inner-text"
-								value={ btns[ index ].text }
+								value={ btns?.[ index ]?.text }
 							/>
-							{ btns[ index ].icon && 'left' !== btns[ index ].iconSide && (
+							{ btns?.[ index ]?.icon && 'left' !== btns?.[ index ]?.iconSide && (
 								<IconSpanTag extraClass={ `kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon }/>
 							) }
 						</a>
@@ -439,29 +439,29 @@ import classnames from 'classnames';
 			const { btnCount, btns, hAlign, uniqueID, letterSpacing, forceFullwidth, thAlign, mhAlign, collapseFullwidth } = attributes;
 			const renderSaveBtns = ( index ) => {
 				let relAttr;
-				if ( '_blank' === btns[ index ].target ) {
+				if ( '_blank' === btns?.[ index ]?.target ) {
 					relAttr = 'noreferrer noopener';
 				}
-				if ( true === btns[ index ].noFollow ) {
+				if ( true === btns?.[ index ]?.noFollow ) {
 					relAttr = ( relAttr ? relAttr.concat( ' nofollow' ) : 'nofollow' );
 				}
-				if ( undefined !== btns[ index ].sponsored && true === btns[ index ].sponsored ) {
+				if ( undefined !== btns?.[ index ]?.sponsored && true === btns?.[ index ]?.sponsored ) {
 					relAttr = ( relAttr ? relAttr.concat( ' sponsored' ) : 'sponsored' );
 				}
 				let btnSize;
-				if ( undefined !== btns[ index ].paddingLR || undefined !== btns[ index ].paddingBT ) {
+				if ( undefined !== btns?.[ index ]?.paddingLR || undefined !== btns?.[ index ]?.paddingBT ) {
 					btnSize = 'custom';
 				} else {
 					btnSize = 'standard';
 				}
 				let globalStyles;
-				if ( undefined !== btns[ index ].inheritStyles && '' !== btns[ index ].inheritStyles ) {
+				if ( undefined !== btns?.[ index ]?.inheritStyles && '' !== btns?.[ index ]?.inheritStyles ) {
 					globalStyles = 'kb-btn-global-' + btns[ index ].inheritStyles;
 				} else {
 					globalStyles = '';
 				}
 				let themeStyles;
-				if ( undefined !== btns[ index ].inheritStyles && 'inherit' === btns[ index ].inheritStyles ) {
+				if ( undefined !== btns?.[ index ]?.inheritStyles && 'inherit' === btns?.[ index ]?.inheritStyles ) {
 					themeStyles = 'wp-block-button__link';
 				} else {
 					themeStyles = '';
@@ -470,35 +470,35 @@ import classnames from 'classnames';
 					'kt-button': true,
 					'button': true,
 					[ `kt-btn-${ index }-action` ]: true,
-					[ `kt-btn-size-${ ( btns[ index ].btnSize ? btns[ index ].btnSize : btnSize ) }` ]: true,
-					[ `kt-btn-style-${ ( btns[ index ].btnStyle ? btns[ index ].btnStyle : 'basic' ) }` ]: true,
-					[ `kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) }` ]: true,
-					[ `kt-btn-has-text-${ ( ! btns[ index ].text ? 'false' : 'true' ) }` ] : true,
-					[ `kt-btn-has-svg-${ ( ! btns[ index ].icon ? 'false' : 'true' ) }` ]: true,
-					'ktblocksvideopop': 'video' === btns[ index ].target,
-					[ btns[ index ].cssClass ]: btns[ index ].cssClass,
+					[ `kt-btn-size-${ ( btns?.[ index ]?.btnSize ? btns?.[ index ]?.btnSize : btnSize ) }` ]: true,
+					[ `kt-btn-style-${ ( btns?.[ index ]?.btnStyle ? btns?.[ index ]?.btnStyle : 'basic' ) }` ]: true,
+					[ `kt-btn-svg-show-${ ( ! btns?.[ index ]?.iconHover ? 'always' : 'hover' ) }` ]: true,
+					[ `kt-btn-has-text-${ ( ! btns?.[ index ]?.text ? 'false' : 'true' ) }` ] : true,
+					[ `kt-btn-has-svg-${ ( ! btns?.[ index ]?.icon ? 'false' : 'true' ) }` ]: true,
+					'ktblocksvideopop': 'video' === btns?.[ index ]?.target,
+					[ btns?.[ index ]?.cssClass ]: btns?.[ index ]?.cssClass,
 					[ globalStyles ]: globalStyles,
 					[ themeStyles ]: themeStyles,
-					[ `kb-btn-only-icon` ]: ( btns[ index ].icon && btns[ index ].onlyIcon && btns[ index ].onlyIcon[0] ),
-					[ `kb-btn-tablet-only-icon` ]:( btns[ index ].icon && btns[ index ].onlyIcon && btns[ index ].onlyIcon[1] ),
-					[ `kb-btn-mobile-only-icon` ]: ( btns[ index ].icon && btns[ index ].onlyIcon && btns[ index ].onlyIcon[2] ),
+					[ `kb-btn-only-icon` ]: ( btns?.[ index ]?.icon && btns?.[ index ]?.onlyIcon && btns?.[ index ]?.onlyIcon[0] ),
+					[ `kb-btn-tablet-only-icon` ]:( btns?.[ index ]?.icon && btns?.[ index ]?.onlyIcon && btns?.[ index ]?.onlyIcon[1] ),
+					[ `kb-btn-mobile-only-icon` ]: ( btns?.[ index ]?.icon && btns?.[ index ]?.onlyIcon && btns?.[ index ]?.onlyIcon[2] ),
 				} );
 				return (
 					<div className={ `kt-btn-wrap kt-btn-wrap-${ index }` }>
-						<a id={ btns[ index ].anchor ? btns[ index ].anchor : undefined } className={ btnClasses } aria-label={ btns[ index ].label ? btns[ index ].label : undefined } download={ ( undefined !== btns[ index ].download && true === btns[ index ].download ? '' : undefined ) } href={ ( ! btns[ index ].link ? '#' : btns[ index ].link ) } target={ ( '_blank' === btns[ index ].target ? btns[ index ].target : undefined ) } rel={ relAttr } style={ {
-							borderRadius: ( undefined !== btns[ index ].borderRadius && '' !== btns[ index ].borderRadius ? btns[ index ].borderRadius + 'px' : undefined ),
-							borderWidth: ( undefined !== btns[ index ].borderWidth && '' !== btns[ index ].borderWidth ? btns[ index ].borderWidth + 'px' : undefined ),
+						<a id={ btns?.[ index ]?.anchor ? btns[ index ].anchor : undefined } className={ btnClasses } aria-label={ btns?.[ index ]?.label ? btns[ index ].label : undefined } download={ ( undefined !== btns?.[ index ]?.download && true === btns[ index ].download ? '' : undefined ) } href={ ( ! btns?.[ index ]?.link ? '#' : btns[ index ].link ) } target={ ( '_blank' === btns?.[ index ]?.target ? btns[ index ].target : undefined ) } rel={ relAttr } style={ {
+							borderRadius: ( undefined !== btns?.[ index ]?.borderRadius && '' !== btns[ index ].borderRadius ? btns[ index ].borderRadius + 'px' : undefined ),
+							borderWidth: ( undefined !== btns?.[ index ]?.borderWidth && '' !== btns[ index ].borderWidth ? btns[ index ].borderWidth + 'px' : undefined ),
 							letterSpacing: ( undefined !== letterSpacing && '' !== letterSpacing ? letterSpacing + 'px' : undefined ),
 						} } >
-							{ btns[ index ].icon && 'left' === btns[ index ].iconSide && (
+							{ btns?.[ index ]?.icon && 'left' === btns?.[ index ]?.iconSide && (
 								<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ '1em' } />
 							) }
 							<RichText.Content
 								tagName={ 'span' }
 								className="kt-btn-inner-text"
-								value={ btns[ index ].text }
+								value={ btns?.[ index ]?.text }
 							/>
-							{ btns[ index ].icon && 'left' !== btns[ index ].iconSide && (
+							{ btns?.[ index ]?.icon && 'left' !== btns?.[ index ]?.iconSide && (
 								<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ '1em' } />
 							) }
 						</a>
@@ -662,30 +662,33 @@ import classnames from 'classnames';
 		save: ( { attributes } ) => {
 			const { btnCount, btns, hAlign, uniqueID, letterSpacing, forceFullwidth, thAlign, mhAlign, collapseFullwidth } = attributes;
 			const renderSaveBtns = ( index ) => {
+				if ( undefined === btns?.[ index ] ) {
+					return;
+				}
 				let relAttr;
-				if ( '_blank' === btns[ index ].target ) {
+				if ( '_blank' === btns?.[ index ]?.target ) {
 					relAttr = 'noreferrer noopener';
 				}
-				if ( true === btns[ index ].noFollow ) {
+				if ( true === btns?.[ index ]?.noFollow ) {
 					relAttr = ( relAttr ? relAttr.concat( ' nofollow' ) : 'nofollow' );
 				}
-				if ( undefined !== btns[ index ].sponsored && true === btns[ index ].sponsored ) {
+				if ( undefined !== btns?.[ index ]?.sponsored && true === btns?.[ index ]?.sponsored ) {
 					relAttr = ( relAttr ? relAttr.concat( ' sponsored' ) : 'sponsored' );
 				}
 				let btnSize;
-				if ( undefined !== btns[ index ].paddingLR || undefined !== btns[ index ].paddingBT ) {
+				if ( undefined !== btns?.[ index ]?.paddingLR || undefined !== btns?.[ index ]?.paddingBT ) {
 					btnSize = 'custom';
 				} else {
 					btnSize = 'standard';
 				}
 				let globalStyles;
-				if ( undefined !== btns[ index ].inheritStyles && '' !== btns[ index ].inheritStyles ) {
+				if ( undefined !== btns?.[ index ]?.inheritStyles && '' !== btns?.[ index ]?.inheritStyles ) {
 					globalStyles = 'kb-btn-global-' + btns[ index ].inheritStyles;
 				} else {
 					globalStyles = '';
 				}
 				let themeStyles;
-				if ( undefined !== btns[ index ].inheritStyles && 'inherit' === btns[ index ].inheritStyles ) {
+				if ( undefined !== btns?.[ index ]?.inheritStyles && 'inherit' === btns?.[ index ]?.inheritStyles ) {
 					themeStyles = 'wp-block-button__link';
 				} else {
 					themeStyles = '';
@@ -853,18 +856,21 @@ import classnames from 'classnames';
 		save: ( { attributes } ) => {
 			const { btnCount, btns, hAlign, uniqueID, letterSpacing, forceFullwidth, thAlign, mhAlign } = attributes;
 			const renderSaveBtns = ( index ) => {
+				if ( undefined === btns?.[ index ] ) {
+					return;
+				}
 				let relAttr;
-				if ( '_blank' === btns[ index ].target && true === btns[ index ].noFollow ) {
+				if ( '_blank' === btns?.[ index ]?.target && true === btns?.[ index ]?.noFollow ) {
 					relAttr = 'noreferrer noopener nofollow';
-				} else if ( '_blank' === btns[ index ].target ) {
+				} else if ( '_blank' === btns?.[ index ]?.target ) {
 					relAttr = 'noreferrer noopener';
-				} else if ( true === btns[ index ].noFollow ) {
+				} else if ( true === btns?.[ index ]?.noFollow ) {
 					relAttr = 'nofollow';
 				} else {
 					relAttr = undefined;
 				}
 				let btnSize;
-				if ( undefined !== btns[ index ].paddingLR || undefined !== btns[ index ].paddingBT ) {
+				if ( undefined !== btns?.[ index ]?.paddingLR || undefined !== btns?.[ index ]?.paddingBT ) {
 					btnSize = 'custom';
 				} else {
 					btnSize = 'standard';
@@ -987,12 +993,15 @@ import classnames from 'classnames';
 		save: ( { attributes } ) => {
 			const { btnCount, btns, hAlign, uniqueID, letterSpacing, forceFullwidth } = attributes;
 			const renderSaveBtns = ( index ) => {
+				if ( undefined === btns?.[ index ] ) {
+					return;
+				}
 				let relAttr;
-				if ( '_blank' === btns[ index ].target && true === btns[ index ].noFollow ) {
+				if ( '_blank' ===btns?.[ index ]?.target && true ===btns?.[ index ]?.noFollow ) {
 					relAttr = 'noreferrer noopener nofollow';
-				} else if ( '_blank' === btns[ index ].target ) {
+				} else if ( '_blank' ===btns?.[ index ]?.target ) {
 					relAttr = 'noreferrer noopener';
-				} else if ( true === btns[ index ].noFollow ) {
+				} else if ( true ===btns?.[ index ]?.noFollow ) {
 					relAttr = 'nofollow';
 				} else {
 					relAttr = undefined;
@@ -1108,16 +1117,19 @@ import classnames from 'classnames';
 		save: ( { attributes } ) => {
 			const { btnCount, btns, hAlign, uniqueID, letterSpacing } = attributes;
 			const renderSaveBtns = ( index ) => {
+				if ( undefined === btns?.[ index ] ) {
+					return;
+				}
 				return (
 					<div className={ `kt-btn-wrap kt-btn-wrap-${ index }` }>
-						<a className={ `kt-button kt-btn-${ index }-action kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) } kt-btn-has-text-${ ( ! btns[ index ].text ? 'false' : 'true' ) } kt-btn-has-svg-${ ( ! btns[ index ].icon ? 'false' : 'true' ) }${ ( btns[ index ].cssClass ? ' ' + btns[ index ].cssClass : '' ) }` } href={ ( ! btns[ index ].link ? '#' : btns[ index ].link ) } target={ btns[ index ].target } rel={ btns[ index ].target ? 'noopener noreferrer' : undefined } style={ {
-							fontSize: ( btns[ index ].size ? btns[ index ].size + 'px' : undefined ),
-							borderRadius: ( btns[ index ].borderRadius ? btns[ index ].borderRadius + 'px' : undefined ),
-							borderWidth: btns[ index ].borderWidth + 'px',
-							paddingLeft: ( btns[ index ].paddingLR ? btns[ index ].paddingLR + 'px' : undefined ),
-							paddingRight: ( btns[ index ].paddingLR ? btns[ index ].paddingLR + 'px' : undefined ),
-							paddingTop: ( btns[ index ].paddingBT ? btns[ index ].paddingBT + 'px' : undefined ),
-							paddingBottom: ( btns[ index ].paddingBT ? btns[ index ].paddingBT + 'px' : undefined ),
+						<a className={ `kt-button kt-btn-${ index }-action kt-btn-svg-show-${ ( ! btns?.[ index ]?.iconHover ? 'always' : 'hover' ) } kt-btn-has-text-${ ( ! btns?.[ index ]?.text ? 'false' : 'true' ) } kt-btn-has-svg-${ ( ! btns[ index ].icon ? 'false' : 'true' ) }${ ( btns?.[ index ]?.cssClass ? ' ' + btns[ index ].cssClass : '' ) }` } href={ ( ! btns?.[ index ]?.link ? '#' : btns[ index ].link ) } target={ btns?.[ index ]?.target } rel={ btns?.[ index ]?.target ? 'noopener noreferrer' : undefined } style={ {
+							fontSize: ( btns?.[ index ]?.size ? btns[ index ].size + 'px' : undefined ),
+							borderRadius: ( btns?.[ index ]?.borderRadius ? btns[ index ].borderRadius + 'px' : undefined ),
+							borderWidth: btns?.[ index ]?.borderWidth + 'px',
+							paddingLeft: ( btns?.[ index ]?.paddingLR ? btns[ index ].paddingLR + 'px' : undefined ),
+							paddingRight: ( btns?.[ index ]?.paddingLR ? btns[ index ].paddingLR + 'px' : undefined ),
+							paddingTop: ( btns?.[ index ]?.paddingBT ? btns[ index ].paddingBT + 'px' : undefined ),
+							paddingBottom: ( btns?.[ index ]?.paddingBT ? btns[ index ].paddingBT + 'px' : undefined ),
 							letterSpacing: ( letterSpacing ? letterSpacing + 'px' : undefined ),
 						} } >
 							{ btns[ index ].icon && 'left' === btns[ index ].iconSide && (
@@ -1219,6 +1231,9 @@ import classnames from 'classnames';
 		save: ( { attributes } ) => {
 			const { btnCount, btns, hAlign, uniqueID, letterSpacing } = attributes;
 			const renderSaveBtns = ( index ) => {
+				if ( undefined === btns?.[ index ] ) {
+					return;
+				}
 				return (
 					<div className={ `kt-btn-wrap kt-btn-wrap-${ index }` }>
 						<a className={ `kt-button kt-btn-${ index }-action kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) } kt-btn-has-text-${ ( ! btns[ index ].text ? 'false' : 'true' ) } kt-btn-has-svg-${ ( ! btns[ index ].icon ? 'false' : 'true' ) }${ ( btns[ index ].cssClass ? ' ' + btns[ index ].cssClass : '' ) }` } href={ ( ! btns[ index ].link ? '#' : btns[ index ].link ) } target={ btns[ index ].target } rel={ '_blank' === btns[ index ].target ? 'noreferrer noopener' : undefined } style={ {
@@ -1329,6 +1344,9 @@ import classnames from 'classnames';
 		save: ( { attributes } ) => {
 			const { btnCount, btns, hAlign, uniqueID, letterSpacing } = attributes;
 			const renderSaveBtns = ( index ) => {
+				if ( undefined === btns?.[ index ] ) {
+					return;
+				}
 				return (
 					<div className={ `kt-btn-wrap kt-btn-wrap-${ index }` }>
 						<a className={ `kt-button kt-btn-${ index }-action kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) } kt-btn-has-text-${ ( ! btns[ index ].text ? 'false' : 'true' ) } kt-btn-has-svg-${ ( ! btns[ index ].icon ? 'false' : 'true' ) }` } href={ ( ! btns[ index ].link ? '#' : btns[ index ].link ) } target={ btns[ index ].target } style={ {
@@ -1408,6 +1426,9 @@ import classnames from 'classnames';
 		save: ( { attributes } ) => {
 			const { btnCount, btns, hAlign, uniqueID } = attributes;
 			const renderSaveBtns = ( index ) => {
+				if ( undefined === btns?.[ index ] ) {
+					return;
+				}
 				return (
 					<div className={ `kt-btn-wrap kt-btn-wrap-${ index }` }>
 						<a className={ `kt-button kt-btn-${ index }-action kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) } kt-btn-has-text-${ ( ! btns[ index ].text ? 'false' : 'true' ) } kt-btn-has-svg-${ ( ! btns[ index ].icon ? 'false' : 'true' ) }` } href={ ( ! btns[ index ].link ? '#' : btns[ index ].link ) } target={ btns[ index ].target } style={ {
@@ -1489,6 +1510,9 @@ import classnames from 'classnames';
 		save: ( { attributes } ) => {
 			const { btnCount, btns, hAlign, uniqueID } = attributes;
 			const renderSaveBtns = ( index ) => {
+				if ( undefined === btns?.[ index ] ) {
+					return;
+				}
 				return (
 					<div className={ `kt-btn-wrap kt-btn-wrap-${ index }` }>
 						<a className={ `kt-button kt-btn-${ index }-action kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) } kt-btn-has-text-${ ( ! btns[ index ].text ? 'false' : 'true' ) } kt-btn-has-svg-${ ( ! btns[ index ].icon ? 'false' : 'true' ) }` } href={ ( ! btns[ index ].link ? '#' : btns[ index ].link ) } target={ btns[ index ].target } style={ {

@@ -130,7 +130,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			'archives'           => __( 'Form Archives', 'kadence_blocks' ),
 			'attributes'         => __( 'Form Attributes', 'kadence_blocks' ),
 			'parent_item_colon'  => __( 'Parent Form:', 'kadence_blocks' ),
-			'all_items'          => __( 'All Forms', 'kadence_blocks' ),
+			'all_items'          => __( 'Forms', 'kadence_blocks' ),
 			'add_new_item'       => __( 'Add New Form', 'kadence_blocks' ),
 			'new_item'           => __( 'New Form', 'kadence_blocks' ),
 			'edit_item'          => __( 'Edit Form', 'kadence_blocks' ),
@@ -440,6 +440,46 @@ class Kadence_Blocks_Form_CPT_Controller {
 
 		register_post_meta(
 			'kadence_form',
+			'_kad_form_getresponse',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'object',
+				'default'       => array(
+					'automation' => array(),
+					'tags' => array(),
+					'map' => array(),
+					'listMulti' => array(),
+					'doubleOptin' => false,
+				),
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'object',
+						'properties' => array(
+							'automation' => array(
+								'type' => 'object',
+								'properties' => array(
+									'value' => array( 'type' => 'string' ),
+									'label' => array( 'type' => 'string' ),
+								),
+							),
+							'tags'  => array( 'type' => 'array' ),
+							'map'  => array(
+								'type' => 'object',
+								'additionalProperties' => array(
+									'type' => 'string',
+								),
+							),
+							'listMulti'  => array( 'type' => 'array' ),
+							'doubleOptin'  => array( 'type' => 'boolean' ),
+						),
+					),
+				),
+			)
+		);
+
+		register_post_meta(
+			'kadence_form',
 			'_kad_form_convertkit',
 			array(
 				'single'        => true,
@@ -539,6 +579,17 @@ class Kadence_Blocks_Form_CPT_Controller {
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'boolean',
 				'default'       => true,
+			)
+		);
+		register_post_meta(
+			'kadence_form',
+			'_kad_form_enableAnalytics',
+			array(
+				'show_in_rest'  => true,
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'boolean',
+				'default'       => false,
 			)
 		);
 		register_post_meta(
