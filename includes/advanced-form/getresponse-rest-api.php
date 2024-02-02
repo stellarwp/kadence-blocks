@@ -81,21 +81,21 @@ class Kadence_GetResponse_REST_Controller extends WP_REST_Controller {
 			'headers' => array(
 				'X-Auth-Token' => 'api-key ' . $api_key,
 			),
+			'timeout' => 10,
 		);
-
 		$response = wp_safe_remote_get( $request_url, $request_args );
 
 		if ( is_wp_error( $response ) || 200 != (int) wp_remote_retrieve_response_code( $response ) ) {
-			return array();
+			return new WP_Error( 'getresponse_error', __( 'Error fetching data from GetResponse', 'kadence-blocks' ) );
 		}
 
 		$body = json_decode( wp_remote_retrieve_body( $response ), true );
 
 		if ( ! is_array( $body ) ) {
-			return array();
+			return new WP_Error( 'getresponse_error', __( 'Empty data from GetResponse', 'kadence-blocks' ) );
 		}
 
-		return $body;
+		return rest_ensure_response( $body );
 	}
 
 	/**
