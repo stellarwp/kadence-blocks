@@ -82,14 +82,14 @@ function GetResponseOptions( { formInnerBlocks, parentClientId, settings, save }
 	};
 
 	const getLists = () => {
-		if ( !api ) {
+		if ( ! api ) {
 			setLists( [] );
 			setListsLoaded( true );
+			setIsFetching( false );
 			return;
 		}
 
 		setIsFetching( true );
-
 		apiFetch( {
 			path: addQueryArgs(
 				'/kb-getresponse/v1/get',
@@ -101,8 +101,7 @@ function GetResponseOptions( { formInnerBlocks, parentClientId, settings, save }
 				lists.map( ( item ) => {
 					theLists.push( { value: item.campaignId, label: item.name } );
 				} );
-
-				setLists( theLists );
+				setLists( theLists ? theLists : [] );
 				setListsLoaded( true );
 				setIsFetching( false );
 			} )
@@ -201,7 +200,11 @@ function GetResponseOptions( { formInnerBlocks, parentClientId, settings, save }
 		} ).then( () => {
 			setApi( value );
 			setIsSaving( false );
-			setIsSavedApi( true );
+			if ( '' === value ) {
+				setIsSavedApi( false );
+			} else {
+				setIsSavedApi( true );
+			}
 		} );
 	};
 
@@ -222,7 +225,12 @@ function GetResponseOptions( { formInnerBlocks, parentClientId, settings, save }
 	const hasAttr = Array.isArray( listAttr ) && listAttr.length > 0;
 	const hasTags = Array.isArray( tags ) && tags.length > 0;
 	const listValue = undefined !== settings.listMulti && settings.listMulti ? settings.listMulti : '';
-
+	useEffect( () => {
+		if ( apiBase && api ) {
+			getLists();
+			setTagsLoaded( false );
+		}
+	}, [ api, apiBase ] );
 	return (
 		<KadencePanelBody
 			title={__( 'GetResponse Settings', 'kadence-blocks' )}
@@ -252,7 +260,14 @@ function GetResponseOptions( { formInnerBlocks, parentClientId, settings, save }
 							{ value: 'https://api3.getresponse360.com/v3', label: 'https://api3.getresponse360.com/v3' },
 							{ value: 'https://api3.getresponse360.pl/v3', label: 'https://api3.getresponse360.pl/v3' },
 						] }
-						onChange={ value => saveAPIBase( value )}
+						onChange={ value => {
+							if ( value !== apiBase ) {
+								setIsSavedApiBase( false );
+								setLists( false );
+								setTags( false );
+							}
+							saveAPIBase( value );
+						}}
 					/>
 				</>
 			) }
@@ -264,8 +279,7 @@ function GetResponseOptions( { formInnerBlocks, parentClientId, settings, save }
 					{!isFetching && !hasLists && (
 						<>
 							<h2 className="kt-heading-size-title">{__( 'Select List', 'kadence-blocks' )}</h2>
-							{( !listsLoaded ? getLists() : '' )}
-							{!Array.isArray( lists ) ?
+							{ !Array.isArray( lists ) ?
 								<Spinner/> :
 								__( 'No Lists found.', 'kadence-blocks' )}
 						</>
@@ -278,7 +292,7 @@ function GetResponseOptions( { formInnerBlocks, parentClientId, settings, save }
 								<Select
 									value={listValue}
 									onChange={( value ) => {
-										save( { listMulti: ( value ? value : [] ) } );
+										save( { listMulti: ( value ? [value] : [] ) } );
 									}}
 									id={'mc-list-selection'}
 									isClearable={true}
