@@ -232,7 +232,7 @@ class Kadence_Blocks_CSS {
 	 * Gaps variables used in string based gutters.
 	 */
 	protected $gap_sizes = array(
-		'none' => 'var(--global-kb-gap-none, 0 )',
+		'none' => 'var(--global-kb-gap-none, 0rem )',
 		'skinny' => 'var(--global-kb-gap-sm, 1rem)',
 		'narrow' => '20px',
 		'wide' => '40px',
