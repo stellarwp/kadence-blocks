@@ -703,7 +703,7 @@ class KB_Ajax_Form {
 			}
 		} else {
 			$post_data = get_post( absint( $post_id ) );
-			if ( is_object( $post_data ) && is_post_publicly_viewable( $post_data ) ) {
+			if ( is_object( $post_data ) ) {
 				$blocks = $this->parse_blocks( $post_data->post_content );
 			}
 		}
