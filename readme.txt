@@ -97,6 +97,10 @@ developers of this plugin.
 
 == Changelog ==
 
+= 3.2.22 =
+Release Date: February TBD, 2024
+* Fix: Accordion block inside Advanced Query Loops.
+
 = 3.2.21 =
 Release Date: February 3nd, 2024
 * Fix: Issue with custom column widths and gutter none.
