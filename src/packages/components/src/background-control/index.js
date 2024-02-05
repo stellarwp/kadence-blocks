@@ -16,6 +16,7 @@ import './editor.scss';
  * Import Kadence Components
  */
 import DynamicBackgroundControl from '../dynamic-background-control';
+import ImageSizeControl from '../common/image-size-controls';
 import KadenceMediaPlaceholder from '../common/media-placeholder';
 import KadenceRadioButtons from '../common/radio-buttons';
 import KadenceFocalPicker from '../focal-picker';
@@ -109,7 +110,9 @@ class BackgroundControl extends Component {
 						) : (
 							<Fragment>
 								<MediaUpload
-									onSelect={ ( img ) => onSaveImage( img ) }
+									onSelect={ ( img ) => {
+										console.log(img)
+										onSaveImage( img ) }}
 									type="image"
 									value={ ( imageID ? imageID : '' ) }
 									render={ ( { open } ) => (
@@ -137,6 +140,14 @@ class BackgroundControl extends Component {
 							url={ ( imageURL ? imageURL : '' ) }
 							value={ ( imagePosition ? imagePosition : 'center center' ) }
 							onChange={ value => onSavePosition( value ) }
+						/>
+						<ImageSizeControl
+							label={ __( 'Image File Size', 'kadence-blocks' ) }
+							id={ imageID }
+							url={ imageURL }
+							fullSelection={ true }
+							selectByValue={ false }
+							onChange={ newImage => onSaveURL(newImage.value) }
 						/>
 						<BackgroundSizeControl
 							label={ __( 'Background Image Size', 'kadence-blocks' ) }
