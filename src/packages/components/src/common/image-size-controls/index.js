@@ -19,17 +19,13 @@ import { useSelect } from '@wordpress/data';
  * @returns {object} Measure settings.
  */
 const ImageSizeControl = (props) => {
-	const [imageSizeOptions, setImageSizeOptions] = useState({});
-	const {label, id, url, slug, onChange, fullSelection = true, selectByValue = true} = props;
+	const [ imageSizeOptions, setImageSizeOptions ] = useState( {} );
+	const { label, id, url, slug, onChange, fullSelection = true, selectByValue = true } = props;
 
-	const {image, imageSizes} = useSelect((select) => {
+	const { image } = useSelect((select) => {
 		const { getMedia } = select( 'core' );
-		const { getSettings } = select( 'core/block-editor' );
-		const { imageSizes } = getSettings();
-
 		return {
 			image: id ? getMedia( id ) : null,
-			imageSizes,
 		};
 	});
 	const getImageSizeOptions = () => {
@@ -67,7 +63,6 @@ const ImageSizeControl = (props) => {
 		return null;
 	}
 	const getSmallImageSizeOptions = () => {
-		const {image} = props;
 		if ( image ) {
 			const sizes = ( undefined !== image.media_details.sizes ? image.media_details.sizes : [] );
 			const standardSizes = [];
