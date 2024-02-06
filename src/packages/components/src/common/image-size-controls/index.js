@@ -11,24 +11,31 @@ import Select from 'react-select';
 /**
  * Internal block libraries
  */
-import { Component, Fragment } from '@wordpress/element';
-import { withSelect } from '@wordpress/data';
+import { Fragment, useState, useEffect } from '@wordpress/element';
+import { withSelect, useSelect } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.
  */
-class ImageSizeControl extends Component {
-	constructor( label, id, url, slug, onChange, fullSelection = true, selectByValue = true ) {
-		super( ...arguments );
-		this.getImageSizeOptions = this.getImageSizeOptions.bind( this );
-		this.getSmallImageSizeOptions = this.getSmallImageSizeOptions.bind( this );
-		this.state = {
-			isVisible: false,
+const ImageSizeControl = (props) => {
+	const [imageSizeOptions, setImageSizeOptions] = useState({});
+	const {label, id, url, slug, onChange, fullSelection = true, selectByValue = true} = props;
+
+	const {image, imageSizes} = useSelect((select) => {
+		const { getMedia } = select( 'core' );
+		const { getSettings } = select( 'core/block-editor' );
+		const { imageSizes } = getSettings();
+
+		return {
+			image: id ? getMedia( id ) : null,
+			imageSizes,
 		};
-	}
-	getImageSizeOptions() {
-		const { image } = this.props;
+	});
+
+	console.log(id);
+
+	const getImageSizeOptions = () => {
 		if ( image ) {
 			const sizes = ( undefined !== image.media_details.sizes ? image.media_details.sizes : [] );
 			const imgSizes = Object.keys( sizes ).map( ( item ) => {
@@ -62,8 +69,8 @@ class ImageSizeControl extends Component {
 		}
 		return null;
 	}
-	getSmallImageSizeOptions() {
-		const { image } = this.props;
+	const getSmallImageSizeOptions = () => {
+		const {image} = props;
 		if ( image ) {
 			const sizes = ( undefined !== image.media_details.sizes ? image.media_details.sizes : [] );
 			const standardSizes = [];
@@ -101,63 +108,50 @@ class ImageSizeControl extends Component {
 		}
 		return null;
 	}
-	render() {
-		let imageSizeOptions;
-		if ( undefined === this.props.fullSelection || true === this.props.fullSelection ) {
-			imageSizeOptions = this.getImageSizeOptions();
-		} else {
-			imageSizeOptions = this.getSmallImageSizeOptions();
-		}
-		return (
-			<div className="kb-image-size-container">
-				{ ! isEmpty( imageSizeOptions ) && ( undefined === this.props.selectByValue || true === this.props.selectByValue ) && (
-					<Fragment>
-						<h2 className="kb-image-size-title">{ this.props.label }</h2>
-						<div className="kb-image-size-select-form-row">
-							<Select
-								options={ imageSizeOptions }
-								value={ imageSizeOptions.filter( ( { value } ) => value === this.props.url ) }
-								isMulti={ false }
-								maxMenuHeight={ 250 }
-								isClearable={ false }
-								placeholder={ '' }
-								onChange={ this.props.onChange }
-							/>
-						</div>
-					</Fragment>
-				) }
-				{ ! isEmpty( imageSizeOptions ) && false === this.props.selectByValue && (
-					<Fragment>
-						<h2 className="kb-image-size-title">{ this.props.label }</h2>
-						<div className="kb-image-size-select-form-row">
-							<Select
-								options={ imageSizeOptions }
-								value={ imageSizeOptions.filter( ( { slug } ) => slug === this.props.slug ) }
-								isMulti={ false }
-								maxMenuHeight={ 250 }
-								isClearable={ false }
-								placeholder={ '' }
-								onChange={ this.props.onChange }
-							/>
-						</div>
-					</Fragment>
-				) }
-			</div>
-		);
-	}
-}
-export default compose( [
-	withSelect( ( select, props ) => {
-		const { getMedia } = select( 'core' );
-		const { id } = props;
-		const { getSettings } = select( 'core/block-editor' );
-		const {
-			imageSizes,
-		} = getSettings();
 
-		return {
-			image: id ? getMedia( id ) : null,
-			imageSizes,
-		};
-	} ),
-] )( ImageSizeControl );
+	useEffect(() => {
+		if ( undefined === fullSelection || true === fullSelection ) {
+			setImageSizeOptions(getImageSizeOptions());
+		} else {
+			setImageSizeOptions(getSmallImageSizeOptions());
+		}
+	}, [image]);
+	return (
+		<div className="kb-image-size-container">
+			{ ! isEmpty( imageSizeOptions ) && ( undefined === selectByValue || true === selectByValue ) && (
+				<Fragment>
+					<h2 className="kb-image-size-title">{ label }</h2>
+					<div className="kb-image-size-select-form-row">
+						<Select
+							options={ imageSizeOptions }
+							value={ imageSizeOptions.filter( ( { value } ) => value === url ) }
+							isMulti={ false }
+							maxMenuHeight={ 250 }
+							isClearable={ false }
+							placeholder={ '' }
+							onChange={ onChange }
+						/>
+					</div>
+				</Fragment>
+			) }
+			{ ! isEmpty( imageSizeOptions ) && false === selectByValue && (
+				<Fragment>
+					<h2 className="kb-image-size-title">{ label }</h2>
+					<div className="kb-image-size-select-form-row">
+						<Select
+							options={ imageSizeOptions }
+							value={ imageSizeOptions.filter( ( { newSlug } ) => newSlug === slug ) }
+							isMulti={ false }
+							maxMenuHeight={ 250 }
+							isClearable={ false }
+							placeholder={ '' }
+							onChange={ onChange }
+						/>
+					</div>
+				</Fragment>
+			) }
+		</div>
+	);
+}
+
+export default  ImageSizeControl;

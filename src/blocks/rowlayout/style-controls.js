@@ -225,6 +225,7 @@ import { __ } from '@wordpress/i18n';
 				onSaveSize={ value => saveTabletOverlay( { overlayBgImgSize: value } ) }
 				onSaveRepeat={ value => saveTabletOverlay( { overlayBgImgRepeat: value } ) }
 				onSaveAttachment={ value => saveTabletOverlay( { overlayBgImgAttachment: value } ) }
+				onImageSizeChange={ value => saveTabletOverlay( { overlayBgImg: value } ) }
 				disableMediaButtons={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImg ? tabletOverlay[ 0 ].overlayBgImg : '' ) }
 				dynamicAttribute="tabletOverlay:0:overlayBgImg"
 				isSelected={ isSelected }
@@ -278,6 +279,7 @@ import { __ } from '@wordpress/i18n';
 				onSaveSize={ value => saveMobileOverlay( { overlayBgImgSize: value } ) }
 				onSaveRepeat={ value => saveMobileOverlay( { overlayBgImgRepeat: value } ) }
 				onSaveAttachment={ value => saveMobileOverlay( { overlayBgImgAttachment: value } ) }
+				onImageSizeChange={ value => saveMobileOverlay( { overlayBgImg: value } ) }
 				disableMediaButtons={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImg ? mobileOverlay[ 0 ].overlayBgImg : '' ) }
 				dynamicAttribute="mobileOverlay:0:overlayBgImg"
 				isSelected={ isSelected }
@@ -359,6 +361,7 @@ import { __ } from '@wordpress/i18n';
 								onSaveSize={ value => saveMobileBackground( { bgImgSize: value } ) }
 								onSaveRepeat={ value => saveMobileBackground( { bgImgRepeat: value } ) }
 								onSaveAttachment={ value => saveMobileBackground( { bgImgAttachment: value } ) }
+								onImageSizeChange={ value => saveMobileBackground( { bgImg: value } ) }
 								disableMediaButtons={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImg ? mobileBackground[ 0 ].bgImg : '' ) }
 								dynamicAttribute="mobileBackground:0:bgImg"
 								isSelected={ isSelected }
@@ -491,6 +494,7 @@ import { __ } from '@wordpress/i18n';
 								onSaveSize={ value => saveTabletBackground( { bgImgSize: value } ) }
 								onSaveRepeat={ value => saveTabletBackground( { bgImgRepeat: value } ) }
 								onSaveAttachment={ value => saveTabletBackground( { bgImgAttachment: value } ) }
+								onImageSizeChange={ value => saveTabletBackground( { bgImg: value } ) }
 								disableMediaButtons={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImg ? tabletBackground[ 0 ].bgImg : '' ) }
 								dynamicAttribute="tabletBackground:0:bgImg"
 								isSelected={ isSelected }
@@ -933,6 +937,7 @@ import { __ } from '@wordpress/i18n';
 						onChange={ value => setAttributes( { bgColor: value } ) }
 						onClassChange={ value => setAttributes( { bgColorClass: value } ) }
 					/>
+					{console.log(bgImgID)};
 					<KadenceBackgroundControl
 						label={ __( 'Background Image', 'kadence-blocks' ) }
 						hasImage={ bgImg }
@@ -967,8 +972,9 @@ import { __ } from '@wordpress/i18n';
 						onSaveSize={ value => setAttributes( { bgImgSize: value } ) }
 						onSaveRepeat={ value => setAttributes( { bgImgRepeat: value } ) }
 						onSaveAttachment={ value => setAttributes( { bgImgAttachment: value } ) }
+						onImageSizeChange={ value => setAttributes( { bgImg: value } ) }
 						inlineImage={ backgroundInline }
-						onSaveInlineImage={ ( value ) => setAttributes( { backgroundInline: value } ) }
+						onSaveInlineImage={ ( value ) => setAttributes( { bgImg: value } ) }
 						disableMediaButtons={ bgImg }
 						dynamicAttribute="bgImg"
 						isSelected={ isSelected }
@@ -1026,6 +1032,7 @@ import { __ } from '@wordpress/i18n';
 				onSaveSize={ value => setAttributes( { overlayBgImgSize: value } ) }
 				onSaveRepeat={ value => setAttributes( { overlayBgImgRepeat: value } ) }
 				onSaveAttachment={ value => setAttributes( { overlayBgImgAttachment: value } ) }
+				onImageSizeChange={ value => saveTabletBackground( { overlayBgImg: value } ) }
 				disableMediaButtons={ overlayBgImg }
 				dynamicAttribute="overlayBgImg"
 				isSelected={ isSelected }
