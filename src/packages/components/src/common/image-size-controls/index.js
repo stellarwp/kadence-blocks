@@ -32,9 +32,6 @@ const ImageSizeControl = (props) => {
 			imageSizes,
 		};
 	});
-
-	console.log(id);
-
 	const getImageSizeOptions = () => {
 		if ( image ) {
 			const sizes = ( undefined !== image.media_details.sizes ? image.media_details.sizes : [] );

@@ -937,7 +937,6 @@ import { __ } from '@wordpress/i18n';
 						onChange={ value => setAttributes( { bgColor: value } ) }
 						onClassChange={ value => setAttributes( { bgColorClass: value } ) }
 					/>
-					{console.log(bgImgID)};
 					<KadenceBackgroundControl
 						label={ __( 'Background Image', 'kadence-blocks' ) }
 						hasImage={ bgImg }
