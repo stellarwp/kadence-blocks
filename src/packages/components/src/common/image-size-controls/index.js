@@ -12,8 +12,8 @@ import Select from 'react-select';
  * Internal block libraries
  */
 import { Fragment, useState, useEffect } from '@wordpress/element';
-import { withSelect, useSelect } from '@wordpress/data';
-import { compose } from '@wordpress/compose';
+import { useSelect } from '@wordpress/data';
+
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.
