@@ -1031,7 +1031,7 @@ import { __ } from '@wordpress/i18n';
 				onSaveSize={ value => setAttributes( { overlayBgImgSize: value } ) }
 				onSaveRepeat={ value => setAttributes( { overlayBgImgRepeat: value } ) }
 				onSaveAttachment={ value => setAttributes( { overlayBgImgAttachment: value } ) }
-				onImageSizeChange={ value => saveTabletBackground( { overlayBgImg: value } ) }
+				onImageSizeChange={ value => setAttributes( { overlayBgImg: value } ) }
 				disableMediaButtons={ overlayBgImg }
 				dynamicAttribute="overlayBgImg"
 				isSelected={ isSelected }
