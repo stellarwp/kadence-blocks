@@ -973,7 +973,7 @@ import { __ } from '@wordpress/i18n';
 						onSaveAttachment={ value => setAttributes( { bgImgAttachment: value } ) }
 						onImageSizeChange={ value => setAttributes( { bgImg: value } ) }
 						inlineImage={ backgroundInline }
-						onSaveInlineImage={ ( value ) => setAttributes( { bgImg: value } ) }
+						onSaveInlineImage={ ( value ) => setAttributes( { backgroundInline: value } ) }
 						disableMediaButtons={ bgImg }
 						dynamicAttribute="bgImg"
 						isSelected={ isSelected }
