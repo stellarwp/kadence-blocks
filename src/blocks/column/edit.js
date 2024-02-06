@@ -21,8 +21,6 @@ import {
 	ResponsiveRangeControls,
 	KadencePanelBody,
 	URLInputControl,
-	VerticalAlignmentIcon,
-	KadenceRadioButtons,
 	ResponsiveRadioRangeControls,
 	ResponsiveAlignControls,
 	BoxShadowControl,
