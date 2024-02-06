@@ -10,7 +10,7 @@ import transforms from './transforms';
 import deprecated from './deprecated';
 const { name } = metadata;
 import { spacerIcon } from '@kadence/icons';
-import { __ } from '@wordpress/i18n';
+import { __, _x } from '@wordpress/i18n';
 
 /**
  * Import Css
@@ -26,7 +26,7 @@ registerBlockType('kadence/spacer', {
 		}
 	},
 	...metadata,
-	title: __( 'Spacer / Divider', 'kadence-blocks' ),
+	title: _x( 'Spacer / Divider', 'block title', 'kadence-blocks' ),
 	keywords: [
 		__( 'spacer', 'kadence-blocks' ),
 		__( 'divider', 'kadence-blocks' ),

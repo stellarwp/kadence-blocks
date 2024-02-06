@@ -785,7 +785,7 @@ class Kadence_Blocks_Prebuilt_Library {
 	 * @param  string $content the import post content.
 	 */
 	public function process_image_content( $content = '', $image_library = '' ) {
-		error_log( print_r( $image_library, true ) );
+		// error_log( print_r( $image_library, true ) );
 		// Find all urls.
 		preg_match_all( '/https?:\/\/[^\'" ]+/i', $content, $match );
 		// preg_match_all( '#\bhttps?://[^,\s()<>]+(?:\([\w\d]+\)|([^,[:punct:]\s]|/))#', $content, $match );

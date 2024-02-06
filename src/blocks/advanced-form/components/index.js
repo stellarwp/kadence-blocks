@@ -30,6 +30,7 @@ export { default as SendinBlueOptions } from './submit-actions/sendinblue';
 export { default as MailchimpOptions } from './submit-actions/mailchimp';
 export { default as ConvertKitOptions } from './submit-actions/convert-kit';
 export { default as ActiveCampaignOptions } from './submit-actions/active-campaign';
+export { default as GetResponseOptions } from './submit-actions/get-response';
 
 export { default as WebhookOptions } from './submit-actions/webhook';
 export { default as AutoEmailOptions } from './submit-actions/auto-email';

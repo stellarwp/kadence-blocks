@@ -232,7 +232,7 @@ class Kadence_Blocks_CSS {
 	 * Gaps variables used in string based gutters.
 	 */
 	protected $gap_sizes = array(
-		'none' => 'var(--global-kb-gap-none, 0 )',
+		'none' => 'var(--global-kb-gap-none, 0rem )',
 		'skinny' => 'var(--global-kb-gap-sm, 1rem)',
 		'narrow' => '20px',
 		'wide' => '40px',
@@ -1380,6 +1380,81 @@ class Kadence_Blocks_CSS {
 			}
 		}
 		$this->set_media_state( 'desktop' );
+	}
+	/**
+	 * Generates the shadow output.
+	 *
+	 * @param array  $shadow an array of shadow settings.
+	 * @return string
+	 */
+	public function render_row_gap_property( $attributes, $name = array( 'gap', 'tabletGap', 'mobileGap' ), $device = 'desktop', $custom = '', $unit_name = 'gapUnit' ) {
+		if ( empty( $attributes ) || empty( $name ) ) {
+			return '';
+		}
+		if ( ! is_array( $attributes ) ) {
+			return '';
+		}
+		$unit = ! empty( $attributes[ $unit_name ] ) ? $attributes[ $unit_name ] : 'px';
+		switch ( $device ) {
+			case 'tablet':
+				if ( ! empty( $attributes[ $name[1] ] ) ) {
+					if ( is_array( $name ) && $attributes[ $name[1] ] === 'custom' ) {
+						if ( $this->is_number( $attributes[ $custom ][1] ) ) {
+							return $attributes[ $custom ][1] . $unit;
+						}
+					} else {
+						return $this->get_variable_gap_value( $attributes[ $name[1] ] );
+					}
+				} elseif ( ! is_array( $name ) && ! empty( $attributes[ $name ][1] ) ) {
+					if ( $attributes[ $name ][1] === 'custom' ) {
+						if ( $this->is_number( $attributes[ $custom ][1] ) ) {
+							return $attributes[ $custom ][1] . $unit;
+						}
+					} else {
+						return $this->get_variable_gap_value( $attributes[ $name ][1] );
+					}
+				}
+				break;
+			case 'mobile':
+				if ( is_array( $name ) && ! empty( $attributes[ $name[2] ] ) ) {
+					if ( $attributes[ $name[2] ] === 'custom' ) {
+						if ( $this->is_number( $attributes[ $custom ][2] ) ) {
+							return $attributes[ $custom ][2] . $unit;
+						}
+					} else {
+						return $this->get_variable_gap_value( $attributes[ $name[2] ] );
+					}
+				} elseif ( ! is_array( $name ) && ! empty( $attributes[ $name ][2] ) ) {
+					if ( $attributes[ $name ][2] === 'custom' ) {
+						if ( $this->is_number( $attributes[ $custom ][2] ) ) {
+							return $attributes[ $custom ][2] . $unit;
+						}
+					} else {
+						return $this->get_variable_gap_value( $attributes[ $name ][2] );
+					}
+				}
+				break;
+			default:
+				if ( is_array( $name ) && ! empty( $attributes[ $name[0] ] ) ) {
+					if ( $attributes[ $name[0] ] === 'custom' ) {
+						if ( $this->is_number( $attributes[ $custom ][0] ) ) {
+							return $attributes[ $custom ][0] . $unit;
+						}
+					} else {
+						return $this->get_variable_gap_value( $attributes[ $name[0] ] );
+					}
+				} elseif ( ! is_array( $name ) && ! empty( $attributes[ $name ][0] ) ) {
+					if ( $attributes[ $name ][0] === 'custom' ) {
+						if ( $this->is_number( $attributes[ $custom ][0] ) ) {
+							return $attributes[ $custom ][0] . $unit;
+						}
+					} else {
+						return $this->get_variable_gap_value( $attributes[ $name ][0] );
+					}
+				}
+				break;
+		}
+		return '';
 	}
 	/**
 	 * Generates the shadow output.

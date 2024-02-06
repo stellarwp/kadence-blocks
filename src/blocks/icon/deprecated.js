@@ -88,6 +88,9 @@ const v8 = {
 	save( { attributes } ) {
 		const {  icons, iconCount, blockAlignment, textAlignment, uniqueID, verticalAlignment } = attributes;
 		const renderSaveIcons = ( index ) => {
+			if ( undefined === icons?.[ index ] ) {
+				return;
+			}
 			return (
 				<div className={ `kt-svg-style-${ icons[ index ].style } kt-svg-icon-wrap kt-svg-item-${ index }` }>
 					{ icons[ index ].icon && icons[ index ].link && (
@@ -185,6 +188,9 @@ const v7 = {
 	save: ( { attributes } ) => {
 		const { icons, iconCount, blockAlignment, textAlignment, uniqueID, verticalAlignment } = attributes;
 		const renderSaveIcons = ( index ) => {
+			if ( undefined === icons?.[ index ] ) {
+				return;
+			}
 			return (
 				<div className={ `kt-svg-style-${ icons[ index ].style } kt-svg-icon-wrap kt-svg-item-${ index }` }>
 					{ icons[ index ].icon && icons[ index ].link && (
@@ -289,6 +295,9 @@ const v6 = {
 	save: ( { attributes } ) => {
 		const { icons, iconCount, blockAlignment, textAlignment, uniqueID, verticalAlignment } = attributes;
 		const renderSaveIcons = ( index ) => {
+			if ( undefined === icons?.[ index ] ) {
+				return;
+			}
 			return (
 				<div className={ `kt-svg-style-${ icons[ index ].style } kt-svg-icon-wrap kt-svg-item-${ index }` }>
 					{ icons[ index ].icon && icons[ index ].link && (
@@ -379,6 +388,9 @@ const v5 = {
 	save: ( { attributes } ) => {
 		const { icons, iconCount, blockAlignment, textAlignment, uniqueID } = attributes;
 		const renderSaveIcons = ( index ) => {
+			if ( undefined === icons?.[ index ] ) {
+				return;
+			}
 			return (
 				<div className={ `kt-svg-style-${ icons[ index ].style } kt-svg-icon-wrap kt-svg-item-${ index }` }>
 					{ icons[ index ].icon && icons[ index ].link && (
@@ -459,6 +471,9 @@ const v4 = {
 	save: ( { attributes } ) => {
 		const { icons, iconCount, blockAlignment, textAlignment, uniqueID } = attributes;
 		const renderSaveIcons = ( index ) => {
+			if ( undefined === icons?.[ index ] ) {
+				return;
+			}
 			return (
 				<div className={ `kt-svg-style-${ icons[ index ].style } kt-svg-icon-wrap kt-svg-item-${ index }` }>
 					{ icons[ index ].icon && icons[ index ].link && (
@@ -541,6 +556,9 @@ const v3 = {
 	save: ( { attributes } ) => {
 		const { icons, iconCount, blockAlignment, textAlignment, uniqueID } = attributes;
 		const renderSaveIcons = ( index ) => {
+			if ( undefined === icons?.[ index ] ) {
+				return;
+			}
 			return (
 				<div className={ `kt-svg-style-${ icons[ index ].style } kt-svg-icon-wrap kt-svg-item-${ index }` }>
 					{ icons[ index ].icon && icons[ index ].link && (
@@ -621,6 +639,9 @@ const v2 = {
 	save: ( { attributes } ) => {
 		const { icons, iconCount, blockAlignment, textAlignment, uniqueID } = attributes;
 		const renderSaveIcons = ( index ) => {
+			if ( undefined === icons?.[ index ] ) {
+				return;
+			}
 			return (
 				<div className={ `kt-svg-style-${ icons[ index ].style } kt-svg-icon-wrap kt-svg-item-${ index }` }>
 					{ icons[ index ].icon && icons[ index ].link && (

@@ -122,11 +122,11 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li' );
 			$css->render_measure_output( $attributes, 'titleMargin', 'margin', array( 'unit_key' => 'titleMarginUnit' ) );
 
-			if( ( !isset($attributes['layout'] ) || ( isset( $attributes['layout'] ) && 'tabs' === $attributes['layout'] ) ) && ( isset( $attributes['widthType'] ) && $attributes['widthType'] === 'percent' ) ) {
+			if( ( ! isset( $attributes['layout'] ) || ( isset( $attributes['layout'] ) && 'tabs' === $attributes['layout'] ) ) && ( isset( $attributes['widthType'] ) && $attributes['widthType'] === 'percent' ) ) {
 				$css->add_property( 'margin-right', '0px' );
 				$css->add_property( 'margin-left', '0px' );
 			}
-			
+
 			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li:last-child' );
 			if( !isset($attributes['layout'] ) || ( isset($attributes['layout'] ) && 'tabs' === $attributes['layout'] ) ) {
 				$css->add_property( 'margin-right', '0px' );
@@ -172,17 +172,16 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_media_state( 'desktop' );
 
 		if ( 'vtabs' !== $layout && 'percent' === $widthType ) {
-			if ( isset( $attributes['gutter'] ) && ! empty( $attributes['gutter'] ) && is_array( $attributes['gutter'] ) ) {
-				$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list' );
-				$css->add_property( 'margin-right', -$attributes['gutter'][0] - 1 . 'px' );
-				$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title' );
-				$css->add_property( 'margin-right', $attributes['gutter'][0] . 'px' );
+			$gap = ( isset( $attributes['gutter'][0] ) && is_numeric( $attributes['gutter'][0] ) ) ? $attributes['gutter'][0] : 10;
+			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list' );
+			$css->add_property( 'margin-right', -$gap - 1 . 'px' );
+			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title' );
+			$css->add_property( 'margin-right', $gap . 'px' );
 
-				if ( is_rtl() ) {
-					$css->set_selector( '.rtl .wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title' );
-					$css->add_property( 'margin-right', '0px' );
-					$css->add_property( 'margin-left', $attributes['gutter'][0] . 'px' );
-				}
+			if ( is_rtl() ) {
+				$css->set_selector( '.rtl .wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title' );
+				$css->add_property( 'margin-right', '0px' );
+				$css->add_property( 'margin-left', $gap . 'px' );
 			}
 			if ( isset( $attributes['tabWidth'] ) && ! empty( $attributes['tabWidth'] ) && is_array( $attributes['tabWidth'] ) && ! empty( $attributes['tabWidth'][1] ) && '' !== $attributes['tabWidth'][1] ) {
 				$css->set_media_state( 'tablet' );
@@ -260,11 +259,8 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'background', $css->sanitize_color( $attributes['titleBg'] ) );
 		}
 		if ( ( ! empty( $attributes['titleMargin'] ) && is_array( $attributes['titleMargin'] ) ) || ( ! empty( $attributes['tabletTitleMargin'] ) && is_array( $attributes['tabletTitleMargin'] ) ) || ( ! empty( $attributes['mobileTitleMargin'] ) && is_array( $attributes['mobileTitleMargin'] ) ) ) {
+			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title .kt-tab-title' );
 			$css->render_measure_output( $attributes, 'titleMargin', 'margin', array( 'unit_key' => 'titleMarginUnit' ) );
-			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title, .wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap .kt-tab-inner-content' );
-			$css->render_measure_output( $attributes, 'titleMargin', 'margin', array( 'unit_key' => 'titleMarginUnit' ) );
-			$css->add_property( 'margin-top', '0' );
-			$css->add_property( 'margin-bottom', '0' );
 		}
 
 		/*

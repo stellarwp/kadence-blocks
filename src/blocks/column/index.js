@@ -16,11 +16,11 @@ import edit from './edit';
 import metadata from './block.json';
 import save from './save';
 import deprecated from './deprecated';
-import { __ } from '@wordpress/i18n';
+import { __, _x } from '@wordpress/i18n';
 
 registerBlockType( 'kadence/column', {
 	...metadata,
-	title: __( 'Section', 'kadence-blocks' ),
+	title: _x( 'Section', 'block title', 'kadence-blocks' ),
 	description: __( 'A container to style a section of content.', 'kadence-blocks' ),
 	keywords: [
 		__( 'column', 'kadence-blocks' ),

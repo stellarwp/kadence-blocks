@@ -36,7 +36,7 @@ import save from './save';
  * Internal block libraries
  */
 import { registerBlockType } from '@wordpress/blocks';
-import { __ } from '@wordpress/i18n';
+import { __, _x } from '@wordpress/i18n';
 /**
  * Register: a Gutenberg Block.
  *
@@ -48,7 +48,7 @@ import { __ } from '@wordpress/i18n';
  */
 registerBlockType( 'kadence/accordion', {
 	...metadata,
-	title: __( 'Accordion', 'kadence-blocks' ),
+	title: _x( 'Accordion', 'block title', 'kadence-blocks' ),
 	description: __( 'Create beautiful accordions! Each pane can contain any other block, customize title styles, content background, and borders.', 'kadence-blocks' ),
 	keywords: [
 		__( 'accordion', 'kadence-blocks' ),
