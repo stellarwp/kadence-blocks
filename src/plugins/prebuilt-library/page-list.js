@@ -474,7 +474,7 @@ function PageList( {
 			:root .has-theme-palette9-background-color { background-color: var(--global-palette9); }`
 		}
 
-		const normalizeStyles = `--global-content-edge-padding: 3rem;padding:0px !important;`;
+		const normalizeStyles = `--global-content-edge-padding: 3rem;padding:0px !important;--global-vw:1200px !important;`;
 		newStyles = [
 			{ css: `:root {margin-block:0;}body{${normalizeStyles} ${globalColors}}.single-iframe-content .kb-pattern-delete-block {display: none;}${colorClasses}` }
 		];
@@ -527,7 +527,7 @@ function PageList( {
 			.single-iframe-content .has-theme-palette9-background-color { background-color: var(--global-palette9); }`
 		}
 
-		const normalizeStyles = `--global-content-edge-padding: 3rem;padding:0px !important;`;
+		const normalizeStyles = `--global-content-edge-padding: 3rem;padding:0px !important;--global-vw:1200px !important;`;
 		if ( 'dark' === selectedStyle ) {
 			styleColors = `.single-iframe-content {--global-palette1:${kadence_blocks_params.global_colors['--global-palette1']};
 			--global-palette2:${kadence_blocks_params.global_colors['--global-palette2']};
