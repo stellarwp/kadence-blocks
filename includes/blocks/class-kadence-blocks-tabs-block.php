@@ -174,7 +174,7 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 		if ( 'vtabs' !== $layout && 'percent' === $widthType ) {
 			$gap = ( isset( $attributes['gutter'][0] ) && is_numeric( $attributes['gutter'][0] ) ) ? $attributes['gutter'][0] : 10;
 			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list' );
-			$css->add_property( 'margin-right', -$gap - 1 . 'px' );
+			$css->add_property( 'margin-right', -$gap . 'px' );
 			$css->set_selector( '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title' );
 			$css->add_property( 'margin-right', $gap . 'px' );
 
