@@ -13,7 +13,9 @@
 	z-index: 0;
 	gap: 8px;
 }
-
+.wp-block-kadence-tabs .kt-tabs-title-list * {
+    box-sizing: border-box;
+}
 .kb-tab-block-layout-select .components-button.kb-tab-block-layout-item {
 	display: flex;
 	align-items: center;

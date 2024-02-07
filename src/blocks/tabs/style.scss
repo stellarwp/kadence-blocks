@@ -19,6 +19,9 @@ ul.menu .wp-block-kadence-tabs .kt-tabs-wrap {
         }
     }
 }
+.wp-block-kadence-tabs .kt-tabs-title-list * {
+    box-sizing: border-box;
+}
 // Normal Tabs css.
 .wp-block-kadence-tabs {
     .kt-tabs-title-list {
