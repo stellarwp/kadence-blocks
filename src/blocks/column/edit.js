@@ -24,6 +24,7 @@ import {
 	ResponsiveRadioRangeControls,
 	ResponsiveAlignControls,
 	BoxShadowControl,
+	KadenceFormConditionals,
 	BackgroundControl as KadenceBackgroundControl,
 	ResponsiveBorderControl,
 	BackgroundTypeControl,
