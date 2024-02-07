@@ -11,7 +11,7 @@ import Select from 'react-select';
 /**
  * Internal block libraries
  */
-import { Fragment, useState, useEffect } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 
 /**
@@ -21,13 +21,15 @@ import { useSelect } from '@wordpress/data';
 const ImageSizeControl = (props) => {
 	const [ imageSizeOptions, setImageSizeOptions ] = useState( {} );
 	const { label, id, url, slug, onChange, fullSelection = true, selectByValue = true } = props;
-
-	const { image } = useSelect((select) => {
-		const { getMedia } = select( 'core' );
-		return {
-			image: id ? getMedia( id ) : null,
-		};
-	});
+	const { image } = useSelect(
+		( select ) => {
+			const { getMedia } = select( 'core' );
+			return {
+				image: id ? getMedia( id ) : null,
+			};
+		},
+		[ id ]
+	);
 	const getImageSizeOptions = () => {
 		if ( image ) {
 			const sizes = ( undefined !== image.media_details.sizes ? image.media_details.sizes : [] );
@@ -111,7 +113,7 @@ const ImageSizeControl = (props) => {
 	return (
 		<div className="kb-image-size-container">
 			{ ! isEmpty( imageSizeOptions ) && ( undefined === selectByValue || true === selectByValue ) && (
-				<Fragment>
+				<>
 					<h2 className="kb-image-size-title">{ label }</h2>
 					<div className="kb-image-size-select-form-row">
 						<Select
@@ -124,15 +126,15 @@ const ImageSizeControl = (props) => {
 							onChange={ onChange }
 						/>
 					</div>
-				</Fragment>
+				</>
 			) }
 			{ ! isEmpty( imageSizeOptions ) && false === selectByValue && (
-				<Fragment>
+				<>
 					<h2 className="kb-image-size-title">{ label }</h2>
 					<div className="kb-image-size-select-form-row">
 						<Select
 							options={ imageSizeOptions }
-							value={ imageSizeOptions.filter( ( { newSlug } ) => newSlug === slug ) }
+							value={ imageSizeOptions.filter( ( imgSize ) => imgSize.slug === slug ) }
 							isMulti={ false }
 							maxMenuHeight={ 250 }
 							isClearable={ false }
@@ -140,7 +142,7 @@ const ImageSizeControl = (props) => {
 							onChange={ onChange }
 						/>
 					</div>
-				</Fragment>
+				</>
 			) }
 		</div>
 	);
