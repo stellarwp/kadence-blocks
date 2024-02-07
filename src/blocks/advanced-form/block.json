@@ -1,15 +1,14 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "kadence/advanced-form",
   "title": "Advanced Form",
   "category": "kadence-blocks",
   "description": "Create an advanced contact or marketing form for your website.",
   "supports": {
 	"html": false,
-	"className": true,
+    "customClassName": false,
 	"reusable": false,
-	"anchor": true,
 	"lock": false,
     "kbMetadata": true
   },

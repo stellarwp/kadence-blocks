@@ -426,9 +426,21 @@ class Kadence_Blocks_Frontend {
 							$blockattr = $block['attrs'];
 							if ( isset( $blockattr['ref'] ) ) {
 								$reusable_block = get_post( $blockattr['ref'] );
-								if ( $reusable_block && 'wp_block' == $reusable_block->post_type ) {
+								if ( $reusable_block && 'wp_block' === $reusable_block->post_type ) {
 									$reuse_data_block = parse_blocks( $reusable_block->post_content );
 									$this->blocks_cycle_through( $reuse_data_block, $kadence_blocks );
+								}
+							}
+						}
+					}
+					if ( 'kadence/advanced-form' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							if ( isset( $blockattr['id'] ) ) {
+								$form_block = get_post( $blockattr['id'] );
+								if ( $form_block && 'kadence_form' === $form_block->post_type ) {
+									$form_data_block = parse_blocks( $form_block->post_content );
+									$this->blocks_cycle_through( $form_data_block, $kadence_blocks );
 								}
 							}
 						}
@@ -467,13 +479,25 @@ class Kadence_Blocks_Frontend {
 						$blockattr = $inner_block['attrs'];
 						if ( isset( $blockattr['ref'] ) ) {
 							$reusable_block = get_post( $blockattr['ref'] );
-							if ( $reusable_block && 'wp_block' == $reusable_block->post_type ) {
+							if ( $reusable_block && 'wp_block' === $reusable_block->post_type ) {
 								$reuse_data_block = parse_blocks( $reusable_block->post_content );
 								// This is a block inside itself.
 								if ( isset( $reuse_data_block[0] ) && isset( $reuse_data_block[0]['blockName'] ) && 'core/block' === $reuse_data_block[0]['blockName'] && isset( $reuse_data_block[0]['attrs'] ) && isset( $reuse_data_block[0]['attrs']['ref'] ) && $reuse_data_block[0]['attrs']['ref'] === $blockattr['ref'] ) {
 									return;
 								}
 								$this->blocks_cycle_through( $reuse_data_block, $kadence_blocks );
+							}
+						}
+					}
+				}
+				if ( 'kadence/advanced-form' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						if ( isset( $blockattr['id'] ) ) {
+							$form_block = get_post( $blockattr['id'] );
+							if ( $form_block && 'kadence_form' === $form_block->post_type ) {
+								$form_data_block = parse_blocks( $form_block->post_content );
+								$this->blocks_cycle_through( $form_data_block, $kadence_blocks );
 							}
 						}
 					}

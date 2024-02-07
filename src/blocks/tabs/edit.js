@@ -222,7 +222,7 @@ function KadenceTabs( props ) {
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				parentData: {
 					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
-					postId: select( 'core/editor' ).getCurrentPostId(),
+					postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
 					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
 					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
 				}
@@ -647,7 +647,7 @@ function KadenceTabs( props ) {
 			} );
 		}
 
-		const renderTitles = ( index ) => {
+		const renderTitles = ( index, isLast = false) => {
 			const subFont = ( subtitleFont && subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].sizeType ? subtitleFont : [ {
 				size: [ '', '', '' ],
 				sizeType: 'px',
@@ -671,7 +671,7 @@ function KadenceTabs( props ) {
 				<Fragment>
 					<li className={ `kt-title-item kt-title-item-${ index } kt-tabs-svg-show-${ ( titles[ index ] && titles[ index ].onlyIcon ? 'only' : 'always' ) } kt-tabs-icon-side-${ ( titles[ index ] && titles[ index ].iconSide ? titles[ index ].iconSide : 'right' ) } kt-tabs-has-icon-${ ( titles[ index ] && titles[ index ].icon ? 'true' : 'false' ) } kt-tab-title-${ ( 1 + index === currentTab ? 'active' : 'inactive' ) }${ ( enableSubtitle ? ' kb-tabs-have-subtitle' : '' ) }` } style={ {
 						marginTop: ( '' !== previewTitleMarginTop ? getSpacingOptionOutput( previewTitleMarginTop, previewTitleMarginUnit ) : '' ),
-						marginRight: ( 'tabs' === layout && widthType === 'percent' ? '0px' : ( '' !== previewTitleMarginRight ? getSpacingOptionOutput( previewTitleMarginRight, previewTitleMarginUnit ) : '' ) ),
+						marginRight: ( (isLast && 'vtabs' !== layout) || ('tabs' === layout && widthType === 'percent') ? '0px' : ( '' !== previewTitleMarginRight ? getSpacingOptionOutput( previewTitleMarginRight, previewTitleMarginUnit ) : '' ) ),
 						marginBottom: ( '' !== previewTitleMarginBottom ? getSpacingOptionOutput( previewTitleMarginBottom, previewTitleMarginUnit ) : '' ),
 						marginLeft: ( 'tabs' === layout && widthType === 'percent' ? '0px' : ( '' !== previewTitleMarginLeft ? getSpacingOptionOutput( previewTitleMarginLeft, previewTitleMarginUnit ) : '' ) ),
 					} }>
@@ -819,7 +819,7 @@ function KadenceTabs( props ) {
 		};
 		const renderPreviewArray = (
 			<Fragment>
-				{ times( tabCount, n => renderTitles( n ) ) }
+				{ times( tabCount, n => renderTitles( n, tabCount - 1 === n ) ) }
 			</Fragment>
 		);
 		const renderAnchorSettings = ( index ) => {
@@ -1078,6 +1078,7 @@ function KadenceTabs( props ) {
 								insertTab( newBlock );
 								//wp.data.dispatch( 'core/block-editor' ).insertBlock( newBlock, clientId );
 								const newtabs = titles;
+								// Translators: %d is the tab number.
 								newtabs.push( {
 									text: sprintf( __( 'Tab %d', 'kadence-blocks' ), tabCount + 1 ),
 									icon: titles[ 0 ].icon,
@@ -1320,6 +1321,7 @@ function KadenceTabs( props ) {
 																				unit={titleMarginUnit}
 																				units={[ 'px', 'em', 'rem' ]}
 																				onUnit={( value ) => setAttributes( { titleMarginUnit: value } )}
+																				allowAuto={ true }
 																			/>
 																			{ __('Left & right title margins are ignored in % width tabs', 'kadence-blocks') }
 
@@ -1401,6 +1403,7 @@ function KadenceTabs( props ) {
 													unit={titleMarginUnit}
 													units={[ 'px', 'em', 'rem' ]}
 													onUnit={( value ) => setAttributes( { titleMarginUnit: value } )}
+													allowAuto={ true }
 												/>
 											</Fragment>
 										)}
@@ -1703,6 +1706,7 @@ function KadenceTabs( props ) {
 							</div> */}
 							<ul className={ `kt-tabs-title-list${ ( 'tabs' === layout && widthType === 'percent' ? ' kb-tabs-list-columns kb-tab-title-columns-' + tabWidth[ 0 ] : '' ) }` } style={{
 								width: 'vtabs' === previewLayout ? previewVerticalTabWidth + previewVerticalTabWidthUnit : undefined,
+								marginRight: ( 'tabs' === layout && widthType === 'percent' ? -gutter[ 0 ] + 'px' : undefined ),
 							}}>
 								{ renderPreviewArray }
 							</ul>

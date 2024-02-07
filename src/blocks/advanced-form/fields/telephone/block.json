@@ -1,10 +1,13 @@
 {
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "kadence/advanced-form-telephone",
   "category": "kadence-blocks",
   "textdomain": "kadence-blocks",
   "attributes": {
 	"uniqueID": {
+		"type": "string"
+	},
+	"formID": {
 		"type": "string"
 	},
 	"label": {
@@ -80,7 +83,8 @@
   "supports": {
 	"anchor": true,
 	"html": false,
-    "ktdynamic": true,
+	"ktdynamic": true,
+	"ktfieldconditional": true,
 	"reusable": false,
 	"kbMetadata": true,
 	"kbContentLabel": "label"

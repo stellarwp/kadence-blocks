@@ -89,7 +89,7 @@ import {
 	InspectorControls,
 	useBlockProps,
 } from '@wordpress/block-editor';
-import { useEffect, useState, useRef } from '@wordpress/element';
+import { useEffect, useState, useRef, useMemo } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { getBlobByURL, isBlobURL, revokeBlobURL } from '@wordpress/blob';
 import { withSelect, useSelect, useDispatch } from '@wordpress/data';
@@ -200,7 +200,7 @@ function GalleryEdit( props ) {
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 				parentData: {
 					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
-					postId: select( 'core/editor' ).getCurrentPostId(),
+					postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
 					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
 					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
 				}
@@ -225,10 +225,9 @@ function GalleryEdit( props ) {
 		} else {
 			addUniqueID( uniqueId, clientId );
 		}
-
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 		// Old Static Image source.
-		if ( every( images, ( { url } ) => isBlobURL( url ) ) ) {
+		if ( images?.length && every( images, ( { url } ) => isBlobURL( url ) ) ) {
 			const filesList = map( images, ( { url } ) => getBlobByURL( url ) );
 			forEach( images, ( { url } ) => revokeBlobURL( url ) );
 			mediaUpload( {
@@ -408,18 +407,6 @@ function GalleryEdit( props ) {
 			imagesDynamic: updatingImages,
 		} );
 	};
-
-	const setColumnsNumber = ( value ) => {
-		setAttribs( { columns: value } );
-	};
-
-	const toggleImageCrop = () => {
-		setAttribs( { imageCrop: !imageCrop } );
-	};
-
-	const getImageCropHelp = ( checked ) => {
-		return checked ? __( 'Thumbnails are cropped to align.', 'kadence-blocks' ) : __( 'Thumbnails are not cropped.', 'kadence-blocks' );
-	};
 	const saveImageAttributes = ( id, attributes ) => {
 		const data = new window.FormData();
 		forEach( attributes, ( ( value, key ) => data.append( key, value ) ) );
@@ -472,18 +459,10 @@ function GalleryEdit( props ) {
 	// 	}
 	// };
 
-	const carouselSizeTrigger = () => {
-		const carousel = document.getElementById( 'kb-gallery-id-' + uniqueID );
-		if ( carousel ) {
-			const width = Math.floor( ( 80 / 100 ) * carousel.offsetWidth );
-			carousel.querySelectorAll( '.slick-slide' ).forEach( function( item ) {
-				item.style.maxWidth = width + 'px';
-			} );
-		}
-
-		return;
-	};
-	const galleryTypes = applyFilters( 'kadence.galleryTypes', typeOptions );
+	const galleryTypes = useMemo(
+		() => ( applyFilters( 'kadence.galleryTypes', typeOptions ) ),
+		[]
+	);
 	const theImages = imagesDynamic ?? [];
 	const hasImages = !!theImages.length;
 	const onColumnChange = ( value ) => {
@@ -603,13 +582,18 @@ function GalleryEdit( props ) {
 		arrows        : ( arrowStyle === 'none' ? false : true ),
 		speed         : transSpeed,
 		drag     : false,
-		focus        : 0,
 		perPage      : previewColumns,
 		interval     : autoSpeed,
-		perMove      : ( slidesScroll === 'all' ? previewColumns : 1 ),
 		gap          : previewGutter ? previewGutter + previewGutterUnit : '0',
-		direction : ( isRTL ? 'rtl' : 'ltr' )
+		direction : ( isRTL ? 'rtl' : 'ltr' ),
 	};
+
+	if(carouselSettings.perPage === 1 || slidesScroll === "1") {
+		carouselSettings.focus = 0;
+		carouselSettings.perMove = 1;
+		carouselSettings.type = 'loop';
+	}
+	
 	const fluidCarouselSettings = {
 		type         : 'loop',
 		autoplay     : autoPlay,
@@ -1556,6 +1540,7 @@ function GalleryEdit( props ) {
 											onUnit={(value) => setAttributes({marginUnit: value})}
 											onMouseOver={marginMouseOver.onMouseOver}
 											onMouseOut={marginMouseOver.onMouseOut}
+											allowAuto={ true }
 										/>
 
 									</KadencePanelBody>

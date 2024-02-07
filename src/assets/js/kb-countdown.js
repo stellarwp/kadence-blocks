@@ -29,8 +29,81 @@
 			}
 			return '';
 		},
+		getRepeaterTimeStamp(id) {
+			const currentDate = new Date();
+			const initialDate = new Date(window.kadenceCountdown.timers[ id ].timestamp);
+			const seconds = initialDate.getSeconds();
+			const minutes = initialDate.getMinutes();
+			const hours = initialDate.getHours();
+			let futureDate = new Date();
+			const daysPassed = (currentDate.getTime() - initialDate.getTime()) / (1000 * 3600 * 24);
+			let offsetDays = 0;
+			let repeatTimeStamp = 0;
+			let dayOfMonth = initialDate.getDate();
+			const futureDayOfMonth = currentDate.getDate();
+			const initialMonth = initialDate.getMonth();
+			const futureMonth = currentDate.getMonth() === 11 ? 0 : futureDayOfMonth >= dayOfMonth ? currentDate.getMonth() + 1 : currentDate.getMonth();
+			let futureYear = currentDate.getMonth() === 11 ? currentDate.getFullYear() + 1 : currentDate.getFullYear();
+			const nextMonthDays = new Date(futureYear, futureMonth + 1, 0).getDate();
+			
+			switch(window.kadenceCountdown.timers[ id ].frequency) {
+				case 'daily':
+					offsetDays = daysPassed + 1;
+					futureDate.setDate(initialDate.getDate() + offsetDays);
+					futureDate.setHours(hours);
+					futureDate.setMinutes(minutes);
+					futureDate.setSeconds(seconds);
+					break;
+				case 'weekly':
+					offsetDays = daysPassed + (7 - (daysPassed) % 7);
+					futureDate.setDate(initialDate.getDate() + offsetDays);
+					futureDate.setHours(hours);
+					futureDate.setMinutes(minutes);
+					futureDate.setSeconds(seconds);
+					break;
+				case 'monthly':
+					if(dayOfMonth === 31 && nextMonthDays === 30 ) {
+						dayOfMonth = 30;
+					} else if(futureMonth === 0 && dayOfMonth >= 29) {
+						dayOfMonth = dayOfMonth === 29 ? dayOfMonth : 28;
+					}
+
+					futureDate = new Date(
+						futureYear, 
+						futureMonth,
+						dayOfMonth,
+						hours, 
+						minutes,
+						seconds
+					);
+					break;
+				case 'yearly':
+					const datePassed = currentDate.getMonth() >= initialDate.getMonth() 
+						&& currentDate.getDate() >= initialDate.getDate()
+						&& currentDate.getHours() >= hours
+						&& currentDate.getMinutes() >= minutes
+						&& currentDate.getSeconds() >= seconds;
+					const nextYear = datePassed
+						? currentDate.getFullYear()
+						: currentDate.getFullYear() + 1;
+					futureDate = new Date(
+						nextYear, 
+						initialMonth,
+						dayOfMonth,
+						hours, 
+						minutes,
+						seconds
+					);
+					break;
+				default:
+					break;
+			}
+
+			return futureDate.getTime();
+		},
 		updateTimerInterval( element, id, parent ) {
-			var currentTimeStamp = new Date;
+			var currentTimeStamp = new Date();
+			var userTimezoneOffset = -1 * ( new Date().getTimezoneOffset() / 60 );
 			var total = '';
 			if ( window.kadenceCountdown.timers[ id ].type === 'evergreen' ) {
 				//Check for cookie.
@@ -109,6 +182,13 @@
 			} else {
 				total = Math.floor( window.kadenceCountdown.timers[ id ].timestamp - currentTimeStamp.getTime() );
 			}
+			
+			const stopRepeating = !window.kadenceCountdown.timers[ id ].stopCount ? true : (new Date(window.kadenceCountdown.timers[ id ].endDate) <= new Date() ? false : true);
+			
+			if(window.kadenceCountdown.timers[ id ].repeat && total <= 0 && stopRepeating) {
+				const futureTimeStamp = window.kadenceCountdown.getRepeaterTimeStamp(id);
+				total = Math.floor( futureTimeStamp - currentTimeStamp.getTime());
+			}
 			// Check if completed.
 			if ( total && total < 0  ) {
 				if ( 'redirect' === window.kadenceCountdown.timers[ id ].action ) {
@@ -186,7 +266,7 @@
 				}
 				return;
 			}
-			if ( ( total || 0 === total ) && window.kadenceCountdown.timers[ id ].timer ) {
+			if (( total || 0 === total ) && window.kadenceCountdown.timers[ id ].timer ) {
 				var enableDividers = window.kadenceCountdown.timers[ id ].dividers;
 				var timeNumbers = window.kadenceCountdown.timers[ id ].stopWatch;
 				var units = window.kadenceCountdown.timers[ id ].units;

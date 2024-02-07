@@ -1,7 +1,8 @@
 /**
  * Import General Editor CSS
  */
- import './editor.scss';
+import './editor.scss';
+
 export { default as PopColorControl } from './pop-color-control';
 export { default as SinglePopColorControl } from './single-pop-color-control';
 export { default as ColorIcons } from './color-icons';
@@ -12,10 +13,12 @@ export { default as ResponsiveAlignControls } from './responsive-align-control';
 export { default as KadenceSelectPosts } from './select-posts-controls';
 export { default as WebfontLoader } from './web-font-loader';
 export { default as KadenceWebfontLoader } from './kadence-web-font-loader';
+export { default as KadenceFormConditionals } from './form-conditionals';
 export { default as HeadingLevelIcon } from './heading-level-icon';
 export { default as BoxShadowControl } from './box-shadow-control';
 export { default as DynamicImageControl } from './dynamic-image-control';
 export { default as DynamicTextControl } from './dynamic-text-control';
+export { default as DynamicInlineReplaceControl } from './dynamic-inline-replace-control';
 export { default as DynamicBackgroundControl } from './dynamic-background-control';
 export { default as DynamicGalleryControl } from './dynamic-gallery-control';
 export { default as DropShadowControl } from './drop-shadow-control';
@@ -37,6 +40,7 @@ export { default as SubsectionWrap } from './common/subsection-wrap';
 export { default as KadencePanelBody } from './panel-body';
 export { default as KadenceInspectorControls } from './inspector-controls';
 export { default as KadenceSelectTerms } from './select-terms-control';
+export { default as KadencePostSelectTerms } from './post-select-terms-control';
 export { default as SmallResponsiveControl } from './small-responsive-control';
 export { default as ResponsiveControl } from './responsive-control';
 export { default as StepControls } from './step-control';
@@ -98,4 +102,7 @@ export { default as KadenceBlockDefaults } from './block-defaults';
 
 export { default as KadenceIconPicker } from './icon-picker';
 
+export { default as TaxonomySelect } from './taxonomy-select';
+
 export { default as SelectParentBlock } from './select-parent-block';
+export { default as ObfuscateTextControl } from './obfuscate-text-control';

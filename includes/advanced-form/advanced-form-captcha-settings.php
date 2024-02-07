@@ -85,7 +85,7 @@ class Kadence_Blocks_Form_Captcha_Settings {
 		} elseif ( ! empty( $attributes['type'] ) ) {
 			$this->service = $attributes['type'];
 		} else {
-			$this->service = false;
+			$this->service = 'googlev2'; // default value from block.json
 		}
 	}
 
@@ -128,7 +128,7 @@ class Kadence_Blocks_Form_Captcha_Settings {
 			if ( ! empty( $key ) ) {
 				$this->public_key = $key;
 			}
-		} elseif ( ! empty( $attributes['type'] ) ) {
+		} elseif ( ! empty( $this->service ) ) {
 			$option_key = '';
 			switch ( $this->service ) {
 				case 'googlev2':
@@ -173,7 +173,7 @@ class Kadence_Blocks_Form_Captcha_Settings {
 			if ( ! empty( $key ) ) {
 				$this->secret_key = $key;
 			}
-		} elseif ( ! empty( $attributes['type'] ) ) {
+		} elseif ( ! empty( $this->service ) ) {
 			$option_key = '';
 			switch ( $this->service ) {
 				case 'googlev2':

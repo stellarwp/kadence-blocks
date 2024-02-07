@@ -168,7 +168,7 @@ export function ImageEdit( props ) {
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 				parentData: {
 					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
-					postId: select( 'core/editor' ).getCurrentPostId(),
+					postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
 					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
 					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
 				}
@@ -254,7 +254,7 @@ export function ImageEdit( props ) {
 	useEffect( () => {
 		//when the attr url changes set the dynamic url. Also set the attr url if we didn't have one ( initialized with dynamic seetings )
 		debouncedSetDynamicState( 'kadence.dynamicImage', '', attributes, 'url', setAttributes, context, setDynamicURL, url ? false : true);
-	}, [ 'url' ] );
+	}, [ url, context ] );
 
 	const marginMouseOver = mouseOverVisualizer();
 	const paddingMouseOver = mouseOverVisualizer();
@@ -461,7 +461,8 @@ export function ImageEdit( props ) {
 		[ `filter-${ imageFilter }` ]: imageFilter && imageFilter !== 'none',
 		[ `kb-image-is-ratio-size` ]: useRatio,
 		'image-is-svg': url && url.endsWith( '.svg' ),
-		[ `kadence-image${ uniqueID }` ]: uniqueID
+		[ `kadence-image${ uniqueID }` ]: uniqueID,
+		'kb-image-max-width-set' : imgMaxWidth,
 	} );
 
 	// const blockProps = useBlockProps( {

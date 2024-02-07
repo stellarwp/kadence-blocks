@@ -65,4 +65,11 @@
     &:hover {
 		background-color: #F8F9FB;
 	}
+    &[disabled] {
+        cursor: not-allowed;
+        background: transparent;
+        &:hover {
+            background: transparent;
+        }
+    }
 }

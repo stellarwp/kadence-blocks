@@ -20,6 +20,15 @@ export function getSpacingOptionOutput( value, unit, spacingMap = SPACING_SIZES_
 	if ( undefined === value ) {
 		return '';
 	}
+	if ( value === '' ) {
+		return '';
+	}
+	if ( value === null ) {
+		return '';
+	}
+	if ( value === '') {
+		return '0' + unit;
+	}
 	if ( ! spacingMap ) {
 		return value;
 	}

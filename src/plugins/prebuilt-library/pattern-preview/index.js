@@ -14,12 +14,11 @@ export function PatternPreview( {
 	baseCompatStyles,
 	neededCompatStyles,
 	patternType,
+	rootScroll,
 } ) {
-
 	if ( ! html ) {
 		return null;
 	}
-	
 
 	return (
 		<AutoHeightPatternPreview
@@ -33,6 +32,7 @@ export function PatternPreview( {
 			baseCompatStyles={ baseCompatStyles }
 			neededCompatStyles={ neededCompatStyles }
 			patternType={ patternType }
+			rootScroll={ rootScroll }
 		/>
 	);
 }

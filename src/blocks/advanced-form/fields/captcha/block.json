@@ -1,6 +1,6 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 2,
+	"apiVersion": 3,
 	"title": "Captcha",
 	"name": "kadence/advanced-form-captcha",
 	"category": "kadence-blocks",
@@ -9,6 +9,9 @@
 	  "uniqueID": {
 		"type": "string",
 		"default": ""
+	  },
+	  "formID": {
+		"type": "string"
 	  },
 	  "type": {
 		  "type": "string",

@@ -46,6 +46,8 @@ module.exports = {
 		'extension-kadence-base': './src/extension/kadence-base/index.js',
 		'extension-stores': './src/extension/stores/index.js',
 		'extension-block-css': './src/extension/block-css/index.js',
+		'extension-image-picker': './src/extension/image-picker/index.js',
+		'admin-kadence-home': './src/home.js',
 	},
 	output: {
 		...defaultConfig.output,

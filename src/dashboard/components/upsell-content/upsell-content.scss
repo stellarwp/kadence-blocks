@@ -1,0 +1,46 @@
+.kb-upsell-content {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 40px;
+	align-items: center;
+
+	@media (min-width: 768px) {
+		grid-template-columns: 1fr 1fr;
+		gap: 120px;
+	}
+}
+
+.kb-upsell-content__image {
+	width: 100%;
+
+	.kb-upsell-content--flipped & {
+		order: 2;
+	}
+}
+
+.kb-upsell-content__tag {
+	border-radius: 8px;
+	background: #161a1e;
+	padding: 8px 12px;
+	color: #fff;
+	margin-bottom: 24px;
+	display: inline-flex;
+}
+
+.kb-upsell-content__heading {
+	font-size: 32px;
+	font-weight: 500;
+	line-height: 130%;
+	letter-spacing: -0.64px;
+	color: #161a1e;
+	max-width: 300px;
+	margin-bottom: 8px;
+}
+
+.kb-upsell-content__description {
+	font-size: 18px;
+	line-height: 175%;
+	letter-spacing: 0.36px;
+	color: #161a1e;
+	margin-bottom: 24px;
+}

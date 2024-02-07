@@ -243,7 +243,7 @@ function KadenceTestimonials( props ) {
                 previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 				parentData: {
 					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
-					postId: select( 'core/editor' ).getCurrentPostId(),
+					postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
 					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
 					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
 				}
@@ -301,6 +301,7 @@ function KadenceTestimonials( props ) {
 	};
 
     useEffect(() => {
+		setBlockDefaults( metadata['name'], attributes);
 
 		const postOrFseId = getPostOrFseId( props, parentData );
 		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
@@ -716,6 +717,8 @@ function KadenceTestimonials( props ) {
         if( style === 'bubble' || style === 'inlineimage' ) {
             applyTo = '.kt-testimonial-text-wrap';
         }
+        let shadowCarousel = ( displayShadow && layout && layout === 'carousel' );
+        let wrapperPaddingTopBottomApplyTo =  shadowCarousel ? '.kt-blocks-testimonials-wrap' + uniqueID + ' .splide__slide' : '.kt-blocks-testimonials-wrap' + uniqueID;
 
         return (
             <style>
@@ -739,10 +742,12 @@ function KadenceTestimonials( props ) {
                         ${ 'bubble' === style || 'inlineimage' === style ? '' : 'max-width: ' + containerMaxWidth + 'px;' }
                         ${ 'bubble' === style || 'inlineimage' === style || !previewContainerMinHeight ? '' : 'min-height: ' + previewContainerMinHeight + 'px;' }
 					}
+                    ${wrapperPaddingTopBottomApplyTo} {
+						${ previewWrapperPaddingTop ? 'padding-top: ' + getSpacingOptionOutput( previewWrapperPaddingTop, wrapperPaddingType ) + ';' : shadowCarousel ? 'padding-top: .5rem;' : '' }
+						${ previewWrapperPaddingBottom ? 'padding-bottom: ' + getSpacingOptionOutput( previewWrapperPaddingBottom, wrapperPaddingType ) + ';' : shadowCarousel ? 'padding-bottom: .5rem;' : '' }
+                    }
 					.kt-blocks-testimonials-wrap${uniqueID} {
-						${ previewWrapperPaddingTop ? 'padding-top: ' + getSpacingOptionOutput( previewWrapperPaddingTop, wrapperPaddingType ) + ';' : '' }
 						${ previewWrapperPaddingRight ? 'padding-right: ' + getSpacingOptionOutput( previewWrapperPaddingRight, wrapperPaddingType ) + ';' : '' }
-						${ previewWrapperPaddingBottom ? 'padding-bottom: ' + getSpacingOptionOutput( previewWrapperPaddingBottom, wrapperPaddingType ) + ';' : '' }
 						${ previewWrapperPaddingLeft ? 'padding-left: ' + getSpacingOptionOutput( previewWrapperPaddingLeft, wrapperPaddingType ) + ';' : '' }
                         ${ previewWrapperMarginTop ? 'margin-top: ' + getSpacingOptionOutput( previewWrapperMarginTop, wrapperMarginUnit ) + ';' : '' }
 						${ previewWrapperMarginRight ? 'margin-right: ' + getSpacingOptionOutput( previewWrapperMarginRight, wrapperMarginUnit ) + ';' : '' }
@@ -1526,6 +1531,7 @@ function KadenceTestimonials( props ) {
 													unit={iconMarginUnit}
 													units={[ 'px', 'em', 'rem' ]}
 													onUnit={( value ) => setAttributes( { iconMarginUnit: value } )}
+                                                    allowAuto={ true }
 												/>
                                             </Fragment>
                                         )}
@@ -1618,6 +1624,7 @@ function KadenceTestimonials( props ) {
 													unit={titleMarginUnit}
 													units={[ 'px', 'em', 'rem' ]}
 													onUnit={( value ) => setAttributes( { titleMarginUnit: value } )}
+                                                    allowAuto={ true }
 												/>
                                                 <ResponsiveRangeControls
                                                     label={__('Title Min Height', 'kadence-blocks')}
@@ -1694,6 +1701,7 @@ function KadenceTestimonials( props ) {
 													unit={ratingMarginUnit}
 													units={[ 'px', 'em', 'rem' ]}
 													onUnit={( value ) => setAttributes( { ratingMarginUnit: value } )}
+                                                    allowAuto={ true }
 												/>
                                             </Fragment>
                                         )}
@@ -1866,6 +1874,7 @@ function KadenceTestimonials( props ) {
 													unit={mediaMarginUnit}
 													units={[ 'px', 'em', 'rem' ]}
 													onUnit={( value ) => setAttributes( { mediaMarginUnit: value } )}
+                                                    allowAuto={ true }
 												/>
                                                 {'card' === style && (
                                                     <Fragment>
@@ -2155,6 +2164,7 @@ function KadenceTestimonials( props ) {
 											unit={wrapperMarginUnit}
 											units={[ 'px', 'em', 'rem' ]}
 											onUnit={( value ) => setAttributes( { wrapperMarginUnit: value } )}
+                                            allowAuto={ true }
 										/>
                                     </KadencePanelBody>
                                 )}

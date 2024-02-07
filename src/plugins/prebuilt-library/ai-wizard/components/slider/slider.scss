@@ -1,0 +1,220 @@
+@import '../../scss/variables.scss';
+
+$react-slidy-c-background: transparent !default;
+$react-slidy-c-nav-background: rgba(255, 255, 255, 0.8) !default;
+$react-slidy-c-nav-color: #aaaaaa !default;
+$react-slidy-c-transparent: rgba(0, 0, 0, 0) !default;
+$react-slidy-h-image: auto !default;
+$react-slidy-mh: 50px !default;
+
+@mixin arrow($direction) {
+  @if $direction == "right" {
+    margin-right: 6px;
+    transform: rotate(45deg);
+  } @else if $direction == "left" {
+    margin-left: 6px;
+    transform: rotate(-135deg);
+  }
+
+  border-right: 3px solid $react-slidy-c-nav-color;
+  border-top: 3px solid $react-slidy-c-nav-color;
+  content: "";
+  display: inline-block;
+  height: 24px;
+  width: 24px;
+}
+
+.react-Slidy {
+  -webkit-tap-highlight-color: $react-slidy-c-transparent;
+  backface-visibility: hidden;
+  background: $react-slidy-c-background;
+  min-height: $react-slidy-mh;
+  position: relative;
+  user-select: none;
+  max-width: 440px;
+  margin: 0 auto;
+
+  &-arrow {
+    align-items: center;
+    bottom: 0;
+    display: flex;
+    margin: auto 0;
+    position: absolute;
+    top: 0;
+    width: auto;
+    height: 32px;
+    width: 32px;
+    z-index: 1;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    background: rgba(255,255,255, 0);
+    transition: background 0.3s ease;
+
+    .dashicon {
+    	color: #FFFFFF;
+    	transition: color 0.3s ease;
+    }
+
+    &:hover {
+	    background: rgba(255,255,255, 1);
+    
+    	.dashicon {
+    		color: #000000;
+    	}
+    }
+
+    &Left {
+      left: -42px;
+    }
+
+    &Right {
+      right: -42px;
+    }
+
+    @media screen and (max-width: 850px) {
+      display: none;
+    }
+  }
+
+  &-prev,
+  &-next {
+    background: $react-slidy-c-nav-background;
+    cursor: pointer;
+    height: 20%;
+    justify-content: center;
+    min-height: 56px;
+    width: 40px;
+  }
+
+  &--fullHeight {
+    height: 100%;
+    & > div li img {
+      height: 100%;
+    }
+  }
+
+  &--fullWidth > div li img {
+    width: 100%;
+  }
+
+  &--contain li img {
+    object-fit: contain;
+  }
+
+  &--cover li img {
+    object-fit: cover;
+  }
+
+  &:hover > &-arrow {
+    opacity: 1;
+  }
+
+  &:hover > &-arrow[disabled] {
+    opacity: 0.2;
+  }
+
+  > div {
+    font-size: 0;
+    max-height: 100%;
+    overflow: hidden;
+    position: relative;
+    white-space: nowrap;
+    width: 100%;
+
+    > ul {
+      display: block;
+      list-style: none;
+      padding: 0;
+      transition-property: transform;
+      width: 100%;
+      will-change: transform, transition-timing, transition-duration;
+
+      & > li {
+        display: inline-block;
+        position: relative;
+        user-select: none;
+        vertical-align: middle;
+        width: 100%;
+      }
+    }
+
+    img {
+      -webkit-backface-visibility: hidden;
+      -webkit-perspective: 1000;
+
+      display: block;
+      height: $react-slidy-h-image;
+      margin: 0 auto;
+      max-width: 100%;
+      pointer-events: none;
+      touch-action: none;
+      user-select: none;
+    }
+  }
+}
+
+// Image Preview Slideshow Styles
+.stellarwp-photo-preview {
+  margin-top: -8px;
+
+  .react-Slidy {
+    margin: 0 -8px;
+
+    &-arrow {
+      .dashicon {
+    		color: #000000;
+      }
+
+      &:hover {
+	      background: rgba(0, 0, 0, 1);
+      
+    	  .dashicon {
+    	    color: #FFFFFF;
+    	  }
+      }
+    }
+
+    &-arrowLeft {
+      left: -32px;
+    }
+
+    &-arrowRight {
+      right: -32px;
+    }
+  }
+}
+
+.stellarwp-slider {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  padding: 100px 32px 32px 32px;
+  border-radius: 20px;
+  background-size: cover;
+  -webkit-transition: background 200ms ease-in-out 300ms;
+  -moz-transition: background 200ms ease-in-out 300ms;
+  -o-transition: background 200ms ease-in-out 300ms;
+  transition: background 200ms ease-in-out 300ms;
+
+  &:not(.has-background) {
+    background: $color-gray-500;
+  }
+
+  &__text {
+    position: absolute;
+    top: 32px;
+    margin: 0 auto 32px auto;
+    padding: 8px 12px;
+    border-radius: 18px;
+    background: $color-black;
+    color: $color-white;
+    font-size: 13px;
+    line-height: 1;
+    z-index: 10;
+  }
+}
+

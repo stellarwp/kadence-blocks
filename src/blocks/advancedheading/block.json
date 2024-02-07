@@ -1,6 +1,6 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "title": "Advanced Text",
   "name": "kadence/advancedheading",
   "category": "kadence-blocks",
@@ -471,6 +471,10 @@
 	  "type": "array",
 	  "default": [ "", "", "", "" ]
 	},
+	"iconPaddingUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
 	"iconSize": {
 	  "type": "array",
 	  "default": [ "", "", "" ]
@@ -528,6 +532,30 @@
 	"borderRadiusUnit": {
 	  "type": "string",
 	  "default": "px"
+	},
+	"iconTitle": {
+		"type": "string",
+		"default": ""
+	},
+	"markBorderRadius": {
+		"type": "array",
+		"default": [ "", "", "", "" ]
+	},
+	"tabletMarkBorderRadius": {
+		"type": "array",
+		"default": [ "", "", "", "" ]
+	},
+	"mobileMarkBorderRadius": {
+		"type": "array",
+		"default": [ "", "", "", "" ]
+	},
+	"markBorderRadiusUnit": {
+		"type": "string",
+		"default": "px"
+	},
+	"altTitle": {
+		"type": "string",
+		"default": ""
 	}
   },
   "usesContext": [

@@ -410,24 +410,18 @@ div.kb-blocks-bg-video {
 }
 // Full height align middle.
 .wp-block-kadence-rowlayout.kt-row-valign-top.kt-inner-column-height-full > .innerblocks-wrap > .wp-block-kadence-column > .kadence-inner-column-inner:not(.kadence-inner-column-direction-horizontal) {
-    display: flex;
-	flex-direction: column;
 	justify-content: flex-start;
 	> * {
 		width: 100%;
 	}
 }
 .wp-block-kadence-rowlayout.kt-row-valign-middle.kt-inner-column-height-full > .innerblocks-wrap > .wp-block-kadence-column > .kadence-inner-column-inner:not(.kadence-inner-column-direction-horizontal) {
-    display: flex;
-	flex-direction: column;
 	justify-content: center;
 	> * {
 		width: 100%;
 	}
 }
 .wp-block-kadence-rowlayout.kt-row-valign-bottom.kt-inner-column-height-full > .innerblocks-wrap > .wp-block-kadence-column > .kadence-inner-column-inner:not(.kadence-inner-column-direction-horizontal) {
-    display: flex;
-	flex-direction: column;
 	justify-content: flex-end;
 	> * {
 		width: 100%;
@@ -451,6 +445,15 @@ div.kb-blocks-bg-video {
 }
 .wp-block-kadence-rowlayout.kt-inner-column-height-full > .innerblocks-wrap > .wp-block-kadence-column > .kadence-inner-column-inner.kadence-inner-column-vertical-align-bottom:not(.kadence-inner-column-direction-horizontal) {
 	justify-content: flex-end;
+}
+.wp-block-kadence-rowlayout.kt-inner-column-height-full > .innerblocks-wrap > .wp-block-kadence-column > .kadence-inner-column-inner.kadence-inner-column-vertical-align-space-between:not(.kadence-inner-column-direction-horizontal) {
+	justify-content: space-between;
+}
+.wp-block-kadence-rowlayout.kt-inner-column-height-full > .innerblocks-wrap > .wp-block-kadence-column > .kadence-inner-column-inner.kadence-inner-column-vertical-align-space-around:not(.kadence-inner-column-direction-horizontal) {
+	justify-content: space-around;
+}
+.wp-block-kadence-rowlayout.kt-inner-column-height-full > .innerblocks-wrap > .wp-block-kadence-column > .kadence-inner-column-inner.kadence-inner-column-vertical-align-space-evenly:not(.kadence-inner-column-direction-horizontal) {
+	justify-content: space-evenly;
 }
 
 .wp-block-kadence-rowlayout.kt-inner-column-height-full > .innerblocks-wrap > .wp-block-kadence-column > .kadence-inner-column-inner.kadence-inner-column-vertical-align-top.kadence-inner-column-direction-horizontal {
@@ -490,6 +493,10 @@ div.kb-blocks-bg-video {
 		grid-auto-rows: minmax(min-content, max-content);
 		column-gap: var(--global-row-gutter-md, 2rem);
 		row-gap: var(--global-row-gutter-md, 2rem);
+	}
+
+	&:has(.wp-block-kadence-modal .preview-active){
+		z-index: 1000;
 	}
 }
 // Three Columns

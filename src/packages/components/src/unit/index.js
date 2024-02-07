@@ -46,6 +46,7 @@ export default function UnitControl( {
 	units = [ 'px', 'em', 'rem' ],
 	parentLabel = null,
 	reset = true,
+	preventUnitSelection = false,
 } ) {
 	const onChangeCustom = ( newSize ) => {
 		const isNumeric = ! isNaN( parseFloat( newSize ) );
@@ -109,11 +110,19 @@ export default function UnitControl( {
 								}
 							} }
 							value={ unit }
+							disabled={ preventUnitSelection ? true : false }
 						>
 							{ units.map( ( option ) => (
-								<option value={ option } selected={ unit === option || ( unit === '' && '-' === option ) ? true : undefined } key={ option }>
-									{ option }
-								</option>
+								!preventUnitSelection
+									? 
+										<option value={ option } selected={ unit === option || ( unit === '' && '-' === option ) ? true : undefined } key={ option }>
+											{ option }
+										</option>
+									: 
+										unit === option &&
+											<option value={ option } selected={ unit === option || ( unit === '' && '-' === option ) ? true : undefined } key={ option }>
+												{ option }
+											</option>
 							) ) }
 						</select>
 					</div>

@@ -22,7 +22,9 @@ import {
 } from '@kadence/icons';
 import classnames from 'classnames';
 
-import { debounce, map, get, has } from 'lodash';
+import { store as noticesStore } from '@wordpress/notices';
+
+import { debounce, map, get, has, isEmpty } from 'lodash';
 import {
 	PopColorControl,
 	TypographyControls,
@@ -77,6 +79,8 @@ import {
 	Fragment,
 } from '@wordpress/element';
 
+import { store as coreStore } from '@wordpress/core-data';
+
 import {
 	MediaUpload,
 	RichText,
@@ -95,6 +99,7 @@ import {
 	TextControl,
 	ToggleControl,
 	SelectControl,
+	TextareaControl,
 } from '@wordpress/components';
 import {
 	applyFilters,
@@ -200,6 +205,8 @@ function KadenceInfoBox( props ) {
 	const [ mediaMarginControl, setMediaMarginControl ] = useState( 'linked' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
+    const { createSuccessNotice } = useDispatch( noticesStore );
+
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
@@ -211,7 +218,7 @@ function KadenceInfoBox( props ) {
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 				parentData: {
 					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
-					postId: select( 'core/editor' ).getCurrentPostId(),
+					postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
 					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
 					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
 				}
@@ -348,6 +355,8 @@ function KadenceInfoBox( props ) {
 	const previewHoverRadiusRight = getPreviewSize( previewDevice, ( undefined !== borderHoverRadius ? borderHoverRadius[ 1 ] : '' ), ( undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[ 1 ] : '' ), ( undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[ 1 ] : '' ) );
 	const previewHoverRadiusBottom = getPreviewSize( previewDevice, ( undefined !== borderHoverRadius ? borderHoverRadius[ 2 ] : '' ), ( undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[ 2 ] : '' ), ( undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[ 2 ] : '' ) );
 	const previewHoverRadiusLeft = getPreviewSize( previewDevice, ( undefined !== borderHoverRadius ? borderHoverRadius[ 3 ] : '' ), ( undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[ 3 ] : '' ), ( undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[ 3 ] : '' ) );
+
+	const previewMaxWidth = getPreviewSize( previewDevice, ( '' !== maxWidth ? maxWidth : '' ), ( '' !== tabletMaxWidth ? tabletMaxWidth : '' ), ( '' !== mobileMaxWidth ? mobileMaxWidth : '' ) );
 
 	const previewTitleFontSize = getPreviewSize( previewDevice, ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 0 ] ? titleFont[ 0 ].size[ 0 ] : '' ), ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 1 ] ? titleFont[ 0 ].size[ 1 ] : '' ), ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 2 ] ? titleFont[ 0 ].size[ 2 ] : '' ) );
 	const previewTitleLineHeight = getPreviewSize( previewDevice, ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 1 ] ? titleFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 2 ] ? titleFont[ 0 ].lineHeight[ 2 ] : '' ) );
@@ -1114,6 +1123,54 @@ function KadenceInfoBox( props ) {
 			setAttributes( attributesToPaste );
 		}
 	}
+	const { editEntityRecord, saveEditedEntityRecord } = useDispatch( coreStore );
+
+	const { mediaImageRecord, mediaImageFlipRecord } = useSelect(
+		( select ) => {
+			var rec, flipRec;
+
+			if ( mediaImage[0] && mediaImage[0].id ) {
+				rec = select( coreStore ).getEntityRecord(
+					'postType',
+					'attachment',
+					mediaImage[0].id
+				);
+			}
+			
+			if ( mediaImage[0] && mediaImage[0].flipId ) {
+				flipRec = select( coreStore ).getEntityRecord(
+					'postType',
+					'attachment',
+					mediaImage[0].flipId
+				);
+			}
+
+			return { 
+				mediaImageRecord: rec,
+				mediaImageFlipRecord: flipRec
+			};
+	} );
+
+	const updateMediaImageAlt = ( alt, id ) => {
+
+		if ( id ) {
+			editEntityRecord(
+				'postType',
+				'attachment',
+				id,
+				{ alt_text: alt },
+			).catch( () => {
+				console.log('error');
+			} );
+
+			saveEditedEntityRecord( 'postType', 'attachment', id ).then( () => {
+				createSuccessNotice( __( 'Media default alt text updated.' ), {
+					type: 'snackbar',
+				} )
+			});
+
+		}
+	}
 
 	const mediaImagedraw = ( 'drawborder' === mediaImage[ 0 ].hoverAnimation || 'grayscale-border-draw' === mediaImage[ 0 ].hoverAnimation ? true : false );
 	const renderCSS = (
@@ -1647,6 +1704,20 @@ function KadenceInfoBox( props ) {
 												max={800}
 												step={1}
 											/>
+											<div className='components-base-control'>
+												<TextareaControl
+													label={ __( 'Alt text', 'kadence-blocks' ) }
+													value={ mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].alt ? mediaImage[ 0 ].alt : '' }
+													onChange={ value => saveMediaImage( { alt: value } ) }
+													className={'mb-0'}
+												/>
+												<Button
+													text={ __( "Use as this image's default alt text", 'kadence-blocks' ) }
+													variant={'link'}
+													onClick={ () => { updateMediaImageAlt( mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].alt ? mediaImage[ 0 ].alt : '', mediaImage[ 0 ].id ) } }
+													disabled={ isEmpty( mediaImageRecord ) }
+												/>
+											</div>
 											<SelectControl
 												label={__( 'Image ratio', 'kadence-blocks' )}
 												options={[
@@ -1728,6 +1799,20 @@ function KadenceInfoBox( props ) {
 															onChange={changeFlipImageSize}
 														/>
 													)}
+													<div className='components-base-control'>
+														<TextareaControl
+															label={ __( 'Alt text', 'kadence-blocks' ) }
+															value={ mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].flipAlt ? mediaImage[ 0 ].flipAlt : '' }
+															onChange={ value => saveMediaImage( { flipAlt: value } ) }
+															className={'mb-0'}
+														/>
+														<Button
+															text={ __( "Use as this image's default alt text", 'kadence-blocks' ) }
+															variant={'link'}
+															onClick={ () => { updateMediaImageAlt( mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].flipAlt ? mediaImage[ 0 ].flipAlt : '', mediaImage[ 0 ].flipId ) } }
+															disabled={ isEmpty( mediaImageFlipRecord ) }
+														/>
+													</div>
 												</>
 											)}
 											<MeasurementControls
@@ -1963,7 +2048,8 @@ function KadenceInfoBox( props ) {
 												}
 											</TabPanel>
 											<TextControl
-												label={__( 'Icon Title for Accessibility', 'kadence-blocks' )}
+												label={__( 'Title for screen readers', 'kadence-blocks' )}
+												help={__( 'If no title added screen readers will ignore, good if the icon is purely decorative.', 'kadence-blocks' )}
 												value={mediaIcon[ 0 ].title}
 												onChange={value => saveMediaIcon( { title: value } )}
 											/>
@@ -2467,6 +2553,7 @@ function KadenceInfoBox( props ) {
 									onUnit={(value) => setAttributes({containerMarginUnit: value})}
 									onMouseOver={marginMouseOver.onMouseOver}
 									onMouseOut={marginMouseOver.onMouseOut}
+									allowAuto={ true }
 								/>
 								<ResponsiveRangeControls
 									label={__( 'Max Width', 'kadence-blocks' )}
@@ -2510,7 +2597,7 @@ function KadenceInfoBox( props ) {
 					paddingRight : ( '' !== previewContainerPaddingRight ? getSpacingOptionOutput( previewContainerPaddingRight, previewPaddingType ) : undefined ),
 					paddingBottom: ( '' !== previewContainerPaddingBottom ? getSpacingOptionOutput( previewContainerPaddingBottom, previewPaddingType ) : undefined ),
 					paddingLeft  : ( '' !== previewContainerPaddingLeft ? getSpacingOptionOutput( previewContainerPaddingLeft, previewPaddingType ) : undefined ),
-					maxWidth     : ( maxWidth ? maxWidth + maxWidthUnit : undefined ),
+					maxWidth     : ( previewMaxWidth ? previewMaxWidth + ( maxWidthUnit ? maxWidthUnit : 'px' ) : undefined ),
 					marginTop    : ( '' !== previewContainerMarginTop ? getSpacingOptionOutput( previewContainerMarginTop, containerMarginUnit ) : undefined ),
 					marginRight  : ( '' !== previewContainerMarginRight ? getSpacingOptionOutput( previewContainerMarginRight, containerMarginUnit ) : undefined ),
 					marginBottom : ( '' !== previewContainerMarginBottom ? getSpacingOptionOutput( previewContainerMarginBottom, containerMarginUnit ) : undefined ),
@@ -2558,7 +2645,7 @@ function KadenceInfoBox( props ) {
 										<div className="kadence-info-box-image-inner-intrisic">
 											<img
 												src={mediaImage[ 0 ].url}
-												alt={mediaImage[ 0 ].alt}
+												alt={mediaImage[ 0 ].alt ? mediaImage[ 0 ].alt : mediaImage[ 0 ].alt}
 												width={( mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype ? mediaImage[ 0 ].maxWidth : mediaImage[ 0 ].width )}
 												height={mediaImage[ 0 ].height}
 												className={`${( mediaImage[ 0 ].id ? `kt-info-box-image wp-image-${mediaImage[ 0 ].id}` : 'kt-info-box-image wp-image-offsite' )} ${( mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype ? ' kt-info-svg-image' : '' )}`}
@@ -2566,7 +2653,7 @@ function KadenceInfoBox( props ) {
 											{mediaImage[ 0 ].flipUrl && 'flip' === mediaImage[ 0 ].hoverAnimation && (
 												<img
 													src={mediaImage[ 0 ].flipUrl}
-													alt={mediaImage[ 0 ].flipAlt}
+													alt={mediaImage[ 0 ].flipAlt ? mediaImage[ 0 ].flipAlt : mediaImage[ 0 ].flipAlt}
 													width={( mediaImage[ 0 ].flipSubtype && 'svg+xml' === mediaImage[ 0 ].flipSubtype ? mediaImage[ 0 ].maxWidth : mediaImage[ 0 ].flipWidth )}
 													height={mediaImage[ 0 ].flipHeight}
 													className={`${( mediaImage[ 0 ].flipId ? `kt-info-box-image-flip wp-image-${mediaImage[ 0 ].flipId}` : 'kt-info-box-image-flip wp-image-offsite' )} ${( mediaImage[ 0 ].flipSubtype && 'svg+xml' === mediaImage[ 0 ].flipSubtype ? ' kt-info-svg-image' : '' )}`}

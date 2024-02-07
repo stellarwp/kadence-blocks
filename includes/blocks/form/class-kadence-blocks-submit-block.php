@@ -54,7 +54,8 @@ class Kadence_Blocks_Submit_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		$outer_classes = array( 'kb-adv-form-field', 'kb-submit-field', 'kb-field' . $unique_id );
+		$class_id = $this->class_id( $attributes );
+		$outer_classes = array( 'kb-adv-form-field', 'kb-submit-field', 'kb-field' . $class_id );
 		if ( ! empty( $attributes['className'] ) ) {
 			$outer_classes[] = $attributes['className'];
 		}
@@ -62,7 +63,7 @@ class Kadence_Blocks_Submit_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 			'class' => implode( ' ', $outer_classes ),
 		);
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
-		$classes = array( 'kb-button', 'kt-button', 'button', 'kb-adv-form-submit-button', 'kb-btn' . $unique_id );
+		$classes = array( 'kb-button', 'kt-button', 'button', 'kb-adv-form-submit-button', 'kb-btn' . $class_id );
 		$classes[] = ! empty( $attributes['sizePreset'] ) ? 'kt-btn-size-' . $attributes['sizePreset'] : 'kt-btn-size-standard';
 		$classes[] = ! empty( $attributes['widthType'] ) ? 'kt-btn-width-type-' . $attributes['widthType'] : 'kt-btn-width-type-auto';
 		$classes[] = ! empty( $attributes['inheritStyles'] ) ? 'kb-btn-global-' . $attributes['inheritStyles'] : 'kb-btn-global-fill';
@@ -116,18 +117,18 @@ class Kadence_Blocks_Submit_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
-
-		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
+		$class_id = $this->class_id( $attributes );
+		$css->set_style_id( 'kb-' . $this->block_name . $class_id );
 
 		$width_type = ! empty( $attributes['widthType'] ) ? $attributes['widthType'] : 'auto';
 		if ( 'fixed' === $width_type ) {
-			$css->set_selector( '.kb-submit-field .kb-btn' . $unique_id . '.kb-button, ul.menu .kb-submit-field .kb-btn' . $unique_id . '.kb-button' );
+			$css->set_selector( '.kb-submit-field .kb-btn' . $class_id . '.kb-button, ul.menu .kb-submit-field .kb-btn' . $class_id . '.kb-button' );
 			$css->render_responsive_range( $attributes, 'width', 'width', 'widthUnit' );
 		} else {
-			$css->set_selector( 'ul.menu .kb-submit-field .kb-btn' . $unique_id . '.kb-button' );
+			$css->set_selector( 'ul.menu .kb-submit-field .kb-btn' . $class_id . '.kb-button' );
 			$css->add_property( 'width', 'initial' );
 		}
-		$css->set_selector( '.kb-submit-field .kb-btn' . $unique_id . '.kb-button' );
+		$css->set_selector( '.kb-submit-field .kb-btn' . $class_id . '.kb-button' );
 		$bg_type = ! empty( $attributes['backgroundType'] ) ? $attributes['backgroundType'] : 'normal';
 		$bg_hover_type = ! empty( $attributes['backgroundHoverType'] ) ? $attributes['backgroundHoverType'] : 'normal';
 		if ( ! empty( $attributes['color'] ) ) {
@@ -152,19 +153,19 @@ class Kadence_Blocks_Submit_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 			}
 		}
 		// Icon.
-		$css->set_selector( '.kb-btn' . $unique_id . '.kb-button .kb-svg-icon-wrap' );
+		$css->set_selector( '.kb-btn' . $class_id . '.kb-button .kb-svg-icon-wrap' );
 		if ( ! empty( $attributes['iconColor'] ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['iconColor'] ) );
 		}
 		$css->render_measure_output( $attributes, 'iconPadding', 'padding', array( 'unit_key' => 'iconPaddingUnit' ) );
 		$css->render_responsive_range( $attributes, 'iconSize', 'font-size', 'iconSizeUnit' );
 		// Icon Hover.
-		$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover .kb-svg-icon-wrap' );
+		$css->set_selector( '.kb-btn' . $class_id . '.kb-button:hover .kb-svg-icon-wrap' );
 		if ( ! empty( $attributes['iconColorHover'] ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['iconColorHover'] ) );
 		}
 		// Hover.
-		$css->set_selector( '.kb-submit-field .kb-btn' . $unique_id . '.kb-button:hover' );
+		$css->set_selector( '.kb-submit-field .kb-btn' . $class_id . '.kb-button:hover' );
 		if ( ! empty( $attributes['colorHover'] ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['colorHover'] ) );
 		}
@@ -176,7 +177,7 @@ class Kadence_Blocks_Submit_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 		if ( isset( $attributes['displayHoverShadow'] ) && true === $attributes['displayHoverShadow'] ) {
 			if ( ( 'gradient' === $bg_type || 'gradient' === $bg_hover_type ) && isset( $attributes['shadowHover'][0]['inset'] ) && true === $attributes['shadowHover'][0]['inset'] ) {
 				$css->add_property( 'box-shadow', '0px 0px 0px 0px rgba(0, 0, 0, 0)' );
-				$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
+				$css->set_selector( '.kb-btn' . $class_id . '.kb-button:hover::before' );
 			}
 			if ( isset( $attributes['shadowHover'] ) && is_array( $attributes['shadowHover'] ) && isset( $attributes['shadowHover'][0] ) && is_array( $attributes['shadowHover'][0] ) ) {
 				$css->add_property( 'box-shadow', ( isset( $attributes['shadowHover'][0]['inset'] ) && true === $attributes['shadowHover'][0]['inset'] ? 'inset ' : '' ) . ( isset( $attributes['shadowHover'][0]['hOffset'] ) && is_numeric( $attributes['shadowHover'][0]['hOffset'] ) ? $attributes['shadowHover'][0]['hOffset'] : '0' ) . 'px ' . ( isset( $attributes['shadowHover'][0]['vOffset'] ) && is_numeric( $attributes['shadowHover'][0]['vOffset'] ) ? $attributes['shadowHover'][0]['vOffset'] : '0' ) . 'px ' . ( isset( $attributes['shadowHover'][0]['blur'] ) && is_numeric( $attributes['shadowHover'][0]['blur'] ) ? $attributes['shadowHover'][0]['blur'] : '14' ) . 'px ' . ( isset( $attributes['shadowHover'][0]['spread'] ) && is_numeric( $attributes['shadowHover'][0]['spread'] ) ? $attributes['shadowHover'][0]['spread'] : '0' ) . 'px ' . $css->render_color( ( isset( $attributes['shadowHover'][0]['color'] ) && ! empty( $attributes['shadowHover'][0]['color'] ) ? $attributes['shadowHover'][0]['color'] : '#000000' ), ( isset( $attributes['shadowHover'][0]['opacity'] ) && is_numeric( $attributes['shadowHover'][0]['opacity'] ) ? $attributes['shadowHover'][0]['opacity'] : 0.2 ) ) );
@@ -186,25 +187,25 @@ class Kadence_Blocks_Submit_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 		}
 		// Hover before.
 		if ( 'gradient' === $bg_type && 'normal' === $bg_hover_type && ! empty( $attributes['backgroundHover'] ) ) {
-			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
+			$css->set_selector( '.kb-btn' . $class_id . '.kb-button:hover::before' );
 			$css->add_property( 'background', $css->render_color( $attributes['backgroundHover'] ) );
-			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button::before' );
+			$css->set_selector( '.kb-btn' . $class_id . '.kb-button::before' );
 			$css->add_property( 'transition', 'opacity .3s ease-in-out' );
 		}
 		if ( 'gradient' === $bg_hover_type && ! empty( $attributes['gradientHover'] ) ) {
-			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
+			$css->set_selector( '.kb-btn' . $class_id . '.kb-button:hover::before' );
 			$css->add_property( 'background', $attributes['gradientHover'] );
-			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button::before' );
+			$css->set_selector( '.kb-btn' . $class_id . '.kb-button::before' );
 			$css->add_property( 'transition', 'opacity .3s ease-in-out' );
 		}
 		// Only Icon.
 		if ( isset( $attributes['onlyIcon'][0] ) && '' !== $attributes['onlyIcon'][0] && true == $attributes['onlyIcon'][0] ) {
-			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button .kt-btn-inner-text' );
+			$css->set_selector( '.kb-btn' . $class_id . '.kb-button .kt-btn-inner-text' );
 			$css->add_property( 'display', 'none' );
 		}
 		if ( isset( $attributes['onlyIcon'][1] ) && '' !== $attributes['onlyIcon'][1] ) {
 			$css->set_media_state( 'tablet' );
-			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button .kt-btn-inner-text' );
+			$css->set_selector( '.kb-btn' . $class_id . '.kb-button .kt-btn-inner-text' );
 			if ( true == $attributes['onlyIcon'][1] ) {
 				$css->add_property( 'display', 'none' );
 			} elseif ( false == $attributes['onlyIcon'][1] ) {
@@ -213,7 +214,7 @@ class Kadence_Blocks_Submit_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 		}
 		if ( isset( $attributes['onlyIcon'][2] ) && '' !== $attributes['onlyIcon'][2] ) {
 			$css->set_media_state( 'mobile' );
-			$css->set_selector( '.kb-btn' . $unique_id . '.kb-button .kt-btn-inner-text' );
+			$css->set_selector( '.kb-btn' . $class_id . '.kb-button .kt-btn-inner-text' );
 			if ( true == $attributes['onlyIcon'][2] ) {
 				$css->add_property( 'display', 'none' );
 			} elseif ( false == $attributes['onlyIcon'][2] ) {
@@ -221,7 +222,7 @@ class Kadence_Blocks_Submit_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 			}
 		}
 		$css->set_media_state( 'desktop' );
-		$css->set_selector( '.kb-submit-field.kb-field' . $unique_id );
+		$css->set_selector( '.kb-submit-field.kb-field' . $class_id );
 		$hAlignKeys = array( 'hAlign' => 'desktop', 'thAlign' => 'tablet', 'mhAlign' => 'mobile' );
 		foreach( $hAlignKeys as $alignKey => $device ) {
 			if ( ! empty( $attributes[$alignKey]) ) {

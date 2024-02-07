@@ -27,7 +27,7 @@ let kbAdvHeadingTypedListener = setInterval(function () {
 
 			try {
 				if (strings) {
-					strings = JSON.parse(strings);
+					strings = JSON.parse(strings.replaceAll('&', '&amp;'));
 				}
 			} catch (e) {
 				console.log( 'Could decode typed text strings');
@@ -39,7 +39,7 @@ let kbAdvHeadingTypedListener = setInterval(function () {
 				stringsArray = [ ...strings ];
 			}
 
-			stringsArray.unshift( element.textContent );
+			stringsArray.unshift( element.textContent.replaceAll('&', '&amp;') );
 
 
 			kbTypedSettings.strings = stringsArray;

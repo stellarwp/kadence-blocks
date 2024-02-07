@@ -322,7 +322,8 @@ import fetchSearchResults from '../../links/get-post-search-results';
 								</Fragment>,
 								this.props.attributes,
 								dynamicAttribute, 
-								this.props
+								undefined,
+								this.props.context
 							) }
 						</div>
 					) }

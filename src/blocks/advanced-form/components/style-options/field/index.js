@@ -25,8 +25,8 @@ import {
 	ResponsiveGapSizeControl,
 	ResponsiveMeasureRangeControl,
 } from '@kadence/components';
+import { KadenceColorOutput } from '@kadence/helpers';
 import { useSetting } from '@wordpress/block-editor';
-
 import { default as useColorIsDark } from '../../use-color-is-dark';
 
 export default function FieldStyles( { setMetaAttribute, inputFont, style, useFormMeta } ) {
@@ -88,11 +88,11 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 				mobileValue={( undefined !== style?.gap?.[2] ? style.gap[2] : '' )}
 				onChangeMobile={( value ) => saveStyle( { gap: [( undefined !== style?.gap?.[0] ? style.gap[0] : '' ),( undefined !== style?.gap?.[1] ? style.gap[1] : '' ),value] } )}
 				min={0}
-				max={( style?.rowGapUnit === 'px' ? 200 : 12 )}
-				step={( style?.rowGapUnit === 'px' ? 1 : 0.1 )}
-				unit={ style?.rowGapUnit ? rowGapUnit : 'px' }
+				max={( style?.gapUnit === 'px' ? 200 : 12 )}
+				step={( style?.gapUnit === 'px' ? 1 : 0.1 )}
+				unit={ style?.gapUnit ? style.gapUnit : 'px' }
 				onUnit={( value ) => {
-					saveStyle( { rowGapUnit: value } );
+					saveStyle( { gapUnit: value } );
 				}}
 				units={[ 'px', 'em', 'rem' ]}
 			/>
@@ -181,7 +181,7 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 							value={( style?.borderActive ? style.borderActive : '' )}
 							default={''}
 							onChange={ ( value ) => {
-								saveStyle( { borderActive: value } );
+								saveStyle( { borderActive: KadenceColorOutput(value) } );
 							}}
 						/>
 					</>
@@ -266,98 +266,98 @@ export default function FieldStyles( { setMetaAttribute, inputFont, style, useFo
 								saveStyleBoxShadow( value, 7 );
 							}}
 						/>
+						<h2>{__( 'Border Settings', 'kadence-blocks' )}</h2>
+						<ResponsiveBorderControl
+							label={__( 'Border', 'kadence-blocks' )}
+							value={ [ fieldBorderStyle ] }
+							tabletValue={ [tabletFieldBorderStyle] }
+							mobileValue={ [mobileFieldBorderStyle] }
+							onChange={( value ) => setMetaAttribute( value[0], 'fieldBorderStyle' ) }
+							onChangeTablet={( value ) => setMetaAttribute( value[0], 'tabletFieldBorderStyle')}
+							onChangeMobile={( value ) => setMetaAttribute( value[0], 'mobileFieldBorderStyle' )}
+						/>
+						<ResponsiveMeasurementControls
+							label={__( 'Border Radius', 'kadence-blocks' )}
+							value={fieldBorderRadius}
+							tabletValue={tabletFieldBorderRadius}
+							mobileValue={mobileFieldBorderRadius}
+							onChange={( value ) => setMetaAttribute( value, 'fieldBorderRadius')}
+							onChangeTablet={( value ) => setMetaAttribute( value, 'tabletFieldBorderRadius' )}
+							onChangeMobile={( value ) => setMetaAttribute( value, 'mobileFieldBorderRadius' )}
+							unit={fieldBorderRadiusUnit}
+							units={[ 'px', 'em', 'rem', '%' ]}
+							onUnit={( value ) => setMetaAttribute( value, 'fieldBorderRadiusUnit' ) }
+							max={(fieldBorderRadiusUnit === 'em' || fieldBorderRadiusUnit === 'rem' ? 24 : 500)}
+							step={(fieldBorderRadiusUnit === 'em' || fieldBorderRadiusUnit === 'rem' ? 0.1 : 1)}
+							min={ 0 }
+							isBorderRadius={ true }
+							allowEmpty={true}
+						/>
+						<TypographyControls
+							fontSize={inputFont.size}
+							onFontSize={( value ) => saveInputFont( { size: value } )}
+							fontSizeType={inputFont.sizeType}
+							onFontSizeType={( value ) => saveInputFont( { sizeType: value } )}
+							lineHeight={inputFont.lineHeight}
+							onLineHeight={( value ) => saveInputFont( { lineHeight: value } )}
+							lineHeightType={inputFont.lineType}
+							onLineHeightType={( value ) => saveInputFont( { lineType: value } )}
+						/>
+						<KadencePanelBody
+							title={__( 'Advanced Field Settings', 'kadence-blocks' )}
+							initialOpen={false}
+							panelName={'kb-form-advanced-field-settings'}
+						>
+							<TypographyControls
+								fontGroup={'body'}
+								reLetterSpacing={inputFont.letterSpacing}
+								onLetterSpacing={( value ) => saveInputFont( { letterSpacing: value } )}
+								letterSpacingType={inputFont?.letterType}
+								onLetterSpacingType={( value ) => saveInputFont( { letterType: value } )}
+								textTransform={inputFont.textTransform}
+								onTextTransform={( value ) => saveInputFont( { textTransform: value } )}
+								fontFamily={inputFont.family}
+								onFontFamily={( value ) => saveInputFont( { family: value } )}
+								onFontChange={( select ) => {
+									saveInputFont( {
+										family: select.value,
+										google: select.google,
+									} );
+								}}
+								onFontArrayChange={( values ) => saveInputFont( values )}
+								googleFont={inputFont.google}
+								onGoogleFont={( value ) => saveInputFont( { google: value } )}
+								loadGoogleFont={inputFont.loadGoogle}
+								onLoadGoogleFont={( value ) => saveInputFont( { loadGoogle: value } )}
+								fontVariant={inputFont.variant}
+								onFontVariant={( value ) => saveInputFont( { variant: value } )}
+								fontWeight={inputFont.weight}
+								onFontWeight={( value ) => saveInputFont( { weight: value } )}
+								fontStyle={inputFont.style}
+								onFontStyle={( value ) => saveInputFont( { style: value } )}
+								fontSubset={inputFont.subset}
+								onFontSubset={( value ) => saveInputFont( { subset: value } )}
+							/>
+							<ResponsiveMeasurementControls
+								label={__( 'Input Padding', 'kadence-blocks' )}
+								value={ style?.padding}
+								onChange={( value ) => saveStyle( { padding: value } )}
+								tabletValue={ style?.tabletPadding}
+								onChangeTablet={( value ) => saveStyle( { tabletPadding: value } )}
+								mobileValue={ style?.mobilePadding}
+								onChangeMobile={( value ) => saveStyle( { mobilePadding: value } )}
+								min={0}
+								max={( style?.paddingUnit === 'em' || style?.paddingUnit === 'rem' ? 12 : 200 )}
+								step={( style?.paddingUnit === 'em' || style?.paddingUnit === 'rem' ? 0.1 : 1 )}
+								unit={ style?.paddingUnit ? style?.paddingUnit : 'px' }
+								units={[ 'px', 'em', 'rem' ]}
+								onUnit={( value ) => saveStyle( { paddingUnit: value } )}
+								allowEmpty={true}
+							/>
+						</KadencePanelBody>
 					</>
 				}
 			/>
-			<h2>{__( 'Border Settings', 'kadence-blocks' )}</h2>
-			<ResponsiveBorderControl
-				label={__( 'Border', 'kadence-blocks' )}
-				value={ [ fieldBorderStyle ] }
-				tabletValue={ [tabletFieldBorderStyle] }
-				mobileValue={ [mobileFieldBorderStyle] }
-				onChange={( value ) => setMetaAttribute( value[0], 'fieldBorderStyle' ) }
-				onChangeTablet={( value ) => setMetaAttribute( value[0], 'tabletFieldBorderStyle')}
-				onChangeMobile={( value ) => setMetaAttribute( value[0], 'mobileFieldBorderStyle' )}
-			/>
-			<ResponsiveMeasurementControls
-				label={__( 'Border Radius', 'kadence-blocks' )}
-				value={fieldBorderRadius}
-				tabletValue={tabletFieldBorderRadius}
-				mobileValue={mobileFieldBorderRadius}
-				onChange={( value ) => setMetaAttribute( value, 'fieldBorderRadius')}
-				onChangeTablet={( value ) => setMetaAttribute( value, 'tabletFieldBorderRadius' )}
-				onChangeMobile={( value ) => setMetaAttribute( value, 'mobileFieldBorderRadius' )}
-				unit={fieldBorderRadiusUnit}
-				units={[ 'px', 'em', 'rem', '%' ]}
-				onUnit={( value ) => setMetaAttribute( value, 'fieldBorderRadiusUnit' ) }
-				max={(fieldBorderRadiusUnit === 'em' || fieldBorderRadiusUnit === 'rem' ? 24 : 500)}
-				step={(fieldBorderRadiusUnit === 'em' || fieldBorderRadiusUnit === 'rem' ? 0.1 : 1)}
-				min={ 0 }
-				isBorderRadius={ true }
-				allowEmpty={true}
-			/>
-			<TypographyControls
-				fontSize={inputFont.size}
-				onFontSize={( value ) => saveInputFont( { size: value } )}
-				fontSizeType={inputFont.sizeType}
-				onFontSizeType={( value ) => saveInputFont( { sizeType: value } )}
-				lineHeight={inputFont.lineHeight}
-				onLineHeight={( value ) => saveInputFont( { lineHeight: value } )}
-				lineHeightType={inputFont.lineType}
-				onLineHeightType={( value ) => saveInputFont( { lineType: value } )}
-			/>
-			<KadencePanelBody
-				title={__( 'Advanced Field Settings', 'kadence-blocks' )}
-				initialOpen={false}
-				panelName={'kb-form-advanced-field-settings'}
-			>
-				<TypographyControls
-					fontGroup={'body'}
-					reLetterSpacing={inputFont.letterSpacing}
-					onLetterSpacing={( value ) => saveInputFont( { letterSpacing: value } )}
-					letterSpacingType={inputFont?.letterType}
-					onLetterSpacingType={( value ) => saveInputFont( { letterType: value } )}
-					textTransform={inputFont.textTransform}
-					onTextTransform={( value ) => saveInputFont( { textTransform: value } )}
-					fontFamily={inputFont.family}
-					onFontFamily={( value ) => saveInputFont( { family: value } )}
-					onFontChange={( select ) => {
-						saveInputFont( {
-							family: select.value,
-							google: select.google,
-						} );
-					}}
-					onFontArrayChange={( values ) => saveInputFont( values )}
-					googleFont={inputFont.google}
-					onGoogleFont={( value ) => saveInputFont( { google: value } )}
-					loadGoogleFont={inputFont.loadGoogle}
-					onLoadGoogleFont={( value ) => saveInputFont( { loadGoogle: value } )}
-					fontVariant={inputFont.variant}
-					onFontVariant={( value ) => saveInputFont( { variant: value } )}
-					fontWeight={inputFont.weight}
-					onFontWeight={( value ) => saveInputFont( { weight: value } )}
-					fontStyle={inputFont.style}
-					onFontStyle={( value ) => saveInputFont( { style: value } )}
-					fontSubset={inputFont.subset}
-					onFontSubset={( value ) => saveInputFont( { subset: value } )}
-				/>
-				<ResponsiveMeasurementControls
-					label={__( 'Input Padding', 'kadence-blocks' )}
-					value={ style?.padding}
-					onChange={( value ) => saveStyle( { padding: value } )}
-					tabletValue={ style?.tabletPadding}
-					onChangeTablet={( value ) => saveStyle( { tabletPadding: value } )}
-					mobileValue={ style?.mobilePadding}
-					onChangeMobile={( value ) => saveStyle( { mobilePadding: value } )}
-					min={0}
-					max={( style?.paddingUnit === 'em' || style?.paddingUnit === 'rem' ? 12 : 200 )}
-					step={( style?.paddingUnit === 'em' || style?.paddingUnit === 'rem' ? 0.1 : 1 )}
-					unit={ style?.paddingUnit ? style?.paddingUnit : 'px' }
-					units={[ 'px', 'em', 'rem' ]}
-					onUnit={( value ) => saveStyle( { paddingUnit: value } )}
-					allowEmpty={true}
-				/>
-			</KadencePanelBody>
 		</>
 	);
 

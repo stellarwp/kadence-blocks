@@ -80,10 +80,12 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$align = ( ! empty( $attributes['align'] ) ? $attributes['align'] : '' );
 		if ( $align !== 'wide' && $align !== 'full' ) {
-			$css->set_selector( '.kb-image' . $unique_id . '.kb-image-is-ratio-size, .kb-image' . $unique_id . ' .kb-image-is-ratio-size' );
 			if ( isset( $attributes['imgMaxWidth'] ) && is_numeric( $attributes['imgMaxWidth'] ) ) {
+				$css->set_selector( '.kb-image' . $unique_id . '.kb-image-is-ratio-size, .kb-image' . $unique_id . ' .kb-image-is-ratio-size' );
 				$css->add_property( 'max-width', $attributes['imgMaxWidth'] . 'px' );
 				$css->add_property( 'width', '100%' );
+				$css->set_selector( '.wp-block-kadence-column > .kt-inside-inner-col > .kb-image' . $unique_id . '.kb-image-is-ratio-size, .wp-block-kadence-column > .kt-inside-inner-col > .kb-image' . $unique_id . ' .kb-image-is-ratio-size' );
+				$css->add_property( 'align-self', 'unset' );
 			}
 		}
 		if ( $align === 'center' || $align === 'right' || $align === 'left' ) {
@@ -314,7 +316,27 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 
 		return $css->css_output();
 	}
-
+	/**
+	 * Build HTML for dynamic blocks
+	 *
+	 * @param $attributes
+	 * @param $unique_id
+	 * @param $content
+	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
+	 *
+	 * @return mixed
+	 */
+	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
+		$update_alt_globally = isset( $attributes['globalAlt'] ) && true === $attributes['globalAlt'] ? true : false;
+		if ( apply_filters( 'kadence_blocks_update_alt_text_globally', $update_alt_globally, $attributes ) && ! empty( $attributes['id'] ) ) {
+			// Check if we can get the alt text.
+			$alt = get_post_meta( $attributes['id'], '_wp_attachment_image_alt', true );
+			if ( ! empty( $alt ) ) {
+				$content = str_replace( 'alt=""', 'alt="' . esc_attr( $alt ) . '"', $content );
+			}
+		}
+		return $content;
+	}
 
 }
 

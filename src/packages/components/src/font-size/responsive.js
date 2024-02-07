@@ -105,6 +105,7 @@
 			 min={ min }
 			 unit={ unit }
 			 radio={ radio }
+			 preventUnitSelection={ true }
 		 />
 	 );
 	 output.Tablet = (
@@ -120,6 +121,7 @@
 			min={ min }
 			unit={ unit }
 			radio={ radio }
+			preventUnitSelection={ true }
 		 />
 	 );
 	 output.Desktop = (

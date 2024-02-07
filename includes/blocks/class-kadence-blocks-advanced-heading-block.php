@@ -95,7 +95,6 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		}
 		$css->render_measure_output( $attributes, 'padding', 'padding' );
 		$css->render_measure_output( $attributes, 'margin', 'margin' );
-		$css->render_responsive_range( $attributes, 'maxWidth', 'max-width' );
 
 		// Style.
 		if ( isset( $attributes['align'] ) && ! empty( $attributes['align'] ) ) {
@@ -244,7 +243,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] .kb-adv-heading-icon' );
 			$css->render_color_output( $attributes, 'iconColor', 'color' );
 			$css->render_responsive_range( $attributes, 'iconSize', 'font-size', 'iconSizeUnit' );
-			$css->render_measure_output( $attributes, 'iconPadding', 'margin', array( 'unit_key' => 'iconSizeUnit' ) );
+			$css->render_measure_output( $attributes, 'iconPadding', 'margin', array( 'unit_key' => 'iconPaddingUnit' ) );
 			if ( isset( $attributes['lineHeight'] ) ) {
 				$css->add_property( 'line-height', $attributes['lineHeight'] . ( empty( $attributes['lineType'] ) ? 'px' : $attributes['lineType'] ) );
 			}
@@ -300,6 +299,15 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( 'border-style', $attributes['markBorderStyle'] );
 		}
 		$css->render_border_styles( $attributes, 'markBorderStyles' );
+		$css->render_border_radius( $attributes, 'markBorderRadius', ( ! empty( $attributes['markBorderRadiusUnit'] ) ? $attributes['markBorderRadiusUnit'] : 'px' ) );
+
+		$css->set_media_state( 'tablet' );
+		$css->render_border_radius( $attributes, 'tabletMarkBorderRadius', ( ! empty( $attributes['markBorderRadiusUnit'] ) ? $attributes['markBorderRadiusUnit'] : 'px' ) );
+		$css->set_media_state( 'desktop' );
+
+		$css->set_media_state( 'mobile' );
+		$css->render_border_radius( $attributes, 'mobileMarkBorderRadius', ( ! empty( $attributes['markBorderRadiusUnit'] ) ? $attributes['markBorderRadiusUnit'] : 'px' ) );
+		$css->set_media_state( 'desktop' );
 		$mark_padding_args = array(
 			'desktop_key' => 'markPadding',
 			'tablet_key'  => 'markTabPadding',
@@ -531,7 +539,9 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			if ( $line_icon ) {
 				$stroke_width = 2;
 			}
-			$svg_icon = Kadence_Blocks_Svg_Render::render( $attributes['icon'], $fill, $stroke_width );
+			$title = ( ! empty ( $attributes['iconTitle'] ) ? $attributes['iconTitle'] : '' );
+			$hidden = ( empty( $title ) ? true : false );
+			$svg_icon = Kadence_Blocks_Svg_Render::render( $attributes['icon'], $fill, $stroke_width, $title, $hidden );
 		}
 		return '<span class="kb-svg-icon-wrap kb-adv-heading-icon kb-svg-icon-' . esc_attr( $attributes['icon'] ) . ' kb-adv-heading-icon-side-' . esc_attr( $icon_side ) . '">' . $svg_icon . '</span>';
 	}

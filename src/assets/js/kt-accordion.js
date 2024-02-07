@@ -399,7 +399,9 @@ function () {
     value: function _initalState() {
       // Sets state object as per `this.settings.openHeadersOnLoad`
       var headersToOpen = this.settings.openHeadersOnLoad;
-
+      this.headers.forEach(function (header, index) {
+        header.setAttribute('aria-expanded', false);
+      });
       if (headersToOpen.length) {
         this.toggling = true;
         this._openHeadersOnLoad(headersToOpen);
@@ -983,6 +985,11 @@ return KadenceAccordion;
         } );
       };
       window.addEventListener( 'hashchange', window.KadenceBlocksAccordion.anchor, false );
+
+	  window.addEventListener( 'kb-query-loaded', () => {
+		  window.KadenceBlocksAccordion.init();
+	  } );
+
 		}
 	}
 	if ( 'loading' === document.readyState ) {

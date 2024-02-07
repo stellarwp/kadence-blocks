@@ -21,10 +21,10 @@ import {
 	ResponsiveRangeControls,
 	KadencePanelBody,
 	URLInputControl,
-	VerticalAlignmentIcon,
-	KadenceRadioButtons,
+	ResponsiveRadioRangeControls,
 	ResponsiveAlignControls,
 	BoxShadowControl,
+	KadenceFormConditionals,
 	BackgroundControl as KadenceBackgroundControl,
 	ResponsiveBorderControl,
 	BackgroundTypeControl,
@@ -57,6 +57,7 @@ import {
 
 import './editor.scss';
 import metadata from './block.json';
+import { getPreviewGutterSize } from './utils';
 //import ResizeGridSection from './resize-grid-section';
 /**
  * Import WordPress
@@ -96,7 +97,7 @@ function SectionEdit( props ) {
 		className,
 	} = props;
 
-	const { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic, direction, gutter, gutterUnit, verticalAlignment, justifyContent, backgroundImgHover, backgroundHover, borderHover, borderHoverWidth, borderHoverRadius, shadowHover, displayHoverShadow, tabletBorderHoverWidth, mobileBorderHoverWidth, textColorHover, linkColorHover, linkHoverColorHover, linkNoFollow, linkSponsored, link, linkTarget, linkTitle, wrapContent, heightUnit, height, maxWidth, maxWidthUnit, htmlTag, sticky, stickyOffset, stickyOffsetUnit, overlay, overlayHover, overlayImg, overlayImgHover, overlayOpacity, overlayHoverOpacity, align, padding, tabletPadding, mobilePadding, margin, tabletMargin, mobileMargin, backgroundType, backgroundHoverType, gradient, gradientHover, overlayType, overlayHoverType, overlayGradient, overlayGradientHover, borderRadiusUnit, borderHoverRadiusUnit, tabletBorderRadius, mobileBorderRadius, borderStyle, mobileBorderStyle, tabletBorderStyle, borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle, tabletBorderHoverRadius, mobileBorderHoverRadius, inQueryBlock, hoverOverlayBlendMode, overlayBlendMode, rowGapUnit, rowGap, flexBasis, flexBasisUnit } = attributes;
+	const { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic, direction, gutter, gutterUnit, verticalAlignment, verticalAlignmentTablet, verticalAlignmentMobile, justifyContent, backgroundImgHover, backgroundHover, borderHover, borderHoverWidth, borderHoverRadius, shadowHover, displayHoverShadow, tabletBorderHoverWidth, mobileBorderHoverWidth, textColorHover, linkColorHover, linkHoverColorHover, linkNoFollow, linkSponsored, link, linkTarget, linkTitle, wrapContent, heightUnit, height, maxWidth, maxWidthUnit, htmlTag, sticky, stickyOffset, stickyOffsetUnit, overlay, overlayHover, overlayImg, overlayImgHover, overlayOpacity, overlayHoverOpacity, align, padding, tabletPadding, mobilePadding, margin, tabletMargin, mobileMargin, backgroundType, backgroundHoverType, gradient, gradientHover, overlayType, overlayHoverType, overlayGradient, overlayGradientHover, borderRadiusUnit, borderHoverRadiusUnit, tabletBorderRadius, mobileBorderRadius, borderStyle, mobileBorderStyle, tabletBorderStyle, borderHoverStyle, tabletBorderHoverStyle, mobileBorderHoverStyle, tabletBorderHoverRadius, mobileBorderHoverRadius, inQueryBlock, hoverOverlayBlendMode, overlayBlendMode, rowGapUnit, rowGap, flexBasis, flexBasisUnit, rowGapVariable, gutterVariable, kbVersion } = attributes;
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const [ dynamicBackgroundImg, setDynamicBackgroundImg ] = useState( '' );
@@ -112,7 +113,7 @@ function SectionEdit( props ) {
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 				parentData: {
 					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
-					postId: select( 'core/editor' ).getCurrentPostId(),
+					postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
 					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
 					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
 				}
@@ -273,12 +274,105 @@ function SectionEdit( props ) {
 			const tempMobileBorderHoverWidth = JSON.parse(JSON.stringify(tempMobileBorderHoverStyle));
 			setAttributes( { mobileBorderHoverStyle: tempMobileBorderHoverWidth, mobileBorderWidth:[ '', '', '', '' ] } );
 		}
+		if ( ! kbVersion || kbVersion < 2 ) {
+			// Update Align and Text Align settings for 3.2.0
+			let deskJustifyAlign = ( justifyContent?.[0] ? justifyContent[0] : '' );
+			let tabletJustifyAlign = ( justifyContent?.[1] ? justifyContent[1] : '' );
+			let mobileJustifyAlign = ( justifyContent?.[2] ? justifyContent[2] : '' );
+			let deskDirection = ( direction?.[0] ? direction[0] : '' );
+			let tabletDirection = ( direction?.[1] ? direction[1] : '' );
+			let mobileDirection = ( direction?.[2] ? direction[2] : '' );
+			let updateJustify = false;
+			if ( '' !== textAlign?.[0] && deskDirection === 'horizontal' && deskJustifyAlign === '' ) {
+				switch ( textAlign[0] ) {
+					case 'center':
+						deskJustifyAlign = 'center';
+						break;
+					case 'left':
+						deskJustifyAlign = 'flex-start';
+						break;
+					case 'right':
+						deskJustifyAlign = 'flex-end';
+						break;
+				}
+				updateJustify = true;
+			}
+			if ( '' !== textAlign?.[1] && ( tabletDirection === 'horizontal' || ( tabletDirection === '' && deskDirection === 'horizontal' ) ) && deskJustifyAlign === '' ) {
+				switch ( textAlign[1] ) {
+					case 'center':
+						tabletJustifyAlign = 'center';
+						break;
+					case 'left':
+						tabletJustifyAlign = 'flex-start';
+						break;
+					case 'right':
+						tabletJustifyAlign = 'flex-end';
+						break;
+				}
+				updateJustify = true;
+			}
+			if ( '' !== textAlign?.[2] && ( mobileDirection === 'horizontal' || ( mobileDirection === '' && tabletDirection === 'horizontal' ) || ( mobileDirection === '' && tabletDirection === '' && deskDirection === 'horizontal' ) ) && deskJustifyAlign === '' ) {
+				switch ( textAlign[2] ) {
+					case 'center':
+						mobileJustifyAlign = 'center';
+						break;
+					case 'left':
+						mobileJustifyAlign = 'flex-start';
+						break;
+					case 'right':
+						mobileJustifyAlign = 'flex-end';
+						break;
+				}
+				updateJustify = true;
+			}
+			if ( deskDirection === 'vertical' && deskJustifyAlign !== '' ) {
+				deskJustifyAlign = '';
+				updateJustify = true;
+			}
+			if ( ( tabletDirection === 'vertical' || ( tabletDirection === '' && deskDirection === 'vertical' ) ) && tabletJustifyAlign !== '' ) {
+				tabletJustifyAlign = '';
+				updateJustify = true;
+			}
+			if ( ( mobileDirection === 'vertical' || ( mobileDirection === '' && tabletDirection === 'vertical' ) || ( mobileDirection === '' && tabletDirection === '' && deskDirection === 'vertical' ) ) && mobileJustifyAlign !== '' ) {
+				mobileJustifyAlign = '';
+				updateJustify = true;
+			}
+			if ( updateJustify ) {
+				setAttributes( { justifyContent: [ deskJustifyAlign, tabletJustifyAlign, mobileJustifyAlign ] } );
+			}
+			// Update Gutter settings for 3.2.0.
+			if ( '' !== gutter?.[0] || '' !== gutter?.[1] || '' !== gutter?.[2] ) {
+				setAttributes( { gutterVariable: [ ( '' !== gutter?.[0] ? 'custom' : '' ), ( '' !== gutter?.[1] ? 'custom' : '' ), ( '' !== gutter?.[2] ? 'custom' : '' ) ] } );
+			}
+			if ( '' !== rowGap?.[0] || '' !== rowGap?.[1] || '' !== rowGap?.[2] ) {
+				setAttributes( { rowGapVariable: [ ( '' !== rowGap?.[0] ? 'custom' : '' ), ( '' !== rowGap?.[1] ? 'custom' : '' ), ( '' !== rowGap?.[2] ? 'custom' : '' ) ] } );
+			}
+			// Update row gap to match gutter if layout is horizontal.
+			if ( undefined !== rowGap && ( ( deskDirection === 'horizontal' ) || tabletDirection === 'horizontal' || mobileDirection === 'horizontal' ) ) {
+				let tempRowGap = JSON.parse( JSON.stringify( rowGap ) );
+				if ( deskDirection  === 'horizontal' ) {
+					tempRowGap[0] = ( '' !== gutter?.[0] ? gutter[0] : 10 );
+				}
+				if ( ( ( tabletDirection === '' && deskDirection === 'horizontal' ) || ( tabletDirection === 'horizontal' ) ) && '' !== gutter?.[1] ) {
+					tempRowGap[1] = gutter?.[1];
+				}
+				if ( ( ( mobileDirection === '' && tabletDirection === 'horizontal' ) || ( mobileDirection === '' && tabletDirection === '' && deskDirection === 'horizontal' ) || ( mobileDirection === 'horizontal' ) ) && '' !== gutter?.[2] ) {
+					tempRowGap[2] = gutter?.[2];
+				}
+				setAttributes( { rowGap: tempRowGap, rowGapUnit: ( gutterUnit ? gutterUnit : 'px' ) } );
+			}
+			setAttributes( { kbVersion: 2 } );
+		}
+
+		if( inRowBlock && align !== '' ) {
+			setAttributes( { align: '' } );
+		}
 	}, [] );
 
 	//set the dynamic image state
 	useEffect( () => {
 		debouncedSetDynamicState( 'kadence.dynamicBackground', '', attributes, 'backgroundImg:0:bgImg', setAttributes, context, setDynamicBackgroundImg, backgroundImg ? false : true );
-	}, [ 'backgroundImg' ] );
+	}, [ backgroundImg, context ] );
 
 	const { hasInnerBlocks, inRowBlock, inFormBlock } = useSelect(
 		( select ) => {
@@ -394,8 +488,6 @@ function SectionEdit( props ) {
 			bgImg: '',
 		} );
 	};
-	const gutterMax = ( gutterUnit !== 'px' ? 12 : 200 );
-	const gutterStep = ( gutterUnit !== 'px' ? 0.1 : 1 );
 	const previewPaddingType = ( undefined !== paddingType ? paddingType : 'px' );
 	const previewMarginType = ( undefined !== marginType ? marginType : 'px' );
 	// Margin
@@ -428,13 +520,32 @@ function SectionEdit( props ) {
 	const previewHoverRadiusLeft = getPreviewSize( previewDevice, ( undefined !== borderHoverRadius ? borderHoverRadius[ 3 ] : '' ), ( undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[ 3 ] : '' ), ( undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[ 3 ] : '' ) );
 
 	const previewAlign = getPreviewSize( previewDevice, ( textAlign && textAlign[ 0 ] ? textAlign[ 0 ] : '' ) , ( textAlign && textAlign[ 1 ] ? textAlign[ 1 ] : '' ), ( textAlign && textAlign[ 2 ] ? textAlign[ 2 ] : '' ) );
-	const previewGutter = getPreviewSize( previewDevice, ( gutter && '' !== gutter[ 0 ] ? gutter[ 0 ] : '' ) , ( gutter && '' !== gutter[ 1 ] ? gutter[ 1 ] : '' ), ( gutter && '' !== gutter[ 2 ] ? gutter[ 2 ] : '' ) );
+	const previewVerticalAlign = getPreviewSize( previewDevice, ( verticalAlignment ? verticalAlignment : '' ) , ( verticalAlignmentTablet ? verticalAlignmentTablet : '' ), ( verticalAlignmentMobile ? verticalAlignmentMobile : '' ) );
+	let previewVerticalAlignCSS = previewVerticalAlign;
+	if ( previewVerticalAlign && 'top' === previewVerticalAlign ) {
+		previewVerticalAlignCSS = 'flex-start';
+	} else if ( previewVerticalAlign && 'middle' === previewVerticalAlign ) {
+		previewVerticalAlignCSS = 'center';
+	} else if ( previewVerticalAlign && 'bottom' === previewVerticalAlign ) {
+		previewVerticalAlignCSS = 'flex-end';
+	}
+	const previewGutter = getPreviewSize( previewDevice, ( gutter && '' !== gutter[ 0 ] ? gutter[ 0 ] : '10' ) , ( gutter && '' !== gutter[ 1 ] ? gutter[ 1 ] : '' ), ( gutter && '' !== gutter[ 2 ] ? gutter[ 2 ] : '' ) );
+	const previewGutterVariable = getPreviewSize( previewDevice, ( gutterVariable && '' !== gutterVariable[ 0 ] ? gutterVariable[ 0 ] : 'sm' ) , ( gutterVariable && '' !== gutterVariable[ 1 ] ? gutterVariable[ 1 ] : '' ), ( gutterVariable && '' !== gutterVariable[ 2 ] ? gutterVariable[ 2 ] : '' ) );
+	const horizontalGap = getPreviewGutterSize( previewDevice, previewGutterVariable, gutter, gutterUnit );
+
 	const previewRowGap = getPreviewSize( previewDevice, ( rowGap && '' !== rowGap[ 0 ] ? rowGap[ 0 ] : '' ) , ( rowGap && '' !== rowGap[ 1 ] ? rowGap[ 1 ] : '' ), ( rowGap && '' !== rowGap[ 2 ] ? rowGap[ 2 ] : '' ) );
-	const previewDirection = getPreviewSize( previewDevice, ( direction && '' !== direction[ 0 ] ? direction[ 0 ] : '' ) , ( direction && '' !== direction[ 1 ] ? direction[ 1 ] : '' ), ( direction && '' !== direction[ 2 ] ? direction[ 2 ] : '' ) );
-	const previewJustify = getPreviewSize( previewDevice, ( justifyContent && '' !== justifyContent[ 0 ] ? justifyContent[ 0 ] : '' ) , ( justifyContent && '' !== justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ), ( justifyContent && '' !== justifyContent[ 2 ] ? justifyContent[ 2 ] : '' ) );
+	const previewRowGapVariable = getPreviewSize( previewDevice, ( rowGapVariable && '' !== rowGapVariable[ 0 ] ? rowGapVariable[ 0 ] : 'none' ) , ( rowGapVariable && '' !== rowGapVariable[ 1 ] ? rowGapVariable[ 1 ] : '' ), ( rowGapVariable && '' !== rowGapVariable[ 2 ] ? rowGapVariable[ 2 ] : '' ) );
+	const flexRowGapVariable = getPreviewSize( previewDevice, ( rowGapVariable && '' !== rowGapVariable[ 0 ] ? rowGapVariable[ 0 ] : '' ) , ( rowGapVariable && '' !== rowGapVariable[ 1 ] ? rowGapVariable[ 1 ] : '' ), ( rowGapVariable && '' !== rowGapVariable[ 2 ] ? rowGapVariable[ 2 ] : '' ) );
+
+	const verticalGap = getPreviewGutterSize( previewDevice, previewRowGapVariable, rowGap, rowGapUnit );
+	const previewDirection = getPreviewSize( previewDevice, ( direction && '' !== direction[ 0 ] ? direction[ 0 ] : 'vertical' ) , ( direction && '' !== direction[ 1 ] ? direction[ 1 ] : '' ), ( direction && '' !== direction[ 2 ] ? direction[ 2 ] : '' ) );
+
+	const previewJustify = getPreviewSize( previewDevice, ( undefined !== justifyContent?.[0] && '' !== justifyContent?.[0] ? justifyContent[ 0 ] : '' ) , ( undefined !== justifyContent?.[1] && '' !== justifyContent?.[1] ? justifyContent[ 1 ] : ( 'horizontal' == direction?.[ 0 ] && 'vertical' == direction?.[ 1 ] ? 'stretch' : '' ) ), ( undefined !== justifyContent?.[2] && '' !== justifyContent?.[2] ? justifyContent[ 2 ] : ( 'horizontal' == direction?.[ 1 ] && 'vertical' == direction?.[ 2 ] ? 'stretch' : '' ) ) );
+
+
 	const previewWrap = getPreviewSize( previewDevice, ( wrapContent && '' !== wrapContent[ 0 ] ? wrapContent[ 0 ] : '' ) , ( wrapContent && '' !== wrapContent[ 1 ] ? wrapContent[ 1 ] : '' ), ( wrapContent && '' !== wrapContent[ 2 ] ? wrapContent[ 2 ] : '' ) );
 	const backgroundString = ( background ? KadenceColorOutput( background, backgroundOpacity ) : undefined );
-	const previewFlexBasis = getPreviewSize( previewDevice, ( flexBasis && '' !== flexBasis[ 0 ] ? flexBasis[ 0 ] : '' ) , ( flexBasis && '' !== flexBasis[ 1 ] ? flexBasis[ 1 ] : '' ), ( flexBasis && '' !== flexBasis[ 2 ] ? flexBasis[ 2 ] : '' ) );
+	const previewFlexBasis = getPreviewSize( previewDevice, ( ( previewDirection === 'horizontal' || previewDirection === 'horizontal-reverse' ) && flexBasis && '' !== flexBasis[ 0 ] ? flexBasis[ 0 ] : '' ) , ( ( previewDirection === 'horizontal' || previewDirection === 'horizontal-reverse' ) && flexBasis && '' !== flexBasis[ 1 ] ? flexBasis[ 1 ] : '' ), ( ( previewDirection === 'horizontal' || previewDirection === 'horizontal-reverse' ) && flexBasis && '' !== flexBasis[ 2 ] ? flexBasis[ 2 ] : '' ) );
 
 	const previewMaxWidth = getPreviewSize( previewDevice, ( maxWidth && maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ) , ( maxWidth && maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), ( maxWidth && maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) );
 	const previewMinHeight = getPreviewSize( previewDevice, ( height && '' !== height[ 0 ] ? height[ 0 ] : '' ) , ( height && '' !== height[ 1 ] ? height[ 1 ] : '' ), ( height && '' !== height[ 2 ] ? height[ 2 ] : '' ) );
@@ -452,8 +563,8 @@ function SectionEdit( props ) {
 		'kvs-md-false': vstablet !== 'undefined' && vstablet,
 		'kvs-sm-false': vsmobile !== 'undefined' && vsmobile,
 	} );
-	const hasBackgroundImage = ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? true : false );
 	const previewBackgroundImg = dynamicBackgroundImg ? dynamicBackgroundImg : backgroundImg;
+	const hasBackgroundImage = ( previewBackgroundImg && previewBackgroundImg[ 0 ] && previewBackgroundImg[ 0 ].bgImg ? true : false );
 	const previewBackgroundImgCSS = hasBackgroundImage ? `url( ${ previewBackgroundImg[ 0 ].bgImg } )` : '';
 	const previewBackground = backgroundType === 'gradient' ? gradient : previewBackgroundImgCSS;
 	const hasHoverBackgroundImage = ( backgroundImgHover && backgroundImgHover[ 0 ] && backgroundImgHover[ 0 ].bgImg ? true : false );
@@ -473,7 +584,8 @@ function SectionEdit( props ) {
 		'kb-section-only-appender': ! hasInnerBlocks,
 		[ `kadence-inner-column-direction-${ ( previewDirection ? previewDirection : 'vertical' ) }` ]: true,
 		[ `kadence-inner-column-text-align-${ ( previewAlign ? previewAlign : 'normal' ) }` ]: true,
-		[ `kadence-inner-column-vertical-align-${ ( verticalAlignment ? verticalAlignment : 'inherit' ) }` ]: true,
+		[ `kadence-inner-column-vertical-align-${ ( previewVerticalAlign ? previewVerticalAlign : 'inherit' ) }` ]: true,
+		'section-is-flex': ( previewDirection === 'horizontal' || previewDirection === 'horizontal-reverse' || previewDirection === 'vertical-reverse' || previewJustify || previewFlexBasis || flexRowGapVariable || previewVerticalAlign ),
 	} );
 	const blockProps = useBlockProps( {
 		className: classes,
@@ -481,14 +593,14 @@ function SectionEdit( props ) {
 			top: ( sticky && undefined !== previewStickyOffset ? previewStickyOffset + previewStickyOffsetUnit : undefined ),
 		},
 		'data-align': ( ! inRowBlock && ( 'full' === align || 'wide' === align ) ? align : undefined ),
-		'data-vertical-align': ( 'top' === verticalAlignment || 'middle' === verticalAlignment || 'bottom' === verticalAlignment ? verticalAlignment : undefined ),
+		'data-vertical-align': ( 'top' === previewVerticalAlign || 'middle' === previewVerticalAlign || 'bottom' === previewVerticalAlign ? previewVerticalAlign : undefined ),
 	} );
 	const innerBlocksProps = useInnerBlocksProps(
 		{
 			className: innerClasses,
 		},
 		{
-			orientation: ( direction && direction[ 0 ] ? direction[ 0 ] : 'vertical' ),
+			orientation: ( previewDirection === 'horizontal' || previewDirection === 'horizontal-reverse' ? 'horizontal' : 'vertical' ),
 			templateLock: ( templateLock ? templateLock : false ),
 			renderAppender: hasInnerBlocks
 				? undefined
@@ -496,7 +608,7 @@ function SectionEdit( props ) {
 			allowedBlocks: inFormBlock ? FORM_ALLOWED_BLOCKS : undefined
 		}
 	);
-	const previewVerticalAlign = ( verticalAlignment ? verticalAlignment : ( direction && direction[ 0 ] && direction[ 0 ] === 'horizontal' ? 'middle' : 'top' ) );
+	const actualVerticalAlign = ( previewVerticalAlign ? previewVerticalAlign : ( previewDirection === 'horizontal' || previewDirection === 'horizontal-reverse' ? 'middle' : 'top' ) );
 	return (
 		<div { ...blockProps }>
 			<style>
@@ -530,17 +642,29 @@ function SectionEdit( props ) {
 				{ (  previewHoverRadiusLeft ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { border-bottom-left-radius:${  previewHoverRadiusLeft + ( borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px' ) } !important; }` : '' ) }
 
 				{ ( previewMaxWidth ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner { max-width:${ previewMaxWidth + previewMaxWidthUnit }; margin-left: auto; margin-right:auto; }` : '' ) }
-				{ ( previewMaxWidth ? `.wp-block-kadence-column > .kadence-inner-column-direction-horizontal > .wp-block-kadence-column.kadence-column-${ uniqueID } > .kadence-inner-column-inner { max-width:100%; margin-left: unset; margin-right:unset; }` : '' ) }
-				{ ( previewMaxWidth ? `.wp-block-kadence-column > .kadence-inner-column-direction-horizontal > .wp-block-kadence-column.kadence-column-${ uniqueID } { flex: 0 1 ${ previewMaxWidth + previewMaxWidthUnit }; }` : '' ) }
+				{ ( previewMaxWidth ? `.wp-block-kadence-column > .kadence-inner-column-direction-horizontal > .wp-block-kadence-column.kadence-column-${ uniqueID } > .kadence-inner-column-inner, .wp-block-kadence-column > .kadence-inner-column-direction-horizontal-reverse > .wp-block-kadence-column.kadence-column-${ uniqueID } > .kadence-inner-column-inner { max-width:100%; margin-left: unset; margin-right:unset; }` : '' ) }
+				{ ( previewMaxWidth ? `.wp-block-kadence-column > .kadence-inner-column-direction-horizontal > .wp-block-kadence-column.kadence-column-${ uniqueID }, .wp-block-kadence-column > .kadence-inner-column-direction-horizontal-reverse > .wp-block-kadence-column.kadence-column-${ uniqueID } { flex: 0 1 ${ previewMaxWidth + previewMaxWidthUnit }; }` : '' ) }
 				{ ( ( undefined !== zIndex && '' !== zIndex ) ? `.kadence-column-${ uniqueID } { z-index: ${ zIndex }; }` : '' ) }
 				{ ( textColor ? `.kadence-column-${ uniqueID }, .kadence-column-${ uniqueID } .kt-svg-icon-list-item-wrap, .kadence-column-${ uniqueID } p, .kadence-column-${ uniqueID } h1, .kadence-column-${ uniqueID } h1.kadence-advancedheading-text, .kadence-column-${ uniqueID } h2, .kadence-column-${ uniqueID } h2.kadence-advancedheading-text, .kadence-column-${ uniqueID } h3, .kadence-column-${ uniqueID } h3.kadence-advancedheading-text, .kadence-column-${ uniqueID } h4, .kadence-column-${ uniqueID } h4.kadence-advancedheading-text, .kadence-column-${ uniqueID } h5, .kadence-column-${ uniqueID } h5.kadence-advancedheading-text, .kadence-column-${ uniqueID } h6, .kadence-column-${ uniqueID } h6.kadence-advancedheading-text { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
 				{ ( linkColor ? `.kadence-column-${ uniqueID } a { color: ${ KadenceColorOutput( linkColor ) }; }` : '' ) }
 				{ ( linkHoverColor ? `.kadence-column-${ uniqueID } a:hover { color: ${ KadenceColorOutput( linkHoverColor ) }; }` : '' ) }
-				{ ( '' !== previewGutter ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal { gap: ${ previewGutter + ( gutterUnit ? gutterUnit : 'px' )}; }` : '' ) }
-				{ ( '' !== previewFlexBasis ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal > * { flex: 1 1 ${ previewFlexBasis + ( flexBasisUnit ? flexBasisUnit : 'px' )}; }` : '' ) }
-				{ ( '' !== previewFlexBasis ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal .wp-block-kadence-image:not(:last-child) { margin-bottom: unset; }` : '' ) }
-				{ ( '' !== previewRowGap ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-vertical { display: flex; flex-direction: column; row-gap: ${ previewRowGap + ( rowGapUnit ? rowGapUnit : 'px' )}; }` : '' ) }
-				{ ( previewJustify ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal { justify-content: ${ previewJustify }; }` : '' ) }
+				{ ( '' !== horizontalGap ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner { column-gap: ${ horizontalGap }; }` : '' ) }
+				{ ( '' !== previewFlexBasis && null !== previewFlexBasis ? `.wp-block-kadence-column.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal > *, .wp-block-kadence-column.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal-reverse > * { flex: 1 1 ${ previewFlexBasis + ( flexBasisUnit ? flexBasisUnit : 'px' )}; }` : '' ) }
+				{ ( '' !== previewFlexBasis ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal > .wp-block-kadence-image:not(:last-child), .kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal-reverse > .wp-block-kadence-image:not(:last-child) { margin-bottom: unset; }` : '' ) }
+				{ ( '' == previewFlexBasis ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal > .kb-image-is-ratio-size:not(.kb-image-max-width-set), .kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal-reverse > .kb-image-is-ratio-size:not(.kb-image-max-width-set) { flex-grow: 1; }` : '' ) }
+				{ ( '' == previewFlexBasis ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-vertical > .kb-image-is-ratio-size:not(.kb-image-max-width-set), .kadence-column-${ uniqueID } > .kadence-inner-column-direction-vertical-reverse > .kb-image-is-ratio-size:not(.kb-image-max-width-set) { align-self: stretch; }` : '' ) }
+				{ ( '' == previewFlexBasis ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-vertical > .kb-image-is-ratio-size:not(.kb-image-max-width-set), .kadence-column-${ uniqueID } > .kadence-inner-column-direction-vertical-reverse > .kb-image-is-ratio-size:not(.kb-image-max-width-set) { align-self: stretch; }` : '' ) }
+
+				{ ( '' !== verticalGap ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner { row-gap: ${ verticalGap }; }` : '' ) }
+
+				{ ( previewJustify ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal, .kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal-reverse { justify-content: ${ previewJustify }; }` : '' ) }
+				{ ( previewJustify ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-vertical, .kadence-column-${ uniqueID } > .kadence-inner-column-direction-vertical-reverse { align-items: ${ previewJustify }; }` : '' ) }
+
+				{ ( previewJustify ? `.kadence-column-${ uniqueID }.wp-block-kadence-column > .kadence-inner-column-direction-vertical > *, .kadence-column-${ uniqueID }.wp-block-kadence-column > .kadence-inner-column-direction-vertical-reverse > * { max-width: 100%; }` : '' ) }
+
+				{ ( previewVerticalAlignCSS ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-vertical, .kadence-column-${ uniqueID } > .kadence-inner-column-direction-vertical-reverse { justify-content: ${ previewVerticalAlignCSS }; }` : '' ) }
+				{ ( previewVerticalAlignCSS ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal, .kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal-reverse { align-items: ${ previewVerticalAlignCSS }; }` : '' ) }
+		
 				{ ( previewWrap ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal { flex-wrap: ${ previewWrap }; }` : '' ) }
 				{ ( textColorHover ? `.kadence-column-${ uniqueID }:hover, .kadence-column-${ uniqueID }:hover .kt-svg-icon-list-item-wrap, .kadence-column-${ uniqueID }:hover p, .kadence-column-${ uniqueID }:hover h1, .kadence-column-${ uniqueID }:hover h2, .kadence-column-${ uniqueID }:hover h3, .kadence-column-${ uniqueID }:hover h4, .kadence-column-${ uniqueID }:hover h5, .kadence-column-${ uniqueID }:hover h6 { color: ${ KadenceColorOutput( textColorHover ) }; }` : '' ) }
 				{ ( linkColorHover ? `.kadence-column-${ uniqueID }:hover a { color: ${ KadenceColorOutput( linkColorHover ) }; }` : '' ) }
@@ -583,7 +707,7 @@ function SectionEdit( props ) {
 						) }
 						<ToolbarGroup group="align">
 							<BlockVerticalAlignmentControl
-								value={previewVerticalAlign === 'middle' ? 'center' : previewVerticalAlign }
+								value={actualVerticalAlign === 'middle' ? 'center' : actualVerticalAlign }
 								onChange={ value => {
 									if ( value === 'center' ) {
 										setAttributes( { verticalAlignment: 'middle' } );
@@ -618,102 +742,238 @@ function SectionEdit( props ) {
 										title={__( 'Flex Settings', 'kadence-blocks' )}
 										panelName={'kb-col-flex-settings'}
 									>
-										<SmallResponsiveControl
-											label={__( 'Inner Block Direction', 'kadence-blocks' )}
-											desktopChildren={<KadenceRadioButtons
-												//label={ __( 'Inner Block Direction', 'kadence-blocks' ) }
-												value={( direction && direction[ 0 ] ? direction[ 0 ] : 'vertical' )}
-												options={[
-													{ value: 'vertical', label: __( 'Vertical', 'kadence-blocks' ) },
-													{ value: 'horizontal', label: __( 'Horizontal', 'kadence-blocks' ) },
-												]}
-												onChange={value => setAttributes( { direction: [ value, ( direction && direction[ 1 ] ? direction[ 1 ] : '' ), ( direction && direction[ 2 ] ? direction[ 2 ] : '' ) ] } )}
-											/>}
-											tabletChildren={<KadenceRadioButtons
-												//label={ __( 'Inner Block Direction', 'kadence-blocks' ) }
-												value={( direction && direction[ 1 ] ? direction[ 1 ] : '' )}
-												options={[
-													{ value: 'vertical', label: __( 'Vertical', 'kadence-blocks' ) },
-													{ value: 'horizontal', label: __( 'Horizontal', 'kadence-blocks' ) },
-												]}
-												onChange={value => setAttributes( { direction: [ ( direction && direction[ 0 ] ? direction[ 0 ] : 'vertical' ), value, ( direction && direction[ 2 ] ? direction[ 2 ] : '' ) ] } )}
-											/>}
-											mobileChildren={<KadenceRadioButtons
-												//label={ __( 'Inner Block Direction', 'kadence-blocks' ) }
-												value={( direction && direction[ 2 ] ? direction[ 2 ] : '' )}
-												options={[
-													{ value: 'vertical', label: __( 'Vertical', 'kadence-blocks' ) },
-													{ value: 'horizontal', label: __( 'Horizontal', 'kadence-blocks' ) },
-												]}
-												onChange={value => setAttributes( { direction: [ ( direction && direction[ 0 ] ? direction[ 0 ] : 'vertical' ), ( direction && direction[ 1 ] ? direction[ 1 ] : '' ), value ] } )}
-											/>}
+										<ResponsiveAlignControls
+											label={__( 'Direction', 'kadence-blocks' )}
+											value={( direction && direction[ 0 ] ? direction[ 0 ] : 'vertical' )}
+											tabletValue={( direction && direction[ 1 ] ? direction[ 1 ] : '' )}
+											mobileValue={( direction && direction[ 2 ] ? direction[ 2 ] : '' )}
+											onChange={( value ) => {
+												if ( value ) {
+													setAttributes( { direction: [ value, ( undefined !== direction?.[1] ? direction[1] : '' ), ( undefined !== direction?.[2] ? direction[2] : '' ) ] } );
+												}
+											} }
+											onChangeTablet={( value ) => {
+												let tempValue = value;
+												if ( direction && direction[ 1 ] && tempValue === direction[ 1 ] ) {
+													tempValue = '';
+												}
+												setAttributes( { direction: [ ( undefined !== direction?.[0] ? direction[0] : '' ), tempValue, ( undefined !== direction?.[2] ? direction[2] : '' ) ] } );
+											} }
+											onChangeMobile={ ( value ) => {
+												let tempValue = value;
+												if ( direction && direction[ 2 ] && tempValue === direction[ 2 ] ) {
+													tempValue = '';
+												}
+												setAttributes( { direction: [ ( undefined !== direction?.[0] ? direction[0] : '' ), ( undefined !== direction?.[1] ? direction[1] : '' ), tempValue ] } );
+											}}
+											type={ 'orientation-column' }
 										/>
-										{( previewDirection ? previewDirection : 'vertical' ) === 'horizontal' ? (
-											<Fragment>
-												<ResponsiveRangeControls
-													label={__( 'Gap', 'kadence-blocks' )}
-													value={( gutter && '' !== gutter[ 0 ] ? gutter[ 0 ] : 10 )}
-													onChange={value => setAttributes( { gutter: [ value, ( gutter && gutter[ 1 ] ? gutter[ 1 ] : '' ), ( gutter && gutter[ 2 ] ? gutter[ 2 ] : '' ) ] } )}
-													tabletValue={( gutter && '' !== gutter[ 1 ] ? gutter[ 1 ] : '' )}
-													onChangeTablet={value => setAttributes( { gutter: [ ( gutter && gutter[ 0 ] ? gutter[ 0 ] : 10 ), value, ( gutter && gutter[ 2 ] ? gutter[ 2 ] : '' ) ] } )}
-													mobileValue={( gutter && '' !== gutter[ 2 ] ? gutter[ 2 ] : '' )}
-													onChangeMobile={value => setAttributes( { gutter: [ ( gutter && gutter[ 0 ] ? gutter[ 0 ] : 10 ), ( gutter && gutter[ 2 ] ? gutter[ 2 ] : '' ), value ] } )}
+										{ ( previewDirection === 'horizontal-reverse' || previewDirection === 'horizontal' ) && (
+											<ResponsiveAlignControls
+												label={__( 'Alignment', 'kadence-blocks' )}
+												value={ ( justifyContent && justifyContent?.[ 0 ] ? justifyContent[ 0 ] : '' ) }
+												tabletValue={ ( justifyContent && justifyContent?.[ 1 ] ? justifyContent[ 1 ] : '' ) }
+												mobileValue={ ( justifyContent && justifyContent?.[ 2 ] ? justifyContent[ 2 ] : '' ) }
+												onChange={ ( value ) => {
+													let tempValue = value;
+													if ( ( justifyContent && justifyContent?.[ 0 ] ? justifyContent[ 0 ] : '' ) === value ) {
+														tempValue = '';
+													}
+													setAttributes( { justifyContent: [ tempValue, ( justifyContent && justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ), ( justifyContent && justifyContent[ 2 ] ? justifyContent[ 2 ] : '' ) ] } );
+												} }
+												onChangeTablet={( value ) => {
+													let tempValue = value;
+													if ( ( justifyContent && justifyContent?.[ 1 ] ? justifyContent[ 1 ] : '' ) === value ) {
+														tempValue = '';
+													}
+													setAttributes( { justifyContent: [ ( justifyContent && justifyContent?.[ 0 ] ? justifyContent[ 0 ] : '' ), tempValue, ( justifyContent && justifyContent[ 2 ] ? justifyContent[ 2 ] : '' ) ] } );
+												} }
+												onChangeMobile={( value ) => {
+													let tempValue = value;
+													if ( ( justifyContent && justifyContent?.[ 2 ] ? justifyContent[ 2 ] : '' ) === value ) {
+														tempValue = '';
+													}
+													setAttributes( { justifyContent: [ ( justifyContent && justifyContent?.[ 0 ] ? justifyContent[ 0 ] : '' ), ( justifyContent && justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ), tempValue ] } );
+												} }
+												type={ 'justify-column' }
+												reverse={ previewDirection === 'horizontal-reverse' ? true : false }
+											/>
+										) }
+										{ ( previewDirection === 'vertical-reverse' || previewDirection === 'vertical' ) && (
+											<ResponsiveAlignControls
+												label={__( 'Alignment', 'kadence-blocks' )}
+												value={ ( justifyContent && justifyContent?.[ 0 ] ? justifyContent[ 0 ] : '' ) }
+												tabletValue={ ( justifyContent && justifyContent?.[ 1 ] ? justifyContent[ 1 ] : '' ) }
+												mobileValue={ ( justifyContent && justifyContent?.[ 2 ] ? justifyContent[ 2 ] : '' ) }
+												onChange={ ( value ) => {
+													let tempValue = value;
+													if ( ( justifyContent && justifyContent?.[ 0 ] ? justifyContent[ 0 ] : '' ) === value ) {
+														tempValue = '';
+													}
+													setAttributes( { justifyContent: [ tempValue, ( justifyContent && justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ), ( justifyContent && justifyContent[ 2 ] ? justifyContent[ 2 ] : '' ) ] } );
+												} }
+												onChangeTablet={( value ) => {
+													let tempValue = value;
+													if ( ( justifyContent && justifyContent?.[ 1 ] ? justifyContent[ 1 ] : '' ) === value ) {
+														tempValue = '';
+													}
+													setAttributes( { justifyContent: [ ( justifyContent && justifyContent?.[ 0 ] ? justifyContent[ 0 ] : '' ), tempValue, ( justifyContent && justifyContent[ 2 ] ? justifyContent[ 2 ] : '' ) ] } );
+												} }
+												onChangeMobile={( value ) => {
+													let tempValue = value;
+													if ( ( justifyContent && justifyContent?.[ 2 ] ? justifyContent[ 2 ] : '' ) === value ) {
+														tempValue = '';
+													}
+													setAttributes( { justifyContent: [ ( justifyContent && justifyContent?.[ 0 ] ? justifyContent[ 0 ] : '' ), ( justifyContent && justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ), tempValue ] } );
+												} }
+												type={ 'justify-align' }
+											/>
+										) }
+										{ ( previewDirection === 'horizontal-reverse' || previewDirection === 'horizontal' ) && (
+											<ResponsiveAlignControls
+												label={ __( 'Vertical Alignment', 'kadence-blocks' ) }
+												value={ ( verticalAlignment ? verticalAlignment : '' ) }
+												mobileValue={ ( verticalAlignmentTablet ? verticalAlignmentTablet : '' ) }
+												tabletValue={ ( verticalAlignmentMobile ? verticalAlignmentMobile : '' ) }
+												onChange={( value ) => {
+													let tempValue = value;
+													if ( ( verticalAlignment ? verticalAlignment : '' ) === value ) {
+														tempValue = '';
+													}
+													setAttributes( { verticalAlignment: tempValue } );
+												} }
+												onChangeTablet={( value ) => {
+													let tempValue = value;
+													if ( ( verticalAlignmentTablet ? verticalAlignmentTablet : '' ) === value ) {
+														tempValue = '';
+													}
+													setAttributes( { verticalAlignmentTablet: tempValue } );
+												} }
+												onChangeMobile={( value ) => {
+													let tempValue = value;
+													if ( ( verticalAlignmentMobile ? verticalAlignmentMobile : '' ) === value ) {
+														tempValue = '';
+													}
+													setAttributes( { verticalAlignmentMobile: tempValue } );
+												} }
+												type={ 'vertical-column' }
+											/>
+										) }
+										{ ( previewDirection === 'vertical-reverse' || previewDirection === 'vertical' ) && (
+											<ResponsiveAlignControls
+												label={ __( 'Vertical Alignment', 'kadence-blocks' ) }
+												value={ ( verticalAlignment ? verticalAlignment : '' ) }
+												mobileValue={ ( verticalAlignmentTablet ? verticalAlignmentTablet : '' ) }
+												tabletValue={ ( verticalAlignmentMobile ? verticalAlignmentMobile : '' ) }
+												onChange={( value ) => {
+													let tempValue = value;
+													if ( ( verticalAlignment ? verticalAlignment : '' ) === value ) {
+														tempValue = '';
+													}
+													setAttributes( { verticalAlignment: tempValue } );
+												} }
+												onChangeTablet={( value ) => {
+													let tempValue = value;
+													if ( ( verticalAlignmentTablet ? verticalAlignmentTablet : '' ) === value ) {
+														tempValue = '';
+													}
+													setAttributes( { verticalAlignmentTablet: tempValue } );
+												} }
+												onChangeMobile={( value ) => {
+													let tempValue = value;
+													if ( ( verticalAlignmentMobile ? verticalAlignmentMobile : '' ) === value ) {
+														tempValue = '';
+													}
+													setAttributes( { verticalAlignmentMobile: tempValue } );
+												} }
+												type={ 'justify-vertical' }
+												reverse={ previewDirection === 'vertical-reverse' ? true : false }
+											/>
+										) }
+										{ ( previewDirection === 'horizontal-reverse' || previewDirection === 'horizontal' ) ? (
+											<>
+												<ResponsiveRadioRangeControls
+													label={__( 'Horizontal Gap', 'kadence-blocks' )}
+													options={ [
+														{ value: 'none', size:0, label: __('None', 'kadence-blocks' ) },
+														{ value: 'sm', size:16, label: __('Sm', 'kadence-blocks' ) },
+														{ value: 'md', size:32, label: __('Md', 'kadence-blocks' ) },
+														{ value: 'lg', size:64, label: __('Lg', 'kadence-blocks' ) },
+													] }
+													value={ {
+														value: ( undefined !== gutterVariable?.[ 0 ] && '' !== gutterVariable?.[ 0 ]? gutterVariable[ 0 ] : 'sm' ),
+														size:( gutter && undefined !== gutter?.[ 0 ] && null !== gutter?.[ 0 ] && '' !== gutter?.[ 0 ] ? gutter[ 0 ] : '' ),
+													} }
+													onChange={ ( value, size ) => {
+														setAttributes( { gutterVariable: [ value, ( gutterVariable?.[1] ? gutterVariable[1] : '' ), ( gutterVariable?.[2] ? gutterVariable[2] : '' ) ], gutter: [ size, ( gutter?.[1] ? gutter[1] : '' ), ( gutter?.[2] ? gutter[2] : '' ) ] } );
+													}}
+													tabletValue={ {
+														value: ( undefined !== gutterVariable?.[ 1 ] ? gutterVariable[ 1 ] : '' ),
+														size: ( gutter && undefined !== gutter?.[ 1 ] && null !== gutter?.[ 1 ] && '' !== gutter?.[ 1 ] ? gutter[ 1 ] : '' ),
+													} }
+													onChangeTablet={ ( value, size ) => {
+														setAttributes( { gutterVariable: [ ( gutterVariable?.[0] ? gutterVariable[0] : '' ), value, ( gutterVariable?.[2] ? gutterVariable[2] : '' ) ], gutter: [ ( gutter?.[0] ? gutter[0] : '' ), size, ( gutter?.[2] ? gutter[2] : '' ) ] } );
+													}}
+													mobileValue={ {
+														value: ( undefined !== gutterVariable?.[ 2 ] ? gutterVariable[ 2 ] : '' ),
+														size: ( gutter && undefined !== gutter?.[ 2 ] && null !== gutter?.[ 2 ] && '' !== gutter?.[ 2 ] ? gutter[ 2 ] : '' ),
+													} }
+													onChangeMobile={ ( value, size ) => {
+														setAttributes( { gutterVariable: [ ( gutterVariable?.[0] ? gutterVariable[0] : '' ), ( gutterVariable?.[1] ? gutterVariable[1] : '' ), value ], gutter: [ ( gutter?.[0] ? gutter[0] : '' ), ( gutter?.[1] ? gutter[1] : '' ), size ] } );
+													}}
 													min={0}
-													max={gutterMax}
-													step={gutterStep}
-													unit={gutterUnit}
-													onUnit={( value ) => setAttributes( { gutterUnit: value } )}
-													units={[ 'px', 'em', 'rem' ]}
+													max={( gutterUnit !== 'px' ? 12 : 200 )}
+													step={( gutterUnit !== 'px' ? 0.1 : 1 )}
+													unit={ gutterUnit ? gutterUnit : 'px' }
+													onUnit={( value ) => {
+														setAttributes( { gutterUnit: value } );
+													}}
+													units={[ 'px', 'em', 'rem', '%', 'vh' ]}
 												/>
-												<SmallResponsiveControl
-													label={__( 'Justify Content', 'kadence-blocks' )}
-													desktopChildren={<SelectControl
-														//label={ __( 'Justify Content', 'kadence-blocks' ) }
-														value={( justifyContent && justifyContent[ 0 ] ? justifyContent[ 0 ] : '' )}
-														options={[
-															{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
-															{ value: 'flex-start', label: __( 'Start', 'kadence-blocks' ) },
-															{ value: 'center', label: __( 'Center', 'kadence-blocks' ) },
-															{ value: 'flex-end', label: __( 'End', 'kadence-blocks' ) },
-															{ value: 'space-between', label: __( 'Space Between', 'kadence-blocks' ) },
-															{ value: 'space-around', label: __( 'Space Around', 'kadence-blocks' ) },
-															{ value: 'space-evenly', label: __( 'Space Evenly', 'kadence-blocks' ) },
-														]}
-														onChange={value => setAttributes( { justifyContent: [ value, ( justifyContent && justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ), ( justifyContent && justifyContent[ 2 ] ? justifyContent[ 2 ] : '' ) ] } )}
-													/>}
-													tabletChildren={<SelectControl
-														//label={ __( 'Justify Content', 'kadence-blocks' ) }
-														value={( justifyContent && justifyContent[ 1 ] ? justifyContent[ 1 ] : '' )}
-														options={[
-															{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
-															{ value: 'flex-start', label: __( 'Start', 'kadence-blocks' ) },
-															{ value: 'center', label: __( 'Center', 'kadence-blocks' ) },
-															{ value: 'flex-end', label: __( 'End', 'kadence-blocks' ) },
-															{ value: 'space-between', label: __( 'Space Between', 'kadence-blocks' ) },
-															{ value: 'space-around', label: __( 'Space Around', 'kadence-blocks' ) },
-															{ value: 'space-evenly', label: __( 'Space Evenly', 'kadence-blocks' ) },
-														]}
-														onChange={value => setAttributes( { justifyContent: [ ( justifyContent && justifyContent[ 0 ] ? justifyContent[ 0 ] : '' ), value, ( justifyContent && justifyContent[ 2 ] ? justifyContent[ 2 ] : '' ) ] } )}
-													/>}
-													mobileChildren={<SelectControl
-														//label={ __( 'Justify Content', 'kadence-blocks' ) }
-														value={( justifyContent && justifyContent[ 2 ] ? justifyContent[ 2 ] : '' )}
-														options={[
-															{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
-															{ value: 'flex-start', label: __( 'Start', 'kadence-blocks' ) },
-															{ value: 'center', label: __( 'Center', 'kadence-blocks' ) },
-															{ value: 'flex-end', label: __( 'End', 'kadence-blocks' ) },
-															{ value: 'space-between', label: __( 'Space Between', 'kadence-blocks' ) },
-															{ value: 'space-around', label: __( 'Space Around', 'kadence-blocks' ) },
-															{ value: 'space-evenly', label: __( 'Space Evenly', 'kadence-blocks' ) },
-														]}
-														onChange={value => setAttributes( { justifyContent: [ ( justifyContent && justifyContent[ 0 ] ? justifyContent[ 0 ] : '' ), ( justifyContent && justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ), value ] } )}
-													/>}
+												<ResponsiveRadioRangeControls
+													label={__( 'Vertical Gap', 'kadence-blocks' )}
+													options={ [
+														{ value: 'none', size:0, label: __('None', 'kadence-blocks' ) },
+														{ value: 'sm', size:16, label: __('Sm', 'kadence-blocks' ) },
+														{ value: 'md', size:32, label: __('Md', 'kadence-blocks' ) },
+														{ value: 'lg', size:64, label: __('Lg', 'kadence-blocks' ) },
+													] }
+													value={ {
+														value: ( undefined !== rowGapVariable?.[ 0 ] ? rowGapVariable[ 0 ] :  'none' ),
+														size: ( undefined !== rowGap?.[ 0 ] ? rowGap[ 0 ] : 0 ),
+													} }
+													onChange={ ( value, size ) => {
+														setAttributes( { rowGapVariable: [ value, ( undefined !== rowGapVariable?.[ 1 ] ? rowGapVariable[ 1 ] : '' ), ( undefined !== rowGapVariable?.[ 2 ] ? rowGapVariable[ 2 ] : '' ) ], rowGap: [ size, ( rowGap?.[ 1 ] ? rowGap[ 1 ] : '' ), ( rowGap?.[ 2 ] ? rowGap[ 2 ] : '' ) ] } );
+													}}
+													tabletValue={ {
+														value: ( undefined !== rowGapVariable?.[ 1 ] ? rowGapVariable[ 1 ] : '' ),
+														size: ( undefined !== rowGap?.[ 1 ] ? rowGap[ 1 ] : '' ),
+													} }
+													onChangeTablet={ ( value, size ) => {
+														setAttributes( { rowGapVariable: [ ( undefined !== rowGapVariable?.[ 0 ] ? rowGapVariable[ 0 ] : '' ), value, ( undefined !== rowGapVariable?.[ 2 ] ? rowGapVariable[ 2 ] : '' ) ], rowGap: [ ( rowGap?.[ 0 ] ? rowGap[ 0 ] : 10 ), size, ( rowGap?.[ 2 ] ? rowGap[ 2 ] : '' ) ] } );
+													}}
+													mobileValue={ {
+														value: ( undefined !== rowGapVariable?.[ 2 ] ? rowGapVariable[ 2 ] : '' ),
+														size: ( undefined !== rowGap?.[ 2 ] ? rowGap[ 2 ] : '' ),
+													} }
+													onChangeMobile={ ( value, size ) => {
+														setAttributes( { rowGapVariable: [ ( undefined !== rowGapVariable?.[ 0 ] ? rowGapVariable[ 0 ] : '' ), ( undefined !== rowGapVariable?.[ 1 ] ? rowGapVariable[ 1 ] : '' ), value ], rowGap: [ ( rowGap?.[ 0 ] ? rowGap[ 0 ] : 10 ), ( rowGap?.[ 2 ] ? rowGap[ 2 ] : '' ), size ] } );
+													}}
+													min={0}
+													max={( rowGapUnit !== 'px' ? 12 : 200 )}
+													step={( rowGapUnit !== 'px' ? 0.1 : 1 )}
+													unit={ rowGapUnit ? rowGapUnit : 'px' }
+													onUnit={( value ) => {
+														setAttributes( { rowGapUnit: value } );
+													}}
+													units={[ 'px', 'em', 'rem', '%', 'vh' ]}
+													reset={ () => {
+														setAttributes( { rowGapVariable: [ '', '', '' ], rowGap: [ '', '', '' ] } );
+													}}
 												/>
 												<SmallResponsiveControl
 													label={__( 'Wrap Content', 'kadence-blocks' )}
 													desktopChildren={<SelectControl
-														//label={ __( 'Justify Content', 'kadence-blocks' ) }
 														value={( wrapContent && wrapContent[ 0 ] ? wrapContent[ 0 ] : '' )}
 														options={[
 															{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
@@ -724,7 +984,6 @@ function SectionEdit( props ) {
 														onChange={value => setAttributes( { wrapContent: [ value, ( wrapContent && wrapContent[ 1 ] ? wrapContent[ 1 ] : '' ), ( wrapContent && wrapContent[ 2 ] ? wrapContent[ 2 ] : '' ) ] } )}
 													/>}
 													tabletChildren={<SelectControl
-														//label={ __( 'Justify Content', 'kadence-blocks' ) }
 														value={( wrapContent && wrapContent[ 1 ] ? wrapContent[ 1 ] : '' )}
 														options={[
 															{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
@@ -735,7 +994,6 @@ function SectionEdit( props ) {
 														onChange={value => setAttributes( { wrapContent: [ ( wrapContent && wrapContent[ 0 ] ? wrapContent[ 0 ] : '' ), value, ( wrapContent && wrapContent[ 2 ] ? wrapContent[ 2 ] : '' ) ] } )}
 													/>}
 													mobileChildren={<SelectControl
-														//label={ __( 'Justify Content', 'kadence-blocks' ) }
 														value={( wrapContent && wrapContent[ 2 ] ? wrapContent[ 2 ] : '' )}
 														options={[
 															{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
@@ -758,44 +1016,58 @@ function SectionEdit( props ) {
 														onChangeMobile={value => setAttributes( { flexBasis: [ ( flexBasis && flexBasis[ 0 ] ? flexBasis[ 0 ] : 10 ), ( flexBasis && flexBasis[ 2 ] ? flexBasis[ 2 ] : '' ), value ] } )}
 														min={0}
 														max={( flexBasisUnit === '%' ? 100 : 1000 )}
-														step={1}
+														step={( flexBasisUnit === '%' ? 0.1 : 1 )}
 														unit={flexBasisUnit}
 														onUnit={( value ) => setAttributes( { flexBasisUnit: value } )}
 														units={[ '%', 'px' ]}
 													/>
 												)}
-											</Fragment>
+											</>
 										) : (
-											<Fragment>
-												<ResponsiveRangeControls
-													label={__( 'Row Gap', 'kadence-blocks' )}
-													value={( rowGap && '' !== rowGap[ 0 ] ? rowGap[ 0 ] : 0 )}
-													onChange={value => setAttributes( { rowGap: [ value, ( rowGap && rowGap[ 1 ] ? rowGap[ 1 ] : '' ), ( rowGap && rowGap[ 2 ] ? rowGap[ 2 ] : '' ) ] } )}
-													tabletValue={( rowGap && '' !== rowGap[ 1 ] ? rowGap[ 1 ] : '' )}
-													onChangeTablet={value => setAttributes( { rowGap: [ ( rowGap && rowGap[ 0 ] ? rowGap[ 0 ] : 10 ), value, ( rowGap && rowGap[ 2 ] ? rowGap[ 2 ] : '' ) ] } )}
-													mobileValue={( rowGap && '' !== rowGap[ 2 ] ? rowGap[ 2 ] : '' )}
-													onChangeMobile={value => setAttributes( { rowGap: [ ( rowGap && rowGap[ 0 ] ? rowGap[ 0 ] : 10 ), ( rowGap && rowGap[ 2 ] ? rowGap[ 2 ] : '' ), value ] } )}
+											<>
+												<ResponsiveRadioRangeControls
+													label={__( 'Vertical Gap', 'kadence-blocks' )}
+													options={ [
+														{ value: 'none', size:0, label: __('None', 'kadence-blocks' ) },
+														{ value: 'sm', size:16, label: __('Sm', 'kadence-blocks' ) },
+														{ value: 'md', size:32, label: __('Md', 'kadence-blocks' ) },
+														{ value: 'lg', size:64, label: __('Lg', 'kadence-blocks' ) },
+													] }
+													value={ {
+														value: ( undefined !== rowGapVariable?.[ 0 ] ? rowGapVariable[ 0 ] :  'none' ),
+														size: ( undefined !== rowGap?.[ 0 ] ? rowGap[ 0 ] : 0 ),
+													} }
+													onChange={ ( value, size ) => {
+														setAttributes( { rowGapVariable: [ value, ( undefined !== rowGapVariable?.[ 1 ] ? rowGapVariable[ 1 ] : '' ), ( undefined !== rowGapVariable?.[ 2 ] ? rowGapVariable[ 2 ] : '' ) ], rowGap: [ size, ( rowGap?.[ 1 ] ? rowGap[ 1 ] : '' ), ( rowGap?.[ 2 ] ? rowGap[ 2 ] : '' ) ] } );
+													}}
+													tabletValue={ {
+														value: ( undefined !== rowGapVariable?.[ 1 ] ? rowGapVariable[ 1 ] : '' ),
+														size: ( undefined !== rowGap?.[ 1 ] ? rowGap[ 1 ] : '' ),
+													} }
+													onChangeTablet={ ( value, size ) => {
+														setAttributes( { rowGapVariable: [ ( undefined !== rowGapVariable?.[ 0 ] ? rowGapVariable[ 0 ] : '' ), value, ( undefined !== rowGapVariable?.[ 2 ] ? rowGapVariable[ 2 ] : '' ) ], rowGap: [ ( rowGap?.[ 0 ] ? rowGap[ 0 ] : 10 ), size, ( rowGap?.[ 2 ] ? rowGap[ 2 ] : '' ) ] } );
+													}}
+													mobileValue={ {
+														value: ( undefined !== rowGapVariable?.[ 2 ] ? rowGapVariable[ 2 ] : '' ),
+														size: ( undefined !== rowGap?.[ 2 ] ? rowGap[ 2 ] : '' ),
+													} }
+													onChangeMobile={ ( value, size ) => {
+														setAttributes( { rowGapVariable: [ ( undefined !== rowGapVariable?.[ 0 ] ? rowGapVariable[ 0 ] : '' ), ( undefined !== rowGapVariable?.[ 1 ] ? rowGapVariable[ 1 ] : '' ), value ], rowGap: [ ( rowGap?.[ 0 ] ? rowGap[ 0 ] : 10 ), ( rowGap?.[ 2 ] ? rowGap[ 2 ] : '' ), size ] } );
+													}}
 													min={0}
-													max={ ( rowGapUnit !== 'px' ? 12 : 200 ) }
+													max={( rowGapUnit !== 'px' ? 12 : 200 )}
 													step={( rowGapUnit !== 'px' ? 0.1 : 1 )}
-													unit={rowGapUnit}
-													onUnit={( value ) => setAttributes( { rowGapUnit: value } )}
-													units={[ 'px', 'em', 'rem' ]}
+													unit={ rowGapUnit ? rowGapUnit : 'px' }
+													onUnit={( value ) => {
+														setAttributes( { rowGapUnit: value } );
+													}}
+													units={[ 'px', 'em', 'rem', '%', 'vh' ]}
+													reset={ () => {
+														setAttributes( { rowGapVariable: [ '', '', '' ], rowGap: [ '', '', '' ] } );
+													}}
 												/>
-
-											</Fragment>
+											</>
 										)}
-										<SelectControl
-											label={__( 'Vertical Alignment', 'kadence-blocks' )}
-											value={( verticalAlignment ? verticalAlignment : '' )}
-											options={[
-												{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
-												{ value: 'top', label: __( 'Top', 'kadence-blocks' ) },
-												{ value: 'middle', label: __( 'Middle', 'kadence-blocks' ) },
-												{ value: 'bottom', label: __( 'Bottom', 'kadence-blocks' ) },
-											]}
-											onChange={ ( value ) => setAttributes( { verticalAlignment: value } )}
-										/>
 										<ResponsiveAlignControls
 											label={__( 'Text Alignment', 'kadence-blocks' )}
 											value={( textAlign && textAlign[ 0 ] ? textAlign[ 0 ] : '' )}
@@ -923,6 +1195,7 @@ function SectionEdit( props ) {
 											onUnit={ ( value ) => setAttributes( { marginType: value } ) }
 											onMouseOver={ marginMouseOver.onMouseOver }
 											onMouseOut={ marginMouseOver.onMouseOut }
+											allowAuto={ true }
 										/>
 									</KadencePanelBody>
 								)}
@@ -1054,7 +1327,9 @@ function SectionEdit( props ) {
 										onChange={( value ) => setAttributes( { vsmobile: value } )}
 									/>
 								</KadencePanelBody>
-
+								{ inFormBlock && (
+									<KadenceFormConditionals { ...props } />
+								)}
 								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs }  />
 
 							</>

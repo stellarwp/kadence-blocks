@@ -1,10 +1,13 @@
 {
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "kadence/advanced-form-hidden",
   "category": "kadence-blocks",
   "textdomain": "kadence-blocks",
   "attributes": {
 	"uniqueID": {
+		"type": "string"
+	},
+	"formID": {
 		"type": "string"
 	},
 	"label": {
@@ -27,8 +30,9 @@
   "supports": {
 	"anchor": true,
 	"html": false,
-	"ktdynamic": true,
 	"reusable": false,
+	"ktdynamic": true,
+	"ktfieldconditional": true,
 	"kbMetadata": true,
 	"kbContentLabel": "label"
   },

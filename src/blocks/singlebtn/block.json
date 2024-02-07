@@ -1,6 +1,6 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "title": "Single Button",
   "name": "kadence/singlebtn",
   "parent": [ "kadence/advancedbtn" ],
@@ -345,6 +345,9 @@
 	  "type": "boolean",
 	  "default": false
 	},
+	"textUnderline": {
+		"type": "string"
+	},
 	"anchor": {
 		"type": "string"
 	},
@@ -355,6 +358,10 @@
 	"noCustomDefaults": {
 		"type": "boolean",
 		"default": false
+	},
+	"iconTitle": {
+		"type": "string",
+		"default": ""
 	}
   },
   "supports": {
@@ -370,6 +377,9 @@
   },
   "usesContext": [
 	"postId",
-	"queryId"
+	"queryId",
+	"kadence/dynamicSource",
+	"kadence/repeaterRowData",
+	"kadence/repeaterRow" 
   ]
 }

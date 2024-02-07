@@ -60,7 +60,6 @@ function GalleryImage( props ) {
 		thumbnail,
 		dynamicSource,
 		previewDevice,
-		image
 	} = props;
 
 	const [ showSettings, setShowSettings ] = useState( false );
@@ -200,7 +199,6 @@ function GalleryImage( props ) {
 			onChange={( newCaption ) => setAttributes( { caption: newCaption } )}
 			inlineToolbar
 			keepPlaceholderOnFocus
-			unstableOnFocus={ () => { onSelectImage(); }}
 			style={{
 				fontWeight   : '' !== captionStyles[ 0 ].weight ? captionStyles[ 0 ].weight : undefined,
 				fontStyle    : '' !== captionStyles[ 0 ].style ? captionStyles[ 0 ].style : undefined,
@@ -239,8 +237,10 @@ function GalleryImage( props ) {
 	} );
 
 	return (
-		<Fragment>
-			<figure className={className}>
+		<>
+			<figure className={className} style={{
+					maxWidth: ( ( 'below' === captionStyle && width && height ) ? width + 'px' : undefined ),
+				}}>
 				<div className="kb-gal-image-radius" style={{
 					maxWidth: ( ( type === 'masonry' && width && height ) ? width + 'px' : undefined ),
 				}}>
@@ -294,8 +294,8 @@ function GalleryImage( props ) {
 				)}
 			</figure>
 			{! thumbnail && linkTo === 'custom' && isSelected && ! dynamicSource && (
-				<>
-					<div className="kb-gallery-custom-link block-editor-url-popover__row" onClick={ () => toggleSettingsVisibility()}>
+				<div className="kb-gallery-custom-options">
+					<div className="block-editor-url-popover__row kb-gallery-custom-link" onClick={ () => toggleSettingsVisibility()}>
 						<URLInput
 							aria-label={__( 'URL', 'kadence-blocks' )}
 							placeholder={__( 'Paste or type URL', 'kadence-blocks' )}
@@ -327,17 +327,11 @@ function GalleryImage( props ) {
 							/>
 						</div>
 					)}
-				</>
+				</div>
 			)}
-		</Fragment>
+		</>
 	);
 
 }
 
-export default withSelect( ( select, ownProps ) => {
-	const { getMedia } = select( 'core' );
-	const { id } = ownProps;
-	return {
-		image: id ? getMedia( id ) : null,
-	};
-} )( GalleryImage );
+export default GalleryImage;

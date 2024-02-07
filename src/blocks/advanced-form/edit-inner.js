@@ -1,5 +1,5 @@
 /**
- * BLOCK: Kadence Block Template
+ * BLOCK: Kadence Advanced Form
  */
 
 /**
@@ -11,11 +11,12 @@ import './editor.scss';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { useState, useCallback, useEffect } from '@wordpress/element';
+import { useState, useCallback, useEffect, useMemo } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import { size, get, isEqual } from 'lodash';
 import { addQueryArgs } from '@wordpress/url';
+import { applyFilters } from '@wordpress/hooks';
 import {
 	useEntityBlockEditor,
 	useEntityProp,
@@ -37,27 +38,22 @@ import {
 	getPreviewSize,
 	KadenceColorOutput,
 	getSpacingOptionOutput,
-	mouseOverVisualizer
+	mouseOverVisualizer,
+	arrayStringToInt
 } from '@kadence/helpers';
 
 import {
-	useBlockProps,
-	RichText,
-	BlockAlignmentControl,
-	InnerBlocks,
 	InspectorControls,
 	BlockControls,
 	useInnerBlocksProps,
 	InspectorAdvancedControls,
-	BlockVerticalAlignmentControl,
-	JustifyContentControl,
 } from '@wordpress/block-editor';
 import {
 	TextControl,
 	SelectControl,
 	ToggleControl,
 	ToolbarGroup,
-	ToolbarButton,
+	ExternalLink,
 	Button,
 	Placeholder,
 	TextareaControl,
@@ -75,6 +71,7 @@ import {
 	MailchimpOptions,
 	ConvertKitOptions,
 	ActiveCampaignOptions,
+	GetResponseOptions,
 	FormTitle,
 	WebhookOptions,
 	AutoEmailOptions,
@@ -83,6 +80,7 @@ import {
 	MessageOptions,
 	MessageStyling,
 	getFormFields,
+	dedupeFormFieldUniqueIds,
 	FieldBlockAppender,
 	SelectForm,
 } from './components';
@@ -94,12 +92,17 @@ import classnames from 'classnames';
 import { useEntityPublish } from './hooks';
 const ALLOWED_BLOCKS = [ 'core/paragraph', 'kadence/advancedheading', 'kadence/spacer', 'kadence/rowlayout', 'kadence/column', 'kadence/advanced-form-text', 'kadence/advanced-form-textarea', 'kadence/advanced-form-select', 'kadence/advanced-form-submit', 'kadence/advanced-form-radio', 'kadence/advanced-form-file', 'kadence/advanced-form-time', 'kadence/advanced-form-date', 'kadence/advanced-form-telephone', 'kadence/advanced-form-checkbox', 'kadence/advanced-form-email', 'kadence/advanced-form-accept', 'kadence/advanced-form-number', 'kadence/advanced-form-hidden', 'kadence/advanced-form-captcha' ];
 
+/**
+ * Regular expression matching invalid anchor characters for replacement.
+ *
+ * @type {RegExp}
+ */
+const ANCHOR_REGEX = /[\s#]/g;
 export function EditInner( props ) {
 
 	const {
 		attributes,
 		setAttributes,
-		className,
 		clientId,
 		direct,
 		id,
@@ -132,6 +135,7 @@ export function EditInner( props ) {
 	const [ mailchimp ] = useFormMeta( '_kad_form_mailchimp' );
 	const [ convertkit ] = useFormMeta( '_kad_form_convertkit' );
 	const [ activecampaign ] = useFormMeta( '_kad_form_activecampaign' );
+	const [ getresponse ] = useFormMeta( '_kad_form_getresponse' );
 
 	const [ redirect ] = useFormMeta( '_kad_form_redirect' );
 	const [ description ] = useFormMeta( '_kad_form_description' );
@@ -161,6 +165,11 @@ export function EditInner( props ) {
 	const [ maxWidth ] = useFormMeta( '_kad_form_maxWidth' );
 	const [ maxWidthUnit ] = useFormMeta( '_kad_form_maxWidthUnit');
 	const [ submitHide ] = useFormMeta( '_kad_form_submitHide' );
+	const [ browserValidation ] = useFormMeta( '_kad_form_browserValidation' );
+	const [ enableAnalytics ] = useFormMeta( '_kad_form_enableAnalytics' );
+
+	const [ className ] = useFormMeta( '_kad_form_className' );
+	const [ anchor ] = useFormMeta( '_kad_form_anchor' );
 
 	const [ meta, setMeta ] = useFormProp( 'meta' );
 
@@ -179,6 +188,7 @@ export function EditInner( props ) {
 	const saveLabelFont = ( value ) => {
 		setMetaAttribute( { ...labelFont, ...value }, 'labelFont' );
 	};
+
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 0 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 0 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 0 ] : '' ) );
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 1 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 1 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 1 ] : '' ) );
 	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 2 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 2 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 2 ] : '' ) );
@@ -211,24 +221,46 @@ export function EditInner( props ) {
 
 	const [ title, setTitle ] = useFormProp( 'title' );
 
-	const [ blocks, onInput, onChange ] = useEntityBlockEditor(
+	let [ blocks, onInput, onChange ] = useEntityBlockEditor(
 		'postType',
 		'kadence_form',
 		id,
 	);
 	const {
-		insertBlocks,
+		updateBlockAttributes
 	} = useDispatch( editorStore );
-	let formInnerBlocks = get( blocks, [ 0, 'innerBlocks' ], [] );
+
+	let emptyForm = useMemo( () => {
+		return [ createBlock( 'kadence/advanced-form', {} ) ];
+	}, [ clientId ] );
+
+	if( blocks.length === 0 ) {
+		blocks = emptyForm;
+	}
+
+	let formInnerBlocks = useMemo( () => {
+		return get( blocks, [ 0, 'innerBlocks' ], [] );
+	}, [ blocks ] );
+
+	let newBlock = useMemo( () => {
+		return get( blocks, [ 0 ], {} );
+	}, [ blocks ] );
+
 	useEffect( () => {
 		if ( Array.isArray( formInnerBlocks ) && formInnerBlocks.length ) {
+			dedupeFormFieldUniqueIds( formInnerBlocks, updateBlockAttributes, id );
+
 			let currentFields = getFormFields( formInnerBlocks );
+
 			if ( ! isEqual( fields, currentFields ) ) {
 				setMetaAttribute( currentFields, 'fields' );
 			}
 		}
 	}, [formInnerBlocks] );
-	let newBlock = get( blocks, [ 0 ], {} );
+
+	const showAnalytics = useMemo( () => {
+		return applyFilters( 'kadence.analyticsOptionAdvancedForm', false );
+	}, [] );
 
 	const [ isAdding, addNew ] = useEntityPublish( 'kadence_form', id );
 	const onAdd = async( title, template, style, initialDescription ) => {
@@ -275,34 +307,28 @@ export function EditInner( props ) {
 			if ( response.id ) {
 				switch ( template ) {
 					case 'contact':
-						insertBlocks(
-							[
+						onChange( [ { ...newBlock, innerBlocks: [
 								createBlock( 'kadence/rowlayout', { colLayout: 'equal', padding: ['0','0','0','0'] }, [
 									createBlock( 'kadence/column', {}, [
 										createBlock( 'kadence/advanced-form-text', { label: 'Name' } )
 									] ),
 									createBlock( 'kadence/column', {}, [
 										createBlock( 'kadence/advanced-form-email', { label: 'Email', required: true } )
-									] ) 
+									] )
 								] ),
 								createBlock( 'kadence/advanced-form-textarea', { label: 'Message', required: true } ),
 								createBlock( 'kadence/advanced-form-submit', { text: 'Submit' } )
-							],
-							0,
-							clientId,
-							false
-						);
+							] } ], clientId );
 						break;
 					case 'contactAdvanced':
-						insertBlocks(
-							[
+						onChange( [ { ...newBlock, innerBlocks: [
 								createBlock( 'kadence/rowlayout', { colLayout: 'equal', padding: ['0','0','0','0'] }, [
 									createBlock( 'kadence/column', {}, [
 										createBlock( 'kadence/advanced-form-text', { label: 'Name' } )
 									] ),
 									createBlock( 'kadence/column', {}, [
 										createBlock( 'kadence/advanced-form-email', { label: 'Email', required: true } ),
-									] ) 
+									] )
 								] ),
 								createBlock( 'kadence/rowlayout', { colLayout: 'equal', padding: ['0','0','0','0'] }, [
 									createBlock( 'kadence/column', {}, [
@@ -310,61 +336,42 @@ export function EditInner( props ) {
 									] ),
 									createBlock( 'kadence/column', {}, [
 										createBlock( 'kadence/advanced-form-select', { label: 'Option 2' } )
-									] ) 
+									] )
 								] ),
 								createBlock( 'kadence/advanced-form-textarea', { label: 'Message', required: true } ),
-								createBlock( 'kadence/advanced-form-submit', { text: 'Submit' } ) 
-							],
-							0,
-							clientId,
-							false
-						);
+								createBlock( 'kadence/advanced-form-submit', { text: 'Submit' } )
+							] } ], clientId );
 						break;
 					case 'subscribeAdvanced':
-						insertBlocks(
-							[
+						onChange( [ { ...newBlock, innerBlocks: [
 								createBlock( 'kadence/rowlayout', { colLayout: 'equal', padding: ['0','0','0','0'] }, [
 									createBlock( 'kadence/column', {}, [
 										createBlock( 'kadence/advanced-form-text', { label: 'Name' } )
 									] ),
 									createBlock( 'kadence/column', {}, [
 										createBlock( 'kadence/advanced-form-email', { label: 'Email', required: true } )
-									] ) 
+									] )
 								] ),
 								createBlock( 'kadence/advanced-form-submit', { text: 'Submit' } )
-							],
-							0,
-							clientId,
-							false
-						);
+							] } ], clientId );
 						break;
 					case 'subscribe':
-						insertBlocks(
-							[
+						onChange( [ { ...newBlock, innerBlocks: [
 								createBlock( 'kadence/rowlayout', { colLayout: 'left-golden', padding: ['0','0','0','0'] }, [
 									createBlock( 'kadence/column', {}, [
 										createBlock( 'kadence/advanced-form-email', { label: 'Email', required: true } )
 									] ),
 									createBlock( 'kadence/column', { verticalAlignment: 'bottom' }, [
-										createBlock( 'kadence/advanced-form-submit', buttonAttributes ) 
-									] ) 
-								] ),
-							],
-							0,
-							clientId,
-							false
-						);
+										createBlock( 'kadence/advanced-form-submit', buttonAttributes )
+									] )
+								] )
+							] } ], clientId );
 						break;
 					default:
-						insertBlocks(
-							[ 
+						onChange( [ { ...newBlock, innerBlocks: [
 								createBlock( 'core/paragraph', {} ),
 								createBlock( 'kadence/advanced-form-submit', { text: 'Submit' } ),
-							],
-							0,
-							clientId,
-							false
-						);
+						] } ], clientId );
 						break;
 				}
 				setTitle(title);
@@ -448,6 +455,7 @@ export function EditInner( props ) {
 			renderAppender: formInnerBlocks.length === 0 ? useFieldBlockAppenderBase : useFieldBlockAppender
 		}
 	);
+
 	if ( formInnerBlocks.length === 0 ) {
 		return (
 			<>
@@ -463,9 +471,9 @@ export function EditInner( props ) {
 		);
 	}
 	if ( typeof pagenow !== 'undefined' && ( 'widgets' === pagenow || 'customize' === pagenow ) ) {
-		const editPostLink = addQueryArgs( 'post.php', { 
-			post: id, 
-			action: 'edit' 
+		const editPostLink = addQueryArgs( 'post.php', {
+			post: id,
+			action: 'edit'
 		} );
 		return (
 			<>
@@ -489,7 +497,7 @@ export function EditInner( props ) {
 							label={__( 'Selected Form', 'kadence-blocks' )}
 							hideLabelFromVision={ true }
 							onChange={ ( nextId ) => {
-								setAttributes( { id: parseInt( nextId ) } ) 
+								setAttributes( { id: parseInt( nextId ) } )
 							} }
 							value={ id }
 						/>
@@ -524,11 +532,11 @@ export function EditInner( props ) {
 				{( activeTab === 'general' ) &&
 
 					<>
-						{ ! direct && (
-							<KadencePanelBody
-								panelName={'kb-advanced-form-selected-switch'}
-								title={ __( 'Selected Form', 'kadence-blocks' ) }
-							>
+						<KadencePanelBody
+							panelName={'kb-advanced-form-selected-switch'}
+							title={ __( 'Form', 'kadence-blocks' ) }
+						>
+							{ ! direct && (
 								<SelectForm
 									postType="kadence_form"
 									label={__( 'Selected Form', 'kadence-blocks' )}
@@ -536,29 +544,15 @@ export function EditInner( props ) {
 									onChange={ ( nextId ) => setAttributes( { id: parseInt( nextId ) } ) }
 									value={ id }
 								/>
-								<TextareaControl
-									label={__( 'Form Description', 'kadence-blocks' )}
-									placeholder={__( 'Optionally add an description about your form', 'kadence-blocks' )}
-									help={ __( 'This is used for your reference only.', 'kadence-blocks' )}
-									value={( undefined !== description ? description : '' )}
-									onChange={value => setMetaAttribute( value, 'description' )}
-								/>
-							</KadencePanelBody>
-						) }
-						{ direct && (
-							<KadencePanelBody
-								panelName={'kb-advanced-form-selected-switch'}
-								title={ __( 'Form', 'kadence-blocks' ) }
-							>
-								<TextareaControl
-									label={__( 'Form Description', 'kadence-blocks' )}
-									placeholder={__( 'Optionally add an description about your form', 'kadence-blocks' )}
-									help={ __( 'This is used for your reference only.', 'kadence-blocks' )}
-									value={( undefined !== description ? description : '' )}
-									onChange={value => setMetaAttribute( value, 'description' )}
-								/>
-							</KadencePanelBody>
-						) }
+							)}
+							<TextareaControl
+								label={__( 'Form Description', 'kadence-blocks' )}
+								placeholder={__( 'Optionally add an description about your form', 'kadence-blocks' )}
+								help={ __( 'This is used for your reference only.', 'kadence-blocks' )}
+								value={( undefined !== description ? description : '' )}
+								onChange={value => setMetaAttribute( value, 'description' )}
+							/>
+						</KadencePanelBody>
 						<KadencePanelBody
 							panelName={'kb-advanced-form-submit-actions'}
 							title={__( 'Submit Actions', 'kadence-blocks' )}
@@ -705,6 +699,15 @@ export function EditInner( props ) {
 							/>
 						)}
 
+						{actions.includes( 'getresponse' ) && (
+							<GetResponseOptions
+								parentClientId={clientId}
+								formInnerBlocks={formInnerBlocks}
+								settings={getresponse}
+								save={( value ) => setMetaAttribute( { ...getresponse, ...value }, 'getresponse' )}
+							/>
+						)}
+
 						{actions.includes( 'webhook' ) && (
 							<WebhookOptions
 								parentClientId={clientId}
@@ -788,63 +791,11 @@ export function EditInner( props ) {
 						>
 							<MessageStyling setMetaAttribute={setMetaAttribute} useFormMeta={ useFormMeta } />
 						</KadencePanelBody>
-					</>
-				}
 
-				{( activeTab === 'advanced' ) &&
-					<>
-						<KadencePanelBody panelName={'kb-row-padding'}>
-							<ResponsiveMeasureRangeControl
-								label={__('Padding', 'kadence-blocks')}
-								value={padding}
-								tabletValue={tabletPadding}
-								mobileValue={mobilePadding}
-								onChange={(value) => {
-									setMetaAttribute( value, 'padding' );
-								}}
-								onChangeTablet={(value) => {
-									setMetaAttribute( value, 'tabletPadding' );
-								}}
-								onChangeMobile={(value) => {
-									setMetaAttribute( value, 'mobilePadding' );
-								}}
-								min={0}
-								max={(paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200)}
-								step={(paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1)}
-								unit={paddingUnit}
-								units={['px', 'em', 'rem', '%']}
-								onUnit={(value) => setMetaAttribute( value, 'paddingUnit' )}
-								onMouseOver={paddingMouseOver.onMouseOver}
-								onMouseOut={paddingMouseOver.onMouseOut}
-							/>
-							<ResponsiveMeasureRangeControl
-								label={__('Margin', 'kadence-blocks')}
-								value={margin}
-								tabletValue={tabletMargin}
-								mobileValue={mobileMargin}
-								onChange={(value) => {
-									setMetaAttribute( value, 'margin' );
-								}}
-								onChangeTablet={(value) => {
-									setMetaAttribute( value, 'tabletMargin' );
-								}}
-								onChangeMobile={(value) => {
-									setMetaAttribute( value, 'mobileMargin' );
-								}}
-								min={(marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200)}
-								max={(marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200)}
-								step={(marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1)}
-								unit={marginUnit}
-								units={['px', 'em', 'rem', '%', 'vh']}
-								onUnit={(value) => setMetaAttribute( value, 'marginUnit' )}
-								onMouseOver={marginMouseOver.onMouseOver}
-								onMouseOut={marginMouseOver.onMouseOut}
-							/>
-						</KadencePanelBody>
-						<div className="kt-sidebar-settings-spacer"></div>
 						<KadencePanelBody
-							initialOpen={true}
-							panelName={ 'kb-adv-form-max-width' }
+							title={__( 'Background', 'kadence-blocks' )}
+							initialOpen={false}
+							panelName={'kb-form-background'}
 						>
 							<BackgroundTypeControl
 								label={ __( 'Background Type', 'kadence-blocks' ) }
@@ -871,6 +822,65 @@ export function EditInner( props ) {
 									gradients={ [] }
 								/>
 							)}
+						</KadencePanelBody>
+					</>
+				}
+
+				{( activeTab === 'advanced' ) &&
+					<>
+						<KadencePanelBody panelName={'kb-row-padding'}>
+							<ResponsiveMeasureRangeControl
+								label={__('Padding', 'kadence-blocks')}
+								value={ arrayStringToInt( padding ) }
+								tabletValue={ arrayStringToInt( tabletPadding ) }
+								mobileValue={ arrayStringToInt( mobilePadding ) }
+								onChange={(value) => {
+									setMetaAttribute( value.map(String), 'padding' );
+								}}
+								onChangeTablet={(value) => {
+									setMetaAttribute( value.map(String), 'tabletPadding' );
+								}}
+								onChangeMobile={(value) => {
+									setMetaAttribute( value.map(String), 'mobilePadding' );
+								}}
+								min={0}
+								max={(paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200)}
+								step={(paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1)}
+								unit={paddingUnit}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setMetaAttribute( value, 'paddingUnit' )}
+								onMouseOver={paddingMouseOver.onMouseOver}
+								onMouseOut={paddingMouseOver.onMouseOut}
+							/>
+							<ResponsiveMeasureRangeControl
+								label={__('Margin', 'kadence-blocks')}
+								value={ arrayStringToInt( margin ) }
+								tabletValue={ arrayStringToInt( tabletMargin ) }
+								mobileValue={ arrayStringToInt( mobileMargin ) }
+								onChange={(value) => {
+									setMetaAttribute( value.map(String), 'margin' );
+								}}
+								onChangeTablet={(value) => {
+									setMetaAttribute( value.map(String), 'tabletMargin' );
+								}}
+								onChangeMobile={(value) => {
+									setMetaAttribute( value.map(String), 'mobileMargin' );
+								}}
+								min={(marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200)}
+								max={(marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200)}
+								step={(marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1)}
+								unit={marginUnit}
+								units={['px', 'em', 'rem', '%', 'vh']}
+								onUnit={(value) => setMetaAttribute( value, 'marginUnit' )}
+								onMouseOver={marginMouseOver.onMouseOver}
+								onMouseOut={marginMouseOver.onMouseOut}
+								allowAuto={ true}
+							/>
+						</KadencePanelBody>
+						<KadencePanelBody
+							initialOpen={true}
+							panelName={ 'kb-adv-form-max-width' }
+						>
 							<ResponsiveRangeControls
 								label={__( 'Max Width', 'kadence-blocks' )}
 								value={ ( maxWidth[ 0 ] !== '' ? parseInt( maxWidth[ 0 ] ) : '' ) }
@@ -899,6 +909,32 @@ export function EditInner( props ) {
 								units={[ 'px', '%', 'vw' ]}
 							/>
 						</KadencePanelBody>
+						<KadencePanelBody
+							title={__( 'Validation', 'kadence-blocks' )}
+							initialOpen={false}
+							panelName={ 'kb-adv-form-browser-validation' }
+						>
+							<ToggleControl
+								label={ __( 'Use Browser Validation', 'kadence-blocks' ) }
+								checked={ browserValidation }
+								onChange={ ( value ) => { setMetaAttribute( value, 'browserValidation' ) } }
+								help={ __( 'This will use the browsers default validation for required fields. If disabled, custom error message will be displayed.', 'kadence-blocks' ) }
+							/>
+						</KadencePanelBody>
+						{ showAnalytics && (
+							<KadencePanelBody
+								title={__( 'Analytics', 'kadence-blocks' )}
+								initialOpen={false}
+								panelName={ 'kb-adv-form-enable-analytics' }
+							>
+								<ToggleControl
+									label={ __( 'Enable Form Analytics', 'kadence-blocks' ) }
+									checked={ enableAnalytics }
+									onChange={ ( value ) => { setMetaAttribute( value, 'enableAnalytics' ) } }
+									help={ __( 'This will capture how many times the form is loaded, started, and submitted so you can have conversion analytics.', 'kadence-blocks' ) }
+								/>
+							</KadencePanelBody>
+						) }
 					</>
 				}
 
@@ -909,6 +945,48 @@ export function EditInner( props ) {
 					help={ __( 'Only disable if you intend to control form styles through custom css or theme', 'kadence-blocks' ) }
 					checked={ undefined !== style?.basicStyles ? style.basicStyles : true }
 					onChange={( value ) => { setMetaAttribute( { ...style, ...{ basicStyles: value } }, 'style') }}
+				/>
+
+				<TextControl
+					__nextHasNoMarginBottom
+					className="html-anchor-control"
+					label={ __( 'HTML anchor' ) }
+					help={
+						<>
+							{ __(
+								'Enter a word or two — without spaces — to make a unique web address just for this block, called an “anchor.” Then, you’ll be able to link directly to this section of your page.'
+							) }
+
+							<ExternalLink
+								href={ __(
+									'https://wordpress.org/documentation/article/page-jumps/'
+								) }
+							>
+								{ __( 'Learn more about anchors' ) }
+							</ExternalLink>
+						</>
+					}
+					value={ anchor }
+					placeholder={ __( 'Add an anchor' ) }
+					onChange={ ( nextValue ) => {
+						nextValue = nextValue.replace( ANCHOR_REGEX, '-' );
+						setMetaAttribute( nextValue, 'anchor' );
+					} }
+					autoCapitalize="none"
+					autoComplete="off"
+				/>
+
+				<TextControl
+					__nextHasNoMarginBottom
+					autoComplete="off"
+					label={ __( 'Additional CSS class(es)' ) }
+					value={ className }
+					onChange={ ( nextValue ) => {
+						setMetaAttribute( ( nextValue !== '' ? nextValue : undefined ), 'className');
+					} }
+					help={ __(
+						'Separate multiple classes with spaces.'
+					) }
 				/>
 			</InspectorAdvancedControls>
 			<BackendStyles uniqueID={uniqueID} useFormMeta={useFormMeta} previewDevice={previewDevice} inputFont={inputFont} fieldStyle={style} labelStyle={labelFont} helpStyle={helpFont} radioLabelFont={radioLabelFont} />

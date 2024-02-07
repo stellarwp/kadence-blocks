@@ -16,13 +16,15 @@ import {
 	RangeControl,
 	TextControl,
 	ToolbarButton,
-	ToggleControl
+	ToggleControl,
+	Button,
 } from '@wordpress/components';
 import { useViewportMatch, usePrevious } from '@wordpress/compose';
 import { useSelect, useDispatch } from '@wordpress/data';
 import {
 	BlockControls,
 	InspectorControls,
+	MediaUpload,
 	InspectorAdvancedControls,
 	RichText,
 	MediaReplaceFlow,
@@ -33,7 +35,7 @@ import {
 import { useEffect, useState, useRef, useCallback } from '@wordpress/element';
 import { __, sprintf, isRTL } from '@wordpress/i18n';
 import { createBlock } from '@wordpress/blocks';
-import { crop, upload, caption as captionIcon } from '@wordpress/icons';
+import { crop, upload, caption as captionIcon, update } from '@wordpress/icons';
 import { store as noticesStore } from '@wordpress/notices';
 import { store as coreStore } from '@wordpress/core-data';
 /**
@@ -168,10 +170,11 @@ export default function Image( {
 		overlayGradient,
 		overlayOpacity,
 		overlayBlendMode,
+		globalAlt,
 	} = attributes;
 
 	const previewURL = dynamicURL ? dynamicURL : url;
-
+	const [ updateImageStore, setImageStore ] = useState( false );
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[0] : '' ), ( undefined !== marginTablet ? marginTablet[ 0 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 0 ] : '' ) );
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[1] : '' ), ( undefined !== marginTablet ? marginTablet[ 1 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 1 ] : '' ) );
 	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[2] : '' ), ( undefined !== marginTablet ? marginTablet[ 2 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 2 ] : '' ) );
@@ -245,7 +248,7 @@ export default function Image( {
 		( select ) => {
 			const { getMedia } = select( coreStore );
 			return {
-				image: id && isSelected ? getMedia( id ) : null,
+				image: id && isSelected ? getMedia( id, { context: 'view' } ) : null,
 			};
 		},
 		[ id, isSelected ]
@@ -289,12 +292,12 @@ export default function Image( {
 		},
 		[ clientId ]
 	);
-	const imageSizeOptions = map(
-		filter( imageSizes, ( { slug } ) =>
-			get( image, [ 'media_details', 'sizes', slug, 'source_url' ] )
-		),
-		( { name, slug } ) => ( { value: slug, label: name } )
-	);
+	// const imageSizeOptions = map(
+	// 	filter( imageSizes, ( { slug } ) =>
+	// 		get( image, [ 'media_details', 'sizes', slug, 'source_url' ] )
+	// 	),
+	// 	( { name, slug } ) => ( { value: slug, label: name } )
+	// );
 	// If an image is externally hosted, try to fetch the image data. This may
 	// fail if the image host doesn't allow CORS with the domain. If it works,
 	// we can enable a button in the toolbar to upload the image.
@@ -360,14 +363,18 @@ export default function Image( {
 		setAttributes( { alt: newAlt } );
 	}
 
-	function onUpdateSelectImage( image ) {
+	function onUpdateSelectImage( mediaUpdate ) {
 		setAttributes( {
-			url: image.url,
-			id: image.id ? image.id : undefined,
+			url: mediaUpdate.url,
+			id: mediaUpdate.id ? mediaUpdate.id : undefined,
+			alt: mediaUpdate?.alt ? mediaUpdate.alt : undefined,
 			width: undefined,
 			height: undefined,
 			sizeSlug: undefined,
 		} );
+		if ( mediaUpdate?.alt && image?.alt_text ) {
+			image.alt_text = mediaUpdate.alt;
+		}
 	}
 	function clearImage() {
 		setAttributes( {
@@ -629,18 +636,49 @@ export default function Image( {
 									units={ [ 'px' ] }
 								/>
 							) }
-							<TextareaControl
-								label={ __( 'Alt text (alternative text)' ) }
-								value={ alt }
-								onChange={ updateAlt }
-								help={
-									<>
-										<ExternalLink href="https://www.w3.org/WAI/tutorials/images/decision-tree">
-											{ __( 'Describe the purpose of the image', 'kadence-blocks' ) }
-										</ExternalLink>
-										{ __( 'Leave empty if the image is purely decorative.', 'kadence-blocks' ) }
-									</>
-								}
+							{ ( ! globalAlt || ! image ) && (
+								<TextareaControl
+									label={ __( 'Alt text (alternative text)', 'kadence-blocks' ) }
+									value={ alt }
+									onChange={ updateAlt }
+									help={
+										<>
+											<ExternalLink href="https://www.w3.org/WAI/tutorials/images/decision-tree">
+												{ __( 'Describe the purpose of the image', 'kadence-blocks' ) }
+											</ExternalLink>
+											{ __( 'Leave empty if the image is purely decorative.', 'kadence-blocks' ) }
+										</>
+									}
+								/>
+							) }
+							{ globalAlt && image && (
+								<div className='components-base-control'>
+									<TextareaControl
+										label={ __( 'Alt text (alternative text)', 'kadence-blocks' ) }
+										value={ image?.alt_text ? image.alt_text : '' }
+										onChange={ value => console.log( value ) }
+										disabled={ true }
+										className={'mb-0'}
+									/>
+									<MediaUpload
+										onSelect={ onUpdateSelectImage }
+										type="image"
+										value={ ( id ? id : '' ) }
+										render={ ( { open } ) => (
+											<Button
+												text={ __( "Edit Image Alt Text", 'kadence-blocks' ) }
+												variant={'link'}
+												onClick={ open }
+											/>
+										) }
+									/>
+								</div>
+							) }
+							<ToggleControl
+								label={ __( 'Dynamic Alt Text', 'kadence-blocks' ) }
+								help={ __( 'This makes it so alt text changed in the media library automatically updates on your website without needing to update this block.', 'kadence-blocks' ) }
+								checked={ globalAlt }
+								onChange={ ( value ) => setAttributes( { globalAlt: value } ) }
 							/>
 							<TextControl
 								label={ __( 'Title attribute', 'kadence-blocks' ) }
@@ -1115,6 +1153,7 @@ export default function Image( {
 								onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
 								onMouseOver={ marginMouseOver.onMouseOver }
 								onMouseOut={ marginMouseOver.onMouseOut }
+								allowAuto={ true }
 							/>
 						</KadencePanelBody>
 
@@ -1383,7 +1422,7 @@ export default function Image( {
 		img = (
 			<ResizableBox
 				size={ {
-					width: previewMaxWidth ?? backupWidth,
+					width: previewMaxWidth && '' !== previewMaxWidth ? previewMaxWidth : backupWidth,
 					height: 'auto',
 				} }
 				showHandle={ isSelected }
@@ -1420,6 +1459,7 @@ export default function Image( {
 				{ ( overlayOpacity !== undefined && overlayOpacity !== '' ? `.kadence-image${ uniqueID } .kb-image-has-overlay:after { opacity: ${ overlayOpacity } }` : '' ) }
 				{ ( overlayBlendMode ? `.kadence-image${ uniqueID } .kb-image-has-overlay:after { mix-blend-mode: ${overlayBlendMode}; }` : '' ) }
 				{ ( previewOverlay ? `.kadence-image${ uniqueID } .kb-image-has-overlay:after { background:${ previewOverlay }; }` : '' ) }
+				{ ( previewMaxWidth ? `.kadence-inner-column-inner:where(.section-is-flex) > .kadence-image${ uniqueID } { max-width: ${ previewMaxWidth }px; }` : '' ) }
 			</style>
 			{ /* Hide controls during upload to avoid component remount,
 				which causes duplicated image upload. */ }

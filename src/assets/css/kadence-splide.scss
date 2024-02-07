@@ -187,6 +187,12 @@
 }
 .kb-splide.splide--rtl {
 	direction: rtl;
+	&.splide--fade {
+		> .splide__track .splide__list  {
+			direction: rtl;
+			flex-direction: row-reverse;
+		}
+	}
 }
 .kb-splide.splide--ttb.is-active > .splide__slider > .splide__track > .splide__list,
 .kb-splide.splide--ttb.is-active > .splide__track > .splide__list {

@@ -47,7 +47,9 @@ class Kadence_Blocks_Svg_Render {
 	 */
 	public function __construct() {
 		add_filter( 'render_block', array( $this, 'render_icons_dynamically' ), 10, 2 );
-		add_filter( 'wp_get_attachment_image_src', array( $this, 'fix_wp_get_attachment_image_svg' ), 10, 4 );
+		if ( apply_filters( 'kadence_blocks_fix_svg_dimensions', false ) ) {
+			add_filter( 'wp_get_attachment_image_src', array( $this, 'fix_wp_get_attachment_image_svg' ), 10, 4 );
+		}
 	}
 	/**
 	 * On build convert icons into svgs.
@@ -90,7 +92,7 @@ class Kadence_Blocks_Svg_Render {
 					if ( $line_icon ) {
 						$stroke_width = ( ! empty( $args['stroke'] ) ? $args['stroke'] : 2 );
 					}
-					$hidden = ( ! empty( $args['title'] ) ? true : false );
+					$hidden = ( empty( $args['title'] ) ? true : false );
 					$svg    = self::render( $args['name'], $fill, $stroke_width, $args['title'], $hidden );
 					return '<span class="kb-svg-icon-wrap kb-svg-icon-' . esc_attr( $args['name'] ) . ( ! empty( $args['class'] ) ? ' ' . esc_attr( $args['class'] ) : '' ) . '">' . $svg . '</span>';
 				},
@@ -125,10 +127,12 @@ class Kadence_Blocks_Svg_Render {
 			$preserve = '';
 			$vb_array = explode( ' ', $vb );
 			$typeL = substr( $name, 0, 3 );
-			if( $typeL && 'fas' !== $typeL && isset( $vb_array[2] ) && isset( $vb_array[3] ) && $vb_array[2] !== $vb_array[3] ) {
+
+			// This is added because some people upload icons that have negative values in the viewbox which cause part of the icons to get cut off unless this is added.
+			if ( $typeL && 'fas' !== $typeL && 'fe_' !== $typeL && 'ic_' !== $typeL && ( ( isset( $vb_array[0] ) && absint( $vb_array[0] ) > 0 ) || ( isset( $vb_array[1] ) && absint( $vb_array[1] ) > 0 ) ) ) {
 				$preserve = 'preserveAspectRatio="xMinYMin meet"';
 			}
-			$svg .= '<svg viewBox="' . $vb . '" ' . $preserve . ' fill="' . esc_attr( $fill ) . '"' . ( ! empty( $stroke_width ) ? ' stroke="currentColor" stroke-width="' . esc_attr( $stroke_width ) . '" stroke-linecap="round" stroke-linejoin="round"' : '' ) . ' xmlns="http://www.w3.org/2000/svg" ' . ( ! empty( $extras ) ? ' ' . $extras : '' ) . ( $hidden ? ' aria-hidden="true"' : '' ) . '>';
+			$svg .= '<svg viewBox="' . $vb . '" ' . $preserve . ' fill="' . esc_attr( $fill ) . '"' . ( ! empty( $stroke_width ) ? ' stroke="currentColor" stroke-width="' . esc_attr( $stroke_width ) . '" stroke-linecap="round" stroke-linejoin="round"' : '' ) . ' xmlns="http://www.w3.org/2000/svg" ' . ( ! empty( $extras ) ? ' ' . $extras : '' ) . ( $hidden ? ' aria-hidden="true"' : ' role="img"' ) . '>';
 			if ( ! empty( $title ) ) {
 				$svg .= '<title>' . $title . '</title>';
 			}
@@ -194,7 +198,7 @@ class Kadence_Blocks_Svg_Render {
 			if ( is_array( $size ) ) {
 				$image[1] = $size[0];
 				$image[2] = $size[1];
-			} elseif ( ini_get('allow_url_fopen') && ( $xml = simplexml_load_file( $image[0] ) ) !== false ) {
+			} elseif ( ini_get( 'allow_url_fopen' ) && ( $xml = simplexml_load_file( $image[0], SimpleXMLElement::class, LIBXML_NOWARNING ) ) !== false ) {
 				$attr = $xml->attributes();
 				$viewbox = explode( ' ', $attr->viewBox );
 				$image[1] = isset( $attr->width ) && preg_match( '/\d+/', $attr->width, $value ) ? (int) $value[0] : ( count( $viewbox ) == 4 ? (int) $viewbox[2] : null );

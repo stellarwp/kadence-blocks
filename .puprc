@@ -2,7 +2,8 @@
 	"build": [
 		"composer install --no-dev",
 		"npm install --legacy-peer-deps",
-		"npm run build"
+		"npm run build",
+		"composer wp"
 	],
 	"build_dev": [
 		"composer install --no-dev",
@@ -15,7 +16,6 @@
 			"fail_method_dev": "warn"
 		}
 	},
-	"clean": [],
 	"paths": {
 		"build_dir": ".pup-build",
 		"changelog": "readme.txt",

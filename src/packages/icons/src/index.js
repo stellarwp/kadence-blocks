@@ -50,8 +50,17 @@ export { default as copy } from './copy'
 export { default as copyStyles } from './copy-styles'
 export { default as paste } from './paste'
 export { default as click } from './click'
-export { default as dynamicIcon } from './dynamic'
-export { default as dynamic } from './dynamic'
+export { default as dynamicIcon } from './dynamic';
+export { default as dynamic } from './dynamic';
+export { default as aiIcon } from './ai';
+export { default as aiSettings } from './ai-settings';
+export { default as autoFix } from './auto-fix';
+export { default as subject } from './subject';
+export { default as notes } from './notes';
+export { default as playlist } from './playlist';
+export { default as check } from './check';
+export { default as chatBubble } from './chat-bubble';
+export { default as eye } from './eye';
 
 // Block Icons
 export { default as restaurantMenuIcon } from './block-icons/restaurant-menu'
@@ -217,3 +226,4 @@ export { default as progressIcon } from './block-icons/progress-bar/primary-icon
 export { default as circleBar } from './block-icons/progress-bar/circle-bar-layout'
 export { default as lineBar } from './block-icons/progress-bar/line-bar-layout'
 export { default as semiCircleBar } from './block-icons/progress-bar/semi-circle-bar-layout'
+export { default as lineMask } from './block-icons/progress-bar/line-mask-layout'

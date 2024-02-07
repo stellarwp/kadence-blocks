@@ -20,6 +20,7 @@ import * as BlockIcons from '@kadence/icons';
  * Import Settings
  */
 import KadenceEditorWidth from './editor-width';
+import KadenceSetting from './settings';
 import KadenceColors from './block-defaults/color-palette-defaults';
 
 /*
@@ -576,6 +577,30 @@ function KadenceConfig() {
 					>
 						<ResetDefaults />
 					</PanelBody>
+					<PanelBody
+						title={__('Pexels Library Search', 'kadence-blocks')}
+						initialOpen={ false }
+					>
+						<KadenceSetting
+							slug={'enable_image_picker'}
+							label={__('Enable Pexels Image Picker', 'kadence-blocks')}
+							type={'toggle'}
+							theDefault={true}
+						/>
+					</PanelBody>
+					{ 'undefined' !== typeof( window.kadenceDynamicParams ) && (
+						<PanelBody
+							title={__('Dynamic Content Settings', 'kadence-blocks')}
+							initialOpen={ false }
+						>
+							<KadenceSetting
+								slug={'get_fields_show_all'}
+								label={__('Always show all fields', 'kadence-blocks')}
+								type={'toggle'}
+								theDefault={false}
+							/>
+						</PanelBody>
+					) }
 
 
 					</>

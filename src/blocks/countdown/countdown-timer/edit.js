@@ -47,7 +47,7 @@ function KadenceCoundownTimer( props ) {
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				parentData: {
 					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
-					postId: select( 'core/editor' ).getCurrentPostId(),
+					postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
 					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
 					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
 				}
@@ -184,10 +184,87 @@ function KadenceCoundownTimer( props ) {
 		className: `kb-countdown-timer kb-countdown-timer-${uniqueID}`,
 	} );
 
+	const calculateDate = () => {
+		const currentDate = new Date();
+		const initialDate = new Date(parentBlock[ 0 ].attributes.timestamp);
+		const stopRepeating = !parentBlock[ 0 ].attributes.stopRepeating ? true : (new Date(parentBlock[ 0 ].attributes.endDate) <= new Date(currentDate) ? false : true);
+		if(currentDate >= initialDate && parentBlock[ 0 ].attributes.repeat && parentBlock[ 0 ].attributes.frequency !== '' && stopRepeating) {
+			const seconds = initialDate.getSeconds();
+			const minutes = initialDate.getMinutes();
+			const hours = initialDate.getHours();
+			let futureDate = new Date();
+			let daysPassed = Math.floor((currentDate.getTime() - initialDate.getTime()) / (1000 * 3600 * 24));
+			let offsetDays = 0;
+			let dayOfMonth = initialDate.getDate();
+			const futureDayOfMonth = currentDate.getDate();
+			const initialMonth = initialDate.getMonth();
+			const futureMonth = currentDate.getMonth() === 11 ? 0 : futureDayOfMonth >= dayOfMonth ? currentDate.getMonth() + 1 : currentDate.getMonth();
+			let futureYear = currentDate.getMonth() === 11 ? currentDate.getFullYear() + 1 : currentDate.getFullYear();
+			const nextMonthDays = new Date(futureYear, futureMonth + 1, 0).getDate();
+		
+			switch(parentBlock[ 0 ].attributes.frequency) {
+				case 'daily':
+					offsetDays = daysPassed + 1;
+					futureDate.setDate(initialDate.getDate() + offsetDays);
+					futureDate.setHours(hours);
+					futureDate.setMinutes(minutes);
+					futureDate.setSeconds(seconds);
+					break;
+				case 'weekly':
+					offsetDays = daysPassed + (7 - (daysPassed) % 7);
+					futureDate.setDate(initialDate.getDate() + offsetDays);
+					futureDate.setHours(hours);
+					futureDate.setMinutes(minutes);
+					futureDate.setSeconds(seconds);
+					break;
+				case 'monthly':
+					if(dayOfMonth === 31 && nextMonthDays === 30 ) {
+						dayOfMonth = 30;
+					} else if(futureMonth === 0 && dayOfMonth >= 29) {
+						dayOfMonth = dayOfMonth === 29 ? dayOfMonth : 28;
+					}
+
+					futureDate = new Date(
+						futureYear, 
+						futureMonth,
+						dayOfMonth,
+						hours, 
+						minutes,
+						seconds
+					);
+					break;
+				case 'yearly':
+					const datePassed = currentDate.getMonth() <= initialDate.getMonth() 
+						&& currentDate.getDate() <= initialDate.getDate()
+						&& currentDate.getHours() <= hours
+						&& currentDate.getMinutes() <= minutes
+						&& currentDate.getSeconds() <= seconds;
+					futureYear = datePassed
+						? currentDate.getFullYear()
+						: currentDate.getFullYear() + 1;
+					futureDate = new Date(
+						futureYear, 
+						initialMonth,
+						dayOfMonth,
+						hours, 
+						minutes,
+						seconds
+					);
+					break;
+				default:
+					break;
+			}
+
+			return futureDate;
+		} 
+
+		return new Date(parentBlock[ 0 ].attributes.timestamp);
+	}
+
 	return (
 		<div {...blockProps} id={`kb-timer-${parentID}`}>
 			<Countdown
-				date={new Date( parentBlock[ 0 ].attributes.timestamp )}
+				date={ calculateDate() }
 				renderer={renderer}
 			/>
 		</div>

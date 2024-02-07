@@ -7,6 +7,10 @@
  * @version  1.9
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Class to create a minified css output.
  */
@@ -89,6 +93,22 @@ class Kadence_Blocks_CSS {
 	 * @var array
 	 */
 	protected $_tablet_only_media_query = array();
+
+	/**
+	 * The array that holds all of the css to output inside of the tablet media query
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $_tablet_pro_media_query = array();
+
+	/**
+	 * The array that holds all of the css to output inside of the tablet media query
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $_tablet_only_pro_media_query = array();
 
 	/**
 	 * The array that holds all of the css to output inside of the tablet media query
@@ -185,6 +205,7 @@ class Kadence_Blocks_CSS {
 	 * Spacing variables used in string based padding / margin.
 	 */
 	protected $spacing_sizes = array(
+		'ss-auto' => 'var(--global-kb-spacing-auto, auto)',
 		'xxs' => 'var(--global-kb-spacing-xxs, 0.5rem)',
 		'xs' => 'var(--global-kb-spacing-xs, 1rem)',
 		'sm' => 'var(--global-kb-spacing-sm, 1.5rem)',
@@ -211,7 +232,7 @@ class Kadence_Blocks_CSS {
 	 * Gaps variables used in string based gutters.
 	 */
 	protected $gap_sizes = array(
-		'none' => 'var(--global-kb-gap-none, 0 )',
+		'none' => 'var(--global-kb-gap-none, 0rem )',
 		'skinny' => 'var(--global-kb-gap-sm, 1rem)',
 		'narrow' => '20px',
 		'wide' => '40px',
@@ -364,8 +385,10 @@ class Kadence_Blocks_CSS {
 			$media_query            = array();
 			$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
 			$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
+			$media_query['tabletPro']  = apply_filters( 'kadence_tablet_pro_media_query', '(max-width: 1024px), only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape) and (hover: none)' );
 			$media_query['desktop'] = apply_filters( 'kadence_desktop_media_query', '(min-width: 1025px)' );
 			$media_query['mobileReverse'] = apply_filters( 'kadence_mobile_reverse_media_query', '(min-width: 768px)' );
+			$media_query['tabletOnlyPro']    = apply_filters( 'kadence_tablet_only_pro_media_query', '(min-width: 768px) and (max-width: 1024px), only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape) and (hover: none)' );
 			$media_query['tabletOnly']    = apply_filters( 'kadence_tablet_only_media_query', '(min-width: 768px) and (max-width: 1024px)' );
 			$this->media_queries    = $media_query;
 		}
@@ -470,11 +493,21 @@ class Kadence_Blocks_CSS {
 					$this->_tablet_media_query[ $this->_selector ] = '';
 				}
 				$this->_tablet_media_query[ $this->_selector ] .= sprintf( $format, $property, $value, $prefix );
+			} elseif ( 'tabletPro' === $this->_media_state ) {
+				if ( ! isset( $this->_tablet_pro_media_query[ $this->_selector ] ) ) {
+					$this->_tablet_pro_media_query[ $this->_selector ] = '';
+				}
+				$this->_tablet_pro_media_query[ $this->_selector ] .= sprintf( $format, $property, $value, $prefix );
 			} elseif ( 'tabletOnly' === $this->_media_state ) {
 				if ( ! isset( $this->_tablet_only_media_query[ $this->_selector ] ) ) {
 					$this->_tablet_only_media_query[ $this->_selector ] = '';
 				}
 				$this->_tablet_only_media_query[ $this->_selector ] .= sprintf( $format, $property, $value, $prefix );
+			} elseif ( 'tabletOnlyPro' === $this->_media_state ) {
+				if ( ! isset( $this->_tablet_only_pro_media_query[ $this->_selector ] ) ) {
+					$this->_tablet_only_pro_media_query[ $this->_selector ] = '';
+				}
+				$this->_tablet_only_pro_media_query[ $this->_selector ] .= sprintf( $format, $property, $value, $prefix );
 			} elseif ( 'desktopOnly' === $this->_media_state ) {
 				if ( ! isset( $this->_desktop_only_media_query[ $this->_selector ] ) ) {
 					$this->_desktop_only_media_query[ $this->_selector ] = '';
@@ -740,15 +773,17 @@ class Kadence_Blocks_CSS {
 	 * @param array $font an array of font settings.
 	 * @return string
 	 */
-	public function render_font_weight( $weight ) {
+	public function render_font_weight( $weight, $google = true ) {
 		if ( empty( $weight ) ) {
 			return false;
 		}
 		if ( 'inherit' === $weight ) {
 			return false;
 		}
-		if ( 'regular' === $weight ) {
+		if ( 'regular' === $weight && $google ) {
 			$weight_string = 'normal';
+		} elseif ( 'regular' === $weight && ! $google ) {
+			$weight_string = false;
 		} else {
 			$weight_string = $weight;
 		}
@@ -783,16 +818,10 @@ class Kadence_Blocks_CSS {
 		if ( isset( $font[0] ) && is_array( $font[0] ) && ! empty( $font[0] ) ) {
 			$font = $font[0];
 		}
-		if ( isset( $font['style'] ) && ! empty( $font['style'] ) ) {
-			$this->add_property( 'font-style', $font['style'] );
-		}
-		if ( isset( $font['weight'] ) && ! empty( $font['weight'] ) ) {
-			$this->add_property( 'font-weight', $font['weight'] );
-		}
 		$size_type = ( isset( $font['sizeType'] ) && ! empty( $font['sizeType'] ) ? $font['sizeType'] : 'px' );
 		$line_type = ( isset( $font['lineType'] ) ? $font['lineType'] : '' );
 		$line_type = ( '-' !== $line_type ? $line_type : '' );
-		$letter_type = ( isset( $font['letterSpacingType'] ) && ! empty( $font['letterSpacingType'] ) ? $font['letterSpacingType'] : 'px' );
+		$letter_type = ( isset( $font['letterSpacingType'] ) && ! empty( $font['letterSpacingType'] ) ? $font['letterSpacingType'] : isset( $font['letterType'] ) && ! empty( $font['letterType'] ) ) ? $font['letterType'] : 'px';
 		if ( isset( $font['size'] ) && isset( $font['size'][0] ) && ! empty( $font['size'][0] ) ) {
 			$this->add_property( 'font-size', $this->get_font_size( $font['size'][0], $size_type ) );
 		}
@@ -814,10 +843,17 @@ class Kadence_Blocks_CSS {
 			$this->add_property( 'letter-spacing', $font['letterSpacing'] . $letter_type );
 		}
 		$family = ( isset( $font['family'] ) && ! empty( $font['family'] ) && 'inherit' !== $font['family'] ? $font['family'] : '' );
+		$is_google = false;
 		if ( ! empty( $family ) ) {
-			$google = isset( $font['google'] ) && $font['google'] ? true : false;
-			$google = $google && ( isset( $font['loadGoogle'] ) && $font['loadGoogle'] || ! isset( $font['loadGoogle'] ) ) ? true : false;
+			$is_google = isset( $font['google'] ) && $font['google'] ? true : false;
+			$google    = $is_google && ( isset( $font['loadGoogle'] ) && $font['loadGoogle'] || ! isset( $font['loadGoogle'] ) ) ? true : false;
 			$this->add_property( 'font-family', $this->render_font_family( $font['family'], $google, ( isset( $font['variant'] ) ? $font['variant'] : '' ), ( isset( $font['subset'] ) ? $font['subset'] : '' ) ) );
+			if ( isset( $font['style'] ) && ! empty( $font['style'] ) && 'normal' !== $font['style'] ) {
+				$this->add_property( 'font-style', $font['style'] );
+			}
+		}
+		if ( isset( $font['weight'] ) && ! empty( $font['weight'] ) ) {
+			$this->add_property( 'font-weight', $this->render_font_weight( $font['weight'], $is_google ) );
 		}
 		if ( isset( $font['textTransform'] ) && ! empty( $font['textTransform'] ) ) {
 			$this->add_property( 'text-transform', $font['textTransform'] );
@@ -1261,14 +1297,14 @@ class Kadence_Blocks_CSS {
 			return false;
 		}
 		$unit = ! empty( $attributes[ $unit_name ] ) ? $attributes[ $unit_name ] : 'px';
-		if ( isset( $attributes[ $name ][0] ) && '' !== $attributes[ $name ][0] ) {
+		if ( isset( $attributes[ $name ][0] ) && '' !== $attributes[ $name ][0] && ! is_array( $attributes[ $name ][0] ) ) {
 			$this->add_property( $property, $this->get_gap_size( $attributes[ $name ][0], $unit ) );
 		}
-		if ( isset( $attributes[ $name ][1] ) && '' !== $attributes[ $name ][1] ) {
+		if ( isset( $attributes[ $name ][1] ) && '' !== $attributes[ $name ][1] && ! is_array( $attributes[ $name ][1] ) ) {
 			$this->set_media_state( 'tablet' );
 			$this->add_property( $property, $this->get_gap_size( $attributes[ $name ][1], $unit ) );
 		}
-		if ( isset( $attributes[ $name ][2] ) && '' !== $attributes[ $name ][2] ) {
+		if ( isset( $attributes[ $name ][2] ) && '' !== $attributes[ $name ][2] && ! is_array( $attributes[ $name ][2] ) ) {
 			$this->set_media_state( 'mobile' );
 			$this->add_property( $property, $this->get_gap_size( $attributes[ $name ][2], $unit ) );
 		}
@@ -1288,7 +1324,7 @@ class Kadence_Blocks_CSS {
 			return false;
 		}
 		$unit = ! empty( $attributes[ $unit_name ] ) ? $attributes[ $unit_name ] : 'px';
-		if ( ! empty( $attributes[ $name[0] ] ) ) {
+		if ( is_array( $name ) && ! empty( $attributes[ $name[0] ] ) ) {
 			if ( $attributes[ $name[0] ] === 'custom' ) {
 				if ( $this->is_number( $attributes[ $custom ][0] ) ) {
 					$this->add_property( $property, $attributes[ $custom ][0] . $unit );
@@ -1296,18 +1332,35 @@ class Kadence_Blocks_CSS {
 			} else {
 				$this->add_property( $property, $this->get_variable_gap_value( $attributes[ $name[0] ] ) );
 			}
+		} elseif ( ! is_array( $name ) && ! empty( $attributes[ $name ][0] ) ) {
+			if ( $attributes[ $name ][0] === 'custom' ) {
+				if ( $this->is_number( $attributes[ $custom ][0] ) ) {
+					$this->add_property( $property, $attributes[ $custom ][0] . $unit );
+				}
+			} else {
+				$this->add_property( $property, $this->get_variable_gap_value( $attributes[ $name ][0] ) );
+			}
 		}
 		if ( ! empty( $attributes[ $name[1] ] ) ) {
 			$this->set_media_state( 'tablet' );
-			if ( $attributes[ $name[1] ] === 'custom' ) {
+			if ( is_array( $name ) && $attributes[ $name[1] ] === 'custom' ) {
 				if ( $this->is_number( $attributes[ $custom ][1] ) ) {
 					$this->add_property( $property, $attributes[ $custom ][1] . $unit );
 				}
 			} else {
 				$this->add_property( $property, $this->get_variable_gap_value( $attributes[ $name[1] ] ) );
 			}
+		} elseif ( ! is_array( $name ) && ! empty( $attributes[ $name ][1] ) ) {
+			$this->set_media_state( 'tablet' );
+			if ( $attributes[ $name ][1] === 'custom' ) {
+				if ( $this->is_number( $attributes[ $custom ][1] ) ) {
+					$this->add_property( $property, $attributes[ $custom ][1] . $unit );
+				}
+			} else {
+				$this->add_property( $property, $this->get_variable_gap_value( $attributes[ $name ][1] ) );
+			}
 		}
-		if ( ! empty( $attributes[ $name[2] ] ) ) {
+		if ( is_array( $name ) && ! empty( $attributes[ $name[2] ] ) ) {
 			$this->set_media_state( 'mobile' );
 			if ( $attributes[ $name[2] ] === 'custom' ) {
 				if ( $this->is_number( $attributes[ $custom ][2] ) ) {
@@ -1316,8 +1369,92 @@ class Kadence_Blocks_CSS {
 			} else {
 				$this->add_property( $property, $this->get_variable_gap_value( $attributes[ $name[2] ] ) );
 			}
+		} elseif ( ! is_array( $name ) && ! empty( $attributes[ $name ][2] ) ) {
+			$this->set_media_state( 'mobile' );
+			if ( $attributes[ $name ][2] === 'custom' ) {
+				if ( $this->is_number( $attributes[ $custom ][2] ) ) {
+					$this->add_property( $property, $attributes[ $custom ][2] . $unit );
+				}
+			} else {
+				$this->add_property( $property, $this->get_variable_gap_value( $attributes[ $name ][2] ) );
+			}
 		}
 		$this->set_media_state( 'desktop' );
+	}
+	/**
+	 * Generates the shadow output.
+	 *
+	 * @param array  $shadow an array of shadow settings.
+	 * @return string
+	 */
+	public function render_row_gap_property( $attributes, $name = array( 'gap', 'tabletGap', 'mobileGap' ), $device = 'desktop', $custom = '', $unit_name = 'gapUnit' ) {
+		if ( empty( $attributes ) || empty( $name ) ) {
+			return '';
+		}
+		if ( ! is_array( $attributes ) ) {
+			return '';
+		}
+		$unit = ! empty( $attributes[ $unit_name ] ) ? $attributes[ $unit_name ] : 'px';
+		switch ( $device ) {
+			case 'tablet':
+				if ( ! empty( $attributes[ $name[1] ] ) ) {
+					if ( is_array( $name ) && $attributes[ $name[1] ] === 'custom' ) {
+						if ( $this->is_number( $attributes[ $custom ][1] ) ) {
+							return $attributes[ $custom ][1] . $unit;
+						}
+					} else {
+						return $this->get_variable_gap_value( $attributes[ $name[1] ] );
+					}
+				} elseif ( ! is_array( $name ) && ! empty( $attributes[ $name ][1] ) ) {
+					if ( $attributes[ $name ][1] === 'custom' ) {
+						if ( $this->is_number( $attributes[ $custom ][1] ) ) {
+							return $attributes[ $custom ][1] . $unit;
+						}
+					} else {
+						return $this->get_variable_gap_value( $attributes[ $name ][1] );
+					}
+				}
+				break;
+			case 'mobile':
+				if ( is_array( $name ) && ! empty( $attributes[ $name[2] ] ) ) {
+					if ( $attributes[ $name[2] ] === 'custom' ) {
+						if ( $this->is_number( $attributes[ $custom ][2] ) ) {
+							return $attributes[ $custom ][2] . $unit;
+						}
+					} else {
+						return $this->get_variable_gap_value( $attributes[ $name[2] ] );
+					}
+				} elseif ( ! is_array( $name ) && ! empty( $attributes[ $name ][2] ) ) {
+					if ( $attributes[ $name ][2] === 'custom' ) {
+						if ( $this->is_number( $attributes[ $custom ][2] ) ) {
+							return $attributes[ $custom ][2] . $unit;
+						}
+					} else {
+						return $this->get_variable_gap_value( $attributes[ $name ][2] );
+					}
+				}
+				break;
+			default:
+				if ( is_array( $name ) && ! empty( $attributes[ $name[0] ] ) ) {
+					if ( $attributes[ $name[0] ] === 'custom' ) {
+						if ( $this->is_number( $attributes[ $custom ][0] ) ) {
+							return $attributes[ $custom ][0] . $unit;
+						}
+					} else {
+						return $this->get_variable_gap_value( $attributes[ $name[0] ] );
+					}
+				} elseif ( ! is_array( $name ) && ! empty( $attributes[ $name ][0] ) ) {
+					if ( $attributes[ $name ][0] === 'custom' ) {
+						if ( $this->is_number( $attributes[ $custom ][0] ) ) {
+							return $attributes[ $custom ][0] . $unit;
+						}
+					} else {
+						return $this->get_variable_gap_value( $attributes[ $name ][0] );
+					}
+				}
+				break;
+		}
+		return '';
 	}
 	/**
 	 * Generates the shadow output.
@@ -1577,15 +1714,16 @@ class Kadence_Blocks_CSS {
 		}
 	}
 	/**
-	 * Generates the responsive range output.
+	 * Generates the responsive size output.
 	 *
 	 * @param array  $attributes an array of attributes.
 	 * @param string $name an string of the attribute name.
 	 * @param string $property an string of the attribute name.
 	 * @param string $unit an string of the attribute name.
+	 * @param string $defaults Optional defaults to fallback if the responsive value is empty.
 	 * @return string
 	 */
-	public function render_responsive_size( $attributes, $name = array( 'width', 'tabletWidth', 'mobileWidth' ), $property = 'width', $unit = '' ) {
+	public function render_responsive_size( $attributes, $name = array( 'width', 'tabletWidth', 'mobileWidth' ), $property = 'width', $unit = '', $defaults = array( '', '', '' ) ) {
 		if ( empty( $attributes ) || empty( $name ) ) {
 			return false;
 		}
@@ -1596,16 +1734,24 @@ class Kadence_Blocks_CSS {
 			$unit = $name[0] . 'Type';
 		}
 		$unit = ! empty( $attributes[ $unit ] ) ? $attributes[ $unit ] : 'px';
+
+		$this->set_media_state( 'desktop' );
 		if ( ! empty( $attributes[ $name[0] ] ) ) {
 			$this->add_property( $property, $attributes[ $name[0] ] . $unit );
+		} else if ( $defaults[0] ) {
+			$this->add_property( $property, $defaults[0] . $unit );
 		}
+		$this->set_media_state( 'tablet' );
 		if ( ! empty( $attributes[ $name[1] ] ) ) {
-			$this->set_media_state( 'tablet' );
 			$this->add_property( $property, $attributes[ $name[1] ] . $unit );
+		} else if ( $defaults[1] ) {
+			$this->add_property( $property, $defaults[1] . $unit );
 		}
+		$this->set_media_state( 'mobile' );
 		if ( ! empty( $attributes[ $name[2] ] ) ) {
-			$this->set_media_state( 'mobile' );
 			$this->add_property( $property, $attributes[ $name[2] ] . $unit );
+		} else if ( $defaults[2] ) {
+			$this->add_property( $property, $defaults[2] . $unit );
 		}
 		$this->set_media_state( 'desktop' );
 	}
@@ -2235,9 +2381,25 @@ class Kadence_Blocks_CSS {
 			}
 			$this->stop_media_query();
 		}
+		if ( isset( $this->_tablet_pro_media_query ) && is_array( $this->_tablet_pro_media_query ) && ! empty( $this->_tablet_pro_media_query ) ) {
+			foreach ( $this->_tablet_pro_media_query as $selector => $string ) {
+				$this->start_media_query( $this->get_media_queries( 'tabletPro' ) );
+				$this->set_selector( $selector );
+				$this->_css .= $string;
+			}
+			$this->stop_media_query();
+		}
 		if ( isset( $this->_tablet_media_query ) && is_array( $this->_tablet_media_query ) && ! empty( $this->_tablet_media_query ) ) {
 			foreach ( $this->_tablet_media_query as $selector => $string ) {
 				$this->start_media_query( $this->get_media_queries( 'tablet' ) );
+				$this->set_selector( $selector );
+				$this->_css .= $string;
+			}
+			$this->stop_media_query();
+		}
+		if ( isset( $this->_tablet_only_pro_media_query ) && is_array( $this->_tablet_only_pro_media_query ) && ! empty( $this->_tablet_only_pro_media_query ) ) {
+			$this->start_media_query( $this->get_media_queries( 'tabletOnlyPro' ) );
+			foreach ( $this->_tablet_only_pro_media_query as $selector => $string ) {
 				$this->set_selector( $selector );
 				$this->_css .= $string;
 			}
@@ -2286,8 +2448,10 @@ class Kadence_Blocks_CSS {
 		$this->_selector_output = '';
 		$this->_selector_states = array();
 		$this->_tablet_media_query = array();
+		$this->_tablet_pro_media_query = array();
 		$this->_desktop_only_media_query = array();
 		$this->_tablet_only_media_query = array();
+		$this->_tablet_only_pro_media_query = array();
 		$this->_mobile_media_query = array();
 		$this->_media_state = 'desktop';
 		$this->_css = '';

@@ -50,6 +50,9 @@ class Kadence_Blocks_Form_CPT_Controller {
 				10,
 				2
 			);
+			if ( class_exists( 'Kadence_Blocks_Duplicate_Form' ) ) {
+				new Kadence_Blocks_Duplicate_Form( self::SLUG );
+			}
 		}
 	}
 	/**
@@ -63,12 +66,12 @@ class Kadence_Blocks_Form_CPT_Controller {
 	private function filter_post_type_columns( array $columns ) : array {
 
 		$add = array(
-			'description'  => esc_html__( 'Description', 'kadence-pro' ),
+			'description'  => esc_html__( 'Description', 'kadence-blocks' ),
 		);
 		if ( class_exists( 'Kadence_Blocks_Pro' ) ) {
-			$add['entries'] = esc_html__( 'Entries', 'kadence-pro' );
+			$add['entries'] = esc_html__( 'Entries', 'kadence-blocks' );
 		} else {
-			$add['entries'] = esc_html__( 'Entries (Pro Only)', 'kadence-pro' );
+			$add['entries'] = esc_html__( 'Entries (Pro Only)', 'kadence-blocks' );
 		}
 
 		$new_columns = array();
@@ -127,7 +130,7 @@ class Kadence_Blocks_Form_CPT_Controller {
 			'archives'           => __( 'Form Archives', 'kadence_blocks' ),
 			'attributes'         => __( 'Form Attributes', 'kadence_blocks' ),
 			'parent_item_colon'  => __( 'Parent Form:', 'kadence_blocks' ),
-			'all_items'          => __( 'All Forms', 'kadence_blocks' ),
+			'all_items'          => __( 'Forms', 'kadence_blocks' ),
 			'add_new_item'       => __( 'Add New Form', 'kadence_blocks' ),
 			'new_item'           => __( 'New Form', 'kadence_blocks' ),
 			'edit_item'          => __( 'Edit Form', 'kadence_blocks' ),
@@ -437,6 +440,46 @@ class Kadence_Blocks_Form_CPT_Controller {
 
 		register_post_meta(
 			'kadence_form',
+			'_kad_form_getresponse',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'object',
+				'default'       => array(
+					'automation' => array(),
+					'tags' => array(),
+					'map' => array(),
+					'listMulti' => array(),
+					'doubleOptin' => false,
+				),
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'object',
+						'properties' => array(
+							'automation' => array(
+								'type' => 'object',
+								'properties' => array(
+									'value' => array( 'type' => 'string' ),
+									'label' => array( 'type' => 'string' ),
+								),
+							),
+							'tags'  => array( 'type' => 'array' ),
+							'map'  => array(
+								'type' => 'object',
+								'additionalProperties' => array(
+									'type' => 'string',
+								),
+							),
+							'listMulti'  => array( 'type' => 'array' ),
+							'doubleOptin'  => array( 'type' => 'boolean' ),
+						),
+					),
+				),
+			)
+		);
+
+		register_post_meta(
+			'kadence_form',
 			'_kad_form_convertkit',
 			array(
 				'single'        => true,
@@ -491,6 +534,8 @@ class Kadence_Blocks_Form_CPT_Controller {
 					'automation' => array(),
 					'tags' => array(),
 					'map' => array(),
+					'listMulti' => array(),
+					'doubleOptin' => false,
 				),
 				'show_in_rest'  => array(
 					'schema' => array(
@@ -517,6 +562,8 @@ class Kadence_Blocks_Form_CPT_Controller {
 									'type' => 'string',
 								),
 							),
+							'listMulti'  => array( 'type' => 'array' ),
+							'doubleOptin'  => array( 'type' => 'boolean' ),
 						),
 					),
 				),
@@ -525,13 +572,35 @@ class Kadence_Blocks_Form_CPT_Controller {
 
 		register_post_meta(
 			'kadence_form',
+			'_kad_form_browserValidation',
+			array(
+				'show_in_rest'  => true,
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'boolean',
+				'default'       => true,
+			)
+		);
+		register_post_meta(
+			'kadence_form',
+			'_kad_form_enableAnalytics',
+			array(
+				'show_in_rest'  => true,
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'boolean',
+				'default'       => false,
+			)
+		);
+		register_post_meta(
+			'kadence_form',
 			'_kad_form_redirect',
 			array(
 				'show_in_rest'  => true,
 				'single'        => true,
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'string',
-				'default'       => ''
+				'default'       => '',
 			)
 		);
 		register_post_meta(
@@ -1213,6 +1282,16 @@ class Kadence_Blocks_Form_CPT_Controller {
 		);
 
 		$register_meta = array(
+			array(
+				'key'     => '_kad_form_anchor',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_form_className',
+				'default' => '',
+				'type'    => 'string'
+			),
 			array(
 				'key'           => '_kad_form_actions',
 				'default'       => array( 'email' ),

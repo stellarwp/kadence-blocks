@@ -1,5 +1,5 @@
 {
-	"apiVersion": 2,
+	"apiVersion": 3,
 	"name": "kadence/progress-bar",
 	"title": "Progress Bar",
 	"category": "kadence-blocks",
@@ -107,7 +107,7 @@
 		},
 		"progressWidth": {
 			"type": "number",
-			"default": "2"
+			"default": 2
 		},
 		"progressWidthTablet": {
 			"type": "number",
@@ -129,7 +129,8 @@
 			"enum": [
 				"line",
 				"circle",
-				"semicircle"
+				"semicircle",
+				"line-mask"
 			],
 			"default": "line",
 			"type": "string"
@@ -305,6 +306,17 @@
 				"",
 				""
 			]
+		},
+		"maskIterations": {
+			"type": "number",
+			"default": 5
+		},
+		"maskSvg": {
+			"type": "string",
+			"default": "star"
+		},
+		"maskUrl": {
+			"type": "string"
 		}
 	}
 }

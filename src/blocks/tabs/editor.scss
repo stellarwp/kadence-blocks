@@ -13,7 +13,9 @@
 	z-index: 0;
 	gap: 8px;
 }
-
+.wp-block-kadence-tabs .kt-tabs-title-list * {
+    box-sizing: border-box;
+}
 .kb-tab-block-layout-select .components-button.kb-tab-block-layout-item {
 	display: flex;
 	align-items: center;
@@ -341,12 +343,6 @@ ul.kt-tabs-title-list.kb-tab-title-columns-2 > li {
 }
 ul.kt-tabs-title-list.kb-tab-title-columns-1 > li {
     flex: 0 1 100%;
-}
-ul.kt-tabs-title-list.kb-tab-title-columns-1 > li > .kt-tab-title {
-    margin-right: 0px !important;
-}
-ul.kt-tabs-title-list.kb-tabs-list-columns > li:last-child > .kt-tab-title {
-    margin-right: 0px !important;
 }
 ul.kt-tabs-title-list.kb-tabs-list-columns .kt-tab-title {
 	justify-content: center;

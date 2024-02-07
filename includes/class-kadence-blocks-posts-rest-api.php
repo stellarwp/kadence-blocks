@@ -13,6 +13,11 @@
 class Kadence_Blocks_Post_Rest_Controller extends WP_REST_Controller {
 
 	/**
+	 * Query property name.
+	 */
+	const PROP_SOURCE = 'source';
+
+	/**
 	 * Type property name.
 	 */
 	const PROP_TYPE = 'type';
@@ -110,6 +115,8 @@ class Kadence_Blocks_Post_Rest_Controller extends WP_REST_Controller {
 	public function __construct() {
 		$this->namespace = 'kbp/v1';
 		$this->query_base = 'post-query';
+		$this->taxonomies_select = 'taxonomies-select';
+		$this->term_select = 'term-select';
 	}
 
 	/**
@@ -127,6 +134,30 @@ class Kadence_Blocks_Post_Rest_Controller extends WP_REST_Controller {
 					'callback'            => array( $this, 'get_query_items' ),
 					'permission_callback' => array( $this, 'get_items_permission_check' ),
 					'args'                => $this->get_query_params(),
+				),
+			)
+		);
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->taxonomies_select,
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_taxonomies_content' ),
+					'permission_callback' => array( $this, 'get_items_permission_check' ),
+					'args'                => $this->get_tax_select_params(),
+				),
+			)
+		);
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->term_select,
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_term_content' ),
+					'permission_callback' => array( $this, 'get_items_permission_check' ),
+					'args'                => $this->get_tax_select_params(),
 				),
 			)
 		);
@@ -153,8 +184,8 @@ class Kadence_Blocks_Post_Rest_Controller extends WP_REST_Controller {
 	public function get_query_items( $request ) {
 		$prop_type      = $request->get_param( self::PROP_TYPE );
 		$query_type     = $request->get_param( self::PROP_QUERY );
-		// $allow_multiple = $request->get_param( self::PROP_MULTIPLE );
-		// $prop_array     = $request->get_param( self::PROP_TYPE_ARRAY );
+		$allow_multiple = $request->get_param( self::PROP_MULTIPLE );
+		$prop_array     = $request->get_param( self::PROP_TYPE_ARRAY );
 		$tax_type       = $request->get_param( self::PROP_TAX_TYPE );
 		$exclude        = $request->get_param( self::PROP_EXCLUDE );
 		$categories     = ( $request->get_param( self::PROP_CATEGORY ) ? wp_parse_list( $request->get_param( self::PROP_CATEGORY ) ) : array() );
@@ -163,11 +194,8 @@ class Kadence_Blocks_Post_Rest_Controller extends WP_REST_Controller {
 			return array();
 		}
 
-		// $query_args = array(
-		// 	'post_type' => $allow_multiple ? $prop_array : $prop_type,
-		// );
 		$query_args = array(
-			'post_type' => $prop_type,
+			'post_type' => $allow_multiple ? $prop_array : $prop_type,
 		);
 		if ( 'individual' === $query_type ) {
 			$query_args['post__in']            = $request->get_param( self::PROP_INCLUDE );
@@ -183,6 +211,9 @@ class Kadence_Blocks_Post_Rest_Controller extends WP_REST_Controller {
 			$query_args['post_status']         = 'publish';
 			$query_args['ignore_sticky_posts'] = $request->get_param( self::PROP_ALLOW_STICKY );
 			$current_post_id                   = $request->get_param( self::PROP_POST_ID );
+			if( !empty( $request->get_param( self::PROP_INCLUDE ) ) ) {
+				$query_args['post__in']            = $request->get_param( self::PROP_INCLUDE );
+			}
 			if ( ! empty( $current_post_id ) ) {
 				$query_args['post__not_in']        = array( $current_post_id );
 			}
@@ -214,6 +245,77 @@ class Kadence_Blocks_Post_Rest_Controller extends WP_REST_Controller {
 		}
 
 		return rest_ensure_response( $posts );
+	}
+
+	/**
+	 * Retrieves a collection of objects.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 */
+	public function get_taxonomies_content( $request ) {
+		$source        = $request->get_param( self::PROP_SOURCE );
+		if ( 'all' === $source ) {
+			$post_types = kadence_blocks_get_post_types();
+		} else if ( gettype( $source ) == 'string' && ! is_numeric( $source ) ) {
+			$post_types = array(
+				array(
+					'value' => $source,
+					'label' => $source,
+				),
+			);
+		} else {
+			$type = get_post_type( $source );
+			if ( empty( $type ) ) {
+				return '';
+			}
+			$post_types = array(
+				array(
+					'value' => $type,
+					'label' => $type,
+				),
+			);
+		}
+		$taxs = array();
+		foreach ( $post_types as $key => $post_type ) {
+			$taxonomies = get_object_taxonomies( $post_type['value'], 'objects' );
+			foreach ( $taxonomies as $term_slug => $term ) {
+				if ( ! $term->public || ! $term->show_ui ) {
+					continue;
+				}
+				$taxs[] = array(
+					'value' => $term_slug,
+					'label' => $term->label,
+				);
+			}
+		}
+		return rest_ensure_response( $taxs );
+	}
+
+	/**
+	 * Retrieves terms for a given taxonomy source.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 */
+	public function get_term_content( $request ) {
+		$source = $request->get_param( self::PROP_SOURCE );
+		$page = $request->get_param( self::PROP_PAGE );
+		$number = $request->get_param( self::PROP_PER_PAGE );
+		if ( empty( $source ) ) {
+			return '';
+		}
+		$terms = get_terms( $source );
+		$term_items = array();
+		if ( ! empty( $terms ) ) {
+			foreach ( $terms as $term_key => $term_item ) {
+				$term_items[] = array(
+					'value' => $source . '|' . $term_item->term_id,
+					'label' => $term_item->name,
+				);
+			}
+		}
+		return rest_ensure_response( $term_items );
 	}
 
 	/**
@@ -406,6 +508,55 @@ class Kadence_Blocks_Post_Rest_Controller extends WP_REST_Controller {
 	}
 
 	/**
+	 * Retrieves the query params for the search results collection.
+	 *
+	 * @return array Collection parameters.
+	 */
+	public function get_term_params() {
+		$query_params  = parent::get_collection_params();
+		$query_params[ self::PROP_TAX_TYPE ] = array(
+			'description' => __( 'Taxonomy Type.', 'kadence-blocks-pro' ),
+			'type'        => 'string',
+		);
+		$query_params[ self::PROP_SOURCE ] = array(
+			'description' => __( 'The source of the content.', 'kadence-blocks-pro' ),
+			'type'        => 'string',
+			'default'     => 'current',
+		);
+		return $query_params;
+	}
+
+	/**
+	 * Retrieves the query params for the search results collection.
+	 *
+	 * @return array Collection parameters.
+	 */
+	public function get_tax_select_params() {
+		$query_params  = parent::get_collection_params();
+
+		$query_params[ self::PROP_SOURCE ] = array(
+			'description' => __( 'The source of the content.', 'kadence-blocks-pro' ),
+			'type'        => 'string',
+			'default'     => '',
+			'sanitize_callback' => array( $this, 'sanitize_post_source_string' ),
+			'validate_callback' => array( $this, 'validate_post_source_string' ),
+		);
+		$query_params[ self::PROP_PER_PAGE ] = array(
+			'description' => __( 'Number of results to return.', 'kadence-blocks-pro' ),
+			'type'        => 'number',
+			'sanitize_callback' => array( $this, 'sanitize_post_perpage' ),
+			'default' => 25,
+		);
+		$query_params[ self::PROP_PAGE ] = array(
+			'description' => __( 'Page of results to return.', 'kadence-blocks-pro' ),
+			'type'        => 'number',
+			'sanitize_callback' => array( $this, 'sanitize_results_page_number' ),
+			'default' => 1,
+		);
+		return $query_params;
+	}
+
+	/**
 	 * Sanitizes the list of subtypes, to ensure only subtypes of the passed type are included.
 	 *
 	 * @param array    $post_types  One or more post types.
@@ -447,6 +598,29 @@ class Kadence_Blocks_Post_Rest_Controller extends WP_REST_Controller {
 	 */
 	public function validate_post_types( $value ) {
 		return is_array( $value );
+	}
+	/**
+	 * Sanitizes the post type string, to ensure only the allowed post types are included.
+	 *
+	 * @param string   $post_type  One post type.
+	 * @param WP_REST_Request $request   Full details about the request.
+	 * @param string          $parameter Parameter name.
+	 * @return array|WP_Error List of valid subtypes, or WP_Error object on failure.
+	 */
+	public function sanitize_post_source_string( $source, $request ) {
+		return sanitize_text_field( $source );
+	}
+	/**
+	 * Validates the post type, to ensure it's a string.
+	 *
+	 * @param array    $value  One or more subtypes.
+	 * @return bool    true or false.
+	 */
+	public function validate_post_source_string( $value ) {
+		if ( '' !== $value ) {
+			return true;
+		}
+		return false;
 	}
 
 	/**

@@ -89,7 +89,7 @@ import {
 
 function KadenceIconLists( props ) {
 	const { attributes, className, setAttributes, isSelected, insertListItem, insertListItems, listBlock, container, clientId, updateBlockAttributes, onDelete } = props;
-	const { listCount, items, listStyles, columns, listLabelGap, listGap, tabletListGap, mobileListGap, columnGap, tabletColumnGap, mobileColumnGap, blockAlignment, uniqueID, listMargin, tabletListMargin, mobileListMargin, listMarginType, listPadding, tabletListPadding, mobileListPadding, listPaddingType, iconAlign, tabletColumns, mobileColumns, icon, iconSize, width, color, background, border, borderRadius, padding, borderWidth, style, linkUnderline, linkColor, linkHoverColor } = attributes;
+	const { listCount, items, listStyles, columns, listLabelGap, listGap, tabletListGap, mobileListGap, columnGap, tabletColumnGap, mobileColumnGap, blockAlignment, uniqueID, listMargin, tabletListMargin, mobileListMargin, listMarginType, listPadding, tabletListPadding, mobileListPadding, listPaddingType, iconAlign, tabletColumns, mobileColumns, icon, iconSize, width, color, background, border, borderRadius, padding, borderWidth, style, linkUnderline, linkColor, linkHoverColor, iconTitle } = attributes;
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
@@ -101,7 +101,7 @@ function KadenceIconLists( props ) {
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 				parentData: {
 					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
-					postId: select( 'core/editor' ).getCurrentPostId(),
+					postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
 					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
 					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
 				}
@@ -594,6 +594,7 @@ function KadenceIconLists( props ) {
 										onUnit={( value ) => setAttributes( { listMarginType: value } )}
 										onMouseOver={ listMarginMouseOver.onMouseOver }
 										onMouseOut={ listMarginMouseOver.onMouseOut }
+										allowAuto={ true }
 									/>
 								</KadencePanelBody>
 

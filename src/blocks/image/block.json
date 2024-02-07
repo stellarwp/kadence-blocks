@@ -1,6 +1,6 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 2,
+	"apiVersion": 3,
 	"name": "kadence/image",
 	"title": "Advanced Image",
 	"category": "kadence-blocks",
@@ -277,6 +277,10 @@
 			"default": false
 		},
 		"preventLazyLoad": {
+			"type": "boolean",
+			"default": false
+		},
+		"globalAlt": {
 			"type": "boolean",
 			"default": false
 		},

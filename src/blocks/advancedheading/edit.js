@@ -33,8 +33,14 @@ import {
 	ResponsiveBorderControl,
 	CopyPasteAttributes,
 	KadenceIconPicker,
-	IconRender
+	IconRender,
+	DynamicTextControl,
+	DynamicInlineReplaceControl,
 } from '@kadence/components';
+
+import {
+	dynamicIcon
+} from '@kadence/icons';
 
 import {
 	KadenceColorOutput,
@@ -48,7 +54,7 @@ import {
 	getUniqueId,
 	getInQueryBlock,
 	setBlockDefaults,
-	getPostOrFseId
+	getPostOrFseId,
 } from '@kadence/helpers';
 
 /**
@@ -56,6 +62,7 @@ import {
  */
 import './formats/markformat';
 import './formats/typed-text';
+import AIText from './ai-text/ai-text.js';
 
 import Typed from 'typed.js';
 
@@ -93,6 +100,7 @@ import {
 	SelectControl,
 	ToolbarDropdownMenu,
 	TextControl,
+	ToggleControl,
 } from '@wordpress/components';
 
 import {
@@ -205,6 +213,7 @@ function KadenceAdvancedHeading( props ) {
 		beforeIcon,
 		afterIcon,
 		icon,
+		iconTitle,
 		iconColor,
 		iconColorHover,
 		iconSide,
@@ -222,8 +231,15 @@ function KadenceAdvancedHeading( props ) {
 		tabletBorderRadius,
 		mobileBorderRadius,
 		borderRadiusUnit,
+		markBorderRadius,
+		tabletMarkBorderRadius,
+		mobileMarkBorderRadius,
+		markBorderRadiusUnit,
+		altTitle,
 	} = attributes;
+
 	const [ activeTab, setActiveTab ] = useState( 'style' );
+	const [ contentRef, setContentRef ] = useState();
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
 	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		( select ) => {
@@ -233,7 +249,7 @@ function KadenceAdvancedHeading( props ) {
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 				parentData: {
 					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
-					postId: select( 'core/editor' ).getCurrentPostId(),
+					postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
 					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
 					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
 				}
@@ -259,6 +275,7 @@ function KadenceAdvancedHeading( props ) {
 		}
 
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
+
 
 		// Update Old Styles
 		if ( ( '' !== topMargin || '' !== rightMargin || '' !== bottomMargin || '' !== leftMargin ) ) {
@@ -331,7 +348,11 @@ function KadenceAdvancedHeading( props ) {
 		} );
 	};
 
-	const renderTypography = typography && !typography.includes( ',' ) ? '\'' + typography + '\'' : typography;
+	const isDynamicReplaced = ( undefined !== kadenceDynamic && undefined !== kadenceDynamic[ 'content' ] && undefined !== kadenceDynamic[ 'content' ].enable && kadenceDynamic[ 'content' ].enable );
+	let richTextFormatsBase = applyFilters('kadence.whitelist_richtext_formats', ['core/bold', 'core/italic', 'kadence/mark', 'kadence/typed', 'core/strikethrough', 'core/superscript', 'core/superscript', 'toolset/inline-field'], 'kadence/advancedheading');
+	richTextFormatsBase = ! kadenceDynamic?.['content']?.shouldReplace ? [ ...['kadence/insert-dynamic'], ...richTextFormatsBase ] : richTextFormatsBase;
+	const richTextFormats = link || isDynamicReplaced ? richTextFormatsBase : undefined;
+	const renderTypography = typography && ! typography.includes( ',' ) ? '\'' + typography + '\'' : typography;
 	const markBGString = ( markBG ? KadenceColorOutput( markBG, markBGOpacity ) : '' );
 	const markBorderString = ( markBorder ? KadenceColorOutput( markBorder, markBorderOpacity ) : '' );
 	const textColorClass = getColorClassName( 'color', colorClass );
@@ -397,6 +418,12 @@ function KadenceAdvancedHeading( props ) {
 	const previewBorderRadiusRight = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 1 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 1 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 1 ] : '' ) );
 	const previewBorderRadiusBottom = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 2 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 2 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 2 ] : '' ) );
 	const previewBorderRadiusLeft = getPreviewSize( previewDevice, ( undefined !== borderRadius ? borderRadius[ 3 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 3 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 3 ] : '' ) );
+
+	const previewMarkBorderRadiusTop = getPreviewSize( previewDevice, ( undefined !== markBorderRadius ? markBorderRadius[ 0 ] : '' ), ( undefined !== tabletMarkBorderRadius ? tabletMarkBorderRadius[ 0 ] : '' ), ( undefined !== mobileMarkBorderRadius ? mobileMarkBorderRadius[ 0 ] : '' ) );
+	const previewMarkBorderRadiusRight = getPreviewSize( previewDevice, ( undefined !== markBorderRadius ? markBorderRadius[ 1 ] : '' ), ( undefined !== tabletMarkBorderRadius ? tabletMarkBorderRadius[ 1 ] : '' ), ( undefined !== mobileMarkBorderRadius ? mobileMarkBorderRadius[ 1 ] : '' ) );
+	const previewMarkBorderRadiusBottom = getPreviewSize( previewDevice, ( undefined !== markBorderRadius ? markBorderRadius[ 2 ] : '' ), ( undefined !== tabletMarkBorderRadius ? tabletMarkBorderRadius[ 2 ] : '' ), ( undefined !== mobileMarkBorderRadius ? mobileMarkBorderRadius[ 2 ] : '' ) );
+	const previewMarkBorderRadiusLeft = getPreviewSize( previewDevice, ( undefined !== markBorderRadius ? markBorderRadius[ 3 ] : '' ), ( undefined !== tabletMarkBorderRadius ? tabletMarkBorderRadius[ 3 ] : '' ), ( undefined !== mobileMarkBorderRadius ? mobileMarkBorderRadius[ 3 ] : '' ) );
+	const markBorderRadiusUnitPreview = ( undefined !== markBorderRadiusUnit ? markBorderRadiusUnit : 'px' );
 	let backgroundIgnoreClass = backgroundColorClass ? false : true;
 	if ( ! backgroundIgnoreClass && ! kadence_blocks_params.isKadenceT && background && background.startsWith( 'palette' ) ) {
 		backgroundIgnoreClass = true;
@@ -479,7 +506,7 @@ function KadenceAdvancedHeading( props ) {
 	const classes = classnames( {
 		[ `kt-adv-heading${uniqueID}` ]: uniqueID,
 		[ 'kadence-advancedheading-text' ]                  : true,
-		'kb-content-is-dynamic'        : undefined !== kadenceDynamic && undefined !== kadenceDynamic[ 'content' ] && undefined !== kadenceDynamic[ 'content' ].enable && kadenceDynamic[ 'content' ].enable,
+		'kb-content-is-dynamic'        : isDynamicReplaced,
 		[ textColorClass ]             : textColorClass,
 		'has-text-color'               : textColorClass,
 		[ textBackgroundColorClass ]   : textBackgroundColorClass,
@@ -503,47 +530,12 @@ function KadenceAdvancedHeading( props ) {
 				paddingLeft  : ( previewIconPaddingLeft ? getSpacingOptionOutput( previewIconPaddingLeft, iconPaddingUnit ) : undefined ),
 			}}/>
 		);
-
 	}
-	const dynamicHeadingContent = (
-			<TagHTML
-				style={{
-					display: icon ? 'flex' : undefined,
-					alignItems: icon ? iconVerticalAlign : undefined,
-					gap: icon ? '0.25em' : undefined,
-					justifyContent: icon && previewJustifyAlign ? previewJustifyAlign : undefined,
-					textAlign: previewAlign ? previewAlign : undefined,
-					backgroundColor: background && backgroundIgnoreClass ? KadenceColorOutput( background ) : undefined,
-					color          : color ? KadenceColorOutput( color ) : undefined,
-					fontWeight     : fontWeight,
-					fontStyle      : fontStyle,
-					fontSize       : ( previewFontSize ? getFontSizeOptionOutput( previewFontSize, ( sizeType ? sizeType : 'px' ) ) : undefined ),
-					lineHeight     : ( previewLineHeight ? previewLineHeight + ( fontHeightType ? fontHeightType : '' ) : undefined ),
-					letterSpacing  : ( previewLetterSpacing ? previewLetterSpacing + ( letterSpacingType ? letterSpacingType : 'px' ) : undefined ),
-					textTransform  : ( textTransform ? textTransform : undefined ),
-					fontFamily     : ( typography ? renderTypography : '' ),
-					paddingTop     : ( '' !== previewPaddingTop ? getSpacingOptionOutput( previewPaddingTop, paddingType ) : undefined ),
-					paddingRight   : ( '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingType ) : undefined ),
-					paddingBottom  : ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingType ) : undefined ),
-					paddingLeft    : ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingType ) : undefined ),
-					marginTop      : ( '' !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginType ) : undefined ),
-					marginRight    : ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginType ) : undefined ),
-					marginBottom   : ( '' !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginType ) : undefined ),
-					marginLeft     : ( '' !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginType ) : undefined ),
-					textShadow     : ( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].enable && textShadow[ 0 ].enable ? ( undefined !== textShadow[ 0 ].hOffset ? textShadow[ 0 ].hOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].vOffset ? textShadow[ 0 ].vOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].blur ? textShadow[ 0 ].blur : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].color ? KadenceColorOutput( textShadow[ 0 ].color ) : 'rgba(0,0,0,0.2)' ) : undefined ),
-				}}
-				className={classes}
-			>
-					{iconSide === 'left' && renderIcon()}
 
-					{applyFilters( 'kadence.dynamicContent', <Spinner/>, attributes, 'content' )}
-
-					{iconSide === 'right' && renderIcon()}
-		</TagHTML>
-	);
 	const headingContent = (
 			<TagHTML
 			className={classes}
+			data-alt-title={ altTitle ? altTitle : undefined }
 			style={{
 				display: icon ? 'flex' : undefined,
 				alignItems: icon ? iconVerticalAlign : undefined,
@@ -573,35 +565,42 @@ function KadenceAdvancedHeading( props ) {
 			}}>
 				{iconSide === 'left' && renderIcon()}
 
-				<RichText
-					id={ 'adv-heading' + uniqueID }
-					tagName="span"
-					className={'kb-adv-heading-inner'}
-					allowedFormats={(link ? applyFilters('kadence.whitelist_richtext_formats', ['core/bold', 'core/italic', 'kadence/insert-dynamic', 'kadence/mark', 'kadence/typed', 'core/strikethrough', 'core/superscript', 'core/superscript', 'toolset/inline-field'], 'kadence/advancedheading') : undefined)}
-					value={content}
-					onChange={(value) => setAttributes({content: value})}
-					onMerge={mergeBlocks}
-					onSplit={(value) => {
-						if (!value) {
-							return createBlock('core/paragraph');
-						}
-						return createBlock('kadence/advancedheading', {
-							...attributes,
-							content: value,
-						});
-					}}
-					onReplace={onReplace}
-					onRemove={() => onReplace([])}
-					style={{
-						fontWeight: fontWeight,
-						fontStyle: fontStyle,
-						letterSpacing: (previewLetterSpacing ? previewLetterSpacing + (letterSpacingType ? letterSpacingType : 'px') : undefined),
-						textTransform: (textTransform ? textTransform : undefined),
-						fontFamily: (typography ? renderTypography : ''),
-						textShadow: (undefined !== textShadow && undefined !== textShadow[0] && undefined !== textShadow[0].enable && textShadow[0].enable ? (undefined !== textShadow[0].hOffset ? textShadow[0].hOffset : 1) + 'px ' + (undefined !== textShadow[0].vOffset ? textShadow[0].vOffset : 1) + 'px ' + (undefined !== textShadow[0].blur ? textShadow[0].blur : 1) + 'px ' + (undefined !== textShadow[0].color ? KadenceColorOutput(textShadow[0].color) : 'rgba(0,0,0,0.2)') : undefined),
-					}}
-					placeholder={__('Write something…', 'kadence-blocks')}
-				/>
+				{ ! isDynamicReplaced && (
+					<RichText
+						id={ 'adv-heading' + uniqueID }
+						tagName="span"
+						className={'kb-adv-heading-inner'}
+						allowedFormats={richTextFormats ? richTextFormats : undefined}
+						value={content}
+						onChange={(value) => setAttributes({content: value})}
+						onMerge={mergeBlocks}
+						onSplit={(value) => {
+							if (!value) {
+								return createBlock('core/paragraph');
+							}
+							return createBlock('kadence/advancedheading', {
+								...attributes,
+								content: value,
+							});
+						}}
+						onReplace={onReplace}
+						onRemove={() => onReplace([])}
+						style={{
+							fontWeight: fontWeight,
+							fontStyle: fontStyle,
+							letterSpacing: (previewLetterSpacing ? previewLetterSpacing + (letterSpacingType ? letterSpacingType : 'px') : undefined),
+							textTransform: (textTransform ? textTransform : undefined),
+							fontFamily: (typography ? renderTypography : ''),
+							textShadow: (undefined !== textShadow && undefined !== textShadow[0] && undefined !== textShadow[0].enable && textShadow[0].enable ? (undefined !== textShadow[0].hOffset ? textShadow[0].hOffset : 1) + 'px ' + (undefined !== textShadow[0].vOffset ? textShadow[0].vOffset : 1) + 'px ' + (undefined !== textShadow[0].blur ? textShadow[0].blur : 1) + 'px ' + (undefined !== textShadow[0].color ? KadenceColorOutput(textShadow[0].color) : 'rgba(0,0,0,0.2)') : undefined),
+						}}
+						placeholder={__('Write something…', 'kadence-blocks')}
+					/>
+				) }
+				{ isDynamicReplaced && (
+					<>
+						{ applyFilters( 'kadence.dynamicContent', <Spinner/>, attributes, 'content', setAttributes, context ) }
+					</>
+				) }
 
 				{iconSide === 'right' && renderIcon()}
 
@@ -616,14 +615,14 @@ function KadenceAdvancedHeading( props ) {
 				event.preventDefault();
 			}}
 		>
-			{undefined !== kadenceDynamic && undefined !== kadenceDynamic[ 'content' ] && undefined !== kadenceDynamic[ 'content' ].enable && kadenceDynamic[ 'content' ].enable ? dynamicHeadingContent : headingContent}
+			{headingContent}
 		</a>
 	);
 	const wrapperClasses = classnames({
 		'kb-is-heading' : htmlTag && htmlTag === 'heading',
 		'kb-adv-text'   : true,
 	});
-	const nonTransAttrs = [ 'content' ];
+	const nonTransAttrs = [ 'content', 'altTitle' ];
 	const blockProps = useBlockProps( {
 		className: wrapperClasses,
 	} );
@@ -637,11 +636,11 @@ function KadenceAdvancedHeading( props ) {
 			if ( contentHtml.querySelectorAll( '.kt-typed-text' )[ 0 ] ) {
 				let typedElement = contentHtml.querySelectorAll( '.kt-typed-text' )[ 0 ];
 				let dataStrings = typedElement.getAttribute('data-strings');
-				let strings = dataStrings ? JSON.parse( dataStrings ) : [];
+				let strings = dataStrings ? JSON.parse( dataStrings.replaceAll('&', '&amp;') ) : [];
 
 				// Adding the default/existing string twice is required for displaying properly
-				strings.unshift( typedElement.textContent );
-				strings.unshift( typedElement.textContent );
+				strings.unshift( typedElement.textContent.replaceAll('&', '&amp;') );
+				strings.unshift( typedElement.textContent.replaceAll('&', '&amp;') );
 
 				let options = {
 					strings: strings,
@@ -699,6 +698,10 @@ function KadenceAdvancedHeading( props ) {
 						padding-right: ${( previewMarkPaddingRight ? getSpacingOptionOutput( previewMarkPaddingRight, markPaddingType ) : '0' )};
 						padding-bottom: ${( previewMarkPaddingBottom ? getSpacingOptionOutput( previewMarkPaddingBottom, markPaddingType ) : '0' )};
 						padding-left: ${( previewMarkPaddingLeft ? getSpacingOptionOutput( previewMarkPaddingLeft, markPaddingType ) : '0' )};
+						${ '' !== previewMarkBorderRadiusTop ? 'border-top-left-radius:' + previewMarkBorderRadiusTop + markBorderRadiusUnitPreview + ';' : '' }
+						${ '' !== previewMarkBorderRadiusRight ? 'border-top-right-radius:' + previewMarkBorderRadiusRight + markBorderRadiusUnitPreview + ';' : '' }
+						${ '' !== previewMarkBorderRadiusBottom ? 'border-bottom-right-radius:' + previewMarkBorderRadiusBottom + markBorderRadiusUnitPreview + ';' : '' }
+						${ '' !== previewMarkBorderRadiusLeft ? 'border-bottom-left-radius:' + previewMarkBorderRadiusLeft + markBorderRadiusUnitPreview + ';' : '' }
 					}`}
 				{ ( previewMaxWidth ? `.editor-styles-wrapper *:not(.kadence-inner-column-direction-horizontal) > .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID }, .editor-styles-wrapper .kadence-inner-column-direction-horizontal > .wp-block-kadence-advancedheading[data-block="${clientId}"] { max-width:${ previewMaxWidth + ( maxWidthType ? maxWidthType : 'px' ) } !important; }` : '' ) }
 				{ ( previewMaxWidth && previewAlign === 'center' ? `.editor-styles-wrapper *:not(.kadence-inner-column-direction-horizontal) > .wp-block-kadence-advancedheading .kt-adv-heading${uniqueID }, .editor-styles-wrapper .kadence-inner-column-direction-horizontal > .wp-block-kadence-advancedheading[data-block="${clientId}"] { margin-left: auto; margin-right:auto; }` : '' ) }
@@ -806,6 +809,9 @@ function KadenceAdvancedHeading( props ) {
 					blockSlug={ metadata['name'] }
 					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 				/>
+				{ Boolean( kadenceDynamic?.['content']?.shouldReplace ) && (
+					<DynamicTextControl dynamicAttribute={'content'} {...props} />
+				)}
 			</BlockControls>
 			{showSettings( 'allSettings', 'kadence/advancedheading' ) && (
 				<InspectorControls>
@@ -1177,6 +1183,14 @@ function KadenceAdvancedHeading( props ) {
 										units={[ 'px', 'em', 'rem' ]}
 										onUnit={( value ) => setAttributes( { iconPaddingUnit: value } )}
 									/>
+									<TextControl
+										label={__( 'Title for screen readers', 'kadence-blocks' )}
+										help={__( 'If no title added screen readers will ignore, good if the icon is purely decorative.', 'kadence-blocks' )}
+										value={ iconTitle }
+										onChange={ value => {
+											setAttributes( { iconTitle: value } );
+										} }
+									/>
 								</KadencePanelBody>
 							)}
 							{showSettings( 'highlightSettings', 'kadence/advancedheading' ) && (
@@ -1208,6 +1222,23 @@ function KadenceAdvancedHeading( props ) {
 										onChange={( value ) => setAttributes( { markBorderStyles: value } )}
 										onChangeTablet={( value ) => setAttributes( { tabletMarkBorderStyles: value } )}
 										onChangeMobile={( value ) => setAttributes( { mobileMarkBorderStyles: value } )}
+									/>
+									<ResponsiveMeasurementControls
+										label={__( 'Border Radius', 'kadence-blocks' )}
+										value={markBorderRadius}
+										tabletValue={tabletMarkBorderRadius}
+										mobileValue={mobileMarkBorderRadius}
+										onChange={( value ) => setAttributes( { markBorderRadius: value } )}
+										onChangeTablet={( value ) => setAttributes( { tabletMarkBorderRadius: value } )}
+										onChangeMobile={( value ) => setAttributes( { mobileMarkBorderRadius: value } )}
+										unit={markBorderRadiusUnit}
+										units={[ 'px', 'em', 'rem', '%' ]}
+										onUnit={( value ) => setAttributes( { markBorderRadiusUnit: value } )}
+										max={(markBorderRadiusUnit === 'em' || markBorderRadiusUnit === 'rem' ? 24 : 500)}
+										step={(markBorderRadiusUnit === 'em' || markBorderRadiusUnit === 'rem' ? 0.1 : 1)}
+										min={ 0 }
+										isBorderRadius={ true }
+										allowEmpty={true}
 									/>
 									<TypographyControls
 										fontGroup={'heading'}
@@ -1306,6 +1337,7 @@ function KadenceAdvancedHeading( props ) {
 											onUnit={(value) => setAttributes({marginType: value})}
 											onMouseOver={marginMouseOver.onMouseOver}
 											onMouseOut={marginMouseOver.onMouseOut}
+											allowAuto={ true }
 										/>
 									</KadencePanelBody>
 
@@ -1314,14 +1346,24 @@ function KadenceAdvancedHeading( props ) {
 							)}
 
 							<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs }  />
-
 						</>
-
 					)}
-
-						</InspectorControls>
+				</InspectorControls>
 			)}
+
+			<DynamicInlineReplaceControl dynamicAttribute={'content'} {...props} />
+
 			<InspectorAdvancedControls>
+				{ htmlTag === 'heading' && (
+					<TextControl
+						label={__( 'Alterative title for table of contents', 'kadence-blocks' )}
+						help={__( 'If using table of contents block you can define a custom title here.', 'kadence-blocks' )}
+						value={ altTitle }
+						onChange={ value => {
+							setAttributes( { altTitle: value } );
+						} }
+					/>
+				)}
 				<TextControl
 					label={__( 'HTML Anchor', 'kadence-blocks' )}
 					help={__( 'Anchors lets you link directly to a section on a page.', 'kadence-blocks' )}
@@ -1331,8 +1373,10 @@ function KadenceAdvancedHeading( props ) {
 						setAttributes( {
 							anchor: nextValue,
 						} );
-					}}/>
+					}}
+				/>
 			</InspectorAdvancedControls>
+
 			{kadenceAnimation && (
 				<div className={`kt-animation-wrap-${kadenceAnimation}`}>
 					<div id={`animate-id${uniqueID}`} className={'aos-animate kt-animation-wrap'} data-aos={( kadenceAnimation ? kadenceAnimation : undefined )}

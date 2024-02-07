@@ -36,7 +36,6 @@ import {
 	ResponsiveAlignControls,
 	GradientControl,
 	BoxShadowControl,
-	DynamicTextControl,
 	InspectorControlTabs,
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
@@ -65,6 +64,7 @@ import {
 	BlockControls,
 	JustifyContentControl,
 	useBlockProps,
+	store as blockEditorStore
 } from '@wordpress/block-editor';
 import {
 	TextControl,
@@ -74,7 +74,7 @@ import {
 import {
 	applyFilters,
 } from '@wordpress/hooks';
-
+import { getUniqueFieldId } from '../../components';
 
 export default function KadenceButtonEdit( { attributes, setAttributes, className, isSelected, context, clientId, name } ) {
 	const {
@@ -138,26 +138,27 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 		mhAlign
 	} = attributes;
 
-	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { previewDevice } = useSelect(
 		( select ) => {
 			return {
-				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
-				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 			};
 		},
 		[ clientId ]
 	);
+
+	useEffect( () => {
+		// Doesn't worry about if a filed is duplicated. Duplicated fields get a custom ID through the watch at the form level.
+		let uniqueId = getUniqueFieldId( uniqueID, clientId );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+		}
+	}, [] );
 	const marginMouseOver = mouseOverVisualizer();
 	const paddingMouseOver = mouseOverVisualizer();
 	useEffect( () => {
 		setBlockDefaults( 'kadence/singlebtn', attributes);
-
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
-
 	}, [] );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
@@ -380,8 +381,8 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 							parentSlug={ 'kadence/advanced-form' }
 						/>
 						<InspectorControlTabs
-							panelName={'singlebtn'}
-							setActiveTab={( value ) => setActiveTab( value )}
+							panelName={'advanced-form-submit'}
+							setActiveTab={ setActiveTab }
 							activeTab={ activeTab}
 						/>
 
@@ -884,6 +885,7 @@ export default function KadenceButtonEdit( { attributes, setAttributes, classNam
 												onUnit={( value ) => setAttributes( { marginUnit: value } )}
 												onMouseOver={ marginMouseOver.onMouseOver }
 												onMouseOut={ marginMouseOver.onMouseOut }
+												allowAuto={ true }
 											/>
 											<TextControl
 												label={ __( 'Add Aria Label', 'kadence-blocks' )}

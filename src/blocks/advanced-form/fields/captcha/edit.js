@@ -3,7 +3,7 @@
  */
 import { TextControl, SelectControl, ToggleControl, Button, TextareaControl, Spinner, ExternalLink } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
+import { InspectorControls, useBlockProps, store as blockEditorStore } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { KadencePanelBody, InspectorControlTabs, ResponsiveRangeControls, SelectParentBlock } from '@kadence/components';
 import {
@@ -17,7 +17,7 @@ import {
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 import classNames from 'classnames';
-import { FieldBlockAppender } from '../../components';
+import { FieldBlockAppender, getUniqueFieldId } from '../../components';
 import { get } from 'lodash';
 import ReCAPTCHA from 'react-google-recaptcha';
 import Turnstile from 'react-turnstile';
@@ -45,23 +45,25 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 		requiredMessage,
 	} = attributes;
 	const [ activeTab, setActiveTab ] = useState( 'general' );
-	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
-	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+	const { previewDevice } = useSelect(
 		( select ) => {
 			return {
-				isUniqueID   : ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
-				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 			};
 		},
-		[ clientId ],
+		[ clientId ]
 	);
 
 	useEffect( () => {
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock );
-		setAttributes( { uniqueID: uniqueId } );
-		addUniqueID( uniqueId, clientId );
+		// Doesn't worry about if a filed is duplicated. Duplicated fields get a custom ID through the watch at the form level.
+		let uniqueId = getUniqueFieldId( uniqueID, clientId );
+		if ( uniqueId !== uniqueID ) {
+			attributes.uniqueID = uniqueId;
+			setAttributes( { uniqueID: uniqueId } );
+		}
+	}, [] );
 
+	useEffect( () => {
 		const neededFields = [
 			'kadence_blocks_recaptcha_site_key',
 			'kadence_blocks_recaptcha_secret_key',
@@ -132,6 +134,8 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 	const [ isSaving, setIsSaving ] = useState( false );
 
 	let allowedTabs = [ 'general', 'style', 'advanced' ];
+	const linkToKadenceCaptchaSettings = <a href={kadence_blocks_params.adminUrl + 'options-general.php?page=kadence-recaptcha-settings'}
+											target={'_blank'}>{__( 'Modify Kadence Captcha settings', 'kadence-blocks' )}</a>;
 
 	const googleV2RerenderKey = theme + size + recaptchaLanguage + recaptchaSiteKey + recaptchaSecretKey;
 
@@ -226,8 +230,7 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 								}
 
 								{hasKadenceCaptcha && useKcSettings ? (
-									<a href={kadence_blocks_params.adminUrl + 'options-general.php?page=kadence-recaptcha-settings'}
-									   target={'_blank'}>{__( 'Modify Kadence Captcha settings', 'kadence-blocks' )}</a>
+									linkToKadenceCaptchaSettings
 								) : (
 									<>
 										<SelectControl
@@ -341,7 +344,7 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 					}
 					{( activeTab === 'style' ) &&
 						<KadencePanelBody>
-							{type === 'googlev3' &&
+							{type === 'googlev3' && useKcSettings === false &&
 								<>
 									<ToggleControl
 										label={__( 'Hide reCAPTCHA badge', 'kadence-blocks' )}
@@ -371,7 +374,10 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 									}
 								</>
 							}
-
+							{ useKcSettings === true && (
+								linkToKadenceCaptchaSettings
+							) }
+							{ useKcSettings === false && (
 							<SelectControl
 								label={__( 'Color Theme', 'kadence-blocks' )}
 								value={theme}
@@ -381,6 +387,8 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 								]}
 								onChange={( value ) => setAttributes( { theme: value } )}
 							/>
+							) }
+
 							{type !== 'googlev3' &&
 								<SelectControl
 									label={__( 'Size', 'kadence-blocks' )}
@@ -501,7 +509,7 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 									{ previewHide && ! previewShowNotice &&
 										<em>{ __( 'Placeholder for hidden Google V3 reCaptcha', 'kadence-blocks' ) }</em>
 									}
-									{previewHide && previewShowNotice &&
+									{ previewHide && previewShowNotice &&
 										<span
 											style={{
 												fontSize    : '11px',
@@ -515,8 +523,8 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 											}}
 											className={'kt-recaptcha-branding-string'}
 										>
-									{googlev3HiddenNotice}
-								</span>
+											{googlev3HiddenNotice}
+										</span>
 									}
 								</>
 							}

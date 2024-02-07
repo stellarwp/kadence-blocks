@@ -146,7 +146,7 @@ function RowLayoutEditContainer( props ) {
 				innerItemCount: select( blockEditorStore ).getBlockCount( clientId ),
 				parentData: {
 					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
-					postId: select( 'core/editor' ).getCurrentPostId(),
+					postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
 					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
 					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
 				}
@@ -330,7 +330,7 @@ function RowLayoutEditContainer( props ) {
 
 	useEffect( () => {
 		debouncedSetDynamicState( 'kadence.dynamicBackground', '', attributes, 'bgImg', setAttributes, context, setDynamicBackgroundImg, bgImg ? false : true );
-	}, [ 'bgImg' ] );
+	}, [ bgImg, context ] );
 
 	const [ contentWidthPop, setContentWidthPop ] = useState( false );
 	const [ resizingVisually, setResizingVisually ] = useState( false );
@@ -474,7 +474,7 @@ function RowLayoutEditContainer( props ) {
 		// [ `kt-mobile-layout-${ mobileLayoutClass }` ]: mobileLayoutClass,
 		[ `current-tab-${ currentTab }` ]: currentTab,
 		[ `kt-v-gutter-${ collapseGutter }` ]: collapseGutter,
-		[ `kt-m-colapse-${ collapseOrder }` ]: collapseOrder,
+		[ `kt-m-colapse-${ collapseOrder }` ]: previewDevice !== 'Desktop' ? collapseOrder : false,
 		[ `kt-custom-first-width-${ widthString }` ]: widthString,
 		[ `kt-custom-second-width-${ secondWidthString }` ]: secondWidthString,
 		[ `kt-custom-third-width-${ thirdWidthNumber }` ]: thirdWidthNumber,
@@ -730,6 +730,7 @@ function RowLayoutEditContainer( props ) {
 											onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
 											onMouseOver={ marginMouseOver.onMouseOver }
 											onMouseOut={ marginMouseOver.onMouseOut }
+											allowAuto={ true }
 										/>
 									</KadencePanelBody>
 								) }
@@ -945,7 +946,7 @@ function RowLayoutEditContainer( props ) {
 							{ ( widthNumber && secondWidthNumber && thirdWidthNumber ? `.wp-block-kadence-rowlayout.kb-row-id-${ uniqueID } > .innerblocks-wrap.kb-grid-columns-3.kt-layout-inner-wrap-id${ uniqueID } { grid-template-columns: minmax(0, calc( ${ parseFloat( widthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) ) minmax(0, calc( ${ parseFloat( secondWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) )  minmax(0, calc( ${ parseFloat( thirdWidthNumber ) }%${ gapTotal ? ' - (' + gapTotal + ' / 3)' : '' } ) ) }` : '' ) }
 						</>
 					) }
-					{ 'right-to-left' === collapseOrder && ( 'grid-layout' === previewLayout || 'row' === previewLayout || 'last-row' === previewLayout || 'first-row' === previewLayout ) && (
+					{ 'Desktop' !== previewDevice && 'right-to-left' === collapseOrder && ( 'grid-layout' === previewLayout || 'row' === previewLayout || 'last-row' === previewLayout || 'first-row' === previewLayout ) && (
 						<>
 						{ times( columns, n => {
 								const item = n + 1;

@@ -117,6 +117,20 @@ class TypographyControls extends Component {
 			];
 			options = custom_fonts.concat( options );
 		}
+		if ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params?.isKadenceT ) {
+			const themeOptions = [
+				{ label: 'Inherit Heading Font Family', value: 'var( --global-heading-font-family, inherit )', google: false },
+				{ label: 'Inherit Body Font Family', value: 'var( --global-body-font-family, inherit )', google: false },
+			];
+			const theme_fonts = [
+				{
+					type: 'group',
+					label: __( 'Theme Global Fonts', 'kadence-blocks' ),
+					options: themeOptions,
+				},
+			];
+			options = theme_fonts.concat( options );
+		}
 		let typographyOptions = applyFilters( 'kadence.typography_options', options );
 		let typographySelectOptions = [].concat.apply( [], typographyOptions.map( option => option.options ) );
 		const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
@@ -451,10 +465,10 @@ class TypographyControls extends Component {
 			{ value: 'capitalize', label: __( 'Ab', 'kadence-blocks' ), tooltip: __( 'Capitalize', 'kadence-blocks' ) },
 		];
 		const fontMin = ( fontSizeType !== 'px' ? 0.2 : 5 );
-		const fontMax = ( fontSizeType !== 'px' ? 12 : 300 );
+		const fontMax = ( fontSizeType !== 'px' ? 120 : 3000 );
 		const fontStep = ( fontSizeType !== 'px' ? 0.001 : 1 );
 		const lineMin = ( lineHeightType !== 'px' ? 0.2 : 5 );
-		const lineMax = ( lineHeightType !== 'px' ? 12 : 200 );
+		const lineMax = ( lineHeightType !== 'px' ? 120 : 3000 );
 		const lineStep = ( lineHeightType !== 'px' ? 0.001 : 1 );
 		const usingReg = typographyWeights.some(function(el) {
 			return el.value === 'regular';

@@ -1,5 +1,7 @@
 export { default as getFormFields } from './get-form-fields';
+export { default as dedupeFormFieldUniqueIds } from './dedupe-form-field-unique-ids';
 export { default as verifyUniqueFieldName } from './verify-unique-field-name';
+export { default as getUniqueFieldId } from './get-unique-field-id';
 
 export { default as SelectOrCreatePlaceholder } from './select-or-create-placeholder';
 export { default as SelectForm } from './select-form';
@@ -28,6 +30,7 @@ export { default as SendinBlueOptions } from './submit-actions/sendinblue';
 export { default as MailchimpOptions } from './submit-actions/mailchimp';
 export { default as ConvertKitOptions } from './submit-actions/convert-kit';
 export { default as ActiveCampaignOptions } from './submit-actions/active-campaign';
+export { default as GetResponseOptions } from './submit-actions/get-response';
 
 export { default as WebhookOptions } from './submit-actions/webhook';
 export { default as AutoEmailOptions } from './submit-actions/auto-email';

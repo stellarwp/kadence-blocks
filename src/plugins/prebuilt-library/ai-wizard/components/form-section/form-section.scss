@@ -1,0 +1,19 @@
+@import '../../scss/variables.scss';
+
+.stellarwp.form-section {
+  margin-bottom: 16px;
+
+  .form-section__content {
+    margin-bottom: 0;
+    font-size: 12px;
+    color: $color-disabled;
+  }
+
+  &.has-children {
+    margin-bottom: 0;
+
+    .form-section__content {
+      margin-bottom: 16px;
+    }
+  }
+}

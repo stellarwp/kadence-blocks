@@ -1,5 +1,5 @@
 {
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "kadence/advanced-form-time",
   "category": "kadence-blocks",
   "textdomain": "kadence-blocks",
@@ -7,11 +7,10 @@
 	"uniqueID": {
 		"type": "string"
 	},
-	"label": {
-	  "type": "string",
-	  "default": ""
+	"formID": {
+		"type": "string"
 	},
-	"placeholder": {
+	"label": {
 	  "type": "string",
 	  "default": ""
 	},
@@ -81,6 +80,7 @@
 	"anchor": true,
 	"html": false,
 	"ktdynamic": true,
+	"ktfieldconditional": true,
 	"reusable": false,
 	"kbMetadata": true,
 	"kbContentLabel": "label"

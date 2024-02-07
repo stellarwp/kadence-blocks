@@ -6,6 +6,7 @@
 
 (function() {
 	'use strict';
+	
 	var kadenceBlocksGLight = {
 		carouselCache: {},
 		carouselItem: {},
@@ -53,10 +54,15 @@
 					let filter = foundGalleries[i].getAttribute( 'data-image-filter' );
 					const skin = filter ? 'kadence-dark kb-gal-light-filter-' + filter : 'kadence-dark';
 					var showCaption = foundGalleries[ i ].getAttribute( 'data-lightbox-caption' );
+					let galleryLinks = foundGalleries[i].querySelectorAll( 'a.kb-gallery-item-link' );
+					for(let l = 0; l < galleryLinks.length; l++) {
+						galleryLinks[l].setAttribute('aria-label', kb_glightbox.lightBoxAriaLabel);
+					}
 					kadenceBlocksGLight.foundClasses[i] = false;
 					for ( let n = 0; n < galleryClass.length; n++ ) {
 						if ( galleryClass[ n ].indexOf( 'kb-gallery-id' ) !== -1 ) {
-							kadenceBlocksGLight.foundClasses[i] = galleryClass[ n ];
+							foundGalleries[i].classList.add( 'kb-light-gallery-' + i );
+							kadenceBlocksGLight.foundClasses[i] = 'kb-light-gallery-' + i;
 							break;
 						}
 					}

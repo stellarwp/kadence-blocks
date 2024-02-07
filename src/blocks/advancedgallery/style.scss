@@ -7,6 +7,9 @@
 	box-sizing: border-box;
 }
 .wp-block-kadence-advancedgallery {
+    flex: 1;
+}
+.wp-block-kadence-advancedgallery {
    .kt-blocks-carousel.kt-carousel-container-dotstyle-none {
 		padding-bottom: 0;
    }
@@ -51,7 +54,7 @@
 			position: relative;
 			margin-bottom: 0;
 			figure {
-				margin: 0;
+				margin: 0 auto;
 				.kb-gal-image-radius {
 					position: relative;
 					overflow: hidden;

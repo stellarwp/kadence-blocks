@@ -45,7 +45,7 @@ function copyVendorFiles() {
  *
  * @returns
  */
-function standalone() {
+function miscJs() {
 	let process = processFiles();
 
 	let copy = copyVendorFiles();
@@ -53,7 +53,7 @@ function standalone() {
 	return copy;
 }
 
-exports.standaloneJs = standalone;
+exports.miscJs = miscJs;
 
-exports.buildJs = parallel(standalone);
-exports.js = parallel(standalone);
+exports.buildJs = parallel(miscJs);
+exports.js = parallel(miscJs);

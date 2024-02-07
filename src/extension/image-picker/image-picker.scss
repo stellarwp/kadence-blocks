@@ -1,0 +1,215 @@
+.kadence-blocks-image-picker {
+    width: 100%;
+    height: 100%;
+
+    .kadence-blocks-image-picker-wrapper, 
+    .kadence-blocks-image-picker-router,
+    .kadence-blocks-image-picker-contents {
+        width: 100%;
+        height: 100%;
+    }
+
+    .kadence-blocks-image-picker-contents {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        grid-template-rows: min-content 1fr;
+
+        .kadence-blocks-image-picker-search-container {
+            order: 1;
+            background: #f6f7f7;
+            border-bottom: 1px solid #dcdcde;
+            padding: 10px;
+
+            input {
+                width: 100%;
+                height: 38px;
+            }
+            .components-button.kb-pexels-search-send {
+                border-radius: 2px;
+                padding: 0 0 0 12px;
+                height: 38px;
+            }
+        }
+
+        .kadence-blocks-image-picker-scroll-container {
+            order: 3;
+            overflow: auto;
+            padding: 10px 10px 0 10px;
+
+            .kb-css-masonry {
+                margin-left: -10px;
+                display: flex;
+                width: auto;
+                margin-top: 15px;
+             }
+             .kb-css-masonry_column {
+                padding-left: 10px;
+                background-clip: padding-box;
+            }
+
+            .result {
+                line-height: 0;
+                margin-bottom: 10px;
+                border-radius: 5px;
+                .result-wrap {
+                    position: relative;
+                }
+                .image-wrap {
+                    padding: 0;
+                    border: none;
+                    position: relative;
+                    line-height: 0;
+                    min-height: 0;
+                    max-height: none;
+                    height: auto;
+                    display: block;
+                    border: 0;
+                    border-radius: 0;
+
+                    &:focus-visible {
+                        .image-hover-container {
+                            visibility: visible;
+                            opacity: 1;
+                        }
+                    }
+
+                    img {
+                        width: 100%;
+                    }
+                }
+
+                .image-hover-container {
+                    opacity: 0;
+                    visibility: none;
+                    position: absolute;
+                    pointer-events: none;
+                    top: 0;
+                    height: 100%;
+                    width: 100%;
+                    background-color: rgba(0, 88, 176, .45);
+
+                    transition: all .2s ease-in-out;
+                }
+                .download-button {
+                    background-color: white;
+                    border-radius: 2px;
+                    padding: 2px;
+                    position: absolute;
+                    bottom: 10px;
+                    right: 10px;
+                    &.btn-already-downloaded {
+                        background-color: #65c774;
+                    }
+                }
+                // Show the hover container if the results is hovered, the select button is foucsed, or if the result is active
+                &:hover,
+                &.active {
+                    .image-hover-container {
+                        visibility: visible;
+                        opacity: 1;
+                    }
+                }
+
+                &.downloaded {
+                    .download-button {
+                        background-color: #65c774;
+                    }
+
+                }
+            }
+        }
+
+        .kadence-blocks-image-picker-sidebar {
+            order: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            grid-row: span 2;
+            background: #f6f7f7;
+            border-left: 1px solid #dcdcde;
+
+            .result-details-container {
+                padding: 20px 16px;
+                padding-bottom: 0;
+                overflow: auto;
+
+                hr {
+                    margin: 10px 0;
+                }
+
+                .result-details {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+
+                    .result-detail {
+                        display: grid;
+                        grid-template-columns: 30% minmax(0, 1fr);
+                        gap: 10px;
+
+                        .result-detail-label {
+                            text-align: right;
+                        }
+                        .result-detail-value {
+                            word-wrap: break-word;
+                        }
+                    }
+                }
+            }
+
+            .download-button {
+                border-radius: 0;
+                justify-content: center;
+            }
+        }
+    }
+
+}
+.kb-pexels-search {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap:4px;
+}
+.kb-pexels-search .components-base-control {
+    flex-grow: 1;
+}
+.kadence-blocks-image-picker .kadence-blocks-image-picker-contents {
+    .kb-image-selection-button {
+        height: 18px;
+        width: 18px;
+        padding: 0;
+        border: 0;
+        position: absolute;
+        z-index: 10;
+        min-width: 0;
+        top: 0;
+        right: 0;
+        outline: 0;
+        opacity: 0;
+        cursor: pointer;
+        color:#fff;
+        background-color: #2271b1;
+        box-shadow: 0 0 0 3px #fff, 0 0 0 5px #2271b1;
+        svg {
+            max-width: 18px;
+            max-height: 18px;
+            height: 18px;
+            width: 18px;
+        }
+    }
+    
+    .result.is-selected {
+        .kb-image-selection-button {
+            opacity: 1;
+        }
+    }
+}
+.kadence-blocks-image-picker .kadence-blocks-image-picker-contents .kadence-blocks-image-picker-scroll-container .result .download-button.btn-download-error {
+    background: red;
+    color: white;
+}
+.kadence-blocks-image-picker .kadence-blocks-image-picker-contents .kadence-blocks-image-picker-sidebar .download-button.btn-download-error {
+    background: red;
+    color: white;
+}
