@@ -29,6 +29,9 @@ jobs:
       - name: Install composer
         run: sudo composer self-update --stable
 
+      - name: Test Auth
+        run: composer config github-oauth
+
       #- name: Validate composer.json and composer.lock
       #  run: composer validate
 
