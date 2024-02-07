@@ -5,7 +5,7 @@ Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.2
 Tested up to: 6.4
 Stable tag: 3.2.21
-Requires PHP: 7.2
+Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -99,6 +99,7 @@ developers of this plugin.
 
 = 3.2.22 =
 Release Date: February TBD, 2024
+* Add: Option to set image size for backgrounds.
 * Fix: Accordion block inside Advanced Query Loops.
 
 = 3.2.21 =
