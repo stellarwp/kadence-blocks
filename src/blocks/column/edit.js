@@ -21,12 +21,10 @@ import {
 	ResponsiveRangeControls,
 	KadencePanelBody,
 	URLInputControl,
-	VerticalAlignmentIcon,
-	KadenceRadioButtons,
-	KadenceFormConditionals,
 	ResponsiveRadioRangeControls,
 	ResponsiveAlignControls,
 	BoxShadowControl,
+	KadenceFormConditionals,
 	BackgroundControl as KadenceBackgroundControl,
 	ResponsiveBorderControl,
 	BackgroundTypeControl,
@@ -945,7 +943,6 @@ function SectionEdit( props ) {
 														size: ( undefined !== rowGap?.[ 0 ] ? rowGap[ 0 ] : 0 ),
 													} }
 													onChange={ ( value, size ) => {
-														console.log( value );
 														setAttributes( { rowGapVariable: [ value, ( undefined !== rowGapVariable?.[ 1 ] ? rowGapVariable[ 1 ] : '' ), ( undefined !== rowGapVariable?.[ 2 ] ? rowGapVariable[ 2 ] : '' ) ], rowGap: [ size, ( rowGap?.[ 1 ] ? rowGap[ 1 ] : '' ), ( rowGap?.[ 2 ] ? rowGap[ 2 ] : '' ) ] } );
 													}}
 													tabletValue={ {
