@@ -722,7 +722,7 @@ function PatternList( {
 		return newStyles;
 	}, [ selectedStyle, selectedFontSize ] );
 	const customShadowStyles = useMemo( () => {
-		let tempStyles = '.pattern-shadow-wrap .single-iframe-content {--global-content-width:1200px }';
+		let tempStyles = '.pattern-shadow-wrap .single-iframe-content {--global-content-width:1200px; --global-vw:1200px !important;}';
 		if ( ! selectedStyle || 'light' === selectedStyle ) {
 			tempStyles = tempStyles.concat( `.single-iframe-content {--global-content-edge-padding: 3rem;padding:0px !important;}` );
 		}

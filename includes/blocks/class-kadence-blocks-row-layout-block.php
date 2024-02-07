@@ -623,6 +623,15 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 					}
 					$css->set_media_state( 'desktop' );
 				}
+			} else {
+				if ( ( isset( $attributes['breakoutLeft'] ) && true === $attributes['breakoutLeft'] ) ) {
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(1):not(.specificity)' );
+					$css->add_property( 'margin-left', 'var(--breakout-negative-margin-left, calc( ' . $padding_left . ' *-1 ) )' );
+				}
+				if ( ( isset( $attributes['breakoutRight'] ) && true === $attributes['breakoutRight'] ) ) {
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(2):not(.specificity)' );
+					$css->add_property( 'margin-right', 'var(--breakout-negative-margin-right, calc( ' . $padding_right . ' *-1 ))' );
+				}
 			}
 			$css->set_media_state( 'tabletOnly' );
 			if ( ( isset( $attributes['breakoutLeft'] ) && true === $attributes['breakoutLeft'] ) ) {
