@@ -9,26 +9,22 @@ jobs:
       fail-fast: false
       matrix:
         test: ["wpunit"]
-        wordpress: ["nightly"]
+        wordpress: ["nightly", "6.4"]
 
     steps:
 
       - uses: actions/checkout@v2
 
-      - name: Install NodeJS
-        uses: actions/setup-node@v3
+      - uses: oven-sh/setup-bun@v1
         with:
-          node-version: 16
-          registry-url: 'https://npm.pkg.github.com'
-          cache: 'npm'
-          cache-dependency-path: package-lock.json
+          bun-version: latest
 
-      - run: npm ci --ignore-scripts --legacy-peer-deps
+      - run: bun install --frozen-lockfile
 
-      - run: npm rebuild && npm run prepare --if-present
+      - run: bun rebuild && bun run prepare --if-present
 
-      - name: Build NPM packages
-        run: npm run build
+      - name: Build packages
+        run: bun run build
 
       - name: Install composer
         run: sudo composer self-update --stable
@@ -75,8 +71,8 @@ jobs:
 
       - name: Run tests
         run: |
-          npm run-script test-build
-          npm run-script test-${{ matrix.test }}
+          bun run-script test-build
+          bun run-script test-${{ matrix.test }}
 
       - name: Upload codeception output
         if: ${{ failure() }}
