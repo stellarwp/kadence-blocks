@@ -25,7 +25,7 @@ const ImageSizeControl = (props) => {
 		( select ) => {
 			const { getMedia } = select( 'core' );
 			return {
-				image: id ? getMedia( id ) : null,
+				image: id ? getMedia( id, { context: 'view' } ) : null,
 			};
 		},
 		[ id ]

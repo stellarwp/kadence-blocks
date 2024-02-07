@@ -248,7 +248,7 @@ export default function Image( {
 		( select ) => {
 			const { getMedia } = select( coreStore );
 			return {
-				image: id && isSelected ? getMedia( id ) : null,
+				image: id && isSelected ? getMedia( id, { context: 'view' } ) : null,
 			};
 		},
 		[ id, isSelected ]
