@@ -60,7 +60,6 @@ function GalleryImage( props ) {
 		thumbnail,
 		dynamicSource,
 		previewDevice,
-		image
 	} = props;
 
 	const [ showSettings, setShowSettings ] = useState( false );
@@ -335,10 +334,4 @@ function GalleryImage( props ) {
 
 }
 
-export default withSelect( ( select, ownProps ) => {
-	const { getMedia } = select( 'core' );
-	const { id } = ownProps;
-	return {
-		image: id ? getMedia( id ) : null,
-	};
-} )( GalleryImage );
+export default GalleryImage;

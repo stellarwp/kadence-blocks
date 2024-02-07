@@ -154,7 +154,6 @@ export default compose( [
 		const {
 			imageSizes,
 		} = getSettings();
-
 		return {
 			image: id ? getMedia( id ) : null,
 			imageSizes,

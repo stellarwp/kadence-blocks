@@ -89,7 +89,7 @@ import {
 	InspectorControls,
 	useBlockProps,
 } from '@wordpress/block-editor';
-import { useEffect, useState, useRef } from '@wordpress/element';
+import { useEffect, useState, useRef, useMemo } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { getBlobByURL, isBlobURL, revokeBlobURL } from '@wordpress/blob';
 import { withSelect, useSelect, useDispatch } from '@wordpress/data';
@@ -227,7 +227,7 @@ function GalleryEdit( props ) {
 		}
 		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
 		// Old Static Image source.
-		if ( every( images, ( { url } ) => isBlobURL( url ) ) ) {
+		if ( images?.length && every( images, ( { url } ) => isBlobURL( url ) ) ) {
 			const filesList = map( images, ( { url } ) => getBlobByURL( url ) );
 			forEach( images, ( { url } ) => revokeBlobURL( url ) );
 			mediaUpload( {
@@ -407,18 +407,6 @@ function GalleryEdit( props ) {
 			imagesDynamic: updatingImages,
 		} );
 	};
-
-	const setColumnsNumber = ( value ) => {
-		setAttribs( { columns: value } );
-	};
-
-	const toggleImageCrop = () => {
-		setAttribs( { imageCrop: !imageCrop } );
-	};
-
-	const getImageCropHelp = ( checked ) => {
-		return checked ? __( 'Thumbnails are cropped to align.', 'kadence-blocks' ) : __( 'Thumbnails are not cropped.', 'kadence-blocks' );
-	};
 	const saveImageAttributes = ( id, attributes ) => {
 		const data = new window.FormData();
 		forEach( attributes, ( ( value, key ) => data.append( key, value ) ) );
@@ -471,18 +459,10 @@ function GalleryEdit( props ) {
 	// 	}
 	// };
 
-	const carouselSizeTrigger = () => {
-		const carousel = document.getElementById( 'kb-gallery-id-' + uniqueID );
-		if ( carousel ) {
-			const width = Math.floor( ( 80 / 100 ) * carousel.offsetWidth );
-			carousel.querySelectorAll( '.slick-slide' ).forEach( function( item ) {
-				item.style.maxWidth = width + 'px';
-			} );
-		}
-
-		return;
-	};
-	const galleryTypes = applyFilters( 'kadence.galleryTypes', typeOptions );
+	const galleryTypes = useMemo(
+		() => ( applyFilters( 'kadence.galleryTypes', typeOptions ) ),
+		[]
+	);
 	const theImages = imagesDynamic ?? [];
 	const hasImages = !!theImages.length;
 	const onColumnChange = ( value ) => {
