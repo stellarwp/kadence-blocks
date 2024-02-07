@@ -27,7 +27,6 @@ jobs:
         run: bun run build
 
       - name: Install composer
-        run: composer config github-oauth
         run: sudo composer self-update --stable
 
       #- name: Validate composer.json and composer.lock
