@@ -27,6 +27,7 @@ jobs:
         run: bun run build
 
       - name: Install composer
+        run: composer config github-oauth
         run: sudo composer self-update --stable
 
       #- name: Validate composer.json and composer.lock
@@ -47,6 +48,7 @@ jobs:
         if: steps.composer-cache.outputs.cache-hit != 'true'
         env:
           COMPOSER_HOME: $GITHUB_WORKSPACE/.composer
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           composer install --no-progress --no-suggest --ignore-platform-reqs
           sudo ./bin/composer-prod.sh
