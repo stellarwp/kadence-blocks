@@ -73,8 +73,8 @@ jobs:
 
       - name: Run tests
         run: |
-          bun run-script test-build
-          bun run-script test-${{ matrix.test }}
+          bun run test-build
+          bun run test-${{ matrix.test }}
 
       - name: Upload codeception output
         if: ${{ failure() }}
