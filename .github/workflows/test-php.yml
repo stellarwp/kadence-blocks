@@ -47,8 +47,9 @@ jobs:
         if: steps.composer-cache.outputs.cache-hit != 'true'
         env:
           COMPOSER_HOME: $GITHUB_WORKSPACE/.composer
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMPOSER_AUTH: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          composer config store-auths false
           composer install --no-progress --no-suggest --ignore-platform-reqs
 #          sudo ./bin/composer-prod.sh
 
