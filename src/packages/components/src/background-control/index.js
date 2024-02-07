@@ -42,7 +42,6 @@ const BackgroundControl = ( props ) => {
 		onSaveSize,
 		onSaveRepeat,
 		onSaveAttachment,
-		onImageSizeChange,
 		disableMediaButtons,
 		imageURL,
 		imageID,
@@ -129,12 +128,16 @@ const BackgroundControl = ( props ) => {
 						value={ ( imagePosition ? imagePosition : 'center center' ) }
 						onChange={ value => onSavePosition( value ) }
 					/>
-					<ImageSizeControl
-						label={ __( 'Image File Size', 'kadence-blocks' ) }
-						id={ imageID }
-						url={ imageURL }
-						onChange={ newImage => onImageSizeChange(newImage.value) }
-					/>
+					{ imageID && (
+						<ImageSizeControl
+							label={ __( 'Image File Size', 'kadence-blocks' ) }
+							id={ imageID }
+							url={ imageURL }
+							onChange={ newImage => {
+								onSaveImage( { id: imageID, url:newImage.value } );
+							} }
+						/>
+					) }
 					<BackgroundSizeControl
 						label={ __( 'Background Image Size', 'kadence-blocks' ) }
 						value={ ( imageSize ? imageSize : 'cover' ) }

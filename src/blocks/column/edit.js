@@ -1394,7 +1394,6 @@ function SectionEdit( props ) {
 															onSaveSize={value => saveHoverBackgroundImage( { bgImgSize: value } )}
 															onSaveRepeat={value => saveHoverBackgroundImage( { bgImgRepeat: value } )}
 															onSaveAttachment={value => saveHoverBackgroundImage( { bgImgAttachment: value } )}
-															onImageSizeChange={ value => saveHoverBackgroundImage( { bgImg: value } ) }
 															disableMediaButtons={( backgroundImgHover && backgroundImgHover[ 0 ] && backgroundImgHover[ 0 ].bgImg ? backgroundImgHover[ 0 ].bgImg : '' )}
 															dynamicAttribute="backgroundImgHover:0:bgImg"
 															isSelected={isSelected}
@@ -1461,7 +1460,6 @@ function SectionEdit( props ) {
 															onSaveSize={value => saveBackgroundImage( { bgImgSize: value } )}
 															onSaveRepeat={value => saveBackgroundImage( { bgImgRepeat: value } )}
 															onSaveAttachment={value => saveBackgroundImage( { bgImgAttachment: value } )}
-															onImageSizeChange={ value => saveBackgroundImage( { bgImg: value } ) }
 															disableMediaButtons={( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? backgroundImg[ 0 ].bgImg : '' )}
 															dynamicAttribute="backgroundImg:0:bgImg"
 															isSelected={isSelected}
@@ -1546,7 +1544,6 @@ function SectionEdit( props ) {
 															onSaveSize={ value => saveHoverOverlayImage( { bgImgSize: value } ) }
 															onSaveRepeat={ value => saveHoverOverlayImage( { bgImgRepeat: value } ) }
 															onSaveAttachment={ value => saveHoverOverlayImage( { bgImgAttachment: value } ) }
-															onImageSizeChange={ value => saveHoverOverlayImag( { bgImg: value } ) }
 															disableMediaButtons={ ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImg ? overlayImgHover[ 0 ].bgImg : '' ) }
 															dynamicAttribute="overlayImgHover:0:bgImg"
 															isSelected={ isSelected }
@@ -1630,7 +1627,6 @@ function SectionEdit( props ) {
 															onSaveSize={ value => saveOverlayImage( { bgImgSize: value } ) }
 															onSaveRepeat={ value => saveOverlayImage( { bgImgRepeat: value } ) }
 															onSaveAttachment={ value => saveOverlayImage( { bgImgAttachment: value } ) }
-															onImageSizeChange={ value => saveOverlayImage( { bgImg: value } ) }
 															disableMediaButtons={ ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImg ? overlayImg[ 0 ].bgImg : '' ) }
 															dynamicAttribute="overlayImg:0:bgImg"
 															isSelected={ isSelected }
