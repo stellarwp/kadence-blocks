@@ -72,7 +72,6 @@ import {useEffect, Fragment, useState, useRef} from '@wordpress/element';
 import {
     AlignmentToolbar,
     InspectorControls,
-    InspectorAdvancedControls,
     BlockControls,
     useBlockProps,
     InnerBlocks,
@@ -85,7 +84,6 @@ import {
     Button,
     ButtonGroup,
     RangeControl,
-    TextControl,
     ToggleControl,
     SelectControl,
     ToolbarButton,
@@ -99,8 +97,6 @@ import {
 
 import classnames from 'classnames';
 import { migrateToInnerblocks } from './utils';
-
-const ANCHOR_REGEX = /[\s#]/g;
 
 /**
  * Build the overlay edit
@@ -2180,19 +2176,6 @@ function KadenceTestimonials( props ) {
                             </>
                         )}
                     </InspectorControls>
-                    <InspectorAdvancedControls>
-                        <TextControl
-                            label={__( 'HTML Anchor', 'kadence-blocks' )}
-                            help={__( 'Anchors lets you link directly to a section on a page.', 'kadence-blocks' )}
-                            value={anchor || ''}
-                            onChange={( nextValue ) => {
-                                nextValue = nextValue.replace( ANCHOR_REGEX, '-' );
-                                setAttributes( {
-                                    anchor: nextValue,
-                                } );
-                            }}
-                        />
-                    </InspectorAdvancedControls>
                 </Fragment>
             )}
             {showPreset && (

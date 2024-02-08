@@ -136,6 +136,7 @@
 	"kadence/testimonials-containerVAlign"
   ],
   "supports": {
+	"anchor": true,
 	"html": false,
 	"kbMetadata": true,
 	"kbContentLabel": "title"

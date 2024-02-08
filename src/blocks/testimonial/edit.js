@@ -65,7 +65,6 @@ import {
     MediaUpload,
     RichText,
     InspectorControls,
-    InspectorAdvancedControls,
     useBlockProps,
     BlockControls,
 } from '@wordpress/block-editor';
@@ -77,7 +76,6 @@ import {
     ButtonGroup,
     Dashicon,
     RangeControl,
-    TextControl,
     ToggleControl,
     SelectControl,
     Tooltip,
@@ -88,8 +86,6 @@ import {
     image,
 } from '@wordpress/icons';
 import classnames from 'classnames';
-
-const ANCHOR_REGEX = /[\s#]/g;
 
 /**
  * Build the overlay edit
@@ -621,19 +617,6 @@ function KadenceTestimonials( props ) {
                             )}
 
                         </InspectorControls>
-                        <InspectorAdvancedControls>
-                            <TextControl
-                                label={__( 'HTML Anchor', 'kadence-blocks' )}
-                                help={__( 'Anchors lets you link directly to a section on a page.', 'kadence-blocks' )}
-                                value={anchor || ''}
-                                onChange={( nextValue ) => {
-                                    nextValue = nextValue.replace( ANCHOR_REGEX, '-' );
-                                    setAttributes( {
-                                        anchor: nextValue,
-                                    } );
-                                }}
-                            />
-                        </InspectorAdvancedControls>
                     </>
                 )}
 

@@ -817,6 +817,7 @@
 	"queryId"
   ],
   "supports": {
+	"anchor": true,
 	"html": false,
     "kbMetadata": true
   }
