@@ -859,6 +859,7 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 				$inner_content = sprintf( '<div %1$s>%2$s</div>', $inner_wrapper_attributes, $content );
 			}
 			$wrapper_args = array(
+				'id'    => isset($attributes['anchor']) && !empty($attributes['anchor']) ? $attributes['anchor'] : '',
 				'class' => implode( ' ', $outer_classes ),
 			);
 			$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
