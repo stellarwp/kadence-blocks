@@ -61,7 +61,7 @@ import {
 
 function KadenceIcons( props ) {
 	const { attributes, className, setAttributes, iconsBlock, insertIcon, insertIcons, clientId, context } = props;
-	const { inQueryBlock, icons, blockAlignment, textAlignment, tabletTextAlignment, mobileTextAlignment, wrapIcons, uniqueID, verticalAlignment, gap, gapUnit } = attributes;
+	const { inQueryBlock, icons, blockAlignment, textAlignment, tabletTextAlignment, mobileTextAlignment, wrapIcons, wrapIconsTablet, wrapIconsMobile, uniqueID, verticalAlignment, gap, gapUnit } = attributes;
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
@@ -120,7 +120,7 @@ function KadenceIcons( props ) {
 	const previewGap = getPreviewSize( previewDevice, ( undefined !== gap?.[0] ? gap[0] : '' ), ( undefined !== gap?.[1] ? gap[1] : '' ), ( undefined !== gap?.[2] ? gap[2] : '' ) );
 	const previewVerticalAlignment = verticalAlignment && 'middle' === verticalAlignment ? 'center' : verticalAlignment;
 	const previewTextAlign = getPreviewSize( previewDevice, ( textAlignment ? textAlignment : undefined ), ( undefined !== tabletTextAlignment && tabletTextAlignment ? tabletTextAlignment : undefined ), ( undefined !== mobileTextAlignment && mobileTextAlignment ? mobileTextAlignment : undefined ) );
-	const previewIconWrap = getPreviewSize( previewDevice, undefined !== wrapIcons && undefined !== wrapIcons[0] ? wrapIcons[0] : false, undefined !== wrapIcons && undefined !== wrapIcons[0] ? wrapIcons[1] : false, undefined !== wrapIcons && undefined !== wrapIcons[2] ? wrapIcons[2] : false );
+	const previewIconWrap = getPreviewSize( previewDevice, undefined !== wrapIcons ? wrapIcons : false, undefined !== wrapIconsTablet ? wrapIconsTablet : false, undefined !== wrapIconsMobile ? wrapIconsMobile : false );
 	const innerClasses = classnames( {
 		'kt-svg-icons': true,
 		[ `kt-svg-icons-${ uniqueID }` ]: uniqueID,
@@ -211,23 +211,19 @@ function KadenceIcons( props ) {
 							label={__( 'Wrap Icons?', 'kadence-blocks' )}
 							checked={ previewIconWrap }
 							onChange={( value ) => {
-									const wrapIconsValue = wrapIcons;
-									if(undefined !== wrapIcons) {
-										switch(previewDevice) {
-											case 'Desktop':
-												wrapIconsValue[0] = value;
-												break;
-											case 'Tablet':
-												wrapIconsValue[1] = value;
-												break;
-											case 'Mobile':
-												wrapIconsValue[2] = value;
-												break;
-											default:
-												break;
-										}
+									switch( previewDevice ) {
+										case 'Desktop':
+											setAttributes( { wrapIcons: value } )
+											break;
+										case 'Tablet':
+											setAttributes( { wrapIconsTablet: value } )
+											break;
+										case 'Mobile':
+											setAttributes( { wrapIconsMobile: value } )
+											break;
+										default:
+											break;
 									}
-									setAttributes( { wrapIcons: wrapIconsValue } )
 								}
 							}
 						/>

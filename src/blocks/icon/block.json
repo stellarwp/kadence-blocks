@@ -61,8 +61,16 @@
 	  "type": "string"
 	},
 	"wrapIcons": {
-		"type": "array",
-		"default": [false, false, false]
+		"type": "boolean",
+		"default": false
+	},
+	"wrapIconsTablet": {
+		"type": "boolean",
+		"default": false
+	},
+	"wrapIconsMobile": {
+		"type": "boolean",
+		"default": false
 	},
 	"verticalAlignment": {
 	  "type": "string"
