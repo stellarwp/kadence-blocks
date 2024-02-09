@@ -44,9 +44,8 @@ export function PreviewIcon({ attributes, previewDevice}) {
         uniqueID,
         verticalAlignment
     } = attributes;
-    
-    const previewSize = getPreviewSize( previewDevice, ( size ? size : undefined ), ( undefined !== tabletSize && tabletSize ? tabletSize : undefined ), ( undefined !== mobileSize && mobileSize ? mobileSize : undefined ) );
 
+    const previewSize = getPreviewSize( previewDevice, ( undefined !== size ? size : undefined ), ( undefined !== tabletSize || tabletSize === 0 ? tabletSize : undefined ), ( undefined !== mobileSize || mobileSize === 0 ? mobileSize : undefined ) );
     const previewMarginTop = getPreviewSize( previewDevice, ( margin && undefined !== margin[ 0 ] ? margin[ 0 ] : undefined ), ( tabletMargin && undefined !== tabletMargin[ 0 ] ? tabletMargin[ 0 ] : undefined ), ( mobileMargin && undefined !== mobileMargin[ 0 ] ? mobileMargin[ 0 ] : undefined ) );
     const previewMarginRight = getPreviewSize( previewDevice, ( margin && undefined !== margin[ 1 ] ? margin[ 1 ] : undefined ), ( tabletMargin && undefined !== tabletMargin[ 1 ] ? tabletMargin[ 1 ] : undefined ), ( mobileMargin && undefined !== mobileMargin[ 1 ] ? mobileMargin[ 1 ] : undefined ) );
     const previewMarginBottom = getPreviewSize( previewDevice, ( margin && undefined !== margin[ 2 ] ? margin[ 2 ] : undefined ), ( tabletMargin && undefined !== tabletMargin[ 2 ] ? tabletMargin[ 2 ] : undefined ), ( mobileMargin && undefined !== mobileMargin[ 2 ] ? mobileMargin[ 2 ] : undefined ) );
