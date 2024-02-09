@@ -26,6 +26,8 @@
 	padding: 20px;
 }
 .kt-svg-icons {
+  flex-wrap: wrap;
+  
   &.kb-icon-valign-top {
     align-items: flex-start;
   }
