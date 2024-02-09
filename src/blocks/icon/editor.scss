@@ -26,8 +26,6 @@
 	padding: 20px;
 }
 .kt-svg-icons {
-  flex-wrap: wrap;
-  
   &.kb-icon-valign-top {
     align-items: flex-start;
   }
@@ -49,6 +47,9 @@
   &.kb-icon-halign-space-between {
 		justify-content: space-between;
 	}
+  &.kb-icon-wrap {
+    flex-wrap: wrap;
+  }
 }
 .wp-block-kadence-icon .kt-svg-icons .wp-block-kadence-single-icon {
   margin: 0;

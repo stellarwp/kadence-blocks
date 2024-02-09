@@ -60,6 +60,10 @@
 	"mobileTextAlignment": {
 	  "type": "string"
 	},
+	"wrapIcons": {
+		"type": "array",
+		"default": [false, false, false]
+	},
 	"verticalAlignment": {
 	  "type": "string"
 	},
