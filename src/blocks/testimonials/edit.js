@@ -227,7 +227,6 @@ function KadenceTestimonials( props ) {
 		mobileWrapperMargin,
 		wrapperMarginUnit,
         carouselType,
-        anchor
     } = attributes;
 
     const [activeTab, setActiveTab] = useState('general');

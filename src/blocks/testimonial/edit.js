@@ -121,7 +121,6 @@ function KadenceTestimonials( props ) {
         tabletIsize,
         mobileIsize,
         inQueryBlock,
-        anchor,
     } = attributes;
 
     const displayContent = context['kadence/testimonials-displayContent'];
