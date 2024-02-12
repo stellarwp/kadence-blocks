@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks;
 
 use InvalidArgumentException;
+use KadenceWP\KadenceBlocks\Adbar\Dot;
 use KadenceWP\KadenceBlocks\Cache\Cache_Provider;
 use KadenceWP\KadenceBlocks\Image_Downloader\Image_Downloader_Provider;
 use KadenceWP\KadenceBlocks\Shutdown\Shutdown_Provider;
@@ -69,6 +70,7 @@ final class App {
 
 	private function init(): void {
 		$this->container->bind( Container::class, $this->container );
+		$this->container->singleton( Dot::class, new Dot() );
 
 		foreach ( $this->providers as $provider ) {
 			$this->container->register( $provider );
