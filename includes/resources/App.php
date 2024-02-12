@@ -7,6 +7,7 @@ use KadenceWP\KadenceBlocks\Adbar\Dot;
 use KadenceWP\KadenceBlocks\Cache\Cache_Provider;
 use KadenceWP\KadenceBlocks\Image_Downloader\Image_Downloader_Provider;
 use KadenceWP\KadenceBlocks\Shutdown\Shutdown_Provider;
+use KadenceWP\KadenceBlocks\StellarWP\ContainerContract\ContainerInterface;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Container;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Providable;
 use KadenceWP\KadenceBlocks\Uplink\Uplink_Provider;
@@ -70,6 +71,7 @@ final class App {
 
 	private function init(): void {
 		$this->container->bind( Container::class, $this->container );
+		$this->container->bind( ContainerInterface::class, $this->container );
 		$this->container->singleton( Dot::class, new Dot() );
 
 		foreach ( $this->providers as $provider ) {
