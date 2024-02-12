@@ -16,6 +16,8 @@ final class Shutdown_Provider extends Provider {
 		$this->container->when( Shutdown_Collection::class )
 		                ->needs( '$tasks' )
 		                ->give( [
+			                // Add any terminable tasks to the collection to run on shutdown.
+			                // Important: these will run in the order provided.
 			                $this->container->get( Cache_Primer::class ),
 			                $this->container->get( Block_Library_Cache::class ),
 			                $this->container->get( Ai_Cache::class ),
