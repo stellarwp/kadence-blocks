@@ -67,7 +67,7 @@
 				el.classList.add( 'kb-adv-form-message' );
 				el.classList.add( 'kb-adv-form-warning' );
 				el.setAttribute( 'role', 'alert' );
-				el.innerHTML = error_string;
+				el.innerHTML = window.kadenceAdvancedForm.strip_tags( error_string, '<div><a><b><i><u><p><ol><ul>' );
 				if ( item.classList.contains( 'kb-accept-field' ) ) {
 					item.parentNode.parentNode.append( el );
 				} else if ( item.classList.contains( 'kb-checkbox-field' ) || item.classList.contains( 'kb-radio-field' ) ) {
@@ -89,7 +89,7 @@
 			var el = document.createElement('div');
 			el.classList.add( 'kb-adv-form-message' );
 			el.classList.add( 'kb-adv-form-warning' );
-			el.innerHTML = error_message;
+			el.innerHTML = window.kadenceAdvancedForm.strip_tags( error_message, '<div><a><b><i><u><p><ol><ul>' );
 			window.kadenceAdvancedForm.insertAfter( el, form );
 		},
 		isValidEmail( email ) {
@@ -321,9 +321,21 @@
 			//form_data = form_data + '&_kb_form_verify=' + kb_adv_form_params.nonce;
 			return form_data;
 		},
+		strip_tags( input, allowed ) {			
+			allowed = (((allowed || '') + '')
+			.toLowerCase()
+			.match(/<[a-z][a-z0-9]*>/g) || [])
+			.join(''); // making sure the allowed arg is a string containing only tags in lowercase (<a><b><c>)
+			var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+			commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
+			return input.replace(commentsAndPhpTags, '')
+			.replace(tags, function($0, $1) {
+			  return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
+			});
+		},
 		createElementFromHTML( htmlString ) {
 			var div = document.createElement('div');
-			div.innerHTML = htmlString;
+			div.innerHTML = window.kadenceAdvancedForm.strip_tags( htmlString, '<div><a><b><i><u><p><ol><ul>' );
 
 			// Change this to div.childNodes to support multiple top-level nodes
 			return div.firstChild;

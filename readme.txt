@@ -101,6 +101,7 @@ developers of this plugin.
 Release Date: February TBD, 2024
 * Add: Option to set image size for backgrounds.
 * Fix: Accordion block inside Advanced Query Loops.
+* Fix: Issue with some html rendered in the success/failed message of forms.
 
 = 3.2.21 =
 Release Date: February 3nd, 2024
