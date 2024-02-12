@@ -28,9 +28,7 @@ final class Cache_Provider extends Provider {
 
 		$this->container->when( Block_Library_Cache::class )
 		                ->needs( Storage::class )
-		                ->give( static function ( $c ) use ( $path ) {
-			                return new LocalStorage( $c->get( Filesystem::class ), $path );
-		                } );
+		                ->give( new LocalStorage( $this->container->get( Filesystem::class ), $path ) );
 
 		$this->container->singleton( Block_Library_Cache::class, Block_Library_Cache::class );
 	}
@@ -41,9 +39,7 @@ final class Cache_Provider extends Provider {
 
 		$this->container->when( Ai_Cache::class )
 		                ->needs( Storage::class )
-		                ->give( static function ( $c ) use ( $path ) {
-			                return new LocalStorage( $c->get( Filesystem::class ), $path );
-		                } );
+		                ->give( new LocalStorage( $this->container->get( Filesystem::class ), $path ) );
 
 		$this->container->singleton( Ai_Cache::class, Ai_Cache::class );
 	}
