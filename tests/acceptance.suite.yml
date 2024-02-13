@@ -10,10 +10,13 @@ modules:
     enabled:
         - WPDb
         - WPBrowser
+        - WPCLI
+        - WPFilesystem
         - \Helper\Acceptance
+        - \Helper\WPVersion
     config:
         WPDb:
-            dsn: '%TEST_SITE_DB_DSN%'
+            dsn: 'mysql:host=%TEST_SITE_DB_HOST%;port=%TEST_SITE_DB_PORT%;dbname=%TEST_SITE_DB_NAME%'
             user: '%TEST_SITE_DB_USER%'
             password: '%TEST_SITE_DB_PASSWORD%'
             dump: 'tests/_data/dump.sql'
@@ -33,3 +36,14 @@ modules:
             headers:
                 X_TEST_REQUEST: 1
                 X_WPBROWSER_REQUEST: 1
+        WPCLI:
+          path: '%WP_ROOT_FOLDER%'
+          allow-root: true
+          env:
+            strict-args: true
+        WPFilesystem:
+          wpRootFolder: '%WP_ROOT_FOLDER%'
+        \Helper\WPVersion:
+          version: '%WP_VERSION%'
+          path: '%WP_ROOT_FOLDER%'
+          allow-root: true

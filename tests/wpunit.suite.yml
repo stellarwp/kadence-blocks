@@ -7,6 +7,7 @@ modules:
     enabled:
         - WPLoader
         - \Helper\Wpunit
+        - \Helper\WPVersion
     config:
         WPLoader:
             wpRootFolder: "%WP_ROOT_FOLDER%"
@@ -20,3 +21,8 @@ modules:
             title: "Kadence Test Site"
             plugins: ['kadence-blocks/kadence-blocks.php']
             activatePlugins: ['kadence-blocks/kadence-blocks.php']
+        \Helper\WPVersion:
+          installEarly: true
+          version: '%WP_VERSION%'
+          path: '%WP_ROOT_FOLDER%'
+          allow-root: true

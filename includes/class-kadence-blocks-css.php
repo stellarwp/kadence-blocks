@@ -640,6 +640,14 @@ class Kadence_Blocks_CSS {
 		return $this;
 	}
 	/**
+	 * Get media state
+	 *
+	 * @return string
+	 */
+	public function get_media_state() {
+		return $this->_media_state;
+	}
+	/**
 	 * Stops using a media query.
 	 *
 	 * @see    start_media_query()

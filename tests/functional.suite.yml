@@ -13,7 +13,7 @@ modules:
         - \Helper\Functional
     config:
         WPDb:
-            dsn: '%TEST_SITE_DB_DSN%'
+            dsn: 'mysql:host=%TEST_SITE_DB_HOST%;port=%TEST_SITE_DB_PORT%;dbname=%TEST_SITE_DB_NAME%'
             user: '%TEST_SITE_DB_USER%'
             password: '%TEST_SITE_DB_PASSWORD%'
             dump: 'tests/_data/dump.sql'
