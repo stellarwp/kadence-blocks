@@ -58,6 +58,9 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		$desktop_horizontal_align = ! empty( $attributes['justifyContent'][0] ) ? $attributes['justifyContent'][0] : '';
 		$tablet_horizontal_align = ! empty( $attributes['justifyContent'][1] ) ? $attributes['justifyContent'][1] : $desktop_horizontal_align;
 		$mobile_horizontal_align = ! empty( $attributes['justifyContent'][2] ) ? $attributes['justifyContent'][2] : $tablet_horizontal_align;
+		$desktop_flex_wrap = ! empty( $attributes['wrapContent'][0] ) ? $attributes['wrapContent'][0] : '';
+		$tablet_flex_wrap = ! empty( $attributes['wrapContent'][1] ) ? $attributes['wrapContent'][1] : $desktop_flex_wrap;
+		$mobile_flex_wrap = ! empty( $attributes['wrapContent'][2] ) ? $attributes['wrapContent'][2] : $tablet_flex_wrap;
 		$desktop_direction = ! empty( $attributes['direction'][0] ) ? $attributes['direction'][0] : 'vertical';
 		$tablet_direction = ! empty( $attributes['direction'][1] ) ? $attributes['direction'][1] : $desktop_direction;
 		$mobile_direction = ! empty( $attributes['direction'][2] ) ? $attributes['direction'][2] : $tablet_direction;
@@ -409,8 +412,8 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				}
 				$css->add_property( 'justify-content', $justify );
 			}
-			if ( ! empty( $attributes['wrapContent'][0] ) ) {
-				$css->add_property( 'flex-wrap', $attributes['wrapContent'][0] );
+			if ( ! empty( $desktop_flex_wrap ) ) {
+				$css->add_property( 'flex-wrap', $desktop_flex_wrap );
 			}
 			// Handle Margin issues.
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *, .kadence-column' . $unique_id . ' > .kt-inside-inner-col > figure.wp-block-image, .kadence-column' . $unique_id . ' > .kt-inside-inner-col > figure.wp-block-kadence-image' );
@@ -711,8 +714,8 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				}
 				$css->add_property( 'justify-content', $justify );
 			}
-			if ( ! empty( $attributes['wrapContent'][1] ) ) {
-				$css->add_property( 'flex-wrap', $attributes['wrapContent'][1] );
+			if ( ! empty( $tablet_flex_wrap ) ) {
+				$css->add_property( 'flex-wrap', $tablet_flex_wrap );
 			}
 			$css->set_media_state( 'tabletOnly' );
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *, .kadence-column' . $unique_id . ' > .kt-inside-inner-col > figure.wp-block-image, .kadence-column' . $unique_id . ' > .kt-inside-inner-col > figure.wp-block-kadence-image' );
@@ -822,8 +825,8 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				}
 				$css->add_property( 'justify-content', $justify );
 			}
-			if ( isset( $attributes['wrapContent'] ) && is_array( $attributes['wrapContent'] ) && ! empty( $attributes['wrapContent'][2] ) ) {
-				$css->add_property( 'flex-wrap', $attributes['wrapContent'][2] );
+			if ( ! empty( $mobile_flex_wrap ) ) {
+				$css->add_property( 'flex-wrap', $mobile_flex_wrap );
 			}
 			$css->set_media_state( 'mobile' );
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *, .kadence-column' . $unique_id . ' > .kt-inside-inner-col > figure.wp-block-image, .kadence-column' . $unique_id . ' > .kt-inside-inner-col > figure.wp-block-kadence-image' );

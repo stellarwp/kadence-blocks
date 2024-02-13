@@ -68,7 +68,6 @@ import {
 /**
  * WordPress dependencies
  */
-import { compose } from '@wordpress/compose';
 import {
 	Button,
 	ButtonGroup,
@@ -88,6 +87,7 @@ import {
 	MediaUpload,
 	InspectorControls,
 	useBlockProps,
+	store as blockEditorStore,
 } from '@wordpress/block-editor';
 import { useEffect, useState, useRef, useMemo } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
@@ -128,15 +128,14 @@ const typeOptions = [
 	{ value: 'tiles', label: __( 'Tiles (Pro addon)', 'kadence-blocks' ), icon: galleryTilesIcon, isDisabled: true },
 	// { value: 'mosaic', label: __( 'Mosaic (Pro only)', 'kadence-blocks' ), icon: galSliderIcon, isDisabled: true },
 ];
-
 const ALLOWED_MEDIA_TYPES = [ 'image' ];
 
-function GalleryEdit( props ) {
+export default function GalleryEdit( props ) {
 
 	// saveImageAttributes = debounce( saveImageAttributes.bind( this ), 1000 );
 	// carouselSizeTrigger = debounce( carouselSizeTrigger.bind( this ), 250 );
 
-	const { attributes, isSelected, className, noticeUI, mediaUpload, context, clientId, setAttributes } = props;
+	const { attributes, isSelected, className, noticeUI, context, clientId, setAttributes } = props;
 	const {
 		inQueryBlock,
 		uniqueID,
@@ -192,18 +191,19 @@ function GalleryEdit( props ) {
 	const thumbsRef = useRef();
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
 	const dynamicSource = ( kadenceDynamic && kadenceDynamic[ 'images' ] && kadenceDynamic[ 'images' ].enable ? true : false );
-	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData, mediaUpload } = useSelect(
 		( select ) => {
 			return {
 				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
 				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 				parentData: {
-					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
+					rootBlock: select( blockEditorStore ).getBlock( select( blockEditorStore ).getBlockHierarchyRootClientId( clientId ) ),
 					postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
-					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
+					reusableParent: select( blockEditorStore ).getBlockAttributes( select( blockEditorStore ).getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
 					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
-				}
+				},
+				mediaUpload : select( blockEditorStore ).getSettings().mediaUpload,
 			};
 		},
 		[ clientId ]
@@ -1911,18 +1911,3 @@ function GalleryEdit( props ) {
 		</div>
 	);
 }
-
-export default compose( [
-	withSelect( ( select ) => {
-		const { getSettings } = select( 'core/block-editor' );
-		const {
-			__experimentalMediaUpload,
-			mediaUpload,
-		} = getSettings();
-
-		return {
-			mediaUpload: mediaUpload ? mediaUpload : __experimentalMediaUpload,
-		};
-	} ),
-	withNotices,
-] )( GalleryEdit );

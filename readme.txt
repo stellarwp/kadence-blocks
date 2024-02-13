@@ -102,6 +102,7 @@ Release Date: February 12th, 2024
 * Add: Option to set image size for backgrounds.
 * Fix: Accordion block inside Advanced Query Loops.
 * Fix: Issue with custom column widths and default gutter.
+* Fix: Issue with flex wrap inheriting to tablet and mobile.
 * Fix: Issue with some html rendered in the success/failed message of forms.
 
 = 3.2.21 =
