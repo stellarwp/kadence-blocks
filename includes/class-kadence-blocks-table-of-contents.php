@@ -585,6 +585,8 @@ class Kadence_Blocks_Table_Of_Contents {
 				}
 				if ( $heading->getAttribute( 'data-add-anyway' ) ) {
 					$heading->addAnyway = true;
+				} else {
+					$heading->addAnyway = false;
 				}
 				if ( $anchor_string ) {
 					$add = true;
