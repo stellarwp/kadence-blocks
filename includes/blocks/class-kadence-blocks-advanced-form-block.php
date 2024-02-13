@@ -179,9 +179,21 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! empty( $desktop_border_color ) ) {
 			$css->add_property( '--kb-form-border-color', $desktop_border_color );
 		}
+
+		$css->set_selector(
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=text]:focus,' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=tel]:focus,' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=number]:focus,' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=date]:focus,' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=time]:focus,' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=email]:focus,' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=file]:focus,' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=email]:focus,' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form select:focus,' .
+			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form textarea:focus'
+		);
 		if ( ! empty( $field_style['borderActive'] ) ) {
-			$css->add_property( '--kb-form-border-focus-color', $desktop_border_color );
-			$css->render_color_output( $field_style, 'borderActive', '--kb-form-border-focus-color' );
+			$css->add_property( 'border-color',  $field_style['borderActive'] );
 		}
 
 
