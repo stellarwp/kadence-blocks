@@ -32,6 +32,7 @@ import {
 	plusCircle,
 } from '@wordpress/icons';
 import { kadenceNewIcon, aiIcon, aiSettings } from '@kadence/icons';
+import { tryParseJSON } from '@kadence/helpers';
 import { useMemo, useEffect, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { useDebounce } from '@wordpress/compose';
@@ -48,6 +49,7 @@ import KadenceBlockPatternList from './block-pattern-list';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { CONTEXT_PROMPTS } from './data-fetch/constants';
 import { sendEvent } from '../../extension/analytics/send-event';
+import { getAsyncData } from './data-fetch/get-async-data';
 
 function PatternsListHeader( { filterValue, filteredBlockPatternsLength } ) {
 	if ( ! filterValue ) {
@@ -464,6 +466,7 @@ function PatternList( {
 	const [ categoryFilter, setCategoryFilter ] = useState( [] );
 	const [ styleFilter, setStyleFilter ] = useState( [] );
 	const debouncedSpeak = useDebounce(speak, 500);
+	const { getPattern } = getAsyncData();
 	const { getContextState, getContextContent, getAllContext } = useSelect(
 		( select ) => {
 			return {
@@ -478,26 +481,36 @@ function PatternList( {
 	const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
 	const isAIDisabled	   = window?.kadence_blocks_params?.isAIDisabled ? true : false;
 	const data_key = ( window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '' );
-	const onSelectBlockPattern = ( info ) => {
+	async function onSelectBlockPattern( info ) {
 		const patternSend = {
 			id: info.id,
 			slug:info.slug,
 			type: 'pattern',
 			style: selectedStyle ? selectedStyle : 'light',
 		}
+		const response = await getPattern( ( patternSend?.type === 'page' ? 'pages' : 'section' ), ( patternSend?.type ? patternSend.type : 'patternSend' ), ( patternSend?.id ? patternSend.id : '' ), ( patternSend?.style ? patternSend.style : 'light' ) );
+		let newInfo = ''; // info.content;
+		if ( response ) {
+			try {
+				const tempContent = JSON.parse( response );
+				if ( tempContent ) {
+					newInfo = tempContent;
+				}
+			} catch ( e ) { }
+		}
+		console.log( newInfo );
+		// sendEvent( 'pattern_added_to_page', {
+		// 	categories: info.categories,
+		// 	id: info.id,
+		// 	slug: info.slug,
+		// 	name: info.name,
+		// 	style: selectedStyle ? selectedStyle : 'light',
+		// 	is_ai: contextTab === 'context',
+		// 	// Only send context when using AI patterns.
+		// 	context: contextTab === 'context' ? contextLabel : '',
+		// } );
 
-		sendEvent( 'pattern_added_to_page', {
-			categories: info.categories,
-			id: info.id,
-			slug: info.slug,
-			name: info.name,
-			style: selectedStyle ? selectedStyle : 'light',
-			is_ai: contextTab === 'context',
-			// Only send context when using AI patterns.
-			context: contextTab === 'context' ? contextLabel : '',
-		} );
-
-		let newInfo = info.content;
+		
 		newInfo = wooContent( newInfo );
 		if ( userData?.locationType && 'Online Only' !== userData?.locationType && userData?.locationInput ) {
 			newInfo = replaceAddressContent( newInfo, userData.locationInput );
@@ -531,6 +544,10 @@ function PatternList( {
 			temp.keywords = patterns[ key ].keywords ? patterns[ key ].keywords : [];
 			if ( patterns[ key ]?.html ) {
 				temp.html = replaceMasks( patterns[ key ].html );
+			}
+			if ( index === 1 ) {
+			console.log( patterns[ key ] );
+			console.log( patterns[ key ].content );
 			}
 			temp.content = patterns[ key ]?.content || '';
 			temp.pro = patterns[ key ].pro;

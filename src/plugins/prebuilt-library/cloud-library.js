@@ -430,6 +430,7 @@ class CloudSections extends Component {
 								const pro = control.state.items[key].pro;
 								const locked = libraryItems[key].locked;
 								const descriptionId = `${ slug }_kb_cloud__item-description`;
+								console.log( control.state.items[key] );
 								if ( ( 'all' === getActiveCat || Object.keys( categories ).includes( getActiveCat ) ) && ( ! control.state.search || ( keywords && keywords.some( x => x.toLowerCase().includes( control.state.search.toLowerCase() ) ) ) ) ) {
 									return (
 										<div className="kb-css-masonry-inner">
