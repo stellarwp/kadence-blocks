@@ -1742,7 +1742,7 @@ class Kadence_Blocks_CSS {
 			$this->add_property( $property, $defaults[0] . $unit );
 		}
 		$this->set_media_state( 'tablet' );
-		if ( isset( $attributes[ $name[0] ] ) && '' !== $attributes[ $name[0] ] ) {
+		if ( isset( $attributes[ $name[1] ] ) && '' !== $attributes[ $name[1] ] ) {
 			$this->add_property( $property, $attributes[ $name[1] ] . $unit );
 		} else if ( $defaults[1] ) {
 			$this->add_property( $property, $defaults[1] . $unit );
