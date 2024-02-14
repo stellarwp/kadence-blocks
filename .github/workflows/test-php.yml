@@ -23,12 +23,12 @@ jobs:
         with:
           bun-version: latest
 
-      - run: bun install --frozen-lockfile
+#      - run: bun install --frozen-lockfile
 
       # - run: bun rebuild && bun run prepare --if-present
 
-      - name: Build packages
-        run: bun run build
+#      - name: Build packages
+#        run: bun run build
 
       - name: Install composer
         run: sudo composer self-update --stable
