@@ -767,7 +767,52 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 
 		return kadence_blocks()->get( Image_Downloader::class )->download( $parameters );
 	}
-
+	/**
+	 * Creates the forms if needed.
+	 *
+	 * @param string $content The content to process.
+	 */
+	public function process_forms( $content, $forms ) {
+		$new_forms = array();
+		foreach ( $forms as $form_id => $form_content ) {
+			if ( empty( $form_content['name'] ) ) {
+				continue;
+			}
+			$import_key = $form_id . sanitize_key( $form_content['name'] );
+			// Lets not duplicate forms.
+			$has_form = get_posts( array(
+				'post_type'  => 'kadence_form',
+				'meta_key' => '_kad_form_importId',
+				'meta_value' => $import_key,
+				'title'      => $form_content['name'],
+			) );
+			if ( $has_form ) {
+				$new_forms[ $form_id ] = $has_form[0]->ID;
+				continue;
+			}
+			$new_form_id = wp_insert_post(
+				array(
+					'post_title'   => wp_strip_all_tags( $form_content['name'] ),
+					'post_content' => $form_content['content'],
+					'post_status'  => 'publish',
+					'post_type'    => 'kadence_form',
+				)
+			);
+			if ( ! is_wp_error( $new_form_id ) ) {
+				if ( ! empty( $form_content['meta'] ) ) {
+					foreach ( $form_content['meta'] as $meta_key => $meta_value ) {
+						update_post_meta( $new_form_id, $meta_key, $meta_value );
+					}
+				}
+				update_post_meta( $new_form_id, '_kad_form_importId', $import_key );
+				$new_forms[ $form_id ] = $new_form_id;
+			}
+		}
+		foreach ( $new_forms as $old_id => $new_id ) {
+			$content = str_replace( '"id":' . absint( $old_id) . ',', '"id":' . absint( $new_id  ) . ',', $content );
+		}
+		return $content;
+	}
 	/**
 	 * Retrieves a collection of objects.
 	 *
@@ -780,8 +825,11 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			return rest_ensure_response( 'failed' );
 		}
 		$content = $parameters['content'];
+		$forms = isset( $parameters['forms'] ) ? $parameters['forms'] : array();
 		$image_library = $parameters['image_library'];
-		//error_log( print_r( $image_library, true ) );
+		if ( ! empty( $forms ) ) {
+			$content = $this->process_forms( $content, $forms );
+		}
 		// Find all urls.
 		preg_match_all( '/https?:\/\/[^\'" ]+/i', $content, $match );
 		// preg_match_all( '#\bhttps?://[^,\s()<>]+(?:\([\w\d]+\)|([^,[:punct:]\s]|/))#', $content, $match );

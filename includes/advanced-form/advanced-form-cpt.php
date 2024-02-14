@@ -1486,6 +1486,11 @@ class Kadence_Blocks_Form_CPT_Controller {
 				'type'          => 'array',
 				'children_type' => 'string'
 			),
+			array(
+				'key'     => '_kad_form_importId',
+				'default' => '',
+				'type'    => 'string'
+			),
 		);
 		register_post_meta(
 			'kadence_form',

@@ -362,6 +362,7 @@ export function getAsyncData() {
 			return 'failed';
 		}
 	}
+
 	/**
 	 * Get library data.
 	 *
@@ -417,14 +418,15 @@ export function getAsyncData() {
 	 *
 	 * @return {Promise<object>} Promise returns object
 	 */
-	async function processPattern( content, imageCollection ) {
+	async function processPattern( content, imageCollection = '', forms = '' ) {
 		try {
 			const response = await apiFetch( {
-				path: '/kb-design-library/v1/process_pattern',
+				path: '/kb-design-library/v1/process_pattern', 
 				method: 'POST',
 				data: {
 					content: content,
 					image_library: imageCollection,
+					forms: forms,
 				},
 			} );
 			return response;
