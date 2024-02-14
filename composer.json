@@ -90,7 +90,9 @@
 			"delete_vendor_packages": true,
 			"exclude_from_prefix": {
 			  "file_patterns": [
-				  "/symfony\\/polyfill-(.*)/",
+				  "/symfony\\/polyfill-(.*)/"
+			  ],
+			  "packages": [
 				  "symfony/service-contracts"
 			  ]
 			}
