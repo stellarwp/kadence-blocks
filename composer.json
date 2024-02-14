@@ -45,7 +45,8 @@
 		"codeception/module-db": "^1.2",
 		"codeception/module-filesystem": "^1.0.3",
 		"codeception/module-cli": "^1.1.1",
-		"codeception/util-universalframework": "^1.0"
+		"codeception/util-universalframework": "^1.0",
+		"symfony/service-contracts": "^2.5"
 	},
 	"autoload": {
 		"psr-4": {
