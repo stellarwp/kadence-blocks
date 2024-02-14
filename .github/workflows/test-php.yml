@@ -82,14 +82,11 @@ jobs:
         run: |
           sed -i -e 's/WP_TAG=6-php8.0/WP_TAG=${{ matrix.wordpress }}-php${{ matrix.php }}/g' .env
           sed -i -e 's/WP_VERSION=""/WP_VERSION="${{ matrix.wordpress }}"/g' tests/codeception.env
-          cat .env
-          cat tests/codeception.env
 
       - name: Set WordPress Nightly
         if: matrix.wordpress == 'nightly'
         run: |
           sed -i -e 's/WP_VERSION=""/WP_VERSION="nightly"/g' tests/codeception.env
-          cat tests/codeception.env
 
       - name: Setup docker
         run: ./bin/setup-docker.sh
