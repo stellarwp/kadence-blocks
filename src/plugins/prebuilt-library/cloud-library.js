@@ -148,7 +148,7 @@ function CloudSections ( {
 		} );
 		setPageContextListOptions( tempPageContexts );
 	}, [ pagesCategories ] );
-	const { getPatterns, getPattern, processPattern } = getAsyncData();
+	const { getPatterns, getPattern, processPattern, getPatternCategories } = getAsyncData();
 	const forceRefreshLibrary = () => {
 		if ( ! isLoading && patterns ) {
 			setPatterns( JSON.parse(JSON.stringify(patterns)) );
@@ -190,7 +190,6 @@ function CloudSections ( {
 				try {
 					const tempContent = JSON.parse( response );
 					if ( tempContent ) {
-						console.log( tempContent );
 						pattern.content = tempContent;
 					}
 				} catch ( e ) { }
@@ -295,34 +294,45 @@ function CloudSections ( {
 		} else {
 			const o = SafeParseJSON( response, false );
 			if ( o ) {
-				if ( subTab === 'pages' ) {
-					const pageCats = {};
-					kadence_blocks_params.library_pages = o;
-					{ Object.keys( o ).map( function( key, index ) {
-						if ( o[ key ].categories && typeof o[ key ].categories === "object") {
-							{ Object.keys( o[ key ].categories ).map( function( ckey, i ) {
-								if ( ! pageCats.hasOwnProperty( ckey ) ) {
-									pageCats[ ckey ] = o[ key ].categories[ ckey ];
-								}
-							} ) }
-						}
-					} ) }
-					setPages( o );
-					setPagesCategories( JSON.parse(JSON.stringify( pageCats ) ) );
+				const categories = await getPatternCategories( tab, tempReload, action?.[0]?.url ? action[0].url : '', action?.[0]?.key ? action[0].key : '' );
+				if ( categories ) {
+					const catOrder = SafeParseJSON( categories, false );
+					if ( subTab === 'pages' ) {
+						const pageCats = catOrder ? catOrder : {};
+						kadence_blocks_params.library_pages = o;
+						{ Object.keys( o ).map( function( key, index ) {
+							if ( o[ key ].categories && typeof o[ key ].categories === "object") {
+								{ Object.keys( o[ key ].categories ).map( function( ckey, i ) {
+									if ( ! pageCats.hasOwnProperty( ckey ) ) {
+										pageCats[ ckey ] = o[ key ].categories[ ckey ];
+									}
+								} ) }
+							}
+						} ) }
+						setPages( o );
+						setPagesCategories( JSON.parse(JSON.stringify( pageCats ) ) );
+					} else {
+						const cats = catOrder ? catOrder : {};
+						kadence_blocks_params.library_sections = o;
+						{ Object.keys( o ).map( function( key, index ) {
+							if ( o[ key ].categories && typeof o[ key ].categories === "object") {
+								{ Object.keys( o[ key ].categories ).map( function( ckey, i ) {
+									if ( ! cats.hasOwnProperty( ckey ) ) {
+										cats[ ckey ] = o[ key ].categories[ ckey ];
+									}
+								} ) }
+							}
+						} ) }
+						setPatterns( o );
+						setCategories( JSON.parse(JSON.stringify( cats ) ) );
+					}
 				} else {
-					const cats = {};
-					kadence_blocks_params.library_sections = o;
-					{ Object.keys( o ).map( function( key, index ) {
-						if ( o[ key ].categories && typeof o[ key ].categories === "object") {
-							{ Object.keys( o[ key ].categories ).map( function( ckey, i ) {
-								if ( ! cats.hasOwnProperty( ckey ) ) {
-									cats[ ckey ] = o[ key ].categories[ ckey ];
-								}
-							} ) }
-						}
-					} ) }
-					setPatterns( o );
-					setCategories( JSON.parse(JSON.stringify( cats ) ) );
+					if ( subTab === 'pages' ) {
+						setPages( 'error' );
+					} else {
+						setPatterns( 'error' );
+					}
+					setIsError( true );
 				}
 			} else {
 				if ( subTab === 'pages' ) {
@@ -342,7 +352,7 @@ function CloudSections ( {
 		} else if ( ! isLoading ) {
 			getLibraryContent( false );
 		}
-	}, [reload, selectedSubTab] );
+	}, [reload, tab] );
 	const activePanel = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 	const sidebar_saved_enabled = ( activePanel && activePanel['sidebar'] ? activePanel['sidebar'] : 'show' );
 	const sidebarEnabled = ( sidebar ? sidebar : sidebar_saved_enabled );
@@ -544,7 +554,6 @@ function CloudSections ( {
 						{ Object.keys( patterns ).map( function( key, index ) {
 							const name = patterns[key].name;
 							const slug = patterns[key].slug;
-							const content = patterns[key].content;
 							const image = patterns[key].image;
 							const imageWidth = patterns[key].imageW;
 							const imageHeight = patterns[key].imageH;
@@ -554,7 +563,6 @@ function CloudSections ( {
 							const pro = patterns[key].pro;
 							const locked = patterns[key].locked;
 							const descriptionId = `${ slug }_kb_cloud__item-description`;
-							console.log( patterns[key] );
 							if ( ( 'all' === getActiveCat || Object.keys( categories ).includes( getActiveCat ) ) && ( ! search || ( keywords && keywords.some( x => x.toLowerCase().includes( search.toLowerCase() ) ) ) ) ) {
 								return (
 									<div className="kb-css-masonry-inner">

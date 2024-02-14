@@ -190,7 +190,23 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access protected
 	 * @var string
 	 */
+	protected $remote_cat_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/categories/';
+
+	/**
+	 * The remote URL.
+	 *
+	 * @access protected
+	 * @var string
+	 */
 	protected $remote_pages_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/pages/';
+
+	/**
+	 * The remote URL.
+	 *
+	 * @access protected
+	 * @var string
+	 */
+	protected $remote_pages_cat_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/pages-categories/';
 
 	/**
 	 * The remote URL.
@@ -363,6 +379,18 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_library' ),
+					'permission_callback' => array( $this, 'get_items_permission_check' ),
+					'args'                => $this->get_collection_params(),
+				),
+			)
+		);
+		register_rest_route(
+			$this->namespace,
+			'/get_library_categories',
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_library_categories' ),
 					'permission_callback' => array( $this, 'get_items_permission_check' ),
 					'args'                => $this->get_collection_params(),
 				),
@@ -964,7 +992,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			}
 			// Get the response.
 			$api_url  = add_query_arg( $args, $library_url );
-			$response = wp_safe_remote_get(
+			$response = wp_remote_get(
 				$api_url,
 				array(
 					'timeout' => 20,
@@ -989,7 +1017,79 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 
 		return rest_ensure_response( 'error' );
 	}
+	/**
+	 * Retrieves a collection of objects.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response Response object on success, or WP_Error object on failure.
+	 */
+	public function get_library_categories( WP_REST_Request $request ) {
+		$this->get_license_keys();
+		$reload           = $request->get_param( self::PROP_FORCE_RELOAD );
+		$library          = $request->get_param( self::PROP_LIBRARY );
+		$library_url      = $request->get_param( self::PROP_LIBRARY_URL );
+		$key              = $request->get_param( self::PROP_KEY );
 
+		if ( ! empty( $library_url ) ) {
+			$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/categories/';
+		} elseif ( ! empty( $library ) && 'pages' === $library ) {
+			$library_url = $this->remote_pages_cat_url;
+			$key = 'new-pages';
+		} else {
+			$library_url = $this->remote_cat_url;
+		}
+
+		$identifier = 'library-categories' . $library;
+
+		if ( ! empty( $this->api_key ) ) {
+			$identifier .= '_' . $this->api_key;
+		}
+
+		if ( ! empty( $key ) ) {
+			$identifier .= '_' . $key;
+		}
+
+		if ( 'templates' !== $library && 'pages' !== $library && 'section' !== $library && 'template' !== $library ) {
+			$cloud_settings = json_decode( get_option( 'kadence_blocks_cloud' ), true );
+			if ( ! empty( $cloud_settings['connections'][ $library ]['expires'] ) ) {
+				$expires = strtotime( get_date_from_gmt( $cloud_settings['connections'][ $library ]['expires'] ) );
+				$now     = strtotime( get_date_from_gmt( current_time( 'Y-m-d H:i:s' ) ) );
+
+				if ( $expires < $now ) {
+					$refresh = ( ! empty( $cloud_settings['connections'][ $library ]['refresh'] ) ? $cloud_settings['connections'][ $library ]['refresh'] : 'month' );
+					if ( 'day' === $refresh ) {
+						$expires_add = DAY_IN_SECONDS;
+					} elseif ( 'week' === $refresh ) {
+						$expires_add = WEEK_IN_SECONDS;
+					} else {
+						$expires_add = MONTH_IN_SECONDS;
+					}
+					$cloud_settings['connections'][ $library ]['expires'] = gmdate( 'Y-m-d H:i:s', strtotime( current_time( 'mysql' ) ) + $expires_add );
+					update_option( 'kadence_blocks_cloud', json_encode( $cloud_settings ) );
+					$reload = true;
+				}
+			}
+		}
+
+		// Check if we have a local file.
+		if ( ! $reload ) {
+			try {
+				return rest_ensure_response( $this->block_library_cache->get( $identifier ) );
+			} catch ( NotFoundException $e ) {
+			}
+		}
+
+		// Access via remote.
+		$response = $this->get_remote_library_categories( $library, $library_url, $key );
+
+		if ( 'error' === $response ) {
+			return rest_ensure_response( 'error' );
+		}
+
+		$this->block_library_cache->cache( $identifier, $response );
+
+		return rest_ensure_response( $response );
+	}
 	/**
 	 * Retrieves a collection of objects.
 	 *
@@ -1688,7 +1788,54 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		// Get the response.
 		$api_url  = add_query_arg( $args, $library_url );
-		$response = wp_safe_remote_get(
+		$response = wp_remote_get(
+			$api_url,
+			array(
+				'timeout' => 30,
+			)
+		);
+		// Early exit if there was an error.
+		if ( is_wp_error( $response ) || $this->is_response_code_error( $response ) ) {
+			return 'error';
+		}
+
+		// Get the CSS from our response.
+		$contents = wp_remote_retrieve_body( $response );
+		// Early exit if there was an error.
+		if ( is_wp_error( $contents ) ) {
+			return 'error';
+		}
+
+		return $contents;
+	}
+
+	/**
+	 * Get remote file contents.
+	 *
+	 * @access public
+	 * @return string Returns the remote URL contents.
+	 */
+	public function get_remote_library_categories( $library, $library_url, $key ) {
+		$site_url = get_original_domain();
+		$args = array(
+			'key'  => $key,
+			'site' => $site_url,
+		);
+		if ( 'templates' === $library || 'section' === $library || 'pages' === $library || 'template' === $library ) {
+			$args['api_email']  = $this->api_email;
+			$args['api_key']    = $this->api_key;
+			$args['product_id'] = $this->product_id;
+
+			if ( 'iThemes' === $this->api_email ) {
+				$args['site_url'] = $site_url;
+			}
+		}
+		if ( 'templates' === $library ) {
+			$args['request'] = 'blocks';
+		}
+		// Get the response.
+		$api_url  = add_query_arg( $args, $library_url );
+		$response = wp_remote_get(
 			$api_url,
 			array(
 				'timeout' => 30,
@@ -1838,7 +1985,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			$args['email'] = $this->api_email;
 		}
 		$api_url  = add_query_arg( $args, $this->remote_credits_url . 'get-remaining' );
-		$response = wp_safe_remote_get(
+		$response = wp_remote_get(
 			$api_url,
 			array(
 				'timeout' => 20,
@@ -1866,7 +2013,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function get_remote_image_collections() {
 		$api_url  = $this->remote_ai_url . 'images/collections';
-		$response = wp_safe_remote_get(
+		$response = wp_remote_get(
 			$api_url,
 			array(
 				'timeout' => 20,
@@ -1975,7 +2122,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function get_remote_industry_verticals() {
 		$api_url  = $this->remote_ai_url . 'verticals';
-		$response = wp_safe_remote_get(
+		$response = wp_remote_get(
 			$api_url,
 			array(
 				'timeout' => 20,
@@ -2136,7 +2283,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			return $local_image['image'];
 		}
 		$file_content = wp_remote_retrieve_body(
-			wp_safe_remote_get(
+			wp_remote_get(
 				$image_data['url'],
 				array(
 					'timeout'   => '60',

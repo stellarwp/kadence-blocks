@@ -461,6 +461,7 @@ function PatternList( {
 	styles,
 } ) {
 	const [ failedAI, setFailedAI ] = useState( false );
+	const [ importing, setImporting ] = useState( false );
 	const [ failedAIType, setFailedAIType ] = useState( 'general' );
 	const [rootScroll, setRootScroll] = useState();
 	const [ categoryFilter, setCategoryFilter ] = useState( [] );
@@ -481,10 +482,11 @@ function PatternList( {
 	const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
 	const isAIDisabled	   = window?.kadence_blocks_params?.isAIDisabled ? true : false;
 	const data_key = ( window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '' );
-	async function onSelectBlockPattern( info ) {
+	async function onSelectBlockPattern( pattern ) {
+		setImporting( true );
 		const patternSend = {
-			id: info.id,
-			slug:info.slug,
+			id: pattern.id,
+			slug:pattern.slug,
 			type: 'pattern',
 			style: selectedStyle ? selectedStyle : 'light',
 		}
@@ -498,19 +500,21 @@ function PatternList( {
 				}
 			} catch ( e ) { }
 		}
-		console.log( newInfo );
-		// sendEvent( 'pattern_added_to_page', {
-		// 	categories: info.categories,
-		// 	id: info.id,
-		// 	slug: info.slug,
-		// 	name: info.name,
-		// 	style: selectedStyle ? selectedStyle : 'light',
-		// 	is_ai: contextTab === 'context',
-		// 	// Only send context when using AI patterns.
-		// 	context: contextTab === 'context' ? contextLabel : '',
-		// } );
+		if ( ! newInfo && pattern?.content ) {
+			newInfo = pattern.content;
+		}
+		sendEvent( 'pattern_added_to_page', {
+			categories: pattern.categories,
+			id: pattern.id,
+			slug: pattern.slug,
+			name: pattern.name,
+			style: selectedStyle ? selectedStyle : 'light',
+			is_ai: contextTab === 'context',
+			// Only send context when using AI patterns.
+			context: contextTab === 'context' ? contextLabel : '',
+		} );
 
-		
+		newInfo = replaceImages( newInfo, imageCollection, pattern.categories, pattern.id, pattern.variation, teamCollection);
 		newInfo = wooContent( newInfo );
 		if ( userData?.locationType && 'Online Only' !== userData?.locationType && userData?.locationInput ) {
 			newInfo = replaceAddressContent( newInfo, userData.locationInput );
@@ -528,8 +532,12 @@ function PatternList( {
 	}
 	const thePatterns = useMemo( () => {
 		let allPatterns = [];
+		let variation = 0;
 		Object.keys( patterns ).map( function( key, index ) {
 			const temp = [];
+			if ( variation === 11 ) {
+				variation = 0;
+			}
 			temp.title = patterns[ key ].name;
 			temp.name = patterns[ key ].name;
 			temp.image = patterns[ key ].image;
@@ -545,15 +553,13 @@ function PatternList( {
 			if ( patterns[ key ]?.html ) {
 				temp.html = replaceMasks( patterns[ key ].html );
 			}
-			if ( index === 1 ) {
-			console.log( patterns[ key ] );
-			console.log( patterns[ key ].content );
-			}
 			temp.content = patterns[ key ]?.content || '';
 			temp.pro = patterns[ key ].pro;
 			temp.locked = ( patterns[ key ].pro && 'true' !== kadence_blocks_params.pro ? true : false );
 			temp.proRender = false;
 			temp.viewportWidth = 1200;
+			temp.variation = variation;
+			variation ++;
 			allPatterns.push( temp );
 		} );
 		return allPatterns;
@@ -636,10 +642,10 @@ function PatternList( {
 					variation = 0;
 				}
 				if ( item?.html ) {
-					item['html'] = replaceImages( item.html, imageCollection, item.categories, item.id, variation, teamCollection);
-					item['content'] = replaceImages( item.content, imageCollection, item.categories, item.id, variation, teamCollection);
+					item['html'] = replaceImages( item.html, imageCollection, item.categories, item.id, item.variation, teamCollection);
+					item['content'] = replaceImages( item.content, imageCollection, item.categories, item.id, item.variation, teamCollection);
 				} else {
-					item['content'] = replaceImages( item.content, imageCollection, item.categories, item.id, variation, teamCollection);
+					item['content'] = replaceImages( item.content, imageCollection, item.categories, item.id, item.variation, teamCollection);
 				}
 				variation ++;
 				return item;
@@ -653,13 +659,13 @@ function PatternList( {
 					variation = 0;
 				}
 				if ( item?.html) {
-					item['html'] = replaceContent( item.html, allContext, item.categories, aiContext, item.name, true );
-					item['content'] = replaceContent( item.content, allContext, item.categories, aiContext, item.name );
+					item['html'] = replaceContent( item.html, allContext, item.categories, aiContext, item.variation, true );
+					item['content'] = replaceContent( item.content, allContext, item.categories, aiContext, item.variation );
 					if ( userData?.locationType && 'Online Only' !== userData?.locationType && userData?.locationInput ) {
 						item['html'] = replaceAddressContent( item['html'], userData.locationInput );
 					}
 				} else {
-					item['content'] = replaceContent( item.content, allContext, item.categories, aiContext, variation );
+					item['content'] = replaceContent( item.content, allContext, item.categories, aiContext, item.variation );
 				}
 				variation ++;
 				return item;
@@ -814,6 +820,18 @@ function PatternList( {
 		return (
 			<div className="kb-ai-dropdown-container-content-wrap activation-needed">
 				<p className="kb-disabled-authorize-note">{__('Kadence AI is disabled by site admin.', 'kadence-blocks')}</p>
+			</div>
+		);
+	}
+	if ( importing ) {
+		return (
+			<div className="block-editor-block-patterns-explorer__wrap">
+				<div className={ `block-editor-block-patterns-explorer__list${ contextTab === 'context' ? ' kb-ai-patterns-explorer' : '' }`}>
+				<div className="preparing-importing-images">
+						<Spinner />
+						<h2>{ __( 'Preparing Content...', 'kadence-blocks' ) }</h2>
+					</div>
+				</div>
 			</div>
 		);
 	}
