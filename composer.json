@@ -92,7 +92,7 @@
 				"packages": [
 					"symfony/service-contracts"
 				]
-			}
+			},
 			"exclude_from_prefix": {
 			  "file_patterns": [
 				  "/symfony\\/polyfill-(.*)/"
