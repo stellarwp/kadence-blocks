@@ -609,6 +609,11 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 					break;
 			}
 			$content = sprintf( '<div %1$s>%2$s</div>', $wrapper_attributes, $content );
+		} else {
+			// Fix for older versions where columns-ss is not set.
+			if ( strpos( $content, 'data-columns-ss' ) === false && strpos( $content, 'kb-gallery-type-grid' ) !== false ) {
+				$content = str_replace( 'data-columns-xs="1"', 'data-columns-xs="1" data-columns-ss="1"', $content );
+			}
 		}
 		return $content;
 	}
