@@ -1,5 +1,5 @@
 name: Test Suite
-run-name: '[Tests] ${{ github.event.head_commit.message }}'
+run-name: '[Test] ${{ github.event.head_commit.message }}'
 
 on: [push, workflow_dispatch]
 

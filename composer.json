@@ -88,7 +88,7 @@
 			"constant_prefix": "KADENCE_BLOCKS_",
 			"namespace_prefix": "KadenceWP\\KadenceBlocks\\",
 			"delete_vendor_packages": true,
-			"exclude_from_copy:": {
+			"exclude_from_copy": {
 				"packages": [
 					"symfony/service-contracts"
 				]
