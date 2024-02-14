@@ -97,6 +97,10 @@ developers of this plugin.
 
 == Changelog ==
 
+= 3.2.24 =
+Release Date: February TBD, 2024
+* Fix: Ability to set icon size to 0 on tablet and mobile in icon block.
+
 = 3.2.22 =
 Release Date: February 12th, 2024
 * Add: Option to set image size for backgrounds.
