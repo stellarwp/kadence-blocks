@@ -99,6 +99,7 @@ developers of this plugin.
 
 = 3.2.24 =
 Release Date: February TBD, 2024
+* Add: "only text" responsive option when using an icon in Advanced button.
 * Fix: Responsive font sizes on text in infobox.
 * Fix: Ability to set icon size to 0 on tablet and mobile in icon block.
 
