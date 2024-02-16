@@ -253,7 +253,12 @@ class Kadence_Blocks_Table_Of_Contents {
 				foreach ( array( 'h1' => 1, 'h2' => 2, 'h3' => 3, 'h4' => 4, 'h5' => 5, 'h6' => 6 ) as $tag => $level ) {
 					if ( isset( $attributes['allowedHeaders'][0][$tag] ) && ! $attributes['allowedHeaders'][0][$tag] ) {
 						foreach ( $headings as $headkey => $headvalue ) {
-							if ( $headvalue['level'] === $level && !$headvalue['addanyway'] ) {
+							if ( isset($_GET['benni'] ) ) {
+								echo "<pre>";
+								var_dump($headkey, $headvalue);
+								echo "</pre>";
+							}
+							if ( $headvalue['level'] === $level && 'true' !== $headvalue['include'] || 'false' === $headvalue['include'] ) {
 								unset( $headings[$headkey] );
 							}
 						}
