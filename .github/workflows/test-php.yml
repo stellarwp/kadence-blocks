@@ -1,0 +1,104 @@
+name: Test Suite
+run-name: '[Test] ${{ github.event.head_commit.message }}'
+
+on: [push, workflow_dispatch]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test: ["wpunit", "acceptance"]
+        # wordpress: ["nightly", "6.4", "6.2"]
+        wordpress: ["6.4", "6.2"]
+        #php: ["8.0", "8.3"]
+        php: ["8.0"]
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - run: bun install --frozen-lockfile
+
+      # - run: bun rebuild && bun run prepare --if-present
+
+      - name: Build packages
+        run: bun run build
+
+      - name: Install composer
+        run: sudo composer self-update --stable
+
+      # Composer validate doesn't like our type of "wordpress-plugin"
+      # - name: Validate composer.json and composer.lock
+      #  run: composer validate
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            vendor
+            vendor-prod
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+
+      - name: Install composer dependencies
+        if: steps.composer-cache.outputs.cache-hit != 'true'
+        env:
+          COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.COMPOSER_TOKEN }}"}}'
+        run: |
+          composer config store-auths false
+          composer install --no-progress --no-suggest --ignore-platform-reqs
+
+      - name: Install composer vendor-prod
+        if: steps.composer-cache.outputs.cache-hit != 'true'
+        env:
+          COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.COMPOSER_TOKEN }}"}}'
+          COMPOSER_VENDOR_DIR: vendor-prod
+        run: |
+          composer config store-auths false
+          composer install --prefer-dist --no-dev --no-ansi --no-interaction
+          composer du -a --no-dev --no-ansi --no-interaction
+
+      - name: Generate autoloader
+        if: steps.composer-cache.outputs.cache-hit == 'true'
+        run: composer du
+
+      - name: Setup environment
+        run: envsubst < tests/docker-compose.codeception.env > tests/codeception.env
+
+      - name: Set WordPress Version
+        if: matrix.wordpress != 'nightly'
+        run: sed -i -e 's/WP_TAG=6/WP_TAG=${{ matrix.wordpress }}/g' .env
+
+      - name: Set WordPress Version
+        if: matrix.wordpress != 'nightly'
+        run: |
+          sed -i -e 's/WP_TAG=6-php8.0/WP_TAG=${{ matrix.wordpress }}-php${{ matrix.php }}/g' .env
+          sed -i -e 's/WP_VERSION=""/WP_VERSION="${{ matrix.wordpress }}"/g' tests/codeception.env
+
+      - name: Set WordPress Nightly
+        if: matrix.wordpress == 'nightly'
+        run: |
+          sed -i -e 's/WP_VERSION=""/WP_VERSION="nightly"/g' tests/codeception.env
+
+      - name: Setup docker
+        run: ./bin/setup-docker.sh
+
+      - name: Run tests
+        run: |
+          bun run test-build
+          bun run test-${{ matrix.test }}
+
+      - name: Upload codeception output
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: "${{ matrix.test }}-${{ matrix.wordpress }}-output"
+          path: "./tests/_output"

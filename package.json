@@ -11,8 +11,11 @@
     "build-gulp": "gulp build",
     "build": "wp-scripts build && gulp build",
     "build:custom": "wp-scripts build --webpack-bundle-analyzer",
-    "lint:js": "wp-scripts lint-js",
-    "format": "wp-scripts format"
+    "lint-js": "wp-scripts lint-js",
+    "format": "wp-scripts format",
+	"test-wpunit": "docker-compose exec -T -w /var/www/html/wp-content/plugins/kadence-blocks wordpress ./vendor/bin/codecept run wpunit",
+	"test-acceptance": "docker-compose exec -T -w /var/www/html/wp-content/plugins/kadence-blocks wordpress ./vendor/bin/codecept run acceptance",
+	"test-build": "docker-compose exec -T -w /var/www/html/wp-content/plugins/kadence-blocks wordpress ./vendor/bin/codecept build"
   },
   "dependencies": {
     "@algolia/autocomplete-js": "^1.10.0",

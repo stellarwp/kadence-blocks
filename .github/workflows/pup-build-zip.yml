@@ -1,4 +1,5 @@
 name: Generate Zip (Pup)
+run-name: '[Build] ${{ github.ref_name }}'
 
 on:
   workflow_dispatch:
@@ -25,6 +26,8 @@ jobs:
         run: composer -- pup
 
       - name: pup build
+        env:
+          COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.COMPOSER_TOKEN }}"}}'
         run: composer -- pup build
 
       - name: pup check

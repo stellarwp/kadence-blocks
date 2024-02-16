@@ -226,7 +226,7 @@ function KadenceTestimonials( props ) {
 		tabletWrapperMargin,
 		mobileWrapperMargin,
 		wrapperMarginUnit,
-        carouselType
+        carouselType,
     } = attributes;
 
     const [activeTab, setActiveTab] = useState('general');
@@ -2174,7 +2174,6 @@ function KadenceTestimonials( props ) {
                                 <KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs } preventMultiple={ [ 'testimonials' ] } />
                             </>
                         )}
-
                     </InspectorControls>
                 </Fragment>
             )}

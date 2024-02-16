@@ -69,7 +69,7 @@ class Kadence_Blocks_Listitem_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 		$css->set_selector( '.kt-svg-icon-list-item-' . $unique_id . ' .kt-svg-icon-list-single' );
 
-		if ( ! empty( $attributes['size'] ) ) {
+		if ( isset( $attributes['size'] ) && is_numeric($attributes['size'])) {
 			$css->add_property( 'font-size', $attributes['size'] . 'px !important' );
 		}
 		if ( ! empty( $attributes['color'] ) ) {
