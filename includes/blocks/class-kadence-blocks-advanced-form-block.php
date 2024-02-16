@@ -127,7 +127,6 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=time],' .
 			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=email],' .
 			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=file],' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=email],' .
 			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form select,' .
 			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form textarea'
 		);
@@ -180,23 +179,6 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( '--kb-form-border-color', $desktop_border_color );
 		}
 
-		$css->set_selector(
-			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=text]:focus,' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=tel]:focus,' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=number]:focus,' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=date]:focus,' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=time]:focus,' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=email]:focus,' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=file]:focus,' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form input[type=email]:focus,' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form select:focus,' .
-			'.wp-block-kadence-advanced-form' . $unique_id . ' .kb-advanced-form textarea:focus'
-		);
-		if ( ! empty( $field_style['borderActive'] ) ) {
-			$css->add_property( 'border-color',  $field_style['borderActive'] );
-		}
-
-
 		/*
 		 * Field Placeholder text
 		 */
@@ -221,6 +203,10 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		);
 
 		$css->render_color_output( $input_font, 'colorActive', 'color' );
+
+		if ( ! empty( $field_style['borderActive'] ) ) {
+			$css->add_property( 'border-color',  $css->sanitize_color( $field_style['borderActive'] ) );
+		}
 
 		if ( ! empty( $field_style['boxShadowActive'][0] ) && $field_style['boxShadowActive'][0] === true ) {
 			$css->add_property( 'box-shadow', ( isset( $field_style['boxShadowActive'][7] ) && true === $field_style['boxShadowActive'][7] ? 'inset ' : '' ) . ( isset( $field_style['boxShadowActive'][3] ) && is_numeric( $field_style['boxShadowActive'][3] ) ? $field_style['boxShadowActive'][3] : '2' ) . 'px ' . ( isset( $field_style['boxShadowActive'][4] ) && is_numeric( $field_style['boxShadowActive'][4] ) ? $field_style['boxShadowActive'][4] : '2' ) . 'px ' . ( isset( $field_style['boxShadowActive'][5] ) && is_numeric( $field_style['boxShadowActive'][5] ) ? $field_style['boxShadowActive'][5] : '3' ) . 'px ' . ( isset( $field_style['boxShadowActive'][6] ) && is_numeric( $field_style['boxShadowActive'][6] ) ? $field_style['boxShadowActive'][6] : '0' ) . 'px ' . $css->render_color( ( isset( $field_style['boxShadowActive'][1] ) && ! empty( $field_style['boxShadowActive'][1] ) ? $field_style['boxShadowActive'][1] : '#000000' ), ( isset( $field_style['boxShadowActive'][2] ) && is_numeric( $field_style['boxShadowActive'][2] ) ? $field_style['boxShadowActive'][2] : 0.4 ) ) );
