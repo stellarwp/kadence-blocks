@@ -639,13 +639,6 @@ function PatternLibrary( {
 	}, [aIUserData]);
 	async function onInsertContent( pattern ) {
 		setIsImporting( true );
-		// const response = await getPattern( ( pattern?.type === 'page' ? 'pages' : 'section' ), ( pattern?.type ? pattern.type : 'pattern' ), ( pattern?.id ? pattern.id : '' ), ( pattern?.style ? pattern.style : 'light' ) );
-		// let patternBlocks = pattern?.content ? pattern.content : '';
-		// if ( response && ! patternBlocks ) {
-		// 	patternBlocks = parse( response, {
-		// 		__unstableSkipMigrationLogs: true
-		// 	});
-		// }
 		let patternBlocks = pattern?.content ? pattern.content : '';
 		processImportContent( patternBlocks );
 	}

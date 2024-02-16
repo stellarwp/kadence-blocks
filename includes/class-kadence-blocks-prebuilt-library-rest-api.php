@@ -2392,19 +2392,31 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function check_for_local_image( $image_data ) {
 		global $wpdb;
-
-		// Thanks BrainstormForce for this idea.
-		// Check if image is already local based on meta key and custom hex value.
-		$image_id = $wpdb->get_var(
-			$wpdb->prepare(
-				'SELECT `post_id` FROM `' . $wpdb->postmeta . '`
-					WHERE `meta_key` = \'_kadence_blocks_image_hash\'
-						AND `meta_value` = %s
-				;',
-				sha1( $image_data['url'] )
-			)
-		);
-		if ( $image_id ) {
+		$image_id = '';
+		if ( ! empty( $image_data['url'] ) && strpos( $image_data['url'], get_site_url() ) !== false ) {
+			$image_id = attachment_url_to_postid( $image_data['url'] );
+			if ( empty( $image_id ) ) {
+				// Get unsized version use Regular expression to find the pattern -numberxnumber
+				$pattern = "/-\d+x\d+/";
+				// Replace the pattern with an empty string.
+				$cleaned_url = preg_replace( $pattern, '', $image_data['url'] );
+				$image_id = attachment_url_to_postid( $cleaned_url );
+			}
+		}
+		if ( empty( $image_id ) ) {
+			// Thanks BrainstormForce for this idea.
+			// Check if image is already local based on meta key and custom hex value.
+			$image_id = $wpdb->get_var(
+				$wpdb->prepare(
+					'SELECT `post_id` FROM `' . $wpdb->postmeta . '`
+						WHERE `meta_key` = \'_kadence_blocks_image_hash\'
+							AND `meta_value` = %s
+					;',
+					sha1( $image_data['url'] )
+				)
+			);
+		}
+		if ( ! empty( $image_id ) ) {
 			$local_image = array(
 				'id'  => $image_id,
 				'url' => wp_get_attachment_url( $image_id ),
@@ -2428,10 +2440,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( empty( $link ) ) {
 			return false;
 		}
-		if ( strpos( $link, 'prophecyimg.fly.dev' ) !== false ) {
-			return true;
-		}
-		if ( strpos( $link, 'images.pexels.com' ) !== false ) {
+		if ( strpos( $link, 'https://images.pexels.com' ) !== false ) {
 			return true;
 		}
 		return preg_match( '/^((https?:\/\/)|(www\.))([a-z0-9-].?)+(:[0-9]+)?\/[\w\-]+\.(jpg|png|gif|webp|jpeg)\/?$/i', $link );
