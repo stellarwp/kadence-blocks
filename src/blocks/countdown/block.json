@@ -46,10 +46,12 @@
 	  "type": "string"
 	},
 	"evergreenHours": {
-	  "type": "number"
+	  "type": "number",
+	  "default": 0
 	},
 	"evergreenMinutes": {
-	  "type": "number"
+	  "type": "number",
+	  "default": 0
 	},
 	"evergreenReset": {
 	  "type": "number",

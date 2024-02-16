@@ -329,9 +329,10 @@ function KadenceCountdown( props ) {
 		return newDate.getTime();
 	};
 	const saveEvergreenHours = ( value ) => {
-		const theEvergreenTimeStamp = getEverGreenTimestamp( value );
+		const hoursValue = undefined !== value ? value : 0;
+		const theEvergreenTimeStamp = getEverGreenTimestamp( hoursValue );
 		setAttributes( {
-			evergreenHours: value,
+			evergreenHours: hoursValue,
 			timestamp     : theEvergreenTimeStamp,
 		} );
 	};
@@ -342,9 +343,10 @@ function KadenceCountdown( props ) {
 		return newDate.getTime();
 	};
 	const saveEvergreenMinutes = ( value ) => {
-		const theEvergreenTimeStamp = getEverGreenMinTimestamp( value );
+		const minutesValue = undefined !== value ? value : 0;
+		const theEvergreenTimeStamp = getEverGreenMinTimestamp( minutesValue );
 		setAttributes( {
-			evergreenMinutes: value,
+			evergreenMinutes: minutesValue,
 			timestamp       : theEvergreenTimeStamp,
 		} );
 	};
@@ -507,6 +509,7 @@ function KadenceCountdown( props ) {
 		if ( undefined !== parentBlock.attributes.timestamp && parentBlock.attributes.timestamp !== timestamp ) {
 			setAttributes( { timestamp: parentBlock.attributes.timestamp } );
 		}
+		console.log(parentBlock.attributes.evergreenHours);
 		if ( undefined !== parentBlock.attributes.evergreenHours && parentBlock.attributes.evergreenHours !== evergreenHours ) {
 			setAttributes( { evergreenHours: parentBlock.attributes.evergreenHours } );
 		}
