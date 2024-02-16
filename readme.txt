@@ -98,8 +98,9 @@ developers of this plugin.
 == Changelog ==
 
 = 3.2.23 =
-Release Date: February TBD, 2024
+Release Date: February 16th 2024
 * Add: "only text" responsive option when using an icon in Advanced button.
+* Add: New language selection for AI wizard.
 * Update: Pattern import to handle advanced forms.
 * Fix: Responsive font sizes on text in infobox.
 * Fix: Ability to set icon size to 0 on tablet and mobile in icon block.

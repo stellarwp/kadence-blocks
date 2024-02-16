@@ -874,8 +874,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				// Avoid srcset images.
 				if (
 					false === strpos( $link, '-150x' ) &&
-					false === strpos( $link, '-300x' ) &&
-					false === strpos( $link, '-1024x' )
+					false === strpos( $link, '-300x' )
 				) {
 					$image_urls[] = $link;
 				}
@@ -910,7 +909,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		// Regex to find wp:kadence/image blocks with id and src.
 		$pattern = '/<!-- wp:kadence\/image .*?"id":(\d+),.*?"uniqueID":"[^"]+".*?-->(.*?)<img src="([^"]+)".*?<!-- \/wp:kadence\/image -->/s';
-
 		// Use preg_match_all to find all matches
 		if ( preg_match_all( $pattern, $content, $block_matches, PREG_SET_ORDER ) ) {
 			foreach ( $block_matches as $block_match ) {
@@ -2402,7 +2400,13 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				$pattern = "/-\d+x\d+/";
 				// Replace the pattern with an empty string.
 				$cleaned_url = preg_replace( $pattern, '', $image_data['url'] );
-				$image_id = attachment_url_to_postid( $cleaned_url );
+				if ( $cleaned_url !== $image_data['url'] ) {
+					$image_id = attachment_url_to_postid( $cleaned_url );
+					if ( empty( $image_id ) ) {
+						$scaled_url = preg_replace( $pattern, '-scaled', $image_data['url'] );
+						$image_id = attachment_url_to_postid( $scaled_url );
+					}
+				}
 			}
 		}
 		if ( empty( $image_id ) ) {
@@ -2421,7 +2425,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( ! empty( $image_id ) ) {
 			$local_image = array(
 				'id'  => $image_id,
-				'url' => wp_get_attachment_url( $image_id ),
+				'url' => ( ! empty( $image_data['url'] ) && strpos( $image_data['url'], get_site_url() ) !== false ) ? $image_data['url'] : wp_get_attachment_url( $image_id ),
 			);
 			return array(
 				'status' => true,
