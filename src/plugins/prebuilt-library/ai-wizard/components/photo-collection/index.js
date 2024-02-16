@@ -145,7 +145,7 @@ const styles = {
 
 const ALLOWED_MEDIA_TYPES = [ 'image' ];
 
-export function PhotoCollection({ photos, loading, collectionLink, title, description, updateCollection }) {
+export function PhotoCollection({ photos, loading, isLocal, collectionLink, title, description, updateCollection }) {
 	const photoGallery = usePhotos(photos);
     const [isDownloading, setIsDownloading] = useState( false );
     const [downloadedIDs, setDownloadedIDs] = useState( [] );
@@ -169,7 +169,7 @@ export function PhotoCollection({ photos, loading, collectionLink, title, descri
 			alt: photo.alt || photo.name,
 			url: photo?.sizes?.large?.url || photo?.sizes?.full?.url,
 			sizes: [
-				{ name: 'thumbnail', src: photo?.sizes?.thumbnail?.url }
+				{ name: 'thumbnail', src: photo?.sizes?.thumbnail?.url || photo?.sizes?.large?.url || photo?.sizes?.full?.url }
 			]
 		}));
 		updateCollection(formattedPhotos);
@@ -193,7 +193,7 @@ export function PhotoCollection({ photos, loading, collectionLink, title, descri
 	}
 	function handleDownload( open ) {
 		if ( ! isDownloading ) {
-			if ( photos?.length > 0 ) {
+			if ( ! isLocal && photos?.length > 0 ) {
 				downloadToMediaLibrary( open );
 			} else {
 				open();
@@ -220,7 +220,7 @@ export function PhotoCollection({ photos, loading, collectionLink, title, descri
 								</FlexBlock>
 								{
 									image?.sizes ? (
-										<img style={ styles.img } alt={ image.alt } src={ image.sizes[0].src } />
+										<img style={ styles.img } alt={ image.alt } src={ ( image?.sizes?.[0]?.src ? image.sizes[0].src : image?.url ) } />
 									) : (
 										<FlexBlock style={{ ...styles.square, ...styles.placeholder }} key={image.alt} />
 									)

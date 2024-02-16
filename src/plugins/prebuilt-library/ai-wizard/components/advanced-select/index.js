@@ -42,7 +42,7 @@ export const AdvancedSelect = forwardRef(function AdvancedSelect( props, ref ) {
 
 	function handleOutsideClick(event) {
 		event.stopPropagation();
-		if (parentRef && !parentRef.current.contains(event.target)) {
+		if (parentRef?.current && event?.target && !parentRef.current.contains(event.target)) {
 			shouldClose();
 		}
 	}

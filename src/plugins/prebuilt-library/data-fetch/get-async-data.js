@@ -124,19 +124,67 @@ export function getAsyncData() {
 			const myImages = { data: [] };
 			if ( localGallery?.galleries?.[0]?.images ) {
 				const aImages = localGallery?.galleries?.[0]?.images.map( ( item, index ) => {
-					if ( item?.sizes?.[1]?.src ) {
-						return { sizes:[ { src: item.sizes[1].src } ]};
+					const img = {}
+					if ( item?.alt ) {
+						img.alt = item.alt;
 					}
-					return { sizes:[ { src: item.url } ]};
+					if ( item?.url ) {
+						img.url = item.url;
+					}
+					if ( item?.width ) {
+						img.width = item.width;
+					}
+					if ( item?.height ) {
+						img.height = item.height;
+					}
+					if ( item?.photographer ) {
+						img.photographer = item.photographer;
+					}
+					if ( item?.photographer_url ) {
+						img.photographer_url = item.photographer_url;
+					}
+					if ( item?.id ) {
+						img.id = item.id;
+					}
+					if ( item?.sizes?.[1]?.src ) {
+						img.sizes = [ { src: item.sizes[1].src } ];
+					} else {
+						img.sizes = [ { src: item.url } ];
+					}
+					return img;
 				} );
 				myImages.data.push( { images: aImages } );
 			}
 			if ( localGallery?.galleries?.[1]?.images ) {
 				const bImages = localGallery?.galleries?.[1]?.images.map( ( item, index ) => {
-					if ( item?.sizes?.[1]?.src ) {
-						return { sizes:[ { src: item.sizes[1].src } ]};
+					const img = {}
+					if ( item?.alt ) {
+						img.alt = item.alt;
 					}
-					return { sizes:[ { src: item.url } ]};
+					if ( item?.url ) {
+						img.url = item.url;
+					}
+					if ( item?.width ) {
+						img.width = item.width;
+					}
+					if ( item?.height ) {
+						img.height = item.height;
+					}
+					if ( item?.photographer ) {
+						img.photographer = item.photographer;
+					}
+					if ( item?.photographer_url ) {
+						img.photographer_url = item.photographer_url;
+					}
+					if ( item?.id ) {
+						img.id = item.id;
+					}
+					if ( item?.sizes?.[1]?.src ) {
+						img.sizes = [ { src: item.sizes[1].src } ];
+					} else {
+						img.sizes = [ { src: item.url } ];
+					}
+					return img;
 				} );
 				myImages.data.push( { images: bImages } );
 			}

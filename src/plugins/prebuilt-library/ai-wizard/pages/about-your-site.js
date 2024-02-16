@@ -14,7 +14,7 @@ import { __, sprintf } from "@wordpress/i18n";
 import { Button } from "../components";
 import { missionStatementHelper } from "../utils/mission-statement-helper";
 import { convertStreamDataToJson } from "../utils/convert-stream-data-to-json";
-import { THOUGHT_STARTERS } from "../constants";
+import { LANG_TYPE, THOUGHT_STARTERS } from "../constants";
 import { Ai, Visibility, VisibilityOff } from "../components/icons";
 
 /**
@@ -101,10 +101,15 @@ export function AboutYourSite() {
 	const [aiLoading, setAiLoading] = useState(false);
 	const [ error, setError] = useState('');
 	const { state, dispatch } = useKadenceAi();
-	const { missionStatement, entityType, companyName } = state;
+	const { missionStatement, entityType, lang, companyName } = state;
 	const title = sprintf(
 		__("Tell us about your%s", "kadence-blocks"),
 		titlePartial[entityType]
+	);
+	const langObject = LANG_TYPE.filter((option) => option.value === ( lang ? lang : 'en-US' ));
+	const language = sprintf(
+		__("This should be written in %s.", "kadence-blocks"),
+		langObject?.[0]?.label ? langObject[0].label : 'your site language'
 	);
 	const { getMissionStatement } = missionStatementHelper();
 
@@ -150,7 +155,7 @@ export function AboutYourSite() {
 		setAiLoading(true);
 		setError( '' );
 
-		getMissionStatement(value)
+		getMissionStatement(value, lang)
 			.then((readableStream) => {
 				const reader = readableStream.getReader();
 
@@ -188,7 +193,7 @@ export function AboutYourSite() {
 			<FlexBlock style={{ alignSelf: "center" }}>
 				<Flex justify="center" style={styles.leftContent}>
 					<FlexBlock style={styles.formWrapper} className={"stellarwp-body"}>
-						<FormSection headline={title} content={content}>
+						<FormSection headline={title} content={ lang && lang !== 'en-US' ? language + ' ' + content : content }>
 							<View style={styles.textareaWrapper}>
 								<TextareaProgress
 									hideLabelFromVision

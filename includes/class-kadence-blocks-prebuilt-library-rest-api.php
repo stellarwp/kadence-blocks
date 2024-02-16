@@ -1473,6 +1473,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$body['mission'] = ! empty( $prophecy_data['missionStatement'] ) ? $prophecy_data['missionStatement'] : '';
 		$body['tone'] = ! empty( $prophecy_data['tone'] ) ? $prophecy_data['tone'] : '';
 		$body['keywords'] = ! empty( $prophecy_data['keywords'] ) ? $prophecy_data['keywords'] : '';
+		$body['lang'] = ! empty( $prophecy_data['lang'] ) ? $prophecy_data['lang'] : '';
 		switch ( $context ) {
 			case 'about':
 				$body['prompts'] = array(
@@ -2092,6 +2093,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'industry' => $parameters['industry'],
 			'location' => $parameters['location'],
 			'description' => $parameters['description'],
+			'lang' => ! empty( $parameters['lang'] ) ? $parameters['lang'] : '',
 			'count' => $parameters['count'],
 		);
 		$response = wp_remote_post(

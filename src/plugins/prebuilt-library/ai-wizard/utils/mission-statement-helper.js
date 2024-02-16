@@ -1,7 +1,7 @@
 import { API_URL } from "../constants";
 
 export function missionStatementHelper() {
-	async function getMissionStatement(missionStatement) {
+	async function getMissionStatement(missionStatement, lang) {
 		try {
 			// Get site domain from the url.
 			const url = new URL(window.location.href);
@@ -39,6 +39,7 @@ export function missionStatementHelper() {
 					},
 					body: JSON.stringify({
 						text: missionStatement,
+						lang: lang ? lang : "en-US",
 						stream: true,
 					}),
 				}
