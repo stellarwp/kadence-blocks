@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.2
 Tested up to: 6.4
-Stable tag: 3.2.22
+Stable tag: 3.2.23
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -97,9 +97,10 @@ developers of this plugin.
 
 == Changelog ==
 
-= 3.2.24 =
+= 3.2.23 =
 Release Date: February TBD, 2024
 * Add: "only text" responsive option when using an icon in Advanced button.
+* Update: Pattern import to handle advanced forms.
 * Fix: Responsive font sizes on text in infobox.
 * Fix: Ability to set icon size to 0 on tablet and mobile in icon block.
 * Fix: setting anchor tags on testimonial and testimonials blocks.
