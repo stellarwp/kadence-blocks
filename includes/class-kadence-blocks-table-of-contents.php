@@ -248,7 +248,6 @@ class Kadence_Blocks_Table_Of_Contents {
 				self::$the_headings = $this->table_of_contents_get_headings_from_content( $page_content, 1, 1, $attributes );
 			}
 			$headings = self::$the_headings;
-			$headings = self::$the_headings;
 			if ( $attributes && isset( $attributes['allowedHeaders'] ) && isset( $attributes['allowedHeaders'][0] ) && is_array( $attributes['allowedHeaders'][0] ) ) {
 				foreach ( array( 'h1' => 1, 'h2' => 2, 'h3' => 3, 'h4' => 4, 'h5' => 5, 'h6' => 6 ) as $tag => $level ) {
 					if ( !isset( $attributes['allowedHeaders'][0][$tag] ) || $attributes['allowedHeaders'][0][$tag] ) {
