@@ -992,7 +992,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			}
 			// Get the response.
 			$api_url  = add_query_arg( $args, $library_url );
-			$response = wp_remote_get(
+			$response = wp_safe_remote_get(
 				$api_url,
 				array(
 					'timeout' => 20,
@@ -1788,7 +1788,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		// Get the response.
 		$api_url  = add_query_arg( $args, $library_url );
-		$response = wp_remote_get(
+		$response = wp_safe_remote_get(
 			$api_url,
 			array(
 				'timeout' => 30,
@@ -1835,7 +1835,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		// Get the response.
 		$api_url  = add_query_arg( $args, $library_url );
-		$response = wp_remote_get(
+		$response = wp_safe_remote_get(
 			$api_url,
 			array(
 				'timeout' => 30,
@@ -1985,7 +1985,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			$args['email'] = $this->api_email;
 		}
 		$api_url  = add_query_arg( $args, $this->remote_credits_url . 'get-remaining' );
-		$response = wp_remote_get(
+		$response = wp_safe_remote_get(
 			$api_url,
 			array(
 				'timeout' => 20,
@@ -2013,7 +2013,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function get_remote_image_collections() {
 		$api_url  = $this->remote_ai_url . 'images/collections';
-		$response = wp_remote_get(
+		$response = wp_safe_remote_get(
 			$api_url,
 			array(
 				'timeout' => 20,
@@ -2122,7 +2122,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function get_remote_industry_verticals() {
 		$api_url  = $this->remote_ai_url . 'verticals';
-		$response = wp_remote_get(
+		$response = wp_safe_remote_get(
 			$api_url,
 			array(
 				'timeout' => 20,
@@ -2283,7 +2283,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			return $local_image['image'];
 		}
 		$file_content = wp_remote_retrieve_body(
-			wp_remote_get(
+			wp_safe_remote_get(
 				$image_data['url'],
 				array(
 					'timeout'   => '60',
