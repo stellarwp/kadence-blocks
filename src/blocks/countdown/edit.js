@@ -509,7 +509,6 @@ function KadenceCountdown( props ) {
 		if ( undefined !== parentBlock.attributes.timestamp && parentBlock.attributes.timestamp !== timestamp ) {
 			setAttributes( { timestamp: parentBlock.attributes.timestamp } );
 		}
-		console.log(parentBlock.attributes.evergreenHours);
 		if ( undefined !== parentBlock.attributes.evergreenHours && parentBlock.attributes.evergreenHours !== evergreenHours ) {
 			setAttributes( { evergreenHours: parentBlock.attributes.evergreenHours } );
 		}
