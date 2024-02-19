@@ -81,6 +81,8 @@ function kadence_gutenberg_editor_assets() {
 		'image',
 		'infobox',
 		'lottie',
+		'navigation',
+		'navigation-link',
 		'posts',
 		'rowlayout',
 		'progress-bar',
@@ -1078,6 +1080,9 @@ function kadence_blocks_register_api_endpoints() {
 	$lottieanimation_controller_upload = new Kadence_LottieAnimation_post_REST_Controller();
 	$lottieanimation_controller_upload->register_routes();
 
+	$nav = new WP_REST_KB_Navigation_Fallback_Controller();
+	$nav->register_routes();
+
 	$design_library_controller_upload = new Kadence_Blocks_Prebuilt_Library_REST_Controller();
 	$design_library_controller_upload->register_routes();
 	$image_picker_controller_upload = new Kadence_Blocks_Image_Picker_REST_Controller();
@@ -1135,7 +1140,7 @@ add_filter( 'wp_img_tag_add_loading_attr', 'kadence_blocks_skip_lazy_load', 10, 
 
 /**
  * Filter to remove block rendering when events builds their custom excerpts.
- * 
+ *
  * @param bool $remove_blocks Whether to remove blocks or not.
  * @param WP_Post $post The post object.
  */

@@ -88,6 +88,8 @@ function kadence_blocks_init() {
 	require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-tabs-block.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-testimonials-block.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-testimonial-block.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-navigation-block.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-navigation-link-block.php';
 
 	require_once KADENCE_BLOCKS_PATH . 'includes/settings/class-kadence-blocks-settings.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-posts-rest-api.php';
@@ -98,6 +100,10 @@ function kadence_blocks_init() {
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-lottieanimation-post-rest-api.php';
 	// Advanced Form.
 	require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/advanced-form-init.php';
+	// Navigation
+	require_once KADENCE_BLOCKS_PATH . 'includes/navigation/kb-navigation-cpt.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/navigation/kb-navigation-rest.php';
+
 	// SVG render.
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-svg.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-local-gfonts.php';
