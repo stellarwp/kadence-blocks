@@ -52,7 +52,7 @@
 							}
 							error_string = error_string + ' ' + kb_adv_form_params[error_type];
 						}
-						break
+						break;
 				}
 				var next = item.parentNode.querySelector( '.kb-adv-form-error-msg' );
 				if ( next ) {
@@ -300,7 +300,17 @@
 								window.kadenceAdvancedForm.markError( required[n], error_type, self );
 							}
 							break;
+						case 'number':
+							val = required[n].value.trim();
 
+							if ( val === '' ) {
+								error = true;
+								error_type = 'required';
+							
+								// mark the error in the field.
+								window.kadenceAdvancedForm.markError( required[n], error_type, self );
+							}
+							break;
 					};
 				}
 
