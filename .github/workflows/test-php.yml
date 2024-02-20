@@ -3,6 +3,9 @@ run-name: '[Test] ${{ github.event.head_commit.message }}'
 
 on: [push, workflow_dispatch]
 
+env:
+  COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.COMPOSER_TOKEN }}"}}'
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -19,6 +22,11 @@ jobs:
 
       - uses: actions/checkout@v4
 
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "${{ matrix.php }}"
+
       - uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
@@ -30,45 +38,11 @@ jobs:
       - name: Build packages
         run: bun run build
 
-      - name: Install composer
-        run: sudo composer self-update --stable
+      - name: Validate composer.json and composer.lock
+        run: composer validate
 
-      # Composer validate doesn't like our type of "wordpress-plugin"
-      # - name: Validate composer.json and composer.lock
-      #  run: composer validate
-
-      - name: Cache Composer packages
-        id: composer-cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            vendor
-            vendor-prod
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-
-      - name: Install composer dependencies
-        if: steps.composer-cache.outputs.cache-hit != 'true'
-        env:
-          COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.COMPOSER_TOKEN }}"}}'
-        run: |
-          composer config store-auths false
-          composer install --no-progress --no-suggest --ignore-platform-reqs
-
-      - name: Install composer vendor-prod
-        if: steps.composer-cache.outputs.cache-hit != 'true'
-        env:
-          COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.COMPOSER_TOKEN }}"}}'
-          COMPOSER_VENDOR_DIR: vendor-prod
-        run: |
-          composer config store-auths false
-          composer install --prefer-dist --no-dev --no-ansi --no-interaction
-          composer du -a --no-dev --no-ansi --no-interaction
-
-      - name: Generate autoloader
-        if: steps.composer-cache.outputs.cache-hit == 'true'
-        run: composer du
+      - name: Install Composer dependencies
+        uses: ramsey/composer-install@v2
 
       - name: Setup environment
         run: envsubst < tests/docker-compose.codeception.env > tests/codeception.env
@@ -88,8 +62,15 @@ jobs:
         run: |
           sed -i -e 's/WP_VERSION=""/WP_VERSION="nightly"/g' tests/codeception.env
 
-      - name: Setup docker
-        run: ./bin/setup-docker.sh
+      - name: Set UID and GID for docker
+        run: |
+          printf 'UID=%d\nGID=%d\n' $(id -u) $(id -g) > .env.ci
+
+      - name: Start project containers
+        run: docker compose --env-file .env --env-file .env.ci up -d
+
+      - name: Wait for project to be ready
+        run: ./bin/wait-for-it.sh http://localhost:7253
 
       - name: Run tests
         run: |
