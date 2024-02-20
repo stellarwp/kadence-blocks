@@ -3,6 +3,9 @@ run-name: '[Test] ${{ github.event.head_commit.message }}'
 
 on: [push, workflow_dispatch]
 
+env:
+  COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.COMPOSER_TOKEN }}"}}'
+
 jobs:
   test:
     runs-on: ubuntu-latest
