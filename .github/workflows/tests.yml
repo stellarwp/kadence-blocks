@@ -17,6 +17,7 @@ jobs:
       matrix:
         wordpress:
           - latest
+          - nightly
           - '6.3.3'
           - '6.2.4'
         php:
