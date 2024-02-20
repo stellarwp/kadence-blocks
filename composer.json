@@ -5,8 +5,13 @@
 	"homepage": "https://www.kadencewp.com",
 	"config": {
 		"preferred-install": "dist",
+		"sort-packages": true,
+		"optimize-autoloader": true,
 		"platform": {
 			"php": "7.2.34"
+		},
+		"allow-plugins": {
+			"composer/installers": true
 		}
 	},
 	"repositories": [
@@ -28,6 +33,7 @@
 		}
 	],
 	"require": {
+		"composer/installers": "*",
 		"psr/container": "^1.0",
 		"lucatume/di52": "^3.3",
 		"stellarwp/telemetry": "^2.3",
@@ -62,7 +68,7 @@
 			"vendor/bin/stellar-uplink domain=kadence-blocks"
 		],
 		"strauss": [
-			"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.14.1/strauss.phar",
+			"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.16.0/strauss.phar",
 			"@php bin/strauss.phar",
 			"@composer dump-autoload"
 		],
@@ -87,13 +93,10 @@
 			"classmap_prefix": "Kadence_Blocks_",
 			"constant_prefix": "KADENCE_BLOCKS_",
 			"namespace_prefix": "KadenceWP\\KadenceBlocks\\",
-			"delete_vendor_packages": true,
+			"delete_vendor_packages": false,
 			"exclude_from_prefix": {
 			  "file_patterns": [
 				  "/symfony\\/polyfill-(.*)/"
-			  ],
-			  "packages": [
-				  "symfony/service-contracts"
 			  ]
 			}
 		}
