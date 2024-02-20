@@ -22,6 +22,11 @@ jobs:
 
       - uses: actions/checkout@v4
 
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "${{ matrix.php }}"
+
       - uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
@@ -32,9 +37,6 @@ jobs:
 
       - name: Build packages
         run: bun run build
-
-      - name: Install composer
-        run: sudo composer self-update --stable
 
       - name: Validate composer.json and composer.lock
         run: composer validate
