@@ -52,7 +52,7 @@ jobs:
         run: |
           echo "DIR=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         id: composer-cache
         with:
           path: ${{ steps.get-composer-cache-dir.outputs.DIR }}
