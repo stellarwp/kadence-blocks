@@ -1,0 +1,118 @@
+name: 'CI'
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - master
+      - main
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.COMPOSER_TOKEN }}"}}'
+
+    strategy:
+      matrix:
+        wordpress:
+          - latest
+          - 6.3.3
+          - 6.2.4
+        php:
+          - 7.4
+          - 8.0
+          - 8.1
+          - 8.2
+
+    name: WP ${{ matrix.wordpress }} / PHP ${{ matrix.php }}
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - name: Checkout slic
+        uses: actions/checkout@v4
+        with:
+          repository: stellarwp/slic
+          ref: 1.5.1
+          path: slic
+          fetch-depth: 1
+
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - run: bun install --frozen-lockfile
+
+      - name: Build packages
+        run: bun run build
+
+      - name: Get Composer Cache Directory
+        id: get-composer-cache-dir
+        run: |
+          echo "DIR=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v3
+        id: composer-cache
+        with:
+          path: ${{ steps.get-composer-cache-dir.outputs.DIR }}
+          key: ${{ matrix.php }}-composer-${{ hashFiles('composer.lock') }}
+          restore-keys: |
+            ${{ matrix.php }}-composer-
+
+      - name: Set up slic env vars
+        run: |
+          echo "SLIC_BIN=${GITHUB_WORKSPACE}/slic/slic" >> $GITHUB_ENV
+          echo "SLIC_WP_DIR=${GITHUB_WORKSPACE}/slic/_wordpress" >> $GITHUB_ENV
+          echo "SLIC_WORDPRESS_DOCKERFILE=Dockerfile.base" >> $GITHUB_ENV
+
+      - name: Set run context for slic
+        run: echo "SLIC=1" >> $GITHUB_ENV && echo "CI=1" >> $GITHUB_ENV
+
+      - name: Start ssh-agent
+        run: |
+          mkdir -p "${HOME}/.ssh";
+          ssh-agent -a /tmp/ssh_agent.sock;
+
+      - name: Export SSH_AUTH_SOCK env var
+        run: echo "SSH_AUTH_SOCK=/tmp/ssh_agent.sock" >> $GITHUB_ENV
+
+      - name: Set up slic for CI
+        run: |
+          cd ${GITHUB_WORKSPACE}/..
+          ${SLIC_BIN} here
+          ${SLIC_BIN} interactive off
+          ${SLIC_BIN} build-prompt off
+          ${SLIC_BIN} build-subdir off
+          ${SLIC_BIN} xdebug off
+          ${SLIC_BIN} debug on
+          ${SLIC_BIN} php-version set ${{ matrix.php }} --skip-rebuild
+          ${SLIC_BIN} composer-cache set ${{ steps.get-composer-cache-dir.outputs.DIR }}
+          ${SLIC_BIN} info
+          ${SLIC_BIN} config
+
+      - name: Install specific WordPress version
+        run: |
+          ${SLIC_BIN} wp core download --version=${{ matrix.wordpress }} --force
+          ${SLIC_BIN} wp core version
+
+      - name: Set up plugin
+        run: |
+          ${SLIC_BIN} use kadence-blocks
+          ${SLIC_BIN} composer set-version 2
+          ${SLIC_BIN} composer validate
+          ${SLIC_BIN} composer install
+
+      - name: Run wpunit tests
+        run: ${SLIC_BIN} run wpunit --ext DotReporter
+
+      - name: Run acceptance tests
+        run: ${SLIC_BIN} run acceptance --ext DotReporter
+
+      - name: Upload codeception output
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: "${{ matrix.test }}-${{ matrix.php }}-${{ matrix.wordpress }}-output"
+          path: "./tests/_output"
+
