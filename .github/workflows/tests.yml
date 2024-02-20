@@ -45,7 +45,7 @@ jobs:
       - run: bun install --frozen-lockfile
 
       - name: Build packages
-        run: bun run build_ci
+        run: bun run build
 
       - name: Get Composer Cache Directory
         id: get-composer-cache-dir
