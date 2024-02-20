@@ -1,6 +1,6 @@
 {
 	"name": "kadencewp/kadence-blocks",
-	"dsecription": "Kadence Blocks - Gutenberg Blocks for Page Building",
+	"description": "Kadence Blocks - Gutenberg Blocks for Page Building",
 	"type": "wordpress-plugin",
 	"homepage": "https://www.kadencewp.com",
 	"config": {
