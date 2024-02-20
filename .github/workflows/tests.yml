@@ -17,13 +17,13 @@ jobs:
       matrix:
         wordpress:
           - latest
-          - 6.3.3
-          - 6.2.4
+          - '6.3.3'
+          - '6.2.4'
         php:
-          - 7.4
-          - 8.0
-          - 8.1
-          - 8.2
+          - '7.4'
+          - '8.0'
+          - '8.1'
+          - '8.2'
 
     name: WP ${{ matrix.wordpress }} / PHP ${{ matrix.php }}
     steps:
