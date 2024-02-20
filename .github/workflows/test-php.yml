@@ -62,8 +62,11 @@ jobs:
         run: |
           sed -i -e 's/WP_VERSION=""/WP_VERSION="nightly"/g' tests/codeception.env
 
-      - name: Setup docker
-        run: ./bin/setup-docker.sh
+      - name: Start project containers
+        run: ./bin/test-up.sh
+
+      - name: Wait for project to be ready
+        run: ./bin/wait-for-it.sh http://localhost:7253
 
       - name: Run tests
         run: |
