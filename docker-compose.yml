@@ -15,6 +15,7 @@ services:
       WORDPRESS_DB_USER: wp
       WORDPRESS_DB_PASSWORD: pass
       WORDPRESS_SKIP_INSTALL: 'yes'
+      WORDPRESS_DEBUG: 1
     volumes:
       - ./:/var/www/html/wp-content/plugins/kadence-blocks
     depends_on:
