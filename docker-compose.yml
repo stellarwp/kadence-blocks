@@ -24,6 +24,18 @@ services:
   db:
     image: mariadb:10.5
     restart: always
+    healthcheck:
+      interval: 30s
+      retries: 3
+      test:
+        [
+          "CMD",
+          "healthcheck.sh",
+          "--su-mysql",
+          "--connect",
+          "--innodb_initialized"
+        ]
+      timeout: 30s
     ports:
       - ${DB_PORT}:3306
     environment:
