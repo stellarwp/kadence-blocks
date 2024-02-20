@@ -261,7 +261,13 @@ class KB_Ajax_Advanced_Form {
 			$value = $this->sanitize_field( $field['type'], isset( $_POST[ $expected_field ] ) ? $_POST[ $expected_field ] : '', empty( $field['multiSelect'] ) ? false : $field['multiSelect'] );
 
 			// Fail if this field is empty and is required.
-			if ( empty( $value ) && ! empty( $field['required'] ) && $field['required'] && $field['type'] !== 'file' ) {
+			if ( empty( $value ) && ! empty( $field['required'] ) && $field['required'] && $field['type'] !== 'file' && $field['type'] !== 'number') {
+				$required_message = ! empty( $field['required_message'] ) ? $field['required_message'] : __( 'Missing a required field', 'kadence-blocks' );
+				$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), $required_message );
+			}
+
+			// Fail if this field is number and value is not numeric.
+			if(!isset($value) && !is_numeric($value) && $field['type'] === 'number') {
 				$required_message = ! empty( $field['required_message'] ) ? $field['required_message'] : __( 'Missing a required field', 'kadence-blocks' );
 				$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), $required_message );
 			}
