@@ -1,20 +1,15 @@
+actor: Tester
+bootstrap: _bootstrap.php
 paths:
-    tests: tests
-    output: tests/_output
-    data: tests/_data
-    support: tests/_support
-    envs: tests/_envs
-actor_suffix: Tester
-extensions:
-    enabled:
-        - Codeception\Extension\RunFailed
-    commands:
-        - Codeception\Command\GenerateWPUnit
-        - Codeception\Command\GenerateWPRestApi
-        - Codeception\Command\GenerateWPRestController
-        - Codeception\Command\GenerateWPRestPostTypeController
-        - Codeception\Command\GenerateWPAjax
-        - Codeception\Command\GenerateWPCanonical
-        - Codeception\Command\GenerateWPXMLRPC
+  tests: tests
+  log: tests/_output
+  output: tests/_output
+  data: tests/_data
+  helpers: tests/_support
+  wp_root: "%WP_ROOT_FOLDER%"
+settings:
+  colors: true
+  memory_limit: 1024M
 params:
-    - tests/codeception.env
+  # read dynamic configuration parameters from the .env file
+  - .env.testing
