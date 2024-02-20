@@ -45,14 +45,14 @@ jobs:
       - run: bun install --frozen-lockfile
 
       - name: Build packages
-        run: bun run build_ci
+        run: bun run build
 
       - name: Get Composer Cache Directory
         id: get-composer-cache-dir
         run: |
           echo "DIR=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         id: composer-cache
         with:
           path: ${{ steps.get-composer-cache-dir.outputs.DIR }}
