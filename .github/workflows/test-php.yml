@@ -62,8 +62,12 @@ jobs:
         run: |
           sed -i -e 's/WP_VERSION=""/WP_VERSION="nightly"/g' tests/codeception.env
 
+      - name: Set UID and GID for docker
+        run: |
+          printf 'UID=%d\nGID=%d\n' $(id -u) $(id -g) > .env.ci
+
       - name: Start project containers
-        run: ./bin/test-up.sh
+        run: docker compose --env-file .env --env-file .env.ci up -d
 
       - name: Wait for project to be ready
         run: ./bin/wait-for-it.sh http://localhost:7253

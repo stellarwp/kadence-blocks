@@ -9,6 +9,7 @@ services:
     restart: always
     ports:
       - ${WP_PORT}:80
+    user: "${UID:-1000}:${GID:-1000}"
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_NAME: wp
