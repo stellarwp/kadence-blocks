@@ -33,42 +33,11 @@ jobs:
       - name: Install composer
         run: sudo composer self-update --stable
 
-      # Composer validate doesn't like our type of "wordpress-plugin"
-      # - name: Validate composer.json and composer.lock
-      #  run: composer validate
+      - name: Validate composer.json and composer.lock
+        run: composer validate
 
-      - name: Cache Composer packages
-        id: composer-cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            vendor
-            vendor-prod
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-
-      - name: Install composer dependencies
-        if: steps.composer-cache.outputs.cache-hit != 'true'
-        env:
-          COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.COMPOSER_TOKEN }}"}}'
-        run: |
-          composer config store-auths false
-          composer install --no-progress --no-suggest --ignore-platform-reqs
-
-      - name: Install composer vendor-prod
-        if: steps.composer-cache.outputs.cache-hit != 'true'
-        env:
-          COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.COMPOSER_TOKEN }}"}}'
-          COMPOSER_VENDOR_DIR: vendor-prod
-        run: |
-          composer config store-auths false
-          composer install --prefer-dist --no-dev --no-ansi --no-interaction
-          composer du -a --no-dev --no-ansi --no-interaction
-
-      - name: Generate autoloader
-        if: steps.composer-cache.outputs.cache-hit == 'true'
-        run: composer du
+      - name: Install Composer dependencies
+        uses: ramsey/composer-install@v2
 
       - name: Setup environment
         run: envsubst < tests/docker-compose.codeception.env > tests/codeception.env
