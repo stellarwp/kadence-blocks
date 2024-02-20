@@ -190,7 +190,23 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @access protected
 	 * @var string
 	 */
+	protected $remote_cat_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/categories/';
+
+	/**
+	 * The remote URL.
+	 *
+	 * @access protected
+	 * @var string
+	 */
 	protected $remote_pages_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/pages/';
+
+	/**
+	 * The remote URL.
+	 *
+	 * @access protected
+	 * @var string
+	 */
+	protected $remote_pages_cat_url = 'https://patterns.startertemplatecloud.com/wp-json/kadence-cloud/v1/pages-categories/';
 
 	/**
 	 * The remote URL.
@@ -363,6 +379,18 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_library' ),
+					'permission_callback' => array( $this, 'get_items_permission_check' ),
+					'args'                => $this->get_collection_params(),
+				),
+			)
+		);
+		register_rest_route(
+			$this->namespace,
+			'/get_library_categories',
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_library_categories' ),
 					'permission_callback' => array( $this, 'get_items_permission_check' ),
 					'args'                => $this->get_collection_params(),
 				),
@@ -767,7 +795,52 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 
 		return kadence_blocks()->get( Image_Downloader::class )->download( $parameters );
 	}
-
+	/**
+	 * Creates the forms if needed.
+	 *
+	 * @param string $content The content to process.
+	 */
+	public function process_forms( $content, $forms ) {
+		$new_forms = array();
+		foreach ( $forms as $form_id => $form_content ) {
+			if ( empty( $form_content['name'] ) ) {
+				continue;
+			}
+			$import_key = $form_id . sanitize_key( $form_content['name'] );
+			// Lets not duplicate forms.
+			$has_form = get_posts( array(
+				'post_type'  => 'kadence_form',
+				'meta_key' => '_kad_form_importId',
+				'meta_value' => $import_key,
+				'title'      => $form_content['name'],
+			) );
+			if ( $has_form ) {
+				$new_forms[ $form_id ] = $has_form[0]->ID;
+				continue;
+			}
+			$new_form_id = wp_insert_post(
+				array(
+					'post_title'   => wp_strip_all_tags( $form_content['name'] ),
+					'post_content' => $form_content['content'],
+					'post_status'  => 'publish',
+					'post_type'    => 'kadence_form',
+				)
+			);
+			if ( ! is_wp_error( $new_form_id ) ) {
+				if ( ! empty( $form_content['meta'] ) ) {
+					foreach ( $form_content['meta'] as $meta_key => $meta_value ) {
+						update_post_meta( $new_form_id, $meta_key, $meta_value );
+					}
+				}
+				update_post_meta( $new_form_id, '_kad_form_importId', $import_key );
+				$new_forms[ $form_id ] = $new_form_id;
+			}
+		}
+		foreach ( $new_forms as $old_id => $new_id ) {
+			$content = str_replace( '"id":' . absint( $old_id) . ',', '"id":' . absint( $new_id  ) . ',', $content );
+		}
+		return $content;
+	}
 	/**
 	 * Retrieves a collection of objects.
 	 *
@@ -780,8 +853,11 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			return rest_ensure_response( 'failed' );
 		}
 		$content = $parameters['content'];
+		$forms = isset( $parameters['forms'] ) ? $parameters['forms'] : array();
 		$image_library = $parameters['image_library'];
-		//error_log( print_r( $image_library, true ) );
+		if ( ! empty( $forms ) ) {
+			$content = $this->process_forms( $content, $forms );
+		}
 		// Find all urls.
 		preg_match_all( '/https?:\/\/[^\'" ]+/i', $content, $match );
 		// preg_match_all( '#\bhttps?://[^,\s()<>]+(?:\([\w\d]+\)|([^,[:punct:]\s]|/))#', $content, $match );
@@ -798,8 +874,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 				// Avoid srcset images.
 				if (
 					false === strpos( $link, '-150x' ) &&
-					false === strpos( $link, '-300x' ) &&
-					false === strpos( $link, '-1024x' )
+					false === strpos( $link, '-300x' )
 				) {
 					$image_urls[] = $link;
 				}
@@ -834,7 +909,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		// Regex to find wp:kadence/image blocks with id and src.
 		$pattern = '/<!-- wp:kadence\/image .*?"id":(\d+),.*?"uniqueID":"[^"]+".*?-->(.*?)<img src="([^"]+)".*?<!-- \/wp:kadence\/image -->/s';
-
 		// Use preg_match_all to find all matches
 		if ( preg_match_all( $pattern, $content, $block_matches, PREG_SET_ORDER ) ) {
 			foreach ( $block_matches as $block_match ) {
@@ -941,7 +1015,79 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 
 		return rest_ensure_response( 'error' );
 	}
+	/**
+	 * Retrieves a collection of objects.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response Response object on success, or WP_Error object on failure.
+	 */
+	public function get_library_categories( WP_REST_Request $request ) {
+		$this->get_license_keys();
+		$reload           = $request->get_param( self::PROP_FORCE_RELOAD );
+		$library          = $request->get_param( self::PROP_LIBRARY );
+		$library_url      = $request->get_param( self::PROP_LIBRARY_URL );
+		$key              = $request->get_param( self::PROP_KEY );
 
+		if ( ! empty( $library_url ) ) {
+			$library_url = rtrim( $library_url, '/' ) . '/wp-json/kadence-cloud/v1/categories/';
+		} elseif ( ! empty( $library ) && 'pages' === $library ) {
+			$library_url = $this->remote_pages_cat_url;
+			$key = 'new-pages';
+		} else {
+			$library_url = $this->remote_cat_url;
+		}
+
+		$identifier = 'library-categories' . $library;
+
+		if ( ! empty( $this->api_key ) ) {
+			$identifier .= '_' . $this->api_key;
+		}
+
+		if ( ! empty( $key ) ) {
+			$identifier .= '_' . $key;
+		}
+
+		if ( 'templates' !== $library && 'pages' !== $library && 'section' !== $library && 'template' !== $library ) {
+			$cloud_settings = json_decode( get_option( 'kadence_blocks_cloud' ), true );
+			if ( ! empty( $cloud_settings['connections'][ $library ]['expires'] ) ) {
+				$expires = strtotime( get_date_from_gmt( $cloud_settings['connections'][ $library ]['expires'] ) );
+				$now     = strtotime( get_date_from_gmt( current_time( 'Y-m-d H:i:s' ) ) );
+
+				if ( $expires < $now ) {
+					$refresh = ( ! empty( $cloud_settings['connections'][ $library ]['refresh'] ) ? $cloud_settings['connections'][ $library ]['refresh'] : 'month' );
+					if ( 'day' === $refresh ) {
+						$expires_add = DAY_IN_SECONDS;
+					} elseif ( 'week' === $refresh ) {
+						$expires_add = WEEK_IN_SECONDS;
+					} else {
+						$expires_add = MONTH_IN_SECONDS;
+					}
+					$cloud_settings['connections'][ $library ]['expires'] = gmdate( 'Y-m-d H:i:s', strtotime( current_time( 'mysql' ) ) + $expires_add );
+					update_option( 'kadence_blocks_cloud', json_encode( $cloud_settings ) );
+					$reload = true;
+				}
+			}
+		}
+
+		// Check if we have a local file.
+		if ( ! $reload ) {
+			try {
+				return rest_ensure_response( $this->block_library_cache->get( $identifier ) );
+			} catch ( NotFoundException $e ) {
+			}
+		}
+
+		// Access via remote.
+		$response = $this->get_remote_library_categories( $library, $library_url, $key );
+
+		if ( 'error' === $response ) {
+			return rest_ensure_response( 'error' );
+		}
+
+		$this->block_library_cache->cache( $identifier, $response );
+
+		return rest_ensure_response( $response );
+	}
 	/**
 	 * Retrieves a collection of objects.
 	 *
@@ -1325,6 +1471,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$body['mission'] = ! empty( $prophecy_data['missionStatement'] ) ? $prophecy_data['missionStatement'] : '';
 		$body['tone'] = ! empty( $prophecy_data['tone'] ) ? $prophecy_data['tone'] : '';
 		$body['keywords'] = ! empty( $prophecy_data['keywords'] ) ? $prophecy_data['keywords'] : '';
+		$body['lang'] = ! empty( $prophecy_data['lang'] ) ? $prophecy_data['lang'] : '';
 		switch ( $context ) {
 			case 'about':
 				$body['prompts'] = array(
@@ -1660,6 +1807,53 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 
 		return $contents;
 	}
+
+	/**
+	 * Get remote file contents.
+	 *
+	 * @access public
+	 * @return string Returns the remote URL contents.
+	 */
+	public function get_remote_library_categories( $library, $library_url, $key ) {
+		$site_url = get_original_domain();
+		$args = array(
+			'key'  => $key,
+			'site' => $site_url,
+		);
+		if ( 'templates' === $library || 'section' === $library || 'pages' === $library || 'template' === $library ) {
+			$args['api_email']  = $this->api_email;
+			$args['api_key']    = $this->api_key;
+			$args['product_id'] = $this->product_id;
+
+			if ( 'iThemes' === $this->api_email ) {
+				$args['site_url'] = $site_url;
+			}
+		}
+		if ( 'templates' === $library ) {
+			$args['request'] = 'blocks';
+		}
+		// Get the response.
+		$api_url  = add_query_arg( $args, $library_url );
+		$response = wp_safe_remote_get(
+			$api_url,
+			array(
+				'timeout' => 30,
+			)
+		);
+		// Early exit if there was an error.
+		if ( is_wp_error( $response ) || $this->is_response_code_error( $response ) ) {
+			return 'error';
+		}
+
+		// Get the CSS from our response.
+		$contents = wp_remote_retrieve_body( $response );
+		// Early exit if there was an error.
+		if ( is_wp_error( $contents ) ) {
+			return 'error';
+		}
+
+		return $contents;
+	}
 	/**
 	 * Get remote file contents.
 	 *
@@ -1897,6 +2091,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'industry' => $parameters['industry'],
 			'location' => $parameters['location'],
 			'description' => $parameters['description'],
+			'lang' => ! empty( $parameters['lang'] ) ? $parameters['lang'] : '',
 			'count' => $parameters['count'],
 		);
 		$response = wp_remote_post(
@@ -2197,22 +2392,40 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 */
 	public function check_for_local_image( $image_data ) {
 		global $wpdb;
-
-		// Thanks BrainstormForce for this idea.
-		// Check if image is already local based on meta key and custom hex value.
-		$image_id = $wpdb->get_var(
-			$wpdb->prepare(
-				'SELECT `post_id` FROM `' . $wpdb->postmeta . '`
-					WHERE `meta_key` = \'_kadence_blocks_image_hash\'
-						AND `meta_value` = %s
-				;',
-				sha1( $image_data['url'] )
-			)
-		);
-		if ( $image_id ) {
+		$image_id = '';
+		if ( ! empty( $image_data['url'] ) && strpos( $image_data['url'], get_site_url() ) !== false ) {
+			$image_id = attachment_url_to_postid( $image_data['url'] );
+			if ( empty( $image_id ) ) {
+				// Get unsized version use Regular expression to find the pattern -numberxnumber
+				$pattern = "/-\d+x\d+/";
+				// Replace the pattern with an empty string.
+				$cleaned_url = preg_replace( $pattern, '', $image_data['url'] );
+				if ( $cleaned_url !== $image_data['url'] ) {
+					$image_id = attachment_url_to_postid( $cleaned_url );
+					if ( empty( $image_id ) ) {
+						$scaled_url = preg_replace( $pattern, '-scaled', $image_data['url'] );
+						$image_id = attachment_url_to_postid( $scaled_url );
+					}
+				}
+			}
+		}
+		if ( empty( $image_id ) ) {
+			// Thanks BrainstormForce for this idea.
+			// Check if image is already local based on meta key and custom hex value.
+			$image_id = $wpdb->get_var(
+				$wpdb->prepare(
+					'SELECT `post_id` FROM `' . $wpdb->postmeta . '`
+						WHERE `meta_key` = \'_kadence_blocks_image_hash\'
+							AND `meta_value` = %s
+					;',
+					sha1( $image_data['url'] )
+				)
+			);
+		}
+		if ( ! empty( $image_id ) ) {
 			$local_image = array(
 				'id'  => $image_id,
-				'url' => wp_get_attachment_url( $image_id ),
+				'url' => ( ! empty( $image_data['url'] ) && strpos( $image_data['url'], get_site_url() ) !== false ) ? $image_data['url'] : wp_get_attachment_url( $image_id ),
 			);
 			return array(
 				'status' => true,
@@ -2233,10 +2446,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( empty( $link ) ) {
 			return false;
 		}
-		if ( strpos( $link, 'prophecyimg.fly.dev' ) !== false ) {
-			return true;
-		}
-		if ( strpos( $link, 'images.pexels.com' ) !== false ) {
+		if ( strpos( $link, 'https://images.pexels.com' ) !== false ) {
 			return true;
 		}
 		return preg_match( '/^((https?:\/\/)|(www\.))([a-z0-9-].?)+(:[0-9]+)?\/[\w\-]+\.(jpg|png|gif|webp|jpeg)\/?$/i', $link );

@@ -14,6 +14,7 @@ export function keywordsHelper() {
 		entity_type,
 		industry,
 		location,
+		lang,
 		description,
 	}) {
 		try {
@@ -26,6 +27,7 @@ export function keywordsHelper() {
 					industry,
 					location,
 					description,
+					lang: lang ? lang : "en-US",
 					count: 10,
 				},
 			});

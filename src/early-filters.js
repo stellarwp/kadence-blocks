@@ -38,6 +38,11 @@ export function blockMetadataAttribute( settings ) {
 				if ( context === 'list-view' && get( metadata, 'name', '' ) !== '' ) {
 					return metadata.name;
 				} else if ( undefined !== contentLabel && get( attributes, contentLabel ) !== '' ) {
+					// Accordion pane block is stored as an array, doing this instead of deprecation on parent accordion.
+					if( get( settings, 'name' ) === 'kadence/pane' && get( attributes, contentLabel ) instanceof Array ) {
+						return convertArrayTitleToString( get( attributes, contentLabel ) );
+					}
+
 					return get( attributes, contentLabel );
 				}
 			};
@@ -45,6 +50,20 @@ export function blockMetadataAttribute( settings ) {
 	}
 
 	return settings;
+}
+
+function convertArrayTitleToString(arr) {
+	let result = '';
+
+	arr.forEach(item => {
+		if (typeof item === 'string') {
+			result += item;
+		} else if (item.props && item.props.children) {
+			result += convertArrayTitleToString(item.props.children);
+		}
+	});
+
+	return result;
 }
 
 addFilter( 'blocks.registerBlockType', 'kadence/block-label', blockMetadataAttribute );
