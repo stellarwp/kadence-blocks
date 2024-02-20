@@ -3,6 +3,7 @@
 	"description": "Kadence Blocks - Gutenberg Blocks for Page Building",
 	"type": "wordpress-plugin",
 	"homepage": "https://www.kadencewp.com",
+	"license": "GPL-2.0-or-later",
 	"config": {
 		"preferred-install": "dist",
 		"sort-packages": true,
