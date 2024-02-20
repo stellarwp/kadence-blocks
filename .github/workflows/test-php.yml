@@ -63,7 +63,7 @@ jobs:
           sed -i -e 's/WP_VERSION=""/WP_VERSION="nightly"/g' tests/codeception.env
 
       - name: Start project containers
-        run: docker-compose -f docker-compose.yml up -d
+        run: ./bin/test-up.sh
 
       - name: Wait for project to be ready
         run: ./bin/wait-for-it.sh http://localhost:7253
