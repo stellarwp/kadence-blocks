@@ -35,8 +35,6 @@ services:
       - ${DB_PORT}:3306
     environment:
       MYSQL_DATABASE: wp
-      MYSQL_USER: wp
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: password
     tmpfs:
       - /var/lib/mysql
