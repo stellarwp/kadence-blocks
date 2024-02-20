@@ -13,7 +13,7 @@ services:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_NAME: wp
       WORDPRESS_DB_USER: root
-      WORDPRESS_DB_PASSWORD: pass
+      WORDPRESS_DB_PASSWORD: password
       WORDPRESS_SKIP_INSTALL: 'yes'
       WORDPRESS_DEBUG: 1
     volumes:
@@ -26,7 +26,7 @@ services:
     image: mariadb:10.7.8
     restart: always
     healthcheck: # The `wp` db should exist.
-      test: mysqlshow -u root -proot wp
+      test: mysqlshow -u root -ppassword wp
       start_period: 5s
       interval: 1s
       timeout: 3s
@@ -36,7 +36,7 @@ services:
     environment:
       MYSQL_DATABASE: wp
       MYSQL_USER: wp
-      MYSQL_PASSWORD: pass
+      MYSQL_PASSWORD: password
       MYSQL_ROOT_PASSWORD: root
     tmpfs:
       - /var/lib/mysql
