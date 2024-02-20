@@ -5,6 +5,10 @@
 		"npm run build",
 		"composer wp"
 	],
+	"build_ci": [
+		"npm install --legacy-peer-deps",
+		"npm run build"
+	],
 	"build_dev": [
 		"composer install --no-dev",
 		"npm install --legacy-peer-deps",
