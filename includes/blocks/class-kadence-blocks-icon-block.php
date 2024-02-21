@@ -92,21 +92,6 @@ class Kadence_Blocks_Icon_Block extends Kadence_Blocks_Abstract_Block {
 		if( isset($attributes['wrapIcons'] ) && $attributes['wrapIcons'] ) {
 			$css->add_property('flex-wrap', 'wrap');
 		}
-		if( isset($attributes['wrapIconsTablet'] ) && $attributes['wrapIconsTablet'] ) {
-			$css->set_media_state('tablet');
-			$css->add_property('flex-wrap', 'wrap');
-		} else {
-			$css->set_media_state('tablet');
-			$css->add_property('flex-wrap', 'nowrap');
-		}
-		if( isset($attributes['wrapIconsMobile'] ) && $attributes['wrapIconsMobile'] ) {
-			$css->set_media_state('mobile');
-			$css->add_property('flex-wrap', 'wrap');
-		} else {
-			$css->set_media_state('mobile');
-			$css->add_property('flex-wrap', 'nowrap');
-		}
-		$css->set_media_state('desktop');
 		$css->render_gap( $attributes );
 
 		return $css->css_output();

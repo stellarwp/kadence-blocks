@@ -61,7 +61,7 @@ import {
 
 function KadenceIcons( props ) {
 	const { attributes, className, setAttributes, iconsBlock, insertIcon, insertIcons, clientId, context } = props;
-	const { inQueryBlock, icons, blockAlignment, textAlignment, tabletTextAlignment, mobileTextAlignment, wrapIcons, wrapIconsTablet, wrapIconsMobile, uniqueID, verticalAlignment, gap, gapUnit } = attributes;
+	const { inQueryBlock, icons, blockAlignment, textAlignment, tabletTextAlignment, mobileTextAlignment, wrapIcons, uniqueID, verticalAlignment, gap, gapUnit } = attributes;
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
@@ -120,13 +120,12 @@ function KadenceIcons( props ) {
 	const previewGap = getPreviewSize( previewDevice, ( undefined !== gap?.[0] ? gap[0] : '' ), ( undefined !== gap?.[1] ? gap[1] : '' ), ( undefined !== gap?.[2] ? gap[2] : '' ) );
 	const previewVerticalAlignment = verticalAlignment && 'middle' === verticalAlignment ? 'center' : verticalAlignment;
 	const previewTextAlign = getPreviewSize( previewDevice, ( textAlignment ? textAlignment : undefined ), ( undefined !== tabletTextAlignment && tabletTextAlignment ? tabletTextAlignment : undefined ), ( undefined !== mobileTextAlignment && mobileTextAlignment ? mobileTextAlignment : undefined ) );
-	const previewIconWrap = getPreviewSize( previewDevice, undefined !== wrapIcons ? wrapIcons : false, undefined !== wrapIconsTablet ? wrapIconsTablet : false, undefined !== wrapIconsMobile ? wrapIconsMobile : false );
 	const innerClasses = classnames( {
 		'kt-svg-icons': true,
 		[ `kt-svg-icons-${ uniqueID }` ]: uniqueID,
 		[ `kb-icon-halign-${ previewTextAlign }` ]: previewTextAlign,
 		[ `kb-icon-valign-${ previewVerticalAlignment }` ]: previewVerticalAlignment,
-		[ `kb-icon-wrap` ]: previewIconWrap,
+		[ `kb-icon-wrap` ]: wrapIcons,
 	} );
 	const innerBlocksProps = useInnerBlocksProps(
 		{
@@ -209,23 +208,8 @@ function KadenceIcons( props ) {
 						/>
 						<ToggleControl
 							label={__( 'Wrap Icons?', 'kadence-blocks' )}
-							checked={ previewIconWrap }
-							onChange={( value ) => {
-									switch( previewDevice ) {
-										case 'Desktop':
-											setAttributes( { wrapIcons: value } )
-											break;
-										case 'Tablet':
-											setAttributes( { wrapIconsTablet: value } )
-											break;
-										case 'Mobile':
-											setAttributes( { wrapIconsMobile: value } )
-											break;
-										default:
-											break;
-									}
-								}
-							}
+							checked={ wrapIcons }
+							onChange={ ( value ) => { setAttributes( { wrapIcons: value } ) } }
 						/>
 						{ undefined !==iconsBlock?.innerBlocks?.length &&iconsBlock.innerBlocks.length > 1 && (
 							<ResponsiveGapSizeControl
