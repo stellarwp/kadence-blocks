@@ -17,6 +17,7 @@ module.exports = {
 		'helpers': './src/packages/helpers/src/index.js',
 		'blocks-navigation': './src/blocks/navigation/index.js',
 		'blocks-navigation-link': './src/blocks/navigation-link/index.js',
+		'blocks-header': './src/blocks/header/index.js',
 		'blocks-googlemaps': './src/blocks/googlemaps/block.js',
 		'blocks-lottie': './src/blocks/lottie/index.js',
 		'blocks-image': './src/blocks/image/index.js',

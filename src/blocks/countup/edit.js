@@ -52,7 +52,6 @@ function KadenceCounterUp( props ) {
 	const {
 		clientId,
 		attributes,
-		className,
 		isSelected,
 		setAttributes
 	} = props;
@@ -62,8 +61,6 @@ function KadenceCounterUp( props ) {
 		title,
 		start,
 		end,
-		startDecimal,
-		endDecimal,
 		prefix,
 		suffix,
 		duration,
@@ -119,7 +116,7 @@ function KadenceCounterUp( props ) {
 		setBlockDefaults( 'kadence/countup', attributes);
 
 		const postOrFseId = getPostOrFseId( props, parentData );
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
+		const uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
 		if ( uniqueId !== uniqueID ) {
 			attributes.uniqueID = uniqueId;
 			setAttributes( { uniqueID: uniqueId } );
@@ -187,8 +184,8 @@ function KadenceCounterUp( props ) {
 						<CopyPasteAttributes
 						attributes={ attributes }
 						excludedAttrs={ ['start', 'end', 'endDecimal', 'title', 'suffix', 'prefix'] }
-						defaultAttributes={ metadata['attributes'] }
-						blockSlug={ metadata['name'] }
+						defaultAttributes={ metadata.attributes }
+						blockSlug={ metadata.name }
 						onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 						/>
 					</BlockControls>
@@ -280,7 +277,7 @@ function KadenceCounterUp( props ) {
 							className={'kb-count-up-title'}
 							value={title}
 							onChange={( content ) => setAttributes( { title: content } )}
-							placeholder={__( 'Type Here...', 'kadence-blocks' )}
+							placeholder={__( 'Type Here…', 'kadence-blocks' )}
 							style={{
 								display: 'block',
 								fontWeight   : titleFont[ 0 ].weight,

@@ -90,6 +90,7 @@ function kadence_blocks_init() {
 	require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-testimonial-block.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-navigation-block.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-navigation-link-block.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-header-block.php';
 
 	require_once KADENCE_BLOCKS_PATH . 'includes/settings/class-kadence-blocks-settings.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-posts-rest-api.php';
@@ -103,6 +104,9 @@ function kadence_blocks_init() {
 	// Navigation
 	require_once KADENCE_BLOCKS_PATH . 'includes/navigation/kb-navigation-cpt.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/navigation/kb-navigation-rest.php';
+	// Header
+	require_once KADENCE_BLOCKS_PATH . 'includes/header/header-cpt.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/header/header-rest.php';
 
 	// SVG render.
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-svg.php';
