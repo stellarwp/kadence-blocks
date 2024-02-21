@@ -1707,14 +1707,14 @@ class Kadence_Blocks_CSS {
 		}
 		$unit = ! empty( $attributes[ $unit ] ) ? $attributes[ $unit ] : 'px';
 		if ( isset( $attributes[ $name ] ) && is_array( $attributes[ $name ] ) ) {
-			if ( ! empty( $attributes[ $name ][0] ) ) {
+			if ( isset( $attributes[ $name ][0] ) && is_numeric( $attributes[ $name ][0] ) ) {
 				$this->add_property( $property, $attributes[ $name ][0] . $unit );
 			}
-			if ( ! empty( $attributes[ $name ][1] ) ) {
+			if ( isset( $attributes[ $name ][1] ) && is_numeric( $attributes[ $name ][1] ) ){
 				$this->set_media_state( 'tablet' );
 				$this->add_property( $property, $attributes[ $name ][1] . $unit );
 			}
-			if ( ! empty( $attributes[ $name ][2] ) ) {
+			if ( isset( $attributes[ $name ][2] ) && is_numeric( $attributes[ $name ][2] ) ) {
 				$this->set_media_state( 'mobile' );
 				$this->add_property( $property, $attributes[ $name ][2] . $unit );
 			}

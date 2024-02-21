@@ -313,9 +313,9 @@ function KadenceIconLists( props ) {
 												label={__( 'List Vertical Spacing' )}
 												value={listGap}
 												onChange={value => setAttributes( { listGap: value } )}
-												tabletValue={( tabletListGap ? tabletListGap : '' )}
+												tabletValue={( undefined !== tabletListGap ? tabletListGap : '' )}
 												onChangeTablet={( value ) => setAttributes( { tabletListGap: value } )}
-												mobileValue={( mobileListGap ? mobileListGap : '' )}
+												mobileValue={( undefined !== mobileListGap ? mobileListGap : '' )}
 												onChangeMobile={( value ) => setAttributes( { mobileListGap: value } )}
 												min={0}
 												max={60}
