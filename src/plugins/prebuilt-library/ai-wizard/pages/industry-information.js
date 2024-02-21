@@ -23,6 +23,7 @@ import {
 import { useKadenceAi } from '../context/kadence-ai-provider';
 import {
 	ENTITY_TYPE,
+	LANG_TYPE,
 	ENTITY_TO_NAME,
 	LOCATION_TYPES,
 	LOCATION_BUSINESS_ADDRESS,
@@ -70,9 +71,10 @@ const content = __(
 
 export function IndustryInformation() {
 	const [ currentEntityType, setCurrentEntityType ] = useState( null );
+	const [ currentLanguageType, setCurrentLanguageType ] = useState( '' );
 	const [ backgroundImage, setBackgroundImage ] = useState( 0 );
 	const { state, dispatch } = useKadenceAi();
-	const { companyName, entityType, locationInput, locationType, industry } =
+	const { companyName, entityType, locationInput, lang, locationType, industry } =
 		state;
 
 	useEffect(() => {
@@ -81,7 +83,17 @@ export function IndustryInformation() {
 			setCurrentEntityType(entityObject[0]);
 		}
 	}, [entityType]);
-
+	useEffect(() => {
+		const langObject = LANG_TYPE.filter((option) => option.value === lang);
+		if (langObject.length) {
+			setCurrentLanguageType(langObject[0]);
+		} else {
+			const english = LANG_TYPE.filter((option) => option.value === 'en-US' );
+			if (english.length) {
+				setCurrentLanguageType(english[0]);
+			}
+		}
+	}, [lang]);
 	useEffect(() => {
 		switch (locationType) {
 			case LOCATION_BUSINESS_ADDRESS:
@@ -105,7 +117,9 @@ export function IndustryInformation() {
 		}
 		dispatch({ type: 'SET_INDUSTRY', payload: industry });
 	}
-
+	function handleLangChange(langType) {
+		dispatch({ type: "SET_LANG", payload: langType.value });
+	}
 	function handleEntityTypeChange(entityType) {
 		dispatch({ type: "SET_ENTITY_TYPE", payload: entityType.value });
 	}
@@ -163,6 +177,19 @@ export function IndustryInformation() {
 					style={ styles.leftContent }
 				>
 					<FlexBlock style={ styles.formWrapper } className={ 'stellarwp-body' }>
+						<FormSection
+							headline={ <span className="has-beta-pill">{__("Your Sites's Language", "kadence-blocks")} <span className="beta-pill">Beta</span></span> }
+							content={ __("Select your preferred language for AI-generated content on your site. Note: AI content quality varies by language due to available training data; English is best supported.", "kadence-blocks") }
+						>
+							<VStack spacing={ 4 } style={{ margin: '0 auto 30px' }}>
+						 		<SelectControl
+									label={ '' }
+									value={ currentLanguageType }
+									onChange={ handleLangChange }
+									options={ LANG_TYPE }
+								/>
+							</VStack>
+						</FormSection>
 						<FormSection
 							headline={ headline }
 							content={ content }

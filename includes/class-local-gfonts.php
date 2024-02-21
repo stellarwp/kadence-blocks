@@ -348,7 +348,7 @@ if ( ! class_exists( 'WebFont_Loader' ) ) {
 				$user_agent = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/73.0';
 			}
 			// Get the response.
-			$response = wp_remote_get( $this->remote_url, array( 'user-agent' => $user_agent ) );
+			$response = wp_safe_remote_get( $this->remote_url, array( 'user-agent' => $user_agent ) );
 			// Early exit if there was an error.
 			if ( is_wp_error( $response ) || 200 !== (int) wp_remote_retrieve_response_code( $response ) ) {
 				return '';

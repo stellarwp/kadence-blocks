@@ -31,6 +31,14 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 	protected $block_name = 'rowlayout';
 
 	/**
+	 * Allowed HTML tags for front end output
+	 *
+	 * @var string[]
+	 */
+	protected $allowed_html_tags = array( 'div', 'header', 'section', 'article', 'main', 'aside', 'footer' );
+
+
+	/**
 	 * Instance Control
 	 */
 	public static function get_instance() {
@@ -102,7 +110,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 					if ( ! empty( $gap ) ) {
 						$grid_layout = 'minmax(0, calc(' . $column1 . '% - ((' . $gap . ' * 1 )/2))) minmax(0, calc(' . abs( $column1 - 100 ) . '% - ((' . $gap . ' * 1 )/2)))';
 					} else {
-						$grid_layout = 'minmax(0, ' . $column1 . '%) minmax(0, ' . abs( $column1 - 100 ) . '%)';
+						$grid_layout = 'minmax(0, calc(' . $column1 . '% - ((var(--kb-default-row-gutter, var(--global-row-gutter-md, 2rem)) * 1 )/2))) minmax(0, calc(' . abs( $column1 - 100 ) . '% - ((var(--kb-default-row-gutter, var(--global-row-gutter-md, 2rem)) * 1 )/2)))';
 					}
 				} else {
 					switch ( $layout ) {
@@ -133,7 +141,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 						if ( ! empty( $gap ) ) {
 							$grid_layout = 'minmax(0, calc(' . $column1 . '% - ((' . $gap . ' * 2 )/3))) minmax(0, calc(' . $column2 . '% - ((' . $gap . ' * 2 )/3))) minmax(0, calc(' . abs( ( $column1 + $column2 ) - 100 ) . '% - ((' . $gap . ' * 2 )/3)))';
 						} else {
-							$grid_layout = 'minmax(0, ' . $column1 . '%) minmax(0, ' . $column2 . '%) minmax(0, ' . abs( ( $column1 + $column2 ) - 100 ) . '%)';
+							$grid_layout = 'minmax(0, calc(' . $column1 . '% - ((var(--kb-default-row-gutter, var(--global-row-gutter-md, 2rem)) * 2 )/3))) minmax(0, calc(' . $column2 . '% - ((var(--kb-default-row-gutter, var(--global-row-gutter-md, 2rem)) * 2 )/3))) minmax(0, calc(' . abs( ( $column1 + $column2 ) - 100 ) . '% - ((var(--kb-default-row-gutter, var(--global-row-gutter-md, 2rem)) * 2 )/3)))';
 						}
 					}
 				} else {
@@ -1475,7 +1483,8 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		if ( ! empty( $attributes['kbVersion'] ) && $attributes['kbVersion'] > 1 ) {
-			$html_tag = ( ! empty( $attributes['htmlTag'] ) ? $attributes['htmlTag'] : 'div' );
+			$html_tag = $this->get_html_tag( $attributes, 'htmlTag', 'div', $this->allowed_html_tags );
+
 			$outer_classes = array( 'kb-row-layout-wrap', 'kb-row-layout-id' . $unique_id );
 			$outer_classes[] = ! empty( $attributes['align'] ) ? 'align' . $attributes['align'] : 'alignnone';
 			if ( isset( $attributes['vsdesk'] ) && $attributes['vsdesk'] ) {

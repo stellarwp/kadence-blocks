@@ -5,7 +5,7 @@
  * Description: Advanced Page Building Blocks for Gutenberg. Create custom column layouts, backgrounds, dual buttons, icons etc.
  * Author: Kadence WP
  * Author URI: https://www.kadencewp.com
- * Version: 3.2.21
+ * Version: 3.2.23
  * Requires PHP: 7.2
  * Text Domain: kadence-blocks
  * License: GPL2+
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 define( 'KADENCE_BLOCKS_PATH', realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR );
 define( 'KADENCE_BLOCKS_URL', plugin_dir_url( __FILE__ ) );
-define( 'KADENCE_BLOCKS_VERSION', '3.2.21' );
+define( 'KADENCE_BLOCKS_VERSION', '3.2.23' );
 
 require_once plugin_dir_path( __FILE__ ) . 'vendor/vendor-prefixed/autoload.php';
 require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
@@ -29,14 +29,14 @@ use KadenceWP\KadenceBlocks\App;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\ContainerAdapter;
 use KadenceWP\KadenceBlocks\StellarWP\Telemetry\Config;
 use KadenceWP\KadenceBlocks\StellarWP\Telemetry\Core as Telemetry;
-use KadenceWP\KadenceBlocks\Container;
 use KadenceWP\KadenceBlocks\StellarWP\Uplink\Config as UplinkConfig;
-use KadenceWP\KadenceBlocks\StellarWP\Uplink\Uplink;
 use KadenceWP\KadenceBlocks\StellarWP\Uplink\Register;
+use KadenceWP\KadenceBlocks\StellarWP\Uplink\Uplink;
+
 /**
  * Add a check before redirecting
  */
-function kadence_blocks_activate() {
+function kadence_blocks_activate(): void {
 	add_option( 'kadence_blocks_redirect_on_activation', true );
 }
 register_activation_hook( __FILE__, 'kadence_blocks_activate' );
@@ -44,11 +44,11 @@ register_activation_hook( __FILE__, 'kadence_blocks_activate' );
 /**
  * Load Plugin
  */
-function kadence_blocks_init() {
-	$container = new Container();
+function kadence_blocks_init(): void {
+	$container = new ContainerAdapter( new \KadenceWP\KadenceBlocks\lucatume\DI52\Container() );
 
 	// The Kadence Blocks Application.
-	App::instance( new ContainerAdapter( $container->container() ) );
+	App::instance( $container );
 
 	require_once KADENCE_BLOCKS_PATH . 'includes/init.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/form-ajax.php';
@@ -156,7 +156,7 @@ function kadence_blocks_init() {
 	add_filter( 'stellarwp/uplink/kadence-blocks/prevent_update_check', '__return_true' );
 	add_filter(
 		'stellarwp/uplink/kadence-blocks/api_get_base_url',
-		static function() {
+		static function () {
 			return 'https://licensing.kadencewp.com';
 		},
 		10,
@@ -168,7 +168,7 @@ add_action( 'plugins_loaded', 'kadence_blocks_init', 1 );
 /**
  * Load the plugin textdomain
  */
-function kadence_blocks_lang() {
+function kadence_blocks_lang(): void {
 	load_plugin_textdomain( 'kadence-blocks', false, basename( dirname( __FILE__ ) ) . '/languages' );
 }
 add_action( 'init', 'kadence_blocks_lang' );

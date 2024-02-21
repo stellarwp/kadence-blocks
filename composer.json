@@ -1,11 +1,18 @@
 {
 	"name": "kadencewp/kadence-blocks",
+	"description": "Kadence Blocks - Gutenberg Blocks for Page Building",
 	"type": "wordpress-plugin",
 	"homepage": "https://www.kadencewp.com",
+	"license": "GPL-2.0-or-later",
 	"config": {
 		"preferred-install": "dist",
+		"sort-packages": true,
+		"optimize-autoloader": true,
 		"platform": {
 			"php": "7.2.34"
+		},
+		"allow-plugins": {
+			"composer/installers": true
 		}
 	},
 	"repositories": [
@@ -27,6 +34,7 @@
 		}
 	],
 	"require": {
+		"composer/installers": "^2.0",
 		"psr/container": "^1.0",
 		"lucatume/di52": "^3.3",
 		"stellarwp/telemetry": "^2.3",
@@ -36,9 +44,24 @@
 		"stellarwp/prophecy-storage": "^1.1",
 		"symfony/translation-contracts": "^2.5"
 	},
+	"require-dev": {
+		"lucatume/wp-browser": "^3.1.6",
+		"codeception/module-asserts": "^1.3.1",
+		"codeception/module-phpbrowser": "^1.0.3",
+		"codeception/module-webdriver": "^1.4.1",
+		"codeception/module-db": "^1.2",
+		"codeception/module-filesystem": "^1.0.3",
+		"codeception/module-cli": "^1.1.1",
+		"codeception/util-universalframework": "^1.0"
+	},
 	"autoload": {
 		"psr-4": {
 			"KadenceWP\\KadenceBlocks\\": "includes/resources"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Tests\\": "tests/"
 		}
 	},
 	"scripts": {
@@ -46,7 +69,7 @@
 			"vendor/bin/stellar-uplink domain=kadence-blocks"
 		],
 		"strauss": [
-			"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.14.1/strauss.phar",
+			"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.16.0/strauss.phar",
 			"@php bin/strauss.phar",
 			"@composer dump-autoload"
 		],
@@ -71,7 +94,7 @@
 			"classmap_prefix": "Kadence_Blocks_",
 			"constant_prefix": "KADENCE_BLOCKS_",
 			"namespace_prefix": "KadenceWP\\KadenceBlocks\\",
-			"delete_vendor_packages": true,
+			"delete_vendor_packages": false,
 			"exclude_from_prefix": {
 			  "file_patterns": [
 				  "/symfony\\/polyfill-(.*)/"

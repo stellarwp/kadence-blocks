@@ -85,7 +85,7 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 			$content .= '<div class="kt-blocks-testimonial-carousel-item kb-slide-item">';
 		}
 
-		$content .= '<div class="kt-testimonial-item-wrap kt-testimonial-item-' . $unique_id . ' ' . ( $containerVAlign ? "testimonial-valign-" . $containerVAlign : "" ) . '">';
+		$content .= '<div ' . (isset($attributes['anchor']) && !empty($attributes['anchor']) ? "id=" . $attributes['anchor'] : '') . ' class="kt-testimonial-item-wrap kt-testimonial-item-' . $unique_id . ' ' . ( $containerVAlign ? "testimonial-valign-" . $containerVAlign : "" ) . '">';
 		$content .= '<div class="kt-testimonial-text-wrap">';
 
 		if ( $displayIcon && $iconStyles[0]['icon'] && $style !== 'card' ) {

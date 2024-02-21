@@ -22,7 +22,8 @@ import {
 	setBlockDefaults,
 	getUniqueId,
 	getInQueryBlock,
-	getPostOrFseId
+	getPostOrFseId,
+    getPreviewSize
 } from '@kadence/helpers';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { PreviewIcon } from './preview-icon';
@@ -131,6 +132,8 @@ function KadenceSingleIcon( props ) {
         [ clientId ]
     );
 
+    const previewSize = getPreviewSize( previewDevice, undefined !== size ? size : undefined, undefined !== tabletSize ? tabletSize : undefined, undefined !== mobileSize ? mobileSize : undefined );
+
     useEffect( () => {
 		setBlockDefaults( 'kadence/single-icon', attributes );
 
@@ -201,7 +204,7 @@ function KadenceSingleIcon( props ) {
 
                             <ResponsiveRangeControls
                                 label={__( 'Icon Size', 'kadence-blocks' )}
-                                value={size ? size : ''}
+                                value={previewSize}
                                 onChange={value => {
                                     setAttributes( { size: value } );
                                 }}

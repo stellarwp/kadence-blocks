@@ -89,6 +89,9 @@ class Kadence_Blocks_Icon_Block extends Kadence_Blocks_Abstract_Block {
 			'mobile_key'  => 'mobileTextAlignment',
 		);
 		$css->render_flex_align( $attributes, 'textAlignment', $align_args );
+		if( isset($attributes['wrapIcons'] ) && $attributes['wrapIcons'] ) {
+			$css->add_property('flex-wrap', 'wrap');
+		}
 		$css->render_gap( $attributes );
 
 		return $css->css_output();

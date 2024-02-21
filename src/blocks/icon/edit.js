@@ -15,6 +15,7 @@ import {
 	KadenceInspectorControls,
 	ResponsiveGapSizeControl,
 } from '@kadence/components';
+import { ToggleControl } from '@wordpress/components';
 import {
 	getPreviewSize,
 	setBlockDefaults,
@@ -60,7 +61,7 @@ import {
 
 function KadenceIcons( props ) {
 	const { attributes, className, setAttributes, iconsBlock, insertIcon, insertIcons, clientId, context } = props;
-	const { inQueryBlock, icons, blockAlignment, textAlignment, tabletTextAlignment, mobileTextAlignment, uniqueID, verticalAlignment, gap, gapUnit } = attributes;
+	const { inQueryBlock, icons, blockAlignment, textAlignment, tabletTextAlignment, mobileTextAlignment, wrapIcons, uniqueID, verticalAlignment, gap, gapUnit } = attributes;
 
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
@@ -124,6 +125,7 @@ function KadenceIcons( props ) {
 		[ `kt-svg-icons-${ uniqueID }` ]: uniqueID,
 		[ `kb-icon-halign-${ previewTextAlign }` ]: previewTextAlign,
 		[ `kb-icon-valign-${ previewVerticalAlignment }` ]: previewVerticalAlignment,
+		[ `kb-icon-wrap` ]: wrapIcons,
 	} );
 	const innerBlocksProps = useInnerBlocksProps(
 		{
@@ -203,6 +205,11 @@ function KadenceIcons( props ) {
 							onChangeTablet={( nextAlign ) => setAttributes( { tabletTextAlignment: ( nextAlign ? nextAlign : '' ) } )}
 							onChangeMobile={( nextAlign ) => setAttributes( { mobileTextAlignment: ( nextAlign ? nextAlign : '' ) } )}
 							type={ 'justify' }
+						/>
+						<ToggleControl
+							label={__( 'Wrap Icons?', 'kadence-blocks' )}
+							checked={ wrapIcons }
+							onChange={ ( value ) => { setAttributes( { wrapIcons: value } ) } }
 						/>
 						{ undefined !==iconsBlock?.innerBlocks?.length &&iconsBlock.innerBlocks.length > 1 && (
 							<ResponsiveGapSizeControl

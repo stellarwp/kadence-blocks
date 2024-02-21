@@ -124,19 +124,67 @@ export function getAsyncData() {
 			const myImages = { data: [] };
 			if ( localGallery?.galleries?.[0]?.images ) {
 				const aImages = localGallery?.galleries?.[0]?.images.map( ( item, index ) => {
-					if ( item?.sizes?.[1]?.src ) {
-						return { sizes:[ { src: item.sizes[1].src } ]};
+					const img = {}
+					if ( item?.alt ) {
+						img.alt = item.alt;
 					}
-					return { sizes:[ { src: item.url } ]};
+					if ( item?.url ) {
+						img.url = item.url;
+					}
+					if ( item?.width ) {
+						img.width = item.width;
+					}
+					if ( item?.height ) {
+						img.height = item.height;
+					}
+					if ( item?.photographer ) {
+						img.photographer = item.photographer;
+					}
+					if ( item?.photographer_url ) {
+						img.photographer_url = item.photographer_url;
+					}
+					if ( item?.id ) {
+						img.id = item.id;
+					}
+					if ( item?.sizes?.[1]?.src ) {
+						img.sizes = [ { src: item.sizes[1].src } ];
+					} else {
+						img.sizes = [ { src: item.url } ];
+					}
+					return img;
 				} );
 				myImages.data.push( { images: aImages } );
 			}
 			if ( localGallery?.galleries?.[1]?.images ) {
 				const bImages = localGallery?.galleries?.[1]?.images.map( ( item, index ) => {
-					if ( item?.sizes?.[1]?.src ) {
-						return { sizes:[ { src: item.sizes[1].src } ]};
+					const img = {}
+					if ( item?.alt ) {
+						img.alt = item.alt;
 					}
-					return { sizes:[ { src: item.url } ]};
+					if ( item?.url ) {
+						img.url = item.url;
+					}
+					if ( item?.width ) {
+						img.width = item.width;
+					}
+					if ( item?.height ) {
+						img.height = item.height;
+					}
+					if ( item?.photographer ) {
+						img.photographer = item.photographer;
+					}
+					if ( item?.photographer_url ) {
+						img.photographer_url = item.photographer_url;
+					}
+					if ( item?.id ) {
+						img.id = item.id;
+					}
+					if ( item?.sizes?.[1]?.src ) {
+						img.sizes = [ { src: item.sizes[1].src } ];
+					} else {
+						img.sizes = [ { src: item.url } ];
+					}
+					return img;
 				} );
 				myImages.data.push( { images: bImages } );
 			}
@@ -369,6 +417,31 @@ export function getAsyncData() {
 	 *
 	 * @return {Promise<object>} Promise returns object
 	 */
+	async function getPatternCategories( library, reload, library_url = null, key = null ) {
+		try {
+			const response = await apiFetch( {
+				path: addQueryArgs( '/kb-design-library/v1/get_library_categories', {
+					force_reload: reload,
+					library: library,
+					library_url: library_url ? library_url : '',
+					key: key ? key : library,
+				} ),
+			} );
+			return response;
+		} catch (error) {
+			const message = error?.message ? error.message : error;
+			console.log(`ERROR: ${ message }`);
+			return 'failed';
+		}
+	}
+
+	/**
+	 * Get library data.
+	 *
+	 * @param {(object)} userData
+	 *
+	 * @return {Promise<object>} Promise returns object
+	 */
 	async function getPattern( library, type, item_id, style, library_url = null, key = null ) {
 		try {
 			const response = await apiFetch( {
@@ -417,14 +490,15 @@ export function getAsyncData() {
 	 *
 	 * @return {Promise<object>} Promise returns object
 	 */
-	async function processPattern( content, imageCollection ) {
+	async function processPattern( content, imageCollection = '', forms = '' ) {
 		try {
 			const response = await apiFetch( {
-				path: '/kb-design-library/v1/process_pattern',
+				path: '/kb-design-library/v1/process_pattern', 
 				method: 'POST',
 				data: {
 					content: content,
 					image_library: imageCollection,
+					forms: forms,
 				},
 			} );
 			return response;
@@ -444,6 +518,7 @@ export function getAsyncData() {
 		getAIWizardData,
 		getCollectionByIndustry,
 		getPatterns,
+		getPatternCategories,
 		getPattern,
 		processPattern,
 		getLocalAIContexts,

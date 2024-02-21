@@ -74,6 +74,7 @@ export function TheDetails() {
 		suggestedKeywords,
 		suggestedKeywordsState,
 		tone,
+		lang,
 		imageSearchQuery,
 	} = state;
 	const [keywordsLengthError, setKeywordsLengthError] = useState(null);
@@ -147,6 +148,7 @@ export function TheDetails() {
 			entity_type: entityType,
 			industry,
 			location,
+			lang,
 			description: missionStatement,
 		})
 			.then((response) => {

@@ -244,6 +244,7 @@ export default function KadenceButtonEdit( props ) {
 		mobileIconPadding,
 		iconPaddingUnit,
 		onlyIcon,
+		onlyText,
 		iconColor,
 		iconColorHover,
 		label,
@@ -445,6 +446,7 @@ export default function KadenceButtonEdit( props ) {
 	const previewAlign = getPreviewSize( previewDevice, ( undefined !== btnsBlock?.[0]?.attributes?.hAlign ? btnsBlock?.[0]?.attributes?.hAlign : '' ), ( undefined !== btnsBlock?.[0]?.attributes?.thAlign ? btnsBlock?.[0]?.attributes?.thAlign : '' ), ( undefined !== btnsBlock?.[0]?.attributes?.mhAlign ? btnsBlock?.[0]?.attributes?.mhAlign : '' ) );
 	const previewVertical = getPreviewSize( previewDevice, ( undefined !== btnsBlock?.[0]?.attributes?.vAlign ? btnsBlock?.[0]?.attributes?.vAlign : '' ), ( undefined !== btnsBlock?.[0]?.attributes?.tvAlign ? btnsBlock?.[0]?.attributes?.tvAlign : '' ), ( undefined !== btnsBlock?.[0]?.attributes?.mvAlign ? btnsBlock?.[0]?.attributes?.mvAlign : '' ) );
 	const previewOnlyIcon = getPreviewSize( previewDevice, ( undefined !== onlyIcon?.[0] ? onlyIcon[0] : '' ), ( undefined !== onlyIcon?.[1] ? onlyIcon[1] : undefined ), ( undefined !== onlyIcon?.[2] ? onlyIcon[2] : undefined ) );
+	const previewOnlyText = getPreviewSize( previewDevice, false, ( undefined !== onlyText?.[0] ? onlyText[0] : undefined ), ( undefined !== onlyText?.[1] ? onlyText[1] : undefined ) );
 	let btnbg;
 	// let btnGrad;
 	// let btnGrad2;
@@ -466,9 +468,10 @@ export default function KadenceButtonEdit( props ) {
 		[ `kt-button-${uniqueID}` ]  : true,
 		[ `kb-btn-global-${inheritStyles}` ] : inheritStyles,
 		'wp-block-button__link'              : inheritStyles && 'inherit' === inheritStyles,
-		[ `kb-btn-has-icon` ]                : icon,
+		[ `kb-btn-has-icon` ]                : (undefined !== previewOnlyText && previewOnlyText ? false : icon),
 		[ `kt-btn-svg-show-${( !iconHover ? 'always' : 'hover' )}` ]   : icon,
 		[ `kb-btn-only-icon` ]               : previewOnlyIcon,
+		[ `kb-btn-only-text` ]               : previewOnlyText,
 		[ `kt-btn-size-${( sizePreset ? sizePreset : 'standard' )}` ]  : true,
 		[ `kb-btn-underline-${textUnderline}` ] : textUnderline,
 		[`${className}`]                  : className,
@@ -980,37 +983,47 @@ export default function KadenceButtonEdit( props ) {
 												}}
 											/>}
 											tabletChildren={<SelectControl
-												value={( undefined !== onlyIcon?.[1] && onlyIcon[1] ? 'true' : ( undefined !== onlyIcon?.[1] && false === onlyIcon[1] ? 'false' : '' ) )}
+												value={( undefined !== onlyText?.[0] && onlyText[0] ? 'text' : ( undefined !== onlyIcon?.[1] && onlyIcon[1] ? 'true' : ( undefined !== onlyIcon?.[1] && false === onlyIcon[1] ? 'false' : '' ) ) )}
 												options={[
 													{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
 													{ value: 'false', label: __( 'Show Icon and Text', 'kadence-blocks' ) },
 													{ value: 'true', label: __( 'Show Only Icon', 'kadence-blocks' ) },
+													{ value: 'text', label: __( 'Show Only Text', 'kadence-blocks' ) },
 												]}
 												onChange={value => {
-													let newValue = value;
-													if ( value === 'true' ) {
-														newValue = true;
-													} else if ( value === 'false' ) {
-														newValue = false;
+													if('text' !== value) {
+														let newValue = value;
+														if ( value === 'true' ) {
+															newValue = true;
+														} else if ( value === 'false' ) {
+															newValue = false;
+														}
+														setAttributes( { onlyIcon: [ ( undefined !== onlyIcon?.[0] ? onlyIcon[0] : '' ), newValue, ( undefined !== onlyIcon?.[2] ? onlyIcon[2] : '' ) ], onlyText: [ ( undefined !== onlyText?.[0] ? false : '' ), ( undefined !== onlyText?.[1] ? onlyText[1] : '' ) ] } );
+													} else {
+														setAttributes( { onlyText: [ ( undefined !== onlyText?.[0] ? true : '' ), ( undefined !== onlyText?.[1] ? onlyText[1] : '' ) ], onlyIcon: [ ( undefined !== onlyIcon?.[0] ? onlyIcon[0] : '' ), false, ( undefined !== onlyIcon?.[2] ? onlyIcon[2] : '' ) ] } );
 													}
-													setAttributes( { onlyIcon: [ ( undefined !== onlyIcon?.[0] ? onlyIcon[0] : '' ), newValue, ( undefined !== onlyIcon?.[2] ? onlyIcon[2] : '' ) ] } );
 												}}
 											/>}
 											mobileChildren={<SelectControl
-												value={( undefined !== onlyIcon?.[2] && onlyIcon[2] ? 'true' : ( undefined !== onlyIcon?.[2] && false === onlyIcon[2] ? 'false' : '' ) )}
+												value={( undefined !== onlyText?.[1] && onlyText[1] ? 'text' : ( undefined !== onlyIcon?.[2] && onlyIcon[2] ? 'true' : ( undefined !== onlyIcon?.[2] && false === onlyIcon[2] ? 'false' : '' ) ) )}
 												options={[
 													{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
 													{ value: 'false', label: __( 'Show Icon and Text', 'kadence-blocks' ) },
 													{ value: 'true', label: __( 'Show Only Icon', 'kadence-blocks' ) },
+													{ value: 'text', label: __( 'Show Only Text', 'kadence-blocks' ) },
 												]}
 												onChange={value => {
-													let newValue = value;
-													if ( value === 'true' ) {
-														newValue = true;
-													} else if ( value === 'false' ) {
-														newValue = false;
+													if('text' !== value) {
+														let newValue = value;
+														if ( value === 'true' ) {
+															newValue = true;
+														} else if ( value === 'false' ) {
+															newValue = false;
+														}
+														setAttributes( { onlyIcon: [ ( undefined !== onlyIcon?.[0] ? onlyIcon[0] : '' ), ( undefined !== onlyIcon?.[1] ? onlyIcon[1] : '' ), newValue ], onlyText: [ ( undefined !== onlyText?.[0] ? onlyText?.[0] : '' ), ( undefined !== onlyText?.[1] ? false : '' ) ] } );
+													} else {
+														setAttributes( { onlyText: [ ( undefined !== onlyText?.[0] ? onlyText?.[0] : '' ), ( undefined !== onlyText?.[1] ? true : '' ) ], onlyIcon: [ ( undefined !== onlyIcon?.[0] ? onlyIcon[0] : '' ), ( undefined !== onlyIcon?.[1] ? onlyIcon[1] : '' ), false] } );
 													}
-													setAttributes( { onlyIcon: [ ( undefined !== onlyIcon?.[0] ? onlyIcon[0] : '' ), ( undefined !== onlyIcon?.[1] ? onlyIcon[1] : '' ), newValue ] } );
 												}}
 											/>}
 										/>
