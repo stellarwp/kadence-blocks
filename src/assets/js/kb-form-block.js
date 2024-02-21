@@ -60,7 +60,7 @@
 				el.classList.add( 'kb-form-error-msg' );
 				el.classList.add( 'kadence-blocks-form-warning' );
 				el.setAttribute( 'role', 'alert' );
-				el.innerHTML = error_string;
+				el.innerHTML = window.kadenceForm.strip_tags( error_string, '<div><a><b><i><u><p><ol><ul>' );
 				if ( item.classList.contains( 'kb-checkbox-style' ) ) {
 					item.parentNode.append( el );
 				} else {
@@ -72,6 +72,18 @@
 			}
 			window.kadenceForm.error_item ++;
 		},
+		strip_tags( input, allowed ) {			
+			allowed = (((allowed || '') + '')
+			.toLowerCase()
+			.match(/<[a-z][a-z0-9]*>/g) || [])
+			.join(''); // making sure the allowed arg is a string containing only tags in lowercase (<a><b><c>)
+			var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+			commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
+			return input.replace(commentsAndPhpTags, '')
+			.replace(tags, function($0, $1) {
+			  return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
+			});
+		},
 		addErrorNotice( form ) {
 			var error_message = form.getAttribute('data-error-message');
 			if ( ! error_message || '' === error_message || undefined === error_message ) {
@@ -80,7 +92,7 @@
 			var el = document.createElement('div');
 			el.classList.add( 'kadence-blocks-form-message' );
 			el.classList.add( 'kadence-blocks-form-warning' );
-			el.innerHTML = error_message;
+			el.innerHTML = window.kadenceForm.strip_tags( error_message, '<div><a><b><i><u><p><ol><ul>' );
 			window.kadenceForm.insertAfter( el, form );
 		},
 		isValidEmail( email ) {
@@ -295,7 +307,7 @@
 		},
 		createElementFromHTML( htmlString ) {
 			var div = document.createElement('div');
-			div.innerHTML = htmlString;
+			div.innerHTML = window.kadenceForm.strip_tags( htmlString, '<div><a><b><i><u><p><ol><ul>' );
 
 			// Change this to div.childNodes to support multiple top-level nodes
 			return div.firstChild;

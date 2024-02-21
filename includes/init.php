@@ -250,7 +250,8 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 	$current_user     = wp_get_current_user();
 	$user_email       = $current_user->user_email;
 	$recent_posts     = wp_get_recent_posts( array( 'numberposts' => '1' ) );
-	$products          = get_posts( array( 'numberposts' => 4, 'post_type' => 'product', 'fields' => 'ids' ) );
+	$products         = get_posts( array( 'numberposts' => 4, 'post_type' => 'product', 'fields' => 'ids' ) );
+	$prophecy_data    = json_decode( get_option( 'kadence_blocks_prophecy' ), true );
 	wp_localize_script(
 		'kadence-blocks-js',
 		'kadence_blocks_params',
@@ -322,6 +323,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'addProductsLink' => ( class_exists( 'woocommerce' ) ? admin_url( 'product-new.php' ) : 'https://wordpress.org/plugins/woocommerce/' ),
 			'hasKadenceCaptcha' => ( is_plugin_active( 'kadence-recaptcha/kadence-recaptcha.php' ) ? true : false ),
 			'adminUrl' => get_admin_url(),
+			'aiLang' => ( ! empty( $prophecy_data['lang'] ) ? $prophecy_data['lang'] : '' ),
 		)
 	);
 	wp_localize_script(

@@ -806,6 +806,10 @@
 	"kbVersion": {
 		"type": "number",
 		"default": ""
+	},
+	"anchor": {
+		"type": "string",
+		"default": ""
 	}
   },
   "usesContext": [

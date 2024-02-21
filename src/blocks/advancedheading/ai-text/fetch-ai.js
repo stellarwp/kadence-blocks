@@ -36,6 +36,7 @@ export function getAIContentHelper() {
 				product_slug: window?.kadence_blocks_params?.pSlug ? window.kadence_blocks_params.pSlug : '',
 				product_version: window?.kadence_blocks_params?.pVersion ? window.kadence_blocks_params.pVersion : '',
 			};
+			const lang = window?.kadence_blocks_params?.aiLang ? window.kadence_blocks_params.aiLang : 'en-US';
 			const response = await fetch(
 				`${API_URL}proxy/generate/content`,
 				{
@@ -46,6 +47,7 @@ export function getAIContentHelper() {
 					},
 					body: JSON.stringify({
 						prompt: prompt,
+						lang: lang,
 						stream: true,
 					}),
 				}
@@ -77,6 +79,13 @@ export function getAIContentHelper() {
 				product_slug: window?.kadence_blocks_params?.pSlug ? window.kadence_blocks_params.pSlug : '',
 				product_version: window?.kadence_blocks_params?.pVersion ? window.kadence_blocks_params.pVersion : '',
 			};
+			const body = {
+				text: content,
+				stream: true,
+			};
+			if ( type === 'improve' || type === 'simplify' ) {
+				body.lang = window?.kadence_blocks_params?.aiLang ? window.kadence_blocks_params.aiLang : 'en-US';
+			}
 			const response = await fetch(
 				`${API_URL}proxy/transform/${type}`,
 				{
@@ -85,10 +94,7 @@ export function getAIContentHelper() {
 						"Content-Type": "application/json",
 						"X-Prophecy-Token": btoa(JSON.stringify(token)),
 					},
-					body: JSON.stringify({
-						text: content,
-						stream: true,
-					}),
+					body: JSON.stringify(body),
 				}
 			);
 			if (!(response?.status === 200)) {
@@ -124,6 +130,7 @@ export function getAIContentHelper() {
 			};
 			if ( type === 'tone' ) {
 				body.tone = prompt;
+				body.lang = window?.kadence_blocks_params?.aiLang ? window.kadence_blocks_params.aiLang : 'en-US';
 			} else {
 				body.prompt = prompt;
 			}

@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.2
 Tested up to: 6.4
-Stable tag: 3.2.21
+Stable tag: 3.2.23
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -97,10 +97,22 @@ developers of this plugin.
 
 == Changelog ==
 
+= 3.2.23 =
+Release Date: February 16th 2024
+* Add: "only text" responsive option when using an icon in Advanced button.
+* Add: New language selection for AI wizard.
+* Update: Pattern import to handle advanced forms.
+* Fix: Responsive font sizes on text in infobox.
+* Fix: Ability to set icon size to 0 on tablet and mobile in icon block.
+* Fix: setting anchor tags on testimonial and testimonials blocks.
+
 = 3.2.22 =
-Release Date: February TBD, 2024
+Release Date: February 12th, 2024
 * Add: Option to set image size for backgrounds.
 * Fix: Accordion block inside Advanced Query Loops.
+* Fix: Issue with custom column widths and default gutter.
+* Fix: Issue with flex wrap inheriting to tablet and mobile.
+* Fix: Issue with some html rendered in the success/failed message of forms.
 
 = 3.2.21 =
 Release Date: February 3nd, 2024

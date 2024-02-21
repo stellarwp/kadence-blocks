@@ -111,6 +111,104 @@ export const ENTITY_TYPE = [
 		label: __("An Organization", "kadence-blocks"),
 	},
 ];
+export const LANG_TYPE = [
+	{
+		value: 'da-DK',
+		label: __("Danish (Denmark)", "kadence-starter-templates"),
+	},
+	{
+		value: 'nl-BE',
+		label: __("Dutch (Belgium)", "kadence-starter-templates"),
+	},
+	{
+		value: 'nl-N',
+		label: __("Dutch (Netherlands)", "kadence-starter-templates"),
+	},
+	{
+		value: 'en-AU',
+		label: __("English (Australia)", "kadence-starter-templates"),
+	},
+	{
+		value: 'en-CA',
+		label: __("English (Canada)", "kadence-starter-templates"),
+	},
+	{
+		value: 'en-IN',
+		label: __("English (India)", "kadence-starter-templates"),
+	},
+	{
+		value: 'en-NZ',
+		label: __("English (New Zealand)", "kadence-starter-templates"),
+	},
+	{
+		value: 'en-GB',
+		label: __("English (UK)", "kadence-starter-templates"),
+	},
+	{
+		value: 'en-US',
+		label: __("English (US)", "kadence-starter-templates"),
+	},
+	{
+		value: 'fr-BE',
+		label: __("French (Belgium)", "kadence-starter-templates"),
+	},
+	{
+		value: 'fr-CA',
+		label: __("French (Canada)", "kadence-starter-templates"),
+	},
+	{
+		value: 'fr-FR',
+		label: __("French (France)", "kadence-starter-templates"),
+	},
+	{
+		value: 'de-AT',
+		label: __("German (Austria)", "kadence-starter-templates"),
+	},
+	{
+		value: 'de-BE',
+		label: __("German (Belgium)", "kadence-starter-templates"),
+	},
+	{
+		value: 'de-DE',
+		label: __("German (Germany)", "kadence-starter-templates"),
+	},
+	{
+		value: 'de-CH',
+		label: __("German (Switzerland)", "kadence-starter-templates"),
+	},
+	{
+		value: 'it-IT',
+		label: __("Italian (Italy)", "kadence-starter-templates"),
+	},
+	{
+		value: 'pt-BR',
+		label: __("Portuguese (Brazil)", "kadence-starter-templates"),
+	},
+	{
+		value: 'pt-PT',
+		label: __("Portuguese (Portugal)", "kadence-starter-templates"),
+	},
+	{
+		value: 'es-AR',
+		label: __("Spanish (Argentina)", "kadence-starter-templates"),
+	},
+	{
+		value: 'es-CO',
+		label: __("Spanish (Colombia)", "kadence-starter-templates"),
+	},
+	{
+		value: 'es-419',
+		label: __("Spanish (Latin America)", "kadence-starter-templates"),
+	},
+	{
+		value: 'es-MX',
+		label: __("Spanish (Mexico)", "kadence-starter-templates"),
+	},
+	{
+		value: 'es-ES',
+		label: __("Spanish (Spain)", "kadence-starter-templates"),
+	},
+];
 
 export const ENTITY_TO_NAME = {
 	COMPANY: {

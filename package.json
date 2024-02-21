@@ -11,7 +11,7 @@
     "build-gulp": "gulp build",
     "build": "wp-scripts build && gulp build",
     "build:custom": "wp-scripts build --webpack-bundle-analyzer",
-    "lint:js": "wp-scripts lint-js",
+    "lint-js": "wp-scripts lint-js",
     "format": "wp-scripts format"
   },
   "dependencies": {

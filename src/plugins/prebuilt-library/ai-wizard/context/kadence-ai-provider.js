@@ -35,6 +35,7 @@ const initialState = {
 	suggestedKeywords: [],
 	suggestedKeywordsState: "",
 	imageSearchQuery: "",
+	lang: "",
 };
 
 const KadenceAiContext = createContext();
@@ -50,6 +51,11 @@ function kadenceAiReducer(state, action) {
 			return {
 				...state,
 				companyName: action.payload,
+			};
+		case "SET_LANG":
+			return {
+				...state,
+				lang: action.payload,
 			};
 		case "SET_ENTITY_TYPE":
 			return {

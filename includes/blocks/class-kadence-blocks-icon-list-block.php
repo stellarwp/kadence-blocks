@@ -90,10 +90,10 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 
 		$list_gap_props = array(
 			'listGap' => array(
-				0 => ! empty( $attributes['listGap'] ) ? $attributes['listGap'] : '5',
-				1 => ! empty( $attributes['tabletListGap'] ) ? $attributes['tabletListGap'] : ( ! empty( $attributes['listGap'] ) ? $attributes['listGap'] : '' ),
-				2 => ! empty( $attributes['mobileListGap'] ) ? $attributes['mobileListGap'] : ( ! empty( $attributes['tabletListGap'] ) ? $attributes['tabletListGap'] : ( ! empty( $attributes['listGap'] ) ? $attributes['listGap'] : '' ) ),
-			),
+				0 => isset( $attributes['listGap'] ) ? $attributes['listGap'] : '5',
+				1 => isset( $attributes['tabletListGap'] ) ? $attributes['tabletListGap'] : '',
+				2 => isset( $attributes['mobileListGap'] ) ? $attributes['mobileListGap'] : '',
+			)
 		);
 
 		$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list' );

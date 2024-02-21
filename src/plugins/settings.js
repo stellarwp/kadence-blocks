@@ -29,7 +29,7 @@ function KadenceSetting( props ) {
     const saveConfig = (key, value) => {
 
         setIsSaving(true);
-		console.log('saveConfig', key, value);
+		// console.log('saveConfig', key, value);
         const config = (kadence_blocks_params.globalSettings ? JSON.parse(kadence_blocks_params.globalSettings) : {});
 		config[key] = value;
         const settingModel = new wp.api.models.Settings({kadence_blocks_settings: JSON.stringify(config)});
