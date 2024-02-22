@@ -1,4 +1,4 @@
-const { parallel, series } = require('gulp');
+const { parallel } = require('gulp');
 
 const jsTasks = require('./gulp/tasks/js');
 const stylesTasks = require('./gulp/tasks/styles');

@@ -11,8 +11,8 @@ import { assign, get } from 'lodash';
 /**
  * Add animation attributes
  *
- * @param {array} settings The block settings.
- * @returns {array} The block settings with animation added.
+ * @param {Array} settings The block settings.
+ * @return {Array} The block settings with animation added.
  */
 export function blockMetadataAttribute( settings ) {
 
