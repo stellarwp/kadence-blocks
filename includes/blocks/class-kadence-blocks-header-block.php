@@ -127,9 +127,10 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 //		$nav_attributes = json_decode( json_encode( $nav_attributes ), true );
 
 		$name = ! empty( $attributes['name'] ) ? $attributes['name'] : '';
+		$outer_classes = array( 'wp-block-kadence-header' . $unique_id );
 		$wrapper_attributes = get_block_wrapper_attributes(
 			array(
-				'class'      => 'kb-block-navigation',
+				'class'      => implode( ' ', $outer_classes ),
 				'aria-label' => $name,
 			)
 		);
