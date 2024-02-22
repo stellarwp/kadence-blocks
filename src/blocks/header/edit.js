@@ -220,7 +220,7 @@ function Chooser( { id, post, commit, postExists } ) {
 	return (
 		<SelectOrCreatePlaceholder
 			postType="kadence_header"
-			label={__( 'Advanced Heading', 'kadence-blocks' )}
+			label={__( 'Advanced Header', 'kadence-blocks' )}
 			instructions={__( 'Select an existing header or create a new one.', 'kadence-blocks' )}
 			placeholder={__( 'Select header', 'kadence-blocks' )}
 			onSelect={commit}

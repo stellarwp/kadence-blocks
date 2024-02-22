@@ -41,6 +41,15 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	protected $has_style = false;
 
 	/**
+	 * Instance of this class
+	 *
+	 * @var null
+	 */
+	private static $seen_refs = array();
+
+	protected $nav_attributes = array();
+
+	/**
 	 * Instance Control
 	 */
 	public static function get_instance() {
@@ -77,16 +86,45 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
+		$nav_block = get_post( $attributes['id'] );
 
-		return 'WIP';
-
-		$nav_block = get_post( $attributes['ref'] );
-
-		$inner_blocks = static::get_inner_blocks( $attributes, $block_instance );
-		// Prevent navigation blocks referencing themselves from rendering.
-		if ( block_core_navigation_block_contains_core_navigation( $inner_blocks ) ) {
-			return '-- Failed here --';
+		if ( ! $nav_block || 'kadence_header' !== $nav_block->post_type ) {
+			return '';
 		}
+
+		if ( 'publish' !== $nav_block->post_status || ! empty( $nav_block->post_password ) ) {
+			return '';
+		}
+
+		// Prevent a nav block from being rendered inside itself.
+		if ( isset( self::$seen_refs[ $attributes['id'] ] ) ) {
+			// WP_DEBUG_DISPLAY must only be honored when WP_DEBUG. This precedent
+			// is set in `wp_debug_mode()`.
+			$is_debug = WP_DEBUG && WP_DEBUG_DISPLAY;
+
+			return $is_debug ?
+				// translators: Visible only in the front end, this warning takes the place of a faulty block.
+				__( '[block rendering halted]', 'kadence-blocks' ) :
+				'';
+		}
+		self::$seen_refs[ $attributes['id'] ] = true;
+
+		// Remove the advanced nav block so it doesn't try and render.
+		$content = preg_replace( '/<!-- wp:kadence\/header {.*?} -->/', '', $nav_block->post_content );
+		$content = str_replace( '<!-- wp:kadence/header  -->', '', $content );
+		$content = str_replace( '<!-- wp:kadence/header -->', '', $content );
+		$content = str_replace( '<!-- /wp:kadence/header -->', '', $content );
+
+		// Handle embeds for nav block.
+		global $wp_embed;
+		$content = $wp_embed->run_shortcode( $content );
+		$content = $wp_embed->autoembed( $content );
+		$content = do_blocks( $content );
+
+		unset( self::$seen_refs[ $attributes['id'] ] );
+
+//		$nav_attributes = $this->get_nav_attributes( $attributes['id'] );
+//		$nav_attributes = json_decode( json_encode( $nav_attributes ), true );
 
 		$name = ! empty( $attributes['name'] ) ? $attributes['name'] : '';
 		$wrapper_attributes = get_block_wrapper_attributes(
@@ -96,8 +134,6 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 			)
 		);
 
-		$content = do_blocks( $nav_block->post_content );
-
 		return sprintf(
 			'<nav %1$s>%2$s</nav>',
 			$wrapper_attributes,
@@ -105,6 +141,34 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		);
 	}
 
+	/**
+	 * Get nav attributes.
+	 *
+	 * @param int $post_id Post ID.
+	 * @return array
+	 */
+	private function get_nav_attributes( $post_id ) {
+
+		if ( ! empty( $this->nav_attributes[ $post_id ] ) ) {
+			return $this->nav_attributes[ $post_id ];
+		}
+
+		$post_meta = get_post_meta( $post_id );
+		$nav_meta = array();
+		if ( is_array( $post_meta ) ) {
+			foreach ( $post_meta as $meta_key => $meta_value ) {
+				if ( strpos( $meta_key, '_kad_nav_' ) === 0 && isset( $meta_value[0] ) ) {
+					$nav_meta[ str_replace( '_kad_nav_', '', $meta_key ) ] = maybe_unserialize( $meta_value[0] );
+				}
+			}
+		}
+
+		if ( $this->nav_attributes[ $post_id ] = $nav_meta ) {
+			return $this->nav_attributes[ $post_id ];
+		}
+
+		return array();
+	}
 }
 
 Kadence_Blocks_Header_Block::get_instance();

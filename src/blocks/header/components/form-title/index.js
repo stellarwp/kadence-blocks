@@ -31,7 +31,7 @@ export default function FormTitle( {
 		<Placeholder
 			className="kb-select-or-create-placeholder kb-adv-form-select"
 			icon={formBlockIcon}
-			label={__( 'Advanced Heading', 'kadence-blocks' )}
+			label={__( 'Advanced Header', 'kadence-blocks' )}
 		>
 			<div className='kb-form-wizard-pagination'>
 				{ map( formSteps, ( { name, key }, index ) => (

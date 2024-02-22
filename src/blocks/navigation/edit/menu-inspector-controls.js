@@ -143,10 +143,6 @@ const MenuInspectorControls = ( props ) => {
 	} = props;
 
 	return (
-		<>Hello World</>
-	);
-
-	return (
 		<InspectorControls group="list">
 			<PanelBody title={ null }>
 				<HStack className="wp-block-navigation-off-canvas-editor__header">

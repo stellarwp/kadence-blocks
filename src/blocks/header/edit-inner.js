@@ -163,7 +163,7 @@ export function EditInner( props ) {
 
 			if ( response.id ) {
 				onChange( [ { ...newBlock, innerBlocks: [
-						createBlock( 'core/paragraph', { content: 'Hello World'} )
+						createBlock( 'kadence/column', { } )
 					] } ], clientId );
 
 				setTitle(title);

@@ -93,9 +93,17 @@ class Kadence_Blocks_Header_CPT_Controller {
 					'title',
 					'editor',
 					'revisions',
+					'custom-fields'
 				),
 			)
 		);
+	}
+
+	/**
+	 * Check that user can edit these.
+	 */
+	public function meta_auth_callback() {
+		return current_user_can( 'edit_kadence_header' );
 	}
 
 	public function register_meta() {

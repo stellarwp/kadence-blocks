@@ -16,12 +16,11 @@
 	"keywords": [ "header", "footer", "navigation" ],
 	"attributes": {
 		"uniqueID": {
-			"type": "string",
-			"default": "123321"
+			"type": "string"
 		},
 		"id": {
-			"type": "number",
-			"default": 15476
+			"type": "integer",
+			"default": 0
 		}
 	}
 }

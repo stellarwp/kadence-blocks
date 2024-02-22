@@ -714,21 +714,21 @@ function Navigation( {
 					{ __( 'Unsaved Navigation Menu.' ) }
 				</AccessibleDescription>
 
-				<MenuInspectorControls
-					clientId={ clientId }
-					createNavigationMenuIsSuccess={
-						createNavigationMenuIsSuccess
-					}
-					createNavigationMenuIsError={ createNavigationMenuIsError }
-					currentMenuId={ ref }
-					isNavigationMenuMissing={ isNavigationMenuMissing }
-					isManageMenusButtonDisabled={ isManageMenusButtonDisabled }
-					onCreateNew={ createUntitledEmptyNavigationMenu }
-					onSelectClassicMenu={ onSelectClassicMenu }
-					onSelectNavigationMenu={ onSelectNavigationMenu }
-					isLoading={ isLoading }
-					blockEditingMode={ blockEditingMode }
-				/>
+				{/*<MenuInspectorControls*/}
+				{/*	clientId={ clientId }*/}
+				{/*	createNavigationMenuIsSuccess={*/}
+				{/*		createNavigationMenuIsSuccess*/}
+				{/*	}*/}
+				{/*	createNavigationMenuIsError={ createNavigationMenuIsError }*/}
+				{/*	currentMenuId={ ref }*/}
+				{/*	isNavigationMenuMissing={ isNavigationMenuMissing }*/}
+				{/*	isManageMenusButtonDisabled={ isManageMenusButtonDisabled }*/}
+				{/*	onCreateNew={ createUntitledEmptyNavigationMenu }*/}
+				{/*	onSelectClassicMenu={ onSelectClassicMenu }*/}
+				{/*	onSelectNavigationMenu={ onSelectNavigationMenu }*/}
+				{/*	isLoading={ isLoading }*/}
+				{/*	blockEditingMode={ blockEditingMode }*/}
+				{/*/>*/}
 				{ blockEditingMode === 'default' && stylingInspectorControls }
 				<ResponsiveWrapper
 					id={ clientId }
@@ -756,21 +756,21 @@ function Navigation( {
 	if ( ref && isNavigationMenuMissing ) {
 		return (
 			<TagName { ...blockProps }>
-				<MenuInspectorControls
-					clientId={ clientId }
-					createNavigationMenuIsSuccess={
-						createNavigationMenuIsSuccess
-					}
-					createNavigationMenuIsError={ createNavigationMenuIsError }
-					currentMenuId={ ref }
-					isNavigationMenuMissing={ isNavigationMenuMissing }
-					isManageMenusButtonDisabled={ isManageMenusButtonDisabled }
-					onCreateNew={ createUntitledEmptyNavigationMenu }
-					onSelectClassicMenu={ onSelectClassicMenu }
-					onSelectNavigationMenu={ onSelectNavigationMenu }
-					isLoading={ isLoading }
-					blockEditingMode={ blockEditingMode }
-				/>
+				{/*<MenuInspectorControls*/}
+				{/*	clientId={ clientId }*/}
+				{/*	createNavigationMenuIsSuccess={*/}
+				{/*		createNavigationMenuIsSuccess*/}
+				{/*	}*/}
+				{/*	createNavigationMenuIsError={ createNavigationMenuIsError }*/}
+				{/*	currentMenuId={ ref }*/}
+				{/*	isNavigationMenuMissing={ isNavigationMenuMissing }*/}
+				{/*	isManageMenusButtonDisabled={ isManageMenusButtonDisabled }*/}
+				{/*	onCreateNew={ createUntitledEmptyNavigationMenu }*/}
+				{/*	onSelectClassicMenu={ onSelectClassicMenu }*/}
+				{/*	onSelectNavigationMenu={ onSelectNavigationMenu }*/}
+				{/*	isLoading={ isLoading }*/}
+				{/*	blockEditingMode={ blockEditingMode }*/}
+				{/*/>*/}
 				<DeletedNavigationWarning
 					onCreateNew={ createUntitledEmptyNavigationMenu }
 				/>
@@ -824,21 +824,21 @@ function Navigation( {
 	return (
 		<EntityProvider kind="postType" type="kb_navigation" id={ ref }>
 			<RecursionProvider uniqueId={ recursionId }>
-				<MenuInspectorControls
-					clientId={ clientId }
-					createNavigationMenuIsSuccess={
-						createNavigationMenuIsSuccess
-					}
-					createNavigationMenuIsError={ createNavigationMenuIsError }
-					currentMenuId={ ref }
-					isNavigationMenuMissing={ isNavigationMenuMissing }
-					isManageMenusButtonDisabled={ isManageMenusButtonDisabled }
-					onCreateNew={ createUntitledEmptyNavigationMenu }
-					onSelectClassicMenu={ onSelectClassicMenu }
-					onSelectNavigationMenu={ onSelectNavigationMenu }
-					isLoading={ isLoading }
-					blockEditingMode={ blockEditingMode }
-				/>
+				{/*<MenuInspectorControls*/}
+				{/*	clientId={ clientId }*/}
+				{/*	createNavigationMenuIsSuccess={*/}
+				{/*		createNavigationMenuIsSuccess*/}
+				{/*	}*/}
+				{/*	createNavigationMenuIsError={ createNavigationMenuIsError }*/}
+				{/*	currentMenuId={ ref }*/}
+				{/*	isNavigationMenuMissing={ isNavigationMenuMissing }*/}
+				{/*	isManageMenusButtonDisabled={ isManageMenusButtonDisabled }*/}
+				{/*	onCreateNew={ createUntitledEmptyNavigationMenu }*/}
+				{/*	onSelectClassicMenu={ onSelectClassicMenu }*/}
+				{/*	onSelectNavigationMenu={ onSelectNavigationMenu }*/}
+				{/*	isLoading={ isLoading }*/}
+				{/*	blockEditingMode={ blockEditingMode }*/}
+				{/*/>*/}
 				{ blockEditingMode === 'default' && stylingInspectorControls }
 				{ blockEditingMode === 'default' && isEntityAvailable && (
 					<InspectorControls group="advanced">
