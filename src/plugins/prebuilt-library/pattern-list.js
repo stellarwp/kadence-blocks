@@ -484,6 +484,7 @@ function PatternList( {
 	const data_key = ( window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '' );
 	async function onSelectBlockPattern( pattern ) {
 		setImporting( true );
+		const allContext = getAllContext();
 		const patternSend = {
 			id: pattern.id,
 			slug:pattern.slug,
@@ -515,6 +516,9 @@ function PatternList( {
 		} );
 
 		newInfo = replaceImages( newInfo, imageCollection, pattern.categories, pattern.id, pattern.variation, teamCollection);
+		if ( contextTab === 'context' ) {
+			newInfo = replaceContent( newInfo, allContext, pattern.categories, aiContext, pattern.variation );
+		}
 		newInfo = wooContent( newInfo );
 		if ( userData?.locationType && 'Online Only' !== userData?.locationType && userData?.locationInput ) {
 			newInfo = replaceAddressContent( newInfo, userData.locationInput );
