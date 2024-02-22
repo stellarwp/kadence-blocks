@@ -12,6 +12,13 @@ class Kadence_Blocks_Header_CPT_Controller {
 	private static $instance = null;
 
 	/**
+	 * Post type.
+	 *
+	 * @var string
+	 */
+	private $post_type = 'kadence_header';
+
+	/**
 	 * Instance Control.
 	 */
 	public static function get_instance() {
@@ -31,19 +38,12 @@ class Kadence_Blocks_Header_CPT_Controller {
 	}
 
 	/**
-	 * Registers the form post type.
+	 * Registers the header post type.
 	 */
 	public function register_post_type() {
-		$navigation_post_edit_link = 'site-editor.php?' . build_query(
-				array(
-					'postId'   => '%s',
-					'postType' => 'kadence_header',
-					'canvas'   => 'edit',
-				)
-			);
 
 		register_post_type(
-			'kadence_header',
+			$this->post_type,
 			array(
 				'labels'                => array(
 					'name'                  => _x( 'Kadence Header', 'post type general name' ),
@@ -67,8 +67,6 @@ class Kadence_Blocks_Header_CPT_Controller {
 				),
 				'description'           => __( 'Kadence Headers that can be inserted into your site.' ),
 				'public'                => false,
-				'_builtin'              => true, /* internal use only. don't use this when registering your own post type. */
-				'_edit_link'            => $navigation_post_edit_link, /* internal use only. don't use this when registering your own post type. */
 				'has_archive'           => false,
 				'show_ui'               => true,
 				'show_in_menu'          => false,
@@ -89,7 +87,7 @@ class Kadence_Blocks_Header_CPT_Controller {
 					'edit_published_posts'   => 'edit_theme_options',
 					'edit_posts'             => 'edit_theme_options',
 				),
-				'rest_base'             => 'kadence_header',
+				'rest_base'             => $this->post_type,
 				'rest_controller_class' => Kadence_Blocks_Header_CPT_Rest_Controller::class,
 				'supports'              => array(
 					'title',
@@ -101,7 +99,6 @@ class Kadence_Blocks_Header_CPT_Controller {
 	}
 
 	public function register_meta() {
-
 		$register_meta = array(
 			array(
 				'key'     => '_kad_header_anchor',
@@ -117,7 +114,7 @@ class Kadence_Blocks_Header_CPT_Controller {
 
 		foreach ( $register_meta as $meta ) {
 
-			if ( $meta['type'] === 'string' ) {
+			if ( 'string' === $meta['type'] ) {
 				$show_in_rest = true;
 			} elseif ( $meta['type'] === 'array' ) {
 				$show_in_rest = array(
@@ -148,7 +145,7 @@ class Kadence_Blocks_Header_CPT_Controller {
 			}
 
 			register_post_meta(
-				'kadence_form',
+				$this->post_type,
 				$meta['key'],
 				array(
 					'single'        => true,
