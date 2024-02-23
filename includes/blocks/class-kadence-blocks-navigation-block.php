@@ -41,27 +41,13 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 	protected $has_style = false;
 
 	/**
-	 * Used to determine whether or not a navigation has submenus.
-	 */
-	private static $has_submenus = false;
-
-	/**
-	 * Used to determine which blocks need an <li> wrapper.
+	 * Instance of this class
 	 *
-	 * @var array
+	 * @var null
 	 */
-	private static $needs_list_item_wrapper = array(
-		'core/site-title',
-		'core/site-logo',
-	);
+	private static $seen_refs = array();
 
-	/**
-	 * Keeps track of all the navigation names that have been seen.
-	 *
-	 * @var array
-	 */
-	private static $seen_menu_names = array();
-
+	protected $navigation_attributes = array();
 	/**
 	 * Instance Control
 	 */
@@ -99,24 +85,54 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
+		$nav_block = get_post( $attributes['id'] );
 
-		$nav_block = get_post( $attributes['ref'] );
-
-		$inner_blocks = static::get_inner_blocks( $attributes, $block_instance );
-		// Prevent navigation blocks referencing themselves from rendering.
-		if ( block_core_navigation_block_contains_core_navigation( $inner_blocks ) ) {
-			return '-- Failed here --';
+		if ( ! $nav_block || 'kadence_navigation' !== $nav_block->post_type ) {
+			return '';
 		}
 
+		if ( 'publish' !== $nav_block->post_status || ! empty( $nav_block->post_password ) ) {
+			return '';
+		}
+
+		// Prevent a nav block from being rendered inside itself.
+		if ( isset( self::$seen_refs[ $attributes['id'] ] ) ) {
+			// WP_DEBUG_DISPLAY must only be honored when WP_DEBUG. This precedent
+			// is set in `wp_debug_mode()`.
+			$is_debug = WP_DEBUG && WP_DEBUG_DISPLAY;
+
+			return $is_debug ?
+				// translators: Visible only in the front end, this warning takes the place of a faulty block.
+				__( '[block rendering halted]', 'kadence-blocks' ) :
+				'';
+		}
+		self::$seen_refs[ $attributes['id'] ] = true;
+
+		// Remove the advanced nav block so it doesn't try and render.
+		$content = preg_replace( '/<!-- wp:kadence\/navigation {.*?} -->/', '', $nav_block->post_content );
+		$content = str_replace( '<!-- wp:kadence/navigation  -->', '', $content );
+		$content = str_replace( '<!-- wp:kadence/navigation -->', '', $content );
+		$content = str_replace( '<!-- /wp:kadence/navigation -->', '', $content );
+
+		// Handle embeds for nav block.
+		global $wp_embed;
+		$content = $wp_embed->run_shortcode( $content );
+		$content = $wp_embed->autoembed( $content );
+		$content = do_blocks( $content );
+
+		unset( self::$seen_refs[ $attributes['id'] ] );
+
+//		$navigation_attributes = $this->get_nav_attributes( $attributes['id'] );
+//		$navigation_attributes = json_decode( json_encode( $nav_attributes ), true );
+
 		$name = ! empty( $attributes['name'] ) ? $attributes['name'] : '';
+		$outer_classes = array( 'wp-block-kadence-header' . $unique_id );
 		$wrapper_attributes = get_block_wrapper_attributes(
 			array(
-				'class'      => 'kb-block-navigation',
+				'class'      => implode( ' ', $outer_classes ),
 				'aria-label' => $name,
 			)
 		);
-
-		$content = do_blocks( $nav_block->post_content );
 
 		return sprintf(
 			'<nav %1$s>%2$s</nav>',
@@ -126,101 +142,32 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 	}
 
 	/**
-	 * Gets the inner blocks for the navigation block from the navigation post.
+	 * Get Navigation attributes.
 	 *
-	 * @param array $attributes The block attributes.
-	 *
-	 * @return WP_Block_List Returns the inner blocks for the navigation block.
+	 * @param int $post_id Post ID.
+	 * @return array
 	 */
-	private static function get_inner_blocks_from_navigation_post( $attributes ) {
-		$navigation_post = get_post( $attributes['ref'] );
-		if ( ! isset( $navigation_post ) ) {
-			return new WP_Block_List( array(), $attributes );
+	private function get_navigation_attributes( $post_id ) {
+
+		if ( ! empty( $this->navigation_attributes[ $post_id ] ) ) {
+			return $this->navigation_attributes[ $post_id ];
 		}
 
-		// Only published posts are valid. If this is changed then a corresponding change
-		// must also be implemented in `use-navigation-menu.js`.
-		if ( 'publish' === $navigation_post->post_status ) {
-			$parsed_blocks = parse_blocks( $navigation_post->post_content );
-
-			// 'parse_blocks' includes a null block with '\n\n' as the content when
-			// it encounters whitespace. This code strips it.
-			$blocks = block_core_navigation_filter_out_empty_blocks( $parsed_blocks );
-
-			if ( function_exists( 'get_hooked_block_markup' ) ) {
-				// Run Block Hooks algorithm to inject hooked blocks.
-				$markup         = block_core_navigation_insert_hooked_blocks( $blocks, $navigation_post );
-				$root_nav_block = parse_blocks( $markup )[0];
-
-				$blocks = isset( $root_nav_block['innerBlocks'] ) ? $root_nav_block['innerBlocks'] : $blocks;
+		$post_meta = get_post_meta( $post_id );
+		$nav_meta = array();
+		if ( is_array( $post_meta ) ) {
+			foreach ( $post_meta as $meta_key => $meta_value ) {
+				if ( strpos( $meta_key, '_kad_navigation_' ) === 0 && isset( $meta_value[0] ) ) {
+					$nav_meta[ str_replace( '_kad_navigation_', '', $meta_key ) ] = maybe_unserialize( $meta_value[0] );
+				}
 			}
-
-			// TODO - this uses the full navigation block attributes for the
-			// context which could be refined.
-			return new WP_Block_List( $blocks, $attributes );
-		}
-	}
-
-	/**
-	 * Gets the inner blocks for the navigation block from the fallback.
-	 *
-	 * @param array $attributes The block attributes.
-	 *
-	 * @return WP_Block_List Returns the inner blocks for the navigation block.
-	 */
-	private static function get_inner_blocks_from_fallback( $attributes ) {
-		$fallback_blocks = block_core_navigation_get_fallback_blocks();
-
-		// Fallback my have been filtered so do basic test for validity.
-		if ( empty( $fallback_blocks ) || ! is_array( $fallback_blocks ) ) {
-			return new WP_Block_List( array(), $attributes );
 		}
 
-		return new WP_Block_List( $fallback_blocks, $attributes );
-	}
-
-	/**
-	 * Gets the inner blocks for the navigation block.
-	 *
-	 * @param array    $attributes The block attributes.
-	 * @param WP_Block $block      The parsed block.
-	 *
-	 * @return WP_Block_List Returns the inner blocks for the navigation block.
-	 */
-	private static function get_inner_blocks( $attributes, $block ) {
-		$inner_blocks = $block->inner_blocks;
-
-		// Load inner blocks from the navigation post.
-		if ( array_key_exists( 'ref', $attributes ) ) {
-			$inner_blocks = static::get_inner_blocks_from_navigation_post( $attributes );
+		if ( $this->navigation_attributes[ $post_id ] = $nav_meta ) {
+			return $this->navigation_attributes[ $post_id ];
 		}
 
-		// If there are no inner blocks then fallback to rendering an appropriate fallback.
-		if ( empty( $inner_blocks ) ) {
-			$inner_blocks = static::get_inner_blocks_from_fallback( $attributes );
-		}
-
-		$post_ids = block_core_navigation_get_post_ids( $inner_blocks );
-		if ( $post_ids ) {
-			_prime_post_caches( $post_ids, false, false );
-		}
-
-		return $inner_blocks;
-	}
-
-
-	/**
-	 * Returns the markup for the navigation block.
-	 *
-	 * @param array         $attributes   The block attributes.
-	 * @param WP_Block_List $inner_blocks The list of inner blocks.
-	 *
-	 * @return string Returns the navigation wrapper markup.
-	 */
-	private static function get_wrapper_markup( $attributes, $inner_blocks ) {
-		$inner_blocks_html = static::get_inner_blocks_html( $attributes, $inner_blocks );
-
-		return $inner_blocks_html;
+		return array();
 	}
 
 }

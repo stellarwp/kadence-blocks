@@ -6,10 +6,6 @@ import { store as coreStore } from '@wordpress/core-data';
 import { useDispatch } from '@wordpress/data';
 import { useState, useCallback } from '@wordpress/element';
 
-/**
- * Internal dependencies
- */
-import useGenerateDefaultNavigationTitle from './use-generate-default-navigation-title';
 
 export const CREATE_NAVIGATION_MENU_SUCCESS = 'success';
 export const CREATE_NAVIGATION_MENU_ERROR = 'error';
@@ -22,7 +18,7 @@ export default function useCreateNavigationMenu( clientId ) {
 	const [ error, setError ] = useState( null );
 
 	const { saveEntityRecord, editEntityRecord } = useDispatch( coreStore );
-	const generateDefaultTitle = useGenerateDefaultNavigationTitle( clientId );
+	const generateDefaultTitle = 'Preset title change me';
 
 	// This callback uses data from the two placeholder steps and only creates
 	// a new navigation menu when the user completes the final step.
@@ -64,7 +60,7 @@ export default function useCreateNavigationMenu( clientId ) {
 			};
 
 			// Return affords ability to await on this function directly
-			return saveEntityRecord( 'postType', 'kb_navigation', record )
+			return saveEntityRecord( 'postType', 'kadence_navigation', record )
 				.then( ( response ) => {
 					setValue( response );
 					setStatus( CREATE_NAVIGATION_MENU_SUCCESS );
@@ -74,7 +70,7 @@ export default function useCreateNavigationMenu( clientId ) {
 					if ( postStatus !== 'publish' ) {
 						editEntityRecord(
 							'postType',
-							'kb_navigation',
+							'kadence_navigation',
 							response.id,
 							{ status: 'publish' }
 						);

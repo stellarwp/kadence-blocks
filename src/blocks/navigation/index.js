@@ -15,7 +15,7 @@ import metadata from './block.json';
 
 registerBlockType( 'kadence/navigation', {
 	...metadata,
-	title: _x( 'KB NAV', 'block title', 'kadence-blocks' ),
+	title: _x( 'Navigation (Adv)', 'block title', 'kadence-blocks' ),
 	icon: {
 		src: icon,
 	},

@@ -47,7 +47,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	private static $seen_refs = array();
 
-	protected $nav_attributes = array();
+	protected $header_attributes = array();
 
 	/**
 	 * Instance Control
@@ -86,13 +86,13 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		$nav_block = get_post( $attributes['id'] );
+		$header_block = get_post( $attributes['id'] );
 
-		if ( ! $nav_block || 'kadence_header' !== $nav_block->post_type ) {
+		if ( ! $header_block || 'kadence_header' !== $header_block->post_type ) {
 			return '';
 		}
 
-		if ( 'publish' !== $nav_block->post_status || ! empty( $nav_block->post_password ) ) {
+		if ( 'publish' !== $header_block->post_status || ! empty( $header_block->post_password ) ) {
 			return '';
 		}
 
@@ -110,7 +110,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		self::$seen_refs[ $attributes['id'] ] = true;
 
 		// Remove the advanced nav block so it doesn't try and render.
-		$content = preg_replace( '/<!-- wp:kadence\/header {.*?} -->/', '', $nav_block->post_content );
+		$content = preg_replace( '/<!-- wp:kadence\/header {.*?} -->/', '', $header_block->post_content );
 		$content = str_replace( '<!-- wp:kadence/header  -->', '', $content );
 		$content = str_replace( '<!-- wp:kadence/header -->', '', $content );
 		$content = str_replace( '<!-- /wp:kadence/header -->', '', $content );
@@ -123,8 +123,8 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 
 		unset( self::$seen_refs[ $attributes['id'] ] );
 
-//		$nav_attributes = $this->get_nav_attributes( $attributes['id'] );
-//		$nav_attributes = json_decode( json_encode( $nav_attributes ), true );
+//		$header_attributes = $this->get_header_attributes( $attributes['id'] );
+//		$header_attributes = json_decode( json_encode( $header_attributes ), true );
 
 		$name = ! empty( $attributes['name'] ) ? $attributes['name'] : '';
 		$outer_classes = array( 'wp-block-kadence-header' . $unique_id );
@@ -143,29 +143,29 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	}
 
 	/**
-	 * Get nav attributes.
+	 * Get header attributes.
 	 *
 	 * @param int $post_id Post ID.
 	 * @return array
 	 */
-	private function get_nav_attributes( $post_id ) {
+	private function get_header_attributes( $post_id ) {
 
-		if ( ! empty( $this->nav_attributes[ $post_id ] ) ) {
-			return $this->nav_attributes[ $post_id ];
+		if ( ! empty( $this->header_attributes[ $post_id ] ) ) {
+			return $this->header_attributes[ $post_id ];
 		}
 
 		$post_meta = get_post_meta( $post_id );
 		$nav_meta = array();
 		if ( is_array( $post_meta ) ) {
 			foreach ( $post_meta as $meta_key => $meta_value ) {
-				if ( strpos( $meta_key, '_kad_nav_' ) === 0 && isset( $meta_value[0] ) ) {
-					$nav_meta[ str_replace( '_kad_nav_', '', $meta_key ) ] = maybe_unserialize( $meta_value[0] );
+				if ( strpos( $meta_key, '_kad_header_' ) === 0 && isset( $meta_value[0] ) ) {
+					$nav_meta[ str_replace( '_kad_header_', '', $meta_key ) ] = maybe_unserialize( $meta_value[0] );
 				}
 			}
 		}
 
-		if ( $this->nav_attributes[ $post_id ] = $nav_meta ) {
-			return $this->nav_attributes[ $post_id ];
+		if ( $this->header_attributes[ $post_id ] = $nav_meta ) {
+			return $this->header_attributes[ $post_id ];
 		}
 
 		return array();

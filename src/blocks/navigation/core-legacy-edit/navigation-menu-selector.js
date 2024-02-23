@@ -65,7 +65,7 @@ function NavigationMenuSelector( {
 
 	const [ currentTitle ] = useEntityProp(
 		'postType',
-		'kb_navigation',
+		'kadence_navigation',
 		'title'
 	);
 

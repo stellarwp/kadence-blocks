@@ -43,7 +43,7 @@ import { useMergeRefs } from '@wordpress/compose';
  */
 import { LinkUI } from './link-ui';
 import { updateAttributes } from './update-attributes';
-import { getColors } from '../navigation/edit/utils';
+import { getColors } from '../navigation/core-legacy-edit/utils';
 
 const DEFAULT_BLOCK = { name: 'kadence/navigation-link' };
 

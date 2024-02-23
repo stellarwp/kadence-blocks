@@ -4,6 +4,7 @@
  */
 class Kadence_Blocks_Navigation_CPT_Controller {
 
+	private $post_type = 'kadence_navigation';
 	/**
 	 * Instance Control
 	 *
@@ -35,13 +36,13 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 		$navigation_post_edit_link = 'site-editor.php?' . build_query(
 				array(
 					'postId'   => '%s',
-					'postType' => 'kb_navigation',
+					'postType' => $this->post_type,
 					'canvas'   => 'edit',
 				)
 			);
 
 		register_post_type(
-			'kb_navigation',
+			$this->post_type,
 			array(
 				'labels'                => array(
 					'name'                  => _x( 'Kadence Navigation Menus', 'post type general name' ),
@@ -87,15 +88,84 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 					'edit_published_posts'   => 'edit_theme_options',
 					'edit_posts'             => 'edit_theme_options',
 				),
-				'rest_base'             => 'kb_navigation',
-				'rest_controller_class' => 'WP_REST_Posts_Controller',
+				'rest_base'             => $this->post_type,
+				'rest_controller_class' => Kadence_Blocks_Navigation_CPT_Rest_Controller::class,
 				'supports'              => array(
 					'title',
 					'editor',
 					'revisions',
+					'custom-fields'
 				),
 			)
 		);
+	}
+
+	/**
+	 * Check that user can edit these.
+	 */
+	public function meta_auth_callback() {
+		return current_user_can( 'edit_kadence_navigation' );
+	}
+
+	public function register_meta() {
+		$register_meta = array(
+			array(
+				'key'     => '_kad_navigation_anchor',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_navigation_className',
+				'default' => '',
+				'type'    => 'string'
+			),
+		);
+
+		foreach ( $register_meta as $meta ) {
+
+			if ( 'string' === $meta['type'] ) {
+				$show_in_rest = true;
+			} elseif ( $meta['type'] === 'array' ) {
+				$show_in_rest = array(
+					'schema' => array(
+						'type'  => $meta['type'],
+						'items' => array(
+							'type' => $meta['children_type']
+						),
+					),
+				);
+
+				if( !empty( $meta['properties']) ) {
+					$show_in_rest = array_merge_recursive( $show_in_rest, array(
+						'schema' => array(
+							'items' => array(
+								'properties' => $meta['properties']
+							)
+						)
+					) );
+				}
+			} elseif ( $meta['type'] === 'object' ) {
+				$show_in_rest = array(
+					'schema' => array(
+						'type'       => $meta['type'],
+						'properties' => $meta['properties']
+					),
+				);
+			}
+
+			register_post_meta(
+				$this->post_type,
+				$meta['key'],
+				array(
+					'single'        => true,
+					'auth_callback' => array( $this, 'meta_auth_callback' ),
+					'type'          => $meta['type'],
+					'default'       => $meta['default'],
+					'show_in_rest'  => $show_in_rest,
+				)
+			);
+		}
+
 	}
 }
 

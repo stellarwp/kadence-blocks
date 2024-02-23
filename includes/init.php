@@ -1082,10 +1082,6 @@ function kadence_blocks_register_api_endpoints() {
 	$lottieanimation_controller_get->register_routes();
 	$lottieanimation_controller_upload = new Kadence_LottieAnimation_post_REST_Controller();
 	$lottieanimation_controller_upload->register_routes();
-
-	$advanced_nav_rest_controller = new WP_REST_KB_Navigation_Fallback_Controller();
-	$advanced_nav_rest_controller->register_routes();
-
 	$design_library_controller_upload = new Kadence_Blocks_Prebuilt_Library_REST_Controller();
 	$design_library_controller_upload->register_routes();
 	$image_picker_controller_upload = new Kadence_Blocks_Image_Picker_REST_Controller();

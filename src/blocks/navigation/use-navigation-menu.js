@@ -14,7 +14,7 @@ import { useSelect } from '@wordpress/data';
 import { PRELOADED_NAVIGATION_MENUS_QUERY } from './constants';
 
 export default function useNavigationMenu( ref ) {
-	const permissions = useResourcePermissions( 'kb_navigation', ref );
+	const permissions = useResourcePermissions( 'kadence_navigation', ref );
 
 	const { canCreate, canUpdate, canDelete, isResolving, hasResolved } = permissions;
 
@@ -37,7 +37,7 @@ export default function useNavigationMenu( ref ) {
 		hasResolved: hasResolvedNavigationMenus,
 	} = useEntityRecords(
 		'postType',
-		`kb_navigation`,
+		`kadence_navigation`,
 		PRELOADED_NAVIGATION_MENUS_QUERY
 	);
 
@@ -73,7 +73,7 @@ function selectExistingMenu( select, ref ) {
 
 	const { getEntityRecord, getEditedEntityRecord, hasFinishedResolution } =
 		select( coreStore );
-	const args = [ 'postType', 'kb_navigation', ref ];
+	const args = [ 'postType', 'kadence_navigation', ref ];
 	const navigationMenu = getEntityRecord( ...args );
 	const editedNavigationMenu = getEditedEntityRecord( ...args );
 	const hasResolvedNavigationMenu = hasFinishedResolution(

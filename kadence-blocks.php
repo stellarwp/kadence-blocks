@@ -102,11 +102,11 @@ function kadence_blocks_init(): void {
 	// Advanced Form.
 	require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/advanced-form-init.php';
 	// Navigation
-	require_once KADENCE_BLOCKS_PATH . 'includes/navigation/kb-navigation-cpt.php';
-	require_once KADENCE_BLOCKS_PATH . 'includes/navigation/kb-navigation-rest.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/navigation/class-kadence-navigation-cpt.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/navigation/class-kadence-navigation-rest.php';
 	// Header
-	require_once KADENCE_BLOCKS_PATH . 'includes/header/header-cpt.php';
-	require_once KADENCE_BLOCKS_PATH . 'includes/header/header-rest.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/header/class-kadence-header-cpt.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/header/class-kadence-header-rest.php';
 
 	// SVG render.
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-svg.php';

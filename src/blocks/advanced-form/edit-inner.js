@@ -3,11 +3,6 @@
  */
 
 /**
- * Import Css
- */
-import './editor.scss';
-
-/**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';

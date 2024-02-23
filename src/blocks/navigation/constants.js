@@ -3,8 +3,8 @@ export const DEFAULT_BLOCK = {
 };
 
 export const ALLOWED_BLOCKS = [
-	'core/navigation-link',
 	'kadence/navigation-link',
+	'core/navigation-link',
 	'core/search',
 	'core/social-links',
 	'core/page-list',
@@ -18,9 +18,9 @@ export const ALLOWED_BLOCKS = [
 ];
 
 export const PRIORITIZED_INSERTER_BLOCKS = [
-	'core/navigation-link/page',
-	'core/navigation-link',
 	'kadence/navigation-link',
+	// 'core/navigation-link/page',
+	// 'core/navigation-link',
 ];
 
 // These parameters must be kept aligned with those in
@@ -36,6 +36,6 @@ export const PRELOADED_NAVIGATION_MENUS_QUERY = {
 
 export const SELECT_NAVIGATION_MENUS_ARGS = [
 	'postType',
-	'kb_navigation',
+	'kadence_navigation',
 	PRELOADED_NAVIGATION_MENUS_QUERY,
 ];

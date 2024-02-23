@@ -1,5 +1,5 @@
 /**
- * BLOCK: Kadence Advanced Heading
+ * BLOCK: Kadence Advanced Navigation
  */
 
 
@@ -55,7 +55,11 @@ import {
  */
 import classnames from 'classnames';
 import { useEntityPublish } from './hooks';
-
+import {
+	DEFAULT_BLOCK,
+	ALLOWED_BLOCKS,
+	PRIORITIZED_INSERTER_BLOCKS,
+} from './constants';
 /**
  * Regular expression matching invalid anchor characters for replacement.
  *
@@ -90,23 +94,23 @@ export function EditInner( props ) {
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
 
-	// const [ padding ] = useHeaderMeta( '_kad_header_padding' );
-	// const [ tabletPadding ] = useHeaderMeta( '_kad_header_tabletPadding' );
-	// const [ mobilePadding ] = useHeaderMeta( '_kad_header_mobilePadding' );
-	// const [ paddingUnit ] = useHeaderMeta( '_kad_header_paddingUnit' );
+	// const [ padding ] = useNavigationMeta( '_kad_navigation_padding' );
+	// const [ tabletPadding ] = useNavigationMeta( '_kad_navigation_tabletPadding' );
+	// const [ mobilePadding ] = useNavigationMeta( '_kad_navigation_mobilePadding' );
+	// const [ paddingUnit ] = useNavigationMeta( '_kad_navigation_paddingUnit' );
 	//
-	// const [ margin ] = useHeaderMeta( '_kad_header_margin' );
-	// const [ tabletMargin ] = useHeaderMeta( '_kad_header_tabletMargin' );
-	// const [ mobileMargin ] = useHeaderMeta( '_kad_header_mobileMargin' );
-	// const [ marginUnit ] = useHeaderMeta( '_kad_header_marginUnit' );
+	// const [ margin ] = useNavigationMeta( '_kad_navigation_margin' );
+	// const [ tabletMargin ] = useNavigationMeta( '_kad_navigation_tabletMargin' );
+	// const [ mobileMargin ] = useNavigationMeta( '_kad_navigation_mobileMargin' );
+	// const [ marginUnit ] = useNavigationMeta( '_kad_navigation_marginUnit' );
 
-	const [ className ] = useHeaderMeta( '_kad_header_className' );
-	const [ anchor ] = useHeaderMeta( '_kad_header_anchor' );
+	const [ className ] = useNavigationMeta( '_kad_navigation_className' );
+	const [ anchor ] = useNavigationMeta( '_kad_navigation_anchor' );
 
-	const [ meta, setMeta ] = useHeaderProp( 'meta' );
+	const [ meta, setMeta ] = useNavigationProp( 'meta' );
 
 	const setMetaAttribute = ( value, key ) => {
-		setMeta( { ...meta, ['_kad_header_' + key]: value } );
+		setMeta( { ...meta, ['_kad_navigation_' + key]: value } );
 	};
 
 	// const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 0 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 0 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 0 ] : '' ) );
@@ -119,32 +123,32 @@ export function EditInner( props ) {
 	// const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== padding ? padding[ 2 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 2 ] : '' ) );
 	// const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== padding ? padding[ 3 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 3 ] : '' ) );
 
-	const headerClasses = classnames( {
-		'kb-header'          : true,
-		[ `kb-header-${id}` ]: true,
-		[ `kb-header${uniqueID}` ]: uniqueID,
+	const formClasses = classnames( {
+		'kb-navigation'          : true,
+		[ `kb-navigation-${id}` ]: true,
+		[ `kb-navigation${uniqueID}` ]: uniqueID,
 	} );
 
-	const [ title, setTitle ] = useHeaderProp( 'title' );
+	const [ title, setTitle ] = useNavigationProp( 'title' );
 
 	let [ blocks, onInput, onChange ] = useEntityBlockEditor(
 		'postType',
-		'kadence_header',
+		'kadence_navigation',
 		id,
 	);
 	const {
 		updateBlockAttributes
 	} = useDispatch( editorStore );
 
-	const emptyHeader = useMemo( () => {
-		return [ createBlock( 'kadence/column', {} ) ];
+	const emptyNavigation = useMemo( () => {
+		return [ createBlock( 'kadence/navigation', {} ) ];
 	}, [ clientId ] );
 
 	if( blocks.length === 0 ) {
-		blocks = emptyHeader;
+		blocks = emptyNavigation;
 	}
 
-	const headerInnerBlocks = useMemo( () => {
+	const navigationInnerBlocks = useMemo( () => {
 		return get( blocks, [ 0, 'innerBlocks' ], [] );
 	}, [ blocks ] );
 
@@ -152,23 +156,23 @@ export function EditInner( props ) {
 		return get( blocks, [ 0 ], {} );
 	}, [ blocks ] );
 
-	const [ isAdding, addNew ] = useEntityPublish( 'kadence_header', id );
+	const [ isAdding, addNew ] = useEntityPublish( 'kadence_navigation', id );
 	const onAdd = async( title, template, initialDescription ) => {
 		try {
 			const response = await addNew();
 
 			if ( response.id ) {
 				onChange( [ { ...newBlock, innerBlocks: [
-						createBlock( 'kadence/column', { } )
+						createBlock( 'kadence/navigation-link', { } )
 					] } ], clientId );
 
 				setTitle(title);
 
 				const updatedMeta = meta;
-				updatedMeta._kad_header_description = initialDescription;
+				updatedMeta._kad_navigation_description = initialDescription;
 
 				setMeta( { ...meta, updatedMeta } );
-				await wp.data.dispatch( 'core' ).saveEditedEntityRecord( 'postType', 'kadence_header', id );
+				await wp.data.dispatch( 'core' ).saveEditedEntityRecord( 'postType', 'kadence_navigation', id );
 			}
 		} catch ( error ) {
 			console.error( error );
@@ -177,7 +181,7 @@ export function EditInner( props ) {
 
 	const innerBlocksProps = useInnerBlocksProps(
 		{
-			className: headerClasses,
+			className: formClasses,
 			style: {
 				// marginTop   : ( '' !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginUnit ) : undefined ),
 				// marginRight : ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginUnit ) : undefined ),
@@ -191,16 +195,18 @@ export function EditInner( props ) {
 			}
 		},
 		{
-			// allowedBlocks: ALLOWED_BLOCKS,
-			value: ! direct ? headerInnerBlocks : undefined,
+			allowedBlocks: ALLOWED_BLOCKS,
+			prioritizedInserterBlocks: PRIORITIZED_INSERTER_BLOCKS,
+			value: ! direct ? navigationInnerBlocks : undefined,
 			onInput: ! direct ? ( a, b ) => onInput( [ { ...newBlock, innerBlocks: a } ], b ) : undefined,
 			onChange: ! direct ? ( a, b ) => onChange( [ { ...newBlock, innerBlocks: a } ], b ) : undefined,
 			templateLock: false,
-			// renderAppender: headerInnerBlocks.length === 0 ? useFieldBlockAppenderBase : useFieldBlockAppender
+			defaultBlock: DEFAULT_BLOCK,
+			// renderAppender: navigationInnerBlocks.length === 0 ? useFieldBlockAppenderBase : useFieldBlockAppender
 		}
 	);
 
-	if ( headerInnerBlocks.length === 0 ) {
+	if ( navigationInnerBlocks.length === 0 ) {
 		return (
 			<>
 				<FormTitle
@@ -226,7 +232,7 @@ export function EditInner( props ) {
 					label={__( 'Kadence Heading', 'kadence-blocks' )}
 					icon={ formBlockIcon }
 				>
-					<p style={{ width: '100%', marginBottom:'10px'}}>{ __( 'Advanced Headers can not be edited within the widgets screen.', 'kadence-blocks' ) }</p>
+					<p style={{ width: '100%', marginBottom:'10px'}}>{ __( 'Advanced forms can not be edited within the widgets screen.', 'kadence-blocks' ) }</p>
 					<Button href={ editPostLink } variant='primary' className='kb-form-edit-link'>
 						{ __( 'Edit Form', 'kadence-blocks' ) }
 					</Button>
@@ -234,11 +240,11 @@ export function EditInner( props ) {
 				<InspectorControls>
 					<KadencePanelBody
 							panelName={'kb-advanced-form-selected-switch'}
-							title={ __( 'Selected Header', 'kadence-blocks' ) }
+							title={ __( 'Selected Form', 'kadence-blocks' ) }
 						>
 						<SelectForm
-							postType="kadence_header"
-							label={__( 'Selected Header', 'kadence-blocks' )}
+							postType="kadence_navigation"
+							label={__( 'Selected Form', 'kadence-blocks' )}
 							hideLabelFromVision={ true }
 							onChange={ ( nextId ) => {
 								setAttributes( { id: parseInt( nextId ) } )
@@ -262,7 +268,7 @@ export function EditInner( props ) {
 			<InspectorControls>
 
 				<InspectorControlTabs
-					panelName={'advanced-header'}
+					panelName={'advanced-navigation'}
 					setActiveTab={( value ) => setActiveTab( value )}
 					activeTab={activeTab}
 				/>
@@ -405,12 +411,12 @@ export function EditInner( props ) {
 }
 export default ( EditInner );
 
-function useHeaderProp( prop ) {
-	return useEntityProp( 'postType', 'kadence_header', prop );
+function useNavigationProp( prop ) {
+	return useEntityProp( 'postType', 'kadence_navigation', prop );
 }
 
-function useHeaderMeta( key ) {
-	const [ meta, setMeta ] = useHeaderProp( 'meta' );
+function useNavigationMeta( key ) {
+	const [ meta, setMeta ] = useNavigationProp( 'meta' );
 
 	return [
 		meta[ key ],

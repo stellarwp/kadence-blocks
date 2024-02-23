@@ -1,5 +1,5 @@
 /**
- * BLOCK: Kadence Advanced Header
+ * BLOCK: Kadence Advanced Navigation
  */
 
 /**
@@ -56,8 +56,8 @@ export function Edit( props ) {
 	const { id, uniqueID } = attributes;
 
 	const blockClasses = classnames( {
-		'wp-block-kadence-header'                : true,
-		[ `wp-block-kadence-header${uniqueID}` ] : uniqueID,
+		'wp-block-kadence-advanced-form'                : true,
+		[ `wp-block-kadence-advanced-form${uniqueID}` ] : uniqueID,
 	} );
 	const blockProps = useBlockProps( {
 		className: blockClasses
@@ -65,9 +65,9 @@ export function Edit( props ) {
 	const { post, postExists, isLoading, currentPostType, postId } = useSelect(
 		( select ) => {
 			return {
-				post: id && select( coreStore ).getEditedEntityRecord( 'postType', 'kadence_header', id ),
-				postExists: id && select( coreStore ).getEntityRecord( 'postType', 'kadence_header', id ),
-				isLoading: select( coreStore ).isResolving(  'getEntityRecord', [ 'postType', 'kadence_header', id  ] ),
+				post: id && select( coreStore ).getEditedEntityRecord( 'postType', 'kadence_navigation', id ),
+				postExists: id && select( coreStore ).getEntityRecord( 'postType', 'kadence_navigation', id ),
+				isLoading: select( coreStore ).isResolving(  'getEntityRecord', [ 'postType', 'kadence_navigation', id  ] ),
 				currentPostType: select( 'core/editor' )?.getCurrentPostType() ? select( 'core/editor' )?.getCurrentPostType() : '',
 				postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
 			}
@@ -111,14 +111,14 @@ export function Edit( props ) {
 		} else {
 			addUniqueID( uniqueId, clientId );
 		}
-		if ( currentPostType === 'kadence_header' ) {
+		if ( currentPostType === 'kadence_navigation' ) {
 			// Lame workaround for gutenberg to prevent showing the block Validity error.
 			window.wp.data.dispatch( 'core/block-editor' ).setTemplateValidity( true );
 		}
 	}, [] );
 
-	{/* Directly editing from via kadence_header post type */}
-	if ( currentPostType === 'kadence_header' ) {
+	{/* Directly editing from via kadence_navigation post type */}
+	if ( currentPostType === 'kadence_navigation' ) {
 		return (
 			<div {...blockProps}>
 				<EditInner {...props} direct={true} id={ postId }/>
@@ -149,11 +149,11 @@ export function Edit( props ) {
 					</Placeholder>
 					<InspectorControls>
 						<KadencePanelBody
-								panelName={'kb-advanced-form-selected-switch'}
-								title={ __( 'Selected Form', 'kadence-blocks' ) }
-							>
+							panelName={'kb-advanced-form-selected-switch'}
+							title={ __( 'Selected Form', 'kadence-blocks' ) }
+						>
 							<SelectForm
-								postType="kadence_header"
+								postType="kadence_navigation"
 								label={__( 'Selected Form', 'kadence-blocks' )}
 								hideLabelFromVision={ true }
 								onChange={ ( nextId ) => {
@@ -177,11 +177,11 @@ export function Edit( props ) {
 					</Placeholder>
 					<InspectorControls>
 						<KadencePanelBody
-								panelName={'kb-advanced-form-selected-switch'}
-								title={ __( 'Selected Form', 'kadence-blocks' ) }
-							>
+							panelName={'kb-advanced-form-selected-switch'}
+							title={ __( 'Selected Form', 'kadence-blocks' ) }
+						>
 							<SelectForm
-								postType="kadence_header"
+								postType="kadence_navigation"
 								label={__( 'Selected Form', 'kadence-blocks' )}
 								hideLabelFromVision={ true }
 								onChange={ ( nextId ) => {
@@ -196,7 +196,7 @@ export function Edit( props ) {
 
 			{/* Form selected and loaded, display it */}
 			{id > 0 && !isEmpty( post ) && post.status !== 'trash' && (
-				<EntityProvider kind="postType" type="kadence_header" id={id}>
+				<EntityProvider kind="postType" type="kadence_navigation" id={id}>
 					<EditInner {...props} direct={false} id={id}/>
 				</EntityProvider>
 			)}
@@ -207,7 +207,7 @@ export function Edit( props ) {
 export default ( Edit );
 
 function Chooser( { id, post, commit, postExists } ) {
-	const [ isAdding, addNew ] = useEntityAutoDraft( 'kadence_header', 'kadence_header' );
+	const [ isAdding, addNew ] = useEntityAutoDraft( 'kadence_navigation', 'kadence_navigation' );
 	const onAdd = async () => {
 		try {
 			const response = await addNew();
@@ -219,10 +219,10 @@ function Chooser( { id, post, commit, postExists } ) {
 
 	return (
 		<SelectOrCreatePlaceholder
-			postType="kadence_header"
-			label={__( 'Advanced Header', 'kadence-blocks' )}
-			instructions={__( 'Select an existing header or create a new one.', 'kadence-blocks' )}
-			placeholder={__( 'Select header', 'kadence-blocks' )}
+			postType="kadence_navigation"
+			label={__( 'Advanced Navigation', 'kadence-blocks' )}
+			instructions={__( 'Select an existing navigation or create a new one.', 'kadence-blocks' )}
+			placeholder={__( 'Select navigation', 'kadence-blocks' )}
 			onSelect={commit}
 			isSelecting={id && isEmpty( post ) && undefined !== postExists}
 			onAdd={onAdd}

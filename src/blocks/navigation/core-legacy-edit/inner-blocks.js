@@ -56,7 +56,7 @@ export default function NavigationInnerBlocks( {
 
 	const [ blocks, onInput, onChange ] = useEntityBlockEditor(
 		'postType',
-		'kb_navigation'
+		'kadence_navigation'
 	);
 
 	const shouldDirectInsert = useMemo(
@@ -82,7 +82,7 @@ export default function NavigationInnerBlocks( {
 
 	const hasMenuItems = !! blocks?.length;
 
-	// If there is a `ref` attribute pointing to a `kb_navigation` but
+	// If there is a `ref` attribute pointing to a `kadence_navigation` but
 	// that menu has no **items** (i.e. empty) then show a placeholder.
 	// The block must also be selected else the placeholder will display
 	// alongside the appender.
