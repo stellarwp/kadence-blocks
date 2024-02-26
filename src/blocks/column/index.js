@@ -1,13 +1,13 @@
 /**
  * Import Icons
  */
- import { blockColumnIcon } from '@kadence/icons';
+import { blockColumnIcon } from '@kadence/icons';
 
 import { registerBlockType } from '@wordpress/blocks';
 /**
  * Import Css
  */
- import './style.scss';
+import './style.scss';
 
 /**
  * Internal dependencies
@@ -18,15 +18,11 @@ import save from './save';
 import deprecated from './deprecated';
 import { __, _x } from '@wordpress/i18n';
 
-registerBlockType( 'kadence/column', {
+registerBlockType('kadence/column', {
 	...metadata,
-	title: _x( 'Section', 'block title', 'kadence-blocks' ),
-	description: __( 'A container to style a section of content.', 'kadence-blocks' ),
-	keywords: [
-		__( 'column', 'kadence-blocks' ),
-		__( 'section', 'kadence-blocks' ),
-		'KB',
-	],
+	title: _x('Section', 'block title', 'kadence-blocks'),
+	description: __('A container to style a section of content.', 'kadence-blocks'),
+	keywords: [__('column', 'kadence-blocks'), __('section', 'kadence-blocks'), 'KB'],
 	icon: {
 		src: blockColumnIcon,
 	},
@@ -36,15 +32,15 @@ registerBlockType( 'kadence/column', {
 	example: {
 		attributes: {
 			background: '#DADADA',
-			padding: [ 30, 20, 30, 20 ],
+			padding: [30, 20, 30, 20],
 		},
 		innerBlocks: [
 			{
 				name: 'core/paragraph',
 				attributes: {
-					content: __( 'Section content', 'kadence-blocks' ),
-				}
-			}
-		]
-	}
+					content: __('Section content', 'kadence-blocks'),
+				},
+			},
+		],
+	},
 });

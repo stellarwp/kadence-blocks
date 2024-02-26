@@ -1,4 +1,4 @@
-export default function getQuery( blockAttributes, queryType ) {
+export default function getQuery(blockAttributes, queryType) {
 	const {
 		postType,
 		taxType,
@@ -14,36 +14,36 @@ export default function getQuery( blockAttributes, queryType ) {
 		postIds,
 	} = blockAttributes;
 	let theCurrentID = 0;
-	if ( wp.data.select( 'core/editor' ) ) {
-		const { getCurrentPostId } = wp.data.select( 'core/editor' );
+	if (wp.data.select('core/editor')) {
+		const { getCurrentPostId } = wp.data.select('core/editor');
 		theCurrentID = getCurrentPostId();
 	}
-	if ( null === theCurrentID ) {
+	if (null === theCurrentID) {
 		theCurrentID = 0;
 	}
 	const query = {
 		query: queryType,
 		per_page: postsToShow,
 		type: postType,
-		offset: ( offsetQuery ? offsetQuery : 0 ),
-		allow_sticky: ( allowSticky ? true : false ),
-		exclude: ( excludeTax ? excludeTax : 'include' ),
-		post_tax: ( postTax ? true : false ),
-		tax_type: ( taxType ? taxType : '' ),
-		post_id: theCurrentID
+		offset: offsetQuery ? offsetQuery : 0,
+		allow_sticky: allowSticky ? true : false,
+		exclude: excludeTax ? excludeTax : 'include',
+		post_tax: postTax ? true : false,
+		tax_type: taxType ? taxType : '',
+		post_id: theCurrentID,
 	};
-	if ( categories && categories.length ) {
-		const ids = categories.map( ( { value } ) => value );
-		query.category = ids.join( ',' );
+	if (categories && categories.length) {
+		const ids = categories.map(({ value }) => value);
+		query.category = ids.join(',');
 	}
-	if ( tags && tags.length ) {
-		const ids = tags.map( ( { value } ) => value );
-		query.tags = ids.join( ',' );
+	if (tags && tags.length) {
+		const ids = tags.map(({ value }) => value);
+		query.tags = ids.join(',');
 	}
-	if ( orderBy ) {
+	if (orderBy) {
 		query.order_by = orderBy;
 	}
-	if ( queryType === 'query' && order ) {
+	if (queryType === 'query' && order) {
 		query.order = order;
 	}
 	// if ( orderby ) {
@@ -74,9 +74,9 @@ export default function getQuery( blockAttributes, queryType ) {
 	// }
 
 	// Toggle query parameters depending on block type.
-	switch ( queryType ) {
+	switch (queryType) {
 		case 'individual':
-			if ( postIds && postIds.length ) {
+			if (postIds && postIds.length) {
 				query.include = postIds;
 				query.per_page = postIds.length;
 			}

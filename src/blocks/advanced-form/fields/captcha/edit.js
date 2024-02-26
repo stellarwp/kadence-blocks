@@ -1,19 +1,26 @@
 /**
  * WordPress dependencies
  */
-import { TextControl, SelectControl, ToggleControl, Button, TextareaControl, Spinner, ExternalLink } from '@wordpress/components';
+import {
+	TextControl,
+	SelectControl,
+	ToggleControl,
+	Button,
+	TextareaControl,
+	Spinner,
+	ExternalLink,
+} from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps, store as blockEditorStore } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { KadencePanelBody, InspectorControlTabs, ResponsiveRangeControls, SelectParentBlock } from '@kadence/components';
 import {
-	useEffect,
-	useState,
-} from '@wordpress/element';
-import {
-	getUniqueId,
-	getPreviewSize,
-} from '@kadence/helpers';
+	KadencePanelBody,
+	InspectorControlTabs,
+	ResponsiveRangeControls,
+	SelectParentBlock,
+} from '@kadence/components';
+import { useEffect, useState } from '@wordpress/element';
+import { getUniqueId, getPreviewSize } from '@kadence/helpers';
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 import classNames from 'classnames';
@@ -28,7 +35,7 @@ import HCaptcha from '@hcaptcha/react-hcaptcha';
  */
 import './editor.scss';
 
-function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, context, name } ) {
+function FieldCaptcha({ attributes, setAttributes, isSelected, clientId, context, name }) {
 	const {
 		uniqueID,
 		hideRecaptcha,
@@ -44,26 +51,26 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 		minWidthUnit,
 		requiredMessage,
 	} = attributes;
-	const [ activeTab, setActiveTab ] = useState( 'general' );
+	const [activeTab, setActiveTab] = useState('general');
 	const { previewDevice } = useSelect(
-		( select ) => {
+		(select) => {
 			return {
-				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 			};
 		},
-		[ clientId ]
+		[clientId]
 	);
 
-	useEffect( () => {
+	useEffect(() => {
 		// Doesn't worry about if a filed is duplicated. Duplicated fields get a custom ID through the watch at the form level.
-		let uniqueId = getUniqueFieldId( uniqueID, clientId );
-		if ( uniqueId !== uniqueID ) {
+		let uniqueId = getUniqueFieldId(uniqueID, clientId);
+		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
-			setAttributes( { uniqueID: uniqueId } );
+			setAttributes({ uniqueID: uniqueId });
 		}
-	}, [] );
+	}, []);
 
-	useEffect( () => {
+	useEffect(() => {
 		const neededFields = [
 			'kadence_blocks_recaptcha_site_key',
 			'kadence_blocks_recaptcha_secret_key',
@@ -78,185 +85,204 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 		/**
 		 * Get settings
 		 */
-		apiFetch( {
-			path  : addQueryArgs( '/wp/v2/settings',
-				{ _fields: neededFields },
-			),
+		apiFetch({
+			path: addQueryArgs('/wp/v2/settings', { _fields: neededFields }),
 			method: 'GET',
-		} ).then( ( response ) => {
-			setRecaptchaSiteKey( response.kadence_blocks_recaptcha_site_key );
-			setRecaptchaSecretKey( response.kadence_blocks_recaptcha_secret_key );
-			setRecaptchaLanguage( response.kadence_blocks_recaptcha_language );
+		}).then((response) => {
+			setRecaptchaSiteKey(response.kadence_blocks_recaptcha_site_key);
+			setRecaptchaSecretKey(response.kadence_blocks_recaptcha_secret_key);
+			setRecaptchaLanguage(response.kadence_blocks_recaptcha_language);
 
-			setHCaptchaSiteKey( response.kadence_blocks_hcaptcha_site_key );
-			setHCaptchaSecretKey( response.kadence_blocks_hcaptcha_secret_key );
+			setHCaptchaSiteKey(response.kadence_blocks_hcaptcha_site_key);
+			setHCaptchaSecretKey(response.kadence_blocks_hcaptcha_secret_key);
 
-			setTurnstileSiteKey( response.kadence_blocks_turnstile_site_key );
-			setTurnstileSecretKey( response.kadence_blocks_turnstile_secret_key );
+			setTurnstileSiteKey(response.kadence_blocks_turnstile_site_key);
+			setTurnstileSecretKey(response.kadence_blocks_turnstile_secret_key);
 
 			try {
-				setKadenceRecaptha( JSON.parse( get( response, 'kt_recaptcha', {} ) ) );
+				setKadenceRecaptha(JSON.parse(get(response, 'kt_recaptcha', {})));
 			} catch (e) {
-				setKadenceRecaptha( {} );
+				setKadenceRecaptha({});
 			}
 
-			setSettingsLoaded( true );
-		} );
+			setSettingsLoaded(true);
+		});
+	}, [type]);
 
-	}, [ type ] );
+	const previewMaxWidth = getPreviewSize(
+		previewDevice,
+		maxWidth && maxWidth[0] ? maxWidth[0] : '',
+		maxWidth && maxWidth[1] ? maxWidth[1] : '',
+		maxWidth && maxWidth[2] ? maxWidth[2] : ''
+	);
+	const previewMinWidth = getPreviewSize(
+		previewDevice,
+		minWidth && minWidth[0] ? minWidth[0] : '',
+		minWidth && minWidth[1] ? minWidth[1] : '',
+		minWidth && minWidth[2] ? minWidth[2] : ''
+	);
 
-	const previewMaxWidth = getPreviewSize( previewDevice, ( maxWidth && maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ), ( maxWidth && maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), ( maxWidth && maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) );
-	const previewMinWidth = getPreviewSize( previewDevice, ( minWidth && minWidth[ 0 ] ? minWidth[ 0 ] : '' ), ( minWidth && minWidth[ 1 ] ? minWidth[ 1 ] : '' ), ( minWidth && minWidth[ 2 ] ? minWidth[ 2 ] : '' ) );
+	const hasKadenceCaptcha = kadence_blocks_params.hasKadenceCaptcha !== '';
 
-	const hasKadenceCaptcha = ( kadence_blocks_params.hasKadenceCaptcha !== '' );
-
-	const classes = classNames( {
+	const classes = classNames({
 		'kb-adv-form-field': true,
-	} );
-	const blockProps = useBlockProps( {
+	});
+	const blockProps = useBlockProps({
 		className: classes,
-		style    : {
-			maxWidth: '' !== previewMaxWidth ? previewMaxWidth + ( maxWidthUnit ? maxWidthUnit : '%' ) : undefined,
-			minWidth: '' !== previewMinWidth ? previewMinWidth + ( minWidthUnit ? minWidthUnit : 'px' ) : undefined,
+		style: {
+			maxWidth: '' !== previewMaxWidth ? previewMaxWidth + (maxWidthUnit ? maxWidthUnit : '%') : undefined,
+			minWidth: '' !== previewMinWidth ? previewMinWidth + (minWidthUnit ? minWidthUnit : 'px') : undefined,
 		},
-	} );
+	});
 
-	const [ settingsLoaded, setSettingsLoaded ] = useState( false );
-	const [ recaptchaSiteKey, setRecaptchaSiteKey ] = useState( '-' );
-	const [ recaptchaSecretKey, setRecaptchaSecretKey ] = useState( '' );
-	const [ recaptchaLanguage, setRecaptchaLanguage ] = useState( '' );
-	const [ hCaptchaSiteKey, setHCaptchaSiteKey ] = useState( '-' );
-	const [ hCaptchaSecretKey, setHCaptchaSecretKey ] = useState( '' );
-	const [ turnstileSiteKey, setTurnstileSiteKey ] = useState( '-' );
-	const [ turnstileSecretKey, setTurnstileSecretKey ] = useState( '' );
+	const [settingsLoaded, setSettingsLoaded] = useState(false);
+	const [recaptchaSiteKey, setRecaptchaSiteKey] = useState('-');
+	const [recaptchaSecretKey, setRecaptchaSecretKey] = useState('');
+	const [recaptchaLanguage, setRecaptchaLanguage] = useState('');
+	const [hCaptchaSiteKey, setHCaptchaSiteKey] = useState('-');
+	const [hCaptchaSecretKey, setHCaptchaSecretKey] = useState('');
+	const [turnstileSiteKey, setTurnstileSiteKey] = useState('-');
+	const [turnstileSecretKey, setTurnstileSecretKey] = useState('');
 
-	const [ kadenceRecaptha, setKadenceRecaptha ] = useState( false );
-	const [ isSaving, setIsSaving ] = useState( false );
+	const [kadenceRecaptha, setKadenceRecaptha] = useState(false);
+	const [isSaving, setIsSaving] = useState(false);
 
-	let allowedTabs = [ 'general', 'style', 'advanced' ];
-	const linkToKadenceCaptchaSettings = <a href={kadence_blocks_params.adminUrl + 'options-general.php?page=kadence-recaptcha-settings'}
-											target={'_blank'}>{__( 'Modify Kadence Captcha settings', 'kadence-blocks' )}</a>;
+	let allowedTabs = ['general', 'style', 'advanced'];
+	const linkToKadenceCaptchaSettings = (
+		<a
+			href={kadence_blocks_params.adminUrl + 'options-general.php?page=kadence-recaptcha-settings'}
+			target={'_blank'}
+		>
+			{__('Modify Kadence Captcha settings', 'kadence-blocks')}
+		</a>
+	);
 
 	const googleV2RerenderKey = theme + size + recaptchaLanguage + recaptchaSiteKey + recaptchaSecretKey;
 
 	const saveCaptchaSetting = () => {
-		setIsSaving( true );
+		setIsSaving(true);
 
-		if ( type === 'turnstile' ) {
-			const settingModel = new wp.api.models.Settings( {
-				kadence_blocks_turnstile_site_key  : turnstileSiteKey,
+		if (type === 'turnstile') {
+			const settingModel = new wp.api.models.Settings({
+				kadence_blocks_turnstile_site_key: turnstileSiteKey,
 				kadence_blocks_turnstile_secret_key: turnstileSecretKey,
-				kadence_blocks_recaptcha_language  : recaptchaLanguage,
-			} );
+				kadence_blocks_recaptcha_language: recaptchaLanguage,
+			});
 
-			settingModel.save().then( response => {
-				setIsSaving( false );
-			} );
-		} else if ( type === 'googlev2' || type === 'googlev3' ) {
-			const settingModel = new wp.api.models.Settings( {
-				kadence_blocks_recaptcha_site_key  : recaptchaSiteKey,
+			settingModel.save().then((response) => {
+				setIsSaving(false);
+			});
+		} else if (type === 'googlev2' || type === 'googlev3') {
+			const settingModel = new wp.api.models.Settings({
+				kadence_blocks_recaptcha_site_key: recaptchaSiteKey,
 				kadence_blocks_recaptcha_secret_key: recaptchaSecretKey,
-				kadence_blocks_recaptcha_language  : recaptchaLanguage,
-			} );
+				kadence_blocks_recaptcha_language: recaptchaLanguage,
+			});
 
-			settingModel.save().then( response => {
-				setIsSaving( false );
-			} );
-		} else if ( type === 'hcaptcha' ) {
-			const settingModel = new wp.api.models.Settings( {
-				kadence_blocks_hcaptcha_site_key  : hCaptchaSiteKey,
+			settingModel.save().then((response) => {
+				setIsSaving(false);
+			});
+		} else if (type === 'hcaptcha') {
+			const settingModel = new wp.api.models.Settings({
+				kadence_blocks_hcaptcha_site_key: hCaptchaSiteKey,
 				kadence_blocks_hcaptcha_secret_key: hCaptchaSecretKey,
-				kadence_blocks_recaptcha_language : recaptchaLanguage,
-			} );
+				kadence_blocks_recaptcha_language: recaptchaLanguage,
+			});
 
-			settingModel.save().then( response => {
-				setIsSaving( false );
-			} );
+			settingModel.save().then((response) => {
+				setIsSaving(false);
+			});
 		}
 	};
 
-	const kcKeyToType = ( key ) => {
-		let types = [ 'googlev2', 'googlev3', 'turnstile' ];
+	const kcKeyToType = (key) => {
+		let types = ['googlev2', 'googlev3', 'turnstile'];
 
-		return types[ key ];
+		return types[key];
 	};
 
-	const previewType = useKcSettings ? kcKeyToType( get( kadenceRecaptha, 'enable_v3', 0 ) ) : type;
-	const previewGoogleSiteKey = useKcSettings ? get( kadenceRecaptha, 'v3_re_site_key', '-' ) : recaptchaSiteKey;
-	const previewTurnstileSiteKey = useKcSettings ? get( kadenceRecaptha, 'v3_re_site_key', '-' ) : turnstileSiteKey;
-	const previewhCaptchaSiteKey = useKcSettings ? get( kadenceRecaptha, 'v3_re_site_key', '-' ) : hCaptchaSiteKey;
-	const previewTheme = useKcSettings ? get( kadenceRecaptha, 'kt_re_theme', 'light' ) : theme;
-	const previewSize = useKcSettings ? get( kadenceRecaptha, 'kt_re_size', 'normal' ) : size;
-	const previewHide = useKcSettings ? get( kadenceRecaptha, 'hide_v3_badge', false ) : hideRecaptcha;
-	const previewShowNotice = useKcSettings ? get( kadenceRecaptha, 'show_v3_notice', true ) : showRecaptchaNotice;
-	const previewNotice = useKcSettings ? get( kadenceRecaptha, 'v3_notice', '' ) : recaptchaNotice;
-	const googlev3HiddenNotice = previewNotice !== '' ? previewNotice : __( 'This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply', 'kadence-blocks' );
+	const previewType = useKcSettings ? kcKeyToType(get(kadenceRecaptha, 'enable_v3', 0)) : type;
+	const previewGoogleSiteKey = useKcSettings ? get(kadenceRecaptha, 'v3_re_site_key', '-') : recaptchaSiteKey;
+	const previewTurnstileSiteKey = useKcSettings ? get(kadenceRecaptha, 'v3_re_site_key', '-') : turnstileSiteKey;
+	const previewhCaptchaSiteKey = useKcSettings ? get(kadenceRecaptha, 'v3_re_site_key', '-') : hCaptchaSiteKey;
+	const previewTheme = useKcSettings ? get(kadenceRecaptha, 'kt_re_theme', 'light') : theme;
+	const previewSize = useKcSettings ? get(kadenceRecaptha, 'kt_re_size', 'normal') : size;
+	const previewHide = useKcSettings ? get(kadenceRecaptha, 'hide_v3_badge', false) : hideRecaptcha;
+	const previewShowNotice = useKcSettings ? get(kadenceRecaptha, 'show_v3_notice', true) : showRecaptchaNotice;
+	const previewNotice = useKcSettings ? get(kadenceRecaptha, 'v3_notice', '') : recaptchaNotice;
+	const googlev3HiddenNotice =
+		previewNotice !== ''
+			? previewNotice
+			: __(
+					'This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply',
+					'kadence-blocks'
+			  );
 
 	return (
 		<>
 			<style>
 				{isSelected && (
 					<>
-						{`.block-editor-block-popover__inbetween-container .block-editor-block-list__insertion-point.is-with-inserter { display: none }`};
+						{`.block-editor-block-popover__inbetween-container .block-editor-block-list__insertion-point.is-with-inserter { display: none }`}
+						;
 					</>
 				)}
 			</style>
 			<div {...blockProps}>
 				<InspectorControls>
 					<SelectParentBlock
-						label={ __( 'View Form Settings', 'kadence-blocks' ) }
-						clientId={ clientId }
-						parentSlug={ 'kadence/advanced-form' }
+						label={__('View Form Settings', 'kadence-blocks')}
+						clientId={clientId}
+						parentSlug={'kadence/advanced-form'}
 					/>
 					<InspectorControlTabs
 						panelName={'advanced-form-date-general'}
-						setActiveTab={( value ) => setActiveTab( value )}
+						setActiveTab={(value) => setActiveTab(value)}
 						activeTab={activeTab}
 						allowedTabs={allowedTabs}
 					/>
-					{( activeTab === 'general' ) &&
+					{activeTab === 'general' && (
 						<>
-							<KadencePanelBody
-								initialOpen={true}
-								panelName={'kb-adv-form-captcha-controls'}
-							>
-								{hasKadenceCaptcha &&
+							<KadencePanelBody initialOpen={true} panelName={'kb-adv-form-captcha-controls'}>
+								{hasKadenceCaptcha && (
 									<ToggleControl
-										label={__( 'Use Kadence Captcha Settings', 'kadence-blocks' )}
+										label={__('Use Kadence Captcha Settings', 'kadence-blocks')}
 										checked={useKcSettings}
-										onChange={( value ) => setAttributes( { useKcSettings: value } )}
-										help={__( 'Use settings from Kadence Captcha Plugin', 'kadence-blocks' )}
+										onChange={(value) => setAttributes({ useKcSettings: value })}
+										help={__('Use settings from Kadence Captcha Plugin', 'kadence-blocks')}
 									/>
-								}
+								)}
 
 								{hasKadenceCaptcha && useKcSettings ? (
 									linkToKadenceCaptchaSettings
 								) : (
 									<>
 										<SelectControl
-											label={__( 'Captcha Type', 'kadence-blocks' )}
+											label={__('Captcha Type', 'kadence-blocks')}
 											value={type}
 											options={[
-												{ value: 'googlev2', label: __( 'Google V2', 'kadence-blocks' ) },
-												{ value: 'googlev3', label: __( 'Google V3', 'kadence-blocks' ) },
-												{ value: 'turnstile', label: __( 'Turnstile', 'kadence-blocks' ) },
-												{ value: 'hcaptcha', label: __( 'hCaptcha', 'kadence-blocks' ) },
+												{ value: 'googlev2', label: __('Google V2', 'kadence-blocks') },
+												{ value: 'googlev3', label: __('Google V3', 'kadence-blocks') },
+												{ value: 'turnstile', label: __('Turnstile', 'kadence-blocks') },
+												{ value: 'hcaptcha', label: __('hCaptcha', 'kadence-blocks') },
 											]}
-											onChange={( value ) => { setAttributes( { type: value } ); }}
+											onChange={(value) => {
+												setAttributes({ type: value });
+											}}
 										/>
 
 										{type === 'turnstile' && (
 											<>
 												<TextControl
-													label={__( 'Turnstile Site Key', 'kadence-blocks' )}
+													label={__('Turnstile Site Key', 'kadence-blocks')}
 													value={turnstileSiteKey}
-													onChange={( value ) => setTurnstileSiteKey( value )}
+													onChange={(value) => setTurnstileSiteKey(value)}
 												/>
 
 												<TextControl
-													label={__( 'Turnstile Secret Key', 'kadence-blocks' )}
+													label={__('Turnstile Secret Key', 'kadence-blocks')}
 													value={turnstileSecretKey}
-													onChange={( value ) => setTurnstileSecretKey( value )}
+													onChange={(value) => setTurnstileSecretKey(value)}
 												/>
 
 												<div className="components-base-control">
@@ -265,32 +291,40 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 														onClick={() => saveCaptchaSetting()}
 														disabled={'' === turnstileSiteKey || '' === turnstileSecretKey}
 													>
-														{isSaving ? __( 'Saving', 'kadence-blocks' ) : __( 'Save', 'kadence-blocks' )}
+														{isSaving
+															? __('Saving', 'kadence-blocks')
+															: __('Save', 'kadence-blocks')}
 													</Button>
 												</div>
 											</>
 										)}
 
-										{( type === 'googlev2' || type === 'googlev3' ) && (
+										{(type === 'googlev2' || type === 'googlev3') && (
 											<>
 												<TextControl
-													label={__( 'Recaptcha Site Key', 'kadence-blocks' )}
+													label={__('Recaptcha Site Key', 'kadence-blocks')}
 													value={recaptchaSiteKey}
-													onChange={( value ) => setRecaptchaSiteKey( value )}
+													onChange={(value) => setRecaptchaSiteKey(value)}
 												/>
 
 												<TextControl
-													label={__( 'Recaptcha Secret Key', 'kadence-blocks' )}
+													label={__('Recaptcha Secret Key', 'kadence-blocks')}
 													value={recaptchaSecretKey}
-													onChange={( value ) => setRecaptchaSecretKey( value )}
+													onChange={(value) => setRecaptchaSecretKey(value)}
 												/>
 
 												<TextControl
-													label={__( 'Force Specific Language', 'kadence-blocks' )}
+													label={__('Force Specific Language', 'kadence-blocks')}
 													value={recaptchaLanguage}
-													onChange={( value ) => setRecaptchaLanguage( value )}
+													onChange={(value) => setRecaptchaLanguage(value)}
 												/>
-												<p className='kb-small-help'><ExternalLink href={'https://developers.google.com/recaptcha/docs/language/'}>{__( 'View language codes here', 'kadence-blocks' )}</ExternalLink></p>
+												<p className="kb-small-help">
+													<ExternalLink
+														href={'https://developers.google.com/recaptcha/docs/language/'}
+													>
+														{__('View language codes here', 'kadence-blocks')}
+													</ExternalLink>
+												</p>
 
 												<div className="components-base-control">
 													<Button
@@ -298,7 +332,9 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 														onClick={() => saveCaptchaSetting()}
 														disabled={'' === recaptchaSiteKey || '' === recaptchaSecretKey}
 													>
-														{isSaving ? __( 'Saving', 'kadence-blocks' ) : __( 'Save', 'kadence-blocks' )}
+														{isSaving
+															? __('Saving', 'kadence-blocks')
+															: __('Save', 'kadence-blocks')}
 													</Button>
 												</div>
 											</>
@@ -307,21 +343,21 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 										{type === 'hcaptcha' && (
 											<>
 												<TextControl
-													label={__( 'hCaptcha Site Key', 'kadence-blocks' )}
+													label={__('hCaptcha Site Key', 'kadence-blocks')}
 													value={hCaptchaSiteKey}
-													onChange={( value ) => setHCaptchaSiteKey( value )}
+													onChange={(value) => setHCaptchaSiteKey(value)}
 												/>
 
 												<TextControl
-													label={__( 'hCaptcha Secret Key', 'kadence-blocks' )}
+													label={__('hCaptcha Secret Key', 'kadence-blocks')}
 													value={hCaptchaSecretKey}
-													onChange={( value ) => setHCaptchaSecretKey( value )}
+													onChange={(value) => setHCaptchaSecretKey(value)}
 												/>
 
 												<TextControl
-													label={__( 'Force Specific Language', 'kadence-blocks' )}
+													label={__('Force Specific Language', 'kadence-blocks')}
 													value={recaptchaLanguage}
-													onChange={( value ) => setRecaptchaLanguage( value )}
+													onChange={(value) => setRecaptchaLanguage(value)}
 												/>
 
 												<div className="components-base-control">
@@ -330,232 +366,303 @@ function FieldCaptcha( { attributes, setAttributes, isSelected, clientId, contex
 														onClick={() => saveCaptchaSetting()}
 														disabled={'' === hCaptchaSiteKey || '' === hCaptchaSecretKey}
 													>
-														{isSaving ? __( 'Saving', 'kadence-blocks' ) : __( 'Save', 'kadence-blocks' )}
+														{isSaving
+															? __('Saving', 'kadence-blocks')
+															: __('Save', 'kadence-blocks')}
 													</Button>
 												</div>
 											</>
 										)}
-
 									</>
 								)}
-
 							</KadencePanelBody>
 						</>
-					}
-					{( activeTab === 'style' ) &&
+					)}
+					{activeTab === 'style' && (
 						<KadencePanelBody>
-							{type === 'googlev3' && useKcSettings === false &&
+							{type === 'googlev3' && useKcSettings === false && (
 								<>
 									<ToggleControl
-										label={__( 'Hide reCAPTCHA badge', 'kadence-blocks' )}
+										label={__('Hide reCAPTCHA badge', 'kadence-blocks')}
 										checked={hideRecaptcha}
-										onChange={( value ) => setAttributes( { hideRecaptcha: value } )}
-										help={__( 'Hiding requires that information about recaptcha be added to your form', 'kadence-blocks' )}
+										onChange={(value) => setAttributes({ hideRecaptcha: value })}
+										help={__(
+											'Hiding requires that information about recaptcha be added to your form',
+											'kadence-blocks'
+										)}
 									/>
 
-									{hideRecaptcha &&
+									{hideRecaptcha && (
 										<>
 											<ToggleControl
-												label={__( 'Add reCAPTCHA notice info to form', 'kadence-blocks' )}
+												label={__('Add reCAPTCHA notice info to form', 'kadence-blocks')}
 												checked={showRecaptchaNotice}
-												onChange={( value ) => setAttributes( { showRecaptchaNotice: value } )}
-												help={__( 'This will add the required reCAPTCHA version 3 informtion to your form.', 'kadence-blocks' )}
+												onChange={(value) => setAttributes({ showRecaptchaNotice: value })}
+												help={__(
+													'This will add the required reCAPTCHA version 3 informtion to your form.',
+													'kadence-blocks'
+												)}
 											/>
 
-											{showRecaptchaNotice &&
+											{showRecaptchaNotice && (
 												<TextareaControl
-													label={__( 'Optional - Custom reCaptcha notice', 'kadence-blocks' )}
+													label={__('Optional - Custom reCaptcha notice', 'kadence-blocks')}
 													value={recaptchaNotice}
-													onChange={( value ) => setAttributes( { recaptchaNotice: value } )}
-													help={__( 'If left empty then "This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply" is used.', 'kadence-blocks' )}
+													onChange={(value) => setAttributes({ recaptchaNotice: value })}
+													help={__(
+														'If left empty then "This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply" is used.',
+														'kadence-blocks'
+													)}
 												/>
-											}
+											)}
 										</>
-									}
+									)}
 								</>
-							}
-							{ useKcSettings === true && (
-								linkToKadenceCaptchaSettings
-							) }
-							{ useKcSettings === false && (
-							<SelectControl
-								label={__( 'Color Theme', 'kadence-blocks' )}
-								value={theme}
-								options={[
-									{ label: __( 'Light', 'kadence-blocks' ), value: 'light' },
-									{ label: __( 'Dark', 'kadence-blocks' ), value: 'dark' },
-								]}
-								onChange={( value ) => setAttributes( { theme: value } )}
-							/>
-							) }
-
-							{type !== 'googlev3' &&
+							)}
+							{useKcSettings === true && linkToKadenceCaptchaSettings}
+							{useKcSettings === false && (
 								<SelectControl
-									label={__( 'Size', 'kadence-blocks' )}
+									label={__('Color Theme', 'kadence-blocks')}
+									value={theme}
 									options={[
-										{ label: __( 'Normal', 'kadence-blocks' ), value: 'normal' },
-										{ label: __( 'Compact', 'kadence-blocks' ), value: 'compact' },
+										{ label: __('Light', 'kadence-blocks'), value: 'light' },
+										{ label: __('Dark', 'kadence-blocks'), value: 'dark' },
+									]}
+									onChange={(value) => setAttributes({ theme: value })}
+								/>
+							)}
+
+							{type !== 'googlev3' && (
+								<SelectControl
+									label={__('Size', 'kadence-blocks')}
+									options={[
+										{ label: __('Normal', 'kadence-blocks'), value: 'normal' },
+										{ label: __('Compact', 'kadence-blocks'), value: 'compact' },
 									]}
 									value={size}
-									onChange={( value ) => setAttributes( { size: value } )}
+									onChange={(value) => setAttributes({ size: value })}
 								/>
-							}
+							)}
 						</KadencePanelBody>
-					}
-					{( activeTab === 'advanced' ) &&
+					)}
+					{activeTab === 'advanced' && (
 						<>
 							<KadencePanelBody
-								title={__( 'Field Width', 'kadence-blocks' )}
+								title={__('Field Width', 'kadence-blocks')}
 								initialOpen={true}
 								panelName={'kb-adv-form-date-width'}
 							>
 								<ResponsiveRangeControls
-									label={__( 'Max Width', 'kadence-blocks' )}
-									value={( undefined !== maxWidth && undefined !== maxWidth[ 0 ] ? maxWidth[ 0 ] : '' )}
-									onChange={value => {
-										setAttributes( { maxWidth: [ value, ( undefined !== maxWidth && undefined !== maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), ( undefined !== maxWidth && undefined !== maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) ] } );
+									label={__('Max Width', 'kadence-blocks')}
+									value={undefined !== maxWidth && undefined !== maxWidth[0] ? maxWidth[0] : ''}
+									onChange={(value) => {
+										setAttributes({
+											maxWidth: [
+												value,
+												undefined !== maxWidth && undefined !== maxWidth[1] ? maxWidth[1] : '',
+												undefined !== maxWidth && undefined !== maxWidth[2] ? maxWidth[2] : '',
+											],
+										});
 									}}
-									tabletValue={( undefined !== maxWidth && undefined !== maxWidth[ 1 ] ? maxWidth[ 1 ] : '' )}
-									onChangeTablet={( value ) => {
-										setAttributes( { maxWidth: [ ( undefined !== maxWidth && undefined !== maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ), value, ( undefined !== maxWidth && undefined !== maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) ] } );
+									tabletValue={undefined !== maxWidth && undefined !== maxWidth[1] ? maxWidth[1] : ''}
+									onChangeTablet={(value) => {
+										setAttributes({
+											maxWidth: [
+												undefined !== maxWidth && undefined !== maxWidth[0] ? maxWidth[0] : '',
+												value,
+												undefined !== maxWidth && undefined !== maxWidth[2] ? maxWidth[2] : '',
+											],
+										});
 									}}
-									mobileValue={( undefined !== maxWidth && undefined !== maxWidth[ 2 ] ? maxWidth[ 2 ] : '' )}
-									onChangeMobile={( value ) => {
-										setAttributes( { maxWidth: [ ( undefined !== maxWidth && undefined !== maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ), ( undefined !== maxWidth && undefined !== maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), value ] } );
+									mobileValue={undefined !== maxWidth && undefined !== maxWidth[2] ? maxWidth[2] : ''}
+									onChangeMobile={(value) => {
+										setAttributes({
+											maxWidth: [
+												undefined !== maxWidth && undefined !== maxWidth[0] ? maxWidth[0] : '',
+												undefined !== maxWidth && undefined !== maxWidth[1] ? maxWidth[1] : '',
+												value,
+											],
+										});
 									}}
 									min={0}
-									max={( maxWidthUnit === 'px' ? 2000 : 100 )}
+									max={maxWidthUnit === 'px' ? 2000 : 100}
 									step={1}
 									unit={maxWidthUnit ? maxWidthUnit : '%'}
-									onUnit={( value ) => {
-										setAttributes( { maxWidthUnit: value } );
+									onUnit={(value) => {
+										setAttributes({ maxWidthUnit: value });
 									}}
-									units={[ 'px', '%', 'vw' ]}
+									units={['px', '%', 'vw']}
 								/>
 								<ResponsiveRangeControls
-									label={__( 'Min Width', 'kadence-blocks' )}
-									value={( undefined !== minWidth && undefined !== minWidth[ 0 ] ? minWidth[ 0 ] : '' )}
-									onChange={value => {
-										setAttributes( { minWidth: [ value, ( undefined !== minWidth && undefined !== minWidth[ 1 ] ? minWidth[ 1 ] : '' ), ( undefined !== minWidth && undefined !== minWidth[ 2 ] ? minWidth[ 2 ] : '' ) ] } );
+									label={__('Min Width', 'kadence-blocks')}
+									value={undefined !== minWidth && undefined !== minWidth[0] ? minWidth[0] : ''}
+									onChange={(value) => {
+										setAttributes({
+											minWidth: [
+												value,
+												undefined !== minWidth && undefined !== minWidth[1] ? minWidth[1] : '',
+												undefined !== minWidth && undefined !== minWidth[2] ? minWidth[2] : '',
+											],
+										});
 									}}
-									tabletValue={( undefined !== minWidth && undefined !== minWidth[ 1 ] ? minWidth[ 1 ] : '' )}
-									onChangeTablet={( value ) => {
-										setAttributes( { minWidth: [ ( undefined !== minWidth && undefined !== minWidth[ 0 ] ? minWidth[ 0 ] : '' ), value, ( undefined !== minWidth && undefined !== minWidth[ 2 ] ? minWidth[ 2 ] : '' ) ] } );
+									tabletValue={undefined !== minWidth && undefined !== minWidth[1] ? minWidth[1] : ''}
+									onChangeTablet={(value) => {
+										setAttributes({
+											minWidth: [
+												undefined !== minWidth && undefined !== minWidth[0] ? minWidth[0] : '',
+												value,
+												undefined !== minWidth && undefined !== minWidth[2] ? minWidth[2] : '',
+											],
+										});
 									}}
-									mobileValue={( undefined !== minWidth && undefined !== minWidth[ 2 ] ? minWidth[ 2 ] : '' )}
-									onChangeMobile={( value ) => {
-										setAttributes( { minWidth: [ ( undefined !== minWidth && undefined !== minWidth[ 0 ] ? minWidth[ 0 ] : '' ), ( undefined !== minWidth && undefined !== minWidth[ 1 ] ? minWidth[ 1 ] : '' ), value ] } );
+									mobileValue={undefined !== minWidth && undefined !== minWidth[2] ? minWidth[2] : ''}
+									onChangeMobile={(value) => {
+										setAttributes({
+											minWidth: [
+												undefined !== minWidth && undefined !== minWidth[0] ? minWidth[0] : '',
+												undefined !== minWidth && undefined !== minWidth[1] ? minWidth[1] : '',
+												value,
+											],
+										});
 									}}
 									min={0}
-									max={( minWidthUnit === 'px' ? 2000 : 100 )}
+									max={minWidthUnit === 'px' ? 2000 : 100}
 									step={1}
 									unit={minWidthUnit ? minWidthUnit : 'px'}
-									onUnit={( value ) => {
-										setAttributes( { minWidthUnit: value } );
+									onUnit={(value) => {
+										setAttributes({ minWidthUnit: value });
 									}}
-									units={[ 'px', '%', 'vw' ]}
+									units={['px', '%', 'vw']}
 								/>
 							</KadencePanelBody>
 						</>
-					}
+					)}
 				</InspectorControls>
-				<div style={{ minHeight: ( type !== 'googlev3' ? '74px' : undefined ) }}>
-					{ settingsLoaded ? (
+				<div style={{ minHeight: type !== 'googlev3' ? '74px' : undefined }}>
+					{settingsLoaded ? (
 						<>
 							{previewType === 'hcaptcha' && (
 								<>
-									{ previewhCaptchaSiteKey && (
+									{previewhCaptchaSiteKey && (
 										<HCaptcha
 											reCaptchaCompat={false}
 											theme={previewTheme}
 											size={previewSize}
 											sitekey={previewhCaptchaSiteKey}
-											onVerify={( token, ekey ) => { return null; }}
+											onVerify={(token, ekey) => {
+												return null;
+											}}
 										/>
-									) }
-									{ ! previewhCaptchaSiteKey && (
-										<div className={ 'preview-captcha  preview-captcha-' + previewSize + ' preview-captcha-' + previewTheme }>
-											{ __('Please Add API Key', 'kadence-blocks' ) }
+									)}
+									{!previewhCaptchaSiteKey && (
+										<div
+											className={
+												'preview-captcha  preview-captcha-' +
+												previewSize +
+												' preview-captcha-' +
+												previewTheme
+											}
+										>
+											{__('Please Add API Key', 'kadence-blocks')}
 										</div>
-									) }
+									)}
 								</>
-							) }
+							)}
 
-							{ previewType === 'googlev2' && (
+							{previewType === 'googlev2' && (
 								<>
-									{ previewGoogleSiteKey && googleV2RerenderKey && (
+									{previewGoogleSiteKey && googleV2RerenderKey && (
 										<ReCAPTCHA
 											key={googleV2RerenderKey}
 											sitekey={previewGoogleSiteKey}
 											theme={previewTheme}
 											hl={recaptchaLanguage}
 											size={previewSize}
-											onChange={() => { return null; }}
+											onChange={() => {
+												return null;
+											}}
 										/>
-									) }
-									{ ( ! previewGoogleSiteKey || ! googleV2RerenderKey ) && (
-										<div className={ 'preview-captcha  preview-captcha-' + previewSize + ' preview-captcha-' + previewTheme }>
-											{ __('Please Add API Keys', 'kadence-blocks' ) }
+									)}
+									{(!previewGoogleSiteKey || !googleV2RerenderKey) && (
+										<div
+											className={
+												'preview-captcha  preview-captcha-' +
+												previewSize +
+												' preview-captcha-' +
+												previewTheme
+											}
+										>
+											{__('Please Add API Keys', 'kadence-blocks')}
 										</div>
-									) }
+									)}
 								</>
-							) }
+							)}
 
-							{previewType === 'googlev3' &&
+							{previewType === 'googlev3' && (
 								<>
-									{previewHide === false &&
-										<em>{__( 'Google V3 reCAPTCHA', 'kadence-blocks' )}</em>
-									}
-									{ previewHide && ! previewShowNotice &&
-										<em>{ __( 'Placeholder for hidden Google V3 reCaptcha', 'kadence-blocks' ) }</em>
-									}
-									{ previewHide && previewShowNotice &&
+									{previewHide === false && <em>{__('Google V3 reCAPTCHA', 'kadence-blocks')}</em>}
+									{previewHide && !previewShowNotice && (
+										<em>{__('Placeholder for hidden Google V3 reCaptcha', 'kadence-blocks')}</em>
+									)}
+									{previewHide && previewShowNotice && (
 										<span
 											style={{
-												fontSize    : '11px',
-												color       : '#555',
-												lineHeight  : '1.2',
-												display     : 'block',
+												fontSize: '11px',
+												color: '#555',
+												lineHeight: '1.2',
+												display: 'block',
 												marginBottom: '16px',
 												// maxWidth: '400px',
-												padding   : '10px',
+												padding: '10px',
 												background: '#f2f2f2',
 											}}
 											className={'kt-recaptcha-branding-string'}
 										>
 											{googlev3HiddenNotice}
 										</span>
-									}
+									)}
 								</>
-							}
+							)}
 
 							{previewType === 'turnstile' && (
 								<>
-									{ previewTurnstileSiteKey && (
+									{previewTurnstileSiteKey && (
 										<Turnstile
 											theme={previewTheme}
 											size={previewSize}
 											sitekey={previewTurnstileSiteKey}
-											onVerify={( token ) => { return null; }}
+											onVerify={(token) => {
+												return null;
+											}}
 										/>
-									) }
-									{ ! previewTurnstileSiteKey && (
-										<div className={ 'preview-captcha  preview-captcha-' + previewSize + ' preview-captcha-' + previewTheme }>
-											{ __('Please Add API Key', 'kadence-blocks' ) }
+									)}
+									{!previewTurnstileSiteKey && (
+										<div
+											className={
+												'preview-captcha  preview-captcha-' +
+												previewSize +
+												' preview-captcha-' +
+												previewTheme
+											}
+										>
+											{__('Please Add API Key', 'kadence-blocks')}
 										</div>
-									) }
+									)}
 								</>
-							) }
+							)}
 						</>
 					) : (
-						<div className={ 'preview-captcha  preview-captcha-' + previewSize + ' preview-captcha-' + previewTheme }>
-							{ __(' Loading Captcha Settings', 'kadence-blocks' ) }
-							<Spinner/>
+						<div
+							className={
+								'preview-captcha  preview-captcha-' + previewSize + ' preview-captcha-' + previewTheme
+							}
+						>
+							{__(' Loading Captcha Settings', 'kadence-blocks')}
+							<Spinner />
 						</div>
 					)}
-
 				</div>
-				<FieldBlockAppender inline={true} className="kb-custom-inbetween-inserter" getRoot={clientId}/>
+				<FieldBlockAppender inline={true} className="kb-custom-inbetween-inserter" getRoot={clientId} />
 			</div>
 		</>
 	);

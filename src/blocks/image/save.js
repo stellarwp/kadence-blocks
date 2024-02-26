@@ -6,10 +6,10 @@ import classnames from 'classnames';
 /**
  * WordPress dependencies
  */
- import { RichText, useBlockProps } from '@wordpress/block-editor';
- import { getBlockDefaultClassName } from '@wordpress/blocks';
+import { RichText, useBlockProps } from '@wordpress/block-editor';
+import { getBlockDefaultClassName } from '@wordpress/blocks';
 
-export default function save( { attributes } ) {
+export default function save({ attributes }) {
 	const {
 		url,
 		alt,
@@ -38,101 +38,98 @@ export default function save( { attributes } ) {
 		globalAlt,
 	} = attributes;
 
-	const classes = classnames( {
-		[ `align${ align }` ]: align,
-		[ `size-${ sizeSlug }` ]: sizeSlug,
+	const classes = classnames({
+		[`align${align}`]: align,
+		[`size-${sizeSlug}`]: sizeSlug,
 		'is-resized': width || height,
-		[ `kb-filter-${ imageFilter }` ]: imageFilter && imageFilter !== 'none',
-		[ `kb-image-is-ratio-size` ]: useRatio,
-		'image-is-svg': url && url.endsWith( '.svg' ),
-	} );
+		[`kb-filter-${imageFilter}`]: imageFilter && imageFilter !== 'none',
+		[`kb-image-is-ratio-size`]: useRatio,
+		'image-is-svg': url && url.endsWith('.svg'),
+	});
 
-	const allClasses = classnames( {
-		[ `kb-image${ uniqueID }` ]: uniqueID,
-		[ getBlockDefaultClassName( 'kadence/image' ) ]: getBlockDefaultClassName( 'kadence/image' ),
-		[ `align${ align }` ]: align,
-		[ `size-${ sizeSlug }` ]: sizeSlug,
+	const allClasses = classnames({
+		[`kb-image${uniqueID}`]: uniqueID,
+		[getBlockDefaultClassName('kadence/image')]: getBlockDefaultClassName('kadence/image'),
+		[`align${align}`]: align,
+		[`size-${sizeSlug}`]: sizeSlug,
 		'is-resized': width || height,
-		[ `kb-filter-${ imageFilter }` ]: imageFilter && imageFilter !== 'none',
-		[ `kb-image-is-ratio-size` ]: useRatio,
-		'image-is-svg': url && url.endsWith( '.svg' ),
-	} );
+		[`kb-filter-${imageFilter}`]: imageFilter && imageFilter !== 'none',
+		[`kb-image-is-ratio-size`]: useRatio,
+		'image-is-svg': url && url.endsWith('.svg'),
+	});
 
-	const containerClasses = classnames( {
-		[ `kb-image${ uniqueID }` ]: uniqueID,
-		[ getBlockDefaultClassName( 'kadence/image' ) ]: getBlockDefaultClassName( 'kadence/image' ),
-	} );
+	const containerClasses = classnames({
+		[`kb-image${uniqueID}`]: uniqueID,
+		[getBlockDefaultClassName('kadence/image')]: getBlockDefaultClassName('kadence/image'),
+	});
 
-	const imgClasses = classnames( {
+	const imgClasses = classnames({
 		'kb-img': true,
-		[ `wp-image-${ id }` ]: id,
-		[ `skip-lazy` ]: preventLazyLoad,
-		[ `kb-skip-lazy` ]: preventLazyLoad,
-	} );
+		[`wp-image-${id}`]: id,
+		[`skip-lazy`]: preventLazyLoad,
+		[`kb-skip-lazy`]: preventLazyLoad,
+	});
 	let useOverlay = false;
-	if ( overlayOpacity && overlay && overlayType && overlayType !== 'gradient' ) {
+	if (overlayOpacity && overlay && overlayType && overlayType !== 'gradient') {
 		useOverlay = true;
-	} else if ( overlayOpacity && overlayGradient && overlayType && overlayType === 'gradient' ) {
+	} else if (overlayOpacity && overlayGradient && overlayType && overlayType === 'gradient') {
 		useOverlay = true;
 	}
 	let relAttr;
-	if ( linkTarget ) {
+	if (linkTarget) {
 		relAttr = 'noopener noreferrer';
 	}
-	if ( undefined !== linkNoFollow && true === linkNoFollow ) {
-		relAttr = ( relAttr ? relAttr.concat( ' nofollow' ) : 'nofollow' );
+	if (undefined !== linkNoFollow && true === linkNoFollow) {
+		relAttr = relAttr ? relAttr.concat(' nofollow') : 'nofollow';
 	}
-	if ( undefined !== linkSponsored && true === linkSponsored ) {
-		relAttr = ( relAttr ? relAttr.concat( ' sponsored' ) : 'sponsored' );
+	if (undefined !== linkSponsored && true === linkSponsored) {
+		relAttr = relAttr ? relAttr.concat(' sponsored') : 'sponsored';
 	}
 	let image = (
-		<img
-			src={ url }
-			alt={ globalAlt ? '' : alt }
-			className={ imgClasses }
-			width={ width }
-			height={ height }
-			title={ title }
-		/>
+		<img src={url} alt={globalAlt ? '' : alt} className={imgClasses} width={width} height={height} title={title} />
 	);
-	if ( useRatio ){
-		image = <div className={ `kb-is-ratio-image kb-image-ratio-${ ( ratio ? ratio : 'land43' )}${ ( useOverlay ? ' kb-image-has-overlay' : '' ) }` }>{ image }</div>;
-	} else if ( useOverlay ) {
-		image = <div className={ `kb-image-has-overlay` }>{ image }</div>;
+	if (useRatio) {
+		image = (
+			<div
+				className={`kb-is-ratio-image kb-image-ratio-${ratio ? ratio : 'land43'}${
+					useOverlay ? ' kb-image-has-overlay' : ''
+				}`}
+			>
+				{image}
+			</div>
+		);
+	} else if (useOverlay) {
+		image = <div className={`kb-image-has-overlay`}>{image}</div>;
 	}
 
 	const figure = (
 		<>
-			{ link && true ? (
-					<a
-						href={ link }
-						className={ 'kb-advanced-image-link' }
-						target={ linkTarget ? '_blank' : undefined }
-						rel={ relAttr ? relAttr : undefined }
-						aria-label={ linkTitle ? linkTitle : undefined }
-					>
-						{ image }
-					</a>
+			{link && true ? (
+				<a
+					href={link}
+					className={'kb-advanced-image-link'}
+					target={linkTarget ? '_blank' : undefined}
+					rel={relAttr ? relAttr : undefined}
+					aria-label={linkTitle ? linkTitle : undefined}
+				>
+					{image}
+				</a>
 			) : (
 				image
-			) }
-			{ ! RichText.isEmpty( caption ) && showCaption !== false  && (
-				<RichText.Content tagName="figcaption" value={ caption } />
-			) }
+			)}
+			{!RichText.isEmpty(caption) && showCaption !== false && (
+				<RichText.Content tagName="figcaption" value={caption} />
+			)}
 		</>
 	);
 
-	if ( 'left' === align || 'right' === align || 'center' === align ) {
+	if ('left' === align || 'right' === align || 'center' === align) {
 		return (
-			<div { ...useBlockProps.save( { className: containerClasses }) }>
-				<figure className={ classes }>{ figure }</figure>
+			<div {...useBlockProps.save({ className: containerClasses })}>
+				<figure className={classes}>{figure}</figure>
 			</div>
 		);
 	}
 
-	return (
-		<figure { ...useBlockProps.save( { className: allClasses } ) } >
-			{ figure }
-		</figure>
-	);
+	return <figure {...useBlockProps.save({ className: allClasses })}>{figure}</figure>;
 }

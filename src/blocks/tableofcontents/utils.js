@@ -13,23 +13,20 @@
  *
  * @return {WPHeadingData[]} The list of heading parameters.
  */
-export function getHeadingsFromHeadingElements( headingElements ) {
-	return [ ...headingElements ].map( ( heading ) => {
+export function getHeadingsFromHeadingElements(headingElements) {
+	return [...headingElements].map((heading) => {
 		let anchor = '';
 
-		if ( heading.hasAttribute( 'id' ) ) {
+		if (heading.hasAttribute('id')) {
 			// The id attribute may contain many ids, so just use the first.
-			const firstId = heading
-				.getAttribute( 'id' )
-				.trim()
-				.split( ' ' )[ 0 ];
+			const firstId = heading.getAttribute('id').trim().split(' ')[0];
 
-			anchor = `#${ firstId }`;
+			anchor = `#${firstId}`;
 		}
 
 		let level;
 
-		switch ( heading.tagName ) {
+		switch (heading.tagName) {
 			case 'H1':
 				level = 1;
 				break;
@@ -50,8 +47,14 @@ export function getHeadingsFromHeadingElements( headingElements ) {
 				break;
 		}
 
-		return { anchor, content: heading.hasAttribute( 'data-alt-title' ) ? heading.getAttribute( 'data-alt-title' ) : heading.textContent, level };
-	} );
+		return {
+			anchor,
+			content: heading.hasAttribute('data-alt-title')
+				? heading.getAttribute('data-alt-title')
+				: heading.textContent,
+			level,
+		};
+	});
 }
 
 /**
@@ -61,46 +64,49 @@ export function getHeadingsFromHeadingElements( headingElements ) {
  *
  * @return {WPHeadingData[]} The list of heading parameters.
  */
-export function getHeadingsFromContent( content, attributes ) {
+export function getHeadingsFromContent(content, attributes) {
 	// Create a temporary container to put the post content into, so we can
 	// use the DOM to find all the headings.
-	const tempPostContentDOM = document.createElement( 'div' );
+	const tempPostContentDOM = document.createElement('div');
 	tempPostContentDOM.innerHTML = content;
 
 	// Remove template elements so that headings inside them aren't counted.
 	// This is only needed for IE11, which doesn't recognize the element and
 	// treats it like a div.
-	for ( const template of tempPostContentDOM.querySelectorAll(
-		'template'
-	) ) {
-		tempPostContentDOM.removeChild( template );
+	for (const template of tempPostContentDOM.querySelectorAll('template')) {
+		tempPostContentDOM.removeChild(template);
 	}
-	let queryArray = [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ];
-	if ( attributes && undefined !== attributes.allowedHeaders && undefined !== attributes.allowedHeaders[ 0 ] && attributes.allowedHeaders[ 0 ] ) {
+	let queryArray = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+	if (
+		attributes &&
+		undefined !== attributes.allowedHeaders &&
+		undefined !== attributes.allowedHeaders[0] &&
+		attributes.allowedHeaders[0]
+	) {
 		queryArray = [];
-		if ( attributes.allowedHeaders[ 0 ].h1 ) {
-			queryArray.push( 'h1' );
+		if (attributes.allowedHeaders[0].h1) {
+			queryArray.push('h1');
 		}
-		if ( attributes.allowedHeaders[ 0 ].h2 ) {
-			queryArray.push( 'h2' );
+		if (attributes.allowedHeaders[0].h2) {
+			queryArray.push('h2');
 		}
-		if ( attributes.allowedHeaders[ 0 ].h3 ) {
-			queryArray.push( 'h3' );
+		if (attributes.allowedHeaders[0].h3) {
+			queryArray.push('h3');
 		}
-		if ( attributes.allowedHeaders[ 0 ].h4 ) {
-			queryArray.push( 'h4' );
+		if (attributes.allowedHeaders[0].h4) {
+			queryArray.push('h4');
 		}
-		if ( attributes.allowedHeaders[ 0 ].h5 ) {
-			queryArray.push( 'h5' );
+		if (attributes.allowedHeaders[0].h5) {
+			queryArray.push('h5');
 		}
-		if ( attributes.allowedHeaders[ 0 ].h6 ) {
-			queryArray.push( 'h6' );
+		if (attributes.allowedHeaders[0].h6) {
+			queryArray.push('h6');
 		}
 	}
 	const queryString = queryArray.toString();
-	if ( queryString ) {
-		const headingElements = tempPostContentDOM.querySelectorAll( queryString );
-		return getHeadingsFromHeadingElements( headingElements );
+	if (queryString) {
+		const headingElements = tempPostContentDOM.querySelectorAll(queryString);
+		return getHeadingsFromHeadingElements(headingElements);
 	}
 	return [];
 }
@@ -126,52 +132,45 @@ export function getHeadingsFromContent( content, attributes ) {
  *
  * @return {WPNestedHeadingData[]} The nested list of headings.
  */
-export function linearToNestedHeadingList( headingList, index = 0, child = false ) {
+export function linearToNestedHeadingList(headingList, index = 0, child = false) {
 	const nestedHeadingList = [];
-	headingList.forEach( ( heading, key ) => {
-		if ( heading.content === '' ) {
+	headingList.forEach((heading, key) => {
+		if (heading.content === '') {
 			return;
 		}
 		// Make sure we are only working with the same level as the first iteration in our set.
-		if ( heading.level === headingList[ 0 ].level ) {
+		if (heading.level === headingList[0].level) {
 			// Check that the next iteration will return a value.
 			// If it does and the next level is greater than the current level,
 			// the next iteration becomes a child of the current interation.
-			if (
-				headingList[ key + 1 ] !== undefined &&
-				headingList[ key + 1 ].level > heading.level
-			) {
+			if (headingList[key + 1] !== undefined && headingList[key + 1].level > heading.level) {
 				// We need to calculate the last index before the next iteration that has the same level (siblings).
 				// We then use this last index to slice the array for use in recursion.
 				// This prevents duplicate nodes.
 				let endOfSlice = headingList.length;
-				for ( let i = key + 1; i < headingList.length; i++ ) {
-					if ( headingList[ i ].level === heading.level ) {
+				for (let i = key + 1; i < headingList.length; i++) {
+					if (headingList[i].level === heading.level) {
 						endOfSlice = i;
 						break;
 					}
 				}
 
 				// We found a child node: Push a new node onto the return array with children.
-				nestedHeadingList.push( {
+				nestedHeadingList.push({
 					heading,
 					index: index + key,
-					children: linearToNestedHeadingList(
-						headingList.slice( key + 1, endOfSlice ),
-						index + key + 1,
-						true
-					),
-				} );
+					children: linearToNestedHeadingList(headingList.slice(key + 1, endOfSlice), index + key + 1, true),
+				});
 			} else {
 				// No child node: Push a new node onto the return array.
-				nestedHeadingList.push( {
+				nestedHeadingList.push({
 					heading,
 					index: index + key,
 					children: null,
-				} );
+				});
 			}
 		}
-	} );
+	});
 
 	return nestedHeadingList;
 }

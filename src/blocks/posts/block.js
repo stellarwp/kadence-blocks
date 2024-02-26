@@ -18,7 +18,6 @@ import './style.scss';
 import edit from './edit';
 import metadata from './block.json';
 
-
 /**
  * Internal block libraries
  */
@@ -34,15 +33,10 @@ import { __, _x } from '@wordpress/i18n';
  * @return {?WPBlock}          The block, if it has been successfully
  *                             registered; otherwise `undefined`.
  */
-registerBlockType( 'kadence/posts', {
+registerBlockType('kadence/posts', {
 	...metadata,
-	title: _x( 'Posts', 'block title', 'kadence-blocks' ),
-	keywords: [
-		__( 'posts', 'kadence-blocks' ),
-		__( 'latest posts', 'kadence-blocks' ),
-		__( 'blog', 'kadence-blocks' ),
-		'KB',
-	],
+	title: _x('Posts', 'block title', 'kadence-blocks'),
+	keywords: [__('posts', 'kadence-blocks'), __('latest posts', 'kadence-blocks'), __('blog', 'kadence-blocks'), 'KB'],
 	icon: {
 		src: postsIcon,
 	},
@@ -53,7 +47,7 @@ registerBlockType( 'kadence/posts', {
 	example: {
 		attributes: {
 			columns: 1,
-			postsToShow: 2
-		}
-	}
-} );
+			postsToShow: 2,
+		},
+	},
+});

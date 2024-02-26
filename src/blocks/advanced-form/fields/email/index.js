@@ -10,7 +10,6 @@ import edit from './edit';
 import metadata from './block.json';
 import { registerBlockType } from '@wordpress/blocks';
 
-
 /**
  * WordPress dependencies
  */
@@ -22,12 +21,9 @@ registerBlockType('kadence/advanced-form-email', {
 	icon: {
 		src: emailInputIcon,
 	},
-	title: __( 'Email Field', 'kadence-blocks' ),
-	description: __( 'Kadence Form email input field', 'kadence-blocks' ),
-	keywords: [
-		'kadence',
-	],
+	title: __('Email Field', 'kadence-blocks'),
+	description: __('Kadence Form email input field', 'kadence-blocks'),
+	keywords: ['kadence'],
 	edit,
 	save: () => null,
-
 });

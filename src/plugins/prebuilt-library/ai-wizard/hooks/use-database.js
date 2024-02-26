@@ -5,8 +5,8 @@ import { useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 
 export function useDatabase() {
-	const [ loading, setLoading ] = useState(false);
-	const [ error, setError ] = useState(false);
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState(false);
 
 	/**
 	 * Save wizard data to Wordpress options table.
@@ -21,7 +21,7 @@ export function useDatabase() {
 			const response = await apiFetch({
 				path: '/wp/v2/settings',
 				method: 'POST',
-				data: { kadence_blocks_prophecy: JSON.stringify(data) }
+				data: { kadence_blocks_prophecy: JSON.stringify(data) },
 			});
 
 			if (response) {
@@ -32,7 +32,7 @@ export function useDatabase() {
 		} catch (error) {
 			const message = error?.message ? error.message : error;
 
-			console.log(`ERROR: ${ message }`);
+			console.log(`ERROR: ${message}`);
 
 			setLoading(false);
 			setError(true);
@@ -66,7 +66,7 @@ export function useDatabase() {
 		} catch (error) {
 			const message = error?.message ? error.message : error;
 
-			console.log(`ERROR: ${ message }`);
+			console.log(`ERROR: ${message}`);
 
 			setLoading(false);
 			setError(true);
@@ -79,7 +79,6 @@ export function useDatabase() {
 		loading,
 		error,
 		saveAiWizardData,
-		getAiWizardData
-	}
+		getAiWizardData,
+	};
 }
-

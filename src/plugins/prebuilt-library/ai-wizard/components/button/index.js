@@ -31,6 +31,5 @@ import './button.scss';
 export function Button(props) {
 	const { className = '', ...rest } = props;
 
-	return <CoreButton className={ `stellarwp ${ className }` } { ...rest } />;
+	return <CoreButton className={`stellarwp ${className}`} {...rest} />;
 }
-

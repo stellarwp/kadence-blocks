@@ -17,14 +17,10 @@ import './style.scss';
 
 registerBlockType('kadence/lottie', {
 	...metadata,
-	title: _x( 'Lottie Animations', 'block title', 'kadence-blocks' ),
-	description: _x( 'Display lottie animations on your site', 'block description', 'kadence-blocks' ),
-	keywords: [
-		__( 'lottie', 'kadence-blocks' ),
-		__( 'animation', 'kadence-blocks' ),
-		'KB',
-	],
-	getEditWrapperProps( attributes ) {
+	title: _x('Lottie Animations', 'block title', 'kadence-blocks'),
+	description: _x('Display lottie animations on your site', 'block description', 'kadence-blocks'),
+	keywords: [__('lottie', 'kadence-blocks'), __('animation', 'kadence-blocks'), 'KB'],
+	getEditWrapperProps(attributes) {
 		return {
 			'data-align': attributes.align,
 		};
@@ -35,5 +31,5 @@ registerBlockType('kadence/lottie', {
 	edit,
 	deprecated,
 	save: () => null,
-	example: {}
+	example: {},
 });

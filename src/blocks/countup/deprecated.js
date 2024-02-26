@@ -26,23 +26,25 @@ export default [
 			},
 			titleFont: {
 				type: 'array',
-				default: [ {
-					level: 4,
-					htmlTag: 'div',
-					size: [ '', '', '' ],
-					sizeType: 'px',
-					lineHeight: [ '', '', '' ],
-					lineType: '',
-					letterSpacing: '',
-					textTransform: '',
-					family: '',
-					google: false,
-					style: '',
-					weight: '',
-					variant: '',
-					subset: '',
-					loadGoogle: true,
-				} ],
+				default: [
+					{
+						level: 4,
+						htmlTag: 'div',
+						size: ['', '', ''],
+						sizeType: 'px',
+						lineHeight: ['', '', ''],
+						lineType: '',
+						letterSpacing: '',
+						textTransform: '',
+						family: '',
+						google: false,
+						style: '',
+						weight: '',
+						variant: '',
+						subset: '',
+						loadGoogle: true,
+					},
+				],
 			},
 			titlePaddingType: {
 				type: 'string',
@@ -50,15 +52,15 @@ export default [
 			},
 			titlePadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			titleTabletPadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			titleMobilePadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			titleMarginType: {
 				type: 'string',
@@ -66,19 +68,19 @@ export default [
 			},
 			titleMargin: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			titleTabletMargin: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			titleMobileMargin: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			titleAlign: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			titleColor: {
 				type: 'string',
@@ -90,25 +92,27 @@ export default [
 			},
 			titleMinHeight: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			numberFont: {
 				type: 'array',
-				default: [ {
-					size: [ '50', '', '' ],
-					sizeType: 'px',
-					lineHeight: [ '', '', '' ],
-					lineType: 'px',
-					letterSpacing: '',
-					textTransform: '',
-					family: '',
-					google: false,
-					style: '',
-					weight: '',
-					variant: '',
-					subset: '',
-					loadGoogle: true,
-				} ],
+				default: [
+					{
+						size: ['50', '', ''],
+						sizeType: 'px',
+						lineHeight: ['', '', ''],
+						lineType: 'px',
+						letterSpacing: '',
+						textTransform: '',
+						family: '',
+						google: false,
+						style: '',
+						weight: '',
+						variant: '',
+						subset: '',
+						loadGoogle: true,
+					},
+				],
 			},
 			numberPaddingType: {
 				type: 'string',
@@ -116,15 +120,15 @@ export default [
 			},
 			numberPadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			numberTabletPadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			numberMobilePadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			numberMarginType: {
 				type: 'string',
@@ -132,19 +136,19 @@ export default [
 			},
 			numberMargin: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			numberTabletMargin: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			numberMobileMargin: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			numberAlign: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			numberColor: {
 				type: 'string',
@@ -156,15 +160,15 @@ export default [
 			},
 			numberMinHeight: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			start: {
 				type: 'number',
-				default: 0
+				default: 0,
 			},
 			end: {
 				type: 'number',
-				default: 100
+				default: 100,
 			},
 			prefix: {
 				type: 'string',
@@ -181,34 +185,37 @@ export default [
 			separator: {
 				type: 'boolean',
 				default: false,
-			}
+			},
 		},
-		save: ( { attributes } ) => {
+		save: ({ attributes }) => {
 			const {
 				uniqueID,
-					title,
-					start,
-					end,
-					prefix,
-					suffix,
-					duration,
-					separator,
-					titleFont,
-					displayTitle,
-					decimal,
-					decimalSpaces,
+				title,
+				start,
+				end,
+				prefix,
+				suffix,
+				duration,
+				separator,
+				titleFont,
+				displayTitle,
+				decimal,
+				decimalSpaces,
 			} = attributes;
 
-			const classes = classnames( {
-				[ `kb-count-up-${uniqueID}` ]: uniqueID,
-				'kb-count-up'                : true,
-			} );
+			const classes = classnames({
+				[`kb-count-up-${uniqueID}`]: uniqueID,
+				'kb-count-up': true,
+			});
 
-			const tagName = titleFont[ 0 ].htmlTag && titleFont[ 0 ].htmlTag !== 'heading' ? titleFont[ 0 ].htmlTag : 'h' + titleFont[ 0 ].level;
+			const tagName =
+				titleFont[0].htmlTag && titleFont[0].htmlTag !== 'heading'
+					? titleFont[0].htmlTag
+					: 'h' + titleFont[0].level;
 
-			const blockProps = useBlockProps.save( {
-				className: classes
-			} );
+			const blockProps = useBlockProps.save({
+				className: classes,
+			});
 
 			return (
 				<div
@@ -222,17 +229,13 @@ export default [
 					data-decimal={decimal ? decimal : undefined}
 					data-decimal-spaces={decimal ? decimalSpaces : undefined}
 				>
-					<div className={'kb-count-up-process kb-count-up-number'}/>
+					<div className={'kb-count-up-process kb-count-up-number'} />
 					{title && displayTitle && (
-						<RichText.Content
-							tagName={tagName}
-							className={'kb-count-up-title'}
-							value={title}
-						/>
+						<RichText.Content tagName={tagName} className={'kb-count-up-title'} value={title} />
 					)}
 				</div>
 			);
-		}
+		},
 	},
 	{
 		attributes: {
@@ -250,23 +253,25 @@ export default [
 			},
 			titleFont: {
 				type: 'array',
-				default: [ {
-					level: 4,
-					htmlTag: 'div',
-					size: [ '', '', '' ],
-					sizeType: 'px',
-					lineHeight: [ '', '', '' ],
-					lineType: 'px',
-					letterSpacing: '',
-					textTransform: '',
-					family: '',
-					google: false,
-					style: '',
-					weight: '',
-					variant: '',
-					subset: '',
-					loadGoogle: true,
-				} ],
+				default: [
+					{
+						level: 4,
+						htmlTag: 'div',
+						size: ['', '', ''],
+						sizeType: 'px',
+						lineHeight: ['', '', ''],
+						lineType: 'px',
+						letterSpacing: '',
+						textTransform: '',
+						family: '',
+						google: false,
+						style: '',
+						weight: '',
+						variant: '',
+						subset: '',
+						loadGoogle: true,
+					},
+				],
 			},
 			titlePaddingType: {
 				type: 'string',
@@ -274,15 +279,15 @@ export default [
 			},
 			titlePadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			titleTabletPadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			titleMobilePadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			titleMarginType: {
 				type: 'string',
@@ -290,19 +295,19 @@ export default [
 			},
 			titleMargin: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			titleTabletMargin: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			titleMobileMargin: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			titleAlign: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			titleColor: {
 				type: 'string',
@@ -314,25 +319,27 @@ export default [
 			},
 			titleMinHeight: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			numberFont: {
 				type: 'array',
-				default: [ {
-					size: [ '50', '', '' ],
-					sizeType: 'px',
-					lineHeight: [ '', '', '' ],
-					lineType: 'px',
-					letterSpacing: '',
-					textTransform: '',
-					family: '',
-					google: false,
-					style: '',
-					weight: '',
-					variant: '',
-					subset: '',
-					loadGoogle: true,
-				} ],
+				default: [
+					{
+						size: ['50', '', ''],
+						sizeType: 'px',
+						lineHeight: ['', '', ''],
+						lineType: 'px',
+						letterSpacing: '',
+						textTransform: '',
+						family: '',
+						google: false,
+						style: '',
+						weight: '',
+						variant: '',
+						subset: '',
+						loadGoogle: true,
+					},
+				],
 			},
 			numberPaddingType: {
 				type: 'string',
@@ -340,15 +347,15 @@ export default [
 			},
 			numberPadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			numberTabletPadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			numberMobilePadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			numberMarginType: {
 				type: 'string',
@@ -356,19 +363,19 @@ export default [
 			},
 			numberMargin: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			numberTabletMargin: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			numberMobileMargin: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			numberAlign: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			numberColor: {
 				type: 'string',
@@ -380,15 +387,15 @@ export default [
 			},
 			numberMinHeight: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			start: {
 				type: 'number',
-				default: 0
+				default: 0,
 			},
 			end: {
 				type: 'number',
-				default: 100
+				default: 100,
 			},
 			prefix: {
 				type: 'string',
@@ -405,47 +412,35 @@ export default [
 			separator: {
 				type: 'boolean',
 				default: false,
-			}
+			},
 		},
-		save: ( { attributes } ) => {
-			const {
-				uniqueID,
-				title,
-				start,
-				end,
-				prefix,
-				suffix,
-				duration,
-				separator,
-				titleFont,
-				displayTitle,
-			} = attributes
-			const classes = classnames( {
-				[ `kb-count-up-${ uniqueID }` ]: uniqueID,
-				'kb-count-up': true
-			} );
-			const tagName = titleFont[ 0 ].htmlTag && titleFont[ 0 ].htmlTag !== 'heading' ? titleFont[ 0 ].htmlTag : 'h' + titleFont[ 0 ].level;
+		save: ({ attributes }) => {
+			const { uniqueID, title, start, end, prefix, suffix, duration, separator, titleFont, displayTitle } =
+				attributes;
+			const classes = classnames({
+				[`kb-count-up-${uniqueID}`]: uniqueID,
+				'kb-count-up': true,
+			});
+			const tagName =
+				titleFont[0].htmlTag && titleFont[0].htmlTag !== 'heading'
+					? titleFont[0].htmlTag
+					: 'h' + titleFont[0].level;
 			return (
 				<div
-					className={ classes }
-					data-start={ start }
-					data-end={ end }
-					data-prefix={ prefix }
-					data-suffix={ suffix }
-					data-duration={ duration }
-					data-separator={ separator }
+					className={classes}
+					data-start={start}
+					data-end={end}
+					data-prefix={prefix}
+					data-suffix={suffix}
+					data-duration={duration}
+					data-separator={separator}
 				>
-					<div className={ 'kb-count-up-process kb-count-up-number' } />
-					{ title && displayTitle && (
-						<RichText.Content
-							tagName={ tagName }
-							className={ 'kb-count-up-title' }
-							value={ title }
-						/>
-					) }
+					<div className={'kb-count-up-process kb-count-up-number'} />
+					{title && displayTitle && (
+						<RichText.Content tagName={tagName} className={'kb-count-up-title'} value={title} />
+					)}
 				</div>
 			);
-		}
-	}
+		},
+	},
 ];
-

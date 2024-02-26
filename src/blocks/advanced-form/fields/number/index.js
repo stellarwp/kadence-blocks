@@ -10,7 +10,6 @@ import edit from './edit';
 import metadata from './block.json';
 import { registerBlockType } from '@wordpress/blocks';
 
-
 /**
  * WordPress dependencies
  */
@@ -19,14 +18,12 @@ import { Icon } from '@wordpress/components';
 
 registerBlockType('kadence/advanced-form-number', {
 	...metadata,
-	title: __( 'Number', 'kadence-blocks' ),
-	description: __( 'Kadence Form number input', 'kadence-blocks' ),
-	keywords: [
-		'kadence',
-	],
+	title: __('Number', 'kadence-blocks'),
+	description: __('Kadence Form number input', 'kadence-blocks'),
+	keywords: ['kadence'],
 	icon: {
 		src: numberInputIcon,
 	},
 	edit,
-	save: () => null
+	save: () => null,
 });

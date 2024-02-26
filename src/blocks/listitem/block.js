@@ -27,24 +27,24 @@ import { __ } from '@wordpress/i18n';
  * @return {?WPBlock}          The block, if it has been successfully
  *                             registered; otherwise `undefined`.
  */
-registerBlockType( 'kadence/listitem', {
-    ...metadata,
-    title: __( 'List item', 'kadence-blocks' ),
-    description: __( 'Icon list item', 'kadence-blocks' ),
-    icon: {
-        src: iconListItemBlockIcon,
-    },
-    edit,
-    save,
-    merge: ( a, { text = '' } ) => ( {
+registerBlockType('kadence/listitem', {
+	...metadata,
+	title: __('List item', 'kadence-blocks'),
+	description: __('Icon list item', 'kadence-blocks'),
+	icon: {
+		src: iconListItemBlockIcon,
+	},
+	edit,
+	save,
+	merge: (a, { text = '' }) => ({
 		...a,
-		text: ( a.text || '' ) + text,
-	} ),
-    deprecated,
+		text: (a.text || '') + text,
+	}),
+	deprecated,
 	example: {
 		attributes: {
-			text: __( 'List Item', 'kadence-blocks' ),
-			icon: 'fe_checkCircle'
-		}
-	}
-} );
+			text: __('List Item', 'kadence-blocks'),
+			icon: 'fe_checkCircle',
+		},
+	},
+});

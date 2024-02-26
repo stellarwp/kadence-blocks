@@ -1,8 +1,8 @@
-import ReactSlidy from "react-slidy";
-import { ArticleCard } from "../article-card";
-import { useScreenResolution } from "../../hooks/use-screen-resolution";
+import ReactSlidy from 'react-slidy';
+import { ArticleCard } from '../article-card';
+import { useScreenResolution } from '../../hooks/use-screen-resolution';
 
-import "./article-slider.scss";
+import './article-slider.scss';
 
 export function ArticleSlider({ articles }) {
 	const screenResolution = useScreenResolution();

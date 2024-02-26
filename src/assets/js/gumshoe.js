@@ -7,17 +7,16 @@
  */
 
 (function (root, factory) {
-	if ( typeof define === 'function' && define.amd ) {
-		define([], (function () {
+	if (typeof define === 'function' && define.amd) {
+		define([], function () {
 			return factory(root);
-		}));
-	} else if ( typeof exports === 'object' ) {
+		});
+	} else if (typeof exports === 'object') {
 		module.exports = factory(root);
 	} else {
 		root.Gumshoe = factory(root);
 	}
-})(typeof global !== 'undefined' ? global : typeof window !== 'undefined' ? window : this, (function (window) {
-
+})(typeof global !== 'undefined' ? global : typeof window !== 'undefined' ? window : this, function (window) {
 	'use strict';
 
 	//
@@ -25,7 +24,6 @@
 	//
 
 	var defaults = {
-
 		// Active classes
 		navClass: 'active',
 		contentClass: 'active',
@@ -39,10 +37,8 @@
 		reflow: false,
 
 		// Event support
-		events: true
-
+		events: true,
 	};
-
 
 	//
 	// Methods
@@ -55,12 +51,12 @@
 	 */
 	var extend = function () {
 		var merged = {};
-		Array.prototype.forEach.call(arguments, (function (obj) {
+		Array.prototype.forEach.call(arguments, function (obj) {
 			for (var key in obj) {
 				if (!obj.hasOwnProperty(key)) return;
 				merged[key] = obj[key];
 			}
-		}));
+		});
 		return merged;
 	};
 
@@ -71,7 +67,6 @@
 	 * @param  {Object} detail Any details to pass along with the event
 	 */
 	var emitEvent = function (type, elem, detail) {
-
 		// Make sure events are enabled
 		if (!detail.settings.events) return;
 
@@ -79,12 +74,11 @@
 		var event = new CustomEvent(type, {
 			bubbles: true,
 			cancelable: true,
-			detail: detail
+			detail: detail,
 		});
 
 		// Dispatch the event
 		elem.dispatchEvent(event);
-
 	};
 
 	/**
@@ -108,13 +102,13 @@
 	 * @param  {Array} contents The content areas
 	 */
 	var sortContents = function (contents) {
-		if(contents) {
-			contents.sort((function (item1, item2) {
+		if (contents) {
+			contents.sort(function (item1, item2) {
 				var offset1 = getOffsetTop(item1.content);
 				var offset2 = getOffsetTop(item2.content);
 				if (offset1 < offset2) return -1;
 				return 1;
-			}));
+			});
 		}
 	};
 
@@ -124,7 +118,6 @@
 	 * @return {Float}           The number of pixels to offset the calculations
 	 */
 	var getOffset = function (settings) {
-
 		// if the offset is a function run it
 		if (typeof settings.offset === 'function') {
 			return parseFloat(settings.offset());
@@ -132,7 +125,6 @@
 
 		// Otherwise, return it as-is
 		return parseFloat(settings.offset);
-
 	};
 
 	/**
@@ -142,9 +134,12 @@
 	 */
 	var getDocumentHeight = function () {
 		return Math.max(
-			document.body.scrollHeight, document.documentElement.scrollHeight,
-			document.body.offsetHeight, document.documentElement.offsetHeight,
-			document.body.clientHeight, document.documentElement.clientHeight
+			document.body.scrollHeight,
+			document.documentElement.scrollHeight,
+			document.body.offsetHeight,
+			document.documentElement.offsetHeight,
+			document.body.clientHeight,
+			document.documentElement.clientHeight
 		);
 	};
 
@@ -191,7 +186,7 @@
 	 * @return {Object}          The content area and matching navigation link
 	 */
 	var getActive = function (contents, settings) {
-		var last = contents[contents.length-1];
+		var last = contents[contents.length - 1];
 		if (useLastItem(last, settings)) return last;
 		for (var i = contents.length - 1; i >= 0; i--) {
 			if (isInView(contents[i].content, settings)) return contents[i];
@@ -204,7 +199,6 @@
 	 * @param  {Object} settings The settings for this instantiation
 	 */
 	var deactivateNested = function (nav, settings) {
-
 		// If nesting isn't activated, bail
 		if (!settings.nested || !nav.parentNode) return;
 
@@ -217,7 +211,6 @@
 
 		// Apply recursively to any parent navigation elements
 		deactivateNested(li, settings);
-
 	};
 
 	/**
@@ -226,7 +219,6 @@
 	 * @param  {Object} settings The settings for this instantiation
 	 */
 	var deactivate = function (items, settings) {
-
 		// Make sure there are items to deactivate
 		if (!items) return;
 
@@ -245,11 +237,9 @@
 		emitEvent('gumshoeDeactivate', li, {
 			link: items.nav,
 			content: items.content,
-			settings: settings
+			settings: settings,
 		});
-
 	};
-
 
 	/**
 	 * Activate parent navs in a nested navigation
@@ -257,7 +247,6 @@
 	 * @param  {Object} settings The settings for this instantiation
 	 */
 	var activateNested = function (nav, settings) {
-
 		// If nesting isn't activated, bail
 		if (!settings.nested) return;
 
@@ -270,7 +259,6 @@
 
 		// Apply recursively to any parent navigation elements
 		activateNested(li, settings);
-
 	};
 
 	/**
@@ -279,7 +267,6 @@
 	 * @param  {Object} settings The settings for this instantiation
 	 */
 	var activate = function (items, settings) {
-
 		// Make sure there are items to activate
 		if (!items) return;
 
@@ -298,9 +285,8 @@
 		emitEvent('gumshoeActivate', li, {
 			link: items.nav,
 			content: items.content,
-			settings: settings
+			settings: settings,
 		});
-
 	};
 
 	/**
@@ -309,14 +295,12 @@
 	 * @param {Object} options  User options and settings
 	 */
 	var Constructor = function (selector, options) {
-
 		//
 		// Variables
 		//
 
 		var publicAPIs = {};
 		var navItems, contents, current, timeout, settings;
-
 
 		//
 		// Methods
@@ -326,7 +310,6 @@
 		 * Set variables from DOM elements
 		 */
 		publicAPIs.setup = function () {
-
 			// Get all nav items
 			navItems = document.querySelectorAll(selector);
 
@@ -334,8 +317,7 @@
 			contents = [];
 
 			// Loop through each item, get it's matching content, and push to the array
-			Array.prototype.forEach.call(navItems, (function (item) {
-
+			Array.prototype.forEach.call(navItems, function (item) {
 				// Get the content for the nav item
 				var content = document.getElementById(decodeURIComponent(item.hash.substr(1)));
 				if (!content) return;
@@ -343,21 +325,18 @@
 				// Push to the contents array
 				contents.push({
 					nav: item,
-					content: content
+					content: content,
 				});
-
-			}));
+			});
 
 			// Sort contents by the order they appear in the DOM
 			sortContents(contents);
-
 		};
 
 		/**
 		 * Detect which content is currently active
 		 */
 		publicAPIs.detect = function () {
-
 			// Get the active content
 			var active = getActive(contents, settings);
 
@@ -379,7 +358,6 @@
 
 			// Update the currently active content
 			current = active;
-
 		};
 
 		/**
@@ -387,7 +365,6 @@
 		 * Debounced for performance
 		 */
 		var scrollHandler = function (event) {
-
 			// If there's a timer, cancel it
 			if (timeout) {
 				window.cancelAnimationFrame(timeout);
@@ -395,7 +372,6 @@
 
 			// Setup debounce callback
 			timeout = window.requestAnimationFrame(publicAPIs.detect);
-
 		};
 
 		/**
@@ -403,25 +379,22 @@
 		 * Debounced for performance
 		 */
 		var resizeHandler = function (event) {
-
 			// If there's a timer, cancel it
 			if (timeout) {
 				window.cancelAnimationFrame(timeout);
 			}
 
 			// Setup debounce callback
-			timeout = window.requestAnimationFrame((function () {
+			timeout = window.requestAnimationFrame(function () {
 				sortContents(contents);
 				publicAPIs.detect();
-			}));
-
+			});
 		};
 
 		/**
 		 * Destroy the current instantiation
 		 */
 		publicAPIs.destroy = function () {
-
 			// Undo DOM changes
 			if (current) {
 				deactivate(current, settings);
@@ -439,14 +412,12 @@
 			current = null;
 			timeout = null;
 			settings = null;
-
 		};
 
 		/**
 		 * Initialize the current instantiation
 		 */
 		var init = function () {
-
 			// Merge user options into defaults
 			settings = extend(defaults, options || {});
 
@@ -461,9 +432,7 @@
 			if (settings.reflow) {
 				window.addEventListener('resize', resizeHandler, false);
 			}
-
 		};
-
 
 		//
 		// Initialize and return the public APIs
@@ -471,14 +440,11 @@
 
 		init();
 		return publicAPIs;
-
 	};
-
 
 	//
 	// Return the Constructor
 	//
 
 	return Constructor;
-
-}));
+});

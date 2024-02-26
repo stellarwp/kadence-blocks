@@ -1,106 +1,98 @@
 {
-  "apiVersion": 3,
-  "name": "kadence/advanced-form-number",
-  "category": "kadence-blocks",
-  "textdomain": "kadence-blocks",
-  "attributes": {
-	"uniqueID": {
-		"type": "string"
+	"apiVersion": 3,
+	"name": "kadence/advanced-form-number",
+	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
+	"attributes": {
+		"uniqueID": {
+			"type": "string"
+		},
+		"formID": {
+			"type": "string"
+		},
+		"label": {
+			"type": "string",
+			"default": ""
+		},
+		"placeholder": {
+			"type": "string",
+			"default": ""
+		},
+		"showLabel": {
+			"type": "boolean",
+			"default": true
+		},
+		"required": {
+			"type": "boolean",
+			"default": false
+		},
+		"defaultValue": {
+			"type": "string"
+		},
+		"defaultParameter": {
+			"type": "string"
+		},
+		"allowDecimals": {
+			"type": "boolean",
+			"default": false
+		},
+		"maxValue": {
+			"type": "number",
+			"default": ""
+		},
+		"minValue": {
+			"type": "number",
+			"default": ""
+		},
+		"ariaDescription": {
+			"type": "string",
+			"default": ""
+		},
+		"maxWidth": {
+			"type": "array",
+			"default": ["", "", ""]
+		},
+		"maxWidthUnit": {
+			"type": "string",
+			"default": "%"
+		},
+		"minWidth": {
+			"type": "array",
+			"default": ["", "", ""]
+		},
+		"minWidthUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"helpText": {
+			"type": "string",
+			"default": ""
+		},
+		"inputName": {
+			"type": "string"
+		},
+		"auto": {
+			"type": "string"
+		},
+		"errorMessage": {
+			"type": "string"
+		},
+		"requiredMessage": {
+			"type": "string"
+		},
+		"anchor": {
+			"type": "string"
+		}
 	},
-	"formID": {
-		"type": "string"
+	"supports": {
+		"anchor": true,
+		"html": false,
+		"ktdynamic": true,
+		"ktfieldconditional": true,
+		"reusable": false,
+		"kbMetadata": true,
+		"kbContentLabel": "label"
 	},
-	"label": {
-	  "type": "string",
-	  "default": ""
-	},
-	"placeholder": {
-	  "type": "string",
-	  "default": ""
-	},
-	"showLabel": {
-	  "type": "boolean",
-	  "default": true
-	},
-	"required": {
-	  "type": "boolean",
-	  "default": false
-	},
-    "defaultValue": {
-	  "type": "string"
-    },
-    "defaultParameter": {
-	  "type": "string"
-    },
-	"allowDecimals": {
-		"type": "boolean",
-		"default": false
-	},
-	"maxValue": {
-	  "type": "number",
-	  "default": ""
-	},
-	"minValue": {
-	  "type": "number",
-	  "default": ""
-	},
-	"ariaDescription": {
-	  "type": "string",
-	  "default": ""
-	},
-	"maxWidth": {
-	 "type": "array",
-	 "default": [
-	  "",
-	  "",
-	  ""
-	 ]
-	},
-	"maxWidthUnit": {
-	 "type": "string",
-	 "default": "%"
-	},
-	"minWidth": {
-	 "type": "array",
-	 "default": [
-	  "",
-	  "",
-	  ""
-	 ]
-	},
-	"minWidthUnit": {
-	 "type": "string",
-	 "default": "px"
-	},
-	"helpText": {
-	  "type": "string",
-	  "default": ""
-	},
-	"inputName": {
-	  "type": "string"
-	},
-	"auto": {
-	  "type": "string"
-	},
-	"errorMessage": {
-	  "type": "string"
-	},
-	"requiredMessage": {
-	 "type": "string"
-	},
-	"anchor": {
-	  "type": "string"
-	}
-  },
-  "supports": {
-	"anchor": true,
-	"html": false,
-	"ktdynamic": true,
-	"ktfieldconditional": true,
-	"reusable": false,
-	"kbMetadata": true,
-	"kbContentLabel": "label"
-  },
-  "ancestor": [ "kadence/advanced-form" ],
-  "parent": [ "kadence/advanced-form", "kadence/column" ]
+	"ancestor": ["kadence/advanced-form"],
+	"parent": ["kadence/advanced-form", "kadence/column"]
 }

@@ -7,11 +7,8 @@
  */
 
 const transforms = {
-	from: [
-	],
-	to: [
-
-	],
+	from: [],
+	to: [],
 };
 
 export default transforms;

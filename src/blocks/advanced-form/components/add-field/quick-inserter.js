@@ -28,10 +28,31 @@ const SEARCH_THRESHOLD = 6;
 const SHOWN_BLOCK_TYPES = 6;
 const SHOWN_BLOCK_PATTERNS = 2;
 const SHOWN_BLOCK_PATTERNS_WITH_PRIORITIZATION = 4;
-const fieldBlocks = [ 'kadence/advanced-form-text', 'kadence/advanced-form-email', 'kadence/advanced-form-textarea', 'kadence/advanced-form-select', 'kadence/advanced-form-radio', 'kadence/advanced-form-telephone', 'kadence/advanced-form-checkbox', 'kadence/advanced-form-number' ];
-const advancedFieldBlocks = [ 'kadence/advanced-form-file', 'kadence/advanced-form-time', 'kadence/advanced-form-date', 'kadence/advanced-form-accept', 'kadence/advanced-form-hidden' ];
-const submitBlocks = [ 'kadence/advanced-form-submit', 'kadence/advanced-form-captcha' ];
-const layoutBlocks = [ 'core/paragraph', 'kadence/advancedheading', 'kadence/column', 'kadence/rowlayout', 'kadence/spacer' ];
+const fieldBlocks = [
+	'kadence/advanced-form-text',
+	'kadence/advanced-form-email',
+	'kadence/advanced-form-textarea',
+	'kadence/advanced-form-select',
+	'kadence/advanced-form-radio',
+	'kadence/advanced-form-telephone',
+	'kadence/advanced-form-checkbox',
+	'kadence/advanced-form-number',
+];
+const advancedFieldBlocks = [
+	'kadence/advanced-form-file',
+	'kadence/advanced-form-time',
+	'kadence/advanced-form-date',
+	'kadence/advanced-form-accept',
+	'kadence/advanced-form-hidden',
+];
+const submitBlocks = ['kadence/advanced-form-submit', 'kadence/advanced-form-captcha'];
+const layoutBlocks = [
+	'core/paragraph',
+	'kadence/advancedheading',
+	'kadence/column',
+	'kadence/rowlayout',
+	'kadence/spacer',
+];
 
 /**
  * Retrieves the block types inserter state.
@@ -40,60 +61,51 @@ const layoutBlocks = [ 'core/paragraph', 'kadence/advancedheading', 'kadence/col
  * @param {Function} onInsert     function called when inserter a list of blocks.
  * @return {Array} Returns the block types state. (block types, categories, collections, onSelect handler)
  */
-const useBlockTypesState = ( rootClientId, onInsert ) => {
+const useBlockTypesState = (rootClientId, onInsert) => {
 	const { submitItems, layoutItems, formItems, formAdvItems } = useSelect(
-		( select ) => {
-			const { getInserterItems } = select( blockEditorStore );
-			const allItems = getInserterItems( rootClientId );
-			let formItems = allItems.filter(
-				( item ) => fieldBlocks.includes( item.id )
-			);
-			let formAdvItems = allItems.filter(
-				( item ) => advancedFieldBlocks.includes( item.id )
-			);
-			const submitItems = allItems.filter(
-				( item ) => submitBlocks.includes( item.id )
-			);
-			let layoutItems = allItems.filter(
-				( item ) => layoutBlocks.includes( item.id )
-			);
-			formItems = sortBy(formItems, function(item){
-				return fieldBlocks.indexOf(item.name)
+		(select) => {
+			const { getInserterItems } = select(blockEditorStore);
+			const allItems = getInserterItems(rootClientId);
+			let formItems = allItems.filter((item) => fieldBlocks.includes(item.id));
+			let formAdvItems = allItems.filter((item) => advancedFieldBlocks.includes(item.id));
+			const submitItems = allItems.filter((item) => submitBlocks.includes(item.id));
+			let layoutItems = allItems.filter((item) => layoutBlocks.includes(item.id));
+			formItems = sortBy(formItems, function (item) {
+				return fieldBlocks.indexOf(item.name);
 			});
-			formAdvItems = sortBy(formAdvItems, function(item){
-				return advancedFieldBlocks.indexOf(item.name)
+			formAdvItems = sortBy(formAdvItems, function (item) {
+				return advancedFieldBlocks.indexOf(item.name);
 			});
-			layoutItems = sortBy(layoutItems, function(item){
-				return layoutBlocks.indexOf(item.name)
+			layoutItems = sortBy(layoutItems, function (item) {
+				return layoutBlocks.indexOf(item.name);
 			});
 			return {
 				submitItems: submitItems,
-				layoutItems:layoutItems,
+				layoutItems: layoutItems,
 				formItems: formItems,
 				formAdvItems: formAdvItems,
 			};
 		},
-		[ rootClientId ]
+		[rootClientId]
 	);
 
 	const onSelectItem = useCallback(
-		( { name, initialAttributes, innerBlocks }, shouldFocusBlock, destinationIndex ) => {
+		({ name, initialAttributes, innerBlocks }, shouldFocusBlock, destinationIndex) => {
 			const insertedBlock = createBlock(
 				name,
 				initialAttributes,
-				createBlocksFromInnerBlocksTemplate( innerBlocks )
+				createBlocksFromInnerBlocksTemplate(innerBlocks)
 			);
 
-			onInsert( insertedBlock, undefined, shouldFocusBlock, destinationIndex );
+			onInsert(insertedBlock, undefined, shouldFocusBlock, destinationIndex);
 		},
-		[ onInsert ]
+		[onInsert]
 	);
 
-	return [ formItems, formAdvItems, layoutItems, submitItems, onSelectItem ];
+	return [formItems, formAdvItems, layoutItems, submitItems, onSelectItem];
 };
 
-
-export default function QuickInserter( {
+export default function QuickInserter({
 	onSelect,
 	rootClientId,
 	clientId,
@@ -102,28 +114,24 @@ export default function QuickInserter( {
 	prioritizePatterns,
 	selectBlockOnInsert,
 	orderInitialBlockItems,
-} ) {
-	const [ filterValue, setFilterValue ] = useState( '' );
-	const [ destinationRootClientId, onInsertBlocks ] = useInsertionPoint( {
+}) {
+	const [filterValue, setFilterValue] = useState('');
+	const [destinationRootClientId, onInsertBlocks] = useInsertionPoint({
 		onSelect,
 		rootClientId,
 		clientId,
 		isAppender,
 		selectBlockOnInsert,
-	} );
-	const [
-		blockTypes,
-		formAdvItems,
-		blockLayoutItems,
-		blockSubmitItems,
-		onSelectBlockType,
-	] = useBlockTypesState( destinationRootClientId, onInsertBlocks );
+	});
+	const [blockTypes, formAdvItems, blockLayoutItems, blockSubmitItems, onSelectBlockType] = useBlockTypesState(
+		destinationRootClientId,
+		onInsertBlocks
+	);
 	const { setInserterIsOpened, insertIndex } = useSelect(
-		( select ) => {
-			const { getSettings, getBlockIndex, getBlockCount } =
-				select( blockEditorStore );
+		(select) => {
+			const { getSettings, getBlockIndex, getBlockCount } = select(blockEditorStore);
 			const settings = getSettings();
-			const index = getBlockIndex( clientId );
+			const index = getBlockIndex(clientId);
 			const blockCount = getBlockCount();
 
 			return {
@@ -131,87 +139,87 @@ export default function QuickInserter( {
 				insertIndex: index === -1 ? blockCount - 1 : index,
 			};
 		},
-		[ clientId ]
+		[clientId]
 	);
-	useEffect( () => {
-		if ( setInserterIsOpened ) {
-			setInserterIsOpened( false );
+	useEffect(() => {
+		if (setInserterIsOpened) {
+			setInserterIsOpened(false);
 		}
-	}, [ setInserterIsOpened ] );
-	const BlockSelectList = ( { name } ) => {
+	}, [setInserterIsOpened]);
+	const BlockSelectList = ({ name }) => {
 		switch (name) {
 			case 'layout':
 				return (
 					<>
-						{ blockLayoutItems.map( ( item, j ) => (
+						{blockLayoutItems.map((item, j) => (
 							<InserterListItem
-								key={ item.id }
-								item={ item }
-								className={ getBlockMenuDefaultClassName(
-									item.id
-								) }
-								onSelect={ ( selectItem, evt ) => onSelectBlockType( selectItem, true, ( insertionIndex ? insertionIndex : insertIndex ) ) }
+								key={item.id}
+								item={item}
+								className={getBlockMenuDefaultClassName(item.id)}
+								onSelect={(selectItem, evt) =>
+									onSelectBlockType(selectItem, true, insertionIndex ? insertionIndex : insertIndex)
+								}
 							/>
-						) ) }
+						))}
 					</>
 				);
 				break;
 			case 'extra':
 				return (
 					<>
-						{ blockSubmitItems.map( ( item, j ) => (
+						{blockSubmitItems.map((item, j) => (
 							<InserterListItem
-								key={ item.id }
-								item={ item }
-								className={ getBlockMenuDefaultClassName(
-									item.id
-								) }
-								onSelect={ ( selectItem, evt ) => onSelectBlockType( selectItem, true, ( insertionIndex ? insertionIndex : insertIndex ) ) }
+								key={item.id}
+								item={item}
+								className={getBlockMenuDefaultClassName(item.id)}
+								onSelect={(selectItem, evt) =>
+									onSelectBlockType(selectItem, true, insertionIndex ? insertionIndex : insertIndex)
+								}
 							/>
-						) ) }
+						))}
 					</>
 				);
 				break;
 			case 'advanced':
 				return (
 					<>
-						{ formAdvItems.map( ( item, j ) => (
+						{formAdvItems.map((item, j) => (
 							<InserterListItem
-								key={ item.id }
-								item={ item }
-								className={ getBlockMenuDefaultClassName(
-									item.id
-								) }
-								onSelect={ ( selectItem, evt ) => onSelectBlockType( selectItem, true, ( insertionIndex ? insertionIndex : insertIndex ) ) }
+								key={item.id}
+								item={item}
+								className={getBlockMenuDefaultClassName(item.id)}
+								onSelect={(selectItem, evt) =>
+									onSelectBlockType(selectItem, true, insertionIndex ? insertionIndex : insertIndex)
+								}
 							/>
-						) ) }
+						))}
 					</>
 				);
 				break;
 			default:
 				return (
 					<>
-						{ blockTypes.map( ( item, j ) => (
+						{blockTypes.map((item, j) => (
 							<InserterListItem
-								key={ item.id }
-								item={ item }
-								className={ getBlockMenuDefaultClassName(
-									item.id
-								) }
-								onSelect={ ( selectItem, evt ) => onSelectBlockType( selectItem, true, ( insertionIndex ? insertionIndex : insertIndex ) ) }
+								key={item.id}
+								item={item}
+								className={getBlockMenuDefaultClassName(item.id)}
+								onSelect={(selectItem, evt) =>
+									onSelectBlockType(selectItem, true, insertionIndex ? insertionIndex : insertIndex)
+								}
 							/>
-						) ) }
+						))}
 					</>
 				);
 				break;
 		}
-	}
+	};
 
 	return (
 		<div
-			className={ classnames( 'block-editor-inserter__quick-inserter', {
+			className={classnames('block-editor-inserter__quick-inserter', {
 				'has-expand': setInserterIsOpened,
-			} ) }
+			})}
 		>
 			{/* { showSearch && (
 				<SearchControl
@@ -230,28 +238,40 @@ export default function QuickInserter( {
 				<TabPanel
 					className="kb-custom-insert_tabs"
 					activeClass="active-insert-list"
-					tabs={ [
+					tabs={[
 						{
 							name: 'fields',
-							title: <span className='insert-tab-title-wrap'><span className='insert-tab-subtitle'>{__( 'Standard', 'kadence-blocks' )}</span><span className='insert-tab-title'>{__( 'Fields', 'kadence-blocks' )}</span></span>,
+							title: (
+								<span className="insert-tab-title-wrap">
+									<span className="insert-tab-subtitle">{__('Standard', 'kadence-blocks')}</span>
+									<span className="insert-tab-title">{__('Fields', 'kadence-blocks')}</span>
+								</span>
+							),
 						},
 						{
 							name: 'advanced',
-							title: <span className='insert-tab-title-wrap'><span className='insert-tab-subtitle'>{__( 'Advanced', 'kadence-blocks' )}</span><span className='insert-tab-title'>{__( 'Fields', 'kadence-blocks' )}</span></span>,
+							title: (
+								<span className="insert-tab-title-wrap">
+									<span className="insert-tab-subtitle">{__('Advanced', 'kadence-blocks')}</span>
+									<span className="insert-tab-title">{__('Fields', 'kadence-blocks')}</span>
+								</span>
+							),
 						},
 						{
 							name: 'layout',
-							title: __( 'Layout', 'kadence-blocks' ),
+							title: __('Layout', 'kadence-blocks'),
 						},
 						{
 							name: 'extra',
-							title: __( 'Misc', 'kadence-blocks' ),
+							title: __('Misc', 'kadence-blocks'),
 						},
-					] }
+					]}
 				>
-					{ ( tab ) => (
-						<div className="kb-custom-insert__list"><BlockSelectList name={ tab.name } /></div>
-					) }
+					{(tab) => (
+						<div className="kb-custom-insert__list">
+							<BlockSelectList name={tab.name} />
+						</div>
+					)}
 				</TabPanel>
 			</div>
 		</div>

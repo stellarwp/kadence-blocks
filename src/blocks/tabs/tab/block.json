@@ -1,27 +1,25 @@
 {
-  "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 3,
-  "title": "Tab",
-  "name": "kadence/tab",
-  "category": "kadence-blocks",
-  "parent": [
-	"kadence/tabs"
-  ],
-  "attributes": {
-	"id": {
-	  "type": "number",
-	  "default": 1
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"title": "Tab",
+	"name": "kadence/tab",
+	"category": "kadence-blocks",
+	"parent": ["kadence/tabs"],
+	"attributes": {
+		"id": {
+			"type": "number",
+			"default": 1
+		},
+		"uniqueID": {
+			"type": "string",
+			"default": ""
+		}
 	},
-	"uniqueID": {
-	  "type": "string",
-	  "default": ""
-	}
-  },
-  "supports": {
-	"inserter": false,
-	"reusable": false,
-	"html": false,
-	"lock": false
-  },
-  "editorScript": "file:editor.js"
+	"supports": {
+		"inserter": false,
+		"reusable": false,
+		"html": false,
+		"lock": false
+	},
+	"editorScript": "file:editor.js"
 }

@@ -96,9 +96,9 @@
 			"namespace_prefix": "KadenceWP\\KadenceBlocks\\",
 			"delete_vendor_packages": false,
 			"exclude_from_prefix": {
-			  "file_patterns": [
-				  "/symfony\\/polyfill-(.*)/"
-			  ]
+				"file_patterns": [
+					"/symfony\\/polyfill-(.*)/"
+				]
 			}
 		}
 	}

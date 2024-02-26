@@ -1,23 +1,17 @@
 /**
  * WordPress dependencies
  */
-import { useState } from "@wordpress/element";
-import {
-	BaseControl,
-	Button,
-	Flex,
-	FlexItem,
-	Icon,
-} from "@wordpress/components";
-import { __ } from "@wordpress/i18n";
+import { useState } from '@wordpress/element';
+import { BaseControl, Button, Flex, FlexItem, Icon } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import { Chip } from "../chip";
-import "./chips-input.scss";
-import { LoadingDots, Sparkle } from "../icons";
-import { KEYWORD_SUGGESTION_STATES } from "../../constants";
+import { Chip } from '../chip';
+import './chips-input.scss';
+import { LoadingDots, Sparkle } from '../icons';
+import { KEYWORD_SUGGESTION_STATES } from '../../constants';
 
 export function ChipsInput(props) {
 	const {
@@ -35,8 +29,8 @@ export function ChipsInput(props) {
 		...baseProps
 	} = props;
 
-	const internalId = id ? `inspector-chips-input-control-${id}` : "";
-	const [inputValue, setInputValue] = useState("");
+	const internalId = id ? `inspector-chips-input-control-${id}` : '';
+	const [inputValue, setInputValue] = useState('');
 	const [inputRef, setInputRef] = useState();
 
 	function handleTagDelete(tag) {
@@ -47,7 +41,7 @@ export function ChipsInput(props) {
 	}
 
 	function maybeUpdateTags() {
-		const trimmedInput = inputValue.replace(",", "").trim();
+		const trimmedInput = inputValue.replace(',', '').trim();
 		const newSelectedItems = [...tags];
 		const duplicatedValues = newSelectedItems.indexOf(trimmedInput);
 
@@ -56,18 +50,18 @@ export function ChipsInput(props) {
 		}
 
 		if (duplicatedValues !== -1) {
-			setInputValue("");
+			setInputValue('');
 			return;
 		}
 
 		newSelectedItems.push(trimmedInput);
 		selectedTags(newSelectedItems);
-		setInputValue("");
+		setInputValue('');
 	}
 
 	function handleKeyDown(evt) {
-		const isEnter = evt.key === "Enter";
-		const isComma = evt.key === ",";
+		const isEnter = evt.key === 'Enter';
+		const isComma = evt.key === ',';
 
 		if (isEnter || isComma) {
 			evt.preventDefault();
@@ -81,7 +75,7 @@ export function ChipsInput(props) {
 	}
 
 	function handleInputChange(value) {
-		if (value !== " " && value !== ",") {
+		if (value !== ' ' && value !== ',') {
 			setInputValue(value);
 		}
 	}
@@ -93,28 +87,16 @@ export function ChipsInput(props) {
 		const newSelectedItems = [...tags];
 		newSelectedItems.push(keyword);
 		selectedTags(newSelectedItems);
-		setInputValue("");
+		setInputValue('');
 		onSuggestedKeywordAdded(keyword);
 	}
 
 	return (
-		<BaseControl
-			className={"stellarwp-chips-input"}
-			id={internalId}
-			{...baseProps}
-		>
-			<div
-				className="stellarwp-chips-input__control"
-				onClick={() => inputRef && inputRef.focus()}
-			>
+		<BaseControl className={'stellarwp-chips-input'} id={internalId} {...baseProps}>
+			<div className="stellarwp-chips-input__control" onClick={() => inputRef && inputRef.focus()}>
 				{Array.isArray(tags) &&
 					tags.map((tag, index) => (
-						<Chip
-							key={index}
-							text={tag}
-							className="chip--blue"
-							onDelete={() => handleTagDelete(tag)}
-						/>
+						<Chip key={index} text={tag} className="chip--blue" onDelete={() => handleTagDelete(tag)} />
 					))}
 				{Array.isArray(tags) && tags.length < maxTags && (
 					<input
@@ -126,9 +108,7 @@ export function ChipsInput(props) {
 						onKeyUp={handleKeyDown}
 						onBlur={handleOnBlur}
 						onChange={(e) => handleInputChange(e.target.value)}
-						placeholder={
-							placeholder && tags.length < maxTags ? placeholder : ""
-						}
+						placeholder={placeholder && tags.length < maxTags ? placeholder : ''}
 					/>
 				)}
 			</div>
@@ -141,10 +121,7 @@ export function ChipsInput(props) {
 								return (
 									<div className="stellarwp-chips-input__suggestions-loading">
 										<Icon icon={Sparkle} />
-										{__(
-											"Kadence is looking for Keyword Suggestions",
-											"kadence-blocks"
-										)}
+										{__('Kadence is looking for Keyword Suggestions', 'kadence-blocks')}
 										<Icon icon={LoadingDots} />
 									</div>
 								);
@@ -152,7 +129,7 @@ export function ChipsInput(props) {
 								return (
 									<>
 										<div className="stellarwp-chips-input__suggestions-title">
-											{__("Suggested Keywords", "kadence-blocks")}
+											{__('Suggested Keywords', 'kadence-blocks')}
 										</div>
 										<ul className="stellarwp-chips-input__suggestions-list">
 											{suggestedKeywords.map((keyword, index) => (
@@ -175,15 +152,12 @@ export function ChipsInput(props) {
 								return (
 									<>
 										<div className="stellarwp-chips-input__suggestions-title">
-											{__(
-												"We couldn’t find any good Keywords.",
-												"kadence-blocks"
-											)}
+											{__('We couldn’t find any good Keywords.', 'kadence-blocks')}
 										</div>
 										<div className="stellarwp-chips-input__suggestions-description">
 											{__(
 												"No worries, you can add your own keywords. Make sure to use words that directly relate to your website's content and what you do. The more the better.",
-												"kadence-blocks"
+												'kadence-blocks'
 											)}
 										</div>
 									</>
@@ -193,7 +167,7 @@ export function ChipsInput(props) {
 									<Flex>
 										<FlexItem>
 											<div className="stellarwp-chips-input__suggestions-title">
-												{__("Oops! Something went wrong.", "kadence-blocks")}
+												{__('Oops! Something went wrong.', 'kadence-blocks')}
 											</div>
 										</FlexItem>
 										<FlexItem>
@@ -202,7 +176,7 @@ export function ChipsInput(props) {
 												variant="link"
 												className="stellarwp-chips-input__suggestions-try-button"
 											>
-												{__("Try again.", "kadence-blocks")}
+												{__('Try again.', 'kadence-blocks')}
 											</Button>
 										</FlexItem>
 									</Flex>
