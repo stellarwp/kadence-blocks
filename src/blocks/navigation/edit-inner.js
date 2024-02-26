@@ -23,7 +23,15 @@ import {
 	useInnerBlocksProps,
 	InspectorAdvancedControls,
 } from '@wordpress/block-editor';
-import { TextControl, ToggleControl, ToolbarGroup, ExternalLink, Button, Placeholder } from '@wordpress/components';
+import {
+	TextControl,
+	ToggleControl,
+	ToolbarGroup,
+	ExternalLink,
+	Button,
+	Placeholder,
+	Modal,
+} from '@wordpress/components';
 
 import { FormTitle, SelectForm } from './components';
 
@@ -134,6 +142,10 @@ export function EditInner(props) {
 		}
 	};
 
+	const [isOpen, setOpen] = useState(false);
+	const openModal = () => setOpen(true);
+	const closeModal = () => setOpen(false);
+
 	const innerBlocksProps = useInnerBlocksProps(
 		{
 			className: formClasses,
@@ -229,6 +241,20 @@ export function EditInner(props) {
 				{activeTab === 'general' && (
 					<>
 						General tab
+						<>
+							<Button variant="secondary" onClick={openModal}>
+								Open Menu Editor
+							</Button>
+							{isOpen && (
+								<Modal title="Menu Editor" onRequestClose={closeModal}>
+									<></>
+
+									<Button variant="secondary" onClick={closeModal}>
+										My custom close button
+									</Button>
+								</Modal>
+							)}
+						</>
 						<div className="kt-sidebar-settings-spacer"></div>
 					</>
 				)}
