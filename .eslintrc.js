@@ -81,6 +81,7 @@ const eslintConfig = {
 		'no-cond-assign': 'off',
 		'jsdoc/require-returns-check': 'off',
 		'@wordpress/no-global-active-element': 'off',
+		'jsx-a11y/anchor-has-content': 'off',
 	},
 	ignorePatterns: ['node_modules/', 'dist/', 'build/', 'vendor/', 'gulp/', 'src/packages/'],
 };
