@@ -13,12 +13,17 @@ import metadata from './block.json';
 
 registerBlockType('kadence/progress-bar', {
 	...metadata,
-	title: _x( 'Progress Bar', 'block title', 'kadence-blocks' ),
+	title: _x('Progress Bar', 'block title', 'kadence-blocks'),
 	icon: {
 		src: progressIcon,
 	},
-	getEditWrapperProps( attributes ) {
-		if ( 'wide' === attributes.align || 'full' === attributes.align || 'left' === attributes.align || 'right' === attributes.align ) {
+	getEditWrapperProps(attributes) {
+		if (
+			'wide' === attributes.align ||
+			'full' === attributes.align ||
+			'left' === attributes.align ||
+			'right' === attributes.align
+		) {
 			return {
 				'data-align': attributes.align,
 			};

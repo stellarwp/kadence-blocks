@@ -29,33 +29,26 @@ import { useBlockProps } from '@wordpress/block-editor';
  * @return {?WPBlock}          The block, if it has been successfully
  *                             registered; otherwise `undefined`.
  */
-registerBlockType( 'kadence/theme-header', {
-	title: _x( 'Theme Header', 'block title', 'kadence-blocks' ),
+registerBlockType('kadence/theme-header', {
+	title: _x('Theme Header', 'block title', 'kadence-blocks'),
 	icon: {
 		src: blockTabsIcon,
 	},
 	category: 'kadence-blocks',
-	keywords: [
-		__( 'header', 'kadence-blocks' ),
-		__( 'theme', 'kadence-blocks' ),
-		'KB',
-	],
+	keywords: [__('header', 'kadence-blocks'), __('theme', 'kadence-blocks'), 'KB'],
 	supports: {
 		anchor: true,
-		align: [ 'wide', 'full' ],
+		align: ['wide', 'full'],
 	},
-	edit: function ( props ) {
-        const blockProps = useBlockProps();
-        return (
-            <div { ...blockProps }>
-                <ServerSideRender
-                    block="kadence/theme-header"
-                    attributes={ props.attributes }
-                />
-            </div>
-        );
-    },
+	edit: function (props) {
+		const blockProps = useBlockProps();
+		return (
+			<div {...blockProps}>
+				<ServerSideRender block="kadence/theme-header" attributes={props.attributes} />
+			</div>
+		);
+	},
 	save() {
 		return null;
 	},
-} );
+});

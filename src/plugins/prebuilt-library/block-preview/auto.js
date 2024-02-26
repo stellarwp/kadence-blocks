@@ -10,7 +10,7 @@ import { Disabled, Spinner } from '@wordpress/components';
  */
 import {
 	BlockList,
-//	__unstableIframe as Iframe,
+	//	__unstableIframe as Iframe,
 	__unstableEditorStyles as EditorStyles,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
@@ -22,7 +22,7 @@ let MemoizedBlockList;
 
 const MAX_HEIGHT = 1600;
 
-function ScaledBlockPreview( {
+function ScaledBlockPreview({
 	viewportWidth,
 	containerWidth,
 	minHeight = '200px',
@@ -31,43 +31,40 @@ function ScaledBlockPreview( {
 	ratio,
 	neededCompatStyles = [],
 	baseCompatStyles,
-} ) {
-	if ( ! viewportWidth ) {
+}) {
+	if (!viewportWidth) {
 		viewportWidth = containerWidth;
 	}
 
-	const [ contentResizeListener, { height: contentHeight } ] =
-		useResizeObserver();
-
+	const [contentResizeListener, { height: contentHeight }] = useResizeObserver();
 
 	// Initialize on render instead of module top level, to avoid circular dependency issues.
-	MemoizedBlockList = MemoizedBlockList || pure( BlockList );
+	MemoizedBlockList = MemoizedBlockList || pure(BlockList);
 
 	const scale = containerWidth / viewportWidth;
 	return (
 		<>
-			{ ! contentHeight && (
-				<div className='kb-preview-iframe-loader'><Spinner /></div>
-			) }
+			{!contentHeight && (
+				<div className="kb-preview-iframe-loader">
+					<Spinner />
+				</div>
+			)}
 			<Disabled
 				className="block-editor-block-preview__content"
-				style={ {
-					transform: `scale(${ scale })`,
+				style={{
+					transform: `scale(${scale})`,
 					height: contentHeight * scale,
-					maxHeight:
-						contentHeight > MAX_HEIGHT ? MAX_HEIGHT * scale : undefined,
+					maxHeight: contentHeight > MAX_HEIGHT ? MAX_HEIGHT * scale : undefined,
 					minHeight: contentHeight ? undefined : minHeight,
-				} }
+				}}
 			>
 				<Iframe
-					head={ <EditorStyles styles={ editorStyles } /> }
-					contentRef={ useRefEffect( ( bodyElement ) => {
+					head={<EditorStyles styles={editorStyles} />}
+					contentRef={useRefEffect((bodyElement) => {
 						const {
 							ownerDocument: { documentElement },
 						} = bodyElement;
-						documentElement.classList.add(
-							'block-editor-block-preview__content-iframe'
-						);
+						documentElement.classList.add('block-editor-block-preview__content-iframe');
 						documentElement.style.position = 'absolute';
 						documentElement.style.width = '100%';
 
@@ -75,10 +72,10 @@ function ScaledBlockPreview( {
 						bodyElement.style.boxSizing = 'border-box';
 						bodyElement.style.position = 'absolute';
 						bodyElement.style.width = '100%';
-					}, [] ) }
+					}, [])}
 					aria-hidden
-					tabIndex={ -1 }
-					style={ {
+					tabIndex={-1}
+					style={{
 						position: 'absolute',
 						width: viewportWidth,
 						height: contentHeight,
@@ -86,36 +83,25 @@ function ScaledBlockPreview( {
 						// This is a catch-all max-height for patterns.
 						// See: https://github.com/WordPress/gutenberg/pull/38175.
 						maxHeight: MAX_HEIGHT,
-						minHeight:
-							scale !== 0 && scale < 1 && minHeight
-								? minHeight / scale
-								: minHeight,
-					} }
+						minHeight: scale !== 0 && scale < 1 && minHeight ? minHeight / scale : minHeight,
+					}}
 				>
-					{ contentResizeListener }
-					<MemoizedBlockList renderAppender={ false } />
+					{contentResizeListener}
+					<MemoizedBlockList renderAppender={false} />
 				</Iframe>
 			</Disabled>
 		</>
 	);
 }
 
-export default function AutoBlockPreview( props ) {
-	const [ containerResizeListener, { width: containerWidth } ] =
-		useResizeObserver();
+export default function AutoBlockPreview(props) {
+	const [containerResizeListener, { width: containerWidth }] = useResizeObserver();
 
 	return (
 		<>
-			<div style={ { position: 'relative', width: '100%', height: 0 } }>
-				{ containerResizeListener }
-			</div>
+			<div style={{ position: 'relative', width: '100%', height: 0 }}>{containerResizeListener}</div>
 			<div className="block-editor-block-preview__container">
-				{ !! containerWidth && (
-					<ScaledBlockPreview
-						{ ...props }
-						containerWidth={ containerWidth }
-					/>
-				) }
+				{!!containerWidth && <ScaledBlockPreview {...props} containerWidth={containerWidth} />}
 			</div>
 		</>
 	);

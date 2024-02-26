@@ -1,92 +1,84 @@
 {
-  "apiVersion": 3,
-  "name": "kadence/advanced-form-accept",
-  "category": "kadence-blocks",
-  "textdomain": "kadence-blocks",
-  "attributes": {
-	"uniqueID": {
-		"type": "string"
+	"apiVersion": 3,
+	"name": "kadence/advanced-form-accept",
+	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
+	"attributes": {
+		"uniqueID": {
+			"type": "string"
+		},
+		"formID": {
+			"type": "string"
+		},
+		"label": {
+			"type": "string",
+			"default": ""
+		},
+		"showLabel": {
+			"type": "boolean",
+			"default": true
+		},
+		"required": {
+			"type": "boolean",
+			"default": false
+		},
+		"defaultValue": {
+			"type": "string"
+		},
+		"isChecked": {
+			"type": "boolean",
+			"default": false
+		},
+		"defaultParameter": {
+			"type": "string"
+		},
+		"ariaDescription": {
+			"type": "string",
+			"default": ""
+		},
+		"helpText": {
+			"type": "string",
+			"default": ""
+		},
+		"description": {
+			"type": "string",
+			"default": ""
+		},
+		"maxWidth": {
+			"type": "array",
+			"default": ["", "", ""]
+		},
+		"maxWidthUnit": {
+			"type": "string",
+			"default": "%"
+		},
+		"minWidth": {
+			"type": "array",
+			"default": ["", "", ""]
+		},
+		"minWidthUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"inputName": {
+			"type": "string"
+		},
+		"requiredMessage": {
+			"type": "string"
+		},
+		"anchor": {
+			"type": "string"
+		}
 	},
-	"formID": {
-		"type": "string"
+	"supports": {
+		"anchor": true,
+		"html": false,
+		"ktfieldconditional": true,
+		"reusable": false,
+		"kbMetadata": true,
+		"ktdynamic": true,
+		"kbContentLabel": "label"
 	},
-	"label": {
-	  "type": "string",
-	  "default": ""
-	},
-	"showLabel": {
-	  "type": "boolean",
-	  "default": true
-	},
-	"required": {
-	  "type": "boolean",
-	  "default": false
-	},
-	"defaultValue": {
-	  "type": "string"
-	},
-	"isChecked": {
-		"type": "boolean",
-		"default": false
-	},
-	"defaultParameter": {
-	  "type": "string"
-	},
-	"ariaDescription": {
-	  "type": "string",
-	  "default": ""
-	},
-	"helpText": {
-	  "type": "string",
-	  "default": ""
-	},
-	"description": {
-	  "type": "string",
-	  "default": ""
-	},
-	"maxWidth": {
-	  "type": "array",
-	  "default": [
-		  "",
-		  "",
-		  ""
-	  ]
-	},
-	"maxWidthUnit": {
-	  "type": "string",
-	  "default": "%"
-	},
-	"minWidth": {
-	  "type": "array",
-	  "default": [
-		  "",
-		  "",
-		  ""
-	  ]
-	},
-	"minWidthUnit": {
-	  "type": "string",
-	  "default": "px"
-	},
-	"inputName": {
-	  "type": "string"
-	},
-	"requiredMessage": {
-	  "type": "string"
-	},
-	"anchor": {
-	  "type": "string"
-	}
-  },
-  "supports": {
-	"anchor": true,
-	"html": false,
-	"ktfieldconditional": true,
-	"reusable": false,
-	"kbMetadata": true,
-	"ktdynamic": true,
-	"kbContentLabel": "label"
-  },
-  "ancestor": [ "kadence/advanced-form" ],
-  "parent": [ "kadence/advanced-form", "kadence/column" ]
+	"ancestor": ["kadence/advanced-form"],
+	"parent": ["kadence/advanced-form", "kadence/column"]
 }

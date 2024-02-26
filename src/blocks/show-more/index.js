@@ -12,13 +12,9 @@ import transforms from './transforms';
 
 registerBlockType('kadence/show-more', {
 	...metadata,
-	title: _x( 'Show More', 'block title', 'kadence-blocks' ),
-	description: _x( 'Hide content and enable a show more button to reveal', 'block description', 'kadence-blocks' ),
-	keywords: [
-		__( 'show', 'kadence-blocks' ),
-		__( 'hide', 'kadence-blocks' ),
-		"kb",
-	],
+	title: _x('Show More', 'block title', 'kadence-blocks'),
+	description: _x('Hide content and enable a show more button to reveal', 'block description', 'kadence-blocks'),
+	keywords: [__('show', 'kadence-blocks'), __('hide', 'kadence-blocks'), 'kb'],
 	icon: {
 		src: showMoreIcon,
 	},
@@ -34,11 +30,14 @@ registerBlockType('kadence/show-more', {
 					{
 						name: 'core/paragraph',
 						attributes: {
-							content: __( 'This content will be partially hidden. Click the button below to reveal more.', 'kadence-blocks' ),
-						}
-					}
-				]
+							content: __(
+								'This content will be partially hidden. Click the button below to reveal more.',
+								'kadence-blocks'
+							),
+						},
+					},
+				],
 			},
-		]
-	}
+		],
+	},
 });

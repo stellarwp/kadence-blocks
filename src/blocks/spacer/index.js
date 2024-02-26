@@ -20,17 +20,17 @@ import './style.scss';
 export { metadata, name };
 
 registerBlockType('kadence/spacer', {
-	getEditWrapperProps( { blockAlignment } ) {
-		if ( 'full' === blockAlignment || 'wide' === blockAlignment || 'center' === blockAlignment ) {
+	getEditWrapperProps({ blockAlignment }) {
+		if ('full' === blockAlignment || 'wide' === blockAlignment || 'center' === blockAlignment) {
 			return { 'data-align': blockAlignment };
 		}
 	},
 	...metadata,
-	title: _x( 'Spacer / Divider', 'block title', 'kadence-blocks' ),
+	title: _x('Spacer / Divider', 'block title', 'kadence-blocks'),
 	keywords: [
-		__( 'spacer', 'kadence-blocks' ),
-		__( 'divider', 'kadence-blocks' ),
-		__( 'separator', 'kadence-blocks' ),
+		__('spacer', 'kadence-blocks'),
+		__('divider', 'kadence-blocks'),
+		__('separator', 'kadence-blocks'),
 		'KB',
 	],
 	icon: {
@@ -44,6 +44,6 @@ registerBlockType('kadence/spacer', {
 		attributes: {
 			spacerHeight: 4,
 			dividerColor: '#2B6CB0',
-		}
-	}
+		},
+	},
 });

@@ -27,33 +27,20 @@ import {
 	getFontSizeOptionOutput,
 	setBlockDefaults,
 	getUniqueId,
-	getPostOrFseId
+	getPostOrFseId,
 } from '@kadence/helpers';
 
-import {
-	lineBar,
-	circleBar,
-	semiCircleBar,
-	lineMask,
-} from '@kadence/icons';
+import { lineBar, circleBar, semiCircleBar, lineMask } from '@kadence/icons';
 
 /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
-import {
-	useState,
-	useEffect,
-	Fragment,
-} from '@wordpress/element';
+import { useState, useEffect, Fragment } from '@wordpress/element';
 import { useBlockProps, BlockAlignmentControl } from '@wordpress/block-editor';
 import { map, range } from 'lodash';
-import {
-	RichText,
-	InspectorControls,
-	BlockControls,
-} from '@wordpress/block-editor';
+import { RichText, InspectorControls, BlockControls } from '@wordpress/block-editor';
 
 import {
 	PanelBody,
@@ -62,26 +49,16 @@ import {
 	Button,
 	ToggleControl,
 	RangeControl,
-	TextControl
+	TextControl,
 } from '@wordpress/components';
-import {
-	Circle,
-	SemiCircle,
-	Line,
-} from 'progressbar.js';
+import { Circle, SemiCircle, Line } from 'progressbar.js';
 /**
  * Internal dependencies
  */
 import classnames from 'classnames';
 
-export function Edit( props ) {
-
-	const {
-		attributes,
-		setAttributes,
-		isSelected,
-		clientId,
-	} = props;
+export function Edit(props) {
+	const { attributes, setAttributes, isSelected, clientId } = props;
 
 	const {
 		uniqueID,
@@ -131,268 +108,456 @@ export function Edit( props ) {
 		maskUrl,
 	} = attributes;
 
-	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
-		( select ) => {
+		(select) => {
 			return {
-				isUniqueID   : ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
-				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
-				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
+				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
+				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 				parentData: {
-					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
-					postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
-					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
-					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
-				}
+					rootBlock: select('core/block-editor').getBlock(
+						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
+					),
+					postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
+					reusableParent: select('core/block-editor').getBlockAttributes(
+						select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
+					),
+					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
+				},
 			};
 		},
-		[ clientId ],
+		[clientId]
 	);
 
-	useEffect( () => {
-		setBlockDefaults( 'kadence/progress-bar', attributes );
+	useEffect(() => {
+		setBlockDefaults('kadence/progress-bar', attributes);
 
-		const postOrFseId = getPostOrFseId( props, parentData );
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
-		if ( uniqueId !== uniqueID ) {
+		const postOrFseId = getPostOrFseId(props, parentData);
+		let uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
-			setAttributes( { uniqueID: uniqueId } );
-			addUniqueID( uniqueId, clientId );
+			setAttributes({ uniqueID: uniqueId });
+			addUniqueID(uniqueId, clientId);
 		} else {
-			addUniqueID( uniqueID, clientId );
+			addUniqueID(uniqueID, clientId);
 		}
-	}, [] );
+	}, []);
 
-	const saveLabelFont = ( value ) => {
-		setAttributes( {
-			labelFont: JSON.parse( JSON.stringify( { ...labelFont, ...value } ) ),
-		} );
+	const saveLabelFont = (value) => {
+		setAttributes({
+			labelFont: JSON.parse(JSON.stringify({ ...labelFont, ...value })),
+		});
 	};
-	const saveNumberFont = ( value ) => {
-		setAttributes( {
-			numberFont: JSON.parse( JSON.stringify( { ...numberFont, ...value } ) ),
-		} );
+	const saveNumberFont = (value) => {
+		setAttributes({
+			numberFont: JSON.parse(JSON.stringify({ ...numberFont, ...value })),
+		});
 	};
 
-	const [ activeTab, setActiveTab ] = useState( 'general' );
-	const [ rerender, setRerender ] = useState( 0 );
+	const [activeTab, setActiveTab] = useState('general');
+	const [rerender, setRerender] = useState(0);
 
-	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 0 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 0 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 0 ] : '' ) );
-	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 1 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 1 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 1 ] : '' ) );
-	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 2 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 2 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 2 ] : '' ) );
-	const previewMarginLeft = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 3 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 3 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 3 ] : '' ) );
+	const previewMarginTop = getPreviewSize(
+		previewDevice,
+		undefined !== margin ? margin[0] : '',
+		undefined !== tabletMargin ? tabletMargin[0] : '',
+		undefined !== mobileMargin ? mobileMargin[0] : ''
+	);
+	const previewMarginRight = getPreviewSize(
+		previewDevice,
+		undefined !== margin ? margin[1] : '',
+		undefined !== tabletMargin ? tabletMargin[1] : '',
+		undefined !== mobileMargin ? mobileMargin[1] : ''
+	);
+	const previewMarginBottom = getPreviewSize(
+		previewDevice,
+		undefined !== margin ? margin[2] : '',
+		undefined !== tabletMargin ? tabletMargin[2] : '',
+		undefined !== mobileMargin ? mobileMargin[2] : ''
+	);
+	const previewMarginLeft = getPreviewSize(
+		previewDevice,
+		undefined !== margin ? margin[3] : '',
+		undefined !== tabletMargin ? tabletMargin[3] : '',
+		undefined !== mobileMargin ? mobileMargin[3] : ''
+	);
 
-	const previewLabelPaddingTop = getPreviewSize( previewDevice, ( undefined !== labelPadding ? labelPadding[ 0 ] : '' ), ( undefined !== tabletLabelPadding ? tabletLabelPadding[ 0 ] : '' ), ( undefined !== mobileLabelPadding ? mobileLabelPadding[ 0 ] : '' ) );
-	const previewLabelPaddingRight = getPreviewSize( previewDevice, ( undefined !== labelPadding ? labelPadding[ 1 ] : '' ), ( undefined !== tabletLabelPadding ? tabletLabelPadding[ 1 ] : '' ), ( undefined !== mobileLabelPadding ? mobileLabelPadding[ 1 ] : '' ) );
-	const previewLabelPaddingBottom = getPreviewSize( previewDevice, ( undefined !== labelPadding ? labelPadding[ 2 ] : '' ), ( undefined !== tabletLabelPadding ? tabletLabelPadding[ 2 ] : '' ), ( undefined !== mobileLabelPadding ? mobileLabelPadding[ 2 ] : '' ) );
-	const previewLabelPaddingLeft = getPreviewSize( previewDevice, ( undefined !== labelPadding ? labelPadding[ 3 ] : '' ), ( undefined !== tabletLabelPadding ? tabletLabelPadding[ 3 ] : '' ), ( undefined !== mobileLabelPadding ? mobileLabelPadding[ 3 ] : '' ) );
+	const previewLabelPaddingTop = getPreviewSize(
+		previewDevice,
+		undefined !== labelPadding ? labelPadding[0] : '',
+		undefined !== tabletLabelPadding ? tabletLabelPadding[0] : '',
+		undefined !== mobileLabelPadding ? mobileLabelPadding[0] : ''
+	);
+	const previewLabelPaddingRight = getPreviewSize(
+		previewDevice,
+		undefined !== labelPadding ? labelPadding[1] : '',
+		undefined !== tabletLabelPadding ? tabletLabelPadding[1] : '',
+		undefined !== mobileLabelPadding ? mobileLabelPadding[1] : ''
+	);
+	const previewLabelPaddingBottom = getPreviewSize(
+		previewDevice,
+		undefined !== labelPadding ? labelPadding[2] : '',
+		undefined !== tabletLabelPadding ? tabletLabelPadding[2] : '',
+		undefined !== mobileLabelPadding ? mobileLabelPadding[2] : ''
+	);
+	const previewLabelPaddingLeft = getPreviewSize(
+		previewDevice,
+		undefined !== labelPadding ? labelPadding[3] : '',
+		undefined !== tabletLabelPadding ? tabletLabelPadding[3] : '',
+		undefined !== mobileLabelPadding ? mobileLabelPadding[3] : ''
+	);
 
-	const previewProgressWidth = getPreviewSize( previewDevice, ( undefined !== progressWidth ? progressWidth : '' ), ( undefined !== progressWidthTablet ? progressWidthTablet : '' ), ( undefined !== progressWidthMobile ? progressWidthMobile : '' ) );
-	const previewProgressBorderRadius = getPreviewSize( previewDevice, ( undefined !== progressBorderRadius[ 0 ] ? progressBorderRadius[ 0 ] : '' ), ( undefined !== progressBorderRadius[ 1 ] ? progressBorderRadius[ 1 ] : '' ), ( undefined !== progressBorderRadius[ 2 ] ? progressBorderRadius[ 2 ] : '' ) );
+	const previewProgressWidth = getPreviewSize(
+		previewDevice,
+		undefined !== progressWidth ? progressWidth : '',
+		undefined !== progressWidthTablet ? progressWidthTablet : '',
+		undefined !== progressWidthMobile ? progressWidthMobile : ''
+	);
+	const previewProgressBorderRadius = getPreviewSize(
+		previewDevice,
+		undefined !== progressBorderRadius[0] ? progressBorderRadius[0] : '',
+		undefined !== progressBorderRadius[1] ? progressBorderRadius[1] : '',
+		undefined !== progressBorderRadius[2] ? progressBorderRadius[2] : ''
+	);
 
-	const previewContainerMaxWidth = getPreviewSize( previewDevice, ( undefined !== containerMaxWidth ? containerMaxWidth : '' ), ( undefined !== tabletContainerMaxWidth ? tabletContainerMaxWidth : '' ), ( undefined !== mobileContainerMaxWidth ? mobileContainerMaxWidth : '' ) );
-	const tempLabelFont = JSON.parse( JSON.stringify( labelFont ) );
-	const tempNumberFont = JSON.parse( JSON.stringify( numberFont ) );
-	const previewLabelFont = getPreviewSize( previewDevice, ( undefined !== tempLabelFont.size && undefined !== tempLabelFont.size[ 0 ] && '' !== tempLabelFont.size[ 0 ] ? tempLabelFont.size[ 0 ] : '' ), ( undefined !== tempLabelFont.size && undefined !== tempLabelFont.size[ 1 ] && '' !== tempLabelFont.size[ 1 ] ? tempLabelFont.size[ 1 ] : '' ), ( undefined !== tempLabelFont.size && undefined !== tempLabelFont.size[ 2 ] && '' !== tempLabelFont.size[ 2 ] ? tempLabelFont.size[ 2 ] : '' ) );
-	const previewLabelLineHeight = getPreviewSize( previewDevice, ( undefined !== tempLabelFont.lineHeight && undefined !== tempLabelFont.lineHeight[ 0 ] && '' !== tempLabelFont.lineHeight[ 0 ] ? tempLabelFont.lineHeight[ 0 ] : '' ), ( undefined !== tempLabelFont.lineHeight && undefined !== tempLabelFont.lineHeight[ 1 ] && '' !== tempLabelFont.lineHeight[ 1 ] ? tempLabelFont.lineHeight[ 1 ] : '' ), ( undefined !== tempLabelFont.lineHeight && undefined !== tempLabelFont.lineHeight[ 2 ] && '' !== tempLabelFont.lineHeight[ 2 ] ? tempLabelFont.lineHeight[ 2 ] : '' ) );
-	const previewLabelSpacing = getPreviewSize( previewDevice, ( undefined !== tempLabelFont?.letterSpacing?.[ 0 ] && '' !== tempLabelFont.letterSpacing[ 0 ] ? tempLabelFont.letterSpacing[ 0 ] : '' ), ( undefined !== tempLabelFont?.letterSpacing?.[ 1 ] && '' !== tempLabelFont.letterSpacing[ 1 ] ? tempLabelFont.letterSpacing[ 1 ] : '' ), ( undefined !== tempLabelFont?.letterSpacing?.[ 2 ] && '' !== tempLabelFont.letterSpacing[ 2 ] ? tempLabelFont.letterSpacing[ 2 ] : '' ) );
-	const previewNumberFont = getPreviewSize( previewDevice, ( undefined !== tempNumberFont.size && undefined !== tempNumberFont.size[ 0 ] && '' !== tempNumberFont.size[ 0 ] ? tempNumberFont.size[ 0 ] : '' ), ( undefined !== tempNumberFont.size && undefined !== tempNumberFont.size[ 1 ] && '' !== tempNumberFont.size[ 1 ] ? tempNumberFont.size[ 1 ] : '' ), ( undefined !== tempNumberFont.size && undefined !== tempNumberFont.size[ 2 ] && '' !== tempNumberFont.size[ 2 ] ? tempNumberFont.size[ 2 ] : '' ) );
-	const previewNumberLineHeight = getPreviewSize( previewDevice, ( undefined !== tempNumberFont?.lineHeight?.[ 0 ] && '' !== tempNumberFont.lineHeight[ 0 ] ? tempNumberFont.lineHeight[ 0 ] : '' ), ( undefined !== tempNumberFont?.lineHeight?.[ 1 ] && '' !== tempNumberFont.lineHeight[ 1 ] ? tempNumberFont.lineHeight[ 1 ] : '' ), ( undefined !== tempNumberFont?.lineHeight?.[ 2 ] && '' !== tempNumberFont.lineHeight[ 2 ] ? tempNumberFont.lineHeight[ 2 ] : '' ) );
-	const previewNumberSpacing = getPreviewSize( previewDevice, ( undefined !== tempNumberFont?.letterSpacing?.[ 0 ] && '' !== tempNumberFont.letterSpacing[ 0 ] ? tempNumberFont.letterSpacing[ 0 ] : '' ), ( undefined !== tempNumberFont?.letterSpacing?.[ 1 ] && '' !== tempNumberFont.letterSpacing[ 1 ] ? tempNumberFont.letterSpacing[ 1 ] : '' ), ( undefined !== tempNumberFont?.letterSpacing?.[ 2 ] && '' !== tempNumberFont.letterSpacing[ 2 ] ? tempNumberFont.letterSpacing[ 2 ] : '' ) );
-	const previewAlign = getPreviewSize( previewDevice, ( undefined !== hAlign ? hAlign : '' ), ( undefined !== thAlign ? thAlign : '' ), ( undefined !== mhAlign ? mhAlign : '' ) );
-	const containerClasses = classnames( {
-		'kb-progress-bar-container'               : true,
-		[ `kb-progress-bar-container${uniqueID}` ]: true,
-		[ `kb-progress-bar-type-${barType}` ]     : true,
-		[ `kb-progress-bar-align${ undefined !== align ? align : ''}`] : true,	
-	} );
+	const previewContainerMaxWidth = getPreviewSize(
+		previewDevice,
+		undefined !== containerMaxWidth ? containerMaxWidth : '',
+		undefined !== tabletContainerMaxWidth ? tabletContainerMaxWidth : '',
+		undefined !== mobileContainerMaxWidth ? mobileContainerMaxWidth : ''
+	);
+	const tempLabelFont = JSON.parse(JSON.stringify(labelFont));
+	const tempNumberFont = JSON.parse(JSON.stringify(numberFont));
+	const previewLabelFont = getPreviewSize(
+		previewDevice,
+		undefined !== tempLabelFont.size && undefined !== tempLabelFont.size[0] && '' !== tempLabelFont.size[0]
+			? tempLabelFont.size[0]
+			: '',
+		undefined !== tempLabelFont.size && undefined !== tempLabelFont.size[1] && '' !== tempLabelFont.size[1]
+			? tempLabelFont.size[1]
+			: '',
+		undefined !== tempLabelFont.size && undefined !== tempLabelFont.size[2] && '' !== tempLabelFont.size[2]
+			? tempLabelFont.size[2]
+			: ''
+	);
+	const previewLabelLineHeight = getPreviewSize(
+		previewDevice,
+		undefined !== tempLabelFont.lineHeight &&
+			undefined !== tempLabelFont.lineHeight[0] &&
+			'' !== tempLabelFont.lineHeight[0]
+			? tempLabelFont.lineHeight[0]
+			: '',
+		undefined !== tempLabelFont.lineHeight &&
+			undefined !== tempLabelFont.lineHeight[1] &&
+			'' !== tempLabelFont.lineHeight[1]
+			? tempLabelFont.lineHeight[1]
+			: '',
+		undefined !== tempLabelFont.lineHeight &&
+			undefined !== tempLabelFont.lineHeight[2] &&
+			'' !== tempLabelFont.lineHeight[2]
+			? tempLabelFont.lineHeight[2]
+			: ''
+	);
+	const previewLabelSpacing = getPreviewSize(
+		previewDevice,
+		undefined !== tempLabelFont?.letterSpacing?.[0] && '' !== tempLabelFont.letterSpacing[0]
+			? tempLabelFont.letterSpacing[0]
+			: '',
+		undefined !== tempLabelFont?.letterSpacing?.[1] && '' !== tempLabelFont.letterSpacing[1]
+			? tempLabelFont.letterSpacing[1]
+			: '',
+		undefined !== tempLabelFont?.letterSpacing?.[2] && '' !== tempLabelFont.letterSpacing[2]
+			? tempLabelFont.letterSpacing[2]
+			: ''
+	);
+	const previewNumberFont = getPreviewSize(
+		previewDevice,
+		undefined !== tempNumberFont.size && undefined !== tempNumberFont.size[0] && '' !== tempNumberFont.size[0]
+			? tempNumberFont.size[0]
+			: '',
+		undefined !== tempNumberFont.size && undefined !== tempNumberFont.size[1] && '' !== tempNumberFont.size[1]
+			? tempNumberFont.size[1]
+			: '',
+		undefined !== tempNumberFont.size && undefined !== tempNumberFont.size[2] && '' !== tempNumberFont.size[2]
+			? tempNumberFont.size[2]
+			: ''
+	);
+	const previewNumberLineHeight = getPreviewSize(
+		previewDevice,
+		undefined !== tempNumberFont?.lineHeight?.[0] && '' !== tempNumberFont.lineHeight[0]
+			? tempNumberFont.lineHeight[0]
+			: '',
+		undefined !== tempNumberFont?.lineHeight?.[1] && '' !== tempNumberFont.lineHeight[1]
+			? tempNumberFont.lineHeight[1]
+			: '',
+		undefined !== tempNumberFont?.lineHeight?.[2] && '' !== tempNumberFont.lineHeight[2]
+			? tempNumberFont.lineHeight[2]
+			: ''
+	);
+	const previewNumberSpacing = getPreviewSize(
+		previewDevice,
+		undefined !== tempNumberFont?.letterSpacing?.[0] && '' !== tempNumberFont.letterSpacing[0]
+			? tempNumberFont.letterSpacing[0]
+			: '',
+		undefined !== tempNumberFont?.letterSpacing?.[1] && '' !== tempNumberFont.letterSpacing[1]
+			? tempNumberFont.letterSpacing[1]
+			: '',
+		undefined !== tempNumberFont?.letterSpacing?.[2] && '' !== tempNumberFont.letterSpacing[2]
+			? tempNumberFont.letterSpacing[2]
+			: ''
+	);
+	const previewAlign = getPreviewSize(
+		previewDevice,
+		undefined !== hAlign ? hAlign : '',
+		undefined !== thAlign ? thAlign : '',
+		undefined !== mhAlign ? mhAlign : ''
+	);
+	const containerClasses = classnames({
+		'kb-progress-bar-container': true,
+		[`kb-progress-bar-container${uniqueID}`]: true,
+		[`kb-progress-bar-type-${barType}`]: true,
+		[`kb-progress-bar-align${undefined !== align ? align : ''}`]: true,
+	});
 
-	const blockProps = useBlockProps( {
+	const blockProps = useBlockProps({
 		className: containerClasses,
-	} );
+	});
 
 	const layoutPresetOptions = [
-		{ key: 'line', name: __( 'Line', 'kadence-blocks' ), icon: lineBar },
-		{ key: 'circle', name: __( 'Circle', 'kadence-blocks' ), icon: circleBar },
-		{ key: 'line-mask', name: __( 'Masked Line', 'kadence-blocks' ), icon: lineMask },
-		{ key: 'semicircle', name: __( 'Semicircle', 'kadence-blocks' ), icon: semiCircleBar },
+		{ key: 'line', name: __('Line', 'kadence-blocks'), icon: lineBar },
+		{ key: 'circle', name: __('Circle', 'kadence-blocks'), icon: circleBar },
+		{ key: 'line-mask', name: __('Masked Line', 'kadence-blocks'), icon: lineMask },
+		{ key: 'semicircle', name: __('Semicircle', 'kadence-blocks'), icon: semiCircleBar },
 	];
 	const labelFontConfigObj = {
 		google: {
-			families: [ labelFont.family + ( labelFont.variant ? ':' + labelFont.variant : '' ) ],
+			families: [labelFont.family + (labelFont.variant ? ':' + labelFont.variant : '')],
 		},
 	};
-	const labelFontConfig = ( labelFont.google ? labelFontConfigObj : '' );
+	const labelFontConfig = labelFont.google ? labelFontConfigObj : '';
 	const numberFontConfigObj = {
 		google: {
-			families: [ numberFont.family + ( numberFont.variant ? ':' + numberFont.variant : '' ) ],
+			families: [numberFont.family + (numberFont.variant ? ':' + numberFont.variant : '')],
 		},
 	};
-	const numberFontConfig = ( numberFont.google ? numberFontConfigObj : '' );
+	const numberFontConfig = numberFont.google ? numberFontConfigObj : '';
 
 	const progressLabelStyles = {
-		fontWeight   : labelFont?.weight ? labelFont.weight : undefined,
-		fontStyle    : labelFont?.style ? labelFont.style : undefined,
-		color        : labelFont?.color ? KadenceColorOutput( labelFont.color ) : undefined,
-		fontSize     : ( previewLabelFont ? getFontSizeOptionOutput( previewLabelFont, labelFont.sizeType ) : undefined ),
-		lineHeight   : ( previewLabelLineHeight ? previewLabelLineHeight + labelFont.lineType : undefined ),
-		letterSpacing: ( previewLabelSpacing ? previewLabelSpacing + ( labelFont.spacingType ? labelFont.spacingType : 'px' ) : undefined ),
-		textTransform: ( labelFont.textTransform ? labelFont.textTransform : undefined ),
-		fontFamily   : ( labelFont.family ? labelFont.family : undefined ),
+		fontWeight: labelFont?.weight ? labelFont.weight : undefined,
+		fontStyle: labelFont?.style ? labelFont.style : undefined,
+		color: labelFont?.color ? KadenceColorOutput(labelFont.color) : undefined,
+		fontSize: previewLabelFont ? getFontSizeOptionOutput(previewLabelFont, labelFont.sizeType) : undefined,
+		lineHeight: previewLabelLineHeight ? previewLabelLineHeight + labelFont.lineType : undefined,
+		letterSpacing: previewLabelSpacing
+			? previewLabelSpacing + (labelFont.spacingType ? labelFont.spacingType : 'px')
+			: undefined,
+		textTransform: labelFont.textTransform ? labelFont.textTransform : undefined,
+		fontFamily: labelFont.family ? labelFont.family : undefined,
 	};
 	const progressPercentStyles = {
-		fontWeight   : tempNumberFont?.weight ? tempNumberFont.weight : progressLabelStyles.fontWeight,
-		fontStyle    : tempNumberFont?.style ? tempNumberFont.style : progressLabelStyles.fontStyle,
-		color        : tempNumberFont?.color ? KadenceColorOutput( tempNumberFont.color ) : progressLabelStyles.color,
-		fontSize     : previewNumberFont ? getFontSizeOptionOutput( previewNumberFont, tempNumberFont.sizeType ) : progressLabelStyles.fontSize,
-		lineHeight   : previewNumberLineHeight ? previewNumberLineHeight + tempNumberFont.lineType : progressLabelStyles.lineHeight,
-		letterSpacing: previewNumberSpacing ? previewNumberSpacing + ( tempNumberFont.spacingType ? tempNumberFont.spacingType : 'px' ) : progressLabelStyles.letterSpacing,
+		fontWeight: tempNumberFont?.weight ? tempNumberFont.weight : progressLabelStyles.fontWeight,
+		fontStyle: tempNumberFont?.style ? tempNumberFont.style : progressLabelStyles.fontStyle,
+		color: tempNumberFont?.color ? KadenceColorOutput(tempNumberFont.color) : progressLabelStyles.color,
+		fontSize: previewNumberFont
+			? getFontSizeOptionOutput(previewNumberFont, tempNumberFont.sizeType)
+			: progressLabelStyles.fontSize,
+		lineHeight: previewNumberLineHeight
+			? previewNumberLineHeight + tempNumberFont.lineType
+			: progressLabelStyles.lineHeight,
+		letterSpacing: previewNumberSpacing
+			? previewNumberSpacing + (tempNumberFont.spacingType ? tempNumberFont.spacingType : 'px')
+			: progressLabelStyles.letterSpacing,
 		textTransform: tempNumberFont?.textTransform ? tempNumberFont.textTransform : progressLabelStyles.textTransform,
-		fontFamily   : ( tempNumberFont?.family ? tempNumberFont.family : progressLabelStyles.fontFamily ),
+		fontFamily: tempNumberFont?.family ? tempNumberFont.family : progressLabelStyles.fontFamily,
 	};
 
 	const progressAttributes = {
-		color      :  progressColor ? KadenceColorOutput( progressColor, progressOpacity ) : 'var(--global-palette1, #2B6CB0)',
+		color: progressColor ? KadenceColorOutput(progressColor, progressOpacity) : 'var(--global-palette1, #2B6CB0)',
 		strokeWidth: previewProgressWidth,
-		duration   : ( duration === 0 ? 1 : duration * 1000 ),
-		easing     : easing,
-		trailWidth : previewProgressWidth,
-		trailColor : barBackground ? KadenceColorOutput( barBackground, barBackgroundOpacity ) : 'var(--global-palette7, #EDF2F7)',
-		svgStyle   : {
-			borderRadius: ( barType === 'line' ? previewProgressBorderRadius + 'px' : '' ),
+		duration: duration === 0 ? 1 : duration * 1000,
+		easing: easing,
+		trailWidth: previewProgressWidth,
+		trailColor: barBackground
+			? KadenceColorOutput(barBackground, barBackgroundOpacity)
+			: 'var(--global-palette7, #EDF2F7)',
+		svgStyle: {
+			borderRadius: barType === 'line' ? previewProgressBorderRadius + 'px' : '',
 		},
-		step       : function( state, bar ) {
-			let iFrameSelector = document.getElementsByName( 'editor-canvas' );
-			let selector = iFrameSelector.length > 0 ? document.getElementsByName( 'editor-canvas' )[ 0 ].contentWindow.document : document;
+		step: function (state, bar) {
+			let iFrameSelector = document.getElementsByName('editor-canvas');
+			let selector =
+				iFrameSelector.length > 0
+					? document.getElementsByName('editor-canvas')[0].contentWindow.document
+					: document;
 
-			let elementAbove = selector.getElementById( 'current-progress-above' + uniqueID );
-			let elementInside = selector.getElementById( 'current-progress-inside' + uniqueID );
-			let elementBelow = selector.getElementById( 'current-progress-below' + uniqueID );
+			let elementAbove = selector.getElementById('current-progress-above' + uniqueID);
+			let elementInside = selector.getElementById('current-progress-inside' + uniqueID);
+			let elementBelow = selector.getElementById('current-progress-below' + uniqueID);
 			let value;
-			if ( numberIsRelative ) {
+			if (numberIsRelative) {
 				value = bar.value() * 100;
 			} else {
 				value = bar.value() * progressMax;
 			}
-			if ( decimal === 'one' ) {
+			if (decimal === 'one') {
 				value = Math.round(value * 10) / 10;
-				value = value.toFixed(1)
-			} else if ( decimal === 'two' ) {
+				value = value.toFixed(1);
+			} else if (decimal === 'two') {
 				value = Math.round(value * 100) / 100;
-				value = value.toFixed(2)
+				value = value.toFixed(2);
 			} else {
-				value = Math.round( value );
+				value = Math.round(value);
 			}
 
-			if ( elementAbove && labelPosition === 'above' && displayPercent ) {
+			if (elementAbove && labelPosition === 'above' && displayPercent) {
 				elementAbove.innerHTML = numberPrefix + value + numberSuffix;
-			} else if ( elementAbove ) {
+			} else if (elementAbove) {
 				elementAbove.innerHTML = '';
 			}
 
-			if ( elementInside && labelPosition === 'inside' && displayPercent ) {
+			if (elementInside && labelPosition === 'inside' && displayPercent) {
 				elementInside.innerHTML = numberPrefix + value + numberSuffix;
-			} else if ( elementInside ) {
+			} else if (elementInside) {
 				elementInside.innerHTML = '';
 			}
 
-			if ( elementBelow && labelPosition === 'below' && displayPercent ) {
+			if (elementBelow && labelPosition === 'below' && displayPercent) {
 				elementBelow.innerHTML = numberPrefix + value + numberSuffix;
-			} else if ( elementBelow ) {
+			} else if (elementBelow) {
 				elementBelow.innerHTML = '';
 			}
 		},
 	};
 
 	const container = '#kb-progress-bar' + uniqueID;
-	const iFrameSelector = document.getElementsByName( 'editor-canvas' );
-	const selector = iFrameSelector.length > 0 ? document.getElementsByName( 'editor-canvas' )[ 0 ].contentWindow.document : document;
+	const iFrameSelector = document.getElementsByName('editor-canvas');
+	const selector =
+		iFrameSelector.length > 0 ? document.getElementsByName('editor-canvas')[0].contentWindow.document : document;
 	let progressItem = null;
 
-	useEffect( () => {
-		const containerDiv = selector.querySelector( container );
-		if ( containerDiv === null ) {
+	useEffect(() => {
+		const containerDiv = selector.querySelector(container);
+		if (containerDiv === null) {
 			return;
 		}
-		if ( barType === 'line' || barType === 'line-mask' ) {
-			progressItem = new Line( containerDiv, progressAttributes );
-		} else if ( barType === 'circle' ) {
-			progressItem = new Circle( containerDiv, progressAttributes );
-		} else if ( barType === 'semicircle' ) {
-			progressItem = new SemiCircle( containerDiv, progressAttributes );
+		if (barType === 'line' || barType === 'line-mask') {
+			progressItem = new Line(containerDiv, progressAttributes);
+		} else if (barType === 'circle') {
+			progressItem = new Circle(containerDiv, progressAttributes);
+		} else if (barType === 'semicircle') {
+			progressItem = new SemiCircle(containerDiv, progressAttributes);
 		}
 
-		if ( progressItem ) {
-			progressItem.animate( progressAmount / progressMax );
+		if (progressItem) {
+			progressItem.animate(progressAmount / progressMax);
 		}
 
 		return function cleanup() {
-			if ( progressItem ) {
+			if (progressItem) {
 				progressItem.destroy();
 			}
 		};
-	}, [ progressAmount, progressMax, progressColor, progressOpacity, progressBorderRadius, duration, easing, barBackground, barBackgroundOpacity, barType, progressWidth, progressWidthTablet, progressWidthMobile, labelPosition, numberIsRelative, rerender, labelLayout, decimal, uniqueID, selector, displayPercent, numberPrefix, numberSuffix ] );
+	}, [
+		progressAmount,
+		progressMax,
+		progressColor,
+		progressOpacity,
+		progressBorderRadius,
+		duration,
+		easing,
+		barBackground,
+		barBackgroundOpacity,
+		barType,
+		progressWidth,
+		progressWidthTablet,
+		progressWidthMobile,
+		labelPosition,
+		numberIsRelative,
+		rerender,
+		labelLayout,
+		decimal,
+		uniqueID,
+		selector,
+		displayPercent,
+		numberPrefix,
+		numberSuffix,
+	]);
 
-	const RenderLabel = ( currentPosition ) => {
-
+	const RenderLabel = (currentPosition) => {
 		let wrapperLayoutStyles = {
-			paddingTop   : ( '' !== previewLabelPaddingTop ? getSpacingOptionOutput( previewLabelPaddingTop, labelPaddingType ) : undefined ),
-			paddingRight : ( '' !== previewLabelPaddingRight ? getSpacingOptionOutput( previewLabelPaddingRight, labelPaddingType ) : undefined ),
-			paddingBottom: ( '' !== previewLabelPaddingBottom ? getSpacingOptionOutput( previewLabelPaddingBottom, labelPaddingType ) : undefined ),
-			paddingLeft  : ( '' !== previewLabelPaddingLeft ? getSpacingOptionOutput( previewLabelPaddingLeft, labelPaddingType ) : undefined ),
+			paddingTop:
+				'' !== previewLabelPaddingTop
+					? getSpacingOptionOutput(previewLabelPaddingTop, labelPaddingType)
+					: undefined,
+			paddingRight:
+				'' !== previewLabelPaddingRight
+					? getSpacingOptionOutput(previewLabelPaddingRight, labelPaddingType)
+					: undefined,
+			paddingBottom:
+				'' !== previewLabelPaddingBottom
+					? getSpacingOptionOutput(previewLabelPaddingBottom, labelPaddingType)
+					: undefined,
+			paddingLeft:
+				'' !== previewLabelPaddingLeft
+					? getSpacingOptionOutput(previewLabelPaddingLeft, labelPaddingType)
+					: undefined,
 		};
 
-		if ( previewAlign === 'space-between' ) {
+		if (previewAlign === 'space-between') {
 			wrapperLayoutStyles.justifyContent = 'space-between';
-		} else if ( previewAlign === 'center' ) {
+		} else if (previewAlign === 'center') {
 			wrapperLayoutStyles.justifyContent = 'center';
 			wrapperLayoutStyles.textAlign = 'center';
-		} else if ( previewAlign === 'left' ) {
+		} else if (previewAlign === 'left') {
 			wrapperLayoutStyles.textAlign = 'left';
 			wrapperLayoutStyles.justifyContent = 'flex-start';
-		} else if ( previewAlign === 'right' ) {
+		} else if (previewAlign === 'right') {
 			wrapperLayoutStyles.textAlign = 'right';
 			wrapperLayoutStyles.justifyContent = 'flex-end';
 		}
 
-		if ( labelLayout === 'lt' || labelLayout === 'lb' ) {
+		if (labelLayout === 'lt' || labelLayout === 'lb') {
 			wrapperLayoutStyles.flexDirection = 'column';
 		}
 
-		if ( labelPosition === 'inside' && previewAlign === 'center' ) {
+		if (labelPosition === 'inside' && previewAlign === 'center') {
 			wrapperLayoutStyles.transform = 'translateX(-50%) translateY(-50%)';
 			wrapperLayoutStyles.left = '50%';
 		}
 
-		if ( ( barType === 'line' || barType === 'line-mask' ) && labelPosition === 'inside' && previewAlign === 'space-between' ) {
+		if (
+			(barType === 'line' || barType === 'line-mask') &&
+			labelPosition === 'inside' &&
+			previewAlign === 'space-between'
+		) {
 			wrapperLayoutStyles.width = '100%';
 		}
 
 		return (
 			<div
-				className={'kb-progress-label-wrap ' + ( currentPosition === 'inside' ? 'kt-progress-label-inside' : '' )}
+				className={'kb-progress-label-wrap ' + (currentPosition === 'inside' ? 'kt-progress-label-inside' : '')}
 				style={wrapperLayoutStyles}
 			>
-
-				{ displayPercent && ( labelLayout === 'lb' || labelLayout === 'pl' ) && (
+				{displayPercent && (labelLayout === 'lb' || labelLayout === 'pl') && (
 					<span id={'current-progress-' + currentPosition + uniqueID} style={progressPercentStyles}></span>
-				) }
+				)}
 
-				{displayLabel &&
+				{displayLabel && (
 					<RichText
 						tagName={'span'}
 						value={label}
-						onChange={( value ) => {
-							setAttributes( { label: value } );
+						onChange={(value) => {
+							setAttributes({ label: value });
 						}}
-						placeholder={__( 'Progress', 'kadence-blocks' )}
+						placeholder={__('Progress', 'kadence-blocks')}
 						style={progressLabelStyles}
 						className={'kt-progress-label'}
 					/>
-				}
-				{ displayPercent && ( labelLayout === 'lt' || labelLayout === 'lp' ) && (
+				)}
+				{displayPercent && (labelLayout === 'lt' || labelLayout === 'lp') && (
 					<span id={'current-progress-' + currentPosition + uniqueID} style={progressPercentStyles}></span>
-				) }
+				)}
 			</div>
 		);
 	};
@@ -403,25 +568,30 @@ export function Edit( props ) {
 	var maskBaseUrl = kadence_blocks_params.svgMaskPath;
 	var maskUrlToUse = maskBaseUrl + mask + '.svg';
 
-	if ( 'custom' === maskSvg ) {
-		if ( maskUrl ) {
+	if ('custom' === maskSvg) {
+		if (maskUrl) {
 			maskUrlToUse = maskUrl;
 		} else {
 			maskUrlToUse = maskBaseUrl + 'star.svg';
 		}
 	}
 
-	var maskImageString = ('url(' + maskUrlToUse + '),').repeat( iterations ).replace(/(^,)|(,$)/g, "");
-	var maskRepeatString = ('no-repeat,').repeat( iterations ).replace(/(^,)|(,$)/g, "");
-	var maskPositionArray = iterations > 1 ? range( 0, 100.1, 100 / ( iterations - 1) ) : [0];
-	var maskPositionString = (maskPositionArray.join('%,') + '%').replace(/(^,)|(,$)/g, "");
+	var maskImageString = ('url(' + maskUrlToUse + '),').repeat(iterations).replace(/(^,)|(,$)/g, '');
+	var maskRepeatString = 'no-repeat,'.repeat(iterations).replace(/(^,)|(,$)/g, '');
+	var maskPositionArray = iterations > 1 ? range(0, 100.1, 100 / (iterations - 1)) : [0];
+	var maskPositionString = (maskPositionArray.join('%,') + '%').replace(/(^,)|(,$)/g, '');
 	var maskAspectRatioString = iterations + '/1';
-	var maskHeightString = progressWidth ? ( progressWidth * 11.5 ) + 'px' : '80px';
-	var maskHeightStringTablet = progressWidthTablet ? ( progressWidthTablet * 11.5 ) + 'px' : '';
-	var maskHeightStringMobile = progressWidthMobile ? ( progressWidthMobile * 11.5 ) + 'px' : '';
-	var previewMaskHeightString = getPreviewSize( previewDevice, maskHeightString, maskHeightStringTablet, maskHeightStringMobile );
+	var maskHeightString = progressWidth ? progressWidth * 11.5 + 'px' : '80px';
+	var maskHeightStringTablet = progressWidthTablet ? progressWidthTablet * 11.5 + 'px' : '';
+	var maskHeightStringMobile = progressWidthMobile ? progressWidthMobile * 11.5 + 'px' : '';
+	var previewMaskHeightString = getPreviewSize(
+		previewDevice,
+		maskHeightString,
+		maskHeightStringTablet,
+		maskHeightStringMobile
+	);
 
-	if ( 'line-mask' == barType ) {
+	if ('line-mask' == barType) {
 		maskStyles = `
 				#kb-progress-bar${uniqueID} {
 					-webkit-mask-image: ${maskImageString};
@@ -446,184 +616,213 @@ export function Edit( props ) {
 	return (
 		<div {...blockProps}>
 			<BlockControls group="block">
-				<BlockAlignmentControl
-					value={align}
-					onChange={( value ) => setAttributes( { align: value } )}
-				/>
+				<BlockAlignmentControl value={align} onChange={(value) => setAttributes({ align: value })} />
 			</BlockControls>
 			<InspectorControls>
-				<InspectorControlTabs
-					panelName={'progress-bar'}
-					setActiveTab={setActiveTab}
-					activeTab={activeTab}
-				/>
+				<InspectorControlTabs panelName={'progress-bar'} setActiveTab={setActiveTab} activeTab={activeTab} />
 
-				{( activeTab === 'general' ) && (
+				{activeTab === 'general' && (
 					<>
 						<PanelBody>
-							<ButtonGroup className="kt-style-btn-group" aria-label={__( 'Progress Bar Layout', 'kadence-blocks' )}>
-								{map( layoutPresetOptions, ( { name, key, icon } ) => (
+							<ButtonGroup
+								className="kt-style-btn-group"
+								aria-label={__('Progress Bar Layout', 'kadence-blocks')}
+							>
+								{map(layoutPresetOptions, ({ name, key, icon }) => (
 									<Button
 										key={key}
 										className="kt-style-btn"
 										isSmall
 										label={name}
 										aria-pressed={false}
-										onClick={ () => {
+										onClick={() => {
 											const attributeUpdates = { barType: key };
-											if ( key !== 'line' && labelPosition === 'inside' ) {
+											if (key !== 'line' && labelPosition === 'inside') {
 												attributeUpdates.hAlign = 'center';
 												attributeUpdates.thAlign = '';
 												attributeUpdates.mhAlign = '';
 											}
 											// Update from default if they choose the line mask option
-											if ( key === 'line-mask' ) {
-												if ( 100 == progressMax && 90 == progressAmount ) {
+											if (key === 'line-mask') {
+												if (100 == progressMax && 90 == progressAmount) {
 													attributeUpdates.progressMax = 5;
 													attributeUpdates.progressAmount = 4;
 													attributeUpdates.displayPercent = false;
 													attributeUpdates.decimal = 'one';
 												}
-												if ( '' == label ) {
+												if ('' == label) {
 													attributeUpdates.displayLabel = false;
 												}
 											}
-											setAttributes( attributeUpdates );
-										} }
+											setAttributes(attributeUpdates);
+										}}
 										style={{
-											border     : ( barType === key ? '2px solid #2B6CB0' : '0' ),
+											border: barType === key ? '2px solid #2B6CB0' : '0',
 											//marginRight: '4px',
 											//width      : '75px',
 										}}
 									>
 										{icon}
 									</Button>
-								) )}
+								))}
 							</ButtonGroup>
 						</PanelBody>
 
 						{/* These are the wordpress and Kadence components mostly that are imported at the top */}
 						<KadencePanelBody>
-							{ ( barType == 'line-mask' ) && (
+							{barType == 'line-mask' && (
 								<>
 									<SelectControl
-										label={ __( 'Mask Shape', 'kadence-blocks' ) }
-										options={ [
+										label={__('Mask Shape', 'kadence-blocks')}
+										options={[
 											{
-												label: __( 'Star', 'kadence-blocks' ),
+												label: __('Star', 'kadence-blocks'),
 												value: 'star',
 											},
 											{
-												label: __( 'Heart', 'kadence-blocks' ),
+												label: __('Heart', 'kadence-blocks'),
 												value: 'heart',
 											},
 											{
-												label: __( 'Smile', 'kadence-blocks' ),
+												label: __('Smile', 'kadence-blocks'),
 												value: 'smile-beam',
 											},
 											{
-												label: __( 'Thumbs Up', 'kadence-blocks' ),
+												label: __('Thumbs Up', 'kadence-blocks'),
 												value: 'thumbs-up',
 											},
 											{
-												label: __( 'Thumbs Down', 'kadence-blocks' ),
+												label: __('Thumbs Down', 'kadence-blocks'),
 												value: 'thumbs-down',
 											},
 											{
-												label: __( 'Mug', 'kadence-blocks' ),
+												label: __('Mug', 'kadence-blocks'),
 												value: 'mug-hot',
 											},
 											{
-												label: __( 'Circle', 'kadence-blocks' ),
+												label: __('Circle', 'kadence-blocks'),
 												value: 'circle',
 											},
 											{
-												label: __( 'Diamond', 'kadence-blocks' ),
+												label: __('Diamond', 'kadence-blocks'),
 												value: 'diamond',
 											},
 											{
-												label: __( 'Rounded', 'kadence-blocks' ),
+												label: __('Rounded', 'kadence-blocks'),
 												value: 'rounded',
 											},
 											{
-												label: __( 'Cat', 'kadence-blocks' ),
+												label: __('Cat', 'kadence-blocks'),
 												value: 'cat',
 											},
 											{
-												label: __( 'Dog', 'kadence-blocks' ),
+												label: __('Dog', 'kadence-blocks'),
 												value: 'dog',
 											},
 											{
-												label: __( 'Custom', 'kadence-blocks' ),
+												label: __('Custom', 'kadence-blocks'),
 												value: 'custom',
 											},
-										] }
-										value={ maskSvg }
-										onChange={ ( value ) => setAttributes( { maskSvg: value } ) }
+										]}
+										value={maskSvg}
+										onChange={(value) => setAttributes({ maskSvg: value })}
 									/>
-									{ ( maskSvg === 'custom' ) && (
+									{maskSvg === 'custom' && (
 										<div class="components-base-control">
 											<KadenceImageControl
-												label={ __( 'Custom Mask Image', 'kadence-blocks' ) }
-												hasImage={ ( maskUrl ? true : false ) }
-												imageURL={ ( maskUrl ? maskUrl : '' ) }
-												imageID={ '' }
-												onRemoveImage={ () => {
-													setAttributes( {
+												label={__('Custom Mask Image', 'kadence-blocks')}
+												hasImage={maskUrl ? true : false}
+												imageURL={maskUrl ? maskUrl : ''}
+												imageID={''}
+												onRemoveImage={() => {
+													setAttributes({
 														maskUrl: undefined,
-													} );
-												} }
-												onSaveImage={ ( image ) => {
-													setAttributes( {
+													});
+												}}
+												onSaveImage={(image) => {
+													setAttributes({
 														maskUrl: image.url,
-													} )
-												} }
-												disableMediaButtons={ ( maskUrl ? true : false ) }
+													});
+												}}
+												disableMediaButtons={maskUrl ? true : false}
 											/>
-											Square images that are black on a transparent background work best for this mask.
+											Square images that are black on a transparent background work best for this
+											mask.
 										</div>
-									) }
+									)}
 									<RangeControl
-										label={__( 'Mask Iterations', 'kadence-blocks' )}
+										label={__('Mask Iterations', 'kadence-blocks')}
 										value={maskIterations}
-										onChange={( value ) => setAttributes( { maskIterations: value } )}
+										onChange={(value) => setAttributes({ maskIterations: value })}
 										min={1}
 										max={100}
 									/>
 								</>
-							) }
+							)}
 							<ResponsiveRangeControls
-								label={__( 'Progress Thickness', 'kadence-blocks' )}
+								label={__('Progress Thickness', 'kadence-blocks')}
 								value={progressWidth}
 								tabletValue={progressWidthTablet}
 								mobileValue={progressWidthMobile}
-								onChange={( value ) => {
-									setAttributes( { progressWidth: value } );
+								onChange={(value) => {
+									setAttributes({ progressWidth: value });
 								}}
-								onChangeTablet={( value ) => {
-									setAttributes( { progressWidthTablet: value } );
+								onChangeTablet={(value) => {
+									setAttributes({ progressWidthTablet: value });
 								}}
-								onChangeMobile={( value ) => {
-									setAttributes( { progressWidthMobile: value } );
+								onChangeMobile={(value) => {
+									setAttributes({ progressWidthMobile: value });
 								}}
-
 								allowEmpty={false}
 								min={0.25}
 								max={50}
 								step={0.25}
-
 							/>
-							{( 'line' === barType ) && (
+							{'line' === barType && (
 								<ResponsiveRangeControls
-									label={__( 'Border Radius', 'kadence-blocks' )}
-									value={progressBorderRadius[ 0 ]}
-									tabletValue={progressBorderRadius[ 1 ]}
-									mobileValue={progressBorderRadius[ 2 ]}
-									onChange={( value ) => setAttributes( { progressBorderRadius: [ value, ( progressBorderRadius && progressBorderRadius[ 1 ] ? progressBorderRadius[ 1 ] : '' ), ( progressBorderRadius && progressBorderRadius[ 2 ] ? progressBorderRadius[ 2 ] : '' ) ] } )}
-									onChangeTablet={( value ) => setAttributes( { progressBorderRadius: [ ( progressBorderRadius && progressBorderRadius[ 0 ] ? progressBorderRadius[ 0 ] : '' ), value, ( progressBorderRadius && progressBorderRadius[ 2 ] ? progressBorderRadius[ 2 ] : '' ) ] } )}
-									onChangeMobile={( value ) => setAttributes( { progressBorderRadius: [ ( progressBorderRadius && progressBorderRadius[ 0 ] ? progressBorderRadius[ 0 ] : '' ), ( progressBorderRadius && progressBorderRadius[ 1 ] ? progressBorderRadius[ 1 ] : '' ), value ] } )}
-
-
+									label={__('Border Radius', 'kadence-blocks')}
+									value={progressBorderRadius[0]}
+									tabletValue={progressBorderRadius[1]}
+									mobileValue={progressBorderRadius[2]}
+									onChange={(value) =>
+										setAttributes({
+											progressBorderRadius: [
+												value,
+												progressBorderRadius && progressBorderRadius[1]
+													? progressBorderRadius[1]
+													: '',
+												progressBorderRadius && progressBorderRadius[2]
+													? progressBorderRadius[2]
+													: '',
+											],
+										})
+									}
+									onChangeTablet={(value) =>
+										setAttributes({
+											progressBorderRadius: [
+												progressBorderRadius && progressBorderRadius[0]
+													? progressBorderRadius[0]
+													: '',
+												value,
+												progressBorderRadius && progressBorderRadius[2]
+													? progressBorderRadius[2]
+													: '',
+											],
+										})
+									}
+									onChangeMobile={(value) =>
+										setAttributes({
+											progressBorderRadius: [
+												progressBorderRadius && progressBorderRadius[0]
+													? progressBorderRadius[0]
+													: '',
+												progressBorderRadius && progressBorderRadius[1]
+													? progressBorderRadius[1]
+													: '',
+												value,
+											],
+										})
+									}
 									allowEmpty={true}
 									min={0}
 									max={50}
@@ -632,132 +831,140 @@ export function Edit( props ) {
 								/>
 							)}
 							<KadenceRadioButtons
-								label={__( 'Number Format', 'kadence-blocks' )}
+								label={__('Number Format', 'kadence-blocks')}
 								value={decimal}
-								className={ 'kb-letter-case' }
+								className={'kb-letter-case'}
 								options={[
-									{ value: 'none', label: __( '1', 'kadence-blocks' ), tooltip: __( 'Whole Number', 'kadence-blocks' ) },
-									{ value: 'one', label: __( '0.1', 'kadence-blocks' ), tooltip: __( 'One Decimal Space', 'kadence-blocks' ) },
-									{ value: 'two', label: __( '0.01', 'kadence-blocks' ), tooltip: __( 'Two Decimal Spaces', 'kadence-blocks' ) },
+									{
+										value: 'none',
+										label: __('1', 'kadence-blocks'),
+										tooltip: __('Whole Number', 'kadence-blocks'),
+									},
+									{
+										value: 'one',
+										label: __('0.1', 'kadence-blocks'),
+										tooltip: __('One Decimal Space', 'kadence-blocks'),
+									},
+									{
+										value: 'two',
+										label: __('0.01', 'kadence-blocks'),
+										tooltip: __('Two Decimal Spaces', 'kadence-blocks'),
+									},
 								]}
-								allowClear={ false }
-								onChange={value => setAttributes( { decimal: value } )}
+								allowClear={false}
+								onChange={(value) => setAttributes({ decimal: value })}
 							/>
 							<RangeControl
-								label={__( 'Progress', 'kadence-blocks' )}
+								label={__('Progress', 'kadence-blocks')}
 								value={progressAmount}
-								onChange={( value ) => setAttributes( { progressAmount: value } )}
+								onChange={(value) => setAttributes({ progressAmount: value })}
 								min={0}
 								max={progressMax}
-								step={ ( decimal === 'two' ? 0.01 : ( decimal === 'one' ? 0.1 : 1 ) ) }
+								step={decimal === 'two' ? 0.01 : decimal === 'one' ? 0.1 : 1}
 							/>
 							<RangeControl
-								label={__( 'Max Progress', 'kadence-blocks' )}
+								label={__('Max Progress', 'kadence-blocks')}
 								value={progressMax}
-								onChange={( value ) => setAttributes( { progressMax: value } )}
+								onChange={(value) => setAttributes({ progressMax: value })}
 								min={1}
 								max={1000}
-								step={( decimal === 'two' ? 0.01 : ( decimal === 'one' ? 0.1 : 1 ) ) }
+								step={decimal === 'two' ? 0.01 : decimal === 'one' ? 0.1 : 1}
 							/>
 						</KadencePanelBody>
 
 						<KadencePanelBody
-							title={__( 'Number Settings', 'kadence-blocks' )}
+							title={__('Number Settings', 'kadence-blocks')}
 							initialOpen={true}
 							panelName={'kb-progress-number-settings'}
 						>
 							<ToggleControl
-								label={__( 'Show Number', 'kadence-blocks' )}
+								label={__('Show Number', 'kadence-blocks')}
 								checked={displayPercent}
-								onChange={( value ) => setAttributes( { displayPercent: value } )}
+								onChange={(value) => setAttributes({ displayPercent: value })}
 							/>
 
 							{displayPercent && (
 								<Fragment>
 									<TextControl
-										label={__( 'Number Prefix', 'kadence-blocks' )}
+										label={__('Number Prefix', 'kadence-blocks')}
 										value={numberPrefix}
-										onChange={( value ) => setAttributes( { numberPrefix: value } )}
+										onChange={(value) => setAttributes({ numberPrefix: value })}
 										onBlur={() => {
-											setRerender( Math.random() );
+											setRerender(Math.random());
 										}}
 									/>
 									<TextControl
-										label={__( 'Number Suffix', 'kadence-blocks' )}
+										label={__('Number Suffix', 'kadence-blocks')}
 										value={numberSuffix}
-										onChange={( value ) => setAttributes( { numberSuffix: value } )}
+										onChange={(value) => setAttributes({ numberSuffix: value })}
 										onBlur={() => {
-											setRerender( Math.random() );
+											setRerender(Math.random());
 										}}
 									/>
 									{progressMax !== 100 && (
 										<ToggleControl
-											label={__( 'Percentage relative to 100%', 'kadence-blocks' )}
+											label={__('Percentage relative to 100%', 'kadence-blocks')}
 											checked={numberIsRelative}
-											onChange={( value ) => setAttributes( { numberIsRelative: value } )}
+											onChange={(value) => setAttributes({ numberIsRelative: value })}
 										/>
 									)}
-
 								</Fragment>
 							)}
-
 						</KadencePanelBody>
 
 						<KadencePanelBody
-							title={__( 'Animation', 'kadence-blocks' )}
+							title={__('Animation', 'kadence-blocks')}
 							initialOpen={false}
 							panelName={'kb-progress-bar-timing'}
 						>
 							<RangeControl
-								label={__( 'Duration', 'kadence-blocks' )}
+								label={__('Duration', 'kadence-blocks')}
 								value={duration}
-								onChange={( value ) => setAttributes( { duration: value } )}
+								onChange={(value) => setAttributes({ duration: value })}
 								min={0}
 								max={25}
 								step={0.1}
 							/>
 
 							<ToggleControl
-								label={__( 'Wait until visible to animate', 'kadence-blocks' )}
-								help={__( 'The animation wont start until the progress bar is visible in the viewport. This does not apply in the editor', 'kadence-blocks' )}
+								label={__('Wait until visible to animate', 'kadence-blocks')}
+								help={__(
+									'The animation wont start until the progress bar is visible in the viewport. This does not apply in the editor',
+									'kadence-blocks'
+								)}
 								checked={delayUntilInView}
-								onChange={( value ) => setAttributes( { delayUntilInView: value } )}
+								onChange={(value) => setAttributes({ delayUntilInView: value })}
 							/>
 
 							<SelectControl
-								label={__( 'Type', 'kadence-blocks' )}
-								options={
-									[ { value: 'linear', label: __( 'Linear', 'kadence-blocks' ) },
-									  { value: 'easeIn', label: __( 'Ease In', 'kadence-blocks' ) },
-									  { value: 'easeOut', label: __( 'Ease Out', 'kadence-blocks' ) },
-									  { value: 'easeInOut', label: __( 'Ease In Out', 'kadence-blocks' ) } ]
-								}
+								label={__('Type', 'kadence-blocks')}
+								options={[
+									{ value: 'linear', label: __('Linear', 'kadence-blocks') },
+									{ value: 'easeIn', label: __('Ease In', 'kadence-blocks') },
+									{ value: 'easeOut', label: __('Ease Out', 'kadence-blocks') },
+									{ value: 'easeInOut', label: __('Ease In Out', 'kadence-blocks') },
+								]}
 								value={easing}
-								onChange={( value ) => setAttributes( { easing: value } )}
+								onChange={(value) => setAttributes({ easing: value })}
 							/>
-
 						</KadencePanelBody>
-
 					</>
-
 				)}
 
-
-				{( activeTab === 'style' ) && (
-
+				{activeTab === 'style' && (
 					<Fragment>
 						<KadencePanelBody>
 							<KadenceRadioButtons
-								label={__( 'Text Position', 'kadence-blocks' )}
-								value={ labelPosition }
-								options={ [
-									{ value: 'above', label: __( 'Above', 'kadence-blocks' ) },
-									{ value: 'inside', label: __( 'Inside', 'kadence-blocks' ) },
-									{ value: 'below', label: __( 'Below', 'kadence-blocks' ) },
-								] }
-								className={ 'kb-letter-case' }
-								allowClear={ false }
-								onChange={( value ) => setAttributes( { labelPosition: value } )}
+								label={__('Text Position', 'kadence-blocks')}
+								value={labelPosition}
+								options={[
+									{ value: 'above', label: __('Above', 'kadence-blocks') },
+									{ value: 'inside', label: __('Inside', 'kadence-blocks') },
+									{ value: 'below', label: __('Below', 'kadence-blocks') },
+								]}
+								className={'kb-letter-case'}
+								allowClear={false}
+								onChange={(value) => setAttributes({ labelPosition: value })}
 							/>
 
 							{/* {labelPosition !== 'inside' || barType === 'line' ? ( <ResponsiveAlignControls
@@ -771,273 +978,280 @@ export function Edit( props ) {
 								type={'justify'}
 							/> ) : null} */}
 							<ResponsiveAlignControls
-								label={__( 'Text Alignment', 'kadence-blocks' )}
-								value={( hAlign ? hAlign : '' )}
-								mobileValue={( mhAlign ? mhAlign : '' )}
-								tabletValue={( thAlign ? thAlign : '' )}
-								onChange={( nextAlign ) => setAttributes( { hAlign: ( nextAlign ? nextAlign : 'space-between' ) } )}
-								onChangeTablet={( nextAlign ) => setAttributes( { thAlign: ( nextAlign ? nextAlign : '' ) } )}
-								onChangeMobile={( nextAlign ) => setAttributes( { mhAlign: ( nextAlign ? nextAlign : '' ) } )}
+								label={__('Text Alignment', 'kadence-blocks')}
+								value={hAlign ? hAlign : ''}
+								mobileValue={mhAlign ? mhAlign : ''}
+								tabletValue={thAlign ? thAlign : ''}
+								onChange={(nextAlign) =>
+									setAttributes({ hAlign: nextAlign ? nextAlign : 'space-between' })
+								}
+								onChangeTablet={(nextAlign) => setAttributes({ thAlign: nextAlign ? nextAlign : '' })}
+								onChangeMobile={(nextAlign) => setAttributes({ mhAlign: nextAlign ? nextAlign : '' })}
 								type={'justify'}
 							/>
 
 							{displayLabel && displayPercent ? (
 								<SelectControl
-									label={__( 'Text Layout', 'kadence-blocks' )}
+									label={__('Text Layout', 'kadence-blocks')}
 									options={[
-										{ value: 'lp', label: __( 'Label then %', 'kadence-blocks' ) },
-										{ value: 'pl', label: __( '% then Label', 'kadence-blocks' ) },
-										{ value: 'lt', label: __( 'Label above %', 'kadence-blocks' ) },
-										{ value: 'lb', label: __( 'Label below %', 'kadence-blocks' ) },
+										{ value: 'lp', label: __('Label then %', 'kadence-blocks') },
+										{ value: 'pl', label: __('% then Label', 'kadence-blocks') },
+										{ value: 'lt', label: __('Label above %', 'kadence-blocks') },
+										{ value: 'lb', label: __('Label below %', 'kadence-blocks') },
 									]}
 									value={labelLayout}
-									onChange={( value ) => setAttributes( { labelLayout: value } )}
+									onChange={(value) => setAttributes({ labelLayout: value })}
 								/>
 							) : null}
 
 							<ToggleControl
-								label={__( 'Show Label', 'kadence-blocks' )}
+								label={__('Show Label', 'kadence-blocks')}
 								checked={displayLabel}
-								onChange={( value ) => setAttributes( { displayLabel: value } )}
+								onChange={(value) => setAttributes({ displayLabel: value })}
 							/>
 
 							<ToggleControl
-								label={__( 'Show Number', 'kadence-blocks' )}
+								label={__('Show Number', 'kadence-blocks')}
 								checked={displayPercent}
-								onChange={( value ) => setAttributes( { displayPercent: value } )}
+								onChange={(value) => setAttributes({ displayPercent: value })}
 							/>
 						</KadencePanelBody>
 
 						<KadencePanelBody
-							title={__( 'Progress Color', 'kadence-blocks' )}
+							title={__('Progress Color', 'kadence-blocks')}
 							initialOpen={false}
 							panelName={'kb-progress-color'}
 						>
 							<PopColorControl
-								label={__( 'Progress Background', 'kadence-blocks' )}
-								colorValue={ barBackground }
+								label={__('Progress Background', 'kadence-blocks')}
+								colorValue={barBackground}
 								opacityValue={barBackgroundOpacity}
-								onColorChange={value => setAttributes( { barBackground: value } )}
-								onOpacityChange={value => setAttributes( { barBackgroundOpacity: value } )}
+								onColorChange={(value) => setAttributes({ barBackground: value })}
+								onOpacityChange={(value) => setAttributes({ barBackgroundOpacity: value })}
 							/>
 							<PopColorControl
-								label={__( 'Progress Color', 'kadence-blocks' )}
-								colorValue={ progressColor }
+								label={__('Progress Color', 'kadence-blocks')}
+								colorValue={progressColor}
 								opacityValue={progressOpacity}
-								onColorChange={value => setAttributes( { progressColor: value } )}
-								onOpacityChange={value => setAttributes( { progressOpacity: value } )}
+								onColorChange={(value) => setAttributes({ progressColor: value })}
+								onOpacityChange={(value) => setAttributes({ progressOpacity: value })}
 							/>
 						</KadencePanelBody>
 						{displayPercent || displayLabel ? (
-								<KadencePanelBody
-									title={__( 'Text Styling', 'kadence-blocks' )}
-									initialOpen={false}
-									panelName={'kb-progress-text-styling'}
-								>
-									<PopColorControl
-										label={__( 'Color Settings', 'kadence-blocks' )}
-										value={( labelFont.color ? labelFont.color : '' )}
-										default={''}
-										onChange={value => saveLabelFont( { color: value } )}
-									/>
-									<TypographyControls
-										fontGroup={'body'}
-										fontSize={labelFont.size}
-										onFontSize={( value ) => saveLabelFont( { size: value } )}
-										fontSizeType={labelFont.sizeType}
-										onFontSizeType={( value ) => saveLabelFont( { sizeType: value } )}
-										lineHeight={labelFont.lineHeight}
-										onLineHeight={( value ) => saveLabelFont( { lineHeight: value } )}
-										lineHeightType={labelFont.lineType}
-										onLineHeightType={( value ) => saveLabelFont( { lineType: value } )}
-										reLetterSpacing={labelFont.letterSpacing}
-										onLetterSpacing={( value ) => saveLabelFont( { letterSpacing: value } )}
-										textTransform={labelFont.textTransform}
-										onTextTransform={( value ) => saveLabelFont( { textTransform: value } )}
-										fontFamily={labelFont.family}
-										onFontFamily={( value ) => saveLabelFont( { family: value } )}
-										onFontChange={( select ) => {
-											saveLabelFont( {
-												family: select.value,
-												google: select.google,
-											} );
-										}}
-										onFontArrayChange={( values ) => saveLabelFont( values )}
-										googleFont={labelFont.google}
-										onGoogleFont={( value ) => saveLabelFont( { google: value } )}
-										loadGoogleFont={labelFont.loadGoogle}
-										onLoadGoogleFont={( value ) => saveLabelFont( { loadGoogle: value } )}
-										fontVariant={labelFont.variant}
-										onFontVariant={( value ) => saveLabelFont( { variant: value } )}
-										fontWeight={labelFont.weight}
-										onFontWeight={( value ) => saveLabelFont( { weight: value } )}
-										fontStyle={labelFont.style}
-										onFontStyle={( value ) => saveLabelFont( { style: value } )}
-										fontSubset={labelFont.subset}
-										onFontSubset={( value ) => saveLabelFont( { subset: value } )}
-										// padding={labelFont.padding}
-										// onPadding={( value ) => saveLabelFont( { padding: value } )}
-										// margin={labelFont.margin}
-										// onMargin={( value ) => saveLabelFont( { margin: value } )}
-									/>
-								</KadencePanelBody> )
-							: null}
-
-						{displayPercent && ( <KadencePanelBody
-							title={__( 'Number Styling', 'kadence-blocks' )}
-							initialOpen={false}
-							panelName={'kb-progress-number-styling'}
-						>
-							<PopColorControl
-								label={__( 'Color Settings', 'kadence-blocks' )}
-								value={( numberFont.color ? numberFont.color : '' )}
-								default={''}
-								onChange={value => saveNumberFont( { color: value } )}
-							/>
-							<TypographyControls
-								fontGroup={'body'}
-								fontSize={numberFont.size}
-								onFontSize={( value ) => saveNumberFont( { size: value } )}
-								fontSizeType={numberFont.sizeType}
-								onFontSizeType={( value ) => saveNumberFont( { sizeType: value } )}
-								lineHeight={numberFont.lineHeight}
-								onLineHeight={( value ) => saveNumberFont( { lineHeight: value } )}
-								lineHeightType={numberFont.lineType}
-								onLineHeightType={( value ) => saveNumberFont( { lineType: value } )}
-								reLetterSpacing={numberFont.letterSpacing}
-								onLetterSpacing={( value ) => saveNumberFont( { letterSpacing: value } )}
-								textTransform={numberFont.textTransform}
-								onTextTransform={( value ) => saveNumberFont( { textTransform: value } )}
-								fontFamily={numberFont.family}
-								onFontFamily={( value ) => saveNumberFont( { family: value } )}
-								onFontChange={( select ) => {
-									saveNumberFont( {
-										family: select.value,
-										google: select.google,
-									} );
-								}}
-								onFontArrayChange={( values ) => saveNumberFont( values )}
-								googleFont={numberFont.google}
-								onGoogleFont={( value ) => saveNumberFont( { google: value } )}
-								loadGoogleFont={numberFont.loadGoogle}
-								onLoadGoogleFont={( value ) => saveNumberFont( { loadGoogle: value } )}
-								fontVariant={numberFont.variant}
-								onFontVariant={( value ) => saveNumberFont( { variant: value } )}
-								fontWeight={numberFont.weight}
-								onFontWeight={( value ) => saveNumberFont( { weight: value } )}
-								fontStyle={numberFont.style}
-								onFontStyle={( value ) => saveNumberFont( { style: value } )}
-								fontSubset={numberFont.subset}
-								onFontSubset={( value ) => saveNumberFont( { subset: value } )}
-								// padding={numberFont.padding}
-								// onPadding={( value ) => saveNumberFont( { padding: value } )}
-								// margin={numberFont.margin}
-								// onMargin={( value ) => saveNumberFont( { margin: value } )}
-							/>
-						</KadencePanelBody> )}
-						{ ( displayPercent || displayLabel ) && (
 							<KadencePanelBody
-								title={__( 'Text and Number Padding', 'kadence-blocks' )}
+								title={__('Text Styling', 'kadence-blocks')}
+								initialOpen={false}
+								panelName={'kb-progress-text-styling'}
+							>
+								<PopColorControl
+									label={__('Color Settings', 'kadence-blocks')}
+									value={labelFont.color ? labelFont.color : ''}
+									default={''}
+									onChange={(value) => saveLabelFont({ color: value })}
+								/>
+								<TypographyControls
+									fontGroup={'body'}
+									fontSize={labelFont.size}
+									onFontSize={(value) => saveLabelFont({ size: value })}
+									fontSizeType={labelFont.sizeType}
+									onFontSizeType={(value) => saveLabelFont({ sizeType: value })}
+									lineHeight={labelFont.lineHeight}
+									onLineHeight={(value) => saveLabelFont({ lineHeight: value })}
+									lineHeightType={labelFont.lineType}
+									onLineHeightType={(value) => saveLabelFont({ lineType: value })}
+									reLetterSpacing={labelFont.letterSpacing}
+									onLetterSpacing={(value) => saveLabelFont({ letterSpacing: value })}
+									textTransform={labelFont.textTransform}
+									onTextTransform={(value) => saveLabelFont({ textTransform: value })}
+									fontFamily={labelFont.family}
+									onFontFamily={(value) => saveLabelFont({ family: value })}
+									onFontChange={(select) => {
+										saveLabelFont({
+											family: select.value,
+											google: select.google,
+										});
+									}}
+									onFontArrayChange={(values) => saveLabelFont(values)}
+									googleFont={labelFont.google}
+									onGoogleFont={(value) => saveLabelFont({ google: value })}
+									loadGoogleFont={labelFont.loadGoogle}
+									onLoadGoogleFont={(value) => saveLabelFont({ loadGoogle: value })}
+									fontVariant={labelFont.variant}
+									onFontVariant={(value) => saveLabelFont({ variant: value })}
+									fontWeight={labelFont.weight}
+									onFontWeight={(value) => saveLabelFont({ weight: value })}
+									fontStyle={labelFont.style}
+									onFontStyle={(value) => saveLabelFont({ style: value })}
+									fontSubset={labelFont.subset}
+									onFontSubset={(value) => saveLabelFont({ subset: value })}
+									// padding={labelFont.padding}
+									// onPadding={( value ) => saveLabelFont( { padding: value } )}
+									// margin={labelFont.margin}
+									// onMargin={( value ) => saveLabelFont( { margin: value } )}
+								/>
+							</KadencePanelBody>
+						) : null}
+
+						{displayPercent && (
+							<KadencePanelBody
+								title={__('Number Styling', 'kadence-blocks')}
+								initialOpen={false}
+								panelName={'kb-progress-number-styling'}
+							>
+								<PopColorControl
+									label={__('Color Settings', 'kadence-blocks')}
+									value={numberFont.color ? numberFont.color : ''}
+									default={''}
+									onChange={(value) => saveNumberFont({ color: value })}
+								/>
+								<TypographyControls
+									fontGroup={'body'}
+									fontSize={numberFont.size}
+									onFontSize={(value) => saveNumberFont({ size: value })}
+									fontSizeType={numberFont.sizeType}
+									onFontSizeType={(value) => saveNumberFont({ sizeType: value })}
+									lineHeight={numberFont.lineHeight}
+									onLineHeight={(value) => saveNumberFont({ lineHeight: value })}
+									lineHeightType={numberFont.lineType}
+									onLineHeightType={(value) => saveNumberFont({ lineType: value })}
+									reLetterSpacing={numberFont.letterSpacing}
+									onLetterSpacing={(value) => saveNumberFont({ letterSpacing: value })}
+									textTransform={numberFont.textTransform}
+									onTextTransform={(value) => saveNumberFont({ textTransform: value })}
+									fontFamily={numberFont.family}
+									onFontFamily={(value) => saveNumberFont({ family: value })}
+									onFontChange={(select) => {
+										saveNumberFont({
+											family: select.value,
+											google: select.google,
+										});
+									}}
+									onFontArrayChange={(values) => saveNumberFont(values)}
+									googleFont={numberFont.google}
+									onGoogleFont={(value) => saveNumberFont({ google: value })}
+									loadGoogleFont={numberFont.loadGoogle}
+									onLoadGoogleFont={(value) => saveNumberFont({ loadGoogle: value })}
+									fontVariant={numberFont.variant}
+									onFontVariant={(value) => saveNumberFont({ variant: value })}
+									fontWeight={numberFont.weight}
+									onFontWeight={(value) => saveNumberFont({ weight: value })}
+									fontStyle={numberFont.style}
+									onFontStyle={(value) => saveNumberFont({ style: value })}
+									fontSubset={numberFont.subset}
+									onFontSubset={(value) => saveNumberFont({ subset: value })}
+									// padding={numberFont.padding}
+									// onPadding={( value ) => saveNumberFont( { padding: value } )}
+									// margin={numberFont.margin}
+									// onMargin={( value ) => saveNumberFont( { margin: value } )}
+								/>
+							</KadencePanelBody>
+						)}
+						{(displayPercent || displayLabel) && (
+							<KadencePanelBody
+								title={__('Text and Number Padding', 'kadence-blocks')}
 								initialOpen={false}
 								panelName={'kb-progress-text-padding'}
 							>
 								<ResponsiveMeasureRangeControl
-									label={__( 'Padding', 'kadence-blocks' )}
+									label={__('Padding', 'kadence-blocks')}
 									value={labelPadding}
 									tabletValue={tabletLabelPadding}
 									mobileValue={mobileLabelPadding}
-									onChange={( value ) => {
-										setAttributes( { labelPadding: value } );
+									onChange={(value) => {
+										setAttributes({ labelPadding: value });
 									}}
-									onChangeTablet={( value ) => setAttributes( { tabletLabelPadding: value } )}
-									onChangeMobile={( value ) => setAttributes( { mobileLabelPadding: value } )}
-									min={( labelPaddingType === 'em' || labelPaddingType === 'rem' ? -12 : -200 )}
-									max={( labelPaddingType === 'em' || labelPaddingType === 'rem' ? 24 : 200 )}
-									step={( labelPaddingType === 'em' || labelPaddingType === 'rem' ? 0.1 : 1 )}
+									onChangeTablet={(value) => setAttributes({ tabletLabelPadding: value })}
+									onChangeMobile={(value) => setAttributes({ mobileLabelPadding: value })}
+									min={labelPaddingType === 'em' || labelPaddingType === 'rem' ? -12 : -200}
+									max={labelPaddingType === 'em' || labelPaddingType === 'rem' ? 24 : 200}
+									step={labelPaddingType === 'em' || labelPaddingType === 'rem' ? 0.1 : 1}
 									unit={labelPaddingType}
-									units={[ 'px', 'em', 'rem', '%', 'vh' ]}
-									onUnit={( value ) => setAttributes( { labelPaddingType: value } )}
+									units={['px', 'em', 'rem', '%', 'vh']}
+									onUnit={(value) => setAttributes({ labelPaddingType: value })}
 									// onMouseOver={ labelPaddingMouseOver.onMouseOver }
 									// onMouseOut={ labelPaddingMouseOver.onMouseOut }
 								/>
 							</KadencePanelBody>
-						) }
+						)}
 					</Fragment>
-
 				)}
 
 				{activeTab === 'advanced' && (
 					<KadencePanelBody>
 						<ResponsiveMeasureRangeControl
-							label={__( 'Margin', 'kadence-blocks' )}
+							label={__('Margin', 'kadence-blocks')}
 							value={margin}
 							tabletValue={tabletMargin}
 							mobileValue={mobileMargin}
-							onChange={( value ) => {
-								setAttributes( { margin: value } );
+							onChange={(value) => {
+								setAttributes({ margin: value });
 							}}
-							onChangeTablet={( value ) => setAttributes( { tabletMargin: value } )}
-							onChangeMobile={( value ) => setAttributes( { mobileMargin: value } )}
-							min={( marginType === 'em' || marginType === 'rem' ? -12 : -200 )}
-							max={( marginType === 'em' || marginType === 'rem' ? 24 : 200 )}
-							step={( marginType === 'em' || marginType === 'rem' ? 0.1 : 1 )}
+							onChangeTablet={(value) => setAttributes({ tabletMargin: value })}
+							onChangeMobile={(value) => setAttributes({ mobileMargin: value })}
+							min={marginType === 'em' || marginType === 'rem' ? -12 : -200}
+							max={marginType === 'em' || marginType === 'rem' ? 24 : 200}
+							step={marginType === 'em' || marginType === 'rem' ? 0.1 : 1}
 							unit={marginType}
-							units={[ 'px', 'em', 'rem', '%', 'vh' ]}
-							onUnit={( value ) => setAttributes( { marginType: value } )}
+							units={['px', 'em', 'rem', '%', 'vh']}
+							onUnit={(value) => setAttributes({ marginType: value })}
 							// onMouseOver={ marginMouseOver.onMouseOver }
 							// onMouseOut={ marginMouseOver.onMouseOut }
-							allowAuto={ true }
+							allowAuto={true}
 						/>
 						<ResponsiveRangeControls
-							label={__( 'Max Width', 'kadence-blocks' )}
+							label={__('Max Width', 'kadence-blocks')}
 							value={containerMaxWidth}
-							onChange={value => setAttributes( { containerMaxWidth: value } )}
-							tabletValue={( tabletContainerMaxWidth ? tabletContainerMaxWidth : '' )}
-							onChangeTablet={( value ) => setAttributes( { tabletContainerMaxWidth: value } )}
-							mobileValue={( mobileContainerMaxWidth ? mobileContainerMaxWidth : '' )}
-							onChangeMobile={( value ) => setAttributes( { mobileContainerMaxWidth: value } )}
+							onChange={(value) => setAttributes({ containerMaxWidth: value })}
+							tabletValue={tabletContainerMaxWidth ? tabletContainerMaxWidth : ''}
+							onChangeTablet={(value) => setAttributes({ tabletContainerMaxWidth: value })}
+							mobileValue={mobileContainerMaxWidth ? mobileContainerMaxWidth : ''}
+							onChangeMobile={(value) => setAttributes({ mobileContainerMaxWidth: value })}
 							min={0}
-							max={( containerMaxWidthUnits === 'px' ? 3000 : 100 )}
+							max={containerMaxWidthUnits === 'px' ? 3000 : 100}
 							step={1}
 							unit={containerMaxWidthUnits}
-							onUnit={( value ) => setAttributes( { containerMaxWidthUnits: value } )}
-							reset={() => setAttributes( { containerMaxWidth: 0, tabletContainerMaxWidth: '', mobileContainerMaxWidth: '' } )}
-							units={[ 'px', 'vh', '%' ]}
+							onUnit={(value) => setAttributes({ containerMaxWidthUnits: value })}
+							reset={() =>
+								setAttributes({
+									containerMaxWidth: 0,
+									tabletContainerMaxWidth: '',
+									mobileContainerMaxWidth: '',
+								})
+							}
+							units={['px', 'vh', '%']}
 						/>
 					</KadencePanelBody>
 				)}
-
 			</InspectorControls>
 			<style>{maskStyles}</style>
-			<div style={
-				{
-					position    : 'relative',
-					marginTop   : ( '' !== previewMarginTop ? getSpacingOptionOutput( previewMarginTop, marginType ) : undefined ),
-					marginRight : ( '' !== previewMarginRight ? getSpacingOptionOutput( previewMarginRight, marginType ) : undefined ),
-					marginBottom: ( '' !== previewMarginBottom ? getSpacingOptionOutput( previewMarginBottom, marginType ) : undefined ),
-					marginLeft  : ( '' !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginType ) : undefined ),
-					width       : ( previewContainerMaxWidth ? previewContainerMaxWidth + containerMaxWidthUnits : 'none' ),
-				}
-			}>
+			<div
+				style={{
+					position: 'relative',
+					marginTop:
+						'' !== previewMarginTop ? getSpacingOptionOutput(previewMarginTop, marginType) : undefined,
+					marginRight:
+						'' !== previewMarginRight ? getSpacingOptionOutput(previewMarginRight, marginType) : undefined,
+					marginBottom:
+						'' !== previewMarginBottom
+							? getSpacingOptionOutput(previewMarginBottom, marginType)
+							: undefined,
+					marginLeft:
+						'' !== previewMarginLeft ? getSpacingOptionOutput(previewMarginLeft, marginType) : undefined,
+					width: previewContainerMaxWidth ? previewContainerMaxWidth + containerMaxWidthUnits : 'none',
+				}}
+			>
+				{'above' === labelPosition && (displayLabel || displayPercent) && RenderLabel('above')}
 
-				{ 'above' === labelPosition && ( displayLabel || displayPercent ) &&
-					RenderLabel( 'above' )
-				}
-
-				<div id={'kb-progress-bar' + uniqueID } class="kb-progress-bar"></div>
-				{ 'inside' === labelPosition && ( displayLabel || displayPercent ) &&
-					RenderLabel( 'inside' )
-				}
-				{ 'below' === labelPosition && ( displayLabel || displayPercent ) &&
-					RenderLabel( 'below' )
-				}
+				<div id={'kb-progress-bar' + uniqueID} class="kb-progress-bar"></div>
+				{'inside' === labelPosition && (displayLabel || displayPercent) && RenderLabel('inside')}
+				{'below' === labelPosition && (displayLabel || displayPercent) && RenderLabel('below')}
 			</div>
 
-			{labelFont.google && ( <WebfontLoader config={labelFontConfig}></WebfontLoader> )}
+			{labelFont.google && <WebfontLoader config={labelFontConfig}></WebfontLoader>}
 
-			{displayPercent && numberFont.google && ( <WebfontLoader config={numberFontConfig}></WebfontLoader> )}
+			{displayPercent && numberFont.google && <WebfontLoader config={numberFontConfig}></WebfontLoader>}
 		</div>
 	);
 }
 
-export default ( Edit );
+export default Edit;

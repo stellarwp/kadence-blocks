@@ -7,8 +7,8 @@
 /**
  * Register sub blocks.
  */
- import './countdown-timer/block.js';
- import './countdown-inner/block.js';
+import './countdown-timer/block.js';
+import './countdown-inner/block.js';
 
 /**
  * Import Icons
@@ -17,7 +17,7 @@ import { countdownIcon } from '@kadence/icons';
 /**
  * Import Css
  */
- import './style.scss';
+import './style.scss';
 /**
  * Internal dependencies
  */
@@ -40,15 +40,11 @@ import { __, _x } from '@wordpress/i18n';
  * @return {?WPBlock}          The block, if it has been successfully
  *                             registered; otherwise `undefined`.
  */
-registerBlockType( 'kadence/countdown', {
+registerBlockType('kadence/countdown', {
 	...metadata,
-	title: _x( 'Countdown', 'block title', 'kadence-blocks' ),
-	description: __( 'The countdown timer', 'kadence-blocks' ),
-	keywords: [
-		__( 'countdown', 'kadence-blocks' ),
-		__( 'timer', 'kadence-blocks' ),
-		'KB',
-	],
+	title: _x('Countdown', 'block title', 'kadence-blocks'),
+	description: __('The countdown timer', 'kadence-blocks'),
+	keywords: [__('countdown', 'kadence-blocks'), __('timer', 'kadence-blocks'), 'KB'],
 	icon: countdownIcon,
 	edit,
 	save,
@@ -56,8 +52,8 @@ registerBlockType( 'kadence/countdown', {
 		innerBlocks: [
 			{
 				name: 'kadence/countdown-timer',
-				attributes: {}
-			}
-		]
-	}
-} );
+				attributes: {},
+			},
+		],
+	},
+});

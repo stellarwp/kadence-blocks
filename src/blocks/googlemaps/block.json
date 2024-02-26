@@ -1,135 +1,135 @@
 {
-  "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 3,
-  "name": "kadence/googlemaps",
-  "title": "Google Maps",
-  "category": "kadence-blocks",
-  "textdomain": "kadence-google-maps",
-  "attributes": {
-	"uniqueID": {
-	  "type": "string"
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "kadence/googlemaps",
+	"title": "Google Maps",
+	"category": "kadence-blocks",
+	"textdomain": "kadence-google-maps",
+	"attributes": {
+		"uniqueID": {
+			"type": "string"
+		},
+		"width": {
+			"type": "number",
+			"default": ""
+		},
+		"heightDesktop": {
+			"type": "number",
+			"default": 450
+		},
+		"heightTablet": {
+			"type": "number",
+			"default": ""
+		},
+		"heightMobile": {
+			"type": "number",
+			"default": ""
+		},
+		"widthDesktop": {
+			"type": "number",
+			"default": ""
+		},
+		"widthTablet": {
+			"type": "number",
+			"default": ""
+		},
+		"widthMobile": {
+			"type": "number",
+			"default": ""
+		},
+		"zoom": {
+			"type": "number",
+			"default": "11"
+		},
+		"location": {
+			"type": "string",
+			"default": "Golden Gate Bridge"
+		},
+		"lat": {
+			"type": "string",
+			"default": ""
+		},
+		"lng": {
+			"type": "string",
+			"default": ""
+		},
+		"apiType": {
+			"type": "string",
+			"enum": ["embed", "javascript"],
+			"default": "embed"
+		},
+		"showMarker": {
+			"type": "boolean",
+			"default": true
+		},
+		"mapType": {
+			"type": "string",
+			"enum": ["roadmap", "satellite"],
+			"default": "roadmap"
+		},
+		"mapFilter": {
+			"type": "string",
+			"enum": ["standard", "grayscale", "invert", "saturate", "sepia"],
+			"default": "standard"
+		},
+		"mapStyle": {
+			"type": "string",
+			"default": "standard"
+		},
+		"showControls": {
+			"type": "boolean",
+			"default": true
+		},
+		"customSnazzy": {
+			"type": "string",
+			"default": ""
+		},
+		"mapFilterAmount": {
+			"type": "number",
+			"default": 50
+		},
+		"marginDesktop": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"marginTablet": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"marginMobile": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"marginUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"paddingDesktop": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"paddingTablet": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"paddingMobile": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"paddingUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"textAlign": {
+			"type": "array",
+			"default": ["", "", ""]
+		},
+		"kbVersion": {
+			"type": "number",
+			"default": ""
+		}
 	},
-	"width": {
-	  "type": "number",
-	  "default": ""
-	},
-	"heightDesktop": {
-	  "type": "number",
-	  "default": 450
-	},
-	"heightTablet": {
-	  "type": "number",
-	  "default": ""
-	},
-	"heightMobile": {
-	  "type": "number",
-	  "default": ""
-	},
-	"widthDesktop": {
-	  "type": "number",
-	  "default": ""
-	},
-	"widthTablet": {
-	  "type": "number",
-	  "default": ""
-	},
-	"widthMobile": {
-	  "type": "number",
-	  "default": ""
-	},
-	"zoom": {
-	  "type": "number",
-	  "default": "11"
-	},
-	"location": {
-	  "type": "string",
-	  "default": "Golden Gate Bridge"
-	},
-	"lat": {
-	  "type": "string",
-	  "default": ""
-	},
-	"lng": {
-	  "type": "string",
-	  "default": ""
-	},
-	"apiType": {
-	  "type": "string",
-	  "enum": ["embed", "javascript"],
-	  "default": "embed"
-	},
-	"showMarker": {
-	  "type": "boolean",
-	  "default": true
-	},
-	"mapType": {
-	  "type": "string",
-	  "enum": ["roadmap", "satellite"],
-	  "default": "roadmap"
-	},
-	"mapFilter": {
-	  "type": "string",
-	  "enum": ["standard", "grayscale", "invert", "saturate", "sepia"],
-	  "default": "standard"
-	},
-	"mapStyle": {
-	  "type": "string",
-	  "default": "standard"
-	},
-	"showControls": {
-	  "type": "boolean",
-	  "default": true
-	},
-	"customSnazzy": {
-	  "type": "string",
-	  "default": ""
-	},
-	"mapFilterAmount": {
-	  "type": "number",
-	  "default": 50
-	},
-	"marginDesktop": {
-	  "type": "array",
-	  "default":  [ "", "", "", "" ]
-	},
-	"marginTablet": {
-	  "type": "array",
-	  "default":  [ "", "", "", "" ]
-	},
-	"marginMobile": {
-	  "type": "array",
-	  "default":  [ "", "", "", "" ]
-	},
-	"marginUnit": {
-	  "type": "string",
-	  "default": "px"
-	},
-	"paddingDesktop": {
-	  "type": "array",
-	  "default":  [ "", "", "", "" ]
-	},
-	"paddingTablet": {
-	  "type": "array",
-	  "default":  [ "", "", "", "" ]
-	},
-	"paddingMobile": {
-	  "type": "array",
-	  "default":  [ "", "", "", "" ]
-	},
-	"paddingUnit": {
-	  "type": "string",
-	  "default": "px"
-	},
-	"textAlign": {
-		"type": "array",
-		"default":  [ "", "", "" ]
-	},
-	"kbVersion": {
-	  "type": "number",
-	  "default": ""
+	"supports": {
+		"kbMetadata": true
 	}
-  },
-  "supports": {
-	  "kbMetadata": true
-  }
 }

@@ -19,4 +19,3 @@ export * from './tone-select-control';
 export * from './wizard';
 export * from './photo-collection';
 export * from './advanced-select';
-

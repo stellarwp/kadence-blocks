@@ -31,23 +31,19 @@ import { __ } from '@wordpress/i18n';
  * @return {?WPBlock}          The block, if it has been successfully
  *                             registered; otherwise `undefined`.
  */
-registerBlockType( 'kadence/countdown-inner', {
+registerBlockType('kadence/countdown-inner', {
 	...metadata,
-	title: __( 'Countdown Content', 'kadence-blocks' ),
-	description: __( 'Inner Container for Countdown Block', 'kadence-blocks' ),
-	keywords: [
-		__( 'countdown', 'kadence-blocks' ),
-		__( 'timer', 'kadence-blocks' ),
-		'KB',
-	],
+	title: __('Countdown Content', 'kadence-blocks'),
+	description: __('Inner Container for Countdown Block', 'kadence-blocks'),
+	keywords: [__('countdown', 'kadence-blocks'), __('timer', 'kadence-blocks'), 'KB'],
 	icon: countdownInnerIcon,
 	edit,
-	save( { attributes } ) {
+	save({ attributes }) {
 		const { location, uniqueID } = attributes;
 
-		const blockProps = useBlockProps.save( {
-			className: `kb-countdown-inner kb-countdown-inner-${ location } kb-countdown-inner-${ uniqueID }`
-		} );
+		const blockProps = useBlockProps.save({
+			className: `kb-countdown-inner kb-countdown-inner-${location} kb-countdown-inner-${uniqueID}`,
+		});
 
 		return (
 			<div {...blockProps}>
@@ -55,4 +51,4 @@ registerBlockType( 'kadence/countdown-inner', {
 			</div>
 		);
 	},
-} );
+});

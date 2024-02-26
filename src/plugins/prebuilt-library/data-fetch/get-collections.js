@@ -25,7 +25,7 @@ export function getCollection() {
 	 * @return {void}
 	 */
 	function setCollection() {
-		if (! sessionStorage.getItem(COLLECTION_SESSION_KEY)) {
+		if (!sessionStorage.getItem(COLLECTION_SESSION_KEY)) {
 			getCollection();
 		}
 	}
@@ -35,7 +35,7 @@ export function getCollection() {
 	 *
 	 * @return {Promise<array>} Promise returns array
 	 */
-	async function getCollection( industry ) {
+	async function getCollection(industry) {
 		if (sessionStorage.getItem(COLLECTION_SESSION_KEY)) {
 			return JSON.parse(sessionStorage.getItem(COLLECTION_SESSION_KEY));
 		}
@@ -51,27 +51,26 @@ export function getCollection() {
 	 * @return {Promise<object>} Promise returns object
 	 */
 	async function getCollectionByIndustry(industry) {
-		const industries = Array.isArray(industry) ? industry : [ industry ];
+		const industries = Array.isArray(industry) ? industry : [industry];
 		try {
-			const response = await apiFetch( {
-				path: addQueryArgs( API_ROUTE_GET_IMAGES, {
+			const response = await apiFetch({
+				path: addQueryArgs(API_ROUTE_GET_IMAGES, {
 					industries: industries,
-				} ),
-			} );
-			const responseData = SafeParseJSON( response, false );
-			if ( responseData ) {
+				}),
+			});
+			const responseData = SafeParseJSON(response, false);
+			if (responseData) {
 				return responseData;
 			}
 			return [];
 		} catch (error) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${ message }`);
+			console.log(`ERROR: ${message}`);
 		}
 	}
 	return {
 		setCollection,
 		getCollection,
-		getCollectionByIndustry
-	}
+		getCollectionByIndustry,
+	};
 }
-

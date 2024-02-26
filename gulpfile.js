@@ -16,4 +16,4 @@ exports.js = jsTasks.js;
 exports.miscStyles = stylesTasks.miscStyle;
 exports.styles = stylesTasks.styles;
 
-exports.build = parallel( jsTasks.js, stylesTasks.styles );
+exports.build = parallel(jsTasks.js, stylesTasks.styles);

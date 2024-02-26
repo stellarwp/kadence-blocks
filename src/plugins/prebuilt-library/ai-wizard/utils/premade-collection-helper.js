@@ -5,7 +5,7 @@ import {
 	COLLECTION_REQUEST_IMAGE_TYPE,
 	API_ROUTE_GET_COLLECTIONS,
 	API_ROUTE_GET_VERTICALS,
-	API_MAX_ATTEMPTS
+	API_MAX_ATTEMPTS,
 } from '../constants';
 
 import apiFetch from '@wordpress/api-fetch';
@@ -40,7 +40,6 @@ export function preMadeCollectionsHelper() {
 		}
 	}, []);
 
-
 	/**
 	 * Get collections data from Prophecy endpoint.
 	 *
@@ -49,20 +48,20 @@ export function preMadeCollectionsHelper() {
 	async function getCollectionsFromProphecy() {
 		try {
 			let collections = [];
-			const response = await apiFetch( {
-				path: addQueryArgs( API_ROUTE_GET_COLLECTIONS ),
-			} );
-			const responseData = SafeParseJSON( response, false );
+			const response = await apiFetch({
+				path: addQueryArgs(API_ROUTE_GET_COLLECTIONS),
+			});
+			const responseData = SafeParseJSON(response, false);
 
-			if ( responseData?.data?.collections ) {
+			if (responseData?.data?.collections) {
 				collections = responseData.data.collections;
-				setPexelLinks(collections)
+				setPexelLinks(collections);
 				sessionStorage.setItem(COLLECTIONS_SESSION_KEY, JSON.stringify(collections));
 			}
 		} catch (error) {
 			const message = error?.message ? error.message : error;
 
-			console.log(`ERROR: ${ message }`);
+			console.log(`ERROR: ${message}`);
 		} finally {
 			setLoading(false);
 		}
@@ -78,44 +77,40 @@ export function preMadeCollectionsHelper() {
 		for (let tries = 0; tries < API_MAX_ATTEMPTS; tries++) {
 			try {
 				const response = await apiFetch({
-					path: API_ROUTE_GET_VERTICALS
+					path: API_ROUTE_GET_VERTICALS,
 				});
 				const responseData = SafeParseJSON(response, false);
 
 				if (responseData && responseData?.data) {
 					// PreMade vertical don't have the galleries key
 					let parsedVerticals = responseData.data.reduce((acc, item) => {
-
 						const subVerticals = item.sub_verticals.map((vert) => {
 							return {
 								label: vert,
 								value: vert,
-							}
+							};
 						});
-						return [
-							...acc,
-							...subVerticals
-						]
+						return [...acc, ...subVerticals];
 					}, []);
 					// Sort alphabetically
 					parsedVerticals.sort(function (a, b) {
 						if (a.label < b.label) {
-						  return -1;
+							return -1;
 						}
 						if (a.label > b.label) {
-						  return 1;
+							return 1;
 						}
 						return 0;
 					});
-					parsedVerticals = parsedVerticals.filter(item => item.value !== 'Other');
+					parsedVerticals = parsedVerticals.filter((item) => item.value !== 'Other');
 					parsedVerticals.unshift({
 						label: __('AI Search Collection', 'kadence-blocks'),
-						value: "aiGenerated",
+						value: 'aiGenerated',
 						galleries: [
 							{ name: 'featured', images: [] },
-							{ name: 'background', images: [] }
-						]
-					})
+							{ name: 'background', images: [] },
+						],
+					});
 					setVerticals(parsedVerticals);
 					sessionStorage.setItem(VERTICALS_SESSION_KEY, JSON.stringify(parsedVerticals));
 					break;
@@ -136,37 +131,41 @@ export function preMadeCollectionsHelper() {
 	 *
 	 * @return {Promise<object>} Promise returns object
 	 */
-	async function getPreMadeCollectionByIndustry(industry, search = '' ) {
-		const industries = Array.isArray(industry) ? industry : [ industry ];
+	async function getPreMadeCollectionByIndustry(industry, search = '') {
+		const industries = Array.isArray(industry) ? industry : [industry];
 
 		try {
-			const response = await apiFetch( {
-				path: addQueryArgs( API_ROUTE_GET_IMAGES, {
+			const response = await apiFetch({
+				path: addQueryArgs(API_ROUTE_GET_IMAGES, {
 					industries: industries,
 					industry: search,
 					image_type: COLLECTION_REQUEST_IMAGE_TYPE,
 					image_sizes: kadenceExtensionImagePicker.image_sizes,
-				} ),
-			} );
-			const responseData = SafeParseJSON( response, false );
-			if ( responseData && responseData?.data ) {
-				if ( 'aiGenerated' === industry ) {
-					return [{
-						name: 'featured',
-						images: responseData?.data?.images.slice(0, 12),
-					},
-					{
-						name: 'background',
-						images: responseData?.data?.images.slice(12, 24),
-					}]
+				}),
+			});
+			const responseData = SafeParseJSON(response, false);
+			if (responseData && responseData?.data) {
+				if ('aiGenerated' === industry) {
+					return [
+						{
+							name: 'featured',
+							images: responseData?.data?.images.slice(0, 12),
+						},
+						{
+							name: 'background',
+							images: responseData?.data?.images.slice(12, 24),
+						},
+					];
 				} else {
 					const dataWithLinks = responseData.data.map((gallery) => {
-						const matchingLink = pexelLinks.find((item) => item.collection_slug === gallery.collection_slug);
+						const matchingLink = pexelLinks.find(
+							(item) => item.collection_slug === gallery.collection_slug
+						);
 						return {
 							name: gallery.collection_slug,
 							images: gallery.images,
-							pexelLink: matchingLink?.collection_url || ''
-						}
+							pexelLink: matchingLink?.collection_url || '',
+						};
 					});
 					return dataWithLinks;
 				}
@@ -174,7 +173,7 @@ export function preMadeCollectionsHelper() {
 			return [];
 		} catch (error) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${ message }`);
+			console.log(`ERROR: ${message}`);
 		}
 	}
 
@@ -182,6 +181,5 @@ export function preMadeCollectionsHelper() {
 		loading,
 		verticals,
 		getPreMadeCollectionByIndustry,
-	}
+	};
 }
-

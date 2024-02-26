@@ -5,10 +5,7 @@
  */
 
 import metadata from './block.json';
-import {
-	InnerBlocks,
-	useBlockProps
-} from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 /**
  * Import Icons
@@ -35,31 +32,27 @@ import { __ } from '@wordpress/i18n';
  * @return {?WPBlock}          The block, if it has been successfully
  *                             registered; otherwise `undefined`.
  */
-registerBlockType( 'kadence/tab', {
+registerBlockType('kadence/tab', {
 	...metadata,
-	title: __( 'Tab', 'kadence-blocks' ),
-	keywords: [
-		__( 'tabs', 'kadence-blocks' ),
-		__( 'tab', 'kadence-blocks' ),
-		'KB',
-	],
+	title: __('Tab', 'kadence-blocks'),
+	keywords: [__('tabs', 'kadence-blocks'), __('tab', 'kadence-blocks'), 'KB'],
 	icon: {
-		src: tabsBlockIcon
+		src: tabsBlockIcon,
 	},
-	getEditWrapperProps( attributes ) {
+	getEditWrapperProps(attributes) {
 		return { 'data-tab': attributes.id };
 	},
 	edit,
-	save( { attributes } ) {
+	save({ attributes }) {
 		const { id, uniqueID } = attributes;
 
-		const blockProps = useBlockProps.save( {
-			className: `kt-tab-inner-content kt-inner-tab-${ id } kt-inner-tab${ uniqueID }`
-		} );
+		const blockProps = useBlockProps.save({
+			className: `kt-tab-inner-content kt-inner-tab-${id} kt-inner-tab${uniqueID}`,
+		});
 
 		return (
 			<div {...blockProps}>
-				<div className={ 'kt-tab-inner-content-inner' } >
+				<div className={'kt-tab-inner-content-inner'}>
 					<InnerBlocks.Content />
 				</div>
 			</div>
@@ -73,11 +66,11 @@ registerBlockType( 'kadence/tab', {
 					default: 1,
 				},
 			},
-			save: ( { attributes } ) => {
+			save: ({ attributes }) => {
 				const { id } = attributes;
 				return (
-					<div className={ `kt-tab-inner-content kt-inner-tab-${ id }` }>
-						<div className={ 'kt-tab-inner-content-inner' } >
+					<div className={`kt-tab-inner-content kt-inner-tab-${id}`}>
+						<div className={'kt-tab-inner-content-inner'}>
 							<InnerBlocks.Content />
 						</div>
 					</div>
@@ -85,4 +78,4 @@ registerBlockType( 'kadence/tab', {
 			},
 		},
 	],
-} );
+});

@@ -35,11 +35,7 @@
 		},
 		"maxWidth": {
 			"type": "array",
-			"default": [
-			"",
-			"",
-			""
-			]
+			"default": ["", "", ""]
 		},
 		"maxWidthUnit": {
 			"type": "string",
@@ -47,11 +43,7 @@
 		},
 		"minWidth": {
 			"type": "array",
-			"default": [
-			"",
-			"",
-			""
-			]
+			"default": ["", "", ""]
 		},
 		"minWidthUnit": {
 			"type": "string",
@@ -85,6 +77,6 @@
 		"kbMetadata": true,
 		"kbContentLabel": "label"
 	},
-	"ancestor": [ "kadence/advanced-form" ],
-	"parent": [ "kadence/advanced-form", "kadence/column" ]
+	"ancestor": ["kadence/advanced-form"],
+	"parent": ["kadence/advanced-form", "kadence/column"]
 }
