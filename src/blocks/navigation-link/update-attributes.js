@@ -29,16 +29,8 @@ import { safeDecodeURI } from '@wordpress/url';
  * @param {WPNavigationLinkBlockAttributes} blockAttributes Current block attributes.
  */
 
-export const updateAttributes = (
-	updatedValue = {},
-	setAttributes,
-	blockAttributes = {}
-) => {
-	const {
-		label: originalLabel = '',
-		kind: originalKind = '',
-		type: originalType = '',
-	} = blockAttributes;
+export const updateAttributes = (updatedValue = {}, setAttributes, blockAttributes = {}) => {
+	const { label: originalLabel = '', kind: originalKind = '', type: originalType = '' } = blockAttributes;
 
 	const {
 		title: newLabel = '', // the title of any provided Post.
@@ -49,8 +41,8 @@ export const updateAttributes = (
 		type: newType = originalType,
 	} = updatedValue;
 
-	const newLabelWithoutHttp = newLabel.replace( /http(s?):\/\//gi, '' );
-	const newUrlWithoutHttp = newUrl.replace( /http(s?):\/\//gi, '' );
+	const newLabelWithoutHttp = newLabel.replace(/http(s?):\/\//gi, '');
+	const newUrlWithoutHttp = newUrl.replace(/http(s?):\/\//gi, '');
 
 	const useNewLabel =
 		newLabel &&
@@ -72,27 +64,23 @@ export const updateAttributes = (
 	// See also:
 	// - https://github.com/WordPress/gutenberg/pull/41063
 	// - https://github.com/WordPress/gutenberg/pull/18617.
-	const label = useNewLabel
-		? escapeHTML( newLabel )
-		: originalLabel || escapeHTML( newUrlWithoutHttp );
+	const label = useNewLabel ? escapeHTML(newLabel) : originalLabel || escapeHTML(newUrlWithoutHttp);
 
 	// In https://github.com/WordPress/gutenberg/pull/24670 we decided to use "tag" in favor of "post_tag"
-	const type = newType === 'post_tag' ? 'tag' : newType.replace( '-', '_' );
+	const type = newType === 'post_tag' ? 'tag' : newType.replace('-', '_');
 
-	const isBuiltInType =
-		[ 'post', 'page', 'tag', 'category' ].indexOf( type ) > -1;
+	const isBuiltInType = ['post', 'page', 'tag', 'category'].indexOf(type) > -1;
 
-	const isCustomLink =
-		( ! newKind && ! isBuiltInType ) || newKind === 'custom';
+	const isCustomLink = (!newKind && !isBuiltInType) || newKind === 'custom';
 	const kind = isCustomLink ? 'custom' : newKind;
 
-	setAttributes( {
+	setAttributes({
 		// Passed `url` may already be encoded. To prevent double encoding, decodeURI is executed to revert to the original string.
-		...( newUrl && { url: encodeURI( safeDecodeURI( newUrl ) ) } ),
-		...( label && { label } ),
-		...( undefined !== opensInNewTab && { opensInNewTab } ),
-		...( id && Number.isInteger( id ) && { id } ),
-		...( kind && { kind } ),
-		...( type && type !== 'URL' && { type } ),
-	} );
+		...(newUrl && { url: encodeURI(safeDecodeURI(newUrl)) }),
+		...(label && { label }),
+		...(undefined !== opensInNewTab && { opensInNewTab }),
+		...(id && Number.isInteger(id) && { id }),
+		...(kind && { kind }),
+		...(type && type !== 'URL' && { type }),
+	});
 };

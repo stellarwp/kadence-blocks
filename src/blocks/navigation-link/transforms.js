@@ -7,124 +7,119 @@ const transforms = {
 	from: [
 		{
 			type: 'block',
-			blocks: [ 'core/site-logo' ],
+			blocks: ['core/site-logo'],
 			transform: () => {
-				return createBlock( 'kadence/navigation-link' );
+				return createBlock('kadence/navigation-link');
 			},
 		},
 		{
 			type: 'block',
-			blocks: [ 'core/spacer' ],
+			blocks: ['core/spacer'],
 			transform: () => {
-				return createBlock( 'kadence/navigation-link' );
+				return createBlock('kadence/navigation-link');
 			},
 		},
 		{
 			type: 'block',
-			blocks: [ 'core/home-link' ],
+			blocks: ['core/home-link'],
 			transform: () => {
-				return createBlock( 'kadence/navigation-link' );
+				return createBlock('kadence/navigation-link');
 			},
 		},
 		{
 			type: 'block',
-			blocks: [ 'core/social-links' ],
+			blocks: ['core/social-links'],
 			transform: () => {
-				return createBlock( 'kadence/navigation-link' );
+				return createBlock('kadence/navigation-link');
 			},
 		},
 		{
 			type: 'block',
-			blocks: [ 'core/search' ],
+			blocks: ['core/search'],
 			transform: () => {
-				return createBlock( 'kadence/navigation-link' );
+				return createBlock('kadence/navigation-link');
 			},
 		},
 		{
 			type: 'block',
-			blocks: [ 'core/page-list' ],
+			blocks: ['core/page-list'],
 			transform: () => {
-				return createBlock( 'kadence/navigation-link' );
+				return createBlock('kadence/navigation-link');
 			},
 		},
 		{
 			type: 'block',
-			blocks: [ 'core/buttons' ],
+			blocks: ['core/buttons'],
 			transform: () => {
-				return createBlock( 'kadence/navigation-link' );
+				return createBlock('kadence/navigation-link');
 			},
 		},
 	],
 	to: [
 		{
 			type: 'block',
-			blocks: [ 'core/navigation-submenu' ],
-			transform: ( attributes, innerBlocks ) =>
-				createBlock(
-					'core/navigation-submenu',
-					attributes,
-					innerBlocks
-				),
+			blocks: ['core/navigation-submenu'],
+			transform: (attributes, innerBlocks) => createBlock('core/navigation-submenu', attributes, innerBlocks),
 		},
 		{
 			type: 'block',
-			blocks: [ 'core/spacer' ],
+			blocks: ['core/spacer'],
 			transform: () => {
-				return createBlock( 'core/spacer' );
+				return createBlock('core/spacer');
 			},
 		},
 		{
 			type: 'block',
-			blocks: [ 'core/site-logo' ],
+			blocks: ['core/site-logo'],
 			transform: () => {
-				return createBlock( 'core/site-logo' );
+				return createBlock('core/site-logo');
 			},
 		},
 		{
 			type: 'block',
-			blocks: [ 'core/home-link' ],
+			blocks: ['core/home-link'],
 			transform: () => {
-				return createBlock( 'core/home-link' );
+				return createBlock('core/home-link');
 			},
 		},
 		{
 			type: 'block',
-			blocks: [ 'core/social-links' ],
+			blocks: ['core/social-links'],
 			transform: () => {
-				return createBlock( 'core/social-links' );
+				return createBlock('core/social-links');
 			},
 		},
 		{
 			type: 'block',
-			blocks: [ 'core/search' ],
+			blocks: ['core/search'],
 			transform: () => {
-				return createBlock( 'core/search', {
+				return createBlock('core/search', {
 					showLabel: false,
 					buttonUseIcon: true,
 					buttonPosition: 'button-inside',
-				} );
+				});
 			},
 		},
 		{
 			type: 'block',
-			blocks: [ 'core/page-list' ],
+			blocks: ['core/page-list'],
 			transform: () => {
-				return createBlock( 'core/page-list' );
+				return createBlock('core/page-list');
 			},
 		},
 		{
 			type: 'block',
-			blocks: [ 'core/buttons' ],
-			transform: ( { label, url, rel, title, opensInNewTab } ) => {
-				return createBlock( 'core/buttons', {}, [
-					createBlock( 'core/button', {
+			blocks: ['core/buttons'],
+			transform: ({ label, url, rel, title, opensInNewTab }) => {
+				return createBlock('core/buttons', {}, [
+					createBlock('core/button', {
 						text: label,
 						url,
 						rel,
 						title,
 						linkTarget: opensInNewTab ? '_blank' : undefined,
-					} ),
-				] );
+					}),
+				]);
 			},
 		},
 	],

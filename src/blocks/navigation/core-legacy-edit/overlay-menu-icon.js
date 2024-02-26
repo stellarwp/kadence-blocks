@@ -4,9 +4,9 @@
 import { SVG, Rect } from '@wordpress/primitives';
 import { Icon, menu } from '@wordpress/icons';
 
-export default function OverlayMenuIcon( { icon } ) {
-	if ( icon === 'menu' ) {
-		return <Icon icon={ menu } />;
+export default function OverlayMenuIcon({ icon }) {
+	if (icon === 'menu') {
+		return <Icon icon={menu} />;
 	}
 
 	return (

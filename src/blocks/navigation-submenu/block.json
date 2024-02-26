@@ -4,7 +4,7 @@
 	"name": "core/navigation-submenu",
 	"title": "Submenu",
 	"category": "design",
-	"parent": [ "kadence/navigation" ],
+	"parent": ["kadence/navigation"],
 	"description": "Add a submenu to your navigation.",
 	"textdomain": "default",
 	"attributes": {

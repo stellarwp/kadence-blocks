@@ -24,47 +24,46 @@ import { useEntityRecords } from '@wordpress/core-data';
  * @param {number} menuId the menu for which to retrieve menuItem data.
  * @return { NavigationEntitiesData } the entity data.
  */
-export default function useNavigationEntities( menuId ) {
+export default function useNavigationEntities(menuId) {
 	const {
 		records: menus,
 		isResolving: isResolvingMenus,
 		hasResolved: hasResolvedMenus,
-	} = useEntityRecords( 'root', 'menu', { per_page: -1, context: 'view' } );
+	} = useEntityRecords('root', 'menu', { per_page: -1, context: 'view' });
 
 	const {
 		records: pages,
 		isResolving: isResolvingPages,
 		hasResolved: hasResolvedPages,
-	} = useEntityRecords( 'postType', 'page', {
+	} = useEntityRecords('postType', 'page', {
 		parent: 0,
 		order: 'asc',
 		orderby: 'id',
 		per_page: -1,
 		context: 'view',
-	} );
+	});
 
-	const { records: menuItems, hasResolved: hasResolvedMenuItems } =
-		useEntityRecords(
-			'root',
-			'menuItem',
-			{
-				menus: menuId,
-				per_page: -1,
-				context: 'view',
-			},
-			{ enabled: !! menuId }
-		);
+	const { records: menuItems, hasResolved: hasResolvedMenuItems } = useEntityRecords(
+		'root',
+		'menuItem',
+		{
+			menus: menuId,
+			per_page: -1,
+			context: 'view',
+		},
+		{ enabled: !!menuId }
+	);
 
 	return {
 		pages,
 		isResolvingPages,
 		hasResolvedPages,
-		hasPages: !! ( hasResolvedPages && pages?.length ),
+		hasPages: !!(hasResolvedPages && pages?.length),
 
 		menus,
 		isResolvingMenus,
 		hasResolvedMenus,
-		hasMenus: !! ( hasResolvedMenus && menus?.length ),
+		hasMenus: !!(hasResolvedMenus && menus?.length),
 
 		menuItems,
 		hasResolvedMenuItems,

@@ -25,14 +25,14 @@ export const settings = {
 	// 	return addSubmenu;
 	// },
 	icon: linkIcon,
-	__experimentalLabel( attributes, { context } ) {
+	__experimentalLabel(attributes, { context }) {
 		const { label } = attributes;
 
 		const customName = attributes?.metadata?.name;
 
 		// In the list view, use the block's menu label as the label.
 		// If the menu label is empty, fall back to the default label.
-		if ( context === 'list-view' && ( customName || label ) ) {
+		if (context === 'list-view' && (customName || label)) {
 			return attributes?.metadata?.name || label;
 		}
 
@@ -43,4 +43,4 @@ export const settings = {
 	transforms,
 };
 
-export const init = () => initBlock( { name, metadata, settings } );
+export const init = () => initBlock({ name, metadata, settings });

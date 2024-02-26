@@ -1,12 +1,7 @@
 /**
  * WordPress dependencies
  */
-import {
-	MenuGroup,
-	MenuItem,
-	MenuItemsChoice,
-	DropdownMenu,
-} from '@wordpress/components';
+import { MenuGroup, MenuItem, MenuItemsChoice, DropdownMenu } from '@wordpress/components';
 import { moreVertical } from '@wordpress/icons';
 import { __, sprintf } from '@wordpress/i18n';
 import { decodeEntities } from '@wordpress/html-entities';
@@ -19,25 +14,25 @@ import { useEntityProp } from '@wordpress/core-data';
 import useNavigationMenu from '../use-navigation-menu';
 import useNavigationEntities from '../use-navigation-entities';
 
-function buildMenuLabel( title, id, status ) {
-	if ( ! title ) {
+function buildMenuLabel(title, id, status) {
+	if (!title) {
 		/* translators: %s is the index of the menu in the list of menus. */
-		return sprintf( __( '(no title %s)' ), id );
+		return sprintf(__('(no title %s)'), id);
 	}
 
-	if ( status === 'publish' ) {
-		return decodeEntities( title );
+	if (status === 'publish') {
+		return decodeEntities(title);
 	}
 
 	return sprintf(
 		// translators: %1s: title of the menu; %2s: status of the menu (draft, pending, etc.).
-		__( '%1$s (%2$s)' ),
-		decodeEntities( title ),
+		__('%1$s (%2$s)'),
+		decodeEntities(title),
 		status
 	);
 }
 
-function NavigationMenuSelector( {
+function NavigationMenuSelector({
 	currentMenuId,
 	onSelectNavigationMenu,
 	onSelectClassicMenu,
@@ -45,11 +40,11 @@ function NavigationMenuSelector( {
 	actionLabel,
 	createNavigationMenuIsSuccess,
 	createNavigationMenuIsError,
-} ) {
+}) {
 	/* translators: %s: The name of a menu. */
-	const createActionLabel = __( "Create from '%s'" );
+	const createActionLabel = __("Create from '%s'");
 
-	const [ isCreatingMenu, setIsCreatingMenu ] = useState( false );
+	const [isCreatingMenu, setIsCreatingMenu] = useState(false);
 
 	actionLabel = actionLabel || createActionLabel;
 
@@ -63,58 +58,46 @@ function NavigationMenuSelector( {
 		canSwitchNavigationMenu,
 	} = useNavigationMenu();
 
-	const [ currentTitle ] = useEntityProp(
-		'postType',
-		'kadence_navigation',
-		'title'
-	);
+	const [currentTitle] = useEntityProp('postType', 'kadence_navigation', 'title');
 
-	const menuChoices = useMemo( () => {
+	const menuChoices = useMemo(() => {
 		return (
-			navigationMenus?.map( ( { id, title, status }, index ) => {
-				const label = buildMenuLabel(
-					title?.rendered,
-					index + 1,
-					status
-				);
+			navigationMenus?.map(({ id, title, status }, index) => {
+				const label = buildMenuLabel(title?.rendered, index + 1, status);
 
 				return {
 					value: id,
 					label,
-					ariaLabel: sprintf( actionLabel, label ),
+					ariaLabel: sprintf(actionLabel, label),
 				};
-			} ) || []
+			}) || []
 		);
-	}, [ navigationMenus, actionLabel ] );
+	}, [navigationMenus, actionLabel]);
 
-	const hasNavigationMenus = !! navigationMenus?.length;
-	const hasClassicMenus = !! classicMenus?.length;
-	const showNavigationMenus = !! canSwitchNavigationMenu;
-	const showClassicMenus = !! canUserCreateNavigationMenu;
+	const hasNavigationMenus = !!navigationMenus?.length;
+	const hasClassicMenus = !!classicMenus?.length;
+	const showNavigationMenus = !!canSwitchNavigationMenu;
+	const showClassicMenus = !!canUserCreateNavigationMenu;
 
-	const noMenuSelected = hasNavigationMenus && ! currentMenuId;
-	const noBlockMenus = ! hasNavigationMenus && hasResolvedNavigationMenus;
-	const menuUnavailable =
-		hasResolvedNavigationMenus && currentMenuId === null;
+	const noMenuSelected = hasNavigationMenus && !currentMenuId;
+	const noBlockMenus = !hasNavigationMenus && hasResolvedNavigationMenus;
+	const menuUnavailable = hasResolvedNavigationMenus && currentMenuId === null;
 
 	let selectorLabel = '';
 
-	if ( isCreatingMenu || isResolvingNavigationMenus ) {
-		selectorLabel = __( 'Loading…' );
-	} else if ( noMenuSelected || noBlockMenus || menuUnavailable ) {
+	if (isCreatingMenu || isResolvingNavigationMenus) {
+		selectorLabel = __('Loading…');
+	} else if (noMenuSelected || noBlockMenus || menuUnavailable) {
 		// Note: classic Menus may be available.
-		selectorLabel = __( 'Choose or create a Navigation menu' );
+		selectorLabel = __('Choose or create a Navigation menu');
 	} else {
 		// Current Menu's title.
 		selectorLabel = currentTitle;
 	}
 
-	useEffect( () => {
-		if (
-			isCreatingMenu &&
-			( createNavigationMenuIsSuccess || createNavigationMenuIsError )
-		) {
-			setIsCreatingMenu( false );
+	useEffect(() => {
+		if (isCreatingMenu && (createNavigationMenuIsSuccess || createNavigationMenuIsError)) {
+			setIsCreatingMenu(false);
 		}
 	}, [
 		hasResolvedNavigationMenus,
@@ -125,71 +108,64 @@ function NavigationMenuSelector( {
 		menuUnavailable,
 		noBlockMenus,
 		noMenuSelected,
-	] );
+	]);
 
 	const NavigationMenuSelectorDropdown = (
-		<DropdownMenu
-			label={ selectorLabel }
-			icon={ moreVertical }
-			toggleProps={ { isSmall: true } }
-		>
-			{ ( { onClose } ) => (
+		<DropdownMenu label={selectorLabel} icon={moreVertical} toggleProps={{ isSmall: true }}>
+			{({ onClose }) => (
 				<>
-					{ showNavigationMenus && hasNavigationMenus && (
-						<MenuGroup label={ __( 'Menus' ) }>
+					{showNavigationMenus && hasNavigationMenus && (
+						<MenuGroup label={__('Menus')}>
 							<MenuItemsChoice
-								value={ currentMenuId }
-								onSelect={ ( menuId ) => {
-									setIsCreatingMenu( true );
-									onSelectNavigationMenu( menuId );
+								value={currentMenuId}
+								onSelect={(menuId) => {
+									setIsCreatingMenu(true);
+									onSelectNavigationMenu(menuId);
 									onClose();
-								} }
-								choices={ menuChoices }
-								disabled={ isCreatingMenu }
+								}}
+								choices={menuChoices}
+								disabled={isCreatingMenu}
 							/>
 						</MenuGroup>
-					) }
-					{ showClassicMenus && hasClassicMenus && (
-						<MenuGroup label={ __( 'Import Classic Menus' ) }>
-							{ classicMenus?.map( ( menu ) => {
-								const label = decodeEntities( menu.name );
+					)}
+					{showClassicMenus && hasClassicMenus && (
+						<MenuGroup label={__('Import Classic Menus')}>
+							{classicMenus?.map((menu) => {
+								const label = decodeEntities(menu.name);
 								return (
 									<MenuItem
-										onClick={ () => {
-											setIsCreatingMenu( true );
-											onSelectClassicMenu( menu );
+										onClick={() => {
+											setIsCreatingMenu(true);
+											onSelectClassicMenu(menu);
 											onClose();
-										} }
-										key={ menu.id }
-										aria-label={ sprintf(
-											createActionLabel,
-											label
-										) }
-										disabled={ isCreatingMenu }
+										}}
+										key={menu.id}
+										aria-label={sprintf(createActionLabel, label)}
+										disabled={isCreatingMenu}
 									>
-										{ label }
+										{label}
 									</MenuItem>
 								);
-							} ) }
+							})}
 						</MenuGroup>
-					) }
+					)}
 
-					{ canUserCreateNavigationMenu && (
-						<MenuGroup label={ __( 'Tools' ) }>
+					{canUserCreateNavigationMenu && (
+						<MenuGroup label={__('Tools')}>
 							<MenuItem
-								disabled={ isCreatingMenu }
-								onClick={ () => {
+								disabled={isCreatingMenu}
+								onClick={() => {
 									onClose();
 									onCreateNew();
-									setIsCreatingMenu( true );
-								} }
+									setIsCreatingMenu(true);
+								}}
 							>
-								{ __( 'Create new menu' ) }
+								{__('Create new menu')}
 							</MenuItem>
 						</MenuGroup>
-					) }
+					)}
 				</>
-			) }
+			)}
 		</DropdownMenu>
 	);
 

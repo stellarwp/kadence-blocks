@@ -16,20 +16,16 @@ import metadata from './block.json';
 
 import { InnerBlocks } from '@wordpress/block-editor';
 
-registerBlockType( 'kadence/header', {
+registerBlockType('kadence/header', {
 	...metadata,
-	title: _x( 'Header (Adv)', 'block title', 'kadence-blocks' ),
-	description: _x( 'Create an advanced header or footer for your website.', 'block description', 'kadence-blocks' ),
-	keywords: [
-		__( 'header', 'kadence-blocks' ),
-		__( 'footer', 'kadence-blocks' ),
-		'kb',
-	],
+	title: _x('Header (Adv)', 'block title', 'kadence-blocks'),
+	description: _x('Create an advanced header or footer for your website.', 'block description', 'kadence-blocks'),
+	keywords: [__('header', 'kadence-blocks'), __('footer', 'kadence-blocks'), 'kb'],
 	icon: {
 		src: formBlockIcon,
 	},
 	edit,
-	save:() => {
+	save: () => {
 		return <InnerBlocks.Content />;
-	}
+	},
 });

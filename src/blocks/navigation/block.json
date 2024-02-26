@@ -5,7 +5,7 @@
 	"title": "Navigation (Adv)",
 	"category": "theme",
 	"description": "An advanced navigation block.",
-	"keywords": [ "menu", "navigation", "links" ],
+	"keywords": ["menu", "navigation", "links"],
 	"textdomain": "default",
 	"attributes": {
 		"uniqueID": {
@@ -17,7 +17,7 @@
 		}
 	},
 	"supports": {
-		"align": [ "wide", "full" ],
+		"align": ["wide", "full"],
 		"ariaLabel": true,
 		"html": false
 	}

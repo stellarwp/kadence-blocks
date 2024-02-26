@@ -19,18 +19,18 @@ const { name } = metadata;
 
 export { metadata, name };
 
-registerBlockType( name, {
+registerBlockType(name, {
 	icon: linkIcon,
-	__experimentalLabel: ( { label } ) => label,
+	__experimentalLabel: ({ label }) => label,
 	edit,
-	save:() => {
+	save: () => {
 		return <InnerBlocks.Content />;
 	},
 	example: {
 		attributes: {
-			label: _x( 'Example Link', 'navigation link preview example' ),
+			label: _x('Example Link', 'navigation link preview example'),
 			url: 'https://example.com',
 		},
 	},
 	transforms,
-} );
+});

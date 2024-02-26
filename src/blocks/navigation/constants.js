@@ -29,13 +29,9 @@ export const PRIORITIZED_INSERTER_BLOCKS = [
 // edit-site/src/components/sidebar-navigation-screen-navigation-menus/constants.js
 export const PRELOADED_NAVIGATION_MENUS_QUERY = {
 	per_page: 100,
-	status: [ 'publish', 'draft' ],
+	status: ['publish', 'draft'],
 	order: 'desc',
-	orderby: 'date'
+	orderby: 'date',
 };
 
-export const SELECT_NAVIGATION_MENUS_ARGS = [
-	'postType',
-	'kadence_navigation',
-	PRELOADED_NAVIGATION_MENUS_QUERY,
-];
+export const SELECT_NAVIGATION_MENUS_ARGS = ['postType', 'kadence_navigation', PRELOADED_NAVIGATION_MENUS_QUERY];
