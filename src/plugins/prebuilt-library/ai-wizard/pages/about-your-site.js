@@ -11,18 +11,18 @@ import {
 	__experimentalText as Text,
 } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
-import { Button } from '../components';
 import { missionStatementHelper } from '../utils/mission-statement-helper';
 import { convertStreamDataToJson } from '../utils/convert-stream-data-to-json';
-import { LANG_TYPE, THOUGHT_STARTERS } from '../constants';
 import { Ai, Visibility, VisibilityOff } from '../components/icons';
 
 /**
  * Internal dependencies
  */
-import { FormSection, Slider, TextareaProgress } from '../components';
+import { Button, FormSection, Slider, TextareaProgress } from '../components';
 import { Education4All, HealingTouch, Prospera, SpencerSharp } from './slides/about-your-site';
 import {
+	LANG_TYPE,
+	THOUGHT_STARTERS,
 	ENTITY_TYPE_INDIVIDUAL,
 	MISSION_STATEMENT_STATUS,
 	MISSION_STATEMENT_GOAL,

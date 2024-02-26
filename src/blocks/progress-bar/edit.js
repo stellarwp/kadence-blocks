@@ -38,9 +38,14 @@ import { lineBar, circleBar, semiCircleBar, lineMask } from '@kadence/icons';
 import { __ } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useState, useEffect, Fragment } from '@wordpress/element';
-import { useBlockProps, BlockAlignmentControl } from '@wordpress/block-editor';
 import { map, range } from 'lodash';
-import { RichText, InspectorControls, BlockControls } from '@wordpress/block-editor';
+import {
+	RichText,
+	InspectorControls,
+	BlockControls,
+	useBlockProps,
+	BlockAlignmentControl,
+} from '@wordpress/block-editor';
 
 import {
 	PanelBody,
@@ -134,7 +139,7 @@ export function Edit(props) {
 		setBlockDefaults('kadence/progress-bar', attributes);
 
 		const postOrFseId = getPostOrFseId(props, parentData);
-		let uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -376,7 +381,7 @@ export function Edit(props) {
 		color: progressColor ? KadenceColorOutput(progressColor, progressOpacity) : 'var(--global-palette1, #2B6CB0)',
 		strokeWidth: previewProgressWidth,
 		duration: duration === 0 ? 1 : duration * 1000,
-		easing: easing,
+		easing,
 		trailWidth: previewProgressWidth,
 		trailColor: barBackground
 			? KadenceColorOutput(barBackground, barBackgroundOpacity)
@@ -384,16 +389,16 @@ export function Edit(props) {
 		svgStyle: {
 			borderRadius: barType === 'line' ? previewProgressBorderRadius + 'px' : '',
 		},
-		step: function (state, bar) {
-			let iFrameSelector = document.getElementsByName('editor-canvas');
-			let selector =
+		step(state, bar) {
+			const iFrameSelector = document.getElementsByName('editor-canvas');
+			const selector =
 				iFrameSelector.length > 0
 					? document.getElementsByName('editor-canvas')[0].contentWindow.document
 					: document;
 
-			let elementAbove = selector.getElementById('current-progress-above' + uniqueID);
-			let elementInside = selector.getElementById('current-progress-inside' + uniqueID);
-			let elementBelow = selector.getElementById('current-progress-below' + uniqueID);
+			const elementAbove = selector.getElementById('current-progress-above' + uniqueID);
+			const elementInside = selector.getElementById('current-progress-inside' + uniqueID);
+			const elementBelow = selector.getElementById('current-progress-below' + uniqueID);
 			let value;
 			if (numberIsRelative) {
 				value = bar.value() * 100;
@@ -485,7 +490,7 @@ export function Edit(props) {
 	]);
 
 	const RenderLabel = (currentPosition) => {
-		let wrapperLayoutStyles = {
+		const wrapperLayoutStyles = {
 			paddingTop:
 				'' !== previewLabelPaddingTop
 					? getSpacingOptionOutput(previewLabelPaddingTop, labelPaddingType)
@@ -562,11 +567,11 @@ export function Edit(props) {
 		);
 	};
 
-	var maskStyles = '';
-	var iterations = maskIterations ?? 5;
-	var mask = maskSvg ?? 'star';
-	var maskBaseUrl = kadence_blocks_params.svgMaskPath;
-	var maskUrlToUse = maskBaseUrl + mask + '.svg';
+	let maskStyles = '';
+	const iterations = maskIterations ?? 5;
+	const mask = maskSvg ?? 'star';
+	const maskBaseUrl = kadence_blocks_params.svgMaskPath;
+	let maskUrlToUse = maskBaseUrl + mask + '.svg';
 
 	if ('custom' === maskSvg) {
 		if (maskUrl) {
@@ -576,15 +581,15 @@ export function Edit(props) {
 		}
 	}
 
-	var maskImageString = ('url(' + maskUrlToUse + '),').repeat(iterations).replace(/(^,)|(,$)/g, '');
-	var maskRepeatString = 'no-repeat,'.repeat(iterations).replace(/(^,)|(,$)/g, '');
-	var maskPositionArray = iterations > 1 ? range(0, 100.1, 100 / (iterations - 1)) : [0];
-	var maskPositionString = (maskPositionArray.join('%,') + '%').replace(/(^,)|(,$)/g, '');
-	var maskAspectRatioString = iterations + '/1';
-	var maskHeightString = progressWidth ? progressWidth * 11.5 + 'px' : '80px';
-	var maskHeightStringTablet = progressWidthTablet ? progressWidthTablet * 11.5 + 'px' : '';
-	var maskHeightStringMobile = progressWidthMobile ? progressWidthMobile * 11.5 + 'px' : '';
-	var previewMaskHeightString = getPreviewSize(
+	const maskImageString = ('url(' + maskUrlToUse + '),').repeat(iterations).replace(/(^,)|(,$)/g, '');
+	const maskRepeatString = 'no-repeat,'.repeat(iterations).replace(/(^,)|(,$)/g, '');
+	const maskPositionArray = iterations > 1 ? range(0, 100.1, 100 / (iterations - 1)) : [0];
+	const maskPositionString = (maskPositionArray.join('%,') + '%').replace(/(^,)|(,$)/g, '');
+	const maskAspectRatioString = iterations + '/1';
+	const maskHeightString = progressWidth ? progressWidth * 11.5 + 'px' : '80px';
+	const maskHeightStringTablet = progressWidthTablet ? progressWidthTablet * 11.5 + 'px' : '';
+	const maskHeightStringMobile = progressWidthMobile ? progressWidthMobile * 11.5 + 'px' : '';
+	const previewMaskHeightString = getPreviewSize(
 		previewDevice,
 		maskHeightString,
 		maskHeightStringTablet,

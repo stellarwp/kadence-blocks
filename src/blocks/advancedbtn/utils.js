@@ -41,11 +41,11 @@ export function migrateToInnerblocks(attributes) {
 	} = attributes;
 	const newGap = ['xs', '', ''];
 	let newOrientation = ['', '', ''];
-	let buttonInnerBlocks = [];
+	const buttonInnerBlocks = [];
 	if (btns?.length) {
 		times(btnCount, (n) => {
-			let btn = btns[n];
-			let newAttrs = { ...btn };
+			const btn = btns[n];
+			const newAttrs = { ...btn };
 			// 1. Update Typography to new format.
 			newAttrs.typography = [
 				{
@@ -142,7 +142,7 @@ export function migrateToInnerblocks(attributes) {
 				];
 			}
 			newAttrs.borderRadius = tempBorderRadius;
-			let tempBorderStyle = [
+			const tempBorderStyle = [
 				{
 					top: ['', '', ''],
 					right: ['', '', ''],
@@ -557,7 +557,7 @@ export function migrateToInnerblocks(attributes) {
 	//// 	  "mobileMargin": [ "", "", "", "" ],
 	//// 	  "anchor": "",
 	//// 	  "borderStyle": ""
-	let buttonParentAttributes = {
+	const buttonParentAttributes = {
 		...attributes,
 		btns: [],
 		btnCount: 1,

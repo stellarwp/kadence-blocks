@@ -24,12 +24,12 @@ export default function wooContent(content) {
 	if (!content) {
 		return content;
 	}
-	let theProducts = kadence_blocks_params?.replaceProducts ? kadence_blocks_params.replaceProducts : '';
-	let fourProducts = theProducts ? theProducts.toString() : '';
-	let threeProducts = theProducts ? theProducts.slice(0, 3).toString() : '';
+	const theProducts = kadence_blocks_params?.replaceProducts ? kadence_blocks_params.replaceProducts : '';
+	const fourProducts = theProducts ? theProducts.toString() : '';
+	const threeProducts = theProducts ? theProducts.slice(0, 3).toString() : '';
 	//<!-- wp:woocommerce/handpicked-products {"columns":4,"orderby":"menu_order","products":[8121,5159,5160,7737]} /-->
 	// <!-- wp:woocommerce/handpicked-products {"orderby":"menu_order","products":[8121,5160,5159]} /-->
-	let product_content = getStringBetween(
+	const product_content = getStringBetween(
 		content,
 		'<!-- wp:woocommerce/handpicked-products',
 		'"products":[8121,5160,5159]',
@@ -41,7 +41,7 @@ export default function wooContent(content) {
 			'<!-- wp:woocommerce/handpicked-products' + product_content + '"products":[' + threeProducts + ']'
 		);
 	}
-	let for_product_content = getStringBetween(
+	const for_product_content = getStringBetween(
 		content,
 		'<!-- wp:woocommerce/handpicked-products',
 		'"products":[8121,5159,5160,7737]',

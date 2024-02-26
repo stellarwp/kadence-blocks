@@ -55,7 +55,7 @@ export function getCollection() {
 		try {
 			const response = await apiFetch({
 				path: addQueryArgs(API_ROUTE_GET_IMAGES, {
-					industries: industries,
+					industries,
 				}),
 			});
 			const responseData = SafeParseJSON(response, false);

@@ -822,21 +822,18 @@ export default function replaceContent(content, aiContent, categories, context, 
 			if (testimonialContent?.testimonials) {
 				for (let index = 0; index < testimonialContent?.testimonials.length; index++) {
 					// Title.
-					if (testimonialContent?.testimonials?.[index]?.['customer']) {
-						content = content.replace(
-							'Customer Name',
-							testimonialContent?.testimonials?.[index]?.['customer']
-						);
+					if (testimonialContent?.testimonials?.[index]?.customer) {
+						content = content.replace('Customer Name', testimonialContent?.testimonials?.[index]?.customer);
 					}
 					// Testimonial.
-					if (testimonialContent?.testimonials?.[index]?.['testimonial']) {
+					if (testimonialContent?.testimonials?.[index]?.testimonial) {
 						content = content.replace(
 							'Testimonials are a social proof, a powerful way to inspire trust.',
-							testimonialContent?.testimonials?.[index]?.['testimonial']
+							testimonialContent?.testimonials?.[index]?.testimonial
 						);
 						content = content.replace(
 							'Testimonials, as authentic endorsements from satisfied customers, serve as potent social proof, significantly inspiring trust in potential consumers.',
-							testimonialContent?.testimonials?.[index]?.['testimonial']
+							testimonialContent?.testimonials?.[index]?.testimonial
 						);
 					}
 				}
@@ -905,9 +902,9 @@ export default function replaceContent(content, aiContent, categories, context, 
 					// Price.
 					if (0 === index) {
 					}
-					if (pricingTableContent?.plans?.[index]?.['price']) {
+					if (pricingTableContent?.plans?.[index]?.price) {
 						// Remove monthyl, yearly, etc.
-						let pricingTablePrice = pricingTableContent?.plans?.[index]?.['price'].replace('/month', '');
+						let pricingTablePrice = pricingTableContent?.plans?.[index]?.price.replace('/month', '');
 						pricingTablePrice = pricingTablePrice.replace('/year', '');
 						if (0 === index) {
 							content = content.replace('$60', pricingTablePrice);
@@ -1293,12 +1290,12 @@ export default function replaceContent(content, aiContent, categories, context, 
 			if (peopleContent?.people) {
 				for (let index = 0; index < peopleContent?.people.length; index++) {
 					// Name.
-					if (peopleContent?.people?.[index]?.['name']) {
-						content = content.replace('Name Lastname', peopleContent?.people?.[index]?.['name']);
+					if (peopleContent?.people?.[index]?.name) {
+						content = content.replace('Name Lastname', peopleContent?.people?.[index]?.name);
 					}
 					// position.
-					if (peopleContent?.people?.[index]?.['position']) {
-						content = content.replace('Position or title', peopleContent?.people?.[index]?.['position']);
+					if (peopleContent?.people?.[index]?.position) {
+						content = content.replace('Position or title', peopleContent?.people?.[index]?.position);
 					}
 					// sentence.
 					if (peopleContent?.people?.[index]?.['sentence-short']) {
@@ -1446,13 +1443,11 @@ export default function replaceContent(content, aiContent, categories, context, 
 								featuredContent?.['product-features-and-benefits']?.[index]?.['list-item-short']
 							);
 						}
-					} else {
-						if (featuredContent?.['product-features-and-benefits']?.[index]?.['list-item-short']) {
-							content = content.replace(
-								'Short feature description',
-								featuredContent?.['product-features-and-benefits']?.[index]?.['list-item-short']
-							);
-						}
+					} else if (featuredContent?.['product-features-and-benefits']?.[index]?.['list-item-short']) {
+						content = content.replace(
+							'Short feature description',
+							featuredContent?.['product-features-and-benefits']?.[index]?.['list-item-short']
+						);
 					}
 				}
 			}
@@ -1534,7 +1529,7 @@ export default function replaceContent(content, aiContent, categories, context, 
 			break;
 		case 'form':
 			let textContent = '';
-			const aboutContent = aiContent?.['about']?.content;
+			const aboutContent = aiContent?.about?.content;
 			if (aboutContent) {
 				textContent = aboutContent.find((x) => x.id === 'about');
 			}

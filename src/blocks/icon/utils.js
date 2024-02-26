@@ -6,10 +6,10 @@ import { times } from 'lodash';
 
 export function migrateToInnerblocks(attributes) {
 	const { icons, iconCount, blockAlignment, textAlignment } = attributes;
-	let iconInnerBlocks = [];
+	const iconInnerBlocks = [];
 	if (icons?.length) {
 		times(iconCount, (n) => {
-			let icon = icons[n];
+			const icon = icons[n];
 			if (undefined === icon?.padding?.[0]) {
 				const tempPadding = parseInt(icon.padding, 10);
 				icon.padding = [tempPadding, tempPadding, tempPadding, tempPadding];
@@ -29,7 +29,7 @@ export function migrateToInnerblocks(attributes) {
 			if (undefined !== icon?.marginLeft && icon.marginLeft) {
 				icon.margin[3] = icon.marginLeft ? parseInt(icon.marginLeft, 10) : '';
 			}
-			let newAttrs = { ...icon };
+			const newAttrs = { ...icon };
 			iconInnerBlocks.push(createBlock('kadence/single-icon', newAttrs));
 		});
 	}
@@ -40,7 +40,7 @@ export function migrateToInnerblocks(attributes) {
 		newTextAlignment = 'center';
 	}
 
-	let iconParentAttributes = {
+	const iconParentAttributes = {
 		...attributes,
 		blockAlignment: newAlign,
 		textAlignment: newTextAlignment,

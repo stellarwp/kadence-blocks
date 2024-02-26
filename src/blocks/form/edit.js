@@ -196,7 +196,7 @@ function KadenceForm(props) {
 				postID: postOrFseId.toString(),
 			});
 		}
-		let uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -690,7 +690,7 @@ function KadenceForm(props) {
 		}
 		options.splice(newIndex, 1, fields[fieldIndex].options[oldIndex]);
 		options.splice(oldIndex, 1, fields[fieldIndex].options[newIndex]);
-		saveFields({ options: options }, fieldIndex);
+		saveFields({ options }, fieldIndex);
 	};
 
 	const onOptionMoveDown = (oldIndex, fieldIndex) => {
@@ -2422,7 +2422,7 @@ function KadenceForm(props) {
 				}`;
 	};
 	const blockProps = useBlockProps({
-		className: className,
+		className,
 	});
 	return (
 		<div {...blockProps}>
@@ -2438,8 +2438,8 @@ function KadenceForm(props) {
 				<CopyPasteAttributes
 					attributes={attributes}
 					excludedAttrs={nonTransAttrs}
-					defaultAttributes={metadata['attributes']}
-					blockSlug={metadata['name']}
+					defaultAttributes={metadata.attributes}
+					blockSlug={metadata.name}
 					onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
 				/>
 			</BlockControls>
@@ -5211,8 +5211,8 @@ function KadenceForm(props) {
 
 						<KadenceBlockDefaults
 							attributes={attributes}
-							defaultAttributes={metadata['attributes']}
-							blockSlug={metadata['name']}
+							defaultAttributes={metadata.attributes}
+							blockSlug={metadata.name}
 							excludedAttrs={nonTransAttrs}
 						/>
 					</>

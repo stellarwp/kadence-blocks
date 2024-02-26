@@ -40,7 +40,7 @@ registerBlockType('kadence/theme-header', {
 		anchor: true,
 		align: ['wide', 'full'],
 	},
-	edit: function (props) {
+	edit(props) {
 		const blockProps = useBlockProps();
 		return (
 			<div {...blockProps}>

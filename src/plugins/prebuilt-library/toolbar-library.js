@@ -73,7 +73,7 @@ function ToolbarLibrary() {
 	};
 	if (showSettings('show', 'kadence/designlibrary') && kadence_blocks_params.showDesignLibrary) {
 		// Watch for the toolbar to be visible and the design library button to be missing.
-		let unsubscribe = subscribe(() => {
+		const unsubscribe = subscribe(() => {
 			const editToolbar = document.querySelector('.edit-post-header-toolbar');
 			if (!editToolbar) {
 				return;

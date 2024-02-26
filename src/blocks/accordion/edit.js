@@ -237,7 +237,7 @@ function KadenceAccordionComponent(props) {
 		}
 
 		const postOrFseId = getPostOrFseId(props, parentData);
-		let uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -264,7 +264,7 @@ function KadenceAccordionComponent(props) {
 			setTitleTag(accordionBlock.innerBlocks[0].attributes.titleTag);
 		}
 		// Update from old border settings.
-		let tempContentBorderStyle = JSON.parse(
+		const tempContentBorderStyle = JSON.parse(
 			JSON.stringify(
 				attributes.contentBorderStyle
 					? attributes.contentBorderStyle
@@ -305,7 +305,7 @@ function KadenceAccordionComponent(props) {
 			setAttributes({ contentBorderStyle: tempContentBorderStyle });
 		}
 		// Update from old border settings.
-		let tempBorderStyle = JSON.parse(
+		const tempBorderStyle = JSON.parse(
 			JSON.stringify(
 				attributes.titleBorder
 					? attributes.titleBorder
@@ -321,7 +321,7 @@ function KadenceAccordionComponent(props) {
 			)
 		);
 		// Update from old border settings.
-		let tempBorderHoverStyle = JSON.parse(
+		const tempBorderHoverStyle = JSON.parse(
 			JSON.stringify(
 				attributes.titleBorderHover
 					? attributes.titleBorderHover
@@ -337,7 +337,7 @@ function KadenceAccordionComponent(props) {
 			)
 		);
 		// Update from old border settings.
-		let tempBorderActiveStyle = JSON.parse(
+		const tempBorderActiveStyle = JSON.parse(
 			JSON.stringify(
 				attributes.titleBorderActive
 					? attributes.titleBorderActive
@@ -1506,8 +1506,8 @@ function KadenceAccordionComponent(props) {
 				/>
 				<CopyPasteAttributes
 					attributes={attributes}
-					defaultAttributes={metadata['attributes']}
-					blockSlug={metadata['name']}
+					defaultAttributes={metadata.attributes}
+					blockSlug={metadata.name}
 					onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
 				/>
 			</BlockControls>
@@ -1686,22 +1686,21 @@ function KadenceAccordionComponent(props) {
 															/>
 														</div>
 													);
-												} else {
-													return (
-														<div className={tab.className} key={tab.className}>
-															<PopColorControl
-																label={__('Icon Color', 'kadence-blocks')}
-																value={iconColor.standard ? iconColor.standard : ''}
-																default={''}
-																onChange={(value) =>
-																	setAttributes({
-																		iconColor: { ...iconColor, standard: value },
-																	})
-																}
-															/>
-														</div>
-													);
 												}
+												return (
+													<div className={tab.className} key={tab.className}>
+														<PopColorControl
+															label={__('Icon Color', 'kadence-blocks')}
+															value={iconColor.standard ? iconColor.standard : ''}
+															default={''}
+															onChange={(value) =>
+																setAttributes({
+																	iconColor: { ...iconColor, standard: value },
+																})
+															}
+														/>
+													</div>
+												);
 											}
 										}}
 									</TabPanel>
@@ -1794,28 +1793,25 @@ function KadenceAccordionComponent(props) {
 															/>
 														</div>
 													);
-												} else {
-													return (
-														<div className={tab.className} key={tab.className}>
-															<PopColorControl
-																label={__('Title Color', 'kadence-blocks')}
-																value={titleStyles[0].color ? titleStyles[0].color : ''}
-																onChange={(value) => saveTitleStyles({ color: value })}
-															/>
-															<PopColorControl
-																label={__('Title Background', 'kadence-blocks')}
-																value={
-																	titleStyles[0].background
-																		? titleStyles[0].background
-																		: ''
-																}
-																onChange={(value) =>
-																	saveTitleStyles({ background: value })
-																}
-															/>
-														</div>
-													);
 												}
+												return (
+													<div className={tab.className} key={tab.className}>
+														<PopColorControl
+															label={__('Title Color', 'kadence-blocks')}
+															value={titleStyles[0].color ? titleStyles[0].color : ''}
+															onChange={(value) => saveTitleStyles({ color: value })}
+														/>
+														<PopColorControl
+															label={__('Title Background', 'kadence-blocks')}
+															value={
+																titleStyles[0].background
+																	? titleStyles[0].background
+																	: ''
+															}
+															onChange={(value) => saveTitleStyles({ background: value })}
+														/>
+													</div>
+												);
 											}
 										}}
 									</TabPanel>
@@ -1890,27 +1886,24 @@ function KadenceAccordionComponent(props) {
 															/>
 														</div>
 													);
-												} else {
-													return (
-														<div className={tab.className} key={tab.className}>
-															<ResponsiveBorderControl
-																label={__('Border', 'kadence-blocks')}
-																value={titleBorder}
-																tabletValue={tabletTitleBorder}
-																mobileValue={mobileTitleBorder}
-																onChange={(value) =>
-																	setAttributes({ titleBorder: value })
-																}
-																onChangeTablet={(value) =>
-																	setAttributes({ tabletTitleBorder: value })
-																}
-																onChangeMobile={(value) =>
-																	setAttributes({ mobileTitleBorder: value })
-																}
-															/>
-														</div>
-													);
 												}
+												return (
+													<div className={tab.className} key={tab.className}>
+														<ResponsiveBorderControl
+															label={__('Border', 'kadence-blocks')}
+															value={titleBorder}
+															tabletValue={tabletTitleBorder}
+															mobileValue={mobileTitleBorder}
+															onChange={(value) => setAttributes({ titleBorder: value })}
+															onChangeTablet={(value) =>
+																setAttributes({ tabletTitleBorder: value })
+															}
+															onChangeMobile={(value) =>
+																setAttributes({ mobileTitleBorder: value })
+															}
+														/>
+													</div>
+												);
 											}
 										}}
 									</TabPanel>
@@ -2203,8 +2196,8 @@ function KadenceAccordionComponent(props) {
 
 							<KadenceBlockDefaults
 								attributes={attributes}
-								defaultAttributes={metadata['attributes']}
-								blockSlug={metadata['name']}
+								defaultAttributes={metadata.attributes}
+								blockSlug={metadata.name}
 							/>
 						</>
 					)}
@@ -2258,7 +2251,7 @@ function KadenceAccordionComponent(props) {
 									onClick={() => {
 										const newBlock = createBlock('kadence/pane', {
 											id: paneCount + 1,
-											titleTag: titleTag,
+											titleTag,
 										});
 										setAttributes({ paneCount: paneCount + 1 });
 										insertPane(newBlock);

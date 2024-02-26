@@ -303,10 +303,10 @@ function KadenceTestimonials(props) {
 	};
 
 	useEffect(() => {
-		setBlockDefaults(metadata['name'], attributes);
+		setBlockDefaults(metadata.name, attributes);
 
 		const postOrFseId = getPostOrFseId(props, parentData);
-		let uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -377,7 +377,7 @@ function KadenceTestimonials(props) {
 			containerBorderWidth[2] !== '' ||
 			containerBorderWidth[3] !== ''
 		) {
-			let tmpBorderColor = KadenceColorOutput(
+			const tmpBorderColor = KadenceColorOutput(
 				containerBorder,
 				undefined !== containerBorderOpacity ? containerBorderOpacity : 1
 			);
@@ -402,7 +402,7 @@ function KadenceTestimonials(props) {
 			iconStyles[0].borderWidth[2] !== '' ||
 			iconStyles[0].borderWidth[3] !== ''
 		) {
-			let tmpIconBorderColor = KadenceColorOutput(
+			const tmpIconBorderColor = KadenceColorOutput(
 				iconStyles[0].border,
 				undefined !== iconStyles[0].borderOpacity ? iconStyles[0].borderOpacity : 1
 			);
@@ -436,7 +436,7 @@ function KadenceTestimonials(props) {
 			mediaStyles[0].borderWidth[2] !== '' ||
 			mediaStyles[0].borderWidth[3] !== ''
 		) {
-			let tmpMediaBorderColor = KadenceColorOutput(
+			const tmpMediaBorderColor = KadenceColorOutput(
 				mediaStyles[0].border,
 				undefined !== mediaStyles[0].borderOpacity ? mediaStyles[0].borderOpacity : 1
 			);
@@ -1308,8 +1308,8 @@ function KadenceTestimonials(props) {
 		if (style === 'bubble' || style === 'inlineimage') {
 			applyTo = '.kt-testimonial-text-wrap';
 		}
-		let shadowCarousel = displayShadow && layout && layout === 'carousel';
-		let wrapperPaddingTopBottomApplyTo = shadowCarousel
+		const shadowCarousel = displayShadow && layout && layout === 'carousel';
+		const wrapperPaddingTopBottomApplyTo = shadowCarousel
 			? '.kt-blocks-testimonials-wrap' + uniqueID + ' .splide__slide'
 			: '.kt-blocks-testimonials-wrap' + uniqueID;
 
@@ -2162,8 +2162,8 @@ function KadenceTestimonials(props) {
 						<CopyPasteAttributes
 							attributes={attributes}
 							excludedAttrs={nonTransAttrs}
-							defaultAttributes={metadata['attributes']}
-							blockSlug={metadata['name']}
+							defaultAttributes={metadata.attributes}
+							blockSlug={metadata.name}
 							onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
 							preventMultiple={['testimonials']}
 						/>
@@ -3579,8 +3579,8 @@ function KadenceTestimonials(props) {
 
 								<KadenceBlockDefaults
 									attributes={attributes}
-									defaultAttributes={metadata['attributes']}
-									blockSlug={metadata['name']}
+									defaultAttributes={metadata.attributes}
+									blockSlug={metadata.name}
 									excludedAttrs={nonTransAttrs}
 									preventMultiple={['testimonials']}
 								/>

@@ -2,9 +2,7 @@
  * BLOCK: Kadence Spacer
  */
 
-import { useBlockProps } from '@wordpress/block-editor';
-import { dispatch, select } from '@wordpress/data';
-import { RichText } from '@wordpress/block-editor';
+import { RichText, useBlockProps } from '@wordpress/block-editor';
 
 /**
  * Kadence dependencies

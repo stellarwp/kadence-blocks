@@ -258,7 +258,7 @@ function KadenceAdvancedHeading(props) {
 		setBlockDefaults('kadence/advancedheading', attributes);
 
 		const postOrFseId = getPostOrFseId(props, parentData);
-		let uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -300,7 +300,7 @@ function KadenceAdvancedHeading(props) {
 		}
 
 		// Update from old border settings.
-		let tempBorderStyle = JSON.parse(
+		const tempBorderStyle = JSON.parse(
 			JSON.stringify(
 				attributes.markBorderStyles
 					? attributes.markBorderStyles
@@ -362,9 +362,9 @@ function KadenceAdvancedHeading(props) {
 
 	const isDynamicReplaced =
 		undefined !== kadenceDynamic &&
-		undefined !== kadenceDynamic['content'] &&
-		undefined !== kadenceDynamic['content'].enable &&
-		kadenceDynamic['content'].enable;
+		undefined !== kadenceDynamic.content &&
+		undefined !== kadenceDynamic.content.enable &&
+		kadenceDynamic.content.enable;
 	let richTextFormatsBase = applyFilters(
 		'kadence.whitelist_richtext_formats',
 		[
@@ -379,7 +379,7 @@ function KadenceAdvancedHeading(props) {
 		],
 		'kadence/advancedheading'
 	);
-	richTextFormatsBase = !kadenceDynamic?.['content']?.shouldReplace
+	richTextFormatsBase = !kadenceDynamic?.content?.shouldReplace
 		? [...['kadence/insert-dynamic'], ...richTextFormatsBase]
 		: richTextFormatsBase;
 	const richTextFormats = link || isDynamicReplaced ? richTextFormatsBase : undefined;
@@ -872,8 +872,8 @@ function KadenceAdvancedHeading(props) {
 					onReplace={onReplace}
 					onRemove={() => onReplace([])}
 					style={{
-						fontWeight: fontWeight,
-						fontStyle: fontStyle,
+						fontWeight,
+						fontStyle,
 						letterSpacing: previewLetterSpacing
 							? previewLetterSpacing + (letterSpacingType ? letterSpacingType : 'px')
 							: undefined,
@@ -935,16 +935,16 @@ function KadenceAdvancedHeading(props) {
 			const contentHtml = parser.parseFromString(attributes.content, 'text/html');
 
 			if (contentHtml.querySelectorAll('.kt-typed-text')[0]) {
-				let typedElement = contentHtml.querySelectorAll('.kt-typed-text')[0];
-				let dataStrings = typedElement.getAttribute('data-strings');
-				let strings = dataStrings ? JSON.parse(dataStrings.replaceAll('&', '&amp;')) : [];
+				const typedElement = contentHtml.querySelectorAll('.kt-typed-text')[0];
+				const dataStrings = typedElement.getAttribute('data-strings');
+				const strings = dataStrings ? JSON.parse(dataStrings.replaceAll('&', '&amp;')) : [];
 
 				// Adding the default/existing string twice is required for displaying properly
 				strings.unshift(typedElement.textContent.replaceAll('&', '&amp;'));
 				strings.unshift(typedElement.textContent.replaceAll('&', '&amp;'));
 
-				let options = {
-					strings: strings,
+				const options = {
+					strings,
 					cursorChar: typedElement.getAttribute('data-cursor-char') ?? '_',
 					startDelay: typedElement.getAttribute('data-start-delay')
 						? parseInt(typedElement.getAttribute('data-start-delay'))
@@ -1207,11 +1207,11 @@ function KadenceAdvancedHeading(props) {
 				<CopyPasteAttributes
 					attributes={attributes}
 					excludedAttrs={nonTransAttrs}
-					defaultAttributes={metadata['attributes']}
-					blockSlug={metadata['name']}
+					defaultAttributes={metadata.attributes}
+					blockSlug={metadata.name}
 					onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
 				/>
-				{Boolean(kadenceDynamic?.['content']?.shouldReplace) && (
+				{Boolean(kadenceDynamic?.content?.shouldReplace) && (
 					<DynamicTextControl dynamicAttribute={'content'} {...props} />
 				)}
 			</BlockControls>
@@ -1906,8 +1906,8 @@ function KadenceAdvancedHeading(props) {
 
 							<KadenceBlockDefaults
 								attributes={attributes}
-								defaultAttributes={metadata['attributes']}
-								blockSlug={metadata['name']}
+								defaultAttributes={metadata.attributes}
+								blockSlug={metadata.name}
 								excludedAttrs={nonTransAttrs}
 							/>
 						</>

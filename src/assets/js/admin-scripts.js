@@ -25,7 +25,7 @@ jQuery(document).ready(function ($) {
 		const $dialogContiner = $('#js-settings-modal-content');
 		let settingsContent = '';
 		if (kt_blocks_params.blockConfigSettings[selectedSlug]) {
-			for (var key in kt_blocks_params.blockConfigSettings[selectedSlug]) {
+			for (const key in kt_blocks_params.blockConfigSettings[selectedSlug]) {
 				// skip loop if the property is from prototype
 				if (!kt_blocks_params.blockConfigSettings[selectedSlug].hasOwnProperty(key)) continue;
 				const obj = kt_blocks_params.blockConfigSettings[selectedSlug][key];
@@ -231,7 +231,7 @@ jQuery(document).ready(function ($) {
 						settingsContent += '<div class="kt-modal-settings-array"><h4>' + obj.name + '</h4>';
 						for (const option in obj.options) {
 							if (!obj.options.hasOwnProperty(option)) continue;
-							const inner = kt_blocks_params.blockConfigSettings[selectedSlug][key]['options'][option];
+							const inner = kt_blocks_params.blockConfigSettings[selectedSlug][key].options[option];
 							switch (inner.type) {
 								case 'number':
 									settingsContent +=
@@ -317,14 +317,14 @@ jQuery(document).ready(function ($) {
 			buttons: [
 				{
 					text: kt_blocks_params.texts.close,
-					click: function () {
+					click() {
 						$(this).dialog('close');
 					},
 				},
 				{
 					text: kt_blocks_params.texts.save,
 					class: 'button  button-primary kt-modal-save-button',
-					click: function (event) {
+					click(event) {
 						const $button = $(event.currentTarget);
 						/**
 						 * Keep button from running twice
@@ -370,7 +370,7 @@ jQuery(document).ready(function ($) {
 							}
 						});
 						$('#js-settings-modal-content .kt-modal-settings-number-array').each(function () {
-							var numberValue = [];
+							const numberValue = [];
 							const arrayKey = $(this).attr('data-array-key');
 							$(this)
 								.find('.kt-block-config-input-number-array')
@@ -431,10 +431,10 @@ jQuery(document).ready(function ($) {
 									kt_block: selectedSlug,
 									config: dataConfig,
 								},
-								success: function () {
+								success() {
 									buttonStatusSucess(kt_blocks_params.texts.updated);
 								},
-								error: function (jqxhr, textStatus, error) {
+								error(jqxhr, textStatus, error) {
 									console.log(error);
 									buttonStatusDisabled('Error');
 								},

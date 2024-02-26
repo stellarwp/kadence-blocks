@@ -65,7 +65,7 @@ function FieldFile({ attributes, setAttributes, isSelected, clientId, context, n
 
 	useEffect(() => {
 		// Doesn't worry about if a filed is duplicated. Duplicated fields get a custom ID through the watch at the form level.
-		let uniqueId = getUniqueFieldId(uniqueID, clientId);
+		const uniqueId = getUniqueFieldId(uniqueID, clientId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });

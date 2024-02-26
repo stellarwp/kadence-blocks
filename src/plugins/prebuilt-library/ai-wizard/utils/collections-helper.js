@@ -86,29 +86,28 @@ export function collectionsHelper() {
 			dispatch({ type: 'SET_CUSTOM_COLLECTIONS', payload: wpCollectionsClone });
 			setWordpressCollections(wpCollectionsClone);
 			return wpCollectionsClone[found].value;
-		} else {
-			// create new collection record
-			const matchingPremade = preMadeCollections.find((item) => item.value === collectionId);
-			const collectionVersion = wordpressCollections.reduce((acc, item) => {
-				if (item.createdFrom === collectionId && item.version > acc) {
-					return item.version;
-				}
-				return acc;
-			}, 0);
-
-			newCollection = {
-				label: `${matchingPremade.label} (Edited${collectionVersion > 0 ? ` ${collectionVersion + 1}` : ''})`,
-				value: `${collectionId}_${collectionVersion}_${new Date().getTime().toString().slice(-6)}`,
-				createdFrom: collectionId,
-				version: collectionVersion + 1,
-				galleries: updatedCollection,
-			};
-
-			const updatedCollections = [newCollection, ...wordpressCollections];
-			dispatch({ type: 'SET_CUSTOM_COLLECTIONS', payload: updatedCollections });
-			setWordpressCollections(updatedCollections);
-			return newCollection.value;
 		}
+		// create new collection record
+		const matchingPremade = preMadeCollections.find((item) => item.value === collectionId);
+		const collectionVersion = wordpressCollections.reduce((acc, item) => {
+			if (item.createdFrom === collectionId && item.version > acc) {
+				return item.version;
+			}
+			return acc;
+		}, 0);
+
+		newCollection = {
+			label: `${matchingPremade.label} (Edited${collectionVersion > 0 ? ` ${collectionVersion + 1}` : ''})`,
+			value: `${collectionId}_${collectionVersion}_${new Date().getTime().toString().slice(-6)}`,
+			createdFrom: collectionId,
+			version: collectionVersion + 1,
+			galleries: updatedCollection,
+		};
+
+		const updatedCollections = [newCollection, ...wordpressCollections];
+		dispatch({ type: 'SET_CUSTOM_COLLECTIONS', payload: updatedCollections });
+		setWordpressCollections(updatedCollections);
+		return newCollection.value;
 	}
 
 	/**
@@ -127,7 +126,7 @@ export function collectionsHelper() {
 			value: `${collectionName.replace(/ /g, '')}_${0}_${new Date().getTime().toString().slice(-6)}`,
 			createdFrom: null,
 			version: 0,
-			galleries: galleries,
+			galleries,
 		};
 
 		const updatedCollections = [newCollection, ...wordpressCollections];

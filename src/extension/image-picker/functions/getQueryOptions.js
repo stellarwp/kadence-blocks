@@ -10,25 +10,25 @@ import { API } from '../constants/API';
  * @return {Object} 				 Parameters used for the fetch request.
  */
 export default function getQueryOptions(options) {
-	var headers = new Headers();
+	const headers = new Headers();
 	headers.append('Content-Type', 'application/json');
-	var sizes = kadenceExtensionImagePicker.image_sizes.forEach((element) => {
+	const sizes = kadenceExtensionImagePicker.image_sizes.forEach((element) => {
 		element?.crop ? (element.crop = true) : (element.crop = false);
 		return element;
 	});
-	var body = {
+	const body = {
 		query: API.defaults.query,
-		sizes: sizes,
+		sizes,
 		image_type: API.defaults.image_type,
 		page: 1,
 		per_page: API.defaults.per_page,
 		locale: API.defaults.locale,
 	};
-	var mergedBody = JSON.stringify({ ...body, ...options });
+	const mergedBody = JSON.stringify({ ...body, ...options });
 
-	var defaults = {
+	const defaults = {
 		method: 'POST',
-		headers: headers,
+		headers,
 		body: mergedBody,
 		redirect: 'follow',
 	};
@@ -37,18 +37,18 @@ export default function getQueryOptions(options) {
 }
 
 export function getImportOptions(results, options = {}) {
-	var headers = new Headers();
+	const headers = new Headers();
 	headers.append('Content-Type', 'application/json');
 
-	var body = {
+	const body = {
 		images: results,
 	};
 
-	var mergedBody = JSON.stringify({ ...body, ...options });
+	const mergedBody = JSON.stringify({ ...body, ...options });
 
-	var defaults = {
+	const defaults = {
 		method: 'POST',
-		headers: headers,
+		headers,
 		body: mergedBody,
 		redirect: 'follow',
 	};

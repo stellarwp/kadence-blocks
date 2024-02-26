@@ -9,7 +9,7 @@
 		cache: {},
 		countUpItems: {},
 		listenerCache: {},
-		isInViewport: function (el) {
+		isInViewport(el) {
 			const rect = el.getBoundingClientRect();
 			return (
 				rect.top >= 0 &&
@@ -18,13 +18,13 @@
 				rect.right <= (window.innerWidth || document.documentElement.clientWidth) + 300
 			);
 		},
-		initScrollSpy: function () {
+		initScrollSpy() {
 			window.kadenceCountUp.countUpItems = document.querySelectorAll('.kb-count-up');
 			if (!window.kadenceCountUp.countUpItems.length) {
 				return;
 			}
 			for (let n = 0; n < window.kadenceCountUp.countUpItems.length; n++) {
-				let self = window.kadenceCountUp.countUpItems[n],
+				const self = window.kadenceCountUp.countUpItems[n],
 					start = self.dataset.start,
 					end = self.dataset.end,
 					prefix = self.dataset.prefix,
@@ -36,13 +36,13 @@
 					el = self.querySelector('.kb-count-up-process');
 				let theSeparator = separator === 'true' ? ',' : separator;
 				theSeparator = theSeparator === 'false' ? '' : theSeparator;
-				let KbCounterOptions = {
+				const KbCounterOptions = {
 					startVal: start ? start : 0,
 					duration: duration ? duration : 2,
 					prefix: prefix ? prefix : '',
 					suffix: suffix ? suffix : '',
 					separator: theSeparator,
-					decimal: decimal,
+					decimal,
 					decimalPlaces: decimalSpaces,
 				};
 				window.kadenceCountUp.cache[n] = new countUp.CountUp(el, end, KbCounterOptions);
@@ -54,7 +54,7 @@
 			}
 		},
 		accessabilityModifications(el, end) {
-			var div = document.createElement('div');
+			const div = document.createElement('div');
 			div.classList.add('screen-reader-text');
 			div.innerHTML = end;
 			el.before(div);
@@ -63,7 +63,7 @@
 		/**
 		 * Start Listener.
 		 */
-		listener: function (index) {
+		listener(index) {
 			return function curried_func(e) {
 				window.kadenceCountUp.startCountUp(index);
 			};
@@ -71,7 +71,7 @@
 		/**
 		 * Start function.
 		 */
-		startCountUp: function (index) {
+		startCountUp(index) {
 			if (window.kadenceCountUp.isInViewport(window.kadenceCountUp.countUpItems[index])) {
 				if (!window.kadenceCountUp.cache[index].error) {
 					window.kadenceCountUp.cache[index].start();
@@ -80,7 +80,7 @@
 			}
 		},
 		// Initiate sticky when the DOM loads.
-		init: function () {
+		init() {
 			window.kadenceCountUp.initScrollSpy();
 		},
 	};

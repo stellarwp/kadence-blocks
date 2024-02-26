@@ -12,18 +12,19 @@ const { localStorage } = window;
  */
 import { debounce } from 'lodash';
 import Masonry from 'react-masonry-css';
+import AutoHeightBlockPreview from '../auto';
+
 /**
  * WordPress dependencies
  */
 const { applyFilters } = wp.hooks;
 
-import { withSelect, withDispatch } from '@wordpress/data';
+import { withSelect, withDispatch, useSelect } from '@wordpress/data';
 import { rawHandler } from '@wordpress/blocks';
 import { Button, TextControl, SelectControl, VisuallyHidden, ExternalLink, Spinner } from '@wordpress/components';
 import { arrowLeft, download, previous, update, next, chevronLeft, chevronDown } from '@wordpress/icons';
 import { __, sprintf } from '@wordpress/i18n';
 import { useDisabled, useMergeRefs } from '@wordpress/compose';
-import { useSelect } from '@wordpress/data';
 import { memo, useMemo } from '@wordpress/element';
 import {
 	BlockEditorProvider,

@@ -13,7 +13,7 @@ function ImportDefaults() {
 	const [importFile, setImportFile] = useState();
 
 	const parseAndUpload = (selectedFile) => {
-		let fileread = new FileReader();
+		const fileread = new FileReader();
 		let fileData;
 
 		fileread.onload = function (e) {
@@ -36,7 +36,7 @@ function ImportDefaults() {
 			}
 
 			if (has(fileData, 'block_defaults')) {
-				let blockDefaults = JSON.stringify(fileData.block_defaults);
+				const blockDefaults = JSON.stringify(fileData.block_defaults);
 
 				apiFetch({
 					path: '/wp/v2/settings',
@@ -51,7 +51,7 @@ function ImportDefaults() {
 			}
 
 			if (has(fileData, 'block_visibility')) {
-				let blockVis = JSON.stringify(fileData.block_visibility);
+				const blockVis = JSON.stringify(fileData.block_visibility);
 
 				apiFetch({
 					path: '/wp/v2/settings',

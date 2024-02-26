@@ -6,7 +6,15 @@ import memoize from 'memize';
 
 import { KadenceColorOutput, getPreviewSize } from '@kadence/helpers';
 
-import { ToggleControl, SelectControl, ToolbarGroup, TabPanel, ResizableBox } from '@wordpress/components';
+import {
+	ToggleControl,
+	SelectControl,
+	ToolbarGroup,
+	TabPanel,
+	ResizableBox,
+	Tooltip,
+	Button,
+} from '@wordpress/components';
 import { Fragment, useEffect, useMemo, useState } from '@wordpress/element';
 /**
  * Build the row edit
@@ -126,7 +134,7 @@ export default compose([
 		const { getBlocksByClientId } = select('core/block-editor');
 		const parentBlock = getBlocksByClientId(rootID);
 		return {
-			parentBlock: parentBlock,
+			parentBlock,
 		};
 	}),
 ])(ResizeColumn);

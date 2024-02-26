@@ -29,7 +29,7 @@ export default function Result(props) {
 				? select('kadenceblocks/data').getImagePickerDownloadedImages()
 				: '';
 		return {
-			imagePickerDownloadedImages: imagePickerDownloadedImages,
+			imagePickerDownloadedImages,
 		};
 	}, []);
 	const { setImagePickerDownloadedImages } = useDispatch('kadenceblocks/data');
@@ -100,7 +100,7 @@ export default function Result(props) {
 								{__('Photographer:')}
 							</label>
 							<div class="result-detail-value" id="result-detail-photographer">
-								<a href={photographer_url} target="_blank">
+								<a href={photographer_url} target="_blank" rel="noreferrer">
 									{photographer}
 								</a>
 							</div>
@@ -148,7 +148,6 @@ export default function Result(props) {
 				/>
 			</>
 		);
-	} else {
-		return <div className="result-details-container">{__('No details for this photo')}</div>;
 	}
+	return <div className="result-details-container">{__('No details for this photo')}</div>;
 }

@@ -1,8 +1,8 @@
 (function () {
 	'use strict';
 	window.KBTabs = {
-		setupTabs: function () {
-			var ktTabWraps = document.querySelectorAll('.kt-tabs-wrap');
+		setupTabs() {
+			const ktTabWraps = document.querySelectorAll('.kt-tabs-wrap');
 			ktTabWraps.forEach((thisElem) => {
 				thisElem.querySelectorAll(':scope > .kt-tabs-title-list').forEach((subElem) => {
 					subElem.setAttribute('role', 'tablist');
@@ -15,9 +15,9 @@
 					});
 
 				thisElem.querySelectorAll(':scope > .kt-tabs-title-list li a').forEach((subElem) => {
-					var parentListItem = subElem.parentElement;
-					var parentId = parentListItem.getAttribute('id');
-					var isActive = parentListItem.classList.contains('kt-tab-title-active');
+					const parentListItem = subElem.parentElement;
+					const parentId = parentListItem.getAttribute('id');
+					const isActive = parentListItem.classList.contains('kt-tab-title-active');
 
 					parentListItem.setAttribute('role', 'presentation');
 					subElem.setAttribute('role', 'tab');
@@ -26,8 +26,10 @@
 					subElem.setAttribute('tabindex', isActive ? '0' : '-1');
 
 					// Set attr on the related content tab
-					var tabId = subElem.getAttribute('data-tab');
-					var contentTab = thisElem.querySelector(':scope > .kt-tabs-content-wrap > .kt-inner-tab-' + tabId);
+					const tabId = subElem.getAttribute('data-tab');
+					const contentTab = thisElem.querySelector(
+						':scope > .kt-tabs-content-wrap > .kt-inner-tab-' + tabId
+					);
 					contentTab.setAttribute('aria-labelledby', parentId);
 					contentTab.setAttribute('aria-hidden', isActive ? 'false' : 'true');
 
@@ -57,11 +59,11 @@
 						}
 					});
 				});
-				var resizeEvent = new Event('resize');
+				const resizeEvent = new Event('resize');
 				window.dispatchEvent(resizeEvent);
 			});
 
-			var ktTabButtons = document.querySelectorAll('.kt-tabs-title-list li a');
+			const ktTabButtons = document.querySelectorAll('.kt-tabs-title-list li a');
 			ktTabButtons.forEach((thisElem) => {
 				thisElem.addEventListener('click', function (evt) {
 					evt.preventDefault();
@@ -71,13 +73,13 @@
 				});
 			});
 
-			var ktAccordions = document.querySelectorAll('.kt-create-accordion');
+			const ktAccordions = document.querySelectorAll('.kt-create-accordion');
 			ktAccordions.forEach((thisElem) => {
 				thisElem.querySelectorAll(':scope > .kt-tabs-title-list .kt-title-item').forEach((listItem) => {
-					var tabId = listItem.querySelector('a').getAttribute('data-tab');
+					const tabId = listItem.querySelector('a').getAttribute('data-tab');
 
-					var titleClasses = listItem.classList;
-					var accordionTitleClasses = ['kt-tabs-accordion-title', 'kt-tabs-accordion-title-' + tabId];
+					const titleClasses = listItem.classList;
+					const accordionTitleClasses = ['kt-tabs-accordion-title', 'kt-tabs-accordion-title-' + tabId];
 
 					const closestTabWrap = listItem.closest('.kt-tabs-wrap');
 					const ktContentWrap = closestTabWrap.querySelector(':scope > .kt-tabs-content-wrap');
@@ -97,15 +99,15 @@
 				});
 			});
 
-			var ktAccordionAnchor = document.querySelectorAll('.kt-tabs-accordion-title a');
+			const ktAccordionAnchor = document.querySelectorAll('.kt-tabs-accordion-title a');
 			ktAccordionAnchor.forEach((thisElem) => {
 				thisElem.addEventListener('click', function (evt) {
 					evt.preventDefault();
 
-					var tabId = thisElem.getAttribute('data-tab');
-					var accTitle = thisElem.parentElement;
-					var tabWrap = thisElem.closest('.kt-tabs-wrap');
-					var tabContent = tabWrap.querySelector(':scope > .kt-tabs-content-wrap > .kt-inner-tab-' + tabId);
+					const tabId = thisElem.getAttribute('data-tab');
+					const accTitle = thisElem.parentElement;
+					const tabWrap = thisElem.closest('.kt-tabs-wrap');
+					const tabContent = tabWrap.querySelector(':scope > .kt-tabs-content-wrap > .kt-inner-tab-' + tabId);
 
 					if (accTitle.classList.contains('kt-tab-title-active')) {
 						tabWrap.classList.remove('kt-active-tab-' + tabId);
@@ -117,29 +119,29 @@
 						tabContent.style.display = 'block';
 					}
 
-					var resizeEvent = new Event('resize');
+					const resizeEvent = new Event('resize');
 					window.dispatchEvent(resizeEvent);
-					var tabEvent = new Event('kadence-tabs-open');
+					const tabEvent = new Event('kadence-tabs-open');
 					window.dispatchEvent(tabEvent);
 				});
 			});
 			window.KBTabs.setActiveWithHash();
 		},
-		setActiveWithHash: function () {
+		setActiveWithHash() {
 			if (window.location.hash == '') {
 				return;
 			}
 
-			var tabTitleItems = window.document.querySelector(window.location.hash + '.kt-title-item');
+			const tabTitleItems = window.document.querySelector(window.location.hash + '.kt-title-item');
 			if (!tabTitleItems) {
 				return;
 			}
 
-			var currentTab = window.document.querySelector('#' + window.location.hash.substring(1));
+			const currentTab = window.document.querySelector('#' + window.location.hash.substring(1));
 
 			// Trigger tab change.
-			var tabNumber = currentTab.querySelector('a').getAttribute('data-tab');
-			var tabWrap = currentTab.closest('.kt-tabs-wrap');
+			const tabNumber = currentTab.querySelector('a').getAttribute('data-tab');
+			const tabWrap = currentTab.closest('.kt-tabs-wrap');
 			window.KBTabs.setActiveTab(tabWrap, tabNumber);
 
 			if (
@@ -153,13 +155,13 @@
 					.scrollIntoView({ behavior: 'smooth' });
 			}
 		},
-		isMobileSize: function () {
+		isMobileSize() {
 			return window.innerWidth <= 767;
 		},
-		isTabletSize: function () {
+		isTabletSize() {
 			return window.innerWidth > 767 && window.innerWidth <= 1024;
 		},
-		setActiveTab: function (wrapper, tabNumber, moveFocus = true) {
+		setActiveTab(wrapper, tabNumber, moveFocus = true) {
 			const prevActiveAnchor = wrapper.querySelector(':scope > .kt-tabs-title-list > li.kt-tab-title-active a');
 			const prevActiveListItem = wrapper.querySelector(':scope > .kt-tabs-title-list > li.kt-tab-title-active');
 			prevActiveListItem.classList.replace('kt-tab-title-active', 'kt-tab-title-inactive');
@@ -192,12 +194,12 @@
 
 			window.KBTabs.setAriaAttributesForTabs(wrapper, tabNumber);
 
-			var resizeEvent = new Event('resize');
+			const resizeEvent = new Event('resize');
 			window.dispatchEvent(resizeEvent);
-			var tabEvent = new Event('kadence-tabs-open');
+			const tabEvent = new Event('kadence-tabs-open');
 			window.dispatchEvent(tabEvent);
 		},
-		setAriaAttributesForTabs: function (wrapper, tabNumber) {
+		setAriaAttributesForTabs(wrapper, tabNumber) {
 			wrapper
 				.querySelectorAll(
 					':scope > .kt-tabs-content-wrap > .kt-tab-inner-content:not(.kt-inner-tab-' + tabNumber + ')'
@@ -228,7 +230,7 @@
 			}
 		},
 
-		init: function () {
+		init() {
 			window.KBTabs.setupTabs();
 			window.addEventListener('hashchange', window.KBTabs.setActiveWithHash, false);
 		},

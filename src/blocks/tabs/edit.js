@@ -271,7 +271,7 @@ function KadenceTabs(props) {
 		}
 
 		const postOrFseId = getPostOrFseId(props, parentData);
-		let uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -854,7 +854,7 @@ function KadenceTabs(props) {
 	);
 
 	const saveFontAttribute = (key, value) => {
-		let ucKey = key.charAt(0).toUpperCase() + key.slice(1);
+		const ucKey = key.charAt(0).toUpperCase() + key.slice(1);
 
 		setAttributes({
 			[key]: value[0],
@@ -928,8 +928,8 @@ function KadenceTabs(props) {
 							color: KadenceColorOutput(titleColor),
 							fontSize: previewFontSize ? getFontSizeOptionOutput(previewFontSize, sizeType) : undefined,
 							lineHeight: previewLineHeight ? previewLineHeight + lineType : undefined,
-							fontWeight: fontWeight,
-							fontStyle: fontStyle,
+							fontWeight,
+							fontStyle,
 							letterSpacing: letterSpacing + 'px',
 							textTransform: textTransform ? textTransform : undefined,
 							fontFamily: typography ? typography : '',
@@ -1337,7 +1337,7 @@ function KadenceTabs(props) {
 	let accordionOrderStyle = '';
 	if (isAccordionPreview) {
 		times(tabCount, (n) => {
-			let output = `
+			const output = `
 					.kt-title-item-${n} {
 						order: ${2 * n}
 					}
@@ -1393,8 +1393,8 @@ function KadenceTabs(props) {
 				<CopyPasteAttributes
 					attributes={attributes}
 					excludedAttrs={nonTransAttrs}
-					defaultAttributes={metadata['attributes']}
-					blockSlug={metadata['name']}
+					defaultAttributes={metadata.attributes}
+					blockSlug={metadata.name}
 					onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
 				/>
 				<ToolbarGroup group="add-block">
@@ -2231,8 +2231,8 @@ function KadenceTabs(props) {
 
 							<KadenceBlockDefaults
 								attributes={attributes}
-								defaultAttributes={metadata['attributes']}
-								blockSlug={metadata['name']}
+								defaultAttributes={metadata.attributes}
+								blockSlug={metadata.name}
 								excludedAttrs={nonTransAttrs}
 							/>
 						</>

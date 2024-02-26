@@ -17,7 +17,7 @@
 
 		function CustomEvent(event, params) {
 			params = params || { bubbles: false, cancelable: false, detail: undefined };
-			var evt = document.createEvent('CustomEvent');
+			const evt = document.createEvent('CustomEvent');
 			evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
 			return evt;
 		}
@@ -28,8 +28,8 @@
 	})();
 
 	function _defineProperties(target, props) {
-		for (var i = 0; i < props.length; i++) {
-			var descriptor = props[i];
+		for (let i = 0; i < props.length; i++) {
+			const descriptor = props[i];
 			descriptor.enumerable = descriptor.enumerable || false;
 			descriptor.configurable = true;
 			if ('value' in descriptor) descriptor.writable = true;
@@ -47,10 +47,10 @@
 		_extends =
 			Object.assign ||
 			function (target) {
-				for (var i = 1; i < arguments.length; i++) {
-					var source = arguments[i];
+				for (let i = 1; i < arguments.length; i++) {
+					const source = arguments[i];
 
-					for (var key in source) {
+					for (const key in source) {
 						if (Object.prototype.hasOwnProperty.call(source, key)) {
 							target[key] = source[key];
 						}
@@ -86,14 +86,14 @@
 
 	if (!Array.from) {
 		Array.from = (function () {
-			var toStr = Object.prototype.toString;
+			const toStr = Object.prototype.toString;
 
-			var isCallable = function isCallable(fn) {
+			const isCallable = function isCallable(fn) {
 				return typeof fn === 'function' || toStr.call(fn) === '[object Function]';
 			};
 
-			var toInteger = function toInteger(value) {
-				var number = Number(value);
+			const toInteger = function toInteger(value) {
+				const number = Number(value);
 
 				if (isNaN(number)) {
 					return 0;
@@ -106,10 +106,10 @@
 				return (number > 0 ? 1 : -1) * Math.floor(Math.abs(number));
 			};
 
-			var maxSafeInteger = Math.pow(2, 53) - 1;
+			const maxSafeInteger = Math.pow(2, 53) - 1;
 
-			var toLength = function toLength(value) {
-				var len = toInteger(value);
+			const toLength = function toLength(value) {
+				const len = toInteger(value);
 				return Math.min(Math.max(len, 0), maxSafeInteger);
 			}; // The length property of the from method is 1.
 
@@ -118,16 +118,16 @@
 				/* , mapFn, thisArg */
 			) {
 				// 1. Let C be the this value.
-				var C = this; // 2. Let items be ToObject(arrayLike).
+				const C = this; // 2. Let items be ToObject(arrayLike).
 
-				var items = Object(arrayLike); // 3. ReturnIfAbrupt(items).
+				const items = Object(arrayLike); // 3. ReturnIfAbrupt(items).
 
 				if (arrayLike == null) {
 					throw new TypeError('Array.from requires an array-like object - not null or undefined');
 				} // 4. If mapfn is undefined, then let mapping be false.
 
-				var mapFn = arguments.length > 1 ? arguments[1] : void undefined;
-				var T;
+				const mapFn = arguments.length > 1 ? arguments[1] : void undefined;
+				let T;
 
 				if (typeof mapFn !== 'undefined') {
 					// 5. else
@@ -142,16 +142,16 @@
 				} // 10. Let lenValue be Get(items, "length").
 				// 11. Let len be ToLength(lenValue).
 
-				var len = toLength(items.length); // 13. If IsConstructor(C) is true, then
+				const len = toLength(items.length); // 13. If IsConstructor(C) is true, then
 				// 13. a. Let A be the result of calling the [[Construct]] internal method
 				// of C with an argument list containing the single item len.
 				// 14. a. Else, Let A be ArrayCreate(len).
 
-				var A = isCallable(C) ? Object(new C(len)) : new Array(len); // 16. Let k be 0.
+				const A = isCallable(C) ? Object(new C(len)) : new Array(len); // 16. Let k be 0.
 
-				var k = 0; // 17. Repeat, while k < len… (also steps a - h)
+				let k = 0; // 17. Repeat, while k < len… (also steps a - h)
 
-				var kValue;
+				let kValue;
 
 				while (k < len) {
 					kValue = items[k];
@@ -179,9 +179,9 @@
 
 	/* eslint-disable no-unused-vars */
 	(function (document, window) {
-		var el = document.body || document.documentElement,
-			s = el.style,
-			prefixAnimation = '',
+		const el = document.body || document.documentElement;
+		const s = el.style;
+		let prefixAnimation = '',
 			prefixTransition = '';
 		if (s.WebkitAnimation == '') prefixAnimation = '-webkit-';
 		if (s.MozAnimation == '') prefixAnimation = '-moz-';
@@ -191,7 +191,7 @@
 		if (s.OTransition == '') prefixTransition = '-o-';
 		Object.defineProperty(Object.prototype, 'onCSSAnimationEnd', {
 			value: function value(callback) {
-				var runOnce = function runOnce(e) {
+				const runOnce = function runOnce(e) {
 					callback();
 					e.target.removeEventListener(e.type, runOnce);
 				};
@@ -213,7 +213,7 @@
 		});
 		Object.defineProperty(Object.prototype, 'onCSSTransitionEnd', {
 			value: function value(callback) {
-				var runOnce = function runOnce(e) {
+				const runOnce = function runOnce(e) {
 					callback();
 					e.target.removeEventListener(e.type, runOnce);
 				};
@@ -249,21 +249,21 @@
 	 * Initializes the object
 	 */
 
-	var KadenceAccordion =
+	const KadenceAccordion =
 		/*#__PURE__*/
 		(function () {
 			function KadenceAccordion(el, options) {
-				var _this2 = this;
+				const _this2 = this;
 
 				_classCallCheck(this, KadenceAccordion);
 
-				var container = typeof el === 'string' ? document.querySelector(el) : el; // If el is not defined
+				const container = typeof el === 'string' ? document.querySelector(el) : el; // If el is not defined
 
 				if (container == null) {
 					return;
 				}
 
-				var defaults = {
+				const defaults = {
 					headerClass: '.kt-blocks-accordion-header',
 					panelClass: '.kt-accordion-panel',
 					panelInnerClass: '.kt-accordion-panel-inner',
@@ -292,8 +292,8 @@
 
 				this.container = container; // Selecting children of the current accordion instance
 				// Kadence Edit
-				var panes = Array.from(this.container.children);
-				var children = [];
+				const panes = Array.from(this.container.children);
+				const children = [];
 				Array.from(panes).forEach(function (pane) {
 					Array.from(pane.children).forEach(function (item) {
 						children.push(item);
@@ -304,13 +304,13 @@
 				// In order to have nested accordions we need each to only get all the button
 				// elements for this instance. Here an array is created to show all the children
 				// of the element `badger-accordion__header`.
-				var headerParent = children.filter(function (header) {
+				const headerParent = children.filter(function (header) {
 					return !header.classList.contains(_this2.settings.panelClass.substr(1));
 				}); // Creating an array of all DOM nodes that are Accordion headers
 				this.headers = headerParent.reduce(function (acc, header) {
-					var _ref;
+					let _ref;
 					// Gets all the elements that have the headerClass
-					var a = Array.from(header.children).filter(function (child) {
+					let a = Array.from(header.children).filter(function (child) {
 						return child.classList.contains(_this2.settings.headerClass.substr(1));
 					}); // Merges the current `badger-accordion__header` accordion triggers
 					if (
@@ -417,7 +417,7 @@
 					key: '_initalState',
 					value: function _initalState() {
 						// Sets state object as per `this.settings.openHeadersOnLoad`
-						var headersToOpen = this.settings.openHeadersOnLoad;
+						const headersToOpen = this.settings.openHeadersOnLoad;
 						this.headers.forEach(function (header, index) {
 							header.setAttribute('aria-expanded', false);
 						});
@@ -437,7 +437,7 @@
 				{
 					key: '_insertDataAttrs',
 					value: function _insertDataAttrs() {
-						var _this3 = this;
+						const _this3 = this;
 
 						this.headers.forEach(function (header, index) {
 							header.setAttribute(_this3.settings.headerDataAttr, index);
@@ -455,7 +455,7 @@
 						this.container.classList.add(this.settings.initializedClass);
 						this._setRole('presentation', this.container);
 						// Create a new event
-						var event = new CustomEvent('initialized');
+						const event = new CustomEvent('initialized');
 						// Dispatch the event
 						this.container.dispatchEvent(event);
 					},
@@ -469,7 +469,7 @@
 					key: '_addListeners',
 					value: function _addListeners() {
 						// So we can reference the badger-accordion object inside out eventListener
-						var _this = this; // Adding click event to accordion
+						const _this = this; // Adding click event to accordion
 
 						this.headers.forEach(function (header, index) {
 							header.addEventListener('click', function () {
@@ -478,15 +478,15 @@
 								_this.handleClick(header, index);
 							});
 							header.addEventListener('keydown', function (event) {
-								var key = event.which.toString();
+								const key = event.which.toString();
 								// 33 = Page Up, 34 = Page Down
-								var ctrlModifier = event.ctrlKey && key.match(/33|34/);
+								const ctrlModifier = event.ctrlKey && key.match(/33|34/);
 								// Up/ Down arrow and Control + Page Up/ Page Down keyboard operations
 								// 38 = Up, 40 = Down
 								if (key.match(/38|40/) || ctrlModifier) {
-									var direction = key.match(/34|40/) ? 1 : -1;
-									var length = _this.headers.length;
-									var newIndex = (index + length + direction) % length;
+									const direction = key.match(/34|40/) ? 1 : -1;
+									const length = _this.headers.length;
+									const newIndex = (index + length + direction) % length;
 									_this.headers[newIndex].focus();
 									event.preventDefault();
 								} else if (key.match(/35|36/)) {
@@ -524,10 +524,10 @@
 						if (!forceOpen) {
 							forceOpen = false;
 						}
-						var _this10 = this;
+						const _this10 = this;
 						// Removing current `.` from `this.settings.headerClass` class so it can
 						// be checked against the `targetHeader` classList
-						var targetHeaderClass = this.settings.headerClass.substr(1); // Checking that the thing that was clicked on was the accordions header
+						const targetHeaderClass = this.settings.headerClass.substr(1); // Checking that the thing that was clicked on was the accordions header
 
 						if (targetHeader.classList.contains(targetHeaderClass) && this.toggling === false) {
 							this.toggling = true; // Updating states
@@ -554,9 +554,9 @@
 				{
 					key: 'setState',
 					value: function setState(targetHeaderId) {
-						var _this4 = this;
+						const _this4 = this;
 
-						var states = this.getState(); // If `this.settings.openMultiplePanels` is false we need to ensure only one panel
+						const states = this.getState(); // If `this.settings.openMultiplePanels` is false we need to ensure only one panel
 						// be can open at once. If it is false then all panels state APART from the one that
 						// has just been clicked needs to be set to 'closed'.
 
@@ -571,7 +571,7 @@
 
 						states.filter(function (state, index) {
 							if (index == targetHeaderId) {
-								var newState = _this4.toggleState(state.state);
+								const newState = _this4.toggleState(state.state);
 
 								return (state.state = newState);
 							}
@@ -586,7 +586,7 @@
 				{
 					key: '_renderDom',
 					value: function _renderDom() {
-						var _this5 = this;
+						const _this5 = this;
 						// Filter through all open headers and open them
 						this.states.filter(function (state, index) {
 							if (state.state === 'open') {
@@ -612,7 +612,7 @@
 				{
 					key: 'open',
 					value: function open(headerIndex) {
-						var setState = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+						const setState = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
 						// 1. If being fired directly the state needs to be updated.
 						if (setState) {
@@ -631,7 +631,7 @@
 				{
 					key: 'close',
 					value: function close(headerIndex) {
-						var setState = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+						const setState = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
 						// 1. If being fired directly the state needs to be updated.
 						if (setState) {
@@ -649,7 +649,7 @@
 				{
 					key: 'openAll',
 					value: function openAll() {
-						var _this6 = this;
+						const _this6 = this;
 
 						this.headers.forEach(function (header, headerIndex) {
 							_this6.togglePanel('open', headerIndex);
@@ -664,7 +664,7 @@
 				{
 					key: 'closeAll',
 					value: function closeAll() {
-						var _this7 = this;
+						const _this7 = this;
 
 						this.headers.forEach(function (header, headerIndex) {
 							_this7.togglePanel('closed', headerIndex);
@@ -681,12 +681,12 @@
 				{
 					key: 'togglePanel',
 					value: function togglePanel(animationAction, headerIndex) {
-						var _this8 = this;
+						const _this8 = this;
 						if (animationAction !== undefined && headerIndex !== undefined) {
 							if (animationAction === 'closed') {
 								// 1. Getting ID of panel that we want to close
-								var header = this.headers[headerIndex];
-								var panelToClose = this.panels[headerIndex]; // 2. Closeing panel
+								const header = this.headers[headerIndex];
+								const panelToClose = this.panels[headerIndex]; // 2. Closeing panel
 								if (!panelToClose.classList.contains(this.settings.hiddenClass)) {
 									panelToClose.setAttribute('data-panel-height', panelToClose.scrollHeight + 'px');
 									panelToClose.style.height = panelToClose.scrollHeight + 'px';
@@ -697,8 +697,8 @@
 									panelToClose.classList.remove(this.settings.activeClass);
 									header.classList.remove(this.settings.activeClass);
 									header.setAttribute('aria-expanded', false);
-									var transDuration =
-										1000 * parseFloat(getComputedStyle(panelToClose)['transitionDuration']);
+									const transDuration =
+										1000 * parseFloat(getComputedStyle(panelToClose).transitionDuration);
 									setTimeout(function () {
 										panelToClose.classList.add(_this8.settings.hiddenClass);
 										panelToClose.classList.remove('kt-panel-is-collapsing');
@@ -711,8 +711,8 @@
 								//   });
 							} else if (animationAction === 'open') {
 								// 1. Getting ID of panel that we want to open
-								var _header = this.headers[headerIndex];
-								var panelToOpen = this.panels[headerIndex]; // 2. Opening panel
+								const _header = this.headers[headerIndex];
+								const panelToOpen = this.panels[headerIndex]; // 2. Opening panel
 								if (!panelToOpen.classList.contains(this.settings.activeClass)) {
 									panelToOpen.classList.remove(this.settings.hiddenClass);
 									panelToOpen.style.height = 0;
@@ -728,11 +728,11 @@
 									panelToOpen.offsetHeight;
 									_header.classList.add(this.settings.activeClass); // 4. Set aria attrs
 									_header.setAttribute('aria-expanded', true); // 5. Resetting toggling so a new event can be fired
-									var resizeEvent = window.document.createEvent('UIEvents');
+									const resizeEvent = window.document.createEvent('UIEvents');
 									resizeEvent.initUIEvent('resize', true, false, window, 0);
 									window.dispatchEvent(resizeEvent);
-									var _transDuration =
-										1000 * parseFloat(getComputedStyle(panelToOpen)['transitionDuration']);
+									const _transDuration =
+										1000 * parseFloat(getComputedStyle(panelToOpen).transitionDuration);
 									setTimeout(function () {
 										panelToOpen.classList.add(_this8.settings.activeClass);
 										panelToOpen.style.height = '';
@@ -768,18 +768,17 @@
 				{
 					key: 'getState',
 					value: function getState() {
-						var _this9 = this;
+						const _this9 = this;
 
-						var headerIds = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+						const headerIds = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 
 						if (headerIds.length && Array.isArray(headerIds)) {
-							var states = headerIds.map(function (header) {
+							const states = headerIds.map(function (header) {
 								return _this9.states[header];
 							});
 							return states;
-						} else {
-							return this.states;
 						}
+						return this.states;
 					},
 					/**
 					 *  TOGGLE STATE
@@ -805,11 +804,11 @@
 				{
 					key: '_openHeadersOnLoad',
 					value: function _openHeadersOnLoad() {
-						var _this10 = this;
+						const _this10 = this;
 
-						var headersToOpen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+						const headersToOpen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 						if (headersToOpen.length && Array.isArray(headersToOpen)) {
-							var headers = headersToOpen.filter(function (header) {
+							const headers = headersToOpen.filter(function (header) {
 								return header != undefined;
 							});
 							headers.forEach(function (header) {
@@ -855,9 +854,9 @@
 				{
 					key: 'calculatePanelHeight',
 					value: function calculatePanelHeight(panel) {
-						var panelInner = panel.querySelector(this.settings.panelInnerClass);
-						var activeHeight = panelInner.getBoundingClientRect();
-						return panel.setAttribute('data-panel-height', ''.concat(activeHeight['height'], 'px'));
+						const panelInner = panel.querySelector(this.settings.panelInnerClass);
+						const activeHeight = panelInner.getBoundingClientRect();
+						return panel.setAttribute('data-panel-height', ''.concat(activeHeight.height, 'px'));
 						//return panel.style.maxHeight = "".concat(activeHeight, "px");
 						// panel.style.maxHeight = panel.getAttribute('data-panel-height');
 					},
@@ -870,7 +869,7 @@
 				{
 					key: 'calculateAllPanelsHeight',
 					value: function calculateAllPanelsHeight() {
-						var _this11 = this;
+						const _this11 = this;
 
 						this.panels.forEach(function (panel) {
 							_this11.calculatePanelHeight(panel);
@@ -883,7 +882,7 @@
 				{
 					key: '_setupHeaders',
 					value: function _setupHeaders() {
-						var _this12 = this;
+						const _this12 = this;
 
 						this.headers.forEach(function (header, index) {
 							header.setAttribute('id', 'kt-accordion-header-'.concat(_this12.ids[index].id));
@@ -897,7 +896,7 @@
 				{
 					key: '_setupPanels',
 					value: function _setupPanels() {
-						var _this13 = this;
+						const _this13 = this;
 						this.panels.forEach(function (panel, index) {
 							panel.setAttribute('id', 'kt-accordion-panel-'.concat(_this13.ids[index].id));
 							panel.setAttribute('aria-labelledby', 'kt-accordion-header-'.concat(_this13.ids[index].id));
@@ -918,15 +917,15 @@
 
 (function () {
 	'use strict';
-	var hasInitializedKadenceAccordion = false;
+	let hasInitializedKadenceAccordion = false;
 	window.KadenceBlocksAccordion = {
 		/**
 		 * Initiate anchor scroll.
 		 */
-		scroll: function (element, to, duration) {
+		scroll(element, to, duration) {
 			if (duration <= 0) return;
-			var difference = to - element.scrollTop;
-			var perTick = (difference / duration) * 10;
+			const difference = to - element.scrollTop;
+			const perTick = (difference / duration) * 10;
 
 			setTimeout(function () {
 				element.scrollTop = element.scrollTop + perTick;
@@ -937,10 +936,9 @@
 		/**
 		 * Initiate anchor trigger.
 		 */
-		anchor: function (e) {
+		anchor(e) {
 			if (window.location.hash != '') {
-				var id = location.hash.substring(1),
-					element;
+				const id = location.hash.substring(1);
 
 				if (!/^[A-z0-9_-]+$/.test(id)) {
 					return;
@@ -949,10 +947,10 @@
 					return;
 				}
 				hasInitializedKadenceAccordion = true;
-				element = document.getElementById(id);
+				const element = document.getElementById(id);
 				if (element) {
 					if (element.classList.contains('wp-block-kadence-pane')) {
-						var child = document.querySelectorAll('#' + id + ' .kt-blocks-accordion-header')[0];
+						const child = document.querySelectorAll('#' + id + ' .kt-blocks-accordion-header')[0];
 						if (!child.classList.contains('kt-accordion-panel-active')) {
 							if (e.type && e.type === 'initialized') {
 								window.setTimeout(function () {
@@ -974,15 +972,15 @@
 			}
 		},
 		// Initiate the menus when the DOM loads.
-		init: function () {
-			var accordions = document.querySelectorAll('.kt-accordion-inner-wrap');
-			var accordionsArray = Array.from(accordions);
-			for (var i = 0, len = accordionsArray.length; i < len; i++) {
-				var multiplePanels = accordionsArray[i].getAttribute('data-allow-multiple-open');
-				var openPanels = accordionsArray[i].getAttribute('data-start-open');
-				var openPanel = parseInt(openPanels);
+		init() {
+			const accordions = document.querySelectorAll('.kt-accordion-inner-wrap');
+			const accordionsArray = Array.from(accordions);
+			for (let i = 0, len = accordionsArray.length; i < len; i++) {
+				const multiplePanels = accordionsArray[i].getAttribute('data-allow-multiple-open');
+				const openPanels = accordionsArray[i].getAttribute('data-start-open');
+				let openPanel = parseInt(openPanels);
 				if (openPanels !== 'none') {
-					for (var b = 0, lenb = accordionsArray[i].children.length; b < lenb; b++) {
+					for (let b = 0, lenb = accordionsArray[i].children.length; b < lenb; b++) {
 						if (
 							accordionsArray[i].children[b].classList.contains(
 								'kt-accordion-pane-' + parseInt(1 + openPanel)

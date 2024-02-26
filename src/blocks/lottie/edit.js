@@ -16,11 +16,9 @@ import '@dotlottie/player-component';
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useBlockProps, BlockAlignmentControl } from '@wordpress/block-editor';
+import { useBlockProps, BlockAlignmentControl, BlockControls } from '@wordpress/block-editor';
 const { rest_url } = kadence_blocks_params;
 import { has, get } from 'lodash';
-
-import { BlockControls } from '@wordpress/block-editor';
 
 const { apiFetch } = wp;
 import {
@@ -32,9 +30,9 @@ import {
 	FormFileUpload,
 	Button,
 	Notice,
+	__experimentalNumberControl as NumberControl,
 } from '@wordpress/components';
 
-import { __experimentalNumberControl as NumberControl } from '@wordpress/components';
 /**
  * Internal dependencies
  */
@@ -184,7 +182,7 @@ export function Edit(props) {
 		setBlockDefaults('kadence/lottie', attributes);
 
 		const postOrFseId = getPostOrFseId(props, parentData);
-		let uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -198,7 +196,7 @@ export function Edit(props) {
 		[`kb-lottie-container${uniqueID}`]: true,
 	});
 	function parseAndUpload(file, title, setLottieJsonError) {
-		let fileread = new FileReader();
+		const fileread = new FileReader();
 		let lottieJson;
 
 		fileread.onload = function (e) {
@@ -212,7 +210,7 @@ export function Edit(props) {
 			if (typeof lottieJson === 'object') {
 				apiFetch({
 					path: '/kb-lottieanimation/v1/animations',
-					data: { lottieFile: lottieJson, title: title },
+					data: { lottieFile: lottieJson, title },
 					method: 'POST',
 				}).then((response) => {
 					if (has(response, 'value') && has(response, 'label')) {
@@ -301,7 +299,7 @@ export function Edit(props) {
 		);
 	};
 
-	let playerProps = {};
+	const playerProps = {};
 
 	if (loop) {
 		playerProps.loop = '';
@@ -395,8 +393,8 @@ export function Edit(props) {
 				<CopyPasteAttributes
 					attributes={attributes}
 					excludedAttrs={nonTransAttrs}
-					defaultAttributes={metadata['attributes']}
-					blockSlug={metadata['name']}
+					defaultAttributes={metadata.attributes}
+					blockSlug={metadata.name}
 					onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
 				/>
 			</BlockControls>
@@ -706,8 +704,8 @@ export function Edit(props) {
 
 						<KadenceBlockDefaults
 							attributes={attributes}
-							defaultAttributes={metadata['attributes']}
-							blockSlug={metadata['name']}
+							defaultAttributes={metadata.attributes}
+							blockSlug={metadata.name}
 							excludedAttrs={nonTransAttrs}
 						/>
 					</>

@@ -138,11 +138,11 @@ class PrebuiltModal extends Component {
 	render() {
 		const cloudSettings = this.state.cloudSettings;
 		const activePanel = SafeParseJSON(localStorage.getItem('kadenceBlocksPrebuilt'), true);
-		const active_saved_tab = activePanel && activePanel['activeTab'] ? activePanel['activeTab'] : 'section';
+		const active_saved_tab = activePanel && activePanel.activeTab ? activePanel.activeTab : 'section';
 		const active_tab = this.state.section ? this.state.section : active_saved_tab;
 		let actions = this.state.actions;
-		if (cloudSettings && cloudSettings['connections']) {
-			actions = cloudSettings['connections'].concat(actions);
+		if (cloudSettings && cloudSettings.connections) {
+			actions = cloudSettings.connections.concat(actions);
 		}
 		if (this.state.reloadActions && !this.state.isFetching) {
 			this.reloadAllActions();
@@ -199,7 +199,7 @@ class PrebuiltModal extends Component {
 																	localStorage.getItem('kadenceBlocksPrebuilt'),
 																	true
 																);
-																activeTab['activeTab'] = action.slug;
+																activeTab.activeTab = action.slug;
 																localStorage.setItem(
 																	'kadenceBlocksPrebuilt',
 																	JSON.stringify(activeTab)
@@ -232,7 +232,7 @@ class PrebuiltModal extends Component {
 																	localStorage.getItem('kadenceBlocksPrebuilt'),
 																	true
 																);
-																activeTab['activeTab'] = action.slug;
+																activeTab.activeTab = action.slug;
 																localStorage.setItem(
 																	'kadenceBlocksPrebuilt',
 																	JSON.stringify(activeTab)

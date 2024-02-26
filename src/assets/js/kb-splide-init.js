@@ -1,34 +1,34 @@
 (function () {
 	'use strict';
 	var kadenceBlocksSplide = {
-		initAll: function () {
-			let advancedSliders = document.querySelectorAll(
+		initAll() {
+			const advancedSliders = document.querySelectorAll(
 				'.wp-block-kadence-advancedgallery .kt-blocks-carousel-init'
 			);
 			this.bootstrapSliders(advancedSliders);
 
-			let testimonialSliders = document.querySelectorAll(
+			const testimonialSliders = document.querySelectorAll(
 				'.wp-block-kadence-testimonials .kt-blocks-carousel-init'
 			);
 			this.bootstrapSliders(testimonialSliders);
 
-			let bgSliders = document.querySelectorAll('.kb-blocks-bg-slider > .kt-blocks-carousel-init');
+			const bgSliders = document.querySelectorAll('.kb-blocks-bg-slider > .kt-blocks-carousel-init');
 			this.bootstrapSliders(bgSliders);
 		},
-		bootstrapSliders: function (elementList) {
+		bootstrapSliders(elementList) {
 			if (!elementList || elementList.length === 0) {
 				return;
 			}
 
 			for (let i = 0; i < elementList.length; i++) {
-				var thisSlider = elementList[i];
+				const thisSlider = elementList[i];
 				if (!thisSlider || !thisSlider.children || thisSlider.classList.contains('is-initialized')) {
 					continue;
 				}
 				thisSlider.classList.add('kb-splide');
 
 				const slideCount = this.createSplideElements(thisSlider);
-				let parsedData = this.parseDataset(thisSlider.dataset);
+				const parsedData = this.parseDataset(thisSlider.dataset);
 				const inHiddenMenu = Boolean(thisSlider.closest('.kadence-menu-mega-enabled'));
 
 				if (document.querySelector('html[dir="rtl"]')) {
@@ -41,12 +41,12 @@
 					elem.classList.remove('kt-post-carousel-loading');
 				});
 
-				let splideOptions = this.getSplideOptions(parsedData);
+				const splideOptions = this.getSplideOptions(parsedData);
 				// Add this to remove slick based css from hiding elements
 				thisSlider.classList.add('splide-initialized');
 				thisSlider.classList.add('splide-slider');
 
-				let { sliderType } = parsedData;
+				const { sliderType } = parsedData;
 
 				if (sliderType && sliderType === 'fluidcarousel') {
 					elementList[i].querySelectorAll('.kb-slide-item').forEach(function (elem) {
@@ -94,7 +94,7 @@
 						splideOptions.type = parsedData.sliderFade ? 'fade' : 'slide';
 					}
 					splideOptions.rewind = true;
-					let splideSlider = new Splide(thisSlider, splideOptions);
+					const splideSlider = new Splide(thisSlider, splideOptions);
 					splideSlider.on('overflow', function (isOverflow) {
 						splideSlider.options = {
 							arrows: slideCount === 1 ? false : splideOptions.arrows,
@@ -104,15 +104,15 @@
 					});
 					splideSlider.mount();
 				} else if (sliderType && sliderType === 'thumbnail') {
-					let navSliderId = parsedData.sliderNav;
-					let navSlider = document.querySelector('#' + navSliderId);
+					const navSliderId = parsedData.sliderNav;
+					const navSlider = document.querySelector('#' + navSliderId);
 
 					this.createSplideElements(navSlider);
 
 					// Switch the datasets for the nav and main slider elements
-					let mainSliderParsedData = this.parseDataset(navSlider.dataset);
-					let mainSliderOptions = this.getSplideOptions(mainSliderParsedData);
-					let navSliderOptions = splideOptions;
+					const mainSliderParsedData = this.parseDataset(navSlider.dataset);
+					const mainSliderOptions = this.getSplideOptions(mainSliderParsedData);
+					const navSliderOptions = splideOptions;
 					navSliderOptions.isNavigation = true;
 					navSliderOptions.pagination = false;
 					navSliderOptions.type = 'loop';
@@ -131,8 +131,8 @@
 					navSlider.classList.add('slick-slider');
 					navSlider.classList.add('kb-splide');
 
-					let carouselSlider = new Splide(thisSlider, mainSliderOptions);
-					let thumbnailSlider = new Splide(navSlider, navSliderOptions);
+					const carouselSlider = new Splide(thisSlider, mainSliderOptions);
+					const thumbnailSlider = new Splide(navSlider, navSliderOptions);
 					thumbnailSlider.on('overflow', function (isOverflow) {
 						// Reset the carousel position
 						thumbnailSlider.go(0);
@@ -152,7 +152,7 @@
 				} else if (sliderType && sliderType === 'rewind') {
 					splideOptions.type = 'slide';
 					splideOptions.rewind = true;
-					let splideSlider = new Splide(thisSlider, splideOptions);
+					const splideSlider = new Splide(thisSlider, splideOptions);
 					if (!inHiddenMenu) {
 						splideSlider.on('overflow', function (isOverflow) {
 							// Reset the carousel position
@@ -168,7 +168,7 @@
 					}
 					splideSlider.mount();
 				} else {
-					let splideSlider = new Splide(thisSlider, splideOptions);
+					const splideSlider = new Splide(thisSlider, splideOptions);
 					if (!inHiddenMenu) {
 						splideSlider.on('overflow', function (isOverflow) {
 							// Reset the carousel position
@@ -187,10 +187,10 @@
 			}
 		},
 
-		parseDataset: function (elementDataset) {
+		parseDataset(elementDataset) {
 			// Auto-parse all values in the elements dataset
 			return Object.keys(elementDataset).reduce((acc, key) => {
-				let parsedInt = parseInt(elementDataset[key]);
+				const parsedInt = parseInt(elementDataset[key]);
 				if (!Number.isNaN(parsedInt)) {
 					return { ...acc, [key]: parsedInt };
 				}
@@ -202,9 +202,9 @@
 			}, {});
 		},
 
-		createSplideElements: function (wrapperElem) {
+		createSplideElements(wrapperElem) {
 			const slideCount = wrapperElem.children.length;
-			for (let slide of wrapperElem.children) {
+			for (const slide of wrapperElem.children) {
 				slide.classList.add('splide__slide');
 				//slide.classList.add("slick-slide");
 				if (slide.classList.contains('last')) {
@@ -212,10 +212,10 @@
 				}
 			}
 
-			let splideTrack = document.createElement('div');
+			const splideTrack = document.createElement('div');
 			splideTrack.classList.add('splide__track');
 
-			let splideList = document.createElement('div');
+			const splideList = document.createElement('div');
 			splideList.classList.add('splide__list');
 			// The slides go inside the list element
 			splideList.innerHTML = wrapperElem.innerHTML;
@@ -227,7 +227,7 @@
 			return slideCount;
 		},
 
-		getSplideOptions: function (dataSet) {
+		getSplideOptions(dataSet) {
 			const scrollIsOne = dataSet.sliderScroll === 1 ? 1 : false;
 			const splideOpts = {
 				//start: 0,
@@ -240,7 +240,6 @@
 						? 'linear'
 						: 'cubic-bezier(0.25, 1, 0.5, 1)',
 				lazyLoad: 'nearby',
-				pauseOnHover: dataSet.sliderPause || false,
 				autoplay: dataSet.sliderAuto || false,
 				interval: dataSet.sliderSpeed || 7000,
 				speed: dataSet.sliderAnimSpeed || 400,
@@ -291,7 +290,7 @@
 		},
 
 		// Initiate the menus when the DOM loads.
-		init: function () {
+		init() {
 			if (typeof Splide === 'function') {
 				kadenceBlocksSplide.initAll();
 			} else {

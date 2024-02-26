@@ -12,9 +12,9 @@
 		carouselItem: {},
 		lightboxes: {},
 		foundClasses: {},
-		simulateClick: function (elem) {
+		simulateClick(elem) {
 			// Create our event (with options)
-			var evt = new MouseEvent('click', {
+			const evt = new MouseEvent('click', {
 				bubbles: true,
 				cancelable: true,
 				view: window,
@@ -27,15 +27,15 @@
 		// 		element.getAttribute( 'href' ).toLowerCase().split( '?' )[0].split( '#' )[0]
 		// 	);
 		// },
-		handleClones: function (element) {
-			var foundClones = element.querySelectorAll('.kb-slide-item.splide__slide--clone a.kb-gallery-item-link');
-			var foundRegular = element.querySelectorAll(
+		handleClones(element) {
+			const foundClones = element.querySelectorAll('.kb-slide-item.splide__slide--clone a.kb-gallery-item-link');
+			const foundRegular = element.querySelectorAll(
 				'.kb-slide-item:not(.splide__slide--clone) a.kb-gallery-item-link'
 			);
 			for (let c = 0; c < foundClones.length; c++) {
 				foundClones[c].addEventListener('click', function (event) {
 					event.preventDefault();
-					var the_href = foundClones[c].getAttribute('href');
+					const the_href = foundClones[c].getAttribute('href');
 					for (let b = 0; b < foundRegular.length; b++) {
 						if (the_href === foundRegular[b].getAttribute('href')) {
 							kadenceBlocksGLight.simulateClick(foundRegular[b]);
@@ -45,18 +45,18 @@
 				});
 			}
 		},
-		findGalleries: function () {
-			let foundGalleries = document.querySelectorAll('.kb-gallery-magnific-init');
+		findGalleries() {
+			const foundGalleries = document.querySelectorAll('.kb-gallery-magnific-init');
 			if (!foundGalleries.length) {
 				return;
 			}
 			if (foundGalleries) {
 				for (let i = 0; i < foundGalleries.length; i++) {
-					let galleryClass = foundGalleries[i].classList;
-					let filter = foundGalleries[i].getAttribute('data-image-filter');
+					const galleryClass = foundGalleries[i].classList;
+					const filter = foundGalleries[i].getAttribute('data-image-filter');
 					const skin = filter ? 'kadence-dark kb-gal-light-filter-' + filter : 'kadence-dark';
-					var showCaption = foundGalleries[i].getAttribute('data-lightbox-caption');
-					let galleryLinks = foundGalleries[i].querySelectorAll('a.kb-gallery-item-link');
+					const showCaption = foundGalleries[i].getAttribute('data-lightbox-caption');
+					const galleryLinks = foundGalleries[i].querySelectorAll('a.kb-gallery-item-link');
 					for (let l = 0; l < galleryLinks.length; l++) {
 						galleryLinks[l].setAttribute('aria-label', kb_glightbox.lightBoxAriaLabel);
 					}
@@ -69,9 +69,9 @@
 						}
 					}
 					if ('true' == showCaption && !foundGalleries[i].classList.contains('kb-gallery-non-static')) {
-						var foundImages = foundGalleries[i].querySelectorAll('a.kb-gallery-item-link');
+						const foundImages = foundGalleries[i].querySelectorAll('a.kb-gallery-item-link');
 						for (let x = 0; x < foundImages.length; x++) {
-							var caption = foundImages[x].querySelector('.kadence-blocks-gallery-item__caption');
+							const caption = foundImages[x].querySelector('.kadence-blocks-gallery-item__caption');
 							if (caption) {
 								foundImages[x].setAttribute('data-description', caption.innerText);
 							}
@@ -88,7 +88,7 @@
 										kadenceBlocksGLight.foundClasses[i] +
 										' .kb-slide-item:not(.splide__slide--clone) a.kb-gallery-item-link:not([target="_blank"])',
 									touchNavigation: true,
-									skin: skin,
+									skin,
 									loop: true,
 									openEffect: 'fade',
 									closeEffect: 'fade',
@@ -105,7 +105,7 @@
 											kadenceBlocksGLight.foundClasses[i] +
 											' .kb-slide-item:not(.splide__slide--clone) a.kb-gallery-item-link:not([target="_blank"])',
 										touchNavigation: true,
-										skin: skin,
+										skin,
 										loop: true,
 										openEffect: 'fade',
 										closeEffect: 'fade',
@@ -124,7 +124,7 @@
 								kadenceBlocksGLight.foundClasses[i] +
 								' a.kb-gallery-item-link:not([target="_blank"])',
 							touchNavigation: true,
-							skin: skin,
+							skin,
 							loop: true,
 							openEffect: 'fade',
 							closeEffect: 'fade',
@@ -137,11 +137,11 @@
 		/**
 		 * Initiate the script to process all
 		 */
-		initAll: function () {
+		initAll() {
 			kadenceBlocksGLight.findGalleries();
 		},
 		// Initiate the menus when the DOM loads.
-		init: function () {
+		init() {
 			if (typeof GLightbox == 'function') {
 				kadenceBlocksGLight.initAll();
 			} else {

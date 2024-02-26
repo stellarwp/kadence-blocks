@@ -99,14 +99,14 @@ const store = createReduxStore('kadence/library', {
 	reducer(state = DEFAULT_STATE, action) {
 		switch (action.type) {
 			case 'UPDATE_CONTEXT_STATE':
-				let updatedContextStates = state.contextStates;
+				const updatedContextStates = state.contextStates;
 				updatedContextStates[action.context] = action.contextState;
 				return {
 					...state,
 					contextStates: updatedContextStates,
 				};
 			case 'UPDATE_MASS_CONTEXT_STATE':
-				let updatedMassContextStates = state.contextStates;
+				const updatedMassContextStates = state.contextStates;
 				action.contexts.forEach((tempContext) => {
 					updatedMassContextStates[tempContext] = action.contextState;
 				});
@@ -115,14 +115,14 @@ const store = createReduxStore('kadence/library', {
 					contextStates: updatedMassContextStates,
 				};
 			case 'UPDATE_CONTEXT':
-				let updatedContext = state.context;
+				const updatedContext = state.context;
 				updatedContext[action.slug] = action.context;
 				return {
 					...state,
 					context: updatedContext,
 				};
 			case 'UPDATE_MASS_CONTEXT':
-				let updatedMassContext = state.context;
+				const updatedMassContext = state.context;
 				action.slugs.forEach((slug) => {
 					updatedMassContext[slug] = action.contexts[slug];
 				});
@@ -172,7 +172,7 @@ const store = createReduxStore('kadence/library', {
 		hasAllPageContext(state) {
 			const { context } = state;
 			let hasAllContext = true;
-			for (let slug in CONTEXTS_IN_PAGES) {
+			for (const slug in CONTEXTS_IN_PAGES) {
 				if (!context?.[slug]?.content?.length) {
 					hasAllContext = false;
 					break;

@@ -6,7 +6,7 @@
 	'use strict';
 	window.kadenceShowMore = {
 		cache: {},
-		initShowMore: function () {
+		initShowMore() {
 			window.kadenceShowMore.cache = document.querySelectorAll('.wp-block-kadence-show-more');
 			if (!window.kadenceShowMore.cache.length) {
 				return;
@@ -68,7 +68,7 @@
 			}
 		},
 		// Initiate sticky when the DOM loads.
-		init: function () {
+		init() {
 			window.kadenceShowMore.initShowMore();
 		},
 	};

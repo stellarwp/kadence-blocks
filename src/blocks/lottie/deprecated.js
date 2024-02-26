@@ -148,7 +148,7 @@ export default [
 				return url;
 			};
 
-			let playerProps = {};
+			const playerProps = {};
 
 			if (attributes.loop) {
 				playerProps.loop = '';

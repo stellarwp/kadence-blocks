@@ -80,7 +80,7 @@ export function KadenceAiWizard(props) {
 		const saveStatus = await saveAiWizardData({
 			firstTime: false,
 			isSubmitted: true,
-			isComplete: isComplete,
+			isComplete,
 			...rest,
 		});
 

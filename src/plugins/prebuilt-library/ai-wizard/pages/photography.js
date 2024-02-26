@@ -142,7 +142,7 @@ export function Photography(props) {
 		handlePossiblePhotoLibraryChange(newValue);
 	}
 	function findOptionWithValue(arr, value) {
-		for (let group of arr) {
+		for (const group of arr) {
 			const foundOption = group.options.find((option) => option.value === value);
 			if (foundOption) {
 				return foundOption;

@@ -23,9 +23,7 @@ class KadenceGlobalTypography extends Component {
 	}
 	componentDidMount() {
 		const typographyConfig =
-			this.state.globalStyles && this.state.globalStyles['typography']
-				? this.state.globalStyles['typography']
-				: {};
+			this.state.globalStyles && this.state.globalStyles.typography ? this.state.globalStyles.typography : {};
 		if (typographyConfig.p && typographyConfig.p[0]) {
 			if (
 				typographyConfig.p[0].padding[0] === typographyConfig.p[0].padding[1] &&
@@ -62,16 +60,16 @@ class KadenceGlobalTypography extends Component {
 	}
 	saveConfigState(key, value) {
 		const globalStyles = this.state.globalStyles;
-		if (!globalStyles['typography']) {
-			globalStyles['typography'] = {};
+		if (!globalStyles.typography) {
+			globalStyles.typography = {};
 		}
-		globalStyles['typography'][key] = value;
-		this.setState({ globalStyles: globalStyles });
-		this.saveConfig('typography', globalStyles['typography']);
+		globalStyles.typography[key] = value;
+		this.setState({ globalStyles });
+		this.saveConfig('typography', globalStyles.typography);
 	}
 	render() {
 		const { globalStyles, pMarginControl, pPaddingControl } = this.state;
-		const typographyConfig = globalStyles && globalStyles['typography'] ? globalStyles['typography'] : {};
+		const typographyConfig = globalStyles && globalStyles.typography ? globalStyles.typography : {};
 		const pDefaultStyles = [
 			{
 				enable: false,

@@ -278,7 +278,7 @@ function KadenceAdvancedButton(props) {
 	};
 
 	const onMove = (oldIndex, newIndex) => {
-		let newBtns = [...btns];
+		const newBtns = [...btns];
 		newBtns.splice(newIndex, 1, btns[oldIndex]);
 		newBtns.splice(oldIndex, 1, btns[newIndex]);
 
@@ -329,7 +329,7 @@ function KadenceAdvancedButton(props) {
 
 		setSelectedButton(index + 1);
 		setAttributes({
-			btns: btns,
+			btns,
 			btnCount: newcount,
 		});
 		saveArrayUpdate({ iconSide: btns[0].iconSide }, 0);
@@ -364,16 +364,16 @@ function KadenceAdvancedButton(props) {
 			margin: newUpdate,
 		});
 	};
-	let defaultBtnAttributes = defaultBtns;
+	const defaultBtnAttributes = defaultBtns;
 	const blockConfigObject = kadence_blocks_params.configuration
 		? JSON.parse(kadence_blocks_params.configuration)
 		: [];
 	if (
 		blockConfigObject['kadence/advancedbtn'] !== undefined &&
 		typeof blockConfigObject['kadence/advancedbtn'] === 'object' &&
-		undefined !== blockConfigObject['kadence/advancedbtn']['btns']
+		undefined !== blockConfigObject['kadence/advancedbtn'].btns
 	) {
-		defaultBtnAttributes[0] = { ...defaultBtns[0], ...blockConfigObject['kadence/advancedbtn']['btns'][0] };
+		defaultBtnAttributes[0] = { ...defaultBtns[0], ...blockConfigObject['kadence/advancedbtn'].btns[0] };
 	}
 	const marginMouseOver = mouseOverVisualizer();
 	const buttonMarginMouseOver = mouseOverVisualizer();
@@ -731,8 +731,8 @@ function KadenceAdvancedButton(props) {
 										? btns[index].responsiveSize[1]
 										: ''
 								) + (undefined !== btns[index].sizeType ? btns[index].sizeType : 'px'),
-							fontWeight: fontWeight,
-							fontStyle: fontStyle,
+							fontWeight,
+							fontStyle,
 							letterSpacing: letterSpacing + 'px',
 							textTransform: textTransform ? textTransform : undefined,
 							fontFamily: typography ? typography : '',
@@ -3955,7 +3955,7 @@ function KadenceAdvancedButton(props) {
 
 									<KadenceBlockDefaults
 										attributes={attributes}
-										defaultAttributes={metadata['attributes']}
+										defaultAttributes={metadata.attributes}
 										blockSlug={'kadence/advancedbtn'}
 										excludedAttrs={['btnCount', 'lockBtnCount', 'hideLink']}
 										preventMultiple={['btns']}

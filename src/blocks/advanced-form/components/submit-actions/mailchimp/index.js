@@ -59,7 +59,7 @@ function MailChimpControls({ formInnerBlocks, parentClientId, settings, save }) 
 	const fields = useMemo(() => getFormFields(formInnerBlocks), [parentClientId]);
 
 	const saveMap = (value, uniqueID) => {
-		let updatedMap = { ...settings.map };
+		const updatedMap = { ...settings.map };
 		updatedMap[uniqueID] = value;
 		save({ map: updatedMap });
 	};

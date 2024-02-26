@@ -557,7 +557,7 @@ function RowLayoutEditContainer(props) {
 			saveMobileOverlay({ gradient: newMobileGradient, currentOverlayTab: 'gradient' });
 		}
 		// Update from old border settings.
-		let tempBorderStyle = JSON.parse(
+		const tempBorderStyle = JSON.parse(
 			JSON.stringify(
 				attributes.borderStyle
 					? attributes.borderStyle
@@ -593,7 +593,7 @@ function RowLayoutEditContainer(props) {
 			setAttributes({ borderStyle: tempBorderStyle });
 		}
 		// Update from old border settings.
-		let tempTabletBorderStyle = JSON.parse(
+		const tempTabletBorderStyle = JSON.parse(
 			JSON.stringify(
 				attributes.tabletBorderStyle
 					? attributes.tabletBorderStyle
@@ -634,7 +634,7 @@ function RowLayoutEditContainer(props) {
 			setAttributes({ tabletBorderStyle: tempTabletBorderStyle });
 		}
 		// Update from old border settings.
-		let tempMobileBorderStyle = JSON.parse(
+		const tempMobileBorderStyle = JSON.parse(
 			JSON.stringify(
 				attributes.mobileBorderStyle
 					? attributes.mobileBorderStyle
@@ -682,7 +682,7 @@ function RowLayoutEditContainer(props) {
 		if (innerItemCount < columns && uniqueID) {
 			updateColumns(innerItemCount, columns);
 		} else if (innerItemCount < columns && !uniqueID) {
-			let defaults = setBlockDefaults('kadence/rowlayout', attributes);
+			const defaults = setBlockDefaults('kadence/rowlayout', attributes);
 			updateColumns(innerItemCount, defaults.columns);
 		}
 	}, [innerItemCount, columns]);
@@ -1135,8 +1135,8 @@ function RowLayoutEditContainer(props) {
 					</ToolbarGroup>
 					<CopyPasteAttributes
 						attributes={attributes}
-						defaultAttributes={metadata['attributes']}
-						blockSlug={metadata['name']}
+						defaultAttributes={metadata.attributes}
+						blockSlug={metadata.name}
 						onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
 					/>
 				</BlockControls>
@@ -1474,8 +1474,8 @@ function RowLayoutEditContainer(props) {
 
 								<KadenceBlockDefaults
 									attributes={attributes}
-									defaultAttributes={metadata['attributes']}
-									blockSlug={metadata['name']}
+									defaultAttributes={metadata.attributes}
+									blockSlug={metadata.name}
 								/>
 							</>
 						)}
@@ -1844,17 +1844,11 @@ const RowLayoutEditContainerWrapper = withDispatch((dispatch, ownProps, registry
 					});
 				}),
 			];
-		} else {
-			if (1 === previousColumns - newColumns) {
-				const lastItem = innerBlocks.length - 1;
-				if (!innerBlocks[lastItem].innerBlocks.length) {
-					innerBlocks = dropRight(innerBlocks, previousColumns - newColumns);
-				}
+		} else if (1 === previousColumns - newColumns) {
+			const lastItem = innerBlocks.length - 1;
+			if (!innerBlocks[lastItem].innerBlocks.length) {
+				innerBlocks = dropRight(innerBlocks, previousColumns - newColumns);
 			}
-			// innerBlocks = dropRight(
-			// 	innerBlocks,
-			// 	previousColumns - newColumns
-			// );
 		}
 
 		replaceInnerBlocks(clientId, innerBlocks);

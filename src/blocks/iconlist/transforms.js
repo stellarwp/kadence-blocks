@@ -28,7 +28,7 @@ const transforms = {
 					{
 						listStyles: [
 							{
-								...metadata['attributes']['listStyles']['default'][0],
+								...metadata.attributes.listStyles.default[0],
 								color: get(attributes, ['style', 'color', 'text'], ''),
 							},
 						],

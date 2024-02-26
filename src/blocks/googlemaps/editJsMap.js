@@ -18,10 +18,10 @@ const LIBRARIES = ['places'];
 export function EditJsMap({ zoom, lat, lng, showMarker, mapType, mapStyle, customSnazzy, googleApiKey }) {
 	const mapStyleArray = snazzyMapStyles(mapStyle, customSnazzy);
 
-	let mapOptions = { styles: mapStyleArray, mapTypeId: mapType };
+	const mapOptions = { styles: mapStyleArray, mapTypeId: mapType };
 
-	let floatLat = isNaN(parseFloat(lat)) ? parseFloat('42.877742') : parseFloat(lat);
-	let floatLng = isNaN(parseFloat(lng)) ? parseFloat('-97.380979') : parseFloat(lng);
+	const floatLat = isNaN(parseFloat(lat)) ? parseFloat('42.877742') : parseFloat(lat);
+	const floatLng = isNaN(parseFloat(lng)) ? parseFloat('-97.380979') : parseFloat(lng);
 
 	return (
 		<LoadScript googleMapsApiKey={googleApiKey} libraries={LIBRARIES}>
