@@ -5,36 +5,36 @@ import { useCallback, useRef } from '@wordpress/element';
 import { useDispatch } from '@wordpress/data';
 import { store as noticeStore } from '@wordpress/notices';
 
-function useNavigationNotice( { name, message = '' } = {} ) {
+function useNavigationNotice({ name, message = '' } = {}) {
 	const noticeRef = useRef();
 
-	const { createWarningNotice, removeNotice } = useDispatch( noticeStore );
+	const { createWarningNotice, removeNotice } = useDispatch(noticeStore);
 
 	const showNotice = useCallback(
-		( customMsg ) => {
-			if ( noticeRef.current ) {
+		(customMsg) => {
+			if (noticeRef.current) {
 				return;
 			}
 
 			noticeRef.current = name;
 
-			createWarningNotice( customMsg || message, {
+			createWarningNotice(customMsg || message, {
 				id: noticeRef.current,
 				type: 'snackbar',
-			} );
+			});
 		},
-		[ noticeRef, createWarningNotice, message, name ]
+		[noticeRef, createWarningNotice, message, name]
 	);
 
-	const hideNotice = useCallback( () => {
-		if ( ! noticeRef.current ) {
+	const hideNotice = useCallback(() => {
+		if (!noticeRef.current) {
 			return;
 		}
-		removeNotice( noticeRef.current );
+		removeNotice(noticeRef.current);
 		noticeRef.current = null;
-	}, [ noticeRef, removeNotice ] );
+	}, [noticeRef, removeNotice]);
 
-	return [ showNotice, hideNotice ];
+	return [showNotice, hideNotice];
 }
 
 export default useNavigationNotice;

@@ -12,10 +12,9 @@ import { InnerBlocks } from '@wordpress/block-editor';
 import edit from './edit';
 import metadata from './block.json';
 
-
-registerBlockType( 'kadence/navigation', {
+registerBlockType('kadence/navigation', {
 	...metadata,
-	title: _x( 'Navigation (Adv)', 'block title', 'kadence-blocks' ),
+	title: _x('Navigation (Adv)', 'block title', 'kadence-blocks'),
 	icon: {
 		src: icon,
 	},
@@ -28,7 +27,7 @@ registerBlockType( 'kadence/navigation', {
 				name: 'core/navigation-link',
 				attributes: {
 					// translators: 'Home' as in a website's home page.
-					label: __( 'Home' ),
+					label: __('Home'),
 					url: 'https://make.wordpress.org/',
 				},
 			},
@@ -36,7 +35,7 @@ registerBlockType( 'kadence/navigation', {
 				name: 'core/navigation-link',
 				attributes: {
 					// translators: 'About' as in a website's about page.
-					label: __( 'About' ),
+					label: __('About'),
 					url: 'https://make.wordpress.org/',
 				},
 			},
@@ -44,14 +43,14 @@ registerBlockType( 'kadence/navigation', {
 				name: 'core/navigation-link',
 				attributes: {
 					// translators: 'Contact' as in a website's contact page.
-					label: __( 'Contact' ),
+					label: __('Contact'),
 					url: 'https://make.wordpress.org/',
 				},
 			},
 		],
 	},
 	edit,
-	save:() => {
+	save: () => {
 		return <InnerBlocks.Content />;
-	}
-} );
+	},
+});

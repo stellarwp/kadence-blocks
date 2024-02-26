@@ -1,102 +1,97 @@
 {
-  "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 3,
-  "parent": [
-    "kadence/iconlist"
-  ],
-  "title": "List item",
-  "name": "kadence/listitem",
-  "category": "kadence-blocks",
-  "attributes": {
-    "uniqueID": {
-      "type": "string",
-      "default": ""
-    },
-    "icon": {
-      "type": "string",
-      "default": ""
-    },
-	"showIcon": {
-	  "type": "boolean",
-	  "default": true
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"parent": ["kadence/iconlist"],
+	"title": "List item",
+	"name": "kadence/listitem",
+	"category": "kadence-blocks",
+	"attributes": {
+		"uniqueID": {
+			"type": "string",
+			"default": ""
+		},
+		"icon": {
+			"type": "string",
+			"default": ""
+		},
+		"showIcon": {
+			"type": "boolean",
+			"default": true
+		},
+		"link": {
+			"type": "string",
+			"default": "",
+			"__experimentalRole": "content"
+		},
+		"linkNoFollow": {
+			"type": "boolean",
+			"default": false
+		},
+		"linkSponsored": {
+			"type": "boolean",
+			"default": false
+		},
+		"target": {
+			"type": "string",
+			"default": "_self",
+			"__experimentalRole": "content"
+		},
+		"size": {
+			"type": "number",
+			"default": ""
+		},
+		"width": {
+			"type": "number",
+			"default": ""
+		},
+		"text": {
+			"type": "string",
+			"default": "",
+			"__experimentalRole": "content"
+		},
+		"color": {
+			"type": "string",
+			"default": ""
+		},
+		"background": {
+			"type": "string",
+			"default": ""
+		},
+		"border": {
+			"type": "string",
+			"default": ""
+		},
+		"borderRadius": {
+			"type": "number",
+			"default": ""
+		},
+		"padding": {
+			"type": "number",
+			"default": ""
+		},
+		"borderWidth": {
+			"type": "number",
+			"default": ""
+		},
+		"style": {
+			"type": "string",
+			"default": ""
+		},
+		"level": {
+			"type": "number",
+			"default": 0
+		},
+		"iconTitle": {
+			"type": "string",
+			"default": ""
+		}
 	},
-    "link": {
-      "type": "string",
-      "default": "",
-      "__experimentalRole": "content"
-    },
-	"linkNoFollow": {
-	  "type": "boolean",
-	  "default": false
-	},
-	"linkSponsored": {
-	  "type": "boolean",
-	  "default": false
-	},
-    "target": {
-      "type": "string",
-      "default": "_self",
-      "__experimentalRole": "content"
-    },
-    "size": {
-      "type": "number",
-      "default": ""
-    },
-    "width": {
-      "type": "number",
-      "default": ""
-    },
-    "text": {
-      "type": "string",
-      "default": "",
-      "__experimentalRole": "content"
-    },
-    "color": {
-      "type": "string",
-      "default": ""
-    },
-    "background": {
-      "type": "string",
-      "default": ""
-    },
-    "border": {
-      "type": "string",
-      "default": ""
-    },
-    "borderRadius": {
-      "type": "number",
-      "default": ""
-    },
-    "padding": {
-      "type": "number",
-      "default": ""
-    },
-    "borderWidth": {
-      "type": "number",
-      "default": ""
-    },
-    "style": {
-      "type": "string",
-      "default": ""
-    },
-    "level": {
-      "type": "number",
-      "default": 0
-    },
-    "iconTitle": {
-      "type": "string",
-      "default": ""
-    }
-  },
-  "usesContext": [
-    "kadence/listIcon",
-    "kadence/listIconWidth"
-  ],
-  "supports": {
-    "ktdynamic": true,
-    "html": false,
-    "reusable": false,
-    "kbMetadata": true,
-    "kbContentLabel": "text"
-  }
+	"usesContext": ["kadence/listIcon", "kadence/listIconWidth"],
+	"supports": {
+		"ktdynamic": true,
+		"html": false,
+		"reusable": false,
+		"kbMetadata": true,
+		"kbContentLabel": "text"
+	}
 }

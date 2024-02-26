@@ -4,60 +4,54 @@
 import { useRegistry, useDispatch, useSelect } from '@wordpress/data';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 
-
-export default function useMerge( clientId, onMerge ) {
+export default function useMerge(clientId, onMerge) {
 	const registry = useRegistry();
-	const {
-		getPreviousBlockClientId,
-		getNextBlockClientId,
-		getBlockOrder,
-	} = useSelect( blockEditorStore );
-	const { mergeBlocks, moveBlocksToPosition } =
-		useDispatch( blockEditorStore );
+	const { getPreviousBlockClientId, getNextBlockClientId, getBlockOrder } = useSelect(blockEditorStore);
+	const { mergeBlocks, moveBlocksToPosition } = useDispatch(blockEditorStore);
 
-	function getTrailingId( id ) {
-		const order = getBlockOrder( id );
+	function getTrailingId(id) {
+		const order = getBlockOrder(id);
 
-		if ( ! order.length ) {
+		if (!order.length) {
 			return id;
 		}
 
-		return getTrailingId( order[ order.length - 1 ] );
+		return getTrailingId(order[order.length - 1]);
 	}
 
-	return ( forward ) => {
-		if ( forward ) {
-			const nextBlockClientId = getNextBlockClientId( clientId );
+	return (forward) => {
+		if (forward) {
+			const nextBlockClientId = getNextBlockClientId(clientId);
 
-			if ( ! nextBlockClientId ) {
-				onMerge( forward );
+			if (!nextBlockClientId) {
+				onMerge(forward);
 				return;
 			}
 
-			registry.batch( () => {
+			registry.batch(() => {
 				moveBlocksToPosition(
-					getBlockOrder( nextBlockClientId ),
+					getBlockOrder(nextBlockClientId),
 					nextBlockClientId,
-					getPreviousBlockClientId( nextBlockClientId )
+					getPreviousBlockClientId(nextBlockClientId)
 				);
-				mergeBlocks( clientId, nextBlockClientId );
-			} );
+				mergeBlocks(clientId, nextBlockClientId);
+			});
 		} else {
 			// Merging is only done from the top level. For lowel levels, the
 			// list item is outdented instead.
-			const previousBlockClientId = getPreviousBlockClientId( clientId );
-			if ( previousBlockClientId ) {
-				const trailingId = getTrailingId( previousBlockClientId );
-				registry.batch( () => {
+			const previousBlockClientId = getPreviousBlockClientId(clientId);
+			if (previousBlockClientId) {
+				const trailingId = getTrailingId(previousBlockClientId);
+				registry.batch(() => {
 					// moveBlocksToPosition(
 					// 	getBlockOrder( clientId ),
 					// 	clientId,
 					// 	previousBlockClientId
 					// );
-					mergeBlocks( trailingId, clientId );
-				} );
+					mergeBlocks(trailingId, clientId);
+				});
 			} else {
-				onMerge( forward );
+				onMerge(forward);
 			}
 		}
 	};

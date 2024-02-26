@@ -1,19 +1,19 @@
 /**
- * Props to Instant Image & StockPak for the inspiration for this code. 
+ * Props to Instant Image & StockPak for the inspiration for this code.
  */
 import './image-picker.scss';
-import { createRoot, render } from "@wordpress/element";
-import ImagePicker from "./components/ImagePicker";
+import { createRoot, render } from '@wordpress/element';
+import ImagePicker from './components/ImagePicker';
 
-import buildURL from "./functions/buildURL";
-import getProvider from "./functions/getProvider";
-import getQueryOptions from "./functions/getQueryOptions";
-import { deleteSession, getSession, saveSession } from "./functions/session";
+import buildURL from './functions/buildURL';
+import getProvider from './functions/getProvider';
+import getQueryOptions from './functions/getQueryOptions';
+import { deleteSession, getSession, saveSession } from './functions/session';
 import { __ } from '@wordpress/i18n';
 
 // Global vars
-window.kadenceImagePickerId = "";
-window.kadenceImagePickerFrame = "";
+window.kadenceImagePickerId = '';
+window.kadenceImagePickerFrame = '';
 const kadenceImagePickerInit = () => {
 	// Load MediaFrame deps
 	const initialMediaFrame = wp.media.view.MediaFrame.Post;
@@ -35,7 +35,7 @@ const kadenceImagePickerInit = () => {
 		// Handlers
 		bindHandlers() {
 			initialMediaFrame.prototype.bindHandlers.apply(this, arguments);
-			this.on("content:create:kadenceimagepicker", this.kadenceFrameContent, this);
+			this.on('content:create:kadenceimagepicker', this.kadenceFrameContent, this);
 		},
 
 		/**
@@ -49,7 +49,6 @@ const kadenceImagePickerInit = () => {
 				window.kadenceImagePickerFrame = state.frame;
 			}
 		},
-
 	});
 	// Create Image Picker Tab
 	wp.media.view.MediaFrame.Select = initialMediaFrameSelect.extend({
@@ -58,7 +57,7 @@ const kadenceImagePickerInit = () => {
 			initialMediaFrameSelect.prototype.browseRouter.apply(this, arguments);
 			routerView.set({
 				kadenceimagepicker: {
-					text: __( 'Pexels', 'kadence-blocks' ), // eslint-disable-line no-undef
+					text: __('Pexels', 'kadence-blocks'), // eslint-disable-line no-undef
 					priority: 120,
 				},
 			});
@@ -67,7 +66,7 @@ const kadenceImagePickerInit = () => {
 		// Handlers
 		bindHandlers() {
 			initialMediaFrameSelect.prototype.bindHandlers.apply(this, arguments);
-			this.on("content:create:kadenceimagepicker", this.kadenceFrameContent, this);
+			this.on('content:create:kadenceimagepicker', this.kadenceFrameContent, this);
 		},
 
 		/**
@@ -82,7 +81,7 @@ const kadenceImagePickerInit = () => {
 			}
 		},
 	});
-}
+};
 
 // Render Image Picker
 const imagePickerMediaTab = () => {
@@ -90,19 +89,17 @@ const imagePickerMediaTab = () => {
 		return false; // Exit if not a frame.
 	}
 
-	const modal = window.kadenceImagePickerFrame.el.querySelector(".media-frame-content"); // Get all media modals
+	const modal = window.kadenceImagePickerFrame.el.querySelector('.media-frame-content'); // Get all media modals
 	if (!modal) {
 		return false; // Exit if not modal.
 	}
 
-	modal.innerHTML = ""; // Clear any existing modals.
+	modal.innerHTML = ''; // Clear any existing modals.
 
 	const html = createWrapperHTML(); // Create HTML wrapper
 	modal.appendChild(html); // Append Image Picker to modal.
 
-	const element = modal.querySelector(
-		"#kadence-blocks-image-picker-router-" + window.kadenceImagePickerId
-	);
+	const element = modal.querySelector('#kadence-blocks-image-picker-router-' + window.kadenceImagePickerId);
 	if (!element) {
 		return false; // Exit if not element.
 	}
@@ -121,7 +118,7 @@ const getMediaModalProvider = async (element) => {
 
 	// Build URL.
 	const options = getQueryOptions();
-	const url = buildURL("search");
+	const url = buildURL('search');
 
 	// Get session storage.
 	//const sessionData = getSession(url);
@@ -187,15 +184,15 @@ const renderApp = (element, provider, results, error) => {
  * @return {Element} Create the HTML markup for the media modal.
  */
 const createWrapperHTML = () => {
-	const wrapper = document.createElement("div");
-	wrapper.classList.add("kadence-blocks-image-picker");
+	const wrapper = document.createElement('div');
+	wrapper.classList.add('kadence-blocks-image-picker');
 
-	const container = document.createElement("div");
-	container.classList.add("kadence-blocks-image-picker-wrapper");
+	const container = document.createElement('div');
+	container.classList.add('kadence-blocks-image-picker-wrapper');
 
-	const frame = document.createElement("div");
-	frame.classList.add("kadence-blocks-image-picker-router");
-	frame.setAttribute("id", "kadence-blocks-image-picker-router-" + window.kadenceImagePickerId);
+	const frame = document.createElement('div');
+	frame.classList.add('kadence-blocks-image-picker-router');
+	frame.setAttribute('id', 'kadence-blocks-image-picker-router-' + window.kadenceImagePickerId);
 
 	container.appendChild(frame);
 	wrapper.appendChild(container);
@@ -208,49 +205,41 @@ jQuery(document).ready(function ($) {
 	kadenceImagePickerInit();
 	if (wp.media) {
 		// Open
-		wp.media.view.Modal.prototype.on("open", function () {
+		wp.media.view.Modal.prototype.on('open', function () {
 			if (!window.kadenceImagePickerFrame?.el) {
 				return false;
 			}
 			const selectedTab = window.kadenceImagePickerFrame.el.querySelector(
-				".media-router button.media-menu-item.active"
+				'.media-router button.media-menu-item.active'
 			);
-			if (selectedTab && selectedTab.id === "menu-item-kadenceimagepicker") {
+			if (selectedTab && selectedTab.id === 'menu-item-kadenceimagepicker') {
 				imagePickerMediaTab();
 			}
 		});
 
 		// Click Handler
-		$(document).on(
-			"click",
-			".media-router button.media-menu-item",
-			function () {
-				if (!window.kadenceImagePickerFrame?.el) {
-					return false;
-				}
-				const selectedTab = window.kadenceImagePickerFrame.el.querySelector(
-					".media-router button.media-menu-item.active"
-				);
-				if (selectedTab && selectedTab.id === "menu-item-kadenceimagepicker") {
-					imagePickerMediaTab();
-				}
+		$(document).on('click', '.media-router button.media-menu-item', function () {
+			if (!window.kadenceImagePickerFrame?.el) {
+				return false;
 			}
-		);
+			const selectedTab = window.kadenceImagePickerFrame.el.querySelector(
+				'.media-router button.media-menu-item.active'
+			);
+			if (selectedTab && selectedTab.id === 'menu-item-kadenceimagepicker') {
+				imagePickerMediaTab();
+			}
+		});
 		// Click Handler
-		$(document).on(
-			"click",
-			".media-frame-menu .media-menu button.media-menu-item",
-			function () {
-				if (!window.kadenceImagePickerFrame?.el) {
-					return false;
-				}
-				const selectedTab = window.kadenceImagePickerFrame.el.querySelector(
-					".media-router button.media-menu-item.active"
-				);
-				if (selectedTab && selectedTab.id === "menu-item-kadenceimagepicker") {
-					imagePickerMediaTab();
-				}
+		$(document).on('click', '.media-frame-menu .media-menu button.media-menu-item', function () {
+			if (!window.kadenceImagePickerFrame?.el) {
+				return false;
 			}
-		);
+			const selectedTab = window.kadenceImagePickerFrame.el.querySelector(
+				'.media-router button.media-menu-item.active'
+			);
+			if (selectedTab && selectedTab.id === 'menu-item-kadenceimagepicker') {
+				imagePickerMediaTab();
+			}
+		});
 	}
 });

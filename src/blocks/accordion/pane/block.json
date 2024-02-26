@@ -1,52 +1,52 @@
 {
-  "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 3,
-  "title": "Pane",
-  "category": "kadence-blocks",
-  "parent": [ "kadence/accordion" ],
-  "attributes": {
-	"id": {
-	  "type": "number",
-	  "default": 1
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"title": "Pane",
+	"category": "kadence-blocks",
+	"parent": ["kadence/accordion"],
+	"attributes": {
+		"id": {
+			"type": "number",
+			"default": 1
+		},
+		"title": {
+			"type": "array",
+			"source": "children",
+			"selector": ".kt-blocks-accordion-title",
+			"default": ""
+		},
+		"titleTag": {
+			"type": "string",
+			"default": "div"
+		},
+		"hideLabel": {
+			"type": "boolean",
+			"default": false
+		},
+		"ariaLabel": {
+			"type": "string",
+			"default": ""
+		},
+		"icon": {
+			"type": "string",
+			"default": ""
+		},
+		"iconSide": {
+			"type": "string",
+			"default": "right"
+		},
+		"uniqueID": {
+			"type": "string",
+			"default": ""
+		}
 	},
-	"title": {
-	  "type": "array",
-	  "source": "children",
-	  "selector": ".kt-blocks-accordion-title",
-	  "default": ""
-	},
-	"titleTag": {
-	  "type": "string",
-	  "default": "div"
-	},
-	"hideLabel": {
-	  "type": "boolean",
-	  "default": false
-	},
-	"ariaLabel": {
-	  "type": "string",
-	  "default": ""
-	},
-	"icon": {
-	  "type": "string",
-	  "default": ""
-	},
-	"iconSide": {
-	  "type": "string",
-	  "default": "right"
-	},
-	"uniqueID": {
-	  "type": "string",
-	  "default": ""
+	"supports": {
+		"inserter": false,
+		"reusable": false,
+		"html": false,
+		"anchor": true,
+		"lock": false,
+		"kbMetadata": true,
+		"kbContentLabel": "title"
 	}
-  },
-  "supports": {
-	"inserter": false,
-	"reusable": false,
-	"html": false,
-	"anchor": true,
-	"lock":false,
-	"kbMetadata": true,
-	"kbContentLabel": "title"
-  }
 }

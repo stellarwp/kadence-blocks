@@ -4,9 +4,7 @@
 	"title": "Countdown Content",
 	"name": "kadence/countdown-inner",
 	"category": "kadence-blocks",
-	"parent": [
-		"kadence/countdown"
-	],
+	"parent": ["kadence/countdown"],
 	"description": "",
 	"attributes": {
 		"uniqueID": {

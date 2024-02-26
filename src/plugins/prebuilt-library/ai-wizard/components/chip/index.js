@@ -1,18 +1,18 @@
 /**
  * External dependencies
  */
-import classnames from "classnames";
+import classnames from 'classnames';
 
 /**
  * WordPress dependencies
  */
-import { Button as CoreButton } from "@wordpress/components";
-import { __ } from "@wordpress/i18n";
+import { Button as CoreButton } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import "./chip.scss";
+import './chip.scss';
 
 /**
  * @param {object} props
@@ -24,8 +24,8 @@ import "./chip.scss";
 export function Chip(props) {
 	const { onDelete, text, className } = props;
 
-	const classes = classnames("stellarwp", "chip", className, {
-		"has-icon": onDelete,
+	const classes = classnames('stellarwp', 'chip', className, {
+		'has-icon': onDelete,
 	});
 
 	function handleDeleteClick(event) {
@@ -39,7 +39,7 @@ export function Chip(props) {
 		deleteButton = (
 			<CoreButton
 				icon="no-alt"
-				label={__("Delete Selection", "kadence-blocks")}
+				label={__('Delete Selection', 'kadence-blocks')}
 				isSmall
 				onClick={handleDeleteClick}
 			/>

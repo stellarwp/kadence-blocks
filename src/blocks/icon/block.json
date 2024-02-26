@@ -1,95 +1,88 @@
 {
-  "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 3,
-  "title": "Icon",
-  "name": "kadence/icon",
-  "category": "kadence-blocks",
-  "attributes": {
-	"icons": {
-	  "type": "array",
-	  "default": [
-		{
-			"icon": "fe_aperture",
-			"link": "",
-			"target": "_self",
-			"size": 50,
-			"width": 2,
-			"title": "",
-			"color": "palette4",
-			"background": "transparent",
-			"border": "palette4",
-			"borderRadius": 0,
-			"borderWidth": 2,
-			"padding": [ 20, 20, 20, 20 ],
-			"paddingUnit" : "px",
-			"style": "default",
-			"margin": [ "", "", "", "" ],
-			"marginUnit" : "px",
-			"hColor": "",
-			"hBackground": "",
-			"hBorder": "",
-			"linkTitle": "",
-			"tabletSize": "",
-			"mobileSize": "",
-			"tabletMargin": [ "", "", "", "" ],
-			"mobileMargin": [ "", "", "", "" ],
-			"tabletPadding": [ "", "", "", "" ],
-			"mobilePadding": [ "", "", "", "" ]
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"title": "Icon",
+	"name": "kadence/icon",
+	"category": "kadence-blocks",
+	"attributes": {
+		"icons": {
+			"type": "array",
+			"default": [
+				{
+					"icon": "fe_aperture",
+					"link": "",
+					"target": "_self",
+					"size": 50,
+					"width": 2,
+					"title": "",
+					"color": "palette4",
+					"background": "transparent",
+					"border": "palette4",
+					"borderRadius": 0,
+					"borderWidth": 2,
+					"padding": [20, 20, 20, 20],
+					"paddingUnit": "px",
+					"style": "default",
+					"margin": ["", "", "", ""],
+					"marginUnit": "px",
+					"hColor": "",
+					"hBackground": "",
+					"hBorder": "",
+					"linkTitle": "",
+					"tabletSize": "",
+					"mobileSize": "",
+					"tabletMargin": ["", "", "", ""],
+					"mobileMargin": ["", "", "", ""],
+					"tabletPadding": ["", "", "", ""],
+					"mobilePadding": ["", "", "", ""]
+				}
+			]
+		},
+		"iconCount": {
+			"type": "number",
+			"default": 1
+		},
+		"uniqueID": {
+			"type": "string",
+			"default": ""
+		},
+		"blockAlignment": {
+			"type": "string",
+			"default": ""
+		},
+		"textAlignment": {
+			"type": "string",
+			"default": "center"
+		},
+		"tabletTextAlignment": {
+			"type": "string"
+		},
+		"mobileTextAlignment": {
+			"type": "string"
+		},
+		"wrapIcons": {
+			"type": "boolean",
+			"default": false
+		},
+		"verticalAlignment": {
+			"type": "string"
+		},
+		"gap": {
+			"type": "array",
+			"default": ["", "", ""]
+		},
+		"gapUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"inQueryBlock": {
+			"type": "boolean",
+			"default": false
 		}
-	  ]
 	},
-	"iconCount": {
-	  "type": "number",
-	  "default": 1
+	"supports": {
+		"ktdynamic": true,
+		"kbMetadata": true
 	},
-	"uniqueID": {
-	  "type": "string",
-	  "default": ""
-	},
-	"blockAlignment": {
-	  "type": "string",
-	  "default": ""
-	},
-	"textAlignment": {
-	  "type": "string",
-	  "default": "center"
-	},
-	"tabletTextAlignment": {
-	  "type": "string"
-	},
-	"mobileTextAlignment": {
-	  "type": "string"
-	},
-	"wrapIcons": {
-		"type": "boolean",
-		"default": false
-	},
-	"verticalAlignment": {
-	  "type": "string"
-	},
-	"gap": {
-		"type": "array",
-		"default": [
-			"",
-			"",
-			""
-		]
-	},
-	"gapUnit": {
-		"type": "string",
-		"default": "px"
-	},
-	"inQueryBlock": {
-	  "type": "boolean",
-	  "default": false
-	}
-  },
-  "supports": {
-	"ktdynamic": true,
-	"kbMetadata": true
-  },
-  "usesContext": [
-	"postId",
-	"queryId"
-  ]
+	"usesContext": ["postId", "queryId"]
 }

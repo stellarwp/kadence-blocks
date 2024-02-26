@@ -1,4 +1,4 @@
-const { parallel, series } = require('gulp');
+const { parallel } = require('gulp');
 
 const jsTasks = require('./gulp/tasks/js');
 const stylesTasks = require('./gulp/tasks/styles');
@@ -16,4 +16,4 @@ exports.js = jsTasks.js;
 exports.miscStyles = stylesTasks.miscStyle;
 exports.styles = stylesTasks.styles;
 
-exports.build = parallel( jsTasks.js, stylesTasks.styles );
+exports.build = parallel(jsTasks.js, stylesTasks.styles);

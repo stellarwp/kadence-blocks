@@ -18,7 +18,7 @@ import { AdvancedSelectMenu } from './advanced-select-menu';
 
 export const AdvancedSelectContext = createContext({});
 
-export const AdvancedSelect = forwardRef(function AdvancedSelect( props, ref ) {
+export const AdvancedSelect = forwardRef(function AdvancedSelect(props, ref) {
 	const { value, label, options, onChange, createRecord, updateRecord, deleteRecord } = props;
 	const [componentWidth, setComponentWidth] = useState('auto');
 	const [isOpen, setIsOpen] = useState(false);
@@ -26,7 +26,7 @@ export const AdvancedSelect = forwardRef(function AdvancedSelect( props, ref ) {
 	let parentRef = useRef();
 
 	useEffect(() => {
-		if(parentRef && parentRef.current) {
+		if (parentRef && parentRef.current) {
 			/* Subtracting 16 for the padding in the parent */
 			setComponentWidth(`${parentRef.current.clientWidth - 32}px`);
 		}
@@ -37,7 +37,7 @@ export const AdvancedSelect = forwardRef(function AdvancedSelect( props, ref ) {
 
 		return () => {
 			document.removeEventListener('click', handleOutsideClick);
-		}
+		};
 	}, [allowClose]);
 
 	function handleOutsideClick(event) {
@@ -48,52 +48,50 @@ export const AdvancedSelect = forwardRef(function AdvancedSelect( props, ref ) {
 	}
 
 	function shouldClose() {
-		if(allowClose) {
+		if (allowClose) {
 			setIsOpen(false);
 		}
 	}
 
-	function doNothing() {/* Override the WP component defaults */}
+	function doNothing() {
+		/* Override the WP component defaults */
+	}
 
-    return (
+	return (
 		<AdvancedSelectContext.Provider value={{ createRecord, updateRecord, deleteRecord }}>
-			<div className="stellarwp components-advanced-select" ref={ ref }>
-				{label && <label className="components-input-control__label">{ label }</label>}
+			<div className="stellarwp components-advanced-select" ref={ref}>
+				{label && <label className="components-input-control__label">{label}</label>}
 
-					<div className="stellarwp-advancedSelect" ref={parentRef}>
-						<Button
-							className={`${isOpen ? 'is-open' : ''}`}
-							onClick={ () => setIsOpen(!isOpen) }
-						>
-							<div className="stellarwp-advancedSelect__button-content">
-								<div className="stellarwp-advancedSelect__button-label">{ value?.label }</div>
-								<div className="stellarwp-advancedSelect__button-icon"><Icon size={25} icon={chevronDown} /></div>
+				<div className="stellarwp-advancedSelect" ref={parentRef}>
+					<Button className={`${isOpen ? 'is-open' : ''}`} onClick={() => setIsOpen(!isOpen)}>
+						<div className="stellarwp-advancedSelect__button-content">
+							<div className="stellarwp-advancedSelect__button-label">{value?.label}</div>
+							<div className="stellarwp-advancedSelect__button-icon">
+								<Icon size={25} icon={chevronDown} />
 							</div>
+						</div>
 
-							{isOpen && (
-								<Popover
-									placement="bottom-start"
-									offset={8}
-									animate={false}
-									className="stellarwp-advancedSelect__content"
-									onClose={ doNothing }
-									onFocusOutside={ doNothing }
-								>
-									<AdvancedSelectMenu
-										width={ componentWidth }
-										options={ options }
-										onSelect={ onChange }
-										value={ value?.value }
-										allowClose={ setAllowClose }
-									/>
-								</Popover>
-
-							)}
-						</Button>
-					</div>
+						{isOpen && (
+							<Popover
+								placement="bottom-start"
+								offset={8}
+								animate={false}
+								className="stellarwp-advancedSelect__content"
+								onClose={doNothing}
+								onFocusOutside={doNothing}
+							>
+								<AdvancedSelectMenu
+									width={componentWidth}
+									options={options}
+									onSelect={onChange}
+									value={value?.value}
+									allowClose={setAllowClose}
+								/>
+							</Popover>
+						)}
+					</Button>
+				</div>
 			</div>
 		</AdvancedSelectContext.Provider>
-    )
-  }
-)
-
+	);
+});

@@ -9,7 +9,7 @@ import { kadenceNewIcon } from '@kadence/icons';
  */
 import KadenceConfig from './kadence-control-plugin';
 
-registerPlugin( 'kadence-control', {
+registerPlugin('kadence-control', {
 	icon: kadenceNewIcon,
 	render: KadenceConfig,
-} );
+});

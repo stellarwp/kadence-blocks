@@ -1,225 +1,213 @@
 {
-  "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 3,
-  "title": "Posts",
-  "name": "kadence/posts",
-  "category": "kadence-blocks",
-  "attributes": {
-	"uniqueID": {
-	  "type": "string"
-	},
-	"columns": {
-	  "type": "number",
-	  "default": 3
-	},
-	"postsToShow": {
-	  "type": "number",
-	  "default": 6
-	},
-	"offsetQuery": {
-	  "type": "number",
-	  "default": 0
-	},
-	"allowSticky": {
-	  "type": "boolean",
-	  "default": false
-	},
-	"postType": {
-	  "type": "string",
-	  "default": "post"
-	},
-	"postTax": {
-	  "type": "boolean",
-	  "default": false
-	},
-	"taxType": {
-	  "type": "string",
-	  "default": ""
-	},
-	"order": {
-	  "type": "string",
-	  "default": "desc"
-	},
-	"orderBy": {
-	  "type": "string",
-	  "default": "date"
-	},
-	"excludeTax": {
-	  "type": "string",
-	  "default": "include"
-	},
-	"categories": {
-	  "type": "array",
-	  "default": []
-	},
-	"tags": {
-	  "type": "array",
-	  "default": []
-	},
-	"alignImage": {
-	  "type": "string",
-	  "default": "beside"
-	},
-	"image": {
-	  "type": "boolean",
-	  "default": true
-	},
-	"imageSize": {
-	  "type": "string",
-	  "default": "medium_large"
-	},
-	"imageRatio": {
-	  "type": "string",
-	  "default": "2-3"
-	},
-	"aboveCategories": {
-	  "type": "boolean",
-	  "default": true
-	},
-	"categoriesDivider": {
-	  "type": "string",
-	  "default": "vline"
-	},
-	"categoriesStyle": {
-	  "type": "string",
-	  "default": "normal"
-	},
-	"meta": {
-	  "type": "boolean",
-	  "default": true
-	},
-	"metaDivider": {
-	  "type": "string",
-	  "default": "dot"
-	},
-	"author": {
-	  "type": "boolean",
-	  "default": true
-	},
-	"authorImage": {
-	  "type": "boolean",
-	  "default": false
-	},
-	"authorLink": {
-	  "type": "boolean",
-	  "default": false
-	},
-	"authorImageSize": {
-	  "type": "number",
-	  "default": 25
-	},
-	"authorEnabledLabel": {
-	  "type": "boolean",
-	  "default": true
-	},
-	"authorLabel": {
-	  "type": "string",
-	  "default": ""
-	},
-	"date": {
-	  "type": "boolean",
-	  "default": true
-	},
-	"dateEnabledLabel": {
-	  "type": "boolean",
-	  "default": false
-	},
-	"dateLabel": {
-	  "type": "string",
-	  "default": ""
-	},
-	"dateUpdated": {
-	  "type": "boolean",
-	  "default": false
-	},
-	"dateUpdatedEnabledLabel": {
-	  "type": "boolean",
-	  "default": false
-	},
-	"dateUpdatedLabel": {
-	  "type": "string",
-	  "default": ""
-	},
-	"metaCategories": {
-	  "type": "boolean",
-	  "default": false
-	},
-	"metaCategoriesEnabledLabel": {
-	  "type": "boolean",
-	  "default": false
-	},
-	"metaCategoriesLabel": {
-	  "type": "string",
-	  "default": ""
-	},
-	"comments": {
-	  "type": "boolean",
-	  "default": false
-	},
-	"excerpt": {
-	  "type": "boolean",
-	  "default": true
-	},
-	"excerptCustomLength": {
-	  "type": "boolean",
-	  "default": false
-	},
-	"excerptLength": {
-	  "type": "number",
-	  "default": 40
-	},
-	"readmore": {
-	  "type": "boolean",
-	  "default": true
-	},
-	"readmoreLabel": {
-	  "type": "string",
-	  "default": ""
-	},
-	"loopStyle": {
-	  "type": "string",
-	  "default": "boxed"
-	},
-	"titleFont": {
-	  "type": "array",
-	  "default": [
-		{
-		  "level": 2,
-		  "size": [
-			"",
-			"",
-			""
-		  ],
-		  "sizeType": "px",
-		  "lineHeight": [
-			"",
-			"",
-			""
-		  ],
-		  "lineType": "px",
-		  "letterSpacing": [
-			"",
-			"",
-			""
-		  ],
-		  "letterType": "px",
-		  "textTransform": ""
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"title": "Posts",
+	"name": "kadence/posts",
+	"category": "kadence-blocks",
+	"attributes": {
+		"uniqueID": {
+			"type": "string"
+		},
+		"columns": {
+			"type": "number",
+			"default": 3
+		},
+		"postsToShow": {
+			"type": "number",
+			"default": 6
+		},
+		"offsetQuery": {
+			"type": "number",
+			"default": 0
+		},
+		"allowSticky": {
+			"type": "boolean",
+			"default": false
+		},
+		"postType": {
+			"type": "string",
+			"default": "post"
+		},
+		"postTax": {
+			"type": "boolean",
+			"default": false
+		},
+		"taxType": {
+			"type": "string",
+			"default": ""
+		},
+		"order": {
+			"type": "string",
+			"default": "desc"
+		},
+		"orderBy": {
+			"type": "string",
+			"default": "date"
+		},
+		"excludeTax": {
+			"type": "string",
+			"default": "include"
+		},
+		"categories": {
+			"type": "array",
+			"default": []
+		},
+		"tags": {
+			"type": "array",
+			"default": []
+		},
+		"alignImage": {
+			"type": "string",
+			"default": "beside"
+		},
+		"image": {
+			"type": "boolean",
+			"default": true
+		},
+		"imageSize": {
+			"type": "string",
+			"default": "medium_large"
+		},
+		"imageRatio": {
+			"type": "string",
+			"default": "2-3"
+		},
+		"aboveCategories": {
+			"type": "boolean",
+			"default": true
+		},
+		"categoriesDivider": {
+			"type": "string",
+			"default": "vline"
+		},
+		"categoriesStyle": {
+			"type": "string",
+			"default": "normal"
+		},
+		"meta": {
+			"type": "boolean",
+			"default": true
+		},
+		"metaDivider": {
+			"type": "string",
+			"default": "dot"
+		},
+		"author": {
+			"type": "boolean",
+			"default": true
+		},
+		"authorImage": {
+			"type": "boolean",
+			"default": false
+		},
+		"authorLink": {
+			"type": "boolean",
+			"default": false
+		},
+		"authorImageSize": {
+			"type": "number",
+			"default": 25
+		},
+		"authorEnabledLabel": {
+			"type": "boolean",
+			"default": true
+		},
+		"authorLabel": {
+			"type": "string",
+			"default": ""
+		},
+		"date": {
+			"type": "boolean",
+			"default": true
+		},
+		"dateEnabledLabel": {
+			"type": "boolean",
+			"default": false
+		},
+		"dateLabel": {
+			"type": "string",
+			"default": ""
+		},
+		"dateUpdated": {
+			"type": "boolean",
+			"default": false
+		},
+		"dateUpdatedEnabledLabel": {
+			"type": "boolean",
+			"default": false
+		},
+		"dateUpdatedLabel": {
+			"type": "string",
+			"default": ""
+		},
+		"metaCategories": {
+			"type": "boolean",
+			"default": false
+		},
+		"metaCategoriesEnabledLabel": {
+			"type": "boolean",
+			"default": false
+		},
+		"metaCategoriesLabel": {
+			"type": "string",
+			"default": ""
+		},
+		"comments": {
+			"type": "boolean",
+			"default": false
+		},
+		"excerpt": {
+			"type": "boolean",
+			"default": true
+		},
+		"excerptCustomLength": {
+			"type": "boolean",
+			"default": false
+		},
+		"excerptLength": {
+			"type": "number",
+			"default": 40
+		},
+		"readmore": {
+			"type": "boolean",
+			"default": true
+		},
+		"readmoreLabel": {
+			"type": "string",
+			"default": ""
+		},
+		"loopStyle": {
+			"type": "string",
+			"default": "boxed"
+		},
+		"titleFont": {
+			"type": "array",
+			"default": [
+				{
+					"level": 2,
+					"size": ["", "", ""],
+					"sizeType": "px",
+					"lineHeight": ["", "", ""],
+					"lineType": "px",
+					"letterSpacing": ["", "", ""],
+					"letterType": "px",
+					"textTransform": ""
+				}
+			]
+		},
+		"tabletColumns": {
+			"type": "number"
+		},
+		"mobileColumns": {
+			"type": "number"
+		},
+		"showUnique": {
+			"type": "boolean",
+			"default": false
 		}
-	  ]
 	},
-	"tabletColumns": {
-	  "type": "number"
-	},
-	"mobileColumns": {
-	  "type": "number"
-	},
-	"showUnique": {
-	  "type": "boolean",
-	  "default": false
+	"supports": {
+		"html": false,
+		"kbMetadata": true
 	}
-  },
-  "supports": {
-	"html": false,
-	"kbMetadata": true
-  }
 }

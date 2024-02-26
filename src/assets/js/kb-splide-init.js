@@ -1,20 +1,18 @@
 (function () {
-	"use strict";
+	'use strict';
 	var kadenceBlocksSplide = {
 		initAll: function () {
 			let advancedSliders = document.querySelectorAll(
-				".wp-block-kadence-advancedgallery .kt-blocks-carousel-init"
+				'.wp-block-kadence-advancedgallery .kt-blocks-carousel-init'
 			);
 			this.bootstrapSliders(advancedSliders);
 
 			let testimonialSliders = document.querySelectorAll(
-				".wp-block-kadence-testimonials .kt-blocks-carousel-init"
+				'.wp-block-kadence-testimonials .kt-blocks-carousel-init'
 			);
 			this.bootstrapSliders(testimonialSliders);
 
-			let bgSliders = document.querySelectorAll(
-				".kb-blocks-bg-slider > .kt-blocks-carousel-init"
-			);
+			let bgSliders = document.querySelectorAll('.kb-blocks-bg-slider > .kt-blocks-carousel-init');
 			this.bootstrapSliders(bgSliders);
 		},
 		bootstrapSliders: function (elementList) {
@@ -27,48 +25,46 @@
 				if (!thisSlider || !thisSlider.children || thisSlider.classList.contains('is-initialized')) {
 					continue;
 				}
-				thisSlider.classList.add("kb-splide");
+				thisSlider.classList.add('kb-splide');
 
-				const slideCount = this.createSplideElements( thisSlider );
+				const slideCount = this.createSplideElements(thisSlider);
 				let parsedData = this.parseDataset(thisSlider.dataset);
 				const inHiddenMenu = Boolean(thisSlider.closest('.kadence-menu-mega-enabled'));
 
 				if (document.querySelector('html[dir="rtl"]')) {
-					parsedData.sliderDirection = "rtl";
+					parsedData.sliderDirection = 'rtl';
 				} else {
-					parsedData.sliderDirection = "ltr";
+					parsedData.sliderDirection = 'ltr';
 				}
 
-				thisSlider.addEventListener("load", function (elem) {
-					elem.classList.remove("kt-post-carousel-loading");
+				thisSlider.addEventListener('load', function (elem) {
+					elem.classList.remove('kt-post-carousel-loading');
 				});
 
 				let splideOptions = this.getSplideOptions(parsedData);
 				// Add this to remove slick based css from hiding elements
-				thisSlider.classList.add("splide-initialized");
-				thisSlider.classList.add("splide-slider");
+				thisSlider.classList.add('splide-initialized');
+				thisSlider.classList.add('splide-slider');
 
 				let { sliderType } = parsedData;
 
-				if (sliderType && sliderType === "fluidcarousel") {
-					elementList[i]
-						.querySelectorAll(".kb-slide-item")
-						.forEach(function (elem) {
-							if( !elementList[i].clientWidth ) {
-								elem.style.maxWidth = "100%";
-							} else {
-								elem.style.maxWidth = Math.floor((80 / 100) * elementList[i].clientWidth) + "px";
-							}
-						});
-						const childCount = elementList[i].querySelectorAll(".kb-slide-item").length;
+				if (sliderType && sliderType === 'fluidcarousel') {
+					elementList[i].querySelectorAll('.kb-slide-item').forEach(function (elem) {
+						if (!elementList[i].clientWidth) {
+							elem.style.maxWidth = '100%';
+						} else {
+							elem.style.maxWidth = Math.floor((80 / 100) * elementList[i].clientWidth) + 'px';
+						}
+					});
+					const childCount = elementList[i].querySelectorAll('.kb-slide-item').length;
 					const splideSlider = new Splide(thisSlider, {
 						...splideOptions,
-						focus: parsedData.sliderCenterMode !== false ? "center" : 0,
+						focus: parsedData.sliderCenterMode !== false ? 'center' : 0,
 						autoWidth: true,
-						arrows    : childCount > 1 ? splideOptions.arrows : false,
+						arrows: childCount > 1 ? splideOptions.arrows : false,
 						pagination: childCount > 1 ? splideOptions.pagination : false,
-						drag      : childCount > 1 ? splideOptions.drag : false,
-						clones    : childCount > 1 ? undefined : 0, // Toggle clones
+						drag: childCount > 1 ? splideOptions.drag : false,
+						clones: childCount > 1 ? undefined : 0, // Toggle clones
 					});
 					// splideSlider.on( 'overflow', function ( isOverflow ) {
 					// 	// Reset the carousel position
@@ -83,41 +79,38 @@
 					// } );
 					splideSlider.mount();
 					var resizeTimer;
-					window.addEventListener("resize", function (e) {
+					window.addEventListener('resize', function (e) {
 						clearTimeout(resizeTimer);
 						resizeTimer = setTimeout(function () {
-							elementList[i]
-								.querySelectorAll(".kb-slide-item")
-								.forEach(function (elem) {
-									elem.style.maxWidth =
-										Math.floor((80 / 100) * elementList[i].clientWidth) + "px";
-								});
+							elementList[i].querySelectorAll('.kb-slide-item').forEach(function (elem) {
+								elem.style.maxWidth = Math.floor((80 / 100) * elementList[i].clientWidth) + 'px';
+							});
 						}, 10);
 					});
-				} else if (sliderType && sliderType === "slider") {
-					if( undefined === parsedData.sliderFade ) {
-						splideOptions.type = "fade";
+				} else if (sliderType && sliderType === 'slider') {
+					if (undefined === parsedData.sliderFade) {
+						splideOptions.type = 'fade';
 					} else {
-						splideOptions.type = parsedData.sliderFade ? "fade" : "slide";
+						splideOptions.type = parsedData.sliderFade ? 'fade' : 'slide';
 					}
 					splideOptions.rewind = true;
 					let splideSlider = new Splide(thisSlider, splideOptions);
-					splideSlider.on( 'overflow', function ( isOverflow ) {
+					splideSlider.on('overflow', function (isOverflow) {
 						splideSlider.options = {
-						  arrows    : slideCount === 1 ? false : splideOptions.arrows,
-						  pagination: slideCount === 1 ? false : splideOptions.pagination,
-						  drag      : slideCount === 1 ? false : splideOptions.drag,
+							arrows: slideCount === 1 ? false : splideOptions.arrows,
+							pagination: slideCount === 1 ? false : splideOptions.pagination,
+							drag: slideCount === 1 ? false : splideOptions.drag,
 						};
-					} );
+					});
 					splideSlider.mount();
-				} else if (sliderType && sliderType === "thumbnail") {
+				} else if (sliderType && sliderType === 'thumbnail') {
 					let navSliderId = parsedData.sliderNav;
-					let navSlider = document.querySelector("#" + navSliderId);
+					let navSlider = document.querySelector('#' + navSliderId);
 
 					this.createSplideElements(navSlider);
 
 					// Switch the datasets for the nav and main slider elements
-					let mainSliderParsedData = this.parseDataset(navSlider.dataset)
+					let mainSliderParsedData = this.parseDataset(navSlider.dataset);
 					let mainSliderOptions = this.getSplideOptions(mainSliderParsedData);
 					let navSliderOptions = splideOptions;
 					navSliderOptions.isNavigation = true;
@@ -126,65 +119,68 @@
 					navSliderOptions.arrows = true;
 					// navSliderOptions.rewind = true;
 
-					mainSliderOptions.type = ( mainSliderParsedData.sliderFade ||  undefined == mainSliderParsedData.sliderFade ) ? "fade" : "slide";
+					mainSliderOptions.type =
+						mainSliderParsedData.sliderFade || undefined == mainSliderParsedData.sliderFade
+							? 'fade'
+							: 'slide';
 					mainSliderOptions.rewind = true;
 					mainSliderOptions.pagination = false;
 					mainSliderOptions.direction = navSliderOptions.direction;
 
-					navSlider.classList.add("slick-initialized");
-					navSlider.classList.add("slick-slider");
-					navSlider.classList.add("kb-splide");
+					navSlider.classList.add('slick-initialized');
+					navSlider.classList.add('slick-slider');
+					navSlider.classList.add('kb-splide');
 
 					let carouselSlider = new Splide(thisSlider, mainSliderOptions);
 					let thumbnailSlider = new Splide(navSlider, navSliderOptions);
-					thumbnailSlider.on( 'overflow', function ( isOverflow ) {
+					thumbnailSlider.on('overflow', function (isOverflow) {
 						// Reset the carousel position
-						thumbnailSlider.go( 0 );
+						thumbnailSlider.go(0);
 
 						thumbnailSlider.options = {
-						  arrows    : navSliderOptions.arrows ? isOverflow : false,
-						  pagination: navSliderOptions.pagination ? isOverflow : false,
-						  drag      : navSliderOptions.drag ? isOverflow : false,
-						  rewind    : ! isOverflow ? true : false,
-						  type      : ! isOverflow ? 'slide' : navSliderOptions.type,
-						  clones    : isOverflow ? undefined : 0, // Toggle clones
+							arrows: navSliderOptions.arrows ? isOverflow : false,
+							pagination: navSliderOptions.pagination ? isOverflow : false,
+							drag: navSliderOptions.drag ? isOverflow : false,
+							rewind: !isOverflow ? true : false,
+							type: !isOverflow ? 'slide' : navSliderOptions.type,
+							clones: isOverflow ? undefined : 0, // Toggle clones
 						};
-					} );
+					});
 					carouselSlider.sync(thumbnailSlider);
 					carouselSlider.mount();
 					thumbnailSlider.mount();
-				} else if (sliderType && sliderType === "rewind") {
-					splideOptions.type = "slide";
+				} else if (sliderType && sliderType === 'rewind') {
+					splideOptions.type = 'slide';
 					splideOptions.rewind = true;
 					let splideSlider = new Splide(thisSlider, splideOptions);
-					if ( ! inHiddenMenu ) {
-						splideSlider.on( 'overflow', function ( isOverflow ) {
+					if (!inHiddenMenu) {
+						splideSlider.on('overflow', function (isOverflow) {
 							// Reset the carousel position
-							splideSlider.go( 0 );
+							splideSlider.go(0);
 
 							splideSlider.options = {
-							arrows    : splideOptions.arrows ? isOverflow : false,
-							pagination: splideOptions.pagination ? isOverflow : false,
-							drag      : splideOptions.drag ? isOverflow : false,
-							clones    : isOverflow ? undefined : 0, // Toggle clones
+								arrows: splideOptions.arrows ? isOverflow : false,
+								pagination: splideOptions.pagination ? isOverflow : false,
+								drag: splideOptions.drag ? isOverflow : false,
+								clones: isOverflow ? undefined : 0, // Toggle clones
 							};
-						} );
+						});
 					}
 					splideSlider.mount();
 				} else {
 					let splideSlider = new Splide(thisSlider, splideOptions);
-					if ( ! inHiddenMenu ) {
-						splideSlider.on( 'overflow', function ( isOverflow ) {
+					if (!inHiddenMenu) {
+						splideSlider.on('overflow', function (isOverflow) {
 							// Reset the carousel position
-							splideSlider.go( 0 );
+							splideSlider.go(0);
 
 							splideSlider.options = {
-							arrows    : splideOptions.arrows ? isOverflow : false,
-							pagination: splideOptions.pagination ? isOverflow : false,
-							drag      : splideOptions.drag ? isOverflow : false,
-							clones    : isOverflow ? undefined : 0, // Toggle clones
+								arrows: splideOptions.arrows ? isOverflow : false,
+								pagination: splideOptions.pagination ? isOverflow : false,
+								drag: splideOptions.drag ? isOverflow : false,
+								clones: isOverflow ? undefined : 0, // Toggle clones
 							};
-						} );
+						});
 					}
 					splideSlider.mount();
 				}
@@ -198,7 +194,7 @@
 				if (!Number.isNaN(parsedInt)) {
 					return { ...acc, [key]: parsedInt };
 				}
-				if (elementDataset[key] === "true" || elementDataset[key] === "false") {
+				if (elementDataset[key] === 'true' || elementDataset[key] === 'false') {
 					return { ...acc, [key]: JSON.parse(elementDataset[key]) };
 				}
 
@@ -209,25 +205,25 @@
 		createSplideElements: function (wrapperElem) {
 			const slideCount = wrapperElem.children.length;
 			for (let slide of wrapperElem.children) {
-				slide.classList.add("splide__slide");
+				slide.classList.add('splide__slide');
 				//slide.classList.add("slick-slide");
-				if (slide.classList.contains("last")) {
-					slide.classList.remove("last");
+				if (slide.classList.contains('last')) {
+					slide.classList.remove('last');
 				}
 			}
 
-			let splideTrack = document.createElement("div");
-			splideTrack.classList.add("splide__track");
+			let splideTrack = document.createElement('div');
+			splideTrack.classList.add('splide__track');
 
-			let splideList = document.createElement("div");
-			splideList.classList.add("splide__list");
+			let splideList = document.createElement('div');
+			splideList.classList.add('splide__list');
 			// The slides go inside the list element
 			splideList.innerHTML = wrapperElem.innerHTML;
 			// The list element goes inside the track
 			splideTrack.innerHTML = splideList.outerHTML;
 			// The track goes inside them argument elem
 			wrapperElem.innerHTML = splideTrack.outerHTML;
-			wrapperElem.classList.add("splide");
+			wrapperElem.classList.add('splide');
 			return slideCount;
 		},
 
@@ -241,8 +237,8 @@
 				type: dataSet.sliderFade ? 'fade' : 'loop',
 				easing:
 					dataSet.sliderAnimSpeed && dataSet.sliderAnimSpeed > 1000
-						? "linear"
-						: "cubic-bezier(0.25, 1, 0.5, 1)",
+						? 'linear'
+						: 'cubic-bezier(0.25, 1, 0.5, 1)',
 				lazyLoad: 'nearby',
 				pauseOnHover: dataSet.sliderPause || false,
 				autoplay: dataSet.sliderAuto || false,
@@ -281,12 +277,12 @@
 					},
 				},
 				classes: {
-					prev: "splide__arrow--prev slick-prev",
-					next: "splide__arrow--next slick-next",
+					prev: 'splide__arrow--prev slick-prev',
+					next: 'splide__arrow--next slick-next',
 				},
 			};
 
-			if(splideOpts.perPage === 1 || scrollIsOne) {
+			if (splideOpts.perPage === 1 || scrollIsOne) {
 				splideOpts.focus = 0;
 				splideOpts.perMove = scrollIsOne || dataSet.columnsXxl || 1;
 			}
@@ -296,28 +292,28 @@
 
 		// Initiate the menus when the DOM loads.
 		init: function () {
-			if (typeof Splide === "function") {
+			if (typeof Splide === 'function') {
 				kadenceBlocksSplide.initAll();
 			} else {
 				var initLoadDelay = setInterval(function () {
-					if (typeof Splide === "function") {
+					if (typeof Splide === 'function') {
 						kadenceBlocksSplide.initAll();
 						clearInterval(initLoadDelay);
 					} else {
-						console.log("No Splide found");
+						console.log('No Splide found');
 					}
 				}, 200);
 			}
 		},
 	};
-	if (document.readyState === "loading") {
+	if (document.readyState === 'loading') {
 		// The DOM has not yet been loaded.
-		document.addEventListener("DOMContentLoaded", kadenceBlocksSplide.init);
+		document.addEventListener('DOMContentLoaded', kadenceBlocksSplide.init);
 	} else {
 		// The DOM has already been loaded.
 		kadenceBlocksSplide.init();
 	}
-	document.addEventListener("kadenceJSInitReload", function(){
+	document.addEventListener('kadenceJSInitReload', function () {
 		kadenceBlocksSplide.init();
 	});
 })();

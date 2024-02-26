@@ -23,412 +23,424 @@ export default [
 		attributes: {
 			id: {
 				type: 'number',
-				default: 1
+				default: 1,
 			},
 			topPadding: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			bottomPadding: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			leftPadding: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			rightPadding: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			topPaddingM: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			bottomPaddingM: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			leftPaddingM: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			rightPaddingM: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			topMargin: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			bottomMargin: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			topMarginM: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			bottomMarginM: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			leftMargin: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			rightMargin: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			leftMarginM: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			rightMarginM: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			zIndex: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			background: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			backgroundOpacity: {
 				type: 'number',
-				default: 1
+				default: 1,
 			},
 			border: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			borderOpacity: {
 				type: 'number',
-				default: 1
+				default: 1,
 			},
 			borderWidth: {
 				type: 'array',
-				default: [ 0, 0, 0, 0 ]
+				default: [0, 0, 0, 0],
 			},
 			tabletBorderWidth: {
 				type: 'array',
-				default: [ '', '', '', '' ]
+				default: ['', '', '', ''],
 			},
 			mobileBorderWidth: {
 				type: 'array',
-				default: [ '', '', '', '' ]
+				default: ['', '', '', ''],
 			},
 			borderRadius: {
 				type: 'array',
-				default: [ 0, 0, 0, 0 ]
+				default: [0, 0, 0, 0],
 			},
 			uniqueID: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			collapseOrder: {
-				type: 'number'
+				type: 'number',
 			},
 			backgroundImg: {
 				type: 'array',
-				default: [ {
-					bgImg: '',
-					bgImgID: '',
-					bgImgSize: 'cover',
-					bgImgPosition: 'center center',
-					bgImgAttachment: 'scroll',
-					bgImgRepeat: 'no-repeat',
-				} ]
+				default: [
+					{
+						bgImg: '',
+						bgImgID: '',
+						bgImgSize: 'cover',
+						bgImgPosition: 'center center',
+						bgImgAttachment: 'scroll',
+						bgImgRepeat: 'no-repeat',
+					},
+				],
 			},
 			textAlign: {
 				type: 'array',
-				default: [ '', '', '' ]
+				default: ['', '', ''],
 			},
 			textColor: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			linkColor: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			linkHoverColor: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			topPaddingT: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			bottomPaddingT: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			leftPaddingT: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			rightPaddingT: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			topMarginT: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			bottomMarginT: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			leftMarginT: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			rightMarginT: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			displayShadow: {
 				type: 'boolean',
-				default: false
+				default: false,
 			},
 			shadow: {
 				type: 'array',
-				default: [ {
-					color: '#000000',
-					opacity: 0.2,
-					spread: 0,
-					blur: 14,
-					hOffset: 0,
-					vOffset: 0,
-					inset: false,
-				} ]
+				default: [
+					{
+						color: '#000000',
+						opacity: 0.2,
+						spread: 0,
+						blur: 14,
+						hOffset: 0,
+						vOffset: 0,
+						inset: false,
+					},
+				],
 			},
 			noCustomDefaults: {
 				type: 'boolean',
-				default: false
+				default: false,
 			},
 			vsdesk: {
 				type: 'boolean',
-				default: false
+				default: false,
 			},
 			vstablet: {
 				type: 'boolean',
-				default: false
+				default: false,
 			},
 			vsmobile: {
 				type: 'boolean',
-				default: false
+				default: false,
 			},
 			paddingType: {
 				type: 'string',
-				default: 'px'
+				default: 'px',
 			},
 			marginType: {
 				type: 'string',
-				default: 'px'
+				default: 'px',
 			},
 			bgColorClass: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			templateLock: {
-				type: 'string'
+				type: 'string',
 			},
 			direction: {
 				type: 'array',
-				default: [ '', '', '' ]
+				default: ['', '', ''],
 			},
 			justifyContent: {
 				type: 'array',
-				default: [ '', '', '' ]
+				default: ['', '', ''],
 			},
 			wrapContent: {
 				type: 'array',
-				default: [ '', '', '' ]
+				default: ['', '', ''],
 			},
 			gutter: {
 				type: 'array',
-				default: [ '', '', '' ]
+				default: ['', '', ''],
 			},
 			gutterUnit: {
 				type: 'string',
-				default: 'px'
+				default: 'px',
 			},
 			verticalAlignment: {
-				type: 'string'
+				type: 'string',
 			},
 			backgroundImgHover: {
 				type: 'array',
-				default: [ {
-					bgImg: '',
-					bgImgID: '',
-					bgImgSize: 'cover',
-					bgImgPosition: 'center center',
-					bgImgAttachment: 'scroll',
-					bgImgRepeat: 'no-repeat',
-				} ]
+				default: [
+					{
+						bgImg: '',
+						bgImgID: '',
+						bgImgSize: 'cover',
+						bgImgPosition: 'center center',
+						bgImgAttachment: 'scroll',
+						bgImgRepeat: 'no-repeat',
+					},
+				],
 			},
 			backgroundHover: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			overlayOpacity: {
 				type: 'number',
-				default: 0.3
+				default: 0.3,
 			},
 			overlay: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			overlayImg: {
 				type: 'array',
-				default: [ {
-					bgImg: '',
-					bgImgID: '',
-					bgImgSize: 'cover',
-					bgImgPosition: 'center center',
-					bgImgAttachment: 'scroll',
-					bgImgRepeat: 'no-repeat',
-				} ]
+				default: [
+					{
+						bgImg: '',
+						bgImgID: '',
+						bgImgSize: 'cover',
+						bgImgPosition: 'center center',
+						bgImgAttachment: 'scroll',
+						bgImgRepeat: 'no-repeat',
+					},
+				],
 			},
 			overlayHoverOpacity: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			overlayHover: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			overlayImgHover: {
 				type: 'array',
-				default: [ {
-					bgImg: '',
-					bgImgID: '',
-					bgImgSize: 'cover',
-					bgImgPosition: 'center center',
-					bgImgAttachment: 'scroll',
-					bgImgRepeat: 'no-repeat',
-				} ]
+				default: [
+					{
+						bgImg: '',
+						bgImgID: '',
+						bgImgSize: 'cover',
+						bgImgPosition: 'center center',
+						bgImgAttachment: 'scroll',
+						bgImgRepeat: 'no-repeat',
+					},
+				],
 			},
 			overlayGradient: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			overlayGradientHover: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			borderHover: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			borderHoverWidth: {
 				type: 'array',
-				default: [ '', '', '', '' ]
+				default: ['', '', '', ''],
 			},
 			tabletBorderHoverWidth: {
 				type: 'array',
-				default: [ '', '', '', '' ]
+				default: ['', '', '', ''],
 			},
 			mobileBorderHoverWidth: {
 				type: 'array',
-				default: [ '', '', '', '' ]
+				default: ['', '', '', ''],
 			},
 			borderHoverRadius: {
 				type: 'array',
-				default: [ '', '', '', '' ]
+				default: ['', '', '', ''],
 			},
 			displayHoverShadow: {
 				type: 'boolean',
-				default: false
+				default: false,
 			},
 			shadowHover: {
 				type: 'array',
-				default: [ {
-					color: '#000000',
-					opacity: 0.2,
-					spread: 0,
-					blur: 14,
-					hOffset: 0,
-					vOffset: 0,
-					inset: false,
-				} ]
+				default: [
+					{
+						color: '#000000',
+						opacity: 0.2,
+						spread: 0,
+						blur: 14,
+						hOffset: 0,
+						vOffset: 0,
+						inset: false,
+					},
+				],
 			},
 			textColorHover: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			linkColorHover: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			linkHoverColorHover: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			link: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			linkTitle: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			linkTarget: {
 				type: 'boolean',
-				default: false
+				default: false,
 			},
 			linkNoFollow: {
 				type: 'boolean',
-				default: false
+				default: false,
 			},
 			linkSponsored: {
 				type: 'boolean',
-				default: false
+				default: false,
 			},
 			maxWidth: {
 				type: 'array',
-				default: [ '', '', '' ]
+				default: ['', '', ''],
 			},
 			maxWidthUnit: {
 				type: 'string',
-				default: 'px'
+				default: 'px',
 			},
 			height: {
 				type: 'array',
-				default: [ '', '', '' ]
+				default: ['', '', ''],
 			},
 			heightUnit: {
 				type: 'string',
-				default: 'px'
+				default: 'px',
 			},
 			htmlTag: {
 				type: 'string',
-				default: 'div'
+				default: 'div',
 			},
 			inQueryBlock: {
 				type: 'boolean',
-				default: false
+				default: false,
 			},
 			overlayType: {
 				type: 'string',
-				default: 'normal'
+				default: 'normal',
 			},
 			sticky: {
 				type: 'boolean',
-				default: false
+				default: false,
 			},
 			stickyOffset: {
 				type: 'array',
-				default: [ '', '', '' ]
+				default: ['', '', ''],
 			},
 			stickyOffsetUnit: {
 				type: 'string',
-				default: 'px'
+				default: 'px',
 			},
 			kadenceBlockCSS: {
 				type: 'string',
@@ -439,14 +451,16 @@ export default [
 			},
 			kadenceAOSOptions: {
 				type: 'array',
-				default: [ {
-					duration: '',
-					offset: '',
-					easing: '',
-					once: '',
-					delay: '',
-					delayOffset: '',
-				} ],
+				default: [
+					{
+						duration: '',
+						offset: '',
+						easing: '',
+						once: '',
+						delay: '',
+						delayOffset: '',
+					},
+				],
 			},
 			kadenceDynamic: {
 				type: 'object',
@@ -463,467 +477,534 @@ export default [
 			ktanimateswipe: true,
 			ktdynamic: true,
 			kbcss: true,
-			editorsKitBlockNavigator: true
+			editorsKitBlockNavigator: true,
 		},
-		save: ( { attributes } ) => {
-			const { id, uniqueID, vsdesk, vstablet, vsmobile, link, linkNoFollow, linkSponsored, sticky, linkTarget, linkTitle, htmlTag, overlay, overlayImg, overlayHover, overlayImgHover, align, direction, overlayGradient, overlayGradientHover, kadenceAnimation, kadenceAOSOptions } = attributes;
-			const hasOverlay = ( overlay || overlayGradient || overlayGradientHover || ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImg ) || overlayHover || ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImg ) ? true : false );
-			const deskDirection = ( direction && '' !== direction[ 0 ] ? direction[ 0 ] : false );
-			const tabDirection = ( direction && '' !== direction[ 1 ] ? direction[ 1 ] : false );
-			const mobileDirection = ( direction && '' !== direction[ 2 ] ? direction[ 2 ] : false );
-			const classes = classnames( {
-				[ `inner-column-${ id }` ]: id,
-				[ `kadence-column${ uniqueID }` ]: uniqueID,
+		save: ({ attributes }) => {
+			const {
+				id,
+				uniqueID,
+				vsdesk,
+				vstablet,
+				vsmobile,
+				link,
+				linkNoFollow,
+				linkSponsored,
+				sticky,
+				linkTarget,
+				linkTitle,
+				htmlTag,
+				overlay,
+				overlayImg,
+				overlayHover,
+				overlayImgHover,
+				align,
+				direction,
+				overlayGradient,
+				overlayGradientHover,
+				kadenceAnimation,
+				kadenceAOSOptions,
+			} = attributes;
+			const hasOverlay =
+				overlay ||
+				overlayGradient ||
+				overlayGradientHover ||
+				(overlayImg && overlayImg[0] && overlayImg[0].bgImg) ||
+				overlayHover ||
+				(overlayImgHover && overlayImgHover[0] && overlayImgHover[0].bgImg)
+					? true
+					: false;
+			const deskDirection = direction && '' !== direction[0] ? direction[0] : false;
+			const tabDirection = direction && '' !== direction[1] ? direction[1] : false;
+			const mobileDirection = direction && '' !== direction[2] ? direction[2] : false;
+			const classes = classnames({
+				[`inner-column-${id}`]: id,
+				[`kadence-column${uniqueID}`]: uniqueID,
 				'kvs-lg-false': vsdesk !== undefined && vsdesk,
 				'kvs-md-false': vstablet !== undefined && vstablet,
 				'kvs-sm-false': vsmobile !== undefined && vsmobile,
 				'kb-section-has-link': undefined !== link && '' !== link,
 				'kb-section-is-sticky': undefined !== sticky && sticky,
 				'kb-section-has-overlay': undefined !== hasOverlay && hasOverlay,
-				[ `align${ align }`] : align === 'full' || align === 'wide',
-				[ `kb-section-dir-${ deskDirection }` ]: deskDirection,
-				[ `kb-section-md-dir-${ tabDirection }` ]: tabDirection,
-				[ `kb-section-sm-dir-${ mobileDirection }` ]: mobileDirection,
-			} );
+				[`align${align}`]: align === 'full' || align === 'wide',
+				[`kb-section-dir-${deskDirection}`]: deskDirection,
+				[`kb-section-md-dir-${tabDirection}`]: tabDirection,
+				[`kb-section-sm-dir-${mobileDirection}`]: mobileDirection,
+			});
 			let relAttr;
-			if ( linkTarget ) {
+			if (linkTarget) {
 				relAttr = 'noopener noreferrer';
 			}
-			if ( undefined !== linkNoFollow && true === linkNoFollow ) {
-				relAttr = ( relAttr ? relAttr.concat( ' nofollow' ) : 'nofollow' );
+			if (undefined !== linkNoFollow && true === linkNoFollow) {
+				relAttr = relAttr ? relAttr.concat(' nofollow') : 'nofollow';
 			}
-			if ( undefined !== linkSponsored && true === linkSponsored ) {
-				relAttr = ( relAttr ? relAttr.concat( ' sponsored' ) : 'sponsored' );
+			if (undefined !== linkSponsored && true === linkSponsored) {
+				relAttr = relAttr ? relAttr.concat(' sponsored') : 'sponsored';
 			}
-			const HtmlTagOut = ( ! htmlTag ? 'div' : htmlTag );
+			const HtmlTagOut = !htmlTag ? 'div' : htmlTag;
 			return (
-				<HtmlTagOut { ...useBlockProps.save( { className: classes } ) }
-							data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) }
-							data-aos-offset={ ( kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].offset ? kadenceAOSOptions[ 0 ].offset : undefined ) }
-							data-aos-duration={ ( kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) }
-							data-aos-delay={ ( kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].delay ? kadenceAOSOptions[ 0 ].delay : undefined ) }
-							data-aos-easing={ ( kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) }
-							data-aos-once={ ( kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[ 0 ] && undefined !== kadenceAOSOptions[ 0 ].once && '' !== kadenceAOSOptions[ 0 ].once ? kadenceAOSOptions[ 0 ].once : undefined ) }
+				<HtmlTagOut
+					{...useBlockProps.save({ className: classes })}
+					data-aos={kadenceAnimation ? kadenceAnimation : undefined}
+					data-aos-offset={
+						kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].offset
+							? kadenceAOSOptions[0].offset
+							: undefined
+					}
+					data-aos-duration={
+						kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].duration
+							? kadenceAOSOptions[0].duration
+							: undefined
+					}
+					data-aos-delay={
+						kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].delay
+							? kadenceAOSOptions[0].delay
+							: undefined
+					}
+					data-aos-easing={
+						kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].easing
+							? kadenceAOSOptions[0].easing
+							: undefined
+					}
+					data-aos-once={
+						kadenceAnimation &&
+						kadenceAOSOptions &&
+						kadenceAOSOptions[0] &&
+						undefined !== kadenceAOSOptions[0].once &&
+						'' !== kadenceAOSOptions[0].once
+							? kadenceAOSOptions[0].once
+							: undefined
+					}
 				>
-					<div className={ 'kt-inside-inner-col' }>
+					<div className={'kt-inside-inner-col'}>
 						<InnerBlocks.Content />
 					</div>
-					{ link && (
+					{link && (
 						<a
-							href={ link }
-							className={ `kb-section-link-overlay` }
-							target={ linkTarget ? '_blank' : undefined }
-							rel={ relAttr ? relAttr : undefined }
-							aria-label={ linkTitle ? linkTitle : undefined }
-						>
-						</a>
-					) }
+							href={link}
+							className={`kb-section-link-overlay`}
+							target={linkTarget ? '_blank' : undefined}
+							rel={relAttr ? relAttr : undefined}
+							aria-label={linkTitle ? linkTitle : undefined}
+						></a>
+					)}
 				</HtmlTagOut>
 			);
-		}
+		},
 	},
 	{
 		attributes: {
 			id: {
 				type: 'number',
-				default: 1
+				default: 1,
 			},
 			topPadding: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			bottomPadding: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			leftPadding: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			rightPadding: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			topPaddingM: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			bottomPaddingM: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			leftPaddingM: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			rightPaddingM: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			topMargin: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			bottomMargin: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			topMarginM: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			bottomMarginM: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			leftMargin: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			rightMargin: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			leftMarginM: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			rightMarginM: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			zIndex: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			background: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			backgroundOpacity: {
 				type: 'number',
-				default: 1
+				default: 1,
 			},
 			border: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			borderOpacity: {
 				type: 'number',
-				default: 1
+				default: 1,
 			},
 			borderWidth: {
 				type: 'array',
-				default: [ 0, 0, 0, 0 ]
+				default: [0, 0, 0, 0],
 			},
 			tabletBorderWidth: {
 				type: 'array',
-				default: [ '', '', '', '' ]
+				default: ['', '', '', ''],
 			},
 			mobileBorderWidth: {
 				type: 'array',
-				default: [ '', '', '', '' ]
+				default: ['', '', '', ''],
 			},
 			borderRadius: {
 				type: 'array',
-				default: [ 0, 0, 0, 0 ]
+				default: [0, 0, 0, 0],
 			},
 			uniqueID: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			collapseOrder: {
-				type: 'number'
+				type: 'number',
 			},
 			backgroundImg: {
 				type: 'array',
-				default: [ {
-					bgImg: '',
-					bgImgID: '',
-					bgImgSize: 'cover',
-					bgImgPosition: 'center center',
-					bgImgAttachment: 'scroll',
-					bgImgRepeat: 'no-repeat',
-				} ]
+				default: [
+					{
+						bgImg: '',
+						bgImgID: '',
+						bgImgSize: 'cover',
+						bgImgPosition: 'center center',
+						bgImgAttachment: 'scroll',
+						bgImgRepeat: 'no-repeat',
+					},
+				],
 			},
 			textAlign: {
 				type: 'array',
-				default: [ '', '', '' ]
+				default: ['', '', ''],
 			},
 			textColor: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			linkColor: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			linkHoverColor: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			topPaddingT: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			bottomPaddingT: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			leftPaddingT: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			rightPaddingT: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			topMarginT: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			bottomMarginT: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			leftMarginT: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			rightMarginT: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			displayShadow: {
 				type: 'boolean',
-				default: false
+				default: false,
 			},
 			shadow: {
 				type: 'array',
-				default: [ {
-					color: '#000000',
-					opacity: 0.2,
-					spread: 0,
-					blur: 14,
-					hOffset: 0,
-					vOffset: 0,
-					inset: false,
-				} ]
+				default: [
+					{
+						color: '#000000',
+						opacity: 0.2,
+						spread: 0,
+						blur: 14,
+						hOffset: 0,
+						vOffset: 0,
+						inset: false,
+					},
+				],
 			},
 			noCustomDefaults: {
 				type: 'boolean',
-				default: false
+				default: false,
 			},
 			vsdesk: {
 				type: 'boolean',
-				default: false
+				default: false,
 			},
 			vstablet: {
 				type: 'boolean',
-				default: false
+				default: false,
 			},
 			vsmobile: {
 				type: 'boolean',
-				default: false
+				default: false,
 			},
 			paddingType: {
 				type: 'string',
-				default: 'px'
+				default: 'px',
 			},
 			marginType: {
 				type: 'string',
-				default: 'px'
+				default: 'px',
 			},
 			bgColorClass: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			templateLock: {
-				type: 'string'
+				type: 'string',
 			},
 			direction: {
 				type: 'array',
-				default: [ '', '', '' ]
+				default: ['', '', ''],
 			},
 			justifyContent: {
 				type: 'array',
-				default: [ '', '', '' ]
+				default: ['', '', ''],
 			},
 			wrapContent: {
 				type: 'array',
-				default: [ '', '', '' ]
+				default: ['', '', ''],
 			},
 			gutter: {
 				type: 'array',
-				default: [ '', '', '' ]
+				default: ['', '', ''],
 			},
 			gutterUnit: {
 				type: 'string',
-				default: 'px'
+				default: 'px',
 			},
 			verticalAlignment: {
-				type: 'string'
+				type: 'string',
 			},
 			backgroundImgHover: {
 				type: 'array',
-				default: [ {
-					bgImg: '',
-					bgImgID: '',
-					bgImgSize: 'cover',
-					bgImgPosition: 'center center',
-					bgImgAttachment: 'scroll',
-					bgImgRepeat: 'no-repeat',
-				} ]
+				default: [
+					{
+						bgImg: '',
+						bgImgID: '',
+						bgImgSize: 'cover',
+						bgImgPosition: 'center center',
+						bgImgAttachment: 'scroll',
+						bgImgRepeat: 'no-repeat',
+					},
+				],
 			},
 			backgroundHover: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			overlayOpacity: {
 				type: 'number',
-				default: 0.3
+				default: 0.3,
 			},
 			overlay: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			overlayImg: {
 				type: 'array',
-				default: [ {
-					bgImg: '',
-					bgImgID: '',
-					bgImgSize: 'cover',
-					bgImgPosition: 'center center',
-					bgImgAttachment: 'scroll',
-					bgImgRepeat: 'no-repeat',
-				} ]
+				default: [
+					{
+						bgImg: '',
+						bgImgID: '',
+						bgImgSize: 'cover',
+						bgImgPosition: 'center center',
+						bgImgAttachment: 'scroll',
+						bgImgRepeat: 'no-repeat',
+					},
+				],
 			},
 			overlayHoverOpacity: {
 				type: 'number',
-				default: ''
+				default: '',
 			},
 			overlayHover: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			overlayImgHover: {
 				type: 'array',
-				default: [ {
-					bgImg: '',
-					bgImgID: '',
-					bgImgSize: 'cover',
-					bgImgPosition: 'center center',
-					bgImgAttachment: 'scroll',
-					bgImgRepeat: 'no-repeat',
-				} ]
+				default: [
+					{
+						bgImg: '',
+						bgImgID: '',
+						bgImgSize: 'cover',
+						bgImgPosition: 'center center',
+						bgImgAttachment: 'scroll',
+						bgImgRepeat: 'no-repeat',
+					},
+				],
 			},
 			borderHover: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			borderHoverWidth: {
 				type: 'array',
-				default: [ '', '', '', '' ]
+				default: ['', '', '', ''],
 			},
 			tabletBorderHoverWidth: {
 				type: 'array',
-				default: [ '', '', '', '' ]
+				default: ['', '', '', ''],
 			},
 			mobileBorderHoverWidth: {
 				type: 'array',
-				default: [ '', '', '', '' ]
+				default: ['', '', '', ''],
 			},
 			borderHoverRadius: {
 				type: 'array',
-				default: [ '', '', '', '' ]
+				default: ['', '', '', ''],
 			},
 			displayHoverShadow: {
 				type: 'boolean',
-				default: false
+				default: false,
 			},
 			shadowHover: {
 				type: 'array',
-				default: [ {
-					color: '#000000',
-					opacity: 0.2,
-					spread: 0,
-					blur: 14,
-					hOffset: 0,
-					vOffset: 0,
-					inset: false,
-				} ]
+				default: [
+					{
+						color: '#000000',
+						opacity: 0.2,
+						spread: 0,
+						blur: 14,
+						hOffset: 0,
+						vOffset: 0,
+						inset: false,
+					},
+				],
 			},
 			textColorHover: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			linkColorHover: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			linkHoverColorHover: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			link: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			linkTitle: {
 				type: 'string',
-				default: ''
+				default: '',
 			},
 			linkTarget: {
 				type: 'boolean',
-				default: false
+				default: false,
 			},
 			linkNoFollow: {
 				type: 'boolean',
-				default: false
+				default: false,
 			},
 			linkSponsored: {
 				type: 'boolean',
-				default: false
+				default: false,
 			},
 			maxWidth: {
 				type: 'array',
-				default: [ '', '', '' ]
+				default: ['', '', ''],
 			},
 			maxWidthUnit: {
 				type: 'string',
-				default: 'px'
+				default: 'px',
 			},
 			height: {
 				type: 'array',
-				default: [ '', '', '' ]
+				default: ['', '', ''],
 			},
 			heightUnit: {
 				type: 'string',
-				default: 'px'
+				default: 'px',
 			},
 			htmlTag: {
 				type: 'string',
-				default: 'div'
+				default: 'div',
 			},
 			inQueryBlock: {
 				type: 'boolean',
-				default: false
+				default: false,
 			},
 			overlayType: {
 				type: 'string',
-				default: 'normal'
+				default: 'normal',
 			},
 			sticky: {
 				type: 'boolean',
-				default: false
+				default: false,
 			},
 			stickyOffset: {
 				type: 'array',
-				default: [ '', '', '' ]
+				default: ['', '', ''],
 			},
 			stickyOffsetUnit: {
 				type: 'string',
-				default: 'px'
+				default: 'px',
 			},
 			kadenceBlockCSS: {
 				type: 'string',
@@ -934,14 +1015,16 @@ export default [
 			},
 			kadenceAOSOptions: {
 				type: 'array',
-				default: [ {
-					duration: '',
-					offset: '',
-					easing: '',
-					once: '',
-					delay: '',
-					delayOffset: '',
-				} ],
+				default: [
+					{
+						duration: '',
+						offset: '',
+						easing: '',
+						once: '',
+						delay: '',
+						delayOffset: '',
+					},
+				],
 			},
 			kadenceDynamic: {
 				type: 'object',
@@ -958,57 +1041,107 @@ export default [
 			ktanimateswipe: true,
 			ktdynamic: true,
 			kbcss: true,
-			editorsKitBlockNavigator: true
+			editorsKitBlockNavigator: true,
 		},
-		save: ( { attributes } ) => {
-			const { id, uniqueID, vsdesk, vstablet, vsmobile, link, linkNoFollow, linkSponsored, sticky, direction, linkTarget, linkTitle, htmlTag, overlay, overlayImg, overlayHover, overlayImgHover, kadenceAnimation, kadenceAOSOptions } = attributes;
-			const hasOverlay = ( overlay || ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImg ) || overlayHover || ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImg ) ? true : false );
-			const classes = classnames( {
-				[ `inner-column-${ id }` ]: id,
-				[ `kadence-column${ uniqueID }` ]: uniqueID,
+		save: ({ attributes }) => {
+			const {
+				id,
+				uniqueID,
+				vsdesk,
+				vstablet,
+				vsmobile,
+				link,
+				linkNoFollow,
+				linkSponsored,
+				sticky,
+				direction,
+				linkTarget,
+				linkTitle,
+				htmlTag,
+				overlay,
+				overlayImg,
+				overlayHover,
+				overlayImgHover,
+				kadenceAnimation,
+				kadenceAOSOptions,
+			} = attributes;
+			const hasOverlay =
+				overlay ||
+				(overlayImg && overlayImg[0] && overlayImg[0].bgImg) ||
+				overlayHover ||
+				(overlayImgHover && overlayImgHover[0] && overlayImgHover[0].bgImg)
+					? true
+					: false;
+			const classes = classnames({
+				[`inner-column-${id}`]: id,
+				[`kadence-column${uniqueID}`]: uniqueID,
 				'kvs-lg-false': vsdesk !== undefined && vsdesk,
 				'kvs-md-false': vstablet !== undefined && vstablet,
 				'kvs-sm-false': vsmobile !== undefined && vsmobile,
 				'kb-section-has-link': undefined !== link && '' !== link,
 				'kb-section-is-sticky': undefined !== sticky && sticky,
 				'kb-section-has-overlay': undefined !== hasOverlay && hasOverlay,
-			} );
+			});
 			let relAttr;
-			if ( linkTarget ) {
+			if (linkTarget) {
 				relAttr = 'noopener noreferrer';
 			}
-			if ( undefined !== linkNoFollow && true === linkNoFollow ) {
-				relAttr = ( relAttr ? relAttr.concat( ' nofollow' ) : 'nofollow' );
+			if (undefined !== linkNoFollow && true === linkNoFollow) {
+				relAttr = relAttr ? relAttr.concat(' nofollow') : 'nofollow';
 			}
-			if ( undefined !== linkSponsored && true === linkSponsored ) {
-				relAttr = ( relAttr ? relAttr.concat( ' sponsored' ) : 'sponsored' );
+			if (undefined !== linkSponsored && true === linkSponsored) {
+				relAttr = relAttr ? relAttr.concat(' sponsored') : 'sponsored';
 			}
-			const HtmlTagOut = ( ! htmlTag ? 'div' : htmlTag );
+			const HtmlTagOut = !htmlTag ? 'div' : htmlTag;
 			return (
-				<HtmlTagOut { ...useBlockProps.save( { className: classes } ) }
-							data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) }
-							data-aos-offset={ ( kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].offset ? kadenceAOSOptions[ 0 ].offset : undefined ) }
-							data-aos-duration={ ( kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) }
-							data-aos-delay={ ( kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].delay ? kadenceAOSOptions[ 0 ].delay : undefined ) }
-							data-aos-easing={ ( kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) }
-							data-aos-once={ ( kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[ 0 ] && undefined !== kadenceAOSOptions[ 0 ].once && '' !== kadenceAOSOptions[ 0 ].once ? kadenceAOSOptions[ 0 ].once : undefined ) }
+				<HtmlTagOut
+					{...useBlockProps.save({ className: classes })}
+					data-aos={kadenceAnimation ? kadenceAnimation : undefined}
+					data-aos-offset={
+						kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].offset
+							? kadenceAOSOptions[0].offset
+							: undefined
+					}
+					data-aos-duration={
+						kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].duration
+							? kadenceAOSOptions[0].duration
+							: undefined
+					}
+					data-aos-delay={
+						kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].delay
+							? kadenceAOSOptions[0].delay
+							: undefined
+					}
+					data-aos-easing={
+						kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].easing
+							? kadenceAOSOptions[0].easing
+							: undefined
+					}
+					data-aos-once={
+						kadenceAnimation &&
+						kadenceAOSOptions &&
+						kadenceAOSOptions[0] &&
+						undefined !== kadenceAOSOptions[0].once &&
+						'' !== kadenceAOSOptions[0].once
+							? kadenceAOSOptions[0].once
+							: undefined
+					}
 				>
-					<div className={ 'kt-inside-inner-col' }>
+					<div className={'kt-inside-inner-col'}>
 						<InnerBlocks.Content />
 					</div>
-					{ link && (
+					{link && (
 						<a
-							href={ link }
-							className={ `kb-section-link-overlay` }
-							target={ linkTarget ? '_blank' : undefined }
-							rel={ relAttr ? relAttr : undefined }
-							aria-label={ linkTitle ? linkTitle : undefined }
-						>
-						</a>
-					) }
+							href={link}
+							className={`kb-section-link-overlay`}
+							target={linkTarget ? '_blank' : undefined}
+							rel={relAttr ? relAttr : undefined}
+							aria-label={linkTitle ? linkTitle : undefined}
+						></a>
+					)}
 				</HtmlTagOut>
 			);
-		}
+		},
 	},
 	{
 		attributes: {
@@ -1102,19 +1235,19 @@ export default [
 			},
 			borderWidth: {
 				type: 'array',
-				default: [ 0, 0, 0, 0 ],
+				default: [0, 0, 0, 0],
 			},
 			tabletBorderWidth: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			mobileBorderWidth: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			borderRadius: {
 				type: 'array',
-				default: [ 0, 0, 0, 0 ],
+				default: [0, 0, 0, 0],
 			},
 			uniqueID: {
 				type: 'string',
@@ -1125,18 +1258,20 @@ export default [
 			},
 			backgroundImg: {
 				type: 'array',
-				default: [ {
-					bgImg: '',
-					bgImgID: '',
-					bgImgSize: 'cover',
-					bgImgPosition: 'center center',
-					bgImgAttachment: 'scroll',
-					bgImgRepeat: 'no-repeat',
-				} ],
+				default: [
+					{
+						bgImg: '',
+						bgImgID: '',
+						bgImgSize: 'cover',
+						bgImgPosition: 'center center',
+						bgImgAttachment: 'scroll',
+						bgImgRepeat: 'no-repeat',
+					},
+				],
 			},
 			textAlign: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			textColor: {
 				type: 'string',
@@ -1188,15 +1323,17 @@ export default [
 			},
 			shadow: {
 				type: 'array',
-				default: [ {
-					color: '#000000',
-					opacity: 0.2,
-					spread: 0,
-					blur: 14,
-					hOffset: 0,
-					vOffset: 0,
-					inset: false,
-				} ],
+				default: [
+					{
+						color: '#000000',
+						opacity: 0.2,
+						spread: 0,
+						blur: 14,
+						hOffset: 0,
+						vOffset: 0,
+						inset: false,
+					},
+				],
 			},
 			noCustomDefaults: {
 				type: 'bool',
@@ -1231,15 +1368,15 @@ export default [
 			},
 			direction: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			justifyContent: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			gutter: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			gutterUnit: {
 				type: 'string',
@@ -1250,14 +1387,16 @@ export default [
 			},
 			backgroundImgHover: {
 				type: 'array',
-				default: [ {
-					bgImg: '',
-					bgImgID: '',
-					bgImgSize: 'cover',
-					bgImgPosition: 'center center',
-					bgImgAttachment: 'scroll',
-					bgImgRepeat: 'no-repeat',
-				} ],
+				default: [
+					{
+						bgImg: '',
+						bgImgID: '',
+						bgImgSize: 'cover',
+						bgImgPosition: 'center center',
+						bgImgAttachment: 'scroll',
+						bgImgRepeat: 'no-repeat',
+					},
+				],
 			},
 			backgroundHover: {
 				type: 'string',
@@ -1269,19 +1408,19 @@ export default [
 			},
 			borderHoverWidth: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			tabletBorderHoverWidth: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			mobileBorderHoverWidth: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			borderHoverRadius: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			displayHoverShadow: {
 				type: 'bool',
@@ -1289,15 +1428,17 @@ export default [
 			},
 			shadowHover: {
 				type: 'array',
-				default: [ {
-					color: '#000000',
-					opacity: 0.2,
-					spread: 0,
-					blur: 14,
-					hOffset: 0,
-					vOffset: 0,
-					inset: false,
-				} ],
+				default: [
+					{
+						color: '#000000',
+						opacity: 0.2,
+						spread: 0,
+						blur: 14,
+						hOffset: 0,
+						vOffset: 0,
+						inset: false,
+					},
+				],
 			},
 			textColorHover: {
 				type: 'string',
@@ -1324,14 +1465,16 @@ export default [
 			},
 			kadenceAOSOptions: {
 				type: 'array',
-				default: [ {
-					duration: '',
-					offset: '',
-					easing: '',
-					once: '',
-					delay: '',
-					delayOffset: '',
-				} ],
+				default: [
+					{
+						duration: '',
+						offset: '',
+						easing: '',
+						once: '',
+						delay: '',
+						delayOffset: '',
+					},
+				],
 			},
 			kadenceDynamic: {
 				type: 'object',
@@ -1348,36 +1491,77 @@ export default [
 			ktanimateswipe: true,
 			ktdynamic: true,
 			kbcss: true,
-			editorsKitBlockNavigator: true
+			editorsKitBlockNavigator: true,
 		},
-		save: ( { attributes } ) => {
-			const { id, background, backgroundOpacity, backgroundImg, uniqueID, vsdesk, vstablet, vsmobile, bgColorClass, kadenceAnimation, kadenceAOSOptions } = attributes;
-			const bgImg = ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? backgroundImg[ 0 ].bgImg : '' );
-			const backgroundString = ( background && '' === bgImg ? KadenceColorOutput( background, backgroundOpacity ) : undefined );
-			const classes = classnames( {
-				[ `inner-column-${ id }` ]: id,
-				[ `kadence-column${ uniqueID }` ]: uniqueID,
+		save: ({ attributes }) => {
+			const {
+				id,
+				background,
+				backgroundOpacity,
+				backgroundImg,
+				uniqueID,
+				vsdesk,
+				vstablet,
+				vsmobile,
+				bgColorClass,
+				kadenceAnimation,
+				kadenceAOSOptions,
+			} = attributes;
+			const bgImg = backgroundImg && backgroundImg[0] && backgroundImg[0].bgImg ? backgroundImg[0].bgImg : '';
+			const backgroundString =
+				background && '' === bgImg ? KadenceColorOutput(background, backgroundOpacity) : undefined;
+			const classes = classnames({
+				[`inner-column-${id}`]: id,
+				[`kadence-column${uniqueID}`]: uniqueID,
 				'kvs-lg-false': vsdesk !== 'undefined' && vsdesk,
 				'kvs-md-false': vstablet !== 'undefined' && vstablet,
 				'kvs-sm-false': vsmobile !== 'undefined' && vsmobile,
-			} );
+			});
 			return (
-				<div className={ classes }
-					 data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) }
-					 data-aos-offset={ ( kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].offset ? kadenceAOSOptions[ 0 ].offset : undefined ) }
-					 data-aos-duration={ ( kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) }
-					 data-aos-delay={ ( kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].delay ? kadenceAOSOptions[ 0 ].delay : undefined ) }
-					 data-aos-easing={ ( kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) }
-					 data-aos-once={ ( kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[ 0 ] && undefined !== kadenceAOSOptions[ 0 ].once && '' !== kadenceAOSOptions[ 0 ].once ? kadenceAOSOptions[ 0 ].once : undefined ) }
+				<div
+					className={classes}
+					data-aos={kadenceAnimation ? kadenceAnimation : undefined}
+					data-aos-offset={
+						kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].offset
+							? kadenceAOSOptions[0].offset
+							: undefined
+					}
+					data-aos-duration={
+						kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].duration
+							? kadenceAOSOptions[0].duration
+							: undefined
+					}
+					data-aos-delay={
+						kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].delay
+							? kadenceAOSOptions[0].delay
+							: undefined
+					}
+					data-aos-easing={
+						kadenceAnimation && kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].easing
+							? kadenceAOSOptions[0].easing
+							: undefined
+					}
+					data-aos-once={
+						kadenceAnimation &&
+						kadenceAOSOptions &&
+						kadenceAOSOptions[0] &&
+						undefined !== kadenceAOSOptions[0].once &&
+						'' !== kadenceAOSOptions[0].once
+							? kadenceAOSOptions[0].once
+							: undefined
+					}
 				>
-					<div className={ 'kt-inside-inner-col' } style={ {
-						background: backgroundString,
-					} } >
+					<div
+						className={'kt-inside-inner-col'}
+						style={{
+							background: backgroundString,
+						}}
+					>
 						<InnerBlocks.Content />
 					</div>
 				</div>
 			);
-		}
+		},
 	},
 	{
 		attributes: {
@@ -1471,19 +1655,19 @@ export default [
 			},
 			borderWidth: {
 				type: 'array',
-				default: [ 0, 0, 0, 0 ],
+				default: [0, 0, 0, 0],
 			},
 			tabletBorderWidth: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			mobileBorderWidth: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			borderRadius: {
 				type: 'array',
-				default: [ 0, 0, 0, 0 ],
+				default: [0, 0, 0, 0],
 			},
 			uniqueID: {
 				type: 'string',
@@ -1494,18 +1678,20 @@ export default [
 			},
 			backgroundImg: {
 				type: 'array',
-				default: [ {
-					bgImg: '',
-					bgImgID: '',
-					bgImgSize: 'cover',
-					bgImgPosition: 'center center',
-					bgImgAttachment: 'scroll',
-					bgImgRepeat: 'no-repeat',
-				} ],
+				default: [
+					{
+						bgImg: '',
+						bgImgID: '',
+						bgImgSize: 'cover',
+						bgImgPosition: 'center center',
+						bgImgAttachment: 'scroll',
+						bgImgRepeat: 'no-repeat',
+					},
+				],
 			},
 			textAlign: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			textColor: {
 				type: 'string',
@@ -1557,15 +1743,17 @@ export default [
 			},
 			shadow: {
 				type: 'array',
-				default: [ {
-					color: '#000000',
-					opacity: 0.2,
-					spread: 0,
-					blur: 14,
-					hOffset: 0,
-					vOffset: 0,
-					inset: false,
-				} ],
+				default: [
+					{
+						color: '#000000',
+						opacity: 0.2,
+						spread: 0,
+						blur: 14,
+						hOffset: 0,
+						vOffset: 0,
+						inset: false,
+					},
+				],
 			},
 			noCustomDefaults: {
 				type: 'bool',
@@ -1597,7 +1785,7 @@ export default [
 			},
 			templateLock: {
 				type: 'string',
-			}
+			},
 		},
 		supports: {
 			anchor: true,
@@ -1607,24 +1795,29 @@ export default [
 			ktanimateswipe: true,
 			ktdynamic: true,
 			kbcss: true,
-			editorsKitBlockNavigator: true
+			editorsKitBlockNavigator: true,
 		},
-		save: ( { attributes } ) => {
-			const { id, background, backgroundOpacity, backgroundImg, uniqueID, vsdesk, vstablet, vsmobile } = attributes;
-			const bgImg = ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? backgroundImg[ 0 ].bgImg : '' );
-			const backgroundString = ( background && '' === bgImg ? KadenceColorOutput( background, backgroundOpacity ) : undefined );
-			const classes = classnames( {
-				[ `inner-column-${ id }` ]: id,
-				[ `kadence-column${ uniqueID }` ]: uniqueID,
+		save: ({ attributes }) => {
+			const { id, background, backgroundOpacity, backgroundImg, uniqueID, vsdesk, vstablet, vsmobile } =
+				attributes;
+			const bgImg = backgroundImg && backgroundImg[0] && backgroundImg[0].bgImg ? backgroundImg[0].bgImg : '';
+			const backgroundString =
+				background && '' === bgImg ? KadenceColorOutput(background, backgroundOpacity) : undefined;
+			const classes = classnames({
+				[`inner-column-${id}`]: id,
+				[`kadence-column${uniqueID}`]: uniqueID,
 				'kvs-lg-false': vsdesk !== 'undefined' && vsdesk,
 				'kvs-md-false': vstablet !== 'undefined' && vstablet,
 				'kvs-sm-false': vsmobile !== 'undefined' && vsmobile,
-			} );
+			});
 			return (
-				<div className={ classes }>
-					<div className={ 'kt-inside-inner-col' } style={ {
-						background: backgroundString,
-					} } >
+				<div className={classes}>
+					<div
+						className={'kt-inside-inner-col'}
+						style={{
+							background: backgroundString,
+						}}
+					>
 						<InnerBlocks.Content />
 					</div>
 				</div>
@@ -1723,11 +1916,11 @@ export default [
 			},
 			borderWidth: {
 				type: 'array',
-				default: [ 0, 0, 0, 0 ],
+				default: [0, 0, 0, 0],
 			},
 			borderRadius: {
 				type: 'array',
-				default: [ 0, 0, 0, 0 ],
+				default: [0, 0, 0, 0],
 			},
 			uniqueID: {
 				type: 'string',
@@ -1738,18 +1931,20 @@ export default [
 			},
 			backgroundImg: {
 				type: 'array',
-				default: [ {
-					bgImg: '',
-					bgImgID: '',
-					bgImgSize: 'cover',
-					bgImgPosition: 'center center',
-					bgImgAttachment: 'scroll',
-					bgImgRepeat: 'no-repeat',
-				} ],
+				default: [
+					{
+						bgImg: '',
+						bgImgID: '',
+						bgImgSize: 'cover',
+						bgImgPosition: 'center center',
+						bgImgAttachment: 'scroll',
+						bgImgRepeat: 'no-repeat',
+					},
+				],
 			},
 			textAlign: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			textColor: {
 				type: 'string',
@@ -1801,15 +1996,17 @@ export default [
 			},
 			shadow: {
 				type: 'array',
-				default: [ {
-					color: '#000000',
-					opacity: 0.2,
-					spread: 0,
-					blur: 14,
-					hOffset: 0,
-					vOffset: 0,
-					inset: false,
-				} ],
+				default: [
+					{
+						color: '#000000',
+						opacity: 0.2,
+						spread: 0,
+						blur: 14,
+						hOffset: 0,
+						vOffset: 0,
+						inset: false,
+					},
+				],
 			},
 			noCustomDefaults: {
 				type: 'bool',
@@ -1826,7 +2023,7 @@ export default [
 			vsmobile: {
 				type: 'bool',
 				default: false,
-			}
+			},
 		},
 		supports: {
 			anchor: true,
@@ -1836,17 +2033,21 @@ export default [
 			ktanimateswipe: true,
 			ktdynamic: true,
 			kbcss: true,
-			editorsKitBlockNavigator: true
+			editorsKitBlockNavigator: true,
 		},
-		save: ( { attributes } ) => {
+		save: ({ attributes }) => {
 			const { id, background, backgroundOpacity, backgroundImg, uniqueID } = attributes;
-			const bgImg = ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? backgroundImg[ 0 ].bgImg : '' );
-			const backgroundString = ( background && '' === bgImg ? KadenceColorOutput( background, backgroundOpacity ) : undefined );
+			const bgImg = backgroundImg && backgroundImg[0] && backgroundImg[0].bgImg ? backgroundImg[0].bgImg : '';
+			const backgroundString =
+				background && '' === bgImg ? KadenceColorOutput(background, backgroundOpacity) : undefined;
 			return (
-				<div className={ `inner-column-${ id } kadence-column${ uniqueID }` }>
-					<div className={ 'kt-inside-inner-col' } style={ {
-						background: backgroundString,
-					} } >
+				<div className={`inner-column-${id} kadence-column${uniqueID}`}>
+					<div
+						className={'kt-inside-inner-col'}
+						style={{
+							background: backgroundString,
+						}}
+					>
 						<InnerBlocks.Content />
 					</div>
 				</div>
@@ -1936,14 +2137,17 @@ export default [
 				default: 1,
 			},
 		},
-		save: ( { attributes } ) => {
+		save: ({ attributes }) => {
 			const { id, background, backgroundOpacity } = attributes;
-			const backgroundString = ( background ? hexToRGBA( background, backgroundOpacity ) : undefined );
+			const backgroundString = background ? hexToRGBA(background, backgroundOpacity) : undefined;
 			return (
-				<div className={ `inner-column-${ id }` }>
-					<div className={ 'kt-inside-inner-col' } style={ {
-						background: backgroundString,
-					} } >
+				<div className={`inner-column-${id}`}>
+					<div
+						className={'kt-inside-inner-col'}
+						style={{
+							background: backgroundString,
+						}}
+					>
 						<InnerBlocks.Content />
 					</div>
 				</div>
@@ -1957,11 +2161,11 @@ export default [
 				default: 1,
 			},
 		},
-		save: ( { attributes } ) => {
+		save: ({ attributes }) => {
 			const { id } = attributes;
 			return (
-				<div className={ `inner-column-${ id }` }>
-					<div className={ 'kt-inside-inner-col' } >
+				<div className={`inner-column-${id}`}>
+					<div className={'kt-inside-inner-col'}>
 						<InnerBlocks.Content />
 					</div>
 				</div>
@@ -1975,10 +2179,10 @@ export default [
 				default: 1,
 			},
 		},
-		save: ( { attributes } ) => {
+		save: ({ attributes }) => {
 			const { id } = attributes;
 			return (
-				<div className={ `inner-column-${ id }` }>
+				<div className={`inner-column-${id}`}>
 					<InnerBlocks.Content />
 				</div>
 			);

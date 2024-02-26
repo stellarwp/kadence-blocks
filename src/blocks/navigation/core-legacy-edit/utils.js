@@ -3,7 +3,6 @@
  */
 import classnames from 'classnames';
 
-
 /**
  * Determine the colors for a menu.
  *
@@ -17,7 +16,7 @@ import classnames from 'classnames';
  * @param {Object}  context
  * @param {boolean} isSubMenu
  */
-export function getColors( context, isSubMenu ) {
+export function getColors(context, isSubMenu) {
 	const {
 		textColor,
 		customTextColor,
@@ -32,48 +31,41 @@ export function getColors( context, isSubMenu ) {
 
 	const colors = {};
 
-	if ( isSubMenu && !! customOverlayTextColor ) {
+	if (isSubMenu && !!customOverlayTextColor) {
 		colors.customTextColor = customOverlayTextColor;
-	} else if ( isSubMenu && !! overlayTextColor ) {
+	} else if (isSubMenu && !!overlayTextColor) {
 		colors.textColor = overlayTextColor;
-	} else if ( !! customTextColor ) {
+	} else if (!!customTextColor) {
 		colors.customTextColor = customTextColor;
-	} else if ( !! textColor ) {
+	} else if (!!textColor) {
 		colors.textColor = textColor;
-	} else if ( !! style?.color?.text ) {
+	} else if (!!style?.color?.text) {
 		colors.customTextColor = style.color.text;
 	}
 
-	if ( isSubMenu && !! customOverlayBackgroundColor ) {
+	if (isSubMenu && !!customOverlayBackgroundColor) {
 		colors.customBackgroundColor = customOverlayBackgroundColor;
-	} else if ( isSubMenu && !! overlayBackgroundColor ) {
+	} else if (isSubMenu && !!overlayBackgroundColor) {
 		colors.backgroundColor = overlayBackgroundColor;
-	} else if ( !! customBackgroundColor ) {
+	} else if (!!customBackgroundColor) {
 		colors.customBackgroundColor = customBackgroundColor;
-	} else if ( !! backgroundColor ) {
+	} else if (!!backgroundColor) {
 		colors.backgroundColor = backgroundColor;
-	} else if ( !! style?.color?.background ) {
+	} else if (!!style?.color?.background) {
 		colors.customTextColor = style.color.background;
 	}
 
 	return colors;
 }
 
-export function getNavigationChildBlockProps( innerBlocksColors ) {
+export function getNavigationChildBlockProps(innerBlocksColors) {
 	return {
-		className: classnames( 'wp-block-navigation__submenu-container', {
-			'has-text-color': !! (
-				innerBlocksColors.textColor || innerBlocksColors.customTextColor
-			),
-			[ `has-${ innerBlocksColors.textColor }-color` ]:
-				!! innerBlocksColors.textColor,
-			'has-background': !! (
-				innerBlocksColors.backgroundColor ||
-				innerBlocksColors.customBackgroundColor
-			),
-			[ `has-${ innerBlocksColors.backgroundColor }-background-color` ]:
-				!! innerBlocksColors.backgroundColor,
-		} ),
+		className: classnames('wp-block-navigation__submenu-container', {
+			'has-text-color': !!(innerBlocksColors.textColor || innerBlocksColors.customTextColor),
+			[`has-${innerBlocksColors.textColor}-color`]: !!innerBlocksColors.textColor,
+			'has-background': !!(innerBlocksColors.backgroundColor || innerBlocksColors.customBackgroundColor),
+			[`has-${innerBlocksColors.backgroundColor}-background-color`]: !!innerBlocksColors.backgroundColor,
+		}),
 		style: {
 			color: innerBlocksColors.customTextColor,
 			backgroundColor: innerBlocksColors.customBackgroundColor,

@@ -7,16 +7,9 @@ import classnames from 'classnames';
 
 import { KadenceColorOutput } from '@kadence/helpers';
 
-import {
-	Fragment,
-} from '@wordpress/element';
-import {
-	RichText,
-	getColorClassName,
-} from '@wordpress/block-editor';
-import {
-	getBlockDefaultClassName,
-} from '@wordpress/blocks';
+import { Fragment } from '@wordpress/element';
+import { RichText, getColorClassName } from '@wordpress/block-editor';
+import { getBlockDefaultClassName } from '@wordpress/blocks';
 
 export default [
 	{
@@ -118,11 +111,11 @@ export default [
 			},
 			tabletMargin: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			mobileMargin: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			tabletMarginType: {
 				type: 'string',
@@ -138,19 +131,19 @@ export default [
 			},
 			padding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			tabletPadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			mobilePadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			markSize: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			markSizeType: {
 				type: 'string',
@@ -158,7 +151,7 @@ export default [
 			},
 			markLineHeight: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			markLineType: {
 				type: 'string',
@@ -208,15 +201,15 @@ export default [
 			},
 			markPadding: {
 				type: 'array',
-				default: [ 0, 0, 0, 0 ],
+				default: [0, 0, 0, 0],
 			},
 			markTabPadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			markMobilePadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			markPaddingControl: {
 				type: 'string',
@@ -259,13 +252,15 @@ export default [
 			},
 			textShadow: {
 				type: 'array',
-				default: [ {
-					enable: false,
-					color: 'rgba(0, 0, 0, 0.2)',
-					blur: 1,
-					hOffset: 1,
-					vOffset: 1,
-				} ],
+				default: [
+					{
+						enable: false,
+						color: 'rgba(0, 0, 0, 0.2)',
+						blur: 1,
+						hOffset: 1,
+						vOffset: 1,
+					},
+				],
 			},
 			htmlTag: {
 				type: 'string',
@@ -310,74 +305,132 @@ export default [
 				default: false,
 			},
 		},
-		save: ( { attributes } ) => {
-			const { anchor, level, content, colorClass, color, textShadow, letterSpacing, topMargin, bottomMargin, marginType, align, uniqueID, className, kadenceAnimation, kadenceAOSOptions, htmlTag, link, linkNoFollow, linkSponsored, linkTarget, backgroundColorClass, linkStyle } = attributes;
+		save: ({ attributes }) => {
+			const {
+				anchor,
+				level,
+				content,
+				colorClass,
+				color,
+				textShadow,
+				letterSpacing,
+				topMargin,
+				bottomMargin,
+				marginType,
+				align,
+				uniqueID,
+				className,
+				kadenceAnimation,
+				kadenceAOSOptions,
+				htmlTag,
+				link,
+				linkNoFollow,
+				linkSponsored,
+				linkTarget,
+				backgroundColorClass,
+				linkStyle,
+			} = attributes;
 			const tagName = htmlTag && htmlTag !== 'heading' ? htmlTag : 'h' + level;
-			const mType = ( marginType ? marginType : 'px' );
-			const textColorClass = getColorClassName( 'color', colorClass );
-			const textBackgroundColorClass = getColorClassName( 'background-color', backgroundColorClass );
-			const revealAnimation = ( kadenceAnimation && ( 'reveal-left' === kadenceAnimation || 'reveal-right' === kadenceAnimation || 'reveal-up' === kadenceAnimation || 'reveal-down' === kadenceAnimation ) ? true : false );
-			const wrapper = ( revealAnimation ? true : false );
-			const classes = classnames( {
-				[ `kt-adv-heading${ uniqueID }` ]: uniqueID,
-				[ className ]: ! wrapper && ! link && className,
-				[ getBlockDefaultClassName( 'kadence/advancedheading' ) ]: getBlockDefaultClassName( 'kadence/advancedheading' ),
-				[ textColorClass ]: textColorClass,
+			const mType = marginType ? marginType : 'px';
+			const textColorClass = getColorClassName('color', colorClass);
+			const textBackgroundColorClass = getColorClassName('background-color', backgroundColorClass);
+			const revealAnimation =
+				kadenceAnimation &&
+				('reveal-left' === kadenceAnimation ||
+					'reveal-right' === kadenceAnimation ||
+					'reveal-up' === kadenceAnimation ||
+					'reveal-down' === kadenceAnimation)
+					? true
+					: false;
+			const wrapper = revealAnimation ? true : false;
+			const classes = classnames({
+				[`kt-adv-heading${uniqueID}`]: uniqueID,
+				[className]: !wrapper && !link && className,
+				[getBlockDefaultClassName('kadence/advancedheading')]:
+					getBlockDefaultClassName('kadence/advancedheading'),
+				[textColorClass]: textColorClass,
 				'has-text-color': textColorClass,
-				[ textBackgroundColorClass ]: textBackgroundColorClass,
+				[textBackgroundColorClass]: textBackgroundColorClass,
 				'has-background': textBackgroundColorClass,
-				[ `hls-${ linkStyle }` ]: ! link && linkStyle
-			} );
+				[`hls-${linkStyle}`]: !link && linkStyle,
+			});
 			let relAttr;
-			if ( linkTarget ) {
+			if (linkTarget) {
 				relAttr = 'noopener noreferrer';
 			}
-			if ( undefined !== linkNoFollow && true === linkNoFollow ) {
-				relAttr = ( relAttr ? relAttr.concat( ' nofollow' ) : 'nofollow' );
+			if (undefined !== linkNoFollow && true === linkNoFollow) {
+				relAttr = relAttr ? relAttr.concat(' nofollow') : 'nofollow';
 			}
-			if ( undefined !== linkSponsored && true === linkSponsored ) {
-				relAttr = ( relAttr ? relAttr.concat( ' sponsored' ) : 'sponsored' );
+			if (undefined !== linkSponsored && true === linkSponsored) {
+				relAttr = relAttr ? relAttr.concat(' sponsored') : 'sponsored';
 			}
 			//const readyContent = ( link ? `<a href="${link}" class="kb-advanced-heading-link"${ linkTarget ? ' target="_blank"' : '' }${ relAttr ? ` rel="${relAttr}"` : '' }>${content}</a>` : content );
 			const htmlItem = (
 				<RichText.Content
-					tagName={ tagName }
-					id={ anchor ? anchor : undefined }
-					className={ classes }
-					data-kb-block={ `kb-adv-heading${ uniqueID }` }
-					data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) }
-					data-aos-offset={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].offset ? kadenceAOSOptions[ 0 ].offset : undefined ) }
-					data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) }
-					data-aos-delay={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].delay ? kadenceAOSOptions[ 0 ].delay : undefined ) }
-					data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) }
-					data-aos-once={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && undefined !== kadenceAOSOptions[ 0 ].once && '' !== kadenceAOSOptions[ 0 ].once ? kadenceAOSOptions[ 0 ].once : undefined ) }
-					value={ content }
+					tagName={tagName}
+					id={anchor ? anchor : undefined}
+					className={classes}
+					data-kb-block={`kb-adv-heading${uniqueID}`}
+					data-aos={kadenceAnimation ? kadenceAnimation : undefined}
+					data-aos-offset={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].offset
+							? kadenceAOSOptions[0].offset
+							: undefined
+					}
+					data-aos-duration={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].duration
+							? kadenceAOSOptions[0].duration
+							: undefined
+					}
+					data-aos-delay={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].delay
+							? kadenceAOSOptions[0].delay
+							: undefined
+					}
+					data-aos-easing={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].easing
+							? kadenceAOSOptions[0].easing
+							: undefined
+					}
+					data-aos-once={
+						kadenceAOSOptions &&
+						kadenceAOSOptions[0] &&
+						undefined !== kadenceAOSOptions[0].once &&
+						'' !== kadenceAOSOptions[0].once
+							? kadenceAOSOptions[0].once
+							: undefined
+					}
+					value={content}
 				/>
 			);
 			const linkHTMLItem = (
 				<a
-					href={ link }
-					className={ `kb-advanced-heading-link kt-adv-heading-link${ uniqueID }${ ( ! wrapper && className ? ' ' + className : '' ) }${ ( linkStyle ? ' hls-' + linkStyle : '' ) }` }
-					target={ linkTarget ? '_blank' : undefined }
-					relAttr={ relAttr ? relAttr : undefined }
+					href={link}
+					className={`kb-advanced-heading-link kt-adv-heading-link${uniqueID}${
+						!wrapper && className ? ' ' + className : ''
+					}${linkStyle ? ' hls-' + linkStyle : ''}`}
+					target={linkTarget ? '_blank' : undefined}
+					relAttr={relAttr ? relAttr : undefined}
 				>
-					{ htmlItem }
+					{htmlItem}
 				</a>
 			);
-			const readyContent = ( link ? linkHTMLItem : htmlItem );
+			const readyContent = link ? linkHTMLItem : htmlItem;
 			return (
 				<Fragment>
-					{ wrapper && (
-						<div className={ `kb-adv-heading-wrap${ uniqueID } kadence-advanced-heading-wrapper${ ( revealAnimation ? ' kadence-heading-clip-animation' : '' ) }${ ( className ? ' ' + className : '' ) }` }>
-							{ readyContent }
+					{wrapper && (
+						<div
+							className={`kb-adv-heading-wrap${uniqueID} kadence-advanced-heading-wrapper${
+								revealAnimation ? ' kadence-heading-clip-animation' : ''
+							}${className ? ' ' + className : ''}`}
+						>
+							{readyContent}
 						</div>
-					) }
-					{ ! wrapper && (
-						readyContent
-					) }
+					)}
+					{!wrapper && readyContent}
 				</Fragment>
 			);
-		}
+		},
 	},
 	{
 		attributes: {
@@ -478,11 +531,11 @@ export default [
 			},
 			tabletMargin: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			mobileMargin: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			tabletMarginType: {
 				type: 'string',
@@ -498,19 +551,19 @@ export default [
 			},
 			padding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			tabletPadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			mobilePadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			markSize: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			markSizeType: {
 				type: 'string',
@@ -518,7 +571,7 @@ export default [
 			},
 			markLineHeight: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			markLineType: {
 				type: 'string',
@@ -568,15 +621,15 @@ export default [
 			},
 			markPadding: {
 				type: 'array',
-				default: [ 0, 0, 0, 0 ],
+				default: [0, 0, 0, 0],
 			},
 			markTabPadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			markMobilePadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			markPaddingControl: {
 				type: 'string',
@@ -619,13 +672,15 @@ export default [
 			},
 			textShadow: {
 				type: 'array',
-				default: [ {
-					enable: false,
-					color: 'rgba(0, 0, 0, 0.2)',
-					blur: 1,
-					hOffset: 1,
-					vOffset: 1,
-				} ],
+				default: [
+					{
+						enable: false,
+						color: 'rgba(0, 0, 0, 0.2)',
+						blur: 1,
+						hOffset: 1,
+						vOffset: 1,
+					},
+				],
 			},
 			htmlTag: {
 				type: 'string',
@@ -657,73 +712,129 @@ export default [
 				type: 'string',
 			},
 		},
-		save: ( { attributes } ) => {
-			const { anchor, level, content, colorClass, color, textShadow, letterSpacing, topMargin, bottomMargin, marginType, align, uniqueID, className, kadenceAnimation, kadenceAOSOptions, htmlTag, link, linkNoFollow, linkSponsored, linkTarget, backgroundColorClass, linkStyle } = attributes;
+		save: ({ attributes }) => {
+			const {
+				anchor,
+				level,
+				content,
+				colorClass,
+				color,
+				textShadow,
+				letterSpacing,
+				topMargin,
+				bottomMargin,
+				marginType,
+				align,
+				uniqueID,
+				className,
+				kadenceAnimation,
+				kadenceAOSOptions,
+				htmlTag,
+				link,
+				linkNoFollow,
+				linkSponsored,
+				linkTarget,
+				backgroundColorClass,
+				linkStyle,
+			} = attributes;
 			const tagName = htmlTag && htmlTag !== 'heading' ? htmlTag : 'h' + level;
-			const mType = ( marginType ? marginType : 'px' );
-			const textColorClass = getColorClassName( 'color', colorClass );
-			const textBackgroundColorClass = getColorClassName( 'background-color', backgroundColorClass );
-			const revealAnimation = ( kadenceAnimation && ( 'reveal-left' === kadenceAnimation || 'reveal-right' === kadenceAnimation || 'reveal-up' === kadenceAnimation || 'reveal-down' === kadenceAnimation ) ? true : false );
-			const wrapper = ( revealAnimation ? true : false );
-			const classes = classnames( {
-				[ `kt-adv-heading${ uniqueID }` ]: uniqueID,
-				[ className ]: ! wrapper && ! link && className,
-				[ getBlockDefaultClassName( 'kadence/advancedheading' ) ]: getBlockDefaultClassName( 'kadence/advancedheading' ),
-				[ textColorClass ]: textColorClass,
+			const mType = marginType ? marginType : 'px';
+			const textColorClass = getColorClassName('color', colorClass);
+			const textBackgroundColorClass = getColorClassName('background-color', backgroundColorClass);
+			const revealAnimation =
+				kadenceAnimation &&
+				('reveal-left' === kadenceAnimation ||
+					'reveal-right' === kadenceAnimation ||
+					'reveal-up' === kadenceAnimation ||
+					'reveal-down' === kadenceAnimation)
+					? true
+					: false;
+			const wrapper = revealAnimation ? true : false;
+			const classes = classnames({
+				[`kt-adv-heading${uniqueID}`]: uniqueID,
+				[className]: !wrapper && !link && className,
+				[getBlockDefaultClassName('kadence/advancedheading')]:
+					getBlockDefaultClassName('kadence/advancedheading'),
+				[textColorClass]: textColorClass,
 				'has-text-color': textColorClass,
-				[ textBackgroundColorClass ]: textBackgroundColorClass,
+				[textBackgroundColorClass]: textBackgroundColorClass,
 				'has-background': textBackgroundColorClass,
-			} );
+			});
 			let relAttr;
-			if ( linkTarget ) {
+			if (linkTarget) {
 				relAttr = 'noopener noreferrer';
 			}
-			if ( undefined !== linkNoFollow && true === linkNoFollow ) {
-				relAttr = ( relAttr ? relAttr.concat( ' nofollow' ) : 'nofollow' );
+			if (undefined !== linkNoFollow && true === linkNoFollow) {
+				relAttr = relAttr ? relAttr.concat(' nofollow') : 'nofollow';
 			}
-			if ( undefined !== linkSponsored && true === linkSponsored ) {
-				relAttr = ( relAttr ? relAttr.concat( ' sponsored' ) : 'sponsored' );
+			if (undefined !== linkSponsored && true === linkSponsored) {
+				relAttr = relAttr ? relAttr.concat(' sponsored') : 'sponsored';
 			}
 			//const readyContent = ( link ? `<a href="${link}" class="kb-advanced-heading-link"${ linkTarget ? ' target="_blank"' : '' }${ relAttr ? ` rel="${relAttr}"` : '' }>${content}</a>` : content );
 			const htmlItem = (
 				<RichText.Content
-					tagName={ tagName }
-					id={ anchor ? anchor : undefined }
-					className={ classes }
-					data-kb-block={ `kb-adv-heading${ uniqueID }` }
-					data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) }
-					data-aos-offset={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].offset ? kadenceAOSOptions[ 0 ].offset : undefined ) }
-					data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) }
-					data-aos-delay={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].delay ? kadenceAOSOptions[ 0 ].delay : undefined ) }
-					data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) }
-					data-aos-once={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && undefined !== kadenceAOSOptions[ 0 ].once && '' !== kadenceAOSOptions[ 0 ].once ? kadenceAOSOptions[ 0 ].once : undefined ) }
-					value={ content }
+					tagName={tagName}
+					id={anchor ? anchor : undefined}
+					className={classes}
+					data-kb-block={`kb-adv-heading${uniqueID}`}
+					data-aos={kadenceAnimation ? kadenceAnimation : undefined}
+					data-aos-offset={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].offset
+							? kadenceAOSOptions[0].offset
+							: undefined
+					}
+					data-aos-duration={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].duration
+							? kadenceAOSOptions[0].duration
+							: undefined
+					}
+					data-aos-delay={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].delay
+							? kadenceAOSOptions[0].delay
+							: undefined
+					}
+					data-aos-easing={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].easing
+							? kadenceAOSOptions[0].easing
+							: undefined
+					}
+					data-aos-once={
+						kadenceAOSOptions &&
+						kadenceAOSOptions[0] &&
+						undefined !== kadenceAOSOptions[0].once &&
+						'' !== kadenceAOSOptions[0].once
+							? kadenceAOSOptions[0].once
+							: undefined
+					}
+					value={content}
 				/>
 			);
 			const linkHTMLItem = (
 				<a
-					href={ link }
-					className={ 'kb-advanced-heading-link' }
-					target={ linkTarget ? '_blank' : undefined }
-					relAttr={ relAttr ? relAttr : undefined }
+					href={link}
+					className={'kb-advanced-heading-link'}
+					target={linkTarget ? '_blank' : undefined}
+					relAttr={relAttr ? relAttr : undefined}
 				>
-					{ htmlItem }
+					{htmlItem}
 				</a>
 			);
-			const readyContent = ( link ? linkHTMLItem : htmlItem );
+			const readyContent = link ? linkHTMLItem : htmlItem;
 			return (
 				<Fragment>
-					{ wrapper && (
-						<div className={ `kb-adv-heading-wrap${ uniqueID } kadence-advanced-heading-wrapper${ ( revealAnimation ? ' kadence-heading-clip-animation' : '' ) }${ ( className ? ' ' + className : '' ) }` }>
-							{ readyContent }
+					{wrapper && (
+						<div
+							className={`kb-adv-heading-wrap${uniqueID} kadence-advanced-heading-wrapper${
+								revealAnimation ? ' kadence-heading-clip-animation' : ''
+							}${className ? ' ' + className : ''}`}
+						>
+							{readyContent}
 						</div>
-					) }
-					{ ! wrapper && (
-						readyContent
-					) }
+					)}
+					{!wrapper && readyContent}
 				</Fragment>
 			);
-		}
+		},
 	},
 	{
 		attributes: {
@@ -824,11 +935,11 @@ export default [
 			},
 			tabletMargin: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			mobileMargin: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			tabletMarginType: {
 				type: 'string',
@@ -844,19 +955,19 @@ export default [
 			},
 			padding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			tabletPadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			mobilePadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			markSize: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			markSizeType: {
 				type: 'string',
@@ -864,7 +975,7 @@ export default [
 			},
 			markLineHeight: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			markLineType: {
 				type: 'string',
@@ -914,15 +1025,15 @@ export default [
 			},
 			markPadding: {
 				type: 'array',
-				default: [ 0, 0, 0, 0 ],
+				default: [0, 0, 0, 0],
 			},
 			markTabPadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			markMobilePadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			markPaddingControl: {
 				type: 'string',
@@ -965,13 +1076,15 @@ export default [
 			},
 			textShadow: {
 				type: 'array',
-				default: [ {
-					enable: false,
-					color: 'rgba(0, 0, 0, 0.2)',
-					blur: 1,
-					hOffset: 1,
-					vOffset: 1,
-				} ],
+				default: [
+					{
+						enable: false,
+						color: 'rgba(0, 0, 0, 0.2)',
+						blur: 1,
+						hOffset: 1,
+						vOffset: 1,
+					},
+				],
 			},
 			htmlTag: {
 				type: 'string',
@@ -1003,72 +1116,127 @@ export default [
 				type: 'string',
 			},
 		},
-		save: ( { attributes } ) => {
-			const { anchor, level, content, colorClass, color, textShadow, letterSpacing, topMargin, bottomMargin, marginType, align, uniqueID, className, kadenceAnimation, kadenceAOSOptions, htmlTag, link, linkNoFollow, linkSponsored, linkTarget, backgroundColorClass } = attributes;
+		save: ({ attributes }) => {
+			const {
+				anchor,
+				level,
+				content,
+				colorClass,
+				color,
+				textShadow,
+				letterSpacing,
+				topMargin,
+				bottomMargin,
+				marginType,
+				align,
+				uniqueID,
+				className,
+				kadenceAnimation,
+				kadenceAOSOptions,
+				htmlTag,
+				link,
+				linkNoFollow,
+				linkSponsored,
+				linkTarget,
+				backgroundColorClass,
+			} = attributes;
 			const tagName = htmlTag && htmlTag !== 'heading' ? htmlTag : 'h' + level;
-			const mType = ( marginType ? marginType : 'px' );
-			const textColorClass = getColorClassName( 'color', colorClass );
-			const textBackgroundColorClass = getColorClassName( 'background-color', backgroundColorClass );
-			const revealAnimation = ( kadenceAnimation && ( 'reveal-left' === kadenceAnimation || 'reveal-right' === kadenceAnimation || 'reveal-up' === kadenceAnimation || 'reveal-down' === kadenceAnimation ) ? true : false );
-			const wrapper = ( revealAnimation ? true : false );
-			const classes = classnames( {
-				[ `kt-adv-heading${ uniqueID }` ]: uniqueID,
-				[ className ]: ! wrapper && className,
-				[ getBlockDefaultClassName( 'kadence/advancedheading' ) ]: getBlockDefaultClassName( 'kadence/advancedheading' ),
-				[ textColorClass ]: textColorClass,
+			const mType = marginType ? marginType : 'px';
+			const textColorClass = getColorClassName('color', colorClass);
+			const textBackgroundColorClass = getColorClassName('background-color', backgroundColorClass);
+			const revealAnimation =
+				kadenceAnimation &&
+				('reveal-left' === kadenceAnimation ||
+					'reveal-right' === kadenceAnimation ||
+					'reveal-up' === kadenceAnimation ||
+					'reveal-down' === kadenceAnimation)
+					? true
+					: false;
+			const wrapper = revealAnimation ? true : false;
+			const classes = classnames({
+				[`kt-adv-heading${uniqueID}`]: uniqueID,
+				[className]: !wrapper && className,
+				[getBlockDefaultClassName('kadence/advancedheading')]:
+					getBlockDefaultClassName('kadence/advancedheading'),
+				[textColorClass]: textColorClass,
 				'has-text-color': textColorClass,
-				[ textBackgroundColorClass ]: textBackgroundColorClass,
+				[textBackgroundColorClass]: textBackgroundColorClass,
 				'has-background': textBackgroundColorClass,
-			} );
+			});
 			let relAttr;
-			if ( linkTarget ) {
+			if (linkTarget) {
 				relAttr = 'noopener noreferrer';
 			}
-			if ( undefined !== linkNoFollow && true === linkNoFollow ) {
-				relAttr = ( relAttr ? relAttr.concat( ' nofollow' ) : 'nofollow' );
+			if (undefined !== linkNoFollow && true === linkNoFollow) {
+				relAttr = relAttr ? relAttr.concat(' nofollow') : 'nofollow';
 			}
-			if ( undefined !== linkSponsored && true === linkSponsored ) {
-				relAttr = ( relAttr ? relAttr.concat( ' sponsored' ) : 'sponsored' );
+			if (undefined !== linkSponsored && true === linkSponsored) {
+				relAttr = relAttr ? relAttr.concat(' sponsored') : 'sponsored';
 			}
 			const htmlItem = (
 				<RichText.Content
-					tagName={ tagName }
-					id={ anchor ? anchor : undefined }
-					className={ classes }
-					data-kb-block={ `kb-adv-heading${ uniqueID }` }
-					data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) }
-					data-aos-offset={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].offset ? kadenceAOSOptions[ 0 ].offset : undefined ) }
-					data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) }
-					data-aos-delay={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].delay ? kadenceAOSOptions[ 0 ].delay : undefined ) }
-					data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) }
-					data-aos-once={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && undefined !== kadenceAOSOptions[ 0 ].once && '' !== kadenceAOSOptions[ 0 ].once ? kadenceAOSOptions[ 0 ].once : undefined ) }
-					value={ content }
+					tagName={tagName}
+					id={anchor ? anchor : undefined}
+					className={classes}
+					data-kb-block={`kb-adv-heading${uniqueID}`}
+					data-aos={kadenceAnimation ? kadenceAnimation : undefined}
+					data-aos-offset={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].offset
+							? kadenceAOSOptions[0].offset
+							: undefined
+					}
+					data-aos-duration={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].duration
+							? kadenceAOSOptions[0].duration
+							: undefined
+					}
+					data-aos-delay={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].delay
+							? kadenceAOSOptions[0].delay
+							: undefined
+					}
+					data-aos-easing={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].easing
+							? kadenceAOSOptions[0].easing
+							: undefined
+					}
+					data-aos-once={
+						kadenceAOSOptions &&
+						kadenceAOSOptions[0] &&
+						undefined !== kadenceAOSOptions[0].once &&
+						'' !== kadenceAOSOptions[0].once
+							? kadenceAOSOptions[0].once
+							: undefined
+					}
+					value={content}
 				/>
 			);
 			const linkHTMLItem = (
 				<a
-					href={ link }
-					className={ 'kb-advanced-heading-link' }
-					target={ linkTarget ? '_blank' : undefined }
-					relAttr={ relAttr ? relAttr : undefined }
+					href={link}
+					className={'kb-advanced-heading-link'}
+					target={linkTarget ? '_blank' : undefined}
+					relAttr={relAttr ? relAttr : undefined}
 				>
-					{ htmlItem }
+					{htmlItem}
 				</a>
 			);
-			const readyContent = ( link ? linkHTMLItem : htmlItem );
+			const readyContent = link ? linkHTMLItem : htmlItem;
 			return (
 				<Fragment>
-					{ wrapper && (
-						<div className={ `kb-adv-heading-wrap${ uniqueID } kadence-advanced-heading-wrapper${ ( revealAnimation ? ' kadence-heading-clip-animation' : '' ) }${ ( className ? ' ' + className : '' ) }` }>
-							{ readyContent }
+					{wrapper && (
+						<div
+							className={`kb-adv-heading-wrap${uniqueID} kadence-advanced-heading-wrapper${
+								revealAnimation ? ' kadence-heading-clip-animation' : ''
+							}${className ? ' ' + className : ''}`}
+						>
+							{readyContent}
 						</div>
-					) }
-					{ ! wrapper && (
-						readyContent
-					) }
+					)}
+					{!wrapper && readyContent}
 				</Fragment>
 			);
-		}
+		},
 	},
 	{
 		attributes: {
@@ -1169,11 +1337,11 @@ export default [
 			},
 			tabletMargin: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			mobileMargin: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			tabletMarginType: {
 				type: 'string',
@@ -1189,19 +1357,19 @@ export default [
 			},
 			padding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			tabletPadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			mobilePadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			markSize: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			markSizeType: {
 				type: 'string',
@@ -1209,7 +1377,7 @@ export default [
 			},
 			markLineHeight: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			markLineType: {
 				type: 'string',
@@ -1259,15 +1427,15 @@ export default [
 			},
 			markPadding: {
 				type: 'array',
-				default: [ 0, 0, 0, 0 ],
+				default: [0, 0, 0, 0],
 			},
 			markTabPadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			markMobilePadding: {
 				type: 'array',
-				default: [ '', '', '', '' ],
+				default: ['', '', '', ''],
 			},
 			markPaddingControl: {
 				type: 'string',
@@ -1310,13 +1478,15 @@ export default [
 			},
 			textShadow: {
 				type: 'array',
-				default: [ {
-					enable: false,
-					color: 'rgba(0, 0, 0, 0.2)',
-					blur: 1,
-					hOffset: 1,
-					vOffset: 1,
-				} ],
+				default: [
+					{
+						enable: false,
+						color: 'rgba(0, 0, 0, 0.2)',
+						blur: 1,
+						hOffset: 1,
+						vOffset: 1,
+					},
+				],
 			},
 			htmlTag: {
 				type: 'string',
@@ -1327,47 +1497,97 @@ export default [
 				default: false,
 			},
 		},
-		save: ( { attributes } ) => {
-			const { anchor, level, content, colorClass, color, textShadow, letterSpacing, topMargin, bottomMargin, marginType, align, uniqueID, className, kadenceAnimation, kadenceAOSOptions, htmlTag } = attributes;
+		save: ({ attributes }) => {
+			const {
+				anchor,
+				level,
+				content,
+				colorClass,
+				color,
+				textShadow,
+				letterSpacing,
+				topMargin,
+				bottomMargin,
+				marginType,
+				align,
+				uniqueID,
+				className,
+				kadenceAnimation,
+				kadenceAOSOptions,
+				htmlTag,
+			} = attributes;
 			const tagName = htmlTag && htmlTag !== 'heading' ? htmlTag : 'h' + level;
-			const mType = ( marginType ? marginType : 'px' );
-			const textColorClass = getColorClassName( 'color', colorClass );
-			const revealAnimation = ( kadenceAnimation && ( 'reveal-left' === kadenceAnimation || 'reveal-right' === kadenceAnimation || 'reveal-up' === kadenceAnimation || 'reveal-down' === kadenceAnimation ) ? true : false );
-			const wrapper = ( revealAnimation ? true : false );
-			const classes = classnames( {
-				[ `kt-adv-heading${ uniqueID }` ]: uniqueID,
-				[ className ]: ! wrapper && className,
-				[ getBlockDefaultClassName( 'kadence/advancedheading' ) ]: getBlockDefaultClassName( 'kadence/advancedheading' ),
-				[ textColorClass ]: textColorClass,
-			} );
+			const mType = marginType ? marginType : 'px';
+			const textColorClass = getColorClassName('color', colorClass);
+			const revealAnimation =
+				kadenceAnimation &&
+				('reveal-left' === kadenceAnimation ||
+					'reveal-right' === kadenceAnimation ||
+					'reveal-up' === kadenceAnimation ||
+					'reveal-down' === kadenceAnimation)
+					? true
+					: false;
+			const wrapper = revealAnimation ? true : false;
+			const classes = classnames({
+				[`kt-adv-heading${uniqueID}`]: uniqueID,
+				[className]: !wrapper && className,
+				[getBlockDefaultClassName('kadence/advancedheading')]:
+					getBlockDefaultClassName('kadence/advancedheading'),
+				[textColorClass]: textColorClass,
+			});
 			const htmlItem = (
 				<RichText.Content
-					tagName={ tagName }
-					id={ anchor ? anchor : undefined }
-					className={ classes }
-					data-kb-block={ `kb-adv-heading${ uniqueID }` }
-					data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) }
-					data-aos-offset={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].offset ? kadenceAOSOptions[ 0 ].offset : undefined ) }
-					data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) }
-					data-aos-delay={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].delay ? kadenceAOSOptions[ 0 ].delay : undefined ) }
-					data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) }
-					data-aos-once={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && undefined !== kadenceAOSOptions[ 0 ].once && '' !== kadenceAOSOptions[ 0 ].once ? kadenceAOSOptions[ 0 ].once : undefined ) }
-					value={ content }
+					tagName={tagName}
+					id={anchor ? anchor : undefined}
+					className={classes}
+					data-kb-block={`kb-adv-heading${uniqueID}`}
+					data-aos={kadenceAnimation ? kadenceAnimation : undefined}
+					data-aos-offset={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].offset
+							? kadenceAOSOptions[0].offset
+							: undefined
+					}
+					data-aos-duration={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].duration
+							? kadenceAOSOptions[0].duration
+							: undefined
+					}
+					data-aos-delay={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].delay
+							? kadenceAOSOptions[0].delay
+							: undefined
+					}
+					data-aos-easing={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].easing
+							? kadenceAOSOptions[0].easing
+							: undefined
+					}
+					data-aos-once={
+						kadenceAOSOptions &&
+						kadenceAOSOptions[0] &&
+						undefined !== kadenceAOSOptions[0].once &&
+						'' !== kadenceAOSOptions[0].once
+							? kadenceAOSOptions[0].once
+							: undefined
+					}
+					value={content}
 				/>
 			);
 			return (
 				<Fragment>
-					{ wrapper && (
-						<div className={ `kb-adv-heading-wrap${ uniqueID } kadence-advanced-heading-wrapper${ ( revealAnimation ? ' kadence-heading-clip-animation' : '' ) }${ ( className ? ' ' + className : '' ) }` }>
-							{ htmlItem }
+					{wrapper && (
+						<div
+							className={`kb-adv-heading-wrap${uniqueID} kadence-advanced-heading-wrapper${
+								revealAnimation ? ' kadence-heading-clip-animation' : ''
+							}${className ? ' ' + className : ''}`}
+						>
+							{htmlItem}
 						</div>
-					) }
-					{ ! wrapper && (
-						htmlItem
-					) }
+					)}
+					{!wrapper && htmlItem}
 				</Fragment>
 			);
-		}
+		},
 	},
 	{
 		attributes: {
@@ -1460,7 +1680,7 @@ export default [
 			},
 			markSize: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			markSizeType: {
 				type: 'string',
@@ -1468,7 +1688,7 @@ export default [
 			},
 			markLineHeight: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			markLineType: {
 				type: 'string',
@@ -1518,7 +1738,7 @@ export default [
 			},
 			markPadding: {
 				type: 'array',
-				default: [ 0, 0, 0, 0 ],
+				default: [0, 0, 0, 0],
 			},
 			markPaddingControl: {
 				type: 'string',
@@ -1555,13 +1775,15 @@ export default [
 			},
 			textShadow: {
 				type: 'array',
-				default: [ {
-					enable: false,
-					color: 'rgba(0, 0, 0, 0.2)',
-					blur: 1,
-					hOffset: 1,
-					vOffset: 1,
-				} ],
+				default: [
+					{
+						enable: false,
+						color: 'rgba(0, 0, 0, 0.2)',
+						blur: 1,
+						hOffset: 1,
+						vOffset: 1,
+					},
+				],
 			},
 			htmlTag: {
 				type: 'string',
@@ -1572,65 +1794,133 @@ export default [
 			},
 			kadenceAOSOptions: {
 				type: 'array',
-				default: [ {
-					duration: '',
-					offset: '',
-					easing: '',
-					once: '',
-					delay: '',
-					delayOffset: '',
-				} ],
+				default: [
+					{
+						duration: '',
+						offset: '',
+						easing: '',
+						once: '',
+						delay: '',
+						delayOffset: '',
+					},
+				],
 			},
 		},
-		save: ( { attributes } ) => {
-			const { anchor, align, level, content, color, colorClass, textShadow, uniqueID, letterSpacing, topMargin, bottomMargin, marginType, className, kadenceAnimation, kadenceAOSOptions, htmlTag } = attributes;
+		save: ({ attributes }) => {
+			const {
+				anchor,
+				align,
+				level,
+				content,
+				color,
+				colorClass,
+				textShadow,
+				uniqueID,
+				letterSpacing,
+				topMargin,
+				bottomMargin,
+				marginType,
+				className,
+				kadenceAnimation,
+				kadenceAOSOptions,
+				htmlTag,
+			} = attributes;
 			//const tagName = 'h' + level;
 			const tagName = htmlTag && htmlTag !== 'heading' ? htmlTag : 'h' + level;
-			const textColorClass = getColorClassName( 'color', colorClass );
-			const mType = ( marginType ? marginType : 'px' );
-			let tagId = ( anchor ? anchor : `kt-adv-heading${ uniqueID }` );
-			const revealAnimation = ( kadenceAnimation && ( 'reveal-left' === kadenceAnimation || 'reveal-right' === kadenceAnimation || 'reveal-up' === kadenceAnimation || 'reveal-down' === kadenceAnimation ) ? true : false );
-			const wrapper = ( anchor || revealAnimation ? true : false );
-			tagId = ( revealAnimation && ! anchor ? `kt-adv-inner-heading${ uniqueID }` : tagId );
+			const textColorClass = getColorClassName('color', colorClass);
+			const mType = marginType ? marginType : 'px';
+			let tagId = anchor ? anchor : `kt-adv-heading${uniqueID}`;
+			const revealAnimation =
+				kadenceAnimation &&
+				('reveal-left' === kadenceAnimation ||
+					'reveal-right' === kadenceAnimation ||
+					'reveal-up' === kadenceAnimation ||
+					'reveal-down' === kadenceAnimation)
+					? true
+					: false;
+			const wrapper = anchor || revealAnimation ? true : false;
+			tagId = revealAnimation && !anchor ? `kt-adv-inner-heading${uniqueID}` : tagId;
 			//const classes = ( ! wrapper && className ? `${ className } ${ getBlockDefaultClassName( 'kadence/advancedheading' ) }` : getBlockDefaultClassName( 'kadence/advancedheading' ) );
-			const classes = classnames( {
-				[ `kt-adv-heading${ uniqueID }` ]: uniqueID,
-				[ className ]: ! wrapper && className,
-				[ getBlockDefaultClassName( 'kadence/advancedheading' ) ]: getBlockDefaultClassName( 'kadence/advancedheading' ),
-				[ textColorClass ]: textColorClass,
-			} );
+			const classes = classnames({
+				[`kt-adv-heading${uniqueID}`]: uniqueID,
+				[className]: !wrapper && className,
+				[getBlockDefaultClassName('kadence/advancedheading')]:
+					getBlockDefaultClassName('kadence/advancedheading'),
+				[textColorClass]: textColorClass,
+			});
 			const htmlItem = (
 				<RichText.Content
-					tagName={ tagName }
-					id={ tagId }
-					className={ classes }
-					data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) }
-					data-aos-offset={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].offset ? kadenceAOSOptions[ 0 ].offset : undefined ) }
-					data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) }
-					data-aos-delay={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].delay ? kadenceAOSOptions[ 0 ].delay : undefined ) }
-					data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) }
-					data-aos-once={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && undefined !== kadenceAOSOptions[ 0 ].once && '' !== kadenceAOSOptions[ 0 ].once ? kadenceAOSOptions[ 0 ].once : undefined ) }
-					style={ {
+					tagName={tagName}
+					id={tagId}
+					className={classes}
+					data-aos={kadenceAnimation ? kadenceAnimation : undefined}
+					data-aos-offset={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].offset
+							? kadenceAOSOptions[0].offset
+							: undefined
+					}
+					data-aos-duration={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].duration
+							? kadenceAOSOptions[0].duration
+							: undefined
+					}
+					data-aos-delay={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].delay
+							? kadenceAOSOptions[0].delay
+							: undefined
+					}
+					data-aos-easing={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].easing
+							? kadenceAOSOptions[0].easing
+							: undefined
+					}
+					data-aos-once={
+						kadenceAOSOptions &&
+						kadenceAOSOptions[0] &&
+						undefined !== kadenceAOSOptions[0].once &&
+						'' !== kadenceAOSOptions[0].once
+							? kadenceAOSOptions[0].once
+							: undefined
+					}
+					style={{
 						textAlign: align,
-						color: ! textColorClass && color ? KadenceColorOutput( color ) : undefined,
-						letterSpacing: ( letterSpacing ? letterSpacing + 'px' : undefined ),
-						marginTop: ( undefined !== topMargin && '' !== topMargin ? topMargin + mType : undefined ),
-						marginBottom: ( undefined !== bottomMargin && '' !== bottomMargin ? bottomMargin + mType : undefined ),
-						textShadow: ( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].enable && textShadow[ 0 ].enable ? ( undefined !== textShadow[ 0 ].hOffset ? textShadow[ 0 ].hOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].vOffset ? textShadow[ 0 ].vOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].blur ? textShadow[ 0 ].blur : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].color ? KadenceColorOutput( textShadow[ 0 ].color ) : 'rgba(0,0,0,0.2)' ) : undefined ),
-					} }
-					value={ content }
+						color: !textColorClass && color ? KadenceColorOutput(color) : undefined,
+						letterSpacing: letterSpacing ? letterSpacing + 'px' : undefined,
+						marginTop: undefined !== topMargin && '' !== topMargin ? topMargin + mType : undefined,
+						marginBottom:
+							undefined !== bottomMargin && '' !== bottomMargin ? bottomMargin + mType : undefined,
+						textShadow:
+							undefined !== textShadow &&
+							undefined !== textShadow[0] &&
+							undefined !== textShadow[0].enable &&
+							textShadow[0].enable
+								? (undefined !== textShadow[0].hOffset ? textShadow[0].hOffset : 1) +
+								  'px ' +
+								  (undefined !== textShadow[0].vOffset ? textShadow[0].vOffset : 1) +
+								  'px ' +
+								  (undefined !== textShadow[0].blur ? textShadow[0].blur : 1) +
+								  'px ' +
+								  (undefined !== textShadow[0].color
+										? KadenceColorOutput(textShadow[0].color)
+										: 'rgba(0,0,0,0.2)')
+								: undefined,
+					}}
+					value={content}
 				/>
 			);
 			return (
 				<Fragment>
-					{ wrapper && (
-						<div id={ `kt-adv-heading${ uniqueID }` } className={ `kadence-advanced-heading-wrapper${ ( revealAnimation ? ' kadence-heading-clip-animation' : '' ) }${ ( className ? ' ' + className : '' ) }` }>
-							{ htmlItem }
+					{wrapper && (
+						<div
+							id={`kt-adv-heading${uniqueID}`}
+							className={`kadence-advanced-heading-wrapper${
+								revealAnimation ? ' kadence-heading-clip-animation' : ''
+							}${className ? ' ' + className : ''}`}
+						>
+							{htmlItem}
 						</div>
-					) }
-					{ ! wrapper && (
-						htmlItem
-					) }
+					)}
+					{!wrapper && htmlItem}
 				</Fragment>
 			);
 		},
@@ -1726,7 +2016,7 @@ export default [
 			},
 			markSize: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			markSizeType: {
 				type: 'string',
@@ -1734,7 +2024,7 @@ export default [
 			},
 			markLineHeight: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			markLineType: {
 				type: 'string',
@@ -1784,7 +2074,7 @@ export default [
 			},
 			markPadding: {
 				type: 'array',
-				default: [ 0, 0, 0, 0 ],
+				default: [0, 0, 0, 0],
 			},
 			markPaddingControl: {
 				type: 'string',
@@ -1817,46 +2107,96 @@ export default [
 				type: 'string',
 			},
 		},
-		save: ( { attributes } ) => {
-			const { anchor, align, level, content, color, uniqueID, letterSpacing, topMargin, bottomMargin, marginType, className, kadenceAnimation, kadenceAOSOptions } = attributes;
+		save: ({ attributes }) => {
+			const {
+				anchor,
+				align,
+				level,
+				content,
+				color,
+				uniqueID,
+				letterSpacing,
+				topMargin,
+				bottomMargin,
+				marginType,
+				className,
+				kadenceAnimation,
+				kadenceAOSOptions,
+			} = attributes;
 			const tagName = 'h' + level;
-			const mType = ( marginType ? marginType : 'px' );
-			let tagId = ( anchor ? anchor : `kt-adv-heading${ uniqueID }` );
-			const revealAnimation = ( kadenceAnimation && ( 'reveal-left' === kadenceAnimation || 'reveal-right' === kadenceAnimation || 'reveal-up' === kadenceAnimation || 'reveal-down' === kadenceAnimation ) ? true : false );
-			const wrapper = ( anchor || revealAnimation ? true : false );
-			tagId = ( revealAnimation && ! anchor ? `kt-adv-inner-heading${ uniqueID }` : tagId );
-			const classes = ( className ? `${ className } ${ getBlockDefaultClassName( 'kadence/advancedheading' ) }` : getBlockDefaultClassName( 'kadence/advancedheading' ) );
+			const mType = marginType ? marginType : 'px';
+			let tagId = anchor ? anchor : `kt-adv-heading${uniqueID}`;
+			const revealAnimation =
+				kadenceAnimation &&
+				('reveal-left' === kadenceAnimation ||
+					'reveal-right' === kadenceAnimation ||
+					'reveal-up' === kadenceAnimation ||
+					'reveal-down' === kadenceAnimation)
+					? true
+					: false;
+			const wrapper = anchor || revealAnimation ? true : false;
+			tagId = revealAnimation && !anchor ? `kt-adv-inner-heading${uniqueID}` : tagId;
+			const classes = className
+				? `${className} ${getBlockDefaultClassName('kadence/advancedheading')}`
+				: getBlockDefaultClassName('kadence/advancedheading');
 			const htmlItem = (
 				<RichText.Content
-					tagName={ tagName }
-					id={ tagId }
-					className={ `kt-adv-heading${ uniqueID } ${ classes }` }
-					data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) }
-					data-aos-offset={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].offset ? kadenceAOSOptions[ 0 ].offset : undefined ) }
-					data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) }
-					data-aos-delay={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].delay ? kadenceAOSOptions[ 0 ].delay : undefined ) }
-					data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) }
-					data-aos-once={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && undefined !== kadenceAOSOptions[ 0 ].once && '' !== kadenceAOSOptions[ 0 ].once ? kadenceAOSOptions[ 0 ].once : undefined ) }
-					style={ {
+					tagName={tagName}
+					id={tagId}
+					className={`kt-adv-heading${uniqueID} ${classes}`}
+					data-aos={kadenceAnimation ? kadenceAnimation : undefined}
+					data-aos-offset={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].offset
+							? kadenceAOSOptions[0].offset
+							: undefined
+					}
+					data-aos-duration={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].duration
+							? kadenceAOSOptions[0].duration
+							: undefined
+					}
+					data-aos-delay={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].delay
+							? kadenceAOSOptions[0].delay
+							: undefined
+					}
+					data-aos-easing={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].easing
+							? kadenceAOSOptions[0].easing
+							: undefined
+					}
+					data-aos-once={
+						kadenceAOSOptions &&
+						kadenceAOSOptions[0] &&
+						undefined !== kadenceAOSOptions[0].once &&
+						'' !== kadenceAOSOptions[0].once
+							? kadenceAOSOptions[0].once
+							: undefined
+					}
+					style={{
 						textAlign: align,
 						color: color,
-						letterSpacing: ( letterSpacing ? letterSpacing + 'px' : undefined ),
-						marginTop: ( undefined !== topMargin && '' !== topMargin ? topMargin + mType : undefined ),
-						marginBottom: ( undefined !== bottomMargin && '' !== bottomMargin ? bottomMargin + mType : undefined ),
-					} }
-					value={ content }
+						letterSpacing: letterSpacing ? letterSpacing + 'px' : undefined,
+						marginTop: undefined !== topMargin && '' !== topMargin ? topMargin + mType : undefined,
+						marginBottom:
+							undefined !== bottomMargin && '' !== bottomMargin ? bottomMargin + mType : undefined,
+					}}
+					value={content}
 				/>
 			);
 			return (
 				<Fragment>
-					{ wrapper && (
-						<div id={ `kt-adv-heading${ uniqueID }` } className={ `kadence-advanced-heading-wrapper${ ( revealAnimation ? ' kadence-heading-clip-animation' : '' ) }` }>
-							{ htmlItem }
+					{wrapper && (
+						<div
+							id={`kt-adv-heading${uniqueID}`}
+							className={`kadence-advanced-heading-wrapper${
+								revealAnimation ? ' kadence-heading-clip-animation' : ''
+							}`}
+						>
+							{htmlItem}
 						</div>
-					) }
-					{ ! wrapper && (
-						htmlItem
-					) }
+					)}
+					{!wrapper && htmlItem}
 				</Fragment>
 			);
 		},
@@ -1952,7 +2292,7 @@ export default [
 			},
 			markSize: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			markSizeType: {
 				type: 'string',
@@ -1960,7 +2300,7 @@ export default [
 			},
 			markLineHeight: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			markLineType: {
 				type: 'string',
@@ -2010,7 +2350,7 @@ export default [
 			},
 			markPadding: {
 				type: 'array',
-				default: [ 0, 0, 0, 0 ],
+				default: [0, 0, 0, 0],
 			},
 			markPaddingControl: {
 				type: 'string',
@@ -2043,46 +2383,95 @@ export default [
 				type: 'string',
 			},
 		},
-		save: ( { attributes } ) => {
-			const { anchor, align, level, content, color, uniqueID, letterSpacing, topMargin, bottomMargin, marginType, className, kadenceAnimation, kadenceAOSOptions } = attributes;
+		save: ({ attributes }) => {
+			const {
+				anchor,
+				align,
+				level,
+				content,
+				color,
+				uniqueID,
+				letterSpacing,
+				topMargin,
+				bottomMargin,
+				marginType,
+				className,
+				kadenceAnimation,
+				kadenceAOSOptions,
+			} = attributes;
 			const tagName = 'h' + level;
-			const mType = ( marginType ? marginType : 'px' );
-			let tagId = ( anchor ? anchor : `kt-adv-heading${ uniqueID }` );
-			const revealAnimation = ( kadenceAnimation && ( 'reveal-left' === kadenceAnimation || 'reveal-right' === kadenceAnimation || 'reveal-up' === kadenceAnimation || 'reveal-down' === kadenceAnimation ) ? true : false );
-			const wrapper = ( anchor || revealAnimation ? true : false );
-			tagId = ( revealAnimation && ! anchor ? `kt-adv-inner-heading${ uniqueID }` : tagId );
-			const classes = ( className ? `${ className } ${ getBlockDefaultClassName( 'kadence/advancedheading' ) }` : getBlockDefaultClassName( 'kadence/advancedheading' ) );
+			const mType = marginType ? marginType : 'px';
+			let tagId = anchor ? anchor : `kt-adv-heading${uniqueID}`;
+			const revealAnimation =
+				kadenceAnimation &&
+				('reveal-left' === kadenceAnimation ||
+					'reveal-right' === kadenceAnimation ||
+					'reveal-up' === kadenceAnimation ||
+					'reveal-down' === kadenceAnimation)
+					? true
+					: false;
+			const wrapper = anchor || revealAnimation ? true : false;
+			tagId = revealAnimation && !anchor ? `kt-adv-inner-heading${uniqueID}` : tagId;
+			const classes = className
+				? `${className} ${getBlockDefaultClassName('kadence/advancedheading')}`
+				: getBlockDefaultClassName('kadence/advancedheading');
 			const htmlItem = (
 				<RichText.Content
-					tagName={ tagName }
-					id={ tagId }
-					className={ `kt-adv-heading${ uniqueID } ${ classes }` }
-					data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) }
-					data-aos-offset={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].offset ? kadenceAOSOptions[ 0 ].offset : undefined ) }
-					data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) }
-					data-aos-delay={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].delay ? kadenceAOSOptions[ 0 ].delay : undefined ) }
-					data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) }
-					data-aos-once={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && undefined !== kadenceAOSOptions[ 0 ].once && '' !== kadenceAOSOptions[ 0 ].once ? kadenceAOSOptions[ 0 ].once : undefined ) }
-					style={ {
+					tagName={tagName}
+					id={tagId}
+					className={`kt-adv-heading${uniqueID} ${classes}`}
+					data-aos={kadenceAnimation ? kadenceAnimation : undefined}
+					data-aos-offset={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].offset
+							? kadenceAOSOptions[0].offset
+							: undefined
+					}
+					data-aos-duration={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].duration
+							? kadenceAOSOptions[0].duration
+							: undefined
+					}
+					data-aos-delay={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].delay
+							? kadenceAOSOptions[0].delay
+							: undefined
+					}
+					data-aos-easing={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].easing
+							? kadenceAOSOptions[0].easing
+							: undefined
+					}
+					data-aos-once={
+						kadenceAOSOptions &&
+						kadenceAOSOptions[0] &&
+						undefined !== kadenceAOSOptions[0].once &&
+						'' !== kadenceAOSOptions[0].once
+							? kadenceAOSOptions[0].once
+							: undefined
+					}
+					style={{
 						textAlign: align,
 						color: color,
-						letterSpacing: ( letterSpacing ? letterSpacing + 'px' : undefined ),
-						marginTop: ( topMargin ? topMargin + mType : undefined ),
-						marginBottom: ( bottomMargin ? bottomMargin + mType : undefined ),
-					} }
-					value={ content }
+						letterSpacing: letterSpacing ? letterSpacing + 'px' : undefined,
+						marginTop: topMargin ? topMargin + mType : undefined,
+						marginBottom: bottomMargin ? bottomMargin + mType : undefined,
+					}}
+					value={content}
 				/>
 			);
 			return (
 				<Fragment>
-					{ wrapper && (
-						<div id={ `kt-adv-heading${ uniqueID }` } className={ `kadence-advanced-heading-wrapper${ ( revealAnimation ? ' kadence-heading-clip-animation' : '' ) }` }>
-							{ htmlItem }
+					{wrapper && (
+						<div
+							id={`kt-adv-heading${uniqueID}`}
+							className={`kadence-advanced-heading-wrapper${
+								revealAnimation ? ' kadence-heading-clip-animation' : ''
+							}`}
+						>
+							{htmlItem}
 						</div>
-					) }
-					{ ! wrapper && (
-						htmlItem
-					) }
+					)}
+					{!wrapper && htmlItem}
 				</Fragment>
 			);
 		},
@@ -2178,7 +2567,7 @@ export default [
 			},
 			markSize: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			markSizeType: {
 				type: 'string',
@@ -2186,7 +2575,7 @@ export default [
 			},
 			markLineHeight: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			markLineType: {
 				type: 'string',
@@ -2236,7 +2625,7 @@ export default [
 			},
 			markPadding: {
 				type: 'array',
-				default: [ 0, 0, 0, 0 ],
+				default: [0, 0, 0, 0],
 			},
 			markPaddingControl: {
 				type: 'string',
@@ -2261,46 +2650,95 @@ export default [
 				type: 'string',
 			},
 		},
-		save: ( { attributes } ) => {
-			const { anchor, align, level, content, color, uniqueID, letterSpacing, topMargin, bottomMargin, marginType, className, kadenceAnimation, kadenceAOSOptions } = attributes;
+		save: ({ attributes }) => {
+			const {
+				anchor,
+				align,
+				level,
+				content,
+				color,
+				uniqueID,
+				letterSpacing,
+				topMargin,
+				bottomMargin,
+				marginType,
+				className,
+				kadenceAnimation,
+				kadenceAOSOptions,
+			} = attributes;
 			const tagName = 'h' + level;
-			const mType = ( marginType ? marginType : 'px' );
-			let tagId = ( anchor ? anchor : `kt-adv-heading${ uniqueID }` );
-			const revealAnimation = ( kadenceAnimation && ( 'reveal-left' === kadenceAnimation || 'reveal-right' === kadenceAnimation || 'reveal-up' === kadenceAnimation || 'reveal-down' === kadenceAnimation ) ? true : false );
-			const wrapper = ( anchor || revealAnimation ? true : false );
-			tagId = ( revealAnimation && ! anchor ? `kt-adv-inner-heading${ uniqueID }` : `kt-adv-heading${ uniqueID }` );
-			const classes = ( className ? `${ className } ${ getBlockDefaultClassName( 'kadence/advancedheading' ) }` : getBlockDefaultClassName( 'kadence/advancedheading' ) );
+			const mType = marginType ? marginType : 'px';
+			let tagId = anchor ? anchor : `kt-adv-heading${uniqueID}`;
+			const revealAnimation =
+				kadenceAnimation &&
+				('reveal-left' === kadenceAnimation ||
+					'reveal-right' === kadenceAnimation ||
+					'reveal-up' === kadenceAnimation ||
+					'reveal-down' === kadenceAnimation)
+					? true
+					: false;
+			const wrapper = anchor || revealAnimation ? true : false;
+			tagId = revealAnimation && !anchor ? `kt-adv-inner-heading${uniqueID}` : `kt-adv-heading${uniqueID}`;
+			const classes = className
+				? `${className} ${getBlockDefaultClassName('kadence/advancedheading')}`
+				: getBlockDefaultClassName('kadence/advancedheading');
 			const htmlItem = (
 				<RichText.Content
-					tagName={ tagName }
-					id={ tagId }
-					className={ `kt-adv-heading${ uniqueID } ${ classes }` }
-					data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) }
-					data-aos-offset={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].offset ? kadenceAOSOptions[ 0 ].offset : undefined ) }
-					data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) }
-					data-aos-delay={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].delay ? kadenceAOSOptions[ 0 ].delay : undefined ) }
-					data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) }
-					data-aos-once={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && undefined !== kadenceAOSOptions[ 0 ].once && '' !== kadenceAOSOptions[ 0 ].once ? kadenceAOSOptions[ 0 ].once : undefined ) }
-					style={ {
+					tagName={tagName}
+					id={tagId}
+					className={`kt-adv-heading${uniqueID} ${classes}`}
+					data-aos={kadenceAnimation ? kadenceAnimation : undefined}
+					data-aos-offset={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].offset
+							? kadenceAOSOptions[0].offset
+							: undefined
+					}
+					data-aos-duration={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].duration
+							? kadenceAOSOptions[0].duration
+							: undefined
+					}
+					data-aos-delay={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].delay
+							? kadenceAOSOptions[0].delay
+							: undefined
+					}
+					data-aos-easing={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].easing
+							? kadenceAOSOptions[0].easing
+							: undefined
+					}
+					data-aos-once={
+						kadenceAOSOptions &&
+						kadenceAOSOptions[0] &&
+						undefined !== kadenceAOSOptions[0].once &&
+						'' !== kadenceAOSOptions[0].once
+							? kadenceAOSOptions[0].once
+							: undefined
+					}
+					style={{
 						textAlign: align,
 						color: color,
-						letterSpacing: ( letterSpacing ? letterSpacing + 'px' : undefined ),
-						marginTop: ( topMargin ? topMargin + mType : undefined ),
-						marginBottom: ( bottomMargin ? bottomMargin + mType : undefined ),
-					} }
-					value={ content }
+						letterSpacing: letterSpacing ? letterSpacing + 'px' : undefined,
+						marginTop: topMargin ? topMargin + mType : undefined,
+						marginBottom: bottomMargin ? bottomMargin + mType : undefined,
+					}}
+					value={content}
 				/>
 			);
 			return (
 				<Fragment>
-					{ wrapper && (
-						<div id={ `kt-adv-heading${ uniqueID }` } className={ `kadence-advanced-heading-wrapper${ ( revealAnimation ? ' kadence-heading-clip-animation' : '' ) }` }>
-							{ htmlItem }
+					{wrapper && (
+						<div
+							id={`kt-adv-heading${uniqueID}`}
+							className={`kadence-advanced-heading-wrapper${
+								revealAnimation ? ' kadence-heading-clip-animation' : ''
+							}`}
+						>
+							{htmlItem}
 						</div>
-					) }
-					{ ! wrapper && (
-						htmlItem
-					) }
+					)}
+					{!wrapper && htmlItem}
 				</Fragment>
 			);
 		},
@@ -2396,7 +2834,7 @@ export default [
 			},
 			markSize: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			markSizeType: {
 				type: 'string',
@@ -2404,7 +2842,7 @@ export default [
 			},
 			markLineHeight: {
 				type: 'array',
-				default: [ '', '', '' ],
+				default: ['', '', ''],
 			},
 			markLineType: {
 				type: 'string',
@@ -2454,7 +2892,7 @@ export default [
 			},
 			markPadding: {
 				type: 'array',
-				default: [ 0, 0, 0, 0 ],
+				default: [0, 0, 0, 0],
 			},
 			markPaddingControl: {
 				type: 'string',
@@ -2476,22 +2914,23 @@ export default [
 				default: 'solid',
 			},
 		},
-		save: ( { attributes } ) => {
-			const { align, level, content, color, uniqueID, letterSpacing, topMargin, bottomMargin, marginType } = attributes;
+		save: ({ attributes }) => {
+			const { align, level, content, color, uniqueID, letterSpacing, topMargin, bottomMargin, marginType } =
+				attributes;
 			const tagName = 'h' + level;
-			const mType = ( marginType ? marginType : 'px' );
+			const mType = marginType ? marginType : 'px';
 			return (
 				<RichText.Content
-					tagName={ tagName }
-					id={ `kt-adv-heading${ uniqueID }` }
-					style={ {
+					tagName={tagName}
+					id={`kt-adv-heading${uniqueID}`}
+					style={{
 						textAlign: align,
 						color: color,
-						letterSpacing: ( letterSpacing ? letterSpacing + 'px' : undefined ),
-						marginTop: ( topMargin ? topMargin + mType : undefined ),
-						marginBottom: ( bottomMargin ? bottomMargin + mType : undefined ),
-					} }
-					value={ content }
+						letterSpacing: letterSpacing ? letterSpacing + 'px' : undefined,
+						marginTop: topMargin ? topMargin + mType : undefined,
+						marginBottom: bottomMargin ? bottomMargin + mType : undefined,
+					}}
+					value={content}
 				/>
 			);
 		},
@@ -2574,19 +3013,19 @@ export default [
 				default: 'normal',
 			},
 		},
-		save: ( { attributes } ) => {
+		save: ({ attributes }) => {
 			const { align, level, content, color, uniqueID, letterSpacing } = attributes;
 			const tagName = 'h' + level;
 			return (
 				<RichText.Content
-					tagName={ tagName }
-					id={ `kt-adv-heading${ uniqueID }` }
-					style={ {
+					tagName={tagName}
+					id={`kt-adv-heading${uniqueID}`}
+					style={{
 						textAlign: align,
 						color: color,
-						letterSpacing: ( letterSpacing ? letterSpacing + 'px' : undefined ),
-					} }
-					value={ content }
+						letterSpacing: letterSpacing ? letterSpacing + 'px' : undefined,
+					}}
+					value={content}
 				/>
 			);
 		},

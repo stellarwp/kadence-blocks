@@ -1,7 +1,7 @@
 import { LOCATION_ONLINE_ONLY } from '../constants';
 
 export function useAiWizardHelper(state, pages) {
-	if (! state) {
+	if (!state) {
 		throw new Error('useAiWizardHelper requires state');
 	}
 
@@ -13,11 +13,13 @@ export function useAiWizardHelper(state, pages) {
 	 * @return {string[]}
 	 */
 	function getCurrentPageRequiredFields(currentPage) {
-		if (! Array.isArray(pages)) {
+		if (!Array.isArray(pages)) {
 			return [];
 		}
 
-		return pages[currentPage || state.currentPageIndex]?.required ? pages[currentPage || state.currentPageIndex]?.required : [];
+		return pages[currentPage || state.currentPageIndex]?.required
+			? pages[currentPage || state.currentPageIndex]?.required
+			: [];
 	}
 
 	/**
@@ -41,13 +43,13 @@ export function useAiWizardHelper(state, pages) {
 
 			// Return field if boolean value is true.
 			if (typeof state[field] === 'boolean') {
-				return !! state[field];
+				return !!state[field];
 			}
 		});
 
 		// Return only fields that are missing from requiredFields - this are missing.
 		return requiredFields.filter((field) => {
-			return ! populatedFields.includes(field);
+			return !populatedFields.includes(field);
 		});
 	}
 
@@ -57,27 +59,21 @@ export function useAiWizardHelper(state, pages) {
 	 * @return {boolean}
 	 */
 	function isForwardButtonDisabled() {
-		const {
-			currentPageIndex,
-			locationType,
-			locationInput,
-			keywords,
-			missionStatement,
-		} = state;
+		const { currentPageIndex, locationType, locationInput, keywords, missionStatement } = state;
 		const missing = getMissingFields();
 		const pageId = pages?.[currentPageIndex]?.id;
 
-		switch(pageId) {
+		switch (pageId) {
 			case 'industry-information':
-				return (missing.length > 0 || locationType !== LOCATION_ONLINE_ONLY && ! locationInput);
+				return missing.length > 0 || (locationType !== LOCATION_ONLINE_ONLY && !locationInput);
 			case 'about-your-site':
 				const missionLength = missionStatement.length >= 200 && missionStatement.length < 1500 ? false : true;
 
-				return (missionLength || missing.length > 0) ? true : false;
+				return missionLength || missing.length > 0 ? true : false;
 			case 'the-details':
 				const missingKeywords = keywords.length >= 5 ? false : true;
 
-				return (missingKeywords || missing.length > 0) ? true : false;
+				return missingKeywords || missing.length > 0 ? true : false;
 			default:
 				return missing.length > 0 ? true : false;
 		}
@@ -95,6 +91,6 @@ export function useAiWizardHelper(state, pages) {
 
 	return {
 		isForwardButtonDisabled,
-		isFinishButtonDisabled
-	}
+		isFinishButtonDisabled,
+	};
 }

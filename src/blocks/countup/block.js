@@ -46,15 +46,15 @@ import { __, _x } from '@wordpress/i18n';
  * @return {?WPBlock}          The block, if it has been successfully
  *                             registered; otherwise `undefined`.
  */
-registerBlockType( 'kadence/countup', {
+registerBlockType('kadence/countup', {
 	...metadata,
-	title: _x( 'Count Up', 'block title', 'kadence-blocks' ),
-	description: _x( 'An animated count up or down to a specific value.', 'block description', 'kadence-blocks' ),
+	title: _x('Count Up', 'block title', 'kadence-blocks'),
+	description: _x('An animated count up or down to a specific value.', 'block description', 'kadence-blocks'),
 	keywords: [
-		__( 'count down', 'kadence-blocks' ),
-		__( 'count up', 'kadence-blocks' ),
-		__( 'counter', 'kadence-blocks' ),
-		__( 'number', 'kadence-blocks' ),
+		__('count down', 'kadence-blocks'),
+		__('count up', 'kadence-blocks'),
+		__('counter', 'kadence-blocks'),
+		__('number', 'kadence-blocks'),
 		'KB',
 	],
 	icon: {
@@ -65,7 +65,7 @@ registerBlockType( 'kadence/countup', {
 	deprecated,
 	example: {
 		attributes: {
-			title: __( 'My count up title', 'kadence-blocks' ),
-		}
-	}
-} );
+			title: __('My count up title', 'kadence-blocks'),
+		},
+	},
+});

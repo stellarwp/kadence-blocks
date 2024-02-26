@@ -4,9 +4,7 @@
 	"title": "Countdown Timer",
 	"name": "kadence/countdown-timer",
 	"category": "kadence-blocks",
-	"parent": [
-		"kadence/countdown"
-	],
+	"parent": ["kadence/countdown"],
 	"description": "",
 	"attributes": {
 		"uniqueID": {

@@ -9,6 +9,5 @@ import { CheckboxControl as CoreCheckboxControl } from '@wordpress/components';
 import './checkbox-control.scss';
 
 export function CheckboxControl(props) {
-	return <CoreCheckboxControl className={ 'stellarwp' } { ...props } />;
+	return <CoreCheckboxControl className={'stellarwp'} {...props} />;
 }
-

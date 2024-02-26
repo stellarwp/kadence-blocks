@@ -13,7 +13,7 @@
 		"kbMetadata": true
 	},
 	"textdomain": "kadence-blocks",
-	"keywords": [ "header", "footer", "navigation" ],
+	"keywords": ["header", "footer", "navigation"],
 	"attributes": {
 		"uniqueID": {
 			"type": "string"

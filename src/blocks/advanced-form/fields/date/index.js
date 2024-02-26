@@ -10,7 +10,6 @@ import edit from './edit';
 import metadata from './block.json';
 import { registerBlockType } from '@wordpress/blocks';
 
-
 /**
  * WordPress dependencies
  */
@@ -20,11 +19,9 @@ import { Icon } from '@wordpress/components';
 // export { name, category, metadata, settings };
 registerBlockType('kadence/advanced-form-date', {
 	...metadata,
-	title: __( 'Date', 'kadence-blocks' ),
-	description: __( 'Kadence Form date', 'kadence-blocks' ),
-	keywords: [
-		'kadence',
-	],
+	title: __('Date', 'kadence-blocks'),
+	description: __('Kadence Form date', 'kadence-blocks'),
+	keywords: ['kadence'],
 	icon: {
 		src: dateInputIcon,
 	},

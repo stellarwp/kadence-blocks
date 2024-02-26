@@ -2,7 +2,6 @@
  * BLOCK: Kadence Advanced Navigation
  */
 
-
 /**
  * Internal block libraries
  */
@@ -12,23 +11,11 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import { get, isEqual } from 'lodash';
 import { addQueryArgs } from '@wordpress/url';
-import {
-	useEntityBlockEditor,
-	useEntityProp,
-} from '@wordpress/core-data';
+import { useEntityBlockEditor, useEntityProp } from '@wordpress/core-data';
 import { store as editorStore } from '@wordpress/block-editor';
 import { formBlockIcon } from '@kadence/icons';
-import {
-	KadencePanelBody,
-	InspectorControlTabs,
-	SpacingVisualizer
-} from '@kadence/components';
-import {
-	getPreviewSize,
-	KadenceColorOutput,
-	getSpacingOptionOutput,
-	mouseOverVisualizer
-} from '@kadence/helpers';
+import { KadencePanelBody, InspectorControlTabs, SpacingVisualizer } from '@kadence/components';
+import { getPreviewSize, KadenceColorOutput, getSpacingOptionOutput, mouseOverVisualizer } from '@kadence/helpers';
 
 import {
 	InspectorControls,
@@ -36,60 +23,36 @@ import {
 	useInnerBlocksProps,
 	InspectorAdvancedControls,
 } from '@wordpress/block-editor';
-import {
-	TextControl,
-	ToggleControl,
-	ToolbarGroup,
-	ExternalLink,
-	Button,
-	Placeholder
-} from '@wordpress/components';
+import { TextControl, ToggleControl, ToolbarGroup, ExternalLink, Button, Placeholder } from '@wordpress/components';
 
-import {
-	FormTitle,
-	SelectForm,
-} from './components';
+import { FormTitle, SelectForm } from './components';
 
 /**
  * Internal dependencies
  */
 import classnames from 'classnames';
 import { useEntityPublish } from './hooks';
-import {
-	DEFAULT_BLOCK,
-	ALLOWED_BLOCKS,
-	PRIORITIZED_INSERTER_BLOCKS,
-} from './constants';
+import { DEFAULT_BLOCK, ALLOWED_BLOCKS, PRIORITIZED_INSERTER_BLOCKS } from './constants';
 /**
  * Regular expression matching invalid anchor characters for replacement.
  *
  * @type {RegExp}
  */
 const ANCHOR_REGEX = /[\s#]/g;
-export function EditInner( props ) {
-
-	const {
-		attributes,
-		setAttributes,
-		clientId,
-		direct,
-		id,
-		isSelected,
-	} = props;
-	const {
-		uniqueID
-	} = attributes;
+export function EditInner(props) {
+	const { attributes, setAttributes, clientId, direct, id, isSelected } = props;
+	const { uniqueID } = attributes;
 
 	const { previewDevice } = useSelect(
-		( select ) => {
+		(select) => {
 			return {
-				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 			};
 		},
-		[ clientId ],
+		[clientId]
 	);
 
-	const [ activeTab, setActiveTab ] = useState( 'general' );
+	const [activeTab, setActiveTab] = useState('general');
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
@@ -104,13 +67,13 @@ export function EditInner( props ) {
 	// const [ mobileMargin ] = useNavigationMeta( '_kad_navigation_mobileMargin' );
 	// const [ marginUnit ] = useNavigationMeta( '_kad_navigation_marginUnit' );
 
-	const [ className ] = useNavigationMeta( '_kad_navigation_className' );
-	const [ anchor ] = useNavigationMeta( '_kad_navigation_anchor' );
+	const [className] = useNavigationMeta('_kad_navigation_className');
+	const [anchor] = useNavigationMeta('_kad_navigation_anchor');
 
-	const [ meta, setMeta ] = useNavigationProp( 'meta' );
+	const [meta, setMeta] = useNavigationProp('meta');
 
-	const setMetaAttribute = ( value, key ) => {
-		setMeta( { ...meta, ['_kad_navigation_' + key]: value } );
+	const setMetaAttribute = (value, key) => {
+		setMeta({ ...meta, ['_kad_navigation_' + key]: value });
 	};
 
 	// const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== margin ? margin[ 0 ] : '' ), ( undefined !== tabletMargin ? tabletMargin[ 0 ] : '' ), ( undefined !== mobileMargin ? mobileMargin[ 0 ] : '' ) );
@@ -123,59 +86,51 @@ export function EditInner( props ) {
 	// const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== padding ? padding[ 2 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 2 ] : '' ) );
 	// const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== padding ? padding[ 3 ] : '' ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== mobilePadding ? mobilePadding[ 3 ] : '' ) );
 
-	const formClasses = classnames( {
-		'kb-navigation'          : true,
-		[ `kb-navigation-${id}` ]: true,
-		[ `kb-navigation${uniqueID}` ]: uniqueID,
-	} );
+	const formClasses = classnames({
+		'kb-navigation': true,
+		[`kb-navigation-${id}`]: true,
+		[`kb-navigation${uniqueID}`]: uniqueID,
+	});
 
-	const [ title, setTitle ] = useNavigationProp( 'title' );
+	const [title, setTitle] = useNavigationProp('title');
 
-	let [ blocks, onInput, onChange ] = useEntityBlockEditor(
-		'postType',
-		'kadence_navigation',
-		id,
-	);
-	const {
-		updateBlockAttributes
-	} = useDispatch( editorStore );
+	let [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_navigation', id);
+	const { updateBlockAttributes } = useDispatch(editorStore);
 
-	const emptyNavigation = useMemo( () => {
-		return [ createBlock( 'kadence/navigation', {} ) ];
-	}, [ clientId ] );
+	const emptyNavigation = useMemo(() => {
+		return [createBlock('kadence/navigation', {})];
+	}, [clientId]);
 
-	if( blocks.length === 0 ) {
+	if (blocks.length === 0) {
 		blocks = emptyNavigation;
 	}
 
-	const navigationInnerBlocks = useMemo( () => {
-		return get( blocks, [ 0, 'innerBlocks' ], [] );
-	}, [ blocks ] );
+	const navigationInnerBlocks = useMemo(() => {
+		return get(blocks, [0, 'innerBlocks'], []);
+	}, [blocks]);
 
-	const newBlock = useMemo( () => {
-		return get( blocks, [ 0 ], {} );
-	}, [ blocks ] );
+	const newBlock = useMemo(() => {
+		return get(blocks, [0], {});
+	}, [blocks]);
 
-	const [ isAdding, addNew ] = useEntityPublish( 'kadence_navigation', id );
-	const onAdd = async( title, template, initialDescription ) => {
+	const [isAdding, addNew] = useEntityPublish('kadence_navigation', id);
+	const onAdd = async (title, template, initialDescription) => {
 		try {
 			const response = await addNew();
 
-			if ( response.id ) {
-				onChange( [ { ...newBlock, innerBlocks: [
-						createBlock( 'kadence/navigation-link', { } )
-					] } ], clientId );
+			if (response.id) {
+				onChange([{ ...newBlock, innerBlocks: [createBlock('kadence/navigation-link', {})] }], clientId);
 
 				setTitle(title);
 
 				const updatedMeta = meta;
 				updatedMeta._kad_navigation_description = initialDescription;
 
-				setMeta( { ...meta, updatedMeta } );
-				await wp.data.dispatch( 'core' ).saveEditedEntityRecord( 'postType', 'kadence_navigation', id );
+				setMeta({ ...meta, updatedMeta });
+				await wp.data.dispatch('core').saveEditedEntityRecord('postType', 'kadence_navigation', id);
 			}
-		} catch ( error ) {
-			console.error( error );
+		} catch (error) {
+			console.error(error);
 		}
 	};
 
@@ -192,64 +147,62 @@ export function EditInner( props ) {
 				// paddingRight : ( '' !== previewPaddingRight ? getSpacingOptionOutput( previewPaddingRight, paddingUnit ) : undefined ),
 				// paddingBottom: ( '' !== previewPaddingBottom ? getSpacingOptionOutput( previewPaddingBottom, paddingUnit ) : undefined ),
 				// paddingLeft  : ( '' !== previewPaddingLeft ? getSpacingOptionOutput( previewPaddingLeft, paddingUnit ) : undefined ),
-			}
+			},
 		},
 		{
 			allowedBlocks: ALLOWED_BLOCKS,
 			prioritizedInserterBlocks: PRIORITIZED_INSERTER_BLOCKS,
-			value: ! direct ? navigationInnerBlocks : undefined,
-			onInput: ! direct ? ( a, b ) => onInput( [ { ...newBlock, innerBlocks: a } ], b ) : undefined,
-			onChange: ! direct ? ( a, b ) => onChange( [ { ...newBlock, innerBlocks: a } ], b ) : undefined,
+			value: !direct ? navigationInnerBlocks : undefined,
+			onInput: !direct ? (a, b) => onInput([{ ...newBlock, innerBlocks: a }], b) : undefined,
+			onChange: !direct ? (a, b) => onChange([{ ...newBlock, innerBlocks: a }], b) : undefined,
 			templateLock: false,
 			defaultBlock: DEFAULT_BLOCK,
 			// renderAppender: navigationInnerBlocks.length === 0 ? useFieldBlockAppenderBase : useFieldBlockAppender
 		}
 	);
 
-	if ( navigationInnerBlocks.length === 0 ) {
+	if (navigationInnerBlocks.length === 0) {
 		return (
 			<>
-				<FormTitle
-					onAdd={ onAdd }
-					isAdding={ isAdding }
-					existingTitle={ title }
-				/>
-				<div className='kb-form-hide-while-setting-up'>
+				<FormTitle onAdd={onAdd} isAdding={isAdding} existingTitle={title} />
+				<div className="kb-form-hide-while-setting-up">
 					<div {...innerBlocksProps} />
 				</div>
 			</>
 		);
 	}
-	if ( typeof pagenow !== 'undefined' && ( 'widgets' === pagenow || 'customize' === pagenow ) ) {
-		const editPostLink = addQueryArgs( 'post.php', {
+	if (typeof pagenow !== 'undefined' && ('widgets' === pagenow || 'customize' === pagenow)) {
+		const editPostLink = addQueryArgs('post.php', {
 			post: id,
-			action: 'edit'
-		} );
+			action: 'edit',
+		});
 		return (
 			<>
 				<Placeholder
 					className="kb-select-or-create-placeholder"
-					label={__( 'Kadence Heading', 'kadence-blocks' )}
-					icon={ formBlockIcon }
+					label={__('Kadence Heading', 'kadence-blocks')}
+					icon={formBlockIcon}
 				>
-					<p style={{ width: '100%', marginBottom:'10px'}}>{ __( 'Advanced forms can not be edited within the widgets screen.', 'kadence-blocks' ) }</p>
-					<Button href={ editPostLink } variant='primary' className='kb-form-edit-link'>
-						{ __( 'Edit Form', 'kadence-blocks' ) }
+					<p style={{ width: '100%', marginBottom: '10px' }}>
+						{__('Advanced forms can not be edited within the widgets screen.', 'kadence-blocks')}
+					</p>
+					<Button href={editPostLink} variant="primary" className="kb-form-edit-link">
+						{__('Edit Form', 'kadence-blocks')}
 					</Button>
 				</Placeholder>
 				<InspectorControls>
 					<KadencePanelBody
-							panelName={'kb-advanced-form-selected-switch'}
-							title={ __( 'Selected Form', 'kadence-blocks' ) }
-						>
+						panelName={'kb-advanced-form-selected-switch'}
+						title={__('Selected Form', 'kadence-blocks')}
+					>
 						<SelectForm
 							postType="kadence_navigation"
-							label={__( 'Selected Form', 'kadence-blocks' )}
-							hideLabelFromVision={ true }
-							onChange={ ( nextId ) => {
-								setAttributes( { id: parseInt( nextId ) } )
-							} }
-							value={ id }
+							label={__('Selected Form', 'kadence-blocks')}
+							hideLabelFromVision={true}
+							onChange={(nextId) => {
+								setAttributes({ id: parseInt(nextId) });
+							}}
+							value={id}
 						/>
 					</KadencePanelBody>
 				</InspectorControls>
@@ -259,35 +212,30 @@ export function EditInner( props ) {
 	return (
 		<>
 			<style>
-				{ isSelected && (
+				{isSelected && (
 					<>
-					{ `.block-editor-block-popover__inbetween-container .block-editor-block-list__insertion-point.is-with-inserter { display: none }` };
+						{`.block-editor-block-popover__inbetween-container .block-editor-block-list__insertion-point.is-with-inserter { display: none }`}
+						;
 					</>
 				)}
 			</style>
 			<InspectorControls>
-
 				<InspectorControlTabs
 					panelName={'advanced-navigation'}
-					setActiveTab={( value ) => setActiveTab( value )}
+					setActiveTab={(value) => setActiveTab(value)}
 					activeTab={activeTab}
 				/>
 
-				{( activeTab === 'general' ) &&
+				{activeTab === 'general' && (
 					<>
 						General tab
-
 						<div className="kt-sidebar-settings-spacer"></div>
 					</>
-				}
+				)}
 
-				{( activeTab === 'style' ) &&
-					<>
-						Style tab
-					</>
-				}
+				{activeTab === 'style' && <>Style tab</>}
 
-				{( activeTab === 'advanced' ) &&
+				{activeTab === 'advanced' && (
 					<>
 						Advanced tab
 						{/*<KadencePanelBody panelName={'kb-row-padding'}>*/}
@@ -340,36 +288,30 @@ export function EditInner( props ) {
 						{/*	/>*/}
 						{/*</KadencePanelBody>*/}
 					</>
-				}
-
+				)}
 			</InspectorControls>
 			<InspectorAdvancedControls>
-
 				<TextControl
 					__nextHasNoMarginBottom
 					className="html-anchor-control"
-					label={ __( 'HTML anchor' ) }
+					label={__('HTML anchor')}
 					help={
 						<>
-							{ __(
+							{__(
 								'Enter a word or two — without spaces — to make a unique web address just for this block, called an “anchor.” Then, you’ll be able to link directly to this section of your page.'
-							) }
+							)}
 
-							<ExternalLink
-								href={ __(
-									'https://wordpress.org/documentation/article/page-jumps/'
-								) }
-							>
-								{ __( 'Learn more about anchors' ) }
+							<ExternalLink href={__('https://wordpress.org/documentation/article/page-jumps/')}>
+								{__('Learn more about anchors')}
 							</ExternalLink>
 						</>
 					}
-					value={ anchor }
-					placeholder={ __( 'Add an anchor' ) }
-					onChange={ ( nextValue ) => {
-						nextValue = nextValue.replace( ANCHOR_REGEX, '-' );
-						setMetaAttribute( nextValue, 'anchor' );
-					} }
+					value={anchor}
+					placeholder={__('Add an anchor')}
+					onChange={(nextValue) => {
+						nextValue = nextValue.replace(ANCHOR_REGEX, '-');
+						setMetaAttribute(nextValue, 'anchor');
+					}}
 					autoCapitalize="none"
 					autoComplete="off"
 				/>
@@ -377,14 +319,12 @@ export function EditInner( props ) {
 				<TextControl
 					__nextHasNoMarginBottom
 					autoComplete="off"
-					label={ __( 'Additional CSS class(es)' ) }
-					value={ className }
-					onChange={ ( nextValue ) => {
-						setMetaAttribute( ( nextValue !== '' ? nextValue : undefined ), 'className');
-					} }
-					help={ __(
-						'Separate multiple classes with spaces.'
-					) }
+					label={__('Additional CSS class(es)')}
+					value={className}
+					onChange={(nextValue) => {
+						setMetaAttribute(nextValue !== '' ? nextValue : undefined, 'className');
+					}}
+					help={__('Separate multiple classes with spaces.')}
 				/>
 			</InspectorAdvancedControls>
 
@@ -405,26 +345,25 @@ export function EditInner( props ) {
 			{/*	forceShow={ marginMouseOver.isMouseOver }*/}
 			{/*	spacing={ [ getSpacingOptionOutput( previewMarginTop, marginUnit ), getSpacingOptionOutput( previewMarginRight, marginUnit ), getSpacingOptionOutput( previewMarginBottom, marginUnit ), getSpacingOptionOutput( previewMarginLeft, marginUnit ) ] }*/}
 			{/*/>*/}
-
 		</>
 	);
 }
-export default ( EditInner );
+export default EditInner;
 
-function useNavigationProp( prop ) {
-	return useEntityProp( 'postType', 'kadence_navigation', prop );
+function useNavigationProp(prop) {
+	return useEntityProp('postType', 'kadence_navigation', prop);
 }
 
-function useNavigationMeta( key ) {
-	const [ meta, setMeta ] = useNavigationProp( 'meta' );
+function useNavigationMeta(key) {
+	const [meta, setMeta] = useNavigationProp('meta');
 
 	return [
-		meta[ key ],
+		meta[key],
 		useCallback(
-			( newValue ) => {
-				setMeta( { ...meta, [ key ]: newValue } );
+			(newValue) => {
+				setMeta({ ...meta, [key]: newValue });
 			},
-			[ key, setMeta ],
+			[key, setMeta]
 		),
 	];
 }

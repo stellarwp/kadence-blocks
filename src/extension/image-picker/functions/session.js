@@ -1,5 +1,5 @@
-import { API } from "../constants/API";
-import { md5Hash } from "./helpers";
+import { API } from '../constants/API';
+import { md5Hash } from './helpers';
 
 /**
  * Get results from session storage by URL.
@@ -8,7 +8,7 @@ import { md5Hash } from "./helpers";
  * @return {Array|boolean} Session results.
  */
 export function getSession(url) {
-	if ( !url ) {
+	if (!url) {
 		return false; // Exit if no URL or test mode is enabled.
 	}
 

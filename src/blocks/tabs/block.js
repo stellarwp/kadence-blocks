@@ -5,12 +5,12 @@
 /**
  * Register sub blocks.
  */
- import './tab/block.js';
+import './tab/block.js';
 
- /**
+/**
  * Import Css
  */
-  import './style.scss';
+import './style.scss';
 /**
  * Import Icons
  */
@@ -50,19 +50,15 @@ import { registerBlockType } from '@wordpress/blocks';
  * @return {?WPBlock}          The block, if it has been successfully
  *                             registered; otherwise `undefined`.
  */
-registerBlockType( 'kadence/tabs', {
+registerBlockType('kadence/tabs', {
 	...metadata,
-	title: _x( 'Tabs', 'block title', 'kadence-blocks' ),
-	keywords: [
-		__( 'tabs', 'kadence-blocks' ),
-		__( 'tab', 'kadence-blocks' ),
-		'KB',
-	],
+	title: _x('Tabs', 'block title', 'kadence-blocks'),
+	keywords: [__('tabs', 'kadence-blocks'), __('tab', 'kadence-blocks'), 'KB'],
 	icon: {
 		src: blockTabsIcon,
 	},
-	getEditWrapperProps( { blockAlignment } ) {
-		if ( 'full' === blockAlignment || 'wide' === blockAlignment || 'center' === blockAlignment ) {
+	getEditWrapperProps({ blockAlignment }) {
+		if ('full' === blockAlignment || 'wide' === blockAlignment || 'center' === blockAlignment) {
 			return { 'data-align': blockAlignment };
 		}
 	},
@@ -73,7 +69,7 @@ registerBlockType( 'kadence/tabs', {
 		attributes: {
 			uniqueID: '123456789',
 			titleColor: '#FFFFFF',
-			titleBg: '#2B6CB0'
+			titleBg: '#2B6CB0',
 		},
 		innerBlocks: [
 			{
@@ -82,11 +78,11 @@ registerBlockType( 'kadence/tabs', {
 					{
 						name: 'core/heading',
 						attributes: {
-							content: __( 'Tab 1 Content', 'kadence-blocks' ),
-						}
-					}
-				]
-			}
-		]
-	}
-} );
+							content: __('Tab 1 Content', 'kadence-blocks'),
+						},
+					},
+				],
+			},
+		],
+	},
+});

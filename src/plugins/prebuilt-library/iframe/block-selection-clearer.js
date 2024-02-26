@@ -7,9 +7,7 @@ import { useRefEffect } from '@wordpress/compose';
 /**
  * Internal dependencies
  */
-import {
-	store as blockEditorStore,
-} from '@wordpress/block-editor';
+import { store as blockEditorStore } from '@wordpress/block-editor';
 
 /**
  * Pass the returned ref callback to an element that should clear block
@@ -19,40 +17,39 @@ import {
  * @return {import('react').RefCallback} Ref callback.
  */
 export function useBlockSelectionClearer() {
-	const { getSettings, hasSelectedBlock, hasMultiSelection } =
-		useSelect( blockEditorStore );
-	const { clearSelectedBlock } = useDispatch( blockEditorStore );
+	const { getSettings, hasSelectedBlock, hasMultiSelection } = useSelect(blockEditorStore);
+	const { clearSelectedBlock } = useDispatch(blockEditorStore);
 	const { clearBlockSelection: isEnabled } = getSettings();
 
 	return useRefEffect(
-		( node ) => {
-			if ( ! isEnabled ) {
+		(node) => {
+			if (!isEnabled) {
 				return;
 			}
 
-			function onMouseDown( event ) {
-				if ( ! hasSelectedBlock() && ! hasMultiSelection() ) {
+			function onMouseDown(event) {
+				if (!hasSelectedBlock() && !hasMultiSelection()) {
 					return;
 				}
 
 				// Only handle clicks on the element, not the children.
-				if ( event.target !== node ) {
+				if (event.target !== node) {
 					return;
 				}
 
 				clearSelectedBlock();
 			}
 
-			node.addEventListener( 'mousedown', onMouseDown );
+			node.addEventListener('mousedown', onMouseDown);
 
 			return () => {
-				node.removeEventListener( 'mousedown', onMouseDown );
+				node.removeEventListener('mousedown', onMouseDown);
 			};
 		},
-		[ hasSelectedBlock, hasMultiSelection, clearSelectedBlock, isEnabled ]
+		[hasSelectedBlock, hasMultiSelection, clearSelectedBlock, isEnabled]
 	);
 }
 
-export default function BlockSelectionClearer( props ) {
-	return <div ref={ useBlockSelectionClearer() } { ...props } />;
+export default function BlockSelectionClearer(props) {
+	return <div ref={useBlockSelectionClearer()} {...props} />;
 }

@@ -10,7 +10,6 @@ import edit from './edit';
 import metadata from './block.json';
 import { registerBlockType } from '@wordpress/blocks';
 
-
 /**
  * WordPress dependencies
  */
@@ -19,15 +18,12 @@ import { Icon } from '@wordpress/components';
 
 registerBlockType('kadence/advanced-form-time', {
 	...metadata,
-	title: __( 'Time', 'kadence-blocks' ),
-	description: __( 'Kadence Form time input field', 'kadence-blocks' ),
-	keywords: [
-		'kadence',
-	],
+	title: __('Time', 'kadence-blocks'),
+	description: __('Kadence Form time input field', 'kadence-blocks'),
+	keywords: ['kadence'],
 	icon: {
 		src: timeInputIcon,
 	},
 	edit,
 	save: () => null,
-
 });

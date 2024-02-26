@@ -4,13 +4,8 @@
 	"name": "kadence/navigation-link",
 	"title": "KB Custom Link",
 	"category": "design",
-	"parent": [ "kadence/navigation", "core/navigation" ],
-	"allowedBlocks": [
-		"kadence/navigation-link",
-		"core/navigation-link",
-		"core/navigation-submenu",
-		"core/page-list"
-	],
+	"parent": ["kadence/navigation", "core/navigation"],
+	"allowedBlocks": ["kadence/navigation-link", "core/navigation-link", "core/navigation-submenu", "core/page-list"],
 	"description": "Add a page, link, or another item to your navigation.",
 	"textdomain": "default",
 	"attributes": {

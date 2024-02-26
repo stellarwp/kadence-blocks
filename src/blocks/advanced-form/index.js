@@ -30,22 +30,21 @@ import metadata from './block.json';
 import { InnerBlocks } from '@wordpress/block-editor';
 import transforms from './transforms';
 
-
-registerBlockType( 'kadence/advanced-form', {
+registerBlockType('kadence/advanced-form', {
 	...metadata,
-	title: _x( 'Form (Adv)', 'block title', 'kadence-blocks' ),
-	description: _x( 'Create an advanced contact or marketing form for your website.', 'block description', 'kadence-blocks' ),
-	keywords: [
-		__( 'contact', 'kadence-blocks' ),
-		__( 'form', 'kadence-blocks' ),
-		'kb',
-	],
+	title: _x('Form (Adv)', 'block title', 'kadence-blocks'),
+	description: _x(
+		'Create an advanced contact or marketing form for your website.',
+		'block description',
+		'kadence-blocks'
+	),
+	keywords: [__('contact', 'kadence-blocks'), __('form', 'kadence-blocks'), 'kb'],
 	icon: {
 		src: formBlockIcon,
 	},
 	transforms,
 	edit,
-	save:() => {
+	save: () => {
 		return <InnerBlocks.Content />;
-	}
+	},
 });

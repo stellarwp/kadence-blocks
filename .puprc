@@ -1,11 +1,13 @@
 {
 	"build": [
+		"jq '.extra.strauss.delete_vendor_packages = true' composer.json > temp && mv temp composer.json",
 		"composer install --no-dev",
 		"npm install --legacy-peer-deps",
 		"npm run build",
 		"composer wp"
 	],
 	"build_dev": [
+		"jq '.extra.strauss.delete_vendor_packages = true' composer.json > temp && mv temp composer.json",
 		"composer install --no-dev",
 		"npm install --legacy-peer-deps",
 		"npm run build"

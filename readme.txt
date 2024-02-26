@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.2
 Tested up to: 6.4
-Stable tag: 3.2.23
+Stable tag: 3.2.24
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -96,6 +96,14 @@ assist you with verification, CVE assignment, and notify the
 developers of this plugin.
 
 == Changelog ==
+
+= 3.2.24 =
+Release Date: February 26th 2024
+* Add: Option to wrap icons in icon block.
+* Update: Inline AI to work with language selection.
+* Fix: AI content in pattern library.
+* Fix: Infobox icons size incorrect in some circumstances.
+* Fix: Prevent undesired HTML tags from being output in advanced text block.
 
 = 3.2.23 =
 Release Date: February 16th 2024

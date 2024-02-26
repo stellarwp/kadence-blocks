@@ -12,22 +12,18 @@ import transforms from './transforms';
 
 registerBlockType('kadence/googlemaps', {
 	...metadata,
-	title: _x( 'Google Maps', 'block title', 'kadence-blocks' ),
-	description: _x( 'Display google maps on your site', 'block description', 'kadence-blocks' ),
-	keywords: [
-		__( 'google', 'kadence-blocks' ),
-		__( 'maps', 'kadence-blocks' ),
-		'KB',
-	],
+	title: _x('Google Maps', 'block title', 'kadence-blocks'),
+	description: _x('Display google maps on your site', 'block description', 'kadence-blocks'),
+	keywords: [__('google', 'kadence-blocks'), __('maps', 'kadence-blocks'), 'KB'],
 	icon: {
 		src: googleMapsIcon,
 	},
-	getEditWrapperProps( attributes ) {
+	getEditWrapperProps(attributes) {
 		return {
 			'data-align': attributes.align,
 		};
 	},
 	transforms,
 	edit,
-	save
+	save,
 });

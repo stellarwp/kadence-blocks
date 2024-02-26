@@ -38,13 +38,13 @@ modules:
                 X_TEST_REQUEST: 1
                 X_WPBROWSER_REQUEST: 1
         WPCLI:
-          path: '%WP_ROOT_FOLDER%'
-          allow-root: true
-          env:
-            strict-args: true
+            path: '%WP_ROOT_FOLDER%'
+            allow-root: true
+            env:
+                strict-args: true
         WPFilesystem:
-          wpRootFolder: '%WP_ROOT_FOLDER%'
+            wpRootFolder: '%WP_ROOT_FOLDER%'
         \Helper\WPVersion:
-          version: '%WP_VERSION%'
-          path: '%WP_ROOT_FOLDER%'
-          allow-root: true
+            version: '%WP_VERSION%'
+            path: '%WP_ROOT_FOLDER%'
+            allow-root: true

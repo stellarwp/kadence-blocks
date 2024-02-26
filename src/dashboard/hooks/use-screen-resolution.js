@@ -1,4 +1,4 @@
-import { useEffect, useState } from "@wordpress/element";
+import { useEffect, useState } from '@wordpress/element';
 
 export function useScreenResolution() {
 	const [screenResolution, setScreenResolution] = useState({
@@ -16,9 +16,9 @@ export function useScreenResolution() {
 
 		handleResize();
 
-		window.addEventListener("resize", handleResize);
+		window.addEventListener('resize', handleResize);
 
-		return () => window.removeEventListener("resize", handleResize);
+		return () => window.removeEventListener('resize', handleResize);
 	}, []);
 
 	return screenResolution;
