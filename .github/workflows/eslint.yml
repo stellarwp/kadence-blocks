@@ -3,15 +3,15 @@ run-name: '[ESLint] ${{ github.event.head_commit.message }}'
 
 on: push
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '15.x'
-          registry-url: 'https://npm.pkg.github.com'
-      - run: npm ci --ignore-scripts
-      - run: npm rebuild && npm run prepare --if-present
-      - name: Run ESLint
-        run: npm run lint-js
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: '15.x'
+                  registry-url: 'https://npm.pkg.github.com'
+            - run: npm ci --ignore-scripts
+            - run: npm rebuild && npm run prepare --if-present
+            - name: Run ESLint
+              run: npm run lint-js
