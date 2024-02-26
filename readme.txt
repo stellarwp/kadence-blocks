@@ -98,8 +98,9 @@ developers of this plugin.
 == Changelog ==
 
 = 3.2.24 =
-Release Date: February 22nd 2024
+Release Date: February 26th 2024
 * Add: Option to wrap icons in icon block.
+* Update: Inline AI to work with language selection.
 * Fix: AI content in pattern library.
 * Fix: Infobox icons size incorrect in some circumstances.
 * Fix: Prevent undesired HTML tags from being output in advanced text block.
