@@ -12,7 +12,6 @@ import { createBlock } from '@wordpress/blocks';
 import { get, isEqual } from 'lodash';
 import { addQueryArgs } from '@wordpress/url';
 import { useEntityBlockEditor, useEntityProp } from '@wordpress/core-data';
-import { store as editorStore } from '@wordpress/block-editor';
 import { formBlockIcon } from '@kadence/icons';
 import { KadencePanelBody, InspectorControlTabs, SpacingVisualizer } from '@kadence/components';
 import { getPreviewSize, KadenceColorOutput, getSpacingOptionOutput, mouseOverVisualizer } from '@kadence/helpers';
@@ -22,6 +21,7 @@ import {
 	BlockControls,
 	useInnerBlocksProps,
 	InspectorAdvancedControls,
+	store as editorStore,
 } from '@wordpress/block-editor';
 import {
 	TextControl,

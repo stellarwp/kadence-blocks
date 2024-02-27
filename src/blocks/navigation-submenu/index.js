@@ -1,7 +1,6 @@
 /**
  * WordPress dependencies
  */
-import { page, addSubmenu } from '@wordpress/icons';
 import { customLink as linkIcon } from '@wordpress/icons';
 
 /**
