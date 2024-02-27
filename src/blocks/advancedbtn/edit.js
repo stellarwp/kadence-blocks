@@ -134,7 +134,7 @@ function KadenceButtons(props) {
 		setBlockDefaults('kadence/advancedbtn', attributes);
 
 		const postOrFseId = getPostOrFseId(props, parentData);
-		let uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -278,7 +278,7 @@ function KadenceButtons(props) {
 	);
 
 	const outerClasses = classnames({
-		className: className,
+		className,
 		[`kb-btns-${uniqueID}`]: true,
 	});
 	const blockProps = useBlockProps({

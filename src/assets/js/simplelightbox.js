@@ -8,11 +8,11 @@
 	}
 })(this, function () {
 	function assign(target) {
-		for (var i = 1; i < arguments.length; i++) {
-			var obj = arguments[i];
+		for (let i = 1; i < arguments.length; i++) {
+			const obj = arguments[i];
 
 			if (obj) {
-				for (var key in obj) {
+				for (const key in obj) {
 					obj.hasOwnProperty(key) && (target[key] = obj[key]);
 				}
 			}
@@ -34,7 +34,7 @@
 	}
 
 	function parseHtml(html) {
-		var div = document.createElement('div');
+		const div = document.createElement('div');
 		div.innerHTML = html.trim();
 
 		return div.childNodes[0];
@@ -91,11 +91,11 @@
 	};
 
 	assign(SimpleLightbox.prototype, {
-		init: function (options) {
+		init(options) {
 			options = this.options = assign({}, SimpleLightbox.defaults, options);
 
-			var self = this;
-			var elements;
+			const self = this;
+			let elements;
 
 			if (options.$items) {
 				elements = options.$items.get();
@@ -141,11 +141,11 @@
 			}
 		},
 
-		addEvent: function (element, eventName, callback, scope) {
+		addEvent(element, eventName, callback, scope) {
 			this.eventRegistry[scope || 'lightbox'].push({
-				element: element,
-				eventName: eventName,
-				callback: callback,
+				element,
+				eventName,
+				callback,
 			});
 
 			element.addEventListener(eventName, callback);
@@ -153,7 +153,7 @@
 			return this;
 		},
 
-		removeEvents: function (scope) {
+		removeEvents(scope) {
 			this.eventRegistry[scope].forEach(function (item) {
 				item.element.removeEventListener(item.eventName, item.callback);
 			});
@@ -163,15 +163,15 @@
 			return this;
 		},
 
-		next: function () {
+		next() {
 			return this.showPosition(this.currentPosition + 1);
 		},
 
-		prev: function () {
+		prev() {
 			return this.showPosition(this.currentPosition - 1);
 		},
 
-		normalizePosition: function (position) {
+		normalizePosition(position) {
 			if (position >= this.items.length) {
 				position = 0;
 			} else if (position < 0) {
@@ -181,8 +181,8 @@
 			return position;
 		},
 
-		showPosition: function (position) {
-			var newPosition = this.normalizePosition(position);
+		showPosition(position) {
+			const newPosition = this.normalizePosition(position);
 
 			if (typeof this.currentPosition !== 'undefined') {
 				this.direction = newPosition > this.currentPosition ? 'next' : 'prev';
@@ -193,9 +193,9 @@
 			return this.setupLightboxHtml().prepareItem(this.currentPosition, this.setContent).show();
 		},
 
-		loading: function (on) {
-			var self = this;
-			var options = this.options;
+		loading(on) {
+			const self = this;
+			const options = this.options;
 
 			if (on) {
 				this.loadingTimeout = setTimeout(function () {
@@ -210,9 +210,9 @@
 				clearTimeout(this.loadingTimeout);
 			}
 		},
-		getVideoURL: function (url) {
-			var frm = '//_URL_';
-			var converts = [
+		getVideoURL(url) {
+			const frm = '//_URL_';
+			const converts = [
 				{
 					rx: /^(?:https?:)?\/\/(?:www\.)?vimeo\.com\/([^\?&"]+).*$/g,
 					tmpl: frm.replace('_URL_', 'player.vimeo.com/video/$1'),
@@ -226,19 +226,19 @@
 					tmpl: frm.replace('_URL_', 'www.youtube-nocookie.com/embed/$1'),
 				},
 			];
-			for (var i = 0; i < converts.length; i++) {
+			for (let i = 0; i < converts.length; i++) {
 				if (converts[i].rx.test(url)) {
 					return url.replace(converts[i].rx, converts[i].tmpl);
 				}
 			}
 			return url;
 		},
-		prepareItem: function (position, callback) {
-			var self = this;
-			var url = this.items[position];
+		prepareItem(position, callback) {
+			const self = this;
+			const url = this.items[position];
 			this.loading(true);
 			if (this.options.videoRegex.test(url)) {
-				var videoURL = this.getVideoURL(url);
+				const videoURL = this.getVideoURL(url);
 				callback.call(
 					self,
 					parseHtml(
@@ -248,7 +248,7 @@
 					)
 				);
 			} else {
-				var $imageCont = parseHtml(
+				const $imageCont = parseHtml(
 					'<div class="slbImageWrap"><img class="slbImage" src="' + url + '" /></div>'
 				);
 
@@ -270,16 +270,16 @@
 			return this;
 		},
 
-		loadImage: function (url, callback) {
+		loadImage(url, callback) {
 			if (!this.options.videoRegex.test(url)) {
-				var image = new Image();
+				const image = new Image();
 				callback && (image.onload = callback);
 				image.src = url;
 			}
 		},
 
-		setupLightboxHtml: function () {
-			var o = this.options;
+		setupLightboxHtml() {
+			const o = this.options;
 
 			if (!this.$el) {
 				this.$el = parseHtml(
@@ -328,7 +328,7 @@
 			return this;
 		},
 
-		show: function () {
+		show() {
 			if (!this.modalInDom) {
 				document.querySelector(this.options.appendTarget).appendChild(this.$el);
 				addClass(document.documentElement, this.options.htmlClass);
@@ -339,8 +339,8 @@
 			return this;
 		},
 
-		setContent: function (content) {
-			var $content = typeof content === 'string' ? parseHtml(content) : content;
+		setContent(content) {
+			const $content = typeof content === 'string' ? parseHtml(content) : content;
 			this.loading(false);
 
 			this.setupLightboxHtml();
@@ -361,21 +361,21 @@
 			return this;
 		},
 
-		setImageDimensions: function () {
+		setImageDimensions() {
 			if (this.$currentImage) {
 				this.$currentImage.style.maxHeight = getWindowHeight() + 'px';
 			}
 		},
 
-		setupLightboxEvents: function () {
-			var self = this;
+		setupLightboxEvents() {
+			const self = this;
 
 			if (this.eventRegistry.lightbox.length) {
 				return this;
 			}
 
 			this.addEvent(this.$el, 'click', function (e) {
-				var $target = e.target;
+				const $target = e.target;
 
 				if (
 					matches($target, '.slbCloseBtn') ||
@@ -403,7 +403,7 @@
 			return this;
 		},
 
-		close: function () {
+		close() {
 			if (this.modalInDom) {
 				this.runHook('beforeClose');
 				this.removeEvents('lightbox');
@@ -417,20 +417,20 @@
 			this.currentPosition = this.options.startAt;
 		},
 
-		destroy: function () {
+		destroy() {
 			this.close();
 			this.runHook('beforeDestroy');
 			this.removeEvents('thumbnails');
 			this.runHook('afterDestroy');
 		},
 
-		runHook: function (name) {
+		runHook(name) {
 			this.options[name] && this.options[name](this);
 		},
 	});
 
 	SimpleLightbox.open = function (options) {
-		var instance = new SimpleLightbox(options);
+		const instance = new SimpleLightbox(options);
 
 		return options.content
 			? instance.setContent(options.content).show()
@@ -439,13 +439,12 @@
 
 	SimpleLightbox.registerAsJqueryPlugin = function ($) {
 		$.fn.simpleLightbox = function (options) {
-			var lightboxInstance;
-			var $items = this;
+			let lightboxInstance;
+			const $items = this;
 
 			return this.each(function () {
 				if (!$.data(this, 'simpleLightbox')) {
-					lightboxInstance =
-						lightboxInstance || new SimpleLightbox($.extend({}, options, { $items: $items }));
+					lightboxInstance = lightboxInstance || new SimpleLightbox($.extend({}, options, { $items }));
 					$.data(this, 'simpleLightbox', lightboxInstance);
 				}
 			});

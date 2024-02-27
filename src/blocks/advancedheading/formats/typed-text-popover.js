@@ -26,7 +26,7 @@ export default function TypedTextPopover({ name, value, updateFormat, onClose, c
 		shuffle: 'false',
 	};
 	const getCurrentSettings = () => {
-		let response = { ...defaultAttributes, ...activeAttributes };
+		const response = { ...defaultAttributes, ...activeAttributes };
 
 		try {
 			response.strings = JSON.parse(response.strings);

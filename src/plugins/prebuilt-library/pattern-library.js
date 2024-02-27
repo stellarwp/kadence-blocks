@@ -290,7 +290,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 				};
 			})
 		);
-		let tempPageContexts = [];
+		const tempPageContexts = [];
 		Object.keys(pagesCategories).map(function (key, index) {
 			if ('category' !== key) {
 				tempPageContexts.push({
@@ -311,7 +311,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 	useEffect(() => {
 		const activePageStyles = styleTerms.filter((style, index) => filterChoices[index] && style);
 		const tempActiveStorage = SafeParseJSON(localStorage.getItem('kadenceBlocksPrebuilt'), true);
-		tempActiveStorage['kbPageStyles'] = activePageStyles;
+		tempActiveStorage.kbPageStyles = activePageStyles;
 		localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(tempActiveStorage));
 
 		setPageStyles(activePageStyles);
@@ -646,15 +646,15 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 		const tempActiveStorage = SafeParseJSON(localStorage.getItem('kadenceBlocksPrebuilt'), true);
 		if (response === 'error') {
 			console.log('Error getting credits');
-			tempActiveStorage['credits'] = 'fetch';
+			tempActiveStorage.credits = 'fetch';
 			localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(tempActiveStorage));
 			setCredits(0);
 		} else if (response === '') {
-			tempActiveStorage['credits'] = 0;
+			tempActiveStorage.credits = 0;
 			localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(tempActiveStorage));
 			setCredits(0);
 		} else {
-			tempActiveStorage['credits'] = parseInt(response);
+			tempActiveStorage.credits = parseInt(response);
 			localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(tempActiveStorage));
 			setCredits(parseInt(response));
 		}
@@ -677,11 +677,11 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 	}, [aIUserData]);
 	async function onInsertContent(pattern) {
 		setIsImporting(true);
-		let patternBlocks = pattern?.content ? pattern.content : '';
+		const patternBlocks = pattern?.content ? pattern.content : '';
 		processImportContent(patternBlocks);
 	}
 	const ajaxImportProcess = (blockcode) => {
-		var data = new FormData();
+		const data = new FormData();
 		data.append('action', 'kadence_import_process_image_data');
 		data.append('security', kadence_blocks_params.ajax_nonce);
 		data.append('import_content', blockcode);
@@ -690,7 +690,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 			.ajax({
 				method: 'POST',
 				url: kadence_blocks_params.ajax_url,
-				data: data,
+				data,
 				contentType: false,
 				processData: false,
 			})
@@ -840,7 +840,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 														localStorage.getItem('kadenceBlocksPrebuilt'),
 														true
 													);
-													tempActiveStorage['replaceImages'] = value ? 'all' : 'none';
+													tempActiveStorage.replaceImages = value ? 'all' : 'none';
 													localStorage.setItem(
 														'kadenceBlocksPrebuilt',
 														JSON.stringify(tempActiveStorage)
@@ -862,7 +862,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 														localStorage.getItem('kadenceBlocksPrebuilt'),
 														true
 													);
-													tempActiveStorage['previewMode'] = value ? 'iframe' : 'image';
+													tempActiveStorage.previewMode = value ? 'iframe' : 'image';
 													localStorage.setItem(
 														'kadenceBlocksPrebuilt',
 														JSON.stringify(tempActiveStorage)
@@ -896,7 +896,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 									localStorage.getItem('kadenceBlocksPrebuilt'),
 									true
 								);
-								tempActiveStorage['contextTab'] = 'design';
+								tempActiveStorage.contextTab = 'design';
 								localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(tempActiveStorage));
 								forceRefreshLibrary();
 								setContextTab('design');
@@ -919,7 +919,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 									localStorage.getItem('kadenceBlocksPrebuilt'),
 									true
 								);
-								tempActiveStorage['contextTab'] = 'context';
+								tempActiveStorage.contextTab = 'context';
 								localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(tempActiveStorage));
 								forceRefreshLibrary();
 								setContextTab('context');
@@ -938,7 +938,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 									localStorage.getItem('kadenceBlocksPrebuilt'),
 									true
 								);
-								tempActiveStorage['subTab'] = 'patterns';
+								tempActiveStorage.subTab = 'patterns';
 								localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(tempActiveStorage));
 								setSubTab('patterns');
 							}}
@@ -956,7 +956,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 									localStorage.getItem('kadenceBlocksPrebuilt'),
 									true
 								);
-								tempActiveStorage['subTab'] = 'pages';
+								tempActiveStorage.subTab = 'pages';
 								localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(tempActiveStorage));
 								setSubTab('pages');
 							}}
@@ -1002,7 +1002,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 																	localStorage.getItem('kadenceBlocksPrebuilt'),
 																	true
 																);
-																tempActiveStorage['kbPageCat'] = category.value;
+																tempActiveStorage.kbPageCat = category.value;
 																localStorage.setItem(
 																	'kadenceBlocksPrebuilt',
 																	JSON.stringify(tempActiveStorage)
@@ -1031,7 +1031,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 															localStorage.getItem('kadenceBlocksPrebuilt'),
 															true
 														);
-														tempActiveStorage['kbPageCat'] = category.value;
+														tempActiveStorage.kbPageCat = category.value;
 														localStorage.setItem(
 															'kadenceBlocksPrebuilt',
 															JSON.stringify(tempActiveStorage)
@@ -1066,7 +1066,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 																	localStorage.getItem('kadenceBlocksPrebuilt'),
 																	true
 																);
-																tempActiveStorage['kbCat'] = category.value;
+																tempActiveStorage.kbCat = category.value;
 																localStorage.setItem(
 																	'kadenceBlocksPrebuilt',
 																	JSON.stringify(tempActiveStorage)
@@ -1106,7 +1106,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 																localStorage.getItem('kadenceBlocksPrebuilt'),
 																true
 															);
-															tempActiveStorage['context'] = contextCategory.value;
+															tempActiveStorage.context = contextCategory.value;
 															localStorage.setItem(
 																'kadenceBlocksPrebuilt',
 																JSON.stringify(tempActiveStorage)
@@ -1209,7 +1209,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 											localStorage.getItem('kadenceBlocksPrebuilt'),
 											true
 										);
-										tempActiveStorage['style'] = style.value;
+										tempActiveStorage.style = style.value;
 										localStorage.setItem(
 											'kadenceBlocksPrebuilt',
 											JSON.stringify(tempActiveStorage)
@@ -1245,7 +1245,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 											localStorage.getItem('kadenceBlocksPrebuilt'),
 											true
 										);
-										tempActiveStorage['style'] = style.value;
+										tempActiveStorage.style = style.value;
 										localStorage.setItem(
 											'kadenceBlocksPrebuilt',
 											JSON.stringify(tempActiveStorage)

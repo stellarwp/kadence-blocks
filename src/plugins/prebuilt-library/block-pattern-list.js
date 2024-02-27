@@ -78,19 +78,13 @@ function KadenceBlockPattern({
 					{pattern.description ? <div className="kb-pattern-description">{pattern.description}</div> : null}
 				</div>
 			);
-		} else {
-			return (
-				<div className="block-editor-block-patterns-list__item-title">
-					<span
-						className="kb-pattern-inline-title"
-						dangerouslySetInnerHTML={{ __html: pattern.title }}
-					></span>
-					{undefined !== pro && pro && (
-						<span className="kb-pattern-pro-item">{__('Pro', 'kadence-blocks')}</span>
-					)}
-				</div>
-			);
 		}
+		return (
+			<div className="block-editor-block-patterns-list__item-title">
+				<span className="kb-pattern-inline-title" dangerouslySetInnerHTML={{ __html: pattern.title }}></span>
+				{undefined !== pro && pro && <span className="kb-pattern-pro-item">{__('Pro', 'kadence-blocks')}</span>}
+			</div>
+		);
 	}
 
 	return (
@@ -235,8 +229,8 @@ function KadenceBlockPatternListIframe({
 		return styles;
 	}, [styles, customStyles]);
 	const showItems = (patterns) => {
-		var items = [];
-		for (var i = 0; i < records; i++) {
+		const items = [];
+		for (let i = 0; i < records; i++) {
 			if (undefined !== patterns[i]?.name) {
 				items.push(
 					<KadenceBlockPattern
@@ -368,8 +362,8 @@ function KadenceBlockPatternList({
 		return styles;
 	}, [styles, customShadowStyles]);
 	const showAllItems = (patterns) => {
-		var items = [];
-		for (var i = 0; i < shadowRecords; i++) {
+		const items = [];
+		for (let i = 0; i < shadowRecords; i++) {
 			if (undefined !== patterns[i]?.name) {
 				items.push(
 					<KadenceBlockPattern

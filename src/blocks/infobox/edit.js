@@ -224,7 +224,7 @@ function KadenceInfoBox(props) {
 		setBlockDefaults('kadence/infobox', attributes);
 
 		const postOrFseId = getPostOrFseId(props, parentData);
-		let uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -279,7 +279,7 @@ function KadenceInfoBox(props) {
 				containerBorderRadius: '',
 			});
 		}
-		let tempBorderStyle = JSON.parse(
+		const tempBorderStyle = JSON.parse(
 			JSON.stringify(
 				attributes.borderStyle
 					? attributes.borderStyle
@@ -331,7 +331,7 @@ function KadenceInfoBox(props) {
 		if (updateBorderStyle) {
 			setAttributes({ borderStyle: tempBorderStyle });
 		}
-		let tempBorderHoverStyle = JSON.parse(
+		const tempBorderHoverStyle = JSON.parse(
 			JSON.stringify(
 				attributes.borderHoverStyle
 					? attributes.borderHoverStyle
@@ -684,7 +684,7 @@ function KadenceInfoBox(props) {
 			setAttributes({
 				hAlign: 'center',
 				containerBackground: '#ffffff' === containerBackground ? '' : containerBackground,
-				containerHoverBackground: containerHoverBackground,
+				containerHoverBackground,
 				borderStyle: [
 					{
 						top: ['', '', ''],
@@ -756,7 +756,7 @@ function KadenceInfoBox(props) {
 			setAttributes({
 				hAlign: 'center',
 				containerBackground: '' === containerBackground ? '#ffffff' : containerBackground,
-				containerHoverBackground: containerHoverBackground,
+				containerHoverBackground,
 				borderStyle: [
 					{
 						top: ['var(--global-palette7, #eeeeee)', '', 5],
@@ -845,7 +845,7 @@ function KadenceInfoBox(props) {
 			setAttributes({
 				hAlign: 'left',
 				containerBackground: '' === containerBackground ? '#ffffff' : containerBackground,
-				containerHoverBackground: containerHoverBackground,
+				containerHoverBackground,
 				borderStyle: [
 					{
 						top: ['var(--global-palette7, #eeeeee)', '', 5],
@@ -934,7 +934,7 @@ function KadenceInfoBox(props) {
 			setAttributes({
 				hAlign: 'left',
 				containerBackground: '' === containerBackground ? '#ffffff' : containerBackground,
-				containerHoverBackground: containerHoverBackground,
+				containerHoverBackground,
 				borderStyle: [
 					{
 						top: ['var(--global-palette7, #eeeeee)', '', 5],
@@ -1025,7 +1025,7 @@ function KadenceInfoBox(props) {
 			setAttributes({
 				hAlign: 'center',
 				containerBackground: '' === containerBackground ? '#ffffff' : containerBackground,
-				containerHoverBackground: containerHoverBackground,
+				containerHoverBackground,
 				borderStyle: [
 					{
 						top: ['var(--global-palette7, #eeeeee)', '', 5],
@@ -1114,7 +1114,7 @@ function KadenceInfoBox(props) {
 			setAttributes({
 				hAlign: 'left',
 				containerBackground: '' === containerBackground ? '#ffffff' : containerBackground,
-				containerHoverBackground: containerHoverBackground,
+				containerHoverBackground,
 				borderStyle: [
 					{
 						top: ['var(--global-palette7, #eeeeee)', '', 5],
@@ -1288,8 +1288,8 @@ function KadenceInfoBox(props) {
 			id: media.id,
 			url: url || media.url,
 			alt: media.alt,
-			width: width,
-			height: height,
+			width,
+			height,
 			maxWidth: maxwidth ? maxwidth : 50,
 			subtype: media.subtype,
 		});
@@ -1506,7 +1506,7 @@ function KadenceInfoBox(props) {
 	const { editEntityRecord, saveEditedEntityRecord } = useDispatch(coreStore);
 
 	const { mediaImageRecord, mediaImageFlipRecord } = useSelect((select) => {
-		var rec, flipRec;
+		let rec, flipRec;
 
 		if (mediaImage[0] && mediaImage[0].id) {
 			rec = select(coreStore).getEntityRecord('postType', 'attachment', mediaImage[0].id);
@@ -1881,8 +1881,8 @@ function KadenceInfoBox(props) {
 				<CopyPasteAttributes
 					attributes={attributes}
 					excludedAttrs={nonTransAttrs}
-					defaultAttributes={metadata['attributes']}
-					blockSlug={metadata['name']}
+					defaultAttributes={metadata.attributes}
+					blockSlug={metadata.name}
 					onPaste={(attributesToPaste) => onPaste(attributesToPaste)}
 				/>
 			</BlockControls>
@@ -2053,7 +2053,7 @@ function KadenceInfoBox(props) {
 															}
 															colorDefault={'#000000'}
 															onArrayChange={(color, opacity) => {
-																saveHoverShadow({ color: color, opacity: opacity });
+																saveHoverShadow({ color, opacity });
 															}}
 															opacity={
 																undefined !== shadowHover &&
@@ -2192,7 +2192,7 @@ function KadenceInfoBox(props) {
 															}
 															colorDefault={'#000000'}
 															onArrayChange={(color, opacity) => {
-																saveShadow({ color: color, opacity: opacity });
+																saveShadow({ color, opacity });
 															}}
 															opacity={
 																undefined !== shadow &&
@@ -3650,8 +3650,8 @@ function KadenceInfoBox(props) {
 
 							<KadenceBlockDefaults
 								attributes={attributes}
-								defaultAttributes={metadata['attributes']}
-								blockSlug={metadata['name']}
+								defaultAttributes={metadata.attributes}
+								blockSlug={metadata.name}
 								excludedAttrs={nonTransAttrs}
 							/>
 						</>

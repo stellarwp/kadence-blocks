@@ -2,7 +2,7 @@ import { getPreviewSize, KadenceColorOutput, getFontSizeOptionOutput } from '@ka
 import { get, isEmpty } from 'lodash';
 
 export default (previewDevice, radioLabelFont) => {
-	let styles = {};
+	const styles = {};
 	if (!isEmpty(radioLabelFont, 'color')) {
 		styles.color = KadenceColorOutput(radioLabelFont.color);
 	} else {
@@ -14,7 +14,7 @@ export default (previewDevice, radioLabelFont) => {
 		get(radioLabelFont, 'sizeType', 'px')
 	);
 
-	let lineHeight = getPreviewSize(
+	const lineHeight = getPreviewSize(
 		previewDevice,
 		radioLabelFont?.lineHeight?.[0],
 		radioLabelFont?.lineHeight?.[1],
@@ -23,7 +23,7 @@ export default (previewDevice, radioLabelFont) => {
 	if (lineHeight) {
 		styles.lineHeight = lineHeight + get(radioLabelFont, 'lineType', '');
 	}
-	let letterSpacing = getPreviewSize(
+	const letterSpacing = getPreviewSize(
 		previewDevice,
 		radioLabelFont?.letterSpacing?.[0],
 		radioLabelFont?.letterSpacing?.[1],

@@ -2,7 +2,6 @@
  * WordPress dependencies
  */
 
-import { withSelect, withDispatch } from '@wordpress/data';
 import { parse } from '@wordpress/blocks';
 import {
 	Button,
@@ -516,7 +515,7 @@ function PatternList({
 		onSelect(patternSend);
 	}
 	const thePatterns = useMemo(() => {
-		let allPatterns = [];
+		const allPatterns = [];
 		let variation = 0;
 		Object.keys(patterns).map(function (key, index) {
 			const temp = [];
@@ -629,7 +628,7 @@ function PatternList({
 					variation = 0;
 				}
 				if (item?.html) {
-					item['html'] = replaceImages(
+					item.html = replaceImages(
 						item.html,
 						imageCollection,
 						item.categories,
@@ -637,7 +636,7 @@ function PatternList({
 						item.variation,
 						teamCollection
 					);
-					item['content'] = replaceImages(
+					item.content = replaceImages(
 						item.content,
 						imageCollection,
 						item.categories,
@@ -646,7 +645,7 @@ function PatternList({
 						teamCollection
 					);
 				} else {
-					item['content'] = replaceImages(
+					item.content = replaceImages(
 						item.content,
 						imageCollection,
 						item.categories,
@@ -667,32 +666,13 @@ function PatternList({
 					variation = 0;
 				}
 				if (item?.html) {
-					item['html'] = replaceContent(
-						item.html,
-						allContext,
-						item.categories,
-						aiContext,
-						item.variation,
-						true
-					);
-					item['content'] = replaceContent(
-						item.content,
-						allContext,
-						item.categories,
-						aiContext,
-						item.variation
-					);
+					item.html = replaceContent(item.html, allContext, item.categories, aiContext, item.variation, true);
+					item.content = replaceContent(item.content, allContext, item.categories, aiContext, item.variation);
 					if (userData?.locationType && 'Online Only' !== userData?.locationType && userData?.locationInput) {
-						item['html'] = replaceAddressContent(item['html'], userData.locationInput);
+						item.html = replaceAddressContent(item.html, userData.locationInput);
 					}
 				} else {
-					item['content'] = replaceContent(
-						item.content,
-						allContext,
-						item.categories,
-						aiContext,
-						item.variation
-					);
+					item.content = replaceContent(item.content, allContext, item.categories, aiContext, item.variation);
 				}
 				variation++;
 				return item;
@@ -778,10 +758,10 @@ function PatternList({
 		}
 		if ('sm' === selectedFontSize) {
 			tempStyles =
-				tempStyles.concat(`.block-editor-block-list__layout.is-root-container {--global-kb-font-size-xxxl:${kadence_blocks_params.font_sizes['xxl']};
-			--global-kb-font-size-xxl:${kadence_blocks_params.font_sizes['xl']};
-			--global-kb-font-size-xl:${kadence_blocks_params.font_sizes['lg']};
-			--global-kb-font-size-lg:${kadence_blocks_params.font_sizes['md']}; }`);
+				tempStyles.concat(`.block-editor-block-list__layout.is-root-container {--global-kb-font-size-xxxl:${kadence_blocks_params.font_sizes.xxl};
+			--global-kb-font-size-xxl:${kadence_blocks_params.font_sizes.xl};
+			--global-kb-font-size-xl:${kadence_blocks_params.font_sizes.lg};
+			--global-kb-font-size-lg:${kadence_blocks_params.font_sizes.md}; }`);
 		}
 		const newStyles = [{ css: tempStyles }];
 		return newStyles;
@@ -853,10 +833,10 @@ function PatternList({
 		}
 		if ('sm' === selectedFontSize) {
 			tempStyles =
-				tempStyles.concat(`.single-iframe-content {--global-kb-font-size-xxxl:${kadence_blocks_params.font_sizes['xxl']};
-			--global-kb-font-size-xxl:${kadence_blocks_params.font_sizes['xl']};
-			--global-kb-font-size-xl:${kadence_blocks_params.font_sizes['lg']};
-			--global-kb-font-size-lg:${kadence_blocks_params.font_sizes['md']}; }`);
+				tempStyles.concat(`.single-iframe-content {--global-kb-font-size-xxxl:${kadence_blocks_params.font_sizes.xxl};
+			--global-kb-font-size-xxl:${kadence_blocks_params.font_sizes.xl};
+			--global-kb-font-size-xl:${kadence_blocks_params.font_sizes.lg};
+			--global-kb-font-size-lg:${kadence_blocks_params.font_sizes.md}; }`);
 		}
 		const newStyles = [{ css: tempStyles }];
 		return newStyles;

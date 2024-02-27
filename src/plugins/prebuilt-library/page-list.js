@@ -17,7 +17,6 @@ import InfiniteScroll from 'react-infinite-scroller';
  * WordPress dependencies
  */
 
-import { withSelect, withDispatch } from '@wordpress/data';
 import { rawHandler, parse } from '@wordpress/blocks';
 import {
 	Button,
@@ -145,10 +144,10 @@ function BuildPageContent(rows) {
 	}
 	let tempContent = '';
 	Object.keys(rows).map(function (key, index) {
-		const rowStyle = rows[key]['pattern_style'];
+		const rowStyle = rows[key].pattern_style;
 		const rowStart = `<!-- wp:kadence/column {"borderWidth":["","","",""],"uniqueID":"_f8d4f6-${key}","borderStyle":[{"top":["","",""],"right":["","",""],"bottom":["","",""],"left":["","",""],"unit":"px"}],"className":"kb-pattern-preview-${rowStyle}"} --><div class="wp-block-kadence-column kadence-column_f8d4f6-${key} kb-pattern-preview-${rowStyle}"><div class="kt-inside-inner-col">`;
 		const rowEnd = `</div></div><!-- /wp:kadence/column -->`;
-		const rowContent = rowStart + rows[key]['pattern_content'] + rowEnd;
+		const rowContent = rowStart + rows[key].pattern_content + rowEnd;
 		tempContent = tempContent.concat(rowContent);
 	});
 	return tempContent;
@@ -166,14 +165,14 @@ function BuildHTMLPageContent(rows, useImageReplace, imageCollection, contextTab
 			variation = 0;
 		}
 		let theContent = '';
-		const categories = rows?.[key]?.['pattern_category'] ? Object.keys(rows[key]['pattern_category']) : [];
-		let context = rows[key]['pattern_context'];
+		const categories = rows?.[key]?.pattern_category ? Object.keys(rows[key].pattern_category) : [];
+		let context = rows[key].pattern_context;
 		context = 'contact' === context ? 'contact-form' : context;
 		context = 'subscribe' === context ? 'subscribe-form' : context;
 		context = 'pricing' === context ? 'pricing-table' : context;
-		theContent = replaceMasks(rows[key]['pattern_html']);
+		theContent = replaceMasks(rows[key].pattern_html);
 		if (useImageReplace === 'all' && imageCollection) {
-			theContent = replaceImages(theContent, imageCollection, categories, rows[key]['pattern_id'], variation);
+			theContent = replaceImages(theContent, imageCollection, categories, rows[key].pattern_id, variation);
 		}
 		if (contextTab === 'context') {
 			theContent = replaceContent(theContent, aiContent, categories, context, variation, true);
@@ -198,9 +197,9 @@ function BuildPageImportContent(rows, useImageReplace, imageCollection, contextT
 		if (variation === 11) {
 			variation = 0;
 		}
-		let theContent = '';
-		const rowStyle = rows[key]['pattern_style'];
-		let rowContent = rows[key]['pattern_content'];
+		const theContent = '';
+		const rowStyle = rows[key].pattern_style;
+		let rowContent = rows[key].pattern_content;
 		rowContent = deleteContent(rowContent);
 		if (selectedStyle === 'dark') {
 			if ('light' === rowStyle) {
@@ -208,20 +207,18 @@ function BuildPageImportContent(rows, useImageReplace, imageCollection, contextT
 			} else if ('highlight' === rowStyle) {
 				rowContent = replaceColors(rowContent, 'highlight');
 			}
-		} else {
-			if ('dark' === rowStyle) {
-				rowContent = replaceColors(rowContent, 'dark');
-			} else if ('highlight' === rowStyle) {
-				rowContent = replaceColors(rowContent, 'highlight');
-			}
+		} else if ('dark' === rowStyle) {
+			rowContent = replaceColors(rowContent, 'dark');
+		} else if ('highlight' === rowStyle) {
+			rowContent = replaceColors(rowContent, 'highlight');
 		}
-		const categories = rows?.[key]?.['pattern_category'] ? Object.keys(rows[key]['pattern_category']) : [];
-		let context = rows[key]['pattern_context'];
+		const categories = rows?.[key]?.pattern_category ? Object.keys(rows[key].pattern_category) : [];
+		let context = rows[key].pattern_context;
 		context = 'contact' === context ? 'contact-form' : context;
 		context = 'subscribe' === context ? 'subscribe-form' : context;
 		context = 'pricing' === context ? 'pricing-table' : context;
 		if (useImageReplace === 'all' && imageCollection) {
-			rowContent = replaceImages(rowContent, imageCollection, categories, rows[key]['pattern_id'], variation);
+			rowContent = replaceImages(rowContent, imageCollection, categories, rows[key].pattern_id, variation);
 		}
 		if (contextTab === 'context') {
 			rowContent = replaceContent(rowContent, aiContent, categories, context, variation);
@@ -301,29 +298,29 @@ function PageList({
 		};
 	}, []);
 	const thePages = useMemo(() => {
-		let allPatterns = [];
+		const allPatterns = [];
 		let variation = 0;
 		Object.keys(pages).map(function (key, index) {
 			const temp = [];
 			if (variation === 11) {
 				variation = 0;
 			}
-			temp['title'] = pages[key].name;
-			temp['name'] = pages[key].name;
-			temp['description'] = pages[key].description;
-			temp['image'] = pages[key].image;
-			temp['imageWidth'] = pages[key].imageW;
-			temp['imageHeight'] = pages[key].imageH;
-			temp['id'] = pages[key].id;
-			temp['slug'] = pages[key].slug;
-			temp['pageStyles'] = pages[key].page_styles ? Object.values(pages[key].page_styles) : [];
-			temp['categories'] = pages[key].categories ? Object.keys(pages[key].categories) : [];
-			temp['contexts'] = pages[key].contexts ? Object.keys(pages[key].contexts) : [];
-			temp['keywords'] = pages[key].keywords ? pages[key].keywords : [];
-			temp['content'] = BuildPageContent(pages[key].rows);
+			temp.title = pages[key].name;
+			temp.name = pages[key].name;
+			temp.description = pages[key].description;
+			temp.image = pages[key].image;
+			temp.imageWidth = pages[key].imageW;
+			temp.imageHeight = pages[key].imageH;
+			temp.id = pages[key].id;
+			temp.slug = pages[key].slug;
+			temp.pageStyles = pages[key].page_styles ? Object.values(pages[key].page_styles) : [];
+			temp.categories = pages[key].categories ? Object.keys(pages[key].categories) : [];
+			temp.contexts = pages[key].contexts ? Object.keys(pages[key].contexts) : [];
+			temp.keywords = pages[key].keywords ? pages[key].keywords : [];
+			temp.content = BuildPageContent(pages[key].rows);
 			if (pages[key]?.rows?.[0]?.pattern_html) {
 				const allContext = getAllContext();
-				temp['html'] = BuildHTMLPageContent(
+				temp.html = BuildHTMLPageContent(
 					pages[key].rows,
 					useImageReplace,
 					imageCollection,
@@ -331,13 +328,13 @@ function PageList({
 					allContext
 				);
 			} else if (pages[key]?.rows_html) {
-				temp['html'] = replaceMasks(pages[key].rows_html);
+				temp.html = replaceMasks(pages[key].rows_html);
 			}
-			temp['rows'] = pages[key].rows;
-			temp['pro'] = pages[key].pro;
-			temp['locked'] = pages[key].pro && 'true' !== kadence_blocks_params.pro ? true : false;
-			temp['proRender'] = false;
-			temp['viewportWidth'] = 1200;
+			temp.rows = pages[key].rows;
+			temp.pro = pages[key].pro;
+			temp.locked = pages[key].pro && 'true' !== kadence_blocks_params.pro ? true : false;
+			temp.proRender = false;
+			temp.viewportWidth = 1200;
 			variation++;
 			allPatterns.push(temp);
 		});

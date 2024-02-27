@@ -7,17 +7,17 @@ import { times } from 'lodash';
 export function migrateToInnerblocks(attributes) {
 	const { items, listCount } = attributes;
 
-	let listInnerBlocks = [];
+	const listInnerBlocks = [];
 	if (items?.length) {
 		times(listCount, (n) => {
-			let item = items[n];
-			let newAttrs = { ...item };
+			const item = items[n];
+			const newAttrs = { ...item };
 
 			listInnerBlocks.push(createBlock('kadence/listitem', newAttrs));
 		});
 	}
 
-	let listParentAttributes = { ...attributes, items: [], listCount: 1 };
+	const listParentAttributes = { ...attributes, items: [], listCount: 1 };
 
 	return [listParentAttributes, listInnerBlocks];
 }

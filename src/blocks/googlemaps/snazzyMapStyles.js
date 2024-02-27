@@ -251,7 +251,6 @@ export default function snazzyMapStyles(styleName, customSnazzy = '') {
 		return night_mode;
 	} else if (styleName === 'custom' && customSnazzy !== '') {
 		return JSON.parse(customSnazzy);
-	} else {
-		return [];
 	}
+	return [];
 }

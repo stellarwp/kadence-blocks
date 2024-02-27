@@ -204,7 +204,7 @@ function KadenceTableOfContents(props) {
 		setBlockDefaults('kadence/tableofcontents', attributes);
 
 		const postOrFseId = getPostOrFseId(props, parentData);
-		let uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -217,7 +217,7 @@ function KadenceTableOfContents(props) {
 			setShowContent(false);
 		}
 		// Update from old border settings.
-		let tempBorderStyle = JSON.parse(
+		const tempBorderStyle = JSON.parse(
 			JSON.stringify(
 				attributes.borderStyle
 					? attributes.borderStyle
@@ -264,7 +264,7 @@ function KadenceTableOfContents(props) {
 			setAttributes({ borderStyle: JSON.parse(JSON.stringify(tempBorderStyle)) });
 		}
 		// Update from old title border settings.
-		let tempTitleBorderStyle = JSON.parse(
+		const tempTitleBorderStyle = JSON.parse(
 			JSON.stringify(
 				attributes.titleBorderStyle
 					? attributes.titleBorderStyle
@@ -742,8 +742,8 @@ function KadenceTableOfContents(props) {
 			</ToolbarGroup>
 			<CopyPasteAttributes
 				attributes={attributes}
-				defaultAttributes={metadata['attributes']}
-				blockSlug={metadata['name']}
+				defaultAttributes={metadata.attributes}
+				blockSlug={metadata.name}
 				onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
 			/>
 		</BlockControls>
@@ -1007,8 +1007,8 @@ function KadenceTableOfContents(props) {
 
 						<KadenceBlockDefaults
 							attributes={attributes}
-							defaultAttributes={metadata['attributes']}
-							blockSlug={metadata['name']}
+							defaultAttributes={metadata.attributes}
+							blockSlug={metadata.name}
 						/>
 					</>
 				)}
@@ -1266,7 +1266,7 @@ function KadenceTableOfContents(props) {
 										: '#000000'
 								}
 								colorDefault={'#000000'}
-								onArrayChange={(color, opacity) => saveShadow({ color: color, opacity: opacity })}
+								onArrayChange={(color, opacity) => saveShadow({ color, opacity })}
 								opacity={
 									undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].opacity
 										? shadow[0].opacity
@@ -1636,8 +1636,8 @@ export default compose([
 		}
 		return {
 			pageIndex: page,
-			postContent: postContent,
-			blockOrder: blockOrder,
+			postContent,
+			blockOrder,
 			isTyping: select('core/block-editor').isTyping(),
 		};
 	}),

@@ -22,7 +22,7 @@ export const getRelevantMediaFiles = async (images, lightSize, thumbSize, oldIma
 				undefined;
 			imageProps.url = theImage.source_url || image.url;
 			if (image.id && typeof oldImages === 'object' && oldImages !== null) {
-				for (let k in oldImages) {
+				for (const k in oldImages) {
 					if (parseInt(oldImages[k].id) === image.id) {
 						if (oldImages[k].customLink) {
 							old_link = oldImages[k].customLink;
@@ -70,7 +70,7 @@ export const pickRelevantMediaFiles = (image, lightSize, thumbSize, oldImages) =
 	let oldThumb_size = '';
 	const imageProps = pick(image, ['id', 'link']);
 	if (image.id && typeof oldImages === 'object' && oldImages !== null) {
-		for (let k in oldImages) {
+		for (const k in oldImages) {
 			if (parseInt(oldImages[k].id) === image.id) {
 				if (oldImages[k].customLink) {
 					imageProps.customLink = oldImages[k].customLink;

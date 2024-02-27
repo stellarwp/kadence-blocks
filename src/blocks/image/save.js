@@ -109,8 +109,8 @@ export default function save({ attributes }) {
 					href={link}
 					className={'kb-advanced-image-link'}
 					target={linkTarget ? '_blank' : undefined}
-					rel={relAttr ? relAttr : undefined}
 					aria-label={linkTitle ? linkTitle : undefined}
+					rel={relAttr ? relAttr : undefined}
 				>
 					{image}
 				</a>

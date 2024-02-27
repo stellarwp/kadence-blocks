@@ -22,9 +22,9 @@ export function Save({ attributes }) {
 		[`align${attributes.align}`]: attributes.align,
 	});
 
-	let mapQueryParams = {
+	const mapQueryParams = {
 		key: 'KADENCE_GOOGLE_MAPS_KEY',
-		zoom: zoom,
+		zoom,
 		maptype: mapType,
 		q: location,
 	};

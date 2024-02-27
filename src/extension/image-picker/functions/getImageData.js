@@ -33,12 +33,12 @@ export default async function getImageData(
 	try {
 		const results = await response.json();
 
-		var newData = { ...currentDataState };
+		let newData = { ...currentDataState };
 		if ('undefined' != typeof results.code && 'rest_prophecy_image_search_no_results' == results.code) {
 			newData = {};
 		} else if (combine && 'undefined' != typeof currentDataState.images) {
 			newData = { ...currentDataState, ...results.data };
-			var mergedImages = currentDataState.images.concat(results.data.images);
+			const mergedImages = currentDataState.images.concat(results.data.images);
 			newData.images = mergedImages;
 		} else {
 			newData = results.data;

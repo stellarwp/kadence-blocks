@@ -150,26 +150,24 @@ export default function PaddingResizer({
 										],
 									});
 								}
+							} else if (edge === 'top') {
+								setAttributes({
+									padding: [
+										parseInt(previewPadding + delta.height, 10),
+										padding ? padding[1] : '',
+										padding ? padding[2] : '',
+										padding ? padding[3] : '',
+									],
+								});
 							} else {
-								if (edge === 'top') {
-									setAttributes({
-										padding: [
-											parseInt(previewPadding + delta.height, 10),
-											padding ? padding[1] : '',
-											padding ? padding[2] : '',
-											padding ? padding[3] : '',
-										],
-									});
-								} else {
-									setAttributes({
-										padding: [
-											padding ? padding[0] : '',
-											padding ? padding[1] : '',
-											parseInt(previewPadding + delta.height, 10),
-											padding ? padding[3] : '',
-										],
-									});
-								}
+								setAttributes({
+									padding: [
+										padding ? padding[0] : '',
+										padding ? padding[1] : '',
+										parseInt(previewPadding + delta.height, 10),
+										padding ? padding[3] : '',
+									],
+								});
 							}
 							toggleSelection(true);
 						}}
@@ -263,26 +261,24 @@ export default function PaddingResizer({
 										],
 									});
 								}
+							} else if (edge === 'top') {
+								setAttributes({
+									padding: [
+										size,
+										padding ? padding[1] : '',
+										padding ? padding[2] : '',
+										padding ? padding[3] : '',
+									],
+								});
 							} else {
-								if (edge === 'top') {
-									setAttributes({
-										padding: [
-											size,
-											padding ? padding[1] : '',
-											padding ? padding[2] : '',
-											padding ? padding[3] : '',
-										],
-									});
-								} else {
-									setAttributes({
-										padding: [
-											padding ? padding[0] : '',
-											padding ? padding[1] : '',
-											size,
-											padding ? padding[3] : '',
-										],
-									});
-								}
+								setAttributes({
+									padding: [
+										padding ? padding[0] : '',
+										padding ? padding[1] : '',
+										size,
+										padding ? padding[3] : '',
+									],
+								});
 							}
 							toggleSelection(true);
 						}}

@@ -25,11 +25,11 @@ export function missionStatementHelper() {
 				product_version = window?.kadenceHomeParams?.pVersion ? window.kadenceHomeParams.pVersion : '';
 			}
 			const token = {
-				domain: domain,
-				key: key,
-				site_name: site_name,
-				product_slug: product_slug,
-				product_version: product_version,
+				domain,
+				key,
+				site_name,
+				product_slug,
+				product_version,
 			};
 			const response = await fetch(`${API_URL}proxy/intake/improve-mission-statement`, {
 				method: 'POST',

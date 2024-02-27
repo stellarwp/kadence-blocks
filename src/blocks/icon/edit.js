@@ -15,7 +15,6 @@ import {
 	KadenceInspectorControls,
 	ResponsiveGapSizeControl,
 } from '@kadence/components';
-import { ToggleControl } from '@wordpress/components';
 import {
 	getPreviewSize,
 	setBlockDefaults,
@@ -49,7 +48,7 @@ import {
 } from '@wordpress/block-editor';
 import { useEffect, useState } from '@wordpress/element';
 import { plusCircle } from '@wordpress/icons';
-import { ToolbarButton, ToolbarGroup } from '@wordpress/components';
+import { ToolbarButton, ToolbarGroup, ToggleControl } from '@wordpress/components';
 
 function KadenceIcons(props) {
 	const { attributes, className, setAttributes, iconsBlock, insertIcon, insertIcons, clientId, context } = props;
@@ -96,7 +95,7 @@ function KadenceIcons(props) {
 		setBlockDefaults('kadence/icon', attributes);
 
 		const postOrFseId = getPostOrFseId(props, parentData);
-		let uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -126,7 +125,7 @@ function KadenceIcons(props) {
 	}, [iconsBlock.innerBlocks.length]);
 
 	const blockProps = useBlockProps({
-		className: className,
+		className,
 		['data-align']:
 			'left' === blockAlignment || 'right' === blockAlignment || 'center' === blockAlignment
 				? blockAlignment

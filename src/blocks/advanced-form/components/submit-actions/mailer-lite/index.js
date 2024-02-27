@@ -53,7 +53,7 @@ export default function MailerLiteOptions({ formInnerBlocks, parentClientId, set
 	const fields = useMemo(() => getFormFields(formInnerBlocks), [parentClientId]);
 
 	const saveMap = (value, uniqueID) => {
-		let updatedMap = { ...settings.map };
+		const updatedMap = { ...settings.map };
 		updatedMap[uniqueID] = value;
 		save({ map: updatedMap });
 	};

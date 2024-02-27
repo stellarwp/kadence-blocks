@@ -12,13 +12,13 @@
 				Object.assign ||
 				function (t) {
 					for (var i, a = 1, s = arguments.length; a < s; a++)
-						for (var n in (i = arguments[a])) Object.prototype.hasOwnProperty.call(i, n) && (t[n] = i[n]);
+						for (const n in (i = arguments[a])) Object.prototype.hasOwnProperty.call(i, n) && (t[n] = i[n]);
 					return t;
 				}).apply(this, arguments);
 		},
 		a = (function () {
 			function t(t, a, s) {
-				var n = this;
+				const n = this;
 				(this.target = t),
 					(this.endVal = a),
 					(this.options = s),
@@ -44,7 +44,7 @@
 					(this.paused = !0),
 					(this.count = function (t) {
 						n.startTime || (n.startTime = t);
-						var i = t - n.startTime;
+						const i = t - n.startTime;
 						(n.remaining = n.duration - i),
 							n.useEasing
 								? n.countDown
@@ -65,7 +65,7 @@
 								: n.callback && n.callback();
 					}),
 					(this.formatNumber = function (t) {
-						var i,
+						let i,
 							a,
 							s,
 							e,
@@ -78,7 +78,7 @@
 							n.options.useGrouping)
 						) {
 							r = '';
-							for (var l = 0, u = s.length; l < u; ++l)
+							for (let l = 0, u = s.length; l < u; ++l)
 								0 !== l && l % 3 == 0 && (r = n.options.separator + r), (r = s[u - l - 1] + r);
 							s = r;
 						}
@@ -113,12 +113,12 @@
 			}
 			return (
 				(t.prototype.determineDirectionAndSmartEasing = function () {
-					var t = this.finalEndVal ? this.finalEndVal : this.endVal;
+					const t = this.finalEndVal ? this.finalEndVal : this.endVal;
 					this.countDown = this.startVal > t;
-					var i = t - this.startVal;
+					const i = t - this.startVal;
 					if (Math.abs(i) > this.options.smartEasingThreshold) {
 						this.finalEndVal = t;
-						var a = this.countDown ? 1 : -1;
+						const a = this.countDown ? 1 : -1;
 						(this.endVal = t + a * this.options.smartEasingAmount), (this.duration = this.duration / 2);
 					} else (this.endVal = t), (this.finalEndVal = null);
 					this.finalEndVal ? (this.useEasing = !1) : (this.useEasing = this.options.useEasing);
@@ -162,7 +162,7 @@
 							(this.rAF = requestAnimationFrame(this.count)));
 				}),
 				(t.prototype.printValue = function (t) {
-					var i = this.formattingFn(t);
+					const i = this.formattingFn(t);
 					'INPUT' === this.el.tagName
 						? (this.el.value = i)
 						: 'text' === this.el.tagName || 'tspan' === this.el.tagName
@@ -173,7 +173,7 @@
 					return 'number' == typeof t && !isNaN(t);
 				}),
 				(t.prototype.validateValue = function (t) {
-					var i = Number(t);
+					const i = Number(t);
 					return this.ensureNumber(i)
 						? i
 						: ((this.error = '[CountUp] invalid start or end value: ' + t), null);

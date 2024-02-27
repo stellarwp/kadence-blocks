@@ -91,6 +91,7 @@ export default [
 							href={link}
 							className={'kb-advanced-image-link'}
 							target={linkTarget ? '_blank' : undefined}
+							// eslint-disable-next-line react/jsx-no-target-blank
 							rel={relAttr ? relAttr : undefined}
 						>
 							{image}
@@ -194,7 +195,7 @@ export default [
 							href={link}
 							className={'kb-advanced-image-link'}
 							target={linkTarget ? '_blank' : undefined}
-							rel={relAttr ? relAttr : undefined}
+							rel={relAttr ? relAttr : undefined} // eslint-disable-line
 						>
 							{image}
 						</a>

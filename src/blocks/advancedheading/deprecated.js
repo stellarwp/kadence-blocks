@@ -411,6 +411,7 @@ export default [
 					}${linkStyle ? ' hls-' + linkStyle : ''}`}
 					target={linkTarget ? '_blank' : undefined}
 					relAttr={relAttr ? relAttr : undefined}
+					rel="noreferrer"
 				>
 					{htmlItem}
 				</a>
@@ -815,6 +816,7 @@ export default [
 					className={'kb-advanced-heading-link'}
 					target={linkTarget ? '_blank' : undefined}
 					relAttr={relAttr ? relAttr : undefined}
+					rel="noreferrer"
 				>
 					{htmlItem}
 				</a>
@@ -1217,6 +1219,7 @@ export default [
 					className={'kb-advanced-heading-link'}
 					target={linkTarget ? '_blank' : undefined}
 					relAttr={relAttr ? relAttr : undefined}
+					rel="noreferrer"
 				>
 					{htmlItem}
 				</a>
@@ -2175,7 +2178,7 @@ export default [
 					}
 					style={{
 						textAlign: align,
-						color: color,
+						color,
 						letterSpacing: letterSpacing ? letterSpacing + 'px' : undefined,
 						marginTop: undefined !== topMargin && '' !== topMargin ? topMargin + mType : undefined,
 						marginBottom:
@@ -2451,7 +2454,7 @@ export default [
 					}
 					style={{
 						textAlign: align,
-						color: color,
+						color,
 						letterSpacing: letterSpacing ? letterSpacing + 'px' : undefined,
 						marginTop: topMargin ? topMargin + mType : undefined,
 						marginBottom: bottomMargin ? bottomMargin + mType : undefined,
@@ -2718,7 +2721,7 @@ export default [
 					}
 					style={{
 						textAlign: align,
-						color: color,
+						color,
 						letterSpacing: letterSpacing ? letterSpacing + 'px' : undefined,
 						marginTop: topMargin ? topMargin + mType : undefined,
 						marginBottom: bottomMargin ? bottomMargin + mType : undefined,
@@ -2925,7 +2928,7 @@ export default [
 					id={`kt-adv-heading${uniqueID}`}
 					style={{
 						textAlign: align,
-						color: color,
+						color,
 						letterSpacing: letterSpacing ? letterSpacing + 'px' : undefined,
 						marginTop: topMargin ? topMargin + mType : undefined,
 						marginBottom: bottomMargin ? bottomMargin + mType : undefined,
@@ -3022,7 +3025,7 @@ export default [
 					id={`kt-adv-heading${uniqueID}`}
 					style={{
 						textAlign: align,
-						color: color,
+						color,
 						letterSpacing: letterSpacing ? letterSpacing + 'px' : undefined,
 					}}
 					value={content}

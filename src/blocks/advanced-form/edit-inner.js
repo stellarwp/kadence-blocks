@@ -13,7 +13,6 @@ import { size, get, isEqual } from 'lodash';
 import { addQueryArgs } from '@wordpress/url';
 import { applyFilters } from '@wordpress/hooks';
 import { useEntityBlockEditor, useEntityProp } from '@wordpress/core-data';
-import { store as editorStore } from '@wordpress/block-editor';
 import { formBlockIcon } from '@kadence/icons';
 import {
 	KadencePanelBody,
@@ -39,6 +38,7 @@ import {
 	BlockControls,
 	useInnerBlocksProps,
 	InspectorAdvancedControls,
+	store as editorStore,
 } from '@wordpress/block-editor';
 import {
 	TextControl,
@@ -282,7 +282,7 @@ export function EditInner(props) {
 	let [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_form', id);
 	const { updateBlockAttributes } = useDispatch(editorStore);
 
-	let emptyForm = useMemo(() => {
+	const emptyForm = useMemo(() => {
 		return [createBlock('kadence/advanced-form', {})];
 	}, [clientId]);
 
@@ -290,11 +290,11 @@ export function EditInner(props) {
 		blocks = emptyForm;
 	}
 
-	let formInnerBlocks = useMemo(() => {
+	const formInnerBlocks = useMemo(() => {
 		return get(blocks, [0, 'innerBlocks'], []);
 	}, [blocks]);
 
-	let newBlock = useMemo(() => {
+	const newBlock = useMemo(() => {
 		return get(blocks, [0], {});
 	}, [blocks]);
 
@@ -302,7 +302,7 @@ export function EditInner(props) {
 		if (Array.isArray(formInnerBlocks) && formInnerBlocks.length) {
 			dedupeFormFieldUniqueIds(formInnerBlocks, updateBlockAttributes, id);
 
-			let currentFields = getFormFields(formInnerBlocks);
+			const currentFields = getFormFields(formInnerBlocks);
 
 			if (!isEqual(fields, currentFields)) {
 				setMetaAttribute(currentFields, 'fields');
@@ -495,7 +495,7 @@ export function EditInner(props) {
 						break;
 				}
 				setTitle(title);
-				let updatedMeta = meta;
+				const updatedMeta = meta;
 				if (
 					kadence_blocks_params.pro === 'true' &&
 					updatedMeta?._kad_form_actions &&

@@ -10,7 +10,7 @@
 		/**
 		 * Initiate the script to process all
 		 */
-		initAll: function (element) {
+		initAll(element) {
 			GLightbox({
 				selector: '.ktblocksvideopop',
 				touchNavigation: true,
@@ -29,7 +29,7 @@
 			});
 		},
 		// Initiate the menus when the DOM loads.
-		init: function () {
+		init() {
 			if (typeof GLightbox == 'function') {
 				kadenceBlocksVideoLightbox.initAll();
 			} else {

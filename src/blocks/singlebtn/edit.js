@@ -49,114 +49,6 @@ import {
 import classnames from 'classnames';
 import { times, filter, map, uniqueId } from 'lodash';
 
-const defaultBtns = {
-	text: '',
-	link: '',
-	target: '_self',
-	color: '',
-	background: '',
-	borderRadius: ['', '', '', ''],
-	colorHover: '',
-	backgroundHover: '',
-	icon: '',
-	iconSide: 'right',
-	iconHover: false,
-	noFollow: false,
-	sponsored: false,
-	download: false,
-	gradient: '',
-	gradientHover: '',
-	btnStyle: 'basic',
-	sizePreset: 'standard',
-	backgroundType: 'solid',
-	backgroundHoverType: 'solid',
-	width: ['', '', ''],
-	widthType: 'auto',
-	borderStyle: [
-		{
-			top: ['', '', ''],
-			right: ['', '', ''],
-			bottom: ['', '', ''],
-			left: ['', '', ''],
-			unit: 'px',
-		},
-	],
-	borderHoverStyle: [
-		{
-			top: ['', '', ''],
-			right: ['', '', ''],
-			bottom: ['', '', ''],
-			left: ['', '', ''],
-			unit: 'px',
-		},
-	],
-	displayShadow: false,
-	displayHoverShadow: false,
-	shadow: [
-		{
-			color: '#000000',
-			opacity: 0.2,
-			spread: 0,
-			blur: 2,
-			hOffset: 1,
-			vOffset: 1,
-			inset: false,
-		},
-	],
-	shadowHover: [
-		{
-			color: '#000000',
-			opacity: 0.4,
-			spread: 0,
-			blur: 3,
-			hOffset: 2,
-			vOffset: 2,
-			inset: false,
-		},
-	],
-	typography: {
-		type: 'array',
-		default: [
-			{
-				size: ['', '', ''],
-				sizeType: 'px',
-				lineHeight: ['', '', ''],
-				lineType: 'px',
-				letterSpacing: ['', '', ''],
-				letterType: 'px',
-				family: '',
-				google: false,
-				style: '',
-				weight: '',
-				variant: '',
-				subset: '',
-				loadGoogle: true,
-				textTransform: '',
-			},
-		],
-	},
-	inheritStyles: '',
-	iconSize: ['', '', ''],
-	iconPadding: ['', '', '', ''],
-	iconTabletPadding: ['', '', '', ''],
-	iconMobilePadding: ['', '', '', ''],
-	iconPaddingUnit: 'px',
-	onlyIcon: [false, '', ''],
-	iconColor: '',
-	iconColorHover: '',
-	iconSizeUnit: 'px',
-	label: '',
-	marginUnit: 'px',
-	margin: ['', '', '', ''],
-	tabletMargin: ['', '', '', ''],
-	mobileMargin: ['', '', '', ''],
-	paddingUnit: 'px',
-	padding: ['', '', '', ''],
-	tabletPadding: ['', '', '', ''],
-	mobilePadding: ['', '', '', ''],
-	borderStyle: [{}],
-};
-
 import metadata from './block.json';
 /**
  * Internal block libraries
@@ -314,7 +206,7 @@ export default function KadenceButtonEdit(props) {
 		setBlockDefaults('kadence/singlebtn', attributes);
 
 		const postOrFseId = getPostOrFseId(props, parentData);
-		let uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -864,11 +756,11 @@ export default function KadenceButtonEdit(props) {
 
 	const isDynamicReplaced =
 		undefined !== kadenceDynamic &&
-		undefined !== kadenceDynamic['text'] &&
-		undefined !== kadenceDynamic['text'].enable &&
-		kadenceDynamic['text'].enable;
+		undefined !== kadenceDynamic.text &&
+		undefined !== kadenceDynamic.text.enable &&
+		kadenceDynamic.text.enable;
 	const richTextFormatsBase = ['core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field'];
-	const richTextFormats = !kadenceDynamic?.['text']?.shouldReplace
+	const richTextFormats = !kadenceDynamic?.text?.shouldReplace
 		? [...['kadence/insert-dynamic'], ...richTextFormatsBase]
 		: richTextFormatsBase;
 
@@ -916,11 +808,11 @@ export default function KadenceButtonEdit(props) {
 				<CopyPasteAttributes
 					attributes={attributes}
 					excludedAttrs={nonTransAttrs}
-					defaultAttributes={metadata['attributes']}
-					blockSlug={metadata['name']}
+					defaultAttributes={metadata.attributes}
+					blockSlug={metadata.name}
 					onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
 				/>
-				{Boolean(kadenceDynamic?.['text']?.shouldReplace) && (
+				{Boolean(kadenceDynamic?.text?.shouldReplace) && (
 					<DynamicTextControl dynamicAttribute={'text'} {...props} />
 				)}
 			</BlockControls>
@@ -1203,7 +1095,7 @@ export default function KadenceButtonEdit(props) {
 														}
 														colorDefault={'#000000'}
 														onArrayChange={(color, opacity) => {
-															saveShadowHover({ color: color, opacity: opacity });
+															saveShadowHover({ color, opacity });
 														}}
 														opacity={
 															undefined !== shadowHover &&
@@ -1359,7 +1251,7 @@ export default function KadenceButtonEdit(props) {
 														}
 														colorDefault={'#000000'}
 														onArrayChange={(color, opacity) => {
-															saveShadow({ color: color, opacity: opacity });
+															saveShadow({ color, opacity });
 														}}
 														opacity={
 															undefined !== shadow &&
@@ -1812,8 +1704,8 @@ export default function KadenceButtonEdit(props) {
 
 								<KadenceBlockDefaults
 									attributes={attributes}
-									defaultAttributes={metadata['attributes']}
-									blockSlug={metadata['name']}
+									defaultAttributes={metadata.attributes}
+									blockSlug={metadata.name}
 									excludedAttrs={nonTransAttrs}
 								/>
 							</>

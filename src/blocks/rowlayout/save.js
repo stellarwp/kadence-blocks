@@ -6,8 +6,7 @@ import classnames from 'classnames';
 import { times } from 'lodash';
 import { KadenceColorOutput } from '@kadence/helpers';
 import { __ } from '@wordpress/i18n';
-import { useBlockProps } from '@wordpress/block-editor';
-import { InnerBlocks, getColorClassName } from '@wordpress/block-editor';
+import { useBlockProps, InnerBlocks, getColorClassName } from '@wordpress/block-editor';
 
 /**
  * Build the row edit

@@ -107,7 +107,7 @@ function KadenceSpacerDivider(props) {
 		setBlockDefaults('kadence/spacer', attributes);
 
 		const postOrFseId = getPostOrFseId(props, parentData);
-		let uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -120,7 +120,7 @@ function KadenceSpacerDivider(props) {
 	const [activeTab, setActiveTab] = useState('general');
 
 	const blockProps = useBlockProps({
-		className: className,
+		className,
 	});
 
 	let alp;
@@ -176,8 +176,8 @@ function KadenceSpacerDivider(props) {
 						<AlignmentToolbar value={hAlign} onChange={(value) => setAttributes({ hAlign: value })} />
 						<CopyPasteAttributes
 							attributes={attributes}
-							defaultAttributes={metadata['attributes']}
-							blockSlug={metadata['name']}
+							defaultAttributes={metadata.attributes}
+							blockSlug={metadata.name}
 							onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
 						/>
 					</BlockControls>
@@ -353,8 +353,8 @@ function KadenceSpacerDivider(props) {
 
 								<KadenceBlockDefaults
 									attributes={attributes}
-									defaultAttributes={metadata['attributes']}
-									blockSlug={metadata['name']}
+									defaultAttributes={metadata.attributes}
+									blockSlug={metadata.name}
 								/>
 							</>
 						)}

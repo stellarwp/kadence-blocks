@@ -91,10 +91,10 @@ export default function FormTitle({ setTitle, isAdding, existingTitle, onAdd }) 
 		};
 	}
 	const startStyleOptions = [
-		{ key: 'skip', name: __('Basic'), icon: styleIcons['skip'], isDisabled: false },
-		{ key: 'dark', name: __('Dark', 'kadence-blocks'), icon: styleIcons['dark'], isDisabled: false },
-		{ key: 'infield', name: __('Infield', 'kadence-blocks'), icon: styleIcons['infield'], isDisabled: false },
-		{ key: 'underline', name: __('Underline', 'kadence-blocks'), icon: styleIcons['underline'], isDisabled: false },
+		{ key: 'skip', name: __('Basic'), icon: styleIcons.skip, isDisabled: false },
+		{ key: 'dark', name: __('Dark', 'kadence-blocks'), icon: styleIcons.dark, isDisabled: false },
+		{ key: 'infield', name: __('Infield', 'kadence-blocks'), icon: styleIcons.infield, isDisabled: false },
+		{ key: 'underline', name: __('Underline', 'kadence-blocks'), icon: styleIcons.underline, isDisabled: false },
 	];
 	const formTemplates = applyFilters('kadence.formTemplates', startLayoutOptions);
 	const formStyles = applyFilters('kadence.formStyles', startStyleOptions);

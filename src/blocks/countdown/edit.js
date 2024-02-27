@@ -222,7 +222,7 @@ function KadenceCountdown(props) {
 		setBlockDefaults('kadence/countdown', attributes);
 
 		const postOrFseId = getPostOrFseId(props, parentData);
-		let uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -1277,8 +1277,8 @@ function KadenceCountdown(props) {
 						<CopyPasteAttributes
 							attributes={attributes}
 							excludedAttrs={nonTransAttrs}
-							defaultAttributes={metadata['attributes']}
-							blockSlug={metadata['name']}
+							defaultAttributes={metadata.attributes}
+							blockSlug={metadata.name}
 							onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
 						/>
 					</BlockControls>
@@ -2077,8 +2077,8 @@ function KadenceCountdown(props) {
 
 								<KadenceBlockDefaults
 									attributes={attributes}
-									defaultAttributes={metadata['attributes']}
-									blockSlug={metadata['name']}
+									defaultAttributes={metadata.attributes}
+									blockSlug={metadata.name}
 									excludedAttrs={nonTransAttrs}
 								/>
 							</>

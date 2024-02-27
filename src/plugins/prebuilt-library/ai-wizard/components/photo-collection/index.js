@@ -24,7 +24,7 @@ async function downloadImages(images) {
 			path: '/kb-design-library/v1/process_images',
 			method: 'POST',
 			data: {
-				images: images,
+				images,
 			},
 		});
 		return response;

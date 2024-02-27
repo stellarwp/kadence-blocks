@@ -424,7 +424,7 @@ function Inspector({
 									htmlTag={titleFont[0].htmlTag}
 									onTagLevel={(value) => saveTitleFont({ level: value })}
 									onTagLevelHTML={(level, tag) => {
-										saveTitleFont({ level: level, htmlTag: tag });
+										saveTitleFont({ level, htmlTag: tag });
 									}}
 									fontSize={titleFont[0].size}
 									onFontSize={(value) => saveTitleFont({ size: value })}
@@ -741,8 +741,8 @@ function Inspector({
 				<>
 					<KadenceBlockDefaults
 						attributes={attributes}
-						defaultAttributes={metadata['attributes']}
-						blockSlug={metadata['name']}
+						defaultAttributes={metadata.attributes}
+						blockSlug={metadata.name}
 						excludedAttrs={['start', 'end', 'endDecimal', 'title']}
 					/>
 				</>

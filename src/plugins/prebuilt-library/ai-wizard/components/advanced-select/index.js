@@ -23,7 +23,7 @@ export const AdvancedSelect = forwardRef(function AdvancedSelect(props, ref) {
 	const [componentWidth, setComponentWidth] = useState('auto');
 	const [isOpen, setIsOpen] = useState(false);
 	const [allowClose, setAllowClose] = useState(true);
-	let parentRef = useRef();
+	const parentRef = useRef();
 
 	useEffect(() => {
 		if (parentRef && parentRef.current) {

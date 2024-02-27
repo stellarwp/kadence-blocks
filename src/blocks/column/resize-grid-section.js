@@ -122,7 +122,7 @@ function ResizeGridSection(props) {
 			<ResizableBox
 				className="grid-section-handle"
 				style={{
-					gridArea: gridArea,
+					gridArea,
 					width: 'auto',
 					height: 'auto',
 				}}
@@ -154,7 +154,7 @@ export default compose([
 		const parentBlock = getBlocksByClientId(rootID);
 		return {
 			parentBlockClientId: rootID,
-			parentBlock: parentBlock,
+			parentBlock,
 		};
 	}),
 ])(ResizeGridSection);

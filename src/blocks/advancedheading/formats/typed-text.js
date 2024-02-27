@@ -88,7 +88,7 @@ export const kadenceTypedText = {
 		};
 
 		const getCurrentSettings = () => {
-			let response = { ...defaultAttributes, ...activeAttributes };
+			const response = { ...defaultAttributes, ...activeAttributes };
 
 			try {
 				response.strings = JSON.parse(response.strings);
@@ -100,7 +100,7 @@ export const kadenceTypedText = {
 		};
 
 		const updateFormat = (newValue) => {
-			let newAttributes = {
+			const newAttributes = {
 				...activeAttributes,
 				...newValue,
 			};

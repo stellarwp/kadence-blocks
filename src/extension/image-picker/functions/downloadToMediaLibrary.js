@@ -14,7 +14,7 @@ async function downloadImage(images) {
 			path: '/kb-image-picker/v1/process_images',
 			method: 'POST',
 			data: {
-				images: images,
+				images,
 			},
 		});
 	} catch (error) {

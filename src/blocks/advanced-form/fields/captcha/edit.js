@@ -63,7 +63,7 @@ function FieldCaptcha({ attributes, setAttributes, isSelected, clientId, context
 
 	useEffect(() => {
 		// Doesn't worry about if a filed is duplicated. Duplicated fields get a custom ID through the watch at the form level.
-		let uniqueId = getUniqueFieldId(uniqueID, clientId);
+		const uniqueId = getUniqueFieldId(uniqueID, clientId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -147,11 +147,12 @@ function FieldCaptcha({ attributes, setAttributes, isSelected, clientId, context
 	const [kadenceRecaptha, setKadenceRecaptha] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
 
-	let allowedTabs = ['general', 'style', 'advanced'];
+	const allowedTabs = ['general', 'style', 'advanced'];
 	const linkToKadenceCaptchaSettings = (
 		<a
 			href={kadence_blocks_params.adminUrl + 'options-general.php?page=kadence-recaptcha-settings'}
 			target={'_blank'}
+			rel="noreferrer"
 		>
 			{__('Modify Kadence Captcha settings', 'kadence-blocks')}
 		</a>
@@ -196,7 +197,7 @@ function FieldCaptcha({ attributes, setAttributes, isSelected, clientId, context
 	};
 
 	const kcKeyToType = (key) => {
-		let types = ['googlev2', 'googlev3', 'turnstile'];
+		const types = ['googlev2', 'googlev3', 'turnstile'];
 
 		return types[key];
 	};

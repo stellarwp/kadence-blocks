@@ -1,8 +1,8 @@
-let kbAdvHeadingTypedListener = setInterval(function () {
+const kbAdvHeadingTypedListener = setInterval(function () {
 	if (typeof Typed !== 'undefined') {
 		clearInterval(kbAdvHeadingTypedListener);
 
-		let kbTypedDefaults = {
+		const kbTypedDefaults = {
 			strings: JSON.stringify(['']),
 			cursorChar: '_',
 			startDelay: 0,
@@ -16,12 +16,12 @@ let kbAdvHeadingTypedListener = setInterval(function () {
 			shuffle: false,
 		};
 
-		let typedHeadings = document.querySelectorAll('.kt-typed-text');
+		const typedHeadings = document.querySelectorAll('.kt-typed-text');
 
 		typedHeadings.forEach(function (element) {
 			let strings = element.getAttribute('data-strings');
 			let stringsArray = [];
-			let kbTypedSettings = { ...kbTypedDefaults };
+			const kbTypedSettings = { ...kbTypedDefaults };
 
 			try {
 				if (strings) {

@@ -17,7 +17,7 @@ export function convertStreamDataToJson(data) {
 	const decodedValue = new TextDecoder().decode(data);
 	const lines = decodedValue.split('\n');
 
-	let eventData = {
+	const eventData = {
 		content: '',
 	};
 	lines.forEach((line) => {

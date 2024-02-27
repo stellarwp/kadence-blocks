@@ -59,8 +59,8 @@ registerBlockType('kadence/advancedheading', {
 				blocks: ['core/heading'],
 				transform: ({ content, level }) => {
 					return createBlock('kadence/advancedheading', {
-						content: content,
-						level: level,
+						content,
+						level,
 					});
 				},
 			},
@@ -80,8 +80,8 @@ registerBlockType('kadence/advancedheading', {
 				blocks: ['core/heading'],
 				transform: ({ content, level }) => {
 					return createBlock('core/heading', {
-						content: content,
-						level: level,
+						content,
+						level,
 					});
 				},
 			},

@@ -191,7 +191,7 @@ function KadenceIconLists(props) {
 		}
 
 		const postOrFseId = getPostOrFseId(props, parentData);
-		let uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -350,7 +350,7 @@ function KadenceIconLists(props) {
 	const nonTransAttrs = ['listCount'];
 
 	const blockProps = useBlockProps({
-		className: className,
+		className,
 		// 'data-align': ( 'center' === blockAlignment || 'left' === blockAlignment || 'right' === blockAlignment ? blockAlignment : undefined )
 	});
 	const innerBlocksProps = useInnerBlocksProps(blockProps, {
@@ -387,8 +387,8 @@ function KadenceIconLists(props) {
 				<CopyPasteAttributes
 					attributes={attributes}
 					excludedAttrs={nonTransAttrs}
-					defaultAttributes={metadata['attributes']}
-					blockSlug={metadata['name']}
+					defaultAttributes={metadata.attributes}
+					blockSlug={metadata.name}
 					onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
 				/>
 			</BlockControls>
@@ -745,8 +745,8 @@ function KadenceIconLists(props) {
 
 							<KadenceBlockDefaults
 								attributes={attributes}
-								defaultAttributes={metadata['attributes']}
-								blockSlug={metadata['name']}
+								defaultAttributes={metadata.attributes}
+								blockSlug={metadata.name}
 								excludedAttrs={nonTransAttrs}
 								preventMultiple={['items']}
 							/>

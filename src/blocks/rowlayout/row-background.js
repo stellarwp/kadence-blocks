@@ -388,7 +388,6 @@ function RowBackground({ attributes, previewDevice, backgroundClasses, children,
 			backgroundSliderSettings && backgroundSliderSettings[0] && backgroundSliderSettings[0].arrowStyle !== 'none'
 				? true
 				: false,
-		rewind: true,
 		perPage: 1,
 		rewind: true,
 		pagination:

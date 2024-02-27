@@ -59,15 +59,15 @@ export function LargeBanner({
 		const tempActiveStorage = SafeParseJSON(localStorage.getItem('kadenceBlocksPrebuilt'), true);
 		if (response === 'error') {
 			console.log('Error getting credits');
-			tempActiveStorage['credits'] = 'fetch';
+			tempActiveStorage.credits = 'fetch';
 			localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(tempActiveStorage));
 			setAvailableCredits(0);
 		} else if (response === '') {
-			tempActiveStorage['credits'] = 0;
+			tempActiveStorage.credits = 0;
 			localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(tempActiveStorage));
 			setAvailableCredits(0);
 		} else {
-			tempActiveStorage['credits'] = parseInt(response);
+			tempActiveStorage.credits = parseInt(response);
 			localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(tempActiveStorage));
 			setAvailableCredits(parseInt(response));
 		}

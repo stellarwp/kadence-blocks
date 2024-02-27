@@ -50,24 +50,24 @@ class CloudConnect extends Component {
 				isLoading: false,
 				newUrl: '',
 				newKey: '',
-				cloudSettings: cloudSettings,
+				cloudSettings,
 			});
 			this.props.onReload();
 		});
 	}
 	addConnection() {
 		this.setState({ isLoading: true });
-		var data = new FormData();
+		const data = new FormData();
 		data.append('action', 'kadence_import_get_new_connection_data');
 		data.append('security', kadence_blocks_params.ajax_nonce);
 		data.append('url', this.state.newUrl ? this.state.newUrl : '');
 		data.append('key', this.state.newKey ? this.state.newKey : '');
-		var control = this;
+		const control = this;
 		jQuery
 			.ajax({
 				method: 'POST',
 				url: kadence_blocks_params.ajax_url,
-				data: data,
+				data,
 				contentType: false,
 				processData: false,
 			})
@@ -125,7 +125,7 @@ class CloudConnect extends Component {
 												onClick={() => {
 													const cloudSettings = this.state.cloudSettings;
 													cloudSettings.connections.splice(index, 1);
-													this.setState({ cloudSettings: cloudSettings });
+													this.setState({ cloudSettings });
 													this.saveSettings(cloudSettings);
 												}}
 											/>

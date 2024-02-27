@@ -49,10 +49,10 @@ export default function ImagePicker(props) {
 					? select('kadenceblocks/data').getImagePickerResults()
 					: '';
 			return {
-				imagePickerQuery: imagePickerQuery,
-				imagePickerSelection: imagePickerSelection,
-				imagePickerMultiSelection: imagePickerMultiSelection,
-				imagePickerResults: imagePickerResults,
+				imagePickerQuery,
+				imagePickerSelection,
+				imagePickerMultiSelection,
+				imagePickerResults,
 			};
 		},
 		[]

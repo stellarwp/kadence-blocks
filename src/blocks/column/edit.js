@@ -270,7 +270,7 @@ function SectionEdit(props) {
 		setBlockDefaults('kadence/column', attributes);
 
 		const postOrFseId = getPostOrFseId(props, parentData);
-		let uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -341,7 +341,7 @@ function SectionEdit(props) {
 			});
 		}
 		// Update from old border settings.
-		let tempBorderStyle = JSON.parse(
+		const tempBorderStyle = JSON.parse(
 			JSON.stringify(
 				attributes.borderStyle
 					? attributes.borderStyle
@@ -376,7 +376,7 @@ function SectionEdit(props) {
 		if (updateBorderStyle) {
 			setAttributes({ borderStyle: tempBorderStyle });
 		}
-		let tempBorderHoverStyle = JSON.parse(
+		const tempBorderHoverStyle = JSON.parse(
 			JSON.stringify(
 				attributes.borderHoverStyle
 					? attributes.borderHoverStyle
@@ -416,7 +416,7 @@ function SectionEdit(props) {
 		if (updateBorderHoverStyle) {
 			setAttributes({ borderHoverStyle: tempBorderHoverStyle });
 		}
-		let tempTabBorderStyle = JSON.parse(
+		const tempTabBorderStyle = JSON.parse(
 			JSON.stringify(
 				attributes.tabletBorderStyle
 					? attributes.tabletBorderStyle
@@ -444,7 +444,7 @@ function SectionEdit(props) {
 			const tempTabBorderWidth = JSON.parse(JSON.stringify(tempTabBorderStyle));
 			setAttributes({ tabletBorderStyle: tempTabBorderWidth, tabletBorderWidth: ['', '', '', ''] });
 		}
-		let tempTabBorderHoverStyle = JSON.parse(
+		const tempTabBorderHoverStyle = JSON.parse(
 			JSON.stringify(
 				attributes.tabletBorderHoverStyle
 					? attributes.tabletBorderHoverStyle
@@ -475,7 +475,7 @@ function SectionEdit(props) {
 				tabletBorderHoverWidth: ['', '', '', ''],
 			});
 		}
-		let tempMobileBorderStyle = JSON.parse(
+		const tempMobileBorderStyle = JSON.parse(
 			JSON.stringify(
 				attributes.mobileBorderStyle
 					? attributes.mobileBorderStyle
@@ -502,7 +502,7 @@ function SectionEdit(props) {
 			tempMobileBorderStyle[0].left[2] = mobileBorderWidth?.[3] || '';
 			setAttributes({ mobileBorderStyle: tempMobileBorderStyle, mobileBorderWidth: ['', '', '', ''] });
 		}
-		let tempMobileBorderHoverStyle = JSON.parse(
+		const tempMobileBorderHoverStyle = JSON.parse(
 			JSON.stringify(
 				attributes.mobileBorderHoverStyle
 					? attributes.mobileBorderHoverStyle
@@ -535,9 +535,9 @@ function SectionEdit(props) {
 			let deskJustifyAlign = justifyContent?.[0] ? justifyContent[0] : '';
 			let tabletJustifyAlign = justifyContent?.[1] ? justifyContent[1] : '';
 			let mobileJustifyAlign = justifyContent?.[2] ? justifyContent[2] : '';
-			let deskDirection = direction?.[0] ? direction[0] : '';
-			let tabletDirection = direction?.[1] ? direction[1] : '';
-			let mobileDirection = direction?.[2] ? direction[2] : '';
+			const deskDirection = direction?.[0] ? direction[0] : '';
+			const tabletDirection = direction?.[1] ? direction[1] : '';
+			const mobileDirection = direction?.[2] ? direction[2] : '';
 			let updateJustify = false;
 			if ('' !== textAlign?.[0] && deskDirection === 'horizontal' && deskJustifyAlign === '') {
 				switch (textAlign[0]) {
@@ -638,7 +638,7 @@ function SectionEdit(props) {
 				undefined !== rowGap &&
 				(deskDirection === 'horizontal' || tabletDirection === 'horizontal' || mobileDirection === 'horizontal')
 			) {
-				let tempRowGap = JSON.parse(JSON.stringify(rowGap));
+				const tempRowGap = JSON.parse(JSON.stringify(rowGap));
 				if (deskDirection === 'horizontal') {
 					tempRowGap[0] = '' !== gutter?.[0] ? gutter[0] : 10;
 				}
@@ -701,9 +701,9 @@ function SectionEdit(props) {
 						: false;
 			}
 			return {
-				inRowBlock: inRowBlock,
+				inRowBlock,
 				hasInnerBlocks: !!(block && block.innerBlocks.length),
-				inFormBlock: inFormBlock,
+				inFormBlock,
 			};
 		},
 		[clientId]
@@ -1453,8 +1453,8 @@ function SectionEdit(props) {
 						<CopyPasteAttributes
 							attributes={attributes}
 							excludedAttrs={nonTransAttrs}
-							defaultAttributes={metadata['attributes']}
-							blockSlug={metadata['name']}
+							defaultAttributes={metadata.attributes}
+							blockSlug={metadata.name}
 							onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
 						/>
 					</BlockControls>
@@ -2577,8 +2577,8 @@ function SectionEdit(props) {
 								{inFormBlock && <KadenceFormConditionals {...props} />}
 								<KadenceBlockDefaults
 									attributes={attributes}
-									defaultAttributes={metadata['attributes']}
-									blockSlug={metadata['name']}
+									defaultAttributes={metadata.attributes}
+									blockSlug={metadata.name}
 									excludedAttrs={nonTransAttrs}
 								/>
 							</>
@@ -3202,7 +3202,7 @@ function SectionEdit(props) {
 													}
 													colorDefault={'#000000'}
 													onArrayChange={(color, opacity) => {
-														saveShadowHover({ color: color, opacity: opacity });
+														saveShadowHover({ color, opacity });
 													}}
 													opacity={
 														undefined !== shadowHover &&
@@ -3331,7 +3331,7 @@ function SectionEdit(props) {
 													}
 													colorDefault={'#000000'}
 													onArrayChange={(color, opacity) => {
-														saveShadow({ color: color, opacity: opacity });
+														saveShadow({ color, opacity });
 													}}
 													opacity={
 														undefined !== shadow &&
