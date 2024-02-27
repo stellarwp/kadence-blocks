@@ -7,7 +7,7 @@
 !(function () {
 	'use strict';
 	function o() {
-		var o = window,
+		const o = window,
 			t = document;
 		if (!('scrollBehavior' in t.documentElement.style && !0 !== o.__forceSmoothScrollPolyfill__)) {
 			var l,
@@ -72,7 +72,7 @@
 					function () {
 						if (void 0 !== arguments[0])
 							if (!0 !== f(arguments[0])) {
-								var o = arguments[0].left,
+								const o = arguments[0].left,
 									t = arguments[0].top;
 								h.call(
 									this,
@@ -118,7 +118,7 @@
 				}),
 				(e.prototype.scrollIntoView = function () {
 					if (!0 !== f(arguments[0])) {
-						var l = (function (o) {
+						const l = (function (o) {
 								for (
 									;
 									o !== t.body &&
@@ -126,7 +126,7 @@
 
 								)
 									o = o.parentNode || o.host;
-								var l, e, r;
+								let l, e, r;
 								return o;
 							})(this),
 							e = l.getBoundingClientRect(),
@@ -166,11 +166,11 @@
 				: void 0;
 		}
 		function a(t, l) {
-			var e = o.getComputedStyle(t, null)['overflow' + l];
+			const e = o.getComputedStyle(t, null)['overflow' + l];
 			return 'auto' === e || 'scroll' === e;
 		}
 		function d(t) {
-			var l,
+			let l,
 				e,
 				i,
 				c,
@@ -183,11 +183,8 @@
 				(e === t.x && i === t.y) || o.requestAnimationFrame(d.bind(o, t));
 		}
 		function h(l, e, r) {
-			var c,
-				f,
-				p,
-				a,
-				h = s();
+			let c, f, p, a;
+			const h = s();
 			l === t.body
 				? ((c = o), (f = o.scrollX || o.pageXOffset), (p = o.scrollY || o.pageYOffset), (a = i.scroll))
 				: ((c = l), (f = l.scrollLeft), (p = l.scrollTop), (a = n)),
@@ -202,19 +199,19 @@
 		/**
 		 * Add anchors where needed.
 		 */
-		initAddAnchors: function () {
-			var headings = JSON.parse(kadence_blocks_toc.headings);
+		initAddAnchors() {
+			const headings = JSON.parse(kadence_blocks_toc.headings);
 			for (let i = 0; i < headings.length; i++) {
-				var heading_items = document.querySelectorAll('h' + headings[i].level);
+				const heading_items = document.querySelectorAll('h' + headings[i].level);
 				if (!heading_items.length) {
 					return;
 				}
-				var first_string = encodeURIComponent(headings[i].content)
+				const first_string = encodeURIComponent(headings[i].content)
 					.toString()
 					.normalize()
 					.replace(/[^\w\s]/gi, '');
 				for (let n = 0; n < heading_items.length; n++) {
-					var second_string = heading_items[n].textContent
+					let second_string = heading_items[n].textContent
 						.replace(/×/g, 'x')
 						.replace(/–/g, '-')
 						.replace(/—/g, '-')
@@ -228,7 +225,7 @@
 						.toString()
 						.normalize()
 						.replace(/[^\w\s]/gi, '');
-					var alt_string = encodeURIComponent(heading_items[n].getAttribute('data-alt-title'))
+					const alt_string = encodeURIComponent(heading_items[n].getAttribute('data-alt-title'))
 						.toString()
 						.normalize()
 						.replace(/[^\w\s]/gi, '');
@@ -248,7 +245,7 @@
 		/**
 		 * Toggle an attribute.
 		 */
-		toggleAttribute: function (element, attribute, trueVal, falseVal) {
+		toggleAttribute(element, attribute, trueVal, falseVal) {
 			if (trueVal === undefined) {
 				trueVal = true;
 			}
@@ -264,7 +261,7 @@
 		/**
 		 * Toggle a class.
 		 */
-		toggleClass: function (element, trueVal, falseVal) {
+		toggleClass(element, trueVal, falseVal) {
 			if (trueVal === undefined) {
 				trueVal = 'active';
 			}
@@ -282,8 +279,8 @@
 		/**
 		 * Instigate toggle.
 		 */
-		initCollapse: function () {
-			var collapse_items = document.querySelectorAll('.kb-collapsible-toc');
+		initCollapse() {
+			const collapse_items = document.querySelectorAll('.kb-collapsible-toc');
 			if (!collapse_items.length) {
 				return;
 			}
@@ -302,7 +299,7 @@
 			}
 		},
 		scrollToElement(element, offset, history = true) {
-			var originalTop = Math.floor(element.getBoundingClientRect().top) - offset;
+			const originalTop = Math.floor(element.getBoundingClientRect().top) - offset;
 			window.scrollBy({ top: originalTop, left: 0, behavior: 'smooth' });
 			element.tabIndex = '-1';
 			element.focus({
@@ -315,14 +312,14 @@
 		/**
 		 * Instigate toggle.
 		 */
-		initScroll: function () {
-			var scroll_toc = document.querySelectorAll('.kb-toc-smooth-scroll');
+		initScroll() {
+			const scroll_toc = document.querySelectorAll('.kb-toc-smooth-scroll');
 			if (!scroll_toc.length) {
 				return;
 			}
 			for (let n = 0; n < scroll_toc.length; n++) {
 				var offset = parseInt(scroll_toc[n].getAttribute('data-scroll-offset'));
-				var elements = scroll_toc[n].querySelectorAll('a.kb-table-of-contents__entry');
+				const elements = scroll_toc[n].querySelectorAll('a.kb-table-of-contents__entry');
 				for (let i = 0; i < elements.length; i++) {
 					elements[i].onclick = (e) => {
 						if (e.target.getAttribute('href')) {
@@ -336,10 +333,10 @@
 								return;
 							}
 						}
-						var targetID = targetLink
+						const targetID = targetLink
 							.getAttribute('href')
 							.substring(targetLink.getAttribute('href').indexOf('#'));
-						var targetAnchor = document.getElementById(targetID.replace('#', ''));
+						const targetAnchor = document.getElementById(targetID.replace('#', ''));
 						if (!targetAnchor) {
 							return;
 						}
@@ -349,20 +346,22 @@
 				}
 			}
 		},
-		initScrollSpy: function () {
+		initScrollSpy() {
 			if (typeof Gumshoe == 'function') {
-				var scroll_spy = document.querySelectorAll('.wp-block-kadence-tableofcontents[data-scroll-spy="true"]');
+				const scroll_spy = document.querySelectorAll(
+					'.wp-block-kadence-tableofcontents[data-scroll-spy="true"]'
+				);
 				if (!scroll_spy.length) {
 					return;
 				}
-				var spy_item = [];
+				const spy_item = [];
 				for (let n = 0; n < scroll_spy.length; n++) {
 					var offset = parseInt(scroll_spy[n].getAttribute('data-scroll-offset'));
 					// Initialize Gumshoe
 					spy_item[n] = new Gumshoe('.' + scroll_spy[n].classList[2] + ' .kb-table-of-content-list a', {
 						nested: true,
 						nestedClass: 'active-parent',
-						offset: function () {
+						offset() {
 							return offset ? offset : 0;
 						},
 					});
@@ -370,7 +369,7 @@
 			}
 		},
 		// Initiate sticky when the DOM loads.
-		init: function () {
+		init() {
 			window.kadenceTOC.initAddAnchors();
 			window.kadenceTOC.initCollapse();
 			window.kadenceTOC.initScroll();

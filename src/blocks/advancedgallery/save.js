@@ -39,7 +39,7 @@ function Save({ attributes }) {
 	if (kbVersion >= 2) {
 		return null;
 	}
-	const dynamicSource = kadenceDynamic && kadenceDynamic['images'] && kadenceDynamic['images'].enable ? true : false;
+	const dynamicSource = kadenceDynamic && kadenceDynamic.images && kadenceDynamic.images.enable ? true : false;
 	if (dynamicSource) {
 		return null;
 	}

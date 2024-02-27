@@ -60,16 +60,16 @@ class TemplatesLibrary extends Component {
 	}
 	importProcess(blockcode) {
 		this.setState({ isImporting: true });
-		var data = new FormData();
+		const data = new FormData();
 		data.append('action', 'kadence_import_process_data');
 		data.append('security', kadence_blocks_params.ajax_nonce);
 		data.append('import_content', blockcode);
-		var control = this;
+		const control = this;
 		jQuery
 			.ajax({
 				method: 'POST',
 				url: kadence_blocks_params.ajax_url,
-				data: data,
+				data,
 				contentType: false,
 				processData: false,
 			})
@@ -86,15 +86,15 @@ class TemplatesLibrary extends Component {
 	}
 	reloadTemplateData() {
 		this.setState({ errorItems: false, isLoading: true, items: 'loading' });
-		var data_key =
+		let data_key =
 			kadence_blocks_params.proData && kadence_blocks_params.proData.api_key
 				? kadence_blocks_params.proData.api_key
 				: '';
-		var data_email =
+		let data_email =
 			kadence_blocks_params.proData && kadence_blocks_params.proData.api_email
 				? kadence_blocks_params.proData.api_email
 				: '';
-		var product_id =
+		const product_id =
 			kadence_blocks_params.proData && kadence_blocks_params.proData.product_id
 				? kadence_blocks_params.proData.product_id
 				: '';
@@ -107,19 +107,19 @@ class TemplatesLibrary extends Component {
 				data_email = 'iThemes';
 			}
 		}
-		var data = new FormData();
+		const data = new FormData();
 		data.append('action', 'kadence_import_reload_prebuilt_templates_data');
 		data.append('security', kadence_blocks_params.ajax_nonce);
 		data.append('api_key', data_key);
 		data.append('api_email', data_email);
 		data.append('product_id', product_id);
 		data.append('package', 'templates');
-		var control = this;
+		const control = this;
 		jQuery
 			.ajax({
 				method: 'POST',
 				url: kadence_blocks_params.ajax_url,
-				data: data,
+				data,
 				contentType: false,
 				processData: false,
 			})
@@ -142,15 +142,15 @@ class TemplatesLibrary extends Component {
 	}
 	loadTemplateData() {
 		this.setState({ errorItems: false, isLoading: true, items: 'loading' });
-		var data_key =
+		let data_key =
 			kadence_blocks_params.proData && kadence_blocks_params.proData.api_key
 				? kadence_blocks_params.proData.api_key
 				: '';
-		var data_email =
+		let data_email =
 			kadence_blocks_params.proData && kadence_blocks_params.proData.api_email
 				? kadence_blocks_params.proData.api_email
 				: '';
-		var product_id =
+		const product_id =
 			kadence_blocks_params.proData && kadence_blocks_params.proData.product_id
 				? kadence_blocks_params.proData.product_id
 				: '';
@@ -163,19 +163,19 @@ class TemplatesLibrary extends Component {
 				data_email = 'iThemes';
 			}
 		}
-		var data = new FormData();
+		const data = new FormData();
 		data.append('action', 'kadence_import_get_prebuilt_templates_data');
 		data.append('security', kadence_blocks_params.ajax_nonce);
 		data.append('api_key', data_key);
 		data.append('api_email', data_email);
 		data.append('product_id', product_id);
 		data.append('package', 'templates');
-		var control = this;
+		const control = this;
 		jQuery
 			.ajax({
 				method: 'POST',
 				url: kadence_blocks_params.ajax_url,
-				data: data,
+				data,
 				contentType: false,
 				processData: false,
 			})

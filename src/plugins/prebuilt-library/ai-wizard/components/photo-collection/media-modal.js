@@ -119,8 +119,8 @@ const getGalleryDetailsMediaFrame = () => {
 				})
 			);
 		},
-		galleryEditToolbar: function () {
-			var editing = this.state().get('editing');
+		galleryEditToolbar() {
+			const editing = this.state().get('editing');
 			this.toolbar.set(
 				new wp.media.view.Toolbar({
 					controller: this,
@@ -136,8 +136,8 @@ const getGalleryDetailsMediaFrame = () => {
 							/**
 							 * @fires wp.media.controller.State#update
 							 */
-							click: function () {
-								var controller = this.controller,
+							click() {
+								const controller = this.controller,
 									state = controller.state();
 
 								controller.close();
@@ -152,7 +152,7 @@ const getGalleryDetailsMediaFrame = () => {
 				})
 			);
 		},
-		galleryAddToolbar: function () {
+		galleryAddToolbar() {
 			this.toolbar.set(
 				new wp.media.view.Toolbar({
 					controller: this,
@@ -166,8 +166,8 @@ const getGalleryDetailsMediaFrame = () => {
 							/**
 							 * @fires wp.media.controller.State#reset
 							 */
-							click: function () {
-								var controller = this.controller,
+							click() {
+								const controller = this.controller,
 									state = controller.state(),
 									edit = controller.state('gallery-edit');
 

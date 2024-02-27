@@ -39,6 +39,7 @@ function copyVendorFiles() {
 				};
 			})
 		)
+		.pipe(minify(config.minify))
 		.pipe(dest(config.dirs.dist + '/js'));
 }
 

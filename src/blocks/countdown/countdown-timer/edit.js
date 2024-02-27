@@ -8,11 +8,10 @@ import Countdown from 'react-countdown';
 import { __ } from '@wordpress/i18n';
 import { useBlockProps } from '@wordpress/block-editor';
 
-import { withSelect } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 import { Fragment, useEffect } from '@wordpress/element';
 
-import { useSelect, useDispatch } from '@wordpress/data';
+import { withSelect, useSelect, useDispatch } from '@wordpress/data';
 
 import { getUniqueId, getPostOrFseId } from '@kadence/helpers';
 
@@ -53,7 +52,7 @@ function KadenceCoundownTimer(props) {
 
 	useEffect(() => {
 		const postOrFseId = getPostOrFseId(props, parentData);
-		let uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -172,84 +171,83 @@ function KadenceCoundownTimer(props) {
 					{postText}
 				</Fragment>
 			);
-		} else {
-			// Render a countdown
-			const parts = {};
-			let calculateHours = Math.floor((total / (1000 * 60 * 60)) % 24);
-			let calculateMinutes = Math.floor((total / 1000 / 60) % 60);
-			let calculateSeconds = Math.floor((total / 1000) % 60);
+		}
+		// Render a countdown
+		const parts = {};
+		let calculateHours = Math.floor((total / (1000 * 60 * 60)) % 24);
+		let calculateMinutes = Math.floor((total / 1000 / 60) % 60);
+		let calculateSeconds = Math.floor((total / 1000) % 60);
+		if (
+			undefined !== displayUnits &&
+			undefined !== displayUnits[0] &&
+			undefined !== displayUnits[0].days &&
+			!displayUnits[0].days
+		) {
+			//Do nothing.
+			calculateHours = Math.floor(total / (1000 * 60 * 60));
 			if (
 				undefined !== displayUnits &&
 				undefined !== displayUnits[0] &&
-				undefined !== displayUnits[0].days &&
-				!displayUnits[0].days
+				undefined !== displayUnits[0].hours &&
+				!displayUnits[0].hours
 			) {
 				//Do nothing.
-				calculateHours = Math.floor(total / (1000 * 60 * 60));
+				calculateMinutes = Math.floor(total / 1000 / 60);
 				if (
 					undefined !== displayUnits &&
 					undefined !== displayUnits[0] &&
-					undefined !== displayUnits[0].hours &&
-					!displayUnits[0].hours
+					undefined !== displayUnits[0].minutes &&
+					!displayUnits[0].minutes
 				) {
 					//Do nothing.
-					calculateMinutes = Math.floor(total / 1000 / 60);
-					if (
-						undefined !== displayUnits &&
-						undefined !== displayUnits[0] &&
-						undefined !== displayUnits[0].minutes &&
-						!displayUnits[0].minutes
-					) {
-						//Do nothing.
-						calculateSeconds = Math.floor(total / 1000);
-						parts.seconds = calculateSeconds;
-					} else {
-						parts.minutes = calculateMinutes;
-						parts.seconds = calculateSeconds;
-					}
+					calculateSeconds = Math.floor(total / 1000);
+					parts.seconds = calculateSeconds;
 				} else {
-					parts.hours = calculateHours;
 					parts.minutes = calculateMinutes;
 					parts.seconds = calculateSeconds;
 				}
 			} else {
-				parts.days = Math.floor(total / (1000 * 60 * 60 * 24));
 				parts.hours = calculateHours;
 				parts.minutes = calculateMinutes;
 				parts.seconds = calculateSeconds;
 			}
-			const remaining = Object.keys(parts).map((part) => {
-				if ('seconds' !== part && enableDividers) {
-					return (
-						<Fragment>
-							<div className={`kb-countdown-date-item kb-countdown-item kb-countdown-date-item-${part}`}>
-								<span className="kb-countdown-number">{calculateNumberDesign(parts[part])}</span>
-								<span className="kb-countdown-label">{labels[part]}</span>
-							</div>
-							<div
-								className={`kb-countdown-item kb-countdown-date-item kb-countdown-divider-item kb-countdown-divider-item-${part}`}
-							>
-								<span className="kb-countdown-number">:</span>
-								<span className="kb-countdown-label">&nbsp;</span>
-							</div>
-						</Fragment>
-					);
-				}
-				return (
-					<div className={`kb-countdown-date-item kb-countdown-item kb-countdown-date-item-${part}`}>
-						<span className="kb-countdown-number">{calculateNumberDesign(parts[part])}</span>
-						<span className="kb-countdown-label">{labels[part]}</span>
-					</div>
-				);
-			});
-			return (
-				<Fragment>
-					{preText}
-					{remaining}
-					{postText}
-				</Fragment>
-			);
+		} else {
+			parts.days = Math.floor(total / (1000 * 60 * 60 * 24));
+			parts.hours = calculateHours;
+			parts.minutes = calculateMinutes;
+			parts.seconds = calculateSeconds;
 		}
+		const remaining = Object.keys(parts).map((part) => {
+			if ('seconds' !== part && enableDividers) {
+				return (
+					<Fragment>
+						<div className={`kb-countdown-date-item kb-countdown-item kb-countdown-date-item-${part}`}>
+							<span className="kb-countdown-number">{calculateNumberDesign(parts[part])}</span>
+							<span className="kb-countdown-label">{labels[part]}</span>
+						</div>
+						<div
+							className={`kb-countdown-item kb-countdown-date-item kb-countdown-divider-item kb-countdown-divider-item-${part}`}
+						>
+							<span className="kb-countdown-number">:</span>
+							<span className="kb-countdown-label">&nbsp;</span>
+						</div>
+					</Fragment>
+				);
+			}
+			return (
+				<div className={`kb-countdown-date-item kb-countdown-item kb-countdown-date-item-${part}`}>
+					<span className="kb-countdown-number">{calculateNumberDesign(parts[part])}</span>
+					<span className="kb-countdown-label">{labels[part]}</span>
+				</div>
+			);
+		});
+		return (
+			<Fragment>
+				{preText}
+				{remaining}
+				{postText}
+			</Fragment>
+		);
 	};
 
 	const blockProps = useBlockProps({
@@ -274,7 +272,7 @@ function KadenceCoundownTimer(props) {
 			const minutes = initialDate.getMinutes();
 			const hours = initialDate.getHours();
 			let futureDate = new Date();
-			let daysPassed = Math.floor((currentDate.getTime() - initialDate.getTime()) / (1000 * 3600 * 24));
+			const daysPassed = Math.floor((currentDate.getTime() - initialDate.getTime()) / (1000 * 3600 * 24));
 			let offsetDays = 0;
 			let dayOfMonth = initialDate.getDate();
 			const futureDayOfMonth = currentDate.getDate();
@@ -346,8 +344,8 @@ export default compose([
 		const rootID = getBlockRootClientId(clientId);
 		const parentBlock = getBlocksByClientId(rootID);
 		return {
-			parentBlock: parentBlock,
-			rootID: rootID,
+			parentBlock,
+			rootID,
 		};
 	}),
 ])(KadenceCoundownTimer);

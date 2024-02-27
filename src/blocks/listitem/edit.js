@@ -23,10 +23,9 @@ import metadata from './block.json';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { useBlockProps } from '@wordpress/block-editor';
 import { createBlock } from '@wordpress/blocks';
 
-import { InspectorControls, RichText, BlockControls, store as blockEditorStore } from '@wordpress/block-editor';
+import { InspectorControls, RichText, BlockControls, useBlockProps } from '@wordpress/block-editor';
 
 import { useEffect, useState, useRef } from '@wordpress/element';
 
@@ -105,7 +104,7 @@ function KadenceListItem(props) {
 		setBlockDefaults('kadence/listitem', attributes);
 
 		const postOrFseId = getPostOrFseId(props, parentData);
-		let uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -116,11 +115,11 @@ function KadenceListItem(props) {
 	}, []);
 
 	const blockProps = useBlockProps({
-		className: className,
+		className,
 	});
 
 	const onMoveLeft = () => {
-		let newLevel = level - 1;
+		const newLevel = level - 1;
 
 		setAttributes({ level: Math.max(newLevel, 0) });
 	};
@@ -370,8 +369,7 @@ function KadenceListItem(props) {
 						setAttributes({ text: value });
 					}}
 					onSplit={(value, isOriginal) => {
-						let newAttributes;
-						newAttributes = { ...attributes };
+						const newAttributes = { ...attributes };
 						newAttributes.text = value;
 						if (!isOriginal) {
 							newAttributes.uniqueID = '';

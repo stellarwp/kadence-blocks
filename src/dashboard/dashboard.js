@@ -76,9 +76,7 @@ class KadenceDashboard extends Component {
 						case 'changelog':
 							return (
 								<Panel className="changelog-section tab-section">
-									<PanelBody opened={true}>
-										<ChangelogTab />
-									</PanelBody>
+									<PanelBody opened={true}>{/*<ChangelogTab />*/}</PanelBody>
 								</Panel>
 							);
 					}

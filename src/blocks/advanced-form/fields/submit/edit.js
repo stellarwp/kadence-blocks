@@ -147,7 +147,7 @@ export default function KadenceButtonEdit({
 
 	useEffect(() => {
 		// Doesn't worry about if a filed is duplicated. Duplicated fields get a custom ID through the watch at the form level.
-		let uniqueId = getUniqueFieldId(uniqueID, clientId);
+		const uniqueId = getUniqueFieldId(uniqueID, clientId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -503,7 +503,7 @@ export default function KadenceButtonEdit({
 		[`kt-btn-size-${sizePreset ? sizePreset : 'standard'}`]: true,
 	});
 	const classes = classnames({
-		className: className,
+		className,
 		[`kb-single-btn-${uniqueID}`]: true,
 		[`kt-btn-width-type-${widthType ? widthType : 'auto'}`]: true,
 	});
@@ -677,8 +677,8 @@ export default function KadenceButtonEdit({
 				<CopyPasteAttributes
 					attributes={attributes}
 					excludedAttrs={nonTransAttrs}
-					defaultAttributes={metadata['attributes']}
-					blockSlug={metadata['name']}
+					defaultAttributes={metadata.attributes}
+					blockSlug={metadata.name}
 					onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
 				/>
 			</BlockControls>
@@ -897,7 +897,7 @@ export default function KadenceButtonEdit({
 														}
 														colorDefault={'#000000'}
 														onArrayChange={(color, opacity) => {
-															saveShadowHover({ color: color, opacity: opacity });
+															saveShadowHover({ color, opacity });
 														}}
 														opacity={
 															undefined !== shadowHover &&
@@ -1053,7 +1053,7 @@ export default function KadenceButtonEdit({
 														}
 														colorDefault={'#000000'}
 														onArrayChange={(color, opacity) => {
-															saveShadow({ color: color, opacity: opacity });
+															saveShadow({ color, opacity });
 														}}
 														opacity={
 															undefined !== shadow &&
@@ -1437,8 +1437,8 @@ export default function KadenceButtonEdit({
 
 								<KadenceBlockDefaults
 									attributes={attributes}
-									defaultAttributes={metadata['attributes']}
-									blockSlug={metadata['name']}
+									defaultAttributes={metadata.attributes}
+									blockSlug={metadata.name}
 									excludedAttrs={nonTransAttrs}
 								/>
 							</>

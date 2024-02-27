@@ -586,7 +586,7 @@ const deprecated = [
 			);
 
 			const blockProps = useBlockProps.save({
-				className: className,
+				className,
 			});
 
 			return (
@@ -1259,7 +1259,7 @@ const deprecated = [
 			);
 
 			const blockProps = useBlockProps.save({
-				className: className,
+				className,
 			});
 
 			return (

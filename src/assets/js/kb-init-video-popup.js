@@ -10,14 +10,14 @@
 		/**
 		 * Initiate the script to process all
 		 */
-		initAll: function (element) {
+		initAll(element) {
 			new SimpleLightbox({
 				elements: document.querySelectorAll('.ktblocksvideopop'),
 				videoRegex: new RegExp(/youtube.com|youtu.be|youtube-nocookie.com|vimeo.com/),
 			});
 		},
 		// Initiate the menus when the DOM loads.
-		init: function () {
+		init() {
 			if (typeof SimpleLightbox == 'function') {
 				kadenceBlocksVideoLightbox.initAll();
 			} else {

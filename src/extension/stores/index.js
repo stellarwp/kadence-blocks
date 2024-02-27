@@ -183,7 +183,7 @@ const store = createReduxStore('kadenceblocks/data', {
 				}
 				return {
 					...state,
-					uniquePanes: uniquePanes,
+					uniquePanes,
 				};
 			case 'ADD_WEBFONT':
 				const updatedFonts = state.webFonts;

@@ -21,14 +21,13 @@ import metadata from './block.json';
 /**
  * Import helpers
  */
-import { getUniqueId, getFontSizeOptionOutput, getPostOrFseId } from '@kadence/helpers';
+import { getUniqueId, getFontSizeOptionOutput, getPostOrFseId, getPreviewSize } from '@kadence/helpers';
 
 /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
 import { withSelect, useSelect, useDispatch } from '@wordpress/data';
-import { getPreviewSize, setBlockDefaults } from '@kadence/helpers';
 import {
 	KadencePanelBody,
 	RangeControl,
@@ -178,7 +177,7 @@ function KadencePosts(props) {
 
 	useEffect(() => {
 		const postOrFseId = getPostOrFseId(props, parentData);
-		let uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -212,7 +211,7 @@ function KadencePosts(props) {
 	]);
 
 	useEffect(() => {
-		debouncedGetTaxonomyTerms(attributes['taxType']);
+		debouncedGetTaxonomyTerms(attributes.taxType);
 	}, [taxType, categories]);
 
 	const blockProps = useBlockProps();
@@ -231,11 +230,11 @@ function KadencePosts(props) {
 	const saveTaxSelectValue = (value) => {
 		if (value && typeof value == 'object') {
 			let tempTax = '';
-			let tempCategories = [];
+			const tempCategories = [];
 			value.forEach((term) => {
 				let tempTerm = [];
 				[tempTax, tempTerm] = term.value.split('|');
-				let tempCategory = {
+				const tempCategory = {
 					value: tempTerm,
 					label: term.label,
 				};
@@ -272,14 +271,12 @@ function KadencePosts(props) {
 		} else {
 			columnsClass = 'grid-xs-col-1 grid-sm-col-2 grid-lg-col-2';
 		}
+	} else if (undefined !== tabletColumns && 1 === tabletColumns) {
+		columnsClass = 'grid-xs-col-1 grid-sm-col-1 grid-lg-col-3';
+	} else if (undefined !== tabletColumns && 3 === tabletColumns) {
+		columnsClass = 'grid-xs-col-1 grid-sm-col-3 grid-lg-col-3';
 	} else {
-		if (undefined !== tabletColumns && 1 === tabletColumns) {
-			columnsClass = 'grid-xs-col-1 grid-sm-col-1 grid-lg-col-3';
-		} else if (undefined !== tabletColumns && 3 === tabletColumns) {
-			columnsClass = 'grid-xs-col-1 grid-sm-col-3 grid-lg-col-3';
-		} else {
-			columnsClass = 'grid-xs-col-1 grid-sm-col-2 grid-lg-col-3';
-		}
+		columnsClass = 'grid-xs-col-1 grid-sm-col-2 grid-lg-col-3';
 	}
 
 	const titleSize = getPreviewSize(
@@ -369,8 +366,8 @@ function KadencePosts(props) {
 			<BlockControls>
 				<CopyPasteAttributes
 					attributes={attributes}
-					defaultAttributes={metadata['attributes']}
-					blockSlug={metadata['name']}
+					defaultAttributes={metadata.attributes}
+					blockSlug={metadata.name}
 					onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
 				/>
 			</BlockControls>
@@ -971,8 +968,8 @@ function KadencePosts(props) {
 
 						<KadenceBlockDefaults
 							attributes={attributes}
-							defaultAttributes={metadata['attributes']}
-							blockSlug={metadata['name']}
+							defaultAttributes={metadata.attributes}
+							blockSlug={metadata.name}
 						/>
 					</>
 				)}

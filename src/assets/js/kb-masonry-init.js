@@ -1,23 +1,23 @@
 (function () {
 	'use strict';
 	window.kadenceBlocksMasonry = {
-		trigger_animation_class: function (element) {
+		trigger_animation_class(element) {
 			element.classList.add('kt-masonry-trigger-animation');
 		},
-		init: function () {
-			var masonryitems = document.querySelectorAll('.kb-masonry-init');
+		init() {
+			const masonryitems = document.querySelectorAll('.kb-masonry-init');
 			// No point if no items
 			if (!masonryitems.length) {
 				return;
 			}
 			for (let i = 0; i < masonryitems.length; i++) {
-				var itemSelector = masonryitems[i].getAttribute('data-item-selector');
-				var masRtl = true;
+				const itemSelector = masonryitems[i].getAttribute('data-item-selector');
+				let masRtl = true;
 				if (document.body.classList.contains('rtl')) {
 					masRtl = false;
 				}
 				var masGrid = new Masonry(masonryitems[i], {
-					itemSelector: itemSelector,
+					itemSelector,
 					isOriginLeft: masRtl,
 				});
 				// var subitems = masonryitems[i].querySelectorAll( itemSelector );
@@ -33,7 +33,7 @@
 				});
 				masGrid.once('layoutComplete', function (items) {
 					// Create a new event
-					var event = new CustomEvent('layoutComplete');
+					const event = new CustomEvent('layoutComplete');
 					masonryitems[i].dispatchEvent(event);
 				});
 			}

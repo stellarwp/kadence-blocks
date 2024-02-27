@@ -21,9 +21,9 @@ export default (previewDevice, fieldStyle, inputFont, useFormMeta) => {
 	const [tabletFieldBorderStyle] = useFormMeta('_kad_form_tabletFieldBorderStyle');
 	const [mobileFieldBorderStyle] = useFormMeta('_kad_form_mobileFieldBorderStyle');
 
-	let styles = {};
+	const styles = {};
 
-	let lineHeight = getPreviewSize(
+	const lineHeight = getPreviewSize(
 		previewDevice,
 		inputFont?.lineHeight?.[0],
 		inputFont?.lineHeight?.[1],
@@ -32,7 +32,7 @@ export default (previewDevice, fieldStyle, inputFont, useFormMeta) => {
 	if (lineHeight) {
 		styles.lineHeight = lineHeight + get(inputFont, 'lineType', '');
 	}
-	let letterSpacing = getPreviewSize(
+	const letterSpacing = getPreviewSize(
 		previewDevice,
 		inputFont?.letterSpacing?.[0],
 		inputFont?.letterSpacing?.[1],
@@ -42,14 +42,14 @@ export default (previewDevice, fieldStyle, inputFont, useFormMeta) => {
 		styles.letterSpacing = letterSpacing + get(inputFont, 'letterType', 'px');
 	}
 
-	let fontSize = getPreviewSize(previewDevice, inputFont.size[0], inputFont.size[1], inputFont.size[2]);
+	const fontSize = getPreviewSize(previewDevice, inputFont.size[0], inputFont.size[1], inputFont.size[2]);
 	styles.fontSize = getFontSizeOptionOutput(fontSize, inputFont.sizeType);
 	styles.fieldFont = inputFont;
 	if (inputFont?.color) {
 		styles.color = KadenceColorOutput(inputFont.color);
 	}
 
-	let previewGap = getPreviewSize(
+	const previewGap = getPreviewSize(
 		previewDevice,
 		undefined !== fieldStyle?.gap?.[0] && '' !== fieldStyle?.gap?.[0] ? fieldStyle?.gap[0] : '',
 		undefined !== fieldStyle?.gap?.[1] && '' !== fieldStyle?.gap?.[1] ? fieldStyle?.gap[1] : '',
@@ -59,31 +59,31 @@ export default (previewDevice, fieldStyle, inputFont, useFormMeta) => {
 		styles.previewRowGap = getGapSizeOptionOutput(previewGap, fieldStyle?.gapUnit ? fieldStyle.gapUnit : 'px');
 	}
 
-	let paddingTop = getPreviewSize(
+	const paddingTop = getPreviewSize(
 		previewDevice,
 		fieldStyle?.padding?.[0],
 		fieldStyle?.tabletPadding?.[0],
 		fieldStyle?.mobilePadding?.[0]
 	);
-	let paddingRight = getPreviewSize(
+	const paddingRight = getPreviewSize(
 		previewDevice,
 		fieldStyle?.padding?.[1],
 		fieldStyle?.tabletPadding?.[1],
 		fieldStyle?.mobilePadding?.[1]
 	);
-	let paddingBottom = getPreviewSize(
+	const paddingBottom = getPreviewSize(
 		previewDevice,
 		fieldStyle?.padding?.[2],
 		fieldStyle?.tabletPadding?.[2],
 		fieldStyle?.mobilePadding?.[2]
 	);
-	let paddingLeft = getPreviewSize(
+	const paddingLeft = getPreviewSize(
 		previewDevice,
 		fieldStyle?.padding?.[3],
 		fieldStyle?.tabletPadding?.[3],
 		fieldStyle?.mobilePadding?.[3]
 	);
-	let paddingUnit = fieldStyle?.paddingUnit ? fieldStyle?.paddingUnit : 'px';
+	const paddingUnit = fieldStyle?.paddingUnit ? fieldStyle?.paddingUnit : 'px';
 	styles.paddingTop = '' !== paddingTop ? paddingTop + paddingUnit : undefined;
 	styles.paddingRight = '' !== paddingRight ? paddingRight + paddingUnit : undefined;
 	styles.paddingBottom = '' !== paddingBottom ? paddingBottom + paddingUnit : undefined;
@@ -92,25 +92,25 @@ export default (previewDevice, fieldStyle, inputFont, useFormMeta) => {
 	styles.placeholderColor =
 		undefined !== fieldStyle?.placeholderColor ? KadenceColorOutput(fieldStyle?.placeholderColor) : undefined;
 
-	let borderRadiusTop = getPreviewSize(
+	const borderRadiusTop = getPreviewSize(
 		previewDevice,
 		undefined !== fieldBorderRadius?.[0] ? fieldBorderRadius[0] : '',
 		undefined !== tabletFieldBorderRadius?.[0] ? tabletFieldBorderRadius[0] : '',
 		undefined !== mobileFieldBorderRadius?.[0] ? mobileFieldBorderRadius[0] : ''
 	);
-	let borderRadiusRight = getPreviewSize(
+	const borderRadiusRight = getPreviewSize(
 		previewDevice,
 		undefined !== fieldBorderRadius?.[1] ? fieldBorderRadius[1] : '',
 		undefined !== tabletFieldBorderRadius?.[1] ? tabletFieldBorderRadius[1] : '',
 		undefined !== mobileFieldBorderRadius?.[1] ? mobileFieldBorderRadius[1] : ''
 	);
-	let borderRadiusBottom = getPreviewSize(
+	const borderRadiusBottom = getPreviewSize(
 		previewDevice,
 		undefined !== fieldBorderRadius?.[2] ? fieldBorderRadius[2] : '',
 		undefined !== tabletFieldBorderRadius?.[2] ? tabletFieldBorderRadius[2] : '',
 		undefined !== mobileFieldBorderRadius?.[2] ? mobileFieldBorderRadius[2] : ''
 	);
-	let borderRadiusLeft = getPreviewSize(
+	const borderRadiusLeft = getPreviewSize(
 		previewDevice,
 		undefined !== fieldBorderRadius?.[3] ? fieldBorderRadius[3] : '',
 		undefined !== tabletFieldBorderRadius?.[3] ? tabletFieldBorderRadius[3] : '',

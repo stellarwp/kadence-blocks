@@ -583,7 +583,7 @@ export default [
 							href={link}
 							className={`kb-section-link-overlay`}
 							target={linkTarget ? '_blank' : undefined}
-							rel={relAttr ? relAttr : undefined}
+							rel={relAttr ? relAttr : undefined} // eslint-disable-line
 							aria-label={linkTitle ? linkTitle : undefined}
 						></a>
 					)}
@@ -1135,7 +1135,7 @@ export default [
 							href={link}
 							className={`kb-section-link-overlay`}
 							target={linkTarget ? '_blank' : undefined}
-							rel={relAttr ? relAttr : undefined}
+							rel={relAttr ? relAttr : undefined} // eslint-disable-line
 							aria-label={linkTitle ? linkTitle : undefined}
 						></a>
 					)}

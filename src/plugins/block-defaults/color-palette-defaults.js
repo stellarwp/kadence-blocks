@@ -2,9 +2,8 @@ import { map, get, uniqueId, findIndex } from 'lodash';
 import { AdvancedColorControlPalette } from '@kadence/components';
 import { Component, Fragment, useEffect, useState } from '@wordpress/element';
 import { ToggleControl, Dashicon, Button, Tooltip } from '@wordpress/components';
-import { withSelect, withDispatch } from '@wordpress/data';
+import { withSelect, withDispatch, useDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
-import { useDispatch } from '@wordpress/data';
 import { store as noticesStore } from '@wordpress/notices';
 
 const kbColorUniqueIDs = [];
@@ -60,7 +59,7 @@ function KadenceColorDefault(props) {
 
 				kadence_blocks_params.colors = JSON.stringify(config);
 
-				props.updateSettings({ colors: colors });
+				props.updateSettings({ colors });
 			});
 		}
 	};
@@ -126,12 +125,12 @@ function KadenceColorDefault(props) {
 													{
 														color: value,
 														name: title,
-														slug: slug,
+														slug,
 													},
 													theIndex
 												);
 
-												saveColors({ color: value, name: title, slug: slug }, index);
+												saveColors({ color: value, name: title, slug }, index);
 
 												saveConfig();
 											}}
@@ -184,11 +183,11 @@ function KadenceColorDefault(props) {
 													{
 														color: value,
 														name: title,
-														slug: slug,
+														slug,
 													},
 													theIndex
 												);
-												saveColors({ color: value, name: title, slug: slug }, index);
+												saveColors({ color: value, name: title, slug }, index);
 												saveConfig();
 											}}
 										/>

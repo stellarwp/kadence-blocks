@@ -85,14 +85,14 @@ export function Edit(props) {
 	const previewDevice = useSelect((select) => {
 		return select('kadenceblocks/data').getPreviewDeviceType();
 	}, []);
-	let includedGoogleApiKey = 'AIzaSyBAM2o7PiQqwk15LC1XRH2e_KJ-jUa7KYk';
+	const includedGoogleApiKey = 'AIzaSyBAM2o7PiQqwk15LC1XRH2e_KJ-jUa7KYk';
 
 	const [customGoogleApiKey, setCustomGoogleApiKey] = useState('');
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
 
-	let googleApiKey = isEmpty(customGoogleApiKey) ? includedGoogleApiKey : customGoogleApiKey;
+	const googleApiKey = isEmpty(customGoogleApiKey) ? includedGoogleApiKey : customGoogleApiKey;
 
 	/*
 	 * Geocode friendly address into Lat/Lng
@@ -109,7 +109,7 @@ export function Edit(props) {
 	const locationChange = async (address) => {
 		try {
 			const geocoder = new window.google.maps.Geocoder();
-			const response = await geocoder.geocode({ address: address });
+			const response = await geocoder.geocode({ address });
 			if (has(response.results, [0])) {
 				setAttributes({
 					lat: response.results[0].geometry.location.lat().toString(),
@@ -238,7 +238,7 @@ export function Edit(props) {
 		setBlockDefaults('kadence/googlemaps', attributes);
 
 		const postOrFseId = getPostOrFseId(props, parentData);
-		let uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -294,9 +294,9 @@ export function Edit(props) {
 		className: classes,
 	});
 
-	let mapQueryParams = {
+	const mapQueryParams = {
 		key: googleApiKey,
-		zoom: zoom,
+		zoom,
 		maptype: mapType,
 		q: location,
 	};
@@ -311,8 +311,8 @@ export function Edit(props) {
 				<BlockControls>
 					<CopyPasteAttributes
 						attributes={attributes}
-						defaultAttributes={metadata['attributes']}
-						blockSlug={metadata['name']}
+						defaultAttributes={metadata.attributes}
+						blockSlug={metadata.name}
 						onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
 					/>
 				</BlockControls>
@@ -486,7 +486,7 @@ export function Edit(props) {
 											onChange={(value) => setAttributes({ customSnazzy: value })}
 										/>
 
-										<a href={'https://snazzymaps.com'} target={'_blank'}>
+										<a href={'https://snazzymaps.com'} target={'_blank'} rel="noreferrer">
 											{' '}
 											{__('Visit Snazzy Maps', 'kadence-blocks')}{' '}
 										</a>
@@ -510,6 +510,7 @@ export function Edit(props) {
 								<a
 									href={'https://developers.google.com/maps/documentation/embed/get-api-key'}
 									target={'_blank'}
+									rel="noreferrer"
 								>
 									{__('How to create an API Key', 'kadence-blocks')}
 								</a>
@@ -692,8 +693,8 @@ export function Edit(props) {
 
 							<KadenceBlockDefaults
 								attributes={attributes}
-								defaultAttributes={metadata['attributes']}
-								blockSlug={metadata['name']}
+								defaultAttributes={metadata.attributes}
+								blockSlug={metadata.name}
 							/>
 						</>
 					)}
@@ -812,7 +813,7 @@ export function Edit(props) {
 					<div style={{ maxWidth: '600px' }}>
 						{__('The Google Maps Javascript API is paid service and costs per request.', 'kadence-blocks')}
 						<br />
-						<a href={'https://mapsplatform.google.com/pricing/'} target={'_blank'}>
+						<a href={'https://mapsplatform.google.com/pricing/'} target={'_blank'} rel="noreferrer">
 							{__('Click here to view the latest pricing', 'kadence-blocks')}{' '}
 						</a>
 						.
@@ -826,6 +827,7 @@ export function Edit(props) {
 						<a
 							href={'https://developers.google.com/maps/api-security-best-practices#restricting-api-keys'}
 							target={'_blank'}
+							rel="noreferrer"
 						>
 							{__('More informaiton on that can be found here', 'kadence-blocks')}
 						</a>

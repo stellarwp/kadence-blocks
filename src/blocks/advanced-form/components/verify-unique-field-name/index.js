@@ -7,7 +7,7 @@ function verifyUniqueFieldName(fields, uniqueID, name) {
 			}
 			return false;
 		});
-		var fieldNames = fields.filter((item) => item.name === name && uniqueID !== item.uniqueID);
+		const fieldNames = fields.filter((item) => item.name === name && uniqueID !== item.uniqueID);
 		return fieldNames;
 
 		// var fieldNames = []

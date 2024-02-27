@@ -1,14 +1,14 @@
 /**
  * Parallax Background.
  */
-var kbjarforEach = function (array, callback, scope) {
-	for (var i = 0; i < array.length; i++) {
+const kbjarforEach = function (array, callback, scope) {
+	for (let i = 0; i < array.length; i++) {
 		callback.call(scope, i, array[i]); // passes back stuff we need.
 	}
 };
-var kbNodeList = document.querySelectorAll('.kt-jarallax');
+const kbNodeList = document.querySelectorAll('.kt-jarallax');
 // Setup a timer
-var kbjartimeout;
+let kbjartimeout;
 // Listen for resize events
 window.addEventListener(
 	'resize',

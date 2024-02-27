@@ -1,6 +1,5 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect, useCallback } from '@wordpress/element';
-import { RichTextToolbarButton } from '@wordpress/block-editor';
 import { useSelect } from '@wordpress/data';
 import {
 	Popover,
@@ -85,12 +84,12 @@ export const AIText = {
 			const tempActiveStorage = SafeParseJSON(localStorage.getItem('kadenceBlocksPrebuilt'), true);
 			if (response === 'error') {
 				console.log('Error getting credits');
-				tempActiveStorage['credits'] = 'fetch';
+				tempActiveStorage.credits = 'fetch';
 				localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(tempActiveStorage));
 				setCredits(0);
 				setTempCredits('');
 			} else {
-				tempActiveStorage['credits'] = parseInt(response);
+				tempActiveStorage.credits = parseInt(response);
 				localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(tempActiveStorage));
 				setCredits(parseInt(response));
 				setTempCredits('');
@@ -199,15 +198,15 @@ export const AIText = {
 		}
 		function handleEditingContent(value, prompt, type) {
 			let AIContent = '';
-			let initial_text = value;
-			let action_type = type;
+			const initial_text = value;
+			const action_type = type;
 			setIsLoading(true);
 			setAiSuggestion('');
 			setError('');
 			sendEvent('ai_inline_requested', {
 				tool_name: name,
 				type: action_type,
-				initial_text: initial_text,
+				initial_text,
 			});
 			getAIEdit(value, prompt, type)
 				.then((readableStream) => {
@@ -223,7 +222,7 @@ export const AIText = {
 							sendEvent('ai_inline_completed', {
 								tool_name: name,
 								type: action_type,
-								initial_text: initial_text,
+								initial_text,
 								result: AIContent,
 								credits_before: parseInt(currentCredits),
 								credits_after: parseInt(currentCredits) - 1,
@@ -256,15 +255,15 @@ export const AIText = {
 		}
 		function handleTransformingContent(value, type) {
 			let AIContent = '';
-			let initial_text = value;
-			let action_type = type;
+			const initial_text = value;
+			const action_type = type;
 			setIsLoading(true);
 			setAiSuggestion('');
 			setError('');
 			sendEvent('ai_inline_requested', {
 				tool_name: name,
 				type: action_type,
-				initial_text: initial_text,
+				initial_text,
 			});
 			getAITransform(value, type)
 				.then((readableStream) => {
@@ -280,7 +279,7 @@ export const AIText = {
 							sendEvent('ai_inline_completed', {
 								tool_name: name,
 								type: action_type,
-								initial_text: initial_text,
+								initial_text,
 								result: AIContent,
 								credits_before: parseInt(currentCredits),
 								credits_after: parseInt(currentCredits) - 1,

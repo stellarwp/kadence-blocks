@@ -61,7 +61,7 @@ const BlockCSSComponent = createHigherOrderComponent((BlockEdit) => {
 			}
 			return {
 				hasBlockCSS: hasSupport,
-				openTab: openTab,
+				openTab,
 			};
 		}, []);
 		const [isOpen, setOpen] = useState(false);

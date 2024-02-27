@@ -80,10 +80,10 @@ const useBlockTypesState = (rootClientId, onInsert) => {
 				return layoutBlocks.indexOf(item.name);
 			});
 			return {
-				submitItems: submitItems,
-				layoutItems: layoutItems,
-				formItems: formItems,
-				formAdvItems: formAdvItems,
+				submitItems,
+				layoutItems,
+				formItems,
+				formAdvItems,
 			};
 		},
 		[rootClientId]
@@ -163,7 +163,6 @@ export default function QuickInserter({
 						))}
 					</>
 				);
-				break;
 			case 'extra':
 				return (
 					<>
@@ -179,7 +178,6 @@ export default function QuickInserter({
 						))}
 					</>
 				);
-				break;
 			case 'advanced':
 				return (
 					<>
@@ -195,7 +193,6 @@ export default function QuickInserter({
 						))}
 					</>
 				);
-				break;
 			default:
 				return (
 					<>
@@ -211,7 +208,6 @@ export default function QuickInserter({
 						))}
 					</>
 				);
-				break;
 		}
 	};
 

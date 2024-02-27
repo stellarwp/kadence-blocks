@@ -26,7 +26,7 @@ export default function removeContent(content) {
 	if (!content) {
 		return content;
 	}
-	let remove_content = getStringBetween(content, '<!-- wp:kadence/column', '<!-- /wp:kadence/column -->', 0);
+	const remove_content = getStringBetween(content, '<!-- wp:kadence/column', '<!-- /wp:kadence/column -->', 0);
 	if (remove_content) {
 		content = content.replace('<!-- wp:kadence/column' + remove_content + '<!-- /wp:kadence/column -->', '');
 	}

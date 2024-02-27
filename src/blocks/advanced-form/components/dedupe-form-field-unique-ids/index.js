@@ -3,9 +3,9 @@ import { getUniqueFieldId } from '../../components';
 
 function getFormFields(blocks) {
 	if (Array.isArray(blocks) && blocks.length) {
-		var fields = [];
+		let fields = [];
 		blocks.forEach((block) => {
-			var innerFields = [];
+			let innerFields = [];
 			if (fieldBlocks.includes(block.name)) {
 				fields.push({
 					uniqueID: block?.attributes?.uniqueID || '',

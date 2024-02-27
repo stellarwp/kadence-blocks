@@ -137,7 +137,7 @@ export function preMadeCollectionsHelper() {
 		try {
 			const response = await apiFetch({
 				path: addQueryArgs(API_ROUTE_GET_IMAGES, {
-					industries: industries,
+					industries,
 					industry: search,
 					image_type: COLLECTION_REQUEST_IMAGE_TYPE,
 					image_sizes: kadenceExtensionImagePicker.image_sizes,
@@ -156,19 +156,16 @@ export function preMadeCollectionsHelper() {
 							images: responseData?.data?.images.slice(12, 24),
 						},
 					];
-				} else {
-					const dataWithLinks = responseData.data.map((gallery) => {
-						const matchingLink = pexelLinks.find(
-							(item) => item.collection_slug === gallery.collection_slug
-						);
-						return {
-							name: gallery.collection_slug,
-							images: gallery.images,
-							pexelLink: matchingLink?.collection_url || '',
-						};
-					});
-					return dataWithLinks;
 				}
+				const dataWithLinks = responseData.data.map((gallery) => {
+					const matchingLink = pexelLinks.find((item) => item.collection_slug === gallery.collection_slug);
+					return {
+						name: gallery.collection_slug,
+						images: gallery.images,
+						pexelLink: matchingLink?.collection_url || '',
+					};
+				});
+				return dataWithLinks;
 			}
 			return [];
 		} catch (error) {

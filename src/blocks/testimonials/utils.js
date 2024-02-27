@@ -6,16 +6,16 @@ import { times } from 'lodash';
 export function migrateToInnerblocks(attributes) {
 	const { testimonials, itemsCount } = attributes;
 
-	let testimonialInnerBlocks = [];
+	const testimonialInnerBlocks = [];
 	if (testimonials?.length) {
 		times(itemsCount, (n) => {
-			let testimonial = testimonials[n];
-			let newAttrs = { ...testimonial };
+			const testimonial = testimonials[n];
+			const newAttrs = { ...testimonial };
 
 			testimonialInnerBlocks.push(createBlock('kadence/testimonial', newAttrs));
 		});
 	}
-	let testimonialParentAttributes = { ...attributes, testimonials: [], itemsCount: 1 };
+	const testimonialParentAttributes = { ...attributes, testimonials: [], itemsCount: 1 };
 
 	return [testimonialParentAttributes, testimonialInnerBlocks];
 }

@@ -25,7 +25,7 @@ function WebhookOptions({ formInnerBlocks, parentClientId, settings, save }) {
 	const SLUG_REGEX = /[\s#]/g;
 
 	const saveMap = (value, uniqueID) => {
-		let updatedMap = { ...settings.map };
+		const updatedMap = { ...settings.map };
 		updatedMap[uniqueID] = value;
 		save({ map: updatedMap });
 	};

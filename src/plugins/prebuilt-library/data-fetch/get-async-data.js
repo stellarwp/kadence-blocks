@@ -8,7 +8,7 @@ import { __ } from '@wordpress/i18n';
 import { SafeParseJSON } from '@kadence/helpers';
 const API_ROUTE_GET_IMAGES = '/kb-design-library/v1/get_images';
 
-var { kadence_blocks_params } = window;
+const { kadence_blocks_params } = window;
 
 export function getAsyncData() {
 	const [isLoadingWizard, setLoadingWizard] = useState(false);
@@ -217,7 +217,7 @@ export function getAsyncData() {
 			try {
 				const response = await apiFetch({
 					path: addQueryArgs(API_ROUTE_GET_IMAGES, {
-						industries: industries,
+						industries,
 						industry: userData?.imageSearchQuery,
 					}),
 				});
@@ -246,7 +246,7 @@ export function getAsyncData() {
 		try {
 			const response = await apiFetch({
 				path: addQueryArgs(API_ROUTE_GET_IMAGES, {
-					industries: industries,
+					industries,
 				}),
 			});
 			const responseData = SafeParseJSON(response, false);
@@ -272,7 +272,7 @@ export function getAsyncData() {
 		try {
 			const response = await apiFetch({
 				path: addQueryArgs('/kb-design-library/v1/get', {
-					context: context,
+					context,
 				}),
 			});
 			return response;
@@ -356,7 +356,7 @@ export function getAsyncData() {
 			const response = await apiFetch({
 				path: addQueryArgs('/kb-design-library/v1/get', {
 					force_reload: true,
-					context: context,
+					context,
 				}),
 			});
 			return response;
@@ -421,7 +421,7 @@ export function getAsyncData() {
 			const response = await apiFetch({
 				path: addQueryArgs('/kb-design-library/v1/get_library', {
 					force_reload: reload,
-					library: library,
+					library,
 					library_url: library_url ? library_url : '',
 					key: key ? key : library,
 				}),
@@ -445,7 +445,7 @@ export function getAsyncData() {
 			const response = await apiFetch({
 				path: addQueryArgs('/kb-design-library/v1/get_library_categories', {
 					force_reload: reload,
-					library: library,
+					library,
 					library_url: library_url ? library_url : '',
 					key: key ? key : library,
 				}),
@@ -469,7 +469,7 @@ export function getAsyncData() {
 		try {
 			const response = await apiFetch({
 				path: addQueryArgs('/kb-design-library/v1/get_pattern_content', {
-					library: library,
+					library,
 					library_url: library_url ? library_url : '',
 					key: key ? key : library,
 					pattern_id: item_id ? item_id : '',
@@ -477,7 +477,7 @@ export function getAsyncData() {
 					pattern_style: style ? style : '',
 					api_key: data_key,
 					api_email: data_email,
-					product_id: product_id,
+					product_id,
 				}),
 			});
 			return response;
@@ -519,9 +519,9 @@ export function getAsyncData() {
 				path: '/kb-design-library/v1/process_pattern',
 				method: 'POST',
 				data: {
-					content: content,
+					content,
 					image_library: imageCollection,
-					forms: forms,
+					forms,
 				},
 			});
 			return response;

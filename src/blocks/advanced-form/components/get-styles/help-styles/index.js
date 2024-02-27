@@ -2,7 +2,7 @@ import { getPreviewSize, KadenceColorOutput, getFontSizeOptionOutput } from '@ka
 import { get, isEmpty } from 'lodash';
 
 export default (previewDevice, parentHelpStyle) => {
-	let styles = {};
+	const styles = {};
 
 	if (!isEmpty(parentHelpStyle, 'color')) {
 		styles.color = KadenceColorOutput(parentHelpStyle.color);
@@ -15,7 +15,7 @@ export default (previewDevice, parentHelpStyle) => {
 		get(parentHelpStyle, 'sizeType', 'px')
 	);
 
-	let lineHeight = getPreviewSize(
+	const lineHeight = getPreviewSize(
 		previewDevice,
 		parentHelpStyle?.lineHeight?.[0],
 		parentHelpStyle?.lineHeight?.[1],
@@ -24,7 +24,7 @@ export default (previewDevice, parentHelpStyle) => {
 	if (lineHeight) {
 		styles.lineHeight = lineHeight + get(parentHelpStyle, 'lineType', '');
 	}
-	let letterSpacing = getPreviewSize(
+	const letterSpacing = getPreviewSize(
 		previewDevice,
 		parentHelpStyle?.letterSpacing?.[0],
 		parentHelpStyle?.letterSpacing?.[1],

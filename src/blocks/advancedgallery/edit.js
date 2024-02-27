@@ -195,7 +195,7 @@ export default function GalleryEdit(props) {
 	const mainRef = useRef(null);
 	const thumbsRef = useRef();
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const dynamicSource = kadenceDynamic && kadenceDynamic['images'] && kadenceDynamic['images'].enable ? true : false;
+	const dynamicSource = kadenceDynamic && kadenceDynamic.images && kadenceDynamic.images.enable ? true : false;
 	const { isUniqueID, isUniqueBlock, previewDevice, parentData, mediaUpload } = useSelect(
 		(select) => {
 			return {
@@ -226,7 +226,7 @@ export default function GalleryEdit(props) {
 		setBlockDefaults('kadence/advancedgallery', attributes);
 
 		const postOrFseId = getPostOrFseId(props, parentData);
-		let uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -415,7 +415,7 @@ export default function GalleryEdit(props) {
 	};
 
 	const onMove = (oldIndex, newIndex) => {
-		let newImages = [...imagesDynamic];
+		const newImages = [...imagesDynamic];
 		newImages.splice(newIndex, 1, imagesDynamic[oldIndex]);
 		newImages.splice(oldIndex, 1, imagesDynamic[newIndex]);
 		setSelectedImage(newIndex);
@@ -437,7 +437,7 @@ export default function GalleryEdit(props) {
 	};
 
 	const onRemoveImage = (index) => {
-		let newImages = filter(imagesDynamic, (img, i) => index !== i);
+		const newImages = filter(imagesDynamic, (img, i) => index !== i);
 		setSelectedImage(null);
 		setAttribs({
 			imagesDynamic: newImages,
@@ -460,7 +460,7 @@ export default function GalleryEdit(props) {
 
 	// async
 	async function setCaptions() {
-		let previousShowCaption = showCaption;
+		const previousShowCaption = showCaption;
 		setAttribs({ showCaption: !previousShowCaption });
 
 		if (previousShowCaption) {
@@ -758,8 +758,8 @@ export default function GalleryEdit(props) {
 			<CopyPasteAttributes
 				attributes={attributes}
 				excludedAttrs={nonTransAttrs}
-				defaultAttributes={metadata['attributes']}
-				blockSlug={metadata['name']}
+				defaultAttributes={metadata.attributes}
+				blockSlug={metadata.name}
 				onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
 			/>
 		</BlockControls>
@@ -1881,7 +1881,7 @@ export default function GalleryEdit(props) {
 
 							<KadenceBlockDefaults
 								attributes={attributes}
-								defaultAttributes={metadata['attributes']}
+								defaultAttributes={metadata.attributes}
 								blockSlug={'kadence/advancedgallery'}
 								excludedAttrs={nonTransAttrs}
 							/>
@@ -1910,8 +1910,8 @@ export default function GalleryEdit(props) {
 	const mediaPlaceholder = (
 		<KadenceMediaPlaceholder
 			labels={{
-				title: title,
-				instructions: instructions,
+				title,
+				instructions,
 			}}
 			selectIcon={plusCircleFilled}
 			selectLabel={__('Select Images', 'kadence-blocks')}

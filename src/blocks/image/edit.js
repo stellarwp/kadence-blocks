@@ -179,7 +179,7 @@ export function ImageEdit(props) {
 		setBlockDefaults('kadence/image', attributes);
 
 		const postOrFseId = getPostOrFseId(props, parentData);
-		let uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -191,7 +191,7 @@ export function ImageEdit(props) {
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 
 		// Update from old border settings.
-		let tempBorderStyle = JSON.parse(
+		const tempBorderStyle = JSON.parse(
 			JSON.stringify(
 				attributes.borderStyle
 					? attributes.borderStyle
@@ -231,7 +231,7 @@ export function ImageEdit(props) {
 		if (updateBorderStyle) {
 			setAttributes({ borderStyle: tempBorderStyle });
 		}
-		let tempTabBorderStyle = JSON.parse(
+		const tempTabBorderStyle = JSON.parse(
 			JSON.stringify(
 				attributes.tabletBorderStyle
 					? attributes.tabletBorderStyle
@@ -259,7 +259,7 @@ export function ImageEdit(props) {
 			const tempTabBorderWidth = JSON.parse(JSON.stringify(tempTabBorderStyle));
 			setAttributes({ tabletBorderStyle: tempTabBorderWidth, borderWidthTablet: ['', '', '', ''] });
 		}
-		let tempMobileBorderStyle = JSON.parse(
+		const tempMobileBorderStyle = JSON.parse(
 			JSON.stringify(
 				attributes.mobileBorderStyle
 					? attributes.mobileBorderStyle

@@ -34,13 +34,8 @@ import {
 } from '@kadence/helpers';
 
 import { useBlockProps, useInnerBlocksProps, BlockControls } from '@wordpress/block-editor';
-import { useEffect, useRef, useState } from '@wordpress/element';
+import { useEffect, useRef, useState, Fragment } from '@wordpress/element';
 import { uniqueId } from 'lodash';
-
-/**
- * Internal dependencies
- */
-import { Fragment } from '@wordpress/element';
 
 /**
  * External dependencies
@@ -99,7 +94,7 @@ export function Edit(props) {
 		setBlockDefaults('kadence/show-more', attributes);
 
 		const postOrFseId = getPostOrFseId(props, parentData);
-		let uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -261,7 +256,7 @@ export function Edit(props) {
 	);
 
 	const FadeOut = () => {
-		let fadeSize = enableFadeOut && !isExpanded ? Math.abs(fadeOutSize - 100) : 100;
+		const fadeSize = enableFadeOut && !isExpanded ? Math.abs(fadeOutSize - 100) : 100;
 
 		return (
 			<div className="Class">
@@ -286,8 +281,8 @@ export function Edit(props) {
 			<BlockControls>
 				<CopyPasteAttributes
 					attributes={attributes}
-					defaultAttributes={metadata['attributes']}
-					blockSlug={metadata['name']}
+					defaultAttributes={metadata.attributes}
+					blockSlug={metadata.name}
 					onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
 				/>
 			</BlockControls>
@@ -428,8 +423,8 @@ export function Edit(props) {
 
 						<KadenceBlockDefaults
 							attributes={attributes}
-							defaultAttributes={metadata['attributes']}
-							blockSlug={metadata['name']}
+							defaultAttributes={metadata.attributes}
+							blockSlug={metadata.name}
 						/>
 					</>
 				)}

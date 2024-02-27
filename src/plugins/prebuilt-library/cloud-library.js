@@ -14,9 +14,8 @@ import Masonry from 'react-masonry-css';
 import { useSelect, withDispatch, useDispatch } from '@wordpress/data';
 import { parse, rawHandler } from '@wordpress/blocks';
 import { debounce, isEqual } from 'lodash';
-import { Component, Fragment } from '@wordpress/element';
 import { store as noticesStore } from '@wordpress/notices';
-import { useMemo, useEffect, useState } from '@wordpress/element';
+import { Fragment, useEffect, useState } from '@wordpress/element';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 import { getAsyncData } from './data-fetch/get-async-data';
 import { Button, TextControl, SelectControl, VisuallyHidden, Spinner } from '@wordpress/components';
@@ -120,7 +119,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 				};
 			})
 		);
-		let tempPageContexts = [];
+		const tempPageContexts = [];
 		Object.keys(pagesCategories).map(function (key, index) {
 			if ('category' !== key) {
 				tempPageContexts.push({
@@ -156,8 +155,8 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 			const cloudSettings = kadence_blocks_params?.cloud_settings
 				? JSON.parse(kadence_blocks_params.cloud_settings)
 				: {};
-			if (cloudSettings && cloudSettings['connections']) {
-				action = cloudSettings['connections'].filter((obj) => {
+			if (cloudSettings && cloudSettings.connections) {
+				action = cloudSettings.connections.filter((obj) => {
 					return obj.slug === tab;
 				});
 			}
@@ -195,7 +194,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 		}
 	}
 	const ajaxImportProcess = (blockcode) => {
-		var data = new FormData();
+		const data = new FormData();
 		data.append('action', 'kadence_import_process_image_data');
 		data.append('security', kadence_blocks_params.ajax_nonce);
 		data.append('import_content', blockcode);
@@ -204,7 +203,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 			.ajax({
 				method: 'POST',
 				url: kadence_blocks_params.ajax_url,
-				data: data,
+				data,
 				contentType: false,
 				processData: false,
 			})
@@ -250,8 +249,8 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 			const cloudSettings = kadence_blocks_params?.cloud_settings
 				? JSON.parse(kadence_blocks_params.cloud_settings)
 				: {};
-			if (cloudSettings && cloudSettings['connections']) {
-				action = cloudSettings['connections'].filter((obj) => {
+			if (cloudSettings && cloudSettings.connections) {
+				action = cloudSettings.connections.filter((obj) => {
 					return obj.slug === tab;
 				});
 			}
@@ -373,12 +372,12 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 		}
 	}, [reload, tab]);
 	const activePanel = SafeParseJSON(localStorage.getItem('kadenceBlocksPrebuilt'), true);
-	const sidebar_saved_enabled = activePanel && activePanel['sidebar'] ? activePanel['sidebar'] : 'show';
+	const sidebar_saved_enabled = activePanel && activePanel.sidebar ? activePanel.sidebar : 'show';
 	const sidebarEnabled = sidebar ? sidebar : sidebar_saved_enabled;
 	const roundAccurately = (number, decimalPlaces) =>
 		Number(Math.round(Number(number + 'e' + decimalPlaces)) + 'e' + decimalPlaces * -1);
 	const categoryItems = categories;
-	const savedGridSize = activePanel && activePanel['grid'] ? activePanel['grid'] : 'normal';
+	const savedGridSize = activePanel && activePanel.grid ? activePanel.grid : 'normal';
 	const gridSize = stateGridSize ? stateGridSize : savedGridSize;
 	const catOptions = Object.keys(categoryItems).map(function (key, index) {
 		return { value: 'category' === key ? 'all' : key, label: categoryItems[key] };
@@ -440,7 +439,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 									localStorage.getItem('kadenceBlocksPrebuilt'),
 									true
 								);
-								activeSidebar['sidebar'] = 'hide';
+								activeSidebar.sidebar = 'hide';
 								localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(activeSidebar));
 								setSidebar('hide');
 							}}
@@ -455,7 +454,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 								}
 								aria-pressed={getActiveCat === category.value}
 								onClick={() => {
-									let newCat = category;
+									const newCat = category;
 									newCat[activePanel.activeTab] = category.value;
 									setCategory(newCat);
 								}}
@@ -477,7 +476,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 									localStorage.getItem('kadenceBlocksPrebuilt'),
 									true
 								);
-								activeSidebar['sidebar'] = 'show';
+								activeSidebar.sidebar = 'show';
 								localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(activeSidebar));
 								setSidebar('show');
 							}}
@@ -487,7 +486,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 							value={getActiveCat}
 							options={catOptions}
 							onChange={(value) => {
-								let newCat = category;
+								const newCat = category;
 								newCat[activePanel.activeTab] = value;
 								setCategory(newCat);
 							}}
@@ -509,7 +508,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 									localStorage.getItem('kadenceBlocksPrebuilt'),
 									true
 								);
-								activeSidebar['grid'] = 'large';
+								activeSidebar.grid = 'large';
 								localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(activeSidebar));
 								setGridSize('large');
 							}}
@@ -530,7 +529,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 									localStorage.getItem('kadenceBlocksPrebuilt'),
 									true
 								);
-								activeSidebar['grid'] = 'normal';
+								activeSidebar.grid = 'normal';
 								localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(activeSidebar));
 								setGridSize('normal');
 							}}

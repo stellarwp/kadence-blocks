@@ -115,7 +115,7 @@ export default function ThreeColumnDrag({ attributes, setAttributes, secondWidth
 			tempSecondW =
 				Math.round(Math.abs((!secondColumnWidth ? secondWidthNumber : secondColumnWidth) - tempChange) / 5) * 5;
 		}
-		let tempThird = Math.abs(Math.round((tempSecondW + tempFirstW - 100) * 10) / 10);
+		const tempThird = Math.abs(Math.round((tempSecondW + tempFirstW - 100) * 10) / 10);
 
 		//set text width percentages on resizer flags
 		editorDocument.getElementById('left-column-width-' + uniqueID).innerHTML = tempFirstW + '%';
@@ -145,7 +145,7 @@ export default function ThreeColumnDrag({ attributes, setAttributes, secondWidth
 			tempSecondW =
 				Math.round(Math.abs((!secondColumnWidth ? secondWidthNumber : secondColumnWidth) - tempChange) / 5) * 5;
 		}
-		let tempThird = Math.abs(Math.round((tempSecondW + tempFirstW - 100) * 10) / 10);
+		const tempThird = Math.abs(Math.round((tempSecondW + tempFirstW - 100) * 10) / 10);
 
 		setAttributes({ firstColumnWidth: tempFirstW, secondColumnWidth: tempSecondW });
 		setTimeout(() => {
@@ -165,7 +165,7 @@ export default function ThreeColumnDrag({ attributes, setAttributes, secondWidth
 			tempSecondW = Math.round(parseInt(elt.style.width) / 5) * 5;
 			tempSecondWidth = Math.round((tempSecondW - tempFirstW) / 5) * 5;
 		}
-		let tempThird = Math.abs(Math.round((tempSecondWidth + tempFirstW - 100) * 10) / 10);
+		const tempThird = Math.abs(Math.round((tempSecondWidth + tempFirstW - 100) * 10) / 10);
 
 		//set text width percentages on resizer flags
 		editorDocument.getElementById('left-column-width-' + uniqueID).innerHTML = tempFirstW + '%';

@@ -29,7 +29,7 @@ function FieldHidden({ attributes, setAttributes, isSelected, clientId, context,
 
 	useEffect(() => {
 		// Doesn't worry about if a filed is duplicated. Duplicated fields get a custom ID through the watch at the form level.
-		let uniqueId = getUniqueFieldId(uniqueID, clientId);
+		const uniqueId = getUniqueFieldId(uniqueID, clientId);
 		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
 			setAttributes({ uniqueID: uniqueId });
@@ -44,12 +44,12 @@ function FieldHidden({ attributes, setAttributes, isSelected, clientId, context,
 	const defaultPreview = useMemo(() => {
 		if (
 			undefined !== kadenceDynamic &&
-			undefined !== kadenceDynamic['defaultValue'] &&
-			undefined !== kadenceDynamic['defaultValue']?.enable &&
-			'' !== kadenceDynamic['defaultValue'].enable &&
-			true === kadenceDynamic['defaultValue'].enable
+			undefined !== kadenceDynamic.defaultValue &&
+			undefined !== kadenceDynamic.defaultValue?.enable &&
+			'' !== kadenceDynamic.defaultValue.enable &&
+			true === kadenceDynamic.defaultValue.enable
 		) {
-			return kadenceDynamic?.['defaultValue']?.field ? '{' + kadenceDynamic['defaultValue'].field + '}' : '';
+			return kadenceDynamic?.defaultValue?.field ? '{' + kadenceDynamic.defaultValue.field + '}' : '';
 		}
 		return attributes?.defaultValue ? attributes.defaultValue : '';
 	}, [kadenceDynamic, defaultValue]);

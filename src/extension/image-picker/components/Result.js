@@ -37,7 +37,7 @@ export default function Result(props) {
 				? select('kadenceblocks/data').getImagePickerDownloadedImages()
 				: '';
 		return {
-			imagePickerDownloadedImages: imagePickerDownloadedImages,
+			imagePickerDownloadedImages,
 		};
 	}, []);
 	const { setImagePickerDownloadedImages } = useDispatch('kadenceblocks/data');

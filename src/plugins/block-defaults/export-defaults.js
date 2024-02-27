@@ -12,7 +12,7 @@ function ExportDefaults() {
 	const [includeDefaults, setIncludeDefaults] = useState(Object.keys(blockDefaults).length === 0 ? false : true);
 	const [includeVisbility, setIncludeVisibility] = useState(Object.keys(blockVisibility).length === 0 ? false : true);
 
-	let exportData = {};
+	const exportData = {};
 
 	if (includeVisbility) {
 		exportData.block_visibility = blockVisibility;

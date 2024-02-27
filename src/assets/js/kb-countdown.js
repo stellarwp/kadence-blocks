@@ -4,9 +4,9 @@
 	window.kadenceCountdown = {
 		cache: {},
 		timers: JSON.parse(kadence_blocks_countdown.timers),
-		createCookie: function (name, value, length, unit) {
+		createCookie(name, value, length, unit) {
 			if (length) {
-				var date = new Date();
+				const date = new Date();
 				if ('minutes' == unit) {
 					date.setTime(date.getTime() + length * 60 * 1000);
 				} else if ('hours' == unit) {
@@ -22,8 +22,8 @@
 			document.cookie = kadence_blocks_countdown.site_slug + '-' + name + '=' + value + expires + '; path=/';
 		},
 		getCookie(name) {
-			var value = '; ' + document.cookie;
-			var parts = value.split('; ' + kadence_blocks_countdown.site_slug + '-' + name + '=');
+			const value = '; ' + document.cookie;
+			const parts = value.split('; ' + kadence_blocks_countdown.site_slug + '-' + name + '=');
 			if (parts.length == 2) {
 				return parts.pop().split(';').shift();
 			}
@@ -38,7 +38,7 @@
 			let futureDate = new Date();
 			const daysPassed = (currentDate.getTime() - initialDate.getTime()) / (1000 * 3600 * 24);
 			let offsetDays = 0;
-			let repeatTimeStamp = 0;
+			const repeatTimeStamp = 0;
 			let dayOfMonth = initialDate.getDate();
 			const futureDayOfMonth = currentDate.getDate();
 			const initialMonth = initialDate.getMonth();
@@ -48,7 +48,8 @@
 					: futureDayOfMonth >= dayOfMonth
 					? currentDate.getMonth() + 1
 					: currentDate.getMonth();
-			let futureYear = currentDate.getMonth() === 11 ? currentDate.getFullYear() + 1 : currentDate.getFullYear();
+			const futureYear =
+				currentDate.getMonth() === 11 ? currentDate.getFullYear() + 1 : currentDate.getFullYear();
 			const nextMonthDays = new Date(futureYear, futureMonth + 1, 0).getDate();
 
 			switch (window.kadenceCountdown.timers[id].frequency) {
@@ -92,9 +93,9 @@
 			return futureDate.getTime();
 		},
 		updateTimerInterval(element, id, parent) {
-			var currentTimeStamp = new Date();
-			var userTimezoneOffset = -1 * (new Date().getTimezoneOffset() / 60);
-			var total = '';
+			const currentTimeStamp = new Date();
+			const userTimezoneOffset = -1 * (new Date().getTimezoneOffset() / 60);
+			let total = '';
 			if (window.kadenceCountdown.timers[id].type === 'evergreen') {
 				//Check for cookie.
 				if ('' !== window.kadenceCountdown.cache[id].cookie) {
@@ -165,12 +166,12 @@
 				// Total is negative so past date, let check if we should reset it.
 				if (total && total < 0) {
 					// check if reset is needed.
-					var resetDate = new Date();
+					const resetDate = new Date();
 					resetDate.setTime(
 						window.kadenceCountdown.cache[id].cookie +
 							Math.floor(window.kadenceCountdown.cache[id].reset) * 24 * 60 * 60 * 1000
 					);
-					var shouldRest = Math.floor(resetDate.getTime() - currentTimeStamp.getTime());
+					const shouldRest = Math.floor(resetDate.getTime() - currentTimeStamp.getTime());
 					if (shouldRest < 0) {
 						total = '';
 					}
@@ -184,7 +185,7 @@
 						window.kadenceCountdown.cache[id].request.readyState === 4) ||
 						!window.kadenceCountdown.timers[id].strict)
 				) {
-					var newDate = new Date();
+					const newDate = new Date();
 					newDate.setTime(
 						newDate.getTime() + Math.floor(window.kadenceCountdown.timers[id].hours) * 60 * 60 * 1000
 					);
@@ -199,7 +200,7 @@
 						'days'
 					);
 					total = Math.floor(newDate.getTime() - currentTimeStamp.getTime());
-					var request = new XMLHttpRequest();
+					const request = new XMLHttpRequest();
 					request.open('POST', kadence_blocks_countdown.ajax_url, true);
 					request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 					request.onload = function () {
@@ -354,9 +355,9 @@
 				labels.hours = window.kadenceCountdown.timers[id].hoursLabel;
 				labels.minutes = window.kadenceCountdown.timers[id].minutesLabel;
 				labels.seconds = window.kadenceCountdown.timers[id].secondsLabel;
-				var calculateHours = Math.floor((total / (1000 * 60 * 60)) % 24);
-				var calculateMinutes = Math.floor((total / 1000 / 60) % 60);
-				var calculateSeconds = Math.floor((total / 1000) % 60);
+				let calculateHours = Math.floor((total / (1000 * 60 * 60)) % 24);
+				let calculateMinutes = Math.floor((total / 1000 / 60) % 60);
+				let calculateSeconds = Math.floor((total / 1000) % 60);
 				var parts = {};
 				if (undefined !== units && undefined !== units[0] && undefined !== units[0].days && !units[0].days) {
 					//Do nothing.
@@ -421,7 +422,7 @@
 				window.kadenceCountdown.cache[id].revealed = true;
 				parent.style.opacity = 1;
 				if (window.kadenceCountdown.timers[id].revealOnLoad) {
-					var sticky = parent.closest('.kadence-pro-fixed-wrap');
+					const sticky = parent.closest('.kadence-pro-fixed-wrap');
 					if (sticky && !window.kadenceCountdown.timers[id].timer) {
 						setTimeout(function () {
 							parent.style.height = parent.scrollHeight + 'px';
@@ -429,7 +430,7 @@
 							sticky.style.height = Math.floor(sticky.scrollHeight + parent.scrollHeight) + 'px';
 						}, 200);
 						setTimeout(function () {
-							var event = new CustomEvent('kadence-update-sticky');
+							const event = new CustomEvent('kadence-update-sticky');
 							window.dispatchEvent(event);
 							sticky.style.transition = '';
 						}, 1000);
@@ -465,14 +466,14 @@
 			}, 1000);
 		},
 		initTimer() {
-			var countdowns = document.querySelectorAll('.kb-countdown-container');
+			const countdowns = document.querySelectorAll('.kb-countdown-container');
 			if (!countdowns.length) {
 				return;
 			}
-			for (var n = 0; n < countdowns.length; n++) {
-				var id = countdowns[n].getAttribute('data-id');
+			for (let n = 0; n < countdowns.length; n++) {
+				const id = countdowns[n].getAttribute('data-id');
 				if (id && window.kadenceCountdown.timers[id]) {
-					var el = countdowns[n].querySelector('.kb-countdown-timer');
+					const el = countdowns[n].querySelector('.kb-countdown-timer');
 					window.kadenceCountdown.updateTimer(el, id, countdowns[n]);
 				}
 			}

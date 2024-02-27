@@ -600,8 +600,8 @@ export default function Image({
 				<CopyPasteAttributes
 					attributes={attributes}
 					excludedAttrs={nonTransAttrs}
-					defaultAttributes={metadata['attributes']}
-					blockSlug={metadata['name']}
+					defaultAttributes={metadata.attributes}
+					blockSlug={metadata.name}
 					onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
 				/>
 			</BlockControls>
@@ -865,7 +865,7 @@ export default function Image({
 										: '#000000'
 								}
 								colorDefault={'#000000'}
-								onArrayChange={(color, opacity) => saveBoxShadow({ color: color, opacity: opacity })}
+								onArrayChange={(color, opacity) => saveBoxShadow({ color, opacity })}
 								opacity={
 									undefined !== boxShadow &&
 									undefined !== boxShadow[0] &&
@@ -946,7 +946,7 @@ export default function Image({
 										: '#000000'
 								}
 								colorDefault={'#000000'}
-								onArrayChange={(color, opacity) => saveDropShadow({ color: color, opacity: opacity })}
+								onArrayChange={(color, opacity) => saveDropShadow({ color, opacity })}
 								opacity={
 									undefined !== dropShadow &&
 									undefined !== dropShadow[0] &&
@@ -1131,7 +1131,7 @@ export default function Image({
 								onChange={(value) => setAttributes({ showCaption: value })}
 							/>
 							{showCaption && (
-								<Fragment>
+								<>
 									<PopColorControl
 										label={__('Caption Color', 'kadence-blocks')}
 										value={
@@ -1178,7 +1178,7 @@ export default function Image({
 										fontSubset={captionStyles[0].subset}
 										onFontSubset={(value) => saveCaptionFont({ subset: value })}
 									/>
-								</Fragment>
+								</>
 							)}
 						</KadencePanelBody>
 						<KadencePanelBody
@@ -1326,8 +1326,8 @@ export default function Image({
 
 						<KadenceBlockDefaults
 							attributes={attributes}
-							defaultAttributes={metadata['attributes']}
-							blockSlug={metadata['name']}
+							defaultAttributes={metadata.attributes}
+							blockSlug={metadata.name}
 							excludedAttrs={nonTransAttrs}
 						/>
 					</>

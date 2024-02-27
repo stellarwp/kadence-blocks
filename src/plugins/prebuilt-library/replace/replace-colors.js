@@ -72,7 +72,7 @@ export default function replaceColors(content, style) {
 	content = content.replace(/logo-placeholder-9.png/g, 'logo-placeholder-9-white.png');
 	content = content.replace(/logo-placeholder-10.png/g, 'logo-placeholder-10-white.png');
 
-	let replacements = [];
+	const replacements = [];
 
 	if ('dark' === style) {
 		// Handle tabs.
@@ -83,7 +83,7 @@ export default function replaceColors(content, style) {
 			'kb-pattern-active-tab-highlight'
 		);
 		if (tab_content) {
-			let tab_content_org = tab_content;
+			const tab_content_org = tab_content;
 			tab_content = tab_content.replace(/"titleColorActive":"palette9"/g, '"titleColorActive":"ph-kb-pal9"');
 			tab_content = tab_content.replace(/"titleColorHover":"palette9"/g, '"titleColorHover":"ph-kb-pal9"');
 			content = content.replace(tab_content_org, tab_content);
@@ -97,7 +97,7 @@ export default function replaceColors(content, style) {
 			'kb-divider-static'
 		);
 		if (row_divider_content) {
-			let row_divider_content_org = row_divider_content;
+			const row_divider_content_org = row_divider_content;
 			row_divider_content = row_divider_content.replace(
 				/"bottomSepColor":"palette9"/g,
 				'"bottomSepColor":"ph-kb-pal9"'
@@ -126,7 +126,7 @@ export default function replaceColors(content, style) {
 			0
 		);
 		if (white_text_content) {
-			let white_text_content_org = white_text_content;
+			const white_text_content_org = white_text_content;
 			white_text_content = white_text_content.replace(/"textColor":"palette9"/g, '"textColor":"ph-kb-pal9"');
 			white_text_content = white_text_content.replace(/"linkColor":"palette9"/g, '"linkColor":"ph-kb-pal9"');
 			white_text_content = white_text_content.replace(
@@ -168,7 +168,7 @@ export default function replaceColors(content, style) {
 		// Handle Forms.
 		let form_content = getStringBetween(content, '"submit":[{', ']}', 'wp:kadence/form');
 		if (form_content) {
-			let form_content_org = form_content;
+			const form_content_org = form_content;
 			form_content = form_content.replace(/"color":""/g, '"color":"ph-kb-pal9"');
 			form_content = form_content.replace(/"background":""/g, '"background":"ph-kb-pal3"');
 			form_content = form_content.replace(/"colorHover":""/g, '"colorHover":"ph-kb-pal9"');
@@ -183,7 +183,7 @@ export default function replaceColors(content, style) {
 			'kb-divider-static'
 		);
 		if (row_divider_content) {
-			let row_divider_content_org = row_divider_content;
+			const row_divider_content_org = row_divider_content;
 			row_divider_content = row_divider_content.replace(
 				/"bottomSepColor":"palette9"/g,
 				'"bottomSepColor":"ph-kb-pal9"'

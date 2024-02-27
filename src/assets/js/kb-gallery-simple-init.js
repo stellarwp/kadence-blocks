@@ -7,28 +7,28 @@
 (function () {
 	'use strict';
 	var kadenceBlocksLightbox = {
-		simulateClick: function (elem) {
+		simulateClick(elem) {
 			// Create our event (with options)
-			var evt = new MouseEvent('click', {
+			const evt = new MouseEvent('click', {
 				bubbles: true,
 				cancelable: true,
 				view: window,
 			});
 			// If cancelled, don't dispatch our event
-			var canceled = !elem.dispatchEvent(evt);
+			const canceled = !elem.dispatchEvent(evt);
 		},
-		checkImage: function (element) {
+		checkImage(element) {
 			return /(png|jpg|jpeg|gif|tiff|bmp|webp)$/.test(
 				element.getAttribute('href').toLowerCase().split('?')[0].split('#')[0]
 			);
 		},
-		handleClones: function (element) {
-			var foundClones = element.querySelectorAll('.slick-cloned a.kb-gallery-item-link');
-			var foundRegular = element.querySelectorAll('.slick-slide:not(.slick-cloned) a.kb-gallery-item-link');
+		handleClones(element) {
+			const foundClones = element.querySelectorAll('.slick-cloned a.kb-gallery-item-link');
+			const foundRegular = element.querySelectorAll('.slick-slide:not(.slick-cloned) a.kb-gallery-item-link');
 			for (let c = 0; c < foundClones.length; c++) {
 				foundClones[c].addEventListener('click', function (event) {
 					event.preventDefault();
-					var the_href = foundClones[c].getAttribute('href');
+					const the_href = foundClones[c].getAttribute('href');
 					for (let b = 0; b < foundRegular.length; b++) {
 						if (the_href === foundRegular[b].getAttribute('href')) {
 							kadenceBlocksLightbox.simulateClick(foundRegular[b]);
@@ -38,13 +38,13 @@
 				});
 			}
 		},
-		findGalleries: function () {
-			var foundGalleries = document.querySelectorAll('.kb-gallery-magnific-init');
+		findGalleries() {
+			const foundGalleries = document.querySelectorAll('.kb-gallery-magnific-init');
 			if (!foundGalleries.length) {
 				return;
 			}
 			if (foundGalleries) {
-				var carousel = [];
+				const carousel = [];
 				for (let i = 0; i < foundGalleries.length; i++) {
 					carousel[i] = foundGalleries[i].querySelector('.kt-blocks-carousel-init');
 					if (carousel[i]) {
@@ -52,10 +52,10 @@
 							kadenceBlocksLightbox.handleClones(carousel[i]);
 						}, 200);
 					}
-					var galleryClass = foundGalleries[i].classList;
-					var showCaption = foundGalleries[i].getAttribute('data-lightbox-caption');
-					var filter = foundGalleries[i].getAttribute('data-image-filter');
-					var foundGalleryClass = false;
+					const galleryClass = foundGalleries[i].classList;
+					const showCaption = foundGalleries[i].getAttribute('data-lightbox-caption');
+					const filter = foundGalleries[i].getAttribute('data-image-filter');
+					let foundGalleryClass = false;
 					for (let n = 0; n < galleryClass.length; n++) {
 						if (galleryClass[n].indexOf('kb-gallery-id') !== -1) {
 							foundGalleryClass = galleryClass[n];
@@ -63,9 +63,9 @@
 						}
 					}
 					if ('true' == showCaption) {
-						var foundImages = foundGalleries[i].querySelectorAll('a.kb-gallery-item-link');
+						const foundImages = foundGalleries[i].querySelectorAll('a.kb-gallery-item-link');
 						for (let x = 0; x < foundImages.length; x++) {
-							var caption = foundImages[x].querySelector('.kadence-blocks-gallery-item__caption');
+							const caption = foundImages[x].querySelector('.kadence-blocks-gallery-item__caption');
 							if (caption) {
 								foundImages[x].setAttribute('data-caption', caption.innerText);
 							}
@@ -87,12 +87,12 @@
 		/**
 		 * Initiate the script to process all
 		 */
-		initAll: function () {
+		initAll() {
 			SimpleLightbox.defaults.captionAttribute = 'data-caption';
 			kadenceBlocksLightbox.findGalleries();
 		},
 		// Initiate the menus when the DOM loads.
-		init: function () {
+		init() {
 			if (typeof SimpleLightbox == 'function') {
 				kadenceBlocksLightbox.initAll();
 			} else {
