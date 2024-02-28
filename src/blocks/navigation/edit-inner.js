@@ -13,8 +13,19 @@ import { get, isEqual } from 'lodash';
 import { addQueryArgs } from '@wordpress/url';
 import { useEntityBlockEditor, useEntityProp } from '@wordpress/core-data';
 import { formBlockIcon } from '@kadence/icons';
-import { KadencePanelBody, InspectorControlTabs, SpacingVisualizer } from '@kadence/components';
-import { getPreviewSize, KadenceColorOutput, getSpacingOptionOutput, mouseOverVisualizer } from '@kadence/helpers';
+import {
+	KadencePanelBody,
+	InspectorControlTabs,
+	SpacingVisualizer,
+	ResponsiveMeasureRangeControl,
+} from '@kadence/components';
+import {
+	getPreviewSize,
+	KadenceColorOutput,
+	getSpacingOptionOutput,
+	mouseOverVisualizer,
+	arrayStringToInt,
+} from '@kadence/helpers';
 
 import {
 	InspectorControls,
@@ -56,16 +67,22 @@ export function EditInner(props) {
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
+	const borderMouseOver = mouseOverVisualizer();
 
-	// const [ padding ] = useNavigationMeta( '_kad_navigation_padding' );
-	// const [ tabletPadding ] = useNavigationMeta( '_kad_navigation_tabletPadding' );
-	// const [ mobilePadding ] = useNavigationMeta( '_kad_navigation_mobilePadding' );
-	// const [ paddingUnit ] = useNavigationMeta( '_kad_navigation_paddingUnit' );
-	//
-	// const [ margin ] = useNavigationMeta( '_kad_navigation_margin' );
-	// const [ tabletMargin ] = useNavigationMeta( '_kad_navigation_tabletMargin' );
-	// const [ mobileMargin ] = useNavigationMeta( '_kad_navigation_mobileMargin' );
-	// const [ marginUnit ] = useNavigationMeta( '_kad_navigation_marginUnit' );
+	const [padding] = useNavigationMeta('_kad_navigation_padding');
+	const [tabletPadding] = useNavigationMeta('_kad_navigation_tabletPadding');
+	const [mobilePadding] = useNavigationMeta('_kad_navigation_mobilePadding');
+	const [paddingUnit] = useNavigationMeta('_kad_navigation_paddingUnit');
+
+	const [margin] = useNavigationMeta('_kad_navigation_margin');
+	const [tabletMargin] = useNavigationMeta('_kad_navigation_tabletMargin');
+	const [mobileMargin] = useNavigationMeta('_kad_navigation_mobileMargin');
+	const [marginUnit] = useNavigationMeta('_kad_navigation_marginUnit');
+
+	const [border] = useNavigationMeta('_kad_navigation_border');
+	const [borderRadius] = useNavigationMeta('_kad_navigation_borderRadius');
+	const [borderColor] = useNavigationMeta('_kad_navigation_borderColor');
+	const [borderUnit] = useNavigationMeta('_kad_navigation_borderUnit');
 
 	const [className] = useNavigationMeta('_kad_navigation_className');
 	const [anchor] = useNavigationMeta('_kad_navigation_anchor');
@@ -232,61 +249,74 @@ export function EditInner(props) {
 						<div className="kt-sidebar-settings-spacer"></div>
 					</>
 				)}
-
-				{activeTab === 'style' && <>Style tab</>}
+				{console.log(activeTab)}
+				{activeTab === 'style' && (
+					<>
+						<KadencePanelBody panelName={'kb-row-border'}>
+							<ResponsiveMeasureRangeControl
+								label={__('Border Width', 'kadence-blocks')}
+								value={border}
+								onChange={(value) => {
+									setMetaAttribute(value.map(String), 'border');
+								}}
+								min={0}
+								max={200}
+								step={1}
+								unit={borderUnit}
+								units={['px']}
+								onMouseOver={borderMouseOver.onMouseOver}
+								onMouseOut={borderMouseOver.onMouseOut}
+							/>
+						</KadencePanelBody>
+					</>
+				)}
 
 				{activeTab === 'advanced' && (
 					<>
-						Advanced tab
-						{/*<KadencePanelBody panelName={'kb-row-padding'}>*/}
-						{/*	<ResponsiveMeasureRangeControl*/}
-						{/*		label={__('Padding', 'kadence-blocks')}*/}
-						{/*		value={ arrayStringToInt( padding ) }*/}
-						{/*		tabletValue={ arrayStringToInt( tabletPadding ) }*/}
-						{/*		mobileValue={ arrayStringToInt( mobilePadding ) }*/}
-						{/*		onChange={(value) => {*/}
-						{/*			setMetaAttribute( value.map(String), 'padding' );*/}
-						{/*		}}*/}
-						{/*		onChangeTablet={(value) => {*/}
-						{/*			setMetaAttribute( value.map(String), 'tabletPadding' );*/}
-						{/*		}}*/}
-						{/*		onChangeMobile={(value) => {*/}
-						{/*			setMetaAttribute( value.map(String), 'mobilePadding' );*/}
-						{/*		}}*/}
-						{/*		min={0}*/}
-						{/*		max={(paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200)}*/}
-						{/*		step={(paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1)}*/}
-						{/*		unit={paddingUnit}*/}
-						{/*		units={['px', 'em', 'rem', '%']}*/}
-						{/*		onUnit={(value) => setMetaAttribute( value, 'paddingUnit' )}*/}
-						{/*		onMouseOver={paddingMouseOver.onMouseOver}*/}
-						{/*		onMouseOut={paddingMouseOver.onMouseOut}*/}
-						{/*	/>*/}
-						{/*	<ResponsiveMeasureRangeControl*/}
-						{/*		label={__('Margin', 'kadence-blocks')}*/}
-						{/*		value={ arrayStringToInt( margin ) }*/}
-						{/*		tabletValue={ arrayStringToInt( tabletMargin ) }*/}
-						{/*		mobileValue={ arrayStringToInt( mobileMargin ) }*/}
-						{/*		onChange={(value) => {*/}
-						{/*			setMetaAttribute( value.map(String), 'margin' );*/}
-						{/*		}}*/}
-						{/*		onChangeTablet={(value) => {*/}
-						{/*			setMetaAttribute( value.map(String), 'tabletMargin' );*/}
-						{/*		}}*/}
-						{/*		onChangeMobile={(value) => {*/}
-						{/*			setMetaAttribute( value.map(String), 'mobileMargin' );*/}
-						{/*		}}*/}
-						{/*		min={(marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200)}*/}
-						{/*		max={(marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200)}*/}
-						{/*		step={(marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1)}*/}
-						{/*		unit={marginUnit}*/}
-						{/*		units={['px', 'em', 'rem', '%', 'vh']}*/}
-						{/*		onUnit={(value) => setMetaAttribute( value, 'marginUnit' )}*/}
-						{/*		onMouseOver={marginMouseOver.onMouseOver}*/}
-						{/*		onMouseOut={marginMouseOver.onMouseOut}*/}
-						{/*		allowAuto={ true}*/}
-						{/*	/>*/}
-						{/*</KadencePanelBody>*/}
+						<KadencePanelBody panelName={'kb-row-padding'}>
+							<ResponsiveMeasureRangeControl
+								label={__('Padding', 'kadence-blocks')}
+								value={padding}
+								onChange={(value) => {
+									setMetaAttribute(value.map(String), 'padding');
+								}}
+								onChangeTablet={(value) => {
+									setMetaAttribute(value.map(String), 'tabletPadding');
+								}}
+								onChangeMobile={(value) => {
+									setMetaAttribute(value.map(String), 'mobilePadding');
+								}}
+								min={0}
+								max={paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200}
+								step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
+								unit={paddingUnit}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setMetaAttribute(value, 'paddingUnit')}
+								onMouseOver={paddingMouseOver.onMouseOver}
+								onMouseOut={paddingMouseOver.onMouseOut}
+							/>
+							<ResponsiveMeasureRangeControl
+								label={__('Margin', 'kadence-blocks')}
+								value={margin}
+								onChange={(value) => {
+									setMetaAttribute(value.map(String), 'margin');
+								}}
+								onChangeTablet={(value) => {
+									setMetaAttribute(value.map(String), 'tabletMargin');
+								}}
+								onChangeMobile={(value) => {
+									setMetaAttribute(value.map(String), 'mobileMargin');
+								}}
+								min={0}
+								max={marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200}
+								step={paddingUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
+								unit={paddingUnit}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setMetaAttribute(value, 'marginUnit')}
+								onMouseOver={marginMouseOver.onMouseOver}
+								onMouseOut={marginMouseOver.onMouseOut}
+							/>
+						</KadencePanelBody>
 					</>
 				)}
 			</InspectorControls>

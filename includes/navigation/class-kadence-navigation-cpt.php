@@ -27,6 +27,8 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 	public function __construct() {
 		// Register the post type.
 		add_action( 'init', array( $this, 'register_post_type' ), 2 );
+		// Register the meta settings for from post.
+		add_action( 'init', array( $this, 'register_meta' ), 20 );
 	}
 
 	/**
@@ -118,6 +120,74 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'key'     => '_kad_navigation_className',
 				'default' => '',
 				'type'    => 'string'
+			),
+			array(
+				'key'     		=> '_kad_navigation_padding',
+				'default'       => array( '20', '20', '20', '20' ),
+				'type'          => 'array',
+				'children_type' => 'string'
+			),
+			array(
+				'key'     		=> '_kad_navigation_tabletPadding',
+				'default'       => array( '20', '20', '20', '20' ),
+				'type'          => 'array',
+				'children_type' => 'string'
+			),
+			array(
+				'key'     		=> '_kad_navigation_mobilePadding',
+				'default'       => array( '20', '20', '20', '20' ),
+				'type'          => 'array',
+				'children_type' => 'string'
+			),
+			array(
+				'key'     => '_kad_navigation_paddingUnit',
+				'default' => 'px',
+				'type'    => 'string',
+			),
+			array(
+				'key'           => '_kad_navigation_margin',
+				'default'       => array( '', '', '', '' ),
+				'type'          => 'array',
+				'children_type' => 'string'
+			),
+			array(
+				'key'           => '_kad_navigation_tabletMargin',
+				'default'       => array( '', '', '', '' ),
+				'type'          => 'array',
+				'children_type' => 'string'
+			),
+			array(
+				'key'           => '_kad_navigation_mobileMargin',
+				'default'       => array( '', '', '', '' ),
+				'type'          => 'array',
+				'children_type' => 'string'
+			),
+			array(
+				'key'     => '_kad_navigation_marginUnit',
+				'default' => 'px',
+				'type'    => 'string',
+			),
+			array(
+				'key'           => '_kad_navigation_border',
+				'default'       => array( '', '', '', '' ),
+				'type'          => 'array',
+				'children_type' => 'string'
+			),
+			array(
+				'key'           => '_kad_navigation_borderRadius',
+				'default'       => array( '', '', '', '' ),
+				'type'          => 'array',
+				'children_type' => 'string'
+			),
+			array(
+				'key'           => '_kad_navigation_borderColor',
+				'default'       => '',
+				'type'          => 'string',
+			),
+			array(
+				'key'     => '_kad_navigation_borderUnit',
+				'default' => 'px',
+				'type'    => 'string',
 			),
 		);
 
