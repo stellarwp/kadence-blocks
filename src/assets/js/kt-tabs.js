@@ -155,13 +155,8 @@
 						'.kt-tabs-content-wrap > .kt-tabs-accordion-title.kt-tabs-accordion-title-' + tabNumber
 					)
 					.scrollIntoView({ behavior: 'smooth' });
-			} else if ( tabWrap.classList.contains('kt-tabs-layout-vtabs') ) {
-				tabWrap
-					.querySelector(
-						'.kt-tabs-content-wrap'
-					)
-					.scrollIntoView({ behavior: 'smooth' });
-				
+			} else if (tabWrap.classList.contains('kt-tabs-layout-vtabs')) {
+				tabWrap.querySelector('.kt-tabs-content-wrap').scrollIntoView({ behavior: 'smooth' });
 			}
 		},
 		isMobileSize() {
