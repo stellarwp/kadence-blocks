@@ -35,6 +35,8 @@ class Kadence_Blocks_Header_CPT_Controller {
 		// Register the post type.
 		add_action( 'init', array( $this, 'register_post_type' ), 2 );
 		add_action( 'init', array( $this, 'register_meta' ), 20 );
+		add_filter( 'user_has_cap', array( $this, 'filter_post_type_user_caps' ) );
+
 	}
 
 	/**
@@ -104,6 +106,30 @@ class Kadence_Blocks_Header_CPT_Controller {
 	 */
 	public function meta_auth_callback() {
 		return current_user_can( 'edit_kadence_header' );
+	}
+
+	/**
+	 * Filters the capabilities of a user to conditionally grant them capabilities for managing headers.
+	 *
+	 * Any user who can 'edit_others_pages' will have access to manage headers.
+	 *
+	 * @param array $allcaps A user's capabilities.
+	 * @return array Filtered $allcaps.
+	 */
+	public function filter_post_type_user_caps( $allcaps ) {
+		if ( isset( $allcaps['edit_others_pages'] ) ) {
+			$allcaps['edit_kadence_header']             = $allcaps['edit_others_pages'];
+			$allcaps['edit_others_kadence_header']      = $allcaps['edit_others_pages'];
+			$allcaps['edit_published_kadence_header']   = $allcaps['edit_others_pages'];
+			$allcaps['edit_private_kadence_header']     = $allcaps['edit_others_pages'];
+			$allcaps['delete_kadence_header']           = $allcaps['edit_others_pages'];
+			$allcaps['delete_others_kadence_header']    = $allcaps['edit_others_pages'];
+			$allcaps['delete_published_kadence_header'] = $allcaps['edit_others_pages'];
+			$allcaps['delete_private_kadence_header']   = $allcaps['edit_others_pages'];
+			$allcaps['publish_kadence_header']          = $allcaps['edit_others_pages'];
+			$allcaps['read_private_kadence_header']     = $allcaps['edit_others_pages'];
+		}
+		return $allcaps;
 	}
 
 	public function register_meta() {
