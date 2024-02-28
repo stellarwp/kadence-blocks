@@ -1,6 +1,6 @@
 === Gutenberg Blocks by Kadence Blocks – Page Builder Features ===
 Contributors: britner, oakesjosh, woodardmc
-Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
+Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.2
 Tested up to: 6.4
