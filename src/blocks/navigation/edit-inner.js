@@ -33,7 +33,7 @@ import {
 	Modal,
 } from '@wordpress/components';
 
-import { FormTitle, SelectForm } from './components';
+import { FormTitle, SelectForm, MenuEditor } from './components';
 
 /**
  * Internal dependencies
@@ -41,6 +41,7 @@ import { FormTitle, SelectForm } from './components';
 import classnames from 'classnames';
 import { useEntityPublish } from './hooks';
 import { DEFAULT_BLOCK, ALLOWED_BLOCKS, PRIORITIZED_INSERTER_BLOCKS } from './constants';
+
 /**
  * Regular expression matching invalid anchor characters for replacement.
  *
@@ -242,16 +243,16 @@ export function EditInner(props) {
 					<>
 						General tab
 						<>
-							<Button variant="secondary" onClick={openModal}>
-								Open Menu Editor
-							</Button>
-							{isOpen && (
-								<Modal title="Menu Editor" onRequestClose={closeModal}>
-									<></>
+							<br />
+							<br />
 
-									<Button variant="secondary" onClick={closeModal}>
-										My custom close button
-									</Button>
+							<Button variant="secondary" onClick={openModal}>
+								{__('Open Visual Editor', 'kadence-blocks')}
+							</Button>
+
+							{isOpen && (
+								<Modal title="Visual Editor" onRequestClose={closeModal} style={{ minWidth: '600px' }}>
+									<MenuEditor />
 								</Modal>
 							)}
 						</>
