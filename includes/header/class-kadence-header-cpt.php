@@ -118,6 +118,52 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'default' => '',
 				'type'    => 'string'
 			),
+			array(
+				'key'     => '_kad_header_padding',
+				'default' => array('20', '20', '20', '20'),
+				'type'    => 'array',
+				'children_type' => 'string'
+			),
+			array(
+				'key'     => '_kad_header_tabletPadding',
+				'default' => array('20', '20', '20', '20'),
+				'type'    => 'array',
+				'children_type' => 'string'
+			),
+			array(
+				'key'     => '_kad_header_mobilePadding',
+				'default' => array('20', '20', '20', '20'),
+				'type'    => 'array',
+				'children_type' => 'string'
+			),
+			array(
+				'key'     => '_kad_header_paddingUnit',
+				'default' => 'px',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_margin',
+				'default' => array('', '', '', ''),
+				'type'    => 'array',
+				'children_type' => 'string'
+			),
+			array(
+				'key'     => '_kad_header_tabletMargin',
+				'default' => array('', '', '', ''),
+				'type'    => 'array',
+				'children_type' => 'string'
+			),
+			array(
+				'key'     => '_kad_header_mobileMargin',
+				'default' => array('', '', '', ''),
+				'type'    => 'array',
+				'children_type' => 'string'
+			),
+			array(
+				'key'     => '_kad_header_marginUnit',
+				'default' => 'px',
+				'type'    => 'string'
+			),
 		);
 
 		foreach ( $register_meta as $meta ) {
