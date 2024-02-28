@@ -144,6 +144,8 @@
 			const tabWrap = currentTab.closest('.kt-tabs-wrap');
 			window.KBTabs.setActiveTab(tabWrap, tabNumber);
 
+			//If collapsed accordions, go to that tab title
+			//If using vertical tabs go to the top of the content area
 			if (
 				(window.KBTabs.isMobileSize() && tabWrap.classList.contains('kt-tabs-mobile-layout-accordion')) ||
 				(window.KBTabs.isTabletSize() && tabWrap.classList.contains('kt-tabs-tablet-layout-accordion'))
@@ -153,6 +155,8 @@
 						'.kt-tabs-content-wrap > .kt-tabs-accordion-title.kt-tabs-accordion-title-' + tabNumber
 					)
 					.scrollIntoView({ behavior: 'smooth' });
+			} else if (tabWrap.classList.contains('kt-tabs-layout-vtabs')) {
+				tabWrap.querySelector('.kt-tabs-content-wrap').scrollIntoView({ behavior: 'smooth' });
 			}
 		},
 		isMobileSize() {
