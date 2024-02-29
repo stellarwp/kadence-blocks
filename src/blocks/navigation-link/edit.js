@@ -221,6 +221,7 @@ export default function Edit(props) {
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
+	const [showSubMenus, setShowSubMenus] = useState(false);
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
@@ -274,31 +275,35 @@ export default function Edit(props) {
 	const [isLabelFieldFocused, setIsLabelFieldFocused] = useState(false);
 
 	//hasChildren is a proxy for isSubmenu
-	const { innerBlocks, isAtMaxNesting, isTopLevelLink, isParentOfSelectedBlock, hasChildren } = useSelect(
-		(select) => {
-			const {
-				getBlocks,
-				getBlockCount,
-				getBlockName,
-				getBlockRootClientId,
-				hasSelectedInnerBlock,
-				getBlockParentsByBlockName,
-			} = select(blockEditorStore);
+	const { innerBlocks, isAtMaxNesting, isSubMenuChild, isTopLevelLink, isParentOfSelectedBlock, hasChildren } =
+		useSelect(
+			(select) => {
+				const {
+					getBlocks,
+					getBlockCount,
+					getBlockName,
+					getBlockRootClientId,
+					hasSelectedInnerBlock,
+					getBlockParentsByBlockName,
+				} = select(blockEditorStore);
 
-			const rootBlockName = getBlockName(getBlockRootClientId(clientId));
+				const rootBlockName = getBlockName(getBlockRootClientId(clientId));
+				const navLinkParents = getBlockParentsByBlockName(clientId, [
+					'kadence/navigation-link',
+					'core/navigation-submenu',
+				]);
 
-			return {
-				innerBlocks: getBlocks(clientId),
-				isAtMaxNesting:
-					getBlockParentsByBlockName(clientId, ['kadence/navigation-link', 'core/navigation-submenu'])
-						.length >= maxNestingLevel,
-				isTopLevelLink: rootBlockName === 'core/navigation' || rootBlockName === 'kadence/navigation',
-				isParentOfSelectedBlock: hasSelectedInnerBlock(clientId, true),
-				hasChildren: !!getBlockCount(clientId),
-			};
-		},
-		[clientId]
-	);
+				return {
+					innerBlocks: getBlocks(clientId),
+					isAtMaxNesting: navLinkParents.length >= maxNestingLevel,
+					isSubMenuChild: navLinkParents.length > 0,
+					isTopLevelLink: rootBlockName === 'core/navigation' || rootBlockName === 'kadence/navigation',
+					isParentOfSelectedBlock: hasSelectedInnerBlock(clientId, true),
+					hasChildren: !!getBlockCount(clientId),
+				};
+			},
+			[clientId]
+		);
 
 	/**
 	 * Enable or disable the mega menu by changing the row layout and setting the attribute.
@@ -306,6 +311,7 @@ export default function Edit(props) {
 	function doMegaMenu(value) {
 		if (value) {
 			//enable
+			//TODO put any existing submenus / items into the new mega menu
 			const newMegaMenu = createBlock('kadence/rowlayout', [], []);
 			insertBlock(newMegaMenu, 0, clientId);
 			setAttributes({ isMegaMenu: true });
@@ -313,6 +319,16 @@ export default function Edit(props) {
 			//disable
 			replaceInnerBlocks(clientId, []);
 			setAttributes({ isMegaMenu: false });
+		}
+	}
+
+	/**
+	 * Add a submenu item to this nav item.
+	 */
+	function addSubMenuItem() {
+		if (!isAtMaxNesting) {
+			const newMenuItem = createBlock('kadence/navigation-link', [], []);
+			insertBlock(newMenuItem, 0, clientId);
 		}
 	}
 
@@ -406,7 +422,7 @@ export default function Edit(props) {
 
 	const blockProps = useBlockProps({
 		ref: useMergeRefs([setPopoverAnchor, listItemRef]),
-		className: classnames('wp-block-kadence-navigation-item', {
+		className: classnames('wp-block-kadence-navigation-item', 'menu-item', {
 			'is-editing': isSelected || isParentOfSelectedBlock,
 			'is-dragging-within': isDraggingWithin,
 			'has-link': !!url,
@@ -419,7 +435,10 @@ export default function Edit(props) {
 	const innerBlocksProps = useInnerBlocksProps(
 		{
 			...blockProps,
-			className: 'remove-outline', // Remove the outline from the inner blocks container.
+			className: classnames('remove-outline', {
+				'sub-menu': hasChildren,
+				'show-sub-menus': showSubMenus,
+			}),
 		},
 		{
 			defaultBlock: DEFAULT_BLOCK,
@@ -531,6 +550,16 @@ export default function Edit(props) {
 					onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
 				/>
 				<ToolbarGroup>
+					{!isAtMaxNesting && !hasChildren && (
+						<ToolbarButton
+							name="submenu"
+							icon={addSubmenu}
+							title={__('Add sub menu')}
+							onClick={() => addSubMenuItem()}
+						/>
+					)}
+				</ToolbarGroup>
+				<ToolbarGroup>
 					{isMegaMenu && isTopLevelLink && (
 						<ToolbarButton
 							name="megamenu"
@@ -564,6 +593,20 @@ export default function Edit(props) {
 				/>
 				{activeTab === 'general' && (
 					<KadencePanelBody panelName={'navigation-link-general'}>
+						{isTopLevelLink && (
+							<ToggleControl
+								label={__('Mega Menu', 'kadence-blocks')}
+								checked={isMegaMenu}
+								onChange={(value) => doMegaMenu(value)}
+							/>
+						)}
+						{isTopLevelLink && hasChildren && (
+							<ToggleControl
+								label={__('Show Sub Menus', 'kadence-blocks')}
+								checked={showSubMenus}
+								onChange={(value) => setShowSubmenus(value)}
+							/>
+						)}
 						<TextControl
 							__nextHasNoMarginBottom
 							value={label ? stripHTML(label) : ''}
@@ -613,14 +656,6 @@ export default function Edit(props) {
 							autoComplete="off"
 							help={__('The relationship of the linked URL as space-separated link types.')}
 						/>
-
-						{isTopLevelLink && (
-							<ToggleControl
-								label={__('Mega Menu', 'kadence-blocks')}
-								checked={isMegaMenu}
-								onChange={(value) => doMegaMenu(value)}
-							/>
-						)}
 					</KadencePanelBody>
 				)}
 
