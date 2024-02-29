@@ -18,6 +18,7 @@ import {
 	InspectorControlTabs,
 	SpacingVisualizer,
 	ResponsiveMeasureRangeControl,
+	ColorPicker,
 } from '@kadence/components';
 import {
 	getPreviewSize,
@@ -67,6 +68,8 @@ export function EditInner(props) {
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
+	const borderMouseOver = mouseOverVisualizer();
+	const borderRadiusMouseOver = mouseOverVisualizer();
 
 	const [padding] = useHeaderMeta('_kad_header_padding');
 	const [tabletPadding] = useHeaderMeta('_kad_header_tabletPadding');
@@ -77,6 +80,16 @@ export function EditInner(props) {
 	const [tabletMargin] = useHeaderMeta('_kad_header_tabletMargin');
 	const [mobileMargin] = useHeaderMeta('_kad_header_mobileMargin');
 	const [marginUnit] = useHeaderMeta('_kad_header_marginUnit');
+
+	const [borderColor] = useHeaderMeta('_kad_header_borderColor');
+	const [border] = useHeaderMeta('_kad_header_border');
+	const [tabletBorder] = useHeaderMeta('_kad_header_tabletBorder');
+	const [mobileBorder] = useHeaderMeta('_kad_header_mobileBorder');
+	const [borderUnit] = useHeaderMeta('_kad_header_borderUnit');
+	const [borderRadius] = useHeaderMeta('_kad_header_borderRadius');
+	const [tabletBorderRadius] = useHeaderMeta('_kad_header_tabletBorderRadius');
+	const [mobileBorderRadius] = useHeaderMeta('_kad_header_mobileBorderRadius');
+	const [borderRadiusUnit] = useHeaderMeta('_kad_header_borderRadiusUnit');
 
 	const [className] = useHeaderMeta('_kad_header_className');
 	const [anchor] = useHeaderMeta('_kad_header_anchor');
@@ -135,6 +148,56 @@ export function EditInner(props) {
 		undefined !== padding ? padding[3] : '',
 		undefined !== tabletPadding ? tabletPadding[3] : '',
 		undefined !== mobilePadding ? mobilePadding[3] : ''
+	);
+
+	const previewBorderTop = getPreviewSize(
+		previewDevice,
+		undefined !== border ? border[0] : '',
+		undefined !== tabletBorder ? tabletBorder[0] : '',
+		undefined !== mobileBorder ? mobileBorder[0] : ''
+	);
+	const previewBorderRight = getPreviewSize(
+		previewDevice,
+		undefined !== border ? border[1] : '',
+		undefined !== tabletBorder ? tabletBorder[1] : '',
+		undefined !== mobileBorder ? mobileBorder[1] : ''
+	);
+	const previewBorderBottom = getPreviewSize(
+		previewDevice,
+		undefined !== border ? border[2] : '',
+		undefined !== tabletBorder ? tabletBorder[2] : '',
+		undefined !== mobileBorder ? mobileBorder[2] : ''
+	);
+	const previewBorderLeft = getPreviewSize(
+		previewDevice,
+		undefined !== border ? border[3] : '',
+		undefined !== tabletBorder ? tabletBorder[3] : '',
+		undefined !== mobileBorder ? mobileBorder[3] : ''
+	);
+
+	const previewBorderRadiusTop = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadius ? borderRadius[0] : '',
+		undefined !== tabletBorderRadius ? tabletBorderRadius[0] : '',
+		undefined !== mobileBorderRadius ? mobileBorderRadius[0] : ''
+	);
+	const previewBorderRadiusRight = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadius ? borderRadius[1] : '',
+		undefined !== tabletBorderRadius ? tabletBorderRadius[1] : '',
+		undefined !== mobileBorderRadius ? mobileBorderRadius[1] : ''
+	);
+	const previewBorderRadiusBottom = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadius ? borderRadius[2] : '',
+		undefined !== tabletBorderRadius ? tabletBorderRadius[2] : '',
+		undefined !== mobileBorderRadius ? mobileBorderRadius[2] : ''
+	);
+	const previewBorderRadiusLeft = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadius ? borderRadius[3] : '',
+		undefined !== tabletBorderRadius ? tabletBorderRadius[3] : '',
+		undefined !== mobileBorderRadius ? mobileBorderRadius[3] : ''
 	);
 
 	const headerClasses = classnames({
@@ -205,6 +268,17 @@ export function EditInner(props) {
 					'' !== previewPaddingBottom ? getSpacingOptionOutput(previewPaddingBottom, paddingUnit) : undefined,
 				paddingLeft:
 					'' !== previewPaddingLeft ? getSpacingOptionOutput(previewPaddingLeft, paddingUnit) : undefined,
+
+				borderColor: borderColor,
+				borderTopWidth:
+					'' !== previewBorderTop ? getSpacingOptionOutput(previewBorderTop, borderUnit) : undefined,
+				borderRightWidth:
+					'' !== previewBorderRight ? getSpacingOptionOutput(previewBorderRight, borderUnit) : undefined,
+				borderBottomWidth:
+					'' !== previewBorderBottom ? getSpacingOptionOutput(previewBorderBottom, borderUnit) : undefined,
+				borderLeftWidth:
+					'' !== previewBorderLeft ? getSpacingOptionOutput(previewPaddingLeft, borderUnit) : undefined,
+				borderRadius: borderRadius.join(borderRadiusUnit + ' '),
 			},
 		},
 		{
@@ -289,7 +363,59 @@ export function EditInner(props) {
 					</>
 				)}
 
-				{activeTab === 'style' && <>Style tab</>}
+				{activeTab === 'style' && (
+					<>
+						<KadencePanelBody panelName={'kb-row-border'}>
+							<ColorPicker
+								color={borderColor}
+								onChangeComplete={(color) => setMetaAttribute(color, 'borderColor')}
+								disableAlpha
+							/>
+							<ResponsiveMeasureRangeControl
+								label={__('Border Width', 'kadence-blocks')}
+								value={border}
+								onChange={(value) => {
+									setMetaAttribute(value.map(String), 'border');
+								}}
+								onChangeTablet={(value) => {
+									setMetaAttribute(value.map(String), 'tabletBorder');
+								}}
+								onChangeMobile={(value) => {
+									setMetaAttribute(value.map(String), 'mobileBorder');
+								}}
+								min={0}
+								max={200}
+								step={1}
+								unit={borderUnit}
+								units={['px']}
+								onMouseOver={borderMouseOver.onMouseOver}
+								onMouseOut={borderMouseOver.onMouseOut}
+							/>
+							<ResponsiveMeasureRangeControl
+								label={__('Border Radius', 'kadence-blocks')}
+								value={borderRadius}
+								onChange={(value) => {
+									setMetaAttribute(value.map(String), 'border');
+								}}
+								onChangeTablet={(value) => {
+									setMetaAttribute(value.map(String), 'tabletBorderRadius');
+								}}
+								onChangeMobile={(value) => {
+									setMetaAttribute(value.map(String), 'mobileBorderRadius');
+								}}
+								min={0}
+								max={200}
+								step={1}
+								unit={borderRadiusUnit}
+								units={['px']}
+								onMouseOver={borderRadiusMouseOver.onMouseOver}
+								onMouseOut={borderRadiusMouseOver.onMouseOut}
+							/>
+						</KadencePanelBody>
+
+						<div className="kt-sidebar-settings-spacer"></div>
+					</>
+				)}
 
 				{activeTab === 'advanced' && (
 					<>

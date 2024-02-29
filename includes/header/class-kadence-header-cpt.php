@@ -190,6 +190,45 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'default' => 'px',
 				'type'    => 'string'
 			),
+			array(
+				'key'     => '_kad_header_borderColor',
+				'default' => '#eaeaea',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_border',
+				'default' => array('', '', '', ''),
+				'type'    => 'array',
+				'children_type' => 'string'
+			),
+			array(
+				'key'     => '_kad_header_borderUnit',
+				'default' => 'px',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_borderRadius',
+				'default' => array('', '', '', ''),
+				'type'    => 'array',
+				'children_type' => 'string'
+			),
+			array(
+				'key'     => '_kad_header_tabletBorderRadius',
+				'default' => array('', '', '', ''),
+				'type'    => 'array',
+				'children_type' => 'string'
+			),
+			array(
+				'key'     => '_kad_header_mobileBorderRadius',
+				'default' => array('', '', '', ''),
+				'type'    => 'array',
+				'children_type' => 'string'
+			),
+			array(
+				'key'     => '_kad_header_borderRadiusUnit',
+				'default' => 'px',
+				'type'    => 'string'
+			),
 		);
 
 		foreach ( $register_meta as $meta ) {
