@@ -10,8 +10,7 @@
 	"textdomain": "default",
 	"attributes": {
 		"uniqueID": {
-			"type": "string",
-			"default": "987654321"
+			"type": "string"
 		},
 		"label": {
 			"type": "string"
@@ -46,6 +45,70 @@
 		},
 		"isMegaMenu": {
 			"type": "boolean"
+		},
+		"padding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"tabletPadding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"mobilePadding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"paddingUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"margin": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"tabletMargin": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"mobileMargin": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"marginUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"color": {
+			"type": "string",
+			"default": ""
+		},
+		"background": {
+			"type": "string",
+			"default": ""
+		},
+		"gradient": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundType": {
+			"type": "string",
+			"default": "normal"
+		},
+		"colorHover": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundHover": {
+			"type": "string",
+			"default": ""
+		},
+		"gradientHover": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundHoverType": {
+			"type": "string",
+			"default": "normal"
 		}
 	},
 	"usesContext": [
@@ -64,27 +127,14 @@
 		"style"
 	],
 	"supports": {
-		"reusable": false,
 		"html": false,
-		"__experimentalSlashInserter": true,
-		"typography": {
-			"fontSize": true,
-			"lineHeight": true,
-			"__experimentalFontFamily": true,
-			"__experimentalFontWeight": true,
-			"__experimentalFontStyle": true,
-			"__experimentalTextTransform": true,
-			"__experimentalTextDecoration": true,
-			"__experimentalLetterSpacing": true,
-			"__experimentalDefaultControls": {
-				"fontSize": true
-			}
-		},
+		"className": true,
+		"reusable": false,
+		"anchor": true,
+		"kbMetadata": true,
 		"renaming": false,
 		"interactivity": {
 			"clientNavigation": true
 		}
-	},
-	"editorStyle": "wp-block-navigation-link-editor",
-	"style": "wp-block-navigation-link"
+	}
 }

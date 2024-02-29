@@ -295,7 +295,6 @@ export function EditInner(props) {
 						<div className="kt-sidebar-settings-spacer"></div>
 					</>
 				)}
-				{console.log(activeTab)}
 				{activeTab === 'style' && (
 					<>
 						<KadencePanelBody panelName={'kb-row-border'}>
