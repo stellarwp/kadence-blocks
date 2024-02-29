@@ -154,12 +154,12 @@ export default function NavigationLinkEdit({
 	context,
 	clientId,
 }) {
-	const { id, label, type, url, description, rel, title, kind } = attributes;
+	const { id, label, type, url, description, rel, title, kind, isMegaMenu } = attributes;
 
 	const [isInvalid, isDraft] = useIsInvalidLink(kind, type, id);
 	const { maxNestingLevel } = context;
 
-	const { replaceBlock, __unstableMarkNextChangeAsNotPersistent } = useDispatch(blockEditorStore);
+	const { insertBlock, replaceInnerBlocks, __unstableMarkNextChangeAsNotPersistent } = useDispatch(blockEditorStore);
 	const [isLinkOpen, setIsLinkOpen] = useState(false);
 	// Use internal state instead of a ref to make sure that the component
 	// re-renders when the popover's anchor updates.
@@ -173,6 +173,7 @@ export default function NavigationLinkEdit({
 	// This is a workaround to keep the focus on the label field when label filed is focused we don't render the rich text.
 	const [isLabelFieldFocused, setIsLabelFieldFocused] = useState(false);
 
+	//hasChildren is a proxy for isSubmenu
 	const { innerBlocks, isAtMaxNesting, isTopLevelLink, isParentOfSelectedBlock, hasChildren } = useSelect(
 		(select) => {
 			const {
@@ -198,15 +199,20 @@ export default function NavigationLinkEdit({
 	);
 
 	/**
-	 * Transform to submenu block.
+	 * Enable the mega menu by adding a row layout and setting the attribute.
 	 */
-	function transformToSubmenu() {
-		const newSubmenu = createBlock(
-			'core/navigation-submenu',
-			attributes,
-			innerBlocks.length > 0 ? innerBlocks : [createBlock('kadence/navigation-link')]
-		);
-		replaceBlock(clientId, newSubmenu);
+	function enableMegaMenu() {
+		const newMegaMenu = createBlock('kadence/rowlayout', [], []);
+		insertBlock(newMegaMenu, 0, clientId);
+		setAttributes({ isMegaMenu: true });
+	}
+
+	/**
+	 * Disable the mega menu by removing the row layout and setting the attribute.
+	 */
+	function disableMegaMenu() {
+		replaceInnerBlocks(clientId, []);
+		setAttributes({ isMegaMenu: false });
 	}
 
 	useEffect(() => {
@@ -219,15 +225,16 @@ export default function NavigationLinkEdit({
 		}
 	}, [url]);
 
-	useEffect(() => {
-		// If block has inner blocks, transform to Submenu.
-		if (hasChildren) {
-			// This side-effect should not create an undo level as those should
-			// only be created via user interactions.
-			__unstableMarkNextChangeAsNotPersistent();
-			transformToSubmenu();
-		}
-	}, [hasChildren]);
+	//Disabling for now, but this could be something where we automatically do some processing if the user adds a row layout manually.
+	// useEffect(() => {
+	// 	// If block has inner blocks, transform to Submenu.
+	// 	if (hasChildren) {
+	// 		// This side-effect should not create an undo level as those should
+	// 		// only be created via user interactions.
+	// 		__unstableMarkNextChangeAsNotPersistent();
+	// 		enableMegaMenu();
+	// 	}
+	// }, [hasChildren]);
 
 	/**
 	 * The hook shouldn't be necessary but due to a focus loss happening
@@ -326,6 +333,8 @@ export default function NavigationLinkEdit({
 			defaultBlock: DEFAULT_BLOCK,
 			directInsert: true,
 			renderAppender: false,
+			template: isMegaMenu ? ['kadence/rowlayout'] : [],
+			templateLock: isMegaMenu ? 'all' : false,
 		}
 	);
 
@@ -347,19 +356,20 @@ export default function NavigationLinkEdit({
 		<>
 			<BlockControls>
 				<ToolbarGroup>
-					<ToolbarButton
-						name="link"
-						icon={linkIcon}
-						title={__('Link')}
-						shortcut={displayShortcut.primary('k')}
-						onClick={() => setIsLinkOpen(true)}
-					/>
-					{!isAtMaxNesting && (
+					{isMegaMenu && (
 						<ToolbarButton
-							name="submenu"
+							name="megamenu"
 							icon={addSubmenu}
-							title={__('Add submenu')}
-							onClick={transformToSubmenu}
+							title={__('Disable mega menu')}
+							onClick={disableMegaMenu}
+						/>
+					)}
+					{!isMegaMenu && (
+						<ToolbarButton
+							name="megamenu"
+							icon={addSubmenu}
+							title={__('Add mega menu')}
+							onClick={enableMegaMenu}
 						/>
 					)}
 				</ToolbarGroup>
