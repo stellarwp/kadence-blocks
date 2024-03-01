@@ -780,7 +780,7 @@ export default function Edit(props) {
 
 				</PanelBody> */}
 			</InspectorControls>
-			<div {...blockProps}>
+			<li {...blockProps}>
 				{/* eslint-disable jsx-a11y/anchor-is-valid */}
 
 				{linkCSS}
@@ -901,8 +901,8 @@ export default function Edit(props) {
 						/>
 					)}
 				</a>
-				<div {...innerBlocksProps} />
-			</div>
+				<ul {...innerBlocksProps} />
+			</li>
 		</>
 	);
 }
