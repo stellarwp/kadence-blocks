@@ -3149,7 +3149,10 @@ function SectionEdit(props) {
 													value={borderHoverStyle}
 													tabletValue={tabletBorderHoverStyle}
 													mobileValue={mobileBorderHoverStyle}
-													onChange={(value) => setAttributes({ borderHoverStyle: value })}
+													onChange={(value) => {
+														console.log(value);
+														setAttributes({ borderHoverStyle: value });
+													}}
 													onChangeTablet={(value) =>
 														setAttributes({ tabletBorderHoverStyle: value })
 													}

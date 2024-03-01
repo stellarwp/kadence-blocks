@@ -18,7 +18,9 @@ import {
 	InspectorControlTabs,
 	SpacingVisualizer,
 	ResponsiveMeasureRangeControl,
-	ColorPicker,
+	ResponsiveMeasurementControls,
+	ResponsiveBorderControl,
+	TypographyControls,
 } from '@kadence/components';
 import {
 	getPreviewSize,
@@ -277,8 +279,21 @@ export function EditInner(props) {
 				borderBottomWidth:
 					'' !== previewBorderBottom ? getSpacingOptionOutput(previewBorderBottom, borderUnit) : undefined,
 				borderLeftWidth:
+					'' !== previewBorderRadiusLeft ? getSpacingOptionOutput(previewPaddingLeft, borderUnit) : undefined,
+				borderTopLeftRadius:
+					'' !== previewBorderRadiusTop
+						? getSpacingOptionOutput(previewBorderRadiusLeft, borderUnit)
+						: undefined,
+				borderTopRightReadius:
+					'' !== previewBorderRadiusRight
+						? getSpacingOptionOutput(previewBorderRadiusRight, borderUnit)
+						: undefined,
+				borderBottomLeftRadius:
+					'' !== previewBorderRadiusBottom
+						? getSpacingOptionOutput(previewBorderRadiusBottom, borderUnit)
+						: undefined,
+				borderBottomRightRadius:
 					'' !== previewBorderLeft ? getSpacingOptionOutput(previewPaddingLeft, borderUnit) : undefined,
-				borderRadius: borderRadius.join(borderRadiusUnit + ' '),
 			},
 		},
 		{
@@ -365,54 +380,99 @@ export function EditInner(props) {
 
 				{activeTab === 'style' && (
 					<>
-						<KadencePanelBody panelName={'kb-row-border'}>
-							<ColorPicker
-								color={borderColor}
-								onChangeComplete={(color) => setMetaAttribute(color, 'borderColor')}
-								disableAlpha
-							/>
-							<ResponsiveMeasureRangeControl
-								label={__('Border Width', 'kadence-blocks')}
+						<KadencePanelBody
+							title={__('Border Styles', 'kadence-blocks')}
+							initialOpen={false}
+							panelName={'kb-row-border'}
+						>
+							<ResponsiveBorderControl
+								label={__('Border', 'kadence-blocks')}
 								value={border}
+								tabletValue={tabletBorder}
+								mobileValue={mobileBorder}
 								onChange={(value) => {
-									setMetaAttribute(value.map(String), 'border');
+									setMetaAttribute(
+										[
+											KadenceColorOutput(value[0].top[0]),
+											KadenceColorOutput(value[0].right[0]),
+											KadenceColorOutput(value[0].bottom[0]),
+											KadenceColorOutput(value[0].left[0]),
+										],
+										'borderColor'
+									);
+									console.log(value);
+									setMetaAttribute(
+										[value[0].top[2], value[0].right[2], value[0].bottom[2], value[0].left[2]],
+										'border'
+									);
+									setMetaAttribute(value[0].unit, 'paddingUnit');
 								}}
-								onChangeTablet={(value) => {
-									setMetaAttribute(value.map(String), 'tabletBorder');
-								}}
-								onChangeMobile={(value) => {
-									setMetaAttribute(value.map(String), 'mobileBorder');
-								}}
-								min={0}
-								max={200}
-								step={1}
-								unit={borderUnit}
-								units={['px']}
-								onMouseOver={borderMouseOver.onMouseOver}
-								onMouseOut={borderMouseOver.onMouseOut}
+								onChangeTablet={(value) => setMetaAttribute(value, 'tabletBorder')}
+								onChangeMobile={(value) => setMetaAttribute(value, 'mobileBorder')}
 							/>
-							<ResponsiveMeasureRangeControl
+							<ResponsiveMeasurementControls
 								label={__('Border Radius', 'kadence-blocks')}
 								value={borderRadius}
-								onChange={(value) => {
-									setMetaAttribute(value.map(String), 'border');
-								}}
-								onChangeTablet={(value) => {
-									setMetaAttribute(value.map(String), 'tabletBorderRadius');
-								}}
-								onChangeMobile={(value) => {
-									setMetaAttribute(value.map(String), 'mobileBorderRadius');
-								}}
-								min={0}
-								max={200}
-								step={1}
+								tabletValue={tabletBorderRadius}
+								mobileValue={mobileBorderRadius}
+								onChange={(value) => setMetaAttribute(value.map(String), 'borderRadius')}
+								onChangeTablet={(value) => setMetaAttribute(value.map(String), 'tabletBorderRadius')}
+								onChangeMobile={(value) => setMetaAttribute(value.map(String), 'mobileBorderRadius')}
 								unit={borderRadiusUnit}
-								units={['px']}
-								onMouseOver={borderRadiusMouseOver.onMouseOver}
-								onMouseOut={borderRadiusMouseOver.onMouseOut}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setMetaAttribute(value, 'borderRadiusUnit')}
+								max={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 500}
+								step={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1}
+								min={0}
+								isBorderRadius={true}
+								allowEmpty={true}
 							/>
 						</KadencePanelBody>
-
+						<div className="kt-sidebar-settings-spacer"></div>
+						<KadencePanelBody
+							title={__('Typography Settings', 'kadence-blocks')}
+							initialOpen={false}
+							panelName={'kb-adv-btn-font-family'}
+						>
+							<TypographyControls
+								fontGroup={'button'}
+								fontSize={typography[0].size}
+								onFontSize={(value) => saveTypography({ size: value })}
+								fontSizeType={typography[0].sizeType}
+								onFontSizeType={(value) => saveTypography({ sizeType: value })}
+								lineHeight={typography[0].lineHeight}
+								onLineHeight={(value) => saveTypography({ lineHeight: value })}
+								lineHeightType={typography[0].lineType}
+								onLineHeightType={(value) => saveTypography({ lineType: value })}
+								reLetterSpacing={typography[0].letterSpacing}
+								onLetterSpacing={(value) => saveTypography({ letterSpacing: value })}
+								letterSpacingType={typography[0].letterType}
+								onLetterSpacingType={(value) => saveTypography({ letterType: value })}
+								textTransform={typography[0].textTransform}
+								onTextTransform={(value) => saveTypography({ textTransform: value })}
+								fontFamily={typography[0].family}
+								onFontFamily={(value) => saveTypography({ family: value })}
+								onFontChange={(select) => {
+									saveTypography({
+										family: select.value,
+										google: select.google,
+									});
+								}}
+								onFontArrayChange={(values) => saveTypography(values)}
+								googleFont={typography[0].google}
+								onGoogleFont={(value) => saveTypography({ google: value })}
+								loadGoogleFont={typography[0].loadGoogle}
+								onLoadGoogleFont={(value) => saveTypography({ loadGoogle: value })}
+								fontVariant={typography[0].variant}
+								onFontVariant={(value) => saveTypography({ variant: value })}
+								fontWeight={typography[0].weight}
+								onFontWeight={(value) => saveTypography({ weight: value })}
+								fontStyle={typography[0].style}
+								onFontStyle={(value) => saveTypography({ style: value })}
+								fontSubset={typography[0].subset}
+								onFontSubset={(value) => saveTypography({ subset: value })}
+							/>
+						</KadencePanelBody>
 						<div className="kt-sidebar-settings-spacer"></div>
 					</>
 				)}

@@ -192,14 +192,23 @@ class Kadence_Blocks_Header_CPT_Controller {
 			),
 			array(
 				'key'     => '_kad_header_borderColor',
-				'default' => '#eaeaea',
-				'type'    => 'string'
-			),
-			array(
-				'key'     => '_kad_header_border',
 				'default' => array('', '', '', ''),
 				'type'    => 'array',
 				'children_type' => 'string'
+			),
+			array(
+				'key'     => '_kad_header_border',
+				'default' => [
+					[
+						"top"  => ["", "", ""],
+						"right" => ["", "", ""],
+						"bottom" => ["", "", ""],
+						"left" => ["", "", ""],
+						"unit" => "px"
+					]
+				],
+				'type'    => 'array',
+				'children_type' => 'array'
 			),
 			array(
 				'key'     => '_kad_header_borderUnit',
