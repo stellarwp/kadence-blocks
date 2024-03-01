@@ -34,9 +34,17 @@ import {
 	InspectorAdvancedControls,
 	store as editorStore,
 } from '@wordpress/block-editor';
-import { TextControl, ToggleControl, ToolbarGroup, ExternalLink, Button, Placeholder } from '@wordpress/components';
+import {
+	TextControl,
+	ToggleControl,
+	ToolbarGroup,
+	ExternalLink,
+	Button,
+	Placeholder,
+	Modal,
+} from '@wordpress/components';
 
-import { FormTitle, SelectForm } from './components';
+import { FormTitle, SelectForm, MenuEditor } from './components';
 
 /**
  * Internal dependencies
@@ -44,6 +52,7 @@ import { FormTitle, SelectForm } from './components';
 import classnames from 'classnames';
 import { useEntityPublish } from './hooks';
 import { DEFAULT_BLOCK, ALLOWED_BLOCKS, PRIORITIZED_INSERTER_BLOCKS } from './constants';
+
 /**
  * Regular expression matching invalid anchor characters for replacement.
  *
@@ -191,6 +200,10 @@ export function EditInner(props) {
 		}
 	};
 
+	const [isOpen, setOpen] = useState(false);
+	const openModal = () => setOpen(true);
+	const closeModal = () => setOpen(false);
+
 	const innerBlocksProps = useInnerBlocksProps(
 		{
 			className: formClasses,
@@ -292,6 +305,20 @@ export function EditInner(props) {
 				{activeTab === 'general' && (
 					<>
 						General tab
+						<>
+							<br />
+							<br />
+
+							<Button variant="secondary" onClick={openModal}>
+								{__('Open Visual Editor', 'kadence-blocks')}
+							</Button>
+
+							{isOpen && (
+								<Modal title="Visual Editor" onRequestClose={closeModal} style={{ minWidth: '600px' }}>
+									<MenuEditor />
+								</Modal>
+							)}
+						</>
 						<div className="kt-sidebar-settings-spacer"></div>
 					</>
 				)}
