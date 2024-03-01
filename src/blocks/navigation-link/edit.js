@@ -16,6 +16,7 @@ import {
 	Tooltip,
 	ToolbarGroup,
 	ToggleControl,
+	SelectControl,
 } from '@wordpress/components';
 import { displayShortcut, isKeyboardEvent, ENTER } from '@wordpress/keycodes';
 import { __ } from '@wordpress/i18n';
@@ -64,6 +65,7 @@ import {
 	BackgroundTypeControl,
 	HoverToggleControl,
 	KadenceBlockDefaults,
+	RangeControl,
 } from '@kadence/components';
 
 /**
@@ -218,10 +220,29 @@ export default function Edit(props) {
 		backgroundHover,
 		gradientHover,
 		backgroundHoverType,
+		megaMenuWidth,
+		megaMenuCustomWidth,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
 	const [showSubMenus, setShowSubMenus] = useState(false);
+
+	const [isInvalid, isDraft] = useIsInvalidLink(kind, type, id);
+	const { maxNestingLevel } = context;
+
+	const { insertBlock, replaceInnerBlocks, __unstableMarkNextChangeAsNotPersistent } = useDispatch(blockEditorStore);
+	const [isLinkOpen, setIsLinkOpen] = useState(false);
+	// Use internal state instead of a ref to make sure that the component
+	// re-renders when the popover's anchor updates.
+	const [popoverAnchor, setPopoverAnchor] = useState(null);
+	const listItemRef = useRef(null);
+	const isDraggingWithin = useIsDraggingWithin(listItemRef);
+	const itemLabelPlaceholder = __('Add label…');
+	const ref = useRef();
+
+	// Change the label using inspector causes rich text to change focus on firefox.
+	// This is a workaround to keep the focus on the label field when label filed is focused we don't render the rich text.
+	const [isLabelFieldFocused, setIsLabelFieldFocused] = useState(false);
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
@@ -256,23 +277,6 @@ export default function Edit(props) {
 			addUniqueID(uniqueId, clientId);
 		}
 	}, []);
-
-	const [isInvalid, isDraft] = useIsInvalidLink(kind, type, id);
-	const { maxNestingLevel } = context;
-
-	const { insertBlock, replaceInnerBlocks, __unstableMarkNextChangeAsNotPersistent } = useDispatch(blockEditorStore);
-	const [isLinkOpen, setIsLinkOpen] = useState(false);
-	// Use internal state instead of a ref to make sure that the component
-	// re-renders when the popover's anchor updates.
-	const [popoverAnchor, setPopoverAnchor] = useState(null);
-	const listItemRef = useRef(null);
-	const isDraggingWithin = useIsDraggingWithin(listItemRef);
-	const itemLabelPlaceholder = __('Add label…');
-	const ref = useRef();
-
-	// Change the label using inspector causes rich text to change focus on firefox.
-	// This is a workaround to keep the focus on the label field when label filed is focused we don't render the rich text.
-	const [isLabelFieldFocused, setIsLabelFieldFocused] = useState(false);
 
 	//hasChildren is a proxy for isSubmenu
 	const { innerBlocks, isAtMaxNesting, isSubMenuChild, isTopLevelLink, isParentOfSelectedBlock, hasChildren } =
@@ -324,6 +328,7 @@ export default function Edit(props) {
 
 	/**
 	 * Add a submenu item to this nav item.
+	 * TODO if this is a mega menu, add the sub menu item inside the mega menu (row layout)
 	 */
 	function addSubMenuItem() {
 		if (!isAtMaxNesting) {
@@ -422,14 +427,20 @@ export default function Edit(props) {
 
 	const blockProps = useBlockProps({
 		ref: useMergeRefs([setPopoverAnchor, listItemRef]),
-		className: classnames('wp-block-kadence-navigation-item', 'menu-item', {
-			'is-editing': isSelected || isParentOfSelectedBlock,
-			'is-dragging-within': isDraggingWithin,
-			'has-link': !!url,
-			'has-child': hasChildren,
-			'menu-item--toggled-on': showSubMenus,
-			[`wp-block-kadence-navigation-link${uniqueID}`]: uniqueID,
-		}),
+		className: classnames(
+			'wp-block-kadence-navigation-item',
+			'menu-item',
+			'kadence-menu-mega-width-' + (megaMenuWidth ? megaMenuWidth : 'container'),
+			{
+				'is-editing': isSelected || isParentOfSelectedBlock,
+				'is-dragging-within': isDraggingWithin,
+				'has-link': !!url,
+				'has-child': hasChildren,
+				'menu-item--toggled-on': showSubMenus,
+				'kadence-menu-mega-enabled': isMegaMenu,
+				[`wp-block-kadence-navigation-link${uniqueID}`]: uniqueID,
+			}
+		),
 		onKeyDown,
 	});
 
@@ -561,20 +572,13 @@ export default function Edit(props) {
 					)}
 				</ToolbarGroup>
 				<ToolbarGroup>
-					{isMegaMenu && isTopLevelLink && (
+					{isTopLevelLink && (
 						<ToolbarButton
 							name="megamenu"
 							icon={addSubmenu}
-							title={__('Disable mega menu')}
-							onClick={() => doMegaMenu(false)}
-						/>
-					)}
-					{!isMegaMenu && isTopLevelLink && (
-						<ToolbarButton
-							name="megamenu"
-							icon={addSubmenu}
-							title={__('Add mega menu')}
-							onClick={() => doMegaMenu(true)}
+							title={isMegaMenu ? __('Disable mega menu') : __('Add mega menu')}
+							onClick={() => doMegaMenu(!isMegaMenu)}
+							isPressed={isMegaMenu}
 						/>
 					)}
 				</ToolbarGroup>
@@ -599,6 +603,31 @@ export default function Edit(props) {
 								label={__('Mega Menu', 'kadence-blocks')}
 								checked={isMegaMenu}
 								onChange={(value) => doMegaMenu(value)}
+							/>
+						)}
+						{isMegaMenu && (
+							<SelectControl
+								label={__('Mega Menu Width', 'kadence-blocks')}
+								value={megaMenuWidth}
+								options={[
+									{ value: 'container', label: __('Menu Container Width', 'kadence-blocks') },
+									{ value: 'content', label: __('Content', 'kadence-blocks') },
+									{ value: 'full', label: __('Full Width', 'kadence-blocks') },
+									{ value: 'custom', label: __('Custom Width', 'kadence-blocks') },
+								]}
+								onChange={(value) => setAttributes({ megaMenuWidth: value })}
+							/>
+						)}
+						{isMegaMenu && megaMenuWidth == 'custom' && (
+							<RangeControl
+								label={__('Mega Menu Custom Width', 'kadence-blocks')}
+								value={megaMenuCustomWidth}
+								onChange={(value) => setAttributes({ megaMenuCustomWidth: value })}
+								min={120}
+								max={800}
+								units={['px']}
+								unit={'px'}
+								showUnit={true}
 							/>
 						)}
 						{isTopLevelLink && hasChildren && (

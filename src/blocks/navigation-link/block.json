@@ -109,6 +109,14 @@
 		"backgroundHoverType": {
 			"type": "string",
 			"default": "normal"
+		},
+		"megaMenuWidth": {
+			"type": "string",
+			"default": ""
+		},
+		"megaMenuCustomWidth": {
+			"type": "number",
+			"default": 400
 		}
 	},
 	"usesContext": [
