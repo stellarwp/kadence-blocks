@@ -40,7 +40,7 @@
 		"stellarwp/telemetry": "^2.3",
 		"stellarwp/uplink": "dev-bugfix/multisite-token-logic",
 		"stellarwp/container-contract": "^1.0",
-		"stellarwp/prophecy-image-downloader": "^1.1",
+		"stellarwp/prophecy-image-downloader": "^1.5",
 		"stellarwp/prophecy-storage": "^1.1",
 		"symfony/translation-contracts": "^2.5"
 	},
