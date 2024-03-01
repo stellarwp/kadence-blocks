@@ -1,1 +1,771 @@
 // Navigation block and menu item styles.
+/**
+ * Editor only CSS.
+ */
+/**
+ * Custom Properties
+ */
+
+$global-font-color: #333;
+$global-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell,
+	"Helvetica Neue", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+$global-font-size: 20;
+$global-font-line-height: 1.4;
+
+$color-gray-100: #f7fafc;
+$color-gray-200: #edf2f7;
+$color-gray-300: #e2e8f0;
+$color-gray-400: #cbd5e0;
+$color-gray-500: #a0aec0;
+$color-gray-600: #718096;
+$color-gray-700: #4a5568;
+$color-gray-800: #2d3748;
+$color-gray-900: #1a202c;
+
+$content-width: 1000px;
+$dropdown-symbol-width: 0.7em;
+
+$color-quote-border: #000;
+$color-quote-citation: #6c7781;
+
+$green: #7ad03a !default;
+$red: #a00 !default;
+$orange: #ffba00 !default;
+$blue: #2ea2cc !default;
+
+$secondary: desaturate(lighten(#3182ce, 40%), 21%) !default; // Secondary buttons
+$secondarytext: desaturate(darken($secondary, 60%), 21%) !default; // Text on secondary color bg
+
+$font-size-small: calc(16 / 20 * 1rem);
+$font-size-regular: calc(20 / 16 * 1rem);
+$font-size-large: calc(36 / 20 * 1rem);
+$font-size-larger: calc(48 / 20 * 1rem);
+
+$landscape-phone-minus-query: 540px;
+$landscape-phone-plus-query: 576px;
+$phone-minus-query: 719px;
+$before-tablet-plus-query: 720px;
+$before-tablet-query: 767px;
+$tablet-plus-query: 768px;
+$tablet-minus-query: 1024px;
+$laptop-plus-query: 1025px;
+$desktop-plus-query: 1200px;
+
+// Social Colors.
+$facebook: #3b5998;
+$facebook_group: #3b5998;
+$twitter: #1da1f2;
+$google: #db4437;
+$dribbble: #ea4c89;
+$youtube: #ff3333;
+$linkedin: #4875b4;
+$flickr: #fe0883;
+$tumblr: #32506d;
+$vimeo: #4ebbff;
+$blogger: #ff6600;
+$rss: #ff6200;
+$picasa: #05a136;
+$github: #4078c0;
+$deviantart: #43534d;
+$yahoo: #f52815;
+$pinterest: #c92228;
+$instagram: #405de6;
+$stumbleupon: #f74425;
+$xing: #006567;
+$soundcloud: #ff7700;
+$yelp: #c41200;
+$snapchat: #fffc00;
+$vk: #45668e;
+$viadeo: #f4982b;
+$periscope: #3aa4c6;
+$behance: #1769ff;
+$reddit: #ff4500;
+$medium: #181818;
+$wordpress: #00749c;
+$patreon: #052d49;
+$email: #181818;
+$phone: #181818;
+$whatsapp: #28cf54;
+$google_reviews: #db4437;
+$telegram: #0088cc;
+$trip_advisor: #00af87;
+$imdb: #f5c518;
+$anchor: #5000b9;
+
+/*--------------------------------------------------------------
+ ## Dropdown navigation for header Menus
+ --------------------------------------------------------------*/
+.navigation ul ul.sub-menu,
+.navigation ul ul.submenu {
+	display: none;
+	position: absolute;
+	top: 100%;
+	flex-direction: column;
+	background: #fff;
+	margin-left: 0;
+	box-shadow: 0 2px 13px rgba(0, 0, 0, 0.1);
+	z-index: 1000;
+}
+.navigation ul ul.quadmenu-row {
+	flex-direction: row;
+}
+body:not(.hide-focus-outline) .navigation li.menu-item--has-toggle > a:focus .dropdown-nav-toggle {
+	opacity: 0.2;
+}
+// Hide divider for last item.
+.navigation ul ul.sub-menu > li:last-child,
+.navigation ul ul.submenu > li:last-child {
+	border-bottom: 0;
+}
+.navigation ul ul.sub-menu.sub-menu-edge {
+	left: auto;
+	right: 0;
+}
+.navigation ul ul ul.sub-menu.sub-menu-edge {
+	left: auto;
+	right: 100%;
+}
+// Handle Reveal Animation
+.navigation[class*="navigation-dropdown-animation-fade"] {
+	ul ul.sub-menu,
+	ul ul.submenu {
+		opacity: 0;
+		visibility: hidden;
+		transform: translate3d(0, 0, 0);
+		transition: all 0.2s ease;
+		display: block;
+		clip: rect(1px, 1px, 1px, 1px);
+		height: 1px;
+		overflow: hidden;
+	}
+	ul li:hover > ul,
+	ul li.menu-item--toggled-on > ul,
+	ul li:not(.menu-item--has-toggle):focus > ul {
+		opacity: 1;
+		visibility: visible;
+		transform: translate3d(0, 0, 0);
+		clip: auto;
+		height: auto;
+		overflow: visible;
+	}
+}
+.navigation.navigation-dropdown-animation-fade-up {
+	ul ul.sub-menu,
+	ul ul.submenu {
+		transform: translate3d(0, 10px, 0);
+	}
+}
+.navigation.navigation-dropdown-animation-fade-down {
+	ul ul.sub-menu,
+	ul ul.submenu {
+		transform: translate3d(0, -10px, 0);
+	}
+}
+/*--------------------------------------------------------------
+ ## Submenu Toggles for Header Menus
+ --------------------------------------------------------------*/
+.wp-site-blocks .nav--toggle-sub .dropdown-nav-special-toggle {
+	position: absolute !important;
+	overflow: hidden;
+	padding: 0 !important;
+	margin: 0 !important;
+	margin-right: -0.1em !important;
+	border: 0 !important;
+	width: 0.9em;
+	top: 0;
+	bottom: 0;
+	height: auto;
+	border-radius: 0;
+	box-shadow: none !important;
+	background: transparent !important;
+	display: block;
+	left: auto;
+	right: calc(1.4em / 2);
+	pointer-events: none;
+}
+.wp-site-blocks .nav--toggle-sub .sub-menu .dropdown-nav-special-toggle {
+	width: 2.6em;
+	margin: 0 !important;
+	right: 0;
+}
+.nav--toggle-sub .dropdown-nav-special-toggle:focus {
+	z-index: 10;
+}
+.nav--toggle-sub .dropdown-nav-toggle {
+	display: block;
+	background: transparent;
+	position: absolute;
+	right: 0;
+	top: 50%;
+	width: 0.7em;
+	height: 0.7em;
+	font-size: inherit;
+	width: 0.9em;
+	height: 0.9em;
+	font-size: 0.9em;
+	display: inline-flex;
+	line-height: inherit;
+	margin: 0;
+	padding: 0;
+	border: none;
+	border-radius: 0;
+	transform: translateY(-50%);
+	overflow: visible;
+	transition: opacity 0.2s ease;
+}
+.nav--toggle-sub ul ul .dropdown-nav-toggle {
+	right: 0.2em;
+}
+
+.nav--toggle-sub ul ul .dropdown-nav-toggle .kadence-svg-iconset {
+	transform: rotate(-90deg);
+}
+.nav--toggle-sub li.menu-item-has-children {
+	position: relative;
+}
+.nav-drop-title-wrap {
+	position: relative;
+	padding-right: 1em;
+	display: block;
+}
+/*
+ * If the dropdown toggle is active with JS, then
+ * we'll take care of showing the submenu with JS.
+ */
+.nav--toggle-sub li:hover > ul,
+.nav--toggle-sub li.menu-item--toggled-on > ul,
+.nav--toggle-sub li:not(.menu-item--has-toggle):focus > ul {
+	display: block;
+}
+
+/*
+ * "focus-within" is an alternative to focus class for
+ * supporting browsers (all but IE/Edge) for no-JS context
+ * (e.g. AMP) See https://caniuse.com/#feat=css-focus-within
+ *
+ * This selector needs to stay separated, otherwise submenus
+ * will not be displayed with IE/Edge.
+ */
+.nav--toggle-sub li:not(.menu-item--has-toggle):focus-within > ul {
+	display: block;
+}
+// This makes the dropdowns work a little better on a touch device.
+@media (hover: none) {
+	.wp-site-blocks .nav--toggle-sub .menu-item--has-toggle:not(.menu-item--toggled-on) .dropdown-nav-special-toggle {
+		left: 0;
+		right: 0 !important;
+		margin-right: 0 !important;
+		width: 100%;
+		pointer-events: all;
+	}
+	.wp-site-blocks .nav--toggle-sub .menu-item--has-toggle:not(.menu-item--toggled-on) > a {
+		pointer-events: none;
+	}
+}
+.rtl .nav--toggle-sub .dropdown-nav-toggle {
+	right: auto;
+	left: 0;
+}
+.rtl .primary-menu-container > ul > li.menu-item .dropdown-nav-special-toggle {
+	right: auto;
+	left: calc(1.4em / 2);
+}
+.rtl .wp-site-blocks .nav--toggle-sub .sub-menu .dropdown-nav-special-toggle {
+	left: 0;
+	right: auto;
+}
+.rtl .nav--toggle-sub ul ul .dropdown-nav-toggle .kadence-svg-iconset {
+	transform: rotate(-270deg);
+}
+.rtl .navigation ul ul ul.sub-menu,
+.rtl .navigation ul ul ul.submenu {
+	right: 100%;
+	left: auto;
+}
+.rtl .nav-drop-title-wrap {
+	padding-left: 1em;
+	padding-right: 0;
+}
+.wp-site-blocks .nav--toggle-sub .kadence-menu-mega-enabled .sub-menu .dropdown-nav-special-toggle {
+	display: none;
+}
+/*--------------------------------------------------------------
+ ## Header navigation top item styling
+ --------------------------------------------------------------*/
+.navigation-style-underline-fullheight,
+.navigation-style-fullheight {
+	height: 100%;
+	align-items: center;
+	.header-menu-container {
+		height: 100%;
+		align-items: center;
+		> ul {
+			height: 100%;
+			align-items: center;
+			> li {
+				display: flex;
+				height: 100%;
+				align-items: center;
+				> a {
+					display: flex;
+					height: 100%;
+					align-items: center;
+				}
+			}
+		}
+	}
+}
+.navigation[class*="header-navigation-style-underline"] {
+	.header-menu-container {
+		> ul > li {
+			> a {
+				position: relative;
+				&:after {
+					content: "";
+					width: 100%;
+					position: absolute;
+					bottom: 0px;
+					height: 2px;
+					right: 50%;
+					background: currentColor;
+					transform: scale(0, 0) translate(-50%, 0);
+					transition: transform 0.2s ease-in-out, color 0s ease-in-out;
+				}
+				&:hover:after {
+					transform: scale(1, 1) translate(50%, 0);
+				}
+			}
+			&.current-menu-item,
+			&.current-page-item {
+				> a:after {
+					transform: scale(1, 1) translate(50%, 0);
+				}
+			}
+		}
+	}
+}
+
+/*--------------------------------------------------------------
+ ## Header navigation menus
+ --------------------------------------------------------------*/
+.navigation,
+.header-menu-container {
+	display: flex;
+}
+.navigation li.menu-item > a {
+	display: block;
+	width: 100%;
+	text-decoration: none;
+	color: var(--global-palette4);
+	transition: all 0.2s ease-in-out;
+	transform: translate3d(0, 0, 0);
+}
+.navigation li.menu-item > a:hover,
+.navigation li.menu-item > a:focus {
+	color: var(--global-palette-highlight);
+}
+.navigation ul.sub-menu,
+.navigation ul.submenu {
+	display: block;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.navigation ul li.menu-item > a {
+	padding: 0.6em 0.5em;
+}
+.navigation ul ul li.menu-item > a {
+	padding: 1em;
+}
+.navigation ul ul li.menu-item > a {
+	width: 200px;
+}
+.navigation ul ul ul.sub-menu,
+.navigation ul ul ul.submenu {
+	top: 0;
+	left: 100%;
+	right: auto;
+	min-height: 100%;
+}
+.navigation .menu {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+/*--------------------------------------------------------------
+ ## Trigger
+ --------------------------------------------------------------*/
+.menu-toggle-open {
+	display: flex;
+	background: transparent;
+	align-items: center;
+	box-shadow: none;
+	.menu-toggle-label {
+		padding-right: 5px;
+	}
+	.menu-toggle-icon {
+		display: flex;
+	}
+	.menu-toggle-label:empty {
+		padding-right: 0px;
+	}
+	&:hover,
+	&:focus {
+		border-color: currentColor;
+		background: transparent;
+		box-shadow: none;
+	}
+	&.menu-toggle-style-default {
+		border: 0;
+	}
+}
+.wp-site-blocks .menu-toggle-open {
+	box-shadow: none;
+}
+/*--------------------------------------------------------------
+ ## Mobile Menu
+ --------------------------------------------------------------*/
+.mobile-navigation {
+	width: 100%;
+}
+.mobile-navigation a {
+	display: block;
+	width: 100%;
+	text-decoration: none;
+	padding: 0.6em 0.5em;
+}
+.mobile-navigation ul {
+	display: block;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.drawer-nav-drop-wrap {
+	display: flex;
+	position: relative;
+	a {
+		color: inherit;
+	}
+	.drawer-sub-toggle {
+		background: transparent;
+		color: inherit;
+		padding: 0.5em 0.7em;
+		display: flex;
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+		line-height: normal;
+	}
+	.drawer-sub-toggle[aria-expanded="true"] svg {
+		transform: rotate(180deg);
+	}
+}
+.mobile-navigation.drawer-navigation-parent-toggle-true .drawer-nav-drop-wrap .drawer-sub-toggle {
+	position: absolute;
+	left: 0;
+	z-index: 10;
+	top: 0;
+	bottom: 0;
+	justify-content: flex-end;
+	width: 100%;
+}
+// .mobile-navigation ul li .drawer-nav-drop-wrap a[href="#"] + button {
+// 	position: absolute;
+// 	z-index: 10;
+// 	left:0;
+// 	right:0;
+// 	top:0;
+// 	bottom:0;
+// 	width: 100%;
+//     justify-content: flex-end;
+// }
+.mobile-navigation ul ul {
+	padding-left: 1em;
+	transition: all 0.2s ease-in-out;
+}
+.mobile-navigation ul.has-collapse-sub-nav ul.sub-menu {
+	display: none;
+}
+body[class*="amp-mode-"] .mobile-navigation ul ul {
+	display: block;
+}
+.mobile-navigation ul ul ul ul ul ul {
+	padding-left: 0;
+}
+.mobile-navigation ul.has-collapse-sub-nav .sub-menu.show-drawer {
+	display: block;
+}
+/*--------------------------------------------------------------
+ ## Drawer
+ --------------------------------------------------------------*/
+.popup-drawer {
+	position: fixed;
+	display: none;
+	top: 0;
+	bottom: 0;
+	left: -99999rem;
+	right: 99999rem;
+	transition: opacity 0.25s ease-in, left 0s 0.25s, right 0s 0.25s;
+	z-index: 100000;
+	.drawer-overlay {
+		background-color: rgba(0, 0, 0, 0.4);
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		opacity: 0;
+		transition: opacity 0.2s ease-in-out;
+	}
+	.drawer-inner {
+		width: 100%;
+		transform: translateX(100%);
+		max-width: 90%;
+		right: 0;
+		top: 0;
+		overflow: auto;
+		background: #090c10;
+		color: #fff;
+		bottom: 0;
+		opacity: 0;
+		position: fixed;
+		box-shadow: 0 0 2rem 0 rgba(0, 0, 0, 0.1);
+		display: flex;
+		flex-direction: column;
+		transition: transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1), opacity 0.25s cubic-bezier(0.77, 0.2, 0.05, 1);
+	}
+	.drawer-header {
+		padding: 0 1.5em;
+		display: flex;
+		justify-content: flex-end;
+		// Fixes safair bug.
+		min-height: calc(1.2em + 24px);
+		.drawer-toggle {
+			background: transparent;
+			border: 0;
+			font-size: 24px;
+			line-height: 1;
+			padding: 0.6em 0.15em;
+			color: inherit;
+			display: flex;
+			box-shadow: none;
+			border-radius: 0;
+			&:hover {
+				box-shadow: none;
+			}
+		}
+	}
+	.drawer-content {
+		padding: 0 1.5em 1.5em;
+	}
+}
+.popup-drawer-layout-sidepanel.popup-drawer-side-left {
+	.drawer-inner {
+		transform: translateX(-100%);
+		right: auto;
+		left: 0;
+	}
+}
+@media screen and (max-width: $tablet-minus-query) {
+	.showing-popup-drawer-from-right.animate-body-popup #inner-wrap,
+	.showing-popup-drawer-from-right.animate-body-popup #colophon,
+	.showing-popup-drawer-from-right.animate-body-popup .site-header-row {
+		transform: translateX(-200px);
+	}
+	.showing-popup-drawer-from-left.animate-body-popup #inner-wrap,
+	.showing-popup-drawer-from-left.animate-body-popup #colophon,
+	.showing-popup-drawer-from-left.animate-body-popup .site-header-row {
+		transform: translateX(200px);
+	}
+	.animate-body-popup #inner-wrap,
+	.animate-body-popup .site-header-row,
+	.animate-body-popup #colophon {
+		transform: none;
+		transition: transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1);
+	}
+}
+.popup-drawer-animation-scale.popup-drawer-layout-fullwidth .drawer-inner {
+	transform: scale(0);
+	transform-origin: top right;
+	transition: transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1), opacity 0.3s cubic-bezier(0.77, 0.2, 0.05, 1);
+}
+.popup-drawer-animation-scale.popup-drawer-layout-fullwidth.popup-drawer-side-left .drawer-inner {
+	transform-origin: top left;
+}
+.popup-drawer-animation-scale.popup-drawer-layout-fullwidth.active .drawer-inner {
+	transform: scale(1);
+}
+#mobile-drawer.popup-drawer-animation-slice.popup-drawer-layout-fullwidth .drawer-overlay,
+#mobile-drawer.popup-drawer-animation-slice.popup-drawer-layout-fullwidth .drawer-inner {
+	background: transparent;
+}
+
+.popup-drawer .drawer-header .drawer-toggle {
+	width: 1em;
+	position: relative;
+	height: 1em;
+	box-sizing: content-box;
+	font-size: 24px;
+}
+.drawer-toggle .toggle-close-bar {
+	width: 0.75em;
+	height: 0.08em;
+	background: currentColor;
+	transform-origin: center center;
+	position: absolute;
+	margin-top: -0.04em;
+	opacity: 0;
+	border-radius: 0.08em;
+	left: 50%;
+	margin-left: -0.375em;
+	top: 50%;
+	transform: rotate(45deg) translateX(-50%);
+	transition: transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1), opacity 0.3s cubic-bezier(0.77, 0.2, 0.05, 1);
+	transition-delay: 0.2s;
+}
+.drawer-toggle .toggle-close-bar:last-child {
+	transform: rotate(-45deg) translateX(50%);
+}
+.popup-drawer.active {
+	.drawer-toggle .toggle-close-bar {
+		transform: rotate(45deg);
+		opacity: 1;
+	}
+	.drawer-toggle .toggle-close-bar:last-child {
+		transform: rotate(-45deg);
+		opacity: 1;
+	}
+}
+.popup-drawer .drawer-content.content-valign-middle {
+	min-height: calc(100% - (1.2em + 24px));
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	padding-bottom: calc(1.2em + 24px);
+	max-height: calc(100% - (1.2em + 24px));
+	overflow: auto;
+}
+.popup-drawer .drawer-content.content-valign-bottom {
+	min-height: calc(100% - (1.2em + 24px));
+	display: flex;
+	justify-content: flex-end;
+	flex-direction: column;
+	padding-bottom: calc(1.2em + 24px);
+	max-height: calc(100% - (1.2em + 24px));
+	overflow: auto;
+	.site-header-item-mobile-navigation {
+		display: block;
+		overflow: auto;
+		max-height: calc(100% - (1.2em + 24px));
+	}
+}
+.popup-drawer .drawer-content.content-align-center {
+	text-align: center;
+}
+.popup-drawer .drawer-content.content-align-center .site-header-item {
+	justify-content: center;
+}
+.popup-drawer .drawer-content.content-align-right {
+	text-align: right;
+}
+.popup-drawer .drawer-content.content-align-right .site-header-item {
+	justify-content: flex-end;
+}
+.popup-drawer-layout-fullwidth.popup-drawer-animation-slice {
+	.drawer-inner {
+		transform: none;
+	}
+	.pop-slice-background {
+		transform-origin: center;
+		transform: none;
+		position: absolute;
+		display: flex;
+		flex-flow: column;
+		align-items: stretch;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: -1;
+	}
+	.pop-portion-bg {
+		flex: 1 1 100%;
+		background: rgba(9, 12, 16, 0.97);
+		transform: translateX(-100%);
+		transition: transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1);
+	}
+	.pop-portion-bg:nth-child(odd) {
+		transform: translateX(100%);
+	}
+	.drawer-content {
+		transform: translateY(20px);
+		opacity: 0;
+		transition: all 0.4s ease;
+	}
+}
+.popup-drawer-layout-fullwidth.popup-drawer-animation-slice.active {
+	.pop-portion-bg {
+		transform: translateX(0);
+	}
+	.drawer-content {
+		transform: translateY(0px);
+		opacity: 1;
+		transition: all 0.4s ease;
+		transition-delay: 0.2s;
+	}
+}
+
+@media screen and (max-width: $tablet-minus-query) {
+	.popup-drawer-layout-sidepanel.popup-mobile-drawer-side-right {
+		.drawer-inner {
+			transform: translateX(100%);
+			right: 0;
+			left: auto;
+		}
+	}
+	.popup-drawer-layout-sidepanel.popup-mobile-drawer-side-left {
+		.drawer-inner {
+			transform: translateX(-100%);
+			right: auto;
+			left: 0;
+		}
+	}
+}
+body.admin-bar .popup-drawer {
+	top: 46px;
+	.drawer-inner {
+		top: 46px;
+	}
+}
+@media screen and (min-width: 783px) {
+	body.admin-bar .popup-drawer {
+		top: 32px;
+		.drawer-inner {
+			top: 32px;
+		}
+	}
+}
+.popup-drawer.show-drawer {
+	display: block;
+}
+.popup-drawer.active {
+	left: 0;
+	opacity: 1;
+	right: 0;
+	transition: opacity 0.25s ease-out;
+	.drawer-inner {
+		opacity: 1;
+		transform: translateX(0%);
+	}
+	.drawer-overlay {
+		opacity: 1;
+		cursor: pointer;
+	}
+}
+body[class*="showing-popup-drawer-"] {
+	overflow: hidden;
+}

@@ -152,7 +152,7 @@ export function EditInner(props) {
 		undefined !== mobilePadding ? mobilePadding[3] : ''
 	);
 
-	const formClasses = classnames({
+	const navClasses = classnames('menu', {
 		'kb-navigation': true,
 		[`kb-navigation-${id}`]: true,
 		[`kb-navigation${uniqueID}`]: uniqueID,
@@ -206,7 +206,7 @@ export function EditInner(props) {
 
 	const innerBlocksProps = useInnerBlocksProps(
 		{
-			className: formClasses,
+			className: navClasses,
 			style: {
 				marginTop: '' !== previewMarginTop ? getSpacingOptionOutput(previewMarginTop, marginUnit) : undefined,
 				marginRight:
@@ -260,20 +260,20 @@ export function EditInner(props) {
 					icon={formBlockIcon}
 				>
 					<p style={{ width: '100%', marginBottom: '10px' }}>
-						{__('Advanced forms can not be edited within the widgets screen.', 'kadence-blocks')}
+						{__('Advanced Navs can not be edited within the widgets screen.', 'kadence-blocks')}
 					</p>
-					<Button href={editPostLink} variant="primary" className="kb-form-edit-link">
-						{__('Edit Form', 'kadence-blocks')}
+					<Button href={editPostLink} variant="primary" className="kb-navigation-edit-link">
+						{__('Edit Navigation', 'kadence-blocks')}
 					</Button>
 				</Placeholder>
 				<InspectorControls>
 					<KadencePanelBody
-						panelName={'kb-advanced-form-selected-switch'}
-						title={__('Selected Form', 'kadence-blocks')}
+						panelName={'kb-advanced-navigation-selected-switch'}
+						title={__('Selected Navigation', 'kadence-blocks')}
 					>
 						<SelectForm
 							postType="kadence_navigation"
-							label={__('Selected Form', 'kadence-blocks')}
+							label={__('Selected Navigation', 'kadence-blocks')}
 							hideLabelFromVision={true}
 							onChange={(nextId) => {
 								setAttributes({ id: parseInt(nextId) });
@@ -436,8 +436,11 @@ export function EditInner(props) {
 					help={__('Separate multiple classes with spaces.')}
 				/>
 			</InspectorAdvancedControls>
-
-			<div {...innerBlocksProps} />
+			<nav className="navigation navigation-dropdown-animation-fade-none">
+				<div className="menu-container">
+					<ul {...innerBlocksProps} />
+				</div>
+			</nav>
 			{/*<SpacingVisualizer*/}
 			{/*	style={ {*/}
 			{/*		marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),*/}

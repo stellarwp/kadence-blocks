@@ -427,6 +427,7 @@ export default function Edit(props) {
 			'is-dragging-within': isDraggingWithin,
 			'has-link': !!url,
 			'has-child': hasChildren,
+			'menu-item--toggled-on': showSubMenus,
 			[`wp-block-kadence-navigation-link${uniqueID}`]: uniqueID,
 		}),
 		onKeyDown,
@@ -604,7 +605,7 @@ export default function Edit(props) {
 							<ToggleControl
 								label={__('Show Sub Menus', 'kadence-blocks')}
 								checked={showSubMenus}
-								onChange={(value) => setShowSubmenus(value)}
+								onChange={(value) => setShowSubMenus(value)}
 							/>
 						)}
 						<TextControl
