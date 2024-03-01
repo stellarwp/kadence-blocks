@@ -39,8 +39,7 @@ export function Edit(props) {
 	const { id, uniqueID } = attributes;
 
 	const blockClasses = classnames({
-		'wp-block-kadence-advanced-form': true,
-		[`wp-block-kadence-advanced-form${uniqueID}`]: uniqueID,
+		[`wp-block-kadence-navigation${uniqueID}`]: uniqueID,
 	});
 	const blockProps = useBlockProps({
 		className: blockClasses,
@@ -136,12 +135,12 @@ export function Edit(props) {
 					</Placeholder>
 					<InspectorControls>
 						<KadencePanelBody
-							panelName={'kb-advanced-form-selected-switch'}
-							title={__('Selected Form', 'kadence-blocks')}
+							panelName={'kb-navigation-selected-switch'}
+							title={__('Selected Navigation', 'kadence-blocks')}
 						>
 							<SelectForm
 								postType="kadence_navigation"
-								label={__('Selected Form', 'kadence-blocks')}
+								label={__('Selected Navigation', 'kadence-blocks')}
 								hideLabelFromVision={true}
 								onChange={(nextId) => {
 									setAttributes({ id: parseInt(nextId) });
@@ -165,11 +164,11 @@ export function Edit(props) {
 					<InspectorControls>
 						<KadencePanelBody
 							panelName={'kb-advanced-form-selected-switch'}
-							title={__('Selected Form', 'kadence-blocks')}
+							title={__('Selected Navigation', 'kadence-blocks')}
 						>
 							<SelectForm
 								postType="kadence_navigation"
-								label={__('Selected Form', 'kadence-blocks')}
+								label={__('Selected Navigation', 'kadence-blocks')}
 								hideLabelFromVision={true}
 								onChange={(nextId) => {
 									setAttributes({ id: parseInt(nextId) });
