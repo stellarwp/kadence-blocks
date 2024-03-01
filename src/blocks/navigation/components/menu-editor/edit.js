@@ -3,8 +3,7 @@ import { TextControl, Button } from '@wordpress/components';
 import { useEntityBlockEditor } from '@wordpress/core-data';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { get } from 'lodash';
-import { createBlock } from '@wordpress/blocks';
-import { serialize } from '@wordpress/blocks';
+import { createBlock, serialize } from '@wordpress/blocks';
 
 function NavigationItem({ thisBlock, allBlocks, index, updateLocalBlocks, maxIndex }) {
 	const [isEditing, setIsEditing] = useState(false);
