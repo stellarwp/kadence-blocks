@@ -27,47 +27,47 @@ export const API_ROUTE_GET_SEARCH_QUERY = '/kb-design-library/v1/get_search_quer
 export const CONTENT_TONE = [
 	{
 		value: 'NEUTRAL',
-		label: __( 'Neutral', 'kadence-blocks' ),
+		label: __('Neutral', 'kadence-blocks'),
 	},
 	{
 		value: 'PROFESSIONAL',
-		label: __( 'Professional', 'kadence-blocks' ),
+		label: __('Professional', 'kadence-blocks'),
 	},
 	{
 		value: 'FRIENDLY',
-		label: __( 'Friendly', 'kadence-blocks' ),
+		label: __('Friendly', 'kadence-blocks'),
 	},
 	{
 		value: 'INFORMATIVE',
-		label: __( 'Informative', 'kadence-blocks' ),
+		label: __('Informative', 'kadence-blocks'),
 	},
 	{
 		value: 'ENGAGING',
-		label: __( 'Engaging', 'kadence-blocks' ),
+		label: __('Engaging', 'kadence-blocks'),
 	},
 	{
 		value: 'TRUSTWORTHY',
-		label: __( 'Trustworthy', 'kadence-blocks' ),
+		label: __('Trustworthy', 'kadence-blocks'),
 	},
 	{
 		value: 'CONVERSATIONAL',
-		label: __( 'Conversational', 'kadence-blocks' ),
+		label: __('Conversational', 'kadence-blocks'),
 	},
 	{
 		value: 'PERSUASIVE',
-		label: __( 'Persuasive', 'kadence-blocks' ),
+		label: __('Persuasive', 'kadence-blocks'),
 	},
 	{
 		value: 'UPBEAT',
-		label: __( 'Upbeat', 'kadence-blocks' ),
+		label: __('Upbeat', 'kadence-blocks'),
 	},
 	{
 		value: 'FUNNY',
-		label: __( 'Funny', 'kadence-blocks' ),
+		label: __('Funny', 'kadence-blocks'),
 	},
 	{
 		value: 'INSPIRATIONAL',
-		label: __( 'Inspirational', 'kadence-blocks' ),
+		label: __('Inspirational', 'kadence-blocks'),
 	},
 ];
 
@@ -100,132 +100,132 @@ export const ENTITY_TYPE_ORGANIZATION = 'ORGANIZATION';
 export const ENTITY_TYPE = [
 	{
 		value: ENTITY_TYPE_COMPANY,
-		label: __( 'A Company', 'kadence-blocks' ),
+		label: __('A Company', 'kadence-blocks'),
 	},
 	{
 		value: ENTITY_TYPE_INDIVIDUAL,
-		label: __( 'An Individual', 'kadence-blocks' ),
+		label: __('An Individual', 'kadence-blocks'),
 	},
 	{
 		value: ENTITY_TYPE_ORGANIZATION,
-		label: __( 'An Organization', 'kadence-blocks' ),
+		label: __('An Organization', 'kadence-blocks'),
 	},
 ];
 export const LANG_TYPE = [
 	{
 		value: 'da-DK',
-		label: __( 'Danish (Denmark)', 'kadence-starter-templates' ),
+		label: __('Danish (Denmark)', 'kadence-starter-templates'),
 	},
 	{
 		value: 'nl-BE',
-		label: __( 'Dutch (Belgium)', 'kadence-starter-templates' ),
+		label: __('Dutch (Belgium)', 'kadence-starter-templates'),
 	},
 	{
 		value: 'nl-N',
-		label: __( 'Dutch (Netherlands)', 'kadence-starter-templates' ),
+		label: __('Dutch (Netherlands)', 'kadence-starter-templates'),
 	},
 	{
 		value: 'en-AU',
-		label: __( 'English (Australia)', 'kadence-starter-templates' ),
+		label: __('English (Australia)', 'kadence-starter-templates'),
 	},
 	{
 		value: 'en-CA',
-		label: __( 'English (Canada)', 'kadence-starter-templates' ),
+		label: __('English (Canada)', 'kadence-starter-templates'),
 	},
 	{
 		value: 'en-IN',
-		label: __( 'English (India)', 'kadence-starter-templates' ),
+		label: __('English (India)', 'kadence-starter-templates'),
 	},
 	{
 		value: 'en-NZ',
-		label: __( 'English (New Zealand)', 'kadence-starter-templates' ),
+		label: __('English (New Zealand)', 'kadence-starter-templates'),
 	},
 	{
 		value: 'en-GB',
-		label: __( 'English (UK)', 'kadence-starter-templates' ),
+		label: __('English (UK)', 'kadence-starter-templates'),
 	},
 	{
 		value: 'en-US',
-		label: __( 'English (US)', 'kadence-starter-templates' ),
+		label: __('English (US)', 'kadence-starter-templates'),
 	},
 	{
 		value: 'fr-BE',
-		label: __( 'French (Belgium)', 'kadence-starter-templates' ),
+		label: __('French (Belgium)', 'kadence-starter-templates'),
 	},
 	{
 		value: 'fr-CA',
-		label: __( 'French (Canada)', 'kadence-starter-templates' ),
+		label: __('French (Canada)', 'kadence-starter-templates'),
 	},
 	{
 		value: 'fr-FR',
-		label: __( 'French (France)', 'kadence-starter-templates' ),
+		label: __('French (France)', 'kadence-starter-templates'),
 	},
 	{
 		value: 'de-AT',
-		label: __( 'German (Austria)', 'kadence-starter-templates' ),
+		label: __('German (Austria)', 'kadence-starter-templates'),
 	},
 	{
 		value: 'de-BE',
-		label: __( 'German (Belgium)', 'kadence-starter-templates' ),
+		label: __('German (Belgium)', 'kadence-starter-templates'),
 	},
 	{
 		value: 'de-DE',
-		label: __( 'German (Germany)', 'kadence-starter-templates' ),
+		label: __('German (Germany)', 'kadence-starter-templates'),
 	},
 	{
 		value: 'de-CH',
-		label: __( 'German (Switzerland)', 'kadence-starter-templates' ),
+		label: __('German (Switzerland)', 'kadence-starter-templates'),
 	},
 	{
 		value: 'it-IT',
-		label: __( 'Italian (Italy)', 'kadence-starter-templates' ),
+		label: __('Italian (Italy)', 'kadence-starter-templates'),
 	},
 	{
 		value: 'pt-BR',
-		label: __( 'Portuguese (Brazil)', 'kadence-starter-templates' ),
+		label: __('Portuguese (Brazil)', 'kadence-starter-templates'),
 	},
 	{
 		value: 'pt-PT',
-		label: __( 'Portuguese (Portugal)', 'kadence-starter-templates' ),
+		label: __('Portuguese (Portugal)', 'kadence-starter-templates'),
 	},
 	{
 		value: 'es-AR',
-		label: __( 'Spanish (Argentina)', 'kadence-starter-templates' ),
+		label: __('Spanish (Argentina)', 'kadence-starter-templates'),
 	},
 	{
 		value: 'es-CO',
-		label: __( 'Spanish (Colombia)', 'kadence-starter-templates' ),
+		label: __('Spanish (Colombia)', 'kadence-starter-templates'),
 	},
 	{
 		value: 'es-419',
-		label: __( 'Spanish (Latin America)', 'kadence-starter-templates' ),
+		label: __('Spanish (Latin America)', 'kadence-starter-templates'),
 	},
 	{
 		value: 'es-MX',
-		label: __( 'Spanish (Mexico)', 'kadence-starter-templates' ),
+		label: __('Spanish (Mexico)', 'kadence-starter-templates'),
 	},
 	{
 		value: 'es-ES',
-		label: __( 'Spanish (Spain)', 'kadence-starter-templates' ),
+		label: __('Spanish (Spain)', 'kadence-starter-templates'),
 	},
 	{
 		value: 'sv-SE',
-		label: __( 'Swedish (Sweden)', 'kadence-starter-templates' ),
+		label: __('Swedish (Sweden)', 'kadence-starter-templates'),
 	},
 ];
 
 export const ENTITY_TO_NAME = {
 	COMPANY: {
-		label: __( 'Company Name', 'kadence-blocks' ),
-		placeholder: __( 'Your Company', 'kadence-blocks' ),
+		label: __('Company Name', 'kadence-blocks'),
+		placeholder: __('Your Company', 'kadence-blocks'),
 	},
 	INDIVIDUAL: {
-		label: __( 'Name', 'kadence-blocks' ),
-		placeholder: __( 'Your Name', 'kadence-blocks' ),
+		label: __('Name', 'kadence-blocks'),
+		placeholder: __('Your Name', 'kadence-blocks'),
 	},
 	ORGANIZATION: {
-		label: __( 'Organization Name', 'kadence-blocks' ),
-		placeholder: __( 'Your Organization', 'kadence-blocks' ),
+		label: __('Organization Name', 'kadence-blocks'),
+		placeholder: __('Your Organization', 'kadence-blocks'),
 	},
 };
 
@@ -236,21 +236,21 @@ export const LOCATION_ONLINE_ONLY = 'Online Only';
 export const LOCATION_TYPES = [
 	{
 		icon: store,
-		text: __( 'Business Address', 'kadence-blocks' ),
+		text: __('Business Address', 'kadence-blocks'),
 		value: LOCATION_BUSINESS_ADDRESS,
-		help: __( 'E.g.: 1234 Street #1, Chicago, IL 60076, USA', 'kadence-blocks' ),
-		placeholder: __( 'Street Adress, City, State, Zipcode, Country', 'kadence-blocks' ),
+		help: __('E.g.: 1234 Street #1, Chicago, IL 60076, USA', 'kadence-blocks'),
+		placeholder: __('Street Adress, City, State, Zipcode, Country', 'kadence-blocks'),
 	},
 	{
 		icon: mapMarker,
-		text: __( 'Service Area', 'kadence-blocks' ),
+		text: __('Service Area', 'kadence-blocks'),
 		value: LOCATION_SERVICE_AREA,
-		help: __( 'E.g.: Chicago, USA', 'kadence-blocks' ),
-		placeholder: __( 'District, City, State, Zipcode, Country', 'kadence-blocks' ),
+		help: __('E.g.: Chicago, USA', 'kadence-blocks'),
+		placeholder: __('District, City, State, Zipcode, Country', 'kadence-blocks'),
 	},
 	{
 		icon: desktop,
-		text: __( 'Online Only', 'kadence-blocks' ),
+		text: __('Online Only', 'kadence-blocks'),
 		value: LOCATION_ONLINE_ONLY,
 		help: '',
 		placeholder: '',
@@ -262,29 +262,23 @@ export const MISSION_STATEMENT_GOAL = 300;
 export const MISSION_STATEMENT_STATUS = {
 	initial: {
 		color: '#757575',
-		message: __( 'The more detail you add, the better.', 'kadence-blocks' ),
+		message: __('The more detail you add, the better.', 'kadence-blocks'),
 	},
 	weak: {
 		color: '#DF3416',
-		message: __( 'For better, more accurate copy enter a bit more content.', 'kadence-blocks' ),
+		message: __('For better, more accurate copy enter a bit more content.', 'kadence-blocks'),
 	},
 	medium: {
 		color: '#B35F00',
-		message: __(
-			'This is a great start. Try adding a bit more information to your description.',
-			'kadence-blocks'
-		),
+		message: __('This is a great start. Try adding a bit more information to your description.', 'kadence-blocks'),
 	},
 	strong: {
 		color: '#1B8F6D',
-		message: __(
-			'Excellent work! Want to add more? Keep going! More info means better content.',
-			'kadence-blocks'
-		),
+		message: __('Excellent work! Want to add more? Keep going! More info means better content.', 'kadence-blocks'),
 	},
 	enough: {
 		color: '#1B8F6D',
-		message: __( 'Excellent work! You have added enough information.', 'kadence-blocks' ),
+		message: __('Excellent work! You have added enough information.', 'kadence-blocks'),
 	},
 	less: {
 		color: '#B35F00',
@@ -295,11 +289,11 @@ export const MISSION_STATEMENT_STATUS = {
 	},
 	muchLess: {
 		color: '#DF3416',
-		message: __( "You've added too much information. Remove some to move forward.", 'kadence-blocks' ),
+		message: __("You've added too much information. Remove some to move forward.", 'kadence-blocks'),
 	},
 };
 
-export const INDUSTRY_BACKGROUNDS = [ SpaBg, BusinessBg, TaxesBg, EducationBg ];
+export const INDUSTRY_BACKGROUNDS = [SpaBg, BusinessBg, TaxesBg, EducationBg];
 
 export const THOUGHT_STARTERS = {
 	INDIVIDUAL: [
