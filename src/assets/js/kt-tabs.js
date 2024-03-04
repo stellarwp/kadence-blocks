@@ -246,4 +246,6 @@
 		// The DOM has already been loaded.
 		window.KBTabs.init();
 	}
+
+	document.addEventListener('kb-query-loaded', window.KBTabs.init);
 })();
