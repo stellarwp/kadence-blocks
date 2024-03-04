@@ -319,6 +319,7 @@ export default function Edit(props) {
 			const newMegaMenu = createBlock('kadence/rowlayout', [], []);
 			insertBlock(newMegaMenu, 0, clientId);
 			setAttributes({ isMegaMenu: true });
+			setShowSubMenus(true);
 		} else {
 			//disable
 			replaceInnerBlocks(clientId, []);
