@@ -22,6 +22,7 @@ import {
 	ResponsiveBorderControl,
 	TypographyControls,
 	PopColorControl,
+	ColorGroup,
 	BackgroundControl as KadenceBackgroundControl,
 } from '@kadence/components';
 import {
@@ -120,7 +121,11 @@ export function EditInner(props) {
 	const [bgImgSize] = useHeaderMeta('_kad_header_bgImgSize');
 	const [bgImgRepeat] = useHeaderMeta('_kad_header_bgImgRepeat');
 	const [bgImgAttachment] = useHeaderMeta('_kad_header_bgImgAttachment');
-	const [bgInline] = useHeaderMeta('_kad_header_bgInline');
+
+	// Text color options
+	const [textColor] = useHeaderMeta('_kad_header_textColor');
+	const [linkColor] = useHeaderMeta('_kad_header_linkColor');
+	const [linkHoverColor] = useHeaderMeta('_kad_header_linkHoverColor');
 
 	const [className] = useHeaderMeta('_kad_header_className');
 	const [anchor] = useHeaderMeta('_kad_header_anchor');
@@ -521,13 +526,37 @@ export function EditInner(props) {
 								onFontSubset={(value) => setMetaAttribute(value, 'fontSubset')}
 							/>
 						</KadencePanelBody>
+						<KadencePanelBody
+							title={__('Text Color Settings', 'kadence-blocks')}
+							initialOpen={false}
+							panelName={'kb-header-text-color'}
+						>
+							<ColorGroup>
+								<PopColorControl
+									label={__('Text Color', 'kadence-blocks')}
+									value={textColor ? textColor : ''}
+									default={''}
+									onChange={(value) => setMetaAttribute(value, 'textColor')}
+								/>
+								<PopColorControl
+									label={__('Link Color', 'kadence-blocks')}
+									value={linkColor ? linkColor : ''}
+									default={''}
+									onChange={(value) => setMetaAttribute(value, 'linkColor')}
+									swatchLabel2={__('Hover Color', 'kadence-blocks')}
+									value2={linkHoverColor ? linkHoverColor : ''}
+									default2={''}
+									onChange2={(value) => setMetaAttribute(value, 'linkHoverColor')}
+								/>
+							</ColorGroup>
+						</KadencePanelBody>
 						<div className="kt-sidebar-settings-spacer"></div>
 					</>
 				)}
 
 				{activeTab === 'advanced' && (
 					<>
-						<KadencePanelBody panelName={'kb-row-padding'}>
+						<KadencePanelBody panelName={'kb-header-padding'}>
 							<ResponsiveMeasureRangeControl
 								label={__('Padding', 'kadence-blocks')}
 								value={arrayStringToInt(padding)}

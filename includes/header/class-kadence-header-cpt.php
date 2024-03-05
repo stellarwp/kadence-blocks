@@ -419,6 +419,21 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'default' => '',
 				'type'    => 'string'
 			),
+			array(
+				'key'     => '_kad_header_textColor',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_linkColor',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_linkHoverColor',
+				'default' => '',
+				'type'    => 'string'
+			),
 		);
 
 		foreach ( $register_meta as $meta ) {
