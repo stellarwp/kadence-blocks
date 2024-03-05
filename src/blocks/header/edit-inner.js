@@ -544,7 +544,7 @@ export function EditInner(props) {
 						<KadencePanelBody
 							title={__('Border Settings', 'kadence-blocks')}
 							initialOpen={false}
-							panelName={'kb-row-border'}
+							panelName={'kb-header-border'}
 						>
 							<ResponsiveBorderControl
 								label={__('Border', 'kadence-blocks')}
@@ -562,7 +562,7 @@ export function EditInner(props) {
 						<KadencePanelBody
 							title={__('Typography Settings', 'kadence-blocks')}
 							initialOpen={false}
-							panelName={'kb-adv-btn-font-family'}
+							panelName={'kb-header-font-family'}
 						>
 							<TypographyControls
 								fontGroup={'header'}
