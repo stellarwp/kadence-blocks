@@ -133,6 +133,90 @@ class Kadence_Blocks_Header_CPT_Controller {
 	}
 
 	public function register_meta() {
+		register_post_meta(
+			'kadence_header',
+			'_kad_form_headerBorder',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'object',
+				'default'       => array(
+					'top'    => array( '', '', '' ),
+					'right'  => array( '', '', '' ),
+					'bottom' => array( '', '', '' ),
+					'left'   => array( '', '', '' ),
+					'unit'   => 'px'
+				),
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'object',
+						'properties' => array(
+							'top'    => array( 'type' => 'array' ),
+							'right'  => array( 'type' => 'array' ),
+							'bottom' => array( 'type' => 'array' ),
+							'left'   => array( 'type' => 'array' ),
+							'unit'   => array( 'type' => 'string' ),
+						),
+					),
+				),
+			)
+		);
+		register_post_meta(
+			'kadence_header',
+			'_kad_form_headerTabletBorder',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'object',
+				'default'       => array(
+					'top'    => array( '', '', '' ),
+					'right'  => array( '', '', '' ),
+					'bottom' => array( '', '', '' ),
+					'left'   => array( '', '', '' ),
+					'unit'   => 'px'
+				),
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'object',
+						'properties' => array(
+							'top'    => array( 'type' => 'array' ),
+							'right'  => array( 'type' => 'array' ),
+							'bottom' => array( 'type' => 'array' ),
+							'left'   => array( 'type' => 'array' ),
+							'unit'   => array( 'type' => 'string' ),
+						),
+					),
+				),
+			)
+		);
+		register_post_meta(
+			'kadence_header',
+			'_kad_form_headerMobileBorder',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'object',
+				'default'       => array(
+					'top'    => array( '', '', '' ),
+					'right'  => array( '', '', '' ),
+					'bottom' => array( '', '', '' ),
+					'left'   => array( '', '', '' ),
+					'unit'   => 'px'
+				),
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'object',
+						'properties' => array(
+							'top'    => array( 'type' => 'array' ),
+							'right'  => array( 'type' => 'array' ),
+							'bottom' => array( 'type' => 'array' ),
+							'left'   => array( 'type' => 'array' ),
+							'unit'   => array( 'type' => 'string' ),
+						),
+					),
+				),
+			)
+		);
 		$register_meta = array(
 			array(
 				'key'     => '_kad_header_anchor',
@@ -198,17 +282,9 @@ class Kadence_Blocks_Header_CPT_Controller {
 			),
 			array(
 				'key'     => '_kad_header_border',
-				'default' => [
-					[
-						"top"  => ["", "", ""],
-						"right" => ["", "", ""],
-						"bottom" => ["", "", ""],
-						"left" => ["", "", ""],
-						"unit" => "px"
-					]
-				],
+				'default' => array('', '', '', ''),
 				'type'    => 'array',
-				'children_type' => 'array'
+				'children_type' => 'string'
 			),
 			array(
 				'key'     => '_kad_header_borderUnit',
@@ -305,6 +381,41 @@ class Kadence_Blocks_Header_CPT_Controller {
 			),
 			array(
 				'key'     => '_kad_header_fontSubset',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_bgColor',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_bgImg',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_bgImgID',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_bgImgPosition',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_bgImgSize',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_bgImgRepeat',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_bgImgAttachment',
 				'default' => '',
 				'type'    => 'string'
 			),

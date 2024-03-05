@@ -112,11 +112,11 @@ export default function ResponsiveBorderControl( {
 		}
 
 	   //if the mobile or tablet units are the same as desktop, unset them so they now inherit / follow desktop.
-	   if ( mobileValue && isEqual( value?.[0]?.unit, mobileValue?.[0]?.unit ) ) {
+	   if ( undefined !== value?.[0]?.unit && mobileValue && isEqual( value?.[0]?.unit, mobileValue?.[0]?.unit ) ) {
 		   mobileValue[0].unit = '';
 		   onChangeMobile( mobileValue );
 	   }
-	   if ( tabletValue && isEqual( value?.[0]?.unit, tabletValue?.[0]?.unit ) ) {
+	   if ( undefined !== value?.[0]?.unit && tabletValue && isEqual( value?.[0]?.unit, tabletValue?.[0]?.unit ) ) {
 		   tabletValue[0].unit = '';
 		   onChangeTablet( tabletValue );
 	   }

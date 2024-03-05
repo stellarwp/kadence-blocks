@@ -21,6 +21,8 @@ import {
 	ResponsiveMeasurementControls,
 	ResponsiveBorderControl,
 	TypographyControls,
+	PopColorControl,
+	BackgroundControl as KadenceBackgroundControl,
 } from '@kadence/components';
 import {
 	getPreviewSize,
@@ -70,8 +72,6 @@ export function EditInner(props) {
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
-	const borderMouseOver = mouseOverVisualizer();
-	const borderRadiusMouseOver = mouseOverVisualizer();
 
 	const [padding] = useHeaderMeta('_kad_header_padding');
 	const [tabletPadding] = useHeaderMeta('_kad_header_tabletPadding');
@@ -85,6 +85,9 @@ export function EditInner(props) {
 
 	const [borderColor] = useHeaderMeta('_kad_header_borderColor');
 	const [border] = useHeaderMeta('_kad_header_border');
+	const [headerBorder] = useHeaderMeta('_kad_header_headerBorder');
+	const [headerMobileBorder] = useHeaderMeta('_kad_header_headerMobileBorder');
+	const [headerTabletBorder] = useHeaderMeta('_kad_header_headerTabletBorder');
 	const [tabletBorder] = useHeaderMeta('_kad_header_tabletBorder');
 	const [mobileBorder] = useHeaderMeta('_kad_header_mobileBorder');
 	const [borderUnit] = useHeaderMeta('_kad_header_borderUnit');
@@ -94,7 +97,6 @@ export function EditInner(props) {
 	const [borderRadiusUnit] = useHeaderMeta('_kad_header_borderRadiusUnit');
 
 	// Typography options
-
 	const [fontSize] = useHeaderMeta('_kad_header_fontSize');
 	const [fontSizeType] = useHeaderMeta('_kad_header_fontSizeType');
 	const [lineHeight] = useHeaderMeta('_kad_header_lineHeight');
@@ -109,6 +111,16 @@ export function EditInner(props) {
 	const [fontWeight] = useHeaderMeta('_kad_header_fontWeight');
 	const [fontStyle] = useHeaderMeta('_kad_header_fontStyle');
 	const [fontSubset] = useHeaderMeta('_kad_header_fontSubset');
+
+	//Background Options
+	const [bgColor] = useHeaderMeta('_kad_header_bgColor');
+	const [bgImg] = useHeaderMeta('_kad_header_bgImg');
+	const [bgImgID] = useHeaderMeta('_kad_header_bgImgID');
+	const [bgImgPosition] = useHeaderMeta('_kad_header_bgImgPosition');
+	const [bgImgSize] = useHeaderMeta('_kad_header_bgImgSize');
+	const [bgImgRepeat] = useHeaderMeta('_kad_header_bgImgRepeat');
+	const [bgImgAttachment] = useHeaderMeta('_kad_header_bgImgAttachment');
+	const [bgInline] = useHeaderMeta('_kad_header_bgInline');
 
 	const [className] = useHeaderMeta('_kad_header_className');
 	const [anchor] = useHeaderMeta('_kad_header_anchor');
@@ -301,7 +313,7 @@ export function EditInner(props) {
 					'' !== previewBorderRadiusTop
 						? getSpacingOptionOutput(previewBorderRadiusLeft, borderUnit)
 						: undefined,
-				borderTopRightReadius:
+				borderTopRightRadius:
 					'' !== previewBorderRadiusRight
 						? getSpacingOptionOutput(previewBorderRadiusRight, borderUnit)
 						: undefined,
@@ -398,51 +410,73 @@ export function EditInner(props) {
 				{activeTab === 'style' && (
 					<>
 						<KadencePanelBody
-							title={__('Border Styles', 'kadence-blocks')}
+							title={__('Background Settings', 'kadence-blocks')}
+							initialOpen={true}
+							panelName={'kb-header-bg-settings'}
+						>
+							<PopColorControl
+								label={__('Background Color', 'kadence-blocks')}
+								value={bgColor ? bgColor : ''}
+								default={''}
+								onChange={(value) => {
+									console.log(value);
+									setMetaAttribute(value, 'bgColor');
+								}}
+							/>
+							<KadenceBackgroundControl
+								label={__('Background Image', 'kadence-blocks')}
+								hasImage={bgImg}
+								imageURL={bgImg}
+								imageID={bgImgID}
+								imagePosition={bgImgPosition ? bgImgPosition : 'center center'}
+								imageSize={bgImgSize ? bgImgSize : 'cover'}
+								imageRepeat={bgImgRepeat ? bgImgRepeat : 'no-repeat'}
+								imageAttachment={bgImgAttachment ? bgImgAttachment : 'scroll'}
+								imageAttachmentParallax={true}
+								onRemoveImage={() => {
+									setMetaAttribute(null, 'bgImgID');
+									setMetaAttribute(null, 'bgImg');
+								}}
+								onSaveImage={(img) => {
+									setMetaAttribute(img.id, 'bgImgID');
+									setMetaAttribute(img.url, 'bgImg');
+								}}
+								onSaveURL={(newURL) => {
+									if (newURL !== bgImg) {
+										setMetaAttribute(undefined, 'bgImgID');
+										setMetaAttribute(newURL, 'bgImg');
+									}
+								}}
+								onSavePosition={(value) => setMetaAttribute(value, 'bgImgPosition')}
+								onSaveSize={(value) => setMetaAttribute(value, 'bgImgSize')}
+								onSaveRepeat={(value) => setMetaAttribute(value, 'bgImgRepeat')}
+								onSaveAttachment={(value) => setMetaAttribute(value, 'bgImgAttachment')}
+								disableMediaButtons={bgImg}
+								dynamicAttribute="bgImg"
+								isSelected={isSelected}
+								attributes={attributes}
+								setAttributes={setAttributes}
+								name={'kadence/header'}
+								clientId={clientId}
+								//context={context}
+							/>
+						</KadencePanelBody>
+						<KadencePanelBody
+							title={__('Border Settings', 'kadence-blocks')}
 							initialOpen={false}
 							panelName={'kb-row-border'}
 						>
 							<ResponsiveBorderControl
 								label={__('Border', 'kadence-blocks')}
-								value={border}
-								tabletValue={tabletBorder}
-								mobileValue={mobileBorder}
+								value={[headerBorder]}
+								tabletValue={[headerTabletBorder]}
+								mobileValue={[headerMobileBorder]}
 								onChange={(value) => {
-									setMetaAttribute(
-										[
-											KadenceColorOutput(value[0].top[0]),
-											KadenceColorOutput(value[0].right[0]),
-											KadenceColorOutput(value[0].bottom[0]),
-											KadenceColorOutput(value[0].left[0]),
-										],
-										'borderColor'
-									);
 									console.log(value);
-									setMetaAttribute(
-										[value[0].top[2], value[0].right[2], value[0].bottom[2], value[0].left[2]],
-										'border'
-									);
-									setMetaAttribute(value[0].unit, 'paddingUnit');
+									//setMetaAttribute(value[0], 'headerBorder')
 								}}
-								onChangeTablet={(value) => setMetaAttribute(value, 'tabletBorder')}
-								onChangeMobile={(value) => setMetaAttribute(value, 'mobileBorder')}
-							/>
-							<ResponsiveMeasurementControls
-								label={__('Border Radius', 'kadence-blocks')}
-								value={borderRadius}
-								tabletValue={tabletBorderRadius}
-								mobileValue={mobileBorderRadius}
-								onChange={(value) => setMetaAttribute(value.map(String), 'borderRadius')}
-								onChangeTablet={(value) => setMetaAttribute(value.map(String), 'tabletBorderRadius')}
-								onChangeMobile={(value) => setMetaAttribute(value.map(String), 'mobileBorderRadius')}
-								unit={borderRadiusUnit}
-								units={['px', 'em', 'rem', '%']}
-								onUnit={(value) => setMetaAttribute(value, 'borderRadiusUnit')}
-								max={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 500}
-								step={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1}
-								min={0}
-								isBorderRadius={true}
-								allowEmpty={true}
+								onChangeTablet={(value) => setMetaAttribute(value[0], 'headerTabletBorder')}
+								onChangeMobile={(value) => setMetaAttribute(value[0], 'headerMobileBorder')}
 							/>
 						</KadencePanelBody>
 						<KadencePanelBody
@@ -451,7 +485,7 @@ export function EditInner(props) {
 							panelName={'kb-adv-btn-font-family'}
 						>
 							<TypographyControls
-								fontGroup={'button'}
+								fontGroup={'header'}
 								fontSize={fontSize}
 								onFontSize={(value) => setMetaAttribute(value, 'fontSize')}
 								fontSizeType={fontSizeType}
@@ -473,10 +507,10 @@ export function EditInner(props) {
 									setMetaAttribute(select.google, 'googleFont');
 								}}
 								onFontArrayChange={(values) => setMetaAttribute(values)}
-								googleFont={googleFont}
-								onGoogleFont={(value) => setMetaAttribute(value, 'googleFont')}
-								loadGoogleFont={loadGoogle}
-								onLoadGoogleFont={(value) => setMetaAttribute(value, 'loadGoogle')}
+								//googleFont={googleFont}
+								//onGoogleFont={(value) => setMetaAttribute(value, 'googleFont')}
+								//loadGoogleFont={loadGoogle}
+								//onLoadGoogleFont={(value) => setMetaAttribute(value, 'loadGoogle')}
 								fontVariant={fontVariant}
 								onFontVariant={(value) => setMetaAttribute(value, 'fontVariant')}
 								fontWeight={fontWeight}
