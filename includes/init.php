@@ -288,7 +288,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'termEndpoint'   => '/kbp/v1/term-select',
 			'taxonomiesEndpoint' => '/kbp/v1/taxonomies-select',
 			'postTypes'      => kadence_blocks_get_post_types(),
-			'postTypesQueryable' => kadence_blocks_get_post_types( array( 'publicly_queryable' => true ) ),
+			'postTypesSearchable' => kadence_blocks_get_post_types( array( 'exclude_from_search' => false ) ),
 			'taxonomies'     => array(),
 			'g_fonts'        => file_exists( $gfonts_path ) ? include $gfonts_path : array(),
 			'g_font_names'   => file_exists( $gfont_names_path ) ? include $gfont_names_path : array(),
