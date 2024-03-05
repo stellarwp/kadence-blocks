@@ -238,6 +238,76 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'default' => 'px',
 				'type'    => 'string'
 			),
+			array(
+				'key'     => '_kad_header_fontSize',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_fontSizeType',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_lineHeight',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_lineHeightType',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_letterSpacing',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_letterSpacingType',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_textTransform',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_fontFamily',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_googleFont',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_loadGoogle',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_fontVariant',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_fontWeight',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_fontStyle',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_fontSubset',
+				'default' => '',
+				'type'    => 'string'
+			),
 		);
 
 		foreach ( $register_meta as $meta ) {

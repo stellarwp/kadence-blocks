@@ -93,6 +93,23 @@ export function EditInner(props) {
 	const [mobileBorderRadius] = useHeaderMeta('_kad_header_mobileBorderRadius');
 	const [borderRadiusUnit] = useHeaderMeta('_kad_header_borderRadiusUnit');
 
+	// Typography options
+
+	const [fontSize] = useHeaderMeta('_kad_header_fontSize');
+	const [fontSizeType] = useHeaderMeta('_kad_header_fontSizeType');
+	const [lineHeight] = useHeaderMeta('_kad_header_lineHeight');
+	const [lineHeightType] = useHeaderMeta('_kad_header_lineHeightType');
+	const [letterSpacing] = useHeaderMeta('_kad_header_letterSpacing');
+	const [letterSpacingType] = useHeaderMeta('_kad_header_letterSpacingType');
+	const [textTransform] = useHeaderMeta('_kad_header_textTransform');
+	const [fontFamily] = useHeaderMeta('_kad_header_fontFamily');
+	const [googleFont] = useHeaderMeta('_kad_header_googleFont');
+	const [loadGoogle] = useHeaderMeta('_kad_header_loadGoogle');
+	const [fontVariant] = useHeaderMeta('_kad_header_fontVariant');
+	const [fontWeight] = useHeaderMeta('_kad_header_fontWeight');
+	const [fontStyle] = useHeaderMeta('_kad_header_fontStyle');
+	const [fontSubset] = useHeaderMeta('_kad_header_fontSubset');
+
 	const [className] = useHeaderMeta('_kad_header_className');
 	const [anchor] = useHeaderMeta('_kad_header_anchor');
 
@@ -428,7 +445,6 @@ export function EditInner(props) {
 								allowEmpty={true}
 							/>
 						</KadencePanelBody>
-						<div className="kt-sidebar-settings-spacer"></div>
 						<KadencePanelBody
 							title={__('Typography Settings', 'kadence-blocks')}
 							initialOpen={false}
@@ -436,41 +452,39 @@ export function EditInner(props) {
 						>
 							<TypographyControls
 								fontGroup={'button'}
-								fontSize={typography[0].size}
-								onFontSize={(value) => saveTypography({ size: value })}
-								fontSizeType={typography[0].sizeType}
-								onFontSizeType={(value) => saveTypography({ sizeType: value })}
-								lineHeight={typography[0].lineHeight}
-								onLineHeight={(value) => saveTypography({ lineHeight: value })}
-								lineHeightType={typography[0].lineType}
-								onLineHeightType={(value) => saveTypography({ lineType: value })}
-								reLetterSpacing={typography[0].letterSpacing}
-								onLetterSpacing={(value) => saveTypography({ letterSpacing: value })}
-								letterSpacingType={typography[0].letterType}
-								onLetterSpacingType={(value) => saveTypography({ letterType: value })}
-								textTransform={typography[0].textTransform}
-								onTextTransform={(value) => saveTypography({ textTransform: value })}
-								fontFamily={typography[0].family}
-								onFontFamily={(value) => saveTypography({ family: value })}
+								fontSize={fontSize}
+								onFontSize={(value) => setMetaAttribute(value, 'fontSize')}
+								fontSizeType={fontSizeType}
+								onFontSizeType={(value) => setMetaAttribute(value, 'fontSizeType')}
+								lineHeight={lineHeight}
+								onLineHeight={(value) => setMetaAttribute(value, 'lineHeight')}
+								lineHeightType={lineHeightType}
+								onLineHeightType={(value) => setMetaAttribute(value, 'lineHeightType')}
+								reLetterSpacing={letterSpacing}
+								onLetterSpacing={(value) => setMetaAttribute(value, 'letterSpacing')}
+								letterSpacingType={letterSpacingType}
+								onLetterSpacingType={(value) => setMetaAttribute(value, 'letterSpacingType')}
+								textTransform={textTransform}
+								onTextTransform={(value) => setMetaAttribute(value, 'textTransform')}
+								fontFamily={fontFamily}
+								onFontFamily={(value) => setMetaAttribute(value, 'fontFamily')}
 								onFontChange={(select) => {
-									saveTypography({
-										family: select.value,
-										google: select.google,
-									});
+									setMetaAttribute(select.value, 'fontFamily');
+									setMetaAttribute(select.google, 'googleFont');
 								}}
-								onFontArrayChange={(values) => saveTypography(values)}
-								googleFont={typography[0].google}
-								onGoogleFont={(value) => saveTypography({ google: value })}
-								loadGoogleFont={typography[0].loadGoogle}
-								onLoadGoogleFont={(value) => saveTypography({ loadGoogle: value })}
-								fontVariant={typography[0].variant}
-								onFontVariant={(value) => saveTypography({ variant: value })}
-								fontWeight={typography[0].weight}
-								onFontWeight={(value) => saveTypography({ weight: value })}
-								fontStyle={typography[0].style}
-								onFontStyle={(value) => saveTypography({ style: value })}
-								fontSubset={typography[0].subset}
-								onFontSubset={(value) => saveTypography({ subset: value })}
+								onFontArrayChange={(values) => setMetaAttribute(values)}
+								googleFont={googleFont}
+								onGoogleFont={(value) => setMetaAttribute(value, 'googleFont')}
+								loadGoogleFont={loadGoogle}
+								onLoadGoogleFont={(value) => setMetaAttribute(value, 'loadGoogle')}
+								fontVariant={fontVariant}
+								onFontVariant={(value) => setMetaAttribute(value, 'fontVariant')}
+								fontWeight={fontWeight}
+								onFontWeight={(value) => setMetaAttribute(value, 'fontWeight')}
+								fontStyle={fontStyle}
+								onFontStyle={(value) => setMetaAttribute(value, 'fontStyle')}
+								fontSubset={fontSubset}
+								onFontSubset={(value) => setMetaAttribute(value, 'fontSubset')}
 							/>
 						</KadencePanelBody>
 						<div className="kt-sidebar-settings-spacer"></div>
