@@ -97,10 +97,14 @@ developers of this plugin.
 
 == Changelog ==
 
-= 3.2.25 =
-Release Date: February TBD 2024
+= 3.2.26 =
+Release Date: March TBD 2024
 * Fix: Styling issue with some infobox title headings.
 * Fix: Tabs block inside advanced query card.
+
+= 3.2.25 =
+Release Date: February 27th 2024
+* Fix: Styling issue with some infobox title headings.
 
 = 3.2.24 =
 Release Date: February 26th 2024
