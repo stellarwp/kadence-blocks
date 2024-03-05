@@ -188,27 +188,99 @@ export function EditInner(props) {
 
 	const previewBorderTop = getPreviewSize(
 		previewDevice,
-		undefined !== border ? border[0] : '',
-		undefined !== tabletBorder ? tabletBorder[0] : '',
-		undefined !== mobileBorder ? mobileBorder[0] : ''
+		undefined !== headerBorder?.top ? getSpacingOptionOutput(headerBorder.top[2], headerBorder.unit) : '',
+		undefined !== headerTabletBorder?.top
+			? getSpacingOptionOutput(headerTabletBorder.top[2], headerTabletBorder.unit)
+			: '',
+		undefined !== headerMobileBorder?.top
+			? getSpacingOptionOutput(headerMobileBorder.top[2], headerMobileBorder.unit)
+			: ''
 	);
 	const previewBorderRight = getPreviewSize(
 		previewDevice,
-		undefined !== border ? border[1] : '',
-		undefined !== tabletBorder ? tabletBorder[1] : '',
-		undefined !== mobileBorder ? mobileBorder[1] : ''
+		undefined !== headerBorder?.right ? getSpacingOptionOutput(headerBorder.right[2], headerBorder.unit) : '',
+		undefined !== headerTabletBorder?.right
+			? getSpacingOptionOutput(headerTabletBorder.right[2], headerTabletBorder.unit)
+			: '',
+		undefined !== headerMobileBorder?.right
+			? getSpacingOptionOutput(headerMobileBorder.right[2], headerMobileBorder.unit)
+			: ''
 	);
 	const previewBorderBottom = getPreviewSize(
 		previewDevice,
-		undefined !== border ? border[2] : '',
-		undefined !== tabletBorder ? tabletBorder[2] : '',
-		undefined !== mobileBorder ? mobileBorder[2] : ''
+		undefined !== headerBorder?.bottom ? getSpacingOptionOutput(headerBorder.bottom[2], headerBorder.unit) : '',
+		undefined !== headerTabletBorder?.bottom
+			? getSpacingOptionOutput(headerTabletBorder.bottom[2], headerTabletBorder.unit)
+			: '',
+		undefined !== headerMobileBorder?.bottom
+			? getSpacingOptionOutput(headerMobileBorder.bottom[2], headerMobileBorder.unit)
+			: ''
 	);
 	const previewBorderLeft = getPreviewSize(
 		previewDevice,
-		undefined !== border ? border[3] : '',
-		undefined !== tabletBorder ? tabletBorder[3] : '',
-		undefined !== mobileBorder ? mobileBorder[3] : ''
+		undefined !== headerBorder?.left ? getSpacingOptionOutput(headerBorder.left[2], headerBorder.unit) : '',
+		undefined !== headerTabletBorder?.left
+			? getSpacingOptionOutput(headerTabletBorder.left[2], headerTabletBorder.unit)
+			: '',
+		undefined !== headerMobileBorder?.left
+			? getSpacingOptionOutput(headerMobileBorder.left[2], headerMobileBorder.unit)
+			: ''
+	);
+
+	const previewBorderColorTop = getPreviewSize(
+		previewDevice,
+		undefined !== headerBorder?.top ? KadenceColorOutput(headerBorder.top[0]) : '',
+		undefined !== headerTabletBorder?.top ? KadenceColorOutput(headerTabletBorder.top[0]) : '',
+		undefined !== headerMobileBorder?.top ? KadenceColorOutput(headerTabletBorder.top[0]) : ''
+	);
+
+	const previewBorderColorRight = getPreviewSize(
+		previewDevice,
+		undefined !== headerBorder?.right ? KadenceColorOutput(headerBorder.right[0]) : '',
+		undefined !== headerTabletBorder?.right ? KadenceColorOutput(headerTabletBorder.right[0]) : '',
+		undefined !== headerMobileBorder?.right ? KadenceColorOutput(headerTabletBorder.right[0]) : ''
+	);
+
+	const previewBorderColorBottom = getPreviewSize(
+		previewDevice,
+		undefined !== headerBorder?.bottom ? KadenceColorOutput(headerBorder.bottom[0]) : '',
+		undefined !== headerTabletBorder?.bottom ? KadenceColorOutput(headerTabletBorder.bottom[0]) : '',
+		undefined !== headerMobileBorder?.bottom ? KadenceColorOutput(headerTabletBorder.bottom[0]) : ''
+	);
+
+	const previewBorderColorLeft = getPreviewSize(
+		previewDevice,
+		undefined !== headerBorder?.left ? KadenceColorOutput(headerBorder.left[0]) : '',
+		undefined !== headerTabletBorder?.left ? KadenceColorOutput(headerTabletBorder.left[0]) : '',
+		undefined !== headerMobileBorder?.left ? KadenceColorOutput(headerTabletBorder.left[0]) : ''
+	);
+
+	const previewBorderStyleTop = getPreviewSize(
+		previewDevice,
+		undefined !== headerBorder?.top ? headerBorder.top[1] : '',
+		undefined !== headerTabletBorder?.top ? headerTabletBorder.top[1] : '',
+		undefined !== headerMobileBorder?.top ? headerMobileBorder.top[1] : ''
+	);
+
+	const previewBorderStyleRight = getPreviewSize(
+		previewDevice,
+		undefined !== headerBorder?.right ? headerBorder.right[1] : '',
+		undefined !== headerTabletBorder?.right ? headerTabletBorder.right[1] : '',
+		undefined !== headerMobileBorder?.right ? headerMobileBorder.right[1] : ''
+	);
+
+	const previewBorderStyleBottom = getPreviewSize(
+		previewDevice,
+		undefined !== headerBorder?.bottom ? headerBorder.bottom[1] : '',
+		undefined !== headerTabletBorder?.bottom ? headerTabletBorder.bottom[1] : '',
+		undefined !== headerMobileBorder?.bottom ? headerMobileBorder.bottom[1] : ''
+	);
+
+	const previewBorderStyleLeft = getPreviewSize(
+		previewDevice,
+		undefined !== headerBorder?.left ? headerBorder.left[1] : '',
+		undefined !== headerTabletBorder?.left ? headerTabletBorder.left[1] : '',
+		undefined !== headerMobileBorder?.left ? headerMobileBorder.left[1] : ''
 	);
 
 	const previewBorderRadiusTop = getPreviewSize(
@@ -305,15 +377,18 @@ export function EditInner(props) {
 				paddingLeft:
 					'' !== previewPaddingLeft ? getSpacingOptionOutput(previewPaddingLeft, paddingUnit) : undefined,
 
-				borderColor: borderColor,
-				borderTopWidth:
-					'' !== previewBorderTop ? getSpacingOptionOutput(previewBorderTop, borderUnit) : undefined,
-				borderRightWidth:
-					'' !== previewBorderRight ? getSpacingOptionOutput(previewBorderRight, borderUnit) : undefined,
-				borderBottomWidth:
-					'' !== previewBorderBottom ? getSpacingOptionOutput(previewBorderBottom, borderUnit) : undefined,
-				borderLeftWidth:
-					'' !== previewBorderRadiusLeft ? getSpacingOptionOutput(previewPaddingLeft, borderUnit) : undefined,
+				borderTopWidth: '' !== previewBorderTop ? previewBorderTop : undefined,
+				borderRightWidth: '' !== previewBorderRight ? previewBorderRight : undefined,
+				borderBottomWidth: '' !== previewBorderBottom ? previewBorderBottom : undefined,
+				borderLeftWidth: '' !== previewBorderLeft ? previewBorderLeft : undefined,
+				borderTopColor: '' !== previewBorderColorTop ? previewBorderColorTop : undefined,
+				borderRightColor: '' !== previewBorderColorRight ? previewBorderColorRight : undefined,
+				borderBottomColor: '' !== previewBorderColorBottom ? previewBorderColorBottom : undefined,
+				borderLeftColor: '' !== previewBorderColorLeft ? previewBorderColorLeft : undefined,
+				borderTopStyle: '' !== previewBorderStyleTop ? previewBorderStyleTop : undefined,
+				borderRightStyle: '' !== previewBorderStyleRight ? previewBorderStyleRight : undefined,
+				borderBottomStyle: '' !== previewBorderStyleBottom ? previewBorderStyleBottom : undefined,
+				borderLeftStyle: '' !== previewBorderStyleLeft ? previewBorderStyleLeft : undefined,
 				borderTopLeftRadius:
 					'' !== previewBorderRadiusTop
 						? getSpacingOptionOutput(previewBorderRadiusLeft, borderUnit)
@@ -478,7 +553,7 @@ export function EditInner(props) {
 								mobileValue={[headerMobileBorder]}
 								onChange={(value) => {
 									console.log(value);
-									//setMetaAttribute(value[0], 'headerBorder')
+									setMetaAttribute(value[0], 'headerBorder');
 								}}
 								onChangeTablet={(value) => setMetaAttribute(value[0], 'headerTabletBorder')}
 								onChangeMobile={(value) => setMetaAttribute(value[0], 'headerMobileBorder')}
