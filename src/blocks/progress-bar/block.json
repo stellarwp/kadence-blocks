@@ -5,10 +5,7 @@
 	"category": "kadence-blocks",
 	"description": "Kadence progress bar",
 	"textdomain": "kadence-blocks",
-	"keywords": [
-		"kb",
-		"progress bar"
-	],
+	"keywords": ["kb", "progress bar"],
 	"attributes": {
 		"align": {
 			"type": "string"
@@ -37,30 +34,15 @@
 		},
 		"margin": {
 			"type": "array",
-			"default": [
-				"",
-				"",
-				"",
-				""
-			]
+			"default": ["", "", "", ""]
 		},
 		"tabletMargin": {
 			"type": "array",
-			"default": [
-				"",
-				"",
-				"",
-				""
-			]
+			"default": ["", "", "", ""]
 		},
 		"mobileMargin": {
 			"type": "array",
-			"default": [
-				"",
-				"",
-				"",
-				""
-			]
+			"default": ["", "", "", ""]
 		},
 		"marginType": {
 			"type": "string",
@@ -68,30 +50,15 @@
 		},
 		"labelPadding": {
 			"type": "array",
-			"default": [
-				"",
-				"",
-				"",
-				""
-			]
+			"default": ["", "", "", ""]
 		},
 		"tabletLabelPadding": {
 			"type": "array",
-			"default": [
-				"",
-				"",
-				"",
-				""
-			]
+			"default": ["", "", "", ""]
 		},
 		"mobileLabelPadding": {
 			"type": "array",
-			"default": [
-				"",
-				"",
-				"",
-				""
-			]
+			"default": ["", "", "", ""]
 		},
 		"labelPaddingType": {
 			"type": "string",
@@ -126,12 +93,7 @@
 			"default": 1
 		},
 		"barType": {
-			"enum": [
-				"line",
-				"circle",
-				"semicircle",
-				"line-mask"
-			],
+			"enum": ["line", "circle", "semicircle", "line-mask"],
 			"default": "line",
 			"type": "string"
 		},
@@ -166,23 +128,11 @@
 			"default": {
 				"color": "",
 				"level": 6,
-				"size": [
-					"",
-					"",
-					""
-				],
+				"size": ["", "", ""],
 				"sizeType": "px",
-				"lineHeight": [
-					"",
-					"",
-					""
-				],
+				"lineHeight": ["", "", ""],
 				"lineType": "",
-				"letterSpacing": [
-					"",
-					"",
-					""
-				],
+				"letterSpacing": ["", "", ""],
 				"textTransform": "",
 				"family": "",
 				"google": false,
@@ -191,18 +141,8 @@
 				"variant": "",
 				"subset": "",
 				"loadGoogle": true,
-				"padding": [
-					0,
-					0,
-					0,
-					0
-				],
-				"margin": [
-					0,
-					0,
-					0,
-					0
-				]
+				"padding": [0, 0, 0, 0],
+				"margin": [0, 0, 0, 0]
 			}
 		},
 		"label": {
@@ -218,23 +158,11 @@
 			"default": {
 				"color": "",
 				"level": 6,
-				"size": [
-					"",
-					"",
-					""
-				],
+				"size": ["", "", ""],
 				"sizeType": "px",
-				"lineHeight": [
-					"",
-					"",
-					""
-				],
+				"lineHeight": ["", "", ""],
 				"lineType": "",
-				"letterSpacing": [
-					"",
-					"",
-					""
-				],
+				"letterSpacing": ["", "", ""],
 				"textTransform": "",
 				"family": "",
 				"google": false,
@@ -243,18 +171,8 @@
 				"variant": "",
 				"subset": "",
 				"loadGoogle": true,
-				"padding": [
-					0,
-					0,
-					0,
-					0
-				],
-				"margin": [
-					0,
-					0,
-					0,
-					0
-				]
+				"padding": [0, 0, 0, 0],
+				"margin": [0, 0, 0, 0]
 			}
 		},
 		"progressAmount": {
@@ -290,22 +208,13 @@
 			"default": 2.0
 		},
 		"easing": {
-			"enum": [
-				"easeIn",
-				"easeOut",
-				"linear",
-				"easeInOut"
-			],
+			"enum": ["easeIn", "easeOut", "linear", "easeInOut"],
 			"default": "easeInOut",
 			"type": "string"
 		},
 		"progressBorderRadius": {
 			"type": "array",
-			"default": [
-				"",
-				"",
-				""
-			]
+			"default": ["", "", ""]
 		},
 		"maskIterations": {
 			"type": "number",

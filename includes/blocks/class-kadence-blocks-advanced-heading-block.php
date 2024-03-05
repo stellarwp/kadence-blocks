@@ -39,6 +39,13 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 	protected $has_script = false;
 
 	/**
+	 * Allowed HTML tags for front end output.
+	 *
+	 * @var string[]
+	 */
+	protected $allowed_html_tags = array( 'heading', 'p', 'span', 'div' );
+
+	/**
 	 * Instance Control
 	 */
 	public static function get_instance() {
@@ -372,7 +379,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$this->enqueue_script( 'kadence-blocks-' . $this->block_name );
 		}
 		if ( ! empty( $attributes['icon'] ) ) {
-			$tag_name     = $this->get_tag_name( $attributes );
+			$tag_name     = $this->get_html_tag( $attributes, 'htmlTag', 'h2', $this->allowed_html_tags, 'level' );
 			$text_content = $this->get_inner_content( $content, $tag_name );
 			// Start empty.
 			$content = '';
@@ -546,18 +553,6 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		return '<span class="kb-svg-icon-wrap kb-adv-heading-icon kb-svg-icon-' . esc_attr( $attributes['icon'] ) . ' kb-adv-heading-icon-side-' . esc_attr( $icon_side ) . '">' . $svg_icon . '</span>';
 	}
 
-	/**
-	 * Get the html tag name.
-	 *
-	 * @param array $attributes the blocks attributes.
-	 */
-	private function get_tag_name( $attributes ) {
-		if ( $attributes['htmlTag'] === 'heading' ) {
-			return 'h' . $attributes['level'];
-		}
-
-		return $attributes['htmlTag'];
-	}
 }
 
 Kadence_Blocks_Advancedheading_Block::get_instance();

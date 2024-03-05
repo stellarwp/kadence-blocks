@@ -4,20 +4,20 @@
 import { createBlock } from '@wordpress/blocks';
 import { times } from 'lodash';
 
-export function migrateToInnerblocks( attributes ) {
-    const { items, listCount } = attributes;
+export function migrateToInnerblocks(attributes) {
+	const { items, listCount } = attributes;
 
-    let listInnerBlocks = [];
-    if ( items?.length ) {
-        times( listCount, n => {
-            let item = items[n];
-            let newAttrs = { ...item };
+	const listInnerBlocks = [];
+	if (items?.length) {
+		times(listCount, (n) => {
+			const item = items[n];
+			const newAttrs = { ...item };
 
-            listInnerBlocks.push( createBlock( 'kadence/listitem', newAttrs ) );
-        });
-    }
+			listInnerBlocks.push(createBlock('kadence/listitem', newAttrs));
+		});
+	}
 
-    let listParentAttributes = { ...attributes, items: [], listCount:1 }
+	const listParentAttributes = { ...attributes, items: [], listCount: 1 };
 
-    return [ listParentAttributes, listInnerBlocks ];
+	return [listParentAttributes, listInnerBlocks];
 }

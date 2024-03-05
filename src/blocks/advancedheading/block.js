@@ -21,10 +21,7 @@ import backwardCompatibility from './deprecated';
 /**
  * Internal block libraries
  */
-import {
-	registerBlockType,
-	createBlock
-} from '@wordpress/blocks';
+import { registerBlockType, createBlock } from '@wordpress/blocks';
 import { __, _x } from '@wordpress/i18n';
 /**
  * Register: a Gutenberg Block.
@@ -35,16 +32,14 @@ import { __, _x } from '@wordpress/i18n';
  * @return {?WPBlock}          The block, if it has been successfully
  *                             registered; otherwise `undefined`.
  */
-registerBlockType( 'kadence/advancedheading', {
+registerBlockType('kadence/advancedheading', {
 	...metadata,
-	title: _x( 'Text (Adv)', 'block title', 'kadence-blocks' ),
-	description: __( 'Create a heading or paragraph and define sizes for desktop, tablet and mobile along with font family, colors, etc.', 'kadence-blocks' ),
-	keywords: [
-		__( 'text', 'kadence-blocks' ),
-		__( 'advanced', 'kadence-blocks' ),
-		__( 'heading', 'kadence-blocks' ),
-		'KB',
-	],
+	title: _x('Text (Adv)', 'block title', 'kadence-blocks'),
+	description: __(
+		'Create a heading or paragraph and define sizes for desktop, tablet and mobile along with font family, colors, etc.',
+		'kadence-blocks'
+	),
+	keywords: [__('text', 'kadence-blocks'), __('advanced', 'kadence-blocks'), __('heading', 'kadence-blocks'), 'KB'],
 	icon: {
 		src: advancedHeadingIcon,
 	},
@@ -52,42 +47,42 @@ registerBlockType( 'kadence/advancedheading', {
 		from: [
 			{
 				type: 'block',
-				blocks: [ 'core/paragraph' ],
-				transform: ( { content } ) => {
-					return createBlock( 'kadence/advancedheading', {
+				blocks: ['core/paragraph'],
+				transform: ({ content }) => {
+					return createBlock('kadence/advancedheading', {
 						content,
-					} );
+					});
 				},
 			},
 			{
 				type: 'block',
-				blocks: [ 'core/heading' ],
-				transform: ( { content, level } ) => {
-					return createBlock( 'kadence/advancedheading', {
-						content: content,
-						level: level,
-					} );
+				blocks: ['core/heading'],
+				transform: ({ content, level }) => {
+					return createBlock('kadence/advancedheading', {
+						content,
+						level,
+					});
 				},
 			},
 		],
 		to: [
 			{
 				type: 'block',
-				blocks: [ 'core/paragraph' ],
-				transform: ( { content } ) => {
-					return createBlock( 'core/paragraph', {
+				blocks: ['core/paragraph'],
+				transform: ({ content }) => {
+					return createBlock('core/paragraph', {
 						content,
-					} );
+					});
 				},
 			},
 			{
 				type: 'block',
-				blocks: [ 'core/heading' ],
-				transform: ( { content, level } ) => {
-					return createBlock( 'core/heading', {
-						content: content,
-						level: level,
-					} );
+				blocks: ['core/heading'],
+				transform: ({ content, level }) => {
+					return createBlock('core/heading', {
+						content,
+						level,
+					});
 				},
 			},
 		],
@@ -97,7 +92,7 @@ registerBlockType( 'kadence/advancedheading', {
 	deprecated: backwardCompatibility,
 	example: {
 		attributes: {
-					content: __( 'Example Heading', 'kadence-blocks' ),
-		}
-	}
-} );
+			content: __('Example Heading', 'kadence-blocks'),
+		},
+	},
+});

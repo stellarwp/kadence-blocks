@@ -253,4 +253,31 @@ class Kadence_Blocks_Abstract_Block {
 		wp_enqueue_style( $handle );
 	}
 
+
+	/**
+	 * Gets the HTML tag from the attributes.
+	 * If the tag provided isn't allowed, return the default value.
+	 *
+	 * @param array $attributes Array of the blocks attributes.
+	 * @param string $tag_key Offest on $attributes where the tag is set.
+	 * @param string $default Default tag to use if $tag_key attribue is undefined or invalid.
+	 * @param array $allowed_tags Array of allowed tags.
+	 * @param string $level_key If defined, we'll assume heading tags are allowed.
+	 *
+	 * @return string
+	 */
+	public function get_html_tag( $attributes, $tag_key, $default, $allowed_tags = array(), $level_key = '' ) {
+
+		if( !empty( $attributes[ $tag_key ] ) && in_array( $attributes[ $tag_key ], $allowed_tags ) ) {
+
+			if( $attributes[ $tag_key ] === 'heading' ) {
+				$level = !empty( $attributes[ $level_key ] ) ? $attributes[ $level_key ] : 2;
+				return 'h' . $level;
+			}
+
+			return $attributes[ $tag_key ];
+		}
+
+		return $default;
+	}
 }

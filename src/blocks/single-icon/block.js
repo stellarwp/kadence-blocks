@@ -15,9 +15,7 @@ import deprecated from './deprecated';
 /**
  * Internal block libraries
  */
-import {
-    registerBlockType,
-} from '@wordpress/blocks';
+import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -29,25 +27,21 @@ import { __ } from '@wordpress/i18n';
  * @return {?WPBlock}          The block, if it has been successfully
  *                             registered; otherwise `undefined`.
  */
-registerBlockType( 'kadence/single-icon', {
-    ...metadata,
-    title: __( 'Single Icon', 'kadence-blocks' ),
-    description: __( 'Single icon within Icon block', 'kadence-blocks' ),
-    keywords: [
-        __( 'icon', 'kadence-blocks' ),
-        __( 'svg', 'kadence-blocks' ),
-        'KB',
-    ],
-    icon: {
-        src: iconIcon,
-    },
-    getEditWrapperProps( { blockAlignment } ) {
-        if ( 'left' === blockAlignment || 'right' === blockAlignment || 'center' === blockAlignment ) {
-            return { 'data-align': blockAlignment };
-        }
-    },
-    edit,
-    save,
-    deprecated,
-	example: {}
-} );
+registerBlockType('kadence/single-icon', {
+	...metadata,
+	title: __('Single Icon', 'kadence-blocks'),
+	description: __('Single icon within Icon block', 'kadence-blocks'),
+	keywords: [__('icon', 'kadence-blocks'), __('svg', 'kadence-blocks'), 'KB'],
+	icon: {
+		src: iconIcon,
+	},
+	getEditWrapperProps({ blockAlignment }) {
+		if ('left' === blockAlignment || 'right' === blockAlignment || 'center' === blockAlignment) {
+			return { 'data-align': blockAlignment };
+		}
+	},
+	edit,
+	save,
+	deprecated,
+	example: {},
+});

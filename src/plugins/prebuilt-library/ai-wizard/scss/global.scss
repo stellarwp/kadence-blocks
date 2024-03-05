@@ -22,3 +22,16 @@ h1, h2, h3, h4, h5, h6, p, ul, ol {
 	margin-bottom: 24px;
 }
 
+.has-beta-pill {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+	.beta-pill {
+		padding: 4px 8px 4px 8px;
+		border-radius: 100px;
+		background: #0073E6;
+		font-size:11px;
+		font-weight:normal;
+		color: white;
+	}
+}

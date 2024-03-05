@@ -14,18 +14,16 @@ import './editor.scss';
 import './style.scss';
 import { __, _x } from '@wordpress/i18n';
 
-registerBlockType( 'kadence/tableofcontents', {
+registerBlockType('kadence/tableofcontents', {
 	...metadata,
-	title: _x( 'Table of Contents', 'block title', 'kadence-blocks' ),
-	keywords: [
-		__( 'table of contents', 'kadence-blocks' ),
-		__( 'summary', 'kadence-blocks' ),
-		'KB',
-	],
+	title: _x('Table of Contents', 'block title', 'kadence-blocks'),
+	keywords: [__('table of contents', 'kadence-blocks'), __('summary', 'kadence-blocks'), 'KB'],
 	icon: {
 		src: tableOfContentsIcon,
 	},
 	edit,
-	save() { return null; },
-	example: {}
-} );
+	save() {
+		return null;
+	},
+	example: {},
+});

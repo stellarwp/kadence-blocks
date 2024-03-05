@@ -1,4 +1,4 @@
-import {createReduxStore, register, createRegistrySelector, createRegistryControl} from '@wordpress/data';
+import { createReduxStore, register, createRegistrySelector, createRegistryControl } from '@wordpress/data';
 import { get } from 'lodash';
 
 const DEFAULT_STATE = {
@@ -14,150 +14,152 @@ const DEFAULT_STATE = {
 };
 
 const actions = {
-	*setPreviewDeviceType( deviceType ) {
+	*setPreviewDeviceType(deviceType) {
 		const setForCore = yield {
 			type: 'SET_PREVIEW_DEVICE_TYPE_FOR_CORE',
 			deviceType,
-		}
-		if ( ! setForCore ) {
+		};
+		if (!setForCore) {
 			return {
 				type: 'SET_PREVIEW_DEVICE_TYPE',
 				deviceType,
 			};
 		}
 	},
-	*toggleEditorPanelOpened( panelName, defaultValue ) {
+	*toggleEditorPanelOpened(panelName, defaultValue) {
 		return {
 			type: 'TOGGLE_EDITOR_PANEL_OPENED',
 			panelName,
-			defaultValue
-		}
+			defaultValue,
+		};
 	},
-	*switchEditorTabOpened( tabName, key ) {
+	*switchEditorTabOpened(tabName, key) {
 		return {
 			type: 'SWITCH_EDITOR_TAB_OPENED',
 			tabName,
-			key
-		}
+			key,
+		};
 	},
-	addUniqueID( uniqueID, clientID ) {
+	addUniqueID(uniqueID, clientID) {
 		return {
 			type: 'ADD_UNIQUE_ID',
 			uniqueID,
-			clientID
+			clientID,
 		};
 	},
-	addUniquePane( uniqueID, clientID, rootID ) {
+	addUniquePane(uniqueID, clientID, rootID) {
 		return {
 			type: 'ADD_UNIQUE_PANE',
 			uniqueID,
 			clientID,
-			rootID
+			rootID,
 		};
 	},
-	addWebFont( font, frame ) {
+	addWebFont(font, frame) {
 		return {
 			type: 'ADD_WEBFONT',
 			font,
-			frame
+			frame,
 		};
 	},
-	setImagePickerQuery( query ) {
+	setImagePickerQuery(query) {
 		return {
 			type: 'SET_IMAGE_PICKER_QUERY',
-			query
+			query,
 		};
 	},
-	setImagePickerSelection( index ) {
+	setImagePickerSelection(index) {
 		return {
 			type: 'SET_IMAGE_PICKER_SELECTION',
-			index
+			index,
 		};
 	},
-	setImagePickerMultiSelection( selection ) {
+	setImagePickerMultiSelection(selection) {
 		return {
 			type: 'SET_IMAGE_PICKER_MULTI_SELECTION',
-			selection
+			selection,
 		};
 	},
-	setImagePickerResults( results ) {
+	setImagePickerResults(results) {
 		return {
 			type: 'SET_IMAGE_PICKER_RESULTS',
-			results
+			results,
 		};
 	},
-	setImagePickerDownloadedImages( images ) {
+	setImagePickerDownloadedImages(images) {
 		return {
 			type: 'SET_IMAGE_PICKER_DOWNLOADED_IMAGES',
-			images
+			images,
 		};
-	}
+	},
 };
 
 const controls = {
-	'SET_PREVIEW_DEVICE_TYPE_FOR_CORE': createRegistryControl( ( registry ) => function( { deviceType } ) {
-		const editPost = registry.dispatch( 'core/edit-post' );
-		if ( editPost ) {
-			editPost.__experimentalSetPreviewDeviceType( deviceType );
+	SET_PREVIEW_DEVICE_TYPE_FOR_CORE: createRegistryControl(
+		(registry) =>
+			function ({ deviceType }) {
+				const editPost = registry.dispatch('core/edit-post');
+				if (editPost) {
+					editPost.__experimentalSetPreviewDeviceType(deviceType);
 
-			return true;
-		}
+					return true;
+				}
 
-		const editSite = registry.dispatch( 'core/edit-site' );
+				const editSite = registry.dispatch('core/edit-site');
 
-		if ( editSite ) {
-			editSite.__experimentalSetPreviewDeviceType( deviceType );
+				if (editSite) {
+					editSite.__experimentalSetPreviewDeviceType(deviceType);
 
-			return true;
-		}
+					return true;
+				}
 
-		return false;
-	} ),
+				return false;
+			}
+	),
 };
 
-const getPreviewDeviceType = createRegistrySelector( ( select ) => ( state ) => {
-	const editPost = select( 'core/edit-post' );
+const getPreviewDeviceType = createRegistrySelector((select) => (state) => {
+	const editPost = select('core/edit-post');
 
-	if ( editPost ) {
+	if (editPost) {
 		return editPost.__experimentalGetPreviewDeviceType();
 	}
 
-	const editSite = select( 'core/edit-site' );
+	const editSite = select('core/edit-site');
 
-	if ( editSite ) {
+	if (editSite) {
 		return editSite.__experimentalGetPreviewDeviceType();
 	}
 
 	return state.previewDevice;
-} );
+});
 
-const store = createReduxStore( 'kadenceblocks/data', {
-	reducer( state = DEFAULT_STATE, action ) {
-		switch ( action.type ) {
+const store = createReduxStore('kadenceblocks/data', {
+	reducer(state = DEFAULT_STATE, action) {
+		switch (action.type) {
 			case 'TOGGLE_EDITOR_PANEL_OPENED':
 				const { panelName, defaultValue } = action;
 				const isOpen =
-					state[ panelName ] === true ||
-					get( state, [ 'editorPanels', panelName, 'opened' ], defaultValue );
+					state[panelName] === true || get(state, ['editorPanels', panelName, 'opened'], defaultValue);
 				return {
 					...state,
-					'editorPanels': {
+					editorPanels: {
 						...state.editorPanels,
 						[panelName]: {
 							...state[panelName],
 							opened: !isOpen,
-						}
-					}
+						},
+					},
 				};
 			case 'SWITCH_EDITOR_TAB_OPENED':
 				const { tabName, key } = action;
 
 				return {
 					...state,
-					'editorTabs': {
+					editorTabs: {
 						...state.editorPanels,
-						[tabName]: key
-					}
+						[tabName]: key,
+					},
 				};
 			case 'SET_PREVIEW_DEVICE_TYPE':
 				return {
@@ -166,59 +168,59 @@ const store = createReduxStore( 'kadenceblocks/data', {
 				};
 			case 'ADD_UNIQUE_ID':
 				const updatedIDs = state.uniqueIDs;
-				Object.assign( updatedIDs, { [action.uniqueID]: action.clientID } );
+				Object.assign(updatedIDs, { [action.uniqueID]: action.clientID });
 				return {
 					...state,
 					uniqueIDs: updatedIDs,
 				};
 			case 'ADD_UNIQUE_PANE':
 				const uniquePanes = state.uniquePanes;
-				if ( uniquePanes.hasOwnProperty( action.rootID ) ) {
-					Object.assign( uniquePanes[action.rootID], { [action.uniqueID.toString()]: action.clientID } );
+				if (uniquePanes.hasOwnProperty(action.rootID)) {
+					Object.assign(uniquePanes[action.rootID], { [action.uniqueID.toString()]: action.clientID });
 				} else {
 					uniquePanes[action.rootID] = {};
-					Object.assign( uniquePanes[action.rootID], { [action.uniqueID.toString()]: action.clientID } );
+					Object.assign(uniquePanes[action.rootID], { [action.uniqueID.toString()]: action.clientID });
 				}
 				return {
 					...state,
-					uniquePanes: uniquePanes,
+					uniquePanes,
 				};
 			case 'ADD_WEBFONT':
 				const updatedFonts = state.webFonts;
-				if ( updatedFonts.hasOwnProperty( action.frame ) ) {
-					Object.assign( updatedFonts[action.frame], { [action.font.toString()]: 'loaded' } );
+				if (updatedFonts.hasOwnProperty(action.frame)) {
+					Object.assign(updatedFonts[action.frame], { [action.font.toString()]: 'loaded' });
 				} else {
 					updatedFonts[action.frame] = {};
-					Object.assign( updatedFonts[action.frame], { [action.font.toString()]: 'loaded' } );
+					Object.assign(updatedFonts[action.frame], { [action.font.toString()]: 'loaded' });
 				}
 				return {
 					...state,
-					webFonts:updatedFonts,
+					webFonts: updatedFonts,
 				};
 			case 'SET_IMAGE_PICKER_QUERY':
 				return {
 					...state,
-					imagePickerQuery:action.query,
+					imagePickerQuery: action.query,
 				};
 			case 'SET_IMAGE_PICKER_SELECTION':
 				return {
 					...state,
-					imagePickerSelection:action.index,
+					imagePickerSelection: action.index,
 				};
 			case 'SET_IMAGE_PICKER_MULTI_SELECTION':
 				return {
 					...state,
-					imagePickerMultiSelection:action.selection,
+					imagePickerMultiSelection: action.selection,
 				};
 			case 'SET_IMAGE_PICKER_RESULTS':
 				return {
 					...state,
-					imagePickerResults:action.results,
+					imagePickerResults: action.results,
 				};
 			case 'SET_IMAGE_PICKER_DOWNLOADED_IMAGES':
 				return {
 					...state,
-					imagePickerDownloadedImages:action.images,
+					imagePickerDownloadedImages: action.images,
 				};
 			default:
 				return state;
@@ -228,95 +230,91 @@ const store = createReduxStore( 'kadenceblocks/data', {
 	controls,
 	selectors: {
 		getPreviewDeviceType,
-		getUniqueIDs( state ) {
+		getUniqueIDs(state) {
 			const { uniqueIDs } = state;
 			return uniqueIDs;
 		},
-		isUniqueID( state, uniqueID ) {
+		isUniqueID(state, uniqueID) {
 			const { uniqueIDs } = state;
 			let isUniqueID = true;
-			if ( uniqueIDs.hasOwnProperty( uniqueID ) ) {
+			if (uniqueIDs.hasOwnProperty(uniqueID)) {
 				isUniqueID = false;
 			}
 			return isUniqueID;
 		},
-		isUniqueBlock( state, uniqueID, clientID ) {
+		isUniqueBlock(state, uniqueID, clientID) {
 			const { uniqueIDs } = state;
 			let isUniqueBlock = false;
-			if ( uniqueIDs.hasOwnProperty( uniqueID ) ) {
+			if (uniqueIDs.hasOwnProperty(uniqueID)) {
 				// Compare clientID if they match then it just means we've switched to iframe view and so we don't need a new ID.
-				if ( uniqueIDs[uniqueID] === clientID ) {
+				if (uniqueIDs[uniqueID] === clientID) {
 					isUniqueBlock = true;
 				}
 			}
 			return isUniqueBlock;
 		},
-		isUniquePane( state, uniqueID, rootID ) {
+		isUniquePane(state, uniqueID, rootID) {
 			const { uniquePanes } = state;
 			let isUniquePane = true;
-			if ( uniquePanes.hasOwnProperty( rootID ) ) {
-				if ( uniquePanes[rootID].hasOwnProperty( uniqueID.toString() ) ) {
+			if (uniquePanes.hasOwnProperty(rootID)) {
+				if (uniquePanes[rootID].hasOwnProperty(uniqueID.toString())) {
 					isUniquePane = false;
 				}
 			}
 			return isUniquePane;
 		},
-		isUniquePaneBlock( state, uniqueID, clientID, rootID ) {
+		isUniquePaneBlock(state, uniqueID, clientID, rootID) {
 			const { uniquePanes } = state;
 			let isUniquePaneBlock = false;
-			if ( uniquePanes.hasOwnProperty( rootID ) ) {
-				if ( uniquePanes[rootID].hasOwnProperty( uniqueID.toString() ) ) {
+			if (uniquePanes.hasOwnProperty(rootID)) {
+				if (uniquePanes[rootID].hasOwnProperty(uniqueID.toString())) {
 					// Compare clientID if they match then it just means we've switched to iframe view and so we don't need a new ID.
-					if ( uniquePanes[rootID][uniqueID.toString()] === clientID ) {
+					if (uniquePanes[rootID][uniqueID.toString()] === clientID) {
 						isUniquePaneBlock = true;
 					}
 				}
 			}
 			return isUniquePaneBlock;
 		},
-		isUniqueFont( state, font, frame ) {
+		isUniqueFont(state, font, frame) {
 			const { webFonts } = state;
 			let isUniqueFont = true;
-			if ( webFonts.hasOwnProperty( frame ) ) {
-				if ( webFonts[frame].hasOwnProperty( font.toString() ) ) {
+			if (webFonts.hasOwnProperty(frame)) {
+				if (webFonts[frame].hasOwnProperty(font.toString())) {
 					isUniqueFont = false;
 				}
 			}
 			return isUniqueFont;
 		},
-		isEditorPanelOpened( state, panelName, defaultValue ) {
-			const panels = get( state, ['editorPanels'], {} );
-			return (
-				get( panels, [ panelName ] ) === true || get( panels, [ panelName, 'opened' ], defaultValue ) === true
-			);
+		isEditorPanelOpened(state, panelName, defaultValue) {
+			const panels = get(state, ['editorPanels'], {});
+			return get(panels, [panelName]) === true || get(panels, [panelName, 'opened'], defaultValue) === true;
 		},
-		getOpenSidebarTabKey( state, panelName, defaultValue ) {
-			const panels = get( state, ['editorTabs'], {} );
-			return (
-				get( panels, [ panelName ], defaultValue )
-			);
+		getOpenSidebarTabKey(state, panelName, defaultValue) {
+			const panels = get(state, ['editorTabs'], {});
+			return get(panels, [panelName], defaultValue);
 		},
-		getImagePickerQuery( state ) {
+		getImagePickerQuery(state) {
 			const { imagePickerQuery } = state;
 			return imagePickerQuery;
 		},
-		getImagePickerSelection( state ) {
+		getImagePickerSelection(state) {
 			const { imagePickerSelection } = state;
 			return imagePickerSelection;
 		},
-		getImagePickerMultiSelection( state ) {
+		getImagePickerMultiSelection(state) {
 			const { imagePickerMultiSelection } = state;
 			return imagePickerMultiSelection;
 		},
-		getImagePickerResults( state ) {
+		getImagePickerResults(state) {
 			const { imagePickerResults } = state;
 			return imagePickerResults;
 		},
-		getImagePickerDownloadedImages( state ) {
+		getImagePickerDownloadedImages(state) {
 			const { imagePickerDownloadedImages } = state;
 			return imagePickerDownloadedImages;
 		},
 	},
-} );
+});
 
-register( store );
+register(store);

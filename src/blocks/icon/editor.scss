@@ -47,6 +47,12 @@
   &.kb-icon-halign-space-between {
 		justify-content: space-between;
 	}
+  &.kb-icon-wrap {
+    flex-wrap: wrap;
+  }
+  .kb-icon-transparent {
+    opacity: 0.5;
+  }
 }
 .wp-block-kadence-icon .kt-svg-icons .wp-block-kadence-single-icon {
   margin: 0;

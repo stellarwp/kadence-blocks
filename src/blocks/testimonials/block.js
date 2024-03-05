@@ -20,19 +20,15 @@ import './style.scss';
 
 export { metadata, name };
 
-registerBlockType( 'kadence/testimonials', {
+registerBlockType('kadence/testimonials', {
 	...metadata,
-	title   : _x( 'Testimonials', 'block title', 'kadence-blocks' ),
-	keywords: [
-		__( 'testimonials', 'kadence-blocks' ),
-		__( 'rating', 'kadence-blocks' ),
-		'KB',
-	],
-	icon    : {
+	title: _x('Testimonials', 'block title', 'kadence-blocks'),
+	keywords: [__('testimonials', 'kadence-blocks'), __('rating', 'kadence-blocks'), 'KB'],
+	icon: {
 		src: testimonialBlockIcon,
 	},
 	edit,
 	save,
 	deprecated,
-	example: {}
-} );
+	example: {},
+});

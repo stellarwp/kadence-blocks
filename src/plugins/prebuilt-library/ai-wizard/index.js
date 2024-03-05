@@ -13,15 +13,15 @@ import { KadenceAiWizard } from './kadence-ai-wizard';
 import { useDatabase } from './hooks/use-database';
 import './kadence-ai-wizard.scss';
 
-export function AiWizard( {
+export function AiWizard({
 	photographyOnly = false,
 	onClose,
 	onPrimaryAction,
 	onSecondaryAction,
 	credits = '',
 	isFullScreen = false,
-} ) {
-	const [ wizardData, setWizardData ] = useState();
+}) {
+	const [wizardData, setWizardData] = useState();
 	const { loading, getAiWizardData } = useDatabase();
 
 	async function getPreviousData() {
@@ -37,20 +37,19 @@ export function AiWizard( {
 
 	return (
 		<>
-			{ ( wizardData && ! loading) && (
-				<KadenceAiProvider value={ wizardData }>
+			{wizardData && !loading && (
+				<KadenceAiProvider value={wizardData}>
 					<KadenceAiWizard
-						loading={ loading }
-						onWizardClose={ onClose }
-						onPrimaryAction={ onPrimaryAction }
-						onSecondaryAction={ onSecondaryAction }
-						photographyOnly={ photographyOnly }
-						credits={ credits }
-						isFullScreen={ isFullScreen }
+						loading={loading}
+						onWizardClose={onClose}
+						onPrimaryAction={onPrimaryAction}
+						onSecondaryAction={onSecondaryAction}
+						photographyOnly={photographyOnly}
+						credits={credits}
+						isFullScreen={isFullScreen}
 					/>
 				</KadenceAiProvider>
-			) }
+			)}
 		</>
-	)
+	);
 }
-

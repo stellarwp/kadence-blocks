@@ -20,31 +20,31 @@ const pages = [
 		id: 'how-it-works',
 		content: <HowItWorks />,
 		step: 'How it Works',
-		required: []
+		required: [],
 	},
 	{
 		id: 'industry-information',
 		content: <IndustryInformation />,
 		step: 'Industry Information',
-		required: ['entityType', 'companyName', 'location', 'industry']
+		required: ['entityType', 'companyName', 'location', 'industry'],
 	},
 	{
 		id: 'about-your-site',
 		content: <AboutYourSite />,
 		step: 'About Your Site',
-		required: ['missionStatement']
+		required: ['missionStatement'],
 	},
 	{
 		id: 'the-details',
 		content: <TheDetails />,
 		step: 'The Details',
-		required: ['keywords', 'tone']
+		required: ['keywords', 'tone'],
 	},
 	{
 		id: 'photography',
 		content: <Photography />,
 		step: 'Photography',
-		required: []
+		required: [],
 	},
 ];
 const photographyOnlyPages = [
@@ -52,57 +52,41 @@ const photographyOnlyPages = [
 		id: 'photography',
 		content: <Photography photographyOnly={true} />,
 		step: 'Photography',
-		required: []
+		required: [],
 	},
 ];
 function getPages(photographyOnly) {
-	const { state: { firstTime } } = useKadenceAi();
+	const {
+		state: { firstTime },
+	} = useKadenceAi();
 
 	if (photographyOnly) {
 		return photographyOnlyPages;
 	}
 
-	return ! firstTime ? pages.filter((page) => page.id !== 'how-it-works') : pages;
+	return !firstTime ? pages.filter((page) => page.id !== 'how-it-works') : pages;
 }
 
-export function KadenceAiWizard( props ) {
-	const {
-		loading,
-		onWizardClose,
-		onPrimaryAction,
-		photographyOnly,
-		credits,
-		isFullScreen,
-	} = props;
+export function KadenceAiWizard(props) {
+	const { loading, onWizardClose, onPrimaryAction, photographyOnly, credits, isFullScreen } = props;
 
 	const { state, dispatch } = useKadenceAi();
-	const {
-		isComplete,
-		firstTime,
-		isSubmitted,
-		currentPageIndex,
-		saving,
-		saveError,
-		...rest
-	} = state;
+	const { isComplete, firstTime, isSubmitted, currentPageIndex, saving, saveError, ...rest } = state;
 
-	const {
-		isForwardButtonDisabled,
-		isFinishButtonDisabled
-	} = useAiWizardHelper(state, getPages(photographyOnly));
+	const { isForwardButtonDisabled, isFinishButtonDisabled } = useAiWizardHelper(state, getPages(photographyOnly));
 	const { saveAiWizardData, getAiWizardData } = useDatabase();
 
 	async function handleSave() {
 		const saveStatus = await saveAiWizardData({
 			firstTime: false,
 			isSubmitted: true,
-			isComplete: isComplete,
-			...rest
+			isComplete,
+			...rest,
 		});
 
 		if (saveStatus) {
-			onWizardClose( 'saved' );
-			handleEvent( 'ai_wizard_update' );
+			onWizardClose('saved');
+			handleEvent('ai_wizard_update');
 		}
 	}
 
@@ -111,7 +95,7 @@ export function KadenceAiWizard( props ) {
 			firstTime: false,
 			isSubmitted: true,
 			isComplete: true,
-			...rest
+			...rest,
 		});
 
 		if (complete) {
@@ -119,10 +103,10 @@ export function KadenceAiWizard( props ) {
 		}
 	}
 
-	async function handleEvent( event ) {
+	async function handleEvent(event) {
 		const wizardData = await getAiWizardData();
-		if ( wizardData ) {
-			sendEvent( event, JSON.parse( wizardData ) );
+		if (wizardData) {
+			sendEvent(event, JSON.parse(wizardData));
 		}
 	}
 
@@ -136,9 +120,9 @@ export function KadenceAiWizard( props ) {
 		if (event.type === 'click' && event.target.classList.contains('components-wizard__primary-button')) {
 			if (photographyOnly) {
 				// Fire off collection_updated event after data has saved.
-				handleSave().then( () => {
-					handleEvent( 'collection_updated' );
-				} );
+				handleSave().then(() => {
+					handleEvent('collection_updated');
+				});
 			} else {
 				handleComplete();
 				onPrimaryAction(event, true);
@@ -158,9 +142,9 @@ export function KadenceAiWizard( props ) {
 		if (event.type === 'click' && event.target.classList.contains('components-wizard__secondary-button')) {
 			if (state.photoCollectionChanged) {
 				// Fire off collection_updated event after data has saved.
-				handleSave().then( () => {
-					handleEvent( 'collection_updated' );
-				} );
+				handleSave().then(() => {
+					handleEvent('collection_updated');
+				});
 			} else {
 				handleSave();
 			}
@@ -184,20 +168,24 @@ export function KadenceAiWizard( props ) {
 
 	return (
 		<Wizard
-			isFirstTime={ firstTime }
-			logo={ <KadenceK /> }
-			pages={ getPages(photographyOnly) }
-			forwardButtonDisabled={ isForwardButtonDisabled() }
-			onPageChange={ (pageIndex) => dispatch({ type: 'SET_CURRENT_PAGE_INDEX', payload: pageIndex }) }
-			onClose={ handleOnClose }
-			onPrimaryClick={ handleOnPrimaryClick }
-			primaryButtonText={ photographyOnly ? __( 'Update My Design Library', 'kadence-blocks' ) : __( 'Generate Initial Content', 'kadence-blocks' ) }
-			primaryButtonDisabled={ isFinishButtonDisabled() }
-			onSecondaryClick={ ! photographyOnly ? handleOnSecondaryClick : null }
-			secondaryButtonText={ __( 'Save', 'kadence-blocks' ) }
-			credits={ credits }
-			photographyOnly={ photographyOnly }
-			isFullScreen={ isFullScreen }
+			isFirstTime={firstTime}
+			logo={<KadenceK />}
+			pages={getPages(photographyOnly)}
+			forwardButtonDisabled={isForwardButtonDisabled()}
+			onPageChange={(pageIndex) => dispatch({ type: 'SET_CURRENT_PAGE_INDEX', payload: pageIndex })}
+			onClose={handleOnClose}
+			onPrimaryClick={handleOnPrimaryClick}
+			primaryButtonText={
+				photographyOnly
+					? __('Update My Design Library', 'kadence-blocks')
+					: __('Generate Initial Content', 'kadence-blocks')
+			}
+			primaryButtonDisabled={isFinishButtonDisabled()}
+			onSecondaryClick={!photographyOnly ? handleOnSecondaryClick : null}
+			secondaryButtonText={__('Save', 'kadence-blocks')}
+			credits={credits}
+			photographyOnly={photographyOnly}
+			isFullScreen={isFullScreen}
 		/>
-	)
+	);
 }

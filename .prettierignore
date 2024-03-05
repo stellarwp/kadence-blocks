@@ -1,0 +1,4 @@
+**/*.min.js
+/src/packages/**
+**/node_modules/**
+**/vendor/**

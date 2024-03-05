@@ -5,9 +5,11 @@ dist/
 zip/
 bin/strauss.phar
 .idea
+.vscode
 /vendor/
 /vendor-prefixed/
 bin/pup.phar
 bin/wp-cli.phar
 .pup-build
 .pup-zip
+/tests/codeception.env

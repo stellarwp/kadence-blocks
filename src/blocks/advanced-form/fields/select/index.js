@@ -10,7 +10,6 @@ import edit from './edit';
 import metadata from './block.json';
 import { registerBlockType } from '@wordpress/blocks';
 
-
 /**
  * WordPress dependencies
  */
@@ -19,17 +18,14 @@ import { Icon } from '@wordpress/components';
 
 registerBlockType('kadence/advanced-form-select', {
 	...metadata,
-	title: __( 'Select', 'kadence-blocks' ),
+	title: __('Select', 'kadence-blocks'),
 	/* translators: block description */
-	description: __( 'Kadence Form select input', 'kadence-blocks' ),
-	keywords: [
-		'kadence',
-	],
-	parent: [ 'kadence/advanced-form' ],
+	description: __('Kadence Form select input', 'kadence-blocks'),
+	keywords: ['kadence'],
+	parent: ['kadence/advanced-form'],
 	icon: {
 		src: selectInputIcon,
 	},
 	edit,
 	save: () => null,
-
 });

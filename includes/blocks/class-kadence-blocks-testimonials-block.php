@@ -861,6 +861,9 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 			$wrapper_args = array(
 				'class' => implode( ' ', $outer_classes ),
 			);
+			if(isset($attributes['anchor']) && !empty($attributes['anchor'])) {
+				$wrapper_args['id'] = $attributes['anchor'];
+			}
 			$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 			$content = sprintf( '<div %1$s>%2$s</div>', $wrapper_attributes, $inner_content );
 		} elseif ( ! empty( $attributes['layout'] ) && 'carousel' === $attributes['layout'] ) {

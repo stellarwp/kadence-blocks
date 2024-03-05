@@ -14,7 +14,7 @@ export async function sendEvent(event_label, event_data) {
 			path: '/kb-design-library/v1/handle_event',
 			method: 'POST',
 			data: {
-				event_label: event_label,
+				event_label,
 				event_data: event_data ? event_data : {},
 			},
 		});

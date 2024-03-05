@@ -1,197 +1,201 @@
 {
-  "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 3,
-  "title": "Count Up",
-  "name": "kadence/countup",
-  "category": "kadence-blocks",
-  "description": "",
-  "attributes": {
-	"uniqueID": {
-	  "type": "string",
-	  "default": ""
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"title": "Count Up",
+	"name": "kadence/countup",
+	"category": "kadence-blocks",
+	"description": "",
+	"attributes": {
+		"uniqueID": {
+			"type": "string",
+			"default": ""
+		},
+		"title": {
+			"type": "string",
+			"default": ""
+		},
+		"displayTitle": {
+			"type": "boolean",
+			"default": true
+		},
+		"titleFont": {
+			"type": "array",
+			"default": [
+				{
+					"level": 4,
+					"htmlTag": "div",
+					"size": ["", "", ""],
+					"sizeType": "px",
+					"lineHeight": ["", "", ""],
+					"lineType": "",
+					"letterSpacing": "",
+					"textTransform": "",
+					"family": "",
+					"google": false,
+					"style": "",
+					"weight": "",
+					"variant": "",
+					"subset": "",
+					"loadGoogle": true
+				}
+			]
+		},
+		"titlePaddingType": {
+			"type": "string",
+			"default": "px"
+		},
+		"titlePadding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"titleTabletPadding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"titleMobilePadding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"titleMarginType": {
+			"type": "string",
+			"default": "px"
+		},
+		"titleMargin": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"titleTabletMargin": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"titleMobileMargin": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"titleAlign": {
+			"type": "array",
+			"default": ["", "", ""]
+		},
+		"titleColor": {
+			"type": "string",
+			"default": ""
+		},
+		"titleHoverColor": {
+			"type": "string",
+			"default": ""
+		},
+		"titleMinHeight": {
+			"type": "array",
+			"default": ["", "", ""]
+		},
+		"numberFont": {
+			"type": "array",
+			"default": [
+				{
+					"size": ["50", "", ""],
+					"sizeType": "px",
+					"lineHeight": ["", "", ""],
+					"lineType": "px",
+					"letterSpacing": "",
+					"textTransform": "",
+					"family": "",
+					"google": false,
+					"style": "",
+					"weight": "",
+					"variant": "",
+					"subset": "",
+					"loadGoogle": true
+				}
+			]
+		},
+		"numberPaddingType": {
+			"type": "string",
+			"default": "px"
+		},
+		"numberPadding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"numberTabletPadding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"numberMobilePadding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"numberMarginType": {
+			"type": "string",
+			"default": "px"
+		},
+		"numberMargin": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"numberTabletMargin": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"numberMobileMargin": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"numberAlign": {
+			"type": "array",
+			"default": ["", "", ""]
+		},
+		"numberColor": {
+			"type": "string",
+			"default": ""
+		},
+		"numberHoverColor": {
+			"type": "string",
+			"default": ""
+		},
+		"numberMinHeight": {
+			"type": "array",
+			"default": ["", "", ""]
+		},
+		"start": {
+			"type": "number",
+			"default": 0
+		},
+		"end": {
+			"type": "number",
+			"default": 100
+		},
+		"startDecimal": {
+			"type": "string"
+		},
+		"endDecimal": {
+			"type": "string"
+		},
+		"prefix": {
+			"type": "string",
+			"default": ""
+		},
+		"suffix": {
+			"type": "string",
+			"default": ""
+		},
+		"duration": {
+			"type": "number",
+			"default": 2.5
+		},
+		"separator": {
+			"type": "string",
+			"default": ""
+		},
+		"decimal": {
+			"type": "string",
+			"default": ""
+		},
+		"decimalSpaces": {
+			"type": "number",
+			"default": 2
+		}
 	},
-	"title": {
-	  "type": "string",
-	  "default": ""
-	},
-	"displayTitle": {
-	  "type": "boolean",
-	  "default": true
-	},
-	"titleFont": {
-	  "type": "array",
-	  "default": [ {
-		"level": 4,
-		"htmlTag": "div",
-		"size": [ "", "", "" ],
-		"sizeType": "px",
-		"lineHeight": [ "", "", "" ],
-		"lineType": "",
-		"letterSpacing": "",
-		"textTransform": "",
-		"family": "",
-		"google": false,
-		"style": "",
-		"weight": "",
-		"variant": "",
-		"subset": "",
-		"loadGoogle": true
-	  } ]
-	},
-	"titlePaddingType": {
-	  "type": "string",
-	  "default": "px"
-	},
-	"titlePadding": {
-	  "type": "array",
-	  "default": [ "", "", "", "" ]
-	},
-	"titleTabletPadding": {
-	  "type": "array",
-	  "default": [ "", "", "", "" ]
-	},
-	"titleMobilePadding": {
-	  "type": "array",
-	  "default": [ "", "", "", "" ]
-	},
-	"titleMarginType": {
-	  "type": "string",
-	  "default": "px"
-	},
-	"titleMargin": {
-	  "type": "array",
-	  "default": [ "", "", "", "" ]
-	},
-	"titleTabletMargin": {
-	  "type": "array",
-	  "default": [ "", "", "", "" ]
-	},
-	"titleMobileMargin": {
-	  "type": "array",
-	  "default": [ "", "", "", "" ]
-	},
-	"titleAlign": {
-	  "type": "array",
-	  "default": [ "", "", "" ]
-	},
-	"titleColor": {
-	  "type": "string",
-	  "default": ""
-	},
-	"titleHoverColor": {
-	  "type": "string",
-	  "default": ""
-	},
-	"titleMinHeight": {
-	  "type": "array",
-	  "default": [ "", "", "" ]
-	},
-	"numberFont": {
-	  "type": "array",
-	  "default": [ {
-		"size": [ "50", "", "" ],
-		"sizeType": "px",
-		"lineHeight": [ "", "", "" ],
-		"lineType": "px",
-		"letterSpacing": "",
-		"textTransform": "",
-		"family": "",
-		"google": false,
-		"style": "",
-		"weight": "",
-		"variant": "",
-		"subset": "",
-		"loadGoogle": true
-	  } ]
-	},
-	"numberPaddingType": {
-	  "type": "string",
-	  "default": "px"
-	},
-	"numberPadding": {
-	  "type": "array",
-	  "default": [ "", "", "", "" ]
-	},
-	"numberTabletPadding": {
-	  "type": "array",
-	  "default": [ "", "", "", "" ]
-	},
-	"numberMobilePadding": {
-	  "type": "array",
-	  "default": [ "", "", "", "" ]
-	},
-	"numberMarginType": {
-	  "type": "string",
-	  "default": "px"
-	},
-	"numberMargin": {
-	  "type": "array",
-	  "default": [ "", "", "", "" ]
-	},
-	"numberTabletMargin": {
-	  "type": "array",
-	  "default": [ "", "", "", "" ]
-	},
-	"numberMobileMargin": {
-	  "type": "array",
-	  "default": [ "", "", "", "" ]
-	},
-	"numberAlign": {
-	  "type": "array",
-	  "default": [ "", "", "" ]
-	},
-	"numberColor": {
-	  "type": "string",
-	  "default": ""
-	},
-	"numberHoverColor": {
-	  "type": "string",
-	  "default": ""
-	},
-	"numberMinHeight": {
-	  "type": "array",
-	  "default": [ "", "", "" ]
-	},
-	"start": {
-	  "type": "number",
-	  "default": 0
-	},
-	"end": {
-	  "type": "number",
-	  "default": 100
-	},
-	"startDecimal": {
-	 "type": "string"
-	},
-	"endDecimal": {
-	 "type": "string"
-	},
-	"prefix": {
-	  "type": "string",
-	  "default": ""
-	},
-	"suffix": {
-	  "type": "string",
-	  "default": ""
-	},
-	"duration": {
-	  "type": "number",
-	  "default": 2.5
-	},
-	"separator": {
-	  "type": "string",
-	  "default": ""
-	},
-	"decimal": {
-	  "type": "string",
-	  "default": ""
-	},
-	"decimalSpaces": {
-	  "type": "number",
-	  "default": 2
+	"supports": {
+		"kbMetadata": true
 	}
-  },
-  "supports": {
-    "kbMetadata": true
-  }
 }

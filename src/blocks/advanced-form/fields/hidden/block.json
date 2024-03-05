@@ -1,41 +1,41 @@
 {
-  "apiVersion": 3,
-  "name": "kadence/advanced-form-hidden",
-  "category": "kadence-blocks",
-  "textdomain": "kadence-blocks",
-  "attributes": {
-	"uniqueID": {
-		"type": "string"
+	"apiVersion": 3,
+	"name": "kadence/advanced-form-hidden",
+	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
+	"attributes": {
+		"uniqueID": {
+			"type": "string"
+		},
+		"formID": {
+			"type": "string"
+		},
+		"label": {
+			"type": "string",
+			"default": ""
+		},
+		"defaultValue": {
+			"type": "string"
+		},
+		"defaultParameter": {
+			"type": "string"
+		},
+		"inputName": {
+			"type": "string"
+		},
+		"anchor": {
+			"type": "string"
+		}
 	},
-	"formID": {
-		"type": "string"
+	"supports": {
+		"anchor": true,
+		"html": false,
+		"reusable": false,
+		"ktdynamic": true,
+		"ktfieldconditional": true,
+		"kbMetadata": true,
+		"kbContentLabel": "label"
 	},
-	"label": {
-	  "type": "string",
-	  "default": ""
-	},
-	"defaultValue": {
-	  "type": "string"
-	},
-	"defaultParameter": {
-	  "type": "string"
-	},
-	"inputName": {
-	  "type": "string"
-	},
-	"anchor": {
-	  "type": "string"
-	}
-  },
-  "supports": {
-	"anchor": true,
-	"html": false,
-	"reusable": false,
-	"ktdynamic": true,
-	"ktfieldconditional": true,
-	"kbMetadata": true,
-	"kbContentLabel": "label"
-  },
-  "ancestor": [ "kadence/advanced-form" ],
-  "parent": [ "kadence/advanced-form", "kadence/column" ]
+	"ancestor": ["kadence/advanced-form"],
+	"parent": ["kadence/advanced-form", "kadence/column"]
 }

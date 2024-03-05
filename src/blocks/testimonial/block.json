@@ -1,140 +1,142 @@
 {
-  "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 3,
-  "title": "Testimonial",
-  "name": "kadence/testimonial",
-  "parent": [
-	"kadence/testimonials"
-  ],
-  "category": "kadence-blocks",
-  "textdomain": "kadence-blocks",
-  "attributes": {
-	"uniqueID": {
-	  "type": "string",
-	  "default": ""
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"title": "Testimonial",
+	"name": "kadence/testimonial",
+	"parent": ["kadence/testimonials"],
+	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
+	"attributes": {
+		"uniqueID": {
+			"type": "string",
+			"default": ""
+		},
+		"url": {
+			"type": "string",
+			"default": "",
+			"__experimentalRole": "content"
+		},
+		"id": {
+			"type": "number",
+			"default": "",
+			"__experimentalRole": "content"
+		},
+		"alt": {
+			"type": "string",
+			"default": ""
+		},
+		"width": {
+			"type": "number",
+			"default": ""
+		},
+		"height": {
+			"type": "number",
+			"default": ""
+		},
+		"maxWidth": {
+			"type": "number",
+			"default": ""
+		},
+		"subtype": {
+			"type": "string",
+			"default": ""
+		},
+		"media": {
+			"type": "string",
+			"default": "image"
+		},
+		"icon": {
+			"type": "string",
+			"default": "fas_quote-left"
+		},
+		"isize": {
+			"type": "number",
+			"default": 50
+		},
+		"tabletIsize": {
+			"type": "number",
+			"default": ""
+		},
+		"mobileIsize": {
+			"type": "number",
+			"default": ""
+		},
+		"istroke": {
+			"type": "number",
+			"default": 2
+		},
+		"ititle": {
+			"type": "string",
+			"default": ""
+		},
+		"color": {
+			"type": "string",
+			"default": ""
+		},
+		"title": {
+			"type": "string",
+			"default": "",
+			"__experimentalRole": "content"
+		},
+		"content": {
+			"type": "string",
+			"default": "",
+			"__experimentalRole": "content"
+		},
+		"name": {
+			"type": "string",
+			"default": "",
+			"__experimentalRole": "content"
+		},
+		"occupation": {
+			"type": "string",
+			"default": "",
+			"__experimentalRole": "content"
+		},
+		"rating": {
+			"type": "number",
+			"default": 5
+		},
+		"sizes": {
+			"type": "object",
+			"default": {}
+		},
+		"inQueryBlock": {
+			"type": "boolean",
+			"default": false
+		},
+		"useBlockQuoteTags": {
+			"type": "boolean",
+			"default": true
+		},
+		"anchor": {
+			"type": "string",
+			"default": ""
+		}
 	},
-    "url": {
-	  "type": "string",
-	  "default": "",
-	  "__experimentalRole": "content"
-	},
-	"id": {
-	  "type": "number",
-	  "default": "",
-	  "__experimentalRole": "content"
-	},
-	"alt": {
-	  "type": "string",
-	  "default": ""
-	},
-	"width": {
-	  "type": "number",
-	  "default": ""
-	},
-	"height": {
-	  "type": "number",
-	  "default": ""
-	},
-	"maxWidth": {
-	  "type": "number",
-	  "default": ""
-	},
-	"subtype": {
-	  "type": "string",
-	  "default": ""
-	},
-	"media": {
-	  "type": "string",
-	  "default": "image"
-	},
-	"icon": {
-	  "type": "string",
-	  "default": "fas_quote-left"
-	},
-	"isize": {
-	  "type": "number",
-	  "default": 50
-	},
-	"tabletIsize": {
-		"type": "number",
-		"default": ""
-	},
-	"mobileIsize": {
-		"type": "number",
-		"default":""
-	},
-	"istroke": {
-	  "type": "number",
-	  "default": 2
-	},
-	"ititle": {
-	  "type": "string",
-	  "default": ""
-	},
-	"color": {
-	  "type": "string",
-	  "default": ""
-	},
-	"title": {
-	  "type": "string",
-	  "default": "",
-	  "__experimentalRole": "content"
-	},
-	"content": {
-	  "type": "string",
-	  "default": "",
-	  "__experimentalRole": "content"
-	},
-	"name": {
-	  "type": "string",
-	  "default": "",
-	  "__experimentalRole": "content"
-	},
-	"occupation": {
-	  "type": "string",
-	  "default": "",
-	  "__experimentalRole": "content"
-	},
-	"rating": {
-	  "type": "number",
-	  "default": 5
-	},
-	"sizes": {
-	  "type": "object",
-	  "default": {}
-	},
-	"inQueryBlock": {
-	  "type": "boolean",
-	  "default": false
-	},
-	"useBlockQuoteTags": {
-	  "type": "boolean",
-	  "default": true
+	"usesContext": [
+		"postId",
+		"queryId",
+		"kadence/testimonials-layout",
+		"kadence/testimonials-displayOccupation",
+		"kadence/testimonials-displayContent",
+		"kadence/testimonials-displayTitle",
+		"kadence/testimonials-displayRating",
+		"kadence/testimonials-displayName",
+		"kadence/testimonials-displayIcon",
+		"kadence/testimonials-iconStyles",
+		"kadence/testimonials-style",
+		"kadence/testimonials-containerMaxWidth",
+		"kadence/testimonials-displayMedia",
+		"kadence/testimonials-titleFont",
+		"kadence/testimonials-ratingStyles",
+		"kadence/testimonials-mediaStyles",
+		"kadence/testimonials-containerVAlign"
+	],
+	"supports": {
+		"anchor": true,
+		"html": false,
+		"kbMetadata": true,
+		"kbContentLabel": "title"
 	}
-  },
-  "usesContext": [
-	"postId",
-	"queryId",
-	"kadence/testimonials-layout",
-	"kadence/testimonials-displayOccupation",
-	"kadence/testimonials-displayContent",
-    "kadence/testimonials-displayTitle",
-	"kadence/testimonials-displayRating",
-	"kadence/testimonials-displayName",
-	"kadence/testimonials-displayIcon",
-	"kadence/testimonials-iconStyles",
-	"kadence/testimonials-style",
-	"kadence/testimonials-containerMaxWidth",
-	"kadence/testimonials-displayMedia",
-	"kadence/testimonials-titleFont",
-	"kadence/testimonials-ratingStyles",
-	"kadence/testimonials-mediaStyles",
-	"kadence/testimonials-containerVAlign"
-  ],
-  "supports": {
-	"anchor": true,
-	"html": false,
-	"kbMetadata": true,
-	"kbContentLabel": "title"
-  }
 }

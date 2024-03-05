@@ -1,0 +1,16 @@
+name: ESLint
+run-name: '[ESLint] ${{ github.event.head_commit.message }}'
+
+on: push
+jobs:
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 18
+            - run: npm ci --ignore-scripts --legacy-peer-deps
+            - run: npm rebuild && npm run prepare --if-present
+            - name: Run ESLint
+              run: npm run lint-js

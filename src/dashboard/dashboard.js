@@ -20,17 +20,17 @@ class KadenceDashboard extends Component {
 		const tabs = [
 			{
 				name: 'dashboard',
-				title: __( 'Dashboard', 'kadence' ),
+				title: __('Dashboard', 'kadence'),
 				className: 'kadence-dash-tab',
 			},
 			{
 				name: 'help',
-				title: __( 'Getting Started', 'kadence' ),
+				title: __('Getting Started', 'kadence'),
 				className: 'kadence-help-tab',
 			},
 			{
 				name: 'changelog',
-				title: __( 'Changelog', 'kadence' ),
+				title: __('Changelog', 'kadence'),
 				className: 'kadence-changelog-tab',
 			},
 			// {
@@ -46,53 +46,41 @@ class KadenceDashboard extends Component {
 		];
 
 		const KadenceDashTabPanel = () => (
-			<TabPanel className="kadence-dashboard-tab-panel"
-				activeClass="active-tab"
-				tabs={ tabs }>
-				{
-					( tab ) => {
-						switch ( tab.name ) {
-							case 'dashboard':
-								return (
-									<Panel className="dashboard-section tab-section">
-										<PanelBody
-											opened={ true }
-										>
-											<div className="dashboard-modules-wrapper">
-												<div className="dashboard-customizer-settings">
-													<BlocksList />
-												</div>
-												<div className="dashboard-pro-settings">
-													<ProBlocksList />
-												</div>
+			<TabPanel className="kadence-dashboard-tab-panel" activeClass="active-tab" tabs={tabs}>
+				{(tab) => {
+					switch (tab.name) {
+						case 'dashboard':
+							return (
+								<Panel className="dashboard-section tab-section">
+									<PanelBody opened={true}>
+										<div className="dashboard-modules-wrapper">
+											<div className="dashboard-customizer-settings">
+												<BlocksList />
 											</div>
-										</PanelBody>
-									</Panel>
-								);
+											<div className="dashboard-pro-settings">
+												<ProBlocksList />
+											</div>
+										</div>
+									</PanelBody>
+								</Panel>
+							);
 
-							case 'help':
-								return (
-									<Panel className="help-section tab-section">
-										<PanelBody
-											opened={ true }
-										>
-											<HelpTab />
-										</PanelBody>
-									</Panel>
-								);
-							case 'changelog':
-								return (
-									<Panel className="changelog-section tab-section">
-										<PanelBody
-											opened={ true }
-										>
-											<ChangelogTab />
-										</PanelBody>
-									</Panel>
-								);
-						}
+						case 'help':
+							return (
+								<Panel className="help-section tab-section">
+									<PanelBody opened={true}>
+										<HelpTab />
+									</PanelBody>
+								</Panel>
+							);
+						case 'changelog':
+							return (
+								<Panel className="changelog-section tab-section">
+									<PanelBody opened={true}>{/*<ChangelogTab />*/}</PanelBody>
+								</Panel>
+							);
 					}
-				}
+				}}
 			</TabPanel>
 		);
 
@@ -111,9 +99,6 @@ class KadenceDashboard extends Component {
 	}
 }
 
-wp.domReady( () => {
-	render(
-		<KadenceDashboard />,
-		document.querySelector( '.kadence_blocks_dashboard_main' )
-	);
-} );
+wp.domReady(() => {
+	render(<KadenceDashboard />, document.querySelector('.kadence_blocks_dashboard_main'));
+});

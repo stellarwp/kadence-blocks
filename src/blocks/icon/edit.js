@@ -21,7 +21,7 @@ import {
 	getUniqueId,
 	getInQueryBlock,
 	getGapSizeOptionOutput,
-	getPostOrFseId
+	getPostOrFseId,
 } from '@kadence/helpers';
 import { useSelect, useDispatch, withDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
@@ -46,99 +46,125 @@ import {
 	useBlockProps,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
-import {
-	useEffect,
-	useState
-} from '@wordpress/element';
-import {
-	plusCircle
-} from '@wordpress/icons';
-import {
-	ToolbarButton,
-	ToolbarGroup,
-} from '@wordpress/components';
+import { useEffect, useState } from '@wordpress/element';
+import { plusCircle } from '@wordpress/icons';
+import { ToolbarButton, ToolbarGroup, ToggleControl } from '@wordpress/components';
 
-function KadenceIcons( props ) {
+function KadenceIcons(props) {
 	const { attributes, className, setAttributes, iconsBlock, insertIcon, insertIcons, clientId, context } = props;
-	const { inQueryBlock, icons, blockAlignment, textAlignment, tabletTextAlignment, mobileTextAlignment, uniqueID, verticalAlignment, gap, gapUnit } = attributes;
+	const {
+		inQueryBlock,
+		icons,
+		blockAlignment,
+		textAlignment,
+		tabletTextAlignment,
+		mobileTextAlignment,
+		wrapIcons,
+		uniqueID,
+		verticalAlignment,
+		gap,
+		gapUnit,
+	} = attributes;
 
-	const [ activeTab, setActiveTab ] = useState( 'general' );
+	const [activeTab, setActiveTab] = useState('general');
 
-	const { removeBlock } = useDispatch( 'core/block-editor' );
-	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { removeBlock } = useDispatch('core/block-editor');
+	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
-		( select ) => {
+		(select) => {
 			return {
-				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
-				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
-				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
+				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
+				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 				parentData: {
-					rootBlock: select( 'core/block-editor' ).getBlock( select( 'core/block-editor' ).getBlockHierarchyRootClientId( clientId ) ),
-					postId: select( 'core/editor' )?.getCurrentPostId() ? select( 'core/editor' )?.getCurrentPostId() : '',
-					reusableParent: select('core/block-editor').getBlockAttributes( select('core/block-editor').getBlockParentsByBlockName( clientId, 'core/block' ).slice(-1)[0] ),
-					editedPostId: select( 'core/edit-site' ) ? select( 'core/edit-site' ).getEditedPostId() : false
-				}
+					rootBlock: select('core/block-editor').getBlock(
+						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
+					),
+					postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
+					reusableParent: select('core/block-editor').getBlockAttributes(
+						select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
+					),
+					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
+				},
 			};
 		},
-		[ clientId ]
+		[clientId]
 	);
 
-	useEffect( () => {
-		setBlockDefaults( 'kadence/icon', attributes);
+	useEffect(() => {
+		setBlockDefaults('kadence/icon', attributes);
 
-		const postOrFseId = getPostOrFseId( props, parentData );
-		let uniqueId = getUniqueId( uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId );
-		if ( uniqueId !== uniqueID ) {
+		const postOrFseId = getPostOrFseId(props, parentData);
+		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		if (uniqueId !== uniqueID) {
 			attributes.uniqueID = uniqueId;
-			setAttributes( { uniqueID: uniqueId } );
-			addUniqueID( uniqueId, clientId );
+			setAttributes({ uniqueID: uniqueId });
+			addUniqueID(uniqueId, clientId);
 		} else {
-			addUniqueID( uniqueID, clientId );
+			addUniqueID(uniqueID, clientId);
 		}
 
-		setAttributes( { inQueryBlock: getInQueryBlock( context, inQueryBlock ) } );
-	}, [] );
+		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
+	}, []);
 
-	useEffect( () => {
-		if ( uniqueID && ! iconsBlock.innerBlocks.length ) {
-			if ( icons?.length && undefined !== metadata?.attributes?.icons?.default && !isEqual( metadata.attributes.icons.default, icons ) ) {
-				const migrateUpdate = migrateToInnerblocks( attributes );
-				setAttributes( migrateUpdate[0] );
-				insertIcons( migrateUpdate[1] );
+	useEffect(() => {
+		if (uniqueID && !iconsBlock.innerBlocks.length) {
+			if (
+				icons?.length &&
+				undefined !== metadata?.attributes?.icons?.default &&
+				!isEqual(metadata.attributes.icons.default, icons)
+			) {
+				const migrateUpdate = migrateToInnerblocks(attributes);
+				setAttributes(migrateUpdate[0]);
+				insertIcons(migrateUpdate[1]);
 			} else {
 				// Delete if no inner blocks.
-				removeBlock( clientId, true );
+				removeBlock(clientId, true);
 			}
 		}
-	}, [ iconsBlock.innerBlocks.length ] );
+	}, [iconsBlock.innerBlocks.length]);
 
-	const blockProps = useBlockProps( {
-		className: className,
-		['data-align']: ( 'left' === blockAlignment || 'right' === blockAlignment || 'center' === blockAlignment ) ? blockAlignment : undefined
-	} );
-	const previewGap = getPreviewSize( previewDevice, ( undefined !== gap?.[0] ? gap[0] : '' ), ( undefined !== gap?.[1] ? gap[1] : '' ), ( undefined !== gap?.[2] ? gap[2] : '' ) );
+	const blockProps = useBlockProps({
+		className,
+		['data-align']:
+			'left' === blockAlignment || 'right' === blockAlignment || 'center' === blockAlignment
+				? blockAlignment
+				: undefined,
+	});
+	const previewGap = getPreviewSize(
+		previewDevice,
+		undefined !== gap?.[0] ? gap[0] : '',
+		undefined !== gap?.[1] ? gap[1] : '',
+		undefined !== gap?.[2] ? gap[2] : ''
+	);
 	const previewVerticalAlignment = verticalAlignment && 'middle' === verticalAlignment ? 'center' : verticalAlignment;
-	const previewTextAlign = getPreviewSize( previewDevice, ( textAlignment ? textAlignment : undefined ), ( undefined !== tabletTextAlignment && tabletTextAlignment ? tabletTextAlignment : undefined ), ( undefined !== mobileTextAlignment && mobileTextAlignment ? mobileTextAlignment : undefined ) );
-	const innerClasses = classnames( {
+	const previewTextAlign = getPreviewSize(
+		previewDevice,
+		textAlignment ? textAlignment : undefined,
+		undefined !== tabletTextAlignment && tabletTextAlignment ? tabletTextAlignment : undefined,
+		undefined !== mobileTextAlignment && mobileTextAlignment ? mobileTextAlignment : undefined
+	);
+	const innerClasses = classnames({
 		'kt-svg-icons': true,
-		[ `kt-svg-icons-${ uniqueID }` ]: uniqueID,
-		[ `kb-icon-halign-${ previewTextAlign }` ]: previewTextAlign,
-		[ `kb-icon-valign-${ previewVerticalAlignment }` ]: previewVerticalAlignment,
-	} );
+		[`kt-svg-icons-${uniqueID}`]: uniqueID,
+		[`kb-icon-halign-${previewTextAlign}`]: previewTextAlign,
+		[`kb-icon-valign-${previewVerticalAlignment}`]: previewVerticalAlignment,
+		[`kb-icon-wrap`]: wrapIcons,
+	});
 	const innerBlocksProps = useInnerBlocksProps(
 		{
 			className: innerClasses,
-			style:{
-				gap: ( '' !== previewGap ? getGapSizeOptionOutput( previewGap, ( gapUnit ? gapUnit : 'px' ) ) : undefined ),
-			}
+			style: {
+				gap: '' !== previewGap ? getGapSizeOptionOutput(previewGap, gapUnit ? gapUnit : 'px') : undefined,
+			},
 		},
 		{
-			allowedBlocks:  [ 'kadence/single-icon' ],
+			allowedBlocks: ['kadence/single-icon'],
 			orientation: 'horizontal',
 			templateLock: false,
-			template: [ [ 'kadence/single-icon' ] ],
+			template: [['kadence/single-icon']],
 			renderAppender: false,
-			templateInsertUpdatesSelection: true
+			templateInsertUpdatesSelection: true,
 		}
 	);
 	return (
@@ -146,125 +172,157 @@ function KadenceIcons( props ) {
 			<BlockControls>
 				<BlockAlignmentToolbar
 					value={blockAlignment}
-					controls={[ 'left', 'right' ]}
-					onChange={value => setAttributes( { blockAlignment: value } )}
+					controls={['left', 'right']}
+					onChange={(value) => setAttributes({ blockAlignment: value })}
 				/>
 				<ToolbarGroup>
 					<JustifyContentControl
-						value={ previewTextAlign }
-						onChange={ value => {
-							if ( previewDevice === 'Mobile' ) {
-								setAttributes( { mobileTextAlignment: ( value ? value : '' ) } );
-							} else if ( previewDevice === 'Tablet' ) {
-								setAttributes( { tabletTextAlignment: ( value ? value : '' ) } );
+						value={previewTextAlign}
+						onChange={(value) => {
+							if (previewDevice === 'Mobile') {
+								setAttributes({ mobileTextAlignment: value ? value : '' });
+							} else if (previewDevice === 'Tablet') {
+								setAttributes({ tabletTextAlignment: value ? value : '' });
 							} else {
-								setAttributes( {textAlignment: ( value ? value : 'center' ) } );
+								setAttributes({ textAlignment: value ? value : 'center' });
 							}
-						} }
+						}}
 					/>
 					<BlockVerticalAlignmentControl
-						value={previewVerticalAlignment || 'center' }
-						onChange={value => setAttributes( { verticalAlignment: value } )}
+						value={previewVerticalAlignment || 'center'}
+						onChange={(value) => setAttributes({ verticalAlignment: value })}
 					/>
 				</ToolbarGroup>
 				<ToolbarGroup>
 					<ToolbarButton
 						className="kb-icons-add-icon"
-						icon={ plusCircle }
-						onClick={ () => {
+						icon={plusCircle}
+						onClick={() => {
 							const prevAttributes = iconsBlock.innerBlocks[iconsBlock.innerBlocks.length - 1].attributes;
-							const latestAttributes = JSON.parse(JSON.stringify(prevAttributes) );
+							const latestAttributes = JSON.parse(JSON.stringify(prevAttributes));
 							latestAttributes.uniqueID = '';
-							const newBlock = createBlock( 'kadence/single-icon', latestAttributes );
-							insertIcon( newBlock );
-						} }
-						label={  __( 'Add Another Icon', 'kadence-blocks' ) }
-						showTooltip={ true }
+							const newBlock = createBlock('kadence/single-icon', latestAttributes);
+							insertIcon(newBlock);
+						}}
+						label={__('Add Another Icon', 'kadence-blocks')}
+						showTooltip={true}
 					/>
 				</ToolbarGroup>
 			</BlockControls>
-			<KadenceInspectorControls blockSlug={ 'kadence/icon' }>
-
+			<KadenceInspectorControls blockSlug={'kadence/icon'}>
 				<InspectorControlTabs
-					panelName={ 'icon' }
-					allowedTabs={ [ 'general', 'advanced' ] }
-					setActiveTab={ ( value ) => setActiveTab( value ) }
-					activeTab={ activeTab }
+					panelName={'icon'}
+					allowedTabs={['general', 'advanced']}
+					setActiveTab={(value) => setActiveTab(value)}
+					activeTab={activeTab}
 				/>
 
-				{( activeTab === 'general' ) &&
+				{activeTab === 'general' && (
 					<KadencePanelBody panelName={'kb-icon-alignment-settings'}>
 						<ResponsiveAlignControls
-							label={__( 'Icon Alignment', 'kadence-blocks' )}
-							value={( textAlignment ? textAlignment : 'center' )}
-							mobileValue={( mobileTextAlignment ? mobileTextAlignment : '' )}
-							tabletValue={( tabletTextAlignment ? tabletTextAlignment : '' )}
-							onChange={( nextAlign ) => setAttributes( { textAlignment: ( nextAlign ? nextAlign : 'center' ) } )}
-							onChangeTablet={( nextAlign ) => setAttributes( { tabletTextAlignment: ( nextAlign ? nextAlign : '' ) } )}
-							onChangeMobile={( nextAlign ) => setAttributes( { mobileTextAlignment: ( nextAlign ? nextAlign : '' ) } )}
-							type={ 'justify' }
+							label={__('Icon Alignment', 'kadence-blocks')}
+							value={textAlignment ? textAlignment : 'center'}
+							mobileValue={mobileTextAlignment ? mobileTextAlignment : ''}
+							tabletValue={tabletTextAlignment ? tabletTextAlignment : ''}
+							onChange={(nextAlign) => setAttributes({ textAlignment: nextAlign ? nextAlign : 'center' })}
+							onChangeTablet={(nextAlign) =>
+								setAttributes({ tabletTextAlignment: nextAlign ? nextAlign : '' })
+							}
+							onChangeMobile={(nextAlign) =>
+								setAttributes({ mobileTextAlignment: nextAlign ? nextAlign : '' })
+							}
+							type={'justify'}
 						/>
-						{ undefined !==iconsBlock?.innerBlocks?.length &&iconsBlock.innerBlocks.length > 1 && (
+						<ToggleControl
+							label={__('Wrap Icons?', 'kadence-blocks')}
+							checked={wrapIcons}
+							onChange={(value) => {
+								setAttributes({ wrapIcons: value });
+							}}
+						/>
+						{undefined !== iconsBlock?.innerBlocks?.length && iconsBlock.innerBlocks.length > 1 && (
 							<ResponsiveGapSizeControl
-								label={__( 'Icons Gap', 'kadence-blocks' )}
-								value={ ( undefined !== gap?.[0] ? gap[0] : '' ) }
-								onChange={ value => setAttributes( { gap: [value,( undefined !== gap[1] ? gap[1] : '' ),( undefined !== gap[2] ? gap[2] : '' )] } )}
-								tabletValue={( undefined !== gap?.[1] ? gap[1] : '' )}
-								onChangeTablet={( value ) => setAttributes( { gap: [( undefined !== gap[0] ? gap[0] : '' ),value,( undefined !== gap[2] ? gap[2] : '' )] } )}
-								mobileValue={( undefined !== gap?.[2] ? gap[2] : '' )}
-								onChangeMobile={( value ) => setAttributes( { gap: [( undefined !== gap[0] ? gap[0] : '' ),( undefined !== gap[1] ? gap[1] : '' ),value] } )}
+								label={__('Icons Gap', 'kadence-blocks')}
+								value={undefined !== gap?.[0] ? gap[0] : ''}
+								onChange={(value) =>
+									setAttributes({
+										gap: [
+											value,
+											undefined !== gap[1] ? gap[1] : '',
+											undefined !== gap[2] ? gap[2] : '',
+										],
+									})
+								}
+								tabletValue={undefined !== gap?.[1] ? gap[1] : ''}
+								onChangeTablet={(value) =>
+									setAttributes({
+										gap: [
+											undefined !== gap[0] ? gap[0] : '',
+											value,
+											undefined !== gap[2] ? gap[2] : '',
+										],
+									})
+								}
+								mobileValue={undefined !== gap?.[2] ? gap[2] : ''}
+								onChangeMobile={(value) =>
+									setAttributes({
+										gap: [
+											undefined !== gap[0] ? gap[0] : '',
+											undefined !== gap[1] ? gap[1] : '',
+											value,
+										],
+									})
+								}
 								min={0}
-								max={( gapUnit === 'px' ? 200 : 12 )}
-								step={( gapUnit === 'px' ? 1 : 0.1 )}
-								unit={ gapUnit ? gapUnit : 'px' }
-								onUnit={( value ) => {
-									setAttributes( { gapUnit: value } );
+								max={gapUnit === 'px' ? 200 : 12}
+								step={gapUnit === 'px' ? 1 : 0.1}
+								unit={gapUnit ? gapUnit : 'px'}
+								onUnit={(value) => {
+									setAttributes({ gapUnit: value });
 								}}
-								units={[ 'px', 'em', 'rem' ]}
+								units={['px', 'em', 'rem']}
 							/>
-						) }
+						)}
 					</KadencePanelBody>
-				}
-
+				)}
 			</KadenceInspectorControls>
 			<div {...innerBlocksProps} />
 		</div>
 	);
 }
-const KadenceIconsWrapper = withDispatch(
-	( dispatch, ownProps, registry ) => ( {
-		insertIcon( newBlock ) {
-			const { clientId } = ownProps;
-			const { insertBlock } = dispatch( blockEditorStore );
-			const { getBlock } = registry.select( blockEditorStore );
-			const block = getBlock( clientId );
-			console.log( clientId );
-			console.log( parseInt( block.innerBlocks.length ) );
-			insertBlock( newBlock, ( undefined !== block?.innerBlocks?.length ? parseInt( block.innerBlocks.length ) : 0 ), clientId );
-		},
-		insertIcons( newBlocks ) {
-			const { clientId } = ownProps;
-			const { replaceInnerBlocks } = dispatch( blockEditorStore );
+const KadenceIconsWrapper = withDispatch((dispatch, ownProps, registry) => ({
+	insertIcon(newBlock) {
+		const { clientId } = ownProps;
+		const { insertBlock } = dispatch(blockEditorStore);
+		const { getBlock } = registry.select(blockEditorStore);
+		const block = getBlock(clientId);
+		console.log(clientId);
+		console.log(parseInt(block.innerBlocks.length));
+		insertBlock(
+			newBlock,
+			undefined !== block?.innerBlocks?.length ? parseInt(block.innerBlocks.length) : 0,
+			clientId
+		);
+	},
+	insertIcons(newBlocks) {
+		const { clientId } = ownProps;
+		const { replaceInnerBlocks } = dispatch(blockEditorStore);
 
-			replaceInnerBlocks( clientId, newBlocks );
-		},
-	} )
-)( KadenceIcons );
-const KadenceIconsEdit = ( props ) => {
+		replaceInnerBlocks(clientId, newBlocks);
+	},
+}))(KadenceIcons);
+const KadenceIconsEdit = (props) => {
 	const { clientId } = props;
 	const { iconsBlock } = useSelect(
-		( select ) => {
-			const {
-				getBlock,
-			} = select( 'core/block-editor' );
-			const block = getBlock( clientId );
+		(select) => {
+			const { getBlock } = select('core/block-editor');
+			const block = getBlock(clientId);
 			return {
 				iconsBlock: block,
 			};
 		},
-		[ clientId ]
+		[clientId]
 	);
-	return <KadenceIconsWrapper iconsBlock={ iconsBlock } { ...props } />;
+	return <KadenceIconsWrapper iconsBlock={iconsBlock} {...props} />;
 };
 export default KadenceIconsEdit;
-

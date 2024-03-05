@@ -1,65 +1,63 @@
 {
-  "apiVersion": 3,
-  "name": "kadence/advanced-form-file",
-  "category": "kadence-blocks",
-  "textdomain": "kadence-blocks",
-  "attributes": {
-	"uniqueID": {
-		"type": "string"
+	"apiVersion": 3,
+	"name": "kadence/advanced-form-file",
+	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
+	"attributes": {
+		"uniqueID": {
+			"type": "string"
+		},
+		"formID": {
+			"type": "string"
+		},
+		"label": {
+			"type": "string",
+			"default": ""
+		},
+		"showLabel": {
+			"type": "boolean",
+			"default": true
+		},
+		"required": {
+			"type": "boolean",
+			"default": false
+		},
+		"requiredMessage": {
+			"type": "string"
+		},
+		"multiple": {
+			"type": "boolean",
+			"default": false
+		},
+		"multipleLimit": {
+			"type": "number",
+			"default": 5
+		},
+		"allowedTypes": {
+			"type": "array",
+			"default": ["image"]
+		},
+		"maxSizeMb": {
+			"type": "number",
+			"default": 10
+		},
+		"ariaDescription": {
+			"type": "string",
+			"default": ""
+		},
+		"helpText": {
+			"type": "string",
+			"default": ""
+		},
+		"anchor": {
+			"type": "string"
+		},
+		"inputName": {
+			"type": "string"
+		}
 	},
-	"formID": {
-		"type": "string"
+	"supports": {
+		"ktfieldconditional": true
 	},
-	"label": {
-	  "type": "string",
-	  "default": ""
-	},
-	"showLabel": {
-	  "type": "boolean",
-	  "default": true
-	},
-	"required": {
-	  "type": "boolean",
-	  "default": false
-	},
-	"requiredMessage": {
-		"type": "string"
-	},
-	"multiple": {
-		"type": "boolean",
-		"default": false
-	},
-	"multipleLimit": {
-		"type": "number",
-		"default": 5
-	},
-	"allowedTypes": {
-	  "type": "array",
-	  "default": [ "image" ]
-	},
-	"maxSizeMb": {
-	  "type": "number",
-	  "default": 10
-	},
-	"ariaDescription": {
-	  "type": "string",
-	  "default": ""
-	},
-	"helpText": {
-	  "type": "string",
-	  "default": ""
-	},
-	"anchor": {
-	  "type": "string"
-	},
-	"inputName": {
-	  "type": "string"
-	}
-  },
-  "supports": {
-	  "ktfieldconditional": true
-  },
-  "parent": [
-	"kadence/advanced-form"
-  ]
+	"parent": ["kadence/advanced-form"]
 }

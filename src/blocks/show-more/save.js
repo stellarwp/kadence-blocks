@@ -8,15 +8,15 @@ import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
  */
 import classnames from 'classnames';
 
-function Save( { attributes, innerBlocks } ) {
+function Save({ attributes, innerBlocks }) {
 	const { uniqueID } = attributes;
-	const classes = classnames( {
+	const classes = classnames({
 		'kb-block-show-more-container': true,
-		[ `kb-block-show-more-container${ uniqueID }` ] : true
-	} );
+		[`kb-block-show-more-container${uniqueID}`]: true,
+	});
 
 	return (
-		<div { ...useBlockProps.save( { className: classes }) }>
+		<div {...useBlockProps.save({ className: classes })}>
 			<InnerBlocks.Content />
 		</div>
 	);

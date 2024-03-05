@@ -1,4 +1,4 @@
-import { API } from "../constants/API";
+import { API } from '../constants/API';
 
 /**
  * Get the default provider on page load.

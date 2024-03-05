@@ -13,19 +13,8 @@ import apiFetch from '@wordpress/api-fetch';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import {
-	Fragment,
-	useEffect,
-	useMemo,
-	useState,
-} from '@wordpress/element';
-import {
-	TextControl,
-	Button,
-	Spinner,
-	SelectControl,
-	ExternalLink,
-} from '@wordpress/components';
+import { Fragment, useEffect, useMemo, useState } from '@wordpress/element';
+import { TextControl, Button, Spinner, SelectControl, ExternalLink } from '@wordpress/components';
 import { KadencePanelBody } from '@kadence/components';
 import { getFormFields } from '../../';
 
@@ -36,249 +25,235 @@ const HELP_URL = 'https://help.brevo.com/hc/en-us/articles/209467485-What-s-an-A
  * Build the Measure controls
  * @returns {object} Measure settings.
  */
-function SendInBlueOptions( { formInnerBlocks, parentClientId, settings, save } ) {
+function SendInBlueOptions({ formInnerBlocks, parentClientId, settings, save }) {
+	const [api, setApi] = useState('');
+	const [isSavedAPI, setIsSavedAPI] = useState(false);
+	const [isSaving, setIsSaving] = useState(false);
+	const [lists, setLists] = useState(false);
+	const [isFetching, setIsFetching] = useState(false);
+	const [listsLoaded, setListsLoaded] = useState(false);
+	const [isFetchingAttributes, setIsFetchingAttributes] = useState(false);
+	const [listAttr, setListAttr] = useState(false);
+	const [listAttrLoaded, setListAttrLoaded] = useState(false);
 
-	const [ api, setApi ] = useState( '' );
-	const [ isSavedAPI, setIsSavedAPI ] = useState( false );
-	const [ isSaving, setIsSaving ] = useState( false );
-	const [ lists, setLists ] = useState( false );
-	const [ isFetching, setIsFetching ] = useState( false );
-	const [ listsLoaded, setListsLoaded ] = useState( false );
-	const [ isFetchingAttributes, setIsFetchingAttributes ] = useState( false );
-	const [ listAttr, setListAttr ] = useState( false );
-	const [ listAttrLoaded, setListAttrLoaded ] = useState( false );
+	const fields = useMemo(() => getFormFields(formInnerBlocks), [parentClientId]);
 
-	const fields = useMemo( () => getFormFields( formInnerBlocks ), [ parentClientId ] );
-
-	useEffect( () => {
-		apiFetch( {
+	useEffect(() => {
+		apiFetch({
 			path: '/wp/v2/settings',
 			method: 'GET',
-		} ).then( ( response ) => {
-			setApi( response.kadence_blocks_send_in_blue_api );
-			if ( '' !== response.kadence_blocks_send_in_blue_api ) {
-				setIsSavedAPI( true );
+		}).then((response) => {
+			setApi(response.kadence_blocks_send_in_blue_api);
+			if ('' !== response.kadence_blocks_send_in_blue_api) {
+				setIsSavedAPI(true);
 			}
 		});
-	}, [] );
+	}, []);
 
 	const getSendInBlueList = () => {
-		if ( !api ) {
-			setLists( [] );
-			setListsLoaded( true );
+		if (!api) {
+			setLists([]);
+			setListsLoaded(true);
 			return;
 		}
 
-		setIsFetching( true );
-		apiFetch( {
-			path: addQueryArgs(
-				'/kb-sendinblue/v1/get',
-				{ apikey: api, endpoint: 'contacts/lists', queryargs: [ 'limit=50', 'offset=0' ] },
-			),
-		} )
-			.then( ( lists ) => {
+		setIsFetching(true);
+		apiFetch({
+			path: addQueryArgs('/kb-sendinblue/v1/get', {
+				apikey: api,
+				endpoint: 'contacts/lists',
+				queryargs: ['limit=50', 'offset=0'],
+			}),
+		})
+			.then((lists) => {
 				const theLists = [];
-				lists.lists.map( ( item ) => {
-					theLists.push( { value: item.id, label: item.name } );
-				} );
+				lists.lists.map((item) => {
+					theLists.push({ value: item.id, label: item.name });
+				});
 
-				setLists( theLists );
-				setListsLoaded( true );
-				setIsFetching( false );
-			} )
-			.catch( () => {
-				setLists( [] );
-				setListsLoaded( true );
-				setIsFetching( false );
-			} );
+				setLists(theLists);
+				setListsLoaded(true);
+				setIsFetching(false);
+			})
+			.catch(() => {
+				setLists([]);
+				setListsLoaded(true);
+				setIsFetching(false);
+			});
 	};
 
 	const getSendInBlueAttributes = () => {
-		if ( !api ) {
+		if (!api) {
 			const theAttributes = [];
-			theAttributes.push( { value: null, label: 'None' } );
-			theAttributes.push( { value: 'email', label: 'Email *' } );
+			theAttributes.push({ value: null, label: 'None' });
+			theAttributes.push({ value: 'email', label: 'Email *' });
 
-			setListAttr( theAttributes );
-			setListsLoaded( true );
+			setListAttr(theAttributes);
+			setListsLoaded(true);
 			return;
 		}
-		setIsFetchingAttributes( true );
+		setIsFetchingAttributes(true);
 
-		apiFetch( {
-			path: addQueryArgs(
-				'/kb-sendinblue/v1/get',
-				{ apikey: api, endpoint: 'contacts/attributes' },
-			),
-		} )
-			.then( ( list ) => {
+		apiFetch({
+			path: addQueryArgs('/kb-sendinblue/v1/get', { apikey: api, endpoint: 'contacts/attributes' }),
+		})
+			.then((list) => {
 				const theAttributes = [];
-				theAttributes.push( { value: null, label: 'None' } );
-				theAttributes.push( { value: 'email', label: 'Email *' } );
+				theAttributes.push({ value: null, label: 'None' });
+				theAttributes.push({ value: 'email', label: 'Email *' });
 
-				list.attributes.map( ( item, index ) => {
-					if ( item.category === 'normal' ) {
-						theAttributes.push( { value: item.name, label: item.name } );
+				list.attributes.map((item, index) => {
+					if (item.category === 'normal') {
+						theAttributes.push({ value: item.name, label: item.name });
 					}
-				} );
+				});
 
-				setListAttr( theAttributes );
-				setListsLoaded( true );
-				setIsFetchingAttributes( false );
-			} )
-			.catch( () => {
+				setListAttr(theAttributes);
+				setListsLoaded(true);
+				setIsFetchingAttributes(false);
+			})
+			.catch(() => {
 				const theAttributes = [];
-				theAttributes.push( { value: null, label: 'None' } );
-				theAttributes.push( { value: 'email', label: 'Email *' } );
+				theAttributes.push({ value: null, label: 'None' });
+				theAttributes.push({ value: 'email', label: 'Email *' });
 
-				setListAttr( theAttributes );
-				setListAttrLoaded( true );
-				setIsFetchingAttributes( false );
-			} );
+				setListAttr(theAttributes);
+				setListAttrLoaded(true);
+				setIsFetchingAttributes(false);
+			});
 	};
 
 	const removeAPI = () => {
-		setApi( '' );
+		setApi('');
 
-		if ( isSavedAPI ) {
-			setIsSaving( true );
-			const settingModel = new wp.api.models.Settings( {
+		if (isSavedAPI) {
+			setIsSaving(true);
+			const settingModel = new wp.api.models.Settings({
 				kadence_blocks_send_in_blue_api: '',
-			} );
-			settingModel.save().then( () => {
-				setIsSavedAPI( false );
-				setIsSaving( false );
-			} );
+			});
+			settingModel.save().then(() => {
+				setIsSavedAPI(false);
+				setIsSaving(false);
+			});
 		}
 	};
 
 	const saveAPI = () => {
-		setIsSaving( true );
-		const settingModel = new wp.api.models.Settings( {
+		setIsSaving(true);
+		const settingModel = new wp.api.models.Settings({
 			kadence_blocks_send_in_blue_api: api,
-		} );
-		settingModel.save().then( response => {
-			setIsSaving( false );
-			setIsSavedAPI( true );
-		} );
+		});
+		settingModel.save().then((response) => {
+			setIsSaving(false);
+			setIsSavedAPI(true);
+		});
 	};
 
-	const saveMap = ( value, uniqueID ) => {
-		let updatedMap = { ...settings.map }
+	const saveMap = (value, uniqueID) => {
+		const updatedMap = { ...settings.map };
 		updatedMap[uniqueID] = value;
-		save( { map: updatedMap } );
+		save({ map: updatedMap });
 	};
 
-	const hasLists = Array.isArray( lists ) && lists.length > 0;
-	const hasAttr = Array.isArray( listAttr ) && listAttr.length > 0;
+	const hasLists = Array.isArray(lists) && lists.length > 0;
+	const hasAttr = Array.isArray(listAttr) && listAttr.length > 0;
 
 	return (
-		<KadencePanelBody
-			title={__( 'Brevo (SendInBlue) Settings', 'kadence-blocks-pro' )}
-			initialOpen={false}
-		>
+		<KadencePanelBody title={__('Brevo (SendInBlue) Settings', 'kadence-blocks-pro')} initialOpen={false}>
 			<p>
 				<Fragment>
-					<ExternalLink href={RETRIEVE_API_URL}>{__( 'Get API Key', 'kadence-blocks-pro' )}</ExternalLink>
+					<ExternalLink href={RETRIEVE_API_URL}>{__('Get API Key', 'kadence-blocks-pro')}</ExternalLink>
 					|&nbsp;
-					<ExternalLink href={HELP_URL}>{__( 'Get help', 'kadence-blocks-pro' )}</ExternalLink>
+					<ExternalLink href={HELP_URL}>{__('Get help', 'kadence-blocks-pro')}</ExternalLink>
 				</Fragment>
 			</p>
-			<TextControl
-				label={__( 'API Key (v3)', 'kadence-blocks' )}
-				value={api}
-				onChange={value => setApi( value )}
-			/>
+			<TextControl label={__('API Key (v3)', 'kadence-blocks')} value={api} onChange={(value) => setApi(value)} />
 			<div className="components-base-control">
-				<Button
-					isPrimary
-					onClick={() => saveAPI()}
-					disabled={'' === api}
-				>
-					{isSaving ? __( 'Saving', 'kadence-blocks-pro' ) : __( 'Save', 'kadence-blocks-pro' )}
+				<Button isPrimary onClick={() => saveAPI()} disabled={'' === api}>
+					{isSaving ? __('Saving', 'kadence-blocks-pro') : __('Save', 'kadence-blocks-pro')}
 				</Button>
 				{api !== '' && (
 					<Fragment>
 						&nbsp;
-						<Button
-							isSecondary
-							onClick={() => removeAPI()}
-						>
-							{__( 'Remove', 'kadence-blocks-pro' )}
+						<Button isSecondary onClick={() => removeAPI()}>
+							{__('Remove', 'kadence-blocks-pro')}
 						</Button>
 					</Fragment>
 				)}
 			</div>
 			{isSavedAPI && (
 				<Fragment>
-					{isFetching && (
-						<Spinner/>
-					)}
+					{isFetching && <Spinner />}
 					{!isFetching && !hasLists && (
 						<Fragment>
-							<h2 className="kt-heading-size-title">{__( 'Select Lists', 'kadence-blocks' )}</h2>
-							{( !listsLoaded ? getSendInBlueList() : '' )}
-							{!Array.isArray( lists ) ?
-								<Spinner/> :
-								__( 'No list found.', 'kadence-blocks-pro' )}
+							<h2 className="kt-heading-size-title">{__('Select Lists', 'kadence-blocks')}</h2>
+							{!listsLoaded ? getSendInBlueList() : ''}
+							{!Array.isArray(lists) ? <Spinner /> : __('No list found.', 'kadence-blocks-pro')}
 						</Fragment>
-
 					)}
 					{!isFetching && hasLists && (
 						<Fragment>
-							<h2 className="kt-heading-size-title">{__( 'Select Lists', 'kadence-blocks' )}</h2>
+							<h2 className="kt-heading-size-title">{__('Select Lists', 'kadence-blocks')}</h2>
 							<Select
-								value={( settings && undefined !== settings.lists ? settings.lists : '' )}
-								onChange={( value ) => {
-									save( { lists: ( value ? value : [] ) } );
+								value={settings && undefined !== settings.lists ? settings.lists : ''}
+								onChange={(value) => {
+									save({ lists: value ? value : [] });
 								}}
 								id={'snb-list-selection'}
 								options={lists}
 								isMulti={true}
 								maxMenuHeight={200}
-								placeholder={__( 'Select Lists' )}
+								placeholder={__('Select Lists')}
 							/>
-							{!settings.lists && (
-								<div style={{ height: '100px' }}></div>
-							)}
+							{!settings.lists && <div style={{ height: '100px' }}></div>}
 							{settings.lists && (
 								<Fragment>
-									{isFetchingAttributes && (
-										<Spinner/>
-									)}
+									{isFetchingAttributes && <Spinner />}
 									{!isFetchingAttributes && !hasAttr && (
 										<Fragment>
-											<h2 className="kt-heading-size-title">{__( 'Map Fields', 'kadence-blocks' )}</h2>
-											{( !listAttrLoaded ? getSendInBlueAttributes() : '' )}
-											{!Array.isArray( listAttr ) ?
-												<Spinner/> :
-												__( 'No Fields found.', 'kadence-blocks-pro' )}
+											<h2 className="kt-heading-size-title">
+												{__('Map Fields', 'kadence-blocks')}
+											</h2>
+											{!listAttrLoaded ? getSendInBlueAttributes() : ''}
+											{!Array.isArray(listAttr) ? (
+												<Spinner />
+											) : (
+												__('No Fields found.', 'kadence-blocks-pro')
+											)}
 										</Fragment>
-
 									)}
 									{!isFetchingAttributes && hasAttr && (
 										<Fragment>
-											<h2 className="kt-heading-size-title">{__( 'Map Fields', 'kadence-blocks' )}</h2>
-											{fields && (
-												fields.map( ( item, index ) => {
+											<h2 className="kt-heading-size-title">
+												{__('Map Fields', 'kadence-blocks')}
+											</h2>
+											{fields &&
+												fields.map((item, index) => {
 													return (
 														<div key={index} className="kb-field-map-item">
 															<div className="kb-field-map-item-form">
-																<p className="kb-field-map-item-label">{__( 'Form Field', 'kadence-blocks' )}</p>
+																<p className="kb-field-map-item-label">
+																	{__('Form Field', 'kadence-blocks')}
+																</p>
 																<p className="kb-field-map-item-name">{item.label}</p>
 															</div>
 															<SelectControl
-																label={__( 'Select Field:' )}
+																label={__('Select Field:')}
 																options={listAttr}
-																value={( undefined !== settings.map && undefined !== settings.map[ item.uniqueID ] && settings.map[ item.uniqueID ] ? settings.map[ item.uniqueID ] : '' )}
-																onChange={( value ) => {
-																	saveMap( value, item.uniqueID );
+																value={
+																	undefined !== settings.map &&
+																	undefined !== settings.map[item.uniqueID] &&
+																	settings.map[item.uniqueID]
+																		? settings.map[item.uniqueID]
+																		: ''
+																}
+																onChange={(value) => {
+																	saveMap(value, item.uniqueID);
 																}}
 															/>
 														</div>
 													);
-												} )
-											)}
+												})}
 											{/* <div style={ { height: '10px' } } />
 												<ToggleControl
 													label={ __( 'Require Double Opt In?', 'kadence-blocks-pro' ) }
@@ -313,4 +288,4 @@ function SendInBlueOptions( { formInnerBlocks, parentClientId, settings, save } 
 	);
 }
 
-export default ( SendInBlueOptions );
+export default SendInBlueOptions;

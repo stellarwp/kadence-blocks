@@ -250,7 +250,8 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 	$current_user     = wp_get_current_user();
 	$user_email       = $current_user->user_email;
 	$recent_posts     = wp_get_recent_posts( array( 'numberposts' => '1' ) );
-	$products          = get_posts( array( 'numberposts' => 4, 'post_type' => 'product', 'fields' => 'ids' ) );
+	$products         = get_posts( array( 'numberposts' => 4, 'post_type' => 'product', 'fields' => 'ids' ) );
+	$prophecy_data    = json_decode( get_option( 'kadence_blocks_prophecy' ), true );
 	wp_localize_script(
 		'kadence-blocks-js',
 		'kadence_blocks_params',
@@ -287,7 +288,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'termEndpoint'   => '/kbp/v1/term-select',
 			'taxonomiesEndpoint' => '/kbp/v1/taxonomies-select',
 			'postTypes'      => kadence_blocks_get_post_types(),
-			'postTypesQueryable' => kadence_blocks_get_post_types( array( 'publicly_queryable' => true ) ),
+			'postTypesSearchable' => kadence_blocks_get_post_types( array( 'exclude_from_search' => false ) ),
 			'taxonomies'     => array(),
 			'g_fonts'        => file_exists( $gfonts_path ) ? include $gfonts_path : array(),
 			'g_font_names'   => file_exists( $gfont_names_path ) ? include $gfont_names_path : array(),
@@ -322,6 +323,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'addProductsLink' => ( class_exists( 'woocommerce' ) ? admin_url( 'product-new.php' ) : 'https://wordpress.org/plugins/woocommerce/' ),
 			'hasKadenceCaptcha' => ( is_plugin_active( 'kadence-recaptcha/kadence-recaptcha.php' ) ? true : false ),
 			'adminUrl' => get_admin_url(),
+			'aiLang' => ( ! empty( $prophecy_data['lang'] ) ? $prophecy_data['lang'] : '' ),
 		)
 	);
 	wp_localize_script(

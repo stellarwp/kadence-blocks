@@ -17,19 +17,14 @@ import { __ } from '@wordpress/i18n';
 
 registerBlockType('kadence/advanced-form-captcha', {
 	...metadata,
-	title: __( 'Captcha', 'kadence-blocks' ),
-	description: __( 'Kadence Form Captcha Block', 'kadence-blocks' ),
-	keywords: [
-		'captcha',
-		'verify',
-		'bot'
-	],
-	ancestor: [ 'kadence/advanced-form' ],
-	parent: [ 'kadence/advanced-form', 'kadence/column' ],
+	title: __('Captcha', 'kadence-blocks'),
+	description: __('Kadence Form Captcha Block', 'kadence-blocks'),
+	keywords: ['captcha', 'verify', 'bot'],
+	ancestor: ['kadence/advanced-form'],
+	parent: ['kadence/advanced-form', 'kadence/column'],
 	icon: {
 		src: captchaIcon,
 	},
 	edit,
 	save: () => null,
-
 });

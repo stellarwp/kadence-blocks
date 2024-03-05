@@ -20,14 +20,12 @@ import deprecated from './deprecated';
 /**
  * Import Css
  */
- import './style.scss';
+import './style.scss';
 
 /**
  * Internal block libraries
  */
-import {
-	registerBlockType,
-} from '@wordpress/blocks';
+import { registerBlockType } from '@wordpress/blocks';
 import { __, _x } from '@wordpress/i18n';
 
 /**
@@ -39,20 +37,16 @@ import { __, _x } from '@wordpress/i18n';
  * @return {?WPBlock}          The block, if it has been successfully
  *                             registered; otherwise `undefined`.
  */
-registerBlockType( 'kadence/icon', {
+registerBlockType('kadence/icon', {
 	...metadata,
-	title: _x( 'Icon', 'block title', 'kadence-blocks' ),
-	description: __( 'Create engaging lists with icons for bullets.', 'kadence-blocks' ),
-	keywords: [
-		__( 'icon', 'kadence-blocks' ),
-		__( 'svg', 'kadence-blocks' ),
-		'KB',
-	],
+	title: _x('Icon', 'block title', 'kadence-blocks'),
+	description: __('Create engaging lists with icons for bullets.', 'kadence-blocks'),
+	keywords: [__('icon', 'kadence-blocks'), __('svg', 'kadence-blocks'), 'KB'],
 	icon: {
 		src: iconIcon,
 	},
 	edit,
 	save,
 	deprecated,
-	example: {}
-} );
+	example: {},
+});

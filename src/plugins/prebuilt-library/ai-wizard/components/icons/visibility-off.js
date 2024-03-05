@@ -1,4 +1,4 @@
-import { SVG } from "@wordpress/primitives";
+import { SVG } from '@wordpress/primitives';
 
 export function VisibilityOff() {
 	return (

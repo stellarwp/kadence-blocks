@@ -1,7 +1,7 @@
-import { API_ROUTE_GET_KEYWORDS } from "../constants";
-import apiFetch from "@wordpress/api-fetch";
-import { SafeParseJSON } from "@kadence/helpers";
-import { addQueryArgs } from "@wordpress/url";
+import { API_ROUTE_GET_KEYWORDS } from '../constants';
+import apiFetch from '@wordpress/api-fetch';
+import { SafeParseJSON } from '@kadence/helpers';
+import { addQueryArgs } from '@wordpress/url';
 
 export function keywordsHelper() {
 	/**
@@ -9,23 +9,18 @@ export function keywordsHelper() {
 	 *
 	 * @return {Promise<array>}
 	 */
-	async function getSuggestedKeywords({
-		name,
-		entity_type,
-		industry,
-		location,
-		description,
-	}) {
+	async function getSuggestedKeywords({ name, entity_type, industry, location, lang, description }) {
 		try {
 			const response = await apiFetch({
 				path: API_ROUTE_GET_KEYWORDS,
-				method: "POST",
+				method: 'POST',
 				data: {
 					name,
 					entity_type: entity_type?.toLowerCase(),
 					industry,
 					location,
 					description,
+					lang: lang ? lang : 'en-US',
 					count: 10,
 				},
 			});

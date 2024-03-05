@@ -1,19 +1,13 @@
 /**
  * WordPress dependencies
  */
- import { registerPlugin } from '@wordpress/plugins';
-import {
-	render,
-} from '@wordpress/element';
+import { registerPlugin } from '@wordpress/plugins';
+import { render } from '@wordpress/element';
 import { useDispatch, useSelect, subscribe } from '@wordpress/data';
 import { createBlock, isUnmodifiedDefaultBlock } from '@wordpress/blocks';
-import {
-	store as blockEditorStore,
-} from '@wordpress/block-editor';
+import { store as blockEditorStore } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
-import {
-	Button,
-} from '@wordpress/components';
+import { Button } from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -24,78 +18,74 @@ import { kadenceBlocksIcon } from '@kadence/icons';
  * Add Prebuilt Library button to Gutenberg toolbar
  */
 function ToolbarLibrary() {
-	const { getSelectedBlock, getBlockIndex, getBlockHierarchyRootClientId } = useSelect( blockEditorStore );
-	const {
-		replaceBlocks,
-		insertBlocks,
-	} = useDispatch( blockEditorStore );
+	const { getSelectedBlock, getBlockIndex, getBlockHierarchyRootClientId } = useSelect(blockEditorStore);
+	const { replaceBlocks, insertBlocks } = useDispatch(blockEditorStore);
 	const LibraryButton = () => (
 		<Button
 			className="kb-toolbar-prebuilt-button"
-			icon={ kadenceBlocksIcon }
+			icon={kadenceBlocksIcon}
 			isPrimary
-			onClick={ () => {
+			onClick={() => {
 				const selectedBlock = getSelectedBlock();
-				if ( selectedBlock && isUnmodifiedDefaultBlock( selectedBlock ) ) {
+				if (selectedBlock && isUnmodifiedDefaultBlock(selectedBlock)) {
 					replaceBlocks(
 						selectedBlock.clientId,
-						createBlock( 'kadence/rowlayout', {
+						createBlock('kadence/rowlayout', {
 							isPrebuiltModal: true,
 							noCustomDefaults: true,
-						} ),
+						}),
 						null,
-						0,
+						0
 					);
-				} else if ( selectedBlock ) {
+				} else if (selectedBlock) {
 					const destinationRootClientId = getBlockHierarchyRootClientId(selectedBlock.clientId);
 					let destinationIndex = 0;
-					if ( destinationRootClientId ) {
-						destinationIndex = getBlockIndex( destinationRootClientId ) + 1;
+					if (destinationRootClientId) {
+						destinationIndex = getBlockIndex(destinationRootClientId) + 1;
 					} else {
-						destinationIndex = getBlockIndex( selectedBlock.clientId ) + 1;
+						destinationIndex = getBlockIndex(selectedBlock.clientId) + 1;
 					}
 					insertBlocks(
-						createBlock( 'kadence/rowlayout', {
+						createBlock('kadence/rowlayout', {
 							isPrebuiltModal: true,
 							noCustomDefaults: true,
-						} ),
-						destinationIndex,
+						}),
+						destinationIndex
 					);
 				} else {
 					insertBlocks(
-						createBlock( 'kadence/rowlayout', {
+						createBlock('kadence/rowlayout', {
 							isPrebuiltModal: true,
 							noCustomDefaults: true,
-						} ),
+						})
 					);
 				}
-			} }
+			}}
 		>
-			{ __( 'Design Library', 'kadence-blocks' ) }
+			{__('Design Library', 'kadence-blocks')}
 		</Button>
 	);
-	const renderButton = ( selector ) => {
-		const patternButton = document.createElement( 'div' );
-		patternButton.classList.add( 'kadence-toolbar-design-library' );
-		selector.appendChild( patternButton );
-		render( <LibraryButton />, patternButton );
-	}
-	if ( showSettings( 'show', 'kadence/designlibrary' ) && kadence_blocks_params.showDesignLibrary ) {
+	const renderButton = (selector) => {
+		const patternButton = document.createElement('div');
+		patternButton.classList.add('kadence-toolbar-design-library');
+		selector.appendChild(patternButton);
+		render(<LibraryButton />, patternButton);
+	};
+	if (showSettings('show', 'kadence/designlibrary') && kadence_blocks_params.showDesignLibrary) {
 		// Watch for the toolbar to be visible and the design library button to be missing.
-		let unsubscribe = subscribe( () => {
-			const editToolbar = document.querySelector( '.edit-post-header-toolbar' )
-			if ( ! editToolbar ) {
-				return
+		const unsubscribe = subscribe(() => {
+			const editToolbar = document.querySelector('.edit-post-header-toolbar');
+			if (!editToolbar) {
+				return;
 			}
-			if ( ! editToolbar.querySelector( '.kadence-toolbar-design-library' ) ) {
-				renderButton( editToolbar );
+			if (!editToolbar.querySelector('.kadence-toolbar-design-library')) {
+				renderButton(editToolbar);
 			}
-		} );
-		
+		});
 	}
 
 	return null;
 }
-registerPlugin( 'kb-toolbar-library', {
-    render: ToolbarLibrary,
-} );
+registerPlugin('kb-toolbar-library', {
+	render: ToolbarLibrary,
+});
