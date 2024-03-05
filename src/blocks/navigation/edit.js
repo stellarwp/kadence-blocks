@@ -36,10 +36,13 @@ import { useEffect } from '@wordpress/element';
 export function Edit(props) {
 	const { attributes, setAttributes, clientId } = props;
 
-	const { id, uniqueID } = attributes;
+	const { id, uniqueID, navigationOrientation, navigationStretch, navigationFillStretch } = attributes;
 
 	const blockClasses = classnames({
 		[`wp-block-kadence-navigation${uniqueID}`]: uniqueID,
+		[`navigation-layout-stretch-${navigationStretch}`]: true,
+		[`navigation-layout-fill-stretch-${navigationFillStretch}`]: true,
+		[`navigation-orientation-${navigationOrientation}`]: true,
 	});
 	const blockProps = useBlockProps({
 		className: blockClasses,

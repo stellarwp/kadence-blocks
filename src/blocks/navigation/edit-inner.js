@@ -18,6 +18,7 @@ import {
 	InspectorControlTabs,
 	SpacingVisualizer,
 	ResponsiveMeasureRangeControl,
+	RangeControl,
 } from '@kadence/components';
 import {
 	getPreviewSize,
@@ -42,6 +43,7 @@ import {
 	Button,
 	Placeholder,
 	Modal,
+	SelectControl,
 } from '@wordpress/components';
 
 import { FormTitle, SelectForm, MenuEditor } from './components';
@@ -61,7 +63,15 @@ import { DEFAULT_BLOCK, ALLOWED_BLOCKS, PRIORITIZED_INSERTER_BLOCKS } from './co
 const ANCHOR_REGEX = /[\s#]/g;
 export function EditInner(props) {
 	const { attributes, setAttributes, clientId, direct, id, isSelected } = props;
-	const { uniqueID } = attributes;
+	const {
+		uniqueID,
+		navigationOrientation,
+		navigationSpacing,
+		navigationSpacingUnit,
+		navigationStyle,
+		navigationStretch,
+		navigationFillStretch,
+	} = attributes;
 
 	const { previewDevice } = useSelect(
 		(select) => {
@@ -152,10 +162,13 @@ export function EditInner(props) {
 		undefined !== mobilePadding ? mobilePadding[3] : ''
 	);
 
-	const navClasses = classnames('menu', {
+	const navClasses = classnames('navigation', {
+		[`navigation-dropdown-animation-fade-${id}`]: true,
+	});
+
+	const innerNavClasses = classnames('menu', {
 		'kb-navigation': true,
 		[`kb-navigation-${id}`]: true,
-		[`kb-navigation${uniqueID}`]: uniqueID,
 	});
 
 	const [title, setTitle] = useNavigationProp('title');
@@ -206,7 +219,7 @@ export function EditInner(props) {
 
 	const innerBlocksProps = useInnerBlocksProps(
 		{
-			className: navClasses,
+			className: innerNavClasses,
 			style: {
 				marginTop: '' !== previewMarginTop ? getSpacingOptionOutput(previewMarginTop, marginUnit) : undefined,
 				marginRight:
@@ -285,6 +298,31 @@ export function EditInner(props) {
 			</>
 		);
 	}
+	// $css->set_selector( '.main-navigation .primary-menu-container > ul > li.menu-item > a' );
+	// $css->add_property( 'padding-left', $this->render_half_size( kadence()->option( 'primary_navigation_spacing' ) ) );
+	// $css->add_property( 'padding-right', $this->render_half_size( kadence()->option( 'primary_navigation_spacing' ) ) );
+	// if ( kadence()->option( 'primary_navigation_style' ) === 'standard' || kadence()->option( 'primary_navigation_style' ) === 'underline' ) {
+	// 	$css->add_property( 'padding-top', kadence()->sub_option( 'primary_navigation_vertical_spacing', 'size' ) . kadence()->sub_option( 'primary_navigation_vertical_spacing', 'unit' ) );
+	// 	$css->add_property( 'padding-bottom', kadence()->sub_option( 'primary_navigation_vertical_spacing', 'size' ) . kadence()->sub_option( 'primary_navigation_vertical_spacing', 'unit' ) );
+	// }
+
+	const previewHalfHorizontalSpacing = navigationSpacing[1] / 2 + navigationSpacingUnit;
+	const previewHalfVerticalSpacing = navigationSpacing[0] / 2 + navigationSpacingUnit;
+
+	var dynamicStyles = '';
+	dynamicStyles += `.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > a{`;
+	if (navigationSpacing[1]) {
+		dynamicStyles += 'padding-left: ' + previewHalfHorizontalSpacing + ';';
+		dynamicStyles += 'padding-right: ' + previewHalfHorizontalSpacing + ';';
+	}
+	if ((navigationSpacing[0] && navigationStyle == 'standard') || navigationStyle == 'underline') {
+		dynamicStyles += 'padding-top: ' + previewHalfVerticalSpacing + ';';
+		dynamicStyles += 'padding-bottom: ' + previewHalfVerticalSpacing + ';';
+	}
+	dynamicStyles += '}';
+
+	console.log(1, dynamicStyles);
+
 	return (
 		<>
 			<style>
@@ -294,7 +332,15 @@ export function EditInner(props) {
 						;
 					</>
 				)}
+				{`.main-navigation .primary-menu-container > ul > li.menu-item > a{`}
+
+				{/* { ( navigationStyle == 'standard' || navigationStyle == 'underline' ) && (
+					${labelStyles?.fontStyle ? 'font-style:' + labelStyles.fontStyle + ';' : ''}
+
+				)} */}
+				{`}`}
 			</style>
+			<style dangerouslySetInnerHTML={{ __html: dynamicStyles }} />
 			<InspectorControls>
 				<InspectorControlTabs
 					panelName={'advanced-navigation'}
@@ -304,9 +350,7 @@ export function EditInner(props) {
 
 				{activeTab === 'general' && (
 					<>
-						General tab
 						<>
-							<br />
 							<br />
 
 							<Button variant="secondary" onClick={openModal}>
@@ -320,30 +364,74 @@ export function EditInner(props) {
 							)}
 						</>
 						<div className="kt-sidebar-settings-spacer"></div>
+						<KadencePanelBody panelName={'kb-navigation-general'}>
+							<SelectControl
+								label={__('Orientation', 'kadence-blocks')}
+								value={navigationOrientation}
+								options={[
+									{ value: 'horizontal', label: __('Horizontal') },
+									{ value: 'vertical', label: __('Vertical') },
+								]}
+								onChange={(value) => setAttributes({ navigationOrientation: value })}
+							/>
+							<RangeControl
+								label={__('Horizontal Item Spacing', 'kadence-blocks')}
+								value={navigationSpacing[1]}
+								onChange={(value) =>
+									setAttributes({
+										navigationSpacing: [navigationSpacing[0], value, navigationSpacing[2], value],
+									})
+								}
+								min={0}
+								max={120}
+								units={['em', 'rem', 'px', 'vw']}
+								unit={navigationSpacingUnit}
+								onUnit={(value) => setAttributes({ navigationSpacingUnit: value })}
+								showUnit={true}
+							/>
+							<RangeControl
+								label={__('Vertical Item Spacing', 'kadence-blocks')}
+								value={navigationSpacing[0]}
+								onChange={(value) =>
+									setAttributes({
+										navigationSpacing: [value, navigationSpacing[1], value, navigationSpacing[3]],
+									})
+								}
+								min={0}
+								max={120}
+								units={['em', 'rem', 'px', 'vw']}
+								unit={navigationSpacingUnit}
+								onUnit={(value) => setAttributes({ navigationSpacingUnit: value })}
+								showUnit={true}
+							/>
+							<ToggleControl
+								label={__('Stretch Menu', 'kadence-blocks')}
+								checked={navigationStretch}
+								onChange={(value) => setAttributes({ navigationStretch: value })}
+							/>
+							{navigationStretch && (
+								<ToggleControl
+									label={__('Fill andd Center Menu Items?', 'kadence-blocks')}
+									checked={navigationFillStretch}
+									onChange={(value) => setAttributes({ navigationFillStretch: value })}
+								/>
+							)}
+						</KadencePanelBody>
 					</>
 				)}
 				{activeTab === 'style' && (
 					<>
-						<KadencePanelBody panelName={'kb-row-border'}>
-							<ResponsiveMeasureRangeControl
-								label={__('Border Width', 'kadence-blocks')}
-								value={border}
-								onChange={(value) => {
-									setMetaAttribute(value.map(String), 'border');
-								}}
-								onChangeTablet={(value) => {
-									setMetaAttribute(value.map(String), 'tabletPadding');
-								}}
-								onChangeMobile={(value) => {
-									setMetaAttribute(value.map(String), 'mobilePadding');
-								}}
-								min={0}
-								max={200}
-								step={1}
-								unit={borderUnit}
-								units={['px']}
-								onMouseOver={borderMouseOver.onMouseOver}
-								onMouseOut={borderMouseOver.onMouseOut}
+						<KadencePanelBody panelName={'kb-navigation-style'}>
+							<SelectControl
+								label={__('Style', 'kadence-blocks')}
+								value={navigationStyle}
+								options={[
+									{ value: 'standard', label: __('Standard') },
+									{ value: 'fullheight', label: __('Full Height') },
+									{ value: 'underline', label: __('Underline') },
+									{ value: 'underline-fullheight', label: __('Full Height Underline') },
+								]}
+								onChange={(value) => setAttributes({ navigationStyle: value })}
 							/>
 						</KadencePanelBody>
 						<div className="kt-sidebar-settings-spacer"></div>
@@ -436,7 +524,7 @@ export function EditInner(props) {
 					help={__('Separate multiple classes with spaces.')}
 				/>
 			</InspectorAdvancedControls>
-			<nav className="navigation navigation-dropdown-animation-fade-none">
+			<nav className={navClasses}>
 				<div className="menu-container">
 					<ul {...innerBlocksProps} />
 				</div>

@@ -1001,6 +1001,7 @@ $anchor: #5000b9;
 			}
 		}
 	}
+	// Sub menu show/hide styles
 	.navigation[class*="header-navigation-dropdown-animation-fade"] {
 		.header-menu-container {
 			ul.menu {
@@ -1023,6 +1024,45 @@ $anchor: #5000b9;
 					}
 				}
 			}
+		}
+	}
+
+	/*
+	FROM KADENCE THEME HEADER
+	*/
+	&.navigation-layout-stretch-true {
+		flex-grow: 1;
+		.navigation {
+			flex-grow: 1;
+			.menu-container {
+				flex-grow: 1;
+				.menu {
+					flex-grow: 1;
+					justify-content: space-between;
+				}
+			}
+		}
+	}
+	&.navigation-layout-stretch-true.navigation-layout-fill-stretch-true {
+		.navigation {
+			.menu-container {
+				.menu {
+					display: grid;
+					grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+					> li {
+						text-align: center;
+					}
+				}
+			}
+		}
+	}
+
+	/*
+	NEW STYLES FOR BLOCK
+	*/
+	&.navigation-orientation-vertical {
+		.menu {
+			flex-direction: column;
 		}
 	}
 }
