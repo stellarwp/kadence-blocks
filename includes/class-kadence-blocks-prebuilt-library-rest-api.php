@@ -2311,11 +2311,13 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			'guid'       => $upload['url'],
 		);
 		$info = wp_check_filetype( $upload['file'] );
-		if ( $info ) {
-			$post['post_mime_type'] = $info['type'];
-		} else {
+		$ext  = empty( $info['ext'] ) ? '' : $info['ext'];
+		$type = empty( $type['type'] ) ? '' : $type['type'];
+		// If we can't verify the file type or ext, return.
+		if ( ! $type || ! $ext ) {
 			return $image_data;
 		}
+		$post['post_mime_type'] = $type;
 		if ( ! function_exists( 'wp_generate_attachment_metadata' ) ) {
 			include( ABSPATH . 'wp-admin/includes/image.php' );
 		}
