@@ -88,6 +88,7 @@ export function EditInner(props) {
 	const [marginUnit] = useHeaderMeta('_kad_header_marginUnit');
 
 	const [headerBorder] = useHeaderMeta('_kad_header_headerBorder');
+	const [headerHoverBorder] = useHeaderMeta('_kad_header_headerHoverBorder');
 	const [headerMobileBorder] = useHeaderMeta('_kad_header_headerMobileBorder');
 	const [headerTabletBorder] = useHeaderMeta('_kad_header_headerTabletBorder');
 	const [borderUnit] = useHeaderMeta('_kad_header_borderUnit');
@@ -332,13 +333,40 @@ export function EditInner(props) {
 		<style>
 			{`
 				.kb-header.kb-header${uniqueID} {
-					${previewFontSize ? 'font-size:' + getFontSizeOptionOutput(previewFontSize, headerFont.sizeType) : ''};
-					${previewLineHeight ? 'line-height:' + previewLineHeight + headerFont.lineType : ''};
-					${previewLetterSpacing ? 'letter-spacing:' + previewLetterSpacing + 'px' : ''};
-					${headerFont?.textTransform ? 'text-transform:' + headerFont.textTransform : ''};
-					${headerFont?.family ? 'font-family:' + headerFont.family : ''};
-					${headerFont?.style ? 'font-style:' + headerFont.style : ''};
-					${headerFont?.weight ? 'font-weight:' + headerFont.weight : ''};
+					${previewFontSize ? 'font-size:' + getFontSizeOptionOutput(previewFontSize, headerFont.sizeType) + ';' : ''}
+					${previewLineHeight ? 'line-height:' + previewLineHeight + headerFont.lineType + ';' : ''}
+					${previewLetterSpacing ? 'letter-spacing:' + previewLetterSpacing + 'px;' : ''}
+					${headerFont?.textTransform ? 'text-transform:' + headerFont.textTransform + ';' : ''}
+					${headerFont?.family ? 'font-family:' + headerFont.family + ';' : ''}
+					${headerFont?.style ? 'font-style:' + headerFont.style + ';' : ''}
+					${headerFont?.weight ? 'font-weight:' + headerFont.weight + ';' : ''}
+					${undefined !== background?.image ? 'background-image: url("' + background.image + '")' + ';' : ''}
+					${undefined !== background?.imageSize ? 'background-size: ' + background.imageSize + ';' : ''}
+					${undefined !== background?.imageRepeat ? 'background-repeat: ' + background.imageRepeat + ';' : ''}
+					${undefined !== background?.imageAttachment ? 'background-attachment: ' + background.imageAttachment + ';' : ''}
+					${undefined !== background?.imagePosition ? 'background-position: ' + background.imagePosition + ';' : ''}
+				}
+				.kb-header.kb-header${uniqueID}:hover {
+					${undefined !== backgroundHover?.image ? 'background-image: url("' + backgroundHover.image + '")' + ';' : ''}
+					${undefined !== backgroundHover?.imageSize ? 'background-size: ' + backgroundHover.imageSize + ';' : ''}
+					${undefined !== backgroundHover?.imageRepeat ? 'background-repeat: ' + backgroundHover.imageRepeat + ';' : ''}
+					${
+						undefined !== backgroundHover?.imageAttachment
+							? 'background-attachment: ' + backgroundHover.imageAttachment + ';'
+							: ''
+					}
+					${undefined !== backgroundHover?.imagePosition ? 'background-position: ' + backgroundHover.imagePosition + ';' : ''}
+				}
+
+				.kb-header.kb-header${uniqueID}, .kb-header.kb-header${uniqueID} p {
+					${undefined !== textColor ? 'color: ' + KadenceColorOutput(textColor) + ';' : ''}
+				}
+				.kb-header.kb-header${uniqueID} a {
+					${undefined !== linkColor ? 'color: ' + KadenceColorOutput(linkColor) + ';' : ''}
+				}
+
+				.kb-header.kb-header${uniqueID} a:hover {
+					${undefined !== linkHoverColor ? 'color: ' + KadenceColorOutput(linkHoverColor) + ';' : ''}
 				}
 			`}
 		</style>
