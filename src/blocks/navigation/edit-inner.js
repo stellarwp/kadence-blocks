@@ -397,6 +397,7 @@ export function EditInner(props) {
 								onUnit={(value) => setMetaAttribute(value, 'spacingUnit')}
 								showUnit={true}
 							/>
+							{orientation == 'vertical' || style == 'underline' || style === 'standard' || style === ''}
 							<RangeControl
 								label={__('Vertical Item Spacing', 'kadence-blocks')}
 								value={parseFloat(spacing[0])}

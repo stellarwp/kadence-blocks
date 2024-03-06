@@ -26,7 +26,7 @@ export default function BackendStyles(props) {
 	const navigationHorizontalSpacing = spacing[1];
 	const navigationVerticalSpacing = spacing[0];
 
-	let css = new KadenceBlocksCSS();
+	const css = new KadenceBlocksCSS();
 
 	if (isSelected) {
 		css.set_selector(
@@ -43,7 +43,7 @@ export default function BackendStyles(props) {
 	css.set_selector(`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > a`);
 	css.add_property('padding-left', css.render_half_size(navigationHorizontalSpacing, spacingUnit));
 	css.add_property('padding-right', css.render_half_size(navigationHorizontalSpacing, spacingUnit));
-	if (orientation == 'vertical' || style === 'standard' || style === 'underline') {
+	if (orientation == 'vertical' || style === 'standard' || style === 'underline' || style === '') {
 		css.add_property('padding-top', css.render_size(navigationVerticalSpacing, spacingUnit));
 		css.add_property('padding-bottom', css.render_size(navigationVerticalSpacing, spacingUnit));
 	}
