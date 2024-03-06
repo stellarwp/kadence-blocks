@@ -378,31 +378,39 @@ export function EditInner(props) {
 									{ value: 'horizontal', label: __('Horizontal') },
 									{ value: 'vertical', label: __('Vertical') },
 								]}
-								onChange={(value) => setMetaAttribute(value.map(String), 'orientation')}
+								onChange={(value) => setMetaAttribute(value, 'orientation')}
 							/>
 							<RangeControl
 								label={__('Horizontal Item Spacing', 'kadence-blocks')}
-								value={spacing[1]}
+								value={parseFloat(spacing[1])}
 								onChange={(value) =>
-									setMetaAttribute([spacing[0], value, spacing[2], value], 'spacing')
+									setMetaAttribute(
+										[spacing[0], value.toString(), spacing[2], value.toString()],
+										'spacing'
+									)
 								}
 								min={0}
-								max={120}
-								units={['em', 'rem', 'px', 'vw']}
+								max={spacingUnit === 'em' || spacingUnit === 'rem' ? 24 : 200}
+								step={spacingUnit === 'em' || spacingUnit === 'rem' ? 0.1 : 1}
 								unit={spacingUnit}
+								units={['em', 'rem', 'px', 'vw']}
 								onUnit={(value) => setMetaAttribute(value, 'spacingUnit')}
 								showUnit={true}
 							/>
 							<RangeControl
 								label={__('Vertical Item Spacing', 'kadence-blocks')}
-								value={spacing[0]}
+								value={parseFloat(spacing[0])}
 								onChange={(value) =>
-									setMetaAttribute([value, spacing[1], value, spacing[3]], 'spacing')
+									setMetaAttribute(
+										[value.toString(), spacing[1], value.toString(), spacing[3]],
+										'spacing'
+									)
 								}
 								min={0}
-								max={120}
-								units={['em', 'rem', 'px', 'vw']}
+								max={spacingUnit === 'em' || spacingUnit === 'rem' ? 24 : 200}
+								step={spacingUnit === 'em' || spacingUnit === 'rem' ? 0.1 : 1}
 								unit={spacingUnit}
+								units={['em', 'rem', 'px', 'vw']}
 								onUnit={(value) => setMetaAttribute(value, 'spacingUnit')}
 								showUnit={true}
 							/>
@@ -438,7 +446,7 @@ export function EditInner(props) {
 									{ value: 'underline', label: __('Underline') },
 									{ value: 'underline-fullheight', label: __('Full Height Underline') },
 								]}
-								onChange={(value) => setMetaAttribute(value.map(String), 'style')}
+								onChange={(value) => setMetaAttribute(value, 'style')}
 							/>
 							<HoverToggleControl
 								normal={
@@ -447,13 +455,13 @@ export function EditInner(props) {
 											label={__('Link Color', 'kadence-blocks')}
 											value={linkColor}
 											default={''}
-											onChange={(value) => setMetaAttribute(value.map(String), 'linkColor')}
+											onChange={(value) => setMetaAttribute(value, 'linkColor')}
 										/>
 										<PopColorControl
 											label={__('Background', 'kadence-blocks')}
 											value={background}
 											default={''}
-											onChange={(value) => setMetaAttribute(value.map(String), 'background')}
+											onChange={(value) => setMetaAttribute(value, 'background')}
 										/>
 									</>
 								}
@@ -463,13 +471,13 @@ export function EditInner(props) {
 											label={__('Link Color Hover', 'kadence-blocks')}
 											value={linkColorHover}
 											default={''}
-											onChange={(value) => setMetaAttribute(value.map(String), 'linkColorHover')}
+											onChange={(value) => setMetaAttribute(value, 'linkColorHover')}
 										/>
 										<PopColorControl
 											label={__('Background Hover', 'kadence-blocks')}
 											value={backgroundHover}
 											default={''}
-											onChange={(value) => setMetaAttribute(value.map(String), 'backgroundHover')}
+											onChange={(value) => setMetaAttribute(value, 'backgroundHover')}
 										/>
 									</>
 								}
@@ -479,15 +487,13 @@ export function EditInner(props) {
 											label={__('Link Color Active', 'kadence-blocks')}
 											value={linkColorActive}
 											default={''}
-											onChange={(value) => setMetaAttribute(value.map(String), 'linkColorActive')}
+											onChange={(value) => setMetaAttribute(value, 'linkColorActive')}
 										/>
 										<PopColorControl
 											label={__('Background Active', 'kadence-blocks')}
 											value={backgroundActive}
 											default={''}
-											onChange={(value) =>
-												setMetaAttribute(value.map(String), 'backgroundActive')
-											}
+											onChange={(value) => setMetaAttribute(value, 'backgroundActive')}
 										/>
 									</>
 								}
