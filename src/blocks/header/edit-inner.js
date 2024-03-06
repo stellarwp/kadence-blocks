@@ -25,6 +25,7 @@ import {
 	ColorGroup,
 	BackgroundControl as KadenceBackgroundControl,
 	HoverToggleControl,
+	ResponsiveAlignControls,
 } from '@kadence/components';
 import {
 	getPreviewSize,
@@ -102,12 +103,14 @@ export function EditInner(props) {
 	//Background Options
 	const [background] = useHeaderMeta('_kad_header_background');
 	const [backgroundHover] = useHeaderMeta('_kad_header_backgroundHover');
-	console.log(background);
 
 	// Text color options
 	const [textColor] = useHeaderMeta('_kad_header_textColor');
 	const [linkColor] = useHeaderMeta('_kad_header_linkColor');
 	const [linkHoverColor] = useHeaderMeta('_kad_header_linkHoverColor');
+
+	// Flex direction settings
+	const [flex] = useHeaderMeta('_kad_header_flex');
 
 	const [className] = useHeaderMeta('_kad_header_className');
 	const [anchor] = useHeaderMeta('_kad_header_anchor');
@@ -290,7 +293,7 @@ export function EditInner(props) {
 		undefined !== mobileBorderRadius ? mobileBorderRadius[3] : ''
 	);
 
-	// Title Font size.
+	// Header font options
 	const previewFontSize = getPreviewSize(
 		previewDevice,
 		undefined !== headerFont?.size?.[0] ? headerFont.size[0] : '',
@@ -309,6 +312,14 @@ export function EditInner(props) {
 		undefined !== headerFont?.letterSpacing?.[0] ? headerFont.letterSpacing[0] : '',
 		undefined !== headerFont?.letterSpacing?.[1] ? headerFont.letterSpacing[1] : '',
 		undefined !== headerFont?.letterSpacing?.[2] ? headerFont.letterSpacing[2] : ''
+	);
+
+	// Flex direction options
+	const previewDirection = getPreviewSize(
+		previewDevice,
+		undefined !== flex?.direction?.[0] ? flex.direction[0] : '',
+		undefined !== flex?.direction?.[1] ? flex.direction[1] : '',
+		undefined !== flex?.direction?.[2] ? flex.direction[2] : ''
 	);
 
 	const headerClasses = classnames({
@@ -502,8 +513,336 @@ export function EditInner(props) {
 
 				{activeTab === 'general' && (
 					<>
-						General tab
-						<div className="kt-sidebar-settings-spacer"></div>
+						<KadencePanelBody
+							title={__('Flex Settings', 'kadence-blocks')}
+							panelName={'kb-col-flex-settings'}
+						>
+							<ResponsiveAlignControls
+								label={__('Direction', 'kadence-blocks')}
+								value={flex.direction && flex.direction[0] ? flex.direction[0] : 'vertical'}
+								tabletValue={flex.direction && flex.direction[1] ? flex.direction[1] : ''}
+								mobileValue={flex.direction && flex.direction[2] ? flex.direction[2] : ''}
+								onChange={(value) => {
+									if (value) {
+										setMetaAttribute(
+											{
+												...flex,
+												direction: [
+													value,
+													undefined !== flex.direction?.[1] ? flex.direction[1] : '',
+													undefined !== flex.direction?.[2] ? flex.direction[2] : '',
+												],
+											},
+											'flex'
+										);
+									}
+								}}
+								onChangeTablet={(value) => {
+									let tempValue = value;
+									if (flex.direction && flex.direction[1] && tempValue === flex.direction[1]) {
+										tempValue = '';
+									}
+									setMetaAttribute(
+										{
+											...flex,
+											direction: [
+												undefined !== flex.direction?.[0] ? flex.direction[0] : '',
+												tempValue,
+												undefined !== flex.direction?.[2] ? flex.direction[2] : '',
+											],
+										},
+										'flex'
+									);
+								}}
+								onChangeMobile={(value) => {
+									let tempValue = value;
+									if (flex.direction && flex.direction[2] && tempValue === flex.direction[2]) {
+										tempValue = '';
+									}
+									setMetaAttribute(
+										{
+											...flex,
+											direction: [
+												undefined !== flex.direction?.[0] ? flex.direction[0] : '',
+												undefined !== flex.direction?.[1] ? flex.direction[1] : '',
+												tempValue,
+											],
+										},
+										'flex'
+									);
+								}}
+								type={'orientation-column'}
+							/>
+							<div className="kt-sidebar-settings-spacer"></div>
+							{(previewDirection === 'horizontal-reverse' || previewDirection === 'horizontal') && (
+								<ResponsiveAlignControls
+									label={__('Alignment', 'kadence-blocks')}
+									value={
+										flex.justifyContent && flex.justifyContent?.[0] ? flex.justifyContent[0] : ''
+									}
+									tabletValue={
+										flex.justifyContent && flex.justifyContent?.[1] ? flex.justifyContent[1] : ''
+									}
+									mobileValue={
+										flex.justifyContent && flex.justifyContent?.[2] ? flex.justifyContent[2] : ''
+									}
+									onChange={(value) => {
+										let tempValue = value;
+										if (
+											(flex.justifyContent && flex.justifyContent?.[0]
+												? flex.justifyContent[0]
+												: '') === value
+										) {
+											tempValue = '';
+										}
+										setMetaAttribute(
+											{
+												...flex,
+												justifyContent: [
+													tempValue,
+													flex.justifyContent && flex.justifyContent[1]
+														? flex.justifyContent[1]
+														: '',
+													flex.justifyContent && flex.justifyContent[2]
+														? flex.justifyContent[2]
+														: '',
+												],
+											},
+											'flex'
+										);
+									}}
+									onChangeTablet={(value) => {
+										let tempValue = value;
+										if (
+											(flex.justifyContent && flex.justifyContent?.[1]
+												? flex.justifyContent[1]
+												: '') === value
+										) {
+											tempValue = '';
+										}
+										setMetaAttribute(
+											{
+												...flex,
+												justifyContent: [
+													flex.justifyContent && flex.justifyContent?.[0]
+														? flex.justifyContent[0]
+														: '',
+													tempValue,
+													flex.justifyContent && flex.justifyContent[2]
+														? flex.justifyContent[2]
+														: '',
+												],
+											},
+											'flex'
+										);
+									}}
+									onChangeMobile={(value) => {
+										let tempValue = value;
+										if (
+											(flex.justifyContent && flex.justifyContent?.[2]
+												? flex.justifyContent[2]
+												: '') === value
+										) {
+											tempValue = '';
+										}
+										setMetaAttribute(
+											{
+												...flex,
+												justifyContent: [
+													flex.justifyContent && flex.justifyContent?.[0]
+														? flex.justifyContent[0]
+														: '',
+													flex.justifyContent && flex.justifyContent[1]
+														? flex.justifyContent[1]
+														: '',
+													tempValue,
+												],
+											},
+											'flex'
+										);
+									}}
+									type={'justify-column'}
+									reverse={previewDirection === 'horizontal-reverse' ? true : false}
+								/>
+							)}
+							{(previewDirection === 'vertical-reverse' || previewDirection === 'vertical') && (
+								<ResponsiveAlignControls
+									label={__('Alignment', 'kadence-blocks')}
+									value={
+										flex.justifyContent && flex.justifyContent?.[0] ? flex.justifyContent[0] : ''
+									}
+									tabletValue={
+										flex.justifyContent && flex.justifyContent?.[1] ? flex.justifyContent[1] : ''
+									}
+									mobileValue={
+										flex.justifyContent && flex.justifyContent?.[2] ? flex.justifyContent[2] : ''
+									}
+									onChange={(value) => {
+										let tempValue = value;
+										if (
+											(flex.justifyContent && flex.justifyContent?.[0]
+												? flex.justifyContent[0]
+												: '') === value
+										) {
+											tempValue = '';
+										}
+										setMetaAttribute(
+											{
+												...flex,
+												justifyContent: [
+													tempValue,
+													flex.justifyContent && flex.justifyContent[1]
+														? flex.justifyContent[1]
+														: '',
+													flex.justifyContent && flex.justifyContent[2]
+														? flex.justifyContent[2]
+														: '',
+												],
+											},
+											'flex'
+										);
+									}}
+									onChangeTablet={(value) => {
+										let tempValue = value;
+										if (
+											(flex.justifyContent && flex.justifyContent?.[1]
+												? flex.justifyContent[1]
+												: '') === value
+										) {
+											tempValue = '';
+										}
+										setMetaAttribute(
+											{
+												...flex,
+												justifyContent: [
+													flex.justifyContent && flex.justifyContent?.[0]
+														? flex.justifyContent[0]
+														: '',
+													tempValue,
+													flex.justifyContent && flex.justifyContent[2]
+														? flex.justifyContent[2]
+														: '',
+												],
+											},
+											'flex'
+										);
+									}}
+									onChangeMobile={(value) => {
+										let tempValue = value;
+										if (
+											(flex.justifyContent && flex.justifyContent?.[2]
+												? flex.justifyContent[2]
+												: '') === value
+										) {
+											tempValue = '';
+										}
+										setMetaAttribute(
+											{
+												...flex,
+												justifyContent: [
+													flex.justifyContent && flex.justifyContent?.[0]
+														? flex.justifyContent[0]
+														: '',
+													flex.justifyContent && flex.justifyContent[1]
+														? flex.justifyContent[1]
+														: '',
+													tempValue,
+												],
+											},
+											'flex'
+										);
+									}}
+									type={'justify-align'}
+									reverse={previewDirection === 'horizontal-reverse' ? true : false}
+								/>
+							)}
+							{(previewDirection === 'vertical-reverse' || previewDirection === 'vertical') && (
+								<ResponsiveAlignControls
+									label={__('Vertical Alignment', 'kadence-blocks')}
+									value={undefined !== flex?.verticalAlignment?.[0] ? flex.verticalAlignment[0] : ''}
+									mobileValue={
+										undefined !== flex?.verticalAlignment?.[1] ? flex.verticalAlignment[1] : ''
+									}
+									tabletValue={
+										undefined !== flex?.verticalAlignment?.[2] ? flex.verticalAlignment[2] : ''
+									}
+									onChange={(value) => {
+										let tempValue = value;
+										if (
+											(flex.verticalAlignment && flex.verticalAlignment?.[0]
+												? flex.verticalAlignment[0]
+												: '') === value
+										) {
+											tempValue = '';
+										}
+										setMetaAttribute(
+											{
+												...flex,
+												verticalAlignment: [
+													tempValue,
+													flex.verticalAlignment && flex.verticalAlignment?.[1]
+														? flex.verticalAlignment[1]
+														: '',
+													flex.verticalAlignment && flex.verticalAlignment?.[2]
+														? flex.verticalAlignment[2]
+														: '',
+												],
+											},
+											'flex'
+										);
+									}}
+									onChangeTablet={(value) => {
+										let tempValue = value;
+										if (
+											(undefined !== flex?.verticalAlignment?.[1]
+												? flex.verticalAlignment[1]
+												: '') === value
+										) {
+											tempValue = '';
+										}
+										setMetaAttribute(
+											{
+												...flex,
+												verticalAlignmentTablet: [
+													flex.verticalAlignment && flex.verticalAlignment?.[1]
+														? flex.verticalAlignment[1]
+														: '',
+													tempValue,
+													flex.verticalAlignment && flex.verticalAlignment?.[2]
+														? flex.verticalAlignment[2]
+														: '',
+												],
+											},
+											'flex'
+										);
+									}}
+									onChangeMobile={(value) => {
+										let tempValue = value;
+										if (
+											(undefined !== flex?.verticalAlignment?.[2]
+												? flex.verticalAlignment[2]
+												: '') === value
+										) {
+											tempValue = '';
+										}
+										setMetaAttribute({
+											...flex,
+											verticalAlignmentMobile: [
+												flex.verticalAlignment && flex.verticalAlignment?.[0]
+													? flex.verticalAlignment[0]
+													: '',
+												flex.verticalAlignment && flex.verticalAlignment?.[1]
+													? flex.verticalAlignment[1]
+													: '',
+												tempValue,
+											],
+										});
+									}}
+									type={'justify-vertical'}
+									reverse={previewDirection === 'vertical-reverse' ? true : false}
+								/>
+							)}
+						</KadencePanelBody>
 					</>
 				)}
 
@@ -546,7 +885,6 @@ export function EditInner(props) {
 												setMetaAttribute({ ...background, image: undefined }, 'background');
 											}}
 											onSaveImage={(value) => {
-												console.log(value.id);
 												setMetaAttribute(
 													{ ...background, imageID: value.id.toString() },
 													'background'
@@ -622,7 +960,6 @@ export function EditInner(props) {
 											);
 										}}
 										onSaveImage={(value) => {
-											console.log(value.id);
 											setMetaAttribute(
 												{ ...backgroundHover, imageID: value.id.toString() },
 												'backgroundHover'
