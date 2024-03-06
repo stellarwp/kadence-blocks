@@ -207,8 +207,8 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	public function aria_described_by( $attributes ) {
 
 		if ( ! empty( $attributes['ariaDescription'] ) || ! empty( $attributes['helpText'] ) ) {
-			$form_id = ! empty( $attributes['formID'] ) ? $attributes['formID'] : '';
-			return ' aria-describedby="#aria-describe' . $form_id . $attributes['uniqueID'] . '"';
+			$form_id = ! empty( $attributes['formID'] ) ? esc_attr( $attributes['formID'] ) : '';
+			return ' aria-describedby="#aria-describe' . $form_id . esc_attr( $attributes['uniqueID'] ) . '"';
 		}
 
 		return '';
@@ -224,7 +224,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	public function get_auto_complete( $attributes ) {
 
 		if ( ! empty( $attributes['auto'] ) ) {
-			return ' autocomplete="' . $attributes['auto'] . '"';
+			return ' autocomplete="' . esc_attr( $attributes['auto'] ) . '"';
 		}
 
 		return '';
@@ -263,7 +263,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 			if ( ! empty( $response ) ) {
 				$response .= ' ';
 			}
-			$response .= 'aria-label="' . $attributes['label'] . '"';
+			$response .= 'aria-label="' . esc_attr( $attributes['label'] ) . '"';
 		}
 
 		return $response;
@@ -277,7 +277,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	 */
 	public function get_placeholder( $attributes ) {
 		if ( isset( $attributes['placeholder'] ) ) {
-			return $attributes['placeholder'];
+			return esc_attr( $attributes['placeholder'] );
 		}
 
 		return '';
