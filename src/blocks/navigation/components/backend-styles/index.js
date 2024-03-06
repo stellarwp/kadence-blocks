@@ -20,7 +20,7 @@ export default function BackendStyles(props) {
 		background,
 		backgroundHover,
 		backgroundActive,
-		navigationTypography,
+		typography,
 	} = metaAttributes;
 
 	const navigationHorizontalSpacing = spacing[1];
@@ -54,7 +54,7 @@ export default function BackendStyles(props) {
 	);
 	css.add_property('right', css.render_half_size(navigationHorizontalSpacing, spacingUnit));
 	css.set_selector(`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul li.menu-item > a`);
-	css.render_font(navigationTypography, `.wp-block-kadence-navigation${uniqueID} .navigation`, previewDevice);
+	css.render_font(typography, previewDevice);
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item > a:hover`
 	);

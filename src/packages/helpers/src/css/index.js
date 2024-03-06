@@ -318,8 +318,10 @@ export default class KadenceBlocksCSS {
 		return KadenceColorOutput(string, (opacity = null));
 	}
 
-	render_font(data, cssClass, previewDevice) {
-		return typographyStyle(data, cssClass, previewDevice);
+	render_font(data, previewDevice) {
+		// Do typographyStyle with no class attached
+		this._css += typographyStyle(data, '', previewDevice, false);
+		return this;
 	}
 
 	/**
