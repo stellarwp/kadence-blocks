@@ -269,6 +269,111 @@ export function EditInner(props) {
 		undefined !== headerMobileBorder?.left ? headerMobileBorder.left[1] : ''
 	);
 
+	const previewHoverBorderColorTop = getPreviewSize(
+		previewDevice,
+		undefined !== headerHoverBorder?.top ? KadenceColorOutput(headerHoverBorder.top[0]) : '',
+		undefined !== headerTabletBorder?.top ? KadenceColorOutput(headerTabletBorder.top[0]) : '',
+		undefined !== headerMobileBorder?.top ? KadenceColorOutput(headerTabletBorder.top[0]) : ''
+	);
+
+	const previewHoverBorderColorRight = getPreviewSize(
+		previewDevice,
+		undefined !== headerHoverBorder?.right ? KadenceColorOutput(headerHoverBorder.right[0]) : '',
+		undefined !== headerTabletBorder?.right ? KadenceColorOutput(headerTabletBorder.right[0]) : '',
+		undefined !== headerMobileBorder?.right ? KadenceColorOutput(headerTabletBorder.right[0]) : ''
+	);
+
+	const previewHoverBorderColorBottom = getPreviewSize(
+		previewDevice,
+		undefined !== headerHoverBorder?.bottom ? KadenceColorOutput(headerHoverBorder.bottom[0]) : '',
+		undefined !== headerTabletBorder?.bottom ? KadenceColorOutput(headerTabletBorder.bottom[0]) : '',
+		undefined !== headerMobileBorder?.bottom ? KadenceColorOutput(headerTabletBorder.bottom[0]) : ''
+	);
+
+	const previewHoverBorderColorLeft = getPreviewSize(
+		previewDevice,
+		undefined !== headerHoverBorder?.left ? KadenceColorOutput(headerHoverBorder.left[0]) : '',
+		undefined !== headerTabletBorder?.left ? KadenceColorOutput(headerTabletBorder.left[0]) : '',
+		undefined !== headerMobileBorder?.left ? KadenceColorOutput(headerTabletBorder.left[0]) : ''
+	);
+
+	const previewHoverBorderStyleTop = getPreviewSize(
+		previewDevice,
+		undefined !== headerHoverBorder?.top ? headerHoverBorder.top[1] : '',
+		undefined !== headerTabletBorder?.top ? headerTabletBorder.top[1] : '',
+		undefined !== headerMobileBorder?.top ? headerMobileBorder.top[1] : ''
+	);
+
+	const previewHoverBorderStyleRight = getPreviewSize(
+		previewDevice,
+		undefined !== headerHoverBorder?.right ? headerHoverBorder.right[1] : '',
+		undefined !== headerTabletBorder?.right ? headerTabletBorder.right[1] : '',
+		undefined !== headerMobileBorder?.right ? headerMobileBorder.right[1] : ''
+	);
+
+	const previewHoverBorderStyleBottom = getPreviewSize(
+		previewDevice,
+		undefined !== headerHoverBorder?.bottom ? headerHoverBorder.bottom[1] : '',
+		undefined !== headerTabletBorder?.bottom ? headerTabletBorder.bottom[1] : '',
+		undefined !== headerMobileBorder?.bottom ? headerMobileBorder.bottom[1] : ''
+	);
+
+	const previewHoverBorderStyleLeft = getPreviewSize(
+		previewDevice,
+		undefined !== headerHoverBorder?.left ? headerHoverBorder.left[1] : '',
+		undefined !== headerTabletBorder?.left ? headerTabletBorder.left[1] : '',
+		undefined !== headerMobileBorder?.left ? headerMobileBorder.left[1] : ''
+	);
+
+	const previewHoverBorderTop = getPreviewSize(
+		previewDevice,
+		undefined !== headerHoverBorder?.top
+			? getSpacingOptionOutput(headerHoverBorder.top[2], headerHoverBorder.unit)
+			: '',
+		undefined !== headerTabletBorder?.top
+			? getSpacingOptionOutput(headerTabletBorder.top[2], headerTabletBorder.unit)
+			: '',
+		undefined !== headerMobileBorder?.top
+			? getSpacingOptionOutput(headerMobileBorder.top[2], headerMobileBorder.unit)
+			: ''
+	);
+	const previewHoverBorderRight = getPreviewSize(
+		previewDevice,
+		undefined !== headerHoverBorder?.right
+			? getSpacingOptionOutput(headerHoverBorder.right[2], headerHoverBorder.unit)
+			: '',
+		undefined !== headerTabletBorder?.right
+			? getSpacingOptionOutput(headerTabletBorder.right[2], headerTabletBorder.unit)
+			: '',
+		undefined !== headerMobileBorder?.right
+			? getSpacingOptionOutput(headerMobileBorder.right[2], headerMobileBorder.unit)
+			: ''
+	);
+	const previewHoverBorderBottom = getPreviewSize(
+		previewDevice,
+		undefined !== headerHoverBorder?.bottom
+			? getSpacingOptionOutput(headerHoverBorder.bottom[2], headerHoverBorder.unit)
+			: '',
+		undefined !== headerTabletBorder?.bottom
+			? getSpacingOptionOutput(headerTabletBorder.bottom[2], headerTabletBorder.unit)
+			: '',
+		undefined !== headerMobileBorder?.bottom
+			? getSpacingOptionOutput(headerMobileBorder.bottom[2], headerMobileBorder.unit)
+			: ''
+	);
+	const previewHoverBorderLeft = getPreviewSize(
+		previewDevice,
+		undefined !== headerHoverBorder?.left
+			? getSpacingOptionOutput(headerHoverBorder.left[2], headerHoverBorder.unit)
+			: '',
+		undefined !== headerTabletBorder?.left
+			? getSpacingOptionOutput(headerTabletBorder.left[2], headerTabletBorder.unit)
+			: '',
+		undefined !== headerMobileBorder?.left
+			? getSpacingOptionOutput(headerMobileBorder.left[2], headerMobileBorder.unit)
+			: ''
+	);
+
 	const previewBorderRadiusTop = getPreviewSize(
 		previewDevice,
 		undefined !== borderRadius ? borderRadius[0] : '',
@@ -345,6 +450,18 @@ export function EditInner(props) {
 					${undefined !== background?.imageRepeat ? 'background-repeat: ' + background.imageRepeat + ';' : ''}
 					${undefined !== background?.imageAttachment ? 'background-attachment: ' + background.imageAttachment + ';' : ''}
 					${undefined !== background?.imagePosition ? 'background-position: ' + background.imagePosition + ';' : ''}
+					${'' !== previewBorderTop ? 'border-top-width: ' + previewBorderTop + ';' : ''}
+					${'' !== previewBorderRight ? 'border-right-width: ' + previewBorderRight + ';' : ''}
+					${'' !== previewBorderBottom ? 'border-bottom-width: ' + previewBorderBottom + ';' : ''}
+					${'' !== previewBorderLeft ? 'border-left-width: ' + previewBorderLeft + ';' : ''}
+					${'' !== previewBorderStyleTop ? 'border-top-style: ' + previewBorderStyleTop + ';' : ''}
+					${'' !== previewBorderStyleRight ? 'border-right-style: ' + previewBorderStyleRight + ';' : ''}
+					${'' !== previewBorderStyleBottom ? 'border-bottom-style: ' + previewBorderStyleBottom + ';' : ''}
+					${'' !== previewBorderStyleLeft ? 'border-left-style: ' + previewBorderStyleLeft + ';' : ''}
+					${'' !== previewBorderColorTop ? 'border-top-color: ' + previewBorderColorTop + ';' : ''}
+					${'' !== previewBorderColorRight ? 'border-right-color: ' + previewBorderColorRight + ';' : ''}
+					${'' !== previewBorderColorBottom ? 'border-bottom-color: ' + previewBorderColorBottom + ';' : ''}
+					${'' !== previewBorderColorLeft ? 'border-left-color: ' + previewBorderColorLeft + ';' : ''}
 				}
 				.kb-header.kb-header${uniqueID}:hover {
 					${undefined !== backgroundHover?.image ? 'background-image: url("' + backgroundHover.image + '")' + ';' : ''}
@@ -356,6 +473,18 @@ export function EditInner(props) {
 							: ''
 					}
 					${undefined !== backgroundHover?.imagePosition ? 'background-position: ' + backgroundHover.imagePosition + ';' : ''}
+					${'' !== previewHoverBorderTop ? 'border-top-width: ' + previewHoverBorderTop + ';' : ''}
+					${'' !== previewHoverBorderRight ? 'border-right-width: ' + previewHoverBorderRight + ';' : ''}
+					${'' !== previewHoverBorderBottom ? 'border-bottom-width: ' + previewHoverBorderBottom + ';' : ''}
+					${'' !== previewHoverBorderLeft ? 'border-left-width: ' + previewHoverBorderLeft + ';' : ''}
+					${'' !== previewHoverBorderStyleTop ? 'border-top-style: ' + previewHoverBorderStyleTop + ';' : ''}
+					${'' !== previewHoverBorderStyleRight ? 'border-right-style: ' + previewHoverBorderStyleRight + ';' : ''}
+					${'' !== previewHoverBorderStyleBottom ? 'border-bottom-style: ' + previewHoverBorderStyleBottom + ';' : ''}
+					${'' !== previewHoverBorderStyleLeft ? 'border-left-style: ' + previewHoverBorderStyleLeft + ';' : ''}
+					${'' !== previewHoverBorderColorTop ? 'border-top-color: ' + previewHoverBorderColorTop + ';' : ''}
+					${'' !== previewHoverBorderColorRight ? 'border-right-color: ' + previewHoverBorderColorRight + ';' : ''}
+					${'' !== previewHoverBorderColorBottom ? 'border-bottom-color: ' + previewHoverBorderColorBottom + ';' : ''}
+					${'' !== previewHoverBorderColorLeft ? 'border-left-color: ' + previewHoverBorderColorLeft + ';' : ''}
 				}
 
 				.kb-header.kb-header${uniqueID}, .kb-header.kb-header${uniqueID} p {
@@ -434,19 +563,6 @@ export function EditInner(props) {
 					'' !== previewPaddingBottom ? getSpacingOptionOutput(previewPaddingBottom, paddingUnit) : undefined,
 				paddingLeft:
 					'' !== previewPaddingLeft ? getSpacingOptionOutput(previewPaddingLeft, paddingUnit) : undefined,
-
-				borderTopWidth: '' !== previewBorderTop ? previewBorderTop : undefined,
-				borderRightWidth: '' !== previewBorderRight ? previewBorderRight : undefined,
-				borderBottomWidth: '' !== previewBorderBottom ? previewBorderBottom : undefined,
-				borderLeftWidth: '' !== previewBorderLeft ? previewBorderLeft : undefined,
-				borderTopColor: '' !== previewBorderColorTop ? previewBorderColorTop : undefined,
-				borderRightColor: '' !== previewBorderColorRight ? previewBorderColorRight : undefined,
-				borderBottomColor: '' !== previewBorderColorBottom ? previewBorderColorBottom : undefined,
-				borderLeftColor: '' !== previewBorderColorLeft ? previewBorderColorLeft : undefined,
-				borderTopStyle: '' !== previewBorderStyleTop ? previewBorderStyleTop : undefined,
-				borderRightStyle: '' !== previewBorderStyleRight ? previewBorderStyleRight : undefined,
-				borderBottomStyle: '' !== previewBorderStyleBottom ? previewBorderStyleBottom : undefined,
-				borderLeftStyle: '' !== previewBorderStyleLeft ? previewBorderStyleLeft : undefined,
 				borderTopLeftRadius:
 					'' !== previewBorderRadiusTop
 						? getSpacingOptionOutput(previewBorderRadiusLeft, borderUnit)
@@ -1050,16 +1166,33 @@ export function EditInner(props) {
 							initialOpen={false}
 							panelName={'kb-header-border'}
 						>
-							<ResponsiveBorderControl
-								label={__('Border', 'kadence-blocks')}
-								value={[headerBorder]}
-								tabletValue={[headerTabletBorder]}
-								mobileValue={[headerMobileBorder]}
-								onChange={(value) => {
-									setMetaAttribute(value[0], 'headerBorder');
-								}}
-								onChangeTablet={(value) => setMetaAttribute(value[0], 'headerTabletBorder')}
-								onChangeMobile={(value) => setMetaAttribute(value[0], 'headerMobileBorder')}
+							<HoverToggleControl
+								normal={
+									<ResponsiveBorderControl
+										label={__('Border', 'kadence-blocks')}
+										value={[headerBorder]}
+										tabletValue={[headerTabletBorder]}
+										mobileValue={[headerMobileBorder]}
+										onChange={(value) => {
+											setMetaAttribute(value[0], 'headerBorder');
+										}}
+										onChangeTablet={(value) => setMetaAttribute(value[0], 'headerTabletBorder')}
+										onChangeMobile={(value) => setMetaAttribute(value[0], 'headerMobileBorder')}
+									/>
+								}
+								hover={
+									<ResponsiveBorderControl
+										label={__('Hover Border', 'kadence-blocks')}
+										value={[headerHoverBorder]}
+										tabletValue={[headerTabletBorder]}
+										mobileValue={[headerMobileBorder]}
+										onChange={(value) => {
+											setMetaAttribute(value[0], 'headerHoverBorder');
+										}}
+										onChangeTablet={(value) => setMetaAttribute(value[0], 'headerTabletBorder')}
+										onChangeMobile={(value) => setMetaAttribute(value[0], 'headerMobileBorder')}
+									/>
+								}
 							/>
 						</KadencePanelBody>
 						<KadencePanelBody
