@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.2
 Tested up to: 6.4
-Stable tag: 3.2.25
+Stable tag: 3.2.26
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -98,9 +98,12 @@ developers of this plugin.
 == Changelog ==
 
 = 3.2.26 =
-Release Date: March TBD 2024
+Release Date: March 6th 2024
+* Update: Image importer for design library.
+* Update: Improve js formatting.
 * Fix: Styling issue with some infobox title headings.
 * Fix: Tabs block inside advanced query card.
+* Fix: Issue with image sizes in design library.
 
 = 3.2.25 =
 Release Date: February 27th 2024
