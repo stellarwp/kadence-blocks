@@ -592,14 +592,16 @@ export function EditInner(props) {
 									<KadenceBackgroundControl
 										label={__('Background Image', 'kadence-blocks')}
 										hasImage={
-											undefined === backgroundHover.image || '' === background.image
+											undefined === backgroundHover.image || '' === backgroundHover.image
 												? false
 												: true
 										}
-										imageURL={backgroundHover.image ? background.image : ''}
+										imageURL={backgroundHover.image ? backgroundHover.image : ''}
 										imageID={backgroundHover.imageID}
 										imagePosition={
-											backgroundHover.imagePosition ? background.imagePosition : 'center center'
+											backgroundHover.imagePosition
+												? backgroundHover.imagePosition
+												: 'center center'
 										}
 										imageSize={backgroundHover.imageSize ? backgroundHover.imageSize : 'cover'}
 										imageRepeat={
@@ -610,16 +612,25 @@ export function EditInner(props) {
 										}
 										imageAttachmentParallax={true}
 										onRemoveImage={() => {
-											setMetaAttribute({ ...backgroundHover, imageID: undefined }, 'background');
-											setMetaAttribute({ ...backgroundHover, image: undefined }, 'background');
+											setMetaAttribute(
+												{ ...backgroundHover, imageID: undefined },
+												'backgroundHover'
+											);
+											setMetaAttribute(
+												{ ...backgroundHover, image: undefined },
+												'backgroundHover'
+											);
 										}}
 										onSaveImage={(value) => {
 											console.log(value.id);
 											setMetaAttribute(
 												{ ...backgroundHover, imageID: value.id.toString() },
-												'background'
+												'backgroundHover'
 											);
-											setMetaAttribute({ ...background, image: value.url }, 'backgroundHover');
+											setMetaAttribute(
+												{ ...backgroundHover, image: value.url },
+												'backgroundHover'
+											);
 										}}
 										onSaveURL={(newURL) => {
 											if (newURL !== backgroundHover.image) {
@@ -658,7 +669,7 @@ export function EditInner(props) {
 											)
 										}
 										disableMediaButtons={backgroundHover.image ? true : false}
-										dynamicAttribute="background:image"
+										dynamicAttribute="backgroundHover:image"
 										isSelected={isSelected}
 										attributes={attributes}
 										setAttributes={setAttributes}
