@@ -888,7 +888,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					'url' => $image_url,
 					'id'  => 0,
 				);
-				if ( strpos( $image_url, 'images.pexels.com' ) !== false ) {
+				// If it's a pexels image, get the data.
+				if ( substr( $image_url, 0, strlen( 'https://images.pexels.com' ) ) === 'https://images.pexels.com' ) {
 					$image_data = $this->get_image_info( $image_library, $image_url );
 					if ( $image_data ) {
 						$alt                        = ! empty( $image_data['alt'] ) ? $image_data['alt'] : '';
@@ -2296,7 +2297,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			return $image_data;
 		}
 		$filename = basename( $image_data['url'] );
-		if ( strpos( $image_data['url'], 'images.pexels.com' ) !== false ) {
+		// Check if the image is from Pexels and get the filename.
+		if ( substr( $image_data['url'], 0, strlen( 'https://images.pexels.com' ) ) === 'https://images.pexels.com' ) {
 			$image_path = parse_url( $image_data['url'], PHP_URL_PATH );
 			$filename = basename( $image_path );
 		}
@@ -2446,7 +2448,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( empty( $link ) ) {
 			return false;
 		}
-		if ( strpos( $link, 'https://images.pexels.com' ) !== false ) {
+		if ( substr( $link, 0, strlen( 'https://images.pexels.com' ) ) === 'https://images.pexels.com' ) {
 			return true;
 		}
 		return preg_match( '/^((https?:\/\/)|(www\.))([a-z0-9-].?)+(:[0-9]+)?\/[\w\-]+\.(jpg|png|gif|webp|jpeg)\/?$/i', $link );

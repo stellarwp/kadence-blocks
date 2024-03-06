@@ -11,10 +11,10 @@ const API_ROUTE_GET_IMAGES = '/kb-design-library/v1/get_images';
 const { kadence_blocks_params } = window;
 
 export function getAsyncData() {
-	const [isLoadingWizard, setLoadingWizard] = useState(false);
-	const [isLoadingImages, setLoadingImages] = useState(false);
-	const [isLoadingAI, setLoadingAI] = useState(false);
-	const [error, setError] = useState(false);
+	const [ isLoadingWizard, setLoadingWizard ] = useState( false );
+	const [ isLoadingImages, setLoadingImages ] = useState( false );
+	const [ isLoadingAI, setLoadingAI ] = useState( false );
+	const [ error, setError ] = useState( false );
 
 	let data_key =
 		undefined !== kadence_blocks_params && kadence_blocks_params?.proData && kadence_blocks_params?.proData?.api_key
@@ -32,14 +32,14 @@ export function getAsyncData() {
 		kadence_blocks_params?.proData?.product_id
 			? kadence_blocks_params.proData.product_id
 			: '';
-	if (!data_key) {
+	if ( ! data_key ) {
 		data_key =
 			undefined !== kadence_blocks_params &&
 			kadence_blocks_params?.proData &&
 			kadence_blocks_params?.proData?.ithemes_key
 				? kadence_blocks_params.proData.ithemes_key
 				: '';
-		if (data_key) {
+		if ( data_key ) {
 			data_email = 'iThemes';
 		}
 	}
@@ -52,13 +52,13 @@ export function getAsyncData() {
 	 */
 	async function getAvailableCredits() {
 		try {
-			const response = await apiFetch({
+			const response = await apiFetch( {
 				path: '/kb-design-library/v1/get_remaining_credits',
-			});
+			} );
 			return response;
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${message}`);
+			console.log( `ERROR: ${ message }` );
 			return 'error';
 		}
 	}
@@ -67,27 +67,27 @@ export function getAsyncData() {
 	 *
 	 * @return {Promise<boolean>}
 	 */
-	async function saveAIWizardData(data) {
-		setLoadingWizard(true);
-		setError(false);
+	async function saveAIWizardData( data ) {
+		setLoadingWizard( true );
+		setError( false );
 
 		try {
-			const response = await apiFetch({
+			const response = await apiFetch( {
 				path: '/wp/v2/settings',
 				method: 'POST',
-				data: { kadence_blocks_prophecy: JSON.stringify(data) },
-			});
+				data: { kadence_blocks_prophecy: JSON.stringify( data ) },
+			} );
 
-			if (response) {
-				setLoadingWizard(false);
+			if ( response ) {
+				setLoadingWizard( false );
 
 				return true;
 			}
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${message}`);
-			setLoadingWizard(false);
-			setError(true);
+			console.log( `ERROR: ${ message }` );
+			setLoadingWizard( false );
+			setError( true );
 
 			return false;
 		}
@@ -99,27 +99,27 @@ export function getAsyncData() {
 	 * @return {Promise<object>}
 	 */
 	async function getAIWizardData() {
-		setLoadingWizard(true);
-		setError(false);
+		setLoadingWizard( true );
+		setError( false );
 
 		try {
-			const response = await apiFetch({
+			const response = await apiFetch( {
 				path: '/wp/v2/settings',
 				method: 'GET',
-			});
+			} );
 
-			if (response) {
-				setLoadingWizard(false);
+			if ( response ) {
+				setLoadingWizard( false );
 
-				if (response?.kadence_blocks_prophecy) {
+				if ( response?.kadence_blocks_prophecy ) {
 					return response.kadence_blocks_prophecy;
 				}
 			}
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${message}`);
-			setLoadingWizard(false);
-			setError(true);
+			console.log( `ERROR: ${ message }` );
+			setLoadingWizard( false );
+			setError( true );
 
 			return {};
 		}
@@ -132,132 +132,141 @@ export function getAsyncData() {
 	 *
 	 * @return {Promise<object>} Promise returns object
 	 */
-	async function getCollectionByIndustry(userData) {
-		if (!userData?.photoLibrary) {
+	async function getCollectionByIndustry( userData ) {
+		if ( ! userData?.photoLibrary ) {
 			return [];
 		}
-		// console.log(userData);
 		const localGallery =
 			userData?.customCollections &&
-			userData?.customCollections.some((item) => item.value === userData?.photoLibrary)
-				? userData?.customCollections.find((item) => item.value === userData?.photoLibrary)
+			userData?.customCollections.some( ( item ) => item.value === userData?.photoLibrary )
+				? userData?.customCollections.find( ( item ) => item.value === userData?.photoLibrary )
 				: false;
-		if (localGallery) {
+		if ( localGallery ) {
 			const myImages = { data: [] };
-			if (localGallery?.galleries?.[0]?.images) {
-				const aImages = localGallery?.galleries?.[0]?.images.map((item, index) => {
+			if ( localGallery?.galleries?.[ 0 ]?.images ) {
+				const aImages = localGallery?.galleries?.[ 0 ]?.images.map( ( item, index ) => {
 					const img = {};
-					if (item?.alt) {
+					if ( item?.alt ) {
 						img.alt = item.alt;
 					}
-					if (item?.url) {
+					if ( item?.url ) {
 						img.url = item.url;
 					}
-					if (item?.width) {
+					if ( item?.width ) {
 						img.width = item.width;
 					}
-					if (item?.height) {
+					if ( item?.height ) {
 						img.height = item.height;
 					}
-					if (item?.photographer) {
+					if ( item?.photographer ) {
 						img.photographer = item.photographer;
 					}
-					if (item?.photographer_url) {
+					if ( item?.photographer_url ) {
 						img.photographer_url = item.photographer_url;
 					}
-					if (item?.id) {
+					if ( item?.id ) {
 						img.id = item.id;
 					}
-					if (item?.sizes?.[1]?.src) {
-						img.sizes = [{ src: item.sizes[1].src }];
+					if ( item?.sizes?.[ 1 ]?.src ) {
+						if ( item.sizes.find( ( image ) => image.name === 'large' ) ) {
+							img.sizes = [ { src: item.sizes.find( ( image ) => image.name === 'large' ).src } ];
+						} else if ( item.sizes.find( ( image ) => image.name === '2048x2048' ) ) {
+							img.sizes = [ { src: item.sizes.find( ( image ) => image.name === '2048x2048' ).src } ];
+						} else if ( item.sizes.find( ( image ) => image.name === 'scaled' ) ) {
+							img.sizes = [ { src: item.sizes.find( ( image ) => image.name === 'scaled' ).src } ];
+						} else {
+							img.sizes = [ { src: item.sizes[ 1 ].src } ];
+						}
 					} else {
-						img.sizes = [{ src: item.url }];
+						img.sizes = [ { src: item.url } ];
 					}
 					return img;
-				});
-				myImages.data.push({ images: aImages });
+				} );
+				myImages.data.push( { images: aImages } );
 			}
-			if (localGallery?.galleries?.[1]?.images) {
-				const bImages = localGallery?.galleries?.[1]?.images.map((item, index) => {
+			if ( localGallery?.galleries?.[ 1 ]?.images ) {
+				const bImages = localGallery?.galleries?.[ 1 ]?.images.map( ( item, index ) => {
 					const img = {};
-					if (item?.alt) {
+					if ( item?.alt ) {
 						img.alt = item.alt;
 					}
-					if (item?.url) {
+					if ( item?.url ) {
 						img.url = item.url;
 					}
-					if (item?.width) {
+					if ( item?.width ) {
 						img.width = item.width;
 					}
-					if (item?.height) {
+					if ( item?.height ) {
 						img.height = item.height;
 					}
-					if (item?.photographer) {
+					if ( item?.photographer ) {
 						img.photographer = item.photographer;
 					}
-					if (item?.photographer_url) {
+					if ( item?.photographer_url ) {
 						img.photographer_url = item.photographer_url;
 					}
-					if (item?.id) {
+					if ( item?.id ) {
 						img.id = item.id;
 					}
-					if (item?.sizes?.[1]?.src) {
-						img.sizes = [{ src: item.sizes[1].src }];
+					if ( item?.sizes?.[ 1 ]?.src ) {
+						img.sizes = [ { src: item.sizes[ 1 ].src } ];
 					} else {
-						img.sizes = [{ src: item.url }];
+						img.sizes = [ { src: item.url } ];
 					}
 					return img;
-				});
-				myImages.data.push({ images: bImages });
+				} );
+				myImages.data.push( { images: bImages } );
 			}
 			return myImages;
 		}
-		if ('aiGenerated' === userData?.photoLibrary) {
-			const industries = Array.isArray(userData.photoLibrary) ? userData?.photoLibrary : [userData.photoLibrary];
+		if ( 'aiGenerated' === userData?.photoLibrary ) {
+			const industries = Array.isArray( userData.photoLibrary )
+				? userData?.photoLibrary
+				: [ userData.photoLibrary ];
 			try {
-				const response = await apiFetch({
-					path: addQueryArgs(API_ROUTE_GET_IMAGES, {
+				const response = await apiFetch( {
+					path: addQueryArgs( API_ROUTE_GET_IMAGES, {
 						industries,
 						industry: userData?.imageSearchQuery,
-					}),
-				});
-				const responseData = SafeParseJSON(response, false);
-				if (responseData) {
+					} ),
+				} );
+				const responseData = SafeParseJSON( response, false );
+				if ( responseData ) {
 					return {
 						data: [
 							{
 								name: 'featured',
-								images: responseData?.data?.images.slice(0, 12),
+								images: responseData?.data?.images.slice( 0, 12 ),
 							},
 							{
 								name: 'background',
-								images: responseData?.data?.images.slice(12, 24),
+								images: responseData?.data?.images.slice( 12, 24 ),
 							},
 						],
 					};
 				}
 				return [];
-			} catch (error) {
+			} catch ( error ) {
 				const message = error?.message ? error.message : error;
-				console.log(`ERROR: ${message}`);
+				console.log( `ERROR: ${ message }` );
 			}
 		}
-		const industries = Array.isArray(userData.photoLibrary) ? userData?.photoLibrary : [userData.photoLibrary];
+		const industries = Array.isArray( userData.photoLibrary ) ? userData?.photoLibrary : [ userData.photoLibrary ];
 		try {
-			const response = await apiFetch({
-				path: addQueryArgs(API_ROUTE_GET_IMAGES, {
+			const response = await apiFetch( {
+				path: addQueryArgs( API_ROUTE_GET_IMAGES, {
 					industries,
-				}),
-			});
-			const responseData = SafeParseJSON(response, false);
+				} ),
+			} );
+			const responseData = SafeParseJSON( response, false );
 			// console.log(responseData);
-			if (responseData) {
+			if ( responseData ) {
 				return responseData;
 			}
 			return [];
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${message}`);
+			console.log( `ERROR: ${ message }` );
 		}
 	}
 
@@ -268,17 +277,17 @@ export function getAsyncData() {
 	 *
 	 * @return {Promise<object>} Promise returns object
 	 */
-	async function getAIContentData(context) {
+	async function getAIContentData( context ) {
 		try {
-			const response = await apiFetch({
-				path: addQueryArgs('/kb-design-library/v1/get', {
+			const response = await apiFetch( {
+				path: addQueryArgs( '/kb-design-library/v1/get', {
 					context,
-				}),
-			});
+				} ),
+			} );
 			return response;
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${message}`);
+			console.log( `ERROR: ${ message }` );
 			return 'failed';
 		}
 	}
@@ -292,13 +301,13 @@ export function getAsyncData() {
 	 */
 	async function getLocalAIContentData() {
 		try {
-			const response = await apiFetch({
+			const response = await apiFetch( {
 				path: '/kb-design-library/v1/get_all_items',
-			});
+			} );
 			return response;
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${message}`);
+			console.log( `ERROR: ${ message }` );
 			return 'failed';
 		}
 	}
@@ -311,13 +320,13 @@ export function getAsyncData() {
 	 */
 	async function getInitialAIContent() {
 		try {
-			const response = await apiFetch({
+			const response = await apiFetch( {
 				path: '/kb-design-library/v1/get_initial_jobs',
-			});
+			} );
 			return response;
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${message}`);
+			console.log( `ERROR: ${ message }` );
 			return 'failed';
 		}
 	}
@@ -327,9 +336,9 @@ export function getAsyncData() {
 	 * @return {Promise<object>} Promise returns object
 	 */
 	async function loadVerticals() {
-		const response = await apiFetch({
+		const response = await apiFetch( {
 			path: '/kb-design-library/v1/get_verticals',
-		});
+		} );
 		return response;
 	}
 	/**
@@ -338,9 +347,9 @@ export function getAsyncData() {
 	 * @return {Promise<object>} Promise returns object
 	 */
 	async function loadCollections() {
-		const response = await apiFetch({
+		const response = await apiFetch( {
 			path: '/kb-design-library/v1/get_image_collections',
-		});
+		} );
 		return response;
 	}
 
@@ -351,18 +360,18 @@ export function getAsyncData() {
 	 *
 	 * @return {Promise<object>} Promise returns object
 	 */
-	async function getAIContentDataReload(context) {
+	async function getAIContentDataReload( context ) {
 		try {
-			const response = await apiFetch({
-				path: addQueryArgs('/kb-design-library/v1/get', {
+			const response = await apiFetch( {
+				path: addQueryArgs( '/kb-design-library/v1/get', {
 					force_reload: true,
 					context,
-				}),
-			});
+				} ),
+			} );
 			return response;
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${message}`);
+			console.log( `ERROR: ${ message }` );
 			return 'failed';
 		}
 	}
@@ -374,17 +383,17 @@ export function getAsyncData() {
 	 *
 	 * @return {Promise<object>} Promise returns object
 	 */
-	async function getAIContentRemaining(reload = false) {
+	async function getAIContentRemaining( reload = false ) {
 		try {
-			const response = await apiFetch({
-				path: addQueryArgs('/kb-design-library/v1/get_remaining_jobs', {
+			const response = await apiFetch( {
+				path: addQueryArgs( '/kb-design-library/v1/get_remaining_jobs', {
 					force_reload: reload,
-				}),
-			});
+				} ),
+			} );
 			return response;
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${message}`);
+			console.log( `ERROR: ${ message }` );
 			return 'failed';
 		}
 	}
@@ -395,17 +404,17 @@ export function getAsyncData() {
 	 *
 	 * @return {Promise<object>} Promise returns object
 	 */
-	async function getAllAIContentData(initial = false) {
+	async function getAllAIContentData( initial = false ) {
 		try {
-			const response = await apiFetch({
-				path: addQueryArgs('/kb-design-library/v1/get-all-ai', {
+			const response = await apiFetch( {
+				path: addQueryArgs( '/kb-design-library/v1/get-all-ai', {
 					force_reload: initial,
-				}),
-			});
+				} ),
+			} );
 			return response;
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${message}`);
+			console.log( `ERROR: ${ message }` );
 			return 'failed';
 		}
 	}
@@ -416,20 +425,20 @@ export function getAsyncData() {
 	 *
 	 * @return {Promise<object>} Promise returns object
 	 */
-	async function getPatterns(library, reload, library_url = null, key = null) {
+	async function getPatterns( library, reload, library_url = null, key = null ) {
 		try {
-			const response = await apiFetch({
-				path: addQueryArgs('/kb-design-library/v1/get_library', {
+			const response = await apiFetch( {
+				path: addQueryArgs( '/kb-design-library/v1/get_library', {
 					force_reload: reload,
 					library,
 					library_url: library_url ? library_url : '',
 					key: key ? key : library,
-				}),
-			});
+				} ),
+			} );
 			return response;
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${message}`);
+			console.log( `ERROR: ${ message }` );
 			return 'failed';
 		}
 	}
@@ -440,20 +449,20 @@ export function getAsyncData() {
 	 *
 	 * @return {Promise<object>} Promise returns object
 	 */
-	async function getPatternCategories(library, reload, library_url = null, key = null) {
+	async function getPatternCategories( library, reload, library_url = null, key = null ) {
 		try {
-			const response = await apiFetch({
-				path: addQueryArgs('/kb-design-library/v1/get_library_categories', {
+			const response = await apiFetch( {
+				path: addQueryArgs( '/kb-design-library/v1/get_library_categories', {
 					force_reload: reload,
 					library,
 					library_url: library_url ? library_url : '',
 					key: key ? key : library,
-				}),
-			});
+				} ),
+			} );
 			return response;
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${message}`);
+			console.log( `ERROR: ${ message }` );
 			return 'failed';
 		}
 	}
@@ -465,10 +474,10 @@ export function getAsyncData() {
 	 *
 	 * @return {Promise<object>} Promise returns object
 	 */
-	async function getPattern(library, type, item_id, style, library_url = null, key = null) {
+	async function getPattern( library, type, item_id, style, library_url = null, key = null ) {
 		try {
-			const response = await apiFetch({
-				path: addQueryArgs('/kb-design-library/v1/get_pattern_content', {
+			const response = await apiFetch( {
+				path: addQueryArgs( '/kb-design-library/v1/get_pattern_content', {
 					library,
 					library_url: library_url ? library_url : '',
 					key: key ? key : library,
@@ -478,12 +487,12 @@ export function getAsyncData() {
 					api_key: data_key,
 					api_email: data_email,
 					product_id,
-				}),
-			});
+				} ),
+			} );
 			return response;
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${message}`);
+			console.log( `ERROR: ${ message }` );
 			return 'failed';
 		}
 	}
@@ -496,13 +505,13 @@ export function getAsyncData() {
 	 */
 	async function getLocalAIContexts() {
 		try {
-			const response = await apiFetch({
+			const response = await apiFetch( {
 				path: '/kb-design-library/v1/get_local_contexts',
-			});
+			} );
 			return response;
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${message}`);
+			console.log( `ERROR: ${ message }` );
 			return 'failed';
 		}
 	}
@@ -513,9 +522,9 @@ export function getAsyncData() {
 	 *
 	 * @return {Promise<object>} Promise returns object
 	 */
-	async function processPattern(content, imageCollection = '', forms = '') {
+	async function processPattern( content, imageCollection = '', forms = '' ) {
 		try {
-			const response = await apiFetch({
+			const response = await apiFetch( {
 				path: '/kb-design-library/v1/process_pattern',
 				method: 'POST',
 				data: {
@@ -523,11 +532,11 @@ export function getAsyncData() {
 					image_library: imageCollection,
 					forms,
 				},
-			});
+			} );
 			return response;
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${message}`);
+			console.log( `ERROR: ${ message }` );
 			return 'failed';
 		}
 	}
