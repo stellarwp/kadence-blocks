@@ -296,7 +296,7 @@ body:not(.hide-focus-outline) .navigation li.menu-item--has-toggle > a:focus .dr
 .navigation-style-fullheight {
 	height: 100%;
 	align-items: center;
-	.header-menu-container {
+	.menu-container {
 		height: 100%;
 		align-items: center;
 		> ul {
@@ -315,8 +315,8 @@ body:not(.hide-focus-outline) .navigation li.menu-item--has-toggle > a:focus .dr
 		}
 	}
 }
-.navigation[class*="header-navigation-style-underline"] {
-	.header-menu-container {
+.navigation[class*="navigation-style-underline"] {
+	.menu-container {
 		> ul > li {
 			> a {
 				position: relative;
@@ -349,7 +349,7 @@ body:not(.hide-focus-outline) .navigation li.menu-item--has-toggle > a:focus .dr
  ## Header navigation menus
  --------------------------------------------------------------*/
 .navigation,
-.header-menu-container {
+.menu-container {
 	display: flex;
 }
 .navigation li.menu-item > a {

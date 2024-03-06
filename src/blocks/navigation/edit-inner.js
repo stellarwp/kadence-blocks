@@ -106,8 +106,8 @@ export function EditInner(props) {
 		linkColorHover: meta?._kad_navigation_linkColorHover,
 		linkColorActive: meta?._kad_navigation_linkColorActive,
 		background: meta?._kad_navigation_link_color,
-		backgroundHover: meta?._kad_navigation_background_hover,
-		backgroundActive: meta?._kad_navigation_background_active,
+		backgroundHover: meta?._kad_navigation_backgroundHover,
+		backgroundActive: meta?._kad_navigation_backgroundActive,
 		typography: meta?._kad_navigation_typography,
 	};
 
@@ -457,12 +457,14 @@ export function EditInner(props) {
 											value={linkColor}
 											default={''}
 											onChange={(value) => setMetaAttribute(value, 'linkColor')}
+											key={'normal'}
 										/>
 										<PopColorControl
 											label={__('Background', 'kadence-blocks')}
 											value={background}
 											default={''}
 											onChange={(value) => setMetaAttribute(value, 'background')}
+											key={'normalb'}
 										/>
 									</>
 								}
@@ -473,12 +475,14 @@ export function EditInner(props) {
 											value={linkColorHover}
 											default={''}
 											onChange={(value) => setMetaAttribute(value, 'linkColorHover')}
+											key={'hover'}
 										/>
 										<PopColorControl
 											label={__('Background Hover', 'kadence-blocks')}
 											value={backgroundHover}
 											default={''}
 											onChange={(value) => setMetaAttribute(value, 'backgroundHover')}
+											key={'hoverb'}
 										/>
 									</>
 								}
@@ -489,12 +493,14 @@ export function EditInner(props) {
 											value={linkColorActive}
 											default={''}
 											onChange={(value) => setMetaAttribute(value, 'linkColorActive')}
+											key={'active'}
 										/>
 										<PopColorControl
 											label={__('Background Active', 'kadence-blocks')}
 											value={backgroundActive}
 											default={''}
 											onChange={(value) => setMetaAttribute(value, 'backgroundActive')}
+											key={'activeb'}
 										/>
 									</>
 								}

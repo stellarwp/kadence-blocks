@@ -37,7 +37,7 @@ export default function BackendStyles(props) {
 
 	// Navigation logic from theme styles component.
 	css.set_selector(
-		`.wp-block-kadence-navigation${uniqueID} .navigation[class*="header-navigation-style-underline"] .menu-container>ul>li>a:after`
+		`.wp-block-kadence-navigation${uniqueID} .navigation[class*="navigation-style-underline"] .menu-container>ul>li>a:after`
 	);
 	css.add_property('width', 'calc( 100% - ' + css.render_size(navigationHorizontalSpacing, spacingUnit) + ')');
 	css.set_selector(`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > a`);
@@ -62,7 +62,7 @@ export default function BackendStyles(props) {
 	css.add_property('background', css.render_color(backgroundHover));
 	if (parentActive) {
 		css.set_selector(
-			`.wp-block-kadence-navigation${uniqueID} .navigation[class*="header-navigation-style-underline"] .menu-container.menu-container>ul>li.current-menu-ancestor>a:after`
+			`.wp-block-kadence-navigation${uniqueID} .navigation[class*="navigation-style-underline"] .menu-container.menu-container>ul>li.current-menu-ancestor>a:after`
 		);
 		css.add_property('transform', 'scale(1, 1) translate(50%, 0)');
 		css.set_selector(

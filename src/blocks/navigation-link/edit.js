@@ -240,6 +240,9 @@ export default function Edit(props) {
 	const itemLabelPlaceholder = __('Add label…');
 	const ref = useRef();
 
+	//See if this is the first Nav Item in the menu
+	const hasNoBlockBefore = wp.data.select('core/block-editor').getPreviousBlockClientId(clientId) === null;
+
 	// Change the label using inspector causes rich text to change focus on firefox.
 	// This is a workaround to keep the focus on the label field when label filed is focused we don't render the rich text.
 	const [isLabelFieldFocused, setIsLabelFieldFocused] = useState(false);
@@ -438,6 +441,7 @@ export default function Edit(props) {
 				'has-link': !!url,
 				'has-child': hasChildren,
 				'menu-item--toggled-on': showSubMenus,
+				'current-menu-item': hasNoBlockBefore,
 				'kadence-menu-mega-enabled': isMegaMenu,
 				[`wp-block-kadence-navigation-link${uniqueID}`]: uniqueID,
 			}

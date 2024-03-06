@@ -302,7 +302,7 @@ $anchor: #5000b9;
 	.navigation-style-fullheight {
 		height: 100%;
 		align-items: center;
-		.header-menu-container {
+		.menu-container {
 			height: 100%;
 			align-items: center;
 			> ul {
@@ -321,8 +321,8 @@ $anchor: #5000b9;
 			}
 		}
 	}
-	.navigation[class*="header-navigation-style-underline"] {
-		.header-menu-container {
+	.navigation[class*="navigation-style-underline"] {
+		.menu-container {
 			> ul > li {
 				> a {
 					position: relative;
@@ -355,7 +355,7 @@ $anchor: #5000b9;
 	## Header navigation menus
 	--------------------------------------------------------------*/
 	.navigation,
-	.header-menu-container {
+	.menu-container {
 		display: flex;
 	}
 	.navigation li.menu-item > a {
@@ -794,10 +794,7 @@ $anchor: #5000b9;
 		display: none;
 	}
 	.kadence-menu-hidden-title.menu-item-has-children:not(.kadence-menu-has-icon) > a,
-	.navigation
-		.header-menu-container
-		.kadence-menu-hidden-title.menu-item-has-children:not(.kadence-menu-has-icon)
-		> a {
+	.navigation .menu-container .kadence-menu-hidden-title.menu-item-has-children:not(.kadence-menu-has-icon) > a {
 		padding: 0;
 		border: 0;
 	}
@@ -1003,7 +1000,7 @@ $anchor: #5000b9;
 	}
 	// Sub menu show/hide styles
 	.navigation[class*="header-navigation-dropdown-animation-fade"] {
-		.header-menu-container {
+		.menu-container {
 			ul.menu {
 				> li.kadence-menu-mega-width-custom {
 					> ul.sub-menu {
@@ -1015,7 +1012,7 @@ $anchor: #5000b9;
 		}
 	}
 	.navigation.navigation-dropdown-animation-none {
-		.header-menu-container {
+		.menu-container {
 			ul.menu {
 				> li.kadence-menu-mega-width-custom {
 					> ul.sub-menu {
