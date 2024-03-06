@@ -42,7 +42,7 @@ import {
 } from '@wordpress/block-editor';
 import { TextControl, ToggleControl, ToolbarGroup, ExternalLink, Button, Placeholder } from '@wordpress/components';
 
-import { FormTitle, SelectForm } from './components';
+import { FormTitle, SelectForm, FieldBlockAppender } from './components';
 
 /**
  * Internal dependencies
@@ -98,20 +98,9 @@ export function EditInner(props) {
 	const [borderRadiusUnit] = useHeaderMeta('_kad_header_borderRadiusUnit');
 
 	// Typography options
-	const [fontSize] = useHeaderMeta('_kad_header_fontSize');
-	const [fontSizeType] = useHeaderMeta('_kad_header_fontSizeType');
-	const [lineHeight] = useHeaderMeta('_kad_header_lineHeight');
-	const [lineHeightType] = useHeaderMeta('_kad_header_lineHeightType');
-	const [letterSpacing] = useHeaderMeta('_kad_header_letterSpacing');
-	const [letterSpacingType] = useHeaderMeta('_kad_header_letterSpacingType');
-	const [textTransform] = useHeaderMeta('_kad_header_textTransform');
-	const [fontFamily] = useHeaderMeta('_kad_header_fontFamily');
-	const [googleFont] = useHeaderMeta('_kad_header_googleFont');
-	const [loadGoogle] = useHeaderMeta('_kad_header_loadGoogle');
-	const [fontVariant] = useHeaderMeta('_kad_header_fontVariant');
-	const [fontWeight] = useHeaderMeta('_kad_header_fontWeight');
-	const [fontStyle] = useHeaderMeta('_kad_header_fontStyle');
-	const [fontSubset] = useHeaderMeta('_kad_header_fontSubset');
+
+	const [headerFont] = useHeaderMeta('_kad_header_headerFont');
+	console.log(headerFont);
 
 	//Background Options
 	const [bgColor] = useHeaderMeta('_kad_header_bgColor');
@@ -473,6 +462,7 @@ export function EditInner(props) {
 					</>
 				)}
 			</style>
+
 			<InspectorControls>
 				<InspectorControlTabs
 					panelName={'advanced-header'}
@@ -566,39 +556,64 @@ export function EditInner(props) {
 						>
 							<TypographyControls
 								fontGroup={'header'}
-								fontSize={fontSize}
-								onFontSize={(value) => setMetaAttribute(value, 'fontSize')}
-								fontSizeType={fontSizeType}
-								onFontSizeType={(value) => setMetaAttribute(value, 'fontSizeType')}
-								lineHeight={lineHeight}
-								onLineHeight={(value) => setMetaAttribute(value, 'lineHeight')}
-								lineHeightType={lineHeightType}
-								onLineHeightType={(value) => setMetaAttribute(value, 'lineHeightType')}
-								reLetterSpacing={letterSpacing}
-								onLetterSpacing={(value) => setMetaAttribute(value, 'letterSpacing')}
-								letterSpacingType={letterSpacingType}
-								onLetterSpacingType={(value) => setMetaAttribute(value, 'letterSpacingType')}
-								textTransform={textTransform}
-								onTextTransform={(value) => setMetaAttribute(value, 'textTransform')}
-								fontFamily={fontFamily}
-								onFontFamily={(value) => setMetaAttribute(value, 'fontFamily')}
+								fontSize={headerFont.size}
+								onFontSize={(value) => setMetaAttribute({ ...headerFont, size: value }, 'headerFont')}
+								fontSizeType={headerFont.sizeType}
+								onFontSizeType={(value) =>
+									setMetaAttribute({ ...headerFont, sizeType: value }, 'headerFont')
+								}
+								lineHeight={headerFont.lineHeight}
+								onLineHeight={(value) =>
+									setMetaAttribute({ ...headerFont, lineHeight: value }, 'headerFont')
+								}
+								lineHeightType={headerFont.lineType}
+								onLineHeightType={(value) =>
+									setMetaAttribute({ ...headerFont, lineType: value }, 'headerFont')
+								}
+								reLetterSpacing={headerFont.letterSpacing}
+								onLetterSpacing={(value) =>
+									setMetaAttribute({ ...headerFont, letterSpacing: value }, 'headerFont')
+								}
+								letterSpacingType={headerFont.letterType}
+								onLetterSpacingType={(value) =>
+									setMetaAttribute({ ...headerFont, letterType: value }, 'headerFont')
+								}
+								textTransform={headerFont.textTransform}
+								onTextTransform={(value) =>
+									setMetaAttribute({ ...headerFont, textTransform: value }, 'headerFont')
+								}
+								fontFamily={headerFont.family}
+								onFontFamily={(value) =>
+									setMetaAttribute({ ...headerFont, family: value }, 'headerFont')
+								}
 								onFontChange={(select) => {
-									setMetaAttribute(select.value, 'fontFamily');
-									setMetaAttribute(select.google, 'googleFont');
+									setMetaAttribute({ ...headerFont, ...select }, 'headerFont');
 								}}
-								onFontArrayChange={(values) => setMetaAttribute(values)}
-								//googleFont={googleFont}
-								//onGoogleFont={(value) => setMetaAttribute(value, 'googleFont')}
-								//loadGoogleFont={loadGoogle}
-								//onLoadGoogleFont={(value) => setMetaAttribute(value, 'loadGoogle')}
-								fontVariant={fontVariant}
-								onFontVariant={(value) => setMetaAttribute(value, 'fontVariant')}
-								fontWeight={fontWeight}
-								onFontWeight={(value) => setMetaAttribute(value, 'fontWeight')}
-								fontStyle={fontStyle}
-								onFontStyle={(value) => setMetaAttribute(value, 'fontStyle')}
-								fontSubset={fontSubset}
-								onFontSubset={(value) => setMetaAttribute(value, 'fontSubset')}
+								onFontArrayChange={(values) =>
+									setMetaAttribute({ ...headerFont, ...values }, 'headerFont')
+								}
+								googleFont={headerFont.google}
+								onGoogleFont={(value) =>
+									setMetaAttribute({ ...headerFont, google: value }, 'headerFont')
+								}
+								loadGoogleFont={headerFont.loadGoogle}
+								onLoadGoogleFont={(value) =>
+									setMetaAttribute({ ...headerFont, loadGoogle: value }, 'headerFont')
+								}
+								fontVariant={headerFont.variant}
+								onFontVariant={(value) =>
+									setMetaAttribute({ ...headerFont, variant: value }, 'headerFont')
+								}
+								fontWeight={headerFont.weight}
+								onFontWeight={(value) =>
+									setMetaAttribute({ ...headerFont, weight: value }, 'headerFont')
+								}
+								fontStyle={headerFont.style}
+								onFontStyle={(value) => setMetaAttribute({ ...headerFont, style: value }, 'headerFont')}
+								fontSubset={headerFont.subset}
+								onFontSubset={(value) =>
+									setMetaAttribute({ ...headerFont, subset: value }, 'headerFont')
+								}
 							/>
 						</KadencePanelBody>
 						<KadencePanelBody

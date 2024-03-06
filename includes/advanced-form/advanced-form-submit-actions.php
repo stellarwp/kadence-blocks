@@ -111,7 +111,7 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 			$refer_id = is_object( $post ) ? $post->ID : url_to_postid( wp_get_referer() );
 			$text  = str_replace( '{page_title}', get_the_title( $refer_id ), $text );
 		}
-
+        
 		return $text;
 	}
 	/**

@@ -135,7 +135,55 @@ class Kadence_Blocks_Header_CPT_Controller {
 	public function register_meta() {
 		register_post_meta(
 			'kadence_header',
-			'_kad_form_headerBorder',
+			'_kad_header_headerFont',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'object',
+				'default'       => array(
+					'color'         => '',
+					'size'          => array( '', '', '' ),
+					'sizeType'      => 'px',
+					'lineHeight'    => array( '', '', '' ),
+					'lineType'      => '',
+					'letterSpacing' => array( '', '', '' ),
+					'letterType'    => 'px',
+					'textTransform' => '',
+					'family'        => '',
+					'google'        => false,
+					'style'         => '',
+					'weight'        => '',
+					'variant'       => '',
+					'subset'        => '',
+					'loadGoogle'    => true,
+				),
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'object',
+						'properties' => array(
+							'color'         => array( 'type' => 'string' ),
+							'size'          => array( 'type' => 'array' ),
+							'sizeType'      => array( 'type' => 'string' ),
+							'lineHeight'    => array( 'type' => 'array' ),
+							'lineType'      => array( 'type' => 'string' ),
+							'letterSpacing' => array( 'type' => 'array' ),
+							'letterType'    => array( 'type' => 'string' ),
+							'textTransform' => array( 'type' => 'string' ),
+							'family'        => array( 'type' => 'string' ),
+							'google'        => array( 'type' => 'boolean' ),
+							'style'         => array( 'type' => 'string' ),
+							'weight'        => array( 'type' => 'string' ),
+							'variant'       => array( 'type' => 'string' ),
+							'subset'        => array( 'type' => 'string' ),
+							'loadGoogle'    => array( 'type' => 'boolean' ),
+						),
+					),
+				),
+			)
+		);
+		register_post_meta(
+			'kadence_header',
+			'_kad_header_headerBorder',
 			array(
 				'single'        => true,
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
