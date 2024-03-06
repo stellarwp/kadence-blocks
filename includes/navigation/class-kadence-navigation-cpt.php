@@ -140,30 +140,30 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 			array(
 				'key'     => '_kad_navigation_anchor',
 				'default' => '',
-				'type'    => 'string'
+				'type'    => 'string',
 			),
 			array(
 				'key'     => '_kad_navigation_className',
 				'default' => '',
-				'type'    => 'string'
+				'type'    => 'string',
 			),
 			array(
-				'key'     		=> '_kad_navigation_padding',
+				'key'           => '_kad_navigation_padding',
 				'default'       => array( '20', '20', '20', '20' ),
 				'type'          => 'array',
-				'children_type' => 'string'
+				'children_type' => 'string',
 			),
 			array(
-				'key'     		=> '_kad_navigation_tabletPadding',
+				'key'           => '_kad_navigation_tabletPadding',
 				'default'       => array( '20', '20', '20', '20' ),
 				'type'          => 'array',
-				'children_type' => 'string'
+				'children_type' => 'string',
 			),
 			array(
-				'key'     		=> '_kad_navigation_mobilePadding',
+				'key'           => '_kad_navigation_mobilePadding',
 				'default'       => array( '20', '20', '20', '20' ),
 				'type'          => 'array',
-				'children_type' => 'string'
+				'children_type' => 'string',
 			),
 			array(
 				'key'     => '_kad_navigation_paddingUnit',
@@ -174,19 +174,19 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'key'           => '_kad_navigation_margin',
 				'default'       => array( '', '', '', '' ),
 				'type'          => 'array',
-				'children_type' => 'string'
+				'children_type' => 'string',
 			),
 			array(
 				'key'           => '_kad_navigation_tabletMargin',
 				'default'       => array( '', '', '', '' ),
 				'type'          => 'array',
-				'children_type' => 'string'
+				'children_type' => 'string',
 			),
 			array(
 				'key'           => '_kad_navigation_mobileMargin',
 				'default'       => array( '', '', '', '' ),
 				'type'          => 'array',
-				'children_type' => 'string'
+				'children_type' => 'string',
 			),
 			array(
 				'key'     => '_kad_navigation_marginUnit',
@@ -197,13 +197,13 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'key'           => '_kad_navigation_border',
 				'default'       => array( '', '', '', '' ),
 				'type'          => 'array',
-				'children_type' => 'string'
+				'children_type' => 'string',
 			),
 			array(
 				'key'           => '_kad_navigation_borderRadius',
 				'default'       => array( '', '', '', '' ),
 				'type'          => 'array',
-				'children_type' => 'string'
+				'children_type' => 'string',
 			),
 			array(
 				'key'           => '_kad_navigation_borderColor',
@@ -214,6 +214,93 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'key'     => '_kad_navigation_borderUnit',
 				'default' => 'px',
 				'type'    => 'string',
+			),
+			array(
+				'key'     => '_kad_navigation_orientation',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_spacing',
+				'type' => 'array',
+				'default' => array( '', '', '', '' ),
+			),
+			array(
+				'key'     => '_kad_navigation_spacingUnit',
+				'type' => 'string',
+				'default' => 'em',
+			),
+			array(
+				'key'     => '_kad_navigation_style',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_stretch',
+				'type' => 'boolean',
+				'default' => false,
+			),
+			array(
+				'key'     => '_kad_navigation_fillStretch',
+				'type' => 'boolean',
+				'default' => false,
+			),
+			array(
+				'key'     => '_kad_navigation_parentActive',
+				'type' => 'boolean',
+				'default' => false,
+			),
+			array(
+				'key'     => '_kad_navigation_linkColor',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_linkColorHover',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_linkColorActive',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_background',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundHover',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundActive',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_typography',
+				'type' => 'array',
+				'default' => array(
+					array(
+						'size' => array( '', '', '' ),
+						'sizeType' => 'px',
+						'lineHeight' => array( '', '', '' ),
+						'lineType' => '',
+						'letterSpacing' => array( '', '', '' ),
+						'letterType' => 'px',
+						'textTransform' => '',
+						'family' => '',
+						'google' => '',
+						'style' => '',
+						'weight' => '',
+						'variant' => '',
+						'subset' => '',
+						'loadGoogle' => true,
+					),
+				),
 			),
 		);
 

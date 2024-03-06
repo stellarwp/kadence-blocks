@@ -1,28 +1,32 @@
 import { KadenceBlocksCSS } from '@kadence/helpers';
+import { Getstyles } from '../';
 
 export default function BackendStyles(props) {
-	const { attributes, isSelected, previewDevice } = props;
+	const { attributes, isSelected, previewDevice, metaAttributes } = props;
+
+	const { uniqueID } = attributes;
 
 	const {
-		uniqueID,
-		navigationOrientation,
-		navigationSpacing,
-		navigationSpacingUnit,
-		navigationStyle,
-		navigationStretch,
-		navigationFillStretch,
-		navigationParentActive,
-		navigationLinkColor,
-		navigationLinkColorHover,
-		navigationLinkColorActive,
-		navigationBackground,
-		navigationBackgroundHover,
-		navigationBackgroundActive,
+		orientation,
+		spacing,
+		spacingUnit,
+		style,
+		stretch,
+		fillStretch,
+		parentActive,
+		linkColor,
+		linkColorHover,
+		linkColorActive,
+		background,
+		backgroundHover,
+		backgroundActive,
 		navigationTypography,
-	} = attributes;
+	} = metaAttributes;
 
-	const navigationHorizontalSpacing = navigationSpacing[1];
-	const navigationVerticalSpacing = navigationSpacing[0];
+	const navigationHorizontalSpacing = spacing[1];
+	const navigationVerticalSpacing = spacing[0];
+
+	previewNavigationHorizontalSpacing = getPreviewSize();
 
 	let css = new KadenceBlocksCSS();
 
@@ -37,31 +41,28 @@ export default function BackendStyles(props) {
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .navigation[class*="header-navigation-style-underline"] .menu-container>ul>li>a:after`
 	);
-	css.add_property(
-		'width',
-		'calc( 100% - ' + css.render_size(navigationHorizontalSpacing, navigationSpacingUnit) + ')'
-	);
+	css.add_property('width', 'calc( 100% - ' + css.render_size(navigationHorizontalSpacing, spacingUnit) + ')');
 	css.set_selector(`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > a`);
-	css.add_property('padding-left', css.render_half_size(navigationHorizontalSpacing, navigationSpacingUnit));
-	css.add_property('padding-right', css.render_half_size(navigationHorizontalSpacing, navigationSpacingUnit));
-	if (navigationOrientation == 'vertical' || navigationStyle === 'standard' || navigationStyle === 'underline') {
-		css.add_property('padding-top', css.render_size(navigationVerticalSpacing, navigationSpacingUnit));
-		css.add_property('padding-bottom', css.render_size(navigationVerticalSpacing, navigationSpacingUnit));
+	css.add_property('padding-left', css.render_half_size(navigationHorizontalSpacing, spacingUnit));
+	css.add_property('padding-right', css.render_half_size(navigationHorizontalSpacing, spacingUnit));
+	if (orientation == 'vertical' || style === 'standard' || style === 'underline') {
+		css.add_property('padding-top', css.render_size(navigationVerticalSpacing, spacingUnit));
+		css.add_property('padding-bottom', css.render_size(navigationVerticalSpacing, spacingUnit));
 	}
-	css.add_property('color', css.render_color(navigationLinkColor));
-	css.add_property('background', css.render_color(navigationBackground));
+	css.add_property('color', css.render_color(linkColor));
+	css.add_property('background', css.render_color(background));
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item .dropdown-nav-special-toggle`
 	);
-	css.add_property('right', css.render_half_size(navigationHorizontalSpacing, navigationSpacingUnit));
+	css.add_property('right', css.render_half_size(navigationHorizontalSpacing, spacingUnit));
 	css.set_selector(`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul li.menu-item > a`);
 	css.render_font(navigationTypography, `.wp-block-kadence-navigation${uniqueID} .navigation`, previewDevice);
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item > a:hover`
 	);
-	css.add_property('color', css.render_color(navigationLinkColorHover));
-	css.add_property('background', css.render_color(navigationBackgroundHover));
-	if (navigationParentActive) {
+	css.add_property('color', css.render_color(linkColorHover));
+	css.add_property('background', css.render_color(backgroundHover));
+	if (parentActive) {
 		css.set_selector(
 			`.wp-block-kadence-navigation${uniqueID} .navigation[class*="header-navigation-style-underline"] .menu-container.menu-container>ul>li.current-menu-ancestor>a:after`
 		);
@@ -74,8 +75,8 @@ export default function BackendStyles(props) {
 			`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-item > a`
 		);
 	}
-	css.add_property('color', css.render_color(navigationLinkColorActive));
-	css.add_property('background', css.render_color(navigationBackgroundActive));
+	css.add_property('color', css.render_color(linkColorActive));
+	css.add_property('background', css.render_color(backgroundActive));
 
 	const cssOutput = css.css_output();
 
