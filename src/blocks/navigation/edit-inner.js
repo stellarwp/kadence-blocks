@@ -19,14 +19,11 @@ import {
 	SpacingVisualizer,
 	ResponsiveMeasureRangeControl,
 	RangeControl,
+	PopColorControl,
+	HoverToggleControl,
+	TypographyControls,
 } from '@kadence/components';
-import {
-	getPreviewSize,
-	KadenceColorOutput,
-	getSpacingOptionOutput,
-	mouseOverVisualizer,
-	arrayStringToInt,
-} from '@kadence/helpers';
+import { getPreviewSize, getSpacingOptionOutput, mouseOverVisualizer, showSettings } from '@kadence/helpers';
 
 import {
 	InspectorControls,
@@ -54,6 +51,7 @@ import { FormTitle, SelectForm, MenuEditor } from './components';
 import classnames from 'classnames';
 import { useEntityPublish } from './hooks';
 import { DEFAULT_BLOCK, ALLOWED_BLOCKS, PRIORITIZED_INSERTER_BLOCKS } from './constants';
+import BackendStyles from './components/backend-styles';
 
 /**
  * Regular expression matching invalid anchor characters for replacement.
@@ -71,6 +69,14 @@ export function EditInner(props) {
 		navigationStyle,
 		navigationStretch,
 		navigationFillStretch,
+		navigationParentActive,
+		navigationLinkColor,
+		navigationLinkColorHover,
+		navigationLinkColorActive,
+		navigationBackground,
+		navigationBackgroundHover,
+		navigationBackgroundActive,
+		navigationTypography,
 	} = attributes;
 
 	const { previewDevice } = useSelect(
@@ -110,6 +116,18 @@ export function EditInner(props) {
 
 	const setMetaAttribute = (value, key) => {
 		setMeta({ ...meta, ['_kad_navigation_' + key]: value });
+	};
+
+	const saveTypography = (value) => {
+		const newUpdate = typography.map((item, index) => {
+			if (0 === index) {
+				item = { ...item, ...value };
+			}
+			return item;
+		});
+		setAttributes({
+			navigationTypography: newUpdate,
+		});
 	};
 
 	const previewMarginTop = getPreviewSize(
@@ -164,6 +182,7 @@ export function EditInner(props) {
 
 	const navClasses = classnames('navigation', {
 		[`navigation-dropdown-animation-fade-${id}`]: true,
+		[`navigation-style-${navigationStyle}`]: true,
 	});
 
 	const innerNavClasses = classnames('menu', {
@@ -298,49 +317,34 @@ export function EditInner(props) {
 			</>
 		);
 	}
-	// $css->set_selector( '.main-navigation .primary-menu-container > ul > li.menu-item > a' );
-	// $css->add_property( 'padding-left', $this->render_half_size( kadence()->option( 'primary_navigation_spacing' ) ) );
-	// $css->add_property( 'padding-right', $this->render_half_size( kadence()->option( 'primary_navigation_spacing' ) ) );
-	// if ( kadence()->option( 'primary_navigation_style' ) === 'standard' || kadence()->option( 'primary_navigation_style' ) === 'underline' ) {
-	// 	$css->add_property( 'padding-top', kadence()->sub_option( 'primary_navigation_vertical_spacing', 'size' ) . kadence()->sub_option( 'primary_navigation_vertical_spacing', 'unit' ) );
-	// 	$css->add_property( 'padding-bottom', kadence()->sub_option( 'primary_navigation_vertical_spacing', 'size' ) . kadence()->sub_option( 'primary_navigation_vertical_spacing', 'unit' ) );
+
+	// const previewHalfHorizontalSpacing = navigationSpacing[1] / 2 + navigationSpacingUnit;
+	// const previewHalfVerticalSpacing = navigationSpacing[0] / 2 + navigationSpacingUnit;
+
+	// var dynamicStyles = '';
+	// dynamicStyles += `.wp-block-kadence-navigation${uniqueID} .navigation[class*="navigation-style-underline"] .menu-container>ul>li>a:after{`;
+	// dynamicStyles += 'width: calc( 100% - ' + navigationSpacing[1] + ' );';
+	// dynamicStyles += '}';
+	// dynamicStyles += `.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > a{`;
+	// if (navigationSpacing[1]) {
+	// 	dynamicStyles += 'padding-left: ' + previewHalfHorizontalSpacing + ';';
+	// 	dynamicStyles += 'padding-right: ' + previewHalfHorizontalSpacing + ';';
+	// }
+	// if ((navigationSpacing[0] && navigationStyle == 'standard') || navigationStyle == 'underline') {
+	// 	dynamicStyles += 'padding-top: ' + previewHalfVerticalSpacing + ';';
+	// 	dynamicStyles += 'padding-bottom: ' + previewHalfVerticalSpacing + ';';
+	// }
+	// dynamicStyles += '}';
+	// if (navigationParentActive) {
+	// 	dynamicStyles += `.wp-block-kadence-navigation${uniqueID} .navigation[class*="navigation-style-underline"] .menu-container>ul>li>a:after{`;
+	// 	dynamicStyles += 'width: calc( 100% - ' + navigationSpacing[1] + ' );';
 	// }
 
-	const previewHalfHorizontalSpacing = navigationSpacing[1] / 2 + navigationSpacingUnit;
-	const previewHalfVerticalSpacing = navigationSpacing[0] / 2 + navigationSpacingUnit;
-
-	var dynamicStyles = '';
-	dynamicStyles += `.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > a{`;
-	if (navigationSpacing[1]) {
-		dynamicStyles += 'padding-left: ' + previewHalfHorizontalSpacing + ';';
-		dynamicStyles += 'padding-right: ' + previewHalfHorizontalSpacing + ';';
-	}
-	if ((navigationSpacing[0] && navigationStyle == 'standard') || navigationStyle == 'underline') {
-		dynamicStyles += 'padding-top: ' + previewHalfVerticalSpacing + ';';
-		dynamicStyles += 'padding-bottom: ' + previewHalfVerticalSpacing + ';';
-	}
-	dynamicStyles += '}';
-
-	console.log(1, dynamicStyles);
+	// console.log(1, dynamicStyles);
 
 	return (
 		<>
-			<style>
-				{isSelected && (
-					<>
-						{`.block-editor-block-popover__inbetween-container .block-editor-block-list__insertion-point.is-with-inserter { display: none }`}
-						;
-					</>
-				)}
-				{`.main-navigation .primary-menu-container > ul > li.menu-item > a{`}
-
-				{/* { ( navigationStyle == 'standard' || navigationStyle == 'underline' ) && (
-					${labelStyles?.fontStyle ? 'font-style:' + labelStyles.fontStyle + ';' : ''}
-
-				)} */}
-				{`}`}
-			</style>
-			<style dangerouslySetInnerHTML={{ __html: dynamicStyles }} />
+			<BackendStyles {...props} previewDevice={previewDevice} />
 			<InspectorControls>
 				<InspectorControlTabs
 					panelName={'advanced-navigation'}
@@ -416,6 +420,11 @@ export function EditInner(props) {
 									onChange={(value) => setAttributes({ navigationFillStretch: value })}
 								/>
 							)}
+							<ToggleControl
+								label={__('Make Parent of Current Menu item Active', 'kadence-blocks')}
+								checked={navigationParentActive}
+								onChange={(value) => setAttributes({ navigationParentActive: value })}
+							/>
 						</KadencePanelBody>
 					</>
 				)}
@@ -433,7 +442,103 @@ export function EditInner(props) {
 								]}
 								onChange={(value) => setAttributes({ navigationStyle: value })}
 							/>
+							<HoverToggleControl
+								normal={
+									<>
+										<PopColorControl
+											label={__('Link Color', 'kadence-blocks')}
+											value={navigationLinkColor}
+											default={''}
+											onChange={(value) => setAttributes({ navigationLinkColor: value })}
+										/>
+										<PopColorControl
+											label={__('Background', 'kadence-blocks')}
+											value={navigationBackground}
+											default={''}
+											onChange={(value) => setAttributes({ navigationBackground: value })}
+										/>
+									</>
+								}
+								hover={
+									<>
+										<PopColorControl
+											label={__('Link Color Hover', 'kadence-blocks')}
+											value={navigationLinkColorHover}
+											default={''}
+											onChange={(value) => setAttributes({ navigationLinkColorHover: value })}
+										/>
+										<PopColorControl
+											label={__('Background Hover', 'kadence-blocks')}
+											value={navigationBackgroundHover}
+											default={''}
+											onChange={(value) => setAttributes({ navigationBackgroundHover: value })}
+										/>
+									</>
+								}
+								active={
+									<>
+										<PopColorControl
+											label={__('Link Color Active', 'kadence-blocks')}
+											value={navigationLinkColorActive}
+											default={''}
+											onChange={(value) => setAttributes({ navigationLinkColorActive: value })}
+										/>
+										<PopColorControl
+											label={__('Background Active', 'kadence-blocks')}
+											value={navigationBackgroundActive}
+											default={''}
+											onChange={(value) => setAttributes({ navigationBackgroundActive: value })}
+										/>
+									</>
+								}
+							/>
 						</KadencePanelBody>
+
+						{showSettings('fontSettings', 'kadence/navigation') && (
+							<KadencePanelBody
+								title={__('Typography Settings', 'kadence-blocks')}
+								initialOpen={false}
+								panelName={'kb-adv-btn-font-family'}
+							>
+								<TypographyControls
+									fontSize={navigationTypography[0].size}
+									onFontSize={(value) => saveTypography({ size: value })}
+									fontSizeType={navigationTypography[0].sizeType}
+									onFontSizeType={(value) => saveTypography({ sizeType: value })}
+									lineHeight={navigationTypography[0].lineHeight}
+									onLineHeight={(value) => saveTypography({ lineHeight: value })}
+									lineHeightType={navigationTypography[0].lineType}
+									onLineHeightType={(value) => saveTypography({ lineType: value })}
+									reLetterSpacing={navigationTypography[0].letterSpacing}
+									onLetterSpacing={(value) => saveTypography({ letterSpacing: value })}
+									letterSpacingType={navigationTypography[0].letterType}
+									onLetterSpacingType={(value) => saveTypography({ letterType: value })}
+									textTransform={navigationTypography[0].textTransform}
+									onTextTransform={(value) => saveTypography({ textTransform: value })}
+									fontFamily={navigationTypography[0].family}
+									onFontFamily={(value) => saveTypography({ family: value })}
+									onFontChange={(select) => {
+										saveTypography({
+											family: select.value,
+											google: select.google,
+										});
+									}}
+									onFontArrayChange={(values) => saveTypography(values)}
+									googleFont={navigationTypography[0].google}
+									onGoogleFont={(value) => saveTypography({ google: value })}
+									loadGoogleFont={navigationTypography[0].loadGoogle}
+									onLoadGoogleFont={(value) => saveTypography({ loadGoogle: value })}
+									fontVariant={navigationTypography[0].variant}
+									onFontVariant={(value) => saveTypography({ variant: value })}
+									fontWeight={navigationTypography[0].weight}
+									onFontWeight={(value) => saveTypography({ weight: value })}
+									fontStyle={navigationTypography[0].style}
+									onFontStyle={(value) => saveTypography({ style: value })}
+									fontSubset={navigationTypography[0].subset}
+									onFontSubset={(value) => saveTypography({ subset: value })}
+								/>
+							</KadencePanelBody>
+						)}
 						<div className="kt-sidebar-settings-spacer"></div>
 					</>
 				)}

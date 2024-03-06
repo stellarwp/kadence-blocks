@@ -131,7 +131,7 @@ export function Edit(props) {
 				<>
 					<Placeholder
 						className="kb-select-or-create-placeholder"
-						label={__('Kadence Heading', 'kadence-blocks')}
+						label={__('Kadence Navigation', 'kadence-blocks')}
 						icon={formBlockIcon}
 					>
 						<Spinner />
@@ -159,7 +159,7 @@ export function Edit(props) {
 				<>
 					<Placeholder
 						className="kb-select-or-create-placeholder"
-						label={__('Kadence Heading', 'kadence-blocks')}
+						label={__('Kadence Navigation', 'kadence-blocks')}
 						icon={formBlockIcon}
 					>
 						{__('The selected from is in the trash.', 'kadence-blocks')}

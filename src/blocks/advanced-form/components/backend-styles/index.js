@@ -1,16 +1,7 @@
 import { GetHelpStyles, GetInputStyles, GetLabelStyles, GetRadioLabelStyles } from '../';
-import { getPreviewSize } from '@kadence/helpers';
+import { KadenceBlocksCSS } from '@kadence/helpers';
 
-export default function BackendStyles({
-	uniqueID,
-	previewDevice,
-	fieldStyle,
-	labelStyle,
-	helpStyle,
-	inputFont,
-	radioLabelFont,
-	useFormMeta,
-}) {
+export default function BackendStyles(props) {
 	const fieldStyles = GetInputStyles(previewDevice, fieldStyle, inputFont, useFormMeta);
 	const labelStyles = GetLabelStyles(previewDevice, labelStyle);
 	const helpStyles = GetHelpStyles(previewDevice, helpStyle);
