@@ -31,6 +31,7 @@ import {
 	getSpacingOptionOutput,
 	mouseOverVisualizer,
 	arrayStringToInt,
+	getFontSizeOptionOutput,
 } from '@kadence/helpers';
 
 import {
@@ -57,7 +58,7 @@ import { useEntityPublish } from './hooks';
  */
 const ANCHOR_REGEX = /[\s#]/g;
 export function EditInner(props) {
-	const { attributes, setAttributes, clientId, direct, id, isSelected } = props;
+	const { attributes, setAttributes, clientId, context, direct, id, isSelected } = props;
 	const { uniqueID } = attributes;
 
 	const { previewDevice } = useSelect(
@@ -100,16 +101,10 @@ export function EditInner(props) {
 	// Typography options
 
 	const [headerFont] = useHeaderMeta('_kad_header_headerFont');
-	console.log(headerFont);
 
 	//Background Options
-	const [bgColor] = useHeaderMeta('_kad_header_bgColor');
-	const [bgImg] = useHeaderMeta('_kad_header_bgImg');
-	const [bgImgID] = useHeaderMeta('_kad_header_bgImgID');
-	const [bgImgPosition] = useHeaderMeta('_kad_header_bgImgPosition');
-	const [bgImgSize] = useHeaderMeta('_kad_header_bgImgSize');
-	const [bgImgRepeat] = useHeaderMeta('_kad_header_bgImgRepeat');
-	const [bgImgAttachment] = useHeaderMeta('_kad_header_bgImgAttachment');
+	const [background] = useHeaderMeta('_kad_header_background');
+	console.log(background);
 
 	// Text color options
 	const [textColor] = useHeaderMeta('_kad_header_textColor');
@@ -297,11 +292,48 @@ export function EditInner(props) {
 		undefined !== mobileBorderRadius ? mobileBorderRadius[3] : ''
 	);
 
+	// Title Font size.
+	const previewFontSize = getPreviewSize(
+		previewDevice,
+		undefined !== headerFont?.size?.[0] ? headerFont.size[0] : '',
+		undefined !== headerFont?.size?.[1] ? headerFont.size[1] : '',
+		undefined !== headerFont?.size?.[2] ? headerFont.size[2] : ''
+	);
+	const previewLineHeight = getPreviewSize(
+		previewDevice,
+		undefined !== headerFont?.lineHeight?.[0] ? headerFont.lineHeight[0] : '',
+		undefined !== headerFont?.lineHeight?.[1] ? headerFont.lineHeight[1] : '',
+		undefined !== headerFont?.lineHeight?.[2] ? headerFont.lineHeight[2] : ''
+	);
+
+	const previewLetterSpacing = getPreviewSize(
+		previewDevice,
+		undefined !== headerFont?.letterSpacing?.[0] ? headerFont.letterSpacing[0] : '',
+		undefined !== headerFont?.letterSpacing?.[1] ? headerFont.letterSpacing[1] : '',
+		undefined !== headerFont?.letterSpacing?.[2] ? headerFont.letterSpacing[2] : ''
+	);
+
 	const headerClasses = classnames({
 		'kb-header': true,
 		[`kb-header-${id}`]: true,
 		[`kb-header${uniqueID}`]: uniqueID,
 	});
+
+	const renderCSS = (
+		<style>
+			{`
+				.kb-header.kb-header${uniqueID} {
+					${previewFontSize ? 'font-size:' + getFontSizeOptionOutput(previewFontSize, headerFont.sizeType) : ''};
+					${previewLineHeight ? 'line-height:' + previewLineHeight + headerFont.lineType : ''};
+					${previewLetterSpacing ? 'letter-spacing:' + previewLetterSpacing + 'px' : ''};
+					${headerFont?.textTransform ? 'text-transform:' + headerFont.textTransform : ''};
+					${headerFont?.family ? 'font-family:' + headerFont.family : ''};
+					${headerFont?.style ? 'font-style:' + headerFont.style : ''};
+					${headerFont?.weight ? 'font-weight:' + headerFont.weight : ''};
+				}
+			`}
+		</style>
+	);
 
 	const [title, setTitle] = useHeaderProp('title');
 
@@ -486,49 +518,57 @@ export function EditInner(props) {
 						>
 							<PopColorControl
 								label={__('Background Color', 'kadence-blocks')}
-								value={bgColor ? bgColor : ''}
+								value={undefined !== background?.color ? background.color : ''}
 								default={''}
 								onChange={(value) => {
-									console.log(value);
-									setMetaAttribute(value, 'bgColor');
+									setMetaAttribute({ ...background, color: value }, 'background');
 								}}
 							/>
 							<KadenceBackgroundControl
 								label={__('Background Image', 'kadence-blocks')}
-								hasImage={bgImg}
-								imageURL={bgImg}
-								imageID={bgImgID}
-								imagePosition={bgImgPosition ? bgImgPosition : 'center center'}
-								imageSize={bgImgSize ? bgImgSize : 'cover'}
-								imageRepeat={bgImgRepeat ? bgImgRepeat : 'no-repeat'}
-								imageAttachment={bgImgAttachment ? bgImgAttachment : 'scroll'}
+								hasImage={undefined === background.image || '' === background.image ? false : true}
+								imageURL={background.image ? background.image : ''}
+								imageID={background.imageID}
+								imagePosition={background.imagePosition ? background.imagePosition : 'center center'}
+								imageSize={background.imageSize ? background.imageSize : 'cover'}
+								imageRepeat={background.imageRepeat ? background.imageRepeat : 'no-repeat'}
+								imageAttachment={background.imageAttachment ? background.imageAttachment : 'scroll'}
 								imageAttachmentParallax={true}
 								onRemoveImage={() => {
-									setMetaAttribute(null, 'bgImgID');
-									setMetaAttribute(null, 'bgImg');
+									setMetaAttribute({ ...background, imageID: undefined }, 'background');
+									setMetaAttribute({ ...background, image: undefined }, 'background');
 								}}
-								onSaveImage={(img) => {
-									setMetaAttribute(img.id, 'bgImgID');
-									setMetaAttribute(img.url, 'bgImg');
+								onSaveImage={(value) => {
+									console.log(value.id);
+									setMetaAttribute({ ...background, imageID: value.id.toString() }, 'background');
+									setMetaAttribute({ ...background, image: value.url }, 'background');
 								}}
 								onSaveURL={(newURL) => {
-									if (newURL !== bgImg) {
-										setMetaAttribute(undefined, 'bgImgID');
-										setMetaAttribute(newURL, 'bgImg');
+									if (newURL !== background.image) {
+										setMetaAttribute({ ...background, imageID: undefined }, 'background');
+										setMetaAttribute({ ...background, image: newURL }, 'background');
 									}
 								}}
-								onSavePosition={(value) => setMetaAttribute(value, 'bgImgPosition')}
-								onSaveSize={(value) => setMetaAttribute(value, 'bgImgSize')}
-								onSaveRepeat={(value) => setMetaAttribute(value, 'bgImgRepeat')}
-								onSaveAttachment={(value) => setMetaAttribute(value, 'bgImgAttachment')}
-								disableMediaButtons={bgImg}
-								dynamicAttribute="bgImg"
+								onSavePosition={(value) =>
+									setMetaAttribute({ ...background, imagePosition: value }, 'background')
+								}
+								onSaveSize={(value) =>
+									setMetaAttribute({ ...background, imageSize: value }, 'background')
+								}
+								onSaveRepeat={(value) =>
+									setMetaAttribute({ ...background, imageRepeat: value }, 'background')
+								}
+								onSaveAttachment={(value) =>
+									setMetaAttribute({ ...background, imageAttachment: value }, 'background')
+								}
+								disableMediaButtons={background.image ? true : false}
+								dynamicAttribute="background:image"
 								isSelected={isSelected}
 								attributes={attributes}
 								setAttributes={setAttributes}
 								name={'kadence/header'}
 								clientId={clientId}
-								//context={context}
+								context={context}
 							/>
 						</KadencePanelBody>
 						<KadencePanelBody
@@ -542,7 +582,6 @@ export function EditInner(props) {
 								tabletValue={[headerTabletBorder]}
 								mobileValue={[headerMobileBorder]}
 								onChange={(value) => {
-									console.log(value);
 									setMetaAttribute(value[0], 'headerBorder');
 								}}
 								onChangeTablet={(value) => setMetaAttribute(value[0], 'headerTabletBorder')}
@@ -735,7 +774,7 @@ export function EditInner(props) {
 					help={__('Separate multiple classes with spaces.')}
 				/>
 			</InspectorAdvancedControls>
-
+			{renderCSS}
 			<div {...innerBlocksProps} />
 			{/*<SpacingVisualizer*/}
 			{/*	style={ {*/}
