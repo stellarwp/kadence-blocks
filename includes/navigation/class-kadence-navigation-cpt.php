@@ -236,6 +236,16 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'default' => '',
 			),
 			array(
+				'key'     => '_kad_navigation_collapseSubMenus',
+				'type' => 'boolean',
+				'default' => true,
+			),
+			array(
+				'key'     => '_kad_navigation_parentTogglesMenus',
+				'type' => 'boolean',
+				'default' => false,
+			),
+			array(
 				'key'     => '_kad_navigation_stretch',
 				'type' => 'boolean',
 				'default' => false,

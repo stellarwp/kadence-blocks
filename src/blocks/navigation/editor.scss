@@ -91,6 +91,24 @@ $trip_advisor: #00af87;
 $imdb: #f5c518;
 $anchor: #5000b9;
 
+@mixin hide-sub-menu {
+	opacity: 0;
+	visibility: hidden;
+	transform: translate3d(0, 0, 0);
+	clip: rect(1px, 1px, 1px, 1px);
+	height: 1px;
+	overflow: hidden;
+}
+
+@mixin show-sub-menu {
+	opacity: 1;
+	visibility: visible;
+	transform: translate3d(0, 0, 0);
+	clip: auto;
+	height: auto;
+	overflow: visible;
+}
+
 .wp-block-kadence-navigation {
 	/*
 	FROM KADENCE THEME NAV
@@ -98,176 +116,190 @@ $anchor: #5000b9;
 	/*--------------------------------------------------------------
 	## Dropdown navigation for header Menus
 	--------------------------------------------------------------*/
-	.navigation ul ul.sub-menu,
-	.navigation ul ul.submenu {
-		display: none;
-		position: absolute;
-		top: 100%;
-		flex-direction: column;
-		background: #fff;
-		margin-left: 0;
-		box-shadow: 0 2px 13px rgba(0, 0, 0, 0.1);
-		z-index: 1000;
-	}
-	.navigation ul ul.quadmenu-row {
-		flex-direction: row;
-	}
-	body:not(.hide-focus-outline) .navigation li.menu-item--has-toggle > a:focus .dropdown-nav-toggle {
-		opacity: 0.2;
-	}
-	// Hide divider for last item.
-	.navigation ul ul.sub-menu > li:last-child,
-	.navigation ul ul.submenu > li:last-child {
-		border-bottom: 0;
-	}
-	.navigation ul ul.sub-menu.sub-menu-edge {
-		left: auto;
-		right: 0;
-	}
-	.navigation ul ul ul.sub-menu.sub-menu-edge {
-		left: auto;
-		right: 100%;
-	}
-	// Handle Reveal Animation
-	.navigation[class*="navigation-dropdown-animation-fade"] {
-		ul ul.sub-menu,
-		ul ul.submenu {
-			opacity: 0;
-			visibility: hidden;
-			transform: translate3d(0, 0, 0);
-			transition: all 0.2s ease;
-			display: block;
-			clip: rect(1px, 1px, 1px, 1px);
-			height: 1px;
+	// Proxy for desktop nav
+	&.navigation-orientation-horizontal {
+		.navigation ul ul.sub-menu,
+		.navigation ul ul.submenu {
+			position: absolute;
+			top: 100%;
+			flex-direction: column;
+			background: #fff;
+			margin-left: 0;
+			box-shadow: 0 2px 13px rgba(0, 0, 0, 0.1);
+			z-index: 1000;
+		}
+		.navigation ul ul.quadmenu-row {
+			flex-direction: row;
+		}
+		body:not(.hide-focus-outline)
+			.navigation
+			li.menu-item--has-toggle
+			> .drawer-nav-drop-wrap
+			> a:focus
+			.dropdown-nav-toggle {
+			opacity: 0.2;
+		}
+		// Hide divider for last item.
+		.navigation ul ul.sub-menu > li:last-child,
+		.navigation ul ul.submenu > li:last-child {
+			border-bottom: 0;
+		}
+		.navigation ul ul.sub-menu.sub-menu-edge {
+			left: auto;
+			right: 0;
+		}
+		.navigation ul ul ul.sub-menu.sub-menu-edge {
+			left: auto;
+			right: 100%;
+		}
+		// Handle Reveal Animation for horizontal navs, hover only
+		.navigation {
+			ul.menu li:hover > ul {
+				@include show-sub-menu();
+			}
+		}
+		.navigation.navigation-dropdown-animation-fade-up {
+			ul ul.sub-menu,
+			ul ul.submenu {
+				transform: translate3d(0, 10px, 0);
+			}
+		}
+		.navigation.navigation-dropdown-animation-fade-down {
+			ul ul.sub-menu,
+			ul ul.submenu {
+				transform: translate3d(0, -10px, 0);
+			}
+		}
+
+		/*--------------------------------------------------------------
+		## Submenu Toggles for Header Menus
+		--------------------------------------------------------------*/
+		.wp-site-blocks .nav--toggle-sub .dropdown-nav-special-toggle {
+			position: absolute !important;
 			overflow: hidden;
-		}
-		ul li:hover > ul,
-		ul li.menu-item--toggled-on > ul,
-		ul li:not(.menu-item--has-toggle):focus > ul {
-			opacity: 1;
-			visibility: visible;
-			transform: translate3d(0, 0, 0);
-			clip: auto;
+			padding: 0 !important;
+			margin: 0 !important;
+			margin-right: -0.1em !important;
+			border: 0 !important;
+			width: 0.9em;
+			top: 0;
+			bottom: 0;
 			height: auto;
-			overflow: visible;
-		}
-	}
-	.navigation.navigation-dropdown-animation-fade-up {
-		ul ul.sub-menu,
-		ul ul.submenu {
-			transform: translate3d(0, 10px, 0);
-		}
-	}
-	.navigation.navigation-dropdown-animation-fade-down {
-		ul ul.sub-menu,
-		ul ul.submenu {
-			transform: translate3d(0, -10px, 0);
-		}
-	}
-	/*--------------------------------------------------------------
-	## Submenu Toggles for Header Menus
-	--------------------------------------------------------------*/
-	.wp-site-blocks .nav--toggle-sub .dropdown-nav-special-toggle {
-		position: absolute !important;
-		overflow: hidden;
-		padding: 0 !important;
-		margin: 0 !important;
-		margin-right: -0.1em !important;
-		border: 0 !important;
-		width: 0.9em;
-		top: 0;
-		bottom: 0;
-		height: auto;
-		border-radius: 0;
-		box-shadow: none !important;
-		background: transparent !important;
-		display: block;
-		left: auto;
-		right: calc(1.4em / 2);
-		pointer-events: none;
-	}
-	.wp-site-blocks .nav--toggle-sub .sub-menu .dropdown-nav-special-toggle {
-		width: 2.6em;
-		margin: 0 !important;
-		right: 0;
-	}
-	.nav--toggle-sub .dropdown-nav-special-toggle:focus {
-		z-index: 10;
-	}
-	.nav--toggle-sub .dropdown-nav-toggle {
-		display: block;
-		background: transparent;
-		position: absolute;
-		right: 0;
-		top: 50%;
-		width: 0.7em;
-		height: 0.7em;
-		font-size: inherit;
-		width: 0.9em;
-		height: 0.9em;
-		font-size: 0.9em;
-		display: inline-flex;
-		line-height: inherit;
-		margin: 0;
-		padding: 0;
-		border: none;
-		border-radius: 0;
-		transform: translateY(-50%);
-		overflow: visible;
-		transition: opacity 0.2s ease;
-	}
-	.nav--toggle-sub ul ul .dropdown-nav-toggle {
-		right: 0.2em;
-	}
-
-	.nav--toggle-sub ul ul .dropdown-nav-toggle .kadence-svg-iconset {
-		transform: rotate(-90deg);
-	}
-	.nav--toggle-sub li.menu-item-has-children {
-		position: relative;
-	}
-	.nav-drop-title-wrap {
-		position: relative;
-		padding-right: 1em;
-		display: block;
-	}
-	/*
-	* If the dropdown toggle is active with JS, then
-	* we'll take care of showing the submenu with JS.
-	*/
-	.nav--toggle-sub li:hover > ul,
-	.nav--toggle-sub li.menu-item--toggled-on > ul,
-	.nav--toggle-sub li:not(.menu-item--has-toggle):focus > ul {
-		display: block;
-	}
-
-	/*
-	* "focus-within" is an alternative to focus class for
-	* supporting browsers (all but IE/Edge) for no-JS context
-	* (e.g. AMP) See https://caniuse.com/#feat=css-focus-within
-	*
-	* This selector needs to stay separated, otherwise submenus
-	* will not be displayed with IE/Edge.
-	*/
-	.nav--toggle-sub li:not(.menu-item--has-toggle):focus-within > ul {
-		display: block;
-	}
-	// This makes the dropdowns work a little better on a touch device.
-	@media (hover: none) {
-		.wp-site-blocks
-			.nav--toggle-sub
-			.menu-item--has-toggle:not(.menu-item--toggled-on)
-			.dropdown-nav-special-toggle {
-			left: 0;
-			right: 0 !important;
-			margin-right: 0 !important;
-			width: 100%;
-			pointer-events: all;
-		}
-		.wp-site-blocks .nav--toggle-sub .menu-item--has-toggle:not(.menu-item--toggled-on) > a {
+			border-radius: 0;
+			box-shadow: none !important;
+			background: transparent !important;
+			display: block;
+			left: auto;
+			right: calc(1.4em / 2);
 			pointer-events: none;
 		}
+		.wp-site-blocks .nav--toggle-sub .sub-menu .dropdown-nav-special-toggle {
+			width: 2.6em;
+			margin: 0 !important;
+			right: 0;
+		}
+		.nav--toggle-sub .dropdown-nav-special-toggle:focus {
+			z-index: 10;
+		}
+		.nav--toggle-sub .dropdown-nav-toggle {
+			display: block;
+			background: transparent;
+			position: absolute;
+			right: 0;
+			top: 50%;
+			width: 0.7em;
+			height: 0.7em;
+			font-size: inherit;
+			width: 0.9em;
+			height: 0.9em;
+			font-size: 0.9em;
+			display: inline-flex;
+			line-height: inherit;
+			margin: 0;
+			padding: 0;
+			border: none;
+			border-radius: 0;
+			transform: translateY(-50%);
+			overflow: visible;
+			transition: opacity 0.2s ease;
+		}
+		.nav--toggle-sub ul ul .dropdown-nav-toggle {
+			right: 0.2em;
+		}
+
+		.nav--toggle-sub ul ul .dropdown-nav-toggle .kadence-svg-iconset {
+			transform: rotate(-90deg);
+		}
+		.nav--toggle-sub li.menu-item-has-children {
+			position: relative;
+		}
+		.nav-drop-title-wrap {
+			position: relative;
+			padding-right: 1em;
+			display: block;
+		}
+		/*
+		* If the dropdown toggle is active with JS, then
+		* we'll take care of showing the submenu with JS.
+		*/
+		.nav--toggle-sub li:hover > ul,
+		.nav--toggle-sub li.menu-item--toggled-on > ul,
+		.nav--toggle-sub li:not(.menu-item--has-toggle):focus > ul {
+			display: block;
+		}
+
+		/*
+		* "focus-within" is an alternative to focus class for
+		* supporting browsers (all but IE/Edge) for no-JS context
+		* (e.g. AMP) See https://caniuse.com/#feat=css-focus-within
+		*
+		* This selector needs to stay separated, otherwise submenus
+		* will not be displayed with IE/Edge.
+		*/
+		.nav--toggle-sub li:not(.menu-item--has-toggle):focus-within > ul {
+			display: block;
+		}
+		// This makes the dropdowns work a little better on a touch device.
+		@media (hover: none) {
+			.wp-site-blocks
+				.nav--toggle-sub
+				.menu-item--has-toggle:not(.menu-item--toggled-on)
+				.dropdown-nav-special-toggle {
+				left: 0;
+				right: 0 !important;
+				margin-right: 0 !important;
+				width: 100%;
+				pointer-events: all;
+			}
+			.wp-site-blocks
+				.nav--toggle-sub
+				.menu-item--has-toggle:not(.menu-item--toggled-on)
+				> .drawer-nav-drop-wrap
+				> a {
+				pointer-events: none;
+			}
+		}
 	}
+	//handle reveal for all navs, clicking / toggling only
+	.navigation {
+		//menus are hidden by default
+		ul.menu ul.sub-menu,
+		ul.menu ul.submenu {
+			transition: all 0.2s ease;
+			display: block;
+			@include hide-sub-menu();
+		}
+		//menus that are toggled on (clicked) or have focus are shown
+		ul.menu li.menu-item--toggled-on > ul,
+		ul.menu li:not(.menu-item--has-toggle):focus > ul {
+			@include show-sub-menu();
+		}
+		//navs that indicate all sub menus should not be collapsed should be shown
+		ul.menu.collapse-sub-nav-false ul.sub-menu {
+			@include show-sub-menu();
+		}
+	}
+
 	.rtl .nav--toggle-sub .dropdown-nav-toggle {
 		right: auto;
 		left: 0;
@@ -312,7 +344,7 @@ $anchor: #5000b9;
 					display: flex;
 					height: 100%;
 					align-items: center;
-					> a {
+					> .drawer-nav-drop-wrap > a {
 						display: flex;
 						height: 100%;
 						align-items: center;
@@ -324,7 +356,7 @@ $anchor: #5000b9;
 	.navigation[class*="navigation-style-underline"] {
 		.menu-container {
 			> ul > li {
-				> a {
+				> .drawer-nav-drop-wrap > a {
 					position: relative;
 					&:after {
 						content: "";
@@ -343,7 +375,7 @@ $anchor: #5000b9;
 				}
 				&.current-menu-item,
 				&.current-page-item {
-					> a:after {
+					> .drawer-nav-drop-wrap > a:after {
 						transform: scale(1, 1) translate(50%, 0);
 					}
 				}
@@ -358,7 +390,7 @@ $anchor: #5000b9;
 	.menu-container {
 		display: flex;
 	}
-	.navigation li.menu-item > a {
+	.navigation li.menu-item > .drawer-nav-drop-wrap > a {
 		display: block;
 		width: 100%;
 		text-decoration: none;
@@ -366,8 +398,8 @@ $anchor: #5000b9;
 		transition: all 0.2s ease-in-out;
 		transform: translate3d(0, 0, 0);
 	}
-	.navigation li.menu-item > a:hover,
-	.navigation li.menu-item > a:focus {
+	.navigation li.menu-item > .drawer-nav-drop-wrap > a:hover,
+	.navigation li.menu-item > .drawer-nav-drop-wrap > a:focus {
 		color: var(--global-palette-highlight);
 	}
 	.navigation ul.sub-menu,
@@ -377,13 +409,13 @@ $anchor: #5000b9;
 		margin: 0;
 		padding: 0;
 	}
-	.navigation ul li.menu-item > a {
+	.navigation ul li.menu-item > .drawer-nav-drop-wrap > a {
 		padding: 0.6em 0.5em;
 	}
-	.navigation ul ul li.menu-item > a {
+	.navigation ul ul li.menu-item > .drawer-nav-drop-wrap > a {
 		padding: 1em;
 	}
-	.navigation ul ul li.menu-item > a {
+	.navigation ul ul li.menu-item > .drawer-nav-drop-wrap > a {
 		width: 200px;
 	}
 	.navigation ul ul ul.sub-menu,
@@ -403,7 +435,77 @@ $anchor: #5000b9;
 		padding: 0;
 	}
 	/*--------------------------------------------------------------
-	## Trigger
+	## Mobile Menu
+	--------------------------------------------------------------*/
+	&.navigation-orientation-vertical {
+		.navigation {
+			width: 100%;
+		}
+		.navigation a {
+			display: block;
+			width: 100%;
+			text-decoration: none;
+			padding: 0.6em 0.5em;
+		}
+		.navigation ul {
+			display: block;
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+		.drawer-nav-drop-wrap {
+			display: flex;
+			position: relative;
+			a {
+				color: inherit;
+			}
+			.drawer-sub-toggle {
+				background: transparent;
+				color: inherit;
+				padding: 0.5em 0.7em;
+				display: flex;
+				border: 0;
+				border-radius: 0;
+				box-shadow: none;
+				line-height: normal;
+			}
+			.drawer-sub-toggle[aria-expanded="true"] svg {
+				transform: rotate(180deg);
+			}
+		}
+		.navigation.drawer-navigation-parent-toggle-true .drawer-nav-drop-wrap .drawer-sub-toggle {
+			position: absolute;
+			left: 0;
+			z-index: 10;
+			top: 0;
+			bottom: 0;
+			justify-content: flex-end;
+			width: 100%;
+		}
+		// .navigation ul li .drawer-nav-drop-wrap a[href="#"] + button {
+		// 	position: absolute;
+		// 	z-index: 10;
+		// 	left:0;
+		// 	right:0;
+		// 	top:0;
+		// 	bottom:0;
+		// 	width: 100%;
+		//     justify-content: flex-end;
+		// }
+		.navigation ul ul {
+			padding-left: 1em;
+			transition: all 0.2s ease-in-out;
+		}
+
+		body[class*="amp-mode-"] .navigation ul ul {
+			display: block;
+		}
+		.navigation ul ul ul ul ul ul {
+			padding-left: 0;
+		}
+	}
+	/*--------------------------------------------------------------
+	## Mobile menu drawer Trigger
 	--------------------------------------------------------------*/
 	.menu-toggle-open {
 		display: flex;
@@ -433,80 +535,7 @@ $anchor: #5000b9;
 		box-shadow: none;
 	}
 	/*--------------------------------------------------------------
-	## Mobile Menu
-	--------------------------------------------------------------*/
-	.mobile-navigation {
-		width: 100%;
-	}
-	.mobile-navigation a {
-		display: block;
-		width: 100%;
-		text-decoration: none;
-		padding: 0.6em 0.5em;
-	}
-	.mobile-navigation ul {
-		display: block;
-		list-style: none;
-		margin: 0;
-		padding: 0;
-	}
-	.drawer-nav-drop-wrap {
-		display: flex;
-		position: relative;
-		a {
-			color: inherit;
-		}
-		.drawer-sub-toggle {
-			background: transparent;
-			color: inherit;
-			padding: 0.5em 0.7em;
-			display: flex;
-			border: 0;
-			border-radius: 0;
-			box-shadow: none;
-			line-height: normal;
-		}
-		.drawer-sub-toggle[aria-expanded="true"] svg {
-			transform: rotate(180deg);
-		}
-	}
-	.mobile-navigation.drawer-navigation-parent-toggle-true .drawer-nav-drop-wrap .drawer-sub-toggle {
-		position: absolute;
-		left: 0;
-		z-index: 10;
-		top: 0;
-		bottom: 0;
-		justify-content: flex-end;
-		width: 100%;
-	}
-	// .mobile-navigation ul li .drawer-nav-drop-wrap a[href="#"] + button {
-	// 	position: absolute;
-	// 	z-index: 10;
-	// 	left:0;
-	// 	right:0;
-	// 	top:0;
-	// 	bottom:0;
-	// 	width: 100%;
-	//     justify-content: flex-end;
-	// }
-	.mobile-navigation ul ul {
-		padding-left: 1em;
-		transition: all 0.2s ease-in-out;
-	}
-	.mobile-navigation ul.has-collapse-sub-nav ul.sub-menu {
-		display: none;
-	}
-	body[class*="amp-mode-"] .mobile-navigation ul ul {
-		display: block;
-	}
-	.mobile-navigation ul ul ul ul ul ul {
-		padding-left: 0;
-	}
-	.mobile-navigation ul.has-collapse-sub-nav .sub-menu.show-drawer {
-		display: block;
-	}
-	/*--------------------------------------------------------------
-	## Drawer
+	## Mobile Menu Drawer
 	--------------------------------------------------------------*/
 	.popup-drawer {
 		position: fixed;
@@ -786,15 +815,19 @@ $anchor: #5000b9;
 		display: flex;
 		align-items: center;
 	}
-	.navigation > div > ul > li > a {
+	.navigation > div > ul > li > .drawer-nav-drop-wrap > a {
 		display: flex;
 		align-items: center;
 	}
 	.kadence-menu-hidden-title:not(.kadence-menu-has-icon):not(.menu-item-has-children) {
 		display: none;
 	}
-	.kadence-menu-hidden-title.menu-item-has-children:not(.kadence-menu-has-icon) > a,
-	.navigation .menu-container .kadence-menu-hidden-title.menu-item-has-children:not(.kadence-menu-has-icon) > a {
+	.kadence-menu-hidden-title.menu-item-has-children:not(.kadence-menu-has-icon) > .drawer-nav-drop-wrap > a,
+	.navigation
+		.menu-container
+		.kadence-menu-hidden-title.menu-item-has-children:not(.kadence-menu-has-icon)
+		> .drawer-nav-drop-wrap
+		> a {
 		padding: 0;
 		border: 0;
 	}
@@ -854,8 +887,8 @@ $anchor: #5000b9;
 	.menu-label-content {
 		display: block;
 	}
-	.navigation .kadence-menu-has-description.kadence-menu-has-icon > a,
-	.mobile-navigation .kadence-menu-has-description.kadence-menu-has-icon > a {
+	.navigation .kadence-menu-has-description.kadence-menu-has-icon > .drawer-nav-drop-wrap > a,
+	.mobile-navigation .kadence-menu-has-description.kadence-menu-has-icon > .drawer-nav-drop-wrap > a {
 		display: flex;
 	}
 	// Mega Menu
@@ -872,10 +905,10 @@ $anchor: #5000b9;
 					}
 					> li {
 						border-bottom: 0 !important;
-						> a {
+						> .drawer-nav-drop-wrap > a {
 							border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 						}
-						&:not(.menu-item-has-children):last-child > a {
+						&:not(.menu-item-has-children):last-child > .drawer-nav-drop-wrap > a {
 							border-bottom: 0 !important;
 						}
 					}
@@ -891,109 +924,12 @@ $anchor: #5000b9;
 						clip: auto;
 					}
 				}
-				&:hover,
-				&.menu-item--toggled-on,
-				&:not(.menu-item--has-toggle):focus {
-					ul {
-						visibility: visible;
-					}
-				}
 			}
 			> li.kadence-menu-mega-width-container {
 				position: static;
 				> ul.sub-menu {
 					width: 100%;
 					left: 0;
-				}
-			}
-			> li.kadence-menu-mega-enabled:not(.kadence-menu-mega-columns-1) > ul.sub-menu {
-				display: grid;
-				grid-gap: 16px;
-				opacity: 0;
-				visibility: hidden;
-				clip: rect(1px, 1px, 1px, 1px);
-				height: 1px;
-				overflow: hidden;
-			}
-			> li.kadence-menu-mega-enabled:not(.kadence-menu-mega-columns-1) {
-				&:hover,
-				&.menu-item--toggled-on,
-				&:not(.menu-item--has-toggle):focus {
-					> ul.sub-menu {
-						opacity: 1;
-						visibility: visible;
-						clip: auto;
-						height: auto;
-						overflow: visible;
-						ul {
-							visibility: visible;
-						}
-					}
-				}
-			}
-			> li.kadence-menu-mega-columns-2 {
-				> ul.sub-menu {
-					grid-template-columns: repeat(2, minmax(0, 1fr));
-				}
-				&.kadence-menu-mega-layout-right-golden {
-					> ul.sub-menu {
-						grid-template-columns: 1fr 2fr;
-					}
-				}
-				&.kadence-menu-mega-layout-left-golden {
-					> ul.sub-menu {
-						grid-template-columns: 2fr 1fr;
-					}
-				}
-			}
-			> li.kadence-menu-mega-columns-3 {
-				> ul.sub-menu {
-					grid-template-columns: repeat(3, minmax(0, 1fr));
-				}
-				&.kadence-menu-mega-layout-left-half {
-					> ul.sub-menu {
-						grid-template-columns: 2fr 1fr 1fr;
-					}
-				}
-				&.kadence-menu-mega-layout-right-half {
-					> ul.sub-menu {
-						grid-template-columns: 1fr 1fr 2fr;
-					}
-				}
-				&.kadence-menu-mega-layout-center-half {
-					> ul.sub-menu {
-						grid-template-columns: 1fr 2fr 1fr;
-					}
-				}
-				&.kadence-menu-mega-layout-center-wide {
-					> ul.sub-menu {
-						grid-template-columns: 2fr 6fr 2fr;
-					}
-				}
-			}
-			> li.kadence-menu-mega-columns-4 {
-				> ul.sub-menu {
-					grid-template-columns: repeat(4, minmax(0, 1fr));
-				}
-				&.kadence-menu-mega-layout-left-forty {
-					> ul.sub-menu {
-						grid-template-columns: 2fr 1fr 1fr 1fr;
-					}
-				}
-				&.kadence-menu-mega-layout-right-forty {
-					> ul.sub-menu {
-						grid-template-columns: 1fr 1fr 1fr 2fr;
-					}
-				}
-			}
-			> li.kadence-menu-mega-columns-5 {
-				> ul.sub-menu {
-					grid-template-columns: repeat(5, minmax(0, 1fr));
-				}
-			}
-			> li.kadence-menu-mega-columns-6 {
-				> ul.sub-menu {
-					grid-template-columns: repeat(6, minmax(0, 1fr));
 				}
 			}
 		}
@@ -1057,9 +993,24 @@ $anchor: #5000b9;
 	/*
 	NEW STYLES FOR BLOCK
 	*/
+	// Proxy for mobile nav
 	&.navigation-orientation-vertical {
-		.menu {
-			flex-direction: column;
+		.navigation {
+			display: block;
+			.menu-container {
+				display: block;
+				.menu {
+					display: block;
+					.menu-item {
+						display: list-item;
+						//margin: initial;
+					}
+				}
+			}
 		}
+	}
+	//vertical menus will display this
+	.drawer-nav-drop-wrap {
+		display: contents;
 	}
 }

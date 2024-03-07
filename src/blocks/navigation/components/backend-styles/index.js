@@ -21,6 +21,8 @@ export default function BackendStyles(props) {
 		backgroundHover,
 		backgroundActive,
 		typography,
+		collapseSubMenus,
+		parentTogglesMenus,
 	} = metaAttributes;
 
 	const navigationHorizontalSpacing = spacing[1];
@@ -40,7 +42,9 @@ export default function BackendStyles(props) {
 		`.wp-block-kadence-navigation${uniqueID} .navigation[class*="navigation-style-underline"] .menu-container>ul>li>a:after`
 	);
 	css.add_property('width', 'calc( 100% - ' + css.render_size(navigationHorizontalSpacing, spacingUnit) + ')');
-	css.set_selector(`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > a`);
+	css.set_selector(
+		`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .drawer-nav-drop-wrap > a`
+	);
 	css.add_property('padding-left', css.render_half_size(navigationHorizontalSpacing, spacingUnit));
 	css.add_property('padding-right', css.render_half_size(navigationHorizontalSpacing, spacingUnit));
 	if (orientation == 'vertical' || style === 'standard' || style === 'underline' || style === '') {
@@ -53,10 +57,12 @@ export default function BackendStyles(props) {
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item .dropdown-nav-special-toggle`
 	);
 	css.add_property('right', css.render_half_size(navigationHorizontalSpacing, spacingUnit));
-	css.set_selector(`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul li.menu-item > a`);
+	css.set_selector(
+		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul li.menu-item > .drawer-nav-drop-wrap > a`
+	);
 	css.render_font(typography, previewDevice);
 	css.set_selector(
-		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item > a:hover`
+		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item > .drawer-nav-drop-wrap > a:hover`
 	);
 	css.add_property('color', css.render_color(linkColorHover));
 	css.add_property('background', css.render_color(backgroundHover));
@@ -66,15 +72,19 @@ export default function BackendStyles(props) {
 		);
 		css.add_property('transform', 'scale(1, 1) translate(50%, 0)');
 		css.set_selector(
-			`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-item > a, .navigation .menu-container > ul > li.menu-item.current-menu-ancestor > a, .navigation .menu-container > ul > li.menu-item.current-menu-ancestor > a`
+			`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-item > .drawer-nav-drop-wrap > a, .navigation .menu-container > ul > li.menu-item.current-menu-ancestor > .drawer-nav-drop-wrap > a, .navigation .menu-container > ul > li.menu-item.current-menu-ancestor > .drawer-nav-drop-wrap > a`
 		);
 	} else {
 		css.set_selector(
-			`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-item > a`
+			`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-item > .drawer-nav-drop-wrap > a`
 		);
 	}
 	css.add_property('color', css.render_color(linkColorActive));
 	css.add_property('background', css.render_color(backgroundActive));
+
+	//New Logic for block
+	if (orientation == 'vertical') {
+	}
 
 	const cssOutput = css.css_output();
 

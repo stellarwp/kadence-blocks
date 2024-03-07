@@ -109,6 +109,8 @@ export function EditInner(props) {
 		backgroundHover: meta?._kad_navigation_backgroundHover,
 		backgroundActive: meta?._kad_navigation_backgroundActive,
 		typography: meta?._kad_navigation_typography,
+		collapseSubMenus: meta?._kad_navigation_collapseSubMenus,
+		parentTogglesMenus: meta?._kad_navigation_parentTogglesMenus,
 	};
 
 	const {
@@ -140,6 +142,8 @@ export function EditInner(props) {
 		backgroundHover,
 		backgroundActive,
 		typography,
+		collapseSubMenus,
+		parentTogglesMenus,
 	} = metaAttributes;
 
 	const setMetaAttribute = (value, key) => {
@@ -214,6 +218,7 @@ export function EditInner(props) {
 	const innerNavClasses = classnames('menu', {
 		'kb-navigation': true,
 		[`kb-navigation-${id}`]: true,
+		[`collapse-sub-nav-${collapseSubMenus}`]: true,
 	});
 
 	const [title, setTitle] = useNavigationProp('title');
@@ -380,6 +385,20 @@ export function EditInner(props) {
 								]}
 								onChange={(value) => setMetaAttribute(value, 'orientation')}
 							/>
+							{orientation == 'vertical' && (
+								<ToggleControl
+									label={__('Collapse Sub Menus', 'kadence-blocks')}
+									checked={collapseSubMenus}
+									onChange={(value) => setMetaAttribute(value, 'collapseSubMenus')}
+								/>
+							)}
+							{orientation == 'vertical' && collapseSubMenus && (
+								<ToggleControl
+									label={__('Entire Item Expands Sub Menu', 'kadence-blocks')}
+									checked={parentTogglesMenus}
+									onChange={(value) => setMetaAttribute(value, 'parentTogglesMenus')}
+								/>
+							)}
 							<RangeControl
 								label={__('Horizontal Item Spacing', 'kadence-blocks')}
 								value={parseFloat(spacing[1])}

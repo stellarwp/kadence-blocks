@@ -21,7 +21,7 @@ import { formBlockIcon, formTemplateContactIcon } from '@kadence/icons';
 import { KadencePanelBody } from '@kadence/components';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { Placeholder, Spinner } from '@wordpress/components';
-import { store as coreStore, EntityProvider } from '@wordpress/core-data';
+import { store as coreStore, EntityProvider, useEntityProp } from '@wordpress/core-data';
 
 import { useEntityAutoDraft } from './hooks';
 import { SelectOrCreatePlaceholder, SelectForm } from './components';
@@ -36,13 +36,25 @@ import { useEffect } from '@wordpress/element';
 export function Edit(props) {
 	const { attributes, setAttributes, clientId } = props;
 
-	const { id, uniqueID, navigationOrientation, navigationStretch, navigationFillStretch } = attributes;
+	const { id, uniqueID } = attributes;
+
+	// Since we're not in the EntityProvider yet, we need to provide a post id.
+	// 'id' and 'meta' will be undefined untill the actual post is chosen / loaded
+	const [meta, setMeta] = useNavigationProp('meta', id);
+
+	const metaAttributes = {
+		orientation: meta?._kad_navigation_orientation,
+		stretch: meta?._kad_navigation_stretch,
+		fillStretch: meta?._kad_navigation_fillStretch,
+	};
+
+	const { orientation, stretch, fillStretch } = metaAttributes;
 
 	const blockClasses = classnames({
 		[`wp-block-kadence-navigation${uniqueID}`]: uniqueID,
-		[`navigation-layout-stretch-${navigationStretch}`]: true,
-		[`navigation-layout-fill-stretch-${navigationFillStretch}`]: true,
-		[`navigation-orientation-${navigationOrientation}`]: true,
+		[`navigation-layout-stretch-${stretch}`]: true,
+		[`navigation-layout-fill-stretch-${fillStretch}`]: true,
+		[`navigation-orientation-${orientation}`]: true,
 	});
 	const blockProps = useBlockProps({
 		className: blockClasses,
@@ -218,4 +230,8 @@ function Chooser({ id, post, commit, postExists }) {
 			isAdding={isAdding}
 		/>
 	);
+}
+
+function useNavigationProp(prop, postId) {
+	return useEntityProp('postType', 'kadence_navigation', prop, postId);
 }
