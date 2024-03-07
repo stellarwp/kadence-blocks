@@ -364,7 +364,12 @@ export function EditInner(props) {
 							</Button>
 
 							{isOpen && (
-								<Modal title="Visual Editor" onRequestClose={closeModal} style={{ minWidth: '600px' }}>
+								<Modal
+									title={__('Menu Editor', 'kadence-blocks')}
+									onRequestClose={closeModal}
+									size={'large'}
+									style={{ minWidth: '600px' }}
+								>
 									<MenuEditor />
 								</Modal>
 							)}

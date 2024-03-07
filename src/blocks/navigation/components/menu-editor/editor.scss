@@ -1,0 +1,71 @@
+.kb-menu-visual-editor {
+	display: flex;
+	flex-direction: row;
+	height: 100%;
+
+	.left-column {
+		flex: 1;
+		padding-bottom: 30px;
+	}
+
+	.right-column {
+		flex: 2;
+		padding: 0 30px 20px 30px;
+	}
+
+	.menu-container {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.menu-item,
+	.menu-create {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.menu-item button {
+		border: 0;
+		background-color: #FFF;
+	}
+
+	.menu-item.selected, .menu-item.selected button {
+		background-color: #F0F0F0;
+	}
+
+	.dots, .plus {
+		font-weight: bold;
+	}
+
+	.menu-create {
+		border-top: 1px solid #ccc;
+	}
+
+	.menu-name {
+		display: flex;
+		flex-grow: 1;
+		justify-content: flex-start;
+		margin-right: 2px;
+		margin-bottom: 2px;
+		padding: 10px 0px 10px 10px;
+
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.menu-options {
+		padding: 10px 5px 10px 5px;
+	}
+
+	.edit-menu-name {
+		color: #757575;
+		font-size: 11px;
+
+		padding-bottom: 15px;
+		border-bottom: 1px solid #E0E0E0;
+		margin-bottom: 15px;
+
+	}
+}

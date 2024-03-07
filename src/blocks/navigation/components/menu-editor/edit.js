@@ -1,10 +1,11 @@
-import { useState } from '@wordpress/element';
+import { useCallback, useEffect, useState } from '@wordpress/element';
 import { TextControl, Button } from '@wordpress/components';
-import { useEntityBlockEditor } from '@wordpress/core-data';
-import { useSelect, useDispatch } from '@wordpress/data';
+import { useEntityBlockEditor, useEntityProp } from '@wordpress/core-data';
+import { useDispatch } from '@wordpress/data';
 import { get } from 'lodash';
 import { createBlock, serialize } from '@wordpress/blocks';
-
+import { RichText } from '@wordpress/block-editor';
+import { __ } from '@wordpress/i18n';
 function NavigationItem({ thisBlock, allBlocks, index, updateLocalBlocks, maxIndex }) {
 	const [isEditing, setIsEditing] = useState(false);
 	const moveBlock = (direction, clientId, blocks, inRecursion = false) => {
@@ -138,9 +139,15 @@ const renderBlocks = (allBlocks, innerBlocks, updateLocalBlocks) => {
 export default function MenuEdit({ selectedPostId }) {
 	const { saveEntityRecord } = useDispatch('core');
 	const [blocks, , onChange] = useEntityBlockEditor('postType', 'kadence_navigation', { id: selectedPostId });
-	const initialBlocks = get(blocks, [0, 'innerBlocks'], []);
+	const [title, setTitle] = useNavigationProp('title', selectedPostId);
 
+	const initialBlocks = get(blocks, [0, 'innerBlocks'], [selectedPostId]);
 	const [innerBlocks, setInnerBlocks] = useState(initialBlocks);
+	const [tmpTitle, setTmpTitle] = useState(title);
+
+	useEffect(() => {
+		setInnerBlocks(initialBlocks);
+	}, [selectedPostId]);
 
 	const updateLocalBlocks = (newBlocks) => {
 		setInnerBlocks(newBlocks);
@@ -167,6 +174,7 @@ export default function MenuEdit({ selectedPostId }) {
 			await saveEntityRecord('postType', 'kadence_navigation', {
 				id: selectedPostId,
 				content: serialize(newBlock),
+				title: tmpTitle,
 			});
 			console.log('Post saved successfully');
 		} catch (error) {
@@ -176,6 +184,18 @@ export default function MenuEdit({ selectedPostId }) {
 
 	return (
 		<div>
+			<div className={'edit-menu-name'}>
+				MENU NAME:{' '}
+				<RichText
+					className="kt-blocks-accordion-title"
+					tagName={'span'}
+					placeholder={__('Add Title', 'kadence-blocks')}
+					onChange={(value) => setTmpTitle(value)}
+					value={tmpTitle}
+					keepPlaceholderOnFocus
+				/>
+			</div>
+
 			{renderBlocks(innerBlocks, innerBlocks, updateLocalBlocks)}
 
 			<div style={{ marginTop: '20px' }}>
@@ -202,4 +222,22 @@ export default function MenuEdit({ selectedPostId }) {
 			</div>
 		</div>
 	);
+}
+
+function useNavigationProp(prop, id) {
+	return useEntityProp('postType', 'kadence_navigation', prop, id);
+}
+
+function useNavigationMeta(key) {
+	const [meta, setMeta] = useNavigationProp('meta');
+
+	return [
+		meta[key],
+		useCallback(
+			(newValue) => {
+				setMeta({ ...meta, [key]: newValue });
+			},
+			[key, setMeta]
+		),
+	];
 }
