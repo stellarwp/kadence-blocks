@@ -95,6 +95,7 @@ Release Date: March 6th 2024
 * Fix: Styling issue with some infobox title headings.
 * Fix: Tabs block inside advanced query card.
 * Fix: Issue with image sizes in design library.
+* Fix: Issue with missing option to choose Swedish in ai language settings.
 
 = 3.2.25 =
 Release Date: February 27th 2024
