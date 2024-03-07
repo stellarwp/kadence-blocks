@@ -77,16 +77,19 @@ export function EditInner(props) {
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
 
+	// Padding options
 	const [padding] = useHeaderMeta('_kad_header_padding');
 	const [tabletPadding] = useHeaderMeta('_kad_header_tabletPadding');
 	const [mobilePadding] = useHeaderMeta('_kad_header_mobilePadding');
 	const [paddingUnit] = useHeaderMeta('_kad_header_paddingUnit');
 
+	// Margin options
 	const [margin] = useHeaderMeta('_kad_header_margin');
 	const [tabletMargin] = useHeaderMeta('_kad_header_tabletMargin');
 	const [mobileMargin] = useHeaderMeta('_kad_header_mobileMargin');
 	const [marginUnit] = useHeaderMeta('_kad_header_marginUnit');
 
+	// Border options
 	const [headerBorder] = useHeaderMeta('_kad_header_headerBorder');
 	const [headerHoverBorder] = useHeaderMeta('_kad_header_headerHoverBorder');
 	const [headerMobileBorder] = useHeaderMeta('_kad_header_headerMobileBorder');
@@ -96,6 +99,10 @@ export function EditInner(props) {
 	const [tabletBorderRadius] = useHeaderMeta('_kad_header_tabletBorderRadius');
 	const [mobileBorderRadius] = useHeaderMeta('_kad_header_mobileBorderRadius');
 	const [borderRadiusUnit] = useHeaderMeta('_kad_header_borderRadiusUnit');
+	const [borderHoverRadius] = useHeaderMeta('_kad_header_borderHoverRadius');
+	const [tabletBorderHoverRadius] = useHeaderMeta('_kad_header_tabletBorderHoverRadius');
+	const [mobileBorderHoverRadius] = useHeaderMeta('_kad_header_mobileBorderHoverRadius');
+	const [borderHoverRadiusUnit] = useHeaderMeta('_kad_header_borderHoverRadiusUnit');
 
 	// Typography options
 
@@ -1168,30 +1175,80 @@ export function EditInner(props) {
 						>
 							<HoverToggleControl
 								normal={
-									<ResponsiveBorderControl
-										label={__('Border', 'kadence-blocks')}
-										value={[headerBorder]}
-										tabletValue={[headerTabletBorder]}
-										mobileValue={[headerMobileBorder]}
-										onChange={(value) => {
-											setMetaAttribute(value[0], 'headerBorder');
-										}}
-										onChangeTablet={(value) => setMetaAttribute(value[0], 'headerTabletBorder')}
-										onChangeMobile={(value) => setMetaAttribute(value[0], 'headerMobileBorder')}
-									/>
+									<>
+										<ResponsiveBorderControl
+											label={__('Border', 'kadence-blocks')}
+											value={[headerBorder]}
+											tabletValue={[headerTabletBorder]}
+											mobileValue={[headerMobileBorder]}
+											onChange={(value) => {
+												setMetaAttribute(value[0], 'headerBorder');
+											}}
+											onChangeTablet={(value) => setMetaAttribute(value[0], 'headerTabletBorder')}
+											onChangeMobile={(value) => setMetaAttribute(value[0], 'headerMobileBorder')}
+										/>
+										<ResponsiveMeasurementControls
+											label={__('Border Radius', 'kadence-blocks')}
+											value={borderRadius}
+											tabletValue={tabletBorderRadius}
+											mobileValue={mobileBorderRadius}
+											onChange={(value) => setMetaAttribute(value, 'borderRadius')}
+											onChangeTablet={(value) => setMetaAttribute(value, 'tabletBorderRadius')}
+											onChangeMobile={(value) => setMetaAttribute(value, 'mobileBorderRadius')}
+											unit={borderRadiusUnit}
+											units={['px', 'em', 'rem', '%']}
+											onUnit={(value) => setMetaAttribute(value, 'borderRadiusUnit')}
+											max={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 500}
+											step={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1}
+											min={0}
+											isBorderRadius={true}
+											allowEmpty={true}
+										/>
+									</>
 								}
 								hover={
-									<ResponsiveBorderControl
-										label={__('Hover Border', 'kadence-blocks')}
-										value={[headerHoverBorder]}
-										tabletValue={[headerTabletBorder]}
-										mobileValue={[headerMobileBorder]}
-										onChange={(value) => {
-											setMetaAttribute(value[0], 'headerHoverBorder');
-										}}
-										onChangeTablet={(value) => setMetaAttribute(value[0], 'headerTabletBorder')}
-										onChangeMobile={(value) => setMetaAttribute(value[0], 'headerMobileBorder')}
-									/>
+									<>
+										<ResponsiveBorderControl
+											label={__('Hover Border', 'kadence-blocks')}
+											value={[headerHoverBorder]}
+											tabletValue={[headerTabletBorder]}
+											mobileValue={[headerMobileBorder]}
+											onChange={(value) => {
+												setMetaAttribute(value[0], 'headerHoverBorder');
+											}}
+											onChangeTablet={(value) => setMetaAttribute(value[0], 'headerTabletBorder')}
+											onChangeMobile={(value) => setMetaAttribute(value[0], 'headerMobileBorder')}
+										/>
+										<ResponsiveMeasurementControls
+											label={__('Border Radius', 'kadence-blocks')}
+											value={borderHoverRadius}
+											tabletValue={tabletBorderHoverRadius}
+											mobileValue={mobileBorderHoverRadius}
+											onChange={(value) => setMetaAttribute(value, 'borderHoverRadius')}
+											onChangeTablet={(value) =>
+												setMetaAttribute(value, 'tabletBorderHoverRadius')
+											}
+											onChangeMobile={(value) =>
+												setMetaAttribute(value, 'mobileBorderHoverRadius')
+											}
+											unit={borderHoverRadiusUnit}
+											units={['px', 'em', 'rem', '%']}
+											onUnit={(value) => setMetaAttribute(value, 'borderHoverRadiusUnit')}
+											max={
+												borderHoverRadiusUnit === 'em' || borderHoverRadiusUnit === 'rem'
+													? 24
+													: 500
+											}
+											step={
+												borderHoverRadiusUnit === 'em' || borderHoverRadiusUnit === 'rem'
+													? 0.1
+													: 1
+											}
+											min={0}
+											isBorderRadius={true}
+											allowEmpty={true}
+										/>
+									</>
 								}
 							/>
 						</KadencePanelBody>

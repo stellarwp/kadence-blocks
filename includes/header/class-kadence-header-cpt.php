@@ -439,43 +439,49 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'type'    => 'string'
 			),
 			array(
-				'key'     => '_kad_header_borderColor',
-				'default' => array('', '', '', ''),
-				'type'    => 'array',
-				'children_type' => 'string'
-			),
-			array(
-				'key'     => '_kad_header_border',
-				'default' => array('', '', '', ''),
-				'type'    => 'array',
-				'children_type' => 'string'
-			),
-			array(
-				'key'     => '_kad_header_borderUnit',
-				'default' => 'px',
-				'type'    => 'string'
-			),
-			array(
 				'key'     => '_kad_header_borderRadius',
-				'default' => array('', '', '', ''),
+				'default' => array(0, 0, 0, 0),
 				'type'    => 'array',
-				'children_type' => 'string'
+				'children_type' => 'integer'
 			),
 			array(
 				'key'     => '_kad_header_tabletBorderRadius',
-				'default' => array('', '', '', ''),
+				'default' => array(0, 0, 0, 0),
 				'type'    => 'array',
-				'children_type' => 'string'
+				'children_type' => 'integer'
 			),
 			array(
 				'key'     => '_kad_header_mobileBorderRadius',
-				'default' => array('', '', '', ''),
+				'default' => array(0, 0, 0, 0),
 				'type'    => 'array',
-				'children_type' => 'string'
+				'children_type' => 'integer'
 			),
 			array(
 				'key'     => '_kad_header_borderRadiusUnit',
-				'default' => 'px',
+				'default' => '',
+				'type'    => 'string'
+			),
+			array(
+				'key'     => '_kad_header_borderHoverRadius',
+				'default' => array(0, 0, 0, 0),
+				'type'    => 'array',
+				'children_type' => 'integer'
+			),
+			array(
+				'key'     => '_kad_header_tabletBorderHoverRadius',
+				'default' => array(0, 0, 0, 0),
+				'type'    => 'array',
+				'children_type' => 'integer'
+			),
+			array(
+				'key'     => '_kad_header_mobileBorderHoverRadius',
+				'default' => array(0, 0, 0, 0),
+				'type'    => 'array',
+				'children_type' => 'integer'
+			),
+			array(
+				'key'     => '_kad_header_borderHoverRadiusUnit',
+				'default' => '',
 				'type'    => 'string'
 			),
 			array(
