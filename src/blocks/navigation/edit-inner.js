@@ -18,14 +18,12 @@ import {
 	InspectorControlTabs,
 	SpacingVisualizer,
 	ResponsiveMeasureRangeControl,
+	RangeControl,
+	PopColorControl,
+	HoverToggleControl,
+	TypographyControls,
 } from '@kadence/components';
-import {
-	getPreviewSize,
-	KadenceColorOutput,
-	getSpacingOptionOutput,
-	mouseOverVisualizer,
-	arrayStringToInt,
-} from '@kadence/helpers';
+import { getPreviewSize, getSpacingOptionOutput, mouseOverVisualizer, showSettings } from '@kadence/helpers';
 
 import {
 	InspectorControls,
@@ -34,9 +32,18 @@ import {
 	InspectorAdvancedControls,
 	store as editorStore,
 } from '@wordpress/block-editor';
-import { TextControl, ToggleControl, ToolbarGroup, ExternalLink, Button, Placeholder } from '@wordpress/components';
+import {
+	TextControl,
+	ToggleControl,
+	ToolbarGroup,
+	ExternalLink,
+	Button,
+	Placeholder,
+	Modal,
+	SelectControl,
+} from '@wordpress/components';
 
-import { FormTitle, SelectForm } from './components';
+import { FormTitle, SelectForm, MenuEditor } from './components';
 
 /**
  * Internal dependencies
@@ -44,6 +51,8 @@ import { FormTitle, SelectForm } from './components';
 import classnames from 'classnames';
 import { useEntityPublish } from './hooks';
 import { DEFAULT_BLOCK, ALLOWED_BLOCKS, PRIORITIZED_INSERTER_BLOCKS } from './constants';
+import BackendStyles from './components/backend-styles';
+
 /**
  * Regular expression matching invalid anchor characters for replacement.
  *
@@ -69,28 +78,82 @@ export function EditInner(props) {
 	const marginMouseOver = mouseOverVisualizer();
 	const borderMouseOver = mouseOverVisualizer();
 
-	const [padding] = useNavigationMeta('_kad_navigation_padding');
-	const [tabletPadding] = useNavigationMeta('_kad_navigation_tabletPadding');
-	const [mobilePadding] = useNavigationMeta('_kad_navigation_mobilePadding');
-	const [paddingUnit] = useNavigationMeta('_kad_navigation_paddingUnit');
-
-	const [margin] = useNavigationMeta('_kad_navigation_margin');
-	const [tabletMargin] = useNavigationMeta('_kad_navigation_tabletMargin');
-	const [mobileMargin] = useNavigationMeta('_kad_navigation_mobileMargin');
-	const [marginUnit] = useNavigationMeta('_kad_navigation_marginUnit');
-
-	const [border] = useNavigationMeta('_kad_navigation_border');
-	const [borderRadius] = useNavigationMeta('_kad_navigation_borderRadius');
-	const [borderColor] = useNavigationMeta('_kad_navigation_borderColor');
-	const [borderUnit] = useNavigationMeta('_kad_navigation_borderUnit');
-
-	const [className] = useNavigationMeta('_kad_navigation_className');
-	const [anchor] = useNavigationMeta('_kad_navigation_anchor');
-
 	const [meta, setMeta] = useNavigationProp('meta');
+
+	const metaAttributes = {
+		padding: meta?._kad_navigation_padding,
+		tabletPadding: meta?._kad_navigation_tabletPadding,
+		mobilePadding: meta?._kad_navigation_mobilePadding,
+		paddingUnit: meta?._kad_navigation_paddingUnit,
+		margin: meta?._kad_navigation_margin,
+		tabletMargin: meta?._kad_navigation_tabletMargin,
+		mobileMargin: meta?._kad_navigation_mobileMargin,
+		marginUnit: meta?._kad_navigation_marginUnit,
+		border: meta?._kad_navigation_border,
+		borderRadius: meta?._kad_navigation_borderRadius,
+		borderColor: meta?._kad_navigation_borderColor,
+		borderUnit: meta?._kad_navigation_borderUnit,
+		className: meta?._kad_navigation_className,
+		anchor: meta?._kad_navigation_anchor,
+		orientation: meta?._kad_navigation_orientation,
+		spacing: meta?._kad_navigation_spacing,
+		spacingUnit: meta?._kad_navigation_spacingUnit,
+		style: meta?._kad_navigation_style,
+		stretch: meta?._kad_navigation_stretch,
+		fillStretch: meta?._kad_navigation_fillStretch,
+		parentActive: meta?._kad_navigation_parentActive,
+		linkColor: meta?._kad_navigation_linkColor,
+		linkColorHover: meta?._kad_navigation_linkColorHover,
+		linkColorActive: meta?._kad_navigation_linkColorActive,
+		background: meta?._kad_navigation_link_color,
+		backgroundHover: meta?._kad_navigation_background_hover,
+		backgroundActive: meta?._kad_navigation_background_active,
+		typography: meta?._kad_navigation_typography,
+	};
+
+	const {
+		padding,
+		tabletPadding,
+		mobilePadding,
+		paddingUnit,
+		margin,
+		tabletMargin,
+		mobileMargin,
+		marginUnit,
+		border,
+		borderRadius,
+		borderColor,
+		borderUnit,
+		className,
+		anchor,
+		orientation,
+		spacing,
+		spacingUnit,
+		style,
+		stretch,
+		fillStretch,
+		parentActive,
+		linkColor,
+		linkColorHover,
+		linkColorActive,
+		background,
+		backgroundHover,
+		backgroundActive,
+		typography,
+	} = metaAttributes;
 
 	const setMetaAttribute = (value, key) => {
 		setMeta({ ...meta, ['_kad_navigation_' + key]: value });
+	};
+
+	const saveTypography = (value) => {
+		const newUpdate = typography.map((item, index) => {
+			if (0 === index) {
+				item = { ...item, ...value };
+			}
+			return item;
+		});
+		setMetaAttribute(newUpdate, 'typography');
 	};
 
 	const previewMarginTop = getPreviewSize(
@@ -143,10 +206,14 @@ export function EditInner(props) {
 		undefined !== mobilePadding ? mobilePadding[3] : ''
 	);
 
-	const formClasses = classnames({
+	const navClasses = classnames('navigation', {
+		[`navigation-dropdown-animation-fade-${id}`]: true,
+		[`navigation-style-${style}`]: true,
+	});
+
+	const innerNavClasses = classnames('menu', {
 		'kb-navigation': true,
 		[`kb-navigation-${id}`]: true,
-		[`kb-navigation${uniqueID}`]: uniqueID,
 	});
 
 	const [title, setTitle] = useNavigationProp('title');
@@ -191,9 +258,13 @@ export function EditInner(props) {
 		}
 	};
 
+	const [isOpen, setOpen] = useState(false);
+	const openModal = () => setOpen(true);
+	const closeModal = () => setOpen(false);
+
 	const innerBlocksProps = useInnerBlocksProps(
 		{
-			className: formClasses,
+			className: innerNavClasses,
 			style: {
 				marginTop: '' !== previewMarginTop ? getSpacingOptionOutput(previewMarginTop, marginUnit) : undefined,
 				marginRight:
@@ -247,20 +318,20 @@ export function EditInner(props) {
 					icon={formBlockIcon}
 				>
 					<p style={{ width: '100%', marginBottom: '10px' }}>
-						{__('Advanced forms can not be edited within the widgets screen.', 'kadence-blocks')}
+						{__('Advanced Navs can not be edited within the widgets screen.', 'kadence-blocks')}
 					</p>
-					<Button href={editPostLink} variant="primary" className="kb-form-edit-link">
-						{__('Edit Form', 'kadence-blocks')}
+					<Button href={editPostLink} variant="primary" className="kb-navigation-edit-link">
+						{__('Edit Navigation', 'kadence-blocks')}
 					</Button>
 				</Placeholder>
 				<InspectorControls>
 					<KadencePanelBody
-						panelName={'kb-advanced-form-selected-switch'}
-						title={__('Selected Form', 'kadence-blocks')}
+						panelName={'kb-advanced-navigation-selected-switch'}
+						title={__('Selected Navigation', 'kadence-blocks')}
 					>
 						<SelectForm
 							postType="kadence_navigation"
-							label={__('Selected Form', 'kadence-blocks')}
+							label={__('Selected Navigation', 'kadence-blocks')}
 							hideLabelFromVision={true}
 							onChange={(nextId) => {
 								setAttributes({ id: parseInt(nextId) });
@@ -272,16 +343,10 @@ export function EditInner(props) {
 			</>
 		);
 	}
+
 	return (
 		<>
-			<style>
-				{isSelected && (
-					<>
-						{`.block-editor-block-popover__inbetween-container .block-editor-block-list__insertion-point.is-with-inserter { display: none }`}
-						;
-					</>
-				)}
-			</style>
+			<BackendStyles {...props} metaAttributes={metaAttributes} previewDevice={previewDevice} />
 			<InspectorControls>
 				<InspectorControlTabs
 					panelName={'advanced-navigation'}
@@ -291,35 +356,189 @@ export function EditInner(props) {
 
 				{activeTab === 'general' && (
 					<>
-						General tab
+						<>
+							<br />
+
+							<Button variant="secondary" onClick={openModal}>
+								{__('Open Visual Editor', 'kadence-blocks')}
+							</Button>
+
+							{isOpen && (
+								<Modal title="Visual Editor" onRequestClose={closeModal} style={{ minWidth: '600px' }}>
+									<MenuEditor />
+								</Modal>
+							)}
+						</>
 						<div className="kt-sidebar-settings-spacer"></div>
-					</>
-				)}
-				{console.log(activeTab)}
-				{activeTab === 'style' && (
-					<>
-						<KadencePanelBody panelName={'kb-row-border'}>
-							<ResponsiveMeasureRangeControl
-								label={__('Border Width', 'kadence-blocks')}
-								value={border}
-								onChange={(value) => {
-									setMetaAttribute(value.map(String), 'border');
-								}}
-								onChangeTablet={(value) => {
-									setMetaAttribute(value.map(String), 'tabletPadding');
-								}}
-								onChangeMobile={(value) => {
-									setMetaAttribute(value.map(String), 'mobilePadding');
-								}}
+						<KadencePanelBody panelName={'kb-navigation-general'}>
+							<SelectControl
+								label={__('Orientation', 'kadence-blocks')}
+								value={orientation}
+								options={[
+									{ value: 'horizontal', label: __('Horizontal') },
+									{ value: 'vertical', label: __('Vertical') },
+								]}
+								onChange={(value) => setMetaAttribute(value.map(String), 'orientation')}
+							/>
+							<RangeControl
+								label={__('Horizontal Item Spacing', 'kadence-blocks')}
+								value={spacing[1]}
+								onChange={(value) =>
+									setMetaAttribute([spacing[0], value, spacing[2], value], 'spacing')
+								}
 								min={0}
-								max={200}
-								step={1}
-								unit={borderUnit}
-								units={['px']}
-								onMouseOver={borderMouseOver.onMouseOver}
-								onMouseOut={borderMouseOver.onMouseOut}
+								max={120}
+								units={['em', 'rem', 'px', 'vw']}
+								unit={spacingUnit}
+								onUnit={(value) => setMetaAttribute(value, 'spacingUnit')}
+								showUnit={true}
+							/>
+							<RangeControl
+								label={__('Vertical Item Spacing', 'kadence-blocks')}
+								value={spacing[0]}
+								onChange={(value) =>
+									setMetaAttribute([value, spacing[1], value, spacing[3]], 'spacing')
+								}
+								min={0}
+								max={120}
+								units={['em', 'rem', 'px', 'vw']}
+								unit={spacingUnit}
+								onUnit={(value) => setMetaAttribute(value, 'spacingUnit')}
+								showUnit={true}
+							/>
+							<ToggleControl
+								label={__('Stretch Menu', 'kadence-blocks')}
+								checked={stretch}
+								onChange={(value) => setMetaAttribute(value, 'stretch')}
+							/>
+							{stretch && (
+								<ToggleControl
+									label={__('Fill andd Center Menu Items?', 'kadence-blocks')}
+									checked={fillStretch}
+									onChange={(value) => setMetaAttribute(value, 'fillStretch')}
+								/>
+							)}
+							<ToggleControl
+								label={__('Make Parent of Current Menu item Active', 'kadence-blocks')}
+								checked={parentActive}
+								onChange={(value) => setMetaAttribute(value, 'parentActive')}
 							/>
 						</KadencePanelBody>
+					</>
+				)}
+				{activeTab === 'style' && (
+					<>
+						<KadencePanelBody panelName={'kb-navigation-style'}>
+							<SelectControl
+								label={__('Style', 'kadence-blocks')}
+								value={style}
+								options={[
+									{ value: 'standard', label: __('Standard') },
+									{ value: 'fullheight', label: __('Full Height') },
+									{ value: 'underline', label: __('Underline') },
+									{ value: 'underline-fullheight', label: __('Full Height Underline') },
+								]}
+								onChange={(value) => setMetaAttribute(value.map(String), 'style')}
+							/>
+							<HoverToggleControl
+								normal={
+									<>
+										<PopColorControl
+											label={__('Link Color', 'kadence-blocks')}
+											value={linkColor}
+											default={''}
+											onChange={(value) => setMetaAttribute(value.map(String), 'linkColor')}
+										/>
+										<PopColorControl
+											label={__('Background', 'kadence-blocks')}
+											value={background}
+											default={''}
+											onChange={(value) => setMetaAttribute(value.map(String), 'background')}
+										/>
+									</>
+								}
+								hover={
+									<>
+										<PopColorControl
+											label={__('Link Color Hover', 'kadence-blocks')}
+											value={linkColorHover}
+											default={''}
+											onChange={(value) => setMetaAttribute(value.map(String), 'linkColorHover')}
+										/>
+										<PopColorControl
+											label={__('Background Hover', 'kadence-blocks')}
+											value={backgroundHover}
+											default={''}
+											onChange={(value) => setMetaAttribute(value.map(String), 'backgroundHover')}
+										/>
+									</>
+								}
+								active={
+									<>
+										<PopColorControl
+											label={__('Link Color Active', 'kadence-blocks')}
+											value={linkColorActive}
+											default={''}
+											onChange={(value) => setMetaAttribute(value.map(String), 'linkColorActive')}
+										/>
+										<PopColorControl
+											label={__('Background Active', 'kadence-blocks')}
+											value={backgroundActive}
+											default={''}
+											onChange={(value) =>
+												setMetaAttribute(value.map(String), 'backgroundActive')
+											}
+										/>
+									</>
+								}
+							/>
+						</KadencePanelBody>
+
+						{showSettings('fontSettings', 'kadence/navigation') && (
+							<KadencePanelBody
+								title={__('Typography Settings', 'kadence-blocks')}
+								initialOpen={false}
+								panelName={'kb-adv-btn-font-family'}
+							>
+								<TypographyControls
+									fontSize={typography[0].size}
+									onFontSize={(value) => saveTypography({ size: value })}
+									fontSizeType={typography[0].sizeType}
+									onFontSizeType={(value) => saveTypography({ sizeType: value })}
+									lineHeight={typography[0].lineHeight}
+									onLineHeight={(value) => saveTypography({ lineHeight: value })}
+									lineHeightType={typography[0].lineType}
+									onLineHeightType={(value) => saveTypography({ lineType: value })}
+									reLetterSpacing={typography[0].letterSpacing}
+									onLetterSpacing={(value) => saveTypography({ letterSpacing: value })}
+									letterSpacingType={typography[0].letterType}
+									onLetterSpacingType={(value) => saveTypography({ letterType: value })}
+									textTransform={typography[0].textTransform}
+									onTextTransform={(value) => saveTypography({ textTransform: value })}
+									fontFamily={typography[0].family}
+									onFontFamily={(value) => saveTypography({ family: value })}
+									onFontChange={(select) => {
+										saveTypography({
+											family: select.value,
+											google: select.google,
+										});
+									}}
+									onFontArrayChange={(values) => saveTypography(values)}
+									googleFont={typography[0].google}
+									onGoogleFont={(value) => saveTypography({ google: value })}
+									loadGoogleFont={typography[0].loadGoogle}
+									onLoadGoogleFont={(value) => saveTypography({ loadGoogle: value })}
+									fontVariant={typography[0].variant}
+									onFontVariant={(value) => saveTypography({ variant: value })}
+									fontWeight={typography[0].weight}
+									onFontWeight={(value) => saveTypography({ weight: value })}
+									fontStyle={typography[0].style}
+									onFontStyle={(value) => saveTypography({ style: value })}
+									fontSubset={typography[0].subset}
+									onFontSubset={(value) => saveTypography({ subset: value })}
+								/>
+							</KadencePanelBody>
+						)}
 						<div className="kt-sidebar-settings-spacer"></div>
 					</>
 				)}
@@ -410,8 +629,11 @@ export function EditInner(props) {
 					help={__('Separate multiple classes with spaces.')}
 				/>
 			</InspectorAdvancedControls>
-
-			<div {...innerBlocksProps} />
+			<nav className={navClasses}>
+				<div className="menu-container">
+					<ul {...innerBlocksProps} />
+				</div>
+			</nav>
 			{/*<SpacingVisualizer*/}
 			{/*	style={ {*/}
 			{/*		marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),*/}

@@ -36,11 +36,13 @@ import { useEffect } from '@wordpress/element';
 export function Edit(props) {
 	const { attributes, setAttributes, clientId } = props;
 
-	const { id, uniqueID } = attributes;
+	const { id, uniqueID, navigationOrientation, navigationStretch, navigationFillStretch } = attributes;
 
 	const blockClasses = classnames({
-		'wp-block-kadence-advanced-form': true,
-		[`wp-block-kadence-advanced-form${uniqueID}`]: uniqueID,
+		[`wp-block-kadence-navigation${uniqueID}`]: uniqueID,
+		[`navigation-layout-stretch-${navigationStretch}`]: true,
+		[`navigation-layout-fill-stretch-${navigationFillStretch}`]: true,
+		[`navigation-orientation-${navigationOrientation}`]: true,
 	});
 	const blockProps = useBlockProps({
 		className: blockClasses,
@@ -129,19 +131,19 @@ export function Edit(props) {
 				<>
 					<Placeholder
 						className="kb-select-or-create-placeholder"
-						label={__('Kadence Heading', 'kadence-blocks')}
+						label={__('Kadence Navigation', 'kadence-blocks')}
 						icon={formBlockIcon}
 					>
 						<Spinner />
 					</Placeholder>
 					<InspectorControls>
 						<KadencePanelBody
-							panelName={'kb-advanced-form-selected-switch'}
-							title={__('Selected Form', 'kadence-blocks')}
+							panelName={'kb-navigation-selected-switch'}
+							title={__('Selected Navigation', 'kadence-blocks')}
 						>
 							<SelectForm
 								postType="kadence_navigation"
-								label={__('Selected Form', 'kadence-blocks')}
+								label={__('Selected Navigation', 'kadence-blocks')}
 								hideLabelFromVision={true}
 								onChange={(nextId) => {
 									setAttributes({ id: parseInt(nextId) });
@@ -157,7 +159,7 @@ export function Edit(props) {
 				<>
 					<Placeholder
 						className="kb-select-or-create-placeholder"
-						label={__('Kadence Heading', 'kadence-blocks')}
+						label={__('Kadence Navigation', 'kadence-blocks')}
 						icon={formBlockIcon}
 					>
 						{__('The selected from is in the trash.', 'kadence-blocks')}
@@ -165,11 +167,11 @@ export function Edit(props) {
 					<InspectorControls>
 						<KadencePanelBody
 							panelName={'kb-advanced-form-selected-switch'}
-							title={__('Selected Form', 'kadence-blocks')}
+							title={__('Selected Navigation', 'kadence-blocks')}
 						>
 							<SelectForm
 								postType="kadence_navigation"
-								label={__('Selected Form', 'kadence-blocks')}
+								label={__('Selected Navigation', 'kadence-blocks')}
 								hideLabelFromVision={true}
 								onChange={(nextId) => {
 									setAttributes({ id: parseInt(nextId) });

@@ -8,7 +8,16 @@ import classnames from 'classnames';
  */
 import { createBlock } from '@wordpress/blocks';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { PanelBody, TextControl, TextareaControl, ToolbarButton, Tooltip, ToolbarGroup } from '@wordpress/components';
+import {
+	PanelBody,
+	TextControl,
+	TextareaControl,
+	ToolbarButton,
+	Tooltip,
+	ToolbarGroup,
+	ToggleControl,
+	SelectControl,
+} from '@wordpress/components';
 import { displayShortcut, isKeyboardEvent, ENTER } from '@wordpress/keycodes';
 import { __ } from '@wordpress/i18n';
 import {
@@ -28,12 +37,48 @@ import { link as linkIcon, addSubmenu } from '@wordpress/icons';
 import { store as coreStore } from '@wordpress/core-data';
 import { useMergeRefs } from '@wordpress/compose';
 
+import {
+	getUniqueId,
+	getPostOrFseId,
+	typographyStyle,
+	getSpacingOptionOutput,
+	getBorderStyle,
+	showSettings,
+	getPreviewSize,
+	KadenceColorOutput,
+	getGapSizeOptionOutput,
+} from '@kadence/helpers';
+
+import {
+	KadencePanelBody,
+	KadenceRadioButtons,
+	InspectorControlTabs,
+	ResponsiveMeasureRangeControl,
+	CopyPasteAttributes,
+	SelectParentBlock,
+	ResponsiveRangeControls,
+	ResponsiveGapSizeControl,
+	ButtonStyleControls,
+	ResponsiveAlignControls,
+	PopColorControl,
+	GradientControl,
+	BackgroundTypeControl,
+	HoverToggleControl,
+	KadenceBlockDefaults,
+	RangeControl,
+} from '@kadence/components';
+
 /**
  * Internal dependencies
  */
 import { LinkUI } from './link-ui';
 import { updateAttributes } from './update-attributes';
-import { getColors } from '../navigation/core-legacy-edit/utils';
+
+/**
+ * Import Css
+ */
+import './editor.scss';
+import metadata from './block.json';
 
 const DEFAULT_BLOCK = { name: 'kadence/navigation-link' };
 
@@ -144,22 +189,48 @@ function getMissingText(type) {
 	return missingText;
 }
 
-export default function NavigationLinkEdit({
-	attributes,
-	isSelected,
-	setAttributes,
-	insertBlocksAfter,
-	mergeBlocks,
-	onReplace,
-	context,
-	clientId,
-}) {
-	const { id, label, type, url, description, rel, title, kind } = attributes;
+export default function Edit(props) {
+	const { attributes, isSelected, setAttributes, insertBlocksAfter, mergeBlocks, onReplace, context, clientId } =
+		props;
+
+	const {
+		id,
+		label,
+		type,
+		url,
+		description,
+		rel,
+		title,
+		kind,
+		isMegaMenu,
+		uniqueID,
+		padding,
+		tabletPadding,
+		mobilePadding,
+		paddingUnit,
+		margin,
+		tabletMargin,
+		mobileMargin,
+		marginUnit,
+		color,
+		background,
+		gradient,
+		backgroundType,
+		colorHover,
+		backgroundHover,
+		gradientHover,
+		backgroundHoverType,
+		megaMenuWidth,
+		megaMenuCustomWidth,
+	} = attributes;
+
+	const [activeTab, setActiveTab] = useState('general');
+	const [showSubMenus, setShowSubMenus] = useState(false);
 
 	const [isInvalid, isDraft] = useIsInvalidLink(kind, type, id);
 	const { maxNestingLevel } = context;
 
-	const { replaceBlock, __unstableMarkNextChangeAsNotPersistent } = useDispatch(blockEditorStore);
+	const { insertBlock, replaceInnerBlocks, __unstableMarkNextChangeAsNotPersistent } = useDispatch(blockEditorStore);
 	const [isLinkOpen, setIsLinkOpen] = useState(false);
 	// Use internal state instead of a ref to make sure that the component
 	// re-renders when the popover's anchor updates.
@@ -173,40 +244,98 @@ export default function NavigationLinkEdit({
 	// This is a workaround to keep the focus on the label field when label filed is focused we don't render the rich text.
 	const [isLabelFieldFocused, setIsLabelFieldFocused] = useState(false);
 
-	const { innerBlocks, isAtMaxNesting, isTopLevelLink, isParentOfSelectedBlock, hasChildren } = useSelect(
+	const { addUniqueID } = useDispatch('kadenceblocks/data');
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		(select) => {
-			const {
-				getBlocks,
-				getBlockCount,
-				getBlockName,
-				getBlockRootClientId,
-				hasSelectedInnerBlock,
-				getBlockParentsByBlockName,
-			} = select(blockEditorStore);
-
 			return {
-				innerBlocks: getBlocks(clientId),
-				isAtMaxNesting:
-					getBlockParentsByBlockName(clientId, ['kadence/navigation-link', 'core/navigation-submenu'])
-						.length >= maxNestingLevel,
-				isTopLevelLink: getBlockName(getBlockRootClientId(clientId)) === 'core/navigation',
-				isParentOfSelectedBlock: hasSelectedInnerBlock(clientId, true),
-				hasChildren: !!getBlockCount(clientId),
+				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
+				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
+				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
+				parentData: {
+					rootBlock: select('core/block-editor').getBlock(
+						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
+					),
+					postId: select('core/editor').getCurrentPostId(),
+					reusableParent: select('core/block-editor').getBlockAttributes(
+						select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
+					),
+					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
+				},
 			};
 		},
 		[clientId]
 	);
 
-	/**
-	 * Transform to submenu block.
-	 */
-	function transformToSubmenu() {
-		const newSubmenu = createBlock(
-			'core/navigation-submenu',
-			attributes,
-			innerBlocks.length > 0 ? innerBlocks : [createBlock('kadence/navigation-link')]
+	useEffect(() => {
+		const postOrFseId = getPostOrFseId(props, parentData);
+		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
+		if (uniqueId !== uniqueID) {
+			attributes.uniqueID = uniqueId;
+			setAttributes({ uniqueID: uniqueId });
+			addUniqueID(uniqueId, clientId);
+		} else {
+			addUniqueID(uniqueId, clientId);
+		}
+	}, []);
+
+	//hasChildren is a proxy for isSubmenu
+	const { innerBlocks, isAtMaxNesting, isSubMenuChild, isTopLevelLink, isParentOfSelectedBlock, hasChildren } =
+		useSelect(
+			(select) => {
+				const {
+					getBlocks,
+					getBlockCount,
+					getBlockName,
+					getBlockRootClientId,
+					hasSelectedInnerBlock,
+					getBlockParentsByBlockName,
+				} = select(blockEditorStore);
+
+				const rootBlockName = getBlockName(getBlockRootClientId(clientId));
+				const navLinkParents = getBlockParentsByBlockName(clientId, [
+					'kadence/navigation-link',
+					'core/navigation-submenu',
+				]);
+
+				return {
+					innerBlocks: getBlocks(clientId),
+					isAtMaxNesting: navLinkParents.length >= maxNestingLevel,
+					isSubMenuChild: navLinkParents.length > 0,
+					isTopLevelLink: rootBlockName === 'core/navigation' || rootBlockName === 'kadence/navigation',
+					isParentOfSelectedBlock: hasSelectedInnerBlock(clientId, true),
+					hasChildren: !!getBlockCount(clientId),
+				};
+			},
+			[clientId]
 		);
-		replaceBlock(clientId, newSubmenu);
+
+	/**
+	 * Enable or disable the mega menu by changing the row layout and setting the attribute.
+	 */
+	function doMegaMenu(value) {
+		if (value) {
+			//enable
+			//TODO put any existing submenus / items into the new mega menu
+			const newMegaMenu = createBlock('kadence/rowlayout', [], []);
+			insertBlock(newMegaMenu, 0, clientId);
+			setAttributes({ isMegaMenu: true });
+			setShowSubMenus(true);
+		} else {
+			//disable
+			replaceInnerBlocks(clientId, []);
+			setAttributes({ isMegaMenu: false });
+		}
+	}
+
+	/**
+	 * Add a submenu item to this nav item.
+	 * TODO if this is a mega menu, add the sub menu item inside the mega menu (row layout)
+	 */
+	function addSubMenuItem() {
+		if (!isAtMaxNesting) {
+			const newMenuItem = createBlock('kadence/navigation-link', [], []);
+			insertBlock(newMenuItem, 0, clientId);
+		}
 	}
 
 	useEffect(() => {
@@ -219,15 +348,16 @@ export default function NavigationLinkEdit({
 		}
 	}, [url]);
 
-	useEffect(() => {
-		// If block has inner blocks, transform to Submenu.
-		if (hasChildren) {
-			// This side-effect should not create an undo level as those should
-			// only be created via user interactions.
-			__unstableMarkNextChangeAsNotPersistent();
-			transformToSubmenu();
-		}
-	}, [hasChildren]);
+	//Disabling for now, but this could be something where we automatically do some processing if the user adds a row layout manually.
+	// useEffect(() => {
+	// 	// If block has inner blocks, transform to Submenu.
+	// 	if (hasChildren) {
+	// 		// This side-effect should not create an undo level as those should
+	// 		// only be created via user interactions.
+	// 		__unstableMarkNextChangeAsNotPersistent();
+	// 		enableMegaMenu();
+	// 	}
+	// }, [hasChildren]);
 
 	/**
 	 * The hook shouldn't be necessary but due to a focus loss happening
@@ -290,8 +420,6 @@ export default function NavigationLinkEdit({
 		setIsLinkOpen(false);
 	}
 
-	const { textColor, customTextColor, backgroundColor, customBackgroundColor } = getColors(context, !isTopLevelLink);
-
 	function onKeyDown(event) {
 		if (isKeyboardEvent.primary(event, 'k') || ((!url || isDraft || isInvalid) && event.keyCode === ENTER)) {
 			setIsLinkOpen(true);
@@ -300,38 +428,94 @@ export default function NavigationLinkEdit({
 
 	const blockProps = useBlockProps({
 		ref: useMergeRefs([setPopoverAnchor, listItemRef]),
-		className: classnames('wp-block-navigation-item', {
-			'is-editing': isSelected || isParentOfSelectedBlock,
-			'is-dragging-within': isDraggingWithin,
-			'has-link': !!url,
-			'has-child': hasChildren,
-			'has-text-color': !!textColor || !!customTextColor,
-			[getColorClassName('color', textColor)]: !!textColor,
-			'has-background': !!backgroundColor || customBackgroundColor,
-			[getColorClassName('background-color', backgroundColor)]: !!backgroundColor,
-		}),
-		style: {
-			color: !textColor && customTextColor,
-			backgroundColor: !backgroundColor && customBackgroundColor,
-		},
+		className: classnames(
+			'wp-block-kadence-navigation-item',
+			'menu-item',
+			'kadence-menu-mega-width-' + (megaMenuWidth ? megaMenuWidth : 'container'),
+			{
+				'is-editing': isSelected || isParentOfSelectedBlock,
+				'is-dragging-within': isDraggingWithin,
+				'has-link': !!url,
+				'has-child': hasChildren,
+				'menu-item--toggled-on': showSubMenus,
+				'kadence-menu-mega-enabled': isMegaMenu,
+				[`wp-block-kadence-navigation-link${uniqueID}`]: uniqueID,
+			}
+		),
 		onKeyDown,
 	});
 
 	const innerBlocksProps = useInnerBlocksProps(
 		{
 			...blockProps,
-			className: 'remove-outline', // Remove the outline from the inner blocks container.
+			className: classnames('remove-outline', {
+				'sub-menu': hasChildren,
+				'show-sub-menus': showSubMenus,
+			}),
 		},
 		{
 			defaultBlock: DEFAULT_BLOCK,
 			directInsert: true,
 			renderAppender: false,
+			template: isMegaMenu ? ['kadence/rowlayout'] : [],
+			templateLock: isMegaMenu ? 'all' : false,
 		}
 	);
 
 	if (!url || isInvalid || isDraft) {
 		blockProps.onClick = () => setIsLinkOpen(true);
 	}
+
+	const previewMarginTop = getPreviewSize(
+		previewDevice,
+		undefined !== margin?.[0] ? margin[0] : '',
+		undefined !== tabletMargin?.[0] ? tabletMargin[0] : '',
+		undefined !== mobileMargin?.[0] ? mobileMargin[0] : ''
+	);
+	const previewMarginRight = getPreviewSize(
+		previewDevice,
+		undefined !== margin?.[1] ? margin[1] : '',
+		undefined !== tabletMargin?.[1] ? tabletMargin[1] : '',
+		undefined !== mobileMargin?.[1] ? mobileMargin[1] : ''
+	);
+	const previewMarginBottom = getPreviewSize(
+		previewDevice,
+		undefined !== margin?.[2] ? margin[2] : '',
+		undefined !== tabletMargin?.[2] ? tabletMargin[2] : '',
+		undefined !== mobileMargin?.[2] ? mobileMargin[2] : ''
+	);
+	const previewMarginLeft = getPreviewSize(
+		previewDevice,
+		undefined !== margin?.[3] ? margin[3] : '',
+		undefined !== tabletMargin?.[3] ? tabletMargin[3] : '',
+		undefined !== mobileMargin?.[3] ? mobileMargin[3] : ''
+	);
+	const previewMarginUnit = marginUnit ? marginUnit : 'px';
+
+	const previewPaddingTop = getPreviewSize(
+		previewDevice,
+		undefined !== padding?.[0] ? padding[0] : '',
+		undefined !== tabletPadding?.[0] ? tabletPadding[0] : '',
+		undefined !== mobilePadding?.[0] ? mobilePadding[0] : ''
+	);
+	const previewPaddingRight = getPreviewSize(
+		previewDevice,
+		undefined !== padding?.[1] ? padding[1] : '',
+		undefined !== tabletPadding?.[1] ? tabletPadding[1] : '',
+		undefined !== mobilePadding?.[1] ? mobilePadding[1] : ''
+	);
+	const previewPaddingBottom = getPreviewSize(
+		previewDevice,
+		undefined !== padding?.[2] ? padding[2] : '',
+		undefined !== tabletPadding?.[2] ? tabletPadding[2] : '',
+		undefined !== mobilePadding?.[2] ? mobilePadding[2] : ''
+	);
+	const previewPaddingLeft = getPreviewSize(
+		previewDevice,
+		undefined !== padding?.[3] ? padding[3] : '',
+		undefined !== tabletPadding?.[3] ? tabletPadding[3] : '',
+		undefined !== mobilePadding?.[3] ? mobilePadding[3] : ''
+	);
 
 	const classes = classnames('wp-block-navigation-item__content', {
 		'wp-block-navigation-link__placeholder': !url || isInvalid || isDraft,
@@ -343,84 +527,332 @@ export default function NavigationLinkEdit({
 	const tooltipText =
 		isInvalid || isDraft ? __('This item has been deleted, or is a draft') : __('This item is missing a link');
 
+	const linkCSS = (
+		<style>
+			{`.wp-block-kadence-navigation-link${uniqueID} {`}
+			{color ? 'color:' + KadenceColorOutput(color) + ';' : ''}
+			{backgroundType === 'gradient'
+				? gradient
+					? 'background:' + gradient + ';'
+					: ''
+				: background
+				? 'background:' + KadenceColorOutput(background) + ';'
+				: ''}
+			{'}'}
+			{`.wp-block-kadence-navigation-link${uniqueID}:hover {`}
+			{colorHover ? 'color:' + KadenceColorOutput(colorHover) + ';' : ''}
+			{backgroundHoverType === 'gradient'
+				? gradientHover
+					? 'background:' + gradientHover + ';'
+					: ''
+				: backgroundHover
+				? 'background:' + KadenceColorOutput(backgroundHover) + ';'
+				: ''}
+			{'}'}
+		</style>
+	);
+
 	return (
 		<>
 			<BlockControls>
+				<CopyPasteAttributes
+					attributes={attributes}
+					excludedAttrs={[]}
+					defaultAttributes={metadata.attributes}
+					blockSlug={metadata.name}
+					onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
+				/>
 				<ToolbarGroup>
-					<ToolbarButton
-						name="link"
-						icon={linkIcon}
-						title={__('Link')}
-						shortcut={displayShortcut.primary('k')}
-						onClick={() => setIsLinkOpen(true)}
-					/>
-					{!isAtMaxNesting && (
+					{!isAtMaxNesting && !hasChildren && (
 						<ToolbarButton
 							name="submenu"
 							icon={addSubmenu}
-							title={__('Add submenu')}
-							onClick={transformToSubmenu}
+							title={__('Add sub menu')}
+							onClick={() => addSubMenuItem()}
+						/>
+					)}
+				</ToolbarGroup>
+				<ToolbarGroup>
+					{isTopLevelLink && (
+						<ToolbarButton
+							name="megamenu"
+							icon={addSubmenu}
+							title={isMegaMenu ? __('Disable mega menu') : __('Add mega menu')}
+							onClick={() => doMegaMenu(!isMegaMenu)}
+							isPressed={isMegaMenu}
 						/>
 					)}
 				</ToolbarGroup>
 			</BlockControls>
 			{/* Warning, this duplicated in packages/block-library/src/navigation-submenu/edit.js */}
 			<InspectorControls>
-				<PanelBody title={__('Settings')}>
-					<TextControl
-						__nextHasNoMarginBottom
-						value={label ? stripHTML(label) : ''}
-						onChange={(labelValue) => {
-							setAttributes({ label: labelValue });
-						}}
-						label={__('Label')}
-						autoComplete="off"
-						onFocus={() => setIsLabelFieldFocused(true)}
-						onBlur={() => setIsLabelFieldFocused(false)}
-					/>
-					<TextControl
-						__nextHasNoMarginBottom
-						value={url ? safeDecodeURI(url) : ''}
-						onChange={(urlValue) => {
-							updateAttributes({ url: urlValue }, setAttributes, attributes);
-						}}
-						label={__('URL')}
-						autoComplete="off"
-					/>
-					<TextareaControl
-						__nextHasNoMarginBottom
-						value={description || ''}
-						onChange={(descriptionValue) => {
-							setAttributes({ description: descriptionValue });
-						}}
-						label={__('Description')}
-						help={__('The description will be displayed in the menu if the current theme supports it.')}
-					/>
-					<TextControl
-						__nextHasNoMarginBottom
-						value={title || ''}
-						onChange={(titleValue) => {
-							setAttributes({ title: titleValue });
-						}}
-						label={__('Title attribute')}
-						autoComplete="off"
-						help={__('Additional information to help clarify the purpose of the link.')}
-					/>
-					<TextControl
-						__nextHasNoMarginBottom
-						value={rel || ''}
-						onChange={(relValue) => {
-							setAttributes({ rel: relValue });
-						}}
-						label={__('Rel attribute')}
-						autoComplete="off"
-						help={__('The relationship of the linked URL as space-separated link types.')}
-					/>
-				</PanelBody>
+				<SelectParentBlock
+					label={__('View Navigation Settings', 'kadence-blocks')}
+					clientId={clientId}
+					parentSlug={'kadence/navigation'}
+				/>
+				<InspectorControlTabs
+					panelName={'navigation-link'}
+					initialOpen={'general'}
+					setActiveTab={(value) => setActiveTab(value)}
+					activeTab={activeTab}
+				/>
+				{activeTab === 'general' && (
+					<KadencePanelBody panelName={'navigation-link-general'}>
+						{isTopLevelLink && (
+							<ToggleControl
+								label={__('Mega Menu', 'kadence-blocks')}
+								checked={isMegaMenu}
+								onChange={(value) => doMegaMenu(value)}
+							/>
+						)}
+						{isMegaMenu && (
+							<SelectControl
+								label={__('Mega Menu Width', 'kadence-blocks')}
+								value={megaMenuWidth}
+								options={[
+									{ value: 'container', label: __('Menu Container Width', 'kadence-blocks') },
+									{ value: 'content', label: __('Content', 'kadence-blocks') },
+									{ value: 'full', label: __('Full Width', 'kadence-blocks') },
+									{ value: 'custom', label: __('Custom Width', 'kadence-blocks') },
+								]}
+								onChange={(value) => setAttributes({ megaMenuWidth: value })}
+							/>
+						)}
+						{isMegaMenu && megaMenuWidth == 'custom' && (
+							<RangeControl
+								label={__('Mega Menu Custom Width', 'kadence-blocks')}
+								value={megaMenuCustomWidth}
+								onChange={(value) => setAttributes({ megaMenuCustomWidth: value })}
+								min={120}
+								max={800}
+								units={['px']}
+								unit={'px'}
+								showUnit={true}
+							/>
+						)}
+						{isTopLevelLink && hasChildren && (
+							<ToggleControl
+								label={__('Show Sub Menus', 'kadence-blocks')}
+								checked={showSubMenus}
+								onChange={(value) => setShowSubMenus(value)}
+							/>
+						)}
+						<TextControl
+							__nextHasNoMarginBottom
+							value={label ? stripHTML(label) : ''}
+							onChange={(labelValue) => {
+								setAttributes({ label: labelValue });
+							}}
+							label={__('Label')}
+							autoComplete="off"
+							onFocus={() => setIsLabelFieldFocused(true)}
+							onBlur={() => setIsLabelFieldFocused(false)}
+						/>
+						<TextControl
+							__nextHasNoMarginBottom
+							value={url ? safeDecodeURI(url) : ''}
+							onChange={(urlValue) => {
+								updateAttributes({ url: urlValue }, setAttributes, attributes);
+							}}
+							label={__('URL')}
+							autoComplete="off"
+						/>
+						<TextareaControl
+							__nextHasNoMarginBottom
+							value={description || ''}
+							onChange={(descriptionValue) => {
+								setAttributes({ description: descriptionValue });
+							}}
+							label={__('Description')}
+							help={__('The description will be displayed in the menu if the current theme supports it.')}
+						/>
+						<TextControl
+							__nextHasNoMarginBottom
+							value={title || ''}
+							onChange={(titleValue) => {
+								setAttributes({ title: titleValue });
+							}}
+							label={__('Title attribute')}
+							autoComplete="off"
+							help={__('Additional information to help clarify the purpose of the link.')}
+						/>
+						<TextControl
+							__nextHasNoMarginBottom
+							value={rel || ''}
+							onChange={(relValue) => {
+								setAttributes({ rel: relValue });
+							}}
+							label={__('Rel attribute')}
+							autoComplete="off"
+							help={__('The relationship of the linked URL as space-separated link types.')}
+						/>
+					</KadencePanelBody>
+				)}
+
+				{activeTab === 'style' && (
+					<>
+						<KadencePanelBody panelName={'navigation-link-style-settings'}>
+							<HoverToggleControl
+								hover={
+									<>
+										<PopColorControl
+											label={__('Hover Color', 'kadence-blocks')}
+											value={colorHover ? colorHover : ''}
+											default={''}
+											onChange={(value) => setAttributes({ colorHover: value })}
+										/>
+										<BackgroundTypeControl
+											label={__('Hover Type', 'kadence-blocks')}
+											type={backgroundHoverType ? backgroundHoverType : 'normal'}
+											onChange={(value) => setAttributes({ backgroundHoverType: value })}
+											allowedTypes={['normal', 'gradient']}
+										/>
+										{'gradient' === backgroundHoverType && (
+											<GradientControl
+												value={gradientHover}
+												onChange={(value) => setAttributes({ gradientHover: value })}
+												gradients={[]}
+											/>
+										)}
+										{'gradient' !== backgroundHoverType && (
+											<>
+												<PopColorControl
+													label={__('Background Color', 'kadence-blocks')}
+													value={backgroundHover ? backgroundHover : ''}
+													default={''}
+													onChange={(value) => setAttributes({ backgroundHover: value })}
+												/>
+											</>
+										)}
+									</>
+								}
+								normal={
+									<>
+										<PopColorControl
+											label={__('Color', 'kadence-blocks')}
+											value={color ? color : ''}
+											default={''}
+											onChange={(value) => setAttributes({ color: value })}
+										/>
+										<BackgroundTypeControl
+											label={__('Type', 'kadence-blocks')}
+											type={backgroundType ? backgroundType : 'normal'}
+											onChange={(value) => setAttributes({ backgroundType: value })}
+											allowedTypes={['normal', 'gradient']}
+										/>
+										{'gradient' === backgroundType && (
+											<GradientControl
+												value={gradient}
+												onChange={(value) => setAttributes({ gradient: value })}
+												gradients={[]}
+											/>
+										)}
+										{'gradient' !== backgroundType && (
+											<>
+												<PopColorControl
+													label={__('Background Color', 'kadence-blocks')}
+													value={background ? background : ''}
+													default={''}
+													onChange={(value) => setAttributes({ background: value })}
+												/>
+											</>
+										)}
+									</>
+								}
+							/>
+						</KadencePanelBody>
+					</>
+				)}
+
+				{activeTab === 'advanced' && (
+					<>
+						<ResponsiveMeasureRangeControl
+							label={__('Padding', 'kadence-blocks')}
+							value={padding}
+							onChange={(value) => setAttributes({ padding: value })}
+							tabletValue={tabletPadding}
+							onChangeTablet={(value) => setAttributes({ tabletPadding: value })}
+							mobileValue={mobilePadding}
+							onChangeMobile={(value) => setAttributes({ mobilePadding: value })}
+							min={paddingUnit === 'em' || paddingUnit === 'rem' ? -25 : -400}
+							max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 400}
+							step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
+							unit={paddingUnit}
+							units={['px', 'em', 'rem']}
+							onUnit={(value) => setAttributes({ paddingUnit: value })}
+						/>
+						<ResponsiveMeasureRangeControl
+							label={__('Margin', 'kadence-blocks')}
+							value={margin}
+							onChange={(value) => setAttributes({ margin: value })}
+							tabletValue={tabletMargin}
+							onChangeTablet={(value) => setAttributes({ tabletMargin: value })}
+							mobileValue={mobileMargin}
+							onChangeMobile={(value) => setAttributes({ mobileMargin: value })}
+							min={marginUnit === 'em' || marginUnit === 'rem' ? -25 : -400}
+							max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : 400}
+							step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
+							unit={marginUnit}
+							units={['px', 'em', 'rem']}
+							onUnit={(value) => setAttributes({ marginUnit: value })}
+						/>
+
+						<div className="kt-sidebar-settings-spacer"></div>
+
+						<KadenceBlockDefaults
+							attributes={attributes}
+							defaultAttributes={metadata.attributes}
+							blockSlug={metadata.name}
+						/>
+					</>
+				)}
+				{/* <PanelBody title={__('Settings')}>
+
+				</PanelBody> */}
 			</InspectorControls>
-			<div {...blockProps}>
+			<li {...blockProps}>
 				{/* eslint-disable jsx-a11y/anchor-is-valid */}
-				<a className={classes}>
+
+				{linkCSS}
+				<a
+					className={classes}
+					style={{
+						marginTop:
+							undefined !== previewMarginTop && '' !== previewMarginTop
+								? getSpacingOptionOutput(previewMarginTop, previewMarginUnit)
+								: undefined,
+						marginRight:
+							undefined !== previewMarginRight && '' !== previewMarginRight
+								? getSpacingOptionOutput(previewMarginRight, previewMarginUnit)
+								: undefined,
+						marginBottom:
+							undefined !== previewMarginBottom && '' !== previewMarginBottom
+								? getSpacingOptionOutput(previewMarginBottom, previewMarginUnit)
+								: undefined,
+						marginLeft:
+							undefined !== previewMarginLeft && '' !== previewMarginLeft
+								? getSpacingOptionOutput(previewMarginLeft, previewMarginUnit)
+								: undefined,
+
+						paddingTop:
+							undefined !== previewPaddingTop && '' !== previewPaddingTop
+								? getSpacingOptionOutput(previewPaddingTop, paddingUnit)
+								: undefined,
+						paddingRight:
+							undefined !== previewPaddingRight && '' !== previewPaddingRight
+								? getSpacingOptionOutput(previewPaddingRight, paddingUnit)
+								: undefined,
+						paddingBottom:
+							undefined !== previewPaddingBottom && '' !== previewPaddingBottom
+								? getSpacingOptionOutput(previewPaddingBottom, paddingUnit)
+								: undefined,
+						paddingLeft:
+							undefined !== previewPaddingLeft && '' !== previewPaddingLeft
+								? getSpacingOptionOutput(previewPaddingLeft, paddingUnit)
+								: undefined,
+					}}
+				>
 					{/* eslint-enable */}
 					{!url ? (
 						<div className="wp-block-navigation-link__placeholder-text">
@@ -500,8 +932,8 @@ export default function NavigationLinkEdit({
 						/>
 					)}
 				</a>
-				<div {...innerBlocksProps} />
-			</div>
+				<ul {...innerBlocksProps} />
+			</li>
 		</>
 	);
 }

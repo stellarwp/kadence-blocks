@@ -20,6 +20,7 @@ const { name } = metadata;
 export { metadata, name };
 
 registerBlockType(name, {
+	...metadata,
 	icon: linkIcon,
 	__experimentalLabel: ({ label }) => label,
 	edit,
