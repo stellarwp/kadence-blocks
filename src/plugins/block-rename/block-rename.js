@@ -7,6 +7,7 @@ import { BlockSettingsMenuControls } from '@wordpress/block-editor';
 import { hasBlockSupport } from '@wordpress/blocks';
 import { ENTER } from '@wordpress/keycodes';
 import { MenuItem, Modal, TextControl, Button } from '@wordpress/components';
+import { compareVersions } from '@kadence/helpers';
 
 const RenameBlockMenuItem = () => {
 	const { getBlock } = useSelect('core/block-editor');
@@ -100,6 +101,12 @@ const RenameBlockMenuItem = () => {
 	);
 };
 
-registerPlugin('kadence-block-rename', {
-	render: RenameBlockMenuItem,
-});
+/**
+ * Register our block rename plugin.
+ * Core introduced a rename feature in 6.5.0, so we won't register ours on 6.5+
+ */
+if (compareVersions(kadence_blocks_params.wp_version, '6.5.0') < 0) {
+	registerPlugin('kadence-block-rename', {
+		render: RenameBlockMenuItem,
+	});
+}
