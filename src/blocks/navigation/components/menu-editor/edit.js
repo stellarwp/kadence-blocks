@@ -1,12 +1,27 @@
-import { useState } from '@wordpress/element';
-import { TextControl, Button } from '@wordpress/components';
-import { useEntityBlockEditor } from '@wordpress/core-data';
-import { useSelect, useDispatch } from '@wordpress/data';
+import { useCallback, useEffect, useState } from '@wordpress/element';
+import { TextControl, Button, Icon } from '@wordpress/components';
+import { useEntityBlockEditor, useEntityProp } from '@wordpress/core-data';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { get } from 'lodash';
 import { createBlock, serialize } from '@wordpress/blocks';
+import { RichText } from '@wordpress/block-editor';
+import { __ } from '@wordpress/i18n';
+import { EDITABLE_BLOCK_ATTRIBUTES, PREVENT_BLOCK_DELETE } from './constants';
+import { link } from '@wordpress/icons';
 
-function NavigationItem({ thisBlock, allBlocks, index, updateLocalBlocks, maxIndex }) {
+function BlockItem({ thisBlock, allBlocks, index, updateLocalBlocks, maxIndex, depth }) {
 	const [isEditing, setIsEditing] = useState(false);
+
+	const hasChildren = thisBlock.innerBlocks.length > 0;
+	const hasEditableAttributes = EDITABLE_BLOCK_ATTRIBUTES.some((block) => block.name === thisBlock.name);
+	const editableAttributes = hasEditableAttributes
+		? EDITABLE_BLOCK_ATTRIBUTES.find((block) => block.name === thisBlock.name).attributes
+		: [];
+
+	const blockMeta = useSelect((select) => {
+		return select('core/blocks').getBlockType(thisBlock.name);
+	}, []);
+
 	const moveBlock = (direction, clientId, blocks, inRecursion = false) => {
 		let index;
 		const newArray = blocks.map((block, i) => {
@@ -63,33 +78,48 @@ function NavigationItem({ thisBlock, allBlocks, index, updateLocalBlocks, maxInd
 		updateLocalBlocks(newArray);
 	};
 
+	const renderEditableAttributes = () => {
+		return editableAttributes.map((attribute) => {
+			const value = get(thisBlock, ['attributes', attribute.name], '');
+
+			if (attribute.type === 'string') {
+				return (
+					<p key={attribute.name} style={{ textTransform: 'capitalize' }}>
+						{attribute.name}:{' '}
+						<TextControl
+							value={value}
+							onChange={(newValue) =>
+								handleAttributeUpdate({ [attribute.name]: newValue }, thisBlock.clientId, allBlocks)
+							}
+						/>
+					</p>
+				);
+			}
+
+			return <p>Attribute type of {attribute.type} is not supported yet.</p>;
+		});
+	};
+
 	return (
 		<>
-			<p>
-				<strong>Block:</strong> {thisBlock.name} <br />
-				{thisBlock.name === 'kadence/navigation-link' && (
-					<>
-						<strong>Label:</strong> {thisBlock.attributes.label} <br />
-						<button onClick={() => setIsEditing(!isEditing)}>Edit</button>
-					</>
-				)}
-			</p>
+			<div
+				onClick={() => {
+					hasEditableAttributes ? setIsEditing(!isEditing) : null;
+				}}
+				className={`menu-block ${isEditing ? 'active' : ''} ${!hasChildren ? 'no-children' : ''}`}
+				style={{ marginLeft: depth * 20 + 'px' }}
+			>
+				{/* Expand all for the time being */}
+				{/*{hasChildren && !isEditing && <Icon className={'has-children'} icon="arrow-right-alt2" />}*/}
+				{/*{hasChildren && isEditing && <Icon className={'has-children'} icon="arrow-down-alt2" />}				{hasChildren && !isEditing && <Icon className={'has-children'} icon="arrow-right-alt2" />}*/}
+				{hasChildren && <Icon className={'has-children'} icon="arrow-down-alt2" />}
+				<Icon className={'block-icon'} icon={blockMeta.icon.src} />
+				<span className={'block-label'}>{blockMeta.title}</span>
+				<Icon className={'block-settings'} icon="ellipsis" />
+			</div>
 			{isEditing && (
-				<>
-					<p>
-						Label:{' '}
-						<TextControl
-							value={thisBlock.attributes.label}
-							onChange={(value) => handleAttributeUpdate({ label: value }, thisBlock.clientId, allBlocks)}
-						/>
-					</p>
-					<p>
-						Url:{' '}
-						<TextControl
-							value={thisBlock.attributes.url}
-							onChange={(value) => handleAttributeUpdate({ url: value }, thisBlock.clientId, allBlocks)}
-						/>
-					</p>
+				<div className={'edit-block'}>
+					{renderEditableAttributes()}
 					{index !== 0 && (
 						<Button isSmall isPrimary onClick={() => moveBlock('up', thisBlock.clientId, allBlocks)}>
 							Move Up
@@ -101,46 +131,43 @@ function NavigationItem({ thisBlock, allBlocks, index, updateLocalBlocks, maxInd
 							Move Down
 						</Button>
 					)}
-				</>
-			)}
-			{thisBlock.innerBlocks.length > 0 && (
-				<div style={{ marginTop: '10px', backgroundColor: 'red' }}>
-					{renderBlocks(allBlocks, thisBlock.innerBlocks, updateLocalBlocks)}
 				</div>
 			)}
+
+			{hasChildren && <div>{renderBlocks(allBlocks, thisBlock.innerBlocks, updateLocalBlocks, depth + 1)}</div>}
 		</>
 	);
 }
 
-const renderBlocks = (allBlocks, innerBlocks, updateLocalBlocks) => {
+const renderBlocks = (allBlocks, innerBlocks, updateLocalBlocks, depth = 0) => {
 	const maxIndex = innerBlocks.length - 1;
 
 	return innerBlocks.map((block, index) => (
-		<div
+		<BlockItem
 			key={block.clientId}
-			style={{
-				backgroundColor: index % 2 === 1 ? '#FFF' : '#EEE',
-				border: '1px solid #BBB',
-				padding: '15px',
-			}}
-		>
-			<NavigationItem
-				index={index}
-				maxIndex={maxIndex}
-				thisBlock={block}
-				allBlocks={allBlocks}
-				updateLocalBlocks={updateLocalBlocks}
-			/>
-		</div>
+			depth={depth}
+			index={index}
+			maxIndex={maxIndex}
+			thisBlock={block}
+			allBlocks={allBlocks}
+			updateLocalBlocks={updateLocalBlocks}
+		/>
 	));
 };
 
 export default function MenuEdit({ selectedPostId }) {
 	const { saveEntityRecord } = useDispatch('core');
 	const [blocks, , onChange] = useEntityBlockEditor('postType', 'kadence_navigation', { id: selectedPostId });
-	const initialBlocks = get(blocks, [0, 'innerBlocks'], []);
+	const [title, setTitle] = useNavigationProp('title', selectedPostId);
 
+	const initialBlocks = get(blocks, [0, 'innerBlocks'], [selectedPostId]);
 	const [innerBlocks, setInnerBlocks] = useState(initialBlocks);
+	const [tmpTitle, setTmpTitle] = useState(title);
+
+	useEffect(() => {
+		setInnerBlocks(initialBlocks);
+		setTmpTitle(title);
+	}, [selectedPostId]);
 
 	const updateLocalBlocks = (newBlocks) => {
 		setInnerBlocks(newBlocks);
@@ -167,6 +194,7 @@ export default function MenuEdit({ selectedPostId }) {
 			await saveEntityRecord('postType', 'kadence_navigation', {
 				id: selectedPostId,
 				content: serialize(newBlock),
+				title: tmpTitle,
 			});
 			console.log('Post saved successfully');
 		} catch (error) {
@@ -175,31 +203,71 @@ export default function MenuEdit({ selectedPostId }) {
 	};
 
 	return (
-		<div>
+		<div className={'menu-management'}>
+			<div className={'edit-menu-name'}>
+				MENU NAME:{' '}
+				<RichText
+					tagName={'span'}
+					placeholder={__('Set a Title', 'kadence-blocks')}
+					onChange={(value) => setTmpTitle(value)}
+					value={tmpTitle}
+					withoutInteractiveFormatting={true}
+					allowedFormats={[]}
+				/>
+			</div>
+
 			{renderBlocks(innerBlocks, innerBlocks, updateLocalBlocks)}
 
 			<div style={{ marginTop: '20px' }}>
 				<Button
-					isSmall
+					icon={link}
+					isSecondary
+					iconPosition="left"
 					onClick={() => {
 						updateLocalBlocks([
 							...innerBlocks,
 							createBlock('kadence/navigation-link', { label: 'New Item' }),
 						]);
 					}}
+					style={{
+						width: '100%',
+						color: '#000',
+						borderColor: '#000',
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+					}}
 				>
-					Add New Item
+					Add Navigation Item
 				</Button>
 			</div>
 
-			<div style={{ marginTop: '20px' }}>
-				<Button isSmall isDefault onClick={discardChanges}>
-					Discard Changes
+			<div style={{ marginTop: '30px', float: 'right' }}>
+				<Button isTertiary onClick={discardChanges} style={{ marginRight: '20px' }}>
+					Cancel
 				</Button>
-				<Button isSmall isPrimary onClick={saveChanges}>
-					Save Changes
+				<Button isPrimary onClick={saveChanges}>
+					Apply
 				</Button>
 			</div>
 		</div>
 	);
+}
+
+function useNavigationProp(prop, id) {
+	return useEntityProp('postType', 'kadence_navigation', prop, id);
+}
+
+function useNavigationMeta(key) {
+	const [meta, setMeta] = useNavigationProp('meta');
+
+	return [
+		meta[key],
+		useCallback(
+			(newValue) => {
+				setMeta({ ...meta, [key]: newValue });
+			},
+			[key, setMeta]
+		),
+	];
 }
