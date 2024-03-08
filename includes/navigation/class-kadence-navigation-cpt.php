@@ -312,6 +312,45 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 					),
 				),
 			),
+			array(
+				'key'     => '_kad_navigation_divider',
+				'type' => 'array',
+				'default' => array(
+					array(
+						'top' => array( '', '', '' ),
+						'right' => array( '', '', '' ),
+						'bottom' => array( '', '', '' ),
+						'left' => array( '', '', '' ),
+						'unit' => 'px',
+					),
+				),
+			),
+			array(
+				'key'     => '_kad_navigation_dividerTablet',
+				'type' => 'array',
+				'default' => array(
+					array(
+						'top' => array( '', '', '' ),
+						'right' => array( '', '', '' ),
+						'bottom' => array( '', '', '' ),
+						'left' => array( '', '', '' ),
+						'unit' => 'px',
+					),
+				),
+			),
+			array(
+				'key'     => '_kad_navigation_dividerMobile',
+				'type' => 'array',
+				'default' => array(
+					array(
+						'top' => array( '', '', '' ),
+						'right' => array( '', '', '' ),
+						'bottom' => array( '', '', '' ),
+						'left' => array( '', '', '' ),
+						'unit' => 'px',
+					),
+				),
+			),
 		);
 
 		foreach ( $register_meta as $meta ) {

@@ -22,6 +22,8 @@ import {
 	PopColorControl,
 	HoverToggleControl,
 	TypographyControls,
+	ResponsiveSingleBorderControl,
+	ResponsiveBorderControl,
 } from '@kadence/components';
 import { getPreviewSize, getSpacingOptionOutput, mouseOverVisualizer, showSettings } from '@kadence/helpers';
 
@@ -111,6 +113,9 @@ export function EditInner(props) {
 		typography: meta?._kad_navigation_typography,
 		collapseSubMenus: meta?._kad_navigation_collapseSubMenus,
 		parentTogglesMenus: meta?._kad_navigation_parentTogglesMenus,
+		divider: meta?._kad_navigation_divider,
+		dividerTablet: meta?._kad_navigation_dividerTablet,
+		dividerMobile: meta?._kad_navigation_dividerMobile,
 	};
 
 	const {
@@ -144,6 +149,9 @@ export function EditInner(props) {
 		typography,
 		collapseSubMenus,
 		parentTogglesMenus,
+		divider,
+		dividerTablet,
+		dividerMobile,
 	} = metaAttributes;
 
 	const setMetaAttribute = (value, key) => {
@@ -523,6 +531,22 @@ export function EditInner(props) {
 										/>
 									</>
 								}
+							/>
+						</KadencePanelBody>
+
+						<KadencePanelBody
+							title={__('Divider Settings', 'kadence-blocks')}
+							initialOpen={false}
+							panelName={'kb-navigation-divider'}
+						>
+							<ResponsiveSingleBorderControl
+								label={'Divider'}
+								value={divider}
+								tabletValue={dividerTablet}
+								mobileValue={dividerMobile}
+								onChange={(value) => setMetaAttribute(value, 'divider')}
+								onChangeTablet={(value) => setMetaAttribute(value, 'dividerTablet')}
+								onChangeMobile={(value) => setMetaAttribute(value, 'dividerMobile')}
 							/>
 						</KadencePanelBody>
 

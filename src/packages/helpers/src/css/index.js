@@ -1,5 +1,6 @@
 import KadenceColorOutput from '../kadence-color-output';
 import typographyStyle from '../typography-style';
+import getBorderStyle from '../get-border-style';
 
 /**
  * A Class that can generate css output for a <style> tag.
@@ -153,7 +154,7 @@ export default class KadenceBlocksCSS {
 	}
 
 	/**
-	 * Prepares the $_selector_output variable for rendering
+	 * Prepares the _selector_output variable for rendering
 	 *
 	 * @access private
 	 * @since  1.0
@@ -205,9 +206,9 @@ export default class KadenceBlocksCSS {
 	 * @access public
 	 * @since  1.0
 	 *
-	 * @param  string $property - the css property.
-	 * @param  string $value - the value to be placed with the property.
-	 * @param  string $prefix - not required, but allows for the creation of a browser prefixed property.
+	 * @param  string property - the css property.
+	 * @param  string value - the value to be placed with the property.
+	 * @param  string prefix - not required, but allows for the creation of a browser prefixed property.
 	 * @return this
 	 */
 	add_rule(property, value, prefix = null) {
@@ -325,6 +326,16 @@ export default class KadenceBlocksCSS {
 	}
 
 	/**
+	 * Generates the border output.
+	 *
+	 * @param array border an array of border settings.
+	 * @return string
+	 */
+	render_border(device, side = 'top', desktopStyle, tabletStyle, mobileStyle, inheritBorder = false) {
+		return getBorderStyle(device, side, desktopStyle, tabletStyle, mobileStyle, inheritBorder);
+	}
+
+	/**
 	 * Resets the css variable
 	 *
 	 * @access private
@@ -338,7 +349,7 @@ export default class KadenceBlocksCSS {
 	}
 
 	/**
-	 * Returns the minified css in the $_output variable
+	 * Returns the minified css in the _output variable
 	 *
 	 * @access public
 	 * @since  1.0

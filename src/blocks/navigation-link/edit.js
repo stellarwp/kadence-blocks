@@ -442,6 +442,7 @@ export default function Edit(props) {
 				'is-dragging-within': isDraggingWithin,
 				'has-link': !!url,
 				'has-child': hasChildren,
+				'menu-item-has-children': hasChildren,
 				'menu-item--toggled-on': showSubMenus,
 				'current-menu-item': hasNoBlockBefore,
 				'kadence-menu-mega-enabled': isMegaMenu,
@@ -822,7 +823,7 @@ export default function Edit(props) {
 
 				{linkCSS}
 
-				<div class="drawer-nav-drop-wrap">
+				<div class="link-drop-wrap">
 					<a
 						className={classes}
 						style={{
