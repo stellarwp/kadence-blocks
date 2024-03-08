@@ -1085,17 +1085,3 @@ export default EditInner;
 function useHeaderProp(prop) {
 	return useEntityProp('postType', 'kadence_header', prop);
 }
-
-function useHeaderMeta(key) {
-	const [meta, setMeta] = useHeaderProp('meta');
-
-	return [
-		meta[key],
-		useCallback(
-			(newValue) => {
-				setMeta({ ...meta, [key]: newValue });
-			},
-			[key, setMeta]
-		),
-	];
-}
