@@ -79,15 +79,15 @@ class Kadence_Blocks_Date_Input_Block extends Kadence_Blocks_Advanced_Form_Input
 			'class' => implode( ' ', $outer_classes ),
 		);
 		if ( ! empty( $attributes['defaultValue'] ) && $attributes['defaultValue'] === 'today' ) {
-			$defaultValue = wp_date( 'Y-m-d' );
+			$default_value = wp_date( 'Y-m-d' );
 		} else {
-			$defaultValue = $this->get_default( $attributes );
+			$default_value = $this->get_default( $attributes );
 		}
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 		$inner_content  = '';
 		$inner_content .= $this->field_label( $attributes );
 		$inner_content .= $this->field_aria_label( $attributes );
-		$inner_content .= '<input name="' . $this->field_name( $attributes ) . '" id="' . $this->field_id( $attributes ) . '"' . $this->aria_described_by( $attributes ) . ' data-label="' . esc_attr( $this->get_label( $attributes ) ) . '"' . $this->get_auto_complete( $attributes ) . ' type="' . $type . '" value="' . esc_attr( $defaultValue ) . '" data-type="' . $type . '" class="kb-field kb-' . $type . '-field" data-required="' . $is_required . '" ' . $this->additional_field_attributes( $attributes ) . '/>';
+		$inner_content .= '<input name="' . esc_attr( $this->field_name( $attributes ) ) . '" id="' . esc_attr( $this->field_id( $attributes ) ) . '"' . $this->aria_described_by( $attributes ) . ' data-label="' . esc_attr( $this->get_label( $attributes ) ) . '"' . $this->get_auto_complete( $attributes ) . ' type="' . esc_attr( $type ) . '" value="' . esc_attr( $default_value ) . '" data-type="' . esc_attr( $type ) . '" class="kb-field kb-' . esc_attr( $type ) . '-field" data-required="' . esc_attr( $is_required ) . '" ' . $this->additional_field_attributes( $attributes ) . '/>';
 
 		$inner_content .= $this->field_help_text( $attributes );
 

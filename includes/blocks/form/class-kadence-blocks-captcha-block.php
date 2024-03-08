@@ -116,7 +116,7 @@ class Kadence_Blocks_Captcha_Block extends Kadence_Blocks_Advanced_Form_Input_Bl
 		wp_add_inline_script( 'kadence-blocks-recaptcha', $recaptcha_v2_script, 'before' );
 		$this->enqueue_script( 'kadence-blocks-recaptcha' );
 
-		return '<div class="g-recaptcha" data-language="' . $captcha_settings->language . '" data-size="' . $captcha_settings->size . '" data-theme="' . $captcha_settings->theme . '" data-sitekey="' . $captcha_settings->public_key . '"></div>';
+		return '<div class="g-recaptcha" data-language="' . esc_attr( $captcha_settings->language ) . '" data-size="' . esc_attr( $captcha_settings->size ) . '" data-theme="' . esc_attr( $captcha_settings->theme ) . '" data-sitekey="' . esc_attr( $captcha_settings->public_key ) . '"></div>';
 	}
 
 	private function render_google_v3( $captcha_settings, $unique_id ) {
@@ -138,15 +138,15 @@ class Kadence_Blocks_Captcha_Block extends Kadence_Blocks_Advanced_Form_Input_Bl
 		wp_add_inline_script( 'kadence-blocks-recaptcha', $recaptcha_v3_script, 'after' );
 		$this->enqueue_script( 'kadence-blocks-recaptcha' );
 
-		$output = '<input type="hidden" name="recaptcha_response" class="kb_recaptcha_response kb_recaptcha_' . $unique_id . '" />';
+		$output = '<input type="hidden" name="recaptcha_response" class="kb_recaptcha_response kb_recaptcha_' . esc_attr( $unique_id ) . '" />';
 
 		$hide_v3 = $captcha_settings->get_kadence_captcha_stored_value( 'hide_v3_badge', false );
 		$add_notice = $captcha_settings->get_kadence_captcha_stored_value( 'show_v3_notice', false );
-		if( $captcha_settings->using_kadence_captcha && $hide_v3 && $add_notice ) {
+		if ( $captcha_settings->using_kadence_captcha && $hide_v3 && $add_notice ) {
 			$default = __( 'This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply', 'kadence-blocks' );
 			$custom_notice = $captcha_settings->get_kadence_captcha_stored_value( 'v3_notice', $default );
 
-			$output .= '<span style="max-width: 100%; font-size: 11px; color: #555; line-height: 1.2; display: block; margin-bottom: 16px; padding: 10px; background: #f2f2f2;" class="kt-recaptcha-branding-string">'. $custom_notice .'</span>';
+			$output .= '<span style="max-width: 100%; font-size: 11px; color: #555; line-height: 1.2; display: block; margin-bottom: 16px; padding: 10px; background: #f2f2f2;" class="kt-recaptcha-branding-string">' . $custom_notice . '</span>';
 		}
 
 		return $output;
@@ -155,13 +155,13 @@ class Kadence_Blocks_Captcha_Block extends Kadence_Blocks_Advanced_Form_Input_Bl
 	private function render_turnstile( $captcha_settings ) {
 		$this->enqueue_script( 'kadence-blocks-turnstile' );
 
-		return '<div class="cf-turnstile" data-language="' . $captcha_settings->language . '" data-size="' . $captcha_settings->size . '" data-theme="' . $captcha_settings->theme . '" data-sitekey="' . $captcha_settings->public_key . '"></div>';
+		return '<div class="cf-turnstile" data-language="' . esc_attr( $captcha_settings->language ) . '" data-size="' . esc_attr( $captcha_settings->size ) . '" data-theme="' . esc_attr( $captcha_settings->theme ) . '" data-sitekey="' . esc_attr( $captcha_settings->public_key ) . '"></div>';
 	}
 
 	private function render_hcaptcha( $captcha_settings ) {
 		$this->enqueue_script( 'kadence-blocks-hcaptcha' );
 
-		return '<div class="h-captcha" data-language="' . $captcha_settings->language . '" data-size="' . $captcha_settings->size . '" data-theme="' . $captcha_settings->theme . '" data-sitekey="' . $captcha_settings->public_key . '"></div>';
+		return '<div class="h-captcha" data-language="' . esc_attr( $captcha_settings->language ) . '" data-size="' . esc_attr( $captcha_settings->size ) . '" data-theme="' . esc_attr( $captcha_settings->theme ) . '" data-sitekey="' . esc_attr( $captcha_settings->public_key ) . '"></div>';
 	}
 
 	/**
