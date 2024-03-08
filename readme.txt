@@ -88,6 +88,10 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.2.27 =
+Release Date: March TBD 2024
+* Fix: Compatibility with WordPress 6.5 block rename feature.
+
 = 3.2.26 =
 Release Date: March 7th 2024
 * Update: Image importer for design library.

@@ -23,27 +23,24 @@ export function blockMetadataAttribute(settings) {
 			},
 		});
 
-		// Don't override if already set (image block).
-		if (undefined === settings.__experimentalLabel) {
-			const contentLabel = getBlockSupport(settings, 'kbContentLabel');
+		const contentLabel = getBlockSupport(settings, 'kbContentLabel');
 
-			settings.__experimentalLabel = (attributes, { context }) => {
-				const { metadata } = attributes;
+		settings.__experimentalLabel = (attributes, { context }) => {
+			const { metadata } = attributes;
 
-				// In the list view, use the block's content as the label.
-				// If the content is empty, fall back to the default label.
-				if (context === 'list-view' && get(metadata, 'name', '') !== '') {
-					return metadata.name;
-				} else if (undefined !== contentLabel && get(attributes, contentLabel) !== '') {
-					// Accordion pane block is stored as an array, doing this instead of deprecation on parent accordion.
-					if (get(settings, 'name') === 'kadence/pane' && get(attributes, contentLabel) instanceof Array) {
-						return convertArrayTitleToString(get(attributes, contentLabel));
-					}
-
-					return get(attributes, contentLabel);
+			// In the list view, use the block's content as the label.
+			// If the content is empty, fall back to the default label.
+			if (context === 'list-view' && get(metadata, 'name', '') !== '') {
+				return metadata.name;
+			} else if (context === 'list-view' && undefined !== contentLabel && get(attributes, contentLabel) !== '') {
+				// Accordion pane block is stored as an array, doing this instead of deprecation on parent accordion.
+				if (get(settings, 'name') === 'kadence/pane' && get(attributes, contentLabel) instanceof Array) {
+					return convertArrayTitleToString(get(attributes, contentLabel));
 				}
-			};
-		}
+
+				return get(attributes, contentLabel);
+			}
+		};
 	}
 
 	return settings;
