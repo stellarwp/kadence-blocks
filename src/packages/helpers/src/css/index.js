@@ -330,11 +330,10 @@ export default class KadenceBlocksCSS {
 	 * @param array size an array of size settings.
 	 * @return string
 	 */
-	render_half_size(size, unit) {
-		if (this.empty(size)) {
-			return false;
-		}
-		var size_number = !this.empty(size) ? size : '0';
+	render_half_size(value, tabletValue = null, mobileValue = null, previewDevice = null, unit = null) {
+		var previewValue = getPreviewSize(previewDevice, value, tabletValue, mobileValue);
+
+		var size_number = !this.empty(previewValue) ? previewValue : '0';
 		var size_unit = !this.empty(unit) ? unit : 'em';
 
 		var size_string = 'calc(' + size_number + size_unit + ' / 2)';
@@ -348,11 +347,10 @@ export default class KadenceBlocksCSS {
 	 * @param array size an array of size settings.
 	 * @return string
 	 */
-	render_size(size, unit) {
-		if (this.empty(size)) {
-			return false;
-		}
-		var size_number = !this.empty(size) ? size : '0';
+	render_size(value, tabletValue = null, mobileValue = null, previewDevice = null, unit = null) {
+		var previewValue = getPreviewSize(previewDevice, value, tabletValue, mobileValue);
+
+		var size_number = !this.empty(previewValue) ? previewValue : '0';
 		var size_unit = !this.empty(unit) ? unit : 'em';
 
 		var size_string = size_number + size_unit;
@@ -360,8 +358,9 @@ export default class KadenceBlocksCSS {
 		return size_string;
 	}
 
-	render_color(string, opacity = null) {
-		return KadenceColorOutput(string, (opacity = null));
+	render_color(value, tabletValue = null, mobileValue = null, previewDevice = null, opacity = null) {
+		var previewValue = getPreviewSize(previewDevice, value, tabletValue, mobileValue);
+		return KadenceColorOutput(previewValue, opacity);
 	}
 
 	render_font(data, previewDevice) {
@@ -376,8 +375,15 @@ export default class KadenceBlocksCSS {
 	 * @param array border an array of border settings.
 	 * @return string
 	 */
-	render_border(device, side = 'top', desktopStyle, tabletStyle, mobileStyle, inheritBorder = false) {
-		return getBorderStyle(device, side, desktopStyle, tabletStyle, mobileStyle, inheritBorder);
+	render_border(
+		value,
+		tabletValue = null,
+		mobileValue = null,
+		previewDevice = null,
+		side = 'top',
+		inheritBorder = false
+	) {
+		return getBorderStyle(previewDevice, side, value, tabletValue, mobileValue, inheritBorder);
 	}
 
 	/**
@@ -398,13 +404,8 @@ export default class KadenceBlocksCSS {
 		unit = 'px',
 		args = {}
 	) {
-		if (this.empty(value)) {
-			return false;
-		}
-		var previewValue = value;
-		if (!this.empty(tabletValue) && !this.empty(mobileValue) && !this.empty(previewDevice)) {
-			previewValue = getPreviewSize(previewDevice, value, tabletValue, mobileValue);
-		}
+		var previewValue = getPreviewSize(previewDevice, value, tabletValue, mobileValue);
+
 		var prop_args = {};
 		switch (property) {
 			case 'border-width':

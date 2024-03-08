@@ -25,7 +25,7 @@ import { store as coreStore, EntityProvider, useEntityProp } from '@wordpress/co
 
 import { useEntityAutoDraft } from './hooks';
 import { SelectOrCreatePlaceholder, SelectForm } from './components';
-import { getUniqueId, getPostOrFseId } from '@kadence/helpers';
+import { getUniqueId, getPostOrFseId, getPreviewSize } from '@kadence/helpers';
 
 /**
  * Internal dependencies
@@ -44,21 +44,28 @@ export function Edit(props) {
 
 	const metaAttributes = {
 		orientation: meta?._kad_navigation_orientation,
+		orientationTablet: meta?._kad_navigation_orientationTablet,
+		orientationMobile: meta?._kad_navigation_orientationMobile,
 		stretch: meta?._kad_navigation_stretch,
+		stretchTablet: meta?._kad_navigation_stretchTablet,
+		stretchMobile: meta?._kad_navigation_stretchMobile,
 		fillStretch: meta?._kad_navigation_fillStretch,
+		fillStretchTablet: meta?._kad_navigation_fillStretchTablet,
+		fillStretchMobile: meta?._kad_navigation_fillStretchMobile,
 	};
 
-	const { orientation, stretch, fillStretch } = metaAttributes;
+	const {
+		orientation,
+		orientationTablet,
+		orientationMobile,
+		stretch,
+		stretchTablet,
+		stretchMobile,
+		fillStretch,
+		fillStretchTablet,
+		fillStretchMobile,
+	} = metaAttributes;
 
-	const blockClasses = classnames({
-		[`wp-block-kadence-navigation${uniqueID}`]: uniqueID,
-		[`navigation-layout-stretch-${stretch}`]: true,
-		[`navigation-layout-fill-stretch-${fillStretch}`]: true,
-		[`navigation-orientation-${orientation}`]: true,
-	});
-	const blockProps = useBlockProps({
-		className: blockClasses,
-	});
 	const { post, postExists, isLoading, currentPostType, postId } = useSelect(
 		(select) => {
 			return {
@@ -72,6 +79,15 @@ export function Edit(props) {
 			};
 		},
 		[id]
+	);
+
+	const { previewDevice } = useSelect(
+		(select) => {
+			return {
+				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
+			};
+		},
+		[clientId]
 	);
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
@@ -116,6 +132,20 @@ export function Edit(props) {
 		}
 	}, []);
 
+	const previewOrientation = getPreviewSize(previewDevice, orientation, orientationTablet, orientationMobile);
+	const previewStretch = getPreviewSize(previewDevice, stretch, stretchTablet, stretchMobile);
+	const previewFillStretch = getPreviewSize(previewDevice, fillStretch, fillStretchTablet, fillStretchMobile);
+
+	const blockClasses = classnames({
+		[`wp-block-kadence-navigation${uniqueID}`]: uniqueID,
+		[`navigation-layout-stretch-${previewStretch}`]: true,
+		[`navigation-layout-fill-stretch-${previewFillStretch}`]: true,
+		[`navigation-orientation-${previewOrientation}`]: true,
+	});
+	const blockProps = useBlockProps({
+		className: blockClasses,
+	});
+
 	{
 		/* Directly editing from via kadence_navigation post type */
 	}
@@ -126,6 +156,7 @@ export function Edit(props) {
 			</div>
 		);
 	}
+
 	return (
 		<div {...blockProps}>
 			{/* No form selected or selected form was deleted from the site, display chooser */}

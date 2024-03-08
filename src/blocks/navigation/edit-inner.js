@@ -19,11 +19,14 @@ import {
 	SpacingVisualizer,
 	ResponsiveMeasureRangeControl,
 	RangeControl,
+	ResponsiveRangeControls,
 	PopColorControl,
 	HoverToggleControl,
 	TypographyControls,
 	ResponsiveSingleBorderControl,
 	ResponsiveBorderControl,
+	ResponsiveSelectControl,
+	SmallResponsiveControl,
 } from '@kadence/components';
 import { getPreviewSize, getSpacingOptionOutput, mouseOverVisualizer, showSettings } from '@kadence/helpers';
 
@@ -98,21 +101,49 @@ export function EditInner(props) {
 		className: meta?._kad_navigation_className,
 		anchor: meta?._kad_navigation_anchor,
 		orientation: meta?._kad_navigation_orientation,
-		spacing: meta?._kad_navigation_spacing,
-		spacingUnit: meta?._kad_navigation_spacingUnit,
+		orientationTablet: meta?._kad_navigation_orientationTablet,
+		orientationMobile: meta?._kad_navigation_orientationMobile,
 		style: meta?._kad_navigation_style,
+		styleTablet: meta?._kad_navigation_styleTablet,
+		styleMobile: meta?._kad_navigation_styleMobile,
+		spacing: meta?._kad_navigation_spacing,
+		spacingTablet: meta?._kad_navigation_spacingTablet,
+		spacingMobile: meta?._kad_navigation_spacingMobile,
+		spacingUnit: meta?._kad_navigation_spacingUnit,
 		stretch: meta?._kad_navigation_stretch,
+		stretchTablet: meta?._kad_navigation_stretchTablet,
+		stretchMobile: meta?._kad_navigation_stretchMobile,
 		fillStretch: meta?._kad_navigation_fillStretch,
+		fillStretchTablet: meta?._kad_navigation_fillStretchTablet,
+		fillStretchMobile: meta?._kad_navigation_fillStretchMobile,
 		parentActive: meta?._kad_navigation_parentActive,
+		parentActiveTablet: meta?._kad_navigation_parentActiveTablet,
+		parentActiveMobile: meta?._kad_navigation_parentActiveMobile,
+		collapseSubMenus: meta?._kad_navigation_collapseSubMenus,
+		collapseSubMenusTablet: meta?._kad_navigation_collapseSubMenusTablet,
+		collapseSubMenusMobile: meta?._kad_navigation_collapseSubMenusMobile,
+		parentTogglesMenus: meta?._kad_navigation_parentTogglesMenus,
+		parentTogglesMenusTablet: meta?._kad_navigation_parentTogglesMenusTablet,
+		parentTogglesMenusMobile: meta?._kad_navigation_parentTogglesMenusMobile,
 		linkColor: meta?._kad_navigation_linkColor,
 		linkColorHover: meta?._kad_navigation_linkColorHover,
 		linkColorActive: meta?._kad_navigation_linkColorActive,
+		linkColorTablet: meta?._kad_navigation_linkColorTablet,
+		linkColorHoverTablet: meta?._kad_navigation_linkColorHoverTablet,
+		linkColorActiveTablet: meta?._kad_navigation_linkColorActiveTablet,
+		linkColorMobile: meta?._kad_navigation_linkColorMobile,
+		linkColorHoveMobiler: meta?._kad_navigation_linkColorHoverMobile,
+		linkColorActiveMobile: meta?._kad_navigation_linkColorActiveMobile,
 		background: meta?._kad_navigation_link_color,
 		backgroundHover: meta?._kad_navigation_backgroundHover,
 		backgroundActive: meta?._kad_navigation_backgroundActive,
+		backgroundTablet: meta?._kad_navigation_backgroundTablet,
+		backgroundHoverTablet: meta?._kad_navigation_backgroundHoverTablet,
+		backgroundActiveTablet: meta?._kad_navigation_backgroundActiveTablet,
+		backgroundMobile: meta?._kad_navigation_backgroundMobile,
+		backgroundHoverMobile: meta?._kad_navigation_backgroundHoverMobile,
+		backgroundActiveMobile: meta?._kad_navigation_backgroundActiveMobile,
 		typography: meta?._kad_navigation_typography,
-		collapseSubMenus: meta?._kad_navigation_collapseSubMenus,
-		parentTogglesMenus: meta?._kad_navigation_parentTogglesMenus,
 		divider: meta?._kad_navigation_divider,
 		dividerTablet: meta?._kad_navigation_dividerTablet,
 		dividerMobile: meta?._kad_navigation_dividerMobile,
@@ -134,25 +165,62 @@ export function EditInner(props) {
 		className,
 		anchor,
 		orientation,
-		spacing,
-		spacingUnit,
+		orientationTablet,
+		orientationMobile,
 		style,
+		styleTablet,
+		styleMobile,
+		spacing,
+		spacingTablet,
+		spacingMobile,
+		spacingUnit,
 		stretch,
+		stretchTablet,
+		stretchMobile,
 		fillStretch,
+		fillStretchTablet,
+		fillStretchMobile,
 		parentActive,
+		parentActiveTablet,
+		parentActiveMobile,
+		collapseSubMenus,
+		collapseSubMenusTablet,
+		collapseSubMenusMobile,
+		parentTogglesMenus,
+		parentTogglesMenusTablet,
+		parentTogglesMenusMobile,
 		linkColor,
 		linkColorHover,
 		linkColorActive,
+		linkColorTablet,
+		linkColorHoverTablet,
+		linkColorActiveTablet,
+		linkColorMobile,
+		linkColorHoverMobile,
+		linkColorActiveMobile,
 		background,
 		backgroundHover,
 		backgroundActive,
+		backgroundTablet,
+		backgroundHoverTablet,
+		backgroundActiveTablet,
+		backgroundMobile,
+		backgroundHoverMobile,
+		backgroundActiveMobile,
 		typography,
-		collapseSubMenus,
-		parentTogglesMenus,
 		divider,
 		dividerTablet,
 		dividerMobile,
 	} = metaAttributes;
+
+	const previewOrientation = getPreviewSize(previewDevice, orientation, orientationTablet, orientationMobile);
+	const previewStyle = getPreviewSize(previewDevice, style, styleTablet, styleMobile);
+	const previewCollapseSubMenus = getPreviewSize(
+		previewDevice,
+		collapseSubMenus,
+		collapseSubMenusTablet,
+		collapseSubMenusMobile
+	);
 
 	const setMetaAttribute = (value, key) => {
 		setMeta({ ...meta, ['_kad_navigation_' + key]: value });
@@ -170,13 +238,13 @@ export function EditInner(props) {
 
 	const navClasses = classnames('navigation', {
 		[`navigation-dropdown-animation-fade-${id}`]: true,
-		[`navigation-style-${style}`]: true,
+		[`navigation-style-${previewStyle}`]: true,
 	});
 
 	const innerNavClasses = classnames('menu', {
 		'kb-navigation': true,
 		[`kb-navigation-${id}`]: true,
-		[`collapse-sub-nav-${collapseSubMenus}`]: true,
+		[`collapse-sub-nav-${previewCollapseSubMenus}`]: true,
 	});
 
 	const [title, setTitle] = useNavigationProp('title');
@@ -251,6 +319,121 @@ export function EditInner(props) {
 			</>
 		);
 	}
+
+	const generalToggleControls = (size = '') => {
+		const collapseSubMenusValue = metaAttributes['collapseSubMenus' + size];
+		const parentTogglesMenusValue = metaAttributes['parentTogglesMenus' + size];
+		const stretchValue = metaAttributes['stretch' + size];
+		const fillStretchValue = metaAttributes['fillStretch' + size];
+		const parentActiveValue = metaAttributes['parentActive' + size];
+		const orientationValue = metaAttributes['orientation' + size];
+
+		return (
+			<>
+				{orientationValue == 'vertical' && (
+					<ToggleControl
+						label={__('Collapse Sub Menus', 'kadence-blocks')}
+						checked={collapseSubMenusValue}
+						onChange={(value) => setMetaAttribute(value, 'collapseSubMenus' + size)}
+					/>
+				)}
+				{orientationValue == 'vertical' && collapseSubMenusValue && (
+					<ToggleControl
+						label={__('Entire Item Expands Sub Menu', 'kadence-blocks')}
+						checked={parentTogglesMenusValue}
+						onChange={(value) => setMetaAttribute(value, 'parentTogglesMenus' + size)}
+					/>
+				)}
+				<ToggleControl
+					label={__('Stretch Menu', 'kadence-blocks')}
+					checked={stretchValue}
+					onChange={(value) => setMetaAttribute(value, 'stretch' + size)}
+				/>
+				{stretchValue && (
+					<ToggleControl
+						label={__('Fill andd Center Menu Items?', 'kadence-blocks')}
+						checked={fillStretchValue}
+						onChange={(value) => setMetaAttribute(value, 'fillStretch' + size)}
+					/>
+				)}
+				<ToggleControl
+					label={__('Make Parent of Current Menu item Active', 'kadence-blocks')}
+					checked={parentActiveValue}
+					onChange={(value) => setMetaAttribute(value, 'parentActive' + size)}
+				/>
+			</>
+		);
+	};
+
+	const styleColorControls = (size = '') => {
+		const linkColorValue = metaAttributes['linkColor' + size];
+		const backgroundValue = metaAttributes['background' + size];
+		const linkColorHoverValue = metaAttributes['linkColorHover' + size];
+		const backgroundHoverValue = metaAttributes['backgroundHover' + size];
+		const linkColorActiveValue = metaAttributes['linkColorActive' + size];
+		const backgroundActiveValue = metaAttributes['backgroundActive' + size];
+		return (
+			<>
+				<HoverToggleControl
+					normal={
+						<>
+							<PopColorControl
+								label={__('Link Color', 'kadence-blocks')}
+								value={linkColorValue}
+								default={''}
+								onChange={(value) => setMetaAttribute(value, 'linkColor' + size)}
+								key={'normal'}
+							/>
+							<PopColorControl
+								label={__('Background', 'kadence-blocks')}
+								value={backgroundValue}
+								default={''}
+								onChange={(value) => setMetaAttribute(value, 'background' + size)}
+								key={'normalb'}
+							/>
+						</>
+					}
+					hover={
+						<>
+							<PopColorControl
+								label={__('Link Color Hover', 'kadence-blocks')}
+								value={linkColorHoverValue}
+								default={''}
+								onChange={(value) => setMetaAttribute(value, 'linkColorHover' + size)}
+								key={'hover'}
+							/>
+							<PopColorControl
+								label={__('Background Hover', 'kadence-blocks')}
+								value={backgroundHoverValue}
+								default={''}
+								onChange={(value) => setMetaAttribute(value, 'backgroundHover' + size)}
+								key={'hoverb'}
+							/>
+						</>
+					}
+					active={
+						<>
+							<PopColorControl
+								label={__('Link Color Active', 'kadence-blocks')}
+								value={linkColorActiveValue}
+								default={''}
+								onChange={(value) => setMetaAttribute(value, 'linkColorActive' + size)}
+								key={'active'}
+							/>
+							<PopColorControl
+								label={__('Background Active', 'kadence-blocks')}
+								value={backgroundActiveValue}
+								default={''}
+								onChange={(value) => setMetaAttribute(value, 'backgroundActive' + size)}
+								key={'activeb'}
+							/>
+						</>
+					}
+				/>
+			</>
+		);
+	};
+
 	if (typeof pagenow !== 'undefined' && ('widgets' === pagenow || 'customize' === pagenow)) {
 		const editPostLink = addQueryArgs('post.php', {
 			post: id,
@@ -317,54 +500,40 @@ export function EditInner(props) {
 						</>
 						<div className="kt-sidebar-settings-spacer"></div>
 						<KadencePanelBody panelName={'kb-navigation-general'}>
-							<SelectControl
+							<ResponsiveSelectControl
 								label={__('Orientation', 'kadence-blocks')}
 								value={orientation}
+								tabletValue={orientationTablet}
+								mobileValue={orientationMobile}
 								options={[
 									{ value: 'horizontal', label: __('Horizontal') },
 									{ value: 'vertical', label: __('Vertical') },
 								]}
 								onChange={(value) => setMetaAttribute(value, 'orientation')}
+								onChangeTablet={(value) => setMetaAttribute(value, 'orientationTablet')}
+								onChangeMobile={(value) => setMetaAttribute(value, 'orientationMobile')}
 							/>
-							{orientation == 'vertical' && (
-								<ToggleControl
-									label={__('Collapse Sub Menus', 'kadence-blocks')}
-									checked={collapseSubMenus}
-									onChange={(value) => setMetaAttribute(value, 'collapseSubMenus')}
-								/>
-							)}
-							{orientation == 'vertical' && collapseSubMenus && (
-								<ToggleControl
-									label={__('Entire Item Expands Sub Menu', 'kadence-blocks')}
-									checked={parentTogglesMenus}
-									onChange={(value) => setMetaAttribute(value, 'parentTogglesMenus')}
-								/>
-							)}
-							<RangeControl
+							<ResponsiveRangeControls
 								label={__('Horizontal Item Spacing', 'kadence-blocks')}
 								value={parseFloat(spacing[1])}
+								valueTablet={parseFloat(spacingTablet[1])}
+								valueMobile={parseFloat(spacingMobile[1])}
 								onChange={(value) =>
 									setMetaAttribute(
 										[spacing[0], value.toString(), spacing[2], value.toString()],
 										'spacing'
 									)
 								}
-								min={0}
-								max={spacingUnit === 'em' || spacingUnit === 'rem' ? 24 : 200}
-								step={spacingUnit === 'em' || spacingUnit === 'rem' ? 0.1 : 1}
-								unit={spacingUnit}
-								units={['em', 'rem', 'px', 'vw']}
-								onUnit={(value) => setMetaAttribute(value, 'spacingUnit')}
-								showUnit={true}
-							/>
-							{orientation == 'vertical' || style == 'underline' || style === 'standard' || style === ''}
-							<RangeControl
-								label={__('Vertical Item Spacing', 'kadence-blocks')}
-								value={parseFloat(spacing[0])}
-								onChange={(value) =>
+								onChangeTablet={(value) =>
 									setMetaAttribute(
-										[value.toString(), spacing[1], value.toString(), spacing[3]],
-										'spacing'
+										[spacingTablet[0], value.toString(), spacingTablet[2], value.toString()],
+										'spacingTablet'
+									)
+								}
+								onChangeMobile={(value) =>
+									setMetaAttribute(
+										[spacingMobile[0], value.toString(), spacingMobile[2], value.toString()],
+										'spacingMobile'
 									)
 								}
 								min={0}
@@ -375,32 +544,64 @@ export function EditInner(props) {
 								onUnit={(value) => setMetaAttribute(value, 'spacingUnit')}
 								showUnit={true}
 							/>
-							<ToggleControl
-								label={__('Stretch Menu', 'kadence-blocks')}
-								checked={stretch}
-								onChange={(value) => setMetaAttribute(value, 'stretch')}
-							/>
-							{stretch && (
-								<ToggleControl
-									label={__('Fill andd Center Menu Items?', 'kadence-blocks')}
-									checked={fillStretch}
-									onChange={(value) => setMetaAttribute(value, 'fillStretch')}
+							{(previewOrientation == 'vertical' ||
+								style == 'underline' ||
+								style === 'standard' ||
+								style === '') && (
+								<ResponsiveRangeControls
+									label={__('Vertical Item Spacing', 'kadence-blocks')}
+									value={parseFloat(spacing[0])}
+									valueTablet={parseFloat(spacingTablet[0])}
+									valueMobile={parseFloat(spacingMobile[0])}
+									onChange={(value) =>
+										setMetaAttribute(
+											[value.toString(), spacing[1], value.toString(), spacing[3]],
+											'spacing'
+										)
+									}
+									onChangeTablet={(value) =>
+										setMetaAttribute(
+											[
+												value.toString(),
+												spacingTablet[1],
+												value.toString(),
+												spaspacingTabletcing[3],
+											],
+											'spacingTablet'
+										)
+									}
+									onChangeMobile={(value) =>
+										setMetaAttribute(
+											[value.toString(), spacingMobile[1], value.toString(), spacingMobile[3]],
+											'spacingMobile'
+										)
+									}
+									min={0}
+									max={spacingUnit === 'em' || spacingUnit === 'rem' ? 24 : 200}
+									step={spacingUnit === 'em' || spacingUnit === 'rem' ? 0.1 : 1}
+									unit={spacingUnit}
+									units={['em', 'rem', 'px', 'vw']}
+									onUnit={(value) => setMetaAttribute(value, 'spacingUnit')}
+									showUnit={true}
 								/>
 							)}
-							<ToggleControl
-								label={__('Make Parent of Current Menu item Active', 'kadence-blocks')}
-								checked={parentActive}
-								onChange={(value) => setMetaAttribute(value, 'parentActive')}
-							/>
+							<SmallResponsiveControl
+								label={'layout toggles'}
+								desktopChildren={generalToggleControls()}
+								tabletChildren={generalToggleControls('Tablet')}
+								mobileChildren={generalToggleControls('Mobile')}
+							></SmallResponsiveControl>
 						</KadencePanelBody>
 					</>
 				)}
 				{activeTab === 'style' && (
 					<>
 						<KadencePanelBody panelName={'kb-navigation-style'}>
-							<SelectControl
+							<ResponsiveSelectControl
 								label={__('Style', 'kadence-blocks')}
 								value={style}
+								valueTablet={styleTablet}
+								valueMobile={styleMobile}
 								options={[
 									{ value: 'standard', label: __('Standard') },
 									{ value: 'fullheight', label: __('Full Height') },
@@ -408,63 +609,15 @@ export function EditInner(props) {
 									{ value: 'underline-fullheight', label: __('Full Height Underline') },
 								]}
 								onChange={(value) => setMetaAttribute(value, 'style')}
+								onChangeTablet={(value) => setMetaAttribute(value, 'styleTablet')}
+								onChangeMobile={(value) => setMetaAttribute(value, 'styleMobile')}
 							/>
-							<HoverToggleControl
-								normal={
-									<>
-										<PopColorControl
-											label={__('Link Color', 'kadence-blocks')}
-											value={linkColor}
-											default={''}
-											onChange={(value) => setMetaAttribute(value, 'linkColor')}
-											key={'normal'}
-										/>
-										<PopColorControl
-											label={__('Background', 'kadence-blocks')}
-											value={background}
-											default={''}
-											onChange={(value) => setMetaAttribute(value, 'background')}
-											key={'normalb'}
-										/>
-									</>
-								}
-								hover={
-									<>
-										<PopColorControl
-											label={__('Link Color Hover', 'kadence-blocks')}
-											value={linkColorHover}
-											default={''}
-											onChange={(value) => setMetaAttribute(value, 'linkColorHover')}
-											key={'hover'}
-										/>
-										<PopColorControl
-											label={__('Background Hover', 'kadence-blocks')}
-											value={backgroundHover}
-											default={''}
-											onChange={(value) => setMetaAttribute(value, 'backgroundHover')}
-											key={'hoverb'}
-										/>
-									</>
-								}
-								active={
-									<>
-										<PopColorControl
-											label={__('Link Color Active', 'kadence-blocks')}
-											value={linkColorActive}
-											default={''}
-											onChange={(value) => setMetaAttribute(value, 'linkColorActive')}
-											key={'active'}
-										/>
-										<PopColorControl
-											label={__('Background Active', 'kadence-blocks')}
-											value={backgroundActive}
-											default={''}
-											onChange={(value) => setMetaAttribute(value, 'backgroundActive')}
-											key={'activeb'}
-										/>
-									</>
-								}
-							/>
+							<SmallResponsiveControl
+								label={'Colors'}
+								desktopChildren={styleColorControls()}
+								tabletChildren={styleColorControls('Tablet')}
+								mobileChildren={styleColorControls('Mobile')}
+							></SmallResponsiveControl>
 						</KadencePanelBody>
 
 						<KadencePanelBody

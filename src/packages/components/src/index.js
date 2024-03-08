@@ -43,6 +43,7 @@ export { default as KadenceSelectTerms } from './select-terms-control';
 export { default as KadencePostSelectTerms } from './post-select-terms-control';
 export { default as SmallResponsiveControl } from './small-responsive-control';
 export { default as ResponsiveControl } from './responsive-control';
+export { default as ResponsiveSelectControl } from './responsive-select-control';
 export { default as StepControls } from './step-control';
 export { default as OpacityControl } from './opacity-control';
 export { default as SingleBorderControl } from './border/single-border-control';
