@@ -109,8 +109,10 @@ function BlockItem({ thisBlock, allBlocks, index, updateLocalBlocks, maxIndex, d
 				className={`menu-block ${isEditing ? 'active' : ''} ${!hasChildren ? 'no-children' : ''}`}
 				style={{ marginLeft: depth * 20 + 'px' }}
 			>
-				{hasChildren && !isEditing && <Icon className={'has-children'} icon="arrow-right-alt2" />}
-				{hasChildren && isEditing && <Icon className={'has-children'} icon="arrow-down-alt2" />}
+				{/* Expand all for the time being */}
+				{/*{hasChildren && !isEditing && <Icon className={'has-children'} icon="arrow-right-alt2" />}*/}
+				{/*{hasChildren && isEditing && <Icon className={'has-children'} icon="arrow-down-alt2" />}				{hasChildren && !isEditing && <Icon className={'has-children'} icon="arrow-right-alt2" />}*/}
+				{hasChildren && <Icon className={'has-children'} icon="arrow-down-alt2" />}
 				<Icon className={'block-icon'} icon={blockMeta.icon.src} />
 				<span className={'block-label'}>{blockMeta.title}</span>
 				<Icon className={'block-settings'} icon="ellipsis" />
