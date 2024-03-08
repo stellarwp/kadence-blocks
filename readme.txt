@@ -89,7 +89,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.2.26 =
-Release Date: March 6th 2024
+Release Date: March 7th 2024
 * Update: Image importer for design library.
 * Update: Improve js formatting.
 * Fix: Styling issue with some infobox title headings.
