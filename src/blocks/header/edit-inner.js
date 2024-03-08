@@ -26,6 +26,7 @@ import {
 	BackgroundControl as KadenceBackgroundControl,
 	HoverToggleControl,
 	ResponsiveAlignControls,
+	ResponsiveRangeControls,
 } from '@kadence/components';
 import {
 	getPreviewSize,
@@ -114,6 +115,10 @@ export function EditInner(props) {
 		textColor: meta?._kad_header_textColor,
 		linkColor: meta?._kad_header_linkColor,
 		linkHoverColor: meta?._kad_header_linkHoverColor,
+		height: meta?._kad_header_height,
+		heightUnit: meta?._kad_header_heightUnit,
+		width: meta?._kad_header_width,
+		widthUnit: meta?._kad_header_widthUnit,
 	};
 
 	const {
@@ -150,6 +155,10 @@ export function EditInner(props) {
 		textColor,
 		linkColor,
 		linkHoverColor,
+		height,
+		heightUnit,
+		width,
+		widthUnit,
 	} = metaAttributes;
 
 	const setMetaAttribute = (value, key) => {
@@ -615,6 +624,99 @@ export function EditInner(props) {
 									reverse={previewDirection === 'vertical-reverse' ? true : false}
 								/>
 							)}
+						</KadencePanelBody>
+						<KadencePanelBody
+							title={__('Content Size Settings', 'kadence-blocks')}
+							panelName={'kb-header-size-settings'}
+						>
+							<ResponsiveRangeControls
+								label={__('Min Height', 'kadence-blocks')}
+								value={undefined !== height?.[0] ? height[0] : ''}
+								onChange={(value) => {
+									setMetaAttribute(
+										[
+											value,
+											undefined !== height?.[1] ? height[1] : '',
+											undefined !== height?.[2] ? height[2] : '',
+										].map(String),
+										'height'
+									);
+								}}
+								tabletValue={undefined !== height?.[1] ? height[1] : ''}
+								onChangeTablet={(value) => {
+									setMetaAttribute(
+										[
+											undefined !== height?.[0] ? height[0] : '',
+											value,
+											undefined !== height?.[2] ? height[2] : '',
+										].map(String),
+										'height'
+									);
+								}}
+								mobileValue={undefined !== height?.[2] ? height[2] : ''}
+								onChangeMobile={(value) => {
+									setMetaAttribute(
+										[
+											undefined !== height?.[0] ? height[0] : '',
+											undefined !== height?.[1] ? height[1] : '',
+											value,
+										].map(String),
+										'height'
+									);
+								}}
+								min={0}
+								max={heightUnit === 'px' ? 2000 : 200}
+								step={1}
+								unit={heightUnit ? heightUnit : 'px'}
+								onUnit={(value) => {
+									setMetaAttribute(value, 'heightUnit');
+								}}
+								units={['px', 'vw', 'vh']}
+							/>
+							<ResponsiveRangeControls
+								label={__('Max Width', 'kadence-blocks')}
+								value={undefined !== width?.[0] ? width[0] : ''}
+								onChange={(value) => {
+									setMetaAttribute(
+										[
+											value,
+											undefined !== width?.[1] ? width[1] : '',
+											undefined !== width?.[2] ? width[2] : '',
+										].map(String),
+										'width'
+									);
+								}}
+								tabletValue={undefined !== width?.[1] ? width[1] : ''}
+								onChangeTablet={(value) => {
+									setMetaAttribute(
+										[
+											undefined !== width?.[0] ? width[0] : '',
+											value,
+											undefined !== width?.[2] ? width[2] : '',
+										].map(String),
+										'width'
+									);
+								}}
+								mobileValue={undefined !== width?.[2] ? width[2] : ''}
+								onChangeMobile={(value) => {
+									setMetaAttribute(
+										[
+											undefined !== width?.[0] ? width[0] : '',
+											undefined !== width?.[1] ? width[1] : '',
+											value,
+										].map(String),
+										'width'
+									);
+								}}
+								min={0}
+								max={widthUnit === 'px' ? 2000 : 200}
+								step={1}
+								unit={widthUnit ? widthUnit : 'px'}
+								onUnit={(value) => {
+									setMetaAttribute(value, 'widthUnit');
+								}}
+								units={['px', 'vw', 'vh']}
+							/>
 						</KadencePanelBody>
 					</>
 				)}

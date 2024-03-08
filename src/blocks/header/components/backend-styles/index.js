@@ -46,6 +46,10 @@ export default function BackendStyles(props) {
 		textColor,
 		linkColor,
 		linkHoverColor,
+		height,
+		heightUnit,
+		width,
+		widthUnit,
 	} = metaAttributes;
 
 	const previewMarginTop = getPreviewSize(
@@ -100,27 +104,27 @@ export default function BackendStyles(props) {
 
 	const previewBorderTop = getPreviewSize(
 		previewDevice,
-		undefined !== border?.top ? getSpacingOptionOutput(border.top[2], border.unit) : '',
-		undefined !== tabletBorder?.top ? getSpacingOptionOutput(tabletBorder.top[2], tabletBorder.unit) : '',
-		undefined !== mobileBorder?.top ? getSpacingOptionOutput(mobileBorder.top[2], mobileBorder.unit) : ''
+		undefined !== border?.top ? getSpacingOptionOutput(border.top[2], borderUnit) : '',
+		undefined !== tabletBorder?.top ? getSpacingOptionOutput(tabletBorder.top[2], borderUnit) : '',
+		undefined !== mobileBorder?.top ? getSpacingOptionOutput(mobileBorder.top[2], borderUnit) : ''
 	);
 	const previewBorderRight = getPreviewSize(
 		previewDevice,
 		undefined !== border?.right ? getSpacingOptionOutput(border.right[2], border.unit) : '',
-		undefined !== tabletBorder?.right ? getSpacingOptionOutput(tabletBorder.right[2], tabletBorder.unit) : '',
-		undefined !== mobileBorder?.right ? getSpacingOptionOutput(mobileBorder.right[2], mobileBorder.unit) : ''
+		undefined !== tabletBorder?.right ? getSpacingOptionOutput(tabletBorder.right[2], borderUnit) : '',
+		undefined !== mobileBorder?.right ? getSpacingOptionOutput(mobileBorder.right[2], borderUnit) : ''
 	);
 	const previewBorderBottom = getPreviewSize(
 		previewDevice,
 		undefined !== border?.bottom ? getSpacingOptionOutput(border.bottom[2], border.unit) : '',
-		undefined !== tabletBorder?.bottom ? getSpacingOptionOutput(tabletBorder.bottom[2], tabletBorder.unit) : '',
-		undefined !== mobileBorder?.bottom ? getSpacingOptionOutput(mobileBorder.bottom[2], mobileBorder.unit) : ''
+		undefined !== tabletBorder?.bottom ? getSpacingOptionOutput(tabletBorder.bottom[2], borderUnit) : '',
+		undefined !== mobileBorder?.bottom ? getSpacingOptionOutput(mobileBorder.bottom[2], borderUnit) : ''
 	);
 	const previewBorderLeft = getPreviewSize(
 		previewDevice,
 		undefined !== border?.left ? getSpacingOptionOutput(border.left[2], border.unit) : '',
-		undefined !== tabletBorder?.left ? getSpacingOptionOutput(tabletBorder.left[2], tabletBorder.unit) : '',
-		undefined !== mobileBorder?.left ? getSpacingOptionOutput(mobileBorder.left[2], mobileBorder.unit) : ''
+		undefined !== tabletBorder?.left ? getSpacingOptionOutput(tabletBorder.left[2], borderUnit) : '',
+		undefined !== mobileBorder?.left ? getSpacingOptionOutput(mobileBorder.left[2], borderUnit) : ''
 	);
 
 	const previewBorderColorTop = getPreviewSize(
@@ -237,27 +241,27 @@ export default function BackendStyles(props) {
 
 	const previewHoverBorderTop = getPreviewSize(
 		previewDevice,
-		undefined !== hoverBorder?.top ? getSpacingOptionOutput(hoverBorder.top[2], hoverBorder.unit) : '',
-		undefined !== tabletBorder?.top ? getSpacingOptionOutput(tabletBorder.top[2], tabletBorder.unit) : '',
-		undefined !== mobileBorder?.top ? getSpacingOptionOutput(mobileBorder.top[2], mobileBorder.unit) : ''
+		undefined !== hoverBorder?.top ? getSpacingOptionOutput(hoverBorder.top[2], hoverBorderUnit) : '',
+		undefined !== tabletBorder?.top ? getSpacingOptionOutput(tabletBorder.top[2], hoverBorderUnit) : '',
+		undefined !== mobileBorder?.top ? getSpacingOptionOutput(mobileBorder.top[2], hoverBorderUnit) : ''
 	);
 	const previewHoverBorderRight = getPreviewSize(
 		previewDevice,
-		undefined !== hoverBorder?.right ? getSpacingOptionOutput(hoverBorder.right[2], hoverBorder.unit) : '',
-		undefined !== tabletBorder?.right ? getSpacingOptionOutput(tabletBorder.right[2], tabletBorder.unit) : '',
-		undefined !== mobileBorder?.right ? getSpacingOptionOutput(mobileBorder.right[2], mobileBorder.unit) : ''
+		undefined !== hoverBorder?.right ? getSpacingOptionOutput(hoverBorder.right[2], hoverBorderUnit) : '',
+		undefined !== tabletBorder?.right ? getSpacingOptionOutput(tabletBorder.right[2], hoverBorderUnit) : '',
+		undefined !== mobileBorder?.right ? getSpacingOptionOutput(mobileBorder.right[2], hoverBorderUnit) : ''
 	);
 	const previewHoverBorderBottom = getPreviewSize(
 		previewDevice,
-		undefined !== hoverBorder?.bottom ? getSpacingOptionOutput(hoverBorder.bottom[2], hoverBorder.unit) : '',
-		undefined !== tabletBorder?.bottom ? getSpacingOptionOutput(tabletBorder.bottom[2], tabletBorder.unit) : '',
-		undefined !== mobileBorder?.bottom ? getSpacingOptionOutput(mobileBorder.bottom[2], mobileBorder.unit) : ''
+		undefined !== hoverBorder?.bottom ? getSpacingOptionOutput(hoverBorder.bottom[2], hoverBorderUnit) : '',
+		undefined !== tabletBorder?.bottom ? getSpacingOptionOutput(tabletBorder.bottom[2], hoverBorderUnit) : '',
+		undefined !== mobileBorder?.bottom ? getSpacingOptionOutput(mobileBorder.bottom[2], hoverBorderUnit) : ''
 	);
 	const previewHoverBorderLeft = getPreviewSize(
 		previewDevice,
-		undefined !== hoverBorder?.left ? getSpacingOptionOutput(hoverBorder.left[2], hoverBorder.unit) : '',
-		undefined !== tabletBorder?.left ? getSpacingOptionOutput(tabletBorder.left[2], tabletBorder.unit) : '',
-		undefined !== mobileBorder?.left ? getSpacingOptionOutput(mobileBorder.left[2], mobileBorder.unit) : ''
+		undefined !== hoverBorder?.left ? getSpacingOptionOutput(hoverBorder.left[2], hoverBorderUnit) : '',
+		undefined !== tabletBorder?.left ? getSpacingOptionOutput(tabletBorder.left[2], hoverBorderUnit) : '',
+		undefined !== mobileBorder?.left ? getSpacingOptionOutput(mobileBorder.left[2], hoverBorderUnit) : ''
 	);
 
 	const previewBorderTopLeftRadius = getPreviewSize(
@@ -306,14 +310,40 @@ export default function BackendStyles(props) {
 		undefined !== typography?.letterSpacing?.[2] ? typography.letterSpacing[2] : ''
 	);
 
-	console.log(typography);
-
 	// Flex direction options
 	const previewDirection = getPreviewSize(
 		previewDevice,
 		undefined !== flex?.direction?.[0] ? flex.direction[0] : '',
 		undefined !== flex?.direction?.[1] ? flex.direction[1] : '',
 		undefined !== flex?.direction?.[2] ? flex.direction[2] : ''
+	);
+
+	const previewJustifyContent = getPreviewSize(
+		previewDevice,
+		undefined !== flex?.justifyContent?.[0] ? flex.justifyContent[0] : '',
+		undefined !== flex?.justifyContent?.[1] ? flex.justifyContent[1] : '',
+		undefined !== flex?.justifyContent?.[2] ? flex.justifyContent[2] : ''
+	);
+
+	const previewVerticalAlignment = getPreviewSize(
+		previewDevice,
+		undefined !== flex?.verticalAlignment?.[0] ? flex.verticalAlignment[0] : '',
+		undefined !== flex?.verticalAlignment?.[1] ? flex.verticalAlignment[1] : '',
+		undefined !== flex?.verticalAlignment?.[2] ? flex.verticalAlignment[2] : ''
+	);
+
+	const previewHeight = getPreviewSize(
+		previewDevice,
+		undefined !== height?.[0] ? height[0] : '',
+		undefined !== height?.[1] ? height[1] : '',
+		undefined !== height?.[2] ? height[2] : ''
+	);
+
+	const previewWidth = getPreviewSize(
+		previewDevice,
+		undefined !== width?.[0] ? width[0] : '',
+		undefined !== width?.[1] ? width[1] : '',
+		undefined !== width?.[2] ? width[2] : ''
 	);
 
 	let css = new KadenceBlocksCSS();
@@ -326,6 +356,24 @@ export default function BackendStyles(props) {
 	}
 
 	css.set_selector(`.kb-header.kb-header${uniqueID}`);
+	css.add_property('display', 'flex');
+	css.add_property('flex-wrap', 'wrap');
+	css.add_property('flex-basis', '0');
+
+	if (previewDirection === 'horizontal') {
+		css.add_property('flex-direction', 'row');
+	} else if (previewDirection === 'horizontal-reverse') {
+		css.add_property('flex-direction', 'row-reverse');
+	} else if (previewDirection === 'vertical-reverse') {
+		css.add_property('flex-direction', 'column-reverse');
+	} else {
+		css.add_property('flex-direction', 'column');
+	}
+
+	if (previewDirection === 'vertical-reverse' || previewDirection === 'vertical') {
+		css.add_property('justify-content', previewVerticalAlignment);
+	}
+	css.add_property('align-items', previewVerticalAlignment);
 	css.add_property('color', KadenceColorOutput(textColor));
 	css.add_property('font-size', getFontSizeOptionOutput(previewFontSize, typography.sizeType));
 	css.add_property('letter-spacing', getSpacingOptionOutput(previewLetterSpacing, typography.letterType));
@@ -369,6 +417,8 @@ export default function BackendStyles(props) {
 		'border-bottom-left-radius',
 		getSpacingOptionOutput(previewBorderBottomLeftRadius, borderRadiusUnit)
 	);
+	css.add_property('min-height', getSpacingOptionOutput(previewHeight, heightUnit));
+	css.add_property('max-width', getSpacingOptionOutput(previewWidth, widthUnit));
 
 	css.set_selector(`.kb-header.kb-header${uniqueID}:hover`);
 	css.add_property('background-image', backgroundHover.image);
