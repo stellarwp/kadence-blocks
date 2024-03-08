@@ -1,13 +1,27 @@
 import { useCallback, useEffect, useState } from '@wordpress/element';
-import { TextControl, Button } from '@wordpress/components';
+import { TextControl, Button, Icon } from '@wordpress/components';
 import { useEntityBlockEditor, useEntityProp } from '@wordpress/core-data';
-import { useDispatch } from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { get } from 'lodash';
 import { createBlock, serialize } from '@wordpress/blocks';
 import { RichText } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
-function NavigationItem({ thisBlock, allBlocks, index, updateLocalBlocks, maxIndex }) {
+import { EDITABLE_BLOCK_ATTRIBUTES, PREVENT_BLOCK_DELETE } from './constants';
+import { link } from '@wordpress/icons';
+
+function BlockItem({ thisBlock, allBlocks, index, updateLocalBlocks, maxIndex, depth }) {
 	const [isEditing, setIsEditing] = useState(false);
+
+	const hasChildren = thisBlock.innerBlocks.length > 0;
+	const hasEditableAttributes = EDITABLE_BLOCK_ATTRIBUTES.some((block) => block.name === thisBlock.name);
+	const editableAttributes = hasEditableAttributes
+		? EDITABLE_BLOCK_ATTRIBUTES.find((block) => block.name === thisBlock.name).attributes
+		: [];
+
+	const blockMeta = useSelect((select) => {
+		return select('core/blocks').getBlockType(thisBlock.name);
+	}, []);
+
 	const moveBlock = (direction, clientId, blocks, inRecursion = false) => {
 		let index;
 		const newArray = blocks.map((block, i) => {
@@ -64,33 +78,46 @@ function NavigationItem({ thisBlock, allBlocks, index, updateLocalBlocks, maxInd
 		updateLocalBlocks(newArray);
 	};
 
+	const renderEditableAttributes = () => {
+		return editableAttributes.map((attribute) => {
+			const value = get(thisBlock, ['attributes', attribute.name], '');
+
+			if (attribute.type === 'string') {
+				return (
+					<p key={attribute.name} style={{ textTransform: 'capitalize' }}>
+						{attribute.name}:{' '}
+						<TextControl
+							value={value}
+							onChange={(newValue) =>
+								handleAttributeUpdate({ [attribute.name]: newValue }, thisBlock.clientId, allBlocks)
+							}
+						/>
+					</p>
+				);
+			}
+
+			return <p>Attribute type of {attribute.type} is not supported yet.</p>;
+		});
+	};
+
 	return (
 		<>
-			<p>
-				<strong>Block:</strong> {thisBlock.name} <br />
-				{thisBlock.name === 'kadence/navigation-link' && (
-					<>
-						<strong>Label:</strong> {thisBlock.attributes.label} <br />
-						<button onClick={() => setIsEditing(!isEditing)}>Edit</button>
-					</>
-				)}
-			</p>
+			<div
+				onClick={() => {
+					hasEditableAttributes ? setIsEditing(!isEditing) : null;
+				}}
+				className={`menu-block ${isEditing ? 'active' : ''} ${!hasChildren ? 'no-children' : ''}`}
+				style={{ marginLeft: depth * 20 + 'px' }}
+			>
+				{hasChildren && !isEditing && <Icon className={'has-children'} icon="arrow-right-alt2" />}
+				{hasChildren && isEditing && <Icon className={'has-children'} icon="arrow-down-alt2" />}
+				<Icon className={'block-icon'} icon={blockMeta.icon.src} />
+				<span className={'block-label'}>{blockMeta.title}</span>
+				<Icon className={'block-settings'} icon="ellipsis" />
+			</div>
 			{isEditing && (
-				<>
-					<p>
-						Label:{' '}
-						<TextControl
-							value={thisBlock.attributes.label}
-							onChange={(value) => handleAttributeUpdate({ label: value }, thisBlock.clientId, allBlocks)}
-						/>
-					</p>
-					<p>
-						Url:{' '}
-						<TextControl
-							value={thisBlock.attributes.url}
-							onChange={(value) => handleAttributeUpdate({ url: value }, thisBlock.clientId, allBlocks)}
-						/>
-					</p>
+				<div className={'edit-block'}>
+					{renderEditableAttributes()}
 					{index !== 0 && (
 						<Button isSmall isPrimary onClick={() => moveBlock('up', thisBlock.clientId, allBlocks)}>
 							Move Up
@@ -102,37 +129,27 @@ function NavigationItem({ thisBlock, allBlocks, index, updateLocalBlocks, maxInd
 							Move Down
 						</Button>
 					)}
-				</>
-			)}
-			{thisBlock.innerBlocks.length > 0 && (
-				<div style={{ marginTop: '10px', backgroundColor: 'red' }}>
-					{renderBlocks(allBlocks, thisBlock.innerBlocks, updateLocalBlocks)}
 				</div>
 			)}
+
+			{hasChildren && <div>{renderBlocks(allBlocks, thisBlock.innerBlocks, updateLocalBlocks, depth + 1)}</div>}
 		</>
 	);
 }
 
-const renderBlocks = (allBlocks, innerBlocks, updateLocalBlocks) => {
+const renderBlocks = (allBlocks, innerBlocks, updateLocalBlocks, depth = 0) => {
 	const maxIndex = innerBlocks.length - 1;
 
 	return innerBlocks.map((block, index) => (
-		<div
+		<BlockItem
 			key={block.clientId}
-			style={{
-				backgroundColor: index % 2 === 1 ? '#FFF' : '#EEE',
-				border: '1px solid #BBB',
-				padding: '15px',
-			}}
-		>
-			<NavigationItem
-				index={index}
-				maxIndex={maxIndex}
-				thisBlock={block}
-				allBlocks={allBlocks}
-				updateLocalBlocks={updateLocalBlocks}
-			/>
-		</div>
+			depth={depth}
+			index={index}
+			maxIndex={maxIndex}
+			thisBlock={block}
+			allBlocks={allBlocks}
+			updateLocalBlocks={updateLocalBlocks}
+		/>
 	));
 };
 
@@ -147,6 +164,7 @@ export default function MenuEdit({ selectedPostId }) {
 
 	useEffect(() => {
 		setInnerBlocks(initialBlocks);
+		setTmpTitle(title);
 	}, [selectedPostId]);
 
 	const updateLocalBlocks = (newBlocks) => {
@@ -183,16 +201,16 @@ export default function MenuEdit({ selectedPostId }) {
 	};
 
 	return (
-		<div>
+		<div className={'menu-management'}>
 			<div className={'edit-menu-name'}>
 				MENU NAME:{' '}
 				<RichText
-					className="kt-blocks-accordion-title"
 					tagName={'span'}
-					placeholder={__('Add Title', 'kadence-blocks')}
+					placeholder={__('Set a Title', 'kadence-blocks')}
 					onChange={(value) => setTmpTitle(value)}
 					value={tmpTitle}
-					keepPlaceholderOnFocus
+					withoutInteractiveFormatting={true}
+					allowedFormats={[]}
 				/>
 			</div>
 
@@ -200,24 +218,34 @@ export default function MenuEdit({ selectedPostId }) {
 
 			<div style={{ marginTop: '20px' }}>
 				<Button
-					isSmall
+					icon={link}
+					isSecondary
+					iconPosition="left"
 					onClick={() => {
 						updateLocalBlocks([
 							...innerBlocks,
 							createBlock('kadence/navigation-link', { label: 'New Item' }),
 						]);
 					}}
+					style={{
+						width: '100%',
+						color: '#000',
+						borderColor: '#000',
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+					}}
 				>
-					Add New Item
+					Add Navigation Item
 				</Button>
 			</div>
 
-			<div style={{ marginTop: '20px' }}>
-				<Button isSmall isDefault onClick={discardChanges}>
-					Discard Changes
+			<div style={{ marginTop: '30px', float: 'right' }}>
+				<Button isTertiary onClick={discardChanges} style={{ marginRight: '20px' }}>
+					Cancel
 				</Button>
-				<Button isSmall isPrimary onClick={saveChanges}>
-					Save Changes
+				<Button isPrimary onClick={saveChanges}>
+					Apply
 				</Button>
 			</div>
 		</div>

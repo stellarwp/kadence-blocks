@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Button } from '@wordpress/components';
+import { Button, Icon } from '@wordpress/components';
 import { plus } from '@wordpress/icons';
 
 import { useState } from '@wordpress/element';
@@ -48,7 +48,9 @@ export default function MenuEditor() {
 										setSelectedPostId(post.id);
 									}}
 								>
-									{post.title.rendered}
+									{post.title.rendered === ''
+										? __('(no title)', 'kadence-blocks')
+										: post.title.rendered}
 								</Button>
 								<Button
 									key={'edit' + post.id}
@@ -57,23 +59,14 @@ export default function MenuEditor() {
 										console.log('edit popup: ' + post.id);
 									}}
 								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 24 24"
-										width="22"
-										height="22"
-										aria-hidden="true"
-										focusable="false"
-									>
-										<path d="M13 19h-2v-2h2v2zm0-6h-2v-2h2v2zm0-6h-2V5h2v2z"></path>
-									</svg>
+									<Icon icon="ellipsis" />
 								</Button>
 							</div>
 						))
 					)}
 
 					<div className="menu-create">
-						<Button className="create-menu-button" icon={plus} iconPosition="left" label="Create New Menu">
+						<Button className="create-menu-button" icon={plus}>
 							Create New Menu
 						</Button>
 					</div>
