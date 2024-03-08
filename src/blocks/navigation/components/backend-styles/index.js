@@ -26,7 +26,7 @@ export default function BackendStyles(props) {
 	const navigationHorizontalSpacing = spacing[1];
 	const navigationVerticalSpacing = spacing[0];
 
-	let css = new KadenceBlocksCSS();
+	const css = new KadenceBlocksCSS();
 
 	if (isSelected) {
 		css.set_selector(
