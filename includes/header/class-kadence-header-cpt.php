@@ -135,7 +135,7 @@ class Kadence_Blocks_Header_CPT_Controller {
 	public function register_meta() {
 		register_post_meta(
 			'kadence_header',
-			'_kad_header_headerFont',
+			'_kad_header_typography',
 			array(
 				'single'        => true,
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
@@ -183,7 +183,7 @@ class Kadence_Blocks_Header_CPT_Controller {
 		);
 		register_post_meta(
 			'kadence_header',
-			'_kad_header_headerBorder',
+			'_kad_header_border',
 			array(
 				'single'        => true,
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
@@ -211,7 +211,7 @@ class Kadence_Blocks_Header_CPT_Controller {
 		);
 		register_post_meta(
 			'kadence_header',
-			'_kad_header_headerHoverBorder',
+			'_kad_header_hoverBorder',
 			array(
 				'single'        => true,
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
@@ -239,7 +239,7 @@ class Kadence_Blocks_Header_CPT_Controller {
 		);
 		register_post_meta(
 			'kadence_header',
-			'_kad_form_headerTabletBorder',
+			'_kad_header_tabletHoverBorder',
 			array(
 				'single'        => true,
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
@@ -267,7 +267,63 @@ class Kadence_Blocks_Header_CPT_Controller {
 		);
 		register_post_meta(
 			'kadence_header',
-			'_kad_form_headerMobileBorder',
+			'_kad_header_mobileHoverBorder',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'object',
+				'default'       => array(
+					'top'    => array( '', '', '' ),
+					'right'  => array( '', '', '' ),
+					'bottom' => array( '', '', '' ),
+					'left'   => array( '', '', '' ),
+					'unit'   => 'px'
+				),
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'object',
+						'properties' => array(
+							'top'    => array( 'type' => 'array' ),
+							'right'  => array( 'type' => 'array' ),
+							'bottom' => array( 'type' => 'array' ),
+							'left'   => array( 'type' => 'array' ),
+							'unit'   => array( 'type' => 'string' ),
+						),
+					),
+				),
+			)
+		);
+		register_post_meta(
+			'kadence_header',
+			'_kad_form_tabletBorder',
+			array(
+				'single'        => true,
+				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'type'          => 'object',
+				'default'       => array(
+					'top'    => array( '', '', '' ),
+					'right'  => array( '', '', '' ),
+					'bottom' => array( '', '', '' ),
+					'left'   => array( '', '', '' ),
+					'unit'   => 'px'
+				),
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'       => 'object',
+						'properties' => array(
+							'top'    => array( 'type' => 'array' ),
+							'right'  => array( 'type' => 'array' ),
+							'bottom' => array( 'type' => 'array' ),
+							'left'   => array( 'type' => 'array' ),
+							'unit'   => array( 'type' => 'string' ),
+						),
+					),
+				),
+			)
+		);
+		register_post_meta(
+			'kadence_header',
+			'_kad_form_mobileBorder',
 			array(
 				'single'        => true,
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
