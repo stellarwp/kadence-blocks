@@ -364,6 +364,8 @@ class Kadence_Blocks_Header_CPT_Controller {
 					'imageSize'			=> 'cover',
 					'imageRepeat'		=> 'no-repeat',
 					'imageAttachment'	=> 'scroll',
+					'type'				=> 'normal',
+					'gradient'			=> ''
 				),
 				'show_in_rest'  => array(
 					'schema' => array(
@@ -376,6 +378,8 @@ class Kadence_Blocks_Header_CPT_Controller {
 							'imageSize'			=> array( 'type' => 'string' ),
 							'imageRepeat'		=> array( 'type' => 'string' ),
 							'imageAttachment'	=> array( 'type' => 'string' ),
+							'type'				=> array( 'type' => 'string' ),
+							'gradient'			=> array( 'type' => 'string' ),
 						),
 					),
 				),

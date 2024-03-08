@@ -382,11 +382,19 @@ export default function BackendStyles(props) {
 	css.add_property('font-style', typography.style);
 	css.add_property('font-weight', typography.weight);
 	css.add_property('line-height', getSpacingOptionOutput(previewLineHeight, typography.lineType));
-	css.add_property('background-image', background.image);
-	css.add_property('background-size', background.imageSize);
-	css.add_property('background-repeat', background.imageRepeat);
-	css.add_property('background-attachment', background.imageAttachment);
-	css.add_property('background-position', background.imagePosition);
+	if ('normal' === background?.type && background?.image) {
+		css.add_property('background-image', background.image);
+		css.add_property('background-size', background.imageSize);
+		css.add_property('background-repeat', background.imageRepeat);
+		css.add_property('background-attachment', background.imageAttachment);
+		css.add_property('background-position', background.imagePosition);
+	}
+	if ('normal' === background?.type && background?.color) {
+		css.add_property('background-color', KadenceColorOutput(background.color));
+	}
+	if ('gradient' === background?.type && background?.gradient) {
+		css.add_property('background', background.gradient);
+	}
 	css.add_property('border-top-width', previewBorderTop);
 	css.add_property('border-top-style', previewBorderStyleTop);
 	css.add_property('border-top-color', previewBorderColorTop);
@@ -421,11 +429,14 @@ export default function BackendStyles(props) {
 	css.add_property('max-width', getSpacingOptionOutput(previewWidth, widthUnit));
 
 	css.set_selector(`.kb-header.kb-header${uniqueID}:hover`);
-	css.add_property('background-image', backgroundHover.image);
-	css.add_property('background-size', backgroundHover.imageSize);
-	css.add_property('background-repeat', backgroundHover.imageRepeat);
-	css.add_property('background-attachment', backgroundHover.imageAttachment);
-	css.add_property('background-position', backgroundHover.imagePosition);
+	if (backgroundHover?.image) {
+		css.add_property('background-image', backgroundHover.image);
+		css.add_property('background-size', backgroundHover.imageSize);
+		css.add_property('background-repeat', backgroundHover.imageRepeat);
+		css.add_property('background-attachment', backgroundHover.imageAttachment);
+		css.add_property('background-position', backgroundHover.imagePosition);
+	}
+
 	css.add_property('border-top-width', previewHoverBorderTop);
 	css.add_property('border-top-style', previewHoverBorderStyleTop);
 	css.add_property('border-top-color', previewHoverBorderColorTop);
