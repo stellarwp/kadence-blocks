@@ -6,6 +6,14 @@ export default function BackendStyles(props) {
 	const { uniqueID } = attributes;
 
 	const {
+		padding,
+		tabletPadding,
+		mobilePadding,
+		paddingUnit,
+		margin,
+		tabletMargin,
+		mobileMargin,
+		marginUnit,
 		orientation,
 		spacing,
 		spacingUnit,
@@ -118,20 +126,23 @@ export default function BackendStyles(props) {
 	// $css->add_property( 'background', $css->render_color( kadence()->sub_option( 'mobile_navigation_background', 'active' ) ) );
 	// $css->add_property( 'color', $css->render_color( kadence()->sub_option( 'mobile_navigation_color', 'active' ) ) );
 	css.set_selector(
-		'.navigation ul li.menu-item-has-children .link-drop-wrap, .navigation ul li:not(.menu-item-has-children) a'
+		`.wp-block-kadence-navigation${uniqueID} .navigation ul li.menu-item-has-children .link-drop-wrap, .wp-block-kadence-navigation${uniqueID} .navigation ul li:not(.menu-item-has-children) a`
 	);
 	css.add_property(
 		'border-bottom',
 		css.render_border(previewDevice, 'bottom', divider, dividerTablet, dividerMobile)
 	);
 	css.set_selector(
-		'.navigation:not(.drawer-navigation-parent-toggle-true) ul li.menu-item-has-children .link-drop-wrap button'
+		`.wp-block-kadence-navigation${uniqueID} .navigation:not(.drawer-navigation-parent-toggle-true) ul li.menu-item-has-children .link-drop-wrap button`
 	);
 	css.add_property('border-left', css.render_border(previewDevice, 'bottom', divider, dividerTablet, dividerMobile));
 
 	//New Logic for block
 	if (orientation == 'vertical') {
 	}
+	css.set_selector(`.wp-block-kadence-navigation${uniqueID} > .navigation > .menu-container > .menu`);
+	css.render_measure_output(padding, tabletPadding, mobilePadding, previewDevice, 'padding', paddingUnit);
+	css.render_measure_output(margin, tabletMargin, mobileMargin, previewDevice, 'margin', marginUnit);
 
 	const cssOutput = css.css_output();
 
