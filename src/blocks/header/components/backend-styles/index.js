@@ -429,12 +429,20 @@ export default function BackendStyles(props) {
 	css.add_property('max-width', getSpacingOptionOutput(previewWidth, widthUnit));
 
 	css.set_selector(`.kb-header.kb-header${uniqueID}:hover`);
-	if (backgroundHover?.image) {
+	if ('normal' === backgroundHover?.type && backgroundHover?.image) {
 		css.add_property('background-image', backgroundHover.image);
 		css.add_property('background-size', backgroundHover.imageSize);
 		css.add_property('background-repeat', backgroundHover.imageRepeat);
 		css.add_property('background-attachment', backgroundHover.imageAttachment);
 		css.add_property('background-position', backgroundHover.imagePosition);
+	}
+
+	if ('normal' === backgroundHover?.type && backgroundHover?.color) {
+		css.add_property('background-color', backgroundHover.color);
+	}
+
+	if ('gradient' === backgroundHover?.type && backgroundHover?.gradient) {
+		css.add_property('background', backgroundHover.gradient);
 	}
 
 	css.add_property('border-top-width', previewHoverBorderTop);
