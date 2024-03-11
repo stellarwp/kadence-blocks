@@ -62,7 +62,7 @@
 		display: flex;
 		flex-grow: 1;
 		justify-content: flex-start;
-		padding: 13px 0 13px 10px;
+		padding: 22px 0 22px 10px;
 		margin-right: 2px;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -70,7 +70,9 @@
 	}
 
 	.menu-options {
-		padding: 12px 5px 12px 5px;
+		button {
+			padding: 12px 0;
+		}
 
 		span {
 			transform: rotate(90deg);

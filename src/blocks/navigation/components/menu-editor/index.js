@@ -2,11 +2,12 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Button, Icon } from '@wordpress/components';
-import { plus } from '@wordpress/icons';
+import { Button, DropdownMenu, MenuGroup, MenuItem } from '@wordpress/components';
 
 import { useState } from '@wordpress/element';
-import { useSelect } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
+import { trash } from '@wordpress/icons';
+import CreateNew from './createNew';
 
 import MenuEdit from './edit';
 import './editor.scss';
@@ -20,6 +21,7 @@ import './editor.scss';
 
 export default function MenuEditor() {
 	const [selectedPostId, setSelectedPostId] = useState(0);
+	const { saveEntityRecord } = useDispatch('core');
 
 	const { posts } = useSelect(
 		(selectData) => ({
@@ -31,6 +33,18 @@ export default function MenuEditor() {
 		}),
 		[]
 	);
+
+	const trashPost = async (id) => {
+		try {
+			await saveEntityRecord('postType', 'kadence_navigation', {
+				id,
+				status: 'private',
+			});
+			console.log('Post trashed successfully');
+		} catch (error) {
+			console.error('Error trashing post:', error);
+		}
+	};
 
 	return (
 		<div className="kb-menu-visual-editor">
@@ -52,23 +66,29 @@ export default function MenuEditor() {
 										? __('(no title)', 'kadence-blocks')
 										: post.title.rendered}
 								</Button>
-								<Button
-									key={'edit' + post.id}
-									className={'menu-options'}
-									onClick={() => {
-										console.log('edit popup: ' + post.id);
-									}}
-								>
-									<Icon icon="ellipsis" />
-								</Button>
+								<DropdownMenu icon={'ellipsis'} className={'menu-options'} label="Select a direction">
+									{({ onClose }) => (
+										<>
+											<MenuGroup>
+												<MenuItem
+													icon={trash}
+													onClick={() => {
+														trashPost(post.id);
+														onClose();
+													}}
+												>
+													Trash
+												</MenuItem>
+											</MenuGroup>
+										</>
+									)}
+								</DropdownMenu>
 							</div>
 						))
 					)}
 
 					<div className="menu-create">
-						<Button className="create-menu-button" icon={plus}>
-							Create New Menu
-						</Button>
+						<CreateNew />
 					</div>
 				</div>
 				<div className={'add-menu'}></div>

@@ -12,7 +12,7 @@ import { link } from '@wordpress/icons';
 function BlockItem({ thisBlock, allBlocks, index, updateLocalBlocks, maxIndex, depth }) {
 	const [isEditing, setIsEditing] = useState(false);
 
-	const hasChildren = thisBlock.innerBlocks.length > 0;
+	const hasChildren = thisBlock?.innerBlocks?.length > 0;
 	const hasEditableAttributes = EDITABLE_BLOCK_ATTRIBUTES.some((block) => block.name === thisBlock.name);
 	const editableAttributes = hasEditableAttributes
 		? EDITABLE_BLOCK_ATTRIBUTES.find((block) => block.name === thisBlock.name).attributes
@@ -113,8 +113,8 @@ function BlockItem({ thisBlock, allBlocks, index, updateLocalBlocks, maxIndex, d
 				{/*{hasChildren && !isEditing && <Icon className={'has-children'} icon="arrow-right-alt2" />}*/}
 				{/*{hasChildren && isEditing && <Icon className={'has-children'} icon="arrow-down-alt2" />}				{hasChildren && !isEditing && <Icon className={'has-children'} icon="arrow-right-alt2" />}*/}
 				{hasChildren && <Icon className={'has-children'} icon="arrow-down-alt2" />}
-				<Icon className={'block-icon'} icon={blockMeta.icon.src} />
-				<span className={'block-label'}>{blockMeta.title}</span>
+				<Icon className={'block-icon'} icon={blockMeta?.icon?.src} />
+				<span className={'block-label'}>{blockMeta?.title}</span>
 				<Icon className={'block-settings'} icon="ellipsis" />
 			</div>
 			{isEditing && (
@@ -179,7 +179,6 @@ export default function MenuEdit({ selectedPostId }) {
 	};
 
 	const saveChanges = async () => {
-		console.log('Saving changes');
 		onChange(
 			[
 				{
