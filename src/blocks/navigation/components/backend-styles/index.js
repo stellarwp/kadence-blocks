@@ -196,7 +196,7 @@ export default function BackendStyles(props) {
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul li.menu-item > .link-drop-wrap > a`
 	);
-	css.render_font(typography, previewDevice);
+	css.render_font(typography ? typography : [], previewDevice);
 
 	//Mobile menu logic from theme styles component
 	// // Mobile Menu.
