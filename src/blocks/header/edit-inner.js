@@ -135,11 +135,9 @@ export function EditInner(props) {
 		border,
 		tabletBorder,
 		mobileBorder,
-		borderUnit,
 		hoverBorder,
 		tabletHoverBorder,
 		mobileHoverBorder,
-		hoverBorderUnit,
 		borderRadius,
 		tabletBorderRadius,
 		mobileBorderRadius,
@@ -847,7 +845,6 @@ export function EditInner(props) {
 												<GradientControl
 													value={background?.gradient}
 													onChange={(value) => {
-														console.log(value);
 														setMetaAttribute(
 															{ ...background, gradient: value },
 															'background'
@@ -987,7 +984,6 @@ export function EditInner(props) {
 												<GradientControl
 													value={backgroundHover?.gradient}
 													onChange={(value) => {
-														console.log(value);
 														setMetaAttribute(
 															{ ...backgroundHover, gradient: value },
 															'backgroundHover'
@@ -1047,6 +1043,7 @@ export function EditInner(props) {
 											tabletValue={[tabletHoverBorder]}
 											mobileValue={[mobileHoverBorder]}
 											onChange={(value) => {
+	
 												setMetaAttribute(value[0], 'hoverBorder');
 											}}
 											onChangeTablet={(value) => setMetaAttribute(value[0], 'tabletHoverBorder')}

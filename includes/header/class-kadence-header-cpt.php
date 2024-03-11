@@ -189,10 +189,10 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
 				'default'       => array(
-					'top'    => array( '', '', '' ),
-					'right'  => array( '', '', '' ),
-					'bottom' => array( '', '', '' ),
-					'left'   => array( '', '', '' ),
+					'top'    => array( '', 'solid', '' ),
+					'right'  => array( '', 'solid', '' ),
+					'bottom' => array( '', 'solid', '' ),
+					'left'   => array( '', 'solid', '' ),
 					'unit'   => 'px'
 				),
 				'show_in_rest'  => array(
@@ -217,10 +217,10 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
 				'default'       => array(
-					'top'    => array( '', '', '' ),
-					'right'  => array( '', '', '' ),
-					'bottom' => array( '', '', '' ),
-					'left'   => array( '', '', '' ),
+					'top'    => array( '', 'solid', '' ),
+					'right'  => array( '', 'solid', '' ),
+					'bottom' => array( '', 'solid', '' ),
+					'left'   => array( '', 'solid', '' ),
 					'unit'   => 'px'
 				),
 				'show_in_rest'  => array(
@@ -522,7 +522,7 @@ class Kadence_Blocks_Header_CPT_Controller {
 			),
 			array(
 				'key'     => '_kad_header_borderRadiusUnit',
-				'default' => '',
+				'default' => 'px',
 				'type'    => 'string'
 			),
 			array(
@@ -545,7 +545,7 @@ class Kadence_Blocks_Header_CPT_Controller {
 			),
 			array(
 				'key'     => '_kad_header_borderHoverRadiusUnit',
-				'default' => '',
+				'default' => 'px',
 				'type'    => 'string'
 			),
 			array(

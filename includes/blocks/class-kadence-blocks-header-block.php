@@ -74,11 +74,10 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$bg = isset($header_attributes) && !empty($header_attributes['background']) ? $header_attributes['background'] : '';;
 		$hoverBg = isset($header_attributes) && !empty($header_attributes['backgroundHover']) ? $header_attributes['backgroundHover'] : '';
 		$border = isset($header_attributes) && isset($header_attributes['border']) && is_array($header_attributes['border']) ? $header_attributes['border'] : '';
-		var_dump($header_attributes);
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 		$css->set_selector('.wp-block-kadence-header.wp-block-kadence-header' . $unique_id);
-		$css->add_property('background-color', $css->render_color($bg['color']));
-		$css->render_border_styles($header_attributes, 'border');
+		//$css->add_property('background-color', $css->render_color($bg['color']));
+		//$css->render_border_styles($header_attributes, 'border');
 	// 	$css->add_property('border-top-width', '' );
 	// $css->add_property('border-top-style', $border['top'] . 'px');
 	// $css->add_property('border-top-color', previewBorderColorTop);
@@ -94,8 +93,8 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property('height', '300px');
 		$css->add_property('width', '100%');
 
-		$css->set_selector('.wp-block-kadence-header.wp-block-kadence-header' . $unique_id . ':hover');
-		$css->add_property('background-color', $css->render_color($hoverBg['color']));
+		//$css->set_selector('.wp-block-kadence-header.wp-block-kadence-header' . $unique_id . ':hover');
+		//$css->add_property('background-color', $css->render_color($hoverBg['color']));
 
 		return $css->css_output();
 	}
