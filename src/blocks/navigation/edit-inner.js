@@ -238,13 +238,20 @@ export function EditInner(props) {
 
 	const navClasses = classnames('navigation', {
 		[`navigation-dropdown-animation-fade-${id}`]: true,
-		[`navigation-style-${previewStyle}`]: true,
+		// [`navigation-desktop-dropdown-animation-fade-${dropdownAnimation}`]: !previewDevice || previewDevice == 'Desktop',
+		// [`navigation-tablet-dropdown-animation-fade-${dropdownAnimationTablet}`]: previewDevice == 'Tablet',
+		// [`navigation-mobile-dropdown-animation-fade-${dropdownAnimationMobile}`]: previewDevice == 'Mobile',
+		[`navigation-desktop-style-${style}`]: !previewDevice || previewDevice == 'Desktop',
+		[`navigation-tablet-style-${styleTablet}`]: previewDevice == 'Tablet',
+		[`navigation-mobile-style-${styleMobile}`]: previewDevice == 'Mobile',
 	});
 
 	const innerNavClasses = classnames('menu', {
 		'kb-navigation': true,
 		[`kb-navigation-${id}`]: true,
-		[`collapse-sub-nav-${previewCollapseSubMenus}`]: true,
+		[`collapse-sub-nav-desktop-${collapseSubMenus}`]: !previewDevice || previewDevice == 'Desktop',
+		[`collapse-sub-nav-tablet-${collapseSubMenusTablet}`]: previewDevice == 'Tablet',
+		[`collapse-sub-nav-mobile-${collapseSubMenusMobile}`]: previewDevice == 'Mobile',
 	});
 
 	const [title, setTitle] = useNavigationProp('title');

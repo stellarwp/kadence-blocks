@@ -132,15 +132,17 @@ export function Edit(props) {
 		}
 	}, []);
 
-	const previewOrientation = getPreviewSize(previewDevice, orientation, orientationTablet, orientationMobile);
-	const previewStretch = getPreviewSize(previewDevice, stretch, stretchTablet, stretchMobile);
-	const previewFillStretch = getPreviewSize(previewDevice, fillStretch, fillStretchTablet, fillStretchMobile);
-
 	const blockClasses = classnames({
 		[`wp-block-kadence-navigation${uniqueID}`]: uniqueID,
-		[`navigation-layout-stretch-${previewStretch}`]: true,
-		[`navigation-layout-fill-stretch-${previewFillStretch}`]: true,
-		[`navigation-orientation-${previewOrientation}`]: true,
+		[`navigation-desktop-layout-stretch-${stretch}`]: !previewDevice || previewDevice == 'Desktop',
+		[`navigation-tablet-layout-stretch-${stretchTablet}`]: previewDevice == 'Tablet',
+		[`navigation-mobile-layout-stretch-${stretchMobile}`]: previewDevice == 'Mobile',
+		[`navigation-desktop-layout-fill-stretch-${fillStretch}`]: !previewDevice || previewDevice == 'Desktop',
+		[`navigation-tablet-layout-fill-stretch-${fillStretchTablet}`]: previewDevice == 'Tablet',
+		[`navigation-mobile-layout-fill-stretch-${fillStretchMobile}`]: previewDevice == 'Mobile',
+		[`navigation-desktop-orientation-${orientation}`]: !previewDevice || previewDevice == 'Desktop',
+		[`navigation-tablet-orientation-${orientationTablet}`]: previewDevice == 'Tablet',
+		[`navigation-mobile-orientation-${orientationMobile}`]: previewDevice == 'Mobile',
 	});
 	const blockProps = useBlockProps({
 		className: blockClasses,
