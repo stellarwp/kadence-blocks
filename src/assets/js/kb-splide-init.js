@@ -61,6 +61,7 @@
 						...splideOptions,
 						focus: parsedData.sliderCenterMode !== false ? 'center' : 0,
 						autoWidth: true,
+						preloadPages: childCount <= 1 ? 0 : Math.floor(childCount / 2),
 						arrows: childCount > 1 ? splideOptions.arrows : false,
 						pagination: childCount > 1 ? splideOptions.pagination : false,
 						drag: childCount > 1 ? splideOptions.drag : false,
