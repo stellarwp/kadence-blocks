@@ -266,8 +266,8 @@ class KB_Ajax_Advanced_Form {
 				$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), $required_message );
 			}
 
-			// Fail if this field is number and value is not numeric.
-			if(!isset($value) && !is_numeric($value) && $field['type'] === 'number') {
+			// Fail if this field is number and required and value is not numeric.
+			if(! empty( $field['required'] ) && $field['required'] && !is_numeric($value) && $field['type'] === 'number') {
 				$required_message = ! empty( $field['required_message'] ) ? $field['required_message'] : __( 'Missing a required field', 'kadence-blocks' );
 				$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), $required_message );
 			}
