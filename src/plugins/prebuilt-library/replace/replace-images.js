@@ -1,138 +1,132 @@
 /**
  * WordPress dependencies
  */
-const getStringBetween = ( str, start, end ) => {
+const getStringBetween = (str, start, end) => {
 	// Check if form is there?
-	if ( ! str.includes( 'wp:kadence/form' ) ) {
+	if (!str.includes('wp:kadence/form')) {
 		return '';
 	}
 	// get the start of the submit button.
-	const startpos = str.indexOf( start );
-	if ( ! startpos ) {
+	const startpos = str.indexOf(start);
+	if (!startpos) {
 		return '';
 	}
 	const pos = startpos + start.length;
-	return str.substring( pos, str.indexOf( end, pos ) );
+	return str.substring(pos, str.indexOf(end, pos));
 };
-export default function replaceImages( content, images, categories, context, variation, teamCollection = '' ) {
-	if ( ! content ) {
+export default function replaceImages(content, images, categories, context, variation, teamCollection = '') {
+	if (!content) {
 		return content;
 	}
 
-	if ( ! images.data?.[ 0 ]?.images ) {
+	if (!images.data?.[0]?.images) {
 		return content;
 	}
-	const aRoll = images.data?.[ 0 ]?.images;
-	const bRoll = images.data?.[ 1 ]?.images || images.data?.[ 0 ]?.images;
-	let pRoll = images.data?.[ 2 ]?.images;
-	if ( ! pRoll && categories?.[ 0 ] == 'team' && teamCollection?.data?.[ 0 ]?.images ) {
-		pRoll = teamCollection?.data?.[ 0 ]?.images;
+	const aRoll = images.data?.[0]?.images;
+	const bRoll = images.data?.[1]?.images || images.data?.[0]?.images;
+	let pRoll = images.data?.[2]?.images;
+	if (!pRoll && categories?.[0] == 'team' && teamCollection?.data?.[0]?.images) {
+		pRoll = teamCollection?.data?.[0]?.images;
 	}
-	if ( ! pRoll ) {
-		pRoll = images.data?.[ 1 ]?.images || images.data?.[ 0 ]?.images;
+	if (!pRoll) {
+		pRoll = images.data?.[1]?.images || images.data?.[0]?.images;
 	}
 	const resetVariation = 0;
 	let bvariation = variation;
-	if ( bvariation > bRoll.length ) {
+	if (bvariation > bRoll.length) {
 		bvariation = bvariation - bRoll.length;
 	}
-	if ( bvariation > bRoll.length ) {
+	if (bvariation > bRoll.length) {
 		bvariation = bvariation - bRoll.length;
 	}
 	let pvariation = variation;
-	if ( pvariation > pRoll.length ) {
+	if (pvariation > pRoll.length) {
 		pvariation = pvariation - pRoll.length;
 	}
-	if ( pvariation > pRoll.length ) {
+	if (pvariation > pRoll.length) {
 		pvariation = pvariation - pRoll.length;
 	}
 	const imgs = {
-		a1: aRoll?.[ variation ]?.sizes?.[ 0 ]?.src || aRoll?.[ 0 ]?.sizes?.[ 0 ]?.src,
+		a1: aRoll?.[variation]?.sizes?.[0]?.src || aRoll?.[0]?.sizes?.[0]?.src,
 		a2:
-			aRoll?.[ variation + 1 ]?.sizes?.[ 0 ]?.src ||
-			aRoll?.[ resetVariation ]?.sizes?.[ 0 ]?.src ||
-			aRoll?.[ 0 ]?.sizes?.[ 0 ]?.src,
+			aRoll?.[variation + 1]?.sizes?.[0]?.src ||
+			aRoll?.[resetVariation]?.sizes?.[0]?.src ||
+			aRoll?.[0]?.sizes?.[0]?.src,
 		a3:
-			aRoll?.[ variation + 2 ]?.sizes?.[ 0 ]?.src ||
-			aRoll?.[ resetVariation + 1 ]?.sizes?.[ 0 ]?.src ||
-			aRoll?.[ 0 ]?.sizes?.[ 0 ]?.src,
+			aRoll?.[variation + 2]?.sizes?.[0]?.src ||
+			aRoll?.[resetVariation + 1]?.sizes?.[0]?.src ||
+			aRoll?.[0]?.sizes?.[0]?.src,
 		a4:
-			aRoll?.[ variation + 3 ]?.sizes?.[ 0 ]?.src ||
-			aRoll?.[ resetVariation + 2 ]?.sizes?.[ 0 ]?.src ||
-			aRoll?.[ 0 ]?.sizes?.[ 0 ]?.src,
+			aRoll?.[variation + 3]?.sizes?.[0]?.src ||
+			aRoll?.[resetVariation + 2]?.sizes?.[0]?.src ||
+			aRoll?.[0]?.sizes?.[0]?.src,
 		a5:
-			aRoll?.[ variation + 4 ]?.sizes?.[ 0 ]?.src ||
-			aRoll?.[ resetVariation + 3 ]?.sizes?.[ 0 ]?.src ||
-			aRoll?.[ 0 ]?.sizes?.[ 0 ]?.src,
-		b1: bRoll?.[ bvariation ]?.sizes?.[ 0 ]?.src || bRoll?.[ 0 ]?.sizes?.[ 0 ]?.src,
-		b2:
-			bRoll?.[ bvariation + 1 ]?.sizes?.[ 0 ]?.src ||
-			bRoll?.[ 1 ]?.sizes?.[ 0 ]?.src ||
-			bRoll?.[ 0 ]?.sizes?.[ 0 ]?.src,
+			aRoll?.[variation + 4]?.sizes?.[0]?.src ||
+			aRoll?.[resetVariation + 3]?.sizes?.[0]?.src ||
+			aRoll?.[0]?.sizes?.[0]?.src,
+		b1: bRoll?.[bvariation]?.sizes?.[0]?.src || bRoll?.[0]?.sizes?.[0]?.src,
+		b2: bRoll?.[bvariation + 1]?.sizes?.[0]?.src || bRoll?.[1]?.sizes?.[0]?.src || bRoll?.[0]?.sizes?.[0]?.src,
 		b3:
-			bRoll?.[ bvariation + 2 ]?.sizes?.[ 0 ]?.src ||
-			bRoll?.[ 2 ]?.sizes?.[ 0 ]?.src ||
-			bRoll?.[ 1 ]?.sizes?.[ 0 ]?.src ||
-			bRoll?.[ 0 ]?.sizes?.[ 0 ]?.src,
+			bRoll?.[bvariation + 2]?.sizes?.[0]?.src ||
+			bRoll?.[2]?.sizes?.[0]?.src ||
+			bRoll?.[1]?.sizes?.[0]?.src ||
+			bRoll?.[0]?.sizes?.[0]?.src,
 		b4:
-			bRoll?.[ bvariation + 3 ]?.sizes?.[ 0 ]?.src ||
-			bRoll?.[ 3 ]?.sizes?.[ 0 ]?.src ||
-			bRoll?.[ 2 ]?.sizes?.[ 0 ]?.src ||
-			bRoll?.[ 1 ]?.sizes?.[ 0 ]?.src,
+			bRoll?.[bvariation + 3]?.sizes?.[0]?.src ||
+			bRoll?.[3]?.sizes?.[0]?.src ||
+			bRoll?.[2]?.sizes?.[0]?.src ||
+			bRoll?.[1]?.sizes?.[0]?.src,
 		b5:
-			bRoll?.[ bvariation + 4 ]?.sizes?.[ 0 ]?.src ||
-			bRoll?.[ 4 ]?.sizes?.[ 0 ]?.src ||
-			bRoll?.[ 3 ]?.sizes?.[ 0 ]?.src ||
-			bRoll?.[ 2 ]?.sizes?.[ 0 ]?.src,
+			bRoll?.[bvariation + 4]?.sizes?.[0]?.src ||
+			bRoll?.[4]?.sizes?.[0]?.src ||
+			bRoll?.[3]?.sizes?.[0]?.src ||
+			bRoll?.[2]?.sizes?.[0]?.src,
 		b6:
-			bRoll?.[ bvariation + 5 ]?.sizes?.[ 0 ]?.src ||
-			bRoll?.[ 5 ]?.sizes?.[ 0 ]?.src ||
-			bRoll?.[ 4 ]?.sizes?.[ 0 ]?.src ||
-			bRoll?.[ 3 ]?.sizes?.[ 0 ]?.src,
-		p1: pRoll?.[ pvariation ]?.sizes?.[ 0 ]?.src || pRoll?.[ 0 ]?.sizes?.[ 0 ]?.src,
-		p2:
-			pRoll?.[ pvariation + 1 ]?.sizes?.[ 0 ]?.src ||
-			pRoll?.[ 1 ]?.sizes?.[ 0 ]?.src ||
-			pRoll?.[ 0 ]?.sizes?.[ 0 ]?.src,
+			bRoll?.[bvariation + 5]?.sizes?.[0]?.src ||
+			bRoll?.[5]?.sizes?.[0]?.src ||
+			bRoll?.[4]?.sizes?.[0]?.src ||
+			bRoll?.[3]?.sizes?.[0]?.src,
+		p1: pRoll?.[pvariation]?.sizes?.[0]?.src || pRoll?.[0]?.sizes?.[0]?.src,
+		p2: pRoll?.[pvariation + 1]?.sizes?.[0]?.src || pRoll?.[1]?.sizes?.[0]?.src || pRoll?.[0]?.sizes?.[0]?.src,
 		p3:
-			pRoll?.[ pvariation + 2 ]?.sizes?.[ 0 ]?.src ||
-			pRoll?.[ 2 ]?.sizes?.[ 0 ]?.src ||
-			pRoll?.[ 1 ]?.sizes?.[ 0 ]?.src ||
-			pRoll?.[ 0 ]?.sizes?.[ 0 ]?.src,
+			pRoll?.[pvariation + 2]?.sizes?.[0]?.src ||
+			pRoll?.[2]?.sizes?.[0]?.src ||
+			pRoll?.[1]?.sizes?.[0]?.src ||
+			pRoll?.[0]?.sizes?.[0]?.src,
 		p4:
-			pRoll?.[ pvariation + 3 ]?.sizes?.[ 0 ]?.src ||
-			pRoll?.[ 3 ]?.sizes?.[ 0 ]?.src ||
-			pRoll?.[ 2 ]?.sizes?.[ 0 ]?.src ||
-			pRoll?.[ 1 ]?.sizes?.[ 0 ]?.src,
+			pRoll?.[pvariation + 3]?.sizes?.[0]?.src ||
+			pRoll?.[3]?.sizes?.[0]?.src ||
+			pRoll?.[2]?.sizes?.[0]?.src ||
+			pRoll?.[1]?.sizes?.[0]?.src,
 		p5:
-			pRoll?.[ pvariation + 4 ]?.sizes?.[ 0 ]?.src ||
-			pRoll?.[ 4 ]?.sizes?.[ 0 ]?.src ||
-			pRoll?.[ 3 ]?.sizes?.[ 0 ]?.src ||
-			pRoll?.[ 2 ]?.sizes?.[ 0 ]?.src,
+			pRoll?.[pvariation + 4]?.sizes?.[0]?.src ||
+			pRoll?.[4]?.sizes?.[0]?.src ||
+			pRoll?.[3]?.sizes?.[0]?.src ||
+			pRoll?.[2]?.sizes?.[0]?.src,
 		p6:
-			pRoll?.[ pvariation + 5 ]?.sizes?.[ 0 ]?.src ||
-			pRoll?.[ 5 ]?.sizes?.[ 0 ]?.src ||
-			pRoll?.[ 4 ]?.sizes?.[ 0 ]?.src ||
-			pRoll?.[ 3 ]?.sizes?.[ 0 ]?.src,
+			pRoll?.[pvariation + 5]?.sizes?.[0]?.src ||
+			pRoll?.[5]?.sizes?.[0]?.src ||
+			pRoll?.[4]?.sizes?.[0]?.src ||
+			pRoll?.[3]?.sizes?.[0]?.src,
 		p7:
-			pRoll?.[ pvariation + 6 ]?.sizes?.[ 0 ]?.src ||
-			pRoll?.[ 6 ]?.sizes?.[ 0 ]?.src ||
-			pRoll?.[ 5 ]?.sizes?.[ 0 ]?.src ||
-			pRoll?.[ 4 ]?.sizes?.[ 0 ]?.src,
+			pRoll?.[pvariation + 6]?.sizes?.[0]?.src ||
+			pRoll?.[6]?.sizes?.[0]?.src ||
+			pRoll?.[5]?.sizes?.[0]?.src ||
+			pRoll?.[4]?.sizes?.[0]?.src,
 		p8:
-			pRoll?.[ pvariation + 7 ]?.sizes?.[ 0 ]?.src ||
-			pRoll?.[ 7 ]?.sizes?.[ 0 ]?.src ||
-			pRoll?.[ 6 ]?.sizes?.[ 0 ]?.src ||
-			pRoll?.[ 5 ]?.sizes?.[ 0 ]?.src ||
-			pRoll?.[ 0 ]?.sizes?.[ 0 ]?.src,
+			pRoll?.[pvariation + 7]?.sizes?.[0]?.src ||
+			pRoll?.[7]?.sizes?.[0]?.src ||
+			pRoll?.[6]?.sizes?.[0]?.src ||
+			pRoll?.[5]?.sizes?.[0]?.src ||
+			pRoll?.[0]?.sizes?.[0]?.src,
 		p9:
-			pRoll?.[ pvariation + 8 ]?.sizes?.[ 0 ]?.src ||
-			pRoll?.[ 8 ]?.sizes?.[ 0 ]?.src ||
-			pRoll?.[ 7 ]?.sizes?.[ 0 ]?.src ||
-			pRoll?.[ 6 ]?.sizes?.[ 0 ]?.src ||
-			pRoll?.[ 1 ]?.sizes?.[ 0 ]?.src,
+			pRoll?.[pvariation + 8]?.sizes?.[0]?.src ||
+			pRoll?.[8]?.sizes?.[0]?.src ||
+			pRoll?.[7]?.sizes?.[0]?.src ||
+			pRoll?.[6]?.sizes?.[0]?.src ||
+			pRoll?.[1]?.sizes?.[0]?.src,
 	};
-	if ( context && context.toString() === '14499' ) {
+	if (context && context.toString() === '14499') {
 		// Cards 21.
 		content = content.replace(
 			'https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-scaled.jpg',
@@ -167,7 +161,7 @@ export default function replaceImages( content, images, categories, context, var
 			imgs.a4
 		);
 	}
-	if ( context && ( context.toString() === '15379' || context.toString() === '14885' ) ) {
+	if (context && (context.toString() === '15379' || context.toString() === '14885')) {
 		// Team 19. Team 21
 		content = content.replace(
 			'https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-scaled.jpg',
