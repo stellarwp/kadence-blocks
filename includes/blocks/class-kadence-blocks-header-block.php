@@ -69,15 +69,28 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param string             $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
-		
 		$header_attributes = $this->get_header_attributes( $attributes['id'] );
-		$bg = isset($header_attributes) && !empty($header_attributes['background']) ? $header_attributes['background'] : '';;
-		$hoverBg = isset($header_attributes) && !empty($header_attributes['backgroundHover']) ? $header_attributes['backgroundHover'] : '';
-		$border = isset($header_attributes) && isset($header_attributes['border']) && is_array($header_attributes['border']) ? $header_attributes['border'] : '';
+		$attrs_exist = isset($header_attributes) && ! empty($header_attributes);
+		var_dump($header_attributes);
+		$bg = $attrs_exist && ! empty($header_attributes['background']) ? $header_attributes['background'] : '';
+		$hoverBg = $attrs_exist && !empty($header_attributes['backgroundHover']) ? $header_attributes['backgroundHover'] : '';
+		$border = $attrs_exist && isset($header_attributes['border']) && is_array($header_attributes['border']) ? $header_attributes['border'] : '';
+		$typography = $attrs_exist && isset($header_attributes['typography']) && is_array($header_attributes['typography']) ? $header_attributes['typography'] : '';
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 		$css->set_selector('.wp-block-kadence-header.wp-block-kadence-header' . $unique_id);
-		//$css->add_property('background-color', $css->render_color($bg['color']));
-		//$css->render_border_styles($header_attributes, 'border');
+		$css->add_property('background-color', $css->render_color( ! empty($bg['color']) ? $bg['color'] : ''));
+		//$css->render_border_styles($border, 'border');
+		if('' !== $bg && 'normal' === $bg['type'] && ! empty($bg['image'])) {
+			$css->add_property('background-image', 'url("' . $bg['image'] . '")');
+			$css->add_property('background-position', $bg['position']);
+			$css->add_property('background-size', $bg['size']);
+			$css->add_property('background-repeat', $bg['repeat']);
+			$css->add_property('background-attachment', $bg['attachment']);
+		}
+		$css->add_property('color', $css->render_color($header_attributes['textColor']));
+		$css->add_property('font-size', $css->get_font_size($typography['size'][0], $typography['sizeType']));
+		$css->add_property('text-transform', $typography['textTransform']);
+		$css->add_property('letter-spacing', $typography['letterSpacing'][0] . $typography['letterType'] );
 	// 	$css->add_property('border-top-width', '' );
 	// $css->add_property('border-top-style', $border['top'] . 'px');
 	// $css->add_property('border-top-color', previewBorderColorTop);
@@ -95,7 +108,10 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 
 		//$css->set_selector('.wp-block-kadence-header.wp-block-kadence-header' . $unique_id . ':hover');
 		//$css->add_property('background-color', $css->render_color($hoverBg['color']));
-
+		$css->set_selector('.wp-block-kadence-header.wp-block-kadence-header' . $unique_id . ' a');
+		$css->add_property('color', $css->render_color($header_attributes['linkColor']));
+		$css->set_selector('.wp-block-kadence-header.wp-block-kadence-header' . $unique_id . ' a:hover');
+		$css->add_property('color', $css->render_color($header_attributes['linkHoverColor']));
 		return $css->css_output();
 	}
 
