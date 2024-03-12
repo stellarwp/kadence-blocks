@@ -2,9 +2,9 @@
  * WordPress dependencies
  */
 import { __, _x } from '@wordpress/i18n';
-import { code as icon } from '@wordpress/icons';
 import { registerBlockType } from '@wordpress/blocks';
 import { InnerBlocks } from '@wordpress/block-editor';
+import { navigationBlockIcon } from '@kadence/icons';
 
 /**
  * Internal dependencies
@@ -15,9 +15,7 @@ import metadata from './block.json';
 registerBlockType('kadence/navigation', {
 	...metadata,
 	title: _x('Navigation (Adv)', 'block title', 'kadence-blocks'),
-	icon: {
-		src: icon,
-	},
+	icon: navigationBlockIcon,
 	example: {
 		attributes: {
 			overlayMenu: 'never',
