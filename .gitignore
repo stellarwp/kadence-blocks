@@ -5,7 +5,7 @@ dist/
 zip/
 bin/strauss.phar
 .idea
-.vscode/
+/.vscode/
 /vendor/
 /vendor-prefixed/
 bin/pup.phar
