@@ -1,186 +1,183 @@
 /* global kadence_blocks_advanced_form_params */
-( function () {
+(function () {
 	'use strict';
 	window.kadenceAdvancedForm = {
 		error_item: 1,
-		clearForm( form ) {
+		clearForm(form) {
 			form.reset();
 		},
-		insertAfter( newNode, referenceNode ) {
-			referenceNode.parentNode.insertBefore( newNode, referenceNode.nextSibling );
+		insertAfter(newNode, referenceNode) {
+			referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 		},
-		markError( item, error_type, form ) {
+		markError(item, error_type, form) {
 			let error_string = '';
-			if ( ! form.classList.contains( 'kb-adv-form-has-error' ) ) {
-				form.classList.add( 'kb-adv-form-has-error' );
+			if (!form.classList.contains('kb-adv-form-has-error')) {
+				form.classList.add('kb-adv-form-has-error');
 			}
-			item.classList.add( 'has-error' );
-			if ( error_type ) {
-				switch ( error_type ) {
+			item.classList.add('has-error');
+			if (error_type) {
+				switch (error_type) {
 					case 'required':
 						// Check for user provided required message
-						const manual_error_string = item.getAttribute( 'data-kb-required-message' );
-						if ( manual_error_string && '' !== manual_error_string ) {
+						const manual_error_string = item.getAttribute('data-kb-required-message');
+						if (manual_error_string && '' !== manual_error_string) {
 							error_string = manual_error_string;
 							break;
 						}
-						error_string = item.getAttribute( 'data-required-message' );
-						if ( ! error_string || '' === error_string || undefined === error_string ) {
-							error_string = item.getAttribute( 'data-label' );
-							if ( ! error_string || '' === error_string || undefined === error_string ) {
+						error_string = item.getAttribute('data-required-message');
+						if (!error_string || '' === error_string || undefined === error_string) {
+							error_string = item.getAttribute('data-label');
+							if (!error_string || '' === error_string || undefined === error_string) {
 								error_string = kb_adv_form_params.item;
 							}
-							error_string = error_string + ' ' + kb_adv_form_params[ error_type ];
+							error_string = error_string + ' ' + kb_adv_form_params[error_type];
 						}
 						break;
 					case 'mismatch':
-						error_string = item.getAttribute( 'data-mismatch-message' );
-						if ( ! error_string || '' === error_string || undefined === error_string ) {
-							error_string = item.getAttribute( 'data-label' );
-							if ( ! error_string || '' === error_string || undefined === error_string ) {
+						error_string = item.getAttribute('data-mismatch-message');
+						if (!error_string || '' === error_string || undefined === error_string) {
+							error_string = item.getAttribute('data-label');
+							if (!error_string || '' === error_string || undefined === error_string) {
 								error_string = kb_adv_form_params.item;
 							}
-							error_string = error_string + ' ' + kb_adv_form_params[ error_type ];
+							error_string = error_string + ' ' + kb_adv_form_params[error_type];
 						}
 						break;
 					case 'validation':
-						error_string = item.getAttribute( 'data-validation-message' );
-						if ( ! error_string || '' === error_string || undefined === error_string ) {
-							error_string = item.getAttribute( 'data-label' );
-							if ( ! error_string || '' === error_string || undefined === error_string ) {
+						error_string = item.getAttribute('data-validation-message');
+						if (!error_string || '' === error_string || undefined === error_string) {
+							error_string = item.getAttribute('data-label');
+							if (!error_string || '' === error_string || undefined === error_string) {
 								error_string = kb_adv_form_params.item;
 							}
-							error_string = error_string + ' ' + kb_adv_form_params[ error_type ];
+							error_string = error_string + ' ' + kb_adv_form_params[error_type];
 						}
 						break;
 				}
-				const next = item.parentNode.querySelector( '.kb-adv-form-error-msg' );
-				if ( next ) {
+				const next = item.parentNode.querySelector('.kb-adv-form-error-msg');
+				if (next) {
 					next.remove();
 				}
-				const error_id = item.getAttribute( 'name' ) + '-error';
-				item.setAttribute( 'aria-describedby', error_id );
-				item.setAttribute( 'aria-invalid', 'true' );
-				const el = document.createElement( 'div' );
+				const error_id = item.getAttribute('name') + '-error';
+				item.setAttribute('aria-describedby', error_id);
+				item.setAttribute('aria-invalid', 'true');
+				const el = document.createElement('div');
 				el.id = error_id;
-				el.classList.add( 'kb-adv-form-error-msg' );
-				el.classList.add( 'kb-adv-form-message' );
-				el.classList.add( 'kb-adv-form-warning' );
-				el.setAttribute( 'role', 'alert' );
-				el.innerHTML = window.kadenceAdvancedForm.strip_tags( error_string, '<div><a><b><i><u><p><ol><ul>' );
-				if ( item.classList.contains( 'kb-accept-field' ) ) {
-					item.parentNode.parentNode.append( el );
-				} else if (
-					item.classList.contains( 'kb-checkbox-field' ) ||
-					item.classList.contains( 'kb-radio-field' )
-				) {
-					item.parentNode.append( el );
+				el.classList.add('kb-adv-form-error-msg');
+				el.classList.add('kb-adv-form-message');
+				el.classList.add('kb-adv-form-warning');
+				el.setAttribute('role', 'alert');
+				el.innerHTML = window.kadenceAdvancedForm.strip_tags(error_string, '<div><a><b><i><u><p><ol><ul>');
+				if (item.classList.contains('kb-accept-field')) {
+					item.parentNode.parentNode.append(el);
+				} else if (item.classList.contains('kb-checkbox-field') || item.classList.contains('kb-radio-field')) {
+					item.parentNode.append(el);
 				} else {
-					window.kadenceAdvancedForm.insertAfter( el, item );
+					window.kadenceAdvancedForm.insertAfter(el, item);
 				}
 			}
-			if ( 1 === window.kadenceAdvancedForm.error_item ) {
+			if (1 === window.kadenceAdvancedForm.error_item) {
 				item.focus();
 			}
 			window.kadenceAdvancedForm.error_item++;
 		},
-		addErrorNotice( form ) {
-			let error_message = form.getAttribute( 'data-error-message' );
-			if ( ! error_message || '' === error_message || undefined === error_message ) {
+		addErrorNotice(form) {
+			let error_message = form.getAttribute('data-error-message');
+			if (!error_message || '' === error_message || undefined === error_message) {
 				error_message = kb_adv_form_params.error_message;
 			}
-			const el = document.createElement( 'div' );
-			el.classList.add( 'kb-adv-form-message' );
-			el.classList.add( 'kb-adv-form-warning' );
-			el.innerHTML = window.kadenceAdvancedForm.strip_tags( error_message, '<div><a><b><i><u><p><ol><ul>' );
-			window.kadenceAdvancedForm.insertAfter( el, form );
+			const el = document.createElement('div');
+			el.classList.add('kb-adv-form-message');
+			el.classList.add('kb-adv-form-warning');
+			el.innerHTML = window.kadenceAdvancedForm.strip_tags(error_message, '<div><a><b><i><u><p><ol><ul>');
+			window.kadenceAdvancedForm.insertAfter(el, form);
 		},
-		isValidEmail( email ) {
+		isValidEmail(email) {
 			const pattern = new RegExp(
 				/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i
 			);
-			return pattern.test( email );
+			return pattern.test(email);
 		},
-		isValidURL( url ) {
+		isValidURL(url) {
 			const urlregex = new RegExp(
 				'^(http://www.|https://www.|ftp://www.|www.|http://|https://){1}([0-9A-Za-z]+.)'
 			);
-			return urlregex.test( url );
+			return urlregex.test(url);
 		},
-		isValidTel( tel ) {
-			const telregex = new RegExp( '/^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$/im' );
-			return telregex.test( tel );
+		isValidTel(tel) {
+			const telregex = new RegExp('/^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$/im');
+			return telregex.test(tel);
 		},
-		removeErrors( item ) {
-			if ( item.classList.contains( 'kb-adv-form-has-error' ) ) {
-				item.classList.remove( 'kb-adv-form-has-error' );
+		removeErrors(item) {
+			if (item.classList.contains('kb-adv-form-has-error')) {
+				item.classList.remove('kb-adv-form-has-error');
 			}
-			const errors = item.querySelectorAll( '.has-error' );
-			if ( errors.length ) {
-				for ( var n = 0; n < errors.length; n++ ) {
-					errors[ n ].classList.remove( 'has-error' );
-					errors[ n ].removeAttribute( 'aria-describedby' );
-					errors[ n ].removeAttribute( 'aria-invalid' );
-					const next = errors[ n ].parentNode.querySelector( '.kb-adv-form-error-msg' );
-					if ( next ) {
+			const errors = item.querySelectorAll('.has-error');
+			if (errors.length) {
+				for (var n = 0; n < errors.length; n++) {
+					errors[n].classList.remove('has-error');
+					errors[n].removeAttribute('aria-describedby');
+					errors[n].removeAttribute('aria-invalid');
+					const next = errors[n].parentNode.querySelector('.kb-adv-form-error-msg');
+					if (next) {
 						next.remove();
 					}
 				}
 			}
-			const message = document.querySelectorAll( '.kb-adv-form-message' );
-			if ( message.length ) {
-				for ( var n = 0; n < message.length; n++ ) {
-					message[ n ].remove();
+			const message = document.querySelectorAll('.kb-adv-form-message');
+			if (message.length) {
+				for (var n = 0; n < message.length; n++) {
+					message[n].remove();
 				}
 			}
-			const notices = item.querySelectorAll( '.kb-adv-form-errors' );
-			if ( notices.length ) {
-				for ( var n = 0; n < notices.length; n++ ) {
-					notices[ n ].remove();
+			const notices = item.querySelectorAll('.kb-adv-form-errors');
+			if (notices.length) {
+				for (var n = 0; n < notices.length; n++) {
+					notices[n].remove();
 				}
 			}
 		},
-		serialize( data ) {
+		serialize(data) {
 			const obj = {};
-			for ( const [ key, value ] of data ) {
-				if ( obj[ key ] !== undefined ) {
-					if ( ! Array.isArray( obj[ key ] ) ) {
-						obj[ key ] = [ obj[ key ] ];
+			for (const [key, value] of data) {
+				if (obj[key] !== undefined) {
+					if (!Array.isArray(obj[key])) {
+						obj[key] = [obj[key]];
 					}
-					obj[ key ].push( value );
+					obj[key].push(value);
 				} else {
-					obj[ key ] = value;
+					obj[key] = value;
 				}
 			}
 			return obj;
 		},
-		validateForm( self ) {
+		validateForm(self) {
 			let error = false,
 				error_type = '';
 			// remove all initial errors if any.
-			window.kadenceAdvancedForm.removeErrors( self );
+			window.kadenceAdvancedForm.removeErrors(self);
 			// ===== Validate: Text and Textarea ========
-			const required = self.querySelectorAll( '[data-required="yes"]:not([disabled])' );
-			if ( required.length ) {
-				for ( let n = 0; n < required.length; n++ ) {
-					var data_type = required[ n ].getAttribute( 'data-type' ),
+			const required = self.querySelectorAll('[data-required="yes"]:not([disabled])');
+			if (required.length) {
+				for (let n = 0; n < required.length; n++) {
+					var data_type = required[n].getAttribute('data-type'),
 						val = '';
-					switch ( data_type ) {
+					switch (data_type) {
 						case 'textarea':
 						case 'text':
-							val = required[ n ].value.trim();
+							val = required[n].value.trim();
 
-							if ( val === '' ) {
+							if (val === '') {
 								error = true;
 								error_type = 'required';
 
 								// mark the error in the field.
-								window.kadenceAdvancedForm.markError( required[ n ], error_type, self );
+								window.kadenceAdvancedForm.markError(required[n], error_type, self);
 							}
 							break;
 						case 'tel':
-							val = required[ n ].value.trim();
-							if ( val !== '' ) {
+							val = required[n].value.trim();
+							if (val !== '') {
 								//run the validation
 								// if( ! window.kadenceAdvancedForm.isValidTel( val ) ) {
 								// 	error = true;
@@ -188,128 +185,128 @@
 								// 	// mark the error in the field.
 								// 	window.kadenceAdvancedForm.markError( required[n], error_type, self );
 								// }
-							} else if ( val === '' ) {
+							} else if (val === '') {
 								error = true;
 								error_type = 'required';
 
 								// mark the error in the field.
-								window.kadenceAdvancedForm.markError( required[ n ], error_type, self );
+								window.kadenceAdvancedForm.markError(required[n], error_type, self);
 							}
 							break;
 						case 'accept':
-							if ( required[ n ].checked == false ) {
+							if (required[n].checked == false) {
 								error = true;
 								error_type = 'required';
 								// mark the error in the field.
-								window.kadenceAdvancedForm.markError( required[ n ], error_type, self );
+								window.kadenceAdvancedForm.markError(required[n], error_type, self);
 							}
 							break;
 
 						case 'select':
-							val = required[ n ].value;
+							val = required[n].value;
 							//console.log(val );
-							if ( required[ n ].multiple ) {
-								if ( val === null || val.length === 0 ) {
+							if (required[n].multiple) {
+								if (val === null || val.length === 0) {
 									error = true;
 									error_type = 'required';
 
 									// mark the error in the field.
-									window.kadenceAdvancedForm.markError( required[ n ], error_type, self );
+									window.kadenceAdvancedForm.markError(required[n], error_type, self);
 								}
-							} else if ( ! val || val === '-1' ) {
+							} else if (!val || val === '-1') {
 								error = true;
 								error_type = 'required';
 
 								// mark the error in the field.
-								window.kadenceAdvancedForm.markError( required[ n ], error_type, self );
+								window.kadenceAdvancedForm.markError(required[n], error_type, self);
 							}
 							break;
 
 						case 'radio':
-							var length = required[ n ].querySelector( 'input:checked' );
+							var length = required[n].querySelector('input:checked');
 
-							if ( ! length ) {
+							if (!length) {
 								error = true;
 								error_type = 'required';
 
 								// mark the error in the field.
-								window.kadenceAdvancedForm.markError( required[ n ], error_type, self );
+								window.kadenceAdvancedForm.markError(required[n], error_type, self);
 							}
 							break;
 
 						case 'checkbox':
-							var length = required[ n ].querySelector( 'input:checked' );
+							var length = required[n].querySelector('input:checked');
 
-							if ( ! length ) {
+							if (!length) {
 								error = true;
 								error_type = 'required';
 
 								// mark the error in the field.
-								window.kadenceAdvancedForm.markError( required[ n ], error_type, self );
+								window.kadenceAdvancedForm.markError(required[n], error_type, self);
 							}
 							break;
 
 						case 'email':
-							var val = required[ n ].value.trim();
+							var val = required[n].value.trim();
 
-							if ( val !== '' ) {
+							if (val !== '') {
 								//run the validation
-								if ( ! window.kadenceAdvancedForm.isValidEmail( val ) ) {
+								if (!window.kadenceAdvancedForm.isValidEmail(val)) {
 									error = true;
 									error_type = 'validation';
 
 									// mark the error in the field.
-									window.kadenceAdvancedForm.markError( required[ n ], error_type, self );
+									window.kadenceAdvancedForm.markError(required[n], error_type, self);
 								}
-							} else if ( val === '' ) {
+							} else if (val === '') {
 								error = true;
 								error_type = 'required';
 
 								// mark the error in the field.
-								window.kadenceAdvancedForm.markError( required[ n ], error_type, self );
+								window.kadenceAdvancedForm.markError(required[n], error_type, self);
 							}
 							break;
 						case 'url':
-							var val = required[ n ].value.trim();
+							var val = required[n].value.trim();
 
-							if ( val !== '' ) {
+							if (val !== '') {
 								//run the validation
-								if ( ! window.kadenceAdvancedForm.isValidURL( val ) ) {
+								if (!window.kadenceAdvancedForm.isValidURL(val)) {
 									error = true;
 									error_type = 'validation';
 
 									// mark the error in the field.
-									window.kadenceAdvancedForm.markError( required[ n ], error_type, self );
+									window.kadenceAdvancedForm.markError(required[n], error_type, self);
 								}
-							} else if ( val === '' ) {
+							} else if (val === '') {
 								error = true;
 								error_type = 'required';
 
 								// mark the error in the field.
-								window.kadenceAdvancedForm.markError( required[ n ], error_type, self );
+								window.kadenceAdvancedForm.markError(required[n], error_type, self);
 							}
 							break;
 						case 'file':
-							val = required[ n ].value.trim();
+							val = required[n].value.trim();
 
-							if ( val === '' ) {
+							if (val === '') {
 								error = true;
 								error_type = 'required';
 
 								// mark the error in the field.
-								window.kadenceAdvancedForm.markError( required[ n ], error_type, self );
+								window.kadenceAdvancedForm.markError(required[n], error_type, self);
 							}
 							break;
 
 						case 'number':
 							val = required[n].value.trim();
 
-							if ( val === '' ) {
+							if (val === '') {
 								error = true;
 								error_type = 'required';
-							
+
 								// mark the error in the field.
-								window.kadenceAdvancedForm.markError( required[n], error_type, self );
+								window.kadenceAdvancedForm.markError(required[n], error_type, self);
 							}
 							break;
 					}
@@ -317,209 +314,206 @@
 			}
 
 			// if already some error found, bail out
-			if ( error ) {
+			if (error) {
 				// add error notice
-				window.kadenceAdvancedForm.addErrorNotice( self );
+				window.kadenceAdvancedForm.addErrorNotice(self);
 
 				return false;
 			}
 			//var form_data = self.serialize();
-			const form_data = new FormData( self );
-			form_data.set( '_kb_form_verify', kb_adv_form_params.nonce );
+			const form_data = new FormData(self);
+			form_data.set('_kb_form_verify', kb_adv_form_params.nonce);
 			//form_data = window.kadenceAdvancedForm.serialize( form_data );
 			// form_data = new URLSearchParams(form_data);
 			//form_data = form_data + '&_kb_form_verify=' + kb_adv_form_params.nonce;
 			return form_data;
 		},
-		strip_tags( input, allowed ) {
-			allowed = ( ( ( allowed || '' ) + '' ).toLowerCase().match( /<[a-z][a-z0-9]*>/g ) || [] ).join( '' ); // making sure the allowed arg is a string containing only tags in lowercase (<a><b><c>)
+		strip_tags(input, allowed) {
+			allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join(''); // making sure the allowed arg is a string containing only tags in lowercase (<a><b><c>)
 			const tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
 				commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
-			return input.replace( commentsAndPhpTags, '' ).replace( tags, function ( $0, $1 ) {
-				return allowed.indexOf( '<' + $1.toLowerCase() + '>' ) > -1 ? $0 : '';
-			} );
+			return input.replace(commentsAndPhpTags, '').replace(tags, function ($0, $1) {
+				return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
+			});
 		},
-		createElementFromHTML( htmlString ) {
-			const div = document.createElement( 'div' );
-			div.innerHTML = window.kadenceAdvancedForm.strip_tags( htmlString, '<div><a><b><i><u><p><ol><ul><li>' );
+		createElementFromHTML(htmlString) {
+			const div = document.createElement('div');
+			div.innerHTML = window.kadenceAdvancedForm.strip_tags(htmlString, '<div><a><b><i><u><p><ol><ul><li>');
 
 			// Change this to div.childNodes to support multiple top-level nodes
 			return div.firstChild;
 		},
-		submit( e, form ) {
+		submit(e, form) {
 			e.preventDefault();
-			const event = new Event( 'kb-adv-form-start-submit' );
+			const event = new Event('kb-adv-form-start-submit');
 			// Dispatch the event.
-			window.document.body.dispatchEvent( event );
-			const submitButton = form.querySelector( '.kb-adv-form-submit-button' );
-			const form_data = window.kadenceAdvancedForm.validateForm( form );
-			if ( form_data ) {
-				const el = document.createElement( 'div' );
-				el.classList.add( 'kb-adv-form-loading' );
+			window.document.body.dispatchEvent(event);
+			const submitButton = form.querySelector('.kb-adv-form-submit-button');
+			const form_data = window.kadenceAdvancedForm.validateForm(form);
+			if (form_data) {
+				const el = document.createElement('div');
+				el.classList.add('kb-adv-form-loading');
 				el.innerHTML =
 					'<div class="kb-adv-form-loading-spin"><div></div><div></div><div></div><div></div></div>';
-				form.append( el );
-				submitButton.setAttribute( 'disabled', 'disabled' );
-				submitButton.classList.add( 'button-primary-disabled' );
+				form.append(el);
+				submitButton.setAttribute('disabled', 'disabled');
+				submitButton.classList.add('button-primary-disabled');
 
 				const fetchOptions = {
 					method: 'POST',
 					body: form_data,
 				};
 
-				fetch( kb_adv_form_params.ajaxurl, fetchOptions )
-					.then( ( response ) => {
-						if ( form.querySelector( '.g-recaptcha' ) ) {
+				fetch(kb_adv_form_params.ajaxurl, fetchOptions)
+					.then((response) => {
+						if (form.querySelector('.g-recaptcha')) {
 							grecaptcha.reset();
 						}
-						submitButton.removeAttribute( 'disabled' );
-						submitButton.classList.remove( 'button-primary-disabled' );
-						form.querySelector( '.kb-adv-form-loading' ).remove();
+						submitButton.removeAttribute('disabled');
+						submitButton.classList.remove('button-primary-disabled');
+						form.querySelector('.kb-adv-form-loading').remove();
 
-						if ( response.status >= 200 && response.status < 400 ) {
+						if (response.status >= 200 && response.status < 400) {
 							return response.json();
 						}
-					} )
-					.then( ( body ) => {
+					})
+					.then((body) => {
 						const response = body;
 
-						if ( response.success ) {
+						if (response.success) {
 							const submissionResults = response?.submissionResults;
-							const event = new CustomEvent( 'kb-advanced-form-success', {
+							const event = new CustomEvent('kb-advanced-form-success', {
 								detail: {
-									uniqueId: form.querySelector( 'input[name="_kb_adv_form_id"]' )
-										? form.querySelector( 'input[name="_kb_adv_form_id"]' ).value
+									uniqueId: form.querySelector('input[name="_kb_adv_form_id"]')
+										? form.querySelector('input[name="_kb_adv_form_id"]').value
 										: '',
 									submissionResults,
 								},
-							} );
+							});
 							// Dispatch the event.
-							window.document.body.dispatchEvent( event );
-							window.kadenceAdvancedForm.event( 'submitted', form );
-							if ( response.redirect ) {
-								window.location.replace( response.redirect );
+							window.document.body.dispatchEvent(event);
+							window.kadenceAdvancedForm.event('submitted', form);
+							if (response.redirect) {
+								window.location.replace(response.redirect);
 							} else {
 								window.kadenceAdvancedForm.insertAfter(
-									window.kadenceAdvancedForm.createElementFromHTML( response.html ),
+									window.kadenceAdvancedForm.createElementFromHTML(response.html),
 									form
 								);
-								window.kadenceAdvancedForm.clearForm( form );
-								if ( response?.hide ) {
+								window.kadenceAdvancedForm.clearForm(form);
+								if (response?.hide) {
 									form.remove();
 								}
 							}
-						} else if ( response.data ) {
-							window.kadenceAdvancedForm.event( 'failed', form );
+						} else if (response.data) {
+							window.kadenceAdvancedForm.event('failed', form);
 							window.kadenceAdvancedForm.insertAfter(
-								window.kadenceAdvancedForm.createElementFromHTML( response.data.html ),
+								window.kadenceAdvancedForm.createElementFromHTML(response.data.html),
 								form
 							);
-							if ( response.data.required ) {
-								if ( form.querySelector( '[name="' + response.data.required + '"]' ) ) {
+							if (response.data.required) {
+								if (form.querySelector('[name="' + response.data.required + '"]')) {
 									window.kadenceAdvancedForm.markError(
-										form.querySelector( '[name="' + response.data.required + '"]' ),
+										form.querySelector('[name="' + response.data.required + '"]'),
 										'required',
 										form
 									);
 								}
 							}
 						}
-					} )
-					.catch( function ( error ) {
-						console.log( 'Connection error' );
-					} );
+					})
+					.catch(function (error) {
+						console.log('Connection error');
+					});
 			}
 		},
-		event( type, form ) {
-			if ( form.getAttribute( 'data-kb-events' ) === 'yes' ) {
+		event(type, form) {
+			if (form.getAttribute('data-kb-events') === 'yes') {
 				const event_data = new FormData();
-				event_data.set( 'action', 'kadence_adv_form_event' );
-				event_data.set( 'type', type );
-				event_data.set( '_kb_form_verify', kb_adv_form_params.nonce );
-				event_data.set(
-					'_kb_adv_form_post_id',
-					form.querySelector( 'input[name="_kb_adv_form_post_id"]' ).value
-				);
+				event_data.set('action', 'kadence_adv_form_event');
+				event_data.set('type', type);
+				event_data.set('_kb_form_verify', kb_adv_form_params.nonce);
+				event_data.set('_kb_adv_form_post_id', form.querySelector('input[name="_kb_adv_form_post_id"]').value);
 				const fetchOptions = {
 					method: 'POST',
 					body: event_data,
 				};
-				fetch( kb_adv_form_params.ajaxurl, fetchOptions )
-					.then( ( response ) => {
+				fetch(kb_adv_form_params.ajaxurl, fetchOptions)
+					.then((response) => {
 						//console.log( 'event_response', response );
-						if ( response.status >= 200 && response.status < 400 ) {
+						if (response.status >= 200 && response.status < 400) {
 							return response.json();
 						}
-					} )
-					.then( ( body ) => {
+					})
+					.then((body) => {
 						//console.log( 'event_body', body );
-					} )
-					.catch( function ( error ) {
-						console.log( 'Connection error' );
-					} );
+					})
+					.catch(function (error) {
+						console.log('Connection error');
+					});
 			}
 		},
 		initForms() {
-			const forms = document.querySelectorAll( 'form.kb-advanced-form' );
-			if ( ! forms.length ) {
+			const forms = document.querySelectorAll('form.kb-advanced-form');
+			if (!forms.length) {
 				return;
 			}
-			const start_function = function ( form ) {
-				return function curried_func( e ) {
-					window.kadenceAdvancedForm.event( 'started', form );
+			const start_function = function (form) {
+				return function curried_func(e) {
+					window.kadenceAdvancedForm.event('started', form);
 				};
 			};
-			const click_function = function ( form ) {
-				return function curried_func( e ) {
-					window.kadenceAdvancedForm.submit( e, form );
+			const click_function = function (form) {
+				return function curried_func(e) {
+					window.kadenceAdvancedForm.submit(e, form);
 				};
 			};
-			for ( let n = 0; n < forms.length; n++ ) {
-				window.kadenceAdvancedForm.event( 'viewed', forms[ n ] );
-				forms[ n ].addEventListener( 'change', start_function( forms[ n ] ), { once: true } );
-				forms[ n ].addEventListener( 'submit', click_function( forms[ n ] ) );
+			for (let n = 0; n < forms.length; n++) {
+				window.kadenceAdvancedForm.event('viewed', forms[n]);
+				forms[n].addEventListener('change', start_function(forms[n]), { once: true });
+				forms[n].addEventListener('submit', click_function(forms[n]));
 			}
 		},
 		initFloatingLabels() {
 			const inputs = document.querySelectorAll(
 				'.kb-adv-form-label-style-float .kb-adv-form-text-type-input input, .kb-adv-form-label-style-float .kb-adv-form-text-type-input textarea'
 			);
-			if ( ! inputs.length ) {
+			if (!inputs.length) {
 				return;
 			}
-			const focus_function = function ( input ) {
-				return function curried_func( e ) {
-					input.parentNode.classList.add( 'kb-form-field-focus' );
+			const focus_function = function (input) {
+				return function curried_func(e) {
+					input.parentNode.classList.add('kb-form-field-focus');
 				};
 			};
-			const blur_function = function ( input ) {
-				return function curried_func( e ) {
-					if ( ! input.value ) {
-						input.parentNode.classList.remove( 'kb-form-field-focus' );
+			const blur_function = function (input) {
+				return function curried_func(e) {
+					if (!input.value) {
+						input.parentNode.classList.remove('kb-form-field-focus');
 					}
 				};
 			};
-			for ( let n = 0; n < inputs.length; n++ ) {
-				if ( inputs[ n ].value ) {
-					inputs[ n ].parentNode.classList.add( 'kb-form-field-focus' );
+			for (let n = 0; n < inputs.length; n++) {
+				if (inputs[n].value) {
+					inputs[n].parentNode.classList.add('kb-form-field-focus');
 				}
-				inputs[ n ].addEventListener( 'focus', focus_function( inputs[ n ] ) );
-				inputs[ n ].addEventListener( 'blur', blur_function( inputs[ n ] ) );
+				inputs[n].addEventListener('focus', focus_function(inputs[n]));
+				inputs[n].addEventListener('blur', blur_function(inputs[n]));
 			}
 		},
 		init() {
-			if ( typeof kb_adv_form_params === 'undefined' ) {
+			if (typeof kb_adv_form_params === 'undefined') {
 				return false;
 			}
 			window.kadenceAdvancedForm.initForms();
 			window.kadenceAdvancedForm.initFloatingLabels();
 		},
 	};
-	if ( 'loading' === document.readyState ) {
+	if ('loading' === document.readyState) {
 		// The DOM has not yet been loaded.
-		document.addEventListener( 'DOMContentLoaded', window.kadenceAdvancedForm.init );
+		document.addEventListener('DOMContentLoaded', window.kadenceAdvancedForm.init);
 	} else {
 		// The DOM has already been loaded.
 		window.kadenceAdvancedForm.init();
 	}
-} )();
+})();
