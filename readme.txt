@@ -91,6 +91,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 = 3.2.27 =
 Release Date: March TBD 2024
 * Fix: Compatibility with WordPress 6.5 block rename feature.
+* Fix: Value of 0 not allowed in a required number field for the advanced form block.
 
 = 3.2.26 =
 Release Date: March 7th 2024
