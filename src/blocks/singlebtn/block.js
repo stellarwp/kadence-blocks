@@ -13,9 +13,7 @@ import edit from './edit';
 /**
  * Internal block libraries
  */
-import {
-    registerBlockType,
-} from '@wordpress/blocks';
+import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -27,25 +25,21 @@ import { __ } from '@wordpress/i18n';
  * @return {?WPBlock}          The block, if it has been successfully
  *                             registered; otherwise `undefined`.
  */
-registerBlockType( 'kadence/singlebtn', {
-    ...metadata,
-    title: __( 'Single Button', 'kadence-blocks' ),
-    description: __( 'Single button within a button block', 'kadence-blocks' ),
-    keywords: [
-        __( 'Button', 'kadence-blocks' ),
-        __( 'btn', 'kadence-blocks' ),
-        'KB',
-    ],
-    icon: {
-        src: advancedBtnIcon,
-    },
-    edit,
+registerBlockType('kadence/singlebtn', {
+	...metadata,
+	title: __('Single Button', 'kadence-blocks'),
+	description: __('Single button within a button block', 'kadence-blocks'),
+	keywords: [__('Button', 'kadence-blocks'), __('btn', 'kadence-blocks'), 'KB'],
+	icon: {
+		src: advancedBtnIcon,
+	},
+	edit,
 	save() {
 		return null;
 	},
 	example: {
 		attributes: {
-			text: __( 'Click Me!', 'kadence-blocks' ),
-		}
-	}
-} );
+			text: __('Click Me!', 'kadence-blocks'),
+		},
+	},
+});

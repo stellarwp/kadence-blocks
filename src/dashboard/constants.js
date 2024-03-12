@@ -1,32 +1,22 @@
-import { SectionTitle } from "./components";
-import { Icon, SVG } from "@wordpress/components";
-import { __ } from "@wordpress/i18n";
-import { aiIcon } from "@kadence/icons";
+import { SectionTitle } from './components';
+import { Icon, SVG } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
+import { aiIcon } from '@kadence/icons';
 
 /**
  * Images
  */
-import blocksPro from "./images/blocks-pro.png";
-import bundles from "./images/bundles.png";
+import blocksPro from './images/blocks-pro.png';
+import bundles from './images/bundles.png';
 
 export const AUTHENTICATED_CONTENT = {
 	largeBanner: {
-		heading: (
-			<>
-				{ __( "Let's build,", 'kadence-blocks' ) }
-			</>
-		),
-		subHeading:'',
-		imageSrc:
-			"",
+		heading: <>{__("Let's build,", 'kadence-blocks')}</>,
+		subHeading: '',
+		imageSrc: '',
 	},
 	actionCards: {
-		title: (
-			<SectionTitle
-				title={__("Start Building with Kadence AI", 'kadence-blocks')}
-				icon={aiIcon}
-			/>
-		),
+		title: <SectionTitle title={__('Start Building with Kadence AI', 'kadence-blocks')} icon={aiIcon} />,
 		cards: [
 			{
 				icon: (
@@ -47,22 +37,20 @@ export const AUTHENTICATED_CONTENT = {
 								</g>
 								<defs>
 									<clipPath id="clip0_3059_18235">
-										<rect
-											width="23.875"
-											height="25"
-											fill="white"
-											transform="translate(0.5625)"
-										/>
+										<rect width="23.875" height="25" fill="white" transform="translate(0.5625)" />
 									</clipPath>
 								</defs>
 							</SVG>
 						}
 					/>
 				),
-				heading: __("Build a page with AI-powered patterns", 'kadence-blocks'),
-				content: __( "Take your site further with hundreds of beautiful patterns filled with custom content developed just for your site.", 'kadence-blocks'),
-				variant: "blue",
-				link: "/wp-admin/post-new.php?post_type=page",
+				heading: __('Build a page with AI-powered patterns', 'kadence-blocks'),
+				content: __(
+					'Take your site further with hundreds of beautiful patterns filled with custom content developed just for your site.',
+					'kadence-blocks'
+				),
+				variant: 'blue',
+				link: '/wp-admin/post-new.php?post_type=page',
 			},
 			{
 				icon: (
@@ -83,22 +71,20 @@ export const AUTHENTICATED_CONTENT = {
 								</g>
 								<defs>
 									<clipPath id="clip0_3059_18235">
-										<rect
-											width="23.875"
-											height="25"
-											fill="white"
-											transform="translate(0.5625)"
-										/>
+										<rect width="23.875" height="25" fill="white" transform="translate(0.5625)" />
 									</clipPath>
 								</defs>
 							</SVG>
 						}
 					/>
 				),
-				heading: __("Get started with full pages", 'kadence-blocks'),
-				content: __( "Choose from a variety of pages featuring exclusively tailored content for your site.", 'kadence-blocks'),
-				variant: "green",
-				link: "/wp-admin/post-new.php?post_type=page",
+				heading: __('Get started with full pages', 'kadence-blocks'),
+				content: __(
+					'Choose from a variety of pages featuring exclusively tailored content for your site.',
+					'kadence-blocks'
+				),
+				variant: 'green',
+				link: '/wp-admin/post-new.php?post_type=page',
 			},
 			{
 				icon: (
@@ -119,84 +105,97 @@ export const AUTHENTICATED_CONTENT = {
 								</g>
 								<defs>
 									<clipPath id="clip0_3059_18235">
-										<rect
-											width="23.875"
-											height="25"
-											fill="white"
-											transform="translate(0.5625)"
-										/>
+										<rect width="23.875" height="25" fill="white" transform="translate(0.5625)" />
 									</clipPath>
 								</defs>
 							</SVG>
 						}
 					/>
 				),
-				heading: __("Fine-tune your content", 'kadence-blocks'),
-				content: __( "Write your own prompts to generate AI content from scratch or fine-tune existing copy.", 'kadence-blocks' ),
-				variant: "yellow",
+				heading: __('Fine-tune your content', 'kadence-blocks'),
+				content: __(
+					'Write your own prompts to generate AI content from scratch or fine-tune existing copy.',
+					'kadence-blocks'
+				),
+				variant: 'yellow',
 			},
 		],
 	},
 	upsellContents: [
 		{
 			image: blocksPro,
-			tag: __("Upgrade", 'kadence-blocks'),
-			heading: __("Elevate your pages with Blocks Pro", 'kadence-blocks'),
-			description: __( "Unleash limitless creativity with our custom block library - enhance your content with animations, dynamic texts, custom fonts and icons, and more!", 'kadence-blocks'),
-			href: "https://www.kadencewp.com/kadence-blocks/pro/",
-			buttonText: __("Upgrade to Blocks Pro", 'kadence-blocks'),
+			tag: __('Upgrade', 'kadence-blocks'),
+			heading: __('Elevate your pages with Blocks Pro', 'kadence-blocks'),
+			description: __(
+				'Unleash limitless creativity with our custom block library - enhance your content with animations, dynamic texts, custom fonts and icons, and more!',
+				'kadence-blocks'
+			),
+			href: 'https://www.kadencewp.com/kadence-blocks/pro/',
+			buttonText: __('Upgrade to Blocks Pro', 'kadence-blocks'),
 		},
 		{
 			image: bundles,
-			tag: __("Go Pro", 'kadence-blocks'),
-			heading: __("Achieve more with Bundles", 'kadence-blocks'),
-			description: __( "Elevate your site development process with our Pro Bundles. Jump start your site with a Pro Starter Template, and turbocharge your page building with Theme Pro and Blocks Pro – now powered by Kadence AI. Plus, unlock the potential of Custom Fonts, Cloud, Conversions, and so much more.", 'kadence-blocks'),
-			href: "https://www.kadencewp.com/pricing/",
-			buttonText: __("Go Pro with a Bundle", 'kadence-blocks'),
+			tag: __('Go Pro', 'kadence-blocks'),
+			heading: __('Achieve more with Bundles', 'kadence-blocks'),
+			description: __(
+				'Elevate your site development process with our Pro Bundles. Jump start your site with a Pro Starter Template, and turbocharge your page building with Theme Pro and Blocks Pro – now powered by Kadence AI. Plus, unlock the potential of Custom Fonts, Cloud, Conversions, and so much more.',
+				'kadence-blocks'
+			),
+			href: 'https://www.kadencewp.com/pricing/',
+			buttonText: __('Go Pro with a Bundle', 'kadence-blocks'),
 			flip: true,
 		},
 	],
 	knowledgeBase: {
-		heading: __(" Need Help Getting Started?", 'kadence-blocks'),
+		heading: __(' Need Help Getting Started?', 'kadence-blocks'),
 		articles: [
 			{
-				category: __("Kadence AI", 'kadence-blocks'),
-				heading: __("Update AI Settings", 'kadence-blocks'),
-				description: __( "Update Kadence AI settings. Regenerate contexts for patterns and pages to reflect your updated needs.", 'kadence-blocks'),
-				link: "https://www.kadencewp.com/help-center/docs/kadence-blocks/design-libary-changing-ai-details/",
-				linkTarget: "_blank",
-			},
-			{
-				category: __("Kadence AI", 'kadence-blocks'),
-				heading: __("Customize Image Collections", 'kadence-blocks'),
-				description: __( "Update your Design Library imagery using premade collections or create and customize your own.", 'kadence-blocks'),
-				link: "https://www.kadencewp.com/help-center/docs/kadence-blocks/design-library-changing-ai-image-collections/",
-				linkTarget: "_blank",
-			},
-			{
-				category: __("Kadence Blocks"),
-				heading: __("Row Layout Block"),
+				category: __('Kadence AI', 'kadence-blocks'),
+				heading: __('Update AI Settings', 'kadence-blocks'),
 				description: __(
-					"Use the Row Layout block to improve the column functionality and create responsive post/page layouts."
+					'Update Kadence AI settings. Regenerate contexts for patterns and pages to reflect your updated needs.',
+					'kadence-blocks'
 				),
-				link: "https://www.kadencewp.com/help-center/docs/kadence-blocks/row-layout-block-2/",
-				linkTarget: "_blank",
+				link: 'https://www.kadencewp.com/help-center/docs/kadence-blocks/design-libary-changing-ai-details/',
+				linkTarget: '_blank',
 			},
 			{
-				category: __("Kadence Blocks"),
-				heading: __("Advanced Text Block"),
+				category: __('Kadence AI', 'kadence-blocks'),
+				heading: __('Customize Image Collections', 'kadence-blocks'),
 				description: __(
-					"Use the Advanced Text block to add text to your page/post with advanced customization - now with AI."
+					'Update your Design Library imagery using premade collections or create and customize your own.',
+					'kadence-blocks'
 				),
-				link: "https://www.kadencewp.com/help-center/docs/kadence-blocks/advanced-heading-block/",
-				linkTarget: "_blank",
+				link: 'https://www.kadencewp.com/help-center/docs/kadence-blocks/design-library-changing-ai-image-collections/',
+				linkTarget: '_blank',
 			},
 			{
-				category: __("Support"),
-				heading: __("Need more help?"),
-				description: __( "Didn't find what you were looking for? Find more articles in our knowledge base.", 'kadence-blocks'),
-				link: "https://www.kadencewp.com/help-center/",
-				linkTarget: "_blank",
+				category: __('Kadence Blocks'),
+				heading: __('Row Layout Block'),
+				description: __(
+					'Use the Row Layout block to improve the column functionality and create responsive post/page layouts.'
+				),
+				link: 'https://www.kadencewp.com/help-center/docs/kadence-blocks/row-layout-block-2/',
+				linkTarget: '_blank',
+			},
+			{
+				category: __('Kadence Blocks'),
+				heading: __('Advanced Text Block'),
+				description: __(
+					'Use the Advanced Text block to add text to your page/post with advanced customization - now with AI.'
+				),
+				link: 'https://www.kadencewp.com/help-center/docs/kadence-blocks/advanced-heading-block/',
+				linkTarget: '_blank',
+			},
+			{
+				category: __('Support'),
+				heading: __('Need more help?'),
+				description: __(
+					"Didn't find what you were looking for? Find more articles in our knowledge base.",
+					'kadence-blocks'
+				),
+				link: 'https://www.kadencewp.com/help-center/',
+				linkTarget: '_blank',
 			},
 		],
 	},
@@ -204,13 +203,23 @@ export const AUTHENTICATED_CONTENT = {
 
 export const UNAUTHENTICATED_CONTENT = {
 	largeBanner: {
-		heading: <>{ __( 'Kadence is better with AI.', 'kadence-blocks' ) } {aiIcon}</>,
-		subHeading: __( "Elevate your web development game with Kadence AI. Supercharge your pattern and page library's potential with tailored content - get building pages in no time. Try Kadence AI today with 250 free credits!", 'kadence-blocks' ),
-		subHeadingPro: __( "Elevate your web development game with Kadence AI. Supercharge your pattern and page library's potential with tailored content - get building pages in no time. Connect to your account to use Kadence AI with Kadence Blocks Pro", 'kadence-blocks' ),
-		buttonText: __("Activate Kadence AI", "kadence-blocks"),
+		heading: (
+			<>
+				{__('Kadence is better with AI.', 'kadence-blocks')} {aiIcon}
+			</>
+		),
+		subHeading: __(
+			"Elevate your web development game with Kadence AI. Supercharge your pattern and page library's potential with tailored content - get building pages in no time. Try Kadence AI today with 250 free credits!",
+			'kadence-blocks'
+		),
+		subHeadingPro: __(
+			"Elevate your web development game with Kadence AI. Supercharge your pattern and page library's potential with tailored content - get building pages in no time. Connect to your account to use Kadence AI with Kadence Blocks Pro",
+			'kadence-blocks'
+		),
+		buttonText: __('Activate Kadence AI', 'kadence-blocks'),
 	},
 	actionCards: {
-		title: <SectionTitle title={__("Streamlined site building", 'kadence-blocks')} />,
+		title: <SectionTitle title={__('Streamlined site building', 'kadence-blocks')} />,
 		cards: [
 			{
 				icon: (
@@ -231,24 +240,20 @@ export const UNAUTHENTICATED_CONTENT = {
 								</g>
 								<defs>
 									<clipPath id="clip0_3059_18235">
-										<rect
-											width="23.875"
-											height="25"
-											fill="white"
-											transform="translate(0.5625)"
-										/>
+										<rect width="23.875" height="25" fill="white" transform="translate(0.5625)" />
 									</clipPath>
 								</defs>
 							</SVG>
 						}
 					/>
 				),
-				heading: __("A content-rich design library that is uniquely yours", 'kadence-blocks'),
+				heading: __('A content-rich design library that is uniquely yours', 'kadence-blocks'),
 				content: __(
-					"Jump-start your site-building process with unique content and gorgeous designs. Learn more about the AI-Powered Design Library.", 'kadence-blocks'
+					'Jump-start your site-building process with unique content and gorgeous designs. Learn more about the AI-Powered Design Library.',
+					'kadence-blocks'
 				),
-				link: "https://www.kadencewp.com/wordpress-solutions/kadence-ai/",
-				variant: "blue",
+				link: 'https://www.kadencewp.com/wordpress-solutions/kadence-ai/',
+				variant: 'blue',
 			},
 			{
 				icon: (
@@ -269,88 +274,110 @@ export const UNAUTHENTICATED_CONTENT = {
 								</g>
 								<defs>
 									<clipPath id="clip0_3059_18235">
-										<rect
-											width="23.875"
-											height="25"
-											fill="white"
-											transform="translate(0.5625)"
-										/>
+										<rect width="23.875" height="25" fill="white" transform="translate(0.5625)" />
 									</clipPath>
 								</defs>
 							</SVG>
 						}
 					/>
 				),
-				heading: __("Fine-Tuned Editing", 'kadence-blocks'),
-				content: __( "Get your messaging on point with in-line AI-assisted editing. Learn More about the inline AI.", 'kadence-blocks'),
-				link: "https://www.kadencewp.com/wordpress-solutions/kadence-ai/",
-				variant: "green",
+				heading: __('Fine-Tuned Editing', 'kadence-blocks'),
+				content: __(
+					'Get your messaging on point with in-line AI-assisted editing. Learn More about the inline AI.',
+					'kadence-blocks'
+				),
+				link: 'https://www.kadencewp.com/wordpress-solutions/kadence-ai/',
+				variant: 'green',
 			},
 		],
 	},
 	upsellContents: [
 		{
 			image: blocksPro,
-			tag: __("Upgrade"),
-			heading: __("Elevate your pages with Blocks Pro", 'kadence-blocks'),
-			description: __( "Unleash limitless creativity with our custom block library - enhance your content with animations, dynamic texts, custom fonts and icons, and more!", 'kadence-blocks' ),
-			href: "https://www.kadencewp.com/blocks-pro/",
-			buttonText: __("Upgrade to Blocks Pro", 'kadence-blocks'),
+			tag: __('Upgrade'),
+			heading: __('Elevate your pages with Blocks Pro', 'kadence-blocks'),
+			description: __(
+				'Unleash limitless creativity with our custom block library - enhance your content with animations, dynamic texts, custom fonts and icons, and more!',
+				'kadence-blocks'
+			),
+			href: 'https://www.kadencewp.com/blocks-pro/',
+			buttonText: __('Upgrade to Blocks Pro', 'kadence-blocks'),
 		},
 		{
 			image: bundles,
-			tag: __("Go Pro", 'kadence-blocks'),
-			heading: __("Kadence Blocks works better with Kadence Theme", 'kadence-blocks'),
-			description: __( "Level up with Kadence Blocks and Theme. Kickstart your site using Starter Templates, customize with ease, and elevate your pattern library's style with the Kadence Theme.", 'kadence-blocks'),
-			href: "https://wordpress.org/themes/kadence/",
-			buttonText: __("Try Kadence Theme Free", 'kadence-blocks'),
+			tag: __('Go Pro', 'kadence-blocks'),
+			heading: __('Kadence Blocks works better with Kadence Theme', 'kadence-blocks'),
+			description: __(
+				"Level up with Kadence Blocks and Theme. Kickstart your site using Starter Templates, customize with ease, and elevate your pattern library's style with the Kadence Theme.",
+				'kadence-blocks'
+			),
+			href: 'https://wordpress.org/themes/kadence/',
+			buttonText: __('Try Kadence Theme Free', 'kadence-blocks'),
 			flip: true,
 		},
 	],
 	knowledgeBase: {
-		heading: __(" Need Help Getting Started?", 'kadence-blocks'),
+		heading: __(' Need Help Getting Started?', 'kadence-blocks'),
 		articles: [
 			{
-				category: __("Kadence Blocks", 'kadence-blocks'),
-				heading: __("Using the Design Library", 'kadence-blocks'),
-				description: __( "Use fully designed patterns and pages on your site with your own customizer settings - now with AI.", 'kadence-blocks'),
-				link: "https://www.kadencewp.com/help-center/docs/kadence-blocks/how-to-control-the-kadence-design-library/",
-				linkTarget: "_blank",
+				category: __('Kadence Blocks', 'kadence-blocks'),
+				heading: __('Using the Design Library', 'kadence-blocks'),
+				description: __(
+					'Use fully designed patterns and pages on your site with your own customizer settings - now with AI.',
+					'kadence-blocks'
+				),
+				link: 'https://www.kadencewp.com/help-center/docs/kadence-blocks/how-to-control-the-kadence-design-library/',
+				linkTarget: '_blank',
 			},
 			{
-				category: __("Kadence Blocks", 'kadence-blocks'),
-				heading: __("Row Layout Block", 'kadence-blocks'),
-				description: __("Use the Row Layout block to improve the column functionality and create responsive post/page layouts.", 'kadence-blocks'),
-				link: "https://www.kadencewp.com/help-center/docs/kadence-blocks/row-layout-block-2/",
-				linkTarget: "_blank",
+				category: __('Kadence Blocks', 'kadence-blocks'),
+				heading: __('Row Layout Block', 'kadence-blocks'),
+				description: __(
+					'Use the Row Layout block to improve the column functionality and create responsive post/page layouts.',
+					'kadence-blocks'
+				),
+				link: 'https://www.kadencewp.com/help-center/docs/kadence-blocks/row-layout-block-2/',
+				linkTarget: '_blank',
 			},
 			{
-				category: __("Kadence Blocks", 'kadence-blocks'),
-				heading: __("Advanced Text Block", 'kadence-blocks'),
-				description: __( "Use the Advanced Text block to add text to your page/post with advanced customization - now with AI." , 'kadence-blocks' ),
-				link: "https://www.kadencewp.com/help-center/docs/kadence-blocks/advanced-heading-block/",
-				linkTarget: "_blank",
+				category: __('Kadence Blocks', 'kadence-blocks'),
+				heading: __('Advanced Text Block', 'kadence-blocks'),
+				description: __(
+					'Use the Advanced Text block to add text to your page/post with advanced customization - now with AI.',
+					'kadence-blocks'
+				),
+				link: 'https://www.kadencewp.com/help-center/docs/kadence-blocks/advanced-heading-block/',
+				linkTarget: '_blank',
 			},
 			{
-				category: __("Kadence Blocks Pro", 'kadence-blocks'),
-				heading: __("Kadence Blocks Pro Plugin", 'kadence-blocks'),
-				description: __("Install and activate the Kadence Blocks Pro plugin, and get an overview of the Pro features available.", 'kadence-blocks'),
-				link: "https://www.kadencewp.com/help-center/docs/kadence-blocks/kadence-blocks-pro-plugin/",
-				linkTarget: "_blank",
+				category: __('Kadence Blocks Pro', 'kadence-blocks'),
+				heading: __('Kadence Blocks Pro Plugin', 'kadence-blocks'),
+				description: __(
+					'Install and activate the Kadence Blocks Pro plugin, and get an overview of the Pro features available.',
+					'kadence-blocks'
+				),
+				link: 'https://www.kadencewp.com/help-center/docs/kadence-blocks/kadence-blocks-pro-plugin/',
+				linkTarget: '_blank',
 			},
 			{
-				category: __("Kadence Blocks Pro", 'kadence-blocks'),
-				heading: __("Advanced Slider", 'kadence-blocks'),
-				description: __("Showcase products or highlight important visual content using the Advanced Slider block.", 'kadence-blocks'),
-				link: "https://www.kadencewp.com/help-center/docs/kadence-blocks/advanced-slider/",
-				linkTarget: "_blank",
+				category: __('Kadence Blocks Pro', 'kadence-blocks'),
+				heading: __('Advanced Slider', 'kadence-blocks'),
+				description: __(
+					'Showcase products or highlight important visual content using the Advanced Slider block.',
+					'kadence-blocks'
+				),
+				link: 'https://www.kadencewp.com/help-center/docs/kadence-blocks/advanced-slider/',
+				linkTarget: '_blank',
 			},
 			{
-				category: __("Support", 'kadence-blocks'),
-				heading: __("Need more help?", 'kadence-blocks'),
-				description: __( "Didn't find what you were looking for? Find more articles in our knowledge base.", 'kadence-blocks'),
-				link: "https://www.kadencewp.com/help-center/",
-				linkTarget: "_blank",
+				category: __('Support', 'kadence-blocks'),
+				heading: __('Need more help?', 'kadence-blocks'),
+				description: __(
+					"Didn't find what you were looking for? Find more articles in our knowledge base.",
+					'kadence-blocks'
+				),
+				link: 'https://www.kadencewp.com/help-center/',
+				linkTarget: '_blank',
 			},
 		],
 	},

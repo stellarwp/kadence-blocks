@@ -71,8 +71,8 @@ class Kadence_Blocks_Number_Input_Block extends Kadence_Blocks_Advanced_Form_Inp
 		$type = 'number';
 		$is_required = $this->is_required( $attributes );
 		$class_id = $this->class_id( $attributes );
-		$min = isset( $attributes['minValue'] ) && $attributes['minValue'] !== '' ? ' min="' . $attributes['minValue']  . '" ' : '';
-		$max = isset( $attributes['maxValue'] ) && $attributes['maxValue'] !== '' ? ' max="' . $attributes['maxValue']  . '" ' : '';
+		$min = isset( $attributes['minValue'] ) && $attributes['minValue'] !== '' ? ' min="' . esc_attr( $attributes['minValue'] ) . '" ' : '';
+		$max = isset( $attributes['maxValue'] ) && $attributes['maxValue'] !== '' ? ' max="' . esc_attr( $attributes['maxValue'] ) . '" ' : '';
 		$outer_classes = array( 'kb-adv-form-field', 'kb-adv-form-text-type-input', 'kb-adv-form-infield-type-input', 'kb-field' . $class_id );
 		if ( ! empty( $attributes['className'] ) ) {
 			$outer_classes[] = $attributes['className'];
@@ -85,10 +85,10 @@ class Kadence_Blocks_Number_Input_Block extends Kadence_Blocks_Advanced_Form_Inp
 		$inner_content .= $this->field_label( $attributes );
 		$inner_content .= $this->field_aria_label( $attributes );
 		$step = '';
-		if( !empty( $attributes['allowDecimals'] ) ) {
+		if ( ! empty( $attributes['allowDecimals'] ) ) {
 			$step = 'step="any"';
 		}
-		$inner_content .= '<input name="' . $this->field_name( $attributes ) . '" id="' . $this->field_id( $attributes ) . '"' . $min . $max . $this->aria_described_by( $attributes ) . ' data-label="' . esc_attr( $this->get_label( $attributes ) ) . '"' . $this->get_auto_complete( $attributes ) . ' type="' . $type . '" placeholder="' . $this->get_placeholder( $attributes ) . '" value="' . esc_attr( $this->get_default( $attributes ) ) . '" data-type="' . $type . '" class="kb-field kb-' . $type . '-field" data-required="' . $is_required . '" ' . $this->additional_field_attributes( $attributes ) . ' ' . $step . '/>';
+		$inner_content .= '<input name="' . esc_attr( $this->field_name( $attributes ) ) . '" id="' . esc_attr( $this->field_id( $attributes ) ) . '"' . $min . $max . $this->aria_described_by( $attributes ) . ' data-label="' . esc_attr( $this->get_label( $attributes ) ) . '"' . $this->get_auto_complete( $attributes ) . ' type="' . esc_attr( $type ) . '" placeholder="' . esc_attr( $this->get_placeholder( $attributes ) ) . '" value="' . esc_attr( $this->get_default( $attributes ) ) . '" data-type="' . esc_attr( $type ) . '" class="kb-field kb-' . esc_attr( $type ) . '-field" data-required="' . esc_attr( $is_required ) . '" ' . $this->additional_field_attributes( $attributes ) . ' ' . $step . '/>';
 
 		$inner_content .= $this->field_help_text( $attributes );
 

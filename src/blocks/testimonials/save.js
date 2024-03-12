@@ -3,11 +3,7 @@
  */
 
 import { KadenceColorOutput } from '@kadence/helpers';
-import {
-	RichText,
-	useBlockProps,
-	InnerBlocks
-} from '@wordpress/block-editor';
+import { RichText, useBlockProps, InnerBlocks } from '@wordpress/block-editor';
 /**
  * External dependencies
  */
@@ -18,7 +14,7 @@ import { IconSpanTag } from '@kadence/components';
 import { times } from 'lodash';
 import classnames from 'classnames';
 
-function Save( { attributes } ) {
+function Save({ attributes }) {
 	// const {
 	// 	uniqueID,
 	// 	style,
@@ -57,7 +53,6 @@ function Save( { attributes } ) {
 	// 	containerVAlign,
 	// 	containerPaddingType,
 	// } = attributes;
-
 
 	// const blockProps = useBlockProps.save( {
 	// 	className: classnames( {
@@ -100,7 +95,6 @@ function Save( { attributes } ) {
 	// 	</div>
 	// );
 	return <InnerBlocks.Content />;
-
 }
 
 export default Save;

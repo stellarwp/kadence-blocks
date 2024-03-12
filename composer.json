@@ -40,7 +40,7 @@
 		"stellarwp/telemetry": "^2.3",
 		"stellarwp/uplink": "dev-bugfix/multisite-token-logic",
 		"stellarwp/container-contract": "^1.0",
-		"stellarwp/prophecy-image-downloader": "^1.1",
+		"stellarwp/prophecy-image-downloader": "^1.5",
 		"stellarwp/prophecy-storage": "^1.1",
 		"symfony/translation-contracts": "^2.5"
 	},
@@ -96,9 +96,9 @@
 			"namespace_prefix": "KadenceWP\\KadenceBlocks\\",
 			"delete_vendor_packages": false,
 			"exclude_from_prefix": {
-			  "file_patterns": [
-				  "/symfony\\/polyfill-(.*)/"
-			  ]
+				"file_patterns": [
+					"/symfony\\/polyfill-(.*)/"
+				]
 			}
 		}
 	}

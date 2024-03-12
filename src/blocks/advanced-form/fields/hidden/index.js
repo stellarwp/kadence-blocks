@@ -10,7 +10,6 @@ import edit from './edit';
 import metadata from './block.json';
 import { registerBlockType } from '@wordpress/blocks';
 
-
 /**
  * WordPress dependencies
  */
@@ -19,11 +18,9 @@ import { Icon } from '@wordpress/components';
 
 registerBlockType('kadence/advanced-form-hidden', {
 	...metadata,
-	title: __( 'Hidden Field', 'kadence-blocks' ),
-	description: __( 'Kadence Form hidden field', 'kadence-blocks' ),
-	keywords: [
-		'kadence',
-	],
+	title: __('Hidden Field', 'kadence-blocks'),
+	description: __('Kadence Form hidden field', 'kadence-blocks'),
+	keywords: ['kadence'],
 	icon: {
 		src: hiddenInputIcon,
 	},

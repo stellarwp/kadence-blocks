@@ -18,11 +18,10 @@ import metadata from './block.json';
 import { iconListBlockIcon } from '@kadence/icons';
 import { times } from 'lodash';
 
-
 /**
  * Import Css
  */
- import './style.scss';
+import './style.scss';
 
 /**
  * Internal block libraries
@@ -39,21 +38,17 @@ import { __, _x } from '@wordpress/i18n';
  * @return {?WPBlock}          The block, if it has been successfully
  *                             registered; otherwise `undefined`.
  */
-registerBlockType( 'kadence/iconlist', {
+registerBlockType('kadence/iconlist', {
 	...metadata,
-	title: _x( 'Icon List', 'block title', 'kadence-blocks' ),
-	description: _x( 'Create engaging lists with icons for bullets.', 'block description', 'kadence-blocks' ),
-	keywords: [
-		__( 'icon', 'kadence-blocks' ),
-		__( 'svg', 'kadence-blocks' ),
-		'KB',
-	],
+	title: _x('Icon List', 'block title', 'kadence-blocks'),
+	description: _x('Create engaging lists with icons for bullets.', 'block description', 'kadence-blocks'),
+	keywords: [__('icon', 'kadence-blocks'), __('svg', 'kadence-blocks'), 'KB'],
 	icon: {
 		src: iconListBlockIcon,
 	},
 	transforms,
-	getEditWrapperProps( { blockAlignment } ) {
-		if ( 'left' === blockAlignment || 'right' === blockAlignment || 'center' === blockAlignment ) {
+	getEditWrapperProps({ blockAlignment }) {
+		if ('left' === blockAlignment || 'right' === blockAlignment || 'center' === blockAlignment) {
 			return { 'data-align': blockAlignment };
 		}
 	},
@@ -61,13 +56,13 @@ registerBlockType( 'kadence/iconlist', {
 	edit,
 	save,
 	example: {
-		innerBlocks: times( 3, n => {
+		innerBlocks: times(3, (n) => {
 			return {
-				name      : 'kadence/listitem',
+				name: 'kadence/listitem',
 				attributes: {
-					text: __( 'List Item', 'kadence-blocks' ),
-				}
-			}
-		})
-	}
-} );
+					text: __('List Item', 'kadence-blocks'),
+				},
+			};
+		}),
+	},
+});

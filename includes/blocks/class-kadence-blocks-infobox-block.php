@@ -351,6 +351,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		$attributes['titleTagLevel'] = !empty( $attributes['titleFont'][0]['level'] ) ? $attributes['titleFont'][0]['level'] : 2;
+		$attributes['titleTagType'] = !empty( $attributes['titleTagType'] ) ? $attributes['titleTagType'] : 'heading';
 		$titleTag = $this->get_html_tag( $attributes, 'titleTagType', 'h2', $this->allowed_html_tags, 'titleTagLevel' );
 
 		if ( isset( $attributes['titleColor'] ) || isset( $attributes['titleFont'] ) ) {

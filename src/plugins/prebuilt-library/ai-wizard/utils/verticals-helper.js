@@ -2,15 +2,11 @@ import { useState, useEffect } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { SafeParseJSON } from '@kadence/helpers';
 
-import {
-	VERTICALS_SESSION_KEY,
-	API_MAX_ATTEMPTS,
-	API_ROUTE_GET_VERTICALS
-} from '../constants';
+import { VERTICALS_SESSION_KEY, API_MAX_ATTEMPTS, API_ROUTE_GET_VERTICALS } from '../constants';
 
 export function verticalsHelper() {
-	const [ loading, setLoading ] = useState(false);
-	const [ preMade, setPreMade ] = useState();
+	const [loading, setLoading] = useState(false);
+	const [preMade, setPreMade] = useState();
 
 	useEffect(() => {
 		setLoading(true);
@@ -33,7 +29,7 @@ export function verticalsHelper() {
 		for (let tries = 0; tries < API_MAX_ATTEMPTS; tries++) {
 			try {
 				const response = await apiFetch({
-					path: API_ROUTE_GET_VERTICALS
+					path: API_ROUTE_GET_VERTICALS,
 				});
 				const responseData = SafeParseJSON(response, false);
 
@@ -60,7 +56,7 @@ export function verticalsHelper() {
 	 * @return {object}
 	 */
 	function formatVerticals(data) {
-		if (! data || ! Array.isArray(data)) {
+		if (!data || !Array.isArray(data)) {
 			return [];
 		}
 
@@ -78,7 +74,6 @@ export function verticalsHelper() {
 
 	return {
 		loading,
-		preMadeVerticals: preMade
-	}
+		preMadeVerticals: preMade,
+	};
 }
-

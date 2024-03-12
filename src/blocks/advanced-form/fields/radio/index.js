@@ -11,7 +11,6 @@ import transforms from './transforms';
 import metadata from './block.json';
 import { registerBlockType } from '@wordpress/blocks';
 
-
 /**
  * WordPress dependencies
  */
@@ -20,11 +19,9 @@ import { Icon } from '@wordpress/components';
 
 registerBlockType('kadence/advanced-form-radio', {
 	...metadata,
-	title: __( 'Radio', 'kadence-blocks' ),
-	description: __( 'Kadence Form radio input', 'kadence-blocks' ),
-	keywords: [
-		'kadence',
-	],
+	title: __('Radio', 'kadence-blocks'),
+	description: __('Kadence Form radio input', 'kadence-blocks'),
+	keywords: ['kadence'],
 	icon: {
 		src: radioInputIcon,
 	},

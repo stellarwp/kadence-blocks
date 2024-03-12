@@ -19,33 +19,33 @@ const transforms = {
 			blocks: [
 				'kadence/advanced-form-textarea',
 				'kadence/advanced-form-telephone',
-				'kadence/advanced-form-number'
+				'kadence/advanced-form-number',
 			],
-			transform: ( attributes ) => {
-				return createBlock( 'kadence/advanced-form-text', attributes );
+			transform: (attributes) => {
+				return createBlock('kadence/advanced-form-text', attributes);
 			},
-		}
+		},
 	],
 	to: [
 		{
 			type: 'block',
-			blocks: [ 'kadence/advanced-form-textarea' ],
-			transform: ( attributes ) => {
-				return createBlock( 'kadence/advanced-form-textarea', attributes );
+			blocks: ['kadence/advanced-form-textarea'],
+			transform: (attributes) => {
+				return createBlock('kadence/advanced-form-textarea', attributes);
 			},
 		},
 		{
 			type: 'block',
-			blocks: [ 'kadence/advanced-form-telephone' ],
-			transform: ( attributes ) => {
-				return createBlock( 'kadence/advanced-form-telephone', attributes );
+			blocks: ['kadence/advanced-form-telephone'],
+			transform: (attributes) => {
+				return createBlock('kadence/advanced-form-telephone', attributes);
 			},
 		},
 		{
 			type: 'block',
-			blocks: [ 'kadence/advanced-form-number' ],
-			transform: ( attributes ) => {
-				return createBlock( 'kadence/advanced-form-number', attributes );
+			blocks: ['kadence/advanced-form-number'],
+			transform: (attributes) => {
+				return createBlock('kadence/advanced-form-number', attributes);
 			},
 		},
 	],

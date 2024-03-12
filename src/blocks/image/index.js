@@ -9,7 +9,7 @@ import { registerBlockType } from '@wordpress/blocks';
 /**
  * Import Css
  */
- import './style.scss';
+import './style.scss';
 /**
  * Internal dependencies
  */
@@ -23,8 +23,8 @@ const { name } = metadata;
 export { metadata, name };
 
 export const settings = {
-	title: _x( 'Image (Adv)', 'block title', 'kadence-blocks' ),
-	description: _x( 'Image block with greater controls and advanced features', 'block description', 'kadence-blocks' ),
+	title: _x('Image (Adv)', 'block title', 'kadence-blocks'),
+	description: _x('Image block with greater controls and advanced features', 'block description', 'kadence-blocks'),
 	icon: {
 		src: imageIcon,
 	},
@@ -33,34 +33,16 @@ export const settings = {
 			sizeSlug: 'large',
 			url: 'https://s.w.org/images/core/5.3/MtBlanc1.jpg',
 			// translators: Caption accompanying an image of the Mont Blanc, which serves as an example for the Image block.
-			caption: __( 'Mont Blanc appears—still, snowy, and serene.', 'kadence-blocks' ),
+			caption: __('Mont Blanc appears—still, snowy, and serene.', 'kadence-blocks'),
 		},
 	},
-	__experimentalLabel( attributes, { context } ) {
-		const { metadata } = attributes;
-
-		if ( context === 'accessibility' ) {
-			const { caption, alt, url } = attributes;
-
-			if ( ! url ) {
-				return __( 'Empty' );
-			}
-
-			if ( ! alt ) {
-				return caption || '';
-			}
-
-			// This is intended to be read by a screen reader.
-			// A period simply means a pause, no need to translate it.
-			return alt + ( caption ? '. ' + caption : '' );
-		}
-
-		if ( context === 'list-view' && get( metadata, 'name', '' ) !== '' ) {
-			return metadata.name;
-		}
-	},
-	getEditWrapperProps( attributes ) {
-		if ( 'wide' === attributes.align || 'full' === attributes.align || 'left' === attributes.align || 'right' === attributes.align ) {
+	getEditWrapperProps(attributes) {
+		if (
+			'wide' === attributes.align ||
+			'full' === attributes.align ||
+			'left' === attributes.align ||
+			'right' === attributes.align
+		) {
 			return {
 				'data-align': attributes.align,
 			};
@@ -73,9 +55,7 @@ export const settings = {
 	deprecated,
 };
 
-registerBlockType( metadata,
-	{ 
-		...metadata,
-		...settings
-	}
-);
+registerBlockType(metadata, {
+	...metadata,
+	...settings,
+});

@@ -8,19 +8,37 @@ import { __ } from '@wordpress/i18n';
 import { SafeParseJSON } from '@kadence/helpers';
 const API_ROUTE_GET_IMAGES = '/kb-design-library/v1/get_images';
 
-var { kadence_blocks_params } = window;
+const { kadence_blocks_params } = window;
 
 export function getAsyncData() {
-	const [ isLoadingWizard, setLoadingWizard ] = useState(false);
-	const [ isLoadingImages, setLoadingImages ] = useState(false);
-	const [ isLoadingAI, setLoadingAI ] = useState(false);
-	const [ error, setError ] = useState(false);
+	const [ isLoadingWizard, setLoadingWizard ] = useState( false );
+	const [ isLoadingImages, setLoadingImages ] = useState( false );
+	const [ isLoadingAI, setLoadingAI ] = useState( false );
+	const [ error, setError ] = useState( false );
 
-	let data_key     = ( undefined !== kadence_blocks_params && kadence_blocks_params?.proData && kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '' );
-	let data_email   = ( undefined !== kadence_blocks_params && kadence_blocks_params?.proData && kadence_blocks_params?.proData?.api_email ? kadence_blocks_params.proData.api_email : '' );
-	const product_id = ( undefined !== kadence_blocks_params && kadence_blocks_params?.proData && kadence_blocks_params?.proData?.product_id ? kadence_blocks_params.proData.product_id : '' );
+	let data_key =
+		undefined !== kadence_blocks_params && kadence_blocks_params?.proData && kadence_blocks_params?.proData?.api_key
+			? kadence_blocks_params.proData.api_key
+			: '';
+	let data_email =
+		undefined !== kadence_blocks_params &&
+		kadence_blocks_params?.proData &&
+		kadence_blocks_params?.proData?.api_email
+			? kadence_blocks_params.proData.api_email
+			: '';
+	const product_id =
+		undefined !== kadence_blocks_params &&
+		kadence_blocks_params?.proData &&
+		kadence_blocks_params?.proData?.product_id
+			? kadence_blocks_params.proData.product_id
+			: '';
 	if ( ! data_key ) {
-		data_key = (  undefined !== kadence_blocks_params && kadence_blocks_params?.proData && kadence_blocks_params?.proData?.ithemes_key ? kadence_blocks_params.proData.ithemes_key : '' );
+		data_key =
+			undefined !== kadence_blocks_params &&
+			kadence_blocks_params?.proData &&
+			kadence_blocks_params?.proData?.ithemes_key
+				? kadence_blocks_params.proData.ithemes_key
+				: '';
 		if ( data_key ) {
 			data_email = 'iThemes';
 		}
@@ -38,9 +56,9 @@ export function getAsyncData() {
 				path: '/kb-design-library/v1/get_remaining_credits',
 			} );
 			return response;
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${ message }`);
+			console.log( `ERROR: ${ message }` );
 			return 'error';
 		}
 	}
@@ -49,27 +67,27 @@ export function getAsyncData() {
 	 *
 	 * @return {Promise<boolean>}
 	 */
-	async function saveAIWizardData(data) {
-		setLoadingWizard(true);
-		setError(false);
+	async function saveAIWizardData( data ) {
+		setLoadingWizard( true );
+		setError( false );
 
 		try {
-			const response = await apiFetch({
+			const response = await apiFetch( {
 				path: '/wp/v2/settings',
 				method: 'POST',
-				data: { kadence_blocks_prophecy: JSON.stringify(data) }
-			});
+				data: { kadence_blocks_prophecy: JSON.stringify( data ) },
+			} );
 
-			if (response) {
-				setLoadingWizard(false);
+			if ( response ) {
+				setLoadingWizard( false );
 
 				return true;
 			}
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${ message }`);
-			setLoadingWizard(false);
-			setError(true);
+			console.log( `ERROR: ${ message }` );
+			setLoadingWizard( false );
+			setError( true );
 
 			return false;
 		}
@@ -81,27 +99,27 @@ export function getAsyncData() {
 	 * @return {Promise<object>}
 	 */
 	async function getAIWizardData() {
-		setLoadingWizard(true);
-		setError(false);
+		setLoadingWizard( true );
+		setError( false );
 
 		try {
-			const response = await apiFetch({
+			const response = await apiFetch( {
 				path: '/wp/v2/settings',
 				method: 'GET',
-			});
+			} );
 
-			if (response) {
-				setLoadingWizard(false);
+			if ( response ) {
+				setLoadingWizard( false );
 
-				if (response?.kadence_blocks_prophecy) {
+				if ( response?.kadence_blocks_prophecy ) {
 					return response.kadence_blocks_prophecy;
 				}
 			}
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${ message }`);
-			setLoadingWizard(false);
-			setError(true);
+			console.log( `ERROR: ${ message }` );
+			setLoadingWizard( false );
+			setError( true );
 
 			return {};
 		}
@@ -114,17 +132,20 @@ export function getAsyncData() {
 	 *
 	 * @return {Promise<object>} Promise returns object
 	 */
-	async function getCollectionByIndustry(userData) {
+	async function getCollectionByIndustry( userData ) {
 		if ( ! userData?.photoLibrary ) {
 			return [];
 		}
-		// console.log(userData);
-		const localGallery = userData?.customCollections && userData?.customCollections.some(item => item.value === userData?.photoLibrary) ? userData?.customCollections.find(item => item.value === userData?.photoLibrary) : false;
+		const localGallery =
+			userData?.customCollections &&
+			userData?.customCollections.some( ( item ) => item.value === userData?.photoLibrary )
+				? userData?.customCollections.find( ( item ) => item.value === userData?.photoLibrary )
+				: false;
 		if ( localGallery ) {
 			const myImages = { data: [] };
-			if ( localGallery?.galleries?.[0]?.images ) {
-				const aImages = localGallery?.galleries?.[0]?.images.map( ( item, index ) => {
-					const img = {}
+			if ( localGallery?.galleries?.[ 0 ]?.images ) {
+				const aImages = localGallery?.galleries?.[ 0 ]?.images.map( ( item, index ) => {
+					const img = {};
 					if ( item?.alt ) {
 						img.alt = item.alt;
 					}
@@ -146,8 +167,16 @@ export function getAsyncData() {
 					if ( item?.id ) {
 						img.id = item.id;
 					}
-					if ( item?.sizes?.[1]?.src ) {
-						img.sizes = [ { src: item.sizes[1].src } ];
+					if ( item?.sizes?.[ 1 ]?.src ) {
+						if ( item.sizes.find( ( image ) => image.name === 'large' ) ) {
+							img.sizes = [ { src: item.sizes.find( ( image ) => image.name === 'large' ).src } ];
+						} else if ( item.sizes.find( ( image ) => image.name === '2048x2048' ) ) {
+							img.sizes = [ { src: item.sizes.find( ( image ) => image.name === '2048x2048' ).src } ];
+						} else if ( item.sizes.find( ( image ) => image.name === 'scaled' ) ) {
+							img.sizes = [ { src: item.sizes.find( ( image ) => image.name === 'scaled' ).src } ];
+						} else {
+							img.sizes = [ { src: item.sizes[ 1 ].src } ];
+						}
 					} else {
 						img.sizes = [ { src: item.url } ];
 					}
@@ -155,9 +184,9 @@ export function getAsyncData() {
 				} );
 				myImages.data.push( { images: aImages } );
 			}
-			if ( localGallery?.galleries?.[1]?.images ) {
-				const bImages = localGallery?.galleries?.[1]?.images.map( ( item, index ) => {
-					const img = {}
+			if ( localGallery?.galleries?.[ 1 ]?.images ) {
+				const bImages = localGallery?.galleries?.[ 1 ]?.images.map( ( item, index ) => {
+					const img = {};
 					if ( item?.alt ) {
 						img.alt = item.alt;
 					}
@@ -179,8 +208,8 @@ export function getAsyncData() {
 					if ( item?.id ) {
 						img.id = item.id;
 					}
-					if ( item?.sizes?.[1]?.src ) {
-						img.sizes = [ { src: item.sizes[1].src } ];
+					if ( item?.sizes?.[ 1 ]?.src ) {
+						img.sizes = [ { src: item.sizes[ 1 ].src } ];
 					} else {
 						img.sizes = [ { src: item.url } ];
 					}
@@ -191,38 +220,42 @@ export function getAsyncData() {
 			return myImages;
 		}
 		if ( 'aiGenerated' === userData?.photoLibrary ) {
-			const industries = Array.isArray(userData.photoLibrary) ? userData?.photoLibrary : [ userData.photoLibrary ];
+			const industries = Array.isArray( userData.photoLibrary )
+				? userData?.photoLibrary
+				: [ userData.photoLibrary ];
 			try {
 				const response = await apiFetch( {
 					path: addQueryArgs( API_ROUTE_GET_IMAGES, {
-						industries: industries,
+						industries,
 						industry: userData?.imageSearchQuery,
 					} ),
 				} );
 				const responseData = SafeParseJSON( response, false );
 				if ( responseData ) {
-					return { data:
-						[{
-							name: 'featured',
-							images: responseData?.data?.images.slice(0, 12),
-						},
-						{
-							name: 'background',
-							images: responseData?.data?.images.slice(12, 24),
-						}]
+					return {
+						data: [
+							{
+								name: 'featured',
+								images: responseData?.data?.images.slice( 0, 12 ),
+							},
+							{
+								name: 'background',
+								images: responseData?.data?.images.slice( 12, 24 ),
+							},
+						],
 					};
 				}
 				return [];
-			} catch (error) {
+			} catch ( error ) {
 				const message = error?.message ? error.message : error;
-				console.log(`ERROR: ${ message }`);
+				console.log( `ERROR: ${ message }` );
 			}
 		}
-		const industries = Array.isArray(userData.photoLibrary) ? userData?.photoLibrary : [ userData.photoLibrary ];
+		const industries = Array.isArray( userData.photoLibrary ) ? userData?.photoLibrary : [ userData.photoLibrary ];
 		try {
 			const response = await apiFetch( {
 				path: addQueryArgs( API_ROUTE_GET_IMAGES, {
-					industries: industries,
+					industries,
 				} ),
 			} );
 			const responseData = SafeParseJSON( response, false );
@@ -231,9 +264,9 @@ export function getAsyncData() {
 				return responseData;
 			}
 			return [];
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${ message }`);
+			console.log( `ERROR: ${ message }` );
 		}
 	}
 
@@ -248,13 +281,13 @@ export function getAsyncData() {
 		try {
 			const response = await apiFetch( {
 				path: addQueryArgs( '/kb-design-library/v1/get', {
-					context: context,
+					context,
 				} ),
 			} );
 			return response;
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${ message }`);
+			console.log( `ERROR: ${ message }` );
 			return 'failed';
 		}
 	}
@@ -272,9 +305,9 @@ export function getAsyncData() {
 				path: '/kb-design-library/v1/get_all_items',
 			} );
 			return response;
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${ message }`);
+			console.log( `ERROR: ${ message }` );
 			return 'failed';
 		}
 	}
@@ -291,9 +324,9 @@ export function getAsyncData() {
 				path: '/kb-design-library/v1/get_initial_jobs',
 			} );
 			return response;
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${ message }`);
+			console.log( `ERROR: ${ message }` );
 			return 'failed';
 		}
 	}
@@ -307,7 +340,7 @@ export function getAsyncData() {
 			path: '/kb-design-library/v1/get_verticals',
 		} );
 		return response;
-	};
+	}
 	/**
 	 * Force a reload of the AI content data.
 	 *
@@ -332,13 +365,13 @@ export function getAsyncData() {
 			const response = await apiFetch( {
 				path: addQueryArgs( '/kb-design-library/v1/get', {
 					force_reload: true,
-					context: context,
+					context,
 				} ),
 			} );
 			return response;
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${ message }`);
+			console.log( `ERROR: ${ message }` );
 			return 'failed';
 		}
 	}
@@ -358,9 +391,9 @@ export function getAsyncData() {
 				} ),
 			} );
 			return response;
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${ message }`);
+			console.log( `ERROR: ${ message }` );
 			return 'failed';
 		}
 	}
@@ -374,15 +407,14 @@ export function getAsyncData() {
 	async function getAllAIContentData( initial = false ) {
 		try {
 			const response = await apiFetch( {
-				path: addQueryArgs( '/kb-design-library/v1/get-all-ai',
-				{
+				path: addQueryArgs( '/kb-design-library/v1/get-all-ai', {
 					force_reload: initial,
 				} ),
 			} );
 			return response;
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${ message }`);
+			console.log( `ERROR: ${ message }` );
 			return 'failed';
 		}
 	}
@@ -398,15 +430,15 @@ export function getAsyncData() {
 			const response = await apiFetch( {
 				path: addQueryArgs( '/kb-design-library/v1/get_library', {
 					force_reload: reload,
-					library: library,
+					library,
 					library_url: library_url ? library_url : '',
 					key: key ? key : library,
 				} ),
 			} );
 			return response;
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${ message }`);
+			console.log( `ERROR: ${ message }` );
 			return 'failed';
 		}
 	}
@@ -422,15 +454,15 @@ export function getAsyncData() {
 			const response = await apiFetch( {
 				path: addQueryArgs( '/kb-design-library/v1/get_library_categories', {
 					force_reload: reload,
-					library: library,
+					library,
 					library_url: library_url ? library_url : '',
 					key: key ? key : library,
 				} ),
 			} );
 			return response;
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${ message }`);
+			console.log( `ERROR: ${ message }` );
 			return 'failed';
 		}
 	}
@@ -446,7 +478,7 @@ export function getAsyncData() {
 		try {
 			const response = await apiFetch( {
 				path: addQueryArgs( '/kb-design-library/v1/get_pattern_content', {
-					library: library,
+					library,
 					library_url: library_url ? library_url : '',
 					key: key ? key : library,
 					pattern_id: item_id ? item_id : '',
@@ -454,13 +486,13 @@ export function getAsyncData() {
 					pattern_style: style ? style : '',
 					api_key: data_key,
 					api_email: data_email,
-					product_id: product_id,
+					product_id,
 				} ),
 			} );
 			return response;
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${ message }`);
+			console.log( `ERROR: ${ message }` );
 			return 'failed';
 		}
 	}
@@ -477,9 +509,9 @@ export function getAsyncData() {
 				path: '/kb-design-library/v1/get_local_contexts',
 			} );
 			return response;
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${ message }`);
+			console.log( `ERROR: ${ message }` );
 			return 'failed';
 		}
 	}
@@ -493,18 +525,18 @@ export function getAsyncData() {
 	async function processPattern( content, imageCollection = '', forms = '' ) {
 		try {
 			const response = await apiFetch( {
-				path: '/kb-design-library/v1/process_pattern', 
+				path: '/kb-design-library/v1/process_pattern',
 				method: 'POST',
 				data: {
-					content: content,
+					content,
 					image_library: imageCollection,
-					forms: forms,
+					forms,
 				},
 			} );
 			return response;
-		} catch (error) {
+		} catch ( error ) {
 			const message = error?.message ? error.message : error;
-			console.log(`ERROR: ${ message }`);
+			console.log( `ERROR: ${ message }` );
 			return 'failed';
 		}
 	}
@@ -526,6 +558,5 @@ export function getAsyncData() {
 		getAllAIContentData,
 		getAIContentRemaining,
 		getAvailableCredits,
-	}
+	};
 }
-

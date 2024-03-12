@@ -85,7 +85,7 @@ class Kadence_Blocks_Textarea_Input_Block extends Kadence_Blocks_Advanced_Form_I
 		$inner_content .= $this->field_label( $attributes );
 		$inner_content .= $this->field_aria_label( $attributes );
 
-		$inner_content .= '<textarea name="' . $this->field_name( $attributes ) . '" id="' . $this->field_id( $attributes ) . '" rows="'. $rows . '" ' . $this->aria_described_by( $attributes ) . ' data-label="' . esc_attr( $this->get_label( $attributes ) ) . '"' . $this->get_auto_complete( $attributes ) . ' placeholder="' . $this->get_placeholder( $attributes ) . '" data-type="' . $type . '" class="kb-field kb-' . $type . '-field" data-required="' . $is_required . '" ' . $this->additional_field_attributes( $attributes ) . '>';
+		$inner_content .= '<textarea name="' . esc_attr( $this->field_name( $attributes ) ) . '" id="' . esc_attr( $this->field_id( $attributes ) ) . '" rows="' . esc_attr( $rows ) . '" ' . $this->aria_described_by( $attributes ) . ' data-label="' . esc_attr( $this->get_label( $attributes ) ) . '"' . $this->get_auto_complete( $attributes ) . ' placeholder="' . esc_attr( $this->get_placeholder( $attributes ) ) . '" data-type="' . esc_attr( $type ) . '" class="kb-field kb-' . esc_attr( $type ) . '-field" data-required="' . esc_attr( $is_required ) . '" ' . $this->additional_field_attributes( $attributes ) . '>';
 		$inner_content .= esc_attr( $this->get_default( $attributes ) );
 		$inner_content .= '</textarea>';
 

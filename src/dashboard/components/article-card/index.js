@@ -1,12 +1,6 @@
-import "./article-card.scss";
+import './article-card.scss';
 
-export function ArticleCard({
-	category,
-	heading,
-	description,
-	link,
-	linkTarget = "_blank",
-}) {
+export function ArticleCard({ category, heading, description, link, linkTarget = '_blank' }) {
 	return (
 		<a href={link} target={linkTarget} className="kb-article-card">
 			{category && <div className="kb-article-card__category">{category}</div>}

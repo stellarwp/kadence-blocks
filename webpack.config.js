@@ -1,6 +1,6 @@
-const defaultConfig = require("@wordpress/scripts/config/webpack.config");
-const DependencyExtractionWebpackPlugin = require( '@wordpress/dependency-extraction-webpack-plugin' );
-const StyleOnlyEntryPlugin = require( './src/config/style-only-entry-plugin' );
+const defaultConfig = require('@wordpress/scripts/config/webpack.config');
+const DependencyExtractionWebpackPlugin = require('@wordpress/dependency-extraction-webpack-plugin');
+const StyleOnlyEntryPlugin = require('./src/config/style-only-entry-plugin');
 const EXTERNAL_NAME = 'kadence';
 const HANDLE_NAME = 'kadence';
 const PROJECT_NAMESPACE = '@kadence/';
@@ -12,9 +12,9 @@ function camelCaseDash(string) {
 module.exports = {
 	...defaultConfig,
 	entry: {
-		'icons': './src/packages/icons/src/index.js',
-		'components': './src/packages/components/src/index.js',
-		'helpers': './src/packages/helpers/src/index.js',
+		icons: './src/packages/icons/src/index.js',
+		components: './src/packages/components/src/index.js',
+		helpers: './src/packages/helpers/src/index.js',
 		'blocks-googlemaps': './src/blocks/googlemaps/block.js',
 		'blocks-lottie': './src/blocks/lottie/index.js',
 		'blocks-image': './src/blocks/image/index.js',
@@ -57,10 +57,7 @@ module.exports = {
 	},
 	plugins: [
 		new StyleOnlyEntryPlugin(),
-		...defaultConfig.plugins.filter(
-			( plugin ) =>
-				plugin.constructor.name !== 'DependencyExtractionWebpackPlugin'
-		),
+		...defaultConfig.plugins.filter((plugin) => plugin.constructor.name !== 'DependencyExtractionWebpackPlugin'),
 		new DependencyExtractionWebpackPlugin({
 			requestToExternal(request) {
 				if (request.endsWith('.css')) {
@@ -68,19 +65,12 @@ module.exports = {
 				}
 
 				if (request.startsWith(PROJECT_NAMESPACE)) {
-					return [
-						EXTERNAL_NAME,
-						camelCaseDash(
-							request.substring(PROJECT_NAMESPACE.length)
-						),
-					];
+					return [EXTERNAL_NAME, camelCaseDash(request.substring(PROJECT_NAMESPACE.length))];
 				}
 			},
 			requestToHandle(request) {
 				if (request.startsWith(PROJECT_NAMESPACE)) {
-					return `${HANDLE_NAME}-${request.substring(
-						PROJECT_NAMESPACE.length
-					)}`;
+					return `${HANDLE_NAME}-${request.substring(PROJECT_NAMESPACE.length)}`;
 				}
 			},
 		}),

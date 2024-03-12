@@ -11,33 +11,24 @@ import { forwardRef } from '@wordpress/element';
 import { ToneSelectLabel } from './tone-select-label';
 import './tone-select-control.scss';
 
-export const ToneSelectControl = forwardRef(
-  function ToneSelectControl(props, ref) {
-    const {
-      maxMenuHeight,
-      menuPlacement,
-      options = [],
-      value,
-      ...rest
-    } = props;
+export const ToneSelectControl = forwardRef(function ToneSelectControl(props, ref) {
+	const { maxMenuHeight, menuPlacement, options = [], value, ...rest } = props;
 
-    if (! options.length) {
-      return;
-    }
+	if (!options.length) {
+		return;
+	}
 
-    return (
-      <div ref={ ref }>
-        <Select
-          maxMenuHeight={ maxMenuHeight }
-          menuPlacement={ menuPlacement }
-          classNamePrefix="stellarwp-tone"
-          value={ value }
-          options={ options }
-          getOptionLabel={ (option) => <ToneSelectLabel { ...option } /> }
-			    { ...rest }
-        />
-      </div>
-    )
-  }
-)
-
+	return (
+		<div ref={ref}>
+			<Select
+				maxMenuHeight={maxMenuHeight}
+				menuPlacement={menuPlacement}
+				classNamePrefix="stellarwp-tone"
+				value={value}
+				options={options}
+				getOptionLabel={(option) => <ToneSelectLabel {...option} />}
+				{...rest}
+			/>
+		</div>
+	);
+});

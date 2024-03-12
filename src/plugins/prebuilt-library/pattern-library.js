@@ -5,23 +5,14 @@
 /**
  * Globals.
  */
-const {
-	localStorage,
-} = window;
+const { localStorage } = window;
 
 /**
  * WordPress dependencies
  */
-const {
-	applyFilters,
-} = wp.hooks;
+const { applyFilters } = wp.hooks;
 
-import {
-	withSelect,
-	useSelect,
-	withDispatch,
-	useDispatch,
-} from '@wordpress/data';
+import { withSelect, useSelect, withDispatch, useDispatch } from '@wordpress/data';
 /**
  * WordPress dependencies
  */
@@ -38,7 +29,7 @@ import {
 	VisuallyHidden,
 	ExternalLink,
 	Spinner,
-	Icon
+	Icon,
 } from '@wordpress/components';
 import {
 	arrowLeft,
@@ -58,9 +49,7 @@ import { store as noticesStore } from '@wordpress/notices';
 import PatternList from './pattern-list';
 import PageList from './page-list';
 import { useMemo, useEffect, useState } from '@wordpress/element';
-import {
-	store as blockEditorStore,
-} from '@wordpress/block-editor';
+import { store as blockEditorStore } from '@wordpress/block-editor';
 import { getAsyncData } from './data-fetch/get-async-data';
 /**
  * Internal dependencies
@@ -69,22 +58,23 @@ import { SafeParseJSON } from '@kadence/helpers';
 
 import { kadenceNewIcon, aiIcon, aiSettings, eye } from '@kadence/icons';
 import { AiWizard } from './ai-wizard';
-import { PAGE_CATEGORIES, PATTERN_CONTEXTS, PATTERN_CATEGORIES, CONTEXTS_STATES, CONTEXT_PROMPTS } from './data-fetch/constants';
+import {
+	PAGE_CATEGORIES,
+	PATTERN_CONTEXTS,
+	PATTERN_CATEGORIES,
+	CONTEXTS_STATES,
+	CONTEXT_PROMPTS,
+} from './data-fetch/constants';
 import { sendEvent } from '../../extension/analytics/send-event';
 
 // @todo: Get page style terms dynamically.
-const styleTerms = ['Typographic', 'Image Heavy', 'Content Dense', 'Minimalist'];
+const styleTerms = [ 'Typographic', 'Image Heavy', 'Content Dense', 'Minimalist' ];
 
 /**
  * Prebuilt Sections.
  */
-function PatternLibrary( {
-	importContent,
-	clientId,
-	reload = false,
-	onReload,
- } ) {
-	const isAIDisabled	   = window?.kadence_blocks_params?.isAIDisabled ? true : false;
+function PatternLibrary( { importContent, clientId, reload = false, onReload } ) {
+	const isAIDisabled = window?.kadence_blocks_params?.isAIDisabled ? true : false;
 	const [ category, setCategory ] = useState( '' );
 	const [ pageCategory, setPageCategory ] = useState( '' );
 	const [ pageStyles, setPageStyles ] = useState( styleTerms );
@@ -116,7 +106,7 @@ function PatternLibrary( {
 	const [ aINeedsData, setAINeedsData ] = useState( false );
 	const [ wizardState, setWizardState ] = useState( {
 		visible: false,
-		photographyOnly: false
+		photographyOnly: false,
 	} );
 	const [ isError, setIsError ] = useState( false );
 	const [ isErrorType, setIsErrorType ] = useState( 'general' );
@@ -127,26 +117,22 @@ function PatternLibrary( {
 	const [ isVisible, setIsVisible ] = useState( false );
 	const [ isAdvVisible, setIsAdvVisible ] = useState( false );
 	const [ isFilterVisible, setIsFilterVisible ] = useState( false );
-	const [ filterChoices, setFilterChoices ] = useState(
-		new Array( styleTerms.length ).fill( false )
-	);
+	const [ filterChoices, setFilterChoices ] = useState( new Array( styleTerms.length ).fill( false ) );
 	const [ isContextReloadVisible, setIsContextReloadVisible ] = useState( false );
 	const [ popoverContextAnchor, setPopoverContextAnchor ] = useState();
 	const [ popoverAnchor, setPopoverAnchor ] = useState();
 	const [ popoverAdvAnchor, setPopoverAdvAnchor ] = useState();
 	const [ filterPopoverAnchor, setFilterPopoverAnchor ] = useState();
-	const { updateContextState, updateMassContextState, updateContext, updateMassContext } = useDispatch( 'kadence/library' );
-	const { getContextState, isContextRunning, getContextContent, hasContextContent } = useSelect(
-		( select ) => {
-			return {
-				getContextState: ( value ) => select( 'kadence/library' ).getContextState( value ),
-				isContextRunning: ( value ) => select( 'kadence/library' ).isContextRunning( value ),
-				getContextContent: ( value ) => select( 'kadence/library' ).getContextContent( value ),
-				hasContextContent: ( value ) => select( 'kadence/library' ).hasContextContent( value ),
-			};
-		},
-		[]
-	);
+	const { updateContextState, updateMassContextState, updateContext, updateMassContext } =
+		useDispatch( 'kadence/library' );
+	const { getContextState, isContextRunning, getContextContent, hasContextContent } = useSelect( ( select ) => {
+		return {
+			getContextState: ( value ) => select( 'kadence/library' ).getContextState( value ),
+			isContextRunning: ( value ) => select( 'kadence/library' ).isContextRunning( value ),
+			getContextContent: ( value ) => select( 'kadence/library' ).getContextContent( value ),
+			hasContextContent: ( value ) => select( 'kadence/library' ).hasContextContent( value ),
+		};
+	}, [] );
 	const toggleVisible = () => {
 		setIsVisible( ( state ) => ! state );
 	};
@@ -157,10 +143,8 @@ function PatternLibrary( {
 		setIsFilterVisible( ( state ) => ! state );
 	};
 	const handleFilterToggle = ( position ) => {
-		const updatedChoices = filterChoices.map((item, index) => (
-			index === position ? !item : item
-		));
-		setFilterChoices(updatedChoices);
+		const updatedChoices = filterChoices.map( ( item, index ) => ( index === position ? ! item : item ) );
+		setFilterChoices( updatedChoices );
 	};
 	const toggleReloadVisible = () => {
 		setIsContextReloadVisible( ( state ) => ! state );
@@ -168,17 +152,16 @@ function PatternLibrary( {
 	const closeAiWizard = () => {
 		setWizardState( {
 			visible: false,
-			photographyOnly: false
+			photographyOnly: false,
 		} );
 
 		triggerAIDataReload( ( state ) => ! state );
 	};
 	const handleAiWizardPrimaryAction = ( event, rebuild ) => {
-
 		if ( rebuild ) {
 			getAllNewData();
 		}
-	}
+	};
 	const hasCorrectUserData = ( tempData ) => {
 		const parsedUserData = SafeParseJSON( tempData, true );
 		if ( ! parsedUserData ) {
@@ -204,47 +187,71 @@ function PatternLibrary( {
 			return false;
 		}
 		return true;
-	}
+	};
 	const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
-	const activateLink = ( window?.kadence_blocks_params?.homeLink ? kadence_blocks_params.homeLink : '' );
+	const activateLink = window?.kadence_blocks_params?.homeLink ? kadence_blocks_params.homeLink : '';
 	const activeStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-	const savedStyle = ( undefined !== activeStorage?.style && '' !== activeStorage?.style ? activeStorage.style : 'light' );
-	const savedTab = ( undefined !== activeStorage?.subTab && '' !== activeStorage?.subTab ? activeStorage.subTab : 'patterns' );
-	const savedSelectedCategory = ( undefined !== activeStorage?.kbCat && '' !== activeStorage?.kbCat ? activeStorage.kbCat : 'all' );
-	const savedSelectedPageCategory = ( undefined !== activeStorage?.kbPageCat && '' !== activeStorage?.kbPageCat ? activeStorage.kbPageCat : 'home' );
-	const savedSelectedPageStyles = ( undefined !== activeStorage?.kbPageStyles && '' !== activeStorage?.kbPageStyles ? activeStorage.kbPageStyles : 'all' ); // @todo: Should probably be an array of all available styles
-	const savedPreviewMode = ( undefined !== activeStorage?.previewMode && '' !== activeStorage?.previewMode ? activeStorage.previewMode : 'iframe' );
-	const savedReplaceImages = ( undefined !== activeStorage?.replaceImages && '' !== activeStorage?.replaceImages ? activeStorage.replaceImages : 'all' );
-	const savedFontSize = ( undefined !== activeStorage?.fontSize && '' !== activeStorage?.fontSize ? activeStorage.fontSize : 'lg' );
-	const savedContextTab = ( undefined !== activeStorage?.contextTab && '' !== activeStorage?.contextTab ? activeStorage.contextTab : 'design' );
-	const savedContext = ( undefined !== activeStorage?.context && '' !== activeStorage?.context ? activeStorage.context : 'value-prop' );
-	const savedCredits = ( undefined !== activeStorage?.credits && '' !== activeStorage?.credits && null !== activeStorage?.credits ? activeStorage.credits : 'fetch' );
-	const currentCredits = ( '' !== credits ? credits : savedCredits );
-	const selectedCategory = ( category ? category : savedSelectedCategory );
-	const selectedPageCategory = ( pageCategory ? pageCategory : savedSelectedPageCategory );
-	const selectedPageStyles = ( pageStyles ? pageStyles : savedSelectedPageStyles );
-	const selectedPreviewMode = ( previewMode ? previewMode : savedPreviewMode );
-	const selectedStyle = ( style ? style : savedStyle );
-	const selectedReplaceImages = ( replaceImages ? replaceImages : savedReplaceImages );
-	const selectedFontSize = ( fontSize ? fontSize : savedFontSize );
-	const selectedSubTab = ( subTab ? subTab : savedTab );
-	const selectedContextTab = ( contextTab ? contextTab : savedContextTab );
-	const selectedContext = ( context ? context : savedContext );
-	const selectedContextLabel = contextOptions?.[selectedContext];
-	const { createErrorNotice } = useDispatch(
-		noticesStore
-	);
+	const savedStyle =
+		undefined !== activeStorage?.style && '' !== activeStorage?.style ? activeStorage.style : 'light';
+	const savedTab =
+		undefined !== activeStorage?.subTab && '' !== activeStorage?.subTab ? activeStorage.subTab : 'patterns';
+	const savedSelectedCategory =
+		undefined !== activeStorage?.kbCat && '' !== activeStorage?.kbCat ? activeStorage.kbCat : 'all';
+	const savedSelectedPageCategory =
+		undefined !== activeStorage?.kbPageCat && '' !== activeStorage?.kbPageCat ? activeStorage.kbPageCat : 'home';
+	const savedSelectedPageStyles =
+		undefined !== activeStorage?.kbPageStyles && '' !== activeStorage?.kbPageStyles
+			? activeStorage.kbPageStyles
+			: 'all'; // @todo: Should probably be an array of all available styles
+	const savedPreviewMode =
+		undefined !== activeStorage?.previewMode && '' !== activeStorage?.previewMode
+			? activeStorage.previewMode
+			: 'iframe';
+	const savedReplaceImages =
+		undefined !== activeStorage?.replaceImages && '' !== activeStorage?.replaceImages
+			? activeStorage.replaceImages
+			: 'all';
+	const savedFontSize =
+		undefined !== activeStorage?.fontSize && '' !== activeStorage?.fontSize ? activeStorage.fontSize : 'lg';
+	const savedContextTab =
+		undefined !== activeStorage?.contextTab && '' !== activeStorage?.contextTab
+			? activeStorage.contextTab
+			: 'design';
+	const savedContext =
+		undefined !== activeStorage?.context && '' !== activeStorage?.context ? activeStorage.context : 'value-prop';
+	const savedCredits =
+		undefined !== activeStorage?.credits && '' !== activeStorage?.credits && null !== activeStorage?.credits
+			? activeStorage.credits
+			: 'fetch';
+	const currentCredits = '' !== credits ? credits : savedCredits;
+	const selectedCategory = category ? category : savedSelectedCategory;
+	const selectedPageCategory = pageCategory ? pageCategory : savedSelectedPageCategory;
+	const selectedPageStyles = pageStyles ? pageStyles : savedSelectedPageStyles;
+	const selectedPreviewMode = previewMode ? previewMode : savedPreviewMode;
+	const selectedStyle = style ? style : savedStyle;
+	const selectedReplaceImages = replaceImages ? replaceImages : savedReplaceImages;
+	const selectedFontSize = fontSize ? fontSize : savedFontSize;
+	const selectedSubTab = subTab ? subTab : savedTab;
+	const selectedContextTab = contextTab ? contextTab : savedContextTab;
+	const selectedContext = context ? context : savedContext;
+	const selectedContextLabel = contextOptions?.[ selectedContext ];
+	const { createErrorNotice } = useDispatch( noticesStore );
 
 	// Setting category options
 	useEffect( () => {
-		setCategoryListOptions( Object.keys( categories ).map( function( key, index ) {
-			return { value: ( 'category' === key ? 'all' : key ), label: ( 'category' === key ? __( 'All', 'kadence-blocks' ) : categories[key] ) }
-		} ) );
+		setCategoryListOptions(
+			Object.keys( categories ).map( function ( key, index ) {
+				return {
+					value: 'category' === key ? 'all' : key,
+					label: 'category' === key ? __( 'All', 'kadence-blocks' ) : categories[ key ],
+				};
+			} )
+		);
 	}, [ categories ] );
 
 	// Setting style options
 	useEffect( () => {
-		const patternStyles = Object.keys( patterns ).map( function( key ) {
+		const patternStyles = Object.keys( patterns ).map( function ( key ) {
 			return patterns[ key ].styles;
 		} );
 
@@ -265,7 +272,7 @@ function PatternLibrary( {
 		} );
 
 		const uniqueArray = Array.from( uniqueMap.values() );
-		const styleOptions = uniqueArray.map( function( key ) {
+		const styleOptions = uniqueArray.map( function ( key ) {
 			const keyValue = Object.keys( key )[ 0 ];
 			const keyName = key[ keyValue ];
 			return { value: keyValue, label: keyName };
@@ -275,36 +282,59 @@ function PatternLibrary( {
 	}, [ patterns ] );
 
 	useEffect( () => {
-		setPageCategoryListOptions( Object.keys( pagesCategories ).map( function( key, index ) {
-			return { value: ( 'category' === key ? 'all' : key ), label: ( 'category' === key ? __( 'All', 'kadence-blocks' ) : pagesCategories[key] ) }
-		} ) );
-		let tempPageContexts = [];
-		Object.keys( pagesCategories ).map( function( key, index ) {
+		setPageCategoryListOptions(
+			Object.keys( pagesCategories ).map( function ( key, index ) {
+				return {
+					value: 'category' === key ? 'all' : key,
+					label: 'category' === key ? __( 'All', 'kadence-blocks' ) : pagesCategories[ key ],
+				};
+			} )
+		);
+		const tempPageContexts = [];
+		Object.keys( pagesCategories ).map( function ( key, index ) {
 			if ( 'category' !== key ) {
-				tempPageContexts.push( { value: ( 'category' === key ? 'all' : key ), label: ( 'category' === key ? __( 'All', 'kadence-blocks' ) : pagesCategories[key] ) } );
+				tempPageContexts.push( {
+					value: 'category' === key ? 'all' : key,
+					label: 'category' === key ? __( 'All', 'kadence-blocks' ) : pagesCategories[ key ],
+				} );
 			}
 		} );
 		setPageContextListOptions( tempPageContexts );
 	}, [ pagesCategories ] );
 	useEffect( () => {
-		setContextListOptions( Object.keys( contextOptions ).map( function( key, index ) {
-			return { value: key, label: contextOptions[key] }
-		} ) );
+		setContextListOptions(
+			Object.keys( contextOptions ).map( function ( key, index ) {
+				return { value: key, label: contextOptions[ key ] };
+			} )
+		);
 	}, [] );
-	useEffect(() => {
-		const activePageStyles = styleTerms.filter((style, index) => filterChoices[index] && style);
+	useEffect( () => {
+		const activePageStyles = styleTerms.filter( ( style, index ) => filterChoices[ index ] && style );
 		const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-		tempActiveStorage['kbPageStyles'] = activePageStyles;
+		tempActiveStorage.kbPageStyles = activePageStyles;
 		localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
 
 		setPageStyles( activePageStyles );
-	}, [ filterChoices ])
-	const { getAIContentData, getAIContentDataReload, getAIWizardData, getCollectionByIndustry, getPatterns, getPattern, processPattern, getLocalAIContexts, getLocalAIContentData, getAIContentRemaining, getInitialAIContent, getAvailableCredits } = getAsyncData();
+	}, [ filterChoices ] );
+	const {
+		getAIContentData,
+		getAIContentDataReload,
+		getAIWizardData,
+		getCollectionByIndustry,
+		getPatterns,
+		getPattern,
+		processPattern,
+		getLocalAIContexts,
+		getLocalAIContentData,
+		getAIContentRemaining,
+		getInitialAIContent,
+		getAvailableCredits,
+	} = getAsyncData();
 	async function getLibraryContent( tempSubTab, tempReload ) {
 		setIsLoading( true );
 		setIsError( false );
 		setIsErrorType( 'general' );
-		const response = await getPatterns( ( tempSubTab === 'pages' ? 'pages' : 'section' ), tempReload );
+		const response = await getPatterns( tempSubTab === 'pages' ? 'pages' : 'section', tempReload );
 		if ( response === 'failed' ) {
 			console.log( 'Permissions Error getting library Content' );
 			if ( tempSubTab === 'pages' ) {
@@ -330,31 +360,39 @@ function PatternLibrary( {
 				if ( tempSubTab === 'pages' ) {
 					const pageCats = PAGE_CATEGORIES;
 					kadence_blocks_params.library_pages = o;
-					{ Object.keys( o ).map( function( key, index ) {
-						if ( o[ key ].categories && typeof o[ key ].categories === "object") {
-							{ Object.keys( o[ key ].categories ).map( function( ckey, i ) {
-								if ( ! pageCats.hasOwnProperty( ckey ) ) {
-									pageCats[ ckey ] = o[ key ].categories[ ckey ];
+					{
+						Object.keys( o ).map( function ( key, index ) {
+							if ( o[ key ].categories && typeof o[ key ].categories === 'object' ) {
+								{
+									Object.keys( o[ key ].categories ).map( function ( ckey, i ) {
+										if ( ! pageCats.hasOwnProperty( ckey ) ) {
+											pageCats[ ckey ] = o[ key ].categories[ ckey ];
+										}
+									} );
 								}
-							} ) }
-						}
-					} ) }
+							}
+						} );
+					}
 					setPages( o );
-					setPagesCategories( JSON.parse(JSON.stringify( pageCats ) ) );
+					setPagesCategories( JSON.parse( JSON.stringify( pageCats ) ) );
 				} else {
 					const cats = PATTERN_CATEGORIES;
 					kadence_blocks_params.library_sections = o;
-					{ Object.keys( o ).map( function( key, index ) {
-						if ( o[ key ].categories && typeof o[ key ].categories === "object") {
-							{ Object.keys( o[ key ].categories ).map( function( ckey, i ) {
-								if ( ! cats.hasOwnProperty( ckey ) ) {
-									cats[ ckey ] = o[ key ].categories[ ckey ];
+					{
+						Object.keys( o ).map( function ( key, index ) {
+							if ( o[ key ].categories && typeof o[ key ].categories === 'object' ) {
+								{
+									Object.keys( o[ key ].categories ).map( function ( ckey, i ) {
+										if ( ! cats.hasOwnProperty( ckey ) ) {
+											cats[ ckey ] = o[ key ].categories[ ckey ];
+										}
+									} );
 								}
-							} ) }
-						}
-					} ) }
+							}
+						} );
+					}
 					setPatterns( o );
-					setCategories( JSON.parse(JSON.stringify( cats ) ) );
+					setCategories( JSON.parse( JSON.stringify( cats ) ) );
 				}
 			} else {
 				if ( tempSubTab === 'pages' ) {
@@ -374,15 +412,15 @@ function PatternLibrary( {
 		} else if ( ! isLoading ) {
 			getLibraryContent( selectedSubTab, false );
 		}
-	}, [reload, selectedSubTab] );
+	}, [ reload, selectedSubTab ] );
 	const forceRefreshLibrary = () => {
 		if ( ! isLoading && patterns ) {
-			setPatterns( JSON.parse(JSON.stringify(patterns)) );
+			setPatterns( JSON.parse( JSON.stringify( patterns ) ) );
 		}
 		if ( ! isLoading && pages ) {
-			setPages( JSON.parse(JSON.stringify(pages)) );
+			setPages( JSON.parse( JSON.stringify( pages ) ) );
 		}
-	}
+	};
 	async function getAIContent( tempContext, checking = false ) {
 		if ( ! checking ) {
 			if ( 'loading' !== getContextState( tempContext ) ) {
@@ -407,7 +445,7 @@ function PatternLibrary( {
 			updateContextState( tempContext, false );
 		} else if ( response === 'error' ) {
 			console.log( 'Error getting AI Content.' );
-			createErrorNotice( __('Error generating AI content, Please Retry'), { type: 'snackbar' } );
+			createErrorNotice( __( 'Error generating AI content, Please Retry' ), { type: 'snackbar' } );
 			updateContext( tempContext, 'failed' );
 			setTimeout( () => {
 				forceRefreshLibrary();
@@ -476,21 +514,21 @@ function PatternLibrary( {
 				forceRefreshLibrary();
 			}
 		}
-	}, [selectedContext, hasInitialAI] );
+	}, [ selectedContext, hasInitialAI ] );
 	async function getAIUserData() {
 		const response = await getAIWizardData();
 		if ( ! response ) {
 			setAINeedsData( true );
 		} else if ( ! hasCorrectUserData( response ) ) {
-			const data = response ? SafeParseJSON(response) : {};
+			const data = response ? SafeParseJSON( response ) : {};
 			if ( data?.photoLibrary && data?.customCollections ) {
 				getJustImageCollection( data );
 			}
 			console.log( 'User Data is not correct' );
 			setAINeedsData( true );
 		} else {
-			const data = response ? SafeParseJSON(response) : {};
-			setAIUserData(data);
+			const data = response ? SafeParseJSON( response ) : {};
+			setAIUserData( data );
 			setAINeedsData( false );
 		}
 	}
@@ -499,34 +537,42 @@ function PatternLibrary( {
 		const response = await getInitialAIContent( true );
 		//console.log( response );
 		if ( response === 'error' || response === 'failed' ) {
-			createErrorNotice( __('Error generating AI content, Please Retry'), { type: 'snackbar' } );
+			createErrorNotice( __( 'Error generating AI content, Please Retry' ), { type: 'snackbar' } );
 			console.log( 'Error getting AI Content.' );
 			setIsLoading( false );
 		} else if ( response?.error && response?.context ) {
-			createErrorNotice( __('Error, Some AI Contexts could not be started, Please Retry'), { type: 'snackbar' } );
+			createErrorNotice( __( 'Error, Some AI Contexts could not be started, Please Retry' ), {
+				type: 'snackbar',
+			} );
 			console.log( 'Error getting all new AI Content.' );
 			const tempContextStates = [];
-			response?.context.forEach( key => {
-				tempContextStates.push(key);
-			});
+			response?.context.forEach( ( key ) => {
+				tempContextStates.push( key );
+			} );
 			updateMassContextState( tempContextStates, 'processing' );
 			response?.context.forEach( ( key, index ) => {
-				setTimeout( () => {
-					getAIContent( key, true );
-				}, 1000 + ( index * 50 ) );
-			});
+				setTimeout(
+					() => {
+						getAIContent( key, true );
+					},
+					1000 + index * 50
+				);
+			} );
 			setIsLoading( false );
 		} else {
 			const tempContextStates = [];
-			response.forEach( key => {
-				tempContextStates.push(key);
-			});
+			response.forEach( ( key ) => {
+				tempContextStates.push( key );
+			} );
 			updateMassContextState( tempContextStates, 'processing' );
 			response.forEach( ( key, index ) => {
-				setTimeout( () => {
-					getAIContent( key, true );
-				}, 1000 + ( index * 50 ) );
-			});
+				setTimeout(
+					() => {
+						getAIContent( key, true );
+					},
+					1000 + index * 50
+				);
+			} );
 			getRemoteAvailableCredits();
 			setIsLoading( false );
 		}
@@ -535,17 +581,17 @@ function PatternLibrary( {
 	 * @returns {Promise<void>}
 	 */
 	async function getJustImageCollection( tempUserData ) {
-		const tempUser = JSON.parse(JSON.stringify( tempUserData ) );
+		const tempUser = JSON.parse( JSON.stringify( tempUserData ) );
 		tempUser.photoLibrary = 'Other';
 		const teamResponse = await getCollectionByIndustry( tempUser );
 		if ( ! isEqual( teamResponse, teamCollection ) ) {
 			console.log( 'Image Team Collection Updating' );
-			setTeamCollection(teamResponse);
+			setTeamCollection( teamResponse );
 		}
 		const response = await getCollectionByIndustry( tempUserData );
 		if ( ! isEqual( response, imageCollection ) ) {
 			console.log( 'Image Collection Updating' );
-			setImageCollection(response);
+			setImageCollection( response );
 			forceRefreshLibrary();
 		}
 	}
@@ -553,17 +599,17 @@ function PatternLibrary( {
 	 * @returns {Promise<void>}
 	 */
 	async function getImageCollection() {
-		const tempUser = JSON.parse(JSON.stringify( aIUserData ) );
+		const tempUser = JSON.parse( JSON.stringify( aIUserData ) );
 		tempUser.photoLibrary = 'Other';
 		const teamResponse = await getCollectionByIndustry( tempUser );
 		if ( ! isEqual( teamResponse, teamCollection ) ) {
 			console.log( 'Image Team Collection Updating' );
-			setTeamCollection(teamResponse);
+			setTeamCollection( teamResponse );
 		}
 		const response = await getCollectionByIndustry( aIUserData );
 		if ( ! isEqual( response, imageCollection ) ) {
 			console.log( 'Image Collection Updating' );
-			setImageCollection(response);
+			setImageCollection( response );
 			forceRefreshLibrary();
 		}
 	}
@@ -580,13 +626,13 @@ function PatternLibrary( {
 			setHasInitialAI( true );
 		} else {
 			hasLocalContent = true;
-			Object.keys( localContent ).forEach( key => {
-				if ( localContent?.[key]?.content?.length > 0 ) {
-					tempContextStates.push(key);
+			Object.keys( localContent ).forEach( ( key ) => {
+				if ( localContent?.[ key ]?.content?.length > 0 ) {
+					tempContextStates.push( key );
 				}
-			});
+			} );
 			if ( tempContextStates.length > 0 ) {
-				updateMassContext( tempContextStates, localContent )
+				updateMassContext( tempContextStates, localContent );
 				updateMassContextState( tempContextStates, true );
 			}
 			forceRefreshLibrary();
@@ -595,11 +641,11 @@ function PatternLibrary( {
 		if ( 'failed' === localPrompts ) {
 			console.log( 'No Local Prompts' );
 		} else if ( localPrompts && localPrompts.length > 0 && hasLocalContent ) {
-			localPrompts.forEach( key => {
+			localPrompts.forEach( ( key ) => {
 				if ( tempContextStates.indexOf( key ) === -1 ) {
 					getAIContent( key, true );
 				}
-			});
+			} );
 			setLocalContexts( localPrompts );
 		}
 	}
@@ -608,69 +654,70 @@ function PatternLibrary( {
 		const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 		if ( response === 'error' ) {
 			console.log( 'Error getting credits' );
-			tempActiveStorage['credits'] = 'fetch';
+			tempActiveStorage.credits = 'fetch';
 			localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-			setCredits(0);
+			setCredits( 0 );
 		} else if ( response === '' ) {
-			tempActiveStorage['credits'] = 0;
+			tempActiveStorage.credits = 0;
 			localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
 			setCredits( 0 );
 		} else {
-			tempActiveStorage['credits'] = parseInt( response );
+			tempActiveStorage.credits = parseInt( response );
 			localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
 			setCredits( parseInt( response ) );
 		}
 	}
-	useEffect(() => {
+	useEffect( () => {
 		getAIUserData();
 		if ( isAuthorized && currentCredits === 'fetch' ) {
 			getRemoteAvailableCredits();
 		}
-	}, [aiDataState]);
-	useEffect(() => {
+	}, [ aiDataState ] );
+	useEffect( () => {
 		if ( isAuthorized && aIUserData && ! hasInitialAI ) {
 			getAILocalData();
 		}
-	}, [aIUserData]);
-	useEffect(() => {
+	}, [ aIUserData ] );
+	useEffect( () => {
 		if ( aIUserData ) {
 			getImageCollection();
 		}
-	}, [aIUserData]);
+	}, [ aIUserData ] );
 	async function onInsertContent( pattern ) {
 		setIsImporting( true );
-		let patternBlocks = pattern?.content ? pattern.content : '';
+		const patternBlocks = pattern?.content ? pattern.content : '';
 		processImportContent( patternBlocks );
 	}
 	const ajaxImportProcess = ( blockcode ) => {
-		var data = new FormData();
+		const data = new FormData();
 		data.append( 'action', 'kadence_import_process_image_data' );
 		data.append( 'security', kadence_blocks_params.ajax_nonce );
 		data.append( 'import_content', blockcode );
 		data.append( 'image_library', JSON.stringify( imageCollection ) );
-		jQuery.ajax( {
-			method:      'POST',
-			url:         kadence_blocks_params.ajax_url,
-			data:        data,
-			contentType: false,
-			processData: false,
-		} )
-		.done( function( response, status, stately ) {
-			if ( response ) {
-				importContent( response, clientId );
-			} else {
+		jQuery
+			.ajax( {
+				method: 'POST',
+				url: kadence_blocks_params.ajax_url,
+				data,
+				contentType: false,
+				processData: false,
+			} )
+			.done( function ( response, status, stately ) {
+				if ( response ) {
+					importContent( response, clientId );
+				} else {
+					setIsError( true );
+					setIsErrorType( 'reload' );
+				}
+				setIsImporting( false );
+			} )
+			.fail( function ( error ) {
+				console.log( error );
 				setIsError( true );
 				setIsErrorType( 'reload' );
-			}
-			setIsImporting( false );
-		})
-		.fail( function( error ) {
-			console.log( error );
-			setIsError( true );
-			setIsErrorType( 'reload' );
-			setIsImporting( false );
-		});
-	}
+				setIsImporting( false );
+			} );
+	};
 	async function processImportContent( blockCode ) {
 		const response = await processPattern( blockCode, imageCollection );
 		if ( response === 'failed' ) {
@@ -685,7 +732,7 @@ function PatternLibrary( {
 	const styleOptions = [
 		{ value: 'light', label: __( 'Light', 'kadence-blocks' ) },
 		{ value: 'dark', label: __( 'Dark', 'kadence-blocks' ) },
-		{ value: 'highlight', label: __( 'Highlight', 'kadence-blocks' ) }
+		{ value: 'highlight', label: __( 'Highlight', 'kadence-blocks' ) },
 	];
 	const pageStyleOptions = [
 		{ value: 'light', label: __( 'Light', 'kadence-blocks' ) },
@@ -693,7 +740,7 @@ function PatternLibrary( {
 	];
 	const sizeOptions = [
 		{ value: 'sm', label: __( 'Smaller', 'kadence-blocks' ) },
-		{ value: 'lg', label: __( 'Normal', 'kadence-blocks' ) }
+		{ value: 'lg', label: __( 'Normal', 'kadence-blocks' ) },
 	];
 	const breakpointColumnsObj = {
 		default: 3,
@@ -705,7 +752,7 @@ function PatternLibrary( {
 	return (
 		<div className={ `kt-prebuilt-content kb-prebuilt-has-sidebar` }>
 			<div className="kt-prebuilt-sidebar kb-section-sidebar">
-				<div className='kb-prebuilt-sidebar-header-wrap'>
+				<div className="kb-prebuilt-sidebar-header-wrap">
 					<div className="kb-prebuilt-sidebar-header kb-prebuilt-library-logo">
 						<span className="kb-prebuilt-header-logo">{ kadenceNewIcon }</span>
 						<div className="kb-library-style-popover">
@@ -726,54 +773,61 @@ function PatternLibrary( {
 								>
 									{ ! isAIDisabled && isAuthorized && (
 										<Button
-											className='kadence-ai-wizard-button'
-											iconPosition='left'
+											className="kadence-ai-wizard-button"
+											iconPosition="left"
 											icon={ aiIcon }
-											text={ __('Update Kadence AI Details', 'kadence-blocks') }
+											text={ __( 'Update Kadence AI Details', 'kadence-blocks' ) }
 											onClick={ () => {
 												setIsVisible( false );
 												getRemoteAvailableCredits();
 												setWizardState( {
 													visible: true,
-													photographyOnly: false
+													photographyOnly: false,
 												} );
-											}}
+											} }
 										/>
- 									) }
+									) }
 									{ ! isAIDisabled && ! isAuthorized && (
 										<Button
-											className='kadence-ai-wizard-button'
-											iconPosition='left'
+											className="kadence-ai-wizard-button"
+											iconPosition="left"
 											icon={ aiIcon }
-											text={ __('Activate Kadence AI', 'kadence-blocks') }
+											text={ __( 'Activate Kadence AI', 'kadence-blocks' ) }
 											disabled={ activateLink ? false : true }
-											target={ activateLink ? '_blank' : ''}
+											target={ activateLink ? '_blank' : '' }
 											href={ activateLink ? activateLink : '' }
 										/>
- 									) }
+									) }
 									<Button
 										icon={ image }
-										iconPosition='left'
-										className='kadence-ai-wizard-button'
-										text={ __('Update Design Library Images', 'kadence-blocks') }
+										iconPosition="left"
+										className="kadence-ai-wizard-button"
+										text={ __( 'Update Design Library Images', 'kadence-blocks' ) }
 										disabled={ selectedReplaceImages === 'none' }
 										onClick={ () => {
 											setIsVisible( false );
 											setWizardState( {
 												visible: true,
-												photographyOnly: true
+												photographyOnly: true,
 											} );
-										}}
+										} }
 									/>
 									<Button
-										iconPosition='left'
-										className='kadence-ai-wizard-button'
+										iconPosition="left"
+										className="kadence-ai-wizard-button"
 										icon={ eye }
 										ref={ setPopoverAdvAnchor }
 										isPressed={ isAdvVisible }
 										disabled={ isAdvVisible }
 										onClick={ toggleAdvVisible }
-									><span className='kb-wizard-advanced-text'>{__('Advanced', 'kadence-blocks') }</span> <span className='kb-carrot-open'><Icon icon={ chevronRightSmall } /></span></Button>
+									>
+										<span className="kb-wizard-advanced-text">
+											{ __( 'Advanced', 'kadence-blocks' ) }
+										</span>{ ' ' }
+										<span className="kb-carrot-open">
+											<Icon icon={ chevronRightSmall } />
+										</span>
+									</Button>
 									{ isAdvVisible && (
 										<Popover
 											className="kb-library-extra-advanced-settings"
@@ -782,33 +836,51 @@ function PatternLibrary( {
 											anchor={ popoverAdvAnchor }
 										>
 											<ToggleControl
-												className='kb-toggle-align-right small'
-												label={__( 'Custom Image Selection', 'kadence-blocks' )}
-												checked={selectedReplaceImages !== 'none'}
-												help={__('If disabled you will import and preview only wireframe images.', 'kadence-blocks')}
-												onChange={( value ) => {
-													const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-													tempActiveStorage['replaceImages'] = ( value ? 'all' : 'none' );
-													localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-													setPatterns( JSON.parse(JSON.stringify(patterns)) );
-													setReplaceImages( ( value ? 'all' : 'none' ) );
-												}}
+												className="kb-toggle-align-right small"
+												label={ __( 'Custom Image Selection', 'kadence-blocks' ) }
+												checked={ selectedReplaceImages !== 'none' }
+												help={ __(
+													'If disabled you will import and preview only wireframe images.',
+													'kadence-blocks'
+												) }
+												onChange={ ( value ) => {
+													const tempActiveStorage = SafeParseJSON(
+														localStorage.getItem( 'kadenceBlocksPrebuilt' ),
+														true
+													);
+													tempActiveStorage.replaceImages = value ? 'all' : 'none';
+													localStorage.setItem(
+														'kadenceBlocksPrebuilt',
+														JSON.stringify( tempActiveStorage )
+													);
+													setPatterns( JSON.parse( JSON.stringify( patterns ) ) );
+													setReplaceImages( value ? 'all' : 'none' );
+												} }
 											/>
 											<ToggleControl
-												className='kb-toggle-align-right small'
-												label={__( 'Live Preview', 'kadence-blocks' )}
-												checked={selectedPreviewMode !== 'image'}
-												help={__('If disabled you will not see a live preview of how the patterns will look on your site.', 'kadence-blocks')}
-												onChange={( value ) => {
-													const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-													tempActiveStorage['previewMode'] = value ? 'iframe' : 'image';
-													localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-													setPreviewMode( ( value ? 'iframe' : 'image' ) );
-												}}
+												className="kb-toggle-align-right small"
+												label={ __( 'Live Preview', 'kadence-blocks' ) }
+												checked={ selectedPreviewMode !== 'image' }
+												help={ __(
+													'If disabled you will not see a live preview of how the patterns will look on your site.',
+													'kadence-blocks'
+												) }
+												onChange={ ( value ) => {
+													const tempActiveStorage = SafeParseJSON(
+														localStorage.getItem( 'kadenceBlocksPrebuilt' ),
+														true
+													);
+													tempActiveStorage.previewMode = value ? 'iframe' : 'image';
+													localStorage.setItem(
+														'kadenceBlocksPrebuilt',
+														JSON.stringify( tempActiveStorage )
+													);
+													setPreviewMode( value ? 'iframe' : 'image' );
+												} }
 											/>
 										</Popover>
 									) }
-									</Popover>
+								</Popover>
 							) }
 							{ wizardState.visible && (
 								<AiWizard
@@ -822,113 +894,162 @@ function PatternLibrary( {
 					</div>
 					<div className="kb-library-sidebar-sub-choices">
 						<Button
-								className={ 'kb-subtab-button kb-trigger-design' + ( selectedContextTab === 'design' ? ' is-pressed' : '' ) }
-								aria-pressed={ selectedContextTab === 'design' }
-								onClick={ () => {
-									const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-									tempActiveStorage['contextTab'] = 'design';
-									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-									forceRefreshLibrary();
-									setContextTab( 'design' );
-								}}
-							>
-								{ __( 'By Design', 'kadence-blocks' ) }
-							</Button>
-							<Button
-								className={ 'kb-subtab-button kb-trigger-context' + ( selectedContextTab === 'context' ? ' is-pressed' : '' ) }
-								aria-pressed={ selectedContextTab === 'context' }
-								icon={ aiIcon }
-								iconPosition='left'
-								iconSize={ 16 }
-								text={ __( 'With AI', 'kadence-blocks' )}
-								onClick={ () => {
-									const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-									tempActiveStorage['contextTab'] = 'context';
-									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
-									forceRefreshLibrary();
-									setContextTab( 'context' );
-								}}
-							/>
+							className={
+								'kb-subtab-button kb-trigger-design' +
+								( selectedContextTab === 'design' ? ' is-pressed' : '' )
+							}
+							aria-pressed={ selectedContextTab === 'design' }
+							onClick={ () => {
+								const tempActiveStorage = SafeParseJSON(
+									localStorage.getItem( 'kadenceBlocksPrebuilt' ),
+									true
+								);
+								tempActiveStorage.contextTab = 'design';
+								localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+								forceRefreshLibrary();
+								setContextTab( 'design' );
+							} }
+						>
+							{ __( 'By Design', 'kadence-blocks' ) }
+						</Button>
+						<Button
+							className={
+								'kb-subtab-button kb-trigger-context' +
+								( selectedContextTab === 'context' ? ' is-pressed' : '' )
+							}
+							aria-pressed={ selectedContextTab === 'context' }
+							icon={ aiIcon }
+							iconPosition="left"
+							iconSize={ 16 }
+							text={ __( 'With AI', 'kadence-blocks' ) }
+							onClick={ () => {
+								const tempActiveStorage = SafeParseJSON(
+									localStorage.getItem( 'kadenceBlocksPrebuilt' ),
+									true
+								);
+								tempActiveStorage.contextTab = 'context';
+								localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+								forceRefreshLibrary();
+								setContextTab( 'context' );
+							} }
+						/>
 					</div>
 					<div className="kb-library-sidebar-context-choices">
 						<Button
-							className={ 'kb-context-tab-button kb-trigger-patterns' + ( selectedSubTab === 'patterns' ? ' is-pressed' : '' ) }
+							className={
+								'kb-context-tab-button kb-trigger-patterns' +
+								( selectedSubTab === 'patterns' ? ' is-pressed' : '' )
+							}
 							aria-pressed={ selectedSubTab === 'patterns' }
 							onClick={ () => {
-								const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-								tempActiveStorage['subTab'] = 'patterns';
+								const tempActiveStorage = SafeParseJSON(
+									localStorage.getItem( 'kadenceBlocksPrebuilt' ),
+									true
+								);
+								tempActiveStorage.subTab = 'patterns';
 								localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
 								setSubTab( 'patterns' );
-							}}
+							} }
 						>
 							{ __( 'Patterns', 'kadence-blocks' ) }
 						</Button>
 						<Button
-							className={ 'kb-context-tab-button kb-trigger-pages' + ( selectedSubTab === 'pages' ? ' is-pressed' : '' ) }
+							className={
+								'kb-context-tab-button kb-trigger-pages' +
+								( selectedSubTab === 'pages' ? ' is-pressed' : '' )
+							}
 							aria-pressed={ selectedSubTab === 'pages' }
 							onClick={ () => {
-								const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-								tempActiveStorage['subTab'] = 'pages';
+								const tempActiveStorage = SafeParseJSON(
+									localStorage.getItem( 'kadenceBlocksPrebuilt' ),
+									true
+								);
+								tempActiveStorage.subTab = 'pages';
 								localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
 								setSubTab( 'pages' );
-							}}
+							} }
 						>
 							{ __( 'Pages', 'kadence-blocks' ) }
 						</Button>
 					</div>
-
 				</div>
-				<div className='kb-prebuilt-sidebar-body-wrap'>
+				<div className="kb-prebuilt-sidebar-body-wrap">
 					<div className="kb-library-sidebar-search">
 						<SearchControl
 							value={ search }
 							placeholder={ __( 'Search', 'kadence-blocks' ) }
-							onChange={ value => setSearch( value ) }
+							onChange={ ( value ) => setSearch( value ) }
 						/>
 					</div>
 					<div className="kb-library-sidebar-bottom-wrap">
-						<div className={ `kb-library-sidebar-bottom ${ selectedContextTab === 'context' ? 'kb-context-library-categories' : 'kb-design-library-categories' }`}>
+						<div
+							className={ `kb-library-sidebar-bottom ${
+								selectedContextTab === 'context'
+									? 'kb-context-library-categories'
+									: 'kb-design-library-categories'
+							}` }
+						>
 							{ selectedSubTab === 'pages' ? (
 								<>
 									{ selectedContextTab === 'design' ? (
 										<>
 											{ ! search && (
 												<>
-													{ pageCategoryListOptions.map( ( category, index ) =>
+													{ pageCategoryListOptions.map( ( category, index ) => (
 														<Button
 															key={ `${ category.value }-${ index }` }
-															className={ 'kb-category-button' + ( selectedPageCategory === category.value ? ' is-pressed' : '' ) }
+															className={
+																'kb-category-button' +
+																( selectedPageCategory === category.value
+																	? ' is-pressed'
+																	: '' )
+															}
 															aria-pressed={ selectedPageCategory === category.value }
 															onClick={ () => {
-																const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-																tempActiveStorage['kbPageCat'] = category.value;
-																localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+																const tempActiveStorage = SafeParseJSON(
+																	localStorage.getItem( 'kadenceBlocksPrebuilt' ),
+																	true
+																);
+																tempActiveStorage.kbPageCat = category.value;
+																localStorage.setItem(
+																	'kadenceBlocksPrebuilt',
+																	JSON.stringify( tempActiveStorage )
+																);
 																setPageCategory( category.value );
-															}}
+															} }
 														>
 															{ category.label }
 														</Button>
-													) }
+													) ) }
 												</>
 											) }
 										</>
 									) : (
 										<>
-											{ pageContextListOptions.map( ( category, index ) =>
+											{ pageContextListOptions.map( ( category, index ) => (
 												<Button
 													key={ `${ category.value }-${ index }` }
-													className={ 'kb-category-button' + ( selectedPageCategory === category.value ? ' is-pressed' : '' ) }
+													className={
+														'kb-category-button' +
+														( selectedPageCategory === category.value ? ' is-pressed' : '' )
+													}
 													aria-pressed={ selectedPageCategory === category.value }
 													onClick={ () => {
-														const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-														tempActiveStorage['kbPageCat'] = category.value;
-														localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+														const tempActiveStorage = SafeParseJSON(
+															localStorage.getItem( 'kadenceBlocksPrebuilt' ),
+															true
+														);
+														tempActiveStorage.kbPageCat = category.value;
+														localStorage.setItem(
+															'kadenceBlocksPrebuilt',
+															JSON.stringify( tempActiveStorage )
+														);
 														setPageCategory( category.value );
-													}}
+													} }
 												>
 													{ category.label }
 												</Button>
-											) }
+											) ) }
 										</>
 									) }
 								</>
@@ -938,52 +1059,85 @@ function PatternLibrary( {
 										<>
 											{ ! search && (
 												<>
-													{ categoryListOptions.map( ( category, index ) =>
+													{ categoryListOptions.map( ( category, index ) => (
 														<Button
 															key={ `${ category.value }-${ index }` }
-															className={ 'kb-category-button' + ( selectedCategory === category.value ? ' is-pressed' : '' ) }
+															className={
+																'kb-category-button' +
+																( selectedCategory === category.value
+																	? ' is-pressed'
+																	: '' )
+															}
 															aria-pressed={ selectedCategory === category.value }
 															onClick={ () => {
-																const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-																tempActiveStorage['kbCat'] = category.value;
-																localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+																const tempActiveStorage = SafeParseJSON(
+																	localStorage.getItem( 'kadenceBlocksPrebuilt' ),
+																	true
+																);
+																tempActiveStorage.kbCat = category.value;
+																localStorage.setItem(
+																	'kadenceBlocksPrebuilt',
+																	JSON.stringify( tempActiveStorage )
+																);
 																setCategory( category.value );
-															}}
+															} }
 														>
 															{ category.label }
 														</Button>
-													) }
+													) ) }
 												</>
 											) }
 										</>
 									) : (
 										<>
-											{ contextListOptions.map( ( contextCategory, index ) =>
-												<div key={ `${ contextCategory.value }-${ index }` } className={`context-category-wrap${ ( ( ( !isAIDisabled && localContexts && localContexts.includes( contextCategory.value ) ) || ( ! isAIDisabled && isContextRunning( contextCategory.value ) ) ) ? ' has-content' : '' )}`}>
+											{ contextListOptions.map( ( contextCategory, index ) => (
+												<div
+													key={ `${ contextCategory.value }-${ index }` }
+													className={ `context-category-wrap${
+														( ! isAIDisabled &&
+															localContexts &&
+															localContexts.includes( contextCategory.value ) ) ||
+														( ! isAIDisabled && isContextRunning( contextCategory.value ) )
+															? ' has-content'
+															: ''
+													}` }
+												>
 													<Button
-														className={ `kb-category-button${ ( selectedContext === contextCategory.value ? ' is-pressed' : '' )}` }
+														className={ `kb-category-button${
+															selectedContext === contextCategory.value
+																? ' is-pressed'
+																: ''
+														}` }
 														aria-pressed={ selectedContext === contextCategory.value }
 														onClick={ () => {
-															const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-															tempActiveStorage['context'] = contextCategory.value;
-															localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+															const tempActiveStorage = SafeParseJSON(
+																localStorage.getItem( 'kadenceBlocksPrebuilt' ),
+																true
+															);
+															tempActiveStorage.context = contextCategory.value;
+															localStorage.setItem(
+																'kadenceBlocksPrebuilt',
+																JSON.stringify( tempActiveStorage )
+															);
 															setContext( contextCategory.value );
-														}}
+														} }
 													>
-														{ isContextRunning( contextCategory.value ) ? <Spinner /> : ''}
+														{ isContextRunning( contextCategory.value ) ? <Spinner /> : '' }
 														{ contextCategory.label }
 													</Button>
 													{ ! isAIDisabled && selectedContext === contextCategory.value && (
 														<>
 															<Button
-																className={ 'kb-reload-context-popover-toggle' + ( isContextReloadVisible ? ' is-pressed' : '' ) }
+																className={
+																	'kb-reload-context-popover-toggle' +
+																	( isContextReloadVisible ? ' is-pressed' : '' )
+																}
 																aria-pressed={ isContextReloadVisible }
 																ref={ setPopoverContextAnchor }
 																icon={ update }
 																disabled={ isContextReloadVisible }
 																onClick={ debounce( toggleReloadVisible, 100 ) }
-															>
-															</Button>
+															></Button>
 															{ isContextReloadVisible && (
 																<Popover
 																	className="kb-library-extra-settings"
@@ -991,35 +1145,56 @@ function PatternLibrary( {
 																	onClose={ debounce( toggleReloadVisible, 100 ) }
 																	anchor={ popoverContextAnchor }
 																>
-																	<p>{ sprintf(
-																		/* translators: %s is the credit amount */
-																		__( 'You can regenerate AI content for this context. This will use %s credits and your current ai text will be forever lost. Would you like to regenerate AI content for this context?', 'kadence-blocks' ),
-																		CONTEXT_PROMPTS?.[contextCategory.value] ? CONTEXT_PROMPTS[contextCategory.value] : '1'
-																	) }</p>
-																	<div className='kt-remaining-credits'>{ currentCredits } { __( 'Credits Remaining', 'kadence-blocks' ) }</div>
+																	<p>
+																		{ sprintf(
+																			/* translators: %s is the credit amount */
+																			__(
+																				'You can regenerate AI content for this context. This will use %s credits and your current ai text will be forever lost. Would you like to regenerate AI content for this context?',
+																				'kadence-blocks'
+																			),
+																			CONTEXT_PROMPTS?.[ contextCategory.value ]
+																				? CONTEXT_PROMPTS[
+																						contextCategory.value
+																				  ]
+																				: '1'
+																		) }
+																	</p>
+																	<div className="kt-remaining-credits">
+																		{ currentCredits }{ ' ' }
+																		{ __( 'Credits Remaining', 'kadence-blocks' ) }
+																	</div>
 																	<Button
-																		variant='primary'
+																		variant="primary"
 																		icon={ aiIcon }
 																		iconSize={ 16 }
-																		disabled={ isContextRunning( contextCategory.value ) }
-																		iconPosition='right'
+																		disabled={ isContextRunning(
+																			contextCategory.value
+																		) }
+																		iconPosition="right"
 																		text={ sprintf(
 																			/* translators: %s is the credit amount */
-																			__( 'Regenerate Content (%s Credits)', 'kadence-blocks' ),
-																			CONTEXT_PROMPTS?.[contextCategory.value] ? CONTEXT_PROMPTS[contextCategory.value] : '1'
+																			__(
+																				'Regenerate Content (%s Credits)',
+																				'kadence-blocks'
+																			),
+																			CONTEXT_PROMPTS?.[ contextCategory.value ]
+																				? CONTEXT_PROMPTS[
+																						contextCategory.value
+																				  ]
+																				: '1'
 																		) }
 																		className={ 'kb-reload-context-confirm' }
 																		onClick={ () => {
-																			setIsContextReloadVisible(false);
+																			setIsContextReloadVisible( false );
 																			reloadAI( selectedContext );
-																		}}
+																		} }
 																	/>
 																</Popover>
 															) }
 														</>
-													)}
+													) }
 												</div>
-											) }
+											) ) }
 										</>
 									) }
 								</>
@@ -1031,22 +1206,32 @@ function PatternLibrary( {
 					<div className="kb-library-sidebar-fixed-bottom kb-library-color-select-wrap">
 						<h2>{ __( 'Style', 'kadence-blocks' ) }</h2>
 						<div className="kb-library-style-options">
-							{ styleOptions.map( ( style, index ) =>
+							{ styleOptions.map( ( style, index ) => (
 								<Button
 									key={ `${ style.value }-${ index }` }
 									label={ style.label }
-									className={ 'kb-style-button kb-style-' + style.value + ( selectedStyle === style.value ? ' is-pressed' : '' ) }
+									className={
+										'kb-style-button kb-style-' +
+										style.value +
+										( selectedStyle === style.value ? ' is-pressed' : '' )
+									}
 									aria-pressed={ selectedStyle === style.value }
 									onClick={ () => {
-										const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-										tempActiveStorage['style'] = style.value;
-										localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+										const tempActiveStorage = SafeParseJSON(
+											localStorage.getItem( 'kadenceBlocksPrebuilt' ),
+											true
+										);
+										tempActiveStorage.style = style.value;
+										localStorage.setItem(
+											'kadenceBlocksPrebuilt',
+											JSON.stringify( tempActiveStorage )
+										);
 										setStyle( style.value );
-									}}
+									} }
 								>
 									<span></span>
 								</Button>
-							) }
+							) ) }
 						</div>
 					</div>
 				) }
@@ -1054,22 +1239,35 @@ function PatternLibrary( {
 					<div className="kb-library-sidebar-fixed-bottom kb-library-color-select-wrap">
 						<h2>{ __( 'Style', 'kadence-blocks' ) }</h2>
 						<div className="kb-library-style-options">
-							{ pageStyleOptions.map( ( style, index ) =>
+							{ pageStyleOptions.map( ( style, index ) => (
 								<Button
 									key={ `${ style.value }-${ index }` }
 									label={ style.label }
-									className={ 'kb-style-button kb-style-' + style.value + ( selectedStyle === style.value ? ' is-pressed' : '' ) }
-									aria-pressed={ selectedStyle === style.value || ( selectedStyle === 'highlight' && style.value === 'light' ) }
+									className={
+										'kb-style-button kb-style-' +
+										style.value +
+										( selectedStyle === style.value ? ' is-pressed' : '' )
+									}
+									aria-pressed={
+										selectedStyle === style.value ||
+										( selectedStyle === 'highlight' && style.value === 'light' )
+									}
 									onClick={ () => {
-										const tempActiveStorage = SafeParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-										tempActiveStorage['style'] = style.value;
-										localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( tempActiveStorage ) );
+										const tempActiveStorage = SafeParseJSON(
+											localStorage.getItem( 'kadenceBlocksPrebuilt' ),
+											true
+										);
+										tempActiveStorage.style = style.value;
+										localStorage.setItem(
+											'kadenceBlocksPrebuilt',
+											JSON.stringify( tempActiveStorage )
+										);
 										setStyle( style.value );
-									}}
+									} }
 								>
 									<span></span>
 								</Button>
-							) }
+							) ) }
 						</div>
 						{ /* Temp removal as we are not using */ }
 						{ false && styleTerms && styleTerms.length ? (
@@ -1089,20 +1287,17 @@ function PatternLibrary( {
 										onClose={ debounce( toggleFilterVisible, 100 ) }
 										anchor={ filterPopoverAnchor }
 									>
-										{
-											styleTerms.map((term, index) => {
-												return (
-													<ToggleControl
-														key={ index }
-														className={ 'kb-toggle-align-right small' }
-														label={ term }
-														checked={ filterChoices[index] }
-														onChange={ () => handleFilterToggle(index) }
-													/>
-												)
-												}
-											)
-										}
+										{ styleTerms.map( ( term, index ) => {
+											return (
+												<ToggleControl
+													key={ index }
+													className={ 'kb-toggle-align-right small' }
+													label={ term }
+													checked={ filterChoices[ index ] }
+													onChange={ () => handleFilterToggle( index ) }
+												/>
+											);
+										} ) }
 									</Popover>
 								) }
 							</div>
@@ -1112,27 +1307,34 @@ function PatternLibrary( {
 			</div>
 			{ selectedSubTab === 'pages' ? (
 				<>
-					{ ( isImporting || isLoading || false === pages || isError ) ? (
+					{ isImporting || isLoading || false === pages || isError ? (
 						<>
 							{ ! isError && isLoading && (
-								<div className="kb-loading-library"><Spinner /></div>
+								<div className="kb-loading-library">
+									<Spinner />
+								</div>
 							) }
-							{ ! isError && isImporting &&  (
+							{ ! isError && isImporting && (
 								<div className="preparing-importing-images">
 									<Spinner />
 									<h2>{ __( 'Preparing Content...', 'kadence-blocks' ) }</h2>
 								</div>
 							) }
 							{ isError && isErrorType === 'general' && (
-								<div className='kb-pattern-error-wrapper'>
-									<h2 style={ { textAlign:'center' } }>
-										{ __( 'Error, Unable to access library database, please try re-syncing', 'kadence-blocks' ) }
+								<div className="kb-pattern-error-wrapper">
+									<h2 style={ { textAlign: 'center' } }>
+										{ __(
+											'Error, Unable to access library database, please try re-syncing',
+											'kadence-blocks'
+										) }
 									</h2>
-									<div style={ { textAlign:'center' } }>
+									<div style={ { textAlign: 'center' } }>
 										<Button
 											className="kt-reload-templates"
 											icon={ update }
-											onClick={ () => ! isLoading ? getLibraryContent( selectedSubTab, true ) : null }
+											onClick={ () =>
+												! isLoading ? getLibraryContent( selectedSubTab, true ) : null
+											}
 										>
 											{ __( ' Sync with Cloud', 'kadence-blocks' ) }
 										</Button>
@@ -1140,15 +1342,18 @@ function PatternLibrary( {
 								</div>
 							) }
 							{ isError && isErrorType === 'reload' && (
-								<div className='kb-pattern-error-wrapper'>
-									<h2 style={ { textAlign:'center' } }>
-										{ __( 'Error, Unable to access library, please reload this page in your browser.', 'kadence-blocks' ) }
+								<div className="kb-pattern-error-wrapper">
+									<h2 style={ { textAlign: 'center' } }>
+										{ __(
+											'Error, Unable to access library, please reload this page in your browser.',
+											'kadence-blocks'
+										) }
 									</h2>
 								</div>
 							) }
-							{/* { false === pages && (
+							{ /* { false === pages && (
 								<>{ loadPagesData() }</>
-							) } */}
+							) } */ }
 						</>
 					) : (
 						<PageList
@@ -1170,7 +1375,7 @@ function PatternLibrary( {
 								sendEvent( 'ai_wizard_started' );
 								setWizardState( {
 									visible: true,
-									photographyOnly: false
+									photographyOnly: false,
 								} );
 							} }
 						/>
@@ -1178,27 +1383,34 @@ function PatternLibrary( {
 				</>
 			) : (
 				<>
-					{ ( isImporting || isLoading || false === patterns || isError ) ? (
+					{ isImporting || isLoading || false === patterns || isError ? (
 						<>
 							{ ! isError && isLoading && (
-								<div className="kb-loading-library"><Spinner /></div>
+								<div className="kb-loading-library">
+									<Spinner />
+								</div>
 							) }
-							{ ! isError && isImporting &&  (
+							{ ! isError && isImporting && (
 								<div className="preparing-importing-images">
 									<Spinner />
 									<h2>{ __( 'Preparing Content...', 'kadence-blocks' ) }</h2>
 								</div>
 							) }
 							{ isError && isErrorType === 'general' && (
-								<div className='kb-pattern-error-wrapper'>
-									<h2 style={ { textAlign:'center' } }>
-										{ __( 'Error, Unable to access library database, please try re-syncing', 'kadence-blocks' ) }
+								<div className="kb-pattern-error-wrapper">
+									<h2 style={ { textAlign: 'center' } }>
+										{ __(
+											'Error, Unable to access library database, please try re-syncing',
+											'kadence-blocks'
+										) }
 									</h2>
-									<div style={ { textAlign:'center' } }>
+									<div style={ { textAlign: 'center' } }>
 										<Button
 											className="kt-reload-templates"
 											icon={ update }
-											onClick={ () => ! isLoading ? getLibraryContent( selectedSubTab, true ) : null }
+											onClick={ () =>
+												! isLoading ? getLibraryContent( selectedSubTab, true ) : null
+											}
 										>
 											{ __( ' Sync with Cloud', 'kadence-blocks' ) }
 										</Button>
@@ -1206,9 +1418,12 @@ function PatternLibrary( {
 								</div>
 							) }
 							{ isError && isErrorType === 'reload' && (
-								<div className='kb-pattern-error-wrapper'>
-									<h2 style={ { textAlign:'center' } }>
-										{ __( 'Error, Unable to access library, please reload this page in your browser.', 'kadence-blocks' ) }
+								<div className="kb-pattern-error-wrapper">
+									<h2 style={ { textAlign: 'center' } }>
+										{ __(
+											'Error, Unable to access library, please reload this page in your browser.',
+											'kadence-blocks'
+										) }
 									</h2>
 								</div>
 							) }
@@ -1233,14 +1448,14 @@ function PatternLibrary( {
 							useImageReplace={ selectedReplaceImages }
 							userData={ aIUserData }
 							generateContext={ ( tempCon ) => {
-								setIsContextReloadVisible(false);
+								setIsContextReloadVisible( false );
 								reloadAI( tempCon );
 							} }
 							launchWizard={ () => {
 								sendEvent( 'ai_wizard_started' );
 								setWizardState( {
 									visible: true,
-									photographyOnly: false
+									photographyOnly: false,
 								} );
 							} }
 							categories={ categoryListOptions }
@@ -1252,30 +1467,27 @@ function PatternLibrary( {
 		</div>
 	);
 }
-const PatternLibraryWrapper = withDispatch(
-	( dispatch, { canUserUseUnfilteredHTML } ) => ( {
-		importContent( blockcode, clientId ) {
-			const { replaceBlocks } = dispatch( blockEditorStore );
-			replaceBlocks(
-				clientId,
-				rawHandler( {
-					HTML: blockcode,
-					mode: 'BLOCKS',
-					canUserUseUnfilteredHTML,
-				} ),
-			);
-		}
-	} )
-)( PatternLibrary );
+const PatternLibraryWrapper = withDispatch( ( dispatch, { canUserUseUnfilteredHTML } ) => ( {
+	importContent( blockcode, clientId ) {
+		const { replaceBlocks } = dispatch( blockEditorStore );
+		replaceBlocks(
+			clientId,
+			rawHandler( {
+				HTML: blockcode,
+				mode: 'BLOCKS',
+				canUserUseUnfilteredHTML,
+			} )
+		);
+	},
+} ) )( PatternLibrary );
 const PatternLibraryEdit = ( props ) => {
-	const { canUserUseUnfilteredHTML } = useSelect(
-		( select ) => {
-			return {
-				canUserUseUnfilteredHTML: select( 'core/editor' ) ? select( 'core/editor' ).canUserUseUnfilteredHTML() : false
-			};
-		},
-		[]
-	);
-	return <PatternLibraryWrapper canUserUseUnfilteredHTML={ canUserUseUnfilteredHTML }  { ...props } />;
+	const { canUserUseUnfilteredHTML } = useSelect( ( select ) => {
+		return {
+			canUserUseUnfilteredHTML: select( 'core/editor' )
+				? select( 'core/editor' ).canUserUseUnfilteredHTML()
+				: false,
+		};
+	}, [] );
+	return <PatternLibraryWrapper canUserUseUnfilteredHTML={ canUserUseUnfilteredHTML } { ...props } />;
 };
 export default PatternLibraryEdit;

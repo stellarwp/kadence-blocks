@@ -12,40 +12,35 @@ import { dispatch } from '@wordpress/data';
 import { store as noticesStore } from '@wordpress/notices';
 import { __ } from '@wordpress/i18n';
 
-export function stripFirstImage( attributes, { shortcode } ) {
-	const { body } = document.implementation.createHTMLDocument( '' );
+export function stripFirstImage(attributes, { shortcode }) {
+	const { body } = document.implementation.createHTMLDocument('');
 
 	body.innerHTML = shortcode.content;
 
-	let nodeToRemove = body.querySelector( 'img' );
+	let nodeToRemove = body.querySelector('img');
 
 	// if an image has parents, find the topmost node to remove
-	while (
-		nodeToRemove &&
-		nodeToRemove.parentNode &&
-		nodeToRemove.parentNode !== body
-	) {
+	while (nodeToRemove && nodeToRemove.parentNode && nodeToRemove.parentNode !== body) {
 		nodeToRemove = nodeToRemove.parentNode;
 	}
 
-	if ( nodeToRemove ) {
-		nodeToRemove.parentNode.removeChild( nodeToRemove );
+	if (nodeToRemove) {
+		nodeToRemove.parentNode.removeChild(nodeToRemove);
 	}
 
 	return body.innerHTML.trim();
 }
-
 
 const transforms = {
 	from: [
 		{
 			type: 'block',
 			isMultiBlock: true,
-			blocks: [ 'core/image' ],
-			transform: ( attributes ) => {
+			blocks: ['core/image'],
+			transform: (attributes) => {
 				attributes = attributes[0];
 
-				return createBlock( 'kadence/image', {
+				return createBlock('kadence/image', {
 					id: attributes.id,
 					url: attributes.url,
 					alt: attributes.alt,
@@ -53,8 +48,8 @@ const transforms = {
 					align: attributes.align,
 					sizeSlug: attributes.sizeSlug,
 					width: attributes.width,
-					height: attributes.height
-				} );
+					height: attributes.height,
+				});
 			},
 		},
 	],
@@ -62,7 +57,7 @@ const transforms = {
 		{
 			type: 'block',
 			blocks: ['core/image'],
-			transform: (attributes ) => {
+			transform: (attributes) => {
 				return createBlock('core/image', {
 					id: attributes.id,
 					url: attributes.url,
@@ -71,7 +66,7 @@ const transforms = {
 					align: attributes.align,
 					sizeSlug: attributes.sizeSlug,
 					width: attributes.width,
-					height: attributes.height
+					height: attributes.height,
 				});
 			},
 		},

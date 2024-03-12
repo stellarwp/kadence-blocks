@@ -2,98 +2,89 @@
  * BLOCK Section: Kadence Row / Layout Overlay
  */
 
- import memoize from 'memize';
+import memoize from 'memize';
 
- import { KadenceColorOutput, getPreviewSize } from '@kadence/helpers';
+import { KadenceColorOutput, getPreviewSize } from '@kadence/helpers';
 
-import {
-	ToggleControl,
-	SelectControl,
-	ToolbarGroup,
-	TabPanel,
-	ResizableBox,
-	Icon,
-} from '@wordpress/components';
+import { ToggleControl, SelectControl, ToolbarGroup, TabPanel, ResizableBox, Icon } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import { dragHandle } from '@wordpress/icons';
-import {
-	Fragment,
-	useEffect,
-	useMemo,
-	useState,
-} from '@wordpress/element';
+import { Fragment, useEffect, useMemo, useState } from '@wordpress/element';
 import { withSelect, withDispatch, useSelect, useDispatch } from '@wordpress/data';
 import Draggable from 'react-draggable';
 /**
  * Build the row edit
  */
-function ResizeGridSection( props ) {
+function ResizeGridSection(props) {
 	const { attributes, setAttributes, clientId, parentBlock, parentBlockClientId, context } = props;
-	const [ moveGrid, setMoveGrid ] = useState( [55, 35] );
-	const [ gridArea, setGridArea ] = useState( ( attributes.gridArea ? attributes.gridArea : '2/6/8/10' ) );
+	const [moveGrid, setMoveGrid] = useState([55, 35]);
+	const [gridArea, setGridArea] = useState(attributes.gridArea ? attributes.gridArea : '2/6/8/10');
 	const { previewDevice } = useSelect(
-		( select ) => {
+		(select) => {
 			return {
-				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 			};
 		},
-		[ clientId ]
+		[clientId]
 	);
-	const enable = useMemo( () => ( {
-		right: previewDevice === 'Desktop' ? false : false,
-		left: previewDevice === 'Desktop' ? false : false,
-		top: previewDevice === 'Desktop' ? true : false,
-		bottom: previewDevice === 'Desktop' ? true : false,
-	} ), [ previewDevice ] );
-	const dragStartEvent = ( event ) => {
-		console.log( 'dragStartEvent' );
+	const enable = useMemo(
+		() => ({
+			right: previewDevice === 'Desktop' ? false : false,
+			left: previewDevice === 'Desktop' ? false : false,
+			top: previewDevice === 'Desktop' ? true : false,
+			bottom: previewDevice === 'Desktop' ? true : false,
+		}),
+		[previewDevice]
+	);
+	const dragStartEvent = (event) => {
+		console.log('dragStartEvent');
 		// const parentEl = document.querySelector( `[data-block="${ parentBlockClientId }"] > .kb-grid-layout-container-inner` )
 		// const parentWidth = parentEl.clientWidth/12;
 		// const parentHeight = parentEl.clientHeight/6;
 		// console.log( parentEl.clientWidth );
 		// setMoveGrid( [parentWidth, parentHeight ])
-	}
-	const dragEndEvent = ( event ) => {
-		console.log( event )
-	}
-	const draggingEvent = ( event ) => {
-		console.log( event )
-	}
-	const onResize = ( event ) => {
-		console.log( event )
-		const parentEl = document.querySelector( `[data-block="${ parentBlockClientId }"] > .innerblocks-wrap` )
-		const parentWidth = parentEl.clientWidth/12;
-		const parentHeight = parentEl.clientHeight/6;
-		console.log( parentEl.clientWidth );
-		setMoveGrid( [parentWidth, parentHeight ])
-	}
-	const onResizeStop = ( event ) => {
-		console.log( event )
-	}
+	};
+	const dragEndEvent = (event) => {
+		console.log(event);
+	};
+	const draggingEvent = (event) => {
+		console.log(event);
+	};
+	const onResize = (event) => {
+		console.log(event);
+		const parentEl = document.querySelector(`[data-block="${parentBlockClientId}"] > .innerblocks-wrap`);
+		const parentWidth = parentEl.clientWidth / 12;
+		const parentHeight = parentEl.clientHeight / 6;
+		console.log(parentEl.clientWidth);
+		setMoveGrid([parentWidth, parentHeight]);
+	};
+	const onResizeStop = (event) => {
+		console.log(event);
+	};
 	let displayGrid = false;
-	if ( undefined !== context.gridResize && false === context.gridResize ) {
+	if (undefined !== context.gridResize && false === context.gridResize) {
 		displayGrid = true;
 	}
-	if ( ! displayGrid ) {
+	if (!displayGrid) {
 		return props.children;
 	}
 	return (
 		<Draggable
 			bounds="parent"
 			handle=".grid-section-move-handle"
-			defaultPosition={{x: 0, y: 0}}
+			defaultPosition={{ x: 0, y: 0 }}
 			position={null}
 			grid={moveGrid}
 			scale={1}
-			onStart={( value ) => {
-				const parentEl = document.querySelector( `[data-block="${ parentBlockClientId }"] > .innerblocks-wrap` )
-				console.log( parentEl );
-				const parentWidth = parentEl.clientWidth/12;
-				const parentHeight = parentEl.clientHeight/6;
-				console.log( parentEl.clientWidth );
-				setMoveGrid( [parentWidth, parentHeight ])
+			onStart={(value) => {
+				const parentEl = document.querySelector(`[data-block="${parentBlockClientId}"] > .innerblocks-wrap`);
+				console.log(parentEl);
+				const parentWidth = parentEl.clientWidth / 12;
+				const parentHeight = parentEl.clientHeight / 6;
+				console.log(parentEl.clientWidth);
+				setMoveGrid([parentWidth, parentHeight]);
 			}}
-			onDrag={ ( value ) => {
+			onDrag={(value) => {
 				// console.log( 'DRAG' );
 				// console.log( value );
 				// console.log( value.movementX );
@@ -119,54 +110,51 @@ function ResizeGridSection( props ) {
 				// console.log( final );
 				// setGridArea( final );
 			}}
-			onStop={( value ) => {
-				console.log( 'STOP' );
-				console.log( value );
+			onStop={(value) => {
+				console.log('STOP');
+				console.log(value);
 				// const parentEl = document.querySelector( `[data-block="${ parentBlockClientId }"] > .innerblocks-wrap` )
 				// const parentWidth = parentEl.clientWidth/12;
 				// const parentHeight = parentEl.clientHeight/6;
 				// setMoveGrid( [parentWidth, parentHeight ])
 			}}
+		>
+			<ResizableBox
+				className="grid-section-handle"
+				style={{
+					gridArea,
+					width: 'auto',
+					height: 'auto',
+				}}
+				enable={enable}
+				handleClasses={{
+					right: 'grid-section-handle-x grid-section-handle-right',
+					left: 'grid-section-handle-x grid-section-handle-left',
+					top: 'grid-section-handle-top',
+					bottom: 'grid-section-handle-bottom',
+				}}
+				handleWrapperClass="grid-section-handle-container"
+				grid={moveGrid}
+				onResize={onResize}
+				onResizeStop={onResizeStop}
 			>
-				<ResizableBox
-					className="grid-section-handle"
-					style={{
-						gridArea: gridArea,
-						width: 'auto',
-						height: 'auto',
-					}}
-					enable={ enable }
-					handleClasses={ {
-						right: 'grid-section-handle-x grid-section-handle-right',
-						left: 'grid-section-handle-x grid-section-handle-left',
-						top: 'grid-section-handle-top',
-						bottom: 'grid-section-handle-bottom',
-					} }
-					handleWrapperClass="grid-section-handle-container"
-					grid={ moveGrid }
-					onResize={ onResize }
-					onResizeStop={ onResizeStop }
-				>
-				{ props.children }
+				{props.children}
 				<span className="grid-section-move-handle">
-					<Icon icon={dragHandle}/>
+					<Icon icon={dragHandle} />
 				</span>
 			</ResizableBox>
 		</Draggable>
 	);
 }
-export default compose( [
-	withSelect( ( select, ownProps ) => {
+export default compose([
+	withSelect((select, ownProps) => {
 		const { clientId } = ownProps;
-		const {
-			getBlocksByClientId,
-			getBlockRootClientId,
-		} = select( 'core/block-editor' );
-		const rootID = getBlockRootClientId( clientId )
-		const parentBlock = getBlocksByClientId( rootID );
+		const { getBlocksByClientId, getBlockRootClientId } = select('core/block-editor');
+		const rootID = getBlockRootClientId(clientId);
+		const parentBlock = getBlocksByClientId(rootID);
 		return {
 			parentBlockClientId: rootID,
-			parentBlock: parentBlock,
+			parentBlock,
 		};
-	} ),
-] )( ResizeGridSection );
+	}),
+])(ResizeGridSection);

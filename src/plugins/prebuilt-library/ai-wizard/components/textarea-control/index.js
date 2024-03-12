@@ -9,13 +9,10 @@ import { forwardRef } from '@wordpress/element';
  */
 import './textarea-control.scss';
 
-export const TextareaControl = forwardRef(
-	function TextareaControl(props, ref) {
-		return (
-			<div ref={ ref }>
-				<CoreTextareaControl className={ 'stellarwp' } { ...props } />
-			</div>
-		)
-	}
-);
-
+export const TextareaControl = forwardRef(function TextareaControl(props, ref) {
+	return (
+		<div ref={ref}>
+			<CoreTextareaControl className={'stellarwp'} {...props} />
+		</div>
+	);
+});
