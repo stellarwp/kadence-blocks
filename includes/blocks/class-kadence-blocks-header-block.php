@@ -71,7 +71,6 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		$header_attributes = $this->get_header_attributes( $attributes['id'] );
 		$attrs_exist = isset($header_attributes) && ! empty($header_attributes);
-		var_dump($header_attributes);
 		$bg = $attrs_exist && ! empty($header_attributes['background']) ? $header_attributes['background'] : '';
 		$hoverBg = $attrs_exist && !empty($header_attributes['backgroundHover']) ? $header_attributes['backgroundHover'] : '';
 		$border = $attrs_exist && isset($header_attributes['border']) && is_array($header_attributes['border']) ? $header_attributes['border'] : '';
