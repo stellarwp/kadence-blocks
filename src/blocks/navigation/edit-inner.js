@@ -147,6 +147,14 @@ export function EditInner(props) {
 		divider: meta?._kad_navigation_divider,
 		dividerTablet: meta?._kad_navigation_dividerTablet,
 		dividerMobile: meta?._kad_navigation_dividerMobile,
+		dropdownWidth: meta?._kad_navigation_dropdownWidth,
+		dropdownWidthTablet: meta?._kad_navigation_dropdownWidthTablet,
+		dropdownWidthMobile: meta?._kad_navigation_dropdownWidthMobile,
+		dropdownWidthUnit: meta?._kad_navigation_dropdownWidthUnit,
+		dropdownVerticalSpacing: meta?._kad_navigation_dropdownVerticalSpacing,
+		dropdownVerticalSpacingTablet: meta?._kad_navigation_dropdownVerticalSpacingTablet,
+		dropdownVerticalSpacingMobile: meta?._kad_navigation_dropdownVerticalSpacingMobile,
+		dropdownVerticalSpacingUnit: meta?._kad_navigation_dropdownVerticalSpacingUnit,
 	};
 
 	const {
@@ -211,6 +219,14 @@ export function EditInner(props) {
 		divider,
 		dividerTablet,
 		dividerMobile,
+		dropdownWidth,
+		dropdownWidthTablet,
+		dropdownWidthMobile,
+		dropdownWidthUnit,
+		dropdownVerticalSpacing,
+		dropdownVerticalSpacingTablet,
+		dropdownVerticalSpacingMobile,
+		dropdownVerticalSpacingUnit,
 	} = metaAttributes;
 
 	const previewOrientation = getPreviewSize(previewDevice, orientation, orientationTablet, orientationMobile);
@@ -694,7 +710,56 @@ export function EditInner(props) {
 								/>
 							</KadencePanelBody>
 						)}
-						<div className="kt-sidebar-settings-spacer"></div>
+						<KadencePanelBody
+							title={__('Sub Menu Styles', 'kadence-blocks')}
+							panelName={'kb-navigation-style-sub-menus'}
+							initialOpen={false}
+						>
+							<ResponsiveRangeControls
+								label={__('Dropdown Width', 'kadence-blocks')}
+								value={parseFloat(dropdownWidth)}
+								valueTablet={parseFloat(dropdownWidthTablet)}
+								valueMobile={parseFloat(dropdownWidthMobile)}
+								onChange={(value) => setMetaAttribute(value.toString(), 'dropdownWidth')}
+								onChangeTablet={(value) => setMetaAttribute(value.toString(), 'dropdownWidthTablet')}
+								onChangeMobile={(value) => setMetaAttribute(value.toString(), 'dropdownWidthMobile')}
+								min={0}
+								max={dropdownWidthUnit === 'em' || dropdownWidthUnit === 'rem' ? 24 : 2000}
+								step={dropdownWidthUnit === 'em' || dropdownWidthUnit === 'rem' ? 0.1 : 1}
+								unit={dropdownWidthUnit}
+								units={['em', 'rem', 'px', 'vw']}
+								onUnit={(value) => setMetaAttribute(value, 'dropdownWidthUnit')}
+								showUnit={true}
+							/>
+							<ResponsiveRangeControls
+								label={__('Dropdown Vertical Spacing', 'kadence-blocks')}
+								value={parseFloat(dropdownVerticalSpacing)}
+								valueTablet={parseFloat(dropdownVerticalSpacingTablet)}
+								valueMobile={parseFloat(dropdownVerticalSpacingMobile)}
+								onChange={(value) => setMetaAttribute(value.toString(), 'dropdownVerticalSpacing')}
+								onChangeTablet={(value) =>
+									setMetaAttribute(value.toString(), 'dropdownVerticalSpacingTablet')
+								}
+								onChangeMobile={(value) =>
+									setMetaAttribute(value.toString(), 'dropdownVerticalSpacingMobile')
+								}
+								min={0}
+								max={
+									dropdownVerticalSpacingUnit === 'em' || dropdownVerticalSpacingUnit === 'rem'
+										? 24
+										: 200
+								}
+								step={
+									dropdownVerticalSpacingUnit === 'em' || dropdownVerticalSpacingUnit === 'rem'
+										? 0.1
+										: 1
+								}
+								unit={dropdownVerticalSpacingUnit}
+								units={['em', 'rem', 'px', 'vw']}
+								onUnit={(value) => setMetaAttribute(value, 'dropdownVerticalSpacingUnit')}
+								showUnit={true}
+							/>
+						</KadencePanelBody>
 					</>
 				)}
 

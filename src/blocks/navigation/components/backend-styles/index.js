@@ -53,6 +53,14 @@ export default function BackendStyles(props) {
 		divider,
 		dividerTablet,
 		dividerMobile,
+		dropdownWidth,
+		dropdownWidthTablet,
+		dropdownWidthMobile,
+		dropdownWidthUnit,
+		dropdownVerticalSpacing,
+		dropdownVerticalSpacingTablet,
+		dropdownVerticalSpacingMobile,
+		dropdownVerticalSpacingUnit,
 	} = metaAttributes;
 
 	const navigationHorizontalSpacing = spacing[1];
@@ -65,6 +73,8 @@ export default function BackendStyles(props) {
 	const previewOrientation = getPreviewSize(previewDevice, orientation, orientationTablet, orientationMobile);
 	const previewStyle = getPreviewSize(previewDevice, style, styleTablet, styleMobile);
 	const previewParentActive = getPreviewSize(previewDevice, parentActive, parentActiveTablet, parentActiveMobile);
+
+	const previewDropdownWidth = getPreviewSize(previewDevice, dropdownWidth, dropdownWidthTablet, dropdownWidthMobile);
 
 	// const previewDivider = getPreviewSize(previewDevice, divider, dividerTablet, dividerMobile);
 
@@ -197,6 +207,49 @@ export default function BackendStyles(props) {
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul li.menu-item > .link-drop-wrap > a`
 	);
 	css.render_font(typography ? typography : [], previewDevice);
+
+	//Dropdown logic from theme Styles Component
+	// Dropdown.
+	// $css->set_selector( '.header-navigation .header-menu-container ul ul.sub-menu, .header-navigation .header-menu-container ul ul.submenu' );
+	// $css->add_property( 'background', $css->render_color( kadence()->sub_option( 'dropdown_navigation_background', 'color' ) ) );
+	// $css->add_property( 'box-shadow', $css->render_shadow( kadence()->option( 'dropdown_navigation_shadow' ), kadence()->default( 'dropdown_navigation_shadow' ) ) );
+	// $css->set_selector( '.header-navigation .header-menu-container ul ul li.menu-item, .header-menu-container ul.menu > li.kadence-menu-mega-enabled > ul > li.menu-item > a' );
+	// $css->add_property( 'border-bottom', $css->render_border( kadence()->option( 'dropdown_navigation_divider' ) ) );
+	css.set_selector(
+		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li.menu-item > .link-drop-wrap`
+	);
+	css.add_property('width', previewDropdownWidth + dropdownWidthUnit);
+	css.add_property(
+		'padding-top',
+		css.render_size(
+			dropdownVerticalSpacing,
+			dropdownVerticalSpacingTablet,
+			dropdownVerticalSpacingMobile,
+			previewDevice,
+			dropdownVerticalSpacingUnit
+		)
+	);
+	css.add_property(
+		'padding-bottom',
+		css.render_size(
+			dropdownVerticalSpacing,
+			dropdownVerticalSpacingTablet,
+			dropdownVerticalSpacingMobile,
+			previewDevice,
+			dropdownVerticalSpacingUnit
+		)
+	);
+	css.set_selector(
+		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li.menu-item > .link-drop-wrap > a`
+	);
+	// $css->add_property( 'color', $css->render_color( kadence()->sub_option( 'dropdown_navigation_color', 'color' ) ) );
+	// $css->render_font( kadence()->option( 'dropdown_navigation_typography' ), $css );
+	// $css->set_selector( '.header-navigation .header-menu-container ul ul li.menu-item > a:hover' );
+	// $css->add_property( 'color', $css->render_color( kadence()->sub_option( 'dropdown_navigation_color', 'hover' ) ) );
+	// $css->add_property( 'background', $css->render_color( kadence()->sub_option( 'dropdown_navigation_background', 'hover' ) ) );
+	// $css->set_selector( '.header-navigation .header-menu-container ul ul li.menu-item.current-menu-item > a' );
+	// $css->add_property( 'color', $css->render_color( kadence()->sub_option( 'dropdown_navigation_color', 'active' ) ) );
+	// $css->add_property( 'background', $css->render_color( kadence()->sub_option( 'dropdown_navigation_background', 'active' ) ) );
 
 	//Mobile menu logic from theme styles component
 	// // Mobile Menu.
