@@ -68,6 +68,8 @@ import {
 	RangeControl,
 } from '@kadence/components';
 
+import { ArrowDown, ArrowUp } from '@kadence/icons';
+
 /**
  * Internal dependencies
  */
@@ -239,6 +241,9 @@ export default function Edit(props) {
 	const isDraggingWithin = useIsDraggingWithin(listItemRef);
 	const itemLabelPlaceholder = __('Add label…');
 	const ref = useRef();
+
+	//See if this is the first Nav Item in the menu
+	const hasNoBlockBefore = wp.data.select('core/block-editor').getPreviousBlockClientId(clientId) === null;
 
 	// Change the label using inspector causes rich text to change focus on firefox.
 	// This is a workaround to keep the focus on the label field when label filed is focused we don't render the rich text.
@@ -437,7 +442,9 @@ export default function Edit(props) {
 				'is-dragging-within': isDraggingWithin,
 				'has-link': !!url,
 				'has-child': hasChildren,
+				'menu-item-has-children': hasChildren,
 				'menu-item--toggled-on': showSubMenus,
+				'current-menu-item': hasNoBlockBefore,
 				'kadence-menu-mega-enabled': isMegaMenu,
 				[`wp-block-kadence-navigation-link${uniqueID}`]: uniqueID,
 			}
@@ -815,123 +822,139 @@ export default function Edit(props) {
 				{/* eslint-disable jsx-a11y/anchor-is-valid */}
 
 				{linkCSS}
-				<a
-					className={classes}
-					style={{
-						marginTop:
-							undefined !== previewMarginTop && '' !== previewMarginTop
-								? getSpacingOptionOutput(previewMarginTop, previewMarginUnit)
-								: undefined,
-						marginRight:
-							undefined !== previewMarginRight && '' !== previewMarginRight
-								? getSpacingOptionOutput(previewMarginRight, previewMarginUnit)
-								: undefined,
-						marginBottom:
-							undefined !== previewMarginBottom && '' !== previewMarginBottom
-								? getSpacingOptionOutput(previewMarginBottom, previewMarginUnit)
-								: undefined,
-						marginLeft:
-							undefined !== previewMarginLeft && '' !== previewMarginLeft
-								? getSpacingOptionOutput(previewMarginLeft, previewMarginUnit)
-								: undefined,
 
-						paddingTop:
-							undefined !== previewPaddingTop && '' !== previewPaddingTop
-								? getSpacingOptionOutput(previewPaddingTop, paddingUnit)
-								: undefined,
-						paddingRight:
-							undefined !== previewPaddingRight && '' !== previewPaddingRight
-								? getSpacingOptionOutput(previewPaddingRight, paddingUnit)
-								: undefined,
-						paddingBottom:
-							undefined !== previewPaddingBottom && '' !== previewPaddingBottom
-								? getSpacingOptionOutput(previewPaddingBottom, paddingUnit)
-								: undefined,
-						paddingLeft:
-							undefined !== previewPaddingLeft && '' !== previewPaddingLeft
-								? getSpacingOptionOutput(previewPaddingLeft, paddingUnit)
-								: undefined,
-					}}
-				>
-					{/* eslint-enable */}
-					{!url ? (
-						<div className="wp-block-navigation-link__placeholder-text">
-							<Tooltip text={tooltipText}>
-								<span>{missingText}</span>
-							</Tooltip>
-						</div>
-					) : (
-						<>
-							{!isInvalid && !isDraft && !isLabelFieldFocused && (
-								<>
-									<RichText
-										ref={ref}
-										identifier="label"
-										className="wp-block-navigation-item__label"
-										value={label}
-										onChange={(labelValue) =>
-											setAttributes({
-												label: labelValue,
-											})
-										}
-										onMerge={mergeBlocks}
-										onReplace={onReplace}
-										__unstableOnSplitAtEnd={() =>
-											insertBlocksAfter(createBlock('kadence/navigation-link'))
-										}
-										aria-label={__('Navigation link text')}
-										placeholder={itemLabelPlaceholder}
-										withoutInteractiveFormatting
-										allowedFormats={[
-											'core/bold',
-											'core/italic',
-											'core/image',
-											'core/strikethrough',
-										]}
-										onClick={() => {
-											if (!url) {
-												setIsLinkOpen(true);
+				<div class="link-drop-wrap">
+					<a
+						className={classes}
+						style={{
+							marginTop:
+								undefined !== previewMarginTop && '' !== previewMarginTop
+									? getSpacingOptionOutput(previewMarginTop, previewMarginUnit)
+									: undefined,
+							marginRight:
+								undefined !== previewMarginRight && '' !== previewMarginRight
+									? getSpacingOptionOutput(previewMarginRight, previewMarginUnit)
+									: undefined,
+							marginBottom:
+								undefined !== previewMarginBottom && '' !== previewMarginBottom
+									? getSpacingOptionOutput(previewMarginBottom, previewMarginUnit)
+									: undefined,
+							marginLeft:
+								undefined !== previewMarginLeft && '' !== previewMarginLeft
+									? getSpacingOptionOutput(previewMarginLeft, previewMarginUnit)
+									: undefined,
+
+							paddingTop:
+								undefined !== previewPaddingTop && '' !== previewPaddingTop
+									? getSpacingOptionOutput(previewPaddingTop, paddingUnit)
+									: undefined,
+							paddingRight:
+								undefined !== previewPaddingRight && '' !== previewPaddingRight
+									? getSpacingOptionOutput(previewPaddingRight, paddingUnit)
+									: undefined,
+							paddingBottom:
+								undefined !== previewPaddingBottom && '' !== previewPaddingBottom
+									? getSpacingOptionOutput(previewPaddingBottom, paddingUnit)
+									: undefined,
+							paddingLeft:
+								undefined !== previewPaddingLeft && '' !== previewPaddingLeft
+									? getSpacingOptionOutput(previewPaddingLeft, paddingUnit)
+									: undefined,
+						}}
+					>
+						{/* eslint-enable */}
+						{!url ? (
+							<div className="wp-block-navigation-link__placeholder-text">
+								<Tooltip text={tooltipText}>
+									<span>{missingText}</span>
+								</Tooltip>
+							</div>
+						) : (
+							<>
+								{!isInvalid && !isDraft && !isLabelFieldFocused && (
+									<>
+										<RichText
+											ref={ref}
+											identifier="label"
+											className="wp-block-navigation-item__label"
+											value={label}
+											onChange={(labelValue) =>
+												setAttributes({
+													label: labelValue,
+												})
 											}
-										}}
-									/>
-									{description && (
-										<span className="wp-block-navigation-item__description">{description}</span>
-									)}
-								</>
-							)}
-							{(isInvalid || isDraft || isLabelFieldFocused) && (
-								<div className="wp-block-navigation-link__placeholder-text wp-block-navigation-link__label">
-									<Tooltip text={tooltipText}>
-										<span aria-label={__('Navigation link text')}>
-											{
-												// Some attributes are stored in an escaped form. It's a legacy issue.
-												// Ideally they would be stored in a raw, unescaped form.
-												// Unescape is used here to "recover" the escaped characters
-												// so they display without encoding.
-												// See `updateAttributes` for more details.
-												`${decodeEntities(label)} ${
-													isInvalid || isDraft ? placeholderText : ''
-												}`.trim()
+											onMerge={mergeBlocks}
+											onReplace={onReplace}
+											__unstableOnSplitAtEnd={() =>
+												insertBlocksAfter(createBlock('kadence/navigation-link'))
 											}
-										</span>
-									</Tooltip>
-								</div>
-							)}
-						</>
+											aria-label={__('Navigation link text')}
+											placeholder={itemLabelPlaceholder}
+											withoutInteractiveFormatting
+											allowedFormats={[
+												'core/bold',
+												'core/italic',
+												'core/image',
+												'core/strikethrough',
+											]}
+											onClick={() => {
+												if (!url) {
+													setIsLinkOpen(true);
+												}
+											}}
+										/>
+										{description && (
+											<span className="wp-block-navigation-item__description">{description}</span>
+										)}
+									</>
+								)}
+								{(isInvalid || isDraft || isLabelFieldFocused) && (
+									<div className="wp-block-navigation-link__placeholder-text wp-block-navigation-link__label">
+										<Tooltip text={tooltipText}>
+											<span aria-label={__('Navigation link text')}>
+												{
+													// Some attributes are stored in an escaped form. It's a legacy issue.
+													// Ideally they would be stored in a raw, unescaped form.
+													// Unescape is used here to "recover" the escaped characters
+													// so they display without encoding.
+													// See `updateAttributes` for more details.
+													`${decodeEntities(label)} ${
+														isInvalid || isDraft ? placeholderText : ''
+													}`.trim()
+												}
+											</span>
+										</Tooltip>
+									</div>
+								)}
+							</>
+						)}
+						{isLinkOpen && (
+							<LinkUI
+								clientId={clientId}
+								link={attributes}
+								onClose={() => setIsLinkOpen(false)}
+								anchor={popoverAnchor}
+								onRemove={removeLink}
+								onChange={(updatedValue) => {
+									updateAttributes(updatedValue, setAttributes, attributes);
+								}}
+							/>
+						)}
+					</a>
+
+					{hasChildren && (
+						<button
+							aria-label="Expand child menu"
+							class="dropdown-nav-toggle drawer-sub-toggle"
+							data-toggle-duration="10"
+							data-toggle-target={`wp-block-kadence-navigation-link${uniqueID} .sub-menu`}
+							aria-expanded="false"
+						>
+							<span class="screen-reader-text">Expand child menu</span>
+							{ArrowDown}
+						</button>
 					)}
-					{isLinkOpen && (
-						<LinkUI
-							clientId={clientId}
-							link={attributes}
-							onClose={() => setIsLinkOpen(false)}
-							anchor={popoverAnchor}
-							onRemove={removeLink}
-							onChange={(updatedValue) => {
-								updateAttributes(updatedValue, setAttributes, attributes);
-							}}
-						/>
-					)}
-				</a>
+				</div>
 				<ul {...innerBlocksProps} />
 			</li>
 		</>

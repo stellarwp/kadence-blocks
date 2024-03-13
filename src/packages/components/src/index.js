@@ -43,8 +43,11 @@ export { default as KadenceSelectTerms } from './select-terms-control';
 export { default as KadencePostSelectTerms } from './post-select-terms-control';
 export { default as SmallResponsiveControl } from './small-responsive-control';
 export { default as ResponsiveControl } from './responsive-control';
+export { default as ResponsiveSelectControl } from './responsive-select-control';
 export { default as StepControls } from './step-control';
 export { default as OpacityControl } from './opacity-control';
+export { default as SingleBorderControl } from './border/single-border-control';
+export { default as ResponsiveSingleBorderControl } from './border/responsive-single-border-control';
 export { default as BorderControl } from './border/border-control';
 export { default as ResponsiveBorderControl } from './border/responsive-border-control';
 export { default as FontSizeControl } from './font-size';
@@ -94,8 +97,8 @@ export { default as MeasurementControls } from './measurement/measurement-contro
 export { default as MeasurementSingleControl } from './measurement/single-input-control';
 
 /* Color */
-export { default as AdvancedColorControlPalette } from './color/advanced-color-control-palette'
-export { default as BorderColorControls } from './color/border-color-control'
+export { default as AdvancedColorControlPalette } from './color/advanced-color-control-palette';
+export { default as BorderColorControls } from './color/border-color-control';
 
 /* Block Defaults */
 export { default as KadenceBlockDefaults } from './block-defaults';

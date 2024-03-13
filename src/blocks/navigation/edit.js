@@ -21,11 +21,11 @@ import { formBlockIcon, formTemplateContactIcon } from '@kadence/icons';
 import { KadencePanelBody } from '@kadence/components';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { Placeholder, Spinner } from '@wordpress/components';
-import { store as coreStore, EntityProvider } from '@wordpress/core-data';
+import { store as coreStore, EntityProvider, useEntityProp } from '@wordpress/core-data';
 
 import { useEntityAutoDraft } from './hooks';
 import { SelectOrCreatePlaceholder, SelectForm } from './components';
-import { getUniqueId, getPostOrFseId } from '@kadence/helpers';
+import { getUniqueId, getPostOrFseId, getPreviewSize } from '@kadence/helpers';
 
 /**
  * Internal dependencies
@@ -36,17 +36,36 @@ import { useEffect } from '@wordpress/element';
 export function Edit(props) {
 	const { attributes, setAttributes, clientId } = props;
 
-	const { id, uniqueID, navigationOrientation, navigationStretch, navigationFillStretch } = attributes;
+	const { id, uniqueID } = attributes;
 
-	const blockClasses = classnames({
-		[`wp-block-kadence-navigation${uniqueID}`]: uniqueID,
-		[`navigation-layout-stretch-${navigationStretch}`]: true,
-		[`navigation-layout-fill-stretch-${navigationFillStretch}`]: true,
-		[`navigation-orientation-${navigationOrientation}`]: true,
-	});
-	const blockProps = useBlockProps({
-		className: blockClasses,
-	});
+	// Since we're not in the EntityProvider yet, we need to provide a post id.
+	// 'id' and 'meta' will be undefined untill the actual post is chosen / loaded
+	const [meta, setMeta] = useNavigationProp('meta', id);
+
+	const metaAttributes = {
+		orientation: meta?._kad_navigation_orientation,
+		orientationTablet: meta?._kad_navigation_orientationTablet,
+		orientationMobile: meta?._kad_navigation_orientationMobile,
+		stretch: meta?._kad_navigation_stretch,
+		stretchTablet: meta?._kad_navigation_stretchTablet,
+		stretchMobile: meta?._kad_navigation_stretchMobile,
+		fillStretch: meta?._kad_navigation_fillStretch,
+		fillStretchTablet: meta?._kad_navigation_fillStretchTablet,
+		fillStretchMobile: meta?._kad_navigation_fillStretchMobile,
+	};
+
+	const {
+		orientation,
+		orientationTablet,
+		orientationMobile,
+		stretch,
+		stretchTablet,
+		stretchMobile,
+		fillStretch,
+		fillStretchTablet,
+		fillStretchMobile,
+	} = metaAttributes;
+
 	const { post, postExists, isLoading, currentPostType, postId } = useSelect(
 		(select) => {
 			return {
@@ -60,6 +79,15 @@ export function Edit(props) {
 			};
 		},
 		[id]
+	);
+
+	const { previewDevice } = useSelect(
+		(select) => {
+			return {
+				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
+			};
+		},
+		[clientId]
 	);
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
@@ -104,6 +132,22 @@ export function Edit(props) {
 		}
 	}, []);
 
+	const blockClasses = classnames({
+		[`wp-block-kadence-navigation${uniqueID}`]: uniqueID,
+		[`navigation-desktop-layout-stretch-${stretch}`]: !previewDevice || previewDevice == 'Desktop',
+		[`navigation-tablet-layout-stretch-${stretchTablet}`]: previewDevice == 'Tablet',
+		[`navigation-mobile-layout-stretch-${stretchMobile}`]: previewDevice == 'Mobile',
+		[`navigation-desktop-layout-fill-stretch-${fillStretch}`]: !previewDevice || previewDevice == 'Desktop',
+		[`navigation-tablet-layout-fill-stretch-${fillStretchTablet}`]: previewDevice == 'Tablet',
+		[`navigation-mobile-layout-fill-stretch-${fillStretchMobile}`]: previewDevice == 'Mobile',
+		[`navigation-desktop-orientation-${orientation}`]: !previewDevice || previewDevice == 'Desktop',
+		[`navigation-tablet-orientation-${orientationTablet}`]: previewDevice == 'Tablet',
+		[`navigation-mobile-orientation-${orientationMobile}`]: previewDevice == 'Mobile',
+	});
+	const blockProps = useBlockProps({
+		className: blockClasses,
+	});
+
 	{
 		/* Directly editing from via kadence_navigation post type */
 	}
@@ -114,6 +158,7 @@ export function Edit(props) {
 			</div>
 		);
 	}
+
 	return (
 		<div {...blockProps}>
 			{/* No form selected or selected form was deleted from the site, display chooser */}
@@ -218,4 +263,8 @@ function Chooser({ id, post, commit, postExists }) {
 			isAdding={isAdding}
 		/>
 	);
+}
+
+function useNavigationProp(prop, postId) {
+	return useEntityProp('postType', 'kadence_navigation', prop, postId);
 }

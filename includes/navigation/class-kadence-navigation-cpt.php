@@ -97,7 +97,7 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 					'title',
 					'editor',
 					'revisions',
-					'custom-fields'
+					'custom-fields',
 				),
 			)
 		);
@@ -221,15 +221,32 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'default' => '',
 			),
 			array(
+				'key'     => '_kad_navigation_orientationTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_orientationMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
 				'key'     => '_kad_navigation_spacing',
 				'type' => 'array',
 				'default' => array( '', '', '', '' ),
 				'children_type' => 'string',
 			),
 			array(
-				'key'     => '_kad_navigation_spacingUnit',
-				'type' => 'string',
-				'default' => 'em',
+				'key'     => '_kad_navigation_spacingTablet',
+				'type' => 'array',
+				'default' => array( '', '', '', '' ),
+				'children_type' => 'string',
+			),
+			array(
+				'key'     => '_kad_navigation_spacingMobile',
+				'type' => 'array',
+				'default' => array( '', '', '', '' ),
+				'children_type' => 'string',
 			),
 			array(
 				'key'     => '_kad_navigation_style',
@@ -237,7 +254,32 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'default' => '',
 			),
 			array(
+				'key'     => '_kad_navigation_styleTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_styleMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_spacingUnit',
+				'type' => 'string',
+				'default' => 'em',
+			),
+			array(
 				'key'     => '_kad_navigation_stretch',
+				'type' => 'boolean',
+				'default' => false,
+			),
+			array(
+				'key'     => '_kad_navigation_stretchTablet',
+				'type' => 'boolean',
+				'default' => false,
+			),
+			array(
+				'key'     => '_kad_navigation_stretchMobile',
 				'type' => 'boolean',
 				'default' => false,
 			),
@@ -247,7 +289,57 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'default' => false,
 			),
 			array(
+				'key'     => '_kad_navigation_fillStretchTablet',
+				'type' => 'boolean',
+				'default' => false,
+			),
+			array(
+				'key'     => '_kad_navigation_fillStretchMobile',
+				'type' => 'boolean',
+				'default' => false,
+			),
+			array(
 				'key'     => '_kad_navigation_parentActive',
+				'type' => 'boolean',
+				'default' => false,
+			),
+			array(
+				'key'     => '_kad_navigation_parentActiveTablet',
+				'type' => 'boolean',
+				'default' => false,
+			),
+			array(
+				'key'     => '_kad_navigation_parentActiveMobile',
+				'type' => 'boolean',
+				'default' => false,
+			),
+			array(
+				'key'     => '_kad_navigation_collapseSubMenus',
+				'type' => 'boolean',
+				'default' => true,
+			),
+			array(
+				'key'     => '_kad_navigation_collapseSubMenusTablet',
+				'type' => 'boolean',
+				'default' => true,
+			),
+			array(
+				'key'     => '_kad_navigation_collapseSubMenusMobile',
+				'type' => 'boolean',
+				'default' => true,
+			),
+			array(
+				'key'     => '_kad_navigation_parentTogglesMenus',
+				'type' => 'boolean',
+				'default' => false,
+			),
+			array(
+				'key'     => '_kad_navigation_parentTogglesMenusTablet',
+				'type' => 'boolean',
+				'default' => false,
+			),
+			array(
+				'key'     => '_kad_navigation_parentTogglesMenusMobile',
 				'type' => 'boolean',
 				'default' => false,
 			),
@@ -263,6 +355,81 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 			),
 			array(
 				'key'     => '_kad_navigation_linkColorActive',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_linkColorTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_linkColorHoverTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_linkColorActiveTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_linkColorMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_linkColorHoverMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_linkColorActiveMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_background',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundHover',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundActive',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundHoverTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundActiveTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundHoverMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundActiveMobile',
 				'type' => 'string',
 				'default' => '',
 			),
@@ -283,6 +450,8 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 			),
 			array(
 				'key'     => '_kad_navigation_typography',
+				'type' => 'array',
+				'children_type' => 'object',
 				'default' => array(
 					array(
 						'size'    => array( '', '', '' ),
@@ -319,6 +488,48 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 					'subset'   => array( 'type' => 'string' ),
 					'loadGoogle'   => array( 'type' => 'boolean' ),
 				)
+			),
+			array(
+				'key'     => '_kad_navigation_divider',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top' => array( '', '', '' ),
+						'right' => array( '', '', '' ),
+						'bottom' => array( '', '', '' ),
+						'left' => array( '', '', '' ),
+						'unit' => 'px',
+					),
+				),
+			),
+			array(
+				'key'     => '_kad_navigation_dividerTablet',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top' => array( '', '', '' ),
+						'right' => array( '', '', '' ),
+						'bottom' => array( '', '', '' ),
+						'left' => array( '', '', '' ),
+						'unit' => 'px',
+					),
+				),
+			),
+			array(
+				'key'     => '_kad_navigation_dividerMobile',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top' => array( '', '', '' ),
+						'right' => array( '', '', '' ),
+						'bottom' => array( '', '', '' ),
+						'left' => array( '', '', '' ),
+						'unit' => 'px',
+					),
+				),
 			),
 		);
 

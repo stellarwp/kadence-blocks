@@ -1,5 +1,5 @@
 /**
- * Responsive Border Control Component
+ * Responsive Single Border Control Component
  *
  */
 
@@ -10,7 +10,7 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { useState, useRef, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { map, isEqual } from 'lodash';
-import BorderControl from '../border-control';
+import SingleBorderControl from '../single-border-control';
 import { capitalizeFirstLetter } from '@kadence/helpers';
 import { undo } from '@wordpress/icons';
 /**
@@ -24,15 +24,15 @@ import { settings, link, linkOff } from '@wordpress/icons';
  * Build the Measure controls
  * @returns {object} Measure settings.
  */
-export default function ResponsiveBorderControl({
+export default function ResponsiveSingleBorderControl({
 	label,
 	onChange,
 	onChangeTablet,
 	onChangeMobile,
 	onControl,
-	mobileValue = '',
-	tabletValue = '',
 	value = '',
+	tabletValue = '',
+	mobileValue = '',
 	control = 'individual',
 	units = ['px', 'em', 'rem'],
 	firstIcon = outlineTopIcon,
@@ -66,7 +66,7 @@ export default function ResponsiveBorderControl({
 	reset = true,
 	defaultLinked = true,
 }) {
-	const instanceId = useInstanceId(ResponsiveBorderControl);
+	const instanceId = useInstanceId(ResponsiveSingleBorderControl);
 	const measureIcons = {
 		first: firstIcon,
 		second: secondIcon,
@@ -75,6 +75,10 @@ export default function ResponsiveBorderControl({
 		link: linkIcon,
 		unlink: unlinkIcon,
 	};
+
+	const currentDesktopObject = value?.[0] || deskDefault;
+	const currentTabletObject = tabletValue?.[0] || tabletDefault;
+	const currentMobileObject = mobileValue?.[0] || mobileDefault;
 	const [theControl, setTheControl] = useState(control);
 	const realControl = onControl ? control : theControl;
 	const realSetOnControl = onControl ? onControl : setTheControl;
@@ -86,45 +90,14 @@ export default function ResponsiveBorderControl({
 		setDeviceType(theDevice);
 	}
 	useEffect(() => {
-		if (defaultLinked) {
-			if (theDevice === 'Mobile') {
-				if (
-					isEqual(mobileValue?.[0]?.top, mobileValue?.[0]?.bottom) &&
-					isEqual(mobileValue?.[0]?.top, mobileValue?.[0]?.bottom) &&
-					isEqual(mobileValue?.[0]?.top, mobileValue?.[0]?.right) &&
-					isEqual(mobileValue?.[0]?.top, mobileValue?.[0]?.left)
-				) {
-					realSetOnControl('linked');
-				}
-			} else if (theDevice === 'Tablet') {
-				if (
-					isEqual(tabletValue?.[0]?.top, tabletValue?.[0]?.bottom) &&
-					isEqual(tabletValue?.[0]?.top, tabletValue?.[0]?.bottom) &&
-					isEqual(tabletValue?.[0]?.top, tabletValue?.[0]?.right) &&
-					isEqual(tabletValue?.[0]?.top, tabletValue?.[0]?.left)
-				) {
-					realSetOnControl('linked');
-				}
-			} else {
-				if (
-					isEqual(value?.[0]?.top, value?.[0]?.bottom) &&
-					isEqual(value?.[0]?.top, value?.[0]?.bottom) &&
-					isEqual(value?.[0]?.top, value?.[0]?.right) &&
-					isEqual(value?.[0]?.top, value?.[0]?.left)
-				) {
-					realSetOnControl('linked');
-				}
-			}
-		}
-
 		//if the mobile or tablet units are the same as desktop, unset them so they now inherit / follow desktop.
-		if (mobileValue && isEqual(value?.[0]?.unit, mobileValue?.[0]?.unit)) {
-			mobileValue[0].unit = '';
-			onChangeMobile(mobileValue);
+		if (currentMobileObject && isEqual(currentDesktopObject.unit, currentMobileObject?.unit)) {
+			currentMobileObject.unit = '';
+			onChangeMobile(currentMobileObject);
 		}
-		if (tabletValue && isEqual(value?.[0]?.unit, tabletValue?.[0]?.unit)) {
-			tabletValue[0].unit = '';
-			onChangeTablet(tabletValue);
+		if (currentTabletObject && isEqual(currentDesktopObject.unit, currentTabletObject?.unit)) {
+			currentTabletObject.unit = '';
+			onChangeTablet(currentTabletObject);
 		}
 	}, []);
 	const { setPreviewDeviceType } = useDispatch('kadenceblocks/data');
@@ -150,11 +123,11 @@ export default function ResponsiveBorderControl({
 			itemClass: 'kb-mobile-tab',
 		},
 	];
-	let liveValue = value?.[0] ? value[0] : deskDefault;
+	let liveValue = currentDesktopObject;
 	if (deviceType === 'Tablet') {
-		liveValue = tabletValue?.[0] ? tabletValue[0] : tabletDefault;
+		liveValue = currentTabletObject;
 	} else if (deviceType === 'Mobile') {
-		liveValue = mobileValue?.[0] ? mobileValue[0] : mobileDefault;
+		liveValue = currentMobileObject;
 	}
 	const onReset = () => {
 		if (deviceType === 'Tablet') {
@@ -166,61 +139,80 @@ export default function ResponsiveBorderControl({
 		}
 	};
 	const output = {};
-	const mobileUnit = mobileValue?.[0]?.unit ? mobileValue[0].unit : value?.[0]?.unit ? value[0].unit : 'px';
-	const tabletUnit = tabletValue?.[0]?.unit ? tabletValue[0].unit : value?.[0]?.unit ? value[0].unit : 'px';
+	const mobileUnit = currentMobileObject?.unit
+		? currentMobileObject.unit
+		: currentDesktopObject?.unit
+		? currentDesktopObject.unit
+		: 'px';
+	const tabletUnit = currentTabletObject?.unit
+		? currentTabletObject.unit
+		: currentDesktopObject?.unit
+		? currentDesktopObject.unit
+		: 'px';
+
+	const handleOnChangeDesktop = (size, attr) => {
+		console.log();
+		var newVal = JSON.parse(JSON.stringify(value));
+		newVal[0][attr] = size;
+		onChange(newVal);
+	};
+	const handleOnChangeTablet = (size, attr) => {
+		var newVal = JSON.parse(JSON.stringify(valueTablet));
+		newVal[0][attr] = size;
+		onChangeTablet(newVal);
+	};
+	const handleOnChangeMobile = (size, attr) => {
+		var newVal = JSON.parse(JSON.stringify(valueMobile));
+		newVal[0][attr] = size;
+		onChangeMobile(newVal);
+	};
 
 	output.Mobile = (
-		<BorderControl
+		<SingleBorderControl
 			key={'mobile' + instanceId}
-			value={mobileValue ? JSON.parse(JSON.stringify(mobileValue)) : undefined}
-			onChange={(size) => onChangeMobile(size)}
-			control={realControl}
-			onControl={(value) => realSetOnControl(value)}
-			defaultValue={mobileDefault}
+			value={currentMobileObject?.bottom ? JSON.parse(JSON.stringify(currentMobileObject?.bottom)) : undefined}
+			unit={currentMobileObject?.unit ? JSON.parse(JSON.stringify(currentMobileObject?.unit)) : 'px'}
+			onChange={(size) => handleOnChangeMobile(size, 'bottom')}
+			onUnit={(unit) => handleOnChangeMobile(unit, 'unit')}
+			defaultValue={mobileDefault?.bottom}
 			styles={styles}
 			units={[mobileUnit]}
 			firstIcon={firstIcon}
 			secondIcon={secondIcon}
 			thirdIcon={thirdIcon}
 			fourthIcon={fourthIcon}
-			linkIcon={linkIcon}
-			unlinkIcon={unlinkIcon}
 		/>
 	);
 	output.Tablet = (
-		<BorderControl
+		<SingleBorderControl
 			key={'tablet' + instanceId}
-			value={tabletValue ? JSON.parse(JSON.stringify(tabletValue)) : undefined}
-			onChange={(size) => onChangeTablet(size)}
-			control={realControl}
-			onControl={(value) => realSetOnControl(value)}
-			defaultValue={tabletDefault}
+			value={currentTabletObject?.bottom ? JSON.parse(JSON.stringify(currentTabletObject?.bottom)) : undefined}
+			unit={currentTabletObject?.unit ? JSON.parse(JSON.stringify(currentTabletObject?.unit)) : 'px'}
+			onChange={(size) => handleOnChangeTablet(size, 'bottom')}
+			onUnit={(unit) => handleOnChangeTablet(unit, 'unit')}
+			defaultValue={tabletDefault?.bottom}
 			styles={styles}
 			units={[tabletUnit]}
 			firstIcon={firstIcon}
 			secondIcon={secondIcon}
 			thirdIcon={thirdIcon}
 			fourthIcon={fourthIcon}
-			linkIcon={linkIcon}
-			unlinkIcon={unlinkIcon}
 		/>
 	);
 	output.Desktop = (
-		<BorderControl
+		<SingleBorderControl
 			key={'desktop' + instanceId}
-			value={value ? JSON.parse(JSON.stringify(value)) : undefined}
-			onChange={(size) => onChange(size)}
-			control={realControl}
-			onControl={(value) => realSetOnControl(value)}
-			defaultValue={deskDefault}
+			value={currentDesktopObject?.bottom ? JSON.parse(JSON.stringify(currentDesktopObject?.bottom)) : undefined}
+			unit={currentDesktopObject?.unit ? JSON.parse(JSON.stringify(currentDesktopObject?.unit)) : 'px'}
+			onChange={(size) => handleOnChangeDesktop(size, 'bottom')}
+			onUnit={(unit) => handleOnChangeDesktop(unit, 'unit')}
+			defaultValue={deskDefault?.bottom}
 			styles={styles}
 			units={units}
 			firstIcon={firstIcon}
 			secondIcon={secondIcon}
 			thirdIcon={thirdIcon}
 			fourthIcon={fourthIcon}
-			linkIcon={linkIcon}
-			unlinkIcon={unlinkIcon}
 		/>
 	);
 	let currentDefault = deskDefault;
@@ -268,21 +260,6 @@ export default function ResponsiveBorderControl({
 							</Button>
 						))}
 					</ButtonGroup>
-					{realSetOnControl && (
-						<Button
-							isSmall={true}
-							className={'kadence-radio-item border-control-toggle is-single only-icon'}
-							label={
-								realControl !== 'individual'
-									? __('Individual', 'kadence-blocks')
-									: __('Linked', 'kadence-blocks')
-							}
-							icon={realControl !== 'individual' ? measureIcons.link : measureIcons.unlink}
-							onClick={() => realSetOnControl(realControl !== 'individual' ? 'individual' : 'linked')}
-							isPressed={realControl !== 'individual' ? true : false}
-							isTertiary={realControl !== 'individual' ? false : true}
-						/>
-					)}
 				</div>
 				<div className="kb-responsive-border-control-inner">
 					{output[deviceType] ? output[deviceType] : output.Desktop}
