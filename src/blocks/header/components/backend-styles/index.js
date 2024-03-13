@@ -105,26 +105,26 @@ export default function BackendStyles(props) {
 	const previewBorderTop = getPreviewSize(
 		previewDevice,
 		undefined !== border?.top ? getSpacingOptionOutput(border.top[2], border.unit) : '',
-		undefined !== tabletBorder?.top ? getSpacingOptionOutput(tabletBorder.top[2], borderUnit) : '',
-		undefined !== mobileBorder?.top ? getSpacingOptionOutput(mobileBorder.top[2], borderUnit) : ''
+		undefined !== tabletBorder?.top ? getSpacingOptionOutput(tabletBorder.top[2], border.unit) : '',
+		undefined !== mobileBorder?.top ? getSpacingOptionOutput(mobileBorder.top[2], border.unit) : ''
 	);
 	const previewBorderRight = getPreviewSize(
 		previewDevice,
 		undefined !== border?.right ? getSpacingOptionOutput(border.right[2], border.unit) : '',
-		undefined !== tabletBorder?.right ? getSpacingOptionOutput(tabletBorder.right[2], borderUnit) : '',
-		undefined !== mobileBorder?.right ? getSpacingOptionOutput(mobileBorder.right[2], borderUnit) : ''
+		undefined !== tabletBorder?.right ? getSpacingOptionOutput(tabletBorder.right[2], border.unit) : '',
+		undefined !== mobileBorder?.right ? getSpacingOptionOutput(mobileBorder.right[2], border.unit) : ''
 	);
 	const previewBorderBottom = getPreviewSize(
 		previewDevice,
 		undefined !== border?.bottom ? getSpacingOptionOutput(border.bottom[2], border.unit) : '',
-		undefined !== tabletBorder?.bottom ? getSpacingOptionOutput(tabletBorder.bottom[2], borderUnit) : '',
-		undefined !== mobileBorder?.bottom ? getSpacingOptionOutput(mobileBorder.bottom[2], borderUnit) : ''
+		undefined !== tabletBorder?.bottom ? getSpacingOptionOutput(tabletBorder.bottom[2], border.unit) : '',
+		undefined !== mobileBorder?.bottom ? getSpacingOptionOutput(mobileBorder.bottom[2], border.unit) : ''
 	);
 	const previewBorderLeft = getPreviewSize(
 		previewDevice,
 		undefined !== border?.left ? getSpacingOptionOutput(border.left[2], border.unit) : '',
-		undefined !== tabletBorder?.left ? getSpacingOptionOutput(tabletBorder.left[2], borderUnit) : '',
-		undefined !== mobileBorder?.left ? getSpacingOptionOutput(mobileBorder.left[2], borderUnit) : ''
+		undefined !== tabletBorder?.left ? getSpacingOptionOutput(tabletBorder.left[2], border.unit) : '',
+		undefined !== mobileBorder?.left ? getSpacingOptionOutput(mobileBorder.left[2], border.unit) : ''
 	);
 
 	const previewBorderColorTop = getPreviewSize(
@@ -186,82 +186,82 @@ export default function BackendStyles(props) {
 	const previewHoverBorderColorTop = getPreviewSize(
 		previewDevice,
 		undefined !== hoverBorder?.top ? KadenceColorOutput(hoverBorder.top[0]) : '',
-		undefined !== tabletBorder?.top ? KadenceColorOutput(tabletBorder.top[0]) : '',
-		undefined !== mobileBorder?.top ? KadenceColorOutput(tabletBorder.top[0]) : ''
+		undefined !== tabletHoverBorder?.top ? KadenceColorOutput(tabletHoverBorder.top[0]) : '',
+		undefined !== mobileHoverBorder?.top ? KadenceColorOutput(mobileHoverBorder.top[0]) : ''
 	);
 
 	const previewHoverBorderColorRight = getPreviewSize(
 		previewDevice,
 		undefined !== hoverBorder?.right ? KadenceColorOutput(hoverBorder.right[0]) : '',
-		undefined !== tabletBorder?.right ? KadenceColorOutput(tabletBorder.right[0]) : '',
-		undefined !== mobileBorder?.right ? KadenceColorOutput(tabletBorder.right[0]) : ''
+		undefined !== tabletHoverBorder?.right ? KadenceColorOutput(tabletHoverBorder.right[0]) : '',
+		undefined !== mobileHoverBorder?.right ? KadenceColorOutput(mobileHoverBorder.right[0]) : ''
 	);
 
 	const previewHoverBorderColorBottom = getPreviewSize(
 		previewDevice,
 		undefined !== hoverBorder?.bottom ? KadenceColorOutput(hoverBorder.bottom[0]) : '',
-		undefined !== tabletBorder?.bottom ? KadenceColorOutput(tabletBorder.bottom[0]) : '',
-		undefined !== mobileBorder?.bottom ? KadenceColorOutput(tabletBorder.bottom[0]) : ''
+		undefined !== tabletHoverBorder?.bottom ? KadenceColorOutput(tabletHoverBorder.bottom[0]) : '',
+		undefined !== mobileHoverBorder?.bottom ? KadenceColorOutput(mobileHoverBorder.bottom[0]) : ''
 	);
 
 	const previewHoverBorderColorLeft = getPreviewSize(
 		previewDevice,
 		undefined !== hoverBorder?.left ? KadenceColorOutput(hoverBorder.left[0]) : '',
-		undefined !== tabletBorder?.left ? KadenceColorOutput(tabletBorder.left[0]) : '',
-		undefined !== mobileBorder?.left ? KadenceColorOutput(tabletBorder.left[0]) : ''
+		undefined !== tabletHoverBorder?.left ? KadenceColorOutput(tabletHoverBorder.left[0]) : '',
+		undefined !== mobileHoverBorder?.left ? KadenceColorOutput(mobileHoverBorder.left[0]) : ''
 	);
 
 	const previewHoverBorderStyleTop = getPreviewSize(
 		previewDevice,
 		undefined !== hoverBorder?.top ? hoverBorder.top[1] : '',
-		undefined !== tabletBorder?.top ? tabletBorder.top[1] : '',
-		undefined !== mobileBorder?.top ? mobileBorder.top[1] : ''
+		undefined !== tabletHoverBorder?.top ? tabletHoverBorder.top[1] : '',
+		undefined !== mobileHoverBorder?.top ? mobileHoverBorder.top[1] : ''
 	);
 
 	const previewHoverBorderStyleRight = getPreviewSize(
 		previewDevice,
 		undefined !== hoverBorder?.right ? hoverBorder.right[1] : '',
-		undefined !== tabletBorder?.right ? tabletBorder.right[1] : '',
-		undefined !== mobileBorder?.right ? mobileBorder.right[1] : ''
+		undefined !== tabletHoverBorder?.right ? tabletHoverBorder.right[1] : '',
+		undefined !== mobileHoverBorder?.right ? mobileHoverBorder.right[1] : ''
 	);
 
 	const previewHoverBorderStyleBottom = getPreviewSize(
 		previewDevice,
 		undefined !== hoverBorder?.bottom ? hoverBorder.bottom[1] : '',
-		undefined !== tabletBorder?.bottom ? tabletBorder.bottom[1] : '',
-		undefined !== mobileBorder?.bottom ? mobileBorder.bottom[1] : ''
+		undefined !== tabletHoverBorder?.bottom ? tabletHoverBorder.bottom[1] : '',
+		undefined !== mobileHoverBorder?.bottom ? mobileHoverBorder.bottom[1] : ''
 	);
 
 	const previewHoverBorderStyleLeft = getPreviewSize(
 		previewDevice,
 		undefined !== hoverBorder?.left ? hoverBorder.left[1] : '',
-		undefined !== tabletBorder?.left ? tabletBorder.left[1] : '',
-		undefined !== mobileBorder?.left ? mobileBorder.left[1] : ''
+		undefined !== tabletHoverBorder?.left ? tabletHoverBorder.left[1] : '',
+		undefined !== mobileHoverBorder?.left ? mobileHoverBorder.left[1] : ''
 	);
 
 	const previewHoverBorderTop = getPreviewSize(
 		previewDevice,
 		undefined !== hoverBorder?.top ? getSpacingOptionOutput(hoverBorder.top[2], hoverBorder.unit) : '',
-		undefined !== tabletBorder?.top ? getSpacingOptionOutput(tabletBorder.top[2], hoverBorder.unit) : '',
-		undefined !== mobileBorder?.top ? getSpacingOptionOutput(mobileBorder.top[2], hoverBorderUnit) : ''
+		undefined !== tabletHoverBorder?.top ? getSpacingOptionOutput(tabletHoverBorder.top[2], hoverBorder.unit) : '',
+		undefined !== mobileHoverBorder?.top ? getSpacingOptionOutput(mobileHoverBorder.top[2], hoverBorder.unit) : ''
 	);
 	const previewHoverBorderRight = getPreviewSize(
 		previewDevice,
 		undefined !== hoverBorder?.right ? getSpacingOptionOutput(hoverBorder.right[2], hoverBorder.unit) : '',
-		undefined !== tabletBorder?.right ? getSpacingOptionOutput(tabletBorder.right[2], hoverBorder.unit) : '',
-		undefined !== mobileBorder?.right ? getSpacingOptionOutput(mobileBorder.right[2], hoverBorder.unit) : ''
+		undefined !== tabletHoverBorder?.right ? getSpacingOptionOutput(tabletHoverBorder.right[2], hoverBorder.unit) : '',
+		undefined !== mobileHoverBorder?.right ? getSpacingOptionOutput(mobileHoverBorder.right[2], hoverBorder.unit) : ''
 	);
 	const previewHoverBorderBottom = getPreviewSize(
 		previewDevice,
 		undefined !== hoverBorder?.bottom ? getSpacingOptionOutput(hoverBorder.bottom[2], hoverBorder.unit) : '',
-		undefined !== tabletBorder?.bottom ? getSpacingOptionOutput(tabletBorder.bottom[2], hoverBorder.unit) : '',
-		undefined !== mobileBorder?.bottom ? getSpacingOptionOutput(mobileBorder.bottom[2], hoverBorderUnit) : ''
+		undefined !== tabletHoverBorder?.bottom ? getSpacingOptionOutput(tabletHoverBorder.bottom[2], hoverBorder.unit) : '',
+		undefined !== mobileHoverBorder?.bottom ? getSpacingOptionOutput(mobileHoverBorder.bottom[2], hoverBorder.unit) : ''
 	);
 	const previewHoverBorderLeft = getPreviewSize(
 		previewDevice,
 		undefined !== hoverBorder?.left ? getSpacingOptionOutput(hoverBorder.left[2], hoverBorder.unit) : '',
-		undefined !== tabletBorder?.left ? getSpacingOptionOutput(tabletBorder.left[2], hoverBorder.unit) : '',
-		undefined !== mobileBorder?.left ? getSpacingOptionOutput(mobileBorder.left[2], hoverBorder.unit) : ''
+		undefined !== tabletHoverBorder?.left ? getSpacingOptionOutput(tabletHoverBorder.left[2], hoverBorder.unit) : '',
+		undefined !== mobileHoverBorder?.left ? getSpacingOptionOutput(mobileHoverBorder.left[2], hoverBorder.unit) : ''
 	);
 
 	const previewBorderTopLeftRadius = getPreviewSize(

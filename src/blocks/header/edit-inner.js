@@ -94,7 +94,7 @@ export function EditInner(props) {
 		marginUnit: meta?._kad_header_marginUnit,
 		border: meta?._kad_header_border,
 		tabletBorder: meta?._kad_header_tabletBorder,
-		mobileBorder: meta?._kad_header_tabletBorder,
+		mobileBorder: meta?._kad_header_mobileBorder,
 		borderUnit: meta?._kad_header_borderUnit,
 		hoverBorder: meta?._kad_header_hoverBorder,
 		tabletHoverBorder: meta?._kad_header_tabletHoverBorder,
