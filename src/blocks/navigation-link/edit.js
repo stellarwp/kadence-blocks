@@ -862,84 +862,89 @@ export default function Edit(props) {
 									: undefined,
 						}}
 					>
-						{/* eslint-enable */}
-						{!url ? (
-							<div className="wp-block-navigation-link__placeholder-text">
-								<Tooltip text={tooltipText}>
-									<span>{missingText}</span>
-								</Tooltip>
-							</div>
-						) : (
-							<>
-								{!isInvalid && !isDraft && !isLabelFieldFocused && (
-									<>
-										<RichText
-											ref={ref}
-											identifier="label"
-											className="wp-block-navigation-item__label"
-											value={label}
-											onChange={(labelValue) =>
-												setAttributes({
-													label: labelValue,
-												})
-											}
-											onMerge={mergeBlocks}
-											onReplace={onReplace}
-											__unstableOnSplitAtEnd={() =>
-												insertBlocksAfter(createBlock('kadence/navigation-link'))
-											}
-											aria-label={__('Navigation link text')}
-											placeholder={itemLabelPlaceholder}
-											withoutInteractiveFormatting
-											allowedFormats={[
-												'core/bold',
-												'core/italic',
-												'core/image',
-												'core/strikethrough',
-											]}
-											onClick={() => {
-												if (!url) {
-													setIsLinkOpen(true);
+						<span className="link-drop-title-wrap">
+							{/* eslint-enable */}
+							{!url ? (
+								<div className="wp-block-navigation-link__placeholder-text">
+									<Tooltip text={tooltipText}>
+										<span>{missingText}</span>
+									</Tooltip>
+								</div>
+							) : (
+								<>
+									{!isInvalid && !isDraft && !isLabelFieldFocused && (
+										<>
+											<RichText
+												ref={ref}
+												identifier="label"
+												className="wp-block-navigation-item__label"
+												value={label}
+												onChange={(labelValue) =>
+													setAttributes({
+														label: labelValue,
+													})
 												}
-											}}
-										/>
-										{description && (
-											<span className="wp-block-navigation-item__description">{description}</span>
-										)}
-									</>
-								)}
-								{(isInvalid || isDraft || isLabelFieldFocused) && (
-									<div className="wp-block-navigation-link__placeholder-text wp-block-navigation-link__label">
-										<Tooltip text={tooltipText}>
-											<span aria-label={__('Navigation link text')}>
-												{
-													// Some attributes are stored in an escaped form. It's a legacy issue.
-													// Ideally they would be stored in a raw, unescaped form.
-													// Unescape is used here to "recover" the escaped characters
-													// so they display without encoding.
-													// See `updateAttributes` for more details.
-													`${decodeEntities(label)} ${
-														isInvalid || isDraft ? placeholderText : ''
-													}`.trim()
+												onMerge={mergeBlocks}
+												onReplace={onReplace}
+												__unstableOnSplitAtEnd={() =>
+													insertBlocksAfter(createBlock('kadence/navigation-link'))
 												}
-											</span>
-										</Tooltip>
-									</div>
-								)}
-							</>
-						)}
-						{isLinkOpen && (
-							<LinkUI
-								clientId={clientId}
-								link={attributes}
-								onClose={() => setIsLinkOpen(false)}
-								anchor={popoverAnchor}
-								onRemove={removeLink}
-								onChange={(updatedValue) => {
-									updateAttributes(updatedValue, setAttributes, attributes);
-								}}
-							/>
-						)}
+												aria-label={__('Navigation link text')}
+												placeholder={itemLabelPlaceholder}
+												withoutInteractiveFormatting
+												allowedFormats={[
+													'core/bold',
+													'core/italic',
+													'core/image',
+													'core/strikethrough',
+												]}
+												onClick={() => {
+													if (!url) {
+														setIsLinkOpen(true);
+													}
+												}}
+											/>
+											{description && (
+												<span className="wp-block-navigation-item__description">
+													{description}
+												</span>
+											)}
+										</>
+									)}
+									{(isInvalid || isDraft || isLabelFieldFocused) && (
+										<div className="wp-block-navigation-link__placeholder-text wp-block-navigation-link__label">
+											<Tooltip text={tooltipText}>
+												<span aria-label={__('Navigation link text')}>
+													{
+														// Some attributes are stored in an escaped form. It's a legacy issue.
+														// Ideally they would be stored in a raw, unescaped form.
+														// Unescape is used here to "recover" the escaped characters
+														// so they display without encoding.
+														// See `updateAttributes` for more details.
+														`${decodeEntities(label)} ${
+															isInvalid || isDraft ? placeholderText : ''
+														}`.trim()
+													}
+												</span>
+											</Tooltip>
+										</div>
+									)}
+								</>
+							)}
+							{isLinkOpen && (
+								<LinkUI
+									clientId={clientId}
+									link={attributes}
+									onClose={() => setIsLinkOpen(false)}
+									anchor={popoverAnchor}
+									onRemove={removeLink}
+									onChange={(updatedValue) => {
+										updateAttributes(updatedValue, setAttributes, attributes);
+									}}
+								/>
+							)}
+							{hasChildren && <span className="title-dropdown-nav-toggle">{ArrowDown}</span>}
+						</span>
 					</a>
 
 					{hasChildren && (

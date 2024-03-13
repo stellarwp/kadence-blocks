@@ -128,7 +128,7 @@ $anchor: #5000b9;
 		li.menu-item--has-toggle
 		> .link-drop-wrap
 		> a:focus
-		.dropdown-nav-toggle {
+		.title-dropdown-nav-toggle {
 		opacity: 0.2;
 	}
 	// Hide divider for last item.
@@ -166,7 +166,7 @@ $anchor: #5000b9;
 	/*--------------------------------------------------------------
 		## Submenu Toggles for Header Menus
 		--------------------------------------------------------------*/
-	.wp-site-blocks .nav--toggle-sub .dropdown-nav-special-toggle {
+	.nav--toggle-sub .dropdown-nav-toggle {
 		position: absolute !important;
 		overflow: hidden;
 		padding: 0 !important;
@@ -185,15 +185,15 @@ $anchor: #5000b9;
 		right: calc(1.4em / 2);
 		pointer-events: none;
 	}
-	.wp-site-blocks .nav--toggle-sub .sub-menu .dropdown-nav-special-toggle {
+	.nav--toggle-sub .sub-menu .dropdown-nav-toggle {
 		width: 2.6em;
 		margin: 0 !important;
 		right: 0;
 	}
-	.nav--toggle-sub .dropdown-nav-special-toggle:focus {
+	.nav--toggle-sub .dropdown-nav-toggle:focus {
 		z-index: 10;
 	}
-	.nav--toggle-sub .dropdown-nav-toggle {
+	.nav--toggle-sub .title-dropdown-nav-toggle {
 		display: block;
 		background: transparent;
 		position: absolute;
@@ -214,18 +214,22 @@ $anchor: #5000b9;
 		transform: translateY(-50%);
 		overflow: visible;
 		transition: opacity 0.2s ease;
+
+		.kadence-svg-icon {
+			align-self: center;
+		}
 	}
-	.nav--toggle-sub ul ul .dropdown-nav-toggle {
+	.nav--toggle-sub ul ul .title-dropdown-nav-toggle {
 		right: 0.2em;
 	}
 
-	.nav--toggle-sub ul ul .dropdown-nav-toggle .kadence-svg-iconset {
+	.nav--toggle-sub ul ul .title-dropdown-nav-toggle .kadence-svg-iconset {
 		transform: rotate(-90deg);
 	}
 	.nav--toggle-sub li.menu-item-has-children {
 		position: relative;
 	}
-	.nav-drop-title-wrap {
+	.link-drop-title-wrap {
 		position: relative;
 		padding-right: 1em;
 		display: block;
@@ -253,10 +257,7 @@ $anchor: #5000b9;
 	}
 	// This makes the dropdowns work a little better on a touch device.
 	@media (hover: none) {
-		.wp-site-blocks
-			.nav--toggle-sub
-			.menu-item--has-toggle:not(.menu-item--toggled-on)
-			.dropdown-nav-special-toggle {
+		.wp-site-blocks .nav--toggle-sub .menu-item--has-toggle:not(.menu-item--toggled-on) .dropdown-nav-toggle {
 			left: 0;
 			right: 0 !important;
 			margin-right: 0 !important;
@@ -315,6 +316,10 @@ $anchor: #5000b9;
 		}
 		.drawer-sub-toggle[aria-expanded="true"] svg {
 			transform: rotate(180deg);
+		}
+
+		.title-dropdown-nav-toggle {
+			display: none;
 		}
 	}
 	.navigation.drawer-navigation-parent-toggle-true .link-drop-wrap .drawer-sub-toggle {
@@ -464,19 +469,19 @@ $anchor: #5000b9;
 		}
 	}
 
-	.rtl .nav--toggle-sub .dropdown-nav-toggle {
+	.rtl .nav--toggle-sub .title-dropdown-nav-toggle {
 		right: auto;
 		left: 0;
 	}
-	.rtl .primary-menu-container > ul > li.menu-item .dropdown-nav-special-toggle {
+	.rtl .primary-menu-container > ul > li.menu-item .dropdown-nav-toggle {
 		right: auto;
 		left: calc(1.4em / 2);
 	}
-	.rtl .wp-site-blocks .nav--toggle-sub .sub-menu .dropdown-nav-special-toggle {
+	.rtl .wp-site-blocks .nav--toggle-sub .sub-menu .dropdown-nav-toggle {
 		left: 0;
 		right: auto;
 	}
-	.rtl .nav--toggle-sub ul ul .dropdown-nav-toggle .kadence-svg-iconset {
+	.rtl .nav--toggle-sub ul ul .title-dropdown-nav-toggle .kadence-svg-iconset {
 		transform: rotate(-270deg);
 	}
 	.rtl .navigation ul ul ul.sub-menu,
@@ -484,11 +489,11 @@ $anchor: #5000b9;
 		right: 100%;
 		left: auto;
 	}
-	.rtl .nav-drop-title-wrap {
+	.rtl .link-drop-title-wrap {
 		padding-left: 1em;
 		padding-right: 0;
 	}
-	.wp-site-blocks .nav--toggle-sub .kadence-menu-mega-enabled .sub-menu .dropdown-nav-special-toggle {
+	.wp-site-blocks .nav--toggle-sub .kadence-menu-mega-enabled .sub-menu .dropdown-nav-toggle {
 		display: none;
 	}
 	/*--------------------------------------------------------------
@@ -537,6 +542,7 @@ $anchor: #5000b9;
 	}
 	.navigation li.menu-item > .link-drop-wrap {
 		transition: all 0.2s ease-in-out;
+		position: relative;
 	}
 	.navigation li.menu-item > .link-drop-wrap > a {
 		display: block;
@@ -562,8 +568,6 @@ $anchor: #5000b9;
 	}
 	.navigation ul ul li.menu-item > .link-drop-wrap > a {
 		padding: 1em;
-	}
-	.navigation ul ul li.menu-item > .link-drop-wrap > a {
 		width: 200px;
 	}
 	.navigation ul ul ul.sub-menu,
@@ -921,7 +925,7 @@ $anchor: #5000b9;
 	.navigation ul li a:not([href]) {
 		cursor: default;
 	}
-	.nav-drop-title-wrap {
+	.link-drop-title-wrap {
 		display: flex;
 		align-items: center;
 	}
@@ -950,7 +954,7 @@ $anchor: #5000b9;
 		background: var(--global-palette1);
 		color: white;
 	}
-	.nav-drop-title-wrap .menu-highlight-item {
+	.link-drop-title-wrap .menu-highlight-item {
 		font-size: 0.7em;
 		margin-left: 0.5em;
 	}
@@ -1010,7 +1014,7 @@ $anchor: #5000b9;
 					a {
 						width: 100%;
 					}
-					.dropdown-nav-toggle {
+					.title-dropdown-nav-toggle {
 						display: none;
 					}
 					> li {

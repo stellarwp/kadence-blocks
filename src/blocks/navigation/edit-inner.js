@@ -238,6 +238,7 @@ export function EditInner(props) {
 
 	const navClasses = classnames('navigation', {
 		[`navigation-dropdown-animation-fade-${id}`]: true,
+		['nav--toggle-sub']: true,
 		// [`navigation-desktop-dropdown-animation-fade-${dropdownAnimation}`]: !previewDevice || previewDevice == 'Desktop',
 		// [`navigation-tablet-dropdown-animation-fade-${dropdownAnimationTablet}`]: previewDevice == 'Tablet',
 		// [`navigation-mobile-dropdown-animation-fade-${dropdownAnimationMobile}`]: previewDevice == 'Mobile',
