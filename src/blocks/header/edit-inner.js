@@ -759,18 +759,12 @@ export function EditInner(props) {
 													imageURL={background.image ? background.image : ''}
 													imageID={background.imageID}
 													imagePosition={
-														background.position
-															? background.position
-															: 'center center'
+														background.position ? background.position : 'center center'
 													}
 													imageSize={background.size ? background.size : 'cover'}
-													imageRepeat={
-														background.repeat ? background.repeat : 'no-repeat'
-													}
+													imageRepeat={background.repeat ? background.repeat : 'no-repeat'}
 													imageAttachment={
-														background.attachment
-															? background.attachment
-															: 'scroll'
+														background.attachment ? background.attachment : 'scroll'
 													}
 													imageAttachmentParallax={true}
 													onRemoveImage={() => {
@@ -812,16 +806,10 @@ export function EditInner(props) {
 														)
 													}
 													onSaveSize={(value) =>
-														setMetaAttribute(
-															{ ...background, size: value },
-															'background'
-														)
+														setMetaAttribute({ ...background, size: value }, 'background')
 													}
 													onSaveRepeat={(value) =>
-														setMetaAttribute(
-															{ ...background, repeat: value },
-															'background'
-														)
+														setMetaAttribute({ ...background, repeat: value }, 'background')
 													}
 													onSaveAttachment={(value) =>
 														setMetaAttribute(
@@ -1043,7 +1031,6 @@ export function EditInner(props) {
 											tabletValue={[tabletHoverBorder]}
 											mobileValue={[mobileHoverBorder]}
 											onChange={(value) => {
-	
 												setMetaAttribute(value[0], 'hoverBorder');
 											}}
 											onChangeTablet={(value) => setMetaAttribute(value[0], 'tabletHoverBorder')}

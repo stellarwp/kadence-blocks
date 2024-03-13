@@ -248,19 +248,29 @@ export default function BackendStyles(props) {
 	const previewHoverBorderRight = getPreviewSize(
 		previewDevice,
 		undefined !== hoverBorder?.right ? getSpacingOptionOutput(hoverBorder.right[2], hoverBorder.unit) : '',
-		undefined !== tabletHoverBorder?.right ? getSpacingOptionOutput(tabletHoverBorder.right[2], hoverBorder.unit) : '',
-		undefined !== mobileHoverBorder?.right ? getSpacingOptionOutput(mobileHoverBorder.right[2], hoverBorder.unit) : ''
+		undefined !== tabletHoverBorder?.right
+			? getSpacingOptionOutput(tabletHoverBorder.right[2], hoverBorder.unit)
+			: '',
+		undefined !== mobileHoverBorder?.right
+			? getSpacingOptionOutput(mobileHoverBorder.right[2], hoverBorder.unit)
+			: ''
 	);
 	const previewHoverBorderBottom = getPreviewSize(
 		previewDevice,
 		undefined !== hoverBorder?.bottom ? getSpacingOptionOutput(hoverBorder.bottom[2], hoverBorder.unit) : '',
-		undefined !== tabletHoverBorder?.bottom ? getSpacingOptionOutput(tabletHoverBorder.bottom[2], hoverBorder.unit) : '',
-		undefined !== mobileHoverBorder?.bottom ? getSpacingOptionOutput(mobileHoverBorder.bottom[2], hoverBorder.unit) : ''
+		undefined !== tabletHoverBorder?.bottom
+			? getSpacingOptionOutput(tabletHoverBorder.bottom[2], hoverBorder.unit)
+			: '',
+		undefined !== mobileHoverBorder?.bottom
+			? getSpacingOptionOutput(mobileHoverBorder.bottom[2], hoverBorder.unit)
+			: ''
 	);
 	const previewHoverBorderLeft = getPreviewSize(
 		previewDevice,
 		undefined !== hoverBorder?.left ? getSpacingOptionOutput(hoverBorder.left[2], hoverBorder.unit) : '',
-		undefined !== tabletHoverBorder?.left ? getSpacingOptionOutput(tabletHoverBorder.left[2], hoverBorder.unit) : '',
+		undefined !== tabletHoverBorder?.left
+			? getSpacingOptionOutput(tabletHoverBorder.left[2], hoverBorder.unit)
+			: '',
 		undefined !== mobileHoverBorder?.left ? getSpacingOptionOutput(mobileHoverBorder.left[2], hoverBorder.unit) : ''
 	);
 
@@ -370,7 +380,7 @@ export default function BackendStyles(props) {
 		undefined !== width?.[2] ? width[2] : ''
 	);
 
-	let css = new KadenceBlocksCSS();
+	const css = new KadenceBlocksCSS();
 
 	if (isSelected) {
 		css.set_selector(
@@ -481,8 +491,14 @@ export default function BackendStyles(props) {
 	css.add_property('border-left-style', previewHoverBorderStyleLeft);
 	css.add_property('border-left-color', previewHoverBorderColorLeft);
 
-	css.add_property('border-top-left-radius', getSpacingOptionOutput(previewHoverBorderTopLeftRadius, borderHoverRadiusUnit));
-	css.add_property('border-top-right-radius', getSpacingOptionOutput(previewHoverBorderTopRightRadius, borderHoverRadiusUnit));
+	css.add_property(
+		'border-top-left-radius',
+		getSpacingOptionOutput(previewHoverBorderTopLeftRadius, borderHoverRadiusUnit)
+	);
+	css.add_property(
+		'border-top-right-radius',
+		getSpacingOptionOutput(previewHoverBorderTopRightRadius, borderHoverRadiusUnit)
+	);
 	css.add_property(
 		'border-bottom-right-radius',
 		getSpacingOptionOutput(previewHoverBorderBottomRightRadius, borderHoverRadiusUnit)
@@ -491,7 +507,6 @@ export default function BackendStyles(props) {
 		'border-bottom-left-radius',
 		getSpacingOptionOutput(previewHoverBorderBottomLeftRadius, borderHoverRadiusUnit)
 	);
-	
 
 	css.set_selector(`.kb-header.kb-header${uniqueID} a`);
 	css.add_property('color', KadenceColorOutput(linkColor));

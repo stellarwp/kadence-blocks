@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class managing the header CPT registration.
  */
@@ -25,6 +26,7 @@ class Kadence_Blocks_Header_CPT_Controller {
 		if ( is_null( self::$instance ) ) {
 			self::$instance = new self();
 		}
+
 		return self::$instance;
 	}
 
@@ -114,6 +116,7 @@ class Kadence_Blocks_Header_CPT_Controller {
 	 * Any user who can 'edit_others_pages' will have access to manage headers.
 	 *
 	 * @param array $allcaps A user's capabilities.
+	 *
 	 * @return array Filtered $allcaps.
 	 */
 	public function filter_post_type_user_caps( $allcaps ) {
@@ -129,6 +132,7 @@ class Kadence_Blocks_Header_CPT_Controller {
 			$allcaps['publish_kadence_header']          = $allcaps['edit_others_pages'];
 			$allcaps['read_private_kadence_header']     = $allcaps['edit_others_pages'];
 		}
+
 		return $allcaps;
 	}
 
@@ -357,29 +361,29 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
 				'default'       => array(
-					'color'       		=> '',
-					'image'				=> '',
-					'imageID'			=> '',
-					'position'			=> 'center center',
-					'size'				=> 'cover',
-					'repeat'			=> 'no-repeat',
-					'attachment'		=> 'scroll',
-					'type'				=> 'normal',
-					'gradient'			=> ''
+					'color'      => '',
+					'image'      => '',
+					'imageID'    => '',
+					'position'   => 'center center',
+					'size'       => 'cover',
+					'repeat'     => 'no-repeat',
+					'attachment' => 'scroll',
+					'type'       => 'normal',
+					'gradient'   => ''
 				),
 				'show_in_rest'  => array(
 					'schema' => array(
 						'type'       => 'object',
 						'properties' => array(
-							'color'       		=> array( 'type' => 'string' ),
-							'image'				=> array( 'type' => 'string' ),
-							'imageID'			=> array( 'type' => 'string' ),
-							'position'		=> array( 'type' => 'string' ),
-							'size'			=> array( 'type' => 'string' ),
-							'repeat'		=> array( 'type' => 'string' ),
-							'attachment'	=> array( 'type' => 'string' ),
-							'type'				=> array( 'type' => 'string' ),
-							'gradient'			=> array( 'type' => 'string' ),
+							'color'      => array( 'type' => 'string' ),
+							'image'      => array( 'type' => 'string' ),
+							'imageID'    => array( 'type' => 'string' ),
+							'position'   => array( 'type' => 'string' ),
+							'size'       => array( 'type' => 'string' ),
+							'repeat'     => array( 'type' => 'string' ),
+							'attachment' => array( 'type' => 'string' ),
+							'type'       => array( 'type' => 'string' ),
+							'gradient'   => array( 'type' => 'string' ),
 						),
 					),
 				),
@@ -393,29 +397,29 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
 				'default'       => array(
-					'color'       		=> '',
-					'image'				=> '',
-					'imageID'			=> '',
-					'imagePosition'		=> 'center center',
-					'imageSize'			=> 'cover',
-					'imageRepeat'		=> 'no-repeat',
-					'imageAttachment'	=> 'scroll',
-					'type'				=> 'normal',
-					'gradient'			=> ''
+					'color'           => '',
+					'image'           => '',
+					'imageID'         => '',
+					'imagePosition'   => 'center center',
+					'imageSize'       => 'cover',
+					'imageRepeat'     => 'no-repeat',
+					'imageAttachment' => 'scroll',
+					'type'            => 'normal',
+					'gradient'        => ''
 				),
 				'show_in_rest'  => array(
 					'schema' => array(
 						'type'       => 'object',
 						'properties' => array(
-							'color'       		=> array( 'type' => 'string' ),
-							'image'				=> array( 'type' => 'string' ),
-							'imageID'			=> array( 'type' => 'string' ),
-							'imagePosition'		=> array( 'type' => 'string' ),
-							'imageSize'			=> array( 'type' => 'string' ),
-							'imageRepeat'		=> array( 'type' => 'string' ),
-							'imageAttachment'	=> array( 'type' => 'string' ),
-							'type'				=> array( 'type' => 'string' ),
-							'gradient'			=> array( 'type' => 'string' ),
+							'color'           => array( 'type' => 'string' ),
+							'image'           => array( 'type' => 'string' ),
+							'imageID'         => array( 'type' => 'string' ),
+							'imagePosition'   => array( 'type' => 'string' ),
+							'imageSize'       => array( 'type' => 'string' ),
+							'imageRepeat'     => array( 'type' => 'string' ),
+							'imageAttachment' => array( 'type' => 'string' ),
+							'type'            => array( 'type' => 'string' ),
+							'gradient'        => array( 'type' => 'string' ),
 						),
 					),
 				),
@@ -429,17 +433,17 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'auth_callback' => array( $this, 'meta_auth_callback' ),
 				'type'          => 'object',
 				'default'       => array(
-					'direction'       		=> array('', '', ''),
-					'justifyContent'		=> array('', '', ''),
-					'verticalAlignment'		=> array('', '', ''),
+					'direction'         => array( '', '', '' ),
+					'justifyContent'    => array( '', '', '' ),
+					'verticalAlignment' => array( '', '', '' ),
 				),
 				'show_in_rest'  => array(
 					'schema' => array(
 						'type'       => 'object',
 						'properties' => array(
-							'direction'       	=> array( 'type' => 'array' ),
-							'justifyContent'	=> array( 'type' => 'array' ),
-							'verticalAlignment' => array( 'type' => 'array '),
+							'direction'         => array( 'type' => 'array' ),
+							'justifyContent'    => array( 'type' => 'array' ),
+							'verticalAlignment' => array( 'type' => 'array ' ),
 						),
 					),
 				),
@@ -457,21 +461,21 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'type'    => 'string'
 			),
 			array(
-				'key'     => '_kad_header_padding',
-				'default' => array('20', '20', '20', '20'),
-				'type'    => 'array',
+				'key'           => '_kad_header_padding',
+				'default'       => array( '20', '20', '20', '20' ),
+				'type'          => 'array',
 				'children_type' => 'string'
 			),
 			array(
-				'key'     => '_kad_header_tabletPadding',
-				'default' => array('20', '20', '20', '20'),
-				'type'    => 'array',
+				'key'           => '_kad_header_tabletPadding',
+				'default'       => array( '20', '20', '20', '20' ),
+				'type'          => 'array',
 				'children_type' => 'string'
 			),
 			array(
-				'key'     => '_kad_header_mobilePadding',
-				'default' => array('20', '20', '20', '20'),
-				'type'    => 'array',
+				'key'           => '_kad_header_mobilePadding',
+				'default'       => array( '20', '20', '20', '20' ),
+				'type'          => 'array',
 				'children_type' => 'string'
 			),
 			array(
@@ -480,21 +484,21 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'type'    => 'string'
 			),
 			array(
-				'key'     => '_kad_header_margin',
-				'default' => array('', '', '', ''),
-				'type'    => 'array',
+				'key'           => '_kad_header_margin',
+				'default'       => array( '', '', '', '' ),
+				'type'          => 'array',
 				'children_type' => 'string'
 			),
 			array(
-				'key'     => '_kad_header_tabletMargin',
-				'default' => array('', '', '', ''),
-				'type'    => 'array',
+				'key'           => '_kad_header_tabletMargin',
+				'default'       => array( '', '', '', '' ),
+				'type'          => 'array',
 				'children_type' => 'string'
 			),
 			array(
-				'key'     => '_kad_header_mobileMargin',
-				'default' => array('', '', '', ''),
-				'type'    => 'array',
+				'key'           => '_kad_header_mobileMargin',
+				'default'       => array( '', '', '', '' ),
+				'type'          => 'array',
 				'children_type' => 'string'
 			),
 			array(
@@ -503,21 +507,21 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'type'    => 'string'
 			),
 			array(
-				'key'     => '_kad_header_borderRadius',
-				'default' => array(0, 0, 0, 0),
-				'type'    => 'array',
+				'key'           => '_kad_header_borderRadius',
+				'default'       => array( 0, 0, 0, 0 ),
+				'type'          => 'array',
 				'children_type' => 'integer'
 			),
 			array(
-				'key'     => '_kad_header_tabletBorderRadius',
-				'default' => array(0, 0, 0, 0),
-				'type'    => 'array',
+				'key'           => '_kad_header_tabletBorderRadius',
+				'default'       => array( 0, 0, 0, 0 ),
+				'type'          => 'array',
 				'children_type' => 'integer'
 			),
 			array(
-				'key'     => '_kad_header_mobileBorderRadius',
-				'default' => array(0, 0, 0, 0),
-				'type'    => 'array',
+				'key'           => '_kad_header_mobileBorderRadius',
+				'default'       => array( 0, 0, 0, 0 ),
+				'type'          => 'array',
 				'children_type' => 'integer'
 			),
 			array(
@@ -526,21 +530,21 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'type'    => 'string'
 			),
 			array(
-				'key'     => '_kad_header_borderHoverRadius',
-				'default' => array(0, 0, 0, 0),
-				'type'    => 'array',
+				'key'           => '_kad_header_borderHoverRadius',
+				'default'       => array( 0, 0, 0, 0 ),
+				'type'          => 'array',
 				'children_type' => 'integer'
 			),
 			array(
-				'key'     => '_kad_header_tabletBorderHoverRadius',
-				'default' => array(0, 0, 0, 0),
-				'type'    => 'array',
+				'key'           => '_kad_header_tabletBorderHoverRadius',
+				'default'       => array( 0, 0, 0, 0 ),
+				'type'          => 'array',
 				'children_type' => 'integer'
 			),
 			array(
-				'key'     => '_kad_header_mobileBorderHoverRadius',
-				'default' => array(0, 0, 0, 0),
-				'type'    => 'array',
+				'key'           => '_kad_header_mobileBorderHoverRadius',
+				'default'       => array( 0, 0, 0, 0 ),
+				'type'          => 'array',
 				'children_type' => 'integer'
 			),
 			array(
@@ -669,9 +673,9 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'type'    => 'string'
 			),
 			array(
-				'key'     => '_kad_header_height',
-				'default' => array('', '', ''),
-				'type'    => 'array',
+				'key'           => '_kad_header_height',
+				'default'       => array( '', '', '' ),
+				'type'          => 'array',
 				'children_type' => 'string'
 			),
 			array(
@@ -680,9 +684,9 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'type'    => 'string'
 			),
 			array(
-				'key'     => '_kad_header_width',
-				'default' => array('', '', ''),
-				'type'    => 'array',
+				'key'           => '_kad_header_width',
+				'default'       => array( '', '', '' ),
+				'type'          => 'array',
 				'children_type' => 'string'
 			),
 			array(
@@ -706,7 +710,7 @@ class Kadence_Blocks_Header_CPT_Controller {
 					),
 				);
 
-				if( !empty( $meta['properties']) ) {
+				if ( ! empty( $meta['properties'] ) ) {
 					$show_in_rest = array_merge_recursive( $show_in_rest, array(
 						'schema' => array(
 							'items' => array(
