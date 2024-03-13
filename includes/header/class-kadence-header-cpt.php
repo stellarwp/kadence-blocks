@@ -443,7 +443,7 @@ class Kadence_Blocks_Header_CPT_Controller {
 						'properties' => array(
 							'direction'         => array( 'type' => 'array' ),
 							'justifyContent'    => array( 'type' => 'array' ),
-							'verticalAlignment' => array( 'type' => 'array ' ),
+							'verticalAlignment' => array( 'type' => 'array' ),
 						),
 					),
 				),

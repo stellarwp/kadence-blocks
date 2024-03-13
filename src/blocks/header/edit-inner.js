@@ -30,25 +30,17 @@ import {
 	BackgroundTypeControl,
 	GradientControl,
 } from '@kadence/components';
-import {
-	getPreviewSize,
-	KadenceColorOutput,
-	getSpacingOptionOutput,
-	mouseOverVisualizer,
-	arrayStringToInt,
-	getFontSizeOptionOutput,
-} from '@kadence/helpers';
+import { getPreviewSize, mouseOverVisualizer, arrayStringToInt } from '@kadence/helpers';
 
 import {
 	InspectorControls,
-	BlockControls,
 	useInnerBlocksProps,
 	InspectorAdvancedControls,
 	store as editorStore,
 } from '@wordpress/block-editor';
-import { TextControl, ToggleControl, ToolbarGroup, ExternalLink, Button, Placeholder } from '@wordpress/components';
+import { TextControl, ExternalLink, Button, Placeholder } from '@wordpress/components';
 
-import { FormTitle, SelectForm, FieldBlockAppender } from './components';
+import { FormTitle, SelectForm } from './components';
 
 /**
  * Internal dependencies
