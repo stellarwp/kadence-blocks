@@ -134,7 +134,7 @@ export function EditInner(props) {
 		linkColorMobile: meta?._kad_navigation_linkColorMobile,
 		linkColorHoveMobiler: meta?._kad_navigation_linkColorHoverMobile,
 		linkColorActiveMobile: meta?._kad_navigation_linkColorActiveMobile,
-		background: meta?._kad_navigation_link_color,
+		background: meta?._kad_navigation_background,
 		backgroundHover: meta?._kad_navigation_backgroundHover,
 		backgroundActive: meta?._kad_navigation_backgroundActive,
 		backgroundTablet: meta?._kad_navigation_backgroundTablet,
@@ -143,6 +143,24 @@ export function EditInner(props) {
 		backgroundMobile: meta?._kad_navigation_backgroundMobile,
 		backgroundHoverMobile: meta?._kad_navigation_backgroundHoverMobile,
 		backgroundActiveMobile: meta?._kad_navigation_backgroundActiveMobile,
+		linkColorDropdown: meta?._kad_navigation_linkColorDropdown,
+		linkColorDropdownHover: meta?._kad_navigation_linkColorDropdownHover,
+		linkColorDropdownActive: meta?._kad_navigation_linkColorDropdownActive,
+		linkColorDropdownTablet: meta?._kad_navigation_linkColorDropdownTablet,
+		linkColorDropdownHoverTablet: meta?._kad_navigation_linkColorDropdownHoverTablet,
+		linkColorDropdownActiveTablet: meta?._kad_navigation_linkColorDropdownActiveTablet,
+		linkColorDropdownMobile: meta?._kad_navigation_linkColorDropdownMobile,
+		linkColorDropdownHoveMobiler: meta?._kad_navigation_linkColorDropdownHoverMobile,
+		linkColorDropdownActiveMobile: meta?._kad_navigation_linkColorDropdownActiveMobile,
+		backgroundDropdown: meta?._kad_navigation_backgroundDropdown,
+		backgroundDropdownHover: meta?._kad_navigation_backgroundDropdownHover,
+		backgroundDropdownActive: meta?._kad_navigation_backgroundDropdownActive,
+		backgroundDropdownTablet: meta?._kad_navigation_backgroundDropdownTablet,
+		backgroundDropdownHoverTablet: meta?._kad_navigation_backgroundDropdownHoverTablet,
+		backgroundDropdownActiveTablet: meta?._kad_navigation_backgroundDropdownActiveTablet,
+		backgroundDropdownMobile: meta?._kad_navigation_backgroundDropdownMobile,
+		backgroundDropdownHoverMobile: meta?._kad_navigation_backgroundDropdownHoverMobile,
+		backgroundDropdownActiveMobile: meta?._kad_navigation_backgroundDropdownActiveMobile,
 		typography: meta?._kad_navigation_typography,
 		divider: meta?._kad_navigation_divider,
 		dividerTablet: meta?._kad_navigation_dividerTablet,
@@ -215,6 +233,24 @@ export function EditInner(props) {
 		backgroundMobile,
 		backgroundHoverMobile,
 		backgroundActiveMobile,
+		linkColorDropdown,
+		linkColorDropdownHover,
+		linkColorDropdownActive,
+		linkColorDropdownTablet,
+		linkColorDropdownHoverTablet,
+		linkColorDropdownActiveTablet,
+		linkColorDropdownMobile,
+		linkColorDropdownHoverMobile,
+		linkColorDropdownActiveMobile,
+		backgroundDropdown,
+		backgroundDropdownHover,
+		backgroundDropdownActive,
+		backgroundDropdownTablet,
+		backgroundDropdownHoverTablet,
+		backgroundDropdownActiveTablet,
+		backgroundDropdownMobile,
+		backgroundDropdownHoverMobile,
+		backgroundDropdownActiveMobile,
 		typography,
 		divider,
 		dividerTablet,
@@ -389,13 +425,13 @@ export function EditInner(props) {
 		);
 	};
 
-	const styleColorControls = (size = '') => {
-		const linkColorValue = metaAttributes['linkColor' + size];
-		const backgroundValue = metaAttributes['background' + size];
-		const linkColorHoverValue = metaAttributes['linkColorHover' + size];
-		const backgroundHoverValue = metaAttributes['backgroundHover' + size];
-		const linkColorActiveValue = metaAttributes['linkColorActive' + size];
-		const backgroundActiveValue = metaAttributes['backgroundActive' + size];
+	const styleColorControls = (size = '', suffix = '') => {
+		const linkColorValue = metaAttributes['linkColor' + suffix + size];
+		const backgroundValue = metaAttributes['background' + suffix + size];
+		const linkColorHoverValue = metaAttributes['linkColor' + suffix + 'Hover' + size];
+		const backgroundHoverValue = metaAttributes['background' + suffix + 'Hover' + size];
+		const linkColorActiveValue = metaAttributes['linkColor' + suffix + 'Active' + size];
+		const backgroundActiveValue = metaAttributes['background' + suffix + 'Active' + size];
 		return (
 			<>
 				<HoverToggleControl
@@ -405,14 +441,14 @@ export function EditInner(props) {
 								label={__('Link Color', 'kadence-blocks')}
 								value={linkColorValue}
 								default={''}
-								onChange={(value) => setMetaAttribute(value, 'linkColor' + size)}
+								onChange={(value) => setMetaAttribute(value, 'linkColor' + suffix + size)}
 								key={'normal'}
 							/>
 							<PopColorControl
 								label={__('Background', 'kadence-blocks')}
 								value={backgroundValue}
 								default={''}
-								onChange={(value) => setMetaAttribute(value, 'background' + size)}
+								onChange={(value) => setMetaAttribute(value, 'background' + suffix + size)}
 								key={'normalb'}
 							/>
 						</>
@@ -423,14 +459,14 @@ export function EditInner(props) {
 								label={__('Link Color Hover', 'kadence-blocks')}
 								value={linkColorHoverValue}
 								default={''}
-								onChange={(value) => setMetaAttribute(value, 'linkColorHover' + size)}
+								onChange={(value) => setMetaAttribute(value, 'linkColor' + suffix + 'Hover' + size)}
 								key={'hover'}
 							/>
 							<PopColorControl
 								label={__('Background Hover', 'kadence-blocks')}
 								value={backgroundHoverValue}
 								default={''}
-								onChange={(value) => setMetaAttribute(value, 'backgroundHover' + size)}
+								onChange={(value) => setMetaAttribute(value, 'background' + suffix + 'Hover' + size)}
 								key={'hoverb'}
 							/>
 						</>
@@ -441,14 +477,14 @@ export function EditInner(props) {
 								label={__('Link Color Active', 'kadence-blocks')}
 								value={linkColorActiveValue}
 								default={''}
-								onChange={(value) => setMetaAttribute(value, 'linkColorActive' + size)}
+								onChange={(value) => setMetaAttribute(value, 'linkColor' + suffix + 'Active' + size)}
 								key={'active'}
 							/>
 							<PopColorControl
 								label={__('Background Active', 'kadence-blocks')}
 								value={backgroundActiveValue}
 								default={''}
-								onChange={(value) => setMetaAttribute(value, 'backgroundActive' + size)}
+								onChange={(value) => setMetaAttribute(value, 'background' + suffix + 'Active' + size)}
 								key={'activeb'}
 							/>
 						</>
@@ -759,6 +795,12 @@ export function EditInner(props) {
 								onUnit={(value) => setMetaAttribute(value, 'dropdownVerticalSpacingUnit')}
 								showUnit={true}
 							/>
+							<SmallResponsiveControl
+								label={'Colors'}
+								desktopChildren={styleColorControls('', 'Dropdown')}
+								tabletChildren={styleColorControls('Tablet', 'Dropdown')}
+								mobileChildren={styleColorControls('Mobile', 'Dropdown')}
+							></SmallResponsiveControl>
 						</KadencePanelBody>
 					</>
 				)}

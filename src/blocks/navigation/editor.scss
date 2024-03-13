@@ -184,6 +184,9 @@ $anchor: #5000b9;
 		left: auto;
 		right: calc(1.4em / 2);
 		pointer-events: none;
+
+		//this is editor only, don't need to see this for horizontal navs at all while editing
+		display: none;
 	}
 	.nav--toggle-sub .sub-menu .dropdown-nav-toggle {
 		width: 2.6em;

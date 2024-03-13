@@ -434,17 +434,92 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'default' => '',
 			),
 			array(
-				'key'     => '_kad_navigation_background',
+				'key'     => '_kad_navigation_linkColorDropdown',
 				'type' => 'string',
 				'default' => '',
 			),
 			array(
-				'key'     => '_kad_navigation_backgroundHover',
+				'key'     => '_kad_navigation_linkColorDropdownHover',
 				'type' => 'string',
 				'default' => '',
 			),
 			array(
-				'key'     => '_kad_navigation_backgroundActive',
+				'key'     => '_kad_navigation_linkColorDropdownActive',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_linkColorDropdownTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_linkColorDropdownHoverTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_linkColorDropdownActiveTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_linkColorDropdownMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_linkColorDropdownHoverMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_linkColorDropdownActiveMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundDropdown',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundDropdownHover',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundDropdownActive',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundDropdownTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundDropdownHoverTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundDropdownActiveTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundDropdownMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundDropdownHoverMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundDropdownActiveMobile',
 				'type' => 'string',
 				'default' => '',
 			),

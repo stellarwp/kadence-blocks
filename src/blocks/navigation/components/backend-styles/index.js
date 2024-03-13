@@ -47,6 +47,24 @@ export default function BackendStyles(props) {
 		backgroundMobile,
 		backgroundHoverMobile,
 		backgroundActiveMobile,
+		linkColorDropdown,
+		linkColorDropdownHover,
+		linkColorDropdownActive,
+		linkColorDropdownTablet,
+		linkColorDropdownHoverTablet,
+		linkColorDropdownActiveTablet,
+		linkColorDropdownMobile,
+		linkColorDropdownHoverMobile,
+		linkColorDropdownActiveMobile,
+		backgroundDropdown,
+		backgroundDropdownHover,
+		backgroundDropdownActive,
+		backgroundDropdownTablet,
+		backgroundDropdownHoverTablet,
+		backgroundDropdownActiveTablet,
+		backgroundDropdownMobile,
+		backgroundDropdownHoverMobile,
+		backgroundDropdownActiveMobile,
 		typography,
 		collapseSubMenus,
 		parentTogglesMenus,
@@ -210,8 +228,13 @@ export default function BackendStyles(props) {
 
 	//Dropdown logic from theme Styles Component
 	// Dropdown.
-	// $css->set_selector( '.header-navigation .header-menu-container ul ul.sub-menu, .header-navigation .header-menu-container ul ul.submenu' );
-	// $css->add_property( 'background', $css->render_color( kadence()->sub_option( 'dropdown_navigation_background', 'color' ) ) );
+	css.set_selector(
+		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul.sub-menu, .wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul.submenu`
+	);
+	css.add_property(
+		'background',
+		css.render_color(backgroundDropdown, backgroundDropdownTablet, backgroundDropdownMobile, previewDevice)
+	);
 	// $css->add_property( 'box-shadow', $css->render_shadow( kadence()->option( 'dropdown_navigation_shadow' ), kadence()->default( 'dropdown_navigation_shadow' ) ) );
 	// $css->set_selector( '.header-navigation .header-menu-container ul ul li.menu-item, .header-menu-container ul.menu > li.kadence-menu-mega-enabled > ul > li.menu-item > a' );
 	// $css->add_property( 'border-bottom', $css->render_border( kadence()->option( 'dropdown_navigation_divider' ) ) );
@@ -242,14 +265,53 @@ export default function BackendStyles(props) {
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li.menu-item > .link-drop-wrap > a`
 	);
-	// $css->add_property( 'color', $css->render_color( kadence()->sub_option( 'dropdown_navigation_color', 'color' ) ) );
+	css.add_property(
+		'color',
+		css.render_color(linkColorDropdown, linkColorDropdownTablet, linkColorDropdownMobile, previewDevice)
+	);
 	// $css->render_font( kadence()->option( 'dropdown_navigation_typography' ), $css );
-	// $css->set_selector( '.header-navigation .header-menu-container ul ul li.menu-item > a:hover' );
-	// $css->add_property( 'color', $css->render_color( kadence()->sub_option( 'dropdown_navigation_color', 'hover' ) ) );
-	// $css->add_property( 'background', $css->render_color( kadence()->sub_option( 'dropdown_navigation_background', 'hover' ) ) );
-	// $css->set_selector( '.header-navigation .header-menu-container ul ul li.menu-item.current-menu-item > a' );
-	// $css->add_property( 'color', $css->render_color( kadence()->sub_option( 'dropdown_navigation_color', 'active' ) ) );
-	// $css->add_property( 'background', $css->render_color( kadence()->sub_option( 'dropdown_navigation_background', 'active' ) ) );
+	css.set_selector(
+		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li.menu-item > .link-drop-wrap > a:hover`
+	);
+	css.add_property(
+		'color',
+		css.render_color(
+			linkColorDropdownHover,
+			linkColorDropdownHoverTablet,
+			linkColorDropdownHoverMobile,
+			previewDevice
+		)
+	);
+	css.add_property(
+		'background',
+		css.render_color(
+			backgroundDropdownHover,
+			backgroundDropdownHoverTablet,
+			backgroundDropdownHoverMobile,
+			previewDevice
+		)
+	);
+	css.set_selector(
+		`.wp-block-kadence-navigation${uniqueID}.navigation .menu-container ul ul li.menu-item.current-menu-item > .link-drop-wrap > a`
+	);
+	css.add_property(
+		'color',
+		css.render_color(
+			linkColorDropdownActive,
+			linkColorDropdownActiveTablet,
+			linkColorDropdownActiveMobile,
+			previewDevice
+		)
+	);
+	css.add_property(
+		'background',
+		css.render_color(
+			backgroundDropdownActive,
+			backgroundDropdownActiveTablet,
+			backgroundDropdownActiveMobile,
+			previewDevice
+		)
+	);
 
 	//Mobile menu logic from theme styles component
 	// // Mobile Menu.

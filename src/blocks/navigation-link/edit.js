@@ -821,8 +821,6 @@ export default function Edit(props) {
 			<li {...blockProps}>
 				{/* eslint-disable jsx-a11y/anchor-is-valid */}
 
-				{linkCSS}
-
 				<div class="link-drop-wrap">
 					<a
 						className={classes}
@@ -961,6 +959,7 @@ export default function Edit(props) {
 					)}
 				</div>
 				<ul {...innerBlocksProps} />
+				{linkCSS}
 			</li>
 		</>
 	);
