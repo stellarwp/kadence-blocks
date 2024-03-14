@@ -119,6 +119,7 @@ $anchor: #5000b9;
 		margin-left: 0;
 		box-shadow: 0 2px 13px rgba(0, 0, 0, 0.1);
 		z-index: 1000;
+		width: initial;
 	}
 	.navigation ul ul.quadmenu-row {
 		flex-direction: row;
@@ -286,6 +287,9 @@ $anchor: #5000b9;
 					//margin: initial;
 				}
 			}
+		}
+		ul ul li.menu-item > .link-drop-wrap > a {
+			width: 100%;
 		}
 	}
 

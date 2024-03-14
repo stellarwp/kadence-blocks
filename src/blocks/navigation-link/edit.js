@@ -431,24 +431,22 @@ export default function Edit(props) {
 		}
 	}
 
+	const megaMenuWidthClass = 'kadence-menu-mega-width-' + (megaMenuWidth ? megaMenuWidth : 'container');
+
 	const blockProps = useBlockProps({
 		ref: useMergeRefs([setPopoverAnchor, listItemRef]),
-		className: classnames(
-			'wp-block-kadence-navigation-item',
-			'menu-item',
-			'kadence-menu-mega-width-' + (megaMenuWidth ? megaMenuWidth : 'container'),
-			{
-				'is-editing': isSelected || isParentOfSelectedBlock,
-				'is-dragging-within': isDraggingWithin,
-				'has-link': !!url,
-				'has-child': hasChildren,
-				'menu-item-has-children': hasChildren,
-				'menu-item--toggled-on': showSubMenus,
-				'current-menu-item': hasNoBlockBefore,
-				'kadence-menu-mega-enabled': isMegaMenu,
-				[`wp-block-kadence-navigation-link${uniqueID}`]: uniqueID,
-			}
-		),
+		className: classnames('wp-block-kadence-navigation-item', 'menu-item', {
+			'is-editing': isSelected || isParentOfSelectedBlock,
+			'is-dragging-within': isDraggingWithin,
+			'has-link': !!url,
+			'has-child': hasChildren,
+			'menu-item-has-children': hasChildren,
+			'menu-item--toggled-on': showSubMenus,
+			'current-menu-item': hasNoBlockBefore,
+			'kadence-menu-mega-enabled': isMegaMenu,
+			[`${megaMenuWidthClass}`]: isMegaMenu,
+			[`wp-block-kadence-navigation-link${uniqueID}`]: uniqueID,
+		}),
 		onKeyDown,
 	});
 
