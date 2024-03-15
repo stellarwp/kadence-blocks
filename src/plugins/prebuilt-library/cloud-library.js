@@ -28,7 +28,7 @@ import { __, sprintf } from '@wordpress/i18n';
 import { SafeParseJSON } from '@kadence/helpers';
 
 function CloudSections({ importContent, clientId, reload = false, onReload, tab, libraries }) {
-	const [category, setCategory] = useState('');
+	const [category, setCategory] = useState([]);
 	const [pageCategory, setPageCategory] = useState('');
 	const [pageStyles, setPageStyles] = useState();
 	const [search, setSearch] = useState(null);
@@ -110,26 +110,26 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 		setStyleListOptions(styleOptions);
 	}, [patterns]);
 
-	useEffect(() => {
-		setPageCategoryListOptions(
-			Object.keys(pagesCategories).map(function (key, index) {
-				return {
-					value: 'category' === key ? 'all' : key,
-					label: 'category' === key ? __('All', 'kadence-blocks') : pagesCategories[key],
-				};
-			})
-		);
-		const tempPageContexts = [];
-		Object.keys(pagesCategories).map(function (key, index) {
-			if ('category' !== key) {
-				tempPageContexts.push({
-					value: 'category' === key ? 'all' : key,
-					label: 'category' === key ? __('All', 'kadence-blocks') : pagesCategories[key],
-				});
-			}
-		});
-		setPageContextListOptions(tempPageContexts);
-	}, [pagesCategories]);
+	// useEffect( () => {
+	// 	setPageCategoryListOptions(
+	// 		Object.keys( pagesCategories ).map( function ( key, index ) {
+	// 			return {
+	// 				value: 'category' === key ? 'all' : key,
+	// 				label: 'category' === key ? __( 'All', 'kadence-blocks' ) : pagesCategories[ key ],
+	// 			};
+	// 		} )
+	// 	);
+	// 	const tempPageContexts = [];
+	// 	Object.keys( pagesCategories ).map( function ( key, index ) {
+	// 		if ( 'category' !== key ) {
+	// 			tempPageContexts.push( {
+	// 				value: 'category' === key ? 'all' : key,
+	// 				label: 'category' === key ? __( 'All', 'kadence-blocks' ) : pagesCategories[ key ],
+	// 			} );
+	// 		}
+	// 	} );
+	// 	setPageContextListOptions( tempPageContexts );
+	// }, [ pagesCategories ] );
 	const { getPatterns, getPattern, processPattern, getPatternCategories } = getAsyncData();
 	const forceRefreshLibrary = () => {
 		if (!isLoading && patterns) {
@@ -299,14 +299,14 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 		} else {
 			const o = SafeParseJSON(response, false);
 			if (o) {
-				const categories = await getPatternCategories(
+				const patternCategories = await getPatternCategories(
 					tab,
 					tempReload,
 					action?.[0]?.url ? action[0].url : '',
 					action?.[0]?.key ? action[0].key : ''
 				);
-				if (categories) {
-					const catOrder = SafeParseJSON(categories, false);
+				if (patternCategories) {
+					const catOrder = SafeParseJSON(patternCategories, false);
 					if (subTab === 'pages') {
 						const pageCats = catOrder ? catOrder : {};
 						kadence_blocks_params.library_pages = o;
@@ -326,7 +326,8 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 						setPages(o);
 						setPagesCategories(JSON.parse(JSON.stringify(pageCats)));
 					} else {
-						const cats = catOrder ? catOrder : {};
+						const newCatOrder = catOrder ? catOrder : {};
+						const cats = { ...{ all: 'All' }, ...newCatOrder };
 						kadence_blocks_params.library_sections = o;
 						{
 							Object.keys(o).map(function (key, index) {
@@ -388,8 +389,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 			label: 'category' === key ? __('All', 'kadence-blocks') : categoryItems[key],
 		};
 	});
-	const getActiveCat = category[activePanel.activeTab] ? category[activePanel.activeTab] : 'all';
-	const control = this;
+	const getActiveCat = category?.[activePanel.activeTab] ? category[activePanel.activeTab] : 'all';
 	let breakpointColumnsObj = {
 		default: 5,
 		1600: 4,
@@ -446,20 +446,19 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 						/>
 					</div>
 					<div className="kb-library-sidebar-bottom">
-						{sideCatOptions.map((category, index) => (
+						{sideCatOptions.map((tempCat, index) => (
 							<Button
-								key={`${category.value}-${index}`}
-								className={
-									'kb-category-button' + (getActiveCat === category.value ? ' is-pressed' : '')
-								}
-								aria-pressed={getActiveCat === category.value}
+								key={`${tempCat.value}-${index}`}
+								className={'kb-category-button' + (getActiveCat === tempCat.value ? ' is-pressed' : '')}
+								aria-pressed={getActiveCat === tempCat.value}
 								onClick={() => {
 									const newCat = category;
-									newCat[activePanel.activeTab] = category.value;
+									newCat[activePanel.activeTab] = tempCat.value;
 									setCategory(newCat);
+									forceRefreshLibrary();
 								}}
 							>
-								{category.label}
+								{tempCat.label}
 							</Button>
 						))}
 					</div>
@@ -489,6 +488,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 								const newCat = category;
 								newCat[activePanel.activeTab] = value;
 								setCategory(newCat);
+								forceRefreshLibrary();
 							}}
 						/>
 					</div>
@@ -593,14 +593,14 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 							const image = patterns[key].image;
 							const imageWidth = patterns[key].imageW;
 							const imageHeight = patterns[key].imageH;
-							const categories = patterns[key].categories;
+							const itemCategories = patterns[key].categories;
 							const keywords = patterns[key].keywords;
 							const description = patterns[key].description;
 							const pro = patterns[key].pro;
 							const locked = patterns[key].locked;
 							const descriptionId = `${slug}_kb_cloud__item-description`;
 							if (
-								('all' === getActiveCat || Object.keys(categories).includes(getActiveCat)) &&
+								('all' === getActiveCat || Object.keys(itemCategories).includes(getActiveCat)) &&
 								(!search ||
 									(keywords && keywords.some((x) => x.toLowerCase().includes(search.toLowerCase()))))
 							) {

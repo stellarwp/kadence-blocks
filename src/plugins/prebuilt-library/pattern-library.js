@@ -541,7 +541,9 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 			console.log('Error getting AI Content.');
 			setIsLoading(false);
 		} else if (response?.error && response?.context) {
-			createErrorNotice(__('Error, Some AI Contexts could not be started, Please Retry'), { type: 'snackbar' });
+			createErrorNotice(__('Error, Some AI Contexts could not be started, Please Retry'), {
+				type: 'snackbar',
+			});
 			console.log('Error getting all new AI Content.');
 			const tempContextStates = [];
 			response?.context.forEach((key) => {

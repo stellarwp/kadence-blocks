@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.2
 Tested up to: 6.4
-Stable tag: 3.2.25
+Stable tag: 3.2.26
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -78,29 +78,29 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Frequently Asked Questions ==
 
 = Where do I report security bugs found in this plugin? =
-Please report security bugs found in the source code of the
-Kadence Blocks plugin through the Patchstack
-Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The
-Patchstack team will assist you with verification, CVE assignment, and
-notify the developers of this plugin.
+Please report security bugs found in the source code of the Kadence Blocks plugin through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Security Policy ==
 
 = Reporting Security Bugs =
 
-Please report security bugs found in the
-Kadence Blocks plugin's source code through the
-Patchstack Vulnerability Disclosure
-Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will
-assist you with verification, CVE assignment, and notify the
-developers of this plugin.
+Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
 
-= 3.2.26 =
+= 3.2.27 =
 Release Date: March TBD 2024
+* Fix: Compatibility with WordPress 6.5 block rename feature.
+* Fix: Value of 0 not allowed in a required number field for the advanced form block.
+
+= 3.2.26 =
+Release Date: March 7th 2024
+* Update: Image importer for design library.
+* Update: Improve js formatting.
 * Fix: Styling issue with some infobox title headings.
 * Fix: Tabs block inside advanced query card.
+* Fix: Issue with image sizes in design library.
+* Fix: Issue with missing option to choose Swedish in ai language settings.
 
 = 3.2.25 =
 Release Date: February 27th 2024

@@ -888,7 +888,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 					'url' => $image_url,
 					'id'  => 0,
 				);
-				if ( strpos( $image_url, 'images.pexels.com' ) !== false ) {
+				// If it's a pexels image, get the data.
+				if ( substr( $image_url, 0, strlen( 'https://images.pexels.com' ) ) === 'https://images.pexels.com' ) {
 					$image_data = $this->get_image_info( $image_library, $image_url );
 					if ( $image_data ) {
 						$alt                        = ! empty( $image_data['alt'] ) ? $image_data['alt'] : '';
@@ -2254,8 +2255,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @param string $filename The filename.
 	 * @return string a sanitized filename.
 	 */
-	public function sanitize_jpeg_filename( $filename ) {
-		return sanitize_file_name( $filename ) . '.jpeg';
+	public function sanitize_filename( $filename, $ext ) {
+		return sanitize_file_name( $filename ) . '.' . $ext;
 	}
 	/**
 	 * Create a filename from alt text.
@@ -2282,6 +2283,23 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( $local_image['status'] ) {
 			return $local_image['image'];
 		}
+		$filename   = basename( $image_data['url'] );
+		$image_path = $image_data['url'];
+		// Check if the image is from Pexels and get the filename.
+		if ( substr( $image_data['url'], 0, strlen( 'https://images.pexels.com' ) ) === 'https://images.pexels.com' ) {
+			$image_path = parse_url( $image_data['url'], PHP_URL_PATH );
+			$filename = basename( $image_path );
+		}
+		$info = wp_check_filetype( $image_path );
+		$ext  = empty( $info['ext'] ) ? '' : $info['ext'];
+		$type = empty( $info['type'] ) ? '' : $info['type'];
+		// If we don't allow uploading the file type or ext, return.
+		if ( ! $type || ! $ext ) {
+			return $image_data;
+		}
+		// Custom filename if passed as data.
+		$filename = ! empty( $image_data['filename'] ) ? $this->sanitize_filename( $image_data['filename'], $ext ) : $filename;
+		// Get the file content.
 		$file_content = wp_remote_retrieve_body(
 			wp_safe_remote_get(
 				$image_data['url'],
@@ -2295,25 +2313,13 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( empty( $file_content ) ) {
 			return $image_data;
 		}
-		$filename = basename( $image_data['url'] );
-		if ( strpos( $image_data['url'], 'images.pexels.com' ) !== false ) {
-			$image_path = parse_url( $image_data['url'], PHP_URL_PATH );
-			$filename = basename( $image_path );
-		}
-		// Custom filename if passed as data.
-		$filename = ! empty( $image_data['filename'] ) ? $this->sanitize_jpeg_filename( $image_data['filename'] ) : $filename;
 
 		$upload = wp_upload_bits( $filename, null, $file_content );
 		$post = array(
 			'post_title' => ( ! empty( $image_data['title'] ) ? $image_data['title'] : $filename ),
 			'guid'       => $upload['url'],
 		);
-		$info = wp_check_filetype( $upload['file'] );
-		if ( $info ) {
-			$post['post_mime_type'] = $info['type'];
-		} else {
-			return $image_data;
-		}
+		$post['post_mime_type'] = $type;
 		if ( ! function_exists( 'wp_generate_attachment_metadata' ) ) {
 			include( ABSPATH . 'wp-admin/includes/image.php' );
 		}
@@ -2446,7 +2452,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( empty( $link ) ) {
 			return false;
 		}
-		if ( strpos( $link, 'https://images.pexels.com' ) !== false ) {
+		if ( substr( $link, 0, strlen( 'https://images.pexels.com' ) ) === 'https://images.pexels.com' ) {
 			return true;
 		}
 		return preg_match( '/^((https?:\/\/)|(www\.))([a-z0-9-].?)+(:[0-9]+)?\/[\w\-]+\.(jpg|png|gif|webp|jpeg)\/?$/i', $link );

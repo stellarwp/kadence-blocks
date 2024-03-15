@@ -136,7 +136,6 @@ export function getAsyncData() {
 		if (!userData?.photoLibrary) {
 			return [];
 		}
-		// console.log(userData);
 		const localGallery =
 			userData?.customCollections &&
 			userData?.customCollections.some((item) => item.value === userData?.photoLibrary)
@@ -169,7 +168,15 @@ export function getAsyncData() {
 						img.id = item.id;
 					}
 					if (item?.sizes?.[1]?.src) {
-						img.sizes = [{ src: item.sizes[1].src }];
+						if (item.sizes.find((image) => image.name === 'large')) {
+							img.sizes = [{ src: item.sizes.find((image) => image.name === 'large').src }];
+						} else if (item.sizes.find((image) => image.name === '2048x2048')) {
+							img.sizes = [{ src: item.sizes.find((image) => image.name === '2048x2048').src }];
+						} else if (item.sizes.find((image) => image.name === 'scaled')) {
+							img.sizes = [{ src: item.sizes.find((image) => image.name === 'scaled').src }];
+						} else {
+							img.sizes = [{ src: item.sizes[1].src }];
+						}
 					} else {
 						img.sizes = [{ src: item.url }];
 					}

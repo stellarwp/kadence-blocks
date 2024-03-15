@@ -18,6 +18,7 @@ export default function replaceImages(content, images, categories, context, vari
 	if (!content) {
 		return content;
 	}
+
 	if (!images.data?.[0]?.images) {
 		return content;
 	}

@@ -96,14 +96,14 @@ class Kadence_Blocks_Select_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 
 		$name = $is_multiselect ? $this->field_name( $attributes ) . '[]' : $this->field_name( $attributes );
 
-		$inner_content .= '<select ' . $is_multiselect . ' name="' . $name . '" id="' . $this->field_id( $attributes ) . '"' . $this->aria_described_by( $attributes ) . ' ' . $this->additional_field_attributes( $attributes ) . '>';
+		$inner_content .= '<select ' . $is_multiselect . ' name="' . esc_attr( $name ) . '" id="' . esc_attr( $this->field_id( $attributes ) ) . '"' . $this->aria_described_by( $attributes ) . ' ' . $this->additional_field_attributes( $attributes ) . '>';
 		if ( ! empty( $attributes['placeholder'] ) && $show_placeholder ) {
 			$inner_content .= '<option value="" disabled selected>' . $attributes['placeholder'] . '</option>';
 		}
 		if ( isset( $attributes['options'] ) && is_array( $attributes['options'] ) ) {
 			foreach ( $attributes['options'] as $option ) {
 				$option_value = $this->get_option_value( $option );
-				$inner_content .= '<option value="' . $option_value . '"' . ( $default_value === $option_value ? ' selected' : '' ) . '>' . $option['label'] . '</option>';
+				$inner_content .= '<option value="' . esc_attr( $option_value ) . '"' . ( $default_value === $option_value ? ' selected' : '' ) . '>' . $option['label'] . '</option>';
 			}
 		}
 		$inner_content .= '</select>';
