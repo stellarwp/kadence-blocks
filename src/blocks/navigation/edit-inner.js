@@ -163,6 +163,7 @@ export function EditInner(props) {
 		backgroundDropdownHoverMobile: meta?._kad_navigation_backgroundDropdownHoverMobile,
 		backgroundDropdownActiveMobile: meta?._kad_navigation_backgroundDropdownActiveMobile,
 		typography: meta?._kad_navigation_typography,
+		dropdownTypography: meta?._kad_navigation_dropdownTypography,
 		divider: meta?._kad_navigation_divider,
 		dividerTablet: meta?._kad_navigation_dividerTablet,
 		dividerMobile: meta?._kad_navigation_dividerMobile,
@@ -257,6 +258,7 @@ export function EditInner(props) {
 		backgroundDropdownHoverMobile,
 		backgroundDropdownActiveMobile,
 		typography,
+		dropdownTypography,
 		divider,
 		dividerTablet,
 		dividerMobile,
@@ -295,6 +297,15 @@ export function EditInner(props) {
 			return item;
 		});
 		setMetaAttribute(newUpdate, 'typography');
+	};
+	const saveDropdownTypography = (value) => {
+		const newUpdate = typography.map((item, index) => {
+			if (0 === index) {
+				item = { ...item, ...value };
+			}
+			return item;
+		});
+		setMetaAttribute(newUpdate, 'dropdownTypography');
 	};
 
 	const saveShadow = (value) => {
@@ -923,6 +934,52 @@ export function EditInner(props) {
 										saveShadow({ inset: value });
 									}}
 								/>
+							)}
+
+							{showSettings('fontSettings', 'kadence/navigation') && (
+								<KadencePanelBody
+									title={__('Typography Settings', 'kadence-blocks')}
+									initialOpen={false}
+									panelName={'kb-adv-btn-font-family'}
+								>
+									<TypographyControls
+										fontSize={dropdownTypography[0].size}
+										onFontSize={(value) => saveDropdownTypography({ size: value })}
+										fontSizeType={dropdownTypography[0].sizeType}
+										onFontSizeType={(value) => saveDropdownTypography({ sizeType: value })}
+										lineHeight={dropdownTypography[0].lineHeight}
+										onLineHeight={(value) => saveDropdownTypography({ lineHeight: value })}
+										lineHeightType={dropdownTypography[0].lineType}
+										onLineHeightType={(value) => saveDropdownTypography({ lineType: value })}
+										reLetterSpacing={dropdownTypography[0].letterSpacing}
+										onLetterSpacing={(value) => saveDropdownTypography({ letterSpacing: value })}
+										letterSpacingType={dropdownTypography[0].letterType}
+										onLetterSpacingType={(value) => saveDropdownTypography({ letterType: value })}
+										textTransform={dropdownTypography[0].textTransform}
+										onTextTransform={(value) => saveDropdownTypography({ textTransform: value })}
+										fontFamily={dropdownTypography[0].family}
+										onFontFamily={(value) => saveDropdownTypography({ family: value })}
+										onFontChange={(select) => {
+											saveDropdownTypography({
+												family: select.value,
+												google: select.google,
+											});
+										}}
+										onFontArrayChange={(values) => saveDropdownTypography(values)}
+										googleFont={dropdownTypography[0].google}
+										onGoogleFont={(value) => saveDropdownTypography({ google: value })}
+										loadGoogleFont={dropdownTypography[0].loadGoogle}
+										onLoadGoogleFont={(value) => saveDropdownTypography({ loadGoogle: value })}
+										fontVariant={dropdownTypography[0].variant}
+										onFontVariant={(value) => saveDropdownTypography({ variant: value })}
+										fontWeight={dropdownTypography[0].weight}
+										onFontWeight={(value) => saveDropdownTypography({ weight: value })}
+										fontStyle={dropdownTypography[0].style}
+										onFontStyle={(value) => saveDropdownTypography({ style: value })}
+										fontSubset={dropdownTypography[0].subset}
+										onFontSubset={(value) => saveDropdownTypography({ subset: value })}
+									/>
+								</KadencePanelBody>
 							)}
 						</KadencePanelBody>
 					</>

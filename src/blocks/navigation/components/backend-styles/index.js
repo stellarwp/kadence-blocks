@@ -66,6 +66,7 @@ export default function BackendStyles(props) {
 		backgroundDropdownHoverMobile,
 		backgroundDropdownActiveMobile,
 		typography,
+		dropdownTypography,
 		collapseSubMenus,
 		parentTogglesMenus,
 		divider,
@@ -225,7 +226,7 @@ export default function BackendStyles(props) {
 		css.render_border(dropdownDivider, dropdownDividerTablet, dropdownDividerMobile, previewDevice, 'bottom')
 	);
 	css.set_selector(
-		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li.menu-item > .link-drop-wrap >a`
+		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li.menu-item > .link-drop-wrap > a`
 	);
 	if (previewOrientation == 'horizontal') {
 		css.add_property('width', previewDropdownWidth + dropdownWidthUnit);
@@ -250,6 +251,7 @@ export default function BackendStyles(props) {
 			dropdownVerticalSpacingUnit
 		)
 	);
+	css.render_font(dropdownTypography ? dropdownTypography : [], previewDevice);
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li.menu-item > .link-drop-wrap > a, .wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul.sub-menu `
 	);
