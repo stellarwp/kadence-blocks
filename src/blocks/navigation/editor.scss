@@ -368,11 +368,21 @@ $anchor: #5000b9;
 	flex-grow: 1;
 	.navigation {
 		flex-grow: 1;
-		.menu-container {
+		& > .menu-container {
 			flex-grow: 1;
-			.menu {
+			& > .menu {
 				flex-grow: 1;
 				justify-content: space-between;
+
+				& > .menu-item {
+					margin: 0;
+					flex: 1 1 auto;
+					& > .link-drop-wrap > a {
+						width: fit-content;
+						margin-left: auto;
+						margin-right: auto;
+					}
+				}
 			}
 		}
 	}
@@ -383,12 +393,16 @@ $anchor: #5000b9;
 	FROM KADENCE THEME HEADER
 	*/
 	.navigation {
-		.menu-container {
-			.menu {
+		& > .menu-container {
+			& > .menu {
 				display: grid;
 				grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-				> li {
+
+				& > .menu-item {
 					text-align: center;
+					& > .link-drop-wrap > a {
+						width: initial;
+					}
 				}
 			}
 		}

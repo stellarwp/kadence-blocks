@@ -434,14 +434,16 @@ export function EditInner(props) {
 						onChange={(value) => setMetaAttribute(value, 'parentTogglesMenus' + size)}
 					/>
 				)}
-				<ToggleControl
-					label={__('Stretch Menu', 'kadence-blocks')}
-					checked={stretchValue}
-					onChange={(value) => setMetaAttribute(value, 'stretch' + size)}
-				/>
+				{previewOrientation == 'horizontal' && (
+					<ToggleControl
+						label={__('Stretch Menu', 'kadence-blocks')}
+						checked={stretchValue}
+						onChange={(value) => setMetaAttribute(value, 'stretch' + size)}
+					/>
+				)}
 				{stretchValue && (
 					<ToggleControl
-						label={__('Fill andd Center Menu Items?', 'kadence-blocks')}
+						label={__('Fill and Center Menu Items?', 'kadence-blocks')}
 						checked={fillStretchValue}
 						onChange={(value) => setMetaAttribute(value, 'fillStretch' + size)}
 					/>
