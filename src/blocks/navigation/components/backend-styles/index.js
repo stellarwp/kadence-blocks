@@ -71,6 +71,9 @@ export default function BackendStyles(props) {
 		divider,
 		dividerTablet,
 		dividerMobile,
+		dropdownDivider,
+		dropdownDividerTablet,
+		dropdownDividerMobile,
 		dropdownWidth,
 		dropdownWidthTablet,
 		dropdownWidthMobile,
@@ -79,6 +82,7 @@ export default function BackendStyles(props) {
 		dropdownVerticalSpacingTablet,
 		dropdownVerticalSpacingMobile,
 		dropdownVerticalSpacingUnit,
+		dropdownShadow,
 	} = metaAttributes;
 
 	const navigationHorizontalSpacing = spacing[1];
@@ -208,9 +212,18 @@ export default function BackendStyles(props) {
 		'background',
 		css.render_color(backgroundDropdown, backgroundDropdownTablet, backgroundDropdownMobile, previewDevice)
 	);
-	// $css->add_property( 'box-shadow', $css->render_shadow( kadence()->option( 'dropdown_navigation_shadow' ), kadence()->default( 'dropdown_navigation_shadow' ) ) );
-	// $css->set_selector( '.header-navigation .header-menu-container ul ul li.menu-item, .header-menu-container ul.menu > li.kadence-menu-mega-enabled > ul > li.menu-item > a' );
-	// $css->add_property( 'border-bottom', $css->render_border( kadence()->option( 'dropdown_navigation_divider' ) ) );
+	if (previewOrientation == 'horizontal') {
+		if (dropdownShadow?.[0]?.enable) {
+			css.add_property('box-shadow', css.render_shadow(dropdownShadow[0]));
+		}
+	}
+	css.set_selector(
+		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li:not(:last-of-type), .wp-block-kadence-navigation${uniqueID} .menu-container ul.menu > li.kadence-menu-mega-enabled > ul > li.menu-item > a`
+	);
+	css.add_property(
+		'border-bottom',
+		css.render_border(dropdownDivider, dropdownDividerTablet, dropdownDividerMobile, previewDevice, 'bottom')
+	);
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li.menu-item > .link-drop-wrap >a`
 	);
@@ -320,7 +333,7 @@ export default function BackendStyles(props) {
 	//New Logic for block
 	if (previewOrientation == 'vertical') {
 		css.set_selector(
-			`.wp-block-kadence-navigation${uniqueID} .navigation ul li.menu-item-has-children .link-drop-wrap`
+			`.wp-block-kadence-navigation${uniqueID} .navigation > .menu-container > ul > li.menu-item-has-children > .link-drop-wrap`
 		);
 		css.add_property(
 			'border-bottom',
@@ -335,7 +348,7 @@ export default function BackendStyles(props) {
 		);
 	} else {
 		css.set_selector(
-			`.wp-block-kadence-navigation${uniqueID} .navigation ul li:not(:last-of-type) .link-drop-wrap`
+			`.wp-block-kadence-navigation${uniqueID} .navigation > .menu-container > ul > li:not(:last-of-type) > .link-drop-wrap`
 		);
 		css.add_property(
 			'border-right',

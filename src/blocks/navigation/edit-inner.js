@@ -27,6 +27,7 @@ import {
 	ResponsiveBorderControl,
 	ResponsiveSelectControl,
 	SmallResponsiveControl,
+	BoxShadowControl,
 } from '@kadence/components';
 import { getPreviewSize, getSpacingOptionOutput, mouseOverVisualizer, showSettings } from '@kadence/helpers';
 
@@ -165,6 +166,9 @@ export function EditInner(props) {
 		divider: meta?._kad_navigation_divider,
 		dividerTablet: meta?._kad_navigation_dividerTablet,
 		dividerMobile: meta?._kad_navigation_dividerMobile,
+		dropdownDivider: meta?._kad_navigation_dropdownDivider,
+		dropdownDividerTablet: meta?._kad_navigation_dropdownDividerTablet,
+		dropdownDividerMobile: meta?._kad_navigation_dropdownDividerMobile,
 		dropdownWidth: meta?._kad_navigation_dropdownWidth,
 		dropdownWidthTablet: meta?._kad_navigation_dropdownWidthTablet,
 		dropdownWidthMobile: meta?._kad_navigation_dropdownWidthMobile,
@@ -173,6 +177,7 @@ export function EditInner(props) {
 		dropdownVerticalSpacingTablet: meta?._kad_navigation_dropdownVerticalSpacingTablet,
 		dropdownVerticalSpacingMobile: meta?._kad_navigation_dropdownVerticalSpacingMobile,
 		dropdownVerticalSpacingUnit: meta?._kad_navigation_dropdownVerticalSpacingUnit,
+		dropdownShadow: meta?._kad_navigation_dropdownShadow,
 	};
 
 	const {
@@ -255,6 +260,9 @@ export function EditInner(props) {
 		divider,
 		dividerTablet,
 		dividerMobile,
+		dropdownDivider,
+		dropdownDividerTablet,
+		dropdownDividerMobile,
 		dropdownWidth,
 		dropdownWidthTablet,
 		dropdownWidthMobile,
@@ -263,6 +271,7 @@ export function EditInner(props) {
 		dropdownVerticalSpacingTablet,
 		dropdownVerticalSpacingMobile,
 		dropdownVerticalSpacingUnit,
+		dropdownShadow,
 	} = metaAttributes;
 
 	const previewOrientation = getPreviewSize(previewDevice, orientation, orientationTablet, orientationMobile);
@@ -286,6 +295,16 @@ export function EditInner(props) {
 			return item;
 		});
 		setMetaAttribute(newUpdate, 'typography');
+	};
+
+	const saveShadow = (value) => {
+		const newUpdate = dropdownShadow.map((item, index) => {
+			if (0 === index) {
+				item = { ...item, ...value };
+			}
+			return item;
+		});
+		setMetaAttribute(newUpdate, 'dropdownShadow');
 	};
 
 	const navClasses = classnames('navigation', {
@@ -801,12 +820,110 @@ export function EditInner(props) {
 								onUnit={(value) => setMetaAttribute(value, 'dropdownVerticalSpacingUnit')}
 								showUnit={true}
 							/>
+							<ResponsiveSingleBorderControl
+								label={'Divider'}
+								value={dropdownDivider}
+								tabletValue={dropdownDividerTablet}
+								mobileValue={dropdownDividerMobile}
+								onChange={(value) => setMetaAttribute(value, 'dropdownDivider')}
+								onChangeTablet={(value) => setMetaAttribute(value, 'dropdownDividerTablet')}
+								onChangeMobile={(value) => setMetaAttribute(value, 'dropdownDividerMobile')}
+							/>
 							<SmallResponsiveControl
 								label={'Colors'}
 								desktopChildren={styleColorControls('', 'Dropdown')}
 								tabletChildren={styleColorControls('Tablet', 'Dropdown')}
 								mobileChildren={styleColorControls('Mobile', 'Dropdown')}
 							></SmallResponsiveControl>
+							{previewOrientation == 'horizontal' && (
+								<BoxShadowControl
+									label={__('Box Shadow', 'kadence-blocks')}
+									enable={
+										undefined !== dropdownShadow &&
+										undefined !== dropdownShadow[0] &&
+										undefined !== dropdownShadow[0].enable
+											? dropdownShadow[0].enable
+											: true
+									}
+									color={
+										undefined !== dropdownShadow &&
+										undefined !== dropdownShadow[0] &&
+										undefined !== dropdownShadow[0].color
+											? dropdownShadow[0].color
+											: '#000000'
+									}
+									colorDefault={'#000000'}
+									onArrayChange={(color, opacity) => {
+										saveShadow({ color, opacity });
+									}}
+									opacity={
+										undefined !== dropdownShadow &&
+										undefined !== dropdownShadow[0] &&
+										undefined !== dropdownShadow[0].opacity
+											? dropdownShadow[0].opacity
+											: 0.2
+									}
+									hOffset={
+										undefined !== dropdownShadow &&
+										undefined !== dropdownShadow[0] &&
+										undefined !== dropdownShadow[0].hOffset
+											? dropdownShadow[0].hOffset
+											: 0
+									}
+									vOffset={
+										undefined !== dropdownShadow &&
+										undefined !== dropdownShadow[0] &&
+										undefined !== dropdownShadow[0].vOffset
+											? dropdownShadow[0].vOffset
+											: 0
+									}
+									blur={
+										undefined !== dropdownShadow &&
+										undefined !== dropdownShadow[0] &&
+										undefined !== dropdownShadow[0].blur
+											? dropdownShadow[0].blur
+											: 14
+									}
+									spread={
+										undefined !== dropdownShadow &&
+										undefined !== dropdownShadow[0] &&
+										undefined !== dropdownShadow[0].spread
+											? dropdownShadow[0].spread
+											: 0
+									}
+									inset={
+										undefined !== dropdownShadow &&
+										undefined !== dropdownShadow[0] &&
+										undefined !== dropdownShadow[0].inset
+											? dropdownShadow[0].inset
+											: false
+									}
+									onEnableChange={(value) => {
+										saveShadow({ enable: value });
+									}}
+									onColorChange={(value) => {
+										saveShadow({ color: value });
+									}}
+									onOpacityChange={(value) => {
+										saveShadow({ opacity: value });
+									}}
+									onHOffsetChange={(value) => {
+										saveShadow({ hOffset: value });
+									}}
+									onVOffsetChange={(value) => {
+										saveShadow({ vOffset: value });
+									}}
+									onBlurChange={(value) => {
+										saveShadow({ blur: value });
+									}}
+									onSpreadChange={(value) => {
+										saveShadow({ spread: value });
+									}}
+									onInsetChange={(value) => {
+										saveShadow({ inset: value });
+									}}
+								/>
+							)}
 						</KadencePanelBody>
 					</>
 				)}
