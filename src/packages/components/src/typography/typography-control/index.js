@@ -371,7 +371,7 @@ class TypographyControls extends Component {
 				} else {
 					subset = '';
 					variant = '';
-					weight = 'inherit';
+					weight = undefined !== select.weights?.[0]?.value ? select.weights[0].value : 'inherit';
 				}
 				if ( onFontArrayChange ) {
 					onFontArrayChange( { google: select.google, family: select.value, variant: variant, weight: weight, style: 'normal', subset: subset } );
