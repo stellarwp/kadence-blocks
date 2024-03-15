@@ -263,40 +263,13 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		return $value;
 	}
 
-	public function build_html_attributes( $extra_attributes ) {
-		if ( empty( $extra_attributes ) ) {
-			return '';
-		}
-		$new_attributes = array();
-
-		// This is hardcoded on purpose.
-		// We only support a fixed list of attributes.
-		$attributes_to_merge = array( 'style', 'class', 'id' );
-		$attributes          = array();
-		foreach ( $attributes_to_merge as $attribute_name ) {
-			if ( empty( $new_attributes[ $attribute_name ] ) && empty( $extra_attributes[ $attribute_name ] ) ) {
-				continue;
-			}
-
-			if ( empty( $new_attributes[ $attribute_name ] ) ) {
-				$attributes[ $attribute_name ] = $extra_attributes[ $attribute_name ];
-				continue;
-			}
-
-			if ( empty( $extra_attributes[ $attribute_name ] ) ) {
-				$attributes[ $attribute_name ] = $new_attributes[ $attribute_name ];
-				continue;
-			}
-
-			$attributes[ $attribute_name ] = $extra_attributes[ $attribute_name ] . ' ' . $new_attributes[ $attribute_name ];
-		}
-
-		foreach ( $extra_attributes as $attribute_name => $value ) {
-			if ( ! in_array( $attribute_name, $attributes_to_merge, true ) ) {
-				$attributes[ $attribute_name ] = $value;
-			}
-		}
-
+	/**
+	 * Builds an html attribute string from an array of keys and values.
+	 *
+	 * @param array $attributes The database attribtues.
+	 * @return array
+	 */
+	public function build_html_attributes( $attributes ) {
 		if ( empty( $attributes ) ) {
 			return '';
 		}
