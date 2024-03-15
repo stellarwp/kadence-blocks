@@ -47,7 +47,7 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	private static $seen_refs = array();
 
-	protected $navigation_attributes = array();
+	protected $nav_attributes = array();
 	/**
 	 * Instance Control
 	 */
@@ -68,6 +68,8 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param string             $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
+		$nav_attributes = $this->get_nav_attributes( $attributes['id'] );
+		$nav_attributes = json_decode( json_encode( $nav_attributes ), true );
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
@@ -108,6 +110,9 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		self::$seen_refs[ $attributes['id'] ] = true;
 
+		$nav_attributes = $this->get_nav_attributes( $attributes['id'] );
+		$nav_attributes = json_decode( json_encode( $nav_attributes ), true );
+
 		// Remove the advanced nav block so it doesn't try and render.
 		$content = preg_replace( '/<!-- wp:kadence\/navigation {.*?} -->/', '', $nav_block->post_content );
 		$content = str_replace( '<!-- wp:kadence/navigation  -->', '', $content );
@@ -122,21 +127,59 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 
 		unset( self::$seen_refs[ $attributes['id'] ] );
 
-//		$navigation_attributes = $this->get_nav_attributes( $attributes['id'] );
-//		$navigation_attributes = json_decode( json_encode( $nav_attributes ), true );
+		// Wrapper Attributes.
+		$stretch = $this->get_inherited_value( $nav_attributes['stretch'], $nav_attributes['stretchTablet'], $nav_attributes['stretchMobile'], 'Desktop' );
+		$stretch_tablet = $this->get_inherited_value( $nav_attributes['stretch'], $nav_attributes['stretchTablet'], $nav_attributes['stretchMobile'], 'Tablet' );
+		$stretch_mobile = $this->get_inherited_value( $nav_attributes['stretch'], $nav_attributes['stretchTablet'], $nav_attributes['stretchMobile'], 'Mobile' );
+		$fill_stretch = $this->get_inherited_value( $nav_attributes['fillStretch'], $nav_attributes['fillStretchTablet'], $nav_attributes['fillStretchMobile'], 'Desktop' );
+		$fill_stretch_tablet = $this->get_inherited_value( $nav_attributes['fillStretch'], $nav_attributes['fillStretchTablet'], $nav_attributes['fillStretchMobile'], 'Tablet' );
+		$fill_stretch_mobile = $this->get_inherited_value( $nav_attributes['fillStretch'], $nav_attributes['fillStretchTablet'], $nav_attributes['fillStretchMobile'], 'Mobile' );
+		$orientation = $this->get_inherited_value( $nav_attributes['orientation'], $nav_attributes['orientationTablet'], $nav_attributes['orientationMobile'], 'Desktop' );
+		$orientation_tablet = $this->get_inherited_value( $nav_attributes['orientation'], $nav_attributes['orientationTablet'], $nav_attributes['orientationMobile'], 'Tablet' );
+		$orientation_mobile = $this->get_inherited_value( $nav_attributes['orientation'], $nav_attributes['orientationTablet'], $nav_attributes['orientationMobile'], 'Mobile' );
+
+		$wrapper_classes = array();
+		$wrapper_classes[] = 'wp-block-kadence-navigation' . $unique_id;
+		$wrapper_classes[] = 'navigation-desktop-layout-stretch-' . ( $stretch ? 'true' : 'false' );
+		$wrapper_classes[] = 'navigation-tablet-layout-stretch-' . ( $stretch_tablet ? 'true' : 'false' );
+		$wrapper_classes[] = 'navigation-mobile-layout-stretch-' . ( $stretch_mobile ? 'true' : 'false' );
+		$wrapper_classes[] = 'navigation-desktop-layout-fill-stretch-' . ( $fill_stretch ? 'true' : 'false' );
+		$wrapper_classes[] = 'navigation-tablet-layout-fill-stretch-' . ( $fill_stretch ? 'true' : 'false' );
+		$wrapper_classes[] = 'navigation-mobile-layout-fill-stretch-' . ( $fill_stretch ? 'true' : 'false' );
+		$wrapper_classes[] = 'navigation-desktop-orientation-' . ( $orientation ?? 'horizontal' );
+		$wrapper_classes[] = 'navigation-tablet-orientation-' . ( $orientation_tablet ?? 'horizontal' );
+		$wrapper_classes[] = 'navigation-mobile-orientation-' . ( $orientation_mobile ?? 'horizontal' );
 
 		$name = ! empty( $attributes['name'] ) ? $attributes['name'] : '';
-		$outer_classes = array( 'wp-block-kadence-header' . $unique_id );
+
 		$wrapper_attributes = get_block_wrapper_attributes(
 			array(
-				'class'      => implode( ' ', $outer_classes ),
+				'class'      => implode( ' ', $wrapper_classes ),
 				'aria-label' => $name,
 			)
 		);
 
+		// Navigation Attributes.
+		$navigation_classes = array();
+		$navigation_attributes = $this->build_html_attributes(
+			array(
+				'class' => implode( ' ', $navigation_classes ),
+			)
+		);
+
+		// Menu Attributes.
+		$menu_classes = array();
+		$menu_attributes = $this->build_html_attributes(
+			array(
+				'class' => implode( ' ', $menu_classes ),
+			)
+		);
+
 		return sprintf(
-			'<nav %1$s>%2$s</nav>',
+			'<div %1$s><nav %2$s><div class="menu-container"><ul %3$s>%4$s</ul><div></nav></div>',
 			$wrapper_attributes,
+			$navigation_attributes,
+			$menu_attributes,
 			$content
 		);
 	}
@@ -147,10 +190,13 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param int $post_id Post ID.
 	 * @return array
 	 */
-	private function get_navigation_attributes( $post_id ) {
+	private function get_nav_attributes( $post_id ) {
+		global $wp_meta_keys;
 
-		if ( ! empty( $this->navigation_attributes[ $post_id ] ) ) {
-			return $this->navigation_attributes[ $post_id ];
+		$temp = WP_Block_Type_Registry::get_instance()->get_registered( 'kadence/navigation' );
+
+		if ( ! empty( $this->nav_attributes[ $post_id ] ) ) {
+			return $this->nav_attributes[ $post_id ];
 		}
 
 		$post_meta = get_post_meta( $post_id );
@@ -163,13 +209,105 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-		if ( $this->navigation_attributes[ $post_id ] = $nav_meta ) {
-			return $this->navigation_attributes[ $post_id ];
+		$nav_meta = $this->merge_defaults( $nav_meta );
+
+		if ( $this->nav_attributes[ $post_id ] = $nav_meta ) {
+			return $this->nav_attributes[ $post_id ];
 		}
 
 		return array();
 	}
 
+	/**
+	 * Merges in default values from the cpt registration to the meta attributes from the database.
+	 *
+	 * @param array $attributes The database attribtues.
+	 * @return array
+	 */
+	private function merge_defaults( $attributes ) {
+		$meta_keys = get_registered_meta_keys( 'post', 'kadence_navigation' );
+		$meta_prefix = '_kad_navigation_';
+		$default_attributes = array();
+
+		foreach ( $meta_keys as $key => $value ) {
+			if ( str_starts_with( $key, $meta_prefix ) && array_key_exists( 'default', $value ) ) {
+				$attr_name = str_replace( $meta_prefix, '', $key );
+				$default_attributes[ $attr_name ] = $value['default'];
+			}
+		}
+
+		return array_merge( $default_attributes, $attributes );
+	}
+
+	/**
+	 * Get the value for a responsive attribute considering inheritance.
+	 *
+	 * @param mixed  $value The desktop value.
+	 * @param mixed  $value_tablet The tablet value.
+	 * @param mixed  $value_mobile The mobile value.
+	 * @param string $size The mobile value.
+	 * @return mixed
+	 */
+	public function get_inherited_value( $value, $value_tablet, $value_mobile, $size = 'Desktop' ) {
+		if ( $size === 'Mobile' ) {
+			if ( ! empty( $value_mobile ) ) {
+				return $value_mobile;
+			} else if ( ! empty( $value_tablet ) ) {
+				return $value_tablet;
+			}
+		} else if ( $size === 'Tablet' ) {
+			if ( ! empty( $value_tablet ) ) {
+				return $value_tablet;
+			}
+		}
+		return $value;
+	}
+
+	public function build_html_attributes( $extra_attributes ) {
+		if ( empty( $extra_attributes ) ) {
+			return '';
+		}
+		$new_attributes = array();
+
+		// This is hardcoded on purpose.
+		// We only support a fixed list of attributes.
+		$attributes_to_merge = array( 'style', 'class', 'id' );
+		$attributes          = array();
+		foreach ( $attributes_to_merge as $attribute_name ) {
+			if ( empty( $new_attributes[ $attribute_name ] ) && empty( $extra_attributes[ $attribute_name ] ) ) {
+				continue;
+			}
+
+			if ( empty( $new_attributes[ $attribute_name ] ) ) {
+				$attributes[ $attribute_name ] = $extra_attributes[ $attribute_name ];
+				continue;
+			}
+
+			if ( empty( $extra_attributes[ $attribute_name ] ) ) {
+				$attributes[ $attribute_name ] = $new_attributes[ $attribute_name ];
+				continue;
+			}
+
+			$attributes[ $attribute_name ] = $extra_attributes[ $attribute_name ] . ' ' . $new_attributes[ $attribute_name ];
+		}
+
+		foreach ( $extra_attributes as $attribute_name => $value ) {
+			if ( ! in_array( $attribute_name, $attributes_to_merge, true ) ) {
+				$attributes[ $attribute_name ] = $value;
+			}
+		}
+
+		if ( empty( $attributes ) ) {
+			return '';
+		}
+
+		$normalized_attributes = array();
+		foreach ( $attributes as $key => $value ) {
+			$normalized_attributes[] = $key . '="' . esc_attr( $value ) . '"';
+		}
+
+		return implode( ' ', $normalized_attributes );
+	}
 }
 
 Kadence_Blocks_Navigation_Block::get_instance();
