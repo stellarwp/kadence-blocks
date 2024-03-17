@@ -137,6 +137,12 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$orientation = $this->get_inherited_value( $nav_attributes['orientation'], $nav_attributes['orientationTablet'], $nav_attributes['orientationMobile'], 'Desktop' );
 		$orientation_tablet = $this->get_inherited_value( $nav_attributes['orientation'], $nav_attributes['orientationTablet'], $nav_attributes['orientationMobile'], 'Tablet' );
 		$orientation_mobile = $this->get_inherited_value( $nav_attributes['orientation'], $nav_attributes['orientationTablet'], $nav_attributes['orientationMobile'], 'Mobile' );
+		$collapse_sub_menus = $this->get_inherited_value( $nav_attributes['collapseSubMenus'], $nav_attributes['collapseSubMenusTablet'], $nav_attributes['collapseSubMenusMobile'], 'Desktop' );
+		$collapse_sub_menus_tablet = $this->get_inherited_value( $nav_attributes['collapseSubMenus'], $nav_attributes['collapseSubMenusTablet'], $nav_attributes['collapseSubMenusMobile'], 'Tablet' );
+		$collapse_sub_menus_mobile = $this->get_inherited_value( $nav_attributes['collapseSubMenus'], $nav_attributes['collapseSubMenusTablet'], $nav_attributes['collapseSubMenusMobile'], 'Mobile' );
+		$style = $this->get_inherited_value( $nav_attributes['style'], $nav_attributes['styleTablet'], $nav_attributes['styleMobile'], 'Desktop' );
+		$style_tablet = $this->get_inherited_value( $nav_attributes['style'], $nav_attributes['styleTablet'], $nav_attributes['styleMobile'], 'Tablet' );
+		$style_mobile = $this->get_inherited_value( $nav_attributes['style'], $nav_attributes['styleTablet'], $nav_attributes['styleMobile'], 'Mobile' );
 
 		$wrapper_classes = array();
 		$wrapper_classes[] = 'wp-block-kadence-navigation' . $unique_id;
@@ -146,9 +152,9 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$wrapper_classes[] = 'navigation-desktop-layout-fill-stretch-' . ( $fill_stretch ? 'true' : 'false' );
 		$wrapper_classes[] = 'navigation-tablet-layout-fill-stretch-' . ( $fill_stretch ? 'true' : 'false' );
 		$wrapper_classes[] = 'navigation-mobile-layout-fill-stretch-' . ( $fill_stretch ? 'true' : 'false' );
-		$wrapper_classes[] = 'navigation-desktop-orientation-' . ( $orientation ?? 'horizontal' );
-		$wrapper_classes[] = 'navigation-tablet-orientation-' . ( $orientation_tablet ?? 'horizontal' );
-		$wrapper_classes[] = 'navigation-mobile-orientation-' . ( $orientation_mobile ?? 'horizontal' );
+		$wrapper_classes[] = 'navigation-desktop-orientation-' . ( $orientation ? $orientation : 'horizontal' );
+		$wrapper_classes[] = 'navigation-tablet-orientation-' . ( $orientation_tablet ? $orientation_tablet : 'horizontal' );
+		$wrapper_classes[] = 'navigation-mobile-orientation-' . ( $orientation_mobile ? $orientation_mobile : 'horizontal' );
 
 		$name = ! empty( $attributes['name'] ) ? $attributes['name'] : '';
 
@@ -161,6 +167,13 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 
 		// Navigation Attributes.
 		$navigation_classes = array();
+
+		// Update animation classes with responsive actual animation stuff.
+		$navigation_classes[] = 'navigation-dropdown-animation-fade-';
+		$navigation_classes[] = 'nav--toggle-sub';
+		$navigation_classes[] = 'navigation-desktop-style-' . ( $style ? $style : 'standard' );
+		$navigation_classes[] = 'navigation-tablet-style-' . ( $style_tablet ? $style_tablet : 'standard' );
+		$navigation_classes[] = 'navigation-mobile-style-' . ( $style_mobile ? $style_mobile : 'standard' );
 		$navigation_attributes = $this->build_html_attributes(
 			array(
 				'class' => implode( ' ', $navigation_classes ),
@@ -169,6 +182,10 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 
 		// Menu Attributes.
 		$menu_classes = array();
+		$menu_classes[] = 'kb-navigation';
+		$menu_classes[] = 'collapse-sub-nav-desktop-' . ( $collapse_sub_menus ? 'true' : 'false' );
+		$menu_classes[] = 'collapse-sub-nav-tablet-' . ( $collapse_sub_menus_tablet ? 'true' : 'false' );
+		$menu_classes[] = 'collapse-sub-nav-mobile-' . ( $collapse_sub_menus_mobile ? 'true' : 'false' );
 		$menu_attributes = $this->build_html_attributes(
 			array(
 				'class' => implode( ' ', $menu_classes ),
@@ -176,7 +193,7 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		);
 
 		return sprintf(
-			'<div %1$s><nav %2$s><div class="menu-container"><ul %3$s>%4$s</ul><div></nav></div>',
+			'<div %1$s><nav %2$s><div class="menu-container"><ul %3$s>%4$s</ul></div></nav></div>',
 			$wrapper_attributes,
 			$navigation_attributes,
 			$menu_attributes,

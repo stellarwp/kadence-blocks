@@ -76,10 +76,25 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		$label = !empty( $attributes['label'] ) ? $attributes['label'] : '';
-		$url = !empty( $attributes['url'] ) ? $attributes['url'] : '';
+		$label = ! empty( $attributes['label'] ) ? $attributes['label'] : '';
+		$url = ! empty( $attributes['url'] ) ? $attributes['url'] : '';
 
-		return '<a href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a>';
+		$wrapper_classes = array();
+		$wrapper_classes[] = 'wp-block-kadence-navigation-link' . $unique_id;
+
+		$name = ! empty( $attributes['name'] ) ? $attributes['name'] : '';
+
+		$wrapper_attributes = get_block_wrapper_attributes(
+			array(
+				'class'      => implode( ' ', $wrapper_classes ),
+				'aria-label' => $name,
+			)
+		);
+
+		return sprintf(
+			'<li %1$s><div class="link-drop-wrap"><a href="' . esc_url( $url ) . '"><span class="link-drop-title-wrap">' . esc_html( $label ) . '<span></span></span></a></div></li>',
+			$wrapper_attributes
+		);
 	}
 
 }
