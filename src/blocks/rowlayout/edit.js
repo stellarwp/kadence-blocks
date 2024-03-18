@@ -1570,7 +1570,12 @@ function RowLayoutEditContainer(props) {
 									: ''}
 							</>
 						)}
-					{columns && columns === 3 && 'grid-layout' !== previewLayout && 'default' !== columnGutter && ('Desktop' === previewDevice || ('Tablet' === previewDevice && tabLayoutClass === 'inherit')) && (
+					{columns &&
+						columns === 3 &&
+						'grid-layout' !== previewLayout &&
+						'default' !== columnGutter &&
+						('Desktop' === previewDevice ||
+							('Tablet' === previewDevice && tabLayoutClass === 'inherit')) && (
 							<>
 								{widthNumber && secondWidthNumber && thirdWidthNumber
 									? `.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-3.kt-layout-inner-wrap-id${uniqueID} { grid-template-columns: minmax(0, calc( ${parseFloat(
