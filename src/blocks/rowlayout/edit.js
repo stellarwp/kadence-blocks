@@ -1572,7 +1572,7 @@ function RowLayoutEditContainer(props) {
 						)}
 					{columns &&
 						columns === 3 &&
-						'grid-layout' !== previewLayout && 
+						'grid-layout' !== previewLayout &&
 						'default' !== columnGutter &&
 						('Desktop' === previewDevice ||
 							('Tablet' === previewDevice && tabLayoutClass === 'inherit')) && (
