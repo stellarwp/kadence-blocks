@@ -12,6 +12,11 @@ import { navigationBlockIcon } from '@kadence/icons';
 import edit from './edit';
 import metadata from './block.json';
 
+/**
+ * Import Css
+ */
+import './style.scss';
+
 registerBlockType('kadence/navigation', {
 	...metadata,
 	title: _x('Navigation (Adv)', 'block title', 'kadence-blocks'),

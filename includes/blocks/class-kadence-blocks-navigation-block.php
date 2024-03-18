@@ -34,11 +34,9 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Block determines in scripts need to be loaded for block.
 	 *
-	 * @var string
+	 * @var boolean
 	 */
-	protected $has_script = false;
-
-	protected $has_style = false;
+	protected $has_script = true;
 
 	/**
 	 * Instance of this class
@@ -68,9 +66,6 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param string             $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
-		$nav_attributes = $this->get_nav_attributes( $attributes['id'] );
-		$nav_attributes = json_decode( json_encode( $nav_attributes ), true );
-
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
 		return $css->css_output();
@@ -169,6 +164,7 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$navigation_classes = array();
 
 		// Update animation classes with responsive actual animation stuff.
+		$navigation_classes[] = 'navigation';
 		$navigation_classes[] = 'navigation-dropdown-animation-fade-';
 		$navigation_classes[] = 'nav--toggle-sub';
 		$navigation_classes[] = 'navigation-desktop-style-' . ( $style ? $style : 'standard' );
@@ -183,6 +179,7 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		// Menu Attributes.
 		$menu_classes = array();
 		$menu_classes[] = 'kb-navigation';
+		$menu_classes[] = 'menu';
 		$menu_classes[] = 'collapse-sub-nav-desktop-' . ( $collapse_sub_menus ? 'true' : 'false' );
 		$menu_classes[] = 'collapse-sub-nav-tablet-' . ( $collapse_sub_menus_tablet ? 'true' : 'false' );
 		$menu_classes[] = 'collapse-sub-nav-mobile-' . ( $collapse_sub_menus_mobile ? 'true' : 'false' );
