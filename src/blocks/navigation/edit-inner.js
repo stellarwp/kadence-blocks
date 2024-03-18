@@ -577,8 +577,19 @@ export function EditInner(props) {
 
 				{activeTab === 'general' && (
 					<>
-						<>
-							<br />
+						<KadencePanelBody
+							panelName={'kb-navigation-selected-switch'}
+							title={__('Selected Navigation', 'kadence-blocks')}
+						>
+							{!direct && (
+								<SelectForm
+									postType="kadence_navigation"
+									label={__('Selected Navigation', 'kadence-blocks')}
+									hideLabelFromVision={true}
+									onChange={(nextId) => setAttributes({ id: parseInt(nextId) })}
+									value={id}
+								/>
+							)}
 
 							<Button variant="secondary" onClick={openModal}>
 								{__('Open Visual Editor', 'kadence-blocks')}
@@ -594,7 +605,7 @@ export function EditInner(props) {
 									<MenuEditor />
 								</Modal>
 							)}
-						</>
+						</KadencePanelBody>
 						<div className="kt-sidebar-settings-spacer"></div>
 						<KadencePanelBody panelName={'kb-navigation-general'}>
 							<ResponsiveSelectControl

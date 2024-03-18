@@ -230,3 +230,9 @@ export { default as lineMask } from './block-icons/progress-bar/line-mask-layout
 // Arrows
 export { default as ArrowUp } from './arrow-up';
 export { default as ArrowDown } from './arrow-down';
+
+// Navigation & Header Block
+export { default as headerBlockIcon } from './block-icons/header'
+export { default as navigationBlockIcon } from './block-icons/navigation/block-icon'
+export { default as navigationMegaMenuIcon } from './block-icons/navigation/mega-menu'
+export { default as navigationItemIcon } from './block-icons/navigation/navigation-item'

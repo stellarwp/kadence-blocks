@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { _x } from '@wordpress/i18n';
-import { customLink as linkIcon } from '@wordpress/icons';
+import { navigationItemIcon } from '@kadence/icons';
 import { addFilter } from '@wordpress/hooks';
 import { registerBlockType } from '@wordpress/blocks';
 import { InnerBlocks } from '@wordpress/block-editor';
@@ -21,7 +21,7 @@ export { metadata, name };
 
 registerBlockType(name, {
 	...metadata,
-	icon: linkIcon,
+	icon: navigationItemIcon,
 	__experimentalLabel: ({ label }) => label,
 	edit,
 	save: () => {

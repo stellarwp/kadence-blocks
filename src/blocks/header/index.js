@@ -1,7 +1,7 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { __, _x } from '@wordpress/i18n';
 
-import { formBlockIcon } from '@kadence/icons';
+import { headerBlockIcon } from '@kadence/icons';
 
 /**
  * Import Css
@@ -22,7 +22,7 @@ registerBlockType('kadence/header', {
 	description: _x('Create an advanced header or footer for your website.', 'block description', 'kadence-blocks'),
 	keywords: [__('header', 'kadence-blocks'), __('footer', 'kadence-blocks'), 'kb'],
 	icon: {
-		src: formBlockIcon,
+		src: headerBlockIcon,
 	},
 	edit,
 	save: () => {
