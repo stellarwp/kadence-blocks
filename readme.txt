@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.2
 Tested up to: 6.4
-Stable tag: 3.2.26
+Stable tag: 3.2.27
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -89,9 +89,11 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.2.27 =
-Release Date: March TBD 2024
+Release Date: March 19th 2024
 * Fix: Compatibility with WordPress 6.5 block rename feature.
 * Fix: Value of 0 not allowed in a required number field for the advanced form block.
+* Fix: Possible issue with font weight defaults.
+* Fix: Issue with full height and margin spacing.
 
 = 3.2.26 =
 Release Date: March 7th 2024
