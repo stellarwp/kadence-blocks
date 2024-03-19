@@ -112,6 +112,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 		$wrapper_classes = array();
 		$wrapper_classes[] = 'wp-block-kadence-navigation-link' . $unique_id;
+		$wrapper_classes[] = 'menu-item';
 
 		$name = ! empty( $attributes['name'] ) ? $attributes['name'] : '';
 
