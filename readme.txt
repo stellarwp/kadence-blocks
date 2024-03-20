@@ -92,6 +92,9 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 Release Date: March 20th 2024
 * Update: Available google fonts.
 * Fix: Issue with synced patterns breaking out of layout.
+* Fix: Possible form styles for twenty-twenty.
+* Fix: Issue with flex basis applying to mobile vertical directions.
+* Fix: Issue with four column layouts inheriting in the editor.
 
 = 3.2.27 =
 Release Date: March 19th 2024

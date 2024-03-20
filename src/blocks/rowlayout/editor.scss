@@ -373,6 +373,8 @@ div.kb-blocks-bg-video {
 .is-root-container > .block-library-block__reusable-block-container.is-reusable:has([data-align="full"]) {
 	max-width: calc(100vw - 16px);
 	width: 100vw;
+	margin-top: 0;
+	margin-bottom: 0;
 
 	.block-editor-block-list__block {
 		max-width: var(--global-content-width);
@@ -611,19 +613,19 @@ div.kb-blocks-bg-video {
 	grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 .wp-block-kadence-rowlayout.kt-has-3-columns.kt-row-layout-left-half > .innerblocks-wrap {
-	grid-template-columns: minmax(0, 50%) minmax(0, 25%) minmax(0, 25%);
+	grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
 }
 .wp-block-kadence-rowlayout.kt-has-3-columns.kt-row-layout-right-half > .innerblocks-wrap {
-	grid-template-columns: minmax(0, 25%) minmax(0, 25%) minmax(0, 50%);
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr);
 }
 .wp-block-kadence-rowlayout.kt-has-3-columns.kt-row-layout-center-half > .innerblocks-wrap {
-	grid-template-columns: minmax(0, 25%) minmax(0, 50%) minmax(0, 25%);
+	grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
 }
 .wp-block-kadence-rowlayout.kt-has-3-columns.kt-row-layout-center-wide > .innerblocks-wrap {
-	grid-template-columns: minmax(0, 20%) minmax(0, 60%) minmax(0, 20%);
+	grid-template-columns: minmax(0, 1fr) minmax(0, 3fr) minmax(0, 1fr);
 }
 .wp-block-kadence-rowlayout.kt-has-3-columns.kt-row-layout-center-exwide > .innerblocks-wrap {
-	grid-template-columns: minmax(0, 15%) minmax(0, 70%) minmax(0, 15%);
+	grid-template-columns: minmax(0, 1fr) minmax(0, 6fr) minmax(0, 1fr);
 }
 .wp-block-kadence-rowlayout.kt-has-3-columns.kt-row-layout-first-row > .innerblocks-wrap {
 	grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
@@ -648,10 +650,10 @@ div.kb-blocks-bg-video {
 	grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 .wp-block-kadence-rowlayout.kt-has-4-columns.kt-row-layout-left-forty > .innerblocks-wrap {
-	grid-template-columns: minmax(0, 40%) minmax(0, 20%) minmax(0, 20%) minmax(0, 20%);
+	grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
 }
 .wp-block-kadence-rowlayout.kt-has-4-columns.kt-row-layout-right-forty > .innerblocks-wrap {
-	grid-template-columns: minmax(0, 20%) minmax(0, 20%) minmax(0, 20%) minmax(0, 40%);
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr);
 }
 .wp-block-kadence-rowlayout.kt-has-4-columns.kt-row-layout-two-grid > .innerblocks-wrap {
 	grid-template-columns: repeat(2, minmax(0, 1fr));

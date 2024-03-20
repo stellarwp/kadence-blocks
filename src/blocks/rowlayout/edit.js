@@ -823,6 +823,12 @@ function RowLayoutEditContainer( props ) {
 		! tabletLayout ? '' : tabletLayout,
 		! mobileLayout ? '' : mobileLayout
 	);
+	const previewLayoutActual = getPreviewSize(
+		previewDevice,
+		! colLayout ? 'equal' : colLayout,
+		! tabletLayout || 'inherit' === tabletLayout ? '' : tabletLayout,
+		! mobileLayout ? '' : mobileLayout
+	);
 	let hasBorderRadius = false;
 	if ( undefined !== borderRadius && undefined !== borderRadius[ 0 ] && borderRadius[ 0 ] ) {
 		hasBorderRadius = true;
@@ -929,7 +935,7 @@ function RowLayoutEditContainer( props ) {
 		[ `align${ align }` ]: align,
 		[ `kb-row-id-${ uniqueID }` ]: uniqueID,
 		[ `kt-has-${ columns }-columns` ]: columns,
-		[ `kt-row-layout-${ previewLayout }` ]: previewLayout,
+		[ `kt-row-layout-${ previewLayoutActual }` ]: previewLayoutActual,
 		[ `kt-row-valign-${ verticalAlignment }` ]: verticalAlignment,
 		// [ `kt-tab-layout-${ tabLayoutClass }` ]: tabLayoutClass,
 		// [ `kt-mobile-layout-${ mobileLayoutClass }` ]: mobileLayoutClass,
