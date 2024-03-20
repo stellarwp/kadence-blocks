@@ -370,7 +370,7 @@ div.kb-blocks-bg-video {
 // Therefore, let's at least not add any additional margins here.
 // The goal is for the editor to look more like the front-end.
 //.block-editor-block-list__layout .block-editor-block-list__block[data-type="kadence/rowlayout"] > .block-editor-block-list__block-edit,
-.is-root-container > .block-library-block__reusable-block-container.is-reusable {
+.is-root-container > .block-library-block__reusable-block-container.is-reusable:has([data-align="full"]) {
 	max-width: calc(100vw - 16px);
 	width: 100vw;
 
