@@ -95,6 +95,7 @@ Release Date: March 20th 2024
 * Fix: Possible form styles for twenty-twenty.
 * Fix: Issue with flex basis applying to mobile vertical directions.
 * Fix: Issue with four column layouts inheriting in the editor.
+* Fix: Issue with importing patterns showing Invalid Request, Incorrect Pattern
 
 = 3.2.27 =
 Release Date: March 19th 2024
