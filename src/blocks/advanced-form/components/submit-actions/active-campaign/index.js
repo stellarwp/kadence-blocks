@@ -164,7 +164,6 @@ function ActiveCampaignOptions( { formInnerBlocks, parentClientId, settings, sav
 			} ),
 		} )
 			.then( ( list ) => {
-				console.log( list );
 				const theAttributes = [];
 				theAttributes.push( { value: null, label: 'None' } );
 				theAttributes.push( { value: 'email', label: __( 'Email', 'kadence-blocks' ) + ' *' } );
