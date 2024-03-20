@@ -771,7 +771,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			if ( ( 'horizontal' === $tablet_direction || 'horizontal-reverse' === $tablet_direction ) ) {
 				$css->add_property( 'flex-wrap', 'nowrap' );
 			}
-			if ( ( 'horizontal' === $tablet_direction || 'horizontal-reverse' === $tablet_direction ) && ( ! empty( $attributes['flexBasis'][1] ) || ! empty( $attributes['flexBasis'][1] ) ) ) {
+			if ( ( 'horizontal' === $tablet_direction || 'horizontal-reverse' === $tablet_direction ) && ( ! empty( $attributes['flexBasis'][0] ) || ! empty( $attributes['flexBasis'][1] ) ) ) {
 				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *,.wp-block-kadence-column.kb-section-md-dir-vertical.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *' );
 				$css->add_property( 'flex', '1' );
 				$css->add_property( 'max-width', '100%' );
