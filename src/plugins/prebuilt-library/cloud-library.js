@@ -171,7 +171,7 @@ function CloudSections( { importContent, clientId, reload = false, onReload, tab
 				} );
 			}
 		}
-		if ( action?.[ 0 ]?.url ) {
+		if ( action?.[ 0 ]?.url && pattern?.id ) {
 			const response = await getPattern(
 				tab,
 				'pattern',
