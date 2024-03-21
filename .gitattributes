@@ -3,6 +3,8 @@
 
 *               text
 composer.lock   text -diff
+*.png			binary
+*.jpg			binary
 
 # Ignore paths when git creates an archive of this package
 /.gitattributes             export-ignore
