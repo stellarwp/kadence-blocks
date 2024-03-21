@@ -70,39 +70,67 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 			return;
 		}
 
-		// $form_fields     = $this->get_form_fields( $attributes['id'] );
 		$nav_attributes = $this->get_nav_attributes( $attributes['id'] );
 		$nav_attributes = json_decode( json_encode( $nav_attributes ), true );
 
-		$navigation_horizontal_spacing = $nav_attributes['spacing'][0];
-		$navigation_vertical_spacing = $nav_attributes['spacing'][1];
-
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
+		$sizes = array( 'Desktop', 'Tablet', 'Mobile' );
+
+		foreach ( $sizes as $size ) {
+			$this->sized_dynamic_styles( $css, $nav_attributes, $unique_id, $size );
+		}
+		$css->set_media_state( 'desktop' );
+
+		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > ul li.menu-item > .link-drop-wrap > a' );
+		$css->render_font( $nav_attributes['typography'] ? $nav_attributes['typography'] : [], $css );
+
+		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul li.menu-item > .link-drop-wrap > a' );
+		$css->render_font( $nav_attributes['dropdownTypography'] ? $nav_attributes['dropdownTypography'] : [], $css );
+
+		$css->set_selector( '.wp-block-kadence-navigation${uniqueID} > .navigation > .menu-container > .menu' );
+		$css->render_measure_output( $nav_attributes, 'padding' );
+		$css->render_measure_output( $nav_attributes, 'margin' );
+		return $css->css_output();
+	}
+
+	/**
+	 * Build up the dynamic styles for a size.
+	 *
+	 * @param string $size The size.
+	 * @return array
+	 */
+	public function sized_dynamic_styles( $css, $attributes, $unique_id, $size = 'Desktop' ) {
+		$sized_attributes = $css->get_sized_attributes_auto( $attributes, $size, false );
+		$sized_attributes_inherit = $css->get_sized_attributes_auto( $attributes, $size );
+		$navigation_horizontal_spacing = $sized_attributes['spacing'][0];
+		$navigation_vertical_spacing = $sized_attributes['spacing'][1];
+
+		$css->set_media_state( strtolower( $size ) );
 		// Navigation logic from theme styles component.
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation[class*="navigation-style-underline"] .menu-container>ul>li>a:after' );
-		$css->add_property( 'width', 'calc( 100% - ' . $css->render_size($navigation_horizontal_spacing, $nav_attributes['spacingUnit']) . ' )' );
+		$css->add_property( 'width', 'calc( 100% - ' . $css->render_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) . ' )', $navigation_horizontal_spacing );
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .menu-container > ul > li.menu-item > .link-drop-wrap >a' );
-		$css->add_property( 'padding-left', $css->render_half_size($navigation_horizontal_spacing, $nav_attributes['spacingUnit']));
-		$css->add_property( 'padding-right', $css->render_half_size($navigation_horizontal_spacing, $nav_attributes['spacingUnit']));
+		$css->add_property( 'padding-left', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ), $navigation_horizontal_spacing );
+		$css->add_property( 'padding-right', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ), $navigation_horizontal_spacing );
 		if (
-			( $nav_attributes['orientation'] == 'vertical' ||
-			$nav_attributes['style'] === 'standard' ||
-			$nav_attributes['style'] === 'underline' ||
-			$nav_attributes['style'] === '' ) &&
+			( $sized_attributes_inherit['orientation'] == 'vertical' ||
+			$sized_attributes_inherit['style'] === 'standard' ||
+			$sized_attributes_inherit['style'] === 'underline' ||
+			$sized_attributes_inherit['style'] === '' ) &&
 			is_numeric( $navigation_vertical_spacing )
 		) {
-			$css->add_property( 'padding-top', $css->render_half_size($navigation_vertical_spacing, $nav_attributes['spacingUnit']));
-			$css->add_property( 'padding-bottom', $css->render_half_size($navigation_vertical_spacing, $nav_attributes['spacingUnit']));
+			$css->add_property( 'padding-top', $css->render_half_size( $navigation_vertical_spacing, $attributes['spacingUnit'] ) );
+			$css->add_property( 'padding-bottom', $css->render_half_size( $navigation_vertical_spacing, $attributes['spacingUnit'] ) );
 		}
 
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .menu-container > ul > li.menu-item > .link-drop-wrap > a, .wp-block-kadence-navigation' . $unique_id . ' .menu-container > ul > li.menu-item > .link-drop-wrap' );
-		$css->add_property( 'color', $css->render_color($nav_attributes['linkColor'] ));
-		$css->add_property( 'background', $css->render_color($nav_attributes['background']));
+		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColor'] ), $sized_attributes['linkColor'] );
+		$css->add_property( 'background', $css->render_color( $sized_attributes['background'] ), $sized_attributes['background'] );
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .menu-container > ul > li.menu-item > .link-drop-wrap:hover > a, .wp-block-kadence-navigation' . $unique_id . ' .menu-container > ul > li.menu-item > .link-drop-wrap:hover' );
-		$css->add_property( 'color', $css->render_color($nav_attributes['linkColorHover']));
-		$css->add_property( 'background', $css->render_color($nav_attributes['backgroundHover']) );
-		if ($nav_attributes['parentActive']) {
+		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorHover'] ) );
+		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundHover'] ) );
+		if ( $sized_attributes['parentActive'] ) {
 			$css->set_selector(	'.wp-block-kadence-navigation' . $unique_id . ' .navigation[class*="navigation-style-underline"] .menu-container.menu-container>ul>li.current-menu-ancestor>a:after' );
 			$css->add_property( 'transform', 'scale(1, 1) translate(50%, 0)' );
 			$css->set_selector(	'.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > ul > li.menu-item.current-menu-item > .link-drop-wrap > a,
@@ -113,57 +141,49 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector(	'.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > ul > li.menu-item.current-menu-item > .link-drop-wrap > a,
 				.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > ul > li.menu-item.current-menu-item > .link-drop-wrap' );
 		}
-		$css->add_property( 'color', $css->render_color($nav_attributes['linkColorActive']) );
-		$css->add_property( 'background', $css->render_color($nav_attributes['backgroundActive']) );
+		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorActive']) );
+		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundActive']) );
 
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > ul > li.menu-item .dropdown-nav-special-toggle' );
-		$css->add_property( 'right', $css->render_half_size($navigation_horizontal_spacing, $nav_attributes['spacingUnit']) );
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > ul li.menu-item > .link-drop-wrap > a' );
-		$css->render_font( $nav_attributes['typography'] ? $nav_attributes['typography'] : [], $css );
-
+		$css->add_property( 'right', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit']) );
 
 		//Dropdown logic from theme Styles Component
 		// Dropdown.
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul.sub-menu, .wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul.submenu' );
-		$css->add_property('background', $css->render_color($nav_attributes['backgroundDropdown']) );
-		if ($nav_attributes['orientation'] == 'horizontal' ) {
-			if ($nav_attributes['dropdownShadow'] && isset($nav_attributes['dropdownShadow'][0]) && $nav_attributes['dropdownShadow'][0]['enable']) {
-				$css->add_property( 'box-shadow', $css->render_shadow($nav_attributes['dropdownShadow'][0]));
+		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundDropdown'] ) );
+		if ( $sized_attributes['orientation'] == 'horizontal' ) {
+			if ( $sized_attributes['dropdownShadow'] && isset( $sized_attributes['dropdownShadow'][0] ) && $sized_attributes['dropdownShadow'][0]['enable'] ) {
+				$css->add_property( 'box-shadow', $css->render_shadow( $sized_attributes['dropdownShadow'][0] ) );
 			}
 		}
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul li:not(:last-of-type), .wp-block-kadence-navigation' . $unique_id . ' .menu-container ul.menu > li.kadence-menu-mega-enabled > ul > li.menu-item > a' );
-		$css->add_property( 'border-bottom', $css->render_border($nav_attributes['dropdownDivider'], 'bottom' ) );
+		$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['dropdownDivider'], 'bottom' ) );
 
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul li.menu-item > .link-drop-wrap > a' );
-		if ($nav_attributes['orientation'] == 'horizontal' ) {
-			$css->add_property( 'width', $nav_attributes['dropdownWidth'] . $nav_attributes['dropdownWidthUnit'] );
+		if ( $sized_attributes['orientation'] == 'horizontal' ) {
+			$css->add_property( 'width', $sized_attributes['dropdownWidth'] . $sized_attributes['dropdownWidthUnit'] );
 		}
-		$css->add_property( 'padding-top', $css->render_size(  $nav_attributes['dropdownVerticalSpacing'], $nav_attributes['dropdownVerticalSpacingUnit'] ) );
-		$css->add_property( 'padding-bottom', $css->render_size( $nav_attributes['dropdownVerticalSpacing'], $nav_attributes['dropdownVerticalSpacingUnit'] ) );
-		$css->render_font( $nav_attributes['dropdownTypography'] ? $nav_attributes['dropdownTypography'] : [], $css );
+		$css->add_property( 'padding-top', $css->render_size( $sized_attributes['dropdownVerticalSpacing'], $attributes['dropdownVerticalSpacingUnit'] ) );
+		$css->add_property( 'padding-bottom', $css->render_size( $sized_attributes['dropdownVerticalSpacing'], $attributes['dropdownVerticalSpacingUnit'] ) );
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul li.menu-item > .link-drop-wrap > a, .wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul.sub-menu ' );
-		$css->add_property( 'color', $css->render_color($nav_attributes['linkColorDropdown']));
+		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorDropdown']));
 		// $css->render_font( kadence()->option( 'dropdown_navigation_typography' ), $css );
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul li.menu-item > .link-drop-wrap > a:hover' );
-		$css->add_property( 'color', $css->render_color($nav_attributes['linkColorDropdownHover'] ));
-		$css->add_property( 'background', $css->render_color($nav_attributes['backgroundDropdownHover'] ));
+		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorDropdownHover'] ));
+		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundDropdownHover'] ));
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . '.navigation .menu-container ul ul li.menu-item.current-menu-item > .link-drop-wrap > a' );
-		$css->add_property( 'color', $css->render_color($nav_attributes['linkColorDropdownActive'] ));
-		$css->add_property( 'background', $css->render_color($nav_attributes['backgroundDropdownActive']));
+		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorDropdownActive'] ));
+		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundDropdownActive']));
 
-		if ( $nav_attributes['orientation'] == 'vertical' ) {
+		if ( $sized_attributes['orientation'] == 'vertical' ) {
 			$css->set_selector( '.wp-block-kadence-navigation${uniqueID} .navigation > .menu-container > ul > li.menu-item-has-children > .link-drop-wrap' );
-			$css->add_property( 'border-bottom', $css->render_border($nav_attributes['divider'], 'bottom' ) );
+			$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['divider'], 'bottom' ) );
 			$css->set_selector( '.wp-block-kadence-navigation${uniqueID} .navigation:not(.drawer-navigation-parent-toggle-true) ul li.menu-item-has-children .link-drop-wrap button' );
-			$css->add_property( 'border-left', $css->render_border($nav_attributes['divider'], 'bottom' ) );
+			$css->add_property( 'border-left', $css->render_border( $sized_attributes['divider'], 'bottom' ) );
 		} else {
 			$css->set_selector( '.wp-block-kadence-navigation${uniqueID} .navigation > .menu-container > ul > li:not(:last-of-type) > .link-drop-wrap' );
-			$css->add_property( 'border-right', $css->render_border($nav_attributes['divider'], 'bottom' ) );
+			$css->add_property( 'border-right', $css->render_border( $sized_attributes['divider'], 'bottom' ) );
 		}
-		$css->set_selector( '.wp-block-kadence-navigation${uniqueID} > .navigation > .menu-container > .menu' );
-		$css->render_measure_output( $nav_attributes, 'padding' );
-		$css->render_measure_output( $nav_attributes, 'margin' );
-		return $css->css_output();
 	}
 
 	/**
@@ -217,23 +237,26 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 
 		unset( self::$seen_refs[ $attributes['id'] ] );
 
-		// Wrapper Attributes.
-		$stretch = $this->get_inherited_value( $nav_attributes['stretch'], $nav_attributes['stretchTablet'], $nav_attributes['stretchMobile'], 'Desktop' );
-		$stretch_tablet = $this->get_inherited_value( $nav_attributes['stretch'], $nav_attributes['stretchTablet'], $nav_attributes['stretchMobile'], 'Tablet' );
-		$stretch_mobile = $this->get_inherited_value( $nav_attributes['stretch'], $nav_attributes['stretchTablet'], $nav_attributes['stretchMobile'], 'Mobile' );
-		$fill_stretch = $this->get_inherited_value( $nav_attributes['fillStretch'], $nav_attributes['fillStretchTablet'], $nav_attributes['fillStretchMobile'], 'Desktop' );
-		$fill_stretch_tablet = $this->get_inherited_value( $nav_attributes['fillStretch'], $nav_attributes['fillStretchTablet'], $nav_attributes['fillStretchMobile'], 'Tablet' );
-		$fill_stretch_mobile = $this->get_inherited_value( $nav_attributes['fillStretch'], $nav_attributes['fillStretchTablet'], $nav_attributes['fillStretchMobile'], 'Mobile' );
-		$orientation = $this->get_inherited_value( $nav_attributes['orientation'], $nav_attributes['orientationTablet'], $nav_attributes['orientationMobile'], 'Desktop' );
-		$orientation_tablet = $this->get_inherited_value( $nav_attributes['orientation'], $nav_attributes['orientationTablet'], $nav_attributes['orientationMobile'], 'Tablet' );
-		$orientation_mobile = $this->get_inherited_value( $nav_attributes['orientation'], $nav_attributes['orientationTablet'], $nav_attributes['orientationMobile'], 'Mobile' );
-		$collapse_sub_menus = $this->get_inherited_value( $nav_attributes['collapseSubMenus'], $nav_attributes['collapseSubMenusTablet'], $nav_attributes['collapseSubMenusMobile'], 'Desktop' );
-		$collapse_sub_menus_tablet = $this->get_inherited_value( $nav_attributes['collapseSubMenus'], $nav_attributes['collapseSubMenusTablet'], $nav_attributes['collapseSubMenusMobile'], 'Tablet' );
-		$collapse_sub_menus_mobile = $this->get_inherited_value( $nav_attributes['collapseSubMenus'], $nav_attributes['collapseSubMenusTablet'], $nav_attributes['collapseSubMenusMobile'], 'Mobile' );
-		$style = $this->get_inherited_value( $nav_attributes['style'], $nav_attributes['styleTablet'], $nav_attributes['styleMobile'], 'Desktop' );
-		$style_tablet = $this->get_inherited_value( $nav_attributes['style'], $nav_attributes['styleTablet'], $nav_attributes['styleMobile'], 'Tablet' );
-		$style_mobile = $this->get_inherited_value( $nav_attributes['style'], $nav_attributes['styleTablet'], $nav_attributes['styleMobile'], 'Mobile' );
+		// Inherit values.
+		// Just getting a css class for access to methods.
+		$css = Kadence_Blocks_CSS::get_instance();
+		$stretch = $css->get_inherited_value( $nav_attributes['stretch'], $nav_attributes['stretchTablet'], $nav_attributes['stretchMobile'], 'Desktop' );
+		$stretch_tablet = $css->get_inherited_value( $nav_attributes['stretch'], $nav_attributes['stretchTablet'], $nav_attributes['stretchMobile'], 'Tablet' );
+		$stretch_mobile = $css->get_inherited_value( $nav_attributes['stretch'], $nav_attributes['stretchTablet'], $nav_attributes['stretchMobile'], 'Mobile' );
+		$fill_stretch = $css->get_inherited_value( $nav_attributes['fillStretch'], $nav_attributes['fillStretchTablet'], $nav_attributes['fillStretchMobile'], 'Desktop' );
+		$fill_stretch_tablet = $css->get_inherited_value( $nav_attributes['fillStretch'], $nav_attributes['fillStretchTablet'], $nav_attributes['fillStretchMobile'], 'Tablet' );
+		$fill_stretch_mobile = $css->get_inherited_value( $nav_attributes['fillStretch'], $nav_attributes['fillStretchTablet'], $nav_attributes['fillStretchMobile'], 'Mobile' );
+		$orientation = $css->get_inherited_value( $nav_attributes['orientation'], $nav_attributes['orientationTablet'], $nav_attributes['orientationMobile'], 'Desktop' );
+		$orientation_tablet = $css->get_inherited_value( $nav_attributes['orientation'], $nav_attributes['orientationTablet'], $nav_attributes['orientationMobile'], 'Tablet' );
+		$orientation_mobile = $css->get_inherited_value( $nav_attributes['orientation'], $nav_attributes['orientationTablet'], $nav_attributes['orientationMobile'], 'Mobile' );
+		$collapse_sub_menus = $css->get_inherited_value( $nav_attributes['collapseSubMenus'], $nav_attributes['collapseSubMenusTablet'], $nav_attributes['collapseSubMenusMobile'], 'Desktop' );
+		$collapse_sub_menus_tablet = $css->get_inherited_value( $nav_attributes['collapseSubMenus'], $nav_attributes['collapseSubMenusTablet'], $nav_attributes['collapseSubMenusMobile'], 'Tablet' );
+		$collapse_sub_menus_mobile = $css->get_inherited_value( $nav_attributes['collapseSubMenus'], $nav_attributes['collapseSubMenusTablet'], $nav_attributes['collapseSubMenusMobile'], 'Mobile' );
+		$style = $css->get_inherited_value( $nav_attributes['style'], $nav_attributes['styleTablet'], $nav_attributes['styleMobile'], 'Desktop' );
+		$style_tablet = $css->get_inherited_value( $nav_attributes['style'], $nav_attributes['styleTablet'], $nav_attributes['styleMobile'], 'Tablet' );
+		$style_mobile = $css->get_inherited_value( $nav_attributes['style'], $nav_attributes['styleTablet'], $nav_attributes['styleMobile'], 'Mobile' );
 
+		// Wrapper Attributes.
 		$wrapper_classes = array();
 		$wrapper_classes[] = 'wp-block-kadence-navigation' . $unique_id;
 		$wrapper_classes[] = 'navigation-desktop-layout-stretch-' . ( $stretch ? 'true' : 'false' );
@@ -346,30 +369,6 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		return array_merge( $default_attributes, $attributes );
-	}
-
-	/**
-	 * Get the value for a responsive attribute considering inheritance.
-	 *
-	 * @param mixed  $value The desktop value.
-	 * @param mixed  $value_tablet The tablet value.
-	 * @param mixed  $value_mobile The mobile value.
-	 * @param string $size The mobile value.
-	 * @return mixed
-	 */
-	public function get_inherited_value( $value, $value_tablet, $value_mobile, $size = 'Desktop' ) {
-		if ( $size === 'Mobile' ) {
-			if ( ! empty( $value_mobile ) ) {
-				return $value_mobile;
-			} else if ( ! empty( $value_tablet ) ) {
-				return $value_tablet;
-			}
-		} else if ( $size === 'Tablet' ) {
-			if ( ! empty( $value_tablet ) ) {
-				return $value_tablet;
-			}
-		}
-		return $value;
 	}
 
 	/**

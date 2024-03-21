@@ -576,11 +576,15 @@ class Kadence_Blocks_CSS {
 	 * @since  1.0
 	 *
 	 * @param  string $property - the css property
-	 * @param  string $value - the value to be placed with the property
+	 * @param  mixed  $value - the value to be placed with the property
+	 * @param  mixed  $check_empty - the value to be checkd if empty
 	 * @return $this
 	 */
-	public function add_property( $property, $value = null ) {
+	public function add_property( $property, $value = null, $check_empty = null ) {
 		if ( null === $value ) {
+			return $this;
+		}
+		if ( null !== $check_empty && empty( $check_empty ) ) {
 			return $this;
 		}
 		if ( in_array( $property, $this->_special_properties_list ) ) {
@@ -1966,7 +1970,7 @@ class Kadence_Blocks_CSS {
 		);
 		foreach ( $sizes as $size ) {
 			$this->set_media_state( $size );
-			foreach ( $args['side_prop_keys'] as $side => $prop_key ) {
+			foreach ( $args['sides_prop_keys'] as $side => $prop_key ) {
 				$width = $this->get_border_value( $attributes, $args, $side, $size, 'width', $single_styles );
 				$color = $this->get_border_value( $attributes, $args, $side, $size, 'color', $single_styles );
 				$style = $this->get_border_value( $attributes, $args, $side, $size, 'style', $single_styles );
@@ -2628,6 +2632,159 @@ class Kadence_Blocks_CSS {
 	 */
 	public function set_spacing_sizes( $sizes ) {
 		$this->spacing_sizes = $sizes;
+	}
+
+	/**
+	 * Get the value for a responsive attribute considering inheritance.
+	 *
+	 * @param mixed   $value The desktop value.
+	 * @param mixed   $value_tablet The tablet value.
+	 * @param mixed   $value_mobile The mobile value.
+	 * @param string  $size The size.
+	 * @param boolean $check_array if you should check if an array has any values.
+	 * @return mixed
+	 */
+	public function get_inherited_value( $value, $value_tablet, $value_mobile, $size = 'Desktop', $check_array = false ) {
+
+		if ( ! $check_array ) {
+			if ( $size === 'Mobile' ) {
+				if ( ! empty( $value_mobile ) ) {
+					return $value_mobile;
+				} else if ( ! empty( $value_tablet ) ) {
+					return $value_tablet;
+				}
+			} else if ( $size === 'Tablet' ) {
+				if ( ! empty( $value_tablet ) ) {
+					return $value_tablet;
+				}
+			}
+		} else {
+			if ( $size === 'Mobile' ) {
+				if ( ! $this->empty_but_check_array( $value_mobile ) ) {
+					return $value_mobile;
+				} else if ( ! $this->empty_but_check_array( $value_tablet ) ) {
+					return $value_tablet;
+				}
+			} else if ( $size === 'Tablet' ) {
+				if ( ! $this->empty_but_check_array( $value_tablet ) ) {
+					return $value_tablet;
+				}
+			}
+		}
+		return $value;
+	}
+
+	/**
+	 * Does a check to see if any of the values in this array are not empty.
+	 *
+	 * @param mixed $value the array.
+	 * @return boolean
+	 */
+	public function empty_but_check_array( $value ) {
+		$has_value = false;
+		if ( ! is_array( $value ) ) {
+			return empty( $value );
+		}
+
+		foreach ( $value as $array_value ) {
+			if ( is_array( $array_value ) ) {
+				$has_value = ! $this->empty_but_check_array( $array_value );
+			} else if ( ! empty( $array_value ) ) {
+				$has_value = true;
+			}
+		}
+		return ! $has_value;
+	}
+
+	/**
+	 * Returns a copy of an attributes array, attempts to make values in the form {attribute}Tablet, {attribute}Mobile inherit.
+	 *
+	 * @param array $attributes the attributes.
+	 * @return array
+	 */
+	public function auto_inherit_attribtues( $attributes ) {
+		$inherit_array = array();
+
+		foreach ( $attributes as $key => $value ) {
+			$is_tablet_key = str_ends_with( $key, 'Tablet' );
+			$is_mobile_key = str_ends_with( $key, 'Mobile' );
+
+			if ( $is_tablet_key || $is_mobile_key ) {
+				$desktop_key = substr( $key, 0, -6 );
+				$tablet_key = $desktop_key . 'Tablet';
+				$mobile_key = $desktop_key . 'Mobile';
+
+				if ( array_key_exists( $desktop_key, $attributes ) && array_key_exists( $tablet_key, $attributes ) && array_key_exists( $mobile_key, $attributes ) ) {
+					$inherit_array[ $key ] = $this->get_inherited_value( $attributes[ $desktop_key ], $attributes[ $tablet_key ], $attributes[ $mobile_key ], $is_tablet_key ? 'Tablet' : 'Mobile', true );
+				} else {
+					$inherit_array[ $key ] = $value;
+				}
+			} else {
+				$inherit_array[ $key ] = $value;
+			}
+		}
+
+		return $inherit_array;
+	}
+
+	/**
+	 * Reduces attributes in an array of the form {attribute}Tablet, {attribute}Mobile down to their base (desktop) key given a size.
+	 *
+	 * @param array   $attributes the attributes.
+	 * @param string  $key the key.
+	 * @param string  $size the size.
+	 * @param boolean $inherit if the attribute should inherit.
+	 * @return mixed
+	 */
+	public function get_sized_attribute( $attributes, $key, $size = 'Desktop', $inherit = true ) {
+		$sized_key = $size == 'Desktop' ? $key : $key . $size;
+
+		if ( array_key_exists( $sized_key, $attributes ) ) {
+			$desktop_key = $key;
+			$tablet_key = $desktop_key . 'Tablet';
+			$mobile_key = $desktop_key . 'Mobile';
+
+			if ( array_key_exists( $desktop_key, $attributes ) && array_key_exists( $tablet_key, $attributes ) && array_key_exists( $mobile_key, $attributes ) && $inherit ) {
+				return $this->get_inherited_value( $attributes[ $desktop_key ], $attributes[ $tablet_key ], $attributes[ $mobile_key ], $size, true );
+			}
+
+			return $attributes[ $sized_key ];
+		} else if ( array_key_exists( $key, $attributes ) ) {
+			return $attributes[ $key ];
+		}
+
+		return null;
+	}
+
+	/**
+	 * Gets an Attribute for a given responsive size base on the form {attribute}Tablet, {attribute}Mobile.
+	 *
+	 * @param array   $attributes the attributes.
+	 * @param string  $size the size.
+	 * @param boolean $inherit if the attribute should inherit.
+	 * @return mixed
+	 */
+	public function get_sized_attributes_auto( $attributes, $size = 'Desktop', $inherit = true ) {
+		$sized_array = array();
+
+		foreach ( $attributes as $key => $value ) {
+			$is_tablet_key = str_ends_with( $key, 'Tablet' );
+			$is_mobile_key = str_ends_with( $key, 'Mobile' );
+
+			if ( $is_tablet_key || $is_mobile_key ) {
+				$desktop_key = substr( $key, 0, -6 );
+				$tablet_key = $desktop_key . 'Tablet';
+				$mobile_key = $desktop_key . 'Mobile';
+
+				if ( array_key_exists( $desktop_key, $attributes ) && array_key_exists( $tablet_key, $attributes ) && array_key_exists( $mobile_key, $attributes ) ) {
+					$sized_array[ $desktop_key ] = $this->get_sized_attribute( $attributes, $desktop_key, $size, $inherit );
+				}
+			} else {
+				$sized_array[ $key ] = $value;
+			}
+		}
+
+		return $sized_array;
 	}
 }
 Kadence_Blocks_CSS::get_instance();
