@@ -110,9 +110,12 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$label = ! empty( $attributes['label'] ) ? $attributes['label'] : '';
 		$url = ! empty( $attributes['url'] ) ? $attributes['url'] : '';
 
+		$has_children = ! empty( $content );
+
 		$wrapper_classes = array();
 		$wrapper_classes[] = 'wp-block-kadence-navigation-link' . $unique_id;
 		$wrapper_classes[] = 'menu-item';
+		$wrapper_classes[] = $has_children ? 'menu-item-has-children' : '';
 
 		$name = ! empty( $attributes['name'] ) ? $attributes['name'] : '';
 
@@ -122,8 +125,6 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 				'aria-label' => $name,
 			)
 		);
-
-		$has_children = ! empty( $content );
 
 		$down_arrow_icon = '<svg class="kadence-svg-icon kadence-arrow-down-svg" fill="currentColor" version="1.1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">';
 		$down_arrow_icon .= '<title>' . esc_html__( 'Expand', 'kadence' ) . '</title>';

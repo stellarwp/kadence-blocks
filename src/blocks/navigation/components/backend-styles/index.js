@@ -187,7 +187,7 @@ export default function BackendStyles(props) {
 	);
 
 	css.set_selector(
-		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item .dropdown-nav-special-toggle`
+		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item .dropdown-nav-toggle`
 	);
 	css.add_property(
 		'right',

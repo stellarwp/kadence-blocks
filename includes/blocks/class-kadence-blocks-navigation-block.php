@@ -88,7 +88,7 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul li.menu-item > .link-drop-wrap > a' );
 		$css->render_font( $nav_attributes['dropdownTypography'] ? $nav_attributes['dropdownTypography'] : [], $css );
 
-		$css->set_selector( '.wp-block-kadence-navigation${uniqueID} > .navigation > .menu-container > .menu' );
+		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' > .navigation > .menu-container > .menu' );
 		$css->render_measure_output( $nav_attributes, 'padding' );
 		$css->render_measure_output( $nav_attributes, 'margin' );
 		return $css->css_output();
@@ -144,7 +144,7 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorActive']) );
 		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundActive']) );
 
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > ul > li.menu-item .dropdown-nav-special-toggle' );
+		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > ul > li.menu-item .dropdown-nav-toggle' );
 		$css->add_property( 'right', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit']) );
 
 		//Dropdown logic from theme Styles Component
@@ -176,12 +176,12 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundDropdownActive']));
 
 		if ( $sized_attributes['orientation'] == 'vertical' ) {
-			$css->set_selector( '.wp-block-kadence-navigation${uniqueID} .navigation > .menu-container > ul > li.menu-item-has-children > .link-drop-wrap' );
+			$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation > .menu-container > ul > li.menu-item-has-children > .link-drop-wrap' );
 			$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['divider'], 'bottom' ) );
-			$css->set_selector( '.wp-block-kadence-navigation${uniqueID} .navigation:not(.drawer-navigation-parent-toggle-true) ul li.menu-item-has-children .link-drop-wrap button' );
+			$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation:not(.drawer-navigation-parent-toggle-true) ul li.menu-item-has-children .link-drop-wrap button' );
 			$css->add_property( 'border-left', $css->render_border( $sized_attributes['divider'], 'bottom' ) );
 		} else {
-			$css->set_selector( '.wp-block-kadence-navigation${uniqueID} .navigation > .menu-container > ul > li:not(:last-of-type) > .link-drop-wrap' );
+			$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation > .menu-container > ul > li:not(:last-of-type) > .link-drop-wrap' );
 			$css->add_property( 'border-right', $css->render_border( $sized_attributes['divider'], 'bottom' ) );
 		}
 	}
@@ -369,6 +369,39 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		return array_merge( $default_attributes, $attributes );
+	}
+
+	/**
+	 * Registers scripts and styles.
+	 */
+	public function register_scripts() {
+		parent::register_scripts();
+		// If in the backend, bail out.
+		if ( is_admin() ) {
+			return;
+		}
+		if ( apply_filters( 'kadence_blocks_check_if_rest', false ) && kadence_blocks_is_rest() ) {
+			return;
+		}
+		wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/kb-navigation-block.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+
+		wp_localize_script(
+			'kadence-blocks-' . $this->block_name,
+			'kadenceNavigationConfig',
+			array(
+				'screenReader' => array(
+					'expand'     => __( 'Child menu', 'kadence' ),
+					'expandOf'   => __( 'Child menu of', 'kadence' ),
+					'collapse'   => __( 'Child menu', 'kadence' ),
+					'collapseOf' => __( 'Child menu of', 'kadence' ),
+				),
+				'breakPoints' => array(
+					'desktop' => 1024,
+					'tablet' => 768,
+				),
+				'scrollOffset' => apply_filters( 'kadence_scroll_to_id_additional_offset', 0 ),
+			),
+		);
 	}
 
 	/**
