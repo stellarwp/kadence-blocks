@@ -1895,6 +1895,36 @@ class Kadence_Blocks_CSS {
 		}
 		$this->set_media_state( 'desktop' );
 	}
+
+	/**
+	 * Generates a border string for a single side at a single screen size.
+	 *
+	 * @param array $border an array of border settings.
+	 * @return string
+	 */
+	public function render_border( $border, $side = 'top' ) {
+		if ( empty( $border ) || empty( $border[0] ) ) {
+			return false;
+		}
+		if ( ! is_array( $border[0] ) ) {
+			return false;
+		}
+		if ( ! isset( $border[0][ $side ] ) ) {
+			return false;
+		}
+
+		$border_side = $border[0][ $side ];
+
+		$border_string = '';
+		$style         = ( isset( $border_side[1] ) && ! empty( $border_side[1] ) ? $border_side[1] : 'solid' );
+		$width         = ( isset( $border_side[2] ) && ! empty( $border_side[2] ) ? $border_side[2] : '0' );
+		$unit          = ( isset( $border[0]['unit'] ) && ! empty( $border[0]['unit'] ) ? $border[0]['unit'] : 'px' );
+		$color         = ( isset( $border_side[0] ) && ! empty( $border_side[0] ) ? $border_side[0] : 'transparent' );
+		$border_string = $width . $unit . ' ' . $style . ' ' . $this->render_color( $color );
+
+		return $border_string;
+	}
+
 	/**
 	 * Generates the border styles output.
 	 *
@@ -1921,14 +1951,14 @@ class Kadence_Blocks_CSS {
 			'second_prop' => 'border-right',
 			'third_prop'  => 'border-bottom',
 			'fourth_prop' => 'border-left',
+			'sides_prop_keys' => array(
+				'top' => 'first_prop',
+				'right' => 'second_prop',
+				'bottom' => 'third_prop',
+				'left' => 'fourth_prop',
+			),
 		);
 		$args = wp_parse_args( $args, $defaults );
-		$sides_prop_keys = array(
-			'top' => 'first_prop',
-			'right' => 'second_prop',
-			'bottom' => 'third_prop',
-			'left' => 'fourth_prop',
-		);
 		$sizes = array(
 			'desktop',
 			'tablet',
@@ -1936,7 +1966,7 @@ class Kadence_Blocks_CSS {
 		);
 		foreach ( $sizes as $size ) {
 			$this->set_media_state( $size );
-			foreach ( $sides_prop_keys as $side => $prop_key ) {
+			foreach ( $args['side_prop_keys'] as $side => $prop_key ) {
 				$width = $this->get_border_value( $attributes, $args, $side, $size, 'width', $single_styles );
 				$color = $this->get_border_value( $attributes, $args, $side, $size, 'color', $single_styles );
 				$style = $this->get_border_value( $attributes, $args, $side, $size, 'style', $single_styles );
@@ -2314,25 +2344,41 @@ class Kadence_Blocks_CSS {
 			}
 		}
 	}
+
 	/**
 	 * Generates the size output.
 	 *
 	 * @param array $size an array of size settings.
 	 * @return string
 	 */
-	public function render_size( $size ) {
+	public function render_half_size( $size, $unit = 'px' ) {
 		if ( empty( $size ) ) {
 			return false;
 		}
-		if ( ! is_array( $size ) ) {
+		$size_number = $size ? $size : '0';
+		$size_unit   = $unit ? $unit : 'em';
+
+		$size_string = 'calc(' . $size_number . $size_unit . ' / 2)';
+		return $size_string;
+	}
+
+	/**
+	 * Generates the size output.
+	 *
+	 * @param array $size an array of size settings.
+	 * @return string
+	 */
+	public function render_size( $size, $unit = 'px' ) {
+		if ( empty( $size ) ) {
 			return false;
 		}
-		$size_number = ( isset( $size['size'] ) && ! empty( $size['size'] ) ? $size['size'] : '0' );
-		$size_unit   = ( isset( $size['unit'] ) && ! empty( $size['unit'] ) ? $size['unit'] : 'em' );
+		$size_number = $size ? $size : '0';
+		$size_unit   = $unit ? $unit : 'em';
 
 		$size_string = $size_number . $size_unit;
 		return $size_string;
 	}
+
 	/**
 	 * Add google font to array.
 	 *

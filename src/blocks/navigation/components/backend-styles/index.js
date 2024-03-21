@@ -130,8 +130,8 @@ export default function BackendStyles(props) {
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap >a`
 	);
-	css.add_property('padding-left', css.render_size(previewNavigationHorizontalSpacing));
-	css.add_property('padding-right', css.render_size(previewNavigationHorizontalSpacing));
+	css.add_property('padding-left', css.render_half_size(previewNavigationHorizontalSpacing));
+	css.add_property('padding-right', css.render_half_size(previewNavigationHorizontalSpacing));
 	if (
 		(previewOrientation == 'vertical' ||
 			previewStyle === 'standard' ||
@@ -140,8 +140,8 @@ export default function BackendStyles(props) {
 		!isNaN(parseFloat(previewNavigationVerticalSpacing)) &&
 		isFinite(previewNavigationVerticalSpacing)
 	) {
-		css.add_property('padding-top', css.render_size(previewNavigationVerticalSpacing));
-		css.add_property('padding-bottom', css.render_size(previewNavigationVerticalSpacing));
+		css.add_property('padding-top', css.render_half_size(previewNavigationVerticalSpacing));
+		css.add_property('padding-bottom', css.render_half_size(previewNavigationVerticalSpacing));
 	}
 
 	css.set_selector(
@@ -191,7 +191,7 @@ export default function BackendStyles(props) {
 	);
 	css.add_property(
 		'right',
-		css.render_size(
+		css.render_half_size(
 			navigationHorizontalSpacing,
 			navigationHorizontalSpacingTablet,
 			navigationHorizontalSpacingMobile,
