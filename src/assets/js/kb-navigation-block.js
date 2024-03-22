@@ -12,7 +12,7 @@
 		/**
 		 * Function to init different style of focused element on keyboard users and mouse users.
 		 */
-		initOutlineToggle: function () {
+		initOutlineToggle() {
 			document.body.addEventListener('keydown', function () {
 				document.body.classList.remove('hide-focus-outline');
 			});
@@ -25,7 +25,7 @@
 		/**
 		 * Get element's offset.
 		 */
-		getOffset: function (el) {
+		getOffset(el) {
 			if (el instanceof HTMLElement) {
 				var rect = el.getBoundingClientRect();
 
@@ -48,7 +48,7 @@
 		 * @param {string} query
 		 * @return {NodeList} parents matching query
 		 */
-		findParents: function (target, query) {
+		findParents(target, query) {
 			var parents = [];
 
 			// recursively go up the DOM adding matches to the parents array
@@ -69,7 +69,7 @@
 		/**
 		 * Toggle an attribute.
 		 */
-		toggleAttribute: function (element, attribute, trueVal, falseVal) {
+		toggleAttribute(element, attribute, trueVal, falseVal) {
 			if (trueVal === undefined) {
 				trueVal = true;
 			}
@@ -86,7 +86,7 @@
 		 * Initiate the script to process all
 		 * navigation menus with submenu toggle enabled.
 		 */
-		initNavToggleSubmenus: function () {
+		initNavToggleSubmenus() {
 			var navTOGGLE = document.querySelectorAll('.wp-block-kadence-navigation .nav--toggle-sub');
 
 			// No point if no navs.
@@ -99,7 +99,7 @@
 				window.kadenceNavigation.initEachNavToggleSubmenuInside(navTOGGLE[i]);
 			}
 		},
-		initEachNavToggleSubmenu: function (nav) {
+		initEachNavToggleSubmenu(nav) {
 			// Get the submenus.
 			var SUBMENUS = nav.querySelectorAll('.menu ul');
 
@@ -110,7 +110,7 @@
 
 			for (let i = 0; i < SUBMENUS.length; i++) {
 				var parentMenuItem = SUBMENUS[i].parentNode;
-				let dropdown = parentMenuItem.querySelector('.title-dropdown-navigation-toggle');
+				const dropdown = parentMenuItem.querySelector('.title-dropdown-navigation-toggle');
 				// If dropdown.
 				if (dropdown) {
 					var dropdown_label = parentMenuItem
@@ -206,7 +206,7 @@
 				}
 			}
 		},
-		initEachNavToggleSubmenuInside: function (nav) {
+		initEachNavToggleSubmenuInside(nav) {
 			// Get the submenus.
 			var SUBMENUPARENTS = nav.querySelectorAll('.menu-item-has-children');
 
@@ -240,7 +240,7 @@
 		 * @param {boolean} forceToggle Force the menu toggle.
 		 * @return {void}
 		 */
-		toggleSubMenu: function (parentMenuItem, forceToggle) {
+		toggleSubMenu(parentMenuItem, forceToggle) {
 			var toggleButton = parentMenuItem.querySelector('.dropdown-navigation-toggle'),
 				subMenu = parentMenuItem.querySelector('ul');
 			let parentMenuItemToggled = parentMenuItem.classList.contains('menu-item--toggled-on');
@@ -299,7 +299,7 @@
 		 * @param {string} focusSelector
 		 * @return {boolean} whether or not the element is the first focusable element in the container
 		 */
-		isfirstFocusableElement: function (container, element, focusSelector) {
+		isfirstFocusableElement(container, element, focusSelector) {
 			var focusableElements = container.querySelectorAll(focusSelector);
 			if (0 < focusableElements.length) {
 				return element === focusableElements[0];
@@ -315,7 +315,7 @@
 		 * @param {string} focusSelector
 		 * @return {boolean} whether or not the element is the last focusable element in the container
 		 */
-		islastFocusableElement: function (container, element, focusSelector) {
+		islastFocusableElement(container, element, focusSelector) {
 			var focusableElements = container.querySelectorAll(focusSelector);
 			//console.log( focusableElements );
 			if (0 < focusableElements.length) {
@@ -326,7 +326,7 @@
 		/**
 		 * Initiate the script to process all drawer toggles.
 		 */
-		toggleDrawer: function (element, changeFocus) {
+		toggleDrawer(element, changeFocus) {
 			changeFocus = typeof changeFocus !== 'undefined' ? changeFocus : true;
 			var toggle = element;
 			var target = toggle.closest('li');
@@ -409,7 +409,7 @@
 					var lastFocusableElement = focusableContent[focusableContent.length - 1]; // get last element to be focused inside modal
 
 					document.addEventListener('keydown', function (e) {
-						let isTabPressed = e.key === 'Tab' || e.keyCode === 9;
+						const isTabPressed = e.key === 'Tab' || e.keyCode === 9;
 
 						if (!isTabPressed) {
 							return;
@@ -421,13 +421,11 @@
 								lastFocusableElement.focus(); // add focus for the last focusable element
 								e.preventDefault();
 							}
-						} else {
+						} else if (document.activeElement === lastFocusableElement) {
 							// if tab key is pressed
-							if (document.activeElement === lastFocusableElement) {
-								// if focused has reached to last focusable element then focus first focusable element after pressing tab
-								firstFocusableElement.focus(); // add focus for the first focusable element
-								e.preventDefault();
-							}
+							// if focused has reached to last focusable element then focus first focusable element after pressing tab
+							firstFocusableElement.focus(); // add focus for the first focusable element
+							e.preventDefault();
 						}
 					});
 				}
@@ -437,7 +435,7 @@
 		 * Initiate the script to process all
 		 * navigation menus with small toggle enabled.
 		 */
-		initToggleDrawer: function () {
+		initToggleDrawer() {
 			var drawerTOGGLE = document.querySelectorAll('.drawer-toggle');
 
 			// No point if no drawers.
@@ -490,7 +488,7 @@
 		 * Initiate the script to process all
 		 * navigation menus with vertical style drawers.
 		 */
-		initMobileToggleSub: function () {
+		initMobileToggleSub() {
 			var modalMenus = document.querySelectorAll(' .wp-block-kadence-navigation .has-collapse-sub-nav');
 
 			modalMenus.forEach(function (modalMenu) {
@@ -521,7 +519,7 @@
 		 * Initiate the script to process all
 		 * navigation menus check to close mobile.
 		 */
-		initMobileToggleAnchor: function () {
+		initMobileToggleAnchor() {
 			var mobileModal = document.getElementById('mobile-drawer');
 			// No point if no drawers.
 			if (!mobileModal) {
@@ -541,7 +539,7 @@
 		/**
 		 * Initiate setting the top padding for hero title when page is transparent.
 		 */
-		initTransHeaderPadding: function () {
+		initTransHeaderPadding() {
 			if (document.body.classList.contains('no-header')) {
 				return;
 			}
@@ -561,12 +559,10 @@
 					} else {
 						titleHero.style.paddingTop = header.offsetHeight + 'px';
 					}
+				} else if (!document.body.classList.contains('mobile-transparent-header')) {
+					titleHero.style.paddingTop = 0;
 				} else {
-					if (!document.body.classList.contains('mobile-transparent-header')) {
-						titleHero.style.paddingTop = 0;
-					} else {
-						titleHero.style.paddingTop = header.offsetHeight + 'px';
-					}
+					titleHero.style.paddingTop = header.offsetHeight + 'px';
 				}
 			};
 			if (titleHero) {
@@ -580,7 +576,7 @@
 		 * Initiate the script to stick the header.
 		 * http://www.mattmorgante.com/technology/sticky-navigation-bar-javascript
 		 */
-		initStickyHeader: function () {
+		initStickyHeader() {
 			var desktopSticky = document.querySelector('#main-header .kadence-sticky-header'),
 				mobileSticky = document.querySelector('#mobile-header .kadence-sticky-header'),
 				wrapper = document.getElementById('wrapper'),
@@ -596,12 +592,10 @@
 					activeOffsetTop = window.kadenceNavigation.getOffset(desktopSticky).top;
 					desktopSticky.style.position = null;
 				}
-			} else {
-				if (mobileSticky) {
-					mobileSticky.style.position = 'static';
-					activeOffsetTop = window.kadenceNavigation.getOffset(mobileSticky).top;
-					mobileSticky.style.position = null;
-				}
+			} else if (mobileSticky) {
+				mobileSticky.style.position = 'static';
+				activeOffsetTop = window.kadenceNavigation.getOffset(mobileSticky).top;
+				mobileSticky.style.position = null;
 			}
 			var updateSticky = function (e) {
 				var activeHeader;
@@ -641,15 +635,13 @@
 						activeOffsetTop = window.kadenceNavigation.getOffset(activeHeader).top;
 						activeSize = 'desktop';
 					}
-				} else {
-					if (activeSize === 'desktop') {
-						activeOffsetTop = window.kadenceNavigation.getOffset(activeHeader).top;
-						activeSize = 'mobile';
-					} else if (e && e === 'updateActive') {
-						activeHeader.style.top = 'auto';
-						activeOffsetTop = window.kadenceNavigation.getOffset(activeHeader).top;
-						activeSize = 'mobile';
-					}
+				} else if (activeSize === 'desktop') {
+					activeOffsetTop = window.kadenceNavigation.getOffset(activeHeader).top;
+					activeSize = 'mobile';
+				} else if (e && e === 'updateActive') {
+					activeHeader.style.top = 'auto';
+					activeOffsetTop = window.kadenceNavigation.getOffset(activeHeader).top;
+					activeSize = 'mobile';
 				}
 				var parent = activeHeader.parentNode;
 				var shrink = activeHeader.getAttribute('data-shrink');
@@ -708,7 +700,7 @@
 							shrinkHeader.style.maxHeight = shrinkStartHeight + 'px';
 							if (shrinkLogos) {
 								for (let i = 0; i < shrinkLogos.length; i++) {
-									let shrinkLogo = shrinkLogos[i];
+									const shrinkLogo = shrinkLogos[i];
 									shrinkLogo.style.maxHeight = '100%';
 								}
 							}
@@ -722,7 +714,7 @@
 							shrinkHeader.style.maxHeight = shrinkingHeight + 'px';
 							if (shrinkLogos) {
 								for (let i = 0; i < shrinkLogos.length; i++) {
-									let shrinkLogo = shrinkLogos[i];
+									const shrinkLogo = shrinkLogos[i];
 									shrinkLogo.style.maxHeight = shrinkingHeight + 'px';
 								}
 							}
@@ -791,16 +783,14 @@
 						parent.classList.add('child-is-fixed');
 						document.body.classList.add('header-is-fixed');
 					}
-				} else {
-					if (activeHeader.classList.contains('item-is-fixed')) {
-						activeHeader.classList.remove('item-is-fixed');
-						activeHeader.classList.remove('item-at-start');
-						activeHeader.classList.remove('item-is-stuck');
-						activeHeader.style.height = null;
-						activeHeader.style.top = null;
-						parent.classList.remove('child-is-fixed');
-						document.body.classList.remove('header-is-fixed');
-					}
+				} else if (activeHeader.classList.contains('item-is-fixed')) {
+					activeHeader.classList.remove('item-is-fixed');
+					activeHeader.classList.remove('item-at-start');
+					activeHeader.classList.remove('item-is-stuck');
+					activeHeader.style.height = null;
+					activeHeader.style.top = null;
+					parent.classList.remove('child-is-fixed');
+					document.body.classList.remove('header-is-fixed');
 				}
 			};
 			if (desktopSticky || mobileSticky) {
@@ -834,7 +824,7 @@
 				}
 			}
 		},
-		getTopOffset: function (event = 'scroll') {
+		getTopOffset(event = 'scroll') {
 			if (event === 'load') {
 				var desktopSticky = document.querySelector('#main-header .kadence-sticky-header'),
 					mobileSticky = document.querySelector('#mobile-header .kadence-sticky-header');
@@ -881,7 +871,7 @@
 				activeScrollOffsetTop + activeScrollAdminOffsetTop + Math.floor(kadenceNavigationConfig.scrollOffset)
 			);
 		},
-		scrollToElement: function (element, history, event = 'scroll') {
+		scrollToElement(element, history, event = 'scroll') {
 			history = typeof history !== 'undefined' ? history : true;
 			var offsetSticky = window.kadenceNavigation.getTopOffset(event);
 			var originalTop = Math.floor(element.getBoundingClientRect().top) - offsetSticky;
@@ -897,7 +887,7 @@
 				window.history.pushState('', '', '#' + element.id);
 			}
 		},
-		anchorScrollToCheck: function (e, respond) {
+		anchorScrollToCheck(e, respond) {
 			respond = typeof respond !== 'undefined' ? respond : null;
 			if (e.target.getAttribute('href')) {
 				var targetLink = e.target;
@@ -934,7 +924,7 @@
 		/**
 		 * Initiate the sticky sidebar last width.
 		 */
-		initStickySidebarWidget: function () {
+		initStickySidebarWidget() {
 			if (!document.body.classList.contains('has-sticky-sidebar-widget')) {
 				return;
 			}
@@ -948,7 +938,7 @@
 		/**
 		 * Initiate the sticky sidebar.
 		 */
-		initStickySidebar: function () {
+		initStickySidebar() {
 			if (!document.body.classList.contains('has-sticky-sidebar')) {
 				return;
 			}
@@ -962,7 +952,7 @@
 		/**
 		 * Initiate the scroll to top.
 		 */
-		initAnchorScrollTo: function () {
+		initAnchorScrollTo() {
 			if (document.body.classList.contains('no-anchor-scroll')) {
 				return;
 			}
@@ -1008,7 +998,7 @@
 		/**
 		 * Initiate the scroll to top.
 		 */
-		initScrollToTop: function () {
+		initScrollToTop() {
 			var scrollBtn = document.getElementById('kt-scroll-up');
 			if (scrollBtn) {
 				var checkScrollVisiblity = function () {
@@ -1041,14 +1031,14 @@
 		/**
 		 * Initiate the orientation tracker.
 		 */
-		initTrackOrientation: function () {
+		initTrackOrientation() {
 			window.onresize = window.kadenceNavigation.trackOrientation;
 			window.kadenceNavigation.trackOrientation();
 		},
 		/**
 		 * Determine what orientation the nav is at the currrent screen size.
 		 */
-		trackOrientation: function () {
+		trackOrientation() {
 			const navs = document.querySelectorAll('.wp-block-kadence-navigation');
 
 			for (let i = 0; i < navs.length; i++) {
@@ -1078,7 +1068,7 @@
 			}
 		},
 		// Initiate the menus when the DOM loads.
-		init: function () {
+		init() {
 			window.kadenceNavigation.initNavToggleSubmenus();
 			// window.kadenceNavigation.initToggleDrawer();
 			// window.kadenceNavigation.initMobileToggleAnchor();
