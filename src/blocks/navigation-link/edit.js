@@ -66,6 +66,7 @@ import {
 	HoverToggleControl,
 	KadenceBlockDefaults,
 	RangeControl,
+	SmallResponsiveControl,
 } from '@kadence/components';
 
 import { ArrowDown, ArrowUp } from '@kadence/icons';
@@ -81,6 +82,7 @@ import { updateAttributes } from './update-attributes';
  */
 import './editor.scss';
 import metadata from './block.json';
+import BackendStyles from './components/backend-styles';
 
 const DEFAULT_BLOCK = { name: 'kadence/navigation-link' };
 
@@ -467,60 +469,80 @@ export default function Edit(props) {
 		}
 	);
 
+	const styleColorControls = (size = '', suffix = '') => {
+		const linkColorValue = attributes['linkColor' + suffix + size];
+		const backgroundValue = attributes['background' + suffix + size];
+		const linkColorHoverValue = attributes['linkColor' + suffix + 'Hover' + size];
+		const backgroundHoverValue = attributes['background' + suffix + 'Hover' + size];
+		const linkColorActiveValue = attributes['linkColor' + suffix + 'Active' + size];
+		const backgroundActiveValue = attributes['background' + suffix + 'Active' + size];
+		return (
+			<>
+				<HoverToggleControl
+					normal={
+						<>
+							<PopColorControl
+								label={__('Link Color', 'kadence-blocks')}
+								value={linkColorValue}
+								default={''}
+								onChange={(value) => setAttributes({ ['linkColor' + suffix + size]: value })}
+								key={'normal'}
+							/>
+							<PopColorControl
+								label={__('Background', 'kadence-blocks')}
+								value={backgroundValue}
+								default={''}
+								onChange={(value) => setAttributes({ ['background' + suffix + size]: value })}
+								key={'normalb'}
+							/>
+						</>
+					}
+					hover={
+						<>
+							<PopColorControl
+								label={__('Link Color Hover', 'kadence-blocks')}
+								value={linkColorHoverValue}
+								default={''}
+								onChange={(value) => setAttributes({ ['linkColor' + suffix + 'Hover' + size]: value })}
+								key={'hover'}
+							/>
+							<PopColorControl
+								label={__('Background Hover', 'kadence-blocks')}
+								value={backgroundHoverValue}
+								default={''}
+								onChange={(value) => setAttributes({ ['background' + suffix + 'Hover' + size]: value })}
+								key={'hoverb'}
+							/>
+						</>
+					}
+					active={
+						<>
+							<PopColorControl
+								label={__('Link Color Active', 'kadence-blocks')}
+								value={linkColorActiveValue}
+								default={''}
+								onChange={(value) => setAttributes({ ['linkColor' + suffix + 'Active' + size]: value })}
+								key={'active'}
+							/>
+							<PopColorControl
+								label={__('Background Active', 'kadence-blocks')}
+								value={backgroundActiveValue}
+								default={''}
+								onChange={(value) =>
+									setAttributes({ ['background' + suffix + 'Active' + size]: value })
+								}
+								key={'activeb'}
+							/>
+						</>
+					}
+				/>
+			</>
+		);
+	};
+
 	if (!url || isInvalid || isDraft) {
 		blockProps.onClick = () => setIsLinkOpen(true);
 	}
-
-	const previewMarginTop = getPreviewSize(
-		previewDevice,
-		undefined !== margin?.[0] ? margin[0] : '',
-		undefined !== tabletMargin?.[0] ? tabletMargin[0] : '',
-		undefined !== mobileMargin?.[0] ? mobileMargin[0] : ''
-	);
-	const previewMarginRight = getPreviewSize(
-		previewDevice,
-		undefined !== margin?.[1] ? margin[1] : '',
-		undefined !== tabletMargin?.[1] ? tabletMargin[1] : '',
-		undefined !== mobileMargin?.[1] ? mobileMargin[1] : ''
-	);
-	const previewMarginBottom = getPreviewSize(
-		previewDevice,
-		undefined !== margin?.[2] ? margin[2] : '',
-		undefined !== tabletMargin?.[2] ? tabletMargin[2] : '',
-		undefined !== mobileMargin?.[2] ? mobileMargin[2] : ''
-	);
-	const previewMarginLeft = getPreviewSize(
-		previewDevice,
-		undefined !== margin?.[3] ? margin[3] : '',
-		undefined !== tabletMargin?.[3] ? tabletMargin[3] : '',
-		undefined !== mobileMargin?.[3] ? mobileMargin[3] : ''
-	);
-	const previewMarginUnit = marginUnit ? marginUnit : 'px';
-
-	const previewPaddingTop = getPreviewSize(
-		previewDevice,
-		undefined !== padding?.[0] ? padding[0] : '',
-		undefined !== tabletPadding?.[0] ? tabletPadding[0] : '',
-		undefined !== mobilePadding?.[0] ? mobilePadding[0] : ''
-	);
-	const previewPaddingRight = getPreviewSize(
-		previewDevice,
-		undefined !== padding?.[1] ? padding[1] : '',
-		undefined !== tabletPadding?.[1] ? tabletPadding[1] : '',
-		undefined !== mobilePadding?.[1] ? mobilePadding[1] : ''
-	);
-	const previewPaddingBottom = getPreviewSize(
-		previewDevice,
-		undefined !== padding?.[2] ? padding[2] : '',
-		undefined !== tabletPadding?.[2] ? tabletPadding[2] : '',
-		undefined !== mobilePadding?.[2] ? mobilePadding[2] : ''
-	);
-	const previewPaddingLeft = getPreviewSize(
-		previewDevice,
-		undefined !== padding?.[3] ? padding[3] : '',
-		undefined !== tabletPadding?.[3] ? tabletPadding[3] : '',
-		undefined !== mobilePadding?.[3] ? mobilePadding[3] : ''
-	);
 
 	const classes = classnames('wp-block-navigation-item__content', {
 		'wp-block-navigation-link__placeholder': !url || isInvalid || isDraft,
@@ -531,31 +553,6 @@ export default function Edit(props) {
 	const placeholderText = `(${isInvalid ? __('Invalid') : __('Draft')})`;
 	const tooltipText =
 		isInvalid || isDraft ? __('This item has been deleted, or is a draft') : __('This item is missing a link');
-
-	const linkCSS = (
-		<style>
-			{`.wp-block-kadence-navigation-link${uniqueID} {`}
-			{color ? 'color:' + KadenceColorOutput(color) + ';' : ''}
-			{backgroundType === 'gradient'
-				? gradient
-					? 'background:' + gradient + ';'
-					: ''
-				: background
-				? 'background:' + KadenceColorOutput(background) + ';'
-				: ''}
-			{'}'}
-			{`.wp-block-kadence-navigation-link${uniqueID}:hover {`}
-			{colorHover ? 'color:' + KadenceColorOutput(colorHover) + ';' : ''}
-			{backgroundHoverType === 'gradient'
-				? gradientHover
-					? 'background:' + gradientHover + ';'
-					: ''
-				: backgroundHover
-				? 'background:' + KadenceColorOutput(backgroundHover) + ';'
-				: ''}
-			{'}'}
-		</style>
-	);
 
 	return (
 		<>
@@ -590,6 +587,7 @@ export default function Edit(props) {
 				</ToolbarGroup>
 			</BlockControls>
 			{/* Warning, this duplicated in packages/block-library/src/navigation-submenu/edit.js */}
+			<BackendStyles {...props} previewDevice={previewDevice} />
 			<InspectorControls>
 				<SelectParentBlock
 					label={__('View Navigation Settings', 'kadence-blocks')}
@@ -698,74 +696,12 @@ export default function Edit(props) {
 				{activeTab === 'style' && (
 					<>
 						<KadencePanelBody panelName={'navigation-link-style-settings'}>
-							<HoverToggleControl
-								hover={
-									<>
-										<PopColorControl
-											label={__('Hover Color', 'kadence-blocks')}
-											value={colorHover ? colorHover : ''}
-											default={''}
-											onChange={(value) => setAttributes({ colorHover: value })}
-										/>
-										<BackgroundTypeControl
-											label={__('Hover Type', 'kadence-blocks')}
-											type={backgroundHoverType ? backgroundHoverType : 'normal'}
-											onChange={(value) => setAttributes({ backgroundHoverType: value })}
-											allowedTypes={['normal', 'gradient']}
-										/>
-										{'gradient' === backgroundHoverType && (
-											<GradientControl
-												value={gradientHover}
-												onChange={(value) => setAttributes({ gradientHover: value })}
-												gradients={[]}
-											/>
-										)}
-										{'gradient' !== backgroundHoverType && (
-											<>
-												<PopColorControl
-													label={__('Background Color', 'kadence-blocks')}
-													value={backgroundHover ? backgroundHover : ''}
-													default={''}
-													onChange={(value) => setAttributes({ backgroundHover: value })}
-												/>
-											</>
-										)}
-									</>
-								}
-								normal={
-									<>
-										<PopColorControl
-											label={__('Color', 'kadence-blocks')}
-											value={color ? color : ''}
-											default={''}
-											onChange={(value) => setAttributes({ color: value })}
-										/>
-										<BackgroundTypeControl
-											label={__('Type', 'kadence-blocks')}
-											type={backgroundType ? backgroundType : 'normal'}
-											onChange={(value) => setAttributes({ backgroundType: value })}
-											allowedTypes={['normal', 'gradient']}
-										/>
-										{'gradient' === backgroundType && (
-											<GradientControl
-												value={gradient}
-												onChange={(value) => setAttributes({ gradient: value })}
-												gradients={[]}
-											/>
-										)}
-										{'gradient' !== backgroundType && (
-											<>
-												<PopColorControl
-													label={__('Background Color', 'kadence-blocks')}
-													value={background ? background : ''}
-													default={''}
-													onChange={(value) => setAttributes({ background: value })}
-												/>
-											</>
-										)}
-									</>
-								}
-							/>
+							<SmallResponsiveControl
+								label={'Colors'}
+								desktopChildren={styleColorControls()}
+								tabletChildren={styleColorControls('Tablet')}
+								mobileChildren={styleColorControls('Mobile')}
+							></SmallResponsiveControl>
 						</KadencePanelBody>
 					</>
 				)}
@@ -820,44 +756,7 @@ export default function Edit(props) {
 				{/* eslint-disable jsx-a11y/anchor-is-valid */}
 
 				<div class="link-drop-wrap">
-					<a
-						className={classes}
-						style={{
-							marginTop:
-								undefined !== previewMarginTop && '' !== previewMarginTop
-									? getSpacingOptionOutput(previewMarginTop, previewMarginUnit)
-									: undefined,
-							marginRight:
-								undefined !== previewMarginRight && '' !== previewMarginRight
-									? getSpacingOptionOutput(previewMarginRight, previewMarginUnit)
-									: undefined,
-							marginBottom:
-								undefined !== previewMarginBottom && '' !== previewMarginBottom
-									? getSpacingOptionOutput(previewMarginBottom, previewMarginUnit)
-									: undefined,
-							marginLeft:
-								undefined !== previewMarginLeft && '' !== previewMarginLeft
-									? getSpacingOptionOutput(previewMarginLeft, previewMarginUnit)
-									: undefined,
-
-							paddingTop:
-								undefined !== previewPaddingTop && '' !== previewPaddingTop
-									? getSpacingOptionOutput(previewPaddingTop, paddingUnit)
-									: undefined,
-							paddingRight:
-								undefined !== previewPaddingRight && '' !== previewPaddingRight
-									? getSpacingOptionOutput(previewPaddingRight, paddingUnit)
-									: undefined,
-							paddingBottom:
-								undefined !== previewPaddingBottom && '' !== previewPaddingBottom
-									? getSpacingOptionOutput(previewPaddingBottom, paddingUnit)
-									: undefined,
-							paddingLeft:
-								undefined !== previewPaddingLeft && '' !== previewPaddingLeft
-									? getSpacingOptionOutput(previewPaddingLeft, paddingUnit)
-									: undefined,
-						}}
-					>
+					<a className={classes}>
 						<span className="link-drop-title-wrap">
 							{/* eslint-enable */}
 							{!url ? (
@@ -957,7 +856,6 @@ export default function Edit(props) {
 					)}
 				</div>
 				<ul {...innerBlocksProps} />
-				{linkCSS}
 			</li>
 		</>
 	);

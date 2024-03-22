@@ -78,7 +78,39 @@
 			"type": "string",
 			"default": "px"
 		},
-		"color": {
+		"linkColor": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorHover": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorActive": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorHoverTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorActiveTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorHoverMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorActiveMobile": {
 			"type": "string",
 			"default": ""
 		},
@@ -86,29 +118,37 @@
 			"type": "string",
 			"default": ""
 		},
-		"gradient": {
-			"type": "string",
-			"default": ""
-		},
-		"backgroundType": {
-			"type": "string",
-			"default": "normal"
-		},
-		"colorHover": {
-			"type": "string",
-			"default": ""
-		},
 		"backgroundHover": {
 			"type": "string",
 			"default": ""
 		},
-		"gradientHover": {
+		"backgroundActive": {
 			"type": "string",
 			"default": ""
 		},
-		"backgroundHoverType": {
+		"backgroundTablet": {
 			"type": "string",
-			"default": "normal"
+			"default": ""
+		},
+		"backgroundHoverTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundActiveTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundHoverdMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundActivedMobile": {
+			"type": "string",
+			"default": ""
 		},
 		"megaMenuWidth": {
 			"type": "string",

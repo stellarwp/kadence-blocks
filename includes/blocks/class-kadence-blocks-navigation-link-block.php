@@ -47,6 +47,8 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 	 */
 	private static $seen_refs = array();
 
+	protected $nav_link_attributes = array();
+
 	/**
 	 * Instance Control
 	 */
@@ -68,10 +70,50 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 
+		$nav_link_attributes = $this->get_nav_link_attributes( $unique_id, $attributes );
+
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
+		$sizes = array( 'Desktop', 'Tablet', 'Mobile' );
+
+		foreach ( $sizes as $size ) {
+			$this->sized_dynamic_styles( $css, $nav_link_attributes, $unique_id, $size );
+		}
+		$css->set_media_state( 'desktop' );
+
+		// $css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container > ul li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a' );
+		// $css->render_font( $nav_link_attributes['typography'] ? $nav_link_attributes['typography'] : [], $css );
+
+		$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a' );
+		$css->render_measure_output( $nav_link_attributes, 'padding' );
+		$css->render_measure_output( $nav_link_attributes, 'margin' );
 		return $css->css_output();
 	}
+
+	/**
+	 * Build up the dynamic styles for a size.
+	 *
+	 * @param string $size The size.
+	 * @return array
+	 */
+	public function sized_dynamic_styles( $css, $attributes, $unique_id, $size = 'Desktop' ) {
+		$sized_attributes = $css->get_sized_attributes_auto( $attributes, $size, false );
+		$sized_attributes_inherit = $css->get_sized_attributes_auto( $attributes, $size );
+
+		$css->set_media_state( strtolower( $size ) );
+
+		$css->set_selector( '.wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a, .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap' );
+		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColor'] ), $sized_attributes['linkColor'] );
+		$css->add_property( 'background', $css->render_color( $sized_attributes['background'] ), $sized_attributes['background'] );
+		$css->set_selector( '.wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap:hover > a, .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap:hover' );
+		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorHover'] ) );
+		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundHover'] ) );
+		$css->set_selector(	'.wp-block-kadence-navigation .navigation .menu-container > ul > li.menu-item.current-menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a,
+				.wp-block-kadence-navigation .navigation .menu-container > ul > li.menu-item.current-menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap' );
+		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorActive']) );
+		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundActive']) );
+	}
+
 	/**
 	 * Build HTML for dynamic blocks
 	 *
@@ -97,7 +139,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		}
 		self::$seen_refs[ $attributes['id'] ] = true;
 
-		$nav_attributes = $this->merge_defaults( $attributes );
+		$nav_link_attributes = $this->get_nav_link_attributes( $unique_id, $attributes );
 
 		// Handle embeds for nav block.
 		global $wp_embed;
@@ -142,48 +184,46 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 	}
 
 	/**
+	 * Get Navigation Link attributes.
+	 *
+	 * @param int $unique_id The unique id.
+	 * @return array
+	 */
+	private function get_nav_link_attributes( $unique_id, $attributes ) {
+		global $wp_meta_keys;
+
+		if ( ! empty( $this->nav_link_attributes[ $unique_id ] ) ) {
+			return $this->nav_link_attributes[ $unique_id ];
+		}
+
+		$nav_link_attrs = $this->merge_defaults( $attributes );
+
+		if ( $this->nav_link_attributes[ $unique_id ] = $nav_link_attrs ) {
+			return $this->nav_link_attributes[ $unique_id ];
+		}
+
+		return array();
+	}
+
+	/**
 	 * Merges in default values from the cpt registration to the meta attributes from the database.
 	 *
 	 * @param array $attributes The database attribtues.
 	 * @return array
 	 */
 	private function merge_defaults( $attributes ) {
-		// $meta_keys = get_registered_meta_keys( 'post', 'kadence_navigation' );
-		// $meta_prefix = '_kad_navigation_';
+		$registry = WP_Block_Type_Registry::get_instance()->get_registered( 'kadence/navigation-link' );
 		$default_attributes = array();
 
-		// foreach ( $meta_keys as $key => $value ) {
-		// 	if ( str_starts_with( $key, $meta_prefix ) && array_key_exists( 'default', $value ) ) {
-		// 		$attr_name = str_replace( $meta_prefix, '', $key );
-		// 		$default_attributes[ $attr_name ] = $value['default'];
-		// 	}
-		// }
-
-		return array_merge( $default_attributes, $attributes );
-	}
-
-	/**
-	 * Get the value for a responsive attribute considering inheritance.
-	 *
-	 * @param mixed  $value The desktop value.
-	 * @param mixed  $value_tablet The tablet value.
-	 * @param mixed  $value_mobile The mobile value.
-	 * @param string $size The mobile value.
-	 * @return mixed
-	 */
-	public function get_inherited_value( $value, $value_tablet, $value_mobile, $size = 'Desktop' ) {
-		if ( $size === 'Mobile' ) {
-			if ( ! empty( $value_mobile ) ) {
-				return $value_mobile;
-			} else if ( ! empty( $value_tablet ) ) {
-				return $value_tablet;
-			}
-		} else if ( $size === 'Tablet' ) {
-			if ( ! empty( $value_tablet ) ) {
-				return $value_tablet;
+		if ( $registry && property_exists( $registry, 'attributes' ) && ! empty( $registry->attributes ) ) {
+			foreach ( $registry->attributes as $key => $value ) {
+				if ( isset( $value['default'] ) ) {
+					$default_attributes[ $key ] = $value['default'];
+				}
 			}
 		}
-		return $value;
+
+		return array_merge( $default_attributes, $attributes );
 	}
 
 	/**
