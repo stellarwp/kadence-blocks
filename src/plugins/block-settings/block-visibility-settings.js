@@ -16,7 +16,7 @@ function KadenceVisibilitySettings({ blockSlug, blockName, options }) {
 	const [settings, setSettings] = useState(
 		kadence_blocks_params.settings ? JSON.parse(kadence_blocks_params.settings) : {}
 	);
-	const { createErrorNotice } = useDispatch(noticesStore);
+	const { createSuccessNotice } = useDispatch(noticesStore);
 
 	const saveConfig = (blockID, settingArray) => {
 		setIsSaving(true);
@@ -29,7 +29,7 @@ function KadenceVisibilitySettings({ blockSlug, blockName, options }) {
 		const settingModel = new wp.api.models.Settings({ kadence_blocks_settings_blocks: JSON.stringify(config) });
 
 		settingModel.save().then((response) => {
-			createErrorNotice(blockName + ' ' + __('block visibility saved!', 'kadence-blocks'), {
+			createSuccessNotice(blockName + ' ' + __('block visibility saved!', 'kadence-blocks'), {
 				type: 'snackbar',
 			});
 

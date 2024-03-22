@@ -40,7 +40,7 @@ export default function KadenceBlockDefaults( {
 		return null;
 	}
 
-	const {createErrorNotice} = useDispatch(noticesStore);
+	const {createErrorNotice, createSuccessNotice} = useDispatch(noticesStore);
 
 	const [isOpenResetConfirm, setIsOpenResetConfirm] = useState(false);
 	const [isOpenSaveConfirm, setIsOpenSaveConfirm] = useState(false);
@@ -66,7 +66,7 @@ export default function KadenceBlockDefaults( {
 			method: 'POST',
 			data: { kadence_blocks_config_blocks: JSON.stringify(config)},
 		} ).then( () => {
-			createErrorNotice(__('Block default saved', 'kadence-blocks'), {
+			createSuccessNotice(__('Block default saved', 'kadence-blocks'), {
                 type: 'snackbar',
             })
             setIsOpenResetConfirm(false);
@@ -87,7 +87,7 @@ export default function KadenceBlockDefaults( {
 			method: 'POST',
 			data: { kadence_blocks_config_blocks: JSON.stringify(config)},
 		} ).then( () => {
-			createErrorNotice(__('Block default saved', 'kadence-blocks'), {
+			createSuccessNotice(__('Block default saved', 'kadence-blocks'), {
 				type: 'snackbar',
 			})
 			setIsOpenSaveConfirm(false);
@@ -105,7 +105,7 @@ export default function KadenceBlockDefaults( {
 			method: 'POST',
 			data: { kadence_blocks_config_blocks: JSON.stringify(config)},
 		} ).then( () => {
-			createErrorNotice(__('Block default saved', 'kadence-blocks'), {
+			createSuccessNotice(__('Block default saved', 'kadence-blocks'), {
 				type: 'snackbar',
 			})
 			kadence_blocks_params.configuration = JSON.stringify(config);
