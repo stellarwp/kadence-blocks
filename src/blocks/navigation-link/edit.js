@@ -939,14 +939,14 @@ export default function Edit(props) {
 									}}
 								/>
 							)}
-							{hasChildren && <span className="title-dropdown-nav-toggle">{ArrowDown}</span>}
+							{hasChildren && <span className="title-dropdown-navigation-toggle">{ArrowDown}</span>}
 						</span>
 					</a>
 
 					{hasChildren && (
 						<button
 							aria-label="Expand child menu"
-							class="dropdown-nav-toggle drawer-sub-toggle"
+							class="dropdown-navigation-toggle vertical-sub-toggle"
 							data-toggle-duration="10"
 							data-toggle-target={`wp-block-kadence-navigation-link${uniqueID} .sub-menu`}
 							aria-expanded="false"

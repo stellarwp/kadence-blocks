@@ -87,17 +87,14 @@
 		 * navigation menus with submenu toggle enabled.
 		 */
 		initNavToggleSubmenus: function () {
-			console.log(1);
 			var navTOGGLE = document.querySelectorAll('.wp-block-kadence-navigation .nav--toggle-sub');
 
 			// No point if no navs.
 			if (!navTOGGLE.length) {
-				console.log(2);
 				return;
 			}
 
 			for (let i = 0; i < navTOGGLE.length; i++) {
-				console.log(3, navTOGGLE);
 				window.kadenceNavigation.initEachNavToggleSubmenu(navTOGGLE[i]);
 				window.kadenceNavigation.initEachNavToggleSubmenuInside(navTOGGLE[i]);
 			}
@@ -108,17 +105,14 @@
 
 			// No point if no submenus.
 			if (!SUBMENUS.length) {
-				console.log(4);
 				return;
 			}
 
 			for (let i = 0; i < SUBMENUS.length; i++) {
-				console.log(5, SUBMENUS);
 				var parentMenuItem = SUBMENUS[i].parentNode;
-				let dropdown = parentMenuItem.querySelector('.title-dropdown-nav-toggle');
+				let dropdown = parentMenuItem.querySelector('.title-dropdown-navigation-toggle');
 				// If dropdown.
 				if (dropdown) {
-					console.log(6);
 					var dropdown_label = parentMenuItem
 						.querySelector('.link-drop-title-wrap')
 						.firstChild.textContent.trim();
@@ -129,40 +123,38 @@
 							? kadenceNavigationConfig.screenReader.expandOf + ' ' + dropdown_label
 							: kadenceNavigationConfig.screenReader.expand
 					);
-					console.log(7, dropdown_label);
-					dropdownBtn.classList.add('dropdown-nav-toggle');
-					dropdownBtn.classList.add('drawer-sub-toggle');
-
-					// var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-					// var path1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-
-					// svg.setAttribute('viewbox', '0 0 24 24');
-					// svg.setAttribute('width', '24px');
-					// svg.setAttribute('height', '24px');
-
-					// path1.setAttribute(
-					// 	'd',
-					// 	'M5.293 9.707l6 6c0.391 0.391 1.024 0.391 1.414 0l6-6c0.391-0.391 0.391-1.024 0-1.414s-1.024-0.391-1.414 0l-5.293 5.293-5.293-5.293c-0.391-0.391-1.024-0.391-1.414 0s-0.391 1.024 0 1.414z'
-					// );
-					// svg.appendChild(path1);
-
-					// dropdownBtn.appendChild(svg);
+					dropdownBtn.classList.add('dropdown-navigation-toggle');
+					dropdownBtn.classList.add('vertical-sub-toggle');
 
 					const downArrowIcon =
 						'<span class="screen-reader-text">Expand child menu</span><svg class="kadence-svg-icon kadence-arrow-down-svg" fill="currentColor" version="1.1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M5.293 9.707l6 6c0.391 0.391 1.024 0.391 1.414 0l6-6c0.391-0.391 0.391-1.024 0-1.414s-1.024-0.391-1.414 0l-5.293 5.293-5.293-5.293c-0.391-0.391-1.024-0.391-1.414 0s-0.391 1.024 0 1.414z"></path></svg>';
 					dropdownBtn.innerHTML = downArrowIcon;
+
+					var dropdownBtnSpecial = document.createElement('BUTTON'); // Create a <button> element
+					dropdownBtnSpecial.setAttribute(
+						'aria-label',
+						dropdown_label
+							? kadenceNavigationConfig.screenReader.expandOf + ' ' + dropdown_label
+							: kadenceNavigationConfig.screenReader.expand
+					);
+					dropdownBtnSpecial.classList.add('dropdown-nav-special-toggle');
+
 					const linkDropWrap = parentMenuItem.querySelector('.link-drop-wrap');
-					console.log(8, parentMenuItem, linkDropWrap);
 					linkDropWrap.appendChild(dropdownBtn);
+					linkDropWrap.appendChild(dropdownBtnSpecial);
 					// Toggle the submenu when we click the dropdown button.
-					dropdownBtn.addEventListener('click', function (e) {
+					dropdownBtnSpecial.addEventListener('click', function (e) {
 						e.preventDefault();
 						window.kadenceNavigation.toggleSubMenu(e.target.closest('li'));
 					});
 
 					// Clean up the toggle if a mouse takes over from keyboard.
+					// But only if the nav is horizontal
 					parentMenuItem.addEventListener('mouseleave', function (e) {
-						window.kadenceNavigation.toggleSubMenu(e.target, false);
+						const navBlock = nav.closest('.wp-block-kadence-navigation');
+						if (navBlock.classList.contains('is-horizontal')) {
+							window.kadenceNavigation.toggleSubMenu(e.target, false);
+						}
 					});
 
 					// When we focus on a menu link, make sure all siblings are closed.
@@ -177,7 +169,8 @@
 					// Handle keyboard accessibility for traversing menu.
 					SUBMENUS[i].addEventListener('keydown', function (e) {
 						// These specific selectors help us only select items that are visible.
-						var focusSelector = 'ul.toggle-show > li > a, ul.toggle-show > li > .dropdown-nav-toggle';
+						var focusSelector =
+							'ul.toggle-show > li > a, ul.toggle-show > li > .dropdown-navigation-toggle';
 
 						// 9 is tab KeyMap
 						if (9 === e.keyCode) {
@@ -248,7 +241,7 @@
 		 * @return {void}
 		 */
 		toggleSubMenu: function (parentMenuItem, forceToggle) {
-			var toggleButton = parentMenuItem.querySelector('.dropdown-nav-toggle'),
+			var toggleButton = parentMenuItem.querySelector('.dropdown-navigation-toggle'),
 				subMenu = parentMenuItem.querySelector('ul');
 			let parentMenuItemToggled = parentMenuItem.classList.contains('menu-item--toggled-on');
 			var dropdown_label = parentMenuItem.querySelector('.link-drop-title-wrap').firstChild.textContent.trim();
@@ -336,14 +329,14 @@
 		toggleDrawer: function (element, changeFocus) {
 			changeFocus = typeof changeFocus !== 'undefined' ? changeFocus : true;
 			var toggle = element;
-			var target = document.querySelector(toggle.dataset.toggleTarget);
+			var target = toggle.closest('li');
 			if (!target) {
 				return;
 			}
 			var scrollBar = window.innerWidth - document.documentElement.clientWidth;
 			var duration = toggle.dataset.toggleDuration ? toggle.dataset.toggleDuration : 250;
 			window.kadenceNavigation.toggleAttribute(toggle, 'aria-expanded', 'true', 'false');
-			if (target.classList.contains('show-drawer')) {
+			if (target.classList.contains('menu-item--toggled-on')) {
 				if (toggle.dataset.toggleBodyClass) {
 					document.body.classList.remove(toggle.dataset.toggleBodyClass);
 				}
@@ -352,7 +345,7 @@
 				target.classList.remove('pop-animated');
 				document.body.classList.remove('kadence-scrollbar-fixer');
 				setTimeout(function () {
-					target.classList.remove('show-drawer');
+					target.classList.remove('menu-item--toggled-on');
 					var drawerEvent = new Event('kadence-drawer-closed');
 					window.dispatchEvent(drawerEvent);
 					if (toggle.dataset.setFocus && changeFocus) {
@@ -372,7 +365,7 @@
 				}, duration);
 			} else {
 				// Show the drawer.
-				target.classList.add('show-drawer');
+				target.classList.add('menu-item--toggled-on');
 				// Toggle body class
 				if (toggle.dataset.toggleBodyClass) {
 					document.body.classList.toggle(toggle.dataset.toggleBodyClass);
@@ -461,29 +454,31 @@
 			document.addEventListener('keyup', function (event) {
 				// 27 is keymap for esc key.
 				if (event.keyCode === 27) {
-					if (document.querySelectorAll('.popup-drawer.show-drawer.active')) {
+					if (document.querySelectorAll('.popup-drawer.menu-item--toggled-on.active')) {
 						event.preventDefault();
-						document.querySelectorAll('.popup-drawer.show-drawer.active').forEach(function (element) {
-							window.kadenceNavigation.toggleDrawer(
-								document.querySelector(
-									'*[data-toggle-target="' + element.dataset.drawerTargetString + '"]'
-								)
-							);
-						});
+						document
+							.querySelectorAll('.popup-drawer.menu-item--toggled-on.active')
+							.forEach(function (element) {
+								window.kadenceNavigation.toggleDrawer(
+									document.querySelector(
+										'*[data-toggle-target="' + element.dataset.drawerTargetString + '"]'
+									)
+								);
+							});
 					}
 				}
 			});
 			// Close modal on outside click.
 			document.addEventListener('click', function (event) {
 				var target = event.target;
-				var modal = document.querySelector('.show-drawer.active .drawer-overlay');
+				var modal = document.querySelector('.menu-item--toggled-on.active .drawer-overlay');
 				if (target === modal) {
 					window.kadenceNavigation.toggleDrawer(
 						document.querySelector('*[data-toggle-target="' + modal.dataset.drawerTargetString + '"]')
 					);
 				}
-				var searchModal = document.querySelector('#search-drawer.show-drawer.active .drawer-content');
-				var modal = document.querySelector('#search-drawer.show-drawer.active .drawer-overlay');
+				var searchModal = document.querySelector('#search-drawer.menu-item--toggled-on.active .drawer-content');
+				var modal = document.querySelector('#search-drawer.menu-item--toggled-on.active .drawer-overlay');
 				if (target === searchModal) {
 					window.kadenceNavigation.toggleDrawer(
 						document.querySelector('*[data-toggle-target="' + modal.dataset.drawerTargetString + '"]')
@@ -493,23 +488,23 @@
 		},
 		/**
 		 * Initiate the script to process all
-		 * navigation menus with small toggle enabled.
+		 * navigation menus with vertical style drawers.
 		 */
 		initMobileToggleSub: function () {
-			var modalMenus = document.querySelectorAll('.has-collapse-sub-nav');
+			var modalMenus = document.querySelectorAll(' .wp-block-kadence-navigation .has-collapse-sub-nav');
 
 			modalMenus.forEach(function (modalMenu) {
 				var activeMenuItem = modalMenu.querySelector('.current-menu-item');
 				if (activeMenuItem) {
 					window.kadenceNavigation.findParents(activeMenuItem, 'li').forEach(function (element) {
-						var subMenuToggle = element.querySelector('.drawer-sub-toggle');
+						var subMenuToggle = element.querySelector('.vertical-sub-toggle');
 						if (subMenuToggle) {
 							window.kadenceNavigation.toggleDrawer(subMenuToggle, true);
 						}
 					});
 				}
 			});
-			var drawerSubTOGGLE = document.querySelectorAll('.drawer-sub-toggle');
+			var drawerSubTOGGLE = document.querySelectorAll('.wp-block-kadence-navigation .vertical-sub-toggle');
 			// No point if no drawers.
 			if (!drawerSubTOGGLE.length) {
 				return;
@@ -1043,12 +1038,51 @@
 				});
 			}
 		},
+		/**
+		 * Initiate the orientation tracker.
+		 */
+		initTrackOrientation: function () {
+			window.onresize = window.kadenceNavigation.trackOrientation;
+			window.kadenceNavigation.trackOrientation();
+		},
+		/**
+		 * Determine what orientation the nav is at the currrent screen size.
+		 */
+		trackOrientation: function () {
+			const navs = document.querySelectorAll('.wp-block-kadence-navigation');
+
+			for (let i = 0; i < navs.length; i++) {
+				const nav = navs[i];
+				var isVertical = false;
+				if (window.innerWidth >= 1024) {
+					if (nav.classList.contains('navigation-desktop-orientation-vertical')) {
+						isVertical = true;
+					}
+				} else if (window.innerWidth < 1024 && window.innerWidth >= 768) {
+					if (nav.classList.contains('navigation-tablet-orientation-vertical')) {
+						isVertical = true;
+					}
+				} else if (window.innerWidth < 768) {
+					if (nav.classList.contains('navigation-mobile-orientation-vertical')) {
+						isVertical = true;
+					}
+				}
+
+				if (isVertical) {
+					nav.classList.remove('is-horizontal');
+					nav.classList.add('is-vertical');
+				} else {
+					nav.classList.remove('is-vertical');
+					nav.classList.add('is-horizontal');
+				}
+			}
+		},
 		// Initiate the menus when the DOM loads.
 		init: function () {
 			window.kadenceNavigation.initNavToggleSubmenus();
 			// window.kadenceNavigation.initToggleDrawer();
 			// window.kadenceNavigation.initMobileToggleAnchor();
-			// window.kadenceNavigation.initMobileToggleSub();
+			window.kadenceNavigation.initMobileToggleSub();
 			// window.kadenceNavigation.initOutlineToggle();
 			// window.kadenceNavigation.initStickyHeader();
 			// window.kadenceNavigation.initStickySidebar();
@@ -1056,6 +1090,7 @@
 			// window.kadenceNavigation.initTransHeaderPadding();
 			// window.kadenceNavigation.initAnchorScrollTo();
 			// window.kadenceNavigation.initScrollToTop();
+			window.kadenceNavigation.initTrackOrientation();
 		},
 	};
 	if ('loading' === document.readyState) {

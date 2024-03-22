@@ -144,7 +144,7 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorActive']) );
 		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundActive']) );
 
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > ul > li.menu-item .dropdown-nav-toggle' );
+		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > ul > li.menu-item .dropdown-navigation-toggle' );
 		$css->add_property( 'right', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit']) );
 
 		//Dropdown logic from theme Styles Component
