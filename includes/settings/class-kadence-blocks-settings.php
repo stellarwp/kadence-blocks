@@ -406,7 +406,6 @@ class Kadence_Blocks_Settings {
 				}
 				
 				$settings['colors'] = $newpalette;
-error_log( print_r( $settings['colors'], true ) );
 				if ( function_exists( 'get_block_editor_settings' ) ) {
 					$settings['__experimentalFeatures']['color']['palette']['user']
 						= $settings['__experimentalFeatures']['color']['palette']['theme']
