@@ -601,8 +601,11 @@ function PatternLibrary( { importContent, clientId, reload = false, onReload } )
 		const response = await getCollectionByIndustry( tempUserData );
 		if ( ! isEqual( response, imageCollection ) ) {
 			console.log( 'Image Collection Updating', Date.now().toString().slice( 8 ) );
+			setWaitForImages( false );
 			setImageCollection( response );
 			forceRefreshLibrary();
+		} else {
+			setWaitForImages( false );
 		}
 	}
 	/**
