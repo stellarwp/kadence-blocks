@@ -157,6 +157,10 @@
 		"megaMenuCustomWidth": {
 			"type": "number",
 			"default": 400
+		},
+		"megaMenuCustomWidthUnit": {
+			"type": "string",
+			"default": "px"
 		}
 	},
 	"usesContext": [

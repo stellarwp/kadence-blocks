@@ -226,6 +226,7 @@ export default function Edit(props) {
 		backgroundHoverType,
 		megaMenuWidth,
 		megaMenuCustomWidth,
+		megaMenuCustomWidthUnit,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
@@ -458,6 +459,7 @@ export default function Edit(props) {
 			className: classnames('remove-outline', {
 				'sub-menu': hasChildren,
 				'show-sub-menus': showSubMenus,
+				'mega-menu': isMegaMenu,
 			}),
 		},
 		{
@@ -627,10 +629,11 @@ export default function Edit(props) {
 								label={__('Mega Menu Custom Width', 'kadence-blocks')}
 								value={megaMenuCustomWidth}
 								onChange={(value) => setAttributes({ megaMenuCustomWidth: value })}
+								onUnit={(value) => setAttributes({ megaMenuCustomWidthUnit: value })}
 								min={120}
 								max={800}
-								units={['px']}
-								unit={'px'}
+								units={['px', 'em', 'rem', '%']}
+								unit={megaMenuCustomWidthUnit}
 								showUnit={true}
 							/>
 						)}

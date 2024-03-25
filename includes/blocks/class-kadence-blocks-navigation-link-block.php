@@ -84,6 +84,15 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		// $css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container > ul li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a' );
 		// $css->render_font( $nav_link_attributes['typography'] ? $nav_link_attributes['typography'] : [], $css );
 
+		if ( 'custom' === $nav_link_attributes['megaMenuWidth'] ) {
+			$css->set_selector(
+				'.wp-block-kadence-navigation .menu-container ul.menu .wp-block-kadence-navigation-link' . $unique_id . '.kadence-menu-mega-width-custom > ul.sub-menu'
+			);
+			$css->add_property( 'width', $css->render_size( $nav_link_attributes['megaMenuCustomWidth'], $nav_link_attributes['megaMenuCustomWidthUnit'] ) );
+			// $css->set_selector( '.header-navigation[class*="header-navigation-dropdown-animation-fade"] #menu-item-' . $item->ID . '.kadence-menu-mega-enabled > .sub-menu' );
+			// $css->add_property( 'margin-left', '-' . ( $data['mega_menu_custom_width'] ? floor( $data['mega_menu_custom_width'] / 2 ) : '400' ) . 'px' );
+		}
+
 		$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a' );
 		$css->render_measure_output( $nav_link_attributes, 'padding' );
 		$css->render_measure_output( $nav_link_attributes, 'margin' );
@@ -155,13 +164,17 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$temp = get_queried_object_id();
 		$kind        = empty( $attributes['kind'] ) ? 'post_type' : str_replace( '-', '_', $attributes['kind'] );
 		$is_active   = ! empty( $attributes['id'] ) && get_queried_object_id() === (int) $attributes['id'] && ! empty( get_queried_object()->post_type );
-
+		$is_mega_menu = $nav_link_attributes['isMegaMenu'];
+		$mega_menu_width_class = 'kadence-menu-mega-width-' . ( $nav_link_attributes['megaMenuWidth'] ? $nav_link_attributes['megaMenuWidth'] : 'container' );
 
 		$wrapper_classes = array();
 		$wrapper_classes[] = 'wp-block-kadence-navigation-link' . $unique_id;
 		$wrapper_classes[] = 'menu-item';
 		$wrapper_classes[] = $has_children ? 'menu-item-has-children' : '';
 		$wrapper_classes[] = $is_active ? 'current-menu-item' : '';
+
+		$wrapper_classes[] = $is_mega_menu ? 'kadence-menu-mega-enabled' : '';
+		$wrapper_classes[] = $is_mega_menu ? $mega_menu_width_class : '';
 
 		$name = $nav_link_attributes['name'];
 
@@ -177,8 +190,16 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$down_arrow_icon .= '<path d="M5.293 9.707l6 6c0.391 0.391 1.024 0.391 1.414 0l6-6c0.391-0.391 0.391-1.024 0-1.414s-1.024-0.391-1.414 0l-5.293 5.293-5.293-5.293c-0.391-0.391-1.024-0.391-1.414 0s-0.391 1.024 0 1.414z"></path>';
 		$down_arrow_icon .= '</svg>';
 
+		$sub_menu_classes = array();
+		$sub_menu_classes[] = 'sub-menu';
+		$sub_menu_classes[] = $is_mega_menu ? 'mega-menu' : '';
+		$sub_menu_attributes = $this->build_html_attributes(
+			array(
+				'class' => implode( ' ', $sub_menu_classes ),
+			)
+		);
 
-		$sub_menu_content = $has_children ? '<ul class="sub-menu">' . $content . '</ul>' : '';
+		$sub_menu_content = $has_children ? '<ul ' . $sub_menu_attributes . '>' . $content . '</ul>' : '';
 
 		return sprintf(
 			'<li %1$s><div class="link-drop-wrap"><a class="wp-block-navigation-item__content" href="' . esc_url( $url ) . '"><span class="link-drop-title-wrap">' . esc_html( $label ) . '<span class="title-dropdown-navigation-toggle">%2$s</span></span></a></div>%3$s</li>',
