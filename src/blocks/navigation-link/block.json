@@ -78,6 +78,78 @@
 			"type": "string",
 			"default": "px"
 		},
+		"linkColorDropdown": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorDropdownHover": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorDropdownActive": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorDropdownTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorDropdownHoverTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorDropdownActiveTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorDropdownMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorDropdownHoverMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorDropdownActiveMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundDropdown": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundDropdownHover": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundDropdownActive": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundDropdownTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundDropdownHoverTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundDropdownActiveTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundDropdownMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundDropdownHoverMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundDropdownActiveMobile": {
+			"type": "string",
+			"default": ""
+		},
 		"linkColor": {
 			"type": "string",
 			"default": ""
@@ -142,11 +214,11 @@
 			"type": "string",
 			"default": ""
 		},
-		"backgroundHoverdMobile": {
+		"backgroundHoverMobile": {
 			"type": "string",
 			"default": ""
 		},
-		"backgroundActivedMobile": {
+		"backgroundActiveMobile": {
 			"type": "string",
 			"default": ""
 		},
@@ -161,6 +233,42 @@
 		"megaMenuCustomWidthUnit": {
 			"type": "string",
 			"default": "px"
+		},
+		"dropdownDivider": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"dropdownDividerTablet": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"dropdownDividerMobile": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
 		},
 		"typography": {
 			"type": "array",
@@ -180,6 +288,74 @@
 					"variant": "",
 					"subset": "",
 					"loadGoogle": true
+				}
+			]
+		},
+		"dropdownTypography": {
+			"type": "array",
+			"default": [
+				{
+					"size": ["", "", ""],
+					"sizeType": "px",
+					"lineHeight": ["", "", ""],
+					"lineType": "",
+					"letterSpacing": ["", "", ""],
+					"letterType": "px",
+					"textTransform": "",
+					"family": "",
+					"google": "",
+					"style": "",
+					"weight": "",
+					"variant": "",
+					"subset": "",
+					"loadGoogle": true
+				}
+			]
+		},
+		"dropdownWidth": {
+			"type": "string",
+			"default": ""
+		},
+		"dropdownWidthTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"dropdownWidthMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"dropdownWidthUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"dropdownVerticalSpacing": {
+			"type": "string",
+			"default": ""
+		},
+		"dropdownVerticalSpacingTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"dropdownVerticalSpacingMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"dropdownVerticalSpacingUnit": {
+			"type": "string",
+			"default": "em"
+		},
+		"dropdownShadow": {
+			"type": "array",
+			"default": [
+				{
+					"enable": true,
+					"color": "#000000",
+					"opacity": 0.2,
+					"spread": 0,
+					"blur": 2,
+					"hOffset": 1,
+					"vOffset": 1,
+					"inset": false
 				}
 			]
 		}

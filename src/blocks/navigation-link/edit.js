@@ -68,6 +68,7 @@ import {
 	RangeControl,
 	SmallResponsiveControl,
 	TypographyControls,
+	ResponsiveSingleBorderControl,
 } from '@kadence/components';
 
 import { ArrowDown, ArrowUp } from '@kadence/icons';
@@ -217,18 +218,59 @@ export default function Edit(props) {
 		tabletMargin,
 		mobileMargin,
 		marginUnit,
-		color,
+		linkColor,
+		linkColorHover,
+		linkColorActive,
+		linkColorTablet,
+		linkColorHoverTablet,
+		linkColorActiveTablet,
+		linkColorMobile,
+		linkColorHoverMobile,
+		linkColorActiveMobile,
 		background,
-		gradient,
-		backgroundType,
-		colorHover,
 		backgroundHover,
-		gradientHover,
-		backgroundHoverType,
+		backgroundActive,
+		backgroundTablet,
+		backgroundHoverTablet,
+		backgroundActiveTablet,
+		backgroundMobile,
+		backgroundHoverMobile,
+		backgroundActiveMobile,
+		linkColorDropdown,
+		linkColorDropdownHover,
+		linkColorDropdownActive,
+		linkColorDropdownTablet,
+		linkColorDropdownHoverTablet,
+		linkColorDropdownActiveTablet,
+		linkColorDropdownMobile,
+		linkColorDropdownHoverMobile,
+		linkColorDropdownActiveMobile,
+		backgroundDropdown,
+		backgroundDropdownHover,
+		backgroundDropdownActive,
+		backgroundDropdownTablet,
+		backgroundDropdownHoverTablet,
+		backgroundDropdownActiveTablet,
+		backgroundDropdownMobile,
+		backgroundDropdownHoverMobile,
+		backgroundDropdownActiveMobile,
 		megaMenuWidth,
 		megaMenuCustomWidth,
 		megaMenuCustomWidthUnit,
 		typography,
+		dropdownTypography,
+		dropdownDivider,
+		dropdownDividerTablet,
+		dropdownDividerMobile,
+		dropdownWidth,
+		dropdownWidthTablet,
+		dropdownWidthMobile,
+		dropdownWidthUnit,
+		dropdownVerticalSpacing,
+		dropdownVerticalSpacingTablet,
+		dropdownVerticalSpacingMobile,
+		dropdownVerticalSpacingUnit,
+		dropdownShadow,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
@@ -356,6 +398,16 @@ export default function Edit(props) {
 			return item;
 		});
 		setAttributes({ typography: newUpdate });
+	};
+
+	const saveDropdownTypography = (value) => {
+		const newUpdate = typography.map((item, index) => {
+			if (0 === index) {
+				item = { ...item, ...value };
+			}
+			return item;
+		});
+		setAttributes({ dropdownTypography: newUpdate });
 	};
 
 	useEffect(() => {
@@ -764,6 +816,102 @@ export default function Edit(props) {
 								/>
 							</KadencePanelBody>
 						)}
+
+						<KadencePanelBody
+							title={__('Sub Menu Styles', 'kadence-blocks')}
+							panelName={'kb-navigation-style-sub-menus'}
+							initialOpen={false}
+						>
+							<ResponsiveRangeControls
+								label={__('Dropdown Vertical Spacing', 'kadence-blocks')}
+								value={parseFloat(dropdownVerticalSpacing)}
+								valueTablet={parseFloat(dropdownVerticalSpacingTablet)}
+								valueMobile={parseFloat(dropdownVerticalSpacingMobile)}
+								onChange={(value) => setAttributes({ dropdownVerticalSpacing: value.toString() })}
+								onChangeTablet={(value) =>
+									setAttributes({ dropdownVerticalSpacingTablet: value.toString() })
+								}
+								onChangeMobile={(value) =>
+									setAttributes({ dropdownVerticalSpacingMobile: value.toString() })
+								}
+								min={0}
+								max={
+									dropdownVerticalSpacingUnit === 'em' || dropdownVerticalSpacingUnit === 'rem'
+										? 24
+										: 200
+								}
+								step={
+									dropdownVerticalSpacingUnit === 'em' || dropdownVerticalSpacingUnit === 'rem'
+										? 0.1
+										: 1
+								}
+								unit={dropdownVerticalSpacingUnit}
+								units={['em', 'rem', 'px', 'vw']}
+								onUnit={(value) => setAttributes({ dropdownVerticalSpacingUnit: value })}
+								showUnit={true}
+							/>
+							<ResponsiveSingleBorderControl
+								label={'Divider'}
+								value={dropdownDivider}
+								tabletValue={dropdownDividerTablet}
+								mobileValue={dropdownDividerMobile}
+								onChange={(value) => setAttributes({ dropdownDivider: value })}
+								onChangeTablet={(value) => setAttributes({ dropdownDividerTablet: value })}
+								onChangeMobile={(value) => setAttributes({ dropdownDividerMobile: value })}
+							/>
+							<SmallResponsiveControl
+								label={'Colors'}
+								desktopChildren={styleColorControls('', 'Dropdown')}
+								tabletChildren={styleColorControls('Tablet', 'Dropdown')}
+								mobileChildren={styleColorControls('Mobile', 'Dropdown')}
+							></SmallResponsiveControl>
+
+							{showSettings('fontSettings', 'kadence/navigation') && (
+								<KadencePanelBody
+									title={__('Typography Settings', 'kadence-blocks')}
+									initialOpen={false}
+									panelName={'kb-adv-btn-font-family'}
+								>
+									<TypographyControls
+										fontSize={dropdownTypography[0].size}
+										onFontSize={(value) => saveDropdownTypography({ size: value })}
+										fontSizeType={dropdownTypography[0].sizeType}
+										onFontSizeType={(value) => saveDropdownTypography({ sizeType: value })}
+										lineHeight={dropdownTypography[0].lineHeight}
+										onLineHeight={(value) => saveDropdownTypography({ lineHeight: value })}
+										lineHeightType={dropdownTypography[0].lineType}
+										onLineHeightType={(value) => saveDropdownTypography({ lineType: value })}
+										reLetterSpacing={dropdownTypography[0].letterSpacing}
+										onLetterSpacing={(value) => saveDropdownTypography({ letterSpacing: value })}
+										letterSpacingType={dropdownTypography[0].letterType}
+										onLetterSpacingType={(value) => saveDropdownTypography({ letterType: value })}
+										textTransform={dropdownTypography[0].textTransform}
+										onTextTransform={(value) => saveDropdownTypography({ textTransform: value })}
+										fontFamily={dropdownTypography[0].family}
+										onFontFamily={(value) => saveDropdownTypography({ family: value })}
+										onFontChange={(select) => {
+											saveDropdownTypography({
+												family: select.value,
+												google: select.google,
+											});
+										}}
+										onFontArrayChange={(values) => saveDropdownTypography(values)}
+										googleFont={dropdownTypography[0].google}
+										onGoogleFont={(value) => saveDropdownTypography({ google: value })}
+										loadGoogleFont={dropdownTypography[0].loadGoogle}
+										onLoadGoogleFont={(value) => saveDropdownTypography({ loadGoogle: value })}
+										fontVariant={dropdownTypography[0].variant}
+										onFontVariant={(value) => saveDropdownTypography({ variant: value })}
+										fontWeight={dropdownTypography[0].weight}
+										onFontWeight={(value) => saveDropdownTypography({ weight: value })}
+										fontStyle={dropdownTypography[0].style}
+										onFontStyle={(value) => saveDropdownTypography({ style: value })}
+										fontSubset={dropdownTypography[0].subset}
+										onFontSubset={(value) => saveDropdownTypography({ subset: value })}
+									/>
+								</KadencePanelBody>
+							)}
+						</KadencePanelBody>
 					</>
 				)}
 

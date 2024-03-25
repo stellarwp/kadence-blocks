@@ -259,7 +259,6 @@ export default function BackendStyles(props) {
 		'color',
 		css.render_color(linkColorDropdown, linkColorDropdownTablet, linkColorDropdownMobile, previewDevice)
 	);
-	// $css->render_font( kadence()->option( 'dropdown_navigation_typography' ), $css );
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li.menu-item > .link-drop-wrap > a:hover`
 	);

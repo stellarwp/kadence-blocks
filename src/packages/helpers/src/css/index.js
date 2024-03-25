@@ -350,6 +350,10 @@ export default class KadenceBlocksCSS {
 	render_size(value, tabletValue = null, mobileValue = null, previewDevice = null, unit = null) {
 		const previewValue = getPreviewSize(previewDevice, value, tabletValue, mobileValue);
 
+		if (this.empty(previewValue)) {
+			return false;
+		}
+
 		var size_number = !this.empty(previewValue) ? previewValue : '0';
 		var size_unit = !this.empty(unit) ? unit : 'em';
 

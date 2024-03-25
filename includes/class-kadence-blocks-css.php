@@ -1873,6 +1873,10 @@ class Kadence_Blocks_CSS {
 
 		$border_side = $border[0][ $side ];
 
+		if ( ! isset( $border_side[2] ) || empty( $border_side[2] ) ) {
+			return false;
+		}
+
 		$border_string = '';
 		$style         = ( isset( $border_side[1] ) && ! empty( $border_side[1] ) ? $border_side[1] : 'solid' );
 		$width         = ( isset( $border_side[2] ) && ! empty( $border_side[2] ) ? $border_side[2] : '0' );

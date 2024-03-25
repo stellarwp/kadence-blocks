@@ -31,10 +31,41 @@ export default function BackendStyles(props) {
 		backgroundMobile,
 		backgroundHoverMobile,
 		backgroundActiveMobile,
+		linkColorDropdown,
+		linkColorDropdownHover,
+		linkColorDropdownActive,
+		linkColorDropdownTablet,
+		linkColorDropdownHoverTablet,
+		linkColorDropdownActiveTablet,
+		linkColorDropdownMobile,
+		linkColorDropdownHoverMobile,
+		linkColorDropdownActiveMobile,
+		backgroundDropdown,
+		backgroundDropdownHover,
+		backgroundDropdownActive,
+		backgroundDropdownTablet,
+		backgroundDropdownHoverTablet,
+		backgroundDropdownActiveTablet,
+		backgroundDropdownMobile,
+		backgroundDropdownHoverMobile,
+		backgroundDropdownActiveMobile,
 		megaMenuWidth,
 		megaMenuCustomWidth,
 		megaMenuCustomWidthUnit,
 		typography,
+		dropdownTypography,
+		dropdownDivider,
+		dropdownDividerTablet,
+		dropdownDividerMobile,
+		dropdownWidth,
+		dropdownWidthTablet,
+		dropdownWidthMobile,
+		dropdownWidthUnit,
+		dropdownVerticalSpacing,
+		dropdownVerticalSpacingTablet,
+		dropdownVerticalSpacingMobile,
+		dropdownVerticalSpacingUnit,
+		dropdownShadow,
 	} = attributes;
 
 	// const previewDivider = getPreviewSize(previewDevice, divider, dividerTablet, dividerMobile);
@@ -79,6 +110,96 @@ export default function BackendStyles(props) {
 		// $css->set_selector( '.header-navigation[class*="header-navigation-dropdown-animation-fade"] #menu-item-' . $item->ID . '.kadence-menu-mega-enabled > .sub-menu' );
 		// $css->add_property( 'margin-left', '-' . ( $data['mega_menu_custom_width'] ? floor( $data['mega_menu_custom_width'] / 2 ) : '400' ) . 'px' );
 	}
+
+	//Dropdown logic from theme Styles Component
+	// Dropdown.
+	css.set_selector(
+		`.wp-block-kadence-navigation .navigation .menu-container ul .wp-block-kadence-navigation-link${uniqueID} ul.sub-menu, .wp-block-kadence-navigation .navigation .menu-container ul .wp-block-kadence-navigation-link${uniqueID} ul.submenu`
+	);
+	css.add_property(
+		'background',
+		css.render_color(backgroundDropdown, backgroundDropdownTablet, backgroundDropdownMobile, previewDevice)
+	);
+	css.set_selector(
+		`.wp-block-kadence-navigation .navigation .menu-container ul .wp-block-kadence-navigation-link${uniqueID} ul li:not(:last-of-type), .wp-block-kadence-navigation .menu-container ul.menu li.wp-block-kadence-navigation-link${uniqueID}.kadence-menu-mega-enabled > ul > li.menu-item > a`
+	);
+	css.add_property(
+		'border-bottom',
+		css.render_border(dropdownDivider, dropdownDividerTablet, dropdownDividerMobile, previewDevice, 'bottom')
+	);
+	css.set_selector(
+		`.wp-block-kadence-navigation .navigation .menu-container ul .wp-block-kadence-navigation-link${uniqueID} ul li.menu-item > .link-drop-wrap > a`
+	);
+	css.add_property(
+		'padding-top',
+		css.render_size(
+			dropdownVerticalSpacing,
+			dropdownVerticalSpacingTablet,
+			dropdownVerticalSpacingMobile,
+			previewDevice,
+			dropdownVerticalSpacingUnit
+		)
+	);
+	css.add_property(
+		'padding-bottom',
+		css.render_size(
+			dropdownVerticalSpacing,
+			dropdownVerticalSpacingTablet,
+			dropdownVerticalSpacingMobile,
+			previewDevice,
+			dropdownVerticalSpacingUnit
+		)
+	);
+	css.render_font(dropdownTypography ? dropdownTypography : [], previewDevice);
+	css.set_selector(
+		`.wp-block-kadence-navigation .navigation .menu-container ul .wp-block-kadence-navigation-link${uniqueID} ul li.menu-item > .link-drop-wrap > a, .wp-block-kadence-navigation .navigation .menu-container ul .wp-block-kadence-navigation-link${uniqueID} ul.sub-menu `
+	);
+	css.add_property(
+		'color',
+		css.render_color(linkColorDropdown, linkColorDropdownTablet, linkColorDropdownMobile, previewDevice)
+	);
+	css.set_selector(
+		`.wp-block-kadence-navigation .navigation .menu-container ul .wp-block-kadence-navigation-link${uniqueID} ul li.menu-item > .link-drop-wrap > a:hover`
+	);
+	css.add_property(
+		'color',
+		css.render_color(
+			linkColorDropdownHover,
+			linkColorDropdownHoverTablet,
+			linkColorDropdownHoverMobile,
+			previewDevice
+		)
+	);
+	css.add_property(
+		'background',
+		css.render_color(
+			backgroundDropdownHover,
+			backgroundDropdownHoverTablet,
+			backgroundDropdownHoverMobile,
+			previewDevice
+		)
+	);
+	css.set_selector(
+		`.wp-block-kadence-navigation.navigation .menu-container ul .wp-block-kadence-navigation-link${uniqueID} ul li.menu-item.current-menu-item > .link-drop-wrap > a`
+	);
+	css.add_property(
+		'color',
+		css.render_color(
+			linkColorDropdownActive,
+			linkColorDropdownActiveTablet,
+			linkColorDropdownActiveMobile,
+			previewDevice
+		)
+	);
+	css.add_property(
+		'background',
+		css.render_color(
+			backgroundDropdownActive,
+			backgroundDropdownActiveTablet,
+			backgroundDropdownActiveMobile,
+			previewDevice
+		)
+	);
 
 	css.set_selector(
 		`.wp-block-kadence-navigation .navigation .menu-container > ul li.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a`
