@@ -926,57 +926,11 @@ class Kadence_Blocks_CSS {
 	/**
 	 * Generates the font output.
 	 *
-	 * @param array  $font an array of font settings.
-	 * @param object $css an object of css output.
-	 * @param string $inherit an string to determine if the font should inherit.
-	 * @return string
+	 * @param array $typography an array of font settings.
 	 */
-	public function render_font( $font, $css, $inherit = null ) {
-		if ( empty( $font ) ) {
-			return false;
-		}
-		if ( ! is_array( $font ) ) {
-			return false;
-		}
-		if ( isset( $font['style'] ) && ! empty( $font['style'] ) ) {
-			$css->add_property( 'font-style', $font['style'] );
-		}
-		if ( isset( $font['weight'] ) && ! empty( $font['weight'] ) ) {
-			$css->add_property( 'font-weight', $font['weight'] );
-		}
-		$size_type = ( isset( $font['sizeType'] ) && ! empty( $font['sizeType'] ) ? $font['sizeType'] : 'px' );
-		if ( isset( $font['size'] ) && isset( $font['size']['desktop'] ) && ! empty( $font['size']['desktop'] ) ) {
-			$css->add_property( 'font-size', $this->get_font_size( $font['size']['desktop'], $size_type ) );
-		}
-		$line_type = ( isset( $font['lineType'] ) && ! empty( $font['lineType'] ) ? $font['lineType'] : '' );
-		$line_type = ( '-' !== $line_type ? $line_type : '' );
-		if ( isset( $font['lineHeight'] ) && isset( $font['lineHeight']['desktop'] ) && ! empty( $font['lineHeight']['desktop'] ) ) {
-			$css->add_property( 'line-height', $font['lineHeight']['desktop'] . $line_type );
-		}
-		$letter_type = ( isset( $font['spacingType'] ) && ! empty( $font['spacingType'] ) ? $font['spacingType'] : 'em' );
-		if ( isset( $font['letterSpacing'] ) && isset( $font['letterSpacing']['desktop'] ) && ! empty( $font['letterSpacing']['desktop'] ) ) {
-			$css->add_property( 'letter-spacing', $font['letterSpacing']['desktop'] . $letter_type );
-		}
-		$family = ( isset( $font['family'] ) && ! empty( $font['family'] ) && 'inherit' !== $font['family'] ? $font['family'] : '' );
-		if ( ! empty( $family ) ) {
-			if ( strpos( $family, '"') === false && strpos( $family, ',') === false && strpos( $family, ' ' ) !== false ) {
-				$family = "'" . $family . "'";
-			}
-			$css->add_property( 'font-family', apply_filters( 'kadence_theme_font_family_string', $family ) );
-			if ( isset( $font['google'] ) && true === $font['google'] ) {
-				if ( ! empty( $inherit ) && 'body' === $inherit ) {
-					$this->maybe_add_google_font( $font, $inherit );
-				} else {
-					$this->maybe_add_google_font( $font );
-				}
-			}
-		}
-		if ( isset( $font['transform'] ) && ! empty( $font['transform'] ) ) {
-			$css->add_property( 'text-transform', $font['transform'] );
-		}
-		if ( isset( $font['color'] ) && ! empty( $font['color'] ) ) {
-			$css->add_property( 'color', $this->render_color( $font['color'] ) );
-		}
+	public function render_font( $typography ) {
+		$attributes = array( 'typography' => $typography );
+		$this->render_typography( $attributes );
 	}
 	/**
 	 * Generates the font height output.

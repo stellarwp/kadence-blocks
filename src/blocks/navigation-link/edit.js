@@ -67,6 +67,7 @@ import {
 	KadenceBlockDefaults,
 	RangeControl,
 	SmallResponsiveControl,
+	TypographyControls,
 } from '@kadence/components';
 
 import { ArrowDown, ArrowUp } from '@kadence/icons';
@@ -227,6 +228,7 @@ export default function Edit(props) {
 		megaMenuWidth,
 		megaMenuCustomWidth,
 		megaMenuCustomWidthUnit,
+		typography,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
@@ -345,6 +347,16 @@ export default function Edit(props) {
 			insertBlock(newMenuItem, 0, clientId);
 		}
 	}
+
+	const saveTypography = (value) => {
+		const newUpdate = typography.map((item, index) => {
+			if (0 === index) {
+				item = { ...item, ...value };
+			}
+			return item;
+		});
+		setAttributes({ typography: newUpdate });
+	};
 
 	useEffect(() => {
 		// Show the LinkControl on mount if the URL is empty
@@ -706,6 +718,52 @@ export default function Edit(props) {
 								mobileChildren={styleColorControls('Mobile')}
 							></SmallResponsiveControl>
 						</KadencePanelBody>
+
+						{showSettings('fontSettings', 'kadence/navigation') && (
+							<KadencePanelBody
+								title={__('Typography Settings', 'kadence-blocks')}
+								initialOpen={false}
+								panelName={'kb-adv-btn-font-family'}
+							>
+								<TypographyControls
+									fontSize={typography[0].size}
+									onFontSize={(value) => saveTypography({ size: value })}
+									fontSizeType={typography[0].sizeType}
+									onFontSizeType={(value) => saveTypography({ sizeType: value })}
+									lineHeight={typography[0].lineHeight}
+									onLineHeight={(value) => saveTypography({ lineHeight: value })}
+									lineHeightType={typography[0].lineType}
+									onLineHeightType={(value) => saveTypography({ lineType: value })}
+									reLetterSpacing={typography[0].letterSpacing}
+									onLetterSpacing={(value) => saveTypography({ letterSpacing: value })}
+									letterSpacingType={typography[0].letterType}
+									onLetterSpacingType={(value) => saveTypography({ letterType: value })}
+									textTransform={typography[0].textTransform}
+									onTextTransform={(value) => saveTypography({ textTransform: value })}
+									fontFamily={typography[0].family}
+									onFontFamily={(value) => saveTypography({ family: value })}
+									onFontChange={(select) => {
+										saveTypography({
+											family: select.value,
+											google: select.google,
+										});
+									}}
+									onFontArrayChange={(values) => saveTypography(values)}
+									googleFont={typography[0].google}
+									onGoogleFont={(value) => saveTypography({ google: value })}
+									loadGoogleFont={typography[0].loadGoogle}
+									onLoadGoogleFont={(value) => saveTypography({ loadGoogle: value })}
+									fontVariant={typography[0].variant}
+									onFontVariant={(value) => saveTypography({ variant: value })}
+									fontWeight={typography[0].weight}
+									onFontWeight={(value) => saveTypography({ weight: value })}
+									fontStyle={typography[0].style}
+									onFontStyle={(value) => saveTypography({ style: value })}
+									fontSubset={typography[0].subset}
+									onFontSubset={(value) => saveTypography({ subset: value })}
+								/>
+							</KadencePanelBody>
+						)}
 					</>
 				)}
 

@@ -83,10 +83,10 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_media_state( 'desktop' );
 
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > ul li.menu-item > .link-drop-wrap > a' );
-		$css->render_font( $nav_attributes['typography'] ? $nav_attributes['typography'] : [], $css );
+		$css->render_typography( $nav_attributes );
 
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul li.menu-item > .link-drop-wrap > a' );
-		$css->render_font( $nav_attributes['dropdownTypography'] ? $nav_attributes['dropdownTypography'] : [], $css );
+		$css->render_typography( $nav_attributes, 'dropdownTypography' );
 
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' > .navigation > .menu-container > .menu' );
 		$css->render_measure_output( $nav_attributes, 'padding' );

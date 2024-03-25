@@ -34,6 +34,7 @@ export default function BackendStyles(props) {
 		megaMenuWidth,
 		megaMenuCustomWidth,
 		megaMenuCustomWidthUnit,
+		typography,
 	} = attributes;
 
 	// const previewDivider = getPreviewSize(previewDevice, divider, dividerTablet, dividerMobile);
@@ -78,6 +79,11 @@ export default function BackendStyles(props) {
 		// $css->set_selector( '.header-navigation[class*="header-navigation-dropdown-animation-fade"] #menu-item-' . $item->ID . '.kadence-menu-mega-enabled > .sub-menu' );
 		// $css->add_property( 'margin-left', '-' . ( $data['mega_menu_custom_width'] ? floor( $data['mega_menu_custom_width'] / 2 ) : '400' ) . 'px' );
 	}
+
+	css.set_selector(
+		`.wp-block-kadence-navigation .navigation .menu-container > ul li.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a`
+	);
+	css.render_font(typography ? typography : [], previewDevice);
 
 	css.set_selector(`.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a`);
 	css.render_measure_output(padding, tabletPadding, mobilePadding, previewDevice, 'padding', paddingUnit);

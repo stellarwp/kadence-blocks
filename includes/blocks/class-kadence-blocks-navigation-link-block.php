@@ -81,8 +81,8 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		}
 		$css->set_media_state( 'desktop' );
 
-		// $css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container > ul li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a' );
-		// $css->render_font( $nav_link_attributes['typography'] ? $nav_link_attributes['typography'] : [], $css );
+		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container > ul li.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a' );
+		$css->render_typography( $nav_link_attributes );
 
 		if ( 'custom' === $nav_link_attributes['megaMenuWidth'] ) {
 			$css->set_selector(
