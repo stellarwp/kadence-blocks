@@ -767,7 +767,6 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'type' => 'string',
 				'default' => 'em',
 			),
-
 			array(
 				'key' => '_kad_navigation_dropdownShadow',
 				'type' => 'array',
@@ -794,6 +793,21 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 					'vOffset'  => array( 'type' => 'number' ),
 					'inset'    => array( 'type' => 'boolean' ),
 				),
+			),
+			array(
+				'key'     => '_kad_navigation_dropdownReveal',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_dropdownRevealTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_dropdownRevealMobile',
+				'type' => 'string',
+				'default' => '',
 			),
 		);
 

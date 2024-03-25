@@ -179,6 +179,9 @@ export function EditInner(props) {
 		dropdownVerticalSpacingMobile: meta?._kad_navigation_dropdownVerticalSpacingMobile,
 		dropdownVerticalSpacingUnit: meta?._kad_navigation_dropdownVerticalSpacingUnit,
 		dropdownShadow: meta?._kad_navigation_dropdownShadow,
+		dropdownReveal: meta?._kad_navigation_dropdownReveal,
+		dropdownRevealTablet: meta?._kad_navigation_dropdownRevealTablet,
+		dropdownRevealMobile: meta?._kad_navigation_dropdownRevealMobile,
 	};
 
 	const {
@@ -274,6 +277,9 @@ export function EditInner(props) {
 		dropdownVerticalSpacingMobile,
 		dropdownVerticalSpacingUnit,
 		dropdownShadow,
+		dropdownReveal,
+		dropdownRevealTablet,
+		dropdownRevealMobile,
 	} = metaAttributes;
 
 	const previewOrientation = getPreviewSize(previewDevice, orientation, orientationTablet, orientationMobile);
@@ -319,11 +325,11 @@ export function EditInner(props) {
 	};
 
 	const navClasses = classnames('navigation', {
-		[`navigation-dropdown-animation-fade-${id}`]: true,
 		['nav--toggle-sub']: true,
-		// [`navigation-desktop-dropdown-animation-fade-${dropdownAnimation}`]: !previewDevice || previewDevice == 'Desktop',
-		// [`navigation-tablet-dropdown-animation-fade-${dropdownAnimationTablet}`]: previewDevice == 'Tablet',
-		// [`navigation-mobile-dropdown-animation-fade-${dropdownAnimationMobile}`]: previewDevice == 'Mobile',
+		[`navigation-desktop-dropdown-animation-${dropdownReveal ? dropdownReveal : 'none'}`]:
+			!previewDevice || previewDevice == 'Desktop',
+		[`navigation-tablet-dropdown-animation-${dropdownRevealTablet}`]: previewDevice == 'Tablet',
+		[`navigation-mobile-dropdown-animation-${dropdownRevealMobile}`]: previewDevice == 'Mobile',
 		[`navigation-desktop-style-${style}`]: !previewDevice || previewDevice == 'Desktop',
 		[`navigation-tablet-style-${styleTablet}`]: previewDevice == 'Tablet',
 		[`navigation-mobile-style-${styleMobile}`]: previewDevice == 'Mobile',
@@ -795,26 +801,44 @@ export function EditInner(props) {
 							initialOpen={false}
 						>
 							{previewOrientation == 'horizontal' && (
-								<ResponsiveRangeControls
-									label={__('Dropdown Width', 'kadence-blocks')}
-									value={parseFloat(dropdownWidth)}
-									valueTablet={parseFloat(dropdownWidthTablet)}
-									valueMobile={parseFloat(dropdownWidthMobile)}
-									onChange={(value) => setMetaAttribute(value.toString(), 'dropdownWidth')}
-									onChangeTablet={(value) =>
-										setMetaAttribute(value.toString(), 'dropdownWidthTablet')
-									}
-									onChangeMobile={(value) =>
-										setMetaAttribute(value.toString(), 'dropdownWidthMobile')
-									}
-									min={0}
-									max={dropdownWidthUnit === 'em' || dropdownWidthUnit === 'rem' ? 24 : 2000}
-									step={dropdownWidthUnit === 'em' || dropdownWidthUnit === 'rem' ? 0.1 : 1}
-									unit={dropdownWidthUnit}
-									units={['em', 'rem', 'px', 'vw']}
-									onUnit={(value) => setMetaAttribute(value, 'dropdownWidthUnit')}
-									showUnit={true}
-								/>
+								<>
+									<ResponsiveSelectControl
+										label={__('Reveal Animation', 'kadence-blocks')}
+										value={dropdownReveal}
+										tabletValue={dropdownRevealTablet}
+										mobileValue={dropdownRevealMobile}
+										options={[
+											{ value: 'none', label: __('None') },
+											{ value: 'fade', label: __('Fade') },
+											{ value: 'fade-up', label: __('Fade Up') },
+											{ value: 'fade-down', label: __('Fade Down') },
+										]}
+										onChange={(value) => setMetaAttribute(value, 'dropdownReveal')}
+										onChangeTablet={(value) => setMetaAttribute(value, 'dropdownRevealTablet')}
+										onChangeMobile={(value) => setMetaAttribute(value, 'dropdownRevealMobile')}
+									/>
+
+									<ResponsiveRangeControls
+										label={__('Dropdown Width', 'kadence-blocks')}
+										value={parseFloat(dropdownWidth)}
+										valueTablet={parseFloat(dropdownWidthTablet)}
+										valueMobile={parseFloat(dropdownWidthMobile)}
+										onChange={(value) => setMetaAttribute(value.toString(), 'dropdownWidth')}
+										onChangeTablet={(value) =>
+											setMetaAttribute(value.toString(), 'dropdownWidthTablet')
+										}
+										onChangeMobile={(value) =>
+											setMetaAttribute(value.toString(), 'dropdownWidthMobile')
+										}
+										min={0}
+										max={dropdownWidthUnit === 'em' || dropdownWidthUnit === 'rem' ? 24 : 2000}
+										step={dropdownWidthUnit === 'em' || dropdownWidthUnit === 'rem' ? 0.1 : 1}
+										unit={dropdownWidthUnit}
+										units={['em', 'rem', 'px', 'vw']}
+										onUnit={(value) => setMetaAttribute(value, 'dropdownWidthUnit')}
+										showUnit={true}
+									/>
+								</>
 							)}
 							<ResponsiveRangeControls
 								label={__('Dropdown Vertical Spacing', 'kadence-blocks')}
