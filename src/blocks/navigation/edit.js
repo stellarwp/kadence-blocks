@@ -140,9 +140,12 @@ export function Edit(props) {
 		[`navigation-desktop-layout-fill-stretch-${fillStretch}`]: !previewDevice || previewDevice == 'Desktop',
 		[`navigation-tablet-layout-fill-stretch-${fillStretchTablet}`]: previewDevice == 'Tablet',
 		[`navigation-mobile-layout-fill-stretch-${fillStretchMobile}`]: previewDevice == 'Mobile',
-		[`navigation-desktop-orientation-${orientation}`]: !previewDevice || previewDevice == 'Desktop',
-		[`navigation-tablet-orientation-${orientationTablet}`]: previewDevice == 'Tablet',
-		[`navigation-mobile-orientation-${orientationMobile}`]: previewDevice == 'Mobile',
+		[`navigation-desktop-orientation-${orientation ? orientation : 'horizontal'}`]:
+			!previewDevice || previewDevice == 'Desktop',
+		[`navigation-tablet-orientation-${orientationTablet ? orientationTablet : 'horizontal'}`]:
+			previewDevice == 'Tablet',
+		[`navigation-mobile-orientation-${orientationMobile ? orientationMobile : 'horizontal'}`]:
+			previewDevice == 'Mobile',
 	});
 	const blockProps = useBlockProps({
 		className: blockClasses,

@@ -282,7 +282,12 @@ export function EditInner(props) {
 		dropdownRevealMobile,
 	} = metaAttributes;
 
-	const previewOrientation = getPreviewSize(previewDevice, orientation, orientationTablet, orientationMobile);
+	const previewOrientation = getPreviewSize(
+		previewDevice,
+		orientation ? orientation : 'horizontal',
+		orientationTablet,
+		orientationMobile
+	);
 	const previewStyle = getPreviewSize(previewDevice, style, styleTablet, styleMobile);
 	const previewCollapseSubMenus = getPreviewSize(
 		previewDevice,

@@ -149,19 +149,19 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 			),
 			array(
 				'key'           => '_kad_navigation_padding',
-				'default'       => array( '20', '20', '20', '20' ),
+				'default'       => array( '', '', '', '' ),
 				'type'          => 'array',
 				'children_type' => 'string',
 			),
 			array(
 				'key'           => '_kad_navigation_tabletPadding',
-				'default'       => array( '20', '20', '20', '20' ),
+				'default'       => array( '', '', '', '' ),
 				'type'          => 'array',
 				'children_type' => 'string',
 			),
 			array(
 				'key'           => '_kad_navigation_mobilePadding',
-				'default'       => array( '20', '20', '20', '20' ),
+				'default'       => array( '', '', '', '' ),
 				'type'          => 'array',
 				'children_type' => 'string',
 			),
