@@ -55,6 +55,14 @@ import BackendStyles from './components/backend-styles';
  * @type {RegExp}
  */
 const ANCHOR_REGEX = /[\s#]/g;
+
+const INNERBLOCK_TEMPLATE = [
+	createBlock('kadence/header-container-desktop', {}),
+	createBlock('kadence/header-container-tablet', {}),
+];
+
+const ALLOWED_BLOCKS = ['kadence/header-container-desktop', 'kadence/header-container-tablet'];
+
 export function EditInner(props) {
 	const { attributes, setAttributes, clientId, context, direct, id, isSelected } = props;
 	const { uniqueID } = attributes;
@@ -177,7 +185,7 @@ export function EditInner(props) {
 	const { updateBlockAttributes } = useDispatch(editorStore);
 
 	const emptyHeader = useMemo(() => {
-		return [createBlock('kadence/column', {})];
+		return INNERBLOCK_TEMPLATE;
 	}, [clientId]);
 
 	if (blocks.length === 0) {
@@ -198,7 +206,15 @@ export function EditInner(props) {
 			const response = await addNew();
 
 			if (response.id) {
-				onChange([{ ...newBlock, innerBlocks: [createBlock('kadence/column', {})] }], clientId);
+				onChange(
+					[
+						{
+							...newBlock,
+							innerBlocks: INNERBLOCK_TEMPLATE,
+						},
+					],
+					clientId
+				);
 
 				setTitle(title);
 
@@ -218,12 +234,12 @@ export function EditInner(props) {
 			className: headerClasses,
 		},
 		{
-			// allowedBlocks: ALLOWED_BLOCKS,
+			allowedBlocks: ALLOWED_BLOCKS,
 			value: !direct ? headerInnerBlocks : undefined,
 			onInput: !direct ? (a, b) => onInput([{ ...newBlock, innerBlocks: a }], b) : undefined,
 			onChange: !direct ? (a, b) => onChange([{ ...newBlock, innerBlocks: a }], b) : undefined,
-			templateLock: false,
-			// renderAppender: headerInnerBlocks.length === 0 ? useFieldBlockAppenderBase : useFieldBlockAppender
+			templateLock: 'all',
+			template: INNERBLOCK_TEMPLATE,
 		}
 	);
 

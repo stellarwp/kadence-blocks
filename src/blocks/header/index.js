@@ -9,6 +9,12 @@ import { headerBlockIcon } from '@kadence/icons';
 import './style.scss';
 
 /**
+ * Import child blocks
+ */
+import './children/container-desktop';
+import './children/container-tablet';
+
+/**
  * Internal dependencies
  */
 import edit from './edit';
