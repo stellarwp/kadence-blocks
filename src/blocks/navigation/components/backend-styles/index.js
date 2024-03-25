@@ -86,6 +86,8 @@ export default function BackendStyles(props) {
 		dropdownShadow,
 	} = metaAttributes;
 
+	const css = new KadenceBlocksCSS();
+
 	const navigationHorizontalSpacing = spacing[1];
 	const navigationHorizontalSpacingTablet = spacingTablet[1];
 	const navigationHorizontalSpacingMobile = spacingMobile[1];
@@ -105,15 +107,99 @@ export default function BackendStyles(props) {
 		navigationVerticalSpacingMobile
 	);
 
-	const previewOrientation = getPreviewSize(previewDevice, orientation, orientationTablet, orientationMobile);
+	const previewOrientation = getPreviewSize(
+		previewDevice,
+		orientation ? orientation : 'horizontal',
+		orientationTablet,
+		orientationMobile
+	);
 	const previewStyle = getPreviewSize(previewDevice, style, styleTablet, styleMobile);
 	const previewParentActive = getPreviewSize(previewDevice, parentActive, parentActiveTablet, parentActiveMobile);
-
 	const previewDropdownWidth = getPreviewSize(previewDevice, dropdownWidth, dropdownWidthTablet, dropdownWidthMobile);
-
-	// const previewDivider = getPreviewSize(previewDevice, divider, dividerTablet, dividerMobile);
-
-	const css = new KadenceBlocksCSS();
+	const previewLinkColor = getPreviewSize(previewDevice, linkColor, linkColorTablet, linkColorMobile);
+	const previewBackground = getPreviewSize(previewDevice, background, backgroundTablet, backgroundMobile);
+	const previewLinkColorHover = getPreviewSize(
+		previewDevice,
+		linkColorHover,
+		linkColorHoverTablet,
+		linkColorHoverMobile
+	);
+	const previewBackgroundHover = getPreviewSize(
+		previewDevice,
+		backgroundHover,
+		backgroundHoverTablet,
+		backgroundHoverMobile
+	);
+	const previewLinkColorActive = getPreviewSize(
+		previewDevice,
+		linkColorActive,
+		linkColorActiveTablet,
+		linkColorActiveMobile
+	);
+	const previewBackgroundActive = getPreviewSize(
+		previewDevice,
+		backgroundActive,
+		backgroundActiveTablet,
+		backgroundActiveMobile
+	);
+	const previewLinkColorDropdown = getPreviewSize(
+		previewDevice,
+		linkColorDropdown,
+		linkColorDropdownTablet,
+		linkColorDropdownMobile
+	);
+	const previewBackgroundDropdown = getPreviewSize(
+		previewDevice,
+		backgroundDropdown,
+		backgroundDropdownTablet,
+		backgroundDropdownMobile
+	);
+	const previewLinkColorDropdownHover = getPreviewSize(
+		previewDevice,
+		linkColorDropdownHover,
+		linkColorDropdownHoverTablet,
+		linkColorDropdownHoverMobile
+	);
+	const previewBackgroundDropdownHover = getPreviewSize(
+		previewDevice,
+		backgroundDropdownHover,
+		backgroundDropdownHoverTablet,
+		backgroundDropdownHoverMobile
+	);
+	const previewLinkColorDropdownActive = getPreviewSize(
+		previewDevice,
+		linkColorDropdownActive,
+		linkColorDropdownActiveTablet,
+		linkColorDropdownActiveMobile
+	);
+	const previewBackgroundDropdownActive = getPreviewSize(
+		previewDevice,
+		backgroundDropdownActive,
+		backgroundDropdownActiveTablet,
+		backgroundDropdownActiveMobile
+	);
+	const previewDivider = getPreviewSize(previewDevice, divider, dividerTablet, dividerMobile);
+	const previewDropdownDivider = getPreviewSize(
+		previewDevice,
+		dropdownDivider,
+		dropdownDividerTablet,
+		dropdownDividerMobile
+	);
+	const previewDropdownVerticalSpacing = getPreviewSize(
+		previewDevice,
+		dropdownVerticalSpacing,
+		dropdownVerticalSpacingTablet,
+		dropdownVerticalSpacingMobile
+	);
+	//need to caclulate this outside of conditionals because it uses a hook underneath.
+	const dividerValue = css.render_border(divider, dividerTablet, dividerMobile, previewDevice, 'bottom');
+	const dropdownDividerValue = css.render_border(
+		dropdownDivider,
+		dropdownDividerTablet,
+		dropdownDividerMobile,
+		previewDevice,
+		'bottom'
+	);
 
 	if (isSelected) {
 		css.set_selector(
@@ -147,19 +233,13 @@ export default function BackendStyles(props) {
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap > a, .wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap`
 	);
-	css.add_property('color', css.render_color(linkColor, linkColorTablet, linkColorMobile, previewDevice));
-	css.add_property('background', css.render_color(background, backgroundTablet, backgroundMobile, previewDevice));
+	css.add_property('color', css.render_color(previewLinkColor));
+	css.add_property('background', css.render_color(previewBackground));
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap:hover > a, .wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap:hover`
 	);
-	css.add_property(
-		'color',
-		css.render_color(linkColorHover, linkColorHoverTablet, linkColorHoverMobile, previewDevice)
-	);
-	css.add_property(
-		'background',
-		css.render_color(backgroundHover, backgroundHoverTablet, backgroundHoverMobile, previewDevice)
-	);
+	css.add_property('color', css.render_color(previewLinkColorHover));
+	css.add_property('background', css.render_color(previewBackgroundHover));
 	if (previewParentActive) {
 		css.set_selector(
 			`.wp-block-kadence-navigation${uniqueID} .navigation[class*="navigation-style-underline"] .menu-container.menu-container>ul>li.current-menu-ancestor>a:after`
@@ -177,28 +257,13 @@ export default function BackendStyles(props) {
 			.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-item > .link-drop-wrap`
 		);
 	}
-	css.add_property(
-		'color',
-		css.render_color(linkColorActive, linkColorActiveTablet, linkColorActiveMobile, previewDevice)
-	);
-	css.add_property(
-		'background',
-		css.render_color(backgroundActive, backgroundActiveTablet, backgroundActiveMobile, previewDevice)
-	);
+	css.add_property('color', css.render_color(previewLinkColorActive));
+	css.add_property('background', css.render_color(previewBackgroundActive));
 
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item .dropdown-navigation-toggle`
 	);
-	css.add_property(
-		'right',
-		css.render_half_size(
-			navigationHorizontalSpacing,
-			navigationHorizontalSpacingTablet,
-			navigationHorizontalSpacingMobile,
-			previewDevice,
-			spacingUnit
-		)
-	);
+	css.add_property('right', css.render_half_size(previewNavigationHorizontalSpacing, spacingUnit));
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul li.menu-item > .link-drop-wrap > a`
 	);
@@ -209,10 +274,7 @@ export default function BackendStyles(props) {
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul.sub-menu, .wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul.submenu`
 	);
-	css.add_property(
-		'background',
-		css.render_color(backgroundDropdown, backgroundDropdownTablet, backgroundDropdownMobile, previewDevice)
-	);
+	css.add_property('background', css.render_color(previewBackgroundDropdown));
 	if (previewOrientation == 'horizontal') {
 		if (dropdownShadow?.[0]?.enable) {
 			css.add_property('box-shadow', css.render_shadow(dropdownShadow[0]));
@@ -221,86 +283,30 @@ export default function BackendStyles(props) {
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li:not(:last-of-type), .wp-block-kadence-navigation${uniqueID} .menu-container ul.menu > li.kadence-menu-mega-enabled > ul > li.menu-item > a`
 	);
-	css.add_property(
-		'border-bottom',
-		css.render_border(dropdownDivider, dropdownDividerTablet, dropdownDividerMobile, previewDevice, 'bottom')
-	);
+	css.add_property('border-bottom', dropdownDividerValue);
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li.menu-item > .link-drop-wrap > a`
 	);
 	if (previewOrientation == 'horizontal') {
 		css.add_property('width', previewDropdownWidth + dropdownWidthUnit);
 	}
-	css.add_property(
-		'padding-top',
-		css.render_size(
-			dropdownVerticalSpacing,
-			dropdownVerticalSpacingTablet,
-			dropdownVerticalSpacingMobile,
-			previewDevice,
-			dropdownVerticalSpacingUnit
-		)
-	);
-	css.add_property(
-		'padding-bottom',
-		css.render_size(
-			dropdownVerticalSpacing,
-			dropdownVerticalSpacingTablet,
-			dropdownVerticalSpacingMobile,
-			previewDevice,
-			dropdownVerticalSpacingUnit
-		)
-	);
+	css.add_property('padding-top', css.render_size(previewDropdownVerticalSpacing, dropdownVerticalSpacingUnit));
+	css.add_property('padding-bottom', css.render_size(previewDropdownVerticalSpacing, dropdownVerticalSpacingUnit));
 	css.render_font(dropdownTypography ? dropdownTypography : [], previewDevice);
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li.menu-item > .link-drop-wrap > a, .wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul.sub-menu `
 	);
-	css.add_property(
-		'color',
-		css.render_color(linkColorDropdown, linkColorDropdownTablet, linkColorDropdownMobile, previewDevice)
-	);
+	css.add_property('color', css.render_color(previewLinkColorDropdown));
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li.menu-item > .link-drop-wrap > a:hover`
 	);
-	css.add_property(
-		'color',
-		css.render_color(
-			linkColorDropdownHover,
-			linkColorDropdownHoverTablet,
-			linkColorDropdownHoverMobile,
-			previewDevice
-		)
-	);
-	css.add_property(
-		'background',
-		css.render_color(
-			backgroundDropdownHover,
-			backgroundDropdownHoverTablet,
-			backgroundDropdownHoverMobile,
-			previewDevice
-		)
-	);
+	css.add_property('color', css.render_color(previewLinkColorDropdownHover));
+	css.add_property('background', css.render_color(previewBackgroundDropdownHover));
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID}.navigation .menu-container ul ul li.menu-item.current-menu-item > .link-drop-wrap > a`
 	);
-	css.add_property(
-		'color',
-		css.render_color(
-			linkColorDropdownActive,
-			linkColorDropdownActiveTablet,
-			linkColorDropdownActiveMobile,
-			previewDevice
-		)
-	);
-	css.add_property(
-		'background',
-		css.render_color(
-			backgroundDropdownActive,
-			backgroundDropdownActiveTablet,
-			backgroundDropdownActiveMobile,
-			previewDevice
-		)
-	);
+	css.add_property('color', css.render_color(previewLinkColorDropdownActive));
+	css.add_property('background', css.render_color(previewBackgroundDropdownActive));
 
 	//Mobile menu logic from theme styles component
 	// // Mobile Menu.
@@ -336,25 +342,16 @@ export default function BackendStyles(props) {
 		css.set_selector(
 			`.wp-block-kadence-navigation${uniqueID} .navigation > .menu-container > ul > li.menu-item-has-children > .link-drop-wrap`
 		);
-		css.add_property(
-			'border-bottom',
-			css.render_border(divider, dividerTablet, dividerMobile, previewDevice, 'bottom')
-		);
+		css.add_property('border-bottom', dividerValue);
 		css.set_selector(
 			`.wp-block-kadence-navigation${uniqueID} .navigation:not(.drawer-navigation-parent-toggle-true) ul li.menu-item-has-children .link-drop-wrap button`
 		);
-		css.add_property(
-			'border-left',
-			css.render_border(divider, dividerTablet, dividerMobile, previewDevice, 'bottom')
-		);
+		css.add_property('border-left', dividerValue);
 	} else {
 		css.set_selector(
 			`.wp-block-kadence-navigation${uniqueID} .navigation > .menu-container > ul > li:not(:last-of-type) > .link-drop-wrap`
 		);
-		css.add_property(
-			'border-right',
-			css.render_border(divider, dividerTablet, dividerMobile, previewDevice, 'bottom')
-		);
+		css.add_property('border-right', dividerValue);
 	}
 	css.set_selector(`.wp-block-kadence-navigation${uniqueID} > .navigation > .menu-container > .menu`);
 	css.render_measure_output(padding, tabletPadding, mobilePadding, previewDevice, 'padding', paddingUnit);

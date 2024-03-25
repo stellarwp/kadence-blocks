@@ -112,10 +112,6 @@ export function Edit(props) {
 		[clientId]
 	);
 
-	if (isPreviewMode) {
-		return <>{formTemplateContactIcon}</>;
-	}
-
 	useEffect(() => {
 		const postOrFseId = getPostOrFseId(props, parentData);
 		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
@@ -150,6 +146,10 @@ export function Edit(props) {
 	const blockProps = useBlockProps({
 		className: blockClasses,
 	});
+
+	if (isPreviewMode) {
+		return <>{formTemplateContactIcon}</>;
+	}
 
 	{
 		/* Directly editing from via kadence_navigation post type */

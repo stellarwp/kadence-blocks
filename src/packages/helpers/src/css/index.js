@@ -330,10 +330,8 @@ export default class KadenceBlocksCSS {
 	 * @param array size an array of size settings.
 	 * @return string
 	 */
-	render_half_size(value, tabletValue = null, mobileValue = null, previewDevice = null, unit = null) {
-		const previewValue = getPreviewSize(previewDevice, value, tabletValue, mobileValue);
-
-		var size_number = !this.empty(previewValue) ? previewValue : '0';
+	render_half_size(value, unit = null) {
+		var size_number = !this.empty(value) ? value : '0';
 		var size_unit = !this.empty(unit) ? unit : 'em';
 
 		var size_string = 'calc(' + size_number + size_unit + ' / 2)';
@@ -347,14 +345,12 @@ export default class KadenceBlocksCSS {
 	 * @param array size an array of size settings.
 	 * @return string
 	 */
-	render_size(value, tabletValue = null, mobileValue = null, previewDevice = null, unit = null) {
-		const previewValue = getPreviewSize(previewDevice, value, tabletValue, mobileValue);
-
-		if (this.empty(previewValue)) {
+	render_size(value, unit = null) {
+		if (this.empty(value)) {
 			return false;
 		}
 
-		var size_number = !this.empty(previewValue) ? previewValue : '0';
+		var size_number = !this.empty(value) ? value : '0';
 		var size_unit = !this.empty(unit) ? unit : 'em';
 
 		var size_string = size_number + size_unit;
@@ -362,9 +358,8 @@ export default class KadenceBlocksCSS {
 		return size_string;
 	}
 
-	render_color(value, tabletValue = null, mobileValue = null, previewDevice = null, opacity = null) {
-		const previewValue = getPreviewSize(previewDevice, value, tabletValue, mobileValue);
-		return KadenceColorOutput(previewValue, opacity);
+	render_color(value, opacity = null) {
+		return KadenceColorOutput(value, opacity);
 	}
 
 	render_font(data, previewDevice) {
@@ -568,57 +563,55 @@ export default class KadenceBlocksCSS {
 	 * @param string default the default shadow settings.
 	 * @return string
 	 */
-	render_shadow(value, tabletValue = null, mobileValue = null, previewDevice = null, defaultValue = []) {
-		const previewValue = getPreviewSize(previewDevice, value, tabletValue, mobileValue);
-
-		if (this.empty(previewValue, true)) {
+	render_shadow(value) {
+		if (this.empty(value, true)) {
 			return false;
 		}
-		if (typeof previewValue != 'object') {
+		if (typeof value != 'object') {
 			return false;
 		}
-		if (!('color' in previewValue)) {
+		if (!('color' in value)) {
 			return false;
 		}
-		if (!('hOffset' in previewValue)) {
+		if (!('hOffset' in value)) {
 			return false;
 		}
-		if (!('vOffset' in previewValue)) {
+		if (!('vOffset' in value)) {
 			return false;
 		}
-		if (!('blur' in previewValue)) {
+		if (!('blur' in value)) {
 			return false;
 		}
-		if (!('spread' in previewValue)) {
+		if (!('spread' in value)) {
 			return false;
 		}
-		if (!('inset' in previewValue)) {
+		if (!('inset' in value)) {
 			return false;
 		}
 		var shadowString = '';
-		if (previewValue['inset']) {
+		if (value['inset']) {
 			shadowString =
 				'inset ' +
-				(!this.empty(previewValue['hOffset']) ? previewValue['hOffset'] : '0') +
+				(!this.empty(value['hOffset']) ? value['hOffset'] : '0') +
 				'px ' +
-				(!this.empty(previewValue['vOffset']) ? previewValue['vOffset'] : '0') +
+				(!this.empty(value['vOffset']) ? value['vOffset'] : '0') +
 				'px ' +
-				(!this.empty(previewValue['blur']) ? previewValue['blur'] : '0') +
+				(!this.empty(value['blur']) ? value['blur'] : '0') +
 				'px ' +
-				(!this.empty(previewValue['spread']) ? previewValue['spread'] : '0') +
+				(!this.empty(value['spread']) ? value['spread'] : '0') +
 				'px ' +
-				(!this.empty(previewValue['color']) ? this.render_color(previewValue['color']) : 'rgba(0,0,0,0.0)');
+				(!this.empty(value['color']) ? this.render_color(value['color']) : 'rgba(0,0,0,0.0)');
 		} else {
 			shadowString =
-				(!this.empty(previewValue['hOffset']) ? previewValue['hOffset'] : '0') +
+				(!this.empty(value['hOffset']) ? value['hOffset'] : '0') +
 				'px ' +
-				(!this.empty(previewValue['vOffset']) ? previewValue['vOffset'] : '0') +
+				(!this.empty(value['vOffset']) ? value['vOffset'] : '0') +
 				'px ' +
-				(!this.empty(previewValue['blur']) ? previewValue['blur'] : '0') +
+				(!this.empty(value['blur']) ? value['blur'] : '0') +
 				'px ' +
-				(!this.empty(previewValue['spread']) ? previewValue['spread'] : '0') +
+				(!this.empty(value['spread']) ? value['spread'] : '0') +
 				'px ' +
-				(!this.empty(previewValue['color']) ? this.render_color(previewValue['color']) : 'rgba(0,0,0,0.0)');
+				(!this.empty(value['color']) ? this.render_color(value['color']) : 'rgba(0,0,0,0.0)');
 		}
 
 		return shadowString;

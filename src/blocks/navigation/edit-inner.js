@@ -410,17 +410,6 @@ export function EditInner(props) {
 		}
 	);
 
-	if (navigationInnerBlocks.length === 0) {
-		return (
-			<>
-				<FormTitle onAdd={onAdd} isAdding={isAdding} existingTitle={title} />
-				<div className="kb-form-hide-while-setting-up">
-					<div {...innerBlocksProps} />
-				</div>
-			</>
-		);
-	}
-
 	const generalToggleControls = (size = '') => {
 		const collapseSubMenusValue = metaAttributes['collapseSubMenus' + size];
 		const parentTogglesMenusValue = metaAttributes['parentTogglesMenus' + size];
@@ -445,14 +434,14 @@ export function EditInner(props) {
 						onChange={(value) => setMetaAttribute(value, 'parentTogglesMenus' + size)}
 					/>
 				)}
-				{previewOrientation == 'horizontal' && (
+				{orientationValue == 'horizontal' && (
 					<ToggleControl
 						label={__('Stretch Menu', 'kadence-blocks')}
 						checked={stretchValue}
 						onChange={(value) => setMetaAttribute(value, 'stretch' + size)}
 					/>
 				)}
-				{previewOrientation == 'horizontal' && stretchValue && (
+				{orientationValue == 'horizontal' && stretchValue && (
 					<ToggleControl
 						label={__('Fill and Center Menu Items?', 'kadence-blocks')}
 						checked={fillStretchValue}
@@ -536,6 +525,17 @@ export function EditInner(props) {
 			</>
 		);
 	};
+
+	if (navigationInnerBlocks.length === 0) {
+		return (
+			<>
+				<FormTitle onAdd={onAdd} isAdding={isAdding} existingTitle={title} />
+				<div className="kb-form-hide-while-setting-up">
+					<div {...innerBlocksProps} />
+				</div>
+			</>
+		);
+	}
 
 	if (typeof pagenow !== 'undefined' && ('widgets' === pagenow || 'customize' === pagenow)) {
 		const editPostLink = addQueryArgs('post.php', {
