@@ -281,7 +281,8 @@ $anchor: #5000b9;
 	}
 	.link-drop-title-wrap {
 		position: relative;
-		display: block;
+		display: flex;
+		flex-wrap: nowrap;
 	}
 	/*
 		 * If the dropdown toggle is active with JS, then

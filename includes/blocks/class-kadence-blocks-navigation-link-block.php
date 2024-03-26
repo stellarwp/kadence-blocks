@@ -93,6 +93,27 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			// $css->add_property( 'margin-left', '-' . ( $data['mega_menu_custom_width'] ? floor( $data['mega_menu_custom_width'] / 2 ) : '400' ) . 'px' );
 		}
 
+		//link icons
+		if ( $nav_link_attributes['mediaType'] == 'icon' && ! empty( $nav_link_attributes['mediaIcon'][0]['icon'] ) ) {
+			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a > .link-drop-title-wrap > .kb-svg-icon-wrap' );
+			$css->add_property( 'display', 'flex' );
+			$css->add_property( 'padding-bottom', $css->render_size( $nav_link_attributes['mediaStyle'][0]['padding'][0], 'px' ) );
+			$css->add_property( 'padding-top', $css->render_size( $nav_link_attributes['mediaStyle'][0]['padding'][0], 'px' ) );
+			$css->add_property( 'padding-left', $css->render_size( $nav_link_attributes['mediaStyle'][0]['padding'][0], 'px' ) );
+			$css->add_property( 'padding-right', $css->render_size( $nav_link_attributes['mediaStyle'][0]['padding'][0], 'px' ) );
+			$css->add_property( 'background', $css->render_color( $nav_link_attributes['mediaStyle'][0]['background'] ), $nav_link_attributes['mediaStyle'][0]['background'] );
+			$css->add_property( 'border-radius', $css->render_size( $nav_link_attributes['mediaStyle'][0]['borderRadius'], 'px' ), $nav_link_attributes['mediaStyle'][0]['borderRadius'] );
+
+			if ( $nav_link_attributes['mediaAlign'] == 'left' ) {
+				$css->add_property( 'margin-right', $css->render_size( $nav_link_attributes['mediaStyle'][0]['margin'][0], 'px' ) );
+			} else {
+				$css->add_property( 'margin-left', $css->render_size( $nav_link_attributes['mediaStyle'][0]['margin'][0], 'px' ) );
+			}
+			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a > .link-drop-title-wrap > .kb-svg-icon-wrap svg' );
+			$css->add_property( 'width', $css->render_size( $nav_link_attributes['mediaIcon'][0]['size'], 'px' ) );
+			$css->add_property( 'height', $css->render_size( $nav_link_attributes['mediaIcon'][0]['size'], 'px' ) );
+		}
+
 		$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a' );
 		$css->render_measure_output( $nav_link_attributes, 'padding' );
 		$css->render_measure_output( $nav_link_attributes, 'margin' );
@@ -222,8 +243,20 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 		$sub_menu_content = $has_children ? '<ul ' . $sub_menu_attributes . '>' . $content . '</ul>' : '';
 
+		$svg_icon   = '';
+		if ( $nav_link_attributes['mediaType'] == 'icon' && ! empty( $nav_link_attributes['mediaIcon'][0]['icon'] ) ) {
+			$type         = substr( $nav_link_attributes['mediaIcon'][0]['icon'], 0, 2 );
+			$line_icon    = ( ! empty( $type ) && 'fe' == $type ? true : false );
+			$fill         = ( $line_icon ? 'none' : 'currentColor' );
+			$stroke_width = $line_icon ? $nav_link_attributes['mediaIcon'][0]['width'] ?? 2 : false;
+
+			$svg_icon = Kadence_Blocks_Svg_Render::render( $nav_link_attributes['mediaIcon'][0]['icon'], $fill, $stroke_width );
+		}
+		$icon_left  = ! empty( $svg_icon ) && 'left' === $nav_link_attributes['mediaAlign'] ? '<span class="kb-svg-icon-wrap kb-svg-icon-' . esc_attr( $nav_link_attributes['mediaIcon'][0]['icon'] ) . ' kt-btn-icon-side-left">' . $svg_icon . '</span>' : '';
+		$icon_right = ! empty( $svg_icon ) && 'right' === $nav_link_attributes['mediaAlign'] ? '<span class="kb-svg-icon-wrap kb-svg-icon-' . esc_attr( $nav_link_attributes['mediaIcon'][0]['icon'] ) . ' kt-btn-icon-side-right">' . $svg_icon . '</span>' : '';
+
 		return sprintf(
-			'<li %1$s><div class="link-drop-wrap"><a class="wp-block-navigation-item__content" href="' . esc_url( $url ) . '"><span class="link-drop-title-wrap">' . esc_html( $label ) . '<span class="title-dropdown-navigation-toggle">%2$s</span></span></a></div>%3$s</li>',
+			'<li %1$s><div class="link-drop-wrap"><a class="wp-block-navigation-item__content" href="' . esc_url( $url ) . '"><span class="link-drop-title-wrap">' . $icon_left . esc_html( $label ) . $icon_right . '<span class="title-dropdown-navigation-toggle">%2$s</span></span></a></div>%3$s</li>',
 			$wrapper_attributes,
 			$has_children ? $down_arrow_icon : '',
 			$sub_menu_content

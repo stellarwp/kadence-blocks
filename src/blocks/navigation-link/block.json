@@ -358,6 +358,67 @@
 					"inset": false
 				}
 			]
+		},
+		"mediaType": {
+			"type": "string",
+			"default": ""
+		},
+		"mediaAlign": {
+			"type": "string",
+			"default": "right"
+		},
+		"mediaImage": {
+			"type": "array",
+			"default": [
+				{
+					"url": "",
+					"id": "",
+					"alt": "",
+					"width": "",
+					"height": "",
+					"maxWidth": "",
+					"hoverAnimation": "none",
+					"flipUrl": "",
+					"flipId": "",
+					"flipAlt": "",
+					"flipWidth": "",
+					"flipHeight": "",
+					"subtype": "",
+					"flipSubtype": ""
+				}
+			]
+		},
+		"mediaIcon": {
+			"type": "array",
+			"default": [
+				{
+					"icon": "fe_aperture",
+					"size": 20,
+					"width": 2,
+					"title": "",
+					"color": "",
+					"hoverColor": "",
+					"hoverAnimation": "none",
+					"flipIcon": "",
+					"tabletSize": "",
+					"mobileSize": ""
+				}
+			]
+		},
+		"mediaStyle": {
+			"type": "array",
+			"default": [
+				{
+					"background": "",
+					"hoverBackground": "",
+					"border": "",
+					"hoverBorder": "",
+					"borderRadius": 0,
+					"borderWidth": [0, 0, 0, 0],
+					"padding": [5, 5, 5, 5],
+					"margin": ["", "", "", ""]
+				}
+			]
 		}
 	},
 	"usesContext": [
