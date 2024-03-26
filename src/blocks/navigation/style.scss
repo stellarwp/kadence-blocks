@@ -286,10 +286,13 @@ $anchor: #5000b9;
 	}
 	.nav--toggle-sub li.menu-item-has-children {
 		position: relative;
+
+		.link-drop-wrap > a > .link-drop-title-wrap {
+			padding-right: 1em;
+		}
 	}
 	.link-drop-title-wrap {
 		position: relative;
-		padding-right: 1em;
 		display: block;
 	}
 	/*
