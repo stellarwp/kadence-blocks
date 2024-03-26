@@ -11,14 +11,16 @@ import classnames from 'classnames';
  * Internal block libraries
  */
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useBlockProps, InnerBlocks, useInnerBlocksProps } from '@wordpress/block-editor';
+import { useBlockProps, InnerBlocks, useInnerBlocksProps, InspectorControls } from '@wordpress/block-editor';
 
 import { getUniqueId, getPostOrFseId } from '@kadence/helpers';
+import { SelectParentBlock } from '@kadence/components';
 
 /**
  * Internal dependencies
  */
 import { useEffect } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 
 export function Edit(props) {
 	const { attributes, setAttributes, clientId } = props;
@@ -77,17 +79,18 @@ export function Edit(props) {
 		}
 	);
 
-	if (previewDevice === 'Desktop') {
-		return <></>;
-	}
-
-	return <div {...innerBlocksProps} />;
-
-	// return (
-	// 	<div {...blockProps}>
-	// 		<div {...innerBlocksProps} />
-	// 	</div>
-	// );
+	return (
+		<>
+			<InspectorControls>
+				<SelectParentBlock
+					label={__('View Header Settings', 'kadence-blocks')}
+					clientId={clientId}
+					parentSlug={'kadence/header'}
+				/>
+			</InspectorControls>
+			<div {...innerBlocksProps} />
+		</>
+	);
 }
 
 export default Edit;
