@@ -185,7 +185,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$temp = get_queried_object_id();
 		$kind        = empty( $attributes['kind'] ) ? 'post_type' : str_replace( '-', '_', $attributes['kind'] );
 		$is_active   = ! empty( $attributes['id'] ) && get_queried_object_id() === (int) $attributes['id'] && ! empty( get_queried_object()->post_type );
-		$is_mega_menu = $nav_link_attributes['isMegaMenu'];
+		$is_mega_menu = ! empty( $nav_link_attributes['isMegaMenu'] );
 		$mega_menu_width_class = 'kadence-menu-mega-width-' . ( $nav_link_attributes['megaMenuWidth'] ? $nav_link_attributes['megaMenuWidth'] : 'container' );
 
 		$wrapper_classes = array();
@@ -197,7 +197,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$wrapper_classes[] = $is_mega_menu ? 'kadence-menu-mega-enabled' : '';
 		$wrapper_classes[] = $is_mega_menu ? $mega_menu_width_class : '';
 
-		$name = $nav_link_attributes['name'];
+		$name = !empty( $nav_link_attributes['name'] ) ? $nav_link_attributes['name'] : '';
 
 		$wrapper_attributes = get_block_wrapper_attributes(
 			array(
