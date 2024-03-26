@@ -653,7 +653,7 @@ export default function Edit(props) {
 				</ToolbarGroup>
 			</BlockControls>
 			{/* Warning, this duplicated in packages/block-library/src/navigation-submenu/edit.js */}
-			<BackendStyles {...props} previewDevice={previewDevice} />
+			<BackendStyles {...props} previewDevice={previewDevice} currentRef={ref} />
 			<InspectorControls>
 				<SelectParentBlock
 					label={__('View Navigation Settings', 'kadence-blocks')}

@@ -1,7 +1,8 @@
-import { KadenceBlocksCSS, getPreviewSize } from '@kadence/helpers';
+import { KadenceBlocksCSS, getPreviewSize, useEditorWidth } from '@kadence/helpers';
+import { useRef } from '@wordpress/element';
 
 export default function BackendStyles(props) {
-	const { attributes, isSelected, previewDevice } = props;
+	const { attributes, isSelected, previewDevice, currentRef } = props;
 
 	const {
 		uniqueID,
@@ -68,6 +69,10 @@ export default function BackendStyles(props) {
 		dropdownShadow,
 	} = attributes;
 
+	//const ref = useRef();
+	const editorWidth = useEditorWidth(currentRef, []);
+	//console.log(1, currentRef);
+
 	// const previewDivider = getPreviewSize(previewDevice, divider, dividerTablet, dividerMobile);
 
 	const css = new KadenceBlocksCSS();
@@ -102,13 +107,26 @@ export default function BackendStyles(props) {
 		css.render_color(backgroundActive, backgroundActiveTablet, backgroundActiveMobile, previewDevice)
 	);
 
-	if ('custom' === megaMenuWidth) {
+	if (megaMenuWidth === 'custom') {
 		css.set_selector(
 			`.wp-block-kadence-navigation .menu-container ul.menu .wp-block-kadence-navigation-link${uniqueID}.kadence-menu-mega-width-custom > ul.sub-menu`
 		);
 		css.add_property('width', css.render_size(megaMenuCustomWidth, null, null, null, megaMenuCustomWidthUnit));
 		// $css->set_selector( '.header-navigation[class*="header-navigation-dropdown-animation-fade"] #menu-item-' . $item->ID . '.kadence-menu-mega-enabled > .sub-menu' );
 		// $css->add_property( 'margin-left', '-' . ( $data['mega_menu_custom_width'] ? floor( $data['mega_menu_custom_width'] / 2 ) : '400' ) . 'px' );
+	} else if (megaMenuWidth === 'full' && currentRef?.current) {
+		css.set_selector(
+			`.wp-block-kadence-navigation .menu-container ul.menu .wp-block-kadence-navigation-link${uniqueID}.kadence-menu-mega-width-full > ul.sub-menu`
+		);
+		css.add_property('width', editorWidth + 'px');
+		css.add_property(
+			'left',
+			-1 *
+				Math.abs(
+					currentRef.current.closest('.wp-block-kadence-navigation-link').getBoundingClientRect().left
+				).toString() +
+				'px'
+		);
 	}
 
 	//Dropdown logic from theme Styles Component
