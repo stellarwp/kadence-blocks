@@ -102,8 +102,6 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	// $css->add_property('border-left-width', previewBorderLeft);
 	// $css->add_property('border-left-style', previewBorderStyleLeft);
 	// $css->add_property('border-left-color', previewBorderColorLeft);
-		$css->add_property('height', '300px');
-		$css->add_property('width', '100%');
 
 		//$css->set_selector('.wp-block-kadence-header.wp-block-kadence-header' . $unique_id . ':hover');
 		//$css->add_property('background-color', $css->render_color($hoverBg['color']));
