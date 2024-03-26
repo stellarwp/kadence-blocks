@@ -72,6 +72,9 @@ export function Edit(props) {
 	const innerBlocksProps = useInnerBlocksProps(
 		{
 			className: '',
+			style: {
+				display: previewDevice !== 'Desktop' ? 'block' : 'none',
+			},
 		},
 		{
 			renderAppender: InnerBlocks.ButtonBlockAppender,
