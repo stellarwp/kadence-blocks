@@ -131,6 +131,10 @@ $anchor: #5000b9;
 	.navigation ul ul.quadmenu-row {
 		flex-direction: row;
 	}
+	.navigation ul ul li.menu-item > .link-drop-wrap > a {
+		padding: 1em;
+		width: 200px;
+	}
 	body:not(.hide-focus-outline)
 		.navigation
 		li.menu-item--has-toggle
@@ -635,10 +639,6 @@ $anchor: #5000b9;
 	}
 	.navigation ul li.menu-item > .link-drop-wrap > a {
 		padding: 0.6em 0.5em;
-	}
-	.navigation ul ul li.menu-item > .link-drop-wrap > a {
-		padding: 1em;
-		width: 200px;
 	}
 	.navigation ul ul ul.sub-menu,
 	.navigation ul ul ul.submenu {

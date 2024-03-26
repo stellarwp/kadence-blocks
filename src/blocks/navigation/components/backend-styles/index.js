@@ -339,12 +339,10 @@ export default function BackendStyles(props) {
 
 	//New Logic for block
 	if (previewOrientation == 'vertical') {
-		css.set_selector(
-			`.wp-block-kadence-navigation${uniqueID} .navigation > .menu-container > ul > li.menu-item-has-children > .link-drop-wrap`
-		);
+		css.set_selector(`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul li .link-drop-wrap`);
 		css.add_property('border-bottom', dividerValue);
 		css.set_selector(
-			`.wp-block-kadence-navigation${uniqueID} .navigation:not(.drawer-navigation-parent-toggle-true) ul li.menu-item-has-children .link-drop-wrap button`
+			`.wp-block-kadence-navigation${uniqueID} .navigation:not(.drawer-navigation-parent-toggle-true) ul li .link-drop-wrap button`
 		);
 		css.add_property('border-left', dividerValue);
 	} else {
