@@ -30,7 +30,7 @@ const initialState = {
 	backgroundImages: [],
 	customCollections: [
 		{
-			label: __( 'My Images', 'kadence-blocks-pro' ),
+			label: __('My Images', 'kadence-blocks-pro'),
 			value: 'my-images',
 			galleries: [
 				{ name: 'featured', isLocal: true, images: [] },
@@ -50,8 +50,8 @@ const initialState = {
 
 const KadenceAiContext = createContext();
 
-function kadenceAiReducer( state, action ) {
-	switch ( action.type ) {
+function kadenceAiReducer(state, action) {
+	switch (action.type) {
 		case 'SET_CURRENT_PAGE_INDEX':
 			return {
 				...state,
@@ -115,7 +115,7 @@ function kadenceAiReducer( state, action ) {
 		case 'SET_PRIVACY_AGREEMENT':
 			return {
 				...state,
-				privacyAgreement: ! state.privacyAgreement,
+				privacyAgreement: !state.privacyAgreement,
 			};
 		case 'SET_PHOTO_LIBRARY':
 			return {
@@ -177,25 +177,25 @@ function kadenceAiReducer( state, action ) {
 	}
 }
 
-function initializeKadenceAiState( data ) {
+function initializeKadenceAiState(data) {
 	return {
 		...initialState,
 		...data,
 	};
 }
 
-function KadenceAiProvider( props ) {
-	const [ state, dispatch ] = useReducer( kadenceAiReducer, props.value, initializeKadenceAiState );
+function KadenceAiProvider(props) {
+	const [state, dispatch] = useReducer(kadenceAiReducer, props.value, initializeKadenceAiState);
 	const value = { state, dispatch };
 
-	return <KadenceAiContext.Provider value={ value }>{ props.children }</KadenceAiContext.Provider>;
+	return <KadenceAiContext.Provider value={value}>{props.children}</KadenceAiContext.Provider>;
 }
 
 function useKadenceAi() {
-	const context = useContext( KadenceAiContext );
+	const context = useContext(KadenceAiContext);
 
-	if ( context === undefined ) {
-		throw new Error( 'useKadenceAi must be used with KadenceAiProvider' );
+	if (context === undefined) {
+		throw new Error('useKadenceAi must be used with KadenceAiProvider');
 	}
 
 	return context;
