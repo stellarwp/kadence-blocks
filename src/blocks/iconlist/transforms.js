@@ -27,6 +27,40 @@ const getNestedListsFrom = (rawItems, level = 0) => {
 	return listItems;
 }
 
+const getNestedListsTo = (rawItems, attributes) => {
+	let lastLevel = rawItems[0].attributes.level;
+	const nestedBlocks = [];
+	let nestedListItems = [];
+	const listItems = rawItems.map((listItem, index) => {
+		if(lastLevel === listItem.attributes.level) {
+			nestedListItems.push(createBlock('core/list-item', { content: listItem.attributes.text }));
+		}
+		
+		if(lastLevel < listItem.attributes.level) {
+			nestedBlocks.push(createBlock(
+				'core/list',
+				{
+					ordered: false,
+					style: {
+						color: {
+							text: attributes.listStyles[0].color,
+						},
+					},
+				},
+				nestedListItems
+			));
+			lastLevel = listItem.attributes.level;
+		}
+		console.log(nestedBlocks);
+		if(lastLevel > listItem.attributes.level) {
+			lastLevel = listItem.attributes.level;
+			nestedListItems = [];
+			return nestedBlocks;
+		}
+	});
+	return listItems;
+}
+
 const transforms = {
 	from: [
 		{
@@ -55,7 +89,7 @@ const transforms = {
 			type: 'block',
 			blocks: ['core/list'],
 			transform: (blockAttributes, innerBlocks) => {
-				console.log(innerBlocks);
+				getNestedListsTo(innerBlocks, blockAttributes);
 				const listItems = innerBlocks.map((listItem) => {
 					return createBlock('core/list-item', { content: listItem.attributes.text });
 				});
