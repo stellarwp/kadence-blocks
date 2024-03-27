@@ -40,7 +40,7 @@
 			"step": "importFile",
 			"file": {
 				"resource": "url",
-				"url": "https://www.kadencewp.com/wp-content/uploads/playground-demos/example-page-demo.xml"
+				"url": "https://raw.githubusercontent.com/stellarwp/kadence-blocks/master/.wordpress-org/blueprints/example-page-demo.xml"
 			}
 		}
     ]
