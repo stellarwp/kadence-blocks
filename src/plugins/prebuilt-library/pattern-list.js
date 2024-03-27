@@ -769,7 +769,7 @@ function PatternList({
 	const customShadowStyles = useMemo(() => {
 		let tempStyles =
 			'.pattern-shadow-wrap .single-iframe-content {--global-content-width:1200px; --global-vw:1200px !important;}img{max-width:100%}svg { height: 1em; width: 1em;}';
-		if ( ! selectedStyle || 'light' === selectedStyle ) {
+		if (!selectedStyle || 'light' === selectedStyle) {
 			tempStyles = tempStyles.concat(
 				`.single-iframe-content {--global-content-edge-padding: 3rem;padding:0px !important;}`
 			);
