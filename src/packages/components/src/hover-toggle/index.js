@@ -43,6 +43,28 @@ export default function HoverToggleControl({
 	const [isHover, setIsHover] = useState(initial === 'hover' ? true : false);
 	const [isActive, setIsActive] = useState(initial === 'active' ? true : false);
 
+	var tabs = [
+		{
+			name: 'normal',
+			title: normalTab,
+			className: 'kt-normal-tab',
+		},
+	];
+	if (hover) {
+		tabs.push({
+			name: 'hover',
+			title: hoverTab,
+			className: 'kt-hover-tab',
+		});
+	}
+	if (active) {
+		tabs.push({
+			name: 'active',
+			title: activeTab,
+			className: 'kt-active-tab',
+		});
+	}
+
 	if (tabUI) {
 		return [
 			<div
@@ -50,27 +72,7 @@ export default function HoverToggleControl({
 					className ? ' ' + className : ''
 				}`}
 			>
-				<TabPanel
-					className="kt-inspect-tabs kt-hover-tabs"
-					activeClass="active-tab"
-					tabs={[
-						{
-							name: 'normal',
-							title: normalTab,
-							className: 'kt-normal-tab',
-						},
-						{
-							name: 'hover',
-							title: hoverTab,
-							className: 'kt-hover-tab',
-						},
-						{
-							name: 'active',
-							title: activeTab,
-							className: 'kt-active-tab',
-						},
-					]}
-				>
+				<TabPanel className="kt-inspect-tabs kt-hover-tabs" activeClass="active-tab" tabs={tabs}>
 					{(tab) => {
 						if (tab.name) {
 							if ('hover' === tab.name) {

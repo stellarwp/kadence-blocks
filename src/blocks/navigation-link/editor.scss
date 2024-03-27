@@ -2,7 +2,7 @@
  * Appender
  */
 
-.wp-block-navigation .block-list-appender {
+.wp-block-kadence-navigation .block-list-appender {
 	position: relative;
 }
 
@@ -11,23 +11,23 @@
  */
 
 // Show submenus above the sibling inserter.
-.wp-block-navigation .has-child {
+.wp-block-kadence-navigation .has-child {
 	cursor: pointer;
 
-	.wp-block-navigation__submenu-container {
-		z-index: z-index(".has-child .wp-block-navigation__submenu-container");
+	.wp-block-kadence-navigation__submenu-container {
+		z-index: z-index(".has-child .wp-block-kadence-navigation__submenu-container");
 	}
 
 	&:hover {
-		.wp-block-navigation__submenu-container {
-			z-index: z-index(".has-child:hover .wp-block-navigation__submenu-container");
+		.wp-block-kadence-navigation__submenu-container {
+			z-index: z-index(".has-child:hover .wp-block-kadence-navigation__submenu-container");
 		}
 	}
 
 	// Show on editor selected, even if on frontend it only stays open on focus-within.
 	&.is-selected,
 	&.has-child-selected {
-		> .wp-block-navigation__submenu-container {
+		> .wp-block-kadence-navigation__submenu-container {
 			// We use important here because if the parent block is selected and submenus are present, they should always be visible.
 			visibility: visible !important;
 			opacity: 1 !important;
@@ -43,8 +43,8 @@
  * Navigation Items.
  */
 
-.wp-block-navigation-item {
-	.wp-block-navigation-item__content {
+.wp-block-kadence-navigation-link {
+	.wp-block-kadence-navigation-link__content {
 		cursor: text;
 	}
 
@@ -60,9 +60,16 @@
 		margin-bottom: 20px;
 		margin-left: 20px;
 	}
+
+	.link-media-container {
+		display: flex;
+		.link-svg-icon {
+			display: flex;
+		}
+	}
 }
 
-.wp-block-navigation-link__invalid-item {
+.wp-block-kadence-navigation-link__invalid-item {
 	color: #000;
 }
 
@@ -70,7 +77,7 @@
  * Menu item setup state. Is shown when a menu item has no URL configured.
  */
 
-.wp-block-navigation-link__placeholder {
+.wp-block-kadence-navigation-link__placeholder {
 	position: relative;
 
 	// While in a placeholder state, hide any underlines the theme might add.
@@ -79,7 +86,7 @@
 	background-image: none !important;
 
 	// Draw a wavy underline.
-	.wp-block-navigation-link__placeholder-text span {
+	.wp-block-kadence-navigation-link__placeholder-text span {
 		$blur: 10%;
 		$width: 6%;
 		$stop1: 30%;
@@ -114,7 +121,7 @@
 	}
 
 	// This needs extra specificity.
-	&.wp-block-navigation-item__content {
+	&.wp-block-kadence-navigation-link__content {
 		cursor: pointer;
 	}
 }

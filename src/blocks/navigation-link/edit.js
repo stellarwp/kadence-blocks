@@ -671,50 +671,81 @@ export default function Edit(props) {
 			</>
 		);
 	};
+	const iconColorControls = (size = '', suffix = '') => {
+		const colorValue = attributes['mediaStyle'][0]['color' + suffix + size];
+		const colorHoverValue = attributes['mediaStyle'][0]['colorHover' + suffix + size];
+		const colorActiveValue = attributes['mediaStyle'][0]['colorActive' + suffix + size];
+		const backgroundValue = attributes['mediaStyle'][0]['background' + suffix + size];
+		const backgroundHoverValue = attributes['mediaStyle'][0]['backgroundHover' + suffix + size];
+		const backgroundActiveValue = attributes['mediaStyle'][0]['backgroundActive' + suffix + size];
+		return (
+			<>
+				<HoverToggleControl
+					normal={
+						<>
+							<PopColorControl
+								label={__('Color', 'kadence-blocks')}
+								value={colorValue}
+								default={''}
+								onChange={(value) => saveMediaStyle({ ['color' + suffix + size]: value })}
+								key={'normal'}
+							/>
+							<PopColorControl
+								label={__('Background', 'kadence-blocks')}
+								value={backgroundValue}
+								default={''}
+								onChange={(value) => saveMediaStyle({ ['background' + suffix + size]: value })}
+								key={'normalb'}
+							/>
+						</>
+					}
+					hover={
+						<>
+							<PopColorControl
+								label={__('Hover Color', 'kadence-blocks')}
+								value={colorHoverValue}
+								default={''}
+								onChange={(value) => saveMediaStyle({ ['colorHover' + suffix + size]: value })}
+								key={'hover'}
+							/>
+							<PopColorControl
+								label={__('Hover Background', 'kadence-blocks')}
+								value={backgroundHoverValue}
+								default={''}
+								onChange={(value) => saveMediaStyle({ ['backgroundHover' + suffix + size]: value })}
+								key={'hoverb'}
+							/>
+						</>
+					}
+					active={
+						<>
+							<PopColorControl
+								label={__('Active Color', 'kadence-blocks')}
+								value={colorActiveValue}
+								default={''}
+								onChange={(value) => saveMediaStyle({ ['colorActive' + suffix + size]: value })}
+								key={'active'}
+							/>
+							<PopColorControl
+								label={__('Active Background', 'kadence-blocks')}
+								value={backgroundActiveValue}
+								default={''}
+								onChange={(value) => saveMediaStyle({ ['backgroundActive' + suffix + size]: value })}
+								key={'activeb'}
+							/>
+						</>
+					}
+				/>
+			</>
+		);
+	};
 
 	const mediaContent = (
 		<>
 			{mediaType && 'none' !== mediaType && (
-				<div
-					className={'link-media-container'}
-					style={{
-						marginLeft: mediaAlign == 'right' ? mediaStyle[0].margin[0] + 'px' : false,
-						marginRight: mediaAlign == 'left' ? mediaStyle[0].margin[0] + 'px' : false,
-					}}
-				>
-					<div
-						className={`link-media ${
-							'number' === mediaType ? 'kt-info-media-animate-' + mediaNumber[0].hoverAnimation : ''
-						}${'image' === mediaType ? 'kt-info-media-animate-' + mediaImage[0].hoverAnimation : ''}${
-							'icon' === mediaType ? 'kt-info-media-animate-' + mediaIcon[0].hoverAnimation : ''
-						}`}
-						style={{
-							borderColor: KadenceColorOutput(mediaStyle[0].border),
-							backgroundColor: KadenceColorOutput(mediaStyle[0].background),
-							borderRadius: mediaStyle[0].borderRadius + 'px',
-							borderWidth: mediaStyle[0].borderWidth
-								? mediaStyle[0].borderWidth[0] +
-								  'px ' +
-								  mediaStyle[0].borderWidth[1] +
-								  'px ' +
-								  mediaStyle[0].borderWidth[2] +
-								  'px ' +
-								  mediaStyle[0].borderWidth[3] +
-								  'px'
-								: '',
-							padding: mediaStyle[0].padding
-								? mediaStyle[0].padding[0] +
-								  'px ' +
-								  mediaStyle[0].padding[0] +
-								  'px ' +
-								  mediaStyle[0].padding[0] +
-								  'px ' +
-								  mediaStyle[0].padding[0] +
-								  'px'
-								: '',
-						}}
-					>
-						{!mediaImage[0].url && 'image' === mediaType && (
+				<div className={'link-media-container'}>
+					{/* {!mediaImage[0].url && 'image' === mediaType && (
+						<>
 							<Fragment>
 								<KadenceMediaPlaceholder
 									labels={''}
@@ -727,8 +758,7 @@ export default function Edit(props) {
 									disableMediaButtons={false}
 								/>
 							</Fragment>
-						)}
-						{mediaImage[0].url && 'image' === mediaType && (
+
 							<div
 								className="link-image-inner-intrisic-container"
 								style={{
@@ -794,48 +824,24 @@ export default function Edit(props) {
 									</div>
 								</div>
 							</div>
-						)}
-						{'icon' === mediaType && (
-							<div className={`link-icon-container link-icon-animate-${mediaIcon[0].hoverAnimation}`}>
-								<div className={'link-icon-inner-container'}>
-									<IconRender
-										className={`link-svg-icon link-svg-icon-${mediaIcon[0].icon}`}
-										name={mediaIcon[0].icon}
-										size={previewMediaIconSize}
-										htmltag="span"
-										strokeWidth={
-											'fe' === mediaIcon[0].icon.substring(0, 2) ? mediaIcon[0].width : undefined
-										}
-										style={{
-											display: 'flex',
-											color: mediaIcon[0].color
-												? KadenceColorOutput(mediaIcon[0].color)
-												: undefined,
-										}}
-									/>
-									{mediaIcon[0].flipIcon && 'flip' === mediaIcon[0].hoverAnimation && (
-										<IconRender
-											className={`link-svg-icon-flip link-svg-icon-${mediaIcon[0].flipIcon}`}
-											name={mediaIcon[0].flipIcon}
-											size={previewMediaIconSize}
-											htmltag="span"
-											strokeWidth={
-												'fe' === mediaIcon[0].flipIcon.substring(0, 2)
-													? mediaIcon[0].width
-													: undefined
-											}
-											style={{
-												display: 'flex',
-												color: mediaIcon[0].hoverColor
-													? KadenceColorOutput(mediaIcon[0].hoverColor)
-													: undefined,
-											}}
-										/>
-									)}
-								</div>
-							</div>
-						)}
-					</div>
+						</>
+					)} */}
+					{'icon' === mediaType && (
+						<>
+							<IconRender
+								className={`link-svg-icon link-svg-icon-${mediaIcon[0].icon}`}
+								name={mediaIcon[0].icon}
+								htmltag="span"
+							/>
+							{mediaIcon[0].flipIcon && 'flip' === mediaIcon[0].hoverAnimation && (
+								<IconRender
+									className={`link-svg-icon-flip link-svg-icon-${mediaIcon[0].flipIcon}`}
+									name={mediaIcon[0].flipIcon}
+									htmltag="span"
+								/>
+							)}
+						</>
+					)}
 				</div>
 			)}
 		</>
@@ -1160,17 +1166,19 @@ export default function Edit(props) {
 									options={[
 										{ value: 'none', label: __('None', 'kadence-blocks') },
 										{ value: 'icon', label: __('Icon', 'kadence-blocks') },
-										{ value: 'image', label: __('Image', 'kadence-blocks') },
+										//{ value: 'image', label: __('Image', 'kadence-blocks') },
 									]}
 									onChange={(value) => setAttributes({ mediaType: value })}
 								/>
 								{mediaType && 'none' !== mediaType && (
-									<SmallResponsiveControl
-										label={__('Media Align', 'kadence-blocks')}
-										desktopChildren={mediaSettingsControls()}
-										tabletChildren={mediaSettingsControls('Tablet')}
-										mobileChildren={mediaSettingsControls('Mobile')}
-									/>
+									<>
+										<SmallResponsiveControl
+											label={__('Media Align', 'kadence-blocks')}
+											desktopChildren={mediaSettingsControls()}
+											tabletChildren={mediaSettingsControls('Tablet')}
+											mobileChildren={mediaSettingsControls('Mobile')}
+										/>
+									</>
 								)}
 								{/* {'image' === mediaType && (
 									<>
@@ -1425,14 +1433,14 @@ export default function Edit(props) {
 																					'kadence-blocks'
 																				)}
 																				value={
-																					mediaIcon[0].hoverColor
-																						? mediaIcon[0].hoverColor
+																					mediaIcon[0].colorHover
+																						? mediaIcon[0].colorHover
 																						: '#444444'
 																				}
 																				default={'#444444'}
 																				onChange={(value) =>
 																					saveMediaIcon({
-																						hoverColor: value,
+																						colorHover: value,
 																					})
 																				}
 																			/>
@@ -1450,13 +1458,13 @@ export default function Edit(props) {
 																		'kadence-blocks'
 																	)}
 																	value={
-																		mediaStyle[0].hoverBackground
-																			? mediaStyle[0].hoverBackground
+																		mediaStyle[0].backgroundHover
+																			? mediaStyle[0].backgroundHover
 																			: ''
 																	}
 																	default={'transparent'}
 																	onChange={(value) =>
-																		saveMediaStyle({ hoverBackground: value })
+																		saveMediaStyle({ backgroundHover: value })
 																	}
 																/>
 																<PopColorControl
@@ -1545,138 +1553,85 @@ export default function Edit(props) {
 											value={mediaIcon[0].icon}
 											onChange={(value) => saveMediaIcon({ icon: value })}
 										/>
+										<SmallResponsiveControl
+											label={__('Colors', 'kadence-blocks')}
+											desktopChildren={iconColorControls()}
+											tabletChildren={iconColorControls('Tablet')}
+											mobileChildren={iconColorControls('Mobile')}
+										/>
 										<ResponsiveRangeControls
-											label={__('Icon Size (px)', 'kadence-blocks')}
+											label={__('Icon Size', 'kadence-blocks')}
 											value={mediaIcon[0].size}
-											mobileValue={mediaIcon[0].mobileSize ? mediaIcon[0].mobileSize : ''}
-											tabletValue={mediaIcon[0].tabletSize ? mediaIcon[0].tabletSize : ''}
+											tabletValue={mediaIcon[0].sizeTablet ? mediaIcon[0].sizeTablet : ''}
+											mobileValue={mediaIcon[0].sizeMobile ? mediaIcon[0].sizeMobile : ''}
 											onChange={(value) => saveMediaIcon({ size: value })}
-											onChangeTablet={(value) => saveMediaIcon({ tabletSize: value })}
-											onChangeMobile={(value) => saveMediaIcon({ mobileSize: value })}
+											onChangeTablet={(value) => saveMediaIcon({ sizeTablet: value })}
+											onChangeMobile={(value) => saveMediaIcon({ sizeMobile: value })}
+											units={['px']}
+											unit={'px'}
 											min={5}
 											max={250}
 											step={1}
 										/>
 										{mediaIcon[0].icon && 'fe' === mediaIcon[0].icon.substring(0, 2) && (
-											<RangeControl
+											<ResponsiveRangeControls
 												label={__('Icon Line Width', 'kadence-blocks')}
 												value={mediaIcon[0].width}
+												valueTablet={mediaIcon[0].widthTablet}
+												valueMobile={mediaIcon[0].widthMobile}
 												onChange={(value) => saveMediaIcon({ width: value })}
+												onChangeTablet={(value) => saveMediaIcon({ widthTablet: value })}
+												onChangeMobile={(value) => saveMediaIcon({ widthMobile: value })}
 												step={0.5}
 												min={0.5}
 												max={4}
 											/>
 										)}
-										<RangeControl
-											label={__('Icon Border Radius (px)', 'kadence-blocks')}
+										<ResponsiveRangeControls
+											label={__('Icon Border Radius', 'kadence-blocks')}
 											value={mediaStyle[0].borderRadius}
+											valueTablet={mediaStyle[0].borderRadiusTablet}
+											valueMobile={mediaStyle[0].borderRadiusMobile}
 											onChange={(value) => saveMediaStyle({ borderRadius: value })}
+											onChangeTablet={(value) => saveMediaStyle({ borderRadiusTablet: value })}
+											onChangeMobile={(value) => saveMediaStyle({ borderRadiusMobile: value })}
+											units={['px']}
+											unit={'px'}
 											step={1}
 											min={0}
 											max={200}
 										/>
-										<TabPanel
-											className="kt-inspect-tabs kt-hover-tabs"
-											activeClass="active-tab"
-											tabs={[
-												{
-													name: 'normal',
-													title: __('Normal', 'kadence-blocks'),
-													className: 'kt-normal-tab',
-												},
-												{
-													name: 'hover',
-													title: __('Hover', 'kadence-blocks'),
-													className: 'kt-hover-tab',
-												},
-											]}
-										>
-											{(tab) => {
-												let tabout;
-												if (tab.name) {
-													if ('hover' === tab.name) {
-														tabout = (
-															<>
-																<PopColorControl
-																	label={__('Icon Hover Color', 'kadence-blocks')}
-																	value={
-																		mediaIcon[0].hoverColor
-																			? mediaIcon[0].hoverColor
-																			: ''
-																	}
-																	default={''}
-																	onChange={(value) =>
-																		saveMediaIcon({ hoverColor: value })
-																	}
-																/>
-																<PopColorControl
-																	label={__(
-																		'Icon Hover Background',
-																		'kadence-blocks'
-																	)}
-																	value={
-																		mediaStyle[0].hoverBackground
-																			? mediaStyle[0].hoverBackground
-																			: ''
-																	}
-																	default={''}
-																	onChange={(value) =>
-																		saveMediaStyle({ hoverBackground: value })
-																	}
-																/>
-															</>
-														);
-													} else {
-														tabout = (
-															<>
-																<PopColorControl
-																	label={__('Icon Color', 'kadence-blocks')}
-																	value={mediaIcon[0].color ? mediaIcon[0].color : ''}
-																	default={''}
-																	onChange={(value) =>
-																		saveMediaIcon({ color: value })
-																	}
-																/>
-																<PopColorControl
-																	label={__('Icon Background', 'kadence-blocks')}
-																	value={
-																		mediaStyle[0].background
-																			? mediaStyle[0].background
-																			: ''
-																	}
-																	default={''}
-																	onChange={(value) =>
-																		saveMediaStyle({ background: value })
-																	}
-																/>
-															</>
-														);
-													}
-												}
-												return (
-													<div className={tab.className} key={tab.className}>
-														{tabout}
-													</div>
-												);
-											}}
-										</TabPanel>
-
-										<RangeControl
-											label={__('Media Padding', 'kadence-blocks')}
-											value={mediaStyle[0].padding[0]}
-											onChange={(value) => saveMediaStyle({ padding: [value, '', '', ''] })}
-											step={1}
-											min={0}
-											max={200}
-										/>
-
-										<RangeControl
+										<ResponsiveRangeControls
 											label={__('Media Spacing', 'kadence-blocks')}
 											value={mediaStyle[0].margin[0]}
+											valueTablet={mediaStyle[0].marginTablet[0]}
+											valueMobile={mediaStyle[0].marginMobile[0]}
 											onChange={(value) => saveMediaStyle({ margin: [value, '', '', ''] })}
+											onChangeTablet={(value) =>
+												saveMediaStyle({ marginTablet: [value, '', '', ''] })
+											}
+											onChangeMobile={(value) =>
+												saveMediaStyle({ marginMobile: [value, '', '', ''] })
+											}
+											units={['px']}
+											unit={'px'}
 											step={1}
 											min={0}
+											max={100}
+										/>
+										<ResponsiveMeasureRangeControl
+											label={__('Media Padding', 'kadence-blocks')}
+											value={mediaStyle[0].padding}
+											onChange={(value) => saveMediaStyle({ padding: value })}
+											tabletValue={mediaStyle[0].paddingTablet}
+											onChangeTablet={(value) => saveMediaStyle({ tabletPadding: value })}
+											mobileValue={mediaStyle[0].paddingMobile}
+											onChangeMobile={(value) => saveMediaStyle({ mobilePadding: value })}
+											min={0}
 											max={200}
+											step={1}
+											units={['px']}
+											unit={'px'}
 										/>
 										<TextControl
 											label={__('Title for screen readers', 'kadence-blocks')}
@@ -1746,7 +1701,6 @@ export default function Edit(props) {
 				<div class="link-drop-wrap">
 					<a className={classes}>
 						<span className="link-drop-title-wrap">
-							{mediaAlign == 'left' && mediaContent}
 							{/* eslint-enable */}
 							{!url ? (
 								<div className="wp-block-navigation-link__placeholder-text">
@@ -1827,7 +1781,7 @@ export default function Edit(props) {
 									}}
 								/>
 							)}
-							{mediaAlign == 'right' && mediaContent}
+							{mediaContent}
 							{hasChildren && <span className="title-dropdown-navigation-toggle">{ArrowDown}</span>}
 						</span>
 					</a>

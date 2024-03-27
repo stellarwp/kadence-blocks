@@ -365,7 +365,15 @@
 		},
 		"mediaAlign": {
 			"type": "string",
-			"default": "right"
+			"default": ""
+		},
+		"mediaAlignTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"mediaAlignMobile": {
+			"type": "string",
+			"default": ""
 		},
 		"mediaImage": {
 			"type": "array",
@@ -394,14 +402,14 @@
 				{
 					"icon": "fe_aperture",
 					"size": 20,
+					"sizeTablet": "",
+					"sizeMobile": "",
 					"width": 2,
-					"title": "",
-					"color": "",
-					"hoverColor": "",
+					"widthTablet": 2,
+					"widthMobile": 2,
 					"hoverAnimation": "none",
-					"flipIcon": "",
-					"tabletSize": "",
-					"mobileSize": ""
+					"title": "",
+					"flipIcon": ""
 				}
 			]
 		},
@@ -409,14 +417,36 @@
 			"type": "array",
 			"default": [
 				{
+					"color": "",
+					"colorTablet": "",
+					"colorMobile": "",
+					"colorHover": "",
+					"colorHoverTablet": "",
+					"colorHoverMobile": "",
+					"colorActive": "",
+					"colorActiveTablet": "",
+					"colorActiveMobile": "",
 					"background": "",
-					"hoverBackground": "",
+					"backgroundTablet": "",
+					"backgroundMobile": "",
+					"backgroundHover": "",
+					"backgroundHoverTablet": "",
+					"backgroundHoverMobile": "",
+					"backgroundActive": "",
+					"backgroundActiveTablet": "",
+					"backgroundActiveMobile": "",
 					"border": "",
 					"hoverBorder": "",
-					"borderRadius": 0,
+					"borderRadius": "",
+					"borderRadiusTablet": "",
+					"borderRadiusMobile": "",
 					"borderWidth": [0, 0, 0, 0],
 					"padding": [5, 5, 5, 5],
-					"margin": ["", "", "", ""]
+					"paddingTablet": [5, 5, 5, 5],
+					"paddingMobile": [5, 5, 5, 5],
+					"margin": ["", "", "", ""],
+					"marginTablet": ["", "", "", ""],
+					"marginMobile": ["", "", "", ""]
 				}
 			]
 		}
