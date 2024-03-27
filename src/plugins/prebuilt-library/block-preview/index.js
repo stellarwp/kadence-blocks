@@ -23,8 +23,7 @@ export function BlockPreview({
 	additionalStyles = [],
 	editorStyles,
 	ratio,
-	neededCompatStyles = [],
-	baseCompatStyles,
+	shadowCompatStyles = [],
 }) {
 	const originalSettings = useSelect((select) => select(blockEditorStore).getSettings(), []);
 	const settings = useMemo(() => ({ ...originalSettings, __unstableIsPreviewMode: true }), [originalSettings]);
@@ -42,8 +41,7 @@ export function BlockPreview({
 				additionalStyles={additionalStyles}
 				ratio={ratio}
 				editorStyles={editorStyles}
-				baseCompatStyles={baseCompatStyles}
-				neededCompatStyles={neededCompatStyles}
+				shadowCompatStyles={shadowCompatStyles}
 			/>
 		</BlockEditorProvider>
 	);

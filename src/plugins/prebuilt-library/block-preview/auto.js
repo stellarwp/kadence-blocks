@@ -29,8 +29,6 @@ function ScaledBlockPreview({
 	additionalStyles = [],
 	editorStyles,
 	ratio,
-	neededCompatStyles = [],
-	baseCompatStyles,
 }) {
 	if (!viewportWidth) {
 		viewportWidth = containerWidth;
