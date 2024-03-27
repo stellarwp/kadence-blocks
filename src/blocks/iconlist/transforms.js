@@ -32,33 +32,41 @@ const getNestedListsTo = (rawItems, attributes) => {
 	const nestedBlocks = [];
 	let nestedListItems = [];
 	const listItems = rawItems.map((listItem, index) => {
-		if(lastLevel === listItem.attributes.level) {
-			nestedListItems.push(createBlock('core/list-item', { content: listItem.attributes.text }));
+		if(lastLevel === listItem.attributes.level && index !== 0) {
+			return createBlock('core/list-item', { content: listItem[index - 1].attributes.text });
+		} else if(lastLevel > listItem.attributes.level) {
+			lastLevel++;
+			rawItems = rawItems.slice(index, -1);
+			const nestedItems = getNestedListsTo(rawItems, attributes);
+			return createBlock('core/list-item', { content: listItem.attributes.text }, nestedItems);
 		}
+
+		// If previous list item level is less than the current item
+		// Then recursive
 		
-		if(lastLevel < listItem.attributes.level) {
-			nestedBlocks.push(createBlock(
-				'core/list',
-				{
-					ordered: false,
-					style: {
-						color: {
-							text: attributes.listStyles[0].color,
-						},
-					},
-				},
-				nestedListItems
-			));
-			lastLevel = listItem.attributes.level;
-		}
-		console.log(nestedBlocks);
-		if(lastLevel > listItem.attributes.level) {
-			lastLevel = listItem.attributes.level;
-			nestedListItems = [];
-			return nestedBlocks;
-		}
+		// if(lastLevel < listItem.attributes.level) {
+		// 	nestedBlocks.push(createBlock(
+		// 		'core/list',
+		// 		{
+		// 			ordered: false,
+		// 			style: {
+		// 				color: {
+		// 					text: attributes.listStyles[0].color,
+		// 				},
+		// 			},
+		// 		},
+		// 		nestedListItems;
+		// 	));
+		// 	lastLevel = listItem.attributes.level;
+		// }
+		
+		// if(lastLevel > listItem.attributes.level) {
+		// 	lastLevel = listItem.attributes.level;
+		// 	nestedListItems = [];
+		// 	return nestedBlocks;
+		// }
 	});
-	return listItems;
+	console.log( listItems );
 }
 
 const transforms = {
@@ -90,22 +98,22 @@ const transforms = {
 			blocks: ['core/list'],
 			transform: (blockAttributes, innerBlocks) => {
 				getNestedListsTo(innerBlocks, blockAttributes);
-				const listItems = innerBlocks.map((listItem) => {
-					return createBlock('core/list-item', { content: listItem.attributes.text });
-				});
+				// const listItems = innerBlocks.map((listItem) => {
+				// 	return createBlock('core/list-item', { content: listItem.attributes.text });
+				// });
 
-				return createBlock(
-					'core/list',
-					{
-						ordered: false,
-						style: {
-							color: {
-								text: blockAttributes.listStyles[0].color,
-							},
-						},
-					},
-					listItems
-				);
+				// return createBlock(
+				// 	'core/list',
+				// 	{
+				// 		ordered: false,
+				// 		style: {
+				// 			color: {
+				// 				text: blockAttributes.listStyles[0].color,
+				// 			},
+				// 		},
+				// 	},
+				// 	listItems
+				// );
 			},
 		},
 	],
