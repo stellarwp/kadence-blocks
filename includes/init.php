@@ -340,6 +340,23 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'icons' => file_exists( $icons_path ) ? include $icons_path : array(),
 		)
 	);
+	if ( apply_filters( 'kadence_blocks_preload_design_library', true ) ) {
+		$design_library_controller_upload = new Kadence_Blocks_Prebuilt_Library_REST_Controller();
+		wp_localize_script(
+			'kadence-blocks-js',
+			'kadence_blocks_params_library',
+			array(
+				'library_sections' => $design_library_controller_upload->get_local_library_data(),
+			)
+		);
+		wp_localize_script(
+			'kadence-blocks-js',
+			'kadence_blocks_params_wizard',
+			array(
+				'settings' => $prophecy_data,
+			)
+		);
+	}
 }
 add_action( 'enqueue_block_editor_assets', 'kadence_blocks_gutenberg_editor_assets_variables' );
 

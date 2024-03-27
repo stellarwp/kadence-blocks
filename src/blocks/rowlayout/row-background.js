@@ -482,6 +482,8 @@ function RowBackground({ attributes, previewDevice, backgroundClasses, children,
 							backgroundSize: previewBackgroundSize ? previewBackgroundSize : undefined,
 							backgroundPosition: previewBackgroundPosition ? previewBackgroundPosition : undefined,
 							backgroundRepeat: previewBackgroundRepeat ? previewBackgroundRepeat : undefined,
+							backgroundAttachment:
+								previewBackgroundAttachment === 'parallax' ? 'fixed' : previewBackgroundAttachment,
 						}}
 					></div>
 				)}

@@ -55,8 +55,9 @@ function KadenceBlockPattern({
 	selectedStyle,
 	editorStyles,
 	shadowStyles,
-	baseCompatStyles,
-	neededCompatStyles,
+	// baseCompatStyles,
+	// neededCompatStyles,
+	shadowCompatStyles,
 	patternType,
 	rootScroll,
 }) {
@@ -122,8 +123,7 @@ function KadenceBlockPattern({
 							viewportWidth={viewportWidth}
 							additionalStyles={customStyles}
 							editorStyles={editorStyles}
-							baseCompatStyles={baseCompatStyles}
-							neededCompatStyles={neededCompatStyles}
+							shadowCompatStyles={shadowCompatStyles}
 						/>
 					)}
 					{'image' !== previewMode && html && (
@@ -138,8 +138,7 @@ function KadenceBlockPattern({
 									: undefined
 							}
 							shadowStyles={shadowStyles}
-							baseCompatStyles={baseCompatStyles}
-							neededCompatStyles={neededCompatStyles}
+							shadowCompatStyles={shadowCompatStyles}
 							patternType={patternType}
 							rootScroll={rootScroll}
 						/>
@@ -214,6 +213,28 @@ function KadenceBlockPatternListIframe({
 	const neededCompatStyles = compatStyles.filter(
 		(style) => style.id && !styleIds.includes(style.id) && !styleIdsExclude.includes(style.id)
 	);
+	const shadowCompatStyles = useMemo( () => {
+		return (
+			<>
+				{ [ ...neededCompatStyles, ...baseCompatStyles ].map(
+					( { tagName, href, id, rel, media, textContent } ) => {
+						const TagName = tagName.toLowerCase();
+						let finalTextContent = textContent.replace( / .block-editor-block-list__layout/g, '' );
+						finalTextContent = finalTextContent.replace( /:root/g, '.pattern-shadow-wrap' );
+						if ( TagName === 'style' ) {
+							return (
+								<TagName { ...{ id } } key={ id }>
+									{ finalTextContent }
+								</TagName>
+							);
+						}
+
+						return <TagName { ...{ href, id, rel, media } } key={ id } />;
+					}
+				) }
+			</>
+		);
+	}, [ neededCompatStyles, baseCompatStyles ] );
 	const editorStyles = useMemo(() => {
 		if (styles) {
 			return [
@@ -244,8 +265,9 @@ function KadenceBlockPatternListIframe({
 						editorStyles={editorStyles}
 						shadowStyles={''}
 						rootScroll={rootScroll}
-						baseCompatStyles={undefined !== baseCompatStyles ? baseCompatStyles : []}
-						neededCompatStyles={undefined !== neededCompatStyles ? neededCompatStyles : []}
+						// baseCompatStyles={undefined !== baseCompatStyles ? baseCompatStyles : []}
+						// neededCompatStyles={undefined !== neededCompatStyles ? neededCompatStyles : []}
+						shadowCompatStyles={shadowCompatStyles}
 						patternType={patternType}
 					/>
 				);
@@ -347,6 +369,28 @@ function KadenceBlockPatternList({
 	const neededCompatStyles = compatStyles.filter(
 		(style) => style.id && !styleIds.includes(style.id) && !styleIdsExclude.includes(style.id)
 	);
+	const shadowCompatStyles = useMemo( () => {
+		return (
+			<>
+				{ [ ...neededCompatStyles, ...baseCompatStyles ].map(
+					( { tagName, href, id, rel, media, textContent } ) => {
+						const TagName = tagName.toLowerCase();
+						let finalTextContent = textContent.replace( / .block-editor-block-list__layout/g, '' );
+						finalTextContent = finalTextContent.replace( /:root/g, '.pattern-shadow-wrap' );
+						if ( TagName === 'style' ) {
+							return (
+								<TagName { ...{ id } } key={ id }>
+									{ finalTextContent }
+								</TagName>
+							);
+						}
+
+						return <TagName { ...{ href, id, rel, media } } key={ id } />;
+					}
+				) }
+			</>
+		);
+	}, [ neededCompatStyles, baseCompatStyles ] );
 	const shadowStyles = useMemo(() => {
 		if (styles) {
 			return [
@@ -377,8 +421,9 @@ function KadenceBlockPatternList({
 						selectedStyle={selectedStyle}
 						editorStyles={''}
 						rootScroll={rootScroll}
-						baseCompatStyles={undefined !== baseCompatStyles ? baseCompatStyles : []}
-						neededCompatStyles={undefined !== neededCompatStyles ? neededCompatStyles : []}
+						// baseCompatStyles={undefined !== baseCompatStyles ? baseCompatStyles : []}
+						// neededCompatStyles={undefined !== neededCompatStyles ? neededCompatStyles : []}
+						shadowCompatStyles={shadowCompatStyles}
 						patternType={patternType}
 					/>
 				);

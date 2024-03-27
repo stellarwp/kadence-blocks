@@ -14,7 +14,7 @@ function ResetDefaults() {
 	const [includeVisbility, setIncludeVisibility] = useState(true);
 	const [includeDefaults, setIncludeDefaults] = useState(true);
 	const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-	const { createErrorNotice } = useDispatch(noticesStore);
+	const { createSuccessNotice } = useDispatch(noticesStore);
 
 	const blockDefaults = SafeParseJSON(get(kadence_blocks_params, ['configuration'], {}), true);
 	const blockVisibility = SafeParseJSON(get(kadence_blocks_params, ['settings'], {}), true);
@@ -26,7 +26,7 @@ function ResetDefaults() {
 				method: 'POST',
 				data: { kadence_blocks_config_blocks: JSON.stringify({}) },
 			}).then(() => {
-				createErrorNotice(__('Block defaults reset', 'kadence-blocks'), {
+				createSuccessNotice(__('Block defaults reset', 'kadence-blocks'), {
 					type: 'snackbar',
 				});
 				kadence_blocks_params.configuration = JSON.stringify({});
@@ -39,7 +39,7 @@ function ResetDefaults() {
 				method: 'POST',
 				data: { kadence_blocks_settings_blocks: JSON.stringify({}) },
 			}).then(() => {
-				createErrorNotice(__('Block visibility reset', 'kadence-blocks'), {
+				createSuccessNotice(__('Block visibility reset', 'kadence-blocks'), {
 					type: 'snackbar',
 				});
 				kadence_blocks_params.settings = JSON.stringify({});
