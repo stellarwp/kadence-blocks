@@ -57,11 +57,78 @@ import BackendStyles from './components/backend-styles';
 const ANCHOR_REGEX = /[\s#]/g;
 
 const INNERBLOCK_TEMPLATE = [
-	createBlock('kadence/header-container-desktop', {}),
-	createBlock('kadence/header-container-tablet', {}),
+	createBlock('kadence/header-container-desktop', {}, [
+		createBlock('kadence/header-row', { metadata: { name: __('Top Row', 'kadence-blocks') } }, [
+			createBlock('kadence/header-section', { metadata: { name: __('Left Section', 'kadence-blocks') } }, []),
+			createBlock(
+				'kadence/header-section',
+				{ metadata: { name: __('Left Middle Section', 'kadence-blocks') } },
+				[]
+			),
+			createBlock('kadence/header-section', { metadata: { name: __('Middle Section', 'kadence-blocks') } }, []),
+			createBlock(
+				'kadence/header-section',
+				{ metadata: { name: __('Right Middle Section', 'kadence-blocks') } },
+				[]
+			),
+			createBlock('kadence/header-section', { metadata: { name: __('Right Section', 'kadence-blocks') } }, []),
+		]),
+		createBlock('kadence/header-row', { metadata: { name: __('Middle Row', 'kadence-blocks') } }, [
+			createBlock('kadence/header-section', { metadata: { name: __('Left Section', 'kadence-blocks') } }, []),
+			createBlock(
+				'kadence/header-section',
+				{ metadata: { name: __('Left Middle Section', 'kadence-blocks') } },
+				[]
+			),
+			createBlock('kadence/header-section', { metadata: { name: __('Middle Section', 'kadence-blocks') } }, []),
+			createBlock(
+				'kadence/header-section',
+				{ metadata: { name: __('Right Middle Section', 'kadence-blocks') } },
+				[]
+			),
+			createBlock('kadence/header-section', { metadata: { name: __('Right Section', 'kadence-blocks') } }, []),
+		]),
+		createBlock('kadence/header-row', { metadata: { name: __('Bottom Row', 'kadence-blocks') } }, [
+			createBlock('kadence/header-section', { metadata: { name: __('Left Section', 'kadence-blocks') } }, []),
+			createBlock(
+				'kadence/header-section',
+				{ metadata: { name: __('Left Middle Section', 'kadence-blocks') } },
+				[]
+			),
+			createBlock('kadence/header-section', { metadata: { name: __('Middle Section', 'kadence-blocks') } }, []),
+			createBlock(
+				'kadence/header-section',
+				{ metadata: { name: __('Right Middle Section', 'kadence-blocks') } },
+				[]
+			),
+			createBlock('kadence/header-section', { metadata: { name: __('Right Section', 'kadence-blocks') } }, []),
+		]),
+	]),
+	createBlock('kadence/header-container-tablet', {}, [
+		createBlock('kadence/header-row', { metadata: { name: __('Top Row', 'kadence-blocks') } }, [
+			createBlock('kadence/header-section', { metadata: { name: __('Left Section', 'kadence-blocks') } }, []),
+			createBlock('kadence/header-section', { metadata: { name: __('Middle Section', 'kadence-blocks') } }, []),
+			createBlock('kadence/header-section', { metadata: { name: __('Right Section', 'kadence-blocks') } }, []),
+		]),
+		createBlock('kadence/header-row', { metadata: { name: __('Middle Row', 'kadence-blocks') } }, [
+			createBlock('kadence/header-section', { metadata: { name: __('Left Section', 'kadence-blocks') } }, []),
+			createBlock('kadence/header-section', { metadata: { name: __('Middle Section', 'kadence-blocks') } }, []),
+			createBlock('kadence/header-section', { metadata: { name: __('Right Section', 'kadence-blocks') } }, []),
+		]),
+		createBlock('kadence/header-row', { metadata: { name: __('Bottom Row', 'kadence-blocks') } }, [
+			createBlock('kadence/header-section', { metadata: { name: __('Left Section', 'kadence-blocks') } }, []),
+			createBlock('kadence/header-section', { metadata: { name: __('Middle Section', 'kadence-blocks') } }, []),
+			createBlock('kadence/header-section', { metadata: { name: __('Right Section', 'kadence-blocks') } }, []),
+		]),
+	]),
 ];
 
-const ALLOWED_BLOCKS = ['kadence/header-container-desktop', 'kadence/header-container-tablet'];
+const ALLOWED_BLOCKS = [
+	'kadence/header-container-desktop',
+	'kadence/header-container-tablet',
+	'kadence/header-row',
+	'kadence/header-section',
+];
 
 export function EditInner(props) {
 	const { attributes, setAttributes, clientId, context, direct, id, isSelected } = props;
@@ -181,16 +248,8 @@ export function EditInner(props) {
 
 	const [title, setTitle] = useHeaderProp('title');
 
-	let [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_header', id);
+	const [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_header', id);
 	const { updateBlockAttributes } = useDispatch(editorStore);
-
-	const emptyHeader = useMemo(() => {
-		return INNERBLOCK_TEMPLATE;
-	}, [clientId]);
-
-	if (blocks.length === 0) {
-		blocks = emptyHeader;
-	}
 
 	const headerInnerBlocks = useMemo(() => {
 		return get(blocks, [0, 'innerBlocks'], []);

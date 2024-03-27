@@ -69,16 +69,18 @@ export function Edit(props) {
 		}
 	}, []);
 
+	const hasChildBlocks = wp.data.select('core/block-editor').getBlockOrder(clientId).length > 0;
+
 	const innerBlocksProps = useInnerBlocksProps(
 		{
-			className: '',
+			className: 'kadence-header-inner-section',
 			style: {
 				display: previewDevice === 'Desktop' ? 'block' : 'none',
 			},
 		},
 		{
-			renderAppender: false,
-			templateLock: 'all',
+			renderAppender: hasChildBlocks ? false : InnerBlocks.ButtonBlockAppender,
+			templateLock: false,
 		}
 	);
 
