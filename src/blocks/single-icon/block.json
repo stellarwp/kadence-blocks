@@ -38,6 +38,14 @@
 			"type": "string",
 			"default": ""
 		},
+		"colorStacked": {
+			"type": "string",
+			"default": ""
+		},
+		"hColorStacked": {
+			"type": "string",
+			"default": ""
+		},
 		"background": {
 			"type": "string",
 			"default": "transparent"

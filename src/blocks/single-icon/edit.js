@@ -52,10 +52,12 @@ function KadenceSingleIcon(props) {
 		title,
 		text,
 		hColor,
+		hColorStacked,
 		hBackground,
 		tabletSize,
 		hBorder,
 		color,
+		colorStacked,
 		background,
 		border,
 		borderRadius,
@@ -84,8 +86,10 @@ function KadenceSingleIcon(props) {
 		width,
 		text,
 		color,
+		colorStacked,
 		background,
 		hColor,
+		hColorStacked,
 		hBackground,
 		hBorder,
 		border,
@@ -158,7 +162,11 @@ function KadenceSingleIcon(props) {
 			{`.wp-block-kadence-single-icon .kt-svg-item-${uniqueID}:hover .kt-svg-icon {
 					${undefined !== hColor && hColor ? 'color:' + KadenceColorOutput(hColor) + '!important;' : ''}
             }
+			.wp-block-kadence-single-icon .kt-svg-style-stacked.kt-svg-item-${uniqueID} .kt-svg-icon {
+				${undefined !== colorStacked && colorStacked ? 'color:' + KadenceColorOutput(colorStacked) + '!important;' : ''}
+			}
             .wp-block-kadence-single-icon .kt-svg-style-stacked.kt-svg-item-${uniqueID}:hover .kt-svg-icon {
+					${undefined !== hColorStacked && hColorStacked ? 'color:' + KadenceColorOutput(hColorStacked) + '!important;' : ''}
 					${undefined !== hBackground && hBackground ? 'background:' + KadenceColorOutput(hBackground) + '!important;' : ''}
 					${undefined !== hBorder && hBorder ? 'border-color:' + KadenceColorOutput(hBorder) + '!important;' : ''}
             }`}
@@ -240,22 +248,40 @@ function KadenceSingleIcon(props) {
 								]}
 								onChange={(value) => setAttributes({ style: value })}
 							/>
-							<PopColorControl
-								label={__('Icon Color', 'kadence-blocks')}
-								value={color ? color : ''}
-								default={''}
-								onChange={(value) => {
-									setAttributes({ color: value });
-								}}
-								swatchLabel2={__('Hover Color', 'kadence-blocks')}
-								value2={hColor ? hColor : ''}
-								default2={''}
-								onChange2={(value) => {
-									setAttributes({ hColor: value });
-								}}
-							/>
+							{style === 'default' && (
+								<>
+									<PopColorControl
+										label={__('Icon Color', 'kadence-blocks')}
+										value={color ? color : ''}
+										default={''}
+										onChange={(value) => {
+											setAttributes({ color: value });
+										}}
+										swatchLabel2={__('Hover Color', 'kadence-blocks')}
+										value2={hColor ? hColor : ''}
+										default2={''}
+										onChange2={(value) => {
+											setAttributes({ hColor: value });
+										}}
+									/>
+								</>
+							)}
 							{style !== 'default' && (
 								<>
+									<PopColorControl
+										label={__('Icon Color', 'kadence-blocks')}
+										value={colorStacked ? colorStacked : ''}
+										default={''}
+										onChange={(value) => {
+											setAttributes({ colorStacked: value });
+										}}
+										swatchLabel2={__('Hover Color', 'kadence-blocks')}
+										value2={hColorStacked ? hColorStacked : ''}
+										default2={''}
+										onChange2={(value) => {
+											setAttributes({ hColorStacked: value });
+										}}
+									/>
 									<PopColorControl
 										label={__('Background Color', 'kadence-blocks')}
 										value={background ? background : ''}
