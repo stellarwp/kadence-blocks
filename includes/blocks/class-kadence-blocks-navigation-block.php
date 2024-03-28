@@ -261,9 +261,9 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$parent_toggles_menus = $css->get_inherited_value( $nav_attributes['parentTogglesMenus'], $nav_attributes['parentTogglesMenusTablet'], $nav_attributes['parentTogglesMenusMobile'], 'Desktop' );
 		$parent_toggles_menus_tablet = $css->get_inherited_value( $nav_attributes['parentTogglesMenus'], $nav_attributes['parentTogglesMenusTablet'], $nav_attributes['parentTogglesMenusMobile'], 'Tablet' );
 		$parent_toggles_menus_mobile = $css->get_inherited_value( $nav_attributes['parentTogglesMenus'], $nav_attributes['parentTogglesMenusTablet'], $nav_attributes['parentTogglesMenusMobile'], 'Mobile' );
-		$collaps_sub_menus = $css->get_inherited_value( $nav_attributes['collapseSubMenus'], $nav_attributes['collapseSubMenusTablet'], $nav_attributes['collapseSubMenusMobile'], 'Desktop' );
-		$collaps_sub_menus_tablet = $css->get_inherited_value( $nav_attributes['collapseSubMenus'], $nav_attributes['collapseSubMenusTablet'], $nav_attributes['collapseSubMenusMobile'], 'Tablet' );
-		$collaps_sub_menus_mobile = $css->get_inherited_value( $nav_attributes['collapseSubMenus'], $nav_attributes['collapseSubMenusTablet'], $nav_attributes['collapseSubMenusMobile'], 'Mobile' );
+		$collapse_sub_menus = $css->get_inherited_value( $nav_attributes['collapseSubMenus'], $nav_attributes['collapseSubMenusTablet'], $nav_attributes['collapseSubMenusMobile'], 'Desktop' );
+		$collapse_sub_menus_tablet = $css->get_inherited_value( $nav_attributes['collapseSubMenus'], $nav_attributes['collapseSubMenusTablet'], $nav_attributes['collapseSubMenusMobile'], 'Tablet' );
+		$collapse_sub_menus_mobile = $css->get_inherited_value( $nav_attributes['collapseSubMenus'], $nav_attributes['collapseSubMenusTablet'], $nav_attributes['collapseSubMenusMobile'], 'Mobile' );
 		$parent_active = $css->get_inherited_value( $nav_attributes['parentActive'], $nav_attributes['parentActiveTablet'], $nav_attributes['parentActiveMobile'], 'Desktop' );
 		$parent_active_tablet = $css->get_inherited_value( $nav_attributes['parentActive'], $nav_attributes['parentActiveTablet'], $nav_attributes['parentActiveMobile'], 'Tablet' );
 		$parent_active_mobile = $css->get_inherited_value( $nav_attributes['parentActive'], $nav_attributes['parentActiveTablet'], $nav_attributes['parentActiveMobile'], 'Mobile' );
@@ -302,9 +302,9 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$navigation_classes[] = 'navigation-desktop-dropdown-animation-' . ( $dropdown_reveal ? $dropdown_reveal : 'none' );
 		$navigation_classes[] = 'navigation-tablet-dropdown-animation-' . ( $dropdown_reveal_tablet ? $dropdown_reveal_tablet : 'none' );
 		$navigation_classes[] = 'navigation-mobile-dropdown-animation-' . ( $dropdown_reveal_mobile ? $dropdown_reveal_mobile : 'none' );
-		$navigation_classes[] = 'navigation-desktop-collapse-sub-menus-' . ( $collaps_sub_menus ? 'true' : 'false' );
-		$navigation_classes[] = 'navigation-tablet-parent-toggles-menus-' . ( $collaps_sub_menus_tablet ? 'true' : 'false' );
-		$navigation_classes[] = 'navigation-mobile-parent-toggles-menus-' . ( $collaps_sub_menus_mobile ? 'true' : 'false' );
+		$navigation_classes[] = 'navigation-desktop-collapse-sub-menus-' . ( $collapse_sub_menus ? 'true' : 'false' );
+		$navigation_classes[] = 'navigation-tablet-collapse-sub-menus-' . ( $collapse_sub_menus_tablet ? 'true' : 'false' );
+		$navigation_classes[] = 'navigation-mobile-collapse-sub-menus-' . ( $collapse_sub_menus_mobile ? 'true' : 'false' );
 		$navigation_classes[] = 'navigation-desktop-parent-toggles-menus-' . ( $parent_toggles_menus ? 'true' : 'false' );
 		$navigation_classes[] = 'navigation-tablet-parent-toggles-menus-' . ( $parent_toggles_menus_tablet ? 'true' : 'false' );
 		$navigation_classes[] = 'navigation-mobile-parent-toggles-menus-' . ( $parent_toggles_menus_mobile ? 'true' : 'false' );

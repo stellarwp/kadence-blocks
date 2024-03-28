@@ -672,12 +672,12 @@ export default function Edit(props) {
 		);
 	};
 	const iconColorControls = (size = '', suffix = '') => {
-		const colorValue = attributes['mediaStyle'][0]['color' + suffix + size];
-		const colorHoverValue = attributes['mediaStyle'][0]['colorHover' + suffix + size];
-		const colorActiveValue = attributes['mediaStyle'][0]['colorActive' + suffix + size];
-		const backgroundValue = attributes['mediaStyle'][0]['background' + suffix + size];
-		const backgroundHoverValue = attributes['mediaStyle'][0]['backgroundHover' + suffix + size];
-		const backgroundActiveValue = attributes['mediaStyle'][0]['backgroundActive' + suffix + size];
+		const colorValue = attributes.mediaStyle[0]['color' + suffix + size];
+		const colorHoverValue = attributes.mediaStyle[0]['colorHover' + suffix + size];
+		const colorActiveValue = attributes.mediaStyle[0]['colorActive' + suffix + size];
+		const backgroundValue = attributes.mediaStyle[0]['background' + suffix + size];
+		const backgroundHoverValue = attributes.mediaStyle[0]['backgroundHover' + suffix + size];
+		const backgroundActiveValue = attributes.mediaStyle[0]['backgroundActive' + suffix + size];
 		return (
 			<>
 				<HoverToggleControl
