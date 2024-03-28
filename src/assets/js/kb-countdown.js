@@ -92,6 +92,10 @@
 
 			return futureDate.getTime();
 		},
+		stripHtml(html) {
+			const doc = new DOMParser().parseFromString(html, 'text/html');
+			return doc.body.textContent || '';
+		},
 		updateTimerInterval(element, id, parent) {
 			const currentTimeStamp = new Date();
 			const userTimezoneOffset = -1 * (new Date().getTimezoneOffset() / 60);
@@ -313,25 +317,31 @@
 							parts.seconds = 0;
 						}
 						var preText = window.kadenceCountdown.timers[id].preLabel
-							? `<div class="kb-countdown-item kb-pre-timer"><span class="kb-pre-timer-inner">${window.kadenceCountdown.timers[id].preLabel}</span></div>`
+							? `<div class="kb-countdown-item kb-pre-timer"><span class="kb-pre-timer-inner">${window.kadenceCountdown.stripHtml(
+									window.kadenceCountdown.timers[id].preLabel
+							  )}</span></div>`
 							: '';
 						var postText = window.kadenceCountdown.timers[id].postLabel
-							? `<div class="kb-countdown-item kb-post-timer"><span class="kb-post-timer-inner">${window.kadenceCountdown.timers[id].postLabel}</span></div>`
+							? `<div class="kb-countdown-item kb-post-timer"><span class="kb-post-timer-inner">${window.kadenceCountdown.stripHtml(
+									window.kadenceCountdown.timers[id].postLabel
+							  )}</span></div>`
 							: '';
 						var remaining = Object.keys(parts)
 							.map((part) => {
 								if ('seconds' !== part && enableDividers) {
 									return `<div class="kb-countdown-item kb-countdown-date-item kb-countdown-date-item-${part}"><span class="kb-countdown-number">${window.kadenceCountdown.calculateNumberDesign(
-										parts[part],
+										window.kadenceCountdown.stripHtml(parts[part]),
 										timeNumbers
-									)}</span><span class="kb-countdown-label">${
+									)}</span><span class="kb-countdown-label">${window.kadenceCountdown.stripHtml(
 										labels[part]
-									}</span></div><div class="kb-countdown-item kb-countdown-date-item kb-countdown-divider-item kb-countdown-divider-item-${part}"><span class="kb-countdown-number">:</span><span class="kb-countdown-label">&nbsp;</span></div>`;
+									)}</span></div><div class="kb-countdown-item kb-countdown-date-item kb-countdown-divider-item kb-countdown-divider-item-${part}"><span class="kb-countdown-number">:</span><span class="kb-countdown-label">&nbsp;</span></div>`;
 								}
 								return `<div class="kb-countdown-item kb-countdown-date-item kb-countdown-date-item-${part}"><span class="kb-countdown-number">${window.kadenceCountdown.calculateNumberDesign(
-									parts[part],
+									window.kadenceCountdown.stripHtml(parts[part]),
 									timeNumbers
-								)}</span><span class="kb-countdown-label">${labels[part]}</span></div>`;
+								)}</span><span class="kb-countdown-label">${window.kadenceCountdown.stripHtml(
+									labels[part]
+								)}</span></div>`;
 							})
 							.join(' ');
 						element.innerHTML = preText + remaining + postText;
