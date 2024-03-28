@@ -91,7 +91,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 = 3.2.31 =
 Release Date: March 27th 2024
 * Fix: Issue with gradient colors.
-* Fix: Issue with outputing error log.
+* Fix: Issue with outputting error log.
 
 = 3.2.30 =
 Release Date: March 22nd 2024
