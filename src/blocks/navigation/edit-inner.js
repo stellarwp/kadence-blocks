@@ -422,14 +422,14 @@ export function EditInner(props) {
 			<>
 				{orientationValue == 'vertical' && (
 					<ToggleControl
-						label={__('Collapse Sub Menus', 'kadence-blocks')}
+						label={__('Collapse Vertical Sub Menus', 'kadence-blocks')}
 						checked={collapseSubMenusValue}
 						onChange={(value) => setMetaAttribute(value, 'collapseSubMenus' + size)}
 					/>
 				)}
 				{orientationValue == 'vertical' && collapseSubMenusValue && (
 					<ToggleControl
-						label={__('Entire Item Expands Sub Menu', 'kadence-blocks')}
+						label={__('Entire Item Expands Vertical Sub Menu', 'kadence-blocks')}
 						checked={parentTogglesMenusValue}
 						onChange={(value) => setMetaAttribute(value, 'parentTogglesMenus' + size)}
 					/>

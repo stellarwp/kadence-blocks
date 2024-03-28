@@ -195,7 +195,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 
 		// Prevent a nav block from being rendered inside itself.
-		if ( isset( self::$seen_refs[ $attributes['id'] ] ) ) {
+		if ( isset( $attributes['id'] ) && isset( self::$seen_refs[ $attributes['id'] ] ) ) {
 			// WP_DEBUG_DISPLAY must only be honored when WP_DEBUG. This precedent
 			// is set in 'wp_debug_mode()'.
 			$is_debug = WP_DEBUG && WP_DEBUG_DISPLAY;
@@ -205,9 +205,12 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 				__( '[block rendering halted]', 'kadence-blocks' ) :
 				'';
 		}
-		self::$seen_refs[ $attributes['id'] ] = true;
+		if ( isset( $attributes['id'] ) ) {
+			self::$seen_refs[ $attributes['id'] ] = true;
+		}
 
 		$nav_link_attributes = $this->get_nav_link_attributes( $unique_id, $attributes );
+		$child_info = $this->get_child_info( $block_instance );
 
 		// Handle embeds for nav block.
 		global $wp_embed;
@@ -215,7 +218,9 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$content = $wp_embed->autoembed( $content );
 		$content = do_blocks( $content );
 
-		unset( self::$seen_refs[ $attributes['id'] ] );
+		if ( isset( $attributes['id'] ) ) {
+			unset( self::$seen_refs[ $attributes['id'] ] );
+		}
 
 		$label = $nav_link_attributes['label'];
 		$url = $nav_link_attributes['url'];
@@ -223,7 +228,8 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$has_children = ! empty( $content );
 		$temp = get_queried_object_id();
 		$kind        = empty( $attributes['kind'] ) ? 'post_type' : str_replace( '-', '_', $attributes['kind'] );
-		$is_active   = ! empty( $attributes['id'] ) && get_queried_object_id() === (int) $attributes['id'] && ! empty( get_queried_object()->post_type );
+		$is_active_ancestor = $child_info['has_active_child'];
+		$is_active   = $this->is_current( $attributes );
 		$is_mega_menu = ! empty( $nav_link_attributes['isMegaMenu'] );
 		$mega_menu_width_class = 'kadence-menu-mega-width-' . ( $nav_link_attributes['megaMenuWidth'] ? $nav_link_attributes['megaMenuWidth'] : 'container' );
 
@@ -232,6 +238,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$wrapper_classes[] = 'menu-item';
 		$wrapper_classes[] = $has_children ? 'menu-item-has-children' : '';
 		$wrapper_classes[] = $is_active ? 'current-menu-item' : '';
+		$wrapper_classes[] = $is_active_ancestor ? 'current-menu-ancestor' : '';
 
 		$wrapper_classes[] = $is_mega_menu ? 'kadence-menu-mega-enabled' : '';
 		$wrapper_classes[] = $is_mega_menu ? $mega_menu_width_class : '';
@@ -273,7 +280,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$icon  = ! empty( $svg_icon ) ? '<div class="link-media-container"><span class="link-svg-icon link-svg-icon-' . esc_attr( $nav_link_attributes['mediaIcon'][0]['icon'] ) . '">' . $svg_icon . '</span></div>' : '';
 
 		return sprintf(
-			'<li %1$s><div class="link-drop-wrap"><a class="wp-block-navigation-item__content" href="' . esc_url( $url ) . '"><span class="link-drop-title-wrap">' . esc_html( $label ) . $icon . '<span class="title-dropdown-navigation-toggle">%2$s</span></span></a></div>%3$s</li>',
+			'<li %1$s><div class="link-drop-wrap"><a class="wp-block-kadence-navigation-link__content" href="' . esc_url( $url ) . '"><span class="link-drop-title-wrap">' . esc_html( $label ) . $icon . '<span class="title-dropdown-navigation-toggle">%2$s</span></span></a></div>%3$s</li>',
 			$wrapper_attributes,
 			$has_children ? $down_arrow_icon : '',
 			$sub_menu_content
@@ -315,6 +322,14 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		if ( $registry && property_exists( $registry, 'attributes' ) && ! empty( $registry->attributes ) ) {
 			foreach ( $registry->attributes as $key => $value ) {
 				if ( isset( $value['default'] ) ) {
+					//handle types of attributes that are an array with a single object that actually contains the actual attributes
+					if ( is_array( $value['default'] ) && count( $value['default'] ) == 1 && isset( $value['default'][0] ) ) {
+						if ( isset( $attributes[ $key ] ) && is_array( $attributes[ $key ] ) && count( $attributes[ $key ] ) == 1 && isset( $attributes[ $key ][0] ) ) {
+							$attributes[ $key ][0] = array_merge( $value['default'][0], $attributes[ $key ][0] );
+						}
+					}
+
+					//standard case
 					$default_attributes[ $key ] = $value['default'];
 				}
 			}
@@ -340,6 +355,47 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		}
 
 		return implode( ' ', $normalized_attributes );
+	}
+
+	/**
+	 * Parse content data, looking for data about child nav links.
+	 *
+	 * @param stdObject $block_instance This blocks instance object.
+	 * @return array
+	 */
+	public function get_child_info( $block_instance ) {
+		$child_info = array(
+			'has_active_child' => false,
+		);
+		if ( property_exists( $block_instance, 'inner_blocks' ) && $block_instance->inner_blocks ) {
+			foreach ( $block_instance->inner_blocks as $inner_block ) {
+				if ( $inner_block->name == 'kadence/navigation-link' ) {
+					if ( isset( $inner_block->attributes ) ) {
+						if ( $this->is_current( $inner_block->attributes ) ) {
+							$child_info['has_active_child'] = true;
+						}
+					}
+				}
+
+				$inner_child_info = $this->get_child_info( $inner_block );
+
+				if ( $inner_child_info['has_active_child'] ) {
+					$child_info['has_active_child'] = true;
+				}
+			}
+		}
+
+		return $child_info;
+	}
+
+	/**
+	 * Checks if a nav link item is current.
+	 *
+	 * @param array $attributes an attributes array.
+	 * @return boolean
+	 */
+	public function is_current( $attributes ) {
+		return ! empty( $attributes['id'] ) && get_queried_object_id() === (int) $attributes['id'] && ! empty( get_queried_object()->post_type );
 	}
 }
 

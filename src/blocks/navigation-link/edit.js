@@ -851,8 +851,8 @@ export default function Edit(props) {
 		blockProps.onClick = () => setIsLinkOpen(true);
 	}
 
-	const classes = classnames('wp-block-navigation-item__content', {
-		'wp-block-navigation-link__placeholder': !url || isInvalid || isDraft,
+	const classes = classnames('wp-block-kadence-navigation-link__content', {
+		'wp-block-kadence-navigation-link__placeholder': !url || isInvalid || isDraft,
 	});
 
 	const missingText = getMissingText(type);

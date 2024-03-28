@@ -134,7 +134,7 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector(	'.wp-block-kadence-navigation' . $unique_id . ' .navigation[class*="navigation-style-underline"] .menu-container.menu-container>ul>li.current-menu-ancestor>a:after' );
 			$css->add_property( 'transform', 'scale(1, 1) translate(50%, 0)' );
 			$css->set_selector(	'.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > ul > li.menu-item.current-menu-item > .link-drop-wrap > a,
-				.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > ul > li.menu-item.current-menu-item > .link-drop-wrap 
+				.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > ul > li.menu-item.current-menu-item > .link-drop-wrap, 
 				.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > ul > li.menu-item.current-menu-ancestor > .link-drop-wrap > a,
 				.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > ul > li.menu-item.current-menu-ancestor > .link-drop-wrap' );
 		} else {
@@ -258,6 +258,15 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$style = $css->get_inherited_value( $nav_attributes['style'], $nav_attributes['styleTablet'], $nav_attributes['styleMobile'], 'Desktop' );
 		$style_tablet = $css->get_inherited_value( $nav_attributes['style'], $nav_attributes['styleTablet'], $nav_attributes['styleMobile'], 'Tablet' );
 		$style_mobile = $css->get_inherited_value( $nav_attributes['style'], $nav_attributes['styleTablet'], $nav_attributes['styleMobile'], 'Mobile' );
+		$parent_toggles_menus = $css->get_inherited_value( $nav_attributes['parentTogglesMenus'], $nav_attributes['parentTogglesMenusTablet'], $nav_attributes['parentTogglesMenusMobile'], 'Desktop' );
+		$parent_toggles_menus_tablet = $css->get_inherited_value( $nav_attributes['parentTogglesMenus'], $nav_attributes['parentTogglesMenusTablet'], $nav_attributes['parentTogglesMenusMobile'], 'Tablet' );
+		$parent_toggles_menus_mobile = $css->get_inherited_value( $nav_attributes['parentTogglesMenus'], $nav_attributes['parentTogglesMenusTablet'], $nav_attributes['parentTogglesMenusMobile'], 'Mobile' );
+		$collaps_sub_menus = $css->get_inherited_value( $nav_attributes['collapseSubMenus'], $nav_attributes['collapseSubMenusTablet'], $nav_attributes['collapseSubMenusMobile'], 'Desktop' );
+		$collaps_sub_menus_tablet = $css->get_inherited_value( $nav_attributes['collapseSubMenus'], $nav_attributes['collapseSubMenusTablet'], $nav_attributes['collapseSubMenusMobile'], 'Tablet' );
+		$collaps_sub_menus_mobile = $css->get_inherited_value( $nav_attributes['collapseSubMenus'], $nav_attributes['collapseSubMenusTablet'], $nav_attributes['collapseSubMenusMobile'], 'Mobile' );
+		$parent_active = $css->get_inherited_value( $nav_attributes['parentActive'], $nav_attributes['parentActiveTablet'], $nav_attributes['parentActiveMobile'], 'Desktop' );
+		$parent_active_tablet = $css->get_inherited_value( $nav_attributes['parentActive'], $nav_attributes['parentActiveTablet'], $nav_attributes['parentActiveMobile'], 'Tablet' );
+		$parent_active_mobile = $css->get_inherited_value( $nav_attributes['parentActive'], $nav_attributes['parentActiveTablet'], $nav_attributes['parentActiveMobile'], 'Mobile' );
 
 		// Wrapper Attributes.
 		$wrapper_classes = array();
@@ -293,6 +302,15 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$navigation_classes[] = 'navigation-desktop-dropdown-animation-' . ( $dropdown_reveal ? $dropdown_reveal : 'none' );
 		$navigation_classes[] = 'navigation-tablet-dropdown-animation-' . ( $dropdown_reveal_tablet ? $dropdown_reveal_tablet : 'none' );
 		$navigation_classes[] = 'navigation-mobile-dropdown-animation-' . ( $dropdown_reveal_mobile ? $dropdown_reveal_mobile : 'none' );
+		$navigation_classes[] = 'navigation-desktop-collapse-sub-menus-' . ( $collaps_sub_menus ? 'true' : 'false' );
+		$navigation_classes[] = 'navigation-tablet-parent-toggles-menus-' . ( $collaps_sub_menus_tablet ? 'true' : 'false' );
+		$navigation_classes[] = 'navigation-mobile-parent-toggles-menus-' . ( $collaps_sub_menus_mobile ? 'true' : 'false' );
+		$navigation_classes[] = 'navigation-desktop-parent-toggles-menus-' . ( $parent_toggles_menus ? 'true' : 'false' );
+		$navigation_classes[] = 'navigation-tablet-parent-toggles-menus-' . ( $parent_toggles_menus_tablet ? 'true' : 'false' );
+		$navigation_classes[] = 'navigation-mobile-parent-toggles-menus-' . ( $parent_toggles_menus_mobile ? 'true' : 'false' );
+		$navigation_classes[] = 'navigation-desktop-parent-active-' . ( $parent_active ? 'true' : 'false' );
+		$navigation_classes[] = 'navigation-tablet-parent-active-' . ( $parent_active_tablet ? 'true' : 'false' );
+		$navigation_classes[] = 'navigation-mobile-parent-active-' . ( $parent_active_mobile ? 'true' : 'false' );
 		$navigation_attributes = $this->build_html_attributes(
 			array(
 				'class' => implode( ' ', $navigation_classes ),
@@ -369,6 +387,15 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		foreach ( $meta_keys as $key => $value ) {
 			if ( str_starts_with( $key, $meta_prefix ) && array_key_exists( 'default', $value ) ) {
 				$attr_name = str_replace( $meta_prefix, '', $key );
+
+				//handle types of attributes that are an array with a single object that actually contains the actual attributes
+				if ( is_array( $value['default'] ) && count( $value['default'] ) == 1 && isset( $value['default'][0] ) ) {
+					if ( isset( $attributes[ $attr_name ] ) && is_array( $attributes[ $attr_name ] ) && count( $attributes[ $attr_name ] ) == 1 && isset( $attributes[ $attr_name ][0] ) ) {
+						$attributes[ $attr_name ][0] = array_merge( $value['default'][0], $attributes[ $attr_name ][0] );
+					}
+				}
+
+				//standard case
 				$default_attributes[ $attr_name ] = $value['default'];
 			}
 		}
