@@ -1,14 +1,14 @@
 {
 	"build": [
-		"composer install --no-dev --no-scripts",
-		"composer strauss-release",
+		"@composer install --no-dev --no-scripts",
+		"@composer run strauss-release",
 		"npm install --legacy-peer-deps",
 		"npm run build",
-		"composer wp"
+		"@composer run wp"
 	],
 	"build_dev": [
-		"composer install --no-dev --no-scripts",
-		"composer strauss-release",
+		"@composer install --no-dev --no-scripts",
+		"@composer run strauss-release",
 		"npm install --legacy-peer-deps",
 		"npm run build"
 	],
