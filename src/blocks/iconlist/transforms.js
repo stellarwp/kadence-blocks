@@ -6,7 +6,7 @@
  * WordPress dependencies
  */
 import { createBlock } from '@wordpress/blocks';
-import { get } from 'lodash';
+import { get, min } from 'lodash';
 import metadata from './block.json';
 
 import { LINE_SEPARATOR, __UNSTABLE_LINE_SEPARATOR } from '@wordpress/rich-text';
@@ -20,9 +20,9 @@ const getNestedListsFrom = (rawItems, level = 0) => {
 			listItem.innerBlocks[0].name === 'core/list' &&
 			listItem.innerBlocks[0].innerBlocks.length > 0
 		) {
-			level++;
-			const nestedItems = getNestedListsFrom(listItem.innerBlocks[0].innerBlocks, level);
-			level--;
+			// Our maximum allowed level is 5, so limit to that
+			const maxLevel = min([level + 1, 5]);
+			const nestedItems = getNestedListsFrom(listItem.innerBlocks[0].innerBlocks, maxLevel);
 			return [createBlock('kadence/listitem', { text: listItem.attributes.content, level }), ...nestedItems];
 		}
 		return createBlock('kadence/listitem', { text: listItem.attributes.content, level });
