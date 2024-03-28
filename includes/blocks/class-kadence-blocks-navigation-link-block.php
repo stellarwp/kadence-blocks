@@ -32,15 +32,6 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 	protected $block_name = 'navigation-link';
 
 	/**
-	 * Block determines in scripts need to be loaded for block.
-	 *
-	 * @var string
-	 */
-	protected $has_script = false;
-
-	protected $has_style = false;
-
-	/**
 	 * Instance of this class
 	 *
 	 * @var null
@@ -93,27 +84,6 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			// $css->add_property( 'margin-left', '-' . ( $data['mega_menu_custom_width'] ? floor( $data['mega_menu_custom_width'] / 2 ) : '400' ) . 'px' );
 		}
 
-		//link icons
-		if ( $nav_link_attributes['mediaType'] == 'icon' && ! empty( $nav_link_attributes['mediaIcon'][0]['icon'] ) ) {
-			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a > .link-drop-title-wrap > .kb-svg-icon-wrap' );
-			$css->add_property( 'display', 'flex' );
-			$css->add_property( 'padding-bottom', $css->render_size( $nav_link_attributes['mediaStyle'][0]['padding'][0], 'px' ) );
-			$css->add_property( 'padding-top', $css->render_size( $nav_link_attributes['mediaStyle'][0]['padding'][0], 'px' ) );
-			$css->add_property( 'padding-left', $css->render_size( $nav_link_attributes['mediaStyle'][0]['padding'][0], 'px' ) );
-			$css->add_property( 'padding-right', $css->render_size( $nav_link_attributes['mediaStyle'][0]['padding'][0], 'px' ) );
-			$css->add_property( 'background', $css->render_color( $nav_link_attributes['mediaStyle'][0]['background'] ), $nav_link_attributes['mediaStyle'][0]['background'] );
-			$css->add_property( 'border-radius', $css->render_size( $nav_link_attributes['mediaStyle'][0]['borderRadius'], 'px' ), $nav_link_attributes['mediaStyle'][0]['borderRadius'] );
-
-			if ( $nav_link_attributes['mediaAlign'] == 'left' ) {
-				$css->add_property( 'margin-right', $css->render_size( $nav_link_attributes['mediaStyle'][0]['margin'][0], 'px' ) );
-			} else {
-				$css->add_property( 'margin-left', $css->render_size( $nav_link_attributes['mediaStyle'][0]['margin'][0], 'px' ) );
-			}
-			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a > .link-drop-title-wrap > .kb-svg-icon-wrap svg' );
-			$css->add_property( 'width', $css->render_size( $nav_link_attributes['mediaIcon'][0]['size'], 'px' ) );
-			$css->add_property( 'height', $css->render_size( $nav_link_attributes['mediaIcon'][0]['size'], 'px' ) );
-		}
-
 		$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a' );
 		$css->render_measure_output( $nav_link_attributes, 'padding' );
 		$css->render_measure_output( $nav_link_attributes, 'margin' );
@@ -130,11 +100,26 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$sized_attributes = $css->get_sized_attributes_auto( $attributes, $size, false );
 		$sized_attributes_inherit = $css->get_sized_attributes_auto( $attributes, $size );
 
+		$media_style_background = $css->get_inherited_value( $attributes['mediaStyle'][0]['background'], $attributes['mediaStyle'][0]['backgroundTablet'], $attributes['mediaStyle'][0]['backgroundMobile'], $size, true );
+		$media_style_background_hover = $css->get_inherited_value( $attributes['mediaStyle'][0]['backgroundHover'], $attributes['mediaStyle'][0]['backgroundHoverTablet'], $attributes['mediaStyle'][0]['backgroundHoverMobile'], $size, true );
+		$media_style_background_active = $css->get_inherited_value( $attributes['mediaStyle'][0]['backgroundActive'], $attributes['mediaStyle'][0]['backgroundActiveTablet'], $attributes['mediaStyle'][0]['backgroundActiveMobile'], $size, true );
+		$media_style_color = $css->get_inherited_value( $attributes['mediaStyle'][0]['color'], $attributes['mediaStyle'][0]['colorTablet'], $attributes['mediaStyle'][0]['colorMobile'], $size, true );
+		$media_style_color_hover = $css->get_inherited_value( $attributes['mediaStyle'][0]['colorHover'], $attributes['mediaStyle'][0]['colorHoverTablet'], $attributes['mediaStyle'][0]['colorHoverMobile'], $size, true );
+		$media_style_color_active = $css->get_inherited_value( $attributes['mediaStyle'][0]['colorActive'], $attributes['mediaStyle'][0]['colorActiveTablet'], $attributes['mediaStyle'][0]['colorActiveMobile'], $size, true );
+
+		$media_style_border_radius = $css->get_inherited_value( $attributes['mediaStyle'][0]['borderRadius'], $attributes['mediaStyle'][0]['borderRadiusTablet'], $attributes['mediaStyle'][0]['borderRadiusMobile'], $size, true );
+		$media_style_padding = $css->get_inherited_value( $attributes['mediaStyle'][0]['padding'], $attributes['mediaStyle'][0]['paddingTablet'], $attributes['mediaStyle'][0]['paddingMobile'], $size, true );
+		$media_style_margin = $css->get_inherited_value( $attributes['mediaStyle'][0]['margin'], $attributes['mediaStyle'][0]['marginTablet'], $attributes['mediaStyle'][0]['marginMobile'], $size, true );
+		$media_icon_size = $css->get_inherited_value( $attributes['mediaIcon'][0]['size'], $attributes['mediaIcon'][0]['sizeTablet'], $attributes['mediaIcon'][0]['sizeMobile'], $size, true );
+		$media_icon_width = $css->get_inherited_value( $attributes['mediaIcon'][0]['width'], $attributes['mediaIcon'][0]['widthTablet'], $attributes['mediaIcon'][0]['widthMobile'], $size, true );
+
+		$is_fe_icon = 'fe' === substr( $attributes['mediaIcon'][0]['icon'], 0, 2 );
+
 		$css->set_media_state( strtolower( $size ) );
 
 		$css->set_selector( '.wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a, .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap' );
 		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColor'] ), $sized_attributes['linkColor'] );
-		$css->add_property( 'background', $css->render_color( $sized_attributes['background'] ), $sized_attributes['background'] );
+		$css->add_property( 'background', $css->render_color( $sized_attributes['background'] ) );
 		$css->set_selector( '.wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap:hover > a, .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap:hover' );
 		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorHover'] ) );
 		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundHover'] ) );
@@ -162,6 +147,39 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$css->set_selector( '.wp-block-kadence-navigation.navigation .menu-container ul .wp-block-kadence-navigation-link' . $unique_id . ' ul li.menu-item.current-menu-item > .link-drop-wrap > a' );
 		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorDropdownActive'] ));
 		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundDropdownActive']));
+
+		//media styles (icons)
+		if ( $attributes['mediaType'] && 'none' !== $attributes['mediaType'] ) {
+			//normal styles
+			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container' );
+			$css->add_property( 'background-color', $css->render_color( $media_style_background ) );
+			$css->add_property( 'border-radius', $css->render_size( $media_style_border_radius ) );
+			$css->add_property( 'padding', $css->render_measure( $media_style_padding, 'px' ) );
+			if ( $sized_attributes['mediaAlign'] == 'left' ) {
+				$css->add_property( 'order', '-1' );
+				$css->add_property( 'margin-right', $css->render_size( $media_style_margin[0], 'px' ) );
+			} else {
+				$css->add_property( 'margin-left', $css->render_size( $media_style_margin[0], 'px' ) );
+			}
+
+			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .link-svg-icon > svg' );
+			$css->add_property( 'width', $css->render_size( $media_icon_size, 'px' ) );
+			$css->add_property( 'height', $css->render_size( $media_icon_size, 'px' ) );
+			$css->add_property( 'stroke-width', $css->render_size( $is_fe_icon ? $media_icon_width : null, 'px' ) );
+			$css->add_property( 'color', $css->render_color( $media_style_color ) );
+
+			//hover style
+			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ':hover > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container' );
+			$css->add_property( 'background-color', $css->render_color( $media_style_background_hover ) );
+			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ':hover > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .link-svg-icon > svg' );
+			$css->add_property( 'color', $css->render_color( $media_style_color_hover ) );
+
+			//active style
+			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . '.current-menu-item > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container' );
+			$css->add_property( 'background-color', $css->render_color( $media_style_background_active ) );
+			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . '.current-menu-item > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .link-svg-icon > svg' );
+			$css->add_property( 'color', $css->render_color( $media_style_color_active ) );
+		}
 	}
 
 	/**
@@ -179,7 +197,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		// Prevent a nav block from being rendered inside itself.
 		if ( isset( self::$seen_refs[ $attributes['id'] ] ) ) {
 			// WP_DEBUG_DISPLAY must only be honored when WP_DEBUG. This precedent
-			// is set in `wp_debug_mode()`.
+			// is set in 'wp_debug_mode()'.
 			$is_debug = WP_DEBUG && WP_DEBUG_DISPLAY;
 
 			return $is_debug ?
@@ -248,15 +266,14 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$type         = substr( $nav_link_attributes['mediaIcon'][0]['icon'], 0, 2 );
 			$line_icon    = ( ! empty( $type ) && 'fe' == $type ? true : false );
 			$fill         = ( $line_icon ? 'none' : 'currentColor' );
-			$stroke_width = $line_icon ? $nav_link_attributes['mediaIcon'][0]['width'] ?? 2 : false;
+			$extras       = ' width="18" height="18" stroke-linecap="round" stroke-linejoin="round" stroke="currentColor"';
 
-			$svg_icon = Kadence_Blocks_Svg_Render::render( $nav_link_attributes['mediaIcon'][0]['icon'], $fill, $stroke_width );
+			$svg_icon = Kadence_Blocks_Svg_Render::render( $nav_link_attributes['mediaIcon'][0]['icon'], $fill, false, '', true, $extras );
 		}
-		$icon_left  = ! empty( $svg_icon ) && 'left' === $nav_link_attributes['mediaAlign'] ? '<span class="kb-svg-icon-wrap kb-svg-icon-' . esc_attr( $nav_link_attributes['mediaIcon'][0]['icon'] ) . ' kt-btn-icon-side-left">' . $svg_icon . '</span>' : '';
-		$icon_right = ! empty( $svg_icon ) && 'right' === $nav_link_attributes['mediaAlign'] ? '<span class="kb-svg-icon-wrap kb-svg-icon-' . esc_attr( $nav_link_attributes['mediaIcon'][0]['icon'] ) . ' kt-btn-icon-side-right">' . $svg_icon . '</span>' : '';
+		$icon  = ! empty( $svg_icon ) ? '<div class="link-media-container"><span class="link-svg-icon link-svg-icon-' . esc_attr( $nav_link_attributes['mediaIcon'][0]['icon'] ) . '">' . $svg_icon . '</span></div>' : '';
 
 		return sprintf(
-			'<li %1$s><div class="link-drop-wrap"><a class="wp-block-navigation-item__content" href="' . esc_url( $url ) . '"><span class="link-drop-title-wrap">' . $icon_left . esc_html( $label ) . $icon_right . '<span class="title-dropdown-navigation-toggle">%2$s</span></span></a></div>%3$s</li>',
+			'<li %1$s><div class="link-drop-wrap"><a class="wp-block-navigation-item__content" href="' . esc_url( $url ) . '"><span class="link-drop-title-wrap">' . esc_html( $label ) . $icon . '<span class="title-dropdown-navigation-toggle">%2$s</span></span></a></div>%3$s</li>',
 			$wrapper_attributes,
 			$has_children ? $down_arrow_icon : '',
 			$sub_menu_content
