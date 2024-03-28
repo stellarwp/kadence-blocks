@@ -68,9 +68,17 @@
 		"stellar-uplink": [
 			"vendor/bin/stellar-uplink domain=kadence-blocks"
 		],
+		"strauss-install": [
+			"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.17.0/strauss.phar"
+		],
 		"strauss": [
-			"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.16.0/strauss.phar",
+			"@strauss-install",
 			"@php bin/strauss.phar",
+			"@composer dump-autoload"
+		],
+		"strauss-release": [
+			"@strauss-install",
+			"@php bin/strauss.phar --deleteVendorPackages=true",
 			"@composer dump-autoload"
 		],
 		"pup": [
