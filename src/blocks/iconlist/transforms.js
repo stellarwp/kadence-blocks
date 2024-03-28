@@ -35,13 +35,14 @@ const getNestedListsTo = (innerBlocks, blockAttributes, indent = 0) => {
 	const result = [];
 	while (innerBlocksCopy.length > 0) {
 		const curItem = innerBlocksCopy[0];
+		const nextItemLevel = get(innerBlocksCopy, ['1', 'attributes', 'level']);
+		innerBlocksCopy.shift();
+
 		if (curItem.attributes.level === indent) {
 			// If next item is an indent, add it as a child block
-			if (innerBlocksCopy[1] && innerBlocksCopy[1].attributes.level > indent) {
-				innerBlocksCopy.shift();
-
+			if (nextItemLevel && nextItemLevel > indent) {
 				// Core doesn't allow multiple levels of indent on a single list item
-				if (innerBlocksCopy[0].attributes.level > indent + 1) {
+				if (nextItemLevel > indent + 1) {
 					innerBlocksCopy[0].attributes.level = indent + 1;
 				}
 
@@ -50,11 +51,7 @@ const getNestedListsTo = (innerBlocks, blockAttributes, indent = 0) => {
 				innerBlocksCopy.splice(0, innerList.innerBlocks.length - 1);
 			} else {
 				result.push(createBlock('core/list-item', { content: curItem.attributes.text }));
-				innerBlocksCopy.shift();
 			}
-		} else {
-			// Not handling this indent level
-			innerBlocksCopy.shift();
 		}
 	}
 
