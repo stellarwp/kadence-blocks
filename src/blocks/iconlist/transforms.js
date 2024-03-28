@@ -58,7 +58,11 @@ const getNestedListsTo = (innerBlocks, blockAttributes, indent = 0) => {
 		}
 	}
 
-	return createBlock('core/list', {}, result);
+	return createBlock(
+		'core/list',
+		{ style: { color: { text: get(blockAttributes, ['listStyles', '0', 'color']) } } },
+		result
+	);
 };
 
 const transforms = {
