@@ -30,7 +30,15 @@ const getNestedListsFrom = (rawItems, level = 0) => {
 	return listItems;
 };
 
-const getNestedListsTo = (innerBlocks, blockAttributes, indent = 0) => {
+/*
+ * Recursively create nested list items from a flat array of blocks.
+ *
+ * @param {Array} innerBlocks - Array of inner blocks.
+ * @param {Object} blockAttributes - Block attributes.
+ * @param {number} indent - Current indent level.
+ * @param {boolean} firstRun - Whether this is the first run of the function. Core doesn't allow indention on first item, so if it's first run we should force inclusion in the list
+ */
+const getNestedListsTo = (innerBlocks, blockAttributes, indent = 0, firstRun = true) => {
 	const innerBlocksCopy = [...innerBlocks];
 	const result = [];
 	while (innerBlocksCopy.length > 0) {
@@ -38,7 +46,7 @@ const getNestedListsTo = (innerBlocks, blockAttributes, indent = 0) => {
 		const nextItemLevel = get(innerBlocksCopy, ['1', 'attributes', 'level']);
 		innerBlocksCopy.shift();
 
-		if (curItem.attributes.level === indent) {
+		if (curItem.attributes.level === indent || firstRun) {
 			// If next item is an indent, add it as a child block
 			if (nextItemLevel && nextItemLevel > indent) {
 				// Core doesn't allow multiple levels of indent on a single list item
@@ -46,9 +54,9 @@ const getNestedListsTo = (innerBlocks, blockAttributes, indent = 0) => {
 					innerBlocksCopy[0].attributes.level = indent + 1;
 				}
 
-				const innerList = getNestedListsTo(innerBlocksCopy, blockAttributes, indent + 1);
+				const innerList = getNestedListsTo(innerBlocksCopy, blockAttributes, indent + 1, false);
 				result.push(createBlock('core/list-item', { content: curItem.attributes.text }, [innerList]));
-				innerBlocksCopy.splice(0, innerList.innerBlocks.length - 1);
+				innerBlocksCopy.splice(0, innerList.innerBlocks.length);
 			} else {
 				result.push(createBlock('core/list-item', { content: curItem.attributes.text }));
 			}
