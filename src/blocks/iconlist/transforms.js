@@ -28,17 +28,22 @@ const getNestedListsFrom = (rawItems, level = 0) => {
 }
 
 const getNestedListsTo = (rawItems, attributes) => {
-	let lastLevel = rawItems[0].attributes.level;
-	const nestedBlocks = [];
-	let nestedListItems = [];
+	if(undefined === rawItems || rawItems.length === 0) {
+		return;
+	}
+	
+	let lastLevel = undefined !== rawItems?.[0].attributes?.level ? rawItems?.[0].attributes?.level : 0;
+	
 	const listItems = rawItems.map((listItem, index) => {
 		if(lastLevel === listItem.attributes.level && index !== 0) {
-			return createBlock('core/list-item', { content: listItem[index - 1].attributes.text });
-		} else if(lastLevel > listItem.attributes.level) {
-			lastLevel++;
+			return createBlock('core/list-item', { content: rawItems[index - 1].attributes.text });
+		} else if(lastLevel < listItem.attributes.level) {
+			lastLevel = listItem.attributes.level;
+			let currentItem = rawItems[index - 1];
 			rawItems = rawItems.slice(index, -1);
-			const nestedItems = getNestedListsTo(rawItems, attributes);
-			return createBlock('core/list-item', { content: listItem.attributes.text }, nestedItems);
+			if(rawItems) {
+				return createBlock('core/list-item', { content: currentItem.attributes.text }, getNestedListsTo(rawItems, attributes));
+			}
 		}
 
 		// If previous list item level is less than the current item
@@ -66,7 +71,7 @@ const getNestedListsTo = (rawItems, attributes) => {
 		// 	return nestedBlocks;
 		// }
 	});
-	console.log( listItems );
+	//console.log( listItems );
 }
 
 const transforms = {
