@@ -27,52 +27,36 @@ const getNestedListsFrom = (rawItems, level = 0) => {
 	return listItems;
 }
 
-const getNestedListsTo = (rawItems, attributes) => {
-	if(undefined === rawItems || rawItems.length === 0) {
-		return;
-	}
-	
-	let lastLevel = undefined !== rawItems?.[0].attributes?.level ? rawItems?.[0].attributes?.level : 0;
-	
-	const listItems = rawItems.map((listItem, index) => {
-		if(lastLevel === listItem.attributes.level && index !== 0) {
-			return createBlock('core/list-item', { content: rawItems[index - 1].attributes.text });
-		} else if(lastLevel < listItem.attributes.level) {
-			lastLevel = listItem.attributes.level;
-			let currentItem = rawItems[index - 1];
-			rawItems = rawItems.slice(index, -1);
-			if(rawItems) {
-				return createBlock('core/list-item', { content: currentItem.attributes.text }, getNestedListsTo(rawItems, attributes));
-			}
-		}
+const getNestedListsTo = (innerBlocks, blockAttributes, indent = 0) => {
+	const innerBlocksCopy = [...innerBlocks];
+	const result = [];
+	while (innerBlocksCopy.length > 0) {
+		const curItem = innerBlocksCopy[0];
+		if (curItem.attributes.level === indent) {
+			// If next item is an indent, add it as a child block
+			if (innerBlocksCopy[1] && innerBlocksCopy[1].attributes.level > indent) {
+				innerBlocksCopy.shift();
 
-		// If previous list item level is less than the current item
-		// Then recursive
-		
-		// if(lastLevel < listItem.attributes.level) {
-		// 	nestedBlocks.push(createBlock(
-		// 		'core/list',
-		// 		{
-		// 			ordered: false,
-		// 			style: {
-		// 				color: {
-		// 					text: attributes.listStyles[0].color,
-		// 				},
-		// 			},
-		// 		},
-		// 		nestedListItems;
-		// 	));
-		// 	lastLevel = listItem.attributes.level;
-		// }
-		
-		// if(lastLevel > listItem.attributes.level) {
-		// 	lastLevel = listItem.attributes.level;
-		// 	nestedListItems = [];
-		// 	return nestedBlocks;
-		// }
-	});
-	//console.log( listItems );
-}
+				// Core doesn't allow multiple levels of indent on a single list item
+				if (innerBlocksCopy[0].attributes.level > indent + 1) {
+					innerBlocksCopy[0].attributes.level = indent + 1;
+				}
+
+				const innerList = getNestedListsTo(innerBlocksCopy, blockAttributes, indent + 1);
+				result.push(createBlock('core/list-item', { content: curItem.attributes.text }, [innerList]));
+				innerBlocksCopy.splice(0, innerList.innerBlocks.length - 1);
+			} else {
+				result.push(createBlock('core/list-item', { content: curItem.attributes.text }));
+				innerBlocksCopy.shift();
+			}
+		} else {
+			// Not handling this indent level
+			innerBlocksCopy.shift();
+		}
+	}
+
+	return createBlock('core/list', {}, result);
+};
 
 const transforms = {
 	from: [
@@ -102,23 +86,7 @@ const transforms = {
 			type: 'block',
 			blocks: ['core/list'],
 			transform: (blockAttributes, innerBlocks) => {
-				getNestedListsTo(innerBlocks, blockAttributes);
-				// const listItems = innerBlocks.map((listItem) => {
-				// 	return createBlock('core/list-item', { content: listItem.attributes.text });
-				// });
-
-				// return createBlock(
-				// 	'core/list',
-				// 	{
-				// 		ordered: false,
-				// 		style: {
-				// 			color: {
-				// 				text: blockAttributes.listStyles[0].color,
-				// 			},
-				// 		},
-				// 	},
-				// 	listItems
-				// );
+				return getNestedListsTo(innerBlocks, blockAttributes);
 			},
 		},
 	],
