@@ -15,17 +15,20 @@ const lineSep = LINE_SEPARATOR ? LINE_SEPARATOR : __UNSTABLE_LINE_SEPARATOR;
 
 const getNestedListsFrom = (rawItems, level = 0) => {
 	const listItems = rawItems.flatMap((listItem) => {
-		if(undefined !== listItem.innerBlocks?.[0]?.name && listItem.innerBlocks[0].name === 'core/list' && listItem.innerBlocks[0].innerBlocks.length > 0) {
+		if (
+			undefined !== listItem.innerBlocks?.[0]?.name &&
+			listItem.innerBlocks[0].name === 'core/list' &&
+			listItem.innerBlocks[0].innerBlocks.length > 0
+		) {
 			level++;
 			const nestedItems = getNestedListsFrom(listItem.innerBlocks[0].innerBlocks, level);
 			level--;
-			return [createBlock('kadence/listitem', { text: listItem.attributes.content, level: level }), ...nestedItems];
-		} else {
-			return createBlock('kadence/listitem', { text: listItem.attributes.content, level });
+			return [createBlock('kadence/listitem', { text: listItem.attributes.content, level }), ...nestedItems];
 		}
+		return createBlock('kadence/listitem', { text: listItem.attributes.content, level });
 	});
 	return listItems;
-}
+};
 
 const getNestedListsTo = (innerBlocks, blockAttributes, indent = 0) => {
 	const innerBlocksCopy = [...innerBlocks];
