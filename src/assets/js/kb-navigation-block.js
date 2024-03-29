@@ -334,7 +334,8 @@
 				return;
 			}
 			var scrollBar = window.innerWidth - document.documentElement.clientWidth;
-			var duration = toggle.dataset.toggleDuration ? toggle.dataset.toggleDuration : 250;
+			//pretty sure this duration is only for animating the off canvas area, not sub menus. Disabling for now.
+			var duration = 0;
 			window.kadenceNavigation.toggleAttribute(toggle, 'aria-expanded', 'true', 'false');
 			if (target.classList.contains('menu-item--toggled-on')) {
 				if (toggle.dataset.toggleBodyClass) {
@@ -489,19 +490,19 @@
 		 * navigation menus with vertical style drawers.
 		 */
 		initMobileToggleSub() {
-			var modalMenus = document.querySelectorAll(' .wp-block-kadence-navigation .has-collapse-sub-nav');
+			// var modalMenus = document.querySelectorAll(' .wp-block-kadence-navigation .has-collapse-sub-nav');
 
-			modalMenus.forEach(function (modalMenu) {
-				var activeMenuItem = modalMenu.querySelector('.current-menu-item');
-				if (activeMenuItem) {
-					window.kadenceNavigation.findParents(activeMenuItem, 'li').forEach(function (element) {
-						var subMenuToggle = element.querySelector('.vertical-sub-toggle');
-						if (subMenuToggle) {
-							window.kadenceNavigation.toggleDrawer(subMenuToggle, true);
-						}
-					});
-				}
-			});
+			// modalMenus.forEach(function (modalMenu) {
+			// 	var activeMenuItem = modalMenu.querySelector('.current-menu-item');
+			// 	if (activeMenuItem) {
+			// 		window.kadenceNavigation.findParents(activeMenuItem, 'li').forEach(function (element) {
+			// 			var subMenuToggle = element.querySelector('.vertical-sub-toggle');
+			// 			if (subMenuToggle) {
+			// 				window.kadenceNavigation.toggleDrawer(subMenuToggle, true);
+			// 			}
+			// 		});
+			// 	}
+			// });
 			var drawerSubTOGGLE = document.querySelectorAll('.wp-block-kadence-navigation .vertical-sub-toggle');
 			// No point if no drawers.
 			if (!drawerSubTOGGLE.length) {
