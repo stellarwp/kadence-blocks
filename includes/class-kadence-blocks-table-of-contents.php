@@ -425,26 +425,19 @@ class Kadence_Blocks_Table_Of_Contents {
 		libxml_use_internal_errors( true );
 		// Parse the post content into an HTML document.
 		$content = mb_convert_encoding( $content, 'HTML-ENTITIES', 'UTF-8' );
-		// loadHTML expects ISO-8859-1, so we need to convert the post content to
-		// that format. We use htmlentities to encode Unicode characters not
-		// supported by ISO-8859-1 as HTML entities. However, this function also
-		// converts all special characters like < or > to HTML entities, so we use
-		// htmlspecialchars_decode to decode them.
-		$doc->loadHTML(
-			htmlspecialchars_decode(
-				utf8_decode(
-					htmlentities(
-						'<!DOCTYPE html><html><head><title>:D</title><body>' .
-						htmlspecialchars( $content ) .
-						'</body></html>',
-						ENT_COMPAT,
-						'UTF-8',
-						false
-					)
-				),
-				ENT_COMPAT
-			)
+
+		// Instead of using utf8_decode, we use mb_convert_encoding to convert the encoding from UTF-8 to ISO-8859-1 directly.
+		// Note that the HTML entities conversion remains the same, ensuring that special characters and Unicode characters
+		// not supported by ISO-8859-1 are properly encoded.
+		$convertedContent = mb_convert_encoding(
+			htmlentities(
+				'<!DOCTYPE html><html><head><title>:D</title><body>' . htmlspecialchars( $content ) . '</body></html>',
+				ENT_COMPAT, 'UTF-8', false
+			),
+			'ISO-8859-1', 'UTF-8'
 		);
+
+		$doc->loadHTML(htmlspecialchars_decode($convertedContent, ENT_COMPAT));
 
 		// We're done parsing, so we can disable user error handling. This also
 		// clears any existing errors, which helps avoid a memory leak.
