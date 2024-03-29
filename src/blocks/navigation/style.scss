@@ -316,6 +316,7 @@ $anchor: #5000b9;
 		position: relative;
 		display: flex;
 		flex-wrap: nowrap;
+		text-align: center;
 	}
 	/*
 		 * If the dropdown toggle is active with JS, then
@@ -1153,9 +1154,14 @@ $anchor: #5000b9;
 	.menu-label-content {
 		display: block;
 	}
-	.navigation .kadence-menu-has-description.kadence-menu-has-icon > .link-drop-wrap > a,
-	.mobile-navigation .kadence-menu-has-description.kadence-menu-has-icon > .link-drop-wrap > a {
-		display: flex;
+	//icon and description placement
+	.kadence-menu-has-description > .link-drop-wrap > a > .link-drop-title-wrap {
+		display: grid;
+		grid-template-columns: 1fr;
+	}
+	.kadence-menu-has-description.kadence-menu-has-icon > .link-drop-wrap > a > .link-drop-title-wrap {
+		display: grid;
+		grid-template-columns: 1fr auto;
 	}
 	// Mega Menu
 	.menu-container {

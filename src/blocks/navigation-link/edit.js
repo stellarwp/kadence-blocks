@@ -562,6 +562,8 @@ export default function Edit(props) {
 			'current-menu-item': hasNoBlockBefore,
 			'kadence-menu-mega-enabled': isMegaMenu,
 			[`${megaMenuWidthClass}`]: isMegaMenu,
+			'kadence-menu-has-icon': mediaType == 'icon',
+			'kadence-menu-has-description': description,
 			[`wp-block-kadence-navigation-link${uniqueID}`]: uniqueID,
 		}),
 		onKeyDown,
@@ -975,8 +977,8 @@ export default function Edit(props) {
 							onChange={(descriptionValue) => {
 								setAttributes({ description: descriptionValue });
 							}}
-							label={__('Description')}
-							help={__('The description will be displayed in the menu if the current theme supports it.')}
+							label={__('Description', 'kadence-blocks')}
+							help={__('Hidden by default. This can be shown in the style settings.', 'kadence-blocks')}
 						/>
 						<TextControl
 							__nextHasNoMarginBottom
@@ -1742,11 +1744,6 @@ export default function Edit(props) {
 													}
 												}}
 											/>
-											{description && (
-												<span className="wp-block-navigation-item__description">
-													{description}
-												</span>
-											)}
 										</>
 									)}
 									{(isInvalid || isDraft || isLabelFieldFocused) && (
@@ -1782,6 +1779,7 @@ export default function Edit(props) {
 								/>
 							)}
 							{mediaContent}
+							{description && <span className="menu-label-description">{description}</span>}
 							{hasChildren && <span className="title-dropdown-navigation-toggle">{ArrowDown}</span>}
 						</span>
 					</a>

@@ -318,17 +318,19 @@ export default function BackendStyles(props) {
 		);
 		css.add_property('background-color', css.render_color(previewMediaStyleBackground));
 		css.add_property('border-radius', css.render_size(previewMediaStyleBorderRadius));
-		css.render_measure_output(
-			mediaStyle[0].padding,
-			mediaStyle[0].paddingTablet,
-			mediaStyle[0].paddingMobile,
-			previewDevice,
-			'padding',
-			'px'
-		);
+		css.add_property('padding-top', css.render_size(previewMediaStylePadding[0], 'px'));
+		css.add_property('padding-right', css.render_size(previewMediaStylePadding[1], 'px'));
+		css.add_property('padding-bottom', css.render_size(previewMediaStylePadding[2], 'px'));
+		css.add_property('padding-left', css.render_size(previewMediaStylePadding[3], 'px'));
+
 		if (previewMediaAlign == 'left') {
 			css.add_property('order', '-1');
 			css.add_property('margin-right', css.render_size(previewMediaStyleMargin[0], 'px'));
+
+			css.set_selector(
+				`.wp-block-kadence-navigation-link${uniqueID}.kadence-menu-has-description.kadence-menu-has-icon > .link-drop-wrap > a > .link-drop-title-wrap`
+			);
+			css.add_property('grid-template-columns', 'auto 1fr');
 		} else {
 			css.add_property('margin-left', css.render_size(previewMediaStyleMargin[0], 'px'));
 		}
