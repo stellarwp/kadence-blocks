@@ -279,7 +279,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$icon  = ! empty( $svg_icon ) ? '<div class="link-media-container"><span class="link-svg-icon link-svg-icon-' . esc_attr( $nav_link_attributes['mediaIcon'][0]['icon'] ) . '">' . $svg_icon . '</span></div>' : '';
 
 		return sprintf(
-			'<li %1$s><div class="link-drop-wrap"><a class="wp-block-kadence-navigation-link__content" href="' . esc_url( $url ) . '"><span class="link-drop-title-wrap">' . esc_html( $label ) . $icon . '<span class="title-dropdown-navigation-toggle">%2$s</span></span></a></div>%3$s</li>',
+			'<li %1$s><div class="link-drop-wrap"><a class="wp-block-kadence-navigation-link__content"' . (! empty($nav_link_attributes['disableLink']) && true === $nav_link_attributes['disableLink'] ? '' : ' href="' . esc_url( $url ) . '"' ) . '><span class="link-drop-title-wrap">' . ( ! empty( $nav_link_attributes['hideLabel'] ) && true === $nav_link_attributes['hideLabel'] ? '' : esc_html( $label ) ) . $icon . '<span class="title-dropdown-navigation-toggle">%2$s</span></span></a></div>%3$s</li>',
 			$wrapper_attributes,
 			$has_children ? $down_arrow_icon : '',
 			$sub_menu_content
