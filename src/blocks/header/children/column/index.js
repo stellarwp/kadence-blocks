@@ -11,10 +11,10 @@ import metadata from './block.json';
 
 import { InnerBlocks } from '@wordpress/block-editor';
 
-registerBlockType('kadence/header-section', {
+registerBlockType('kadence/header-column', {
 	...metadata,
-	title: _x('Header Section', 'block title', 'kadence-blocks'),
-	description: _x('Header section.', 'block description', 'kadence-blocks'),
+	title: _x('Header Column', 'block title', 'kadence-blocks'),
+	description: _x('Header Column.', 'block description', 'kadence-blocks'),
 	icon: {
 		src: headerBlockIcon,
 	},

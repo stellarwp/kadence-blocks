@@ -1,11 +1,11 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "kadence/header-section",
+	"name": "kadence/header-column",
 	"parent": ["kadence/header"],
-	"title": "Header Section",
+	"title": "Header Column",
 	"category": "design",
-	"description": "Kadence header section",
+	"description": "Kadence header column",
 	"supports": {
 		"inserter": true
 	},

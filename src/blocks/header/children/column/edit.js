@@ -73,7 +73,7 @@ export function Edit(props) {
 
 	const innerBlocksProps = useInnerBlocksProps(
 		{
-			className: 'kadence-header-inner-section',
+			className: 'kadence-header-inner-column',
 			style: {
 				display: previewDevice === 'Desktop' ? 'block' : 'none',
 			},

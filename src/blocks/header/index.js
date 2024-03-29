@@ -14,7 +14,7 @@ import './style.scss';
 import './children/container-desktop';
 import './children/container-tablet';
 import './children/row';
-import './children/section';
+import './children/column';
 
 /**
  * Internal dependencies
