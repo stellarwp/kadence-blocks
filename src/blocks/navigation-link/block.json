@@ -15,6 +15,10 @@
 		"label": {
 			"type": "string"
 		},
+		"hideLabel": {
+			"type": "boolean",
+			"default": false
+		},
 		"type": {
 			"type": "string"
 		},
@@ -33,6 +37,10 @@
 		},
 		"url": {
 			"type": "string"
+		},
+		"disableLink": {
+			"type": "boolean",
+			"default": false
 		},
 		"title": {
 			"type": "string"

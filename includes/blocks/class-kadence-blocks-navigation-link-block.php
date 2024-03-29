@@ -79,7 +79,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$label = !empty( $attributes['label'] ) ? $attributes['label'] : '';
 		$url = !empty( $attributes['url'] ) ? $attributes['url'] : '';
 
-		return '<a href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a>';
+		return '<a' . ( ! empty( $attributes['disableLink'] ) && true === $attributes['disableLink'] ? '' : ' href="' . esc_url( $url ) . '"' ) . '>' . ( !empty( $attributes['hideLabel'] ) && true === $attributes['hideLabel'] ? '' : esc_html( $label ) ) . '</a>';
 	}
 
 }

@@ -198,8 +198,10 @@ export default function Edit(props) {
 	const {
 		id,
 		label,
+		hideLabel,
 		type,
 		url,
+		disableLink,
 		description,
 		rel,
 		title,
@@ -239,7 +241,7 @@ export default function Edit(props) {
 	const [popoverAnchor, setPopoverAnchor] = useState(null);
 	const listItemRef = useRef(null);
 	const isDraggingWithin = useIsDraggingWithin(listItemRef);
-	const itemLabelPlaceholder = __('Add label…');
+	const itemLabelPlaceholder = hideLabel ? __('Hidden Label') : __('Add label…');
 	const ref = useRef();
 
 	//See if this is the first Nav Item in the menu
@@ -656,6 +658,11 @@ export default function Edit(props) {
 							onFocus={() => setIsLabelFieldFocused(true)}
 							onBlur={() => setIsLabelFieldFocused(false)}
 						/>
+						<ToggleControl
+							label={__('Hide Label', 'kadence-blocks')}
+							checked={hideLabel}
+							onChange={(value) => setAttributes({ hideLabel: value })}
+						/>
 						<TextControl
 							__nextHasNoMarginBottom
 							value={url ? safeDecodeURI(url) : ''}
@@ -664,6 +671,11 @@ export default function Edit(props) {
 							}}
 							label={__('URL')}
 							autoComplete="off"
+						/>
+						<ToggleControl
+							label={__('Disable Link', 'kadence-blocks')}
+							checked={disableLink}
+							onChange={(value) => setAttributes({ disableLink: value })}
 						/>
 						<TextareaControl
 							__nextHasNoMarginBottom
@@ -690,7 +702,7 @@ export default function Edit(props) {
 							onChange={(relValue) => {
 								setAttributes({ rel: relValue });
 							}}
-							label={__('Rel attribute')}
+							label={__('Rel attributte')}
 							autoComplete="off"
 							help={__('The relationship of the linked URL as space-separated link types.')}
 						/>
@@ -877,7 +889,7 @@ export default function Edit(props) {
 											ref={ref}
 											identifier="label"
 											className="wp-block-navigation-item__label"
-											value={label}
+											value={hideLabel ? '' : label}
 											onChange={(labelValue) =>
 												setAttributes({
 													label: labelValue,
