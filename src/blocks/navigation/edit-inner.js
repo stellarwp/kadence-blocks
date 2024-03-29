@@ -27,6 +27,7 @@ import {
 	ResponsiveBorderControl,
 	ResponsiveSelectControl,
 	SmallResponsiveControl,
+	BoxShadowControl,
 } from '@kadence/components';
 import { getPreviewSize, getSpacingOptionOutput, mouseOverVisualizer, showSettings } from '@kadence/helpers';
 
@@ -134,7 +135,7 @@ export function EditInner(props) {
 		linkColorMobile: meta?._kad_navigation_linkColorMobile,
 		linkColorHoveMobiler: meta?._kad_navigation_linkColorHoverMobile,
 		linkColorActiveMobile: meta?._kad_navigation_linkColorActiveMobile,
-		background: meta?._kad_navigation_link_color,
+		background: meta?._kad_navigation_background,
 		backgroundHover: meta?._kad_navigation_backgroundHover,
 		backgroundActive: meta?._kad_navigation_backgroundActive,
 		backgroundTablet: meta?._kad_navigation_backgroundTablet,
@@ -143,10 +144,44 @@ export function EditInner(props) {
 		backgroundMobile: meta?._kad_navigation_backgroundMobile,
 		backgroundHoverMobile: meta?._kad_navigation_backgroundHoverMobile,
 		backgroundActiveMobile: meta?._kad_navigation_backgroundActiveMobile,
+		linkColorDropdown: meta?._kad_navigation_linkColorDropdown,
+		linkColorDropdownHover: meta?._kad_navigation_linkColorDropdownHover,
+		linkColorDropdownActive: meta?._kad_navigation_linkColorDropdownActive,
+		linkColorDropdownTablet: meta?._kad_navigation_linkColorDropdownTablet,
+		linkColorDropdownHoverTablet: meta?._kad_navigation_linkColorDropdownHoverTablet,
+		linkColorDropdownActiveTablet: meta?._kad_navigation_linkColorDropdownActiveTablet,
+		linkColorDropdownMobile: meta?._kad_navigation_linkColorDropdownMobile,
+		linkColorDropdownHoveMobiler: meta?._kad_navigation_linkColorDropdownHoverMobile,
+		linkColorDropdownActiveMobile: meta?._kad_navigation_linkColorDropdownActiveMobile,
+		backgroundDropdown: meta?._kad_navigation_backgroundDropdown,
+		backgroundDropdownHover: meta?._kad_navigation_backgroundDropdownHover,
+		backgroundDropdownActive: meta?._kad_navigation_backgroundDropdownActive,
+		backgroundDropdownTablet: meta?._kad_navigation_backgroundDropdownTablet,
+		backgroundDropdownHoverTablet: meta?._kad_navigation_backgroundDropdownHoverTablet,
+		backgroundDropdownActiveTablet: meta?._kad_navigation_backgroundDropdownActiveTablet,
+		backgroundDropdownMobile: meta?._kad_navigation_backgroundDropdownMobile,
+		backgroundDropdownHoverMobile: meta?._kad_navigation_backgroundDropdownHoverMobile,
+		backgroundDropdownActiveMobile: meta?._kad_navigation_backgroundDropdownActiveMobile,
 		typography: meta?._kad_navigation_typography,
+		dropdownTypography: meta?._kad_navigation_dropdownTypography,
 		divider: meta?._kad_navigation_divider,
 		dividerTablet: meta?._kad_navigation_dividerTablet,
 		dividerMobile: meta?._kad_navigation_dividerMobile,
+		dropdownDivider: meta?._kad_navigation_dropdownDivider,
+		dropdownDividerTablet: meta?._kad_navigation_dropdownDividerTablet,
+		dropdownDividerMobile: meta?._kad_navigation_dropdownDividerMobile,
+		dropdownWidth: meta?._kad_navigation_dropdownWidth,
+		dropdownWidthTablet: meta?._kad_navigation_dropdownWidthTablet,
+		dropdownWidthMobile: meta?._kad_navigation_dropdownWidthMobile,
+		dropdownWidthUnit: meta?._kad_navigation_dropdownWidthUnit,
+		dropdownVerticalSpacing: meta?._kad_navigation_dropdownVerticalSpacing,
+		dropdownVerticalSpacingTablet: meta?._kad_navigation_dropdownVerticalSpacingTablet,
+		dropdownVerticalSpacingMobile: meta?._kad_navigation_dropdownVerticalSpacingMobile,
+		dropdownVerticalSpacingUnit: meta?._kad_navigation_dropdownVerticalSpacingUnit,
+		dropdownShadow: meta?._kad_navigation_dropdownShadow,
+		dropdownReveal: meta?._kad_navigation_dropdownReveal,
+		dropdownRevealTablet: meta?._kad_navigation_dropdownRevealTablet,
+		dropdownRevealMobile: meta?._kad_navigation_dropdownRevealMobile,
 	};
 
 	const {
@@ -207,13 +242,52 @@ export function EditInner(props) {
 		backgroundMobile,
 		backgroundHoverMobile,
 		backgroundActiveMobile,
+		linkColorDropdown,
+		linkColorDropdownHover,
+		linkColorDropdownActive,
+		linkColorDropdownTablet,
+		linkColorDropdownHoverTablet,
+		linkColorDropdownActiveTablet,
+		linkColorDropdownMobile,
+		linkColorDropdownHoverMobile,
+		linkColorDropdownActiveMobile,
+		backgroundDropdown,
+		backgroundDropdownHover,
+		backgroundDropdownActive,
+		backgroundDropdownTablet,
+		backgroundDropdownHoverTablet,
+		backgroundDropdownActiveTablet,
+		backgroundDropdownMobile,
+		backgroundDropdownHoverMobile,
+		backgroundDropdownActiveMobile,
 		typography,
+		dropdownTypography,
 		divider,
 		dividerTablet,
 		dividerMobile,
+		dropdownDivider,
+		dropdownDividerTablet,
+		dropdownDividerMobile,
+		dropdownWidth,
+		dropdownWidthTablet,
+		dropdownWidthMobile,
+		dropdownWidthUnit,
+		dropdownVerticalSpacing,
+		dropdownVerticalSpacingTablet,
+		dropdownVerticalSpacingMobile,
+		dropdownVerticalSpacingUnit,
+		dropdownShadow,
+		dropdownReveal,
+		dropdownRevealTablet,
+		dropdownRevealMobile,
 	} = metaAttributes;
 
-	const previewOrientation = getPreviewSize(previewDevice, orientation, orientationTablet, orientationMobile);
+	const previewOrientation = getPreviewSize(
+		previewDevice,
+		orientation ? orientation : 'horizontal',
+		orientationTablet,
+		orientationMobile
+	);
 	const previewStyle = getPreviewSize(previewDevice, style, styleTablet, styleMobile);
 	const previewCollapseSubMenus = getPreviewSize(
 		previewDevice,
@@ -235,23 +309,50 @@ export function EditInner(props) {
 		});
 		setMetaAttribute(newUpdate, 'typography');
 	};
+	const saveDropdownTypography = (value) => {
+		const newUpdate = typography.map((item, index) => {
+			if (0 === index) {
+				item = { ...item, ...value };
+			}
+			return item;
+		});
+		setMetaAttribute(newUpdate, 'dropdownTypography');
+	};
+
+	const saveShadow = (value) => {
+		const newUpdate = dropdownShadow.map((item, index) => {
+			if (0 === index) {
+				item = { ...item, ...value };
+			}
+			return item;
+		});
+		setMetaAttribute(newUpdate, 'dropdownShadow');
+	};
 
 	const navClasses = classnames('navigation', {
-		[`navigation-dropdown-animation-fade-${id}`]: true,
-		// [`navigation-desktop-dropdown-animation-fade-${dropdownAnimation}`]: !previewDevice || previewDevice == 'Desktop',
-		// [`navigation-tablet-dropdown-animation-fade-${dropdownAnimationTablet}`]: previewDevice == 'Tablet',
-		// [`navigation-mobile-dropdown-animation-fade-${dropdownAnimationMobile}`]: previewDevice == 'Mobile',
+		['nav--toggle-sub']: true,
+		[`navigation-desktop-dropdown-animation-${dropdownReveal ? dropdownReveal : 'none'}`]:
+			!previewDevice || previewDevice == 'Desktop',
+		[`navigation-tablet-dropdown-animation-${dropdownRevealTablet}`]: previewDevice == 'Tablet',
+		[`navigation-mobile-dropdown-animation-${dropdownRevealMobile}`]: previewDevice == 'Mobile',
 		[`navigation-desktop-style-${style}`]: !previewDevice || previewDevice == 'Desktop',
 		[`navigation-tablet-style-${styleTablet}`]: previewDevice == 'Tablet',
 		[`navigation-mobile-style-${styleMobile}`]: previewDevice == 'Mobile',
+		[`navigation-desktop-collapse-sub-menus-${collapseSubMenus}`]: !previewDevice || previewDevice == 'Desktop',
+		[`navigation-tablet-collapse-sub-menus-${collapseSubMenusTablet}`]: previewDevice == 'Tablet',
+		[`navigation-mobile-collapse-sub-menus-${collapseSubMenusMobile}`]: previewDevice == 'Mobile',
+		//we don't need to apply this setting in the editor
+		// [`navigation-desktop-parent-toggles-menus-${parentTogglesMenus}`]: !previewDevice || previewDevice == 'Desktop',
+		// [`navigation-tablet-parent-toggles-menus-${parentTogglesMenusTablet}`]: previewDevice == 'Tablet',
+		// [`navigation-mobile-parent-toggles-menus-${parentTogglesMenusMobile}`]: previewDevice == 'Mobile',
+		[`navigation-desktop-parent-active-${parentActive}`]: !previewDevice || previewDevice == 'Desktop',
+		[`navigation-tablet-parent-active-${parentActiveTablet}`]: previewDevice == 'Tablet',
+		[`navigation-mobile-parent-active-${parentActiveMobile}`]: previewDevice == 'Mobile',
 	});
 
 	const innerNavClasses = classnames('menu', {
 		'kb-navigation': true,
 		[`kb-navigation-${id}`]: true,
-		[`collapse-sub-nav-desktop-${collapseSubMenus}`]: !previewDevice || previewDevice == 'Desktop',
-		[`collapse-sub-nav-tablet-${collapseSubMenusTablet}`]: previewDevice == 'Tablet',
-		[`collapse-sub-nav-mobile-${collapseSubMenusMobile}`]: previewDevice == 'Mobile',
 	});
 
 	const [title, setTitle] = useNavigationProp('title');
@@ -316,17 +417,6 @@ export function EditInner(props) {
 		}
 	);
 
-	if (navigationInnerBlocks.length === 0) {
-		return (
-			<>
-				<FormTitle onAdd={onAdd} isAdding={isAdding} existingTitle={title} />
-				<div className="kb-form-hide-while-setting-up">
-					<div {...innerBlocksProps} />
-				</div>
-			</>
-		);
-	}
-
 	const generalToggleControls = (size = '') => {
 		const collapseSubMenusValue = metaAttributes['collapseSubMenus' + size];
 		const parentTogglesMenusValue = metaAttributes['parentTogglesMenus' + size];
@@ -339,26 +429,28 @@ export function EditInner(props) {
 			<>
 				{orientationValue == 'vertical' && (
 					<ToggleControl
-						label={__('Collapse Sub Menus', 'kadence-blocks')}
+						label={__('Collapse Vertical Sub Menus', 'kadence-blocks')}
 						checked={collapseSubMenusValue}
 						onChange={(value) => setMetaAttribute(value, 'collapseSubMenus' + size)}
 					/>
 				)}
 				{orientationValue == 'vertical' && collapseSubMenusValue && (
 					<ToggleControl
-						label={__('Entire Item Expands Sub Menu', 'kadence-blocks')}
+						label={__('Entire Item Expands Vertical Sub Menu', 'kadence-blocks')}
 						checked={parentTogglesMenusValue}
 						onChange={(value) => setMetaAttribute(value, 'parentTogglesMenus' + size)}
 					/>
 				)}
-				<ToggleControl
-					label={__('Stretch Menu', 'kadence-blocks')}
-					checked={stretchValue}
-					onChange={(value) => setMetaAttribute(value, 'stretch' + size)}
-				/>
-				{stretchValue && (
+				{orientationValue == 'horizontal' && (
 					<ToggleControl
-						label={__('Fill andd Center Menu Items?', 'kadence-blocks')}
+						label={__('Stretch Menu', 'kadence-blocks')}
+						checked={stretchValue}
+						onChange={(value) => setMetaAttribute(value, 'stretch' + size)}
+					/>
+				)}
+				{orientationValue == 'horizontal' && stretchValue && (
+					<ToggleControl
+						label={__('Fill and Center Menu Items?', 'kadence-blocks')}
 						checked={fillStretchValue}
 						onChange={(value) => setMetaAttribute(value, 'fillStretch' + size)}
 					/>
@@ -372,13 +464,13 @@ export function EditInner(props) {
 		);
 	};
 
-	const styleColorControls = (size = '') => {
-		const linkColorValue = metaAttributes['linkColor' + size];
-		const backgroundValue = metaAttributes['background' + size];
-		const linkColorHoverValue = metaAttributes['linkColorHover' + size];
-		const backgroundHoverValue = metaAttributes['backgroundHover' + size];
-		const linkColorActiveValue = metaAttributes['linkColorActive' + size];
-		const backgroundActiveValue = metaAttributes['backgroundActive' + size];
+	const styleColorControls = (size = '', suffix = '') => {
+		const linkColorValue = metaAttributes['linkColor' + suffix + size];
+		const backgroundValue = metaAttributes['background' + suffix + size];
+		const linkColorHoverValue = metaAttributes['linkColor' + suffix + 'Hover' + size];
+		const backgroundHoverValue = metaAttributes['background' + suffix + 'Hover' + size];
+		const linkColorActiveValue = metaAttributes['linkColor' + suffix + 'Active' + size];
+		const backgroundActiveValue = metaAttributes['background' + suffix + 'Active' + size];
 		return (
 			<>
 				<HoverToggleControl
@@ -388,14 +480,14 @@ export function EditInner(props) {
 								label={__('Link Color', 'kadence-blocks')}
 								value={linkColorValue}
 								default={''}
-								onChange={(value) => setMetaAttribute(value, 'linkColor' + size)}
+								onChange={(value) => setMetaAttribute(value, 'linkColor' + suffix + size)}
 								key={'normal'}
 							/>
 							<PopColorControl
 								label={__('Background', 'kadence-blocks')}
 								value={backgroundValue}
 								default={''}
-								onChange={(value) => setMetaAttribute(value, 'background' + size)}
+								onChange={(value) => setMetaAttribute(value, 'background' + suffix + size)}
 								key={'normalb'}
 							/>
 						</>
@@ -406,14 +498,14 @@ export function EditInner(props) {
 								label={__('Link Color Hover', 'kadence-blocks')}
 								value={linkColorHoverValue}
 								default={''}
-								onChange={(value) => setMetaAttribute(value, 'linkColorHover' + size)}
+								onChange={(value) => setMetaAttribute(value, 'linkColor' + suffix + 'Hover' + size)}
 								key={'hover'}
 							/>
 							<PopColorControl
 								label={__('Background Hover', 'kadence-blocks')}
 								value={backgroundHoverValue}
 								default={''}
-								onChange={(value) => setMetaAttribute(value, 'backgroundHover' + size)}
+								onChange={(value) => setMetaAttribute(value, 'background' + suffix + 'Hover' + size)}
 								key={'hoverb'}
 							/>
 						</>
@@ -424,14 +516,14 @@ export function EditInner(props) {
 								label={__('Link Color Active', 'kadence-blocks')}
 								value={linkColorActiveValue}
 								default={''}
-								onChange={(value) => setMetaAttribute(value, 'linkColorActive' + size)}
+								onChange={(value) => setMetaAttribute(value, 'linkColor' + suffix + 'Active' + size)}
 								key={'active'}
 							/>
 							<PopColorControl
 								label={__('Background Active', 'kadence-blocks')}
 								value={backgroundActiveValue}
 								default={''}
-								onChange={(value) => setMetaAttribute(value, 'backgroundActive' + size)}
+								onChange={(value) => setMetaAttribute(value, 'background' + suffix + 'Active' + size)}
 								key={'activeb'}
 							/>
 						</>
@@ -440,6 +532,17 @@ export function EditInner(props) {
 			</>
 		);
 	};
+
+	if (navigationInnerBlocks.length === 0) {
+		return (
+			<>
+				<FormTitle onAdd={onAdd} isAdding={isAdding} existingTitle={title} />
+				<div className="kb-form-hide-while-setting-up">
+					<div {...innerBlocksProps} />
+				</div>
+			</>
+		);
+	}
 
 	if (typeof pagenow !== 'undefined' && ('widgets' === pagenow || 'customize' === pagenow)) {
 		const editPostLink = addQueryArgs('post.php', {
@@ -538,24 +641,24 @@ export function EditInner(props) {
 							/>
 							<ResponsiveRangeControls
 								label={__('Horizontal Item Spacing', 'kadence-blocks')}
-								value={parseFloat(spacing[1])}
-								valueTablet={parseFloat(spacingTablet[1])}
-								valueMobile={parseFloat(spacingMobile[1])}
+								value={parseFloat(spacing[1]) ? parseFloat(spacing[1]) : ''}
+								valueTablet={parseFloat(spacingTablet[1]) ? parseFloat(spacingTablet[1]) : ''}
+								valueMobile={parseFloat(spacingMobile[1]) ? parseFloat(spacingMobile[1]) : ''}
 								onChange={(value) =>
 									setMetaAttribute(
-										[spacing[0], value.toString(), spacing[2], value.toString()],
+										[spacing[0], String(value ?? ''), spacing[2], String(value ?? '')],
 										'spacing'
 									)
 								}
 								onChangeTablet={(value) =>
 									setMetaAttribute(
-										[spacingTablet[0], value.toString(), spacingTablet[2], value.toString()],
+										[spacingTablet[0], String(value ?? ''), spacingTablet[2], String(value ?? '')],
 										'spacingTablet'
 									)
 								}
 								onChangeMobile={(value) =>
 									setMetaAttribute(
-										[spacingMobile[0], value.toString(), spacingMobile[2], value.toString()],
+										[spacingMobile[0], String(value ?? ''), spacingMobile[2], String(value ?? '')],
 										'spacingMobile'
 									)
 								}
@@ -573,22 +676,22 @@ export function EditInner(props) {
 								style === '') && (
 								<ResponsiveRangeControls
 									label={__('Vertical Item Spacing', 'kadence-blocks')}
-									value={parseFloat(spacing[0])}
-									valueTablet={parseFloat(spacingTablet[0])}
-									valueMobile={parseFloat(spacingMobile[0])}
+									value={parseFloat(spacing[0]) ? parseFloat(spacing[0]) : ''}
+									valueTablet={parseFloat(spacingTablet[0]) ? parseFloat(spacingTablet[0]) : ''}
+									valueMobile={parseFloat(spacingMobile[0]) ? parseFloat(spacingMobile[0]) : ''}
 									onChange={(value) =>
 										setMetaAttribute(
-											[value.toString(), spacing[1], value.toString(), spacing[3]],
+											[String(value ?? ''), spacing[1], String(value ?? ''), spacing[3]],
 											'spacing'
 										)
 									}
 									onChangeTablet={(value) =>
 										setMetaAttribute(
 											[
-												value.toString(),
+												String(value ?? ''),
 												spacingTablet[1],
-												value.toString(),
-												spaspacingTabletcing[3],
+												String(value ?? ''),
+												spacingTablet[3],
 											],
 											'spacingTablet'
 										)
@@ -704,7 +807,230 @@ export function EditInner(props) {
 								/>
 							</KadencePanelBody>
 						)}
-						<div className="kt-sidebar-settings-spacer"></div>
+						<KadencePanelBody
+							title={__('Sub Menu Styles', 'kadence-blocks')}
+							panelName={'kb-navigation-style-sub-menus'}
+							initialOpen={false}
+						>
+							{previewOrientation == 'horizontal' && (
+								<>
+									<ResponsiveSelectControl
+										label={__('Reveal Animation', 'kadence-blocks')}
+										value={dropdownReveal}
+										tabletValue={dropdownRevealTablet}
+										mobileValue={dropdownRevealMobile}
+										options={[
+											{ value: 'none', label: __('None') },
+											{ value: 'fade', label: __('Fade') },
+											{ value: 'fade-up', label: __('Fade Up') },
+											{ value: 'fade-down', label: __('Fade Down') },
+										]}
+										onChange={(value) => setMetaAttribute(value, 'dropdownReveal')}
+										onChangeTablet={(value) => setMetaAttribute(value, 'dropdownRevealTablet')}
+										onChangeMobile={(value) => setMetaAttribute(value, 'dropdownRevealMobile')}
+									/>
+
+									<ResponsiveRangeControls
+										label={__('Dropdown Width', 'kadence-blocks')}
+										value={parseFloat(dropdownWidth)}
+										valueTablet={parseFloat(dropdownWidthTablet)}
+										valueMobile={parseFloat(dropdownWidthMobile)}
+										onChange={(value) => setMetaAttribute(value.toString(), 'dropdownWidth')}
+										onChangeTablet={(value) =>
+											setMetaAttribute(value.toString(), 'dropdownWidthTablet')
+										}
+										onChangeMobile={(value) =>
+											setMetaAttribute(value.toString(), 'dropdownWidthMobile')
+										}
+										min={0}
+										max={dropdownWidthUnit === 'em' || dropdownWidthUnit === 'rem' ? 24 : 2000}
+										step={dropdownWidthUnit === 'em' || dropdownWidthUnit === 'rem' ? 0.1 : 1}
+										unit={dropdownWidthUnit}
+										units={['em', 'rem', 'px', 'vw']}
+										onUnit={(value) => setMetaAttribute(value, 'dropdownWidthUnit')}
+										showUnit={true}
+									/>
+								</>
+							)}
+							<ResponsiveRangeControls
+								label={__('Dropdown Vertical Spacing', 'kadence-blocks')}
+								value={parseFloat(dropdownVerticalSpacing)}
+								valueTablet={parseFloat(dropdownVerticalSpacingTablet)}
+								valueMobile={parseFloat(dropdownVerticalSpacingMobile)}
+								onChange={(value) => setMetaAttribute(value.toString(), 'dropdownVerticalSpacing')}
+								onChangeTablet={(value) =>
+									setMetaAttribute(value.toString(), 'dropdownVerticalSpacingTablet')
+								}
+								onChangeMobile={(value) =>
+									setMetaAttribute(value.toString(), 'dropdownVerticalSpacingMobile')
+								}
+								min={0}
+								max={
+									dropdownVerticalSpacingUnit === 'em' || dropdownVerticalSpacingUnit === 'rem'
+										? 24
+										: 200
+								}
+								step={
+									dropdownVerticalSpacingUnit === 'em' || dropdownVerticalSpacingUnit === 'rem'
+										? 0.1
+										: 1
+								}
+								unit={dropdownVerticalSpacingUnit}
+								units={['em', 'rem', 'px', 'vw']}
+								onUnit={(value) => setMetaAttribute(value, 'dropdownVerticalSpacingUnit')}
+								showUnit={true}
+							/>
+							<ResponsiveSingleBorderControl
+								label={'Divider'}
+								value={dropdownDivider}
+								tabletValue={dropdownDividerTablet}
+								mobileValue={dropdownDividerMobile}
+								onChange={(value) => setMetaAttribute(value, 'dropdownDivider')}
+								onChangeTablet={(value) => setMetaAttribute(value, 'dropdownDividerTablet')}
+								onChangeMobile={(value) => setMetaAttribute(value, 'dropdownDividerMobile')}
+							/>
+							<SmallResponsiveControl
+								label={'Colors'}
+								desktopChildren={styleColorControls('', 'Dropdown')}
+								tabletChildren={styleColorControls('Tablet', 'Dropdown')}
+								mobileChildren={styleColorControls('Mobile', 'Dropdown')}
+							></SmallResponsiveControl>
+							{previewOrientation == 'horizontal' && (
+								<BoxShadowControl
+									label={__('Box Shadow', 'kadence-blocks')}
+									enable={
+										undefined !== dropdownShadow &&
+										undefined !== dropdownShadow[0] &&
+										undefined !== dropdownShadow[0].enable
+											? dropdownShadow[0].enable
+											: true
+									}
+									color={
+										undefined !== dropdownShadow &&
+										undefined !== dropdownShadow[0] &&
+										undefined !== dropdownShadow[0].color
+											? dropdownShadow[0].color
+											: '#000000'
+									}
+									colorDefault={'#000000'}
+									onArrayChange={(color, opacity) => {
+										saveShadow({ color, opacity });
+									}}
+									opacity={
+										undefined !== dropdownShadow &&
+										undefined !== dropdownShadow[0] &&
+										undefined !== dropdownShadow[0].opacity
+											? dropdownShadow[0].opacity
+											: 0.2
+									}
+									hOffset={
+										undefined !== dropdownShadow &&
+										undefined !== dropdownShadow[0] &&
+										undefined !== dropdownShadow[0].hOffset
+											? dropdownShadow[0].hOffset
+											: 0
+									}
+									vOffset={
+										undefined !== dropdownShadow &&
+										undefined !== dropdownShadow[0] &&
+										undefined !== dropdownShadow[0].vOffset
+											? dropdownShadow[0].vOffset
+											: 0
+									}
+									blur={
+										undefined !== dropdownShadow &&
+										undefined !== dropdownShadow[0] &&
+										undefined !== dropdownShadow[0].blur
+											? dropdownShadow[0].blur
+											: 14
+									}
+									spread={
+										undefined !== dropdownShadow &&
+										undefined !== dropdownShadow[0] &&
+										undefined !== dropdownShadow[0].spread
+											? dropdownShadow[0].spread
+											: 0
+									}
+									inset={
+										undefined !== dropdownShadow &&
+										undefined !== dropdownShadow[0] &&
+										undefined !== dropdownShadow[0].inset
+											? dropdownShadow[0].inset
+											: false
+									}
+									onEnableChange={(value) => {
+										saveShadow({ enable: value });
+									}}
+									onColorChange={(value) => {
+										saveShadow({ color: value });
+									}}
+									onOpacityChange={(value) => {
+										saveShadow({ opacity: value });
+									}}
+									onHOffsetChange={(value) => {
+										saveShadow({ hOffset: value });
+									}}
+									onVOffsetChange={(value) => {
+										saveShadow({ vOffset: value });
+									}}
+									onBlurChange={(value) => {
+										saveShadow({ blur: value });
+									}}
+									onSpreadChange={(value) => {
+										saveShadow({ spread: value });
+									}}
+									onInsetChange={(value) => {
+										saveShadow({ inset: value });
+									}}
+								/>
+							)}
+
+							{showSettings('fontSettings', 'kadence/navigation') && (
+								<KadencePanelBody
+									title={__('Typography Settings', 'kadence-blocks')}
+									initialOpen={false}
+									panelName={'kb-adv-btn-font-family'}
+								>
+									<TypographyControls
+										fontSize={dropdownTypography[0].size}
+										onFontSize={(value) => saveDropdownTypography({ size: value })}
+										fontSizeType={dropdownTypography[0].sizeType}
+										onFontSizeType={(value) => saveDropdownTypography({ sizeType: value })}
+										lineHeight={dropdownTypography[0].lineHeight}
+										onLineHeight={(value) => saveDropdownTypography({ lineHeight: value })}
+										lineHeightType={dropdownTypography[0].lineType}
+										onLineHeightType={(value) => saveDropdownTypography({ lineType: value })}
+										reLetterSpacing={dropdownTypography[0].letterSpacing}
+										onLetterSpacing={(value) => saveDropdownTypography({ letterSpacing: value })}
+										letterSpacingType={dropdownTypography[0].letterType}
+										onLetterSpacingType={(value) => saveDropdownTypography({ letterType: value })}
+										textTransform={dropdownTypography[0].textTransform}
+										onTextTransform={(value) => saveDropdownTypography({ textTransform: value })}
+										fontFamily={dropdownTypography[0].family}
+										onFontFamily={(value) => saveDropdownTypography({ family: value })}
+										onFontChange={(select) => {
+											saveDropdownTypography({
+												family: select.value,
+												google: select.google,
+											});
+										}}
+										onFontArrayChange={(values) => saveDropdownTypography(values)}
+										googleFont={dropdownTypography[0].google}
+										onGoogleFont={(value) => saveDropdownTypography({ google: value })}
+										loadGoogleFont={dropdownTypography[0].loadGoogle}
+										onLoadGoogleFont={(value) => saveDropdownTypography({ loadGoogle: value })}
+										fontVariant={dropdownTypography[0].variant}
+										onFontVariant={(value) => saveDropdownTypography({ variant: value })}
+										fontWeight={dropdownTypography[0].weight}
+										onFontWeight={(value) => saveDropdownTypography({ weight: value })}
+										fontStyle={dropdownTypography[0].style}
+										onFontStyle={(value) => saveDropdownTypography({ style: value })}
+										fontSubset={dropdownTypography[0].subset}
+										onFontSubset={(value) => saveDropdownTypography({ subset: value })}
+									/>
+								</KadencePanelBody>
+							)}
+						</KadencePanelBody>
 					</>
 				)}
 

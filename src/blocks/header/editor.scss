@@ -1,0 +1,30 @@
+.wp-block {
+	&[data-align="center"],
+	&[data-align="full"],
+	&[data-align="wide"] {
+		.wp-block-kadence-header .kb-header {
+			margin-left: auto;
+			margin-right: auto;
+		}
+	}
+
+	&[data-align="left"] {
+		.wp-block-kadence-header {
+			width: 100%;
+			.kb-header {
+				width: 100%;
+				float: left;
+			}
+		}
+	}
+
+	&[data-align="right"] {
+		.wp-block-kadence-header {
+			width: 100%;
+			.kb-header {
+				width: 100%;
+				float: right;
+			}
+		}
+	}
+}

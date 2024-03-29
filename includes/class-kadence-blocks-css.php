@@ -576,11 +576,15 @@ class Kadence_Blocks_CSS {
 	 * @since  1.0
 	 *
 	 * @param  string $property - the css property
-	 * @param  string $value - the value to be placed with the property
+	 * @param  mixed  $value - the value to be placed with the property
+	 * @param  mixed  $check_empty - the value to be checkd if empty
 	 * @return $this
 	 */
-	public function add_property( $property, $value = null ) {
+	public function add_property( $property, $value = null, $check_empty = null ) {
 		if ( null === $value ) {
+			return $this;
+		}
+		if ( null !== $check_empty && empty( $check_empty ) ) {
 			return $this;
 		}
 		if ( in_array( $property, $this->_special_properties_list ) ) {
@@ -922,57 +926,11 @@ class Kadence_Blocks_CSS {
 	/**
 	 * Generates the font output.
 	 *
-	 * @param array  $font an array of font settings.
-	 * @param object $css an object of css output.
-	 * @param string $inherit an string to determine if the font should inherit.
-	 * @return string
+	 * @param array $typography an array of font settings.
 	 */
-	public function render_font( $font, $css, $inherit = null ) {
-		if ( empty( $font ) ) {
-			return false;
-		}
-		if ( ! is_array( $font ) ) {
-			return false;
-		}
-		if ( isset( $font['style'] ) && ! empty( $font['style'] ) ) {
-			$css->add_property( 'font-style', $font['style'] );
-		}
-		if ( isset( $font['weight'] ) && ! empty( $font['weight'] ) ) {
-			$css->add_property( 'font-weight', $font['weight'] );
-		}
-		$size_type = ( isset( $font['sizeType'] ) && ! empty( $font['sizeType'] ) ? $font['sizeType'] : 'px' );
-		if ( isset( $font['size'] ) && isset( $font['size']['desktop'] ) && ! empty( $font['size']['desktop'] ) ) {
-			$css->add_property( 'font-size', $this->get_font_size( $font['size']['desktop'], $size_type ) );
-		}
-		$line_type = ( isset( $font['lineType'] ) && ! empty( $font['lineType'] ) ? $font['lineType'] : '' );
-		$line_type = ( '-' !== $line_type ? $line_type : '' );
-		if ( isset( $font['lineHeight'] ) && isset( $font['lineHeight']['desktop'] ) && ! empty( $font['lineHeight']['desktop'] ) ) {
-			$css->add_property( 'line-height', $font['lineHeight']['desktop'] . $line_type );
-		}
-		$letter_type = ( isset( $font['spacingType'] ) && ! empty( $font['spacingType'] ) ? $font['spacingType'] : 'em' );
-		if ( isset( $font['letterSpacing'] ) && isset( $font['letterSpacing']['desktop'] ) && ! empty( $font['letterSpacing']['desktop'] ) ) {
-			$css->add_property( 'letter-spacing', $font['letterSpacing']['desktop'] . $letter_type );
-		}
-		$family = ( isset( $font['family'] ) && ! empty( $font['family'] ) && 'inherit' !== $font['family'] ? $font['family'] : '' );
-		if ( ! empty( $family ) ) {
-			if ( strpos( $family, '"') === false && strpos( $family, ',') === false && strpos( $family, ' ' ) !== false ) {
-				$family = "'" . $family . "'";
-			}
-			$css->add_property( 'font-family', apply_filters( 'kadence_theme_font_family_string', $family ) );
-			if ( isset( $font['google'] ) && true === $font['google'] ) {
-				if ( ! empty( $inherit ) && 'body' === $inherit ) {
-					$this->maybe_add_google_font( $font, $inherit );
-				} else {
-					$this->maybe_add_google_font( $font );
-				}
-			}
-		}
-		if ( isset( $font['transform'] ) && ! empty( $font['transform'] ) ) {
-			$css->add_property( 'text-transform', $font['transform'] );
-		}
-		if ( isset( $font['color'] ) && ! empty( $font['color'] ) ) {
-			$css->add_property( 'color', $this->render_color( $font['color'] ) );
-		}
+	public function render_font( $typography ) {
+		$attributes = array( 'typography' => $typography );
+		$this->render_typography( $attributes );
 	}
 	/**
 	 * Generates the font height output.
@@ -1895,6 +1853,40 @@ class Kadence_Blocks_CSS {
 		}
 		$this->set_media_state( 'desktop' );
 	}
+
+	/**
+	 * Generates a border string for a single side at a single screen size.
+	 *
+	 * @param array $border an array of border settings.
+	 * @return string
+	 */
+	public function render_border( $border, $side = 'top' ) {
+		if ( empty( $border ) || empty( $border[0] ) ) {
+			return false;
+		}
+		if ( ! is_array( $border[0] ) ) {
+			return false;
+		}
+		if ( ! isset( $border[0][ $side ] ) ) {
+			return false;
+		}
+
+		$border_side = $border[0][ $side ];
+
+		if ( ! isset( $border_side[2] ) || empty( $border_side[2] ) ) {
+			return false;
+		}
+
+		$border_string = '';
+		$style         = ( isset( $border_side[1] ) && ! empty( $border_side[1] ) ? $border_side[1] : 'solid' );
+		$width         = ( isset( $border_side[2] ) && ! empty( $border_side[2] ) ? $border_side[2] : '0' );
+		$unit          = ( isset( $border[0]['unit'] ) && ! empty( $border[0]['unit'] ) ? $border[0]['unit'] : 'px' );
+		$color         = ( isset( $border_side[0] ) && ! empty( $border_side[0] ) ? $border_side[0] : 'transparent' );
+		$border_string = $width . $unit . ' ' . $style . ' ' . $this->render_color( $color );
+
+		return $border_string;
+	}
+
 	/**
 	 * Generates the border styles output.
 	 *
@@ -1921,14 +1913,14 @@ class Kadence_Blocks_CSS {
 			'second_prop' => 'border-right',
 			'third_prop'  => 'border-bottom',
 			'fourth_prop' => 'border-left',
+			'sides_prop_keys' => array(
+				'top' => 'first_prop',
+				'right' => 'second_prop',
+				'bottom' => 'third_prop',
+				'left' => 'fourth_prop',
+			),
 		);
 		$args = wp_parse_args( $args, $defaults );
-		$sides_prop_keys = array(
-			'top' => 'first_prop',
-			'right' => 'second_prop',
-			'bottom' => 'third_prop',
-			'left' => 'fourth_prop',
-		);
 		$sizes = array(
 			'desktop',
 			'tablet',
@@ -1936,7 +1928,7 @@ class Kadence_Blocks_CSS {
 		);
 		foreach ( $sizes as $size ) {
 			$this->set_media_state( $size );
-			foreach ( $sides_prop_keys as $side => $prop_key ) {
+			foreach ( $args['sides_prop_keys'] as $side => $prop_key ) {
 				$width = $this->get_border_value( $attributes, $args, $side, $size, 'width', $single_styles );
 				$color = $this->get_border_value( $attributes, $args, $side, $size, 'color', $single_styles );
 				$style = $this->get_border_value( $attributes, $args, $side, $size, 'style', $single_styles );
@@ -2314,25 +2306,41 @@ class Kadence_Blocks_CSS {
 			}
 		}
 	}
+
 	/**
 	 * Generates the size output.
 	 *
 	 * @param array $size an array of size settings.
 	 * @return string
 	 */
-	public function render_size( $size ) {
+	public function render_half_size( $size, $unit = 'px' ) {
 		if ( empty( $size ) ) {
 			return false;
 		}
-		if ( ! is_array( $size ) ) {
+		$size_number = $size ? $size : '0';
+		$size_unit   = $unit ? $unit : 'em';
+
+		$size_string = 'calc(' . $size_number . $size_unit . ' / 2)';
+		return $size_string;
+	}
+
+	/**
+	 * Generates the size output.
+	 *
+	 * @param array $size an array of size settings.
+	 * @return string
+	 */
+	public function render_size( $size, $unit = 'px' ) {
+		if ( empty( $size ) ) {
 			return false;
 		}
-		$size_number = ( isset( $size['size'] ) && ! empty( $size['size'] ) ? $size['size'] : '0' );
-		$size_unit   = ( isset( $size['unit'] ) && ! empty( $size['unit'] ) ? $size['unit'] : 'em' );
+		$size_number = $size ? $size : '0';
+		$size_unit   = $unit ? $unit : 'em';
 
 		$size_string = $size_number . $size_unit;
 		return $size_string;
 	}
+
 	/**
 	 * Add google font to array.
 	 *
@@ -2582,6 +2590,166 @@ class Kadence_Blocks_CSS {
 	 */
 	public function set_spacing_sizes( $sizes ) {
 		$this->spacing_sizes = $sizes;
+	}
+
+	/**
+	 * Get the value for a responsive attribute considering inheritance.
+	 *
+	 * @param mixed   $value The desktop value.
+	 * @param mixed   $value_tablet The tablet value.
+	 * @param mixed   $value_mobile The mobile value.
+	 * @param string  $size The size.
+	 * @param boolean $check_array if you should check if an array has any values.
+	 * @return mixed
+	 */
+	public function get_inherited_value( $value, $value_tablet, $value_mobile, $size = 'Desktop', $check_array = false ) {
+
+		if ( ! $check_array ) {
+			if ( $size === 'Mobile' ) {
+				if ( ! empty( $value_mobile ) ) {
+					return $value_mobile;
+				} else if ( ! empty( $value_tablet ) ) {
+					return $value_tablet;
+				}
+			} else if ( $size === 'Tablet' ) {
+				if ( ! empty( $value_tablet ) ) {
+					return $value_tablet;
+				}
+			}
+		} else {
+			if ( $size === 'Mobile' ) {
+				if ( ! $this->empty_but_check_array( $value_mobile ) ) {
+					return $value_mobile;
+				} else if ( ! $this->empty_but_check_array( $value_tablet ) ) {
+					return $value_tablet;
+				}
+			} else if ( $size === 'Tablet' ) {
+				if ( ! $this->empty_but_check_array( $value_tablet ) ) {
+					return $value_tablet;
+				}
+			}
+		}
+		return $value;
+	}
+
+	/**
+	 * Does a check to see if any of the values in this array are not empty.
+	 *
+	 * @param mixed $value the array.
+	 * @return boolean
+	 */
+	public function empty_but_check_array( $value ) {
+		$has_value = false;
+		if ( ! is_array( $value ) ) {
+			return empty( $value );
+		}
+
+		foreach ( $value as $array_value ) {
+			if ( is_array( $array_value ) ) {
+				$has_value = ! $this->empty_but_check_array( $array_value );
+			} else if ( ! empty( $array_value ) ) {
+				$has_value = true;
+			}
+		}
+		return ! $has_value;
+	}
+
+	/**
+	 * Returns a copy of an attributes array, attempts to make values in the form {attribute}Tablet, {attribute}Mobile inherit.
+	 *
+	 * @param array $attributes the attributes.
+	 * @return array
+	 */
+	public function auto_inherit_attribtues( $attributes ) {
+		$inherit_array = array();
+
+		foreach ( $attributes as $key => $value ) {
+			$is_tablet_key = str_ends_with( $key, 'Tablet' );
+			$is_mobile_key = str_ends_with( $key, 'Mobile' );
+
+			if ( $is_tablet_key || $is_mobile_key ) {
+				$desktop_key = substr( $key, 0, -6 );
+				$tablet_key = $desktop_key . 'Tablet';
+				$mobile_key = $desktop_key . 'Mobile';
+
+				if ( array_key_exists( $desktop_key, $attributes ) && array_key_exists( $tablet_key, $attributes ) && array_key_exists( $mobile_key, $attributes ) ) {
+					$inherit_array[ $key ] = $this->get_inherited_value( $attributes[ $desktop_key ], $attributes[ $tablet_key ], $attributes[ $mobile_key ], $is_tablet_key ? 'Tablet' : 'Mobile', true );
+				} else {
+					$inherit_array[ $key ] = $value;
+				}
+			} else {
+				$inherit_array[ $key ] = $value;
+			}
+		}
+
+		return $inherit_array;
+	}
+
+	/**
+	 * Reduces attributes in an array of the form {attribute}Tablet, {attribute}Mobile down to their base (desktop) key given a size.
+	 *
+	 * @param array   $attributes the attributes.
+	 * @param string  $key the key.
+	 * @param string  $size the size.
+	 * @param boolean $inherit if the attribute should inherit.
+	 * @return mixed
+	 */
+	public function get_sized_attribute( $attributes, $key, $size = 'Desktop', $inherit = true ) {
+		$sized_key = $size == 'Desktop' ? $key : $key . $size;
+
+		if ( array_key_exists( $sized_key, $attributes ) ) {
+			$desktop_key = $key;
+			$tablet_key = $desktop_key . 'Tablet';
+			$mobile_key = $desktop_key . 'Mobile';
+
+			if ( array_key_exists( $desktop_key, $attributes ) && array_key_exists( $tablet_key, $attributes ) && array_key_exists( $mobile_key, $attributes ) && $inherit ) {
+				return $this->get_inherited_value( $attributes[ $desktop_key ], $attributes[ $tablet_key ], $attributes[ $mobile_key ], $size, true );
+			}
+
+			return $attributes[ $sized_key ];
+		} else if ( array_key_exists( $key, $attributes ) ) {
+			return $attributes[ $key ];
+		}
+
+		return null;
+	}
+
+	/**
+	 * Gets an Attribute for a given responsive size base on the form {attribute}Tablet, {attribute}Mobile.
+	 *
+	 * @param array   $attributes the attributes.
+	 * @param string  $size the size.
+	 * @param boolean $inherit if the attribute should inherit.
+	 * @return mixed
+	 */
+	public function get_sized_attributes_auto( $attributes, $size = 'Desktop', $inherit = true, $special_keys = array() ) {
+		$sized_array = array();
+
+		foreach ( $attributes as $key => $value ) {
+			$is_tablet_key = str_ends_with( $key, 'Tablet' );
+			$is_mobile_key = str_ends_with( $key, 'Mobile' );
+			$is_special_key = array_key_exists( $key, $special_keys );
+
+			if ( $is_tablet_key || $is_mobile_key ) {
+				$desktop_key = substr( $key, 0, -6 );
+				$tablet_key = $desktop_key . 'Tablet';
+				$mobile_key = $desktop_key . 'Mobile';
+
+				if ( array_key_exists( $desktop_key, $attributes ) && array_key_exists( $tablet_key, $attributes ) && array_key_exists( $mobile_key, $attributes ) ) {
+					$sized_array[ $desktop_key ] = $this->get_sized_attribute( $attributes, $desktop_key, $size, $inherit );
+				}
+			} else if ( $is_special_key ) {
+				$desktop_value = $special_keys[ $key ]['Desktop'];
+				$tablet_value = $special_keys[ $key ]['Tablet'];
+				$mobile_value = $special_keys[ $key ]['Mobile'];
+
+				$sized_array[ $key ] = $this->get_inherited_value( $desktop_value, $tablet_value, $mobile_value, $size, true );
+			} else {
+				$sized_array[ $key ] = $value;
+			}
+		}
+
+		return $sized_array;
 	}
 }
 Kadence_Blocks_CSS::get_instance();

@@ -39,4 +39,6 @@ export { default as getPostOrFseId } from './get-post-or-fse-id';
 export { default as hashString } from './hash-string';
 export { default as arrayStringToInt } from './array-string-to-int';
 
+export { default as useEditorWidth } from './use-editor-width';
+
 export { default as KadenceBlocksCSS } from './css';

@@ -91,6 +91,27 @@ $trip_advisor: #00af87;
 $imdb: #f5c518;
 $anchor: #5000b9;
 
+@mixin parent-toggles-menus-styles {
+	.link-drop-wrap .dropdown-navigation-toggle {
+		position: absolute;
+		left: 0;
+		z-index: 10;
+		top: 0;
+		bottom: 0;
+		justify-content: flex-end;
+		width: 100%;
+	}
+}
+
+@mixin uncollapse-sub-menus {
+	ul.menu ul.sub-menu {
+		@include show-sub-menu();
+	}
+	.link-drop-wrap .dropdown-navigation-toggle {
+		display: none;
+	}
+}
+
 @mixin hide-sub-menu {
 	opacity: 0;
 	visibility: hidden;
@@ -109,6 +130,13 @@ $anchor: #5000b9;
 	overflow: visible;
 }
 
+@mixin navigation-fade-up-styles {
+	transform: translate3d(0, 10px, 0);
+}
+@mixin navigation-fade-down-styles {
+	transform: translate3d(0, -10px, 0);
+}
+
 @mixin horizontal-navigation-base-styles {
 	.navigation ul ul.sub-menu,
 	.navigation ul ul.submenu {
@@ -119,16 +147,21 @@ $anchor: #5000b9;
 		margin-left: 0;
 		box-shadow: 0 2px 13px rgba(0, 0, 0, 0.1);
 		z-index: 1000;
+		width: initial;
 	}
 	.navigation ul ul.quadmenu-row {
 		flex-direction: row;
+	}
+	.navigation ul ul li.menu-item > .link-drop-wrap > a {
+		padding: 1em;
+		width: 200px;
 	}
 	body:not(.hide-focus-outline)
 		.navigation
 		li.menu-item--has-toggle
 		> .link-drop-wrap
 		> a:focus
-		.dropdown-nav-toggle {
+		.title-dropdown-navigation-toggle {
 		opacity: 0.2;
 	}
 	// Hide divider for last item.
@@ -150,23 +183,54 @@ $anchor: #5000b9;
 			@include show-sub-menu();
 		}
 	}
-	.navigation.navigation-dropdown-animation-fade-up {
+	//In the editor we just look for these classes as they will come and go as the preview device changes.
+	//In the frontend, they will all be present, so must each be wrapped in a media query
+	//Desktop fade up style
+	.navigation.navigation-desktop-dropdown-animation-fade-up {
 		ul ul.sub-menu,
 		ul ul.submenu {
-			transform: translate3d(0, 10px, 0);
+			@include navigation-fade-up-styles();
 		}
 	}
-	.navigation.navigation-dropdown-animation-fade-down {
+	//Tablet fade up style
+	.navigation.navigation-tablet-dropdown-animation-fade-up {
 		ul ul.sub-menu,
 		ul ul.submenu {
-			transform: translate3d(0, -10px, 0);
+			@include navigation-fade-up-styles();
+		}
+	}
+	//Mobile fade up style
+	.navigation.navigation-mobile-dropdown-animation-fade-up {
+		ul ul.sub-menu,
+		ul ul.submenu {
+			@include navigation-fade-up-styles();
+		}
+	}
+	.navigation.navigation-desktop-dropdown-animation-fade-down {
+		ul ul.sub-menu,
+		ul ul.submenu {
+			@include navigation-fade-down-styles();
+		}
+	}
+	//Tablet fade up style
+	.navigation.navigation-tablet-dropdown-animation-fade-down {
+		ul ul.sub-menu,
+		ul ul.submenu {
+			@include navigation-fade-down-styles();
+		}
+	}
+	//Mobile fade up style
+	.navigation.navigation-mobile-dropdown-animation-fade-down {
+		ul ul.sub-menu,
+		ul ul.submenu {
+			@include navigation-fade-down-styles();
 		}
 	}
 
 	/*--------------------------------------------------------------
-		## Submenu Toggles for Header Menus
-		--------------------------------------------------------------*/
-	.wp-site-blocks .nav--toggle-sub .dropdown-nav-special-toggle {
+		 ## Submenu Toggles for Header Menus
+		 --------------------------------------------------------------*/
+	.nav--toggle-sub .dropdown-navigation-toggle {
 		position: absolute !important;
 		overflow: hidden;
 		padding: 0 !important;
@@ -184,16 +248,19 @@ $anchor: #5000b9;
 		left: auto;
 		right: calc(1.4em / 2);
 		pointer-events: none;
+
+		//this is editor only, don't need to see this for horizontal navs at all while editing
+		display: none;
 	}
-	.wp-site-blocks .nav--toggle-sub .sub-menu .dropdown-nav-special-toggle {
+	.nav--toggle-sub .sub-menu .dropdown-navigation-toggle {
 		width: 2.6em;
 		margin: 0 !important;
 		right: 0;
 	}
-	.nav--toggle-sub .dropdown-nav-special-toggle:focus {
+	.nav--toggle-sub .dropdown-navigation-toggle:focus {
 		z-index: 10;
 	}
-	.nav--toggle-sub .dropdown-nav-toggle {
+	.nav--toggle-sub .title-dropdown-navigation-toggle {
 		display: block;
 		background: transparent;
 		position: absolute;
@@ -214,26 +281,34 @@ $anchor: #5000b9;
 		transform: translateY(-50%);
 		overflow: visible;
 		transition: opacity 0.2s ease;
+
+		.kadence-svg-icon {
+			align-self: center;
+		}
 	}
-	.nav--toggle-sub ul ul .dropdown-nav-toggle {
+	.nav--toggle-sub ul ul .title-dropdown-navigation-toggle {
 		right: 0.2em;
 	}
 
-	.nav--toggle-sub ul ul .dropdown-nav-toggle .kadence-svg-iconset {
+	.nav--toggle-sub ul ul .title-dropdown-navigation-toggle .kadence-svg-iconset {
 		transform: rotate(-90deg);
 	}
 	.nav--toggle-sub li.menu-item-has-children {
 		position: relative;
+
+		.link-drop-wrap > a > .link-drop-title-wrap {
+			padding-right: 1em;
+		}
 	}
-	.nav-drop-title-wrap {
+	.link-drop-title-wrap {
 		position: relative;
-		padding-right: 1em;
-		display: block;
+		display: flex;
+		flex-wrap: nowrap;
 	}
 	/*
-		* If the dropdown toggle is active with JS, then
-		* we'll take care of showing the submenu with JS.
-		*/
+		 * If the dropdown toggle is active with JS, then
+		 * we'll take care of showing the submenu with JS.
+		 */
 	.nav--toggle-sub li:hover > ul,
 	.nav--toggle-sub li.menu-item--toggled-on > ul,
 	.nav--toggle-sub li:not(.menu-item--has-toggle):focus > ul {
@@ -241,13 +316,13 @@ $anchor: #5000b9;
 	}
 
 	/*
-		* "focus-within" is an alternative to focus class for
-		* supporting browsers (all but IE/Edge) for no-JS context
-		* (e.g. AMP) See https://caniuse.com/#feat=css-focus-within
-		*
-		* This selector needs to stay separated, otherwise submenus
-		* will not be displayed with IE/Edge.
-		*/
+		 * "focus-within" is an alternative to focus class for
+		 * supporting browsers (all but IE/Edge) for no-JS context
+		 * (e.g. AMP) See https://caniuse.com/#feat=css-focus-within
+		 *
+		 * This selector needs to stay separated, otherwise submenus
+		 * will not be displayed with IE/Edge.
+		 */
 	.nav--toggle-sub li:not(.menu-item--has-toggle):focus-within > ul {
 		display: block;
 	}
@@ -256,7 +331,7 @@ $anchor: #5000b9;
 		.wp-site-blocks
 			.nav--toggle-sub
 			.menu-item--has-toggle:not(.menu-item--toggled-on)
-			.dropdown-nav-special-toggle {
+			.dropdown-navigation-toggle {
 			left: 0;
 			right: 0 !important;
 			margin-right: 0 !important;
@@ -272,7 +347,6 @@ $anchor: #5000b9;
 @mixin vertical-navigation-base-styles {
 	.navigation {
 		width: 100%;
-
 		display: block;
 		.menu-container {
 			display: block;
@@ -283,6 +357,9 @@ $anchor: #5000b9;
 					//margin: initial;
 				}
 			}
+		}
+		ul ul li.menu-item > .link-drop-wrap > a {
+			width: 100%;
 		}
 	}
 
@@ -304,7 +381,7 @@ $anchor: #5000b9;
 		a {
 			color: inherit;
 		}
-		.drawer-sub-toggle {
+		.vertical-sub-toggle {
 			background: transparent;
 			color: inherit;
 			padding: 0.5em 0.7em;
@@ -313,30 +390,49 @@ $anchor: #5000b9;
 			border-radius: 0;
 			box-shadow: none;
 			line-height: normal;
+			display: flex;
+			align-items: center;
 		}
-		.drawer-sub-toggle[aria-expanded="true"] svg {
+		.vertical-sub-toggle[aria-expanded="true"] svg {
 			transform: rotate(180deg);
 		}
+
+		.title-dropdown-navigation-toggle {
+			display: none;
+		}
 	}
-	.navigation.drawer-navigation-parent-toggle-true .link-drop-wrap .drawer-sub-toggle {
-		position: absolute;
-		left: 0;
-		z-index: 10;
-		top: 0;
-		bottom: 0;
-		justify-content: flex-end;
-		width: 100%;
+
+	//In the editor we just look for these classes as they will come and go as the preview device changes.
+	//In the frontend, they will all be present, so must each be wrapped in a media query
+	//Desktop parent toggle sub menus
+	.navigation-desktop-parent-toggles-menus-true {
+		@include parent-toggles-menus-styles();
 	}
-	// .navigation ul li .link-drop-wrap a[href="#"] + button {
-	// 	position: absolute;
-	// 	z-index: 10;
-	// 	left:0;
-	// 	right:0;
-	// 	top:0;
-	// 	bottom:0;
-	// 	width: 100%;
-	//     justify-content: flex-end;
-	// }
+	//Tablet parent toggle sub menus
+	.navigation-tablet-parent-toggles-menus-true {
+		@include parent-toggles-menus-styles();
+	}
+	//Mobiel parent toggle sub menus
+	.navigation-mobile-parent-toggles-menus-true {
+		@include parent-toggles-menus-styles();
+	}
+
+	//navs that indicate all sub menus should not be collapsed should be shown
+	//In the editor we just look for these classes as they will come and go as the preview device changes.
+	//In the frontend, they will all be present, so must each be wrapped in a media query
+	//Desktop collapse sub menus
+	.navigation-desktop-collapse-sub-menus-false {
+		@include uncollapse-sub-menus();
+	}
+	//Tablet collapse sub menus
+	.navigation-tablet-collapse-sub-menus-false {
+		@include uncollapse-sub-menus();
+	}
+	//Mobile collapse sub menus
+	.navigation-mobile-collapse-sub-menus-false {
+		@include uncollapse-sub-menus();
+	}
+
 	.navigation ul ul {
 		padding-left: 1em;
 		transition: all 0.2s ease-in-out;
@@ -348,20 +444,33 @@ $anchor: #5000b9;
 	.navigation ul ul ul ul ul ul {
 		padding-left: 0;
 	}
+	.navigation > .menu-container > ul > li:not(:last-of-type) > .link-drop-wrap {
+		border-right: none;
+	}
 }
 
 @mixin layout-stretch-styles {
 	/*
-	FROM KADENCE THEME HEADER
-	*/
+	 FROM KADENCE THEME HEADER
+	 */
 	flex-grow: 1;
 	.navigation {
 		flex-grow: 1;
-		.menu-container {
+		& > .menu-container {
 			flex-grow: 1;
-			.menu {
+			& > .menu {
 				flex-grow: 1;
 				justify-content: space-between;
+
+				& > .menu-item {
+					margin: 0;
+					flex: 1 1 auto;
+					& > .link-drop-wrap > a {
+						width: fit-content;
+						margin-left: auto;
+						margin-right: auto;
+					}
+				}
 			}
 		}
 	}
@@ -369,15 +478,19 @@ $anchor: #5000b9;
 
 @mixin layout-fill-stretch-styles {
 	/*
-	FROM KADENCE THEME HEADER
-	*/
+	 FROM KADENCE THEME HEADER
+	 */
 	.navigation {
-		.menu-container {
-			.menu {
+		& > .menu-container {
+			& > .menu {
 				display: grid;
 				grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-				> li {
+
+				& > .menu-item {
 					text-align: center;
+					& > .link-drop-wrap > a {
+						width: initial;
+					}
 				}
 			}
 		}
@@ -424,13 +537,15 @@ $anchor: #5000b9;
 			height: 100%;
 			align-items: center;
 			> li {
-				display: flex;
 				height: 100%;
 				align-items: center;
-				> .link-drop-wrap > a {
-					display: flex;
+				> .link-drop-wrap {
 					height: 100%;
-					align-items: center;
+					> a {
+						display: flex;
+						height: 100%;
+						align-items: center;
+					}
 				}
 			}
 		}
@@ -439,11 +554,11 @@ $anchor: #5000b9;
 
 .wp-block-kadence-navigation {
 	/*
-	FROM KADENCE THEME NAV
-	*/
+	 FROM KADENCE THEME NAV
+	 */
 	/*--------------------------------------------------------------
-	## Dropdown navigation for header Menus
-	--------------------------------------------------------------*/
+	 ## Dropdown navigation for header Menus
+	 --------------------------------------------------------------*/
 
 	//handle reveal for all navs, clicking / toggling only
 	.navigation {
@@ -459,25 +574,21 @@ $anchor: #5000b9;
 		ul.menu li:not(.menu-item--has-toggle):focus > ul {
 			@include show-sub-menu();
 		}
-		//navs that indicate all sub menus should not be collapsed should be shown
-		ul.menu.collapse-sub-nav-false ul.sub-menu {
-			@include show-sub-menu();
-		}
 	}
 
-	.rtl .nav--toggle-sub .dropdown-nav-toggle {
+	.rtl .nav--toggle-sub .title-dropdown-navigation-toggle {
 		right: auto;
 		left: 0;
 	}
-	.rtl .primary-menu-container > ul > li.menu-item .dropdown-nav-special-toggle {
+	.rtl .primary-menu-container > ul > li.menu-item .dropdown-navigation-toggle {
 		right: auto;
 		left: calc(1.4em / 2);
 	}
-	.rtl .wp-site-blocks .nav--toggle-sub .sub-menu .dropdown-nav-special-toggle {
+	.rtl .wp-site-blocks .nav--toggle-sub .sub-menu .dropdown-navigation-toggle {
 		left: 0;
 		right: auto;
 	}
-	.rtl .nav--toggle-sub ul ul .dropdown-nav-toggle .kadence-svg-iconset {
+	.rtl .nav--toggle-sub ul ul .title-dropdown-navigation-toggle .kadence-svg-iconset {
 		transform: rotate(-270deg);
 	}
 	.rtl .navigation ul ul ul.sub-menu,
@@ -485,59 +596,60 @@ $anchor: #5000b9;
 		right: 100%;
 		left: auto;
 	}
-	.rtl .nav-drop-title-wrap {
+	.rtl .link-drop-title-wrap {
 		padding-left: 1em;
 		padding-right: 0;
 	}
-	.wp-site-blocks .nav--toggle-sub .kadence-menu-mega-enabled .sub-menu .dropdown-nav-special-toggle {
+	.wp-site-blocks .nav--toggle-sub .kadence-menu-mega-enabled .sub-menu .dropdown-navigation-toggle {
 		display: none;
 	}
 	/*--------------------------------------------------------------
-	## Header navigation top item styling
-	--------------------------------------------------------------*/
+	 ## Header navigation top item styling
+	 --------------------------------------------------------------*/
 
 	//In the editor we just look for these classes as they will come and go as the preview device changes.
 	//In the frontend, they will all be present, so must each be wrapped in a media query
 	//Desktop full-height-menu
-	.navigation-desktop-style-underline-fullheight,
-	.navigation-desktop-style-fullheight {
+	&.navigation-desktop-orientation-horizontal .navigation-desktop-style-underline-fullheight,
+	&.navigation-desktop-orientation-horizontal .navigation-desktop-style-fullheight {
 		@include navigation-full-height-styles();
 	}
 	//Tablet full-height-menu
-	.navigation-tablet-style-underline-fullheight,
-	.navigation-tablet-style-fullheight {
+	&.navigation-tablet-orientation-horizontal .navigation-tablet-style-underline-fullheight,
+	&.navigation-tablet-orientation-horizontal .navigation-tablet-style-fullheight {
 		@include navigation-full-height-styles();
 	}
 	//Mobile full-height-menu
-	.navigation-mobile-style-underline-fullheight,
-	.navigation-mobile-style-fullheight {
+	&.navigation-mobile-orientation-horizontal .navigation-mobile-style-underline-fullheight,
+	&.navigation-mobile-orientation-horizontal .navigation-mobile-style-fullheight {
 		@include navigation-full-height-styles();
 	}
 
 	//In the editor we just look for these classes as they will come and go as the preview device changes.
 	//In the frontend, they will all be present, so must each be wrapped in a media query
 	//Desktop underline menu
-	.navigation[class*="navigation-style-underline"] {
+	&.navigation-desktop-orientation-horizontal .navigation[class*="navigation-desktop-style-underline"] {
 		@include navigation-underline-styles();
 	}
 	//Tablet underline menu
-	.navigation[class*="navigation-tablet-style-underline"] {
+	&.navigation-tablet-orientation-horizontal .navigation[class*="navigation-tablet-style-underline"] {
 		@include navigation-underline-styles();
 	}
 	//Mobile underline menu
-	.navigation[class*="navigation-mobile-style-underline"] {
+	&.navigation-mobile-orientation-horizontal .navigation[class*="navigation-mobile-style-underline"] {
 		@include navigation-underline-styles();
 	}
 
 	/*--------------------------------------------------------------
-	## Header navigation menus
-	--------------------------------------------------------------*/
+	 ## Header navigation menus
+	 --------------------------------------------------------------*/
 	.navigation,
 	.menu-container {
 		display: flex;
 	}
 	.navigation li.menu-item > .link-drop-wrap {
 		transition: all 0.2s ease-in-out;
+		position: relative;
 	}
 	.navigation li.menu-item > .link-drop-wrap > a {
 		display: block;
@@ -560,12 +672,6 @@ $anchor: #5000b9;
 	}
 	.navigation ul li.menu-item > .link-drop-wrap > a {
 		padding: 0.6em 0.5em;
-	}
-	.navigation ul ul li.menu-item > .link-drop-wrap > a {
-		padding: 1em;
-	}
-	.navigation ul ul li.menu-item > .link-drop-wrap > a {
-		width: 200px;
 	}
 	.navigation ul ul ul.sub-menu,
 	.navigation ul ul ul.submenu {
@@ -599,8 +705,8 @@ $anchor: #5000b9;
 		@include horizontal-navigation-base-styles;
 	}
 	/*--------------------------------------------------------------
-	## Mobile Menu
-	--------------------------------------------------------------*/
+	 ## Mobile Menu
+	 --------------------------------------------------------------*/
 	//In the editor we just look for these classes as they will come and go as the preview device changes.
 	//In the frontend, they will all be present, so must each be wrapped in a media query
 	//Desktop vertical menu
@@ -616,8 +722,8 @@ $anchor: #5000b9;
 		@include vertical-navigation-base-styles;
 	}
 	/*--------------------------------------------------------------
-	## Mobile menu drawer Trigger
-	--------------------------------------------------------------*/
+	 ## Mobile menu drawer Trigger
+	 --------------------------------------------------------------*/
 	.menu-toggle-open {
 		display: flex;
 		background: transparent;
@@ -646,8 +752,8 @@ $anchor: #5000b9;
 		box-shadow: none;
 	}
 	/*--------------------------------------------------------------
-	## Mobile Menu Drawer
-	--------------------------------------------------------------*/
+	 ## Mobile Menu Drawer
+	 --------------------------------------------------------------*/
 	.popup-drawer {
 		position: fixed;
 		display: none;
@@ -917,12 +1023,12 @@ $anchor: #5000b9;
 	}
 
 	/*
-	FROM KADENCE PRO MENU-ADDON
-	*/
+	 FROM KADENCE PRO MENU-ADDON
+	 */
 	.navigation ul li a:not([href]) {
 		cursor: default;
 	}
-	.nav-drop-title-wrap {
+	.link-drop-title-wrap {
 		display: flex;
 		align-items: center;
 	}
@@ -951,7 +1057,7 @@ $anchor: #5000b9;
 		background: var(--global-palette1);
 		color: white;
 	}
-	.nav-drop-title-wrap .menu-highlight-item {
+	.link-drop-title-wrap .menu-highlight-item {
 		font-size: 0.7em;
 		margin-left: 0.5em;
 	}
@@ -1011,7 +1117,7 @@ $anchor: #5000b9;
 					a {
 						width: 100%;
 					}
-					.dropdown-nav-toggle {
+					.title-dropdown-navigation-toggle {
 						display: none;
 					}
 					> li {
@@ -1045,7 +1151,7 @@ $anchor: #5000b9;
 			}
 		}
 	}
-	// Sub menu show/hide styles
+	// Sub menu show/hide mega menu fixes
 	.navigation[class*="header-navigation-dropdown-animation-fade"] {
 		.menu-container {
 			ul.menu {
@@ -1074,34 +1180,34 @@ $anchor: #5000b9;
 	//In the editor we just look for these classes as they will come and go as the preview device changes.
 	//In the frontend, they will all be present, so must each be wrapped in a media query
 	//Desktop stretch
-	&.navigation-desktop-layout-stretch-true {
+	&.navigation-desktop-layout-stretch-true.navigation-desktop-orientation-horizontal {
 		@include layout-stretch-styles();
 	}
 	//Tablet stretch
-	&.navigation-tablet-layout-stretch-true {
+	&.navigation-tablet-layout-stretch-true.navigation-tablet-orientation-horizontal {
 		@include layout-stretch-styles();
 	}
 	//Mobile stretch
-	&.navigation-mobile-layout-stretch-true {
+	&.navigation-mobile-layout-stretch-true.navigation-mobile-orientation-horizontal {
 		@include layout-stretch-styles();
 	}
 
 	//In the editor we just look for these classes as they will come and go as the preview device changes.
 	//In the frontend, they will all be present, so must each be wrapped in a media query
 	//Desktop fill-stretch
-	&.navigation-desktop-layout-stretch-true.navigation-desktop-layout-fill-stretch-true {
+	&.navigation-desktop-layout-stretch-true.navigation-desktop-layout-fill-stretch-true.navigation-desktop-orientation-horizontal {
 		@include layout-fill-stretch-styles();
 	}
 	//Tablet fill-stretch
-	&.navigation-tablet-layout-stretch-true.navigation-tablet-layout-fill-stretch-true {
+	&.navigation-tablet-layout-stretch-true.navigation-tablet-layout-fill-stretch-true.navigation-tablet-orientation-horizontal {
 		@include layout-fill-stretch-styles();
 	}
 	//Mobile fill-stretch
-	&.navigation-mobile-layout-stretch-true.navigation-mobile-layout-fill-stretch-true {
+	&.navigation-mobile-layout-stretch-true.navigation-mobile-layout-fill-stretch-true.navigation-mobile-orientation-horizontal {
 		@include layout-fill-stretch-styles();
 	}
 
 	/*
-	NEW STYLES FOR BLOCK
-	*/
+	 NEW STYLES FOR BLOCK
+	 */
 }

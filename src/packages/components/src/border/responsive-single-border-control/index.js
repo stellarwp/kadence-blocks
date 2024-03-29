@@ -93,11 +93,11 @@ export default function ResponsiveSingleBorderControl({
 		//if the mobile or tablet units are the same as desktop, unset them so they now inherit / follow desktop.
 		if (currentMobileObject && isEqual(currentDesktopObject.unit, currentMobileObject?.unit)) {
 			currentMobileObject.unit = '';
-			onChangeMobile(currentMobileObject);
+			handleOnChangeMobile('', 'unit');
 		}
 		if (currentTabletObject && isEqual(currentDesktopObject.unit, currentTabletObject?.unit)) {
 			currentTabletObject.unit = '';
-			onChangeTablet(currentTabletObject);
+			handleOnChangeTablet('', 'unit');
 		}
 	}, []);
 	const { setPreviewDeviceType } = useDispatch('kadenceblocks/data');
@@ -151,18 +151,17 @@ export default function ResponsiveSingleBorderControl({
 		: 'px';
 
 	const handleOnChangeDesktop = (size, attr) => {
-		console.log();
 		var newVal = JSON.parse(JSON.stringify(value));
 		newVal[0][attr] = size;
 		onChange(newVal);
 	};
 	const handleOnChangeTablet = (size, attr) => {
-		var newVal = JSON.parse(JSON.stringify(valueTablet));
+		var newVal = JSON.parse(JSON.stringify(tabletValue));
 		newVal[0][attr] = size;
 		onChangeTablet(newVal);
 	};
 	const handleOnChangeMobile = (size, attr) => {
-		var newVal = JSON.parse(JSON.stringify(valueMobile));
+		var newVal = JSON.parse(JSON.stringify(mobileValue));
 		newVal[0][attr] = size;
 		onChangeMobile(newVal);
 	};
