@@ -1,6 +1,11 @@
 /**
- * BLOCK: Kadence Header Container (Desktop)
+ * BLOCK: Kadence Header Column
  */
+
+/**
+ * Import Css
+ */
+import './editor.scss';
 
 /**
  * External dependencies
@@ -73,7 +78,7 @@ export function Edit(props) {
 
 	const innerBlocksProps = useInnerBlocksProps(
 		{
-			className: 'kadence-header-inner-column',
+			className: 'kadence-header-column',
 			style: {
 				display: previewDevice === 'Desktop' ? 'block' : 'none',
 			},

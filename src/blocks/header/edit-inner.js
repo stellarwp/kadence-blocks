@@ -59,66 +59,36 @@ const ANCHOR_REGEX = /[\s#]/g;
 const INNERBLOCK_TEMPLATE = [
 	createBlock('kadence/header-container-desktop', {}, [
 		createBlock('kadence/header-row', { metadata: { name: __('Top Row', 'kadence-blocks') } }, [
-			createBlock('kadence/header-column', { metadata: { name: __('Left Column', 'kadence-blocks') } }, []),
-			createBlock(
-				'kadence/header-column',
-				{ metadata: { name: __('Left Middle Column', 'kadence-blocks') } },
-				[]
-			),
-			createBlock('kadence/header-column', { metadata: { name: __('Middle Column', 'kadence-blocks') } }, []),
-			createBlock(
-				'kadence/header-column',
-				{ metadata: { name: __('Right Middle Column', 'kadence-blocks') } },
-				[]
-			),
-			createBlock('kadence/header-column', { metadata: { name: __('Right Column', 'kadence-blocks') } }, []),
+			createBlock('kadence/header-column', { metadata: { name: __('Left', 'kadence-blocks') } }, []),
+			createBlock('kadence/header-column', { metadata: { name: __('Center', 'kadence-blocks') } }, []),
+			createBlock('kadence/header-column', { metadata: { name: __('Right', 'kadence-blocks') } }, []),
 		]),
 		createBlock('kadence/header-row', { metadata: { name: __('Middle Row', 'kadence-blocks') } }, [
-			createBlock('kadence/header-column', { metadata: { name: __('Left Column', 'kadence-blocks') } }, []),
-			createBlock(
-				'kadence/header-column',
-				{ metadata: { name: __('Left Middle Column', 'kadence-blocks') } },
-				[]
-			),
-			createBlock('kadence/header-column', { metadata: { name: __('Middle Column', 'kadence-blocks') } }, []),
-			createBlock(
-				'kadence/header-column',
-				{ metadata: { name: __('Right Middle Column', 'kadence-blocks') } },
-				[]
-			),
-			createBlock('kadence/header-column', { metadata: { name: __('Right Column', 'kadence-blocks') } }, []),
+			createBlock('kadence/header-column', { metadata: { name: __('Left', 'kadence-blocks') } }, []),
+			createBlock('kadence/header-column', { metadata: { name: __('Center', 'kadence-blocks') } }, []),
+			createBlock('kadence/header-column', { metadata: { name: __('Right', 'kadence-blocks') } }, []),
 		]),
 		createBlock('kadence/header-row', { metadata: { name: __('Bottom Row', 'kadence-blocks') } }, [
-			createBlock('kadence/header-column', { metadata: { name: __('Left Column', 'kadence-blocks') } }, []),
-			createBlock(
-				'kadence/header-column',
-				{ metadata: { name: __('Left Middle Column', 'kadence-blocks') } },
-				[]
-			),
-			createBlock('kadence/header-column', { metadata: { name: __('Middle Column', 'kadence-blocks') } }, []),
-			createBlock(
-				'kadence/header-column',
-				{ metadata: { name: __('Right Middle Column', 'kadence-blocks') } },
-				[]
-			),
-			createBlock('kadence/header-column', { metadata: { name: __('Right Column', 'kadence-blocks') } }, []),
+			createBlock('kadence/header-column', { metadata: { name: __('Left', 'kadence-blocks') } }, []),
+			createBlock('kadence/header-column', { metadata: { name: __('Center', 'kadence-blocks') } }, []),
+			createBlock('kadence/header-column', { metadata: { name: __('Right', 'kadence-blocks') } }, []),
 		]),
 	]),
 	createBlock('kadence/header-container-tablet', {}, [
 		createBlock('kadence/header-row', { metadata: { name: __('Top Row', 'kadence-blocks') } }, [
-			createBlock('kadence/header-column', { metadata: { name: __('Left Column', 'kadence-blocks') } }, []),
-			createBlock('kadence/header-column', { metadata: { name: __('Middle Column', 'kadence-blocks') } }, []),
-			createBlock('kadence/header-column', { metadata: { name: __('Right Column', 'kadence-blocks') } }, []),
+			createBlock('kadence/header-column', { metadata: { name: __('Left', 'kadence-blocks') } }, []),
+			createBlock('kadence/header-column', { metadata: { name: __('Center', 'kadence-blocks') } }, []),
+			createBlock('kadence/header-column', { metadata: { name: __('Right', 'kadence-blocks') } }, []),
 		]),
 		createBlock('kadence/header-row', { metadata: { name: __('Middle Row', 'kadence-blocks') } }, [
-			createBlock('kadence/header-column', { metadata: { name: __('Left Column', 'kadence-blocks') } }, []),
-			createBlock('kadence/header-column', { metadata: { name: __('Middle Column', 'kadence-blocks') } }, []),
-			createBlock('kadence/header-column', { metadata: { name: __('Right Column', 'kadence-blocks') } }, []),
+			createBlock('kadence/header-column', { metadata: { name: __('Left', 'kadence-blocks') } }, []),
+			createBlock('kadence/header-column', { metadata: { name: __('Center', 'kadence-blocks') } }, []),
+			createBlock('kadence/header-column', { metadata: { name: __('Right', 'kadence-blocks') } }, []),
 		]),
 		createBlock('kadence/header-row', { metadata: { name: __('Bottom Row', 'kadence-blocks') } }, [
-			createBlock('kadence/header-column', { metadata: { name: __('Left Column', 'kadence-blocks') } }, []),
-			createBlock('kadence/header-column', { metadata: { name: __('Middle Column', 'kadence-blocks') } }, []),
-			createBlock('kadence/header-column', { metadata: { name: __('Right Column', 'kadence-blocks') } }, []),
+			createBlock('kadence/header-column', { metadata: { name: __('Left', 'kadence-blocks') } }, []),
+			createBlock('kadence/header-column', { metadata: { name: __('Center', 'kadence-blocks') } }, []),
+			createBlock('kadence/header-column', { metadata: { name: __('Right', 'kadence-blocks') } }, []),
 		]),
 	]),
 ];
@@ -298,7 +268,7 @@ export function EditInner(props) {
 			onInput: !direct ? (a, b) => onInput([{ ...newBlock, innerBlocks: a }], b) : undefined,
 			onChange: !direct ? (a, b) => onChange([{ ...newBlock, innerBlocks: a }], b) : undefined,
 			templateLock: 'all',
-			template: INNERBLOCK_TEMPLATE,
+			// template: INNERBLOCK_TEMPLATE,
 		}
 	);
 

@@ -1,0 +1,25 @@
+.kadence-header-row-wrap {
+	display: grid !important;
+	grid-template-columns: 1fr auto 1fr;
+
+	.kadence-header-column:nth-child(2) {
+		justify-content: center;
+	}
+
+	.kadence-header-column:nth-child(1) {
+		justify-content: left;
+	}
+
+	.kadence-header-column:nth-child(3) {
+		justify-content: right;
+	}
+	.kadence-header-column {
+		display: flex !important;
+		align-items: center;
+
+		* {
+			margin-right: 10px !important;
+			margin-left: unset !important;
+		}
+	}
+}
