@@ -353,6 +353,12 @@ export default function Edit(props) {
 		undefined !== mediaIcon[0].tabletSize && undefined !== mediaIcon[0].tabletSize ? mediaIcon[0].tabletSize : '',
 		undefined !== mediaIcon[0].mobileSize && undefined !== mediaIcon[0].mobileSize ? mediaIcon[0].mobileSize : ''
 	);
+	const previewHighlightIconSize = getPreviewSize(
+		previewDevice,
+		undefined !== highlightIcon[0] && undefined !== highlightIcon[0].size ? highlightIcon[0].size : '14',
+		undefined !== highlightIcon[0].tabletSize && undefined !== highlightIcon[0].tabletSize ? highlightIcon[0].tabletSize : '',
+		undefined !== highlightIcon[0].mobileSize && undefined !== highlightIcon[0].mobileSize ? highlightIcon[0].mobileSize : ''
+	);
 
 	useEffect(() => {
 		const postOrFseId = getPostOrFseId(props, parentData);
@@ -1171,6 +1177,23 @@ export default function Edit(props) {
 								value={highlightIcon[0].icon}
 								onChange={(value) => saveMediaIcon({ icon: value }, 'highlightIcon')}
 							/>
+							<ResponsiveRangeControls
+								label={__('Icon Size', 'kadence-blocks')}
+								value={previewHighlightIconSize}
+								onChange={(value) => saveMediaIcon({ size: value }, 'highlightIcon')}
+								tabletValue={previewHighlightIconSize}
+								onChangeTablet={(value) => {
+									saveMediaIcon({ tabletSize: value }, 'highlightIcon');
+								}}
+								mobileValue={previewHighlightIconSize}
+								onChangeMobile={(value) => {
+									saveMediaIcon({ mobileSize: value }, 'highlightIcon');
+								}}
+								min={0}
+								max={40}
+								step={1}
+								unit={'px'}
+							/>
 							<SmallResponsiveControl
 								label={'Highlight Label Colors'}
 								desktopChildren={highlightColorControls()}
@@ -1901,16 +1924,16 @@ export default function Edit(props) {
 							{description && <span className="menu-label-description">{description}</span>}
 							{hasChildren && <span className="title-dropdown-navigation-toggle">{ArrowDown}</span>}
 						</span>
-						<span className="link-highlight-label">
-							{highlightLabel}
-							{ undefined !== highlightIcon?.[0]?.icon &&
+						
+							<span className="link-highlight-label">
+								{ highlightLabel }
+								
 								<IconRender
-									className={`link-svg-icon link-svg-icon-${highlightIcon[0].icon}`}
+									className={`kt-svg-icon`}
 									name={highlightIcon[0].icon}
-									htmltag="span"
+									size={previewHighlightIconSize}
 								/>
-							}
-						</span>
+							</span>
 					</a>
 
 					{hasChildren && (
