@@ -493,8 +493,8 @@
 			"type": "array",
 			"default": [
 				{
-					"icon": "fe_aperture",
-					"size": 20,
+					"icon": "",
+					"size": 12,
 					"sizeTablet": "",
 					"sizeMobile": "",
 					"width": 2,

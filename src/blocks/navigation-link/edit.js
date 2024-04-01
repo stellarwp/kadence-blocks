@@ -1164,7 +1164,7 @@ export default function Edit(props) {
 								onBlur={() => setIsLabelFieldFocused(false)}
 							/>
 							<SmallResponsiveControl
-								label={'Highlight Label'}
+								label={'Highlight Label Color'}
 								desktopChildren={highlightColorControls()}
 								tabletChildren={highlightColorControls('Tablet')}
 								mobileChildren={highlightColorControls('Mobile')}
@@ -1896,6 +1896,16 @@ export default function Edit(props) {
 							{mediaContent}
 							{description && <span className="menu-label-description">{description}</span>}
 							{hasChildren && <span className="title-dropdown-navigation-toggle">{ArrowDown}</span>}
+						</span>
+						<span className="link-highlight-label">
+							{highlightLabel}
+							{ undefined !== highlightIcon?.[0]?.icon &&
+								<IconRender
+									className={`link-svg-icon link-svg-icon-${highlightIcon[0].icon}`}
+									name={highlightIcon[0].icon}
+									htmltag="span"
+								/>
+							}
 						</span>
 					</a>
 
