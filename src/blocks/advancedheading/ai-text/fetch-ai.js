@@ -28,7 +28,9 @@ export function getAIContentHelper() {
 			const url = new URL(window.location.href);
 			const domain = url.hostname;
 			const token = {
-				domain,
+				domain: window?.kadence_blocks_params?.proData?.domain
+					? window.kadence_blocks_params.proData.domain
+					: domain,
 				key: window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '',
 				site_name: window?.kadence_blocks_params?.site_name ? window.kadence_blocks_params.site_name : '',
 				product_slug: window?.kadence_blocks_params?.pSlug ? window.kadence_blocks_params.pSlug : '',
@@ -66,7 +68,9 @@ export function getAIContentHelper() {
 			const url = new URL(window.location.href);
 			const domain = url.hostname;
 			const token = {
-				domain,
+				domain: window?.kadence_blocks_params?.proData?.domain
+					? window.kadence_blocks_params.proData.domain
+					: domain,
 				key: window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '',
 				site_name: window?.kadence_blocks_params?.site_name ? window.kadence_blocks_params.site_name : '',
 				product_slug: window?.kadence_blocks_params?.pSlug ? window.kadence_blocks_params.pSlug : '',
@@ -106,7 +110,9 @@ export function getAIContentHelper() {
 			const url = new URL(window.location.href);
 			const domain = url.hostname;
 			const token = {
-				domain,
+				domain: window?.kadence_blocks_params?.proData?.domain
+					? window.kadence_blocks_params.proData.domain
+					: domain,
 				key: window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '',
 				site_name: window?.kadence_blocks_params?.site_name ? window.kadence_blocks_params.site_name : '',
 				product_slug: window?.kadence_blocks_params?.pSlug ? window.kadence_blocks_params.pSlug : '',
