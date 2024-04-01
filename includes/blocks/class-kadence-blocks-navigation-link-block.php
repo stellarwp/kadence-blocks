@@ -158,6 +158,10 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			if ( $sized_attributes['mediaAlign'] == 'left' ) {
 				$css->add_property( 'order', '-1' );
 				$css->add_property( 'margin-right', $css->render_size( $media_style_margin[0], 'px' ) );
+
+				$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . '.kadence-menu-has-description.kadence-menu-has-icon > .link-drop-wrap > a > .link-drop-title-wrap' );
+				$css->add_property( 'grid-template-columns', 'auto 1fr' );
+
 			} else {
 				$css->add_property( 'margin-left', $css->render_size( $media_style_margin[0], 'px' ) );
 			}
@@ -230,6 +234,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$is_active_ancestor = $child_info['has_active_child'];
 		$is_active   = $this->is_current( $attributes );
 		$is_mega_menu = ! empty( $nav_link_attributes['isMegaMenu'] );
+		$has_icon = $nav_link_attributes['mediaType'] == 'icon' && ! empty( $nav_link_attributes['mediaIcon'][0]['icon'] );
 		$mega_menu_width_class = 'kadence-menu-mega-width-' . ( $nav_link_attributes['megaMenuWidth'] ? $nav_link_attributes['megaMenuWidth'] : 'container' );
 
 		$wrapper_classes = array();
@@ -241,6 +246,8 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 		$wrapper_classes[] = $is_mega_menu ? 'kadence-menu-mega-enabled' : '';
 		$wrapper_classes[] = $is_mega_menu ? $mega_menu_width_class : '';
+		$wrapper_classes[] = $nav_link_attributes['description'] ? 'kadence-menu-has-description' : '';
+		$wrapper_classes[] = $has_icon ? 'kadence-menu-has-icon' : '';
 
 		$name = !empty( $nav_link_attributes['name'] ) ? $nav_link_attributes['name'] : '';
 
@@ -268,7 +275,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$sub_menu_content = $has_children ? '<ul ' . $sub_menu_attributes . '>' . $content . '</ul>' : '';
 
 		$svg_icon   = '';
-		if ( $nav_link_attributes['mediaType'] == 'icon' && ! empty( $nav_link_attributes['mediaIcon'][0]['icon'] ) ) {
+		if ( $has_icon ) {
 			$type         = substr( $nav_link_attributes['mediaIcon'][0]['icon'], 0, 2 );
 			$line_icon    = ( ! empty( $type ) && 'fe' == $type ? true : false );
 			$fill         = ( $line_icon ? 'none' : 'currentColor' );
@@ -277,6 +284,8 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$svg_icon = Kadence_Blocks_Svg_Render::render( $nav_link_attributes['mediaIcon'][0]['icon'], $fill, false, '', true, $extras );
 		}
 		$icon  = ! empty( $svg_icon ) ? '<div class="link-media-container"><span class="link-svg-icon link-svg-icon-' . esc_attr( $nav_link_attributes['mediaIcon'][0]['icon'] ) . '">' . $svg_icon . '</span></div>' : '';
+
+		$description = $nav_link_attributes['description'] ? '<span class="menu-label-description">' . $nav_link_attributes['description'] . '</span>' : '';
 
 		return sprintf(
 			'<li %1$s><div class="link-drop-wrap"><a class="wp-block-kadence-navigation-link__content"' . (! empty($nav_link_attributes['disableLink']) && true === $nav_link_attributes['disableLink'] ? '' : ' href="' . esc_url( $url ) . '"' ) . '><span class="link-drop-title-wrap">' . ( ! empty( $nav_link_attributes['hideLabel'] ) && true === $nav_link_attributes['hideLabel'] ? '' : esc_html( $label ) ) . $icon . '<span class="title-dropdown-navigation-toggle">%2$s</span></span></a></div>%3$s</li>',

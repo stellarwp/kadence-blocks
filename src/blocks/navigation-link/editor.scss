@@ -63,6 +63,8 @@
 
 	.link-media-container {
 		display: flex;
+		grid-row: span 2;
+
 		.link-svg-icon {
 			display: flex;
 		}
