@@ -240,6 +240,25 @@ export default function Edit(props) {
 		backgroundMobile,
 		backgroundHoverMobile,
 		backgroundActiveMobile,
+		highlightLabel,
+		labelBackground,
+		labelBackgroundHover,
+		labelBackgroundActive,
+		labelBackgroundTablet,
+		labelBackgroundHoverTablet,
+		labelBackgroundActiveTablet,
+		labelBackgroundMobile,
+		labelBackgroundHoverMobile,
+		labelBackgroundActiveMobile,
+		labelColor,
+		labelColorHover,
+		labelColorActive,
+		labelColorTablet,
+		labelColorHoverTablet,
+		labelColorActiveTablet,
+		labelColorMobile,
+		labelColorHoverMobile,
+		labelColorActiveMobile,
 		linkColorDropdown,
 		linkColorDropdownHover,
 		linkColorDropdownActive,
@@ -280,6 +299,7 @@ export default function Edit(props) {
 		mediaImage,
 		mediaIcon,
 		mediaStyle,
+		highlightIcon,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
@@ -436,7 +456,7 @@ export default function Edit(props) {
 			mediaImage: newUpdate,
 		});
 	};
-	const saveMediaIcon = (value) => {
+	const saveMediaIcon = (value, attrName = 'mediaIcon') => {
 		const newUpdate = mediaIcon.map((item, index) => {
 			if (0 === index) {
 				item = { ...item, ...value };
@@ -444,7 +464,7 @@ export default function Edit(props) {
 			return item;
 		});
 		setAttributes({
-			mediaIcon: newUpdate,
+			[attrName]: newUpdate,
 		});
 	};
 	const saveMediaStyle = (value) => {
@@ -586,6 +606,77 @@ export default function Edit(props) {
 			templateLock: isMegaMenu ? 'all' : false,
 		}
 	);
+
+	const highlightColorControls = (size = '', suffix = '') => {
+		const labelColorValue = attributes['labelColor' + suffix + size];
+		const labelBackgroundValue = attributes['labelBackground' + suffix + size];
+		const labelColorHoverValue = attributes['labelColor' + suffix + 'Hover' + size];
+		const labelBackgroundHoverValue = attributes['labelBackground' + suffix + 'Hover' + size];
+		const labelColorActiveValue = attributes['labelColor' + suffix + 'Active' + size];
+		const labelBackgroundActiveValue = attributes['labelBackground' + suffix + 'Active' + size];
+		return (
+			<>
+				<HoverToggleControl
+					normal={
+						<>
+							<PopColorControl
+								label={__('Label Color', 'kadence-blocks')}
+								value={labelColorValue}
+								default={''}
+								onChange={(value) => setAttributes({ ['labelColor' + suffix + size]: value })}
+								key={'normal'}
+							/>
+							<PopColorControl
+								label={__('Label Background', 'kadence-blocks')}
+								value={labelBackgroundValue}
+								default={''}
+								onChange={(value) => setAttributes({ ['labelBackground' + suffix + size]: value })}
+								key={'normalb'}
+							/>
+						</>
+					}
+					hover={
+						<>
+							<PopColorControl
+								label={__('Label Color Hover', 'kadence-blocks')}
+								value={labelColorHoverValue}
+								default={''}
+								onChange={(value) => setAttributes({ ['labelColor' + suffix + 'Hover' + size]: value })}
+								key={'hover'}
+							/>
+							<PopColorControl
+								label={__('Label Background Hover', 'kadence-blocks')}
+								value={labelBackgroundHoverValue}
+								default={''}
+								onChange={(value) => setAttributes({ ['labelBackground' + suffix + 'Hover' + size]: value })}
+								key={'hoverb'}
+							/>
+						</>
+					}
+					active={
+						<>
+							<PopColorControl
+								label={__('Label Color Active', 'kadence-blocks')}
+								value={labelColorActiveValue}
+								default={''}
+								onChange={(value) => setAttributes({ ['labelColor' + suffix + 'Active' + size]: value })}
+								key={'active'}
+							/>
+							<PopColorControl
+								label={__('Label Background Active', 'kadence-blocks')}
+								value={labelBackgroundActiveValue}
+								default={''}
+								onChange={(value) =>
+									setAttributes({ ['labelBackground' + suffix + 'Active' + size]: value })
+								}
+								key={'activeb'}
+							/>
+						</>
+					}
+				/>
+			</>
+		);
+	};
 
 	const styleColorControls = (size = '', suffix = '') => {
 		const linkColorValue = attributes['linkColor' + suffix + size];
@@ -1059,6 +1150,30 @@ export default function Edit(props) {
 								/>
 							</KadencePanelBody>
 						)}
+
+						<KadencePanelBody panelName={'navigation-link-style-settings'}>
+							<TextControl
+								__nextHasNoMarginBottom
+								value={highlightLabel ? stripHTML(highlightLabel) : ''}
+								onChange={(labelValue) => {
+									setAttributes({ highlightLabel: labelValue });
+								}}
+								label={__('Highlight Label')}
+								autoComplete="off"
+								onFocus={() => setIsLabelFieldFocused(true)}
+								onBlur={() => setIsLabelFieldFocused(false)}
+							/>
+							<SmallResponsiveControl
+								label={'Highlight Label'}
+								desktopChildren={highlightColorControls()}
+								tabletChildren={highlightColorControls('Tablet')}
+								mobileChildren={highlightColorControls('Mobile')}
+							></SmallResponsiveControl>
+							<KadenceIconPicker
+								value={highlightIcon[0].icon}
+								onChange={(value) => saveMediaIcon({ icon: value }, 'highlightIcon')}
+							/>
+						</KadencePanelBody>
 
 						<KadencePanelBody
 							title={__('Sub Menu Styles', 'kadence-blocks')}

@@ -186,6 +186,46 @@
 			"type": "string",
 			"default": ""
 		},
+		"highlightLabel": {
+			"type": "string",
+			"default": ""
+		},
+		"labelColor": {
+			"type": "string",
+			"default": ""
+		},
+		"labelColorHover": {
+			"type": "string",
+			"default": ""
+		},
+		"labelColorActive": {
+			"type": "string",
+			"default": ""
+		},
+		"labelColorTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"labelColorHoverTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"labelColorActiveTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"labelColorMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"labelColorHoverMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"labelColorActiveMobile": {
+			"type": "string",
+			"default": ""
+		},
 		"background": {
 			"type": "string",
 			"default": ""
@@ -219,6 +259,42 @@
 			"default": ""
 		},
 		"backgroundActiveMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"labelBackground": {
+			"type": "string",
+			"default": ""
+		},
+		"labelBackgroundHover": {
+			"type": "string",
+			"default": ""
+		},
+		"labelBackgroundActive": {
+			"type": "string",
+			"default": ""
+		},
+		"labelBackgroundTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"labelBackgroundHoverTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"labelBackgroundActiveTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"labelBackgroundMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"labelBackgroundHoverMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"labelBackgroundActiveMobile": {
 			"type": "string",
 			"default": ""
 		},
@@ -397,6 +473,23 @@
 			]
 		},
 		"mediaIcon": {
+			"type": "array",
+			"default": [
+				{
+					"icon": "fe_aperture",
+					"size": 20,
+					"sizeTablet": "",
+					"sizeMobile": "",
+					"width": 2,
+					"widthTablet": 2,
+					"widthMobile": 2,
+					"hoverAnimation": "none",
+					"title": "",
+					"flipIcon": ""
+				}
+			]
+		},
+		"highlightIcon": {
 			"type": "array",
 			"default": [
 				{
