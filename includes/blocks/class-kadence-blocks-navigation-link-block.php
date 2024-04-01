@@ -87,16 +87,18 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a' );
 		$css->render_measure_output( $nav_link_attributes, 'padding' );
 		$css->render_measure_output( $nav_link_attributes, 'margin' );
-
-		$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a .link-highlight-label' );
-		$css->add_property( 'color', $css->render_color( $attributes['labelColor'] ) );
-		$css->add_property( 'background-color', $css->render_color( $attributes['labelBackground'] ) );
-		$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a .link-highlight-label:hover' );
-		$css->add_property( 'color', $css->render_color( $attributes['labelColorHover'] ) );
-		$css->add_property( 'background-color', $css->render_color( $attributes['labelBackgroundHover'] ) );
-		$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a .link-highlight-label:active' );
-		$css->add_property( 'color', $css->render_color( $attributes['labelColorActive'] ) );
-		$css->add_property( 'background-color', $css->render_color( $attributes['labelBackgroundActive'] ) );
+		if( ! empty( $attributes['highlightLabel'] ) ) {
+			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a .link-highlight-label' );
+			$css->add_property( 'transition', 'color 0.35s ease-in-out, background-color 0.35s ease-in-out' );
+			$css->add_property( 'color', $css->render_color( $attributes['labelColor'] ) );
+			$css->add_property( 'background-color', $css->render_color( $attributes['labelBackground'] ) );
+			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a:hover .link-highlight-label' );
+			$css->add_property( 'color', $css->render_color( $attributes['labelColorHover'] ) );
+			$css->add_property( 'background-color', $css->render_color( $attributes['labelBackgroundHover'] ) );
+			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a:active .link-highlight-label' );
+			$css->add_property( 'color', $css->render_color( $attributes['labelColorActive'] ) );
+			$css->add_property( 'background-color', $css->render_color( $attributes['labelBackgroundActive'] ) );
+		}
 		
 		return $css->css_output();
 	}
