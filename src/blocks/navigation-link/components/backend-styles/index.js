@@ -32,6 +32,25 @@ export default function BackendStyles(props) {
 		backgroundMobile,
 		backgroundHoverMobile,
 		backgroundActiveMobile,
+		highlightLabel,
+		labelBackground,
+		labelBackgroundHover,
+		labelBackgroundActive,
+		labelBackgroundTablet,
+		labelBackgroundHoverTablet,
+		labelBackgroundActiveTablet,
+		labelBackgroundMobile,
+		labelBackgroundHoverMobile,
+		labelBackgroundActiveMobile,
+		labelColor,
+		labelColorHover,
+		labelColorActive,
+		labelColorTablet,
+		labelColorHoverTablet,
+		labelColorActiveTablet,
+		labelColorMobile,
+		labelColorHoverMobile,
+		labelColorActiveMobile,
 		linkColorDropdown,
 		linkColorDropdownHover,
 		linkColorDropdownActive,
@@ -121,6 +140,42 @@ export default function BackendStyles(props) {
 		backgroundHover,
 		backgroundHoverTablet,
 		backgroundHoverMobile
+	);
+	const previewLabelColor = getPreviewSize(
+		previewDevice,
+		labelColor,
+		labelColorTablet,
+		labelColorMobile
+	);
+	const previewLabelColorHover = getPreviewSize(
+		previewDevice,
+		labelColorHover,
+		labelColorHoverTablet,
+		labelColorHoverMobile
+	);
+	const previewLabelColorActive = getPreviewSize(
+		previewDevice,
+		labelColorActive,
+		labelColorActiveTablet,
+		labelColorActiveMobile
+	);
+	const previewLabelBackground = getPreviewSize(
+		previewDevice,
+		labelBackground,
+		labelBackgroundTablet,
+		labelBackgroundMobile
+	);
+	const previewLabelBackgroundHover = getPreviewSize(
+		previewDevice,
+		labelBackgroundHover,
+		labelBackgroundHoverTablet,
+		labelBackgroundHoverMobile
+	);
+	const previewLabelBackgroundActive = getPreviewSize(
+		previewDevice,
+		labelBackgroundActive,
+		labelBackgroundActiveTablet,
+		labelBackgroundActiveMobile
 	);
 	const previewBackgroundActive = getPreviewSize(
 		previewDevice,
@@ -363,6 +418,22 @@ export default function BackendStyles(props) {
 		);
 		css.add_property('color', css.render_color(previewMediaStyleColorActive));
 	}
+
+	css.set_selector(
+		`.wp-block-kadence-navigation-link${uniqueID}.menu-item > .link-drop-wrap > a .link-highlight-label`
+	);
+	css.add_property('color', css.render_color(previewLabelColor));
+	css.add_property('background-color', css.render_color(previewLabelBackground));
+	css.set_selector(
+		`.wp-block-kadence-navigation-link${uniqueID}.menu-item:hover > .link-drop-wrap > a .link-highlight-label`
+	);
+	css.add_property('color', css.render_color(previewLabelColorHover));
+	css.add_property('background-color', css.render_color(previewLabelBackgroundHover));
+	css.set_selector(
+		`.wp-block-kadence-navigation-link${uniqueID}.menu-item > .link-drop-wrap > a:active .link-highlight-label`
+	);
+	css.add_property('color', css.render_color(previewLabelColorActive));
+	css.add_property('background-color', css.render_color(previewLabelBackgroundActive));
 
 	const cssOutput = css.css_output();
 

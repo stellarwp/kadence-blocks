@@ -1151,7 +1151,11 @@ export default function Edit(props) {
 							</KadencePanelBody>
 						)}
 
-						<KadencePanelBody panelName={'navigation-link-style-settings'}>
+						<KadencePanelBody
+							title={__('Highlight Label Settings', 'kadence-blocks')}
+							initialOpen={false}
+							panelName={'navigation-link-highlight-settings'}
+						>
 							<TextControl
 								__nextHasNoMarginBottom
 								value={highlightLabel ? stripHTML(highlightLabel) : ''}
@@ -1163,16 +1167,16 @@ export default function Edit(props) {
 								onFocus={() => setIsLabelFieldFocused(true)}
 								onBlur={() => setIsLabelFieldFocused(false)}
 							/>
-							<SmallResponsiveControl
-								label={'Highlight Label Color'}
-								desktopChildren={highlightColorControls()}
-								tabletChildren={highlightColorControls('Tablet')}
-								mobileChildren={highlightColorControls('Mobile')}
-							></SmallResponsiveControl>
 							<KadenceIconPicker
 								value={highlightIcon[0].icon}
 								onChange={(value) => saveMediaIcon({ icon: value }, 'highlightIcon')}
 							/>
+							<SmallResponsiveControl
+								label={'Highlight Label Colors'}
+								desktopChildren={highlightColorControls()}
+								tabletChildren={highlightColorControls('Tablet')}
+								mobileChildren={highlightColorControls('Mobile')}
+							></SmallResponsiveControl>
 						</KadencePanelBody>
 
 						<KadencePanelBody
