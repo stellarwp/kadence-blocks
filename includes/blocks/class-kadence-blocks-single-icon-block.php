@@ -80,7 +80,6 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block {
 			$css->render_measure_output( $attributes, 'margin', 'margin', array( 'unit_key' => 'marginUnit' ) );
 
 			if ( isset( $attributes['style'] ) && 'stacked' === $attributes['style'] ) {
-				$css->render_color_output( $attributes, 'colorStacked', 'color' );
 				$css->render_color_output( $attributes, 'background', 'background' );
 				$css->render_color_output( $attributes, 'border', 'border-color' );
 				$css->render_range( $attributes, 'borderWidth', 'border-width' );
