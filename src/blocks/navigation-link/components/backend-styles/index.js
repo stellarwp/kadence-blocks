@@ -427,6 +427,7 @@ export default function BackendStyles(props) {
 	css.set_selector(
 		`.wp-block-kadence-navigation-link${uniqueID}.menu-item:hover > .link-drop-wrap > a .link-highlight-label`
 	);
+	css.add_property('transition', 'all 0.35s ease-in-out');
 	css.add_property('color', css.render_color(previewLabelColorHover));
 	css.add_property('background-color', css.render_color(previewLabelBackgroundHover));
 	css.set_selector(
