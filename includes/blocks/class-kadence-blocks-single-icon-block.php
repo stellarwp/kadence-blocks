@@ -84,17 +84,14 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block {
 				$css->render_range( $attributes, 'borderWidth', 'border-width' );
 				$css->render_range( $attributes, 'borderRadius', 'border-radius', '%' );
 				$css->render_measure_output( $attributes, 'padding', 'padding', array( 'unit_key' => 'paddingUnit' ) );
+				$css->set_selector( '.kt-svg-item-' . $unique_id . ':hover .kb-svg-icon-wrap' );
+				$css->render_color_output( $attributes, 'hBackground', 'background' );
+				$css->render_color_output( $attributes, 'hBorder', 'border-color' );
 			}
 			$css->render_measure_output( $attributes, 'margin', 'margin', array( 'unit_key' => 'marginUnit' ) );
 			// Hover.
 			$css->set_selector( '.kt-svg-item-' . $unique_id . ':hover .kb-svg-icon-wrap' );
 			$css->render_color_output( $attributes, 'hColor', 'color' );
-			if ( isset( $attributes['style'] ) && 'stacked' === $attributes['style'] ) {
-				$css->render_color_output( $attributes, 'hColorStacked', 'color' );
-			}
-			$css->render_color_output( $attributes, 'hBackground', 'background' );
-			$css->render_color_output( $attributes, 'hBorder', 'border-color' );
-
 		}
 
 		return $css->css_output();
