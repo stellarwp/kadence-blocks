@@ -188,6 +188,8 @@ class Kadence_Blocks_AI_Events {
 					'keywords'          => $event_data['keywords'] ?? '',
 					'tone'              => $event_data['tone'] ?? '',
 					'collections'       => $event_data['customCollections'] ?? '',
+					'lang'              => $event_data['lang'] ?? '',
+					'goals'             => $event_data['goals'] ?? '',
 				];
 				break;
 			case 'ai_wizard_complete':
@@ -201,6 +203,8 @@ class Kadence_Blocks_AI_Events {
 					'keywords'          => $event_data['keywords'] ?? '',
 					'tone'              => $event_data['tone'] ?? '',
 					'collections'       => $event_data['customCollections'] ?? '',
+					'lang'              => $event_data['lang'] ?? '',
+					'goals'             => $event_data['goals'] ?? '',
 				];
 				break;
 			case 'pattern_added_to_page':

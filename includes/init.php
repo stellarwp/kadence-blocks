@@ -240,6 +240,9 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 	if ( ! empty( $pro_data['key'] ) ) {
 		$is_authorized = is_authorized( $pro_data['key'], 'kadence-blocks', ( ! empty( $token ) ? $token : '' ), get_license_domain() );
 	}
+	if ( empty( $pro_data['domain'] ) ) {
+		$pro_data['domain'] = get_license_domain();
+	}
 	$font_sizes = apply_filters( 'kadence_blocks_variable_font_sizes', $font_sizes );
 	$subscribed = class_exists( 'Kadence_Blocks_Pro' ) ? true : get_option( 'kadence_blocks_wire_subscribe' );
 	$gfonts_path      = KADENCE_BLOCKS_PATH . 'includes/gfonts-array.php';
@@ -340,6 +343,23 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'icons' => file_exists( $icons_path ) ? include $icons_path : array(),
 		)
 	);
+	if ( apply_filters( 'kadence_blocks_preload_design_library', true ) ) {
+		$design_library_controller_upload = new Kadence_Blocks_Prebuilt_Library_REST_Controller();
+		wp_localize_script(
+			'kadence-blocks-js',
+			'kadence_blocks_params_library',
+			array(
+				'library_sections' => apply_filters( 'kadence_blocks_preload_design_library_data', $design_library_controller_upload->get_local_library_data() ),
+			)
+		);
+		wp_localize_script(
+			'kadence-blocks-js',
+			'kadence_blocks_params_wizard',
+			array(
+				'settings' => $prophecy_data,
+			)
+		);
+	}
 }
 add_action( 'enqueue_block_editor_assets', 'kadence_blocks_gutenberg_editor_assets_variables' );
 

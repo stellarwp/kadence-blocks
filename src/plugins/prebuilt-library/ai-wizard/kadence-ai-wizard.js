@@ -77,6 +77,9 @@ export function KadenceAiWizard(props) {
 	const { saveAiWizardData, getAiWizardData } = useDatabase();
 
 	async function handleSave() {
+		if (firstTime) {
+			sendEvent('ai_wizard_started');
+		}
 		const saveStatus = await saveAiWizardData({
 			firstTime: false,
 			isSubmitted: true,

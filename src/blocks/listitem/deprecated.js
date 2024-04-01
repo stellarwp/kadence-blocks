@@ -17,28 +17,28 @@ export default [
 	{
 		attributes: metadata.attributes,
 		apiVersion: 2,
-		save: ({ attributes }) => {
+		save: ( { attributes } ) => {
 			const { uniqueID, icon, link, target, width, text, style, level, showIcon, size } = attributes;
 
-			const classes = classnames({
+			const classes = classnames( {
 				'kt-svg-icon-list-item-wrap': true,
-				[`kt-svg-icon-list-item-${uniqueID}`]: uniqueID,
-				[`kt-svg-icon-list-style-${style}`]: style,
-				[`kt-svg-icon-list-level-${level}`]: level,
-			});
+				[ `kt-svg-icon-list-item-${ uniqueID }` ]: uniqueID,
+				[ `kt-svg-icon-list-style-${ style }` ]: style,
+				[ `kt-svg-icon-list-level-${ level }` ]: level,
+			} );
 
-			const blockProps = useBlockProps.save({
+			const blockProps = useBlockProps.save( {
 				className: classes,
-			});
+			} );
 
 			const iconName = icon ? icon : 'USE_PARENT_DEFAULT_ICON';
 
 			const iconSpan = (
 				<IconSpanTag
-					extraClass={'kt-svg-icon-list-single'}
-					name={iconName}
-					strokeWidth={'fe' === icon.substring(0, 2) ? width : undefined}
-					ariaHidden={'true'}
+					extraClass={ 'kt-svg-icon-list-single' }
+					name={ iconName }
+					strokeWidth={ 'fe' === icon.substring( 0, 2 ) ? width : undefined }
+					ariaHidden={ 'true' }
 				/>
 			);
 
@@ -63,24 +63,24 @@ export default [
 				);
 
 			return (
-				<li {...blockProps}>
-					{link && (
+				<li { ...blockProps }>
+					{ link && (
 						<a
-							href={link}
-							className={'kt-svg-icon-link'}
-							target={'_blank' === target ? target : undefined}
-							rel={'_blank' === target ? 'noopener noreferrer' : undefined}
+							href={ link }
+							className={ 'kt-svg-icon-link' }
+							target={ '_blank' === target ? target : undefined }
+							rel={ '_blank' === target ? 'noopener noreferrer' : undefined }
 						>
-							{showIcon ? iconSpan : emptyIcon}
-							<RichText.Content tagName="span" value={text} className={'kt-svg-icon-list-text'} />
+							{ showIcon ? iconSpan : emptyIcon }
+							<RichText.Content tagName="span" value={ text } className={ 'kt-svg-icon-list-text' } />
 						</a>
-					)}
-					{!link && (
+					) }
+					{ ! link && (
 						<>
-							{showIcon ? iconSpan : emptyIcon}
-							<RichText.Content tagName="span" value={text} className={'kt-svg-icon-list-text'} />
+							{ showIcon ? iconSpan : emptyIcon }
+							<RichText.Content tagName="span" value={ text } className={ 'kt-svg-icon-list-text' } />
 						</>
-					)}
+					) }
 				</li>
 			);
 		},
@@ -148,53 +148,53 @@ export default [
 				default: 0,
 			},
 		},
-		save: ({ attributes }) => {
+		save: ( { attributes } ) => {
 			const { uniqueID, icon, link, target, width, text, style, level } = attributes;
 
-			const classes = classnames({
+			const classes = classnames( {
 				'kt-svg-icon-list-item-wrap': true,
-				[`kt-svg-icon-list-item-${uniqueID}`]: uniqueID,
-				[`kt-svg-icon-list-style-${style}`]: style,
-				[`kt-svg-icon-list-level-${level}`]: level,
-			});
+				[ `kt-svg-icon-list-item-${ uniqueID }` ]: uniqueID,
+				[ `kt-svg-icon-list-style-${ style }` ]: style,
+				[ `kt-svg-icon-list-level-${ level }` ]: level,
+			} );
 
-			const blockProps = useBlockProps.save({
+			const blockProps = useBlockProps.save( {
 				className: classes,
-			});
+			} );
 
 			return (
-				<li {...blockProps}>
-					{link && (
+				<li { ...blockProps }>
+					{ link && (
 						<a
-							href={link}
-							className={'kt-svg-icon-link'}
-							target={'_blank' === target ? target : undefined}
-							rel={'_blank' === target ? 'noopener noreferrer' : undefined}
+							href={ link }
+							className={ 'kt-svg-icon-link' }
+							target={ '_blank' === target ? target : undefined }
+							rel={ '_blank' === target ? 'noopener noreferrer' : undefined }
 						>
-							{icon && (
+							{ icon && (
 								<IconSpanTag
-									extraClass={'kt-svg-icon-list-single'}
-									name={icon}
-									strokeWidth={'fe' === icon.substring(0, 2) ? width : undefined}
-									ariaHidden={'true'}
+									extraClass={ 'kt-svg-icon-list-single' }
+									name={ icon }
+									strokeWidth={ 'fe' === icon.substring( 0, 2 ) ? width : undefined }
+									ariaHidden={ 'true' }
 								/>
-							)}
-							<RichText.Content tagName="span" value={text} className={'kt-svg-icon-list-text'} />
+							) }
+							<RichText.Content tagName="span" value={ text } className={ 'kt-svg-icon-list-text' } />
 						</a>
-					)}
-					{!link && (
+					) }
+					{ ! link && (
 						<>
-							{icon && (
+							{ icon && (
 								<IconSpanTag
-									extraClass={'kt-svg-icon-list-single'}
-									name={icon}
-									strokeWidth={'fe' === icon.substring(0, 2) ? width : undefined}
-									ariaHidden={'true'}
+									extraClass={ 'kt-svg-icon-list-single' }
+									name={ icon }
+									strokeWidth={ 'fe' === icon.substring( 0, 2 ) ? width : undefined }
+									ariaHidden={ 'true' }
 								/>
-							)}
-							<RichText.Content tagName="span" value={text} className={'kt-svg-icon-list-text'} />
+							) }
+							<RichText.Content tagName="span" value={ text } className={ 'kt-svg-icon-list-text' } />
 						</>
-					)}
+					) }
 				</li>
 			);
 		},

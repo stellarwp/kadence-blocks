@@ -114,103 +114,103 @@ export const ENTITY_TYPE = [
 export const LANG_TYPE = [
 	{
 		value: 'da-DK',
-		label: __('Danish (Denmark)', 'kadence-starter-templates'),
+		label: __('Danish (Denmark)', 'kadence-blocks'),
 	},
 	{
 		value: 'nl-BE',
-		label: __('Dutch (Belgium)', 'kadence-starter-templates'),
+		label: __('Dutch (Belgium)', 'kadence-blocks'),
 	},
 	{
 		value: 'nl-N',
-		label: __('Dutch (Netherlands)', 'kadence-starter-templates'),
+		label: __('Dutch (Netherlands)', 'kadence-blocks'),
 	},
 	{
 		value: 'en-AU',
-		label: __('English (Australia)', 'kadence-starter-templates'),
+		label: __('English (Australia)', 'kadence-blocks'),
 	},
 	{
 		value: 'en-CA',
-		label: __('English (Canada)', 'kadence-starter-templates'),
+		label: __('English (Canada)', 'kadence-blocks'),
 	},
 	{
 		value: 'en-IN',
-		label: __('English (India)', 'kadence-starter-templates'),
+		label: __('English (India)', 'kadence-blocks'),
 	},
 	{
 		value: 'en-NZ',
-		label: __('English (New Zealand)', 'kadence-starter-templates'),
+		label: __('English (New Zealand)', 'kadence-blocks'),
 	},
 	{
 		value: 'en-GB',
-		label: __('English (UK)', 'kadence-starter-templates'),
+		label: __('English (UK)', 'kadence-blocks'),
 	},
 	{
 		value: 'en-US',
-		label: __('English (US)', 'kadence-starter-templates'),
+		label: __('English (US)', 'kadence-blocks'),
 	},
 	{
 		value: 'fr-BE',
-		label: __('French (Belgium)', 'kadence-starter-templates'),
+		label: __('French (Belgium)', 'kadence-blocks'),
 	},
 	{
 		value: 'fr-CA',
-		label: __('French (Canada)', 'kadence-starter-templates'),
+		label: __('French (Canada)', 'kadence-blocks'),
 	},
 	{
 		value: 'fr-FR',
-		label: __('French (France)', 'kadence-starter-templates'),
+		label: __('French (France)', 'kadence-blocks'),
 	},
 	{
 		value: 'de-AT',
-		label: __('German (Austria)', 'kadence-starter-templates'),
+		label: __('German (Austria)', 'kadence-blocks'),
 	},
 	{
 		value: 'de-BE',
-		label: __('German (Belgium)', 'kadence-starter-templates'),
+		label: __('German (Belgium)', 'kadence-blocks'),
 	},
 	{
 		value: 'de-DE',
-		label: __('German (Germany)', 'kadence-starter-templates'),
+		label: __('German (Germany)', 'kadence-blocks'),
 	},
 	{
 		value: 'de-CH',
-		label: __('German (Switzerland)', 'kadence-starter-templates'),
+		label: __('German (Switzerland)', 'kadence-blocks'),
 	},
 	{
 		value: 'it-IT',
-		label: __('Italian (Italy)', 'kadence-starter-templates'),
+		label: __('Italian (Italy)', 'kadence-blocks'),
 	},
 	{
 		value: 'pt-BR',
-		label: __('Portuguese (Brazil)', 'kadence-starter-templates'),
+		label: __('Portuguese (Brazil)', 'kadence-blocks'),
 	},
 	{
 		value: 'pt-PT',
-		label: __('Portuguese (Portugal)', 'kadence-starter-templates'),
+		label: __('Portuguese (Portugal)', 'kadence-blocks'),
 	},
 	{
 		value: 'es-AR',
-		label: __('Spanish (Argentina)', 'kadence-starter-templates'),
+		label: __('Spanish (Argentina)', 'kadence-blocks'),
 	},
 	{
 		value: 'es-CO',
-		label: __('Spanish (Colombia)', 'kadence-starter-templates'),
+		label: __('Spanish (Colombia)', 'kadence-blocks'),
 	},
 	{
 		value: 'es-419',
-		label: __('Spanish (Latin America)', 'kadence-starter-templates'),
+		label: __('Spanish (Latin America)', 'kadence-blocks'),
 	},
 	{
 		value: 'es-MX',
-		label: __('Spanish (Mexico)', 'kadence-starter-templates'),
+		label: __('Spanish (Mexico)', 'kadence-blocks'),
 	},
 	{
 		value: 'es-ES',
-		label: __('Spanish (Spain)', 'kadence-starter-templates'),
+		label: __('Spanish (Spain)', 'kadence-blocks'),
 	},
 	{
 		value: 'sv-SE',
-		label: __('Swedish (Sweden)', 'kadence-starter-templates'),
+		label: __('Swedish (Sweden)', 'kadence-blocks'),
 	},
 ];
 
@@ -228,6 +228,54 @@ export const ENTITY_TO_NAME = {
 		placeholder: __('Your Organization', 'kadence-blocks'),
 	},
 };
+
+export const SITE_GOALS = [
+	{
+		label: __('I want to sell products', 'kadence-blocks'),
+		description: __(
+			'Get example woocommerce content and layouts that work better for online stores.',
+			'kadence-blocks'
+		),
+		icon: 'cart',
+		value: 'ecommerce',
+	},
+	{
+		label: __('I want to receive donations', 'kadence-blocks'),
+		description: __('Get example donation forms and layouts that work better for non-profits.', 'kadence-blocks'),
+		icon: 'share-alt',
+		value: 'donations',
+	},
+	{
+		label: __('I want to display events', 'kadence-blocks'),
+		description: __(
+			'Get example events content and layouts that work better for showcasing events.',
+			'kadence-blocks'
+		),
+		icon: 'calendar-alt',
+		value: 'events',
+	},
+	{
+		label: __('I want to offer courses', 'kadence-blocks'),
+		description: __(
+			'Get example course content and layouts that work better for learning management.',
+			'kadence-blocks'
+		),
+		icon: 'welcome-learn-more',
+		value: 'courses',
+	},
+	{
+		label: __('I want to sell tickets to events', 'kadence-blocks'),
+		description: __('Get example events content and layouts that work better for ticket sales.', 'kadence-blocks'),
+		icon: 'tickets-alt',
+		value: 'tickets',
+	},
+	{
+		label: __('I want to book appointments', 'kadence-blocks'),
+		description: __('Get example appointment content and layouts that work better for bookings.', 'kadence-blocks'),
+		icon: 'edit-page',
+		value: 'booking',
+	},
+];
 
 export const LOCATION_BUSINESS_ADDRESS = 'Business Address';
 export const LOCATION_SERVICE_AREA = 'Service Area';

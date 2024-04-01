@@ -16,7 +16,7 @@ function KadenceSetting(props) {
 	const [settings, setSettings] = useState(
 		kadence_blocks_params.globalSettings ? JSON.parse(kadence_blocks_params.globalSettings) : {}
 	);
-	const { createErrorNotice } = useDispatch(noticesStore);
+	const { createSuccessNotice } = useDispatch(noticesStore);
 
 	const saveConfig = (key, value) => {
 		setIsSaving(true);
@@ -26,7 +26,7 @@ function KadenceSetting(props) {
 		const settingModel = new wp.api.models.Settings({ kadence_blocks_settings: JSON.stringify(config) });
 
 		settingModel.save().then((response) => {
-			createErrorNotice(__('Settings saved', 'kadence-blocks'), {
+			createSuccessNotice(__('Settings saved', 'kadence-blocks'), {
 				type: 'snackbar',
 			});
 

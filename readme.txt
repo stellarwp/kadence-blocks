@@ -3,8 +3,8 @@ Contributors: britner, oakesjosh, woodardmc
 Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.2
-Tested up to: 6.4
-Stable tag: 3.2.26
+Tested up to: 6.5
+Stable tag: 3.2.32
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -88,10 +88,39 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 2.3.32 =
+Release Date: April TBD 2024
+* Fix: Transforms on P tag in Advanced Text block.
+
+= 3.2.31 =
+Release Date: March 27th 2024
+* Fix: Issue with gradient colors.
+* Fix: Issue with outputting error log.
+
+= 3.2.30 =
+Release Date: March 22nd 2024
+* Update: Improve Design library load time.
+* Fix: Issue with custom color palette.
+
+= 3.2.29 =
+Release Date: March 21st 2024
+* Fix: Hidden Field showing on front end.
+
+= 3.2.28 =
+Release Date: March 20th 2024
+* Update: Available google fonts.
+* Fix: Issue with synced patterns breaking out of layout.
+* Fix: Possible form styles for twenty-twenty.
+* Fix: Issue with flex basis applying to mobile vertical directions.
+* Fix: Issue with four column layouts inheriting in the editor.
+* Fix: Issue with importing patterns showing Invalid Request, Incorrect Pattern
+
 = 3.2.27 =
-Release Date: March TBD 2024
+Release Date: March 19th 2024
 * Fix: Compatibility with WordPress 6.5 block rename feature.
 * Fix: Value of 0 not allowed in a required number field for the advanced form block.
+* Fix: Possible issue with font weight defaults.
+* Fix: Issue with full height and margin spacing.
 
 = 3.2.26 =
 Release Date: March 7th 2024

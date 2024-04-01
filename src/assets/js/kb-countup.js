@@ -18,6 +18,11 @@
 				rect.right <= (window.innerWidth || document.documentElement.clientWidth) + 300
 			);
 		},
+		stripHtml(html) {
+			const doc = new DOMParser().parseFromString(html, 'text/html');
+
+			return doc.body.textContent || '';
+		},
 		initScrollSpy() {
 			window.kadenceCountUp.countUpItems = document.querySelectorAll('.kb-count-up');
 			if (!window.kadenceCountUp.countUpItems.length) {
@@ -27,10 +32,10 @@
 				const self = window.kadenceCountUp.countUpItems[n],
 					start = self.dataset.start,
 					end = self.dataset.end,
-					prefix = self.dataset.prefix,
-					suffix = self.dataset.suffix,
+					prefix = window.kadenceCountUp.stripHtml(self.dataset.prefix),
+					suffix = window.kadenceCountUp.stripHtml(self.dataset.suffix),
 					duration = self.dataset.duration,
-					separator = self.dataset.separator,
+					separator = window.kadenceCountUp.stripHtml(self.dataset.separator),
 					decimal = self.dataset.decimal ? self.dataset.decimal : false,
 					decimalSpaces = self.dataset.decimalSpaces ? self.dataset.decimalSpaces : false,
 					el = self.querySelector('.kb-count-up-process');
