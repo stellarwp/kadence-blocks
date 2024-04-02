@@ -8,7 +8,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { Wizard, KadenceK } from './components';
-import { HowItWorks, IndustryInformation, AboutYourSite, TheDetails, Photography } from './pages';
+import { HowItWorks, IndustryInformation, AboutYourSite, TheDetails, Photography, SiteGoals } from './pages';
 import { useKadenceAi } from './context/kadence-ai-provider';
 import { useAiWizardHelper } from './hooks/use-ai-wizard-helper';
 import { useDatabase } from './hooks/use-database';
@@ -39,6 +39,12 @@ const pages = [
 		content: <TheDetails />,
 		step: 'The Details',
 		required: ['keywords', 'tone'],
+	},
+	{
+		id: 'goals',
+		content: <SiteGoals />,
+		step: 'Site Goals',
+		required: [],
 	},
 	{
 		id: 'photography',

@@ -113,6 +113,10 @@ export const ENTITY_TYPE = [
 ];
 export const LANG_TYPE = [
 	{
+		value: 'cs-CZ',
+		label: __('Czech', 'kadence-blocks'),
+	},
+	{
 		value: 'da-DK',
 		label: __('Danish (Denmark)', 'kadence-blocks'),
 	},
@@ -149,6 +153,10 @@ export const LANG_TYPE = [
 		label: __('English (US)', 'kadence-blocks'),
 	},
 	{
+		value: 'fi-FI',
+		label: __('Finnish', 'kadence-blocks'),
+	},
+	{
 		value: 'fr-BE',
 		label: __('French (Belgium)', 'kadence-blocks'),
 	},
@@ -175,6 +183,10 @@ export const LANG_TYPE = [
 	{
 		value: 'de-CH',
 		label: __('German (Switzerland)', 'kadence-blocks'),
+	},
+	{
+		value: 'hu-HU',
+		label: __('Hungarian', 'kadence-blocks'),
 	},
 	{
 		value: 'it-IT',
@@ -212,6 +224,10 @@ export const LANG_TYPE = [
 		value: 'sv-SE',
 		label: __('Swedish (Sweden)', 'kadence-blocks'),
 	},
+	{
+		value: 'tr-TR',
+		label: __('Turkish', 'kadence-blocks'),
+	},
 ];
 
 export const ENTITY_TO_NAME = {
@@ -231,49 +247,82 @@ export const ENTITY_TO_NAME = {
 
 export const SITE_GOALS = [
 	{
-		label: __('I want to sell products', 'kadence-blocks'),
+		label: __('I want to sell products', 'kadence-starter-templates'),
 		description: __(
-			'Get example woocommerce content and layouts that work better for online stores.',
-			'kadence-blocks'
+			'Get example woocommerce content and see layouts that work better for online stores.',
+			'kadence-starter-templates'
 		),
 		icon: 'cart',
 		value: 'ecommerce',
 	},
 	{
-		label: __('I want to receive donations', 'kadence-blocks'),
-		description: __('Get example donation forms and layouts that work better for non-profits.', 'kadence-blocks'),
+		label: __('I want to receive donations', 'kadence-starter-templates'),
+		description: __('See layouts that work better for non-profits.', 'kadence-starter-templates'),
 		icon: 'share-alt',
 		value: 'donations',
 	},
 	{
-		label: __('I want to display events', 'kadence-blocks'),
+		label: __('I want to display events', 'kadence-starter-templates'),
 		description: __(
-			'Get example events content and layouts that work better for showcasing events.',
-			'kadence-blocks'
+			'Get example events content and see layouts that work better for showcasing events.',
+			'kadence-starter-templates'
 		),
 		icon: 'calendar-alt',
 		value: 'events',
 	},
 	{
-		label: __('I want to offer courses', 'kadence-blocks'),
-		description: __(
-			'Get example course content and layouts that work better for learning management.',
-			'kadence-blocks'
-		),
+		label: __('I want to offer courses', 'kadence-starter-templates'),
+		description: __('See layouts that work better for learning management.', 'kadence-starter-templates'),
 		icon: 'welcome-learn-more',
 		value: 'courses',
 	},
 	{
-		label: __('I want to sell tickets to events', 'kadence-blocks'),
-		description: __('Get example events content and layouts that work better for ticket sales.', 'kadence-blocks'),
+		label: __('I want to sell tickets to events', 'kadence-starter-templates'),
+		description: __('See layouts that work better for ticket sales.', 'kadence-starter-templates'),
 		icon: 'tickets-alt',
 		value: 'tickets',
 	},
 	{
-		label: __('I want to book appointments', 'kadence-blocks'),
-		description: __('Get example appointment content and layouts that work better for bookings.', 'kadence-blocks'),
+		label: __('I want to generate leads', 'kadence-starter-templates'),
+		description: __('See layouts that work better for getting new leads.', 'kadence-starter-templates'),
+		icon: 'chart-bar',
+		value: 'landing',
+	},
+	{
+		label: __('I want to display my services', 'kadence-starter-templates'),
+		description: __('See layouts that work better for service sites.', 'kadence-starter-templates'),
+		icon: 'businessperson',
+		value: 'services',
+	},
+	{
+		label: __('I want to offer a membership', 'kadence-starter-templates'),
+		description: __('See layouts that work better for membership sites.', 'kadence-starter-templates'),
+		icon: 'money',
+		value: 'membership',
+	},
+	{
+		label: __('I want to write blog posts', 'kadence-starter-templates'),
+		description: __('See layouts that work better for bloggers.', 'kadence-starter-templates'),
+		icon: 'welcome-write-blog',
+		value: 'blogging',
+	},
+	{
+		label: __('I want to book appointments', 'kadence-starter-templates'),
+		description: __('See layouts that work better for bookings.', 'kadence-starter-templates'),
 		icon: 'edit-page',
 		value: 'booking',
+	},
+	{
+		label: __('I want to display my photography', 'kadence-starter-templates'),
+		description: __('See layouts that work better for photographers.', 'kadence-starter-templates'),
+		icon: 'camera',
+		value: 'photography',
+	},
+	{
+		label: __('I want to promote my podcast', 'kadence-starter-templates'),
+		description: __('See layouts that work better for podcasters.', 'kadence-starter-templates'),
+		icon: 'microphone',
+		value: 'podcasting',
 	},
 ];
 
