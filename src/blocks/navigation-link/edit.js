@@ -281,6 +281,7 @@ export default function Edit(props) {
 		megaMenuCustomWidth,
 		megaMenuCustomWidthUnit,
 		typography,
+		highlightTypography,
 		dropdownTypography,
 		dropdownDivider,
 		dropdownDividerTablet,
@@ -432,14 +433,14 @@ export default function Edit(props) {
 		}
 	}
 
-	const saveTypography = (value) => {
-		const newUpdate = typography.map((item, index) => {
+	const saveTypography = (value, attributeName = 'typography') => {
+		const newUpdate = attributes[attributeName].map((item, index) => {
 			if (0 === index) {
 				item = { ...item, ...value };
 			}
 			return item;
 		});
-		setAttributes({ typography: newUpdate });
+		setAttributes({ [attributeName]: newUpdate });
 	};
 
 	const saveDropdownTypography = (value) => {
@@ -463,7 +464,7 @@ export default function Edit(props) {
 		});
 	};
 	const saveMediaIcon = (value, attrName = 'mediaIcon') => {
-		const newUpdate = mediaIcon.map((item, index) => {
+		const newUpdate = attributes[attrName].map((item, index) => {
 			if (0 === index) {
 				item = { ...item, ...value };
 			}
@@ -1173,6 +1174,50 @@ export default function Edit(props) {
 								onFocus={() => setIsLabelFieldFocused(true)}
 								onBlur={() => setIsLabelFieldFocused(false)}
 							/>
+							<KadencePanelBody
+								title={__('Typography Settings', 'kadence-blocks')}
+								initialOpen={false}
+								panelName={'kb-link-highlight-label-typography'}
+							>
+								<TypographyControls
+									fontSize={highlightTypography[0].size}
+									onFontSize={(value) => saveTypography({ size: value }, 'highlightTypography')}
+									fontSizeType={highlightTypography[0].sizeType}
+									onFontSizeType={(value) => saveTypography({ sizeType: value }, 'highlightTypography')}
+									lineHeight={highlightTypography[0].lineHeight}
+									onLineHeight={(value) => saveTypography({ lineHeight: value }, 'highlightTypography')}
+									lineHeightType={highlightTypography[0].lineType}
+									onLineHeightType={(value) => saveTypography({ lineType: value }, 'highlightTypography')}
+									reLetterSpacing={highlightTypography[0].letterSpacing}
+									onLetterSpacing={(value) => saveTypography({ letterSpacing: value }, 'highlightTypography')}
+									letterSpacingType={highlightTypography[0].letterType}
+									onLetterSpacingType={(value) => saveTypography({ letterType: value }, 'highlightTypography')}
+									textTransform={highlightTypography[0].textTransform}
+									onTextTransform={(value) => saveTypography({ textTransform: value }, 'highlightTypography')}
+									fontFamily={highlightTypography[0].family}
+									onFontFamily={(value) => saveTypography({ family: value }, 'highlightTypography')}
+									onFontChange={(select) => {
+										saveTypography({
+											family: select.value,
+											google: select.google,
+										}, 'highlightTypography');
+									}}
+									onFontArrayChange={(values) => saveTypography(values, 'highlightTypography')}
+									googleFont={highlightTypography[0].google}
+									onGoogleFont={(value) => saveTypography({ google: value }, 'highlightTypography')}
+									loadGoogleFont={highlightTypography[0].loadGoogle}
+									onLoadGoogleFont={(value) => saveTypography({ loadGoogle: value }, 'highlightTypography')}
+									fontVariant={highlightTypography[0].variant}
+									onFontVariant={(value) => saveTypography({ variant: value }, 'highlightTypography')}
+									fontWeight={highlightTypography[0].weight}
+									onFontWeight={(value) => saveTypography({ weight: value }, 'highlightTypography')}
+									fontStyle={highlightTypography[0].style}
+									onFontStyle={(value) => saveTypography({ style: value }, 'highlightTypography')}
+									fontSubset={highlightTypography[0].subset}
+									onFontSubset={(value) => saveTypography({ subset: value }, 'highlightTypography')}
+								/>
+							</KadencePanelBody>
+							<div className="kt-sidebar-settings-spacer"></div>
 							<KadenceIconPicker
 								value={highlightIcon[0].icon}
 								onChange={(value) => saveMediaIcon({ icon: value }, 'highlightIcon')}

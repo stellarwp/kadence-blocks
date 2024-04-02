@@ -367,6 +367,27 @@
 				}
 			]
 		},
+		"highlightTypography": {
+			"type": "array",
+			"default": [
+				{
+					"size": ["", "", ""],
+					"sizeType": "px",
+					"lineHeight": ["", "", ""],
+					"lineType": "",
+					"letterSpacing": ["", "", ""],
+					"letterType": "px",
+					"textTransform": "",
+					"family": "",
+					"google": "",
+					"style": "",
+					"weight": "",
+					"variant": "",
+					"subset": "",
+					"loadGoogle": true
+				}
+			]
+		},
 		"dropdownTypography": {
 			"type": "array",
 			"default": [

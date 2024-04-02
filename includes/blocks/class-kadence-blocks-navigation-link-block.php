@@ -74,6 +74,8 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container > ul li.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a' );
 		$css->render_typography( $nav_link_attributes );
+		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container > ul li.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a .link-highlight-label' );
+		$css->render_typography( $nav_link_attributes, 'highlightTypography' );
 
 		if ( 'custom' === $nav_link_attributes['megaMenuWidth'] ) {
 			$css->set_selector(
@@ -302,7 +304,6 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$description = ! empty($nav_link_attributes['description']) ? '<span class="menu-label-description">' . $nav_link_attributes['description'] . '</span>' : '';
 		
 		$highlight_icon   = '';
-		var_dump($nav_link_attributes['highlightIcon'][0]['size']);
 		if ( ! empty( $nav_link_attributes['highlightIcon'][0]['icon'] ) ) {
 			$type         = substr( $nav_link_attributes['highlightIcon'][0]['icon'], 0, 2 );
 			$icon_size	  = isset($nav_link_attributes['highlightIcon'][0]['size']) && is_numeric($nav_link_attributes['highlightIcon'][0]['size']) ? $nav_link_attributes['highlightIcon'][0]['size'] : '';
