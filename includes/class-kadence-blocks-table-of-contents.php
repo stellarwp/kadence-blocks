@@ -302,7 +302,7 @@ class Kadence_Blocks_Table_Of_Contents {
 	 */
 	private function get_ignore_list() {
 		if ( is_null( self::$ignore_list ) ) {
-			self::$ignore_list = apply_filters( 'kadence_toc_block_ignore_array', array( 'kadence/tableofcontents', 'kadence/tabs', 'kadence/modal', 'core/post-content' ) );
+			self::$ignore_list = apply_filters( 'kadence_toc_block_ignore_array', array( 'kadence/tableofcontents', 'kadence/tabs', 'kadence/modal', 'kadence/repeater', 'core/post-content' ) );
 		}
 		return self::$ignore_list;
 	}
@@ -353,6 +353,9 @@ class Kadence_Blocks_Table_Of_Contents {
 			}
 		} else if ( $block['blockName'] === 'core/post-content' ) {
 			self::$output_content .= $the_post_content;
+		} else if ( $block['blockName'] === 'kadence/repeater' ) {
+			//repeater needs to render all together to properly render dynamic data with context.
+			self::$output_content .= render_block( $block );
 		}
 	}
 	/**
