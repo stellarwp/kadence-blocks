@@ -2,7 +2,7 @@
 Contributors: britner, oakesjosh, woodardmc
 Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
-Requires at least: 6.2
+Requires at least: 6.3
 Tested up to: 6.5
 Stable tag: 3.2.32
 Requires PHP: 7.4
@@ -89,8 +89,11 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 2.3.32 =
-Release Date: April TBD 2024
-* Fix: Transforms on P tag in Advanced Text block.
+Release Date: April 2nd 2024
+* Update: Design Library to better handle certain images.
+* Update: Language strings.
+* Update: Show support for 6.5
+* Fix: Possible max vars limit when using gravity forms.
 * Fix: Aria labels on progress bar block.
 * Fix: CSS issue with icons that had previously been displayed as stacked.
 
@@ -98,6 +101,7 @@ Release Date: April TBD 2024
 Release Date: March 27th 2024
 * Fix: Issue with gradient colors.
 * Fix: Issue with outputting error log.
+* Fix: Transforms on P tag in Advanced Text block.
 
 = 3.2.30 =
 Release Date: March 22nd 2024

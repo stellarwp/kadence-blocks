@@ -36,7 +36,7 @@ class TagSearch extends Component {
 						<div className="kb-dynamic-popover-inner-wrap">
 							<div className="kb-tag-search-inner-wrap">
 								<TextControl
-									label={__('Search for Tag', 'kadence-blocks-pro')}
+									label={__('Search for Tag', 'kadence-blocks')}
 									value={this.props.value}
 									onChange={(value) => {
 										this.props.onChange(value);
@@ -50,7 +50,7 @@ class TagSearch extends Component {
 										this.props.onAction();
 										this.toggle;
 									}}
-									label={__('Search', 'kadence-blocks-pro')}
+									label={__('Search', 'kadence-blocks')}
 									showTooltip={true}
 								/>
 							</div>
@@ -64,7 +64,7 @@ class TagSearch extends Component {
 					isPressed={this.props.value ? true : false}
 					aria-haspopup="true"
 					aria-expanded={open}
-					label={__('Search', 'kadence-blocks-pro')}
+					label={__('Search', 'kadence-blocks')}
 					showTooltip={true}
 				/>
 			</>

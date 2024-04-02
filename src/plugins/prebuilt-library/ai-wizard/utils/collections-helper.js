@@ -30,7 +30,7 @@ export function collectionsHelper() {
 		if (!customCollections) {
 			const temp = [
 				{
-					label: __('My Images', 'kadence-blocks-pro'),
+					label: __('My Images', 'kadence-blocks'),
 					value: 'my-collections',
 					galleries: [
 						{ name: 'featured', isLocal: true, images: [] },
