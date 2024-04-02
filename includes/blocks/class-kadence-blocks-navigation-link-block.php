@@ -300,9 +300,22 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$icon  = ! empty( $svg_icon ) ? '<div class="link-media-container"><span class="link-svg-icon link-svg-icon-' . esc_attr( $nav_link_attributes['mediaIcon'][0]['icon'] ) . '">' . $svg_icon . '</span></div>' : '';
 
 		$description = ! empty($nav_link_attributes['description']) ? '<span class="menu-label-description">' . $nav_link_attributes['description'] . '</span>' : '';
+		
+		$highlight_icon   = '';
+		var_dump($nav_link_attributes['highlightIcon'][0]['size']);
+		if ( ! empty( $nav_link_attributes['highlightIcon'][0]['icon'] ) ) {
+			$type         = substr( $nav_link_attributes['highlightIcon'][0]['icon'], 0, 2 );
+			$icon_size	  = isset($nav_link_attributes['highlightIcon'][0]['size']) && is_numeric($nav_link_attributes['highlightIcon'][0]['size']) ? $nav_link_attributes['highlightIcon'][0]['size'] : '';
+			$line_icon    = ( ! empty( $type ) && 'fe' == $type ? true : false );
+			$fill         = ( $line_icon ? 'none' : 'currentColor' );
+			$extras       = ' width="' . $icon_size . '" height="' . $icon_size . '" stroke-linecap="round" stroke-linejoin="round" stroke="currentColor"';
+
+			$highlight_icon = Kadence_Blocks_Svg_Render::render( $nav_link_attributes['highlightIcon'][0]['icon'], $fill, false, '', true, $extras );
+		}
+		$hl_icon  = ! empty( $highlight_icon ) ? '<div class="link-media-container"><span class="link-svg-icon link-svg-icon-' . esc_attr( $nav_link_attributes['highlightIcon'][0]['icon'] ) . '">' . $highlight_icon . '</span></div>' : '';
 		$highlight_label = '';
 		if(!empty($attributes['highlightLabel'])) {
-			$highlight_label = '<span class="link-highlight-label">' . $attributes['highlightLabel'] . '</span>';
+			$highlight_label = '<span class="link-highlight-label">' . $attributes['highlightLabel'] . '<span>' . $hl_icon . '</span></span>';
 		}
 		return sprintf(
 			'<li %1$s><div class="link-drop-wrap"><a class="wp-block-kadence-navigation-link__content" href="' . esc_url( $url ) . '"><span class="link-drop-title-wrap">' . esc_html( $label ) . $icon . $description . '<span class="title-dropdown-navigation-toggle">%2$s</span></span>' . $highlight_label . '</a></div>%3$s</li>',
