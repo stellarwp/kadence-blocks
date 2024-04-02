@@ -80,7 +80,7 @@ export function getAIContentHelper() {
 				text: content,
 				stream: true,
 			};
-			if (type === 'improve' || type === 'simplify') {
+			if (type === 'improve' || type === 'simplify' || type === 'spelling' || type === 'tone') {
 				body.lang = window?.kadence_blocks_params?.aiLang ? window.kadence_blocks_params.aiLang : 'en-US';
 			}
 			const response = await fetch(`${API_URL}proxy/transform/${type}`, {
