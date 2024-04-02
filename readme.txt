@@ -92,6 +92,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 Release Date: April TBD 2024
 * Fix: Transforms on P tag in Advanced Text block.
 * Fix: Aria labels on progress bar block.
+* Fix: CSS issue with icons that had previously been displayed as stacked.
 
 = 3.2.31 =
 Release Date: March 27th 2024
