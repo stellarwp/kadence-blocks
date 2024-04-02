@@ -92,7 +92,9 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 Release Date: April 2nd 2024
 * Update: Design Library to better handle certain images.
 * Update: Language strings.
-* Update: Show support for 6.5
+* Update: Show support for 6.5.
+* Update: AI wizard to include goals.
+* Fix: Issue with theme colors not working when changing opacity.
 * Fix: Possible max vars limit when using gravity forms.
 * Fix: Aria labels on progress bar block.
 * Fix: CSS issue with icons that had previously been displayed as stacked.
