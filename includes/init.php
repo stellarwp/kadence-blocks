@@ -343,7 +343,8 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'icons' => file_exists( $icons_path ) ? include $icons_path : array(),
 		)
 	);
-	if ( apply_filters( 'kadence_blocks_preload_design_library', true ) ) {
+	$fast_load_patterns = class_exists( 'GFForms' ) ? false : true;
+	if ( apply_filters( 'kadence_blocks_preload_design_library', $fast_load_patterns ) ) {
 		$design_library_controller_upload = new Kadence_Blocks_Prebuilt_Library_REST_Controller();
 		wp_localize_script(
 			'kadence-blocks-js',
