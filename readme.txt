@@ -88,6 +88,10 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 2.3.33 =
+Release Date: April TBD 2024
+* Fix: PHP 8.3 deprecated function call in Table of Contents block.
+
 = 2.3.32 =
 Release Date: April 2nd 2024
 * Update: Design Library to better handle certain images.
