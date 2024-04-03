@@ -16,8 +16,8 @@ jobs:
             matrix:
                 wordpress:
                     - latest
+                    - '6.4.3'
                     - '6.3.3'
-                    - '6.2.4'
                 php:
                     - '7.4'
                     - '8.0'
