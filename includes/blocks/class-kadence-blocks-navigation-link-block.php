@@ -89,7 +89,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a' );
 		$css->render_measure_output( $nav_link_attributes, 'padding' );
 		$css->render_measure_output( $nav_link_attributes, 'margin' );
-		if( ! empty( $attributes['highlightLabel'] ) ) {
+		if( ! empty( $nav_link_attributes['highlightLabel'] ) ) {
 			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a .link-highlight-label' );
 			$css->add_property( 'transition', 'color 0.35s ease-in-out, background-color 0.35s ease-in-out' );
 			$css->add_property( 'color', $css->render_color( $attributes['labelColor'] ) );
@@ -245,6 +245,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$url = $nav_link_attributes['url'];
 
 		$has_children = ! empty( $content );
+		$has_highlight_label = !empty($nav_link_attributes['highlightLabel']) || ! empty($nav_link_attributes['highlightIcon']);
 		$temp = get_queried_object_id();
 		$kind        = empty( $attributes['kind'] ) ? 'post_type' : str_replace( '-', '_', $attributes['kind'] );
 		$is_active_ancestor = $child_info['has_active_child'];
@@ -313,13 +314,15 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 			$highlight_icon = Kadence_Blocks_Svg_Render::render( $nav_link_attributes['highlightIcon'][0]['icon'], $fill, false, '', true, $extras );
 		}
-		$hl_icon  = ! empty( $highlight_icon ) ? '<div class="link-media-container"><span class="link-svg-icon link-svg-icon-' . esc_attr( $nav_link_attributes['highlightIcon'][0]['icon'] ) . '">' . $highlight_icon . '</span></div>' : '';
+		$hl_icon  = ! empty( $highlight_icon ) && $has_highlight_label ? '<div class="link-media-container"><span class="link-svg-icon link-svg-icon-' . esc_attr( $nav_link_attributes['highlightIcon'][0]['icon'] ) . '">' . $highlight_icon . '</span></div>' : '';
 		$highlight_label = '';
-		if(!empty($attributes['highlightLabel'])) {
-			$highlight_label = '<span class="link-highlight-label">' . $attributes['highlightLabel'] . '<span>' . $hl_icon . '</span></span>';
+		$highlight_class = '';
+		if( $has_highlight_label ) {
+			$highlight_class = ' has-highlight-label';
+			$highlight_label = '<span class="link-highlight-label">' . $nav_link_attributes['highlightLabel'] . $hl_icon . '</span>';
 		}
 		return sprintf(
-			'<li %1$s><div class="link-drop-wrap"><a class="wp-block-kadence-navigation-link__content" href="' . esc_url( $url ) . '"><span class="link-drop-title-wrap">' . esc_html( $label ) . $icon . $description . '<span class="title-dropdown-navigation-toggle">%2$s</span></span>' . $highlight_label . '</a></div>%3$s</li>',
+			'<li %1$s><div class="link-drop-wrap"><a class="wp-block-kadence-navigation-link__content' . $highlight_class . '" href="' . esc_url( $url ) . '"><span class="link-drop-title-wrap">' . esc_html( $label ) . $icon . $description . '<span class="title-dropdown-navigation-toggle">%2$s</span></span>' . $highlight_label . '</a></div>%3$s</li>',
 			$wrapper_attributes,
 			$has_children ? $down_arrow_icon : '',
 			$sub_menu_content

@@ -13,6 +13,14 @@
 	.wp-block-kadence-navigation-link__description {
 		display: none;
 	}
+	.wp-block-kadence-navigation-link__content.has-highlight-label {
+		display: flex !important;
+		.link-highlight-label {
+			display: flex;
+			flex-wrap: nowrap;
+			align-items: center;
+		}
+	}
 
 	.link-media-container {
 		display: flex;
