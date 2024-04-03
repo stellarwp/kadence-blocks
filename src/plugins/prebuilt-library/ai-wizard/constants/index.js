@@ -113,6 +113,38 @@ export const ENTITY_TYPE = [
 ];
 export const LANG_TYPE = [
 	{
+		value: 'ar',
+		label: __('Arabic', 'kadence-blocks'),
+	},
+	{
+		value: 'ar-QA',
+		label: __('Arabic (Qatar)', 'kadence-blocks'),
+	},
+	{
+		value: 'ar-SA',
+		label: __('Arabic (Saudi Arabia)', 'kadence-blocks'),
+	},
+	{
+		value: 'zh',
+		label: __('Chinese', 'kadence-blocks'),
+	},
+	{
+		value: 'el-GR',
+		label: __('Greek', 'kadence-blocks'),
+	},
+	{
+		value: 'he-IL',
+		label: __('Hebrew', 'kadence-blocks'),
+	},
+	{
+		value: 'ja-JP',
+		label: __('Japanese', 'kadence-blocks'),
+	},
+	{
+		value: 'ru-RU',
+		label: __('Russian', 'kadence-blocks'),
+	},
+	{
 		value: 'cs-CZ',
 		label: __('Czech', 'kadence-blocks'),
 	},
