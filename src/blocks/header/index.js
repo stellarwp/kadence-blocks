@@ -15,6 +15,7 @@ import './children/container-desktop';
 import './children/container-tablet';
 import './children/row';
 import './children/column';
+import './children/section';
 
 /**
  * Internal dependencies

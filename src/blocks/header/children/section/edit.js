@@ -1,5 +1,5 @@
 /**
- * BLOCK: Kadence Header Container (Desktop)
+ * BLOCK: Kadence Header section
  */
 
 /**
@@ -29,7 +29,6 @@ export function Edit(props) {
 
 	const blockClasses = classnames({
 		'wp-block-kadence-header': true,
-		'wp-block-kadence-header-desktop': true,
 		[`wp-block-kadence-header${uniqueID}`]: uniqueID,
 	});
 	const blockProps = useBlockProps({
@@ -70,16 +69,18 @@ export function Edit(props) {
 		}
 	}, []);
 
+	const hasChildBlocks = wp.data.select('core/block-editor').getBlockOrder(clientId).length > 0;
+
 	const innerBlocksProps = useInnerBlocksProps(
 		{
-			className: 'wp-block-kadence-header-desktop',
+			className: 'kadence-header-section',
 			style: {
 				display: previewDevice === 'Desktop' ? 'block' : 'none',
 			},
 		},
 		{
-			renderAppender: false,
-			templateLock: 'all',
+			renderAppender: hasChildBlocks ? false : InnerBlocks.ButtonBlockAppender,
+			templateLock: false,
 		}
 	);
 
