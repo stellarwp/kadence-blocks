@@ -225,9 +225,7 @@ export default function BackendStyles(props) {
 		mediaIcon[0].widthMobile
 	);
 	const previewMediaAlign = getPreviewSize(previewDevice, mediaAlign, mediaAlignTablet, mediaAlignMobile);
-	if (uniqueID == '494_c9029f-f0') {
-		console.log(1, mediaStyle);
-	}
+
 	const css = new KadenceBlocksCSS();
 
 	css.set_selector(

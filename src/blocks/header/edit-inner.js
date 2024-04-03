@@ -29,6 +29,7 @@ import {
 	ResponsiveRangeControls,
 	BackgroundTypeControl,
 	GradientControl,
+	ResponsiveSelectControl,
 } from '@kadence/components';
 import { getPreviewSize, mouseOverVisualizer, arrayStringToInt } from '@kadence/helpers';
 
@@ -121,6 +122,9 @@ export function EditInner(props) {
 		heightUnit: meta?._kad_header_heightUnit,
 		width: meta?._kad_header_width,
 		widthUnit: meta?._kad_header_widthUnit,
+		style: meta?._kad_header_style,
+		styleTablet: meta?._kad_header_styleTablet,
+		styleMobile: meta?._kad_header_styleMobile,
 	};
 
 	const {
@@ -159,6 +163,9 @@ export function EditInner(props) {
 		heightUnit,
 		width,
 		widthUnit,
+		style,
+		styleTablet,
+		styleMobile,
 	} = metaAttributes;
 
 	const setMetaAttribute = (value, key) => {
@@ -303,6 +310,25 @@ export function EditInner(props) {
 
 				{activeTab === 'general' && (
 					<>
+						<KadencePanelBody
+							title={__('General Settings', 'kadence-blocks')}
+							panelName={'kb-col-flex-settings'}
+						>
+							<ResponsiveSelectControl
+								label={__('Style', 'kadence-blocks')}
+								value={style}
+								valueTablet={styleTablet}
+								valueMobile={styleMobile}
+								options={[
+									{ value: 'standard', label: __('Standard', 'kadence-blocks') },
+									{ value: 'sticky', label: __('Sticky', 'kadence-blocks') },
+									{ value: 'transparent', label: __('Transparent', 'kadence-blocks') },
+								]}
+								onChange={(value) => setMetaAttribute(value, 'style')}
+								onChangeTablet={(value) => setMetaAttribute(value, 'styleTablet')}
+								onChangeMobile={(value) => setMetaAttribute(value, 'styleMobile')}
+							/>
+						</KadencePanelBody>
 						<KadencePanelBody
 							title={__('Flex Settings', 'kadence-blocks')}
 							panelName={'kb-col-flex-settings'}
