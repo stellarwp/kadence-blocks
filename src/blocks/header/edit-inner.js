@@ -185,6 +185,7 @@ export function EditInner(props) {
 		undefined !== flex?.direction?.[1] ? flex.direction[1] : '',
 		undefined !== flex?.direction?.[2] ? flex.direction[2] : ''
 	);
+	const previewStyle = getPreviewSize(previewDevice, style ? style : 'standard', styleTablet, styleMobile);
 
 	const [title, setTitle] = useHeaderProp('title');
 

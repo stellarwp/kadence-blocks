@@ -21,7 +21,7 @@ import { formBlockIcon, formTemplateContactIcon } from '@kadence/icons';
 import { KadencePanelBody } from '@kadence/components';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { Placeholder, Spinner } from '@wordpress/components';
-import { store as coreStore, EntityProvider } from '@wordpress/core-data';
+import { store as coreStore, EntityProvider, useEntityProp } from '@wordpress/core-data';
 
 import { useEntityAutoDraft } from './hooks';
 import { SelectOrCreatePlaceholder, SelectForm } from './components';
@@ -38,13 +38,25 @@ export function Edit(props) {
 
 	const { id, uniqueID } = attributes;
 
-	const blockClasses = classnames({
-		'wp-block-kadence-header': true,
-		[`wp-block-kadence-header${uniqueID}`]: uniqueID,
-	});
-	const blockProps = useBlockProps({
-		className: blockClasses,
-	});
+	const [meta, setMeta] = useHeaderProp('meta', id);
+
+	const metaAttributes = {
+		style: meta?._kad_header_style,
+		styleTablet: meta?._kad_header_styleTablet,
+		styleMobile: meta?._kad_header_styleMobile,
+	};
+
+	const { style, styleTablet, styleMobile } = metaAttributes;
+
+	const { previewDevice } = useSelect(
+		(select) => {
+			return {
+				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
+			};
+		},
+		[clientId]
+	);
+
 	const { post, postExists, isLoading, currentPostType, postId } = useSelect(
 		(select) => {
 			return {
@@ -81,6 +93,18 @@ export function Edit(props) {
 		},
 		[clientId]
 	);
+
+	const blockClasses = classnames({
+		'wp-block-kadence-header': true,
+		[`wp-block-kadence-header${uniqueID}`]: uniqueID,
+		[`header-desktop-style-${style}`]: !previewDevice || previewDevice == 'Desktop',
+		[`header-tablet-style-${styleTablet}`]: previewDevice == 'Tablet',
+		[`header-mobile-style-${styleMobile}`]: previewDevice == 'Mobile',
+	});
+
+	const blockProps = useBlockProps({
+		className: blockClasses,
+	});
 
 	if (isPreviewMode) {
 		return <>{formTemplateContactIcon}</>;
@@ -216,4 +240,8 @@ function Chooser({ id, post, commit, postExists }) {
 			isAdding={isAdding}
 		/>
 	);
+}
+
+function useHeaderProp(prop, postId) {
+	return useEntityProp('postType', 'kadence_header', prop, postId);
 }
