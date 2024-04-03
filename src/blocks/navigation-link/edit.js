@@ -959,7 +959,7 @@ export default function Edit(props) {
 							onChange={(labelValue) => {
 								setAttributes({ label: labelValue });
 							}}
-							label={__('Label')}
+							label={__('Lab')}
 							autoComplete="off"
 							onFocus={() => setIsLabelFieldFocused(true)}
 							onBlur={() => setIsLabelFieldFocused(false)}
@@ -1008,7 +1008,7 @@ export default function Edit(props) {
 							onChange={(relValue) => {
 								setAttributes({ rel: relValue });
 							}}
-							label={__('Rel attributte')}
+							label={__('Rel attribute')}
 							autoComplete="off"
 							help={__('The relationship of the linked URL as space-separated link types.')}
 						/>
