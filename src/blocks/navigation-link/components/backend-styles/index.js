@@ -364,7 +364,6 @@ export default function BackendStyles(props) {
 	css.set_selector(
 		`.wp-block-kadence-navigation .navigation .menu-container > ul li.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a .link-highlight-label`
 	);
-	console.log(highlightTypography);
 	css.render_font(highlightTypography ? highlightTypography : [], previewDevice);
 	css.set_selector(`.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a`);
 	css.render_measure_output(padding, tabletPadding, mobilePadding, previewDevice, 'padding', paddingUnit);

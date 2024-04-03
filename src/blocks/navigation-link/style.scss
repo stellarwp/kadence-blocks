@@ -19,6 +19,13 @@
 			display: flex;
 			flex-wrap: nowrap;
 			align-items: center;
+
+			.link-svg-icon {
+				svg {
+					width: 12px;
+					height: 12px;
+				}
+			}
 		}
 	}
 

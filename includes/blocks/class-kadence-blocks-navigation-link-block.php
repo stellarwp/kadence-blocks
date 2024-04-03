@@ -76,7 +76,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$css->render_typography( $nav_link_attributes );
 		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container > ul li.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a .link-highlight-label' );
 		$css->render_typography( $nav_link_attributes, 'highlightTypography' );
-
+		
 		if ( 'custom' === $nav_link_attributes['megaMenuWidth'] ) {
 			$css->set_selector(
 				'.wp-block-kadence-navigation .menu-container ul.menu .wp-block-kadence-navigation-link' . $unique_id . '.kadence-menu-mega-width-custom > ul.sub-menu'
@@ -84,6 +84,26 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( 'width', $css->render_size( $nav_link_attributes['megaMenuCustomWidth'], $nav_link_attributes['megaMenuCustomWidthUnit'] ) );
 			// $css->set_selector( '.header-navigation[class*="header-navigation-dropdown-animation-fade"] #menu-item-' . $item->ID . '.kadence-menu-mega-enabled > .sub-menu' );
 			// $css->add_property( 'margin-left', '-' . ( $data['mega_menu_custom_width'] ? floor( $data['mega_menu_custom_width'] / 2 ) : '400' ) . 'px' );
+		}
+
+		//var_dump($nav_link_attributes['highlightIcon'][0]['sizeTablet']);
+		
+		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container > ul li.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a .link-highlight-label .link-svg-icon svg' );
+		if( isset( $nav_link_attributes['highlightIcon'][0]['size'] ) && is_numeric( $nav_link_attributes['highlightIcon'][0]['size'] ) ) {
+			$css->add_property( 'width', $nav_link_attributes['highlightIcon'][0]['size'] . 'px' );
+			$css->add_property( 'height', $nav_link_attributes['highlightIcon'][0]['size'] . 'px' );
+		}
+		
+		if(isset( $nav_link_attributes['highlightIcon'][0]['sizeTablet'] ) && is_numeric( $nav_link_attributes['highlightIcon'][0]['sizeTablet'] ) ) {
+			$css->set_media_state( 'tablet' );
+			$css->add_property( 'width',  $nav_link_attributes['highlightIcon'][0]['sizeTablet'] . 'px' );
+			$css->add_property( 'height',  $nav_link_attributes['highlightIcon'][0]['sizeTablet'] . 'px' );
+		}
+
+		if(isset( $nav_link_attributes['highlightIcon'][0]['sizeMobile'] ) && is_numeric( $nav_link_attributes['highlightIcon'][0]['sizeMobile'] ) ) {
+			$css->set_media_state( 'mobile' );
+			$css->add_property( 'width',  $nav_link_attributes['highlightIcon'][0]['sizeMobile'] . 'px' );
+			$css->add_property( 'height',  $nav_link_attributes['highlightIcon'][0]['sizeMobile'] . 'px' );
 		}
 
 		$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a' );
@@ -310,7 +330,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$icon_size	  = isset($nav_link_attributes['highlightIcon'][0]['size']) && is_numeric($nav_link_attributes['highlightIcon'][0]['size']) ? $nav_link_attributes['highlightIcon'][0]['size'] : '';
 			$line_icon    = ( ! empty( $type ) && 'fe' == $type ? true : false );
 			$fill         = ( $line_icon ? 'none' : 'currentColor' );
-			$extras       = ' width="' . $icon_size . '" height="' . $icon_size . '" stroke-linecap="round" stroke-linejoin="round" stroke="currentColor"';
+			$extras       = '" stroke-linecap="round" stroke-linejoin="round" stroke="currentColor"';
 
 			$highlight_icon = Kadence_Blocks_Svg_Render::render( $nav_link_attributes['highlightIcon'][0]['icon'], $fill, false, '', true, $extras );
 		}

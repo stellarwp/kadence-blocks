@@ -1218,6 +1218,7 @@ export default function Edit(props) {
 								/>
 							</KadencePanelBody>
 							<div className="kt-sidebar-settings-spacer"></div>
+							<div className="kt-sidebar-settings-spacer"></div>
 							<KadenceIconPicker
 								value={highlightIcon[0].icon}
 								onChange={(value) => saveMediaIcon({ icon: value }, 'highlightIcon')}
@@ -1228,11 +1229,11 @@ export default function Edit(props) {
 								onChange={(value) => saveMediaIcon({ size: value }, 'highlightIcon')}
 								tabletValue={previewHighlightIconSize}
 								onChangeTablet={(value) => {
-									saveMediaIcon({ tabletSize: value }, 'highlightIcon');
+									saveMediaIcon({ sizeTablet: value }, 'highlightIcon');
 								}}
 								mobileValue={previewHighlightIconSize}
 								onChangeMobile={(value) => {
-									saveMediaIcon({ mobileSize: value }, 'highlightIcon');
+									saveMediaIcon({ sizeMobile: value }, 'highlightIcon');
 								}}
 								min={0}
 								max={40}
