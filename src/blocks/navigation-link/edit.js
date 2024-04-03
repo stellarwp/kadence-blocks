@@ -241,6 +241,7 @@ export default function Edit(props) {
 		backgroundHoverMobile,
 		backgroundActiveMobile,
 		highlightLabel,
+		highlightSpacing,
 		labelBackground,
 		labelBackgroundHover,
 		labelBackgroundActive,
@@ -474,15 +475,15 @@ export default function Edit(props) {
 			[attrName]: newUpdate,
 		});
 	};
-	const saveMediaStyle = (value) => {
-		const newUpdate = mediaStyle.map((item, index) => {
+	const saveMediaStyle = (value, attrName = 'mediaStyle') => {
+		const newUpdate = attributes[attrName].map((item, index) => {
 			if (0 === index) {
 				item = { ...item, ...value };
 			}
 			return item;
 		});
 		setAttributes({
-			mediaStyle: newUpdate,
+			[attrName]: newUpdate,
 		});
 	};
 
@@ -1225,18 +1226,18 @@ export default function Edit(props) {
 							/>
 							<ResponsiveRangeControls
 								label={__('Icon Size', 'kadence-blocks')}
-								value={previewHighlightIconSize}
+								value={highlightIcon[0].size}
 								onChange={(value) => saveMediaIcon({ size: value }, 'highlightIcon')}
-								tabletValue={previewHighlightIconSize}
+								tabletValue={highlightIcon[0].sizeTablet}
 								onChangeTablet={(value) => {
 									saveMediaIcon({ sizeTablet: value }, 'highlightIcon');
 								}}
-								mobileValue={previewHighlightIconSize}
+								mobileValue={highlightIcon[0].sizeMobile}
 								onChangeMobile={(value) => {
 									saveMediaIcon({ sizeMobile: value }, 'highlightIcon');
 								}}
 								min={0}
-								max={40}
+								max={400}
 								step={1}
 								unit={'px'}
 							/>
@@ -1246,6 +1247,34 @@ export default function Edit(props) {
 								tabletChildren={highlightColorControls('Tablet')}
 								mobileChildren={highlightColorControls('Mobile')}
 							></SmallResponsiveControl>
+							<ResponsiveMeasureRangeControl
+								label={__('Margin', 'kadence-blocks')}
+								value={ undefined !== highlightSpacing?.[0]?.margin ? highlightSpacing[0].margin : '' }
+								onChange={(value) => saveMediaStyle({ margin: value }, 'highlightSpacing')}
+								tabletValue={ undefined !== highlightSpacing?.[0]?.marginTablet ? highlightSpacing[0].marginTablet : '' }
+								onChangeTablet={(value) => saveMediaStyle({ marginTablet: value }, 'highlightSpacing')}
+								mobileValue={undefined !== highlightSpacing?.[0]?.marginMobile ? highlightSpacing[0].marginMobile : ''}
+								onChangeMobile={(value) => saveMediaStyle({ marginMobile: value }, 'highlightSpacing')}
+								min={0}
+								max={200}
+								step={1}
+								units={['px']}
+								unit={'px'}
+							/>
+							<ResponsiveMeasureRangeControl
+								label={__('Padding', 'kadence-blocks')}
+								value={ undefined !== highlightSpacing?.[0]?.padding ? highlightSpacing[0].padding : '' }
+								onChange={(value) => saveMediaStyle({ padding: value }, 'highlightSpacing')}
+								tabletValue={ undefined !== highlightSpacing?.[0]?.paddingTablet ? highlightSpacing[0].paddingTablet : '' }
+								onChangeTablet={(value) => saveMediaStyle({ tabletPadding: value }, 'highlightSpacing')}
+								mobileValue={undefined !== highlightSpacing?.[0]?.paddingMobile ? highlightSpacing[0].paddingMobile : ''}
+								onChangeMobile={(value) => saveMediaStyle({ mobilePadding: value }, 'highlightSpacing')}
+								min={0}
+								max={200}
+								step={1}
+								units={['px']}
+								unit={'px'}
+							/>
 						</KadencePanelBody>
 
 						<KadencePanelBody
