@@ -1275,6 +1275,23 @@ export default function Edit(props) {
 								units={['px']}
 								unit={'px'}
 							/>
+							<ResponsiveSingleBorderControl
+								label={'Border'}
+								value={ highlightSpacing[0].border }
+								tabletValue={ highlightSpacing[0].borderTablet }
+								mobileValue={ highlightSpacing[0].borderMobile }
+								onChange={(value) => {
+									console.log(value);
+									//saveMediaStyle({ border: value }, 'highlightSpacing');
+								}}
+								onChangeTablet={
+									(value) => console.log(value)//(value) => saveMediaStyle({ borderTablet: value }, 'highlightSpacing')
+								}
+								onChangeMobile={
+									(value) => console.log(value)
+									//(value) => saveMediaStyle({ borderMobile: value }, 'highlightSpacing')
+								}
+							/>
 						</KadencePanelBody>
 
 						<KadencePanelBody

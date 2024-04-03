@@ -569,6 +569,8 @@
 			"default": [
 				{
 					"border": "",
+					"borderTablet": "",
+					"borderMobile": "",
 					"hoverBorder": "",
 					"borderRadius": "",
 					"borderRadiusTablet": "",
