@@ -348,8 +348,6 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 	private function get_nav_attributes( $post_id ) {
 		global $wp_meta_keys;
 
-		$temp = WP_Block_Type_Registry::get_instance()->get_registered( 'kadence/navigation' );
-
 		if ( ! empty( $this->nav_attributes[ $post_id ] ) ) {
 			return $this->nav_attributes[ $post_id ];
 		}
