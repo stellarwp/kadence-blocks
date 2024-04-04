@@ -14,6 +14,11 @@
 		display: none;
 	}
 
+	.link-drop-title-wrap {
+		display: grid;
+		grid-template-columns: 1fr auto;
+	}
+
 	.link-media-container {
 		display: flex;
 		grid-row: span 2;

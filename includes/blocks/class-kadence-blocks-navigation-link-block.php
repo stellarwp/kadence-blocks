@@ -289,11 +289,11 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$link_url = ! empty($nav_link_attributes['disableLink']) && true === $nav_link_attributes['disableLink'] ? '' : ' href="' . esc_url( $url ) . '"';
 		$link_label = ! empty( $nav_link_attributes['hideLabel'] ) && true === $nav_link_attributes['hideLabel'] ? '' : esc_html( $label );
 		return sprintf(
-			'<li %1$s><div class="link-drop-wrap"><a class="wp-block-kadence-navigation-link__content" %2$s><span class="link-drop-title-wrap">%3$s%4$s<span class="title-dropdown-navigation-toggle">%5$s</span></span>%6$s</a></div>%7$s</li>',
+			'<li %1$s><div class="link-drop-wrap"><a class="wp-block-kadence-navigation-link__content" %2$s><span class="link-drop-title-wrap">%3$s%4$s%5$s%6$s<span class="title-dropdown-navigation-toggle"></span></span></a></div>%7$s</li>',
 			$wrapper_attributes,
 			$link_url,
-			$icon,
 			$link_label,
+			$icon,
 			$has_children ? $down_arrow_icon : '',
 			$description,
 			$sub_menu_content
