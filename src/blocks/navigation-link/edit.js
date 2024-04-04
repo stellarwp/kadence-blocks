@@ -959,7 +959,7 @@ export default function Edit(props) {
 							onChange={(labelValue) => {
 								setAttributes({ label: labelValue });
 							}}
-							label={__('Lab')}
+							label={__('Label')}
 							autoComplete="off"
 							onFocus={() => setIsLabelFieldFocused(true)}
 							onBlur={() => setIsLabelFieldFocused(false)}
