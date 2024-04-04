@@ -4,11 +4,11 @@ import {
 	getPreviewSize,
 	getSpacingOptionOutput,
 	KadenceColorOutput,
+	useElementHeight,
 } from '@kadence/helpers';
-import { Getstyles } from '../';
 
 export default function BackendStyles(props) {
-	const { attributes, isSelected, previewDevice, metaAttributes } = props;
+	const { attributes, isSelected, previewDevice, metaAttributes, currentRef } = props;
 
 	const { uniqueID } = attributes;
 
@@ -50,6 +50,10 @@ export default function BackendStyles(props) {
 		heightUnit,
 		width,
 		widthUnit,
+		style,
+		styleTablet,
+		styleMobile,
+		autoTransparentSpacing,
 	} = metaAttributes;
 
 	const previewMarginTop = getPreviewSize(
@@ -380,6 +384,12 @@ export default function BackendStyles(props) {
 		undefined !== width?.[2] ? width[2] : ''
 	);
 
+	const previewStyle = getPreviewSize(previewDevice, style, styleTablet, styleMobile);
+
+	// const elementHeight = useElementHeight(currentRef, [isSelected]);
+	// console.log(1, elementHeight);
+	const elementHeight = currentRef?.current?.clientHeight;
+
 	const css = new KadenceBlocksCSS();
 
 	if (isSelected) {
@@ -416,18 +426,20 @@ export default function BackendStyles(props) {
 	css.add_property('font-style', typography.style);
 	css.add_property('font-weight', typography.weight);
 	css.add_property('line-height', getSpacingOptionOutput(previewLineHeight, typography.lineType));
-	if ('normal' === background?.type && background?.image) {
-		css.add_property('background-image', background.image);
-		css.add_property('background-size', background.imageSize);
-		css.add_property('background-repeat', background.imageRepeat);
-		css.add_property('background-attachment', background.imageAttachment);
-		css.add_property('background-position', background.imagePosition);
-	}
-	if ('normal' === background?.type && background?.color) {
-		css.add_property('background-color', KadenceColorOutput(background.color));
-	}
-	if ('gradient' === background?.type && background?.gradient) {
-		css.add_property('background', background.gradient);
+	if (previewStyle != 'transparent') {
+		if ('normal' === background?.type && background?.image) {
+			css.add_property('background-image', background.image);
+			css.add_property('background-size', background.imageSize);
+			css.add_property('background-repeat', background.imageRepeat);
+			css.add_property('background-attachment', background.imageAttachment);
+			css.add_property('background-position', background.imagePosition);
+		}
+		if ('normal' === background?.type && background?.color) {
+			css.add_property('background-color', KadenceColorOutput(background.color));
+		}
+		if ('gradient' === background?.type && background?.gradient) {
+			css.add_property('background', background.gradient);
+		}
 	}
 	css.add_property('border-top-width', previewBorderTop);
 	css.add_property('border-top-style', previewBorderStyleTop);
@@ -463,20 +475,23 @@ export default function BackendStyles(props) {
 	css.add_property('max-width', getSpacingOptionOutput(previewWidth, widthUnit));
 
 	css.set_selector(`.kb-header.kb-header${uniqueID}:hover`);
-	if ('normal' === backgroundHover?.type && backgroundHover?.image) {
-		css.add_property('background-image', backgroundHover.image);
-		css.add_property('background-size', backgroundHover.imageSize);
-		css.add_property('background-repeat', backgroundHover.imageRepeat);
-		css.add_property('background-attachment', backgroundHover.imageAttachment);
-		css.add_property('background-position', backgroundHover.imagePosition);
-	}
 
-	if ('normal' === backgroundHover?.type && backgroundHover?.color) {
-		css.add_property('background-color', backgroundHover.color);
-	}
+	if (previewStyle != 'transparent') {
+		if ('normal' === backgroundHover?.type && backgroundHover?.image) {
+			css.add_property('background-image', backgroundHover.image);
+			css.add_property('background-size', backgroundHover.imageSize);
+			css.add_property('background-repeat', backgroundHover.imageRepeat);
+			css.add_property('background-attachment', backgroundHover.imageAttachment);
+			css.add_property('background-position', backgroundHover.imagePosition);
+		}
 
-	if ('gradient' === backgroundHover?.type && backgroundHover?.gradient) {
-		css.add_property('background', backgroundHover.gradient);
+		if ('normal' === backgroundHover?.type && backgroundHover?.color) {
+			css.add_property('background-color', backgroundHover.color);
+		}
+
+		if ('gradient' === backgroundHover?.type && backgroundHover?.gradient) {
+			css.add_property('background', backgroundHover.gradient);
+		}
 	}
 	css.add_property('border-top-width', previewHoverBorderTop);
 	css.add_property('border-top-style', previewHoverBorderStyleTop);
@@ -513,6 +528,17 @@ export default function BackendStyles(props) {
 
 	css.set_selector(`.kb-header.kb-header${uniqueID} a:hover`);
 	css.add_property('color', KadenceColorOutput(linkHoverColor));
+
+	if (previewStyle == 'transparent') {
+		css.set_selector(`.wp-block-kadence-header${uniqueID}`);
+		css.add_property('top', '0px');
+
+		//apply auto padding to the next block after the header
+		if (autoTransparentSpacing && elementHeight) {
+			css.set_selector(`.wp-block-kadence-header${uniqueID} + *`);
+			css.add_property('padding-top', elementHeight + 'px');
+		}
+	}
 
 	const cssOutput = css.css_output();
 

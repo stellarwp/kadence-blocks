@@ -76,10 +76,8 @@ export default function BackendStyles(props) {
 		mediaAlignMobile,
 	} = attributes;
 
-	//const ref = useRef();
 	const editorWidth = useEditorWidth(currentRef, []);
 	const isFEIcon = 'fe' === mediaIcon[0].icon.substring(0, 2);
-	//console.log(1, currentRef);
 
 	// const previewDivider = getPreviewSize(previewDevice, divider, dividerTablet, dividerMobile);
 

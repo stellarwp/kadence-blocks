@@ -504,6 +504,11 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'type' => 'string',
 				'default' => '',
 			),
+			array(
+				'key'     => '_kad_header_autoTransparentSpacing',
+				'default' => true,
+				'type'    => 'boolean',
+			),
 		);
 
 		foreach ( $register_meta as $meta ) {
