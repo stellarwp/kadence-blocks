@@ -13,10 +13,11 @@
 	.wp-block-kadence-navigation-link__description {
 		display: none;
 	}
-
-	.link-drop-title-wrap {
-		display: grid;
-		grid-template-columns: 1fr auto;
+	.kadence-menu-has-description.kadence-menu-has-icon {
+		.link-drop-title-wrap {
+			display: grid;
+			grid-template-columns: 1fr auto;
+		}
 	}
 
 	.link-media-container {
