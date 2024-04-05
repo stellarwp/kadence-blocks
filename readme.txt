@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.3
 Tested up to: 6.5
-Stable tag: 3.2.32
+Stable tag: 3.2.33
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -88,11 +88,12 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
-= 3.3.33 =
-Release Date: April TBD 2024
+= 3.2.33 =
+Release Date: April 5th 2024
 * Fix: PHP 8.3 deprecated function call in Table of Contents block.
+* Fix: Possible css issue in FSE templates.
 
-= 3.3.32 =
+= 3.2.32 =
 Release Date: April 2nd 2024
 * Update: Design Library to better handle certain images.
 * Update: Language strings.
