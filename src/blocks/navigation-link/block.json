@@ -575,12 +575,10 @@
 					"borderRadius": [0, 0, 0, 0],
 					"borderRadiusTablet": [0, 0, 0, 0],
 					"borderRadiusMobile": [0, 0, 0, 0],
-					"borderRadiusUnit": "px",
 					"borderWidth": [0, 0, 0, 0],
 					"padding": [5, 5, 5, 5],
 					"paddingTablet": [5, 5, 5, 5],
 					"paddingMobile": [5, 5, 5, 5],
-					"paddingUnit": "px",
 					"margin": ["", "", "", ""],
 					"marginTablet": ["", "", "", ""],
 					"marginMobile": ["", "", "", ""]

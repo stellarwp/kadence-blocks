@@ -1250,6 +1250,7 @@ export default function Edit(props) {
 							<KadenceIconPicker
 								value={highlightIcon[0].icon}
 								onChange={(value) => saveMediaIcon({ icon: value }, 'highlightIcon')}
+								allowClear={true}
 							/>
 							<ResponsiveRangeControls
 								label={__('Icon Size', 'kadence-blocks')}
@@ -1341,9 +1342,8 @@ export default function Edit(props) {
 								onChangeMobile={(value) =>
 									saveMediaStyle({ borderRadiusMobile: value }, 'highlightSpacing')
 								}
-								unit={highlightSpacing[0].borderRadiusUnit}
-								units={['px', 'em', 'rem']}
-								onUnit={(value) => saveMediaStyle({ borderRadiusUnit: value }, 'highlightSpacing')}
+								unit={'px'}
+								units={['px']}
 								min={0}
 								max={200}
 								step={1}
@@ -2075,12 +2075,14 @@ export default function Edit(props) {
 
 						<span className="link-highlight-label">
 							{highlightLabel}
-
-							<IconRender
-								className={`kt-svg-icon`}
-								name={highlightIcon[0].icon}
-								size={previewHighlightIconSize}
-							/>
+							{undefined !== highlightIcon?.[0]?.icon ||
+								('' !== highlightIcon[0].icon && (
+									<IconRender
+										className={`kt-highlight-label-icon`}
+										name={highlightIcon[0].icon}
+										size={previewHighlightIconSize}
+									/>
+								))}
 						</span>
 					</a>
 
