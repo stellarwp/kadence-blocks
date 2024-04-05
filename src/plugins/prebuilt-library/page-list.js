@@ -72,8 +72,8 @@ function PageListNotice({ type }) {
 		<Heading level={2} lineHeight={'48px'} className="kb-patterns-banner-notice kb-page-notice-above">
 			<Spinner />
 			{'processing' === type
-				? __('Generating AI Content.', 'kadence Blocks')
-				: __('Content still generating, some pages will not have AI Content.', 'kadence Blocks')}
+				? __('Generating AI Content.', 'kadence-blocks')
+				: __('Content still generating, some pages will not have AI Content.', 'kadence-blocks')}
 		</Heading>
 	);
 }
@@ -86,7 +86,7 @@ function ProOnlyHeader({ launchWizard }) {
 		<div className="kb-patterns-banner-generate-notice">
 			<Icon className="kadence-generate-icons" icon={aiIcon} />
 			<Heading level={2} lineHeight={'1.2'} className="kb-patterns-heading-notice">
-				{__('Drop in professionally designed pages with AI Generated Content', 'kadence Blocks')}
+				{__('Drop in professionally designed pages with AI Generated Content', 'kadence-blocks')}
 			</Heading>
 			{!isAuthorized && (
 				<Button

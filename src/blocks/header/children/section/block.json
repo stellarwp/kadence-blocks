@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "kadence/header-section",
+	"parent": ["kadence/header"],
+	"title": "Header Section",
+	"category": "design",
+	"description": "Kadence header section",
+	"supports": {
+		"inserter": true
+	},
+	"textdomain": "kadence-blocks",
+	"attributes": {
+		"uniqueID": {
+			"type": "string"
+		},
+		"location": {
+			"type": "string"
+		}
+	}
+}

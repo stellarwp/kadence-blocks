@@ -51,6 +51,7 @@ registerBlockType('kadence/advancedheading', {
 				transform: ({ content }) => {
 					return createBlock('kadence/advancedheading', {
 						content,
+						htmlTag: 'p',
 					});
 				},
 			},

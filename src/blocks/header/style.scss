@@ -123,3 +123,49 @@ $anchor: #5000b9;
 		}
 	}
 }
+
+.kadence-blocks-header-desktop {
+	// Override a style we set elsewhere
+	p {
+		margin-bottom: unset;
+	}
+
+	.kadence-blocks-header-row {
+		display: grid !important;
+		grid-template-columns: 1fr auto 1fr;
+	}
+
+	.kadence-blocks-header-column-center {
+		display: flex !important;
+		justify-content: center;
+	}
+
+	.kadence-blocks-header-section {
+		display: flex !important;
+		align-items: center;
+
+		.kadence-blocks-header-column {
+			display: flex !important;
+			align-items: center;
+		}
+	}
+
+	.kadence-blocks-header-column-center-left {
+		flex-grow: 1;
+		justify-content: flex-end !important;
+	}
+
+	.kadence-blocks-header-column-center-right {
+		flex-grow: 1;
+		justify-content: flex-start !important;
+	}
+
+	//.kadence-blocks-header-section-right *:first-child {
+	//
+	//	justify-content: flex-start;
+	//}
+	//
+	//.kadence-blocks-header-section-right *:nth-child(2) {
+	//	justify-content: flex-end;
+	//}
+}

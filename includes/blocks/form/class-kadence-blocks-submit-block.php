@@ -56,9 +56,6 @@ class Kadence_Blocks_Submit_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		$class_id = $this->class_id( $attributes );
 		$outer_classes = array( 'kb-adv-form-field', 'kb-submit-field', 'kb-field' . $class_id );
-		if ( ! empty( $attributes['className'] ) ) {
-			$outer_classes[] = $attributes['className'];
-		}
 		$wrapper_args = array(
 			'class' => implode( ' ', $outer_classes ),
 		);
@@ -71,6 +68,10 @@ class Kadence_Blocks_Submit_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 		$classes[] = ! empty( $attributes['icon'] ) ? 'kt-btn-has-svg-true' : 'kt-btn-has-svg-false';
 		if ( ! empty( $attributes['inheritStyles'] ) && 'inherit' === $attributes['inheritStyles'] ) {
 			$classes[] = 'wp-block-button__link';
+		}
+		if ( ! empty( $attributes['className'] ) ) {
+			$wrapper_attributes = str_replace( ' ' . $attributes['className'], '', $wrapper_attributes );
+			$classes[] = $attributes['className'];
 		}
 		$button_args = array(
 			'class' => implode( ' ', $classes ),

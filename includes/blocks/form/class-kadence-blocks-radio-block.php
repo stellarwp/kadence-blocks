@@ -84,10 +84,10 @@ class Kadence_Blocks_Radio_Block extends Kadence_Blocks_Advanced_Form_Input_Bloc
 		$radio_label = $attributes;
 		$radio_label['inputName'] = 'rb' . $class_id;
 		$inline_class = '';
-		if( isset($attributes['inline']) && true === $attributes['inline']) {
+		if ( isset( $attributes['inline'] ) && true === $attributes['inline'] ) {
 			$inline_class = ' kb-radio-check-items-inline';
 		}
-		$inner_content .= '<fieldset class="kb-radio-check-item-wrap' . $inline_class . '" id="' . $this->field_name( $radio_label ) . '" data-type="radio" data-required="' . $is_required . '" ' . $this->additional_fieldset_attributes( $attributes ) . '>';
+		$inner_content .= '<fieldset class="kb-radio-check-item-wrap' . esc_attr( $inline_class ) . '" id="' . esc_attr( $this->field_name( $radio_label ) ) . '" data-type="radio" data-required="' . esc_attr( $is_required ) . '" ' . $this->additional_fieldset_attributes( $attributes ) . '>';
 		$inner_content      .= $this->field_legend( $radio_label );
 		$inner_content      .= $this->field_aria_label( $attributes );
 		foreach ( $attributes['options'] as $key => $option ) {
@@ -97,9 +97,9 @@ class Kadence_Blocks_Radio_Block extends Kadence_Blocks_Advanced_Form_Input_Bloc
 			$is_checked = $is_checked_from_editor || $is_checked_from_param;
 
 			$inner_content .= '<div class="kb-radio-check-item">';
-			$inner_content .= '<input class="kb-radio-style" type="radio" ' . $this->aria_described_by( $attributes ) . ' id="' . $id . '" name="' . $this->field_name( $attributes ) . '" ' . ( $is_checked ? "checked" : "" ) . ' value="' . $this->get_option_value( $option ) . '" >';
+			$inner_content .= '<input class="kb-radio-style" type="radio" ' . $this->aria_described_by( $attributes ) . ' id="' . esc_attr( $id ) . '" name="' . esc_attr( $this->field_name( $attributes ) ) . '" ' . ( $is_checked ? "checked" : "" ) . ' value="' . esc_attr( $this->get_option_value( $option ) ) . '">';
 
-			$inner_content .= '<label for="' . $id . '">' . $option['label'] . '</label>';
+			$inner_content .= '<label for="' . esc_attr( $id ) . '">' . $option['label'] . '</label>';
 
 			$description   = array(
 				'uniqueID' => $id,
@@ -109,7 +109,7 @@ class Kadence_Blocks_Radio_Block extends Kadence_Blocks_Advanced_Form_Input_Bloc
 
 			$inner_content .= '</div>';
 		}
-		
+
 		$inner_content .= '</fieldset>';
 
 		$inner_content .= $this->field_help_text( $attributes );

@@ -515,11 +515,11 @@ class Kadence_Blocks_Post_Rest_Controller extends WP_REST_Controller {
 	public function get_term_params() {
 		$query_params  = parent::get_collection_params();
 		$query_params[ self::PROP_TAX_TYPE ] = array(
-			'description' => __( 'Taxonomy Type.', 'kadence-blocks-pro' ),
+			'description' => __( 'Taxonomy Type.', 'kadence-blocks' ),
 			'type'        => 'string',
 		);
 		$query_params[ self::PROP_SOURCE ] = array(
-			'description' => __( 'The source of the content.', 'kadence-blocks-pro' ),
+			'description' => __( 'The source of the content.', 'kadence-blocks' ),
 			'type'        => 'string',
 			'default'     => 'current',
 		);
@@ -535,20 +535,20 @@ class Kadence_Blocks_Post_Rest_Controller extends WP_REST_Controller {
 		$query_params  = parent::get_collection_params();
 
 		$query_params[ self::PROP_SOURCE ] = array(
-			'description' => __( 'The source of the content.', 'kadence-blocks-pro' ),
+			'description' => __( 'The source of the content.', 'kadence-blocks' ),
 			'type'        => 'string',
 			'default'     => '',
 			'sanitize_callback' => array( $this, 'sanitize_post_source_string' ),
 			'validate_callback' => array( $this, 'validate_post_source_string' ),
 		);
 		$query_params[ self::PROP_PER_PAGE ] = array(
-			'description' => __( 'Number of results to return.', 'kadence-blocks-pro' ),
+			'description' => __( 'Number of results to return.', 'kadence-blocks' ),
 			'type'        => 'number',
 			'sanitize_callback' => array( $this, 'sanitize_post_perpage' ),
 			'default' => 25,
 		);
 		$query_params[ self::PROP_PAGE ] = array(
-			'description' => __( 'Page of results to return.', 'kadence-blocks-pro' ),
+			'description' => __( 'Page of results to return.', 'kadence-blocks' ),
 			'type'        => 'number',
 			'sanitize_callback' => array( $this, 'sanitize_results_page_number' ),
 			'default' => 1,

@@ -463,7 +463,7 @@ function KadencePosts(props) {
 									<Fragment>
 										<div className="term-select-form-row">
 											<TaxonomySelect
-												label={__('Select Taxonomy', 'kadence-blocks-pro')}
+												label={__('Select Taxonomy', 'kadence-blocks')}
 												value={getTaxSelectValue()}
 												source={postType}
 												termIsMulti={true}

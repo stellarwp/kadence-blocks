@@ -29,6 +29,7 @@ export function Edit(props) {
 
 	const blockClasses = classnames({
 		'wp-block-kadence-header': true,
+		'wp-block-kadence-header-desktop': true,
 		[`wp-block-kadence-header${uniqueID}`]: uniqueID,
 	});
 	const blockProps = useBlockProps({
@@ -71,14 +72,14 @@ export function Edit(props) {
 
 	const innerBlocksProps = useInnerBlocksProps(
 		{
-			className: '',
+			className: 'wp-block-kadence-header-desktop',
 			style: {
 				display: previewDevice === 'Desktop' ? 'block' : 'none',
 			},
 		},
 		{
-			renderAppender: InnerBlocks.ButtonBlockAppender,
-			templateLock: false,
+			renderAppender: false,
+			templateLock: 'all',
 		}
 	);
 
