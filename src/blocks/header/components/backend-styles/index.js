@@ -399,7 +399,7 @@ export default function BackendStyles(props) {
 		css.add_property('display', 'none');
 	}
 
-	css.set_selector(`.kb-header.kb-header${uniqueID}`);
+	css.set_selector(`.wp-block-kadence-header${uniqueID}`);
 	css.add_property('display', 'flex');
 	css.add_property('flex-wrap', 'wrap');
 	css.add_property('flex-basis', '0');
@@ -474,7 +474,7 @@ export default function BackendStyles(props) {
 	css.add_property('min-height', getSpacingOptionOutput(previewHeight, heightUnit));
 	css.add_property('max-width', getSpacingOptionOutput(previewWidth, widthUnit));
 
-	css.set_selector(`.kb-header.kb-header${uniqueID}:hover`);
+	css.set_selector(`wp-block-kadence-header${uniqueID}:hover`);
 
 	if (previewStyle != 'transparent') {
 		if ('normal' === backgroundHover?.type && backgroundHover?.image) {
@@ -523,10 +523,10 @@ export default function BackendStyles(props) {
 		getSpacingOptionOutput(previewHoverBorderBottomLeftRadius, borderHoverRadiusUnit)
 	);
 
-	css.set_selector(`.kb-header.kb-header${uniqueID} a`);
+	css.set_selector(`wp-block-kadence-header${uniqueID} a`);
 	css.add_property('color', KadenceColorOutput(linkColor));
 
-	css.set_selector(`.kb-header.kb-header${uniqueID} a:hover`);
+	css.set_selector(`wp-block-kadence-header${uniqueID} a:hover`);
 	css.add_property('color', KadenceColorOutput(linkHoverColor));
 
 	if (previewStyle == 'transparent') {

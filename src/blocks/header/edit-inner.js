@@ -318,12 +318,6 @@ export function EditInner(props) {
 		setMeta({ ...meta, ['_kad_header_' + key]: value });
 	};
 
-	const headerClasses = classnames({
-		'kb-header': true,
-		[`kb-header-${id}`]: true,
-		[`kb-header${uniqueID}`]: uniqueID,
-	});
-
 	// Flex direction options
 	const previewDirection = getPreviewSize(
 		previewDevice,
@@ -385,7 +379,7 @@ export function EditInner(props) {
 
 	const innerBlocksProps = useInnerBlocksProps(
 		{
-			className: headerClasses,
+			className: '',
 		},
 		{
 			allowedBlocks: ALLOWED_BLOCKS,
