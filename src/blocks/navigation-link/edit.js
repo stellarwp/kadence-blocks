@@ -2094,17 +2094,18 @@ export default function Edit(props) {
 							{description && <span className="menu-label-description">{description}</span>}
 							{hasChildren && <span className="title-dropdown-navigation-toggle">{ArrowDown}</span>}
 						</span>
-
-						<span className="link-highlight-label">
-							{highlightLabel}
-							{undefined !== highlightIcon?.[0]?.icon && '' !== highlightIcon[0].icon && (
-								<IconRender
-									className={`kt-highlight-label-icon`}
-									name={highlightIcon[0].icon}
-									size={previewHighlightIconSize}
-								/>
-							)}
-						</span>
+					    { (undefined !== highlightIcon?.[0]?.icon && "" !== highlightIcon[0].icon || undefined !== highlightLabel && "" !== highlightLabel ) &&
+							<span className="link-highlight-label">
+								{highlightLabel}
+								{undefined !== highlightIcon?.[0]?.icon && '' !== highlightIcon[0].icon && (
+									<IconRender
+										className={`kt-highlight-label-icon`}
+										name={highlightIcon[0].icon}
+										size={previewHighlightIconSize}
+									/>
+								)}
+							</span>
+						}
 					</a>
 
 					{hasChildren && (

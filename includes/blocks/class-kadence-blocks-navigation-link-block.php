@@ -86,30 +86,11 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			// $css->add_property( 'margin-left', '-' . ( $data['mega_menu_custom_width'] ? floor( $data['mega_menu_custom_width'] / 2 ) : '400' ) . 'px' );
 		}
 
-		//var_dump($nav_link_attributes['highlightIcon'][0]['sizeTablet']);
-		
-		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container > ul li.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a .link-highlight-label .link-svg-icon svg' );
-		if( isset( $nav_link_attributes['highlightIcon'][0]['size'] ) && is_numeric( $nav_link_attributes['highlightIcon'][0]['size'] ) ) {
-			$css->add_property( 'width', $nav_link_attributes['highlightIcon'][0]['size'] . 'px' );
-			$css->add_property( 'height', $nav_link_attributes['highlightIcon'][0]['size'] . 'px' );
-		}
-		
-		if(isset( $nav_link_attributes['highlightIcon'][0]['sizeTablet'] ) && is_numeric( $nav_link_attributes['highlightIcon'][0]['sizeTablet'] ) ) {
-			$css->set_media_state( 'tablet' );
-			$css->add_property( 'width',  $nav_link_attributes['highlightIcon'][0]['sizeTablet'] . 'px' );
-			$css->add_property( 'height',  $nav_link_attributes['highlightIcon'][0]['sizeTablet'] . 'px' );
-		}
-
-		if(isset( $nav_link_attributes['highlightIcon'][0]['sizeMobile'] ) && is_numeric( $nav_link_attributes['highlightIcon'][0]['sizeMobile'] ) ) {
-			$css->set_media_state( 'mobile' );
-			$css->add_property( 'width',  $nav_link_attributes['highlightIcon'][0]['sizeMobile'] . 'px' );
-			$css->add_property( 'height',  $nav_link_attributes['highlightIcon'][0]['sizeMobile'] . 'px' );
-		}
-
 		$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a' );
 		$css->render_measure_output( $nav_link_attributes, 'padding' );
 		$css->render_measure_output( $nav_link_attributes, 'margin', 'margin' );
-		if( ! empty( $nav_link_attributes['highlightLabel']) || ! empty($nav_link_attributes['highlightLabel'])) {
+
+		if( ! empty( $nav_link_attributes['highlightLabel']) || ! empty($nav_link_attributes['highlightIcon']['icon'])) {
 			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a .link-highlight-label' );
 			$css->add_property( 'transition', 'color 0.35s ease-in-out, background-color 0.35s ease-in-out' );
 			$css->add_property( 'color', $css->render_color( $attributes['labelColor'] ) );
@@ -125,6 +106,27 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a:active .link-highlight-label' );
 			$css->add_property( 'color', $css->render_color( $attributes['labelColorActive'] ) );
 			$css->add_property( 'background-color', $css->render_color( $attributes['labelBackgroundActive'] ) );
+			
+			if(! empty($nav_link_attributes['highlightIcon'])) {
+				$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container > ul li.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a .link-highlight-label .link-svg-icon svg' );
+				
+				if( isset( $nav_link_attributes['highlightIcon'][0]['size'] ) && is_numeric( $nav_link_attributes['highlightIcon'][0]['size'] ) ) {
+					$css->add_property( 'width', $nav_link_attributes['highlightIcon'][0]['size'] . 'px' );
+					$css->add_property( 'height', $nav_link_attributes['highlightIcon'][0]['size'] . 'px' );
+				}
+				
+				if(isset( $nav_link_attributes['highlightIcon'][0]['sizeTablet'] ) && is_numeric( $nav_link_attributes['highlightIcon'][0]['sizeTablet'] ) ) {
+					$css->set_media_state( 'tablet' );
+					$css->add_property( 'width',  $nav_link_attributes['highlightIcon'][0]['sizeTablet'] . 'px' );
+					$css->add_property( 'height',  $nav_link_attributes['highlightIcon'][0]['sizeTablet'] . 'px' );
+				}
+				if(isset( $nav_link_attributes['highlightIcon'][0]['sizeMobile'] ) && is_numeric( $nav_link_attributes['highlightIcon'][0]['sizeMobile'] ) ) {
+					$css->set_media_state( 'mobile' );
+					$css->add_property( 'width',  $nav_link_attributes['highlightIcon'][0]['sizeMobile'] . 'px' );
+					$css->add_property( 'height',  $nav_link_attributes['highlightIcon'][0]['sizeMobile'] . 'px' );
+				}
+				$css->set_media_state( 'desktop' );
+			}
 		}
 		
 		return $css->css_output();
