@@ -190,6 +190,30 @@
 			"type": "string",
 			"default": ""
 		},
+		"highlightSide": {
+			"type": "string",
+			"default": "right"
+		},
+		"highlightSideTablet": {
+			"type": "string",
+			"default": "right"
+		},
+		"highlightSideMobile": {
+			"type": "string",
+			"default": "right"
+		},
+		"iconSide": {
+			"type": "string",
+			"default": "right"
+		},
+		"iconSideTablet": {
+			"type": "string",
+			"default": "right"
+		},
+		"iconSideMobile": {
+			"type": "string",
+			"default": "right"
+		},
 		"labelColor": {
 			"type": "string",
 			"default": ""

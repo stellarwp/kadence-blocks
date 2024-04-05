@@ -100,14 +100,38 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$css->render_border_styles( $attributes['highlightSpacing'][0], 'border' );
 			$css->render_border_radius( $attributes['highlightSpacing'][0] );
 			$css->render_gap($attributes['highlightSpacing'][0]);
+			if( 'left' === $attributes['highlightSide'] ) {
+				$css->add_property('order', '-1');
+			}
+			if( 'left' === $attributes['highlightSideTablet'] ) {
+				$css->set_media_state( 'tablet' );
+				$css->add_property( 'order', '-1' );
+			}
+			if( 'left' === $attributes['highlightSideMobile'] ) {
+				$css->set_media_state( 'mobile' );
+				$css->add_property( 'order', '-1' );
+			}
+			$css->set_media_state( 'desktop' );
 			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a:hover .link-highlight-label' );
 			$css->add_property( 'color', $css->render_color( $attributes['labelColorHover'] ) );
 			$css->add_property( 'background-color', $css->render_color( $attributes['labelBackgroundHover'] ) );
 			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a:active .link-highlight-label' );
 			$css->add_property( 'color', $css->render_color( $attributes['labelColorActive'] ) );
 			$css->add_property( 'background-color', $css->render_color( $attributes['labelBackgroundActive'] ) );
-			
-			if(! empty($nav_link_attributes['highlightIcon'])) {
+			if(! empty($nav_link_attributes['highlightIcon'][0]['icon'])) {
+				$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container > ul li.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a .link-highlight-label .link-media-container' );
+				if( 'left' === $attributes['iconSide'] ) {
+					$css->add_property( 'order', '-1' );
+				}
+				if( 'left' === $attributes['iconSideTablet'] ) {
+					$css->set_media_state( 'tablet' );
+					$css->add_property( 'order', '-1' );
+				}
+				if( 'left' === $attributes['iconSideMobile'] ) {
+					$css->set_media_state( 'mobile' );
+					$css->add_property( 'order', '-1' );
+				}
+				$css->set_media_state( 'desktop' );
 				$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container > ul li.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a .link-highlight-label .link-svg-icon svg' );
 				
 				if( isset( $nav_link_attributes['highlightIcon'][0]['size'] ) && is_numeric( $nav_link_attributes['highlightIcon'][0]['size'] ) ) {

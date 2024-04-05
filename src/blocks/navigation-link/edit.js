@@ -75,6 +75,7 @@ import {
 	MeasurementControls,
 	ResponsiveMeasurementControls,
 	IconRender,
+	ResponsiveSelectControl
 } from '@kadence/components';
 
 import { ArrowDown, ArrowUp } from '@kadence/icons';
@@ -244,6 +245,9 @@ export default function Edit(props) {
 		backgroundActiveMobile,
 		highlightLabel,
 		highlightSpacing,
+		highlightSide,
+		highlightSideMobile,
+		highlightSideTablet,
 		labelBackground,
 		labelBackgroundHover,
 		labelBackgroundActive,
@@ -304,6 +308,9 @@ export default function Edit(props) {
 		mediaIcon,
 		mediaStyle,
 		highlightIcon,
+		iconSide,
+		iconSideTablet,
+		iconSideMobile
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
@@ -1306,6 +1313,32 @@ export default function Edit(props) {
 								step={1}
 								unit={'px'}
 								units={['px']}
+							/>
+							<ResponsiveSelectControl
+								label={__('Align Icon', 'kadence-blocks')}
+								value={iconSide}
+								tabletValue={iconSideTablet}
+								mobileValue={iconSideMobile}
+								options={[
+									{ value: 'right', label: __('Right', 'kadence-blocks') },
+									{ value: 'left', label: __('Left', 'kadence-blocks') },
+								]}
+								onChange={(value) => setAttributes({iconSide: value})}
+								onChangeTablet={(value) => setAttributes({iconSideTablet: value})}
+								onChangeMobile={(value) => setAttributes({iconSideMobile: value})}
+							/>
+							<ResponsiveSelectControl
+								label={__('Align Highlight Label', 'kadence-blocks')}
+								value={highlightSide}
+								tabletValue={highlightSideTablet}
+								mobileValue={highlightSideMobile}
+								options={[
+									{ value: 'right', label: __('Right', 'kadence-blocks') },
+									{ value: 'left', label: __('Left', 'kadence-blocks') },
+								]}
+								onChange={(value) => setAttributes({highlightSide: value})}
+								onChangeTablet={(value) => setAttributes({highlightSideTablet: value})}
+								onChangeMobile={(value) => setAttributes({highlightSideMobile: value})}
 							/>
 							<SmallResponsiveControl
 								label={__('Highlight Label Colors', 'kadence-blocks')}
