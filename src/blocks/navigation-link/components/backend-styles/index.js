@@ -278,9 +278,9 @@ export default function BackendStyles(props) {
 	);
 	const previewHighlightLabelGap = getPreviewSize(
 		previewDevice,
-		highlightSpacing[0].gap,
-		highlightSpacing[0].gapTablet,
-		highlightSpacing[0].gapMobile
+		highlightSpacing[0].gap[0],
+		highlightSpacing[0].gap[1],
+		highlightSpacing[0].gap[2]
 	);
 	const previewMediaAlign = getPreviewSize(previewDevice, mediaAlign, mediaAlignTablet, mediaAlignMobile);
 	if (uniqueID == '494_c9029f-f0') {
@@ -432,16 +432,16 @@ export default function BackendStyles(props) {
 	css.add_property('background-color', css.render_color(previewLabelBackground));
 	css.render_measure_output(
 		highlightSpacing[0].padding,
-		highlightSpacing[0].paddingTablet,
-		highlightSpacing[0].paddingMobile,
+		highlightSpacing[0].tabletPadding,
+		highlightSpacing[0].mobilePadding,
 		previewDevice,
 		'padding',
 		'px'
 	);
 	css.render_measure_output(
 		highlightSpacing[0].margin,
-		highlightSpacing[0].marginTablet,
-		highlightSpacing[0].marginMobile,
+		highlightSpacing[0].tabletMargin,
+		highlightSpacing[0].mobileMargin,
 		previewDevice,
 		'margin',
 		'px'
@@ -498,7 +498,7 @@ export default function BackendStyles(props) {
 		'border-radius',
 		'px'
 	);
-	css.add_property('gap', previewHighlightLabelGap + 'px');
+	css.add_property('gap', css.get_gap_size(previewHighlightLabelGap, 'px'));
 	css.set_selector(
 		`.wp-block-kadence-navigation-link${uniqueID}.menu-item > .link-drop-wrap > a:hover .link-highlight-label`
 	);

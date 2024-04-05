@@ -108,12 +108,16 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 		$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a' );
 		$css->render_measure_output( $nav_link_attributes, 'padding' );
-		$css->render_measure_output( $nav_link_attributes, 'margin' );
+		$css->render_measure_output( $nav_link_attributes, 'margin', 'margin' );
 		if( ! empty( $nav_link_attributes['highlightLabel'] ) ) {
 			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a .link-highlight-label' );
 			$css->add_property( 'transition', 'color 0.35s ease-in-out, background-color 0.35s ease-in-out' );
 			$css->add_property( 'color', $css->render_color( $attributes['labelColor'] ) );
 			$css->add_property( 'background-color', $css->render_color( $attributes['labelBackground'] ) );
+			$css->render_measure_output( $attributes['highlightSpacing'][0], 'margin', 'margin' );
+			$css->render_measure_output( $attributes['highlightSpacing'][0], 'padding' );
+			$css->render_measure_output( $attributes['highlightSpacing'][0], 'border', 'border' );
+			$css->render_gap($attributes['highlightSpacing'][0]);
 			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a:hover .link-highlight-label' );
 			$css->add_property( 'color', $css->render_color( $attributes['labelColorHover'] ) );
 			$css->add_property( 'background-color', $css->render_color( $attributes['labelBackgroundHover'] ) );

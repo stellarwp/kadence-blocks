@@ -1268,22 +1268,44 @@ export default function Edit(props) {
 								step={1}
 								unit={'px'}
 							/>
-							<ResponsiveRangeControls
+							<ResponsiveGapSizeControl
 								label={__('Label / Icon Gap', 'kadence-blocks')}
-								value={highlightSpacing[0].gap}
-								onChange={(value) => saveMediaIcon({ gap: value }, 'highlightSpacing')}
-								tabletValue={highlightSpacing[0].gapTablet}
-								onChangeTablet={(value) => {
-									saveMediaIcon({ gapTablet: value }, 'highlightSpacing');
+								value={highlightSpacing[0].gap[0]}
+								onChange={(value) => {
+									console.log(value);
+									saveMediaStyle({
+										gap: [
+											value,
+											highlightSpacing[0].gap[1],
+											highlightSpacing[0].gap[2],
+										],
+									}, 'highlightSpacing')
 								}}
-								mobileValue={highlightSpacing[0].gapMobile}
-								onChangeMobile={(value) => {
-									saveMediaIcon({ gapMobile: value }, 'highlightSpacing');
-								}}
+								tabletValue={highlightSpacing[0].gap[1]}
+								onChangeTablet={(value) =>
+									saveMediaStyle({
+										gap: [
+											highlightSpacing[0].gap[0],
+											value,
+											highlightSpacing[0].gap[2],
+										],
+									}, 'highlightSpacing')
+								}
+								mobileValue={highlightSpacing[0].gap[2]}
+								onChangeMobile={(value) =>
+									saveMediaStyle({
+										gap: [
+											highlightSpacing[0].gap[0],
+											highlightSpacing[0].gap[1],
+											value,
+										],
+									}, 'highlightSpacing')
+								}
 								min={0}
 								max={100}
 								step={1}
 								unit={'px'}
+								units={['px']}
 							/>
 							<SmallResponsiveControl
 								label={__('Highlight Label Colors', 'kadence-blocks')}
@@ -1295,10 +1317,10 @@ export default function Edit(props) {
 								label={__('Margin', 'kadence-blocks')}
 								value={highlightSpacing[0].margin}
 								onChange={(value) => saveMediaStyle({ margin: value }, 'highlightSpacing')}
-								tabletValue={highlightSpacing[0].marginTablet}
-								onChangeTablet={(value) => saveMediaStyle({ marginTablet: value }, 'highlightSpacing')}
-								mobileValue={highlightSpacing[0].marginMobile}
-								onChangeMobile={(value) => saveMediaStyle({ marginMobile: value }, 'highlightSpacing')}
+								tabletValue={highlightSpacing[0].tabletMargin}
+								onChangeTablet={(value) => saveMediaStyle({ tabletMargin: value }, 'highlightSpacing')}
+								mobileValue={highlightSpacing[0].mobileMargin}
+								onChangeMobile={(value) => saveMediaStyle({ mobileMargin: value }, 'highlightSpacing')}
 								min={0}
 								max={200}
 								step={1}
@@ -1309,10 +1331,10 @@ export default function Edit(props) {
 								label={__('Padding', 'kadence-blocks')}
 								value={highlightSpacing[0].padding}
 								onChange={(value) => saveMediaStyle({ padding: value }, 'highlightSpacing')}
-								tabletValue={highlightSpacing[0].paddingTablet}
-								onChangeTablet={(value) => saveMediaStyle({ paddingTablet: value }, 'highlightSpacing')}
-								mobileValue={highlightSpacing[0].paddingMobile}
-								onChangeMobile={(value) => saveMediaStyle({ paddingMobile: value }, 'highlightSpacing')}
+								tabletValue={highlightSpacing[0].tabletPadding}
+								onChangeTablet={(value) => saveMediaStyle({ tabletPadding: value }, 'highlightSpacing')}
+								mobileValue={highlightSpacing[0].mobilePadding}
+								onChangeMobile={(value) => saveMediaStyle({ mobilePadding: value }, 'highlightSpacing')}
 								min={0}
 								max={200}
 								step={1}

@@ -576,15 +576,13 @@
 					"borderRadiusTablet": [0, 0, 0, 0],
 					"borderRadiusMobile": [0, 0, 0, 0],
 					"borderWidth": [0, 0, 0, 0],
-					"gap": "",
-					"gapTablet": "",
-					"gapMobile": "",
+					"gap": ["", "", ""],
 					"padding": [5, 5, 5, 5],
-					"paddingTablet": [5, 5, 5, 5],
-					"paddingMobile": [5, 5, 5, 5],
+					"tabletPadding": [5, 5, 5, 5],
+					"mobilePadding": [5, 5, 5, 5],
 					"margin": ["", "", "", ""],
-					"marginTablet": ["", "", "", ""],
-					"marginMobile": ["", "", "", ""]
+					"tabletMargin": ["", "", "", ""],
+					"mobileMargin": ["", "", "", ""]
 				}
 			]
 		}
