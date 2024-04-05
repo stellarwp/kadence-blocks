@@ -2,15 +2,29 @@
 // Contains styles only that are unique to the manually inserted menu item.
 // Styles in the Navigation block itself target both custom menu items, and
 // those from the Page List block.
-.wp-block-navigation {
+.wp-block-kadence-navigation-link {
 	// This wraps just the innermost text for custom menu items.
-	.wp-block-navigation-item__label {
+	.wp-block-kadence-navigation-link__label {
 		overflow-wrap: break-word;
 	}
 
 	// Hide the description by default.
 	// If a theme opts-in to show descriptions, they will need to provide styles for them.
-	.wp-block-navigation-item__description {
+	.wp-block-kadence-navigation-link__description {
 		display: none;
+	}
+
+	.link-media-container {
+		display: flex;
+		grid-row: span 2;
+		.link-svg-icon {
+			display: inline-flex;
+			justify-content: center;
+			align-items: center;
+
+			svg {
+				stroke: currentColor;
+			}
+		}
 	}
 }

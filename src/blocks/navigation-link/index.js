@@ -19,6 +19,11 @@ const { name } = metadata;
 
 export { metadata, name };
 
+/**
+ * Import Css
+ */
+import './style.scss';
+
 registerBlockType(name, {
 	...metadata,
 	icon: navigationItemIcon,

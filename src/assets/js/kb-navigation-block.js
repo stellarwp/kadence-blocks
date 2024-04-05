@@ -1067,8 +1067,90 @@
 				}
 			}
 		},
+
+		/**
+		 * Find the cart and open it.
+		 */
+		runSubMenuContentSize() {
+			var contentSubmenus = document.querySelectorAll(
+				'.wp-block-kadence-navigation .kadence-menu-mega-width-content > ul.sub-menu'
+			);
+			for (let i = 0; i < contentSubmenus.length; i++) {
+				var parentMenuItem = contentSubmenus[i].parentNode;
+				var row = contentSubmenus[i].closest('.wp-block-kadence-navigation');
+				contentSubmenus[i].style.left = '';
+				contentSubmenus[i].style.width = row.offsetWidth + 'px';
+				contentSubmenus[i].style.left =
+					-1 *
+						Math.abs(
+							parentMenuItem.getBoundingClientRect().left - row.getBoundingClientRect().left
+						).toString() +
+					'px';
+			}
+		},
+		/**
+		 * Initiate the script to toggle cart when product is added.
+		 */
+		initContentSubMenuSize() {
+			var contentSubmenus = document.querySelectorAll(
+				'.wp-block-kadence-navigation .kadence-menu-mega-width-content > ul.sub-menu'
+			);
+			// No point if no submenus.
+			if (!contentSubmenus.length) {
+				return;
+			}
+			var timeout;
+			window.addEventListener(
+				'resize',
+				function () {
+					clearTimeout(timeout);
+					timeout = setTimeout(window.kadenceNavigation.runSubMenuContentSize, 500);
+				},
+				false
+			);
+			window.addEventListener('load', window.kadenceNavigation.runSubMenuContentSize);
+			window.kadenceNavigation.runSubMenuContentSize();
+		},
+		/**
+		 * Setup the Fullwith Menu.
+		 */
+		runSubMenuFullSize() {
+			var contentSubmenus = document.querySelectorAll(
+				'.wp-block-kadence-navigation .kadence-menu-mega-width-full > ul.sub-menu'
+			);
+			for (let i = 0; i < contentSubmenus.length; i++) {
+				var parentMenuItem = contentSubmenus[i].parentNode;
+				contentSubmenus[i].style.left = '';
+				contentSubmenus[i].style.width = window.innerWidth + 'px';
+				contentSubmenus[i].style.left =
+					-1 * Math.abs(parentMenuItem.getBoundingClientRect().left).toString() + 'px';
+			}
+		},
+		/**
+		 * Initiate the script to toggle cart when product is added.
+		 */
+		initFullSubMenuSize() {
+			var contentSubmenus = document.querySelectorAll(
+				'.wp-block-kadence-navigation .kadence-menu-mega-width-full > ul.sub-menu'
+			);
+			// No point if no submenus.
+			if (!contentSubmenus.length) {
+				return;
+			}
+			var timeout;
+			window.addEventListener(
+				'resize',
+				function () {
+					clearTimeout(timeout);
+					timeout = setTimeout(window.kadenceNavigation.runSubMenuFullSize, 500);
+				},
+				false
+			);
+			window.kadenceNavigation.runSubMenuFullSize();
+		},
 		// Initiate the menus when the DOM loads.
 		init() {
+			//theme nav
 			window.kadenceNavigation.initNavToggleSubmenus();
 			// window.kadenceNavigation.initToggleDrawer();
 			// window.kadenceNavigation.initMobileToggleAnchor();
@@ -1081,6 +1163,10 @@
 			// window.kadenceNavigation.initAnchorScrollTo();
 			// window.kadenceNavigation.initScrollToTop();
 			window.kadenceNavigation.initTrackOrientation();
+
+			//pro mega menu
+			window.kadenceNavigation.initContentSubMenuSize();
+			window.kadenceNavigation.initFullSubMenuSize();
 		},
 	};
 	if ('loading' === document.readyState) {

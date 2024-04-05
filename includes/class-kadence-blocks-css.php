@@ -2722,12 +2722,13 @@ class Kadence_Blocks_CSS {
 	 * @param boolean $inherit if the attribute should inherit.
 	 * @return mixed
 	 */
-	public function get_sized_attributes_auto( $attributes, $size = 'Desktop', $inherit = true ) {
+	public function get_sized_attributes_auto( $attributes, $size = 'Desktop', $inherit = true, $special_keys = array() ) {
 		$sized_array = array();
 
 		foreach ( $attributes as $key => $value ) {
 			$is_tablet_key = str_ends_with( $key, 'Tablet' );
 			$is_mobile_key = str_ends_with( $key, 'Mobile' );
+			$is_special_key = array_key_exists( $key, $special_keys );
 
 			if ( $is_tablet_key || $is_mobile_key ) {
 				$desktop_key = substr( $key, 0, -6 );
@@ -2737,6 +2738,12 @@ class Kadence_Blocks_CSS {
 				if ( array_key_exists( $desktop_key, $attributes ) && array_key_exists( $tablet_key, $attributes ) && array_key_exists( $mobile_key, $attributes ) ) {
 					$sized_array[ $desktop_key ] = $this->get_sized_attribute( $attributes, $desktop_key, $size, $inherit );
 				}
+			} else if ( $is_special_key ) {
+				$desktop_value = $special_keys[ $key ]['Desktop'];
+				$tablet_value = $special_keys[ $key ]['Tablet'];
+				$mobile_value = $special_keys[ $key ]['Mobile'];
+
+				$sized_array[ $key ] = $this->get_inherited_value( $desktop_value, $tablet_value, $mobile_value, $size, true );
 			} else {
 				$sized_array[ $key ] = $value;
 			}
