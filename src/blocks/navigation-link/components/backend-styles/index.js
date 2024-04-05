@@ -450,8 +450,8 @@ export default function BackendStyles(props) {
 		'border-top',
 		css.render_border(
 			highlightSpacing[0].border,
-			highlightSpacing[0].borderTablet,
-			highlightSpacing[0].borderMobile,
+			highlightSpacing[0].tabletBorder,
+			highlightSpacing[0].mobileBorder,
 			previewDevice,
 			'top',
 			false
@@ -461,8 +461,8 @@ export default function BackendStyles(props) {
 		'border-right',
 		css.render_border(
 			highlightSpacing[0].border,
-			highlightSpacing[0].borderTablet,
-			highlightSpacing[0].borderMobile,
+			highlightSpacing[0].tabletBorder,
+			highlightSpacing[0].mobileBorder,
 			previewDevice,
 			'right',
 			false
@@ -472,8 +472,8 @@ export default function BackendStyles(props) {
 		'border-bottom',
 		css.render_border(
 			highlightSpacing[0].border,
-			highlightSpacing[0].borderTablet,
-			highlightSpacing[0].borderMobile,
+			highlightSpacing[0].tabletBorder,
+			highlightSpacing[0].mobileBorder,
 			previewDevice,
 			'bottom',
 			false
@@ -483,8 +483,8 @@ export default function BackendStyles(props) {
 		'border-left',
 		css.render_border(
 			highlightSpacing[0].border,
-			highlightSpacing[0].borderTablet,
-			highlightSpacing[0].borderMobile,
+			highlightSpacing[0].tabletBorder,
+			highlightSpacing[0].mobileBorder,
 			previewDevice,
 			'left',
 			false
@@ -492,8 +492,8 @@ export default function BackendStyles(props) {
 	);
 	css.render_measure_output(
 		highlightSpacing[0].borderRadius,
-		highlightSpacing[0].borderRadiusTablet,
-		highlightSpacing[0].borderRadiusMobile,
+		highlightSpacing[0].tabletBorderRadius,
+		highlightSpacing[0].mobileBorderRadius,
 		previewDevice,
 		'border-radius',
 		'px'

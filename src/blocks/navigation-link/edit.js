@@ -1344,25 +1344,25 @@ export default function Edit(props) {
 							<ResponsiveBorderControl
 								label={__('Border', 'kadence-blocks')}
 								value={highlightSpacing[0].border}
-								tabletValue={highlightSpacing[0].borderTablet}
-								mobileValue={highlightSpacing[0].borderMobile}
+								tabletValue={highlightSpacing[0].tabletBorder}
+								mobileValue={highlightSpacing[0].mobileBorder}
 								onChange={(value) => {
 									saveMediaStyle({ border: value }, 'highlightSpacing');
 								}}
-								onChangeTablet={(value) => saveMediaStyle({ borderTablet: value }, 'highlightSpacing')}
-								onChangeMobile={(value) => saveMediaStyle({ borderMobile: value }, 'highlightSpacing')}
+								onChangeTablet={(value) => saveMediaStyle({ tabletBorder: value }, 'highlightSpacing')}
+								onChangeMobile={(value) => saveMediaStyle({ mobileBorder: value }, 'highlightSpacing')}
 							/>
 							<ResponsiveMeasurementControls
 								label={__('Border Radius', 'kadence-blocks')}
 								value={highlightSpacing[0].borderRadius}
 								onChange={(value) => saveMediaStyle({ borderRadius: value }, 'highlightSpacing')}
-								tabletValue={highlightSpacing[0].borderRadiusTablet}
+								tabletValue={highlightSpacing[0].tabletBorderRadius}
 								onChangeTablet={(value) =>
-									saveMediaStyle({ borderRadiusTablet: value }, 'highlightSpacing')
+									saveMediaStyle({ tabletBorderRadius: value }, 'highlightSpacing')
 								}
-								mobileValue={highlightSpacing[0].borderRadiusMobile}
+								mobileValue={highlightSpacing[0].mobileBorderRadius}
 								onChangeMobile={(value) =>
-									saveMediaStyle({ borderRadiusMobile: value }, 'highlightSpacing')
+									saveMediaStyle({ mobileBorderRadius: value }, 'highlightSpacing')
 								}
 								unit={'px'}
 								units={['px']}
