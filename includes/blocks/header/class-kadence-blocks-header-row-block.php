@@ -81,7 +81,7 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
-		$css->set_selector( '.kadence-blocks-header-row' . $unique_id );
+		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id );
 
 
 		return $css->css_output();
@@ -98,12 +98,12 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 		$html = '';
 
 		$classes = array(
-			'kadence-blocks-header-row',
-			'kadence-blocks-header-row' . esc_attr( $unique_id ),
+			'wp-block-kadence-header-row',
+			'wp-block-kadence-header-row' . esc_attr( $unique_id ),
 		);
 
 		if( !empty( $attributes['location'])) {
-			$classes[]= 'kadence-blocks-header-row-' . esc_attr( $attributes['location'] );
+			$classes[]= 'wp-block-kadence-header-row-' . esc_attr( $attributes['location'] );
 		}
 
 		$html .= '<div class="' . esc_attr( implode( ' ', $classes ) ) . '">';

@@ -63,9 +63,9 @@ export function Edit(props) {
 	}, []);
 
 	const innerBlockClasses = classnames({
-		'kadence-blocks-header-section': true,
-		[`kadence-blocks-header-section-${location}`]: location,
-		[`kadence-blocks-header-section${uniqueID}`]: uniqueID,
+		'wp-block-kadence-header-section': true,
+		[`wp-block-kadence-header-section-${location}`]: location,
+		[`wp-block-kadence-header-section${uniqueID}`]: uniqueID,
 	});
 
 	const innerBlocksProps = useInnerBlocksProps(

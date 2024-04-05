@@ -220,7 +220,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		);
 
 		return sprintf(
-			'<header %1$s>%2$s</header>',
+			'<div %1$s>%2$s</div>',
 			$wrapper_attributes,
 			$content
 		);

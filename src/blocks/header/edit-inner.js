@@ -12,6 +12,13 @@ import { createBlock } from '@wordpress/blocks';
 import { get } from 'lodash';
 import { addQueryArgs } from '@wordpress/url';
 import { useEntityBlockEditor, useEntityProp } from '@wordpress/core-data';
+import {
+	InspectorControls,
+	useInnerBlocksProps,
+	InspectorAdvancedControls,
+	store as editorStore,
+} from '@wordpress/block-editor';
+import { TextControl, ExternalLink, Button, Placeholder, ToggleControl } from '@wordpress/components';
 import { formBlockIcon } from '@kadence/icons';
 import {
 	KadencePanelBody,
@@ -32,14 +39,6 @@ import {
 } from '@kadence/components';
 import { getPreviewSize, mouseOverVisualizer, arrayStringToInt, useElementWidth } from '@kadence/helpers';
 
-import {
-	InspectorControls,
-	useInnerBlocksProps,
-	InspectorAdvancedControls,
-	store as editorStore,
-} from '@wordpress/block-editor';
-import { TextControl, ExternalLink, Button, Placeholder, ToggleControl } from '@wordpress/components';
-
 import { FormTitle, SelectForm } from './components';
 
 /**
@@ -58,7 +57,7 @@ const ANCHOR_REGEX = /[\s#]/g;
 
 const INNERBLOCK_TEMPLATE = [
 	createBlock('kadence/header-container-desktop', {}, [
-		createBlock('kadence/header-row', { metadata: { name: __('Top Row', 'kadence-blocks') } }, [
+		createBlock('kadence/header-row', { metadata: { name: __('Top Row', 'kadence-blocks') }, location: 'top' }, [
 			createBlock(
 				'kadence/header-section',
 				{ metadata: { name: __('Left Section', 'kadence-blocks') }, location: 'left' },
@@ -96,82 +95,90 @@ const INNERBLOCK_TEMPLATE = [
 				]
 			),
 		]),
-		createBlock('kadence/header-row', { metadata: { name: __('Middle Row', 'kadence-blocks') } }, [
-			createBlock(
-				'kadence/header-section',
-				{ metadata: { name: __('Left Section', 'kadence-blocks') }, location: 'left' },
-				[
-					createBlock(
-						'kadence/header-column',
-						{ metadata: { name: __('Left', 'kadence-blocks') }, location: 'left' },
-						[]
-					),
-					createBlock(
-						'kadence/header-column',
-						{ metadata: { name: __('Center Left', 'kadence-blocks') }, location: 'center-left' },
-						[]
-					),
-				]
-			),
-			createBlock('kadence/header-column', {
-				metadata: { name: __('Center', 'kadence-blocks') },
-				location: 'center',
-			}),
-			createBlock(
-				'kadence/header-section',
-				{ metadata: { name: __('Right Section', 'kadence-blocks') }, location: 'right' },
-				[
-					createBlock(
-						'kadence/header-column',
-						{ metadata: { name: __('Center Right', 'kadence-blocks') }, location: 'center-right' },
-						[]
-					),
-					createBlock(
-						'kadence/header-column',
-						{ metadata: { name: __('Right', 'kadence-blocks') }, location: 'right' },
-						[]
-					),
-				]
-			),
-		]),
-		createBlock('kadence/header-row', { metadata: { name: __('Bottom Row', 'kadence-blocks') } }, [
-			createBlock(
-				'kadence/header-section',
-				{ metadata: { name: __('Left Section', 'kadence-blocks') }, location: 'left' },
-				[
-					createBlock(
-						'kadence/header-column',
-						{ metadata: { name: __('Left', 'kadence-blocks') }, location: 'left' },
-						[]
-					),
-					createBlock(
-						'kadence/header-column',
-						{ metadata: { name: __('Center Left', 'kadence-blocks') }, location: 'center-left' },
-						[]
-					),
-				]
-			),
-			createBlock('kadence/header-column', {
-				metadata: { name: __('Center', 'kadence-blocks') },
-				location: 'center',
-			}),
-			createBlock(
-				'kadence/header-section',
-				{ metadata: { name: __('Right Section', 'kadence-blocks') }, location: 'right' },
-				[
-					createBlock(
-						'kadence/header-column',
-						{ metadata: { name: __('Center Right', 'kadence-blocks') }, location: 'center-right' },
-						[]
-					),
-					createBlock(
-						'kadence/header-column',
-						{ metadata: { name: __('Right', 'kadence-blocks') }, location: 'right' },
-						[]
-					),
-				]
-			),
-		]),
+		createBlock(
+			'kadence/header-row',
+			{ metadata: { name: __('Middle Row', 'kadence-blocks') }, location: 'center' },
+			[
+				createBlock(
+					'kadence/header-section',
+					{ metadata: { name: __('Left Section', 'kadence-blocks') }, location: 'left' },
+					[
+						createBlock(
+							'kadence/header-column',
+							{ metadata: { name: __('Left', 'kadence-blocks') }, location: 'left' },
+							[]
+						),
+						createBlock(
+							'kadence/header-column',
+							{ metadata: { name: __('Center Left', 'kadence-blocks') }, location: 'center-left' },
+							[]
+						),
+					]
+				),
+				createBlock('kadence/header-column', {
+					metadata: { name: __('Center', 'kadence-blocks') },
+					location: 'center',
+				}),
+				createBlock(
+					'kadence/header-section',
+					{ metadata: { name: __('Right Section', 'kadence-blocks') }, location: 'right' },
+					[
+						createBlock(
+							'kadence/header-column',
+							{ metadata: { name: __('Center Right', 'kadence-blocks') }, location: 'center-right' },
+							[]
+						),
+						createBlock(
+							'kadence/header-column',
+							{ metadata: { name: __('Right', 'kadence-blocks') }, location: 'right' },
+							[]
+						),
+					]
+				),
+			]
+		),
+		createBlock(
+			'kadence/header-row',
+			{ metadata: { name: __('Bottom Row', 'kadence-blocks') }, location: 'center' },
+			[
+				createBlock(
+					'kadence/header-section',
+					{ metadata: { name: __('Left Section', 'kadence-blocks') }, location: 'left' },
+					[
+						createBlock(
+							'kadence/header-column',
+							{ metadata: { name: __('Left', 'kadence-blocks') }, location: 'left' },
+							[]
+						),
+						createBlock(
+							'kadence/header-column',
+							{ metadata: { name: __('Center Left', 'kadence-blocks') }, location: 'center-left' },
+							[]
+						),
+					]
+				),
+				createBlock('kadence/header-column', {
+					metadata: { name: __('Center', 'kadence-blocks') },
+					location: 'center',
+				}),
+				createBlock(
+					'kadence/header-section',
+					{ metadata: { name: __('Right Section', 'kadence-blocks') }, location: 'right' },
+					[
+						createBlock(
+							'kadence/header-column',
+							{ metadata: { name: __('Center Right', 'kadence-blocks') }, location: 'center-right' },
+							[]
+						),
+						createBlock(
+							'kadence/header-column',
+							{ metadata: { name: __('Right', 'kadence-blocks') }, location: 'right' },
+							[]
+						),
+					]
+				),
+			]
+		),
 	]),
 	createBlock('kadence/header-container-tablet', {}, [
 		createBlock('kadence/header-row', { metadata: { name: __('Top Row', 'kadence-blocks') } }, [
@@ -395,7 +402,7 @@ export function EditInner(props) {
 			<>
 				<FormTitle onAdd={onAdd} isAdding={isAdding} existingTitle={title} />
 				<div className="kb-form-hide-while-setting-up">
-					<div {...innerBlocksProps} />
+					<Fragment {...innerBlocksProps} />
 				</div>
 			</>
 		);
@@ -1461,7 +1468,8 @@ export function EditInner(props) {
 					help={__('Separate multiple classes with spaces.')}
 				/>
 			</InspectorAdvancedControls>
-			<div {...innerBlocksProps} ref={componentRef} />
+			<Fragment {...innerBlocksProps} ref={componentRef} />
+			<div className="height-ref"></div>
 			{/*<SpacingVisualizer*/}
 			{/*	style={ {*/}
 			{/*		marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),*/}

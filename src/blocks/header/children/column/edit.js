@@ -33,7 +33,7 @@ export function Edit(props) {
 	const { uniqueID, location } = attributes;
 
 	// const blockClasses = classnames({
-	// 	'kadence-blocks-header-column': true,
+	// 	'wp-block-kadence-header-column': true,
 	// 	[`kadence-header${uniqueID}`]: uniqueID,
 	// });
 	// const blockProps = useBlockProps({
@@ -77,9 +77,9 @@ export function Edit(props) {
 	const hasChildBlocks = wp.data.select('core/block-editor').getBlockOrder(clientId).length > 0;
 
 	const innerBlocksClasses = classnames({
-		'kadence-blocks-header-column': true,
-		[`kadence-blocks-header-column-${location}`]: location,
-		[`kadence-blocks-header-column${uniqueID}`]: uniqueID,
+		'wp-block-kadence-header-column': true,
+		[`wp-block-kadence-header-column-${location}`]: location,
+		[`wp-block-kadence-header-column${uniqueID}`]: uniqueID,
 	});
 	const innerBlocksProps = useInnerBlocksProps(
 		{

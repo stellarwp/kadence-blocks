@@ -30,15 +30,7 @@ import { __ } from '@wordpress/i18n';
 export function Edit(props) {
 	const { attributes, setAttributes, clientId } = props;
 
-	const { uniqueID } = attributes;
-
-	const blockClasses = classnames({
-		'wp-block-kadence-header': true,
-		[`wp-block-kadence-header${uniqueID}`]: uniqueID,
-	});
-	const blockProps = useBlockProps({
-		className: blockClasses,
-	});
+	const { uniqueID, location } = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, parentData, previewDevice } = useSelect(
@@ -74,9 +66,14 @@ export function Edit(props) {
 		}
 	}, []);
 
+	const innerBlockClasses = classnames({
+		'wp-block-kadence-header-row': true,
+		[`wp-block-kadence-header-row-${location}`]: location,
+		[`wp-block-kadence-header-row${uniqueID}`]: uniqueID,
+	});
 	const innerBlocksProps = useInnerBlocksProps(
 		{
-			className: 'kadence-blocks-header-row',
+			className: innerBlockClasses,
 			style: {
 				display: previewDevice === 'Desktop' ? 'block' : 'none',
 			},
