@@ -1258,7 +1258,7 @@ export default function Edit(props) {
 								onChange={(value) => saveMediaIcon({ icon: value }, 'highlightIcon')}
 								allowClear={true}
 							/>
-							{undefined !== highLightIcon?.[0]?.icon && '' !== highLightIcon[0].icon && (
+							{undefined !== highlightIcon?.[0]?.icon && '' !== highlightIcon[0].icon && (
 								<>
 									<ResponsiveRangeControls
 										label={__('Icon Size', 'kadence-blocks')}

@@ -132,8 +132,8 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 					$css->add_property( 'order', '-1' );
 				}
 				$css->set_media_state( 'desktop' );
-				$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container > ul li.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a .link-highlight-label .link-svg-icon svg' );
 				
+				$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container > ul li.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a .link-highlight-label .link-svg-icon svg' );
 				if( isset( $nav_link_attributes['highlightIcon'][0]['size'] ) && is_numeric( $nav_link_attributes['highlightIcon'][0]['size'] ) ) {
 					$css->add_property( 'width', $nav_link_attributes['highlightIcon'][0]['size'] . 'px' );
 					$css->add_property( 'height', $nav_link_attributes['highlightIcon'][0]['size'] . 'px' );
