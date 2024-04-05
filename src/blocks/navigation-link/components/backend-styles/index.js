@@ -288,18 +288,8 @@ export default function BackendStyles(props) {
 		highlightSpacing[0].gap[1],
 		highlightSpacing[0].gap[2]
 	);
-	const previewHighlightSide = getPreviewSize(
-		previewDevice,
-		highlightSide,
-		highlightSideTablet,
-		highlightSideMobile
-	);
-	const previewIconSide = getPreviewSize(
-		previewDevice,
-		iconSide,
-		iconSideTablet,
-		iconSideMobile
-	);
+	const previewHighlightSide = getPreviewSize(previewDevice, highlightSide, highlightSideTablet, highlightSideMobile);
+	const previewIconSide = getPreviewSize(previewDevice, iconSide, iconSideTablet, iconSideMobile);
 	const previewMediaAlign = getPreviewSize(previewDevice, mediaAlign, mediaAlignTablet, mediaAlignMobile);
 	if (uniqueID == '494_c9029f-f0') {
 		console.log(1, mediaStyle);
@@ -516,8 +506,8 @@ export default function BackendStyles(props) {
 		'border-radius',
 		'px'
 	);
-	if('left' === previewHighlightSide) {
-		css.add_property('order', "-1");
+	if ('left' === previewHighlightSide) {
+		css.add_property('order', '-1');
 	}
 	css.add_property('gap', css.get_gap_size(previewHighlightLabelGap, 'px'));
 	css.set_selector(
@@ -534,7 +524,7 @@ export default function BackendStyles(props) {
 	css.set_selector(
 		`.wp-block-kadence-navigation-link${uniqueID}.menu-item > .link-drop-wrap > a .link-highlight-label .kt-highlight-label-icon`
 	);
-	if('left' === previewIconSide) {
+	if ('left' === previewIconSide) {
 		css.add_property('order', '-1');
 	}
 

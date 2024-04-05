@@ -75,7 +75,7 @@ import {
 	MeasurementControls,
 	ResponsiveMeasurementControls,
 	IconRender,
-	ResponsiveSelectControl
+	ResponsiveSelectControl,
 } from '@kadence/components';
 
 import { ArrowDown, ArrowUp } from '@kadence/icons';
@@ -310,7 +310,7 @@ export default function Edit(props) {
 		highlightIcon,
 		iconSide,
 		iconSideTablet,
-		iconSideMobile
+		iconSideMobile,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
@@ -1280,33 +1280,30 @@ export default function Edit(props) {
 								value={highlightSpacing[0].gap[0]}
 								onChange={(value) => {
 									console.log(value);
-									saveMediaStyle({
-										gap: [
-											value,
-											highlightSpacing[0].gap[1],
-											highlightSpacing[0].gap[2],
-										],
-									}, 'highlightSpacing')
+									saveMediaStyle(
+										{
+											gap: [value, highlightSpacing[0].gap[1], highlightSpacing[0].gap[2]],
+										},
+										'highlightSpacing'
+									);
 								}}
 								tabletValue={highlightSpacing[0].gap[1]}
 								onChangeTablet={(value) =>
-									saveMediaStyle({
-										gap: [
-											highlightSpacing[0].gap[0],
-											value,
-											highlightSpacing[0].gap[2],
-										],
-									}, 'highlightSpacing')
+									saveMediaStyle(
+										{
+											gap: [highlightSpacing[0].gap[0], value, highlightSpacing[0].gap[2]],
+										},
+										'highlightSpacing'
+									)
 								}
 								mobileValue={highlightSpacing[0].gap[2]}
 								onChangeMobile={(value) =>
-									saveMediaStyle({
-										gap: [
-											highlightSpacing[0].gap[0],
-											highlightSpacing[0].gap[1],
-											value,
-										],
-									}, 'highlightSpacing')
+									saveMediaStyle(
+										{
+											gap: [highlightSpacing[0].gap[0], highlightSpacing[0].gap[1], value],
+										},
+										'highlightSpacing'
+									)
 								}
 								min={0}
 								max={100}
@@ -1323,9 +1320,9 @@ export default function Edit(props) {
 									{ value: 'right', label: __('Right', 'kadence-blocks') },
 									{ value: 'left', label: __('Left', 'kadence-blocks') },
 								]}
-								onChange={(value) => setAttributes({iconSide: value})}
-								onChangeTablet={(value) => setAttributes({iconSideTablet: value})}
-								onChangeMobile={(value) => setAttributes({iconSideMobile: value})}
+								onChange={(value) => setAttributes({ iconSide: value })}
+								onChangeTablet={(value) => setAttributes({ iconSideTablet: value })}
+								onChangeMobile={(value) => setAttributes({ iconSideMobile: value })}
 							/>
 							<ResponsiveSelectControl
 								label={__('Align Highlight Label', 'kadence-blocks')}
@@ -1336,9 +1333,9 @@ export default function Edit(props) {
 									{ value: 'right', label: __('Right', 'kadence-blocks') },
 									{ value: 'left', label: __('Left', 'kadence-blocks') },
 								]}
-								onChange={(value) => setAttributes({highlightSide: value})}
-								onChangeTablet={(value) => setAttributes({highlightSideTablet: value})}
-								onChangeMobile={(value) => setAttributes({highlightSideMobile: value})}
+								onChange={(value) => setAttributes({ highlightSide: value })}
+								onChangeTablet={(value) => setAttributes({ highlightSideTablet: value })}
+								onChangeMobile={(value) => setAttributes({ highlightSideMobile: value })}
 							/>
 							<SmallResponsiveControl
 								label={__('Highlight Label Colors', 'kadence-blocks')}
@@ -2127,7 +2124,8 @@ export default function Edit(props) {
 							{description && <span className="menu-label-description">{description}</span>}
 							{hasChildren && <span className="title-dropdown-navigation-toggle">{ArrowDown}</span>}
 						</span>
-					    { (undefined !== highlightIcon?.[0]?.icon && "" !== highlightIcon[0].icon || undefined !== highlightLabel && "" !== highlightLabel ) &&
+						{((undefined !== highlightIcon?.[0]?.icon && '' !== highlightIcon[0].icon) ||
+							(undefined !== highlightLabel && '' !== highlightLabel)) && (
 							<span className="link-highlight-label">
 								{highlightLabel}
 								{undefined !== highlightIcon?.[0]?.icon && '' !== highlightIcon[0].icon && (
@@ -2138,7 +2136,7 @@ export default function Edit(props) {
 									/>
 								)}
 							</span>
-						}
+						)}
 					</a>
 
 					{hasChildren && (
