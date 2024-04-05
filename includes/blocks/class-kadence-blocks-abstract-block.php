@@ -166,7 +166,7 @@ class Kadence_Blocks_Abstract_Block {
 		$this->render_scripts( $attributes, true );
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$unique_id = str_replace( '/', '', $unique_id );
+			$unique_id = str_replace( '/', '-', $unique_id );
 			$unique_style_id = apply_filters( 'kadence_blocks_build_render_unique_id', $attributes['uniqueID'], $this->block_name, $attributes );
 			$css_class = Kadence_Blocks_CSS::get_instance();
 
