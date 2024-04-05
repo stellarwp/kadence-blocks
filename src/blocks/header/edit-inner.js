@@ -6,7 +6,7 @@
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { useState, useCallback, useEffect, useMemo, useRef } from '@wordpress/element';
+import { useState, useCallback, Fragment, useMemo, useRef } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import { get } from 'lodash';

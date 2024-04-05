@@ -94,8 +94,12 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return string Returns the block output.
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-
 		$html = '';
+
+		// If this row is empty, don't render it
+		if( !$this->are_innerblocks_empty( $block_instance ) ) {
+			return $html;
+		}
 
 		$classes = array(
 			'wp-block-kadence-header-row',
@@ -111,6 +115,36 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 		$html .= '</div>';
 
 		return $html;
+	}
+
+	/**
+	 * Check if the innerblocks are empty. We won't render the row if all the innerblocks are empty
+	 *
+	 * @return bool
+	 */
+	public function are_innerblocks_empty ( $block_instance ) {
+		$render_block = false;
+
+		$inner_blocks = $block_instance->parsed_block['innerBlocks'] ?? [];
+
+		foreach( $inner_blocks as $top_level_inner_blocks ) {
+			if ($top_level_inner_blocks['blockName'] === 'kadence/header-column' && !empty($top_level_inner_blocks['innerBlocks'])) {
+				$render_block = true;
+				break;
+			}
+
+			if (!empty($top_level_inner_blocks['innerBlocks'])) {
+				foreach ($top_level_inner_blocks['innerBlocks'] as $section_inner_block) {
+					// Check if any 'kadence/header-column' inner block is not empty
+					if ($section_inner_block['blockName'] === 'kadence/header-column' && !empty($section_inner_block['innerBlocks'])) {
+						$render_block = true;
+						break 2; // Break both loops
+					}
+				}
+			}
+		}
+
+		return $render_block;
 	}
 
 }
