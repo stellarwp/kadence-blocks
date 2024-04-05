@@ -97,7 +97,7 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 		$html = '';
 
 		// If this row is empty, don't render it
-		if( !$this->are_innerblocks_empty( $block_instance ) ) {
+		if( $this->are_innerblocks_empty( $block_instance ) ) {
 			return $html;
 		}
 
@@ -123,13 +123,13 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return bool
 	 */
 	public function are_innerblocks_empty ( $block_instance ) {
-		$render_block = false;
+		$is_empty = true;
 
 		$inner_blocks = $block_instance->parsed_block['innerBlocks'] ?? [];
 
 		foreach( $inner_blocks as $top_level_inner_blocks ) {
 			if ($top_level_inner_blocks['blockName'] === 'kadence/header-column' && !empty($top_level_inner_blocks['innerBlocks'])) {
-				$render_block = true;
+				$is_empty = false;
 				break;
 			}
 
@@ -137,14 +137,14 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 				foreach ($top_level_inner_blocks['innerBlocks'] as $section_inner_block) {
 					// Check if any 'kadence/header-column' inner block is not empty
 					if ($section_inner_block['blockName'] === 'kadence/header-column' && !empty($section_inner_block['innerBlocks'])) {
-						$render_block = true;
+						$is_empty = false;
 						break 2; // Break both loops
 					}
 				}
 			}
 		}
 
-		return $render_block;
+		return $is_empty;
 	}
 
 }
