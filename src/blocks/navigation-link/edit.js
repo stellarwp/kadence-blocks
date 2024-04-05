@@ -1265,7 +1265,24 @@ export default function Edit(props) {
 									saveMediaIcon({ sizeMobile: value }, 'highlightIcon');
 								}}
 								min={0}
-								max={400}
+								max={200}
+								step={1}
+								unit={'px'}
+							/>
+							<ResponsiveRangeControls
+								label={__('Label / Icon Gap', 'kadence-blocks')}
+								value={highlightSpacing[0].gap}
+								onChange={(value) => saveMediaIcon({ gap: value }, 'highlightSpacing')}
+								tabletValue={highlightSpacing[0].gapTablet}
+								onChangeTablet={(value) => {
+									saveMediaIcon({ gapTablet: value }, 'highlightSpacing');
+								}}
+								mobileValue={highlightSpacing[0].gapMobile}
+								onChangeMobile={(value) => {
+									saveMediaIcon({ gapMobile: value }, 'highlightSpacing');
+								}}
+								min={0}
+								max={100}
 								step={1}
 								unit={'px'}
 							/>
@@ -2075,14 +2092,13 @@ export default function Edit(props) {
 
 						<span className="link-highlight-label">
 							{highlightLabel}
-							{undefined !== highlightIcon?.[0]?.icon ||
-								('' !== highlightIcon[0].icon && (
-									<IconRender
-										className={`kt-highlight-label-icon`}
-										name={highlightIcon[0].icon}
-										size={previewHighlightIconSize}
-									/>
-								))}
+							{undefined !== highlightIcon?.[0]?.icon && '' !== highlightIcon[0].icon && (
+								<IconRender
+									className={`kt-highlight-label-icon`}
+									name={highlightIcon[0].icon}
+									size={previewHighlightIconSize}
+								/>
+							)}
 						</span>
 					</a>
 

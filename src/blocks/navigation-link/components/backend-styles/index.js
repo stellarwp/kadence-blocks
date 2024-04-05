@@ -276,6 +276,12 @@ export default function BackendStyles(props) {
 		mediaIcon[0].widthTablet,
 		mediaIcon[0].widthMobile
 	);
+	const previewHighlightLabelGap = getPreviewSize(
+		previewDevice,
+		highlightSpacing[0].gap,
+		highlightSpacing[0].gapTablet,
+		highlightSpacing[0].gapMobile
+	);
 	const previewMediaAlign = getPreviewSize(previewDevice, mediaAlign, mediaAlignTablet, mediaAlignMobile);
 	if (uniqueID == '494_c9029f-f0') {
 		console.log(1, mediaStyle);
@@ -492,6 +498,7 @@ export default function BackendStyles(props) {
 		'border-radius',
 		'px'
 	);
+	css.add_property('gap', previewHighlightLabelGap + 'px');
 	css.set_selector(
 		`.wp-block-kadence-navigation-link${uniqueID}.menu-item > .link-drop-wrap > a:hover .link-highlight-label`
 	);
