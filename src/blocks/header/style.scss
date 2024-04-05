@@ -1,5 +1,10 @@
 .kadence-blocks-header-desktop {
 
+	// Override a style we set elsewhere
+	p {
+		margin-bottom: unset;
+	}
+
 	.kadence-blocks-header-row {
 		display: grid !important;
 		grid-template-columns: 1fr auto 1fr;

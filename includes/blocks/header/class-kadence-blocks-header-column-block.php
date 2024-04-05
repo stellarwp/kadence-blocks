@@ -95,37 +95,27 @@ class Kadence_Blocks_Header_Column_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return string Returns the block output.
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-//		if( !empty($attributes['location']) && !in_array( $attributes['location'], array( 'center-left', 'center', 'center-right' ) ) ) {
-//			return $content;
-//		}
-
-		$regex = '/<([a-z]+)(?: .*)?(?<!\/)>.*?<\/\1>/is';
-		preg_match_all( $regex, $content, $matches );
+		if ( ! empty( $attributes['location'] ) && ! in_array( $attributes['location'], array( 'center-left', 'center', 'center-right' ) ) ) {
+			return $content;
+		}
 
 		$html = '';
 
-		if( empty( $matches[0] ) ) {
-			$html .= '<div class="kadence-blocks-header-column"></div>';
-			return $html;
+		$classes = array(
+			'kadence-blocks-header-column'
+		);
+
+		if ( ! empty( $attributes['location'] ) ) {
+			$classes[] = 'kadence-blocks-header-column-' . esc_attr( $attributes['location'] );
 		}
 
-		foreach ( $matches[0] as $match ) {
-			$classes = array(
-				'kadence-blocks-header-column'
-			);
-
-			if ( ! empty( $attributes['location'] ) ) {
-				$classes[] = 'kadence-blocks-header-column-' . esc_attr( $attributes['location'] );
-			}
-
-			$html .= '<div class="' . esc_attr( implode( ' ', $classes ) ) . '">';
-			$html .= $match;
-			$html .= '</div>';
-		}
+		$html .= '<div class="' . esc_attr( implode( ' ', $classes ) ) . '">';
+		$html .= $content;
+		$html .= '</div>';
 
 		return $html;
-	}
 
+	}
 }
 
 Kadence_Blocks_Header_Column_Block::get_instance();

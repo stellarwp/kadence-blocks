@@ -18,31 +18,23 @@
 			display: flex !important;
 			align-items: center;
 		}
-	}
 
-	// Removed centering from blocks
-	.kadence-blocks-header-section > *, .kadence-blocks-header-column > * {
-		display: flex !important;
-		margin-left: unset !important;
-		margin-right: unset !important;
+		// Override a style we set elsewhere
+		p {
+			margin-bottom: unset;
+		}
 	}
 
 	.kadence-blocks-header-column-center-left {
+		flex-grow: 1;
 		display: flex !important;
 		justify-content: flex-end !important;
 	}
 
 	.kadence-blocks-header-column-center-right  {
+		flex-grow: 1;
 		display: flex !important;
 		justify-content: flex-start !important;
 	}
 
-	//.kadence-blocks-header-section-right *:first-child {
-	//
-	//	justify-content: flex-start;
-	//}
-	//
-	//.kadence-blocks-header-section-right *:nth-child(2) {
-	//	justify-content: flex-end;
-	//}
 }

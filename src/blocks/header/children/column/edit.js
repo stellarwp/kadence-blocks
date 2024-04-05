@@ -75,7 +75,6 @@ export function Edit(props) {
 	}, []);
 
 	const hasChildBlocks = wp.data.select('core/block-editor').getBlockOrder(clientId).length > 0;
-	const renderAppender = hasChildBlocks ? false : InnerBlocks.ButtonBlockAppender;
 
 	const innerBlocksClasses = classnames({
 		'kadence-blocks-header-column': true,
@@ -87,7 +86,7 @@ export function Edit(props) {
 			className: innerBlocksClasses,
 		},
 		{
-			renderAppender,
+			renderAppender: hasChildBlocks ? false : InnerBlocks.ButtonBlockAppender, // This will get set to false, leaving on for testing until visual editor is done.
 			templateLock: false,
 		}
 	);
