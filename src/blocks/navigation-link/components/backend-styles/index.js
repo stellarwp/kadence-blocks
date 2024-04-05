@@ -426,6 +426,11 @@ export default function BackendStyles(props) {
 	css.add_property('background-color', css.render_color(previewLabelBackground));
 	css.render_measure_output(highlightSpacing[0].padding, highlightSpacing[0].paddingTablet, highlightSpacing[0].paddingMobile, previewDevice, 'padding', 'px');
 	css.render_measure_output(highlightSpacing[0].margin, highlightSpacing[0].marginTablet, highlightSpacing[0].marginMobile, previewDevice, 'margin', 'px');
+	css.add_property('border-top', css.render_border(highlightSpacing[0].border, highlightSpacing[0].borderTablet, highlightSpacing[0].borderMobile, previewDevice, 'top', false));
+	css.add_property('border-right', css.render_border(highlightSpacing[0].border, highlightSpacing[0].borderTablet, highlightSpacing[0].borderMobile, previewDevice, 'right', false));
+	css.add_property('border-bottom', css.render_border(highlightSpacing[0].border, highlightSpacing[0].borderTablet, highlightSpacing[0].borderMobile, previewDevice, 'bottom', false));
+	css.add_property('border-left', css.render_border(highlightSpacing[0].border, highlightSpacing[0].borderTablet, highlightSpacing[0].borderMobile, previewDevice, 'left', false));
+	css.render_measure_output(highlightSpacing[0].borderRadius, highlightSpacing[0].borderRadiusTablet, highlightSpacing[0].borderRadiusMobile, previewDevice, 'border-radius', 'px');
 	css.set_selector(
 		`.wp-block-kadence-navigation-link${uniqueID}.menu-item > .link-drop-wrap > a:hover .link-highlight-label`
 	);
