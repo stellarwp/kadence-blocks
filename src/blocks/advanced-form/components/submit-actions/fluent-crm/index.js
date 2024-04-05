@@ -138,12 +138,12 @@ export default function FluentCrmOptions({ formInnerBlocks, parentClientId, sett
 
 	return (
 		<KadencePanelBody
-			title={__('FluentCRM Settings', 'kadence-blocks-pro')}
+			title={__('FluentCRM Settings', 'kadence-blocks')}
 			initialOpen={false}
 			panelName={'kb-fluent-crm-settings'}
 		>
 			{!isActive ? (
-				<>{__('FluentCRM is not setup/active.', 'kadence-blocks-pro')}</>
+				<>{__('FluentCRM is not setup/active.', 'kadence-blocks')}</>
 			) : (
 				<>
 					{isFetching && <Spinner />}
@@ -151,7 +151,7 @@ export default function FluentCrmOptions({ formInnerBlocks, parentClientId, sett
 						<>
 							<h2 className="kt-heading-size-title">{__('Select List', 'kadence-blocks')}</h2>
 							{!listsLoaded ? getLists() : ''}
-							{!Array.isArray(lists) ? <Spinner /> : __('No lists found.', 'kadence-blocks-pro')}
+							{!Array.isArray(lists) ? <Spinner /> : __('No lists found.', 'kadence-blocks')}
 						</>
 					)}
 					{!isFetching && hasLists && (
@@ -184,7 +184,7 @@ export default function FluentCrmOptions({ formInnerBlocks, parentClientId, sett
 												{!Array.isArray(listTags) ? (
 													<Spinner />
 												) : (
-													__('No Tags found.', 'kadence-blocks-pro')
+													__('No Tags found.', 'kadence-blocks')
 												)}
 											</>
 										)}
@@ -223,7 +223,7 @@ export default function FluentCrmOptions({ formInnerBlocks, parentClientId, sett
 												{!Array.isArray(listFields) ? (
 													<Spinner />
 												) : (
-													__('No Fields found.', 'kadence-blocks-pro')
+													__('No Fields found.', 'kadence-blocks')
 												)}
 											</>
 										)}

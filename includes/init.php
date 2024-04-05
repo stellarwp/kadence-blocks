@@ -243,6 +243,9 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 	if ( ! empty( $pro_data['key'] ) ) {
 		$is_authorized = is_authorized( $pro_data['key'], 'kadence-blocks', ( ! empty( $token ) ? $token : '' ), get_license_domain() );
 	}
+	if ( empty( $pro_data['domain'] ) ) {
+		$pro_data['domain'] = get_license_domain();
+	}
 	$font_sizes = apply_filters( 'kadence_blocks_variable_font_sizes', $font_sizes );
 	$subscribed = class_exists( 'Kadence_Blocks_Pro' ) ? true : get_option( 'kadence_blocks_wire_subscribe' );
 	$gfonts_path      = KADENCE_BLOCKS_PATH . 'includes/gfonts-array.php';
@@ -291,7 +294,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'termEndpoint'   => '/kbp/v1/term-select',
 			'taxonomiesEndpoint' => '/kbp/v1/taxonomies-select',
 			'postTypes'      => kadence_blocks_get_post_types(),
-			'postTypesQueryable' => kadence_blocks_get_post_types( array( 'publicly_queryable' => true ) ),
+			'postTypesSearchable' => kadence_blocks_get_post_types( array( 'exclude_from_search' => false ) ),
 			'taxonomies'     => array(),
 			'g_fonts'        => file_exists( $gfonts_path ) ? include $gfonts_path : array(),
 			'g_font_names'   => file_exists( $gfont_names_path ) ? include $gfont_names_path : array(),
@@ -343,6 +346,24 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'icons' => file_exists( $icons_path ) ? include $icons_path : array(),
 		)
 	);
+	$fast_load_patterns = class_exists( 'GFForms' ) ? false : true;
+	if ( apply_filters( 'kadence_blocks_preload_design_library', $fast_load_patterns ) ) {
+		$design_library_controller_upload = new Kadence_Blocks_Prebuilt_Library_REST_Controller();
+		wp_localize_script(
+			'kadence-blocks-js',
+			'kadence_blocks_params_library',
+			array(
+				'library_sections' => apply_filters( 'kadence_blocks_preload_design_library_data', $design_library_controller_upload->get_local_library_data() ),
+			)
+		);
+		wp_localize_script(
+			'kadence-blocks-js',
+			'kadence_blocks_params_wizard',
+			array(
+				'settings' => $prophecy_data,
+			)
+		);
+	}
 }
 add_action( 'enqueue_block_editor_assets', 'kadence_blocks_gutenberg_editor_assets_variables' );
 

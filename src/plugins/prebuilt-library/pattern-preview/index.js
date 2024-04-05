@@ -11,8 +11,7 @@ export function PatternPreview({
 	title,
 	ratio,
 	shadowStyles,
-	baseCompatStyles,
-	neededCompatStyles,
+	shadowCompatStyles,
 	patternType,
 	rootScroll,
 }) {
@@ -29,8 +28,7 @@ export function PatternPreview({
 			title={title}
 			ratio={ratio}
 			shadowStyles={shadowStyles}
-			baseCompatStyles={baseCompatStyles}
-			neededCompatStyles={neededCompatStyles}
+			shadowCompatStyles={shadowCompatStyles}
 			patternType={patternType}
 			rootScroll={rootScroll}
 		/>

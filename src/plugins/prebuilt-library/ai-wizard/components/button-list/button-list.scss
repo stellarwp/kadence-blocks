@@ -1,0 +1,105 @@
+@import "../../scss/variables.scss";
+
+.ai-wizard-button-list {
+	.ai-wizard-button-list_wrapper {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 12px;
+		.ai-wizard-button-list_item.components-button {
+			width: 100%;
+			padding: 0;
+			display: flex;
+			flex-flow: row nowrap;
+			justify-content: space-between;
+			align-items: center;
+			height: auto;
+			border: 1px solid;
+			border-color: #dfdfdf;
+			border-radius: 8px;
+			transition: 0.1s all ease-out;
+			box-shadow: none;
+			min-height: 30px;
+			gap: 0px;
+			overflow: hidden;
+			padding: 20px;
+			text-align: left;
+			&.is-selected {
+				border-color: $color-black;
+
+				.dashicon {
+					visibility: visible;
+				}
+			}
+
+			&:focus {
+				outline: none;
+			}
+			&:hover {
+				color: $color-black;
+			}
+			.ai-wizard-button-list_item-icon .dashicon {
+				background: #f2f2f2;
+				padding: 20px;
+				color: #444;
+				border-radius: 100%;
+				box-sizing: content-box;
+				&:before {
+					box-sizing: content-box;
+				}
+			}
+			.ai-wizard-button-list_item-content {
+				display: flex;
+				flex-flow: column nowrap;
+				gap: 8px;
+				flex: 1;
+				padding-left: 20px;
+				.ai-wizard-button-list_item-title {
+					font-size: 16px;
+					font-weight: 500;
+				}
+				.ai-wizard-button-list_item-description {
+					font-size: 12px;
+					font-weight: 400;
+					line-height: 16px;
+					letter-spacing: -0.01em;
+				}
+			}
+			.ai-wizard-button-list_item-active .dashicon {
+				background: $color-black;
+				color: $color-white;
+				border-radius: 40px;
+				visibility: hidden;
+			}
+		}
+	}
+	.ai-wizard-button-list_wrapper
+		.ai-wizard-button-list_item.components-button.is-selected
+		.ai-wizard-button-list_item-active
+		.dashicon {
+		visibility: visible;
+	}
+	.ai-wizard-button-list_item-primary {
+		font-size: 10px;
+		text-transform: uppercase;
+		margin-top: 5px;
+	}
+	.ai-wizard-button-list_item-active {
+		min-width: 50px;
+		text-align: center;
+	}
+	.components-button.stellarwp.ai-wizard-button-list_item-make-primary {
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		padding: 8px 8px 8px 4px;
+		height: auto;
+		border: 0;
+		font-size: 11px;
+		box-shadow: none;
+		color: #777;
+		z-index: 11;
+	}
+	.ai-wizard-button-list_item_wrap {
+		position: relative;
+	}
+}

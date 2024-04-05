@@ -124,11 +124,11 @@ class FluentCRMControls extends Component {
 		const hasTags = Array.isArray(this.state.listTags) && this.state.listTags.length;
 		return (
 			<KadencePanelBody
-				title={__('FluentCRM Settings', 'kadence-blocks-pro')}
+				title={__('FluentCRM Settings', 'kadence-blocks')}
 				initialOpen={false}
 				panelName={'kb-fluent-crm-settings'}
 			>
-				{!isActive && <>{__('FluentCRM is not setup/active.', 'kadence-blocks-pro')}</>}
+				{!isActive && <>{__('FluentCRM is not setup/active.', 'kadence-blocks')}</>}
 				{isActive && (
 					<>
 						{isFetching && <Spinner />}
@@ -136,7 +136,7 @@ class FluentCRMControls extends Component {
 							<>
 								<h2 className="kt-heading-size-title">{__('Select List', 'kadence-blocks')}</h2>
 								{!listsLoaded ? this.getLists() : ''}
-								{!Array.isArray(list) ? <Spinner /> : __('No lists found.', 'kadence-blocks-pro')}
+								{!Array.isArray(list) ? <Spinner /> : __('No lists found.', 'kadence-blocks')}
 							</>
 						)}
 						{!isFetching && hasList && (
@@ -171,7 +171,7 @@ class FluentCRMControls extends Component {
 													{!Array.isArray(listTags) ? (
 														<Spinner />
 													) : (
-														__('No Tags found.', 'kadence-blocks-pro')
+														__('No Tags found.', 'kadence-blocks')
 													)}
 												</>
 											)}
@@ -210,7 +210,7 @@ class FluentCRMControls extends Component {
 													{!Array.isArray(listFields) ? (
 														<Spinner />
 													) : (
-														__('No Fields found.', 'kadence-blocks-pro')
+														__('No Fields found.', 'kadence-blocks')
 													)}
 												</>
 											)}

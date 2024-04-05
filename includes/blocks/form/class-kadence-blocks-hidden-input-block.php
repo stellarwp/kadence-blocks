@@ -51,7 +51,7 @@ class Kadence_Blocks_Hidden_Input_Block extends Kadence_Blocks_Advanced_Form_Inp
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		$type = 'hidden';
 
-		$content = '<input name="' . $this->field_name( $attributes ) . '" id="' . $this->field_id( $attributes ) . '"' . $this->aria_described_by( $attributes ) . ' data-label="' . esc_attr( $this->get_label( $attributes ) ) . '"' . $this->get_auto_complete( $attributes ) . ' type="' . $type . '" placeholder="' . $this->get_placeholder( $attributes ) . '" value="' . esc_attr( $this->get_default( $attributes ) ) . '" data-type="' . $type . '" class="kb-field kb-' . $type . '-field" />';
+		$content = '<input name="' . esc_attr( $this->field_name( $attributes ) ) . '" id="' . esc_attr( $this->field_id( $attributes ) ) . '"' . $this->aria_described_by( $attributes ) . ' data-label="' . esc_attr( $this->get_label( $attributes ) ) . '"' . $this->get_auto_complete( $attributes ) . ' type="' . esc_attr( $type ) . '" placeholder="' . esc_attr( $this->get_placeholder( $attributes ) ) . '" value="' . esc_attr( $this->get_default( $attributes ) ) . '" data-type="' . esc_attr( $type ) . '" class="kb-field kb-' . esc_attr( $type ) . '-field" />';
 
 		return $content;
 	}

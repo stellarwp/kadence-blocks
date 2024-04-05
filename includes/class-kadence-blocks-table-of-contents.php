@@ -302,7 +302,7 @@ class Kadence_Blocks_Table_Of_Contents {
 	 */
 	private function get_ignore_list() {
 		if ( is_null( self::$ignore_list ) ) {
-			self::$ignore_list = apply_filters( 'kadence_toc_block_ignore_array', array( 'kadence/tableofcontents', 'kadence/tabs', 'kadence/modal', 'core/post-content' ) );
+			self::$ignore_list = apply_filters( 'kadence_toc_block_ignore_array', array( 'kadence/tableofcontents', 'kadence/tabs', 'kadence/modal', 'kadence/repeater', 'core/post-content' ) );
 		}
 		return self::$ignore_list;
 	}
@@ -353,6 +353,9 @@ class Kadence_Blocks_Table_Of_Contents {
 			}
 		} else if ( $block['blockName'] === 'core/post-content' ) {
 			self::$output_content .= $the_post_content;
+		} else if ( $block['blockName'] === 'kadence/repeater' ) {
+			//repeater needs to render all together to properly render dynamic data with context.
+			self::$output_content .= render_block( $block );
 		}
 	}
 	/**
@@ -424,7 +427,7 @@ class Kadence_Blocks_Table_Of_Contents {
 		// https://bugzilla.gnome.org/show_bug.cgi?id=761534.
 		libxml_use_internal_errors( true );
 		// Parse the post content into an HTML document.
-		$content = mb_convert_encoding( $content, 'HTML-ENTITIES', 'UTF-8' );
+		$content = mb_encode_numericentity( $content, [0x80, 0x10FFFF, 0, ~0], 'UTF-8' );
 		// loadHTML expects ISO-8859-1, so we need to convert the post content to
 		// that format. We use htmlentities to encode Unicode characters not
 		// supported by ISO-8859-1 as HTML entities. However, this function also
@@ -432,15 +435,15 @@ class Kadence_Blocks_Table_Of_Contents {
 		// htmlspecialchars_decode to decode them.
 		$doc->loadHTML(
 			htmlspecialchars_decode(
-				utf8_decode(
+				mb_convert_encoding(
 					htmlentities(
 						'<!DOCTYPE html><html><head><title>:D</title><body>' .
-						htmlspecialchars( $content ) .
+						htmlentities( $content ) .
 						'</body></html>',
 						ENT_COMPAT,
 						'UTF-8',
 						false
-					)
+					), 'ISO-8859-1', 'UTF-8'
 				),
 				ENT_COMPAT
 			)

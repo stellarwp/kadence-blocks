@@ -64,7 +64,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	public function field_help_text( $attributes ) {
 		if ( ! empty( $attributes['helpText'] ) ) {
 			$form_id = ! empty( $attributes['formID'] ) ? $attributes['formID'] : '';
-			return '<div class="' . self::HELP_CLASS_NAME . '"' . ( empty( $attributes['ariaDescription'] ) ? ' id="aria-describe' . $form_id . $attributes['uniqueID'] . '"' : '' ) . '>' . esc_html( $attributes['helpText'] ) . '</div>';
+			return '<div class="' . self::HELP_CLASS_NAME . '"' . ( empty( $attributes['ariaDescription'] ) ? ' id="aria-describe' . esc_attr( $form_id ) . esc_attr( $attributes['uniqueID'] ) . '"' : '' ) . '>' . esc_html( $attributes['helpText'] ) . '</div>';
 		}
 		return '';
 	}
@@ -78,7 +78,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	public function field_label( $attributes ) {
 		$html = '';
 		if ( ! empty( $this->get_label( $attributes ) ) && ( ! isset( $attributes['showLabel'] ) || ( isset( $attributes['showLabel'] ) && $attributes['showLabel'] ) ) ) {
-			$html .= '<label class="' . self::LABEL_CLASS_NAME . '" for="' . $this->field_id( $attributes ) . '">' . $this->get_label( $attributes );
+			$html .= '<label class="' . self::LABEL_CLASS_NAME . '" for="' . esc_attr( $this->field_id( $attributes ) ) . '">' . $this->get_label( $attributes );
 
 			if ( ! empty( $attributes['required'] ) && $attributes['required'] ) {
 				$html .= '<span class="' . self::REQUIRED_CLASS_NAME . '">*</span>';
@@ -153,7 +153,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 
 		if ( ! empty( $attributes['ariaDescription'] ) ) {
 			$form_id = ! empty( $attributes['formID'] ) ? $attributes['formID'] : '';
-			return '<span id="aria-describe' . $form_id . $attributes['uniqueID'] . '" class="kb-form-aria-describe screen-reader-text">' . $attributes['ariaDescription'] . '</span>';
+			return '<span id="aria-describe' . esc_attr( $form_id ) . esc_attr( $attributes['uniqueID'] ) . '" class="kb-form-aria-describe screen-reader-text">' . $attributes['ariaDescription'] . '</span>';
 		}
 
 		return '';
@@ -208,7 +208,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 
 		if ( ! empty( $attributes['ariaDescription'] ) || ! empty( $attributes['helpText'] ) ) {
 			$form_id = ! empty( $attributes['formID'] ) ? $attributes['formID'] : '';
-			return ' aria-describedby="#aria-describe' . $form_id . $attributes['uniqueID'] . '"';
+			return ' aria-describedby="#aria-describe' . esc_attr( $form_id ) . esc_attr( $attributes['uniqueID'] ) . '"';
 		}
 
 		return '';
@@ -224,7 +224,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	public function get_auto_complete( $attributes ) {
 
 		if ( ! empty( $attributes['auto'] ) ) {
-			return ' autocomplete="' . $attributes['auto'] . '"';
+			return ' autocomplete="' . esc_attr( $attributes['auto'] ) . '"';
 		}
 
 		return '';
@@ -263,7 +263,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 			if ( ! empty( $response ) ) {
 				$response .= ' ';
 			}
-			$response .= 'aria-label="' . $attributes['label'] . '"';
+			$response .= 'aria-label="' . esc_attr( $attributes['label'] ) . '"';
 		}
 
 		return $response;
@@ -347,7 +347,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 	 * @return string
 	 */
 	public function custom_required_message( $attributes ) {
-		if( !empty( $attributes['requiredMessage'] ) ){
+		if ( ! empty( $attributes['requiredMessage'] ) ) {
 			return ' data-kb-required-message="' . esc_attr( $attributes['requiredMessage'] ) . '" ';
 		}
 

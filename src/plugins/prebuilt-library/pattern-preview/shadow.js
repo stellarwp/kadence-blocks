@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { useResizeObserver } from '@wordpress/compose';
-import { useState, useMemo } from '@wordpress/element';
+import { useState, useMemo, useRef, useEffect } from '@wordpress/element';
 import { Disabled, Spinner } from '@wordpress/components';
 import root from 'react-shadow';
 
@@ -19,8 +19,7 @@ function ScaledPatternShadowPreview({
 	additionalStyles = [],
 	title,
 	ratio,
-	neededCompatStyles = [],
-	baseCompatStyles,
+	shadowCompatStyles,
 	shadowStyles,
 	patternType = 'pattern',
 	rootScroll,
@@ -29,6 +28,7 @@ function ScaledPatternShadowPreview({
 		viewportWidth = containerWidth;
 	}
 	const [refreshHeight, setRefreshHeight] = useState(false);
+	const [loadingOpacity, setLoadingOpacity] = useState(0);
 	const [contentResizeListener, { height: contentHeight }] = useResizeObserver();
 	const styleAssets = (
 		<>
@@ -38,23 +38,9 @@ function ScaledPatternShadowPreview({
 				href={kadence_blocks_params.livePreviewStyles}
 				media="all"
 			></link>
-			{[...neededCompatStyles, ...baseCompatStyles].map(({ tagName, href, id, rel, media, textContent }) => {
-				const TagName = tagName.toLowerCase();
-				let finalTextContent = textContent.replace(/ .block-editor-block-list__layout/g, '');
-				finalTextContent = finalTextContent.replace(/:root/g, '.pattern-shadow-wrap');
-				if (TagName === 'style') {
-					return (
-						<TagName {...{ id }} key={id}>
-							{finalTextContent}
-						</TagName>
-					);
-				}
-
-				return <TagName {...{ href, id, rel, media }} key={id} />;
-			})}
+			{shadowCompatStyles}
 		</>
 	);
-
 	const shaddowAssets = (
 		<>
 			{shadowStyles.map((style, index) => {
@@ -79,9 +65,42 @@ function ScaledPatternShadowPreview({
 			//	console.log('RETwoPatternPreview');
 			setRefreshHeight(false);
 		}, 400);
+		setTimeout(() => {
+			setLoadingOpacity(1);
+		}, 800);
 	};
 	const trans_scroll_speed = contentHeight >= MAX_HEIGHT ? ((finalContentHeight - MAX_HEIGHT) / 650) * 1000 : 2000;
 	const transitionSpeed = `transform ${trans_scroll_speed}ms linear !important`;
+	const shadowRef = useRef(null);
+	const checkStylesLoaded = () => {
+		const styles = shadowRef.current.shadowRoot.querySelectorAll('style, link[rel="stylesheet"]');
+		let loadedCount = 0;
+
+		styles.forEach((style) => {
+			if (style.sheet) {
+				// For <style> elements and already loaded <link>
+				loadedCount++;
+			} else if (style.tagName.toLowerCase() === 'link') {
+				// For <link rel="stylesheet"> elements
+				style.onload = () => {
+					loadedCount++;
+					if (loadedCount === styles.length) {
+						setLoadingOpacity(1);
+					}
+				};
+			}
+		});
+
+		if (loadedCount === styles.length) {
+			setLoadingOpacity(1);
+		}
+	};
+	useEffect(() => {
+		if (shadowRef.current) {
+			// Once the component mounts, check if styles have loaded
+			checkStylesLoaded();
+		}
+	}, [shadowRef?.current]);
 	return (
 		<>
 			<LazyLoad
@@ -101,12 +120,14 @@ function ScaledPatternShadowPreview({
 					}}
 				>
 					<root.div
+						ref={shadowRef}
 						className={`kb-pattern-shadow-container${
 							contentHeight >= MAX_HEIGHT ? ' kb-pattern-overflow' : ''
 						}`}
 						aria-hidden
 						tabIndex={-1}
 						style={{
+							opacity: loadingOpacity,
 							position: 'absolute',
 							width: viewportWidth,
 							height: finalContentHeight,

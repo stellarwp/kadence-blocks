@@ -5,7 +5,9 @@ export function missionStatementHelper() {
 		try {
 			// Get site domain from the url.
 			const url = new URL(window.location.href);
-			const domain = url.hostname;
+			const domain = window?.kadence_blocks_params?.proData?.domain
+				? window.kadence_blocks_params.proData.domain
+				: url.hostname;
 			let key = window?.kadence_blocks_params?.proData?.api_key
 				? window.kadence_blocks_params.proData.api_key
 				: '';

@@ -18,6 +18,7 @@ export default function replaceImages(content, images, categories, context, vari
 	if (!content) {
 		return content;
 	}
+
 	if (!images.data?.[0]?.images) {
 		return content;
 	}
@@ -125,8 +126,8 @@ export default function replaceImages(content, images, categories, context, vari
 			pRoll?.[6]?.sizes?.[0]?.src ||
 			pRoll?.[1]?.sizes?.[0]?.src,
 	};
-	if (context && context.toString() === '14499') {
-		// Cards 21.
+	if (context && (context.toString() === '14499' || context.toString() === '18895')) {
+		// Cards 21 & Video 23.
 		content = content.replace(
 			'https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-scaled.jpg',
 			imgs.a1
@@ -542,6 +543,26 @@ export default function replaceImages(content, images, categories, context, vari
 		imgs.p3
 	);
 	content = content.replace(
+		'https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image.jpg',
+		imgs.p1
+	);
+	content = content.replace(
+		'https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image.jpg',
+		imgs.p2
+	);
+	content = content.replace(
+		'https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image.jpg',
+		imgs.p3
+	);
+	content = content.replace(
+		'https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image.jpg',
+		imgs.p4
+	);
+	content = content.replace(
+		'https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image.jpg',
+		imgs.p5
+	);
+	content = content.replace(
 		'https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-1024x683.jpg',
 		imgs.p1
 	);
@@ -593,6 +614,23 @@ export default function replaceImages(content, images, categories, context, vari
 	);
 	content = content.replace(
 		'https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-150x150.jpg',
+		imgs.p4
+	);
+
+	content = content.replace(
+		'https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-300x200.jpg',
+		imgs.p1
+	);
+	content = content.replace(
+		'https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-300x200.jpg',
+		imgs.p2
+	);
+	content = content.replace(
+		'https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-300x200.jpg',
+		imgs.p3
+	);
+	content = content.replace(
+		'https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Portrait-Image-300x200.jpg',
 		imgs.p4
 	);
 
@@ -760,7 +798,7 @@ export default function replaceImages(content, images, categories, context, vari
 	content = content.replace( "https://ftc.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-2048x1586.jpg", imgs['b2'] );
 	content = content.replace( "https://ftc.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-2048x1586.jpg", imgs['b3'] );
 	content = content.replace( "https://ftc.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-1536x1189.jpg", imgs['a3'] );
-	
+
 	// Image Block.
 	content = content.replace( "https://ftc.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-1024x793.jpg", imgs['a1'] );
 	content = content.replace( "https://ftc.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-1024x793.jpg", imgs['a2'] );
@@ -774,7 +812,7 @@ export default function replaceImages(content, images, categories, context, vari
 	content = content.replace( "https://ftc.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Background-Image.jpg", imgs['a5'] );
 	content = content.replace( "https://ftc.startertemplatecloud.com/wp-content/uploads/2023/02/Example-Background-Image-1024x672.jpg", imgs['a4'] );
 	content = content.replace( "https://ftc.startertemplatecloud.com/wp-content/uploads/2023/03/Example-Background-Image-1024x672.jpg", imgs['a4'] );
-	
+
 	content = content.replace( "https://ftc.startertemplatecloud.com/wp-content/uploads/2023/02/Example-B-Roll-Image-8-819x1024.jpg", imgs['a5'] );
 	content = content.replace( "https://ftc.startertemplatecloud.com/wp-content/uploads/2023/02/Example-B-Roll-Image-6-819x1024.jpg", imgs['a4'] );
 	content = content.replace( "https://ftc.startertemplatecloud.com/wp-content/uploads/2023/02/Example-B-Roll-Image-4-819x1024.jpg", imgs['a3'] );
@@ -785,7 +823,7 @@ export default function replaceImages(content, images, categories, context, vari
 	content = content.replace( "https://ftc.startertemplatecloud.com/wp-content/uploads/2023/02/Example-B-Roll-Image-3-819x1024.jpg", imgs['b3'] );
 	content = content.replace( "https://ftc.startertemplatecloud.com/wp-content/uploads/2023/02/Example-B-Roll-Image-2-819x1024.jpg", imgs['b4'] );
 	content = content.replace( "https://ftc.startertemplatecloud.com/wp-content/uploads/2023/02/Example-B-Roll-Image-9-819x1024.jpg", imgs['b5'] );
-	
+
 	// Portrait ratio
 	content = content.replace( "https://ftc.startertemplatecloud.com/wp-content/uploads/2023/02/Example-B-Roll-Image-scaled.jpg", imgs['b1'] );
 	content = content.replace( "https://ftc.startertemplatecloud.com/wp-content/uploads/2023/02/Example-B-Roll-Image-scaled.jpg", imgs['b2'] );

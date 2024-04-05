@@ -1740,7 +1740,7 @@ export default function GalleryEdit(props) {
 														tabout = (
 															<>
 																<BoxShadowControl
-																	label={__('Hover Box Shadow', 'kadence-blocks-pro')}
+																	label={__('Hover Box Shadow', 'kadence-blocks')}
 																	enable={true}
 																	color={
 																		shadowHover[0].color ? shadowHover[0].color : ''
