@@ -33,6 +33,7 @@ export default function BackendStyles(props) {
 		backgroundHoverMobile,
 		backgroundActiveMobile,
 		highlightLabel,
+		highlightSpacing,
 		labelBackground,
 		labelBackgroundHover,
 		labelBackgroundActive,
@@ -419,10 +420,12 @@ export default function BackendStyles(props) {
 	}
 
 	css.set_selector(
-		`.wp-block-kadence-navigation-link${uniqueID}.menu-item > .link-drop-wrap > a .link-highlight-label`
+		`.wp-block-kadence-navigation-link${uniqueID}.menu-item > .link-drop-wrap > a.wp-block-kadence-navigation-link__content .link-highlight-label`
 	);
 	css.add_property('color', css.render_color(previewLabelColor));
 	css.add_property('background-color', css.render_color(previewLabelBackground));
+	css.render_measure_output(highlightSpacing[0].padding, highlightSpacing[0].paddingTablet, highlightSpacing[0].paddingMobile, previewDevice, 'padding', 'px');
+	css.render_measure_output(highlightSpacing[0].margin, highlightSpacing[0].marginTablet, highlightSpacing[0].marginMobile, previewDevice, 'margin', 'px');
 	css.set_selector(
 		`.wp-block-kadence-navigation-link${uniqueID}.menu-item > .link-drop-wrap > a:hover .link-highlight-label`
 	);

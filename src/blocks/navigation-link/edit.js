@@ -1305,13 +1305,13 @@ export default function Edit(props) {
 										? highlightSpacing[0].paddingTablet
 										: ''
 								}
-								onChangeTablet={(value) => saveMediaStyle({ tabletPadding: value }, 'highlightSpacing')}
+								onChangeTablet={(value) => saveMediaStyle({ paddingTablet: value }, 'highlightSpacing')}
 								mobileValue={
 									undefined !== highlightSpacing?.[0]?.paddingMobile
 										? highlightSpacing[0].paddingMobile
 										: ''
 								}
-								onChangeMobile={(value) => saveMediaStyle({ mobilePadding: value }, 'highlightSpacing')}
+								onChangeMobile={(value) => saveMediaStyle({ paddingMobile: value }, 'highlightSpacing')}
 								min={0}
 								max={200}
 								step={1}

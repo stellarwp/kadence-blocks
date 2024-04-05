@@ -580,6 +580,7 @@
 					"padding": [5, 5, 5, 5],
 					"paddingTablet": [5, 5, 5, 5],
 					"paddingMobile": [5, 5, 5, 5],
+					"paddingUnit": "px",
 					"margin": ["", "", "", ""],
 					"marginTablet": ["", "", "", ""],
 					"marginMobile": ["", "", "", ""]
