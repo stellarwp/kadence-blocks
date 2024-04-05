@@ -33,7 +33,7 @@ export function Edit(props) {
 	const { uniqueID, location } = attributes;
 
 	// const blockClasses = classnames({
-	// 	'kadence-header-column': true,
+	// 	'kadence-blocks-header-column': true,
 	// 	[`kadence-header${uniqueID}`]: uniqueID,
 	// });
 	// const blockProps = useBlockProps({
@@ -78,9 +78,9 @@ export function Edit(props) {
 	const renderAppender = hasChildBlocks ? false : InnerBlocks.ButtonBlockAppender;
 
 	const innerBlocksClasses = classnames({
-		'kadence-header-column': true,
-		[`kadence-header-column-${location}`]: location,
-		[`kadence-header-column${uniqueID}`]: uniqueID,
+		'kadence-blocks-header-column': true,
+		[`kadence-blocks-header-column-${location}`]: location,
+		[`kadence-blocks-header-column${uniqueID}`]: uniqueID,
 	});
 	const innerBlocksProps = useInnerBlocksProps(
 		{

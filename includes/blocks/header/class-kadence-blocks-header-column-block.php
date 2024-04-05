@@ -72,10 +72,10 @@ class Kadence_Blocks_Header_Column_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Builds CSS for block.
 	 *
-	 * @param array $attributes the blocks attributes.
-	 * @param Kadence_Blocks_CSS $css the css class for blocks.
-	 * @param string $unique_id the blocks attr ID.
-	 * @param string $unique_style_id the blocks alternate ID for queries.
+	 * @param array              $attributes      the blocks attributes.
+	 * @param Kadence_Blocks_CSS $css             the css class for blocks.
+	 * @param string             $unique_id       the blocks attr ID.
+	 * @param string             $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 
@@ -86,6 +86,7 @@ class Kadence_Blocks_Header_Column_Block extends Kadence_Blocks_Abstract_Block {
 
 		return $css->css_output();
 	}
+
 	/**
 	 * The innerblocks are stored on the $content variable. We just wrap with our data, if needed
 	 *
@@ -94,24 +95,33 @@ class Kadence_Blocks_Header_Column_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return string Returns the block output.
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		if( !empty($attributes['location']) && !in_array( $attributes['location'], array( 'center-left', 'center', 'center-right' ) ) ) {
-			return $content;
-		}
+//		if( !empty($attributes['location']) && !in_array( $attributes['location'], array( 'center-left', 'center', 'center-right' ) ) ) {
+//			return $content;
+//		}
+
+		$regex = '/<([a-z]+)(?: .*)?(?<!\/)>.*?<\/\1>/is';
+		preg_match_all( $regex, $content, $matches );
 
 		$html = '';
 
-		$classes = array(
-			'kadence-blocks-header-column',
-			'kadence-blocks-header-column' . esc_attr( $unique_id ),
-		);
-
-		if( !empty( $attributes['location'])) {
-			$classes[]= 'kadence-blocks-header-column-' . esc_attr( $attributes['location'] );
+		if( empty( $matches[0] ) ) {
+			$html .= '<div class="kadence-blocks-header-column"></div>';
+			return $html;
 		}
 
-		$html .= '<div class="' . esc_attr( implode( ' ', $classes ) ) . '">';
-		$html .= $content;
-		$html .= '</div>';
+		foreach ( $matches[0] as $match ) {
+			$classes = array(
+				'kadence-blocks-header-column'
+			);
+
+			if ( ! empty( $attributes['location'] ) ) {
+				$classes[] = 'kadence-blocks-header-column-' . esc_attr( $attributes['location'] );
+			}
+
+			$html .= '<div class="' . esc_attr( implode( ' ', $classes ) ) . '">';
+			$html .= $match;
+			$html .= '</div>';
+		}
 
 		return $html;
 	}

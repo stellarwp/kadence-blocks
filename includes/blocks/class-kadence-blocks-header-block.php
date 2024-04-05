@@ -38,7 +38,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	protected $has_script = false;
 
-	protected $has_style = false;
+	protected $has_style = true;
 
 	/**
 	 * Instance of this class
