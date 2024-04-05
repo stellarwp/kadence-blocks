@@ -1246,7 +1246,6 @@ export default function Edit(props) {
 								/>
 							</KadencePanelBody>
 							<div className="kt-sidebar-settings-spacer"></div>
-							<div className="kt-sidebar-settings-spacer"></div>
 							<KadenceIconPicker
 								value={highlightIcon[0].icon}
 								onChange={(value) => saveMediaIcon({ icon: value }, 'highlightIcon')}
@@ -1294,19 +1293,11 @@ export default function Edit(props) {
 							></SmallResponsiveControl>
 							<ResponsiveMeasureRangeControl
 								label={__('Margin', 'kadence-blocks')}
-								value={undefined !== highlightSpacing?.[0]?.margin ? highlightSpacing[0].margin : ''}
+								value={highlightSpacing[0].margin}
 								onChange={(value) => saveMediaStyle({ margin: value }, 'highlightSpacing')}
-								tabletValue={
-									undefined !== highlightSpacing?.[0]?.marginTablet
-										? highlightSpacing[0].marginTablet
-										: ''
-								}
+								tabletValue={highlightSpacing[0].marginTablet}
 								onChangeTablet={(value) => saveMediaStyle({ marginTablet: value }, 'highlightSpacing')}
-								mobileValue={
-									undefined !== highlightSpacing?.[0]?.marginMobile
-										? highlightSpacing[0].marginMobile
-										: ''
-								}
+								mobileValue={highlightSpacing[0].marginMobile}
 								onChangeMobile={(value) => saveMediaStyle({ marginMobile: value }, 'highlightSpacing')}
 								min={0}
 								max={200}
@@ -1316,19 +1307,11 @@ export default function Edit(props) {
 							/>
 							<ResponsiveMeasureRangeControl
 								label={__('Padding', 'kadence-blocks')}
-								value={undefined !== highlightSpacing?.[0]?.padding ? highlightSpacing[0].padding : ''}
+								value={highlightSpacing[0].padding}
 								onChange={(value) => saveMediaStyle({ padding: value }, 'highlightSpacing')}
-								tabletValue={
-									undefined !== highlightSpacing?.[0]?.paddingTablet
-										? highlightSpacing[0].paddingTablet
-										: ''
-								}
+								tabletValue={highlightSpacing[0].paddingTablet}
 								onChangeTablet={(value) => saveMediaStyle({ paddingTablet: value }, 'highlightSpacing')}
-								mobileValue={
-									undefined !== highlightSpacing?.[0]?.paddingMobile
-										? highlightSpacing[0].paddingMobile
-										: ''
-								}
+								mobileValue={highlightSpacing[0].paddingMobile}
 								onChangeMobile={(value) => saveMediaStyle({ paddingMobile: value }, 'highlightSpacing')}
 								min={0}
 								max={200}
