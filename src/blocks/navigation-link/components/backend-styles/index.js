@@ -142,12 +142,7 @@ export default function BackendStyles(props) {
 		backgroundHoverTablet,
 		backgroundHoverMobile
 	);
-	const previewLabelColor = getPreviewSize(
-		previewDevice,
-		labelColor,
-		labelColorTablet,
-		labelColorMobile
-	);
+	const previewLabelColor = getPreviewSize(previewDevice, labelColor, labelColorTablet, labelColorMobile);
 	const previewLabelColorHover = getPreviewSize(
 		previewDevice,
 		labelColorHover,

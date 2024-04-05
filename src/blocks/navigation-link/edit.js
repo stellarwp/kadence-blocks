@@ -70,8 +70,10 @@ import {
 	SmallResponsiveControl,
 	TypographyControls,
 	ResponsiveSingleBorderControl,
+	ResponsiveBorderControl,
 	KadenceIconPicker,
 	MeasurementControls,
+	ResponsiveMeasurementControls,
 	IconRender,
 } from '@kadence/components';
 
@@ -358,8 +360,12 @@ export default function Edit(props) {
 	const previewHighlightIconSize = getPreviewSize(
 		previewDevice,
 		undefined !== highlightIcon[0] && undefined !== highlightIcon[0].size ? highlightIcon[0].size : '14',
-		undefined !== highlightIcon[0].tabletSize && undefined !== highlightIcon[0].tabletSize ? highlightIcon[0].tabletSize : '',
-		undefined !== highlightIcon[0].mobileSize && undefined !== highlightIcon[0].mobileSize ? highlightIcon[0].mobileSize : ''
+		undefined !== highlightIcon[0].tabletSize && undefined !== highlightIcon[0].tabletSize
+			? highlightIcon[0].tabletSize
+			: '',
+		undefined !== highlightIcon[0].mobileSize && undefined !== highlightIcon[0].mobileSize
+			? highlightIcon[0].mobileSize
+			: ''
 	);
 
 	useEffect(() => {
@@ -656,7 +662,9 @@ export default function Edit(props) {
 								label={__('Label Background Hover', 'kadence-blocks')}
 								value={labelBackgroundHoverValue}
 								default={''}
-								onChange={(value) => setAttributes({ ['labelBackground' + suffix + 'Hover' + size]: value })}
+								onChange={(value) =>
+									setAttributes({ ['labelBackground' + suffix + 'Hover' + size]: value })
+								}
 								key={'hoverb'}
 							/>
 						</>
@@ -667,7 +675,9 @@ export default function Edit(props) {
 								label={__('Label Color Active', 'kadence-blocks')}
 								value={labelColorActiveValue}
 								default={''}
-								onChange={(value) => setAttributes({ ['labelColor' + suffix + 'Active' + size]: value })}
+								onChange={(value) =>
+									setAttributes({ ['labelColor' + suffix + 'Active' + size]: value })
+								}
 								key={'active'}
 							/>
 							<PopColorControl
@@ -1184,30 +1194,47 @@ export default function Edit(props) {
 									fontSize={highlightTypography[0].size}
 									onFontSize={(value) => saveTypography({ size: value }, 'highlightTypography')}
 									fontSizeType={highlightTypography[0].sizeType}
-									onFontSizeType={(value) => saveTypography({ sizeType: value }, 'highlightTypography')}
+									onFontSizeType={(value) =>
+										saveTypography({ sizeType: value }, 'highlightTypography')
+									}
 									lineHeight={highlightTypography[0].lineHeight}
-									onLineHeight={(value) => saveTypography({ lineHeight: value }, 'highlightTypography')}
+									onLineHeight={(value) =>
+										saveTypography({ lineHeight: value }, 'highlightTypography')
+									}
 									lineHeightType={highlightTypography[0].lineType}
-									onLineHeightType={(value) => saveTypography({ lineType: value }, 'highlightTypography')}
+									onLineHeightType={(value) =>
+										saveTypography({ lineType: value }, 'highlightTypography')
+									}
 									reLetterSpacing={highlightTypography[0].letterSpacing}
-									onLetterSpacing={(value) => saveTypography({ letterSpacing: value }, 'highlightTypography')}
+									onLetterSpacing={(value) =>
+										saveTypography({ letterSpacing: value }, 'highlightTypography')
+									}
 									letterSpacingType={highlightTypography[0].letterType}
-									onLetterSpacingType={(value) => saveTypography({ letterType: value }, 'highlightTypography')}
+									onLetterSpacingType={(value) =>
+										saveTypography({ letterType: value }, 'highlightTypography')
+									}
 									textTransform={highlightTypography[0].textTransform}
-									onTextTransform={(value) => saveTypography({ textTransform: value }, 'highlightTypography')}
+									onTextTransform={(value) =>
+										saveTypography({ textTransform: value }, 'highlightTypography')
+									}
 									fontFamily={highlightTypography[0].family}
 									onFontFamily={(value) => saveTypography({ family: value }, 'highlightTypography')}
 									onFontChange={(select) => {
-										saveTypography({
-											family: select.value,
-											google: select.google,
-										}, 'highlightTypography');
+										saveTypography(
+											{
+												family: select.value,
+												google: select.google,
+											},
+											'highlightTypography'
+										);
 									}}
 									onFontArrayChange={(values) => saveTypography(values, 'highlightTypography')}
 									googleFont={highlightTypography[0].google}
 									onGoogleFont={(value) => saveTypography({ google: value }, 'highlightTypography')}
 									loadGoogleFont={highlightTypography[0].loadGoogle}
-									onLoadGoogleFont={(value) => saveTypography({ loadGoogle: value }, 'highlightTypography')}
+									onLoadGoogleFont={(value) =>
+										saveTypography({ loadGoogle: value }, 'highlightTypography')
+									}
 									fontVariant={highlightTypography[0].variant}
 									onFontVariant={(value) => saveTypography({ variant: value }, 'highlightTypography')}
 									fontWeight={highlightTypography[0].weight}
@@ -1242,18 +1269,26 @@ export default function Edit(props) {
 								unit={'px'}
 							/>
 							<SmallResponsiveControl
-								label={'Highlight Label Colors'}
+								label={__('Highlight Label Colors', 'kadence-blocks')}
 								desktopChildren={highlightColorControls()}
 								tabletChildren={highlightColorControls('Tablet')}
 								mobileChildren={highlightColorControls('Mobile')}
 							></SmallResponsiveControl>
 							<ResponsiveMeasureRangeControl
 								label={__('Margin', 'kadence-blocks')}
-								value={ undefined !== highlightSpacing?.[0]?.margin ? highlightSpacing[0].margin : '' }
+								value={undefined !== highlightSpacing?.[0]?.margin ? highlightSpacing[0].margin : ''}
 								onChange={(value) => saveMediaStyle({ margin: value }, 'highlightSpacing')}
-								tabletValue={ undefined !== highlightSpacing?.[0]?.marginTablet ? highlightSpacing[0].marginTablet : '' }
+								tabletValue={
+									undefined !== highlightSpacing?.[0]?.marginTablet
+										? highlightSpacing[0].marginTablet
+										: ''
+								}
 								onChangeTablet={(value) => saveMediaStyle({ marginTablet: value }, 'highlightSpacing')}
-								mobileValue={undefined !== highlightSpacing?.[0]?.marginMobile ? highlightSpacing[0].marginMobile : ''}
+								mobileValue={
+									undefined !== highlightSpacing?.[0]?.marginMobile
+										? highlightSpacing[0].marginMobile
+										: ''
+								}
 								onChangeMobile={(value) => saveMediaStyle({ marginMobile: value }, 'highlightSpacing')}
 								min={0}
 								max={200}
@@ -1263,11 +1298,19 @@ export default function Edit(props) {
 							/>
 							<ResponsiveMeasureRangeControl
 								label={__('Padding', 'kadence-blocks')}
-								value={ undefined !== highlightSpacing?.[0]?.padding ? highlightSpacing[0].padding : '' }
+								value={undefined !== highlightSpacing?.[0]?.padding ? highlightSpacing[0].padding : ''}
 								onChange={(value) => saveMediaStyle({ padding: value }, 'highlightSpacing')}
-								tabletValue={ undefined !== highlightSpacing?.[0]?.paddingTablet ? highlightSpacing[0].paddingTablet : '' }
+								tabletValue={
+									undefined !== highlightSpacing?.[0]?.paddingTablet
+										? highlightSpacing[0].paddingTablet
+										: ''
+								}
 								onChangeTablet={(value) => saveMediaStyle({ tabletPadding: value }, 'highlightSpacing')}
-								mobileValue={undefined !== highlightSpacing?.[0]?.paddingMobile ? highlightSpacing[0].paddingMobile : ''}
+								mobileValue={
+									undefined !== highlightSpacing?.[0]?.paddingMobile
+										? highlightSpacing[0].paddingMobile
+										: ''
+								}
 								onChangeMobile={(value) => saveMediaStyle({ mobilePadding: value }, 'highlightSpacing')}
 								min={0}
 								max={200}
@@ -1275,22 +1318,35 @@ export default function Edit(props) {
 								units={['px']}
 								unit={'px'}
 							/>
-							<ResponsiveSingleBorderControl
-								label={'Border'}
-								value={ highlightSpacing[0].border }
-								tabletValue={ highlightSpacing[0].borderTablet }
-								mobileValue={ highlightSpacing[0].borderMobile }
+							<ResponsiveBorderControl
+								label={__('Border', 'kadence-blocks')}
+								value={highlightSpacing[0].border}
+								tabletValue={highlightSpacing[0].borderTablet}
+								mobileValue={highlightSpacing[0].borderMobile}
 								onChange={(value) => {
-									console.log(value);
-									//saveMediaStyle({ border: value }, 'highlightSpacing');
+									saveMediaStyle({ border: value }, 'highlightSpacing');
 								}}
-								onChangeTablet={
-									(value) => console.log(value)//(value) => saveMediaStyle({ borderTablet: value }, 'highlightSpacing')
+								onChangeTablet={(value) => saveMediaStyle({ borderTablet: value }, 'highlightSpacing')}
+								onChangeMobile={(value) => saveMediaStyle({ borderMobile: value }, 'highlightSpacing')}
+							/>
+							<ResponsiveMeasurementControls
+								label={__('Border Radius', 'kadence-blocks')}
+								value={highlightSpacing[0].borderRadius}
+								onChange={(value) => saveMediaStyle({ borderRadius: value }, 'highlightSpacing')}
+								tabletValue={highlightSpacing[0].borderRadiusTablet}
+								onChangeTablet={(value) =>
+									saveMediaStyle({ borderRadiusTablet: value }, 'highlightSpacing')
 								}
-								onChangeMobile={
-									(value) => console.log(value)
-									//(value) => saveMediaStyle({ borderMobile: value }, 'highlightSpacing')
+								mobileValue={highlightSpacing[0].borderRadiusMobile}
+								onChangeMobile={(value) =>
+									saveMediaStyle({ borderRadiusMobile: value }, 'highlightSpacing')
 								}
+								unit={highlightSpacing[0].borderRadiusUnit}
+								units={['px', 'em', 'rem']}
+								onUnit={(value) => saveMediaStyle({ borderRadiusUnit: value }, 'highlightSpacing')}
+								min={0}
+								max={200}
+								step={1}
 							/>
 						</KadencePanelBody>
 
@@ -2016,16 +2072,16 @@ export default function Edit(props) {
 							{description && <span className="menu-label-description">{description}</span>}
 							{hasChildren && <span className="title-dropdown-navigation-toggle">{ArrowDown}</span>}
 						</span>
-						
-							<span className="link-highlight-label">
-								{ highlightLabel }
-								
-								<IconRender
-									className={`kt-svg-icon`}
-									name={highlightIcon[0].icon}
-									size={previewHighlightIconSize}
-								/>
-							</span>
+
+						<span className="link-highlight-label">
+							{highlightLabel}
+
+							<IconRender
+								className={`kt-svg-icon`}
+								name={highlightIcon[0].icon}
+								size={previewHighlightIconSize}
+							/>
+						</span>
 					</a>
 
 					{hasChildren && (
