@@ -139,7 +139,7 @@ const INNERBLOCK_TEMPLATE = [
 		),
 		createBlock(
 			'kadence/header-row',
-			{ metadata: { name: __('Bottom Row', 'kadence-blocks') }, location: 'center' },
+			{ metadata: { name: __('Bottom Row', 'kadence-blocks') }, location: 'bottom' },
 			[
 				createBlock(
 					'kadence/header-section',
