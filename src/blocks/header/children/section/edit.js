@@ -10,6 +10,7 @@ import classnames from 'classnames';
 /**
  * Internal block libraries
  */
+import { createBlock } from '@wordpress/blocks';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useBlockProps, InnerBlocks, useInnerBlocksProps, InspectorControls } from '@wordpress/block-editor';
 
@@ -25,15 +26,7 @@ import { __ } from '@wordpress/i18n';
 export function Edit(props) {
 	const { attributes, setAttributes, clientId } = props;
 
-	const { uniqueID } = attributes;
-
-	const blockClasses = classnames({
-		'wp-block-kadence-header': true,
-		[`wp-block-kadence-header${uniqueID}`]: uniqueID,
-	});
-	const blockProps = useBlockProps({
-		className: blockClasses,
-	});
+	const { uniqueID, location } = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, parentData, previewDevice } = useSelect(
@@ -69,18 +62,18 @@ export function Edit(props) {
 		}
 	}, []);
 
-	const hasChildBlocks = wp.data.select('core/block-editor').getBlockOrder(clientId).length > 0;
+	const innerBlockClasses = classnames({
+		'kadence-header-section': true,
+		[`kadence-header-section-${location}`]: location,
+		[`kadence-header-section${uniqueID}`]: uniqueID,
+	});
 
 	const innerBlocksProps = useInnerBlocksProps(
 		{
-			className: 'kadence-header-section',
-			style: {
-				display: previewDevice === 'Desktop' ? 'block' : 'none',
-			},
+			className: innerBlockClasses,
 		},
 		{
-			renderAppender: hasChildBlocks ? false : InnerBlocks.ButtonBlockAppender,
-			templateLock: false,
+			templateLock: 'all',
 		}
 	);
 

@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @category class
  */
-class Kadence_Blocks_Header_Section_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 
 	/**
 	 * Instance of this class
@@ -30,7 +30,7 @@ class Kadence_Blocks_Header_Section_Block extends Kadence_Blocks_Abstract_Block 
 	 *
 	 * @var string
 	 */
-	protected $block_name = 'section';
+	protected $block_name = 'row';
 
 	/**
 	 * Block determines in scripts need to be loaded for block.
@@ -81,11 +81,8 @@ class Kadence_Blocks_Header_Section_Block extends Kadence_Blocks_Abstract_Block 
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
-		$css->set_selector( '.kadence-blocks-header-desktop' . $unique_id );
-		$css->add_property( 'display', 'block' );
+		$css->set_selector( '.kadence-blocks-header-row' . $unique_id );
 
-		$css->set_media_state( 'tablet' );
-		$css->add_property( 'display', 'none');
 
 		return $css->css_output();
 	}
@@ -101,9 +98,13 @@ class Kadence_Blocks_Header_Section_Block extends Kadence_Blocks_Abstract_Block 
 		$html = '';
 
 		$classes = array(
-			'kadence-blocks-header-section',
-			'kadence-blocks-header-section' . esc_attr( $unique_id ),
+			'kadence-blocks-header-row',
+			'kadence-blocks-header-row' . esc_attr( $unique_id ),
 		);
+
+		if( !empty( $attributes['location'])) {
+			$classes[]= 'kadence-blocks-header-row-' . esc_attr( $attributes['location'] );
+		}
 
 		$html .= '<div class="' . esc_attr( implode( ' ', $classes ) ) . '">';
 		$html .= $content;
@@ -114,4 +115,4 @@ class Kadence_Blocks_Header_Section_Block extends Kadence_Blocks_Abstract_Block 
 
 }
 
-Kadence_Blocks_Header_Section_Block::get_instance();
+Kadence_Blocks_Header_Row_Block::get_instance();

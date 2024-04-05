@@ -24,21 +24,21 @@ import { SelectParentBlock } from '@kadence/components';
 /**
  * Internal dependencies
  */
-import { useEffect } from '@wordpress/element';
+import { useEffect, Fragment } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 export function Edit(props) {
 	const { attributes, setAttributes, clientId } = props;
 
-	const { uniqueID } = attributes;
+	const { uniqueID, location } = attributes;
 
-	const blockClasses = classnames({
-		'wp-block-kadence-header': true,
-		[`wp-block-kadence-header${uniqueID}`]: uniqueID,
-	});
-	const blockProps = useBlockProps({
-		className: blockClasses,
-	});
+	// const blockClasses = classnames({
+	// 	'kadence-header-column': true,
+	// 	[`kadence-header${uniqueID}`]: uniqueID,
+	// });
+	// const blockProps = useBlockProps({
+	// 	className: blockClasses,
+	// });
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, parentData, previewDevice } = useSelect(
@@ -75,16 +75,19 @@ export function Edit(props) {
 	}, []);
 
 	const hasChildBlocks = wp.data.select('core/block-editor').getBlockOrder(clientId).length > 0;
+	const renderAppender = hasChildBlocks ? false : InnerBlocks.ButtonBlockAppender;
 
+	const innerBlocksClasses = classnames({
+		'kadence-header-column': true,
+		[`kadence-header-column-${location}`]: location,
+		[`kadence-header-column${uniqueID}`]: uniqueID,
+	});
 	const innerBlocksProps = useInnerBlocksProps(
 		{
-			className: 'kadence-header-column',
-			style: {
-				display: previewDevice === 'Desktop' ? 'block' : 'none',
-			},
+			className: innerBlocksClasses,
 		},
 		{
-			renderAppender: hasChildBlocks ? false : InnerBlocks.ButtonBlockAppender,
+			renderAppender,
 			templateLock: false,
 		}
 	);
@@ -98,7 +101,12 @@ export function Edit(props) {
 					parentSlug={'kadence/header'}
 				/>
 			</InspectorControls>
-			<div {...innerBlocksProps} />
+
+			{location === 'center-left' || location === 'center-right' || location === 'center' ? (
+				<div {...innerBlocksProps} />
+			) : (
+				<Fragment {...innerBlocksProps} />
+			)}
 		</>
 	);
 }

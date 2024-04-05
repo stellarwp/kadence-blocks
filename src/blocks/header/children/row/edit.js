@@ -76,7 +76,7 @@ export function Edit(props) {
 
 	const innerBlocksProps = useInnerBlocksProps(
 		{
-			className: 'kadence-header-row-wrap',
+			className: 'kadence-header-row',
 			style: {
 				display: previewDevice === 'Desktop' ? 'block' : 'none',
 			},

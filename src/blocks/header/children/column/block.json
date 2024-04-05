@@ -13,6 +13,9 @@
 	"attributes": {
 		"uniqueID": {
 			"type": "string"
+		},
+		"location": {
+			"type": "string"
 		}
 	}
 }
