@@ -13,7 +13,7 @@ export default function getPostOrWidgetId( props, postId, reusableParent, fallba
 
 	// Post ID
 	if ( postId ) {
-		postId = postId.replace(/\//g, '_' );
+		postId = postId !== '' && typeof postId === 'string' ? postId.replace(/\//g, '_' ) : postId;
 		return postId;
 	}
 
