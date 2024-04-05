@@ -72,4 +72,8 @@
 	&.header-mobile-style-transparent {
 		@include header-transparent-styles();
 	}
+
+	.wp-block-kadence-image:not(:last-child) {
+		margin-bottom: 0;
+	}
 }
