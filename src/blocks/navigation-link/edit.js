@@ -1258,72 +1258,89 @@ export default function Edit(props) {
 								onChange={(value) => saveMediaIcon({ icon: value }, 'highlightIcon')}
 								allowClear={true}
 							/>
-							<ResponsiveRangeControls
-								label={__('Icon Size', 'kadence-blocks')}
-								value={highlightIcon[0].size}
-								onChange={(value) => saveMediaIcon({ size: value }, 'highlightIcon')}
-								tabletValue={highlightIcon[0].sizeTablet}
-								onChangeTablet={(value) => {
-									saveMediaIcon({ sizeTablet: value }, 'highlightIcon');
-								}}
-								mobileValue={highlightIcon[0].sizeMobile}
-								onChangeMobile={(value) => {
-									saveMediaIcon({ sizeMobile: value }, 'highlightIcon');
-								}}
-								min={0}
-								max={200}
-								step={1}
-								unit={'px'}
-							/>
-							<ResponsiveGapSizeControl
-								label={__('Label / Icon Gap', 'kadence-blocks')}
-								value={highlightSpacing[0].gap[0]}
-								onChange={(value) => {
-									console.log(value);
-									saveMediaStyle(
-										{
-											gap: [value, highlightSpacing[0].gap[1], highlightSpacing[0].gap[2]],
-										},
-										'highlightSpacing'
-									);
-								}}
-								tabletValue={highlightSpacing[0].gap[1]}
-								onChangeTablet={(value) =>
-									saveMediaStyle(
-										{
-											gap: [highlightSpacing[0].gap[0], value, highlightSpacing[0].gap[2]],
-										},
-										'highlightSpacing'
-									)
-								}
-								mobileValue={highlightSpacing[0].gap[2]}
-								onChangeMobile={(value) =>
-									saveMediaStyle(
-										{
-											gap: [highlightSpacing[0].gap[0], highlightSpacing[0].gap[1], value],
-										},
-										'highlightSpacing'
-									)
-								}
-								min={0}
-								max={100}
-								step={1}
-								unit={'px'}
-								units={['px']}
-							/>
-							<ResponsiveSelectControl
-								label={__('Align Icon', 'kadence-blocks')}
-								value={iconSide}
-								tabletValue={iconSideTablet}
-								mobileValue={iconSideMobile}
-								options={[
-									{ value: 'right', label: __('Right', 'kadence-blocks') },
-									{ value: 'left', label: __('Left', 'kadence-blocks') },
-								]}
-								onChange={(value) => setAttributes({ iconSide: value })}
-								onChangeTablet={(value) => setAttributes({ iconSideTablet: value })}
-								onChangeMobile={(value) => setAttributes({ iconSideMobile: value })}
-							/>
+							{undefined !== highLightIcon?.[0]?.icon && '' !== highLightIcon[0].icon && (
+								<>
+									<ResponsiveRangeControls
+										label={__('Icon Size', 'kadence-blocks')}
+										value={highlightIcon[0].size}
+										onChange={(value) => saveMediaIcon({ size: value }, 'highlightIcon')}
+										tabletValue={highlightIcon[0].sizeTablet}
+										onChangeTablet={(value) => {
+											saveMediaIcon({ sizeTablet: value }, 'highlightIcon');
+										}}
+										mobileValue={highlightIcon[0].sizeMobile}
+										onChangeMobile={(value) => {
+											saveMediaIcon({ sizeMobile: value }, 'highlightIcon');
+										}}
+										min={0}
+										max={200}
+										step={1}
+										unit={'px'}
+									/>
+									<ResponsiveGapSizeControl
+										label={__('Label / Icon Gap', 'kadence-blocks')}
+										value={highlightSpacing[0].gap[0]}
+										onChange={(value) => {
+											console.log(value);
+											saveMediaStyle(
+												{
+													gap: [
+														value,
+														highlightSpacing[0].gap[1],
+														highlightSpacing[0].gap[2],
+													],
+												},
+												'highlightSpacing'
+											);
+										}}
+										tabletValue={highlightSpacing[0].gap[1]}
+										onChangeTablet={(value) =>
+											saveMediaStyle(
+												{
+													gap: [
+														highlightSpacing[0].gap[0],
+														value,
+														highlightSpacing[0].gap[2],
+													],
+												},
+												'highlightSpacing'
+											)
+										}
+										mobileValue={highlightSpacing[0].gap[2]}
+										onChangeMobile={(value) =>
+											saveMediaStyle(
+												{
+													gap: [
+														highlightSpacing[0].gap[0],
+														highlightSpacing[0].gap[1],
+														value,
+													],
+												},
+												'highlightSpacing'
+											)
+										}
+										min={0}
+										max={100}
+										step={1}
+										unit={'px'}
+										units={['px']}
+									/>
+									<ResponsiveSelectControl
+										label={__('Align Icon', 'kadence-blocks')}
+										value={iconSide}
+										tabletValue={iconSideTablet}
+										mobileValue={iconSideMobile}
+										options={[
+											{ value: 'right', label: __('Right', 'kadence-blocks') },
+											{ value: 'left', label: __('Left', 'kadence-blocks') },
+										]}
+										onChange={(value) => setAttributes({ iconSide: value })}
+										onChangeTablet={(value) => setAttributes({ iconSideTablet: value })}
+										onChangeMobile={(value) => setAttributes({ iconSideMobile: value })}
+									/>
+								</>
+							)}
+
 							<ResponsiveSelectControl
 								label={__('Align Highlight Label', 'kadence-blocks')}
 								value={highlightSide}
