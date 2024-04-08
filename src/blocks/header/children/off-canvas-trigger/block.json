@@ -1,0 +1,17 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "kadence/off-canvas-trigger",
+	"parent": ["kadence/header"],
+	"category": "design",
+	"description": "Off Canvas trigger",
+	"textdomain": "kadence-blocks",
+	"attributes": {
+		"uniqueID": {
+			"type": "string"
+		},
+		"location": {
+			"type": "string"
+		}
+	}
+}
