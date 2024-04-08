@@ -1,12 +1,11 @@
 <?php
 
-namespace Tests\wpunit\blocks;
-class AccordionTest extends \KadenceBlocksUnit {
-	/**
-	 * @var \WpunitTester
-	 */
-	protected $tester;
+namespace Tests\wpunit\Blocks;
 
+use Kadence_Blocks_Accordion_Block;
+use Tests\Support\Classes\KadenceBlocksUnit;
+
+class AccordionTest extends KadenceBlocksUnit {
 	/**
 	 * Block name.
 	 *
@@ -21,16 +20,15 @@ class AccordionTest extends \KadenceBlocksUnit {
 	 */
 	protected $block;
 
-	protected function _before() {
-		$this->block = new \Kadence_Blocks_Accordion_Block();
-	}
-
-	protected function _after() {
-	}
-
 	public function testIsScriptRegistered() {
 		$this->block->register_scripts();
 
 		$this->assertTrue( wp_script_is( 'kadence-blocks-accordion', 'registered' ), 'Block scripts registered' );
+	}
+
+	protected function setUp(): void {
+		parent::setUp();
+
+		$this->block = new Kadence_Blocks_Accordion_Block();
 	}
 }

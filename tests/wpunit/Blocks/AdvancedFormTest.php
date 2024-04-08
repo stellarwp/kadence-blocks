@@ -1,12 +1,11 @@
 <?php
 
-class AdvancedFormTest extends \KadenceBlocksUnit
-{
-	/**
-	 * @var \WpunitTester
-	 */
-	protected $tester;
+namespace Tests\wpunit\Blocks;
 
+use Kadence_Blocks_Advanced_Form_Block;
+use Tests\Support\Classes\KadenceBlocksUnit;
+
+class AdvancedFormTest extends KadenceBlocksUnit {
 	/**
 	 * Block name.
 	 *
@@ -28,15 +27,6 @@ class AdvancedFormTest extends \KadenceBlocksUnit
 	 */
 	protected $block;
 
-	protected function _before()
-	{
-		$this->block = new \Kadence_Blocks_Advanced_Form_Block();
-	}
-
-	protected function _after()
-	{
-	}
-
 	public function testFormCptRegistered() {
 		$this->assertTrue( $this->tester->is_cpt_registered( $this->post_type ), 'Kadence Form CPT is registered' );
 	}
@@ -44,7 +34,14 @@ class AdvancedFormTest extends \KadenceBlocksUnit
 	public function testIsScriptRegistered() {
 		$this->block->register_scripts();
 
-		$this->assertTrue( wp_script_is( 'kadence-blocks-' . $this->block_name, 'registered' ), 'Base script is registered' );
+		$this->assertTrue( wp_script_is( 'kadence-blocks-' . $this->block_name, 'registered' ),
+			'Base script is registered' );
 	}
+
+	protected function setUp(): void {
+		parent::setUp();
+		$this->block = new Kadence_Blocks_Advanced_Form_Block();
+	}
+
 
 }

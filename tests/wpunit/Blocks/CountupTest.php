@@ -1,12 +1,11 @@
 <?php
 
-namespace Tests\wpunit\blocks;
-class CountupTest extends \KadenceBlocksUnit {
-	/**
-	 * @var \WpunitTester
-	 */
-	protected $tester;
+namespace Tests\wpunit\Blocks;
 
+use Kadence_Blocks_Countup_Block;
+use Tests\Support\Classes\KadenceBlocksUnit;
+
+class CountupTest extends KadenceBlocksUnit {
 	/**
 	 * Block name.
 	 *
@@ -17,16 +16,9 @@ class CountupTest extends \KadenceBlocksUnit {
 	/**
 	 * Block instance.
 	 *
-	 * @var \Kadence_Blocks_Countup_Block
+	 * @var Kadence_Blocks_Countup_Block
 	 */
 	protected $block;
-
-	protected function _before() {
-		$this->block = new \Kadence_Blocks_Countup_Block();
-	}
-
-	protected function _after() {
-	}
 
 	public function testIsScriptRegistered() {
 		$this->block->register_scripts();
@@ -34,4 +26,11 @@ class CountupTest extends \KadenceBlocksUnit {
 		$this->assertTrue( wp_script_is( 'kadence-countup', 'registered' ), 'Count up library is registered' );
 		$this->assertTrue( wp_script_is( 'kadence-blocks-countup', 'registered' ), 'Count up script is registered' );
 	}
+
+	protected function setUp(): void {
+		parent::setUp();
+		$this->block = new Kadence_Blocks_Countup_Block();
+	}
+
+
 }
