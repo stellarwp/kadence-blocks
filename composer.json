@@ -61,7 +61,8 @@
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"Tests\\": "tests/"
+			"Tests\\": "tests/",
+			"Tests\\Support\\Classes\\": "tests/_support/Classes"
 		}
 	},
 	"scripts": {

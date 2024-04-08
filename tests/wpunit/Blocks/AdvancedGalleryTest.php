@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\wpunit\blocks;
-class AdvancedGalleryTest extends \KadenceBlocksUnit {
-	/**
-	 * @var \WpunitTester
-	 */
-	protected $tester;
+namespace Tests\wpunit\Blocks;
 
+use Kadence_Blocks_Advancedbtn_Block;
+use Kadence_Blocks_Advancedgallery_Block;
+use Tests\Support\Classes\KadenceBlocksUnit;
+
+class AdvancedGalleryTest extends KadenceBlocksUnit {
 	/**
 	 * Block name.
 	 *
@@ -17,16 +17,9 @@ class AdvancedGalleryTest extends \KadenceBlocksUnit {
 	/**
 	 * Block instance.
 	 *
-	 * @var \Kadence_Blocks_Advancedbtn_Block
+	 * @var Kadence_Blocks_Advancedbtn_Block
 	 */
 	protected $block;
-
-	protected function _before() {
-		$this->block = new \Kadence_Blocks_Advancedgallery_Block();
-	}
-
-	protected function _after() {
-	}
 
 	public function testIsScriptRegistered() {
 		$this->block->register_scripts();
@@ -37,4 +30,11 @@ class AdvancedGalleryTest extends \KadenceBlocksUnit {
 		$this->assertTrue( wp_script_is( 'kadence-glightbox', 'registered' ), 'Glightbox registered' );
 		$this->assertTrue( wp_script_is( 'kadence-blocks-glight-init', 'registered' ), 'Glightbox init registered' );
 	}
+
+	protected function setUp(): void {
+		parent::setUp();
+		$this->block = new Kadence_Blocks_Advancedgallery_Block();
+	}
+
+
 }
