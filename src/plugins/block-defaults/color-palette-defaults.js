@@ -66,7 +66,7 @@ export default function KadenceColorDefault() {
 					createErrorNotice(__('Colors saved!', 'kadence-blocks'), {
 						type: 'snackbar',
 					});
-					updateSettings({ colors: colors });
+					updateSettings({ colors });
 					return true;
 				}
 			} catch (error) {

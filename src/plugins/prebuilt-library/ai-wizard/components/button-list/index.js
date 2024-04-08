@@ -21,7 +21,7 @@ export function ButtonList({ items = [], selectedItems = [], onChange }) {
 		console.log('tempSelected', tempSelected);
 		console.log('item Selected', selectedItemValue);
 		// Find the index of the item
-		let index = tempSelected.indexOf(selectedItemValue);
+		const index = tempSelected.indexOf(selectedItemValue);
 		// Ensure the item exists in the array
 		if (index !== -1) {
 			// Remove the item from the array and store it in a variable
@@ -37,12 +37,12 @@ export function ButtonList({ items = [], selectedItems = [], onChange }) {
 		console.log('tempSelected', tempSelected);
 		console.log('item Selected', selectedItemValue);
 		// Find the index of the item
-		let index = tempSelected.indexOf(selectedItemValue);
+		const index = tempSelected.indexOf(selectedItemValue);
 		console.log('item index', index);
 		// Ensure the item exists in the array
 		if (index !== -1) {
 			// Remove the item from the array and store it in a variable
-			let [item] = tempSelected.splice(index, 1);
+			const [item] = tempSelected.splice(index, 1);
 			console.log('item', item);
 			// Insert the item at the beginning of the array
 			tempSelected.unshift(item);

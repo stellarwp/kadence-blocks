@@ -123,7 +123,7 @@ export function getAsyncData() {
 					if (!window?.kadence_blocks_params_wizard) {
 						window.kadence_blocks_params_wizard = {};
 					}
-					window.kadence_blocks_params_wizard['settings'] = response.kadence_blocks_prophecy;
+					window.kadence_blocks_params_wizard.settings = response.kadence_blocks_prophecy;
 					return response.kadence_blocks_prophecy;
 				}
 			}
@@ -460,7 +460,7 @@ export function getAsyncData() {
 				if (!window?.kadence_blocks_params_library) {
 					window.kadence_blocks_params_library = {};
 				}
-				window.kadence_blocks_params_library['library_sections'] = response;
+				window.kadence_blocks_params_library.library_sections = response;
 			}
 			return response;
 		} catch (error) {
