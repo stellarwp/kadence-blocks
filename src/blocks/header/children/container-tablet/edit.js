@@ -75,7 +75,7 @@ export function Edit(props) {
 		},
 		{
 			renderAppender: InnerBlocks.ButtonBlockAppender,
-			templateLock: false,
+			templateLock: 'all',
 		}
 	);
 
