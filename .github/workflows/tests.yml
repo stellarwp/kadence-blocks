@@ -92,7 +92,7 @@ jobs:
 
             - name: Install specific WordPress version
               run: |
-                  ${SLIC_BIN} wp core download --version=${{ matrix.wordpress }} --force
+                  ${SLIC_BIN} wp core update --version=${{ matrix.wordpress }} --force
                   ${SLIC_BIN} wp core version
 
             - name: Set up plugin
