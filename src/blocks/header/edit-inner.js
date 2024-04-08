@@ -233,6 +233,7 @@ const INNERBLOCK_TEMPLATE = [
 			),
 		]),
 	]),
+	createBlock('kadence/off-canvas', {}, []),
 ];
 
 const ALLOWED_BLOCKS = [
@@ -240,6 +241,7 @@ const ALLOWED_BLOCKS = [
 	'kadence/header-container-tablet',
 	'kadence/header-row',
 	'kadence/header-column',
+	'kadence/off-canvas',
 ];
 
 export function EditInner(props) {
