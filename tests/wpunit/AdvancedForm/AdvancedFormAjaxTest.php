@@ -1,28 +1,23 @@
 <?php
 
-class AdvancedFormAjaxTest extends \Codeception\Test\Unit {
-	/**
-	 * @var \WpunitTester
-	 */
-	protected $tester;
+namespace Tests\wpunit\AdvancedForm;
+
+use Codeception\TestCase\WPTestCase;
+use KB_Ajax_Advanced_Form;
+
+class AdvancedFormAjaxTest extends WPTestCase {
 
 	/**
-	 * @var \KB_Ajax_Advanced_Form
+	 * @var KB_Ajax_Advanced_Form
 	 */
 	protected $adv_form_ajax;
 
-	protected function _before() {
-		$this->adv_form_ajax = new KB_Ajax_Advanced_Form();
-	}
-
-	protected function _after() {
-	}
-
 	public function testActionWasAdded() {
-		$this->assertIsInt( has_action( 'wp_ajax_kb_process_advanced_form_submit', array( $this->adv_form_ajax, 'process_ajax' ) ) );
-		$this->assertIsInt( has_action( 'wp_ajax_nopriv_kb_process_advanced_form_submit', array( $this->adv_form_ajax, 'process_ajax' ) ) );
+		$this->assertIsInt( has_action( 'wp_ajax_kb_process_advanced_form_submit',
+			[ $this->adv_form_ajax, 'process_ajax' ] ) );
+		$this->assertIsInt( has_action( 'wp_ajax_nopriv_kb_process_advanced_form_submit',
+			[ $this->adv_form_ajax, 'process_ajax' ] ) );
 	}
-
 
 	public function testProcessMissingRequiredField() {
 		$mockedForm = $this->getMockBuilder( KB_Ajax_Advanced_Form::class )
@@ -34,9 +29,9 @@ class AdvancedFormAjaxTest extends \Codeception\Test\Unit {
 				'inputName' => 'field1',
 				'uniqueID'  => 1,
 				'required'  => true,
-			]
+			],
 		];
-		$_POST  = array(); // $_POST doesn't contain required field
+		$_POST  = []; // $_POST doesn't contain required field
 
 		$mockedForm->expects( $this->once() )
 		           ->method( 'process_bail' )->with(
@@ -57,10 +52,10 @@ class AdvancedFormAjaxTest extends \Codeception\Test\Unit {
 				'inputName'        => 'field1',
 				'uniqueID'         => 1,
 				'required'         => true,
-				'required_message' => 'My custom require message'
-			]
+				'required_message' => 'My custom require message',
+			],
 		];
-		$_POST  = array(); // $_POST doesn't contain required field
+		$_POST  = []; // $_POST doesn't contain required field
 
 		$mockedForm->expects( $this->once() )
 		           ->method( 'process_bail' )->with(
@@ -81,14 +76,14 @@ class AdvancedFormAjaxTest extends \Codeception\Test\Unit {
 				'inputName'               => 'field1',
 				'uniqueID'                => 1,
 				'required'                => true,
-				'kadenceFieldConditional' => array(
-					'conditionalData' => array(
+				'kadenceFieldConditional' => [
+					'conditionalData' => [
 						'enable' => true,
-					)
-				)
-			]
+					],
+				],
+			],
 		];
-		$_POST  = array(); // $_POST doesn't contain required field
+		$_POST  = []; // $_POST doesn't contain required field
 
 		$mockedForm->expects( $this->never() )->method( 'process_bail' );
 
@@ -102,15 +97,15 @@ class AdvancedFormAjaxTest extends \Codeception\Test\Unit {
 
 		$fields = [
 			[
-				'inputName'               => 'field1',
-				'uniqueID'                => 1,
-				'type'					=> 'text',
-				'required'                => true,
-			]
+				'inputName' => 'field1',
+				'uniqueID'  => 1,
+				'type'      => 'text',
+				'required'  => true,
+			],
 		];
-		$_POST  = array(
-			'field1' => '<h1></h1>' // Sanitized value will be ''
-		);
+		$_POST  = [
+			'field1' => '<h1></h1>', // Sanitized value will be ''
+		];
 
 		$mockedForm->expects( $this->once() )
 		           ->method( 'process_bail' )->with(
@@ -128,15 +123,15 @@ class AdvancedFormAjaxTest extends \Codeception\Test\Unit {
 
 		$fields = [
 			[
-				'inputName'               => 'field1',
-				'uniqueID'                => 1,
-				'type'					=> 'number',
-				'required'                => true,
-			]
+				'inputName' => 'field1',
+				'uniqueID'  => 1,
+				'type'      => 'number',
+				'required'  => true,
+			],
 		];
-		$_POST  = array(
-			'field1' => 'test'
-		);
+		$_POST  = [
+			'field1' => 'test',
+		];
 
 		$mockedForm->expects( $this->once() )
 		           ->method( 'process_bail' )->with(
@@ -145,5 +140,14 @@ class AdvancedFormAjaxTest extends \Codeception\Test\Unit {
 			);
 
 		$mockedForm->process_fields( $fields );
+	}
+
+	protected function setUp(): void {
+		parent::setUp();
+
+		$this->adv_form_ajax = new KB_Ajax_Advanced_Form();
+	}
+
+	protected function _after() {
 	}
 }
