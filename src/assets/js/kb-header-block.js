@@ -106,14 +106,12 @@ class KBHeader {
 window.KBHeader = KBHeader;
 
 const init = () => {
-	console.log(1);
 	// Testing var, can remove
 	window.KBHeaderBlocks = [];
 
 	var headerBlocks = document.querySelectorAll('.wp-block-kadence-header');
 
 	for (let i = 0; i < headerBlocks.length; i++) {
-		console.log(2);
 		var headerBlock = headerBlocks[i];
 		const kbHeaderBlock = new KBHeader(headerBlock);
 		window.KBHeaderBlocks.push(kbHeaderBlock);
