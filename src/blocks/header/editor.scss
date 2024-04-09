@@ -73,18 +73,4 @@
 	.wp-block-kadence-image:not(:last-child) {
 		margin-bottom: 0;
 	}
-
-	//temporary for mark testing while in development
-	.wp-block-kadence-header-desktop .wp-block-kadence-header-row.wp-block-kadence-header-row-top,
-	.wp-block-kadence-header-desktop .wp-block-kadence-header-row.wp-block-kadence-header-row-bottom,
-	.wp-block-kadence-header-desktop
-		.wp-block-kadence-header-section
-		.wp-block-kadence-header-column.wp-block-kadence-header-column-center-left
-		.block-list-appender,
-	.wp-block-kadence-header-desktop
-		.wp-block-kadence-header-section
-		.wp-block-kadence-header-column.wp-block-kadence-header-column-center-right
-		.block-list-appender {
-		display: none !important;
-	}
 }
