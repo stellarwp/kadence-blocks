@@ -1292,7 +1292,7 @@ export default function Image({
 								onChangeTablet={(value) => setAttributes({ paddingTablet: value })}
 								onChangeMobile={(value) => setAttributes({ paddingMobile: value })}
 								min={0}
-								max={paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200}
+								max={paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 999}
 								step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
 								unit={paddingUnit}
 								units={['px', 'em', 'rem', '%']}
@@ -1310,8 +1310,8 @@ export default function Image({
 								}}
 								onChangeTablet={(value) => setAttributes({ marginTablet: value })}
 								onChangeMobile={(value) => setAttributes({ marginMobile: value })}
-								min={marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200}
-								max={marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200}
+								min={marginUnit === 'em' || marginUnit === 'rem' ? -12 : -999}
+								max={marginUnit === 'em' || marginUnit === 'rem' ? 24 : 999}
 								step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
 								unit={marginUnit}
 								units={['px', 'em', 'rem', '%', 'vh']}

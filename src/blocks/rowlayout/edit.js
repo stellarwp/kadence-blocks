@@ -1230,7 +1230,7 @@ function RowLayoutEditContainer(props) {
 											onChangeTablet={(value) => setAttributes({ tabletPadding: value })}
 											onChangeMobile={(value) => setAttributes({ mobilePadding: value })}
 											min={0}
-											max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 500}
+											max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 999}
 											step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
 											deskDefault={['sm', '', 'sm', '']}
 											unit={paddingUnit}
@@ -1277,8 +1277,8 @@ function RowLayoutEditContainer(props) {
 											onChangeMobile={(value) => {
 												setAttributes({ mobileMargin: [value[0], '', value[2], ''] });
 											}}
-											min={marginUnit === 'em' || marginUnit === 'rem' ? -25 : -800}
-											max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : 800}
+											min={marginUnit === 'em' || marginUnit === 'rem' ? -25 : -999}
+											max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : 999}
 											step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
 											unit={marginUnit}
 											allowEmpty={true}

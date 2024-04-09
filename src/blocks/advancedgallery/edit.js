@@ -633,8 +633,8 @@ export default function GalleryEdit(props) {
 	const marginMouseOver = mouseOverVisualizer();
 	const paddingMouseOver = mouseOverVisualizer();
 
-	const marginMin = marginUnit === 'em' || marginUnit === 'rem' ? -25 : -400;
-	const marginMax = marginUnit === 'em' || marginUnit === 'rem' ? 25 : 400;
+	const marginMin = marginUnit === 'em' || marginUnit === 'rem' ? -25 : -999;
+	const marginMax = marginUnit === 'em' || marginUnit === 'rem' ? 25 : 999;
 	const marginStep = marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1;
 
 	const columnControlTypes = [
@@ -1841,7 +1841,7 @@ export default function GalleryEdit(props) {
 												setAttributes({ mobilePadding: value });
 											}}
 											min={0}
-											max={paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 500}
+											max={paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 999}
 											step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
 											unit={paddingUnit}
 											units={['px', 'em', 'rem', '%', 'vh', 'vw']}
