@@ -43,6 +43,12 @@
 		}
 	}
 
+	.sub-menu {
+		.wp-block-kadence-navigation-link__content {
+			flex-wrap: wrap;
+		}
+	}
+
 	.link-media-container {
 		display: flex;
 		grid-row: span 2;

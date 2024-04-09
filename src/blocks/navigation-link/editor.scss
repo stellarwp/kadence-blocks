@@ -50,6 +50,12 @@
 		align-items: center;
 	}
 
+	.sub-menu {
+		.wp-block-kadence-navigation-link__content {
+			flex-wrap: wrap;
+		}
+	}
+
 	.link-highlight-label {
 		color: var(--global-palette7, #FFFFFF);
         background: var(--global-palette2, #2F2FFC);
