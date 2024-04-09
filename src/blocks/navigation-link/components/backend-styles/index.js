@@ -509,7 +509,9 @@ export default function BackendStyles(props) {
 	if ('left' === previewHighlightSide) {
 		css.add_property('order', '-1');
 	}
-	css.add_property('gap', css.get_gap_size(previewHighlightLabelGap, 'px'));
+	if(undefined !== previewHighlightLabelGap && previewHighlightLabelGap) {
+		css.add_property('gap', css.get_gap_size(previewHighlightLabelGap, 'px'));
+	}
 	css.set_selector(
 		`.wp-block-kadence-navigation-link${uniqueID}.menu-item > .link-drop-wrap > a:hover .link-highlight-label`
 	);

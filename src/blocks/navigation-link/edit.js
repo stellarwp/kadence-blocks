@@ -2144,7 +2144,7 @@ export default function Edit(props) {
 						{((undefined !== highlightIcon?.[0]?.icon && '' !== highlightIcon[0].icon) ||
 							(undefined !== highlightLabel && '' !== highlightLabel)) && (
 							<span className="link-highlight-label">
-								{highlightLabel}
+								<span className="link-highlight-label-text">{highlightLabel}</span>
 								{undefined !== highlightIcon?.[0]?.icon && '' !== highlightIcon[0].icon && (
 									<IconRender
 										className={`kt-highlight-label-icon`}
