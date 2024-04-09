@@ -119,7 +119,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_media_state( strtolower( $size ) );
 
-		$css->set_selector( '.wp-block-kadence-header' . $unique_id );
+		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > div' );
 
 		$bg = $sized_attributes['background'];
 		$hover_bg = $sized_attributes['backgroundHover'];
@@ -137,6 +137,17 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property('background-attachment', $bg['attachment']);
 			}
 		}
+		$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['border'], 'bottom' ) );
+		$css->add_property( 'border-top', $css->render_border( $sized_attributes['border'], 'top' ) );
+		$css->add_property( 'border-left', $css->render_border( $sized_attributes['border'], 'left' ) );
+		$css->add_property( 'border-right', $css->render_border( $sized_attributes['border'], 'right' ) );
+
+		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > div:hover' );
+
+		$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['borderHover'], 'bottom' ) );
+		$css->add_property( 'border-top', $css->render_border( $sized_attributes['borderHover'], 'top' ) );
+		$css->add_property( 'border-left', $css->render_border( $sized_attributes['borderHover'], 'left' ) );
+		$css->add_property( 'border-right', $css->render_border( $sized_attributes['borderHover'], 'right' ) );
 
 		if ( $sized_attributes['style'] == 'transparent' ) {
 			$css->add_property( 'top', '0px' );

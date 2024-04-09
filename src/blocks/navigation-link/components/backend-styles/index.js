@@ -275,7 +275,10 @@ export default function BackendStyles(props) {
 	css.set_selector(
 		`.wp-block-kadence-navigation .navigation .menu-container ul .wp-block-kadence-navigation-link${uniqueID} ul li:not(:last-of-type), .wp-block-kadence-navigation .menu-container ul.menu li.wp-block-kadence-navigation-link${uniqueID}.kadence-menu-mega-enabled > ul > li.menu-item > a`
 	);
-	css.add_property('border-bottom', css.render_border(previewDropdownDivider, 'bottom'));
+	css.add_property(
+		'border-bottom',
+		css.render_border(dropdownDivider, dropdownDividerTablet, dropdownDividerMobile, previewDevice, 'bottom')
+	);
 	css.set_selector(
 		`.wp-block-kadence-navigation .navigation .menu-container ul .wp-block-kadence-navigation-link${uniqueID} ul li.menu-item > .link-drop-wrap > a`
 	);

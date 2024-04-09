@@ -274,21 +274,21 @@ export function EditInner(props) {
 		mobileMargin: meta?._kad_header_mobileMargin,
 		marginUnit: meta?._kad_header_marginUnit,
 		border: meta?._kad_header_border,
-		tabletBorder: meta?._kad_header_tabletBorder,
-		mobileBorder: meta?._kad_header_mobileBorder,
+		borderTablet: meta?._kad_header_borderTablet,
+		borderMobile: meta?._kad_header_borderMobile,
 		borderUnit: meta?._kad_header_borderUnit,
-		hoverBorder: meta?._kad_header_hoverBorder,
-		tabletHoverBorder: meta?._kad_header_tabletHoverBorder,
-		mobileHoverBorder: meta?._kad_header_mobileHoverBorder,
-		hoverBorderUnit: meta?._kad_header_hoverBorderUnit,
+		borderHover: meta?._kad_header_borderHover,
+		borderHoverTablet: meta?._kad_header_borderHoverTablet,
+		borderHoverMobile: meta?._kad_header_borderHoverMobile,
+		borderHoverUnit: meta?._kad_header_borderHoverUnit,
 		borderRadius: meta?._kad_header_borderRadius,
-		tabletBorderRadius: meta?._kad_header_tabletBorderRadius,
-		mobileBorderRadius: meta?._kad_header_mobileBorderRadius,
+		borderRadiusTablet: meta?._kad_header_borderRadiusTablet,
+		borderRadiusMobile: meta?._kad_header_borderRadiusMobile,
 		borderRadiusUnit: meta?._kad_header_borderRadiusUnit,
-		borderHoverRadius: meta?._kad_header_borderHoverRadius,
-		tabletBorderHoverRadius: meta?._kad_header_tabletBorderHoverRadius,
-		mobileBorderHoverRadius: meta?._kad_header_mobileBorderHoverRadius,
-		borderHoverRadiusUnit: meta?._kad_header_borderHoverRadiusUnit,
+		borderRadiusHover: meta?._kad_header_borderRadiusHover,
+		borderRadiusHoverTablet: meta?._kad_header_borderRadiusHoverTablet,
+		borderRadiusHoverMobile: meta?._kad_header_borderRadiusHoverMobile,
+		borderRadiusHoverUnit: meta?._kad_header_borderRadiusHoverUnit,
 		flex: meta?._kad_header_flex,
 		className: meta?._kad_header_className,
 		anchor: meta?._kad_header_anchor,
@@ -318,19 +318,19 @@ export function EditInner(props) {
 		mobileMargin,
 		marginUnit,
 		border,
-		tabletBorder,
-		mobileBorder,
-		hoverBorder,
-		tabletHoverBorder,
-		mobileHoverBorder,
+		borderTablet,
+		borderMobile,
+		borderHover,
+		borderHoverTablet,
+		borderHoverMobile,
 		borderRadius,
-		tabletBorderRadius,
-		mobileBorderRadius,
+		borderRadiusTablet,
+		borderRadiusMobile,
 		borderRadiusUnit,
-		borderHoverRadius,
-		tabletBorderHoverRadius,
-		mobileBorderHoverRadius,
-		borderHoverRadiusUnit,
+		borderRadiusHover,
+		borderRadiusHoverTablet,
+		borderRadiusHoverMobile,
+		borderRadiusHoverUnit,
 		flex,
 		className,
 		anchor,
@@ -510,13 +510,13 @@ export function EditInner(props) {
 								onChangeTablet={(value) => setMetaAttribute(value, 'styleTablet')}
 								onChangeMobile={(value) => setMetaAttribute(value, 'styleMobile')}
 							/>
-							{previewStyle == 'transparent' && (
+							{/* {previewStyle == 'transparent' && (
 								<ToggleControl
 									label={__('Auto spacing under', 'kadence-blocks')}
 									checked={autoTransparentSpacing}
 									onChange={(value) => setMetaAttribute(value, 'autoTransparentSpacing')}
 								/>
-							)}
+							)} */}
 						</KadencePanelBody>
 						<KadencePanelBody
 							title={__('Flex Settings', 'kadence-blocks')}
@@ -1238,23 +1238,23 @@ export function EditInner(props) {
 									<>
 										<ResponsiveBorderControl
 											label={__('Border', 'kadence-blocks')}
-											value={[border]}
-											tabletValue={[tabletBorder]}
-											mobileValue={[mobileBorder]}
+											value={border}
+											tabletValue={borderTablet}
+											mobileValue={borderMobile}
 											onChange={(value) => {
-												setMetaAttribute(value[0], 'border');
+												setMetaAttribute(value, 'border');
 											}}
-											onChangeTablet={(value) => setMetaAttribute(value[0], 'tabletBorder')}
-											onChangeMobile={(value) => setMetaAttribute(value[0], 'mobileBorder')}
+											onChangeTablet={(value) => setMetaAttribute(value, 'borderTablet')}
+											onChangeMobile={(value) => setMetaAttribute(value, 'borderMobile')}
 										/>
 										<ResponsiveMeasurementControls
 											label={__('Border Radius', 'kadence-blocks')}
 											value={borderRadius}
-											tabletValue={tabletBorderRadius}
-											mobileValue={mobileBorderRadius}
+											tabletValue={borderRadiusTablet}
+											mobileValue={borderRadiusMobile}
 											onChange={(value) => setMetaAttribute(value, 'borderRadius')}
-											onChangeTablet={(value) => setMetaAttribute(value, 'tabletBorderRadius')}
-											onChangeMobile={(value) => setMetaAttribute(value, 'mobileBorderRadius')}
+											onChangeTablet={(value) => setMetaAttribute(value, 'borderRadiusTablet')}
+											onChangeMobile={(value) => setMetaAttribute(value, 'borderRadiusMobile')}
 											unit={borderRadiusUnit}
 											units={['px', 'em', 'rem', '%']}
 											onUnit={(value) => setMetaAttribute(value, 'borderRadiusUnit')}
@@ -1270,37 +1270,37 @@ export function EditInner(props) {
 									<>
 										<ResponsiveBorderControl
 											label={__('Hover Border', 'kadence-blocks')}
-											value={[hoverBorder]}
-											tabletValue={[tabletHoverBorder]}
-											mobileValue={[mobileHoverBorder]}
+											value={borderHover}
+											tabletValue={borderHoverTablet}
+											mobileValue={borderHoverMobile}
 											onChange={(value) => {
-												setMetaAttribute(value[0], 'hoverBorder');
+												setMetaAttribute(value, 'borderHover');
 											}}
-											onChangeTablet={(value) => setMetaAttribute(value[0], 'tabletHoverBorder')}
-											onChangeMobile={(value) => setMetaAttribute(value[0], 'mobileHoverBorder')}
+											onChangeTablet={(value) => setMetaAttribute(value, 'borderHoverTablet')}
+											onChangeMobile={(value) => setMetaAttribute(value, 'borderHoverMobile')}
 										/>
 										<ResponsiveMeasurementControls
 											label={__('Border Radius', 'kadence-blocks')}
-											value={borderHoverRadius}
-											tabletValue={tabletBorderHoverRadius}
-											mobileValue={mobileBorderHoverRadius}
-											onChange={(value) => setMetaAttribute(value, 'borderHoverRadius')}
+											value={borderRadiusHover}
+											tabletValue={borderRadiusHoverTablet}
+											mobileValue={borderRadiusHoverMobile}
+											onChange={(value) => setMetaAttribute(value, 'borderRadiusHover')}
 											onChangeTablet={(value) =>
-												setMetaAttribute(value, 'tabletBorderHoverRadius')
+												setMetaAttribute(value, 'borderRadiusHoverTablet')
 											}
 											onChangeMobile={(value) =>
-												setMetaAttribute(value, 'mobileBorderHoverRadius')
+												setMetaAttribute(value, 'borderRadiusHoverMobile')
 											}
-											unit={borderHoverRadiusUnit}
+											unit={borderRadiusHoverUnit}
 											units={['px', 'em', 'rem', '%']}
-											onUnit={(value) => setMetaAttribute(value, 'borderHoverRadiusUnit')}
+											onUnit={(value) => setMetaAttribute(value, 'borderRadiusHoverUnit')}
 											max={
-												borderHoverRadiusUnit === 'em' || borderHoverRadiusUnit === 'rem'
+												borderRadiusHoverUnit === 'em' || borderRadiusHoverUnit === 'rem'
 													? 24
 													: 500
 											}
 											step={
-												borderHoverRadiusUnit === 'em' || borderHoverRadiusUnit === 'rem'
+												borderRadiusHoverUnit === 'em' || borderRadiusHoverUnit === 'rem'
 													? 0.1
 													: 1
 											}
@@ -1499,7 +1499,6 @@ export function EditInner(props) {
 				/>
 			</InspectorAdvancedControls>
 			<Fragment {...innerBlocksProps} ref={componentRef} />
-			<div className="height-ref"></div>
 			{/*<SpacingVisualizer*/}
 			{/*	style={ {*/}
 			{/*		marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),*/}

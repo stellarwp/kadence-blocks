@@ -92,11 +92,15 @@ $imdb: #f5c518;
 $anchor: #5000b9;
 
 @mixin header-transparent-styles {
-	background-color: transparent;
-	position: absolute;
-	left: 0px;
-	right: 0px;
-	z-index: 100;
+	position: relative;
+
+	& > div {
+		background-color: transparent;
+		position: absolute;
+		left: 0px;
+		right: 0px;
+		z-index: 100;
+	}
 }
 
 .wp-block-kadence-header {
@@ -121,6 +125,10 @@ $anchor: #5000b9;
 		@media (max-width: $phone-minus-query) {
 			@include header-transparent-styles();
 		}
+	}
+
+	.wp-block-kadence-image:not(:last-child) {
+		margin-bottom: 0;
 	}
 }
 

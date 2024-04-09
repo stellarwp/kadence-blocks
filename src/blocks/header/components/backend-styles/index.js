@@ -22,21 +22,21 @@ export default function BackendStyles(props) {
 		mobileMargin,
 		marginUnit,
 		border,
-		tabletBorder,
-		mobileBorder,
+		borderTablet,
+		borderMobile,
 		borderUnit,
-		hoverBorder,
-		tabletHoverBorder,
-		mobileHoverBorder,
-		hoverBorderUnit,
+		borderHover,
+		borderHoverTablet,
+		borderHoverMobile,
+		borderHoverUnit,
 		borderRadius,
-		tabletBorderRadius,
-		mobileBorderRadius,
+		borderRadiusTablet,
+		borderRadiusMobile,
 		borderRadiusUnit,
-		borderHoverRadius,
-		tabletBorderHoverRadius,
-		mobileBorderHoverRadius,
-		borderHoverRadiusUnit,
+		borderRadiusHover,
+		borderRadiusHoverTablet,
+		borderRadiusHoverMobile,
+		borderRadiusHoverUnit,
 		flex,
 		className,
 		anchor,
@@ -106,225 +106,53 @@ export default function BackendStyles(props) {
 		undefined !== mobilePadding ? mobilePadding[3] : ''
 	);
 
-	const previewBorderTop = getPreviewSize(
-		previewDevice,
-		undefined !== border?.top ? getSpacingOptionOutput(border.top[2], border.unit) : '',
-		undefined !== tabletBorder?.top ? getSpacingOptionOutput(tabletBorder.top[2], border.unit) : '',
-		undefined !== mobileBorder?.top ? getSpacingOptionOutput(mobileBorder.top[2], border.unit) : ''
-	);
-	const previewBorderRight = getPreviewSize(
-		previewDevice,
-		undefined !== border?.right ? getSpacingOptionOutput(border.right[2], border.unit) : '',
-		undefined !== tabletBorder?.right ? getSpacingOptionOutput(tabletBorder.right[2], border.unit) : '',
-		undefined !== mobileBorder?.right ? getSpacingOptionOutput(mobileBorder.right[2], border.unit) : ''
-	);
-	const previewBorderBottom = getPreviewSize(
-		previewDevice,
-		undefined !== border?.bottom ? getSpacingOptionOutput(border.bottom[2], border.unit) : '',
-		undefined !== tabletBorder?.bottom ? getSpacingOptionOutput(tabletBorder.bottom[2], border.unit) : '',
-		undefined !== mobileBorder?.bottom ? getSpacingOptionOutput(mobileBorder.bottom[2], border.unit) : ''
-	);
-	const previewBorderLeft = getPreviewSize(
-		previewDevice,
-		undefined !== border?.left ? getSpacingOptionOutput(border.left[2], border.unit) : '',
-		undefined !== tabletBorder?.left ? getSpacingOptionOutput(tabletBorder.left[2], border.unit) : '',
-		undefined !== mobileBorder?.left ? getSpacingOptionOutput(mobileBorder.left[2], border.unit) : ''
-	);
-
-	const previewBorderColorTop = getPreviewSize(
-		previewDevice,
-		undefined !== border?.top ? KadenceColorOutput(border.top[0]) : '',
-		undefined !== tabletBorder?.top ? KadenceColorOutput(tabletBorder.top[0]) : '',
-		undefined !== mobileBorder?.top ? KadenceColorOutput(tabletBorder.top[0]) : ''
-	);
-
-	const previewBorderColorRight = getPreviewSize(
-		previewDevice,
-		undefined !== border?.right ? KadenceColorOutput(border.right[0]) : '',
-		undefined !== tabletBorder?.right ? KadenceColorOutput(tabletBorder.right[0]) : '',
-		undefined !== mobileBorder?.right ? KadenceColorOutput(tabletBorder.right[0]) : ''
-	);
-
-	const previewBorderColorBottom = getPreviewSize(
-		previewDevice,
-		undefined !== border?.bottom ? KadenceColorOutput(border.bottom[0]) : '',
-		undefined !== tabletBorder?.bottom ? KadenceColorOutput(tabletBorder.bottom[0]) : '',
-		undefined !== mobileBorder?.bottom ? KadenceColorOutput(tabletBorder.bottom[0]) : ''
-	);
-
-	const previewBorderColorLeft = getPreviewSize(
-		previewDevice,
-		undefined !== border?.left ? KadenceColorOutput(border.left[0]) : '',
-		undefined !== tabletBorder?.left ? KadenceColorOutput(tabletBorder.left[0]) : '',
-		undefined !== mobileBorder?.left ? KadenceColorOutput(tabletBorder.left[0]) : ''
-	);
-
-	const previewBorderStyleTop = getPreviewSize(
-		previewDevice,
-		undefined !== border?.top ? border.top[1] : '',
-		undefined !== tabletBorder?.top ? tabletBorder.top[1] : '',
-		undefined !== mobileBorder?.top ? mobileBorder.top[1] : ''
-	);
-
-	const previewBorderStyleRight = getPreviewSize(
-		previewDevice,
-		undefined !== border?.right ? border.right[1] : '',
-		undefined !== tabletBorder?.right ? tabletBorder.right[1] : '',
-		undefined !== mobileBorder?.right ? mobileBorder.right[1] : ''
-	);
-
-	const previewBorderStyleBottom = getPreviewSize(
-		previewDevice,
-		undefined !== border?.bottom ? border.bottom[1] : '',
-		undefined !== tabletBorder?.bottom ? tabletBorder.bottom[1] : '',
-		undefined !== mobileBorder?.bottom ? mobileBorder.bottom[1] : ''
-	);
-
-	const previewBorderStyleLeft = getPreviewSize(
-		previewDevice,
-		undefined !== border?.left ? border.left[1] : '',
-		undefined !== tabletBorder?.left ? tabletBorder.left[1] : '',
-		undefined !== mobileBorder?.left ? mobileBorder.left[1] : ''
-	);
-
-	const previewHoverBorderColorTop = getPreviewSize(
-		previewDevice,
-		undefined !== hoverBorder?.top ? KadenceColorOutput(hoverBorder.top[0]) : '',
-		undefined !== tabletHoverBorder?.top ? KadenceColorOutput(tabletHoverBorder.top[0]) : '',
-		undefined !== mobileHoverBorder?.top ? KadenceColorOutput(mobileHoverBorder.top[0]) : ''
-	);
-
-	const previewHoverBorderColorRight = getPreviewSize(
-		previewDevice,
-		undefined !== hoverBorder?.right ? KadenceColorOutput(hoverBorder.right[0]) : '',
-		undefined !== tabletHoverBorder?.right ? KadenceColorOutput(tabletHoverBorder.right[0]) : '',
-		undefined !== mobileHoverBorder?.right ? KadenceColorOutput(mobileHoverBorder.right[0]) : ''
-	);
-
-	const previewHoverBorderColorBottom = getPreviewSize(
-		previewDevice,
-		undefined !== hoverBorder?.bottom ? KadenceColorOutput(hoverBorder.bottom[0]) : '',
-		undefined !== tabletHoverBorder?.bottom ? KadenceColorOutput(tabletHoverBorder.bottom[0]) : '',
-		undefined !== mobileHoverBorder?.bottom ? KadenceColorOutput(mobileHoverBorder.bottom[0]) : ''
-	);
-
-	const previewHoverBorderColorLeft = getPreviewSize(
-		previewDevice,
-		undefined !== hoverBorder?.left ? KadenceColorOutput(hoverBorder.left[0]) : '',
-		undefined !== tabletHoverBorder?.left ? KadenceColorOutput(tabletHoverBorder.left[0]) : '',
-		undefined !== mobileHoverBorder?.left ? KadenceColorOutput(mobileHoverBorder.left[0]) : ''
-	);
-
-	const previewHoverBorderStyleTop = getPreviewSize(
-		previewDevice,
-		undefined !== hoverBorder?.top ? hoverBorder.top[1] : '',
-		undefined !== tabletHoverBorder?.top ? tabletHoverBorder.top[1] : '',
-		undefined !== mobileHoverBorder?.top ? mobileHoverBorder.top[1] : ''
-	);
-
-	const previewHoverBorderStyleRight = getPreviewSize(
-		previewDevice,
-		undefined !== hoverBorder?.right ? hoverBorder.right[1] : '',
-		undefined !== tabletHoverBorder?.right ? tabletHoverBorder.right[1] : '',
-		undefined !== mobileHoverBorder?.right ? mobileHoverBorder.right[1] : ''
-	);
-
-	const previewHoverBorderStyleBottom = getPreviewSize(
-		previewDevice,
-		undefined !== hoverBorder?.bottom ? hoverBorder.bottom[1] : '',
-		undefined !== tabletHoverBorder?.bottom ? tabletHoverBorder.bottom[1] : '',
-		undefined !== mobileHoverBorder?.bottom ? mobileHoverBorder.bottom[1] : ''
-	);
-
-	const previewHoverBorderStyleLeft = getPreviewSize(
-		previewDevice,
-		undefined !== hoverBorder?.left ? hoverBorder.left[1] : '',
-		undefined !== tabletHoverBorder?.left ? tabletHoverBorder.left[1] : '',
-		undefined !== mobileHoverBorder?.left ? mobileHoverBorder.left[1] : ''
-	);
-
-	const previewHoverBorderTop = getPreviewSize(
-		previewDevice,
-		undefined !== hoverBorder?.top ? getSpacingOptionOutput(hoverBorder.top[2], hoverBorder.unit) : '',
-		undefined !== tabletHoverBorder?.top ? getSpacingOptionOutput(tabletHoverBorder.top[2], hoverBorder.unit) : '',
-		undefined !== mobileHoverBorder?.top ? getSpacingOptionOutput(mobileHoverBorder.top[2], hoverBorder.unit) : ''
-	);
-	const previewHoverBorderRight = getPreviewSize(
-		previewDevice,
-		undefined !== hoverBorder?.right ? getSpacingOptionOutput(hoverBorder.right[2], hoverBorder.unit) : '',
-		undefined !== tabletHoverBorder?.right
-			? getSpacingOptionOutput(tabletHoverBorder.right[2], hoverBorder.unit)
-			: '',
-		undefined !== mobileHoverBorder?.right
-			? getSpacingOptionOutput(mobileHoverBorder.right[2], hoverBorder.unit)
-			: ''
-	);
-	const previewHoverBorderBottom = getPreviewSize(
-		previewDevice,
-		undefined !== hoverBorder?.bottom ? getSpacingOptionOutput(hoverBorder.bottom[2], hoverBorder.unit) : '',
-		undefined !== tabletHoverBorder?.bottom
-			? getSpacingOptionOutput(tabletHoverBorder.bottom[2], hoverBorder.unit)
-			: '',
-		undefined !== mobileHoverBorder?.bottom
-			? getSpacingOptionOutput(mobileHoverBorder.bottom[2], hoverBorder.unit)
-			: ''
-	);
-	const previewHoverBorderLeft = getPreviewSize(
-		previewDevice,
-		undefined !== hoverBorder?.left ? getSpacingOptionOutput(hoverBorder.left[2], hoverBorder.unit) : '',
-		undefined !== tabletHoverBorder?.left
-			? getSpacingOptionOutput(tabletHoverBorder.left[2], hoverBorder.unit)
-			: '',
-		undefined !== mobileHoverBorder?.left ? getSpacingOptionOutput(mobileHoverBorder.left[2], hoverBorder.unit) : ''
-	);
-
 	const previewBorderTopLeftRadius = getPreviewSize(
 		previewDevice,
 		undefined !== borderRadius ? borderRadius[0] : '',
-		undefined !== tabletBorderRadius ? tabletBorderRadius[0] : '',
-		undefined !== mobileBorderRadius ? mobileBorderRadius[0] : ''
+		undefined !== borderRadiusTablet ? borderRadiusTablet[0] : '',
+		undefined !== borderRadiusMobile ? borderRadiusMobile[0] : ''
 	);
 	const previewBorderTopRightRadius = getPreviewSize(
 		previewDevice,
 		undefined !== borderRadius ? borderRadius[1] : '',
-		undefined !== tabletBorderRadius ? tabletBorderRadius[1] : '',
-		undefined !== mobileBorderRadius ? mobileBorderRadius[1] : ''
+		undefined !== borderRadiusTablet ? borderRadiusTablet[1] : '',
+		undefined !== borderRadiusMobile ? borderRadiusMobile[1] : ''
 	);
 	const previewBorderBottomRightRadius = getPreviewSize(
 		previewDevice,
 		undefined !== borderRadius ? borderRadius[2] : '',
-		undefined !== tabletBorderRadius ? tabletBorderRadius[2] : '',
-		undefined !== mobileBorderRadius ? mobileBorderRadius[2] : ''
+		undefined !== borderRadiusTablet ? borderRadiusTablet[2] : '',
+		undefined !== borderRadiusMobile ? borderRadiusMobile[2] : ''
 	);
 	const previewBorderBottomLeftRadius = getPreviewSize(
 		previewDevice,
 		undefined !== borderRadius ? borderRadius[3] : '',
-		undefined !== tabletBorderRadius ? tabletBorderRadius[3] : '',
-		undefined !== mobileBorderRadius ? mobileBorderRadius[3] : ''
+		undefined !== borderRadiusTablet ? borderRadiusTablet[3] : '',
+		undefined !== borderRadiusMobile ? borderRadiusMobile[3] : ''
 	);
-	const previewHoverBorderTopLeftRadius = getPreviewSize(
+	const previewborderHoverTopLeftRadius = getPreviewSize(
 		previewDevice,
-		undefined !== borderHoverRadius ? borderHoverRadius[0] : '',
-		undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[0] : '',
-		undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[0] : ''
+		undefined !== borderRadiusHover ? borderRadiusHover[0] : '',
+		undefined !== borderRadiusHoverTablet ? borderRadiusHoverTablet[0] : '',
+		undefined !== borderRadiusHoverMobile ? borderRadiusHoverMobile[0] : ''
 	);
-	const previewHoverBorderTopRightRadius = getPreviewSize(
+	const previewborderHoverTopRightRadius = getPreviewSize(
 		previewDevice,
-		undefined !== borderHoverRadius ? borderHoverRadius[1] : '',
-		undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[1] : '',
-		undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[1] : ''
+		undefined !== borderRadiusHover ? borderRadiusHover[1] : '',
+		undefined !== borderRadiusHoverTablet ? borderRadiusHoverTablet[1] : '',
+		undefined !== borderRadiusHoverMobile ? borderRadiusHoverMobile[1] : ''
 	);
-	const previewHoverBorderBottomRightRadius = getPreviewSize(
+	const previewborderHoverBottomRightRadius = getPreviewSize(
 		previewDevice,
-		undefined !== borderHoverRadius ? borderHoverRadius[2] : '',
-		undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[2] : '',
-		undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[2] : ''
+		undefined !== borderRadiusHover ? borderRadiusHover[2] : '',
+		undefined !== borderRadiusHoverTablet ? borderRadiusHoverTablet[2] : '',
+		undefined !== borderRadiusHoverMobile ? borderRadiusHoverMobile[2] : ''
 	);
-	const previewHoverBorderBottomLeftRadius = getPreviewSize(
+	const previewborderHoverBottomLeftRadius = getPreviewSize(
 		previewDevice,
-		undefined !== borderHoverRadius ? borderHoverRadius[3] : '',
-		undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[3] : '',
-		undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[3] : ''
+		undefined !== borderRadiusHover ? borderRadiusHover[3] : '',
+		undefined !== borderRadiusHoverTablet ? borderRadiusHoverTablet[3] : '',
+		undefined !== borderRadiusHoverMobile ? borderRadiusHoverMobile[3] : ''
 	);
 
 	// Header font options
@@ -399,7 +227,7 @@ export default function BackendStyles(props) {
 		css.add_property('display', 'none');
 	}
 
-	css.set_selector(`.wp-block-kadence-header${uniqueID}`);
+	css.set_selector(`.wp-block-kadence-header${uniqueID} > div`);
 	css.add_property('display', 'flex');
 	css.add_property('flex-wrap', 'wrap');
 	css.add_property('flex-basis', '0');
@@ -441,18 +269,12 @@ export default function BackendStyles(props) {
 			css.add_property('background', background.gradient);
 		}
 	}
-	css.add_property('border-top-width', previewBorderTop);
-	css.add_property('border-top-style', previewBorderStyleTop);
-	css.add_property('border-top-color', previewBorderColorTop);
-	css.add_property('border-right-width', previewBorderRight);
-	css.add_property('border-right-style', previewBorderStyleRight);
-	css.add_property('border-right-color', previewBorderColorRight);
-	css.add_property('border-bottom-width', previewBorderBottom);
-	css.add_property('border-bottom-style', previewBorderStyleBottom);
-	css.add_property('border-bottom-color', previewBorderColorBottom);
-	css.add_property('border-left-width', previewBorderLeft);
-	css.add_property('border-left-style', previewBorderStyleLeft);
-	css.add_property('border-left-color', previewBorderColorLeft);
+
+	css.add_property('border-top', css.render_border(border, borderTablet, borderMobile, previewDevice, 'top'));
+	css.add_property('border-right', css.render_border(border, borderTablet, borderMobile, previewDevice, 'right'));
+	css.add_property('border-bottom', css.render_border(border, borderTablet, borderMobile, previewDevice, 'bottom'));
+	css.add_property('border-left', css.render_border(border, borderTablet, borderMobile, previewDevice, 'left'));
+
 	css.add_property('margin-top', getSpacingOptionOutput(previewMarginTop, marginUnit));
 	css.add_property('margin-right', getSpacingOptionOutput(previewMarginRight, marginUnit));
 	css.add_property('margin-bottom', getSpacingOptionOutput(previewMarginBottom, marginUnit));
@@ -474,7 +296,7 @@ export default function BackendStyles(props) {
 	css.add_property('min-height', getSpacingOptionOutput(previewHeight, heightUnit));
 	css.add_property('max-width', getSpacingOptionOutput(previewWidth, widthUnit));
 
-	css.set_selector(`wp-block-kadence-header${uniqueID}:hover`);
+	css.set_selector(`wp-block-kadence-header${uniqueID} > div:hover`);
 
 	if (previewStyle != 'transparent') {
 		if ('normal' === backgroundHover?.type && backgroundHover?.image) {
@@ -493,34 +315,39 @@ export default function BackendStyles(props) {
 			css.add_property('background', backgroundHover.gradient);
 		}
 	}
-	css.add_property('border-top-width', previewHoverBorderTop);
-	css.add_property('border-top-style', previewHoverBorderStyleTop);
-	css.add_property('border-top-color', previewHoverBorderColorTop);
-	css.add_property('border-right-width', previewHoverBorderRight);
-	css.add_property('border-right-style', previewHoverBorderStyleRight);
-	css.add_property('border-right-color', previewHoverBorderColorRight);
-	css.add_property('border-bottom-width', previewHoverBorderBottom);
-	css.add_property('border-bottom-style', previewHoverBorderStyleBottom);
-	css.add_property('border-bottom-color', previewHoverBorderColorBottom);
-	css.add_property('border-left-width', previewHoverBorderLeft);
-	css.add_property('border-left-style', previewHoverBorderStyleLeft);
-	css.add_property('border-left-color', previewHoverBorderColorLeft);
+
+	css.add_property(
+		'border-top',
+		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'top')
+	);
+	css.add_property(
+		'border-right',
+		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'right')
+	);
+	css.add_property(
+		'border-bottom',
+		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'bottom')
+	);
+	css.add_property(
+		'border-left',
+		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'left')
+	);
 
 	css.add_property(
 		'border-top-left-radius',
-		getSpacingOptionOutput(previewHoverBorderTopLeftRadius, borderHoverRadiusUnit)
+		getSpacingOptionOutput(previewborderHoverTopLeftRadius, borderRadiusHoverUnit)
 	);
 	css.add_property(
 		'border-top-right-radius',
-		getSpacingOptionOutput(previewHoverBorderTopRightRadius, borderHoverRadiusUnit)
+		getSpacingOptionOutput(previewborderHoverTopRightRadius, borderRadiusHoverUnit)
 	);
 	css.add_property(
 		'border-bottom-right-radius',
-		getSpacingOptionOutput(previewHoverBorderBottomRightRadius, borderHoverRadiusUnit)
+		getSpacingOptionOutput(previewborderHoverBottomRightRadius, borderRadiusHoverUnit)
 	);
 	css.add_property(
 		'border-bottom-left-radius',
-		getSpacingOptionOutput(previewHoverBorderBottomLeftRadius, borderHoverRadiusUnit)
+		getSpacingOptionOutput(previewborderHoverBottomLeftRadius, borderRadiusHoverUnit)
 	);
 
 	css.set_selector(`wp-block-kadence-header${uniqueID} a`);
@@ -530,12 +357,12 @@ export default function BackendStyles(props) {
 	css.add_property('color', KadenceColorOutput(linkHoverColor));
 
 	if (previewStyle == 'transparent') {
-		css.set_selector(`.wp-block-kadence-header${uniqueID}`);
+		css.set_selector(`.wp-block-kadence-header${uniqueID} > div`);
 		css.add_property('top', '0px');
 
 		//apply auto padding to the next block after the header
 		if (autoTransparentSpacing && elementHeight) {
-			css.set_selector(`.wp-block-kadence-header${uniqueID} + *`);
+			css.set_selector(`.wp-block-kadence-header${uniqueID} + *, .kb-header-transparent-placeholder + *`);
 			css.add_property('padding-top', elementHeight + 'px');
 		}
 	}
