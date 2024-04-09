@@ -296,7 +296,8 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$url = $nav_link_attributes['url'];
 
 		$has_children = ! empty( $content );
-		$has_highlight_label = !empty($nav_link_attributes['highlightLabel']) || ! empty($nav_link_attributes['highlightIcon']);
+		$has_highlight_label = ! empty($nav_link_attributes['highlightLabel']) || ! empty($nav_link_attributes['highlightIcon'][0]['icon']);
+		var_dump($nav_link_attributes['highlightIcon']);
 		$temp = get_queried_object_id();
 		$kind        = empty( $attributes['kind'] ) ? 'post_type' : str_replace( '-', '_', $attributes['kind'] );
 		$is_active_ancestor = $child_info['has_active_child'];
