@@ -524,7 +524,7 @@ class Kadence_Blocks_Header_CPT_Controller {
 			),
 			array(
 				'key'     => '_kad_header_autoTransparentSpacing',
-				'default' => true,
+				'default' => false,
 				'type'    => 'boolean',
 			),
 		);

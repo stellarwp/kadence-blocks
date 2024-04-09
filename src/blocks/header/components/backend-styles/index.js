@@ -214,8 +214,7 @@ export default function BackendStyles(props) {
 
 	const previewStyle = getPreviewSize(previewDevice, style, styleTablet, styleMobile);
 
-	// const elementHeight = useElementHeight(currentRef, [isSelected]);
-	// console.log(1, elementHeight);
+	//const elementHeight = useElementHeight(currentRef, [isSelected]);
 	const elementHeight = currentRef?.current?.clientHeight;
 
 	const css = new KadenceBlocksCSS();
@@ -362,7 +361,7 @@ export default function BackendStyles(props) {
 
 		//apply auto padding to the next block after the header
 		if (autoTransparentSpacing && elementHeight) {
-			css.set_selector(`.wp-block-kadence-header${uniqueID} + *, .kb-header-transparent-placeholder + *`);
+			css.set_selector(`.kb-header-transparent-placeholder + *`);
 			css.add_property('padding-top', elementHeight + 'px');
 		}
 	}

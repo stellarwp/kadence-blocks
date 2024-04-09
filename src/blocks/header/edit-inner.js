@@ -510,13 +510,13 @@ export function EditInner(props) {
 								onChangeTablet={(value) => setMetaAttribute(value, 'styleTablet')}
 								onChangeMobile={(value) => setMetaAttribute(value, 'styleMobile')}
 							/>
-							{/* {previewStyle == 'transparent' && (
+							{previewStyle == 'transparent' && (
 								<ToggleControl
 									label={__('Auto spacing under', 'kadence-blocks')}
 									checked={autoTransparentSpacing}
 									onChange={(value) => setMetaAttribute(value, 'autoTransparentSpacing')}
 								/>
-							)} */}
+							)}
 						</KadencePanelBody>
 						<KadencePanelBody
 							title={__('Flex Settings', 'kadence-blocks')}
@@ -1498,7 +1498,8 @@ export function EditInner(props) {
 					help={__('Separate multiple classes with spaces.')}
 				/>
 			</InspectorAdvancedControls>
-			<Fragment {...innerBlocksProps} ref={componentRef} />
+			<Fragment {...innerBlocksProps} />
+			<span className="height-ref" ref={componentRef} />
 			{/*<SpacingVisualizer*/}
 			{/*	style={ {*/}
 			{/*		marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),*/}

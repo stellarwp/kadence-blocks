@@ -205,11 +205,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 
 		unset( self::$seen_refs[ $attributes['id'] ] );
 
-//		$header_attributes = $this->get_header_attributes( $attributes['id'] );
-//		$header_attributes = json_decode( json_encode( $header_attributes ), true );
-
 		$name = ! empty( $attributes['name'] ) ? $attributes['name'] : '';
-
 
 		// Inherit values.
 		// Just getting a css class for access to methods.
@@ -227,6 +223,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 			array(
 				'class'      => implode( ' ', $wrapper_classes ),
 				'aria-label' => $name,
+				'data-auto-transparent-spacing' => $header_attributes['autoTransparentSpacing'],
 			)
 		);
 
@@ -234,6 +231,28 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 			'<div %1$s>%2$s</div>',
 			$wrapper_attributes,
 			$content
+		);
+	}
+
+	/**
+	 * Registers scripts and styles.
+	 */
+	public function register_scripts() {
+		parent::register_scripts();
+		// If in the backend, bail out.
+		if ( is_admin() ) {
+			return;
+		}
+		if ( apply_filters( 'kadence_blocks_check_if_rest', false ) && kadence_blocks_is_rest() ) {
+			return;
+		}
+
+		wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/kb-header-block.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+
+		wp_localize_script(
+			'kadence-blocks-' . $this->block_name,
+			'kadenceHeaderConfig',
+			array(),
 		);
 	}
 
