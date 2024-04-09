@@ -96,6 +96,9 @@
 				</key>
 			</key>
 		</gutenberg-block>
+		<gutenberg-block type="kadence/advanced-form" translate="1">
+			<key name="id" type="post-ids" sub-type="kadence_form" />
+		</gutenberg-block>
 		<gutenberg-block type="kadence/spacer" translate="0"/>
 		<gutenberg-block type="kadence/rowlayout" translate="0"/>
 		<gutenberg-block type="kadence/column" translate="0"/>
