@@ -294,7 +294,6 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 		$label = $nav_link_attributes['label'];
 		$url = $nav_link_attributes['url'];
-
 		$has_children = ! empty( $content );
 		$has_highlight_label = ! empty($nav_link_attributes['highlightLabel']) || ! empty($nav_link_attributes['highlightIcon'][0]['icon']);
 		$temp = get_queried_object_id();
@@ -370,7 +369,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$highlight_class = '';
 		if( $has_highlight_label ) {
 			$highlight_class = ' has-highlight-label';
-			$highlight_label = '<span class="link-highlight-label">' . $nav_link_attributes['highlightLabel'] . $hl_icon . '</span>';
+			$highlight_label = '<span class="link-highlight-label"><span class="link-highlight-label-text">' . $nav_link_attributes['highlightLabel'] . '</span>' . $hl_icon . '</span>';
 		}
 		return sprintf(
 			'<li %1$s><div class="link-drop-wrap"><a class="wp-block-kadence-navigation-link__content' . $highlight_class . '" href="' . esc_url( $url ) . '"><span class="link-drop-title-wrap">' . esc_html( $label ) . $icon . $description . '<span class="title-dropdown-navigation-toggle">%2$s</span></span>' . $highlight_label . '</a></div>%3$s</li>',
