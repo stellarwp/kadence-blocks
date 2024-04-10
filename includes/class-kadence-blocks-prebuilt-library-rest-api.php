@@ -1090,6 +1090,35 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		return rest_ensure_response( $response );
 	}
 	/**
+	 * Get the section data if available locally.
+	 */
+	public function get_local_library_data() {
+		$this->get_license_keys();
+		$reload           = false;
+		$library          = 'section';
+		$library_url      = $this->remote_url;
+		$key              = 'section';
+
+		$identifier = 'library' . $library;
+		if ( 'section' === $library ) {
+			$identifier .= '_' . KADENCE_BLOCKS_VERSION;
+		}
+
+		if ( ! empty( $this->api_key ) ) {
+			$identifier .= '_' . $this->api_key;
+		}
+
+		if ( ! empty( $key ) ) {
+			$identifier .= '_' . $key;
+		}
+
+		try {
+			return $this->block_library_cache->get( $identifier );
+		} catch ( NotFoundException $e ) {
+		}
+		return array();
+	}
+	/**
 	 * Retrieves a collection of objects.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
@@ -1112,7 +1141,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 
 		$identifier = 'library' . $library;
-
+		if ( 'section' === $library ) {
+			$identifier .= '_' . KADENCE_BLOCKS_VERSION;
+		}
 		if ( ! empty( $this->api_key ) ) {
 			$identifier .= '_' . $this->api_key;
 		}
@@ -1154,7 +1185,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( 'custom' === $library ) {
 			wp_json_encode( apply_filters( 'kadence_block_library_custom_array', array() ) );
 		}
-
 		// Access via remote.
 		$response = $this->get_remote_library_contents( $library, $library_url, $key );
 

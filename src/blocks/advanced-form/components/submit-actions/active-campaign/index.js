@@ -130,7 +130,10 @@ function ActiveCampaignOptions({ formInnerBlocks, parentClientId, settings, save
 		setIsFetchingTags(true);
 
 		apiFetch({
-			path: addQueryArgs('/kb-activecampaign/v1/get', { endpoint: 'tags', queryargs: ['search=' + tagSearch] }),
+			path: addQueryArgs('/kb-activecampaign/v1/get', {
+				endpoint: 'tags',
+				queryargs: ['search=' + tagSearch],
+			}),
 		})
 			.then((tags) => {
 				const theTags = [];
@@ -167,6 +170,8 @@ function ActiveCampaignOptions({ formInnerBlocks, parentClientId, settings, save
 				theAttributes.push({ value: 'firstName', label: __('First Name', 'kadence-blocks') });
 				theAttributes.push({ value: 'lastName', label: __('Last Name', 'kadence-blocks') });
 				theAttributes.push({ value: 'phone', label: __('Phone', 'kadence-blocks') });
+				theAttributes.push({ value: 'acct_name', label: __('Account', 'kadence-blocks') });
+				theAttributes.push({ value: 'contact_jobtitle', label: __('Job Title', 'kadence-blocks') });
 
 				list.map((item, index) => {
 					theAttributes.push({ value: item.id, label: item.title });
@@ -183,6 +188,8 @@ function ActiveCampaignOptions({ formInnerBlocks, parentClientId, settings, save
 				theAttributes.push({ value: 'firstName', label: __('First Name', 'kadence-blocks') });
 				theAttributes.push({ value: 'lastName', label: __('Last Name', 'kadence-blocks') });
 				theAttributes.push({ value: 'phone', label: __('Phone', 'kadence-blocks') });
+				theAttributes.push({ value: 'acct_name', label: __('Account', 'kadence-blocks') });
+				theAttributes.push({ value: 'contact_jobtitle', label: __('Job Title', 'kadence-blocks') });
 
 				setListAttr(theAttributes);
 				setListAttrLoaded(true);
@@ -255,13 +262,13 @@ function ActiveCampaignOptions({ formInnerBlocks, parentClientId, settings, save
 			{!isLoadingSettings && (
 				<>
 					<ObfuscateTextControl
-						label={__('API Key', 'kadence-blocks-pro')}
+						label={__('API Key', 'kadence-blocks')}
 						value={api}
 						onChange={(value) => saveAPI(value)}
 						isSaving={isSaving}
 					/>
 					<ObfuscateTextControl
-						label={__('API URL', 'kadence-blocks-pro')}
+						label={__('API URL', 'kadence-blocks')}
 						value={apiBase}
 						obfuscate={false}
 						placeholder={'https://youaccount.api-us1.com'}
@@ -353,7 +360,7 @@ function ActiveCampaignOptions({ formInnerBlocks, parentClientId, settings, save
 									<div className="components-base-control">
 										<div className="kadence-select-tags-title-wrap">
 											<span className="kt-heading-size-title">
-												{__('Select Tags (Optional)', 'kadence-blocks-pro')}
+												{__('Select Tags (Optional)', 'kadence-blocks')}
 											</span>
 											<TagSearch
 												value={tagSearch}
@@ -434,10 +441,10 @@ function ActiveCampaignOptions({ formInnerBlocks, parentClientId, settings, save
 							</>
 							<div style={{ height: '10px' }}></div>
 							<ToggleControl
-								label={__('Require Double Opt In?', 'kadence-blocks-pro')}
+								label={__('Require Double Opt In?', 'kadence-blocks')}
 								help={__(
 									'This will set the status of the contact to unconfirmed, you must setup an automation in ActiveCampaign to email the contact and update the status after confirmation.',
-									'kadence-blocks-pro'
+									'kadence-blocks'
 								)}
 								checked={undefined !== settings.doubleOptin ? settings.doubleOptin : false}
 								onChange={(value) => {

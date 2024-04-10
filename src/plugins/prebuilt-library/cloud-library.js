@@ -146,11 +146,11 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 		// 	slug:pattern.slug,
 		// }
 		let action = [];
-		if (tab !== 'section') {
-			action = libraries.filter((obj) => {
-				return obj.slug === tab;
-			});
-		}
+		// if (tab !== 'section') {
+		// 	action = libraries.filter((obj) => {
+		// 		return obj.slug === tab;
+		// 	});
+		// }
 		if (action === undefined || action.length == 0) {
 			const cloudSettings = kadence_blocks_params?.cloud_settings
 				? JSON.parse(kadence_blocks_params.cloud_settings)
@@ -171,7 +171,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 				});
 			}
 		}
-		if (action?.[0]?.url) {
+		if (action?.[0]?.url && pattern?.id) {
 			const response = await getPattern(
 				tab,
 				'pattern',

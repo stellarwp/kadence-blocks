@@ -170,26 +170,28 @@ export const AUTHENTICATED_CONTENT = {
 				linkTarget: '_blank',
 			},
 			{
-				category: __('Kadence Blocks'),
-				heading: __('Row Layout Block'),
+				category: __('Kadence Blocks', 'kadence-blocks'),
+				heading: __('Row Layout Block', 'kadence-blocks'),
 				description: __(
-					'Use the Row Layout block to improve the column functionality and create responsive post/page layouts.'
+					'Use the Row Layout block to improve the column functionality and create responsive post/page layouts.',
+					'kadence-blocks'
 				),
 				link: 'https://www.kadencewp.com/help-center/docs/kadence-blocks/row-layout-block-2/',
 				linkTarget: '_blank',
 			},
 			{
-				category: __('Kadence Blocks'),
-				heading: __('Advanced Text Block'),
+				category: __('Kadence Blocks', 'kadence-blocks'),
+				heading: __('Advanced Text Block', 'kadence-blocks'),
 				description: __(
-					'Use the Advanced Text block to add text to your page/post with advanced customization - now with AI.'
+					'Use the Advanced Text block to add text to your page/post with advanced customization - now with AI.',
+					'kadence-blocks'
 				),
 				link: 'https://www.kadencewp.com/help-center/docs/kadence-blocks/advanced-heading-block/',
 				linkTarget: '_blank',
 			},
 			{
-				category: __('Support'),
-				heading: __('Need more help?'),
+				category: __('Support', 'kadence-blocks'),
+				heading: __('Need more help?', 'kadence-blocks'),
 				description: __(
 					"Didn't find what you were looking for? Find more articles in our knowledge base.",
 					'kadence-blocks'
@@ -216,7 +218,7 @@ export const UNAUTHENTICATED_CONTENT = {
 			"Elevate your web development game with Kadence AI. Supercharge your pattern and page library's potential with tailored content - get building pages in no time. Connect to your account to use Kadence AI with Kadence Blocks Pro",
 			'kadence-blocks'
 		),
-		buttonText: __('Activate Kadence AI', 'kadence-blocks'),
+		buttonText: __('Get Started with Kadence AI', 'kadence-blocks'),
 	},
 	actionCards: {
 		title: <SectionTitle title={__('Streamlined site building', 'kadence-blocks')} />,

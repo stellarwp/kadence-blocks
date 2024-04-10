@@ -80,6 +80,7 @@ class Kadence_Blocks_Settings {
 		add_action( 'admin_init', array( $this, 'load_settings' ) );
 		add_action( 'init', array( $this, 'load_api_settings' ) );
 		add_action( 'after_setup_theme', array( $this, 'load_color_palette' ), 999 );
+		add_filter( 'block_editor_settings_all', array( $this, 'load_color_palette_editor_settings' ), 999 );
 		add_action( 'init', array( $this, 'init_post_meta' ) );
 		add_action( 'admin_head-post.php', array( $this, 'admin_editor_width' ), 100 );
 		add_action( 'admin_head-post-new.php', array( $this, 'admin_editor_width' ), 100 );
@@ -317,6 +318,104 @@ class Kadence_Blocks_Settings {
 				)
 			);
 		}
+	}
+	/**
+	 * Load Gutenberg Palette in editor.
+	 *
+	 * @param array $settings The settings.
+	 */
+	public function load_color_palette_editor_settings( $settings ) {
+
+		$palette = json_decode( get_option( 'kadence_blocks_colors' ), true );
+		if ( isset( $palette['palette'] ) && is_array( $palette['palette'] ) ) {
+			$san_palette = array();
+			foreach ( $palette['palette'] as $item ) {
+				$san_palette[] = array(
+					'color' => $item['color'],
+					'name'  => $item['name'],
+					'slug'  => $item['slug'],
+				);
+			}
+			if ( isset( $san_palette[0] ) ) {
+				if ( ( isset( $palette['override'] ) && true !== $palette['override'] ) || ! isset( $palette['override'] ) ) {
+					$theme_palette = get_theme_support( 'editor-color-palette' );
+					if ( isset( $settings['colors'] ) && is_array( $settings['colors'] ) ) {
+						$newpalette = array_merge( $settings['colors'], $san_palette );
+					} else {
+						$default_palette = array(
+							array(
+								'name' => __( 'Pale pink', 'kadence-blocks' ),
+								'slug' => 'pale-pink',
+								'color' => '#f78da7',
+							),
+							array(
+								'name' => __( 'Vivid red', 'kadence-blocks' ),
+								'slug' => 'vivid-red',
+								'color' => '#cf2e2e',
+							),
+							array(
+								'name' => __( 'Luminous vivid orange', 'kadence-blocks' ),
+								'slug' => 'luminous-vivid-orange',
+								'color' => '#ff6900',
+							),
+							array(
+								'name' => __( 'Luminous vivid amber', 'kadence-blocks' ),
+								'slug' => 'luminous-vivid-amber',
+								'color' => '#fcb900',
+							),
+							array(
+								'name' => __( 'Light green cyan', 'kadence-blocks' ),
+								'slug' => 'light-green-cyan',
+								'color' => '#7bdcb5',
+							),
+							array(
+								'name' => __( 'Vivid green cyan', 'kadence-blocks' ),
+								'slug' => 'vivid-green-cyan',
+								'color' => '#00d084',
+							),
+							array(
+								'name' => __( 'Pale cyan blue', 'kadence-blocks' ),
+								'slug' => 'pale-cyan-blue',
+								'color' => '#8ed1fc',
+							),
+							array(
+								'name' => __( 'Vivid cyan blue', 'kadence-blocks' ),
+								'slug' => 'vivid-cyan-blue',
+								'color' => '#0693e3',
+							),
+							array(
+								'name' => __( 'Very light gray', 'kadence-blocks' ),
+								'slug' => 'very-light-gray',
+								'color' => '#eeeeee',
+							),
+							array(
+								'name' => __( 'Cyan bluish gray', 'kadence-blocks' ),
+								'slug' => 'cyan-bluish-gray',
+								'color' => '#abb8c3',
+							),
+							array(
+								'name' => __( 'Very dark gray', 'kadence-blocks' ),
+								'slug' => 'very-dark-gray',
+								'color' => '#313131',
+							),
+						);
+						$newpalette = array_merge( $default_palette, $san_palette );
+					}
+				} else {
+					$newpalette = $san_palette;
+				}
+				
+				$settings['colors'] = $newpalette;
+				if ( function_exists( 'get_block_editor_settings' ) ) {
+					$settings['__experimentalFeatures']['color']['palette']['user']
+						= $settings['__experimentalFeatures']['color']['palette']['theme']
+						= $newpalette;
+				}
+			}
+		}
+
+		return $settings;
+
 	}
 	/**
 	 * Load Gutenberg Palette
@@ -844,7 +943,7 @@ class Kadence_Blocks_Settings {
 			'kadence_blocks_mailerlite_api',
 			array(
 				'type'              => 'string',
-				'description'       => __( 'MailerLite API Key', 'kadence-blocks-pro' ),
+				'description'       => __( 'MailerLite API Key', 'kadence-blocks' ),
 				'sanitize_callback' => 'sanitize_text_field',
 				'show_in_rest'      => true,
 				'default'           => '',
@@ -855,7 +954,7 @@ class Kadence_Blocks_Settings {
 			'kadence_blocks_google_maps_api',
 			array(
 				'type'              => 'string',
-				'description'       => __( 'Google Maps API Key', 'kadence-blocks-pro' ),
+				'description'       => __( 'Google Maps API Key', 'kadence-blocks' ),
 				'sanitize_callback' => 'sanitize_text_field',
 				'show_in_rest'      => true,
 				'default'           => '',
@@ -888,7 +987,7 @@ class Kadence_Blocks_Settings {
 			'kadence_blocks_convertkit_api',
 			array(
 				'type'              => 'string',
-				'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
+				'description'       => __( 'ConvertKit API Key', 'kadence-blocks' ),
 				'sanitize_callback' => 'sanitize_text_field',
 				'show_in_rest'      => true,
 				'default'           => '',
@@ -899,7 +998,7 @@ class Kadence_Blocks_Settings {
 			'kadence_blocks_activecampaign_api_key',
 			array(
 				'type'              => 'string',
-				'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
+				'description'       => __( 'ConvertKit API Key', 'kadence-blocks' ),
 				'sanitize_callback' => 'sanitize_text_field',
 				'show_in_rest'      => true,
 				'default'           => '',
@@ -910,7 +1009,7 @@ class Kadence_Blocks_Settings {
 			'kadence_blocks_activecampaign_api_base',
 			array(
 				'type'              => 'string',
-				'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
+				'description'       => __( 'ConvertKit API Key', 'kadence-blocks' ),
 				'sanitize_callback' => 'sanitize_text_field',
 				'show_in_rest'      => true,
 				'default'           => '',

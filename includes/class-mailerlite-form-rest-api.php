@@ -156,17 +156,17 @@ class Kadence_MailerLite_REST_Controller extends WP_REST_Controller {
 		$query_params  = parent::get_collection_params();
 
 		$query_params[ self::PROP_API_KEY ] = array(
-			'description' => __( 'The API Key for Mailerlite account.', 'kadence-blocks-pro' ),
+			'description' => __( 'The API Key for Mailerlite account.', 'kadence-blocks' ),
 			'type'        => 'string',
 		);
 
 		$query_params[ self::PROP_END_POINT ] = array(
-			'description' => __( 'Actionable endpoint for api call.', 'kadence-blocks-pro' ),
+			'description' => __( 'Actionable endpoint for api call.', 'kadence-blocks' ),
 			'type'        => 'string',
 		);
 
 		$query_params[ self::PROP_QUERY_ARGS ] = array(
-			'description' => __( 'Query Args for url.', 'kadence-blocks-pro' ),
+			'description' => __( 'Query Args for url.', 'kadence-blocks' ),
 			'type'        => 'array',
 		);
 
