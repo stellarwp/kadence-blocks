@@ -159,24 +159,24 @@ function SendInBlueOptions({ formInnerBlocks, parentClientId, settings, save }) 
 	const hasAttr = Array.isArray(listAttr) && listAttr.length > 0;
 
 	return (
-		<KadencePanelBody title={__('Brevo (SendInBlue) Settings', 'kadence-blocks-pro')} initialOpen={false}>
+		<KadencePanelBody title={__('Brevo (SendInBlue) Settings', 'kadence-blocks')} initialOpen={false}>
 			<p>
 				<Fragment>
-					<ExternalLink href={RETRIEVE_API_URL}>{__('Get API Key', 'kadence-blocks-pro')}</ExternalLink>
+					<ExternalLink href={RETRIEVE_API_URL}>{__('Get API Key', 'kadence-blocks')}</ExternalLink>
 					|&nbsp;
-					<ExternalLink href={HELP_URL}>{__('Get help', 'kadence-blocks-pro')}</ExternalLink>
+					<ExternalLink href={HELP_URL}>{__('Get help', 'kadence-blocks')}</ExternalLink>
 				</Fragment>
 			</p>
 			<TextControl label={__('API Key (v3)', 'kadence-blocks')} value={api} onChange={(value) => setApi(value)} />
 			<div className="components-base-control">
 				<Button isPrimary onClick={() => saveAPI()} disabled={'' === api}>
-					{isSaving ? __('Saving', 'kadence-blocks-pro') : __('Save', 'kadence-blocks-pro')}
+					{isSaving ? __('Saving', 'kadence-blocks') : __('Save', 'kadence-blocks')}
 				</Button>
 				{api !== '' && (
 					<Fragment>
 						&nbsp;
 						<Button isSecondary onClick={() => removeAPI()}>
-							{__('Remove', 'kadence-blocks-pro')}
+							{__('Remove', 'kadence-blocks')}
 						</Button>
 					</Fragment>
 				)}
@@ -188,7 +188,7 @@ function SendInBlueOptions({ formInnerBlocks, parentClientId, settings, save }) 
 						<Fragment>
 							<h2 className="kt-heading-size-title">{__('Select Lists', 'kadence-blocks')}</h2>
 							{!listsLoaded ? getSendInBlueList() : ''}
-							{!Array.isArray(lists) ? <Spinner /> : __('No list found.', 'kadence-blocks-pro')}
+							{!Array.isArray(lists) ? <Spinner /> : __('No list found.', 'kadence-blocks')}
 						</Fragment>
 					)}
 					{!isFetching && hasLists && (
@@ -218,7 +218,7 @@ function SendInBlueOptions({ formInnerBlocks, parentClientId, settings, save }) 
 											{!Array.isArray(listAttr) ? (
 												<Spinner />
 											) : (
-												__('No Fields found.', 'kadence-blocks-pro')
+												__('No Fields found.', 'kadence-blocks')
 											)}
 										</Fragment>
 									)}
@@ -256,7 +256,7 @@ function SendInBlueOptions({ formInnerBlocks, parentClientId, settings, save }) 
 												})}
 											{/* <div style={ { height: '10px' } } />
 												<ToggleControl
-													label={ __( 'Require Double Opt In?', 'kadence-blocks-pro' ) }
+													label={ __( 'Require Double Opt In?', 'kadence-blocks' ) }
 													checked={ ( undefined !== settings && undefined !== setting && undefined !== setting.doubleOptin ? setting.doubleOptin : false ) }
 													onChange={ ( value ) => save( { doubleOptin: value } ) }
 												/>

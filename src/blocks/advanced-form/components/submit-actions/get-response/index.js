@@ -223,14 +223,14 @@ function GetResponseOptions({ formInnerBlocks, parentClientId, settings, save })
 			{!isLoadingSettings && (
 				<>
 					<ObfuscateTextControl
-						label={__('API Key', 'kadence-blocks-pro')}
+						label={__('API Key', 'kadence-blocks')}
 						value={api}
 						onChange={(value) => saveAPI(value)}
 						isSaving={isSaving}
 					/>
 
 					<SelectControl
-						label={__('Select API Endpoint', 'kadence-blocks-pro')}
+						label={__('Select API Endpoint', 'kadence-blocks')}
 						value={apiBase}
 						options={[
 							{ value: 'https://api.getresponse.com/v3', label: 'https://api.getresponse.com/v3' },
@@ -293,7 +293,7 @@ function GetResponseOptions({ formInnerBlocks, parentClientId, settings, save })
 									<div className="components-base-control">
 										<div className="kadence-select-tags-title-wrap">
 											<span className="kt-heading-size-title">
-												{__('Select Tags (Optional)', 'kadence-blocks-pro')}
+												{__('Select Tags (Optional)', 'kadence-blocks')}
 											</span>
 										</div>
 										<Select
@@ -365,10 +365,10 @@ function GetResponseOptions({ formInnerBlocks, parentClientId, settings, save })
 							</>
 							<div style={{ height: '10px' }}></div>
 							<ToggleControl
-								label={__('Require Double Opt In?', 'kadence-blocks-pro')}
+								label={__('Require Double Opt In?', 'kadence-blocks')}
 								help={__(
 									'This will set the status of the contact to unconfirmed, you must setup an automation in GetResponse to email the contact and update the status after confirmation.',
-									'kadence-blocks-pro'
+									'kadence-blocks'
 								)}
 								checked={undefined !== settings.doubleOptin ? settings.doubleOptin : false}
 								onChange={(value) => {

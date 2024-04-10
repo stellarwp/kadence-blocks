@@ -177,7 +177,7 @@ export default function MessageStyling({ setMetaAttribute, useFormMeta }) {
 					setMetaAttribute(value.map(String), 'mobileMessagePadding');
 				}}
 				min={0}
-				max={messagePaddingUnit === 'em' || messagePaddingUnit === 'rem' ? 24 : 500}
+				max={messagePaddingUnit === 'em' || messagePaddingUnit === 'rem' ? 24 : 999}
 				step={messagePaddingUnit === 'em' || messagePaddingUnit === 'rem' ? 0.1 : 1}
 				unit={messagePaddingUnit}
 				units={['px', 'em', 'rem', '%', 'vh', 'vw']}
@@ -197,8 +197,8 @@ export default function MessageStyling({ setMetaAttribute, useFormMeta }) {
 				onChangeMobile={(value) => {
 					setMetaAttribute(value.map(String), 'mobileMessageMargin');
 				}}
-				min={messageMarginUnit === 'em' || messageMarginUnit === 'rem' ? -24 : -500}
-				max={messageMarginUnit === 'em' || messageMarginUnit === 'rem' ? 24 : 500}
+				min={messageMarginUnit === 'em' || messageMarginUnit === 'rem' ? -24 : -999}
+				max={messageMarginUnit === 'em' || messageMarginUnit === 'rem' ? 24 : 999}
 				step={messageMarginUnit === 'em' || messageMarginUnit === 'rem' ? 0.1 : 1}
 				unit={messageMarginUnit}
 				units={['px', 'em', 'rem', '%', 'vh', 'vw']}

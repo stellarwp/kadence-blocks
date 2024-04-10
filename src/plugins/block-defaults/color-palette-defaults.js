@@ -6,10 +6,7 @@ import { compose } from '@wordpress/compose';
 import { store as noticesStore } from '@wordpress/notices';
 import apiFetch from '@wordpress/api-fetch';
 import { useDispatch, useSelect } from '@wordpress/data';
-import {
-	useSetting,
-	store as blockEditorStore,
-} from '@wordpress/block-editor';
+import { useSetting, store as blockEditorStore } from '@wordpress/block-editor';
 
 const kbColorUniqueIDs = [];
 /**
@@ -27,16 +24,14 @@ export default function KadenceColorDefault() {
 					override: false,
 			  }
 	);
-	const colorPalette = useSetting( 'color.palette' );
-	const disableCustomColors = ! useSetting( 'color.custom' );
+	const colorPalette = useSetting('color.palette');
+	const disableCustomColors = !useSetting('color.custom');
 	const [colors, setColors] = useState('');
 	const [themeColors, setThemeColors] = useState([]);
 	const [showMessage, setShowMessage] = useState(false);
 	const [classSat, setClassSat] = useState('first');
 	const { createErrorNotice } = useDispatch(noticesStore);
-	const {
-		updateSettings,
-	} = useDispatch( blockEditorStore );
+	const { updateSettings } = useDispatch(blockEditorStore);
 	useEffect(() => {
 		if (!colors) {
 			setColors(colorPalette);
@@ -58,23 +53,23 @@ export default function KadenceColorDefault() {
 			setIsSaving(true);
 			const config = kadenceColors;
 			try {
-				const response = await apiFetch( {
+				const response = await apiFetch({
 					path: '/wp/v2/settings',
 					method: 'POST',
-					data: { kadence_blocks_colors: JSON.stringify( config ) },
-				} );
+					data: { kadence_blocks_colors: JSON.stringify(config) },
+				});
 
-				if ( response ) {
+				if (response) {
 					setIsSaving(false);
 					setKadenceColors(config);
 					kadence_blocks_params.colors = JSON.stringify(config);
 					createErrorNotice(__('Colors saved!', 'kadence-blocks'), {
 						type: 'snackbar',
 					});
-					updateSettings({ colors:colors });
+					updateSettings({ colors });
 					return true;
 				}
-			} catch ( error ) {
+			} catch (error) {
 				createErrorNotice(__('Failed to save colors', 'kadence-blocks'), {
 					type: 'snackbar',
 				});
@@ -326,39 +321,35 @@ export default function KadenceColorDefault() {
 					</Button>
 				</div>
 			)}
-			{undefined !== kadenceColors.palette &&
-				undefined !== kadenceColors.palette[0] &&
-				!disableCustomColors && (
-					<>
-						<ToggleControl
-							label={__('Use only Kadence Blocks Colors?')}
-							checked={undefined !== kadenceColors.override ? kadenceColors.override : false}
-							onChange={(value) => {
-								let newColors;
-								const newKadenceColors = kadenceColors;
-								if (true === value) {
-									newColors = newKadenceColors.palette;
-									newKadenceColors.override = true;
-								} else {
-									newKadenceColors.override = false;
-									newColors = newKadenceColors.palette;
+			{undefined !== kadenceColors.palette && undefined !== kadenceColors.palette[0] && !disableCustomColors && (
+				<>
+					<ToggleControl
+						label={__('Use only Kadence Blocks Colors?')}
+						checked={undefined !== kadenceColors.override ? kadenceColors.override : false}
+						onChange={(value) => {
+							let newColors;
+							const newKadenceColors = kadenceColors;
+							if (true === value) {
+								newColors = newKadenceColors.palette;
+								newKadenceColors.override = true;
+							} else {
+								newKadenceColors.override = false;
+								newColors = newKadenceColors.palette;
 
-									setShowMessage(true);
-								}
-								setKadenceColors(newKadenceColors);
-								setColors(newColors);
-								saveConfig();
-							}}
-						/>
-						{undefined !== kadenceColors.override &&
-							false === kadenceColors.override &&
-							true === showMessage && (
-								<p className="kb-colors-show-notice">
-									{__('Refresh page to reload theme defined colors')}
-								</p>
-							)}
-					</>
-				)}
+								setShowMessage(true);
+							}
+							setKadenceColors(newKadenceColors);
+							setColors(newColors);
+							saveConfig();
+						}}
+					/>
+					{undefined !== kadenceColors.override &&
+						false === kadenceColors.override &&
+						true === showMessage && (
+							<p className="kb-colors-show-notice">{__('Refresh page to reload theme defined colors')}</p>
+						)}
+				</>
+			)}
 		</div>
 	);
 }

@@ -2,9 +2,9 @@
 Contributors: britner, oakesjosh, woodardmc
 Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
-Requires at least: 6.2
-Tested up to: 6.4
-Stable tag: 3.2.31
+Requires at least: 6.3
+Tested up to: 6.5
+Stable tag: 3.2.34
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -88,10 +88,35 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.2.34 =
+Release Date: April 10th 2024
+* Update: Increase Max/Min inputs for padding/margin controls.
+* Update: WPML config.
+* Update: Add form arg filter.
+* Fix: Issue with custom block styles on TEC lists.
+* Fix: Kadence home admin page.
+
+= 3.2.33 =
+Release Date: April 5th 2024
+* Fix: PHP 8.3 deprecated function call in Table of Contents block.
+* Fix: Possible css issue in FSE templates.
+
+= 3.2.32 =
+Release Date: April 2nd 2024
+* Update: Design Library to better handle certain images.
+* Update: Language strings.
+* Update: Show support for 6.5.
+* Update: AI wizard to include goals.
+* Fix: Issue with theme colors not working when changing opacity.
+* Fix: Possible max vars limit when using gravity forms.
+* Fix: Aria labels on progress bar block.
+* Fix: CSS issue with icons that had previously been displayed as stacked.
+
 = 3.2.31 =
 Release Date: March 27th 2024
 * Fix: Issue with gradient colors.
 * Fix: Issue with outputting error log.
+* Fix: Transforms on P tag in Advanced Text block.
 
 = 3.2.30 =
 Release Date: March 22nd 2024

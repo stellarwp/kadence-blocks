@@ -161,27 +161,27 @@ export default function MailerLiteOptions({ formInnerBlocks, parentClientId, set
 
 	return (
 		<KadencePanelBody
-			title={__('MailerLite Settings', 'kadence-blocks-pro')}
+			title={__('MailerLite Settings', 'kadence-blocks')}
 			initialOpen={false}
 			panelName={'kb-mailerlite-settings'}
 		>
 			<p>
 				<>
-					<ExternalLink href={RETRIEVE_API_URL}>{__('Get API Key', 'kadence-blocks-pro')}</ExternalLink>
+					<ExternalLink href={RETRIEVE_API_URL}>{__('Get API Key', 'kadence-blocks')}</ExternalLink>
 					|&nbsp;
-					<ExternalLink href={HELP_URL}>{__('Get help', 'kadence-blocks-pro')}</ExternalLink>
+					<ExternalLink href={HELP_URL}>{__('Get help', 'kadence-blocks')}</ExternalLink>
 				</>
 			</p>
 			<TextControl label={__('API Key', 'kadence-blocks')} value={api} onChange={(value) => setAPI(value)} />
 			<div className="components-base-control">
 				<Button isPrimary onClick={() => saveAPI()} disabled={'' === api}>
-					{isSaving ? __('Saving', 'kadence-blocks-pro') : __('Save', 'kadence-blocks-pro')}
+					{isSaving ? __('Saving', 'kadence-blocks') : __('Save', 'kadence-blocks')}
 				</Button>
 				{isSavedAPI && (
 					<>
 						&nbsp;
 						<Button isSecondary onClick={() => removeAPI()}>
-							{__('Remove', 'kadence-blocks-pro')}
+							{__('Remove', 'kadence-blocks')}
 						</Button>
 					</>
 				)}
@@ -193,7 +193,7 @@ export default function MailerLiteOptions({ formInnerBlocks, parentClientId, set
 						<>
 							<h2 className="kt-heading-size-title">{__('Select a Group', 'kadence-blocks')}</h2>
 							{!groupsLoaded ? getMailerLiteGroups() : ''}
-							{!Array.isArray(groups) ? <Spinner /> : __('No group found.', 'kadence-blocks-pro')}
+							{!Array.isArray(groups) ? <Spinner /> : __('No group found.', 'kadence-blocks')}
 						</>
 					)}
 					{!isFetching && hasGroups && (
@@ -228,7 +228,7 @@ export default function MailerLiteOptions({ formInnerBlocks, parentClientId, set
 											{!Array.isArray(groupFields) ? (
 												<Spinner />
 											) : (
-												__('No Fields found.', 'kadence-blocks-pro')
+												__('No Fields found.', 'kadence-blocks')
 											)}
 										</>
 									)}

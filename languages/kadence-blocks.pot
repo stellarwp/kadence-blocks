@@ -2,14 +2,14 @@
 # This file is distributed under the GPL2+.
 msgid ""
 msgstr ""
-"Project-Id-Version: Kadence Blocks – Gutenberg Blocks for Page Builder Features 3.2.26\n"
+"Project-Id-Version: Kadence Blocks – Gutenberg Blocks for Page Builder Features 3.2.32\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/kadence-blocks\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-03-19T20:27:18+00:00\n"
+"POT-Creation-Date: 2024-04-02T19:22:33+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: kadence-blocks\n"
@@ -32,6 +32,13 @@ msgstr ""
 
 #. Author URI of the plugin
 msgid "https://www.kadencewp.com"
+msgstr ""
+
+#: includes/advanced-form/activecampaign-rest-api.php:113
+#: includes/advanced-form/getresponse-rest-api.php:110
+#: includes/class-fluentcrm-form-rest-api.php:158
+#: includes/class-mailerlite-form-rest-api.php:164
+msgid "Actionable endpoint for api call."
 msgstr ""
 
 #: includes/advanced-form/advanced-form-ajax.php:60
@@ -307,6 +314,14 @@ msgstr ""
 msgid "No posts"
 msgstr ""
 
+#: includes/blocks/class-kadence-blocks-progress-bar-block.php:241
+msgid "Progress"
+msgstr ""
+
+#: includes/blocks/class-kadence-blocks-progress-bar-block.php:372
+msgid "Progressbar Label"
+msgstr ""
+
 #: includes/blocks/class-kadence-blocks-row-layout-block.php:1454
 #: dist/blocks-rowlayout.js:14
 msgid "Play"
@@ -414,8 +429,8 @@ msgstr ""
 
 #: includes/class-kadence-blocks-image-picker-rest.php:91
 #: includes/class-kadence-blocks-image-picker-rest.php:96
-#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2217
-#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2227
+#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2247
+#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2257
 msgid "The Image type to return"
 msgstr ""
 
@@ -436,6 +451,7 @@ msgid "Include posts by ID."
 msgstr ""
 
 #: includes/class-kadence-blocks-posts-rest-api.php:452
+#: includes/class-kadence-blocks-posts-rest-api.php:545
 msgid "Number of results to return."
 msgstr ""
 
@@ -480,60 +496,73 @@ msgstr ""
 msgid "Include posts tags."
 msgstr ""
 
+#: includes/class-kadence-blocks-posts-rest-api.php:518
+msgid "Taxonomy Type."
+msgstr ""
+
+#: includes/class-kadence-blocks-posts-rest-api.php:522
+#: includes/class-kadence-blocks-posts-rest-api.php:538
+msgid "The source of the content."
+msgstr ""
+
+#: includes/class-kadence-blocks-posts-rest-api.php:551
+msgid "Page of results to return."
+msgstr ""
+
 #: includes/class-kadence-blocks-prebuilt-library-rest-api.php:901
 #: includes/class-kadence-blocks-prebuilt-library.php:828
 msgid "Photo by"
 msgstr ""
 
-#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2156
+#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2186
 msgid "The requested ai context."
 msgstr ""
 
-#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2161
+#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2191
 msgid "The requested library."
 msgstr ""
 
-#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2166
+#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2196
 msgid "The requested library URL."
 msgstr ""
 
-#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2172
+#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2202
 msgid "Force a refresh of the context."
 msgstr ""
 
-#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2177
+#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2207
 msgid "Library Key."
 msgstr ""
 
-#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2182
+#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2212
 msgid "Kadence License Key."
 msgstr ""
 
-#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2187
+#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2217
 msgid "Kadence License Email."
 msgstr ""
 
-#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2192
+#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2222
 msgid "Kadence License Product ID."
 msgstr ""
 
-#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2197
+#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2227
 msgid "Pattern Type"
 msgstr ""
 
-#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2202
+#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2232
 msgid "Pattern Style"
 msgstr ""
 
-#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2207
+#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2237
 msgid "Pattern ID"
 msgstr ""
 
-#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2212
+#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2242
 msgid "The selected Industry"
 msgstr ""
 
-#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2222
+#: includes/class-kadence-blocks-prebuilt-library-rest-api.php:2252
 msgid "The industries to return"
 msgstr ""
 
@@ -561,21 +590,21 @@ msgstr ""
 msgid "Once Monthly"
 msgstr ""
 
-#: includes/class-kadence-blocks-table-of-contents.php:372
-#: includes/class-kadence-blocks-table-of-contents.php:835
-#: includes/class-kadence-blocks-table-of-contents.php:844
+#: includes/class-kadence-blocks-table-of-contents.php:375
+#: includes/class-kadence-blocks-table-of-contents.php:838
+#: includes/class-kadence-blocks-table-of-contents.php:847
 msgid "Expand Table of Contents"
 msgstr ""
 
-#: includes/class-kadence-blocks-table-of-contents.php:373
-#: includes/class-kadence-blocks-table-of-contents.php:835
-#: includes/class-kadence-blocks-table-of-contents.php:844
+#: includes/class-kadence-blocks-table-of-contents.php:376
+#: includes/class-kadence-blocks-table-of-contents.php:838
+#: includes/class-kadence-blocks-table-of-contents.php:847
 msgid "Collapse Table of Contents"
 msgstr ""
 
-#: includes/class-kadence-blocks-table-of-contents.php:830
-#: includes/class-kadence-blocks-table-of-contents.php:838
-#: includes/settings/class-kadence-blocks-settings.php:1297
+#: includes/class-kadence-blocks-table-of-contents.php:833
+#: includes/class-kadence-blocks-table-of-contents.php:841
+#: includes/settings/class-kadence-blocks-settings.php:1396
 #: dist/plugin-kadence-control.js:5
 msgid "Table of Contents"
 msgstr ""
@@ -586,6 +615,14 @@ msgstr ""
 
 #: includes/class-lottieanimation-post-rest-api.php:67
 msgid "Please enter an animation title"
+msgstr ""
+
+#: includes/class-mailerlite-form-rest-api.php:159
+msgid "The API Key for Mailerlite account."
+msgstr ""
+
+#: includes/class-mailerlite-form-rest-api.php:169
+msgid "Query Args for url."
 msgstr ""
 
 #: includes/form-ajax.php:55
@@ -615,11 +652,11 @@ msgstr ""
 msgid "%s and higher"
 msgstr ""
 
-#: includes/init.php:428
-#: includes/init.php:456
-#: includes/init.php:483
-#: includes/init.php:527
-#: includes/init.php:556
+#: includes/init.php:449
+#: includes/init.php:477
+#: includes/init.php:504
+#: includes/init.php:548
+#: includes/init.php:577
 #: dist/blocks-advanced-form.js:12
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-advancedgallery.js:1
@@ -634,102 +671,102 @@ msgstr ""
 msgid "Inherit"
 msgstr ""
 
-#: includes/init.php:431
-#: includes/init.php:457
-#: includes/init.php:484
-#: includes/init.php:530
-#: includes/init.php:557
+#: includes/init.php:452
+#: includes/init.php:478
+#: includes/init.php:505
+#: includes/init.php:551
+#: includes/init.php:578
 #: dist/components.js:28
 #: dist/components.js:29
 msgid "Thin 100"
 msgstr ""
 
-#: includes/init.php:433
-#: includes/init.php:458
-#: includes/init.php:485
-#: includes/init.php:532
-#: includes/init.php:558
+#: includes/init.php:454
+#: includes/init.php:479
+#: includes/init.php:506
+#: includes/init.php:553
+#: includes/init.php:579
 #: dist/components.js:28
 #: dist/components.js:29
 msgid "Extra-Light 200"
 msgstr ""
 
-#: includes/init.php:435
-#: includes/init.php:459
-#: includes/init.php:486
-#: includes/init.php:534
-#: includes/init.php:559
+#: includes/init.php:456
+#: includes/init.php:480
+#: includes/init.php:507
+#: includes/init.php:555
+#: includes/init.php:580
 #: dist/components.js:28
 #: dist/components.js:29
 msgid "Light 300"
 msgstr ""
 
-#: includes/init.php:437
-#: includes/init.php:439
+#: includes/init.php:458
 #: includes/init.php:460
-#: includes/init.php:487
-#: includes/init.php:536
-#: includes/init.php:538
-#: includes/init.php:560
+#: includes/init.php:481
+#: includes/init.php:508
+#: includes/init.php:557
+#: includes/init.php:559
+#: includes/init.php:581
 #: dist/components.js:28
 #: dist/components.js:29
 msgid "Regular"
 msgstr ""
 
-#: includes/init.php:441
-#: includes/init.php:461
-#: includes/init.php:488
-#: includes/init.php:540
+#: includes/init.php:462
+#: includes/init.php:482
+#: includes/init.php:509
 #: includes/init.php:561
+#: includes/init.php:582
 #: dist/components.js:28
 #: dist/components.js:29
 msgid "Medium 500"
 msgstr ""
 
-#: includes/init.php:443
-#: includes/init.php:462
-#: includes/init.php:489
-#: includes/init.php:542
-#: includes/init.php:562
+#: includes/init.php:464
+#: includes/init.php:483
+#: includes/init.php:510
+#: includes/init.php:563
+#: includes/init.php:583
 #: dist/components.js:28
 #: dist/components.js:29
 msgid "Semi-Bold 600"
 msgstr ""
 
-#: includes/init.php:445
-#: includes/init.php:463
-#: includes/init.php:490
-#: includes/init.php:544
-#: includes/init.php:563
+#: includes/init.php:466
+#: includes/init.php:484
+#: includes/init.php:511
+#: includes/init.php:565
+#: includes/init.php:584
 #: dist/components.js:28
 #: dist/components.js:29
 msgid "Bold 700"
 msgstr ""
 
-#: includes/init.php:447
-#: includes/init.php:464
-#: includes/init.php:491
-#: includes/init.php:546
-#: includes/init.php:564
+#: includes/init.php:468
+#: includes/init.php:485
+#: includes/init.php:512
+#: includes/init.php:567
+#: includes/init.php:585
 #: dist/components.js:28
 #: dist/components.js:29
 msgid "Extra-Bold 800"
 msgstr ""
 
-#: includes/init.php:449
-#: includes/init.php:465
-#: includes/init.php:492
-#: includes/init.php:548
-#: includes/init.php:565
+#: includes/init.php:470
+#: includes/init.php:486
+#: includes/init.php:513
+#: includes/init.php:569
+#: includes/init.php:586
 #: dist/components.js:28
 #: dist/components.js:29
 msgid "Ultra-Bold 900"
 msgstr ""
 
-#: includes/init.php:841
-#: includes/init.php:868
-#: includes/settings/class-kadence-blocks-settings.php:521
-#: includes/settings/class-kadence-blocks-settings.php:530
+#: includes/init.php:862
+#: includes/init.php:889
+#: includes/settings/class-kadence-blocks-settings.php:620
+#: includes/settings/class-kadence-blocks-settings.php:629
 #: includes/settings/class-kadence-blocks-site-health.php:150
 #: dist/admin-kadence-home.js:2
 msgid "Kadence Blocks"
@@ -739,100 +776,113 @@ msgstr ""
 msgid "Photo by %s"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:165
+#: includes/settings/class-kadence-blocks-settings.php:166
 msgid "I couldn't understand how to make it work."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:170
+#: includes/settings/class-kadence-blocks-settings.php:171
 msgid "I found a better plugin."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:175
+#: includes/settings/class-kadence-blocks-settings.php:176
 msgid "I need a specific feature kadence blocks doesn't provide."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:180
+#: includes/settings/class-kadence-blocks-settings.php:181
 msgid "Something is broken."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:185
+#: includes/settings/class-kadence-blocks-settings.php:186
 msgid "Other"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:209
+#: includes/settings/class-kadence-blocks-settings.php:210
 msgid "Help us make Kadence Blocks even better."
 msgstr ""
 
 #. translators: placeholder: username.
-#: includes/settings/class-kadence-blocks-settings.php:212
+#: includes/settings/class-kadence-blocks-settings.php:213
 msgid "Hi, %1$s! At KadenceWP, we're always looking for more ways to make our products better for you. If you opt into sharing some data on your usage of Kadence Blocks, it helps us identify key areas where we can improve. In return, we'll also email helpful articles and guides to get more out of Kadence, WordPress, and more. If you skip this, that's okay. Kadence Blocks will work just fine. We hope you love building with Kadence."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:343
+#: includes/settings/class-kadence-blocks-settings.php:347
+#: includes/settings/class-kadence-blocks-settings.php:442
 msgid "Pale pink"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:348
+#: includes/settings/class-kadence-blocks-settings.php:352
+#: includes/settings/class-kadence-blocks-settings.php:447
 msgid "Vivid red"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:353
+#: includes/settings/class-kadence-blocks-settings.php:357
+#: includes/settings/class-kadence-blocks-settings.php:452
 msgid "Luminous vivid orange"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:358
+#: includes/settings/class-kadence-blocks-settings.php:362
+#: includes/settings/class-kadence-blocks-settings.php:457
 msgid "Luminous vivid amber"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:363
+#: includes/settings/class-kadence-blocks-settings.php:367
+#: includes/settings/class-kadence-blocks-settings.php:462
 msgid "Light green cyan"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:368
+#: includes/settings/class-kadence-blocks-settings.php:372
+#: includes/settings/class-kadence-blocks-settings.php:467
 msgid "Vivid green cyan"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:373
+#: includes/settings/class-kadence-blocks-settings.php:377
+#: includes/settings/class-kadence-blocks-settings.php:472
 msgid "Pale cyan blue"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:378
+#: includes/settings/class-kadence-blocks-settings.php:382
+#: includes/settings/class-kadence-blocks-settings.php:477
 msgid "Vivid cyan blue"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:383
+#: includes/settings/class-kadence-blocks-settings.php:387
+#: includes/settings/class-kadence-blocks-settings.php:482
 msgid "Very light gray"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:388
+#: includes/settings/class-kadence-blocks-settings.php:392
+#: includes/settings/class-kadence-blocks-settings.php:487
 msgid "Cyan bluish gray"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:393
+#: includes/settings/class-kadence-blocks-settings.php:397
+#: includes/settings/class-kadence-blocks-settings.php:492
 msgid "Very dark gray"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:520
-#: includes/settings/class-kadence-blocks-settings.php:529
-#: includes/settings/class-kadence-blocks-settings.php:531
+#: includes/settings/class-kadence-blocks-settings.php:619
+#: includes/settings/class-kadence-blocks-settings.php:628
+#: includes/settings/class-kadence-blocks-settings.php:630
 msgid "Kadence Blocks -  Gutenberg Page Builder Blocks"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:520
-#: includes/settings/class-kadence-blocks-settings.php:529
+#: includes/settings/class-kadence-blocks-settings.php:619
+#: includes/settings/class-kadence-blocks-settings.php:628
 #: dist/blocks-rowlayout.js:14
 msgid "Kadence"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:540
+#: includes/settings/class-kadence-blocks-settings.php:639
 #: dist/plugin-kadence-control.js:5
 msgid "Close"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:541
+#: includes/settings/class-kadence-blocks-settings.php:640
 #: dist/admin-kadence-home.js:1
 #: dist/admin-kadence-home.js:2
+#: dist/blocks-advanced-form.js:2
 #: dist/blocks-advanced-form.js:10
+#: dist/blocks-form.js:1
 #: dist/blocks-form.js:2
 #: dist/blocks-rowlayout.js:8
 #: dist/blocks-rowlayout.js:9
@@ -841,147 +891,161 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:542
+#: includes/settings/class-kadence-blocks-settings.php:641
 msgid "Updating"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:543
+#: includes/settings/class-kadence-blocks-settings.php:642
 msgid "Updated"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:544
+#: includes/settings/class-kadence-blocks-settings.php:643
 msgid "Config"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:545
+#: includes/settings/class-kadence-blocks-settings.php:644
 msgid "Default Settings"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:551
-#: includes/settings/class-kadence-blocks-settings.php:557
-#: includes/settings/class-kadence-blocks-settings.php:563
-#: includes/settings/class-kadence-blocks-settings.php:569
-#: includes/settings/class-kadence-blocks-settings.php:575
-#: includes/settings/class-kadence-blocks-settings.php:581
-#: includes/settings/class-kadence-blocks-settings.php:587
-#: includes/settings/class-kadence-blocks-settings.php:593
-#: includes/settings/class-kadence-blocks-settings.php:599
-#: includes/settings/class-kadence-blocks-settings.php:605
+#: includes/settings/class-kadence-blocks-settings.php:650
+#: includes/settings/class-kadence-blocks-settings.php:656
+#: includes/settings/class-kadence-blocks-settings.php:662
+#: includes/settings/class-kadence-blocks-settings.php:668
+#: includes/settings/class-kadence-blocks-settings.php:674
+#: includes/settings/class-kadence-blocks-settings.php:680
+#: includes/settings/class-kadence-blocks-settings.php:686
+#: includes/settings/class-kadence-blocks-settings.php:692
+#: includes/settings/class-kadence-blocks-settings.php:698
+#: includes/settings/class-kadence-blocks-settings.php:704
 msgid "Setting defaults has moved into Gutenberg, click on the top right corner settings and go to Kadence Blocks Controls"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:704
+#: includes/settings/class-kadence-blocks-settings.php:803
 msgid "Config Kadence Block Defaults"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:715
+#: includes/settings/class-kadence-blocks-settings.php:814
 msgid "Config Kadence Block visibility settings"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:726
+#: includes/settings/class-kadence-blocks-settings.php:825
 msgid "Config Kadence Block Settings"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:737
+#: includes/settings/class-kadence-blocks-settings.php:836
 msgid "Config Kadence Block Prophecy AI"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:748
+#: includes/settings/class-kadence-blocks-settings.php:847
 msgid "Config Kadence Blocks Color Palette"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:759
+#: includes/settings/class-kadence-blocks-settings.php:858
 msgid "Config Kadence Blocks Global Settings"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:770
+#: includes/settings/class-kadence-blocks-settings.php:869
 msgid "Google reCaptcha Site Key"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:781
+#: includes/settings/class-kadence-blocks-settings.php:880
 msgid "Google reCaptcha Secret Key"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:792
+#: includes/settings/class-kadence-blocks-settings.php:891
 msgid "Google reCaptcha Language"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:803
+#: includes/settings/class-kadence-blocks-settings.php:902
 msgid "Cloudflare Turnstile Site Key"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:814
+#: includes/settings/class-kadence-blocks-settings.php:913
 msgid "Cloudflare Turnstile Secret Key"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:825
+#: includes/settings/class-kadence-blocks-settings.php:924
 msgid "hCaptcha Turnstile Site Key"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:836
+#: includes/settings/class-kadence-blocks-settings.php:935
 #: dist/blocks-advanced-form.js:10
 msgid "hCaptcha Secret Key"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:869
+#: includes/settings/class-kadence-blocks-settings.php:946
+msgid "MailerLite API Key"
+msgstr ""
+
+#: includes/settings/class-kadence-blocks-settings.php:957
+msgid "Google Maps API Key"
+msgstr ""
+
+#: includes/settings/class-kadence-blocks-settings.php:968
 msgid "Config Kadence Blocks Cloud"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:880
+#: includes/settings/class-kadence-blocks-settings.php:979
 msgid "Subscribe to Wireframe library"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:929
+#: includes/settings/class-kadence-blocks-settings.php:990
+#: includes/settings/class-kadence-blocks-settings.php:1001
+#: includes/settings/class-kadence-blocks-settings.php:1012
+msgid "ConvertKit API Key"
+msgstr ""
+
+#: includes/settings/class-kadence-blocks-settings.php:1028
 msgid "Small Template"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:930
+#: includes/settings/class-kadence-blocks-settings.php:1029
 msgid "Large Template"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:932
+#: includes/settings/class-kadence-blocks-settings.php:1031
 msgid "Post default"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:933
+#: includes/settings/class-kadence-blocks-settings.php:1032
 msgid "Page Default"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:935
+#: includes/settings/class-kadence-blocks-settings.php:1034
 msgid "Enable Editor Width"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:940
+#: includes/settings/class-kadence-blocks-settings.php:1039
 msgid "Load Google Fonts Locally"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:949
+#: includes/settings/class-kadence-blocks-settings.php:1048
 msgid "Allows for changes to the editor width on per page/post basis with preset defaults."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:951
-#: includes/settings/class-kadence-blocks-settings.php:964
-#: includes/settings/class-kadence-blocks-settings.php:1022
+#: includes/settings/class-kadence-blocks-settings.php:1050
+#: includes/settings/class-kadence-blocks-settings.php:1063
+#: includes/settings/class-kadence-blocks-settings.php:1121
 msgid "False"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:952
-#: includes/settings/class-kadence-blocks-settings.php:965
-#: includes/settings/class-kadence-blocks-settings.php:1023
+#: includes/settings/class-kadence-blocks-settings.php:1051
+#: includes/settings/class-kadence-blocks-settings.php:1064
+#: includes/settings/class-kadence-blocks-settings.php:1122
 msgid "True"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:962
+#: includes/settings/class-kadence-blocks-settings.php:1061
 msgid "Experimental editor CSS for less excess margins in Gutenberg in an attempt to get a closer WYSIWYG editing experience."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:976
-#: includes/settings/class-kadence-blocks-settings.php:986
+#: includes/settings/class-kadence-blocks-settings.php:1075
+#: includes/settings/class-kadence-blocks-settings.php:1085
 msgid "px"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:996
-#: includes/settings/class-kadence-blocks-settings.php:1009
+#: includes/settings/class-kadence-blocks-settings.php:1095
+#: includes/settings/class-kadence-blocks-settings.php:1108
 #: dist/blocks-column.js:1
 #: dist/blocks-rowlayout.js:14
 #: dist/components.js:27
@@ -990,8 +1054,8 @@ msgstr ""
 msgid "Small"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:997
-#: includes/settings/class-kadence-blocks-settings.php:1010
+#: includes/settings/class-kadence-blocks-settings.php:1096
+#: includes/settings/class-kadence-blocks-settings.php:1109
 #: dist/blocks-column.js:1
 #: dist/blocks-posts.js:9
 #: dist/blocks-rowlayout.js:14
@@ -1001,183 +1065,183 @@ msgstr ""
 msgid "Large"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:998
-#: includes/settings/class-kadence-blocks-settings.php:1011
+#: includes/settings/class-kadence-blocks-settings.php:1097
+#: includes/settings/class-kadence-blocks-settings.php:1110
 msgid "Fullwidth"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1129
-#: includes/settings/class-kadence-blocks-settings.php:1130
+#: includes/settings/class-kadence-blocks-settings.php:1228
+#: includes/settings/class-kadence-blocks-settings.php:1229
 msgid "Activate"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1130
-#: includes/settings/class-kadence-blocks-settings.php:1132
+#: includes/settings/class-kadence-blocks-settings.php:1229
+#: includes/settings/class-kadence-blocks-settings.php:1231
 msgid "Deactivate"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1130
+#: includes/settings/class-kadence-blocks-settings.php:1229
 msgid "Activating..."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1130
+#: includes/settings/class-kadence-blocks-settings.php:1229
 msgid "Activated"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1130
+#: includes/settings/class-kadence-blocks-settings.php:1229
 msgid "Deactivating..."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1130
+#: includes/settings/class-kadence-blocks-settings.php:1229
 msgid "Deactivated"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1136
+#: includes/settings/class-kadence-blocks-settings.php:1235
 msgid "Manage Lottie Animations"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1145
+#: includes/settings/class-kadence-blocks-settings.php:1244
 msgid "Editor Max Widths"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1145
+#: includes/settings/class-kadence-blocks-settings.php:1244
 msgid "Match the editor width to your sites width."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1147
+#: includes/settings/class-kadence-blocks-settings.php:1246
 msgid "Note: The current active themes \"content_width\" is set to:"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1154
+#: includes/settings/class-kadence-blocks-settings.php:1253
 msgid "Save Changes"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1161
+#: includes/settings/class-kadence-blocks-settings.php:1260
 #: dist/components.js:28
 msgid "Google Fonts"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1179
+#: includes/settings/class-kadence-blocks-settings.php:1278
 msgid "Web Creators Community"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1180
+#: includes/settings/class-kadence-blocks-settings.php:1279
 msgid "Join our community of fellow kadence users creating effective websites! Share your site, ask a question and help others."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1181
+#: includes/settings/class-kadence-blocks-settings.php:1280
 msgid "Join our Facebook Group"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1186
+#: includes/settings/class-kadence-blocks-settings.php:1285
 msgid "Documentation"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1187
+#: includes/settings/class-kadence-blocks-settings.php:1286
 msgid "Need help? We have a knowledge base full of articles to get you started."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1188
+#: includes/settings/class-kadence-blocks-settings.php:1287
 msgid "Browse Docs"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1193
+#: includes/settings/class-kadence-blocks-settings.php:1292
 #: dist/admin-kadence-home.js:2
 #: dist/blocks-rowlayout.js:1
 msgid "Support"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1194
+#: includes/settings/class-kadence-blocks-settings.php:1293
 msgid "Have a question, we are happy to help! Get in touch with our support team."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1195
+#: includes/settings/class-kadence-blocks-settings.php:1294
 msgid "Submit a Ticket"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1215
+#: includes/settings/class-kadence-blocks-settings.php:1314
 #: dist/admin-kadence-home.js:2
 msgid "Kadence Blocks Pro"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1217
+#: includes/settings/class-kadence-blocks-settings.php:1316
 msgid "10 Pro Blocks"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1218
+#: includes/settings/class-kadence-blocks-settings.php:1317
 msgid "Pro Block Addons"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1219
+#: includes/settings/class-kadence-blocks-settings.php:1318
 #: dist/components.js:13
 #: dist/components.js:28
 msgid "Dynamic Content"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1220
+#: includes/settings/class-kadence-blocks-settings.php:1319
 msgid "Custom Icons"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1221
+#: includes/settings/class-kadence-blocks-settings.php:1320
 #: dist/components.js:28
 #: dist/components.js:29
 msgid "Custom Fonts"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1222
+#: includes/settings/class-kadence-blocks-settings.php:1321
 msgid "Premium Design Library"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1224
+#: includes/settings/class-kadence-blocks-settings.php:1323
 msgid "Upgrade Kadence Blocks"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1237
+#: includes/settings/class-kadence-blocks-settings.php:1336
 #: dist/plugin-kadence-control.js:5
 msgid "Row Layout"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1238
+#: includes/settings/class-kadence-blocks-settings.php:1337
 msgid "Create rows with nested blocks either in columns or as a container. Give style to your rows with background, overlay, padding, etc."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1242
+#: includes/settings/class-kadence-blocks-settings.php:1341
 #: dist/blocks-advanced-form.js:14
 #: dist/blocks-rowlayout.js:1
 msgid "Form"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1243
+#: includes/settings/class-kadence-blocks-settings.php:1342
 msgid "Create a contact form or marketing form and style it within the block editor."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1247
+#: includes/settings/class-kadence-blocks-settings.php:1346
 #: dist/plugin-kadence-control.js:5
 msgid "Advanced Gallery"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1248
+#: includes/settings/class-kadence-blocks-settings.php:1347
 msgid "Photo galleries, carousels, and sliders! Enable custom links, captions, and more. Plus, you can select image sizes."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1252
+#: includes/settings/class-kadence-blocks-settings.php:1351
 #: dist/plugin-kadence-control.js:5
 msgid "Advanced Button"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1253
+#: includes/settings/class-kadence-blocks-settings.php:1352
 msgid "Create an advanced button or a row of buttons. Style each one including hover controls plus you can use an icon and display them side by side"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1257
+#: includes/settings/class-kadence-blocks-settings.php:1356
 msgid "Lottie Animations"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1258
+#: includes/settings/class-kadence-blocks-settings.php:1357
 msgid "Add an extra \"wow\" factor to your site with engaging Lottie animations."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1262
+#: includes/settings/class-kadence-blocks-settings.php:1361
 #: dist/blocks-icon.js:1
 #: dist/blocks-infobox.js:1
 #: dist/blocks-single-icon.js:1
@@ -1188,115 +1252,115 @@ msgstr ""
 msgid "Icon"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1263
+#: includes/settings/class-kadence-blocks-settings.php:1362
 msgid "Choose from over 1500+ SVG Icons to add into your page and style the size, colors, background, border, etc."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1267
+#: includes/settings/class-kadence-blocks-settings.php:1366
 #: dist/plugin-kadence-control.js:5
 msgid "Spacer/Divider"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1268
+#: includes/settings/class-kadence-blocks-settings.php:1367
 msgid "Easily create a divider and determine the space around it or just create some space in your content."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1272
+#: includes/settings/class-kadence-blocks-settings.php:1371
 #: dist/plugin-kadence-control.js:5
 msgid "Advanced Text"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1273
+#: includes/settings/class-kadence-blocks-settings.php:1372
 #: dist/blocks-advancedheading.js:1
 msgid "Create a heading or paragraph and define sizes for desktop, tablet and mobile along with font family, colors, etc."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1277
+#: includes/settings/class-kadence-blocks-settings.php:1376
 #: dist/blocks-rowlayout.js:1
 #: dist/plugin-kadence-control.js:5
 msgid "Tabs"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1278
+#: includes/settings/class-kadence-blocks-settings.php:1377
 msgid "Create custom vertical or horizontal tabs with advanced styling controls. Each tab content is an empty canvas able to contain any other blocks."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1282
+#: includes/settings/class-kadence-blocks-settings.php:1381
 #: dist/plugin-kadence-control.js:5
 msgid "Info Box"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1283
+#: includes/settings/class-kadence-blocks-settings.php:1382
 msgid "Create a box containing an icon or image and, optionally, a title, description, and learn more text. Style static and hover separately."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1287
+#: includes/settings/class-kadence-blocks-settings.php:1386
 #: dist/blocks-rowlayout.js:1
 #: dist/plugin-kadence-control.js:5
 msgid "Accordion"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1288
+#: includes/settings/class-kadence-blocks-settings.php:1387
 #: dist/blocks-accordion.js:1
 msgid "Create beautiful accordions! Each pane can contain any other block, customize title styles, content background, and borders."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1292
+#: includes/settings/class-kadence-blocks-settings.php:1391
 #: dist/plugin-kadence-control.js:5
 msgid "Icon List"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1293
+#: includes/settings/class-kadence-blocks-settings.php:1392
 msgid "Add beautiful icons to your lists and make them more engaging. Over 1500 icons to choose from and unlimited styles."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1298
+#: includes/settings/class-kadence-blocks-settings.php:1397
 msgid "Allow your readers to navigate your content easily with a table of contents block. Includes smooth scroll to anchor."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1302
+#: includes/settings/class-kadence-blocks-settings.php:1401
 #: dist/blocks-posts.js:9
 #: dist/plugin-kadence-control.js:5
 msgid "Posts"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1303
+#: includes/settings/class-kadence-blocks-settings.php:1402
 msgid "Display a clean grid of posts anywhere on your site, great for your home page where you want to tease your blog."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1307
+#: includes/settings/class-kadence-blocks-settings.php:1406
 #: dist/plugin-kadence-control.js:5
 msgid "Countdown"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1308
+#: includes/settings/class-kadence-blocks-settings.php:1407
 msgid "Increase your conversions by adding a sense of urgency to your offering. Pro includes evergreen campaigns as well."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1312
+#: includes/settings/class-kadence-blocks-settings.php:1411
 #: dist/blocks-rowlayout.js:1
 #: dist/blocks-rowlayout.js:12
 #: dist/plugin-kadence-control.js:5
 msgid "Testimonials"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1313
+#: includes/settings/class-kadence-blocks-settings.php:1412
 msgid "Create confidence in your brand or product by showing off beautiful unique testimonials, add as a carousel or a grid."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1323
+#: includes/settings/class-kadence-blocks-settings.php:1422
 msgid "Invalid nonce"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1326
+#: includes/settings/class-kadence-blocks-settings.php:1425
 msgid "Missing Content"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1332
+#: includes/settings/class-kadence-blocks-settings.php:1431
 msgid "Nothing to Save"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1450
+#: includes/settings/class-kadence-blocks-settings.php:1549
 #: dist/blocks-form.js:1
 #: dist/blocks-rowlayout.js:14
 msgid "Settings"
@@ -1546,6 +1610,151 @@ msgid "An Organization"
 msgstr ""
 
 #: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "Czech"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "Danish (Denmark)"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "Dutch (Belgium)"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "Dutch (Netherlands)"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "English (Australia)"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "English (Canada)"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "English (India)"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "English (New Zealand)"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "English (UK)"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "English (US)"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "Finnish"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "French (Belgium)"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "French (Canada)"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "French (France)"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "German (Austria)"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "German (Belgium)"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "German (Germany)"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "German (Switzerland)"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "Hungarian"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "Italian (Italy)"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "Portuguese (Brazil)"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "Portuguese (Portugal)"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "Spanish (Argentina)"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "Spanish (Colombia)"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "Spanish (Latin America)"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "Spanish (Mexico)"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "Spanish (Spain)"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "Swedish (Sweden)"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "Turkish"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
 #: dist/admin-kadence-home.js:2
 #: dist/blocks-rowlayout.js:8
 #: dist/blocks-rowlayout.js:9
@@ -1659,6 +1868,13 @@ msgstr ""
 #: dist/admin-kadence-home.js:1
 #: dist/blocks-rowlayout.js:8
 msgid "You've added too much information. Remove some to move forward."
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/admin-kadence-home.js:2
+#: dist/blocks-rowlayout.js:8
+#: dist/blocks-rowlayout.js:9
+msgid "My Images"
 msgstr ""
 
 #: dist/admin-kadence-home.js:1
@@ -2197,6 +2413,16 @@ msgstr ""
 
 #: dist/admin-kadence-home.js:2
 #: dist/blocks-rowlayout.js:9
+msgid "What are the goals of this site?"
+msgstr ""
+
+#: dist/admin-kadence-home.js:2
+#: dist/blocks-rowlayout.js:9
+msgid "Select all that apply, it is ok to select none. This will be used to help determine content to show for your specific site. NOTE: This is in early stages and has minimal effects currently, but is improving."
+msgstr ""
+
+#: dist/admin-kadence-home.js:2
+#: dist/blocks-rowlayout.js:9
 msgid "Update My Design Library"
 msgstr ""
 
@@ -2210,7 +2436,7 @@ msgid "Something Great!"
 msgstr ""
 
 #: dist/admin-kadence-home.js:2
-msgid "Activate Kadence Blocks Pro"
+msgid "Connect Blocks Pro License to Site"
 msgstr ""
 
 #: dist/admin-kadence-home.js:2
@@ -2351,14 +2577,8 @@ msgstr ""
 msgid "Elevate your web development game with Kadence AI. Supercharge your pattern and page library's potential with tailored content - get building pages in no time. Connect to your account to use Kadence AI with Kadence Blocks Pro"
 msgstr ""
 
-#. translators: %s: the current context
 #: dist/admin-kadence-home.js:2
-#: dist/blocks-advancedheading.js:1
-#: dist/blocks-rowlayout.js:4
-#: dist/blocks-rowlayout.js:5
-#: dist/blocks-rowlayout.js:7
-#: dist/blocks-rowlayout.js:9
-msgid "Activate Kadence AI"
+msgid "Get Started with Kadence AI"
 msgstr ""
 
 #: dist/admin-kadence-home.js:2
@@ -3330,13 +3550,47 @@ msgstr ""
 
 #: dist/blocks-advanced-form.js:2
 #: dist/blocks-form.js:1
+msgid "MailerLite Settings"
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
+#: dist/blocks-form.js:1
+msgid "Get API Key"
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
+#: dist/blocks-form.js:1
+#: dist/blocks-form.js:2
+msgid "Get help"
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
+#: dist/blocks-form.js:1
 #: dist/blocks-googlemaps.js:1
 msgid "API Key"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:2
+#: dist/blocks-advanced-form.js:10
+#: dist/blocks-form.js:1
+#: dist/blocks-form.js:2
+msgid "Saving"
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
+#: dist/blocks-form.js:1
+#: dist/blocks-form.js:2
+#: dist/components.js:29
+msgid "Remove"
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
 #: dist/blocks-form.js:1
 msgid "Select a Group"
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
+msgid "No group found."
 msgstr ""
 
 #: dist/blocks-advanced-form.js:2
@@ -3351,7 +3605,17 @@ msgstr ""
 
 #: dist/blocks-advanced-form.js:2
 #: dist/blocks-form.js:1
+msgid "No Fields found."
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
+#: dist/blocks-form.js:1
 msgid "Form Field"
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
+#: dist/blocks-form.js:1
+msgid "FluentCRM Settings"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:2
@@ -3361,12 +3625,31 @@ msgstr ""
 
 #: dist/blocks-advanced-form.js:2
 #: dist/blocks-form.js:1
+msgid "No lists found."
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
+#: dist/blocks-form.js:1
 msgid "Select Tags"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:2
 #: dist/blocks-form.js:1
+msgid "No Tags found."
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
+#: dist/blocks-form.js:1
 msgid "Require Double Opt In?"
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
+#: dist/blocks-form.js:1
+msgid "FluentCRM is not setup/active."
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
+msgid "Brevo (SendInBlue) Settings"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:2
@@ -3378,7 +3661,40 @@ msgid "Select Lists"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:2
+msgid "No list found."
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
+msgid "MailChimp Settings"
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
+msgid "Select Audience"
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
+msgid "No Audience found."
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
 msgid "Select Groups"
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
+msgid "No Groups found."
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
+msgid "ConvertKit Settings"
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
+#: dist/blocks-advanced-form.js:14
+msgid "Select Form"
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
+msgid "No forms found."
 msgstr ""
 
 #: dist/blocks-advanced-form.js:2
@@ -3386,12 +3702,25 @@ msgid "Select Sequence"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:2
+msgid "No Sequences found."
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
+msgid "Search for Tag"
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
+#: dist/blocks-rowlayout.js:9
+#: dist/extension-image-picker.js:1
+msgid "Search"
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
 msgid "ActiveCampaign Settings"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:2
-#: dist/blocks-form.js:2
-msgid "Get help"
+msgid "API URL"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:2
@@ -3403,23 +3732,31 @@ msgid "Select Automation (Optional)"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:2
-msgid "No Groups found."
-msgstr ""
-
-#: dist/blocks-advanced-form.js:2
 msgid "Select Tags (Optional)"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:2
-msgid "No Tags found."
+msgid "Account"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:2
-msgid "No Fields found."
+msgid "Job Title"
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
+msgid "This will set the status of the contact to unconfirmed, you must setup an automation in ActiveCampaign to email the contact and update the status after confirmation."
 msgstr ""
 
 #: dist/blocks-advanced-form.js:2
 msgid "GetResponse Settings"
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
+msgid "Select API Endpoint"
+msgstr ""
+
+#: dist/blocks-advanced-form.js:2
+msgid "This will set the status of the contact to unconfirmed, you must setup an automation in GetResponse to email the contact and update the status after confirmation."
 msgstr ""
 
 #: dist/blocks-advanced-form.js:2
@@ -3706,11 +4043,6 @@ msgstr ""
 
 #: dist/blocks-advanced-form.js:10
 msgid "Turnstile Secret Key"
-msgstr ""
-
-#: dist/blocks-advanced-form.js:10
-#: dist/blocks-form.js:2
-msgid "Saving"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:10
@@ -4410,10 +4742,6 @@ msgid "Select an existing form or create a new one."
 msgstr ""
 
 #: dist/blocks-advanced-form.js:14
-msgid "Select Form"
-msgstr ""
-
-#: dist/blocks-advanced-form.js:14
 msgctxt "block title"
 msgid "Form (Adv)"
 msgstr ""
@@ -5060,6 +5388,10 @@ msgid "Sliders and carousels will cut off shadows because of how items in a caro
 msgstr ""
 
 #: dist/blocks-advancedgallery.js:1
+msgid "Hover Box Shadow"
+msgstr ""
+
+#: dist/blocks-advancedgallery.js:1
 #: dist/blocks-rowlayout.js:1
 msgid "Gallery"
 msgstr ""
@@ -5135,6 +5467,15 @@ msgstr ""
 
 #: dist/blocks-advancedheading.js:1
 msgid "Backspace Speed (ms)"
+msgstr ""
+
+#. translators: %s: the current context
+#: dist/blocks-advancedheading.js:1
+#: dist/blocks-rowlayout.js:4
+#: dist/blocks-rowlayout.js:5
+#: dist/blocks-rowlayout.js:7
+#: dist/blocks-rowlayout.js:9
+msgid "Activate Kadence AI"
 msgstr ""
 
 #: dist/blocks-advancedheading.js:1
@@ -6326,11 +6667,6 @@ msgstr ""
 
 #: dist/blocks-form.js:2
 msgid "Secret Key"
-msgstr ""
-
-#: dist/blocks-form.js:2
-#: dist/components.js:29
-msgid "Remove"
 msgstr ""
 
 #: dist/blocks-form.js:2
@@ -7626,6 +7962,11 @@ msgid "Offset Starting Post"
 msgstr ""
 
 #: dist/blocks-posts.js:9
+#: dist/components.js:29
+msgid "Select Taxonomy"
+msgstr ""
+
+#: dist/blocks-posts.js:9
 msgid "Whether to include or exclude items from selected terms."
 msgstr ""
 
@@ -8180,11 +8521,6 @@ msgstr ""
 
 #: dist/blocks-rowlayout.js:9
 msgid "Pages"
-msgstr ""
-
-#: dist/blocks-rowlayout.js:9
-#: dist/extension-image-picker.js:1
-msgid "Search"
 msgstr ""
 
 #. translators: %s is the credit amount
@@ -9418,7 +9754,16 @@ msgid "Create dynamic sites by populating images from various sources."
 msgstr ""
 
 #: dist/components.js:13
+#: dist/components.js:28
+msgid "Create dynamic sites by populating content from various sources."
+msgstr ""
+
+#: dist/components.js:13
 msgid "Dynamic Background Image"
+msgstr ""
+
+#: dist/components.js:13
+msgid "Create dynamic sites by populating background images from various sources."
 msgstr ""
 
 #: dist/components.js:13
@@ -9804,10 +10149,6 @@ msgid "No icons found"
 msgstr ""
 
 #: dist/components.js:29
-msgid "Select Taxonomy"
-msgstr ""
-
-#: dist/components.js:29
 msgid "View Parent Block Settings"
 msgstr ""
 
@@ -9855,8 +10196,15 @@ msgstr ""
 msgid "Settings saved"
 msgstr ""
 
-#. translators: %s: color hex code e.g: "#f00".
 #: dist/plugin-kadence-control.js:1
+msgid "Colors saved!"
+msgstr ""
+
+#: dist/plugin-kadence-control.js:1
+msgid "Failed to save colors"
+msgstr ""
+
+#. translators: %s: color hex code e.g: "#f00".
 #: dist/plugin-kadence-control.js:5
 msgid "Block defaults saved!"
 msgstr ""

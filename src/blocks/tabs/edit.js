@@ -1693,14 +1693,14 @@ function KadenceTabs(props) {
 																		min={
 																			titlePaddingUnit === 'em' ||
 																			titlePaddingUnit === 'rem'
-																				? -2
-																				: -200
+																				? 0
+																				: 0
 																		}
 																		max={
 																			titlePaddingUnit === 'em' ||
 																			titlePaddingUnit === 'rem'
 																				? 12
-																				: 200
+																				: 999
 																		}
 																		step={
 																			titlePaddingUnit === 'em' ||
@@ -1732,13 +1732,13 @@ function KadenceTabs(props) {
 																			titleMarginUnit === 'em' ||
 																			titleMarginUnit === 'rem'
 																				? -2
-																				: -200
+																				: -999
 																		}
 																		max={
 																			titleMarginUnit === 'em' ||
 																			titleMarginUnit === 'rem'
 																				? 12
-																				: 200
+																				: 999
 																		}
 																		step={
 																			titleMarginUnit === 'em' ||
@@ -1783,13 +1783,13 @@ function KadenceTabs(props) {
 																			titlePaddingUnit === 'em' ||
 																			titlePaddingUnit === 'rem'
 																				? -2
-																				: -200
+																				: -999
 																		}
 																		max={
 																			titlePaddingUnit === 'em' ||
 																			titlePaddingUnit === 'rem'
 																				? 12
-																				: 200
+																				: 999
 																		}
 																		step={
 																			titlePaddingUnit === 'em' ||
@@ -1821,13 +1821,13 @@ function KadenceTabs(props) {
 																			titleMarginUnit === 'em' ||
 																			titleMarginUnit === 'rem'
 																				? -2
-																				: -200
+																				: -999
 																		}
 																		max={
 																			titleMarginUnit === 'em' ||
 																			titleMarginUnit === 'rem'
 																				? 12
-																				: 200
+																				: 999
 																		}
 																		step={
 																			titleMarginUnit === 'em' ||
@@ -1864,10 +1864,8 @@ function KadenceTabs(props) {
 												onChangeTablet={(value) => setAttributes({ tabletTitlePadding: value })}
 												mobileValue={mobileTitlePadding}
 												onChangeMobile={(value) => setAttributes({ mobileTitlePadding: value })}
-												min={
-													titlePaddingUnit === 'em' || titlePaddingUnit === 'rem' ? -2 : -200
-												}
-												max={titlePaddingUnit === 'em' || titlePaddingUnit === 'rem' ? 12 : 200}
+												min={titlePaddingUnit === 'em' || titlePaddingUnit === 'rem' ? 0 : 0}
+												max={titlePaddingUnit === 'em' || titlePaddingUnit === 'rem' ? 12 : 999}
 												step={titlePaddingUnit === 'em' || titlePaddingUnit === 'rem' ? 0.1 : 1}
 												unit={titlePaddingUnit}
 												units={['px', 'em', 'rem']}
@@ -1881,8 +1879,8 @@ function KadenceTabs(props) {
 												onChangeTablet={(value) => setAttributes({ tabletTitleMargin: value })}
 												mobileValue={mobileTitleMargin}
 												onChangeMobile={(value) => setAttributes({ mobileTitleMargin: value })}
-												min={titleMarginUnit === 'em' || titleMarginUnit === 'rem' ? -2 : -200}
-												max={titleMarginUnit === 'em' || titleMarginUnit === 'rem' ? 12 : 200}
+												min={titleMarginUnit === 'em' || titleMarginUnit === 'rem' ? -2 : -999}
+												max={titleMarginUnit === 'em' || titleMarginUnit === 'rem' ? 12 : 999}
 												step={titleMarginUnit === 'em' || titleMarginUnit === 'rem' ? 0.1 : 1}
 												unit={titleMarginUnit}
 												units={['px', 'em', 'rem']}
@@ -2184,7 +2182,7 @@ function KadenceTabs(props) {
 									mobileValue={mobileInnerPadding}
 									onChangeMobile={(value) => setAttributes({ mobileInnerPadding: value })}
 									min={0}
-									max={innerPaddingType === 'em' || innerPaddingType === 'rem' ? 25 : 400}
+									max={innerPaddingType === 'em' || innerPaddingType === 'rem' ? 25 : 999}
 									step={innerPaddingType === 'em' || innerPaddingType === 'rem' ? 0.1 : 1}
 									unit={innerPaddingType}
 									units={['px', 'em', 'rem']}

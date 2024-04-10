@@ -1484,7 +1484,6 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		if ( ! empty( $attributes['kbVersion'] ) && $attributes['kbVersion'] > 1 ) {
 			$html_tag = $this->get_html_tag( $attributes, 'htmlTag', 'div', $this->allowed_html_tags );
-
 			$outer_classes = array( 'kb-row-layout-wrap', 'kb-row-layout-id' . $unique_id );
 			$outer_classes[] = ! empty( $attributes['align'] ) ? 'align' . $attributes['align'] : 'alignnone';
 			if ( isset( $attributes['vsdesk'] ) && $attributes['vsdesk'] ) {

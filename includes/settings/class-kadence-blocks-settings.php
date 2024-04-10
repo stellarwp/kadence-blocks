@@ -943,7 +943,7 @@ class Kadence_Blocks_Settings {
 			'kadence_blocks_mailerlite_api',
 			array(
 				'type'              => 'string',
-				'description'       => __( 'MailerLite API Key', 'kadence-blocks-pro' ),
+				'description'       => __( 'MailerLite API Key', 'kadence-blocks' ),
 				'sanitize_callback' => 'sanitize_text_field',
 				'show_in_rest'      => true,
 				'default'           => '',
@@ -954,7 +954,7 @@ class Kadence_Blocks_Settings {
 			'kadence_blocks_google_maps_api',
 			array(
 				'type'              => 'string',
-				'description'       => __( 'Google Maps API Key', 'kadence-blocks-pro' ),
+				'description'       => __( 'Google Maps API Key', 'kadence-blocks' ),
 				'sanitize_callback' => 'sanitize_text_field',
 				'show_in_rest'      => true,
 				'default'           => '',
@@ -987,7 +987,7 @@ class Kadence_Blocks_Settings {
 			'kadence_blocks_convertkit_api',
 			array(
 				'type'              => 'string',
-				'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
+				'description'       => __( 'ConvertKit API Key', 'kadence-blocks' ),
 				'sanitize_callback' => 'sanitize_text_field',
 				'show_in_rest'      => true,
 				'default'           => '',
@@ -998,7 +998,7 @@ class Kadence_Blocks_Settings {
 			'kadence_blocks_activecampaign_api_key',
 			array(
 				'type'              => 'string',
-				'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
+				'description'       => __( 'ConvertKit API Key', 'kadence-blocks' ),
 				'sanitize_callback' => 'sanitize_text_field',
 				'show_in_rest'      => true,
 				'default'           => '',
@@ -1009,7 +1009,7 @@ class Kadence_Blocks_Settings {
 			'kadence_blocks_activecampaign_api_base',
 			array(
 				'type'              => 'string',
-				'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
+				'description'       => __( 'ConvertKit API Key', 'kadence-blocks' ),
 				'sanitize_callback' => 'sanitize_text_field',
 				'show_in_rest'      => true,
 				'default'           => '',

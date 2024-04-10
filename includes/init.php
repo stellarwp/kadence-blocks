@@ -240,6 +240,9 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 	if ( ! empty( $pro_data['key'] ) ) {
 		$is_authorized = is_authorized( $pro_data['key'], 'kadence-blocks', ( ! empty( $token ) ? $token : '' ), get_license_domain() );
 	}
+	if ( empty( $pro_data['domain'] ) ) {
+		$pro_data['domain'] = get_license_domain();
+	}
 	$font_sizes = apply_filters( 'kadence_blocks_variable_font_sizes', $font_sizes );
 	$subscribed = class_exists( 'Kadence_Blocks_Pro' ) ? true : get_option( 'kadence_blocks_wire_subscribe' );
 	$gfonts_path      = KADENCE_BLOCKS_PATH . 'includes/gfonts-array.php';
@@ -340,13 +343,14 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'icons' => file_exists( $icons_path ) ? include $icons_path : array(),
 		)
 	);
-	if ( apply_filters( 'kadence_blocks_preload_design_library', true ) ) {
+	$fast_load_patterns = class_exists( 'GFForms' ) ? false : true;
+	if ( apply_filters( 'kadence_blocks_preload_design_library', $fast_load_patterns ) ) {
 		$design_library_controller_upload = new Kadence_Blocks_Prebuilt_Library_REST_Controller();
 		wp_localize_script(
 			'kadence-blocks-js',
 			'kadence_blocks_params_library',
 			array(
-				'library_sections' => $design_library_controller_upload->get_local_library_data(),
+				'library_sections' => apply_filters( 'kadence_blocks_preload_design_library_data', $design_library_controller_upload->get_local_library_data() ),
 			)
 		);
 		wp_localize_script(
@@ -1152,6 +1156,17 @@ function kadence_blocks_skip_lazy_load( $value, $image, $context ) {
 }
 add_filter( 'wp_img_tag_add_loading_attr', 'kadence_blocks_skip_lazy_load', 10, 3 );
 
+
+/**
+ * Filter to remove block rendering when events builds their custom excerpts.
+ *
+ * @param bool   $enabled Whether build css or not.
+ * @param string $name The block name.
+ * @param string $unique_id The block unique id.
+ */
+function kadence_blocks_events_custom_excerpt_stop_style_output( $enabled, $name, $unique_id ) {
+	return false;
+}
 /**
  * Filter to remove block rendering when events builds their custom excerpts.
  * 
@@ -1160,12 +1175,26 @@ add_filter( 'wp_img_tag_add_loading_attr', 'kadence_blocks_skip_lazy_load', 10, 
  */
 function kadence_blocks_events_custom_excerpt_fix( $remove_blocks, $post ) {
 	if ( $remove_blocks && ! is_singular() ) {
-		add_filter( 'kadence_blocks_render_inline_css', '__return_false' );
+		add_filter( 'kadence_blocks_render_inline_css', 'kadence_blocks_events_custom_excerpt_stop_style_output', 10, 3 );
 	}
 	return $remove_blocks;
 }
+
 add_filter( 'tribe_events_excerpt_blocks_removal', 'kadence_blocks_events_custom_excerpt_fix', 99, 2 );
 
+/**
+ * Remove Filter to remove block rendering when events builds their custom excerpts.
+ * 
+ * @param bool $remove_blocks Whether to remove blocks or not.
+ * @param WP_Post $post The post object.
+ */
+function kadence_blocks_events_custom_excerpt_remove_fix( $html, $post ) {
+	if ( ! is_singular() ) {
+		remove_filter( 'kadence_blocks_render_inline_css', 'kadence_blocks_events_custom_excerpt_stop_style_output', 10, 3 );
+	}
+	return $html;
+}
+add_filter( 'tribe_events_get_the_excerpt', 'kadence_blocks_events_custom_excerpt_remove_fix', 10, 2 );
 /**
  * The Kadence Blocks Application Container.
  *

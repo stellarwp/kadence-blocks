@@ -470,7 +470,7 @@ function KadenceAccordionComponent(props) {
 	];
 	const previewPaddingType = undefined !== contentPaddingType ? contentPaddingType : 'px';
 	const paddingMin = previewPaddingType === 'em' || previewPaddingType === 'rem' ? 0 : 0;
-	const paddingMax = previewPaddingType === 'em' || previewPaddingType === 'rem' ? 12 : 200;
+	const paddingMax = previewPaddingType === 'em' || previewPaddingType === 'rem' ? 12 : 999;
 	const paddingStep = previewPaddingType === 'em' || previewPaddingType === 'rem' ? 0.1 : 1;
 	const previewContentPaddingTop = getPreviewSize(
 		getPreviewDevice,
@@ -501,7 +501,7 @@ function KadenceAccordionComponent(props) {
 			? titleStyles[0].paddingType
 			: 'px';
 	const titlePaddingMin = previewTitlePaddingType === 'em' || previewTitlePaddingType === 'rem' ? 0 : 0;
-	const titlePaddingMax = previewTitlePaddingType === 'em' || previewTitlePaddingType === 'rem' ? 12 : 200;
+	const titlePaddingMax = previewTitlePaddingType === 'em' || previewTitlePaddingType === 'rem' ? 12 : 999;
 	const titlePaddingStep = previewTitlePaddingType === 'em' || previewTitlePaddingType === 'rem' ? 0.1 : 1;
 	const previewTitlePaddingTop = getPreviewSize(
 		getPreviewDevice,
