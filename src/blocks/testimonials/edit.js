@@ -2622,13 +2622,9 @@ function KadenceTestimonials(props) {
 													onChangeMobile={(value) =>
 														setAttributes({ mobileIconPadding: value })
 													}
-													min={
-														iconPaddingUnit === 'em' || iconPaddingUnit === 'rem'
-															? -2
-															: -200
-													}
+													min={iconPaddingUnit === 'em' || iconPaddingUnit === 'rem' ? 0 : 0}
 													max={
-														iconPaddingUnit === 'em' || iconPaddingUnit === 'rem' ? 12 : 200
+														iconPaddingUnit === 'em' || iconPaddingUnit === 'rem' ? 12 : 999
 													}
 													step={
 														iconPaddingUnit === 'em' || iconPaddingUnit === 'rem' ? 0.1 : 1
@@ -2650,9 +2646,9 @@ function KadenceTestimonials(props) {
 														setAttributes({ mobileIconMargin: value })
 													}
 													min={
-														iconMarginUnit === 'em' || iconMarginUnit === 'rem' ? -2 : -200
+														iconMarginUnit === 'em' || iconMarginUnit === 'rem' ? -2 : -999
 													}
-													max={iconMarginUnit === 'em' || iconMarginUnit === 'rem' ? 12 : 200}
+													max={iconMarginUnit === 'em' || iconMarginUnit === 'rem' ? 12 : 999}
 													step={iconMarginUnit === 'em' || iconMarginUnit === 'rem' ? 0.1 : 1}
 													unit={iconMarginUnit}
 													units={['px', 'em', 'rem']}
@@ -2734,14 +2730,12 @@ function KadenceTestimonials(props) {
 														setAttributes({ mobileTitlePadding: value })
 													}
 													min={
-														titlePaddingUnit === 'em' || titlePaddingUnit === 'rem'
-															? -2
-															: -200
+														titlePaddingUnit === 'em' || titlePaddingUnit === 'rem' ? 0 : 0
 													}
 													max={
 														titlePaddingUnit === 'em' || titlePaddingUnit === 'rem'
 															? 12
-															: 200
+															: 999
 													}
 													step={
 														titlePaddingUnit === 'em' || titlePaddingUnit === 'rem'
@@ -2767,10 +2761,10 @@ function KadenceTestimonials(props) {
 													min={
 														titleMarginUnit === 'em' || titleMarginUnit === 'rem'
 															? -2
-															: -200
+															: -999
 													}
 													max={
-														titleMarginUnit === 'em' || titleMarginUnit === 'rem' ? 12 : 200
+														titleMarginUnit === 'em' || titleMarginUnit === 'rem' ? 12 : 999
 													}
 													step={
 														titleMarginUnit === 'em' || titleMarginUnit === 'rem' ? 0.1 : 1
@@ -2888,13 +2882,13 @@ function KadenceTestimonials(props) {
 													}
 													min={
 														ratingPaddingUnit === 'em' || ratingPaddingUnit === 'rem'
-															? -2
-															: -200
+															? 0
+															: 0
 													}
 													max={
 														ratingPaddingUnit === 'em' || ratingPaddingUnit === 'rem'
 															? 12
-															: 200
+															: 999
 													}
 													step={
 														ratingPaddingUnit === 'em' || ratingPaddingUnit === 'rem'
@@ -2920,12 +2914,12 @@ function KadenceTestimonials(props) {
 													min={
 														ratingMarginUnit === 'em' || ratingMarginUnit === 'rem'
 															? -2
-															: -200
+															: -999
 													}
 													max={
 														ratingMarginUnit === 'em' || ratingMarginUnit === 'rem'
 															? 12
-															: 200
+															: 999
 													}
 													step={
 														ratingMarginUnit === 'em' || ratingMarginUnit === 'rem'
@@ -3166,14 +3160,12 @@ function KadenceTestimonials(props) {
 														setAttributes({ mobileMediaPadding: value })
 													}
 													min={
-														mediaPaddingUnit === 'em' || mediaPaddingUnit === 'rem'
-															? -2
-															: -200
+														mediaPaddingUnit === 'em' || mediaPaddingUnit === 'rem' ? 0 : 0
 													}
 													max={
 														mediaPaddingUnit === 'em' || mediaPaddingUnit === 'rem'
 															? 12
-															: 200
+															: 999
 													}
 													step={
 														mediaPaddingUnit === 'em' || mediaPaddingUnit === 'rem'
@@ -3199,10 +3191,10 @@ function KadenceTestimonials(props) {
 													min={
 														mediaMarginUnit === 'em' || mediaMarginUnit === 'rem'
 															? -2
-															: -200
+															: -999
 													}
 													max={
-														mediaMarginUnit === 'em' || mediaMarginUnit === 'rem' ? 12 : 200
+														mediaMarginUnit === 'em' || mediaMarginUnit === 'rem' ? 12 : 999
 													}
 													step={
 														mediaMarginUnit === 'em' || mediaMarginUnit === 'rem' ? 0.1 : 1
@@ -3418,7 +3410,7 @@ function KadenceTestimonials(props) {
 										onChangeTablet={(value) => setAttributes({ tabletContainerPadding: value })}
 										onChangeMobile={(value) => setAttributes({ mobileContainerPadding: value })}
 										min={0}
-										max={containerPaddingType === 'em' || containerPaddingType === 'rem' ? 12 : 200}
+										max={containerPaddingType === 'em' || containerPaddingType === 'rem' ? 12 : 999}
 										step={containerPaddingType === 'em' || containerPaddingType === 'rem' ? 0.1 : 1}
 										unit={containerPaddingType ? containerPaddingType : 'px'}
 										units={['px', 'em', 'rem']}
@@ -3547,10 +3539,8 @@ function KadenceTestimonials(props) {
 											onChangeTablet={(value) => setAttributes({ wrapperTabletPadding: value })}
 											mobileValue={wrapperMobilePadding}
 											onChangeMobile={(value) => setAttributes({ wrapperMobilePadding: value })}
-											min={
-												wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? -25 : -400
-											}
-											max={wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? 25 : 400}
+											min={0}
+											max={wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? 25 : 999}
 											step={wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? 0.1 : 1}
 											unit={wrapperPaddingType}
 											units={['px', 'em', 'rem']}
@@ -3564,8 +3554,8 @@ function KadenceTestimonials(props) {
 											onChangeTablet={(value) => setAttributes({ tabletWrapperMargin: value })}
 											mobileValue={mobileWrapperMargin}
 											onChangeMobile={(value) => setAttributes({ mobileWrapperMargin: value })}
-											min={wrapperMarginUnit === 'em' || wrapperMarginUnit === 'rem' ? -25 : -400}
-											max={wrapperMarginUnit === 'em' || wrapperMarginUnit === 'rem' ? 25 : 400}
+											min={wrapperMarginUnit === 'em' || wrapperMarginUnit === 'rem' ? -25 : -999}
+											max={wrapperMarginUnit === 'em' || wrapperMarginUnit === 'rem' ? 25 : 999}
 											step={wrapperMarginUnit === 'em' || wrapperMarginUnit === 'rem' ? 0.1 : 1}
 											unit={wrapperMarginUnit}
 											units={['px', 'em', 'rem']}

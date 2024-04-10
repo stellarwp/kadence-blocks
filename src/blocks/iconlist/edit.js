@@ -714,8 +714,8 @@ function KadenceIconLists(props) {
 									onChange={(value) => setAttributes({ listPadding: value })}
 									onChangeTablet={(value) => setAttributes({ tabletListPadding: value })}
 									onChangeMobile={(value) => setAttributes({ mobileListPadding: value })}
-									min={listPaddingType === 'em' || listPaddingType === 'rem' ? -25 : -400}
-									max={listPaddingType === 'em' || listPaddingType === 'rem' ? 25 : 400}
+									min={listPaddingType === 'em' || listPaddingType === 'rem' ? -25 : -999}
+									max={listPaddingType === 'em' || listPaddingType === 'rem' ? 25 : 999}
 									step={listPaddingType === 'em' || listPaddingType === 'rem' ? 0.1 : 1}
 									unit={listPaddingType}
 									units={['px', 'em', 'rem', '%']}
@@ -731,8 +731,8 @@ function KadenceIconLists(props) {
 									onChange={(value) => setAttributes({ listMargin: value })}
 									onChangeTablet={(value) => setAttributes({ tabletListMargin: value })}
 									onChangeMobile={(value) => setAttributes({ mobileListMargin: value })}
-									min={listMarginType === 'em' || listMarginType === 'rem' ? -25 : -400}
-									max={listMarginType === 'em' || listMarginType === 'rem' ? 25 : 400}
+									min={listMarginType === 'em' || listMarginType === 'rem' ? -25 : -999}
+									max={listMarginType === 'em' || listMarginType === 'rem' ? 25 : 999}
 									step={listMarginType === 'em' || listMarginType === 'rem' ? 0.1 : 1}
 									unit={listMarginType}
 									units={['px', 'em', 'rem', '%']}

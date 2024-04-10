@@ -34,7 +34,7 @@ export function AdvancedSettings({ attributes, setAttributes }) {
 					max={
 						(paddingUnit ? paddingUnit : 'px') === 'em' || (paddingUnit ? paddingUnit : 'px') === 'rem'
 							? 25
-							: 400
+							: 999
 					}
 					step={
 						(paddingUnit ? paddingUnit : 'px') === 'em' || (paddingUnit ? paddingUnit : 'px') === 'rem'
@@ -55,9 +55,9 @@ export function AdvancedSettings({ attributes, setAttributes }) {
 				mobileValue={mobileMargin ? mobileMargin : ['', '', '', '']}
 				onChangeMobile={(value) => setAttributes({ mobileMargin: value })}
 				min={
-					(marginUnit ? marginUnit : 'px') === 'em' || (marginUnit ? marginUnit : 'px') === 'rem' ? -25 : -400
+					(marginUnit ? marginUnit : 'px') === 'em' || (marginUnit ? marginUnit : 'px') === 'rem' ? -25 : -999
 				}
-				max={(marginUnit ? marginUnit : 'px') === 'em' || (marginUnit ? marginUnit : 'px') === 'rem' ? 25 : 400}
+				max={(marginUnit ? marginUnit : 'px') === 'em' || (marginUnit ? marginUnit : 'px') === 'rem' ? 25 : 999}
 				step={(marginUnit ? marginUnit : 'px') === 'em' || (marginUnit ? marginUnit : 'px') === 'rem' ? 0.1 : 1}
 				unit={marginUnit ? marginUnit : 'px'}
 				units={['px', 'em', 'rem']}

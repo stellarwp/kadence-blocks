@@ -861,8 +861,8 @@ function KadenceForm(props) {
 		undefined !== style[0].tabletGutter && '' !== style[0].tabletGutter ? style[0].tabletGutter : '',
 		undefined !== style[0].mobileGutter && '' !== style[0].mobileGutter ? style[0].mobileGutter : ''
 	);
-	const containerMarginMin = containerMarginType === 'em' || containerMarginType === 'rem' ? -25 : -400;
-	const containerMarginMax = containerMarginType === 'em' || containerMarginType === 'rem' ? 25 : 400;
+	const containerMarginMin = containerMarginType === 'em' || containerMarginType === 'rem' ? -25 : -999;
+	const containerMarginMax = containerMarginType === 'em' || containerMarginType === 'rem' ? 25 : 999;
 	const containerMarginStep = containerMarginType === 'em' || containerMarginType === 'rem' ? 0.1 : 1;
 	const saveMailerlite = (value) => {
 		const newItems = mailerlite.map((item, thisIndex) => {

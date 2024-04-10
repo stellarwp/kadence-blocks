@@ -62,6 +62,9 @@
 		<gutenberg-block type="kadence/posts" translate="1">
 			<key name="readmoreLabel" />
 		</gutenberg-block>
+		<gutenberg-block type="kadence/image" translate="1">
+			<key name="id" type="post-ids" sub-type="attachment" />
+		</gutenberg-block>
 		<gutenberg-block type="kadence/form" translate="1">
 			<xpath>//form[contains(@class, "kb-form")]/@*[name()='data-error-message']</xpath>
 			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/label/text()</xpath>
@@ -92,6 +95,9 @@
 					<key name="fromName"/>
 				</key>
 			</key>
+		</gutenberg-block>
+		<gutenberg-block type="kadence/advanced-form" translate="1">
+			<key name="id" type="post-ids" sub-type="kadence_form" />
 		</gutenberg-block>
 		<gutenberg-block type="kadence/spacer" translate="0"/>
 		<gutenberg-block type="kadence/rowlayout" translate="0"/>

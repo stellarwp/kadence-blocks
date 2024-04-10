@@ -471,7 +471,7 @@ function Inspector({
 									onChangeTablet={(value) => setAttributes({ titleTabletPadding: value })}
 									onChangeMobile={(value) => setAttributes({ titleMobilePadding: value })}
 									min={0}
-									max={titlePaddingType === 'em' || titlePaddingType === 'rem' ? 12 : 200}
+									max={titlePaddingType === 'em' || titlePaddingType === 'rem' ? 12 : 999}
 									step={titlePaddingType === 'em' || titlePaddingType === 'rem' ? 0.1 : 1}
 									unit={titlePaddingType}
 									units={['px', 'em', 'rem', '%']}
@@ -487,8 +487,8 @@ function Inspector({
 									onChange={(value) => setAttributes({ titleMargin: value })}
 									onChangeTablet={(value) => setAttributes({ titleTabletMargin: value })}
 									onChangeMobile={(value) => setAttributes({ titleMobileMargin: value })}
-									min={titleMarginType === 'em' || titleMarginType === 'rem' ? -12 : -200}
-									max={titleMarginType === 'em' || titleMarginType === 'rem' ? 12 : 200}
+									min={titleMarginType === 'em' || titleMarginType === 'rem' ? -12 : -999}
+									max={titleMarginType === 'em' || titleMarginType === 'rem' ? 12 : 999}
 									step={titleMarginType === 'em' || titleMarginType === 'rem' ? 0.1 : 1}
 									unit={titleMarginType}
 									units={['px', 'em', 'rem', '%', 'vh']}
@@ -707,7 +707,7 @@ function Inspector({
 							onChangeTablet={(value) => setAttributes({ numberTabletPadding: value })}
 							onChangeMobile={(value) => setAttributes({ numberMobilePadding: value })}
 							min={0}
-							max={numberPaddingType === 'em' || numberPaddingType === 'rem' ? 12 : 200}
+							max={numberPaddingType === 'em' || numberPaddingType === 'rem' ? 12 : 999}
 							step={numberPaddingType === 'em' || numberPaddingType === 'rem' ? 0.1 : 1}
 							unit={numberPaddingType}
 							units={['px', 'em', 'rem', '%']}
@@ -723,8 +723,8 @@ function Inspector({
 							onChange={(value) => setAttributes({ numberMargin: value })}
 							onChangeTablet={(value) => setAttributes({ numberTabletMargin: value })}
 							onChangeMobile={(value) => setAttributes({ numberMobileMargin: value })}
-							min={numberMarginType === 'em' || numberMarginType === 'rem' ? -12 : -200}
-							max={numberMarginType === 'em' || numberMarginType === 'rem' ? 12 : 200}
+							min={numberMarginType === 'em' || numberMarginType === 'rem' ? -12 : -999}
+							max={numberMarginType === 'em' || numberMarginType === 'rem' ? 12 : 999}
 							step={numberMarginType === 'em' || numberMarginType === 'rem' ? 0.1 : 1}
 							unit={numberMarginType}
 							units={['px', 'em', 'rem', '%', 'vh']}
