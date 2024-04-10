@@ -88,6 +88,13 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.2.34 =
+Release Date: April 10th 2024
+* Update: Increase Max/Min inputs for padding/margin controls.
+* Update: WPML config.
+* Fix: Issue with custom block styles on TEC lists.
+* Fix: Kadence home admin page.
+
 = 3.2.33 =
 Release Date: April 5th 2024
 * Fix: PHP 8.3 deprecated function call in Table of Contents block.
