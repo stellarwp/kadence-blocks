@@ -92,6 +92,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 Release Date: April 10th 2024
 * Update: Increase Max/Min inputs for padding/margin controls.
 * Update: WPML config.
+* Update: Add form arg filter.
 * Fix: Issue with custom block styles on TEC lists.
 * Fix: Kadence home admin page.
 
