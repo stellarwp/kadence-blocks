@@ -250,12 +250,21 @@ class Kadence_Blocks_Table_Of_Contents {
 			$headings = self::$the_headings;
 			if ( $attributes && isset( $attributes['allowedHeaders'] ) && isset( $attributes['allowedHeaders'][0] ) && is_array( $attributes['allowedHeaders'][0] ) ) {
 				foreach ( array( 'h1' => 1, 'h2' => 2, 'h3' => 3, 'h4' => 4, 'h5' => 5, 'h6' => 6 ) as $tag => $level ) {
-					if ( !isset( $attributes['allowedHeaders'][0][$tag] ) || $attributes['allowedHeaders'][0][$tag] ) {
-						continue;
-					}
-					
+
 					foreach ( $headings as $headkey => $headvalue ) {
-						if ( $headvalue['level'] === $level && 'true' !== $headvalue['include'] || 'false' === $headvalue['include'] ) {
+						// User is specifically excluding this heading.
+						if( false === $headvalue['include'] ) {
+
+							unset( $headings[$headkey] );
+						}
+
+						// User is specifically including this heading, or, it's in the allowed headers list.
+						if ( true === $headvalue['include'] || ( !isset( $attributes['allowedHeaders'][0][$tag] ) || $attributes['allowedHeaders'][0][$tag] ) ) {
+							continue;
+						}
+
+						// Heading is at an unwanted level.
+						if ( $headvalue['level'] === $level ) {
 							unset( $headings[$headkey] );
 						}
 					}
@@ -554,7 +563,15 @@ class Kadence_Blocks_Table_Of_Contents {
 				if ( $heading->getAttribute( 'data-alt-title' ) ) {
 					$heading->textContent = $heading->getAttribute( 'data-alt-title' );
 				}
-				$heading->include = $heading->getAttribute( 'data-toc-include' );
+
+				if( $heading->getAttribute( 'data-toc-include' ) === 'true' ){
+					$heading->include = true;
+				} else if ( $heading->getAttribute( 'data-toc-include' ) === 'false' ) {
+					$heading->include = false;
+				} else {
+					$heading->include = '';
+				}
+
 				if ( $anchor_string ) {
 					$add = true;
 					foreach ( self::$headings as $v ) {
@@ -861,6 +878,16 @@ class Kadence_Blocks_Table_Of_Contents {
 			}
 		}
 		return $content;
+	}
+
+	/*
+	 * Reset the instance properties for unit tests
+	 */
+	public static function reset_instance() {
+		self::$headings = array();
+		self::$anchors = array();
+		self::$the_headings = null;
+		self::$output_content = '';
 	}
 
 }
