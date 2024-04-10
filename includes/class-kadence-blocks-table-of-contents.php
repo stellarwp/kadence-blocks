@@ -883,7 +883,7 @@ class Kadence_Blocks_Table_Of_Contents {
 	/*
 	 * Reset the instance properties for unit tests
 	 */
-	public static function reset_instance() {
+	private static function reset_instance() {
 		self::$headings = array();
 		self::$anchors = array();
 		self::$the_headings = null;

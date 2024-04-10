@@ -17,7 +17,7 @@ class TableOfContentsClassTest extends KadenceBlocksTestCase {
 	protected function _after()
 	{
 		// Reset the instance
-		Kadence_Blocks_Table_Of_Contents::reset_instance();
+		$this->invokeMethod( $this->classInstance, 'reset_instance' );
 	}
 
 	public function testConvertTextToAnchor() {
