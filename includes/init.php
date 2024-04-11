@@ -235,9 +235,9 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 	if ( ! empty( $pro_data['email'] ) ) {
 		$pro_data['api_email'] = $pro_data['email'];
 	}
-	$token         = get_authorization_token( 'kadence-blocks' );
+	$token         = ! kadence_blocks_is_ai_disabled() ? get_authorization_token( 'kadence-blocks' ) : '';
 	$is_authorized = false;
-	if ( ! empty( $pro_data['key'] ) ) {
+	if ( ! empty( $pro_data['key'] ) && ! kadence_blocks_is_ai_disabled() ) {
 		$is_authorized = is_authorized( $pro_data['key'], 'kadence-blocks', ( ! empty( $token ) ? $token : '' ), get_license_domain() );
 	}
 	if ( empty( $pro_data['domain'] ) ) {
