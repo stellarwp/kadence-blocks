@@ -274,6 +274,7 @@ class KBHeader {
 			this.activeHeader.classList.remove('item-is-stuck');
 			this.activeHeader.style.height = null;
 			this.activeHeader.style.top = null;
+			this.activeHeader.style.position = 'initial';
 			parent.classList.remove('child-is-fixed');
 			document.body.classList.remove('header-is-fixed');
 			return;
@@ -383,6 +384,9 @@ class KBHeader {
 				}
 			}
 		}
+
+		//set the position to absolute
+		this.activeHeader.style.position = 'absolute';
 
 		// Run the revealing / hidding processing
 		if (this.revealScrollUp) {

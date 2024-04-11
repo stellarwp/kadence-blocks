@@ -551,11 +551,11 @@ export function EditInner(props) {
 										tabletValue={stickySectionTablet}
 										mobileValue={stickySectionMobile}
 										options={[
-											{ value: 'main', label: __('Only Main Row', 'kadence-blocks') },
-											{ value: 'top_main', label: __('Top and Main Row', 'kadence-blocks') },
 											{ value: 'top_main_bottom', label: __('Whole Header', 'kadence-blocks') },
-											{ value: 'top', label: __('Only Top Row', 'kadence-blocks') },
-											{ value: 'top_bottom', label: __('Only Bottom Row', 'kadence-blocks') },
+											// { value: 'main', label: __('Only Main Row', 'kadence-blocks') },
+											// { value: 'top', label: __('Only Top Row', 'kadence-blocks') },
+											// { value: 'bottom', label: __('Only Bottom Row', 'kadence-blocks') },
+											// { value: 'top_main', label: __('Top and Main Row', 'kadence-blocks') },
 										]}
 										onChange={(value) => setMetaAttribute(value, 'stickySection')}
 										onChangeTablet={(value) => setMetaAttribute(value, 'stickySectionTablet')}
