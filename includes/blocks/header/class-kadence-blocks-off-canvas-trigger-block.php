@@ -105,7 +105,6 @@ class Kadence_Blocks_Off_Canvas_Trigger_Block extends Kadence_Blocks_Abstract_Bl
 			$css->set_media_state( 'desktop' );
 		}
 
-
 		return $css->css_output();
 	}
 

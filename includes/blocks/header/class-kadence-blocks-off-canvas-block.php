@@ -82,8 +82,52 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
 		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id );
-		$css->add_property( 'display', 'none' );
-		$css->add_property( 'z-index', '99999' );
+
+		// Background Color.
+		if ( ! empty( $attributes['backgroundColor'] ) ) {
+			$css->add_property( 'background-color', $css->render_color( $attributes['backgroundColor'] ) );
+		}
+
+		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-inner');
+		$css->render_measure_output( $attributes, 'padding', 'padding');
+
+
+		// Active / Opens state
+		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . '.active' );
+
+		if( !empty( $attributes['widthType'] ) && $attributes['widthType'] === 'full') {
+			$css->add_property( 'width', '100%' );
+		} else {
+			$css->add_property( 'width', 'unset' );
+			$css->add_property( 'min-width', '200px' );
+
+			$max_width_unit = !empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px';
+			if( !empty( $attributes['maxWidth']) ) {
+				$css->add_property( 'max-width', $attributes['maxWidth'] . $max_width_unit );
+			}
+			if( !empty( $attributes['maxWidthTablet']) ) {
+				$css->set_media_state('tablet');
+				$css->add_property( 'max-width', $attributes['maxWidthTablet'] . $max_width_unit );
+				$css->set_media_state('desktop');
+			}
+			if( !empty( $attributes['maxWidthMobile']) ) {
+				$css->set_media_state('mobile');
+				$css->add_property( 'max-width', $attributes['maxWidthMobile'] . $max_width_unit );
+				$css->set_media_state('desktop');
+			}
+		}
+
+		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . '.active .kb-off-canvas-inner');
+		$css->add_property( 'width', '100%' );
+
+
+		// Overlay background
+		$css->set_selector( '.wp-block-kadence-off-canvas-overlay' . $unique_id );
+		if ( ! empty( $attributes['pageBackgroundColor'] ) ) {
+			$css->add_property( 'background-color', $css->render_color( $attributes['pageBackgroundColor'] ) );
+		} else {
+			$css->add_property( 'background-color', 'rgba(0,0,0,0.5)' );
+		}
 
 		return $css->css_output();
 	}
@@ -97,14 +141,28 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		$html = '';
 
+		$open_side = !empty( $attributes['slideFrom'] ) ? $attributes['slideFrom'] : 'left';
 		$classes = array(
 			'wp-block-kadence-off-canvas',
 			'wp-block-kadence-off-canvas' . $unique_id,
+			'open-' . $open_side,
 		);
 
+		$overlay_classes = array(
+			'wp-block-kadence-off-canvas-overlay',
+			'wp-block-kadence-off-canvas-overlay' . $unique_id,
+		);
+
+
 		$html .= '<div class="' . esc_attr( implode( ' ', $classes ) ) . '">';
+		$html .= '<div class="kb-off-canvas-inner">';
 		$html .= $content;
 		$html .= '</div>';
+		$html .= '</div>';
+
+		if ( empty( $attributes['widthType'] ) || $attributes['widthType'] === 'partial' ) {
+			$html .= '<div data-unique-id="' . esc_attr( $unique_id ) . '" class="' . esc_attr( implode( ' ', $overlay_classes ) ) . '"></div>';
+		}
 
 		return $html;	}
 

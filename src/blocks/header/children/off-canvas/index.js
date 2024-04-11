@@ -4,6 +4,11 @@ import { __, _x } from '@wordpress/i18n';
 import { headerBlockIcon } from '@kadence/icons';
 
 /**
+ * Import Css
+ */
+import './style.scss';
+
+/**
  * Internal dependencies
  */
 import edit from './edit';
