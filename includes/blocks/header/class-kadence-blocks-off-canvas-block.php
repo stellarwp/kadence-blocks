@@ -99,7 +99,7 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'width', '100%' );
 		} else {
 			$css->add_property( 'width', 'unset' );
-			$css->add_property( 'min-width', '200px' );
+			$css->add_property( 'min-width', '100px' );
 
 			$max_width_unit = !empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px';
 			if( !empty( $attributes['maxWidth']) ) {

@@ -208,7 +208,7 @@ export function Edit(props) {
 									onChangeTablet={(value) => setAttributes({ maxWidthTablet: value })}
 									mobileValue={maxWidthMobile ? maxWidthMobile : ''}
 									onChangeMobile={(value) => setAttributes({ maxWidthMobile: value })}
-									min={5}
+									min={100}
 									max={1500}
 									step={1}
 									unit={'px'}
