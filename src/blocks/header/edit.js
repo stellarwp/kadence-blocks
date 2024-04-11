@@ -215,7 +215,7 @@ export function Edit(props) {
 		);
 	}
 
-	if (previewStyle == 'transparent') {
+	if (previewStyle.includes('transparent')) {
 		return (
 			<div className="kb-header-transparent-placeholder">
 				<>{mainBlockContent}</>

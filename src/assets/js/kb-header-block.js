@@ -188,6 +188,7 @@ class KBHeader {
 	 * http://www.mattmorgante.com/technology/sticky-navigation-bar-javascript
 	 */
 	initStickyHeader() {
+		console.log(1);
 		const self = this;
 		this.activeHeader = this.root.querySelector('.wp-block-kadence-header-desktop');
 
@@ -288,9 +289,13 @@ class KBHeader {
 			this.activeHeader.style.top = 'auto';
 		}
 
-		//set the container anchor height to create a sized placeholder for the header
+		//set the container anchor height to create a sized placeholder for the header (but only if we're not also transparent)
 		var elHeight = this.activeHeader.offsetHeight;
-		this.root.style.height = elHeight + 'px';
+		const activeSizeCased =
+			this.activeSize == 'desktop' ? '' : this.activeSize.charAt(0).toUpperCase() + this.activeSize.slice(1);
+		if (!this['style' + activeSizeCased].includes('transparent')) {
+			this.root.style.height = elHeight + 'px';
+		}
 
 		// Adjust offsetTop depending on certain top of page elements
 		if (document.body.classList.toString().includes('boom_bar-static-top')) {

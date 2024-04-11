@@ -527,19 +527,23 @@ export function EditInner(props) {
 									{ value: 'standard', label: __('Standard', 'kadence-blocks') },
 									{ value: 'sticky', label: __('Sticky', 'kadence-blocks') },
 									{ value: 'transparent', label: __('Transparent', 'kadence-blocks') },
+									{
+										value: 'sticky-transparent',
+										label: __('Sticky and Transparent', 'kadence-blocks'),
+									},
 								]}
 								onChange={(value) => setMetaAttribute(value, 'style')}
 								onChangeTablet={(value) => setMetaAttribute(value, 'styleTablet')}
 								onChangeMobile={(value) => setMetaAttribute(value, 'styleMobile')}
 							/>
-							{previewStyle == 'transparent' && (
+							{previewStyle.includes('transparent') && (
 								<ToggleControl
 									label={__('Auto spacing under', 'kadence-blocks')}
 									checked={autoTransparentSpacing}
 									onChange={(value) => setMetaAttribute(value, 'autoTransparentSpacing')}
 								/>
 							)}
-							{previewStyle == 'sticky' && (
+							{previewStyle.includes('sticky') && (
 								<>
 									<ResponsiveSelectControl
 										label={__('Sticky Section', 'kadence-blocks')}
@@ -1022,7 +1026,7 @@ export function EditInner(props) {
 
 				{activeTab === 'style' && (
 					<>
-						{previewStyle != 'transparent' && (
+						{!previewStyle.includes('transparent') && (
 							<KadencePanelBody
 								title={__('Background Settings', 'kadence-blocks')}
 								initialOpen={true}

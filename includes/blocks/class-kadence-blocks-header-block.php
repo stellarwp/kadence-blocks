@@ -126,15 +126,15 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$border = $sized_attributes['border'];
 		$typography = $sized_attributes['typography'];
 
-		if ( $sized_attributes['style'] != 'transparent' ) {
-			$css->add_property('background-color', $css->render_color( ! empty($bg['color']) ? $bg['color'] : ''));
+		if ( ! str_contains( $sized_attributes['style'], 'transparent' ) ) {
+			$css->add_property( 'background-color', $css->render_color( ! empty( $bg['color'] ) ? $bg['color'] : '') );
 			//$css->render_border_styles($border, 'border');
-			if('' !== $bg && 'normal' === $bg['type'] && ! empty($bg['image'])) {
-				$css->add_property('background-image', 'url("' . $bg['image'] . '")');
-				$css->add_property('background-position', $bg['position']);
-				$css->add_property('background-size', $bg['size']);
-				$css->add_property('background-repeat', $bg['repeat']);
-				$css->add_property('background-attachment', $bg['attachment']);
+			if ( '' !== $bg && 'normal' === $bg['type'] && ! empty( $bg['image'] ) ) {
+				$css->add_property( 'background-image', 'url("' . $bg['image'] . '")' );
+				$css->add_property( 'background-position', $bg['position'] );
+				$css->add_property( 'background-size', $bg['size'] );
+				$css->add_property( 'background-repeat', $bg['repeat'] );
+				$css->add_property( 'background-attachment', $bg['attachment'] );
 			}
 		}
 		$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['border'], 'bottom' ) );
@@ -149,7 +149,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( 'border-left', $css->render_border( $sized_attributes['borderHover'], 'left' ) );
 		$css->add_property( 'border-right', $css->render_border( $sized_attributes['borderHover'], 'right' ) );
 
-		if ( $sized_attributes['style'] == 'transparent' ) {
+		if ( str_contains( $sized_attributes['style'], 'transparent' ) ) {
 			$css->add_property( 'top', '0px' );
 		}
 	}
