@@ -224,6 +224,17 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 				'class'      => implode( ' ', $wrapper_classes ),
 				'aria-label' => $name,
 				'data-auto-transparent-spacing' => $header_attributes['autoTransparentSpacing'],
+				'data-style' => $header_attributes['style'] ?: 'standard',
+				'data-style-tablet' => $header_attributes['styleTablet'] ?: 'standard',
+				'data-style-mobile' => $header_attributes['styleMobile'] ?: 'standard',
+				'data-sticky-section' => $header_attributes['stickySection'] ?: 'main',
+				'data-sticky-section-tablet' => $header_attributes['stickySectionTablet'] ?: 'main',
+				'data-sticky-section-mobile' => $header_attributes['stickySectionMobile'] ?: 'main',
+				'data-shrink-main' => $header_attributes['shrinkMain'],
+				'data-shrink-main-height' => $header_attributes['shrinkMainHeight'] ?: '',
+				'data-shrink-main-height-tablet' => $header_attributes['shrinkMainHeightTablet'] ?: '',
+				'data-shrink-main-height-mobile' => $header_attributes['shrinkMainHeightMobile'] ?: '',
+				'data-reveal-scroll-up' => $header_attributes['revealScrollUp'],
 			)
 		);
 
@@ -252,7 +263,19 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		wp_localize_script(
 			'kadence-blocks-' . $this->block_name,
 			'kadenceHeaderConfig',
-			array(),
+			array(
+				'screenReader' => array(
+					'expand'     => __( 'Child menu', 'kadence' ),
+					'expandOf'   => __( 'Child menu of', 'kadence' ),
+					'collapse'   => __( 'Child menu', 'kadence' ),
+					'collapseOf' => __( 'Child menu of', 'kadence' ),
+				),
+				'breakPoints' => array(
+					'desktop' => 1024,
+					'tablet' => 768,
+				),
+				'scrollOffset' => apply_filters( 'kadence_scroll_to_id_additional_offset', 0 ),
+			),
 		);
 	}
 

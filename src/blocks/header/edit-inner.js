@@ -306,6 +306,14 @@ export function EditInner(props) {
 		styleTablet: meta?._kad_header_styleTablet,
 		styleMobile: meta?._kad_header_styleMobile,
 		autoTransparentSpacing: meta?._kad_header_autoTransparentSpacing,
+		stickySection: meta?._kad_header_stickySection,
+		stickySectionTablet: meta?._kad_header_stickySectionTablet,
+		stickySectionMobile: meta?._kad_header_stickySectionMobile,
+		shrinkMain: meta?._kad_header_shrinkMain,
+		shrinkMainHeight: meta?._kad_header_shrinkMainHeight,
+		shrinkMainHeightTablet: meta?._kad_header_shrinkMainHeightTablet,
+		shrinkMainHeightMobile: meta?._kad_header_shrinkMainHeightMobile,
+		revealScrollUp: meta?._kad_header_revealScrollUp,
 	};
 
 	const {
@@ -348,6 +356,14 @@ export function EditInner(props) {
 		styleTablet,
 		styleMobile,
 		autoTransparentSpacing,
+		stickySection,
+		stickySectionTablet,
+		stickySectionMobile,
+		shrinkMain,
+		shrinkMainHeight,
+		shrinkMainHeightTablet,
+		shrinkMainHeightMobile,
+		revealScrollUp,
 	} = metaAttributes;
 
 	const setMetaAttribute = (value, key) => {
@@ -362,6 +378,12 @@ export function EditInner(props) {
 		undefined !== flex?.direction?.[2] ? flex.direction[2] : ''
 	);
 	const previewStyle = getPreviewSize(previewDevice, style ? style : 'standard', styleTablet, styleMobile);
+	const previewStickySection = getPreviewSize(
+		previewDevice,
+		stickySection ? stickySection : 'main',
+		stickySectionTablet,
+		stickySectionMobile
+	);
 
 	const [title, setTitle] = useHeaderProp('title');
 
@@ -499,8 +521,8 @@ export function EditInner(props) {
 							<ResponsiveSelectControl
 								label={__('Style', 'kadence-blocks')}
 								value={style}
-								valueTablet={styleTablet}
-								valueMobile={styleMobile}
+								tabletValue={styleTablet}
+								mobileValue={styleMobile}
 								options={[
 									{ value: 'standard', label: __('Standard', 'kadence-blocks') },
 									{ value: 'sticky', label: __('Sticky', 'kadence-blocks') },
@@ -516,6 +538,60 @@ export function EditInner(props) {
 									checked={autoTransparentSpacing}
 									onChange={(value) => setMetaAttribute(value, 'autoTransparentSpacing')}
 								/>
+							)}
+							{previewStyle == 'sticky' && (
+								<>
+									<ResponsiveSelectControl
+										label={__('Sticky Section', 'kadence-blocks')}
+										value={stickySection}
+										tabletValue={stickySectionTablet}
+										mobileValue={stickySectionMobile}
+										options={[
+											{ value: 'main', label: __('Only Main Row', 'kadence-blocks') },
+											{ value: 'top_main', label: __('Top and Main Row', 'kadence-blocks') },
+											{ value: 'top_main_bottom', label: __('Whole Header', 'kadence-blocks') },
+											{ value: 'top', label: __('Only Top Row', 'kadence-blocks') },
+											{ value: 'top_bottom', label: __('Only Bottom Row', 'kadence-blocks') },
+										]}
+										onChange={(value) => setMetaAttribute(value, 'stickySection')}
+										onChangeTablet={(value) => setMetaAttribute(value, 'stickySectionTablet')}
+										onChangeMobile={(value) => setMetaAttribute(value, 'stickySectionMobile')}
+									/>
+									<ToggleControl
+										label={__('Reveal on scroll up', 'kadence-blocks')}
+										checked={revealScrollUp}
+										onChange={(value) => setMetaAttribute(value, 'revealScrollUp')}
+									/>
+									<ToggleControl
+										label={__('Shrink Main Row', 'kadence-blocks')}
+										checked={shrinkMain}
+										onChange={(value) => setMetaAttribute(value, 'shrinkMain')}
+									/>
+									{shrinkMain &&
+										(previewStickySection.includes('main') || previewStickySection == '') && (
+											<ResponsiveRangeControls
+												label={__('Main Row Shrink Height', 'kadence-blocks')}
+												value={parseFloat(shrinkMainHeight)}
+												valueTablet={parseFloat(shrinkMainHeightTablet)}
+												valueMobile={parseFloat(shrinkMainHeightMobile)}
+												onChange={(value) =>
+													setMetaAttribute(value.toString(), 'shrinkMainHeight')
+												}
+												onChangeTablet={(value) =>
+													setMetaAttribute(value.toString(), 'shrinkMainHeightTablet')
+												}
+												onChangeMobile={(value) =>
+													setMetaAttribute(value.toString(), 'shrinkMainHeightMobile')
+												}
+												min={0}
+												max={500}
+												step={1}
+												unit={'px'}
+												units={['px']}
+												showUnit={true}
+											/>
+										)}
+								</>
 							)}
 						</KadencePanelBody>
 						<KadencePanelBody

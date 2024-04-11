@@ -527,6 +527,46 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'default' => false,
 				'type'    => 'boolean',
 			),
+			array(
+				'key'     => '_kad_header_stickySection',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_header_stickySectionTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_header_stickySectionMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_header_shrinkMain',
+				'default' => false,
+				'type'    => 'boolean',
+			),
+			array(
+				'key'     => '_kad_header_shrinkMainHeight',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_header_shrinkMainHeightTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_header_shrinkMainHeightMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_header_revealScrollUp',
+				'default' => false,
+				'type'    => 'boolean',
+			),
 		);
 
 		foreach ( $register_meta as $meta ) {
