@@ -328,7 +328,7 @@ export function Edit(props) {
 					{/*</button>*/}
 					<InnerBlocks
 						templateLock={false}
-						template={[['core/paragraph', { placeholder: __('Create Awesome', 'kadence-blocks-pro') }]]}
+						template={[['core/paragraph', { placeholder: __('Create Awesome', 'kadence-blocks') }]]}
 					/>
 				</div>
 			</div>
