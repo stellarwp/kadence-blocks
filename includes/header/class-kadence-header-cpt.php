@@ -178,13 +178,16 @@ class Kadence_Blocks_Header_CPT_Controller {
 			),
 			array(
 				'key' => '_kad_header_border',
-				'type'          => 'object',
-				'default'       => array(
-					'top'    => array( '', 'solid', '' ),
-					'right'  => array( '', 'solid', '' ),
-					'bottom' => array( '', 'solid', '' ),
-					'left'   => array( '', 'solid', '' ),
-					'unit'   => 'px',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
+					),
 				),
 				'properties' => array(
 					'top'    => array( 'type' => 'array' ),
@@ -195,14 +198,17 @@ class Kadence_Blocks_Header_CPT_Controller {
 				),
 			),
 			array(
-				'key' => '_kad_header_hoverBorder',
-				'type'          => 'object',
-				'default'       => array(
-					'top'    => array( '', 'solid', '' ),
-					'right'  => array( '', 'solid', '' ),
-					'bottom' => array( '', 'solid', '' ),
-					'left'   => array( '', 'solid', '' ),
-					'unit'   => 'px',
+				'key' => '_kad_header_borderTablet',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
+					),
 				),
 				'properties' => array(
 					'top'    => array( 'type' => 'array' ),
@@ -213,14 +219,17 @@ class Kadence_Blocks_Header_CPT_Controller {
 				),
 			),
 			array(
-				'key' => '_kad_header_tabletHoverBorder',
-				'type'          => 'object',
-				'default'       => array(
-					'top'    => array( '', '', '' ),
-					'right'  => array( '', '', '' ),
-					'bottom' => array( '', '', '' ),
-					'left'   => array( '', '', '' ),
-					'unit'   => 'px',
+				'key' => '_kad_header_borderMobile',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
+					),
 				),
 				'properties' => array(
 					'top'    => array( 'type' => 'array' ),
@@ -231,14 +240,17 @@ class Kadence_Blocks_Header_CPT_Controller {
 				),
 			),
 			array(
-				'key' => '_kad_header_mobileHoverBorder',
-				'type'          => 'object',
-				'default'       => array(
-					'top'    => array( '', '', '' ),
-					'right'  => array( '', '', '' ),
-					'bottom' => array( '', '', '' ),
-					'left'   => array( '', '', '' ),
-					'unit'   => 'px',
+				'key' => '_kad_header_borderHover',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
+					),
 				),
 				'properties' => array(
 					'top'    => array( 'type' => 'array' ),
@@ -249,14 +261,17 @@ class Kadence_Blocks_Header_CPT_Controller {
 				),
 			),
 			array(
-				'key' => '_kad_form_tabletBorder',
-				'type'          => 'object',
-				'default'       => array(
-					'top'    => array( '', '', '' ),
-					'right'  => array( '', '', '' ),
-					'bottom' => array( '', '', '' ),
-					'left'   => array( '', '', '' ),
-					'unit'   => 'px',
+				'key' => '_kad_header_borderHoverTablet',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
+					),
 				),
 				'properties' => array(
 					'top'    => array( 'type' => 'array' ),
@@ -267,14 +282,17 @@ class Kadence_Blocks_Header_CPT_Controller {
 				),
 			),
 			array(
-				'key' => '_kad_form_mobileBorder',
-				'type'          => 'object',
-				'default'       => array(
-					'top'    => array( '', '', '' ),
-					'right'  => array( '', '', '' ),
-					'bottom' => array( '', '', '' ),
-					'left'   => array( '', '', '' ),
-					'unit'   => 'px',
+				'key' => '_kad_header_borderHoverMobile',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
+					),
 				),
 				'properties' => array(
 					'top'    => array( 'type' => 'array' ),
@@ -413,13 +431,13 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'children_type' => 'integer',
 			),
 			array(
-				'key'           => '_kad_header_tabletBorderRadius',
+				'key'           => '_kad_header_borderRadiusTablet',
 				'default'       => array( 0, 0, 0, 0 ),
 				'type'          => 'array',
 				'children_type' => 'integer',
 			),
 			array(
-				'key'           => '_kad_header_mobileBorderRadius',
+				'key'           => '_kad_header_borderRadiusMobile',
 				'default'       => array( 0, 0, 0, 0 ),
 				'type'          => 'array',
 				'children_type' => 'integer',
@@ -430,25 +448,25 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'type'    => 'string',
 			),
 			array(
-				'key'           => '_kad_header_borderHoverRadius',
+				'key'           => '_kad_header_borderRadiusHover',
 				'default'       => array( 0, 0, 0, 0 ),
 				'type'          => 'array',
 				'children_type' => 'integer',
 			),
 			array(
-				'key'           => '_kad_header_tabletBorderHoverRadius',
+				'key'           => '_kad_header_borderRadiusHoverTablet',
 				'default'       => array( 0, 0, 0, 0 ),
 				'type'          => 'array',
 				'children_type' => 'integer',
 			),
 			array(
-				'key'           => '_kad_header_mobileBorderHoverRadius',
+				'key'           => '_kad_header_borderRadiusHoverMobile',
 				'default'       => array( 0, 0, 0, 0 ),
 				'type'          => 'array',
 				'children_type' => 'integer',
 			),
 			array(
-				'key'     => '_kad_header_borderHoverRadiusUnit',
+				'key'     => '_kad_header_borderRadiusHoverUnit',
 				'default' => 'px',
 				'type'    => 'string',
 			),
@@ -506,7 +524,47 @@ class Kadence_Blocks_Header_CPT_Controller {
 			),
 			array(
 				'key'     => '_kad_header_autoTransparentSpacing',
-				'default' => true,
+				'default' => false,
+				'type'    => 'boolean',
+			),
+			array(
+				'key'     => '_kad_header_stickySection',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_header_stickySectionTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_header_stickySectionMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_header_shrinkMain',
+				'default' => false,
+				'type'    => 'boolean',
+			),
+			array(
+				'key'     => '_kad_header_shrinkMainHeight',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_header_shrinkMainHeightTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_header_shrinkMainHeightMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_header_revealScrollUp',
+				'default' => false,
 				'type'    => 'boolean',
 			),
 		);

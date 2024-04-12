@@ -216,8 +216,16 @@ export default function BackendStyles(props) {
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap >a`
 	);
-	css.add_property('padding-left', css.render_half_size(previewNavigationHorizontalSpacing));
-	css.add_property('padding-right', css.render_half_size(previewNavigationHorizontalSpacing));
+	css.add_property(
+		'padding-left',
+		css.render_half_size(previewNavigationHorizontalSpacing),
+		previewNavigationHorizontalSpacing
+	);
+	css.add_property(
+		'padding-right',
+		css.render_half_size(previewNavigationHorizontalSpacing),
+		previewNavigationHorizontalSpacing
+	);
 	if (
 		(previewOrientation == 'vertical' ||
 			previewStyle === 'standard' ||

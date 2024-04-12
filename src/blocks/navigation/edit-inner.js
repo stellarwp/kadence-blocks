@@ -726,8 +726,8 @@ export function EditInner(props) {
 							<ResponsiveSelectControl
 								label={__('Style', 'kadence-blocks')}
 								value={style}
-								valueTablet={styleTablet}
-								valueMobile={styleMobile}
+								tabletValue={styleTablet}
+								mobileValue={styleMobile}
 								options={[
 									{ value: 'standard', label: __('Standard', 'kadence-blocks') },
 									{ value: 'fullheight', label: __('Full Height', 'kadence-blocks') },

@@ -276,21 +276,21 @@ export function EditInner(props) {
 		mobileMargin: meta?._kad_header_mobileMargin,
 		marginUnit: meta?._kad_header_marginUnit,
 		border: meta?._kad_header_border,
-		tabletBorder: meta?._kad_header_tabletBorder,
-		mobileBorder: meta?._kad_header_mobileBorder,
+		borderTablet: meta?._kad_header_borderTablet,
+		borderMobile: meta?._kad_header_borderMobile,
 		borderUnit: meta?._kad_header_borderUnit,
-		hoverBorder: meta?._kad_header_hoverBorder,
-		tabletHoverBorder: meta?._kad_header_tabletHoverBorder,
-		mobileHoverBorder: meta?._kad_header_mobileHoverBorder,
-		hoverBorderUnit: meta?._kad_header_hoverBorderUnit,
+		borderHover: meta?._kad_header_borderHover,
+		borderHoverTablet: meta?._kad_header_borderHoverTablet,
+		borderHoverMobile: meta?._kad_header_borderHoverMobile,
+		borderHoverUnit: meta?._kad_header_borderHoverUnit,
 		borderRadius: meta?._kad_header_borderRadius,
-		tabletBorderRadius: meta?._kad_header_tabletBorderRadius,
-		mobileBorderRadius: meta?._kad_header_mobileBorderRadius,
+		borderRadiusTablet: meta?._kad_header_borderRadiusTablet,
+		borderRadiusMobile: meta?._kad_header_borderRadiusMobile,
 		borderRadiusUnit: meta?._kad_header_borderRadiusUnit,
-		borderHoverRadius: meta?._kad_header_borderHoverRadius,
-		tabletBorderHoverRadius: meta?._kad_header_tabletBorderHoverRadius,
-		mobileBorderHoverRadius: meta?._kad_header_mobileBorderHoverRadius,
-		borderHoverRadiusUnit: meta?._kad_header_borderHoverRadiusUnit,
+		borderRadiusHover: meta?._kad_header_borderRadiusHover,
+		borderRadiusHoverTablet: meta?._kad_header_borderRadiusHoverTablet,
+		borderRadiusHoverMobile: meta?._kad_header_borderRadiusHoverMobile,
+		borderRadiusHoverUnit: meta?._kad_header_borderRadiusHoverUnit,
 		flex: meta?._kad_header_flex,
 		className: meta?._kad_header_className,
 		anchor: meta?._kad_header_anchor,
@@ -308,6 +308,14 @@ export function EditInner(props) {
 		styleTablet: meta?._kad_header_styleTablet,
 		styleMobile: meta?._kad_header_styleMobile,
 		autoTransparentSpacing: meta?._kad_header_autoTransparentSpacing,
+		stickySection: meta?._kad_header_stickySection,
+		stickySectionTablet: meta?._kad_header_stickySectionTablet,
+		stickySectionMobile: meta?._kad_header_stickySectionMobile,
+		shrinkMain: meta?._kad_header_shrinkMain,
+		shrinkMainHeight: meta?._kad_header_shrinkMainHeight,
+		shrinkMainHeightTablet: meta?._kad_header_shrinkMainHeightTablet,
+		shrinkMainHeightMobile: meta?._kad_header_shrinkMainHeightMobile,
+		revealScrollUp: meta?._kad_header_revealScrollUp,
 	};
 
 	const {
@@ -320,19 +328,19 @@ export function EditInner(props) {
 		mobileMargin,
 		marginUnit,
 		border,
-		tabletBorder,
-		mobileBorder,
-		hoverBorder,
-		tabletHoverBorder,
-		mobileHoverBorder,
+		borderTablet,
+		borderMobile,
+		borderHover,
+		borderHoverTablet,
+		borderHoverMobile,
 		borderRadius,
-		tabletBorderRadius,
-		mobileBorderRadius,
+		borderRadiusTablet,
+		borderRadiusMobile,
 		borderRadiusUnit,
-		borderHoverRadius,
-		tabletBorderHoverRadius,
-		mobileBorderHoverRadius,
-		borderHoverRadiusUnit,
+		borderRadiusHover,
+		borderRadiusHoverTablet,
+		borderRadiusHoverMobile,
+		borderRadiusHoverUnit,
 		flex,
 		className,
 		anchor,
@@ -350,6 +358,14 @@ export function EditInner(props) {
 		styleTablet,
 		styleMobile,
 		autoTransparentSpacing,
+		stickySection,
+		stickySectionTablet,
+		stickySectionMobile,
+		shrinkMain,
+		shrinkMainHeight,
+		shrinkMainHeightTablet,
+		shrinkMainHeightMobile,
+		revealScrollUp,
 	} = metaAttributes;
 
 	const setMetaAttribute = (value, key) => {
@@ -364,6 +380,12 @@ export function EditInner(props) {
 		undefined !== flex?.direction?.[2] ? flex.direction[2] : ''
 	);
 	const previewStyle = getPreviewSize(previewDevice, style ? style : 'standard', styleTablet, styleMobile);
+	const previewStickySection = getPreviewSize(
+		previewDevice,
+		stickySection ? stickySection : 'main',
+		stickySectionTablet,
+		stickySectionMobile
+	);
 
 	const [title, setTitle] = useHeaderProp('title');
 
@@ -501,8 +523,8 @@ export function EditInner(props) {
 							<ResponsiveSelectControl
 								label={__('Style', 'kadence-blocks')}
 								value={style}
-								valueTablet={styleTablet}
-								valueMobile={styleMobile}
+								tabletValue={styleTablet}
+								mobileValue={styleMobile}
 								options={[
 									{ value: 'standard', label: __('Standard', 'kadence-blocks') },
 									{ value: 'sticky', label: __('Sticky', 'kadence-blocks') },
@@ -518,6 +540,60 @@ export function EditInner(props) {
 									checked={autoTransparentSpacing}
 									onChange={(value) => setMetaAttribute(value, 'autoTransparentSpacing')}
 								/>
+							)}
+							{previewStyle == 'sticky' && (
+								<>
+									<ResponsiveSelectControl
+										label={__('Sticky Section', 'kadence-blocks')}
+										value={stickySection}
+										tabletValue={stickySectionTablet}
+										mobileValue={stickySectionMobile}
+										options={[
+											{ value: 'main', label: __('Only Main Row', 'kadence-blocks') },
+											{ value: 'top_main', label: __('Top and Main Row', 'kadence-blocks') },
+											{ value: 'top_main_bottom', label: __('Whole Header', 'kadence-blocks') },
+											{ value: 'top', label: __('Only Top Row', 'kadence-blocks') },
+											{ value: 'top_bottom', label: __('Only Bottom Row', 'kadence-blocks') },
+										]}
+										onChange={(value) => setMetaAttribute(value, 'stickySection')}
+										onChangeTablet={(value) => setMetaAttribute(value, 'stickySectionTablet')}
+										onChangeMobile={(value) => setMetaAttribute(value, 'stickySectionMobile')}
+									/>
+									<ToggleControl
+										label={__('Reveal on scroll up', 'kadence-blocks')}
+										checked={revealScrollUp}
+										onChange={(value) => setMetaAttribute(value, 'revealScrollUp')}
+									/>
+									<ToggleControl
+										label={__('Shrink Main Row', 'kadence-blocks')}
+										checked={shrinkMain}
+										onChange={(value) => setMetaAttribute(value, 'shrinkMain')}
+									/>
+									{shrinkMain &&
+										(previewStickySection.includes('main') || previewStickySection == '') && (
+											<ResponsiveRangeControls
+												label={__('Main Row Shrink Height', 'kadence-blocks')}
+												value={parseFloat(shrinkMainHeight)}
+												valueTablet={parseFloat(shrinkMainHeightTablet)}
+												valueMobile={parseFloat(shrinkMainHeightMobile)}
+												onChange={(value) =>
+													setMetaAttribute(value.toString(), 'shrinkMainHeight')
+												}
+												onChangeTablet={(value) =>
+													setMetaAttribute(value.toString(), 'shrinkMainHeightTablet')
+												}
+												onChangeMobile={(value) =>
+													setMetaAttribute(value.toString(), 'shrinkMainHeightMobile')
+												}
+												min={0}
+												max={500}
+												step={1}
+												unit={'px'}
+												units={['px']}
+												showUnit={true}
+											/>
+										)}
+								</>
 							)}
 						</KadencePanelBody>
 						<KadencePanelBody
@@ -1240,23 +1316,23 @@ export function EditInner(props) {
 									<>
 										<ResponsiveBorderControl
 											label={__('Border', 'kadence-blocks')}
-											value={[border]}
-											tabletValue={[tabletBorder]}
-											mobileValue={[mobileBorder]}
+											value={border}
+											tabletValue={borderTablet}
+											mobileValue={borderMobile}
 											onChange={(value) => {
-												setMetaAttribute(value[0], 'border');
+												setMetaAttribute(value, 'border');
 											}}
-											onChangeTablet={(value) => setMetaAttribute(value[0], 'tabletBorder')}
-											onChangeMobile={(value) => setMetaAttribute(value[0], 'mobileBorder')}
+											onChangeTablet={(value) => setMetaAttribute(value, 'borderTablet')}
+											onChangeMobile={(value) => setMetaAttribute(value, 'borderMobile')}
 										/>
 										<ResponsiveMeasurementControls
 											label={__('Border Radius', 'kadence-blocks')}
 											value={borderRadius}
-											tabletValue={tabletBorderRadius}
-											mobileValue={mobileBorderRadius}
+											tabletValue={borderRadiusTablet}
+											mobileValue={borderRadiusMobile}
 											onChange={(value) => setMetaAttribute(value, 'borderRadius')}
-											onChangeTablet={(value) => setMetaAttribute(value, 'tabletBorderRadius')}
-											onChangeMobile={(value) => setMetaAttribute(value, 'mobileBorderRadius')}
+											onChangeTablet={(value) => setMetaAttribute(value, 'borderRadiusTablet')}
+											onChangeMobile={(value) => setMetaAttribute(value, 'borderRadiusMobile')}
 											unit={borderRadiusUnit}
 											units={['px', 'em', 'rem', '%']}
 											onUnit={(value) => setMetaAttribute(value, 'borderRadiusUnit')}
@@ -1272,37 +1348,37 @@ export function EditInner(props) {
 									<>
 										<ResponsiveBorderControl
 											label={__('Hover Border', 'kadence-blocks')}
-											value={[hoverBorder]}
-											tabletValue={[tabletHoverBorder]}
-											mobileValue={[mobileHoverBorder]}
+											value={borderHover}
+											tabletValue={borderHoverTablet}
+											mobileValue={borderHoverMobile}
 											onChange={(value) => {
-												setMetaAttribute(value[0], 'hoverBorder');
+												setMetaAttribute(value, 'borderHover');
 											}}
-											onChangeTablet={(value) => setMetaAttribute(value[0], 'tabletHoverBorder')}
-											onChangeMobile={(value) => setMetaAttribute(value[0], 'mobileHoverBorder')}
+											onChangeTablet={(value) => setMetaAttribute(value, 'borderHoverTablet')}
+											onChangeMobile={(value) => setMetaAttribute(value, 'borderHoverMobile')}
 										/>
 										<ResponsiveMeasurementControls
 											label={__('Border Radius', 'kadence-blocks')}
-											value={borderHoverRadius}
-											tabletValue={tabletBorderHoverRadius}
-											mobileValue={mobileBorderHoverRadius}
-											onChange={(value) => setMetaAttribute(value, 'borderHoverRadius')}
+											value={borderRadiusHover}
+											tabletValue={borderRadiusHoverTablet}
+											mobileValue={borderRadiusHoverMobile}
+											onChange={(value) => setMetaAttribute(value, 'borderRadiusHover')}
 											onChangeTablet={(value) =>
-												setMetaAttribute(value, 'tabletBorderHoverRadius')
+												setMetaAttribute(value, 'borderRadiusHoverTablet')
 											}
 											onChangeMobile={(value) =>
-												setMetaAttribute(value, 'mobileBorderHoverRadius')
+												setMetaAttribute(value, 'borderRadiusHoverMobile')
 											}
-											unit={borderHoverRadiusUnit}
+											unit={borderRadiusHoverUnit}
 											units={['px', 'em', 'rem', '%']}
-											onUnit={(value) => setMetaAttribute(value, 'borderHoverRadiusUnit')}
+											onUnit={(value) => setMetaAttribute(value, 'borderRadiusHoverUnit')}
 											max={
-												borderHoverRadiusUnit === 'em' || borderHoverRadiusUnit === 'rem'
+												borderRadiusHoverUnit === 'em' || borderRadiusHoverUnit === 'rem'
 													? 24
 													: 500
 											}
 											step={
-												borderHoverRadiusUnit === 'em' || borderHoverRadiusUnit === 'rem'
+												borderRadiusHoverUnit === 'em' || borderRadiusHoverUnit === 'rem'
 													? 0.1
 													: 1
 											}
@@ -1500,8 +1576,8 @@ export function EditInner(props) {
 					help={__('Separate multiple classes with spaces.')}
 				/>
 			</InspectorAdvancedControls>
-			<Fragment {...innerBlocksProps} ref={componentRef} />
-			<div className="height-ref"></div>
+			<Fragment {...innerBlocksProps} />
+			<span className="height-ref" ref={componentRef} />
 			{/*<SpacingVisualizer*/}
 			{/*	style={ {*/}
 			{/*		marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),*/}

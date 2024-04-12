@@ -119,7 +119,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_media_state( strtolower( $size ) );
 
-		$css->set_selector( '.wp-block-kadence-header' . $unique_id );
+		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > div' );
 
 		$bg = $sized_attributes['background'];
 		$hover_bg = $sized_attributes['backgroundHover'];
@@ -137,6 +137,17 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property('background-attachment', $bg['attachment']);
 			}
 		}
+		$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['border'], 'bottom' ) );
+		$css->add_property( 'border-top', $css->render_border( $sized_attributes['border'], 'top' ) );
+		$css->add_property( 'border-left', $css->render_border( $sized_attributes['border'], 'left' ) );
+		$css->add_property( 'border-right', $css->render_border( $sized_attributes['border'], 'right' ) );
+
+		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > div:hover' );
+
+		$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['borderHover'], 'bottom' ) );
+		$css->add_property( 'border-top', $css->render_border( $sized_attributes['borderHover'], 'top' ) );
+		$css->add_property( 'border-left', $css->render_border( $sized_attributes['borderHover'], 'left' ) );
+		$css->add_property( 'border-right', $css->render_border( $sized_attributes['borderHover'], 'right' ) );
 
 		if ( $sized_attributes['style'] == 'transparent' ) {
 			$css->add_property( 'top', '0px' );
@@ -194,11 +205,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 
 		unset( self::$seen_refs[ $attributes['id'] ] );
 
-//		$header_attributes = $this->get_header_attributes( $attributes['id'] );
-//		$header_attributes = json_decode( json_encode( $header_attributes ), true );
-
 		$name = ! empty( $attributes['name'] ) ? $attributes['name'] : '';
-
 
 		// Inherit values.
 		// Just getting a css class for access to methods.
@@ -216,6 +223,18 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 			array(
 				'class'      => implode( ' ', $wrapper_classes ),
 				'aria-label' => $name,
+				'data-auto-transparent-spacing' => $header_attributes['autoTransparentSpacing'],
+				'data-style' => $header_attributes['style'] ?: 'standard',
+				'data-style-tablet' => $header_attributes['styleTablet'] ?: 'standard',
+				'data-style-mobile' => $header_attributes['styleMobile'] ?: 'standard',
+				'data-sticky-section' => $header_attributes['stickySection'] ?: 'main',
+				'data-sticky-section-tablet' => $header_attributes['stickySectionTablet'] ?: 'main',
+				'data-sticky-section-mobile' => $header_attributes['stickySectionMobile'] ?: 'main',
+				'data-shrink-main' => $header_attributes['shrinkMain'],
+				'data-shrink-main-height' => $header_attributes['shrinkMainHeight'] ?: '',
+				'data-shrink-main-height-tablet' => $header_attributes['shrinkMainHeightTablet'] ?: '',
+				'data-shrink-main-height-mobile' => $header_attributes['shrinkMainHeightMobile'] ?: '',
+				'data-reveal-scroll-up' => $header_attributes['revealScrollUp'],
 			)
 		);
 
@@ -223,6 +242,40 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 			'<div %1$s>%2$s</div>',
 			$wrapper_attributes,
 			$content
+		);
+	}
+
+	/**
+	 * Registers scripts and styles.
+	 */
+	public function register_scripts() {
+		parent::register_scripts();
+		// If in the backend, bail out.
+		if ( is_admin() ) {
+			return;
+		}
+		if ( apply_filters( 'kadence_blocks_check_if_rest', false ) && kadence_blocks_is_rest() ) {
+			return;
+		}
+
+		wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/kb-header-block.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+
+		wp_localize_script(
+			'kadence-blocks-' . $this->block_name,
+			'kadenceHeaderConfig',
+			array(
+				'screenReader' => array(
+					'expand'     => __( 'Child menu', 'kadence' ),
+					'expandOf'   => __( 'Child menu of', 'kadence' ),
+					'collapse'   => __( 'Child menu', 'kadence' ),
+					'collapseOf' => __( 'Child menu of', 'kadence' ),
+				),
+				'breakPoints' => array(
+					'desktop' => 1024,
+					'tablet' => 768,
+				),
+				'scrollOffset' => apply_filters( 'kadence_scroll_to_id_additional_offset', 0 ),
+			),
 		);
 	}
 

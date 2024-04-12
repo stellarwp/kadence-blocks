@@ -25,7 +25,7 @@ import { store as coreStore, EntityProvider, useEntityProp } from '@wordpress/co
 
 import { useEntityAutoDraft } from './hooks';
 import { SelectOrCreatePlaceholder, SelectForm } from './components';
-import { getUniqueId, getPostOrFseId } from '@kadence/helpers';
+import { getUniqueId, getPostOrFseId, getPreviewSize } from '@kadence/helpers';
 
 /**
  * Internal dependencies
@@ -94,6 +94,8 @@ export function Edit(props) {
 		[clientId]
 	);
 
+	const previewStyle = getPreviewSize(previewDevice, style ? style : 'standard', styleTablet, styleMobile);
+
 	const blockClasses = classnames({
 		'wp-block-kadence-header': true,
 		[`wp-block-kadence-header${uniqueID}`]: uniqueID,
@@ -126,17 +128,7 @@ export function Edit(props) {
 		}
 	}, []);
 
-	{
-		/* Directly editing from via kadence_header post type */
-	}
-	if (currentPostType === 'kadence_header') {
-		return (
-			<div {...blockProps}>
-				<EditInner {...props} direct={true} id={postId} />
-			</div>
-		);
-	}
-	return (
+	let mainBlockContent = (
 		<div {...blockProps}>
 			{/* No form selected or selected form was deleted from the site, display chooser */}
 			{(id === 0 || (undefined === postExists && !isLoading)) && (
@@ -213,6 +205,25 @@ export function Edit(props) {
 			)}
 		</div>
 	);
+
+	//Directly editing from via kadence_header post type
+	if (currentPostType === 'kadence_header') {
+		mainBlockContent = (
+			<div {...blockProps}>
+				<EditInner {...props} direct={true} id={postId} />
+			</div>
+		);
+	}
+
+	if (previewStyle == 'transparent') {
+		return (
+			<div className="kb-header-transparent-placeholder">
+				<>{mainBlockContent}</>
+			</div>
+		);
+	} else {
+		return <Fragment>{mainBlockContent}</Fragment>;
+	}
 }
 
 export default Edit;
