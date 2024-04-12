@@ -31,7 +31,7 @@ import { getUniqueId, getPostOrFseId, getPreviewSize } from '@kadence/helpers';
  * Internal dependencies
  */
 import EditInner from './edit-inner';
-import { useEffect } from '@wordpress/element';
+import { useEffect, Fragment } from '@wordpress/element';
 
 export function Edit(props) {
 	const { attributes, setAttributes, clientId } = props;
