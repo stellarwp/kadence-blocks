@@ -16,7 +16,7 @@ import { applyFilters } from '@wordpress/hooks';
  * Import Css
  */
 import './editor.scss';
-export default function FormInputControl({
+export default function DynamicTextInputControl({
 	value,
 	onChange,
 	label,
@@ -31,7 +31,7 @@ export default function FormInputControl({
 	clientId,
 	context,
 }) {
-	const instanceId = useInstanceId(FormInputControl);
+	const instanceId = useInstanceId(DynamicTextInputControl);
 	const onReset = () => {
 		if (typeof reset === 'function') {
 			reset();
