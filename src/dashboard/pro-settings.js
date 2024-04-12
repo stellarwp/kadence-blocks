@@ -40,7 +40,7 @@ class ProBlocksList extends Component {
 			<Fragment>
 				{this.state.ProBlocks && (
 					<Fragment>
-						<h2 className="section-header">{__('Pro Blocks', 'kadence-Blocks')}</h2>
+						<h2 className="section-header">{__('Pro Blocks', 'kadence-blocks')}</h2>
 						<div className="two-col-grid">
 							{map(this.state.ProBlocks, (block) => {
 								const enabled =

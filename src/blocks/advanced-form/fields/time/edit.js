@@ -14,7 +14,7 @@ import {
 	KadencePanelBody,
 	InspectorControlTabs,
 	ResponsiveRangeControls,
-	FormInputControl,
+	DynamicTextInputControl,
 	SelectParentBlock,
 } from '@kadence/components';
 import { useEffect, useState, useMemo } from '@wordpress/element';
@@ -148,7 +148,7 @@ function FieldTime({ attributes, setAttributes, isSelected, clientId, context, n
 									value={helpText}
 									onChange={(value) => setAttributes({ helpText: value })}
 								/>
-								<FormInputControl
+								<DynamicTextInputControl
 									label={__('Default Value', 'kadence-blocks')}
 									value={defaultValue}
 									preview={defaultPreview}

@@ -79,7 +79,7 @@ class Kadence_Blocks_Select_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 			'class' => implode( ' ', $outer_classes ),
 		);
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
-		$default_value = isset( $attributes['defaultValue'] ) ? $attributes['defaultValue'] : '';
+		$default_value = $this->get_default( $attributes );
 		$show_placeholder = true;
 		if ( isset( $attributes['options'] ) && is_array( $attributes['options'] ) ) {
 			foreach ( $attributes['options'] as $option ) {
@@ -103,7 +103,11 @@ class Kadence_Blocks_Select_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 		if ( isset( $attributes['options'] ) && is_array( $attributes['options'] ) ) {
 			foreach ( $attributes['options'] as $option ) {
 				$option_value = $this->get_option_value( $option );
-				$inner_content .= '<option value="' . esc_attr( $option_value ) . '"' . ( $default_value === $option_value ? ' selected' : '' ) . '>' . $option['label'] . '</option>';
+				$is_selected_from_param = ! empty( $option_value ) && $option_value && in_array( $option_value, explode( ',', $default_value ) );
+				$has_multiple_param_values = count( explode( ',', $default_value ) ) > 1;
+				//if you have multiple values coming in from the default value, then this field must be a multi select to preselect options
+				$selected = ( $has_multiple_param_values && $is_multiselect && $is_selected_from_param ) || ( ! $has_multiple_param_values && $is_selected_from_param );
+				$inner_content .= '<option value="' . esc_attr( $option_value ) . '"' . ( $selected ? ' selected' : '' ) . '>' . $option['label'] . '</option>';
 			}
 		}
 		$inner_content .= '</select>';

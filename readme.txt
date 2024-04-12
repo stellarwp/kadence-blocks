@@ -1,4 +1,4 @@
-=== Gutenberg Blocks by Kadence Blocks – Page Builder Features ===
+=== Gutenberg Blocks with AI by Kadence WP – Page Builder Features ===
 Contributors: britner, oakesjosh, woodardmc
 Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
@@ -9,53 +9,115 @@ Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Custom Blocks for Gutenberg to help extend the editing capabilities.
+20+ AI-powered Gutenberg Blocks with endless options, enabling top-notch efficiency for high-performance dynamic website creation.
 
 == Description ==
 
-Kadence Blocks adds custom blocks and options to extend Gutenberg’s editing capabilities so you can create stunning websites with ease – no code required. Kadence Blocks is your toolkit that makes the WordPress block editor capable of creating beautiful content that’s usually only possible through page builder plugins. Each block is crafted with care with regard to performance, accessibility, and extensibility.
+Kadence Blocks, now enhanced with AI tools, elevates Gutenberg’s editing capabilities with custom blocks and options so you can effortlessly craft stunning, high-performance websites. Each block is crafted with care in regard to performance, accessibility, and extensibility.
+
+This toolkit extends the WordPress block editor's functionality, rivaling traditional page builders in creating visually impressive and engaging content without requiring any coding.
+
+With the integration of Kadence AI, enjoy features like AI-powered text generation, smart keyword optimization, and customizable design patterns, making web design more intuitive and efficient than ever before. Kadence AI also includes an inline editor within Kadence blocks so you can edit your content at any time using AI to tailor length, tone, and more. 
 
 = Try Kadence Blocks =
-See Kadence Blocks in action with [the live Demo Testing](https://www.kadencewp.com/kadence-blocks/try/)
+[Try Kadence Blocks](https://www.kadencewp.com/kadence-blocks/try/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) on a free demo site.
+[Try Kadence AI](https://www.kadencewp.com/wordpress-solutions/try-kadence-ai/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) on a free demo site.
 
 = Custom Blocks Include =
-* Row Layout - Create rows with nested blocks either in columns or as a container. Give style to your rows with a background, overlay, padding, etc. [Learn more](https://www.kadencewp.com/kadence-blocks/row-layout-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
-* Advanced Gallery - Create stunning photo galleries, carousels, and sliders! Enable custom links, captions, and more. Plus you can select the image size for performance. [Learn more](https://www.kadencewp.com/kadence-blocks/custom-blocks/advanced-gallery/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
-* Form - Our powerful form block allows you to easily create a contact or marketing form and style it within the block editor. [Learn more](https://www.kadencewp.com/kadence-blocks/form-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
-* Advanced Text - Create a heading or paragraph and define sizes for desktop, tablet and mobile along with font family, colors, etc. [Learn more](https://www.kadencewp.com/kadence-blocks/advanced-heading-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
-* Advanced Button - Create an advanced button or a row of buttons. Style each one, including hover controls. Plus you can use an icon and display them side-by-side. [Learn more](https://www.kadencewp.com/kadence-blocks/advanced-button-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
-* Tabs - Create custom vertical or horizontal tabs with advanced styling controls. Each tab content is an empty canvas able to contain any other blocks. [Learn more](https://www.kadencewp.com/kadence-blocks/tabs-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
-* Accordion - Create beautiful accordions! Each pane is able to contain any other block, customize title styles, content background, and borders. [Learn more](https://www.kadencewp.com/kadence-blocks/accordion-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
-* Testimonials - Create confidence in your brand or product by showing off beautiful and unique testimonials. Display add as a carousel or a grid. [Learn more](https://www.kadencewp.com/kadence-blocks/testimonial-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
-* Icon - Choose from over 1500+ SVG icons to add into your page and style the size, colors, background, border, etc. You can also add multiple icons side-by-side. [Learn more](https://www.kadencewp.com/kadence-blocks/icon-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
-* Spacer / Divider - Easily create a divider and determine the space around it or just create some space in your content. You can even define the height per screen size. [Learn more](https://www.kadencewp.com/kadence-blocks/spacer-divider-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
-* Info Box - Create a box containing an icon or image and, optionally, a title, description, and learn more text. Style static and hover separately. [Learn more](https://www.kadencewp.com/kadence-blocks/info-box-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
-* Icon List - Add beautiful icons to your lists and make them more engaging and attract viewers’ attention. Over 1500 icons to choose from and unlimited styles. [Learn more](https://www.kadencewp.com/kadence-blocks/icon-list-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
-* Countdown - Increase your conversions by adding a sense of urgency to your offering. Pro includes evergreen campaigns as well. [Learn more](https://www.kadencewp.com/kadence-blocks/countdown-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
-* Posts - Display a clean grid of posts anywhere on your site, great for your homepage where you want to tease your blog. [Learn more](https://www.kadencewp.com/kadence-blocks/custom-blocks/post-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
-* Table of Contents - Allow your readers to navigate your content easily with a table of contents block. Includes smooth scroll to anchor. [Learn more](https://www.kadencewp.com/kadence-blocks/table-of-contents/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
-* Lottie Animation - You can import lottie animations into your site. You can choose how the animation plays and control animation speeds, loops, etc. [Learn more](https://www.kadencewp.com/kadence-blocks/custom-blocks/lottie-animations//?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* Accordion – Create [beautiful accordions!](https://www.kadencewp.com/kadence-blocks/custom-blocks/accordion-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) Each panel can contain any other block and customized title styles, content background, and borders.
+* Advanced Button – Create an [advanced button](https://www.kadencewp.com/kadence-blocks/custom-blocks/advanced-button-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) or a row of buttons. Style each one, including hover controls. Plus, you can use an icon and display them side-by-side. 
+* Advanced Form – Our [powerful form block](https://www.kadencewp.com/kadence-blocks/custom-blocks/form-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) allows you to easily create a contact or marketing form and style it within the block editor.
+* Advanced Gallery – Create [stunning photo galleries](https://www.kadencewp.com/kadence-blocks/custom-blocks/advanced-gallery/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks), carousels, and sliders! Customize links, captions, image sizes and more for optimal performance.
+* Advanced Text – Create a [heading or paragraph](https://www.kadencewp.com/kadence-blocks/custom-blocks/advanced-heading-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) and define sizes for desktop, tablet and mobile along with font family, colors, etc. Use Inline AI editor to improve writing, fix spelling and grammar errors, change tone, etc.
+* Countdown – Increase your conversions by adding a sense of urgency to your offering with a [countdown](https://www.kadencewp.com/kadence-blocks/custom-blocks/countdown-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks). Pro includes evergreen campaigns as well. 
+* Count Up - Include an [animated number](https://www.kadencewp.com/help-center/docs/kadence-blocks/count-up-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) counter to pages and posts. This can potentially add interest to what would otherwise be boring numbers on a screen.
+* Info Box – Create an [info box](https://www.kadencewp.com/kadence-blocks/custom-blocks/info-box-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) containing an icon or image and, optionally, a title, description, and learn more text. Style static and hover separately.
+* Icon – Choose from over 1500+ [SVG icons](https://www.kadencewp.com/kadence-blocks/custom-blocks/icon-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) to add into your page and style the size, colors, background, border, etc. You can also add multiple icons side-by-side.
+* Icon List – Add [beautiful icons](https://www.kadencewp.com/kadence-blocks/custom-blocks/icon-list-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) to your lists and make them more engaging and attract viewers’ attention. Over 1500 icons to choose from and unlimited styles.
+* Lottie Animation – You can import [lottie animations](https://www.kadencewp.com/kadence-blocks/custom-blocks/lottie-animations/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) into your site. You can choose how the animation plays and control animation speeds, loops, etc. 
+* Posts – Display a clean [grid of posts](https://www.kadencewp.com/kadence-blocks/custom-blocks/post-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) anywhere on your site, great for your homepage where you want to tease your blog.
+* Progress Bar - Show [progress visually](https://www.kadencewp.com/help-center/docs/kadence-blocks/progress-bar-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks), including how much of a goal has been met, satisfaction rates, and many other use cases.
+* Row Layout – [Create rows](https://www.kadencewp.com/kadence-blocks/row-layout-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) with nested blocks in columns or as a container. Give style to your rows with a background, overlay, padding, etc.
+* Section – [Design sections](https://www.kadencewp.com/help-center/docs/kadence-blocks/section-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) of content in Row Layout blocks. Add any block to the section and design it using block settings.
+* Show More – Easily [add previews](https://www.kadencewp.com/help-center/docs/kadence-blocks/show-more-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) to content with nested blocks of any type. Adjust preview size by device type, apply a fade out, customize advanced buttons, and more. 
+* Spacer / Divider – Easily [create a divider](https://www.kadencewp.com/kadence-blocks/spacer-divider-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) and determine the space around it, or just create some space in your content. You can even define the height per screen size.
+* Table of Contents – [Quickly navigate](https://www.kadencewp.com/kadence-blocks/table-of-contents/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) to headings within your post or page by automatically creating anchor links and a smooth scroll.
+* Tabs – Create custom vertical or horizontal [tab layouts](https://www.kadencewp.com/kadence-blocks/custom-blocks/tabs-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) with advanced styling controls. Each tab content is an empty canvas able to contain any other blocks.
+* Testimonials – Create confidence in your brand or product by showing off beautiful and unique [testimonials](https://www.kadencewp.com/help-center/docs/kadence-blocks/testimonial-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks). Display as a carousel or a grid.
 
 = Video Tutorial =
-https://www.youtube.com/watch?v=SYb24ncjVsY
+https://www.youtube.com/watch?v=46P3kMrpFkQ
 
 = Key Block Features =
-* Intelligent Load – Kadence Blocks only loads CSS or Javascript when you need it and only for the blocks you are using on a specific page.
-* Responsive Controls – Tweak your design for each screen size. Edit tablet and mobile settings while previewing in WordPress editor.
-* Typography Controls – Choose from 900+ Google fonts and design your site with complete typography control.
-* Color & Background Controls – Gradients, overlays, parallax backgrounds, borders, etc. You can control all the design settings!
-* Configurable Defaults – Make development a breeze. Once the default settings are defined, every time you add a block those settings will automatically be applied.
-* Setting Visibility Controls – Hide block settings from certain user roles so they can focus on content and you can keep them out of the block designs.
-* Spacing Controls – Control paddings and margins for your blocks in whatever units you like. Customize responsively for precision spacing and design.
+* Inline AI Content Editor – Generate and [improve text on the fly with AI](https://www.kadencewp.com/kadence-ai-wordpress-website-builder/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks). Easily tailor your message and  tone to ensure your content stays polished, impactful, and error-free.
+* Design Library with AI – Overcome creative blocks and assemble a site in no time. Our [AI-powered Design Library](https://www.kadencewp.com/help-center/docs/kadence-blocks/how-to-control-the-kadence-design-library/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) offers hundreds of pre-built patterns and pages tailored to your unique brand 
+* Intelligent Load: Kadence Blocks won’t slow down your website because it only loads CSS or Javascript when you need it- and only for the blocks you are using on a specific page.
+* Responsive Controls: Tweak your design for each screen size. Edit tablet and mobile settings while previewing in WordPress editor.
+* Typography Controls: Choose from 900+ Google fonts and design your site with complete typography control.
+* Color & Background Controls: Gradients, overlays, parallax backgrounds, borders, etc. You can control all the design settings!
+* Configurable Defaults: Make development a breeze. Once the default settings are defined, every time you add a block those settings will automatically be applied.
+* Setting Visibility Controls: Hide block settings from certain user roles so they can focus on content and you can keep them out of the block designs.
+* Spacing Controls: Control paddings and margins for your blocks in whatever units you like. Customize responsively for precision spacing and design.
 
+= Connect With Our Community =
+Naturally, the web creation process comes along with endless questions, creative ideas, and is ripe for collaborative opportunities. That’s where our thriving Facebook community, with over 12,000 members and counting, becomes an invaluable resource.
+
+Whether seeking answers to specific questions, looking for constructive feedback on your website, or eager to uncover innovative ways to leverage Kadence tools, our community is here to support and inspire you.
+
+* Join the [Web Creator Community](https://www.facebook.com/groups/webcreatorcommunity) Facebook Group.
+* Subscribe to the [Kadence WP newsletter](https://www.kadencewp.com/newsletter-subscribe/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) for the latest updates and insights.
+* Listen to our podcast, the [Kadence Beat](https://www.youtube.com/playlist?list=PLz7FUcdXQ3YBhruufxJwDiO-H63MC1Bke), where we explore web creation strategies together.
+
+Check out some tutorials by creators who love Kadence (and think you should, too 🙂):
+
+* [Kadence Blocks Tutorials](https://youtube.com/playlist?list=PLV0AfjbtxNdrAg6ynj2PGSGZ--IAiluxJ&si=ZbIhYyFGn6YOrQm6) by StartBlogging101
+* [The Ultimate Kadence Guide for Beginners](https://youtu.be/ZWavuOtC5Yw?si=n9D5BZ8AbptHiwtO) by CliftonWP
+* [First look at the New Kadence AI Starter Templates](https://youtu.be/2iOyifwwuCY?si=24Hw5RXGcLBAPhy1) by Easy WordPress Tricks
+
+= Get More from Kadence WP =
+Enhance your page building experience even more with these additional [Pro Blocks](https://www.kadencewp.com/kadence-blocks/pro/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks):
+* [Advanced Query Loop](https://www.kadencewp.com/help-center/docs/kadence-blocks/advanced-query-loop-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* [Advanced Slider](https://www.kadencewp.com/help-center/docs/kadence-blocks/advanced-slider/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* [Image Overlay](https://www.kadencewp.com/help-center/docs/kadence-blocks/image-overlay-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* [Modal](https://www.kadencewp.com/help-center/docs/kadence-blocks/modal-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* [Post Grid/Carousel](https://www.kadencewp.com/help-center/docs/kadence-blocks/kadence-blocks-post-grid-carousel-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* [Product Carousel](https://www.kadencewp.com/help-center/docs/kadence-blocks/product-carousel-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* [Repeater](https://www.kadencewp.com/help-center/docs/kadence-blocks/repeater/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* [Split Content](https://www.kadencewp.com/help-center/docs/kadence-blocks/split-content-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* [Video Popup](https://www.kadencewp.com/help-center/docs/kadence-blocks/video-popup-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* …and [more!](https://www.kadencewp.com/help-center/docs/kadence-blocks/kadence-blocks-pro-plugin/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+
+Get over creative blocks and engage your viewers further with these [Premium Features](https://www.kadencewp.com/kadence-blocks/pro/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks):
+* Animate on Scroll
+* [Custom Icons](https://www.kadencewp.com/help-center/docs/kadence-blocks/custom-icons/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* [Custom Fonts](https://www.kadencewp.com/help-center/docs/kadence-blocks/kadence-custom-fonts/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* [Dynamic Content](https://www.kadencewp.com/help-center/docs/kadence-blocks/dynamic-content/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* Page Specific Scripts
+* 400+ [Design Library](https://www.kadencewp.com/introducing-the-innovative-kadence-design-library-revolutionizing-the-world-of-design-patterns/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) patterns with custom AI-powered content
+* Up to 8,000 [AI Credits](https://www.kadencewp.com/wordpress-solutions/kadence-ai/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) per year for starter templates, design library and inline text editing
+
+Power-up your WordPress site with the comprehensive [Kadence WP suite](https://www.kadencewp.com/wordpress-solutions/all-individual-premium-products/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks):
+* Start with the [Kadence Theme](https://www.kadencewp.com/kadence-theme/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) for a flexible, fast, and lightweight foundation.
+* Create personalized, professionally designed websites in minutes with [AI-powered starter templates](https://www.kadencewp.com/wordpress-solutions/kadence-ai/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks). 
+* Seamlessly integrate powerful WooCommerce capabilities through [ShopKit](https://www.kadencewp.com/kadence-shopkit/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks).
+* Upgrade your marketing strategy and boost revenue with [Kadence Conversions](https://www.kadencewp.com/kadence-conversions/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks). 
+* Create a custom library of templates on [Kadence Pattern Hub](https://www.kadencewp.com/kadence-cloud/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) and commoditize your design talents. 
+
+Each tool is designed to work in harmony, providing a full-suite solution for building, managing, and growing your online presence with ease.
+
+= About the Kadence WP Team =
+
+Hello! We are Kadence and we reside in the beautiful city of Missoula, Montana. We find ourselves every day grateful to live in the heart of Big Sky Country where the mountains are plentiful and the rivers run wild. If we’re not writing code or answering support, you can probably find us deep in the woods, exploring and getting lost. We believe that life is meant to be lived to the fullest and we do our best to make the most of every day. Please feel free to leave comments or questions through the contact form. We love hearing what you have to say.
+
+As a brand, we create clean and professional class WordPress tools that help everyday people create beautiful websites. Our name is simply a different spelling of the word "cadence" which means "a rhythmic flow of a sequence of sounds or words: the cadence of a language."
 
 = Source files =
 
-[github](https://github.com/kadencewp/kadence-blocks)
+[github](https://github.com/stellarwp/kadence-blocks)
 
 = Support =
 
-We are happy to help as best we can with questions! Please use the support forums.
+Need support? Our expert team is eager to assist you with any queries. Please reach out through our dedicated [support forms](https://www.kadencewp.com/free-support-tickets/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) for prompt and helpful guidance.
 
 == Installation ==
 
@@ -87,6 +149,10 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 3.2.35 =
+Release Date: April TBD 2024
+* Fix: Variable font sizes on tab titles in tabs block
 
 = 3.2.34 =
 Release Date: April 10th 2024

@@ -103,11 +103,17 @@ class Kadence_Blocks_Svg_Render {
 		}
 		return $block_content;
 	}
+
 	/**
-	 * Return or echo an SVG icon matching the provided key
+	 *  Return or echo an SVG icon matching the provided key
 	 *
-	 * @param string  $name the name of the svg.
-	 * @param boolean $echo wheather or not to echo.
+	 * @param $name
+	 * @param $fill
+	 * @param $stroke_width
+	 * @param $title
+	 * @param $hidden
+	 * @param $extras string Escape any attributes passed to this
+	 * @param $echo
 	 *
 	 * @return string|void
 	 */
