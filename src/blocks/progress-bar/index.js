@@ -28,7 +28,6 @@ registerBlockType('kadence/progress-bar', {
 				'data-align': attributes.align,
 			};
 		}
-		return;
 	},
 	edit,
 	save: () => null,
