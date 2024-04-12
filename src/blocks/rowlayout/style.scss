@@ -39,6 +39,11 @@
 	padding-left: var(--global-content-edge-padding, 15px);
 	padding-right: var(--global-content-edge-padding, 15px);
 }
+.kb-row-layout-wrap {
+	.wp-block-kadence-column .kt-inside-inner-col {
+		word-break: break-word;
+	}
+}
 .kt-inner-column-height-full:not(.kt-row-layout-row) {
 	grid-auto-rows: minmax(0, 1fr);
 	> .wp-block-kadence-column > .kt-inside-inner-col {
