@@ -215,15 +215,14 @@ export function Edit(props) {
 		);
 	}
 
-	if (previewStyle == 'transparent') {
+	if (previewStyle === 'transparent') {
 		return (
 			<div className="kb-header-transparent-placeholder">
 				<>{mainBlockContent}</>
 			</div>
 		);
-	} else {
-		return <Fragment>{mainBlockContent}</Fragment>;
 	}
+	return <Fragment>{mainBlockContent}</Fragment>;
 }
 
 export default Edit;
