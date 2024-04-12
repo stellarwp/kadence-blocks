@@ -150,6 +150,10 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.2.35 =
+Release Date: April TBD 2024
+* Fix: Variable font sizes on tab titles in tabs block
+
 = 3.2.34 =
 Release Date: April 10th 2024
 * Update: Increase Max/Min inputs for padding/margin controls.
