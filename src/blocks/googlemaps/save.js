@@ -38,6 +38,7 @@ export function Save({ attributes }) {
 			{apiType === 'javascript' ? (
 				<div id={`kb-google-map${uniqueID}`} style={{ width: '100%', height: '100%' }}></div>
 			) : (
+				// eslint-disable-next-line jsx-a11y/iframe-has-title
 				<iframe
 					width={'100%'}
 					height={'100%'}

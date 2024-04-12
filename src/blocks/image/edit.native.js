@@ -390,7 +390,7 @@ export class ImageEdit extends Component {
 				icon={textColor}
 				footerNote={
 					<>
-						{__('Describe the purpose of the image. Leave empty if the image is purely decorative. ')}
+						{__('Describe the purpose of the image. Leave empty if the image is purely decorative.')}
 						<FooterMessageLink
 							href={'https://www.w3.org/WAI/tutorials/images/decision-tree/'}
 							value={__('What is alt text?')}
@@ -418,7 +418,7 @@ export class ImageEdit extends Component {
 
 		const removeFeaturedButton = () => (
 			<BottomSheet.Cell
-				label={__('Remove as Featured Image ')}
+				label={__('Remove as Featured Image')}
 				labelStyle={[setFeaturedButtonStyle, styles.removeFeaturedButton]}
 				cellContainerStyle={styles.setFeaturedButtonCellContainer}
 				separatorType={'none'}
@@ -428,7 +428,7 @@ export class ImageEdit extends Component {
 
 		const setFeaturedButton = () => (
 			<BottomSheet.Cell
-				label={__('Set as Featured Image ')}
+				label={__('Set as Featured Image')}
 				labelStyle={setFeaturedButtonStyle}
 				cellContainerStyle={styles.setFeaturedButtonCellContainer}
 				separatorType={'none'}
