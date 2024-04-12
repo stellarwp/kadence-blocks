@@ -9,7 +9,12 @@ import { TextControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps, store as blockEditorStore } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { KadencePanelBody, InspectorControlTabs, FormInputControl, SelectParentBlock } from '@kadence/components';
+import {
+	KadencePanelBody,
+	InspectorControlTabs,
+	DynamicTextInputControl,
+	SelectParentBlock,
+} from '@kadence/components';
 import { useEffect, useState, useMemo } from '@wordpress/element';
 import { getUniqueId } from '@kadence/helpers';
 import classNames from 'classnames';
@@ -90,7 +95,7 @@ function FieldHidden({ attributes, setAttributes, isSelected, clientId, context,
 									value={label}
 									onChange={(value) => setAttributes({ label: value })}
 								/>
-								<FormInputControl
+								<DynamicTextInputControl
 									label={__('Default Value', 'kadence-blocks')}
 									value={defaultValue}
 									preview={defaultPreview}

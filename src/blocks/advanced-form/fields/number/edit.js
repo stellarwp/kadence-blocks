@@ -20,7 +20,7 @@ import {
 	KadencePanelBody,
 	InspectorControlTabs,
 	ResponsiveRangeControls,
-	FormInputControl,
+	DynamicTextInputControl,
 	SelectParentBlock,
 } from '@kadence/components';
 import { useEffect, useState, useMemo } from '@wordpress/element';
@@ -168,7 +168,7 @@ function FieldNumber({ attributes, setAttributes, isSelected, clientId, context,
 									value={placeholder}
 									onChange={(value) => setAttributes({ placeholder: value })}
 								/>
-								<FormInputControl
+								<DynamicTextInputControl
 									label={__('Default Value', 'kadence-blocks')}
 									value={defaultValue}
 									preview={defaultPreview}
