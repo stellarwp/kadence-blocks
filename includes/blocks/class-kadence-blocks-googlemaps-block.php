@@ -179,6 +179,12 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 			$this->enqueue_script( 'kadence-blocks-googlemaps-js' );
 		}
 
+		// Process potential dynamic attribute.
+		$location = '';
+		if ( isset( $attributes['location'] ) && $attributes['location'] ) {
+			$location = do_shortcode( $attributes['location'] );
+		}
+
 		if ( $updated_version ) {
 			$wrapper_args = array(
 				'class' => 'kb-google-maps-container kb-google-maps-container' . $unique_id . ' ' . ( ! empty( $attributes['align'] ) ? 'align' . $attributes['align'] : '' ),
@@ -196,10 +202,10 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 					'key'     => 'KADENCE_GOOGLE_MAPS_KEY',
 					'zoom'    => $attributes['zoom'],
 					'maptype' => $attributes['mapType'],
-					'q'       => $attributes['location']
+					'q'       => $location,
 				);
 				// translators: %s is the location.
-				$title = sprintf( __( 'Google map of %s', 'kadence-blocks' ), $attributes['location'] );
+				$title = sprintf( __( 'Google map of %s', 'kadence-blocks' ), $location );
 				$content .= '<iframe width="100%" height="100%"
 							style="border:0" loading="lazy"
 							src="https://www.google.com/maps/embed/v1/place?' . http_build_query( $mapQueryParams ) . '"

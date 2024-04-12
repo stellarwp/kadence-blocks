@@ -144,7 +144,7 @@ function GenerateHeader({ context, contextLabel, contextState, generateContext }
 					/* translators: %s: the current context */
 					__(
 						'Using the site information you provided we will generate copy for the %s context.',
-						'kadence Blocks'
+						'kadence-blocks'
 					),
 					contextLabel
 				)}

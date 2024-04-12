@@ -249,44 +249,22 @@ class Kadence_Blocks_Table_Of_Contents {
 			}
 			$headings = self::$the_headings;
 			if ( $attributes && isset( $attributes['allowedHeaders'] ) && isset( $attributes['allowedHeaders'][0] ) && is_array( $attributes['allowedHeaders'][0] ) ) {
-				if ( isset( $attributes['allowedHeaders'][0]['h1'] ) && ! $attributes['allowedHeaders'][0]['h1'] ) {
+				foreach ( array( 'h1' => 1, 'h2' => 2, 'h3' => 3, 'h4' => 4, 'h5' => 5, 'h6' => 6 ) as $tag => $level ) {
+
 					foreach ( $headings as $headkey => $headvalue ) {
-						if ( $headvalue['level'] === 1 ) {
+						// User is specifically excluding this heading.
+						if( false === $headvalue['include'] ) {
+
 							unset( $headings[$headkey] );
 						}
-					}
-				}
-				if ( isset( $attributes['allowedHeaders'][0]['h2'] ) && ! $attributes['allowedHeaders'][0]['h2'] ) {
-					foreach ( $headings as $headkey => $headvalue ) {
-						if ( $headvalue['level'] === 2 ) {
-							unset( $headings[$headkey] );
+
+						// User is specifically including this heading, or, it's in the allowed headers list.
+						if ( true === $headvalue['include'] || ( !isset( $attributes['allowedHeaders'][0][$tag] ) || $attributes['allowedHeaders'][0][$tag] ) ) {
+							continue;
 						}
-					}
-				}
-				if ( isset( $attributes['allowedHeaders'][0]['h3'] ) && ! $attributes['allowedHeaders'][0]['h3'] ) {
-					foreach ( $headings as $headkey => $headvalue ) {
-						if ( $headvalue['level'] === 3 ) {
-							unset( $headings[$headkey] );
-						}
-					}
-				}
-				if ( isset( $attributes['allowedHeaders'][0]['h4'] ) && ! $attributes['allowedHeaders'][0]['h4'] ) {
-					foreach ( $headings as $headkey => $headvalue ) {
-						if ( $headvalue['level'] === 4 ) {
-							unset( $headings[$headkey] );
-						}
-					}
-				}
-				if ( isset( $attributes['allowedHeaders'][0]['h5'] ) && ! $attributes['allowedHeaders'][0]['h5'] ) {
-					foreach ( $headings as $headkey => $headvalue ) {
-						if ( $headvalue['level'] === 5 ) {
-							unset( $headings[$headkey] );
-						}
-					}
-				}
-				if ( isset( $attributes['allowedHeaders'][0]['h6'] ) && ! $attributes['allowedHeaders'][0]['h6'] ) {
-					foreach ( $headings as $headkey => $headvalue ) {
-						if ( $headvalue['level'] === 6 ) {
+
+						// Heading is at an unwanted level.
+						if ( $headvalue['level'] === $level ) {
 							unset( $headings[$headkey] );
 						}
 					}
@@ -585,6 +563,15 @@ class Kadence_Blocks_Table_Of_Contents {
 				if ( $heading->getAttribute( 'data-alt-title' ) ) {
 					$heading->textContent = $heading->getAttribute( 'data-alt-title' );
 				}
+
+				if( $heading->getAttribute( 'data-toc-include' ) === 'true' ){
+					$heading->include = true;
+				} else if ( $heading->getAttribute( 'data-toc-include' ) === 'false' ) {
+					$heading->include = false;
+				} else {
+					$heading->include = '';
+				}
+
 				if ( $anchor_string ) {
 					$add = true;
 					foreach ( self::$headings as $v ) {
@@ -597,6 +584,7 @@ class Kadence_Blocks_Table_Of_Contents {
 							'anchor'  => $anchor_string,
 							'content' => $this->convert_smart_quotes( $heading->textContent ),
 							'level'   => $level,
+							'include'   => $heading->include,
 							'page'    => $headings_page,
 						);
 					}
@@ -605,6 +593,7 @@ class Kadence_Blocks_Table_Of_Contents {
 					'anchor'  => $anchor,
 					'content' => $this->convert_smart_quotes( $heading->textContent ),
 					'level'   => $level,
+					'include'   => $heading->include,
 					'page'    => $headings_page,
 				);
 			},
@@ -889,6 +878,16 @@ class Kadence_Blocks_Table_Of_Contents {
 			}
 		}
 		return $content;
+	}
+
+	/*
+	 * Reset the instance properties for unit tests
+	 */
+	private static function reset_instance() {
+		self::$headings = array();
+		self::$anchors = array();
+		self::$the_headings = null;
+		self::$output_content = '';
 	}
 
 }

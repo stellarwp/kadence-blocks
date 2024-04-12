@@ -88,7 +88,7 @@ export function LargeBanner({
 						<div className="kb-large-banner__subheading">{hasPro ? subHeadingPro : subHeading}</div>
 						{showControls && (
 							<a className="uplink-authorize" href={activateUrl}>
-								{hasPr && data_key
+								{hasPro && data_key
 									? __('Connect Blocks Pro License to Site', 'kadence-blocks')
 									: buttonText}
 							</a>

@@ -1,0 +1,68 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "kadence/off-canvas",
+	"parent": ["kadence/header"],
+	"category": "design",
+	"description": "Off Canvas block",
+	"supports": {
+		"inserter": true
+	},
+	"textdomain": "kadence-blocks",
+	"attributes": {
+		"uniqueID": {
+			"type": "string"
+		},
+		"slideFrom": {
+			"type": "string",
+			"default": "left"
+		},
+		"widthType": {
+			"type": "string",
+			"default": "partial"
+		},
+		"maxWidth": {
+			"type": "number"
+		},
+		"maxWidthTablet": {
+			"type": "number"
+		},
+		"maxWidthMobile": {
+			"type": "number"
+		},
+		"maxWidthUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"backgroundColor": {
+			"type": "string",
+			"default": "rgba(0, 0, 0, 0.6)"
+		},
+		"pageBackgroundColor": {
+			"type": "string"
+		},
+		"padding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"tabletPadding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"mobilePadding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"paddingUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"closeIcon": {
+			"type": "string",
+			"default": "times"
+		},
+		"closeIconColor": {
+			"type": "string"
+		}
+	}
+}

@@ -218,8 +218,8 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		$progress_color = ! empty( $attributes['progressColor'] ) ? $css->sanitize_color( $attributes['progressColor'], $attributes['progressOpacity'] ) : 'var(--global-palette1, #2B6CB0)';
 		$bar_background = ! empty( $attributes['barBackground'] ) ? $css->sanitize_color( $attributes['barBackground'], $attributes['barBackgroundOpacity'] ) : 'var(--global-palette7, #EDF2F7)';
 
-		$prefix       = isset( $attributes['numberPrefix'] ) ? $attributes['numberPrefix'] : '';
-		$suffix       = isset( $attributes['numberSuffix'] ) ? $attributes['numberSuffix'] : '';
+		$prefix       = isset( $attributes['numberPrefix'] ) ? esc_attr( $attributes['numberPrefix'] ) : '';
+		$suffix       = isset( $attributes['numberSuffix'] ) ? esc_attr( $attributes['numberSuffix'] ) : '';
 		$progress_min = 0;
 		$progress_amount = ! empty( $attributes['progressAmount'] ) ? $attributes['progressAmount'] : 0;
 		$progress_max = ! empty( $attributes['progressMax'] ) ? $attributes['progressMax'] : 100;

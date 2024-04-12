@@ -1167,8 +1167,8 @@ export function Edit(props) {
 									}}
 									onChangeTablet={(value) => setAttributes({ tabletLabelPadding: value })}
 									onChangeMobile={(value) => setAttributes({ mobileLabelPadding: value })}
-									min={labelPaddingType === 'em' || labelPaddingType === 'rem' ? -12 : -200}
-									max={labelPaddingType === 'em' || labelPaddingType === 'rem' ? 24 : 200}
+									min={labelPaddingType === 'em' || labelPaddingType === 'rem' ? -12 : -999}
+									max={labelPaddingType === 'em' || labelPaddingType === 'rem' ? 24 : 999}
 									step={labelPaddingType === 'em' || labelPaddingType === 'rem' ? 0.1 : 1}
 									unit={labelPaddingType}
 									units={['px', 'em', 'rem', '%', 'vh']}
@@ -1193,8 +1193,8 @@ export function Edit(props) {
 							}}
 							onChangeTablet={(value) => setAttributes({ tabletMargin: value })}
 							onChangeMobile={(value) => setAttributes({ mobileMargin: value })}
-							min={marginType === 'em' || marginType === 'rem' ? -12 : -200}
-							max={marginType === 'em' || marginType === 'rem' ? 24 : 200}
+							min={marginType === 'em' || marginType === 'rem' ? -12 : -999}
+							max={marginType === 'em' || marginType === 'rem' ? 24 : 999}
 							step={marginType === 'em' || marginType === 'rem' ? 0.1 : 1}
 							unit={marginType}
 							units={['px', 'em', 'rem', '%', 'vh']}

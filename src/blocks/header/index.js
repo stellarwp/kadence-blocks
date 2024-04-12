@@ -16,6 +16,8 @@ import './children/container-tablet';
 import './children/row';
 import './children/column';
 import './children/section';
+import './children/off-canvas';
+import './children/off-canvas-trigger';
 
 /**
  * Internal dependencies

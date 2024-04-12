@@ -130,6 +130,7 @@
 		}
 	},
 	"supports": {
-		"kbMetadata": true
+		"kbMetadata": true,
+		"ktdynamic": true
 	}
 }

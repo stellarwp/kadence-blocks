@@ -1,0 +1,38 @@
+.wp-block-kadence-header-desktop {
+	.wp-block-kadence-header-row {
+		display: grid !important;
+		grid-template-columns: 1fr auto 1fr;
+	}
+
+	.wp-block-kadence-header-column-center {
+		display: flex !important;
+		justify-content: center;
+	}
+
+	.wp-block-kadence-header-section {
+		display: flex !important;
+		align-items: center;
+
+		.wp-block-kadence-header-column {
+			display: flex !important;
+			align-items: center;
+		}
+
+		// Override a style we set elsewhere
+		p {
+			margin-bottom: unset;
+		}
+	}
+
+	.wp-block-kadence-header-column-center-left {
+		flex-grow: 1;
+		display: flex !important;
+		justify-content: flex-end !important;
+	}
+
+	.wp-block-kadence-header-column-center-right {
+		flex-grow: 1;
+		display: flex !important;
+		justify-content: flex-start !important;
+	}
+}

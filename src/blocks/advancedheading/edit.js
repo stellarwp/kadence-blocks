@@ -1720,8 +1720,8 @@ function KadenceAdvancedHeading(props) {
 										onChange={(value) => setAttributes({ iconPadding: value })}
 										onChangeTablet={(value) => setAttributes({ tabletIconPadding: value })}
 										onChangeMobile={(value) => setAttributes({ mobileIconPadding: value })}
-										min={iconPaddingUnit === 'em' || iconPaddingUnit === 'rem' ? -2 : -200}
-										max={iconPaddingUnit === 'em' || iconPaddingUnit === 'rem' ? 12 : 200}
+										min={iconPaddingUnit === 'em' || iconPaddingUnit === 'rem' ? -2 : -999}
+										max={iconPaddingUnit === 'em' || iconPaddingUnit === 'rem' ? 12 : 999}
 										step={iconPaddingUnit === 'em' || iconPaddingUnit === 'rem' ? 0.1 : 1}
 										unit={iconPaddingUnit}
 										units={['px', 'em', 'rem']}
@@ -1845,7 +1845,7 @@ function KadenceAdvancedHeading(props) {
 										onChangeTablet={(value) => setAttributes({ markTabPadding: value })}
 										onChangeMobile={(value) => setAttributes({ markMobilePadding: value })}
 										min={0}
-										max={markPaddingType === 'em' || markPaddingType === 'rem' ? 12 : 200}
+										max={markPaddingType === 'em' || markPaddingType === 'rem' ? 12 : 999}
 										step={markPaddingType === 'em' || markPaddingType === 'rem' ? 0.1 : 1}
 										unit={markPaddingType}
 										units={['px', 'em', 'rem', '%']}
@@ -1870,7 +1870,7 @@ function KadenceAdvancedHeading(props) {
 											onChangeTablet={(value) => setAttributes({ tabletPadding: value })}
 											onChangeMobile={(value) => setAttributes({ mobilePadding: value })}
 											min={0}
-											max={paddingType === 'em' || paddingType === 'rem' ? 12 : 200}
+											max={paddingType === 'em' || paddingType === 'rem' ? 12 : 999}
 											step={paddingType === 'em' || paddingType === 'rem' ? 0.1 : 1}
 											unit={paddingType}
 											units={['px', 'em', 'rem', '%']}
@@ -1888,8 +1888,8 @@ function KadenceAdvancedHeading(props) {
 											}}
 											onChangeTablet={(value) => setAttributes({ tabletMargin: value })}
 											onChangeMobile={(value) => setAttributes({ mobileMargin: value })}
-											min={marginType === 'em' || marginType === 'rem' ? -25 : -400}
-											max={marginType === 'em' || marginType === 'rem' ? 25 : 400}
+											min={marginType === 'em' || marginType === 'rem' ? -25 : -999}
+											max={marginType === 'em' || marginType === 'rem' ? 25 : 999}
 											step={marginType === 'em' || marginType === 'rem' ? 0.1 : 1}
 											unit={marginType}
 											units={['px', 'em', 'rem', '%', 'vh']}

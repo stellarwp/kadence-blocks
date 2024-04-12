@@ -3,8 +3,9 @@
 namespace Tests\Support\Classes;
 
 use Codeception\TestCase\WPTestCase;
+use Tests\wpunit\KadenceBlocksTestCase;
 
-abstract class KadenceBlocksUnit extends WPTestCase {
+abstract class KadenceBlocksUnit extends KadenceBlocksTestCase {
 
 	/**
 	 * @var \WpunitTester

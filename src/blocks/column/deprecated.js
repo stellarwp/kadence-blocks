@@ -579,6 +579,7 @@ export default [
 						<InnerBlocks.Content />
 					</div>
 					{link && (
+						// eslint-disable-next-line jsx-a11y/anchor-has-content
 						<a
 							href={link}
 							className={`kb-section-link-overlay`}
@@ -1131,6 +1132,7 @@ export default [
 						<InnerBlocks.Content />
 					</div>
 					{link && (
+						// eslint-disable-next-line jsx-a11y/anchor-has-content
 						<a
 							href={link}
 							className={`kb-section-link-overlay`}

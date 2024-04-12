@@ -784,9 +784,9 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		}
 		$padding_bottom = '';
 		if ( ( 'masonry' === $type ) && ! empty( $image['width'] ) && ! empty( $image['height'] ) ) {
-			$padding_bottom = floor( ( $image['height'] / $image['width'] ) * 100 );
+			$padding_bottom = esc_attr( floor( ( $image['height'] / $image['width'] ) * 100 ) );
 		} else if ( ! empty( $image_ratio ) && 'inherit' === $image_ratio && 'grid' === $type && ! empty( $image['width'] ) && ! empty( $image['height'] ) ) {
-			$padding_bottom = floor( ( $image['height'] / $image['width'] ) * 100 );
+			$padding_bottom = esc_attr( floor( ( $image['height'] / $image['width'] ) * 100 ) );
 		}
 		if ( $lazy_load && ( 'carousel' === $type || 'slider' === $type || 'thumbslider' === $type || 'fluidcarousel' === $type ) ) {
 			$img = '<div class="' . esc_attr( implode( ' ', $image_contain_classes ) ) . '" ' . ( ! empty( $padding_bottom ) ? 'style="padding-bottom:' . $padding_bottom . '%;"' : '' ) . '><img src="' . "data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201000%20667'%3E%3C/svg%3E" . '"  data-splide-lazy="' . esc_attr( $image_src ) . '" ' . ( ! empty( $image['width'] ) ? 'width="' . $image['width'] . '"' : '' ) . ' ' . ( ! empty( $image['height'] ) ? 'height="' . $image['height'] . '"' : '' ) . ' alt="' . esc_attr( $image_alt ) . '" data-full-image="' . esc_attr( $image_full ) . '" data-light-image="' . esc_attr( $image_full ) . '" ' . $this->get_image_srcset_output( $image_id, $image_src, $image['width'], $image['height'] ) . 'data-id="' . esc_attr( $image_id ) . '" class="' . esc_attr( implode( ' ', $image_classes ) ) . '"/></div>';

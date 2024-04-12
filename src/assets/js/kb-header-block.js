@@ -504,7 +504,7 @@ class KBHeader {
 	/**
 	 * Returns options.
 	 *
-	 * @return An object with the latest options.
+	 * @return {string} An object with the latest options.
 	 */
 	get state() {
 		return this._state;

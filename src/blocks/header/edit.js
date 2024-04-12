@@ -31,7 +31,7 @@ import { getUniqueId, getPostOrFseId, getPreviewSize } from '@kadence/helpers';
  * Internal dependencies
  */
 import EditInner from './edit-inner';
-import { useEffect } from '@wordpress/element';
+import { useEffect, Fragment } from '@wordpress/element';
 
 export function Edit(props) {
 	const { attributes, setAttributes, clientId } = props;
@@ -221,9 +221,8 @@ export function Edit(props) {
 				<>{mainBlockContent}</>
 			</div>
 		);
-	} else {
-		return <Fragment>{mainBlockContent}</Fragment>;
 	}
+	return <Fragment>{mainBlockContent}</Fragment>;
 }
 
 export default Edit;
