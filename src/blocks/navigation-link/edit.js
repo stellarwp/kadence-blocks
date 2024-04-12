@@ -297,7 +297,6 @@ export default function Edit(props) {
 	const [popoverAnchor, setPopoverAnchor] = useState(null);
 	const listItemRef = useRef(null);
 	const isDraggingWithin = useIsDraggingWithin(listItemRef);
-	const itemLabelPlaceholder = hideLabel ? __('Hidden Label') : __('Add label…');
 	const ref = useRef();
 
 	//See if this is the first Nav Item in the menu
@@ -1716,65 +1715,69 @@ export default function Edit(props) {
 					<a className={classes}>
 						<span className="link-drop-title-wrap">
 							{/* eslint-enable */}
-							{!url ? (
-								<div className="wp-block-navigation-link__placeholder-text">
-									<Tooltip text={tooltipText}>
-										<span>{missingText}</span>
-									</Tooltip>
-								</div>
-							) : (
+							{!hideLabel && (
 								<>
-									{!isInvalid && !isDraft && !isLabelFieldFocused && (
-										<>
-											<RichText
-												ref={ref}
-												identifier="label"
-												className="wp-block-navigation-item__label"
-												value={hideLabel ? '' : label}
-												onChange={(labelValue) =>
-													setAttributes({
-														label: labelValue,
-													})
-												}
-												onMerge={mergeBlocks}
-												onReplace={onReplace}
-												__unstableOnSplitAtEnd={() =>
-													insertBlocksAfter(createBlock('kadence/navigation-link'))
-												}
-												aria-label={__('Navigation link text')}
-												placeholder={itemLabelPlaceholder}
-												withoutInteractiveFormatting
-												allowedFormats={[
-													'core/bold',
-													'core/italic',
-													'core/image',
-													'core/strikethrough',
-												]}
-												onClick={() => {
-													if (!url) {
-														setIsLinkOpen(true);
-													}
-												}}
-											/>
-										</>
-									)}
-									{(isInvalid || isDraft || isLabelFieldFocused) && (
-										<div className="wp-block-navigation-link__placeholder-text wp-block-navigation-link__label">
+									{!url ? (
+										<div className="wp-block-navigation-link__placeholder-text">
 											<Tooltip text={tooltipText}>
-												<span aria-label={__('Navigation link text')}>
-													{
-														// Some attributes are stored in an escaped form. It's a legacy issue.
-														// Ideally they would be stored in a raw, unescaped form.
-														// Unescape is used here to "recover" the escaped characters
-														// so they display without encoding.
-														// See `updateAttributes` for more details.
-														`${decodeEntities(label)} ${
-															isInvalid || isDraft ? placeholderText : ''
-														}`.trim()
-													}
-												</span>
+												<span>{missingText}</span>
 											</Tooltip>
 										</div>
+									) : (
+										<>
+											{!isInvalid && !isDraft && !isLabelFieldFocused && (
+												<>
+													<RichText
+														ref={ref}
+														identifier="label"
+														className="wp-block-navigation-item__label"
+														value={hideLabel ? '' : label}
+														onChange={(labelValue) =>
+															setAttributes({
+																label: labelValue,
+															})
+														}
+														onMerge={mergeBlocks}
+														onReplace={onReplace}
+														__unstableOnSplitAtEnd={() =>
+															insertBlocksAfter(createBlock('kadence/navigation-link'))
+														}
+														aria-label={__('Navigation link text')}
+														placeholder={__('Add label…')}
+														withoutInteractiveFormatting
+														allowedFormats={[
+															'core/bold',
+															'core/italic',
+															'core/image',
+															'core/strikethrough',
+														]}
+														onClick={() => {
+															if (!url) {
+																setIsLinkOpen(true);
+															}
+														}}
+													/>
+												</>
+											)}
+											{(isInvalid || isDraft || isLabelFieldFocused) && (
+												<div className="wp-block-navigation-link__placeholder-text wp-block-navigation-link__label">
+													<Tooltip text={tooltipText}>
+														<span aria-label={__('Navigation link text')}>
+															{
+																// Some attributes are stored in an escaped form. It's a legacy issue.
+																// Ideally they would be stored in a raw, unescaped form.
+																// Unescape is used here to "recover" the escaped characters
+																// so they display without encoding.
+																// See `updateAttributes` for more details.
+																`${decodeEntities(label)} ${
+																	isInvalid || isDraft ? placeholderText : ''
+																}`.trim()
+															}
+														</span>
+													</Tooltip>
+												</div>
+											)}
+										</>
 									)}
 								</>
 							)}
