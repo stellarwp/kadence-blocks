@@ -16,6 +16,10 @@
 			"type": "string",
 			"default": ""
 		},
+		"hideLabel": {
+			"type": "boolean",
+			"default": false
+		},
 		"type": {
 			"type": "string",
 			"default": ""
@@ -38,6 +42,10 @@
 		"url": {
 			"type": "string",
 			"default": ""
+		},
+		"disableLink": {
+			"type": "boolean",
+			"default": false
 		},
 		"title": {
 			"type": "string",

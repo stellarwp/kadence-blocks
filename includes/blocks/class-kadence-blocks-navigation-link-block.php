@@ -197,7 +197,6 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-
 		// Prevent a nav block from being rendered inside itself.
 		if ( isset( $attributes['id'] ) && isset( self::$seen_refs[ $attributes['id'] ] ) ) {
 			// WP_DEBUG_DISPLAY must only be honored when WP_DEBUG. This precedent
@@ -247,7 +246,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 		$wrapper_classes[] = $is_mega_menu ? 'kadence-menu-mega-enabled' : '';
 		$wrapper_classes[] = $is_mega_menu ? $mega_menu_width_class : '';
-		$wrapper_classes[] = $nav_link_attributes['description'] ? 'kadence-menu-has-description' : '';
+		$wrapper_classes[] = ! empty($nav_link_attributes['description']) ? 'kadence-menu-has-description' : '';
 		$wrapper_classes[] = $has_icon ? 'kadence-menu-has-icon' : '';
 
 		$name = !empty( $nav_link_attributes['name'] ) ? $nav_link_attributes['name'] : '';
@@ -286,12 +285,17 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		}
 		$icon  = ! empty( $svg_icon ) ? '<div class="link-media-container"><span class="link-svg-icon link-svg-icon-' . esc_attr( $nav_link_attributes['mediaIcon'][0]['icon'] ) . '">' . $svg_icon . '</span></div>' : '';
 
-		$description = $nav_link_attributes['description'] ? '<span class="menu-label-description">' . $nav_link_attributes['description'] . '</span>' : '';
-
+		$description = ! empty($nav_link_attributes['description']) ? '<span class="menu-label-description">' . $nav_link_attributes['description'] . '</span>' : '';
+		$link_url = ! empty($nav_link_attributes['disableLink']) && true === $nav_link_attributes['disableLink'] ? '' : ' href="' . esc_url( $url ) . '"';
+		$link_label = ! empty( $nav_link_attributes['hideLabel'] ) && true === $nav_link_attributes['hideLabel'] ? '' : esc_html( $label );
 		return sprintf(
-			'<li %1$s><div class="link-drop-wrap"><a class="wp-block-kadence-navigation-link__content" href="' . esc_url( $url ) . '"><span class="link-drop-title-wrap">' . esc_html( $label ) . $icon . $description . '<span class="title-dropdown-navigation-toggle">%2$s</span></span></a></div>%3$s</li>',
+			'<li %1$s><div class="link-drop-wrap"><a class="wp-block-kadence-navigation-link__content" %2$s><span class="link-drop-title-wrap">%3$s%4$s%5$s%6$s<span class="title-dropdown-navigation-toggle"></span></span></a></div>%7$s</li>',
 			$wrapper_attributes,
+			$link_url,
+			$link_label,
+			$icon,
 			$has_children ? $down_arrow_icon : '',
+			$description,
 			$sub_menu_content
 		);
 	}
