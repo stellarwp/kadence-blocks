@@ -56,7 +56,7 @@ export { default as TagSelect } from './tag-select';
 export { default as GapSizeControl } from './gap-controls';
 export { default as ResponsiveGapSizeControl } from './gap-controls/responsive';
 export { default as CopyPasteAttributes } from './copy-paste-attributes';
-export { default as FormInputControl } from './form-input-control';
+export { default as DynamicTextInputControl } from './dynamic-text-input-control';
 
 /* Panels */
 export { default as ColorGroup } from './panels/color-group';
@@ -94,8 +94,8 @@ export { default as MeasurementControls } from './measurement/measurement-contro
 export { default as MeasurementSingleControl } from './measurement/single-input-control';
 
 /* Color */
-export { default as AdvancedColorControlPalette } from './color/advanced-color-control-palette'
-export { default as BorderColorControls } from './color/border-color-control'
+export { default as AdvancedColorControlPalette } from './color/advanced-color-control-palette';
+export { default as BorderColorControls } from './color/border-color-control';
 
 /* Block Defaults */
 export { default as KadenceBlockDefaults } from './block-defaults';
