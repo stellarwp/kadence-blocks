@@ -534,16 +534,14 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 			setAINeedsData(true);
 			if (data?.photoLibrary && data?.customCollections) {
 				return data;
-			} else {
-				return {};
 			}
-		} else {
-			//	console.log( 'Received User Data', Date.now().toString().slice( 8 ) );
-			const data = response ? SafeParseJSON(response) : {};
-			setAIUserData(data);
-			setAINeedsData(false);
-			return data;
+			return {};
 		}
+		//	console.log( 'Received User Data', Date.now().toString().slice( 8 ) );
+		const data = response ? SafeParseJSON(response) : {};
+		setAIUserData(data);
+		setAINeedsData(false);
+		return data;
 	}
 	async function getAIUserData() {
 		//console.log( 'Get User Data', Date.now().toString().slice( 8 ) );

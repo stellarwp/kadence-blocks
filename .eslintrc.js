@@ -19,12 +19,12 @@ const eslintConfig = {
 		kadence_blocks_user_params: 'readonly',
 	},
 	rules: {
-		// '@wordpress/i18n-text-domain': [    --- From here down we should start enabling rules and fixing errors
-		// 	'error',
-		// 	{
-		// 		allowedTextDomain: ['kadence-blocks'],
-		// 	},
-		// ],
+		'@wordpress/i18n-text-domain': [
+			'error',
+			{
+				allowedTextDomain: ['default', 'kadence-blocks', 'kadence-starter-templates'],
+			},
+		],
 		'import/no-extraneous-dependencies': 'off',
 		'import/no-unresolved': 'off',
 		'import/named': 'off',

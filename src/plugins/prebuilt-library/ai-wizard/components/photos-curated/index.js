@@ -10,15 +10,15 @@ import { Flex, FlexBlock } from '@wordpress/components';
 import { PhotoCollection } from '..';
 
 const content = {
-	featuredTitle: __('Featured Images', 'kadence'),
+	featuredTitle: __('Featured Images', 'kadence-blocks'),
 	featuredDescription: __(
 		'Featured images are meant to draw attention, they are used to represent the content on your website.',
-		'kadence'
+		'kadence-blocks'
 	),
-	backgroundTitle: __('Background Images', 'kadence'),
+	backgroundTitle: __('Background Images', 'kadence-blocks'),
 	backgroundDescription: __(
 		'Background images are meant to enhance the overall look and feel, styling the background of sections in your website.',
-		'kadence'
+		'kadence-blocks'
 	),
 };
 
