@@ -159,6 +159,9 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 		triggerAIDataReload((state) => !state);
 	};
 	const handleAiWizardPrimaryAction = (event, rebuild) => {
+		if ('photography' === event) {
+			updateImageCollection();
+		}
 		if (rebuild) {
 			getAllNewData();
 		}
@@ -520,6 +523,28 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 			}
 		}
 	}, [selectedContext, hasInitialAI]);
+	async function getFreshAIUserData() {
+		//console.log( 'Get User Data', Date.now().toString().slice( 8 ) );
+		const response = await getAIWizardData(true);
+		if (!response) {
+			setAINeedsData(true);
+			return {};
+		} else if (!hasCorrectUserData(response)) {
+			const data = response ? SafeParseJSON(response) : {};
+			setAINeedsData(true);
+			if (data?.photoLibrary && data?.customCollections) {
+				return data;
+			} else {
+				return {};
+			}
+		} else {
+			//	console.log( 'Received User Data', Date.now().toString().slice( 8 ) );
+			const data = response ? SafeParseJSON(response) : {};
+			setAIUserData(data);
+			setAINeedsData(false);
+			return data;
+		}
+	}
 	async function getAIUserData() {
 		//console.log( 'Get User Data', Date.now().toString().slice( 8 ) );
 		const response = await getAIWizardData();
@@ -598,6 +623,29 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 			setWaitForImages(false);
 			setImageCollection(response);
 			forceRefreshLibrary();
+		} else {
+			setWaitForImages(false);
+		}
+	}
+	/**
+	 * @returns {Promise<void>}
+	 */
+	async function updateImageCollection() {
+		const tempData = await getFreshAIUserData();
+		if (tempData) {
+			//	console.log( 'Get Image Collection', Date.now().toString().slice( 8 ) );
+			const response = await getCollectionByIndustry(tempData);
+			if (!isEqual(response, imageCollection)) {
+				//console.log( 'Image Collection Updating', Date.now().toString().slice( 8 ) );
+				setTimeout(() => {
+					//console.log( 'Image Collection Updating Trigger', Date.now().toString().slice( 8 ) );
+					setWaitForImages(false);
+				}, 300);
+				setImageCollection(response);
+				forceRefreshLibrary();
+			} else {
+				setWaitForImages(false);
+			}
 		} else {
 			setWaitForImages(false);
 		}
@@ -1400,7 +1448,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 								</div>
 							)}
 							{!isError && !isLoading && waitForImages && (
-								<div className="kb-loading-library">
+								<div className="kb-loading-library wait-for-images">
 									<Spinner />
 								</div>
 							)}
