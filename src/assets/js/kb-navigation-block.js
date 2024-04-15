@@ -334,7 +334,8 @@
 				return;
 			}
 			var scrollBar = window.innerWidth - document.documentElement.clientWidth;
-			var duration = toggle.dataset.toggleDuration ? toggle.dataset.toggleDuration : 250;
+			//pretty sure this duration is only for animating the off canvas area, not sub menus. Disabling for now.
+			var duration = 0;
 			window.kadenceNavigation.toggleAttribute(toggle, 'aria-expanded', 'true', 'false');
 			if (target.classList.contains('menu-item--toggled-on')) {
 				if (toggle.dataset.toggleBodyClass) {
@@ -489,19 +490,19 @@
 		 * navigation menus with vertical style drawers.
 		 */
 		initMobileToggleSub() {
-			var modalMenus = document.querySelectorAll(' .wp-block-kadence-navigation .has-collapse-sub-nav');
+			// var modalMenus = document.querySelectorAll(' .wp-block-kadence-navigation .has-collapse-sub-nav');
 
-			modalMenus.forEach(function (modalMenu) {
-				var activeMenuItem = modalMenu.querySelector('.current-menu-item');
-				if (activeMenuItem) {
-					window.kadenceNavigation.findParents(activeMenuItem, 'li').forEach(function (element) {
-						var subMenuToggle = element.querySelector('.vertical-sub-toggle');
-						if (subMenuToggle) {
-							window.kadenceNavigation.toggleDrawer(subMenuToggle, true);
-						}
-					});
-				}
-			});
+			// modalMenus.forEach(function (modalMenu) {
+			// 	var activeMenuItem = modalMenu.querySelector('.current-menu-item');
+			// 	if (activeMenuItem) {
+			// 		window.kadenceNavigation.findParents(activeMenuItem, 'li').forEach(function (element) {
+			// 			var subMenuToggle = element.querySelector('.vertical-sub-toggle');
+			// 			if (subMenuToggle) {
+			// 				window.kadenceNavigation.toggleDrawer(subMenuToggle, true);
+			// 			}
+			// 		});
+			// 	}
+			// });
 			var drawerSubTOGGLE = document.querySelectorAll('.wp-block-kadence-navigation .vertical-sub-toggle');
 			// No point if no drawers.
 			if (!drawerSubTOGGLE.length) {
@@ -570,258 +571,6 @@
 				window.addEventListener('scroll', updateHeroPadding, false);
 				window.addEventListener('load', updateHeroPadding, false);
 				updateHeroPadding();
-			}
-		},
-		/**
-		 * Initiate the script to stick the header.
-		 * http://www.mattmorgante.com/technology/sticky-navigation-bar-javascript
-		 */
-		initStickyHeader() {
-			var desktopSticky = document.querySelector('#main-header .kadence-sticky-header'),
-				mobileSticky = document.querySelector('#mobile-header .kadence-sticky-header'),
-				wrapper = document.getElementById('wrapper'),
-				proSticky = document.querySelectorAll('.kadence-pro-fixed-above'),
-				proElements = document.querySelectorAll('.kadence-before-wrapper-item'),
-				activeSize = 'mobile',
-				lastScrollTop = 0,
-				activeOffsetTop = 0;
-			if (parseInt(kadenceNavigationConfig.breakPoints.desktop) < window.innerWidth) {
-				activeSize = 'desktop';
-				if (desktopSticky) {
-					desktopSticky.style.position = 'static';
-					activeOffsetTop = window.kadenceNavigation.getOffset(desktopSticky).top;
-					desktopSticky.style.position = null;
-				}
-			} else if (mobileSticky) {
-				mobileSticky.style.position = 'static';
-				activeOffsetTop = window.kadenceNavigation.getOffset(mobileSticky).top;
-				mobileSticky.style.position = null;
-			}
-			var updateSticky = function (e) {
-				var activeHeader;
-				var offsetTop = window.kadenceNavigation.getOffset(wrapper).top;
-				if (document.body.classList.toString().includes('boom_bar-static-top')) {
-					var boomBar = document.querySelector('.boom_bar');
-					offsetTop = window.kadenceNavigation.getOffset(wrapper).top - boomBar.offsetHeight;
-				}
-				if (proElements.length) {
-					var proElementOffset = 0;
-					for (let i = 0; i < proElements.length; i++) {
-						proElementOffset = proElementOffset + proElements[i].offsetHeight;
-					}
-					offsetTop = window.kadenceNavigation.getOffset(wrapper).top - proElementOffset;
-				}
-				if (proSticky.length) {
-					var proOffset = 0;
-					for (let i = 0; i < proSticky.length; i++) {
-						proOffset = proOffset + proSticky[i].offsetHeight;
-					}
-					offsetTop = window.kadenceNavigation.getOffset(wrapper).top + proOffset;
-				}
-				if (kadenceNavigationConfig.breakPoints.desktop <= window.innerWidth) {
-					activeHeader = desktopSticky;
-				} else {
-					activeHeader = mobileSticky;
-				}
-				if (!activeHeader) {
-					return;
-				}
-				if (kadenceNavigationConfig.breakPoints.desktop <= window.innerWidth) {
-					if (activeSize === 'mobile') {
-						activeOffsetTop = window.kadenceNavigation.getOffset(activeHeader).top;
-						activeSize = 'desktop';
-					} else if (e && e === 'updateActive') {
-						activeHeader.style.top = 'auto';
-						activeOffsetTop = window.kadenceNavigation.getOffset(activeHeader).top;
-						activeSize = 'desktop';
-					}
-				} else if (activeSize === 'desktop') {
-					activeOffsetTop = window.kadenceNavigation.getOffset(activeHeader).top;
-					activeSize = 'mobile';
-				} else if (e && e === 'updateActive') {
-					activeHeader.style.top = 'auto';
-					activeOffsetTop = window.kadenceNavigation.getOffset(activeHeader).top;
-					activeSize = 'mobile';
-				}
-				var parent = activeHeader.parentNode;
-				var shrink = activeHeader.getAttribute('data-shrink');
-				var revealScroll = activeHeader.getAttribute('data-reveal-scroll-up');
-				var startHeight = parseInt(activeHeader.getAttribute('data-start-height'));
-				if (!startHeight || (e && undefined !== e.type && 'orientationchange' === e.type)) {
-					activeHeader.setAttribute('data-start-height', activeHeader.offsetHeight);
-					startHeight = activeHeader.offsetHeight;
-					if (parent.classList.contains('site-header-upper-inner-wrap')) {
-						parent.style.height = null;
-						if (e && undefined !== e.type && 'orientationchange' === e.type) {
-							if (activeHeader.classList.contains('item-is-fixed')) {
-								setTimeout(function () {
-									parent.style.height =
-										Math.floor(parent.offsetHeight + activeHeader.offsetHeight) + 'px';
-								}, 21);
-							} else {
-								setTimeout(function () {
-									parent.style.height = parent.offsetHeight + 'px';
-								}, 21);
-							}
-						} else {
-							parent.style.height = parent.offsetHeight + 'px';
-						}
-					} else if (parent.classList.contains('site-header-inner-wrap')) {
-						parent.style.height = null;
-						parent.style.height = parent.offsetHeight + 'px';
-					} else {
-						parent.style.height = activeHeader.offsetHeight + 'px';
-					}
-				}
-				if ('true' === shrink) {
-					var shrinkHeight = activeHeader.getAttribute('data-shrink-height');
-					if (shrinkHeight) {
-						if ('true' === revealScroll) {
-							if (window.scrollY > lastScrollTop) {
-								var totalOffsetDelay = Math.floor(
-									Math.floor(activeOffsetTop) - Math.floor(offsetTop) + Math.floor(startHeight)
-								);
-							} else {
-								var totalOffsetDelay = Math.floor(activeOffsetTop - offsetTop);
-							}
-						} else {
-							var totalOffsetDelay = Math.floor(activeOffsetTop - offsetTop);
-						}
-						var shrinkLogos = activeHeader.querySelectorAll('.custom-logo');
-						var shrinkHeader = activeHeader.querySelector('.site-main-header-inner-wrap');
-						var shrinkStartHeight = parseInt(shrinkHeader.getAttribute('data-start-height'));
-						if (!shrinkStartHeight) {
-							shrinkHeader.setAttribute('data-start-height', shrinkHeader.offsetHeight);
-							shrinkStartHeight = shrinkHeader.offsetHeight;
-						}
-						if (window.scrollY <= totalOffsetDelay) {
-							shrinkHeader.style.height = shrinkStartHeight + 'px';
-							shrinkHeader.style.minHeight = shrinkStartHeight + 'px';
-							shrinkHeader.style.maxHeight = shrinkStartHeight + 'px';
-							if (shrinkLogos) {
-								for (let i = 0; i < shrinkLogos.length; i++) {
-									const shrinkLogo = shrinkLogos[i];
-									shrinkLogo.style.maxHeight = '100%';
-								}
-							}
-						} else if (window.scrollY > totalOffsetDelay) {
-							var shrinkingHeight = Math.max(
-								shrinkHeight,
-								shrinkStartHeight - (window.scrollY - (activeOffsetTop - offsetTop))
-							);
-							shrinkHeader.style.height = shrinkingHeight + 'px';
-							shrinkHeader.style.minHeight = shrinkingHeight + 'px';
-							shrinkHeader.style.maxHeight = shrinkingHeight + 'px';
-							if (shrinkLogos) {
-								for (let i = 0; i < shrinkLogos.length; i++) {
-									const shrinkLogo = shrinkLogos[i];
-									shrinkLogo.style.maxHeight = shrinkingHeight + 'px';
-								}
-							}
-						}
-					}
-				}
-				if ('true' === revealScroll) {
-					var totalOffset = Math.floor(activeOffsetTop - offsetTop);
-					var currScrollTop = window.scrollY;
-					var elHeight = activeHeader.offsetHeight;
-					var wScrollDiff = lastScrollTop - currScrollTop;
-					var elTop = window
-						.getComputedStyle(activeHeader)
-						.getPropertyValue('transform')
-						.match(/(-?[0-9\.]+)/g);
-					if (elTop && undefined !== elTop[5] && elTop[5]) {
-						var elTopOff = parseInt(elTop[5]) + wScrollDiff;
-					} else {
-						var elTopOff = 0;
-					}
-					var isScrollingDown = currScrollTop > lastScrollTop;
-					if (currScrollTop <= totalOffset) {
-						activeHeader.style.transform = 'translateY(0px)';
-					} else if (isScrollingDown) {
-						activeHeader.classList.add('item-hidden-above');
-						activeHeader.style.transform =
-							'translateY(' + (Math.abs(elTopOff) > elHeight ? -elHeight : elTopOff) + 'px)';
-					} else {
-						var totalOffset = Math.floor(activeOffsetTop - offsetTop);
-						activeHeader.style.transform = 'translateY(' + (elTopOff > 0 ? 0 : elTopOff) + 'px)';
-						activeHeader.classList.remove('item-hidden-above');
-					}
-					lastScrollTop = currScrollTop;
-				} else {
-					var totalOffset = Math.floor(activeOffsetTop - offsetTop);
-				}
-				if (window.scrollY == totalOffset) {
-					activeHeader.style.top = offsetTop + 'px';
-					activeHeader.classList.add('item-is-fixed');
-					activeHeader.classList.add('item-at-start');
-					activeHeader.classList.remove('item-is-stuck');
-					parent.classList.add('child-is-fixed');
-					document.body.classList.add('header-is-fixed');
-				} else if (window.scrollY > totalOffset) {
-					if ('true' === revealScroll) {
-						if (window.scrollY < elHeight + 60 && activeHeader.classList.contains('item-at-start')) {
-							activeHeader.style.height = null;
-							activeHeader.style.top = offsetTop + 'px';
-							activeHeader.classList.add('item-is-fixed');
-							activeHeader.classList.add('item-is-stuck');
-							parent.classList.add('child-is-fixed');
-							document.body.classList.add('header-is-fixed');
-						} else {
-							activeHeader.style.top = offsetTop + 'px';
-							activeHeader.classList.add('item-is-fixed');
-							activeHeader.classList.add('item-is-stuck');
-							activeHeader.classList.remove('item-at-start');
-							parent.classList.add('child-is-fixed');
-							document.body.classList.add('header-is-fixed');
-						}
-					} else {
-						activeHeader.style.top = offsetTop + 'px';
-						activeHeader.classList.add('item-is-fixed');
-						activeHeader.classList.remove('item-at-start');
-						activeHeader.classList.add('item-is-stuck');
-						parent.classList.add('child-is-fixed');
-						document.body.classList.add('header-is-fixed');
-					}
-				} else if (activeHeader.classList.contains('item-is-fixed')) {
-					activeHeader.classList.remove('item-is-fixed');
-					activeHeader.classList.remove('item-at-start');
-					activeHeader.classList.remove('item-is-stuck');
-					activeHeader.style.height = null;
-					activeHeader.style.top = null;
-					parent.classList.remove('child-is-fixed');
-					document.body.classList.remove('header-is-fixed');
-				}
-			};
-			if (desktopSticky || mobileSticky) {
-				window.addEventListener('resize', updateSticky, false);
-				window.addEventListener('scroll', updateSticky, false);
-				window.addEventListener('load', updateSticky, false);
-				window.addEventListener('orientationchange', updateSticky);
-				if (document.readyState === 'complete') {
-					updateSticky('updateActive');
-				}
-				if (
-					document.body.classList.contains('woocommerce-demo-store') &&
-					document.body.classList.contains('kadence-store-notice-placement-above')
-				) {
-					var respondToVisibility = function (element, callback) {
-						var options = {
-							root: document.documentElement,
-						};
-
-						var observer = new IntersectionObserver((entries, observer) => {
-							entries.forEach((entry) => {
-								callback(entry.intersectionRatio > 0);
-							});
-						}, options);
-
-						observer.observe(element);
-					};
-					respondToVisibility(document.querySelector('.woocommerce-store-notice'), (visible) => {
-						updateSticky('updateActive');
-					});
-				}
 			}
 		},
 		getTopOffset(event = 'scroll') {
@@ -1156,7 +905,6 @@
 			// window.kadenceNavigation.initMobileToggleAnchor();
 			window.kadenceNavigation.initMobileToggleSub();
 			// window.kadenceNavigation.initOutlineToggle();
-			// window.kadenceNavigation.initStickyHeader();
 			// window.kadenceNavigation.initStickySidebar();
 			// window.kadenceNavigation.initStickySidebarWidget();
 			// window.kadenceNavigation.initTransHeaderPadding();

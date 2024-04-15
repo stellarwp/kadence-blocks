@@ -90,7 +90,6 @@ export function IndustryInformation() {
 					type: 'SET_LOCATION',
 					payload: `${LOCATION_SERVICE_AREA}: ${locationInput}`,
 				});
-				return;
 		}
 	}, [locationInput, locationType]);
 

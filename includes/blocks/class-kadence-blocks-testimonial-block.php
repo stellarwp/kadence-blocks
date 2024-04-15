@@ -85,7 +85,22 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 			$content .= '<div class="kt-blocks-testimonial-carousel-item kb-slide-item">';
 		}
 
-		$content .= '<div ' . (isset($attributes['anchor']) && !empty($attributes['anchor']) ? "id=" . $attributes['anchor'] : '') . ' class="kt-testimonial-item-wrap kt-testimonial-item-' . $unique_id . ' ' . ( $containerVAlign ? "testimonial-valign-" . $containerVAlign : "" ) . '">';
+		$classes = array(
+			'kt-testimonial-item-wrap',
+			'kt-testimonial-item-' . $unique_id,
+		);
+
+		if($containerVAlign) {
+			$classes[] = 'testimonial-valign-' . $containerVAlign;
+		}
+
+		$wrapper_args = array(
+			'id' => !empty($attributes['anchor']) ? $attributes['anchor'] : '',
+			'class' => implode( ' ', $classes ),
+		);
+		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
+
+		$content .= sprintf('<div %s>', $wrapper_attributes);
 		$content .= '<div class="kt-testimonial-text-wrap">';
 
 		if ( $displayIcon && $iconStyles[0]['icon'] && $style !== 'card' ) {
@@ -269,7 +284,7 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 
 	private function render_rating( $attributes, $ratingStyles ) {
 		if ( ! empty( $ratingStyles[ 0 ]['size'] ) ) {
-			$extras = ' height="'. $ratingStyles[ 0 ]['size'] .'" width="'.$ratingStyles[ 0 ]['size'].'"';
+			$extras = ' height="'. esc_attr( $ratingStyles[ 0 ]['size'] ) .'" width="'. esc_attr( $ratingStyles[ 0 ]['size'] ) .'"';
 		} else {
 			$extras = '';
 		}
@@ -277,7 +292,7 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 		$svg_title = sprintf( esc_html__( '%d star rating', 'kadence-blocks' ), $attributes['rating'] );
 		$svg = Kadence_Blocks_Svg_Render::render( 'fas_star', 'currentColor', ( ! empty(  $ratingStyles[ 0 ]['size'] ) ? $ratingStyles[ 0 ]['size'] : '' ), $svg_title, false, $extras );
 
-		$rating = '<div class="kt-testimonial-rating-wrap kt-testimonial-rating-'. $attributes['rating'] .'">';
+		$rating = '<div class="kt-testimonial-rating-wrap kt-testimonial-rating-'. esc_attr( $attributes['rating'] ) .'">';
 
 		for( $i = 0; $i < $attributes['rating']; $i++ ) {
 			$rating .= '<div class="kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-'. ($i + 1) .'">';

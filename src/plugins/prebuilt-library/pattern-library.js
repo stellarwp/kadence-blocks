@@ -104,6 +104,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 	const [isImporting, setIsImporting] = useState(false);
 	const [hasInitialAI, setHasInitialAI] = useState(false);
 	const [aINeedsData, setAINeedsData] = useState(false);
+	const [waitForImages, setWaitForImages] = useState(false);
 	const [wizardState, setWizardState] = useState({
 		visible: false,
 		photographyOnly: false,
@@ -158,6 +159,9 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 		triggerAIDataReload((state) => !state);
 	};
 	const handleAiWizardPrimaryAction = (event, rebuild) => {
+		if ('photography' === event) {
+			updateImageCollection();
+		}
 		if (rebuild) {
 			getAllNewData();
 		}
@@ -334,6 +338,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 		setIsLoading(true);
 		setIsError(false);
 		setIsErrorType('general');
+		//console.log( 'Getting Library Content', Date.now().toString().slice( 8 ) );
 		const response = await getPatterns(tempSubTab === 'pages' ? 'pages' : 'section', tempReload);
 		if (response === 'failed') {
 			console.log('Permissions Error getting library Content');
@@ -355,6 +360,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 			setIsError(true);
 			setIsLoading(false);
 		} else {
+			//console.log( 'Received Library Content', Date.now().toString().slice( 8 ) );
 			const o = SafeParseJSON(response, false);
 			if (o) {
 				if (tempSubTab === 'pages') {
@@ -427,6 +433,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 				updateContextState(tempContext, 'loading');
 			}
 		}
+		//console.log( 'Getting AI Content', Date.now().toString().slice( 8 ) );
 		const response = await getAIContentData(tempContext);
 		if (response === 'processing') {
 			console.log('Is processing AI');
@@ -452,6 +459,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 			}, 500);
 			updateContextState(tempContext, false);
 		} else {
+			//console.log( 'Received AI Content', Date.now().toString().slice( 8 ) );
 			const o = SafeParseJSON(response, false);
 			let tempLocalContexts = [];
 			if (false !== localContexts) {
@@ -515,7 +523,28 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 			}
 		}
 	}, [selectedContext, hasInitialAI]);
+	async function getFreshAIUserData() {
+		//console.log( 'Get User Data', Date.now().toString().slice( 8 ) );
+		const response = await getAIWizardData(true);
+		if (!response) {
+			setAINeedsData(true);
+			return {};
+		} else if (!hasCorrectUserData(response)) {
+			const data = response ? SafeParseJSON(response) : {};
+			setAINeedsData(true);
+			if (data?.photoLibrary && data?.customCollections) {
+				return data;
+			}
+			return {};
+		}
+		//	console.log( 'Received User Data', Date.now().toString().slice( 8 ) );
+		const data = response ? SafeParseJSON(response) : {};
+		setAIUserData(data);
+		setAINeedsData(false);
+		return data;
+	}
 	async function getAIUserData() {
+		//console.log( 'Get User Data', Date.now().toString().slice( 8 ) );
 		const response = await getAIWizardData();
 		if (!response) {
 			setAINeedsData(true);
@@ -527,7 +556,11 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 			console.log('User Data is not correct');
 			setAINeedsData(true);
 		} else {
+			//	console.log( 'Received User Data', Date.now().toString().slice( 8 ) );
 			const data = response ? SafeParseJSON(response) : {};
+			if (data?.photoLibrary && 'all' === selectedReplaceImages) {
+				setWaitForImages(true);
+			}
 			setAIUserData(data);
 			setAINeedsData(false);
 		}
@@ -541,7 +574,9 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 			console.log('Error getting AI Content.');
 			setIsLoading(false);
 		} else if (response?.error && response?.context) {
-			createErrorNotice(__('Error, Some AI Contexts could not be started, Please Retry'), { type: 'snackbar' });
+			createErrorNotice(__('Error, Some AI Contexts could not be started, Please Retry'), {
+				type: 'snackbar',
+			});
 			console.log('Error getting all new AI Content.');
 			const tempContextStates = [];
 			response?.context.forEach((key) => {
@@ -577,14 +612,40 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 		tempUser.photoLibrary = 'Other';
 		const teamResponse = await getCollectionByIndustry(tempUser);
 		if (!isEqual(teamResponse, teamCollection)) {
-			console.log('Image Team Collection Updating');
+			//	console.log( 'Image Team Collection Updating', Date.now().toString().slice( 8 ) );
 			setTeamCollection(teamResponse);
 		}
 		const response = await getCollectionByIndustry(tempUserData);
 		if (!isEqual(response, imageCollection)) {
-			console.log('Image Collection Updating');
+			//	console.log( 'Image Collection Updating', Date.now().toString().slice( 8 ) );
+			setWaitForImages(false);
 			setImageCollection(response);
 			forceRefreshLibrary();
+		} else {
+			setWaitForImages(false);
+		}
+	}
+	/**
+	 * @returns {Promise<void>}
+	 */
+	async function updateImageCollection() {
+		const tempData = await getFreshAIUserData();
+		if (tempData) {
+			//	console.log( 'Get Image Collection', Date.now().toString().slice( 8 ) );
+			const response = await getCollectionByIndustry(tempData);
+			if (!isEqual(response, imageCollection)) {
+				//console.log( 'Image Collection Updating', Date.now().toString().slice( 8 ) );
+				setTimeout(() => {
+					//console.log( 'Image Collection Updating Trigger', Date.now().toString().slice( 8 ) );
+					setWaitForImages(false);
+				}, 300);
+				setImageCollection(response);
+				forceRefreshLibrary();
+			} else {
+				setWaitForImages(false);
+			}
+		} else {
+			setWaitForImages(false);
 		}
 	}
 	/**
@@ -595,14 +656,21 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 		tempUser.photoLibrary = 'Other';
 		const teamResponse = await getCollectionByIndustry(tempUser);
 		if (!isEqual(teamResponse, teamCollection)) {
-			console.log('Image Team Collection Updating');
+			//console.log( 'Image Team Collection Updating', Date.now().toString().slice( 8 ) );
 			setTeamCollection(teamResponse);
 		}
+		//	console.log( 'Get Image Collection', Date.now().toString().slice( 8 ) );
 		const response = await getCollectionByIndustry(aIUserData);
 		if (!isEqual(response, imageCollection)) {
-			console.log('Image Collection Updating');
+			//console.log( 'Image Collection Updating', Date.now().toString().slice( 8 ) );
+			setTimeout(() => {
+				//console.log( 'Image Collection Updating Trigger', Date.now().toString().slice( 8 ) );
+				setWaitForImages(false);
+			}, 300);
 			setImageCollection(response);
 			forceRefreshLibrary();
+		} else {
+			setWaitForImages(false);
 		}
 	}
 	async function getAILocalData() {
@@ -1360,7 +1428,6 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 							userData={aIUserData}
 							onSelect={(pattern) => onInsertContent(pattern)}
 							launchWizard={() => {
-								sendEvent('ai_wizard_started');
 								setWizardState({
 									visible: true,
 									photographyOnly: false,
@@ -1371,10 +1438,15 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 				</>
 			) : (
 				<>
-					{isImporting || isLoading || false === patterns || isError ? (
+					{isImporting || isLoading || false === patterns || waitForImages === true || isError ? (
 						<>
 							{!isError && isLoading && (
 								<div className="kb-loading-library">
+									<Spinner />
+								</div>
+							)}
+							{!isError && !isLoading && waitForImages && (
+								<div className="kb-loading-library wait-for-images">
 									<Spinner />
 								</div>
 							)}
@@ -1440,7 +1512,6 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 								reloadAI(tempCon);
 							}}
 							launchWizard={() => {
-								sendEvent('ai_wizard_started');
 								setWizardState({
 									visible: true,
 									photographyOnly: false,

@@ -19,12 +19,12 @@ const eslintConfig = {
 		kadence_blocks_user_params: 'readonly',
 	},
 	rules: {
-		// '@wordpress/i18n-text-domain': [    --- From here down we should start enabling rules and fixing errors
-		// 	'error',
-		// 	{
-		// 		allowedTextDomain: ['kadence-blocks'],
-		// 	},
-		// ],
+		'@wordpress/i18n-text-domain': [
+			'error',
+			{
+				allowedTextDomain: ['default', 'kadence-blocks', 'kadence-starter-templates'],
+			},
+		],
 		'import/no-extraneous-dependencies': 'off',
 		'import/no-unresolved': 'off',
 		'import/named': 'off',
@@ -63,21 +63,15 @@ const eslintConfig = {
 		'jsdoc/require-returns-description': 'off',
 		'jsx-a11y/no-static-element-interactions': 'off',
 		'jsx-a11y/aria-role': 'off',
-		'@wordpress/i18n-no-variables': 'off',
 		'jsdoc/require-param-type': 'off',
 		'jsx-a11y/anchor-is-valid': 'off',
 		'no-redeclare': 'off',
-		'@wordpress/i18n-no-flanking-whitespace': 'off',
 		'import/default': 'off',
-		'no-useless-return': 'off',
 		'@wordpress/i18n-no-collapsible-whitespace': 'off',
 		'jsx-a11y/alt-text': 'off',
-		'jsx-a11y/iframe-has-title': 'off',
-		'jsdoc/empty-tags': 'off',
 		'no-bitwise': 'off',
 		'jsdoc/require-returns-check': 'off',
 		'@wordpress/no-global-active-element': 'off',
-		'jsx-a11y/anchor-has-content': 'off',
 	},
 	ignorePatterns: [],
 };

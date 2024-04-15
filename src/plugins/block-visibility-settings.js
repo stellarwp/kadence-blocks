@@ -15,7 +15,7 @@ import {
 /**
  * Internal block libraries
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 
 function KadenceVisibilitySettings({ blockSlug, blockName, options, icon, showBlockWideSettings = true }) {
 	const [isOpen, setIsOpen] = useState(false);
@@ -89,7 +89,11 @@ function KadenceVisibilitySettings({ blockSlug, blockName, options, icon, showBl
 			{isOpen && (
 				<Modal
 					className="kt-block-settings-modal"
-					title={__(blockName + ' Settings', 'kadence-blocks')}
+					title={sprintf(
+						/* translators: %s is the name of the Kadence Block */
+						__('%s Settings', 'kadence-blocks'),
+						blockName
+					)}
 					onRequestClose={() => {
 						resetSettings();
 					}}

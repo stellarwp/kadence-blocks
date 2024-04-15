@@ -36,29 +36,6 @@ export const settings = {
 			caption: __('Mont Blanc appears—still, snowy, and serene.', 'kadence-blocks'),
 		},
 	},
-	__experimentalLabel(attributes, { context }) {
-		const { metadata } = attributes;
-
-		if (context === 'accessibility') {
-			const { caption, alt, url } = attributes;
-
-			if (!url) {
-				return __('Empty');
-			}
-
-			if (!alt) {
-				return caption || '';
-			}
-
-			// This is intended to be read by a screen reader.
-			// A period simply means a pause, no need to translate it.
-			return alt + (caption ? '. ' + caption : '');
-		}
-
-		if (context === 'list-view' && get(metadata, 'name', '') !== '') {
-			return metadata.name;
-		}
-	},
 	getEditWrapperProps(attributes) {
 		if (
 			'wide' === attributes.align ||
@@ -70,7 +47,6 @@ export const settings = {
 				'data-align': attributes.align,
 			};
 		}
-		return;
 	},
 	transforms,
 	edit,

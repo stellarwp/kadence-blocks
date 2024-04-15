@@ -80,6 +80,7 @@ class Kadence_Blocks_Settings {
 		add_action( 'admin_init', array( $this, 'load_settings' ) );
 		add_action( 'init', array( $this, 'load_api_settings' ) );
 		add_action( 'after_setup_theme', array( $this, 'load_color_palette' ), 999 );
+		add_filter( 'block_editor_settings_all', array( $this, 'load_color_palette_editor_settings' ), 999 );
 		add_action( 'init', array( $this, 'init_post_meta' ) );
 		add_action( 'admin_head-post.php', array( $this, 'admin_editor_width' ), 100 );
 		add_action( 'admin_head-post-new.php', array( $this, 'admin_editor_width' ), 100 );
@@ -319,6 +320,104 @@ class Kadence_Blocks_Settings {
 		}
 	}
 	/**
+	 * Load Gutenberg Palette in editor.
+	 *
+	 * @param array $settings The settings.
+	 */
+	public function load_color_palette_editor_settings( $settings ) {
+
+		$palette = json_decode( get_option( 'kadence_blocks_colors' ), true );
+		if ( isset( $palette['palette'] ) && is_array( $palette['palette'] ) ) {
+			$san_palette = array();
+			foreach ( $palette['palette'] as $item ) {
+				$san_palette[] = array(
+					'color' => $item['color'],
+					'name'  => $item['name'],
+					'slug'  => $item['slug'],
+				);
+			}
+			if ( isset( $san_palette[0] ) ) {
+				if ( ( isset( $palette['override'] ) && true !== $palette['override'] ) || ! isset( $palette['override'] ) ) {
+					$theme_palette = get_theme_support( 'editor-color-palette' );
+					if ( isset( $settings['colors'] ) && is_array( $settings['colors'] ) ) {
+						$newpalette = array_merge( $settings['colors'], $san_palette );
+					} else {
+						$default_palette = array(
+							array(
+								'name' => __( 'Pale pink', 'kadence-blocks' ),
+								'slug' => 'pale-pink',
+								'color' => '#f78da7',
+							),
+							array(
+								'name' => __( 'Vivid red', 'kadence-blocks' ),
+								'slug' => 'vivid-red',
+								'color' => '#cf2e2e',
+							),
+							array(
+								'name' => __( 'Luminous vivid orange', 'kadence-blocks' ),
+								'slug' => 'luminous-vivid-orange',
+								'color' => '#ff6900',
+							),
+							array(
+								'name' => __( 'Luminous vivid amber', 'kadence-blocks' ),
+								'slug' => 'luminous-vivid-amber',
+								'color' => '#fcb900',
+							),
+							array(
+								'name' => __( 'Light green cyan', 'kadence-blocks' ),
+								'slug' => 'light-green-cyan',
+								'color' => '#7bdcb5',
+							),
+							array(
+								'name' => __( 'Vivid green cyan', 'kadence-blocks' ),
+								'slug' => 'vivid-green-cyan',
+								'color' => '#00d084',
+							),
+							array(
+								'name' => __( 'Pale cyan blue', 'kadence-blocks' ),
+								'slug' => 'pale-cyan-blue',
+								'color' => '#8ed1fc',
+							),
+							array(
+								'name' => __( 'Vivid cyan blue', 'kadence-blocks' ),
+								'slug' => 'vivid-cyan-blue',
+								'color' => '#0693e3',
+							),
+							array(
+								'name' => __( 'Very light gray', 'kadence-blocks' ),
+								'slug' => 'very-light-gray',
+								'color' => '#eeeeee',
+							),
+							array(
+								'name' => __( 'Cyan bluish gray', 'kadence-blocks' ),
+								'slug' => 'cyan-bluish-gray',
+								'color' => '#abb8c3',
+							),
+							array(
+								'name' => __( 'Very dark gray', 'kadence-blocks' ),
+								'slug' => 'very-dark-gray',
+								'color' => '#313131',
+							),
+						);
+						$newpalette = array_merge( $default_palette, $san_palette );
+					}
+				} else {
+					$newpalette = $san_palette;
+				}
+				
+				$settings['colors'] = $newpalette;
+				if ( function_exists( 'get_block_editor_settings' ) ) {
+					$settings['__experimentalFeatures']['color']['palette']['user']
+						= $settings['__experimentalFeatures']['color']['palette']['theme']
+						= $newpalette;
+				}
+			}
+		}
+
+		return $settings;
+
+	}
+	/**
 	 * Load Gutenberg Palette
 	 */
 	public function load_color_palette() {
@@ -496,8 +595,8 @@ class Kadence_Blocks_Settings {
 	 * @return string
 	 */
 	private function get_icon_svg( $base64 = true ) {
-		$svg = '<svg viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg"><path fill="#a7aaad" d="M14.678,2.315l1.322,-0l0,11.941l-14.678,0l0,-1.282l-1.322,0l0,-11.942l14.678,0l0,1.283Zm-12.789,0.566l-0,10.809l13.545,-0l-0,-10.809l-13.545,0Zm12.222,-0.566l-12.789,-0l-0,10.092l-0.756,0l-0,-10.809l13.545,0l0,0.717Zm-0.624,9.564l-4.389,0c-0.22,0 -0.398,-0.177 -0.398,-0.394c0,-0.218 0.178,-0.395 0.398,-0.395l1.324,0c0.207,-0.014 0.37,-0.185 0.37,-0.393c0,-0.218 -0.178,-0.395 -0.397,-0.395l-2.073,0c-0.219,0 -0.397,-0.176 -0.397,-0.394c0,-0.217 0.178,-0.394 0.397,-0.394l0.622,0c0.219,0 0.397,-0.176 0.397,-0.394c0,-0.217 -0.178,-0.393 -0.397,-0.393l-2.898,-0.001c-0.219,0 -0.397,-0.176 -0.397,-0.394c0,-0.217 0.178,-0.393 0.397,-0.393l1.962,0l0,-0.001l0.768,0c0.219,0 0.397,-0.177 0.397,-0.394c0,-0.217 -0.178,-0.393 -0.397,-0.393l-0.991,0c-0.219,0 -0.397,-0.177 -0.397,-0.394c0,-0.218 0.178,-0.394 0.397,-0.394l1.884,0c0.01,0 0.019,0 0.028,0.001l0.673,0c0.22,0 0.398,-0.177 0.398,-0.395c0,-0.217 -0.178,-0.394 -0.398,-0.394l-0.989,0c-0.206,-0.015 -0.369,-0.185 -0.369,-0.393c0,-0.218 0.178,-0.395 0.398,-0.395l3.402,0l-3.221,3.488l3.896,3.604Zm-6.178,-0.789c0.219,0 0.396,0.176 0.396,0.393c0,0.217 -0.177,0.393 -0.396,0.393l-1.455,0c-0.218,0 -0.396,-0.176 -0.396,-0.393c0,-0.217 0.178,-0.393 0.396,-0.393l1.455,0Zm-0.576,-1.576c0.219,0 0.398,0.177 0.398,0.395c0,0.217 -0.179,0.394 -0.398,0.394c-0.219,0 -0.398,-0.177 -0.398,-0.394c0,-0.218 0.179,-0.395 0.398,-0.395Zm-2.077,-1.575c0.219,0 0.397,0.176 0.397,0.394c0,0.218 -0.178,0.394 -0.397,0.394c-0.22,0 -0.398,-0.176 -0.398,-0.394c0,-0.218 0.178,-0.394 0.398,-0.394Zm1.54,-1.576c0.22,0 0.398,0.177 0.398,0.394c0,0.218 -0.178,0.394 -0.398,0.394c-0.219,0 -0.397,-0.176 -0.397,-0.394c0,-0.217 0.178,-0.394 0.397,-0.394Zm1.426,-1.576c0.219,0 0.397,0.176 0.397,0.393c0,0.217 -0.178,0.393 -0.397,0.393l-0.919,0c-0.219,0 -0.397,-0.176 -0.397,-0.393c0,-0.217 0.178,-0.393 0.397,-0.393l0.919,0Z"/></svg>';
-
+		$svg = apply_filters( 'kadence_blocks_admin_svg_icon', '<svg viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg"><path fill="#a7aaad" d="M14.678,2.315l1.322,-0l0,11.941l-14.678,0l0,-1.282l-1.322,0l0,-11.942l14.678,0l0,1.283Zm-12.789,0.566l-0,10.809l13.545,-0l-0,-10.809l-13.545,0Zm12.222,-0.566l-12.789,-0l-0,10.092l-0.756,0l-0,-10.809l13.545,0l0,0.717Zm-0.624,9.564l-4.389,0c-0.22,0 -0.398,-0.177 -0.398,-0.394c0,-0.218 0.178,-0.395 0.398,-0.395l1.324,0c0.207,-0.014 0.37,-0.185 0.37,-0.393c0,-0.218 -0.178,-0.395 -0.397,-0.395l-2.073,0c-0.219,0 -0.397,-0.176 -0.397,-0.394c0,-0.217 0.178,-0.394 0.397,-0.394l0.622,0c0.219,0 0.397,-0.176 0.397,-0.394c0,-0.217 -0.178,-0.393 -0.397,-0.393l-2.898,-0.001c-0.219,0 -0.397,-0.176 -0.397,-0.394c0,-0.217 0.178,-0.393 0.397,-0.393l1.962,0l0,-0.001l0.768,0c0.219,0 0.397,-0.177 0.397,-0.394c0,-0.217 -0.178,-0.393 -0.397,-0.393l-0.991,0c-0.219,0 -0.397,-0.177 -0.397,-0.394c0,-0.218 0.178,-0.394 0.397,-0.394l1.884,0c0.01,0 0.019,0 0.028,0.001l0.673,0c0.22,0 0.398,-0.177 0.398,-0.395c0,-0.217 -0.178,-0.394 -0.398,-0.394l-0.989,0c-0.206,-0.015 -0.369,-0.185 -0.369,-0.393c0,-0.218 0.178,-0.395 0.398,-0.395l3.402,0l-3.221,3.488l3.896,3.604Zm-6.178,-0.789c0.219,0 0.396,0.176 0.396,0.393c0,0.217 -0.177,0.393 -0.396,0.393l-1.455,0c-0.218,0 -0.396,-0.176 -0.396,-0.393c0,-0.217 0.178,-0.393 0.396,-0.393l1.455,0Zm-0.576,-1.576c0.219,0 0.398,0.177 0.398,0.395c0,0.217 -0.179,0.394 -0.398,0.394c-0.219,0 -0.398,-0.177 -0.398,-0.394c0,-0.218 0.179,-0.395 0.398,-0.395Zm-2.077,-1.575c0.219,0 0.397,0.176 0.397,0.394c0,0.218 -0.178,0.394 -0.397,0.394c-0.22,0 -0.398,-0.176 -0.398,-0.394c0,-0.218 0.178,-0.394 0.398,-0.394Zm1.54,-1.576c0.22,0 0.398,0.177 0.398,0.394c0,0.218 -0.178,0.394 -0.398,0.394c-0.219,0 -0.397,-0.176 -0.397,-0.394c0,-0.217 0.178,-0.394 0.397,-0.394Zm1.426,-1.576c0.219,0 0.397,0.176 0.397,0.393c0,0.217 -0.178,0.393 -0.397,0.393l-0.919,0c-0.219,0 -0.397,-0.176 -0.397,-0.393c0,-0.217 0.178,-0.393 0.397,-0.393l0.919,0Z"/></svg>' );
+		
 		if ( $base64 ) {
 			return 'data:image/svg+xml;base64,' . base64_encode( $svg );
 		}
@@ -517,8 +616,8 @@ class Kadence_Blocks_Settings {
 	public function add_network_menu() {
 		$network_enabled = kadence_blocks_is_network_authorize_enabled();
 		if ( $network_enabled && function_exists( 'is_plugin_active_for_network' ) && is_plugin_active_for_network( 'kadence-blocks/kadence-blocks.php' ) ) {
-			add_menu_page( __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Kadence', 'kadence-blocks' ), $this->settings_user_capabilities(), 'kadence-blocks-home', null, $this->get_icon_svg() );
-			$home_page = add_submenu_page( 'kadence-blocks', __( 'Kadence Blocks', 'kadence-blocks' ), __( 'Home' ), $this->settings_user_capabilities(), 'kadence-blocks-home', array( $this, 'home_page' ), 0 );
+			add_menu_page( __( 'Kadence Blocks - Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Kadence', 'kadence-blocks' ), $this->settings_user_capabilities(), 'kadence-blocks-home', null, $this->get_icon_svg() );
+			$home_page = add_submenu_page( 'kadence-blocks', __( 'Kadence Blocks', 'kadence-blocks' ), __( 'Home', 'kadence-blocks' ), $this->settings_user_capabilities(), 'kadence-blocks-home', array( $this, 'home_page' ), 0 );
 			add_action( 'admin_print_styles-' . $home_page, array( $this, 'home_scripts' ) );
 		}
 	}
@@ -526,9 +625,9 @@ class Kadence_Blocks_Settings {
 	 * Add option page menu
 	 */
 	public function add_menu() {
-		add_menu_page( __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Kadence', 'kadence-blocks' ), $this->settings_user_capabilities(), 'kadence-blocks', null, $this->get_icon_svg() );
-		$home_page = add_submenu_page( 'kadence-blocks', __( 'Kadence Blocks', 'kadence-blocks' ), __( 'Home' ), $this->settings_user_capabilities(), 'kadence-blocks-home', array( $this, 'home_page' ), 0 );
-		$page = add_submenu_page( 'kadence-blocks', __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Settings' ), $this->settings_user_capabilities(), 'kadence-blocks', array( $this, 'config_page' ), 1 );
+		add_menu_page( __( 'Kadence Blocks - Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Kadence', 'kadence-blocks' ), $this->settings_user_capabilities(), 'kadence-blocks', null, $this->get_icon_svg() );
+		$home_page = add_submenu_page( 'kadence-blocks', __( 'Kadence Blocks', 'kadence-blocks' ), __( 'Home', 'kadence-blocks' ), $this->settings_user_capabilities(), 'kadence-blocks-home', array( $this, 'home_page' ), 0 );
+		$page = add_submenu_page( 'kadence-blocks', __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Settings', 'kadence-blocks' ), $this->settings_user_capabilities(), 'kadence-blocks', array( $this, 'config_page' ), 1 );
 		add_action( 'admin_print_styles-' . $home_page, array( $this, 'home_scripts' ) );
 		add_action( 'admin_print_styles-' . $page, array( $this, 'scripts' ) );
 	}
@@ -844,7 +943,7 @@ class Kadence_Blocks_Settings {
 			'kadence_blocks_mailerlite_api',
 			array(
 				'type'              => 'string',
-				'description'       => __( 'MailerLite API Key', 'kadence-blocks-pro' ),
+				'description'       => __( 'MailerLite API Key', 'kadence-blocks' ),
 				'sanitize_callback' => 'sanitize_text_field',
 				'show_in_rest'      => true,
 				'default'           => '',
@@ -855,7 +954,7 @@ class Kadence_Blocks_Settings {
 			'kadence_blocks_google_maps_api',
 			array(
 				'type'              => 'string',
-				'description'       => __( 'Google Maps API Key', 'kadence-blocks-pro' ),
+				'description'       => __( 'Google Maps API Key', 'kadence-blocks' ),
 				'sanitize_callback' => 'sanitize_text_field',
 				'show_in_rest'      => true,
 				'default'           => '',
@@ -888,7 +987,7 @@ class Kadence_Blocks_Settings {
 			'kadence_blocks_convertkit_api',
 			array(
 				'type'              => 'string',
-				'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
+				'description'       => __( 'ConvertKit API Key', 'kadence-blocks' ),
 				'sanitize_callback' => 'sanitize_text_field',
 				'show_in_rest'      => true,
 				'default'           => '',
@@ -899,7 +998,7 @@ class Kadence_Blocks_Settings {
 			'kadence_blocks_activecampaign_api_key',
 			array(
 				'type'              => 'string',
-				'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
+				'description'       => __( 'ConvertKit API Key', 'kadence-blocks' ),
 				'sanitize_callback' => 'sanitize_text_field',
 				'show_in_rest'      => true,
 				'default'           => '',
@@ -910,7 +1009,7 @@ class Kadence_Blocks_Settings {
 			'kadence_blocks_activecampaign_api_base',
 			array(
 				'type'              => 'string',
-				'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
+				'description'       => __( 'ConvertKit API Key', 'kadence-blocks' ),
 				'sanitize_callback' => 'sanitize_text_field',
 				'show_in_rest'      => true,
 				'default'           => '',
@@ -1090,7 +1189,7 @@ class Kadence_Blocks_Settings {
 		<div class="kadence_blocks_dash_head">
 			<div class="kadence_blocks_dash_head_container">
 				<div class="kadence_blocks_dash_logo">
-					<img src="<?php echo esc_url( KADENCE_BLOCKS_URL . 'includes/settings/img/kadence-logo.png' ); ?>" alt="Kadence WP">
+					<img src="<?php echo esc_url( apply_filters( 'kadence_blocks_dash_logo', KADENCE_BLOCKS_URL . 'includes/settings/img/kadence-logo.png' ) ); ?>" alt="Kadence WP">
 				</div>
 				<div class="kadence_blocks_dash_version">
 					<span>

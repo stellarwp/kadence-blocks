@@ -726,13 +726,16 @@ export function EditInner(props) {
 							<ResponsiveSelectControl
 								label={__('Style', 'kadence-blocks')}
 								value={style}
-								valueTablet={styleTablet}
-								valueMobile={styleMobile}
+								tabletValue={styleTablet}
+								mobileValue={styleMobile}
 								options={[
-									{ value: 'standard', label: __('Standard') },
-									{ value: 'fullheight', label: __('Full Height') },
-									{ value: 'underline', label: __('Underline') },
-									{ value: 'underline-fullheight', label: __('Full Height Underline') },
+									{ value: 'standard', label: __('Standard', 'kadence-blocks') },
+									{ value: 'fullheight', label: __('Full Height', 'kadence-blocks') },
+									{ value: 'underline', label: __('Underline', 'kadence-blocks') },
+									{
+										value: 'underline-fullheight',
+										label: __('Full Height Underline', 'kadence-blocks'),
+									},
 								]}
 								onChange={(value) => setMetaAttribute(value, 'style')}
 								onChangeTablet={(value) => setMetaAttribute(value, 'styleTablet')}

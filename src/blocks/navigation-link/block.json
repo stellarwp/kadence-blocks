@@ -13,16 +13,24 @@
 			"type": "string"
 		},
 		"label": {
-			"type": "string"
+			"type": "string",
+			"default": ""
+		},
+		"hideLabel": {
+			"type": "boolean",
+			"default": false
 		},
 		"type": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"description": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"rel": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"id": {
 			"type": "number"
@@ -32,19 +40,28 @@
 			"default": false
 		},
 		"url": {
-			"type": "string"
+			"type": "string",
+			"default": ""
+		},
+		"disableLink": {
+			"type": "boolean",
+			"default": false
 		},
 		"title": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"kind": {
-			"type": "string"
+			"type": "string",
+			"default": ""
 		},
 		"isTopLevelLink": {
-			"type": "boolean"
+			"type": "boolean",
+			"default": false
 		},
 		"isMegaMenu": {
-			"type": "boolean"
+			"type": "boolean",
+			"default": false
 		},
 		"padding": {
 			"type": "array",

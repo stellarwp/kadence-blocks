@@ -1383,7 +1383,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		if ( 'local' == $background_video_type ) {
 			$video_args = array(
 				'class' => 'kb-blocks-bg-video',
-				'id' => 'bg-row-video-' . $attributes['uniqueID'],
+				'id' => 'bg-row-video-' . esc_attr( $attributes['uniqueID'] ),
 				'playsinline' => '',
 				'muted' => ( isset( $video_attributes['mute'] ) && false === $video_attributes['mute'] ? 'false' : '' ),
 				'loop' => ( isset( $video_attributes['loop'] ) && false === $video_attributes['loop'] ? 'false' : '' ),
@@ -1411,7 +1411,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 
 			$video_args = array(
 				'class' => 'kb-blocks-bg-video ' . $background_video_type,
-				'id' => 'bg-row-video-' . $attributes['uniqueID'],
+				'id' => 'bg-row-video-' . esc_attr( $attributes['uniqueID'] ),
 				'src' => $src_base . $video_id . $src_query_string,
 			);
 		}
@@ -1484,7 +1484,6 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		if ( ! empty( $attributes['kbVersion'] ) && $attributes['kbVersion'] > 1 ) {
 			$html_tag = $this->get_html_tag( $attributes, 'htmlTag', 'div', $this->allowed_html_tags );
-
 			$outer_classes = array( 'kb-row-layout-wrap', 'kb-row-layout-id' . $unique_id );
 			$outer_classes[] = ! empty( $attributes['align'] ) ? 'align' . $attributes['align'] : 'alignnone';
 			if ( isset( $attributes['vsdesk'] ) && $attributes['vsdesk'] ) {
@@ -1564,7 +1563,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				} else {
 					$size = 767;
 				}
-				$content = $content . '<script>if( window.innerWidth > ' . $size . ' ){document.getElementById("bg-row-video-' . $attributes['uniqueID'] . '").removeAttribute("preload");document.getElementById("bg-row-video-' . $attributes['uniqueID'] . '").setAttribute("autoplay","");}</script>';
+				$content = $content . '<script>if( window.innerWidth > ' . $size . ' ){document.getElementById("bg-row-video-' . esc_attr( $attributes['uniqueID'] ) . '").removeAttribute("preload");document.getElementById("bg-row-video-' . esc_attr( $attributes['uniqueID'] ) . '").setAttribute("autoplay","");}</script>';
 			}
 		} else {
 			if ( ! empty( $attributes['backgroundSettingTab'] ) && 'video' === $attributes['backgroundSettingTab'] && ! empty( $attributes['backgroundVideo'][0]['local'] ) && ( ( ! empty( $attributes['tabletBackground'][0]['enable'] ) && true == $attributes['tabletBackground'][0]['enable'] ) || ( ! empty( $attributes['mobileBackground'][0]['enable'] ) && true == $attributes['mobileBackground'][0]['enable'] ) ) && apply_filters( 'kadence_blocks_rowlayout_prevent_preload_for_mobile', true ) ) {
@@ -1574,11 +1573,11 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 					$size = 767;
 				}
 				if ( ! empty( $attributes['bgImg'] ) ) {
-					$content = str_replace( 'kt-layout-id' . $attributes['uniqueID'] . '"><div class="kb-blocks-bg-video-container"><video class="kb-blocks-bg-video" poster="' . $attributes['bgImg'] . '" playsinline autoplay', 'kt-layout-id' . $attributes['uniqueID'] . '"><div class="kb-blocks-bg-video-container"><video id="bg-row-video-' . $attributes['uniqueID'] . '" class="kb-blocks-bg-video" poster=" ' . $attributes['bgImg'] . '" playsinline preload="none"', $content );
+					$content = str_replace( 'kt-layout-id' . esc_attr( $attributes['uniqueID'] ). '"><div class="kb-blocks-bg-video-container"><video class="kb-blocks-bg-video" poster="' . $attributes['bgImg'] . '" playsinline autoplay', 'kt-layout-id' . esc_attr( $attributes['uniqueID'] ) . '"><div class="kb-blocks-bg-video-container"><video id="bg-row-video-' . esc_attr( $attributes['uniqueID'] ) . '" class="kb-blocks-bg-video" poster=" ' . $attributes['bgImg'] . '" playsinline preload="none"', $content );
 				} else {
-					$content = str_replace( 'kt-layout-id' . $attributes['uniqueID'] . '"><div class="kb-blocks-bg-video-container"><video class="kb-blocks-bg-video" playsinline autoplay', 'kt-layout-id' . $attributes['uniqueID'] . '"><div class="kb-blocks-bg-video-container"><video id="bg-row-video-' . $attributes['uniqueID'] . '" class="kb-blocks-bg-video" playsinline preload="none"', $content );
+					$content = str_replace( 'kt-layout-id' . esc_attr( $attributes['uniqueID'] ) . '"><div class="kb-blocks-bg-video-container"><video class="kb-blocks-bg-video" playsinline autoplay', 'kt-layout-id' . esc_attr( $attributes['uniqueID'] ) . '"><div class="kb-blocks-bg-video-container"><video id="bg-row-video-' . esc_attr( $attributes['uniqueID'] ) . '" class="kb-blocks-bg-video" playsinline preload="none"', $content );
 				}
-				$content = $content . '<script>if( window.innerWidth > ' . $size . ' ){document.getElementById("bg-row-video-' . $attributes['uniqueID'] . '").removeAttribute("preload");document.getElementById("bg-row-video-' . $attributes['uniqueID'] . '").setAttribute("autoplay","");}</script>';
+				$content = $content . '<script>if( window.innerWidth > ' . $size . ' ){document.getElementById("bg-row-video-' . esc_attr( $attributes['uniqueID'] ) . '").removeAttribute("preload");document.getElementById("bg-row-video-' . esc_attr( $attributes['uniqueID'] ). '").setAttribute("autoplay","");}</script>';
 			}
 		}
 		return $content;

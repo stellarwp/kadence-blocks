@@ -137,12 +137,9 @@ class Kadence_Blocks_Header_CPT_Controller {
 	}
 
 	public function register_meta() {
-		register_post_meta(
-			'kadence_header',
-			'_kad_header_typography',
+		$register_meta = array(
 			array(
-				'single'        => true,
-				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'key' => '_kad_header_typography',
 				'type'          => 'object',
 				'default'       => array(
 					'color'         => '',
@@ -161,204 +158,152 @@ class Kadence_Blocks_Header_CPT_Controller {
 					'subset'        => '',
 					'loadGoogle'    => true,
 				),
-				'show_in_rest'  => array(
-					'schema' => array(
-						'type'       => 'object',
-						'properties' => array(
-							'color'         => array( 'type' => 'string' ),
-							'size'          => array( 'type' => 'array' ),
-							'sizeType'      => array( 'type' => 'string' ),
-							'lineHeight'    => array( 'type' => 'array' ),
-							'lineType'      => array( 'type' => 'string' ),
-							'letterSpacing' => array( 'type' => 'array' ),
-							'letterType'    => array( 'type' => 'string' ),
-							'textTransform' => array( 'type' => 'string' ),
-							'family'        => array( 'type' => 'string' ),
-							'google'        => array( 'type' => 'boolean' ),
-							'style'         => array( 'type' => 'string' ),
-							'weight'        => array( 'type' => 'string' ),
-							'variant'       => array( 'type' => 'string' ),
-							'subset'        => array( 'type' => 'string' ),
-							'loadGoogle'    => array( 'type' => 'boolean' ),
-						),
+				'properties' => array(
+					'color'         => array( 'type' => 'string' ),
+					'size'          => array( 'type' => 'array' ),
+					'sizeType'      => array( 'type' => 'string' ),
+					'lineHeight'    => array( 'type' => 'array' ),
+					'lineType'      => array( 'type' => 'string' ),
+					'letterSpacing' => array( 'type' => 'array' ),
+					'letterType'    => array( 'type' => 'string' ),
+					'textTransform' => array( 'type' => 'string' ),
+					'family'        => array( 'type' => 'string' ),
+					'google'        => array( 'type' => 'boolean' ),
+					'style'         => array( 'type' => 'string' ),
+					'weight'        => array( 'type' => 'string' ),
+					'variant'       => array( 'type' => 'string' ),
+					'subset'        => array( 'type' => 'string' ),
+					'loadGoogle'    => array( 'type' => 'boolean' ),
+				),
+			),
+			array(
+				'key' => '_kad_header_border',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
 					),
 				),
-			)
-		);
-		register_post_meta(
-			'kadence_header',
-			'_kad_header_border',
-			array(
-				'single'        => true,
-				'auth_callback' => array( $this, 'meta_auth_callback' ),
-				'type'          => 'object',
-				'default'       => array(
-					'top'    => array( '', 'solid', '' ),
-					'right'  => array( '', 'solid', '' ),
-					'bottom' => array( '', 'solid', '' ),
-					'left'   => array( '', 'solid', '' ),
-					'unit'   => 'px'
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
 				),
-				'show_in_rest'  => array(
-					'schema' => array(
-						'type'       => 'object',
-						'properties' => array(
-							'top'    => array( 'type' => 'array' ),
-							'right'  => array( 'type' => 'array' ),
-							'bottom' => array( 'type' => 'array' ),
-							'left'   => array( 'type' => 'array' ),
-							'unit'   => array( 'type' => 'string' ),
-						),
+			),
+			array(
+				'key' => '_kad_header_borderTablet',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
 					),
 				),
-			)
-		);
-		register_post_meta(
-			'kadence_header',
-			'_kad_header_hoverBorder',
-			array(
-				'single'        => true,
-				'auth_callback' => array( $this, 'meta_auth_callback' ),
-				'type'          => 'object',
-				'default'       => array(
-					'top'    => array( '', 'solid', '' ),
-					'right'  => array( '', 'solid', '' ),
-					'bottom' => array( '', 'solid', '' ),
-					'left'   => array( '', 'solid', '' ),
-					'unit'   => 'px'
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
 				),
-				'show_in_rest'  => array(
-					'schema' => array(
-						'type'       => 'object',
-						'properties' => array(
-							'top'    => array( 'type' => 'array' ),
-							'right'  => array( 'type' => 'array' ),
-							'bottom' => array( 'type' => 'array' ),
-							'left'   => array( 'type' => 'array' ),
-							'unit'   => array( 'type' => 'string' ),
-						),
+			),
+			array(
+				'key' => '_kad_header_borderMobile',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
 					),
 				),
-			)
-		);
-		register_post_meta(
-			'kadence_header',
-			'_kad_header_tabletHoverBorder',
-			array(
-				'single'        => true,
-				'auth_callback' => array( $this, 'meta_auth_callback' ),
-				'type'          => 'object',
-				'default'       => array(
-					'top'    => array( '', '', '' ),
-					'right'  => array( '', '', '' ),
-					'bottom' => array( '', '', '' ),
-					'left'   => array( '', '', '' ),
-					'unit'   => 'px'
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
 				),
-				'show_in_rest'  => array(
-					'schema' => array(
-						'type'       => 'object',
-						'properties' => array(
-							'top'    => array( 'type' => 'array' ),
-							'right'  => array( 'type' => 'array' ),
-							'bottom' => array( 'type' => 'array' ),
-							'left'   => array( 'type' => 'array' ),
-							'unit'   => array( 'type' => 'string' ),
-						),
+			),
+			array(
+				'key' => '_kad_header_borderHover',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
 					),
 				),
-			)
-		);
-		register_post_meta(
-			'kadence_header',
-			'_kad_header_mobileHoverBorder',
-			array(
-				'single'        => true,
-				'auth_callback' => array( $this, 'meta_auth_callback' ),
-				'type'          => 'object',
-				'default'       => array(
-					'top'    => array( '', '', '' ),
-					'right'  => array( '', '', '' ),
-					'bottom' => array( '', '', '' ),
-					'left'   => array( '', '', '' ),
-					'unit'   => 'px'
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
 				),
-				'show_in_rest'  => array(
-					'schema' => array(
-						'type'       => 'object',
-						'properties' => array(
-							'top'    => array( 'type' => 'array' ),
-							'right'  => array( 'type' => 'array' ),
-							'bottom' => array( 'type' => 'array' ),
-							'left'   => array( 'type' => 'array' ),
-							'unit'   => array( 'type' => 'string' ),
-						),
+			),
+			array(
+				'key' => '_kad_header_borderHoverTablet',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
 					),
 				),
-			)
-		);
-		register_post_meta(
-			'kadence_header',
-			'_kad_form_tabletBorder',
-			array(
-				'single'        => true,
-				'auth_callback' => array( $this, 'meta_auth_callback' ),
-				'type'          => 'object',
-				'default'       => array(
-					'top'    => array( '', '', '' ),
-					'right'  => array( '', '', '' ),
-					'bottom' => array( '', '', '' ),
-					'left'   => array( '', '', '' ),
-					'unit'   => 'px'
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
 				),
-				'show_in_rest'  => array(
-					'schema' => array(
-						'type'       => 'object',
-						'properties' => array(
-							'top'    => array( 'type' => 'array' ),
-							'right'  => array( 'type' => 'array' ),
-							'bottom' => array( 'type' => 'array' ),
-							'left'   => array( 'type' => 'array' ),
-							'unit'   => array( 'type' => 'string' ),
-						),
+			),
+			array(
+				'key' => '_kad_header_borderHoverMobile',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
 					),
 				),
-			)
-		);
-		register_post_meta(
-			'kadence_header',
-			'_kad_form_mobileBorder',
-			array(
-				'single'        => true,
-				'auth_callback' => array( $this, 'meta_auth_callback' ),
-				'type'          => 'object',
-				'default'       => array(
-					'top'    => array( '', '', '' ),
-					'right'  => array( '', '', '' ),
-					'bottom' => array( '', '', '' ),
-					'left'   => array( '', '', '' ),
-					'unit'   => 'px'
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
 				),
-				'show_in_rest'  => array(
-					'schema' => array(
-						'type'       => 'object',
-						'properties' => array(
-							'top'    => array( 'type' => 'array' ),
-							'right'  => array( 'type' => 'array' ),
-							'bottom' => array( 'type' => 'array' ),
-							'left'   => array( 'type' => 'array' ),
-							'unit'   => array( 'type' => 'string' ),
-						),
-					),
-				),
-			)
-		);
-		register_post_meta(
-			'kadence_header',
-			'_kad_header_background',
+			),
 			array(
-				'single'        => true,
-				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'key' => '_kad_header_background',
 				'type'          => 'object',
 				'default'       => array(
 					'color'      => '',
@@ -369,32 +314,22 @@ class Kadence_Blocks_Header_CPT_Controller {
 					'repeat'     => 'no-repeat',
 					'attachment' => 'scroll',
 					'type'       => 'normal',
-					'gradient'   => ''
+					'gradient'   => '',
 				),
-				'show_in_rest'  => array(
-					'schema' => array(
-						'type'       => 'object',
-						'properties' => array(
-							'color'      => array( 'type' => 'string' ),
-							'image'      => array( 'type' => 'string' ),
-							'imageID'    => array( 'type' => 'string' ),
-							'position'   => array( 'type' => 'string' ),
-							'size'       => array( 'type' => 'string' ),
-							'repeat'     => array( 'type' => 'string' ),
-							'attachment' => array( 'type' => 'string' ),
-							'type'       => array( 'type' => 'string' ),
-							'gradient'   => array( 'type' => 'string' ),
-						),
-					),
+				'properties' => array(
+					'color'      => array( 'type' => 'string' ),
+					'image'      => array( 'type' => 'string' ),
+					'imageID'    => array( 'type' => 'string' ),
+					'position'   => array( 'type' => 'string' ),
+					'size'       => array( 'type' => 'string' ),
+					'repeat'     => array( 'type' => 'string' ),
+					'attachment' => array( 'type' => 'string' ),
+					'type'       => array( 'type' => 'string' ),
+					'gradient'   => array( 'type' => 'string' ),
 				),
-			)
-		);
-		register_post_meta(
-			'kadence_header',
-			'_kad_header_backgroundHover',
+			),
 			array(
-				'single'        => true,
-				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'key' => '_kad_header_backgroundHover',
 				'type'          => 'object',
 				'default'       => array(
 					'color'           => '',
@@ -405,189 +340,232 @@ class Kadence_Blocks_Header_CPT_Controller {
 					'imageRepeat'     => 'no-repeat',
 					'imageAttachment' => 'scroll',
 					'type'            => 'normal',
-					'gradient'        => ''
+					'gradient'        => '',
 				),
-				'show_in_rest'  => array(
-					'schema' => array(
-						'type'       => 'object',
-						'properties' => array(
-							'color'           => array( 'type' => 'string' ),
-							'image'           => array( 'type' => 'string' ),
-							'imageID'         => array( 'type' => 'string' ),
-							'imagePosition'   => array( 'type' => 'string' ),
-							'imageSize'       => array( 'type' => 'string' ),
-							'imageRepeat'     => array( 'type' => 'string' ),
-							'imageAttachment' => array( 'type' => 'string' ),
-							'type'            => array( 'type' => 'string' ),
-							'gradient'        => array( 'type' => 'string' ),
-						),
-					),
+				'properties' => array(
+					'color'           => array( 'type' => 'string' ),
+					'image'           => array( 'type' => 'string' ),
+					'imageID'         => array( 'type' => 'string' ),
+					'imagePosition'   => array( 'type' => 'string' ),
+					'imageSize'       => array( 'type' => 'string' ),
+					'imageRepeat'     => array( 'type' => 'string' ),
+					'imageAttachment' => array( 'type' => 'string' ),
+					'type'            => array( 'type' => 'string' ),
+					'gradient'        => array( 'type' => 'string' ),
 				),
-			)
-		);
-		register_post_meta(
-			'kadence_header',
-			'_kad_header_flex',
+			),
 			array(
-				'single'        => true,
-				'auth_callback' => array( $this, 'meta_auth_callback' ),
+				'key' => '_kad_header_flex',
 				'type'          => 'object',
 				'default'       => array(
 					'direction'         => array( '', '', '' ),
 					'justifyContent'    => array( '', '', '' ),
 					'verticalAlignment' => array( '', '', '' ),
 				),
-				'show_in_rest'  => array(
-					'schema' => array(
-						'type'       => 'object',
-						'properties' => array(
-							'direction'         => array( 'type' => 'array' ),
-							'justifyContent'    => array( 'type' => 'array' ),
-							'verticalAlignment' => array( 'type' => 'array' ),
-						),
-					),
+				'properties' => array(
+					'direction'         => array( 'type' => 'array' ),
+					'justifyContent'    => array( 'type' => 'array' ),
+					'verticalAlignment' => array( 'type' => 'array' ),
 				),
-			)
-		);
-		$register_meta = array(
+			),
 			array(
 				'key'     => '_kad_header_anchor',
 				'default' => '',
-				'type'    => 'string'
+				'type'    => 'string',
 			),
 			array(
 				'key'     => '_kad_header_className',
 				'default' => '',
-				'type'    => 'string'
+				'type'    => 'string',
 			),
 			array(
 				'key'           => '_kad_header_padding',
 				'default'       => array( '20', '20', '20', '20' ),
 				'type'          => 'array',
-				'children_type' => 'string'
+				'children_type' => 'string',
 			),
 			array(
 				'key'           => '_kad_header_tabletPadding',
 				'default'       => array( '20', '20', '20', '20' ),
 				'type'          => 'array',
-				'children_type' => 'string'
+				'children_type' => 'string',
 			),
 			array(
 				'key'           => '_kad_header_mobilePadding',
 				'default'       => array( '20', '20', '20', '20' ),
 				'type'          => 'array',
-				'children_type' => 'string'
+				'children_type' => 'string',
 			),
 			array(
 				'key'     => '_kad_header_paddingUnit',
 				'default' => 'px',
-				'type'    => 'string'
+				'type'    => 'string',
 			),
 			array(
 				'key'           => '_kad_header_margin',
 				'default'       => array( '', '', '', '' ),
 				'type'          => 'array',
-				'children_type' => 'string'
+				'children_type' => 'string',
 			),
 			array(
 				'key'           => '_kad_header_tabletMargin',
 				'default'       => array( '', '', '', '' ),
 				'type'          => 'array',
-				'children_type' => 'string'
+				'children_type' => 'string',
 			),
 			array(
 				'key'           => '_kad_header_mobileMargin',
 				'default'       => array( '', '', '', '' ),
 				'type'          => 'array',
-				'children_type' => 'string'
+				'children_type' => 'string',
 			),
 			array(
 				'key'     => '_kad_header_marginUnit',
 				'default' => 'px',
-				'type'    => 'string'
+				'type'    => 'string',
 			),
 			array(
 				'key'           => '_kad_header_borderRadius',
 				'default'       => array( 0, 0, 0, 0 ),
 				'type'          => 'array',
-				'children_type' => 'integer'
+				'children_type' => 'integer',
 			),
 			array(
-				'key'           => '_kad_header_tabletBorderRadius',
+				'key'           => '_kad_header_borderRadiusTablet',
 				'default'       => array( 0, 0, 0, 0 ),
 				'type'          => 'array',
-				'children_type' => 'integer'
+				'children_type' => 'integer',
 			),
 			array(
-				'key'           => '_kad_header_mobileBorderRadius',
+				'key'           => '_kad_header_borderRadiusMobile',
 				'default'       => array( 0, 0, 0, 0 ),
 				'type'          => 'array',
-				'children_type' => 'integer'
+				'children_type' => 'integer',
 			),
 			array(
 				'key'     => '_kad_header_borderRadiusUnit',
 				'default' => 'px',
-				'type'    => 'string'
+				'type'    => 'string',
 			),
 			array(
-				'key'           => '_kad_header_borderHoverRadius',
+				'key'           => '_kad_header_borderRadiusHover',
 				'default'       => array( 0, 0, 0, 0 ),
 				'type'          => 'array',
-				'children_type' => 'integer'
+				'children_type' => 'integer',
 			),
 			array(
-				'key'           => '_kad_header_tabletBorderHoverRadius',
+				'key'           => '_kad_header_borderRadiusHoverTablet',
 				'default'       => array( 0, 0, 0, 0 ),
 				'type'          => 'array',
-				'children_type' => 'integer'
+				'children_type' => 'integer',
 			),
 			array(
-				'key'           => '_kad_header_mobileBorderHoverRadius',
+				'key'           => '_kad_header_borderRadiusHoverMobile',
 				'default'       => array( 0, 0, 0, 0 ),
 				'type'          => 'array',
-				'children_type' => 'integer'
+				'children_type' => 'integer',
 			),
 			array(
-				'key'     => '_kad_header_borderHoverRadiusUnit',
+				'key'     => '_kad_header_borderRadiusHoverUnit',
 				'default' => 'px',
-				'type'    => 'string'
+				'type'    => 'string',
 			),
 			array(
 				'key'     => '_kad_header_textColor',
 				'default' => '',
-				'type'    => 'string'
+				'type'    => 'string',
 			),
 			array(
 				'key'     => '_kad_header_linkColor',
 				'default' => '',
-				'type'    => 'string'
+				'type'    => 'string',
 			),
 			array(
 				'key'     => '_kad_header_linkHoverColor',
 				'default' => '',
-				'type'    => 'string'
+				'type'    => 'string',
 			),
 			array(
 				'key'           => '_kad_header_height',
 				'default'       => array( '', '', '' ),
 				'type'          => 'array',
-				'children_type' => 'string'
+				'children_type' => 'string',
 			),
 			array(
 				'key'     => '_kad_header_heightUnit',
 				'default' => 'px',
-				'type'    => 'string'
+				'type'    => 'string',
 			),
 			array(
 				'key'           => '_kad_header_width',
 				'default'       => array( '', '', '' ),
 				'type'          => 'array',
-				'children_type' => 'string'
+				'children_type' => 'string',
 			),
 			array(
 				'key'     => '_kad_header_widthUnit',
 				'default' => 'px',
-				'type'    => 'string'
+				'type'    => 'string',
+			),
+			array(
+				'key'     => '_kad_header_style',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_header_styleTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_header_styleMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_header_autoTransparentSpacing',
+				'default' => false,
+				'type'    => 'boolean',
+			),
+			array(
+				'key'     => '_kad_header_stickySection',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_header_stickySectionTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_header_stickySectionMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_header_shrinkMain',
+				'default' => false,
+				'type'    => 'boolean',
+			),
+			array(
+				'key'     => '_kad_header_shrinkMainHeight',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_header_shrinkMainHeightTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_header_shrinkMainHeightMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_header_revealScrollUp',
+				'default' => false,
+				'type'    => 'boolean',
 			),
 		);
 

@@ -21,3 +21,4 @@ docker-compose.yml
 codeception.dist.yml
 .env
 .env.testing
+.prettierignore

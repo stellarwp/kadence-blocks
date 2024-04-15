@@ -21,30 +21,42 @@ import { formBlockIcon, formTemplateContactIcon } from '@kadence/icons';
 import { KadencePanelBody } from '@kadence/components';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { Placeholder, Spinner } from '@wordpress/components';
-import { store as coreStore, EntityProvider } from '@wordpress/core-data';
+import { store as coreStore, EntityProvider, useEntityProp } from '@wordpress/core-data';
 
 import { useEntityAutoDraft } from './hooks';
 import { SelectOrCreatePlaceholder, SelectForm } from './components';
-import { getUniqueId, getPostOrFseId } from '@kadence/helpers';
+import { getUniqueId, getPostOrFseId, getPreviewSize } from '@kadence/helpers';
 
 /**
  * Internal dependencies
  */
 import EditInner from './edit-inner';
-import { useEffect } from '@wordpress/element';
+import { useEffect, Fragment } from '@wordpress/element';
 
 export function Edit(props) {
 	const { attributes, setAttributes, clientId } = props;
 
 	const { id, uniqueID } = attributes;
 
-	const blockClasses = classnames({
-		'wp-block-kadence-header': true,
-		[`wp-block-kadence-header${uniqueID}`]: uniqueID,
-	});
-	const blockProps = useBlockProps({
-		className: blockClasses,
-	});
+	const [meta, setMeta] = useHeaderProp('meta', id);
+
+	const metaAttributes = {
+		style: meta?._kad_header_style,
+		styleTablet: meta?._kad_header_styleTablet,
+		styleMobile: meta?._kad_header_styleMobile,
+	};
+
+	const { style, styleTablet, styleMobile } = metaAttributes;
+
+	const { previewDevice } = useSelect(
+		(select) => {
+			return {
+				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
+			};
+		},
+		[clientId]
+	);
+
 	const { post, postExists, isLoading, currentPostType, postId } = useSelect(
 		(select) => {
 			return {
@@ -82,6 +94,20 @@ export function Edit(props) {
 		[clientId]
 	);
 
+	const previewStyle = getPreviewSize(previewDevice, style ? style : 'standard', styleTablet, styleMobile);
+
+	const blockClasses = classnames({
+		'wp-block-kadence-header': true,
+		[`wp-block-kadence-header${uniqueID}`]: uniqueID,
+		[`header-desktop-style-${style}`]: !previewDevice || previewDevice == 'Desktop',
+		[`header-tablet-style-${styleTablet}`]: previewDevice == 'Tablet',
+		[`header-mobile-style-${styleMobile}`]: previewDevice == 'Mobile',
+	});
+
+	const blockProps = useBlockProps({
+		className: blockClasses,
+	});
+
 	if (isPreviewMode) {
 		return <>{formTemplateContactIcon}</>;
 	}
@@ -102,17 +128,7 @@ export function Edit(props) {
 		}
 	}, []);
 
-	{
-		/* Directly editing from via kadence_header post type */
-	}
-	if (currentPostType === 'kadence_header') {
-		return (
-			<div {...blockProps}>
-				<EditInner {...props} direct={true} id={postId} />
-			</div>
-		);
-	}
-	return (
+	let mainBlockContent = (
 		<div {...blockProps}>
 			{/* No form selected or selected form was deleted from the site, display chooser */}
 			{(id === 0 || (undefined === postExists && !isLoading)) && (
@@ -189,6 +205,24 @@ export function Edit(props) {
 			)}
 		</div>
 	);
+
+	//Directly editing from via kadence_header post type
+	if (currentPostType === 'kadence_header') {
+		mainBlockContent = (
+			<div {...blockProps}>
+				<EditInner {...props} direct={true} id={postId} />
+			</div>
+		);
+	}
+
+	if (previewStyle === 'transparent') {
+		return (
+			<div className="kb-header-transparent-placeholder">
+				<>{mainBlockContent}</>
+			</div>
+		);
+	}
+	return <Fragment>{mainBlockContent}</Fragment>;
 }
 
 export default Edit;
@@ -216,4 +250,8 @@ function Chooser({ id, post, commit, postExists }) {
 			isAdding={isAdding}
 		/>
 	);
+}
+
+function useHeaderProp(prop, postId) {
+	return useEntityProp('postType', 'kadence_header', prop, postId);
 }

@@ -36,9 +36,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	 *
 	 * @var string
 	 */
-	protected $has_script = false;
-
-	protected $has_style = false;
+	protected $has_script = true;
 
 	/**
 	 * Instance of this class
@@ -70,22 +68,18 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		$header_attributes = $this->get_header_attributes( $attributes['id'] );
-		$attrs_exist = isset($header_attributes) && ! empty($header_attributes);
-		$bg = $attrs_exist && ! empty($header_attributes['background']) ? $header_attributes['background'] : '';
-		$hoverBg = $attrs_exist && !empty($header_attributes['backgroundHover']) ? $header_attributes['backgroundHover'] : '';
-		$border = $attrs_exist && isset($header_attributes['border']) && is_array($header_attributes['border']) ? $header_attributes['border'] : '';
-		$typography = $attrs_exist && isset($header_attributes['typography']) && is_array($header_attributes['typography']) ? $header_attributes['typography'] : '';
+
+
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
-		$css->set_selector('.wp-block-kadence-header.wp-block-kadence-header' . $unique_id);
-		$css->add_property('background-color', $css->render_color( ! empty($bg['color']) ? $bg['color'] : ''));
-		//$css->render_border_styles($border, 'border');
-		if('' !== $bg && 'normal' === $bg['type'] && ! empty($bg['image'])) {
-			$css->add_property('background-image', 'url("' . $bg['image'] . '")');
-			$css->add_property('background-position', $bg['position']);
-			$css->add_property('background-size', $bg['size']);
-			$css->add_property('background-repeat', $bg['repeat']);
-			$css->add_property('background-attachment', $bg['attachment']);
+
+		$sizes = array( 'Desktop', 'Tablet', 'Mobile' );
+
+		foreach ( $sizes as $size ) {
+			$this->sized_dynamic_styles( $css, $header_attributes, $unique_id, $size );
 		}
+		$css->set_media_state( 'desktop' );
+
+
 //		$css->add_property('color', $css->render_color($header_attributes['textColor']));
 //		$css->add_property('font-size', $css->get_font_size($typography['size'][0], $typography['sizeType']));
 //		$css->add_property('text-transform', $typography['textTransform']);
@@ -104,12 +98,60 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	// $css->add_property('border-left-color', previewBorderColorLeft);
 
 		//$css->set_selector('.wp-block-kadence-header.wp-block-kadence-header' . $unique_id . ':hover');
-		//$css->add_property('background-color', $css->render_color($hoverBg['color']));
+		//$css->add_property('background-color', $css->render_color($hover_bg['color']));
 		$css->set_selector('.wp-block-kadence-header.wp-block-kadence-header' . $unique_id . ' a');
 //		$css->add_property('color', $css->render_color($header_attributes['linkColor']));
 		$css->set_selector('.wp-block-kadence-header.wp-block-kadence-header' . $unique_id . ' a:hover');
 //		$css->add_property('color', $css->render_color($header_attributes['linkHoverColor']));
+
 		return $css->css_output();
+	}
+
+	/**
+	 * Build up the dynamic styles for a size.
+	 *
+	 * @param string $size The size.
+	 * @return array
+	 */
+	public function sized_dynamic_styles( $css, $attributes, $unique_id, $size = 'Desktop' ) {
+		$sized_attributes = $css->get_sized_attributes_auto( $attributes, $size, false );
+		$sized_attributes_inherit = $css->get_sized_attributes_auto( $attributes, $size );
+
+		$css->set_media_state( strtolower( $size ) );
+
+		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > div' );
+
+		$bg = $sized_attributes['background'];
+		$hover_bg = $sized_attributes['backgroundHover'];
+		$border = $sized_attributes['border'];
+		$typography = $sized_attributes['typography'];
+
+		if ( $sized_attributes['style'] != 'transparent' ) {
+			$css->add_property('background-color', $css->render_color( ! empty($bg['color']) ? $bg['color'] : ''));
+			//$css->render_border_styles($border, 'border');
+			if('' !== $bg && 'normal' === $bg['type'] && ! empty($bg['image'])) {
+				$css->add_property('background-image', 'url("' . $bg['image'] . '")');
+				$css->add_property('background-position', $bg['position']);
+				$css->add_property('background-size', $bg['size']);
+				$css->add_property('background-repeat', $bg['repeat']);
+				$css->add_property('background-attachment', $bg['attachment']);
+			}
+		}
+		$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['border'], 'bottom' ) );
+		$css->add_property( 'border-top', $css->render_border( $sized_attributes['border'], 'top' ) );
+		$css->add_property( 'border-left', $css->render_border( $sized_attributes['border'], 'left' ) );
+		$css->add_property( 'border-right', $css->render_border( $sized_attributes['border'], 'right' ) );
+
+		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > div:hover' );
+
+		$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['borderHover'], 'bottom' ) );
+		$css->add_property( 'border-top', $css->render_border( $sized_attributes['borderHover'], 'top' ) );
+		$css->add_property( 'border-left', $css->render_border( $sized_attributes['borderHover'], 'left' ) );
+		$css->add_property( 'border-right', $css->render_border( $sized_attributes['borderHover'], 'right' ) );
+
+		if ( $sized_attributes['style'] == 'transparent' ) {
+			$css->add_property( 'top', '0px' );
+		}
 	}
 
 	/**
@@ -146,6 +188,9 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		self::$seen_refs[ $attributes['id'] ] = true;
 
+		$header_attributes = $this->get_header_attributes( $attributes['id'] );
+		$header_attributes = json_decode( json_encode( $header_attributes ), true );
+
 		// Remove the advanced nav block so it doesn't try and render.
 		$content = preg_replace( '/<!-- wp:kadence\/header {.*?} -->/', '', $header_block->post_content );
 		$content = str_replace( '<!-- wp:kadence/header  -->', '', $content );
@@ -160,22 +205,77 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 
 		unset( self::$seen_refs[ $attributes['id'] ] );
 
-//		$header_attributes = $this->get_header_attributes( $attributes['id'] );
-//		$header_attributes = json_decode( json_encode( $header_attributes ), true );
-
 		$name = ! empty( $attributes['name'] ) ? $attributes['name'] : '';
-		$outer_classes = array( 'wp-block-kadence-header' . $unique_id );
+
+		// Inherit values.
+		// Just getting a css class for access to methods.
+		$css = Kadence_Blocks_CSS::get_instance();
+		$style = $css->get_inherited_value( $header_attributes['style'], $header_attributes['styleTablet'], $header_attributes['styleMobile'], 'Desktop' );
+		$style_tablet = $css->get_inherited_value( $header_attributes['style'], $header_attributes['styleTablet'], $header_attributes['styleMobile'], 'Tablet' );
+		$style_mobile = $css->get_inherited_value( $header_attributes['style'], $header_attributes['styleTablet'], $header_attributes['styleMobile'], 'Mobile' );
+
+		$wrapper_classes = array( 'wp-block-kadence-header' . $unique_id );
+		$wrapper_classes[] = 'header-desktop-style-' . ( $style ? $style : 'standard' );
+		$wrapper_classes[] = 'header-tablet-style-' . ( $style_tablet ? $style_tablet : 'standard' );
+		$wrapper_classes[] = 'header-mobile-style-' . ( $style_mobile ? $style_mobile : 'standard' );
+
 		$wrapper_attributes = get_block_wrapper_attributes(
 			array(
-				'class'      => implode( ' ', $outer_classes ),
+				'class'      => implode( ' ', $wrapper_classes ),
 				'aria-label' => $name,
+				'data-auto-transparent-spacing' => $header_attributes['autoTransparentSpacing'],
+				'data-style' => $header_attributes['style'] ?: 'standard',
+				'data-style-tablet' => $header_attributes['styleTablet'] ?: 'standard',
+				'data-style-mobile' => $header_attributes['styleMobile'] ?: 'standard',
+				'data-sticky-section' => $header_attributes['stickySection'] ?: 'main',
+				'data-sticky-section-tablet' => $header_attributes['stickySectionTablet'] ?: 'main',
+				'data-sticky-section-mobile' => $header_attributes['stickySectionMobile'] ?: 'main',
+				'data-shrink-main' => $header_attributes['shrinkMain'],
+				'data-shrink-main-height' => $header_attributes['shrinkMainHeight'] ?: '',
+				'data-shrink-main-height-tablet' => $header_attributes['shrinkMainHeightTablet'] ?: '',
+				'data-shrink-main-height-mobile' => $header_attributes['shrinkMainHeightMobile'] ?: '',
+				'data-reveal-scroll-up' => $header_attributes['revealScrollUp'],
 			)
 		);
 
 		return sprintf(
-			'<header %1$s>%2$s</header>',
+			'<div %1$s>%2$s</div>',
 			$wrapper_attributes,
 			$content
+		);
+	}
+
+	/**
+	 * Registers scripts and styles.
+	 */
+	public function register_scripts() {
+		parent::register_scripts();
+		// If in the backend, bail out.
+		if ( is_admin() ) {
+			return;
+		}
+		if ( apply_filters( 'kadence_blocks_check_if_rest', false ) && kadence_blocks_is_rest() ) {
+			return;
+		}
+
+		wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/kb-header-block.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+
+		wp_localize_script(
+			'kadence-blocks-' . $this->block_name,
+			'kadenceHeaderConfig',
+			array(
+				'screenReader' => array(
+					'expand'     => __( 'Child menu', 'kadence' ),
+					'expandOf'   => __( 'Child menu of', 'kadence' ),
+					'collapse'   => __( 'Child menu', 'kadence' ),
+					'collapseOf' => __( 'Child menu of', 'kadence' ),
+				),
+				'breakPoints' => array(
+					'desktop' => 1024,
+					'tablet' => 768,
+				),
+				'scrollOffset' => apply_filters( 'kadence_scroll_to_id_additional_offset', 0 ),
+			),
 		);
 	}
 
@@ -192,20 +292,53 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		$post_meta = get_post_meta( $post_id );
-		$nav_meta = array();
+		$header_meta = array();
 		if ( is_array( $post_meta ) ) {
 			foreach ( $post_meta as $meta_key => $meta_value ) {
 				if ( strpos( $meta_key, '_kad_header_' ) === 0 && isset( $meta_value[0] ) ) {
-					$nav_meta[ str_replace( '_kad_header_', '', $meta_key ) ] = maybe_unserialize( $meta_value[0] );
+					$header_meta[ str_replace( '_kad_header_', '', $meta_key ) ] = maybe_unserialize( $meta_value[0] );
 				}
 			}
 		}
 
-		if ( $this->header_attributes[ $post_id ] = $nav_meta ) {
+		$header_meta = $this->merge_defaults( $header_meta );
+
+		if ( $this->header_attributes[ $post_id ] = $header_meta ) {
 			return $this->header_attributes[ $post_id ];
 		}
 
 		return array();
+	}
+
+
+	/**
+	 * Merges in default values from the cpt registration to the meta attributes from the database.
+	 *
+	 * @param array $attributes The database attribtues.
+	 * @return array
+	 */
+	private function merge_defaults( $attributes ) {
+		$meta_keys = get_registered_meta_keys( 'post', 'kadence_header' );
+		$meta_prefix = '_kad_header_';
+		$default_attributes = array();
+
+		foreach ( $meta_keys as $key => $value ) {
+			if ( str_starts_with( $key, $meta_prefix ) && array_key_exists( 'default', $value ) ) {
+				$attr_name = str_replace( $meta_prefix, '', $key );
+
+				//handle types of attributes that are an array with a single object that actually contains the actual attributes
+				if ( is_array( $value['default'] ) && count( $value['default'] ) == 1 && isset( $value['default'][0] ) ) {
+					if ( isset( $attributes[ $attr_name ] ) && is_array( $attributes[ $attr_name ] ) && count( $attributes[ $attr_name ] ) == 1 && isset( $attributes[ $attr_name ][0] ) ) {
+						$attributes[ $attr_name ][0] = array_merge( $value['default'][0], $attributes[ $attr_name ][0] );
+					}
+				}
+
+				//standard case
+				$default_attributes[ $attr_name ] = $value['default'];
+			}
+		}
+
+		return array_merge( $default_attributes, $attributes );
 	}
 }
 

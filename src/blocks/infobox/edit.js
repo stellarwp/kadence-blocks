@@ -400,7 +400,7 @@ function KadenceInfoBox(props) {
 	};
 	const previewPaddingType = undefined !== containerPaddingType ? containerPaddingType : 'px';
 	const paddingMin = previewPaddingType === 'em' || previewPaddingType === 'rem' ? 0 : 0;
-	const paddingMax = previewPaddingType === 'em' || previewPaddingType === 'rem' ? 25 : 400;
+	const paddingMax = previewPaddingType === 'em' || previewPaddingType === 'rem' ? 25 : 999;
 	const paddingStep = previewPaddingType === 'em' || previewPaddingType === 'rem' ? 0.1 : 1;
 	const previewContainerPaddingTop = getPreviewSize(
 		previewDevice,
@@ -667,8 +667,8 @@ function KadenceInfoBox(props) {
 		'' !== mediaAlignMobile ? mediaAlignMobile : ''
 	);
 
-	const marginMin = containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? -25 : -400;
-	const marginMax = containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 25 : 400;
+	const marginMin = containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? -25 : -999;
+	const marginMax = containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 25 : 999;
 	const marginStep = containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 0.1 : 1;
 
 	const layoutPresetOptions = [

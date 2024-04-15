@@ -204,23 +204,23 @@ function ConvertKitOptions({ formInnerBlocks, parentClientId, settings, save }) 
 
 	return (
 		<KadencePanelBody
-			title={__('ConvertKit Settings', 'kadence-blocks-pro')}
+			title={__('ConvertKit Settings', 'kadence-blocks')}
 			initialOpen={false}
 			panelName={'kb-convertkit'}
 		>
 			<p>
-				<ExternalLink href={HELP_URL}>{__('Get help', 'kadence-blocks-pro')}</ExternalLink>
+				<ExternalLink href={HELP_URL}>{__('Get help', 'kadence-blocks')}</ExternalLink>
 			</p>
 			<TextControl label={__('API Key', 'kadence-blocks')} value={api} onChange={(value) => setApi(value)} />
 			<div className="components-base-control">
 				<Button isPrimary onClick={() => saveAPI()} disabled={'' === api}>
-					{isSaving ? __('Saving', 'kadence-blocks-pro') : __('Save', 'kadence-blocks-pro')}
+					{isSaving ? __('Saving', 'kadence-blocks') : __('Save', 'kadence-blocks')}
 				</Button>
 				{api !== '' && (
 					<Fragment>
 						&nbsp;
 						<Button isSecondary onClick={() => removeAPI()}>
-							{__('Remove', 'kadence-blocks-pro')}
+							{__('Remove', 'kadence-blocks')}
 						</Button>
 					</Fragment>
 				)}
@@ -230,14 +230,14 @@ function ConvertKitOptions({ formInnerBlocks, parentClientId, settings, save }) 
 					{isFetching && <Spinner />}
 					{!isFetching && !hasList && (
 						<Fragment>
-							<h2 className="kt-heading-size-title">{__('Select Form', 'kadence-blocks-pro')}</h2>
+							<h2 className="kt-heading-size-title">{__('Select Form', 'kadence-blocks')}</h2>
 							{!listsLoaded ? getConvertKitForms() : ''}
-							{!Array.isArray(list) ? <Spinner /> : __('No forms found.', 'kadence-blocks-pro')}
+							{!Array.isArray(list) ? <Spinner /> : __('No forms found.', 'kadence-blocks')}
 						</Fragment>
 					)}
 					{!isFetching && hasList && (
 						<Fragment>
-							<h2 className="kt-heading-size-title">{__('Select Form', 'kadence-blocks-pro')}</h2>
+							<h2 className="kt-heading-size-title">{__('Select Form', 'kadence-blocks')}</h2>
 							<Select
 								value={
 									undefined !== settings && undefined !== settings && undefined !== settings.form
@@ -266,7 +266,7 @@ function ConvertKitOptions({ formInnerBlocks, parentClientId, settings, save }) 
 										{!Array.isArray(listGroups) ? (
 											<Spinner />
 										) : (
-											__('No Sequences found.', 'kadence-blocks-pro')
+											__('No Sequences found.', 'kadence-blocks')
 										)}
 									</Fragment>
 								)}
@@ -302,7 +302,7 @@ function ConvertKitOptions({ formInnerBlocks, parentClientId, settings, save }) 
 										{!Array.isArray(listTags) ? (
 											<Spinner />
 										) : (
-											__('No Tags found.', 'kadence-blocks-pro')
+											__('No Tags found.', 'kadence-blocks')
 										)}
 									</Fragment>
 								)}
@@ -337,7 +337,7 @@ function ConvertKitOptions({ formInnerBlocks, parentClientId, settings, save }) 
 										{!Array.isArray(listAttr) ? (
 											<Spinner />
 										) : (
-											__('No Fields found.', 'kadence-blocks-pro')
+											__('No Fields found.', 'kadence-blocks')
 										)}
 									</Fragment>
 								)}

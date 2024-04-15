@@ -81,7 +81,7 @@ class Kadence_Blocks_Header_Container_Desktop_Block extends Kadence_Blocks_Abstr
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
-		$css->set_selector( '.kadence-blocks-header-desktop' . $unique_id );
+		$css->set_selector( '.wp-block-kadence-header-desktop' . $unique_id );
 		$css->add_property( 'display', 'block' );
 
 		$css->set_media_state( 'tablet' );
@@ -100,8 +100,8 @@ class Kadence_Blocks_Header_Container_Desktop_Block extends Kadence_Blocks_Abstr
 		$html = '';
 
 		$classes = array(
-			'kadence-blocks-header-desktop',
-			'kadence-blocks-header-desktop' . $unique_id,
+			'wp-block-kadence-header-desktop',
+			'wp-block-kadence-header-desktop' . $unique_id,
 		);
 
 		$html .= '<div class="' . esc_attr( implode( ' ', $classes ) ) . '">';

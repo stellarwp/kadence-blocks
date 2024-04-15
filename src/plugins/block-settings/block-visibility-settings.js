@@ -7,7 +7,7 @@ import { store as noticesStore } from '@wordpress/notices';
 /**
  * Internal block libraries
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 
 function KadenceVisibilitySettings({ blockSlug, blockName, options }) {
 	const [isOpen, setIsOpen] = useState(false);
@@ -16,7 +16,7 @@ function KadenceVisibilitySettings({ blockSlug, blockName, options }) {
 	const [settings, setSettings] = useState(
 		kadence_blocks_params.settings ? JSON.parse(kadence_blocks_params.settings) : {}
 	);
-	const { createErrorNotice } = useDispatch(noticesStore);
+	const { createSuccessNotice } = useDispatch(noticesStore);
 
 	const saveConfig = (blockID, settingArray) => {
 		setIsSaving(true);
@@ -29,7 +29,7 @@ function KadenceVisibilitySettings({ blockSlug, blockName, options }) {
 		const settingModel = new wp.api.models.Settings({ kadence_blocks_settings_blocks: JSON.stringify(config) });
 
 		settingModel.save().then((response) => {
-			createErrorNotice(blockName + ' ' + __('block visibility saved!', 'kadence-blocks'), {
+			createSuccessNotice(blockName + ' ' + __('block visibility saved!', 'kadence-blocks'), {
 				type: 'snackbar',
 			});
 
@@ -75,7 +75,11 @@ function KadenceVisibilitySettings({ blockSlug, blockName, options }) {
 			{isOpen && (
 				<Modal
 					className="kt-block-settings-modal"
-					title={__(blockName + ' Settings', 'kadence-blocks')}
+					title={sprintf(
+						/* translators: %s is the name of the Kadence Block */
+						__('%s Settings', 'kadence-blocks'),
+						blockName
+					)}
 					onRequestClose={() => {
 						resetSettings();
 					}}

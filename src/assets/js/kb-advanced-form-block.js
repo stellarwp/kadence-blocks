@@ -297,6 +297,18 @@
 								window.kadenceAdvancedForm.markError(required[n], error_type, self);
 							}
 							break;
+
+						case 'number':
+							val = required[n].value.trim();
+
+							if (val === '') {
+								error = true;
+								error_type = 'required';
+
+								// mark the error in the field.
+								window.kadenceAdvancedForm.markError(required[n], error_type, self);
+							}
+							break;
 					}
 				}
 			}
@@ -326,7 +338,7 @@
 		},
 		createElementFromHTML(htmlString) {
 			const div = document.createElement('div');
-			div.innerHTML = window.kadenceAdvancedForm.strip_tags(htmlString, '<div><a><b><i><u><p><ol><ul>');
+			div.innerHTML = window.kadenceAdvancedForm.strip_tags(htmlString, '<div><a><b><i><u><p><ol><ul><li>');
 
 			// Change this to div.childNodes to support multiple top-level nodes
 			return div.firstChild;

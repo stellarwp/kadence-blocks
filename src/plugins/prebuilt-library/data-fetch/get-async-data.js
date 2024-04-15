@@ -98,10 +98,18 @@ export function getAsyncData() {
 	 *
 	 * @return {Promise<object>}
 	 */
-	async function getAIWizardData() {
+	async function getAIWizardData(reload = false) {
 		setLoadingWizard(true);
 		setError(false);
-
+		const preloadData =
+			window?.kadence_blocks_params_wizard?.settings && window?.kadence_blocks_params_wizard?.settings?.context
+				? window.kadence_blocks_params_wizard.settings
+				: false;
+		if (!reload && preloadData) {
+			setLoadingWizard(false);
+			console.log('Preloaded Wizard Data');
+			return preloadData;
+		}
 		try {
 			const response = await apiFetch({
 				path: '/wp/v2/settings',
@@ -112,6 +120,10 @@ export function getAsyncData() {
 				setLoadingWizard(false);
 
 				if (response?.kadence_blocks_prophecy) {
+					if (!window?.kadence_blocks_params_wizard) {
+						window.kadence_blocks_params_wizard = {};
+					}
+					window.kadence_blocks_params_wizard.settings = response.kadence_blocks_prophecy;
 					return response.kadence_blocks_prophecy;
 				}
 			}
@@ -136,7 +148,6 @@ export function getAsyncData() {
 		if (!userData?.photoLibrary) {
 			return [];
 		}
-		// console.log(userData);
 		const localGallery =
 			userData?.customCollections &&
 			userData?.customCollections.some((item) => item.value === userData?.photoLibrary)
@@ -169,7 +180,15 @@ export function getAsyncData() {
 						img.id = item.id;
 					}
 					if (item?.sizes?.[1]?.src) {
-						img.sizes = [{ src: item.sizes[1].src }];
+						if (item.sizes.find((image) => image.name === 'large')) {
+							img.sizes = [{ src: item.sizes.find((image) => image.name === 'large').src }];
+						} else if (item.sizes.find((image) => image.name === '2048x2048')) {
+							img.sizes = [{ src: item.sizes.find((image) => image.name === '2048x2048').src }];
+						} else if (item.sizes.find((image) => image.name === 'scaled')) {
+							img.sizes = [{ src: item.sizes.find((image) => image.name === 'scaled').src }];
+						} else {
+							img.sizes = [{ src: item.sizes[1].src }];
+						}
 					} else {
 						img.sizes = [{ src: item.url }];
 					}
@@ -417,6 +436,17 @@ export function getAsyncData() {
 	 * @return {Promise<object>} Promise returns object
 	 */
 	async function getPatterns(library, reload, library_url = null, key = null) {
+		if ('section' === library && !reload) {
+			const preloadPatterns =
+				window?.kadence_blocks_params_library?.library_sections &&
+				window?.kadence_blocks_params_library?.library_sections.length > 0
+					? window.kadence_blocks_params_library.library_sections
+					: false;
+			if (preloadPatterns) {
+				console.log('Preloaded Patterns');
+				return preloadPatterns;
+			}
+		}
 		try {
 			const response = await apiFetch({
 				path: addQueryArgs('/kb-design-library/v1/get_library', {
@@ -426,6 +456,12 @@ export function getAsyncData() {
 					key: key ? key : library,
 				}),
 			});
+			if ('section' === library) {
+				if (!window?.kadence_blocks_params_library) {
+					window.kadence_blocks_params_library = {};
+				}
+				window.kadence_blocks_params_library.library_sections = response;
+			}
 			return response;
 		} catch (error) {
 			const message = error?.message ? error.message : error;

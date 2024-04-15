@@ -218,8 +218,8 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		$progress_color = ! empty( $attributes['progressColor'] ) ? $css->sanitize_color( $attributes['progressColor'], $attributes['progressOpacity'] ) : 'var(--global-palette1, #2B6CB0)';
 		$bar_background = ! empty( $attributes['barBackground'] ) ? $css->sanitize_color( $attributes['barBackground'], $attributes['barBackgroundOpacity'] ) : 'var(--global-palette7, #EDF2F7)';
 
-		$prefix       = isset( $attributes['numberPrefix'] ) ? $attributes['numberPrefix'] : '';
-		$suffix       = isset( $attributes['numberSuffix'] ) ? $attributes['numberSuffix'] : '';
+		$prefix       = isset( $attributes['numberPrefix'] ) ? esc_attr( $attributes['numberPrefix'] ) : '';
+		$suffix       = isset( $attributes['numberSuffix'] ) ? esc_attr( $attributes['numberSuffix'] ) : '';
 		$progress_min = 0;
 		$progress_amount = ! empty( $attributes['progressAmount'] ) ? $attributes['progressAmount'] : 0;
 		$progress_max = ! empty( $attributes['progressMax'] ) ? $attributes['progressMax'] : 100;
@@ -238,7 +238,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 
 		// aria-valuenow="50".
 		
-		$content .= '<div id="kb-progress-bar' . $unique_id . '" class="kb-progress-bar" role="progressbar" aria-label="' . esc_attr( strip_tags( $attributes['label'] ) ) . '" aria-valuemin="' . esc_attr( $progress_min ) . '" aria-valuemax="' . ( $is_relative ? 100 : $progress_max ) . '">' . ( $this->get_label( $attributes, 'inside' ) ) . '</div>';
+		$content .= '<div id="kb-progress-bar' . esc_attr( $unique_id ) . '" class="kb-progress-bar" role="progressbar" aria-labelledby="kt-progress-label' . esc_attr( $attributes['uniqueID'] ) . '" aria-label="' . ( empty($attributes['label']) ? __('Progress', 'kadence-blocks') : esc_attr( strip_tags( $attributes['label'] ) ) ) . '" aria-valuemin="' . esc_attr( $progress_min ) . '" aria-valuemax="' . ( $is_relative ? 100 : $progress_max ) . '">' . ( $this->get_label( $attributes, 'inside' ) ) . '</div>';
 
 		$content .= $this->get_label( $attributes, 'below' );
 
@@ -369,7 +369,8 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			return '';
 		}
 
-		$label = '<span role="textbox" class="kt-progress-label">' . $attributes['label'] . '</span>';
+		$label = '<span id="kt-progress-label' . esc_attr( $attributes['uniqueID'] ) . '" role="textbox" class="kt-progress-label" contenteditable="false" aria-label="' . esc_attr__( 'Progressbar Label', 'kadence-blocks' ). '">' . $attributes['label'] . '</span>';
+		
 		if ( isset( $attributes['displayLabel'] ) && $attributes['displayLabel'] !== true ) {
 			$label = '';
 		}

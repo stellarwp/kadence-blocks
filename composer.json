@@ -40,12 +40,12 @@
 		"stellarwp/telemetry": "^2.3",
 		"stellarwp/uplink": "dev-bugfix/multisite-token-logic",
 		"stellarwp/container-contract": "^1.0",
-		"stellarwp/prophecy-image-downloader": "^1.1",
+		"stellarwp/prophecy-image-downloader": "^1.5",
 		"stellarwp/prophecy-storage": "^1.1",
 		"symfony/translation-contracts": "^2.5"
 	},
 	"require-dev": {
-		"lucatume/wp-browser": "^3.1.6",
+		"lucatume/wp-browser": "<3.5",
 		"codeception/module-asserts": "^1.3.1",
 		"codeception/module-phpbrowser": "^1.0.3",
 		"codeception/module-webdriver": "^1.4.1",
@@ -61,7 +61,8 @@
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"Tests\\": "tests/"
+			"Tests\\": "tests/",
+			"Tests\\Support\\Classes\\": "tests/_support/Classes"
 		}
 	},
 	"scripts": {

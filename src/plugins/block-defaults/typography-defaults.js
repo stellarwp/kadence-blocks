@@ -20,7 +20,7 @@ function KadenceTypographyDefault(props) {
 	const [configuration, setConfiguration] = useState(
 		kadence_blocks_params.configuration ? JSON.parse(kadence_blocks_params.configuration) : {}
 	);
-	const { createErrorNotice } = useDispatch(noticesStore);
+	const { createSuccessNotice } = useDispatch(noticesStore);
 
 	useEffect(() => {
 		// Check for old defaults.
@@ -43,7 +43,7 @@ function KadenceTypographyDefault(props) {
 		config[blockID] = settingArray;
 		const settingModel = new wp.api.models.Settings({ kadence_blocks_config_blocks: JSON.stringify(config) });
 		settingModel.save().then((response) => {
-			createErrorNotice(__('Block defaults saved!', 'kadence-blocks'), {
+			createSuccessNotice(__('Block defaults saved!', 'kadence-blocks'), {
 				type: 'snackbar',
 			});
 

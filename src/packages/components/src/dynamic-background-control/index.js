@@ -70,9 +70,9 @@ class DynamicBackgroundControl extends Component {
 					>
 						<div className="kb-dynamic-popover-inner-wrap">
 							<div className="kb-pro-notice">
-								<h2>{ __( 'Dynamic Background Image', 'kadence-blocks-pro' ) } </h2>
-								<p>{ __( 'Create dynamic sites by populating background images from various sources.', 'kadence-blocks-pro' ) } </p>
-								<ExternalLink href={ 'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=dynamic-content' }>{ __( 'Upgrade to Pro', 'kadence-blocks-pro' ) }</ExternalLink>
+								<h2>{ __( 'Dynamic Background Image', 'kadence-blocks' ) } </h2>
+								<p>{ __( 'Create dynamic sites by populating background images from various sources.', 'kadence-blocks' ) } </p>
+								<ExternalLink href={ 'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=dynamic-content' }>{ __( 'Upgrade to Pro', 'kadence-blocks' ) }</ExternalLink>
 							</div>
 						</div>
 					</Popover>

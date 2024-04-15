@@ -14,7 +14,6 @@ import {
 	KadencePanelBody,
 	InspectorControlTabs,
 	ResponsiveRangeControls,
-	FormInputControl,
 	SelectParentBlock,
 } from '@kadence/components';
 import { useEffect, useState, useMemo } from '@wordpress/element';

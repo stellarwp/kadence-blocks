@@ -236,7 +236,13 @@ export default class KadenceBlocksCSS {
 	 * @param  string value - the value to be placed with the property
 	 * @return this
 	 */
-	add_property(property, value) {
+	add_property(property, value = null, checkEmpty = null) {
+		if (null === value) {
+			return this;
+		}
+		if (null !== checkEmpty && this.empty(checkEmpty)) {
+			return this;
+		}
 		if (this._special_properties_list.includes(property)) {
 			this.add_special_rules(property, value);
 		} else {

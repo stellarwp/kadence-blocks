@@ -1,0 +1,50 @@
+/* The side navigation menu */
+.wp-block-kadence-off-canvas {
+	height: 100%;
+	width: 0;
+	position: fixed;
+	z-index: 9999;
+	top: 0;
+	overflow-x: scroll;
+	transition: 0.5s;
+
+	&.active {
+	}
+
+	.kb-off-canvas-inner {
+		transition: 0.5s;
+	}
+
+	&.open-right {
+		right: 0;
+	}
+
+	&.open-left {
+		left: 0;
+	}
+
+	&.active + .wp-block-kadence-off-canvas-overlay {
+		display: block;
+	}
+}
+
+/* Overlay for grey-out effect */
+.wp-block-kadence-off-canvas-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5); /* Adjust opacity here */
+	z-index: 9998; /* Ensure overlay is below off-canvas menu */
+	display: none; /* Initially hidden */
+}
+
+
+.sidenav .closebtn {
+	position: absolute;
+	top: 0;
+	right: 25px;
+	font-size: 36px;
+	margin-left: 50px;
+}

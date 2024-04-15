@@ -45,6 +45,7 @@ export function LargeBanner({
 	siteName = '',
 }) {
 	const hasPro = window?.kadenceHomeParams?.pro && kadenceHomeParams.pro === 'true' ? true : false;
+	const data_key = window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '';
 	const [isVisible, setIsVisible] = useState(false);
 	const [availableCredits, setAvailableCredits] = useState(false);
 	const toggleVisible = () => {
@@ -87,7 +88,9 @@ export function LargeBanner({
 						<div className="kb-large-banner__subheading">{hasPro ? subHeadingPro : subHeading}</div>
 						{showControls && (
 							<a className="uplink-authorize" href={activateUrl}>
-								{hasPro ? __('Activate Kadence Blocks Pro', 'kadence-blocks') : buttonText}
+								{hasPro && data_key
+									? __('Connect Blocks Pro License to Site', 'kadence-blocks')
+									: buttonText}
 							</a>
 						)}
 						{!showControls && (

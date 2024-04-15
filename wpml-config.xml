@@ -15,6 +15,17 @@
 			<key name="numberPrefix" />
 			<key name="numberSuffix" />
 		</gutenberg-block>
+		<gutenberg-block type="kadence/countdown" translate="1">
+			<key name="preLabel" />
+			<key name="postLabel" />
+			<key name="daysLabel" />
+			<key name="hoursLabel" />
+			<key name="minutesLabel" />
+			<key name="secondsLabel" />
+		</gutenberg-block>
+		<gutenberg-block type="kadence/countup" translate="1">
+			<key name="title" />
+		</gutenberg-block>
 		<gutenberg-block type="kadence/advancedheading" translate="1">
 			<xpath>//div//*[self::h1 or self::h2 or self::h3 or self::h4 or self::h5 or self::h6 or self::p or self::div or self::span.wp-block-kadence-advancedheading]</xpath>
 		</gutenberg-block>
@@ -51,6 +62,9 @@
 		<gutenberg-block type="kadence/posts" translate="1">
 			<key name="readmoreLabel" />
 		</gutenberg-block>
+		<gutenberg-block type="kadence/image" translate="1">
+			<key name="id" type="post-ids" sub-type="attachment" />
+		</gutenberg-block>
 		<gutenberg-block type="kadence/form" translate="1">
 			<xpath>//form[contains(@class, "kb-form")]/@*[name()='data-error-message']</xpath>
 			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/label/text()</xpath>
@@ -81,6 +95,9 @@
 					<key name="fromName"/>
 				</key>
 			</key>
+		</gutenberg-block>
+		<gutenberg-block type="kadence/advanced-form" translate="1">
+			<key name="id" type="post-ids" sub-type="kadence_form" />
 		</gutenberg-block>
 		<gutenberg-block type="kadence/spacer" translate="0"/>
 		<gutenberg-block type="kadence/rowlayout" translate="0"/>

@@ -67,13 +67,13 @@ function BannerHeader({ selectedCategory }) {
 		return null;
 	}
 	const productLabel = !kadence_blocks_params.hasWoocommerce
-		? __('Add WooCommerce and create some products.', 'kadence Blocks')
-		: __('Add some products here.', 'kadence Blocks');
+		? __('Add WooCommerce and create some products.', 'kadence-blocks')
+		: __('Add some products here.', 'kadence-blocks');
 	return (
 		<Heading level={2} lineHeight={'48px'} className="kb-patterns-banner-notice">
 			{(selectedCategory == 'featured-products' || selectedCategory == 'product-loop') && (
 				<>
-					{__('These patterns require you to have some products.', 'kadence Blocks')}{' '}
+					{__('These patterns require you to have some products.', 'kadence-blocks')}{' '}
 					<ExternalLink
 						href={kadence_blocks_params.addProductsLink ? kadence_blocks_params.addProductsLink : '#'}
 					>
@@ -83,9 +83,9 @@ function BannerHeader({ selectedCategory }) {
 			)}
 			{selectedCategory == 'post-loop' && (
 				<>
-					{__('These patterns require you to have some posts.', 'kadence Blocks')}{' '}
+					{__('These patterns require you to have some posts.', 'kadence-blocks')}{' '}
 					<ExternalLink href={kadence_blocks_params.addPostsLink ? kadence_blocks_params.addPostsLink : '#'}>
-						{__('Add some posts here.', 'kadence Blocks')}
+						{__('Add some posts here.', 'kadence-blocks')}
 					</ExternalLink>
 				</>
 			)}
@@ -100,7 +100,7 @@ function LoadingHeader({ type }) {
 				lineHeight={'48px'}
 				className="kb-patterns-banner-notice kb-patterns-banner-notice-error"
 			>
-				{__('Error Generating AI Content', 'kadence Blocks')}
+				{__('Error Generating AI Content', 'kadence-blocks')}
 			</Heading>
 		);
 	}
@@ -108,8 +108,8 @@ function LoadingHeader({ type }) {
 		<Heading level={2} lineHeight={'48px'} className="kb-patterns-banner-notice">
 			<Spinner />
 			{'processing' === type
-				? __('Generating AI Content.', 'kadence Blocks')
-				: __('Loading AI Content.', 'kadence Blocks')}
+				? __('Generating AI Content.', 'kadence-blocks')
+				: __('Loading AI Content.', 'kadence-blocks')}
 		</Heading>
 	);
 }
@@ -135,7 +135,7 @@ function GenerateHeader({ context, contextLabel, contextState, generateContext }
 			<Heading level={2} lineHeight={'1.2'} className="kb-patterns-heading-notice">
 				{sprintf(
 					/* translators: %s: the current context */
-					__('Would you like to generate AI powered content for the %s context?', 'kadence Blocks'),
+					__('Would you like to generate AI powered content for the %s context?', 'kadence-blocks'),
 					contextLabel
 				)}
 			</Heading>
@@ -144,7 +144,7 @@ function GenerateHeader({ context, contextLabel, contextState, generateContext }
 					/* translators: %s: the current context */
 					__(
 						'Using the site information you provided we will generate copy for the %s context.',
-						'kadence Blocks'
+						'kadence-blocks'
 					),
 					contextLabel
 				)}
@@ -237,22 +237,22 @@ function LoadingFailedHeader({ type }) {
 	if ('license' === type) {
 		return (
 			<Heading level={2} lineHeight={'48px'} className="kb-patterns-banner-notice ai-failed-loading">
-				{__('Error Generating AI Content, verify license and available credits.', 'kadence Blocks')}
+				{__('Error Generating AI Content, verify license and available credits.', 'kadence-blocks')}
 			</Heading>
 		);
 	}
 	if ('credits' === type) {
 		return (
 			<Heading level={2} lineHeight={'48px'} className="kb-patterns-banner-notice ai-failed-loading">
-				{__('Error, Can not generate AI Content because of insufficient credits.', 'kadence Blocks')}
+				{__('Error, Can not generate AI Content because of insufficient credits.', 'kadence-blocks')}
 			</Heading>
 		);
 	}
 	return (
 		<Heading level={2} lineHeight={'48px'} className="kb-patterns-banner-notice ai-failed-loading">
 			{'reload' === type
-				? __('AI Content Failed to Load, Please reload this browser window.', 'kadence Blocks')
-				: __('AI Content Failed to Load.', 'kadence Blocks')}
+				? __('AI Content Failed to Load, Please reload this browser window.', 'kadence-blocks')
+				: __('AI Content Failed to Load.', 'kadence-blocks')}
 		</Heading>
 	);
 }
@@ -355,7 +355,7 @@ function ProOnlyHeader({ launchWizard }) {
 		<div className="kb-patterns-banner-generate-notice">
 			<Icon className="kadence-generate-icons" icon={aiIcon} />
 			<Heading level={2} lineHeight={'1.2'} className="kb-patterns-heading-notice">
-				{__('Supercharge your web design process with Kadence AI', 'kadence Blocks')}
+				{__('Supercharge your web design process with Kadence AI', 'kadence-blocks')}
 			</Heading>
 			<p>{launchWizardBody}</p>
 			{!isAuthorized && (
@@ -768,7 +768,7 @@ function PatternList({
 	}, [selectedStyle, selectedFontSize]);
 	const customShadowStyles = useMemo(() => {
 		let tempStyles =
-			'.pattern-shadow-wrap .single-iframe-content {--global-content-width:1200px; --global-vw:1200px !important;}';
+			'.pattern-shadow-wrap .single-iframe-content {--global-content-width:1200px; --global-vw:1200px !important;}img{max-width:100%}svg { height: 1em; width: 1em;}';
 		if (!selectedStyle || 'light' === selectedStyle) {
 			tempStyles = tempStyles.concat(
 				`.single-iframe-content {--global-content-edge-padding: 3rem;padding:0px !important;}`

@@ -987,7 +987,7 @@ export function EditInner(props) {
 									setMetaAttribute(value.map(String), 'mobilePadding');
 								}}
 								min={0}
-								max={paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200}
+								max={paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 999}
 								step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
 								unit={paddingUnit}
 								units={['px', 'em', 'rem', '%']}
@@ -1009,8 +1009,8 @@ export function EditInner(props) {
 								onChangeMobile={(value) => {
 									setMetaAttribute(value.map(String), 'mobileMargin');
 								}}
-								min={marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200}
-								max={marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200}
+								min={marginUnit === 'em' || marginUnit === 'rem' ? -12 : -999}
+								max={marginUnit === 'em' || marginUnit === 'rem' ? 24 : 999}
 								step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
 								unit={marginUnit}
 								units={['px', 'em', 'rem', '%', 'vh']}

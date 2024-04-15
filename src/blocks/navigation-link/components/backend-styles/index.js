@@ -103,10 +103,8 @@ export default function BackendStyles(props) {
 		mediaAlignMobile,
 	} = attributes;
 
-	//const ref = useRef();
 	const editorWidth = useEditorWidth(currentRef, []);
 	const isFEIcon = 'fe' === mediaIcon[0].icon.substring(0, 2);
-	//console.log(1, currentRef);
 
 	// const previewDivider = getPreviewSize(previewDevice, divider, dividerTablet, dividerMobile);
 
@@ -291,9 +289,7 @@ export default function BackendStyles(props) {
 	const previewHighlightSide = getPreviewSize(previewDevice, highlightSide, highlightSideTablet, highlightSideMobile);
 	const previewIconSide = getPreviewSize(previewDevice, iconSide, iconSideTablet, iconSideMobile);
 	const previewMediaAlign = getPreviewSize(previewDevice, mediaAlign, mediaAlignTablet, mediaAlignMobile);
-	if (uniqueID == '494_c9029f-f0') {
-		console.log(1, mediaStyle);
-	}
+
 	const css = new KadenceBlocksCSS();
 
 	css.set_selector(
@@ -345,7 +341,10 @@ export default function BackendStyles(props) {
 	css.set_selector(
 		`.wp-block-kadence-navigation .navigation .menu-container ul .wp-block-kadence-navigation-link${uniqueID} ul li:not(:last-of-type), .wp-block-kadence-navigation .menu-container ul.menu li.wp-block-kadence-navigation-link${uniqueID}.kadence-menu-mega-enabled > ul > li.menu-item > a`
 	);
-	css.add_property('border-bottom', css.render_border(previewDropdownDivider, 'bottom'));
+	css.add_property(
+		'border-bottom',
+		css.render_border(dropdownDivider, dropdownDividerTablet, dropdownDividerMobile, previewDevice, 'bottom')
+	);
 	css.set_selector(
 		`.wp-block-kadence-navigation .navigation .menu-container ul .wp-block-kadence-navigation-link${uniqueID} ul li.menu-item > .link-drop-wrap > a`
 	);

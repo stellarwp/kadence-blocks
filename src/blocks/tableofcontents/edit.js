@@ -894,8 +894,8 @@ function KadenceTableOfContents(props) {
 								onChangeTablet={(value) => setAttributes({ tabletContainerPadding: value })}
 								mobileValue={mobileContainerPadding}
 								onChangeMobile={(value) => setAttributes({ mobileContainerPadding: value })}
-								min={containerPaddingUnit === 'em' || containerPaddingUnit === 'rem' ? -25 : -400}
-								max={containerPaddingUnit === 'em' || containerPaddingUnit === 'rem' ? 25 : 400}
+								min={containerPaddingUnit === 'em' || containerPaddingUnit === 'rem' ? -25 : -999}
+								max={containerPaddingUnit === 'em' || containerPaddingUnit === 'rem' ? 25 : 999}
 								step={containerPaddingUnit === 'em' || containerPaddingUnit === 'rem' ? 0.1 : 1}
 								unit={containerPaddingUnit}
 								units={['px', 'em', 'rem']}
@@ -911,8 +911,8 @@ function KadenceTableOfContents(props) {
 								onChangeTablet={(value) => setAttributes({ containerTabletMargin: value })}
 								mobileValue={containerMobileMargin}
 								onChangeMobile={(value) => setAttributes({ containerMobileMargin: value })}
-								min={containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? -25 : -400}
-								max={containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 25 : 400}
+								min={containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? -25 : -999}
+								max={containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 25 : 999}
 								step={containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 0.1 : 1}
 								unit={containerMarginUnit}
 								units={['px', 'em', 'rem']}
@@ -1077,8 +1077,8 @@ function KadenceTableOfContents(props) {
 										onChangeTablet={(value) => setAttributes({ mobileTitlePadding: value })}
 										mobileValue={mobileTitlePadding}
 										onChangeMobile={(value) => setAttributes({ mobileTitlePadding: value })}
-										min={titlePaddingType === 'em' || titlePaddingType === 'rem' ? -2 : -200}
-										max={titlePaddingType === 'em' || titlePaddingType === 'rem' ? 12 : 200}
+										min={titlePaddingType === 'em' || titlePaddingType === 'rem' ? 0 : 0}
+										max={titlePaddingType === 'em' || titlePaddingType === 'rem' ? 12 : 999}
 										step={titlePaddingType === 'em' || titlePaddingType === 'rem' ? 0.1 : 1}
 										unit={titlePaddingType}
 										units={['px', 'em', 'rem']}
@@ -1208,8 +1208,8 @@ function KadenceTableOfContents(props) {
 								onChangeTablet={(value) => setAttributes({ tabletContentMargin: value })}
 								mobileValue={mobileContentMargin}
 								onChangeMobile={(value) => setAttributes({ mobileContentMargin: value })}
-								min={contentMarginType === 'em' || contentMarginType === 'rem' ? -2 : -200}
-								max={contentMarginType === 'em' || contentMarginType === 'rem' ? 12 : 200}
+								min={contentMarginType === 'em' || contentMarginType === 'rem' ? -2 : -999}
+								max={contentMarginType === 'em' || contentMarginType === 'rem' ? 12 : 999}
 								step={contentMarginType === 'em' || contentMarginType === 'rem' ? 0.1 : 1}
 								unit={contentMarginType}
 								units={['px', 'em', 'rem']}

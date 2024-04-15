@@ -802,6 +802,12 @@ function RowLayoutEditContainer(props) {
 		!tabletLayout ? '' : tabletLayout,
 		!mobileLayout ? '' : mobileLayout
 	);
+	const previewLayoutActual = getPreviewSize(
+		previewDevice,
+		!colLayout ? 'equal' : colLayout,
+		!tabletLayout || 'inherit' === tabletLayout ? '' : tabletLayout,
+		!mobileLayout ? '' : mobileLayout
+	);
 	let hasBorderRadius = false;
 	if (undefined !== borderRadius && undefined !== borderRadius[0] && borderRadius[0]) {
 		hasBorderRadius = true;
@@ -908,7 +914,7 @@ function RowLayoutEditContainer(props) {
 		[`align${align}`]: align,
 		[`kb-row-id-${uniqueID}`]: uniqueID,
 		[`kt-has-${columns}-columns`]: columns,
-		[`kt-row-layout-${previewLayout}`]: previewLayout,
+		[`kt-row-layout-${previewLayoutActual}`]: previewLayoutActual,
 		[`kt-row-valign-${verticalAlignment}`]: verticalAlignment,
 		// [ `kt-tab-layout-${ tabLayoutClass }` ]: tabLayoutClass,
 		// [ `kt-mobile-layout-${ mobileLayoutClass }` ]: mobileLayoutClass,
@@ -928,7 +934,12 @@ function RowLayoutEditContainer(props) {
 		{ key: 'equal', col: 1, name: __('Row', 'kadence-blocks'), icon: rowIcon },
 		{ key: 'equal', col: 2, name: __('Two: Equal', 'kadence-blocks'), icon: twoColIcon },
 		{ key: 'left-golden', col: 2, name: __('Two: Left Heavy 66/33', 'kadence-blocks'), icon: twoLeftGoldenIcon },
-		{ key: 'right-golden', col: 2, name: __('Two: Right Heavy 33/66', 'kadence-blocks'), icon: twoRightGoldenIcon },
+		{
+			key: 'right-golden',
+			col: 2,
+			name: __('Two: Right Heavy 33/66', 'kadence-blocks'),
+			icon: twoRightGoldenIcon,
+		},
 		{ key: 'equal', col: 3, name: __('Three: Equal', 'kadence-blocks'), icon: threeColIcon },
 		{ key: 'left-half', col: 3, name: __('Three: Left Heavy 50/25/25', 'kadence-blocks'), icon: leftHalfIcon },
 		{ key: 'right-half', col: 3, name: __('Three: Right Heavy 25/25/50', 'kadence-blocks'), icon: rightHalfIcon },
@@ -938,7 +949,12 @@ function RowLayoutEditContainer(props) {
 			name: __('Three: Center Heavy 25/50/25', 'kadence-blocks'),
 			icon: centerHalfIcon,
 		},
-		{ key: 'center-wide', col: 3, name: __('Three: Wide Center 20/60/20', 'kadence-blocks'), icon: wideCenterIcon },
+		{
+			key: 'center-wide',
+			col: 3,
+			name: __('Three: Wide Center 20/60/20', 'kadence-blocks'),
+			icon: wideCenterIcon,
+		},
 		{
 			key: 'center-exwide',
 			col: 3,
@@ -946,7 +962,12 @@ function RowLayoutEditContainer(props) {
 			icon: exWideCenterIcon,
 		},
 		{ key: 'equal', col: 4, name: __('Four: Equal', 'kadence-blocks'), icon: fourColIcon },
-		{ key: 'left-forty', col: 4, name: __('Four: Left Heavy 40/20/20/20', 'kadence-blocks'), icon: lFourFortyIcon },
+		{
+			key: 'left-forty',
+			col: 4,
+			name: __('Four: Left Heavy 40/20/20/20', 'kadence-blocks'),
+			icon: lFourFortyIcon,
+		},
 		{
 			key: 'right-forty',
 			col: 4,
@@ -1209,7 +1230,7 @@ function RowLayoutEditContainer(props) {
 											onChangeTablet={(value) => setAttributes({ tabletPadding: value })}
 											onChangeMobile={(value) => setAttributes({ mobilePadding: value })}
 											min={0}
-											max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 500}
+											max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 999}
 											step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
 											deskDefault={['sm', '', 'sm', '']}
 											unit={paddingUnit}
@@ -1256,8 +1277,8 @@ function RowLayoutEditContainer(props) {
 											onChangeMobile={(value) => {
 												setAttributes({ mobileMargin: [value[0], '', value[2], ''] });
 											}}
-											min={marginUnit === 'em' || marginUnit === 'rem' ? -25 : -800}
-											max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : 800}
+											min={marginUnit === 'em' || marginUnit === 'rem' ? -25 : -999}
+											max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : 999}
 											step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
 											unit={marginUnit}
 											allowEmpty={true}
@@ -1459,7 +1480,9 @@ function RowLayoutEditContainer(props) {
 																		isClearable={true}
 																		placeholder={'Any Membership'}
 																		onChange={(value) =>
-																			setAttributes({ rcpMembershipLevel: value })
+																			setAttributes({
+																				rcpMembershipLevel: value,
+																			})
 																		}
 																	/>
 																</div>

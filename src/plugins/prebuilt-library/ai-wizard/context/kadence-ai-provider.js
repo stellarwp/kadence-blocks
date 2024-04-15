@@ -30,7 +30,7 @@ const initialState = {
 	backgroundImages: [],
 	customCollections: [
 		{
-			label: __('My Images', 'kadence-blocks-pro'),
+			label: __('My Images', 'kadence-blocks'),
 			value: 'my-images',
 			galleries: [
 				{ name: 'featured', isLocal: true, images: [] },
@@ -45,6 +45,7 @@ const initialState = {
 	suggestedKeywordsState: '',
 	imageSearchQuery: '',
 	lang: '',
+	goals: [],
 };
 
 const KadenceAiContext = createContext();
@@ -65,6 +66,11 @@ function kadenceAiReducer(state, action) {
 			return {
 				...state,
 				lang: action.payload,
+			};
+		case 'SET_SITE_GOALS':
+			return {
+				...state,
+				goals: action.payload,
 			};
 		case 'SET_ENTITY_TYPE':
 			return {

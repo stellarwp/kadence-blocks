@@ -4,10 +4,10 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
- // Basic Styles.
- .kb-form-basic-style {
-	font-size: var( --kb-form-font-size, 1rem );
-	line-height: var( --kb-form-line-height, 1.6 );
+// Basic Styles.
+.kb-form-basic-style {
+	font-size: var(--kb-form-font-size, 1rem);
+	line-height: var(--kb-form-line-height, 1.6);
 	textarea {
 		width: 100%;
 	}
@@ -29,15 +29,15 @@
 	input[type="file"],
 	textarea {
 		-webkit-appearance: none;
-		color: var(--kb-form-text-color, var(--global-palette5, #555352 ));
-		border: var(--kb-form-border-width, 1px ) solid var(--kb-form-border-color, var(--global-gray-400, #cbd5e0) );
-		font-size: var( --kb-form-font-size, 1rem );
-		line-height: var( --kb-form-line-height, 1.6 );
-		border-radius: var( --kb-form-border-radius, 3px );
-		padding: var( --kb-form-v-padding, 0.4em ) var( --kb-form-h-padding, 0.5em );
+		color: var(--kb-form-text-color, var(--global-palette5, #555352));
+		border: var(--kb-form-border-width, 1px) solid var(--kb-form-border-color, var(--global-gray-400, #cbd5e0));
+		font-size: var(--kb-form-font-size, 1rem);
+		line-height: var(--kb-form-line-height, 1.6);
+		border-radius: var(--kb-form-border-radius, 3px);
+		padding: var(--kb-form-v-padding, 0.4em) var(--kb-form-h-padding, 0.5em);
 		max-width: 100%;
-		background: var(--kb-form-background-color, var(--global-palette9, #fff ) );
-		box-shadow: 0px 0px 0px -7px rgba(0,0,0,0);
+		background: var(--kb-form-background-color, var(--global-palette9, #fff));
+		box-shadow: 0px 0px 0px -7px rgba(0, 0, 0, 0);
 		font-family: inherit;
 	}
 	input[type="text"]:focus,
@@ -57,39 +57,48 @@
 	input[type="color"]:focus,
 	input[type="file"]:focus,
 	textarea:focus {
-		color: var(--kb-form-text-focus-color, var(--kb-form-text-color, var(--global-palette, #241e1a) ) );
-		border-color:var(--kb-form-border-focus-color, var(--global-palette6, #6e6e70) );
+		color: var(--kb-form-text-focus-color, var(--kb-form-text-color, var(--global-palette, #241e1a)));
+		border-color: var(--kb-form-border-focus-color, var(--global-palette6, #6e6e70));
 		outline: 0;
-		box-shadow: 0px 5px 15px -7px rgba(0,0,0,0.1);
-		background:var(--kb-form-background-focus-color, var(--kb-form-background-color, var(--global-palette9, #fff ) ) );
+		box-shadow: 0px 5px 15px -7px rgba(0, 0, 0, 0.1);
+		background: var(
+			--kb-form-background-focus-color,
+			var(--kb-form-background-color, var(--global-palette9, #fff))
+		);
 	}
 	select {
-		border: var(--kb-form-border-width, 1px ) solid var(--kb-form-border-color, var(--global-gray-400, #cbd5e0) );
+		border: var(--kb-form-border-width, 1px) solid var(--kb-form-border-color, var(--global-gray-400, #cbd5e0));
 		background-size: 16px 100%;
-		padding: var( --kb-form-v-padding, 0.4em ) 35px var( --kb-form-v-padding, 0.4em ) var( --kb-form-h-padding, 0.5em );
-		font-size: var( --kb-form-font-size, 1rem );
-		line-height: var( --kb-form-line-height, 1.6 );
-		border-radius: var( --kb-form-border-radius, 3px );
-		background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNSIgaGVpZ2h0PSIyNSIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2U9IiNiYmIiPjxwYXRoIGQ9Ik02IDlsNiA2IDYtNiIvPjwvc3ZnPg==) no-repeat calc(100% - 6px) 50%, var(--kb-form-background-color, var(--global-palette9, #fff ) );
+		padding: var(--kb-form-v-padding, 0.4em) 35px var(--kb-form-v-padding, 0.4em) var(--kb-form-h-padding, 0.5em);
+		font-size: var(--kb-form-font-size, 1rem);
+		line-height: var(--kb-form-line-height, 1.6);
+		border-radius: var(--kb-form-border-radius, 3px);
+		background:
+			url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNSIgaGVpZ2h0PSIyNSIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2U9IiNiYmIiPjxwYXRoIGQ9Ik02IDlsNiA2IDYtNiIvPjwvc3ZnPg==)
+				no-repeat calc(100% - 6px) 50%,
+			var(--kb-form-background-color, var(--global-palette9, #fff));
 		-moz-appearance: none;
 		-webkit-appearance: none;
 		appearance: none;
 		box-shadow: none;
 		outline: 0;
 		font-family: inherit;
-		box-shadow: 0px 0px 0px -7px rgba(0,0,0,0);
+		box-shadow: 0px 0px 0px -7px rgba(0, 0, 0, 0);
 	}
-    select[multiple=""] {
-		background: var(--kb-form-background-color, var(--global-palette9, #fff ) );
+	select[multiple=""] {
+		background: var(--kb-form-background-color, var(--global-palette9, #fff));
 	}
 	select::-ms-expand {
 		display: none;
 	}
 	select:focus {
-		color: var(--kb-form-text-focus-color, var(--kb-form-text-color, var(--global-palette, #241e1a) ) );
-		border-color:var(--kb-form-border-focus-color, var(--global-palette6, #6e6e70) );
-		background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNSIgaGVpZ2h0PSIyNSIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2U9IiNiYmIiPjxwYXRoIGQ9Ik02IDlsNiA2IDYtNiIvPjwvc3ZnPg==) no-repeat calc(100% - 6px) 50%, var(--kb-form-background-focus-color, var(--kb-form-background-color, var(--global-palette9, #fff ) ) );
-		box-shadow: 0px 5px 15px -7px rgba(0,0,0,0.1);
+		color: var(--kb-form-text-focus-color, var(--kb-form-text-color, var(--global-palette, #241e1a)));
+		border-color: var(--kb-form-border-focus-color, var(--global-palette6, #6e6e70));
+		background:
+			url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNSIgaGVpZ2h0PSIyNSIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2U9IiNiYmIiPjxwYXRoIGQ9Ik02IDlsNiA2IDYtNiIvPjwvc3ZnPg==)
+				no-repeat calc(100% - 6px) 50%,
+			var(--kb-form-background-focus-color, var(--kb-form-background-color, var(--global-palette9, #fff)));
+		box-shadow: 0px 5px 15px -7px rgba(0, 0, 0, 0.1);
 		outline: 0;
 		// Fix for firefox if the color palette is dark.
 		option {
@@ -97,72 +106,82 @@
 		}
 	}
 	button {
-		line-height: var( --kb-form-line-height, 1.6 );;
+		line-height: var(--kb-form-line-height, 1.6);
 	}
-	::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+	::-webkit-input-placeholder {
+		/* Chrome/Opera/Safari */
 		color: var(--kb-form-placeholder-color, var(--global-palette6, #6e6e70));
 	}
-	::-moz-placeholder { /* Firefox 19+ */
+	::-moz-placeholder {
+		/* Firefox 19+ */
 		color: var(--kb-form-placeholder-color, var(--global-palette6, #6e6e70));
 		opacity: 1;
 	}
-	:-ms-input-placeholder { /* IE 10+ */
+	:-ms-input-placeholder {
+		/* IE 10+ */
 		color: var(--kb-form-placeholder-color, var(--global-palette6, #6e6e70));
 	}
-	:-moz-placeholder { /* Firefox 18- */
+	:-moz-placeholder {
+		/* Firefox 18- */
 		color: var(--kb-form-placeholder-color, var(--global-palette6, #6e6e70));
 	}
 	::placeholder {
 		color: var(--kb-form-placeholder-color, var(--global-palette6, #6e6e70));
 	}
-	input[type="radio"], input[type="checkbox"] {
+	input[type="radio"],
+	input[type="checkbox"] {
 		/* Add if not using autoprefixer */
 		-webkit-appearance: none;
 		/* Remove most all native input styles */
 		appearance: none;
 		/* For iOS < 15 */
-		background: var(--kb-form-background-color, var(--global-palette9, #fff ) );
+		background: var(--kb-form-background-color, var(--global-palette9, #fff));
 		/* Not removed via appearance */
 		margin: 0;
 		color: currentColor;
-		width: .9em;
-		height: .9em;
-		border: max( var(--kb-form-border-width, 1px ), 1px ) solid var(--kb-form-border-color, var(--global-gray-400, #cbd5e0) );
+		width: 0.9em;
+		height: 0.9em;
+		border: max(var(--kb-form-border-width, 1px), 1px) solid
+			var(--kb-form-border-color, var(--global-gray-400, #cbd5e0));
 		border-radius: 50%;
 		transform: translateY(-0.18em);
 		display: grid;
 		place-content: center;
 		min-width: 0.8em;
-	  }
-	  input[type="checkbox"] {
+	}
+	input[type="checkbox"] {
 		transform: translateY(-0.075em);
-		border-radius: var(--kb-form-border-radius, 3px );
-	  }
-	  input[type="radio"]::before, input[type="checkbox"]::before {
+		border-radius: var(--kb-form-border-radius, 3px);
+	}
+	input[type="radio"]::before,
+	input[type="checkbox"]::before {
 		content: "";
 		width: 0.3em;
 		height: 0.3em;
 		border-radius: 50%;
 		transform: scale(0);
 		transition: 120ms transform ease-in-out;
-		box-shadow: inset 1em 1em var(--kb-form-check-color, #fff );
+		box-shadow: inset 1em 1em var(--kb-form-check-color, #fff);
 		/* Windows High Contrast Mode */
 		background-color: CanvasText;
 	}
 	input[type="checkbox"]::before {
 		clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
-		border-radius: var(--kb-form-border-radius, 3px );
+		border-radius: var(--kb-form-border-radius, 3px);
 		width: 0.5em;
 		height: 0.5em;
 	}
-	input[type="radio"]:checked, input[type="checkbox"]:checked {
-		border-color: var(--kb-form-check-highlight-color, #0c5aff );
-		background: var(--kb-form-check-highlight-color, #0c5aff );
+	input[type="radio"]:checked,
+	input[type="checkbox"]:checked {
+		border-color: var(--kb-form-check-highlight-color, #0c5aff);
+		background: var(--kb-form-check-highlight-color, #0c5aff);
 	}
-	input[type="radio"]:checked::before, input[type="checkbox"]:checked::before {
+	input[type="radio"]:checked::before,
+	input[type="checkbox"]:checked::before {
 		transform: scale(1);
 	}
-	input[type="radio"]:focus, input[type="checkbox"]:focus {
+	input[type="radio"]:focus,
+	input[type="checkbox"]:focus {
 		outline-offset: 3px;
 	}
 	.kb-radio-check-items-inline {
@@ -174,35 +193,38 @@
 		display: flex;
 		margin: 0;
 		align-items: baseline;
-		
+
 		label {
 			flex-grow: 1;
 			padding-left: 0.4em;
 			font-size: 90%;
-			color: var(--kb-form-text-color, var(--global-palette5, #555352 ));
+			color: var(--kb-form-text-color, var(--global-palette5, #555352));
 		}
 	}
 	input[type="file"]::file-selector-button {
 		margin-right: 1em;
 		border: none;
 		font-size: 90%;
-		padding: var( --kb-form-btn-v-padding, 0.2em ) var( --kb-form-btn-h-padding, 1em );
-		border-radius: var(--kb-form-border-radius, 3px );
+		padding: var(--kb-form-btn-v-padding, 0.2em) var(--kb-form-btn-h-padding, 1em);
+		border-radius: var(--kb-form-border-radius, 3px);
 		cursor: pointer;
-		transition: background .2s ease-in-out;
+		transition: background 0.2s ease-in-out;
 	}
 	.kb-adv-form-help {
-		color: var(--kb-form-help-color, var(--global-palette6, #777) );
+		color: var(--kb-form-help-color, var(--global-palette6, #777));
 		margin: 2px 0 2px 0;
 		font-size: 80%;
 		font-style: italic;
 		display: block;
 	}
 	input.has-error:not(:focus):invalid {
-		border-color: var(--kb-form-error-color, #be001b ) !important;
+		border-color: var(--kb-form-error-color, #be001b) !important;
 	}
- }
- // Forced Basic Styles.
+	* {
+		box-sizing: border-box;
+	}
+}
+// Forced Basic Styles.
 .wp-block-kadence-advanced-form {
 	&.kb-form-has-background {
 		padding: 1em;
@@ -264,9 +286,9 @@
 		bottom: -5px;
 		left: -5px;
 		right: -5px;
-		background: rgba(255,255,255,0.7);
+		background: rgba(255, 255, 255, 0.7);
 		z-index: 10;
-		display:flex;
+		display: flex;
 		align-items: flex-end;
 		justify-content: center;
 	}
@@ -281,7 +303,7 @@
 			width: 11px;
 			height: 11px;
 			border-radius: 50%;
-			background: rgba(0,0,0,.7);
+			background: rgba(0, 0, 0, 0.7);
 			animation-timing-function: cubic-bezier(0, 1, 1, 0);
 		}
 		div:nth-child(1) {
@@ -296,7 +318,7 @@
 			left: 26px;
 			animation: kb-adv-form-ellipses2 0.6s infinite;
 		}
-		  div:nth-child(4) {
+		div:nth-child(4) {
 			left: 45px;
 			animation: kb-adv-form-ellipses3 0.6s infinite;
 		}
@@ -313,7 +335,7 @@
 }
 .wp-block-kadence-advanced-form.kb-form-is-dark {
 	.kb-adv-form-loading {
-		background: rgba(0,0,0,0.7);
+		background: rgba(0, 0, 0, 0.7);
 	}
 	.kb-adv-form-loading-spin div {
 		background: rgba(255, 255, 255, 0.7);
@@ -344,21 +366,21 @@
 	}
 }
 .kb-adv-form-success {
-	background: var(--kb-form-success-background, #ebf8ff );
-    padding: 1em;
-    border-radius: 3px;
-    border: 0;
-    color: var(--kb-form-success-color, #2b6cb0 );
+	background: var(--kb-form-success-background, #ebf8ff);
+	padding: 1em;
+	border-radius: 3px;
+	border: 0;
+	color: var(--kb-form-success-color, #2b6cb0);
 }
 .kb-adv-form-warning {
-	background: var(--kb-form-error-background, #fde4e9 );
+	background: var(--kb-form-error-background, #fde4e9);
 	padding: 0.7em;
 	border-radius: 3px;
 	border: 0;
 	text-align: left;
 	width: 100%;
 	margin-top: 3px;
-	color: var(--kb-form-error-color, #be001b );
+	color: var(--kb-form-error-color, #be001b);
 }
 .kb-form-is-dark {
 	--kb-form-error-color: #fff;
@@ -381,13 +403,30 @@
 // }
 // Styles of infield label.
 .wp-block-kadence-advanced-form.kb-adv-form-label-style-infield {
-	input[type="text"], input[type="email"], input[type="url"], input[type="password"], input[type="search"], input[type="number"], input[type="tel"], input[type="range"], input[type="date"], input[type="month"], input[type="week"], input[type="time"], input[type="datetime"], input[type="datetime-local"], input[type="color"], input[type="file"], textarea, select {
-		padding-top: calc(1em + var( --kb-form-v-padding, 0.4em ));
+	input[type="text"],
+	input[type="email"],
+	input[type="url"],
+	input[type="password"],
+	input[type="search"],
+	input[type="number"],
+	input[type="tel"],
+	input[type="range"],
+	input[type="date"],
+	input[type="month"],
+	input[type="week"],
+	input[type="time"],
+	input[type="datetime"],
+	input[type="datetime-local"],
+	input[type="color"],
+	input[type="file"],
+	textarea,
+	select {
+		padding-top: calc(1em + var(--kb-form-v-padding, 0.4em));
 	}
 	.kb-adv-form-label {
 		line-height: 1;
 		font-size: 75%;
-		padding: var( --kb-form-v-padding, 0.4em ) 0;
+		padding: var(--kb-form-v-padding, 0.4em) 0;
 	}
 	.kb-adv-form-infield-type-input {
 		position: relative;
@@ -395,14 +434,14 @@
 			position: absolute;
 			left: 0;
 			top: 0;
-			padding: var( --kb-form-v-padding, 0.4em ) var( --kb-form-h-padding, 0.5em ) 0;
+			padding: var(--kb-form-v-padding, 0.4em) var(--kb-form-h-padding, 0.5em) 0;
 		}
 	}
 }
 // Styles of float label.
 .no-js {
 	.kb-adv-form-label-style-float .kb-adv-form-text-type-input {
-		&:not( .kb-form-field-focus ) {
+		&:not(.kb-form-field-focus) {
 			.kb-adv-form-label {
 				cursor: pointer;
 				transform: translate(0, 0) scale(0.75);
@@ -416,24 +455,26 @@
 		opacity: 1;
 		transform: translate(0, 0) scale(0.75);
 		transform-origin: left bottom;
-		padding: var( --kb-form-v-padding, 0.4em ) 0;
+		padding: var(--kb-form-v-padding, 0.4em) 0;
 		transition: all 0.2s;
 		font-size: 1em;
 		margin-top: -1em;
 	}
 }
 .kb-adv-form-label-style-float .kb-adv-form-text-type-input {
-	&:not( .kb-form-field-focus ) {
+	&:not(.kb-form-field-focus) {
 		.kb-adv-form-label {
 			cursor: text;
-			transform: translate( var( --kb-form-h-padding, 0.5em ), calc(100% + var(--kb-form-border-width, 1px ) ) ) scale(1);
+			transform: translate(var(--kb-form-h-padding, 0.5em), calc(100% + var(--kb-form-border-width, 1px)))
+				scale(1);
 		}
 	}
 
-	input, textarea {
+	input,
+	textarea {
 		&::placeholder {
 			opacity: 1;
-			transition: all .2s;
+			transition: all 0.2s;
 		}
 		&:placeholder-shown:not(:focus)::placeholder {
 			opacity: 0;

@@ -515,8 +515,8 @@ function KadenceButtons(props) {
 										onChangeTablet={(value) => setAttributes({ tabletPadding: value })}
 										mobileValue={mobilePadding}
 										onChangeMobile={(value) => setAttributes({ mobilePadding: value })}
-										min={paddingUnit === 'em' || paddingUnit === 'rem' ? -25 : -400}
-										max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 400}
+										min={paddingUnit === 'em' || paddingUnit === 'rem' ? -25 : -999}
+										max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 999}
 										step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
 										unit={paddingUnit}
 										units={['px', 'em', 'rem']}
@@ -556,8 +556,8 @@ function KadenceButtons(props) {
 										onChangeMobile={(value) => {
 											saveMargin({ mobile: value });
 										}}
-										min={marginUnit === 'em' || marginUnit === 'rem' ? -25 : -400}
-										max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : 400}
+										min={marginUnit === 'em' || marginUnit === 'rem' ? -25 : -999}
+										max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : 999}
 										step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
 										unit={marginUnit}
 										units={['px', 'em', 'rem', '%', 'vh']}

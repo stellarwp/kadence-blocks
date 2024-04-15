@@ -262,6 +262,10 @@ function getReadableColor( value, colors ) {
 		return value;
 	}
 	if ( value.startsWith( 'var(--global-' ) ) {
+		const foundColor = colors.find( ( option ) => option.value === value );
+		if ( foundColor ) {
+			return foundColor.color;
+		}
 		let slug = value.replace( 'var(--global-', '' );
 		slug = slug.substring(0,8);
 		slug = 'theme-' + slug;
@@ -458,7 +462,7 @@ function ControlPoints( {
 														className={ `kadence-color-palette__item ${ ( isActive || isLinked ? 'is-active' : '' ) }` }
 														style={ style }
 														onClick={ () => {
-															if ( slug.startsWith( 'theme-palette' ) ) {
+															if ( slug.startsWith( 'theme-palette' ) && ! color.startsWith( 'var(' ) ) {
 																onChange(
 																	updateControlPointColor(
 																		controlPoints,
@@ -504,7 +508,6 @@ function ControlPoints( {
 									label={__( 'Control Point Position %', 'kadence-blocks' )}
 									value={ point.position }
 									onChange={ ( value ) => {
-										console.log( index, value );
 										onChange(
 											updateControlPointPosition(
 												controlPoints,
@@ -646,7 +649,6 @@ function InsertPoint( {
 								const palette = slug.replace( 'theme-', '' );
 								const isActive = ( ( slug.startsWith( 'theme-palette' ) && pointColor === color ) );
 								const isLinked = ( ( ! slug.startsWith( 'theme-palette' ) && color.startsWith( 'var(' ) && tempColor === color ) );
-								console.log( pointColor );
 								return (
 									<div key={ color } className="kadence-color-palette__item-wrapper">
 										<Tooltip
@@ -660,7 +662,7 @@ function InsertPoint( {
 												style={ style }
 												onClick={ () => {
 													setTempColor( colord( color ).toRgbString() );
-													if ( slug.startsWith( 'theme-palette' ) ) {
+													if ( slug.startsWith( 'theme-palette' ) && ! color.startsWith( 'var(' ) ) {
 														if ( ! alreadyInsertedPoint ) {
 															onChange(
 																addControlPoint(

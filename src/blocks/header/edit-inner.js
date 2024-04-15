@@ -6,17 +6,23 @@
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { useState, useCallback, useEffect, useMemo } from '@wordpress/element';
+import { useState, useCallback, Fragment, useMemo, useRef } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
-import { get, isEqual } from 'lodash';
+import { get } from 'lodash';
 import { addQueryArgs } from '@wordpress/url';
 import { useEntityBlockEditor, useEntityProp } from '@wordpress/core-data';
+import {
+	InspectorControls,
+	useInnerBlocksProps,
+	InspectorAdvancedControls,
+	store as editorStore,
+} from '@wordpress/block-editor';
+import { TextControl, ExternalLink, Button, Placeholder, ToggleControl } from '@wordpress/components';
 import { formBlockIcon } from '@kadence/icons';
 import {
 	KadencePanelBody,
 	InspectorControlTabs,
-	SpacingVisualizer,
 	ResponsiveMeasureRangeControl,
 	ResponsiveMeasurementControls,
 	ResponsiveBorderControl,
@@ -29,16 +35,9 @@ import {
 	ResponsiveRangeControls,
 	BackgroundTypeControl,
 	GradientControl,
+	ResponsiveSelectControl,
 } from '@kadence/components';
-import { getPreviewSize, mouseOverVisualizer, arrayStringToInt } from '@kadence/helpers';
-
-import {
-	InspectorControls,
-	useInnerBlocksProps,
-	InspectorAdvancedControls,
-	store as editorStore,
-} from '@wordpress/block-editor';
-import { TextControl, ExternalLink, Button, Placeholder } from '@wordpress/components';
+import { getPreviewSize, mouseOverVisualizer, arrayStringToInt, useElementWidth } from '@kadence/helpers';
 
 import { FormTitle, SelectForm } from './components';
 
@@ -57,11 +56,193 @@ import BackendStyles from './components/backend-styles';
 const ANCHOR_REGEX = /[\s#]/g;
 
 const INNERBLOCK_TEMPLATE = [
-	createBlock('kadence/header-container-desktop', {}),
-	createBlock('kadence/header-container-tablet', {}),
+	createBlock('kadence/header-container-desktop', {}, [
+		createBlock('kadence/header-row', { metadata: { name: __('Top Row', 'kadence-blocks') }, location: 'top' }, [
+			createBlock(
+				'kadence/header-section',
+				{ metadata: { name: __('Left Section', 'kadence-blocks') }, location: 'left' },
+				[
+					createBlock(
+						'kadence/header-column',
+						{ metadata: { name: __('Left', 'kadence-blocks') }, location: 'left' },
+						[]
+					),
+					createBlock(
+						'kadence/header-column',
+						{ metadata: { name: __('Center Left', 'kadence-blocks') }, location: 'center-left' },
+						[]
+					),
+				]
+			),
+			createBlock('kadence/header-column', {
+				metadata: { name: __('Center', 'kadence-blocks') },
+				location: 'center',
+			}),
+			createBlock(
+				'kadence/header-section',
+				{ metadata: { name: __('Right Section', 'kadence-blocks') }, location: 'right' },
+				[
+					createBlock(
+						'kadence/header-column',
+						{ metadata: { name: __('Center Right', 'kadence-blocks') }, location: 'center-right' },
+						[]
+					),
+					createBlock(
+						'kadence/header-column',
+						{ metadata: { name: __('Right', 'kadence-blocks') }, location: 'right' },
+						[]
+					),
+				]
+			),
+		]),
+		createBlock(
+			'kadence/header-row',
+			{ metadata: { name: __('Middle Row', 'kadence-blocks') }, location: 'center' },
+			[
+				createBlock(
+					'kadence/header-section',
+					{ metadata: { name: __('Left Section', 'kadence-blocks') }, location: 'left' },
+					[
+						createBlock(
+							'kadence/header-column',
+							{ metadata: { name: __('Left', 'kadence-blocks') }, location: 'left' },
+							[]
+						),
+						createBlock(
+							'kadence/header-column',
+							{ metadata: { name: __('Center Left', 'kadence-blocks') }, location: 'center-left' },
+							[]
+						),
+					]
+				),
+				createBlock('kadence/header-column', {
+					metadata: { name: __('Center', 'kadence-blocks') },
+					location: 'center',
+				}),
+				createBlock(
+					'kadence/header-section',
+					{ metadata: { name: __('Right Section', 'kadence-blocks') }, location: 'right' },
+					[
+						createBlock(
+							'kadence/header-column',
+							{ metadata: { name: __('Center Right', 'kadence-blocks') }, location: 'center-right' },
+							[]
+						),
+						createBlock(
+							'kadence/header-column',
+							{ metadata: { name: __('Right', 'kadence-blocks') }, location: 'right' },
+							[]
+						),
+					]
+				),
+			]
+		),
+		createBlock(
+			'kadence/header-row',
+			{ metadata: { name: __('Bottom Row', 'kadence-blocks') }, location: 'bottom' },
+			[
+				createBlock(
+					'kadence/header-section',
+					{ metadata: { name: __('Left Section', 'kadence-blocks') }, location: 'left' },
+					[
+						createBlock(
+							'kadence/header-column',
+							{ metadata: { name: __('Left', 'kadence-blocks') }, location: 'left' },
+							[]
+						),
+						createBlock(
+							'kadence/header-column',
+							{ metadata: { name: __('Center Left', 'kadence-blocks') }, location: 'center-left' },
+							[]
+						),
+					]
+				),
+				createBlock('kadence/header-column', {
+					metadata: { name: __('Center', 'kadence-blocks') },
+					location: 'center',
+				}),
+				createBlock(
+					'kadence/header-section',
+					{ metadata: { name: __('Right Section', 'kadence-blocks') }, location: 'right' },
+					[
+						createBlock(
+							'kadence/header-column',
+							{ metadata: { name: __('Center Right', 'kadence-blocks') }, location: 'center-right' },
+							[]
+						),
+						createBlock(
+							'kadence/header-column',
+							{ metadata: { name: __('Right', 'kadence-blocks') }, location: 'right' },
+							[]
+						),
+					]
+				),
+			]
+		),
+	]),
+	createBlock('kadence/header-container-tablet', {}, [
+		createBlock('kadence/header-row', { metadata: { name: __('Top Row', 'kadence-blocks') } }, [
+			createBlock(
+				'kadence/header-column',
+				{ metadata: { name: __('Left', 'kadence-blocks') }, location: 'tablet-left' },
+				[]
+			),
+			createBlock(
+				'kadence/header-column',
+				{ metadata: { name: __('Center', 'kadence-blocks'), location: 'tablet-center' } },
+				[]
+			),
+			createBlock(
+				'kadence/header-column',
+				{ metadata: { name: __('Right', 'kadence-blocks') }, location: 'tablet-right' },
+				[]
+			),
+		]),
+		createBlock('kadence/header-row', { metadata: { name: __('Middle Row', 'kadence-blocks') } }, [
+			createBlock(
+				'kadence/header-column',
+				{ metadata: { name: __('Left', 'kadence-blocks') }, location: 'tablet-left' },
+				[]
+			),
+			createBlock(
+				'kadence/header-column',
+				{ metadata: { name: __('Center', 'kadence-blocks'), location: 'tablet-center' } },
+				[]
+			),
+			createBlock(
+				'kadence/header-column',
+				{ metadata: { name: __('Right', 'kadence-blocks') }, location: 'tablet-right' },
+				[]
+			),
+		]),
+		createBlock('kadence/header-row', { metadata: { name: __('Bottom Row', 'kadence-blocks') } }, [
+			createBlock(
+				'kadence/header-column',
+				{ metadata: { name: __('Left', 'kadence-blocks') }, location: 'tablet-left' },
+				[]
+			),
+			createBlock(
+				'kadence/header-column',
+				{ metadata: { name: __('Center', 'kadence-blocks'), location: 'tablet-center' } },
+				[]
+			),
+			createBlock(
+				'kadence/header-column',
+				{ metadata: { name: __('Right', 'kadence-blocks') }, location: 'tablet-right' },
+				[]
+			),
+		]),
+	]),
+	createBlock('kadence/off-canvas', {}, []),
 ];
 
-const ALLOWED_BLOCKS = ['kadence/header-container-desktop', 'kadence/header-container-tablet'];
+const ALLOWED_BLOCKS = [
+	'kadence/header-container-desktop',
+	'kadence/header-container-tablet',
+	'kadence/header-row',
+	'kadence/header-column',
+	'kadence/off-canvas',
+];
 
 export function EditInner(props) {
 	const { attributes, setAttributes, clientId, context, direct, id, isSelected } = props;
@@ -75,6 +256,8 @@ export function EditInner(props) {
 		},
 		[clientId]
 	);
+
+	const componentRef = useRef();
 
 	const [activeTab, setActiveTab] = useState('general');
 
@@ -93,21 +276,21 @@ export function EditInner(props) {
 		mobileMargin: meta?._kad_header_mobileMargin,
 		marginUnit: meta?._kad_header_marginUnit,
 		border: meta?._kad_header_border,
-		tabletBorder: meta?._kad_header_tabletBorder,
-		mobileBorder: meta?._kad_header_mobileBorder,
+		borderTablet: meta?._kad_header_borderTablet,
+		borderMobile: meta?._kad_header_borderMobile,
 		borderUnit: meta?._kad_header_borderUnit,
-		hoverBorder: meta?._kad_header_hoverBorder,
-		tabletHoverBorder: meta?._kad_header_tabletHoverBorder,
-		mobileHoverBorder: meta?._kad_header_mobileHoverBorder,
-		hoverBorderUnit: meta?._kad_header_hoverBorderUnit,
+		borderHover: meta?._kad_header_borderHover,
+		borderHoverTablet: meta?._kad_header_borderHoverTablet,
+		borderHoverMobile: meta?._kad_header_borderHoverMobile,
+		borderHoverUnit: meta?._kad_header_borderHoverUnit,
 		borderRadius: meta?._kad_header_borderRadius,
-		tabletBorderRadius: meta?._kad_header_tabletBorderRadius,
-		mobileBorderRadius: meta?._kad_header_mobileBorderRadius,
+		borderRadiusTablet: meta?._kad_header_borderRadiusTablet,
+		borderRadiusMobile: meta?._kad_header_borderRadiusMobile,
 		borderRadiusUnit: meta?._kad_header_borderRadiusUnit,
-		borderHoverRadius: meta?._kad_header_borderHoverRadius,
-		tabletBorderHoverRadius: meta?._kad_header_tabletBorderHoverRadius,
-		mobileBorderHoverRadius: meta?._kad_header_mobileBorderHoverRadius,
-		borderHoverRadiusUnit: meta?._kad_header_borderHoverRadiusUnit,
+		borderRadiusHover: meta?._kad_header_borderRadiusHover,
+		borderRadiusHoverTablet: meta?._kad_header_borderRadiusHoverTablet,
+		borderRadiusHoverMobile: meta?._kad_header_borderRadiusHoverMobile,
+		borderRadiusHoverUnit: meta?._kad_header_borderRadiusHoverUnit,
 		flex: meta?._kad_header_flex,
 		className: meta?._kad_header_className,
 		anchor: meta?._kad_header_anchor,
@@ -121,6 +304,18 @@ export function EditInner(props) {
 		heightUnit: meta?._kad_header_heightUnit,
 		width: meta?._kad_header_width,
 		widthUnit: meta?._kad_header_widthUnit,
+		style: meta?._kad_header_style,
+		styleTablet: meta?._kad_header_styleTablet,
+		styleMobile: meta?._kad_header_styleMobile,
+		autoTransparentSpacing: meta?._kad_header_autoTransparentSpacing,
+		stickySection: meta?._kad_header_stickySection,
+		stickySectionTablet: meta?._kad_header_stickySectionTablet,
+		stickySectionMobile: meta?._kad_header_stickySectionMobile,
+		shrinkMain: meta?._kad_header_shrinkMain,
+		shrinkMainHeight: meta?._kad_header_shrinkMainHeight,
+		shrinkMainHeightTablet: meta?._kad_header_shrinkMainHeightTablet,
+		shrinkMainHeightMobile: meta?._kad_header_shrinkMainHeightMobile,
+		revealScrollUp: meta?._kad_header_revealScrollUp,
 	};
 
 	const {
@@ -133,19 +328,19 @@ export function EditInner(props) {
 		mobileMargin,
 		marginUnit,
 		border,
-		tabletBorder,
-		mobileBorder,
-		hoverBorder,
-		tabletHoverBorder,
-		mobileHoverBorder,
+		borderTablet,
+		borderMobile,
+		borderHover,
+		borderHoverTablet,
+		borderHoverMobile,
 		borderRadius,
-		tabletBorderRadius,
-		mobileBorderRadius,
+		borderRadiusTablet,
+		borderRadiusMobile,
 		borderRadiusUnit,
-		borderHoverRadius,
-		tabletBorderHoverRadius,
-		mobileBorderHoverRadius,
-		borderHoverRadiusUnit,
+		borderRadiusHover,
+		borderRadiusHoverTablet,
+		borderRadiusHoverMobile,
+		borderRadiusHoverUnit,
 		flex,
 		className,
 		anchor,
@@ -159,17 +354,23 @@ export function EditInner(props) {
 		heightUnit,
 		width,
 		widthUnit,
+		style,
+		styleTablet,
+		styleMobile,
+		autoTransparentSpacing,
+		stickySection,
+		stickySectionTablet,
+		stickySectionMobile,
+		shrinkMain,
+		shrinkMainHeight,
+		shrinkMainHeightTablet,
+		shrinkMainHeightMobile,
+		revealScrollUp,
 	} = metaAttributes;
 
 	const setMetaAttribute = (value, key) => {
 		setMeta({ ...meta, ['_kad_header_' + key]: value });
 	};
-
-	const headerClasses = classnames({
-		'kb-header': true,
-		[`kb-header-${id}`]: true,
-		[`kb-header${uniqueID}`]: uniqueID,
-	});
 
 	// Flex direction options
 	const previewDirection = getPreviewSize(
@@ -178,6 +379,13 @@ export function EditInner(props) {
 		undefined !== flex?.direction?.[1] ? flex.direction[1] : '',
 		undefined !== flex?.direction?.[2] ? flex.direction[2] : ''
 	);
+	const previewStyle = getPreviewSize(previewDevice, style ? style : 'standard', styleTablet, styleMobile);
+	const previewStickySection = getPreviewSize(
+		previewDevice,
+		stickySection ? stickySection : 'main',
+		stickySectionTablet,
+		stickySectionMobile
+	);
 
 	const [title, setTitle] = useHeaderProp('title');
 
@@ -185,7 +393,7 @@ export function EditInner(props) {
 	const { updateBlockAttributes } = useDispatch(editorStore);
 
 	const emptyHeader = useMemo(() => {
-		return INNERBLOCK_TEMPLATE;
+		return [createBlock('kadence/header', {})];
 	}, [clientId]);
 
 	if (blocks.length === 0) {
@@ -231,7 +439,7 @@ export function EditInner(props) {
 
 	const innerBlocksProps = useInnerBlocksProps(
 		{
-			className: headerClasses,
+			className: '',
 		},
 		{
 			allowedBlocks: ALLOWED_BLOCKS,
@@ -248,7 +456,7 @@ export function EditInner(props) {
 			<>
 				<FormTitle onAdd={onAdd} isAdding={isAdding} existingTitle={title} />
 				<div className="kb-form-hide-while-setting-up">
-					<div {...innerBlocksProps} />
+					<Fragment {...innerBlocksProps} />
 				</div>
 			</>
 		);
@@ -293,7 +501,12 @@ export function EditInner(props) {
 	}
 	return (
 		<>
-			<BackendStyles {...props} metaAttributes={metaAttributes} previewDevice={previewDevice} />
+			<BackendStyles
+				{...props}
+				metaAttributes={metaAttributes}
+				previewDevice={previewDevice}
+				currentRef={componentRef}
+			/>
 			<InspectorControls>
 				<InspectorControlTabs
 					panelName={'advanced-header'}
@@ -303,6 +516,86 @@ export function EditInner(props) {
 
 				{activeTab === 'general' && (
 					<>
+						<KadencePanelBody
+							title={__('General Settings', 'kadence-blocks')}
+							panelName={'kb-col-flex-settings'}
+						>
+							<ResponsiveSelectControl
+								label={__('Style', 'kadence-blocks')}
+								value={style}
+								tabletValue={styleTablet}
+								mobileValue={styleMobile}
+								options={[
+									{ value: 'standard', label: __('Standard', 'kadence-blocks') },
+									{ value: 'sticky', label: __('Sticky', 'kadence-blocks') },
+									{ value: 'transparent', label: __('Transparent', 'kadence-blocks') },
+								]}
+								onChange={(value) => setMetaAttribute(value, 'style')}
+								onChangeTablet={(value) => setMetaAttribute(value, 'styleTablet')}
+								onChangeMobile={(value) => setMetaAttribute(value, 'styleMobile')}
+							/>
+							{previewStyle == 'transparent' && (
+								<ToggleControl
+									label={__('Auto spacing under', 'kadence-blocks')}
+									checked={autoTransparentSpacing}
+									onChange={(value) => setMetaAttribute(value, 'autoTransparentSpacing')}
+								/>
+							)}
+							{previewStyle == 'sticky' && (
+								<>
+									<ResponsiveSelectControl
+										label={__('Sticky Section', 'kadence-blocks')}
+										value={stickySection}
+										tabletValue={stickySectionTablet}
+										mobileValue={stickySectionMobile}
+										options={[
+											{ value: 'main', label: __('Only Main Row', 'kadence-blocks') },
+											{ value: 'top_main', label: __('Top and Main Row', 'kadence-blocks') },
+											{ value: 'top_main_bottom', label: __('Whole Header', 'kadence-blocks') },
+											{ value: 'top', label: __('Only Top Row', 'kadence-blocks') },
+											{ value: 'top_bottom', label: __('Only Bottom Row', 'kadence-blocks') },
+										]}
+										onChange={(value) => setMetaAttribute(value, 'stickySection')}
+										onChangeTablet={(value) => setMetaAttribute(value, 'stickySectionTablet')}
+										onChangeMobile={(value) => setMetaAttribute(value, 'stickySectionMobile')}
+									/>
+									<ToggleControl
+										label={__('Reveal on scroll up', 'kadence-blocks')}
+										checked={revealScrollUp}
+										onChange={(value) => setMetaAttribute(value, 'revealScrollUp')}
+									/>
+									<ToggleControl
+										label={__('Shrink Main Row', 'kadence-blocks')}
+										checked={shrinkMain}
+										onChange={(value) => setMetaAttribute(value, 'shrinkMain')}
+									/>
+									{shrinkMain &&
+										(previewStickySection.includes('main') || previewStickySection == '') && (
+											<ResponsiveRangeControls
+												label={__('Main Row Shrink Height', 'kadence-blocks')}
+												value={parseFloat(shrinkMainHeight)}
+												valueTablet={parseFloat(shrinkMainHeightTablet)}
+												valueMobile={parseFloat(shrinkMainHeightMobile)}
+												onChange={(value) =>
+													setMetaAttribute(value.toString(), 'shrinkMainHeight')
+												}
+												onChangeTablet={(value) =>
+													setMetaAttribute(value.toString(), 'shrinkMainHeightTablet')
+												}
+												onChangeMobile={(value) =>
+													setMetaAttribute(value.toString(), 'shrinkMainHeightMobile')
+												}
+												min={0}
+												max={500}
+												step={1}
+												unit={'px'}
+												units={['px']}
+												showUnit={true}
+											/>
+										)}
+								</>
+							)}
+						</KadencePanelBody>
 						<KadencePanelBody
 							title={__('Flex Settings', 'kadence-blocks')}
 							panelName={'kb-col-flex-settings'}
@@ -731,268 +1024,288 @@ export function EditInner(props) {
 
 				{activeTab === 'style' && (
 					<>
-						<KadencePanelBody
-							title={__('Background Settings', 'kadence-blocks')}
-							initialOpen={true}
-							panelName={'kb-header-bg-settings'}
-						>
-							<HoverToggleControl
-								normal={
-									<>
-										<BackgroundTypeControl
-											label={__('Type', 'kadence-blocks')}
-											type={undefined != background?.type ? background.type : 'normal'}
-											onChange={(value) =>
-												setMetaAttribute({ ...background, type: value }, 'background')
-											}
-											allowedTypes={['normal', 'gradient']}
-										/>
-										{'normal' === background?.type && (
-											<>
-												<PopColorControl
-													label={__('Background Color', 'kadence-blocks')}
-													value={undefined !== background?.color ? background.color : ''}
-													default={''}
-													onChange={(value) => {
-														setMetaAttribute({ ...background, color: value }, 'background');
-													}}
-												/>
-												<KadenceBackgroundControl
-													label={__('Background Image', 'kadence-blocks')}
-													hasImage={
-														undefined === background.image || '' === background.image
-															? false
-															: true
-													}
-													imageURL={background.image ? background.image : ''}
-													imageID={background.imageID}
-													imagePosition={
-														background.position ? background.position : 'center center'
-													}
-													imageSize={background.size ? background.size : 'cover'}
-													imageRepeat={background.repeat ? background.repeat : 'no-repeat'}
-													imageAttachment={
-														background.attachment ? background.attachment : 'scroll'
-													}
-													imageAttachmentParallax={true}
-													onRemoveImage={() => {
-														setMetaAttribute(
-															{ ...background, imageID: undefined },
-															'background'
-														);
-														setMetaAttribute(
-															{ ...background, image: undefined },
-															'background'
-														);
-													}}
-													onSaveImage={(value) => {
-														setMetaAttribute(
-															{ ...background, imageID: value.id.toString() },
-															'background'
-														);
-														setMetaAttribute(
-															{ ...background, image: value.url },
-															'background'
-														);
-													}}
-													onSaveURL={(newURL) => {
-														if (newURL !== background.image) {
+						{previewStyle != 'transparent' && (
+							<KadencePanelBody
+								title={__('Background Settings', 'kadence-blocks')}
+								initialOpen={true}
+								panelName={'kb-header-bg-settings'}
+							>
+								<HoverToggleControl
+									normal={
+										<>
+											<BackgroundTypeControl
+												label={__('Type', 'kadence-blocks')}
+												type={undefined != background?.type ? background.type : 'normal'}
+												onChange={(value) =>
+													setMetaAttribute({ ...background, type: value }, 'background')
+												}
+												allowedTypes={['normal', 'gradient']}
+											/>
+											{'normal' === background?.type && (
+												<>
+													<PopColorControl
+														label={__('Background Color', 'kadence-blocks')}
+														value={undefined !== background?.color ? background.color : ''}
+														default={''}
+														onChange={(value) => {
+															setMetaAttribute(
+																{ ...background, color: value },
+																'background'
+															);
+														}}
+													/>
+													<KadenceBackgroundControl
+														label={__('Background Image', 'kadence-blocks')}
+														hasImage={
+															undefined === background.image || '' === background.image
+																? false
+																: true
+														}
+														imageURL={background.image ? background.image : ''}
+														imageID={background.imageID}
+														imagePosition={
+															background.position ? background.position : 'center center'
+														}
+														imageSize={background.size ? background.size : 'cover'}
+														imageRepeat={
+															background.repeat ? background.repeat : 'no-repeat'
+														}
+														imageAttachment={
+															background.attachment ? background.attachment : 'scroll'
+														}
+														imageAttachmentParallax={true}
+														onRemoveImage={() => {
 															setMetaAttribute(
 																{ ...background, imageID: undefined },
 																'background'
 															);
 															setMetaAttribute(
-																{ ...background, image: newURL },
+																{ ...background, image: undefined },
 																'background'
 															);
+														}}
+														onSaveImage={(value) => {
+															setMetaAttribute(
+																{ ...background, imageID: value.id.toString() },
+																'background'
+															);
+															setMetaAttribute(
+																{ ...background, image: value.url },
+																'background'
+															);
+														}}
+														onSaveURL={(newURL) => {
+															if (newURL !== background.image) {
+																setMetaAttribute(
+																	{ ...background, imageID: undefined },
+																	'background'
+																);
+																setMetaAttribute(
+																	{ ...background, image: newURL },
+																	'background'
+																);
+															}
+														}}
+														onSavePosition={(value) =>
+															setMetaAttribute(
+																{ ...background, position: value },
+																'background'
+															)
 														}
-													}}
-													onSavePosition={(value) =>
-														setMetaAttribute(
-															{ ...background, position: value },
-															'background'
-														)
-													}
-													onSaveSize={(value) =>
-														setMetaAttribute({ ...background, size: value }, 'background')
-													}
-													onSaveRepeat={(value) =>
-														setMetaAttribute({ ...background, repeat: value }, 'background')
-													}
-													onSaveAttachment={(value) =>
-														setMetaAttribute(
-															{ ...background, attachment: value },
-															'background'
-														)
-													}
-													disableMediaButtons={background.image ? true : false}
-													dynamicAttribute="background:image"
-													isSelected={isSelected}
-													attributes={attributes}
-													setAttributes={setAttributes}
-													name={'kadence/header'}
-													clientId={clientId}
-													context={context}
-												/>
-											</>
-										)}
-										{'gradient' === background?.type && (
-											<>
-												<GradientControl
-													value={background?.gradient}
-													onChange={(value) => {
-														setMetaAttribute(
-															{ ...background, gradient: value },
-															'background'
-														);
-													}}
-													gradients={[]}
-												/>
-											</>
-										)}
-									</>
-								}
-								hover={
-									<>
-										<BackgroundTypeControl
-											label={__('Hover Type', 'kadence-blocks')}
-											type={undefined != backgroundHover?.type ? backgroundHover.type : 'normal'}
-											onChange={(value) =>
-												setMetaAttribute({ ...backgroundHover, type: value }, 'backgroundHover')
-											}
-											allowedTypes={['normal', 'gradient']}
-										/>
-										{'normal' === backgroundHover?.type && (
-											<>
-												<PopColorControl
-													label={__('Background Color', 'kadence-blocks')}
-													value={
-														undefined !== backgroundHover?.color
-															? backgroundHover.color
-															: ''
-													}
-													default={''}
-													onChange={(value) => {
-														setMetaAttribute(
-															{ ...backgroundHover, color: value },
-															'backgroundHover'
-														);
-													}}
-												/>
-												<KadenceBackgroundControl
-													label={__('Background Image', 'kadence-blocks')}
-													hasImage={
-														undefined === backgroundHover.image ||
-														'' === backgroundHover.image
-															? false
-															: true
-													}
-													imageURL={backgroundHover.image ? backgroundHover.image : ''}
-													imageID={backgroundHover.imageID}
-													imagePosition={
-														backgroundHover.imagePosition
-															? backgroundHover.imagePosition
-															: 'center center'
-													}
-													imageSize={
-														backgroundHover.imageSize ? backgroundHover.imageSize : 'cover'
-													}
-													imageRepeat={
-														backgroundHover.imageRepeat
-															? backgroundHover.imageRepeat
-															: 'no-repeat'
-													}
-													imageAttachment={
-														backgroundHover.imageAttachment
-															? backgroundHover.imageAttachment
-															: 'scroll'
-													}
-													imageAttachmentParallax={true}
-													onRemoveImage={() => {
-														setMetaAttribute(
-															{ ...backgroundHover, imageID: undefined },
-															'backgroundHover'
-														);
-														setMetaAttribute(
-															{ ...backgroundHover, image: undefined },
-															'backgroundHover'
-														);
-													}}
-													onSaveImage={(value) => {
-														setMetaAttribute(
-															{ ...backgroundHover, imageID: value.id.toString() },
-															'backgroundHover'
-														);
-														setMetaAttribute(
-															{ ...backgroundHover, image: value.url },
-															'backgroundHover'
-														);
-													}}
-													onSaveURL={(newURL) => {
-														if (newURL !== backgroundHover.image) {
+														onSaveSize={(value) =>
+															setMetaAttribute(
+																{ ...background, size: value },
+																'background'
+															)
+														}
+														onSaveRepeat={(value) =>
+															setMetaAttribute(
+																{ ...background, repeat: value },
+																'background'
+															)
+														}
+														onSaveAttachment={(value) =>
+															setMetaAttribute(
+																{ ...background, attachment: value },
+																'background'
+															)
+														}
+														disableMediaButtons={background.image ? true : false}
+														dynamicAttribute="background:image"
+														isSelected={isSelected}
+														attributes={attributes}
+														setAttributes={setAttributes}
+														name={'kadence/header'}
+														clientId={clientId}
+														context={context}
+													/>
+												</>
+											)}
+											{'gradient' === background?.type && (
+												<>
+													<GradientControl
+														value={background?.gradient}
+														onChange={(value) => {
+															setMetaAttribute(
+																{ ...background, gradient: value },
+																'background'
+															);
+														}}
+														gradients={[]}
+													/>
+												</>
+											)}
+										</>
+									}
+									hover={
+										<>
+											<BackgroundTypeControl
+												label={__('Hover Type', 'kadence-blocks')}
+												type={
+													undefined != backgroundHover?.type ? backgroundHover.type : 'normal'
+												}
+												onChange={(value) =>
+													setMetaAttribute(
+														{ ...backgroundHover, type: value },
+														'backgroundHover'
+													)
+												}
+												allowedTypes={['normal', 'gradient']}
+											/>
+											{'normal' === backgroundHover?.type && (
+												<>
+													<PopColorControl
+														label={__('Background Color', 'kadence-blocks')}
+														value={
+															undefined !== backgroundHover?.color
+																? backgroundHover.color
+																: ''
+														}
+														default={''}
+														onChange={(value) => {
+															setMetaAttribute(
+																{ ...backgroundHover, color: value },
+																'backgroundHover'
+															);
+														}}
+													/>
+													<KadenceBackgroundControl
+														label={__('Background Image', 'kadence-blocks')}
+														hasImage={
+															undefined === backgroundHover.image ||
+															'' === backgroundHover.image
+																? false
+																: true
+														}
+														imageURL={backgroundHover.image ? backgroundHover.image : ''}
+														imageID={backgroundHover.imageID}
+														imagePosition={
+															backgroundHover.imagePosition
+																? backgroundHover.imagePosition
+																: 'center center'
+														}
+														imageSize={
+															backgroundHover.imageSize
+																? backgroundHover.imageSize
+																: 'cover'
+														}
+														imageRepeat={
+															backgroundHover.imageRepeat
+																? backgroundHover.imageRepeat
+																: 'no-repeat'
+														}
+														imageAttachment={
+															backgroundHover.imageAttachment
+																? backgroundHover.imageAttachment
+																: 'scroll'
+														}
+														imageAttachmentParallax={true}
+														onRemoveImage={() => {
 															setMetaAttribute(
 																{ ...backgroundHover, imageID: undefined },
 																'backgroundHover'
 															);
 															setMetaAttribute(
-																{ ...backgroundHover, image: newURL },
+																{ ...backgroundHover, image: undefined },
 																'backgroundHover'
 															);
+														}}
+														onSaveImage={(value) => {
+															setMetaAttribute(
+																{ ...backgroundHover, imageID: value.id.toString() },
+																'backgroundHover'
+															);
+															setMetaAttribute(
+																{ ...backgroundHover, image: value.url },
+																'backgroundHover'
+															);
+														}}
+														onSaveURL={(newURL) => {
+															if (newURL !== backgroundHover.image) {
+																setMetaAttribute(
+																	{ ...backgroundHover, imageID: undefined },
+																	'backgroundHover'
+																);
+																setMetaAttribute(
+																	{ ...backgroundHover, image: newURL },
+																	'backgroundHover'
+																);
+															}
+														}}
+														onSavePosition={(value) =>
+															setMetaAttribute(
+																{ ...backgroundHover, imagePosition: value },
+																'backgroundHover'
+															)
 														}
-													}}
-													onSavePosition={(value) =>
-														setMetaAttribute(
-															{ ...backgroundHover, imagePosition: value },
-															'backgroundHover'
-														)
-													}
-													onSaveSize={(value) =>
-														setMetaAttribute(
-															{ ...backgroundHover, imageSize: value },
-															'backgroundHover'
-														)
-													}
-													onSaveRepeat={(value) =>
-														setMetaAttribute(
-															{ ...backgroundHover, imageRepeat: value },
-															'backgroundHover'
-														)
-													}
-													onSaveAttachment={(value) =>
-														setMetaAttribute(
-															{ ...backgroundHover, imageAttachment: value },
-															'backgroundHover'
-														)
-													}
-													disableMediaButtons={backgroundHover.image ? true : false}
-													dynamicAttribute="backgroundHover:image"
-													isSelected={isSelected}
-													attributes={attributes}
-													setAttributes={setAttributes}
-													name={'kadence/header'}
-													clientId={clientId}
-													context={context}
-												/>
-											</>
-										)}
-										{'gradient' === backgroundHover?.type && (
-											<>
-												<GradientControl
-													value={backgroundHover?.gradient}
-													onChange={(value) => {
-														setMetaAttribute(
-															{ ...backgroundHover, gradient: value },
-															'backgroundHover'
-														);
-													}}
-													gradients={[]}
-												/>
-											</>
-										)}
-									</>
-								}
-							/>
-						</KadencePanelBody>
+														onSaveSize={(value) =>
+															setMetaAttribute(
+																{ ...backgroundHover, imageSize: value },
+																'backgroundHover'
+															)
+														}
+														onSaveRepeat={(value) =>
+															setMetaAttribute(
+																{ ...backgroundHover, imageRepeat: value },
+																'backgroundHover'
+															)
+														}
+														onSaveAttachment={(value) =>
+															setMetaAttribute(
+																{ ...backgroundHover, imageAttachment: value },
+																'backgroundHover'
+															)
+														}
+														disableMediaButtons={backgroundHover.image ? true : false}
+														dynamicAttribute="backgroundHover:image"
+														isSelected={isSelected}
+														attributes={attributes}
+														setAttributes={setAttributes}
+														name={'kadence/header'}
+														clientId={clientId}
+														context={context}
+													/>
+												</>
+											)}
+											{'gradient' === backgroundHover?.type && (
+												<>
+													<GradientControl
+														value={backgroundHover?.gradient}
+														onChange={(value) => {
+															setMetaAttribute(
+																{ ...backgroundHover, gradient: value },
+																'backgroundHover'
+															);
+														}}
+														gradients={[]}
+													/>
+												</>
+											)}
+										</>
+									}
+								/>
+							</KadencePanelBody>
+						)}
 						<KadencePanelBody
 							title={__('Border Settings', 'kadence-blocks')}
 							initialOpen={false}
@@ -1003,23 +1316,23 @@ export function EditInner(props) {
 									<>
 										<ResponsiveBorderControl
 											label={__('Border', 'kadence-blocks')}
-											value={[border]}
-											tabletValue={[tabletBorder]}
-											mobileValue={[mobileBorder]}
+											value={border}
+											tabletValue={borderTablet}
+											mobileValue={borderMobile}
 											onChange={(value) => {
-												setMetaAttribute(value[0], 'border');
+												setMetaAttribute(value, 'border');
 											}}
-											onChangeTablet={(value) => setMetaAttribute(value[0], 'tabletBorder')}
-											onChangeMobile={(value) => setMetaAttribute(value[0], 'mobileBorder')}
+											onChangeTablet={(value) => setMetaAttribute(value, 'borderTablet')}
+											onChangeMobile={(value) => setMetaAttribute(value, 'borderMobile')}
 										/>
 										<ResponsiveMeasurementControls
 											label={__('Border Radius', 'kadence-blocks')}
 											value={borderRadius}
-											tabletValue={tabletBorderRadius}
-											mobileValue={mobileBorderRadius}
+											tabletValue={borderRadiusTablet}
+											mobileValue={borderRadiusMobile}
 											onChange={(value) => setMetaAttribute(value, 'borderRadius')}
-											onChangeTablet={(value) => setMetaAttribute(value, 'tabletBorderRadius')}
-											onChangeMobile={(value) => setMetaAttribute(value, 'mobileBorderRadius')}
+											onChangeTablet={(value) => setMetaAttribute(value, 'borderRadiusTablet')}
+											onChangeMobile={(value) => setMetaAttribute(value, 'borderRadiusMobile')}
 											unit={borderRadiusUnit}
 											units={['px', 'em', 'rem', '%']}
 											onUnit={(value) => setMetaAttribute(value, 'borderRadiusUnit')}
@@ -1035,37 +1348,37 @@ export function EditInner(props) {
 									<>
 										<ResponsiveBorderControl
 											label={__('Hover Border', 'kadence-blocks')}
-											value={[hoverBorder]}
-											tabletValue={[tabletHoverBorder]}
-											mobileValue={[mobileHoverBorder]}
+											value={borderHover}
+											tabletValue={borderHoverTablet}
+											mobileValue={borderHoverMobile}
 											onChange={(value) => {
-												setMetaAttribute(value[0], 'hoverBorder');
+												setMetaAttribute(value, 'borderHover');
 											}}
-											onChangeTablet={(value) => setMetaAttribute(value[0], 'tabletHoverBorder')}
-											onChangeMobile={(value) => setMetaAttribute(value[0], 'mobileHoverBorder')}
+											onChangeTablet={(value) => setMetaAttribute(value, 'borderHoverTablet')}
+											onChangeMobile={(value) => setMetaAttribute(value, 'borderHoverMobile')}
 										/>
 										<ResponsiveMeasurementControls
 											label={__('Border Radius', 'kadence-blocks')}
-											value={borderHoverRadius}
-											tabletValue={tabletBorderHoverRadius}
-											mobileValue={mobileBorderHoverRadius}
-											onChange={(value) => setMetaAttribute(value, 'borderHoverRadius')}
+											value={borderRadiusHover}
+											tabletValue={borderRadiusHoverTablet}
+											mobileValue={borderRadiusHoverMobile}
+											onChange={(value) => setMetaAttribute(value, 'borderRadiusHover')}
 											onChangeTablet={(value) =>
-												setMetaAttribute(value, 'tabletBorderHoverRadius')
+												setMetaAttribute(value, 'borderRadiusHoverTablet')
 											}
 											onChangeMobile={(value) =>
-												setMetaAttribute(value, 'mobileBorderHoverRadius')
+												setMetaAttribute(value, 'borderRadiusHoverMobile')
 											}
-											unit={borderHoverRadiusUnit}
+											unit={borderRadiusHoverUnit}
 											units={['px', 'em', 'rem', '%']}
-											onUnit={(value) => setMetaAttribute(value, 'borderHoverRadiusUnit')}
+											onUnit={(value) => setMetaAttribute(value, 'borderRadiusHoverUnit')}
 											max={
-												borderHoverRadiusUnit === 'em' || borderHoverRadiusUnit === 'rem'
+												borderRadiusHoverUnit === 'em' || borderRadiusHoverUnit === 'rem'
 													? 24
 													: 500
 											}
 											step={
-												borderHoverRadiusUnit === 'em' || borderHoverRadiusUnit === 'rem'
+												borderRadiusHoverUnit === 'em' || borderRadiusHoverUnit === 'rem'
 													? 0.1
 													: 1
 											}
@@ -1263,7 +1576,8 @@ export function EditInner(props) {
 					help={__('Separate multiple classes with spaces.')}
 				/>
 			</InspectorAdvancedControls>
-			<div {...innerBlocksProps} />
+			<Fragment {...innerBlocksProps} />
+			<span className="height-ref" ref={componentRef} />
 			{/*<SpacingVisualizer*/}
 			{/*	style={ {*/}
 			{/*		marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),*/}
@@ -1283,6 +1597,7 @@ export function EditInner(props) {
 		</>
 	);
 }
+
 export default EditInner;
 
 function useHeaderProp(prop) {
