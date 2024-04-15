@@ -508,7 +508,7 @@ export default function BackendStyles(props) {
 	if ('left' === previewHighlightSide) {
 		css.add_property('order', '-1');
 	}
-	if(undefined !== previewHighlightLabelGap && previewHighlightLabelGap) {
+	if (undefined !== previewHighlightLabelGap && previewHighlightLabelGap) {
 		css.add_property('gap', css.get_gap_size(previewHighlightLabelGap, 'px'));
 	}
 	css.set_selector(
