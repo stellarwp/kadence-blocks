@@ -2333,7 +2333,7 @@ function SectionEdit(props) {
 												setAttributes({ mobilePadding: value });
 											}}
 											min={0}
-											max={paddingType === 'em' || paddingType === 'rem' ? 24 : 500}
+											max={paddingType === 'em' || paddingType === 'rem' ? 24 : 999}
 											step={paddingType === 'em' || paddingType === 'rem' ? 0.1 : 1}
 											unit={paddingType}
 											units={['px', 'em', 'rem', '%', 'vh', 'vw']}
@@ -2355,8 +2355,8 @@ function SectionEdit(props) {
 											onChangeMobile={(value) => {
 												setAttributes({ mobileMargin: value });
 											}}
-											min={marginType === 'em' || marginType === 'rem' ? -24 : -500}
-											max={marginType === 'em' || marginType === 'rem' ? 24 : 500}
+											min={marginType === 'em' || marginType === 'rem' ? -24 : -999}
+											max={marginType === 'em' || marginType === 'rem' ? 24 : 999}
 											step={marginType === 'em' || marginType === 'rem' ? 0.1 : 1}
 											unit={marginType}
 											units={['px', 'em', 'rem', '%', 'vh', 'vw']}

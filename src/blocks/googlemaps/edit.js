@@ -36,6 +36,7 @@ import {
 	ResponsiveMeasureRangeControl,
 	SpacingVisualizer,
 	CopyPasteAttributes,
+	DynamicTextInputControl,
 } from '@kadence/components';
 import {
 	getPreviewSize,
@@ -326,12 +327,13 @@ export function Edit(props) {
 								blockSlug={'kadence/googlemaps'}
 								panelName={'mapLocation'}
 							>
-								<TextControl
+								<DynamicTextInputControl
 									label={__('Location', 'kadence-blocks')}
 									value={location}
-									onChange={(value) => {
-										setAttributes({ location: value });
-									}}
+									onChange={(value) => setAttributes({ location: value })}
+									dynamicAttribute={'location'}
+									allowClear={true}
+									{...props}
 								/>
 
 								{apiType === 'javascript' && (
@@ -661,7 +663,7 @@ export function Edit(props) {
 									onChangeTablet={(value) => setAttributes({ paddingTablet: value })}
 									onChangeMobile={(value) => setAttributes({ paddingMobile: value })}
 									min={0}
-									max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 400}
+									max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 999}
 									step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
 									unit={paddingUnit}
 									units={['px', 'em', 'rem', '%']}
@@ -677,8 +679,8 @@ export function Edit(props) {
 									onChange={(value) => setAttributes({ marginDesktop: value })}
 									onChangeTablet={(value) => setAttributes({ marginTablet: value })}
 									onChangeMobile={(value) => setAttributes({ marginMobile: value })}
-									min={marginUnit === 'em' || marginUnit === 'rem' ? -25 : -400}
-									max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : 400}
+									min={marginUnit === 'em' || marginUnit === 'rem' ? -25 : -999}
+									max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : 999}
 									step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
 									unit={marginUnit}
 									units={['px', 'em', 'rem', '%', 'vh']}

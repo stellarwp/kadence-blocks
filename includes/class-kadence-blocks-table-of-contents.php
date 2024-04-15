@@ -249,44 +249,22 @@ class Kadence_Blocks_Table_Of_Contents {
 			}
 			$headings = self::$the_headings;
 			if ( $attributes && isset( $attributes['allowedHeaders'] ) && isset( $attributes['allowedHeaders'][0] ) && is_array( $attributes['allowedHeaders'][0] ) ) {
-				if ( isset( $attributes['allowedHeaders'][0]['h1'] ) && ! $attributes['allowedHeaders'][0]['h1'] ) {
+				foreach ( array( 'h1' => 1, 'h2' => 2, 'h3' => 3, 'h4' => 4, 'h5' => 5, 'h6' => 6 ) as $tag => $level ) {
+
 					foreach ( $headings as $headkey => $headvalue ) {
-						if ( $headvalue['level'] === 1 ) {
+						// User is specifically excluding this heading.
+						if( false === $headvalue['include'] ) {
+
 							unset( $headings[$headkey] );
 						}
-					}
-				}
-				if ( isset( $attributes['allowedHeaders'][0]['h2'] ) && ! $attributes['allowedHeaders'][0]['h2'] ) {
-					foreach ( $headings as $headkey => $headvalue ) {
-						if ( $headvalue['level'] === 2 ) {
-							unset( $headings[$headkey] );
+
+						// User is specifically including this heading, or, it's in the allowed headers list.
+						if ( true === $headvalue['include'] || ( !isset( $attributes['allowedHeaders'][0][$tag] ) || $attributes['allowedHeaders'][0][$tag] ) ) {
+							continue;
 						}
-					}
-				}
-				if ( isset( $attributes['allowedHeaders'][0]['h3'] ) && ! $attributes['allowedHeaders'][0]['h3'] ) {
-					foreach ( $headings as $headkey => $headvalue ) {
-						if ( $headvalue['level'] === 3 ) {
-							unset( $headings[$headkey] );
-						}
-					}
-				}
-				if ( isset( $attributes['allowedHeaders'][0]['h4'] ) && ! $attributes['allowedHeaders'][0]['h4'] ) {
-					foreach ( $headings as $headkey => $headvalue ) {
-						if ( $headvalue['level'] === 4 ) {
-							unset( $headings[$headkey] );
-						}
-					}
-				}
-				if ( isset( $attributes['allowedHeaders'][0]['h5'] ) && ! $attributes['allowedHeaders'][0]['h5'] ) {
-					foreach ( $headings as $headkey => $headvalue ) {
-						if ( $headvalue['level'] === 5 ) {
-							unset( $headings[$headkey] );
-						}
-					}
-				}
-				if ( isset( $attributes['allowedHeaders'][0]['h6'] ) && ! $attributes['allowedHeaders'][0]['h6'] ) {
-					foreach ( $headings as $headkey => $headvalue ) {
-						if ( $headvalue['level'] === 6 ) {
+
+						// Heading is at an unwanted level.
+						if ( $headvalue['level'] === $level ) {
 							unset( $headings[$headkey] );
 						}
 					}
@@ -302,7 +280,7 @@ class Kadence_Blocks_Table_Of_Contents {
 	 */
 	private function get_ignore_list() {
 		if ( is_null( self::$ignore_list ) ) {
-			self::$ignore_list = apply_filters( 'kadence_toc_block_ignore_array', array( 'kadence/tableofcontents', 'kadence/tabs', 'kadence/modal', 'core/post-content' ) );
+			self::$ignore_list = apply_filters( 'kadence_toc_block_ignore_array', array( 'kadence/tableofcontents', 'kadence/tabs', 'kadence/modal', 'kadence/repeater', 'core/post-content' ) );
 		}
 		return self::$ignore_list;
 	}
@@ -353,6 +331,9 @@ class Kadence_Blocks_Table_Of_Contents {
 			}
 		} else if ( $block['blockName'] === 'core/post-content' ) {
 			self::$output_content .= $the_post_content;
+		} else if ( $block['blockName'] === 'kadence/repeater' ) {
+			//repeater needs to render all together to properly render dynamic data with context.
+			self::$output_content .= render_block( $block );
 		}
 	}
 	/**
@@ -424,7 +405,7 @@ class Kadence_Blocks_Table_Of_Contents {
 		// https://bugzilla.gnome.org/show_bug.cgi?id=761534.
 		libxml_use_internal_errors( true );
 		// Parse the post content into an HTML document.
-		$content = mb_convert_encoding( $content, 'HTML-ENTITIES', 'UTF-8' );
+		$content = mb_encode_numericentity( $content, [0x80, 0x10FFFF, 0, ~0], 'UTF-8' );
 		// loadHTML expects ISO-8859-1, so we need to convert the post content to
 		// that format. We use htmlentities to encode Unicode characters not
 		// supported by ISO-8859-1 as HTML entities. However, this function also
@@ -432,15 +413,15 @@ class Kadence_Blocks_Table_Of_Contents {
 		// htmlspecialchars_decode to decode them.
 		$doc->loadHTML(
 			htmlspecialchars_decode(
-				utf8_decode(
+				mb_convert_encoding(
 					htmlentities(
 						'<!DOCTYPE html><html><head><title>:D</title><body>' .
-						htmlspecialchars( $content ) .
+						htmlentities( $content ) .
 						'</body></html>',
 						ENT_COMPAT,
 						'UTF-8',
 						false
-					)
+					), 'ISO-8859-1', 'UTF-8'
 				),
 				ENT_COMPAT
 			)
@@ -582,6 +563,15 @@ class Kadence_Blocks_Table_Of_Contents {
 				if ( $heading->getAttribute( 'data-alt-title' ) ) {
 					$heading->textContent = $heading->getAttribute( 'data-alt-title' );
 				}
+
+				if( $heading->getAttribute( 'data-toc-include' ) === 'true' ){
+					$heading->include = true;
+				} else if ( $heading->getAttribute( 'data-toc-include' ) === 'false' ) {
+					$heading->include = false;
+				} else {
+					$heading->include = '';
+				}
+
 				if ( $anchor_string ) {
 					$add = true;
 					foreach ( self::$headings as $v ) {
@@ -594,6 +584,7 @@ class Kadence_Blocks_Table_Of_Contents {
 							'anchor'  => $anchor_string,
 							'content' => $this->convert_smart_quotes( $heading->textContent ),
 							'level'   => $level,
+							'include'   => $heading->include,
 							'page'    => $headings_page,
 						);
 					}
@@ -602,6 +593,7 @@ class Kadence_Blocks_Table_Of_Contents {
 					'anchor'  => $anchor,
 					'content' => $this->convert_smart_quotes( $heading->textContent ),
 					'level'   => $level,
+					'include'   => $heading->include,
 					'page'    => $headings_page,
 				);
 			},
@@ -886,6 +878,16 @@ class Kadence_Blocks_Table_Of_Contents {
 			}
 		}
 		return $content;
+	}
+
+	/*
+	 * Reset the instance properties for unit tests
+	 */
+	private static function reset_instance() {
+		self::$headings = array();
+		self::$anchors = array();
+		self::$the_headings = null;
+		self::$output_content = '';
 	}
 
 }

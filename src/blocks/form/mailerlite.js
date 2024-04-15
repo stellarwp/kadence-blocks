@@ -191,15 +191,15 @@ class MailerLiteControls extends Component {
 		const hasFields = Array.isArray(this.state.groupFields) && this.state.groupFields.length ? true : false;
 		return (
 			<KadencePanelBody
-				title={__('MailerLite Settings', 'kadence-blocks-pro')}
+				title={__('MailerLite Settings', 'kadence-blocks')}
 				initialOpen={false}
 				panelName={'kb-mailerlite-settings'}
 			>
 				<p>
 					<>
-						<ExternalLink href={RETRIEVE_API_URL}>{__('Get API Key', 'kadence-blocks-pro')}</ExternalLink>
+						<ExternalLink href={RETRIEVE_API_URL}>{__('Get API Key', 'kadence-blocks')}</ExternalLink>
 						|&nbsp;
-						<ExternalLink href={HELP_URL}>{__('Get help', 'kadence-blocks-pro')}</ExternalLink>
+						<ExternalLink href={HELP_URL}>{__('Get help', 'kadence-blocks')}</ExternalLink>
 					</>
 				</p>
 				<TextControl
@@ -209,13 +209,13 @@ class MailerLiteControls extends Component {
 				/>
 				<div className="components-base-control">
 					<Button isPrimary onClick={this.saveAPI} disabled={'' === this.state.api}>
-						{this.state.isSaving ? __('Saving', 'kadence-blocks-pro') : __('Save', 'kadence-blocks-pro')}
+						{this.state.isSaving ? __('Saving', 'kadence-blocks') : __('Save', 'kadence-blocks')}
 					</Button>
 					{this.state.isSavedKey && (
 						<>
 							&nbsp;
 							<Button isSecondary onClick={this.removeAPI}>
-								{__('Remove', 'kadence-blocks-pro')}
+								{__('Remove', 'kadence-blocks')}
 							</Button>
 						</>
 					)}
@@ -268,7 +268,7 @@ class MailerLiteControls extends Component {
 												{!Array.isArray(groupFields) ? (
 													<Spinner />
 												) : (
-													__('No Fields found.', 'kadence-blocks-pro')
+													__('No Fields found.', 'kadence-blocks')
 												)}
 											</>
 										)}

@@ -1325,8 +1325,8 @@ export default function KadenceButtonEdit({
 											onChange={(value) => setAttributes({ iconPadding: value })}
 											onChangeTablet={(value) => setAttributes({ tabletIconPadding: value })}
 											onChangeMobile={(value) => setAttributes({ mobileIconPadding: value })}
-											min={iconPaddingUnit === 'em' || iconPaddingUnit === 'rem' ? -2 : -200}
-											max={iconPaddingUnit === 'em' || iconPaddingUnit === 'rem' ? 12 : 200}
+											min={iconPaddingUnit === 'em' || iconPaddingUnit === 'rem' ? -2 : -999}
+											max={iconPaddingUnit === 'em' || iconPaddingUnit === 'rem' ? 12 : 999}
 											step={iconPaddingUnit === 'em' || iconPaddingUnit === 'rem' ? 0.1 : 1}
 											unit={iconPaddingUnit}
 											units={['px', 'em', 'rem']}
@@ -1396,8 +1396,8 @@ export default function KadenceButtonEdit({
 												onChangeTablet={(value) => setAttributes({ tabletPadding: value })}
 												mobileValue={mobilePadding}
 												onChangeMobile={(value) => setAttributes({ mobilePadding: value })}
-												min={paddingUnit === 'em' || paddingUnit === 'rem' ? -2 : -200}
-												max={paddingUnit === 'em' || paddingUnit === 'rem' ? 12 : 200}
+												min={paddingUnit === 'em' || paddingUnit === 'rem' ? -2 : -999}
+												max={paddingUnit === 'em' || paddingUnit === 'rem' ? 12 : 999}
 												step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
 												unit={paddingUnit}
 												units={['px', 'em', 'rem']}
@@ -1413,8 +1413,8 @@ export default function KadenceButtonEdit({
 												onChangeTablet={(value) => setAttributes({ tabletMargin: value })}
 												mobileValue={mobileMargin}
 												onChangeMobile={(value) => setAttributes({ mobileMargin: value })}
-												min={marginUnit === 'em' || marginUnit === 'rem' ? -2 : -200}
-												max={marginUnit === 'em' || marginUnit === 'rem' ? 12 : 200}
+												min={marginUnit === 'em' || marginUnit === 'rem' ? -2 : -999}
+												max={marginUnit === 'em' || marginUnit === 'rem' ? 12 : 999}
 												step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
 												unit={marginUnit}
 												units={['px', 'em', 'rem']}

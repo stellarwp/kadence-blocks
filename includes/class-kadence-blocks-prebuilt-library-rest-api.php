@@ -1100,6 +1100,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$key              = 'section';
 
 		$identifier = 'library' . $library;
+		if ( 'section' === $library ) {
+			$identifier .= '_' . KADENCE_BLOCKS_VERSION;
+		}
 
 		if ( ! empty( $this->api_key ) ) {
 			$identifier .= '_' . $this->api_key;
@@ -1108,7 +1111,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		if ( ! empty( $key ) ) {
 			$identifier .= '_' . $key;
 		}
-		
+
 		try {
 			return $this->block_library_cache->get( $identifier );
 		} catch ( NotFoundException $e ) {
@@ -1138,7 +1141,9 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 
 		$identifier = 'library' . $library;
-
+		if ( 'section' === $library ) {
+			$identifier .= '_' . KADENCE_BLOCKS_VERSION;
+		}
 		if ( ! empty( $this->api_key ) ) {
 			$identifier .= '_' . $this->api_key;
 		}

@@ -213,28 +213,26 @@ function KadenceBlockPatternListIframe({
 	const neededCompatStyles = compatStyles.filter(
 		(style) => style.id && !styleIds.includes(style.id) && !styleIdsExclude.includes(style.id)
 	);
-	const shadowCompatStyles = useMemo( () => {
+	const shadowCompatStyles = useMemo(() => {
 		return (
 			<>
-				{ [ ...neededCompatStyles, ...baseCompatStyles ].map(
-					( { tagName, href, id, rel, media, textContent } ) => {
-						const TagName = tagName.toLowerCase();
-						let finalTextContent = textContent.replace( / .block-editor-block-list__layout/g, '' );
-						finalTextContent = finalTextContent.replace( /:root/g, '.pattern-shadow-wrap' );
-						if ( TagName === 'style' ) {
-							return (
-								<TagName { ...{ id } } key={ id }>
-									{ finalTextContent }
-								</TagName>
-							);
-						}
-
-						return <TagName { ...{ href, id, rel, media } } key={ id } />;
+				{[...neededCompatStyles, ...baseCompatStyles].map(({ tagName, href, id, rel, media, textContent }) => {
+					const TagName = tagName.toLowerCase();
+					let finalTextContent = textContent.replace(/ .block-editor-block-list__layout/g, '');
+					finalTextContent = finalTextContent.replace(/:root/g, '.pattern-shadow-wrap');
+					if (TagName === 'style') {
+						return (
+							<TagName {...{ id }} key={id}>
+								{finalTextContent}
+							</TagName>
+						);
 					}
-				) }
+
+					return <TagName {...{ href, id, rel, media }} key={id} />;
+				})}
 			</>
 		);
-	}, [ neededCompatStyles, baseCompatStyles ] );
+	}, [neededCompatStyles, baseCompatStyles]);
 	const editorStyles = useMemo(() => {
 		if (styles) {
 			return [
@@ -369,28 +367,26 @@ function KadenceBlockPatternList({
 	const neededCompatStyles = compatStyles.filter(
 		(style) => style.id && !styleIds.includes(style.id) && !styleIdsExclude.includes(style.id)
 	);
-	const shadowCompatStyles = useMemo( () => {
+	const shadowCompatStyles = useMemo(() => {
 		return (
 			<>
-				{ [ ...neededCompatStyles, ...baseCompatStyles ].map(
-					( { tagName, href, id, rel, media, textContent } ) => {
-						const TagName = tagName.toLowerCase();
-						let finalTextContent = textContent.replace( / .block-editor-block-list__layout/g, '' );
-						finalTextContent = finalTextContent.replace( /:root/g, '.pattern-shadow-wrap' );
-						if ( TagName === 'style' ) {
-							return (
-								<TagName { ...{ id } } key={ id }>
-									{ finalTextContent }
-								</TagName>
-							);
-						}
-
-						return <TagName { ...{ href, id, rel, media } } key={ id } />;
+				{[...neededCompatStyles, ...baseCompatStyles].map(({ tagName, href, id, rel, media, textContent }) => {
+					const TagName = tagName.toLowerCase();
+					let finalTextContent = textContent.replace(/ .block-editor-block-list__layout/g, '');
+					finalTextContent = finalTextContent.replace(/:root/g, '.pattern-shadow-wrap');
+					if (TagName === 'style') {
+						return (
+							<TagName {...{ id }} key={id}>
+								{finalTextContent}
+							</TagName>
+						);
 					}
-				) }
+
+					return <TagName {...{ href, id, rel, media }} key={id} />;
+				})}
 			</>
 		);
-	}, [ neededCompatStyles, baseCompatStyles ] );
+	}, [neededCompatStyles, baseCompatStyles]);
 	const shadowStyles = useMemo(() => {
 		if (styles) {
 			return [

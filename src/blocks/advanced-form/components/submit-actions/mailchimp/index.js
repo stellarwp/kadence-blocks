@@ -249,25 +249,25 @@ function MailChimpControls({ formInnerBlocks, parentClientId, settings, save }) 
 	const hasTags = Array.isArray(listTags) && listTags.length > 0;
 	return (
 		<KadencePanelBody
-			title={__('MailChimp Settings', 'kadence-blocks-pro')}
+			title={__('MailChimp Settings', 'kadence-blocks')}
 			initialOpen={false}
 			panelName={'kb-mailchimp-settings'}
 		>
 			<p>
 				<Fragment>
-					<ExternalLink href={HELP_URL}>{__('Get help', 'kadence-blocks-pro')}</ExternalLink>
+					<ExternalLink href={HELP_URL}>{__('Get help', 'kadence-blocks')}</ExternalLink>
 				</Fragment>
 			</p>
 			<TextControl label={__('API Key', 'kadence-blocks')} value={api} onChange={(value) => setApi(value)} />
 			<div className="components-base-control">
 				<Button isPrimary onClick={() => saveAPI()} disabled={'' === api}>
-					{isSaving ? __('Saving', 'kadence-blocks-pro') : __('Save', 'kadence-blocks-pro')}
+					{isSaving ? __('Saving', 'kadence-blocks') : __('Save', 'kadence-blocks')}
 				</Button>
 				{api !== '' && (
 					<Fragment>
 						&nbsp;
 						<Button isSecondary onClick={() => removeAPI()}>
-							{__('Remove', 'kadence-blocks-pro')}
+							{__('Remove', 'kadence-blocks')}
 						</Button>
 					</Fragment>
 				)}
@@ -277,14 +277,14 @@ function MailChimpControls({ formInnerBlocks, parentClientId, settings, save }) 
 					{isFetching && <Spinner />}
 					{!isFetching && !hasLists && (
 						<Fragment>
-							<h2 className="kt-heading-size-title">{__('Select Audience', 'kadence-blocks-pro')}</h2>
+							<h2 className="kt-heading-size-title">{__('Select Audience', 'kadence-blocks')}</h2>
 							{!listsLoaded ? getMailChimpAudience() : ''}
-							{!Array.isArray(lists) ? <Spinner /> : __('No Audience found.', 'kadence-blocks-pro')}
+							{!Array.isArray(lists) ? <Spinner /> : __('No Audience found.', 'kadence-blocks')}
 						</Fragment>
 					)}
 					{!isFetching && hasLists && (
 						<Fragment>
-							<h2 className="kt-heading-size-title">{__('Select Audience', 'kadence-blocks-pro')}</h2>
+							<h2 className="kt-heading-size-title">{__('Select Audience', 'kadence-blocks')}</h2>
 							<Select
 								value={
 									undefined !== settings && undefined !== settings && undefined !== settings.list
@@ -320,7 +320,7 @@ function MailChimpControls({ formInnerBlocks, parentClientId, settings, save }) 
 												{!Array.isArray(listGroups) ? (
 													<Spinner />
 												) : (
-													__('No Groups found.', 'kadence-blocks-pro')
+													__('No Groups found.', 'kadence-blocks')
 												)}
 											</Fragment>
 										)}
@@ -359,7 +359,7 @@ function MailChimpControls({ formInnerBlocks, parentClientId, settings, save }) 
 												{!Array.isArray(listTags) ? (
 													<Spinner />
 												) : (
-													__('No Tags found.', 'kadence-blocks-pro')
+													__('No Tags found.', 'kadence-blocks')
 												)}
 											</Fragment>
 										)}
@@ -398,7 +398,7 @@ function MailChimpControls({ formInnerBlocks, parentClientId, settings, save }) 
 												{!Array.isArray(listAttr) ? (
 													<Spinner />
 												) : (
-													__('No Fields found.', 'kadence-blocks-pro')
+													__('No Fields found.', 'kadence-blocks')
 												)}
 											</Fragment>
 										)}
@@ -439,7 +439,7 @@ function MailChimpControls({ formInnerBlocks, parentClientId, settings, save }) 
 											</Fragment>
 										)}
 										<ToggleControl
-											label={__('Require Double Opt In?', 'kadence-blocks-pro')}
+											label={__('Require Double Opt In?', 'kadence-blocks')}
 											checked={
 												undefined !== settings &&
 												undefined !== settings &&

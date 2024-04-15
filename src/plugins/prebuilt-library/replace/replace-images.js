@@ -126,8 +126,8 @@ export default function replaceImages(content, images, categories, context, vari
 			pRoll?.[6]?.sizes?.[0]?.src ||
 			pRoll?.[1]?.sizes?.[0]?.src,
 	};
-	if (context && context.toString() === '14499') {
-		// Cards 21.
+	if (context && (context.toString() === '14499' || context.toString() === '18895')) {
+		// Cards 21 & Video 23.
 		content = content.replace(
 			'https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Example-A-Roll-Image-scaled.jpg',
 			imgs.a1
