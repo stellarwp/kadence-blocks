@@ -177,6 +177,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 = 3.2.35 =
 Release Date: April TBD 2024
 * Fix: Variable font sizes on tab titles in tabs block
+* Fix: Transforms between core list and Icon List block
 
 = 3.2.34 =
 Release Date: April 10th 2024
