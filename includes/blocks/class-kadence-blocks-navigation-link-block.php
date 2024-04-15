@@ -93,41 +93,41 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		if( ! empty( $nav_link_attributes['highlightLabel']) || ! empty($nav_link_attributes['highlightIcon']['icon'])) {
 			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a .link-highlight-label' );
 			$css->add_property( 'transition', 'color 0.35s ease-in-out, background-color 0.35s ease-in-out' );
-			$css->add_property( 'color', $css->render_color( $attributes['labelColor'] ) );
-			$css->add_property( 'background-color', $css->render_color( $attributes['labelBackground'] ) );
-			$css->render_measure_output( $attributes['highlightSpacing'][0], 'margin', 'margin' );
-			$css->render_measure_output( $attributes['highlightSpacing'][0], 'padding' );
-			$css->render_border_styles( $attributes['highlightSpacing'][0], 'border' );
-			$css->render_border_radius( $attributes['highlightSpacing'][0] );
-			$css->render_gap($attributes['highlightSpacing'][0]);
-			if( 'left' === $attributes['highlightSide'] ) {
+			$css->add_property( 'color', $css->render_color( $nav_link_attributes['labelColor'] ) );
+			$css->add_property( 'background-color', $css->render_color( $nav_link_attributes['labelBackground'] ) );
+			$css->render_measure_output( $nav_link_attributes['highlightSpacing'][0], 'margin', 'margin' );
+			$css->render_measure_output( $nav_link_attributes['highlightSpacing'][0], 'padding' );
+			$css->render_border_styles( $nav_link_attributes['highlightSpacing'][0], 'border' );
+			$css->render_border_radius( $nav_link_attributes['highlightSpacing'][0] );
+			$css->render_gap($nav_link_attributes['highlightSpacing'][0]);
+			if( 'left' === $nav_link_attributes['highlightSide'] ) {
 				$css->add_property('order', '-1');
 			}
-			if( 'left' === $attributes['highlightSideTablet'] ) {
+			if( 'left' === $nav_link_attributes['highlightSideTablet'] ) {
 				$css->set_media_state( 'tablet' );
 				$css->add_property( 'order', '-1' );
 			}
-			if( 'left' === $attributes['highlightSideMobile'] ) {
+			if( 'left' === $nav_link_attributes['highlightSideMobile'] ) {
 				$css->set_media_state( 'mobile' );
 				$css->add_property( 'order', '-1' );
 			}
 			$css->set_media_state( 'desktop' );
 			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a:hover .link-highlight-label' );
-			$css->add_property( 'color', $css->render_color( $attributes['labelColorHover'] ) );
-			$css->add_property( 'background-color', $css->render_color( $attributes['labelBackgroundHover'] ) );
+			$css->add_property( 'color', $css->render_color( $nav_link_attributes['labelColorHover'] ) );
+			$css->add_property( 'background-color', $css->render_color( $nav_link_attributes['labelBackgroundHover'] ) );
 			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a:active .link-highlight-label' );
-			$css->add_property( 'color', $css->render_color( $attributes['labelColorActive'] ) );
-			$css->add_property( 'background-color', $css->render_color( $attributes['labelBackgroundActive'] ) );
+			$css->add_property( 'color', $css->render_color( $nav_link_attributes['labelColorActive'] ) );
+			$css->add_property( 'background-color', $css->render_color( $nav_link_attributes['labelBackgroundActive'] ) );
 			if(! empty($nav_link_attributes['highlightIcon'][0]['icon'])) {
 				$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container > ul li.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a .link-highlight-label .link-media-container' );
-				if( 'left' === $attributes['iconSide'] ) {
+				if( 'left' === $nav_link_attributes['iconSide'] ) {
 					$css->add_property( 'order', '-1' );
 				}
-				if( 'left' === $attributes['iconSideTablet'] ) {
+				if( 'left' === $nav_link_attributes['iconSideTablet'] ) {
 					$css->set_media_state( 'tablet' );
 					$css->add_property( 'order', '-1' );
 				}
-				if( 'left' === $attributes['iconSideMobile'] ) {
+				if( 'left' === $nav_link_attributes['iconSideMobile'] ) {
 					$css->set_media_state( 'mobile' );
 					$css->add_property( 'order', '-1' );
 				}
