@@ -579,7 +579,13 @@ function KadenceInfoBox(props) {
 		previewDevice,
 		maxWidthUnit ? maxWidthUnit : 'px',
 		maxWidthTabletUnit ? maxWidthTabletUnit : maxWidthUnit ? maxWidthUnit : 'px',
-		maxWidthMobileUnit ? maxWidthMobileUnit : maxWidthTabletUnit ? maxWidthTabletUnit : maxWidthUnit ? maxWidthUnit : 'px'
+		maxWidthMobileUnit
+			? maxWidthMobileUnit
+			: maxWidthTabletUnit
+			? maxWidthTabletUnit
+			: maxWidthUnit
+			? maxWidthUnit
+			: 'px'
 	);
 
 	const previewTitleFontSize = getPreviewSize(
@@ -3648,7 +3654,7 @@ function KadenceInfoBox(props) {
 									step={1}
 									unit={previewMaxWidthUnit}
 									onUnit={(value) => {
-										let device = 'Desktop' === previewDevice ? '' : previewDevice;
+										const device = 'Desktop' === previewDevice ? '' : previewDevice;
 										setAttributes({ ['maxWidth' + device + 'Unit']: value });
 									}}
 									units={['px', '%', 'vw']}

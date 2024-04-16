@@ -1076,7 +1076,13 @@ function SectionEdit(props) {
 		previewDevice,
 		maxWidthUnit ? maxWidthUnit : 'px',
 		maxWidthTabletUnit ? maxWidthTabletUnit : maxWidthUnit ? maxWidthUnit : 'px',
-		maxWidthMobileUnit ? maxWidthMobileUnit : maxWidthTabletUnit ? maxWidthTabletUnit : maxWidthUnit ? maxWidthUnit : 'px'
+		maxWidthMobileUnit
+			? maxWidthMobileUnit
+			: maxWidthTabletUnit
+			? maxWidthTabletUnit
+			: maxWidthUnit
+			? maxWidthUnit
+			: 'px'
 	);
 	const previewMinHeight = getPreviewSize(
 		previewDevice,
@@ -2276,8 +2282,8 @@ function SectionEdit(props) {
 											step={1}
 											unit={previewMaxWidthUnit}
 											onUnit={(value) => {
-												let device = 'Desktop' === previewDevice ? '' : previewDevice;
-												setAttributes({['maxWidth' + device + 'Unit']: value })
+												const device = 'Desktop' === previewDevice ? '' : previewDevice;
+												setAttributes({ ['maxWidth' + device + 'Unit']: value });
 											}}
 											units={['px', '%', 'vw']}
 										/>
