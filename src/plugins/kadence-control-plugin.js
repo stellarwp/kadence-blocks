@@ -34,17 +34,18 @@ function KadenceConfig() {
 	const [controls, setControls] = useState(applyFilters('kadence.block_controls_sidebar', []));
 	const [blocks, setBlocks] = useState(applyFilters('kadence.block_blocks_sidebar', []));
 	const [extraPanels, setExtraPanels] = useState(applyFilters('kadence.block_panels_sidebar', []));
-
+	const [controlName, setControlName] = useState(
+		applyFilters('kadence.block_sidebar_control_name', __('Kadence Blocks Controls', 'kadence-blocks'))
+	);
+	const [controlIcon, setControlIcon] = useState(
+		applyFilters('kadence.block_sidebar_control_icon', BlockIcons.kadenceNewIcon)
+	);
 	return (
 		<Fragment>
-			<PluginSidebarMoreMenuItem target="kadence-controls" icon={BlockIcons.kadenceNewIcon}>
-				{__('Kadence Blocks Controls', 'kadence-blocks')}
+			<PluginSidebarMoreMenuItem target="kadence-controls" icon={controlIcon}>
+				{controlName}
 			</PluginSidebarMoreMenuItem>
-			<PluginSidebar
-				isPinnable={true}
-				name="kadence-controls"
-				title={__('Kadence Blocks Controls', 'kadence-blocks')}
-			>
+			<PluginSidebar isPinnable={true} name="kadence-controls" title={controlName}>
 				<PanelBody title={__('Color Palette', 'kadence-blocks')} initialOpen={true}>
 					<KadenceColors />
 				</PanelBody>

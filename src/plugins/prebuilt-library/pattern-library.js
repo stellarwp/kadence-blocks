@@ -10,7 +10,7 @@ const { localStorage } = window;
 /**
  * WordPress dependencies
  */
-const { applyFilters } = wp.hooks;
+import { applyFilters } from '@wordpress/hooks';
 
 import { withSelect, useSelect, withDispatch, useDispatch } from '@wordpress/data';
 /**
@@ -124,6 +124,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 	const [popoverAnchor, setPopoverAnchor] = useState();
 	const [popoverAdvAnchor, setPopoverAdvAnchor] = useState();
 	const [filterPopoverAnchor, setFilterPopoverAnchor] = useState();
+	const [kadenceIcon, setKadenceIcon] = useState(applyFilters('kadence.blocks_icon', kadenceNewIcon));
 	const { updateContextState, updateMassContextState, updateContext, updateMassContext } =
 		useDispatch('kadence/library');
 	const { getContextState, isContextRunning, getContextContent, hasContextContent } = useSelect((select) => {
@@ -814,7 +815,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 			<div className="kt-prebuilt-sidebar kb-section-sidebar">
 				<div className="kb-prebuilt-sidebar-header-wrap">
 					<div className="kb-prebuilt-sidebar-header kb-prebuilt-library-logo">
-						<span className="kb-prebuilt-header-logo">{kadenceNewIcon}</span>
+						<span className="kb-prebuilt-header-logo">{kadenceIcon}</span>
 						<div className="kb-library-style-popover">
 							<Button
 								className={'kb-trigger-extra-settings'}
@@ -972,27 +973,29 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 						>
 							{__('By Design', 'kadence-blocks')}
 						</Button>
-						<Button
-							className={
-								'kb-subtab-button kb-trigger-context' +
-								(selectedContextTab === 'context' ? ' is-pressed' : '')
-							}
-							aria-pressed={selectedContextTab === 'context'}
-							icon={aiIcon}
-							iconPosition="left"
-							iconSize={16}
-							text={__('With AI', 'kadence-blocks')}
-							onClick={() => {
-								const tempActiveStorage = SafeParseJSON(
-									localStorage.getItem('kadenceBlocksPrebuilt'),
-									true
-								);
-								tempActiveStorage.contextTab = 'context';
-								localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(tempActiveStorage));
-								forceRefreshLibrary();
-								setContextTab('context');
-							}}
-						/>
+						{!isAIDisabled && (
+							<Button
+								className={
+									'kb-subtab-button kb-trigger-context' +
+									(selectedContextTab === 'context' ? ' is-pressed' : '')
+								}
+								aria-pressed={selectedContextTab === 'context'}
+								icon={aiIcon}
+								iconPosition="left"
+								iconSize={16}
+								text={__('With AI', 'kadence-blocks')}
+								onClick={() => {
+									const tempActiveStorage = SafeParseJSON(
+										localStorage.getItem('kadenceBlocksPrebuilt'),
+										true
+									);
+									tempActiveStorage.contextTab = 'context';
+									localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(tempActiveStorage));
+									forceRefreshLibrary();
+									setContextTab('context');
+								}}
+							/>
+						)}
 					</div>
 					<div className="kb-library-sidebar-context-choices">
 						<Button
