@@ -17,6 +17,7 @@ import {
 	useInnerBlocksProps,
 	InspectorAdvancedControls,
 	store as editorStore,
+	BlockContextProvider,
 } from '@wordpress/block-editor';
 import { TextControl, ExternalLink, Button, Placeholder, ToggleControl } from '@wordpress/components';
 import { formBlockIcon } from '@kadence/icons';
@@ -1580,7 +1581,9 @@ export function EditInner(props) {
 					help={__('Separate multiple classes with spaces.')}
 				/>
 			</InspectorAdvancedControls>
-			<Fragment {...innerBlocksProps} />
+			<BlockContextProvider value={{ 'kadence/headerPostId': id, 'kadence/headerStyle': style }}>
+				<Fragment {...innerBlocksProps} />
+			</BlockContextProvider>
 			<span className="height-ref" ref={componentRef} />
 			{/*<SpacingVisualizer*/}
 			{/*	style={ {*/}

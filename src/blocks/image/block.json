@@ -11,7 +11,9 @@
 		"imageCrop",
 		"kadence/dynamicSource",
 		"kadence/repeaterRowData",
-		"kadence/repeaterRow"
+		"kadence/repeaterRow",
+		"kadence/headerPostId",
+		"kadence/headerStyle"
 	],
 	"description": "Image block with greater controls and advanced features",
 	"keywords": ["img", "image", "photo", "kb"],
@@ -332,6 +334,43 @@
 		},
 		"overlayBlendMode": {
 			"type": "string"
+		},
+		"urlSticky": {
+			"type": "string"
+		},
+		"altSticky": {
+			"type": "string"
+		},
+		"titleSticky": {
+			"type": "string"
+		},
+		"idSticky": {
+			"type": "number"
+		},
+		"widthSticky": {
+			"type": "number"
+		},
+		"heightSticky": {
+			"type": "number"
+		},
+		"imgMaxWidthSticky": {
+			"type": "number"
+		},
+		"imgMaxWidthStickyTablet": {
+			"type": "number"
+		},
+		"imgMaxWidthStickyMobile": {
+			"type": "number"
+		},
+		"sizeSlugSticky": {
+			"type": "string"
+		},
+		"ratioSticky": {
+			"type": "string"
+		},
+		"useRatioSticky": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"supports": {

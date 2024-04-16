@@ -178,6 +178,18 @@ export default function Image({
 		overlayOpacity,
 		overlayBlendMode,
 		globalAlt,
+		urlSticky,
+		idSticky,
+		altSticky,
+		titleSticky,
+		widthSticky,
+		heightSticky,
+		sizeSlugSticky,
+		imgMaxWidthSticky,
+		imgMaxWidthStickyTablet,
+		imgMaxWidthStickyMobile,
+		useRatioSticky,
+		ratioSticky,
 	} = attributes;
 
 	const previewURL = dynamicURL ? dynamicURL : url;
@@ -363,6 +375,15 @@ export default function Image({
 		},
 		[id, isSelected]
 	);
+	const { imageSticky } = useSelect(
+		(select) => {
+			const { getMedia } = select(coreStore);
+			return {
+				image: idSticky && isSelected ? getMedia(idSticky, { context: 'view' }) : null,
+			};
+		},
+		[idSticky, isSelected]
+	);
 	const { replaceBlocks, toggleSelection } = useDispatch(blockEditorStore);
 	const { createErrorNotice, createSuccessNotice } = useDispatch(noticesStore);
 
@@ -491,6 +512,40 @@ export default function Image({
 			imgMaxWidthMobile: undefined,
 		});
 	}
+
+	function onUpdateSelectImageSticky(mediaUpdate) {
+		setAttributes({
+			urlSticky: mediaUpdate.url,
+			idSticky: mediaUpdate.id ? mediaUpdate.id : undefined,
+			altSticky: mediaUpdate?.alt ? mediaUpdate.alt : undefined,
+			widthSticky: undefined,
+			heightSticky: undefined,
+			sizeSlugSticky: undefined,
+		});
+		if (mediaUpdate?.alt && imageSticky?.alt_text) {
+			imageSticky.alt_text = mediaUpdate.alt;
+		}
+	}
+	function clearImageSticky() {
+		setAttributes({
+			urlSticky: undefined,
+			idSticky: undefined,
+			widthSticky: undefined,
+			heightSticky: undefined,
+			sizeSlugSticky: undefined,
+		});
+	}
+	function changeImageStickySize(imgData) {
+		setAttributes({
+			urlSticky: imgData.value,
+			widthSticky: undefined,
+			heightSticky: undefined,
+			sizeSlugSticky: imgData.slug,
+			imgMaxWidthSticky: undefined,
+			imgMaxWidthStickyTablet: undefined,
+			imgMaxWidthStickyMobile: undefined,
+		});
+	}
 	function uploadExternal() {
 		mediaUpload({
 			filesList: [externalBlob],
@@ -543,6 +598,8 @@ export default function Image({
 	const allowCrop = canEditImage && !isEditingImage;
 	const nonTransAttrs = ['url', 'id', 'caption', 'alt'];
 	const previewOverlay = overlayType === 'gradient' ? overlayGradient : KadenceColorOutput(overlay);
+
+	// console.log(2, urlSticky, url);
 
 	const controls = (
 		<>
@@ -785,6 +842,161 @@ export default function Image({
 								}
 							/>
 						</KadencePanelBody>
+						{context?.['kadence/headerStyle']?.includes('sticky') && (
+							<KadencePanelBody
+								title={__('Sticky Image settings', 'kadence-blocks')}
+								initialOpen={true}
+								panelName={'kb-image-sticky-settings'}
+							>
+								<KadenceImageControl
+									label={__('Image', 'kadence-blocks')}
+									hasImage={urlSticky ? true : false}
+									imageURL={urlSticky ? urlSticky : ''}
+									imageID={idSticky}
+									onRemoveImage={clearImageSticky}
+									onSaveImage={onUpdateSelectImageSticky}
+									disableMediaButtons={urlSticky ? true : false}
+									dynamicAttribute="urlSticky"
+									isSelected={isSelected}
+									attributes={attributes}
+									setAttributes={setAttributes}
+									name={'kadence/image'}
+									clientId={clientId}
+									context={context}
+								/>
+								{idSticky && (
+									<KadenceImageSizeControl
+										label={__('Image File Size', 'kadence-blocks')}
+										id={idSticky}
+										url={urlSticky}
+										fullSelection={true}
+										selectByValue={true}
+										onChange={changeImageStickySize}
+									/>
+								)}
+								<ToggleControl
+									label={__('Use fixed ratio instead of image ratio', 'kadence-blocks')}
+									checked={useRatioSticky}
+									onChange={(value) => setAttributes({ useRatioSticky: value })}
+								/>
+								{useRatio && (
+									<SelectControl
+										label={__('Size Ratio', 'kadence-blocks')}
+										value={ratioSticky}
+										options={[
+											{
+												label: __('Landscape 4:3', 'kadence-blocks'),
+												value: 'land43',
+											},
+											{
+												label: __('Landscape 3:2', 'kadence-blocks'),
+												value: 'land32',
+											},
+											{
+												label: __('Landscape 16:9', 'kadence-blocks'),
+												value: 'land169',
+											},
+											{
+												label: __('Landscape 2:1', 'kadence-blocks'),
+												value: 'land21',
+											},
+											{
+												label: __('Landscape 3:1', 'kadence-blocks'),
+												value: 'land31',
+											},
+											{
+												label: __('Landscape 4:1', 'kadence-blocks'),
+												value: 'land41',
+											},
+											{
+												label: __('Portrait 3:4', 'kadence-blocks'),
+												value: 'port34',
+											},
+											{
+												label: __('Portrait 2:3', 'kadence-blocks'),
+												value: 'port23',
+											},
+											{
+												label: __('Square 1:1', 'kadence-blocks'),
+												value: 'square',
+											},
+										]}
+										onChange={(value) => setAttributes({ ratioSticky: value })}
+									/>
+								)}
+								{showMaxWidth && (
+									<ResponsiveRangeControls
+										label={__('Max Image Width', 'kadence-blocks')}
+										value={imgMaxWidthSticky ? imgMaxWidthSticky : ''}
+										onChange={(value) => setAttributes({ imgMaxWidthSticky: value })}
+										tabletValue={imgMaxWidthStickyTablet ? imgMaxWidthStickyTablet : ''}
+										onChangeTablet={(value) => setAttributes({ imgMaxWidthStickyTablet: value })}
+										mobileValue={imgMaxWidthStickyMobile ? imgMaxWidthStickyMobile : ''}
+										onChangeMobile={(value) => setAttributes({ imgMaxWidthStickyMobile: value })}
+										min={5}
+										max={3000}
+										step={1}
+										unit={'px'}
+										showUnit={true}
+										units={['px']}
+									/>
+								)}
+								{(!globalAlt || !imageSticky) && (
+									<TextareaControl
+										label={__('Alt text (alternative text)', 'kadence-blocks')}
+										value={altSticky}
+										onChange={(value) => setAttributes({ altSticky: value })}
+										help={
+											<>
+												<ExternalLink href="https://www.w3.org/WAI/tutorials/images/decision-tree">
+													{__('Describe the purpose of the image', 'kadence-blocks')}
+												</ExternalLink>
+												{__('Leave empty if the image is purely decorative.', 'kadence-blocks')}
+											</>
+										}
+									/>
+								)}
+								{globalAlt && imageSticky && (
+									<div className="components-base-control">
+										<TextareaControl
+											label={__('Alt text (alternative text)', 'kadence-blocks')}
+											value={imageSticky?.alt_text ? imageSticky.alt_text : ''}
+											onChange={(value) => console.log(value)}
+											disabled={true}
+											className={'mb-0'}
+										/>
+										<MediaUpload
+											onSelect={onUpdateSelectImageSticky}
+											type="image"
+											value={idSticky ? idSticky : ''}
+											render={({ open }) => (
+												<Button
+													text={__('Edit Image Alt Text', 'kadence-blocks')}
+													variant={'link'}
+													onClick={open}
+												/>
+											)}
+										/>
+									</div>
+								)}
+								<TextControl
+									label={__('Title attribute', 'kadence-blocks')}
+									value={titleSticky || ''}
+									onChange={(value) => setAttributes({ titleSticky: value })}
+									help={
+										<>
+											{__('Describe the role of this image on the page.', 'kadence-blocks')}
+											<ExternalLink href="https://www.w3.org/TR/html52/dom.html#the-title-attribute">
+												{__(
+													'(Note: many devices and browsers do not display this text.)',
+													'kadence-blocks'
+												)}
+											</ExternalLink>
+										</>
+									}
+								/>
+							</KadencePanelBody>
+						)}
 						<KadencePanelBody
 							title={__('Link Settings', 'kadence-blocks')}
 							initialOpen={false}

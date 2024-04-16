@@ -36,6 +36,18 @@ export default function save({ attributes }) {
 		overlayGradient,
 		overlayType,
 		globalAlt,
+		urlSticky,
+		idSticky,
+		altSticky,
+		titleSticky,
+		widthSticky,
+		heightSticky,
+		sizeSlugSticky,
+		imgMaxWidthSticky,
+		imgMaxWidthStickyTablet,
+		imgMaxWidthStickyMobile,
+		useRatioSticky,
+		ratioSticky,
 	} = attributes;
 
 	const classes = classnames({
@@ -66,6 +78,13 @@ export default function save({ attributes }) {
 	const imgClasses = classnames({
 		'kb-img': true,
 		[`wp-image-${id}`]: id,
+		[`skip-lazy`]: preventLazyLoad,
+		[`kb-skip-lazy`]: preventLazyLoad,
+	});
+	const imgClassesSticky = classnames({
+		'kb-img': true,
+		'kb-img-sticky': true,
+		[`wp-image-${idSticky}`]: idSticky,
 		[`skip-lazy`]: preventLazyLoad,
 		[`kb-skip-lazy`]: preventLazyLoad,
 	});
@@ -102,6 +121,25 @@ export default function save({ attributes }) {
 		image = <div className={`kb-image-has-overlay`}>{image}</div>;
 	}
 
+	let imageSticky = (
+		<img
+			src={urlSticky}
+			alt={globalAlt ? '' : altSticky}
+			className={imgClassesSticky}
+			width={widthSticky}
+			height={heightSticky}
+			title={titleSticky}
+			style={{ display: 'none' }}
+		/>
+	);
+	if (useRatioSticky) {
+		imageSticky = (
+			<div className={`kb-is-ratio-image kb-image-ratio-${ratioSticky ? ratioSticky : 'land43'}`}>
+				{imageSticky}
+			</div>
+		);
+	}
+
 	const figure = (
 		<>
 			{link && true ? (
@@ -113,9 +151,13 @@ export default function save({ attributes }) {
 					rel={relAttr ? relAttr : undefined}
 				>
 					{image}
+					{urlSticky && imageSticky}
 				</a>
 			) : (
-				image
+				<>
+					{image}
+					{urlSticky && imageSticky}
+				</>
 			)}
 			{!RichText.isEmpty(caption) && showCaption !== false && (
 				<RichText.Content tagName="figcaption" value={caption} />

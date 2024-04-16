@@ -36,7 +36,7 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 	 *
 	 * @var string
 	 */
-	protected $has_script = false;
+	protected $has_script = true;
 
 	/**
 	 * Instance Control
@@ -336,6 +336,21 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 		return $content;
+	}
+
+	/**
+	 * Registers scripts and styles.
+	 */
+	public function register_scripts() {
+		parent::register_scripts();
+		// If in the backend, bail out.
+		if ( is_admin() ) {
+			return;
+		}
+		if ( apply_filters( 'kadence_blocks_check_if_rest', false ) && kadence_blocks_is_rest() ) {
+			return;
+		}
+		wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/kb-image-block.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 	}
 
 }

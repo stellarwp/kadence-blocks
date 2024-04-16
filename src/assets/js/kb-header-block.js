@@ -110,9 +110,14 @@ class KBHeader {
 	anchorOffset = 0;
 
 	/**
-	 * this.activeHeader.
+	 * activeHeader.
 	 */
 	activeHeader;
+
+	/**
+	 * isSticking.
+	 */
+	isSticking = false;
 
 	/**
 	 * The main constructor.
@@ -188,7 +193,6 @@ class KBHeader {
 	 * http://www.mattmorgante.com/technology/sticky-navigation-bar-javascript
 	 */
 	initStickyHeader() {
-		console.log(1);
 		const self = this;
 		this.activeHeader = this.root.querySelector('.wp-block-kadence-header-desktop');
 
@@ -388,24 +392,28 @@ class KBHeader {
 		//set the position to absolute
 		this.activeHeader.style.position = 'absolute';
 
-		// Run the revealing / hidding processing
+		// Run the revealing / hidding processing or the sticky process
 		if (this.revealScrollUp) {
+			// Run the revealing / hidding processing
 			var isScrollingDown = currScrollTop > this.lastScrollTop;
 			var totalOffset = Math.floor(this.anchorOffset + elHeight);
 			if (currScrollTop <= this.anchorOffset - offsetTop) {
 				//above the header, ignore the header
 				this.activeHeader.style.top = 0;
 				this.currentTopPosition = 0;
+				this.setStickyChanged(false);
 			} else if (currScrollTop <= totalOffset) {
 				//scrolling in the header area, ignore the header if scrolling down, keep sticking if scrolling up
 				if (isScrollingDown) {
 					this.activeHeader.style.top = 0;
 					this.currentTopPosition = 0;
+					this.setStickyChanged(false);
 				} else {
 					this.activeHeader.classList.remove('item-hidden-above');
 					var topPos = currScrollTop - this.anchorOffset + offsetTop;
 					this.activeHeader.style.top = topPos + 'px';
 					this.currentTopPosition = topPos;
+					this.setStickyChanged(true);
 				}
 			} else if (isScrollingDown) {
 				//below the header and scrolling down, keep the header top just above the screen
@@ -413,32 +421,36 @@ class KBHeader {
 				var topPos = currScrollTop - this.anchorOffset + offsetTop - elHeight;
 				this.activeHeader.style.top = topPos + 'px';
 				this.currentTopPosition = topPos;
+				this.setStickyChanged(true);
 			} else {
 				//below the header and scrolling up, keep the header top at scroll position
 				this.activeHeader.classList.remove('item-hidden-above');
 				var topPos = currScrollTop - this.anchorOffset + offsetTop;
 				this.activeHeader.style.top = topPos + 'px';
 				this.currentTopPosition = topPos;
+				this.setStickyChanged(true);
 			}
 			this.activeHeader.style.top = topPos + 'px';
-		}
-		// Run the sticking process
-		else {
+		} else {
+			// Run the sticking process
 			var totalOffset = Math.floor(this.anchorOffset - offsetTop);
 			if (currScrollTop <= totalOffset) {
 				//above the header anchor, ignore
 				this.activeHeader.style.top = 0;
 				this.currentTopPosition = 0;
+				this.setStickyChanged(false);
 			} else {
 				//below the header anchor, match it's top to the scroll position
 				var topPos = currScrollTop - this.anchorOffset + offsetTop;
 				this.activeHeader.style.top = topPos + 'px';
 				this.currentTopPosition = topPos;
+				this.setStickyChanged(true);
 			}
 		}
 		this.lastScrollTop = currScrollTop;
 
 		// Set state classes on the header based on scroll position
+		// TODO not sure if this is neccessary as a seperate block of logic, may be better integrated into the stickychanged function
 		if (window.scrollY == totalOffset) {
 			//this.activeHeader.style.top = offsetTop + 'px';
 			this.activeHeader.classList.add('item-is-fixed');
@@ -479,6 +491,19 @@ class KBHeader {
 			//this.activeHeader.style.top = null;
 			parent.classList.remove('child-is-fixed');
 			document.body.classList.remove('header-is-fixed');
+		}
+	}
+
+	setStickyChanged(isSticking) {
+		if (this.isSticking != isSticking) {
+			this.isSticking = isSticking;
+
+			var event = new Event('KADENCE_HEADER_STICKY_CHANGED', {
+				bubbles: true,
+			});
+			event.isSticking = this.isSticking;
+
+			this.root.dispatchEvent(event);
 		}
 	}
 
@@ -527,7 +552,7 @@ class KBHeader {
 }
 window.KBHeader = KBHeader;
 
-const init = () => {
+const initKBHeader = () => {
 	// Testing var, can remove
 	window.KBHeaderBlocks = [];
 
@@ -542,8 +567,8 @@ const init = () => {
 
 if ('loading' === document.readyState) {
 	// The DOM has not yet been loaded.
-	document.addEventListener('DOMContentLoaded', init);
+	document.addEventListener('DOMContentLoaded', initKBHeader);
 } else {
 	// The DOM has already been loaded.
-	init();
+	initKBHeader();
 }
