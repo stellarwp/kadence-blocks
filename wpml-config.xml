@@ -1,11 +1,16 @@
 <wpml-config>
 	<gutenberg-blocks>
-		<gutenberg-block type="kadence/advancedbtn" translate="0"/>
+		<gutenberg-block type="kadence/advancedbtn" translate="1">
+			<xpath>//div/a/span</xpath>
+			<xpath>//div/a/@href</xpath>
+		</gutenberg-block>
 		<gutenberg-block type="kadence/singlebtn" translate="1">
 			<key name="link" />
 			<key name="text" />
 		</gutenberg-block>
-		<gutenberg-block type="kadence/icon" translate="0"/>
+		<gutenberg-block type="kadence/icon" translate="1">
+			<xpath>//div/a/@href</xpath>
+		</gutenberg-block>
 		<gutenberg-block type="kadence/single-icon" translate="1">
 			<key name="link" />
 			<key name="title" />
@@ -37,6 +42,7 @@
 			<xpath>//div/a/@href</xpath>
 			<xpath>//*[@class="kt-blocks-info-box-title"]</xpath>
 			<xpath>//*[@class="kt-blocks-info-box-text"]</xpath>
+			<xpath>//div[@class="kt-infobox-textcontent"]//*[self::h1 or self::h2 or self::h3 or self::h4 or self::h5 or self::h6 or self::p]</xpath>
 			<xpath>//span[@class="kt-blocks-info-box-learnmore"]</xpath>
 		</gutenberg-block>
 		<gutenberg-block type="kadence/pane" translate="1">
@@ -104,5 +110,11 @@
 		<gutenberg-block type="kadence/column" translate="0"/>
 		<gutenberg-block type="kadence/tab" translate="0"/>
 		<gutenberg-block type="kadence/accordion" translate="0"/>
+		<gutenberg-block type="kadence/postgrid" translate="1">
+			<key name="readMoreText" />
+		</gutenberg-block>
+		<gutenberg-block type="kadence/image" translate="1">
+			<key name="id" type="post-ids" sub-type="attachment" />
+		</gutenberg-block>		
 	</gutenberg-blocks>
 </wpml-config>
