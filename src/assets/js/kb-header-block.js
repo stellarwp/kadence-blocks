@@ -120,6 +120,11 @@ class KBHeader {
 	isSticking = false;
 
 	/**
+	 * isTransparent.
+	 */
+	isTransparent = false;
+
+	/**
 	 * The main constructor.
 	 *
 	 * @param target  - The selector for the target element, or the element itself.
@@ -502,6 +507,19 @@ class KBHeader {
 				bubbles: true,
 			});
 			event.isSticking = this.isSticking;
+
+			this.root.dispatchEvent(event);
+		}
+	}
+
+	setTransparentChanged(isTransparent) {
+		if (this.isTransparent != isTransparent) {
+			this.isTransparent = isTransparent;
+
+			var event = new Event('KADENCE_HEADER_STICKY_CHANGED', {
+				bubbles: true,
+			});
+			event.isTransparent = this.isTransparent;
 
 			this.root.dispatchEvent(event);
 		}

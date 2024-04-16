@@ -23,19 +23,29 @@ class KBImage {
 	rootID;
 
 	/**
-	 * The stick elem.
-	 */
-	stickyElem = null;
-
-	/**
 	 * The standard elem.
 	 */
 	standardElem = null;
 
 	/**
+	 * The stick elem.
+	 */
+	stickyElem = null;
+
+	/**
+	 * The transparent elem.
+	 */
+	transparentElem = null;
+
+	/**
 	 * if this image is in sticky state.
 	 */
 	isSticking = false;
+
+	/**
+	 * if this image is in transparent state.
+	 */
+	isTransparent = false;
 
 	/**
 	 * The main constructor.
@@ -52,9 +62,14 @@ class KBImage {
 		this._state = 'CREATED';
 		this.standardElem = this.root.querySelector('.kb-img');
 		this.stickyElem = this.root.querySelector('.kb-img-sticky');
+		this.transparentElem = this.root.querySelector('.kb-img-transparent');
 
 		if (this.stickyElem) {
 			this.initStickyTrack();
+		}
+
+		if (this.transparentElem) {
+			this.initTransparentTrack();
 		}
 
 		var event = new Event('MOUNTED', {
@@ -87,14 +102,60 @@ class KBImage {
 	setStickyStyles() {
 		if (this.stickyElem) {
 			this.stickyElem.style.display = 'initial';
-			this.standardElem.style.display = 'none';
 		}
+		this.unsetStandardStyles();
+		this.unsetTransparentStyles();
+	}
+
+	setTransparentStyles() {
+		if (this.transparentElem) {
+			this.transparentElem.style.display = 'initial';
+		}
+		this.unsetStandardStyles();
+		this.unsetStickyStyles();
 	}
 
 	setStandardStyles() {
 		if (this.standardElem) {
-			this.stickyElem.style.display = 'none';
 			this.standardElem.style.display = 'initial';
+		}
+		this.unsetStickyStyles();
+		this.unsetTransparentStyles();
+	}
+
+	unsetStickyStyles() {
+		if (this.stickyElem) {
+			this.stickyElem.style.display = 'none';
+		}
+	}
+
+	unsetTransparentStyles() {
+		if (this.transparentElem) {
+			this.transparentElem.style.display = 'none';
+		}
+	}
+
+	unsetStandardStyles() {
+		if (this.standardElem) {
+			this.standardElem.style.display = 'none';
+		}
+	}
+
+	initTransparentTrack() {
+		const self = this;
+
+		window.addEventListener('KADENCE_HEADER_TRANSPARENT_CHANGED', this.toggleTransparent.bind(self));
+	}
+
+	toggleTransparent(e) {
+		const self = this;
+
+		if (e.isTransparent) {
+			this.isTransparent = true;
+			this.setTransparentStyles();
+		} else {
+			this.isTransparent = false;
+			this.setStandardStyles();
 		}
 	}
 
@@ -127,7 +188,6 @@ window.KBImage = KBImage;
 const initKBImage = () => {
 	// Testing var, can remove
 	window.KBImageBlocks = [];
-	console.log(0);
 
 	var imageBlocks = document.querySelectorAll('.wp-block-kadence-image');
 

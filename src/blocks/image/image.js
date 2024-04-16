@@ -185,11 +185,13 @@ export default function Image({
 		widthSticky,
 		heightSticky,
 		sizeSlugSticky,
-		imgMaxWidthSticky,
-		imgMaxWidthStickyTablet,
-		imgMaxWidthStickyMobile,
-		useRatioSticky,
-		ratioSticky,
+		urlTransparent,
+		idTransparent,
+		altTransparent,
+		titleTransparent,
+		widthTransparent,
+		heightTransparent,
+		sizeSlugTransparent,
 	} = attributes;
 
 	const previewURL = dynamicURL ? dynamicURL : url;
@@ -384,6 +386,15 @@ export default function Image({
 		},
 		[idSticky, isSelected]
 	);
+	const { imageTransparent } = useSelect(
+		(select) => {
+			const { getMedia } = select(coreStore);
+			return {
+				image: idTransparent && isSelected ? getMedia(idTransparent, { context: 'view' }) : null,
+			};
+		},
+		[idTransparent, isSelected]
+	);
 	const { replaceBlocks, toggleSelection } = useDispatch(blockEditorStore);
 	const { createErrorNotice, createSuccessNotice } = useDispatch(noticesStore);
 
@@ -546,6 +557,41 @@ export default function Image({
 			imgMaxWidthStickyMobile: undefined,
 		});
 	}
+
+	function onUpdateSelectImageTransparent(mediaUpdate) {
+		setAttributes({
+			urlTransparent: mediaUpdate.url,
+			idTransparent: mediaUpdate.id ? mediaUpdate.id : undefined,
+			altTransparent: mediaUpdate?.alt ? mediaUpdate.alt : undefined,
+			widthTransparent: undefined,
+			heightTransparent: undefined,
+			sizeSlugTransparent: undefined,
+		});
+		if (mediaUpdate?.alt && imageTransparent?.alt_text) {
+			imageTransparent.alt_text = mediaUpdate.alt;
+		}
+	}
+	function clearImageTransparent() {
+		setAttributes({
+			urlTransparent: undefined,
+			idTransparent: undefined,
+			widthTransparent: undefined,
+			heightTransparent: undefined,
+			sizeSlugTransparent: undefined,
+		});
+	}
+	function changeImageTransparentSize(imgData) {
+		setAttributes({
+			urlTransparent: imgData.value,
+			widthTransparent: undefined,
+			heightTransparent: undefined,
+			sizeSlugTransparent: imgData.slug,
+			imgMaxWidthTransparent: undefined,
+			imgMaxWidthTransparentTablet: undefined,
+			imgMaxWidthTransparentMobile: undefined,
+		});
+	}
+
 	function uploadExternal() {
 		mediaUpload({
 			filesList: [externalBlob],
@@ -874,73 +920,6 @@ export default function Image({
 										onChange={changeImageStickySize}
 									/>
 								)}
-								{/* <ToggleControl
-									label={__('Use fixed ratio instead of image ratio', 'kadence-blocks')}
-									checked={useRatioSticky}
-									onChange={(value) => setAttributes({ useRatioSticky: value })}
-								/> */}
-								{useRatio && (
-									<SelectControl
-										label={__('Size Ratio', 'kadence-blocks')}
-										value={ratioSticky}
-										options={[
-											{
-												label: __('Landscape 4:3', 'kadence-blocks'),
-												value: 'land43',
-											},
-											{
-												label: __('Landscape 3:2', 'kadence-blocks'),
-												value: 'land32',
-											},
-											{
-												label: __('Landscape 16:9', 'kadence-blocks'),
-												value: 'land169',
-											},
-											{
-												label: __('Landscape 2:1', 'kadence-blocks'),
-												value: 'land21',
-											},
-											{
-												label: __('Landscape 3:1', 'kadence-blocks'),
-												value: 'land31',
-											},
-											{
-												label: __('Landscape 4:1', 'kadence-blocks'),
-												value: 'land41',
-											},
-											{
-												label: __('Portrait 3:4', 'kadence-blocks'),
-												value: 'port34',
-											},
-											{
-												label: __('Portrait 2:3', 'kadence-blocks'),
-												value: 'port23',
-											},
-											{
-												label: __('Square 1:1', 'kadence-blocks'),
-												value: 'square',
-											},
-										]}
-										onChange={(value) => setAttributes({ ratioSticky: value })}
-									/>
-								)}
-								{/* {showMaxWidth && (
-									<ResponsiveRangeControls
-										label={__('Max Image Width', 'kadence-blocks')}
-										value={imgMaxWidthSticky ? imgMaxWidthSticky : ''}
-										onChange={(value) => setAttributes({ imgMaxWidthSticky: value })}
-										tabletValue={imgMaxWidthStickyTablet ? imgMaxWidthStickyTablet : ''}
-										onChangeTablet={(value) => setAttributes({ imgMaxWidthStickyTablet: value })}
-										mobileValue={imgMaxWidthStickyMobile ? imgMaxWidthStickyMobile : ''}
-										onChangeMobile={(value) => setAttributes({ imgMaxWidthStickyMobile: value })}
-										min={5}
-										max={3000}
-										step={1}
-										unit={'px'}
-										showUnit={true}
-										units={['px']}
-									/>
-								)} */}
 								{(!globalAlt || !imageSticky) && (
 									<TextareaControl
 										label={__('Alt text (alternative text)', 'kadence-blocks')}
@@ -983,6 +962,94 @@ export default function Image({
 									label={__('Title attribute', 'kadence-blocks')}
 									value={titleSticky || ''}
 									onChange={(value) => setAttributes({ titleSticky: value })}
+									help={
+										<>
+											{__('Describe the role of this image on the page.', 'kadence-blocks')}
+											<ExternalLink href="https://www.w3.org/TR/html52/dom.html#the-title-attribute">
+												{__(
+													'(Note: many devices and browsers do not display this text.)',
+													'kadence-blocks'
+												)}
+											</ExternalLink>
+										</>
+									}
+								/>
+							</KadencePanelBody>
+						)}
+						{context?.['kadence/headerIsTransparent'] && (
+							<KadencePanelBody
+								title={__('Transparent Image settings', 'kadence-blocks')}
+								initialOpen={true}
+								panelName={'kb-image-transparent-settings'}
+							>
+								<KadenceImageControl
+									label={__('Image', 'kadence-blocks')}
+									hasImage={urlTransparent ? true : false}
+									imageURL={urlTransparent ? urlTransparent : ''}
+									imageID={idTransparent}
+									onRemoveImage={clearImageTransparent}
+									onSaveImage={onUpdateSelectImageTransparent}
+									disableMediaButtons={urlTransparent ? true : false}
+									dynamicAttribute="urlTransparent"
+									isSelected={isSelected}
+									attributes={attributes}
+									setAttributes={setAttributes}
+									name={'kadence/image'}
+									clientId={clientId}
+									context={context}
+								/>
+								{idTransparent && (
+									<KadenceImageSizeControl
+										label={__('Image File Size', 'kadence-blocks')}
+										id={idTransparent}
+										url={urlTransparent}
+										fullSelection={true}
+										selectByValue={true}
+										onChange={changeImageTransparentSize}
+									/>
+								)}
+								{(!globalAlt || !imageTransparent) && (
+									<TextareaControl
+										label={__('Alt text (alternative text)', 'kadence-blocks')}
+										value={altTransparent}
+										onChange={(value) => setAttributes({ altTransparent: value })}
+										help={
+											<>
+												<ExternalLink href="https://www.w3.org/WAI/tutorials/images/decision-tree">
+													{__('Describe the purpose of the image', 'kadence-blocks')}
+												</ExternalLink>
+												{__('Leave empty if the image is purely decorative.', 'kadence-blocks')}
+											</>
+										}
+									/>
+								)}
+								{globalAlt && imageTransparent && (
+									<div className="components-base-control">
+										<TextareaControl
+											label={__('Alt text (alternative text)', 'kadence-blocks')}
+											value={imageTransparent?.alt_text ? imageTransparent.alt_text : ''}
+											onChange={(value) => console.log(value)}
+											disabled={true}
+											className={'mb-0'}
+										/>
+										<MediaUpload
+											onSelect={onUpdateSelectImageTransparent}
+											type="image"
+											value={idTransparent ? idTransparent : ''}
+											render={({ open }) => (
+												<Button
+													text={__('Edit Image Alt Text', 'kadence-blocks')}
+													variant={'link'}
+													onClick={open}
+												/>
+											)}
+										/>
+									</div>
+								)}
+								<TextControl
+									label={__('Title attribute', 'kadence-blocks')}
+									value={titleTransparent || ''}
+									onChange={(value) => setAttributes({ titleTransparent: value })}
 									help={
 										<>
 											{__('Describe the role of this image on the page.', 'kadence-blocks')}

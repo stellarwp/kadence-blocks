@@ -354,24 +354,29 @@
 		"heightSticky": {
 			"type": "number"
 		},
-		"imgMaxWidthSticky": {
-			"type": "number"
-		},
-		"imgMaxWidthStickyTablet": {
-			"type": "number"
-		},
-		"imgMaxWidthStickyMobile": {
-			"type": "number"
-		},
 		"sizeSlugSticky": {
 			"type": "string"
 		},
-		"ratioSticky": {
+		"urlTransparent": {
 			"type": "string"
 		},
-		"useRatioSticky": {
-			"type": "boolean",
-			"default": false
+		"altTransparent": {
+			"type": "string"
+		},
+		"titleTransparent": {
+			"type": "string"
+		},
+		"idTransparent": {
+			"type": "number"
+		},
+		"widthTransparent": {
+			"type": "number"
+		},
+		"heightTransparent": {
+			"type": "number"
+		},
+		"sizeSlugTransparent": {
+			"type": "string"
 		}
 	},
 	"supports": {

@@ -43,11 +43,13 @@ export default function save({ attributes }) {
 		widthSticky,
 		heightSticky,
 		sizeSlugSticky,
-		imgMaxWidthSticky,
-		imgMaxWidthStickyTablet,
-		imgMaxWidthStickyMobile,
-		useRatioSticky,
-		ratioSticky,
+		urlTransparent,
+		idTransparent,
+		altTransparent,
+		titleTransparent,
+		widthTransparent,
+		heightTransparent,
+		sizeSlugTransparent,
 	} = attributes;
 
 	const classes = classnames({
@@ -85,6 +87,13 @@ export default function save({ attributes }) {
 		'kb-img': true,
 		'kb-img-sticky': true,
 		[`wp-image-${idSticky}`]: idSticky,
+		[`skip-lazy`]: preventLazyLoad,
+		[`kb-skip-lazy`]: preventLazyLoad,
+	});
+	const imgClassesTransparent = classnames({
+		'kb-img': true,
+		'kb-img-transparent': true,
+		[`wp-image-${idTransparent}`]: idTransparent,
 		[`skip-lazy`]: preventLazyLoad,
 		[`kb-skip-lazy`]: preventLazyLoad,
 	});
@@ -132,13 +141,27 @@ export default function save({ attributes }) {
 			style={{ display: 'none' }}
 		/>
 	);
-	// if (useRatioSticky) {
-	// 	imageSticky = (
-	// 		<div className={`kb-is-ratio-image kb-image-ratio-${ratioSticky ? ratioSticky : 'land43'}`}>
-	// 			{imageSticky}
-	// 		</div>
-	// 	);
-	// }
+	if (useRatio) {
+		imageSticky = (
+			<div className={`kb-is-ratio-image kb-image-ratio-${ratio ? ratio : 'land43'}`}>{imageSticky}</div>
+		);
+	}
+
+	let imageTransparent = (
+		<img
+			src={urlTransparent}
+			alt={globalAlt ? '' : altTransparent}
+			className={imgClassesTransparent}
+			width={widthTransparent}
+			height={heightTransparent}
+			title={titleTransparent}
+		/>
+	);
+	if (useRatio) {
+		imageTransparent = (
+			<div className={`kb-is-ratio-image kb-image-ratio-${ratio ? ratio : 'land43'}`}>{imageTransparent}</div>
+		);
+	}
 
 	const figure = (
 		<>
@@ -152,11 +175,13 @@ export default function save({ attributes }) {
 				>
 					{image}
 					{urlSticky && imageSticky}
+					{urlTransparent && imageTransparent}
 				</a>
 			) : (
 				<>
 					{image}
 					{urlSticky && imageSticky}
+					{urlTransparent && imageTransparent}
 				</>
 			)}
 			{!RichText.isEmpty(caption) && showCaption !== false && (
