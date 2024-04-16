@@ -874,11 +874,11 @@ export default function Image({
 										onChange={changeImageStickySize}
 									/>
 								)}
-								<ToggleControl
+								{/* <ToggleControl
 									label={__('Use fixed ratio instead of image ratio', 'kadence-blocks')}
 									checked={useRatioSticky}
 									onChange={(value) => setAttributes({ useRatioSticky: value })}
-								/>
+								/> */}
 								{useRatio && (
 									<SelectControl
 										label={__('Size Ratio', 'kadence-blocks')}
@@ -924,7 +924,7 @@ export default function Image({
 										onChange={(value) => setAttributes({ ratioSticky: value })}
 									/>
 								)}
-								{showMaxWidth && (
+								{/* {showMaxWidth && (
 									<ResponsiveRangeControls
 										label={__('Max Image Width', 'kadence-blocks')}
 										value={imgMaxWidthSticky ? imgMaxWidthSticky : ''}
@@ -940,7 +940,7 @@ export default function Image({
 										showUnit={true}
 										units={['px']}
 									/>
-								)}
+								)} */}
 								{(!globalAlt || !imageSticky) && (
 									<TextareaControl
 										label={__('Alt text (alternative text)', 'kadence-blocks')}

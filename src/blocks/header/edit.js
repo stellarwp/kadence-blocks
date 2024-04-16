@@ -41,12 +41,16 @@ export function Edit(props) {
 	const [meta, setMeta] = useHeaderProp('meta', id);
 
 	const metaAttributes = {
-		style: meta?._kad_header_style,
-		styleTablet: meta?._kad_header_styleTablet,
-		styleMobile: meta?._kad_header_styleMobile,
+		isSticky: meta?._kad_header_isSticky,
+		isStickyTablet: meta?._kad_header_isStickyTablet,
+		isStickyMobile: meta?._kad_header_isStickyMobile,
+		isTransparent: meta?._kad_header_isTransparent,
+		isTransparentTablet: meta?._kad_header_isTransparentTablet,
+		isTransparentMobile: meta?._kad_header_isTransparentMobile,
 	};
 
-	const { style, styleTablet, styleMobile } = metaAttributes;
+	const { isSticky, isStickyTablet, isStickyMobile, isTransparent, isTransparentTablet, isTransparentMobile } =
+		metaAttributes;
 
 	const { previewDevice } = useSelect(
 		(select) => {
@@ -94,7 +98,32 @@ export function Edit(props) {
 		[clientId]
 	);
 
-	const previewStyle = getPreviewSize(previewDevice, style ? style : 'standard', styleTablet, styleMobile);
+	const previewIsSticky = getPreviewSize(previewDevice, isSticky, isStickyTablet, isStickyMobile);
+	const previewIsTransparent = getPreviewSize(previewDevice, isTransparent, isTransparentTablet, isTransparentMobile);
+	const style =
+		isSticky && isTransparent
+			? 'sticky-transparent'
+			: isSticky
+			? 'sticky '
+			: isTransparent
+			? 'transparent'
+			: 'standard';
+	const styleTablet =
+		isStickyTablet && isTransparentTablet
+			? 'sticky-transparent'
+			: isStickyTablet
+			? 'sticky '
+			: isTransparentTablet
+			? 'transparent'
+			: 'standard';
+	const styleMobile =
+		isStickyMobile && isTransparentMobile
+			? 'sticky-transparent'
+			: isStickyMobile
+			? 'sticky '
+			: isTransparentMobile
+			? 'transparent'
+			: 'standard';
 
 	const blockClasses = classnames({
 		'wp-block-kadence-header': true,
@@ -215,7 +244,7 @@ export function Edit(props) {
 		);
 	}
 
-	if (previewStyle.includes('transparent')) {
+	if (previewIsTransparent) {
 		return (
 			<div className="kb-header-transparent-placeholder">
 				<>{mainBlockContent}</>

@@ -508,19 +508,34 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'type'    => 'string',
 			),
 			array(
-				'key'     => '_kad_header_style',
-				'type' => 'string',
-				'default' => '',
+				'key'     => '_kad_header_isSticky',
+				'type' => 'boolean',
+				'default' => false,
 			),
 			array(
-				'key'     => '_kad_header_styleTablet',
-				'type' => 'string',
-				'default' => '',
+				'key'     => '_kad_header_isStickyTablet',
+				'type' => 'boolean',
+				'default' => false,
 			),
 			array(
-				'key'     => '_kad_header_styleMobile',
-				'type' => 'string',
-				'default' => '',
+				'key'     => '_kad_header_isStickyMobile',
+				'type' => 'boolean',
+				'default' => false,
+			),
+			array(
+				'key'     => '_kad_header_isTransparent',
+				'type' => 'boolean',
+				'default' => false,
+			),
+			array(
+				'key'     => '_kad_header_isTransparentTablet',
+				'type' => 'boolean',
+				'default' => false,
+			),
+			array(
+				'key'     => '_kad_header_isTransparentMobile',
+				'type' => 'boolean',
+				'default' => false,
 			),
 			array(
 				'key'     => '_kad_header_autoTransparentSpacing',

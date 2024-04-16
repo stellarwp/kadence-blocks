@@ -50,9 +50,12 @@ export default function BackendStyles(props) {
 		heightUnit,
 		width,
 		widthUnit,
-		style,
-		styleTablet,
-		styleMobile,
+		isSticky,
+		isStickyTablet,
+		isStickyMobile,
+		isTransparent,
+		isTransparentTablet,
+		isTransparentMobile,
 		autoTransparentSpacing,
 	} = metaAttributes;
 
@@ -212,7 +215,8 @@ export default function BackendStyles(props) {
 		undefined !== width?.[2] ? width[2] : ''
 	);
 
-	const previewStyle = getPreviewSize(previewDevice, style, styleTablet, styleMobile);
+	const previewIsSticky = getPreviewSize(previewDevice, isSticky, isStickyTablet, isStickyMobile);
+	const previewisTransparent = getPreviewSize(previewDevice, isTransparent, isTransparentTablet, isTransparentMobile);
 
 	//const elementHeight = useElementHeight(currentRef, [isSelected]);
 	const elementHeight = currentRef?.current?.clientHeight;
@@ -253,7 +257,7 @@ export default function BackendStyles(props) {
 	css.add_property('font-style', typography.style);
 	css.add_property('font-weight', typography.weight);
 	css.add_property('line-height', getSpacingOptionOutput(previewLineHeight, typography.lineType));
-	if (!previewStyle.includes('transparent')) {
+	if (!previewisTransparent) {
 		if ('normal' === background?.type && background?.image) {
 			css.add_property('background-image', background.image);
 			css.add_property('background-size', background.imageSize);
@@ -297,7 +301,7 @@ export default function BackendStyles(props) {
 
 	css.set_selector(`wp-block-kadence-header${uniqueID} > div:hover`);
 
-	if (!previewStyle.includes('transparent')) {
+	if (!previewisTransparent) {
 		if ('normal' === backgroundHover?.type && backgroundHover?.image) {
 			css.add_property('background-image', backgroundHover.image);
 			css.add_property('background-size', backgroundHover.imageSize);
@@ -355,7 +359,7 @@ export default function BackendStyles(props) {
 	css.set_selector(`wp-block-kadence-header${uniqueID} a:hover`);
 	css.add_property('color', KadenceColorOutput(linkHoverColor));
 
-	if (previewStyle.includes('transparent')) {
+	if (previewisTransparent) {
 		css.set_selector(`.wp-block-kadence-header${uniqueID} > div`);
 		css.add_property('top', '0px');
 

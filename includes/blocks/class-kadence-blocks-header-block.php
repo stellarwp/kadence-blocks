@@ -126,7 +126,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$border = $sized_attributes['border'];
 		$typography = $sized_attributes['typography'];
 
-		if ( ! str_contains( $sized_attributes['style'], 'transparent' ) ) {
+		if ( ! $sized_attributes['isTransparent'] ) {
 			$css->add_property( 'background-color', $css->render_color( ! empty( $bg['color'] ) ? $bg['color'] : '') );
 			//$css->render_border_styles($border, 'border');
 			if ( '' !== $bg && 'normal' === $bg['type'] && ! empty( $bg['image'] ) ) {
@@ -149,7 +149,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( 'border-left', $css->render_border( $sized_attributes['borderHover'], 'left' ) );
 		$css->add_property( 'border-right', $css->render_border( $sized_attributes['borderHover'], 'right' ) );
 
-		if ( str_contains( $sized_attributes['style'], 'transparent' ) ) {
+		if ( $sized_attributes['isTransparent'] ) {
 			$css->add_property( 'top', '0px' );
 		}
 	}
@@ -210,23 +210,51 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		// Inherit values.
 		// Just getting a css class for access to methods.
 		$css = Kadence_Blocks_CSS::get_instance();
-		$style = $css->get_inherited_value( $header_attributes['style'], $header_attributes['styleTablet'], $header_attributes['styleMobile'], 'Desktop' );
-		$style_tablet = $css->get_inherited_value( $header_attributes['style'], $header_attributes['styleTablet'], $header_attributes['styleMobile'], 'Tablet' );
-		$style_mobile = $css->get_inherited_value( $header_attributes['style'], $header_attributes['styleTablet'], $header_attributes['styleMobile'], 'Mobile' );
+		$is_sticky = $css->get_inherited_value( $header_attributes['isSticky'], $header_attributes['isStickyTablet'], $header_attributes['isStickyMobile'], 'Desktop' );
+		$is_sticky_tablet = $css->get_inherited_value( $header_attributes['isSticky'], $header_attributes['isStickyTablet'], $header_attributes['isStickyMobile'], 'Tablet' );
+		$is_sticky_mobile = $css->get_inherited_value( $header_attributes['isSticky'], $header_attributes['isStickyTablet'], $header_attributes['isStickyMobile'], 'Mobile' );
+		$is_transparent = $css->get_inherited_value( $header_attributes['isTransparent'], $header_attributes['isTransparentTablet'], $header_attributes['isTransparentMobile'], 'Desktop' );
+		$is_transparent_tablet = $css->get_inherited_value( $header_attributes['isTransparent'], $header_attributes['isTransparentTablet'], $header_attributes['isTransparentMobile'], 'Tablet' );
+		$is_transparent_mobile = $css->get_inherited_value( $header_attributes['isTransparent'], $header_attributes['isTransparentTablet'], $header_attributes['isTransparentMobile'], 'Mobile' );
+
+		$style =
+			$is_sticky && $is_transparent
+				? 'sticky-transparent'
+				: ( $is_sticky
+				? 'sticky '
+				: ( $is_transparent
+				? 'transparent'
+				: 'standard' ) );
+		$style_tablet =
+			$is_sticky_tablet && $is_transparent_tablet
+				? 'sticky-transparent'
+				: ( $is_sticky_tablet
+				? 'sticky '
+				: ( $is_transparent_tablet
+				? 'transparent'
+				: 'standard' ) );
+		$style_mobile =
+		$is_sticky_mobile && $is_transparent_mobile
+				? 'sticky-transparent'
+				: ( $is_sticky_mobile
+				? 'sticky '
+				: ( $is_transparent_mobile
+				? 'transparent'
+				: 'standard' ) );
 
 		$wrapper_classes = array( 'wp-block-kadence-header' . $unique_id );
-		$wrapper_classes[] = 'header-desktop-style-' . ( $style ? $style : 'standard' );
-		$wrapper_classes[] = 'header-tablet-style-' . ( $style_tablet ? $style_tablet : 'standard' );
-		$wrapper_classes[] = 'header-mobile-style-' . ( $style_mobile ? $style_mobile : 'standard' );
+		$wrapper_classes[] = 'header-desktop-style-' . $style;
+		$wrapper_classes[] = 'header-tablet-style-' . $style_tablet;
+		$wrapper_classes[] = 'header-mobile-style-' . $style_mobile;
 
 		$wrapper_attributes = get_block_wrapper_attributes(
 			array(
 				'class'      => implode( ' ', $wrapper_classes ),
 				'aria-label' => $name,
 				'data-auto-transparent-spacing' => $header_attributes['autoTransparentSpacing'],
-				'data-style' => $header_attributes['style'] ?: 'standard',
-				'data-style-tablet' => $header_attributes['styleTablet'] ?: 'standard',
-				'data-style-mobile' => $header_attributes['styleMobile'] ?: 'standard',
+				'data-style' => $style,
+				'data-style-tablet' => $style_tablet,
+				'data-style-mobile' => $style_mobile,
 				'data-sticky-section' => $header_attributes['stickySection'] ?: 'main',
 				'data-sticky-section-tablet' => $header_attributes['stickySectionTablet'] ?: 'main',
 				'data-sticky-section-mobile' => $header_attributes['stickySectionMobile'] ?: 'main',

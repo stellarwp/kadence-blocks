@@ -13,7 +13,8 @@
 		"kadence/repeaterRowData",
 		"kadence/repeaterRow",
 		"kadence/headerPostId",
-		"kadence/headerStyle"
+		"kadence/headerIsSticky",
+		"kadence/headerIsTransparent"
 	],
 	"description": "Image block with greater controls and advanced features",
 	"keywords": ["img", "image", "photo", "kb"],

@@ -132,13 +132,13 @@ export default function save({ attributes }) {
 			style={{ display: 'none' }}
 		/>
 	);
-	if (useRatioSticky) {
-		imageSticky = (
-			<div className={`kb-is-ratio-image kb-image-ratio-${ratioSticky ? ratioSticky : 'land43'}`}>
-				{imageSticky}
-			</div>
-		);
-	}
+	// if (useRatioSticky) {
+	// 	imageSticky = (
+	// 		<div className={`kb-is-ratio-image kb-image-ratio-${ratioSticky ? ratioSticky : 'land43'}`}>
+	// 			{imageSticky}
+	// 		</div>
+	// 	);
+	// }
 
 	const figure = (
 		<>
