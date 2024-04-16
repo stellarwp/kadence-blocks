@@ -579,7 +579,7 @@ function KadenceInfoBox(props) {
 		previewDevice,
 		maxWidthUnit ? maxWidthUnit : 'px',
 		maxWidthTabletUnit ? maxWidthTabletUnit : maxWidthUnit ? maxWidthUnit : 'px',
-		maxWidthMobileUnit ? maxWidthMobileUnit : maxWidthUnit ? maxWidthUnit : 'px'
+		maxWidthMobileUnit ? maxWidthMobileUnit : maxWidthTabletUnit ? maxWidthTabletUnit : maxWidthUnit ? maxWidthUnit : 'px'
 	);
 
 	const previewTitleFontSize = getPreviewSize(
@@ -3714,7 +3714,7 @@ function KadenceInfoBox(props) {
 						'' !== previewContainerPaddingLeft
 							? getSpacingOptionOutput(previewContainerPaddingLeft, previewPaddingType)
 							: undefined,
-					maxWidth: previewMaxWidth ? previewMaxWidth + (maxWidthUnit ? maxWidthUnit : 'px') : undefined,
+					maxWidth: previewMaxWidth ? previewMaxWidth + previewMaxWidthUnit : undefined,
 					marginTop:
 						'' !== previewContainerMarginTop
 							? getSpacingOptionOutput(previewContainerMarginTop, containerMarginUnit)
