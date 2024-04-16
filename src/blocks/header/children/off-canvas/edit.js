@@ -60,6 +60,9 @@ export function Edit(props) {
 		maxWidthMobile,
 		maxWidthUnit,
 		pageBackgroundColor,
+		containerMaxWidth,
+		containerMaxWidthTablet,
+		containerMaxWidthMobile,
 	} = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
@@ -146,6 +149,13 @@ export function Edit(props) {
 		undefined !== maxWidthMobile ? maxWidthMobile : ''
 	);
 
+	const previewContainerMaxWidth = getPreviewSize(
+		previewDevice,
+		undefined !== containerMaxWidth ? containerMaxWidth : '',
+		undefined !== containerMaxWidthTablet ? containerMaxWidthTablet : '',
+		undefined !== containerMaxWidthMobile ? containerMaxWidthMobile : ''
+	);
+
 	return (
 		<>
 			<InspectorControls>
@@ -202,7 +212,7 @@ export function Edit(props) {
 							{widthType === 'partial' && (
 								<ResponsiveRangeControls
 									label={__('Max Width', 'kadence-blocks')}
-									value={maxWidth ? maxWidth : ''}
+									value={maxWidth === 0 ? maxWidth : ''}
 									onChange={(value) => setAttributes({ maxWidth: value })}
 									tabletValue={maxWidthTablet ? maxWidthTablet : ''}
 									onChangeTablet={(value) => setAttributes({ maxWidthTablet: value })}
@@ -219,6 +229,29 @@ export function Edit(props) {
 									}
 								/>
 							)}
+
+							<ResponsiveRangeControls
+								label={__('Container Max Width', 'kadence-blocks')}
+								value={containerMaxWidth ? containerMaxWidth : ''}
+								onChange={(value) => setAttributes({ containerMaxWidth: value })}
+								tabletValue={containerMaxWidthTablet ? containerMaxWidthTablet : ''}
+								onChangeTablet={(value) => setAttributes({ containerMaxWidthTablet: value })}
+								mobileValue={containerMaxWidthMobile ? containerMaxWidthMobile : ''}
+								onChangeMobile={(value) => setAttributes({ containerMaxWidthMobile: value })}
+								min={100}
+								max={1500}
+								step={1}
+								unit={'px'}
+								showUnit={true}
+								units={['px']}
+								reset={() =>
+									setAttributes({
+										containerMaxWidth: '',
+										containerMaxWidthTablet: '',
+										containerMaxWidthMobile: '',
+									})
+								}
+							/>
 
 							<PopColorControl
 								label={__('Background Color', 'kadence-blocks')}
@@ -287,7 +320,7 @@ export function Edit(props) {
 					style={{
 						background: backgroundColor ? KadenceColorOutput(backgroundColor) : '#FFF',
 						width: widthType === 'full' ? '100%' : '',
-						maxWidth: previewMaxWidth + maxWidthUnit,
+						maxWidth: widthType !== 'full' ? previewMaxWidth + maxWidthUnit : '',
 						paddingTop:
 							'' !== previewPaddingTop
 								? getSpacingOptionOutput(previewPaddingTop, paddingUnit)
@@ -326,10 +359,12 @@ export function Edit(props) {
 					{/*		<line x1="6" y1="6" x2="18" y2="18"></line>*/}
 					{/*	</svg>*/}
 					{/*</button>*/}
-					<InnerBlocks
-						templateLock={false}
-						template={[['core/paragraph', { placeholder: __('Create Awesome', 'kadence-blocks') }]]}
-					/>
+					<div style={{ maxWidth: previewContainerMaxWidth + 'px' }}>
+						<InnerBlocks
+							templateLock={false}
+							template={[['core/paragraph', { placeholder: __('Create Awesome', 'kadence-blocks-pro') }]]}
+						/>
+					</div>
 				</div>
 			</div>
 		</>

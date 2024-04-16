@@ -120,6 +120,23 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . '.active .kb-off-canvas-inner');
 		$css->add_property( 'width', '100%' );
 
+		if( empty( $attributes['widthType'] ) || ( isset( $attributes['widthType'] ) &&  $attributes['widthType'] === 'partial') ) {
+			$max_width_unit = !empty( $attributes['containerMaxWidthUnit'] ) ? $attributes['containerMaxWidthUnit'] : 'px';
+			if( !empty( $attributes['containerMaxWidth']) ) {
+				$css->add_property( 'max-width', $attributes['containerMaxWidth'] . $max_width_unit );
+			}
+			if( !empty( $attributes['containerMaxWidthTablet']) ) {
+				$css->set_media_state('tablet');
+				$css->add_property( 'max-width', $attributes['containerMaxWidthTablet'] . $max_width_unit );
+				$css->set_media_state('desktop');
+			}
+			if( !empty( $attributes['containerMaxWidthMobile']) ) {
+				$css->set_media_state('mobile');
+				$css->add_property( 'max-width', $attributes['containerMaxWidthMobile'] . $max_width_unit );
+				$css->set_media_state('desktop');
+			}
+		}
+
 
 		// Overlay background
 		$css->set_selector( '.wp-block-kadence-off-canvas-overlay' . $unique_id );

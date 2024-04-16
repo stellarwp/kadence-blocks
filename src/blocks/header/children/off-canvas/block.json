@@ -22,13 +22,28 @@
 			"default": "partial"
 		},
 		"maxWidth": {
-			"type": "number"
+			"type": "number",
+			"default": 0
 		},
 		"maxWidthTablet": {
-			"type": "number"
+			"type": "number",
+			"default": 0
 		},
 		"maxWidthMobile": {
-			"type": "number"
+			"type": "number",
+			"default": 0
+		},
+		"containerMaxWidth": {
+			"type": "number",
+			"default": 0
+		},
+		"containerMaxWidthTablet": {
+			"type": "number",
+			"default": 0
+		},
+		"containerMaxWidthMobile": {
+			"type": "number",
+			"default": 0
 		},
 		"maxWidthUnit": {
 			"type": "string",
