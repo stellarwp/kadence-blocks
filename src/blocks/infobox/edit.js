@@ -153,6 +153,8 @@ function KadenceInfoBox(props) {
 		textMinHeight,
 		titleMinHeight,
 		maxWidthUnit,
+		maxWidthTabletUnit,
+		maxWidthMobileUnit,
 		maxWidth,
 		mediaVAlign,
 		mediaAlignMobile,
@@ -572,6 +574,12 @@ function KadenceInfoBox(props) {
 		'' !== maxWidth ? maxWidth : '',
 		'' !== tabletMaxWidth ? tabletMaxWidth : '',
 		'' !== mobileMaxWidth ? mobileMaxWidth : ''
+	);
+	const previewMaxWidthUnit = getPreviewSize(
+		previewDevice,
+		maxWidthUnit ? maxWidthUnit : 'px',
+		maxWidthTabletUnit ? maxWidthTabletUnit : maxWidthUnit ? maxWidthUnit : 'px',
+		maxWidthMobileUnit ? maxWidthMobileUnit : maxWidthUnit ? maxWidthUnit : 'px'
 	);
 
 	const previewTitleFontSize = getPreviewSize(
@@ -3636,11 +3644,12 @@ function KadenceInfoBox(props) {
 									mobileValue={mobileMaxWidth}
 									onChangeMobile={(value) => setAttributes({ mobileMaxWidth: value })}
 									min={0}
-									max={maxWidthUnit === 'px' ? 2000 : 100}
+									max={previewMaxWidthUnit === 'px' ? 2000 : 100}
 									step={1}
-									unit={maxWidthUnit ? maxWidthUnit : 'px'}
+									unit={previewMaxWidthUnit}
 									onUnit={(value) => {
-										setAttributes({ maxWidthUnit: value });
+										let device = 'Desktop' === previewDevice ? '' : previewDevice;
+										setAttributes({ ['maxWidth' + device + 'Unit']: value });
 									}}
 									units={['px', '%', 'vw']}
 								/>
