@@ -842,7 +842,7 @@ export default function Image({
 								}
 							/>
 						</KadencePanelBody>
-						{context?.['kadence/headerStyle']?.includes('sticky') && (
+						{context?.['kadence/headerIsSticky'] && (
 							<KadencePanelBody
 								title={__('Sticky Image settings', 'kadence-blocks')}
 								initialOpen={true}
