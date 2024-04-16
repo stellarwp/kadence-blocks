@@ -190,6 +190,8 @@ function SectionEdit(props) {
 		height,
 		maxWidth,
 		maxWidthUnit,
+		maxWidthTabletUnit,
+		maxWidthMobileUnit,
 		htmlTag,
 		sticky,
 		stickyOffset,
@@ -1068,6 +1070,14 @@ function SectionEdit(props) {
 		maxWidth && maxWidth[1] ? maxWidth[1] : '',
 		maxWidth && maxWidth[2] ? maxWidth[2] : ''
 	);
+
+	// Check for falsey to support how units worked before
+	const previewMaxWidthUnit = getPreviewSize(
+		previewDevice,
+		maxWidthUnit,
+		maxWidthTabletUnit ? maxWidthTabletUnit : maxWidthUnit,
+		maxWidthMobileUnit ? maxWidthMobileUnit : maxWidthUnit,
+	);
 	const previewMinHeight = getPreviewSize(
 		previewDevice,
 		height && '' !== height[0] ? height[0] : '',
@@ -1081,7 +1091,6 @@ function SectionEdit(props) {
 		stickyOffset && stickyOffset[2] ? stickyOffset[2] : ''
 	);
 	const previewMinHeightUnit = heightUnit ? heightUnit : 'px';
-	const previewMaxWidthUnit = maxWidthUnit ? maxWidthUnit : 'px';
 	const previewStickyOffsetUnit = stickyOffsetUnit ? stickyOffsetUnit : 'px';
 	const classes = classnames({
 		[className]: className,
@@ -2265,9 +2274,10 @@ function SectionEdit(props) {
 											min={0}
 											max={maxWidthUnit === 'px' ? 2000 : 100}
 											step={1}
-											unit={maxWidthUnit ? maxWidthUnit : 'px'}
+											unit={previewMaxWidthUnit ? previewMaxWidthUnit : 'px'}
 											onUnit={(value) => {
-												setAttributes({ maxWidthUnit: value });
+												let device = 'Desktop' === previewDevice ? '' : previewDevice;
+												setAttributes({['maxWidth' + device + 'Unit']: value })
 											}}
 											units={['px', '%', 'vw']}
 										/>
@@ -2333,7 +2343,7 @@ function SectionEdit(props) {
 												setAttributes({ mobilePadding: value });
 											}}
 											min={0}
-											max={paddingType === 'em' || paddingType === 'rem' ? 24 : 999}
+											max={paddingType === 'em' || paddingType === 'rem' ? 24 : 500}
 											step={paddingType === 'em' || paddingType === 'rem' ? 0.1 : 1}
 											unit={paddingType}
 											units={['px', 'em', 'rem', '%', 'vh', 'vw']}
@@ -2355,8 +2365,8 @@ function SectionEdit(props) {
 											onChangeMobile={(value) => {
 												setAttributes({ mobileMargin: value });
 											}}
-											min={marginType === 'em' || marginType === 'rem' ? -24 : -999}
-											max={marginType === 'em' || marginType === 'rem' ? 24 : 999}
+											min={marginType === 'em' || marginType === 'rem' ? -24 : -500}
+											max={marginType === 'em' || marginType === 'rem' ? 24 : 500}
 											step={marginType === 'em' || marginType === 'rem' ? 0.1 : 1}
 											unit={marginType}
 											units={['px', 'em', 'rem', '%', 'vh', 'vw']}
