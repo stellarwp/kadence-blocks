@@ -39,14 +39,13 @@ import {
 } from '@kadence/components';
 import { getPreviewSize, mouseOverVisualizer, arrayStringToInt, useElementWidth } from '@kadence/helpers';
 
-import { FormTitle, SelectForm } from './components';
+import { FormTitle, BackendStyles, SelectForm, VisualBuilder } from './components';
+import { HEADER_ALLOWED_BLOCKS, HEADER_INNERBLOCK_TEMPLATE } from './constants';
 
 /**
  * Internal dependencies
  */
 import { useEntityPublish } from './hooks';
-import { VisualBuilder, BackendStyles } from './components';
-import { HEADER_ALLOWED_BLOCKS, HEADER_INNERBLOCK_TEMPLATE } from './constants';
 /**
  * Regular expression matching invalid anchor characters for replacement.
  *
