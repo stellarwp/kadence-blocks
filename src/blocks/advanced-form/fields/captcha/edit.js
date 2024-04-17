@@ -36,11 +36,14 @@ import HCaptcha from '@hcaptcha/react-hcaptcha';
 import './editor.scss';
 
 function FieldCaptcha({ attributes, setAttributes, isSelected, clientId, context, name }) {
+	//usekcsettings is to use settings from the seperate kadence captcha plugin
+	//usekbsettings is to use the global kadence blocks settings for captions
 	const {
 		uniqueID,
 		hideRecaptcha,
 		type,
 		useKcSettings,
+		useKbSettings,
 		showRecaptchaNotice,
 		recaptchaNotice,
 		theme,
@@ -50,6 +53,13 @@ function FieldCaptcha({ attributes, setAttributes, isSelected, clientId, context
 		maxWidthUnit,
 		minWidthUnit,
 		requiredMessage,
+		recaptchaSiteKey,
+		recaptchaSecretKey,
+		recaptchaLanguage,
+		hCaptchaSiteKey,
+		hCaptchaSecretKey,
+		turnstileSiteKey,
+		turnstileSecretKey,
 	} = attributes;
 	const [activeTab, setActiveTab] = useState('general');
 	const { previewDevice } = useSelect(
@@ -89,15 +99,15 @@ function FieldCaptcha({ attributes, setAttributes, isSelected, clientId, context
 			path: addQueryArgs('/wp/v2/settings', { _fields: neededFields }),
 			method: 'GET',
 		}).then((response) => {
-			setRecaptchaSiteKey(response.kadence_blocks_recaptcha_site_key);
-			setRecaptchaSecretKey(response.kadence_blocks_recaptcha_secret_key);
-			setRecaptchaLanguage(response.kadence_blocks_recaptcha_language);
+			setRecaptchaSiteKeyState(response.kadence_blocks_recaptcha_site_key);
+			setRecaptchaSecretKeyState(response.kadence_blocks_recaptcha_secret_key);
+			setRecaptchaLanguageState(response.kadence_blocks_recaptcha_language);
 
-			setHCaptchaSiteKey(response.kadence_blocks_hcaptcha_site_key);
-			setHCaptchaSecretKey(response.kadence_blocks_hcaptcha_secret_key);
+			setHCaptchaSiteKeyState(response.kadence_blocks_hcaptcha_site_key);
+			setHCaptchaSecretKeyState(response.kadence_blocks_hcaptcha_secret_key);
 
-			setTurnstileSiteKey(response.kadence_blocks_turnstile_site_key);
-			setTurnstileSecretKey(response.kadence_blocks_turnstile_secret_key);
+			setTurnstileSiteKeyState(response.kadence_blocks_turnstile_site_key);
+			setTurnstileSecretKeyState(response.kadence_blocks_turnstile_secret_key);
 
 			try {
 				setKadenceRecaptha(JSON.parse(get(response, 'kt_recaptcha', {})));
@@ -136,13 +146,13 @@ function FieldCaptcha({ attributes, setAttributes, isSelected, clientId, context
 	});
 
 	const [settingsLoaded, setSettingsLoaded] = useState(false);
-	const [recaptchaSiteKey, setRecaptchaSiteKey] = useState('-');
-	const [recaptchaSecretKey, setRecaptchaSecretKey] = useState('');
-	const [recaptchaLanguage, setRecaptchaLanguage] = useState('');
-	const [hCaptchaSiteKey, setHCaptchaSiteKey] = useState('-');
-	const [hCaptchaSecretKey, setHCaptchaSecretKey] = useState('');
-	const [turnstileSiteKey, setTurnstileSiteKey] = useState('-');
-	const [turnstileSecretKey, setTurnstileSecretKey] = useState('');
+	const [recaptchaSiteKeyState, setRecaptchaSiteKeyState] = useState('-');
+	const [recaptchaSecretKeyState, setRecaptchaSecretKeyState] = useState('');
+	const [recaptchaLanguageState, setRecaptchaLanguageState] = useState('');
+	const [hCaptchaSiteKeyState, setHCaptchaSiteKeyState] = useState('-');
+	const [hCaptchaSecretKeyState, setHCaptchaSecretKeyState] = useState('');
+	const [turnstileSiteKeyState, setTurnstileSiteKeyState] = useState('-');
+	const [turnstileSecretKeyState, setTurnstileSecretKeyState] = useState('');
 
 	const [kadenceRecaptha, setKadenceRecaptha] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
@@ -158,44 +168,6 @@ function FieldCaptcha({ attributes, setAttributes, isSelected, clientId, context
 		</a>
 	);
 
-	const googleV2RerenderKey = theme + size + recaptchaLanguage + recaptchaSiteKey + recaptchaSecretKey;
-
-	const saveCaptchaSetting = () => {
-		setIsSaving(true);
-
-		if (type === 'turnstile') {
-			const settingModel = new wp.api.models.Settings({
-				kadence_blocks_turnstile_site_key: turnstileSiteKey,
-				kadence_blocks_turnstile_secret_key: turnstileSecretKey,
-				kadence_blocks_recaptcha_language: recaptchaLanguage,
-			});
-
-			settingModel.save().then((response) => {
-				setIsSaving(false);
-			});
-		} else if (type === 'googlev2' || type === 'googlev3') {
-			const settingModel = new wp.api.models.Settings({
-				kadence_blocks_recaptcha_site_key: recaptchaSiteKey,
-				kadence_blocks_recaptcha_secret_key: recaptchaSecretKey,
-				kadence_blocks_recaptcha_language: recaptchaLanguage,
-			});
-
-			settingModel.save().then((response) => {
-				setIsSaving(false);
-			});
-		} else if (type === 'hcaptcha') {
-			const settingModel = new wp.api.models.Settings({
-				kadence_blocks_hcaptcha_site_key: hCaptchaSiteKey,
-				kadence_blocks_hcaptcha_secret_key: hCaptchaSecretKey,
-				kadence_blocks_recaptcha_language: recaptchaLanguage,
-			});
-
-			settingModel.save().then((response) => {
-				setIsSaving(false);
-			});
-		}
-	};
-
 	const kcKeyToType = (key) => {
 		const types = ['googlev2', 'googlev3', 'turnstile'];
 
@@ -203,9 +175,25 @@ function FieldCaptcha({ attributes, setAttributes, isSelected, clientId, context
 	};
 
 	const previewType = useKcSettings ? kcKeyToType(get(kadenceRecaptha, 'enable_v3', 0)) : type;
-	const previewGoogleSiteKey = useKcSettings ? get(kadenceRecaptha, 'v3_re_site_key', '-') : recaptchaSiteKey;
-	const previewTurnstileSiteKey = useKcSettings ? get(kadenceRecaptha, 'v3_re_site_key', '-') : turnstileSiteKey;
-	const previewhCaptchaSiteKey = useKcSettings ? get(kadenceRecaptha, 'v3_re_site_key', '-') : hCaptchaSiteKey;
+	const previewRecaptchaSiteKey = useKcSettings
+		? get(kadenceRecaptha, 'v3_re_site_key', '-')
+		: useKbSettings
+		? recaptchaSiteKeyState
+		: recaptchaSiteKey;
+	const previewRecaptchaSecretKey = useKbSettings ? recaptchaSecretKeyState : recaptchaSecretKey;
+	const previewRecaptchaLanguage = useKbSettings ? recaptchaLanguageState : recaptchaLanguage;
+	const previewTurnstileSiteKey = useKcSettings
+		? get(kadenceRecaptha, 'v3_re_site_key', '-')
+		: useKbSettings
+		? turnstileSiteKeyState
+		: turnstileSiteKey;
+	const previewTurnstileSecretKey = useKbSettings ? turnstileSecretKeyState : turnstileSecretKey;
+	const previewhCaptchaSiteKey = useKcSettings
+		? get(kadenceRecaptha, 'v3_re_site_key', '-')
+		: useKbSettings
+		? hCaptchaSiteKeyState
+		: hCaptchaSiteKey;
+	const previewhCaptchaSecretKey = useKbSettings ? hCaptchaSecretKeyState : hCaptchaSecretKey;
 	const previewTheme = useKcSettings ? get(kadenceRecaptha, 'kt_re_theme', 'light') : theme;
 	const previewSize = useKcSettings ? get(kadenceRecaptha, 'kt_re_size', 'normal') : size;
 	const previewHide = useKcSettings ? get(kadenceRecaptha, 'hide_v3_badge', false) : hideRecaptcha;
@@ -218,6 +206,44 @@ function FieldCaptcha({ attributes, setAttributes, isSelected, clientId, context
 					'This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply',
 					'kadence-blocks'
 			  );
+
+	const googleV2RerenderKey = theme + size + previewRecaptchaLanguage + previewRecaptchaSiteKey + recaptchaSecretKey;
+
+	const saveCaptchaSetting = () => {
+		setIsSaving(true);
+
+		if (type === 'turnstile') {
+			const settingModel = new wp.api.models.Settings({
+				kadence_blocks_turnstile_site_key: turnstileSiteKeyState,
+				kadence_blocks_turnstile_secret_key: turnstileSecretKeyState,
+				kadence_blocks_recaptcha_language: recaptchaLanguageState,
+			});
+
+			settingModel.save().then((response) => {
+				setIsSaving(false);
+			});
+		} else if (type === 'googlev2' || type === 'googlev3') {
+			const settingModel = new wp.api.models.Settings({
+				kadence_blocks_recaptcha_site_key: recaptchaSiteKeyState,
+				kadence_blocks_recaptcha_secret_key: recaptchaSecretKeyState,
+				kadence_blocks_recaptcha_language: recaptchaLanguageState,
+			});
+
+			settingModel.save().then((response) => {
+				setIsSaving(false);
+			});
+		} else if (type === 'hcaptcha') {
+			const settingModel = new wp.api.models.Settings({
+				kadence_blocks_hcaptcha_site_key: hCaptchaSiteKeyState,
+				kadence_blocks_hcaptcha_secret_key: hCaptchaSecretKeyState,
+				kadence_blocks_recaptcha_language: recaptchaLanguageState,
+			});
+
+			settingModel.save().then((response) => {
+				setIsSaving(false);
+			});
+		}
+	};
 
 	return (
 		<>
@@ -258,6 +284,15 @@ function FieldCaptcha({ attributes, setAttributes, isSelected, clientId, context
 									linkToKadenceCaptchaSettings
 								) : (
 									<>
+										<ToggleControl
+											label={__('Use Global Kadence Settings', 'kadence-blocks')}
+											checked={useKbSettings}
+											onChange={(value) => setAttributes({ useKbSettings: value })}
+											help={__(
+												'Use settings shared for all Kadence Form Captchas',
+												'kadence-blocks'
+											)}
+										/>
 										<SelectControl
 											label={__('Captcha Type', 'kadence-blocks')}
 											value={type}
@@ -276,27 +311,40 @@ function FieldCaptcha({ attributes, setAttributes, isSelected, clientId, context
 											<>
 												<TextControl
 													label={__('Turnstile Site Key', 'kadence-blocks')}
-													value={turnstileSiteKey}
-													onChange={(value) => setTurnstileSiteKey(value)}
+													value={previewTurnstileSiteKey}
+													onChange={(value) =>
+														useKbSettings
+															? setTurnstileSiteKeyState(value)
+															: setAttributes({ turnstileSiteKey: value })
+													}
 												/>
 
 												<TextControl
 													label={__('Turnstile Secret Key', 'kadence-blocks')}
-													value={turnstileSecretKey}
-													onChange={(value) => setTurnstileSecretKey(value)}
+													value={previewTurnstileSecretKey}
+													onChange={(value) =>
+														useKbSettings
+															? setTurnstileSecretKeyState(value)
+															: setAttributes({ turnstileSecretKey: value })
+													}
 												/>
 
-												<div className="components-base-control">
-													<Button
-														isPrimary
-														onClick={() => saveCaptchaSetting()}
-														disabled={'' === turnstileSiteKey || '' === turnstileSecretKey}
-													>
-														{isSaving
-															? __('Saving', 'kadence-blocks')
-															: __('Save', 'kadence-blocks')}
-													</Button>
-												</div>
+												{useKbSettings && (
+													<div className="components-base-control">
+														<Button
+															isPrimary
+															onClick={() => saveCaptchaSetting()}
+															disabled={
+																'' === previewTurnstileSiteKey ||
+																'' === previewTurnstileSecretKey
+															}
+														>
+															{isSaving
+																? __('Saving', 'kadence-blocks')
+																: __('Save', 'kadence-blocks')}
+														</Button>
+													</div>
+												)}
 											</>
 										)}
 
@@ -304,20 +352,32 @@ function FieldCaptcha({ attributes, setAttributes, isSelected, clientId, context
 											<>
 												<TextControl
 													label={__('Recaptcha Site Key', 'kadence-blocks')}
-													value={recaptchaSiteKey}
-													onChange={(value) => setRecaptchaSiteKey(value)}
+													value={previewRecaptchaSiteKey}
+													onChange={(value) =>
+														useKbSettings
+															? setRecaptchaSiteKeyState(value)
+															: setAttributes({ recaptchaSiteKey: value })
+													}
 												/>
 
 												<TextControl
 													label={__('Recaptcha Secret Key', 'kadence-blocks')}
-													value={recaptchaSecretKey}
-													onChange={(value) => setRecaptchaSecretKey(value)}
+													value={previewRecaptchaSecretKey}
+													onChange={(value) =>
+														useKbSettings
+															? setRecaptchaSecretKeyState(value)
+															: setAttributes({ recaptchaSecretKey: value })
+													}
 												/>
 
 												<TextControl
 													label={__('Force Specific Language', 'kadence-blocks')}
-													value={recaptchaLanguage}
-													onChange={(value) => setRecaptchaLanguage(value)}
+													value={previewRecaptchaLanguage}
+													onChange={(value) =>
+														useKbSettings
+															? setRecaptchaLanguageState(value)
+															: setAttributes({ recaptchaLanguage: value })
+													}
 												/>
 												<p className="kb-small-help">
 													<ExternalLink
@@ -327,17 +387,22 @@ function FieldCaptcha({ attributes, setAttributes, isSelected, clientId, context
 													</ExternalLink>
 												</p>
 
-												<div className="components-base-control">
-													<Button
-														isPrimary
-														onClick={() => saveCaptchaSetting()}
-														disabled={'' === recaptchaSiteKey || '' === recaptchaSecretKey}
-													>
-														{isSaving
-															? __('Saving', 'kadence-blocks')
-															: __('Save', 'kadence-blocks')}
-													</Button>
-												</div>
+												{useKbSettings && (
+													<div className="components-base-control">
+														<Button
+															isPrimary
+															onClick={() => saveCaptchaSetting()}
+															disabled={
+																'' === previewRecaptchaSiteKey ||
+																'' === previewRecaptchaSecretKey
+															}
+														>
+															{isSaving
+																? __('Saving', 'kadence-blocks')
+																: __('Save', 'kadence-blocks')}
+														</Button>
+													</div>
+												)}
 											</>
 										)}
 
@@ -345,33 +410,50 @@ function FieldCaptcha({ attributes, setAttributes, isSelected, clientId, context
 											<>
 												<TextControl
 													label={__('hCaptcha Site Key', 'kadence-blocks')}
-													value={hCaptchaSiteKey}
-													onChange={(value) => setHCaptchaSiteKey(value)}
+													value={previewhCaptchaSiteKey}
+													onChange={(value) =>
+														useKbSettings
+															? setHCaptchaSiteKeyState(value)
+															: setAttributes({ hCaptchaSiteKey: value })
+													}
 												/>
 
 												<TextControl
 													label={__('hCaptcha Secret Key', 'kadence-blocks')}
-													value={hCaptchaSecretKey}
-													onChange={(value) => setHCaptchaSecretKey(value)}
+													value={previewhCaptchaSecretKey}
+													onChange={(value) =>
+														useKbSettings
+															? setHCaptchaSecretKeyState(value)
+															: setAttributes({ hCaptchaSecretKey: value })
+													}
 												/>
 
 												<TextControl
 													label={__('Force Specific Language', 'kadence-blocks')}
-													value={recaptchaLanguage}
-													onChange={(value) => setRecaptchaLanguage(value)}
+													value={previewRecaptchaLanguage}
+													onChange={(value) =>
+														useKbSettings
+															? setRecaptchaLanguageState(value)
+															: setAttributes({ recaptchaLanguage: value })
+													}
 												/>
 
-												<div className="components-base-control">
-													<Button
-														isPrimary
-														onClick={() => saveCaptchaSetting()}
-														disabled={'' === hCaptchaSiteKey || '' === hCaptchaSecretKey}
-													>
-														{isSaving
-															? __('Saving', 'kadence-blocks')
-															: __('Save', 'kadence-blocks')}
-													</Button>
-												</div>
+												{useKbSettings && (
+													<div className="components-base-control">
+														<Button
+															isPrimary
+															onClick={() => saveCaptchaSetting()}
+															disabled={
+																'' === previewhCaptchaSiteKey ||
+																'' === previewhCaptchaSecretKey
+															}
+														>
+															{isSaving
+																? __('Saving', 'kadence-blocks')
+																: __('Save', 'kadence-blocks')}
+														</Button>
+													</div>
+												)}
 											</>
 										)}
 									</>
@@ -540,7 +622,7 @@ function FieldCaptcha({ attributes, setAttributes, isSelected, clientId, context
 					)}
 				</InspectorControls>
 				<div style={{ minHeight: type !== 'googlev3' ? '74px' : undefined }}>
-					{settingsLoaded ? (
+					{!useKbSettings || settingsLoaded ? (
 						<>
 							{previewType === 'hcaptcha' && (
 								<>
@@ -572,19 +654,19 @@ function FieldCaptcha({ attributes, setAttributes, isSelected, clientId, context
 
 							{previewType === 'googlev2' && (
 								<>
-									{previewGoogleSiteKey && googleV2RerenderKey && (
+									{previewRecaptchaSiteKey && googleV2RerenderKey && (
 										<ReCAPTCHA
 											key={googleV2RerenderKey}
-											sitekey={previewGoogleSiteKey}
+											sitekey={previewRecaptchaSiteKey}
 											theme={previewTheme}
-											hl={recaptchaLanguage}
+											hl={previewRecaptchaLanguage}
 											size={previewSize}
 											onChange={() => {
 												return null;
 											}}
 										/>
 									)}
-									{(!previewGoogleSiteKey || !googleV2RerenderKey) && (
+									{(!previewRecaptchaSiteKey || !googleV2RerenderKey) && (
 										<div
 											className={
 												'preview-captcha  preview-captcha-' +
