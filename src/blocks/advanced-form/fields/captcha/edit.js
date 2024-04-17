@@ -284,15 +284,6 @@ function FieldCaptcha({ attributes, setAttributes, isSelected, clientId, context
 									linkToKadenceCaptchaSettings
 								) : (
 									<>
-										<ToggleControl
-											label={__('Use Global Kadence Settings', 'kadence-blocks')}
-											checked={useKbSettings}
-											onChange={(value) => setAttributes({ useKbSettings: value })}
-											help={__(
-												'Use settings shared for all Kadence Form Captchas',
-												'kadence-blocks'
-											)}
-										/>
 										<SelectControl
 											label={__('Captcha Type', 'kadence-blocks')}
 											value={type}
@@ -456,6 +447,15 @@ function FieldCaptcha({ attributes, setAttributes, isSelected, clientId, context
 												)}
 											</>
 										)}
+										<ToggleControl
+											label={__('Use Global Kadence Settings', 'kadence-blocks')}
+											checked={useKbSettings}
+											onChange={(value) => setAttributes({ useKbSettings: value })}
+											help={__(
+												'Use settings shared for all Kadence Form Captchas',
+												'kadence-blocks'
+											)}
+										/>
 									</>
 								)}
 							</KadencePanelBody>
