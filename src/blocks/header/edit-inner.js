@@ -19,7 +19,7 @@ import {
 	store as editorStore,
 	BlockContextProvider,
 } from '@wordpress/block-editor';
-import { TextControl, ExternalLink, Button, Placeholder, ToggleControl } from '@wordpress/components';
+import { TextControl, ExternalLink, Button, Placeholder, ToggleControl, SelectControl } from '@wordpress/components';
 import { formBlockIcon } from '@kadence/icons';
 import {
 	KadencePanelBody,
@@ -447,27 +447,6 @@ export function EditInner(props) {
 		}
 	};
 
-	const generalToggleControls = (size = '') => {
-		console.log(1, metaAttributes);
-		const isStickyValue = metaAttributes['isSticky' + size];
-		const isTransparentValue = metaAttributes['isTransparent' + size];
-
-		return (
-			<>
-				<ToggleControl
-					label={__('Sticky Header', 'kadence-blocks')}
-					checked={isStickyValue}
-					onChange={(value) => setMetaAttribute(value, 'isSticky' + size)}
-				/>
-				<ToggleControl
-					label={__('Transparent Header', 'kadence-blocks')}
-					checked={isTransparentValue}
-					onChange={(value) => setMetaAttribute(value, 'isTransparent' + size)}
-				/>
-			</>
-		);
-	};
-
 	const innerBlocksProps = useInnerBlocksProps(
 		{
 			className: '',
@@ -551,38 +530,42 @@ export function EditInner(props) {
 							title={__('General Settings', 'kadence-blocks')}
 							panelName={'kb-col-flex-settings'}
 						>
-							<SmallResponsiveControl
-								label={'layout toggles'}
-								desktopChildren={generalToggleControls()}
-								tabletChildren={generalToggleControls('Tablet')}
-								mobileChildren={generalToggleControls('Mobile')}
-							></SmallResponsiveControl>
-							{/* <ResponsiveSelectControl
-								label={__('Style', 'kadence-blocks')}
-								value={style}
-								tabletValue={styleTablet}
-								mobileValue={styleMobile}
+							<ResponsiveSelectControl
+								label={__('Sticky Header', 'kadence-blocks')}
+								value={isSticky}
+								tabletValue={isStickyTablet}
+								mobileValue={isStickyMobile}
 								options={[
-									{ value: 'standard', label: __('Standard', 'kadence-blocks') },
-									{ value: 'sticky', label: __('Sticky', 'kadence-blocks') },
-									{ value: 'transparent', label: __('Transparent', 'kadence-blocks') },
-									{
-										value: 'sticky-transparent',
-										label: __('Sticky and Transparent', 'kadence-blocks'),
-									},
+									{ value: '', label: __('-', 'kadence-blocks') },
+									{ value: '1', label: __('Yes', 'kadence-blocks') },
+									{ value: '0', label: __('No', 'kadence-blocks') },
 								]}
-								onChange={(value) => setMetaAttribute(value, 'style')}
-								onChangeTablet={(value) => setMetaAttribute(value, 'styleTablet')}
-								onChangeMobile={(value) => setMetaAttribute(value, 'styleMobile')}
-							/> */}
-							{previewIsTransparent && (
+								onChange={(value) => setMetaAttribute(value, 'isSticky')}
+								onChangeTablet={(value) => setMetaAttribute(value, 'isStickyTablet')}
+								onChangeMobile={(value) => setMetaAttribute(value, 'isStickyMobile')}
+							/>
+							<ResponsiveSelectControl
+								label={__('Transparent Header', 'kadence-blocks')}
+								value={isTransparent}
+								tabletValue={isTransparentTablet}
+								mobileValue={isTransparentMobile}
+								options={[
+									{ value: '', label: __('-', 'kadence-blocks') },
+									{ value: '1', label: __('Yes', 'kadence-blocks') },
+									{ value: '0', label: __('No', 'kadence-blocks') },
+								]}
+								onChange={(value) => setMetaAttribute(value, 'isTransparent')}
+								onChangeTablet={(value) => setMetaAttribute(value, 'isTransparentTablet')}
+								onChangeMobile={(value) => setMetaAttribute(value, 'isTransparentMobile')}
+							/>
+							{previewIsTransparent == '1' && (
 								<ToggleControl
 									label={__('Auto spacing under', 'kadence-blocks')}
 									checked={autoTransparentSpacing}
 									onChange={(value) => setMetaAttribute(value, 'autoTransparentSpacing')}
 								/>
 							)}
-							{previewIsSticky && (
+							{previewIsSticky == '1' && (
 								<>
 									<ResponsiveSelectControl
 										label={__('Sticky Section', 'kadence-blocks')}
@@ -1065,7 +1048,7 @@ export function EditInner(props) {
 
 				{activeTab === 'style' && (
 					<>
-						{!previewIsTransparent && (
+						{previewIsTransparent != '1' && (
 							<KadencePanelBody
 								title={__('Background Settings', 'kadence-blocks')}
 								initialOpen={true}

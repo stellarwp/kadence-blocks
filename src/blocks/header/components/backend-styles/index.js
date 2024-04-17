@@ -257,7 +257,7 @@ export default function BackendStyles(props) {
 	css.add_property('font-style', typography.style);
 	css.add_property('font-weight', typography.weight);
 	css.add_property('line-height', getSpacingOptionOutput(previewLineHeight, typography.lineType));
-	if (!previewisTransparent) {
+	if (previewisTransparent != '1') {
 		if ('normal' === background?.type && background?.image) {
 			css.add_property('background-image', background.image);
 			css.add_property('background-size', background.imageSize);
@@ -301,7 +301,7 @@ export default function BackendStyles(props) {
 
 	css.set_selector(`wp-block-kadence-header${uniqueID} > div:hover`);
 
-	if (!previewisTransparent) {
+	if (previewisTransparent != '1') {
 		if ('normal' === backgroundHover?.type && backgroundHover?.image) {
 			css.add_property('background-image', backgroundHover.image);
 			css.add_property('background-size', backgroundHover.imageSize);
@@ -359,7 +359,7 @@ export default function BackendStyles(props) {
 	css.set_selector(`wp-block-kadence-header${uniqueID} a:hover`);
 	css.add_property('color', KadenceColorOutput(linkHoverColor));
 
-	if (previewisTransparent) {
+	if (previewisTransparent == '1') {
 		css.set_selector(`.wp-block-kadence-header${uniqueID} > div`);
 		css.add_property('top', '0px');
 
