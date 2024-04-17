@@ -70,9 +70,12 @@ import {
 	SmallResponsiveControl,
 	TypographyControls,
 	ResponsiveSingleBorderControl,
+	ResponsiveBorderControl,
 	KadenceIconPicker,
 	MeasurementControls,
+	ResponsiveMeasurementControls,
 	IconRender,
+	ResponsiveSelectControl,
 } from '@kadence/components';
 
 import { ArrowDown, ArrowUp } from '@kadence/icons';
@@ -242,6 +245,29 @@ export default function Edit(props) {
 		backgroundMobile,
 		backgroundHoverMobile,
 		backgroundActiveMobile,
+		highlightLabel,
+		highlightSpacing,
+		highlightSide,
+		highlightSideMobile,
+		highlightSideTablet,
+		labelBackground,
+		labelBackgroundHover,
+		labelBackgroundActive,
+		labelBackgroundTablet,
+		labelBackgroundHoverTablet,
+		labelBackgroundActiveTablet,
+		labelBackgroundMobile,
+		labelBackgroundHoverMobile,
+		labelBackgroundActiveMobile,
+		labelColor,
+		labelColorHover,
+		labelColorActive,
+		labelColorTablet,
+		labelColorHoverTablet,
+		labelColorActiveTablet,
+		labelColorMobile,
+		labelColorHoverMobile,
+		labelColorActiveMobile,
 		linkColorDropdown,
 		linkColorDropdownHover,
 		linkColorDropdownActive,
@@ -264,6 +290,7 @@ export default function Edit(props) {
 		megaMenuCustomWidth,
 		megaMenuCustomWidthUnit,
 		typography,
+		highlightTypography,
 		dropdownTypography,
 		dropdownDivider,
 		dropdownDividerTablet,
@@ -282,6 +309,10 @@ export default function Edit(props) {
 		mediaImage,
 		mediaIcon,
 		mediaStyle,
+		highlightIcon,
+		iconSide,
+		iconSideTablet,
+		iconSideMobile,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
@@ -334,6 +365,16 @@ export default function Edit(props) {
 		undefined !== mediaIcon[0] && undefined !== mediaIcon[0].size ? mediaIcon[0].size : '14',
 		undefined !== mediaIcon[0].tabletSize && undefined !== mediaIcon[0].tabletSize ? mediaIcon[0].tabletSize : '',
 		undefined !== mediaIcon[0].mobileSize && undefined !== mediaIcon[0].mobileSize ? mediaIcon[0].mobileSize : ''
+	);
+	const previewHighlightIconSize = getPreviewSize(
+		previewDevice,
+		undefined !== highlightIcon[0] && undefined !== highlightIcon[0].size ? highlightIcon[0].size : '14',
+		undefined !== highlightIcon[0].tabletSize && undefined !== highlightIcon[0].tabletSize
+			? highlightIcon[0].tabletSize
+			: '',
+		undefined !== highlightIcon[0].mobileSize && undefined !== highlightIcon[0].mobileSize
+			? highlightIcon[0].mobileSize
+			: ''
 	);
 
 	useEffect(() => {
@@ -408,14 +449,14 @@ export default function Edit(props) {
 		}
 	}
 
-	const saveTypography = (value) => {
-		const newUpdate = typography.map((item, index) => {
+	const saveTypography = (value, attributeName = 'typography') => {
+		const newUpdate = attributes[attributeName].map((item, index) => {
 			if (0 === index) {
 				item = { ...item, ...value };
 			}
 			return item;
 		});
-		setAttributes({ typography: newUpdate });
+		setAttributes({ [attributeName]: newUpdate });
 	};
 
 	const saveDropdownTypography = (value) => {
@@ -438,26 +479,26 @@ export default function Edit(props) {
 			mediaImage: newUpdate,
 		});
 	};
-	const saveMediaIcon = (value) => {
-		const newUpdate = mediaIcon.map((item, index) => {
+	const saveMediaIcon = (value, attrName = 'mediaIcon') => {
+		const newUpdate = attributes[attrName].map((item, index) => {
 			if (0 === index) {
 				item = { ...item, ...value };
 			}
 			return item;
 		});
 		setAttributes({
-			mediaIcon: newUpdate,
+			[attrName]: newUpdate,
 		});
 	};
-	const saveMediaStyle = (value) => {
-		const newUpdate = mediaStyle.map((item, index) => {
+	const saveMediaStyle = (value, attrName = 'mediaStyle') => {
+		const newUpdate = attributes[attrName].map((item, index) => {
 			if (0 === index) {
 				item = { ...item, ...value };
 			}
 			return item;
 		});
 		setAttributes({
-			mediaStyle: newUpdate,
+			[attrName]: newUpdate,
 		});
 	};
 
@@ -588,6 +629,81 @@ export default function Edit(props) {
 			templateLock: isMegaMenu ? 'all' : false,
 		}
 	);
+
+	const highlightColorControls = (size = '', suffix = '') => {
+		const labelColorValue = attributes['labelColor' + suffix + size];
+		const labelBackgroundValue = attributes['labelBackground' + suffix + size];
+		const labelColorHoverValue = attributes['labelColor' + suffix + 'Hover' + size];
+		const labelBackgroundHoverValue = attributes['labelBackground' + suffix + 'Hover' + size];
+		const labelColorActiveValue = attributes['labelColor' + suffix + 'Active' + size];
+		const labelBackgroundActiveValue = attributes['labelBackground' + suffix + 'Active' + size];
+		return (
+			<>
+				<HoverToggleControl
+					normal={
+						<>
+							<PopColorControl
+								label={__('Label Color', 'kadence-blocks')}
+								value={labelColorValue}
+								default={''}
+								onChange={(value) => setAttributes({ ['labelColor' + suffix + size]: value })}
+								key={'normal'}
+							/>
+							<PopColorControl
+								label={__('Label Background', 'kadence-blocks')}
+								value={labelBackgroundValue}
+								default={''}
+								onChange={(value) => setAttributes({ ['labelBackground' + suffix + size]: value })}
+								key={'normalb'}
+							/>
+						</>
+					}
+					hover={
+						<>
+							<PopColorControl
+								label={__('Label Color Hover', 'kadence-blocks')}
+								value={labelColorHoverValue}
+								default={''}
+								onChange={(value) => setAttributes({ ['labelColor' + suffix + 'Hover' + size]: value })}
+								key={'hover'}
+							/>
+							<PopColorControl
+								label={__('Label Background Hover', 'kadence-blocks')}
+								value={labelBackgroundHoverValue}
+								default={''}
+								onChange={(value) =>
+									setAttributes({ ['labelBackground' + suffix + 'Hover' + size]: value })
+								}
+								key={'hoverb'}
+							/>
+						</>
+					}
+					active={
+						<>
+							<PopColorControl
+								label={__('Label Color Active', 'kadence-blocks')}
+								value={labelColorActiveValue}
+								default={''}
+								onChange={(value) =>
+									setAttributes({ ['labelColor' + suffix + 'Active' + size]: value })
+								}
+								key={'active'}
+							/>
+							<PopColorControl
+								label={__('Label Background Active', 'kadence-blocks')}
+								value={labelBackgroundActiveValue}
+								default={''}
+								onChange={(value) =>
+									setAttributes({ ['labelBackground' + suffix + 'Active' + size]: value })
+								}
+								key={'activeb'}
+							/>
+						</>
+					}
+				/>
+			</>
+		);
+	};
 
 	const styleColorControls = (size = '', suffix = '') => {
 		const linkColorValue = attributes['linkColor' + suffix + size];
@@ -1071,6 +1187,249 @@ export default function Edit(props) {
 								/>
 							</KadencePanelBody>
 						)}
+
+						<KadencePanelBody
+							title={__('Highlight Label Settings', 'kadence-blocks')}
+							initialOpen={false}
+							panelName={'navigation-link-highlight-settings'}
+						>
+							<TextControl
+								__nextHasNoMarginBottom
+								value={highlightLabel ? stripHTML(highlightLabel) : ''}
+								onChange={(labelValue) => {
+									setAttributes({ highlightLabel: labelValue });
+								}}
+								label={__('Highlight Label')}
+								autoComplete="off"
+								onFocus={() => setIsLabelFieldFocused(true)}
+								onBlur={() => setIsLabelFieldFocused(false)}
+							/>
+							<KadencePanelBody
+								title={__('Typography Settings', 'kadence-blocks')}
+								initialOpen={false}
+								panelName={'kb-link-highlight-label-typography'}
+							>
+								<TypographyControls
+									fontSize={highlightTypography[0].size}
+									onFontSize={(value) => saveTypography({ size: value }, 'highlightTypography')}
+									fontSizeType={highlightTypography[0].sizeType}
+									onFontSizeType={(value) =>
+										saveTypography({ sizeType: value }, 'highlightTypography')
+									}
+									lineHeight={highlightTypography[0].lineHeight}
+									onLineHeight={(value) =>
+										saveTypography({ lineHeight: value }, 'highlightTypography')
+									}
+									lineHeightType={highlightTypography[0].lineType}
+									onLineHeightType={(value) =>
+										saveTypography({ lineType: value }, 'highlightTypography')
+									}
+									reLetterSpacing={highlightTypography[0].letterSpacing}
+									onLetterSpacing={(value) =>
+										saveTypography({ letterSpacing: value }, 'highlightTypography')
+									}
+									letterSpacingType={highlightTypography[0].letterType}
+									onLetterSpacingType={(value) =>
+										saveTypography({ letterType: value }, 'highlightTypography')
+									}
+									textTransform={highlightTypography[0].textTransform}
+									onTextTransform={(value) =>
+										saveTypography({ textTransform: value }, 'highlightTypography')
+									}
+									fontFamily={highlightTypography[0].family}
+									onFontFamily={(value) => saveTypography({ family: value }, 'highlightTypography')}
+									onFontChange={(select) => {
+										saveTypography(
+											{
+												family: select.value,
+												google: select.google,
+											},
+											'highlightTypography'
+										);
+									}}
+									onFontArrayChange={(values) => saveTypography(values, 'highlightTypography')}
+									googleFont={highlightTypography[0].google}
+									onGoogleFont={(value) => saveTypography({ google: value }, 'highlightTypography')}
+									loadGoogleFont={highlightTypography[0].loadGoogle}
+									onLoadGoogleFont={(value) =>
+										saveTypography({ loadGoogle: value }, 'highlightTypography')
+									}
+									fontVariant={highlightTypography[0].variant}
+									onFontVariant={(value) => saveTypography({ variant: value }, 'highlightTypography')}
+									fontWeight={highlightTypography[0].weight}
+									onFontWeight={(value) => saveTypography({ weight: value }, 'highlightTypography')}
+									fontStyle={highlightTypography[0].style}
+									onFontStyle={(value) => saveTypography({ style: value }, 'highlightTypography')}
+									fontSubset={highlightTypography[0].subset}
+									onFontSubset={(value) => saveTypography({ subset: value }, 'highlightTypography')}
+								/>
+							</KadencePanelBody>
+							<div className="kt-sidebar-settings-spacer"></div>
+							<KadenceIconPicker
+								value={highlightIcon[0].icon}
+								onChange={(value) => saveMediaIcon({ icon: value }, 'highlightIcon')}
+								allowClear={true}
+							/>
+							{undefined !== highlightIcon?.[0]?.icon && '' !== highlightIcon[0].icon && (
+								<>
+									<ResponsiveRangeControls
+										label={__('Icon Size', 'kadence-blocks')}
+										value={highlightIcon[0].size}
+										onChange={(value) => saveMediaIcon({ size: value }, 'highlightIcon')}
+										tabletValue={highlightIcon[0].sizeTablet}
+										onChangeTablet={(value) => {
+											saveMediaIcon({ sizeTablet: value }, 'highlightIcon');
+										}}
+										mobileValue={highlightIcon[0].sizeMobile}
+										onChangeMobile={(value) => {
+											saveMediaIcon({ sizeMobile: value }, 'highlightIcon');
+										}}
+										min={0}
+										max={200}
+										step={1}
+										unit={'px'}
+									/>
+									<ResponsiveGapSizeControl
+										label={__('Label / Icon Gap', 'kadence-blocks')}
+										value={highlightSpacing[0].gap[0]}
+										onChange={(value) => {
+											console.log(value);
+											saveMediaStyle(
+												{
+													gap: [
+														value,
+														highlightSpacing[0].gap[1],
+														highlightSpacing[0].gap[2],
+													],
+												},
+												'highlightSpacing'
+											);
+										}}
+										tabletValue={highlightSpacing[0].gap[1]}
+										onChangeTablet={(value) =>
+											saveMediaStyle(
+												{
+													gap: [
+														highlightSpacing[0].gap[0],
+														value,
+														highlightSpacing[0].gap[2],
+													],
+												},
+												'highlightSpacing'
+											)
+										}
+										mobileValue={highlightSpacing[0].gap[2]}
+										onChangeMobile={(value) =>
+											saveMediaStyle(
+												{
+													gap: [
+														highlightSpacing[0].gap[0],
+														highlightSpacing[0].gap[1],
+														value,
+													],
+												},
+												'highlightSpacing'
+											)
+										}
+										min={0}
+										max={100}
+										step={1}
+										unit={'px'}
+										units={['px']}
+									/>
+									<ResponsiveSelectControl
+										label={__('Align Icon', 'kadence-blocks')}
+										value={iconSide}
+										tabletValue={iconSideTablet}
+										mobileValue={iconSideMobile}
+										options={[
+											{ value: 'right', label: __('Right', 'kadence-blocks') },
+											{ value: 'left', label: __('Left', 'kadence-blocks') },
+										]}
+										onChange={(value) => setAttributes({ iconSide: value })}
+										onChangeTablet={(value) => setAttributes({ iconSideTablet: value })}
+										onChangeMobile={(value) => setAttributes({ iconSideMobile: value })}
+									/>
+								</>
+							)}
+
+							<ResponsiveSelectControl
+								label={__('Align Highlight Label', 'kadence-blocks')}
+								value={highlightSide}
+								tabletValue={highlightSideTablet}
+								mobileValue={highlightSideMobile}
+								options={[
+									{ value: 'right', label: __('Right', 'kadence-blocks') },
+									{ value: 'left', label: __('Left', 'kadence-blocks') },
+								]}
+								onChange={(value) => setAttributes({ highlightSide: value })}
+								onChangeTablet={(value) => setAttributes({ highlightSideTablet: value })}
+								onChangeMobile={(value) => setAttributes({ highlightSideMobile: value })}
+							/>
+							<SmallResponsiveControl
+								label={__('Highlight Label Colors', 'kadence-blocks')}
+								desktopChildren={highlightColorControls()}
+								tabletChildren={highlightColorControls('Tablet')}
+								mobileChildren={highlightColorControls('Mobile')}
+							></SmallResponsiveControl>
+							<ResponsiveMeasureRangeControl
+								label={__('Margin', 'kadence-blocks')}
+								value={highlightSpacing[0].margin}
+								onChange={(value) => saveMediaStyle({ margin: value }, 'highlightSpacing')}
+								tabletValue={highlightSpacing[0].tabletMargin}
+								onChangeTablet={(value) => saveMediaStyle({ tabletMargin: value }, 'highlightSpacing')}
+								mobileValue={highlightSpacing[0].mobileMargin}
+								onChangeMobile={(value) => saveMediaStyle({ mobileMargin: value }, 'highlightSpacing')}
+								min={0}
+								max={200}
+								step={1}
+								units={['px']}
+								unit={'px'}
+							/>
+							<ResponsiveMeasureRangeControl
+								label={__('Padding', 'kadence-blocks')}
+								value={highlightSpacing[0].padding}
+								onChange={(value) => saveMediaStyle({ padding: value }, 'highlightSpacing')}
+								tabletValue={highlightSpacing[0].tabletPadding}
+								onChangeTablet={(value) => saveMediaStyle({ tabletPadding: value }, 'highlightSpacing')}
+								mobileValue={highlightSpacing[0].mobilePadding}
+								onChangeMobile={(value) => saveMediaStyle({ mobilePadding: value }, 'highlightSpacing')}
+								min={0}
+								max={200}
+								step={1}
+								units={['px']}
+								unit={'px'}
+							/>
+							<ResponsiveBorderControl
+								label={__('Border', 'kadence-blocks')}
+								value={highlightSpacing[0].border}
+								tabletValue={highlightSpacing[0].tabletBorder}
+								mobileValue={highlightSpacing[0].mobileBorder}
+								onChange={(value) => {
+									saveMediaStyle({ border: value }, 'highlightSpacing');
+								}}
+								onChangeTablet={(value) => saveMediaStyle({ tabletBorder: value }, 'highlightSpacing')}
+								onChangeMobile={(value) => saveMediaStyle({ mobileBorder: value }, 'highlightSpacing')}
+							/>
+							<ResponsiveMeasurementControls
+								label={__('Border Radius', 'kadence-blocks')}
+								value={highlightSpacing[0].borderRadius}
+								onChange={(value) => saveMediaStyle({ borderRadius: value }, 'highlightSpacing')}
+								tabletValue={highlightSpacing[0].tabletBorderRadius}
+								onChangeTablet={(value) =>
+									saveMediaStyle({ tabletBorderRadius: value }, 'highlightSpacing')
+								}
+								mobileValue={highlightSpacing[0].mobileBorderRadius}
+								onChangeMobile={(value) =>
+									saveMediaStyle({ mobileBorderRadius: value }, 'highlightSpacing')
+								}
+								unit={'px'}
+								units={['px']}
+								min={0}
+								max={200}
+								step={1}
+							/>
+						</KadencePanelBody>
 
 						<KadencePanelBody
 							title={__('Sub Menu Styles', 'kadence-blocks')}
@@ -1794,6 +2153,19 @@ export default function Edit(props) {
 							{description && <span className="menu-label-description">{description}</span>}
 							{hasChildren && <span className="title-dropdown-navigation-toggle">{ArrowDown}</span>}
 						</span>
+						{((undefined !== highlightIcon?.[0]?.icon && '' !== highlightIcon[0].icon) ||
+							(undefined !== highlightLabel && '' !== highlightLabel)) && (
+							<span className="link-highlight-label">
+								<span className="link-highlight-label-text">{highlightLabel}</span>
+								{undefined !== highlightIcon?.[0]?.icon && '' !== highlightIcon[0].icon && (
+									<IconRender
+										className={`kt-highlight-label-icon`}
+										name={highlightIcon[0].icon}
+										size={previewHighlightIconSize}
+									/>
+								)}
+							</span>
+						)}
 					</a>
 
 					{hasChildren && (
