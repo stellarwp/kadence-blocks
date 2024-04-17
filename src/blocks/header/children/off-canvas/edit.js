@@ -339,26 +339,6 @@ export function Edit(props) {
 								: undefined,
 					}}
 				>
-					{/*<button*/}
-					{/*	className={'kb-off-canvas-modal-close'}*/}
-					{/*	aria-label={__('Close off canvas content editor', 'kadence-blocks')}*/}
-					{/*	onClick={() => setPreviewActive(false)}*/}
-					{/*>*/}
-					{/*	<svg*/}
-					{/*		viewBox="0 0 24 24"*/}
-					{/*		fill="none"*/}
-					{/*		width={'50px'}*/}
-					{/*		height={'50px'}*/}
-					{/*		stroke="currentColor"*/}
-					{/*		xmlns="http://www.w3.org/2000/svg"*/}
-					{/*		strokeWidth="2"*/}
-					{/*		strokeLinecap="round"*/}
-					{/*		strokeLinejoin="round"*/}
-					{/*	>*/}
-					{/*		<line x1="18" y1="6" x2="6" y2="18"></line>*/}
-					{/*		<line x1="6" y1="6" x2="18" y2="18"></line>*/}
-					{/*	</svg>*/}
-					{/*</button>*/}
 					<div style={{ maxWidth: previewContainerMaxWidth + 'px' }}>
 						<InnerBlocks
 							templateLock={false}

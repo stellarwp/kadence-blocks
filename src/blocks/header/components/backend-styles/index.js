@@ -226,7 +226,9 @@ export default function BackendStyles(props) {
 		css.add_property('display', 'none');
 	}
 
-	css.set_selector(`.wp-block-kadence-header${uniqueID} > div`);
+	css.set_selector(
+		`.wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-desktop, .wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-tablet`
+	);
 	css.add_property('display', 'flex');
 	css.add_property('flex-wrap', 'wrap');
 	css.add_property('flex-basis', '0');
