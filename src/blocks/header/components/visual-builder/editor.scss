@@ -11,24 +11,78 @@ $fixed_height: 250px;
 	border-top: 1px solid #a0aec1;
 
 	margin: 0;
-	padding: 0;
-	display: none;
+	padding: 10px;
 	position: fixed;
 	width: 100%;
 	//height: calc(40% - $height_bottom_bars_mobile);
 	height: $fixed_height;
 	bottom: $height_bottom_bars_mobile;
 	left: 0;
-	z-index: 1000;
+	z-index: 9999;
 
-	justify-content: center;
-	align-items: center;
-	display: flex;
+	justify-content: flex-start;
+	display: block;
 
 	@media (min-width: 782px) {
 		//height: calc(40% - $height_top_bottom_bars);
 		height: $fixed_height;
 		bottom: $height_bottom_bar;
+	}
+
+	.tabs {
+		border-bottom: 3px solid #a0aec1;
+	}
+
+	.kb-header-visual-builder-modal-close {
+		border: 0;
+		background: transparent;
+		cursor: pointer;
+		padding: 0;
+		z-index: 99999;
+		display: inline-flex;
+		justify-content: center;
+		align-items: center;
+		color: #444444;
+		-webkit-appearance: none;
+		position: absolute;
+		top: 4px;
+		right: 4px;
+
+		&:focus {
+			outline: none;
+		}
+	}
+
+	.visual-desktop-row {
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
+
+		padding: 10px 15px;
+		background-color: #FFF;
+		border: 1px solid #a0aec1;
+
+	}
+
+	.visual-row-wrapper {
+		display: flex;
+		align-items: center;
+		margin-bottom: 10px;
+
+		&:first-child {
+			margin-top: 10px;
+		}
+		&:last-child {
+			margin-bottom: 0;
+		}
+
+		.visual-section-wrapper {
+		}
+	}
+
+	.settings-icon {
+		font-size: 24px; /* Example size, adjust as needed */
+		margin-right: 10px; /* Space between the icon and the row content */
 	}
 }
 .is-sidebar-opened .kb-header-visual-builder-modal {
@@ -38,47 +92,8 @@ $fixed_height: 250px;
 	}
 }
 
-.kb-header-visual-builder-modal-close {
-	border: 0;
-	background: transparent;
-	cursor: pointer;
-	padding: 0;
-	z-index: 1001;
-	display: inline-flex;
-	justify-content: center;
-	align-items: center;
-	color: #444444;
-	-webkit-appearance: none;
-	position: absolute;
-	top: 4px;
-	right: 4px;
-
-	&:focus {
-		outline: none;
-	}
-}
-
-//.kb-off-canvas-label {
-//	position: absolute;
-//	bottom: 100%;
-//	font-size: 10px;
-//	left: 0;
-//	line-height: 20px;
-//	display: inline-block;
+//Something in the block editor transforms top level block wrappers after adding blocks, this prevents that and keeps appropriate modal display
+//.wp-block-kadence-header div {
+//	transform: none !important;
 //}
-//.kb-off-canvas-modal-popup {
-//	text-align: left;
-//	border: 0 solid transparent;
-//	max-height: 100%;
-//	overflow-y: auto;
-//
-//	display: flex !important;
-//	align-items: flex-start !important;
-//	min-width: 100px;
-//
-//	> .block-editor-inner-blocks {
-//		flex: 1;
-//		min-width: 0;
-//		width: 100%;
-//	}
-//}
+
