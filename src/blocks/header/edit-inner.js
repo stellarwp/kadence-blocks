@@ -17,8 +17,9 @@ import {
 	useInnerBlocksProps,
 	InspectorAdvancedControls,
 	store as editorStore,
+	BlockContextProvider,
 } from '@wordpress/block-editor';
-import { TextControl, ExternalLink, Button, Placeholder, ToggleControl } from '@wordpress/components';
+import { TextControl, ExternalLink, Button, Placeholder, ToggleControl, SelectControl } from '@wordpress/components';
 import { formBlockIcon } from '@kadence/icons';
 import {
 	KadencePanelBody,
@@ -36,6 +37,7 @@ import {
 	BackgroundTypeControl,
 	GradientControl,
 	ResponsiveSelectControl,
+	SmallResponsiveControl,
 } from '@kadence/components';
 import { getPreviewSize, mouseOverVisualizer, arrayStringToInt, useElementWidth } from '@kadence/helpers';
 
@@ -113,9 +115,12 @@ export function EditInner(props) {
 		heightUnit: meta?._kad_header_heightUnit,
 		width: meta?._kad_header_width,
 		widthUnit: meta?._kad_header_widthUnit,
-		style: meta?._kad_header_style,
-		styleTablet: meta?._kad_header_styleTablet,
-		styleMobile: meta?._kad_header_styleMobile,
+		isSticky: meta?._kad_header_isSticky,
+		isStickyTablet: meta?._kad_header_isStickyTablet,
+		isStickyMobile: meta?._kad_header_isStickyMobile,
+		isTransparent: meta?._kad_header_isTransparent,
+		isTransparentTablet: meta?._kad_header_isTransparentTablet,
+		isTransparentMobile: meta?._kad_header_isTransparentMobile,
 		autoTransparentSpacing: meta?._kad_header_autoTransparentSpacing,
 		stickySection: meta?._kad_header_stickySection,
 		stickySectionTablet: meta?._kad_header_stickySectionTablet,
@@ -163,9 +168,12 @@ export function EditInner(props) {
 		heightUnit,
 		width,
 		widthUnit,
-		style,
-		styleTablet,
-		styleMobile,
+		isSticky,
+		isStickyTablet,
+		isStickyMobile,
+		isTransparent,
+		isTransparentTablet,
+		isTransparentMobile,
 		autoTransparentSpacing,
 		stickySection,
 		stickySectionTablet,
@@ -188,7 +196,9 @@ export function EditInner(props) {
 		undefined !== flex?.direction?.[1] ? flex.direction[1] : '',
 		undefined !== flex?.direction?.[2] ? flex.direction[2] : ''
 	);
-	const previewStyle = getPreviewSize(previewDevice, style ? style : 'standard', styleTablet, styleMobile);
+	const previewIsSticky = getPreviewSize(previewDevice, isSticky, isStickyTablet, isStickyMobile);
+	const previewIsTransparent = getPreviewSize(previewDevice, isTransparent, isTransparentTablet, isTransparentMobile);
+
 	const previewStickySection = getPreviewSize(
 		previewDevice,
 		stickySection ? stickySection : 'main',
@@ -330,27 +340,41 @@ export function EditInner(props) {
 							panelName={'kb-col-flex-settings'}
 						>
 							<ResponsiveSelectControl
-								label={__('Style', 'kadence-blocks')}
-								value={style}
-								tabletValue={styleTablet}
-								mobileValue={styleMobile}
+								label={__('Sticky Header', 'kadence-blocks')}
+								value={isSticky}
+								tabletValue={isStickyTablet}
+								mobileValue={isStickyMobile}
 								options={[
-									{ value: 'standard', label: __('Standard', 'kadence-blocks') },
-									{ value: 'sticky', label: __('Sticky', 'kadence-blocks') },
-									{ value: 'transparent', label: __('Transparent', 'kadence-blocks') },
+									{ value: '', label: __('-', 'kadence-blocks') },
+									{ value: '1', label: __('Yes', 'kadence-blocks') },
+									{ value: '0', label: __('No', 'kadence-blocks') },
 								]}
-								onChange={(value) => setMetaAttribute(value, 'style')}
-								onChangeTablet={(value) => setMetaAttribute(value, 'styleTablet')}
-								onChangeMobile={(value) => setMetaAttribute(value, 'styleMobile')}
+								onChange={(value) => setMetaAttribute(value, 'isSticky')}
+								onChangeTablet={(value) => setMetaAttribute(value, 'isStickyTablet')}
+								onChangeMobile={(value) => setMetaAttribute(value, 'isStickyMobile')}
 							/>
-							{previewStyle == 'transparent' && (
+							<ResponsiveSelectControl
+								label={__('Transparent Header', 'kadence-blocks')}
+								value={isTransparent}
+								tabletValue={isTransparentTablet}
+								mobileValue={isTransparentMobile}
+								options={[
+									{ value: '', label: __('-', 'kadence-blocks') },
+									{ value: '1', label: __('Yes', 'kadence-blocks') },
+									{ value: '0', label: __('No', 'kadence-blocks') },
+								]}
+								onChange={(value) => setMetaAttribute(value, 'isTransparent')}
+								onChangeTablet={(value) => setMetaAttribute(value, 'isTransparentTablet')}
+								onChangeMobile={(value) => setMetaAttribute(value, 'isTransparentMobile')}
+							/>
+							{previewIsTransparent == '1' && (
 								<ToggleControl
 									label={__('Auto spacing under', 'kadence-blocks')}
 									checked={autoTransparentSpacing}
 									onChange={(value) => setMetaAttribute(value, 'autoTransparentSpacing')}
 								/>
 							)}
-							{previewStyle == 'sticky' && (
+							{previewIsSticky == '1' && (
 								<>
 									<ResponsiveSelectControl
 										label={__('Sticky Section', 'kadence-blocks')}
@@ -358,11 +382,11 @@ export function EditInner(props) {
 										tabletValue={stickySectionTablet}
 										mobileValue={stickySectionMobile}
 										options={[
-											{ value: 'main', label: __('Only Main Row', 'kadence-blocks') },
-											{ value: 'top_main', label: __('Top and Main Row', 'kadence-blocks') },
 											{ value: 'top_main_bottom', label: __('Whole Header', 'kadence-blocks') },
-											{ value: 'top', label: __('Only Top Row', 'kadence-blocks') },
-											{ value: 'top_bottom', label: __('Only Bottom Row', 'kadence-blocks') },
+											// { value: 'main', label: __('Only Main Row', 'kadence-blocks') },
+											// { value: 'top', label: __('Only Top Row', 'kadence-blocks') },
+											// { value: 'bottom', label: __('Only Bottom Row', 'kadence-blocks') },
+											// { value: 'top_main', label: __('Top and Main Row', 'kadence-blocks') },
 										]}
 										onChange={(value) => setMetaAttribute(value, 'stickySection')}
 										onChangeTablet={(value) => setMetaAttribute(value, 'stickySectionTablet')}
@@ -833,7 +857,7 @@ export function EditInner(props) {
 
 				{activeTab === 'style' && (
 					<>
-						{previewStyle != 'transparent' && (
+						{previewIsTransparent != '1' && (
 							<KadencePanelBody
 								title={__('Background Settings', 'kadence-blocks')}
 								initialOpen={true}
@@ -1385,7 +1409,15 @@ export function EditInner(props) {
 					help={__('Separate multiple classes with spaces.')}
 				/>
 			</InspectorAdvancedControls>
-			<Fragment {...innerBlocksProps} />
+			<BlockContextProvider
+				value={{
+					'kadence/headerPostId': id,
+					'kadence/headerIsSticky': previewIsSticky,
+					'kadence/headerIsTransparent': previewIsTransparent,
+				}}
+			>
+				<Fragment {...innerBlocksProps} />
+			</BlockContextProvider>
 			<span className="height-ref" ref={componentRef} />
 			{/*<SpacingVisualizer*/}
 			{/*	style={ {*/}

@@ -2606,13 +2606,13 @@ class Kadence_Blocks_CSS {
 
 		if ( ! $check_array ) {
 			if ( $size === 'Mobile' ) {
-				if ( ! empty( $value_mobile ) ) {
+				if ( ( isset( $value_mobile ) && $value_mobile !== '' ) || ( is_array( $value_mobile ) && ! empty( $value_mobile ) ) ) {
 					return $value_mobile;
-				} else if ( ! empty( $value_tablet ) ) {
+				} else if ( ( isset( $value_tablet ) && $value_tablet !== '' ) || ( is_array( $value_tablet ) && ! empty( $value_tablet ) ) ) {
 					return $value_tablet;
 				}
 			} else if ( $size === 'Tablet' ) {
-				if ( ! empty( $value_tablet ) ) {
+				if ( ( isset( $value_tablet ) && $value_tablet !== '' ) || ( is_array( $value_tablet ) && ! empty( $value_tablet ) ) ) {
 					return $value_tablet;
 				}
 			}
@@ -2641,13 +2641,13 @@ class Kadence_Blocks_CSS {
 	public function empty_but_check_array( $value ) {
 		$has_value = false;
 		if ( ! is_array( $value ) ) {
-			return empty( $value );
+			return isset( $value ) && $value !== '';
 		}
 
 		foreach ( $value as $array_value ) {
 			if ( is_array( $array_value ) ) {
 				$has_value = ! $this->empty_but_check_array( $array_value );
-			} else if ( ! empty( $array_value ) ) {
+			} else if ( ( isset( $array_value ) && $array_value !== '' ) || ( is_array( $array_value ) && ! empty( $array_value ) ) ) {
 				$has_value = true;
 			}
 		}

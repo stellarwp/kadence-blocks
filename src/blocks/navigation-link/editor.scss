@@ -43,9 +43,33 @@
  * Navigation Items.
  */
 
-.wp-block-kadence-navigation-link {
+.navigation ul.kb-navigation li.wp-block-kadence-navigation-link {
 	.wp-block-kadence-navigation-link__content {
 		cursor: text;
+		display: flex;
+		align-items: center;
+	}
+
+	.sub-menu {
+		.wp-block-kadence-navigation-link__content {
+			flex-wrap: wrap;
+		}
+	}
+
+	.link-highlight-label {
+		color: var(--global-palette7, #FFFFFF);
+        background: var(--global-palette2, #2F2FFC);
+		display: flex;
+		align-items:center;
+		padding: 3px;
+		font-size: 12px;
+		margin-left: 5px;
+		line-height: 1;
+		padding: 5px;
+		border-radius: 5px;
+		.kt-svg-icon {
+			padding-left: 5px;
+		}
 	}
 
 	&.is-editing,
