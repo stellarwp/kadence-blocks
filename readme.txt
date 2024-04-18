@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.3
 Tested up to: 6.5
-Stable tag: 3.2.34
+Stable tag: 3.2.35
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -176,8 +176,14 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 = 3.2.35 =
 Release Date: April TBD 2024
+* Update: readme text.
+* Update: attribute escaping issues.
+* Update: Control for dynamic text.
+* Fix: Issue with gradient controls and theme colors.
 * Fix: Variable font sizes on tab titles in tabs block
 * Fix: Transforms between core list and Icon List block
+* Fix: Issue with some section align settings in a row.
+* Fix: Issue with changing images in design library.
 
 = 3.2.34 =
 Release Date: April 10th 2024
