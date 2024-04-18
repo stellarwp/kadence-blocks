@@ -32,6 +32,32 @@ export default function BackendStyles(props) {
 		backgroundMobile,
 		backgroundHoverMobile,
 		backgroundActiveMobile,
+		highlightLabel,
+		highlightSpacing,
+		highlightSide,
+		highlightSideTablet,
+		highlightSideMobile,
+		iconSide,
+		iconSideTablet,
+		iconSideMobile,
+		labelBackground,
+		labelBackgroundHover,
+		labelBackgroundActive,
+		labelBackgroundTablet,
+		labelBackgroundHoverTablet,
+		labelBackgroundActiveTablet,
+		labelBackgroundMobile,
+		labelBackgroundHoverMobile,
+		labelBackgroundActiveMobile,
+		labelColor,
+		labelColorHover,
+		labelColorActive,
+		labelColorTablet,
+		labelColorHoverTablet,
+		labelColorActiveTablet,
+		labelColorMobile,
+		labelColorHoverMobile,
+		labelColorActiveMobile,
 		linkColorDropdown,
 		linkColorDropdownHover,
 		linkColorDropdownActive,
@@ -63,6 +89,7 @@ export default function BackendStyles(props) {
 		megaMenuCustomWidth,
 		megaMenuCustomWidthUnit,
 		typography,
+		highlightTypography,
 		dropdownTypography,
 		dropdownDivider,
 		dropdownDividerTablet,
@@ -146,6 +173,37 @@ export default function BackendStyles(props) {
 		backgroundHover,
 		backgroundHoverTablet,
 		backgroundHoverMobile
+	);
+	const previewLabelColor = getPreviewSize(previewDevice, labelColor, labelColorTablet, labelColorMobile);
+	const previewLabelColorHover = getPreviewSize(
+		previewDevice,
+		labelColorHover,
+		labelColorHoverTablet,
+		labelColorHoverMobile
+	);
+	const previewLabelColorActive = getPreviewSize(
+		previewDevice,
+		labelColorActive,
+		labelColorActiveTablet,
+		labelColorActiveMobile
+	);
+	const previewLabelBackground = getPreviewSize(
+		previewDevice,
+		labelBackground,
+		labelBackgroundTablet,
+		labelBackgroundMobile
+	);
+	const previewLabelBackgroundHover = getPreviewSize(
+		previewDevice,
+		labelBackgroundHover,
+		labelBackgroundHoverTablet,
+		labelBackgroundHoverMobile
+	);
+	const previewLabelBackgroundActive = getPreviewSize(
+		previewDevice,
+		labelBackgroundActive,
+		labelBackgroundActiveTablet,
+		labelBackgroundActiveMobile
 	);
 	const previewBackgroundActive = getPreviewSize(
 		previewDevice,
@@ -249,6 +307,14 @@ export default function BackendStyles(props) {
 		mediaIcon[0].widthTablet,
 		mediaIcon[0].widthMobile
 	);
+	const previewHighlightLabelGap = getPreviewSize(
+		previewDevice,
+		highlightSpacing[0].gap[0],
+		highlightSpacing[0].gap[1],
+		highlightSpacing[0].gap[2]
+	);
+	const previewHighlightSide = getPreviewSize(previewDevice, highlightSide, highlightSideTablet, highlightSideMobile);
+	const previewIconSide = getPreviewSize(previewDevice, iconSide, iconSideTablet, iconSideMobile);
 	const previewMediaAlign = getPreviewSize(previewDevice, mediaAlign, mediaAlignTablet, mediaAlignMobile);
 
 	const css = new KadenceBlocksCSS();
@@ -340,7 +406,10 @@ export default function BackendStyles(props) {
 		`.wp-block-kadence-navigation .navigation .menu-container > ul li.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a`
 	);
 	css.render_font(typography ? typography : [], previewDevice);
-
+	css.set_selector(
+		`.wp-block-kadence-navigation .navigation .menu-container > ul li.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a .link-highlight-label`
+	);
+	css.render_font(highlightTypography ? highlightTypography : [], previewDevice);
 	css.set_selector(`.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a`);
 	css.render_measure_output(padding, tabletPadding, mobilePadding, previewDevice, 'padding', paddingUnit);
 	css.render_measure_output(margin, tabletMargin, mobileMargin, previewDevice, 'margin', marginUnit);
@@ -397,6 +466,103 @@ export default function BackendStyles(props) {
 			`.wp-block-kadence-navigation-link${uniqueID}.current-menu-item > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .link-svg-icon > svg`
 		);
 		css.add_property('color', css.render_color(previewMediaStyleColorActive));
+	}
+
+	css.set_selector(
+		`.wp-block-kadence-navigation-link${uniqueID}.menu-item > .link-drop-wrap > a.wp-block-kadence-navigation-link__content .link-highlight-label`
+	);
+	css.add_property('color', css.render_color(previewLabelColor));
+	css.add_property('background-color', css.render_color(previewLabelBackground));
+	css.render_measure_output(
+		highlightSpacing[0].padding,
+		highlightSpacing[0].tabletPadding,
+		highlightSpacing[0].mobilePadding,
+		previewDevice,
+		'padding',
+		'px'
+	);
+	css.render_measure_output(
+		highlightSpacing[0].margin,
+		highlightSpacing[0].tabletMargin,
+		highlightSpacing[0].mobileMargin,
+		previewDevice,
+		'margin',
+		'px'
+	);
+	css.add_property(
+		'border-top',
+		css.render_border(
+			highlightSpacing[0].border,
+			highlightSpacing[0].tabletBorder,
+			highlightSpacing[0].mobileBorder,
+			previewDevice,
+			'top',
+			false
+		)
+	);
+	css.add_property(
+		'border-right',
+		css.render_border(
+			highlightSpacing[0].border,
+			highlightSpacing[0].tabletBorder,
+			highlightSpacing[0].mobileBorder,
+			previewDevice,
+			'right',
+			false
+		)
+	);
+	css.add_property(
+		'border-bottom',
+		css.render_border(
+			highlightSpacing[0].border,
+			highlightSpacing[0].tabletBorder,
+			highlightSpacing[0].mobileBorder,
+			previewDevice,
+			'bottom',
+			false
+		)
+	);
+	css.add_property(
+		'border-left',
+		css.render_border(
+			highlightSpacing[0].border,
+			highlightSpacing[0].tabletBorder,
+			highlightSpacing[0].mobileBorder,
+			previewDevice,
+			'left',
+			false
+		)
+	);
+	css.render_measure_output(
+		highlightSpacing[0].borderRadius,
+		highlightSpacing[0].tabletBorderRadius,
+		highlightSpacing[0].mobileBorderRadius,
+		previewDevice,
+		'border-radius',
+		'px'
+	);
+	if ('left' === previewHighlightSide) {
+		css.add_property('order', '-1');
+	}
+	if (undefined !== previewHighlightLabelGap && previewHighlightLabelGap) {
+		css.add_property('gap', css.get_gap_size(previewHighlightLabelGap, 'px'));
+	}
+	css.set_selector(
+		`.wp-block-kadence-navigation-link${uniqueID}.menu-item > .link-drop-wrap > a:hover .link-highlight-label`
+	);
+	css.add_property('transition', 'color 0.35s ease-in-out, background-color 0.35s ease-in-out');
+	css.add_property('color', css.render_color(previewLabelColorHover));
+	css.add_property('background-color', css.render_color(previewLabelBackgroundHover));
+	css.set_selector(
+		`.wp-block-kadence-navigation-link${uniqueID}.menu-item > .link-drop-wrap > a:active .link-highlight-label`
+	);
+	css.add_property('color', css.render_color(previewLabelColorActive));
+	css.add_property('background-color', css.render_color(previewLabelBackgroundActive));
+	css.set_selector(
+		`.wp-block-kadence-navigation-link${uniqueID}.menu-item > .link-drop-wrap > a .link-highlight-label .kt-highlight-label-icon`
+	);
+	if ('left' === previewIconSide) {
+		css.add_property('order', '-1');
 	}
 
 	const cssOutput = css.css_output();

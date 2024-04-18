@@ -203,6 +203,70 @@
 			"type": "string",
 			"default": ""
 		},
+		"highlightLabel": {
+			"type": "string",
+			"default": ""
+		},
+		"highlightSide": {
+			"type": "string",
+			"default": "right"
+		},
+		"highlightSideTablet": {
+			"type": "string",
+			"default": "right"
+		},
+		"highlightSideMobile": {
+			"type": "string",
+			"default": "right"
+		},
+		"iconSide": {
+			"type": "string",
+			"default": "right"
+		},
+		"iconSideTablet": {
+			"type": "string",
+			"default": "right"
+		},
+		"iconSideMobile": {
+			"type": "string",
+			"default": "right"
+		},
+		"labelColor": {
+			"type": "string",
+			"default": ""
+		},
+		"labelColorHover": {
+			"type": "string",
+			"default": ""
+		},
+		"labelColorActive": {
+			"type": "string",
+			"default": ""
+		},
+		"labelColorTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"labelColorHoverTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"labelColorActiveTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"labelColorMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"labelColorHoverMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"labelColorActiveMobile": {
+			"type": "string",
+			"default": ""
+		},
 		"background": {
 			"type": "string",
 			"default": ""
@@ -272,6 +336,39 @@
 			"default": ""
 		},
 		"linkColorTransparentActiveMobile": {
+		"labelBackground": {
+			"type": "string",
+			"default": ""
+		},
+		"labelBackgroundHover": {
+			"type": "string",
+			"default": ""
+		},
+		"labelBackgroundActive": {
+			"type": "string",
+			"default": ""
+		},
+		"labelBackgroundTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"labelBackgroundHoverTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"labelBackgroundActiveTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"labelBackgroundMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"labelBackgroundHoverMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"labelBackgroundActiveMobile": {
 			"type": "string",
 			"default": ""
 		},
@@ -324,6 +421,27 @@
 			]
 		},
 		"typography": {
+			"type": "array",
+			"default": [
+				{
+					"size": ["", "", ""],
+					"sizeType": "px",
+					"lineHeight": ["", "", ""],
+					"lineType": "",
+					"letterSpacing": ["", "", ""],
+					"letterType": "px",
+					"textTransform": "",
+					"family": "",
+					"google": "",
+					"style": "",
+					"weight": "",
+					"variant": "",
+					"subset": "",
+					"loadGoogle": true
+				}
+			]
+		},
+		"highlightTypography": {
 			"type": "array",
 			"default": [
 				{
@@ -466,6 +584,23 @@
 				}
 			]
 		},
+		"highlightIcon": {
+			"type": "array",
+			"default": [
+				{
+					"icon": "",
+					"size": 12,
+					"sizeTablet": "",
+					"sizeMobile": "",
+					"width": 2,
+					"widthTablet": 2,
+					"widthMobile": 2,
+					"hoverAnimation": "none",
+					"title": "",
+					"flipIcon": ""
+				}
+			]
+		},
 		"mediaStyle": {
 			"type": "array",
 			"default": [
@@ -500,6 +635,27 @@
 					"margin": ["", "", "", ""],
 					"marginTablet": ["", "", "", ""],
 					"marginMobile": ["", "", "", ""]
+				}
+			]
+		},
+		"highlightSpacing": {
+			"type": "array",
+			"default": [
+				{
+					"border": "",
+					"tabletBorder": "",
+					"mobileBorder": "",
+					"borderRadius": [5, 5, 5, 5],
+					"tabletBorderRadius": [5, 5, 5, 5],
+					"mobileBorderRadius": [5, 5, 5, 5],
+					"borderWidth": [0, 0, 0, 0],
+					"gap": ["", "", ""],
+					"padding": [5, 5, 5, 5],
+					"tabletPadding": [5, 5, 5, 5],
+					"mobilePadding": [5, 5, 5, 5],
+					"margin": ["", "", "", ""],
+					"tabletMargin": ["", "", "", ""],
+					"mobileMargin": ["", "", "", ""]
 				}
 			]
 		}
