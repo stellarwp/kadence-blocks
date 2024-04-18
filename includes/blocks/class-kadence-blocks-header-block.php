@@ -243,18 +243,24 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 				: 'standard' ) );
 
 		$wrapper_classes = array( 'wp-block-kadence-header' . $unique_id );
-		$wrapper_classes[] = 'header-desktop-style-' . $style;
-		$wrapper_classes[] = 'header-tablet-style-' . $style_tablet;
-		$wrapper_classes[] = 'header-mobile-style-' . $style_mobile;
+		$wrapper_classes[] = $is_sticky ? 'header-desktop-sticky' : '';
+		$wrapper_classes[] = $is_sticky_tablet ? 'header-tablet-sticky' : '';
+		$wrapper_classes[] = $is_sticky_mobile ? 'header-mobile-sticky' : '';
+		$wrapper_classes[] = $is_transparent ? 'header-desktop-transparent' : '';
+		$wrapper_classes[] = $is_transparent_tablet ? 'header-tablet-transparent' : '';
+		$wrapper_classes[] = $is_transparent_mobile ? 'header-mobile-transparent' : '';
 
 		$wrapper_attributes = get_block_wrapper_attributes(
 			array(
 				'class'      => implode( ' ', $wrapper_classes ),
 				'aria-label' => $name,
 				'data-auto-transparent-spacing' => $header_attributes['autoTransparentSpacing'],
-				'data-style' => $style,
-				'data-style-tablet' => $style_tablet,
-				'data-style-mobile' => $style_mobile,
+				'data-sticky' => $is_sticky,
+				'data-sticky-tablet' => $is_sticky_tablet,
+				'data-sticky-mobile' => $is_sticky_mobile,
+				'data-transparent' => $is_transparent,
+				'data-transparent-tablet' => $is_transparent_tablet,
+				'data-transparent-mobile' => $is_transparent_mobile,
 				'data-sticky-section' => $header_attributes['stickySection'] ?: 'main',
 				'data-sticky-section-tablet' => $header_attributes['stickySectionTablet'] ?: 'main',
 				'data-sticky-section-mobile' => $header_attributes['stickySectionMobile'] ?: 'main',

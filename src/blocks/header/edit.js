@@ -128,9 +128,12 @@ export function Edit(props) {
 	const blockClasses = classnames({
 		'wp-block-kadence-header': true,
 		[`wp-block-kadence-header${uniqueID}`]: uniqueID,
-		[`header-desktop-style-${style}`]: !previewDevice || previewDevice == 'Desktop',
-		[`header-tablet-style-${styleTablet}`]: previewDevice == 'Tablet',
-		[`header-mobile-style-${styleMobile}`]: previewDevice == 'Mobile',
+		[`header-desktop-sticky`]: isSticky == '1' && (!previewDevice || previewDevice == 'Desktop'),
+		[`header-tablet-sticky`]: isStickyTablet == '1' && previewDevice == 'Tablet',
+		[`header-mobile-sticky`]: isStickyMobile == '1' && previewDevice == 'Mobile',
+		[`header-desktop-transparent`]: isTransparent == '1' && (!previewDevice || previewDevice == 'Desktop'),
+		[`header-tablet-transparent`]: isTransparentTablet == '1' && previewDevice == 'Tablet',
+		[`header-mobile-transparent`]: isTransparentMobile == '1' && previewDevice == 'Mobile',
 	});
 
 	const blockProps = useBlockProps({

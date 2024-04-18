@@ -2,7 +2,7 @@ import { KadenceBlocksCSS, getPreviewSize, useEditorWidth } from '@kadence/helpe
 import { useRef } from '@wordpress/element';
 
 export default function BackendStyles(props) {
-	const { attributes, isSelected, previewDevice, currentRef } = props;
+	const { attributes, isSelected, previewDevice, currentRef, context } = props;
 
 	const {
 		uniqueID,
@@ -50,6 +50,15 @@ export default function BackendStyles(props) {
 		backgroundDropdownMobile,
 		backgroundDropdownHoverMobile,
 		backgroundDropdownActiveMobile,
+		linkColorTransparent,
+		linkColorTransparentHover,
+		linkColorTransparentActive,
+		linkColorTransparentTablet,
+		linkColorTransparentHoverTablet,
+		linkColorTransparentActiveTablet,
+		linkColorTransparentMobile,
+		linkColorTransparentHoverMobile,
+		linkColorTransparentActiveMobile,
 		megaMenuWidth,
 		megaMenuCustomWidth,
 		megaMenuCustomWidthUnit,
@@ -111,6 +120,24 @@ export default function BackendStyles(props) {
 		linkColorDropdownActive,
 		linkColorDropdownActiveTablet,
 		linkColorDropdownActiveMobile
+	);
+	const previewLinkColorTransparent = getPreviewSize(
+		previewDevice,
+		linkColorTransparent,
+		linkColorTransparentTablet,
+		linkColorTransparentMobile
+	);
+	const previewLinkColorTransparentHover = getPreviewSize(
+		previewDevice,
+		linkColorTransparentHover,
+		linkColorTransparentHoverTablet,
+		linkColorTransparentHoverMobile
+	);
+	const previewLinkColorTransparentActive = getPreviewSize(
+		previewDevice,
+		linkColorTransparentActive,
+		linkColorTransparentActiveTablet,
+		linkColorTransparentActiveMobile
 	);
 
 	const previewBackground = getPreviewSize(previewDevice, background, backgroundTablet, backgroundMobile);
@@ -231,11 +258,17 @@ export default function BackendStyles(props) {
 	);
 	css.add_property('color', css.render_color(previewLinkColor));
 	css.add_property('background', css.render_color(previewBackground));
+	if (context?.['kadence/headerIsTransparent']) {
+		css.add_property('color', css.render_color(previewLinkColorTransparent));
+	}
 	css.set_selector(
 		`.wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap:hover > a, .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap:hover`
 	);
 	css.add_property('color', css.render_color(previewLinkColorHover));
 	css.add_property('background', css.render_color(previewBackgroundHover));
+	if (context?.['kadence/headerIsTransparent']) {
+		css.add_property('color', css.render_color(previewLinkColorTransparentHover));
+	}
 
 	css.set_selector(
 		`.wp-block-kadence-navigation .navigation .menu-container > ul > li.menu-item.current-menu-item.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a,
@@ -243,6 +276,9 @@ export default function BackendStyles(props) {
 	);
 	css.add_property('color', css.render_color(previewLinkColorActive));
 	css.add_property('background', css.render_color(previewBackgroundActive));
+	if (context?.['kadence/headerIsTransparent']) {
+		css.add_property('color', css.render_color(previewLinkColorTransparentActive));
+	}
 
 	if (megaMenuWidth === 'custom') {
 		css.set_selector(

@@ -239,6 +239,42 @@
 			"type": "string",
 			"default": ""
 		},
+		"linkColorTransparent": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorTransparentHover": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorTransparentActive": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorTransparentTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorTransparentHoverTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorTransparentActiveTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorTransparentMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorTransparentHoverMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorTransparentActiveMobile": {
+			"type": "string",
+			"default": ""
+		},
 		"megaMenuWidth": {
 			"type": "string",
 			"default": ""
@@ -481,7 +517,10 @@
 		"customFontSize",
 		"showSubmenuIcon",
 		"maxNestingLevel",
-		"style"
+		"style",
+		"kadence/headerPostId",
+		"kadence/headerIsSticky",
+		"kadence/headerIsTransparent"
 	],
 	"supports": {
 		"html": false,

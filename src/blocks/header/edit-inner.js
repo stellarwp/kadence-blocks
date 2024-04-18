@@ -1603,8 +1603,8 @@ export function EditInner(props) {
 			<BlockContextProvider
 				value={{
 					'kadence/headerPostId': id,
-					'kadence/headerIsSticky': isSticky,
-					'kadence/headerIsTransparent': isTransparent,
+					'kadence/headerIsSticky': previewIsSticky,
+					'kadence/headerIsTransparent': previewIsTransparent,
 				}}
 			>
 				<Fragment {...innerBlocksProps} />

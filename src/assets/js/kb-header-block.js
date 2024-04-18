@@ -32,17 +32,32 @@ class KBHeader {
 	/**
 	 * The desktop style setting.
 	 */
-	style;
+	sticky;
 
 	/**
 	 * The tablet style setting.
 	 */
-	styleTablet;
+	stickyTablet;
 
 	/**
 	 * The mobile style setting.
 	 */
-	styleMobile;
+	stickyMobile;
+
+	/**
+	 * The desktop style setting.
+	 */
+	transparent;
+
+	/**
+	 * The tablet style setting.
+	 */
+	transparentTablet;
+
+	/**
+	 * The mobile style setting.
+	 */
+	transparentMobile;
 
 	/**
 	 * The desktop sticky section setting.
@@ -137,9 +152,12 @@ class KBHeader {
 		//TODO get a real root id parsed from the block unique id.
 		this.rootID = 'aaa';
 		this.autoTransparentSpacing = this.root.dataset?.autoTransparentSpacing === '1';
-		this.style = this.root.dataset?.style;
-		this.styleTablet = this.root.dataset?.styleTablet;
-		this.styleMobile = this.root.dataset?.styleMobile;
+		this.sticky = this.root.dataset?.sticky == '1';
+		this.stickyTablet = this.root.dataset?.stickyTablet == '1';
+		this.stickyMobile = this.root.dataset?.stickyMobile == '1';
+		this.transparent = this.root.dataset?.transparent == '1';
+		this.transparentTablet = this.root.dataset?.transparentTablet == '1';
+		this.transparentMobile = this.root.dataset?.transparentMobile == '1';
 		this.stickySection = this.root.dataset?.stickySection;
 		this.stickySectionTablet = this.root.dataset?.stickySectionTablet;
 		this.stickySectionMobile = this.root.dataset?.stickySectionMobile;
@@ -150,15 +168,10 @@ class KBHeader {
 		this.revealScrollUp = this.root.dataset?.revealScrollUp === '1';
 		this._state = 'CREATED';
 
-		if (this.style == 'transparent' && this.autoTransparentSpacing) {
+		if (this.transparent && this.autoTransparentSpacing) {
 			this.initAutoTransparentSpacing();
 		}
-		if (
-			(this.style.includes('sticky') ||
-				this.styleTablet.includes('sticky') ||
-				this.styleMobile.includes('sticky')) &&
-			this.stickySection
-		) {
+		if ((this.sticky || this.stickyTablet || this.stickyMobile) && this.stickySection) {
 			this.initStickyHeader();
 		}
 
@@ -203,15 +216,15 @@ class KBHeader {
 
 		if (parseInt(kadenceHeaderConfig.breakPoints.desktop) < window.innerWidth) {
 			this.activeSize = 'desktop';
-			if (this.style == 'sticky') {
+			if (this.sticky) {
 				this.activeOffsetTop = this.getOffset(this.root).top;
 			}
 		} else if (parseInt(kadenceHeaderConfig.breakPoints.tablet) < window.innerWidth) {
 			this.activeSize = 'tablet';
-			if (this.styleTablet == 'sticky') {
+			if (this.stickyTablet) {
 				this.activeOffsetTop = this.getOffset(this.root).top;
 			}
-		} else if (this.styleMobile == 'sticky') {
+		} else if (this.stickyMobile) {
 			this.activeOffsetTop = this.getOffset(this.root).top;
 		}
 		window.addEventListener('resize', this.updateSticky.bind(this), false);
@@ -272,9 +285,9 @@ class KBHeader {
 		//don't do sticky stuff if the current screen size is not set to style sticky
 		if (
 			!(
-				(this.activeSize == 'desktop' && this.style.includes('sticky')) ||
-				(this.activeSize == 'tablet' && this.styleTablet.includes('sticky')) ||
-				(this.activeSize == 'mobile' && this.styleMobile.includes('sticky'))
+				(this.activeSize == 'desktop' && this.sticky) ||
+				(this.activeSize == 'tablet' && this.stickyTablet) ||
+				(this.activeSize == 'mobile' && this.stickyMobile)
 			)
 		) {
 			//reset all state classes and end
@@ -303,7 +316,7 @@ class KBHeader {
 		var elHeight = this.activeHeader.offsetHeight;
 		const activeSizeCased =
 			this.activeSize == 'desktop' ? '' : this.activeSize.charAt(0).toUpperCase() + this.activeSize.slice(1);
-		if (!this['style' + activeSizeCased].includes('transparent')) {
+		if (!this['transparent' + activeSizeCased]) {
 			this.root.style.height = elHeight + 'px';
 		}
 
