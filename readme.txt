@@ -176,6 +176,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 = 3.2.35 =
 Release Date: April TBD 2024
+* Update: Captcha block can use different keys and languages for each instance.
 * Update: readme text.
 * Update: attribute escaping issues.
 * Update: Control for dynamic text.
@@ -184,6 +185,7 @@ Release Date: April TBD 2024
 * Fix: Transforms between core list and Icon List block
 * Fix: Issue with some section align settings in a row.
 * Fix: Issue with changing images in design library.
+* Fix: Linking to numeric anchor tags on accordion panes.
 
 = 3.2.34 =
 Release Date: April 10th 2024
