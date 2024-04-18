@@ -336,6 +336,9 @@
 			"default": ""
 		},
 		"linkColorTransparentActiveMobile": {
+			"type": "string",
+			"default": ""
+		},
 		"labelBackground": {
 			"type": "string",
 			"default": ""
