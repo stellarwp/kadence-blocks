@@ -84,6 +84,17 @@ $fixed_height: 250px;
 		font-size: 24px; /* Example size, adjust as needed */
 		margin-right: 10px; /* Space between the icon and the row content */
 	}
+
+	.visual-inner-block {
+		background: #80808045;
+		padding: 3px 8px;
+		border-radius: 3px;
+		font-size: 16px;
+
+		button {
+			padding: 0 !important;
+		}
+	}
 }
 .is-sidebar-opened .kb-header-visual-builder-modal {
 	@media (min-width: 782px) {
