@@ -254,13 +254,9 @@ export function Edit(props) {
 	}
 
 	if (previewIsTransparent) {
-		return (
-			<div className="kb-header-transparent-placeholder">
-				<>{mainBlockContent}</>
-			</div>
-		);
+		return <div className="kb-header-transparent-placeholder">{mainBlockContent}</div>;
 	}
-	return <Fragment>{mainBlockContent}</Fragment>;
+	return mainBlockContent;
 }
 
 export default Edit;
