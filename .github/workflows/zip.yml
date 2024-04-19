@@ -1,0 +1,75 @@
+name: Generate Zip
+on:
+    pull_request:
+    workflow_dispatch:
+        inputs:
+            ref:
+                description: 'Git Commit Ref (branch, tag, or hash)'
+                default: 'main'
+                required: true
+                type: string
+            production:
+                description: 'Is this a production build?'
+                default: 'no'
+                type: choice
+                options:
+                    - 'yes'
+                    - 'no'
+            slack_channel:
+                description: 'Slack channel ID to post to'
+                required: false
+            slack_thread:
+                description: 'Slack thread to post to'
+                required: false
+
+jobs:
+    set_vars:
+        runs-on: ubuntu-latest
+        outputs:
+            ref: ${{ steps.set_var.outputs.ref }}
+            production: ${{ steps.set_var.outputs.production }}
+            slack_channel: ${{ steps.set_var.outputs.slack_channel }}
+            slack_thread: ${{ steps.set_var.outputs.slack_thread }}
+        steps:
+            - name: Prepare job variables
+              if: github.event_name == 'pull_request'
+              run: |
+                  echo "JOB_REF=${{ github.event.pull_request.head.ref }}" >> $GITHUB_ENV
+                  echo "JOB_PRODUCTION=no" >> $GITHUB_ENV  # Default production to 'no'
+                  echo "JOB_SLACK_CHANNEL=''" >> $GITHUB_ENV  # Default slack_channel
+                  echo "JOB_SLACK_THREAD=''" >> $GITHUB_ENV  # Default slack_thread
+
+            - name: If a workflow_dispatch, set ref based on input
+              if: github.event_name == 'workflow_dispatch'
+              run: |
+                  echo "JOB_REF=${{ github.event.inputs.ref }}" >> $GITHUB_ENV
+                  echo "JOB_PRODUCTION=${{ github.event.inputs.production }}" >> $GITHUB_ENV
+                  echo "JOB_SLACK_CHANNEL=${{ github.event.inputs.slack_channel }}" >> $GITHUB_ENV
+                  echo "JOB_SLACK_THREAD=${{ github.event.inputs.slack_thread }}" >> $GITHUB_ENV
+
+            - name: Set ref github workflow output
+              id: set_var
+              run: |
+                  echo "ref=${{ env.JOB_REF }}" >> $GITHUB_OUTPUT
+                  echo "production=${{ env.JOB_PRODUCTION }}" >> $GITHUB_OUTPUT
+                  echo "slack_channel=${{ env.JOB_SLACK_CHANNEL }}" >> $GITHUB_OUTPUT
+                  echo "slack_thread=${{ env.JOB_SLACK_THREAD }}" >> $GITHUB_OUTPUT
+
+    zip:
+        uses: stellarwp/github-actions/.github/workflows/zip.yml@main
+        needs:
+            - set_vars
+        with:
+            ref: ${{ needs.set_vars.outputs.ref }}
+            production: ${{ needs.set_vars.outputs.production }}
+            slack_channel: ${{ needs.set_vars.outputs.slack_channel }}
+            slack_thread: ${{ needs.set_vars.outputs.slack_thread }}
+        secrets:
+            COMPOSER_TOKEN: ${{ secrets.COMPOSER_TOKEN }}
+            GH_BOT_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+            JENKINS_SECRET: ${{ secrets.ZIP_JENKINS_SECRET }}
+            S3_BUCKET: ${{ secrets.ZIP_S3_BUCKET }}
+            S3_ACCESS_KEY_ID: ${{ secrets.ZIP_S3_ACCESS_KEY_ID }}
+            S3_SECRET_ACCESS_KEY: ${{ secrets.ZIP_S3_SECRET_ACCESS_KEY }}
+            S3_REGION: ${{ secrets.ZIP_S3_REGION }}
+            S3_ENDPOINT: ${{ secrets.ZIP_S3_ENDPOINT }}
