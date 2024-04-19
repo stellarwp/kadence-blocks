@@ -58,7 +58,7 @@ jobs:
     zip:
         uses: stellarwp/github-actions/.github/workflows/zip.yml@main
         needs:
-            - set_git_ref
+            - set_vars
         with:
             ref: ${{ needs.set_vars.outputs.ref }}
             production: ${{ needs.set_vars.outputs.production }}
