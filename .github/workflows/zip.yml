@@ -23,35 +23,47 @@ on:
                 required: false
 
 jobs:
-    set_git_ref:
+    set_vars:
         runs-on: ubuntu-latest
         outputs:
             ref: ${{ steps.set_var.outputs.ref }}
+            production: ${{ steps.set_var.outputs.production }}
+            slack_channel: ${{ steps.set_var.outputs.slack_channel }}
+            slack_thread: ${{ steps.set_var.outputs.slack_thread }}
         steps:
             - name: Prepare job variables
               if: github.event_name == 'pull_request'
               run: |
                   echo "JOB_REF=${{ github.event.pull_request.head.ref }}" >> $GITHUB_ENV
+                  echo "JOB_PRODUCTION=no" >> $GITHUB_ENV  # Default production to 'no'
+                  echo "JOB_SLACK_CHANNEL=''" >> $GITHUB_ENV  # Default slack_channel
+                  echo "JOB_SLACK_THREAD=''" >> $GITHUB_ENV  # Default slack_thread
 
             - name: If a workflow_dispatch, set ref based on input
               if: github.event_name == 'workflow_dispatch'
               run: |
                   echo "JOB_REF=${{ github.event.inputs.ref }}" >> $GITHUB_ENV
+                  echo "JOB_PRODUCTION=${{ github.event.inputs.production }}" >> $GITHUB_ENV
+                  echo "JOB_SLACK_CHANNEL=${{ github.event.inputs.slack_channel }}" >> $GITHUB_ENV
+                  echo "JOB_SLACK_THREAD=${{ github.event.inputs.slack_thread }}" >> $GITHUB_ENV
 
             - name: Set ref github workflow output
               id: set_var
               run: |
                   echo "ref=${{ env.JOB_REF }}" >> $GITHUB_OUTPUT
+                  echo "production=${{ env.JOB_PRODUCTION }}" >> $GITHUB_OUTPUT
+                  echo "slack_channel=${{ env.JOB_SLACK_CHANNEL }}" >> $GITHUB_OUTPUT
+                  echo "slack_thread=${{ env.JOB_SLACK_THREAD }}" >> $GITHUB_OUTPUT
 
     zip:
         uses: stellarwp/github-actions/.github/workflows/zip.yml@main
         needs:
             - set_git_ref
         with:
-            ref: ${{ needs.set_git_ref.outputs.ref }}
-            production: ${{ github.event.inputs.production }}
-            slack_channel: ${{ github.event.inputs.slack_channel }}
-            slack_thread: ${{ github.event.inputs.slack_thread }}
+            ref: ${{ needs.set_vars.outputs.ref }}
+            production: ${{ needs.set_vars.outputs.production }}
+            slack_channel: ${{ needs.set_vars.outputs.slack_channel }}
+            slack_thread: ${{ needs.set_vars.outputs.slack_thread }}
         secrets:
             COMPOSER_TOKEN: ${{ secrets.COMPOSER_TOKEN }}
             GH_BOT_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
