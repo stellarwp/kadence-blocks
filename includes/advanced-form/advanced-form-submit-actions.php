@@ -156,7 +156,8 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 			$headers = 'Content-Type: text/plain; charset=UTF-8' . "\r\n";
 		}
 
-		$body = $email_content;
+		// Remove magic quotes from email body
+		$body = wp_unslash( $email_content );
 
 		if ( $reply_email ) {
 			$headers .= 'Reply-To: <' . $reply_email . '>' . "\r\n";
