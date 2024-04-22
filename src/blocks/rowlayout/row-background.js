@@ -128,6 +128,7 @@ function RowBackground({ attributes, previewDevice, backgroundClasses, children,
 		tabletBorderStyle,
 		mobileBorderStyle,
 		borderRadiusUnit,
+		borderRadiusOverflow,
 	} = attributes;
 	const previewMarginTop = getPreviewSize(
 		previewDevice,
@@ -484,6 +485,18 @@ function RowBackground({ attributes, previewDevice, backgroundClasses, children,
 							backgroundRepeat: previewBackgroundRepeat ? previewBackgroundRepeat : undefined,
 							backgroundAttachment:
 								previewBackgroundAttachment === 'parallax' ? 'fixed' : previewBackgroundAttachment,
+							borderTopLeftRadius: ! borderRadiusOverflow && previewRadiusTop
+								? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								: undefined,
+							borderTopRightRadius: ! borderRadiusOverflow && previewRadiusRight
+								? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								: undefined,
+							borderBottomRightRadius: ! borderRadiusOverflow && previewRadiusBottom
+								? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								: undefined,
+							borderBottomLeftRadius: ! borderRadiusOverflow && previewRadiusLeft
+								? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								: undefined,
 						}}
 					></div>
 				)}

@@ -266,6 +266,7 @@ function RowLayoutEditContainer(props) {
 		breakoutRight,
 		topSepHeightUnit,
 		bottomSepHeightUnit,
+		borderRadiusOverflow,
 	} = attributes;
 	const { isPreviewMode } = useSelect((_select) => {
 		const { __unstableIsPreviewMode } = _select(blockEditorStore).getSettings();
@@ -808,19 +809,7 @@ function RowLayoutEditContainer(props) {
 		!tabletLayout || 'inherit' === tabletLayout ? '' : tabletLayout,
 		!mobileLayout ? '' : mobileLayout
 	);
-	let hasBorderRadius = false;
-	if (undefined !== borderRadius && undefined !== borderRadius[0] && borderRadius[0]) {
-		hasBorderRadius = true;
-	}
-	if (undefined !== borderRadius && undefined !== borderRadius[1] && borderRadius[1]) {
-		hasBorderRadius = true;
-	}
-	if (undefined !== borderRadius && undefined !== borderRadius[2] && borderRadius[2]) {
-		hasBorderRadius = true;
-	}
-	if (undefined !== borderRadius && undefined !== borderRadius[3] && borderRadius[3]) {
-		hasBorderRadius = true;
-	}
+	const hasBorderRadius = (borderRadius?.[0] || borderRadius?.[1] || borderRadius?.[2] || borderRadius?.[3]) && borderRadiusOverflow !== false ? true : false;
 	const widthString = `${firstColumnWidth || colLayout}`;
 	const secondWidthString = `${secondColumnWidth || colLayout}`;
 	let widthNumber;

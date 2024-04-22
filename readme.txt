@@ -175,17 +175,20 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.2.35 =
-Release Date: April TBD 2024
+Release Date: April 22nd 2024
+* Add: Option to display accordions in columns.
+* Update: Option to control overflow with border radius in row.
 * Update: Captcha block can use different keys and languages for each instance.
 * Update: readme text.
 * Update: attribute escaping issues.
 * Update: Control for dynamic text.
 * Fix: Issue with gradient controls and theme colors.
-* Fix: Variable font sizes on tab titles in tabs block
+* Fix: Variable font sizes on tab titles in tabs block.
 * Fix: Transforms between core list and Icon List block
 * Fix: Issue with some section align settings in a row.
 * Fix: Issue with changing images in design library.
 * Fix: Linking to numeric anchor tags on accordion panes.
+* Fix: Issue with custom colors showing twice in editor.
 
 = 3.2.34 =
 Release Date: April 10th 2024

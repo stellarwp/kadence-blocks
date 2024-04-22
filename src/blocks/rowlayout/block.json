@@ -713,6 +713,10 @@
 			"type": ["string", "boolean"],
 			"enum": ["all", "insert", "contentOnly", false]
 		},
+		"borderRadiusOverflow": {
+			"type": "boolean",
+			"default": true
+		},
 		"kbVersion": {
 			"type": "number",
 			"default": ""

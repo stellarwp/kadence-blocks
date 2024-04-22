@@ -68,6 +68,11 @@ function Overlay({ attributes, previewDevice }) {
 		overlaySecondOpacity,
 		overlayFirstOpacity,
 		overlayGradient,
+		borderRadiusUnit,
+		borderRadius,
+		tabletBorderRadius,
+		mobileBorderRadius,
+		borderRadiusOverflow,
 	} = attributes;
 	// Overlay Color.
 	const previewOverlayColor = getPreviewSize(
@@ -270,6 +275,30 @@ function Overlay({ attributes, previewDevice }) {
 			? mobileOverlay[0].gradient
 			: ''
 	);
+	const previewRadiusTop = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadius ? borderRadius[0] : '',
+		undefined !== tabletBorderRadius ? tabletBorderRadius[0] : '',
+		undefined !== mobileBorderRadius ? mobileBorderRadius[0] : ''
+	);
+	const previewRadiusRight = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadius ? borderRadius[1] : '',
+		undefined !== tabletBorderRadius ? tabletBorderRadius[1] : '',
+		undefined !== mobileBorderRadius ? mobileBorderRadius[1] : ''
+	);
+	const previewRadiusBottom = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadius ? borderRadius[2] : '',
+		undefined !== tabletBorderRadius ? tabletBorderRadius[2] : '',
+		undefined !== mobileBorderRadius ? mobileBorderRadius[2] : ''
+	);
+	const previewRadiusLeft = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadius ? borderRadius[3] : '',
+		undefined !== tabletBorderRadius ? tabletBorderRadius[3] : '',
+		undefined !== mobileBorderRadius ? mobileBorderRadius[3] : ''
+	);
 	return (
 		<>
 			{(!previewCurrentOverlayTab ||
@@ -292,6 +321,18 @@ function Overlay({ attributes, previewDevice }) {
 							undefined !== previewOverlayOpacity && Number.isInteger(previewOverlayOpacity)
 								? overlayOpacityOutput(previewOverlayOpacity)
 								: undefined,
+						borderTopLeftRadius: ! borderRadiusOverflow && previewRadiusTop
+							? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
+							: undefined,
+						borderTopRightRadius: ! borderRadiusOverflow && previewRadiusRight
+							? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
+							: undefined,
+						borderBottomRightRadius: ! borderRadiusOverflow && previewRadiusBottom
+							? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
+							: undefined,
+						borderBottomLeftRadius: ! borderRadiusOverflow && previewRadiusLeft
+							? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
+							: undefined,
 					}}
 				></div>
 			)}
@@ -317,6 +358,18 @@ function Overlay({ attributes, previewDevice }) {
 							undefined !== previewOverlayOpacity && Number.isInteger(previewOverlayOpacity)
 								? overlayOpacityOutput(previewOverlayOpacity)
 								: undefined,
+						borderTopLeftRadius: ! borderRadiusOverflow && previewRadiusTop
+							? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
+							: undefined,
+						borderTopRightRadius: ! borderRadiusOverflow && previewRadiusRight
+							? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
+							: undefined,
+						borderBottomRightRadius: ! borderRadiusOverflow && previewRadiusBottom
+							? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
+							: undefined,
+						borderBottomLeftRadius: ! borderRadiusOverflow && previewRadiusLeft
+							? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
+							: undefined,
 					}}
 				></div>
 			)}
@@ -331,6 +384,18 @@ function Overlay({ attributes, previewDevice }) {
 							undefined !== previewOverlayOpacity && Number.isInteger(previewOverlayOpacity)
 								? overlayOpacityOutput(previewOverlayOpacity)
 								: undefined,
+						borderTopLeftRadius: ! borderRadiusOverflow && previewRadiusTop
+							? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
+							: undefined,
+						borderTopRightRadius: ! borderRadiusOverflow && previewRadiusRight
+							? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
+							: undefined,
+						borderBottomRightRadius: ! borderRadiusOverflow && previewRadiusBottom
+							? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
+							: undefined,
+						borderBottomLeftRadius: ! borderRadiusOverflow && previewRadiusLeft
+							? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
+							: undefined,
 					}}
 				></div>
 			)}

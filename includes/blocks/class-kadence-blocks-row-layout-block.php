@@ -670,9 +670,14 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$has_radius = true;
 		}
 		if ( $has_radius ) {
-			$css->add_property( 'overflow', 'hidden' );
+			if ( ! isset( $attributes['borderRadiusOverflow'] ) || ( isset( $attributes['borderRadiusOverflow'] ) && false !== $attributes['borderRadiusOverflow'] ) ) {
+				$css->add_property( 'overflow', 'hidden' );
+			}
 			$css->add_property( 'isolation', 'isolate' );
+			$css->set_selector( $base_selector . ' > .kt-row-layout-overlay' );
+			$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array( 'unit_key' => 'borderRadiusUnit' ) );
 		}
+		$css->set_selector( $base_selector );
 		// Border, have to check for old styles first.
 		if ( ! empty( $attributes['border'] ) || ! empty( $attributes['tabletBorder'] ) || ! empty( $attributes['mobileBorder'] ) || $css->is_number( $attributes['borderWidth'][0] ) || $css->is_number( $attributes['borderWidth'][1] ) || $css->is_number( $attributes['borderWidth'][2] ) || $css->is_number( $attributes['borderWidth'][3] ) || $css->is_number( $attributes['tabletBorderWidth'][0] ) || $css->is_number( $attributes['tabletBorderWidth'][1] ) || $css->is_number( $attributes['tabletBorderWidth'][2] ) || $css->is_number( $attributes['tabletBorderWidth'][3] ) || $css->is_number( $attributes['mobileBorderWidth'][0] ) || $css->is_number( $attributes['mobileBorderWidth'][1] ) || $css->is_number( $attributes['mobileBorderWidth'][2] ) || $css->is_number( $attributes['mobileBorderWidth'][3] ) ) {
 			if ( ! empty( $attributes['border'] ) ) {

@@ -177,6 +177,7 @@ function StyleControls({ clientId, attributes, setAttributes, isSelected, contex
 		tabletBorderStyle,
 		mobileBorderStyle,
 		borderRadiusUnit,
+		borderRadiusOverflow,
 		isPrebuiltModal,
 		responsiveMaxWidth,
 		kadenceBlockCSS,
@@ -199,6 +200,7 @@ function StyleControls({ clientId, attributes, setAttributes, isSelected, contex
 			('gradient' === backgroundSettingTab && '' !== gradient))
 			? true
 			: false;
+	const hasBorderRadius = (borderRadius?.[0] || borderRadius?.[1] || borderRadius?.[2] || borderRadius?.[3]) ? true : false;
 	const hasBackgroundVideoContent = undefined !== backgroundVideo && undefined !== backgroundVideo[0];
 	const saveSlideItem = (value, thisIndex) => {
 		let currentItems = backgroundSlider;
@@ -1542,6 +1544,13 @@ function StyleControls({ clientId, attributes, setAttributes, isSelected, contex
 						isBorderRadius={true}
 						allowEmpty={true}
 					/>
+					{ hasBorderRadius && (
+						<ToggleControl
+							label={__('Overflow Hidden', 'kadence-blocks')}
+							checked={borderRadiusOverflow}
+							onChange={(value) => setAttributes({ borderRadiusOverflow: value })}
+						/>
+					)}
 				</KadencePanelBody>
 			)}
 			<div className="kt-sidebar-settings-spacer"></div>
