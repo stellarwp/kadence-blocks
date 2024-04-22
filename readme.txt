@@ -177,6 +177,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 = 3.2.35 =
 Release Date: April 22nd 2024
 * Add: Option to display accordions in columns.
+* Add: Box Shadow control to row layout.
 * Update: Option to control overflow with border radius in row.
 * Update: Captcha block can use different keys and languages for each instance.
 * Update: readme text.

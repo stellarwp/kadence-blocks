@@ -717,6 +717,24 @@
 			"type": "boolean",
 			"default": true
 		},
+		"displayBoxShadow": {
+			"type": "boolean",
+			"default": false
+		},
+		"boxShadow": {
+			"type": "array",
+			"default": [
+				{
+					"color": "#000000",
+					"opacity": 0.2,
+					"spread": 0,
+					"blur": 14,
+					"hOffset": 0,
+					"vOffset": 0,
+					"inset": false
+				}
+			]
+		},
 		"kbVersion": {
 			"type": "number",
 			"default": ""
