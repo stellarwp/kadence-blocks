@@ -295,6 +295,15 @@ export default function Edit(props) {
 		linkColorTransparentMobile,
 		linkColorTransparentHoverMobile,
 		linkColorTransparentActiveMobile,
+		backgroundTransparent,
+		backgroundTransparentHover,
+		backgroundTransparentActive,
+		backgroundTransparentTablet,
+		backgroundTransparentHoverTablet,
+		backgroundTransparentActiveTablet,
+		backgroundTransparentMobile,
+		backgroundTransparentHoverMobile,
+		backgroundTransparentActiveMobile,
 		megaMenuWidth,
 		megaMenuCustomWidth,
 		megaMenuCustomWidthUnit,
@@ -721,8 +730,11 @@ export default function Edit(props) {
 		const linkColorActiveValue = attributes['linkColor' + suffix + 'Active' + size];
 		const backgroundActiveValue = attributes['background' + suffix + 'Active' + size];
 		const linkColorTransparentValue = attributes['linkColorTransparent' + suffix + size];
+		const backgroundTransparentValue = attributes['backgroundTransparent' + suffix + size];
 		const linkColorTransparentHoverValue = attributes['linkColorTransparent' + suffix + 'Hover' + size];
+		const backgroundTransparentHoverValue = attributes['backgroundTransparent' + suffix + 'Hover' + size];
 		const linkColorTransparentActiveValue = attributes['linkColorTransparent' + suffix + 'Active' + size];
+		const backgroundTransparentActiveValue = attributes['backgroundTransparent' + suffix + 'Active' + size];
 		return (
 			<>
 				<HoverToggleControl
@@ -735,7 +747,7 @@ export default function Edit(props) {
 								onChange={(value) => setAttributes({ ['linkColor' + suffix + size]: value })}
 								key={'normal'}
 							/>
-							{context?.['kadence/headerIsTransparent'] && (
+							{context?.['kadence/headerIsTransparent'] == '1' && (
 								<PopColorControl
 									label={__('Link Color Transparent', 'kadence-blocks')}
 									value={linkColorTransparentValue}
@@ -743,7 +755,7 @@ export default function Edit(props) {
 									onChange={(value) =>
 										setAttributes({ ['linkColorTransparent' + suffix + size]: value })
 									}
-									key={'normal'}
+									key={'normalt'}
 								/>
 							)}
 							<PopColorControl
@@ -753,6 +765,17 @@ export default function Edit(props) {
 								onChange={(value) => setAttributes({ ['background' + suffix + size]: value })}
 								key={'normalb'}
 							/>
+							{context?.['kadence/headerIsTransparent'] == '1' && (
+								<PopColorControl
+									label={__('Background Transparent', 'kadence-blocks')}
+									value={backgroundTransparentValue}
+									default={''}
+									onChange={(value) =>
+										setAttributes({ ['backgroundTransparent' + suffix + size]: value })
+									}
+									key={'normalbt'}
+								/>
+							)}
 						</>
 					}
 					hover={
@@ -764,7 +787,7 @@ export default function Edit(props) {
 								onChange={(value) => setAttributes({ ['linkColor' + suffix + 'Hover' + size]: value })}
 								key={'hover'}
 							/>
-							{context?.['kadence/headerIsTransparent'] && (
+							{context?.['kadence/headerIsTransparent'] == '1' && (
 								<PopColorControl
 									label={__('Link Color Hover Transparent', 'kadence-blocks')}
 									value={linkColorTransparentHoverValue}
@@ -772,7 +795,7 @@ export default function Edit(props) {
 									onChange={(value) =>
 										setAttributes({ ['linkColorTransparentHover' + suffix + size]: value })
 									}
-									key={'hover'}
+									key={'hovert'}
 								/>
 							)}
 							<PopColorControl
@@ -782,6 +805,17 @@ export default function Edit(props) {
 								onChange={(value) => setAttributes({ ['background' + suffix + 'Hover' + size]: value })}
 								key={'hoverb'}
 							/>
+							{context?.['kadence/headerIsTransparent'] == '1' && (
+								<PopColorControl
+									label={__('Background Hover Transparent', 'kadence-blocks')}
+									value={backgroundTransparentHoverValue}
+									default={''}
+									onChange={(value) =>
+										setAttributes({ ['backgroundTransparentHover' + suffix + size]: value })
+									}
+									key={'hoverbt'}
+								/>
+							)}
 						</>
 					}
 					active={
@@ -793,7 +827,7 @@ export default function Edit(props) {
 								onChange={(value) => setAttributes({ ['linkColor' + suffix + 'Active' + size]: value })}
 								key={'active'}
 							/>
-							{context?.['kadence/headerIsTransparent'] && (
+							{context?.['kadence/headerIsTransparent'] == '1' && (
 								<PopColorControl
 									label={__('Link Color Active Transparent', 'kadence-blocks')}
 									value={linkColorTransparentActiveValue}
@@ -801,7 +835,7 @@ export default function Edit(props) {
 									onChange={(value) =>
 										setAttributes({ ['linkColorTransparentActive' + suffix + size]: value })
 									}
-									key={'active'}
+									key={'activet'}
 								/>
 							)}
 							<PopColorControl
@@ -813,6 +847,17 @@ export default function Edit(props) {
 								}
 								key={'activeb'}
 							/>
+							{context?.['kadence/headerIsTransparent'] == '1' && (
+								<PopColorControl
+									label={__('Background Active Transparent', 'kadence-blocks')}
+									value={backgroundTransparentActiveValue}
+									default={''}
+									onChange={(value) =>
+										setAttributes({ ['backgroundTransparentActive' + suffix + size]: value })
+									}
+									key={'activebt'}
+								/>
+							)}
 						</>
 					}
 				/>

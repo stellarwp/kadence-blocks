@@ -339,6 +339,42 @@
 			"type": "string",
 			"default": ""
 		},
+		"backgroundTransparent": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundTransparentHover": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundTransparentActive": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundTransparentTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundTransparentHoverTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundTransparentActiveTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundTransparentMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundTransparentHoverMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundTransparentActiveMobile": {
+			"type": "string",
+			"default": ""
+		},
 		"labelBackground": {
 			"type": "string",
 			"default": ""

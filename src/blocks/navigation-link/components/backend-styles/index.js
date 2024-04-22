@@ -85,6 +85,15 @@ export default function BackendStyles(props) {
 		linkColorTransparentMobile,
 		linkColorTransparentHoverMobile,
 		linkColorTransparentActiveMobile,
+		backgroundTransparent,
+		backgroundTransparentHover,
+		backgroundTransparentActive,
+		backgroundTransparentTablet,
+		backgroundTransparentHoverTablet,
+		backgroundTransparentActiveTablet,
+		backgroundTransparentMobile,
+		backgroundTransparentHoverMobile,
+		backgroundTransparentActiveMobile,
 		megaMenuWidth,
 		megaMenuCustomWidth,
 		megaMenuCustomWidthUnit,
@@ -174,6 +183,31 @@ export default function BackendStyles(props) {
 		backgroundHoverTablet,
 		backgroundHoverMobile
 	);
+	const previewBackgroundActive = getPreviewSize(
+		previewDevice,
+		backgroundActive,
+		backgroundActiveTablet,
+		backgroundActiveMobile
+	);
+
+	const previewBackgroundTransparent = getPreviewSize(
+		previewDevice,
+		backgroundTransparent,
+		backgroundTransparentTablet,
+		backgroundTransparentMobile
+	);
+	const previewBackgroundTransparentHover = getPreviewSize(
+		previewDevice,
+		backgroundTransparentHover,
+		backgroundTransparentHoverTablet,
+		backgroundTransparentHoverMobile
+	);
+	const previewBackgroundTransparentActive = getPreviewSize(
+		previewDevice,
+		backgroundTransparentActive,
+		backgroundTransparentActiveTablet,
+		backgroundTransparentActiveMobile
+	);
 	const previewLabelColor = getPreviewSize(previewDevice, labelColor, labelColorTablet, labelColorMobile);
 	const previewLabelColorHover = getPreviewSize(
 		previewDevice,
@@ -204,12 +238,6 @@ export default function BackendStyles(props) {
 		labelBackgroundActive,
 		labelBackgroundActiveTablet,
 		labelBackgroundActiveMobile
-	);
-	const previewBackgroundActive = getPreviewSize(
-		previewDevice,
-		backgroundActive,
-		backgroundActiveTablet,
-		backgroundActiveMobile
 	);
 	const previewBackgroundDropdown = getPreviewSize(
 		previewDevice,
@@ -324,16 +352,18 @@ export default function BackendStyles(props) {
 	);
 	css.add_property('color', css.render_color(previewLinkColor));
 	css.add_property('background', css.render_color(previewBackground));
-	if (context?.['kadence/headerIsTransparent']) {
+	if (context?.['kadence/headerIsTransparent'] == '1') {
 		css.add_property('color', css.render_color(previewLinkColorTransparent));
+		css.add_property('background', css.render_color(previewBackgroundTransparent));
 	}
 	css.set_selector(
 		`.wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap:hover > a, .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap:hover`
 	);
 	css.add_property('color', css.render_color(previewLinkColorHover));
 	css.add_property('background', css.render_color(previewBackgroundHover));
-	if (context?.['kadence/headerIsTransparent']) {
+	if (context?.['kadence/headerIsTransparent'] == '1') {
 		css.add_property('color', css.render_color(previewLinkColorTransparentHover));
+		css.add_property('background', css.render_color(previewBackgroundTransparentHover));
 	}
 
 	css.set_selector(
@@ -342,8 +372,9 @@ export default function BackendStyles(props) {
 	);
 	css.add_property('color', css.render_color(previewLinkColorActive));
 	css.add_property('background', css.render_color(previewBackgroundActive));
-	if (context?.['kadence/headerIsTransparent']) {
+	if (context?.['kadence/headerIsTransparent'] == '1') {
 		css.add_property('color', css.render_color(previewLinkColorTransparentActive));
+		css.add_property('background', css.render_color(previewBackgroundTransparentActive));
 	}
 
 	if (megaMenuWidth === 'custom') {
