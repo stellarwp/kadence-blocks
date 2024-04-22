@@ -151,13 +151,12 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 				if ( is_array( $data['value'] ) ) {
 					$data['value'] = explode( ', ', $data['value'] );
 				}
-				$email_content .= strip_tags( $data['label'] ) . ': ' . $data['value'] . "\n\n";
+				$email_content .= strip_tags( $data['label'] ) . ': ' . wp_unslash( $data['value'] ) . "\n\n";
 			}
 			$headers = 'Content-Type: text/plain; charset=UTF-8' . "\r\n";
 		}
 
-		// Remove magic quotes from email body
-		$body = wp_unslash( $email_content );
+		$body = $email_content
 
 		if ( $reply_email ) {
 			$headers .= 'Reply-To: <' . $reply_email . '>' . "\r\n";
