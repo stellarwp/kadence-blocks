@@ -809,7 +809,11 @@ function RowLayoutEditContainer(props) {
 		!tabletLayout || 'inherit' === tabletLayout ? '' : tabletLayout,
 		!mobileLayout ? '' : mobileLayout
 	);
-	const hasBorderRadius = (borderRadius?.[0] || borderRadius?.[1] || borderRadius?.[2] || borderRadius?.[3]) && borderRadiusOverflow !== false ? true : false;
+	const hasBorderRadius =
+		(borderRadius?.[0] || borderRadius?.[1] || borderRadius?.[2] || borderRadius?.[3]) &&
+		borderRadiusOverflow !== false
+			? true
+			: false;
 	const widthString = `${firstColumnWidth || colLayout}`;
 	const secondWidthString = `${secondColumnWidth || colLayout}`;
 	let widthNumber;

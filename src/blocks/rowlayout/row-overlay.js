@@ -321,18 +321,22 @@ function Overlay({ attributes, previewDevice }) {
 							undefined !== previewOverlayOpacity && Number.isInteger(previewOverlayOpacity)
 								? overlayOpacityOutput(previewOverlayOpacity)
 								: undefined,
-						borderTopLeftRadius: ! borderRadiusOverflow && previewRadiusTop
-							? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
-							: undefined,
-						borderTopRightRadius: ! borderRadiusOverflow && previewRadiusRight
-							? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
-							: undefined,
-						borderBottomRightRadius: ! borderRadiusOverflow && previewRadiusBottom
-							? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
-							: undefined,
-						borderBottomLeftRadius: ! borderRadiusOverflow && previewRadiusLeft
-							? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
-							: undefined,
+						borderTopLeftRadius:
+							!borderRadiusOverflow && previewRadiusTop
+								? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								: undefined,
+						borderTopRightRadius:
+							!borderRadiusOverflow && previewRadiusRight
+								? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								: undefined,
+						borderBottomRightRadius:
+							!borderRadiusOverflow && previewRadiusBottom
+								? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								: undefined,
+						borderBottomLeftRadius:
+							!borderRadiusOverflow && previewRadiusLeft
+								? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								: undefined,
 					}}
 				></div>
 			)}
@@ -358,18 +362,22 @@ function Overlay({ attributes, previewDevice }) {
 							undefined !== previewOverlayOpacity && Number.isInteger(previewOverlayOpacity)
 								? overlayOpacityOutput(previewOverlayOpacity)
 								: undefined,
-						borderTopLeftRadius: ! borderRadiusOverflow && previewRadiusTop
-							? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
-							: undefined,
-						borderTopRightRadius: ! borderRadiusOverflow && previewRadiusRight
-							? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
-							: undefined,
-						borderBottomRightRadius: ! borderRadiusOverflow && previewRadiusBottom
-							? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
-							: undefined,
-						borderBottomLeftRadius: ! borderRadiusOverflow && previewRadiusLeft
-							? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
-							: undefined,
+						borderTopLeftRadius:
+							!borderRadiusOverflow && previewRadiusTop
+								? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								: undefined,
+						borderTopRightRadius:
+							!borderRadiusOverflow && previewRadiusRight
+								? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								: undefined,
+						borderBottomRightRadius:
+							!borderRadiusOverflow && previewRadiusBottom
+								? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								: undefined,
+						borderBottomLeftRadius:
+							!borderRadiusOverflow && previewRadiusLeft
+								? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								: undefined,
 					}}
 				></div>
 			)}
@@ -384,18 +392,22 @@ function Overlay({ attributes, previewDevice }) {
 							undefined !== previewOverlayOpacity && Number.isInteger(previewOverlayOpacity)
 								? overlayOpacityOutput(previewOverlayOpacity)
 								: undefined,
-						borderTopLeftRadius: ! borderRadiusOverflow && previewRadiusTop
-							? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
-							: undefined,
-						borderTopRightRadius: ! borderRadiusOverflow && previewRadiusRight
-							? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
-							: undefined,
-						borderBottomRightRadius: ! borderRadiusOverflow && previewRadiusBottom
-							? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
-							: undefined,
-						borderBottomLeftRadius: ! borderRadiusOverflow && previewRadiusLeft
-							? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
-							: undefined,
+						borderTopLeftRadius:
+							!borderRadiusOverflow && previewRadiusTop
+								? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								: undefined,
+						borderTopRightRadius:
+							!borderRadiusOverflow && previewRadiusRight
+								? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								: undefined,
+						borderBottomRightRadius:
+							!borderRadiusOverflow && previewRadiusBottom
+								? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								: undefined,
+						borderBottomLeftRadius:
+							!borderRadiusOverflow && previewRadiusLeft
+								? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
+								: undefined,
 					}}
 				></div>
 			)}
