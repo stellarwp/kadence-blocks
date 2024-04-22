@@ -3653,6 +3653,7 @@ function KadenceInfoBox(props) {
 									max={previewMaxWidthUnit === 'px' ? 2000 : 100}
 									step={1}
 									unit={previewMaxWidthUnit}
+									allowResponsiveUnitChange={true}
 									onUnit={(value) => {
 										const device = 'Desktop' === previewDevice ? '' : previewDevice;
 										setAttributes({ ['maxWidth' + device + 'Unit']: value });
