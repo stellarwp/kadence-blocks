@@ -183,6 +183,7 @@ Release Date: April 22nd 2024
 * Update: readme text.
 * Update: attribute escaping issues.
 * Update: Control for dynamic text.
+* Fix: Escaping special characters in email content.
 * Fix: Issue with gradient controls and theme colors.
 * Fix: Variable font sizes on tab titles in tabs block.
 * Fix: Transforms between core list and Icon List block
