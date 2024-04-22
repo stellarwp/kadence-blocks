@@ -100,7 +100,7 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 					if ( isset( $field_name ) ) {
 						$field_to_insert = $this->get_response_field_by_name( $field_name );
 						if ( $field_to_insert && isset( $field_to_insert['value'] ) ) {
-							$text = str_replace( '{' . $field_name . '}', $field_to_insert['value'], $text );
+							$text = str_replace( '{' . $field_name . '}', wp_unslash( $field_to_insert['value'] ), $text );
 						}
 					}
 				}
@@ -156,7 +156,7 @@ class Kadence_Blocks_Advanced_Form_Submit_Actions {
 			$headers = 'Content-Type: text/plain; charset=UTF-8' . "\r\n";
 		}
 
-		$body = $email_content
+		$body = $email_content;
 
 		if ( $reply_email ) {
 			$headers .= 'Reply-To: <' . $reply_email . '>' . "\r\n";
