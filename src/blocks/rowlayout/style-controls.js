@@ -203,7 +203,8 @@ function StyleControls({ clientId, attributes, setAttributes, isSelected, contex
 			('gradient' === backgroundSettingTab && '' !== gradient))
 			? true
 			: false;
-	const hasBorderRadius = (borderRadius?.[0] || borderRadius?.[1] || borderRadius?.[2] || borderRadius?.[3]) ? true : false;
+	const hasBorderRadius =
+		borderRadius?.[0] || borderRadius?.[1] || borderRadius?.[2] || borderRadius?.[3] ? true : false;
 	const hasBackgroundVideoContent = undefined !== backgroundVideo && undefined !== backgroundVideo[0];
 	const saveSlideItem = (value, thisIndex) => {
 		let currentItems = backgroundSlider;
@@ -1559,7 +1560,7 @@ function StyleControls({ clientId, attributes, setAttributes, isSelected, contex
 						isBorderRadius={true}
 						allowEmpty={true}
 					/>
-					{ hasBorderRadius && (
+					{hasBorderRadius && (
 						<ToggleControl
 							label={__('Overflow Hidden', 'kadence-blocks')}
 							checked={borderRadiusOverflow}
@@ -1570,53 +1571,39 @@ function StyleControls({ clientId, attributes, setAttributes, isSelected, contex
 						label={__('Box Shadow', 'kadence-blocks')}
 						enable={undefined !== displayBoxShadow ? displayBoxShadow : false}
 						color={
-							undefined !== boxShadow &&
-							undefined !== boxShadow[0] &&
-							undefined !== boxShadow[0].color
+							undefined !== boxShadow && undefined !== boxShadow[0] && undefined !== boxShadow[0].color
 								? boxShadow[0].color
 								: '#000000'
 						}
 						colorDefault={'#000000'}
 						onArrayChange={(color, opacity) => saveBoxShadow({ color, opacity })}
 						opacity={
-							undefined !== boxShadow &&
-							undefined !== boxShadow[0] &&
-							undefined !== boxShadow[0].opacity
+							undefined !== boxShadow && undefined !== boxShadow[0] && undefined !== boxShadow[0].opacity
 								? boxShadow[0].opacity
 								: 0.2
 						}
 						hOffset={
-							undefined !== boxShadow &&
-							undefined !== boxShadow[0] &&
-							undefined !== boxShadow[0].hOffset
+							undefined !== boxShadow && undefined !== boxShadow[0] && undefined !== boxShadow[0].hOffset
 								? boxShadow[0].hOffset
 								: 0
 						}
 						vOffset={
-							undefined !== boxShadow &&
-							undefined !== boxShadow[0] &&
-							undefined !== boxShadow[0].vOffset
+							undefined !== boxShadow && undefined !== boxShadow[0] && undefined !== boxShadow[0].vOffset
 								? boxShadow[0].vOffset
 								: 0
 						}
 						blur={
-							undefined !== boxShadow &&
-							undefined !== boxShadow[0] &&
-							undefined !== boxShadow[0].blur
+							undefined !== boxShadow && undefined !== boxShadow[0] && undefined !== boxShadow[0].blur
 								? boxShadow[0].blur
 								: 14
 						}
 						spread={
-							undefined !== boxShadow &&
-							undefined !== boxShadow[0] &&
-							undefined !== boxShadow[0].spread
+							undefined !== boxShadow && undefined !== boxShadow[0] && undefined !== boxShadow[0].spread
 								? boxShadow[0].spread
 								: 0
 						}
 						inset={
-							undefined !== boxShadow &&
-							undefined !== boxShadow[0] &&
-							undefined !== boxShadow[0].inset
+							undefined !== boxShadow && undefined !== boxShadow[0] && undefined !== boxShadow[0].inset
 								? boxShadow[0].inset
 								: false
 						}

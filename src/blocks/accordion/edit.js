@@ -722,14 +722,14 @@ function KadenceAccordionComponent(props) {
 		getPreviewDevice,
 		columnLayout?.[0] ? columnLayout[0] : 'row',
 		columnLayout?.[1] ? columnLayout[1] : '',
-		columnLayout?.[2] ? columnLayout[2] : 'row',
+		columnLayout?.[2] ? columnLayout[2] : 'row'
 	);
-	const hasColumns = ( layoutPreview && layoutPreview !== 'row' ? true : false );
+	const hasColumns = layoutPreview && layoutPreview !== 'row' ? true : false;
 	const previewGap = getPreviewSize(
 		getPreviewDevice,
 		columnGap?.[0] ? columnGap[0] : 'md',
 		columnGap?.[1] ? columnGap[1] : '',
-		columnGap?.[2] ? columnGap[2] : '',
+		columnGap?.[2] ? columnGap[2] : ''
 	);
 	const inheritBorder = [titleBorder, tabletTitleBorder, mobileTitleBorder];
 
@@ -1511,7 +1511,10 @@ function KadenceAccordionComponent(props) {
 		{
 			className: innerClasses,
 			style: {
-				columnGap: '' !== previewGap ? getGapSizeOptionOutput(previewGap, columnGapUnit ? columnGapUnit : 'px') : undefined,
+				columnGap:
+					'' !== previewGap
+						? getGapSizeOptionOutput(previewGap, columnGapUnit ? columnGapUnit : 'px')
+						: undefined,
 			},
 		},
 		{
@@ -1572,10 +1575,16 @@ function KadenceAccordionComponent(props) {
 													options={layoutOptions}
 													wrap={false}
 													hideLabel={true}
-													className={'kadence-row-layout-radio-btns kb-acccordion-column-layout'}
+													className={
+														'kadence-row-layout-radio-btns kb-acccordion-column-layout'
+													}
 													onChange={(value) => {
 														setAttributes({
-															columnLayout: [value, ( columnLayout?.[1] ? columnLayout[1] : '' ), ( columnLayout?.[2] ? columnLayout[2] : '' ) ]
+															columnLayout: [
+																value,
+																columnLayout?.[1] ? columnLayout[1] : '',
+																columnLayout?.[2] ? columnLayout[2] : '',
+															],
 														});
 													}}
 												/>
@@ -1585,16 +1594,26 @@ function KadenceAccordionComponent(props) {
 													value={columnLayout?.[1] ? columnLayout[1] : ''}
 													options={layoutOptions}
 													wrap={false}
-													className={'kadence-row-layout-radio-btns kb-acccordion-column-layout'}
+													className={
+														'kadence-row-layout-radio-btns kb-acccordion-column-layout'
+													}
 													hideLabel={true}
 													onChange={(value) => {
-														if ( columnLayout?.[1] && columnLayout[1] === value ) {
+														if (columnLayout?.[1] && columnLayout[1] === value) {
 															setAttributes({
-																columnLayout: [( columnLayout?.[0] ? columnLayout[0] : '' ), '', ( columnLayout?.[2] ? columnLayout[2] : '' ) ]
+																columnLayout: [
+																	columnLayout?.[0] ? columnLayout[0] : '',
+																	'',
+																	columnLayout?.[2] ? columnLayout[2] : '',
+																],
 															});
 														} else {
 															setAttributes({
-																columnLayout: [( columnLayout?.[0] ? columnLayout[0] : '' ), value, ( columnLayout?.[2] ? columnLayout[2] : '' ) ]
+																columnLayout: [
+																	columnLayout?.[0] ? columnLayout[0] : '',
+																	value,
+																	columnLayout?.[2] ? columnLayout[2] : '',
+																],
 															});
 														}
 													}}
@@ -1605,17 +1624,23 @@ function KadenceAccordionComponent(props) {
 													value={columnLayout?.[2] ? columnLayout[2] : 'row'}
 													options={layoutOptions}
 													wrap={false}
-													className={'kadence-row-layout-radio-btns kb-acccordion-column-layout'}
+													className={
+														'kadence-row-layout-radio-btns kb-acccordion-column-layout'
+													}
 													hideLabel={true}
 													onChange={(value) => {
 														setAttributes({
-															columnLayout: [( columnLayout?.[0] ? columnLayout[0] : '' ), ( columnLayout?.[1] ? columnLayout[1] : '' ), value ]
+															columnLayout: [
+																columnLayout?.[0] ? columnLayout[0] : '',
+																columnLayout?.[1] ? columnLayout[1] : '',
+																value,
+															],
 														});
 													}}
 												/>
 											}
 										/>
-										{ hasColumns && (
+										{hasColumns && (
 											<ResponsiveGapSizeControl
 												label={__('Column Gap', 'kadence-blocks')}
 												value={undefined !== columnGap?.[0] ? columnGap[0] : ''}
