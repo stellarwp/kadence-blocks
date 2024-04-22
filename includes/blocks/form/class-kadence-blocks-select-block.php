@@ -72,9 +72,6 @@ class Kadence_Blocks_Select_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 		$is_multiselect = ( isset( $attributes['multiSelect'] ) && $attributes['multiSelect'] === true ) ? 'multiple' : '';
 		$class_id = $this->class_id( $attributes );
 		$outer_classes = array( 'kb-adv-form-field', 'kb-adv-form-infield-type-input', 'kb-field' . $class_id );
-		if ( ! empty( $attributes['className'] ) ) {
-			$outer_classes[] = $attributes['className'];
-		}
 		$wrapper_args = array(
 			'class' => implode( ' ', $outer_classes ),
 		);
