@@ -142,9 +142,9 @@ defined( 'ABSPATH' ) || exit;
 											$file_output = '<a href="' . $data['value'] . '" target="_blank">' . $file_name . '</a>';
 										}
 										?>
-										<?php echo wpautop( '<p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; padding-bottom: 5px;">' .$file_output . '</p>' ); ?>
+										<?php echo wpautop( '<p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; padding-bottom: 5px;">' . $file_output . '</p>' ); ?>
 									<?php } else { ?>
-										<?php echo wpautop( '<p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; padding-bottom: 5px;">' . esc_html( $data['value'] ) . '</p>' ); ?>
+										<?php echo wpautop( '<p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; padding-bottom: 5px;">' . esc_html( wp_unslash( $data['value'] ) ) . '</p>' ); ?>
 									<?php } ?>
 								</td>
 							</tr>
