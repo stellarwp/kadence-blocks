@@ -79,24 +79,6 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$css->set_media_state( 'desktop' );
 
-
-//		$css->add_property('color', $css->render_color($header_attributes['textColor']));
-//		$css->add_property('font-size', $css->get_font_size($typography['size'][0], $typography['sizeType']));
-//		$css->add_property('text-transform', $typography['textTransform']);
-//		$css->add_property('letter-spacing', $typography['letterSpacing'][0] . $typography['letterType'] );
-	// 	$css->add_property('border-top-width', '' );
-	// $css->add_property('border-top-style', $border['top'] . 'px');
-	// $css->add_property('border-top-color', previewBorderColorTop);
-	// $css->add_property('border-right-width', previewBorderRight);
-	// $css->add_property('border-right-style', previewBorderStyleRight);
-	// $css->add_property('border-right-color', previewBorderColorRight);
-	// $css->add_property('border-bottom-width', previewBorderBottom);
-	// $css->add_property('border-bottom-style', previewBorderStyleBottom);
-	// $css->add_property('border-bottom-color', previewBorderColorBottom);
-	// $css->add_property('border-left-width', previewBorderLeft);
-	// $css->add_property('border-left-style', previewBorderStyleLeft);
-	// $css->add_property('border-left-color', previewBorderColorLeft);
-
 		//$css->set_selector('.wp-block-kadence-header.wp-block-kadence-header' . $unique_id . ':hover');
 		//$css->add_property('background-color', $css->render_color($hover_bg['color']));
 		$css->set_selector('.wp-block-kadence-header.wp-block-kadence-header' . $unique_id . ' a');
@@ -126,7 +108,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$border = $sized_attributes['border'];
 		$typography = $sized_attributes['typography'];
 
-		if ( ! $sized_attributes['isTransparent'] ) {
+		if ( $sized_attributes['isTransparent'] != '1' ) {
 			$css->add_property( 'background-color', $css->render_color( ! empty( $bg['color'] ) ? $bg['color'] : '') );
 			//$css->render_border_styles($border, 'border');
 			if ( '' !== $bg && 'normal' === $bg['type'] && ! empty( $bg['image'] ) ) {
@@ -137,10 +119,18 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'background-attachment', $bg['attachment'] );
 			}
 		}
+
 		$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['border'], 'bottom' ) );
 		$css->add_property( 'border-top', $css->render_border( $sized_attributes['border'], 'top' ) );
 		$css->add_property( 'border-left', $css->render_border( $sized_attributes['border'], 'left' ) );
 		$css->add_property( 'border-right', $css->render_border( $sized_attributes['border'], 'right' ) );
+
+		if ( $sized_attributes['isTransparent'] == '1' ) {
+			$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['borderTransparent'], 'bottom' ) );
+			$css->add_property( 'border-top', $css->render_border( $sized_attributes['borderTransparent'], 'top' ) );
+			$css->add_property( 'border-left', $css->render_border( $sized_attributes['borderTransparent'], 'left' ) );
+			$css->add_property( 'border-right', $css->render_border( $sized_attributes['borderTransparent'], 'right' ) );
+		}
 
 		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > div:hover' );
 
@@ -149,8 +139,12 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( 'border-left', $css->render_border( $sized_attributes['borderHover'], 'left' ) );
 		$css->add_property( 'border-right', $css->render_border( $sized_attributes['borderHover'], 'right' ) );
 
-		if ( $sized_attributes['isTransparent'] ) {
+		if ( $sized_attributes['isTransparent'] == '1' ) {
 			$css->add_property( 'top', '0px' );
+			$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['borderTransparentHover'], 'bottom' ) );
+			$css->add_property( 'border-top', $css->render_border( $sized_attributes['borderTransparentHover'], 'top' ) );
+			$css->add_property( 'border-left', $css->render_border( $sized_attributes['borderTransparentHover'], 'left' ) );
+			$css->add_property( 'border-right', $css->render_border( $sized_attributes['borderTransparentHover'], 'right' ) );
 		}
 	}
 
