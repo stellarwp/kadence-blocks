@@ -174,7 +174,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
-=3.2.26 =
+=3.2.36 =
 Release Date: May TBD 2024
 * Fix: Custom CSS classes being applied to advanced form fields twice.
 
