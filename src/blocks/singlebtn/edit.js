@@ -72,6 +72,7 @@ import {
 } from '@wordpress/block-editor';
 import { TextControl, ToolbarGroup, SelectControl, ToggleControl, ToolbarButton, Spinner } from '@wordpress/components';
 import { addFilter, applyFilters, doAction } from '@wordpress/hooks';
+import BackendStyles from './components/backend-styles';
 
 export default function KadenceButtonEdit(props) {
 	const { attributes, setAttributes, isSelected, context, clientId, name } = props;
@@ -145,6 +146,32 @@ export default function KadenceButtonEdit(props) {
 		inQueryBlock,
 		kadenceDynamic,
 		className,
+		colorTransparent,
+		colorTransparentHover,
+		backgroundTransparent,
+		backgroundTransparentType,
+		gradientTransparent,
+		backgroundTransparentHover,
+		backgroundTransparentHoverType,
+		gradientTransparentHover,
+		borderTransparentStyle,
+		tabletBorderTransparentStyle,
+		mobileBorderTransparentStyle,
+		borderTransparentHoverStyle,
+		tabletBorderTransparentHoverStyle,
+		mobileBorderTransparentHoverStyle,
+		borderTransparentRadius,
+		tabletBorderTransparentRadius,
+		mobileBorderTransparentRadius,
+		borderTransparentRadiusUnit,
+		borderTransparentHoverRadius,
+		tabletBorderTransparentHoverRadius,
+		mobileBorderTransparentHoverRadius,
+		borderTransparentHoverRadiusUnit,
+		displayShadowTransparent,
+		shadowTransparent,
+		displayHoverShadowTransparent,
+		shadowTransparentHover,
 	} = attributes;
 
 	// Support rank math content analysis.
@@ -265,6 +292,28 @@ export default function KadenceButtonEdit(props) {
 			shadowHover: newItems,
 		});
 	};
+	const saveShadowTransparent = (value) => {
+		const newUpdate = shadowTransparent.map((item, index) => {
+			if (0 === index) {
+				item = { ...item, ...value };
+			}
+			return item;
+		});
+		setAttributes({
+			shadowTransparent: newUpdate,
+		});
+	};
+	const saveShadowTransparentHover = (value) => {
+		const newUpdate = shadowTransparentHover.map((item, index) => {
+			if (0 === index) {
+				item = { ...item, ...value };
+			}
+			return item;
+		});
+		setAttributes({
+			shadowTransparentHover: newUpdate,
+		});
+	};
 	const btnSizes = [
 		{ value: 'small', label: __('SM', 'kadence-blocks') },
 		{ value: 'standard', label: __('MD', 'kadence-blocks') },
@@ -342,31 +391,6 @@ export default function KadenceButtonEdit(props) {
 		undefined !== mobilePadding?.[3] ? mobilePadding[3] : ''
 	);
 
-	const previewRadiusTop = getPreviewSize(
-		previewDevice,
-		undefined !== borderRadius ? borderRadius[0] : '',
-		undefined !== tabletBorderRadius ? tabletBorderRadius[0] : '',
-		undefined !== mobileBorderRadius ? mobileBorderRadius[0] : ''
-	);
-	const previewRadiusRight = getPreviewSize(
-		previewDevice,
-		undefined !== borderRadius ? borderRadius[1] : '',
-		undefined !== tabletBorderRadius ? tabletBorderRadius[1] : '',
-		undefined !== mobileBorderRadius ? mobileBorderRadius[1] : ''
-	);
-	const previewRadiusBottom = getPreviewSize(
-		previewDevice,
-		undefined !== borderRadius ? borderRadius[2] : '',
-		undefined !== tabletBorderRadius ? tabletBorderRadius[2] : '',
-		undefined !== mobileBorderRadius ? mobileBorderRadius[2] : ''
-	);
-	const previewRadiusLeft = getPreviewSize(
-		previewDevice,
-		undefined !== borderRadius ? borderRadius[3] : '',
-		undefined !== tabletBorderRadius ? tabletBorderRadius[3] : '',
-		undefined !== mobileBorderRadius ? mobileBorderRadius[3] : ''
-	);
-
 	const previewIconSize = getPreviewSize(
 		previewDevice,
 		undefined !== iconSize?.[0] ? iconSize[0] : '',
@@ -405,153 +429,6 @@ export default function KadenceButtonEdit(props) {
 		undefined !== width?.[2] ? width[2] : undefined
 	);
 
-	const previewBorderTopStyle = getBorderStyle(
-		previewDevice,
-		'top',
-		borderStyle,
-		tabletBorderStyle,
-		mobileBorderStyle
-	);
-	const previewBorderRightStyle = getBorderStyle(
-		previewDevice,
-		'right',
-		borderStyle,
-		tabletBorderStyle,
-		mobileBorderStyle
-	);
-	const previewBorderBottomStyle = getBorderStyle(
-		previewDevice,
-		'bottom',
-		borderStyle,
-		tabletBorderStyle,
-		mobileBorderStyle
-	);
-	const previewBorderLeftStyle = getBorderStyle(
-		previewDevice,
-		'left',
-		borderStyle,
-		tabletBorderStyle,
-		mobileBorderStyle
-	);
-	const previewBorderTopColor = getBorderColor(
-		previewDevice,
-		'top',
-		borderStyle,
-		tabletBorderStyle,
-		mobileBorderStyle
-	);
-	const previewBorderRightColor = getBorderColor(
-		previewDevice,
-		'right',
-		borderStyle,
-		tabletBorderStyle,
-		mobileBorderStyle
-	);
-	const previewBorderBottomColor = getBorderColor(
-		previewDevice,
-		'bottom',
-		borderStyle,
-		tabletBorderStyle,
-		mobileBorderStyle
-	);
-	const previewBorderLeftColor = getBorderColor(
-		previewDevice,
-		'left',
-		borderStyle,
-		tabletBorderStyle,
-		mobileBorderStyle
-	);
-	const inheritBorder = [borderStyle, tabletBorderStyle, mobileBorderStyle];
-	const previewBorderHoverTopStyle = getBorderStyle(
-		previewDevice,
-		'top',
-		borderHoverStyle,
-		tabletBorderHoverStyle,
-		mobileBorderHoverStyle,
-		inheritBorder
-	);
-	const previewBorderHoverRightStyle = getBorderStyle(
-		previewDevice,
-		'right',
-		borderHoverStyle,
-		tabletBorderHoverStyle,
-		mobileBorderHoverStyle,
-		inheritBorder
-	);
-	const previewBorderHoverBottomStyle = getBorderStyle(
-		previewDevice,
-		'bottom',
-		borderHoverStyle,
-		tabletBorderHoverStyle,
-		mobileBorderHoverStyle,
-		inheritBorder
-	);
-	const previewBorderHoverLeftStyle = getBorderStyle(
-		previewDevice,
-		'left',
-		borderHoverStyle,
-		tabletBorderHoverStyle,
-		mobileBorderHoverStyle,
-		inheritBorder
-	);
-	const previewBorderHoverTopColor = getBorderColor(
-		previewDevice,
-		'top',
-		borderHoverStyle,
-		tabletBorderHoverStyle,
-		mobileBorderHoverStyle,
-		inheritBorder
-	);
-	const previewBorderHoverRightColor = getBorderColor(
-		previewDevice,
-		'right',
-		borderHoverStyle,
-		tabletBorderHoverStyle,
-		mobileBorderHoverStyle,
-		inheritBorder
-	);
-	const previewBorderHoverBottomColor = getBorderColor(
-		previewDevice,
-		'bottom',
-		borderHoverStyle,
-		tabletBorderHoverStyle,
-		mobileBorderHoverStyle,
-		inheritBorder
-	);
-	const previewBorderHoverLeftColor = getBorderColor(
-		previewDevice,
-		'left',
-		borderHoverStyle,
-		tabletBorderHoverStyle,
-		mobileBorderHoverStyle,
-		inheritBorder
-	);
-
-	const previewHoverRadiusTop = getPreviewSize(
-		previewDevice,
-		undefined !== borderHoverRadius ? borderHoverRadius[0] : '',
-		undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[0] : '',
-		undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[0] : ''
-	);
-	const previewHoverRadiusRight = getPreviewSize(
-		previewDevice,
-		undefined !== borderHoverRadius ? borderHoverRadius[1] : '',
-		undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[1] : '',
-		undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[1] : ''
-	);
-	const previewHoverRadiusBottom = getPreviewSize(
-		previewDevice,
-		undefined !== borderHoverRadius ? borderHoverRadius[2] : '',
-		undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[2] : '',
-		undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[2] : ''
-	);
-	const previewHoverRadiusLeft = getPreviewSize(
-		previewDevice,
-		undefined !== borderHoverRadius ? borderHoverRadius[3] : '',
-		undefined !== tabletBorderHoverRadius ? tabletBorderHoverRadius[3] : '',
-		undefined !== mobileBorderHoverRadius ? mobileBorderHoverRadius[3] : ''
-	);
-
 	const previewAlign = getPreviewSize(
 		previewDevice,
 		undefined !== btnsBlock?.[0]?.attributes?.hAlign ? btnsBlock?.[0]?.attributes?.hAlign : '',
@@ -576,21 +453,6 @@ export default function KadenceButtonEdit(props) {
 		undefined !== onlyText?.[0] ? onlyText[0] : undefined,
 		undefined !== onlyText?.[1] ? onlyText[1] : undefined
 	);
-	let btnbg;
-	// let btnGrad;
-	// let btnGrad2;
-	if (undefined !== backgroundType && 'gradient' === backgroundType) {
-		btnbg = gradient;
-		// btnGrad = ( 'transparent' === background || undefined === background ? 'rgba(255,255,255,0)' : KadenceColorOutput( background ) );
-		// btnGrad2 = ( undefined !== gradient && undefined !== gradient[ 0 ] && '' !== gradient[ 0 ] ? KadenceColorOutput( gradient[ 0 ], ( undefined !== gradient && gradient[1] !== undefined ? gradient[ 1 ] : 1 ) ) : KadenceColorOutput( '#999999', ( undefined !== gradient && gradient[1] !== undefined ? gradient[1] : 1 ) ) );
-		// if ( undefined !== gradient && 'radial' === gradient[ 4 ] ) {
-		// 	btnbg = `radial-gradient(at ${( undefined === gradient[ 6 ] ? 'center center' : gradient[ 6 ] )}, ${btnGrad} ${( undefined === gradient[ 2 ] ? '0' : gradient[ 2 ] )}%, ${btnGrad2} ${( undefined === gradient[ 3 ] ? '100' : gradient[ 3 ] )}%)`;
-		// } else if ( undefined === gradient || 'radial' !== gradient[ 4 ] ) {
-		// 	btnbg = `linear-gradient(${( undefined !== gradient && undefined !== gradient[ 5 ] ? gradient[ 5 ] : '180' )}deg, ${btnGrad} ${( undefined !== gradient && undefined !== gradient[ 2 ] ? gradient[ 2 ] : '0' )}%, ${btnGrad2} ${( undefined !== gradient && undefined !== gradient[ 3 ] ? gradient[ 3 ] : '100' )}%)`;
-		// }
-	} else {
-		btnbg = 'transparent' === background || undefined === background ? undefined : KadenceColorOutput(background);
-	}
 	const nonTransAttrs = ['hideLink', 'link', 'target', 'download', 'text', 'sponsor'];
 	const btnClassName = classnames({
 		'kt-button': true,
@@ -621,139 +483,6 @@ export default function KadenceButtonEdit(props) {
 					: undefined,
 		},
 	});
-	let btnRad = '0';
-	let btnBox = '';
-	let btnBox2 = '';
-	const btnbgHover = 'gradient' === backgroundHoverType ? gradientHover : KadenceColorOutput(backgroundHover);
-	if (
-		undefined !== displayHoverShadow &&
-		displayHoverShadow &&
-		undefined !== shadowHover?.[0] &&
-		undefined !== shadowHover?.[0].inset &&
-		false === shadowHover?.[0].inset
-	) {
-		btnBox = `${
-			(undefined !== shadowHover?.[0].inset && shadowHover[0].inset ? 'inset ' : '') +
-			(undefined !== shadowHover?.[0].hOffset ? shadowHover[0].hOffset : 0) +
-			'px ' +
-			(undefined !== shadowHover?.[0].vOffset ? shadowHover[0].vOffset : 0) +
-			'px ' +
-			(undefined !== shadowHover?.[0].blur ? shadowHover[0].blur : 14) +
-			'px ' +
-			(undefined !== shadowHover?.[0].spread ? shadowHover[0].spread : 0) +
-			'px ' +
-			KadenceColorOutput(
-				undefined !== shadowHover?.[0].color ? shadowHover[0].color : '#000000',
-				undefined !== shadowHover?.[0].opacity ? shadowHover[0].opacity : 1
-			)
-		}`;
-		btnBox2 = 'none';
-		btnRad = '0';
-	}
-	if (
-		undefined !== displayHoverShadow &&
-		displayHoverShadow &&
-		undefined !== shadowHover?.[0] &&
-		undefined !== shadowHover?.[0].inset &&
-		true === shadowHover?.[0].inset
-	) {
-		btnBox2 = `${
-			(undefined !== shadowHover?.[0].inset && shadowHover[0].inset ? 'inset ' : '') +
-			(undefined !== shadowHover?.[0].hOffset ? shadowHover[0].hOffset : 0) +
-			'px ' +
-			(undefined !== shadowHover?.[0].vOffset ? shadowHover[0].vOffset : 0) +
-			'px ' +
-			(undefined !== shadowHover?.[0].blur ? shadowHover[0].blur : 14) +
-			'px ' +
-			(undefined !== shadowHover?.[0].spread ? shadowHover[0].spread : 0) +
-			'px ' +
-			KadenceColorOutput(
-				undefined !== shadowHover?.[0].color ? shadowHover[0].color : '#000000',
-				undefined !== shadowHover?.[0].opacity ? shadowHover[0].opacity : 1
-			)
-		}`;
-		btnRad = undefined !== borderRadius ? borderRadius : '3';
-		btnBox = 'none';
-	}
-	const previewTypographyCSS = typographyStyle(
-		typography,
-		`.editor-styles-wrapper .wp-block-kadence-advancedbtn .kb-single-btn-${uniqueID} .kt-button-${uniqueID}`,
-		previewDevice
-	);
-	const renderCSS = (
-		<style>
-			{'' !== previewTypographyCSS ? previewTypographyCSS : ''}
-			{`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}.kb-btn-global-outline {`}
-			{!previewBorderTopStyle && previewBorderTopColor ? 'border-top-color:' + previewBorderTopColor + ';' : ''}
-			{!previewBorderRightStyle && previewBorderRightColor
-				? 'border-right-color:' + previewBorderRightColor + ';'
-				: ''}
-			{!previewBorderLeftStyle && previewBorderLeftColor
-				? 'border-left-color:' + previewBorderLeftColor + ';'
-				: ''}
-			{!previewBorderBottomStyle && previewBorderBottomColor
-				? 'border-bottom-color:' + previewBorderBottomColor + ';'
-				: ''}
-			{'}'}
-			{`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}.kb-btn-global-outline:hover {`}
-			{!previewBorderHoverTopStyle && previewBorderHoverTopColor
-				? 'border-top-color:' + previewBorderHoverTopColor + ';'
-				: ''}
-			{!previewBorderHoverRightStyle && previewBorderHoverRightColor
-				? 'border-right-color:' + previewBorderHoverRightColor + ';'
-				: ''}
-			{!previewBorderHoverLeftStyle && previewBorderHoverLeftColor
-				? 'border-left-color:' + previewBorderHoverLeftColor + ';'
-				: ''}
-			{!previewBorderHoverBottomStyle && previewBorderHoverBottomColor
-				? 'border-bottom-color:' + previewBorderHoverBottomColor + ';'
-				: ''}
-			{'}'}
-			{`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}:hover {`}
-			{colorHover ? 'color:' + KadenceColorOutput(colorHover) + '!important;' : ''}
-			{btnBox ? 'box-shadow:' + btnBox + '!important;' : ''}
-			{previewBorderHoverTopStyle ? 'border-top:' + previewBorderHoverTopStyle + '!important;' : ''}
-			{previewBorderHoverRightStyle ? 'border-right:' + previewBorderHoverRightStyle + '!important;' : ''}
-			{previewBorderHoverLeftStyle ? 'border-left:' + previewBorderHoverLeftStyle + '!important;' : ''}
-			{previewBorderHoverBottomStyle ? 'border-bottom:' + previewBorderHoverBottomStyle + '!important;' : ''}
-			{'' !== previewHoverRadiusTop
-				? 'border-top-left-radius:' +
-				  previewHoverRadiusTop +
-				  (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px') +
-				  '!important;'
-				: ''}
-			{'' !== previewHoverRadiusRight
-				? 'border-top-right-radius:' +
-				  previewHoverRadiusRight +
-				  (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px') +
-				  '!important;'
-				: ''}
-			{'' !== previewHoverRadiusLeft
-				? 'border-bottom-left-radius:' +
-				  previewHoverRadiusLeft +
-				  (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px') +
-				  '!important;'
-				: ''}
-			{'' !== previewHoverRadiusBottom
-				? 'border-bottom-right-radius:' +
-				  previewHoverRadiusBottom +
-				  (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px') +
-				  '!important;'
-				: ''}
-			{'}'}
-			{iconColorHover
-				? `.kb-single-btn-${uniqueID} .kt-button-${uniqueID}:hover .kt-btn-svg-icon { color:${KadenceColorOutput(
-						iconColorHover
-				  )} !important;}`
-				: ''}
-			{`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}::before {`}
-			{btnbgHover ? 'background:' + btnbgHover + ';' : ''}
-			{btnBox2 ? 'box-shadow:' + btnBox2 + ';' : ''}
-			{btnRad ? 'border-radius:' + btnRad + 'px;' : ''}
-			{'}'}
-		</style>
-	);
-
 	const isDynamicReplaced =
 		undefined !== kadenceDynamic &&
 		undefined !== kadenceDynamic.text &&
@@ -766,7 +495,7 @@ export default function KadenceButtonEdit(props) {
 
 	return (
 		<div {...blockProps}>
-			{renderCSS}
+			<BackendStyles {...props} previewDevice={previewDevice} />
 			<BlockControls>
 				<ToolbarGroup>
 					<JustifyContentControl
@@ -990,342 +719,758 @@ export default function KadenceButtonEdit(props) {
 						{activeTab === 'style' && (
 							<>
 								{showSettings('colorSettings', 'kadence/advancedbtn') && (
-									<KadencePanelBody
-										title={__('Button Styles', 'kadence-blocks')}
-										initialOpen={true}
-										panelName={'kb-adv-single-btn-styles'}
-									>
-										<HoverToggleControl
-											hover={
-												<>
-													<PopColorControl
-														label={__('Color Hover', 'kadence-blocks')}
-														value={colorHover ? colorHover : ''}
-														default={''}
-														onChange={(value) => setAttributes({ colorHover: value })}
-													/>
-													<BackgroundTypeControl
-														label={__('Hover Type', 'kadence-blocks')}
-														type={backgroundHoverType ? backgroundHoverType : 'normal'}
-														onChange={(value) =>
-															setAttributes({ backgroundHoverType: value })
-														}
-														allowedTypes={['normal', 'gradient']}
-													/>
-													{'gradient' === backgroundHoverType && (
-														<GradientControl
-															value={gradientHover}
-															onChange={(value) =>
-																setAttributes({ gradientHover: value })
-															}
-															gradients={[]}
-														/>
-													)}
-													{'normal' === backgroundHoverType && (
+									<>
+										<KadencePanelBody
+											title={__('Button Styles', 'kadence-blocks')}
+											initialOpen={true}
+											panelName={'kb-adv-single-btn-styles'}
+										>
+											<HoverToggleControl
+												hover={
+													<>
 														<PopColorControl
-															label={__('Background Color', 'kadence-blocks')}
-															value={backgroundHover ? backgroundHover : ''}
+															label={__('Color Hover', 'kadence-blocks')}
+															value={colorHover ? colorHover : ''}
 															default={''}
+															onChange={(value) => setAttributes({ colorHover: value })}
+														/>
+														<BackgroundTypeControl
+															label={__('Hover Type', 'kadence-blocks')}
+															type={backgroundHoverType ? backgroundHoverType : 'normal'}
 															onChange={(value) =>
-																setAttributes({ backgroundHover: value })
+																setAttributes({ backgroundHoverType: value })
+															}
+															allowedTypes={['normal', 'gradient']}
+														/>
+														{'gradient' === backgroundHoverType && (
+															<GradientControl
+																value={gradientHover}
+																onChange={(value) =>
+																	setAttributes({ gradientHover: value })
+																}
+																gradients={[]}
+															/>
+														)}
+														{'normal' === backgroundHoverType && (
+															<PopColorControl
+																label={__('Background Color', 'kadence-blocks')}
+																value={backgroundHover ? backgroundHover : ''}
+																default={''}
+																onChange={(value) =>
+																	setAttributes({ backgroundHover: value })
+																}
+															/>
+														)}
+														<ResponsiveBorderControl
+															label={__('Border', 'kadence-blocks')}
+															value={borderHoverStyle}
+															tabletValue={tabletBorderHoverStyle}
+															mobileValue={mobileBorderHoverStyle}
+															onChange={(value) =>
+																setAttributes({ borderHoverStyle: value })
+															}
+															onChangeTablet={(value) =>
+																setAttributes({ tabletBorderHoverStyle: value })
+															}
+															onChangeMobile={(value) =>
+																setAttributes({ mobileBorderHoverStyle: value })
 															}
 														/>
-													)}
-													<ResponsiveBorderControl
-														label={__('Border', 'kadence-blocks')}
-														value={borderHoverStyle}
-														tabletValue={tabletBorderHoverStyle}
-														mobileValue={mobileBorderHoverStyle}
-														onChange={(value) => setAttributes({ borderHoverStyle: value })}
-														onChangeTablet={(value) =>
-															setAttributes({ tabletBorderHoverStyle: value })
-														}
-														onChangeMobile={(value) =>
-															setAttributes({ mobileBorderHoverStyle: value })
-														}
-													/>
-													<ResponsiveMeasurementControls
-														label={__('Border Radius', 'kadence-blocks')}
-														value={borderHoverRadius}
-														tabletValue={tabletBorderHoverRadius}
-														mobileValue={mobileBorderHoverRadius}
-														onChange={(value) =>
-															setAttributes({ borderHoverRadius: value })
-														}
-														onChangeTablet={(value) =>
-															setAttributes({ tabletBorderHoverRadius: value })
-														}
-														onChangeMobile={(value) =>
-															setAttributes({ mobileBorderHoverRadius: value })
-														}
-														unit={borderHoverRadiusUnit}
-														units={['px', 'em', 'rem', '%']}
-														onUnit={(value) =>
-															setAttributes({ borderHoverRadiusUnit: value })
-														}
-														max={
-															borderHoverRadiusUnit === 'em' ||
-															borderHoverRadiusUnit === 'rem'
-																? 24
-																: 500
-														}
-														step={
-															borderHoverRadiusUnit === 'em' ||
-															borderHoverRadiusUnit === 'rem'
-																? 0.1
-																: 1
-														}
-														min={0}
-														isBorderRadius={true}
-														allowEmpty={true}
-													/>
-													<BoxShadowControl
-														label={__('Box Shadow', 'kadence-blocks')}
-														enable={
-															undefined !== displayHoverShadow
-																? displayHoverShadow
-																: false
-														}
-														color={
-															undefined !== shadowHover &&
-															undefined !== shadowHover[0] &&
-															undefined !== shadowHover[0].color
-																? shadowHover[0].color
-																: '#000000'
-														}
-														colorDefault={'#000000'}
-														onArrayChange={(color, opacity) => {
-															saveShadowHover({ color, opacity });
-														}}
-														opacity={
-															undefined !== shadowHover &&
-															undefined !== shadowHover[0] &&
-															undefined !== shadowHover[0].opacity
-																? shadowHover[0].opacity
-																: 0.2
-														}
-														hOffset={
-															undefined !== shadowHover &&
-															undefined !== shadowHover[0] &&
-															undefined !== shadowHover[0].hOffset
-																? shadowHover[0].hOffset
-																: 0
-														}
-														vOffset={
-															undefined !== shadowHover &&
-															undefined !== shadowHover[0] &&
-															undefined !== shadowHover[0].vOffset
-																? shadowHover[0].vOffset
-																: 0
-														}
-														blur={
-															undefined !== shadowHover &&
-															undefined !== shadowHover[0] &&
-															undefined !== shadowHover[0].blur
-																? shadowHover[0].blur
-																: 14
-														}
-														spread={
-															undefined !== shadowHover &&
-															undefined !== shadowHover[0] &&
-															undefined !== shadowHover[0].spread
-																? shadowHover[0].spread
-																: 0
-														}
-														inset={
-															undefined !== shadowHover &&
-															undefined !== shadowHover[0] &&
-															undefined !== shadowHover[0].inset
-																? shadowHover[0].inset
-																: false
-														}
-														onEnableChange={(value) => {
-															setAttributes({
-																displayHoverShadow: value,
-															});
-														}}
-														onColorChange={(value) => {
-															saveShadowHover({ color: value });
-														}}
-														onOpacityChange={(value) => {
-															saveShadowHover({ opacity: value });
-														}}
-														onHOffsetChange={(value) => {
-															saveShadowHover({ hOffset: value });
-														}}
-														onVOffsetChange={(value) => {
-															saveShadowHover({ vOffset: value });
-														}}
-														onBlurChange={(value) => {
-															saveShadowHover({ blur: value });
-														}}
-														onSpreadChange={(value) => {
-															saveShadowHover({ spread: value });
-														}}
-														onInsetChange={(value) => {
-															saveShadowHover({ inset: value });
-														}}
-													/>
-												</>
-											}
-											normal={
-												<>
-													<PopColorControl
-														label={__('Color', 'kadence-blocks')}
-														value={color ? color : ''}
-														default={''}
-														onChange={(value) => setAttributes({ color: value })}
-													/>
-													<BackgroundTypeControl
-														label={__('Type', 'kadence-blocks')}
-														type={backgroundType ? backgroundType : 'normal'}
-														onChange={(value) => setAttributes({ backgroundType: value })}
-														allowedTypes={['normal', 'gradient']}
-													/>
-													{'gradient' === backgroundType && (
-														<GradientControl
-															value={gradient}
-															onChange={(value) => setAttributes({ gradient: value })}
-															gradients={[]}
+														<ResponsiveMeasurementControls
+															label={__('Border Radius', 'kadence-blocks')}
+															value={borderHoverRadius}
+															tabletValue={tabletBorderHoverRadius}
+															mobileValue={mobileBorderHoverRadius}
+															onChange={(value) =>
+																setAttributes({ borderHoverRadius: value })
+															}
+															onChangeTablet={(value) =>
+																setAttributes({ tabletBorderHoverRadius: value })
+															}
+															onChangeMobile={(value) =>
+																setAttributes({ mobileBorderHoverRadius: value })
+															}
+															unit={borderHoverRadiusUnit}
+															units={['px', 'em', 'rem', '%']}
+															onUnit={(value) =>
+																setAttributes({ borderHoverRadiusUnit: value })
+															}
+															max={
+																borderHoverRadiusUnit === 'em' ||
+																borderHoverRadiusUnit === 'rem'
+																	? 24
+																	: 500
+															}
+															step={
+																borderHoverRadiusUnit === 'em' ||
+																borderHoverRadiusUnit === 'rem'
+																	? 0.1
+																	: 1
+															}
+															min={0}
+															isBorderRadius={true}
+															allowEmpty={true}
 														/>
-													)}
-													{'normal' === backgroundType && (
+														<BoxShadowControl
+															label={__('Box Shadow', 'kadence-blocks')}
+															enable={
+																undefined !== displayHoverShadow
+																	? displayHoverShadow
+																	: false
+															}
+															color={
+																undefined !== shadowHover &&
+																undefined !== shadowHover[0] &&
+																undefined !== shadowHover[0].color
+																	? shadowHover[0].color
+																	: '#000000'
+															}
+															colorDefault={'#000000'}
+															onArrayChange={(color, opacity) => {
+																saveShadowTransparentHover({ color, opacity });
+															}}
+															opacity={
+																undefined !== shadowHover &&
+																undefined !== shadowHover[0] &&
+																undefined !== shadowHover[0].opacity
+																	? shadowHover[0].opacity
+																	: 0.2
+															}
+															hOffset={
+																undefined !== shadowHover &&
+																undefined !== shadowHover[0] &&
+																undefined !== shadowHover[0].hOffset
+																	? shadowHover[0].hOffset
+																	: 0
+															}
+															vOffset={
+																undefined !== shadowHover &&
+																undefined !== shadowHover[0] &&
+																undefined !== shadowHover[0].vOffset
+																	? shadowHover[0].vOffset
+																	: 0
+															}
+															blur={
+																undefined !== shadowHover &&
+																undefined !== shadowHover[0] &&
+																undefined !== shadowHover[0].blur
+																	? shadowHover[0].blur
+																	: 14
+															}
+															spread={
+																undefined !== shadowHover &&
+																undefined !== shadowHover[0] &&
+																undefined !== shadowHover[0].spread
+																	? shadowHover[0].spread
+																	: 0
+															}
+															inset={
+																undefined !== shadowHover &&
+																undefined !== shadowHover[0] &&
+																undefined !== shadowHover[0].inset
+																	? shadowHover[0].inset
+																	: false
+															}
+															onEnableChange={(value) => {
+																setAttributes({
+																	displayHoverShadow: value,
+																});
+															}}
+															onColorChange={(value) => {
+																saveShadowTransparentHover({ color: value });
+															}}
+															onOpacityChange={(value) => {
+																saveShadowTransparentHover({ opacity: value });
+															}}
+															onHOffsetChange={(value) => {
+																saveShadowTransparentHover({ hOffset: value });
+															}}
+															onVOffsetChange={(value) => {
+																saveShadowTransparentHover({ vOffset: value });
+															}}
+															onBlurChange={(value) => {
+																saveShadowTransparentHover({ blur: value });
+															}}
+															onSpreadChange={(value) => {
+																saveShadowTransparentHover({ spread: value });
+															}}
+															onInsetChange={(value) => {
+																saveShadowTransparentHover({ inset: value });
+															}}
+														/>
+													</>
+												}
+												normal={
+													<>
 														<PopColorControl
-															label={__('Background Color', 'kadence-blocks')}
-															value={background ? background : ''}
+															label={__('Color', 'kadence-blocks')}
+															value={color ? color : ''}
 															default={''}
-															onChange={(value) => setAttributes({ background: value })}
+															onChange={(value) => setAttributes({ color: value })}
 														/>
-													)}
-													<ResponsiveBorderControl
-														label={__('Border', 'kadence-blocks')}
-														value={borderStyle}
-														tabletValue={tabletBorderStyle}
-														mobileValue={mobileBorderStyle}
-														onChange={(value) => setAttributes({ borderStyle: value })}
-														onChangeTablet={(value) =>
-															setAttributes({ tabletBorderStyle: value })
-														}
-														onChangeMobile={(value) =>
-															setAttributes({ mobileBorderStyle: value })
-														}
-													/>
-													<ResponsiveMeasurementControls
-														label={__('Border Radius', 'kadence-blocks')}
-														value={borderRadius}
-														tabletValue={tabletBorderRadius}
-														mobileValue={mobileBorderRadius}
-														onChange={(value) => setAttributes({ borderRadius: value })}
-														onChangeTablet={(value) =>
-															setAttributes({ tabletBorderRadius: value })
-														}
-														onChangeMobile={(value) =>
-															setAttributes({ mobileBorderRadius: value })
-														}
-														unit={borderRadiusUnit}
-														units={['px', 'em', 'rem', '%']}
-														onUnit={(value) => setAttributes({ borderRadiusUnit: value })}
-														max={
-															borderRadiusUnit === 'em' || borderRadiusUnit === 'rem'
-																? 24
-																: 500
-														}
-														step={
-															borderRadiusUnit === 'em' || borderRadiusUnit === 'rem'
-																? 0.1
-																: 1
-														}
-														min={0}
-														isBorderRadius={true}
-														allowEmpty={true}
-													/>
-													<BoxShadowControl
-														label={__('Box Shadow', 'kadence-blocks')}
-														enable={undefined !== displayShadow ? displayShadow : false}
-														color={
-															undefined !== shadow &&
-															undefined !== shadow[0] &&
-															undefined !== shadow[0].color
-																? shadow[0].color
-																: '#000000'
-														}
-														colorDefault={'#000000'}
-														onArrayChange={(color, opacity) => {
-															saveShadow({ color, opacity });
-														}}
-														opacity={
-															undefined !== shadow &&
-															undefined !== shadow[0] &&
-															undefined !== shadow[0].opacity
-																? shadow[0].opacity
-																: 0.2
-														}
-														hOffset={
-															undefined !== shadow &&
-															undefined !== shadow[0] &&
-															undefined !== shadow[0].hOffset
-																? shadow[0].hOffset
-																: 0
-														}
-														vOffset={
-															undefined !== shadow &&
-															undefined !== shadow[0] &&
-															undefined !== shadow[0].vOffset
-																? shadow[0].vOffset
-																: 0
-														}
-														blur={
-															undefined !== shadow &&
-															undefined !== shadow[0] &&
-															undefined !== shadow[0].blur
-																? shadow[0].blur
-																: 14
-														}
-														spread={
-															undefined !== shadow &&
-															undefined !== shadow[0] &&
-															undefined !== shadow[0].spread
-																? shadow[0].spread
-																: 0
-														}
-														inset={
-															undefined !== shadow &&
-															undefined !== shadow[0] &&
-															undefined !== shadow[0].inset
-																? shadow[0].inset
-																: false
-														}
-														onEnableChange={(value) => {
-															setAttributes({
-																displayShadow: value,
-															});
-														}}
-														onColorChange={(value) => {
-															saveShadow({ color: value });
-														}}
-														onOpacityChange={(value) => {
-															saveShadow({ opacity: value });
-														}}
-														onHOffsetChange={(value) => {
-															saveShadow({ hOffset: value });
-														}}
-														onVOffsetChange={(value) => {
-															saveShadow({ vOffset: value });
-														}}
-														onBlurChange={(value) => {
-															saveShadow({ blur: value });
-														}}
-														onSpreadChange={(value) => {
-															saveShadow({ spread: value });
-														}}
-														onInsetChange={(value) => {
-															saveShadow({ inset: value });
-														}}
-													/>
-												</>
-											}
-										/>
-									</KadencePanelBody>
+														<BackgroundTypeControl
+															label={__('Type', 'kadence-blocks')}
+															type={backgroundType ? backgroundType : 'normal'}
+															onChange={(value) =>
+																setAttributes({ backgroundType: value })
+															}
+															allowedTypes={['normal', 'gradient']}
+														/>
+														{'gradient' === backgroundType && (
+															<GradientControl
+																value={gradient}
+																onChange={(value) => setAttributes({ gradient: value })}
+																gradients={[]}
+															/>
+														)}
+														{'normal' === backgroundType && (
+															<PopColorControl
+																label={__('Background Color', 'kadence-blocks')}
+																value={background ? background : ''}
+																default={''}
+																onChange={(value) =>
+																	setAttributes({ background: value })
+																}
+															/>
+														)}
+														<ResponsiveBorderControl
+															label={__('Border', 'kadence-blocks')}
+															value={borderStyle}
+															tabletValue={tabletBorderStyle}
+															mobileValue={mobileBorderStyle}
+															onChange={(value) => setAttributes({ borderStyle: value })}
+															onChangeTablet={(value) =>
+																setAttributes({ tabletBorderStyle: value })
+															}
+															onChangeMobile={(value) =>
+																setAttributes({ mobileBorderStyle: value })
+															}
+														/>
+														<ResponsiveMeasurementControls
+															label={__('Border Radius', 'kadence-blocks')}
+															value={borderRadius}
+															tabletValue={tabletBorderRadius}
+															mobileValue={mobileBorderRadius}
+															onChange={(value) => setAttributes({ borderRadius: value })}
+															onChangeTablet={(value) =>
+																setAttributes({ tabletBorderRadius: value })
+															}
+															onChangeMobile={(value) =>
+																setAttributes({ mobileBorderRadius: value })
+															}
+															unit={borderRadiusUnit}
+															units={['px', 'em', 'rem', '%']}
+															onUnit={(value) =>
+																setAttributes({ borderRadiusUnit: value })
+															}
+															max={
+																borderRadiusUnit === 'em' || borderRadiusUnit === 'rem'
+																	? 24
+																	: 500
+															}
+															step={
+																borderRadiusUnit === 'em' || borderRadiusUnit === 'rem'
+																	? 0.1
+																	: 1
+															}
+															min={0}
+															isBorderRadius={true}
+															allowEmpty={true}
+														/>
+														<BoxShadowControl
+															label={__('Box Shadow', 'kadence-blocks')}
+															enable={undefined !== displayShadow ? displayShadow : false}
+															color={
+																undefined !== shadow &&
+																undefined !== shadow[0] &&
+																undefined !== shadow[0].color
+																	? shadow[0].color
+																	: '#000000'
+															}
+															colorDefault={'#000000'}
+															onArrayChange={(color, opacity) => {
+																saveShadowTransparent({ color, opacity });
+															}}
+															opacity={
+																undefined !== shadow &&
+																undefined !== shadow[0] &&
+																undefined !== shadow[0].opacity
+																	? shadow[0].opacity
+																	: 0.2
+															}
+															hOffset={
+																undefined !== shadow &&
+																undefined !== shadow[0] &&
+																undefined !== shadow[0].hOffset
+																	? shadow[0].hOffset
+																	: 0
+															}
+															vOffset={
+																undefined !== shadow &&
+																undefined !== shadow[0] &&
+																undefined !== shadow[0].vOffset
+																	? shadow[0].vOffset
+																	: 0
+															}
+															blur={
+																undefined !== shadow &&
+																undefined !== shadow[0] &&
+																undefined !== shadow[0].blur
+																	? shadow[0].blur
+																	: 14
+															}
+															spread={
+																undefined !== shadow &&
+																undefined !== shadow[0] &&
+																undefined !== shadow[0].spread
+																	? shadow[0].spread
+																	: 0
+															}
+															inset={
+																undefined !== shadow &&
+																undefined !== shadow[0] &&
+																undefined !== shadow[0].inset
+																	? shadow[0].inset
+																	: false
+															}
+															onEnableChange={(value) => {
+																setAttributes({
+																	displayShadow: value,
+																});
+															}}
+															onColorChange={(value) => {
+																saveShadowTransparent({ color: value });
+															}}
+															onOpacityChange={(value) => {
+																saveShadowTransparent({ opacity: value });
+															}}
+															onHOffsetChange={(value) => {
+																saveShadowTransparent({ hOffset: value });
+															}}
+															onVOffsetChange={(value) => {
+																saveShadowTransparent({ vOffset: value });
+															}}
+															onBlurChange={(value) => {
+																saveShadowTransparent({ blur: value });
+															}}
+															onSpreadChange={(value) => {
+																saveShadowTransparent({ spread: value });
+															}}
+															onInsetChange={(value) => {
+																saveShadowTransparent({ inset: value });
+															}}
+														/>
+													</>
+												}
+											/>
+										</KadencePanelBody>
+										{context?.['kadence/headerIsTransparent'] == '1' && (
+											<KadencePanelBody
+												title={__('Button Transparent Styles', 'kadence-blocks')}
+												initialOpen={false}
+												panelName={'kb-adv-single-btn-styles-transparent'}
+											>
+												<HoverToggleControl
+													hover={
+														<>
+															<PopColorControl
+																label={__('Color Hover', 'kadence-blocks')}
+																value={
+																	colorTransparentHover ? colorTransparentHover : ''
+																}
+																default={''}
+																onChange={(value) =>
+																	setAttributes({ colorTransparentHover: value })
+																}
+															/>
+															<BackgroundTypeControl
+																label={__('Hover Type', 'kadence-blocks')}
+																type={
+																	backgroundTransparentHoverType
+																		? backgroundTransparentHoverType
+																		: 'normal'
+																}
+																onChange={(value) =>
+																	setAttributes({
+																		backgroundTransparentHoverType: value,
+																	})
+																}
+																allowedTypes={['normal', 'gradient']}
+															/>
+															{'gradient' === backgroundTransparentHoverType && (
+																<GradientControl
+																	value={gradientTransparentHover}
+																	onChange={(value) =>
+																		setAttributes({ gradientHover: value })
+																	}
+																	gradients={[]}
+																/>
+															)}
+															{'normal' === backgroundTransparentHoverType && (
+																<PopColorControl
+																	label={__('Background Color', 'kadence-blocks')}
+																	value={
+																		backgroundTransparentHover
+																			? backgroundTransparentHover
+																			: ''
+																	}
+																	default={''}
+																	onChange={(value) =>
+																		setAttributes({ backgroundHover: value })
+																	}
+																/>
+															)}
+															<ResponsiveBorderControl
+																label={__('Border', 'kadence-blocks')}
+																value={borderTransparentHoverStyle}
+																tabletValue={tabletBorderTransparentHoverStyle}
+																mobileValue={mobileBorderTransparentHoverStyle}
+																onChange={(value) =>
+																	setAttributes({
+																		borderTransparentHoverStyle: value,
+																	})
+																}
+																onChangeTablet={(value) =>
+																	setAttributes({
+																		tabletBorderTransparentHoverStyle: value,
+																	})
+																}
+																onChangeMobile={(value) =>
+																	setAttributes({
+																		mobileBorderTransparentHoverStyle: value,
+																	})
+																}
+															/>
+															<ResponsiveMeasurementControls
+																label={__('Border Radius', 'kadence-blocks')}
+																value={borderTransparentHoverRadius}
+																tabletValue={tabletBorderTransparentHoverRadius}
+																mobileValue={mobileBorderTransparentHoverRadius}
+																onChange={(value) =>
+																	setAttributes({
+																		borderTransparentHoverRadius: value,
+																	})
+																}
+																onChangeTablet={(value) =>
+																	setAttributes({
+																		tabletBorderTransparentHoverRadius: value,
+																	})
+																}
+																onChangeMobile={(value) =>
+																	setAttributes({
+																		mobileBorderTransparentHoverRadius: value,
+																	})
+																}
+																unit={borderTransparentHoverRadiusUnit}
+																units={['px', 'em', 'rem', '%']}
+																onUnit={(value) =>
+																	setAttributes({
+																		borderTransparentHoverRadiusUnit: value,
+																	})
+																}
+																max={
+																	borderTransparentHoverRadiusUnit === 'em' ||
+																	borderTransparentHoverRadiusUnit === 'rem'
+																		? 24
+																		: 500
+																}
+																step={
+																	borderTransparentHoverRadiusUnit === 'em' ||
+																	borderTransparentHoverRadiusUnit === 'rem'
+																		? 0.1
+																		: 1
+																}
+																min={0}
+																isBorderRadius={true}
+																allowEmpty={true}
+															/>
+															<BoxShadowControl
+																label={__('Box Shadow', 'kadence-blocks')}
+																enable={
+																	undefined !== displayHoverShadowTransparent
+																		? displayHoverShadowTransparent
+																		: false
+																}
+																color={
+																	undefined !== shadowTransparentHover &&
+																	undefined !== shadowTransparentHover[0] &&
+																	undefined !== shadowTransparentHover[0].color
+																		? shadowTransparentHover[0].color
+																		: '#000000'
+																}
+																colorDefault={'#000000'}
+																onArrayChange={(color, opacity) => {
+																	saveShadowHover({ color, opacity });
+																}}
+																opacity={
+																	undefined !== shadowTransparentHover &&
+																	undefined !== shadowTransparentHover[0] &&
+																	undefined !== shadowTransparentHover[0].opacity
+																		? shadowTransparentHover[0].opacity
+																		: 0.2
+																}
+																hOffset={
+																	undefined !== shadowTransparentHover &&
+																	undefined !== shadowTransparentHover[0] &&
+																	undefined !== shadowTransparentHover[0].hOffset
+																		? shadowTransparentHover[0].hOffset
+																		: 0
+																}
+																vOffset={
+																	undefined !== shadowTransparentHover &&
+																	undefined !== shadowTransparentHover[0] &&
+																	undefined !== shadowTransparentHover[0].vOffset
+																		? shadowTransparentHover[0].vOffset
+																		: 0
+																}
+																blur={
+																	undefined !== shadowTransparentHover &&
+																	undefined !== shadowTransparentHover[0] &&
+																	undefined !== shadowTransparentHover[0].blur
+																		? shadowTransparentHover[0].blur
+																		: 14
+																}
+																spread={
+																	undefined !== shadowTransparentHover &&
+																	undefined !== shadowTransparentHover[0] &&
+																	undefined !== shadowTransparentHover[0].spread
+																		? shadowTransparentHover[0].spread
+																		: 0
+																}
+																inset={
+																	undefined !== shadowTransparentHover &&
+																	undefined !== shadowTransparentHover[0] &&
+																	undefined !== shadowTransparentHover[0].inset
+																		? shadowTransparentHover[0].inset
+																		: false
+																}
+																onEnableChange={(value) => {
+																	setAttributes({
+																		displayHoverShadowTransparent: value,
+																	});
+																}}
+																onColorChange={(value) => {
+																	saveShadowHover({ color: value });
+																}}
+																onOpacityChange={(value) => {
+																	saveShadowHover({ opacity: value });
+																}}
+																onHOffsetChange={(value) => {
+																	saveShadowHover({ hOffset: value });
+																}}
+																onVOffsetChange={(value) => {
+																	saveShadowHover({ vOffset: value });
+																}}
+																onBlurChange={(value) => {
+																	saveShadowHover({ blur: value });
+																}}
+																onSpreadChange={(value) => {
+																	saveShadowHover({ spread: value });
+																}}
+																onInsetChange={(value) => {
+																	saveShadowHover({ inset: value });
+																}}
+															/>
+														</>
+													}
+													normal={
+														<>
+															<PopColorControl
+																label={__('Color', 'kadence-blocks')}
+																value={colorTransparent ? colorTransparent : ''}
+																default={''}
+																onChange={(value) =>
+																	setAttributes({ colorTransparent: value })
+																}
+															/>
+															<BackgroundTypeControl
+																label={__('Type', 'kadence-blocks')}
+																type={
+																	backgroundTransparentType
+																		? backgroundTransparentType
+																		: 'normal'
+																}
+																onChange={(value) =>
+																	setAttributes({ backgroundTransparentType: value })
+																}
+																allowedTypes={['normal', 'gradient']}
+															/>
+															{'gradient' === backgroundTransparentType && (
+																<GradientControl
+																	value={gradientTransparent}
+																	onChange={(value) =>
+																		setAttributes({ gradientTransparent: value })
+																	}
+																	gradients={[]}
+																/>
+															)}
+															{'normal' === backgroundTransparentType && (
+																<PopColorControl
+																	label={__('Background Color', 'kadence-blocks')}
+																	value={
+																		backgroundTransparent
+																			? backgroundTransparent
+																			: ''
+																	}
+																	default={''}
+																	onChange={(value) =>
+																		setAttributes({ backgroundTransparent: value })
+																	}
+																/>
+															)}
+															<ResponsiveBorderControl
+																label={__('Border', 'kadence-blocks')}
+																value={borderTransparentStyle}
+																tabletValue={tabletBorderTransparentStyle}
+																mobileValue={mobileBorderTransparentStyle}
+																onChange={(value) =>
+																	setAttributes({ borderTransparentStyle: value })
+																}
+																onChangeTablet={(value) =>
+																	setAttributes({
+																		tabletBorderTransparentStyle: value,
+																	})
+																}
+																onChangeMobile={(value) =>
+																	setAttributes({
+																		mobileBorderTransparentStyle: value,
+																	})
+																}
+															/>
+															<ResponsiveMeasurementControls
+																label={__('Border Radius', 'kadence-blocks')}
+																value={borderTransparentRadius}
+																tabletValue={tabletBorderTransparentRadius}
+																mobileValue={mobileBorderTransparentRadius}
+																onChange={(value) =>
+																	setAttributes({ borderTransparentRadius: value })
+																}
+																onChangeTablet={(value) =>
+																	setAttributes({
+																		tabletBorderTransparentRadius: value,
+																	})
+																}
+																onChangeMobile={(value) =>
+																	setAttributes({
+																		mobileBorderTransparentRadius: value,
+																	})
+																}
+																unit={borderTransparentRadiusUnit}
+																units={['px', 'em', 'rem', '%']}
+																onUnit={(value) =>
+																	setAttributes({
+																		borderTransparentRadiusUnit: value,
+																	})
+																}
+																max={
+																	borderTransparentRadiusUnit === 'em' ||
+																	borderTransparentRadiusUnit === 'rem'
+																		? 24
+																		: 500
+																}
+																step={
+																	borderTransparentRadiusUnit === 'em' ||
+																	borderTransparentRadiusUnit === 'rem'
+																		? 0.1
+																		: 1
+																}
+																min={0}
+																isBorderRadius={true}
+																allowEmpty={true}
+															/>
+															<BoxShadowControl
+																label={__('Box Shadow', 'kadence-blocks')}
+																enable={
+																	undefined !== displayShadowTransparent
+																		? displayShadowTransparent
+																		: false
+																}
+																color={
+																	undefined !== shadowTransparent &&
+																	undefined !== shadowTransparent[0] &&
+																	undefined !== shadowTransparent[0].color
+																		? shadowTransparent[0].color
+																		: '#000000'
+																}
+																colorDefault={'#000000'}
+																onArrayChange={(color, opacity) => {
+																	saveShadow({ color, opacity });
+																}}
+																opacity={
+																	undefined !== shadowTransparent &&
+																	undefined !== shadowTransparent[0] &&
+																	undefined !== shadowTransparent[0].opacity
+																		? shadowTransparent[0].opacity
+																		: 0.2
+																}
+																hOffset={
+																	undefined !== shadowTransparent &&
+																	undefined !== shadowTransparent[0] &&
+																	undefined !== shadowTransparent[0].hOffset
+																		? shadowTransparent[0].hOffset
+																		: 0
+																}
+																vOffset={
+																	undefined !== shadowTransparent &&
+																	undefined !== shadowTransparent[0] &&
+																	undefined !== shadowTransparent[0].vOffset
+																		? shadow[0].vOffset
+																		: 0
+																}
+																blur={
+																	undefined !== shadowTransparent &&
+																	undefined !== shadowTransparent[0] &&
+																	undefined !== shadowTransparent[0].blur
+																		? shadowTransparent[0].blur
+																		: 14
+																}
+																spread={
+																	undefined !== shadowTransparent &&
+																	undefined !== shadowTransparent[0] &&
+																	undefined !== shadowTransparent[0].spread
+																		? shadowTransparent[0].spread
+																		: 0
+																}
+																inset={
+																	undefined !== shadowTransparent &&
+																	undefined !== shadowTransparent[0] &&
+																	undefined !== shadowTransparent[0].inset
+																		? shadowTransparent[0].inset
+																		: false
+																}
+																onEnableChange={(value) => {
+																	setAttributes({
+																		displayShadowTransparent: value,
+																	});
+																}}
+																onColorChange={(value) => {
+																	saveShadow({ color: value });
+																}}
+																onOpacityChange={(value) => {
+																	saveShadow({ opacity: value });
+																}}
+																onHOffsetChange={(value) => {
+																	saveShadow({ hOffset: value });
+																}}
+																onVOffsetChange={(value) => {
+																	saveShadow({ vOffset: value });
+																}}
+																onBlurChange={(value) => {
+																	saveShadow({ blur: value });
+																}}
+																onSpreadChange={(value) => {
+																	saveShadow({ spread: value });
+																}}
+																onInsetChange={(value) => {
+																	saveShadow({ inset: value });
+																}}
+															/>
+														</>
+													}
+												/>
+											</KadencePanelBody>
+										)}
+									</>
 								)}
 								{showSettings('iconSettings', 'kadence/advancedbtn') && (
 									<KadencePanelBody
@@ -1730,93 +1875,7 @@ export default function KadenceButtonEdit(props) {
 						: undefined
 				}
 			>
-				<span
-					className={btnClassName}
-					style={{
-						paddingTop:
-							'' !== previewPaddingTop
-								? getSpacingOptionOutput(previewPaddingTop, paddingUnit)
-								: undefined,
-						paddingRight:
-							'' !== previewPaddingRight
-								? getSpacingOptionOutput(previewPaddingRight, paddingUnit)
-								: undefined,
-						paddingBottom:
-							'' !== previewPaddingBottom
-								? getSpacingOptionOutput(previewPaddingBottom, paddingUnit)
-								: undefined,
-						paddingLeft:
-							'' !== previewPaddingLeft
-								? getSpacingOptionOutput(previewPaddingLeft, paddingUnit)
-								: undefined,
-						marginTop:
-							'' !== previewMarginTop
-								? getSpacingOptionOutput(previewMarginTop, previewMarginUnit)
-								: undefined,
-						marginRight:
-							'' !== previewMarginRight
-								? getSpacingOptionOutput(previewMarginRight, previewMarginUnit)
-								: undefined,
-						marginBottom:
-							'' !== previewMarginBottom
-								? getSpacingOptionOutput(previewMarginBottom, previewMarginUnit)
-								: undefined,
-						marginLeft:
-							'' !== previewMarginLeft
-								? getSpacingOptionOutput(previewMarginLeft, previewMarginUnit)
-								: undefined,
-						borderTop: previewBorderTopStyle ? previewBorderTopStyle : undefined,
-						borderRight: previewBorderRightStyle ? previewBorderRightStyle : undefined,
-						borderBottom: previewBorderBottomStyle ? previewBorderBottomStyle : undefined,
-						borderLeft: previewBorderLeftStyle ? previewBorderLeftStyle : undefined,
-						borderTopLeftRadius:
-							'' !== previewRadiusTop
-								? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
-								: undefined,
-						borderTopRightRadius:
-							'' !== previewRadiusRight
-								? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
-								: undefined,
-						borderBottomRightRadius:
-							'' !== previewRadiusBottom
-								? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
-								: undefined,
-						borderBottomLeftRadius:
-							'' !== previewRadiusLeft
-								? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
-								: undefined,
-						boxShadow:
-							undefined !== displayShadow &&
-							displayShadow &&
-							undefined !== shadow &&
-							undefined !== shadow[0] &&
-							undefined !== shadow[0].color
-								? (undefined !== shadow[0].inset && shadow[0].inset ? 'inset ' : '') +
-								  (undefined !== shadow[0].hOffset ? shadow[0].hOffset : 0) +
-								  'px ' +
-								  (undefined !== shadow[0].vOffset ? shadow[0].vOffset : 0) +
-								  'px ' +
-								  (undefined !== shadow[0].blur ? shadow[0].blur : 14) +
-								  'px ' +
-								  (undefined !== shadow[0].spread ? shadow[0].spread : 0) +
-								  'px ' +
-								  KadenceColorOutput(
-										undefined !== shadow[0].color ? shadow[0].color : '#000000',
-										undefined !== shadow[0].opacity ? shadow[0].opacity : 1
-								  )
-								: undefined,
-
-						background: undefined !== btnbg ? btnbg : undefined,
-						color: undefined !== color ? KadenceColorOutput(color) : undefined,
-						width:
-							undefined !== widthType &&
-							'fixed' === widthType &&
-							'px' === (undefined !== widthUnit ? widthUnit : 'px') &&
-							'' !== previewFixedWidth
-								? previewFixedWidth + (undefined !== widthUnit ? widthUnit : 'px')
-								: undefined,
-					}}
-				>
+				<span className={btnClassName}>
 					{icon && 'left' === iconSide && (
 						<IconRender
 							className={`kt-btn-svg-icon kt-btn-svg-icon-${icon} kt-btn-side-${iconSide}`}
