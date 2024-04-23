@@ -6,6 +6,7 @@ import { get } from 'lodash';
 import DeleteBlockButton from './delete';
 import SelectBlockButton from './selectBlock';
 import { DESKTOP_SECTION_NAMES, DESKTOP_BLOCK_POSITIONS } from './constants';
+import { select } from '@wordpress/data';
 
 const DesktopRow = ({ position, blocks, allBlocks, onChange, parentClientId }) => {
 	const sections = useMemo(() => {
@@ -39,7 +40,7 @@ const InnerBlock = ({ block, allBlocks, onChange, parentClientId }) => {
 		<div className={'visual-inner-block'}>
 			{block.name.replace('kadence/', '').replace('core/', '')}
 			{/* TODO: Client ID doesn't match editor client ID so selection doesn't work */}
-			{/*<SelectBlockButton clientId={block.clientId} />*/}
+			<SelectBlockButton clientId={block.clientId} />
 			<DeleteBlockButton
 				block={block}
 				allBlocks={allBlocks}
@@ -68,13 +69,14 @@ const InnerBlocks = ({ blocks, allBlocks, onChange, parentClientId }) => {
 	return __('Loading blocks…', 'kadence-blocks');
 };
 
-export default function Desktop({ id }) {
-	const [blocks, , onChange] = useEntityBlockEditor('postType', 'kadence_header', { id });
-	const innerBlocks = useMemo(() => get(blocks, [0, 'innerBlocks'], []), [blocks]);
-	const desktopBlocks = useMemo(() => get(innerBlocks, [0, 'innerBlocks'], []), [blocks]);
-	const parentClientId = get(blocks, [0, 'clientId']);
-
+export default function Desktop({ blocks, onChange }) {
 	const rowPositions = ['top', 'middle', 'bottom'];
+	// const innerBlocks = useMemo(() => get(blocks, [0, 'innerBlocks'], []), [blocks]);
+	// const desktopBlocks = useMemo(() => get(innerBlocks, [0, 'innerBlocks'], []), [blocks]);
+
+	const innerBlocks = get(blocks, [0, 'innerBlocks'], []);
+	const desktopBlocks = get(innerBlocks, [0, 'innerBlocks'], []);
+	const parentClientId = get(blocks, [0, 'clientId']);
 
 	return (
 		<div className={'visual-desktop-container'}>

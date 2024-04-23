@@ -7,16 +7,62 @@ import ModalClose from './close';
 import Desktop from './desktop';
 import './editor.scss';
 
-export default function VisualBuilder({ id, startVisible = false }) {
+const getDescendantIds = (id = '', recursive = true, first_loop = true) => {
+	const { select } = wp.data;
+
+	const ids = id && !first_loop ? [id] : [];
+
+	const children_id = select('core/block-editor').getBlockOrder(id);
+
+	if (children_id) {
+		let descendants_id;
+
+		if (recursive) {
+			descendants_id = children_id.flatMap((_children_id) => getDescendantIds(_children_id, true, false));
+		} else {
+			descendants_id = children_id;
+		}
+
+		ids.push(...descendants_id);
+	}
+
+	return ids;
+};
+
+function extractBlocks(blocksData) {
+	const desktop = null;
+	const tablet = null;
+	const offcanvasBlocks = null;
+
+	// Loop through the blocks data to find the relevant blocks
+	blocksData.forEach((block) => {
+		if (block.name.includes('desktop')) {
+			desktopBlocks = block;
+		} else if (block.name.includes('tablet')) {
+			tabletBlocks = block;
+		} else if (block.name.includes('off-canvas')) {
+			offcanvasBlocks = block;
+		}
+	});
+
+	return { desktopBlocks, tabletBlocks, offcanvasBlocks };
+}
+
+export default function VisualBuilder({ clientId, startVisible = false }) {
 	// Don't commit, active for testing
 	const [isVisible, setIsVisible] = useState(!startVisible);
 	const [tab, setTab] = useState('desktop');
 
-	const [blocks, onChange] = useEntityBlockEditor('postType', 'kadence_header', { id });
+	const { select } = wp.data;
 
-	// const desktopBlocks = useMemo(() => get(blocks, [0, 'innerBlocks', 0, 'innerBlocks']), [blocks]);
-	// const tabletBlocks = useMemo(() => get(blocks, [0, 'innerBlocks', 1, 'innerBlocks']), [blocks]);
-	// const offCanvasBlocks = useMemo(() => get(blocks, [0, 'innerBlocks', 2, 'innerBlocks']), [blocks]);
+	const topLevelIds = select('core/block-editor').getBlockOrder(clientId);
+	// convert the line above to useMemo
+	const topLevelBlocks = useMemo(() => {
+		console.log('RUNNING TOP LEVEL BLOCKS');
+		return topLevelIds.map((_id) => select('core/block-editor').getBlock(_id));
+	}, [topLevelIds]);
+
+	const { desktopBlocks, tabletBlocks, offcanvasBlocks } = extractBlocks(topLevelBlocks);
 
 	return (
 		<div class={'kb-header-visual-builder'}>
@@ -27,20 +73,32 @@ export default function VisualBuilder({ id, startVisible = false }) {
 			{isVisible && (
 				<div class={'kb-header-visual-builder-modal'}>
 					<div class={'tabs'}>
-						<Button isPrimary={tab === 'desktop'} onClick={() => setTab('desktop')}>
+						<Button
+							isPrimary={tab === 'desktop'}
+							disabled={desktop === null}
+							onClick={() => setTab('desktop')}
+						>
 							{__('Desktop', 'kadence-blocks')}
 						</Button>
-						<Button isPrimary={tab === 'tablet'} onClick={() => setTab('tablet')}>
+						<Button
+							isPrimary={tab === 'tablet'}
+							disabled={tablet === null}
+							onClick={() => setTab('tablet')}
+						>
 							{__('Tablet', 'kadence-blocks')}
 						</Button>
-						<Button isPrimary={tab === 'off-canvas'} onClick={() => setTab('off-canvas')}>
+						<Button
+							isPrimary={tab === 'off-canvas'}
+							disabled={offcanvas === null}
+							onClick={() => setTab('off-canvas')}
+						>
 							{__('Off Canvas', 'kadence-blocks')}
 						</Button>
 						<ModalClose isVisible={isVisible} setIsVisible={setIsVisible} />
 					</div>
 
 					<div class={'content'}>
-						{tab === 'desktop' && <Desktop id={id} />}
+						{tab === 'desktop' && <Desktop blocks={desktopBlocks} onChange={onChange} />}
 
 						{tab === 'tablet' && <>Tablet Content</>}
 

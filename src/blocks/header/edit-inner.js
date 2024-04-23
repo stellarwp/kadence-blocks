@@ -41,7 +41,7 @@ import {
 } from '@kadence/components';
 import { getPreviewSize, mouseOverVisualizer, arrayStringToInt, useElementWidth } from '@kadence/helpers';
 
-import { FormTitle, BackendStyles, SelectForm } from './components';
+import { FormTitle, BackendStyles, SelectForm, VisualBuilder } from './components';
 import { HEADER_ALLOWED_BLOCKS, HEADER_INNERBLOCK_TEMPLATE } from './constants';
 
 /**
@@ -57,7 +57,6 @@ const ANCHOR_REGEX = /[\s#]/g;
 
 export function EditInner(props) {
 	const { attributes, setAttributes, clientId, context, direct, id, isSelected } = props;
-	const { uniqueID } = attributes;
 
 	const { previewDevice } = useSelect(
 		(select) => {
@@ -1435,6 +1434,7 @@ export function EditInner(props) {
 			{/*	forceShow={ marginMouseOver.isMouseOver }*/}
 			{/*	spacing={ [ getSpacingOptionOutput( previewMarginTop, marginUnit ), getSpacingOptionOutput( previewMarginRight, marginUnit ), getSpacingOptionOutput( previewMarginBottom, marginUnit ), getSpacingOptionOutput( previewMarginLeft, marginUnit ) ] }*/}
 			{/*/>*/}
+			<VisualBuilder clientId={clientId} />
 		</>
 	);
 }
