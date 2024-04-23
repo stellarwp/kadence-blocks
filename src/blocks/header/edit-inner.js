@@ -995,7 +995,7 @@ export function EditInner(props) {
 								onUnit={(value) => {
 									setMetaAttribute(value, 'heightUnit');
 								}}
-								units={['px', 'vw', 'vh']}
+								units={['px', 'vh', 'vw']}
 							/>
 							<ResponsiveRangeControls
 								label={__('Max Width', 'kadence-blocks')}
@@ -1039,7 +1039,7 @@ export function EditInner(props) {
 								onUnit={(value) => {
 									setMetaAttribute(value, 'widthUnit');
 								}}
-								units={['px', 'vw', 'vh']}
+								units={['px', '%', 'vw']}
 							/>
 						</KadencePanelBody>
 					</>
