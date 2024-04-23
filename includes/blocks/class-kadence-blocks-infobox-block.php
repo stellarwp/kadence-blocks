@@ -91,16 +91,18 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'background', $css->render_color( '#f2f2f2', $alpha ) );
 			}
 			$max_width_unit = ( isset( $attributes['maxWidthUnit'] ) && ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' );
+			$tablet_max_width_unit = ( isset( $attributes['maxWidthTabletUnit'] ) && ! empty( $attributes['maxWidthTabletUnit'] ) ? $attributes['maxWidthTabletUnit'] : 'px' );
+			$mobile_max_width_unit = ( isset( $attributes['maxWidthMobileUnit'] ) && ! empty( $attributes['maxWidthMobileUnit'] ) ? $attributes['maxWidthMobileUnit'] : 'px' );
 			if ( ! empty( $attributes['maxWidth'] ) ) {
 				$css->add_property( 'max-width', $attributes['maxWidth'] . $max_width_unit );
 			}
 			if ( ! empty( $attributes['tabletMaxWidth'] ) ) {
 				$css->set_media_state( 'tablet' );
-				$css->add_property( 'max-width', $attributes['tabletMaxWidth'] . $max_width_unit );
+				$css->add_property( 'max-width', $attributes['tabletMaxWidth'] . $tablet_max_width_unit );
 			}
 			if ( ! empty( $attributes['mobileMaxWidth'] ) ) {
 				$css->set_media_state( 'mobile' );
-				$css->add_property( 'max-width', $attributes['mobileMaxWidth'] . $max_width_unit );
+				$css->add_property( 'max-width', $attributes['mobileMaxWidth'] . $mobile_max_width_unit );
 			}
 			$css->set_media_state( 'desktop' );
 		}
