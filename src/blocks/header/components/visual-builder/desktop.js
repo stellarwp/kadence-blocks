@@ -18,11 +18,17 @@ const DesktopRow = ({ position, blocks }) => {
 		<div className={'visual-row-wrapper'} key={position}>
 			<SelectBlockButton clientId={thisRow.clientId} />
 			<div className={`visual-desktop-row visual-desktop-row-${position}`}>
-				{sections.map((section) => (
-					<div key={section.name} className={`visual-section-wrapper visual-section-wrapper-${section.name}`}>
-						<InnerBlocks blocks={section.blocks} />
-					</div>
-				))}
+				<div className={'visual-section-wrapper visual-section-wrapper-left'}>
+					<InnerBlocks blocks={sections[0].blocks} className={'left'} />
+					<InnerBlocks blocks={sections[1].blocks} className={'center-left'} />
+				</div>
+				<div className={'visual-section-wrapper visual-section-wrapper-center'}>
+					<InnerBlocks blocks={sections[2].blocks} className={'center'} />
+				</div>
+				<div className={'visual-section-wrapper visual-section-wrapper-right'}>
+					<InnerBlocks blocks={sections[3].blocks} className={'center-right'} />
+					<InnerBlocks blocks={sections[4].blocks} className={'right'} />
+				</div>
 			</div>
 		</div>
 	);
@@ -38,13 +44,15 @@ const InnerBlock = ({ block }) => {
 	);
 };
 
-const InnerBlocks = ({ blocks }) => {
+const InnerBlocks = ({ blocks, className }) => {
 	if (blocks) {
-		return blocks.map((block) => (
-			<>
-				<InnerBlock key={block.clientId} block={block} />
-			</>
-		));
+		return (
+			<div className={'visual-column-wrapper visual-column-wrapper-' + className}>
+				{blocks.map((block) => (
+					<InnerBlock key={block.clientId} block={block} />
+				))}
+			</div>
+		);
 	}
 
 	return __('Loading blocks…', 'kadence-blocks');
