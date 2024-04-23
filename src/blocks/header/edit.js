@@ -237,6 +237,7 @@ export function Edit(props) {
 					</EntityProvider>
 				)}
 			</div>
+			<VisualBuilder clientId={clientId} />
 		</>
 	);
 
@@ -247,6 +248,7 @@ export function Edit(props) {
 				<div {...blockProps}>
 					<EditInner {...props} direct={true} id={postId} />
 				</div>
+				<VisualBuilder clientId={clientId} />
 			</>
 		);
 	}

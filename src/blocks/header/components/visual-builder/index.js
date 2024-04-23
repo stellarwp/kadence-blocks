@@ -30,9 +30,9 @@ const getDescendantIds = (id = '', recursive = true, first_loop = true) => {
 };
 
 function extractBlocks(blocksData) {
-	const desktop = null;
-	const tablet = null;
-	const offcanvasBlocks = null;
+	let desktopBlocks,
+		tabletBlocks,
+		offcanvasBlocks = null;
 
 	// Loop through the blocks data to find the relevant blocks
 	blocksData.forEach((block) => {
@@ -56,11 +56,7 @@ export default function VisualBuilder({ clientId, startVisible = false }) {
 	const { select } = wp.data;
 
 	const topLevelIds = select('core/block-editor').getBlockOrder(clientId);
-	// convert the line above to useMemo
-	const topLevelBlocks = useMemo(() => {
-		console.log('RUNNING TOP LEVEL BLOCKS');
-		return topLevelIds.map((_id) => select('core/block-editor').getBlock(_id));
-	}, [topLevelIds]);
+	const topLevelBlocks = topLevelIds.map((_id) => select('core/block-editor').getBlock(_id));
 
 	const { desktopBlocks, tabletBlocks, offcanvasBlocks } = extractBlocks(topLevelBlocks);
 
@@ -75,21 +71,21 @@ export default function VisualBuilder({ clientId, startVisible = false }) {
 					<div class={'tabs'}>
 						<Button
 							isPrimary={tab === 'desktop'}
-							disabled={desktop === null}
+							disabled={desktopBlocks === null}
 							onClick={() => setTab('desktop')}
 						>
 							{__('Desktop', 'kadence-blocks')}
 						</Button>
 						<Button
 							isPrimary={tab === 'tablet'}
-							disabled={tablet === null}
+							disabled={tabletBlocks === null}
 							onClick={() => setTab('tablet')}
 						>
 							{__('Tablet', 'kadence-blocks')}
 						</Button>
 						<Button
 							isPrimary={tab === 'off-canvas'}
-							disabled={offcanvas === null}
+							disabled={offcanvasBlocks === null}
 							onClick={() => setTab('off-canvas')}
 						>
 							{__('Off Canvas', 'kadence-blocks')}
@@ -98,7 +94,7 @@ export default function VisualBuilder({ clientId, startVisible = false }) {
 					</div>
 
 					<div class={'content'}>
-						{tab === 'desktop' && <Desktop blocks={desktopBlocks} onChange={onChange} />}
+						{tab === 'desktop' && <Desktop blocks={desktopBlocks} />}
 
 						{tab === 'tablet' && <>Tablet Content</>}
 

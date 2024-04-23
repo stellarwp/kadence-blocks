@@ -19,16 +19,13 @@ function removeBlockByClientId(blocks, clientId) {
 	return { newBlocks, found };
 }
 
-export default function DeleteBlockButton({ block, parentClientId, allBlocks, onChange }) {
+export default function DeleteBlockButton({ clientId }) {
 	const [isOpen, setOpen] = useState(false);
 	const openModal = () => setOpen(true);
 	const closeModal = () => setOpen(false);
 
 	const confirmDelete = () => {
-		const result = removeBlockByClientId([...allBlocks], block.clientId);
-		if (result.found) {
-			onChange([{ ...allBlocks[0], innerBlocks: result.newBlocks }], parentClientId);
-		}
+		wp.data.dispatch('core/block-editor').removeBlock(clientId);
 		closeModal();
 	};
 
