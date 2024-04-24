@@ -341,6 +341,7 @@ class Kadence_Blocks_Settings {
 					$theme_palette = get_theme_support( 'editor-color-palette' );
 					if ( isset( $settings['colors'] ) && is_array( $settings['colors'] ) ) {
 						$newpalette = array_merge( $settings['colors'], $san_palette );
+						$newpalette = array_map( 'unserialize', array_unique( array_map( 'serialize',$newpalette ) ) );
 					} else {
 						$default_palette = array(
 							array(
@@ -405,6 +406,9 @@ class Kadence_Blocks_Settings {
 					$newpalette = $san_palette;
 				}
 				$settings['colors'] = $newpalette;
+				if ( function_exists( 'get_block_editor_settings' ) ) {
+					$settings['__experimentalFeatures']['color']['palette']['theme'] = $newpalette;
+				}
 			}
 		}
 
