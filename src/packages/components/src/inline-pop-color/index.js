@@ -82,6 +82,13 @@ import {
 	if ( ! isPalette && currentColorString && currentColorString.startsWith( 'var(' ) ) {
 		currentColorString = window.getComputedStyle( document.documentElement ).getPropertyValue( value.replace( 'var(', '' ).split(',')[0].replace( ')', '' ) );
 	}
+	if ( currentColorString && currentColorString.startsWith( 'var(' ) ) {
+		let temp_currentColorString = window.getComputedStyle( document.documentElement ).getPropertyValue( currentColorString.replace( 'var(', '' ).replace( ' ', '' ).replace( ')', '' ) );
+		if ( '' === temp_currentColorString ) {
+			temp_currentColorString = window.getComputedStyle( document.documentElement ).getPropertyValue( currentColorString.replace( 'var(', '' ).replace( ' ', '' ).split(',')[0].replace( ')', '' ) );
+		}
+		currentColorString = temp_currentColorString;
+	}
 	if ( '' === currentColorString ) {
 		currentColorString = defaultValue;
 	}

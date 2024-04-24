@@ -58,6 +58,54 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
+		$css->set_selector( '.kt-accordion-id' . $unique_id . ' .kt-accordion-inner-wrap' );
+		$css->render_gap( $attributes, 'columnGap', 'column-gap', 'columnGapUnit' );
+		if ( ! empty( $attributes['columnLayout'][0] ) && 'row' !== $attributes['columnLayout'][0] ) {
+			switch ( $attributes['columnLayout'][0] ) {
+				case 'two-column':
+					$css->add_property( 'display', 'grid' );
+					$css->add_property( 'grid-template-columns', 'repeat(2, minmax(0, 1fr))' );
+					break;
+				case 'three-column':
+					$css->add_property( 'display', 'grid' );
+					$css->add_property( 'grid-template-columns', 'repeat(3, minmax(0, 1fr))' );
+					break;
+			}
+		}
+		$css->set_media_state( 'tablet' );
+		if ( ! empty( $attributes['columnLayout'][1] ) ) {
+			switch ( $attributes['columnLayout'][1] ) {
+				case 'row':
+					$css->add_property( 'display', 'block' );
+					break;
+				case 'two-column':
+					$css->add_property( 'display', 'grid' );
+					$css->add_property( 'grid-template-columns', 'repeat(2, minmax(0, 1fr))' );
+					break;
+				case 'three-column':
+					$css->add_property( 'display', 'grid' );
+					$css->add_property( 'grid-template-columns', 'repeat(3, minmax(0, 1fr))' );
+					break;
+			}
+		}
+		$css->set_media_state( 'mobile' );
+		if ( ! empty( $attributes['columnLayout'][2] ) ) {
+			switch ( $attributes['columnLayout'][2] ) {
+				case 'row':
+					$css->add_property( 'display', 'block' );
+					break;
+				case 'two-column':
+					$css->add_property( 'display', 'grid' );
+					$css->add_property( 'grid-template-columns', 'repeat(2, minmax(0, 1fr))' );
+					break;
+				case 'three-column':
+					$css->add_property( 'display', 'grid' );
+					$css->add_property( 'grid-template-columns', 'repeat(3, minmax(0, 1fr))' );
+					break;
+			}
+		}
+		$css->set_media_state( 'desktop' );
+
 		$css->set_selector( '.kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner' );
 		// Support legacy non-responsive broder widths
 		if ( ! empty( $attributes['contentBorder'] ) && $attributes['contentBorder'] !== array( '', '', '', '' ) ) {

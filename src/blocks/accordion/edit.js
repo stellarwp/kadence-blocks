@@ -16,6 +16,9 @@ import {
 	topLeftIcon,
 	bottomLeftIcon,
 	bottomRightIcon,
+	rowIcon,
+	twoColIcon,
+	threeColIcon,
 } from '@kadence/icons';
 
 /**
@@ -40,6 +43,9 @@ import {
 	CopyPasteAttributes,
 	ResponsiveMeasurementControls,
 	ColorGroup,
+	SmallResponsiveControl,
+	KadenceRadioButtons,
+	ResponsiveGapSizeControl,
 } from '@kadence/components';
 import {
 	getPreviewSize,
@@ -52,6 +58,7 @@ import {
 	getBorderColor,
 	getBorderStyle,
 	getPostOrFseId,
+	getGapSizeOptionOutput,
 } from '@kadence/helpers';
 
 /**
@@ -159,6 +166,9 @@ function KadenceAccordionComponent(props) {
 		textColor,
 		linkColor,
 		linkHoverColor,
+		columnLayout,
+		columnGap,
+		columnGapUnit,
 	} = attributes;
 
 	const [titleTag, setTitleTag] = useState('div');
@@ -468,6 +478,11 @@ function KadenceAccordionComponent(props) {
 		{ key: 'subtle', name: __('Subtle'), icon: accord3Icon },
 		{ key: 'bottom', name: __('Bottom Border'), icon: accord4Icon },
 	];
+	const layoutOptions = [
+		{ value: 'row', label: __('One Row', 'kadence-blocks'), icon: rowIcon },
+		{ value: 'two-column', label: __('Two Columns', 'kadence-blocks'), icon: twoColIcon },
+		{ value: 'three-column', label: __('Three Columns', 'kadence-blocks'), icon: threeColIcon },
+	];
 	const previewPaddingType = undefined !== contentPaddingType ? contentPaddingType : 'px';
 	const paddingMin = previewPaddingType === 'em' || previewPaddingType === 'rem' ? 0 : 0;
 	const paddingMax = previewPaddingType === 'em' || previewPaddingType === 'rem' ? 12 : 999;
@@ -703,7 +718,19 @@ function KadenceAccordionComponent(props) {
 		undefined !== tabletTitleBorderRadius ? tabletTitleBorderRadius[3] : '',
 		undefined !== mobileTitleBorderRadius ? mobileTitleBorderRadius[3] : ''
 	);
-
+	const layoutPreview = getPreviewSize(
+		getPreviewDevice,
+		columnLayout?.[0] ? columnLayout[0] : 'row',
+		columnLayout?.[1] ? columnLayout[1] : '',
+		columnLayout?.[2] ? columnLayout[2] : 'row'
+	);
+	const hasColumns = layoutPreview && layoutPreview !== 'row' ? true : false;
+	const previewGap = getPreviewSize(
+		getPreviewDevice,
+		columnGap?.[0] ? columnGap[0] : 'md',
+		columnGap?.[1] ? columnGap[1] : '',
+		columnGap?.[2] ? columnGap[2] : ''
+	);
 	const inheritBorder = [titleBorder, tabletTitleBorder, mobileTitleBorder];
 
 	// Title Hover Border
@@ -1478,10 +1505,17 @@ function KadenceAccordionComponent(props) {
 		[`kt-start-active-pane-${openPane + 1}`]: true,
 		[`kt-accodion-icon-style-${iconStyle && showIcon ? iconStyle : 'none'}`]: true,
 		[`kt-accodion-icon-side-${iconSide ? iconSide : 'right'}`]: true,
+		[`kt-accordion-layout-${layoutPreview}`]: layoutPreview,
 	});
 	const innerBlocksProps = useInnerBlocksProps(
 		{
 			className: innerClasses,
+			style: {
+				columnGap:
+					'' !== previewGap
+						? getGapSizeOptionOutput(previewGap, columnGapUnit ? columnGapUnit : 'px')
+						: undefined,
+			},
 		},
 		{
 			allowedBlocks: ALLOWED_BLOCKS,
@@ -1533,6 +1567,122 @@ function KadenceAccordionComponent(props) {
 											checked={startCollapsed}
 											onChange={(value) => setAttributes({ startCollapsed: value })}
 										/>
+										<SmallResponsiveControl
+											label={__('Column Layout', 'kadence-blocks')}
+											desktopChildren={
+												<KadenceRadioButtons
+													value={columnLayout?.[0] ? columnLayout[0] : 'row'}
+													options={layoutOptions}
+													wrap={false}
+													hideLabel={true}
+													className={
+														'kadence-row-layout-radio-btns kb-acccordion-column-layout'
+													}
+													onChange={(value) => {
+														setAttributes({
+															columnLayout: [
+																value,
+																columnLayout?.[1] ? columnLayout[1] : '',
+																columnLayout?.[2] ? columnLayout[2] : '',
+															],
+														});
+													}}
+												/>
+											}
+											tabletChildren={
+												<KadenceRadioButtons
+													value={columnLayout?.[1] ? columnLayout[1] : ''}
+													options={layoutOptions}
+													wrap={false}
+													className={
+														'kadence-row-layout-radio-btns kb-acccordion-column-layout'
+													}
+													hideLabel={true}
+													onChange={(value) => {
+														if (columnLayout?.[1] && columnLayout[1] === value) {
+															setAttributes({
+																columnLayout: [
+																	columnLayout?.[0] ? columnLayout[0] : '',
+																	'',
+																	columnLayout?.[2] ? columnLayout[2] : '',
+																],
+															});
+														} else {
+															setAttributes({
+																columnLayout: [
+																	columnLayout?.[0] ? columnLayout[0] : '',
+																	value,
+																	columnLayout?.[2] ? columnLayout[2] : '',
+																],
+															});
+														}
+													}}
+												/>
+											}
+											mobileChildren={
+												<KadenceRadioButtons
+													value={columnLayout?.[2] ? columnLayout[2] : 'row'}
+													options={layoutOptions}
+													wrap={false}
+													className={
+														'kadence-row-layout-radio-btns kb-acccordion-column-layout'
+													}
+													hideLabel={true}
+													onChange={(value) => {
+														setAttributes({
+															columnLayout: [
+																columnLayout?.[0] ? columnLayout[0] : '',
+																columnLayout?.[1] ? columnLayout[1] : '',
+																value,
+															],
+														});
+													}}
+												/>
+											}
+										/>
+										{hasColumns && (
+											<ResponsiveGapSizeControl
+												label={__('Column Gap', 'kadence-blocks')}
+												value={undefined !== columnGap?.[0] ? columnGap[0] : ''}
+												onChange={(value) =>
+													setAttributes({
+														columnGap: [
+															value,
+															undefined !== columnGap?.[1] ? columnGap[1] : '',
+															undefined !== columnGap?.[2] ? columnGap[2] : '',
+														],
+													})
+												}
+												tabletValue={undefined !== columnGap?.[1] ? columnGap[1] : ''}
+												onChangeTablet={(value) =>
+													setAttributes({
+														columnGap: [
+															undefined !== columnGap?.[0] ? columnGap[0] : '',
+															value,
+															undefined !== columnGap?.[2] ? columnGap[2] : '',
+														],
+													})
+												}
+												mobileValue={undefined !== columnGap?.[2] ? columnGap[2] : ''}
+												onChangeMobile={(value) =>
+													setAttributes({
+														columnGap: [
+															undefined !== columnGap?.[0] ? columnGap[0] : '',
+															undefined !== columnGap?.[1] ? columnGap[1] : '',
+															value,
+														],
+													})
+												}
+												min={0}
+												max={columnGapUnit === 'px' ? 200 : 12}
+												step={columnGapUnit === 'px' ? 1 : 0.1}
+												unit={columnGapUnit ? columnGapUnit : 'px'}
+												onUnit={(value) => {
+													setAttributes({ columnGapUnit: value });
+												}}
+												units={['px', 'em', 'rem']}
+											/>
+										)}
 										{!startCollapsed && (
 											<>
 												<h2>{__('Initial Open Accordion', 'kadence-blocks')}</h2>

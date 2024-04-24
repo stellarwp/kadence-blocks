@@ -271,9 +271,27 @@ function getReadableColor( value, colors ) {
 		slug = 'theme-' + slug;
 		const found = colors.find( ( option ) => option.slug === slug );
 		if ( found ) {
-			return found.color;
+			if ( ! found.color.startsWith( 'var(' ) ) {
+				return found.color;
+			}
+		}
+		let temp_value = window.getComputedStyle( document.documentElement ).getPropertyValue( value.replace( 'var(', '' ).replace( ' ', '' ).replace( ')', '' ) );
+		if ( '' === temp_value ) {
+			temp_value = window.getComputedStyle( document.documentElement ).getPropertyValue( value.replace( 'var(', '' ).replace( ' ', '' ).split(',')[0].replace( ')', '' ) );
+		}
+		if ( temp_value ) {
+			return temp_value;
+		}
+	} else if ( value.startsWith( 'var(' ) ) {
+		let temp_value = window.getComputedStyle( document.documentElement ).getPropertyValue( value.replace( 'var(', '' ).replace( ' ', '' ).replace( ')', '' ) );
+		if ( '' === temp_value ) {
+			temp_value = window.getComputedStyle( document.documentElement ).getPropertyValue( value.replace( 'var(', '' ).replace( ' ', '' ).split(',')[0].replace( ')', '' ) );
+		}
+		if ( temp_value ) {
+			return temp_value;
 		}
 	}
+	
 	return value;
 }
 
@@ -448,8 +466,8 @@ function ControlPoints( {
 									{ map( colors, ( { color, slug, name } ) => {
 										const style = { color };
 										const palette = slug.replace( 'theme-', '' );
-										const isActive = ( ( slug.startsWith( 'theme-palette' ) && pointColor === color ) );
-										const isLinked = ( ( ! slug.startsWith( 'theme-palette' ) && color.startsWith( 'var(' ) && pointColor === color ) );
+										const isActive = ( (  slug.startsWith( 'theme-palette' ) && color === point.color ) || ( slug.startsWith( 'theme-palette' ) && pointColor === color ) );
+										const isLinked = ( ( ! slug.startsWith( 'theme-palette' ) && color.startsWith( 'var(' ) && ( pointColor === color || color === point.color ) ) );
 										return (
 											<div key={ color } className="kadence-color-palette__item-wrapper">
 												<Tooltip
@@ -647,7 +665,8 @@ function InsertPoint( {
 							{ map( colors, ( { color, slug, name } ) => {
 								const style = { color };
 								const palette = slug.replace( 'theme-', '' );
-								const isActive = ( ( slug.startsWith( 'theme-palette' ) && pointColor === color ) );
+								//const isActive = ( ( slug.startsWith( 'theme-palette' ) && pointColor === color ) );
+								const isActive = ( ( slug.startsWith( 'theme-palette' ) && color === tempColor ) || ( slug.startsWith( 'theme-palette' ) && pointColor === color ) );
 								const isLinked = ( ( ! slug.startsWith( 'theme-palette' ) && color.startsWith( 'var(' ) && tempColor === color ) );
 								return (
 									<div key={ color } className="kadence-color-palette__item-wrapper">
@@ -682,6 +701,7 @@ function InsertPoint( {
 															);
 														}
 													} else if ( color.startsWith( 'var(' ) ) {
+														setTempColor( color );
 														if ( ! alreadyInsertedPoint ) {
 															onChange(
 																addControlPoint(

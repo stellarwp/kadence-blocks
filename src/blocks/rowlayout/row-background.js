@@ -128,6 +128,9 @@ function RowBackground({ attributes, previewDevice, backgroundClasses, children,
 		tabletBorderStyle,
 		mobileBorderStyle,
 		borderRadiusUnit,
+		borderRadiusOverflow,
+		displayBoxShadow,
+		boxShadow,
 	} = attributes;
 	const previewMarginTop = getPreviewSize(
 		previewDevice,
@@ -462,6 +465,26 @@ function RowBackground({ attributes, previewDevice, backgroundClasses, children,
 				: undefined,
 			minHeight: previewMinHeight ? previewMinHeight + minHeightUnit : undefined,
 			zIndex: zIndex ? zIndex : undefined,
+			boxShadow:
+				undefined !== displayBoxShadow &&
+				displayBoxShadow &&
+				undefined !== boxShadow &&
+				undefined !== boxShadow[0] &&
+				undefined !== boxShadow[0].color
+					? (undefined !== boxShadow[0].inset && boxShadow[0].inset ? 'inset ' : '') +
+					  (undefined !== boxShadow[0].hOffset ? boxShadow[0].hOffset : 0) +
+					  'px ' +
+					  (undefined !== boxShadow[0].vOffset ? boxShadow[0].vOffset : 0) +
+					  'px ' +
+					  (undefined !== boxShadow[0].blur ? boxShadow[0].blur : 14) +
+					  'px ' +
+					  (undefined !== boxShadow[0].spread ? boxShadow[0].spread : 0) +
+					  'px ' +
+					  KadenceColorOutput(
+							undefined !== boxShadow[0].color ? boxShadow[0].color : '#000000',
+							undefined !== boxShadow[0].opacity ? boxShadow[0].opacity : 0.2
+					  )
+					: undefined,
 		},
 		'data-align': 'full' === align || 'wide' === align || 'center' === align ? align : undefined,
 	});
@@ -484,6 +507,22 @@ function RowBackground({ attributes, previewDevice, backgroundClasses, children,
 							backgroundRepeat: previewBackgroundRepeat ? previewBackgroundRepeat : undefined,
 							backgroundAttachment:
 								previewBackgroundAttachment === 'parallax' ? 'fixed' : previewBackgroundAttachment,
+							borderTopLeftRadius:
+								!borderRadiusOverflow && previewRadiusTop
+									? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
+									: undefined,
+							borderTopRightRadius:
+								!borderRadiusOverflow && previewRadiusRight
+									? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
+									: undefined,
+							borderBottomRightRadius:
+								!borderRadiusOverflow && previewRadiusBottom
+									? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
+									: undefined,
+							borderBottomLeftRadius:
+								!borderRadiusOverflow && previewRadiusLeft
+									? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
+									: undefined,
 						}}
 					></div>
 				)}

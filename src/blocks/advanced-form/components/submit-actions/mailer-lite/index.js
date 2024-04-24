@@ -80,8 +80,9 @@ export default function MailerLiteOptions({ formInnerBlocks, parentClientId, set
 				setGroupsLoaded(true);
 				setIsFetching(false);
 			})
-			.catch(() => {
+			.catch((err) => {
 				console.log('err');
+				console.log(err);
 				setGroups([]);
 				setGroupsLoaded(true);
 				setIsFetching(false);

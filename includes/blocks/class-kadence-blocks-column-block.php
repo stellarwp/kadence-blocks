@@ -437,6 +437,15 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				case 'bottom':
 					$align = 'flex-end';
 					break;
+				case 'space-between':
+					$align = 'space-between';
+					break;
+				case 'space-around':
+					$align = 'space-around';
+					break;
+				case 'space-evenly':
+					$align = 'space-evenly';
+					break;
 				default:
 					$align = 'center';
 					break;
