@@ -8,6 +8,14 @@ export const DESKTOP_BLOCK_POSITIONS = [
 	['innerBlocks', 2, 'innerBlocks', 1, 'innerBlocks'],
 ];
 
+export const DESKTOP_CLIENT_ID_POSITIONS = [
+	['innerBlocks', 0, 'innerBlocks', 0, 'clientId'],
+	['innerBlocks', 0, 'innerBlocks', 1, 'clientId'],
+	['innerBlocks', 1, 'clientId'],
+	['innerBlocks', 2, 'innerBlocks', 0, 'clientId'],
+	['innerBlocks', 2, 'innerBlocks', 1, 'clientId'],
+];
+
 export const ROW_TO_KEY = {
 	top: 0,
 	middle: 1,

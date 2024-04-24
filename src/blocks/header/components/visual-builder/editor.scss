@@ -4,7 +4,7 @@ $height_top_bar: 92px;
 $height_top_bars_mobile: 155px;
 $height_top_bottom_bars: $height_top_bar + $height_bottom_bar;
 $sidebar_width: 280px;
-$fixed_height: 250px;
+$fixed_height: 270px;
 
 .kb-header-visual-builder-modal {
 	background: #eee;
@@ -59,29 +59,79 @@ $fixed_height: 250px;
 		padding-top: 10px;
 
 		.visual-desktop-row {
-			display: grid !important;
-			grid-template-columns: 1fr auto 1fr;
-			width: 100%;
-
+			display: flex !important;
 			padding: 6px 10px;
 			background-color: #FFF;
 			border: 1px solid #a0aec1;
 			border-radius: 2px;
+			width: 100%;
 		}
 
 		.visual-section-wrapper {
+			flex: 1 1 0%;
 			display: flex !important;
-			align-items: center;
+			position: relative;
 		}
 
 		.visual-column-wrapper {
 			display: flex !important;
-			min-height: 42px;
+			flex: 1;
+			min-height: 44px;
+			align-items: center;
+
+			&.visual-column-wrapper-empty-center {
+				display: none !important;
+			}
 		}
 
 		.visual-section-wrapper-center {
 			display: flex !important;
-			justify-content: center;
+			position: relative;
+			min-width: 120px;
+		}
+
+		.add-item {
+			position: absolute;
+			top: 5px;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			background: transparent;
+			z-index: 1;
+			transition: all .2s ease-in-out;
+			color: transparent !important;
+
+			&:hover {
+				color: #444 !important;
+				background: rgba(0, 124, 186, 0.05) !important;
+				box-shadow: none !important;
+				border: 0 !important;
+			}
+		}
+		.add-item-left {
+			right: 0;
+
+			&.add-item-has-mid-columns {
+				right: 50%;
+				text-align: right;
+				padding-right: 30px;
+			}
+		}
+
+		.add-item-center-left {
+			left: 50%;
+		}
+		.add-item-center-right {
+			right: 50%;
+		}
+		.add-item-right {
+			left: 0;
+
+			&.add-item-has-mid-columns {
+				left: 50%;
+				text-align: left;
+				padding-left: 30px;
+			}
 		}
 
 		.visual-column-wrapper-center-left {
@@ -94,22 +144,26 @@ $fixed_height: 250px;
 			justify-content: flex-start !important;
 		}
 
+		.visual-section-wrapper-center {
+			flex: initial;
+		}
+
 		// Column specific styles
 		.visual-column-wrapper-left {
-			min-width: 50%;
 			//background-color: red;
 		}
 		.visual-column-wrapper-center-left {
 			//background-color: blue;
 		}
 		.visual-column-wrapper-center {
+			justify-content: center;
+			flex: auto;
 			//background-color: yellow;
 		}
 		.visual-column-wrapper-center-right {
 			//background-color: green;
 		}
 		.visual-column-wrapper-right {
-			min-width: 50%;
 			//background-color: pink;
 		}
 	}
@@ -125,6 +179,7 @@ $fixed_height: 250px;
 		padding: 3px 6px;
 		border-radius: 3px;
 		font-size: 13px;
+		z-index: 10;
 
 		margin: 0 2px;
 		button {
