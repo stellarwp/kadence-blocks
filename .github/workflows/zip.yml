@@ -5,7 +5,7 @@ on:
         inputs:
             ref:
                 description: 'Git Commit Ref (branch, tag, or hash)'
-                default: 'main'
+                default: 'master'
                 required: true
                 type: string
             production:
