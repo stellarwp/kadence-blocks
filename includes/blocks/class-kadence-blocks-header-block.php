@@ -107,11 +107,10 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$hover_bg = $sized_attributes['backgroundHover'];
 		$border = $sized_attributes['border'];
 		$typography = $sized_attributes['typography'];
-
 		if ( $sized_attributes['isTransparent'] != '1' ) {
 			$css->add_property( 'background-color', $css->render_color( ! empty( $bg['color'] ) ? $bg['color'] : '') );
 			//$css->render_border_styles($border, 'border');
-			if ( '' !== $bg && 'normal' === $bg['type'] && ! empty( $bg['image'] ) ) {
+			if ( '' !== $bg && ! empty($bg['type']) && 'normal' === $bg['type'] && ! empty( $bg['image'] ) ) {
 				$css->add_property( 'background-image', 'url("' . $bg['image'] . '")' );
 				$css->add_property( 'background-position', $bg['position'] );
 				$css->add_property( 'background-size', $bg['size'] );
