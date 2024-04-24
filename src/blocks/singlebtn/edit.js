@@ -172,6 +172,32 @@ export default function KadenceButtonEdit(props) {
 		shadowTransparent,
 		displayHoverShadowTransparent,
 		shadowTransparentHover,
+		colorSticky,
+		colorStickyHover,
+		backgroundSticky,
+		backgroundStickyType,
+		gradientSticky,
+		backgroundStickyHover,
+		backgroundStickyHoverType,
+		gradientStickyHover,
+		borderStickyStyle,
+		tabletBorderStickyStyle,
+		mobileBorderStickyStyle,
+		borderStickyHoverStyle,
+		tabletBorderStickyHoverStyle,
+		mobileBorderStickyHoverStyle,
+		borderStickyRadius,
+		tabletBorderStickyRadius,
+		mobileBorderStickyRadius,
+		borderStickyRadiusUnit,
+		borderStickyHoverRadius,
+		tabletBorderStickyHoverRadius,
+		mobileBorderStickyHoverRadius,
+		borderStickyHoverRadiusUnit,
+		displayShadowSticky,
+		shadowSticky,
+		displayHoverShadowSticky,
+		shadowStickyHover,
 	} = attributes;
 
 	// Support rank math content analysis.
@@ -312,6 +338,28 @@ export default function KadenceButtonEdit(props) {
 		});
 		setAttributes({
 			shadowTransparentHover: newUpdate,
+		});
+	};
+	const saveShadowSticky = (value) => {
+		const newUpdate = shadowSticky.map((item, index) => {
+			if (0 === index) {
+				item = { ...item, ...value };
+			}
+			return item;
+		});
+		setAttributes({
+			shadowSticky: newUpdate,
+		});
+	};
+	const saveShadowStickyHover = (value) => {
+		const newUpdate = shadowStickyHover.map((item, index) => {
+			if (0 === index) {
+				item = { ...item, ...value };
+			}
+			return item;
+		});
+		setAttributes({
+			shadowStickyHover: newUpdate,
 		});
 	};
 	const btnSizes = [
@@ -827,7 +875,7 @@ export default function KadenceButtonEdit(props) {
 															}
 															colorDefault={'#000000'}
 															onArrayChange={(color, opacity) => {
-																saveShadowTransparentHover({ color, opacity });
+																saveShadowHover({ color, opacity });
 															}}
 															opacity={
 																undefined !== shadowHover &&
@@ -877,25 +925,25 @@ export default function KadenceButtonEdit(props) {
 																});
 															}}
 															onColorChange={(value) => {
-																saveShadowTransparentHover({ color: value });
+																saveShadowHover({ color: value });
 															}}
 															onOpacityChange={(value) => {
-																saveShadowTransparentHover({ opacity: value });
+																saveShadowHover({ opacity: value });
 															}}
 															onHOffsetChange={(value) => {
-																saveShadowTransparentHover({ hOffset: value });
+																saveShadowHover({ hOffset: value });
 															}}
 															onVOffsetChange={(value) => {
-																saveShadowTransparentHover({ vOffset: value });
+																saveShadowHover({ vOffset: value });
 															}}
 															onBlurChange={(value) => {
-																saveShadowTransparentHover({ blur: value });
+																saveShadowHover({ blur: value });
 															}}
 															onSpreadChange={(value) => {
-																saveShadowTransparentHover({ spread: value });
+																saveShadowHover({ spread: value });
 															}}
 															onInsetChange={(value) => {
-																saveShadowTransparentHover({ inset: value });
+																saveShadowHover({ inset: value });
 															}}
 														/>
 													</>
@@ -989,7 +1037,7 @@ export default function KadenceButtonEdit(props) {
 															}
 															colorDefault={'#000000'}
 															onArrayChange={(color, opacity) => {
-																saveShadowTransparent({ color, opacity });
+																saveShadow({ color, opacity });
 															}}
 															opacity={
 																undefined !== shadow &&
@@ -1039,25 +1087,25 @@ export default function KadenceButtonEdit(props) {
 																});
 															}}
 															onColorChange={(value) => {
-																saveShadowTransparent({ color: value });
+																saveShadow({ color: value });
 															}}
 															onOpacityChange={(value) => {
-																saveShadowTransparent({ opacity: value });
+																saveShadow({ opacity: value });
 															}}
 															onHOffsetChange={(value) => {
-																saveShadowTransparent({ hOffset: value });
+																saveShadow({ hOffset: value });
 															}}
 															onVOffsetChange={(value) => {
-																saveShadowTransparent({ vOffset: value });
+																saveShadow({ vOffset: value });
 															}}
 															onBlurChange={(value) => {
-																saveShadowTransparent({ blur: value });
+																saveShadow({ blur: value });
 															}}
 															onSpreadChange={(value) => {
-																saveShadowTransparent({ spread: value });
+																saveShadow({ spread: value });
 															}}
 															onInsetChange={(value) => {
-																saveShadowTransparent({ inset: value });
+																saveShadow({ inset: value });
 															}}
 														/>
 													</>
@@ -1200,7 +1248,7 @@ export default function KadenceButtonEdit(props) {
 																}
 																colorDefault={'#000000'}
 																onArrayChange={(color, opacity) => {
-																	saveShadowHover({ color, opacity });
+																	saveShadowTransparentHover({ color, opacity });
 																}}
 																opacity={
 																	undefined !== shadowTransparentHover &&
@@ -1250,25 +1298,25 @@ export default function KadenceButtonEdit(props) {
 																	});
 																}}
 																onColorChange={(value) => {
-																	saveShadowHover({ color: value });
+																	saveShadowTransparentHover({ color: value });
 																}}
 																onOpacityChange={(value) => {
-																	saveShadowHover({ opacity: value });
+																	saveShadowTransparentHover({ opacity: value });
 																}}
 																onHOffsetChange={(value) => {
-																	saveShadowHover({ hOffset: value });
+																	saveShadowTransparentHover({ hOffset: value });
 																}}
 																onVOffsetChange={(value) => {
-																	saveShadowHover({ vOffset: value });
+																	saveShadowTransparentHover({ vOffset: value });
 																}}
 																onBlurChange={(value) => {
-																	saveShadowHover({ blur: value });
+																	saveShadowTransparentHover({ blur: value });
 																}}
 																onSpreadChange={(value) => {
-																	saveShadowHover({ spread: value });
+																	saveShadowTransparentHover({ spread: value });
 																}}
 																onInsetChange={(value) => {
-																	saveShadowHover({ inset: value });
+																	saveShadowTransparentHover({ inset: value });
 																}}
 															/>
 														</>
@@ -1394,7 +1442,7 @@ export default function KadenceButtonEdit(props) {
 																}
 																colorDefault={'#000000'}
 																onArrayChange={(color, opacity) => {
-																	saveShadow({ color, opacity });
+																	saveShadowTransparent({ color, opacity });
 																}}
 																opacity={
 																	undefined !== shadowTransparent &&
@@ -1444,25 +1492,425 @@ export default function KadenceButtonEdit(props) {
 																	});
 																}}
 																onColorChange={(value) => {
-																	saveShadow({ color: value });
+																	saveShadowTransparent({ color: value });
 																}}
 																onOpacityChange={(value) => {
-																	saveShadow({ opacity: value });
+																	saveShadowTransparent({ opacity: value });
 																}}
 																onHOffsetChange={(value) => {
-																	saveShadow({ hOffset: value });
+																	saveShadowTransparent({ hOffset: value });
 																}}
 																onVOffsetChange={(value) => {
-																	saveShadow({ vOffset: value });
+																	saveShadowTransparent({ vOffset: value });
 																}}
 																onBlurChange={(value) => {
-																	saveShadow({ blur: value });
+																	saveShadowTransparent({ blur: value });
 																}}
 																onSpreadChange={(value) => {
-																	saveShadow({ spread: value });
+																	saveShadowTransparent({ spread: value });
 																}}
 																onInsetChange={(value) => {
-																	saveShadow({ inset: value });
+																	saveShadowTransparent({ inset: value });
+																}}
+															/>
+														</>
+													}
+												/>
+											</KadencePanelBody>
+										)}
+										{context?.['kadence/headerIsSticky'] == '1' && (
+											<KadencePanelBody
+												title={__('Button Sticky Styles', 'kadence-blocks')}
+												initialOpen={false}
+												panelName={'kb-adv-single-btn-styles-sticky'}
+											>
+												<HoverToggleControl
+													hover={
+														<>
+															<PopColorControl
+																label={__('Color Hover', 'kadence-blocks')}
+																value={colorStickyHover ? colorStickyHover : ''}
+																default={''}
+																onChange={(value) =>
+																	setAttributes({ colorStickyHover: value })
+																}
+															/>
+															<BackgroundTypeControl
+																label={__('Hover Type', 'kadence-blocks')}
+																type={
+																	backgroundStickyHoverType
+																		? backgroundStickyHoverType
+																		: 'normal'
+																}
+																onChange={(value) =>
+																	setAttributes({
+																		backgroundStickyHoverType: value,
+																	})
+																}
+																allowedTypes={['normal', 'gradient']}
+															/>
+															{'gradient' === backgroundStickyHoverType && (
+																<GradientControl
+																	value={gradientStickyHover}
+																	onChange={(value) =>
+																		setAttributes({ gradientHover: value })
+																	}
+																	gradients={[]}
+																/>
+															)}
+															{'normal' === backgroundStickyHoverType && (
+																<PopColorControl
+																	label={__('Background Color', 'kadence-blocks')}
+																	value={
+																		backgroundStickyHover
+																			? backgroundStickyHover
+																			: ''
+																	}
+																	default={''}
+																	onChange={(value) =>
+																		setAttributes({ backgroundHover: value })
+																	}
+																/>
+															)}
+															<ResponsiveBorderControl
+																label={__('Border', 'kadence-blocks')}
+																value={borderStickyHoverStyle}
+																tabletValue={tabletBorderStickyHoverStyle}
+																mobileValue={mobileBorderStickyHoverStyle}
+																onChange={(value) =>
+																	setAttributes({
+																		borderStickyHoverStyle: value,
+																	})
+																}
+																onChangeTablet={(value) =>
+																	setAttributes({
+																		tabletBorderStickyHoverStyle: value,
+																	})
+																}
+																onChangeMobile={(value) =>
+																	setAttributes({
+																		mobileBorderStickyHoverStyle: value,
+																	})
+																}
+															/>
+															<ResponsiveMeasurementControls
+																label={__('Border Radius', 'kadence-blocks')}
+																value={borderStickyHoverRadius}
+																tabletValue={tabletBorderStickyHoverRadius}
+																mobileValue={mobileBorderStickyHoverRadius}
+																onChange={(value) =>
+																	setAttributes({
+																		borderStickyHoverRadius: value,
+																	})
+																}
+																onChangeTablet={(value) =>
+																	setAttributes({
+																		tabletBorderStickyHoverRadius: value,
+																	})
+																}
+																onChangeMobile={(value) =>
+																	setAttributes({
+																		mobileBorderStickyHoverRadius: value,
+																	})
+																}
+																unit={borderStickyHoverRadiusUnit}
+																units={['px', 'em', 'rem', '%']}
+																onUnit={(value) =>
+																	setAttributes({
+																		borderStickyHoverRadiusUnit: value,
+																	})
+																}
+																max={
+																	borderStickyHoverRadiusUnit === 'em' ||
+																	borderStickyHoverRadiusUnit === 'rem'
+																		? 24
+																		: 500
+																}
+																step={
+																	borderStickyHoverRadiusUnit === 'em' ||
+																	borderStickyHoverRadiusUnit === 'rem'
+																		? 0.1
+																		: 1
+																}
+																min={0}
+																isBorderRadius={true}
+																allowEmpty={true}
+															/>
+															<BoxShadowControl
+																label={__('Box Shadow', 'kadence-blocks')}
+																enable={
+																	undefined !== displayHoverShadowSticky
+																		? displayHoverShadowSticky
+																		: false
+																}
+																color={
+																	undefined !== shadowStickyHover &&
+																	undefined !== shadowStickyHover[0] &&
+																	undefined !== shadowStickyHover[0].color
+																		? shadowStickyHover[0].color
+																		: '#000000'
+																}
+																colorDefault={'#000000'}
+																onArrayChange={(color, opacity) => {
+																	saveShadowStickyHover({ color, opacity });
+																}}
+																opacity={
+																	undefined !== shadowStickyHover &&
+																	undefined !== shadowStickyHover[0] &&
+																	undefined !== shadowStickyHover[0].opacity
+																		? shadowStickyHover[0].opacity
+																		: 0.2
+																}
+																hOffset={
+																	undefined !== shadowStickyHover &&
+																	undefined !== shadowStickyHover[0] &&
+																	undefined !== shadowStickyHover[0].hOffset
+																		? shadowStickyHover[0].hOffset
+																		: 0
+																}
+																vOffset={
+																	undefined !== shadowStickyHover &&
+																	undefined !== shadowStickyHover[0] &&
+																	undefined !== shadowStickyHover[0].vOffset
+																		? shadowStickyHover[0].vOffset
+																		: 0
+																}
+																blur={
+																	undefined !== shadowStickyHover &&
+																	undefined !== shadowStickyHover[0] &&
+																	undefined !== shadowStickyHover[0].blur
+																		? shadowStickyHover[0].blur
+																		: 14
+																}
+																spread={
+																	undefined !== shadowStickyHover &&
+																	undefined !== shadowStickyHover[0] &&
+																	undefined !== shadowStickyHover[0].spread
+																		? shadowStickyHover[0].spread
+																		: 0
+																}
+																inset={
+																	undefined !== shadowStickyHover &&
+																	undefined !== shadowStickyHover[0] &&
+																	undefined !== shadowStickyHover[0].inset
+																		? shadowStickyHover[0].inset
+																		: false
+																}
+																onEnableChange={(value) => {
+																	setAttributes({
+																		displayHoverShadowSticky: value,
+																	});
+																}}
+																onColorChange={(value) => {
+																	saveShadowStickyHover({ color: value });
+																}}
+																onOpacityChange={(value) => {
+																	saveShadowStickyHover({ opacity: value });
+																}}
+																onHOffsetChange={(value) => {
+																	saveShadowStickyHover({ hOffset: value });
+																}}
+																onVOffsetChange={(value) => {
+																	saveShadowStickyHover({ vOffset: value });
+																}}
+																onBlurChange={(value) => {
+																	saveShadowStickyHover({ blur: value });
+																}}
+																onSpreadChange={(value) => {
+																	saveShadowStickyHover({ spread: value });
+																}}
+																onInsetChange={(value) => {
+																	saveShadowStickyHover({ inset: value });
+																}}
+															/>
+														</>
+													}
+													normal={
+														<>
+															<PopColorControl
+																label={__('Color', 'kadence-blocks')}
+																value={colorSticky ? colorSticky : ''}
+																default={''}
+																onChange={(value) =>
+																	setAttributes({ colorSticky: value })
+																}
+															/>
+															<BackgroundTypeControl
+																label={__('Type', 'kadence-blocks')}
+																type={
+																	backgroundStickyType
+																		? backgroundStickyType
+																		: 'normal'
+																}
+																onChange={(value) =>
+																	setAttributes({ backgroundStickyType: value })
+																}
+																allowedTypes={['normal', 'gradient']}
+															/>
+															{'gradient' === backgroundStickyType && (
+																<GradientControl
+																	value={gradientSticky}
+																	onChange={(value) =>
+																		setAttributes({ gradientSticky: value })
+																	}
+																	gradients={[]}
+																/>
+															)}
+															{'normal' === backgroundStickyType && (
+																<PopColorControl
+																	label={__('Background Color', 'kadence-blocks')}
+																	value={backgroundSticky ? backgroundSticky : ''}
+																	default={''}
+																	onChange={(value) =>
+																		setAttributes({ backgroundSticky: value })
+																	}
+																/>
+															)}
+															<ResponsiveBorderControl
+																label={__('Border', 'kadence-blocks')}
+																value={borderStickyStyle}
+																tabletValue={tabletBorderStickyStyle}
+																mobileValue={mobileBorderStickyStyle}
+																onChange={(value) =>
+																	setAttributes({ borderStickyStyle: value })
+																}
+																onChangeTablet={(value) =>
+																	setAttributes({
+																		tabletBorderStickyStyle: value,
+																	})
+																}
+																onChangeMobile={(value) =>
+																	setAttributes({
+																		mobileBorderStickyStyle: value,
+																	})
+																}
+															/>
+															<ResponsiveMeasurementControls
+																label={__('Border Radius', 'kadence-blocks')}
+																value={borderStickyRadius}
+																tabletValue={tabletBorderStickyRadius}
+																mobileValue={mobileBorderStickyRadius}
+																onChange={(value) =>
+																	setAttributes({ borderStickyRadius: value })
+																}
+																onChangeTablet={(value) =>
+																	setAttributes({
+																		tabletBorderStickyRadius: value,
+																	})
+																}
+																onChangeMobile={(value) =>
+																	setAttributes({
+																		mobileBorderStickyRadius: value,
+																	})
+																}
+																unit={borderStickyRadiusUnit}
+																units={['px', 'em', 'rem', '%']}
+																onUnit={(value) =>
+																	setAttributes({
+																		borderStickyRadiusUnit: value,
+																	})
+																}
+																max={
+																	borderStickyRadiusUnit === 'em' ||
+																	borderStickyRadiusUnit === 'rem'
+																		? 24
+																		: 500
+																}
+																step={
+																	borderStickyRadiusUnit === 'em' ||
+																	borderStickyRadiusUnit === 'rem'
+																		? 0.1
+																		: 1
+																}
+																min={0}
+																isBorderRadius={true}
+																allowEmpty={true}
+															/>
+															<BoxShadowControl
+																label={__('Box Shadow', 'kadence-blocks')}
+																enable={
+																	undefined !== displayShadowSticky
+																		? displayShadowSticky
+																		: false
+																}
+																color={
+																	undefined !== shadowSticky &&
+																	undefined !== shadowSticky[0] &&
+																	undefined !== shadowSticky[0].color
+																		? shadowSticky[0].color
+																		: '#000000'
+																}
+																colorDefault={'#000000'}
+																onArrayChange={(color, opacity) => {
+																	saveShadowSticky({ color, opacity });
+																}}
+																opacity={
+																	undefined !== shadowSticky &&
+																	undefined !== shadowSticky[0] &&
+																	undefined !== shadowSticky[0].opacity
+																		? shadowSticky[0].opacity
+																		: 0.2
+																}
+																hOffset={
+																	undefined !== shadowSticky &&
+																	undefined !== shadowSticky[0] &&
+																	undefined !== shadowSticky[0].hOffset
+																		? shadowSticky[0].hOffset
+																		: 0
+																}
+																vOffset={
+																	undefined !== shadowSticky &&
+																	undefined !== shadowSticky[0] &&
+																	undefined !== shadowSticky[0].vOffset
+																		? shadow[0].vOffset
+																		: 0
+																}
+																blur={
+																	undefined !== shadowSticky &&
+																	undefined !== shadowSticky[0] &&
+																	undefined !== shadowSticky[0].blur
+																		? shadowSticky[0].blur
+																		: 14
+																}
+																spread={
+																	undefined !== shadowSticky &&
+																	undefined !== shadowSticky[0] &&
+																	undefined !== shadowSticky[0].spread
+																		? shadowSticky[0].spread
+																		: 0
+																}
+																inset={
+																	undefined !== shadowSticky &&
+																	undefined !== shadowSticky[0] &&
+																	undefined !== shadowSticky[0].inset
+																		? shadowSticky[0].inset
+																		: false
+																}
+																onEnableChange={(value) => {
+																	setAttributes({
+																		displayShadowSticky: value,
+																	});
+																}}
+																onColorChange={(value) => {
+																	saveShadowSticky({ color: value });
+																}}
+																onOpacityChange={(value) => {
+																	saveShadowSticky({ opacity: value });
+																}}
+																onHOffsetChange={(value) => {
+																	saveShadowSticky({ hOffset: value });
+																}}
+																onVOffsetChange={(value) => {
+																	saveShadowSticky({ vOffset: value });
+																}}
+																onBlurChange={(value) => {
+																	saveShadowSticky({ blur: value });
+																}}
+																onSpreadChange={(value) => {
+																	saveShadowSticky({ spread: value });
+																}}
+																onInsetChange={(value) => {
+																	saveShadowSticky({ inset: value });
 																}}
 															/>
 														</>

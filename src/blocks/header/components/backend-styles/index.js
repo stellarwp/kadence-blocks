@@ -37,6 +37,38 @@ export default function BackendStyles(props) {
 		borderRadiusHoverTablet,
 		borderRadiusHoverMobile,
 		borderRadiusHoverUnit,
+		borderTransparent,
+		borderTransparentTablet,
+		borderTransparentMobile,
+		borderTransparentUnit,
+		borderTransparentHover,
+		borderTransparentHoverTablet,
+		borderTransparentHoverMobile,
+		borderTransparentHoverUnit,
+		borderRadiusTransparent,
+		borderRadiusTransparentTablet,
+		borderRadiusTransparentMobile,
+		borderRadiusTransparentUnit,
+		borderRadiusTransparentHover,
+		borderRadiusTransparentHoverTablet,
+		borderRadiusTransparentHoverMobile,
+		borderRadiusTransparentHoverUnit,
+		borderSticky,
+		borderStickyTablet,
+		borderStickyMobile,
+		borderStickyUnit,
+		borderStickyHover,
+		borderStickyHoverTablet,
+		borderStickyHoverMobile,
+		borderStickyHoverUnit,
+		borderRadiusSticky,
+		borderRadiusStickyTablet,
+		borderRadiusStickyMobile,
+		borderRadiusStickyUnit,
+		borderRadiusStickyHover,
+		borderRadiusStickyHoverTablet,
+		borderRadiusStickyHoverMobile,
+		borderRadiusStickyHoverUnit,
 		flex,
 		className,
 		anchor,
@@ -58,6 +90,8 @@ export default function BackendStyles(props) {
 		isTransparentMobile,
 		autoTransparentSpacing,
 	} = metaAttributes;
+
+	const css = new KadenceBlocksCSS();
 
 	const previewMarginTop = getPreviewSize(
 		previewDevice,
@@ -157,6 +191,214 @@ export default function BackendStyles(props) {
 		undefined !== borderRadiusHoverTablet ? borderRadiusHoverTablet[3] : '',
 		undefined !== borderRadiusHoverMobile ? borderRadiusHoverMobile[3] : ''
 	);
+	const previewBorderTopLeftRadiusTransparent = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadiusTransparent ? borderRadiusTransparent[0] : '',
+		undefined !== borderRadiusTransparentTablet ? borderRadiusTransparentTablet[0] : '',
+		undefined !== borderRadiusTransparentMobile ? borderRadiusTransparentMobile[0] : ''
+	);
+	const previewBorderTopRightRadiusTransparent = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadiusTransparent ? borderRadiusTransparent[1] : '',
+		undefined !== borderRadiusTransparentTablet ? borderRadiusTransparentTablet[1] : '',
+		undefined !== borderRadiusTransparentMobile ? borderRadiusTransparentMobile[1] : ''
+	);
+	const previewBorderBottomRightRadiusTransparent = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadiusTransparent ? borderRadiusTransparent[2] : '',
+		undefined !== borderRadiusTransparentTablet ? borderRadiusTransparentTablet[2] : '',
+		undefined !== borderRadiusTransparentMobile ? borderRadiusTransparentMobile[2] : ''
+	);
+	const previewBorderBottomLeftRadiusTransparent = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadiusTransparent ? borderRadiusTransparent[3] : '',
+		undefined !== borderRadiusTransparentTablet ? borderRadiusTransparentTablet[3] : '',
+		undefined !== borderRadiusTransparentMobile ? borderRadiusTransparentMobile[3] : ''
+	);
+	const previewborderHoverTopLeftRadiusTransparent = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadiusTransparentHover ? borderRadiusTransparentHover[0] : '',
+		undefined !== borderRadiusTransparentHoverTablet ? borderRadiusTransparentHoverTablet[0] : '',
+		undefined !== borderRadiusTransparentHoverMobile ? borderRadiusTransparentHoverMobile[0] : ''
+	);
+	const previewborderHoverTopRightRadiusTransparent = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadiusTransparentHover ? borderRadiusTransparentHover[1] : '',
+		undefined !== borderRadiusTransparentHoverTablet ? borderRadiusTransparentHoverTablet[1] : '',
+		undefined !== borderRadiusTransparentHoverMobile ? borderRadiusTransparentHoverMobile[1] : ''
+	);
+	const previewborderHoverBottomRightRadiusTransparent = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadiusTransparentHover ? borderRadiusTransparentHover[2] : '',
+		undefined !== borderRadiusTransparentHoverTablet ? borderRadiusTransparentHoverTablet[2] : '',
+		undefined !== borderRadiusTransparentHoverMobile ? borderRadiusTransparentHoverMobile[2] : ''
+	);
+	const previewborderHoverBottomLeftRadiusTransparent = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadiusTransparentHover ? borderRadiusTransparentHover[3] : '',
+		undefined !== borderRadiusTransparentHoverTablet ? borderRadiusTransparentHoverTablet[3] : '',
+		undefined !== borderRadiusTransparentHoverMobile ? borderRadiusTransparentHoverMobile[3] : ''
+	);
+	const previewBorderTransparentTop = css.render_border(
+		borderTransparent,
+		borderTransparentTablet,
+		borderTransparentMobile,
+		previewDevice,
+		'top'
+	);
+	const previewBorderTransparentLeft = css.render_border(
+		borderTransparent,
+		borderTransparentTablet,
+		borderTransparentMobile,
+		previewDevice,
+		'left'
+	);
+	const previewBorderTransparentRight = css.render_border(
+		borderTransparent,
+		borderTransparentTablet,
+		borderTransparentMobile,
+		previewDevice,
+		'right'
+	);
+	const previewBorderTransparentBottom = css.render_border(
+		borderTransparent,
+		borderTransparentTablet,
+		borderTransparentMobile,
+		previewDevice,
+		'bottom'
+	);
+	const previewBorderTransparentHoverTop = css.render_border(
+		borderTransparentHover,
+		borderTransparentHoverTablet,
+		borderTransparentHoverMobile,
+		previewDevice,
+		'top'
+	);
+	const previewBorderTransparentHoverLeft = css.render_border(
+		borderTransparentHover,
+		borderTransparentHoverTablet,
+		borderTransparentHoverMobile,
+		previewDevice,
+		'left'
+	);
+	const previewBorderTransparentHoverRight = css.render_border(
+		borderTransparentHover,
+		borderTransparentHoverTablet,
+		borderTransparentHoverMobile,
+		previewDevice,
+		'right'
+	);
+	const previewBorderTransparentHoverBottom = css.render_border(
+		borderTransparentHover,
+		borderTransparentHoverTablet,
+		borderTransparentHoverMobile,
+		previewDevice,
+		'bottom'
+	);
+	const previewBorderTopLeftRadiusSticky = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadiusSticky ? borderRadiusSticky[0] : '',
+		undefined !== borderRadiusStickyTablet ? borderRadiusStickyTablet[0] : '',
+		undefined !== borderRadiusStickyMobile ? borderRadiusStickyMobile[0] : ''
+	);
+	const previewBorderTopRightRadiusSticky = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadiusSticky ? borderRadiusSticky[1] : '',
+		undefined !== borderRadiusStickyTablet ? borderRadiusStickyTablet[1] : '',
+		undefined !== borderRadiusStickyMobile ? borderRadiusStickyMobile[1] : ''
+	);
+	const previewBorderBottomRightRadiusSticky = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadiusSticky ? borderRadiusSticky[2] : '',
+		undefined !== borderRadiusStickyTablet ? borderRadiusStickyTablet[2] : '',
+		undefined !== borderRadiusStickyMobile ? borderRadiusStickyMobile[2] : ''
+	);
+	const previewBorderBottomLeftRadiusSticky = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadiusSticky ? borderRadiusSticky[3] : '',
+		undefined !== borderRadiusStickyTablet ? borderRadiusStickyTablet[3] : '',
+		undefined !== borderRadiusStickyMobile ? borderRadiusStickyMobile[3] : ''
+	);
+	const previewborderHoverTopLeftRadiusSticky = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadiusStickyHover ? borderRadiusStickyHover[0] : '',
+		undefined !== borderRadiusStickyHoverTablet ? borderRadiusStickyHoverTablet[0] : '',
+		undefined !== borderRadiusStickyHoverMobile ? borderRadiusStickyHoverMobile[0] : ''
+	);
+	const previewborderHoverTopRightRadiusSticky = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadiusStickyHover ? borderRadiusStickyHover[1] : '',
+		undefined !== borderRadiusStickyHoverTablet ? borderRadiusStickyHoverTablet[1] : '',
+		undefined !== borderRadiusStickyHoverMobile ? borderRadiusStickyHoverMobile[1] : ''
+	);
+	const previewborderHoverBottomRightRadiusSticky = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadiusStickyHover ? borderRadiusStickyHover[2] : '',
+		undefined !== borderRadiusStickyHoverTablet ? borderRadiusStickyHoverTablet[2] : '',
+		undefined !== borderRadiusStickyHoverMobile ? borderRadiusStickyHoverMobile[2] : ''
+	);
+	const previewborderHoverBottomLeftRadiusSticky = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadiusStickyHover ? borderRadiusStickyHover[3] : '',
+		undefined !== borderRadiusStickyHoverTablet ? borderRadiusStickyHoverTablet[3] : '',
+		undefined !== borderRadiusStickyHoverMobile ? borderRadiusStickyHoverMobile[3] : ''
+	);
+	const previewBorderStickyTop = css.render_border(
+		borderSticky,
+		borderStickyTablet,
+		borderStickyMobile,
+		previewDevice,
+		'top'
+	);
+	const previewBorderStickyLeft = css.render_border(
+		borderSticky,
+		borderStickyTablet,
+		borderStickyMobile,
+		previewDevice,
+		'left'
+	);
+	const previewBorderStickyRight = css.render_border(
+		borderSticky,
+		borderStickyTablet,
+		borderStickyMobile,
+		previewDevice,
+		'right'
+	);
+	const previewBorderStickyBottom = css.render_border(
+		borderSticky,
+		borderStickyTablet,
+		borderStickyMobile,
+		previewDevice,
+		'bottom'
+	);
+	const previewBorderStickyHoverTop = css.render_border(
+		borderStickyHover,
+		borderStickyHoverTablet,
+		borderStickyHoverMobile,
+		previewDevice,
+		'top'
+	);
+	const previewBorderStickyHoverLeft = css.render_border(
+		borderStickyHover,
+		borderStickyHoverTablet,
+		borderStickyHoverMobile,
+		previewDevice,
+		'left'
+	);
+	const previewBorderStickyHoverRight = css.render_border(
+		borderStickyHover,
+		borderStickyHoverTablet,
+		borderStickyHoverMobile,
+		previewDevice,
+		'right'
+	);
+	const previewBorderStickyHoverBottom = css.render_border(
+		borderStickyHover,
+		borderStickyHoverTablet,
+		borderStickyHoverMobile,
+		previewDevice,
+		'bottom'
+	);
 
 	// Header font options
 	const previewFontSize = getPreviewSize(
@@ -226,8 +468,6 @@ export default function BackendStyles(props) {
 	//const elementHeight = useElementHeight(currentRef, [isSelected]);
 	const elementHeight = currentRef?.current?.clientHeight;
 
-	const css = new KadenceBlocksCSS();
-
 	if (isSelected) {
 		css.set_selector(
 			`.block-editor-block-popover__inbetween-container .block-editor-block-list__insertion-point.is-with-inserter`
@@ -280,11 +520,6 @@ export default function BackendStyles(props) {
 		}
 	}
 
-	css.add_property('border-top', css.render_border(border, borderTablet, borderMobile, previewDevice, 'top'));
-	css.add_property('border-right', css.render_border(border, borderTablet, borderMobile, previewDevice, 'right'));
-	css.add_property('border-bottom', css.render_border(border, borderTablet, borderMobile, previewDevice, 'bottom'));
-	css.add_property('border-left', css.render_border(border, borderTablet, borderMobile, previewDevice, 'left'));
-
 	css.add_property('margin-top', getSpacingOptionOutput(previewMarginTop, marginUnit));
 	css.add_property('margin-right', getSpacingOptionOutput(previewMarginRight, marginUnit));
 	css.add_property('margin-bottom', getSpacingOptionOutput(previewMarginBottom, marginUnit));
@@ -293,6 +528,10 @@ export default function BackendStyles(props) {
 	css.add_property('padding-right', getSpacingOptionOutput(previewPaddingRight, paddingUnit));
 	css.add_property('padding-bottom', getSpacingOptionOutput(previewPaddingBottom, paddingUnit));
 	css.add_property('padding-left', getSpacingOptionOutput(previewPaddingLeft, paddingUnit));
+	css.add_property('border-top', css.render_border(border, borderTablet, borderMobile, previewDevice, 'top'));
+	css.add_property('border-right', css.render_border(border, borderTablet, borderMobile, previewDevice, 'right'));
+	css.add_property('border-bottom', css.render_border(border, borderTablet, borderMobile, previewDevice, 'bottom'));
+	css.add_property('border-left', css.render_border(border, borderTablet, borderMobile, previewDevice, 'left'));
 	css.add_property('border-top-left-radius', getSpacingOptionOutput(previewBorderTopLeftRadius, borderRadiusUnit));
 	css.add_property('border-top-right-radius', getSpacingOptionOutput(previewBorderTopRightRadius, borderRadiusUnit));
 	css.add_property(
@@ -303,6 +542,52 @@ export default function BackendStyles(props) {
 		'border-bottom-left-radius',
 		getSpacingOptionOutput(previewBorderBottomLeftRadius, borderRadiusUnit)
 	);
+	//Transparent border
+	if (previewIsTransparent == '1') {
+		css.add_property('border-top', previewBorderTransparentTop);
+		css.add_property('border-right', previewBorderTransparentRight);
+		css.add_property('border-bottom', previewBorderTransparentBottom);
+		css.add_property('border-left', previewBorderTransparentLeft);
+		css.add_property(
+			'border-top-left-radius',
+			getSpacingOptionOutput(previewBorderTopLeftRadiusTransparent, borderRadiusTransparentUnit)
+		);
+		css.add_property(
+			'border-top-right-radius',
+			getSpacingOptionOutput(previewBorderTopRightRadiusTransparent, borderRadiusTransparentUnit)
+		);
+		css.add_property(
+			'border-bottom-right-radius',
+			getSpacingOptionOutput(previewBorderBottomRightRadiusTransparent, borderRadiusTransparentUnit)
+		);
+		css.add_property(
+			'border-bottom-left-radius',
+			getSpacingOptionOutput(previewBorderBottomLeftRadiusTransparent, borderRadiusTransparentUnit)
+		);
+	}
+	//Sticky border
+	if (previewIsSticky == '1') {
+		css.add_property('border-top', previewBorderStickyTop);
+		css.add_property('border-right', previewBorderStickyRight);
+		css.add_property('border-bottom', previewBorderStickyBottom);
+		css.add_property('border-left', previewBorderStickyLeft);
+		css.add_property(
+			'border-top-left-radius',
+			getSpacingOptionOutput(previewBorderTopLeftRadiusSticky, borderRadiusStickyUnit)
+		);
+		css.add_property(
+			'border-top-right-radius',
+			getSpacingOptionOutput(previewBorderTopRightRadiusSticky, borderRadiusStickyUnit)
+		);
+		css.add_property(
+			'border-bottom-right-radius',
+			getSpacingOptionOutput(previewBorderBottomRightRadiusSticky, borderRadiusStickyUnit)
+		);
+		css.add_property(
+			'border-bottom-left-radius',
+			getSpacingOptionOutput(previewBorderBottomLeftRadiusSticky, borderRadiusStickyUnit)
+		);
+	}
 	css.add_property('min-height', getSpacingOptionOutput(previewHeight, heightUnit));
 	css.add_property('max-width', getSpacingOptionOutput(previewWidth, widthUnit));
 
@@ -359,6 +644,56 @@ export default function BackendStyles(props) {
 		'border-bottom-left-radius',
 		getSpacingOptionOutput(previewborderHoverBottomLeftRadius, borderRadiusHoverUnit)
 	);
+
+	//Transparent hover border
+	if (previewIsTransparent == '1') {
+		css.add_property('border-top', previewBorderTransparentHoverTop);
+		css.add_property('border-right', previewBorderTransparentHoverRight);
+		css.add_property('border-bottom', previewBorderTransparentHoverBottom);
+		css.add_property('border-left', previewBorderTransparentHoverLeft);
+
+		css.add_property(
+			'border-top-left-radius',
+			getSpacingOptionOutput(previewborderHoverTopLeftRadiusTransparent, borderRadiusTransparentHoverUnit)
+		);
+		css.add_property(
+			'border-top-right-radius',
+			getSpacingOptionOutput(previewborderHoverTopRightRadiusTransparent, borderRadiusTransparentHoverUnit)
+		);
+		css.add_property(
+			'border-bottom-right-radius',
+			getSpacingOptionOutput(previewborderHoverBottomRightRadiusTransparent, borderRadiusTransparentHoverUnit)
+		);
+		css.add_property(
+			'border-bottom-left-radius',
+			getSpacingOptionOutput(previewborderHoverBottomLeftRadiusTransparent, borderRadiusTransparentHoverUnit)
+		);
+	}
+
+	//Sticky hover border
+	if (previewIsSticky == '1') {
+		css.add_property('border-top', previewBorderStickyHoverTop);
+		css.add_property('border-right', previewBorderStickyHoverRight);
+		css.add_property('border-bottom', previewBorderStickyHoverBottom);
+		css.add_property('border-left', previewBorderStickyHoverLeft);
+
+		css.add_property(
+			'border-top-left-radius',
+			getSpacingOptionOutput(previewborderHoverTopLeftRadiusSticky, borderRadiusStickyHoverUnit)
+		);
+		css.add_property(
+			'border-top-right-radius',
+			getSpacingOptionOutput(previewborderHoverTopRightRadiusSticky, borderRadiusStickyHoverUnit)
+		);
+		css.add_property(
+			'border-bottom-right-radius',
+			getSpacingOptionOutput(previewborderHoverBottomRightRadiusSticky, borderRadiusStickyHoverUnit)
+		);
+		css.add_property(
+			'border-bottom-left-radius',
+			getSpacingOptionOutput(previewborderHoverBottomLeftRadiusSticky, borderRadiusStickyHoverUnit)
+		);
+	}
 
 	css.set_selector(`wp-block-kadence-header${uniqueID} a`);
 	css.add_property('color', KadenceColorOutput(linkColor));
