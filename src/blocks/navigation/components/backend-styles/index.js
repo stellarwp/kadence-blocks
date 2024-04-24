@@ -93,6 +93,9 @@ export default function BackendStyles(props) {
 		dropdownDivider,
 		dropdownDividerTablet,
 		dropdownDividerMobile,
+		transparentDivider,
+		transparentDividerTablet,
+		transparentDividerMobile,
 		dropdownWidth,
 		dropdownWidthTablet,
 		dropdownWidthMobile,
@@ -232,13 +235,6 @@ export default function BackendStyles(props) {
 		backgroundTransparentActiveTablet,
 		backgroundTransparentActiveMobile
 	);
-	const previewDivider = getPreviewSize(previewDevice, divider, dividerTablet, dividerMobile);
-	const previewDropdownDivider = getPreviewSize(
-		previewDevice,
-		dropdownDivider,
-		dropdownDividerTablet,
-		dropdownDividerMobile
-	);
 	const previewDropdownVerticalSpacing = getPreviewSize(
 		previewDevice,
 		dropdownVerticalSpacing,
@@ -251,6 +247,13 @@ export default function BackendStyles(props) {
 		dropdownDivider,
 		dropdownDividerTablet,
 		dropdownDividerMobile,
+		previewDevice,
+		'bottom'
+	);
+	const transparentDividerValue = css.render_border(
+		transparentDivider,
+		transparentDividerTablet,
+		transparentDividerMobile,
 		previewDevice,
 		'bottom'
 	);
@@ -382,48 +385,28 @@ export default function BackendStyles(props) {
 	css.add_property('color', css.render_color(previewLinkColorDropdownActive));
 	css.add_property('background', css.render_color(previewBackgroundDropdownActive));
 
-	//Mobile menu logic from theme styles component
-	// // Mobile Menu.
-	// $css->set_selector( '.mobile-navigation ul li' );
-	// $css->render_font( kadence()->option( 'mobile_navigation_typography' ), $css );
-	// $css->start_media_query( $media_query['tablet'] );
-	// $css->set_selector( '.mobile-navigation ul li' );
-	// $css->add_property( 'font-size', $this->render_font_size( kadence()->option( 'mobile_navigation_typography' ), 'tablet' ) );
-	// $css->add_property( 'line-height', $this->render_font_height( kadence()->option( 'mobile_navigation_typography' ), 'tablet' ) );
-	// $css->add_property( 'letter-spacing', $this->render_font_spacing( kadence()->option( 'mobile_navigation_typography' ), 'tablet' ) );
-	// $css->stop_media_query();
-	// $css->start_media_query( $media_query['mobile'] );
-	// $css->set_selector( '.mobile-navigation ul li' );
-	// $css->add_property( 'font-size', $this->render_font_size( kadence()->option( 'mobile_navigation_typography' ), 'mobile' ) );
-	// $css->add_property( 'line-height', $this->render_font_height( kadence()->option( 'mobile_navigation_typography' ), 'mobile' ) );
-	// $css->add_property( 'letter-spacing', $this->render_font_spacing( kadence()->option( 'mobile_navigation_typography' ), 'mobile' ) );
-	// $css->stop_media_query();
-	// $css->set_selector( '.mobile-navigation ul li a' );
-	// $css->add_property( 'padding-top', kadence()->sub_option( 'mobile_navigation_vertical_spacing', 'size' ) . kadence()->sub_option( 'mobile_navigation_vertical_spacing', 'unit' ) );
-	// $css->add_property( 'padding-bottom', kadence()->sub_option( 'mobile_navigation_vertical_spacing', 'size' ) . kadence()->sub_option( 'mobile_navigation_vertical_spacing', 'unit' ) );
-	// $css->set_selector( '.mobile-navigation ul li > a, .mobile-navigation ul li.menu-item-has-children > .drawer-nav-drop-wrap' );
-	// $css->add_property( 'background', $css->render_color( kadence()->sub_option( 'mobile_navigation_background', 'color' ) ) );
-	// $css->add_property( 'color', $css->render_color( kadence()->sub_option( 'mobile_navigation_color', 'color' ) ) );
-	// $css->set_selector( '.mobile-navigation ul li > a:hover, .mobile-navigation ul li.menu-item-has-children > .drawer-nav-drop-wrap:hover' );
-	// $css->add_property( 'background', $css->render_color( kadence()->sub_option( 'mobile_navigation_background', 'hover' ) ) );
-	// $css->add_property( 'color', $css->render_color( kadence()->sub_option( 'mobile_navigation_color', 'hover' ) ) );
-	// $css->set_selector( '.mobile-navigation ul li.current-menu-item > a, .mobile-navigation ul li.current-menu-item.menu-item-has-children > .drawer-nav-drop-wrap' );
-	// $css->add_property( 'background', $css->render_color( kadence()->sub_option( 'mobile_navigation_background', 'active' ) ) );
-	// $css->add_property( 'color', $css->render_color( kadence()->sub_option( 'mobile_navigation_color', 'active' ) ) );
-
 	//New Logic for block
 	if (previewOrientation == 'vertical') {
 		css.set_selector(`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul li .link-drop-wrap`);
 		css.add_property('border-bottom', dividerValue);
+		if (context?.['kadence/headerIsTransparent'] == '1') {
+			css.add_property('border-bottom', transparentDividerValue);
+		}
 		css.set_selector(
 			`.wp-block-kadence-navigation${uniqueID} .navigation:not(.drawer-navigation-parent-toggle-true) ul li .link-drop-wrap button`
 		);
 		css.add_property('border-left', dividerValue);
+		if (context?.['kadence/headerIsTransparent'] == '1') {
+			css.add_property('border-left', transparentDividerValue);
+		}
 	} else {
 		css.set_selector(
 			`.wp-block-kadence-navigation${uniqueID} .navigation > .menu-container > ul > li:not(:last-of-type) > .link-drop-wrap`
 		);
 		css.add_property('border-right', dividerValue);
+		if (context?.['kadence/headerIsTransparent'] == '1') {
+			css.add_property('border-right', transparentDividerValue);
+		}
 	}
 	css.set_selector(`.wp-block-kadence-navigation${uniqueID} > .navigation > .menu-container > .menu`);
 	css.render_measure_output(padding, tabletPadding, mobilePadding, previewDevice, 'padding', paddingUnit);

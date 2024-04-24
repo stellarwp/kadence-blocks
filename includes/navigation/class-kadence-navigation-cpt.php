@@ -740,6 +740,69 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				),
 			),
 			array(
+				'key'     => '_kad_navigation_transparentDivider',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top' => array( '', '', '' ),
+						'right' => array( '', '', '' ),
+						'bottom' => array( '', '', '' ),
+						'left' => array( '', '', '' ),
+						'unit' => 'px',
+					),
+				),
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
+				),
+			),
+			array(
+				'key'     => '_kad_navigation_transparentDividerTablet',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top' => array( '', '', '' ),
+						'right' => array( '', '', '' ),
+						'bottom' => array( '', '', '' ),
+						'left' => array( '', '', '' ),
+						'unit' => 'px',
+					),
+				),
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
+				),
+			),
+			array(
+				'key'     => '_kad_navigation_transparentDividerMobile',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top' => array( '', '', '' ),
+						'right' => array( '', '', '' ),
+						'bottom' => array( '', '', '' ),
+						'left' => array( '', '', '' ),
+						'unit' => 'px',
+					),
+				),
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
+				),
+			),
+			array(
 				'key'     => '_kad_navigation_typography',
 				'default'       => array(
 					array(

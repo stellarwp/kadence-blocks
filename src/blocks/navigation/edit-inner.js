@@ -188,6 +188,9 @@ export function EditInner(props) {
 		dropdownDivider: meta?._kad_navigation_dropdownDivider,
 		dropdownDividerTablet: meta?._kad_navigation_dropdownDividerTablet,
 		dropdownDividerMobile: meta?._kad_navigation_dropdownDividerMobile,
+		transparentDivider: meta?._kad_navigation_transparentDivider,
+		transparentDividerTablet: meta?._kad_navigation_transparentDividerTablet,
+		transparentDividerMobile: meta?._kad_navigation_transparentDividerMobile,
 		dropdownWidth: meta?._kad_navigation_dropdownWidth,
 		dropdownWidthTablet: meta?._kad_navigation_dropdownWidthTablet,
 		dropdownWidthMobile: meta?._kad_navigation_dropdownWidthMobile,
@@ -304,6 +307,9 @@ export function EditInner(props) {
 		dropdownDivider,
 		dropdownDividerTablet,
 		dropdownDividerMobile,
+		transparentDivider,
+		transparentDividerTablet,
+		transparentDividerMobile,
 		dropdownWidth,
 		dropdownWidthTablet,
 		dropdownWidthMobile,
@@ -796,6 +802,15 @@ export function EditInner(props) {
 									tabletChildren={styleColorControls('Tablet', 'Transparent')}
 									mobileChildren={styleColorControls('Mobile', 'Transparent')}
 								></SmallResponsiveControl>
+								<ResponsiveSingleBorderControl
+									label={'Divider'}
+									value={transparentDivider}
+									tabletValue={transparentDividerTablet}
+									mobileValue={transparentDividerMobile}
+									onChange={(value) => setMetaAttribute(value, 'transparentDivider')}
+									onChangeTablet={(value) => setMetaAttribute(value, 'transparentDividerTablet')}
+									onChangeMobile={(value) => setMetaAttribute(value, 'transparentDividerMobile')}
+								/>
 							</KadencePanelBody>
 						)}
 
