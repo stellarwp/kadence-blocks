@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.3
 Tested up to: 6.5
-Stable tag: 3.2.35
+Stable tag: 3.2.36
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -174,9 +174,11 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
-=3.2.36 =
-Release Date: May TBD 2024
+= 3.2.36 =
+Release Date: April 24th 2024
 * Fix: Custom CSS classes being applied to advanced form fields twice.
+* Fix: Issue with custom colors.
+* Fix: Issue with pattern libraries showing empty categories.
 
 = 3.2.35 =
 Release Date: April 22nd 2024
