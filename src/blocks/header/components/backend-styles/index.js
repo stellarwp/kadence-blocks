@@ -53,6 +53,22 @@ export default function BackendStyles(props) {
 		borderRadiusTransparentHoverTablet,
 		borderRadiusTransparentHoverMobile,
 		borderRadiusTransparentHoverUnit,
+		borderSticky,
+		borderStickyTablet,
+		borderStickyMobile,
+		borderStickyUnit,
+		borderStickyHover,
+		borderStickyHoverTablet,
+		borderStickyHoverMobile,
+		borderStickyHoverUnit,
+		borderRadiusSticky,
+		borderRadiusStickyTablet,
+		borderRadiusStickyMobile,
+		borderRadiusStickyUnit,
+		borderRadiusStickyHover,
+		borderRadiusStickyHoverTablet,
+		borderRadiusStickyHoverMobile,
+		borderRadiusStickyHoverUnit,
 		flex,
 		className,
 		anchor,
@@ -279,6 +295,110 @@ export default function BackendStyles(props) {
 		previewDevice,
 		'bottom'
 	);
+	const previewBorderTopLeftRadiusSticky = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadiusSticky ? borderRadiusSticky[0] : '',
+		undefined !== borderRadiusStickyTablet ? borderRadiusStickyTablet[0] : '',
+		undefined !== borderRadiusStickyMobile ? borderRadiusStickyMobile[0] : ''
+	);
+	const previewBorderTopRightRadiusSticky = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadiusSticky ? borderRadiusSticky[1] : '',
+		undefined !== borderRadiusStickyTablet ? borderRadiusStickyTablet[1] : '',
+		undefined !== borderRadiusStickyMobile ? borderRadiusStickyMobile[1] : ''
+	);
+	const previewBorderBottomRightRadiusSticky = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadiusSticky ? borderRadiusSticky[2] : '',
+		undefined !== borderRadiusStickyTablet ? borderRadiusStickyTablet[2] : '',
+		undefined !== borderRadiusStickyMobile ? borderRadiusStickyMobile[2] : ''
+	);
+	const previewBorderBottomLeftRadiusSticky = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadiusSticky ? borderRadiusSticky[3] : '',
+		undefined !== borderRadiusStickyTablet ? borderRadiusStickyTablet[3] : '',
+		undefined !== borderRadiusStickyMobile ? borderRadiusStickyMobile[3] : ''
+	);
+	const previewborderHoverTopLeftRadiusSticky = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadiusStickyHover ? borderRadiusStickyHover[0] : '',
+		undefined !== borderRadiusStickyHoverTablet ? borderRadiusStickyHoverTablet[0] : '',
+		undefined !== borderRadiusStickyHoverMobile ? borderRadiusStickyHoverMobile[0] : ''
+	);
+	const previewborderHoverTopRightRadiusSticky = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadiusStickyHover ? borderRadiusStickyHover[1] : '',
+		undefined !== borderRadiusStickyHoverTablet ? borderRadiusStickyHoverTablet[1] : '',
+		undefined !== borderRadiusStickyHoverMobile ? borderRadiusStickyHoverMobile[1] : ''
+	);
+	const previewborderHoverBottomRightRadiusSticky = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadiusStickyHover ? borderRadiusStickyHover[2] : '',
+		undefined !== borderRadiusStickyHoverTablet ? borderRadiusStickyHoverTablet[2] : '',
+		undefined !== borderRadiusStickyHoverMobile ? borderRadiusStickyHoverMobile[2] : ''
+	);
+	const previewborderHoverBottomLeftRadiusSticky = getPreviewSize(
+		previewDevice,
+		undefined !== borderRadiusStickyHover ? borderRadiusStickyHover[3] : '',
+		undefined !== borderRadiusStickyHoverTablet ? borderRadiusStickyHoverTablet[3] : '',
+		undefined !== borderRadiusStickyHoverMobile ? borderRadiusStickyHoverMobile[3] : ''
+	);
+	const previewBorderStickyTop = css.render_border(
+		borderSticky,
+		borderStickyTablet,
+		borderStickyMobile,
+		previewDevice,
+		'top'
+	);
+	const previewBorderStickyLeft = css.render_border(
+		borderSticky,
+		borderStickyTablet,
+		borderStickyMobile,
+		previewDevice,
+		'left'
+	);
+	const previewBorderStickyRight = css.render_border(
+		borderSticky,
+		borderStickyTablet,
+		borderStickyMobile,
+		previewDevice,
+		'right'
+	);
+	const previewBorderStickyBottom = css.render_border(
+		borderSticky,
+		borderStickyTablet,
+		borderStickyMobile,
+		previewDevice,
+		'bottom'
+	);
+	const previewBorderStickyHoverTop = css.render_border(
+		borderStickyHover,
+		borderStickyHoverTablet,
+		borderStickyHoverMobile,
+		previewDevice,
+		'top'
+	);
+	const previewBorderStickyHoverLeft = css.render_border(
+		borderStickyHover,
+		borderStickyHoverTablet,
+		borderStickyHoverMobile,
+		previewDevice,
+		'left'
+	);
+	const previewBorderStickyHoverRight = css.render_border(
+		borderStickyHover,
+		borderStickyHoverTablet,
+		borderStickyHoverMobile,
+		previewDevice,
+		'right'
+	);
+	const previewBorderStickyHoverBottom = css.render_border(
+		borderStickyHover,
+		borderStickyHoverTablet,
+		borderStickyHoverMobile,
+		previewDevice,
+		'bottom'
+	);
 
 	// Header font options
 	const previewFontSize = getPreviewSize(
@@ -423,7 +543,7 @@ export default function BackendStyles(props) {
 		getSpacingOptionOutput(previewBorderBottomLeftRadius, borderRadiusUnit)
 	);
 	//Transparent border
-	if (previewIsTransparent) {
+	if (previewIsTransparent == '1') {
 		css.add_property('border-top', previewBorderTransparentTop);
 		css.add_property('border-right', previewBorderTransparentRight);
 		css.add_property('border-bottom', previewBorderTransparentBottom);
@@ -443,6 +563,29 @@ export default function BackendStyles(props) {
 		css.add_property(
 			'border-bottom-left-radius',
 			getSpacingOptionOutput(previewBorderBottomLeftRadiusTransparent, borderRadiusTransparentUnit)
+		);
+	}
+	//Sticky border
+	if (previewIsSticky == '1') {
+		css.add_property('border-top', previewBorderStickyTop);
+		css.add_property('border-right', previewBorderStickyRight);
+		css.add_property('border-bottom', previewBorderStickyBottom);
+		css.add_property('border-left', previewBorderStickyLeft);
+		css.add_property(
+			'border-top-left-radius',
+			getSpacingOptionOutput(previewBorderTopLeftRadiusSticky, borderRadiusStickyUnit)
+		);
+		css.add_property(
+			'border-top-right-radius',
+			getSpacingOptionOutput(previewBorderTopRightRadiusSticky, borderRadiusStickyUnit)
+		);
+		css.add_property(
+			'border-bottom-right-radius',
+			getSpacingOptionOutput(previewBorderBottomRightRadiusSticky, borderRadiusStickyUnit)
+		);
+		css.add_property(
+			'border-bottom-left-radius',
+			getSpacingOptionOutput(previewBorderBottomLeftRadiusSticky, borderRadiusStickyUnit)
 		);
 	}
 	css.add_property('min-height', getSpacingOptionOutput(previewHeight, heightUnit));
@@ -503,7 +646,7 @@ export default function BackendStyles(props) {
 	);
 
 	//Transparent hover border
-	if (previewIsTransparent) {
+	if (previewIsTransparent == '1') {
 		css.add_property('border-top', previewBorderTransparentHoverTop);
 		css.add_property('border-right', previewBorderTransparentHoverRight);
 		css.add_property('border-bottom', previewBorderTransparentHoverBottom);
@@ -524,6 +667,31 @@ export default function BackendStyles(props) {
 		css.add_property(
 			'border-bottom-left-radius',
 			getSpacingOptionOutput(previewborderHoverBottomLeftRadiusTransparent, borderRadiusTransparentHoverUnit)
+		);
+	}
+
+	//Sticky hover border
+	if (previewIsSticky == '1') {
+		css.add_property('border-top', previewBorderStickyHoverTop);
+		css.add_property('border-right', previewBorderStickyHoverRight);
+		css.add_property('border-bottom', previewBorderStickyHoverBottom);
+		css.add_property('border-left', previewBorderStickyHoverLeft);
+
+		css.add_property(
+			'border-top-left-radius',
+			getSpacingOptionOutput(previewborderHoverTopLeftRadiusSticky, borderRadiusStickyHoverUnit)
+		);
+		css.add_property(
+			'border-top-right-radius',
+			getSpacingOptionOutput(previewborderHoverTopRightRadiusSticky, borderRadiusStickyHoverUnit)
+		);
+		css.add_property(
+			'border-bottom-right-radius',
+			getSpacingOptionOutput(previewborderHoverBottomRightRadiusSticky, borderRadiusStickyHoverUnit)
+		);
+		css.add_property(
+			'border-bottom-left-radius',
+			getSpacingOptionOutput(previewborderHoverBottomLeftRadiusSticky, borderRadiusStickyHoverUnit)
 		);
 	}
 

@@ -521,6 +521,178 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'type'    => 'string',
 			),
 			array(
+				'key' => '_kad_header_borderSticky',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
+					),
+				),
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
+				),
+			),
+			array(
+				'key' => '_kad_header_borderStickyTablet',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
+					),
+				),
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
+				),
+			),
+			array(
+				'key' => '_kad_header_borderStickyMobile',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
+					),
+				),
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
+				),
+			),
+			array(
+				'key' => '_kad_header_borderStickyHover',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
+					),
+				),
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
+				),
+			),
+			array(
+				'key' => '_kad_header_borderStickyHoverTablet',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
+					),
+				),
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
+				),
+			),
+			array(
+				'key' => '_kad_header_borderStickyHoverMobile',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
+					),
+				),
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
+				),
+			),
+			array(
+				'key'           => '_kad_header_borderRadiusSticky',
+				'default'       => array( 0, 0, 0, 0 ),
+				'type'          => 'array',
+				'children_type' => 'integer',
+			),
+			array(
+				'key'           => '_kad_header_borderRadiusStickyTablet',
+				'default'       => array( 0, 0, 0, 0 ),
+				'type'          => 'array',
+				'children_type' => 'integer',
+			),
+			array(
+				'key'           => '_kad_header_borderRadiusStickyMobile',
+				'default'       => array( 0, 0, 0, 0 ),
+				'type'          => 'array',
+				'children_type' => 'integer',
+			),
+			array(
+				'key'     => '_kad_header_borderRadiusStickyUnit',
+				'default' => 'px',
+				'type'    => 'string',
+			),
+			array(
+				'key'           => '_kad_header_borderRadiusStickyHover',
+				'default'       => array( 0, 0, 0, 0 ),
+				'type'          => 'array',
+				'children_type' => 'integer',
+			),
+			array(
+				'key'           => '_kad_header_borderRadiusStickyHoverTablet',
+				'default'       => array( 0, 0, 0, 0 ),
+				'type'          => 'array',
+				'children_type' => 'integer',
+			),
+			array(
+				'key'           => '_kad_header_borderRadiusStickyHoverMobile',
+				'default'       => array( 0, 0, 0, 0 ),
+				'type'          => 'array',
+				'children_type' => 'integer',
+			),
+			array(
+				'key'     => '_kad_header_borderRadiusStickyHoverUnit',
+				'default' => 'px',
+				'type'    => 'string',
+			),
+			array(
 				'key' => '_kad_header_background',
 				'type'          => 'object',
 				'default'       => array(

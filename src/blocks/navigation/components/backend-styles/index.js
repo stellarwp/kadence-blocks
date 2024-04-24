@@ -83,6 +83,24 @@ export default function BackendStyles(props) {
 		backgroundTransparentMobile,
 		backgroundTransparentHoverMobile,
 		backgroundTransparentActiveMobile,
+		linkColorSticky,
+		linkColorStickyHover,
+		linkColorStickyActive,
+		linkColorStickyTablet,
+		linkColorStickyHoverTablet,
+		linkColorStickyActiveTablet,
+		linkColorStickyMobile,
+		linkColorStickyHoverMobile,
+		linkColorStickyActiveMobile,
+		backgroundSticky,
+		backgroundStickyHover,
+		backgroundStickyActive,
+		backgroundStickyTablet,
+		backgroundStickyHoverTablet,
+		backgroundStickyActiveTablet,
+		backgroundStickyMobile,
+		backgroundStickyHoverMobile,
+		backgroundStickyActiveMobile,
 		typography,
 		dropdownTypography,
 		collapseSubMenus,
@@ -96,6 +114,9 @@ export default function BackendStyles(props) {
 		transparentDivider,
 		transparentDividerTablet,
 		transparentDividerMobile,
+		stickyDivider,
+		stickyDividerTablet,
+		stickyDividerMobile,
 		dropdownWidth,
 		dropdownWidthTablet,
 		dropdownWidthMobile,
@@ -235,6 +256,42 @@ export default function BackendStyles(props) {
 		backgroundTransparentActiveTablet,
 		backgroundTransparentActiveMobile
 	);
+	const previewLinkColorSticky = getPreviewSize(
+		previewDevice,
+		linkColorSticky,
+		linkColorStickyTablet,
+		linkColorStickyMobile
+	);
+	const previewBackgroundSticky = getPreviewSize(
+		previewDevice,
+		backgroundSticky,
+		backgroundStickyTablet,
+		backgroundStickyMobile
+	);
+	const previewLinkColorStickyHover = getPreviewSize(
+		previewDevice,
+		linkColorStickyHover,
+		linkColorStickyHoverTablet,
+		linkColorStickyHoverMobile
+	);
+	const previewBackgroundStickyHover = getPreviewSize(
+		previewDevice,
+		backgroundStickyHover,
+		backgroundStickyHoverTablet,
+		backgroundStickyHoverMobile
+	);
+	const previewLinkColorStickyActive = getPreviewSize(
+		previewDevice,
+		linkColorStickyActive,
+		linkColorStickyActiveTablet,
+		linkColorStickyActiveMobile
+	);
+	const previewBackgroundStickyActive = getPreviewSize(
+		previewDevice,
+		backgroundStickyActive,
+		backgroundStickyActiveTablet,
+		backgroundStickyActiveMobile
+	);
 	const previewDropdownVerticalSpacing = getPreviewSize(
 		previewDevice,
 		dropdownVerticalSpacing,
@@ -254,6 +311,13 @@ export default function BackendStyles(props) {
 		transparentDivider,
 		transparentDividerTablet,
 		transparentDividerMobile,
+		previewDevice,
+		'bottom'
+	);
+	const stickyDividerValue = css.render_border(
+		stickyDivider,
+		stickyDividerTablet,
+		stickyDividerMobile,
 		previewDevice,
 		'bottom'
 	);
@@ -304,6 +368,10 @@ export default function BackendStyles(props) {
 		css.add_property('color', css.render_color(previewLinkColorTransparent));
 		css.add_property('background', css.render_color(previewBackgroundTransparent));
 	}
+	if (context?.['kadence/headerIsSticky'] == '1') {
+		css.add_property('color', css.render_color(previewLinkColorSticky));
+		css.add_property('background', css.render_color(previewBackgroundSticky));
+	}
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap:hover > a, .wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap:hover`
 	);
@@ -312,6 +380,10 @@ export default function BackendStyles(props) {
 	if (context?.['kadence/headerIsTransparent'] == '1') {
 		css.add_property('color', css.render_color(previewLinkColorTransparentHover));
 		css.add_property('background', css.render_color(previewBackgroundTransparentHover));
+	}
+	if (context?.['kadence/headerIsSticky'] == '1') {
+		css.add_property('color', css.render_color(previewLinkColorStickyHover));
+		css.add_property('background', css.render_color(previewBackgroundStickyHover));
 	}
 	if (previewParentActive) {
 		css.set_selector(
@@ -335,6 +407,10 @@ export default function BackendStyles(props) {
 	if (context?.['kadence/headerIsTransparent'] == '1') {
 		css.add_property('color', css.render_color(previewLinkColorTransparentActive));
 		css.add_property('background', css.render_color(previewBackgroundTransparentActive));
+	}
+	if (context?.['kadence/headerIsSticky'] == '1') {
+		css.add_property('color', css.render_color(previewLinkColorStickyActive));
+		css.add_property('background', css.render_color(previewBackgroundStickyActive));
 	}
 
 	css.set_selector(
@@ -392,12 +468,18 @@ export default function BackendStyles(props) {
 		if (context?.['kadence/headerIsTransparent'] == '1') {
 			css.add_property('border-bottom', transparentDividerValue);
 		}
+		if (context?.['kadence/headerIsSticky'] == '1') {
+			css.add_property('border-bottom', stickyDividerValue);
+		}
 		css.set_selector(
 			`.wp-block-kadence-navigation${uniqueID} .navigation:not(.drawer-navigation-parent-toggle-true) ul li .link-drop-wrap button`
 		);
 		css.add_property('border-left', dividerValue);
 		if (context?.['kadence/headerIsTransparent'] == '1') {
 			css.add_property('border-left', transparentDividerValue);
+		}
+		if (context?.['kadence/headerIsSticky'] == '1') {
+			css.add_property('border-left', stickyDividerValue);
 		}
 	} else {
 		css.set_selector(
@@ -406,6 +488,9 @@ export default function BackendStyles(props) {
 		css.add_property('border-right', dividerValue);
 		if (context?.['kadence/headerIsTransparent'] == '1') {
 			css.add_property('border-right', transparentDividerValue);
+		}
+		if (context?.['kadence/headerIsSticky'] == '1') {
+			css.add_property('border-right', stickyDividerValue);
 		}
 	}
 	css.set_selector(`.wp-block-kadence-navigation${uniqueID} > .navigation > .menu-container > .menu`);

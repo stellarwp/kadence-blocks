@@ -220,6 +220,17 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorTransparentActive'] ) );
 		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundTransparentActive'] ) );
 
+		// Styles For Links in Sticky Header.
+		$css->set_selector( '.item-is-stuck .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a, .item-is-stuck .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap' );
+		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorSticky'] ), $sized_attributes['linkColorSticky'] );
+		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundSticky'] ) );
+		$css->set_selector( '.item-is-stuck .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap:hover > a, .item-is-stuck .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap:hover' );
+		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorStickyHover'] ) );
+		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundStickyHover'] ) );
+		$css->set_selector( '.item-is-stuck .wp-block-kadence-navigation .navigation .menu-container > ul > li.menu-item.current-menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a, .item-is-stuck .wp-block-kadence-navigation .navigation .menu-container > ul > li.menu-item.current-menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap' );
+		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorStickyActive'] ) );
+		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundStickyActive'] ) );
+
 		// Dropdown logic from theme Styles Component.
 		// Dropdown.
 		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container ul .wp-block-kadence-navigation-link' . $unique_id . ' ul.sub-menu, .wp-block-kadence-navigation .navigation .menu-container ul .wp-block-kadence-navigation-link' . $unique_id . ' ul.submenu' );

@@ -375,6 +375,78 @@
 			"type": "string",
 			"default": ""
 		},
+		"linkColorSticky": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorStickyHover": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorStickyActive": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorStickyTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorStickyHoverTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorStickyActiveTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorStickyMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorStickyHoverMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"linkColorStickyActiveMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundSticky": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundStickyHover": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundStickyActive": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundStickyTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundStickyHoverTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundStickyActiveTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundStickyMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundStickyHoverMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundStickyActiveMobile": {
+			"type": "string",
+			"default": ""
+		},
 		"labelBackground": {
 			"type": "string",
 			"default": ""

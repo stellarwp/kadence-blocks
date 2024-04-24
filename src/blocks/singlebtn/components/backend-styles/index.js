@@ -80,6 +80,32 @@ export default function BackendStyles(props) {
 		shadowTransparent,
 		displayHoverShadowTransparent,
 		shadowTransparentHover,
+		colorSticky,
+		colorStickyHover,
+		backgroundSticky,
+		backgroundStickyType,
+		gradientSticky,
+		backgroundStickyHover,
+		backgroundStickyHoverType,
+		gradientStickyHover,
+		borderStickyStyle,
+		tabletBorderStickyStyle,
+		mobileBorderStickyStyle,
+		borderStickyHoverStyle,
+		tabletBorderStickyHoverStyle,
+		mobileBorderStickyHoverStyle,
+		borderStickyRadius,
+		tabletBorderStickyRadius,
+		mobileBorderStickyRadius,
+		borderStickyRadiusUnit,
+		borderStickyHoverRadius,
+		tabletBorderStickyHoverRadius,
+		mobileBorderStickyHoverRadius,
+		borderStickyHoverRadiusUnit,
+		displayShadowSticky,
+		shadowSticky,
+		displayHoverShadowSticky,
+		shadowStickyHover,
 	} = attributes;
 
 	const css = new KadenceBlocksCSS();
@@ -378,6 +404,117 @@ export default function BackendStyles(props) {
 		undefined !== mobileBorderTransparentHoverRadius ? mobileBorderTransparentHoverRadius[3] : ''
 	);
 
+	const previewRadiusStickyTop = getPreviewSize(
+		previewDevice,
+		undefined !== borderStickyRadius ? borderStickyRadius[0] : '',
+		undefined !== tabletBorderStickyRadius ? tabletBorderStickyRadius[0] : '',
+		undefined !== mobileBorderStickyRadius ? mobileBorderStickyRadius[0] : ''
+	);
+	const previewRadiusStickyRight = getPreviewSize(
+		previewDevice,
+		undefined !== borderStickyRadius ? borderStickyRadius[1] : '',
+		undefined !== tabletBorderStickyRadius ? tabletBorderStickyRadius[1] : '',
+		undefined !== mobileBorderStickyRadius ? mobileBorderStickyRadius[1] : ''
+	);
+	const previewRadiusStickyBottom = getPreviewSize(
+		previewDevice,
+		undefined !== borderStickyRadius ? borderStickyRadius[2] : '',
+		undefined !== tabletBorderStickyRadius ? tabletBorderStickyRadius[2] : '',
+		undefined !== mobileBorderStickyRadius ? mobileBorderStickyRadius[2] : ''
+	);
+	const previewRadiusStickyLeft = getPreviewSize(
+		previewDevice,
+		undefined !== borderStickyRadius ? borderStickyRadius[3] : '',
+		undefined !== tabletBorderStickyRadius ? tabletBorderStickyRadius[3] : '',
+		undefined !== mobileBorderStickyRadius ? mobileBorderStickyRadius[3] : ''
+	);
+	const previewBorderStickyTopStyle = getBorderStyle(
+		previewDevice,
+		'top',
+		borderStickyStyle,
+		tabletBorderStickyStyle,
+		mobileBorderStickyStyle
+	);
+	const previewBorderStickyRightStyle = getBorderStyle(
+		previewDevice,
+		'right',
+		borderStickyStyle,
+		tabletBorderStickyStyle,
+		mobileBorderStickyStyle
+	);
+	const previewBorderStickyBottomStyle = getBorderStyle(
+		previewDevice,
+		'bottom',
+		borderStickyStyle,
+		tabletBorderStickyStyle,
+		mobileBorderStickyStyle
+	);
+	const previewBorderStickyLeftStyle = getBorderStyle(
+		previewDevice,
+		'left',
+		borderStickyStyle,
+		tabletBorderStickyStyle,
+		mobileBorderStickyStyle
+	);
+	const inheritBorderSticky = [borderStickyStyle, tabletBorderStickyStyle, mobileBorderStickyStyle];
+	const previewBorderStickyHoverTopStyle = getBorderStyle(
+		previewDevice,
+		'top',
+		borderStickyHoverStyle,
+		tabletBorderStickyHoverStyle,
+		mobileBorderStickyHoverStyle,
+		inheritBorderSticky
+	);
+	const previewBorderStickyHoverRightStyle = getBorderStyle(
+		previewDevice,
+		'right',
+		borderStickyHoverStyle,
+		tabletBorderStickyHoverStyle,
+		mobileBorderStickyHoverStyle,
+		inheritBorderSticky
+	);
+	const previewBorderStickyHoverBottomStyle = getBorderStyle(
+		previewDevice,
+		'bottom',
+		borderStickyHoverStyle,
+		tabletBorderStickyHoverStyle,
+		mobileBorderStickyHoverStyle,
+		inheritBorderSticky
+	);
+	const previewBorderStickyHoverLeftStyle = getBorderStyle(
+		previewDevice,
+		'left',
+		borderStickyHoverStyle,
+		tabletBorderStickyHoverStyle,
+		mobileBorderStickyHoverStyle,
+		inheritBorderSticky
+	);
+
+	const previewHoverRadiusStickyTop = getPreviewSize(
+		previewDevice,
+		undefined !== borderStickyHoverRadius ? borderStickyHoverRadius[0] : '',
+		undefined !== tabletBorderStickyHoverRadius ? tabletBorderStickyHoverRadius[0] : '',
+		undefined !== mobileBorderStickyHoverRadius ? mobileBorderStickyHoverRadius[0] : ''
+	);
+	const previewHoverRadiusStickyRight = getPreviewSize(
+		previewDevice,
+		undefined !== borderStickyHoverRadius ? borderStickyHoverRadius[1] : '',
+		undefined !== tabletBorderStickyHoverRadius ? tabletBorderStickyHoverRadius[1] : '',
+		undefined !== mobileBorderStickyHoverRadius ? mobileBorderStickyHoverRadius[1] : ''
+	);
+	const previewHoverRadiusStickyBottom = getPreviewSize(
+		previewDevice,
+		undefined !== borderStickyHoverRadius ? borderStickyHoverRadius[2] : '',
+		undefined !== tabletBorderStickyHoverRadius ? tabletBorderStickyHoverRadius[2] : '',
+		undefined !== mobileBorderStickyHoverRadius ? mobileBorderStickyHoverRadius[2] : ''
+	);
+	const previewHoverRadiusStickyLeft = getPreviewSize(
+		previewDevice,
+		undefined !== borderStickyHoverRadius ? borderStickyHoverRadius[3] : '',
+		undefined !== tabletBorderStickyHoverRadius ? tabletBorderStickyHoverRadius[3] : '',
+		undefined !== mobileBorderStickyHoverRadius ? mobileBorderStickyHoverRadius[3] : ''
+	);
+
 	const previewTypographyCSS = typographyStyle(
 		typography,
 		`.editor-styles-wrapper .wp-block-kadence-advancedbtn .kb-single-btn-${uniqueID} .kt-button-${uniqueID}`,
@@ -399,6 +536,16 @@ export default function BackendStyles(props) {
 			'transparent' === backgroundTransparent || undefined === backgroundTransparent
 				? undefined
 				: KadenceColorOutput(backgroundTransparent);
+	}
+
+	let btnbgSticky;
+	if (undefined !== backgroundStickyType && 'gradient' === backgroundStickyType) {
+		btnbgSticky = gradientSticky;
+	} else {
+		btnbgSticky =
+			'transparent' === backgroundSticky || undefined === backgroundSticky
+				? undefined
+				: KadenceColorOutput(backgroundSticky);
 	}
 
 	let btnRad = '0';
@@ -512,6 +659,62 @@ export default function BackendStyles(props) {
 		}`;
 		btnRadTransparent = undefined !== borderTransparentRadius ? borderTransparentRadius : '3';
 		btnBoxTransparent = 'none';
+	}
+
+	let btnRadSticky = '0';
+	let btnBoxSticky = '';
+	let btnBox2Sticky = '';
+	const btnbgStickyHover =
+		'gradient' === backgroundStickyHoverType ? gradientStickyHover : KadenceColorOutput(backgroundStickyHover);
+	if (
+		undefined !== displayHoverShadowSticky &&
+		displayHoverShadowSticky &&
+		undefined !== shadowStickyHover?.[0] &&
+		undefined !== shadowStickyHover?.[0].inset &&
+		false === shadowStickyHover?.[0].inset
+	) {
+		btnBoxSticky = `${
+			(undefined !== shadowStickyHover?.[0].inset && shadowStickyHover[0].inset ? 'inset ' : '') +
+			(undefined !== shadowStickyHover?.[0].hOffset ? shadowStickyHover[0].hOffset : 0) +
+			'px ' +
+			(undefined !== shadowStickyHover?.[0].vOffset ? shadowStickyHover[0].vOffset : 0) +
+			'px ' +
+			(undefined !== shadowStickyHover?.[0].blur ? shadowStickyHover[0].blur : 14) +
+			'px ' +
+			(undefined !== shadowStickyHover?.[0].spread ? shadowStickyHover[0].spread : 0) +
+			'px ' +
+			KadenceColorOutput(
+				undefined !== shadowStickyHover?.[0].color ? shadowStickyHover[0].color : '#000000',
+				undefined !== shadowStickyHover?.[0].opacity ? shadowStickyHover[0].opacity : 1
+			)
+		}`;
+		btnBox2Sticky = 'none';
+		btnRadSticky = '0';
+	}
+	if (
+		undefined !== displayHoverShadowSticky &&
+		displayHoverShadowSticky &&
+		undefined !== shadowStickyHover?.[0] &&
+		undefined !== shadowStickyHover?.[0].inset &&
+		true === shadowStickyHover?.[0].inset
+	) {
+		btnBox2Sticky = `${
+			(undefined !== shadowStickyHover?.[0].inset && shadowStickyHover[0].inset ? 'inset ' : '') +
+			(undefined !== shadowStickyHover?.[0].hOffset ? shadowStickyHover[0].hOffset : 0) +
+			'px ' +
+			(undefined !== shadowStickyHover?.[0].vOffset ? shadowStickyHover[0].vOffset : 0) +
+			'px ' +
+			(undefined !== shadowStickyHover?.[0].blur ? shadowStickyHover[0].blur : 14) +
+			'px ' +
+			(undefined !== shadowStickyHover?.[0].spread ? shadowStickyHover[0].spread : 0) +
+			'px ' +
+			KadenceColorOutput(
+				undefined !== shadowStickyHover?.[0].color ? shadowStickyHover[0].color : '#000000',
+				undefined !== shadowStickyHover?.[0].opacity ? shadowStickyHover[0].opacity : 1
+			)
+		}`;
+		btnRadSticky = undefined !== borderStickyRadius ? borderStickyRadius : '3';
+		btnBoxSticky = 'none';
 	}
 
 	css.add_raw_styles(previewTypographyCSS);
@@ -755,6 +958,113 @@ export default function BackendStyles(props) {
 		}
 		css.add_property('box-shadow', btnBoxTransparent);
 		css.add_property('color', css.render_color(colorTransparentHover));
+	}
+
+	//sticky styles
+	if (context?.['kadence/headerIsSticky'] == '1') {
+		//standard sticky styles
+		css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}`);
+		if (previewBorderStickyTopStyle) {
+			css.add_property('border-top', previewBorderStickyTopStyle);
+		}
+		if (previewBorderStickyRightStyle) {
+			css.add_property('border-right', previewBorderStickyRightStyle);
+		}
+		if (previewBorderStickyLeftStyle) {
+			css.add_property('border-left', previewBorderStickyLeftStyle);
+		}
+		if (previewBorderStickyBottomStyle) {
+			css.add_property('border-bottom', previewBorderStickyBottomStyle);
+		}
+		if ('' !== previewRadiusStickyTop) {
+			css.add_property(
+				'border-top-left-radius',
+				previewRadiusStickyTop + (borderStickyRadiusUnit ? borderStickyRadiusUnit : 'px')
+			);
+		}
+		if ('' !== previewRadiusStickyRight) {
+			css.add_property(
+				'border-top-right-radius',
+				previewRadiusStickyRight + (borderStickyRadiusUnit ? borderStickyRadiusUnit : 'px')
+			);
+		}
+		if ('' !== previewRadiusStickyLeft) {
+			css.add_property(
+				'border-bottom-left-radius',
+				previewRadiusStickyLeft + (borderStickyRadiusUnit ? borderStickyRadiusUnit : 'px')
+			);
+		}
+		if ('' !== previewRadiusStickyBottom) {
+			css.add_property(
+				'border-bottom-right-radius',
+				previewRadiusStickyBottom + (borderStickyRadiusUnit ? borderStickyRadiusUnit : 'px')
+			);
+		}
+		css.add_property(
+			'box-shadow',
+			undefined !== displayShadowSticky &&
+				displayShadowSticky &&
+				undefined !== shadowSticky &&
+				undefined !== shadowSticky[0] &&
+				undefined !== shadowSticky[0].color
+				? (undefined !== shadowSticky[0].inset && shadowSticky[0].inset ? 'inset ' : '') +
+						(undefined !== shadowSticky[0].hOffset ? shadowSticky[0].hOffset : 0) +
+						'px ' +
+						(undefined !== shadowSticky[0].vOffset ? shadowSticky[0].vOffset : 0) +
+						'px ' +
+						(undefined !== shadowSticky[0].blur ? shadowSticky[0].blur : 14) +
+						'px ' +
+						(undefined !== shadowSticky[0].spread ? shadowSticky[0].spread : 0) +
+						'px ' +
+						KadenceColorOutput(
+							undefined !== shadowSticky[0].color ? shadowSticky[0].color : '#000000',
+							undefined !== shadowSticky[0].opacity ? shadowSticky[0].opacity : 1
+						)
+				: undefined
+		);
+		css.add_property('color', css.render_color(colorSticky));
+		css.add_property('background', btnbgSticky);
+
+		//hover styles
+		css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}:hover`);
+		if (previewBorderStickyHoverTopStyle) {
+			css.add_property('border-top', previewBorderStickyHoverTopStyle);
+		}
+		if (previewBorderStickyHoverRightStyle) {
+			css.add_property('border-right', previewBorderStickyHoverRightStyle);
+		}
+		if (previewBorderStickyHoverLeftStyle) {
+			css.add_property('border-left', previewBorderStickyHoverLeftStyle);
+		}
+		if (previewBorderStickyHoverBottomStyle) {
+			css.add_property('border-bottom', previewBorderStickyHoverBottomStyle);
+		}
+		if ('' !== previewHoverRadiusStickyTop) {
+			css.add_property(
+				'border-top-left-radius',
+				previewHoverRadiusStickyTop + (borderStickyHoverRadiusUnit ? borderStickyHoverRadiusUnit : 'px')
+			);
+		}
+		if ('' !== previewHoverRadiusStickyRight) {
+			css.add_property(
+				'border-top-right-radius',
+				previewHoverRadiusStickyRight + (borderStickyHoverRadiusUnit ? borderStickyHoverRadiusUnit : 'px')
+			);
+		}
+		if ('' !== previewHoverRadiusStickyLeft) {
+			css.add_property(
+				'border-bottom-left-radius',
+				previewHoverRadiusStickyLeft + (borderStickyHoverRadiusUnit ? borderStickyHoverRadiusUnit : 'px')
+			);
+		}
+		if ('' !== previewHoverRadiusStickyBottom) {
+			css.add_property(
+				'border-bottom-right-radius',
+				previewHoverRadiusStickyBottom + (borderStickyHoverRadiusUnit ? borderStickyHoverRadiusUnit : 'px')
+			);
+		}
+		css.add_property('box-shadow', btnBoxSticky);
+		css.add_property('color', css.render_color(colorStickyHover));
 	}
 
 	//icon styles

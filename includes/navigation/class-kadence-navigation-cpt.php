@@ -614,6 +614,96 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'default' => '',
 			),
 			array(
+				'key'     => '_kad_navigation_linkColorSticky',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_linkColorStickyHover',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_linkColorStickyActive',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_linkColorStickyTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_linkColorStickyHoverTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_linkColorStickyActiveTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_linkColorStickyMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_linkColorStickyHoverMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_linkColorStickyActiveMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundSticky',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundStickyHover',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundStickyActive',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundStickyTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundStickyHoverTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundStickyActiveTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundStickyMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundStickyHoverMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundStickyActiveMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
 				'key'     => '_kad_navigation_divider',
 				'type' => 'array',
 				'children_type' => 'object',
@@ -783,6 +873,69 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 			),
 			array(
 				'key'     => '_kad_navigation_transparentDividerMobile',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top' => array( '', '', '' ),
+						'right' => array( '', '', '' ),
+						'bottom' => array( '', '', '' ),
+						'left' => array( '', '', '' ),
+						'unit' => 'px',
+					),
+				),
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
+				),
+			),
+			array(
+				'key'     => '_kad_navigation_stickyDivider',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top' => array( '', '', '' ),
+						'right' => array( '', '', '' ),
+						'bottom' => array( '', '', '' ),
+						'left' => array( '', '', '' ),
+						'unit' => 'px',
+					),
+				),
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
+				),
+			),
+			array(
+				'key'     => '_kad_navigation_stickyDividerTablet',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top' => array( '', '', '' ),
+						'right' => array( '', '', '' ),
+						'bottom' => array( '', '', '' ),
+						'left' => array( '', '', '' ),
+						'unit' => 'px',
+					),
+				),
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
+				),
+			),
+			array(
+				'key'     => '_kad_navigation_stickyDividerMobile',
 				'type' => 'array',
 				'children_type' => 'object',
 				'default' => array(

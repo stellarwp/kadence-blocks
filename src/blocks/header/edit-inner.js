@@ -308,6 +308,22 @@ export function EditInner(props) {
 		borderRadiusTransparentHoverTablet: meta?._kad_header_borderRadiusTransparentHoverTablet,
 		borderRadiusTransparentHoverMobile: meta?._kad_header_borderRadiusTransparentHoverMobile,
 		borderRadiusTransparentHoverUnit: meta?._kad_header_borderRadiusTransparentHoverUnit,
+		borderSticky: meta?._kad_header_borderSticky,
+		borderStickyTablet: meta?._kad_header_borderStickyTablet,
+		borderStickyMobile: meta?._kad_header_borderStickyMobile,
+		borderStickyUnit: meta?._kad_header_borderStickyUnit,
+		borderStickyHover: meta?._kad_header_borderStickyHover,
+		borderStickyHoverTablet: meta?._kad_header_borderStickyHoverTablet,
+		borderStickyHoverMobile: meta?._kad_header_borderStickyHoverMobile,
+		borderStickyHoverUnit: meta?._kad_header_borderStickyHoverUnit,
+		borderRadiusSticky: meta?._kad_header_borderRadiusSticky,
+		borderRadiusStickyTablet: meta?._kad_header_borderRadiusStickyTablet,
+		borderRadiusStickyMobile: meta?._kad_header_borderRadiusStickyMobile,
+		borderRadiusStickyUnit: meta?._kad_header_borderRadiusStickyUnit,
+		borderRadiusStickyHover: meta?._kad_header_borderRadiusStickyHover,
+		borderRadiusStickyHoverTablet: meta?._kad_header_borderRadiusStickyHoverTablet,
+		borderRadiusStickyHoverMobile: meta?._kad_header_borderRadiusStickyHoverMobile,
+		borderRadiusStickyHoverUnit: meta?._kad_header_borderRadiusStickyHoverUnit,
 		flex: meta?._kad_header_flex,
 		className: meta?._kad_header_className,
 		anchor: meta?._kad_header_anchor,
@@ -375,6 +391,20 @@ export function EditInner(props) {
 		borderRadiusTransparentHoverTablet,
 		borderRadiusTransparentHoverMobile,
 		borderRadiusTransparentHoverUnit,
+		borderSticky,
+		borderStickyTablet,
+		borderStickyMobile,
+		borderStickyHover,
+		borderStickyHoverTablet,
+		borderStickyHoverMobile,
+		borderRadiusSticky,
+		borderRadiusStickyTablet,
+		borderRadiusStickyMobile,
+		borderRadiusStickyUnit,
+		borderRadiusStickyHover,
+		borderRadiusStickyHoverTablet,
+		borderRadiusStickyHoverMobile,
+		borderRadiusStickyHoverUnit,
 		flex,
 		className,
 		anchor,
@@ -1443,7 +1473,7 @@ export function EditInner(props) {
 								}
 							/>
 						</KadencePanelBody>
-						{previewIsTransparent && (
+						{previewIsTransparent == '1' && (
 							<KadencePanelBody
 								title={__('Transparent Border Settings', 'kadence-blocks')}
 								initialOpen={false}
@@ -1547,6 +1577,116 @@ export function EditInner(props) {
 												step={
 													borderRadiusTransparentHoverUnit === 'em' ||
 													borderRadiusTransparentHoverUnit === 'rem'
+														? 0.1
+														: 1
+												}
+												min={0}
+												isBorderRadius={true}
+												allowEmpty={true}
+											/>
+										</>
+									}
+								/>
+							</KadencePanelBody>
+						)}
+						{previewIsSticky == '1' && (
+							<KadencePanelBody
+								title={__('Sticky Border Settings', 'kadence-blocks')}
+								initialOpen={false}
+								panelName={'kb-header-border-sticky'}
+							>
+								<HoverToggleControl
+									normal={
+										<>
+											<ResponsiveBorderControl
+												label={__('Border', 'kadence-blocks')}
+												value={borderSticky}
+												tabletValue={borderStickyTablet}
+												mobileValue={borderStickyMobile}
+												onChange={(value) => {
+													setMetaAttribute(value, 'borderSticky');
+												}}
+												onChangeTablet={(value) =>
+													setMetaAttribute(value, 'borderStickyTablet')
+												}
+												onChangeMobile={(value) =>
+													setMetaAttribute(value, 'borderStickyMobile')
+												}
+											/>
+											<ResponsiveMeasurementControls
+												label={__('Border Radius', 'kadence-blocks')}
+												value={borderRadiusSticky}
+												tabletValue={borderRadiusStickyTablet}
+												mobileValue={borderRadiusStickyMobile}
+												onChange={(value) => setMetaAttribute(value, 'borderRadiusSticky')}
+												onChangeTablet={(value) =>
+													setMetaAttribute(value, 'borderRadiusStickyTablet')
+												}
+												onChangeMobile={(value) =>
+													setMetaAttribute(value, 'borderRadiusStickyMobile')
+												}
+												unit={borderRadiusStickyUnit}
+												units={['px', 'em', 'rem', '%']}
+												onUnit={(value) => setMetaAttribute(value, 'borderRadiusStickyUnit')}
+												max={
+													borderRadiusStickyUnit === 'em' || borderRadiusStickyUnit === 'rem'
+														? 24
+														: 500
+												}
+												step={
+													borderRadiusStickyUnit === 'em' || borderRadiusStickyUnit === 'rem'
+														? 0.1
+														: 1
+												}
+												min={0}
+												isBorderRadius={true}
+												allowEmpty={true}
+											/>
+										</>
+									}
+									hover={
+										<>
+											<ResponsiveBorderControl
+												label={__('Hover Border', 'kadence-blocks')}
+												value={borderStickyHover}
+												tabletValue={borderStickyHoverTablet}
+												mobileValue={borderStickyHoverMobile}
+												onChange={(value) => {
+													setMetaAttribute(value, 'borderStickyHover');
+												}}
+												onChangeTablet={(value) =>
+													setMetaAttribute(value, 'borderStickyHoverTablet')
+												}
+												onChangeMobile={(value) =>
+													setMetaAttribute(value, 'borderStickyHoverMobile')
+												}
+											/>
+											<ResponsiveMeasurementControls
+												label={__('Border Radius', 'kadence-blocks')}
+												value={borderRadiusStickyHover}
+												tabletValue={borderRadiusStickyHoverTablet}
+												mobileValue={borderRadiusStickyHoverMobile}
+												onChange={(value) => setMetaAttribute(value, 'borderRadiusStickyHover')}
+												onChangeTablet={(value) =>
+													setMetaAttribute(value, 'borderRadiusStickyHoverTablet')
+												}
+												onChangeMobile={(value) =>
+													setMetaAttribute(value, 'borderRadiusStickyHoverMobile')
+												}
+												unit={borderRadiusStickyHoverUnit}
+												units={['px', 'em', 'rem', '%']}
+												onUnit={(value) =>
+													setMetaAttribute(value, 'borderRadiusStickyHoverUnit')
+												}
+												max={
+													borderRadiusStickyHoverUnit === 'em' ||
+													borderRadiusStickyHoverUnit === 'rem'
+														? 24
+														: 500
+												}
+												step={
+													borderRadiusStickyHoverUnit === 'em' ||
+													borderRadiusStickyHoverUnit === 'rem'
 														? 0.1
 														: 1
 												}

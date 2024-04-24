@@ -94,6 +94,24 @@ export default function BackendStyles(props) {
 		backgroundTransparentMobile,
 		backgroundTransparentHoverMobile,
 		backgroundTransparentActiveMobile,
+		linkColorSticky,
+		linkColorStickyHover,
+		linkColorStickyActive,
+		linkColorStickyTablet,
+		linkColorStickyHoverTablet,
+		linkColorStickyActiveTablet,
+		linkColorStickyMobile,
+		linkColorStickyHoverMobile,
+		linkColorStickyActiveMobile,
+		backgroundSticky,
+		backgroundStickyHover,
+		backgroundStickyActive,
+		backgroundStickyTablet,
+		backgroundStickyHoverTablet,
+		backgroundStickyActiveTablet,
+		backgroundStickyMobile,
+		backgroundStickyHoverMobile,
+		backgroundStickyActiveMobile,
 		megaMenuWidth,
 		megaMenuCustomWidth,
 		megaMenuCustomWidthUnit,
@@ -175,6 +193,24 @@ export default function BackendStyles(props) {
 		linkColorTransparentActiveTablet,
 		linkColorTransparentActiveMobile
 	);
+	const previewLinkColorSticky = getPreviewSize(
+		previewDevice,
+		linkColorSticky,
+		linkColorStickyTablet,
+		linkColorStickyMobile
+	);
+	const previewLinkColorStickyHover = getPreviewSize(
+		previewDevice,
+		linkColorStickyHover,
+		linkColorStickyHoverTablet,
+		linkColorStickyHoverMobile
+	);
+	const previewLinkColorStickyActive = getPreviewSize(
+		previewDevice,
+		linkColorStickyActive,
+		linkColorStickyActiveTablet,
+		linkColorStickyActiveMobile
+	);
 
 	const previewBackground = getPreviewSize(previewDevice, background, backgroundTablet, backgroundMobile);
 	const previewBackgroundHover = getPreviewSize(
@@ -207,6 +243,24 @@ export default function BackendStyles(props) {
 		backgroundTransparentActive,
 		backgroundTransparentActiveTablet,
 		backgroundTransparentActiveMobile
+	);
+	const previewBackgroundSticky = getPreviewSize(
+		previewDevice,
+		backgroundSticky,
+		backgroundStickyTablet,
+		backgroundStickyMobile
+	);
+	const previewBackgroundStickyHover = getPreviewSize(
+		previewDevice,
+		backgroundStickyHover,
+		backgroundStickyHoverTablet,
+		backgroundStickyHoverMobile
+	);
+	const previewBackgroundStickyActive = getPreviewSize(
+		previewDevice,
+		backgroundStickyActive,
+		backgroundStickyActiveTablet,
+		backgroundStickyActiveMobile
 	);
 	const previewLabelColor = getPreviewSize(previewDevice, labelColor, labelColorTablet, labelColorMobile);
 	const previewLabelColorHover = getPreviewSize(
@@ -356,6 +410,10 @@ export default function BackendStyles(props) {
 		css.add_property('color', css.render_color(previewLinkColorTransparent));
 		css.add_property('background', css.render_color(previewBackgroundTransparent));
 	}
+	if (context?.['kadence/headerIsSticky'] == '1') {
+		css.add_property('color', css.render_color(previewLinkColorSticky));
+		css.add_property('background', css.render_color(previewBackgroundSticky));
+	}
 	css.set_selector(
 		`.wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap:hover > a, .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap:hover`
 	);
@@ -364,6 +422,10 @@ export default function BackendStyles(props) {
 	if (context?.['kadence/headerIsTransparent'] == '1') {
 		css.add_property('color', css.render_color(previewLinkColorTransparentHover));
 		css.add_property('background', css.render_color(previewBackgroundTransparentHover));
+	}
+	if (context?.['kadence/headerIsSticky'] == '1') {
+		css.add_property('color', css.render_color(previewLinkColorStickyHover));
+		css.add_property('background', css.render_color(previewBackgroundStickyHover));
 	}
 
 	css.set_selector(
@@ -375,6 +437,10 @@ export default function BackendStyles(props) {
 	if (context?.['kadence/headerIsTransparent'] == '1') {
 		css.add_property('color', css.render_color(previewLinkColorTransparentActive));
 		css.add_property('background', css.render_color(previewBackgroundTransparentActive));
+	}
+	if (context?.['kadence/headerIsSticky'] == '1') {
+		css.add_property('color', css.render_color(previewLinkColorStickyActive));
+		css.add_property('background', css.render_color(previewBackgroundStickyActive));
 	}
 
 	if (megaMenuWidth === 'custom') {

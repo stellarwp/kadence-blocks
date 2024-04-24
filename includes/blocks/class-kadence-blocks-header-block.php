@@ -125,6 +125,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( 'border-left', $css->render_border( $sized_attributes['border'], 'left' ) );
 		$css->add_property( 'border-right', $css->render_border( $sized_attributes['border'], 'right' ) );
 
+		//transparent border
 		if ( $sized_attributes['isTransparent'] == '1' ) {
 			$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['borderTransparent'], 'bottom' ) );
 			$css->add_property( 'border-top', $css->render_border( $sized_attributes['borderTransparent'], 'top' ) );
@@ -139,12 +140,31 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( 'border-left', $css->render_border( $sized_attributes['borderHover'], 'left' ) );
 		$css->add_property( 'border-right', $css->render_border( $sized_attributes['borderHover'], 'right' ) );
 
+		//transparent border hover
 		if ( $sized_attributes['isTransparent'] == '1' ) {
 			$css->add_property( 'top', '0px' );
 			$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['borderTransparentHover'], 'bottom' ) );
 			$css->add_property( 'border-top', $css->render_border( $sized_attributes['borderTransparentHover'], 'top' ) );
 			$css->add_property( 'border-left', $css->render_border( $sized_attributes['borderTransparentHover'], 'left' ) );
 			$css->add_property( 'border-right', $css->render_border( $sized_attributes['borderTransparentHover'], 'right' ) );
+		}
+
+		//sticky border
+		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > div.item-is-stuck' );
+		if ( $sized_attributes['isSticky'] == '1' ) {
+			$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['borderSticky'], 'bottom' ) );
+			$css->add_property( 'border-top', $css->render_border( $sized_attributes['borderSticky'], 'top' ) );
+			$css->add_property( 'border-left', $css->render_border( $sized_attributes['borderSticky'], 'left' ) );
+			$css->add_property( 'border-right', $css->render_border( $sized_attributes['borderSticky'], 'right' ) );
+		}
+		//sticky border hover
+		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > div.item-is-stuck:hover' );
+		if ( $sized_attributes['isSticky'] == '1' ) {
+			$css->add_property( 'top', '0px' );
+			$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['borderStickyHover'], 'bottom' ) );
+			$css->add_property( 'border-top', $css->render_border( $sized_attributes['borderStickyHover'], 'top' ) );
+			$css->add_property( 'border-left', $css->render_border( $sized_attributes['borderStickyHover'], 'left' ) );
+			$css->add_property( 'border-right', $css->render_border( $sized_attributes['borderStickyHover'], 'right' ) );
 		}
 	}
 

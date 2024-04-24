@@ -272,6 +272,51 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'box-shadow', '2px 2px 3px 0px rgba(0, 0, 0, 0.4)' );
 			}
 		}
+
+		//standard sticky styles
+		$css->set_selector( '.item-is-stuck .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button' );
+		$bg_type_sticky = ! empty( $attributes['backgroundStickyType'] ) ? $attributes['backgroundStickyType'] : 'normal';
+		$bg_hover_type_sticky = ! empty( $attributes['backgroundStickyHoverType'] ) ? $attributes['backgroundStickyHoverType'] : 'normal';
+		if ( ! empty( $attributes['colorSticky'] ) ) {
+			$css->add_property( 'color', $css->render_color( $attributes['colorSticky'] ) );
+		}
+		if ( 'normal' === $bg_type_sticky && ! empty( $attributes['backgroundSticky'] ) ) {
+			$css->add_property( 'background', $css->render_color( $attributes['backgroundSticky'] ) . ( 'gradient' === $bg_hover_type_sticky ? ' !important' : '' ) );
+		}
+		if ( 'gradient' === $bg_type_sticky && ! empty( $attributes['gradientSticky'] ) ) {
+			$css->add_property( 'background', $attributes['gradientSticky'] . ' !important' );
+		}
+		$css->render_measure_output( $attributes, 'borderStickyRadius', 'border-radius', array( 'unit_key' => 'borderStickyRadiusUnit' ) );
+		$css->render_border_styles( $attributes, 'borderStickyStyle', true );
+		if ( isset( $attributes['displayShadowSticky'] ) && true === $attributes['displayShadowSticky'] ) {
+			if ( isset( $attributes['shadowSticky'] ) && is_array( $attributes['shadowSticky'] ) && isset( $attributes['shadowSticky'][0] ) && is_array( $attributes['shadowSticky'][0] ) ) {
+				$css->add_property( 'box-shadow', ( isset( $attributes['shadowSticky'][0]['inset'] ) && true === $attributes['shadowSticky'][0]['inset'] ? 'inset ' : '' ) . ( isset( $attributes['shadowSticky'][0]['hOffset'] ) && is_numeric( $attributes['shadowSticky'][0]['hOffset'] ) ? $attributes['shadowSticky'][0]['hOffset'] : '0' ) . 'px ' . ( isset( $attributes['shadowSticky'][0]['vOffset'] ) && is_numeric( $attributes['shadowSticky'][0]['vOffset'] ) ? $attributes['shadowSticky'][0]['vOffset'] : '0' ) . 'px ' . ( isset( $attributes['shadowSticky'][0]['blur'] ) && is_numeric( $attributes['shadowSticky'][0]['blur'] ) ? $attributes['shadowSticky'][0]['blur'] : '14' ) . 'px ' . ( isset( $attributes['shadowSticky'][0]['spread'] ) && is_numeric( $attributes['shadowSticky'][0]['spread'] ) ? $attributes['shadowSticky'][0]['spread'] : '0' ) . 'px ' . $css->render_color( ( isset( $attributes['shadowSticky'][0]['color'] ) && ! empty( $attributes['shadowSticky'][0]['color'] ) ? $attributes['shadowSticky'][0]['color'] : '#000000' ), ( isset( $attributes['shadowSticky'][0]['opacity'] ) && is_numeric( $attributes['shadowSticky'][0]['opacity'] ) ? $attributes['shadowSticky'][0]['opacity'] : 0.2 ) ) );
+			} else {
+				$css->add_property( 'box-shadow', '1px 1px 2px 0px rgba(0, 0, 0, 0.2)' );
+			}
+		}
+
+		//hover sticky styles
+		$css->set_selector( '.item-is-stuck .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:hover' );
+		if ( ! empty( $attributes['colorStickyHover'] ) ) {
+			$css->add_property( 'color', $css->render_color( $attributes['colorStickyHover'] ) );
+		}
+		if ( 'gradient' !== $bg_type_sticky && 'normal' === $bg_hover_type_sticky && ! empty( $attributes['backgroundStickyHover'] ) ) {
+			$css->add_property( 'background', $css->render_color( $attributes['backgroundStickyHover'] ) );
+		}
+		$css->render_measure_output( $attributes, 'borderStickyHoverRadius', 'border-radius' );
+		$css->render_border_styles( $attributes, 'borderStickyHoverStyle', true );
+		if ( isset( $attributes['displayHoverShadowSticky'] ) && true === $attributes['displayHoverShadowSticky'] ) {
+			if ( ( 'gradient' === $bg_type_sticky || 'gradient' === $bg_hover_type_sticky ) && isset( $attributes['shadowStickyHover'][0]['inset'] ) && true === $attributes['shadowStickyHover'][0]['inset'] ) {
+				$css->add_property( 'box-shadow', '0px 0px 0px 0px rgba(0, 0, 0, 0)' );
+				$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
+			}
+			if ( isset( $attributes['shadowStickyHover'] ) && is_array( $attributes['shadowStickyHover'] ) && isset( $attributes['shadowStickyHover'][0] ) && is_array( $attributes['shadowStickyHover'][0] ) ) {
+				$css->add_property( 'box-shadow', ( isset( $attributes['shadowStickyHover'][0]['inset'] ) && true === $attributes['shadowStickyHover'][0]['inset'] ? 'inset ' : '' ) . ( isset( $attributes['shadowStickyHover'][0]['hOffset'] ) && is_numeric( $attributes['shadowStickyHover'][0]['hOffset'] ) ? $attributes['shadowStickyHover'][0]['hOffset'] : '0' ) . 'px ' . ( isset( $attributes['shadowStickyHover'][0]['vOffset'] ) && is_numeric( $attributes['shadowStickyHover'][0]['vOffset'] ) ? $attributes['shadowStickyHover'][0]['vOffset'] : '0' ) . 'px ' . ( isset( $attributes['shadowStickyHover'][0]['blur'] ) && is_numeric( $attributes['shadowStickyHover'][0]['blur'] ) ? $attributes['shadowStickyHover'][0]['blur'] : '14' ) . 'px ' . ( isset( $attributes['shadowStickyHover'][0]['spread'] ) && is_numeric( $attributes['shadowStickyHover'][0]['spread'] ) ? $attributes['shadowStickyHover'][0]['spread'] : '0' ) . 'px ' . $css->render_color( ( isset( $attributes['shadowStickyHover'][0]['color'] ) && ! empty( $attributes['shadowStickyHover'][0]['color'] ) ? $attributes['shadowStickyHover'][0]['color'] : '#000000' ), ( isset( $attributes['shadowStickyHover'][0]['opacity'] ) && is_numeric( $attributes['shadowStickyHover'][0]['opacity'] ) ? $attributes['shadowStickyHover'][0]['opacity'] : 0.2 ) ) );
+			} else {
+				$css->add_property( 'box-shadow', '2px 2px 3px 0px rgba(0, 0, 0, 0.4)' );
+			}
+		}
 	}
 
 	/**
