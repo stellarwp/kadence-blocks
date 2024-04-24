@@ -1,7 +1,7 @@
 import { KadenceBlocksCSS, getPreviewSize } from '@kadence/helpers';
 
 export default function BackendStyles(props) {
-	const { attributes, isSelected, previewDevice, metaAttributes } = props;
+	const { attributes, isSelected, previewDevice, metaAttributes, context } = props;
 
 	const { uniqueID } = attributes;
 
@@ -65,6 +65,24 @@ export default function BackendStyles(props) {
 		backgroundDropdownMobile,
 		backgroundDropdownHoverMobile,
 		backgroundDropdownActiveMobile,
+		linkColorTransparent,
+		linkColorTransparentHover,
+		linkColorTransparentActive,
+		linkColorTransparentTablet,
+		linkColorTransparentHoverTablet,
+		linkColorTransparentActiveTablet,
+		linkColorTransparentMobile,
+		linkColorTransparentHoverMobile,
+		linkColorTransparentActiveMobile,
+		backgroundTransparent,
+		backgroundTransparentHover,
+		backgroundTransparentActive,
+		backgroundTransparentTablet,
+		backgroundTransparentHoverTablet,
+		backgroundTransparentActiveTablet,
+		backgroundTransparentMobile,
+		backgroundTransparentHoverMobile,
+		backgroundTransparentActiveMobile,
 		typography,
 		dropdownTypography,
 		collapseSubMenus,
@@ -178,6 +196,42 @@ export default function BackendStyles(props) {
 		backgroundDropdownActiveTablet,
 		backgroundDropdownActiveMobile
 	);
+	const previewLinkColorTransparent = getPreviewSize(
+		previewDevice,
+		linkColorTransparent,
+		linkColorTransparentTablet,
+		linkColorTransparentMobile
+	);
+	const previewBackgroundTransparent = getPreviewSize(
+		previewDevice,
+		backgroundTransparent,
+		backgroundTransparentTablet,
+		backgroundTransparentMobile
+	);
+	const previewLinkColorTransparentHover = getPreviewSize(
+		previewDevice,
+		linkColorTransparentHover,
+		linkColorTransparentHoverTablet,
+		linkColorTransparentHoverMobile
+	);
+	const previewBackgroundTransparentHover = getPreviewSize(
+		previewDevice,
+		backgroundTransparentHover,
+		backgroundTransparentHoverTablet,
+		backgroundTransparentHoverMobile
+	);
+	const previewLinkColorTransparentActive = getPreviewSize(
+		previewDevice,
+		linkColorTransparentActive,
+		linkColorTransparentActiveTablet,
+		linkColorTransparentActiveMobile
+	);
+	const previewBackgroundTransparentActive = getPreviewSize(
+		previewDevice,
+		backgroundTransparentActive,
+		backgroundTransparentActiveTablet,
+		backgroundTransparentActiveMobile
+	);
 	const previewDivider = getPreviewSize(previewDevice, divider, dividerTablet, dividerMobile);
 	const previewDropdownDivider = getPreviewSize(
 		previewDevice,
@@ -243,11 +297,19 @@ export default function BackendStyles(props) {
 	);
 	css.add_property('color', css.render_color(previewLinkColor));
 	css.add_property('background', css.render_color(previewBackground));
+	if (context?.['kadence/headerIsTransparent'] == '1') {
+		css.add_property('color', css.render_color(previewLinkColorTransparent));
+		css.add_property('background', css.render_color(previewBackgroundTransparent));
+	}
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap:hover > a, .wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap:hover`
 	);
 	css.add_property('color', css.render_color(previewLinkColorHover));
 	css.add_property('background', css.render_color(previewBackgroundHover));
+	if (context?.['kadence/headerIsTransparent'] == '1') {
+		css.add_property('color', css.render_color(previewLinkColorTransparentHover));
+		css.add_property('background', css.render_color(previewBackgroundTransparentHover));
+	}
 	if (previewParentActive) {
 		css.set_selector(
 			`.wp-block-kadence-navigation${uniqueID} .navigation[class*="navigation-style-underline"] .menu-container.menu-container>ul>li.current-menu-ancestor>a:after`
@@ -267,6 +329,10 @@ export default function BackendStyles(props) {
 	}
 	css.add_property('color', css.render_color(previewLinkColorActive));
 	css.add_property('background', css.render_color(previewBackgroundActive));
+	if (context?.['kadence/headerIsTransparent'] == '1') {
+		css.add_property('color', css.render_color(previewLinkColorTransparentActive));
+		css.add_property('background', css.render_color(previewBackgroundTransparentActive));
+	}
 
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item .dropdown-navigation-toggle`

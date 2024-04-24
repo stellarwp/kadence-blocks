@@ -66,7 +66,7 @@ import BackendStyles from './components/backend-styles';
  */
 const ANCHOR_REGEX = /[\s#]/g;
 export function EditInner(props) {
-	const { attributes, setAttributes, clientId, direct, id, isSelected } = props;
+	const { attributes, setAttributes, clientId, direct, id, isSelected, context } = props;
 	const { uniqueID } = attributes;
 
 	const { previewDevice } = useSelect(
@@ -162,6 +162,24 @@ export function EditInner(props) {
 		backgroundDropdownMobile: meta?._kad_navigation_backgroundDropdownMobile,
 		backgroundDropdownHoverMobile: meta?._kad_navigation_backgroundDropdownHoverMobile,
 		backgroundDropdownActiveMobile: meta?._kad_navigation_backgroundDropdownActiveMobile,
+		linkColorTransparent: meta?._kad_navigation_linkColorTransparent,
+		linkColorTransparentHover: meta?._kad_navigation_linkColorTransparentHover,
+		linkColorTransparentActive: meta?._kad_navigation_linkColorTransparentActive,
+		linkColorTransparentTablet: meta?._kad_navigation_linkColorTransparentTablet,
+		linkColorTransparentHoverTablet: meta?._kad_navigation_linkColorTransparentHoverTablet,
+		linkColorTransparentActiveTablet: meta?._kad_navigation_linkColorTransparentActiveTablet,
+		linkColorTransparentMobile: meta?._kad_navigation_linkColorTransparentMobile,
+		linkColorTransparentHoveMobiler: meta?._kad_navigation_linkColorTransparentHoverMobile,
+		linkColorTransparentActiveMobile: meta?._kad_navigation_linkColorTransparentActiveMobile,
+		backgroundTransparent: meta?._kad_navigation_backgroundTransparent,
+		backgroundTransparentHover: meta?._kad_navigation_backgroundTransparentHover,
+		backgroundTransparentActive: meta?._kad_navigation_backgroundTransparentActive,
+		backgroundTransparentTablet: meta?._kad_navigation_backgroundTransparentTablet,
+		backgroundTransparentHoverTablet: meta?._kad_navigation_backgroundTransparentHoverTablet,
+		backgroundTransparentActiveTablet: meta?._kad_navigation_backgroundTransparentActiveTablet,
+		backgroundTransparentMobile: meta?._kad_navigation_backgroundTransparentMobile,
+		backgroundTransparentHoverMobile: meta?._kad_navigation_backgroundTransparentHoverMobile,
+		backgroundTransparentActiveMobile: meta?._kad_navigation_backgroundTransparentActiveMobile,
 		typography: meta?._kad_navigation_typography,
 		dropdownTypography: meta?._kad_navigation_dropdownTypography,
 		divider: meta?._kad_navigation_divider,
@@ -260,6 +278,24 @@ export function EditInner(props) {
 		backgroundDropdownMobile,
 		backgroundDropdownHoverMobile,
 		backgroundDropdownActiveMobile,
+		linkColorTransparent,
+		linkColorTransparentHover,
+		linkColorTransparentActive,
+		linkColorTransparentTablet,
+		linkColorTransparentHoverTablet,
+		linkColorTransparentActiveTablet,
+		linkColorTransparentMobile,
+		linkColorTransparentHoverMobile,
+		linkColorTransparentActiveMobile,
+		backgroundTransparent,
+		backgroundTransparentHover,
+		backgroundTransparentActive,
+		backgroundTransparentTablet,
+		backgroundTransparentHoverTablet,
+		backgroundTransparentActiveTablet,
+		backgroundTransparentMobile,
+		backgroundTransparentHoverMobile,
+		backgroundTransparentActiveMobile,
 		typography,
 		dropdownTypography,
 		divider,
@@ -748,6 +784,20 @@ export function EditInner(props) {
 								mobileChildren={styleColorControls('Mobile')}
 							></SmallResponsiveControl>
 						</KadencePanelBody>
+						{context?.['kadence/headerIsTransparent'] == '1' && (
+							<KadencePanelBody
+								title={__('Transparent Styles', 'kadence-blocks')}
+								initialOpen={false}
+								panelName={'kb-navigation-transparent-styles'}
+							>
+								<SmallResponsiveControl
+									label={'Colors'}
+									desktopChildren={styleColorControls('', 'Transparent')}
+									tabletChildren={styleColorControls('Tablet', 'Transparent')}
+									mobileChildren={styleColorControls('Mobile', 'Transparent')}
+								></SmallResponsiveControl>
+							</KadencePanelBody>
+						)}
 
 						<KadencePanelBody
 							title={__('Divider Settings', 'kadence-blocks')}
