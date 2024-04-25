@@ -545,24 +545,24 @@ export function EditInner(props) {
 									<KadenceBackgroundControl
 										label={__('Background Image', 'kadence-blocks')}
 										hasImage={
-											undefined === backgroundValue?.image?.url || '' === backgroundValue?.image?.url
+											undefined === backgroundValue.image || '' === backgroundValue.image
 												? false
 												: true
 										}
-										imageURL={undefined !== backgroundValue?.image?.url ? backgroundValue.image.url : ''}
-										imageID={undefined !== backgroundValue?.image?.imageID ? backgroundValue.image.imageID : ''}
+										imageURL={backgroundValue.image ? backgroundValue.image : ''}
+										imageID={backgroundValue.imageID}
 										imagePosition={
-											undefined !== backgroundValue?.image?.position ? backgroundValue.image.position : 'center center'
+											backgroundValue.position ? backgroundValue.position : 'center center'
 										}
-										imageSize={undefined !== backgroundValue?.image?.size ? backgroundValue.image.size : 'cover'}
-										imageRepeat={undefined != backgroundValue?.image?.repeat ? backgroundValue.image.repeat : 'no-repeat'}
+										imageSize={backgroundValue.size ? backgroundValue.size : 'cover'}
+										imageRepeat={backgroundValue.repeat ? backgroundValue.repeat : 'no-repeat'}
 										imageAttachment={
-											backgroundValue?.image?.attachment ? backgroundValue.image.attachment : 'scroll'
+											backgroundValue.attachment ? backgroundValue.attachment : 'scroll'
 										}
 										imageAttachmentParallax={true}
 										onRemoveImage={() => {
 											setMetaAttribute(
-												{ ...backgroundValue, image: {...backgroundValue.image, imageID: undefined} },
+												{ ...backgroundValue, imageID: undefined },
 												'background' + suffix + size
 											);
 											setMetaAttribute(

@@ -142,13 +142,20 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > div:hover' );
 
 		if ( $sized_attributes['isTransparent'] != '1' ) {
-			$css->add_property( 'background-color', $css->render_color( ! empty( $hover_bg['color'] ) ? $hover_bg['color'] : '') );
+			$css->render_background( $hover_bg, $css );
 			if ( '' !== $hover_bg && 'normal' === $hover_bg['type'] && ! empty( $hover_bg['image'] ) ) {
-				$css->add_property( 'background-image', 'url("' . $hover_bg['image'] . '")' );
-				$css->add_property( 'background-position', $hover_bg['position'] );
-				$css->add_property( 'background-size', $hover_bg['size'] );
-				$css->add_property( 'background-repeat', $hover_bg['repeat'] );
-				$css->add_property( 'background-attachment', $hover_bg['attachment'] );
+				$hover_img_bg = array(
+					'type' => 'image',
+					'image' => array(
+						'url' 		 => ! empty($hover_bg['image']) ? 'url("' . $hover_bg['image'] . '")' : '',
+						'imageID'    => ! empty($hover_bg['imageID']) ? $hover_bg['imageID'] : '',
+						'position'   => ! empty($hover_bg['position']) ? $hover_bg['position'] : '',
+						'attachment' => ! empty($hover_bg['attachment']) ? $hover_bg['attachment'] : '',
+						'size' => ! empty($hover_bg['size']) ? $hover_bg['size'] : '',
+						'repeat' => ! empty($hover_bg['repeat']) ? $hover_bg['repeat'] : '',
+					)
+				);
+				$css->render_background( $hover_img_bg, $css );
 			}
 		}
 
