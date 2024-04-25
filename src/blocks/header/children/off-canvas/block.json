@@ -50,11 +50,11 @@
 			"default": "px"
 		},
 		"backgroundColor": {
-			"type": "string",
-			"default": "rgba(0, 0, 0, 0.6)"
+			"type": "string"
 		},
 		"pageBackgroundColor": {
-			"type": "string"
+			"type": "string",
+			"default": "rgba(0, 0, 0, 0.6)"
 		},
 		"padding": {
 			"type": "array",

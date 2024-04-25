@@ -40,7 +40,7 @@ export { default as hashString } from './hash-string';
 export { default as arrayStringToInt } from './array-string-to-int';
 export { compareVersions } from './compare-versions';
 
-export { default as useEditorWidth } from './use-editor-width';
+export { default as useEditorElement } from './use-editor-element';
 export { default as useElementHeight } from './use-element-height';
 
 export { default as KadenceBlocksCSS } from './css';

@@ -8,9 +8,6 @@
 	overflow-x: scroll;
 	transition: 0.5s;
 
-	&.active {
-	}
-
 	.kb-off-canvas-inner {
 		transition: 0.5s;
 	}
@@ -23,13 +20,15 @@
 		left: 0;
 	}
 
-	&.active + .wp-block-kadence-off-canvas-overlay {
-		display: block;
+	&.active {
+		& + .kb-off-canvas-overlay {
+			display: block;
+		}
 	}
 }
 
 /* Overlay for grey-out effect */
-.wp-block-kadence-off-canvas-overlay {
+.kb-off-canvas-overlay {
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -39,7 +38,6 @@
 	z-index: 9998; /* Ensure overlay is below off-canvas menu */
 	display: none; /* Initially hidden */
 }
-
 
 .sidenav .closebtn {
 	position: absolute;

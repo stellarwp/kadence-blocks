@@ -117,7 +117,7 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . '.active .kb-off-canvas-inner');
+		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . '.active .kb-off-canvas-inner' );
 		$css->add_property( 'width', '100%' );
 
 		if( empty( $attributes['widthType'] ) || ( isset( $attributes['widthType'] ) &&  $attributes['widthType'] === 'partial') ) {
@@ -139,7 +139,7 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 
 
 		// Overlay background
-		$css->set_selector( '.wp-block-kadence-off-canvas-overlay' . $unique_id );
+		$css->set_selector( '.kb-off-canvas-overlay' . $unique_id );
 		if ( ! empty( $attributes['pageBackgroundColor'] ) ) {
 			$css->add_property( 'background-color', $css->render_color( $attributes['pageBackgroundColor'] ) );
 		} else {
@@ -166,10 +166,9 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 		);
 
 		$overlay_classes = array(
-			'wp-block-kadence-off-canvas-overlay',
-			'wp-block-kadence-off-canvas-overlay' . $unique_id,
+			'kb-off-canvas-overlay',
+			'kb-off-canvas-overlay' . $unique_id,
 		);
-
 
 		$html .= '<div class="' . esc_attr( implode( ' ', $classes ) ) . '">';
 		$html .= '<div class="kb-off-canvas-inner">';
@@ -181,8 +180,8 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 			$html .= '<div data-unique-id="' . esc_attr( $unique_id ) . '" class="' . esc_attr( implode( ' ', $overlay_classes ) ) . '"></div>';
 		}
 
-		return $html;	}
-
+		return $html;
+	}
 }
 
 Kadence_Blocks_Off_Canvas_Block::get_instance();

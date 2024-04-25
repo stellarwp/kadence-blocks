@@ -16,15 +16,15 @@ import classnames from 'classnames';
  * Internal block libraries
  */
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useBlockProps, InnerBlocks, useInnerBlocksProps, InspectorControls } from '@wordpress/block-editor';
-
 import {
-	getUniqueId,
-	getPostOrFseId,
-	KadenceColorOutput,
-	getPreviewSize,
-	getSpacingOptionOutput,
-} from '@kadence/helpers';
+	InnerBlocks,
+	InspectorControls,
+	useBlockProps,
+	useInnerBlocksProps,
+	store as blockEditorStore,
+} from '@wordpress/block-editor';
+
+import { getUniqueId, getPostOrFseId, useEditorElement } from '@kadence/helpers';
 import {
 	SelectParentBlock,
 	KadenceRadioButtons,
@@ -38,12 +38,13 @@ import {
 /**
  * Internal dependencies
  */
-import { useEffect, useMemo, useState } from '@wordpress/element';
+import { useEffect, useMemo, useState, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import BackendStyles from './components/backend-styles';
 
 export function Edit(props) {
 	const { attributes, setAttributes, clientId, isSelected } = props;
-	const [previewActive, setPreviewActive] = useState(isSelected);
+	const [previewActive, setPreviewActive] = useState(false);
 	const [activeTab, setActiveTab] = useState('general');
 
 	const {
@@ -66,8 +67,11 @@ export function Edit(props) {
 	} = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, parentData, previewDevice } = useSelect(
+	const { selectBlock } = useDispatch(blockEditorStore);
+
+	const { isUniqueID, isUniqueBlock, parentData, previewDevice, parentClientId } = useSelect(
 		(select) => {
+			const { getBlockParents, getBlockParentsByBlockName } = select(blockEditorStore);
 			return {
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
@@ -82,6 +86,7 @@ export function Edit(props) {
 					),
 					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
 				},
+				parentClientId: select('core/block-editor').getBlockParents(clientId)[0],
 			};
 		},
 		[clientId]
@@ -104,57 +109,43 @@ export function Edit(props) {
 		return isSelected || childSelected;
 	};
 
-	const innerBlockClasses = classnames({
-		'wp-block-kadence-off-canvas': true,
-	});
-	const innerBlocksProps = useInnerBlocksProps({
-		className: innerBlockClasses,
-	});
+	const ref = useRef();
 
 	const handleModalClick = (e) => {
-		if (e.target.classList.contains('kb-off-canvas-modal')) {
+		console.log(1, e.target);
+		if (e.target.classList.contains('wp-block-kadence-off-canvas')) {
 			setPreviewActive(false);
+			selectBlock(parentClientId);
 		}
+		console.log(2);
 	};
 
-	const previewPaddingTop = getPreviewSize(
-		previewDevice,
-		undefined !== padding ? padding[0] : '',
-		undefined !== tabletPadding ? tabletPadding[0] : '',
-		undefined !== mobilePadding ? mobilePadding[0] : ''
-	);
-	const previewPaddingRight = getPreviewSize(
-		previewDevice,
-		undefined !== padding ? padding[1] : '',
-		undefined !== tabletPadding ? tabletPadding[1] : '',
-		undefined !== mobilePadding ? mobilePadding[1] : ''
-	);
-	const previewPaddingBottom = getPreviewSize(
-		previewDevice,
-		undefined !== padding ? padding[2] : '',
-		undefined !== tabletPadding ? tabletPadding[2] : '',
-		undefined !== mobilePadding ? mobilePadding[2] : ''
-	);
-	const previewPaddingLeft = getPreviewSize(
-		previewDevice,
-		undefined !== padding ? padding[3] : '',
-		undefined !== tabletPadding ? tabletPadding[3] : '',
-		undefined !== mobilePadding ? mobilePadding[3] : ''
+	const editorElement = useEditorElement(ref, [selfOrChildSelected, previewActive]);
+
+	const classes = classnames('wp-block-kadence-off-canvas', `off-canvas-side-${slideFrom}`, {
+		active: selfOrChildSelected() || previewActive,
+		[`wp-block-kadence-off-canvas${uniqueID}`]: uniqueID,
+	});
+
+	const blockProps = useBlockProps({
+		className: classes,
+	});
+
+	const innerNavClasses = classnames('kb-off-canvas-inner');
+
+	const innerBlocksProps = useInnerBlocksProps(
+		{
+			className: innerNavClasses,
+		},
+		{
+			templateLock: false,
+			template: [['core/paragraph', { placeholder: __('Create Awesome', 'kadence-blocks') }]],
+		}
 	);
 
-	const previewMaxWidth = getPreviewSize(
-		previewDevice,
-		undefined !== maxWidth ? maxWidth : '',
-		undefined !== maxWidthTablet ? maxWidthTablet : '',
-		undefined !== maxWidthMobile ? maxWidthMobile : ''
-	);
-
-	const previewContainerMaxWidth = getPreviewSize(
-		previewDevice,
-		undefined !== containerMaxWidth ? containerMaxWidth : '',
-		undefined !== containerMaxWidthTablet ? containerMaxWidthTablet : '',
-		undefined !== containerMaxWidthMobile ? containerMaxWidthMobile : ''
-	);
+	const overlayClasses = classnames('kb-off-canvas-overlay', {
+		[`kb-off-canvas-overlay${uniqueID}`]: uniqueID,
+	});
 
 	return (
 		<>
@@ -212,7 +203,7 @@ export function Edit(props) {
 							{widthType === 'partial' && (
 								<ResponsiveRangeControls
 									label={__('Max Width', 'kadence-blocks')}
-									value={maxWidth === 0 ? maxWidth : ''}
+									value={maxWidth !== 0 ? maxWidth : ''}
 									onChange={(value) => setAttributes({ maxWidth: value })}
 									tabletValue={maxWidthTablet ? maxWidthTablet : ''}
 									onChangeTablet={(value) => setAttributes({ maxWidthTablet: value })}
@@ -298,55 +289,12 @@ export function Edit(props) {
 					</>
 				)}
 			</InspectorControls>
-			<div
-				className={`kb-off-canvas-modal off-canvas-side-${slideFrom}  ${
-					selfOrChildSelected() || previewActive ? 'preview-active' : ''
-				}`}
-				onClick={(e) => handleModalClick(e)}
-				style={{
-					backgroundColor: pageBackgroundColor
-						? KadenceColorOutput(pageBackgroundColor)
-						: KadenceColorOutput('rgba(0, 0, 0, 0.6)'),
-				}}
-			>
-				<style>
-					{`.components-popover.block-editor-block-popover {
-								z-index: 100000;
-							}`}
-				</style>
-				<span className="kb-off-canvas-label">{__('Off Canvas Content', 'kadence-blocks')}</span>
-				<div
-					className={`kb-off-canvas-modal-popup`}
-					style={{
-						background: backgroundColor ? KadenceColorOutput(backgroundColor) : '#FFF',
-						width: widthType === 'full' ? '100%' : '',
-						maxWidth: widthType !== 'full' ? previewMaxWidth + maxWidthUnit : '',
-						paddingTop:
-							'' !== previewPaddingTop
-								? getSpacingOptionOutput(previewPaddingTop, paddingUnit)
-								: undefined,
-						paddingRight:
-							'' !== previewPaddingRight
-								? getSpacingOptionOutput(previewPaddingRight, paddingUnit)
-								: undefined,
-						paddingBottom:
-							'' !== previewPaddingBottom
-								? getSpacingOptionOutput(previewPaddingBottom, paddingUnit)
-								: undefined,
-						paddingLeft:
-							'' !== previewPaddingLeft
-								? getSpacingOptionOutput(previewPaddingLeft, paddingUnit)
-								: undefined,
-					}}
-				>
-					<div style={{ maxWidth: previewContainerMaxWidth + 'px' }}>
-						<InnerBlocks
-							templateLock={false}
-							template={[['core/paragraph', { placeholder: __('Create Awesome', 'kadence-blocks') }]]}
-						/>
-					</div>
-				</div>
+			<BackendStyles {...props} previewDevice={previewDevice} editorElement={editorElement} />
+			<div {...blockProps} onClick={(e) => handleModalClick(e)} ref={ref}>
+				{/* <div className="kb-off-canvas-label">{__('Off Canvas Content', 'kadence-blocks')}</div> */}
+				<div {...innerBlocksProps} />
 			</div>
+			<div className={overlayClasses}></div>
 		</>
 	);
 }

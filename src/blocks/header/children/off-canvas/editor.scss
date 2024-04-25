@@ -5,69 +5,23 @@
  * which makes it higher in priority.
  */
 
-$height_top_bar: 92px;
-$height_bottom_bar: 24px;
-$height_top_bars_mobile: 155px;
-$height_top_bottom_bars: $height_top_bar + $height_bottom_bar;
-$sidebar_width: 280px;
+.wp-block-kadence-off-canvas {
+	//initially hidden
+	display: none;
 
-//Something in the block editor transforms top level block wrappers after adding blocks, this prevents that and keeps appropriate modal display
-.wp-block-kadence-modal {
-	transform: none !important;
-}
-
-// Editor only
-.kb-off-canvas-modal {
 	margin: 0;
 	padding: 0;
-	display: none;
-	position: fixed;
-	width: 100%;
-	height: calc(100% - $height_top_bars_mobile);
-	top: $height_top_bars_mobile;
-	left: 0;
-	z-index: 1000;
+	z-index: 1001;
 
-	@media (min-width: 782px) {
-		height: calc(100% - $height_top_bottom_bars);
-		top: $height_top_bar;
-	}
-}
-.is-sidebar-opened .kb-off-canvas-modal {
-	@media (min-width: 782px) {
-		margin-left: calc(var(--global-kb-editor-sidebar-secondary, $sidebar_width) + 160px);
-		width: calc(var(--global-kb-editor-full-width, calc(80% - $sidebar_width)) - 190px);
-	}
-}
-.kb-off-canvas-modal.preview-active {
-	justify-content: center;
-	align-items: center;
-	display: flex;
-
-	&.off-canvas-side-left {
-		justify-content: flex-start;
-	}
-
-	&.off-canvas-side-right {
-		justify-content: flex-end;
-	}
-}
-.kb-off-canvas-label {
-	position: absolute;
-	bottom: 100%;
-	font-size: 10px;
-	left: 0;
-	line-height: 20px;
-	display: inline-block;
-}
-.kb-off-canvas-modal-popup {
+	background-color: white;
 	text-align: left;
-	border: 0 solid transparent;
+	border: none;
 	max-height: 100%;
 	overflow-y: auto;
 
-	display: flex !important;
-	align-items: flex-start !important;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
 	min-width: 100px;
 
 	> .block-editor-inner-blocks {
@@ -75,23 +29,46 @@ $sidebar_width: 280px;
 		min-width: 0;
 		width: 100%;
 	}
+
+	&.active {
+		display: flex;
+
+		&.off-canvas-side-left {
+			justify-content: flex-start;
+		}
+
+		&.off-canvas-side-right {
+			justify-content: flex-end;
+		}
+
+		& + .kb-off-canvas-overlay {
+			display: block;
+		}
+	}
+
+	.kb-off-canvas-label {
+		bottom: 100%;
+		font-size: 10px;
+		line-height: 20px;
+		background-color: lightgray;
+		width: 100%;
+	}
+
+	& + .kb-off-canvas-overlay {
+		//initially hidden
+		display: none;
+
+		position: fixed;
+		z-index: 1000;
+	}
 }
 
-.wp-block[data-type="kadence/off-canvas"]
-	.wp-block-kadence-modal
-	.kb-off-canvas-modal-popup
-	> .editor-inner-blocks
-	> .editor-block-list__layout
-	> .editor-block-list__block-edit {
-	float: none;
-	margin-left: -28px;
-	margin-right: -28px;
-	min-width: 100px;
+//this needed to be in a more specific selector for the block editor
+.block-editor-block-list__layout .wp-block-kadence-off-canvas {
+	position: fixed;
 }
-.kb-off-canvas-modal .kb-off-canvas-modal-popup {
-	height: 100%;
-}
-.kb-off-canvas-modal-close {
+
+.wp-block-kadence-off-canvas-close {
 	border: 0;
 	background: transparent;
 	cursor: pointer;
@@ -106,9 +83,9 @@ $sidebar_width: 280px;
 	top: 4px;
 	right: 4px;
 }
-.kb-off-canvas-modal-close:focus {
+.wp-block-kadence-off-canvas-close:focus {
 	outline: none;
 }
-.kb-off-canvas-modal-popup.kt-close-position-inside {
+.kb-off-canvas-inner.kt-close-position-inside {
 	position: relative;
 }
