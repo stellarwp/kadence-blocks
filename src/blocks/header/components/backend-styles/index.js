@@ -234,7 +234,6 @@ export default function BackendStyles(props) {
 		);
 		css.add_property('display', 'none');
 	}
-	
 	if(previewDirection) {
 		if('Desktop' === previewDevice){
 			css.set_selector(

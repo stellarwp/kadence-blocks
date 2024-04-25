@@ -1208,10 +1208,10 @@ export function EditInner(props) {
 									label={__('Vertical Alignment', 'kadence-blocks')}
 									value={undefined !== flex?.verticalAlignment?.[0] ? flex.verticalAlignment[0] : ''}
 									mobileValue={
-										undefined !== flex?.verticalAlignment?.[1] ? flex.verticalAlignment[1] : ''
+										undefined !== flex?.verticalAlignment?.[2] ? flex.verticalAlignment[2] : ''
 									}
 									tabletValue={
-										undefined !== flex?.verticalAlignment?.[2] ? flex.verticalAlignment[2] : ''
+										undefined !== flex?.verticalAlignment?.[1] ? flex.verticalAlignment[1] : ''
 									}
 									onChange={(value) => {
 										let tempValue = value;
@@ -1250,9 +1250,9 @@ export function EditInner(props) {
 										setMetaAttribute(
 											{
 												...flex,
-												verticalAlignmentTablet: [
-													flex.verticalAlignment && flex.verticalAlignment?.[1]
-														? flex.verticalAlignment[1]
+												verticalAlignment: [
+													flex.verticalAlignment && flex.verticalAlignment?.[0]
+														? flex.verticalAlignment[0]
 														: '',
 													tempValue,
 													flex.verticalAlignment && flex.verticalAlignment?.[2]
@@ -1264,26 +1264,21 @@ export function EditInner(props) {
 										);
 									}}
 									onChangeMobile={(value) => {
-										let tempValue = value;
-										if (
-											(undefined !== flex?.verticalAlignment?.[2]
-												? flex.verticalAlignment[2]
-												: '') === value
-										) {
-											tempValue = '';
-										}
-										setMetaAttribute({
-											...flex,
-											verticalAlignmentMobile: [
-												flex.verticalAlignment && flex.verticalAlignment?.[0]
-													? flex.verticalAlignment[0]
-													: '',
-												flex.verticalAlignment && flex.verticalAlignment?.[1]
-													? flex.verticalAlignment[1]
-													: '',
-												tempValue,
-											],
-										});
+										setMetaAttribute(
+											{
+												...flex,
+												verticalAlignment: [
+													flex.verticalAlignment && flex.verticalAlignment?.[0]
+														? flex.verticalAlignment[0]
+														: '',
+													flex.verticalAlignment && flex.verticalAlignment?.[1]
+														? flex.verticalAlignment[1]
+														: '',
+													value,
+												],
+											}, 
+											'flex'
+										);
 									}}
 									type={'justify-vertical'}
 									reverse={previewDirection === 'vertical-reverse' ? true : false}
@@ -1296,36 +1291,36 @@ export function EditInner(props) {
 						>
 							<ResponsiveRangeControls
 								label={__('Min Height', 'kadence-blocks')}
-								value={undefined !== height?.[0] ? height[0] : ''}
+								value={undefined !== height?.[0] ? parseFloat(height[0]) : ''}
 								onChange={(value) => {
 									setMetaAttribute(
 										[
-											value,
+											value.toString(),
 											undefined !== height?.[1] ? height[1] : '',
 											undefined !== height?.[2] ? height[2] : '',
-										].map(String),
+										],
 										'height'
 									);
 								}}
-								tabletValue={undefined !== height?.[1] ? height[1] : ''}
+								tabletValue={undefined !== height?.[1] ? parseFloat(height[1]) : ''}
 								onChangeTablet={(value) => {
 									setMetaAttribute(
 										[
 											undefined !== height?.[0] ? height[0] : '',
-											value,
+											value.toString(),
 											undefined !== height?.[2] ? height[2] : '',
-										].map(String),
+										],
 										'height'
 									);
 								}}
-								mobileValue={undefined !== height?.[2] ? height[2] : ''}
+								mobileValue={undefined !== height?.[2] ? parseFloat(height[2]) : ''}
 								onChangeMobile={(value) => {
 									setMetaAttribute(
 										[
 											undefined !== height?.[0] ? height[0] : '',
 											undefined !== height?.[1] ? height[1] : '',
-											value,
-										].map(String),
+											value.toString(),
+										],
 										'height'
 									);
 								}}
@@ -1340,36 +1335,36 @@ export function EditInner(props) {
 							/>
 							<ResponsiveRangeControls
 								label={__('Max Width', 'kadence-blocks')}
-								value={undefined !== width?.[0] ? width[0] : ''}
+								value={undefined !== width?.[0] ? parseFloat(width[0]) : ''}
 								onChange={(value) => {
 									setMetaAttribute(
 										[
-											value,
+											value.toString(),
 											undefined !== width?.[1] ? width[1] : '',
 											undefined !== width?.[2] ? width[2] : '',
-										].map(String),
+										],
 										'width'
 									);
 								}}
-								tabletValue={undefined !== width?.[1] ? width[1] : ''}
+								tabletValue={undefined !== width?.[1] ? parseFloat(width[1]) : ''}
 								onChangeTablet={(value) => {
 									setMetaAttribute(
 										[
 											undefined !== width?.[0] ? width[0] : '',
-											value,
+											value.toString(),
 											undefined !== width?.[2] ? width[2] : '',
-										].map(String),
+										],
 										'width'
 									);
 								}}
-								mobileValue={undefined !== width?.[2] ? width[2] : ''}
+								mobileValue={undefined !== width?.[2] ? parseFloat(width[2]) : ''}
 								onChangeMobile={(value) => {
 									setMetaAttribute(
 										[
 											undefined !== width?.[0] ? width[0] : '',
 											undefined !== width?.[1] ? width[1] : '',
-											value,
-										].map(String),
+											value.toString(),
+										],
 										'width'
 									);
 								}}
@@ -1798,7 +1793,6 @@ export function EditInner(props) {
 							panelName={'kb-header-text-color'}
 						>
 							<ColorGroup>
-								{console.log(typography)}
 								<PopColorControl
 									label={__('Text Color', 'kadence-blocks')}
 									value={typography.color ? typography.color : ''}
