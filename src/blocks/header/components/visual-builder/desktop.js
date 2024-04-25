@@ -1,10 +1,11 @@
 import { __ } from '@wordpress/i18n';
 import { useMemo, useState } from '@wordpress/element';
 import { Button } from '@wordpress/components';
+import { createBlock } from '@wordpress/blocks';
 
-import { get, map } from 'lodash';
+import { get, map, debounce } from 'lodash';
 import classnames from 'classnames';
-import { DndContext, DragOverlay } from '@dnd-kit/core';
+import { DndContext, DragOverlay, closestCenter } from '@dnd-kit/core';
 
 import {
 	arrayMove,
@@ -127,23 +128,6 @@ export default function Desktop({ blocks }) {
 	function handleDragEnd(event) {
 		const { active, over } = event;
 
-		if (over) {
-			let destinationClientId = over.id;
-			const currentClientID = active.id;
-			const parentClientID = wp.data.select('core/block-editor').getBlockRootClientId(currentClientID);
-			const newIndex = getIndex(destinationClientId);
-			const destName = wp.data.select('core/block-editor').getBlockName(destinationClientId);
-
-			// If we're moving within the same column, destinationID should match parentID
-			if (destName !== 'kadence/header-column') {
-				destinationClientId = parentClientID;
-			}
-
-			// moveBlockToPosition( clientID, from RootClientID, to RootClientID, to index )
-			wp.data
-				.dispatch('core/block-editor')
-				.moveBlockToPosition(currentClientID, parentClientID, destinationClientId, newIndex);
-		}
 		setActiveBlockData(null);
 	}
 
@@ -153,11 +137,44 @@ export default function Desktop({ blocks }) {
 	}
 
 	// Action when dragging over a new drop section
-	function onDragOver(event) {}
+	function onDragOver(event) {
+		// console.log('onDragOver', event);
+
+		const { active, over } = event;
+		console.log('----- -- ---- -- - -- - - - - - -- ');
+
+		if (over && active) {
+			let destinationClientId = over.id;
+			const currentClientID = active.id;
+			const parentClientID = wp.data.select('core/block-editor').getBlockRootClientId(currentClientID);
+			const newIndex = getIndex(destinationClientId);
+			const currentIndex = getIndex(currentClientID);
+			const destName = wp.data.select('core/block-editor').getBlockName(destinationClientId);
+
+			// We're moving within the same column
+			if (destName !== 'kadence/header-column') {
+				destinationClientId = parentClientID;
+			}
+
+			// Sorting into same position, no action needed.
+			if (destinationClientId === parentClientID && newIndex === currentIndex) {
+				return;
+			}
+
+			wp.data
+				.dispatch('core/block-editor')
+				.moveBlockToPosition(currentClientID, parentClientID, destinationClientId, newIndex);
+		}
+	}
 
 	return (
 		<div className={'visual-desktop-container'}>
-			<DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart} onDragOver={onDragOver}>
+			<DndContext
+				collisionDetection={closestCenter}
+				onDragEnd={handleDragEnd}
+				onDragStart={handleDragStart}
+				onDragOver={debounce(onDragOver, 100)}
+			>
 				{rowPositions.map((position, index) => (
 					<DesktopRow key={position} position={position} blocks={innerBlocks} />
 				))}
@@ -165,7 +182,7 @@ export default function Desktop({ blocks }) {
 				{/* This created the element that is visually moved when dragging */}
 				<DragOverlay>
 					{activeBlockData ? (
-						<Block block={{ ...activeBlockData.data.current, clientId: '' }} isSortable={false} />
+						<Block block={{ ...activeBlockData.data.current, clientId: '' }} isPreview={true} />
 					) : null}
 				</DragOverlay>
 			</DndContext>

@@ -5,6 +5,7 @@ import { useSelect } from '@wordpress/data';
 import { Icon } from '@wordpress/components';
 
 import { get } from 'lodash';
+import classnames from 'classnames';
 
 function DragHandle(props) {
 	return (
@@ -16,7 +17,7 @@ function DragHandle(props) {
 	);
 }
 
-export default function Block({ block, isSortable = true }) {
+export default function Block({ block, isPreview = false }) {
 	const parentProps = {};
 	let dragHandleProps = {};
 
@@ -34,7 +35,7 @@ export default function Block({ block, isSortable = true }) {
 	};
 
 	// If this is a drag item, it's just a visual representation of the block and not sortable
-	if (isSortable) {
+	if (!isPreview) {
 		const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
 			id: block.clientId,
 			data: {
@@ -53,8 +54,13 @@ export default function Block({ block, isSortable = true }) {
 		dragHandleProps = { ...listeners, ...attributes };
 	}
 
+	const classNames = classnames({
+		'visual-inner-block': true,
+		'visual-inner-block__preview': isPreview,
+	});
+
 	return (
-		<div className={'visual-inner-block'} {...parentProps}>
+		<div className={classNames} {...parentProps}>
 			<div className={'visual-inner-block__controls'}>
 				<DragHandle {...dragHandleProps} />
 				<div>

@@ -1,7 +1,6 @@
-import { __ } from '@wordpress/i18n';
+import { Inserter } from '@wordpress/block-editor';
 import { Button } from '@wordpress/components';
 import classnames from 'classnames';
-import { createBlock } from '@wordpress/blocks';
 
 export default function AddBlockButton({ position, clientId, showMidColumns }) {
 	const classNames = classnames({
@@ -10,22 +9,18 @@ export default function AddBlockButton({ position, clientId, showMidColumns }) {
 		[`add-item-has-mid-columns`]: showMidColumns,
 	});
 
-	// TODO: Show add block modal
-	const addBlock = () => {
-		const random = Math.floor(Math.random() * 1000);
-		wp.data
-			.dispatch('core/block-editor')
-			.insertBlock(createBlock('core/paragraph', { content: 'Random: ' + random }), 0, clientId);
-	};
+	function AddButton({ ...toggleProps }) {
+		const { onToggle, disabled, isOpen, blockTitle, hasSingleBlockType } = toggleProps;
+		return <Button icon={'plus'} disabled={disabled} onClick={onToggle} className={classNames} />;
+	}
 
 	return (
-		<Button
-			icon={'plus'}
-			className={classNames}
-			onClick={() => {
-				console.log('Inserting into: ' + clientId);
-				addBlock();
-			}}
+		<Inserter
+			renderToggle={(toggleProps) => <AddButton {...toggleProps} />}
+			rootClientId={clientId}
+			position="top center"
+			isAppender
+			__experimentalIsQuick
 		/>
 	);
 }
