@@ -191,7 +191,7 @@ $fixed_height: 270px;
 			height: 20px;
 		}
 
-		svg {
+		.drag-handle svg {
 			pointer-events: none;
 			transform: rotate(90deg);
 		}

@@ -2,11 +2,13 @@ import { useSortable } from '@dnd-kit/sortable';
 import SelectBlockButton from './selectBlock';
 import DeleteBlockButton from './delete';
 import { useSelect } from '@wordpress/data';
+import { Icon } from '@wordpress/components';
+
 import { get } from 'lodash';
 
 function DragHandle(props) {
 	return (
-		<div style={{ cursor: 'grab', marginRight: '5px' }} {...props}>
+		<div className={'drag-handle'} style={{ cursor: 'grab', marginRight: '5px' }} {...props}>
 			<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
 				<path d="M13 8c.6 0 1-.4 1-1s-.4-1-1-1-1 .4-1 1 .4 1 1 1zM5 6c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1zm0 4c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1zm8 0c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1zM9 6c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1zm0 4c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1z"></path>
 			</svg>
@@ -60,7 +62,10 @@ export default function Block({ block, isSortable = true }) {
 					<DeleteBlockButton clientId={block.clientId} />
 				</div>
 			</div>
-			{displayTitle()}
+			<div style={{ display: 'flex', alignItems: 'center' }}>
+				<Icon size={16} className={'block-icon'} icon={blockMeta?.icon?.src} />
+				{displayTitle()}
+			</div>
 		</div>
 	);
 }
