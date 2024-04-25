@@ -508,6 +508,10 @@ export default function BackendStyles(props) {
 	css.add_property('font-weight', typography.weight);
 	css.add_property('line-height', getSpacingOptionOutput(previewLineHeight, typography.lineType));
 	if (previewIsTransparent != '1') {
+		css.add_property('border-top', css.render_border(border, borderTablet, borderMobile, previewDevice, 'top'));
+		css.add_property('border-right', css.render_border(border, borderTablet, borderMobile, previewDevice, 'right'));
+		css.add_property('border-bottom', css.render_border(border, borderTablet, borderMobile, previewDevice, 'bottom'));
+		css.add_property('border-left', css.render_border(border, borderTablet, borderMobile, previewDevice, 'left'));
 		if ('normal' === background?.type && background?.image) {
 			css.add_property('background-image', background.image);
 			css.add_property('background-size', background.size);
@@ -561,10 +565,6 @@ export default function BackendStyles(props) {
 	css.add_property('padding-right', getSpacingOptionOutput(previewPaddingRight, paddingUnit));
 	css.add_property('padding-bottom', getSpacingOptionOutput(previewPaddingBottom, paddingUnit));
 	css.add_property('padding-left', getSpacingOptionOutput(previewPaddingLeft, paddingUnit));
-	css.add_property('border-top', css.render_border(border, borderTablet, borderMobile, previewDevice, 'top'));
-	css.add_property('border-right', css.render_border(border, borderTablet, borderMobile, previewDevice, 'right'));
-	css.add_property('border-bottom', css.render_border(border, borderTablet, borderMobile, previewDevice, 'bottom'));
-	css.add_property('border-left', css.render_border(border, borderTablet, borderMobile, previewDevice, 'left'));
 	css.add_property('border-top-left-radius', getSpacingOptionOutput(previewBorderTopLeftRadius, borderRadiusUnit));
 	css.add_property('border-top-right-radius', getSpacingOptionOutput(previewBorderTopRightRadius, borderRadiusUnit));
 	css.add_property(
@@ -623,16 +623,49 @@ export default function BackendStyles(props) {
 	}
 	css.add_property('min-height', getSpacingOptionOutput(previewHeight, heightUnit));
 	css.add_property('max-width', getSpacingOptionOutput(previewWidth, widthUnit));
-
-	css.set_selector(`wp-block-kadence-header${uniqueID} > div:hover`);
-
+	
+	css.set_selector(
+		`.wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-desktop:hover, .wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-tablet:hover`
+	);
 	if (previewIsTransparent != '1') {
+		css.add_property(
+			'border-top',
+			css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'top')
+		);
+		css.add_property(
+			'border-right',
+			css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'right')
+		);
+		css.add_property(
+			'border-bottom',
+			css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'bottom')
+		);
+		css.add_property(
+			'border-left',
+			css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'left')
+		);
+		css.add_property(
+			'border-top-left-radius',
+			getSpacingOptionOutput(previewborderHoverTopLeftRadius, borderRadiusHoverUnit)
+		);
+		css.add_property(
+			'border-top-right-radius',
+			getSpacingOptionOutput(previewborderHoverTopRightRadius, borderRadiusHoverUnit)
+		);
+		css.add_property(
+			'border-bottom-right-radius',
+			getSpacingOptionOutput(previewborderHoverBottomRightRadius, borderRadiusHoverUnit)
+		);
+		css.add_property(
+			'border-bottom-left-radius',
+			getSpacingOptionOutput(previewborderHoverBottomLeftRadius, borderRadiusHoverUnit)
+		);
 		if ('normal' === backgroundHover?.type && backgroundHover?.image) {
 			css.add_property('background-image', backgroundHover.image);
-			css.add_property('background-size', backgroundHover.imageSize);
-			css.add_property('background-repeat', backgroundHover.imageRepeat);
-			css.add_property('background-attachment', backgroundHover.imageAttachment);
-			css.add_property('background-position', backgroundHover.imagePosition);
+			css.add_property('background-size', backgroundHover.size);
+			css.add_property('background-repeat', backgroundHover.repeat);
+			css.add_property('background-attachment', backgroundHover.attachment);
+			css.add_property('background-position', backgroundHover.position);
 		}
 
 		if ('normal' === backgroundHover?.type && backgroundHover?.color) {
@@ -643,6 +676,7 @@ export default function BackendStyles(props) {
 			css.add_property('background', backgroundHover.gradient);
 		}
 	}
+	css.set_selector(`wp-block-kadence-header${uniqueID} > div:hover`);
 	if (previewIsTransparent == '1') {
 		if ('normal' === backgroundTransparentHover?.type && backgroundTransparentHover?.image) {
 			css.add_property('background-image', backgroundTransparentHover.image);
@@ -677,40 +711,6 @@ export default function BackendStyles(props) {
 			css.add_property('background', backgroundStickyHover.gradient);
 		}
 	}
-
-	css.add_property(
-		'border-top',
-		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'top')
-	);
-	css.add_property(
-		'border-right',
-		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'right')
-	);
-	css.add_property(
-		'border-bottom',
-		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'bottom')
-	);
-	css.add_property(
-		'border-left',
-		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'left')
-	);
-
-	css.add_property(
-		'border-top-left-radius',
-		getSpacingOptionOutput(previewborderHoverTopLeftRadius, borderRadiusHoverUnit)
-	);
-	css.add_property(
-		'border-top-right-radius',
-		getSpacingOptionOutput(previewborderHoverTopRightRadius, borderRadiusHoverUnit)
-	);
-	css.add_property(
-		'border-bottom-right-radius',
-		getSpacingOptionOutput(previewborderHoverBottomRightRadius, borderRadiusHoverUnit)
-	);
-	css.add_property(
-		'border-bottom-left-radius',
-		getSpacingOptionOutput(previewborderHoverBottomLeftRadius, borderRadiusHoverUnit)
-	);
 
 	//Transparent hover border
 	if (previewIsTransparent == '1') {
