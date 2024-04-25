@@ -6,7 +6,7 @@ export default function Droppable(props) {
 		id: props.clientId,
 	});
 	const style = {
-		backgroundColor: isOver ? 'aqua' : '',
+		backgroundColor: isOver ? 'rgba(0, 124, 186, 0.05)' : '',
 	};
 
 	return (

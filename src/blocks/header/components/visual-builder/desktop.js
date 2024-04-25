@@ -17,6 +17,7 @@ import Droppable from './droppable';
 import DeleteBlockButton from './delete';
 import SelectBlockButton from './selectBlock';
 import AddBlockButton from './add';
+import Block from './block';
 import { DESKTOP_SECTION_NAMES, DESKTOP_BLOCK_POSITIONS, DESKTOP_CLIENT_ID_POSITIONS, ROW_TO_KEY } from './constants';
 
 const computeSections = (thisRow, blocks) =>
@@ -89,28 +90,6 @@ const DesktopRow = ({ position, blocks }) => {
 	);
 };
 
-const InnerBlock = ({ block }) => {
-	const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
-		id: block.clientId,
-		data: {
-			name: block.name.replace('kadence/', '').replace('core/', ''),
-		},
-	});
-	const style = transform
-		? {
-				transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-		  }
-		: undefined;
-
-	return (
-		<div className={'visual-inner-block'} ref={setNodeRef} style={style} {...listeners} {...attributes}>
-			{block.name.replace('kadence/', '').replace('core/', '')}
-			{/*<SelectBlockButton clientId={block.clientId} />*/}
-			{/*<DeleteBlockButton clientId={block.clientId} />*/}
-		</div>
-	);
-};
-
 const InnerBlocks = ({ blocks, className, clientId, showMidColumns = true }) => {
 	const classNames = classnames({
 		'visual-column-wrapper': true,
@@ -119,13 +98,13 @@ const InnerBlocks = ({ blocks, className, clientId, showMidColumns = true }) => 
 	});
 
 	if (blocks) {
-		const clientIds = map(blocks, 'clientId');
+		const clientIds = useMemo(() => map(blocks, 'clientId'), [blocks]);
 
 		return (
 			<SortableContext items={clientIds} strategy={horizontalListSortingStrategy}>
 				<Droppable clientId={clientId} classNames={classNames}>
 					{blocks.map((block) => (
-						<InnerBlock key={block.clientId} block={block} />
+						<Block key={block.clientId} block={block} />
 					))}
 				</Droppable>
 			</SortableContext>
@@ -186,7 +165,7 @@ export default function Desktop({ blocks }) {
 				{/* This created the element that is visually moved when dragging */}
 				<DragOverlay>
 					{activeBlockData ? (
-						<div className={'visual-inner-block'}>{activeBlockData.data.current.name}</div>
+						<Block block={{ ...activeBlockData.data.current, clientId: '' }} isSortable={false} />
 					) : null}
 				</DragOverlay>
 			</DndContext>

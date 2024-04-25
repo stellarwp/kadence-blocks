@@ -31,7 +31,7 @@ export default function DeleteBlockButton({ clientId }) {
 
 	return (
 		<>
-			<Button icon="no-alt" iconSize={16} isBusy={isOpen} onClick={openModal} />
+			<Button className={'block-delete'} icon="no-alt" iconSize={14} isBusy={isOpen} onClick={openModal} />
 			{isOpen && (
 				<Modal title={__('Delete block?')} onRequestClose={closeModal}>
 					{__('This will remove the block from the header.')}

@@ -5,5 +5,5 @@ export default function SelectBlockButton({ clientId }) {
 		wp.data.dispatch('core/block-editor').selectBlock(clientId);
 	};
 
-	return <Button icon="admin-generic" iconSize={16} onClick={selectBlock} />;
+	return <Button className={'block-select'} icon="admin-generic" iconSize={14} onClick={selectBlock} />;
 }
