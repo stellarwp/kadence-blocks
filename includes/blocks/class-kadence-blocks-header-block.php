@@ -68,11 +68,8 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		$header_attributes = $this->get_header_attributes( $attributes['id'] );
-		if( ! empty( $attributes['align'] ) ) {
-			$header_attributes['align'] = $attributes['align'];
-		}
-
-
+		$header_attributes['align'] = ! empty( $attributes['align'] ) ? $attributes['align'] : '';
+		
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
 		$sizes = array( 'Desktop', 'Tablet', 'Mobile' );
