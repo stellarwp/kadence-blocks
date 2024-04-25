@@ -4,7 +4,7 @@ $height_top_bar: 92px;
 $height_top_bars_mobile: 155px;
 $height_top_bottom_bars: $height_top_bar + $height_bottom_bar;
 $sidebar_width: 280px;
-$fixed_height: 270px;
+$fixed_height: 280px;
 
 .kb-header-visual-builder-modal {
 	background: #eee;
@@ -14,7 +14,6 @@ $fixed_height: 270px;
 	padding: 10px;
 	position: fixed;
 	width: 100%;
-	//height: calc(40% - $height_bottom_bars_mobile);
 	height: $fixed_height;
 	bottom: $height_bottom_bars_mobile;
 	left: 0;
@@ -24,9 +23,12 @@ $fixed_height: 270px;
 	display: block;
 
 	@media (min-width: 782px) {
-		//height: calc(40% - $height_top_bottom_bars);
 		height: $fixed_height;
 		bottom: $height_bottom_bar;
+	}
+
+	.visual-desktop-container__is-dragging .visual-column-wrapper {
+		z-index: unset;
 	}
 
 	.tabs {
@@ -58,6 +60,7 @@ $fixed_height: 270px;
 		display: flex !important;
 		padding-top: 10px;
 		align-items: center;
+		overflow-x: auto;
 
 		.visual-desktop-row {
 			display: flex !important;
@@ -101,7 +104,6 @@ $fixed_height: 270px;
 			left: 0;
 			right: 0;
 			background: transparent;
-			z-index: 1;
 			transition: all .2s ease-in-out;
 			color: transparent !important;
 			height: 100%;
@@ -175,8 +177,7 @@ $fixed_height: 270px;
 		padding: 3px 6px;
 		border-radius: 3px;
 		font-size: 13px;
-		z-index: 10;
-
+		z-index: 1;
 		overflow: hidden;
 		text-wrap: nowrap;
 		text-overflow: ellipsis;

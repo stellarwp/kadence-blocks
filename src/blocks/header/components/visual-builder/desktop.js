@@ -1,8 +1,5 @@
 import { __ } from '@wordpress/i18n';
 import { useMemo, useState } from '@wordpress/element';
-import { Button } from '@wordpress/components';
-import { createBlock } from '@wordpress/blocks';
-
 import { get, map, debounce } from 'lodash';
 import classnames from 'classnames';
 import { DndContext, DragOverlay, closestCenter } from '@dnd-kit/core';
@@ -15,7 +12,6 @@ import {
 	horizontalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import Droppable from './droppable';
-import DeleteBlockButton from './delete';
 import SelectBlockButton from './selectBlock';
 import AddBlockButton from './add';
 import Block from './block';
@@ -138,10 +134,7 @@ export default function Desktop({ blocks }) {
 
 	// Action when dragging over a new drop section
 	function onDragOver(event) {
-		// console.log('onDragOver', event);
-
 		const { active, over } = event;
-		console.log('----- -- ---- -- - -- - - - - - -- ');
 
 		if (over && active) {
 			let destinationClientId = over.id;
@@ -167,8 +160,13 @@ export default function Desktop({ blocks }) {
 		}
 	}
 
+	const classNames = classnames({
+		'visual-desktop-container': true,
+		'visual-desktop-container__is-dragging': activeBlockData !== null,
+	});
+
 	return (
-		<div className={'visual-desktop-container'}>
+		<div className={classNames}>
 			<DndContext
 				collisionDetection={closestCenter}
 				onDragEnd={handleDragEnd}
