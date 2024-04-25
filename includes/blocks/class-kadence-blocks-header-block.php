@@ -209,7 +209,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 						$css->add_property('justify-content', 'flex-end');
 						break;
 					default:
-						$css->add_property('justify-content', previewVerticalAlignment);
+						$css->add_property('justify-content', $vertical_alignment);
 						break;
 				};
 				
