@@ -128,6 +128,8 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( 'border-top', $css->render_border( $sized_attributes['border'], 'top' ) );
 		$css->add_property( 'border-left', $css->render_border( $sized_attributes['border'], 'left' ) );
 		$css->add_property( 'border-right', $css->render_border( $sized_attributes['border'], 'right' ) );
+		$css->render_measure_range( $sized_attributes, 'borderRadius', 'border-radius', '', ['unit_key' => 'borderRadiusUnit']);
+		$css->render_typography( $sized_attributes );
 
 		//hover styles
 		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > div:hover' );

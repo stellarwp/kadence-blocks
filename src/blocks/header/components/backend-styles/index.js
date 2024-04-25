@@ -79,7 +79,6 @@ export default function BackendStyles(props) {
 		backgroundSticky,
 		backgroundStickyHover,
 		typography,
-		textColor,
 		linkColor,
 		linkHoverColor,
 		height,
@@ -500,7 +499,7 @@ export default function BackendStyles(props) {
 		css.add_property('justify-content', previewVerticalAlignment);
 	}
 	css.add_property('align-items', previewVerticalAlignment);
-	css.add_property('color', KadenceColorOutput(textColor));
+	css.add_property('color', KadenceColorOutput(typography.color));
 	css.add_property('font-size', getFontSizeOptionOutput(previewFontSize, typography.sizeType));
 	css.add_property('letter-spacing', getSpacingOptionOutput(previewLetterSpacing, typography.letterType));
 	css.add_property('text-transform', typography.textTransform);

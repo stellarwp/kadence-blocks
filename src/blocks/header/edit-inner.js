@@ -334,7 +334,6 @@ export function EditInner(props) {
 		backgroundSticky: meta?._kad_header_backgroundSticky,
 		backgroundStickyHover: meta?._kad_header_backgroundStickyHover,
 		typography: meta?._kad_header_typography,
-		textColor: meta?._kad_header_textColor,
 		linkColor: meta?._kad_header_linkColor,
 		linkHoverColor: meta?._kad_header_linkHoverColor,
 		height: meta?._kad_header_height,
@@ -1802,9 +1801,9 @@ export function EditInner(props) {
 							<ColorGroup>
 								<PopColorControl
 									label={__('Text Color', 'kadence-blocks')}
-									value={textColor ? textColor : ''}
+									value={typography.color ? typography.color : ''}
 									default={''}
-									onChange={(value) => setMetaAttribute(value, 'textColor')}
+									onChange={(value) => setMetaAttribute({ ...typography, color: value }, 'typography')}
 								/>
 								<PopColorControl
 									label={__('Link Color', 'kadence-blocks')}

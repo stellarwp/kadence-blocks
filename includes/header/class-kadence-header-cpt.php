@@ -919,11 +919,6 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'type'    => 'string',
 			),
 			array(
-				'key'     => '_kad_header_textColor',
-				'default' => '',
-				'type'    => 'string',
-			),
-			array(
 				'key'     => '_kad_header_linkColor',
 				'default' => '',
 				'type'    => 'string',
