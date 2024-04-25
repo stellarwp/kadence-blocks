@@ -305,27 +305,11 @@ export default function BackendStyles(props) {
 	);
 	css.add_property('min-height', getSpacingOptionOutput(previewHeight, heightUnit));
 	css.add_property('max-width', getSpacingOptionOutput(previewWidth, widthUnit));
-
-	css.set_selector(`wp-block-kadence-header${uniqueID} > div:hover`);
-
-	if (previewIsTransparent != '1') {
-		if ('normal' === backgroundHover?.type && backgroundHover?.image) {
-			css.add_property('background-image', backgroundHover.image);
-			css.add_property('background-size', backgroundHover.imageSize);
-			css.add_property('background-repeat', backgroundHover.imageRepeat);
-			css.add_property('background-attachment', backgroundHover.imageAttachment);
-			css.add_property('background-position', backgroundHover.imagePosition);
-		}
-
-		if ('normal' === backgroundHover?.type && backgroundHover?.color) {
-			css.add_property('background-color', backgroundHover.color);
-		}
-
-		if ('gradient' === backgroundHover?.type && backgroundHover?.gradient) {
-			css.add_property('background', backgroundHover.gradient);
-		}
-	}
-
+	
+	// Hover styles
+	css.set_selector(
+		`.wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-desktop:hover, .wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-tablet:hover`
+	);
 	css.add_property(
 		'border-top',
 		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'top')
@@ -359,6 +343,24 @@ export default function BackendStyles(props) {
 		'border-bottom-left-radius',
 		getSpacingOptionOutput(previewborderHoverBottomLeftRadius, borderRadiusHoverUnit)
 	);
+	
+	if (previewIsTransparent != '1') {
+		if ('normal' === backgroundHover?.type && backgroundHover?.image) {
+			css.add_property('background-image', backgroundHover.image);
+			css.add_property('background-size', backgroundHover.imageSize);
+			css.add_property('background-repeat', backgroundHover.imageRepeat);
+			css.add_property('background-attachment', backgroundHover.imageAttachment);
+			css.add_property('background-position', backgroundHover.imagePosition);
+		}
+
+		if ('normal' === backgroundHover?.type && backgroundHover?.color) {
+			css.add_property('background-color', backgroundHover.color);
+		}
+
+		if ('gradient' === backgroundHover?.type && backgroundHover?.gradient) {
+			css.add_property('background', backgroundHover.gradient);
+		}
+	}
 
 	css.set_selector(`wp-block-kadence-header${uniqueID} a`);
 	css.add_property('color', KadenceColorOutput(linkColor));
