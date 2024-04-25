@@ -174,9 +174,9 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		// Flex styles
 		if( ! empty($flex_direction) ) {
 			if( 'Desktop' === $size ) {
-				$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' .wp-block-kadence-header-desktop' );
+				$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > .wp-block-kadence-header-desktop' );
 			} else {
-				$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' .wp-block-kadence-header-tablet' );
+				$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > .wp-block-kadence-header-tablet' );
 			}
 			
 			$css->add_property('display', 'flex');
@@ -238,6 +238,8 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( 'border-left', $css->render_border( $sized_attributes['border'], 'left' ) );
 		$css->add_property( 'border-right', $css->render_border( $sized_attributes['border'], 'right' ) );
 		$css->render_measure_range( $sized_attributes, 'borderRadius', 'border-radius', '', ['unit_key' => 'borderRadiusUnit']);
+		$css->render_measure_output( $sized_attributes, 'margin', 'margin', '', ['unit_key' => 'marginUnit']);
+		$css->render_measure_output( $sized_attributes, 'padding', 'padding', '', ['unit_key' => 'paddingUnit']);
 		$css->render_typography( $sized_attributes );
 		$css->add_property( 'min-height', '' !== $min_height ? $min_height . $sized_attributes['heightUnit'] : '' );
 		$css->add_property( 'max-width', '' !== $max_width ? $max_width . $sized_attributes['widthUnit'] : '' );
