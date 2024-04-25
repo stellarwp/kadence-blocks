@@ -68,6 +68,9 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		$header_attributes = $this->get_header_attributes( $attributes['id'] );
+		if( ! empty( $attributes['align'] ) ) {
+			$header_attributes['align'] = $attributes['align'];
+		}
 
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
@@ -111,8 +114,21 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$max_width = ! empty( $sized_attributes['width'] ) && 'Desktop' === $size ? $sized_attributes['width'][0] : ( 'Tablet' === $size ? $sized_attributes['width'][1] : ('Mobile' === $size ? $sized_attributes['width'][2] : '' ) );
 
 		$css->set_media_state( strtolower( $size ) );
+		var_dump($sized_attributes['flex']);
 
 		//normal state styles
+		$css->set_selector( '.wp-block-kadence-header' . $unique_id );
+		switch( $sized_attributes['align'] ) {
+			case 'left':
+				$css->add_property('margin-right', 'auto');
+				break;
+			case 'center': 
+				$css->add_property('margin', '0 auto');
+				break;
+			case 'right':
+				$css->add_property('margin-left', 'auto');
+				break;
+		}
 		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > .wp-block-kadence-header-desktop' );
 		$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['border'], 'bottom' ) );
 		$css->add_property( 'border-top', $css->render_border( $sized_attributes['border'], 'top' ) );
@@ -122,7 +138,6 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_typography( $sized_attributes );
 		$css->add_property( 'min-height', '' !== $min_height ? $min_height . $sized_attributes['heightUnit'] : '' );
 		$css->add_property( 'max-width', '' !== $max_width ? $max_width . $sized_attributes['widthUnit'] : '' );
-		
 		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > div' );
 		if ( $sized_attributes['isTransparent'] != '1' ) {
 			$css->render_background( $bg, $css );

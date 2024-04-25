@@ -234,28 +234,73 @@ export default function BackendStyles(props) {
 		);
 		css.add_property('display', 'none');
 	}
+	
+	if(previewDirection) {
+		if('Desktop' === previewDevice){
+			css.set_selector(
+				`.wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-desktop`
+			);
+		} else {
+			css.set_selector(
+				`.wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-tablet`
+			);
+		}
+		css.add_property('display', 'flex !important');
+		css.add_property('flex-wrap', 'wrap');
+		switch(previewDirection) {
+			case 'horizontal':
+				css.add_property('flex-direction', 'row');
+				break;
+			case 'horizontal-reverse':
+				css.add_property('flex-direction', 'row-reverse');
+				break;
+			case 'vertical':
+				css.add_property('flex-direction', 'column');
+				break;
+			case 'vertical-reverse':
+				css.add_property('flex-direction', 'column-reverse');
+				break;
+		}
+		if (previewDirection === 'vertical-reverse' || previewDirection === 'vertical') {
+			switch(previewVerticalAlignment) {
+				case 'top':
+					css.add_property('justify-content', 'flex-start');
+					break;
+				case 'middle':
+					css.add_property('justify-content', 'center');
+					break;
+				case 'bottom':
+					css.add_property('justify-content', 'flex-end');
+					break;
+				default:
+					css.add_property('justify-content', previewVerticalAlignment);
+					break;
+			};
+	
+			css.add_property('align-items', previewJustifyContent);
+		}
+	
+		if (previewDirection === 'horizontal-reverse' || previewDirection === 'horizontal') {
+			switch(previewJustifyContent) {
+				case 'top':
+					css.add_property('justify-content', 'flex-start');
+					break;
+				case 'middle':
+					css.add_property('justify-content', 'center');
+					break;
+				case 'bottom':
+					css.add_property('justify-content', 'flex-end');
+					break;
+				default:
+					css.add_property('justify-content', previewJustifyContent);
+					break;
+			};
+		}
+	}
 
 	css.set_selector(
 		`.wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-desktop, .wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-tablet`
 	);
-	css.add_property('display', 'flex');
-	css.add_property('flex-wrap', 'wrap');
-	css.add_property('flex-basis', '0');
-
-	if (previewDirection === 'horizontal') {
-		css.add_property('flex-direction', 'row');
-	} else if (previewDirection === 'horizontal-reverse') {
-		css.add_property('flex-direction', 'row-reverse');
-	} else if (previewDirection === 'vertical-reverse') {
-		css.add_property('flex-direction', 'column-reverse');
-	} else {
-		css.add_property('flex-direction', 'column');
-	}
-
-	if (previewDirection === 'vertical-reverse' || previewDirection === 'vertical') {
-		css.add_property('justify-content', previewVerticalAlignment);
-	}
-	css.add_property('align-items', previewVerticalAlignment);
 	css.add_property('color', KadenceColorOutput(textColor));
 	css.add_property('font-size', getFontSizeOptionOutput(previewFontSize, typography.sizeType));
 	css.add_property('letter-spacing', getSpacingOptionOutput(previewLetterSpacing, typography.letterType));
