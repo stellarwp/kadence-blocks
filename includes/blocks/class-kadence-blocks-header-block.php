@@ -107,10 +107,22 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$hover_bg_sticky = $sized_attributes['backgroundStickyHover'];
 		$border = $sized_attributes['border'];
 		$typography = $sized_attributes['typography'];
+		$min_height = ! empty( $sized_attributes['height'] ) && 'Desktop' === $size ? $sized_attributes['height'][0] : ( 'Tablet' === $size ? $sized_attributes['height'][1] : ('Mobile' === $size ? $sized_attributes['height'][2] : '' ) );
+		$max_width = ! empty( $sized_attributes['width'] ) && 'Desktop' === $size ? $sized_attributes['width'][0] : ( 'Tablet' === $size ? $sized_attributes['width'][1] : ('Mobile' === $size ? $sized_attributes['width'][2] : '' ) );
 
 		$css->set_media_state( strtolower( $size ) );
 
 		//normal state styles
+		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > .wp-block-kadence-header-desktop' );
+		$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['border'], 'bottom' ) );
+		$css->add_property( 'border-top', $css->render_border( $sized_attributes['border'], 'top' ) );
+		$css->add_property( 'border-left', $css->render_border( $sized_attributes['border'], 'left' ) );
+		$css->add_property( 'border-right', $css->render_border( $sized_attributes['border'], 'right' ) );
+		$css->render_measure_range( $sized_attributes, 'borderRadius', 'border-radius', '', ['unit_key' => 'borderRadiusUnit']);
+		$css->render_typography( $sized_attributes );
+		$css->add_property( 'min-height', '' !== $min_height ? $min_height . $sized_attributes['heightUnit'] : '' );
+		$css->add_property( 'max-width', '' !== $max_width ? $max_width . $sized_attributes['widthUnit'] : '' );
+		
 		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > div' );
 		if ( $sized_attributes['isTransparent'] != '1' ) {
 			$css->render_background( $bg, $css );
@@ -130,13 +142,6 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 				$css->render_background( $img_bg, $css );
 			}
 		}
-
-		$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['border'], 'bottom' ) );
-		$css->add_property( 'border-top', $css->render_border( $sized_attributes['border'], 'top' ) );
-		$css->add_property( 'border-left', $css->render_border( $sized_attributes['border'], 'left' ) );
-		$css->add_property( 'border-right', $css->render_border( $sized_attributes['border'], 'right' ) );
-		$css->render_measure_range( $sized_attributes, 'borderRadius', 'border-radius', '', ['unit_key' => 'borderRadiusUnit']);
-		$css->render_typography( $sized_attributes );
 
 		//hover styles
 		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > div:hover' );
