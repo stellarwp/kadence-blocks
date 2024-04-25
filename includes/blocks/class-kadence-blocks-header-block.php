@@ -110,13 +110,55 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$hover_bg_sticky = $sized_attributes['backgroundStickyHover'];
 		$border = $sized_attributes['border'];
 		$typography = $sized_attributes['typography'];
-		$min_height = ! empty( $sized_attributes['height'] ) && 'Desktop' === $size ? $sized_attributes['height'][0] : ( 'Tablet' === $size ? $sized_attributes['height'][1] : ('Mobile' === $size ? $sized_attributes['height'][2] : '' ) );
-		$max_width = ! empty( $sized_attributes['width'] ) && 'Desktop' === $size ? $sized_attributes['width'][0] : ( 'Tablet' === $size ? $sized_attributes['width'][1] : ('Mobile' === $size ? $sized_attributes['width'][2] : '' ) );
-
+		$min_height = ! empty( $sized_attributes['height'] ) && 'Desktop' === $size 
+			? $sized_attributes['height'][0] 
+			: ( 'Tablet' === $size 
+				? $sized_attributes['height'][1] 
+				: ('Mobile' === $size 
+					? $sized_attributes['height'][2] 
+					: '' 
+				) 
+			);
+		$max_width = ! empty( $sized_attributes['width'] ) && 'Desktop' === $size 
+			? $sized_attributes['width'][0] 
+			: ( 'Tablet' === $size 
+				? $sized_attributes['width'][1] 
+				: ('Mobile' === $size 
+					? $sized_attributes['width'][2] 
+					: '' 
+				) 
+			);
+		$flex_direction = ! empty( $sized_attributes['flex'] ) && ! empty( $sized_attributes['flex']['direction'] ) && 'Desktop' === $size && ! empty( $sized_attributes['flex']['direction'][0] )
+			? $sized_attributes['flex']['direction'][0] 
+			: ( 'Tablet' === $size && ! empty( $sized_attributes['flex']['direction'][1] )
+				? $sized_attributes['flex']['direction'][1] 
+				: ( 'Mobile' === $size && ! empty( $sized_attributes['flex']['direction'][2] ) 
+					? $sized_attributes['flex']['direction'][2] 
+					: ''
+				)
+			);
+		$justify_content = ! empty( $sized_attributes['flex'] ) && ! empty( $sized_attributes['flex']['justifyContent'] ) && 'Desktop' === $size && ! empty( $sized_attributes['flex']['justifyContent'][0] )
+			? $sized_attributes['flex']['justifyContent'][0] 
+			: ( 'Tablet' === $size && ! empty( $sized_attributes['flex']['justifyContent'][1] )
+				? $sized_attributes['flex']['justifyContent'][1] 
+				: ( 'Mobile' === $size && ! empty( $sized_attributes['flex']['justifyContent'][2] ) 
+					? $sized_attributes['flex']['justifyContent'][2] 
+					: ''
+				)
+			);
+		$vertical_alignment = ! empty( $sized_attributes['flex'] ) && ! empty( $sized_attributes['flex']['verticalAlignment'] ) && 'Desktop' === $size && ! empty( $sized_attributes['flex']['verticalAlignment'][0] )
+			? $sized_attributes['flex']['verticalAlignment'][0] 
+			: ( 'Tablet' === $size && ! empty( $sized_attributes['flex']['verticalAlignment'][1] )
+				? $sized_attributes['flex']['verticalAlignment'][1] 
+				: ( 'Mobile' === $size && ! empty( $sized_attributes['flex']['verticalAlignment'][2] ) 
+					? $sized_attributes['flex']['verticalAlignment'][2] 
+					: ''
+				)
+			);
 		$css->set_media_state( strtolower( $size ) );
 		var_dump($sized_attributes['flex']);
 
-		//normal state styles
+		// Normal state styles
 		$css->set_selector( '.wp-block-kadence-header' . $unique_id );
 		switch( $sized_attributes['align'] ) {
 			case 'left':
@@ -128,6 +170,67 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 			case 'right':
 				$css->add_property('margin-left', 'auto');
 				break;
+		};
+		// Flex styles
+		if( ! empty($flex_direction) ) {
+			if( 'Desktop' === $size ) {
+				$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' .wp-block-kadence-header-desktop' );
+			} else {
+				$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' .wp-block-kadence-header-tablet' );
+			}
+			
+			$css->add_property('display', 'flex');
+			$css->add_property('flex-wrap', 'wrap');
+
+			switch($flex_direction) {
+				case 'horizontal':
+					$css->add_property('flex-direction', 'row');
+					break;
+				case 'horizontal-reverse':
+					$css->add_property('flex-direction', 'row-reverse');
+					break;
+				case 'vertical':
+					$css->add_property('flex-direction', 'column');
+					break;
+				case 'vertical-reverse':
+					$css->add_property('flex-direction', 'column-reverse');
+					break;
+			}
+
+			if( 'vertical' === $flex_direction || 'vertical-reverse' === $flex_direction ) {
+				switch($vertical_alignment) {
+					case 'top':
+						$css->add_property('justify-content', 'flex-start');
+						break;
+					case 'middle':
+						$css->add_property('justify-content', 'center');
+						break;
+					case 'bottom':
+						$css->add_property('justify-content', 'flex-end');
+						break;
+					default:
+						$css->add_property('justify-content', previewVerticalAlignment);
+						break;
+				};
+				
+				$css->add_property('align-items', $justify_content);
+			}
+			if ($flex_direction === 'horizontal-reverse' || $flex_direction === 'horizontal') {
+				switch($justify_content) {
+					case 'top':
+						$css->add_property('justify-content', 'flex-start');
+						break;
+					case 'middle':
+						$css->add_property('justify-content', 'center');
+						break;
+					case 'bottom':
+						$css->add_property('justify-content', 'flex-end');
+						break;
+					default:
+						$css->add_property('justify-content', $justify_content);
+						break;
+				};
+			}
 		}
 		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > .wp-block-kadence-header-desktop' );
 		$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['border'], 'bottom' ) );
