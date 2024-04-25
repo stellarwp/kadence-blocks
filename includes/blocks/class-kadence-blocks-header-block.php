@@ -113,14 +113,21 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		//normal state styles
 		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > div' );
 		if ( $sized_attributes['isTransparent'] != '1' ) {
-			$css->add_property( 'background-color', $css->render_color( ! empty( $bg['color'] ) ? $bg['color'] : '') );
+			$css->render_background( $bg, $css );
 			//$css->render_border_styles($border, 'border');
 			if ( '' !== $bg && ! empty( $bg['type'] ) && 'normal' === $bg['type'] && ! empty( $bg['image'] ) ) {
-				$css->add_property( 'background-image', 'url("' . $bg['image'] . '")' );
-				$css->add_property( 'background-position', $bg['position'] );
-				$css->add_property( 'background-size', $bg['size'] );
-				$css->add_property( 'background-repeat', $bg['repeat'] );
-				$css->add_property( 'background-attachment', $bg['attachment'] );
+				$img_bg = array(
+					'type' => 'image',
+					'image' => array(
+						'url' => ! empty($bg['image']) ? 'url("' . $bg['image'] . '")' : '',
+						'imageID' => ! empty($bg['imageID']) ? $bg['imageID'] : '',
+						'position' => ! empty($bg['position']) ? $bg['position'] : '',
+						'attachment' => ! empty($bg['attachment']) ? $bg['attachment'] : '',
+						'size' => ! empty($bg['size']) ? $bg['size'] : '',
+						'repeat' => ! empty($bg['repeat']) ? $bg['repeat'] : '',
+					)
+				);
+				$css->render_background( $img_bg, $css );
 			}
 		}
 
