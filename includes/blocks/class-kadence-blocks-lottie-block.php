@@ -252,7 +252,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 		$rest_url = get_rest_url();
 
 		if ( $attributes['fileSrc'] === 'url' ) {
-			$url = $attributes['fileUrl'];
+			$url = esc_attr( $attributes['fileUrl'] );
 		} else {
 			$url = $rest_url . 'kb-lottieanimation/v1/animations/' . esc_attr( $attributes['localFile'][0]['value'] ) . '.json';
 		}
