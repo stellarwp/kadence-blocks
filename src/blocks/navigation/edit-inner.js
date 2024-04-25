@@ -66,7 +66,7 @@ import BackendStyles from './components/backend-styles';
  */
 const ANCHOR_REGEX = /[\s#]/g;
 export function EditInner(props) {
-	const { attributes, setAttributes, clientId, direct, id, isSelected } = props;
+	const { attributes, setAttributes, clientId, direct, id, isSelected, context } = props;
 	const { uniqueID } = attributes;
 
 	const { previewDevice } = useSelect(
@@ -162,6 +162,42 @@ export function EditInner(props) {
 		backgroundDropdownMobile: meta?._kad_navigation_backgroundDropdownMobile,
 		backgroundDropdownHoverMobile: meta?._kad_navigation_backgroundDropdownHoverMobile,
 		backgroundDropdownActiveMobile: meta?._kad_navigation_backgroundDropdownActiveMobile,
+		linkColorTransparent: meta?._kad_navigation_linkColorTransparent,
+		linkColorTransparentHover: meta?._kad_navigation_linkColorTransparentHover,
+		linkColorTransparentActive: meta?._kad_navigation_linkColorTransparentActive,
+		linkColorTransparentTablet: meta?._kad_navigation_linkColorTransparentTablet,
+		linkColorTransparentHoverTablet: meta?._kad_navigation_linkColorTransparentHoverTablet,
+		linkColorTransparentActiveTablet: meta?._kad_navigation_linkColorTransparentActiveTablet,
+		linkColorTransparentMobile: meta?._kad_navigation_linkColorTransparentMobile,
+		linkColorTransparentHoveMobiler: meta?._kad_navigation_linkColorTransparentHoverMobile,
+		linkColorTransparentActiveMobile: meta?._kad_navigation_linkColorTransparentActiveMobile,
+		backgroundTransparent: meta?._kad_navigation_backgroundTransparent,
+		backgroundTransparentHover: meta?._kad_navigation_backgroundTransparentHover,
+		backgroundTransparentActive: meta?._kad_navigation_backgroundTransparentActive,
+		backgroundTransparentTablet: meta?._kad_navigation_backgroundTransparentTablet,
+		backgroundTransparentHoverTablet: meta?._kad_navigation_backgroundTransparentHoverTablet,
+		backgroundTransparentActiveTablet: meta?._kad_navigation_backgroundTransparentActiveTablet,
+		backgroundTransparentMobile: meta?._kad_navigation_backgroundTransparentMobile,
+		backgroundTransparentHoverMobile: meta?._kad_navigation_backgroundTransparentHoverMobile,
+		backgroundTransparentActiveMobile: meta?._kad_navigation_backgroundTransparentActiveMobile,
+		linkColorSticky: meta?._kad_navigation_linkColorSticky,
+		linkColorStickyHover: meta?._kad_navigation_linkColorStickyHover,
+		linkColorStickyActive: meta?._kad_navigation_linkColorStickyActive,
+		linkColorStickyTablet: meta?._kad_navigation_linkColorStickyTablet,
+		linkColorStickyHoverTablet: meta?._kad_navigation_linkColorStickyHoverTablet,
+		linkColorStickyActiveTablet: meta?._kad_navigation_linkColorStickyActiveTablet,
+		linkColorStickyMobile: meta?._kad_navigation_linkColorStickyMobile,
+		linkColorStickyHoveMobiler: meta?._kad_navigation_linkColorStickyHoverMobile,
+		linkColorStickyActiveMobile: meta?._kad_navigation_linkColorStickyActiveMobile,
+		backgroundSticky: meta?._kad_navigation_backgroundSticky,
+		backgroundStickyHover: meta?._kad_navigation_backgroundStickyHover,
+		backgroundStickyActive: meta?._kad_navigation_backgroundStickyActive,
+		backgroundStickyTablet: meta?._kad_navigation_backgroundStickyTablet,
+		backgroundStickyHoverTablet: meta?._kad_navigation_backgroundStickyHoverTablet,
+		backgroundStickyActiveTablet: meta?._kad_navigation_backgroundStickyActiveTablet,
+		backgroundStickyMobile: meta?._kad_navigation_backgroundStickyMobile,
+		backgroundStickyHoverMobile: meta?._kad_navigation_backgroundStickyHoverMobile,
+		backgroundStickyActiveMobile: meta?._kad_navigation_backgroundStickyActiveMobile,
 		typography: meta?._kad_navigation_typography,
 		dropdownTypography: meta?._kad_navigation_dropdownTypography,
 		divider: meta?._kad_navigation_divider,
@@ -170,6 +206,12 @@ export function EditInner(props) {
 		dropdownDivider: meta?._kad_navigation_dropdownDivider,
 		dropdownDividerTablet: meta?._kad_navigation_dropdownDividerTablet,
 		dropdownDividerMobile: meta?._kad_navigation_dropdownDividerMobile,
+		transparentDivider: meta?._kad_navigation_transparentDivider,
+		transparentDividerTablet: meta?._kad_navigation_transparentDividerTablet,
+		transparentDividerMobile: meta?._kad_navigation_transparentDividerMobile,
+		stickyDivider: meta?._kad_navigation_stickyDivider,
+		stickyDividerTablet: meta?._kad_navigation_stickyDividerTablet,
+		stickyDividerMobile: meta?._kad_navigation_stickyDividerMobile,
 		dropdownWidth: meta?._kad_navigation_dropdownWidth,
 		dropdownWidthTablet: meta?._kad_navigation_dropdownWidthTablet,
 		dropdownWidthMobile: meta?._kad_navigation_dropdownWidthMobile,
@@ -260,6 +302,42 @@ export function EditInner(props) {
 		backgroundDropdownMobile,
 		backgroundDropdownHoverMobile,
 		backgroundDropdownActiveMobile,
+		linkColorTransparent,
+		linkColorTransparentHover,
+		linkColorTransparentActive,
+		linkColorTransparentTablet,
+		linkColorTransparentHoverTablet,
+		linkColorTransparentActiveTablet,
+		linkColorTransparentMobile,
+		linkColorTransparentHoverMobile,
+		linkColorTransparentActiveMobile,
+		backgroundTransparent,
+		backgroundTransparentHover,
+		backgroundTransparentActive,
+		backgroundTransparentTablet,
+		backgroundTransparentHoverTablet,
+		backgroundTransparentActiveTablet,
+		backgroundTransparentMobile,
+		backgroundTransparentHoverMobile,
+		backgroundTransparentActiveMobile,
+		linkColorSticky,
+		linkColorStickyHover,
+		linkColorStickyActive,
+		linkColorStickyTablet,
+		linkColorStickyHoverTablet,
+		linkColorStickyActiveTablet,
+		linkColorStickyMobile,
+		linkColorStickyHoverMobile,
+		linkColorStickyActiveMobile,
+		backgroundSticky,
+		backgroundStickyHover,
+		backgroundStickyActive,
+		backgroundStickyTablet,
+		backgroundStickyHoverTablet,
+		backgroundStickyActiveTablet,
+		backgroundStickyMobile,
+		backgroundStickyHoverMobile,
+		backgroundStickyActiveMobile,
 		typography,
 		dropdownTypography,
 		divider,
@@ -268,6 +346,12 @@ export function EditInner(props) {
 		dropdownDivider,
 		dropdownDividerTablet,
 		dropdownDividerMobile,
+		transparentDivider,
+		transparentDividerTablet,
+		transparentDividerMobile,
+		stickyDivider,
+		stickyDividerTablet,
+		stickyDividerMobile,
 		dropdownWidth,
 		dropdownWidthTablet,
 		dropdownWidthMobile,
@@ -748,6 +832,52 @@ export function EditInner(props) {
 								mobileChildren={styleColorControls('Mobile')}
 							></SmallResponsiveControl>
 						</KadencePanelBody>
+						{context?.['kadence/headerIsTransparent'] == '1' && (
+							<KadencePanelBody
+								title={__('Transparent Styles', 'kadence-blocks')}
+								initialOpen={false}
+								panelName={'kb-navigation-transparent-styles'}
+							>
+								<SmallResponsiveControl
+									label={'Colors'}
+									desktopChildren={styleColorControls('', 'Transparent')}
+									tabletChildren={styleColorControls('Tablet', 'Transparent')}
+									mobileChildren={styleColorControls('Mobile', 'Transparent')}
+								></SmallResponsiveControl>
+								<ResponsiveSingleBorderControl
+									label={'Divider'}
+									value={transparentDivider}
+									tabletValue={transparentDividerTablet}
+									mobileValue={transparentDividerMobile}
+									onChange={(value) => setMetaAttribute(value, 'transparentDivider')}
+									onChangeTablet={(value) => setMetaAttribute(value, 'transparentDividerTablet')}
+									onChangeMobile={(value) => setMetaAttribute(value, 'transparentDividerMobile')}
+								/>
+							</KadencePanelBody>
+						)}
+						{context?.['kadence/headerIsSticky'] == '1' && (
+							<KadencePanelBody
+								title={__('Sticky Styles', 'kadence-blocks')}
+								initialOpen={false}
+								panelName={'kb-navigation-sticky-styles'}
+							>
+								<SmallResponsiveControl
+									label={'Colors'}
+									desktopChildren={styleColorControls('', 'Sticky')}
+									tabletChildren={styleColorControls('Tablet', 'Sticky')}
+									mobileChildren={styleColorControls('Mobile', 'Sticky')}
+								></SmallResponsiveControl>
+								<ResponsiveSingleBorderControl
+									label={'Divider'}
+									value={stickyDivider}
+									tabletValue={stickyDividerTablet}
+									mobileValue={stickyDividerMobile}
+									onChange={(value) => setMetaAttribute(value, 'stickyDivider')}
+									onChangeTablet={(value) => setMetaAttribute(value, 'stickyDividerTablet')}
+									onChangeMobile={(value) => setMetaAttribute(value, 'stickyDividerMobile')}
+								/>
+							</KadencePanelBody>
+						)}
 
 						<KadencePanelBody
 							title={__('Divider Settings', 'kadence-blocks')}

@@ -2,13 +2,13 @@
  * WordPress dependencies
  */
 import { registerPlugin } from '@wordpress/plugins';
-import { render } from '@wordpress/element';
+import { render, useState } from '@wordpress/element';
 import { useDispatch, useSelect, subscribe } from '@wordpress/data';
 import { createBlock, isUnmodifiedDefaultBlock } from '@wordpress/blocks';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
-
+import { applyFilters } from '@wordpress/hooks';
 /**
  * Internal dependencies
  */
@@ -20,10 +20,11 @@ import { kadenceBlocksIcon } from '@kadence/icons';
 function ToolbarLibrary() {
 	const { getSelectedBlock, getBlockIndex, getBlockHierarchyRootClientId } = useSelect(blockEditorStore);
 	const { replaceBlocks, insertBlocks } = useDispatch(blockEditorStore);
+	const [kadenceIcon, setKadenceIcon] = useState(applyFilters('kadence.blocks_icon', kadenceBlocksIcon));
 	const LibraryButton = () => (
 		<Button
 			className="kb-toolbar-prebuilt-button"
-			icon={kadenceBlocksIcon}
+			icon={kadenceIcon}
 			isPrimary
 			onClick={() => {
 				const selectedBlock = getSelectedBlock();

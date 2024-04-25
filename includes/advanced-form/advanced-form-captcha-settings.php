@@ -34,6 +34,13 @@ class Kadence_Blocks_Form_Captcha_Settings {
 	public $using_kadence_captcha = false;
 
 	/**
+	 * Are settings sourced from Kadence blocks globals
+	 *
+	 * @var bool
+	 */
+	public $using_kadence_blocks_settings = true;
+
+	/**
 	 * Captcha service
 	 * googlev2, googlev3, turnstile, or hcaptcha
 	 *
@@ -56,10 +63,11 @@ class Kadence_Blocks_Form_Captcha_Settings {
 
 	public function __construct( $attributes ) {
 		$this->is_using_kadence_captcha_settings( $attributes );
+		$this->is_using_kadence_blocks_settings( $attributes );
 		$this->get_captcha_service( $attributes );
 		$this->get_public_key( $attributes );
 		$this->get_secret_key( $attributes );
-		$this->get_captcha_language();
+		$this->get_captcha_language( $attributes );
 		$this->get_styles( $attributes );
 		$this->has_valid_settings();
 	}
@@ -89,14 +97,16 @@ class Kadence_Blocks_Form_Captcha_Settings {
 		}
 	}
 
-	private function get_captcha_language() {
+	private function get_captcha_language( $attributes ) {
 		if ( $this->using_kadence_captcha ) {
 			$stored_value   = $this->get_kadence_captcha_stored_value( 'recaptcha_lang' );
 			$filtered_value = apply_filters( 'kt_recaptcha_option_value', $stored_value, 'recaptcha_lang' );
 
 			$this->language = ! empty( $filtered_value ) ? $filtered_value : false;
-		} elseif ( ! empty( get_option( 'kadence_blocks_recaptcha_language' ) ) ) {
+		} elseif ( $this->using_kadence_blocks_settings && ! empty( get_option( 'kadence_blocks_recaptcha_language' ) ) ) {
 			$this->language = get_option( 'kadence_blocks_recaptcha_language' );
+		} elseif ( isset( $attributes['recaptchaLanguage'] ) ) {
+			$this->language =  $attributes['recaptchaLanguage'];
 		}
 	}
 
@@ -108,9 +118,18 @@ class Kadence_Blocks_Form_Captcha_Settings {
 		}
 	}
 
+	private function is_using_kadence_blocks_settings( $attributes ) {
+		if ( isset( $attributes['useKbSettings'] ) && $attributes['useKbSettings'] ) {
+			$this->using_kadence_blocks_settings = true;
+		} else {
+			$this->using_kadence_blocks_settings = false;
+		}
+	}
+
 	private function get_public_key( $attributes ) {
 		if ( $this->using_kadence_captcha ) {
 			$slug = '';
+			$key = '';
 
 			switch ( $this->service ) {
 				case 'googlev2':
@@ -124,29 +143,42 @@ class Kadence_Blocks_Form_Captcha_Settings {
 					break;
 			}
 			$key = $this->get_kadence_captcha_stored_value( $slug, '' );
-
-			if ( ! empty( $key ) ) {
-				$this->public_key = $key;
-			}
 		} elseif ( ! empty( $this->service ) ) {
-			$option_key = '';
-			switch ( $this->service ) {
-				case 'googlev2':
-				case 'googlev3':
-					$option_key = 'kadence_blocks_recaptcha_site_key';
-					break;
-				case 'turnstile':
-					$option_key = 'kadence_blocks_turnstile_site_key';
-					break;
-				case 'hcaptcha':
-					$option_key = 'kadence_blocks_hcaptcha_site_key';
-					break;
-			}
+			if ( $this->using_kadence_blocks_settings ) {
+				$option_key = '';
+				switch ( $this->service ) {
+					case 'googlev2':
+					case 'googlev3':
+						$option_key = 'kadence_blocks_recaptcha_site_key';
+						break;
+					case 'turnstile':
+						$option_key = 'kadence_blocks_turnstile_site_key';
+						break;
+					case 'hcaptcha':
+						$option_key = 'kadence_blocks_hcaptcha_site_key';
+						break;
+				}
 
-			$site_key = get_option( $option_key );
-			if ( ! empty( $site_key ) ) {
-				$this->public_key = $site_key;
+				$key = get_option( $option_key );
+			} else {
+				switch ( $this->service ) {
+					case 'googlev2':
+					case 'googlev3':
+						$option_key = 'recaptchaSiteKey';
+						break;
+					case 'turnstile':
+						$option_key = 'turnstileSiteKey';
+						break;
+					case 'hcaptcha':
+						$option_key = 'hCaptchaSiteKey';
+						break;
+				}
+				$key = isset( $attributes[ $option_key ] ) ? $attributes[ $option_key ] : '';
 			}
+		}
+
+		if ( ! empty( $key ) ) {
+			$this->public_key = $key;
 		} else {
 			$this->public_key = false;
 		}
@@ -169,29 +201,41 @@ class Kadence_Blocks_Form_Captcha_Settings {
 			}
 
 			$key = $this->get_kadence_captcha_stored_value( $slug, '' );
-
-			if ( ! empty( $key ) ) {
-				$this->secret_key = $key;
-			}
 		} elseif ( ! empty( $this->service ) ) {
-			$option_key = '';
-			switch ( $this->service ) {
-				case 'googlev2':
-				case 'googlev3':
-					$option_key = 'kadence_blocks_recaptcha_secret_key';
-					break;
-				case 'turnstile':
-					$option_key = 'kadence_blocks_turnstile_secret_key';
-					break;
-				case 'hcaptcha':
-					$option_key = 'kadence_blocks_hcaptcha_secret_key';
-					break;
+			if ( $this->using_kadence_blocks_settings ) {
+				$option_key = '';
+				switch ( $this->service ) {
+					case 'googlev2':
+					case 'googlev3':
+						$option_key = 'kadence_blocks_recaptcha_secret_key';
+						break;
+					case 'turnstile':
+						$option_key = 'kadence_blocks_turnstile_secret_key';
+						break;
+					case 'hcaptcha':
+						$option_key = 'kadence_blocks_hcaptcha_secret_key';
+						break;
+				}
+				$key = get_option( $option_key );
+			} else {
+				switch ( $this->service ) {
+					case 'googlev2':
+					case 'googlev3':
+						$option_key = 'recaptchaSecretKey';
+						break;
+					case 'turnstile':
+						$option_key = 'turnstileSecretKey';
+						break;
+					case 'hcaptcha':
+						$option_key = 'hCaptchaSecretKey';
+						break;
+				}
+				$key = isset( $attributes[ $option_key ] ) ? $attributes[ $option_key ] : '';
 			}
+		}
 
-			$site_key = get_option( $option_key );
-			if ( ! empty( $site_key ) ) {
-				$this->secret_key = $site_key;
-			}
+		if ( ! empty( $key ) ) {
+			$this->secret_key = $key;
 		} else {
 			$this->secret_key = false;
 		}

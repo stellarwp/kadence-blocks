@@ -20,5 +20,6 @@
 		"align": ["wide", "full"],
 		"ariaLabel": true,
 		"html": false
-	}
+	},
+	"usesContext": ["kadence/headerPostId", "kadence/headerIsSticky", "kadence/headerIsTransparent"]
 }

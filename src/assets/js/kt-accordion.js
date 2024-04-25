@@ -950,7 +950,7 @@
 				const element = document.getElementById(id);
 				if (element) {
 					if (element.classList.contains('wp-block-kadence-pane')) {
-						const child = document.querySelectorAll('#' + id + ' .kt-blocks-accordion-header')[0];
+						const child = document.querySelectorAll('[id="' + id + '"] .kt-blocks-accordion-header')[0];
 						if (!child.classList.contains('kt-accordion-panel-active')) {
 							if (e.type && e.type === 'initialized') {
 								window.setTimeout(function () {

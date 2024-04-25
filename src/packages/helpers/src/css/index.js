@@ -271,6 +271,24 @@ export default class KadenceBlocksCSS {
 	}
 
 	/**
+	 * Adds a new rule to the css output
+	 *
+	 * @access public
+	 * @since  1.0
+	 *
+	 * @param  string property - the css property.
+	 * @param  string value - the value to be placed with the property.
+	 * @param  string prefix - not required, but allows for the creation of a browser prefixed property.
+	 * @return this
+	 */
+	add_raw_styles(styles) {
+		if (styles) {
+			this._output += styles;
+		}
+		return this;
+	}
+
+	/**
 	 * Adds browser prefixed rules, and other special rules to the css output
 	 *
 	 * @access public

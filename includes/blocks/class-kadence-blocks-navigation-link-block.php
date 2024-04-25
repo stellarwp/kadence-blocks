@@ -212,10 +212,24 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		// Styles For Links in Transparent Header.
 		$css->set_selector( '.header-' . strtolower( $size ) . '-transparent .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a, .header-' . strtolower( $size ) . '-transparent .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap' );
 		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorTransparent'] ), $sized_attributes['linkColorTransparent'] );
+		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundTransparent'] ) );
 		$css->set_selector( '.header-' . strtolower( $size ) . '-transparent .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap:hover > a, .header-' . strtolower( $size ) . '-transparent .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap:hover' );
 		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorTransparentHover'] ) );
+		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundTransparentHover'] ) );
 		$css->set_selector( '.header-' . strtolower( $size ) . '-transparent .wp-block-kadence-navigation .navigation .menu-container > ul > li.menu-item.current-menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a, .header-' . strtolower( $size ) . '-transparent .wp-block-kadence-navigation .navigation .menu-container > ul > li.menu-item.current-menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap' );
 		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorTransparentActive'] ) );
+		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundTransparentActive'] ) );
+
+		// Styles For Links in Sticky Header.
+		$css->set_selector( '.item-is-stuck .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a, .item-is-stuck .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap' );
+		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorSticky'] ), $sized_attributes['linkColorSticky'] );
+		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundSticky'] ) );
+		$css->set_selector( '.item-is-stuck .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap:hover > a, .item-is-stuck .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap:hover' );
+		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorStickyHover'] ) );
+		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundStickyHover'] ) );
+		$css->set_selector( '.item-is-stuck .wp-block-kadence-navigation .navigation .menu-container > ul > li.menu-item.current-menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a, .item-is-stuck .wp-block-kadence-navigation .navigation .menu-container > ul > li.menu-item.current-menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap' );
+		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorStickyActive'] ) );
+		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundStickyActive'] ) );
 
 		// Dropdown logic from theme Styles Component.
 		// Dropdown.

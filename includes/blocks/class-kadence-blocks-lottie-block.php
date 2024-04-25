@@ -236,7 +236,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 					}
 
 				$content .= 'src="' . $this->getAnimationUrl( $attributes ) . '"
-							id="kb-lottie-player' . $unique_id .'"
+							id="kb-lottie-player' . esc_attr( $unique_id ) .'"
 						></dotlottie-player>';
 				if ( isset( $attributes['useRatio'] ) && $attributes['useRatio'] ) {
 					$content .= '</div>';

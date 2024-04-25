@@ -295,6 +295,33 @@ export default function Edit(props) {
 		linkColorTransparentMobile,
 		linkColorTransparentHoverMobile,
 		linkColorTransparentActiveMobile,
+		backgroundTransparent,
+		backgroundTransparentHover,
+		backgroundTransparentActive,
+		backgroundTransparentTablet,
+		backgroundTransparentHoverTablet,
+		backgroundTransparentActiveTablet,
+		backgroundTransparentMobile,
+		backgroundTransparentHoverMobile,
+		backgroundTransparentActiveMobile,
+		linkColorSticky,
+		linkColorStickyHover,
+		linkColorStickyActive,
+		linkColorStickyTablet,
+		linkColorStickyHoverTablet,
+		linkColorStickyActiveTablet,
+		linkColorStickyMobile,
+		linkColorStickyHoverMobile,
+		linkColorStickyActiveMobile,
+		backgroundSticky,
+		backgroundStickyHover,
+		backgroundStickyActive,
+		backgroundStickyTablet,
+		backgroundStickyHoverTablet,
+		backgroundStickyActiveTablet,
+		backgroundStickyMobile,
+		backgroundStickyHoverMobile,
+		backgroundStickyActiveMobile,
 		megaMenuWidth,
 		megaMenuCustomWidth,
 		megaMenuCustomWidthUnit,
@@ -720,9 +747,6 @@ export default function Edit(props) {
 		const backgroundHoverValue = attributes['background' + suffix + 'Hover' + size];
 		const linkColorActiveValue = attributes['linkColor' + suffix + 'Active' + size];
 		const backgroundActiveValue = attributes['background' + suffix + 'Active' + size];
-		const linkColorTransparentValue = attributes['linkColorTransparent' + suffix + size];
-		const linkColorTransparentHoverValue = attributes['linkColorTransparent' + suffix + 'Hover' + size];
-		const linkColorTransparentActiveValue = attributes['linkColorTransparent' + suffix + 'Active' + size];
 		return (
 			<>
 				<HoverToggleControl
@@ -735,17 +759,6 @@ export default function Edit(props) {
 								onChange={(value) => setAttributes({ ['linkColor' + suffix + size]: value })}
 								key={'normal'}
 							/>
-							{context?.['kadence/headerIsTransparent'] && (
-								<PopColorControl
-									label={__('Link Color Transparent', 'kadence-blocks')}
-									value={linkColorTransparentValue}
-									default={''}
-									onChange={(value) =>
-										setAttributes({ ['linkColorTransparent' + suffix + size]: value })
-									}
-									key={'normal'}
-								/>
-							)}
 							<PopColorControl
 								label={__('Background', 'kadence-blocks')}
 								value={backgroundValue}
@@ -764,17 +777,6 @@ export default function Edit(props) {
 								onChange={(value) => setAttributes({ ['linkColor' + suffix + 'Hover' + size]: value })}
 								key={'hover'}
 							/>
-							{context?.['kadence/headerIsTransparent'] && (
-								<PopColorControl
-									label={__('Link Color Hover Transparent', 'kadence-blocks')}
-									value={linkColorTransparentHoverValue}
-									default={''}
-									onChange={(value) =>
-										setAttributes({ ['linkColorTransparentHover' + suffix + size]: value })
-									}
-									key={'hover'}
-								/>
-							)}
 							<PopColorControl
 								label={__('Background Hover', 'kadence-blocks')}
 								value={backgroundHoverValue}
@@ -793,17 +795,6 @@ export default function Edit(props) {
 								onChange={(value) => setAttributes({ ['linkColor' + suffix + 'Active' + size]: value })}
 								key={'active'}
 							/>
-							{context?.['kadence/headerIsTransparent'] && (
-								<PopColorControl
-									label={__('Link Color Active Transparent', 'kadence-blocks')}
-									value={linkColorTransparentActiveValue}
-									default={''}
-									onChange={(value) =>
-										setAttributes({ ['linkColorTransparentActive' + suffix + size]: value })
-									}
-									key={'active'}
-								/>
-							)}
 							<PopColorControl
 								label={__('Background Active', 'kadence-blocks')}
 								value={backgroundActiveValue}
@@ -1185,6 +1176,34 @@ export default function Edit(props) {
 								mobileChildren={styleColorControls('Mobile')}
 							></SmallResponsiveControl>
 						</KadencePanelBody>
+						{context?.['kadence/headerIsTransparent'] == '1' && (
+							<KadencePanelBody
+								title={__('Transparent Styles', 'kadence-blocks')}
+								initialOpen={false}
+								panelName={'navigation-link-transparent-style-settings'}
+							>
+								<SmallResponsiveControl
+									label={'Colors'}
+									desktopChildren={styleColorControls('', 'Transparent')}
+									tabletChildren={styleColorControls('Tablet', 'Transparent')}
+									mobileChildren={styleColorControls('Mobile', 'Transparent')}
+								></SmallResponsiveControl>
+							</KadencePanelBody>
+						)}
+						{context?.['kadence/headerIsSticky'] == '1' && (
+							<KadencePanelBody
+								title={__('Sticky Styles', 'kadence-blocks')}
+								initialOpen={false}
+								panelName={'navigation-link-sticky-style-settings'}
+							>
+								<SmallResponsiveControl
+									label={'Colors'}
+									desktopChildren={styleColorControls('', 'Sticky')}
+									tabletChildren={styleColorControls('Tablet', 'Sticky')}
+									mobileChildren={styleColorControls('Mobile', 'Sticky')}
+								></SmallResponsiveControl>
+							</KadencePanelBody>
+						)}
 
 						{showSettings('fontSettings', 'kadence/navigation') && (
 							<KadencePanelBody

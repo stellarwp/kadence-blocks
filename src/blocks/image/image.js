@@ -888,7 +888,7 @@ export default function Image({
 								}
 							/>
 						</KadencePanelBody>
-						{context?.['kadence/headerIsSticky'] && (
+						{context?.['kadence/headerIsSticky'] == '1' && (
 							<KadencePanelBody
 								title={__('Sticky Image settings', 'kadence-blocks')}
 								initialOpen={true}
@@ -976,7 +976,7 @@ export default function Image({
 								/>
 							</KadencePanelBody>
 						)}
-						{context?.['kadence/headerIsTransparent'] && (
+						{context?.['kadence/headerIsTransparent'] == '1' && (
 							<KadencePanelBody
 								title={__('Transparent Image settings', 'kadence-blocks')}
 								initialOpen={true}
