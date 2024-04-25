@@ -1,12 +1,19 @@
 import { __ } from '@wordpress/i18n';
-import { useMemo } from '@wordpress/element';
+import { useMemo, useState } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 
-import { get } from 'lodash';
+import { get, map } from 'lodash';
 import classnames from 'classnames';
-import { DndContext, useDraggable } from '@dnd-kit/core';
-import Droppable from './droppable';
+import { DndContext, DragOverlay } from '@dnd-kit/core';
 
+import {
+	arrayMove,
+	SortableContext,
+	sortableKeyboardCoordinates,
+	useSortable,
+	horizontalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import Droppable from './droppable';
 import DeleteBlockButton from './delete';
 import SelectBlockButton from './selectBlock';
 import AddBlockButton from './add';
@@ -83,8 +90,11 @@ const DesktopRow = ({ position, blocks }) => {
 };
 
 const InnerBlock = ({ block }) => {
-	const { attributes, listeners, setNodeRef, transform } = useDraggable({
+	const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
 		id: block.clientId,
+		data: {
+			name: block.name.replace('kadence/', '').replace('core/', ''),
+		},
 	});
 	const style = transform
 		? {
@@ -109,12 +119,16 @@ const InnerBlocks = ({ blocks, className, clientId, showMidColumns = true }) => 
 	});
 
 	if (blocks) {
+		const clientIds = map(blocks, 'clientId');
+
 		return (
-			<Droppable clientId={clientId} classNames={classNames}>
-				{blocks.map((block) => (
-					<InnerBlock key={block.clientId} block={block} />
-				))}
-			</Droppable>
+			<SortableContext items={clientIds} strategy={horizontalListSortingStrategy}>
+				<Droppable clientId={clientId} classNames={classNames}>
+					{blocks.map((block) => (
+						<InnerBlock key={block.clientId} block={block} />
+					))}
+				</Droppable>
+			</SortableContext>
 		);
 	}
 
@@ -125,24 +139,56 @@ export default function Desktop({ blocks }) {
 	const rowPositions = ['top', 'middle', 'bottom'];
 	const innerBlocks = useMemo(() => get(blocks, ['innerBlocks'], []), [blocks]);
 
-	function handleDragEnd(event) {
-		if (event.over) {
-			const destinationClientId = event.over.id;
-			const currentClientID = event.active.id;
-			const parentClientID = wp.data.select('core/block-editor').getBlockRootClientId(currentClientID);
+	const [activeBlockData, setActiveBlockData] = useState(null);
 
+	const getIndex = (clientId) => {
+		return wp.data.select('core/block-editor').getBlockIndex(clientId);
+	};
+
+	function handleDragEnd(event) {
+		const { active, over } = event;
+
+		if (over) {
+			let destinationClientId = over.id;
+			const currentClientID = active.id;
+			const parentClientID = wp.data.select('core/block-editor').getBlockRootClientId(currentClientID);
+			const newIndex = getIndex(destinationClientId);
+			const destName = wp.data.select('core/block-editor').getBlockName(destinationClientId);
+
+			// If we're moving within the same column, destinationID should match parentID
+			if (destName !== 'kadence/header-column') {
+				destinationClientId = parentClientID;
+			}
+
+			// moveBlockToPosition( clientID, from RootClientID, to RootClientID, to index )
 			wp.data
 				.dispatch('core/block-editor')
-				.moveBlockToPosition(currentClientID, parentClientID, destinationClientId);
+				.moveBlockToPosition(currentClientID, parentClientID, destinationClientId, newIndex);
 		}
+		setActiveBlockData(null);
 	}
+
+	function handleDragStart(event) {
+		const { active } = event;
+		setActiveBlockData(active);
+	}
+
+	// Action when dragging over a new drop section
+	function onDragOver(event) {}
 
 	return (
 		<div className={'visual-desktop-container'}>
-			<DndContext onDragEnd={handleDragEnd}>
+			<DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart} onDragOver={onDragOver}>
 				{rowPositions.map((position, index) => (
 					<DesktopRow key={position} position={position} blocks={innerBlocks} />
 				))}
+
+				{/* This created the element that is visually moved when dragging */}
+				<DragOverlay>
+					{activeBlockData ? (
+						<div className={'visual-inner-block'}>{activeBlockData.data.current.name}</div>
+					) : null}
+				</DragOverlay>
 			</DndContext>
 		</div>
 	);
