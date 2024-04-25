@@ -32,7 +32,7 @@ const getDescendantIds = (id = '', recursive = true, first_loop = true) => {
 function extractBlocks(blocksData) {
 	let desktopBlocks,
 		tabletBlocks,
-		offcanvasBlocks = null;
+		offCanvasBlocks = null;
 
 	// Loop through the blocks data to find the relevant blocks
 	blocksData.forEach((block) => {
@@ -41,11 +41,11 @@ function extractBlocks(blocksData) {
 		} else if (block.name.includes('tablet')) {
 			tabletBlocks = block;
 		} else if (block.name.includes('off-canvas')) {
-			offcanvasBlocks = block;
+			offCanvasBlocks = block;
 		}
 	});
 
-	return { desktopBlocks, tabletBlocks, offcanvasBlocks };
+	return { desktopBlocks, tabletBlocks, offCanvasBlocks };
 }
 
 export default function VisualBuilder({ clientId, startVisible = false }) {
@@ -58,7 +58,7 @@ export default function VisualBuilder({ clientId, startVisible = false }) {
 	const topLevelIds = select('core/block-editor').getBlockOrder(clientId);
 	const topLevelBlocks = topLevelIds.map((_id) => select('core/block-editor').getBlock(_id));
 
-	const { desktopBlocks, tabletBlocks, offcanvasBlocks } = extractBlocks(topLevelBlocks);
+	const { desktopBlocks, tabletBlocks, offCanvasBlocks } = extractBlocks(topLevelBlocks);
 
 	return (
 		<div class={'kb-header-visual-builder'}>
@@ -85,7 +85,7 @@ export default function VisualBuilder({ clientId, startVisible = false }) {
 						</Button>
 						<Button
 							isPrimary={tab === 'off-canvas'}
-							disabled={offcanvasBlocks === null}
+							disabled={offCanvasBlocks === null}
 							onClick={() => setTab('off-canvas')}
 						>
 							{__('Off Canvas', 'kadence-blocks')}
