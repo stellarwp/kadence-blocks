@@ -508,7 +508,6 @@ export default function BackendStyles(props) {
 	css.add_property('font-weight', typography.weight);
 	css.add_property('line-height', getSpacingOptionOutput(previewLineHeight, typography.lineType));
 	if (previewIsTransparent != '1') {
-		console.log(background);
 		if ('normal' === background?.type && background?.image) {
 			css.add_property('background-image', background.image);
 			css.add_property('background-size', background.size);
@@ -532,7 +531,6 @@ export default function BackendStyles(props) {
 			css.add_property('background-position', backgroundTransparent.imagePosition);
 		}
 		if ('normal' === backgroundTransparent?.type && backgroundTransparent?.color) {
-			console.log(1, backgroundTransparent.color);
 			css.add_property('background-color', KadenceColorOutput(backgroundTransparent.color));
 		}
 		if ('gradient' === backgroundTransparent?.type && backgroundTransparent?.gradient) {

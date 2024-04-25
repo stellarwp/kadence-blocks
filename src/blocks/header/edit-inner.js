@@ -418,7 +418,6 @@ export function EditInner(props) {
 		backgroundSticky,
 		backgroundStickyHover,
 		typography,
-		textColor,
 		linkColor,
 		linkHoverColor,
 		height,
@@ -1799,6 +1798,7 @@ export function EditInner(props) {
 							panelName={'kb-header-text-color'}
 						>
 							<ColorGroup>
+								{console.log(typography)}
 								<PopColorControl
 									label={__('Text Color', 'kadence-blocks')}
 									value={typography.color ? typography.color : ''}
