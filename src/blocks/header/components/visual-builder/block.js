@@ -37,7 +37,7 @@ export default function Block({ block, isSortable = true }) {
 			id: block.clientId,
 			data: {
 				name: block.name,
-				attributes: { metadata: { name: get(block, ['attributes', 'metadata', 'name']) } },
+				attributes: block.attributes,
 			},
 		});
 		const style = transform
