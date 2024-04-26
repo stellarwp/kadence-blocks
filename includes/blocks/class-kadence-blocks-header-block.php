@@ -78,14 +78,12 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 			$this->sized_dynamic_styles( $css, $header_attributes, $unique_id, $size );
 		}
 		$css->set_media_state( 'desktop' );
-
-		//$css->set_selector('.wp-block-kadence-header.wp-block-kadence-header' . $unique_id . ':hover');
-		//$css->add_property('background-color', $css->render_color($hover_bg['color']));
-		$css->set_selector('.wp-block-kadence-header.wp-block-kadence-header' . $unique_id . ' a');
-//		$css->add_property('color', $css->render_color($header_attributes['linkColor']));
-		$css->set_selector('.wp-block-kadence-header.wp-block-kadence-header' . $unique_id . ' a:hover');
-//		$css->add_property('color', $css->render_color($header_attributes['linkHoverColor']));
-
+		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > .wp-block-kadence-header-desktop:hover' );
+		$css->render_measure_range( $header_attributes, 'borderRadiusHover', 'border-radius', '', ['unit_key' => 'borderRadiusHoverUnit']);
+		$css->set_media_state( 'tablet' );
+		$css->render_measure_range( $header_attributes, 'borderRadiusHoverTablet', 'border-radius', '', ['unit_key' => 'borderRadiusHoverUnit']);
+		$css->set_media_state( 'mobile' );
+		$css->render_measure_range( $header_attributes, 'borderRadiusHoverMobile', 'border-radius', '', ['unit_key' => 'borderRadiusHoverUnit']);
 		return $css->css_output();
 	}
 
@@ -238,7 +236,13 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_measure_output( $sized_attributes, 'margin', 'margin', '', ['unit_key' => 'marginUnit']);
 		$css->render_measure_output( $sized_attributes, 'padding', 'padding', '', ['unit_key' => 'paddingUnit']);
 		$css->render_typography( $sized_attributes );
-		
+
+		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > .wp-block-kadence-header-desktop:hover' );
+		$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['borderHover'], 'bottom' ) );
+		$css->add_property( 'border-top', $css->render_border( $sized_attributes['borderHover'], 'top' ) );
+		$css->add_property( 'border-left', $css->render_border( $sized_attributes['borderHover'], 'left' ) );
+		$css->add_property( 'border-right', $css->render_border( $sized_attributes['borderHover'], 'right' ) );
+
 		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > div' );
 		if ( $sized_attributes['isTransparent'] != '1' ) {
 			$css->render_background( $bg, $css );
@@ -279,11 +283,6 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 				$css->render_background( $hover_img_bg, $css );
 			}
 		}
-
-		$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['borderHover'], 'bottom' ) );
-		$css->add_property( 'border-top', $css->render_border( $sized_attributes['borderHover'], 'top' ) );
-		$css->add_property( 'border-left', $css->render_border( $sized_attributes['borderHover'], 'left' ) );
-		$css->add_property( 'border-right', $css->render_border( $sized_attributes['borderHover'], 'right' ) );
 
 		//transparent normal
 		$css->set_selector( '.wp-block-kadence-header' . $unique_id . '.header-' . strtolower( $size ) . '-transparent > div' );

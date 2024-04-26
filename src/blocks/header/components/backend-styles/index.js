@@ -311,10 +311,10 @@ export default function BackendStyles(props) {
 	if (previewIsTransparent != '1') {
 		if ('normal' === background?.type && background?.image) {
 			css.add_property('background-image', background.image);
-			css.add_property('background-size', background.imageSize);
-			css.add_property('background-repeat', background.imageRepeat);
-			css.add_property('background-attachment', background.imageAttachment);
-			css.add_property('background-position', background.imagePosition);
+			css.add_property('background-size', background.size);
+			css.add_property('background-repeat', background.repeat);
+			css.add_property('background-attachment', background.attachment);
+			css.add_property('background-position', background.position);
 		}
 		if ('normal' === background?.type && background?.color) {
 			css.add_property('background-color', KadenceColorOutput(background.color));
