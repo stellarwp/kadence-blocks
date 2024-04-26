@@ -67,7 +67,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param string             $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
-		$header_attributes = $this->get_header_attributes( $attributes['id'] );
+		$header_attributes = $this->get_attributes_with_defaults_cpt( $attributes['id'], 'kadence_header', '_kad_header_' );
 
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
@@ -111,7 +111,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_media_state( strtolower( $size ) );
 
 		//normal state styles
-		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > div' );
+		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' .kb-header-container' );
 
 		if ( $sized_attributes['isTransparent'] != '1' ) {
 			$css->add_property( 'background-color', $css->render_color( ! empty( $bg['color'] ) ? $bg['color'] : '') );
@@ -130,7 +130,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( 'border-right', $css->render_border( $sized_attributes['border'], 'right' ) );
 
 		//hover styles
-		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > div:hover' );
+		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' .kb-header-container:hover' );
 
 		if ( $sized_attributes['isTransparent'] != '1' ) {
 			$css->add_property( 'background-color', $css->render_color( ! empty( $hover_bg['color'] ) ? $hover_bg['color'] : '') );
@@ -149,7 +149,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( 'border-right', $css->render_border( $sized_attributes['borderHover'], 'right' ) );
 
 		//transparent normal
-		$css->set_selector( '.wp-block-kadence-header' . $unique_id . '.header-' . strtolower( $size ) . '-transparent > div' );
+		$css->set_selector( '.wp-block-kadence-header' . $unique_id . '.header-' . strtolower( $size ) . '-transparent .kb-header-container' );
 		if ( $sized_attributes['isTransparent'] == '1' ) {
 			$css->add_property( 'background-color', $css->render_color( ! empty( $bg_transparent['color'] ) ? $bg_transparent['color'] : '') );
 			if ( '' !== $bg_transparent && 'normal' === $bg_transparent['type'] && ! empty( $bg_transparent['image'] ) ) {
@@ -167,7 +167,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		//transparent hover
-		$css->set_selector( '.wp-block-kadence-header' . $unique_id . '.header-' . strtolower( $size ) . '-transparent > div:hover' );
+		$css->set_selector( '.wp-block-kadence-header' . $unique_id . '.header-' . strtolower( $size ) . '-transparent .kb-header-container:hover' );
 		if ( $sized_attributes['isTransparent'] == '1' ) {
 			$css->add_property( 'background-color', $css->render_color( ! empty( $hover_bg_transparent['color'] ) ? $hover_bg_transparent['color'] : '') );
 			if ( '' !== $hover_bg_transparent && 'normal' === $hover_bg_transparent['type'] && ! empty( $hover_bg_transparent['image'] ) ) {
@@ -186,7 +186,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		//sticky normal
-		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > div.item-is-stuck' );
+		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' .kb-header-container.item-is-stuck' );
 		if ( $sized_attributes['isSticky'] == '1' ) {
 			$css->add_property( 'background-color', $css->render_color( ! empty( $bg_sticky['color'] ) ? $bg_sticky['color'] : '') );
 			if ( '' !== $bg_sticky && 'normal' === $hover_bg_sticky['type'] && ! empty( $bg_sticky['image'] ) ) {
@@ -204,7 +204,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		//sticky hover
-		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > div.item-is-stuck:hover' );
+		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' .kb-header-container.item-is-stuck:hover' );
 		if ( $sized_attributes['isSticky'] == '1' ) {
 			$css->add_property( 'background-color', $css->render_color( ! empty( $hover_bg_sticky['color'] ) ? $hover_bg_sticky['color'] : '') );
 			if ( '' !== $hover_bg_sticky && 'normal' === $hover_bg_sticky['type'] && ! empty( $hover_bg_sticky['image'] ) ) {
@@ -257,7 +257,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		self::$seen_refs[ $attributes['id'] ] = true;
 
-		$header_attributes = $this->get_header_attributes( $attributes['id'] );
+		$header_attributes = $this->get_attributes_with_defaults_cpt( $attributes['id'], 'kadence_header', '_kad_header_' );
 		$header_attributes = json_decode( json_encode( $header_attributes ), true );
 
 		// Remove the advanced nav block so it doesn't try and render.
@@ -380,68 +380,6 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 				'scrollOffset' => apply_filters( 'kadence_scroll_to_id_additional_offset', 0 ),
 			),
 		);
-	}
-
-	/**
-	 * Get header attributes.
-	 *
-	 * @param int $post_id Post ID.
-	 * @return array
-	 */
-	private function get_header_attributes( $post_id ) {
-
-		if ( ! empty( $this->header_attributes[ $post_id ] ) ) {
-			return $this->header_attributes[ $post_id ];
-		}
-
-		$post_meta = get_post_meta( $post_id );
-		$header_meta = array();
-		if ( is_array( $post_meta ) ) {
-			foreach ( $post_meta as $meta_key => $meta_value ) {
-				if ( strpos( $meta_key, '_kad_header_' ) === 0 && isset( $meta_value[0] ) ) {
-					$header_meta[ str_replace( '_kad_header_', '', $meta_key ) ] = maybe_unserialize( $meta_value[0] );
-				}
-			}
-		}
-
-		$header_meta = $this->merge_defaults( $header_meta );
-
-		if ( $this->header_attributes[ $post_id ] = $header_meta ) {
-			return $this->header_attributes[ $post_id ];
-		}
-
-		return array();
-	}
-
-
-	/**
-	 * Merges in default values from the cpt registration to the meta attributes from the database.
-	 *
-	 * @param array $attributes The database attribtues.
-	 * @return array
-	 */
-	private function merge_defaults( $attributes ) {
-		$meta_keys = get_registered_meta_keys( 'post', 'kadence_header' );
-		$meta_prefix = '_kad_header_';
-		$default_attributes = array();
-
-		foreach ( $meta_keys as $key => $value ) {
-			if ( str_starts_with( $key, $meta_prefix ) && array_key_exists( 'default', $value ) ) {
-				$attr_name = str_replace( $meta_prefix, '', $key );
-
-				//handle types of attributes that are an array with a single object that actually contains the actual attributes
-				if ( is_array( $value['default'] ) && count( $value['default'] ) == 1 && isset( $value['default'][0] ) ) {
-					if ( isset( $attributes[ $attr_name ] ) && is_array( $attributes[ $attr_name ] ) && count( $attributes[ $attr_name ] ) == 1 && isset( $attributes[ $attr_name ][0] ) ) {
-						$attributes[ $attr_name ][0] = array_merge( $value['default'][0], $attributes[ $attr_name ][0] );
-					}
-				}
-
-				//standard case
-				$default_attributes[ $attr_name ] = $value['default'];
-			}
-		}
-
-		return array_merge( $default_attributes, $attributes );
 	}
 }
 

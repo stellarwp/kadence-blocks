@@ -8,26 +8,23 @@
 .wp-block-kadence-off-canvas {
 	//initially hidden
 	display: none;
-
-	margin: 0;
-	padding: 0;
 	z-index: 1001;
 
 	background-color: white;
-	text-align: left;
 	border: none;
 	max-height: 100%;
 	overflow-y: auto;
+	min-width: 150px;
 
-	justify-content: center;
-	align-items: center;
-	flex-wrap: wrap;
-	min-width: 100px;
+	margin: 0;
+	padding: 0;
 
-	> .block-editor-inner-blocks {
-		flex: 1;
-		min-width: 0;
+	.kb-off-canvas-inner {
 		width: 100%;
+
+		.kt-close-position-inside {
+			position: relative;
+		}
 	}
 
 	&.active {
@@ -85,7 +82,4 @@
 }
 .wp-block-kadence-off-canvas-close:focus {
 	outline: none;
-}
-.kb-off-canvas-inner.kt-close-position-inside {
-	position: relative;
 }

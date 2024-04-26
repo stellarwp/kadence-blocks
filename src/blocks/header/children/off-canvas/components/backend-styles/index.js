@@ -24,9 +24,10 @@ export default function BackendStyles(props) {
 	} = attributes;
 
 	const editorWidth = editorElement?.clientWidth;
-	const editorHeight = editorElement?.clientHeight;
-	const editorTop = editorElement?.getBoundingClientRect().top;
 	const editorLeft = editorElement?.getBoundingClientRect().left;
+	//editor is actually full height of content, it's parent is the frame
+	const editorHeight = editorElement?.parentElement.clientHeight;
+	const editorTop = editorElement?.parentElement.getBoundingClientRect().top;
 
 	const previewPaddingTop = getPreviewSize(
 		previewDevice,
@@ -80,14 +81,14 @@ export default function BackendStyles(props) {
 		'max-width',
 		widthType !== 'full' ? (previewMaxWidth != 0 ? previewMaxWidth + maxWidthUnit : '') : ''
 	);
-	css.add_property('padding-top', getSpacingOptionOutput(previewPaddingTop, paddingUnit));
-	css.add_property('padding-right', getSpacingOptionOutput(previewPaddingRight, paddingUnit));
-	css.add_property('padding-bottom', getSpacingOptionOutput(previewPaddingBottom, paddingUnit));
-	css.add_property('padding-left', getSpacingOptionOutput(previewPaddingLeft, paddingUnit));
 
 	//content area inner
 	css.set_selector(`.wp-block-kadence-off-canvas${uniqueID} .kb-off-canvas-inner`);
 	css.add_property('max-width', previewContainerMaxWidth != 0 ? previewContainerMaxWidth + 'px' : '');
+	css.add_property('padding-top', getSpacingOptionOutput(previewPaddingTop, paddingUnit));
+	css.add_property('padding-right', getSpacingOptionOutput(previewPaddingRight, paddingUnit));
+	css.add_property('padding-bottom', getSpacingOptionOutput(previewPaddingBottom, paddingUnit));
+	css.add_property('padding-left', getSpacingOptionOutput(previewPaddingLeft, paddingUnit));
 
 	//overlay
 	css.set_selector(`.kb-off-canvas-overlay${uniqueID}`);

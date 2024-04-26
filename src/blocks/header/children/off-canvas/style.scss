@@ -1,29 +1,52 @@
-/* The side navigation menu */
+$admin-bar-height: 32px;
+$admin-bar-height-mobile: 46px;
+
+/* The off canvas area */
 .wp-block-kadence-off-canvas {
+	background-color: white;
 	height: 100%;
-	width: 0;
+	min-width: 150px;
+	// left: -9999rem;
+	// right: 9999rem;
 	position: fixed;
 	z-index: 9999;
 	top: 0;
 	overflow-x: scroll;
-	transition: 0.5s;
+	transition: 0.5s ease-in-out;
+
+	&.open-right {
+		right: -100%;
+	}
+	&.open-left {
+		left: -100%;
+	}
 
 	.kb-off-canvas-inner {
 		transition: 0.5s;
 	}
 
-	&.open-right {
-		right: 0;
-	}
-
-	&.open-left {
-		left: 0;
-	}
-
 	&.active {
+		&.open-right {
+			right: 0;
+		}
+		&.open-left {
+			left: 0;
+		}
+
 		& + .kb-off-canvas-overlay {
 			display: block;
 		}
+	}
+}
+
+//admin bar top adjustment
+body.admin-bar .wp-block-kadence-off-canvas {
+	top: $admin-bar-height-mobile;
+	height: calc(100% - $admin-bar-height-mobile);
+
+	@media screen and (min-width: 783px) {
+		top: $admin-bar-height;
+		height: calc(100% - $admin-bar-height);
 	}
 }
 

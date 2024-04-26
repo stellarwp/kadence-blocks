@@ -112,12 +112,10 @@ export function Edit(props) {
 	const ref = useRef();
 
 	const handleModalClick = (e) => {
-		console.log(1, e.target);
 		if (e.target.classList.contains('wp-block-kadence-off-canvas')) {
 			setPreviewActive(false);
 			selectBlock(parentClientId);
 		}
-		console.log(2);
 	};
 
 	const editorElement = useEditorElement(ref, [selfOrChildSelected, previewActive]);
