@@ -50,11 +50,28 @@
 			"default": "px"
 		},
 		"backgroundColor": {
-			"type": "string"
+			"type": "string",
+			"default": ""
+		},
+		"backgroundColorTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundColorMobile": {
+			"type": "string",
+			"default": ""
 		},
 		"pageBackgroundColor": {
 			"type": "string",
 			"default": "rgba(0, 0, 0, 0.6)"
+		},
+		"pageBackgroundColorTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"pageBackgroundColorMobile": {
+			"type": "string",
+			"default": ""
 		},
 		"padding": {
 			"type": "array",

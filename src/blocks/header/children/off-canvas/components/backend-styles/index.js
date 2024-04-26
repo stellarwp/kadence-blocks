@@ -8,6 +8,11 @@ export default function BackendStyles(props) {
 		uniqueID,
 		slideFrom,
 		backgroundColor,
+		backgroundColorTablet,
+		backgroundColorMobile,
+		pageBackgroundColor,
+		pageBackgroundColorTablet,
+		pageBackgroundColorMobile,
 		padding,
 		tabletPadding,
 		mobilePadding,
@@ -17,7 +22,6 @@ export default function BackendStyles(props) {
 		maxWidthTablet,
 		maxWidthMobile,
 		maxWidthUnit,
-		pageBackgroundColor,
 		containerMaxWidth,
 		containerMaxWidthTablet,
 		containerMaxWidthMobile,
@@ -67,6 +71,18 @@ export default function BackendStyles(props) {
 		undefined !== containerMaxWidthTablet ? containerMaxWidthTablet : '',
 		undefined !== containerMaxWidthMobile ? containerMaxWidthMobile : ''
 	);
+	const previewBackgroundColor = getPreviewSize(
+		previewDevice,
+		backgroundColor,
+		backgroundColorTablet,
+		backgroundColorMobile
+	);
+	const previewPageBackgroundColor = getPreviewSize(
+		previewDevice,
+		pageBackgroundColor,
+		pageBackgroundColorTablet,
+		pageBackgroundColorMobile
+	);
 
 	const css = new KadenceBlocksCSS();
 
@@ -75,7 +91,7 @@ export default function BackendStyles(props) {
 	css.add_property('height', editorHeight + 'px');
 	css.add_property('top', editorTop + 'px');
 	css.add_property('left', editorLeft + 'px');
-	css.add_property('background', KadenceColorOutput(backgroundColor));
+	css.add_property('background', KadenceColorOutput(previewBackgroundColor));
 	css.add_property('width', widthType === 'full' ? editorWidth + 'px' : '');
 	css.add_property(
 		'max-width',
@@ -96,7 +112,7 @@ export default function BackendStyles(props) {
 	css.add_property('height', editorHeight + 'px');
 	css.add_property('top', editorTop + 'px');
 	css.add_property('left', editorLeft + 'px');
-	css.add_property('background-color', KadenceColorOutput(pageBackgroundColor));
+	css.add_property('background-color', KadenceColorOutput(previewPageBackgroundColor));
 
 	//random fix
 	css.set_selector('.components-popover.block-editor-block-popover');

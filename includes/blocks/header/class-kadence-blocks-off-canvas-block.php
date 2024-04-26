@@ -91,9 +91,7 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 
 		// container.
 		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id );
-		if ( ! empty( $attributes['backgroundColor'] ) ) {
-			$css->add_property( 'background-color', $css->render_color( $attributes['backgroundColor'] ) );
-		}
+
 		if( !empty( $attributes['widthType'] ) && $attributes['widthType'] === 'full') {
 			$css->add_property( 'width', '100%' );
 		}
@@ -101,14 +99,6 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 		// inner container.
 		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-inner');
 		$css->render_measure_output( $attributes, 'padding', 'padding');
-
-		// Overlay
-		$css->set_selector( '.kb-off-canvas-overlay' . $unique_id );
-		if ( ! empty( $attributes['pageBackgroundColor'] ) ) {
-			$css->add_property( 'background-color', $css->render_color( $attributes['pageBackgroundColor'] ) );
-		} else {
-			$css->add_property( 'background-color', 'rgba(0,0,0,0.5)' );
-		}
 
 		return $css->css_output();
 	}
@@ -131,6 +121,9 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'max-width', $sized_attributes['maxWidth'] . $max_width_unit );
 			}
 		}
+		if ( ! empty( $sized_attributes['backgroundColor'] ) ) {
+			$css->add_property( 'background-color', $css->render_color( $sized_attributes['backgroundColor'] ) );
+		}
 
 		//inner container
 		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-inner');
@@ -139,6 +132,12 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 			if( !empty( $sized_attributes['containerMaxWidth']) ) {
 				$css->add_property( 'max-width', $sized_attributes['containerMaxWidth'] . $max_width_unit );
 			}
+		}
+
+		// Overlay
+		$css->set_selector( '.kb-off-canvas-overlay' . $unique_id );
+		if ( ! empty( $sized_attributes['pageBackgroundColor'] ) ) {
+			$css->add_property( 'background-color', $css->render_color( $sized_attributes['pageBackgroundColor'] ) );
 		}
 	}
 

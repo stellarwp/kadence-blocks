@@ -33,6 +33,7 @@ import {
 	InspectorControlTabs,
 	ResponsiveMeasureRangeControl,
 	ResponsiveRangeControls,
+	SmallResponsiveControl,
 } from '@kadence/components';
 
 /**
@@ -51,6 +52,11 @@ export function Edit(props) {
 		uniqueID,
 		slideFrom,
 		backgroundColor,
+		backgroundColorTablet,
+		backgroundColorMobile,
+		pageBackgroundColor,
+		pageBackgroundColorTablet,
+		pageBackgroundColorMobile,
 		padding,
 		tabletPadding,
 		mobilePadding,
@@ -60,7 +66,6 @@ export function Edit(props) {
 		maxWidthTablet,
 		maxWidthMobile,
 		maxWidthUnit,
-		pageBackgroundColor,
 		containerMaxWidth,
 		containerMaxWidthTablet,
 		containerMaxWidthMobile,
@@ -144,6 +149,31 @@ export function Edit(props) {
 	const overlayClasses = classnames('kb-off-canvas-overlay', {
 		[`kb-off-canvas-overlay${uniqueID}`]: uniqueID,
 	});
+
+	const styleColorControls = (size = '', suffix = '') => {
+		const backgroundColorValue = attributes['backgroundColor' + suffix + size];
+		const pageBackgroundColorValue = attributes['pageBackgroundColor' + suffix + size];
+		return (
+			<>
+				<PopColorControl
+					label={__('Background', 'kadence-blocks')}
+					value={backgroundColorValue}
+					default={''}
+					onChange={(value) => setAttributes({ ['backgroundColor' + suffix + size]: value })}
+					key={'normal'}
+				/>
+				{widthType === 'partial' && (
+					<PopColorControl
+						label={__('Page Background', 'kadence-blocks')}
+						value={pageBackgroundColorValue}
+						default={''}
+						onChange={(value) => setAttributes({ ['pageBackgroundColor' + suffix + size]: value })}
+						key={'normalb'}
+					/>
+				)}
+			</>
+		);
+	};
 
 	return (
 		<>
@@ -241,26 +271,20 @@ export function Edit(props) {
 									})
 								}
 							/>
-
-							<PopColorControl
-								label={__('Background Color', 'kadence-blocks')}
-								value={backgroundColor ? backgroundColor : ''}
-								default={''}
-								onChange={(value) => setAttributes({ backgroundColor: value })}
-							/>
-
-							{widthType === 'partial' && (
-								<PopColorControl
-									label={__('Page Background Color', 'kadence-blocks')}
-									value={pageBackgroundColor}
-									onChange={(value) => setAttributes({ pageBackgroundColor: value })}
-								/>
-							)}
 						</KadencePanelBody>
 					</>
 				)}
 
-				{activeTab === 'style' && <>Style</>}
+				{activeTab === 'style' && (
+					<KadencePanelBody>
+						<SmallResponsiveControl
+							label={'Colors'}
+							desktopChildren={styleColorControls()}
+							tabletChildren={styleColorControls('Tablet')}
+							mobileChildren={styleColorControls('Mobile')}
+						></SmallResponsiveControl>
+					</KadencePanelBody>
+				)}
 
 				{activeTab === 'advanced' && (
 					<>
