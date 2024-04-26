@@ -1,20 +1,12 @@
-import { __ } from '@wordpress/i18n';
 import { useMemo, useState } from '@wordpress/element';
-import { get, map, debounce } from 'lodash';
+import { get, debounce } from 'lodash';
 import classnames from 'classnames';
-import { DndContext, DragOverlay, closestCenter } from '@dnd-kit/core';
+import { DndContext, DragOverlay } from '@dnd-kit/core';
 
-import {
-	arrayMove,
-	SortableContext,
-	sortableKeyboardCoordinates,
-	useSortable,
-	horizontalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import Droppable from './droppable';
 import SelectBlockButton from './selectBlock';
 import AddBlockButton from './add';
 import Block from './block';
+import ColumnBlocks from './columnBlocks';
 import { DESKTOP_SECTION_NAMES, DESKTOP_BLOCK_POSITIONS, DESKTOP_CLIENT_ID_POSITIONS, ROW_TO_KEY } from './constants';
 
 const computeSections = (thisRow, blocks) =>
@@ -24,23 +16,28 @@ const computeSections = (thisRow, blocks) =>
 			blocks: get(thisRow, DESKTOP_BLOCK_POSITIONS[index], []),
 			clientId: get(thisRow, DESKTOP_CLIENT_ID_POSITIONS[index], []),
 		}));
-	}, [blocks]);
+	}, [thisRow, blocks]);
 
-const DesktopRow = ({ position, blocks }) => {
-	const thisRow = get(blocks, [ROW_TO_KEY[position]], []);
+const DesktopRow = ({ position, blocks, activeBlockData }) => {
+	const thisRow = useMemo(() => get(blocks, [ROW_TO_KEY[position]], []), [blocks, position]);
 	const sections = computeSections(thisRow, blocks);
 
-	// If mid columns are empty, and the center is empty, don't show mid columns
+	// If mid columns and center are empty, don't show mid columns
+	// Also don't show the mid columns when dragging a block across the middle.
 	const isCenterEmpty = sections[2].blocks.length === 0;
 	const areMidColumnsEmpty = sections[1].blocks.length === 0 && sections[3].blocks.length === 0;
-	const showMidColumns = !isCenterEmpty || !areMidColumnsEmpty;
+	const isActiveDragTheOnlyCenterBlock =
+		null !== activeBlockData &&
+		sections[2].blocks.length === 1 &&
+		activeBlockData.id === sections[2].blocks[0].clientId;
+	const showMidColumns = (!isCenterEmpty && !isActiveDragTheOnlyCenterBlock) || !areMidColumnsEmpty;
 
 	return (
 		<div className={'visual-row-wrapper'} key={position}>
 			<SelectBlockButton clientId={thisRow.clientId} />
 			<div className={`visual-desktop-row visual-desktop-row-${position}`}>
 				<div className={'visual-section-wrapper visual-section-wrapper-left'}>
-					<InnerBlocks
+					<ColumnBlocks
 						blocks={sections[0].blocks}
 						position={position}
 						className={'left'}
@@ -49,7 +46,7 @@ const DesktopRow = ({ position, blocks }) => {
 					<AddBlockButton position={'left'} clientId={sections[0].clientId} showMidColumns={showMidColumns} />
 					{showMidColumns && (
 						<>
-							<InnerBlocks
+							<ColumnBlocks
 								blocks={sections[1].blocks}
 								className={'center-left'}
 								showMidColumns={showMidColumns}
@@ -60,13 +57,13 @@ const DesktopRow = ({ position, blocks }) => {
 					)}
 				</div>
 				<div className={'visual-section-wrapper visual-section-wrapper-center'}>
-					<InnerBlocks blocks={sections[2].blocks} className={'center'} clientId={sections[2].clientId} />
+					<ColumnBlocks blocks={sections[2].blocks} className={'center'} clientId={sections[2].clientId} />
 					<AddBlockButton position={'center'} clientId={sections[2].clientId} />
 				</div>
 				<div className={'visual-section-wrapper visual-section-wrapper-right'}>
 					{showMidColumns && (
 						<>
-							<InnerBlocks
+							<ColumnBlocks
 								blocks={sections[3].blocks}
 								className={'center-right'}
 								showMidColumns={showMidColumns}
@@ -75,7 +72,7 @@ const DesktopRow = ({ position, blocks }) => {
 							<AddBlockButton position={'center-right'} clientId={sections[3].clientId} />
 						</>
 					)}
-					<InnerBlocks blocks={sections[4].blocks} className={'right'} clientId={sections[4].clientId} />
+					<ColumnBlocks blocks={sections[4].blocks} className={'right'} clientId={sections[4].clientId} />
 					<AddBlockButton
 						position={'right'}
 						clientId={sections[4].clientId}
@@ -85,30 +82,6 @@ const DesktopRow = ({ position, blocks }) => {
 			</div>
 		</div>
 	);
-};
-
-const InnerBlocks = ({ blocks, className, clientId, showMidColumns = true }) => {
-	const classNames = classnames({
-		'visual-column-wrapper': true,
-		[`visual-column-wrapper-${className}`]: true,
-		'visual-column-wrapper-empty-center': !showMidColumns,
-	});
-
-	if (blocks) {
-		const clientIds = useMemo(() => map(blocks, 'clientId'), [blocks]);
-
-		return (
-			<SortableContext items={clientIds} strategy={horizontalListSortingStrategy}>
-				<Droppable clientId={clientId} classNames={classNames}>
-					{blocks.map((block) => (
-						<Block key={block.clientId} block={block} />
-					))}
-				</Droppable>
-			</SortableContext>
-		);
-	}
-
-	return __('Loading blocks…', 'kadence-blocks');
 };
 
 export default function Desktop({ blocks }) {
@@ -167,14 +140,14 @@ export default function Desktop({ blocks }) {
 
 	return (
 		<div className={classNames}>
-			<DndContext
-				collisionDetection={closestCenter}
-				onDragEnd={handleDragEnd}
-				onDragStart={handleDragStart}
-				onDragOver={debounce(onDragOver, 100)}
-			>
+			<DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart} onDragOver={debounce(onDragOver, 100)}>
 				{rowPositions.map((position, index) => (
-					<DesktopRow key={position} position={position} blocks={innerBlocks} />
+					<DesktopRow
+						key={position}
+						position={position}
+						blocks={innerBlocks}
+						activeBlockData={activeBlockData}
+					/>
 				))}
 
 				{/* This created the element that is visually moved when dragging */}
