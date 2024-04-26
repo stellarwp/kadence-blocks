@@ -343,8 +343,8 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 							});
 						}
 						Object.keys(newCatOrder).map(function (key, index) {
-							if ( ! tempCats.hasOwnProperty(key)) {
-								delete newCatOrder[ key ];
+							if (!tempCats.hasOwnProperty(key)) {
+								delete newCatOrder[key];
 							}
 						});
 						const cats = { ...{ all: 'All' }, ...newCatOrder, ...tempCats };
