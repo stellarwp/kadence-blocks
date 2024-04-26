@@ -91,14 +91,27 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 
 		// container.
 		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id );
-
 		if( !empty( $attributes['widthType'] ) && $attributes['widthType'] === 'full') {
 			$css->add_property( 'width', '100%' );
 		}
+		$css->render_border_styles( $attributes, 'border', false, array(
+			'desktop_key' => 'border',
+			'tablet_key'  => 'borderTablet',
+			'mobile_key'  => 'borderMobile',
+		) );
+		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array(
+			'desktop_key' => 'borderRadius',
+			'tablet_key'  => 'borderRadiusTablet',
+			'mobile_key'  => 'borderRadiusMobile',
+		) );
 
 		// inner container.
 		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-inner');
-		$css->render_measure_output( $attributes, 'padding', 'padding');
+		$css->render_measure_output( $attributes, 'padding', 'padding', array(
+			'desktop_key' => 'padding',
+			'tablet_key'  => 'paddingTablet',
+			'mobile_key'  => 'paddingMobile',
+		) );
 
 		return $css->css_output();
 	}
@@ -132,6 +145,18 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 			if( !empty( $sized_attributes['containerMaxWidth']) ) {
 				$css->add_property( 'max-width', $sized_attributes['containerMaxWidth'] . $max_width_unit );
 			}
+		}
+
+		//content area inner alignment
+		if ($sized_attributes['hAlign'] == 'center') {
+			$css->add_property('align-items', 'center');
+		} else if ($sized_attributes['hAlign'] == 'right') {
+			$css->add_property('align-items', 'flex-end');
+		}
+		if ($sized_attributes['vAlign'] == 'center') {
+			$css->add_property('justify-content', 'center');
+		} else if ($sized_attributes['vAlign'] == 'bottom') {
+			$css->add_property('justify-content', 'flex-end');
 		}
 
 		// Overlay

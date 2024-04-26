@@ -14,8 +14,8 @@ export default function BackendStyles(props) {
 		pageBackgroundColorTablet,
 		pageBackgroundColorMobile,
 		padding,
-		tabletPadding,
-		mobilePadding,
+		paddingTablet,
+		paddingMobile,
 		paddingUnit,
 		widthType,
 		maxWidth,
@@ -25,38 +25,27 @@ export default function BackendStyles(props) {
 		containerMaxWidth,
 		containerMaxWidthTablet,
 		containerMaxWidthMobile,
+		hAlign,
+		hAlignTablet,
+		hAlignMobile,
+		vAlign,
+		vAlignTablet,
+		vAlignMobile,
+		border,
+		borderTablet,
+		borderMobile,
+		borderRadius,
+		borderRadiusTablet,
+		borderRadiusMobile,
+		borderRadiusUnit,
 	} = attributes;
 
 	const editorWidth = editorElement?.clientWidth;
 	const editorLeft = editorElement?.getBoundingClientRect().left;
+	const editorRight = window.innerWidth - editorElement?.getBoundingClientRect().right;
 	//editor is actually full height of content, it's parent is the frame
 	const editorHeight = editorElement?.parentElement.clientHeight;
 	const editorTop = editorElement?.parentElement.getBoundingClientRect().top;
-
-	const previewPaddingTop = getPreviewSize(
-		previewDevice,
-		undefined !== padding ? padding[0] : '',
-		undefined !== tabletPadding ? tabletPadding[0] : '',
-		undefined !== mobilePadding ? mobilePadding[0] : ''
-	);
-	const previewPaddingRight = getPreviewSize(
-		previewDevice,
-		undefined !== padding ? padding[1] : '',
-		undefined !== tabletPadding ? tabletPadding[1] : '',
-		undefined !== mobilePadding ? mobilePadding[1] : ''
-	);
-	const previewPaddingBottom = getPreviewSize(
-		previewDevice,
-		undefined !== padding ? padding[2] : '',
-		undefined !== tabletPadding ? tabletPadding[2] : '',
-		undefined !== mobilePadding ? mobilePadding[2] : ''
-	);
-	const previewPaddingLeft = getPreviewSize(
-		previewDevice,
-		undefined !== padding ? padding[3] : '',
-		undefined !== tabletPadding ? tabletPadding[3] : '',
-		undefined !== mobilePadding ? mobilePadding[3] : ''
-	);
 
 	const previewMaxWidth = getPreviewSize(
 		previewDevice,
@@ -83,28 +72,64 @@ export default function BackendStyles(props) {
 		pageBackgroundColorTablet,
 		pageBackgroundColorMobile
 	);
+	const previewHAlign = getPreviewSize(previewDevice, hAlign, hAlignTablet, hAlignMobile);
+	const previewVAlign = getPreviewSize(previewDevice, vAlign, vAlignTablet, vAlignMobile);
 
 	const css = new KadenceBlocksCSS();
 
 	//content area
 	css.set_selector(`.wp-block-kadence-off-canvas${uniqueID}`);
+	if (slideFrom == 'right') {
+		css.add_property('right', editorRight + 'px');
+	} else {
+		css.add_property('left', editorLeft + 'px');
+	}
 	css.add_property('height', editorHeight + 'px');
 	css.add_property('top', editorTop + 'px');
-	css.add_property('left', editorLeft + 'px');
-	css.add_property('background', KadenceColorOutput(previewBackgroundColor));
 	css.add_property('width', widthType === 'full' ? editorWidth + 'px' : '');
+	css.add_property('background', KadenceColorOutput(previewBackgroundColor));
 	css.add_property(
 		'max-width',
 		widthType !== 'full' ? (previewMaxWidth != 0 ? previewMaxWidth + maxWidthUnit : '') : ''
 	);
+	css.add_property('border-top', css.render_border(border, borderTablet, borderMobile, previewDevice, 'top', false));
+	css.add_property(
+		'border-right',
+		css.render_border(border, borderTablet, borderMobile, previewDevice, 'right', false)
+	);
+	css.add_property(
+		'border-bottom',
+		css.render_border(border, borderTablet, borderMobile, previewDevice, 'bottom', false)
+	);
+	css.add_property(
+		'border-left',
+		css.render_border(border, borderTablet, borderMobile, previewDevice, 'left', false)
+	);
+	css.render_measure_output(
+		borderRadius,
+		borderRadiusTablet,
+		borderRadiusMobile,
+		previewDevice,
+		'border-radius',
+		borderRadiusUnit
+	);
 
 	//content area inner
 	css.set_selector(`.wp-block-kadence-off-canvas${uniqueID} .kb-off-canvas-inner`);
+	css.render_measure_output(padding, paddingTablet, paddingMobile, previewDevice, 'padding', paddingUnit);
 	css.add_property('max-width', previewContainerMaxWidth != 0 ? previewContainerMaxWidth + 'px' : '');
-	css.add_property('padding-top', getSpacingOptionOutput(previewPaddingTop, paddingUnit));
-	css.add_property('padding-right', getSpacingOptionOutput(previewPaddingRight, paddingUnit));
-	css.add_property('padding-bottom', getSpacingOptionOutput(previewPaddingBottom, paddingUnit));
-	css.add_property('padding-left', getSpacingOptionOutput(previewPaddingLeft, paddingUnit));
+
+	//content area inner alignment
+	if (previewHAlign == 'center') {
+		css.add_property('align-items', 'center');
+	} else if (previewHAlign == 'right') {
+		css.add_property('align-items', 'flex-end');
+	}
+	if (previewVAlign == 'center') {
+		css.add_property('justify-content', 'center');
+	} else if (previewVAlign == 'bottom') {
+		css.add_property('justify-content', 'flex-end');
+	}
 
 	//overlay
 	css.set_selector(`.kb-off-canvas-overlay${uniqueID}`);

@@ -77,11 +77,11 @@
 			"type": "array",
 			"default": ["", "", "", ""]
 		},
-		"tabletPadding": {
+		"paddingTablet": {
 			"type": "array",
 			"default": ["", "", "", ""]
 		},
-		"mobilePadding": {
+		"paddingMobile": {
 			"type": "array",
 			"default": ["", "", "", ""]
 		},
@@ -95,6 +95,82 @@
 		},
 		"closeIconColor": {
 			"type": "string"
+		},
+		"hAlign": {
+			"type": "string",
+			"default": "left"
+		},
+		"hAlignTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"hAlignMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"vAlign": {
+			"type": "string",
+			"default": "top"
+		},
+		"vAlignTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"vAlignMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"border": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"borderTablet": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"borderMobile": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"borderRadius": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"borderRadiusTablet": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"borderRadiusMobile": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"borderRadiusUnit": {
+			"type": "string",
+			"default": "px"
 		}
 	}
 }
