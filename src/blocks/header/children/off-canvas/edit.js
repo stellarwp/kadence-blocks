@@ -35,6 +35,8 @@ import {
 	ResponsiveRangeControls,
 	SmallResponsiveControl,
 	ResponsiveAlignControls,
+	ResponsiveBorderControl,
+	ResponsiveMeasurementControls,
 } from '@kadence/components';
 
 /**
@@ -59,8 +61,8 @@ export function Edit(props) {
 		pageBackgroundColorTablet,
 		pageBackgroundColorMobile,
 		padding,
-		tabletPadding,
-		mobilePadding,
+		paddingTablet,
+		paddingMobile,
 		paddingUnit,
 		widthType,
 		maxWidth,
@@ -76,6 +78,13 @@ export function Edit(props) {
 		vAlign,
 		vAlignTablet,
 		vAlignMobile,
+		border,
+		borderTablet,
+		borderMobile,
+		borderRadius,
+		borderRadiusTablet,
+		borderRadiusMobile,
+		borderRadiusUnit,
 	} = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
@@ -318,6 +327,32 @@ export function Edit(props) {
 							tabletChildren={styleColorControls('Tablet')}
 							mobileChildren={styleColorControls('Mobile')}
 						></SmallResponsiveControl>
+						<ResponsiveBorderControl
+							label={__('Border', 'kadence-blocks')}
+							value={border}
+							tabletValue={borderTablet}
+							mobileValue={borderMobile}
+							onChange={(value) => setAttributes({ border: value })}
+							onChangeTablet={(value) => setAttributes({ borderTablet: value })}
+							onChangeMobile={(value) => setAttributes({ borderMobile: value })}
+						/>
+						<ResponsiveMeasurementControls
+							label={__('Border Radius', 'kadence-blocks')}
+							value={borderRadius}
+							tabletValue={borderRadiusTablet}
+							mobileValue={borderRadiusMobile}
+							onChange={(value) => setAttributes({ borderRadius: value })}
+							onChangeTablet={(value) => setAttributes({ borderRadiusTablet: value })}
+							onChangeMobile={(value) => setAttributes({ borderRadiusMobile: value })}
+							min={0}
+							max={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 100}
+							step={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1}
+							unit={borderRadiusUnit}
+							units={['px', 'em', 'rem', '%']}
+							onUnit={(value) => setAttributes({ borderRadiusUnit: value })}
+							isBorderRadius={true}
+							allowEmpty={true}
+						/>
 					</KadencePanelBody>
 				)}
 
@@ -327,13 +362,13 @@ export function Edit(props) {
 							<ResponsiveMeasureRangeControl
 								label={__('Padding', 'kadence-blocks')}
 								value={padding}
-								tabletValue={tabletPadding}
-								mobileValue={mobilePadding}
+								tabletValue={paddingTablet}
+								mobileValue={paddingMobile}
 								onChange={(value) => {
 									setAttributes({ padding: value });
 								}}
-								onChangeTablet={(value) => setAttributes({ tabletPadding: value })}
-								onChangeMobile={(value) => setAttributes({ mobilePadding: value })}
+								onChangeTablet={(value) => setAttributes({ paddingTablet: value })}
+								onChangeMobile={(value) => setAttributes({ paddingMobile: value })}
 								min={paddingUnit === 'em' || paddingUnit === 'rem' ? -12 : -999}
 								max={paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 999}
 								step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}

@@ -27,12 +27,13 @@ import {
 	PopColorControl,
 	ResponsiveMeasureRangeControl,
 	ResponsiveRangeControls,
+	InspectorControlTabs,
 } from '@kadence/components';
 
 /**
  * Internal dependencies
  */
-import { useEffect } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 export function Edit(props) {
@@ -56,6 +57,7 @@ export function Edit(props) {
 		marginUnit,
 	} = attributes;
 
+	const [activeTab, setActiveTab] = useState('general');
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, parentData, previewDevice } = useSelect(
 		(select) => {
@@ -90,77 +92,97 @@ export function Edit(props) {
 		}
 	}, []);
 
+	const classes = classnames('wp-block-kadence-off-canvas-trigger', {
+		[`wp-block-kadence-off-canvas-trigger${uniqueID}`]: uniqueID,
+	});
+
+	const blockProps = useBlockProps({
+		className: classes,
+	});
+
 	return (
-		<div {...useBlockProps}>
+		<div {...blockProps}>
 			<InspectorControls>
 				<SelectParentBlock
 					label={__('View Header Settings', 'kadence-blocks')}
 					clientId={clientId}
 					parentSlug={'kadence/header'}
 				/>
+				<InspectorControlTabs panelName={'off-canvas'} setActiveTab={setActiveTab} activeTab={activeTab} />
+				{activeTab === 'general' && (
+					<>
+						<KadencePanelBody title={__('Icon Settings', 'kadence-blocks')} initialOpen={true}>
+							<KadenceIconPicker
+								value={icon}
+								onChange={(value) => setAttributes({ icon: value })}
+								allowClear={true}
+							/>
 
-				<KadencePanelBody title={__('Icon Settings', 'kadence-blocks')} initialOpen={true}>
-					<KadenceIconPicker
-						value={icon}
-						onChange={(value) => setAttributes({ icon: value })}
-						allowClear={true}
-					/>
-
-					<ResponsiveRangeControls
-						label={__('Icon Size', 'kadence-blocks')}
-						value={iconSize}
-						tabletValue={iconSizeTablet ? iconSizeTablet : ''}
-						mobileValue={iconSizeMobile ? iconSizeMobile : ''}
-						onChange={(value) => setAttributes({ iconSize: value })}
-						onChangeTablet={(value) => setAttributes({ iconSizeTablet: value })}
-						onChangeMobile={(value) => setAttributes({ iconSizeMobile: value })}
-						units={['px']}
-						unit={'px'}
-						min={5}
-						max={250}
-						step={1}
-					/>
-
-					<PopColorControl
-						label={__('Icon Color', 'kadence-blocks')}
-						value={iconColor ? iconColor : ''}
-						default={''}
-						onChange={(value) => setAttributes({ iconColor: value })}
-					/>
-				</KadencePanelBody>
-
-				<KadencePanelBody>
-					<ResponsiveMeasureRangeControl
-						label={__('Padding', 'kadence-blocks')}
-						value={padding}
-						tabletValue={tabletPadding}
-						mobileValue={mobilePadding}
-						onChange={(value) => setAttributes({ padding: value })}
-						onChangeTablet={(value) => setAttributes({ tabletPadding: value })}
-						onChangeMobile={(value) => setAttributes({ mobilePadding: value })}
-						min={0}
-						max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 400}
-						step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
-						unit={paddingUnit}
-						units={['px', 'em', 'rem', '%']}
-						onUnit={(value) => setAttributes({ paddingUnit: value })}
-					/>
-					<ResponsiveMeasureRangeControl
-						label={__('Margin', 'kadence-blocks')}
-						value={margin}
-						tabletValue={tabletMargin}
-						mobileValue={mobileMargin}
-						onChange={(value) => setAttributes({ margin: value })}
-						onChangeTablet={(value) => setAttributes({ tabletMargin: value })}
-						onChangeMobile={(value) => setAttributes({ mobileMargin: value })}
-						min={0}
-						max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : 400}
-						step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
-						unit={marginUnit}
-						units={['px', 'em', 'rem', '%']}
-						onUnit={(value) => setAttributes({ marginUnit: value })}
-					/>
-				</KadencePanelBody>
+							<ResponsiveRangeControls
+								label={__('Icon Size', 'kadence-blocks')}
+								value={iconSize}
+								tabletValue={iconSizeTablet ? iconSizeTablet : ''}
+								mobileValue={iconSizeMobile ? iconSizeMobile : ''}
+								onChange={(value) => setAttributes({ iconSize: value })}
+								onChangeTablet={(value) => setAttributes({ iconSizeTablet: value })}
+								onChangeMobile={(value) => setAttributes({ iconSizeMobile: value })}
+								units={['px']}
+								unit={'px'}
+								min={5}
+								max={250}
+								step={1}
+							/>
+						</KadencePanelBody>
+					</>
+				)}
+				{activeTab === 'style' && (
+					<>
+						<KadencePanelBody title={__('Icon Colors', 'kadence-blocks')} initialOpen={true}>
+							<PopColorControl
+								label={__('Icon Color', 'kadence-blocks')}
+								value={iconColor ? iconColor : ''}
+								default={''}
+								onChange={(value) => setAttributes({ iconColor: value })}
+							/>
+						</KadencePanelBody>
+					</>
+				)}
+				{activeTab === 'advanced' && (
+					<>
+						<KadencePanelBody>
+							<ResponsiveMeasureRangeControl
+								label={__('Padding', 'kadence-blocks')}
+								value={padding}
+								tabletValue={tabletPadding}
+								mobileValue={mobilePadding}
+								onChange={(value) => setAttributes({ padding: value })}
+								onChangeTablet={(value) => setAttributes({ tabletPadding: value })}
+								onChangeMobile={(value) => setAttributes({ mobilePadding: value })}
+								min={0}
+								max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 400}
+								step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
+								unit={paddingUnit}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setAttributes({ paddingUnit: value })}
+							/>
+							<ResponsiveMeasureRangeControl
+								label={__('Margin', 'kadence-blocks')}
+								value={margin}
+								tabletValue={tabletMargin}
+								mobileValue={mobileMargin}
+								onChange={(value) => setAttributes({ margin: value })}
+								onChangeTablet={(value) => setAttributes({ tabletMargin: value })}
+								onChangeMobile={(value) => setAttributes({ mobileMargin: value })}
+								min={0}
+								max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : 400}
+								step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
+								unit={marginUnit}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setAttributes({ marginUnit: value })}
+							/>
+						</KadencePanelBody>
+					</>
+				)}
 			</InspectorControls>
 
 			<style>
