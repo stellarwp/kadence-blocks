@@ -78,34 +78,62 @@ class Kadence_Blocks_Off_Canvas_Trigger_Block extends Kadence_Blocks_Abstract_Bl
 	 * @param string             $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
+		$merged_attributes = $this->get_attributes_with_defaults( $unique_id, $attributes, 'kadence/' . $this->$block_name );
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
-		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id );
-		$css->render_measure_output( $attributes, 'padding', 'padding');
-		$css->render_measure_output( $attributes, 'margin', 'margin');
+		$sizes = array( 'Desktop', 'Tablet', 'Mobile' );
 
-		// SVG
+		foreach ( $sizes as $size ) {
+			$this->sized_dynamic_styles( $css, $merged_attributes, $unique_id, $size );
+		}
+		$css->set_media_state( 'desktop' );
+
+		//container
+		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id );
+		$css->render_measure_output( $attributes, 'padding', 'padding', array(
+			'desktop_key' => 'padding',
+			'tablet_key'  => 'paddingTablet',
+			'mobile_key'  => 'paddingMobile',
+		) );
+		$css->render_measure_output( $attributes, 'margin', 'margin', array(
+			'desktop_key' => 'margin',
+			'tablet_key'  => 'marginTablet',
+			'mobile_key'  => 'marginMobile',
+		) );
+
+		//icon
 		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ' svg' );
 
-		if ( ! empty( $attributes['iconSize'] ) ) {
-			$css->add_property( 'width', $attributes['iconSize'] . 'px' );
-			$css->add_property( 'height', $attributes['iconSize'] . 'px' );
-		}
-		if ( ! empty( $attributes['iconSizeTablet'] ) ) {
-			$css->set_media_state( 'tablet' );
-			$css->add_property( 'width', $attributes['iconSizeTablet'] . 'px' );
-			$css->add_property( 'height', $attributes['iconSizeTablet'] . 'px' );
-			$css->set_media_state( 'desktop' );
-		}
-		if ( ! empty( $attributes['iconSizeMobile'] ) ) {
-			$css->set_media_state( 'tablet' );
-			$css->add_property( 'width', $attributes['iconSizeMobile'] . 'px' );
-			$css->add_property( 'height', $attributes['iconSizeMobile'] . 'px' );
-			$css->set_media_state( 'desktop' );
+		return $css->css_output();
+	}
+
+
+	/**
+	 * Build up the dynamic styles for a size.
+	 *
+	 * @param string $size The size.
+	 * @return array
+	 */
+	public function sized_dynamic_styles( $css, $attributes, $unique_id, $size = 'Desktop' ) {
+		$sized_attributes = $css->get_sized_attributes_auto( $attributes, $size, false );
+		$sized_attributes_inherit = $css->get_sized_attributes_auto( $attributes, $size );
+
+		//container
+		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id );
+		if ( ! empty( $sized_attributes['iconBackgroundColor'] ) ) {
+			$css->add_property( 'background-color', $css->render_color( $sized_attributes['iconBackgroundColor'] ) );
 		}
 
-		return $css->css_output();
+		//icon
+		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ' svg' );
+		if ( ! empty( $sized_attributes['iconColor'] ) ) {
+			$css->add_property( 'color', $css->render_color( $sized_attributes['iconColor'] ) );
+		}
+		if ( ! empty( $sized_attributes['iconSize'] ) ) {
+			$css->add_property( 'width', $sized_attributes['iconSize'] . 'px' );
+			$css->add_property( 'height', $sized_attributes['iconSize'] . 'px' );
+		}
 	}
 
 	/**

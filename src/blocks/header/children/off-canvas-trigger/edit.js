@@ -18,13 +18,14 @@ import classnames from 'classnames';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 
-import { getUniqueId, getPostOrFseId } from '@kadence/helpers';
+import { getUniqueId, getPostOrFseId, getPreviewSize } from '@kadence/helpers';
 import {
 	SelectParentBlock,
 	IconRender,
 	KadenceIconPicker,
 	KadencePanelBody,
 	PopColorControl,
+	SmallResponsiveControl,
 	ResponsiveMeasureRangeControl,
 	ResponsiveRangeControls,
 	InspectorControlTabs,
@@ -35,6 +36,7 @@ import {
  */
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import BackendStyles from './components/backend-styles';
 
 export function Edit(props) {
 	const { attributes, setAttributes, clientId } = props;
@@ -46,14 +48,19 @@ export function Edit(props) {
 		iconSizeTablet,
 		iconSizeMobile,
 		iconColor,
+		iconColorTablet,
+		iconColorMobile,
+		iconBackgroundColor,
+		iconBackgroundColorTablet,
+		iconBackgroundColorMobile,
 		label,
 		padding,
-		tabletPadding,
-		mobilePadding,
+		paddingTablet,
+		paddingMobile,
 		paddingUnit,
 		margin,
-		tabletMargin,
-		mobileMargin,
+		marginTablet,
+		marginMobile,
 		marginUnit,
 	} = attributes;
 
@@ -91,6 +98,31 @@ export function Edit(props) {
 			addUniqueID(uniqueId, clientId);
 		}
 	}, []);
+
+	const styleColorControls = (size = '', suffix = '') => {
+		const iconColorValue = attributes['iconColor' + suffix + size];
+		const iconBackgroundColorValue = attributes['iconBackgroundColor' + suffix + size];
+		return (
+			<>
+				<PopColorControl
+					label={__('Color', 'kadence-blocks')}
+					value={iconColorValue}
+					default={''}
+					onChange={(value) => setAttributes({ ['iconColor' + suffix + size]: value })}
+					key={'normal'}
+				/>
+				<PopColorControl
+					label={__('Background', 'kadence-blocks')}
+					value={iconBackgroundColorValue}
+					default={''}
+					onChange={(value) => setAttributes({ ['iconBackgroundColor' + suffix + size]: value })}
+					key={'normalb'}
+				/>
+			</>
+		);
+	};
+
+	const previewIconSize = getPreviewSize(previewDevice, iconSize, iconSizeTablet, iconSizeMobile);
 
 	const classes = classnames('wp-block-kadence-off-canvas-trigger', {
 		[`wp-block-kadence-off-canvas-trigger${uniqueID}`]: uniqueID,
@@ -137,13 +169,13 @@ export function Edit(props) {
 				)}
 				{activeTab === 'style' && (
 					<>
-						<KadencePanelBody title={__('Icon Colors', 'kadence-blocks')} initialOpen={true}>
-							<PopColorControl
-								label={__('Icon Color', 'kadence-blocks')}
-								value={iconColor ? iconColor : ''}
-								default={''}
-								onChange={(value) => setAttributes({ iconColor: value })}
-							/>
+						<KadencePanelBody>
+							<SmallResponsiveControl
+								label={'Colors'}
+								desktopChildren={styleColorControls()}
+								tabletChildren={styleColorControls('Tablet')}
+								mobileChildren={styleColorControls('Mobile')}
+							></SmallResponsiveControl>
 						</KadencePanelBody>
 					</>
 				)}
@@ -153,11 +185,11 @@ export function Edit(props) {
 							<ResponsiveMeasureRangeControl
 								label={__('Padding', 'kadence-blocks')}
 								value={padding}
-								tabletValue={tabletPadding}
-								mobileValue={mobilePadding}
+								tabletValue={paddingTablet}
+								mobileValue={paddingMobile}
 								onChange={(value) => setAttributes({ padding: value })}
-								onChangeTablet={(value) => setAttributes({ tabletPadding: value })}
-								onChangeMobile={(value) => setAttributes({ mobilePadding: value })}
+								onChangeTablet={(value) => setAttributes({ paddingTablet: value })}
+								onChangeMobile={(value) => setAttributes({ paddingMobile: value })}
 								min={0}
 								max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 400}
 								step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
@@ -168,11 +200,11 @@ export function Edit(props) {
 							<ResponsiveMeasureRangeControl
 								label={__('Margin', 'kadence-blocks')}
 								value={margin}
-								tabletValue={tabletMargin}
-								mobileValue={mobileMargin}
+								tabletValue={marginTablet}
+								mobileValue={marginMobile}
 								onChange={(value) => setAttributes({ margin: value })}
-								onChangeTablet={(value) => setAttributes({ tabletMargin: value })}
-								onChangeMobile={(value) => setAttributes({ mobileMargin: value })}
+								onChangeTablet={(value) => setAttributes({ marginTablet: value })}
+								onChangeMobile={(value) => setAttributes({ marginMobile: value })}
 								min={0}
 								max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : 400}
 								step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
@@ -184,18 +216,11 @@ export function Edit(props) {
 					</>
 				)}
 			</InspectorControls>
+			<BackendStyles {...props} previewDevice={previewDevice} />
 
-			<style>
-				{`
-					.kb-off-canvas-trigger {
-						padding: ${padding || 0}${paddingUnit};
-					}
-					.kb-off-canvas-trigger-icon {
-						color: ${iconColor || ''};
-					}
-				`}
-			</style>
-			{icon && iconSize && <IconRender className={`kb-off-canvas-trigger-icon`} name={icon} size={iconSize} />}
+			{icon && previewIconSize && (
+				<IconRender className={`kb-off-canvas-trigger-icon`} name={icon} size={previewIconSize} />
+			)}
 		</div>
 	);
 }

@@ -107,7 +107,11 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 
 		// inner container.
 		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-inner');
-		$css->render_measure_output( $attributes, 'padding', 'padding');
+		$css->render_measure_output( $attributes, 'padding', 'padding', array(
+			'desktop_key' => 'padding',
+			'tablet_key'  => 'paddingTablet',
+			'mobile_key'  => 'paddingMobile',
+		) );
 
 		return $css->css_output();
 	}
