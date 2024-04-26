@@ -101,6 +101,7 @@ class Kadence_Blocks_Header_Container_Desktop_Block extends Kadence_Blocks_Abstr
 
 		$classes = array(
 			'wp-block-kadence-header-desktop',
+			'kb-header-container',
 			'wp-block-kadence-header-desktop' . $unique_id,
 		);
 

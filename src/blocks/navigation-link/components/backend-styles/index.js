@@ -1,4 +1,4 @@
-import { KadenceBlocksCSS, getPreviewSize, useEditorWidth } from '@kadence/helpers';
+import { KadenceBlocksCSS, getPreviewSize, useEditorElement } from '@kadence/helpers';
 import { useRef } from '@wordpress/element';
 
 export default function BackendStyles(props) {
@@ -139,7 +139,8 @@ export default function BackendStyles(props) {
 		mediaAlignMobile,
 	} = attributes;
 
-	const editorWidth = useEditorWidth(currentRef, []);
+	const editorElement = useEditorElement(currentRef, []);
+	const editorWidth = editorElement?.clientWidth;
 	const isFEIcon = 'fe' === mediaIcon[0].icon.substring(0, 2);
 
 	// const previewDivider = getPreviewSize(previewDevice, divider, dividerTablet, dividerMobile);

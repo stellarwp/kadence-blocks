@@ -626,7 +626,7 @@ export default function BackendStyles(props) {
 	css.add_property('min-height', getSpacingOptionOutput(previewHeight, heightUnit));
 	css.add_property('max-width', getSpacingOptionOutput(previewWidth, widthUnit));
 
-	css.set_selector(`wp-block-kadence-header${uniqueID} > div:hover`);
+	css.set_selector(`wp-block-kadence-header${uniqueID} .kb-header-container:hover`);
 
 	if (previewIsTransparent != '1') {
 		if ('normal' === backgroundHover?.type && backgroundHover?.image) {
@@ -771,7 +771,7 @@ export default function BackendStyles(props) {
 	css.add_property('color', KadenceColorOutput(linkHoverColor));
 
 	if (previewIsTransparent == '1') {
-		css.set_selector(`.wp-block-kadence-header${uniqueID} > div`);
+		css.set_selector(`.wp-block-kadence-header${uniqueID} .kb-header-container`);
 		css.add_property('top', '0px');
 
 		//apply auto padding to the next block after the header

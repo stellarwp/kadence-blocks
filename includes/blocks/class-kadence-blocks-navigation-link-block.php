@@ -61,7 +61,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 
-		$nav_link_attributes = $this->get_nav_link_attributes( $unique_id, $attributes );
+		$nav_link_attributes = $this->get_attributes_with_defaults( $unique_id, $attributes, 'kadence/' . $this->$block_name );
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
@@ -316,7 +316,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			self::$seen_refs[ $attributes['id'] ] = true;
 		}
 
-		$nav_link_attributes = $this->get_nav_link_attributes( $unique_id, $attributes );
+		$nav_link_attributes = $this->get_attributes_with_defaults( $unique_id, $attributes, 'kadence/' . $this->$block_name );
 		$child_info = $this->get_child_info( $block_instance );
 
 		// Handle embeds for nav block.
@@ -422,57 +422,6 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$highlight_label,
 			$sub_menu_content,
 		);
-	}
-
-	/**
-	 * Get Navigation Link attributes.
-	 *
-	 * @param int $unique_id The unique id.
-	 * @return array
-	 */
-	private function get_nav_link_attributes( $unique_id, $attributes ) {
-		global $wp_meta_keys;
-
-		if ( ! empty( $this->nav_link_attributes[ $unique_id ] ) ) {
-			return $this->nav_link_attributes[ $unique_id ];
-		}
-
-		$nav_link_attrs = $this->merge_defaults( $attributes );
-
-		if ( $this->nav_link_attributes[ $unique_id ] = $nav_link_attrs ) {
-			return $this->nav_link_attributes[ $unique_id ];
-		}
-
-		return array();
-	}
-
-	/**
-	 * Merges in default values from the cpt registration to the meta attributes from the database.
-	 *
-	 * @param array $attributes The database attribtues.
-	 * @return array
-	 */
-	private function merge_defaults( $attributes ) {
-		$registry = WP_Block_Type_Registry::get_instance()->get_registered( 'kadence/navigation-link' );
-		$default_attributes = array();
-
-		if ( $registry && property_exists( $registry, 'attributes' ) && ! empty( $registry->attributes ) ) {
-			foreach ( $registry->attributes as $key => $value ) {
-				if ( isset( $value['default'] ) ) {
-					//handle types of attributes that are an array with a single object that actually contains the actual attributes
-					if ( is_array( $value['default'] ) && count( $value['default'] ) == 1 && isset( $value['default'][0] ) ) {
-						if ( isset( $attributes[ $key ] ) && is_array( $attributes[ $key ] ) && count( $attributes[ $key ] ) == 1 && isset( $attributes[ $key ][0] ) ) {
-							$attributes[ $key ][0] = array_merge( $value['default'][0], $attributes[ $key ][0] );
-						}
-					}
-
-					//standard case
-					$default_attributes[ $key ] = $value['default'];
-				}
-			}
-		}
-
-		return array_merge( $default_attributes, $attributes );
 	}
 
 	/**
