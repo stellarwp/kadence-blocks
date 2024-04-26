@@ -9,17 +9,16 @@ import Block from './block';
 import ColumnBlocks from './columnBlocks';
 import { DESKTOP_SECTION_NAMES, DESKTOP_BLOCK_POSITIONS, DESKTOP_CLIENT_ID_POSITIONS, ROW_TO_KEY } from './constants';
 
-const computeSections = (thisRow, blocks) =>
-	useMemo(() => {
-		return DESKTOP_SECTION_NAMES.map((name, index) => ({
-			name,
-			blocks: get(thisRow, DESKTOP_BLOCK_POSITIONS[index], []),
-			clientId: get(thisRow, DESKTOP_CLIENT_ID_POSITIONS[index], []),
-		}));
-	}, [thisRow, blocks]);
+const computeSections = (thisRow, blocks) => {
+	return DESKTOP_SECTION_NAMES.map((name, index) => ({
+		name,
+		blocks: get(thisRow, DESKTOP_BLOCK_POSITIONS[index], []),
+		clientId: get(thisRow, DESKTOP_CLIENT_ID_POSITIONS[index], []),
+	}));
+};
 
 const DesktopRow = ({ position, blocks, activeBlockData }) => {
-	const thisRow = useMemo(() => get(blocks, [ROW_TO_KEY[position]], []), [blocks, position]);
+	const thisRow = get(blocks, [ROW_TO_KEY[position]], []);
 	const sections = computeSections(thisRow, blocks);
 
 	// If mid columns and center are empty, don't show mid columns

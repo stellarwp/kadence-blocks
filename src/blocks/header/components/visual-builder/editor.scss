@@ -60,13 +60,13 @@ $fixed_height: 280px;
 		display: flex !important;
 		padding-top: 10px;
 		align-items: center;
-		overflow-x: auto;
 
 		.visual-desktop-row {
 			display: flex !important;
 			background-color: #FFF;
 			border: 1px dashed #a0aec1;
 			width: 100%;
+			overflow-x: auto;
 		}
 
 		.visual-section-wrapper {
