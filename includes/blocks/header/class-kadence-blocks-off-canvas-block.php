@@ -78,76 +78,69 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
+		$merged_attributes = $this->get_attributes_with_defaults( $unique_id, $attributes, 'kadence/' . $this->$block_name );
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
-		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id );
+		$sizes = array( 'Desktop', 'Tablet', 'Mobile' );
 
-		// Background Color.
-		if ( ! empty( $attributes['backgroundColor'] ) ) {
-			$css->add_property( 'background-color', $css->render_color( $attributes['backgroundColor'] ) );
+		foreach ( $sizes as $size ) {
+			$this->sized_dynamic_styles( $css, $merged_attributes, $unique_id, $size );
 		}
+		$css->set_media_state( 'desktop' );
 
-		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-inner');
-		$css->render_measure_output( $attributes, 'padding', 'padding');
-
-
-		// Active / Opens state
-		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . '.active' );
+		// container.
+		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id );
 
 		if( !empty( $attributes['widthType'] ) && $attributes['widthType'] === 'full') {
 			$css->add_property( 'width', '100%' );
-		} else {
-			$css->add_property( 'width', 'unset' );
-			$css->add_property( 'min-width', '100px' );
-
-			$max_width_unit = !empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px';
-			if( !empty( $attributes['maxWidth']) ) {
-				$css->add_property( 'max-width', $attributes['maxWidth'] . $max_width_unit );
-			}
-			if( !empty( $attributes['maxWidthTablet']) ) {
-				$css->set_media_state('tablet');
-				$css->add_property( 'max-width', $attributes['maxWidthTablet'] . $max_width_unit );
-				$css->set_media_state('desktop');
-			}
-			if( !empty( $attributes['maxWidthMobile']) ) {
-				$css->set_media_state('mobile');
-				$css->add_property( 'max-width', $attributes['maxWidthMobile'] . $max_width_unit );
-				$css->set_media_state('desktop');
-			}
 		}
 
-		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . '.active .kb-off-canvas-inner');
-		$css->add_property( 'width', '100%' );
-
-		if( empty( $attributes['widthType'] ) || ( isset( $attributes['widthType'] ) &&  $attributes['widthType'] === 'partial') ) {
-			$max_width_unit = !empty( $attributes['containerMaxWidthUnit'] ) ? $attributes['containerMaxWidthUnit'] : 'px';
-			if( !empty( $attributes['containerMaxWidth']) ) {
-				$css->add_property( 'max-width', $attributes['containerMaxWidth'] . $max_width_unit );
-			}
-			if( !empty( $attributes['containerMaxWidthTablet']) ) {
-				$css->set_media_state('tablet');
-				$css->add_property( 'max-width', $attributes['containerMaxWidthTablet'] . $max_width_unit );
-				$css->set_media_state('desktop');
-			}
-			if( !empty( $attributes['containerMaxWidthMobile']) ) {
-				$css->set_media_state('mobile');
-				$css->add_property( 'max-width', $attributes['containerMaxWidthMobile'] . $max_width_unit );
-				$css->set_media_state('desktop');
-			}
-		}
-
-
-		// Overlay background
-		$css->set_selector( '.wp-block-kadence-off-canvas-overlay' . $unique_id );
-		if ( ! empty( $attributes['pageBackgroundColor'] ) ) {
-			$css->add_property( 'background-color', $css->render_color( $attributes['pageBackgroundColor'] ) );
-		} else {
-			$css->add_property( 'background-color', 'rgba(0,0,0,0.5)' );
-		}
+		// inner container.
+		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-inner');
+		$css->render_measure_output( $attributes, 'padding', 'padding');
 
 		return $css->css_output();
 	}
+
+	/**
+	 * Build up the dynamic styles for a size.
+	 *
+	 * @param string $size The size.
+	 * @return array
+	 */
+	public function sized_dynamic_styles( $css, $attributes, $unique_id, $size = 'Desktop' ) {
+		$sized_attributes = $css->get_sized_attributes_auto( $attributes, $size, false );
+		$sized_attributes_inherit = $css->get_sized_attributes_auto( $attributes, $size );
+
+		//container
+		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id );
+		if( empty( $attributes['widthType'] ) || $attributes['widthType'] !== 'full') {
+			$max_width_unit = !empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px';
+			if( !empty( $sized_attributes['maxWidth']) ) {
+				$css->add_property( 'max-width', $sized_attributes['maxWidth'] . $max_width_unit );
+			}
+		}
+		if ( ! empty( $sized_attributes['backgroundColor'] ) ) {
+			$css->add_property( 'background-color', $css->render_color( $sized_attributes['backgroundColor'] ) );
+		}
+
+		//inner container
+		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-inner');
+		if( empty( $attributes['widthType'] ) || ( isset( $attributes['widthType'] ) &&  $attributes['widthType'] === 'partial') ) {
+			$max_width_unit = !empty( $attributes['containerMaxWidthUnit'] ) ? $attributes['containerMaxWidthUnit'] : 'px';
+			if( !empty( $sized_attributes['containerMaxWidth']) ) {
+				$css->add_property( 'max-width', $sized_attributes['containerMaxWidth'] . $max_width_unit );
+			}
+		}
+
+		// Overlay
+		$css->set_selector( '.kb-off-canvas-overlay' . $unique_id );
+		if ( ! empty( $sized_attributes['pageBackgroundColor'] ) ) {
+			$css->add_property( 'background-color', $css->render_color( $sized_attributes['pageBackgroundColor'] ) );
+		}
+	}
+
 	/**
 	 * The innerblocks are stored on the $content variable. We just wrap with our data, if needed
 	 *
@@ -166,10 +159,9 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 		);
 
 		$overlay_classes = array(
-			'wp-block-kadence-off-canvas-overlay',
-			'wp-block-kadence-off-canvas-overlay' . $unique_id,
+			'kb-off-canvas-overlay',
+			'kb-off-canvas-overlay' . $unique_id,
 		);
-
 
 		$html .= '<div class="' . esc_attr( implode( ' ', $classes ) ) . '">';
 		$html .= '<div class="kb-off-canvas-inner">';
@@ -181,8 +173,8 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 			$html .= '<div data-unique-id="' . esc_attr( $unique_id ) . '" class="' . esc_attr( implode( ' ', $overlay_classes ) ) . '"></div>';
 		}
 
-		return $html;	}
-
+		return $html;
+	}
 }
 
 Kadence_Blocks_Off_Canvas_Block::get_instance();

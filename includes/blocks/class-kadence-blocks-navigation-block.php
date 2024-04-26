@@ -70,7 +70,7 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 			return;
 		}
 
-		$nav_attributes = $this->get_nav_attributes( $attributes['id'] );
+		$nav_attributes = $this->get_attributes_with_defaults_cpt( $attributes['id'], 'kadence_navigation', '_kad_navigation_' );
 		$nav_attributes = json_decode( json_encode( $nav_attributes ), true );
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
@@ -279,7 +279,7 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		self::$seen_refs[ $attributes['id'] ] = true;
 
-		$nav_attributes = $this->get_nav_attributes( $attributes['id'] );
+		$nav_attributes = $this->get_attributes_with_defaults_cpt( $attributes['id'], 'kadence_navigation', '_kad_navigation_' );
 		$nav_attributes = json_decode( json_encode( $nav_attributes ), true );
 
 		// Remove the advanced nav block so it doesn't try and render.
@@ -396,68 +396,6 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 			$menu_attributes,
 			$content
 		);
-	}
-
-	/**
-	 * Get Navigation attributes.
-	 *
-	 * @param int $post_id Post ID.
-	 * @return array
-	 */
-	private function get_nav_attributes( $post_id ) {
-		global $wp_meta_keys;
-
-		if ( ! empty( $this->nav_attributes[ $post_id ] ) ) {
-			return $this->nav_attributes[ $post_id ];
-		}
-
-		$post_meta = get_post_meta( $post_id );
-		$nav_meta = array();
-		if ( is_array( $post_meta ) ) {
-			foreach ( $post_meta as $meta_key => $meta_value ) {
-				if ( strpos( $meta_key, '_kad_navigation_' ) === 0 && isset( $meta_value[0] ) ) {
-					$nav_meta[ str_replace( '_kad_navigation_', '', $meta_key ) ] = maybe_unserialize( $meta_value[0] );
-				}
-			}
-		}
-
-		$nav_meta = $this->merge_defaults( $nav_meta );
-
-		if ( $this->nav_attributes[ $post_id ] = $nav_meta ) {
-			return $this->nav_attributes[ $post_id ];
-		}
-
-		return array();
-	}
-
-	/**
-	 * Merges in default values from the cpt registration to the meta attributes from the database.
-	 *
-	 * @param array $attributes The database attribtues.
-	 * @return array
-	 */
-	private function merge_defaults( $attributes ) {
-		$meta_keys = get_registered_meta_keys( 'post', 'kadence_navigation' );
-		$meta_prefix = '_kad_navigation_';
-		$default_attributes = array();
-
-		foreach ( $meta_keys as $key => $value ) {
-			if ( str_starts_with( $key, $meta_prefix ) && array_key_exists( 'default', $value ) ) {
-				$attr_name = str_replace( $meta_prefix, '', $key );
-
-				//handle types of attributes that are an array with a single object that actually contains the actual attributes
-				if ( is_array( $value['default'] ) && count( $value['default'] ) == 1 && isset( $value['default'][0] ) ) {
-					if ( isset( $attributes[ $attr_name ] ) && is_array( $attributes[ $attr_name ] ) && count( $attributes[ $attr_name ] ) == 1 && isset( $attributes[ $attr_name ][0] ) ) {
-						$attributes[ $attr_name ][0] = array_merge( $value['default'][0], $attributes[ $attr_name ][0] );
-					}
-				}
-
-				//standard case
-				$default_attributes[ $attr_name ] = $value['default'];
-			}
-		}
-
-		return array_merge( $default_attributes, $attributes );
 	}
 
 	/**

@@ -46,6 +46,13 @@ class Kadence_Blocks_Abstract_Block {
 	protected $has_script = false;
 
 	/**
+	 * Block determines if scripts need to be loaded for block.
+	 *
+	 * @var string
+	 */
+	protected $attributes_with_defaults = array();
+
+	/**
 	 * Class Constructor.
 	 */
 	public function __construct() {
@@ -281,5 +288,119 @@ class Kadence_Blocks_Abstract_Block {
 		}
 
 		return $default;
+	}
+
+
+
+	/**
+	 * Get this blocks attributes merged with defaults from the registration.
+	 *
+	 * @param int $unique_id The unique id.
+	 * @return array
+	 */
+	public function get_attributes_with_defaults( $unique_id, $attributes, $block_name ) {
+		global $wp_meta_keys;
+
+		if ( ! empty( $this->attributes_with_defaults[ $unique_id ] ) ) {
+			return $this->attributes_with_defaults[ $unique_id ];
+		}
+
+		$attributes_with_defaults = $this->merge_defaults( $attributes, $block_name );
+
+		if ( $this->attributes_with_defaults[ $unique_id ] = $attributes_with_defaults ) {
+			return $this->attributes_with_defaults[ $unique_id ];
+		}
+
+		return array();
+	}
+
+	/**
+	 * Merges in default values from the block registry to the meta attributes from the database.
+	 *
+	 * @param array $attributes The database attribtues.
+	 * @return array
+	 */
+	public function merge_defaults( $attributes, $block_name ) {
+		$registry = WP_Block_Type_Registry::get_instance()->get_registered( $block_name );
+		$default_attributes = array();
+
+		if ( $registry && property_exists( $registry, 'attributes' ) && ! empty( $registry->attributes ) ) {
+			foreach ( $registry->attributes as $key => $value ) {
+				if ( isset( $value['default'] ) ) {
+					//handle types of attributes that are an array with a single object that actually contains the actual attributes
+					if ( is_array( $value['default'] ) && count( $value['default'] ) == 1 && isset( $value['default'][0] ) ) {
+						if ( isset( $attributes[ $key ] ) && is_array( $attributes[ $key ] ) && count( $attributes[ $key ] ) == 1 && isset( $attributes[ $key ][0] ) ) {
+							$attributes[ $key ][0] = array_merge( $value['default'][0], $attributes[ $key ][0] );
+						}
+					}
+
+					//standard case
+					$default_attributes[ $key ] = $value['default'];
+				}
+			}
+		}
+
+		return array_merge( $default_attributes, $attributes );
+	}
+
+	/**
+	 * Get this blocks attributes merged with defaults from the registration for post type based blocks.
+	 *
+	 * @param int $post_id Post ID.
+	 * @return array
+	 */
+	public function get_attributes_with_defaults_cpt( $post_id, $cpt_name, $meta_prefix  ) {
+
+		if ( ! empty( $this->attributes_with_defaults[ $post_id ] ) ) {
+			return $this->attributes_with_defaults[ $post_id ];
+		}
+
+		$post_meta = get_post_meta( $post_id );
+		$attributes_with_defaults = array();
+		if ( is_array( $post_meta ) ) {
+			foreach ( $post_meta as $meta_key => $meta_value ) {
+				if ( strpos( $meta_key, $meta_prefix ) === 0 && isset( $meta_value[0] ) ) {
+					$attributes_with_defaults[ str_replace( $meta_prefix, '', $meta_key ) ] = maybe_unserialize( $meta_value[0] );
+				}
+			}
+		}
+
+		$attributes_with_defaults = $this->merge_defaults_cpt( $attributes_with_defaults, $cpt_name, $meta_prefix );
+
+		if ( $this->attributes_with_defaults[ $post_id ] = $attributes_with_defaults ) {
+			return $this->attributes_with_defaults[ $post_id ];
+		}
+
+		return array();
+	}
+
+
+	/**
+	 * Merges in default values from the cpt registration to the meta attributes from the database.
+	 *
+	 * @param array $attributes The database attribtues.
+	 * @return array
+	 */
+	public function merge_defaults_cpt( $attributes, $cpt_name, $meta_prefix ) {
+		$meta_keys = get_registered_meta_keys( 'post', $cpt_name );
+		$default_attributes = array();
+
+		foreach ( $meta_keys as $key => $value ) {
+			if ( str_starts_with( $key, $meta_prefix ) && array_key_exists( 'default', $value ) ) {
+				$attr_name = str_replace( $meta_prefix, '', $key );
+
+				//handle types of attributes that are an array with a single object that actually contains the actual attributes
+				if ( is_array( $value['default'] ) && count( $value['default'] ) == 1 && isset( $value['default'][0] ) ) {
+					if ( isset( $attributes[ $attr_name ] ) && is_array( $attributes[ $attr_name ] ) && count( $attributes[ $attr_name ] ) == 1 && isset( $attributes[ $attr_name ][0] ) ) {
+						$attributes[ $attr_name ][0] = array_merge( $value['default'][0], $attributes[ $attr_name ][0] );
+					}
+				}
+
+				//standard case
+				$default_attributes[ $attr_name ] = $value['default'];
+			}
+		}
+
+		return array_merge( $default_attributes, $attributes );
 	}
 }

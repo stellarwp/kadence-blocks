@@ -63,6 +63,7 @@ export function Edit(props) {
 
 	const innerBlockClasses = classnames({
 		'wp-block-kadence-header-tablet': true,
+		'kb-header-container': true,
 		[`wp-block-kadence-header-tablet${uniqueID}`]: uniqueID,
 	});
 

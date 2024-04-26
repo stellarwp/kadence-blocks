@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		});
 	});
 
-	const overlays = document.querySelectorAll('.wp-block-kadence-off-canvas-overlay');
+	const overlays = document.querySelectorAll('.kb-off-canvas-overlay');
 	overlays.forEach(function (overlay) {
 		overlay.addEventListener('click', function () {
 			const uniqueId = overlay.getAttribute('data-unique-id');

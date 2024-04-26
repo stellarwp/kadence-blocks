@@ -7,7 +7,7 @@
 @mixin header-transparent-styles {
 	position: relative;
 
-	& > div {
+	.kb-header-container {
 		background-color: transparent;
 		position: absolute;
 		left: 0px;
@@ -22,7 +22,7 @@
 	position: relative;
 	z-index: 1;
 
-	& > div {
+	.kb-header-container {
 		left: 0;
 		right: 0;
 		z-index: 100;
