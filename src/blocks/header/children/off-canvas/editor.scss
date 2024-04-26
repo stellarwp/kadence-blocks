@@ -21,22 +21,23 @@
 
 	.kb-off-canvas-inner {
 		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
 
 		.kt-close-position-inside {
 			position: relative;
 		}
+
+		//fix for blocks centering themselves in the flex container
+		.wp-block {
+			margin-left: initial;
+			margin-right: initial;
+		}
 	}
 
 	&.active {
-		display: flex;
-
-		&.off-canvas-side-left {
-			justify-content: flex-start;
-		}
-
-		&.off-canvas-side-right {
-			justify-content: flex-end;
-		}
+		display: block;
 
 		& + .kb-off-canvas-overlay {
 			display: block;

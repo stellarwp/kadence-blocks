@@ -25,10 +25,17 @@ export default function BackendStyles(props) {
 		containerMaxWidth,
 		containerMaxWidthTablet,
 		containerMaxWidthMobile,
+		hAlign,
+		hAlignTablet,
+		hAlignMobile,
+		vAlign,
+		vAlignTablet,
+		vAlignMobile,
 	} = attributes;
 
 	const editorWidth = editorElement?.clientWidth;
 	const editorLeft = editorElement?.getBoundingClientRect().left;
+	const editorRight = window.innerWidth - editorElement?.getBoundingClientRect().right;
 	//editor is actually full height of content, it's parent is the frame
 	const editorHeight = editorElement?.parentElement.clientHeight;
 	const editorTop = editorElement?.parentElement.getBoundingClientRect().top;
@@ -83,16 +90,22 @@ export default function BackendStyles(props) {
 		pageBackgroundColorTablet,
 		pageBackgroundColorMobile
 	);
+	const previewHAlign = getPreviewSize(previewDevice, hAlign, hAlignTablet, hAlignMobile);
+	const previewVAlign = getPreviewSize(previewDevice, vAlign, vAlignTablet, vAlignMobile);
 
 	const css = new KadenceBlocksCSS();
 
 	//content area
 	css.set_selector(`.wp-block-kadence-off-canvas${uniqueID}`);
+	if (slideFrom == 'right') {
+		css.add_property('right', editorRight + 'px');
+	} else {
+		css.add_property('left', editorLeft + 'px');
+	}
 	css.add_property('height', editorHeight + 'px');
 	css.add_property('top', editorTop + 'px');
-	css.add_property('left', editorLeft + 'px');
-	css.add_property('background', KadenceColorOutput(previewBackgroundColor));
 	css.add_property('width', widthType === 'full' ? editorWidth + 'px' : '');
+	css.add_property('background', KadenceColorOutput(previewBackgroundColor));
 	css.add_property(
 		'max-width',
 		widthType !== 'full' ? (previewMaxWidth != 0 ? previewMaxWidth + maxWidthUnit : '') : ''
@@ -105,6 +118,18 @@ export default function BackendStyles(props) {
 	css.add_property('padding-right', getSpacingOptionOutput(previewPaddingRight, paddingUnit));
 	css.add_property('padding-bottom', getSpacingOptionOutput(previewPaddingBottom, paddingUnit));
 	css.add_property('padding-left', getSpacingOptionOutput(previewPaddingLeft, paddingUnit));
+
+	//content area inner alignment
+	if (previewHAlign == 'center') {
+		css.add_property('align-items', 'center');
+	} else if (previewHAlign == 'right') {
+		css.add_property('align-items', 'flex-end');
+	}
+	if (previewVAlign == 'center') {
+		css.add_property('justify-content', 'center');
+	} else if (previewVAlign == 'bottom') {
+		css.add_property('justify-content', 'flex-end');
+	}
 
 	//overlay
 	css.set_selector(`.kb-off-canvas-overlay${uniqueID}`);

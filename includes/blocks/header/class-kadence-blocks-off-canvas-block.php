@@ -134,6 +134,18 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
+		//content area inner alignment
+		if ($sized_attributes['hAlign'] == 'center') {
+			$css->add_property('align-items', 'center');
+		} else if ($sized_attributes['hAlign'] == 'right') {
+			$css->add_property('align-items', 'flex-end');
+		}
+		if ($sized_attributes['vAlign'] == 'center') {
+			$css->add_property('justify-content', 'center');
+		} else if ($sized_attributes['vAlign'] == 'bottom') {
+			$css->add_property('justify-content', 'flex-end');
+		}
+
 		// Overlay
 		$css->set_selector( '.kb-off-canvas-overlay' . $unique_id );
 		if ( ! empty( $sized_attributes['pageBackgroundColor'] ) ) {

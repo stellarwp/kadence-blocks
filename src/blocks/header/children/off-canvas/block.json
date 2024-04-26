@@ -95,6 +95,30 @@
 		},
 		"closeIconColor": {
 			"type": "string"
+		},
+		"hAlign": {
+			"type": "string",
+			"default": "left"
+		},
+		"hAlignTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"hAlignMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"vAlign": {
+			"type": "string",
+			"default": "top"
+		},
+		"vAlignTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"vAlignMobile": {
+			"type": "string",
+			"default": ""
 		}
 	}
 }

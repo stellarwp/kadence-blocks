@@ -34,6 +34,7 @@ import {
 	ResponsiveMeasureRangeControl,
 	ResponsiveRangeControls,
 	SmallResponsiveControl,
+	ResponsiveAlignControls,
 } from '@kadence/components';
 
 /**
@@ -69,6 +70,12 @@ export function Edit(props) {
 		containerMaxWidth,
 		containerMaxWidthTablet,
 		containerMaxWidthMobile,
+		hAlign,
+		hAlignTablet,
+		hAlignMobile,
+		vAlign,
+		vAlignTablet,
+		vAlignMobile,
 	} = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
@@ -270,6 +277,34 @@ export function Edit(props) {
 										containerMaxWidthMobile: '',
 									})
 								}
+							/>
+							<ResponsiveAlignControls
+								label={__('Alignment', 'kadence-blocks')}
+								value={hAlign ? hAlign : ''}
+								tabletValue={hAlignTablet ? hAlignTablet : ''}
+								mobileValue={hAlignMobile ? hAlignMobile : ''}
+								onChange={(nextAlign) => setAttributes({ hAlign: nextAlign ? nextAlign : 'center' })}
+								onChangeTablet={(nextAlign) =>
+									setAttributes({ hAlignTablet: nextAlign ? nextAlign : '' })
+								}
+								onChangeMobile={(nextAlign) =>
+									setAttributes({ hAlignMobile: nextAlign ? nextAlign : '' })
+								}
+								type={'text'}
+							/>
+							<ResponsiveAlignControls
+								label={__('Alignment', 'kadence-blocks')}
+								value={vAlign ? vAlign : ''}
+								tabletValue={vAlignTablet ? vAlignTablet : ''}
+								mobileValue={vAlignMobile ? vAlignMobile : ''}
+								onChange={(nextAlign) => setAttributes({ vAlign: nextAlign ? nextAlign : 'center' })}
+								onChangeTablet={(nextAlign) =>
+									setAttributes({ vAlignTablet: nextAlign ? nextAlign : '' })
+								}
+								onChangeMobile={(nextAlign) =>
+									setAttributes({ vAlignMobile: nextAlign ? nextAlign : '' })
+								}
+								type={'vertical'}
 							/>
 						</KadencePanelBody>
 					</>
