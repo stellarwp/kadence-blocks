@@ -166,7 +166,7 @@ export function Edit(props) {
 					<PopColorControl
 						label={__('Page Background', 'kadence-blocks')}
 						value={pageBackgroundColorValue}
-						default={''}
+						default={'rgba(0, 0, 0, 0.6)'}
 						onChange={(value) => setAttributes({ ['pageBackgroundColor' + suffix + size]: value })}
 						key={'normalb'}
 					/>
