@@ -101,6 +101,16 @@ class Kadence_Blocks_Off_Canvas_Trigger_Block extends Kadence_Blocks_Abstract_Bl
 			'tablet_key'  => 'marginTablet',
 			'mobile_key'  => 'marginMobile',
 		) );
+		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array(
+			'desktop_key' => 'borderRadius',
+			'tablet_key'  => 'borderRadiusTablet',
+			'mobile_key'  => 'borderRadiusMobile',
+		) );
+		$css->render_border_styles( $attributes, 'border' );
+
+		//container hover
+		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ':hover' );
+		$css->render_border_styles( $attributes, 'borderHover' );
 
 		//icon
 		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ' svg' );
@@ -125,6 +135,12 @@ class Kadence_Blocks_Off_Canvas_Trigger_Block extends Kadence_Blocks_Abstract_Bl
 			$css->add_property( 'background-color', $css->render_color( $sized_attributes['iconBackgroundColor'] ) );
 		}
 
+		//container hover
+		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ':hover' );
+		if ( ! empty( $sized_attributes['iconBackgroundColorHover'] ) ) {
+			$css->add_property( 'background-color', $css->render_color( $sized_attributes['iconBackgroundColorHover'] ) );
+		}
+
 		//icon
 		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ' svg' );
 		if ( ! empty( $sized_attributes['iconColor'] ) ) {
@@ -133,6 +149,12 @@ class Kadence_Blocks_Off_Canvas_Trigger_Block extends Kadence_Blocks_Abstract_Bl
 		if ( ! empty( $sized_attributes['iconSize'] ) ) {
 			$css->add_property( 'width', $sized_attributes['iconSize'] . 'px' );
 			$css->add_property( 'height', $sized_attributes['iconSize'] . 'px' );
+		}
+
+		//icon hover
+		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ':hover svg' );
+		if ( ! empty( $sized_attributes['iconColorHover'] ) ) {
+			$css->add_property( 'color', $css->render_color( $sized_attributes['iconColorHover'] ) );
 		}
 	}
 
