@@ -43,7 +43,6 @@ export default function BackendStyles(props) {
 		background,
 		backgroundHover,
 		typography,
-		textColor,
 		linkColor,
 		linkHoverColor,
 		height,
