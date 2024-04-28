@@ -132,11 +132,11 @@ function KadenceTypographyDefault(props) {
 	};
 	return (
 		<Fragment>
-			<Tooltip text="Block Defaults">
+			<Tooltip text={__('Block Defaults', 'kadence-blocks')}>
 				<Button className="kb-block-settings-visibility" onClick={() => setIsOpen(true)}>
 					<div className="kt-block-defaults">
 						<span className="kt-block-icon">{fontFamilyIcon}</span>
-						{__('Font Family Options')}
+						{__('Font Family Options', 'kadence-blocks')}
 					</div>
 					<div className="kt-block-settings">
 						<Dashicon icon="visibility" />
@@ -147,13 +147,13 @@ function KadenceTypographyDefault(props) {
 			{isOpen ? (
 				<Modal
 					className="kt-block-defaults-modal kt-font-family-modal"
-					title={__('Kadence Font Family Options')}
+					title={__('Kadence Font Family Options', 'kadence-blocks')}
 					onRequestClose={() => {
 						saveConfig('kadence/typography', typoConfig);
 					}}
 				>
 					<ToggleControl
-						label={__('Show All Font Family Options')}
+						label={__('Show All Font Family Options', 'kadence-blocks')}
 						checked={undefined !== typoConfig.showAll ? typoConfig.showAll : true}
 						onChange={(value) => saveConfigState('showAll', value)}
 					/>
@@ -165,7 +165,7 @@ function KadenceTypographyDefault(props) {
 									value={typoConfig.choiceArray ? typoConfig.choiceArray : ''}
 									isMulti={true}
 									maxMenuHeight={300}
-									placeholder={__('Select the font families you want')}
+									placeholder={__('Select the font families you want', 'kadence-blocks')}
 									onChange={onTypoFontChange}
 								/>
 							</div>
@@ -178,7 +178,7 @@ function KadenceTypographyDefault(props) {
 							saveConfig('kadence/typography', typoConfig);
 						}}
 					>
-						{__('Save/Close')}
+						{__('Save/Close', 'kadence-blocks')}
 					</Button>
 				</Modal>
 			) : null}
