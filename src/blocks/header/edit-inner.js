@@ -666,7 +666,7 @@ export function EditInner(props) {
 										onChange={(value) => {
 											setMetaAttribute(
 												{ ...backgroundHoverValue, color: value },
-												'background' + suffix + 'Hover' + size
+												'backgroundHover'
 											);
 										}}
 									/>
@@ -702,61 +702,61 @@ export function EditInner(props) {
 										onRemoveImage={() => {
 											setMetaAttribute(
 												{ ...backgroundHoverValue, imageID: undefined },
-												'background' + suffix + 'Hover' + size
+												'backgroundHover'
 											);
 											setMetaAttribute(
 												{ ...backgroundHoverValue, image: undefined },
-												'background' + suffix + 'Hover' + size
+												'backgroundHover'
 											);
 										}}
 										onSaveImage={(value) => {
 											setMetaAttribute(
 												{ ...backgroundHoverValue, imageID: value.id.toString() },
-												'background' + suffix + 'Hover' + size
+												'backgroundHover'
 											);
 											setMetaAttribute(
 												{ ...backgroundHoverValue, image: value.url },
-												'background' + suffix + 'Hover' + size
+												'backgroundHover'
 											);
 										}}
 										onSaveURL={(newURL) => {
 											if (newURL !== backgroundHoverValue.image) {
 												setMetaAttribute(
 													{ ...backgroundHoverValue, imageID: undefined },
-													'background' + suffix + 'Hover' + size
+													'backgroundHover'
 												);
 												setMetaAttribute(
 													{ ...backgroundHoverValue, image: newURL },
-													'background' + suffix + 'Hover' + size
+													'backgroundHover'
 												);
 											}
 										}}
 										onSavePosition={(value) =>
 											setMetaAttribute(
 												{ ...backgroundHoverValue, imagePosition: value },
-												'background' + suffix + 'Hover' + size
+												'backgroundHover'
 											)
 										}
 										onSaveSize={(value) =>
 											setMetaAttribute(
 												{ ...backgroundHoverValue, imageSize: value },
-												'background' + suffix + 'Hover' + size
+												'backgroundHover'
 											)
 										}
 										onSaveRepeat={(value) =>
 											setMetaAttribute(
 												{ ...backgroundHoverValue, imageRepeat: value },
-												'background' + suffix + 'Hover' + size
+												'backgroundHover'
 											)
 										}
 										onSaveAttachment={(value) =>
 											setMetaAttribute(
 												{ ...backgroundHoverValue, imageAttachment: value },
-												'background' + suffix + 'Hover' + size
+												'backgroundHover'
 											)
 										}
 										disableMediaButtons={backgroundHoverValue.image ? true : false}
-										dynamicAttribute={'background' + suffix + 'Hover' + size + ':image'}
+										dynamicAttribute={'backgroundHover:image'}
 										isSelected={isSelected}
 										attributes={attributes}
 										setAttributes={setAttributes}
@@ -773,7 +773,7 @@ export function EditInner(props) {
 										onChange={(value) => {
 											setMetaAttribute(
 												{ ...backgroundHoverValue, gradient: value },
-												'background' + suffix + 'Hover' + size
+												'backgroundHover'
 											);
 										}}
 										gradients={[]}
