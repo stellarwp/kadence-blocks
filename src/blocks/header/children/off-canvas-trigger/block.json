@@ -10,9 +10,6 @@
 		"uniqueID": {
 			"type": "string"
 		},
-		"location": {
-			"type": "string"
-		},
 		"icon": {
 			"type": "string",
 			"default": "ic_menu"
@@ -23,11 +20,11 @@
 		},
 		"iconSizeTablet": {
 			"type": "number",
-			"default": 25
+			"default": 0
 		},
 		"iconSizeMobile": {
 			"type": "number",
-			"default": 25
+			"default": 0
 		},
 		"iconColor": {
 			"type": "string",

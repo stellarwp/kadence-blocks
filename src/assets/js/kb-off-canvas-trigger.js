@@ -25,4 +25,15 @@ document.addEventListener('DOMContentLoaded', function () {
 			}
 		});
 	});
+
+	const closeTriggers = document.querySelectorAll('.kb-off-canvas-close');
+	closeTriggers.forEach(function (trigger) {
+		trigger.addEventListener('click', function () {
+			const offCanvas = trigger.closest('.wp-block-kadence-off-canvas');
+
+			if (offCanvas) {
+				offCanvas.classList.toggle('active');
+			}
+		});
+	});
 });

@@ -38,6 +38,36 @@ export default function BackendStyles(props) {
 		borderRadiusTablet,
 		borderRadiusMobile,
 		borderRadiusUnit,
+		closeIcon,
+		closeIconSize,
+		closeIconSizeTablet,
+		closeIconSizeMobile,
+		closeIconColor,
+		closeIconColorTablet,
+		closeIconColorMobile,
+		closeIconColorHover,
+		closeIconColorHoverTablet,
+		closeIconColorHoverMobile,
+		closeIconBackgroundColor,
+		closeIconBackgroundColorTablet,
+		closeIconBackgroundColorMobile,
+		closeIconBackgroundColorHover,
+		closeIconBackgroundColorHoverTablet,
+		closeIconBackgroundColorHoverMobile,
+		closeIconPadding,
+		closeIconPaddingTablet,
+		closeIconPaddingMobile,
+		closeIconPaddingUnit,
+		closeIconBorder,
+		closeIconBorderTablet,
+		closeIconBorderMobile,
+		closeIconBorderHover,
+		closeIconBorderHoverTablet,
+		closeIconBorderHoverMobile,
+		closeIconBorderRadius,
+		closeIconBorderRadiusTablet,
+		closeIconBorderRadiusMobile,
+		closeIconBorderRadiusUnit,
 	} = attributes;
 
 	const editorWidth = editorElement?.clientWidth;
@@ -74,6 +104,31 @@ export default function BackendStyles(props) {
 	);
 	const previewHAlign = getPreviewSize(previewDevice, hAlign, hAlignTablet, hAlignMobile);
 	const previewVAlign = getPreviewSize(previewDevice, vAlign, vAlignTablet, vAlignMobile);
+
+	const previewCloseIconColor = getPreviewSize(
+		previewDevice,
+		closeIconColor,
+		closeIconColorTablet,
+		closeIconColorMobile
+	);
+	const previewCloseIconColorHover = getPreviewSize(
+		previewDevice,
+		closeIconColorHover,
+		closeIconColorHoverTablet,
+		closeIconColorHoverMobile
+	);
+	const previewCloseIconBackgroundColor = getPreviewSize(
+		previewDevice,
+		closeIconBackgroundColor,
+		closeIconBackgroundColorTablet,
+		closeIconBackgroundColorMobile
+	);
+	const previewCloseIconBackgroundColorHover = getPreviewSize(
+		previewDevice,
+		closeIconBackgroundColorHover,
+		closeIconBackgroundColorHoverTablet,
+		closeIconBackgroundColorHoverMobile
+	);
 
 	const css = new KadenceBlocksCSS();
 
@@ -142,6 +197,98 @@ export default function BackendStyles(props) {
 	//random fix
 	css.set_selector('.components-popover.block-editor-block-popover');
 	css.add_property('z-index', '10000');
+
+	//close icon container
+	css.set_selector(`.wp-block-kadence-off-canvas${uniqueID} .kb-off-canvas-close`);
+	css.render_measure_output(
+		closeIconPadding,
+		closeIconPaddingTablet,
+		closeIconPaddingMobile,
+		previewDevice,
+		'padding',
+		closeIconPaddingUnit
+	);
+	css.add_property('background-color', KadenceColorOutput(previewCloseIconBackgroundColor));
+	css.add_property(
+		'border-top',
+		css.render_border(closeIconBorder, closeIconBorderTablet, closeIconBorderMobile, previewDevice, 'top', false)
+	);
+	css.add_property(
+		'border-right',
+		css.render_border(closeIconBorder, closeIconBorderTablet, closeIconBorderMobile, previewDevice, 'right', false)
+	);
+	css.add_property(
+		'border-bottom',
+		css.render_border(closeIconBorder, closeIconBorderTablet, closeIconBorderMobile, previewDevice, 'bottom', false)
+	);
+	css.add_property(
+		'border-left',
+		css.render_border(closeIconBorder, closeIconBorderTablet, closeIconBorderMobile, previewDevice, 'left', false)
+	);
+	css.render_measure_output(
+		closeIconBorderRadius,
+		closeIconBorderRadiusTablet,
+		closeIconBorderRadiusMobile,
+		previewDevice,
+		'border-radius',
+		closeIconBorderRadiusUnit
+	);
+
+	//close icon container hover
+	css.set_selector(`.wp-block-kadence-off-canvas${uniqueID} .kb-off-canvas-close:hover`);
+	css.add_property('background-color', KadenceColorOutput(previewCloseIconBackgroundColorHover));
+	css.add_property(
+		'border-top',
+		css.render_border(
+			closeIconBorderHover,
+			closeIconBorderHoverTablet,
+			closeIconBorderHoverMobile,
+			previewDevice,
+			'top',
+			false
+		)
+	);
+	css.add_property(
+		'border-right',
+		css.render_border(
+			closeIconBorderHover,
+			closeIconBorderHoverTablet,
+			closeIconBorderHoverMobile,
+			previewDevice,
+			'right',
+			false
+		)
+	);
+	css.add_property(
+		'border-bottom',
+		css.render_border(
+			closeIconBorderHover,
+			closeIconBorderHoverTablet,
+			closeIconBorderHoverMobile,
+			previewDevice,
+			'bottom',
+			false
+		)
+	);
+	css.add_property(
+		'border-left',
+		css.render_border(
+			closeIconBorderHover,
+			closeIconBorderHoverTablet,
+			closeIconBorderHoverMobile,
+			previewDevice,
+			'left',
+			false
+		)
+	);
+
+	//close icon
+	css.set_selector(`.wp-block-kadence-off-canvas${uniqueID} .kb-off-canvas-close svg`);
+	css.add_property('color', KadenceColorOutput(previewCloseIconColor));
+
+	//close icon hover
+	css.set_selector(`.wp-block-kadence-off-canvas${uniqueID} .kb-off-canvas-close:hover svg`);
+	css.add_property('color', KadenceColorOutput(previewCloseIconColorHover));
 
 	const cssOutput = css.css_output();
 

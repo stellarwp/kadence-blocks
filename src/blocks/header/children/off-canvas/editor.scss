@@ -59,28 +59,38 @@
 		position: fixed;
 		z-index: 1000;
 	}
+
+	.kb-off-canvas-close {
+		margin: 0;
+		padding: 0;
+		color: currentColor;
+		background: none;
+		border: none;
+		border-radius: 0;
+
+		border: 0;
+		background: transparent;
+		cursor: pointer;
+		padding: 0;
+		z-index: 11;
+		display: inline-flex;
+		justify-content: center;
+		align-items: center;
+		color: #444444;
+		-webkit-appearance: none;
+		position: absolute;
+		top: 4px;
+		right: 4px;
+		svg {
+		}
+
+		&:focus {
+			outline: none;
+		}
+	}
 }
 
 //this needed to be in a more specific selector for the block editor
 .block-editor-block-list__layout .wp-block-kadence-off-canvas {
 	position: fixed;
-}
-
-.wp-block-kadence-off-canvas-close {
-	border: 0;
-	background: transparent;
-	cursor: pointer;
-	padding: 0;
-	z-index: 11;
-	display: inline-flex;
-	justify-content: center;
-	align-items: center;
-	color: #444444;
-	-webkit-appearance: none;
-	position: absolute;
-	top: 4px;
-	right: 4px;
-}
-.wp-block-kadence-off-canvas-close:focus {
-	outline: none;
 }
