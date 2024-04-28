@@ -300,7 +300,7 @@ export default function BackendStyles(props) {
 	css.set_selector(
 		`.wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-desktop, .wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-tablet`
 	);
-	css.add_property('color', KadenceColorOutput(textColor));
+	css.add_property('color', KadenceColorOutput(typography.color));
 	css.add_property('font-size', getFontSizeOptionOutput(previewFontSize, typography.sizeType));
 	css.add_property('letter-spacing', getSpacingOptionOutput(previewLetterSpacing, typography.letterType));
 	css.add_property('text-transform', typography.textTransform);
