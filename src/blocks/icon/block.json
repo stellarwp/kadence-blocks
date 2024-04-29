@@ -4,6 +4,7 @@
 	"title": "Icon",
 	"name": "kadence/icon",
 	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
 	"attributes": {
 		"icons": {
 			"type": "array",
