@@ -174,6 +174,10 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.2.37 =
+Release Date: May TBD 2024
+* Fix: Aria roles when using accordion layout in tabs block.
+
 = 3.2.36 =
 Release Date: April 24th 2024
 * Fix: Custom CSS classes being applied to advanced form fields twice.
@@ -197,10 +201,6 @@ Release Date: April 22nd 2024
 * Fix: Issue with changing images in design library.
 * Fix: Linking to numeric anchor tags on accordion panes.
 * Fix: Issue with custom colors showing twice in editor.
-
-= 3.2.35 =
-Release Date: May TBD 2024
-* Fix: Aria roles when using accordion layout in tabs block.
 
 = 3.2.34 =
 Release Date: April 10th 2024
