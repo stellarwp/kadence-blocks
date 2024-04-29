@@ -4,6 +4,7 @@
 	"title": "Posts",
 	"name": "kadence/posts",
 	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
 	"attributes": {
 		"uniqueID": {
 			"type": "string"

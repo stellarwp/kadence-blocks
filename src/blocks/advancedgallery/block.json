@@ -4,6 +4,7 @@
 	"title": "Advanced Gallery",
 	"name": "kadence/advancedgallery",
 	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
 	"attributes": {
 		"uniqueID": {
 			"type": "string"
