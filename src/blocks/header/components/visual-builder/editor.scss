@@ -206,12 +206,6 @@ $fixed_height: 280px;
 		}
 	}
 }
-.is-sidebar-opened .kb-header-visual-builder-modal {
-	@media (min-width: 782px) {
-		margin-left: calc( var( --global-kb-editor-sidebar-secondary,  $sidebar_width ) + 160px);
-		width: calc( var( --global-kb-editor-full-width, calc(80% - $sidebar_width) ) - 190px);
-	}
-}
 
 //Something in the block editor transforms top level block wrappers after adding blocks, this prevents that and keeps appropriate modal display
 //.wp-block-kadence-header div {

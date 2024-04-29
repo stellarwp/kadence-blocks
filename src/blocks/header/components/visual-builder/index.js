@@ -1,8 +1,8 @@
-import { useMemo, useState } from '@wordpress/element';
+import { useRef, useState } from '@wordpress/element';
 import { Button } from '@wordpress/components';
-import { useEntityBlockEditor } from '@wordpress/core-data';
+import { useEditorElement } from '@kadence/helpers';
 import { __ } from '@wordpress/i18n';
-import { get } from 'lodash';
+
 import ModalClose from './close';
 import Desktop from './desktop';
 import './editor.scss';
@@ -60,14 +60,25 @@ export default function VisualBuilder({ clientId, startVisible = false }) {
 
 	const { desktopBlocks, tabletBlocks, offCanvasBlocks } = extractBlocks(topLevelBlocks);
 
+	const ref = useRef();
+	const editorElement = useEditorElement(ref, []);
+	const editorWidth = editorElement?.clientWidth;
+	const editorLeft = editorElement?.getBoundingClientRect().left;
+
 	return (
-		<div class={'kb-header-visual-builder'}>
+		<div class={'kb-header-visual-builder'} ref={ref}>
 			<div class={'kb-header-visual-builder__toggle'}>
 				<button onClick={() => setIsVisible(!isVisible)}>{isVisible ? 'Hide' : 'Show'} Visual Builder</button>
 			</div>
 
 			{isVisible && (
-				<div class={'kb-header-visual-builder-modal'}>
+				<div
+					class={'kb-header-visual-builder-modal'}
+					style={{
+						width: editorWidth + 'px',
+						left: editorLeft + 'px',
+					}}
+				>
 					<div class={'tabs'}>
 						<Button
 							isPrimary={tab === 'desktop'}
