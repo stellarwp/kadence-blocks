@@ -6,6 +6,7 @@
  * Import Css
  */
 import './editor.scss';
+import './style.scss';
 
 /**
  * External dependencies
@@ -29,6 +30,9 @@ import {
 	ResponsiveMeasureRangeControl,
 	ResponsiveRangeControls,
 	InspectorControlTabs,
+	HoverToggleControl,
+	ResponsiveBorderControl,
+	ResponsiveMeasurementControls,
 } from '@kadence/components';
 
 /**
@@ -50,9 +54,15 @@ export function Edit(props) {
 		iconColor,
 		iconColorTablet,
 		iconColorMobile,
+		iconColorHover,
+		iconColorHoverTablet,
+		iconColorHoverMobile,
 		iconBackgroundColor,
 		iconBackgroundColorTablet,
 		iconBackgroundColorMobile,
+		iconBackgroundColorHover,
+		iconBackgroundColorHoverTablet,
+		iconBackgroundColorHoverMobile,
 		label,
 		padding,
 		paddingTablet,
@@ -62,6 +72,16 @@ export function Edit(props) {
 		marginTablet,
 		marginMobile,
 		marginUnit,
+		border,
+		borderTablet,
+		borderMobile,
+		borderHover,
+		borderHoverTablet,
+		borderHoverMobile,
+		borderRadius,
+		borderRadiusTablet,
+		borderRadiusMobile,
+		borderRadiusUnit,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
@@ -133,7 +153,7 @@ export function Edit(props) {
 	});
 
 	return (
-		<div {...blockProps}>
+		<button {...blockProps}>
 			<InspectorControls>
 				<SelectParentBlock
 					label={__('View Header Settings', 'kadence-blocks')}
@@ -170,12 +190,66 @@ export function Edit(props) {
 				{activeTab === 'style' && (
 					<>
 						<KadencePanelBody>
-							<SmallResponsiveControl
-								label={'Colors'}
-								desktopChildren={styleColorControls()}
-								tabletChildren={styleColorControls('Tablet')}
-								mobileChildren={styleColorControls('Mobile')}
-							></SmallResponsiveControl>
+							<HoverToggleControl
+								normal={
+									<>
+										<SmallResponsiveControl
+											label={'Colors'}
+											desktopChildren={styleColorControls()}
+											tabletChildren={styleColorControls('Tablet')}
+											mobileChildren={styleColorControls('Mobile')}
+										></SmallResponsiveControl>
+										<ResponsiveBorderControl
+											label={__('Border', 'kadence-blocks')}
+											value={border}
+											tabletValue={borderTablet}
+											mobileValue={borderMobile}
+											onChange={(value) => setAttributes({ border: value })}
+											onChangeTablet={(value) => setAttributes({ borderTablet: value })}
+											onChangeMobile={(value) => setAttributes({ borderMobile: value })}
+											key={'normalbr'}
+										/>
+									</>
+								}
+								hover={
+									<>
+										<SmallResponsiveControl
+											label={'Hover Colors'}
+											desktopChildren={styleColorControls('', 'Hover')}
+											tabletChildren={styleColorControls('Tablet', 'Hover')}
+											mobileChildren={styleColorControls('Mobile', 'Hover')}
+										></SmallResponsiveControl>
+										<ResponsiveBorderControl
+											label={__('Hover Border', 'kadence-blocks')}
+											value={borderHover}
+											tabletValue={borderHoverTablet}
+											mobileValue={borderHoverMobile}
+											onChange={(value) => setAttributes({ borderHover: value })}
+											onChangeTablet={(value) => setAttributes({ borderHoverTablet: value })}
+											onChangeMobile={(value) => setAttributes({ borderHoverMobile: value })}
+											key={'normalbrhv'}
+										/>
+									</>
+								}
+							/>
+
+							<ResponsiveMeasurementControls
+								label={__('Border Radius', 'kadence-blocks')}
+								value={borderRadius}
+								tabletValue={borderRadiusTablet}
+								mobileValue={borderRadiusMobile}
+								onChange={(value) => setAttributes({ borderRadius: value })}
+								onChangeTablet={(value) => setAttributes({ borderRadiusTablet: value })}
+								onChangeMobile={(value) => setAttributes({ borderRadiusMobile: value })}
+								min={0}
+								max={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 100}
+								step={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1}
+								unit={borderRadiusUnit}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setAttributes({ borderRadiusUnit: value })}
+								isBorderRadius={true}
+								allowEmpty={true}
+							/>
 						</KadencePanelBody>
 					</>
 				)}
@@ -221,7 +295,7 @@ export function Edit(props) {
 			{icon && previewIconSize && (
 				<IconRender className={`kb-off-canvas-trigger-icon`} name={icon} size={previewIconSize} />
 			)}
-		</div>
+		</button>
 	);
 }
 

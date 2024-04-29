@@ -24,7 +24,7 @@ import {
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
 
-import { getUniqueId, getPostOrFseId, useEditorElement } from '@kadence/helpers';
+import { getUniqueId, getPostOrFseId, useEditorElement, getPreviewSize } from '@kadence/helpers';
 import {
 	SelectParentBlock,
 	KadenceRadioButtons,
@@ -37,6 +37,9 @@ import {
 	ResponsiveAlignControls,
 	ResponsiveBorderControl,
 	ResponsiveMeasurementControls,
+	KadenceIconPicker,
+	HoverToggleControl,
+	IconRender,
 } from '@kadence/components';
 
 /**
@@ -85,6 +88,36 @@ export function Edit(props) {
 		borderRadiusTablet,
 		borderRadiusMobile,
 		borderRadiusUnit,
+		closeIcon,
+		closeIconSize,
+		closeIconSizeTablet,
+		closeIconSizeMobile,
+		closeIconColor,
+		closeIconColorTablet,
+		closeIconColorMobile,
+		closeIconColorHover,
+		closeIconColorHoverTablet,
+		closeIconColorHoverMobile,
+		closeIconBackgroundColor,
+		closeIconBackgroundColorTablet,
+		closeIconBackgroundColorMobile,
+		closeIconBackgroundColorHover,
+		closeIconBackgroundColorHoverTablet,
+		closeIconBackgroundColorHoverMobile,
+		closeIconPadding,
+		closeIconPaddingTablet,
+		closeIconPaddingMobile,
+		closeIconPaddingUnit,
+		closeIconBorder,
+		closeIconBorderTablet,
+		closeIconBorderMobile,
+		closeIconBorderHover,
+		closeIconBorderHoverTablet,
+		closeIconBorderHoverMobile,
+		closeIconBorderRadius,
+		closeIconBorderRadiusTablet,
+		closeIconBorderRadiusMobile,
+		closeIconBorderRadiusUnit,
 	} = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
@@ -140,6 +173,7 @@ export function Edit(props) {
 	};
 
 	const editorElement = useEditorElement(ref, [selfOrChildSelected, previewActive]);
+	const previewCloseIconSize = getPreviewSize(previewDevice, closeIconSize, closeIconSizeTablet, closeIconSizeMobile);
 
 	const classes = classnames('wp-block-kadence-off-canvas', `off-canvas-side-${slideFrom}`, {
 		active: selfOrChildSelected() || previewActive,
@@ -187,6 +221,29 @@ export function Edit(props) {
 						key={'normalb'}
 					/>
 				)}
+			</>
+		);
+	};
+
+	const styleColorControlsCloseIcon = (size = '', suffix = '') => {
+		const closeIconColorValue = attributes['closeIconColor' + suffix + size];
+		const closeIconBackgroundColorValue = attributes['closeIconBackgroundColor' + suffix + size];
+		return (
+			<>
+				<PopColorControl
+					label={__('Color', 'kadence-blocks')}
+					value={closeIconColorValue}
+					default={''}
+					onChange={(value) => setAttributes({ ['closeIconColor' + suffix + size]: value })}
+					key={'closeIcon' + suffix}
+				/>
+				<PopColorControl
+					label={__('Background', 'kadence-blocks')}
+					value={closeIconBackgroundColorValue}
+					default={''}
+					onChange={(value) => setAttributes({ ['closeIconBackgroundColor' + suffix + size]: value })}
+					key={'closeIconb' + suffix}
+				/>
 			</>
 		);
 	};
@@ -316,44 +373,139 @@ export function Edit(props) {
 								type={'vertical'}
 							/>
 						</KadencePanelBody>
+
+						<KadencePanelBody title={__('Close Trigger Settings', 'kadence-blocks')} initialOpen={false}>
+							<KadenceIconPicker
+								value={closeIcon}
+								onChange={(value) => setAttributes({ closeIcon: value })}
+								allowClear={true}
+							/>
+
+							<ResponsiveRangeControls
+								label={__('Icon Size', 'kadence-blocks')}
+								value={closeIconSize}
+								tabletValue={closeIconSizeTablet ? closeIconSizeTablet : ''}
+								mobileValue={closeIconSizeMobile ? closeIconSizeMobile : ''}
+								onChange={(value) => setAttributes({ closeIconSize: value })}
+								onChangeTablet={(value) => setAttributes({ closeIconSizeTablet: value })}
+								onChangeMobile={(value) => setAttributes({ closeIconSizeMobile: value })}
+								units={['px']}
+								unit={'px'}
+								min={5}
+								max={250}
+								step={1}
+							/>
+						</KadencePanelBody>
 					</>
 				)}
 
 				{activeTab === 'style' && (
-					<KadencePanelBody>
-						<SmallResponsiveControl
-							label={'Colors'}
-							desktopChildren={styleColorControls()}
-							tabletChildren={styleColorControls('Tablet')}
-							mobileChildren={styleColorControls('Mobile')}
-						></SmallResponsiveControl>
-						<ResponsiveBorderControl
-							label={__('Border', 'kadence-blocks')}
-							value={border}
-							tabletValue={borderTablet}
-							mobileValue={borderMobile}
-							onChange={(value) => setAttributes({ border: value })}
-							onChangeTablet={(value) => setAttributes({ borderTablet: value })}
-							onChangeMobile={(value) => setAttributes({ borderMobile: value })}
-						/>
-						<ResponsiveMeasurementControls
-							label={__('Border Radius', 'kadence-blocks')}
-							value={borderRadius}
-							tabletValue={borderRadiusTablet}
-							mobileValue={borderRadiusMobile}
-							onChange={(value) => setAttributes({ borderRadius: value })}
-							onChangeTablet={(value) => setAttributes({ borderRadiusTablet: value })}
-							onChangeMobile={(value) => setAttributes({ borderRadiusMobile: value })}
-							min={0}
-							max={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 100}
-							step={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1}
-							unit={borderRadiusUnit}
-							units={['px', 'em', 'rem', '%']}
-							onUnit={(value) => setAttributes({ borderRadiusUnit: value })}
-							isBorderRadius={true}
-							allowEmpty={true}
-						/>
-					</KadencePanelBody>
+					<>
+						<KadencePanelBody>
+							<SmallResponsiveControl
+								label={'Colors'}
+								desktopChildren={styleColorControls()}
+								tabletChildren={styleColorControls('Tablet')}
+								mobileChildren={styleColorControls('Mobile')}
+							></SmallResponsiveControl>
+							<ResponsiveBorderControl
+								label={__('Border', 'kadence-blocks')}
+								value={border}
+								tabletValue={borderTablet}
+								mobileValue={borderMobile}
+								onChange={(value) => setAttributes({ border: value })}
+								onChangeTablet={(value) => setAttributes({ borderTablet: value })}
+								onChangeMobile={(value) => setAttributes({ borderMobile: value })}
+							/>
+							<ResponsiveMeasurementControls
+								label={__('Border Radius', 'kadence-blocks')}
+								value={borderRadius}
+								tabletValue={borderRadiusTablet}
+								mobileValue={borderRadiusMobile}
+								onChange={(value) => setAttributes({ borderRadius: value })}
+								onChangeTablet={(value) => setAttributes({ borderRadiusTablet: value })}
+								onChangeMobile={(value) => setAttributes({ borderRadiusMobile: value })}
+								min={0}
+								max={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 100}
+								step={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1}
+								unit={borderRadiusUnit}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setAttributes({ borderRadiusUnit: value })}
+								isBorderRadius={true}
+								allowEmpty={true}
+							/>
+						</KadencePanelBody>
+						<KadencePanelBody title={__('Close Trigger Styles', 'kadence-blocks')} initialOpen={false}>
+							<HoverToggleControl
+								normal={
+									<>
+										<SmallResponsiveControl
+											label={'Colors'}
+											desktopChildren={styleColorControlsCloseIcon()}
+											tabletChildren={styleColorControlsCloseIcon('Tablet')}
+											mobileChildren={styleColorControlsCloseIcon('Mobile')}
+										></SmallResponsiveControl>
+										<ResponsiveBorderControl
+											label={__('Border', 'kadence-blocks')}
+											value={closeIconBorder}
+											tabletValue={closeIconBorderTablet}
+											mobileValue={closeIconBorderMobile}
+											onChange={(value) => setAttributes({ closeIconBorder: value })}
+											onChangeTablet={(value) => setAttributes({ closeIconBorderTablet: value })}
+											onChangeMobile={(value) => setAttributes({ closeIconBorderMobile: value })}
+											key={'normalbr'}
+										/>
+									</>
+								}
+								hover={
+									<>
+										<SmallResponsiveControl
+											label={'Hover Colors'}
+											desktopChildren={styleColorControlsCloseIcon('', 'Hover')}
+											tabletChildren={styleColorControlsCloseIcon('Tablet', 'Hover')}
+											mobileChildren={styleColorControlsCloseIcon('Mobile', 'Hover')}
+										></SmallResponsiveControl>
+										<ResponsiveBorderControl
+											label={__('Hover Border', 'kadence-blocks')}
+											value={closeIconBorderHover}
+											tabletValue={closeIconBorderHoverTablet}
+											mobileValue={closeIconBorderHoverMobile}
+											onChange={(value) => setAttributes({ closeIconBorderHover: value })}
+											onChangeTablet={(value) =>
+												setAttributes({ closeIconBorderHoverTablet: value })
+											}
+											onChangeMobile={(value) =>
+												setAttributes({ closeIconBorderHoverMobile: value })
+											}
+											key={'normalbrhv'}
+										/>
+									</>
+								}
+							/>
+
+							<ResponsiveMeasurementControls
+								label={__('Border Radius', 'kadence-blocks')}
+								value={closeIconBorderRadius}
+								tabletValue={closeIconBorderRadiusTablet}
+								mobileValue={closeIconBorderRadiusMobile}
+								onChange={(value) => setAttributes({ closeIconBorderRadius: value })}
+								onChangeTablet={(value) => setAttributes({ closeIconBorderRadiusTablet: value })}
+								onChangeMobile={(value) => setAttributes({ closeIconBorderRadiusMobile: value })}
+								min={0}
+								max={
+									closeIconBorderRadiusUnit === 'em' || closeIconBorderRadiusUnit === 'rem' ? 24 : 100
+								}
+								step={
+									closeIconBorderRadiusUnit === 'em' || closeIconBorderRadiusUnit === 'rem' ? 0.1 : 1
+								}
+								unit={closeIconBorderRadiusUnit}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setAttributes({ closeIconBorderRadiusUnit: value })}
+								isBorderRadius={true}
+								allowEmpty={true}
+							/>
+						</KadencePanelBody>
+					</>
 				)}
 
 				{activeTab === 'advanced' && (
@@ -378,11 +530,37 @@ export function Edit(props) {
 								allowAuto={true}
 							/>
 						</KadencePanelBody>
+						<KadencePanelBody title={__('Close Trigger Spacing', 'kadence-blocks')} initialOpen={false}>
+							<ResponsiveMeasureRangeControl
+								label={__('Padding', 'kadence-blocks')}
+								value={closeIconPadding}
+								tabletValue={closeIconPaddingTablet}
+								mobileValue={closeIconPaddingMobile}
+								onChange={(value) => setAttributes({ closeIconPadding: value })}
+								onChangeTablet={(value) => setAttributes({ closeIconPaddingTablet: value })}
+								onChangeMobile={(value) => setAttributes({ closeIconPaddingMobile: value })}
+								min={0}
+								max={closeIconPaddingUnit === 'em' || closeIconPaddingUnit === 'rem' ? 25 : 400}
+								step={closeIconPaddingUnit === 'em' || closeIconPaddingUnit === 'rem' ? 0.1 : 1}
+								unit={closeIconPaddingUnit}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setAttributes({ closeIconPaddingUnit: value })}
+							/>
+						</KadencePanelBody>
 					</>
 				)}
 			</InspectorControls>
 			<BackendStyles {...props} previewDevice={previewDevice} editorElement={editorElement} />
 			<div {...blockProps} onClick={(e) => handleModalClick(e)} ref={ref}>
+				{closeIcon && previewCloseIconSize && (
+					<button className="kb-off-canvas-close">
+						<IconRender
+							className={`kb-off-canvas-close-icon`}
+							name={closeIcon}
+							size={previewCloseIconSize}
+						/>
+					</button>
+				)}
 				{/* <div className="kb-off-canvas-label">{__('Off Canvas Content', 'kadence-blocks')}</div> */}
 				<div {...innerBlocksProps} />
 			</div>
