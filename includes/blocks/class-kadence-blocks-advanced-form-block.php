@@ -404,7 +404,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		$inner_wrapper_attributes = implode( ' ', $inner_wrap_attributes );
 		$form_fields = '';
 		if ( ! empty( $attributes['id'] ) ) {
-			$form_fields .= '<input type="hidden" name="_kb_adv_form_post_id" value="' . $attributes['id'] . '">';
+			$form_fields .= '<input type="hidden" name="_kb_adv_form_post_id" value="' . esc_attr( $attributes['id'] ) . '">';
 		}
 		$form_fields .= '<input type="hidden" name="action" value="kb_process_advanced_form_submit">';
 		$form_fields .= '<input type="hidden" name="_kb_adv_form_id" value="' . esc_attr( $unique_id ) . '">';
