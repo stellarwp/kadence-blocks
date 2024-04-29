@@ -77,7 +77,7 @@ function ResetDefaults() {
 				disabled={Object.keys(blockDefaults).length === 0 && Object.keys(blockVisibility).length === 0}
 				onClick={() => setIsConfirmOpen(true)}
 			>
-				Reset
+				{__('Reset', 'kadence-blocks')}
 			</Button>
 
 			<ConfirmDialog isOpen={isConfirmOpen} onConfirm={() => reset()} onCancel={() => setIsConfirmOpen(false)}>

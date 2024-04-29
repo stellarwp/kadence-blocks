@@ -66,7 +66,7 @@ function KadenceVisibilitySettings({ blockSlug, blockName, options }) {
 
 	return (
 		<Fragment>
-			<Tooltip text="Block Settings Visibility">
+			<Tooltip text={__('Block Settings Visibility', 'kadence-blocks')}>
 				<Button className="kt-block-settings" onClick={() => setIsOpen(true)}>
 					<Dashicon icon="visibility" />
 				</Button>
