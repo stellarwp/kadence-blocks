@@ -198,6 +198,10 @@ Release Date: April 22nd 2024
 * Fix: Linking to numeric anchor tags on accordion panes.
 * Fix: Issue with custom colors showing twice in editor.
 
+= 3.2.35 =
+Release Date: May TBD 2024
+* Fix: Aria roles when using accordion layout in tabs block.
+
 = 3.2.34 =
 Release Date: April 10th 2024
 * Update: Increase Max/Min inputs for padding/margin controls.
