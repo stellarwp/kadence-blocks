@@ -3,6 +3,7 @@
 	"apiVersion": 3,
 	"title": "Pane",
 	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
 	"parent": ["kadence/accordion"],
 	"attributes": {
 		"id": {
