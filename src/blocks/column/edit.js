@@ -1286,7 +1286,7 @@ function SectionEdit(props) {
 					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner { column-gap: ${horizontalGap}; }`
 					: ''}
 				{'' !== previewFlexBasis && null !== previewFlexBasis
-					? `.wp-block-kadence-column.kadence-column-${uniqueID} > .kadence-inner-column-direction-horizontal > *, .wp-block-kadence-column.kadence-column-${uniqueID} > .kadence-inner-column-direction-horizontal-reverse > * { flex: 1 1 ${
+					? `.wp-block-kadence-column.kadence-column-${uniqueID} > .kadence-inner-column-direction-horizontal > *, .wp-block-kadence-column.kadence-column-${uniqueID} > .kadence-inner-column-direction-horizontal-reverse > * { flex-basis: ${
 							previewFlexBasis + (flexBasisUnit ? flexBasisUnit : 'px')
 					  }; }`
 					: ''}
