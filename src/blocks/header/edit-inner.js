@@ -1276,7 +1276,7 @@ export function EditInner(props) {
 														: '',
 													value,
 												],
-											}, 
+											},
 											'flex'
 										);
 									}}
@@ -1797,7 +1797,9 @@ export function EditInner(props) {
 									label={__('Text Color', 'kadence-blocks')}
 									value={typography.color ? typography.color : ''}
 									default={''}
-									onChange={(value) => setMetaAttribute({ ...typography, color: value }, 'typography')}
+									onChange={(value) =>
+										setMetaAttribute({ ...typography, color: value }, 'typography')
+									}
 								/>
 								<PopColorControl
 									label={__('Link Color', 'kadence-blocks')}

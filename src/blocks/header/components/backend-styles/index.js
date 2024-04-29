@@ -233,19 +233,15 @@ export default function BackendStyles(props) {
 		);
 		css.add_property('display', 'none');
 	}
-	if(previewDirection) {
-		if('Desktop' === previewDevice){
-			css.set_selector(
-				`.wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-desktop`
-			);
+	if (previewDirection) {
+		if ('Desktop' === previewDevice) {
+			css.set_selector(`.wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-desktop`);
 		} else {
-			css.set_selector(
-				`.wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-tablet`
-			);
+			css.set_selector(`.wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-tablet`);
 		}
 		css.add_property('display', 'flex !important');
 		css.add_property('flex-wrap', 'wrap');
-		switch(previewDirection) {
+		switch (previewDirection) {
 			case 'horizontal':
 				css.add_property('flex-direction', 'row');
 				break;
@@ -260,7 +256,7 @@ export default function BackendStyles(props) {
 				break;
 		}
 		if (previewDirection === 'vertical-reverse' || previewDirection === 'vertical') {
-			switch(previewVerticalAlignment) {
+			switch (previewVerticalAlignment) {
 				case 'top':
 					css.add_property('justify-content', 'flex-start');
 					break;
@@ -273,13 +269,13 @@ export default function BackendStyles(props) {
 				default:
 					css.add_property('justify-content', previewVerticalAlignment);
 					break;
-			};
-	
+			}
+
 			css.add_property('align-items', previewJustifyContent);
 		}
-	
+
 		if (previewDirection === 'horizontal-reverse' || previewDirection === 'horizontal') {
-			switch(previewJustifyContent) {
+			switch (previewJustifyContent) {
 				case 'top':
 					css.add_property('justify-content', 'flex-start');
 					break;
@@ -292,7 +288,7 @@ export default function BackendStyles(props) {
 				default:
 					css.add_property('justify-content', previewJustifyContent);
 					break;
-			};
+			}
 		}
 	}
 
@@ -348,7 +344,7 @@ export default function BackendStyles(props) {
 	);
 	css.add_property('min-height', getSpacingOptionOutput(previewHeight, heightUnit));
 	css.add_property('max-width', getSpacingOptionOutput(previewWidth, widthUnit));
-	
+
 	// Hover styles
 	css.set_selector(
 		`.wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-desktop:hover, .wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-tablet:hover`
@@ -386,7 +382,7 @@ export default function BackendStyles(props) {
 		'border-bottom-left-radius',
 		getSpacingOptionOutput(previewborderHoverBottomLeftRadius, borderRadiusHoverUnit)
 	);
-	
+
 	if (previewIsTransparent != '1') {
 		if ('normal' === backgroundHover?.type && backgroundHover?.image) {
 			css.add_property('background-image', backgroundHover.image);
