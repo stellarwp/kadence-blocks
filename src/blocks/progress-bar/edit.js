@@ -455,7 +455,8 @@ export function Edit(props) {
 		}
 
 		if (progressItem) {
-			progressItem.animate(progressAmount / progressMax);
+			const progressReal = progressAmount <= progressMax ? progressAmount : progressMax;
+			progressItem.animate(progressReal / progressMax);
 		}
 
 		return function cleanup() {
@@ -870,7 +871,9 @@ export function Edit(props) {
 							<RangeControl
 								label={__('Max Progress', 'kadence-blocks')}
 								value={progressMax}
-								onChange={(value) => setAttributes({ progressMax: value })}
+								onChange={(value) => {
+									setAttributes({ progressMax: value });
+								}}
 								min={1}
 								max={1000}
 								step={decimal === 'two' ? 0.01 : decimal === 'one' ? 0.1 : 1}
