@@ -134,7 +134,7 @@
 	max-width: calc(100% - 30px);
     width: auto;
     max-height: 30px;
-    height: auto;
+    height: fit-content;
 }
 .kadence-icon-picker-pop-theme-dividers .kadence-icon-picker-link svg.kadence-row-divider-top {
     transform: rotate(180deg) !important;
