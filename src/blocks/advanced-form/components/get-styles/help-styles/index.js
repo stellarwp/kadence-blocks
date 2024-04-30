@@ -37,7 +37,7 @@ export default (previewDevice, parentHelpStyle) => {
 	styles.fontWeight = parentHelpStyle.weight ? parentHelpStyle.weight : undefined;
 	styles.textTransform = parentHelpStyle.textTransform ? parentHelpStyle.textTransform : undefined;
 	styles.fontFamily = parentHelpStyle.family ? parentHelpStyle.family : undefined;
-	styles.fontStyle = parentHelpStyle.fontStyle ? parentHelpStyle.fontStyle : undefined;
+	styles.fontStyle = parentHelpStyle.style ? parentHelpStyle.style : undefined;
 
 	styles.paddingTop = '' !== parentHelpStyle.padding[0] ? parentHelpStyle.padding[0] + 'px' : undefined;
 	styles.paddingRight = '' !== parentHelpStyle.padding[1] ? parentHelpStyle.padding[1] + 'px' : undefined;
