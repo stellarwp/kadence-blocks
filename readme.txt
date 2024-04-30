@@ -179,6 +179,7 @@ Release Date: May TBD 2024
 * Fix: Aria roles when using accordion layout in tabs block.
 * Fix: Infobox media alignment when max width is using percentage.
 * Fix: Ability to set progress higher than maximum progress in progress bar.
+* Fix: Animate on scroll when accordion panes adjust page height.
 
 = 3.2.36 =
 Release Date: April 24th 2024

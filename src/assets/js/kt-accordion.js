@@ -702,6 +702,10 @@
 									setTimeout(function () {
 										panelToClose.classList.add(_this8.settings.hiddenClass);
 										panelToClose.classList.remove('kt-panel-is-collapsing');
+
+										if (window.AOS && typeof AOS.refresh === 'function') {
+											AOS.refresh();
+										}
 										return (_this8.toggling = false);
 									}, transDuration);
 								}
@@ -737,6 +741,10 @@
 										panelToOpen.classList.add(_this8.settings.activeClass);
 										panelToOpen.style.height = '';
 										panelToOpen.classList.remove('kt-panel-is-expanding');
+
+										if (window.AOS && typeof AOS.refresh === 'function') {
+											AOS.refresh();
+										}
 										return (_this8.toggling = false);
 									}, _transDuration);
 								}
