@@ -644,19 +644,18 @@ export function Edit(props) {
 										onClick={() => {
 											const attributeUpdates = { barType: key };
 											// Update from default if they choose the line, circle or semicircle options
-											if(key === 'line' || key === 'circle' || key === 'semicircle') {
+											if (key === 'line' || key === 'circle' || key === 'semicircle') {
 												if (5 == progressMax && 4 == progressAmount) {
 													attributeUpdates.progressMax = 100;
 													attributeUpdates.progressAmount = 90;
-													if('' === numberSuffix) {
+													if ('' === numberSuffix) {
 														attributeUpdates.numberSuffix = '%';
 													}
-													if('one' === decimal){
+													if ('one' === decimal) {
 														attributeUpdates.decimal = 'none';
 													}
 													attributeUpdates.displayPercent = true;
 												}
-
 											}
 											if (key !== 'line' && labelPosition === 'inside') {
 												attributeUpdates.hAlign = 'center';
@@ -669,10 +668,10 @@ export function Edit(props) {
 													attributeUpdates.progressMax = 5;
 													attributeUpdates.progressAmount = 4;
 												}
-												if('' !== numberSuffix) {
+												if ('' !== numberSuffix) {
 													attributeUpdates.numberSuffix = '';
 												}
-												if('none' === decimal) {
+												if ('none' === decimal) {
 													attributeUpdates.decimal = 'one';
 												}
 												attributeUpdates.displayPercent = false;
