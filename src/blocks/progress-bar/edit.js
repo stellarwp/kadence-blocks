@@ -643,6 +643,15 @@ export function Edit(props) {
 										aria-pressed={false}
 										onClick={() => {
 											const attributeUpdates = { barType: key };
+											if(key === 'line' || key === 'circle' || key === 'semicircle') {
+												if (5 == progressMax && 4 == progressAmount) {
+													attributeUpdates.progressMax = 100;
+													attributeUpdates.progressAmount = 90;
+												}
+												attributeUpdates.decimal = 'none';
+												attributeUpdates.numberSuffix = '%';
+												attributeUpdates.displayPercent = true;
+											}
 											if (key !== 'line' && labelPosition === 'inside') {
 												attributeUpdates.hAlign = 'center';
 												attributeUpdates.thAlign = '';
@@ -650,11 +659,12 @@ export function Edit(props) {
 											}
 											// Update from default if they choose the line mask option
 											if (key === 'line-mask') {
+												attributeUpdates.decimal = 'one';
+												attributeUpdates.numberSuffix = '';
+												attributeUpdates.displayPercent = false;
 												if (100 == progressMax && 90 == progressAmount) {
 													attributeUpdates.progressMax = 5;
 													attributeUpdates.progressAmount = 4;
-													attributeUpdates.displayPercent = false;
-													attributeUpdates.decimal = 'one';
 												}
 												if ('' == label) {
 													attributeUpdates.displayLabel = false;
