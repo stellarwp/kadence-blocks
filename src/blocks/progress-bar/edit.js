@@ -651,11 +651,9 @@ export function Edit(props) {
 													if ('' === numberSuffix) {
 														attributeUpdates.numberSuffix = '%';
 													}
-													if ('one' === decimal) {
-														attributeUpdates.decimal = 'none';
-													}
-													attributeUpdates.displayPercent = true;
 												}
+												attributeUpdates.decimal = 'none';
+												attributeUpdates.displayPercent = true;
 											}
 											if (key !== 'line' && labelPosition === 'inside') {
 												attributeUpdates.hAlign = 'center';
@@ -663,21 +661,19 @@ export function Edit(props) {
 												attributeUpdates.mhAlign = '';
 											}
 											// Update from default if they choose the line mask option
-											if (key === 'line-mask') {
+											if ( key === 'line-mask') {
 												if (100 == progressMax && 90 == progressAmount) {
 													attributeUpdates.progressMax = 5;
 													attributeUpdates.progressAmount = 4;
+													if ('' !== numberSuffix) {
+														attributeUpdates.numberSuffix = '';
+													}
 												}
-												if ('' !== numberSuffix) {
-													attributeUpdates.numberSuffix = '';
-												}
-												if ('none' === decimal) {
-													attributeUpdates.decimal = 'one';
-												}
-												attributeUpdates.displayPercent = false;
 												if ('' == label) {
 													attributeUpdates.displayLabel = false;
 												}
+												attributeUpdates.decimal = 'one';
+												attributeUpdates.displayPercent = false;
 											}
 											setAttributes(attributeUpdates);
 										}}
