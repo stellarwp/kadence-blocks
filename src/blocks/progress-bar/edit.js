@@ -643,6 +643,7 @@ export function Edit(props) {
 										aria-pressed={false}
 										onClick={() => {
 											const attributeUpdates = { barType: key };
+											// Update from default if they choose the line, circle or semicircle options
 											if(key === 'line' || key === 'circle' || key === 'semicircle') {
 												if (5 == progressMax && 4 == progressAmount) {
 													attributeUpdates.progressMax = 100;
