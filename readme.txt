@@ -177,6 +177,8 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 = 3.2.37 =
 Release Date: May TBD 2024
 * Fix: Aria roles when using accordion layout in tabs block.
+* Fix: Infobox media alignment when max width is using percentage.
+* Fix: Ability to set progress higher than maximum progress in progress bar.
 
 = 3.2.36 =
 Release Date: April 24th 2024
