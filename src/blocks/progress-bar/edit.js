@@ -455,7 +455,7 @@ export function Edit(props) {
 		}
 
 		if (progressItem) {
-			let progressReal = progressAmount <= progressMax ? progressAmount : progressMax;
+			const progressReal = progressAmount <= progressMax ? progressAmount : progressMax;
 			progressItem.animate(progressReal / progressMax);
 		}
 
@@ -872,7 +872,7 @@ export function Edit(props) {
 								label={__('Max Progress', 'kadence-blocks')}
 								value={progressMax}
 								onChange={(value) => {
-									setAttributes({ progressMax: value })
+									setAttributes({ progressMax: value });
 								}}
 								min={1}
 								max={1000}
