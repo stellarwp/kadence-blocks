@@ -313,9 +313,9 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 				desiredAnimation.addTo( progressBarController' . $simple_id . ' );
 				desiredAnimation.on("start", function (e) {';
 		}
-
+		$progress_real = $progress_amount <= $progress_max ? $progress_amount : $progress_max;
 		$content .= 'progressBar' . $simple_id . '.animate(
-							' . $progress_amount / $progress_max . ' ,
+							' . $progress_real / $progress_max . ' ,
 				            {
 								 duration: ' . ( $attributes['duration'] * 1000 ) . ',
 	                             step: function(state, bar) {
