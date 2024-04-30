@@ -647,10 +647,10 @@ export function Edit(props) {
 												if (5 == progressMax && 4 == progressAmount) {
 													attributeUpdates.progressMax = 100;
 													attributeUpdates.progressAmount = 90;
+													attributeUpdates.decimal = 'none';
+													attributeUpdates.numberSuffix = '%';
+													attributeUpdates.displayPercent = true;
 												}
-												attributeUpdates.decimal = 'none';
-												attributeUpdates.numberSuffix = '%';
-												attributeUpdates.displayPercent = true;
 											}
 											if (key !== 'line' && labelPosition === 'inside') {
 												attributeUpdates.hAlign = 'center';
@@ -659,12 +659,12 @@ export function Edit(props) {
 											}
 											// Update from default if they choose the line mask option
 											if (key === 'line-mask') {
-												attributeUpdates.decimal = 'one';
-												attributeUpdates.numberSuffix = '';
-												attributeUpdates.displayPercent = false;
 												if (100 == progressMax && 90 == progressAmount) {
 													attributeUpdates.progressMax = 5;
 													attributeUpdates.progressAmount = 4;
+													attributeUpdates.decimal = 'one';
+													attributeUpdates.numberSuffix = '';
+													attributeUpdates.displayPercent = false;
 												}
 												if ('' == label) {
 													attributeUpdates.displayLabel = false;
