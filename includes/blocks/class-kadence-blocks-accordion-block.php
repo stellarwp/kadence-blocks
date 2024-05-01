@@ -189,7 +189,11 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 				// Hover Styles.
 				$css->set_selector( '.kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-icon-trigger:after, .kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-icon-trigger:before' );
 				$css->render_color_output( $title_styles, 'background', 'background' );
-				$css->set_selector( '.kt-accordion-id' . $unique_id . ' .kt-accordion-header-wrap .kt-blocks-accordion-header:hover, body:not(.hide-focus-outline) .kt-accordion-id' . $unique_id . ' .kt-accordion-header-wrap .kt-blocks-accordion-header:focus' );
+				$css->set_selector( '.kt-accordion-id' . $unique_id . ' .kt-accordion-header-wrap .kt-blocks-accordion-header:hover' );
+				if ( defined( 'KADENCE_VERSION' ) ) {
+					// If we're on kadence theme add some accessability functionality around outlines.
+					$css->set_selector( '.kt-accordion-id' . $unique_id . ' .kt-accordion-header-wrap .kt-blocks-accordion-header:hover, body:not(.hide-focus-outline) .kt-accordion-id' . $unique_id . ' .kt-accordion-header-wrap .kt-blocks-accordion-header:focus' );
+				}
 				$css->render_color_output( $title_styles, 'colorHover', 'color' );
 				$css->render_color_output( $title_styles, 'backgroundHover', 'background' );
 
