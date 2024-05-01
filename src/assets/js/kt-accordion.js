@@ -957,7 +957,6 @@
 							}
 						}
 						if ( e.type && e.type !== 'initialized' ) {
-							console.log(1)
 							//Attempt to scroll to the position of the pane AFTER we've closed other panes with a timeout.
 							//If a pane above us closes, it moves our position up so this gets us a more accurate final position.
 							window.setTimeout(function() {
