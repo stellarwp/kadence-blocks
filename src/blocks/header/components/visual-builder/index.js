@@ -1,10 +1,12 @@
 import { useRef, useState } from '@wordpress/element';
 import { Button } from '@wordpress/components';
-import { useEditorElement } from '@kadence/helpers';
+import { useEditorElement, capitalizeFirstLetter } from '@kadence/helpers';
 import { __ } from '@wordpress/i18n';
+import { useDispatch } from '@wordpress/data';
 
 import ModalClose from './close';
 import Desktop from './desktop';
+import Tablet from './tablet';
 import './editor.scss';
 
 const getDescendantIds = (id = '', recursive = true, first_loop = true) => {
@@ -48,10 +50,19 @@ function extractBlocks(blocksData) {
 	return { desktopBlocks, tabletBlocks, offCanvasBlocks };
 }
 
-export default function VisualBuilder({ clientId, startVisible = false }) {
+export default function VisualBuilder({ clientId, previewDevice, startVisible = false }) {
 	// Don't commit, active for testing
-	const [isVisible, setIsVisible] = useState(!startVisible);
-	const [tab, setTab] = useState('desktop');
+	const [isVisible, setIsVisible] = useState(startVisible);
+	const [tab, setTab] = useState(previewDevice);
+	const { setPreviewDeviceType } = useDispatch('kadenceblocks/data');
+
+	const updateTab = (value) => {
+		setTab(value);
+
+		if (value !== 'off-canvas') {
+			setPreviewDeviceType(capitalizeFirstLetter(value));
+		}
+	};
 
 	const { select } = wp.data;
 
@@ -81,23 +92,23 @@ export default function VisualBuilder({ clientId, startVisible = false }) {
 				>
 					<div class={'tabs'}>
 						<Button
-							isPrimary={tab === 'desktop'}
+							isPrimary={tab === 'Desktop'}
 							disabled={desktopBlocks === null}
-							onClick={() => setTab('desktop')}
+							onClick={() => updateTab('Desktop')}
 						>
 							{__('Desktop', 'kadence-blocks')}
 						</Button>
 						<Button
-							isPrimary={tab === 'tablet'}
+							isPrimary={tab === 'Tablet'}
 							disabled={tabletBlocks === null}
-							onClick={() => setTab('tablet')}
+							onClick={() => updateTab('Tablet')}
 						>
 							{__('Tablet', 'kadence-blocks')}
 						</Button>
 						<Button
 							isPrimary={tab === 'off-canvas'}
 							disabled={offCanvasBlocks === null}
-							onClick={() => setTab('off-canvas')}
+							onClick={() => updateTab('off-canvas')}
 						>
 							{__('Off Canvas', 'kadence-blocks')}
 						</Button>
@@ -105,9 +116,9 @@ export default function VisualBuilder({ clientId, startVisible = false }) {
 					</div>
 
 					<div class={'content'}>
-						{tab === 'desktop' && <Desktop blocks={desktopBlocks} />}
+						{tab === 'Desktop' && <Desktop blocks={desktopBlocks} />}
 
-						{tab === 'tablet' && <>Tablet Content</>}
+						{tab === 'Tablet' && <Tablet blocks={tabletBlocks} />}
 
 						{tab === 'off-canvas' && <>Off Canvas Content</>}
 					</div>

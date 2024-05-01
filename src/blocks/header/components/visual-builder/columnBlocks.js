@@ -5,11 +5,11 @@ import Droppable from './droppable';
 import Block from './block';
 import { map } from 'lodash';
 
-export default function ColumnBlocks({ blocks, className, clientId, showMidColumns = true }) {
+export default function ColumnBlocks({ blocks, className, clientId, showMidColumns = true, isTablet = false }) {
 	const classNames = classnames({
 		'visual-column-wrapper': true,
 		[`visual-column-wrapper-${className}`]: true,
-		'visual-column-wrapper-empty-center': !showMidColumns,
+		'visual-column-wrapper-empty-center': !showMidColumns && !isTablet,
 	});
 
 	const clientIds = useMemo(() => map(blocks, 'clientId'), [blocks]);

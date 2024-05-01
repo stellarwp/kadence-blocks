@@ -2,7 +2,7 @@ import { Inserter } from '@wordpress/block-editor';
 import { Button } from '@wordpress/components';
 import classnames from 'classnames';
 
-export default function AddBlockButton({ position, clientId, showMidColumns }) {
+export default function AddBlockButton({ position, clientId, showMidColumns = false }) {
 	const classNames = classnames({
 		'add-item': true,
 		[`add-item-${position}`]: true,

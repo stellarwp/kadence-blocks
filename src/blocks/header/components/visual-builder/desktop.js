@@ -1,25 +1,19 @@
 import { useMemo, useState } from '@wordpress/element';
-import { get, debounce } from 'lodash';
+import { get } from 'lodash';
 import classnames from 'classnames';
-import { DndContext, DragOverlay } from '@dnd-kit/core';
+import { DragOverlay } from '@dnd-kit/core';
 
 import SelectBlockButton from './selectBlock';
 import AddBlockButton from './add';
 import Block from './block';
 import ColumnBlocks from './columnBlocks';
-import { DESKTOP_SECTION_NAMES, DESKTOP_BLOCK_POSITIONS, DESKTOP_CLIENT_ID_POSITIONS, ROW_TO_KEY } from './constants';
-
-const computeSections = (thisRow, blocks) => {
-	return DESKTOP_SECTION_NAMES.map((name, index) => ({
-		name,
-		blocks: get(thisRow, DESKTOP_BLOCK_POSITIONS[index], []),
-		clientId: get(thisRow, DESKTOP_CLIENT_ID_POSITIONS[index], []),
-	}));
-};
+import DragDropContext from './dragDropContext';
+import { ROW_TO_KEY } from './constants';
+import { computeDesktopSections } from './helpers';
 
 const DesktopRow = ({ position, blocks, activeBlockData }) => {
 	const thisRow = get(blocks, [ROW_TO_KEY[position]], []);
-	const sections = computeSections(thisRow, blocks);
+	const sections = computeDesktopSections(thisRow, blocks);
 
 	// If mid columns and center are empty, don't show mid columns
 	// Also don't show the mid columns when dragging a block across the middle.
@@ -86,60 +80,16 @@ const DesktopRow = ({ position, blocks, activeBlockData }) => {
 export default function Desktop({ blocks }) {
 	const rowPositions = ['top', 'middle', 'bottom'];
 	const innerBlocks = useMemo(() => get(blocks, ['innerBlocks'], []), [blocks]);
-
 	const [activeBlockData, setActiveBlockData] = useState(null);
-
-	const getIndex = (clientId) => {
-		return wp.data.select('core/block-editor').getBlockIndex(clientId);
-	};
-
-	function handleDragEnd(event) {
-		const { active, over } = event;
-
-		setActiveBlockData(null);
-	}
-
-	function handleDragStart(event) {
-		const { active } = event;
-		setActiveBlockData(active);
-	}
-
-	// Action when dragging over a new drop section
-	function onDragOver(event) {
-		const { active, over } = event;
-
-		if (over && active) {
-			let destinationClientId = over.id;
-			const currentClientID = active.id;
-			const parentClientID = wp.data.select('core/block-editor').getBlockRootClientId(currentClientID);
-			const newIndex = getIndex(destinationClientId);
-			const currentIndex = getIndex(currentClientID);
-			const destName = wp.data.select('core/block-editor').getBlockName(destinationClientId);
-
-			// We're moving within the same column
-			if (destName !== 'kadence/header-column') {
-				destinationClientId = parentClientID;
-			}
-
-			// Sorting into same position, no action needed.
-			if (destinationClientId === parentClientID && newIndex === currentIndex) {
-				return;
-			}
-
-			wp.data
-				.dispatch('core/block-editor')
-				.moveBlockToPosition(currentClientID, parentClientID, destinationClientId, newIndex);
-		}
-	}
 
 	const classNames = classnames({
 		'visual-desktop-container': true,
-		'visual-desktop-container__is-dragging': activeBlockData !== null,
+		'visual-container__is-dragging': activeBlockData !== null,
 	});
 
 	return (
 		<div className={classNames}>
-			<DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart} onDragOver={debounce(onDragOver, 100)}>
+			<DragDropContext setActiveBlockData={setActiveBlockData}>
 				{rowPositions.map((position, index) => (
 					<DesktopRow
 						key={position}
@@ -148,14 +98,13 @@ export default function Desktop({ blocks }) {
 						activeBlockData={activeBlockData}
 					/>
 				))}
-
 				{/* This created the element that is visually moved when dragging */}
 				<DragOverlay>
 					{activeBlockData ? (
 						<Block block={{ ...activeBlockData.data.current, clientId: '' }} isPreview={true} />
 					) : null}
 				</DragOverlay>
-			</DndContext>
+			</DragDropContext>
 		</div>
 	);
 }

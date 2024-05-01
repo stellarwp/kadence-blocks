@@ -68,9 +68,9 @@ export default function Block({ block, isPreview = false }) {
 					<DeleteBlockButton clientId={block.clientId} />
 				</div>
 			</div>
-			<div style={{ display: 'flex', alignItems: 'center' }}>
+			<div className={'visual-inner-block__meta'}>
 				<Icon size={16} className={'block-icon'} icon={blockMeta?.icon?.src} />
-				{displayTitle()}
+				<span className={'visual-inner-block__name'}>{displayTitle()}</span>
 			</div>
 		</div>
 	);

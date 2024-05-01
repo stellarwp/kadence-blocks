@@ -27,7 +27,7 @@ $fixed_height: 280px;
 		bottom: $height_bottom_bar;
 	}
 
-	.visual-desktop-container__is-dragging .visual-column-wrapper {
+	.visual-container__is-dragging .visual-column-wrapper {
 		z-index: unset;
 	}
 
@@ -61,7 +61,7 @@ $fixed_height: 280px;
 		padding-top: 10px;
 		align-items: center;
 
-		.visual-desktop-row {
+		.visual-desktop-row, .visual-tablet-row {
 			display: flex !important;
 			background-color: #FFF;
 			border: 1px dashed #a0aec1;
@@ -82,7 +82,7 @@ $fixed_height: 280px;
 		.visual-column-wrapper {
 			display: flex !important;
 			flex: 1;
-			min-height: 46px;
+			min-height: 62px;
 			align-items: center;
 			padding: 6px 10px;
 
@@ -178,16 +178,23 @@ $fixed_height: 280px;
 		border-radius: 3px;
 		font-size: 13px;
 		z-index: 1;
-		overflow: hidden;
-		text-wrap: nowrap;
-		text-overflow: ellipsis;
-		max-width: 125px;
-
 		margin: 0 5px;
 
 		&__controls {
 			display: flex;
 			justify-content: space-between;
+		}
+
+		&__name {
+			overflow: hidden;
+			text-wrap: nowrap;
+			text-overflow: ellipsis;
+			max-width: 115px;
+		}
+
+		&__meta {
+			display: flex;
+			align-items: center;
 		}
 
 		&__preview {
