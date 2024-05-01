@@ -928,20 +928,6 @@
 	let hasInitializedKadenceAccordion = false;
 	window.KadenceBlocksAccordion = {
 		/**
-		 * Initiate anchor scroll.
-		 */
-		scroll(element, to, duration) {
-			if (duration <= 0) return;
-			const difference = to - element.scrollTop;
-			const perTick = (difference / duration) * 10;
-
-			setTimeout(function () {
-				element.scrollTop = element.scrollTop + perTick;
-				if (element.scrollTop === to) return;
-				scrollTo(element, to, duration - 10);
-			}, 10);
-		},
-		/**
 		 * Initiate anchor trigger.
 		 */
 		anchor(e) {
@@ -970,11 +956,14 @@
 								// child.click();
 							}
 						}
-						// if ( e.type && e.type === 'initialized' ) {
-						//   window.setTimeout(function() {
-						//     window.KadenceBlocksAccordion.scroll( document.body, document.getElementById( id ).offsetTop, 600 );
-						//   }, 350 );
-						// }
+						if ( e.type && e.type !== 'initialized' ) {
+							console.log(1)
+							//Attempt to scroll to the position of the pane AFTER we've closed other panes with a timeout.
+							//If a pane above us closes, it moves our position up so this gets us a more accurate final position.
+							window.setTimeout(function() {
+								document.getElementById( id ).scrollIntoView({behavior: "smooth",block: "start", inline: "nearest"});
+							}, 350 );
+						}
 					}
 				}
 			}
