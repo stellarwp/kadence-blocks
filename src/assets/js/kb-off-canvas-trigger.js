@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		});
 	});
 
-	const overlays = document.querySelectorAll('.wp-block-kadence-off-canvas-overlay');
+	const overlays = document.querySelectorAll('.kb-off-canvas-overlay');
 	overlays.forEach(function (overlay) {
 		overlay.addEventListener('click', function () {
 			const uniqueId = overlay.getAttribute('data-unique-id');
@@ -22,6 +22,17 @@ document.addEventListener('DOMContentLoaded', function () {
 				if (offCanvas) {
 					offCanvas.classList.toggle('active');
 				}
+			}
+		});
+	});
+
+	const closeTriggers = document.querySelectorAll('.kb-off-canvas-close');
+	closeTriggers.forEach(function (trigger) {
+		trigger.addEventListener('click', function () {
+			const offCanvas = trigger.closest('.wp-block-kadence-off-canvas');
+
+			if (offCanvas) {
+				offCanvas.classList.toggle('active');
 			}
 		});
 	});

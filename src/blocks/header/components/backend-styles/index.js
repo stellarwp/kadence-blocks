@@ -323,6 +323,36 @@ export default function BackendStyles(props) {
 	css.add_property('border-right', css.render_border(border, borderTablet, borderMobile, previewDevice, 'right'));
 	css.add_property('border-bottom', css.render_border(border, borderTablet, borderMobile, previewDevice, 'bottom'));
 	css.add_property('border-left', css.render_border(border, borderTablet, borderMobile, previewDevice, 'left'));
+	if (previewIsTransparent == '1') {
+		if ('normal' === backgroundTransparent?.type && backgroundTransparent?.image) {
+			css.add_property('background-image', backgroundTransparent.image);
+			css.add_property('background-size', backgroundTransparent.imageSize);
+			css.add_property('background-repeat', backgroundTransparent.imageRepeat);
+			css.add_property('background-attachment', backgroundTransparent.imageAttachment);
+			css.add_property('background-position', backgroundTransparent.imagePosition);
+		}
+		if ('normal' === backgroundTransparent?.type && backgroundTransparent?.color) {
+			css.add_property('background-color', KadenceColorOutput(backgroundTransparent.color));
+		}
+		if ('gradient' === backgroundTransparent?.type && backgroundTransparent?.gradient) {
+			css.add_property('background', backgroundTransparent.gradient);
+		}
+	}
+	if (previewIsSticky == '1') {
+		if ('normal' === backgroundSticky?.type && backgroundSticky?.image) {
+			css.add_property('background-image', backgroundSticky.image);
+			css.add_property('background-size', backgroundSticky.imageSize);
+			css.add_property('background-repeat', backgroundSticky.imageRepeat);
+			css.add_property('background-attachment', backgroundSticky.imageAttachment);
+			css.add_property('background-position', backgroundSticky.imagePosition);
+		}
+		if ('normal' === backgroundSticky?.type && backgroundSticky?.color) {
+			css.add_property('background-color', KadenceColorOutput(backgroundSticky.color));
+		}
+		if ('gradient' === backgroundSticky?.type && backgroundSticky?.gradient) {
+			css.add_property('background', backgroundSticky.gradient);
+		}
+	}
 
 	css.add_property('margin-top', getSpacingOptionOutput(previewMarginTop, marginUnit));
 	css.add_property('margin-right', getSpacingOptionOutput(previewMarginRight, marginUnit));
@@ -345,10 +375,60 @@ export default function BackendStyles(props) {
 	css.add_property('min-height', getSpacingOptionOutput(previewHeight, heightUnit));
 	css.add_property('max-width', getSpacingOptionOutput(previewWidth, widthUnit));
 
-	// Hover styles
-	css.set_selector(
-		`.wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-desktop:hover, .wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-tablet:hover`
-	);
+	css.set_selector(`wp-block-kadence-header${uniqueID} .kb-header-container:hover`);
+
+	if (previewIsTransparent != '1') {
+		if ('normal' === backgroundHover?.type && backgroundHover?.image) {
+			css.add_property('background-image', backgroundHover.image);
+			css.add_property('background-size', backgroundHover.imageSize);
+			css.add_property('background-repeat', backgroundHover.imageRepeat);
+			css.add_property('background-attachment', backgroundHover.imageAttachment);
+			css.add_property('background-position', backgroundHover.imagePosition);
+		}
+
+		if ('normal' === backgroundHover?.type && backgroundHover?.color) {
+			css.add_property('background-color', backgroundHover.color);
+		}
+
+		if ('gradient' === backgroundHover?.type && backgroundHover?.gradient) {
+			css.add_property('background', backgroundHover.gradient);
+		}
+	}
+	if (previewIsTransparent == '1') {
+		if ('normal' === backgroundTransparentHover?.type && backgroundTransparentHover?.image) {
+			css.add_property('background-image', backgroundTransparentHover.image);
+			css.add_property('background-size', backgroundTransparentHover.imageSize);
+			css.add_property('background-repeat', backgroundTransparentHover.imageRepeat);
+			css.add_property('background-attachment', backgroundTransparentHover.imageAttachment);
+			css.add_property('background-position', backgroundTransparentHover.imagePosition);
+		}
+
+		if ('normal' === backgroundTransparentHover?.type && backgroundTransparentHover?.color) {
+			css.add_property('background-color', backgroundTransparentHover.color);
+		}
+
+		if ('gradient' === backgroundTransparentHover?.type && backgroundTransparentHover?.gradient) {
+			css.add_property('background', backgroundTransparentHover.gradient);
+		}
+	}
+	if (previewIsSticky == '1') {
+		if ('normal' === backgroundStickyHover?.type && backgroundStickyHover?.image) {
+			css.add_property('background-image', backgroundStickyHover.image);
+			css.add_property('background-size', backgroundStickyHover.imageSize);
+			css.add_property('background-repeat', backgroundStickyHover.imageRepeat);
+			css.add_property('background-attachment', backgroundStickyHover.imageAttachment);
+			css.add_property('background-position', backgroundStickyHover.imagePosition);
+		}
+
+		if ('normal' === backgroundStickyHover?.type && backgroundStickyHover?.color) {
+			css.add_property('background-color', backgroundStickyHover.color);
+		}
+
+		if ('gradient' === backgroundStickyHover?.type && backgroundStickyHover?.gradient) {
+			css.add_property('background', backgroundStickyHover.gradient);
+		}
+	}
+
 	css.add_property(
 		'border-top',
 		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'top')
@@ -408,7 +488,7 @@ export default function BackendStyles(props) {
 	css.add_property('color', KadenceColorOutput(linkHoverColor));
 
 	if (previewIsTransparent == '1') {
-		css.set_selector(`.wp-block-kadence-header${uniqueID} > div`);
+		css.set_selector(`.wp-block-kadence-header${uniqueID} .kb-header-container`);
 		css.add_property('top', '0px');
 
 		//apply auto padding to the next block after the header

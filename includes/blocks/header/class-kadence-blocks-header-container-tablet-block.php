@@ -102,6 +102,7 @@ class Kadence_Blocks_Header_Container_Tablet_Block extends Kadence_Blocks_Abstra
 
 		$classes = array(
 			'wp-block-kadence-header-tablet',
+			'kb-header-container',
 			'wp-block-kadence-header-tablet' . $unique_id,
 		);
 

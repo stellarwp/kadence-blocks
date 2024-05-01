@@ -141,7 +141,7 @@ export default function KadenceColorDefault() {
 											nameValue={
 												kadenceColors.palette[theIndex].name
 													? kadenceColors.palette[theIndex].name
-													: __('Color') + ' ' + theIndex + 1
+													: __('Color', 'kadence-blocks') + ' ' + theIndex + 1
 											}
 											colorValue={
 												kadenceColors.palette[theIndex].color
@@ -169,7 +169,7 @@ export default function KadenceColorDefault() {
 											text={
 												name ||
 												// translators: %s: color hex code e.g: "#f00".
-												sprintf(__('Color code: %s'), color)
+												sprintf(__('Color code: %s', 'kadence-blocks'), color)
 											}
 										>
 											<div className="components-color-palette__item" style={style}>
@@ -225,7 +225,7 @@ export default function KadenceColorDefault() {
 											text={
 												name ||
 												// translators: %s: color hex code e.g: "#f00".
-												sprintf(__('Color code: %s'), color)
+												sprintf(__('Color code: %s', 'kadence-blocks'), color)
 											}
 										>
 											<div className="components-color-palette__item" style={style}>
@@ -240,7 +240,7 @@ export default function KadenceColorDefault() {
 						undefined !== kadenceColors.palette[colorRemove] &&
 						!disableCustomColors && (
 							<div className="kt-colors-remove-last">
-								<Tooltip text={__('Remove Last Color')}>
+								<Tooltip text={__('Remove Last Color', 'kadence-blocks')}>
 									<Button
 										type="button"
 										isDestructive
@@ -257,7 +257,7 @@ export default function KadenceColorDefault() {
 											setColors(colors);
 											saveConfig();
 										}}
-										aria-label={__('Remove Last Color')}
+										aria-label={__('Remove Last Color', 'kadence-blocks')}
 									>
 										<Dashicon icon="editor-removeformatting" />
 									</Button>
@@ -315,16 +315,16 @@ export default function KadenceColorDefault() {
 							setColors(colors);
 							saveConfig();
 						}}
-						aria-label={__('Add Color')}
+						aria-label={__('Add Color', 'kadence-blocks')}
 					>
-						{__('Add Color')}
+						{__('Add Color', 'kadence-blocks')}
 					</Button>
 				</div>
 			)}
 			{undefined !== kadenceColors.palette && undefined !== kadenceColors.palette[0] && !disableCustomColors && (
 				<>
 					<ToggleControl
-						label={__('Use only Kadence Blocks Colors?')}
+						label={__('Use only Custom Colors?', 'kadence-blocks')}
 						checked={undefined !== kadenceColors.override ? kadenceColors.override : false}
 						onChange={(value) => {
 							let newColors;
@@ -346,7 +346,9 @@ export default function KadenceColorDefault() {
 					{undefined !== kadenceColors.override &&
 						false === kadenceColors.override &&
 						true === showMessage && (
-							<p className="kb-colors-show-notice">{__('Refresh page to reload theme defined colors')}</p>
+							<p className="kb-colors-show-notice">
+								{__('Refresh page to reload theme defined colors', 'kadence-blocks')}
+							</p>
 						)}
 				</>
 			)}

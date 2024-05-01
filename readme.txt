@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.3
 Tested up to: 6.5
-Stable tag: 3.2.34
+Stable tag: 3.2.36
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -117,7 +117,7 @@ As a brand, we create clean and professional class WordPress tools that help eve
 
 = Support =
 
-Need support? Our expert team is eager to assist you with any queries. Please reach out through our dedicated [support forms](https://www.kadencewp.com/free-support-tickets/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) for prompt and helpful guidance.
+Need support? Our expert team is eager to assist you with any queries. Please reach out through our dedicated [support form](https://www.kadencewp.com/free-support-tickets/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) for prompt and helpful guidance.
 
 == Installation ==
 
@@ -139,6 +139,30 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Frequently Asked Questions ==
 
+= What are Kadence Blocks and how do they enhance my WordPress experience? =
+Kadence Blocks are advanced Gutenberg blocks that extend the capabilities of the WordPress editor. They allow you to create stunning, responsive websites easily.
+
+= Is Kadence Blocks free to use? =
+Yes, Kadence Blocks is a robust free plugin that offers a range of custom blocks and tools. There is a Premium addon for those who are looking for even more features. You can see a detailed list outlining what is in [Kadence Blocks vs Kadence Blocks Pro on our site](https://www.kadencewp.com/kadence-blocks/pro/#compare).
+
+= Can I use Kadence Blocks with my current WordPress theme? =
+Absolutely! Kadence Blocks is designed to work seamlessly with most WordPress themes, enhancing your current design capabilities. We recommend using our free theme, [Kadence Theme](https://www.kadencewp.com/kadence-theme/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) with 300,000+ active installs.
+
+= What unique features does Kadence Blocks offer? =
+Kadence Blocks offers plenty of [unique, easy-to-use features](https://www.kadencewp.com/kadence-blocks/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) like our Design Library which is complete with hundreds of unique patterns that can be tailored to your brand with AI. We offer advanced gallery options, configurable block defaults, and visibility controls for block settings.
+
+= Does Kadence Blocks support dynamic content for my website? =
+Yes, our [Pro addon supports dynamic content](https://www.kadencewp.com/kadence-blocks/pro/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks), allowing you to create highly dynamic and interactive websites easily when you upgrade to Pro. Use your own meta fields from ACF and MetaBox as well as custom fields from WooCommerce, The Events Calendar, and other third party plugins.
+
+= Are there tutorials available for Kadence Blocks? =
+Yes, we offer a range of tutorials to help you get the most out of Kadence Blocks. Visit our [help center](https://www.kadencewp.com/help-center/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) for step-by-step guides.
+
+= Can I upgrade to Kadence Blocks Pro for additional features? =
+es, upgrading to Kadence Blocks Pro unlocks additional advanced features and capabilities. Check out the [feature comparison](https://www.kadencewp.com/kadence-blocks/pro/#compare).
+
+= Where can I get support for Kadence Blocks? =
+Our expert team is eager to assist you with any queries. Please reach out through our dedicated [support form](https://www.kadencewp.com/free-support-tickets/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) for prompt and helpful guidance.
+
 = Where do I report security bugs found in this plugin? =
 Please report security bugs found in the source code of the Kadence Blocks plugin through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
@@ -150,9 +174,29 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.2.36 =
+Release Date: April 24th 2024
+* Fix: Custom CSS classes being applied to advanced form fields twice.
+* Fix: Issue with custom colors.
+* Fix: Issue with pattern libraries showing empty categories.
+
 = 3.2.35 =
-Release Date: April TBD 2024
-* Fix: Variable font sizes on tab titles in tabs block
+Release Date: April 22nd 2024
+* Add: Option to display accordions in columns.
+* Add: Box Shadow control to row layout.
+* Update: Option to control overflow with border radius in row.
+* Update: Captcha block can use different keys and languages for each instance.
+* Update: readme text.
+* Update: attribute escaping issues.
+* Update: Control for dynamic text.
+* Fix: Escaping special characters in email content.
+* Fix: Issue with gradient controls and theme colors.
+* Fix: Variable font sizes on tab titles in tabs block.
+* Fix: Transforms between core list and Icon List block
+* Fix: Issue with some section align settings in a row.
+* Fix: Issue with changing images in design library.
+* Fix: Linking to numeric anchor tags on accordion panes.
+* Fix: Issue with custom colors showing twice in editor.
 
 = 3.2.34 =
 Release Date: April 10th 2024

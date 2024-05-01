@@ -21,6 +21,10 @@
 			"type": "boolean",
 			"default": false
 		},
+		"useKbSettings": {
+			"type": "boolean",
+			"default": true
+		},
 		"hideRecaptcha": {
 			"type": "boolean",
 			"default": false
@@ -56,6 +60,34 @@
 		"minWidthUnit": {
 			"type": "string",
 			"default": "px"
+		},
+		"recaptchaSiteKey": {
+			"type": "string",
+			"default": "-"
+		},
+		"recaptchaSecretKey": {
+			"type": "string",
+			"default": ""
+		},
+		"recaptchaLanguage": {
+			"type": "string",
+			"default": ""
+		},
+		"hCaptchaSiteKey": {
+			"type": "string",
+			"default": "-"
+		},
+		"hCaptchaSecretKey": {
+			"type": "string",
+			"default": ""
+		},
+		"turnstileSiteKey": {
+			"type": "string",
+			"default": "-"
+		},
+		"turnstileSecretKey": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"supports": {

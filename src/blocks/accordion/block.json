@@ -324,6 +324,18 @@
 		"faqSchema": {
 			"type": "boolean",
 			"default": false
+		},
+		"columnGap": {
+			"type": "array",
+			"default": ["md", "", ""]
+		},
+		"columnGapUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"columnLayout": {
+			"type": "array",
+			"default": ["row", "", "row"]
 		}
 	},
 	"supports": {

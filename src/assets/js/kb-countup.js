@@ -19,7 +19,8 @@
 			);
 		},
 		stripHtml(html) {
-			const doc = new DOMParser().parseFromString(html, 'text/html');
+			const wrappedHtml = `<pre>${html}</pre>`;
+			const doc = new DOMParser().parseFromString(wrappedHtml, 'text/html');
 
 			return doc.body.textContent || '';
 		},

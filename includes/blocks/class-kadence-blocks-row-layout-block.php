@@ -670,8 +670,21 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$has_radius = true;
 		}
 		if ( $has_radius ) {
-			$css->add_property( 'overflow', 'hidden' );
+			if ( ! isset( $attributes['borderRadiusOverflow'] ) || ( isset( $attributes['borderRadiusOverflow'] ) && false !== $attributes['borderRadiusOverflow'] ) ) {
+				$css->add_property( 'overflow', 'hidden' );
+			}
 			$css->add_property( 'isolation', 'isolate' );
+			$css->set_selector( $base_selector . ' > .kt-row-layout-overlay' );
+			$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array( 'unit_key' => 'borderRadiusUnit' ) );
+		}
+		$css->set_selector( $base_selector );
+		// Box shadow
+		if ( isset( $attributes['displayBoxShadow'] ) && true == $attributes['displayBoxShadow'] ) {
+			if ( isset( $attributes['boxShadow'] ) && is_array( $attributes['boxShadow'] ) && isset( $attributes['boxShadow'][0] ) && is_array( $attributes['boxShadow'][0] ) ) {
+				$css->add_property( 'box-shadow', ( isset( $attributes['boxShadow'][0]['inset'] ) && true === $attributes['boxShadow'][0]['inset'] ? 'inset ' : '' ) . ( isset( $attributes['boxShadow'][0]['hOffset'] ) && is_numeric( $attributes['boxShadow'][0]['hOffset'] ) ? $attributes['boxShadow'][0]['hOffset'] : '0' ) . 'px ' . ( isset( $attributes['boxShadow'][0]['vOffset'] ) && is_numeric( $attributes['boxShadow'][0]['vOffset'] ) ? $attributes['boxShadow'][0]['vOffset'] : '0' ) . 'px ' . ( isset( $attributes['boxShadow'][0]['blur'] ) && is_numeric( $attributes['boxShadow'][0]['blur'] ) ? $attributes['boxShadow'][0]['blur'] : '14' ) . 'px ' . ( isset( $attributes['boxShadow'][0]['spread'] ) && is_numeric( $attributes['boxShadow'][0]['spread'] ) ? $attributes['boxShadow'][0]['spread'] : '0' ) . 'px ' . $css->render_color( ( isset( $attributes['boxShadow'][0]['color'] ) && ! empty( $attributes['boxShadow'][0]['color'] ) ? $attributes['boxShadow'][0]['color'] : '#000000' ), ( isset( $attributes['boxShadow'][0]['opacity'] ) && is_numeric( $attributes['boxShadow'][0]['opacity'] ) ? $attributes['boxShadow'][0]['opacity'] : 0.2 ) ) );
+			} else {
+				$css->add_property( 'box-shadow', 'rgba(0, 0, 0, 0.2) 0px 0px 14px 0px' );
+			}
 		}
 		// Border, have to check for old styles first.
 		if ( ! empty( $attributes['border'] ) || ! empty( $attributes['tabletBorder'] ) || ! empty( $attributes['mobileBorder'] ) || $css->is_number( $attributes['borderWidth'][0] ) || $css->is_number( $attributes['borderWidth'][1] ) || $css->is_number( $attributes['borderWidth'][2] ) || $css->is_number( $attributes['borderWidth'][3] ) || $css->is_number( $attributes['tabletBorderWidth'][0] ) || $css->is_number( $attributes['tabletBorderWidth'][1] ) || $css->is_number( $attributes['tabletBorderWidth'][2] ) || $css->is_number( $attributes['tabletBorderWidth'][3] ) || $css->is_number( $attributes['mobileBorderWidth'][0] ) || $css->is_number( $attributes['mobileBorderWidth'][1] ) || $css->is_number( $attributes['mobileBorderWidth'][2] ) || $css->is_number( $attributes['mobileBorderWidth'][3] ) ) {

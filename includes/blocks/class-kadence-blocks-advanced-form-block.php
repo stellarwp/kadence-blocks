@@ -407,7 +407,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			$form_fields .= '<input type="hidden" name="_kb_adv_form_post_id" value="' . $attributes['id'] . '">';
 		}
 		$form_fields .= '<input type="hidden" name="action" value="kb_process_advanced_form_submit">';
-		$form_fields .= '<input type="hidden" name="_kb_adv_form_id" value="' . $unique_id . '">';
+		$form_fields .= '<input type="hidden" name="_kb_adv_form_id" value="' . esc_attr( $unique_id ) . '">';
 		$content = sprintf( '<div %1$s><form %2$s>%3$s%4$s</form></div>', $wrapper_attributes, $inner_wrapper_attributes, $content, $form_fields );
 
 		return $content;
