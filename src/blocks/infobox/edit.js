@@ -578,14 +578,8 @@ function KadenceInfoBox(props) {
 	const previewMaxWidthUnit = getPreviewSize(
 		previewDevice,
 		maxWidthUnit ? maxWidthUnit : 'px',
-		maxWidthTabletUnit ? maxWidthTabletUnit : maxWidthUnit ? maxWidthUnit : 'px',
-		maxWidthMobileUnit
-			? maxWidthMobileUnit
-			: maxWidthTabletUnit
-			? maxWidthTabletUnit
-			: maxWidthUnit
-			? maxWidthUnit
-			: 'px'
+		maxWidthTabletUnit ? maxWidthTabletUnit : 'px',
+		maxWidthMobileUnit ? maxWidthMobileUnit : 'px'
 	);
 
 	const previewTitleFontSize = getPreviewSize(

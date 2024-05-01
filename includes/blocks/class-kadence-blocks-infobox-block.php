@@ -90,9 +90,9 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 				$alpha = ( isset( $attributes['containerBackgroundOpacity'] ) && is_numeric( $attributes['containerBackgroundOpacity'] ) ? $attributes['containerBackgroundOpacity'] : 1 );
 				$css->add_property( 'background', $css->render_color( '#f2f2f2', $alpha ) );
 			}
-			$max_width_unit = ( isset( $attributes['maxWidthUnit'] ) && ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' );
-			$tablet_max_width_unit = ( isset( $attributes['maxWidthTabletUnit'] ) && ! empty( $attributes['maxWidthTabletUnit'] ) ? $attributes['maxWidthTabletUnit'] : 'px' );
-			$mobile_max_width_unit = ( isset( $attributes['maxWidthMobileUnit'] ) && ! empty( $attributes['maxWidthMobileUnit'] ) ? $attributes['maxWidthMobileUnit'] : 'px' );
+			$max_width_unit = ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px';
+			$tablet_max_width_unit = ! empty( $attributes['maxWidthTabletUnit'] ) ? $attributes['maxWidthTabletUnit'] : 'px';
+			$mobile_max_width_unit = ! empty( $attributes['maxWidthMobileUnit'] ) ? $attributes['maxWidthMobileUnit'] : 'px';
 			if ( ! empty( $attributes['maxWidth'] ) ) {
 				$css->add_property( 'max-width', $attributes['maxWidth'] . $max_width_unit );
 			}
