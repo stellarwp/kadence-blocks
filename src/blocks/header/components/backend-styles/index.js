@@ -532,7 +532,6 @@ export default function BackendStyles(props) {
 			css.add_property('background-position', backgroundTransparent.imagePosition);
 		}
 		if ('normal' === backgroundTransparent?.type && backgroundTransparent?.color) {
-			console.log(1, backgroundTransparent.color);
 			css.add_property('background-color', KadenceColorOutput(backgroundTransparent.color));
 		}
 		if ('gradient' === backgroundTransparent?.type && backgroundTransparent?.gradient) {
