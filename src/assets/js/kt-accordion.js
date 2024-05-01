@@ -956,13 +956,12 @@
 								// child.click();
 							}
 						}
-						if ( e.type && e.type !== 'initialized' ) {
-							//Attempt to scroll to the position of the pane AFTER we've closed other panes with a timeout.
-							//If a pane above us closes, it moves our position up so this gets us a more accurate final position.
-							window.setTimeout(function() {
-								document.getElementById( id ).scrollIntoView({behavior: "smooth",block: "start", inline: "nearest"});
-							}, 350 );
-						}
+
+						//Attempt to scroll to the position of the pane AFTER we've closed other panes with a timeout.
+						//If a pane above us closes, it moves our position up so this gets us a more accurate final position.
+						window.setTimeout(function() {
+							document.getElementById( id ).scrollIntoView({behavior: "smooth",block: "start", inline: "nearest"});
+						}, 350 );
 					}
 				}
 			}
