@@ -35,6 +35,7 @@ const DesktopRow = ({ position, blocks, activeBlockData }) => {
 						position={position}
 						className={'left'}
 						clientId={sections[0].clientId}
+						type={'desktop'}
 					/>
 					<AddBlockButton position={'left'} clientId={sections[0].clientId} showMidColumns={showMidColumns} />
 					{showMidColumns && (
@@ -44,13 +45,19 @@ const DesktopRow = ({ position, blocks, activeBlockData }) => {
 								className={'center-left'}
 								showMidColumns={showMidColumns}
 								clientId={sections[1].clientId}
+								type={'desktop'}
 							/>
 							<AddBlockButton position={'center-left'} clientId={sections[1].clientId} />
 						</>
 					)}
 				</div>
 				<div className={'visual-section-wrapper visual-section-wrapper-center'}>
-					<ColumnBlocks blocks={sections[2].blocks} className={'center'} clientId={sections[2].clientId} />
+					<ColumnBlocks
+						blocks={sections[2].blocks}
+						className={'center'}
+						clientId={sections[2].clientId}
+						type={'desktop'}
+					/>
 					<AddBlockButton position={'center'} clientId={sections[2].clientId} />
 				</div>
 				<div className={'visual-section-wrapper visual-section-wrapper-right'}>
@@ -61,11 +68,17 @@ const DesktopRow = ({ position, blocks, activeBlockData }) => {
 								className={'center-right'}
 								showMidColumns={showMidColumns}
 								clientId={sections[3].clientId}
+								type={'desktop'}
 							/>
 							<AddBlockButton position={'center-right'} clientId={sections[3].clientId} />
 						</>
 					)}
-					<ColumnBlocks blocks={sections[4].blocks} className={'right'} clientId={sections[4].clientId} />
+					<ColumnBlocks
+						blocks={sections[4].blocks}
+						className={'right'}
+						clientId={sections[4].clientId}
+						type={'desktop'}
+					/>
 					<AddBlockButton
 						position={'right'}
 						clientId={sections[4].clientId}

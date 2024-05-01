@@ -7,6 +7,7 @@ import { useDispatch } from '@wordpress/data';
 import ModalClose from './close';
 import Desktop from './desktop';
 import Tablet from './tablet';
+import OffCanvas from './offCanvas';
 import './editor.scss';
 
 const getDescendantIds = (id = '', recursive = true, first_loop = true) => {
@@ -50,9 +51,7 @@ function extractBlocks(blocksData) {
 	return { desktopBlocks, tabletBlocks, offCanvasBlocks };
 }
 
-export default function VisualBuilder({ clientId, previewDevice, startVisible = false }) {
-	// Don't commit, active for testing
-	const [isVisible, setIsVisible] = useState(startVisible);
+export default function VisualBuilder({ clientId, previewDevice, isVisible, setIsVisible }) {
 	const [tab, setTab] = useState(previewDevice);
 	const { setPreviewDeviceType } = useDispatch('kadenceblocks/data');
 
@@ -78,10 +77,6 @@ export default function VisualBuilder({ clientId, previewDevice, startVisible = 
 
 	return (
 		<div class={'kb-header-visual-builder'} ref={ref}>
-			<div class={'kb-header-visual-builder__toggle'}>
-				<button onClick={() => setIsVisible(!isVisible)}>{isVisible ? 'Hide' : 'Show'} Visual Builder</button>
-			</div>
-
 			{isVisible && (
 				<div
 					class={'kb-header-visual-builder-modal'}
@@ -120,7 +115,7 @@ export default function VisualBuilder({ clientId, previewDevice, startVisible = 
 
 						{tab === 'Tablet' && <Tablet blocks={tabletBlocks} />}
 
-						{tab === 'off-canvas' && <>Off Canvas Content</>}
+						{tab === 'off-canvas' && <OffCanvas blocks={offCanvasBlocks} topLevelBlocks={topLevelBlocks} />}
 					</div>
 				</div>
 			)}

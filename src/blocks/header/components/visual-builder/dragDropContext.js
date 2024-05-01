@@ -32,9 +32,6 @@ export default function DragDropContext({ children, setActiveBlockData }) {
 			wp.data
 				.dispatch('core/block-editor')
 				.moveBlockToPosition(currentClientID, parentClientID, destinationClientId, newIndex);
-		} else {
-			// console.log('OTHERd.');
-			// console.log(event);
 		}
 	}
 

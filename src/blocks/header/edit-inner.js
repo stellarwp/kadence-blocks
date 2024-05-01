@@ -56,7 +56,17 @@ import { useEntityPublish } from './hooks';
 const ANCHOR_REGEX = /[\s#]/g;
 
 export function EditInner(props) {
-	const { attributes, setAttributes, clientId, context, direct, id, isSelected } = props;
+	const {
+		attributes,
+		setAttributes,
+		clientId,
+		context,
+		direct,
+		id,
+		isSelected,
+		showVisualBuilder,
+		setShowVisualBuilder,
+	} = props;
 
 	const { previewDevice } = useSelect(
 		(select) => {
@@ -677,6 +687,11 @@ export function EditInner(props) {
 
 				{activeTab === 'general' && (
 					<>
+						<KadencePanelBody>
+							<Button isPrimary onClick={() => setShowVisualBuilder(!showVisualBuilder)}>
+								{showVisualBuilder ? 'Hide' : 'Show'} Visual Builder
+							</Button>
+						</KadencePanelBody>
 						<KadencePanelBody
 							title={__('General Settings', 'kadence-blocks')}
 							panelName={'kb-col-flex-settings'}

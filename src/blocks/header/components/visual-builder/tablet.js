@@ -51,12 +51,7 @@ export default function Tablet({ blocks }) {
 		<div className={classNames}>
 			<DragDropContext setActiveBlockData={setActiveBlockData}>
 				{rowPositions.map((position) => (
-					<TabletRow
-						key={position}
-						position={position}
-						blocks={innerBlocks}
-						activeBlockData={activeBlockData}
-					/>
+					<TabletRow key={position} position={position} blocks={innerBlocks} />
 				))}
 				{/* This created the element that is visually moved when dragging */}
 				<DragOverlay>

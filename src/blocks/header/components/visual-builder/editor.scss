@@ -61,12 +61,25 @@ $fixed_height: 280px;
 		padding-top: 10px;
 		align-items: center;
 
-		.visual-desktop-row, .visual-tablet-row {
+		.visual-desktop-row, .visual-tablet-row, .visual-off-canvas-row {
 			display: flex !important;
 			background-color: #FFF;
 			border: 1px dashed #a0aec1;
 			width: 100%;
 			overflow-x: auto;
+		}
+
+		.visual-off-canvas-row {
+			max-width: 500px;
+		}
+		.visual-section-wrapper-off-canvas {
+			flex-direction: column;
+			max-height: 200px;
+			padding-top: 5px;
+
+			.visual-inner-block {
+				margin: 5px 10px;
+			}
 		}
 
 		.visual-section-wrapper {
@@ -190,6 +203,7 @@ $fixed_height: 280px;
 			text-wrap: nowrap;
 			text-overflow: ellipsis;
 			max-width: 115px;
+			padding-left: 5px;
 		}
 
 		&__meta {

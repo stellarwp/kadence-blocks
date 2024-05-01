@@ -31,7 +31,7 @@ import { getUniqueId, getPostOrFseId, getPreviewSize } from '@kadence/helpers';
  * Internal dependencies
  */
 import EditInner from './edit-inner';
-import { useEffect, Fragment } from '@wordpress/element';
+import { useEffect, Fragment, useState } from '@wordpress/element';
 
 export function Edit(props) {
 	const { attributes, setAttributes, clientId } = props;
@@ -39,6 +39,7 @@ export function Edit(props) {
 	const { id, uniqueID } = attributes;
 
 	const [meta, setMeta] = useHeaderProp('meta', id);
+	const [showVisualBuilder, setShowVisualBuilder] = useState(false);
 
 	const metaAttributes = {
 		isSticky: meta?._kad_header_isSticky,
@@ -233,11 +234,22 @@ export function Edit(props) {
 				{/* Form selected and loaded, display it */}
 				{id > 0 && !isEmpty(post) && post.status !== 'trash' && (
 					<EntityProvider kind="postType" type="kadence_header" id={id}>
-						<EditInner {...props} direct={false} id={id} />
+						<EditInner
+							{...props}
+							direct={false}
+							id={id}
+							showVisualBuilder={showVisualBuilder}
+							setShowVisualBuilder={setShowVisualBuilder}
+						/>
 					</EntityProvider>
 				)}
 			</div>
-			<VisualBuilder clientId={clientId} previewDevice={previewDevice} />
+			<VisualBuilder
+				clientId={clientId}
+				previewDevice={previewDevice}
+				isVisible={showVisualBuilder}
+				setIsVisible={setShowVisualBuilder}
+			/>
 		</>
 	);
 
@@ -246,9 +258,20 @@ export function Edit(props) {
 		mainBlockContent = (
 			<>
 				<div {...blockProps}>
-					<EditInner {...props} direct={true} id={postId} />
+					<EditInner
+						{...props}
+						direct={true}
+						id={postId}
+						showVisualBuilder={showVisualBuilder}
+						setShowVisualBuilder={setShowVisualBuilder}
+					/>
 				</div>
-				<VisualBuilder clientId={clientId} previewDevice={previewDevice} />
+				<VisualBuilder
+					clientId={clientId}
+					previewDevice={previewDevice}
+					isVisible={showVisualBuilder}
+					setIsVisible={setShowVisualBuilder}
+				/>
 			</>
 		);
 	}
