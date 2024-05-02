@@ -5,7 +5,7 @@ import { useState } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { Placeholder, Button, SelectControl } from '@wordpress/components';
-import { heading } from '@wordpress/icons';
+import { headerBlockIcon } from '@kadence/icons';
 
 export default function SelectOrCreatePlaceholder({
 	onSelect,
@@ -68,7 +68,7 @@ export default function SelectOrCreatePlaceholder({
 	return (
 		<Placeholder
 			className="kb-select-or-create-placeholder"
-			icon={heading}
+			icon={headerBlockIcon}
 			label={label}
 			instructions={instructions}
 		>

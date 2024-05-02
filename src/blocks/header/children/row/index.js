@@ -1,7 +1,7 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { __, _x } from '@wordpress/i18n';
 
-import { headerBlockIcon } from '@kadence/icons';
+import { headerRowBlockIcon } from '@kadence/icons';
 
 /**
  * Internal dependencies
@@ -16,7 +16,7 @@ registerBlockType('kadence/header-row', {
 	title: _x('Header Row', 'block title', 'kadence-blocks'),
 	description: _x('Header row.', 'block description', 'kadence-blocks'),
 	icon: {
-		src: headerBlockIcon,
+		src: headerRowBlockIcon,
 	},
 	edit,
 	save: () => {
