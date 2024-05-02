@@ -1,7 +1,7 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { __, _x } from '@wordpress/i18n';
 
-import { headerBlockIcon } from '@kadence/icons';
+import { offCanvasBlockIcon } from '@kadence/icons';
 
 /**
  * Import Css
@@ -21,7 +21,7 @@ registerBlockType('kadence/off-canvas', {
 	title: _x('Off Canvas', 'block title', 'kadence-blocks'),
 	description: _x('Container for off canvas content.', 'block description', 'kadence-blocks'),
 	icon: {
-		src: headerBlockIcon,
+		src: offCanvasBlockIcon,
 	},
 	edit,
 	save: () => {
