@@ -238,3 +238,5 @@ export { default as navigationMegaMenuIcon } from './block-icons/navigation/mega
 export { default as navigationItemIcon } from './block-icons/navigation/navigation-item'
 export { default as offCanvasBlockIcon } from './block-icons/off-canvas'
 export { default as offCanvasTriggerBlockIcon } from './block-icons/off-canvas-trigger'
+export { default as headerDesktopBlockIcon } from './block-icons/header-container-desktop'
+export { default as headerTabletBlockIcon } from './block-icons/header-container-tablet'

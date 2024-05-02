@@ -1,7 +1,7 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { __, _x } from '@wordpress/i18n';
 
-import { headerBlockIcon } from '@kadence/icons';
+import { headerDesktopBlockIcon } from '@kadence/icons';
 
 /**
  * Internal dependencies
@@ -16,7 +16,7 @@ registerBlockType('kadence/header-desktop-container', {
 	title: _x('Header Desktop', 'block title', 'kadence-blocks'),
 	description: _x('Header content for desktop.', 'block description', 'kadence-blocks'),
 	icon: {
-		src: headerBlockIcon,
+		src: headerDesktopBlockIcon,
 	},
 	edit,
 	save: () => {
