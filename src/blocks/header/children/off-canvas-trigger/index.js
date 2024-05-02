@@ -1,7 +1,7 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { __, _x } from '@wordpress/i18n';
 
-import { headerBlockIcon } from '@kadence/icons';
+import { offCanvasTriggerBlockIcon } from '@kadence/icons';
 
 /**
  * Internal dependencies
@@ -16,7 +16,7 @@ registerBlockType('kadence/off-canvas-trigger', {
 	title: _x('Off Canvas Trigger', 'block title', 'kadence-blocks'),
 	description: _x('Toggles the display of an off canvas block.', 'block description', 'kadence-blocks'),
 	icon: {
-		src: headerBlockIcon,
+		src: offCanvasTriggerBlockIcon,
 	},
 	edit,
 	save: () => {
