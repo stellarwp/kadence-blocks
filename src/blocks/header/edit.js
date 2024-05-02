@@ -24,14 +24,14 @@ import { Placeholder, Spinner } from '@wordpress/components';
 import { store as coreStore, EntityProvider, useEntityProp } from '@wordpress/core-data';
 
 import { useEntityAutoDraft } from './hooks';
-import { SelectOrCreatePlaceholder, SelectForm } from './components';
+import { SelectOrCreatePlaceholder, SelectForm, VisualBuilder } from './components';
 import { getUniqueId, getPostOrFseId, getPreviewSize } from '@kadence/helpers';
 
 /**
  * Internal dependencies
  */
 import EditInner from './edit-inner';
-import { useEffect, Fragment } from '@wordpress/element';
+import { useEffect, Fragment, useState } from '@wordpress/element';
 
 export function Edit(props) {
 	const { attributes, setAttributes, clientId } = props;
@@ -39,6 +39,7 @@ export function Edit(props) {
 	const { id, uniqueID } = attributes;
 
 	const [meta, setMeta] = useHeaderProp('meta', id);
+	const [showVisualBuilder, setShowVisualBuilder] = useState(false);
 
 	const metaAttributes = {
 		isSticky: meta?._kad_header_isSticky,
@@ -161,100 +162,124 @@ export function Edit(props) {
 	}, []);
 
 	let mainBlockContent = (
-		<div {...blockProps}>
-			{/* No form selected or selected form was deleted from the site, display chooser */}
-			{(id === 0 || (undefined === postExists && !isLoading)) && (
-				<Chooser
-					id={id}
-					postExists={postExists}
-					post={post}
-					commit={(nextId) => setAttributes({ id: nextId })}
-				/>
-			)}
+		<>
+			<div {...blockProps}>
+				{/* No form selected or selected form was deleted from the site, display chooser */}
+				{(id === 0 || (undefined === postExists && !isLoading)) && (
+					<Chooser
+						id={id}
+						postExists={postExists}
+						post={post}
+						commit={(nextId) => setAttributes({ id: nextId })}
+					/>
+				)}
 
-			{/* Form selected but not loaded yet, show spinner */}
-			{id > 0 && isEmpty(post) && undefined === postExists && isLoading && (
-				<>
-					<Placeholder
-						className="kb-select-or-create-placeholder"
-						label={__('Kadence Heading', 'kadence-blocks')}
-						icon={formBlockIcon}
-					>
-						<Spinner />
-					</Placeholder>
-					<InspectorControls>
-						<KadencePanelBody
-							panelName={'kb-advanced-form-selected-switch'}
-							title={__('Selected Form', 'kadence-blocks')}
+				{/* Form selected but not loaded yet, show spinner */}
+				{id > 0 && isEmpty(post) && undefined === postExists && isLoading && (
+					<>
+						<Placeholder
+							className="kb-select-or-create-placeholder"
+							label={__('Kadence Heading', 'kadence-blocks')}
+							icon={formBlockIcon}
 						>
-							<SelectForm
-								postType="kadence_header"
-								label={__('Selected Form', 'kadence-blocks')}
-								hideLabelFromVision={true}
-								onChange={(nextId) => {
-									setAttributes({ id: parseInt(nextId) });
-								}}
-								value={id}
-							/>
-						</KadencePanelBody>
-					</InspectorControls>
-				</>
-			)}
-			{/* Form selected is in the trash */}
-			{id > 0 && !isEmpty(post) && post.status === 'trash' && (
-				<>
-					<Placeholder
-						className="kb-select-or-create-placeholder"
-						label={__('Kadence Heading', 'kadence-blocks')}
-						icon={formBlockIcon}
-					>
-						{__('The selected from is in the trash.', 'kadence-blocks')}
-					</Placeholder>
-					<InspectorControls>
-						<KadencePanelBody
-							panelName={'kb-advanced-form-selected-switch'}
-							title={__('Selected Form', 'kadence-blocks')}
+							<Spinner />
+						</Placeholder>
+						<InspectorControls>
+							<KadencePanelBody
+								panelName={'kb-advanced-form-selected-switch'}
+								title={__('Selected Form', 'kadence-blocks')}
+							>
+								<SelectForm
+									postType="kadence_header"
+									label={__('Selected Form', 'kadence-blocks')}
+									hideLabelFromVision={true}
+									onChange={(nextId) => {
+										setAttributes({ id: parseInt(nextId) });
+									}}
+									value={id}
+								/>
+							</KadencePanelBody>
+						</InspectorControls>
+					</>
+				)}
+				{/* Form selected is in the trash */}
+				{id > 0 && !isEmpty(post) && post.status === 'trash' && (
+					<>
+						<Placeholder
+							className="kb-select-or-create-placeholder"
+							label={__('Kadence Heading', 'kadence-blocks')}
+							icon={formBlockIcon}
 						>
-							<SelectForm
-								postType="kadence_header"
-								label={__('Selected Form', 'kadence-blocks')}
-								hideLabelFromVision={true}
-								onChange={(nextId) => {
-									setAttributes({ id: parseInt(nextId) });
-								}}
-								value={id}
-							/>
-						</KadencePanelBody>
-					</InspectorControls>
-				</>
-			)}
+							{__('The selected from is in the trash.', 'kadence-blocks')}
+						</Placeholder>
+						<InspectorControls>
+							<KadencePanelBody
+								panelName={'kb-advanced-form-selected-switch'}
+								title={__('Selected Form', 'kadence-blocks')}
+							>
+								<SelectForm
+									postType="kadence_header"
+									label={__('Selected Form', 'kadence-blocks')}
+									hideLabelFromVision={true}
+									onChange={(nextId) => {
+										setAttributes({ id: parseInt(nextId) });
+									}}
+									value={id}
+								/>
+							</KadencePanelBody>
+						</InspectorControls>
+					</>
+				)}
 
-			{/* Form selected and loaded, display it */}
-			{id > 0 && !isEmpty(post) && post.status !== 'trash' && (
-				<EntityProvider kind="postType" type="kadence_header" id={id}>
-					<EditInner {...props} direct={false} id={id} />
-				</EntityProvider>
-			)}
-		</div>
+				{/* Form selected and loaded, display it */}
+				{id > 0 && !isEmpty(post) && post.status !== 'trash' && (
+					<EntityProvider kind="postType" type="kadence_header" id={id}>
+						<EditInner
+							{...props}
+							direct={false}
+							id={id}
+							showVisualBuilder={showVisualBuilder}
+							setShowVisualBuilder={setShowVisualBuilder}
+						/>
+					</EntityProvider>
+				)}
+			</div>
+			<VisualBuilder
+				clientId={clientId}
+				previewDevice={previewDevice}
+				isVisible={showVisualBuilder}
+				setIsVisible={setShowVisualBuilder}
+			/>
+		</>
 	);
 
 	//Directly editing from via kadence_header post type
 	if (currentPostType === 'kadence_header') {
 		mainBlockContent = (
-			<div {...blockProps}>
-				<EditInner {...props} direct={true} id={postId} />
-			</div>
+			<>
+				<div {...blockProps}>
+					<EditInner
+						{...props}
+						direct={true}
+						id={postId}
+						showVisualBuilder={showVisualBuilder}
+						setShowVisualBuilder={setShowVisualBuilder}
+					/>
+				</div>
+				<VisualBuilder
+					clientId={clientId}
+					previewDevice={previewDevice}
+					isVisible={showVisualBuilder}
+					setIsVisible={setShowVisualBuilder}
+				/>
+			</>
 		);
 	}
 
 	if (previewIsTransparent) {
-		return (
-			<div className="kb-header-transparent-placeholder">
-				<>{mainBlockContent}</>
-			</div>
-		);
+		return <div className="kb-header-transparent-placeholder">{mainBlockContent}</div>;
 	}
-	return <Fragment>{mainBlockContent}</Fragment>;
+	return mainBlockContent;
 }
 
 export default Edit;

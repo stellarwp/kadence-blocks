@@ -86,7 +86,7 @@ export function Edit(props) {
 			className: innerBlocksClasses,
 		},
 		{
-			renderAppender: hasChildBlocks ? false : InnerBlocks.ButtonBlockAppender, // This will get set to false, leaving on for testing until visual editor is done.
+			renderAppender: false, // This will get set to false, leaving on for testing until visual editor is done.
 			templateLock: false,
 		}
 	);

@@ -61,7 +61,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 
-		$nav_link_attributes = $this->get_attributes_with_defaults( $unique_id, $attributes, 'kadence/' . $this->$block_name );
+		$nav_link_attributes = $this->get_attributes_with_defaults( $unique_id, $attributes, 'kadence/' . $this->block_name );
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
@@ -76,7 +76,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$css->render_typography( $nav_link_attributes );
 		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container > ul li.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a .link-highlight-label' );
 		$css->render_typography( $nav_link_attributes, 'highlightTypography' );
-		
+
 		if ( 'custom' === $nav_link_attributes['megaMenuWidth'] ) {
 			$css->set_selector(
 				'.wp-block-kadence-navigation .menu-container ul.menu .wp-block-kadence-navigation-link' . $unique_id . '.kadence-menu-mega-width-custom > ul.sub-menu'
@@ -106,7 +106,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 				$css->render_border_radius( $nav_link_attributes['highlightSpacing'][0] );
 				$css->render_gap($nav_link_attributes['highlightSpacing'][0]);
 			}
-			
+
 			if( ! empty($nav_link_attributes['highlightSide']) && 'left' === $nav_link_attributes['highlightSide'] ) {
 				$css->add_property('order', '-1');
 			}
@@ -126,7 +126,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			if( ! empty( $nav_link_attributes['labelBackgroundHover'] ) ) {
 				$css->add_property( 'background-color', $css->render_color( $nav_link_attributes['labelBackgroundHover'] ) );
 			}
-			
+
 			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a:active .link-highlight-label' );
 			if( ! empty( $nav_link_attributes['labelColorActive'] ) ) {
 				$css->add_property( 'color', $css->render_color( $nav_link_attributes['labelColorActive'] ) );
@@ -148,13 +148,13 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 					$css->add_property( 'order', '-1' );
 				}
 				$css->set_media_state( 'desktop' );
-				
+
 				$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container > ul li.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a .link-highlight-label .link-svg-icon svg' );
 				if( isset( $nav_link_attributes['highlightIcon'][0]['size'] ) && is_numeric( $nav_link_attributes['highlightIcon'][0]['size'] ) ) {
 					$css->add_property( 'width', $nav_link_attributes['highlightIcon'][0]['size'] . 'px' );
 					$css->add_property( 'height', $nav_link_attributes['highlightIcon'][0]['size'] . 'px' );
 				}
-				
+
 				if(isset( $nav_link_attributes['highlightIcon'][0]['sizeTablet'] ) && is_numeric( $nav_link_attributes['highlightIcon'][0]['sizeTablet'] ) ) {
 					$css->set_media_state( 'tablet' );
 					$css->add_property( 'width',  $nav_link_attributes['highlightIcon'][0]['sizeTablet'] . 'px' );
@@ -168,7 +168,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 				$css->set_media_state( 'desktop' );
 			}
 		}
-		
+
 		return $css->css_output();
 	}
 
@@ -316,7 +316,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			self::$seen_refs[ $attributes['id'] ] = true;
 		}
 
-		$nav_link_attributes = $this->get_attributes_with_defaults( $unique_id, $attributes, 'kadence/' . $this->$block_name );
+		$nav_link_attributes = $this->get_attributes_with_defaults( $unique_id, $attributes, 'kadence/' . $this->block_name );
 		$child_info = $this->get_child_info( $block_instance );
 
 		// Handle embeds for nav block.
@@ -390,7 +390,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$icon  = ! empty( $svg_icon ) ? '<div class="link-media-container"><span class="link-svg-icon link-svg-icon-' . esc_attr( $nav_link_attributes['mediaIcon'][0]['icon'] ) . '">' . $svg_icon . '</span></div>' : '';
 
 		$description = ! empty($nav_link_attributes['description']) ? '<span class="menu-label-description">' . $nav_link_attributes['description'] . '</span>' : '';
-		
+
 		$highlight_icon   = '';
 		if ( ! empty( $nav_link_attributes['highlightIcon'][0]['icon'] ) ) {
 			$type         = substr( $nav_link_attributes['highlightIcon'][0]['icon'], 0, 2 );
