@@ -37,7 +37,6 @@ export default function BackendStyles(props) {
 		borderRadiusHoverTablet,
 		borderRadiusHoverMobile,
 		borderRadiusHoverUnit,
-		flex,
 		className,
 		anchor,
 		background,
@@ -178,28 +177,6 @@ export default function BackendStyles(props) {
 		undefined !== typography?.letterSpacing?.[2] ? typography.letterSpacing[2] : ''
 	);
 
-	// Flex direction options
-	const previewDirection = getPreviewSize(
-		previewDevice,
-		undefined !== flex?.direction?.[0] ? flex.direction[0] : '',
-		undefined !== flex?.direction?.[1] ? flex.direction[1] : '',
-		undefined !== flex?.direction?.[2] ? flex.direction[2] : ''
-	);
-
-	const previewJustifyContent = getPreviewSize(
-		previewDevice,
-		undefined !== flex?.justifyContent?.[0] ? flex.justifyContent[0] : '',
-		undefined !== flex?.justifyContent?.[1] ? flex.justifyContent[1] : '',
-		undefined !== flex?.justifyContent?.[2] ? flex.justifyContent[2] : ''
-	);
-
-	const previewVerticalAlignment = getPreviewSize(
-		previewDevice,
-		undefined !== flex?.verticalAlignment?.[0] ? flex.verticalAlignment[0] : '',
-		undefined !== flex?.verticalAlignment?.[1] ? flex.verticalAlignment[1] : '',
-		undefined !== flex?.verticalAlignment?.[2] ? flex.verticalAlignment[2] : ''
-	);
-
 	const previewHeight = getPreviewSize(
 		previewDevice,
 		undefined !== height?.[0] ? height[0] : '',
@@ -233,65 +210,6 @@ export default function BackendStyles(props) {
 		);
 		css.add_property('display', 'none');
 	}
-	if (previewDirection) {
-		if ('Desktop' === previewDevice) {
-			css.set_selector(`.wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-desktop`);
-		} else {
-			css.set_selector(`.wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-tablet`);
-		}
-		css.add_property('display', 'flex !important');
-		css.add_property('flex-wrap', 'wrap');
-		switch (previewDirection) {
-			case 'horizontal':
-				css.add_property('flex-direction', 'row');
-				break;
-			case 'horizontal-reverse':
-				css.add_property('flex-direction', 'row-reverse');
-				break;
-			case 'vertical':
-				css.add_property('flex-direction', 'column');
-				break;
-			case 'vertical-reverse':
-				css.add_property('flex-direction', 'column-reverse');
-				break;
-		}
-		if (previewDirection === 'vertical-reverse' || previewDirection === 'vertical') {
-			switch (previewVerticalAlignment) {
-				case 'top':
-					css.add_property('justify-content', 'flex-start');
-					break;
-				case 'middle':
-					css.add_property('justify-content', 'center');
-					break;
-				case 'bottom':
-					css.add_property('justify-content', 'flex-end');
-					break;
-				default:
-					css.add_property('justify-content', previewVerticalAlignment);
-					break;
-			}
-
-			css.add_property('align-items', previewJustifyContent);
-		}
-
-		if (previewDirection === 'horizontal-reverse' || previewDirection === 'horizontal') {
-			switch (previewJustifyContent) {
-				case 'top':
-					css.add_property('justify-content', 'flex-start');
-					break;
-				case 'middle':
-					css.add_property('justify-content', 'center');
-					break;
-				case 'bottom':
-					css.add_property('justify-content', 'flex-end');
-					break;
-				default:
-					css.add_property('justify-content', previewJustifyContent);
-					break;
-			}
-		}
-	}
-
 	css.set_selector(
 		`.wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-desktop, .wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-tablet`
 	);

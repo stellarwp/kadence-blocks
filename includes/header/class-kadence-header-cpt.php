@@ -849,20 +849,6 @@ class Kadence_Blocks_Header_CPT_Controller {
 				),
 			),
 			array(
-				'key' => '_kad_header_flex',
-				'type'          => 'object',
-				'default'       => array(
-					'direction'         => array( '', '', '' ),
-					'justifyContent'    => array( '', '', '' ),
-					'verticalAlignment' => array( '', '', '' ),
-				),
-				'properties' => array(
-					'direction'         => array( 'type' => 'array' ),
-					'justifyContent'    => array( 'type' => 'array' ),
-					'verticalAlignment' => array( 'type' => 'array' ),
-				),
-			),
-			array(
 				'key'     => '_kad_header_anchor',
 				'default' => '',
 				'type'    => 'string',
