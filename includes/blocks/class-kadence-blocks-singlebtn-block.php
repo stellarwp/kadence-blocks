@@ -228,6 +228,8 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$sized_attributes = $css->get_sized_attributes_auto( $attributes, $size, false );
 		$sized_attributes_inherit = $css->get_sized_attributes_auto( $attributes, $size );
 
+		$css->set_media_state( strtolower( $size ) );
+
 		//standard transparent styles
 		$css->set_selector( '.header-' . strtolower( $size ) . '-transparent .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button' );
 		$bg_type_transparent = ! empty( $attributes['backgroundTransparentType'] ) ? $attributes['backgroundTransparentType'] : 'normal';

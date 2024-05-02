@@ -79,13 +79,97 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 
+		$header_row_attributes = $this->get_attributes_with_defaults( $unique_id, $attributes, 'kadence/' . $this->block_name );
+
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
-		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id );
+		$sizes = array( 'Desktop', 'Tablet', 'Mobile' );
 
+		foreach ( $sizes as $size ) {
+			$this->sized_dynamic_styles( $css, $header_row_attributes, $unique_id, $size );
+		}
+		$css->set_media_state( 'desktop' );
+
+		//container
+		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id );
+		$css->render_measure_output( $attributes, 'padding', 'padding', array(
+			'desktop_key' => 'padding',
+			'tablet_key'  => 'paddingTablet',
+			'mobile_key'  => 'paddingMobile',
+		) );
+		$css->render_measure_output( $attributes, 'margin', 'margin', array(
+			'desktop_key' => 'margin',
+			'tablet_key'  => 'marginTablet',
+			'mobile_key'  => 'marginMobile',
+		) );
+		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array(
+			'desktop_key' => 'borderRadius',
+			'tablet_key'  => 'borderRadiusTablet',
+			'mobile_key'  => 'borderRadiusMobile',
+		) );
+		$css->render_border_styles( $attributes, 'border' );
 
 		return $css->css_output();
 	}
+
+	/**
+	 * Build up the dynamic styles for a size.
+	 *
+	 * @param string $size The size.
+	 * @return array
+	 */
+	public function sized_dynamic_styles( $css, $attributes, $unique_id, $size = 'Desktop' ) {
+		$sized_attributes = $css->get_sized_attributes_auto( $attributes, $size, false );
+		$sized_attributes_inherit = $css->get_sized_attributes_auto( $attributes, $size );
+
+		$bg = $sized_attributes['background'];
+		$bg_transparent = $sized_attributes['backgroundTransparent'];
+
+		$css->set_media_state( strtolower( $size ) );
+		
+		//container
+		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id );
+		$css->add_property( 'min-height', $sized_attributes['minHeight'] . $sized_attributes['minHeightUnit'] );
+
+		$css->render_background( $bg, $css );
+		if ( '' !== $bg && ! empty( $bg['type'] ) && 'normal' === $bg['type'] && ! empty( $bg['image'] ) ) {
+			$img_bg = array(
+				'type' => 'image',
+				'image' => array(
+					'url' => ! empty($bg['image']) ? 'url("' . $bg['image'] . '")' : '',
+					'imageID' => ! empty($bg['imageID']) ? $bg['imageID'] : '',
+					'position' => ! empty($bg['position']) ? $bg['position'] : '',
+					'attachment' => ! empty($bg['attachment']) ? $bg['attachment'] : '',
+					'size' => ! empty($bg['size']) ? $bg['size'] : '',
+					'repeat' => ! empty($bg['repeat']) ? $bg['repeat'] : '',
+				)
+			);
+			$css->render_background( $img_bg, $css );
+		}
+
+		//transparent overrides
+		$css->set_selector( '.header-' . strtolower( $size ) . '-transparent .wp-block-kadence-header-row' . $unique_id );
+		$css->render_background( $bg_transparent, $css );
+		if ( '' !== $bg_transparent && ! empty( $bg_transparent['type'] ) && 'normal' === $bg_transparent['type'] && ! empty( $bg_transparent['image'] ) ) {
+			$img_bg = array(
+				'type' => 'image',
+				'image' => array(
+					'url' => ! empty($bg_transparent['image']) ? 'url("' . $bg_transparent['image'] . '")' : '',
+					'imageID' => ! empty($bg_transparent['imageID']) ? $bg_transparent['imageID'] : '',
+					'position' => ! empty($bg_transparent['position']) ? $bg_transparent['position'] : '',
+					'attachment' => ! empty($bg_transparent['attachment']) ? $bg_transparent['attachment'] : '',
+					'size' => ! empty($bg_transparent['size']) ? $bg_transparent['size'] : '',
+					'repeat' => ! empty($bg_transparent['repeat']) ? $bg_transparent['repeat'] : '',
+				)
+			);
+			$css->render_background( $img_bg, $css );
+		}
+
+		//pass down to sections
+		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .wp-block-kadence-header-column, .wp-block-kadence-header-row' . $unique_id . ' .wp-block-kadence-header-section' );
+		$css->add_property( 'gap', $sized_attributes['itemGap'] . $sized_attributes['itemGapUnit'] );
+	}
+
 	/**
 	 * The innerblocks are stored on the $content variable. We just wrap with our data, if needed
 	 *

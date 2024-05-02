@@ -152,6 +152,8 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 		$sized_attributes = $css->get_sized_attributes_auto( $attributes, $size, false );
 		$sized_attributes_inherit = $css->get_sized_attributes_auto( $attributes, $size );
 
+		$css->set_media_state( strtolower( $size ) );
+
 		//container
 		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id );
 		if( empty( $attributes['widthType'] ) || $attributes['widthType'] !== 'full') {

@@ -11,6 +11,11 @@ import metadata from './block.json';
 
 import { InnerBlocks } from '@wordpress/block-editor';
 
+/**
+ * Import Css
+ */
+import './style.scss';
+
 registerBlockType('kadence/header-row', {
 	...metadata,
 	title: _x('Header Row', 'block title', 'kadence-blocks'),

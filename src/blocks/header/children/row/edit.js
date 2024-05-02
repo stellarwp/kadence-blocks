@@ -19,19 +19,64 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { useBlockProps, InnerBlocks, useInnerBlocksProps, InspectorControls } from '@wordpress/block-editor';
 
 import { getUniqueId, getPostOrFseId } from '@kadence/helpers';
-import { SelectParentBlock } from '@kadence/components';
+import {
+	SelectParentBlock,
+	ResponsiveRangeControls,
+	ResponsiveBorderControl,
+	ResponsiveMeasurementControls,
+	ResponsiveMeasureRangeControl,
+	BackgroundControl as KadenceBackgroundControl,
+	KadenceRadioButtons,
+	BackgroundTypeControl,
+	PopColorControl,
+	GradientControl,
+	InspectorControlTabs,
+	KadencePanelBody,
+} from '@kadence/components';
 
 /**
  * Internal dependencies
  */
-import { useEffect } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
+import BackendStyles from './components/backend-styles';
+import { layout } from '@wordpress/icons';
+
 export function Edit(props) {
-	const { attributes, setAttributes, clientId } = props;
+	const { attributes, setAttributes, clientId, context, isSelected } = props;
 
-	const { uniqueID, location } = attributes;
+	const {
+		uniqueID,
+		location,
+		background,
+		backgroundTransparent,
+		border,
+		borderTablet,
+		borderMobile,
+		borderRadius,
+		borderRadiusTablet,
+		borderRadiusMobile,
+		borderRadiusUnit,
+		padding,
+		paddingTablet,
+		paddingMobile,
+		paddingUnit,
+		margin,
+		marginTablet,
+		marginMobile,
+		marginUnit,
+		minHeight,
+		minHeightTablet,
+		minHeightMobile,
+		minHeightUnit,
+		itemGap,
+		itemGapTablet,
+		itemGapMobile,
+		itemGapUnit,
+	} = attributes;
 
+	const [activeTab, setActiveTab] = useState('general');
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, parentData, previewDevice } = useSelect(
 		(select) => {
@@ -84,14 +129,281 @@ export function Edit(props) {
 		}
 	);
 
+	const backgroundStyleControls = (size = '', suffix = '') => {
+		const backgroundValue = attributes['background' + suffix + size];
+		return (
+			<>
+				<BackgroundTypeControl
+					label={__('Type', 'kadence-blocks')}
+					type={undefined != backgroundValue?.type ? backgroundValue.type : 'normal'}
+					onChange={(value) =>
+						setAttributes({
+							['background' + suffix + size]: { ...backgroundValue, type: value },
+						})
+					}
+					allowedTypes={['normal', 'gradient']}
+				/>
+				{'normal' === backgroundValue?.type && (
+					<>
+						<PopColorControl
+							label={__('Background Color', 'kadence-blocks')}
+							value={undefined !== backgroundValue?.color ? backgroundValue.color : ''}
+							default={''}
+							onChange={(value) => {
+								setAttributes({
+									['background' + suffix + size]: { ...backgroundValue, color: value },
+								});
+							}}
+						/>
+						<KadenceBackgroundControl
+							label={__('Background Image', 'kadence-blocks')}
+							hasImage={backgroundValue?.image}
+							imageURL={backgroundValue.image ? backgroundValue.image : ''}
+							imageID={backgroundValue.imageID}
+							imagePosition={backgroundValue.position ? backgroundValue.position : 'center center'}
+							imageSize={backgroundValue.size ? backgroundValue.size : 'cover'}
+							imageRepeat={backgroundValue.repeat ? backgroundValue.repeat : 'no-repeat'}
+							imageAttachment={backgroundValue.attachment ? backgroundValue.attachment : 'scroll'}
+							onRemoveImage={() => {
+								setAttributes({
+									['background' + suffix + size]: { ...backgroundValue, imageID: undefined },
+								});
+
+								setAttributes({
+									['background' + suffix + size]: { ...backgroundValue, image: undefined },
+								});
+							}}
+							onSaveImage={(value) => {
+								setAttributes({
+									['background' + suffix + size]: {
+										...backgroundValue,
+										imageID: value.id.toString(),
+									},
+								});
+
+								setAttributes({
+									['background' + suffix + size]: { ...backgroundValue, image: value.url },
+								});
+							}}
+							onSaveURL={(newURL) => {
+								if (newURL !== backgroundValue.image) {
+									setAttributes({
+										['background' + suffix + size]: { ...backgroundValue, imageID: undefined },
+									});
+
+									setAttributes({
+										['background' + suffix + size]: { ...backgroundValue, image: newURL },
+									});
+								}
+							}}
+							onSavePosition={(value) =>
+								setAttributes({
+									['background' + suffix + size]: { ...backgroundValue, position: value },
+								})
+							}
+							onSaveSize={(value) =>
+								setAttributes({
+									['background' + suffix + size]: { ...backgroundValue, size: value },
+								})
+							}
+							onSaveRepeat={(value) =>
+								setAttributes({
+									['background' + suffix + size]: { ...backgroundValue, repeat: value },
+								})
+							}
+							onSaveAttachment={(value) =>
+								setAttributes({
+									['background' + suffix + size]: { ...backgroundValue, attachment: value },
+								})
+							}
+							disableMediaButtons={backgroundValue.image ? true : false}
+							dynamicAttribute={'background' + suffix + size + ':image'}
+							isSelected={isSelected}
+							attributes={attributes}
+							setAttributes={setAttributes}
+							name={'kadence/header-row'}
+							clientId={clientId}
+							context={context}
+						/>
+					</>
+				)}
+				{'gradient' === backgroundValue?.type && (
+					<>
+						<GradientControl
+							value={backgroundValue?.gradient}
+							onChange={(value) => {
+								setAttributes({
+									['background' + suffix + size]: { ...backgroundValue, gradient: value },
+								});
+							}}
+							gradients={[]}
+						/>
+					</>
+				)}
+			</>
+		);
+	};
+
 	return (
 		<>
+			<BackendStyles {...props} previewDevice={previewDevice} />
 			<InspectorControls>
 				<SelectParentBlock
 					label={__('View Header Settings', 'kadence-blocks')}
 					clientId={clientId}
 					parentSlug={'kadence/header'}
 				/>
+
+				<InspectorControlTabs
+					panelName={'advanced-header-row'}
+					setActiveTab={(value) => setActiveTab(value)}
+					activeTab={activeTab}
+				/>
+
+				{activeTab === 'general' && (
+					<>
+						<KadencePanelBody>
+							<KadenceRadioButtons
+								label={__('Layout', 'kadence-blocks')}
+								value={layout}
+								options={[
+									{ value: '', label: __('Standard', 'kadence-blocks') },
+									{ value: 'fullwidth', label: __('Full Width', 'kadence-blocks') },
+									{ value: 'contained', label: __('Contained', 'kadence-blocks') },
+								]}
+								hideLabel={false}
+								onChange={(value) => {
+									setAttributes({ layout: value });
+								}}
+							/>
+							<ResponsiveRangeControls
+								label={__('Min Height', 'kadence-blocks')}
+								value={minHeight}
+								onChange={(value) => setAttributes({ minHeight: value })}
+								tabletValue={minHeightTablet}
+								onChangeTablet={(value) => setAttributes({ minHeightTablet: value })}
+								mobileValue={minHeightMobile}
+								onChangeMobile={(value) => setAttributes({ minHeightMobile: value })}
+								min={0}
+								max={600}
+								step={1}
+								unit={minHeightUnit}
+								onUnit={(value) => {
+									setAttributes({ minHeightUnit: value });
+								}}
+								units={['px', 'em', 'vh']}
+								showUnit={true}
+							/>
+							<ResponsiveRangeControls
+								label={__('Item Gap', 'kadence-blocks')}
+								value={itemGap}
+								onChange={(value) => setAttributes({ itemGap: value })}
+								tabletValue={itemGapTablet}
+								onChangeTablet={(value) => setAttributes({ itemGapTablet: value })}
+								mobileValue={itemGapMobile}
+								onChangeMobile={(value) => setAttributes({ itemGapMobile: value })}
+								min={0}
+								max={100}
+								step={1}
+								unit={itemGapUnit}
+								onUnit={(value) => {
+									setAttributes({ itemGapUnit: value });
+								}}
+								units={['px', 'em', 'vw']}
+								showUnit={true}
+							/>
+						</KadencePanelBody>
+					</>
+				)}
+				{activeTab === 'style' && (
+					<>
+						<KadencePanelBody
+							title={__('Background Settings', 'kadence-blocks')}
+							initialOpen={true}
+							panelName={'kb-header-row-bg-settings'}
+						>
+							{backgroundStyleControls()}
+						</KadencePanelBody>
+						{context?.['kadence/headerIsTransparent'] == '1' && (
+							<KadencePanelBody
+								title={__('Transparent Background Settings', 'kadence-blocks')}
+								initialOpen={false}
+								panelName={'kb-header-bg-transparent-settings'}
+							>
+								{backgroundStyleControls('', 'Transparent')}
+							</KadencePanelBody>
+						)}
+						<KadencePanelBody
+							title={__('Border Settings', 'kadence-blocks')}
+							initialOpen={true}
+							panelName={'kb-header-row-border-settings'}
+						>
+							<ResponsiveBorderControl
+								label={__('Border', 'kadence-blocks')}
+								value={border}
+								tabletValue={borderTablet}
+								mobileValue={borderMobile}
+								onChange={(value) => setAttributes({ border: value })}
+								onChangeTablet={(value) => setAttributes({ borderTablet: value })}
+								onChangeMobile={(value) => setAttributes({ borderMobile: value })}
+							/>
+
+							<ResponsiveMeasurementControls
+								label={__('Border Radius', 'kadence-blocks')}
+								value={borderRadius}
+								tabletValue={borderRadiusTablet}
+								mobileValue={borderRadiusMobile}
+								onChange={(value) => setAttributes({ borderRadius: value })}
+								onChangeTablet={(value) => setAttributes({ borderRadiusTablet: value })}
+								onChangeMobile={(value) => setAttributes({ borderRadiusMobile: value })}
+								min={0}
+								max={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 100}
+								step={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1}
+								unit={borderRadiusUnit}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setAttributes({ borderRadiusUnit: value })}
+								isBorderRadius={true}
+								allowEmpty={true}
+							/>
+						</KadencePanelBody>
+					</>
+				)}
+				{activeTab === 'advanced' && (
+					<>
+						<KadencePanelBody panelName={'kb-header-row-padding'}>
+							<ResponsiveMeasureRangeControl
+								label={__('Padding', 'kadence-blocks')}
+								value={padding}
+								tabletValue={paddingTablet}
+								mobileValue={paddingMobile}
+								onChange={(value) => setAttributes({ padding: value })}
+								onChangeTablet={(value) => setAttributes({ paddingTablet: value })}
+								onChangeMobile={(value) => setAttributes({ paddingMobile: value })}
+								min={0}
+								max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 400}
+								step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
+								unit={paddingUnit}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setAttributes({ paddingUnit: value })}
+							/>
+							<ResponsiveMeasureRangeControl
+								label={__('Margin', 'kadence-blocks')}
+								value={margin}
+								tabletValue={marginTablet}
+								mobileValue={marginMobile}
+								onChange={(value) => setAttributes({ margin: value })}
+								onChangeTablet={(value) => setAttributes({ marginTablet: value })}
+								onChangeMobile={(value) => setAttributes({ marginMobile: value })}
+								min={0}
+								max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : 400}
+								step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
+								unit={marginUnit}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setAttributes({ marginUnit: value })}
+							/>
+						</KadencePanelBody>
+					</>
+				)}
 			</InspectorControls>
 			<div {...innerBlocksProps} />
 		</>

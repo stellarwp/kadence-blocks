@@ -78,39 +78,10 @@
 	}
 }
 
-.wp-block-kadence-header-row {
-	display: grid !important;
-	grid-template-columns: 1fr auto 1fr;
-}
-.wp-block-kadence-header-column-center {
-	display: flex !important;
-	justify-content: center;
-}
-
 .wp-block-kadence-header-desktop {
 	// Override a style we set elsewhere
 	p {
 		margin-bottom: unset;
-	}
-
-	.wp-block-kadence-header-section {
-		display: flex !important;
-		align-items: center;
-
-		.wp-block-kadence-header-column {
-			display: flex !important;
-			align-items: center;
-		}
-	}
-
-	.wp-block-kadence-header-column-center-left {
-		flex-grow: 1;
-		justify-content: flex-end !important;
-	}
-
-	.wp-block-kadence-header-column-center-right {
-		flex-grow: 1;
-		justify-content: flex-start !important;
 	}
 }
 .wp-block-kadence-header-tablet {
@@ -118,4 +89,9 @@
 		flex-grow: 1;
 		justify-content: flex-end !important;
 	}
+}
+
+.kb-header-container {
+	//fix for bleeding margins in header rows
+	//overflow: auto;
 }
