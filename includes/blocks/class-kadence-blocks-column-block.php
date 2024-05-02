@@ -430,6 +430,8 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		// inside of Row.
 		if ( ! empty( $desktop_vertical_align ) ) {
+			// Restart $align variable to avoid inherit from above value assignment
+			$align = 'center';
 			$justify_content = '';
 			switch ( $desktop_vertical_align ) {
 				case 'top':
@@ -450,7 +452,6 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 					$justify_content = 'space-evenly';
 					break;
 				default:
-					$align = 'center';
 					$justify_content = 'center';
 					break;
 			}
