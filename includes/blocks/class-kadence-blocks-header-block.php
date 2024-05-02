@@ -77,13 +77,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		foreach ( $sizes as $size ) {
 			$this->sized_dynamic_styles( $css, $header_attributes, $unique_id, $size );
 		}
-		$css->set_media_state( 'desktop' );
-		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' .kb-header-container:hover' );
-		$css->render_measure_range( $header_attributes, 'borderRadiusHover', 'border-radius', '', ['unit_key' => 'borderRadiusHoverUnit']);
-		$css->set_media_state( 'tablet' );
-		$css->render_measure_range( $header_attributes, 'borderRadiusHoverTablet', 'border-radius', '', ['unit_key' => 'borderRadiusHoverUnit']);
-		$css->set_media_state( 'mobile' );
-		$css->render_measure_range( $header_attributes, 'borderRadiusHoverMobile', 'border-radius', '', ['unit_key' => 'borderRadiusHoverUnit']);
+
 		return $css->css_output();
 	}
 
@@ -117,7 +111,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( 'border-right', $css->render_border( $sized_attributes['border'], 'right' ) );
 		$css->add_property( 'min-height', '' !== $min_height ? $min_height . $sized_attributes['heightUnit'] : '' );
 		$css->add_property( 'max-width', '' !== $max_width ? $max_width . $sized_attributes['widthUnit'] : '' );
-		$css->render_measure_range( $sized_attributes, 'borderRadius', 'border-radius', '', ['unit_key' => 'borderRadiusUnit']);
+		$css->render_measure_range( $sized_attributes, ( 'Desktop' === $size ? 'borderRadius' : 'borderRadius' . $size ), 'border-radius', '', ['unit_key' => 'borderRadiusUnit']);
 		$css->render_measure_output( $sized_attributes, 'margin', 'margin', '', ['unit_key' => 'marginUnit']);
 		$css->render_measure_output( $sized_attributes, 'padding', 'padding', '', ['unit_key' => 'paddingUnit']);
 		$css->render_typography( $sized_attributes );
@@ -147,6 +141,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( 'border-top', $css->render_border( $sized_attributes['borderHover'], 'top' ) );
 		$css->add_property( 'border-left', $css->render_border( $sized_attributes['borderHover'], 'left' ) );
 		$css->add_property( 'border-right', $css->render_border( $sized_attributes['borderHover'], 'right' ) );
+		$css->render_measure_range( $sized_attributes, ( 'Desktop' === $size ? 'borderRadiusHover' : 'borderRadiusHover' . $size ), 'border-radius', '', ['unit_key' => 'borderRadiusHoverUnit']);
 
 		if ( $sized_attributes['isTransparent'] != '1' ) {
 			$css->render_background( $hover_bg, $css );
