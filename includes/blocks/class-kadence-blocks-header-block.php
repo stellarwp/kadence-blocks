@@ -125,7 +125,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 			);
 		$css->set_media_state( strtolower( $size ) );
 		// Normal state styles
-		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' > .kb-header-container' );
+		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' .kb-header-container' );
 		$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['border'], 'bottom' ) );
 		$css->add_property( 'border-top', $css->render_border( $sized_attributes['border'], 'top' ) );
 		$css->add_property( 'border-left', $css->render_border( $sized_attributes['border'], 'left' ) );

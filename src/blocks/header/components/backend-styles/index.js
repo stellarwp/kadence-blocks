@@ -211,7 +211,7 @@ export default function BackendStyles(props) {
 		css.add_property('display', 'none');
 	}
 	css.set_selector(
-		`.wp-block-kadence-header${uniqueID} > .kb-header-container`
+		`.wp-block-kadence-header${uniqueID} .kb-header-container`
 	);
 	css.add_property('color', KadenceColorOutput(typography.color));
 	css.add_property('font-size', getFontSizeOptionOutput(previewFontSize, typography.sizeType));
@@ -294,7 +294,7 @@ export default function BackendStyles(props) {
 	css.add_property('max-width', getSpacingOptionOutput(previewWidth, widthUnit));
 
 	css.set_selector(
-		`.wp-block-kadence-header${uniqueID} > .kb-header-container:hover`
+		`.wp-block-kadence-header${uniqueID} .kb-header-container:hover`
 	);
 
 	if (previewIsTransparent != '1') {
@@ -366,8 +366,6 @@ export default function BackendStyles(props) {
 			css.add_property('background', backgroundHover.gradient);
 		}
 	}
-
-	css.set_selector(`wp-block-kadence-header${uniqueID} .kb-header-container:hover`);
 
 	if (previewIsTransparent == '1') {
 		if ('normal' === backgroundTransparentHover?.type && backgroundTransparentHover?.image) {
