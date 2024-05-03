@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { _x } from '@wordpress/i18n';
+import { _x, __ } from '@wordpress/i18n';
 import { navigationItemIcon } from '@kadence/icons';
 import { addFilter } from '@wordpress/hooks';
 import { registerBlockType } from '@wordpress/blocks';
@@ -26,6 +26,7 @@ import './style.scss';
 
 registerBlockType(name, {
 	...metadata,
+	title: __('Kadence Nav Link', 'kadence-blocks'),
 	icon: navigationItemIcon,
 	__experimentalLabel: ({ label }) => label,
 	edit,
