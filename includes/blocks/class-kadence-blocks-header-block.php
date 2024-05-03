@@ -117,8 +117,8 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_typography( $sized_attributes );
 		
 		if ( $sized_attributes['isTransparent'] != '1' ) {
-			//$css->render_background( $bg, $css );
-			//$css->render_border_styles($border, 'border');
+			$css->render_background( $bg, $css );
+			// Restructure background image attributes to render $css with method
 			if ( '' !== $bg && ! empty( $bg['type'] ) && 'normal' === $bg['type'] && ! empty( $bg['image'] ) ) {
 				$img_bg = array(
 					'type' => 'image',
