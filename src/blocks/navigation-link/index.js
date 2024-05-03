@@ -3,7 +3,6 @@
  */
 import { _x, __ } from '@wordpress/i18n';
 import { navigationItemIcon } from '@kadence/icons';
-import { addFilter } from '@wordpress/hooks';
 import { registerBlockType } from '@wordpress/blocks';
 import { InnerBlocks } from '@wordpress/block-editor';
 
