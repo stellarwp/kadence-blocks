@@ -480,12 +480,11 @@ export default function BackendStyles(props) {
 		if ('gradient' === background?.type && background?.gradient) {
 			css.add_property('background', background.gradient);
 		}
+		css.add_property('border-top', css.render_border(border, borderTablet, borderMobile, previewDevice, 'top'));
+		css.add_property('border-right', css.render_border(border, borderTablet, borderMobile, previewDevice, 'right'));
+		css.add_property('border-bottom', css.render_border(border, borderTablet, borderMobile, previewDevice, 'bottom'));
+		css.add_property('border-left', css.render_border(border, borderTablet, borderMobile, previewDevice, 'left'));
 	}
-
-	css.add_property('border-top', css.render_border(border, borderTablet, borderMobile, previewDevice, 'top'));
-	css.add_property('border-right', css.render_border(border, borderTablet, borderMobile, previewDevice, 'right'));
-	css.add_property('border-bottom', css.render_border(border, borderTablet, borderMobile, previewDevice, 'bottom'));
-	css.add_property('border-left', css.render_border(border, borderTablet, borderMobile, previewDevice, 'left'));
 	if (previewIsTransparent == '1') {
 		if ('normal' === backgroundTransparent?.type && backgroundTransparent?.image) {
 			css.add_property('background-image', backgroundTransparent.image);
@@ -604,94 +603,39 @@ export default function BackendStyles(props) {
 		if ('gradient' === backgroundHover?.type && backgroundHover?.gradient) {
 			css.add_property('background', backgroundHover.gradient);
 		}
-	}
 
-	if (previewIsTransparent == '1') {
-		if ('normal' === backgroundTransparentHover?.type && backgroundTransparentHover?.image) {
-			css.add_property('background-image', backgroundTransparentHover.image);
-			css.add_property('background-size', backgroundTransparentHover.imageSize);
-			css.add_property('background-repeat', backgroundTransparentHover.imageRepeat);
-			css.add_property('background-attachment', backgroundTransparentHover.imageAttachment);
-			css.add_property('background-position', backgroundTransparentHover.imagePosition);
-		}
-
-		if ('normal' === backgroundTransparentHover?.type && backgroundTransparentHover?.color) {
-			css.add_property('background-color', backgroundTransparentHover.color);
-		}
-
-		if ('gradient' === backgroundTransparentHover?.type && backgroundTransparentHover?.gradient) {
-			css.add_property('background', backgroundTransparentHover.gradient);
-		}
-	}
-	if (previewIsSticky == '1') {
-		if ('normal' === backgroundStickyHover?.type && backgroundStickyHover?.image) {
-			css.add_property('background-image', backgroundStickyHover.image);
-			css.add_property('background-size', backgroundStickyHover.imageSize);
-			css.add_property('background-repeat', backgroundStickyHover.imageRepeat);
-			css.add_property('background-attachment', backgroundStickyHover.imageAttachment);
-			css.add_property('background-position', backgroundStickyHover.imagePosition);
-		}
-
-		if ('normal' === backgroundStickyHover?.type && backgroundStickyHover?.color) {
-			css.add_property('background-color', backgroundStickyHover.color);
-		}
-
-		if ('gradient' === backgroundStickyHover?.type && backgroundStickyHover?.gradient) {
-			css.add_property('background', backgroundStickyHover.gradient);
-		}
-	}
-
-
-	css.add_property(
-		'border-top',
-		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'top')
-	);
-	css.add_property(
-		'border-right',
-		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'right')
-	);
-	css.add_property(
-		'border-bottom',
-		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'bottom')
-	);
-	css.add_property(
-		'border-left',
-		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'left')
-	);
-
-	css.add_property(
-		'border-top-left-radius',
-		getSpacingOptionOutput(previewborderHoverTopLeftRadius, borderRadiusHoverUnit)
-	);
-	css.add_property(
-		'border-top-right-radius',
-		getSpacingOptionOutput(previewborderHoverTopRightRadius, borderRadiusHoverUnit)
-	);
-	css.add_property(
-		'border-bottom-right-radius',
-		getSpacingOptionOutput(previewborderHoverBottomRightRadius, borderRadiusHoverUnit)
-	);
-	css.add_property(
-		'border-bottom-left-radius',
-		getSpacingOptionOutput(previewborderHoverBottomLeftRadius, borderRadiusHoverUnit)
-	);
-
-	if (previewIsTransparent != '1') {
-		if ('normal' === backgroundHover?.type && backgroundHover?.image) {
-			css.add_property('background-image', backgroundHover.image);
-			css.add_property('background-size', backgroundHover.imageSize);
-			css.add_property('background-repeat', backgroundHover.imageRepeat);
-			css.add_property('background-attachment', backgroundHover.imageAttachment);
-			css.add_property('background-position', backgroundHover.imagePosition);
-		}
-
-		if ('normal' === backgroundHover?.type && backgroundHover?.color) {
-			css.add_property('background-color', backgroundHover.color);
-		}
-
-		if ('gradient' === backgroundHover?.type && backgroundHover?.gradient) {
-			css.add_property('background', backgroundHover.gradient);
-		}
+		css.add_property(
+			'border-top',
+			css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'top')
+		);
+		css.add_property(
+			'border-right',
+			css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'right')
+		);
+		css.add_property(
+			'border-bottom',
+			css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'bottom')
+		);
+		css.add_property(
+			'border-left',
+			css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'left')
+		);
+		css.add_property(
+			'border-top-left-radius',
+			getSpacingOptionOutput(previewborderHoverTopLeftRadius, borderRadiusHoverUnit)
+		);
+		css.add_property(
+			'border-top-right-radius',
+			getSpacingOptionOutput(previewborderHoverTopRightRadius, borderRadiusHoverUnit)
+		);
+		css.add_property(
+			'border-bottom-right-radius',
+			getSpacingOptionOutput(previewborderHoverBottomRightRadius, borderRadiusHoverUnit)
+		);
+		css.add_property(
+			'border-bottom-left-radius',
+			getSpacingOptionOutput(previewborderHoverBottomLeftRadius, borderRadiusHoverUnit)
+		);
 	}
 
 	if (previewIsTransparent == '1') {
@@ -733,6 +677,7 @@ export default function BackendStyles(props) {
 			getSpacingOptionOutput(previewborderHoverBottomLeftRadiusTransparent, borderRadiusTransparentHoverUnit)
 		);
 	}
+
 	if (previewIsSticky == '1') {
 		if ('normal' === backgroundStickyHover?.type && backgroundStickyHover?.image) {
 			css.add_property('background-image', backgroundStickyHover.image);
