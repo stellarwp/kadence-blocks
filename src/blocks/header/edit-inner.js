@@ -360,12 +360,12 @@ export function EditInner(props) {
 										imageURL={backgroundValue.image ? backgroundValue.image : ''}
 										imageID={backgroundValue.imageID}
 										imagePosition={
-											backgroundValue.position ? backgroundValue.imagePosition : 'center center'
+											backgroundValue.imagePosition ? backgroundValue.imagePosition : 'center center'
 										}
-										imageSize={backgroundValue.size ? backgroundValue.imageSize : 'cover'}
-										imageRepeat={backgroundValue.repeat ? backgroundValue.imageRepeat : 'no-repeat'}
+										imageSize={backgroundValue.imageSize ? backgroundValue.imageSize : 'cover'}
+										imageRepeat={backgroundValue.imageRepeat ? backgroundValue.imageRepeat : 'no-repeat'}
 										imageAttachment={
-											backgroundValue.attachment ? backgroundValue.imageAttachment : 'scroll'
+											backgroundValue.imageAttachment ? backgroundValue.imageAttachment : 'scroll'
 										}
 										imageAttachmentParallax={true}
 										onRemoveImage={() => {

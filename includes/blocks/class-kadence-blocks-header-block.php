@@ -117,7 +117,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_typography( $sized_attributes );
 		
 		if ( $sized_attributes['isTransparent'] != '1' ) {
-			$css->render_background( $bg, $css );
+			//$css->render_background( $bg, $css );
 			//$css->render_border_styles($border, 'border');
 			if ( '' !== $bg && ! empty( $bg['type'] ) && 'normal' === $bg['type'] && ! empty( $bg['image'] ) ) {
 				$img_bg = array(
@@ -125,10 +125,10 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 					'image' => array(
 						'url' => ! empty($bg['image']) ? 'url("' . $bg['image'] . '")' : '',
 						'imageID' => ! empty($bg['imageID']) ? $bg['imageID'] : '',
-						'position' => ! empty($bg['position']) ? $bg['position'] : '',
-						'attachment' => ! empty($bg['attachment']) ? $bg['attachment'] : '',
-						'size' => ! empty($bg['size']) ? $bg['size'] : '',
-						'repeat' => ! empty($bg['repeat']) ? $bg['repeat'] : '',
+						'position' => ! empty($bg['imagePosition']) ? $bg['imagePosition'] : '',
+						'attachment' => ! empty($bg['imageAttachment']) ? $bg['imageAttachment'] : '',
+						'size' => ! empty($bg['imageSize']) ? $bg['imageSize'] : '',
+						'repeat' => ! empty($bg['imageRepeat']) ? $bg['imageRepeat'] : '',
 					)
 				);
 				$css->render_background( $img_bg, $css );
@@ -151,10 +151,10 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 					'image' => array(
 						'url' 		 => ! empty($hover_bg['image']) ? 'url("' . $hover_bg['image'] . '")' : '',
 						'imageID'    => ! empty($hover_bg['imageID']) ? $hover_bg['imageID'] : '',
-						'position'   => ! empty($hover_bg['position']) ? $hover_bg['position'] : '',
-						'attachment' => ! empty($hover_bg['attachment']) ? $hover_bg['attachment'] : '',
-						'size' => ! empty($hover_bg['size']) ? $hover_bg['size'] : '',
-						'repeat' => ! empty($hover_bg['repeat']) ? $hover_bg['repeat'] : '',
+						'position'   => ! empty($hover_bg['imagePosition']) ? $hover_bg['imagePosition'] : '',
+						'attachment' => ! empty($hover_bg['imageAttachment']) ? $hover_bg['imageAttachment'] : '',
+						'size' => ! empty($hover_bg['imageSize']) ? $hover_bg['imageSize'] : '',
+						'repeat' => ! empty($hover_bg['imageRepeat']) ? $hover_bg['imageRepeat'] : '',
 					)
 				);
 				$css->render_background( $hover_img_bg, $css );
