@@ -93,6 +93,8 @@ export default function BackendStyles(props) {
 		autoTransparentSpacing,
 	} = metaAttributes;
 
+	const css = new KadenceBlocksCSS();
+
 	const previewMarginTop = getPreviewSize(
 		previewDevice,
 		undefined !== margin ? margin[0] : '',
@@ -446,8 +448,6 @@ export default function BackendStyles(props) {
 
 	//const elementHeight = useElementHeight(currentRef, [isSelected]);
 	const elementHeight = currentRef?.current?.clientHeight;
-
-	const css = new KadenceBlocksCSS();
 
 	if (isSelected) {
 		css.set_selector(
