@@ -18,8 +18,9 @@ import {
 	InspectorAdvancedControls,
 	store as editorStore,
 	BlockContextProvider,
+	BlockControls,
 } from '@wordpress/block-editor';
-import { TextControl, ExternalLink, Button, Placeholder, ToggleControl, SelectControl } from '@wordpress/components';
+import { TextControl, ExternalLink, Button, Placeholder, ToggleControl, ToolbarGroup } from '@wordpress/components';
 import { formBlockIcon } from '@kadence/icons';
 import {
 	KadencePanelBody,
@@ -678,6 +679,17 @@ export function EditInner(props) {
 				previewDevice={previewDevice}
 				currentRef={componentRef}
 			/>
+			<BlockControls>
+				<ToolbarGroup>
+					<Button
+						className="components-tab-button"
+						isPressed={showVisualBuilder}
+						onClick={() => setShowVisualBuilder(!showVisualBuilder)}
+					>
+						<span>{__('Visual Builder', 'kadence-blocks')}</span>
+					</Button>
+				</ToolbarGroup>
+			</BlockControls>
 			<InspectorControls>
 				<InspectorControlTabs
 					panelName={'advanced-header'}
@@ -687,11 +699,6 @@ export function EditInner(props) {
 
 				{activeTab === 'general' && (
 					<>
-						<KadencePanelBody>
-							<Button isPrimary onClick={() => setShowVisualBuilder(!showVisualBuilder)}>
-								{showVisualBuilder ? 'Hide' : 'Show'} Visual Builder
-							</Button>
-						</KadencePanelBody>
 						<KadencePanelBody
 							title={__('General Settings', 'kadence-blocks')}
 							panelName={'kb-col-flex-settings'}

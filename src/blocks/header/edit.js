@@ -34,7 +34,7 @@ import EditInner from './edit-inner';
 import { useEffect, Fragment, useState } from '@wordpress/element';
 
 export function Edit(props) {
-	const { attributes, setAttributes, clientId } = props;
+	const { attributes, setAttributes, isSelected, clientId } = props;
 
 	const { id, uniqueID } = attributes;
 
@@ -249,6 +249,7 @@ export function Edit(props) {
 				previewDevice={previewDevice}
 				isVisible={showVisualBuilder}
 				setIsVisible={setShowVisualBuilder}
+				isSelected={isSelected}
 			/>
 		</>
 	);
@@ -271,6 +272,7 @@ export function Edit(props) {
 					previewDevice={previewDevice}
 					isVisible={showVisualBuilder}
 					setIsVisible={setShowVisualBuilder}
+					isSelected={isSelected}
 				/>
 			</>
 		);
