@@ -91,6 +91,7 @@ export default function BackendStyles(props) {
 		isTransparentTablet,
 		isTransparentMobile,
 		autoTransparentSpacing,
+		shadow,
 	} = metaAttributes;
 
 	const css = new KadenceBlocksCSS();
@@ -455,9 +456,9 @@ export default function BackendStyles(props) {
 		);
 		css.add_property('display', 'none');
 	}
-	css.set_selector(
-		`.wp-block-kadence-header${uniqueID} .kb-header-container`
-	);
+
+	//main display container
+	css.set_selector(`.wp-block-kadence-header${uniqueID} .kb-header-container`);
 	css.add_property('color', KadenceColorOutput(typography.color));
 	css.add_property('font-size', getFontSizeOptionOutput(previewFontSize, typography.sizeType));
 	css.add_property('letter-spacing', getSpacingOptionOutput(previewLetterSpacing, typography.letterType));
@@ -476,7 +477,7 @@ export default function BackendStyles(props) {
 	css.add_property('padding-left', getSpacingOptionOutput(previewPaddingLeft, paddingUnit));
 	css.add_property('min-height', getSpacingOptionOutput(previewHeight, heightUnit));
 	css.add_property('max-width', getSpacingOptionOutput(previewWidth, widthUnit));
-	
+
 	if (previewIsTransparent != '1') {
 		if ('normal' === background?.type && background?.image) {
 			css.add_property('background-image', background.image);
@@ -493,10 +494,19 @@ export default function BackendStyles(props) {
 		}
 		css.add_property('border-top', css.render_border(border, borderTablet, borderMobile, previewDevice, 'top'));
 		css.add_property('border-right', css.render_border(border, borderTablet, borderMobile, previewDevice, 'right'));
-		css.add_property('border-bottom', css.render_border(border, borderTablet, borderMobile, previewDevice, 'bottom'));
+		css.add_property(
+			'border-bottom',
+			css.render_border(border, borderTablet, borderMobile, previewDevice, 'bottom')
+		);
 		css.add_property('border-left', css.render_border(border, borderTablet, borderMobile, previewDevice, 'left'));
-		css.add_property('border-top-left-radius', getSpacingOptionOutput(previewBorderTopLeftRadius, borderRadiusUnit));
-		css.add_property('border-top-right-radius', getSpacingOptionOutput(previewBorderTopRightRadius, borderRadiusUnit));
+		css.add_property(
+			'border-top-left-radius',
+			getSpacingOptionOutput(previewBorderTopLeftRadius, borderRadiusUnit)
+		);
+		css.add_property(
+			'border-top-right-radius',
+			getSpacingOptionOutput(previewBorderTopRightRadius, borderRadiusUnit)
+		);
 		css.add_property(
 			'border-bottom-right-radius',
 			getSpacingOptionOutput(previewBorderBottomRightRadius, borderRadiusUnit)
@@ -506,7 +516,7 @@ export default function BackendStyles(props) {
 			getSpacingOptionOutput(previewBorderBottomLeftRadius, borderRadiusUnit)
 		);
 	}
-	
+
 	if (previewIsTransparent == '1') {
 		if ('normal' === backgroundTransparent?.type && backgroundTransparent?.image) {
 			css.add_property('background-image', backgroundTransparent.image);
@@ -581,10 +591,11 @@ export default function BackendStyles(props) {
 			getSpacingOptionOutput(previewBorderBottomLeftRadiusSticky, borderRadiusStickyUnit)
 		);
 	}
+	if (shadow?.[0]?.enable) {
+		css.add_property('box-shadow', css.render_shadow(shadow[0]));
+	}
 
-	css.set_selector(
-		`.wp-block-kadence-header${uniqueID} .kb-header-container:hover`
-	);
+	css.set_selector(`.wp-block-kadence-header${uniqueID} .kb-header-container:hover`);
 
 	if (previewIsTransparent != '1') {
 		if ('normal' === backgroundHover?.type && backgroundHover?.image) {

@@ -101,7 +101,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$typography = $sized_attributes['typography'];
 		$min_height = $css->get_inherited_value($sized_attributes['height'][0], $sized_attributes['height'][1], $sized_attributes['height'][2], $size);
 		$max_width = $css->get_inherited_value($sized_attributes['width'][0], $sized_attributes['width'][1], $sized_attributes['width'][2], $size);
-		
+
 		$css->set_media_state( strtolower( $size ) );
 		// Normal state styles
 		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' .kb-header-container' );
@@ -115,7 +115,11 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_measure_output( $sized_attributes, 'margin', 'margin', '', ['unit_key' => 'marginUnit']);
 		$css->render_measure_output( $sized_attributes, 'padding', 'padding', '', ['unit_key' => 'paddingUnit']);
 		$css->render_typography( $sized_attributes );
-		
+
+		if ( $sized_attributes['shadow'] && isset( $sized_attributes['shadow'][0] ) && $sized_attributes['shadow'][0]['enable'] ) {
+			$css->add_property( 'box-shadow', $css->render_shadow( $sized_attributes['shadow'][0] ) );
+		}
+
 		if ( $sized_attributes['isTransparent'] != '1' ) {
 			$css->render_background( $bg, $css );
 			// Restructure background image attributes to render $css with method

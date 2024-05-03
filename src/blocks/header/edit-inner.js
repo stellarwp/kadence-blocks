@@ -39,6 +39,7 @@ import {
 	GradientControl,
 	ResponsiveSelectControl,
 	SmallResponsiveControl,
+	BoxShadowControl,
 } from '@kadence/components';
 import { getPreviewSize, mouseOverVisualizer, arrayStringToInt, useElementWidth } from '@kadence/helpers';
 
@@ -174,6 +175,7 @@ export function EditInner(props) {
 		shrinkMainHeightTablet: meta?._kad_header_shrinkMainHeightTablet,
 		shrinkMainHeightMobile: meta?._kad_header_shrinkMainHeightMobile,
 		revealScrollUp: meta?._kad_header_revealScrollUp,
+		shadow: meta?._kad_header_shadow,
 	};
 
 	const {
@@ -257,6 +259,7 @@ export function EditInner(props) {
 		shrinkMainHeightTablet,
 		shrinkMainHeightMobile,
 		revealScrollUp,
+		shadow,
 	} = metaAttributes;
 
 	const setMetaAttribute = (value, key) => {
@@ -595,6 +598,16 @@ export function EditInner(props) {
 				/>
 			</>
 		);
+	};
+
+	const saveShadow = (value) => {
+		const newUpdate = shadow.map((item, index) => {
+			if (0 === index) {
+				item = { ...item, ...value };
+			}
+			return item;
+		});
+		setMetaAttribute(newUpdate, 'shadow');
 	};
 
 	const innerBlocksProps = useInnerBlocksProps(
@@ -988,6 +1001,84 @@ export function EditInner(props) {
 										/>
 									</>
 								}
+							/>
+						</KadencePanelBody>
+
+						<KadencePanelBody
+							title={__('Box Shadow', 'kadence-blocks')}
+							initialOpen={false}
+							panelName={'kb-header-shadow'}
+						>
+							<BoxShadowControl
+								label={__('Box Shadow', 'kadence-blocks')}
+								enable={
+									undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].enable
+										? shadow[0].enable
+										: true
+								}
+								color={
+									undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].color
+										? shadow[0].color
+										: '#000000'
+								}
+								colorDefault={'#000000'}
+								onArrayChange={(color, opacity) => {
+									saveShadow({ color, opacity });
+								}}
+								opacity={
+									undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].opacity
+										? shadow[0].opacity
+										: 0.2
+								}
+								hOffset={
+									undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].hOffset
+										? shadow[0].hOffset
+										: 0
+								}
+								vOffset={
+									undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].vOffset
+										? shadow[0].vOffset
+										: 0
+								}
+								blur={
+									undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].blur
+										? shadow[0].blur
+										: 14
+								}
+								spread={
+									undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].spread
+										? shadow[0].spread
+										: 0
+								}
+								inset={
+									undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].inset
+										? shadow[0].inset
+										: false
+								}
+								onEnableChange={(value) => {
+									saveShadow({ enable: value });
+								}}
+								onColorChange={(value) => {
+									saveShadow({ color: value });
+								}}
+								onOpacityChange={(value) => {
+									saveShadow({ opacity: value });
+								}}
+								onHOffsetChange={(value) => {
+									saveShadow({ hOffset: value });
+								}}
+								onVOffsetChange={(value) => {
+									saveShadow({ vOffset: value });
+								}}
+								onBlurChange={(value) => {
+									saveShadow({ blur: value });
+								}}
+								onSpreadChange={(value) => {
+									saveShadow({ spread: value });
+								}}
+								onInsetChange={(value) => {
+									saveShadow({ inset: value });
+								}}
 							/>
 						</KadencePanelBody>
 						{previewIsTransparent == '1' && (

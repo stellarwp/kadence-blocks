@@ -1011,6 +1011,33 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'default' => false,
 				'type'    => 'boolean',
 			),
+			array(
+				'key' => '_kad_header_shadow',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'enable' => false,
+						'color' => '#000000',
+						'opacity' => 0.2,
+						'spread' => 0,
+						'blur' => 2,
+						'hOffset' => 1,
+						'vOffset' => 1,
+						'inset' => false,
+					),
+				),
+				'properties' => array(
+					'enable'    => array( 'type' => 'boolean' ),
+					'color'    => array( 'type' => 'string' ),
+					'opacity'  => array( 'type' => 'number' ),
+					'spread'  => array( 'type' => 'number' ),
+					'blur'  => array( 'type' => 'number' ),
+					'hOffset'  => array( 'type' => 'number' ),
+					'vOffset'  => array( 'type' => 'number' ),
+					'inset'    => array( 'type' => 'boolean' ),
+				),
+			),
 		);
 
 		foreach ( $register_meta as $meta ) {
