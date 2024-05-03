@@ -69,7 +69,6 @@ export default function BackendStyles(props) {
 		borderRadiusStickyHoverTablet,
 		borderRadiusStickyHoverMobile,
 		borderRadiusStickyHoverUnit,
-		flex,
 		className,
 		anchor,
 		background,
@@ -79,7 +78,6 @@ export default function BackendStyles(props) {
 		backgroundSticky,
 		backgroundStickyHover,
 		typography,
-		textColor,
 		linkColor,
 		linkHoverColor,
 		height,
@@ -195,6 +193,7 @@ export default function BackendStyles(props) {
 		undefined !== borderRadiusHoverTablet ? borderRadiusHoverTablet[3] : '',
 		undefined !== borderRadiusHoverMobile ? borderRadiusHoverMobile[3] : ''
 	);
+
 	const previewBorderTopLeftRadiusTransparent = getPreviewSize(
 		previewDevice,
 		undefined !== borderRadiusTransparent ? borderRadiusTransparent[0] : '',
@@ -425,28 +424,6 @@ export default function BackendStyles(props) {
 		undefined !== typography?.letterSpacing?.[2] ? typography.letterSpacing[2] : ''
 	);
 
-	// Flex direction options
-	const previewDirection = getPreviewSize(
-		previewDevice,
-		undefined !== flex?.direction?.[0] ? flex.direction[0] : '',
-		undefined !== flex?.direction?.[1] ? flex.direction[1] : '',
-		undefined !== flex?.direction?.[2] ? flex.direction[2] : ''
-	);
-
-	const previewJustifyContent = getPreviewSize(
-		previewDevice,
-		undefined !== flex?.justifyContent?.[0] ? flex.justifyContent[0] : '',
-		undefined !== flex?.justifyContent?.[1] ? flex.justifyContent[1] : '',
-		undefined !== flex?.justifyContent?.[2] ? flex.justifyContent[2] : ''
-	);
-
-	const previewVerticalAlignment = getPreviewSize(
-		previewDevice,
-		undefined !== flex?.verticalAlignment?.[0] ? flex.verticalAlignment[0] : '',
-		undefined !== flex?.verticalAlignment?.[1] ? flex.verticalAlignment[1] : '',
-		undefined !== flex?.verticalAlignment?.[2] ? flex.verticalAlignment[2] : ''
-	);
-
 	const previewHeight = getPreviewSize(
 		previewDevice,
 		undefined !== height?.[0] ? height[0] : '',
@@ -478,29 +455,10 @@ export default function BackendStyles(props) {
 		);
 		css.add_property('display', 'none');
 	}
-
 	css.set_selector(
-		`.wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-desktop, .wp-block-kadence-header${uniqueID} > .wp-block-kadence-header-tablet`
+		`.wp-block-kadence-header${uniqueID} .kb-header-container`
 	);
-	css.add_property('display', 'flex');
-	css.add_property('flex-wrap', 'wrap');
-	css.add_property('flex-basis', '0');
-
-	if (previewDirection === 'horizontal') {
-		css.add_property('flex-direction', 'row');
-	} else if (previewDirection === 'horizontal-reverse') {
-		css.add_property('flex-direction', 'row-reverse');
-	} else if (previewDirection === 'vertical-reverse') {
-		css.add_property('flex-direction', 'column-reverse');
-	} else {
-		css.add_property('flex-direction', 'column');
-	}
-
-	if (previewDirection === 'vertical-reverse' || previewDirection === 'vertical') {
-		css.add_property('justify-content', previewVerticalAlignment);
-	}
-	css.add_property('align-items', previewVerticalAlignment);
-	css.add_property('color', KadenceColorOutput(textColor));
+	css.add_property('color', KadenceColorOutput(typography.color));
 	css.add_property('font-size', getFontSizeOptionOutput(previewFontSize, typography.sizeType));
 	css.add_property('letter-spacing', getSpacingOptionOutput(previewLetterSpacing, typography.letterType));
 	css.add_property('text-transform', typography.textTransform);
@@ -508,6 +466,17 @@ export default function BackendStyles(props) {
 	css.add_property('font-style', typography.style);
 	css.add_property('font-weight', typography.weight);
 	css.add_property('line-height', getSpacingOptionOutput(previewLineHeight, typography.lineType));
+	css.add_property('margin-top', getSpacingOptionOutput(previewMarginTop, marginUnit));
+	css.add_property('margin-right', getSpacingOptionOutput(previewMarginRight, marginUnit));
+	css.add_property('margin-bottom', getSpacingOptionOutput(previewMarginBottom, marginUnit));
+	css.add_property('margin-left', getSpacingOptionOutput(previewMarginLeft, marginUnit));
+	css.add_property('padding-top', getSpacingOptionOutput(previewPaddingTop, paddingUnit));
+	css.add_property('padding-right', getSpacingOptionOutput(previewPaddingRight, paddingUnit));
+	css.add_property('padding-bottom', getSpacingOptionOutput(previewPaddingBottom, paddingUnit));
+	css.add_property('padding-left', getSpacingOptionOutput(previewPaddingLeft, paddingUnit));
+	css.add_property('min-height', getSpacingOptionOutput(previewHeight, heightUnit));
+	css.add_property('max-width', getSpacingOptionOutput(previewWidth, widthUnit));
+	
 	if (previewIsTransparent != '1') {
 		if ('normal' === background?.type && background?.image) {
 			css.add_property('background-image', background.image);
@@ -522,7 +491,22 @@ export default function BackendStyles(props) {
 		if ('gradient' === background?.type && background?.gradient) {
 			css.add_property('background', background.gradient);
 		}
+		css.add_property('border-top', css.render_border(border, borderTablet, borderMobile, previewDevice, 'top'));
+		css.add_property('border-right', css.render_border(border, borderTablet, borderMobile, previewDevice, 'right'));
+		css.add_property('border-bottom', css.render_border(border, borderTablet, borderMobile, previewDevice, 'bottom'));
+		css.add_property('border-left', css.render_border(border, borderTablet, borderMobile, previewDevice, 'left'));
+		css.add_property('border-top-left-radius', getSpacingOptionOutput(previewBorderTopLeftRadius, borderRadiusUnit));
+		css.add_property('border-top-right-radius', getSpacingOptionOutput(previewBorderTopRightRadius, borderRadiusUnit));
+		css.add_property(
+			'border-bottom-right-radius',
+			getSpacingOptionOutput(previewBorderBottomRightRadius, borderRadiusUnit)
+		);
+		css.add_property(
+			'border-bottom-left-radius',
+			getSpacingOptionOutput(previewBorderBottomLeftRadius, borderRadiusUnit)
+		);
 	}
+	
 	if (previewIsTransparent == '1') {
 		if ('normal' === backgroundTransparent?.type && backgroundTransparent?.image) {
 			css.add_property('background-image', backgroundTransparent.image);
@@ -537,47 +521,8 @@ export default function BackendStyles(props) {
 		if ('gradient' === backgroundTransparent?.type && backgroundTransparent?.gradient) {
 			css.add_property('background', backgroundTransparent.gradient);
 		}
-	}
-	if (previewIsSticky == '1') {
-		if ('normal' === backgroundSticky?.type && backgroundSticky?.image) {
-			css.add_property('background-image', backgroundSticky.image);
-			css.add_property('background-size', backgroundSticky.imageSize);
-			css.add_property('background-repeat', backgroundSticky.imageRepeat);
-			css.add_property('background-attachment', backgroundSticky.imageAttachment);
-			css.add_property('background-position', backgroundSticky.imagePosition);
-		}
-		if ('normal' === backgroundSticky?.type && backgroundSticky?.color) {
-			css.add_property('background-color', KadenceColorOutput(backgroundSticky.color));
-		}
-		if ('gradient' === backgroundSticky?.type && backgroundSticky?.gradient) {
-			css.add_property('background', backgroundSticky.gradient);
-		}
-	}
 
-	css.add_property('margin-top', getSpacingOptionOutput(previewMarginTop, marginUnit));
-	css.add_property('margin-right', getSpacingOptionOutput(previewMarginRight, marginUnit));
-	css.add_property('margin-bottom', getSpacingOptionOutput(previewMarginBottom, marginUnit));
-	css.add_property('margin-left', getSpacingOptionOutput(previewMarginLeft, marginUnit));
-	css.add_property('padding-top', getSpacingOptionOutput(previewPaddingTop, paddingUnit));
-	css.add_property('padding-right', getSpacingOptionOutput(previewPaddingRight, paddingUnit));
-	css.add_property('padding-bottom', getSpacingOptionOutput(previewPaddingBottom, paddingUnit));
-	css.add_property('padding-left', getSpacingOptionOutput(previewPaddingLeft, paddingUnit));
-	css.add_property('border-top', css.render_border(border, borderTablet, borderMobile, previewDevice, 'top'));
-	css.add_property('border-right', css.render_border(border, borderTablet, borderMobile, previewDevice, 'right'));
-	css.add_property('border-bottom', css.render_border(border, borderTablet, borderMobile, previewDevice, 'bottom'));
-	css.add_property('border-left', css.render_border(border, borderTablet, borderMobile, previewDevice, 'left'));
-	css.add_property('border-top-left-radius', getSpacingOptionOutput(previewBorderTopLeftRadius, borderRadiusUnit));
-	css.add_property('border-top-right-radius', getSpacingOptionOutput(previewBorderTopRightRadius, borderRadiusUnit));
-	css.add_property(
-		'border-bottom-right-radius',
-		getSpacingOptionOutput(previewBorderBottomRightRadius, borderRadiusUnit)
-	);
-	css.add_property(
-		'border-bottom-left-radius',
-		getSpacingOptionOutput(previewBorderBottomLeftRadius, borderRadiusUnit)
-	);
-	//Transparent border
-	if (previewIsTransparent == '1') {
+		// Transparent Border
 		css.add_property('border-top', previewBorderTransparentTop);
 		css.add_property('border-right', previewBorderTransparentRight);
 		css.add_property('border-bottom', previewBorderTransparentBottom);
@@ -599,8 +544,22 @@ export default function BackendStyles(props) {
 			getSpacingOptionOutput(previewBorderBottomLeftRadiusTransparent, borderRadiusTransparentUnit)
 		);
 	}
-	//Sticky border
 	if (previewIsSticky == '1') {
+		if ('normal' === backgroundSticky?.type && backgroundSticky?.image) {
+			css.add_property('background-image', backgroundSticky.image);
+			css.add_property('background-size', backgroundSticky.imageSize);
+			css.add_property('background-repeat', backgroundSticky.imageRepeat);
+			css.add_property('background-attachment', backgroundSticky.imageAttachment);
+			css.add_property('background-position', backgroundSticky.imagePosition);
+		}
+		if ('normal' === backgroundSticky?.type && backgroundSticky?.color) {
+			css.add_property('background-color', KadenceColorOutput(backgroundSticky.color));
+		}
+		if ('gradient' === backgroundSticky?.type && backgroundSticky?.gradient) {
+			css.add_property('background', backgroundSticky.gradient);
+		}
+
+		// Sticky Border
 		css.add_property('border-top', previewBorderStickyTop);
 		css.add_property('border-right', previewBorderStickyRight);
 		css.add_property('border-bottom', previewBorderStickyBottom);
@@ -622,10 +581,10 @@ export default function BackendStyles(props) {
 			getSpacingOptionOutput(previewBorderBottomLeftRadiusSticky, borderRadiusStickyUnit)
 		);
 	}
-	css.add_property('min-height', getSpacingOptionOutput(previewHeight, heightUnit));
-	css.add_property('max-width', getSpacingOptionOutput(previewWidth, widthUnit));
 
-	css.set_selector(`wp-block-kadence-header${uniqueID} .kb-header-container:hover`);
+	css.set_selector(
+		`.wp-block-kadence-header${uniqueID} .kb-header-container:hover`
+	);
 
 	if (previewIsTransparent != '1') {
 		if ('normal' === backgroundHover?.type && backgroundHover?.image) {
@@ -643,7 +602,41 @@ export default function BackendStyles(props) {
 		if ('gradient' === backgroundHover?.type && backgroundHover?.gradient) {
 			css.add_property('background', backgroundHover.gradient);
 		}
+
+		css.add_property(
+			'border-top',
+			css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'top')
+		);
+		css.add_property(
+			'border-right',
+			css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'right')
+		);
+		css.add_property(
+			'border-bottom',
+			css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'bottom')
+		);
+		css.add_property(
+			'border-left',
+			css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'left')
+		);
+		css.add_property(
+			'border-top-left-radius',
+			getSpacingOptionOutput(previewborderHoverTopLeftRadius, borderRadiusHoverUnit)
+		);
+		css.add_property(
+			'border-top-right-radius',
+			getSpacingOptionOutput(previewborderHoverTopRightRadius, borderRadiusHoverUnit)
+		);
+		css.add_property(
+			'border-bottom-right-radius',
+			getSpacingOptionOutput(previewborderHoverBottomRightRadius, borderRadiusHoverUnit)
+		);
+		css.add_property(
+			'border-bottom-left-radius',
+			getSpacingOptionOutput(previewborderHoverBottomLeftRadius, borderRadiusHoverUnit)
+		);
 	}
+
 	if (previewIsTransparent == '1') {
 		if ('normal' === backgroundTransparentHover?.type && backgroundTransparentHover?.image) {
 			css.add_property('background-image', backgroundTransparentHover.image);
@@ -660,61 +653,7 @@ export default function BackendStyles(props) {
 		if ('gradient' === backgroundTransparentHover?.type && backgroundTransparentHover?.gradient) {
 			css.add_property('background', backgroundTransparentHover.gradient);
 		}
-	}
-	if (previewIsSticky == '1') {
-		if ('normal' === backgroundStickyHover?.type && backgroundStickyHover?.image) {
-			css.add_property('background-image', backgroundStickyHover.image);
-			css.add_property('background-size', backgroundStickyHover.imageSize);
-			css.add_property('background-repeat', backgroundStickyHover.imageRepeat);
-			css.add_property('background-attachment', backgroundStickyHover.imageAttachment);
-			css.add_property('background-position', backgroundStickyHover.imagePosition);
-		}
 
-		if ('normal' === backgroundStickyHover?.type && backgroundStickyHover?.color) {
-			css.add_property('background-color', backgroundStickyHover.color);
-		}
-
-		if ('gradient' === backgroundStickyHover?.type && backgroundStickyHover?.gradient) {
-			css.add_property('background', backgroundStickyHover.gradient);
-		}
-	}
-
-	css.add_property(
-		'border-top',
-		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'top')
-	);
-	css.add_property(
-		'border-right',
-		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'right')
-	);
-	css.add_property(
-		'border-bottom',
-		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'bottom')
-	);
-	css.add_property(
-		'border-left',
-		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'left')
-	);
-
-	css.add_property(
-		'border-top-left-radius',
-		getSpacingOptionOutput(previewborderHoverTopLeftRadius, borderRadiusHoverUnit)
-	);
-	css.add_property(
-		'border-top-right-radius',
-		getSpacingOptionOutput(previewborderHoverTopRightRadius, borderRadiusHoverUnit)
-	);
-	css.add_property(
-		'border-bottom-right-radius',
-		getSpacingOptionOutput(previewborderHoverBottomRightRadius, borderRadiusHoverUnit)
-	);
-	css.add_property(
-		'border-bottom-left-radius',
-		getSpacingOptionOutput(previewborderHoverBottomLeftRadius, borderRadiusHoverUnit)
-	);
-
-	//Transparent hover border
-	if (previewIsTransparent == '1') {
 		css.add_property('border-top', previewBorderTransparentHoverTop);
 		css.add_property('border-right', previewBorderTransparentHoverRight);
 		css.add_property('border-bottom', previewBorderTransparentHoverBottom);
@@ -738,8 +677,23 @@ export default function BackendStyles(props) {
 		);
 	}
 
-	//Sticky hover border
 	if (previewIsSticky == '1') {
+		if ('normal' === backgroundStickyHover?.type && backgroundStickyHover?.image) {
+			css.add_property('background-image', backgroundStickyHover.image);
+			css.add_property('background-size', backgroundStickyHover.imageSize);
+			css.add_property('background-repeat', backgroundStickyHover.imageRepeat);
+			css.add_property('background-attachment', backgroundStickyHover.imageAttachment);
+			css.add_property('background-position', backgroundStickyHover.imagePosition);
+		}
+
+		if ('normal' === backgroundStickyHover?.type && backgroundStickyHover?.color) {
+			css.add_property('background-color', backgroundStickyHover.color);
+		}
+
+		if ('gradient' === backgroundStickyHover?.type && backgroundStickyHover?.gradient) {
+			css.add_property('background', backgroundStickyHover.gradient);
+		}
+
 		css.add_property('border-top', previewBorderStickyHoverTop);
 		css.add_property('border-right', previewBorderStickyHoverRight);
 		css.add_property('border-bottom', previewBorderStickyHoverBottom);

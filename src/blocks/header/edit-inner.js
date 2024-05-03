@@ -144,7 +144,6 @@ export function EditInner(props) {
 		borderRadiusStickyHoverTablet: meta?._kad_header_borderRadiusStickyHoverTablet,
 		borderRadiusStickyHoverMobile: meta?._kad_header_borderRadiusStickyHoverMobile,
 		borderRadiusStickyHoverUnit: meta?._kad_header_borderRadiusStickyHoverUnit,
-		flex: meta?._kad_header_flex,
 		className: meta?._kad_header_className,
 		anchor: meta?._kad_header_anchor,
 		background: meta?._kad_header_background,
@@ -154,7 +153,6 @@ export function EditInner(props) {
 		backgroundSticky: meta?._kad_header_backgroundSticky,
 		backgroundStickyHover: meta?._kad_header_backgroundStickyHover,
 		typography: meta?._kad_header_typography,
-		textColor: meta?._kad_header_textColor,
 		linkColor: meta?._kad_header_linkColor,
 		linkHoverColor: meta?._kad_header_linkHoverColor,
 		height: meta?._kad_header_height,
@@ -229,7 +227,6 @@ export function EditInner(props) {
 		borderRadiusStickyHoverTablet,
 		borderRadiusStickyHoverMobile,
 		borderRadiusStickyHoverUnit,
-		flex,
 		className,
 		anchor,
 		background,
@@ -239,7 +236,6 @@ export function EditInner(props) {
 		backgroundSticky,
 		backgroundStickyHover,
 		typography,
-		textColor,
 		linkColor,
 		linkHoverColor,
 		height,
@@ -266,14 +262,6 @@ export function EditInner(props) {
 	const setMetaAttribute = (value, key) => {
 		setMeta({ ...meta, ['_kad_header_' + key]: value });
 	};
-
-	// Flex direction options
-	const previewDirection = getPreviewSize(
-		previewDevice,
-		undefined !== flex?.direction?.[0] ? flex.direction[0] : '',
-		undefined !== flex?.direction?.[1] ? flex.direction[1] : '',
-		undefined !== flex?.direction?.[2] ? flex.direction[2] : ''
-	);
 	const previewIsSticky = getPreviewSize(previewDevice, isSticky, isStickyTablet, isStickyMobile);
 	const previewIsTransparent = getPreviewSize(previewDevice, isTransparent, isTransparentTablet, isTransparentMobile);
 
@@ -373,12 +361,12 @@ export function EditInner(props) {
 										imageURL={backgroundValue.image ? backgroundValue.image : ''}
 										imageID={backgroundValue.imageID}
 										imagePosition={
-											backgroundValue.position ? backgroundValue.position : 'center center'
+											backgroundValue.imagePosition ? backgroundValue.imagePosition : 'center center'
 										}
-										imageSize={backgroundValue.size ? backgroundValue.size : 'cover'}
-										imageRepeat={backgroundValue.repeat ? backgroundValue.repeat : 'no-repeat'}
+										imageSize={backgroundValue.imageSize ? backgroundValue.imageSize : 'cover'}
+										imageRepeat={backgroundValue.imageRepeat ? backgroundValue.imageRepeat : 'no-repeat'}
 										imageAttachment={
-											backgroundValue.attachment ? backgroundValue.attachment : 'scroll'
+											backgroundValue.imageAttachment ? backgroundValue.imageAttachment : 'scroll'
 										}
 										imageAttachmentParallax={true}
 										onRemoveImage={() => {
@@ -415,25 +403,25 @@ export function EditInner(props) {
 										}}
 										onSavePosition={(value) =>
 											setMetaAttribute(
-												{ ...backgroundValue, position: value },
+												{ ...backgroundValue, imagePosition: value },
 												'background' + suffix + size
 											)
 										}
 										onSaveSize={(value) =>
 											setMetaAttribute(
-												{ ...backgroundValue, size: value },
+												{ ...backgroundValue, imageSize: value },
 												'background' + suffix + size
 											)
 										}
 										onSaveRepeat={(value) =>
 											setMetaAttribute(
-												{ ...backgroundValue, repeat: value },
+												{ ...backgroundValue, imageRepeat: value },
 												'background' + suffix + size
 											)
 										}
 										onSaveAttachment={(value) =>
 											setMetaAttribute(
-												{ ...backgroundValue, attachment: value },
+												{ ...backgroundValue, imageAttachment: value },
 												'background' + suffix + size
 											)
 										}
@@ -578,7 +566,7 @@ export function EditInner(props) {
 											)
 										}
 										disableMediaButtons={backgroundHoverValue.image ? true : false}
-										dynamicAttribute={'background' + suffix + 'Hover' + size + ':image'}
+										dynamicAttribute={'backgroundHover:image'}
 										isSelected={isSelected}
 										attributes={attributes}
 										setAttributes={setAttributes}
@@ -701,7 +689,7 @@ export function EditInner(props) {
 					<>
 						<KadencePanelBody
 							title={__('General Settings', 'kadence-blocks')}
-							panelName={'kb-col-flex-settings'}
+							panelName={'kb-col-header-type-settings'}
 						>
 							<ResponsiveSelectControl
 								label={__('Sticky Header', 'kadence-blocks')}
@@ -794,371 +782,41 @@ export function EditInner(props) {
 							)}
 						</KadencePanelBody>
 						<KadencePanelBody
-							title={__('Flex Settings', 'kadence-blocks')}
-							panelName={'kb-col-flex-settings'}
-						>
-							<ResponsiveAlignControls
-								label={__('Direction', 'kadence-blocks')}
-								value={flex.direction && flex.direction[0] ? flex.direction[0] : 'vertical'}
-								tabletValue={flex.direction && flex.direction[1] ? flex.direction[1] : ''}
-								mobileValue={flex.direction && flex.direction[2] ? flex.direction[2] : ''}
-								onChange={(value) => {
-									if (value) {
-										setMetaAttribute(
-											{
-												...flex,
-												direction: [
-													value,
-													undefined !== flex.direction?.[1] ? flex.direction[1] : '',
-													undefined !== flex.direction?.[2] ? flex.direction[2] : '',
-												],
-											},
-											'flex'
-										);
-									}
-								}}
-								onChangeTablet={(value) => {
-									let tempValue = value;
-									if (flex.direction && flex.direction[1] && tempValue === flex.direction[1]) {
-										tempValue = '';
-									}
-									setMetaAttribute(
-										{
-											...flex,
-											direction: [
-												undefined !== flex.direction?.[0] ? flex.direction[0] : '',
-												tempValue,
-												undefined !== flex.direction?.[2] ? flex.direction[2] : '',
-											],
-										},
-										'flex'
-									);
-								}}
-								onChangeMobile={(value) => {
-									let tempValue = value;
-									if (flex.direction && flex.direction[2] && tempValue === flex.direction[2]) {
-										tempValue = '';
-									}
-									setMetaAttribute(
-										{
-											...flex,
-											direction: [
-												undefined !== flex.direction?.[0] ? flex.direction[0] : '',
-												undefined !== flex.direction?.[1] ? flex.direction[1] : '',
-												tempValue,
-											],
-										},
-										'flex'
-									);
-								}}
-								type={'orientation-column'}
-							/>
-							<div className="kt-sidebar-settings-spacer"></div>
-							{(previewDirection === 'horizontal-reverse' || previewDirection === 'horizontal') && (
-								<ResponsiveAlignControls
-									label={__('Alignment', 'kadence-blocks')}
-									value={
-										flex.justifyContent && flex.justifyContent?.[0] ? flex.justifyContent[0] : ''
-									}
-									tabletValue={
-										flex.justifyContent && flex.justifyContent?.[1] ? flex.justifyContent[1] : ''
-									}
-									mobileValue={
-										flex.justifyContent && flex.justifyContent?.[2] ? flex.justifyContent[2] : ''
-									}
-									onChange={(value) => {
-										let tempValue = value;
-										if (
-											(flex.justifyContent && flex.justifyContent?.[0]
-												? flex.justifyContent[0]
-												: '') === value
-										) {
-											tempValue = '';
-										}
-										setMetaAttribute(
-											{
-												...flex,
-												justifyContent: [
-													tempValue,
-													flex.justifyContent && flex.justifyContent[1]
-														? flex.justifyContent[1]
-														: '',
-													flex.justifyContent && flex.justifyContent[2]
-														? flex.justifyContent[2]
-														: '',
-												],
-											},
-											'flex'
-										);
-									}}
-									onChangeTablet={(value) => {
-										let tempValue = value;
-										if (
-											(flex.justifyContent && flex.justifyContent?.[1]
-												? flex.justifyContent[1]
-												: '') === value
-										) {
-											tempValue = '';
-										}
-										setMetaAttribute(
-											{
-												...flex,
-												justifyContent: [
-													flex.justifyContent && flex.justifyContent?.[0]
-														? flex.justifyContent[0]
-														: '',
-													tempValue,
-													flex.justifyContent && flex.justifyContent[2]
-														? flex.justifyContent[2]
-														: '',
-												],
-											},
-											'flex'
-										);
-									}}
-									onChangeMobile={(value) => {
-										let tempValue = value;
-										if (
-											(flex.justifyContent && flex.justifyContent?.[2]
-												? flex.justifyContent[2]
-												: '') === value
-										) {
-											tempValue = '';
-										}
-										setMetaAttribute(
-											{
-												...flex,
-												justifyContent: [
-													flex.justifyContent && flex.justifyContent?.[0]
-														? flex.justifyContent[0]
-														: '',
-													flex.justifyContent && flex.justifyContent[1]
-														? flex.justifyContent[1]
-														: '',
-													tempValue,
-												],
-											},
-											'flex'
-										);
-									}}
-									type={'justify-column'}
-									reverse={previewDirection === 'horizontal-reverse' ? true : false}
-								/>
-							)}
-							{(previewDirection === 'vertical-reverse' || previewDirection === 'vertical') && (
-								<ResponsiveAlignControls
-									label={__('Alignment', 'kadence-blocks')}
-									value={
-										flex.justifyContent && flex.justifyContent?.[0] ? flex.justifyContent[0] : ''
-									}
-									tabletValue={
-										flex.justifyContent && flex.justifyContent?.[1] ? flex.justifyContent[1] : ''
-									}
-									mobileValue={
-										flex.justifyContent && flex.justifyContent?.[2] ? flex.justifyContent[2] : ''
-									}
-									onChange={(value) => {
-										let tempValue = value;
-										if (
-											(flex.justifyContent && flex.justifyContent?.[0]
-												? flex.justifyContent[0]
-												: '') === value
-										) {
-											tempValue = '';
-										}
-										setMetaAttribute(
-											{
-												...flex,
-												justifyContent: [
-													tempValue,
-													flex.justifyContent && flex.justifyContent[1]
-														? flex.justifyContent[1]
-														: '',
-													flex.justifyContent && flex.justifyContent[2]
-														? flex.justifyContent[2]
-														: '',
-												],
-											},
-											'flex'
-										);
-									}}
-									onChangeTablet={(value) => {
-										let tempValue = value;
-										if (
-											(flex.justifyContent && flex.justifyContent?.[1]
-												? flex.justifyContent[1]
-												: '') === value
-										) {
-											tempValue = '';
-										}
-										setMetaAttribute(
-											{
-												...flex,
-												justifyContent: [
-													flex.justifyContent && flex.justifyContent?.[0]
-														? flex.justifyContent[0]
-														: '',
-													tempValue,
-													flex.justifyContent && flex.justifyContent[2]
-														? flex.justifyContent[2]
-														: '',
-												],
-											},
-											'flex'
-										);
-									}}
-									onChangeMobile={(value) => {
-										let tempValue = value;
-										if (
-											(flex.justifyContent && flex.justifyContent?.[2]
-												? flex.justifyContent[2]
-												: '') === value
-										) {
-											tempValue = '';
-										}
-										setMetaAttribute(
-											{
-												...flex,
-												justifyContent: [
-													flex.justifyContent && flex.justifyContent?.[0]
-														? flex.justifyContent[0]
-														: '',
-													flex.justifyContent && flex.justifyContent[1]
-														? flex.justifyContent[1]
-														: '',
-													tempValue,
-												],
-											},
-											'flex'
-										);
-									}}
-									type={'justify-align'}
-									reverse={previewDirection === 'horizontal-reverse' ? true : false}
-								/>
-							)}
-							{(previewDirection === 'vertical-reverse' || previewDirection === 'vertical') && (
-								<ResponsiveAlignControls
-									label={__('Vertical Alignment', 'kadence-blocks')}
-									value={undefined !== flex?.verticalAlignment?.[0] ? flex.verticalAlignment[0] : ''}
-									mobileValue={
-										undefined !== flex?.verticalAlignment?.[1] ? flex.verticalAlignment[1] : ''
-									}
-									tabletValue={
-										undefined !== flex?.verticalAlignment?.[2] ? flex.verticalAlignment[2] : ''
-									}
-									onChange={(value) => {
-										let tempValue = value;
-										if (
-											(flex.verticalAlignment && flex.verticalAlignment?.[0]
-												? flex.verticalAlignment[0]
-												: '') === value
-										) {
-											tempValue = '';
-										}
-										setMetaAttribute(
-											{
-												...flex,
-												verticalAlignment: [
-													tempValue,
-													flex.verticalAlignment && flex.verticalAlignment?.[1]
-														? flex.verticalAlignment[1]
-														: '',
-													flex.verticalAlignment && flex.verticalAlignment?.[2]
-														? flex.verticalAlignment[2]
-														: '',
-												],
-											},
-											'flex'
-										);
-									}}
-									onChangeTablet={(value) => {
-										let tempValue = value;
-										if (
-											(undefined !== flex?.verticalAlignment?.[1]
-												? flex.verticalAlignment[1]
-												: '') === value
-										) {
-											tempValue = '';
-										}
-										setMetaAttribute(
-											{
-												...flex,
-												verticalAlignmentTablet: [
-													flex.verticalAlignment && flex.verticalAlignment?.[1]
-														? flex.verticalAlignment[1]
-														: '',
-													tempValue,
-													flex.verticalAlignment && flex.verticalAlignment?.[2]
-														? flex.verticalAlignment[2]
-														: '',
-												],
-											},
-											'flex'
-										);
-									}}
-									onChangeMobile={(value) => {
-										let tempValue = value;
-										if (
-											(undefined !== flex?.verticalAlignment?.[2]
-												? flex.verticalAlignment[2]
-												: '') === value
-										) {
-											tempValue = '';
-										}
-										setMetaAttribute({
-											...flex,
-											verticalAlignmentMobile: [
-												flex.verticalAlignment && flex.verticalAlignment?.[0]
-													? flex.verticalAlignment[0]
-													: '',
-												flex.verticalAlignment && flex.verticalAlignment?.[1]
-													? flex.verticalAlignment[1]
-													: '',
-												tempValue,
-											],
-										});
-									}}
-									type={'justify-vertical'}
-									reverse={previewDirection === 'vertical-reverse' ? true : false}
-								/>
-							)}
-						</KadencePanelBody>
-						<KadencePanelBody
 							title={__('Content Size Settings', 'kadence-blocks')}
 							panelName={'kb-header-size-settings'}
 						>
 							<ResponsiveRangeControls
 								label={__('Min Height', 'kadence-blocks')}
-								value={undefined !== height?.[0] ? height[0] : ''}
+								value={undefined !== height?.[0] ? parseFloat(height[0]) : ''}
 								onChange={(value) => {
 									setMetaAttribute(
 										[
-											value,
+											value.toString(),
 											undefined !== height?.[1] ? height[1] : '',
 											undefined !== height?.[2] ? height[2] : '',
-										].map(String),
+										],
 										'height'
 									);
 								}}
-								tabletValue={undefined !== height?.[1] ? height[1] : ''}
+								tabletValue={undefined !== height?.[1] ? parseFloat(height[1]) : ''}
 								onChangeTablet={(value) => {
 									setMetaAttribute(
 										[
 											undefined !== height?.[0] ? height[0] : '',
-											value,
+											value.toString(),
 											undefined !== height?.[2] ? height[2] : '',
-										].map(String),
+										],
 										'height'
 									);
 								}}
-								mobileValue={undefined !== height?.[2] ? height[2] : ''}
+								mobileValue={undefined !== height?.[2] ? parseFloat(height[2]) : ''}
 								onChangeMobile={(value) => {
 									setMetaAttribute(
 										[
 											undefined !== height?.[0] ? height[0] : '',
 											undefined !== height?.[1] ? height[1] : '',
-											value,
-										].map(String),
+											value.toString(),
+										],
 										'height'
 									);
 								}}
@@ -1169,40 +827,40 @@ export function EditInner(props) {
 								onUnit={(value) => {
 									setMetaAttribute(value, 'heightUnit');
 								}}
-								units={['px', 'vw', 'vh']}
+								units={['px', 'vh', 'vw']}
 							/>
 							<ResponsiveRangeControls
 								label={__('Max Width', 'kadence-blocks')}
-								value={undefined !== width?.[0] ? width[0] : ''}
+								value={undefined !== width?.[0] ? parseFloat(width[0]) : ''}
 								onChange={(value) => {
 									setMetaAttribute(
 										[
-											value,
+											value.toString(),
 											undefined !== width?.[1] ? width[1] : '',
 											undefined !== width?.[2] ? width[2] : '',
-										].map(String),
+										],
 										'width'
 									);
 								}}
-								tabletValue={undefined !== width?.[1] ? width[1] : ''}
+								tabletValue={undefined !== width?.[1] ? parseFloat(width[1]) : ''}
 								onChangeTablet={(value) => {
 									setMetaAttribute(
 										[
 											undefined !== width?.[0] ? width[0] : '',
-											value,
+											value.toString(),
 											undefined !== width?.[2] ? width[2] : '',
-										].map(String),
+										],
 										'width'
 									);
 								}}
-								mobileValue={undefined !== width?.[2] ? width[2] : ''}
+								mobileValue={undefined !== width?.[2] ? parseFloat(width[2]) : ''}
 								onChangeMobile={(value) => {
 									setMetaAttribute(
 										[
 											undefined !== width?.[0] ? width[0] : '',
 											undefined !== width?.[1] ? width[1] : '',
-											value,
-										].map(String),
+											value.toString(),
+										],
 										'width'
 									);
 								}}
@@ -1213,7 +871,7 @@ export function EditInner(props) {
 								onUnit={(value) => {
 									setMetaAttribute(value, 'widthUnit');
 								}}
-								units={['px', 'vw', 'vh']}
+								units={['px', '%', 'vw']}
 							/>
 						</KadencePanelBody>
 					</>
@@ -1633,9 +1291,11 @@ export function EditInner(props) {
 							<ColorGroup>
 								<PopColorControl
 									label={__('Text Color', 'kadence-blocks')}
-									value={textColor ? textColor : ''}
+									value={typography.color ? typography.color : ''}
 									default={''}
-									onChange={(value) => setMetaAttribute(value, 'textColor')}
+									onChange={(value) =>
+										setMetaAttribute({ ...typography, color: value }, 'typography')
+									}
 								/>
 								<PopColorControl
 									label={__('Link Color', 'kadence-blocks')}
