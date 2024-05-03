@@ -190,8 +190,11 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 			'wp-block-kadence-header-row' . esc_attr( $unique_id ),
 		);
 
-		if( !empty( $attributes['location'])) {
-			$classes[]= 'wp-block-kadence-header-row-' . esc_attr( $attributes['location'] );
+		if ( ! empty( $attributes['location'] ) ) {
+			$classes[] = 'wp-block-kadence-header-row-' . esc_attr( $attributes['location'] );
+		}
+		if ( ! empty( $attributes['layout'] ) ) {
+			$classes[] = 'wp-block-kadence-header-row-layout-' . esc_attr( $attributes['layout'] );
 		}
 
 		$html .= '<div class="' . esc_attr( implode( ' ', $classes ) ) . '">';

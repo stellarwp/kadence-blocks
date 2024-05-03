@@ -17,6 +17,10 @@
 		"location": {
 			"type": "string"
 		},
+		"layout": {
+			"type": "string",
+			"default": ""
+		},
 		"background": {
 			"type": "object",
 			"default": {

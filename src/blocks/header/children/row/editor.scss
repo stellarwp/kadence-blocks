@@ -37,4 +37,13 @@
 	.wp-block-kadence-header-section {
 		gap: 10px;
 	}
+
+	&.wp-block-kadence-header-row-layout-contained {
+		margin: 0 auto;
+		padding: 0 var(--global-content-edge-padding);
+		max-width: var(--global-content-width);
+	}
+	&.wp-block-kadence-header-row-layout-fullwidth {
+		//don't do anything with fullwidth in the editor too much of a pain to try and get full editor width.
+	}
 }

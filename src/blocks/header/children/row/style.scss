@@ -38,4 +38,18 @@
 	.wp-block-kadence-header-section {
 		gap: 10px;
 	}
+
+	&.wp-block-kadence-header-row-layout-contained {
+		margin: 0 auto;
+		padding: 0 var(--global-content-edge-padding);
+		max-width: var(--global-content-width);
+	}
+	&.wp-block-kadence-header-row-layout-fullwidth {
+		width: 100vw;
+		position: relative;
+		left: 50%;
+		right: 50%;
+		margin-left: -50vw;
+		margin-right: -50vw;
+	}
 }

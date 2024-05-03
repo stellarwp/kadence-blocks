@@ -41,7 +41,6 @@ import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 import BackendStyles from './components/backend-styles';
-import { layout } from '@wordpress/icons';
 
 export function Edit(props) {
 	const { attributes, setAttributes, clientId, context, isSelected } = props;
@@ -49,6 +48,7 @@ export function Edit(props) {
 	const {
 		uniqueID,
 		location,
+		layout,
 		background,
 		backgroundTransparent,
 		border,
