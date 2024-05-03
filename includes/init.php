@@ -1145,6 +1145,16 @@ function kadence_blocks_register_lottie_custom_post_type() {
 
 add_action( 'init', 'kadence_blocks_register_lottie_custom_post_type' );
 
+/* Sashicons are not enqueue by default when iFraming in block editor
+   https://github.com/WordPress/gutenberg/issues/53528
+*/
+add_action('enqueue_block_assets', function (): void {
+	if( is_admin() ) {
+		wp_enqueue_style( 'dashicons' );
+	}
+});
+
+
 /**
  * Filter core to remove loading = lazy if class is present.
  */

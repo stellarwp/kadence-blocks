@@ -1,11 +1,30 @@
 $height_bottom_bar: 24px;
-$height_bottom_bars_mobile: 20px;
+$height_bottom_bars_mobile: 0px;
 $height_top_bar: 92px;
 $height_top_bars_mobile: 155px;
 $height_top_bottom_bars: $height_top_bar + $height_bottom_bar;
 $sidebar_width: 280px;
 $fixed_height: 280px;
 
+.kb-header-visual-builder-teaser {
+	background: #eee;
+	border-top: 1px solid #a0aec1;
+
+	margin: 0;
+	padding: 10px;
+	position: fixed;
+	width: 100%;
+	bottom: $height_bottom_bars_mobile;
+	left: 0;
+	z-index: 9999;
+
+	justify-content: flex-end;
+	display: flex;
+
+	@media (min-width: 782px) {
+		bottom: $height_bottom_bar;
+	}
+}
 .kb-header-visual-builder-modal {
 	background: #eee;
 	border-top: 1px solid #a0aec1;
@@ -18,8 +37,6 @@ $fixed_height: 280px;
 	bottom: $height_bottom_bars_mobile;
 	left: 0;
 	z-index: 9999;
-
-	justify-content: flex-start;
 	display: block;
 
 	@media (min-width: 782px) {
