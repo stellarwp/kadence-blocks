@@ -103,8 +103,8 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 	public function sized_dynamic_styles( $css, $attributes, $unique_id, $size = 'Desktop' ) {
 		$sized_attributes = $css->get_sized_attributes_auto( $attributes, $size, false );
 		$sized_attributes_inherit = $css->get_sized_attributes_auto( $attributes, $size );
-		$navigation_horizontal_spacing = $sized_attributes['spacing'][0];
-		$navigation_vertical_spacing = $sized_attributes['spacing'][1];
+		$navigation_horizontal_spacing = $sized_attributes['spacing'][1];
+		$navigation_vertical_spacing = $sized_attributes['spacing'][0];
 
 		$css->set_media_state( strtolower( $size ) );
 		// Navigation logic from theme styles component.

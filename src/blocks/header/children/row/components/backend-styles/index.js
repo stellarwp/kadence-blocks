@@ -28,6 +28,10 @@ export default function BackendStyles(props) {
 		minHeightTablet,
 		minHeightMobile,
 		minHeightUnit,
+		maxWidth,
+		maxWidthTablet,
+		maxWidthMobile,
+		maxWidthUnit,
 		itemGap,
 		itemGapTablet,
 		itemGapMobile,
@@ -35,6 +39,7 @@ export default function BackendStyles(props) {
 	} = attributes;
 
 	const previewMinHeight = getPreviewSize(previewDevice, minHeight, minHeightTablet, minHeightMobile);
+	const previewMaxWidth = getPreviewSize(previewDevice, maxWidth, maxWidthTablet, maxWidthMobile);
 	const previewItemGap = getPreviewSize(previewDevice, itemGap, itemGapTablet, itemGapMobile);
 
 	const css = new KadenceBlocksCSS();
@@ -44,6 +49,9 @@ export default function BackendStyles(props) {
 	css.render_measure_output(padding, paddingTablet, paddingMobile, previewDevice, 'padding', paddingUnit);
 	css.render_measure_output(margin, marginTablet, marginMobile, previewDevice, 'margin', marginUnit);
 	css.add_property('min-height', previewMinHeight + minHeightUnit);
+	if (previewMaxWidth != 0) {
+		css.add_property('max-width', previewMaxWidth + maxWidthUnit);
+	}
 	css.add_property('border-top', css.render_border(border, borderTablet, borderMobile, previewDevice, 'top', false));
 	css.add_property(
 		'border-right',

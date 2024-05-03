@@ -70,6 +70,10 @@ export function Edit(props) {
 		minHeightTablet,
 		minHeightMobile,
 		minHeightUnit,
+		maxWidth,
+		maxWidthTablet,
+		maxWidthMobile,
+		maxWidthUnit,
 		itemGap,
 		itemGapTablet,
 		itemGapMobile,
@@ -115,6 +119,7 @@ export function Edit(props) {
 		'wp-block-kadence-header-row': true,
 		[`wp-block-kadence-header-row-${location}`]: location,
 		[`wp-block-kadence-header-row${uniqueID}`]: uniqueID,
+		[`wp-block-kadence-header-row-layout-${layout}`]: layout,
 	});
 	const innerBlocksProps = useInnerBlocksProps(
 		{
@@ -294,6 +299,26 @@ export function Edit(props) {
 								units={['px', 'em', 'vh']}
 								showUnit={true}
 							/>
+							{layout != 'contained' && layout != 'fullwidth' && (
+								<ResponsiveRangeControls
+									label={__('Max Width', 'kadence-blocks')}
+									value={maxWidth}
+									onChange={(value) => setAttributes({ maxWidth: value })}
+									tabletValue={maxWidthTablet}
+									onChangeTablet={(value) => setAttributes({ maxWidthTablet: value })}
+									mobileValue={maxWidthMobile}
+									onChangeMobile={(value) => setAttributes({ maxWidthMobile: value })}
+									min={0}
+									max={600}
+									step={1}
+									unit={maxWidthUnit}
+									onUnit={(value) => {
+										setAttributes({ maxWidthUnit: value });
+									}}
+									units={['px', 'em', 'vw', '%']}
+									showUnit={true}
+								/>
+							)}
 							<ResponsiveRangeControls
 								label={__('Item Gap', 'kadence-blocks')}
 								value={itemGap}
@@ -303,7 +328,7 @@ export function Edit(props) {
 								mobileValue={itemGapMobile}
 								onChangeMobile={(value) => setAttributes({ itemGapMobile: value })}
 								min={0}
-								max={100}
+								max={maxWidthUnit === 'px' ? 2000 : 100}
 								step={1}
 								unit={itemGapUnit}
 								onUnit={(value) => {

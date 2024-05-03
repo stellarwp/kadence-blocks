@@ -1,6 +1,7 @@
 .wp-block-kadence-header-row {
 	display: grid !important;
 	grid-template-columns: 1fr auto 1fr;
+	margin: 0 auto;
 
 	.wp-block-kadence-header-column-center {
 		display: flex !important;
@@ -39,7 +40,6 @@
 	}
 
 	&.wp-block-kadence-header-row-layout-contained {
-		margin: 0 auto;
 		padding: 0 var(--global-content-edge-padding);
 		max-width: var(--global-content-width);
 	}

@@ -149,6 +149,22 @@
 			"type": "string",
 			"default": "px"
 		},
+		"maxWidth": {
+			"type": "number",
+			"default": 0
+		},
+		"maxWidthTablet": {
+			"type": "number",
+			"default": 0
+		},
+		"maxWidthDesktop": {
+			"type": "number",
+			"default": 0
+		},
+		"maxWidthUnit": {
+			"type": "string",
+			"default": "px"
+		},
 		"itemGap": {
 			"type": "number",
 			"default": 10

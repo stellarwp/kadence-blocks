@@ -110,7 +110,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( 'border-left', $css->render_border( $sized_attributes['border'], 'left' ) );
 		$css->add_property( 'border-right', $css->render_border( $sized_attributes['border'], 'right' ) );
 		$css->add_property( 'min-height', '' !== $min_height ? $min_height . $sized_attributes['heightUnit'] : '' );
-		$css->add_property( 'max-width', '' !== $max_width ? $max_width . $sized_attributes['widthUnit'] : '' );
+		$css->add_property( 'max-width', 0 !== $max_width ? $max_width . $sized_attributes['widthUnit'] : '' );
 		$css->render_measure_range( $sized_attributes, ( 'Desktop' === $size ? 'borderRadius' : 'borderRadius' . $size ), 'border-radius', '', ['unit_key' => 'borderRadiusUnit']);
 		$css->render_measure_output( $sized_attributes, 'margin', 'margin', '', ['unit_key' => 'marginUnit']);
 		$css->render_measure_output( $sized_attributes, 'padding', 'padding', '', ['unit_key' => 'paddingUnit']);
