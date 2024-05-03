@@ -360,12 +360,12 @@ export function EditInner(props) {
 										imageURL={backgroundValue.image ? backgroundValue.image : ''}
 										imageID={backgroundValue.imageID}
 										imagePosition={
-											backgroundValue.position ? backgroundValue.position : 'center center'
+											backgroundValue.position ? backgroundValue.imagePosition : 'center center'
 										}
-										imageSize={backgroundValue.size ? backgroundValue.size : 'cover'}
-										imageRepeat={backgroundValue.repeat ? backgroundValue.repeat : 'no-repeat'}
+										imageSize={backgroundValue.size ? backgroundValue.imageSize : 'cover'}
+										imageRepeat={backgroundValue.repeat ? backgroundValue.imageRepeat : 'no-repeat'}
 										imageAttachment={
-											backgroundValue.attachment ? backgroundValue.attachment : 'scroll'
+											backgroundValue.attachment ? backgroundValue.imageAttachment : 'scroll'
 										}
 										imageAttachmentParallax={true}
 										onRemoveImage={() => {
@@ -402,25 +402,25 @@ export function EditInner(props) {
 										}}
 										onSavePosition={(value) =>
 											setMetaAttribute(
-												{ ...backgroundValue, position: value },
+												{ ...backgroundValue, imagePosition: value },
 												'background' + suffix + size
 											)
 										}
 										onSaveSize={(value) =>
 											setMetaAttribute(
-												{ ...backgroundValue, size: value },
+												{ ...backgroundValue, imageSize: value },
 												'background' + suffix + size
 											)
 										}
 										onSaveRepeat={(value) =>
 											setMetaAttribute(
-												{ ...backgroundValue, repeat: value },
+												{ ...backgroundValue, imageRepeat: value },
 												'background' + suffix + size
 											)
 										}
 										onSaveAttachment={(value) =>
 											setMetaAttribute(
-												{ ...backgroundValue, attachment: value },
+												{ ...backgroundValue, imageAttachment: value },
 												'background' + suffix + size
 											)
 										}
