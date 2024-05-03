@@ -4,7 +4,7 @@
 import ChildContainer from '../components/child-container';
 
 export function Edit(props) {
-	return ChildContainer(props, 'Tablet')
+	return ChildContainer(props, 'Tablet');
 }
 
 export default Edit;

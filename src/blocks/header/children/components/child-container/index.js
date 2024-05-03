@@ -23,7 +23,7 @@ import { useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 export default function ChildContainer(props, size = 'Desktop') {
-	const { attributes, setAttributes, clientId } = props
+	const { attributes, setAttributes, clientId } = props;
 
 	const { uniqueID } = attributes;
 
@@ -62,7 +62,7 @@ export default function ChildContainer(props, size = 'Desktop') {
 	}, []);
 
 	const innerBlockClasses = classnames({
-		['wp-block-kadence-header-' + size.toLowerCase()] : true,
+		['wp-block-kadence-header-' + size.toLowerCase()]: true,
 		'kb-header-container': true,
 		['wp-block-kadence-header-' + size.toLowerCase() + uniqueID]: uniqueID,
 	});

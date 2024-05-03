@@ -364,10 +364,14 @@ export function EditInner(props) {
 										imageURL={backgroundValue.image ? backgroundValue.image : ''}
 										imageID={backgroundValue.imageID}
 										imagePosition={
-											backgroundValue.imagePosition ? backgroundValue.imagePosition : 'center center'
+											backgroundValue.imagePosition
+												? backgroundValue.imagePosition
+												: 'center center'
 										}
 										imageSize={backgroundValue.imageSize ? backgroundValue.imageSize : 'cover'}
-										imageRepeat={backgroundValue.imageRepeat ? backgroundValue.imageRepeat : 'no-repeat'}
+										imageRepeat={
+											backgroundValue.imageRepeat ? backgroundValue.imageRepeat : 'no-repeat'
+										}
 										imageAttachment={
 											backgroundValue.imageAttachment ? backgroundValue.imageAttachment : 'scroll'
 										}
