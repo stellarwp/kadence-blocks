@@ -28,6 +28,7 @@ import {
 	ResponsiveSelectControl,
 	SmallResponsiveControl,
 	BoxShadowControl,
+	ResponsiveMeasurementControls,
 } from '@kadence/components';
 import { getPreviewSize, getSpacingOptionOutput, mouseOverVisualizer, showSettings } from '@kadence/helpers';
 
@@ -224,6 +225,13 @@ export function EditInner(props) {
 		dropdownReveal: meta?._kad_navigation_dropdownReveal,
 		dropdownRevealTablet: meta?._kad_navigation_dropdownRevealTablet,
 		dropdownRevealMobile: meta?._kad_navigation_dropdownRevealMobile,
+		dropdownBorder: meta?._kad_navigation_dropdownBorder,
+		dropdownBorderTablet: meta?._kad_navigation_dropdownBorderTablet,
+		dropdownBorderMobile: meta?._kad_navigation_dropdownBorderMobile,
+		dropdownBorderRadius: meta?._kad_navigation_dropdownBorderRadius,
+		dropdownBorderRadiusTablet: meta?._kad_navigation_dropdownBorderRadiusTablet,
+		dropdownBorderRadiusMobile: meta?._kad_navigation_dropdownBorderRadiusMobile,
+		dropdownBorderRadiusUnit: meta?._kad_navigation_dropdownBorderRadiusUnit,
 	};
 
 	const {
@@ -364,6 +372,13 @@ export function EditInner(props) {
 		dropdownReveal,
 		dropdownRevealTablet,
 		dropdownRevealMobile,
+		dropdownBorder,
+		dropdownBorderTablet,
+		dropdownBorderMobile,
+		dropdownBorderRadius,
+		dropdownBorderRadiusTablet,
+		dropdownBorderRadiusMobile,
+		dropdownBorderRadiusUnit,
 	} = metaAttributes;
 
 	const previewOrientation = getPreviewSize(
@@ -1012,6 +1027,33 @@ export function EditInner(props) {
 								units={['em', 'rem', 'px', 'vw']}
 								onUnit={(value) => setMetaAttribute(value, 'dropdownVerticalSpacingUnit')}
 								showUnit={true}
+							/>
+							<ResponsiveBorderControl
+								label={__('Dropdown Border', 'kadence-blocks')}
+								value={dropdownBorder}
+								tabletValue={dropdownBorderTablet}
+								mobileValue={dropdownBorderMobile}
+								onChange={(value) => setMetaAttribute(value, 'dropdownBorder')}
+								onChangeTablet={(value) => setMetaAttribute(value, 'dropdownBorderTablet')}
+								onChangeMobile={(value) => setMetaAttribute(value, 'dropdownBorderMobile')}
+							/>
+
+							<ResponsiveMeasurementControls
+								label={__('Dropdown Border Radius', 'kadence-blocks')}
+								value={dropdownBorderRadius}
+								tabletValue={dropdownBorderRadiusTablet}
+								mobileValue={dropdownBorderRadiusMobile}
+								onChange={(value) => setMetaAttribute(value, 'dropdownBorderRadius')}
+								onChangeTablet={(value) => setMetaAttribute(value, 'dropdownBorderRadiusTablet')}
+								onChangeMobile={(value) => setMetaAttribute(value, 'dropdownBorderRadiusMobile')}
+								unit={dropdownBorderRadiusUnit}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setMetaAttribute(value, 'dropdownBorderRadiusUnit')}
+								max={dropdownBorderRadiusUnit === 'em' || dropdownBorderRadiusUnit === 'rem' ? 24 : 500}
+								step={dropdownBorderRadiusUnit === 'em' || dropdownBorderRadiusUnit === 'rem' ? 0.1 : 1}
+								min={0}
+								isBorderRadius={true}
+								allowEmpty={true}
 							/>
 							<ResponsiveSingleBorderControl
 								label={'Divider'}

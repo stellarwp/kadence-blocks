@@ -1,4 +1,4 @@
-import { KadenceBlocksCSS, getPreviewSize } from '@kadence/helpers';
+import { KadenceBlocksCSS, getPreviewSize, getSpacingOptionOutput } from '@kadence/helpers';
 
 export default function BackendStyles(props) {
 	const { attributes, isSelected, previewDevice, metaAttributes, context } = props;
@@ -126,6 +126,13 @@ export default function BackendStyles(props) {
 		dropdownVerticalSpacingMobile,
 		dropdownVerticalSpacingUnit,
 		dropdownShadow,
+		dropdownBorder,
+		dropdownBorderTablet,
+		dropdownBorderMobile,
+		dropdownBorderRadius,
+		dropdownBorderRadiusTablet,
+		dropdownBorderRadiusMobile,
+		dropdownBorderRadiusUnit,
 	} = metaAttributes;
 
 	const css = new KadenceBlocksCSS();
@@ -298,6 +305,31 @@ export default function BackendStyles(props) {
 		dropdownVerticalSpacingTablet,
 		dropdownVerticalSpacingMobile
 	);
+
+	const previewBorderTopLeftRadius = getPreviewSize(
+		previewDevice,
+		undefined !== dropdownBorderRadius ? dropdownBorderRadius[0] : '',
+		undefined !== dropdownBorderRadiusTablet ? dropdownBorderRadiusTablet[0] : '',
+		undefined !== dropdownBorderRadiusMobile ? dropdownBorderRadiusMobile[0] : ''
+	);
+	const previewBorderTopRightRadius = getPreviewSize(
+		previewDevice,
+		undefined !== dropdownBorderRadius ? dropdownBorderRadius[1] : '',
+		undefined !== dropdownBorderRadiusTablet ? dropdownBorderRadiusTablet[1] : '',
+		undefined !== dropdownBorderRadiusMobile ? dropdownBorderRadiusMobile[1] : ''
+	);
+	const previewBorderBottomRightRadius = getPreviewSize(
+		previewDevice,
+		undefined !== dropdownBorderRadius ? dropdownBorderRadius[2] : '',
+		undefined !== dropdownBorderRadiusTablet ? dropdownBorderRadiusTablet[2] : '',
+		undefined !== dropdownBorderRadiusMobile ? dropdownBorderRadiusMobile[2] : ''
+	);
+	const previewBorderBottomLeftRadius = getPreviewSize(
+		previewDevice,
+		undefined !== dropdownBorderRadius ? dropdownBorderRadius[3] : '',
+		undefined !== dropdownBorderRadiusTablet ? dropdownBorderRadiusTablet[3] : '',
+		undefined !== dropdownBorderRadiusMobile ? dropdownBorderRadiusMobile[3] : ''
+	);
 	//need to caclulate this outside of conditionals because it uses a hook underneath.
 	const dividerValue = css.render_border(divider, dividerTablet, dividerMobile, previewDevice, 'bottom');
 	const dropdownDividerValue = css.render_border(
@@ -428,6 +460,39 @@ export default function BackendStyles(props) {
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul.sub-menu, .wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul.submenu`
 	);
 	css.add_property('background', css.render_color(previewBackgroundDropdown));
+	console.log(1, dropdownBorderRadius);
+	css.add_property(
+		'border-top',
+		css.render_border(dropdownBorder, dropdownBorderTablet, dropdownBorderMobile, previewDevice, 'top')
+	);
+	css.add_property(
+		'border-right',
+		css.render_border(dropdownBorder, dropdownBorderTablet, dropdownBorderMobile, previewDevice, 'right')
+	);
+	css.add_property(
+		'border-bottom',
+		css.render_border(dropdownBorder, dropdownBorderTablet, dropdownBorderMobile, previewDevice, 'bottom')
+	);
+	css.add_property(
+		'border-left',
+		css.render_border(dropdownBorder, dropdownBorderTablet, dropdownBorderMobile, previewDevice, 'left')
+	);
+	css.add_property(
+		'border-top-left-radius',
+		getSpacingOptionOutput(previewBorderTopLeftRadius, dropdownBorderRadiusUnit)
+	);
+	css.add_property(
+		'border-top-right-radius',
+		getSpacingOptionOutput(previewBorderTopRightRadius, dropdownBorderRadiusUnit)
+	);
+	css.add_property(
+		'border-bottom-right-radius',
+		getSpacingOptionOutput(previewBorderBottomRightRadius, dropdownBorderRadiusUnit)
+	);
+	css.add_property(
+		'border-bottom-left-radius',
+		getSpacingOptionOutput(previewBorderBottomLeftRadius, dropdownBorderRadiusUnit)
+	);
 	if (previewOrientation == 'horizontal') {
 		if (dropdownShadow?.[0]?.enable) {
 			css.add_property('box-shadow', css.render_shadow(dropdownShadow[0]));

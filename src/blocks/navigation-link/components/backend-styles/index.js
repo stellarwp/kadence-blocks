@@ -137,6 +137,13 @@ export default function BackendStyles(props) {
 		mediaAlign,
 		mediaAlignTablet,
 		mediaAlignMobile,
+		dropdownBorder,
+		dropdownBorderTablet,
+		dropdownBorderMobile,
+		dropdownBorderRadius,
+		dropdownBorderRadiusTablet,
+		dropdownBorderRadiusMobile,
+		dropdownBorderRadiusUnit,
 	} = attributes;
 
 	const editorElement = useEditorElement(currentRef, []);
@@ -472,6 +479,31 @@ export default function BackendStyles(props) {
 		`.wp-block-kadence-navigation .navigation .menu-container ul .wp-block-kadence-navigation-link${uniqueID} ul.sub-menu, .wp-block-kadence-navigation .navigation .menu-container ul .wp-block-kadence-navigation-link${uniqueID} ul.submenu`
 	);
 	css.add_property('background', css.render_color(previewBackgroundDropdown));
+
+	css.add_property(
+		'border-top',
+		css.render_border(dropdownBorder, dropdownBorderTablet, dropdownBorderMobile, previewDevice, 'top', false)
+	);
+	css.add_property(
+		'border-right',
+		css.render_border(dropdownBorder, dropdownBorderTablet, dropdownBorderMobile, previewDevice, 'right', false)
+	);
+	css.add_property(
+		'border-bottom',
+		css.render_border(dropdownBorder, dropdownBorderTablet, dropdownBorderMobile, previewDevice, 'bottom', false)
+	);
+	css.add_property(
+		'border-left',
+		css.render_border(dropdownBorder, dropdownBorderTablet, dropdownBorderMobile, previewDevice, 'left', false)
+	);
+	css.render_measure_output(
+		dropdownBorderRadius,
+		dropdownBorderRadiusTablet,
+		dropdownBorderRadiusMobile,
+		previewDevice,
+		'border-radius',
+		dropdownBorderRadiusUnit
+	);
 	css.set_selector(
 		`.wp-block-kadence-navigation .navigation .menu-container ul .wp-block-kadence-navigation-link${uniqueID} ul li:not(:last-of-type), .wp-block-kadence-navigation .menu-container ul.menu li.wp-block-kadence-navigation-link${uniqueID}.kadence-menu-mega-enabled > ul > li.menu-item > a`
 	);

@@ -91,6 +91,7 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' > .navigation > .menu-container > .menu' );
 		$css->render_measure_output( $nav_attributes, 'padding' );
 		$css->render_measure_output( $nav_attributes, 'margin' );
+
 		return $css->css_output();
 	}
 
@@ -151,6 +152,11 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		// Dropdown.
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul.sub-menu, .wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul.submenu' );
 		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundDropdown'] ) );
+		$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['dropdownBorder'], 'bottom' ) );
+		$css->add_property( 'border-top', $css->render_border( $sized_attributes['dropdownBorder'], 'top' ) );
+		$css->add_property( 'border-left', $css->render_border( $sized_attributes['dropdownBorder'], 'left' ) );
+		$css->add_property( 'border-right', $css->render_border( $sized_attributes['dropdownBorder'], 'right' ) );
+		$css->render_measure_range( $sized_attributes, ( 'Desktop' === $size ? 'dropdownBorderRadius' : 'dropdownBorderRadius' . $size ), 'border-radius', '', ['unit_key' => 'dropdownBorderRadiusUnit']);
 		if ( $sized_attributes['orientation'] == 'horizontal' ) {
 			if ( $sized_attributes['dropdownShadow'] && isset( $sized_attributes['dropdownShadow'][0] ) && $sized_attributes['dropdownShadow'][0]['enable'] ) {
 				$css->add_property( 'box-shadow', $css->render_shadow( $sized_attributes['dropdownShadow'][0] ) );

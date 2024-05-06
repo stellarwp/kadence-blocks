@@ -169,6 +169,15 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			}
 		}
 
+		// Dropdown.
+		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container ul .wp-block-kadence-navigation-link' . $unique_id . ' ul.sub-menu, .wp-block-kadence-navigation .navigation .menu-container ul .wp-block-kadence-navigation-link' . $unique_id . ' ul.submenu' );
+		$css->render_measure_output( $attributes, 'dropdownBorderRadius', 'border-radius', array(
+			'desktop_key' => 'dropdownBorderRadius',
+			'tablet_key'  => 'dropdownBorderRadiusTablet',
+			'mobile_key'  => 'dropdownBorderRadiusMobile',
+		) );
+		$css->render_border_styles( $attributes, 'dropdownBorder' );
+
 		return $css->css_output();
 	}
 

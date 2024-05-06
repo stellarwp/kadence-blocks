@@ -349,6 +349,13 @@ export default function Edit(props) {
 		iconSide,
 		iconSideTablet,
 		iconSideMobile,
+		dropdownBorder,
+		dropdownBorderTablet,
+		dropdownBorderMobile,
+		dropdownBorderRadius,
+		dropdownBorderRadiusTablet,
+		dropdownBorderRadiusMobile,
+		dropdownBorderRadiusUnit,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
@@ -1526,6 +1533,33 @@ export default function Edit(props) {
 								units={['em', 'rem', 'px', 'vw']}
 								onUnit={(value) => setAttributes({ dropdownVerticalSpacingUnit: value })}
 								showUnit={true}
+							/>
+							<ResponsiveBorderControl
+								label={__('Dropdown Border', 'kadence-blocks')}
+								value={dropdownBorder}
+								tabletValue={dropdownBorderTablet}
+								mobileValue={dropdownBorderMobile}
+								onChange={(value) => setAttributes({ dropdownBorder: value })}
+								onChangeTablet={(value) => setAttributes({ dropdownBorderTablet: value })}
+								onChangeMobile={(value) => setAttributes({ dropdownBorderMobile: value })}
+							/>
+
+							<ResponsiveMeasurementControls
+								label={__('Dropdown Border Radius', 'kadence-blocks')}
+								value={dropdownBorderRadius}
+								tabletValue={dropdownBorderRadiusTablet}
+								mobileValue={dropdownBorderRadiusMobile}
+								onChange={(value) => setAttributes({ dropdownBorderRadius: value })}
+								onChangeTablet={(value) => setAttributes({ dropdownBorderRadiusTablet: value })}
+								onChangeMobile={(value) => setAttributes({ dropdownBorderRadiusMobile: value })}
+								min={0}
+								max={dropdownBorderRadiusUnit === 'em' || dropdownBorderRadiusUnit === 'rem' ? 24 : 100}
+								step={dropdownBorderRadiusUnit === 'em' || dropdownBorderRadiusUnit === 'rem' ? 0.1 : 1}
+								unit={dropdownBorderRadiusUnit}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setAttributes({ dropdownBorderRadiusUnit: value })}
+								isBorderRadius={true}
+								allowEmpty={true}
 							/>
 							<ResponsiveSingleBorderControl
 								label={'Divider'}

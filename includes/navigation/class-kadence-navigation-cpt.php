@@ -1115,6 +1115,92 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'type' => 'string',
 				'default' => '',
 			),
+			array(
+				'key' => '_kad_navigation_dropdownBorder',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
+					),
+				),
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
+				),
+			),
+			array(
+				'key' => '_kad_navigation_dropdownBorderTablet',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
+					),
+				),
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
+				),
+			),
+			array(
+				'key' => '_kad_navigation_dropdownBorderMobile',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
+					),
+				),
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
+				),
+			),
+			array(
+				'key'           => '_kad_navigation_dropdownBorderRadius',
+				'default'       => array( 0, 0, 0, 0 ),
+				'type'          => 'array',
+				'children_type' => 'integer',
+			),
+			array(
+				'key'           => '_kad_navigation_dropdownBorderRadiusTablet',
+				'default'       => array( 0, 0, 0, 0 ),
+				'type'          => 'array',
+				'children_type' => 'integer',
+			),
+			array(
+				'key'           => '_kad_navigation_dropdownBorderRadiusMobile',
+				'default'       => array( 0, 0, 0, 0 ),
+				'type'          => 'array',
+				'children_type' => 'integer',
+			),
+			array(
+				'key'     => '_kad_navigation_dropdownBorderRadiusUnit',
+				'default' => 'px',
+				'type'    => 'string',
+			),
 		);
 
 		foreach ( $register_meta as $meta ) {

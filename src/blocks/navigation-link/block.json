@@ -769,6 +769,58 @@
 					"mobileMargin": ["", "", "", ""]
 				}
 			]
+		},
+		"dropdownBorder": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"dropdownBorderTablet": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"dropdownBorderMobile": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"dropdownBorderRadius": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"dropdownBorderRadiusTablet": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"dropdownBorderRadiusMobile": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"dropdownBorderRadiusUnit": {
+			"type": "string",
+			"default": "px"
 		}
 	},
 	"usesContext": [
