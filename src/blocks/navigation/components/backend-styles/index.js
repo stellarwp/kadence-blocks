@@ -460,7 +460,6 @@ export default function BackendStyles(props) {
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul.sub-menu, .wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul.submenu`
 	);
 	css.add_property('background', css.render_color(previewBackgroundDropdown));
-	console.log(1, dropdownBorderRadius);
 	css.add_property(
 		'border-top',
 		css.render_border(dropdownBorder, dropdownBorderTablet, dropdownBorderMobile, previewDevice, 'top')
