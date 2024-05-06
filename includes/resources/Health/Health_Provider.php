@@ -3,6 +3,7 @@
 namespace KadenceWP\KadenceBlocks\Health;
 
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Provider;
+use KadenceWP\KadenceBlocks\StellarWP\Uplink\Notice\Notice;
 
 /**
  * Check the Health aka the status of requirements, dependencies or anything that
@@ -15,8 +16,8 @@ final class Health_Provider extends Provider {
 	 */
 	public function register(): void {
 		/*
-		 * An array indexed by PHP function names to check are enabled, where a true value is
-		 * they are required and a false value is they are suggested.
+		 * An array indexed by PHP function names to check are enabled and the Notice
+		 * type to render if they aren't.
 		 *
 		 * Adjust as needed.
 		 */
@@ -24,8 +25,8 @@ final class Health_Provider extends Provider {
 		                ->needs( '$function_map' )
 		                ->give( static function (): array {
 			                return [
-				                'error_log'       => true,
-				                'curl_multi_exec' => true,
+				                'error_log'       => Notice::ERROR,
+				                'curl_multi_exec' => Notice::WARNING,
 			                ];
 		                } );
 

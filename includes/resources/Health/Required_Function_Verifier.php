@@ -8,10 +8,10 @@ use KadenceWP\KadenceBlocks\StellarWP\Uplink\Notice\Notice;
 final class Required_Function_Verifier {
 
 	/**
-	 * An array indexed by PHP function names to check are enabled, where a true value is
-	 *  they are required and a false value is they are suggested.
+	 * An array indexed by PHP function names to check are enabled and the Notice
+	 * type to render if they aren't.
 	 *
-	 * @var array<string, bool>
+	 * @var array<string, string>
 	 */
 	private array $function_map;
 
@@ -34,17 +34,17 @@ final class Required_Function_Verifier {
 			return;
 		}
 
-		foreach ( $this->function_map as $function => $required ) {
+		foreach ( $this->function_map as $function => $type ) {
 			if ( function_exists( $function ) ) {
 				continue;
 			}
 
 			$this->notice_handler->add( new Notice(
-				$required ? Notice::ERROR : Notice::WARNING,
+				$type,
 				sprintf(
-					__( 'The <code>%s</code> function is disabled via PHP and is %s by Kadence Blocks. Ask your administrator to enable it.', 'kadence-blocks' ),
-					$required ? __( 'required', 'kadence-blocks' ) : __( 'suggested', 'kadence-blocks' ),
-					$function
+					__( 'The "%s" function is disabled via PHP and is %s by Kadence Blocks. Ask your administrator to enable it.', 'kadence-blocks' ),
+					$function,
+					$type === Notice::ERROR ? __( 'required', 'kadence-blocks' ) : __( 'suggested', 'kadence-blocks' ),
 				),
 			) );
 		}
