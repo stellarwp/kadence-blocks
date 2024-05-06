@@ -58,22 +58,14 @@ import { useEntityPublish } from './hooks';
 const ANCHOR_REGEX = /[\s#]/g;
 
 export function EditInner(props) {
-	const {
-		attributes,
-		setAttributes,
-		clientId,
-		context,
-		direct,
-		id,
-		isSelected,
-		showVisualBuilder,
-		setShowVisualBuilder,
-	} = props;
+	const { attributes, setAttributes, clientId, context, direct, id, isSelected } = props;
+	const { setHeaderVisualBuilderOpenId } = useDispatch('kadenceblocks/data');
 
-	const { previewDevice } = useSelect(
+	const { previewDevice, showVisualBuilder } = useSelect(
 		(select) => {
 			return {
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
+				showVisualBuilder: select('kadenceblocks/data').getOpenHeaderVisualBuilderId() === clientId,
 			};
 		},
 		[clientId]
@@ -689,7 +681,7 @@ export function EditInner(props) {
 					<Button
 						className="components-tab-button"
 						isPressed={showVisualBuilder}
-						onClick={() => setShowVisualBuilder(!showVisualBuilder)}
+						onClick={() => setHeaderVisualBuilderOpenId(showVisualBuilder ? null : clientId)}
 					>
 						<span>{__('Visual Builder', 'kadence-blocks')}</span>
 					</Button>

@@ -39,7 +39,6 @@ export function Edit(props) {
 	const { id, uniqueID } = attributes;
 
 	const [meta, setMeta] = useHeaderProp('meta', id);
-	const [showVisualBuilder, setShowVisualBuilder] = useState(false);
 
 	const metaAttributes = {
 		isSticky: meta?._kad_header_isSticky,
@@ -234,23 +233,11 @@ export function Edit(props) {
 				{/* Form selected and loaded, display it */}
 				{id > 0 && !isEmpty(post) && post.status !== 'trash' && (
 					<EntityProvider kind="postType" type="kadence_header" id={id}>
-						<EditInner
-							{...props}
-							direct={false}
-							id={id}
-							showVisualBuilder={showVisualBuilder}
-							setShowVisualBuilder={setShowVisualBuilder}
-						/>
+						<EditInner {...props} direct={false} id={id} />
 					</EntityProvider>
 				)}
 			</div>
-			<VisualBuilder
-				clientId={clientId}
-				previewDevice={previewDevice}
-				isVisible={showVisualBuilder}
-				setIsVisible={setShowVisualBuilder}
-				isSelected={isSelected}
-			/>
+			<VisualBuilder clientId={clientId} previewDevice={previewDevice} isSelected={isSelected} />
 		</>
 	);
 
@@ -259,21 +246,9 @@ export function Edit(props) {
 		mainBlockContent = (
 			<>
 				<div {...blockProps}>
-					<EditInner
-						{...props}
-						direct={true}
-						id={postId}
-						showVisualBuilder={showVisualBuilder}
-						setShowVisualBuilder={setShowVisualBuilder}
-					/>
+					<EditInner {...props} direct={true} id={postId} />
 				</div>
-				<VisualBuilder
-					clientId={clientId}
-					previewDevice={previewDevice}
-					isVisible={showVisualBuilder}
-					setIsVisible={setShowVisualBuilder}
-					isSelected={isSelected}
-				/>
+				<VisualBuilder clientId={clientId} previewDevice={previewDevice} isSelected={isSelected} />
 			</>
 		);
 	}

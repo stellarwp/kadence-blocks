@@ -51,9 +51,9 @@ function extractBlocks(blocksData) {
 	return { desktopBlocks, tabletBlocks, offCanvasBlocks };
 }
 
-export default function VisualBuilder({ clientId, previewDevice, isVisible, setIsVisible, isSelected }) {
+export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 	const [tab, setTab] = useState(previewDevice);
-	const { setPreviewDeviceType } = useDispatch('kadenceblocks/data');
+	const { setPreviewDeviceType, setHeaderVisualBuilderOpenId } = useDispatch('kadenceblocks/data');
 
 	const updateTab = (value) => {
 		setTab(value);
@@ -63,7 +63,7 @@ export default function VisualBuilder({ clientId, previewDevice, isVisible, setI
 		}
 	};
 
-	const { topLevelBlocks, childSelected } = useSelect(
+	const { topLevelBlocks, childSelected, isVisible, viz } = useSelect(
 		(select) => {
 			const { getBlockOrder, getBlock, hasSelectedInnerBlock } = select('core/block-editor');
 
@@ -72,10 +72,16 @@ export default function VisualBuilder({ clientId, previewDevice, isVisible, setI
 			return {
 				topLevelBlocks: topLevelIds.map((_id) => getBlock(_id)),
 				childSelected: hasSelectedInnerBlock(clientId, true),
+				isVisible: select('kadenceblocks/data').getOpenHeaderVisualBuilderId() === clientId,
+				viz: select('kadenceblocks/data').getOpenHeaderVisualBuilderId(),
 			};
 		},
 		[clientId]
 	);
+
+	const setIsVisible = () => {
+		setHeaderVisualBuilderOpenId(isVisible ? null : clientId);
+	};
 
 	const { desktopBlocks, tabletBlocks, offCanvasBlocks } = extractBlocks(topLevelBlocks);
 

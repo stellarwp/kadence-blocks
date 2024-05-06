@@ -26,6 +26,12 @@ const actions = {
 			};
 		}
 	},
+	*setHeaderVisualBuilderOpenId(clientId = null) {
+		return {
+			type: 'SET_OPEN_HEADER_VISUAL_BUILDER_ID',
+			clientId,
+		};
+	},
 	*toggleEditorPanelOpened(panelName, defaultValue) {
 		return {
 			type: 'TOGGLE_EDITOR_PANEL_OPENED',
@@ -137,6 +143,15 @@ const getPreviewDeviceType = createRegistrySelector((select) => (state) => {
 const store = createReduxStore('kadenceblocks/data', {
 	reducer(state = DEFAULT_STATE, action) {
 		switch (action.type) {
+			case 'SET_OPEN_HEADER_VISUAL_BUILDER_ID':
+				const { clientId } = action;
+				return {
+					...state,
+					headerVisualBuilder: {
+						...state.headerVisualBuilder,
+						open: clientId,
+					},
+				};
 			case 'TOGGLE_EDITOR_PANEL_OPENED':
 				const { panelName, defaultValue } = action;
 				const isOpen =
@@ -285,6 +300,9 @@ const store = createReduxStore('kadenceblocks/data', {
 				}
 			}
 			return isUniqueFont;
+		},
+		getOpenHeaderVisualBuilderId(state) {
+			return get(state, ['headerVisualBuilder', 'open'], null);
 		},
 		isEditorPanelOpened(state, panelName, defaultValue) {
 			const panels = get(state, ['editorPanels'], {});
