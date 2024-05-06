@@ -497,6 +497,11 @@ export default function BackendStyles(props) {
 	css.render_measure_output(padding, tabletPadding, mobilePadding, previewDevice, 'padding', paddingUnit);
 	css.render_measure_output(margin, tabletMargin, mobileMargin, previewDevice, 'margin', marginUnit);
 
+	if (previewStyle.includes('fullheight')) {
+		css.set_selector(`.wp-block-kadence-header .wp-block-kadence-navigation${uniqueID}`);
+		css.add_property('height', '100%');
+	}
+
 	const cssOutput = css.css_output();
 
 	return <style>{`${cssOutput}`}</style>;

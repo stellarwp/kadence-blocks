@@ -10,11 +10,9 @@
 
 	.wp-block-kadence-header-section {
 		display: flex !important;
-		align-items: center;
 
 		.wp-block-kadence-header-column {
 			display: flex !important;
-			align-items: center;
 		}
 
 		// Override a style we set elsewhere
@@ -38,6 +36,7 @@
 	.wp-block-kadence-header-column,
 	.wp-block-kadence-header-section {
 		gap: 10px;
+		align-items: center;
 	}
 
 	&.wp-block-kadence-header-row-layout-contained {

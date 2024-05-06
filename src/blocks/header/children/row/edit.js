@@ -32,6 +32,7 @@ import {
 	GradientControl,
 	InspectorControlTabs,
 	KadencePanelBody,
+	ResponsiveAlignControls,
 } from '@kadence/components';
 
 /**
@@ -78,6 +79,9 @@ export function Edit(props) {
 		itemGapTablet,
 		itemGapMobile,
 		itemGapUnit,
+		vAlign,
+		vAlignTablet,
+		vAlignMobile,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
@@ -336,6 +340,21 @@ export function Edit(props) {
 								}}
 								units={['px', 'em', 'vw']}
 								showUnit={true}
+							/>
+
+							<ResponsiveAlignControls
+								label={__('Vertical Alignment', 'kadence-blocks')}
+								value={vAlign ? vAlign : ''}
+								tabletValue={vAlignTablet ? vAlignTablet : ''}
+								mobileValue={vAlignMobile ? vAlignMobile : ''}
+								onChange={(nextAlign) => setAttributes({ vAlign: nextAlign ? nextAlign : 'center' })}
+								onChangeTablet={(nextAlign) =>
+									setAttributes({ vAlignTablet: nextAlign ? nextAlign : '' })
+								}
+								onChangeMobile={(nextAlign) =>
+									setAttributes({ vAlignMobile: nextAlign ? nextAlign : '' })
+								}
+								type={'vertical'}
 							/>
 						</KadencePanelBody>
 					</>

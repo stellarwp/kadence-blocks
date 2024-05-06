@@ -243,6 +243,11 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.item-is-stuck .wp-block-kadence-navigation' . $unique_id . ' .navigation > .menu-container > ul > li:not(:last-of-type) > .link-drop-wrap' );
 			$css->add_property( 'border-right', $css->render_border( $sized_attributes['stickyDivider'], 'bottom' ) );
 		}
+
+		if ( str_contains( $sized_attributes['style'], 'fullheight' ) ) {
+			$css->set_selector( '.wp-block-kadence-header .wp-block-kadence-navigation' . $unique_id );
+			$css->add_property( 'height', '100%' );
+		}
 	}
 
 	/**

@@ -180,6 +180,18 @@
 		"itemGapUnit": {
 			"type": "string",
 			"default": "px"
+		},
+		"vAlign": {
+			"type": "string",
+			"default": ""
+		},
+		"vAlignTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"vAlignMobile": {
+			"type": "string",
+			"default": ""
 		}
 	},
 

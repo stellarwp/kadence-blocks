@@ -36,11 +36,15 @@ export default function BackendStyles(props) {
 		itemGapTablet,
 		itemGapMobile,
 		itemGapUnit,
+		vAlign,
+		vAlignTablet,
+		vAlignMobile,
 	} = attributes;
 
 	const previewMinHeight = getPreviewSize(previewDevice, minHeight, minHeightTablet, minHeightMobile);
 	const previewMaxWidth = getPreviewSize(previewDevice, maxWidth, maxWidthTablet, maxWidthMobile);
 	const previewItemGap = getPreviewSize(previewDevice, itemGap, itemGapTablet, itemGapMobile);
+	const previewVAlign = getPreviewSize(previewDevice, vAlign, vAlignTablet, vAlignMobile);
 
 	const css = new KadenceBlocksCSS();
 
@@ -109,6 +113,11 @@ export default function BackendStyles(props) {
 		`.wp-block-kadence-header-row${uniqueID} .wp-block-kadence-header-section, .wp-block-kadence-header-row${uniqueID} .wp-block-kadence-header-column`
 	);
 	css.add_property('gap', previewItemGap + itemGapUnit);
+	if (previewVAlign == 'top') {
+		css.add_property('align-items', 'flex-start');
+	} else if (previewVAlign == 'bottom') {
+		css.add_property('align-items', 'flex-end');
+	}
 
 	const cssOutput = css.css_output();
 

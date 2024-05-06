@@ -171,6 +171,11 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 		//pass down to sections
 		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .wp-block-kadence-header-column, .wp-block-kadence-header-row' . $unique_id . ' .wp-block-kadence-header-section' );
 		$css->add_property( 'gap', $sized_attributes['itemGap'] . $sized_attributes['itemGapUnit'] );
+		if ( $sized_attributes['vAlign'] == 'top' ) {
+			$css->add_property( 'align-items', 'flex-start' );
+		} else if ( $sized_attributes['vAlign'] == 'bottom' ) {
+			$css->add_property( 'align-items', 'flex-end' );
+		}
 	}
 
 	/**
