@@ -381,12 +381,7 @@ export function EditInner(props) {
 		dropdownBorderRadiusUnit,
 	} = metaAttributes;
 
-	const previewOrientation = getPreviewSize(
-		previewDevice,
-		orientation ? orientation : 'horizontal',
-		orientationTablet,
-		orientationMobile
-	);
+	const previewOrientation = getPreviewSize(previewDevice, orientation, orientationTablet, orientationMobile);
 	const previewStyle = getPreviewSize(previewDevice, style, styleTablet, styleMobile);
 	const previewCollapseSubMenus = getPreviewSize(
 		previewDevice,
@@ -540,14 +535,14 @@ export function EditInner(props) {
 						onChange={(value) => setMetaAttribute(value, 'parentTogglesMenus' + size)}
 					/>
 				)}
-				{orientationValue == 'horizontal' && (
+				{orientationValue != 'vertical' && (
 					<ToggleControl
 						label={__('Stretch Menu', 'kadence-blocks')}
 						checked={stretchValue}
 						onChange={(value) => setMetaAttribute(value, 'stretch' + size)}
 					/>
 				)}
-				{orientationValue == 'horizontal' && stretchValue && (
+				{orientationValue != 'vertical' && stretchValue && (
 					<ToggleControl
 						label={__('Fill and Center Menu Items?', 'kadence-blocks')}
 						checked={fillStretchValue}
@@ -960,7 +955,7 @@ export function EditInner(props) {
 							panelName={'kb-navigation-style-sub-menus'}
 							initialOpen={false}
 						>
-							{previewOrientation == 'horizontal' && (
+							{previewOrientation != 'vertical' && (
 								<>
 									<ResponsiveSelectControl
 										label={__('Reveal Animation', 'kadence-blocks')}
@@ -1070,7 +1065,7 @@ export function EditInner(props) {
 								tabletChildren={styleColorControls('Tablet', 'Dropdown')}
 								mobileChildren={styleColorControls('Mobile', 'Dropdown')}
 							></SmallResponsiveControl>
-							{previewOrientation == 'horizontal' && (
+							{previewOrientation != 'vertical' && (
 								<BoxShadowControl
 									label={__('Box Shadow', 'kadence-blocks')}
 									enable={
