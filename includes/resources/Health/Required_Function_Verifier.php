@@ -17,6 +17,9 @@ final class Required_Function_Verifier {
 
 	private Notice_Handler $notice_handler;
 
+	/**
+	 * @param array<string, string> $function_map
+	 */
 	public function __construct( array $function_map, Notice_Handler $notice_handler ) {
 		$this->function_map   = $function_map;
 		$this->notice_handler = $notice_handler;
