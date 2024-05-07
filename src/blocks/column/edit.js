@@ -1075,8 +1075,8 @@ function SectionEdit(props) {
 	const previewMaxWidthUnit = getPreviewSize(
 		previewDevice,
 		maxWidthUnit ? maxWidthUnit : 'px',
-		maxWidthTabletUnit ? maxWidthTabletUnit : 'px',
-		maxWidthMobileUnit ? maxWidthMobileUnit : 'px'
+		maxWidthTabletUnit ? maxWidthTabletUnit : '',
+		maxWidthMobileUnit ? maxWidthMobileUnit : ''
 	);
 	const previewMinHeight = getPreviewSize(
 		previewDevice,

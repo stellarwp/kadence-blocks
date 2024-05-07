@@ -91,8 +91,8 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'background', $css->render_color( '#f2f2f2', $alpha ) );
 			}
 			$max_width_unit = ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px';
-			$tablet_max_width_unit = ! empty( $attributes['maxWidthTabletUnit'] ) ? $attributes['maxWidthTabletUnit'] : 'px';
-			$mobile_max_width_unit = ! empty( $attributes['maxWidthMobileUnit'] ) ? $attributes['maxWidthMobileUnit'] : 'px';
+			$tablet_max_width_unit = ! empty( $attributes['maxWidthTabletUnit'] ) ? $attributes['maxWidthTabletUnit'] : $max_width_unit;
+			$mobile_max_width_unit = ! empty( $attributes['maxWidthMobileUnit'] ) ? $attributes['maxWidthMobileUnit'] : $tablet_max_width_unit;
 			if ( ! empty( $attributes['maxWidth'] ) ) {
 				$css->add_property( 'max-width', $attributes['maxWidth'] . $max_width_unit );
 			}
