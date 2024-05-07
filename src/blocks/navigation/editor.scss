@@ -148,6 +148,14 @@ $anchor: #5000b9;
 		box-shadow: 0 2px 13px rgba(0, 0, 0, 0.1);
 		z-index: 1000;
 		width: initial;
+
+		//third level nav
+		ul.submenu {
+			top: 0;
+			left: 100%;
+			right: auto;
+			min-height: 100%;
+		}
 	}
 	.navigation ul ul.quadmenu-row {
 		flex-direction: row;
@@ -676,13 +684,6 @@ $anchor: #5000b9;
 	}
 	.navigation ul li.menu-item > .link-drop-wrap > a {
 		padding: 0.6em 0.5em;
-	}
-	.navigation ul ul ul.sub-menu,
-	.navigation ul ul ul.submenu {
-		top: 0;
-		left: 100%;
-		right: auto;
-		min-height: 100%;
 	}
 	.navigation .menu {
 		display: flex;
