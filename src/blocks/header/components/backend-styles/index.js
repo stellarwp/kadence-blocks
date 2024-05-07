@@ -195,6 +195,39 @@ export default function BackendStyles(props) {
 		undefined !== borderRadiusHoverMobile ? borderRadiusHoverMobile[3] : ''
 	);
 
+	const previewBorderTop = css.render_border(border, borderTablet, borderMobile, previewDevice, 'top');
+	const previewBorderLeft = css.render_border(border, borderTablet, borderMobile, previewDevice, 'left');
+	const previewBorderRight = css.render_border(border, borderTablet, borderMobile, previewDevice, 'right');
+	const previewBorderBottom = css.render_border(border, borderTablet, borderMobile, previewDevice, 'bottom');
+	const previewBorderHoverTop = css.render_border(
+		borderHover,
+		borderHoverTablet,
+		borderHoverMobile,
+		previewDevice,
+		'top'
+	);
+	const previewBorderHoverLeft = css.render_border(
+		borderHover,
+		borderHoverTablet,
+		borderHoverMobile,
+		previewDevice,
+		'left'
+	);
+	const previewBorderHoverRight = css.render_border(
+		borderHover,
+		borderHoverTablet,
+		borderHoverMobile,
+		previewDevice,
+		'right'
+	);
+	const previewBorderHoverBottom = css.render_border(
+		borderHover,
+		borderHoverTablet,
+		borderHoverMobile,
+		previewDevice,
+		'bottom'
+	);
+
 	const previewBorderTopLeftRadiusTransparent = getPreviewSize(
 		previewDevice,
 		undefined !== borderRadiusTransparent ? borderRadiusTransparent[0] : '',
@@ -440,12 +473,7 @@ export default function BackendStyles(props) {
 	);
 
 	const previewIsSticky = getPreviewSize(previewDevice, isSticky, isStickyTablet, isStickyMobile);
-	const previewIsTransparent = getPreviewSize(
-		previewDevice,
-		isTransparent == '1',
-		isTransparentTablet == '1',
-		isTransparentMobile == '1'
-	);
+	const previewIsTransparent = getPreviewSize(previewDevice, isTransparent, isTransparentTablet, isTransparentMobile);
 
 	//const elementHeight = useElementHeight(currentRef, [isSelected]);
 	const elementHeight = currentRef?.current?.clientHeight;
@@ -492,13 +520,10 @@ export default function BackendStyles(props) {
 		if ('gradient' === background?.type && background?.gradient) {
 			css.add_property('background', background.gradient);
 		}
-		css.add_property('border-top', css.render_border(border, borderTablet, borderMobile, previewDevice, 'top'));
-		css.add_property('border-right', css.render_border(border, borderTablet, borderMobile, previewDevice, 'right'));
-		css.add_property(
-			'border-bottom',
-			css.render_border(border, borderTablet, borderMobile, previewDevice, 'bottom')
-		);
-		css.add_property('border-left', css.render_border(border, borderTablet, borderMobile, previewDevice, 'left'));
+		css.add_property('border-top', previewBorderTop);
+		css.add_property('border-right', previewBorderRight);
+		css.add_property('border-bottom', previewBorderBottom);
+		css.add_property('border-left', previewBorderLeft);
 		css.add_property(
 			'border-top-left-radius',
 			getSpacingOptionOutput(previewBorderTopLeftRadius, borderRadiusUnit)
@@ -614,22 +639,10 @@ export default function BackendStyles(props) {
 			css.add_property('background', backgroundHover.gradient);
 		}
 
-		css.add_property(
-			'border-top',
-			css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'top')
-		);
-		css.add_property(
-			'border-right',
-			css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'right')
-		);
-		css.add_property(
-			'border-bottom',
-			css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'bottom')
-		);
-		css.add_property(
-			'border-left',
-			css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'left')
-		);
+		css.add_property('border-top', previewBorderHoverTop);
+		css.add_property('border-right', previewBorderHoverRight);
+		css.add_property('border-bottom', previewBorderHoverBottom);
+		css.add_property('border-left', previewBorderHoverLeft);
 		css.add_property(
 			'border-top-left-radius',
 			getSpacingOptionOutput(previewborderHoverTopLeftRadius, borderRadiusHoverUnit)

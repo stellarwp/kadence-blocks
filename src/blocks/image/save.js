@@ -70,6 +70,7 @@ export default function save({ attributes }) {
 		[`kb-filter-${imageFilter}`]: imageFilter && imageFilter !== 'none',
 		[`kb-image-is-ratio-size`]: useRatio,
 		'image-is-svg': url && url.endsWith('.svg'),
+		[`has-transparent-img`]: urlTransparent,
 	});
 
 	const containerClasses = classnames({

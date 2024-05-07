@@ -1,11 +1,13 @@
 @import "../../assets/css/variables.scss";
 
 @mixin header-transparent-styles {
-	.wp-block-kadence-image .kb-img {
-		display: none;
-	}
-	.wp-block-kadence-image .kb-img-transparent {
-		display: initial;
+	.wp-block-kadence-image.has-transparent-img {
+		.kb-img {
+			display: none;
+		}
+		.kb-img-transparent {
+			display: initial;
+		}
 	}
 }
 
