@@ -49,6 +49,7 @@ final class Required_Function_Verifier {
 					$function,
 					$type === Notice::ERROR ? __( 'required', 'kadence-blocks' ) : __( 'suggested', 'kadence-blocks' ),
 				),
+				true
 			) );
 		}
 
