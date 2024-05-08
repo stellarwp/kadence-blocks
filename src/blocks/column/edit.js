@@ -662,8 +662,12 @@ function SectionEdit(props) {
 					tempRowGap[2] = '' !== gutter?.[2];
 					tempRowGapVariable[1] = '' !== gutter?.[1] ? 'custom' : '';
 				}
-				
-				setAttributes({ rowGapVariable: tempRowGapVariable, rowGap: tempRowGap, rowGapUnit: gutterUnit ? gutterUnit : 'px' });
+
+				setAttributes({
+					rowGapVariable: tempRowGapVariable,
+					rowGap: tempRowGap,
+					rowGapUnit: gutterUnit ? gutterUnit : 'px',
+				});
 			}
 			setAttributes({ kbVersion: 2 });
 		}
