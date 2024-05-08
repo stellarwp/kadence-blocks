@@ -176,6 +176,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 = 3.2.37 =
 Release Date: May 8th 2024
+* Add: Button to reverse image order in advanced gallery.
 * Add: Allow Max width units for columns and infobox to be set uniquely on tablet and mobile.
 * Fix: Aria roles when using accordion layout in tabs block.
 * Fix: Infobox media alignment when max width is using percentage.
