@@ -719,7 +719,7 @@ export function EditInner(props) {
 									size={'large'}
 									style={{ minWidth: '600px' }}
 								>
-									<MenuEditor />
+									<MenuEditor id={id} />
 								</Modal>
 							)}
 						</KadencePanelBody>

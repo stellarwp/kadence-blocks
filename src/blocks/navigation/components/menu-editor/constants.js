@@ -33,3 +33,4 @@ export const EDITABLE_BLOCK_ATTRIBUTES = [
 ];
 
 export const PREVENT_BLOCK_DELETE = ['kadence/column', 'kadence/rowlayout'];
+export const PREVENT_BLOCK_MOVE = ['kadence/column', 'kadence/rowlayout'];

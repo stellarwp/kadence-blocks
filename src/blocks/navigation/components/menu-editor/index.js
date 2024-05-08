@@ -19,8 +19,8 @@ import './editor.scss';
 // import '../../../column/index';
 // import '../../../advancedheading/block';
 
-export default function MenuEditor() {
-	const [selectedPostId, setSelectedPostId] = useState(0);
+export default function MenuEditor({ id = 0 }) {
+	const [selectedPostId, setSelectedPostId] = useState(id);
 	const { saveEntityRecord } = useDispatch('core');
 
 	const { posts } = useSelect(

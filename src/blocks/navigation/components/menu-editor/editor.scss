@@ -100,14 +100,29 @@
 		.menu-block {
 			display: flex;
 			align-items: center;
-			padding: 10px 10px;
+			padding: 10px 10px 10px 0;
 			font-size: 14px;
 			line-height: 16px;
 			cursor: pointer;
+			width: 100%;
 
 			&.no-children{
-				padding-left: 29px;
+				padding-left: 20px;
 			}
+
+			button {
+				padding: 0;
+			}
+		}
+
+		.menu-block-container {
+			display: flex;
+			align-items: center;
+		}
+
+		.drag-handle svg {
+			pointer-events: none;
+			transform: rotate(90deg);
 		}
 
 		.block-label {

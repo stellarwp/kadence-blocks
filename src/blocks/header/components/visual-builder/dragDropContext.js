@@ -17,7 +17,6 @@ export default function DragDropContext({ children, setActiveBlockData }) {
 			const newIndex = getIndex(destinationClientId);
 			const currentIndex = getIndex(currentClientID);
 			const destName = wp.data.select('core/block-editor').getBlockName(destinationClientId);
-			const parentName = wp.data.select('core/block-editor').getBlockName(parentClientID);
 
 			// We're moving within the same column
 			if (destName !== 'kadence/header-column') {
