@@ -3,6 +3,8 @@
 	window.KBTabs = {
 		setupTabs() {
 			const ktTabWraps = document.querySelectorAll('.kt-tabs-wrap');
+			const ktAccordions = document.querySelectorAll('.kt-create-accordion');
+
 			ktTabWraps.forEach((thisElem) => {
 				thisElem.querySelectorAll(':scope > .kt-tabs-title-list').forEach((subElem) => {
 					subElem.setAttribute('role', 'tablist');
@@ -18,19 +20,24 @@
 					const parentListItem = subElem.parentElement;
 					const parentId = parentListItem.getAttribute('id');
 					const isActive = parentListItem.classList.contains('kt-tab-title-active');
-
-					parentListItem.setAttribute('role', 'presentation');
-					subElem.setAttribute('role', 'tab');
-					// subElem.setAttribute('aria-controls', parentId);
-					subElem.setAttribute('aria-selected', isActive ? 'true' : 'false');
-					subElem.setAttribute('tabindex', isActive ? '0' : '-1');
+					const isAccordion = parentListItem.classList.contains('kt-tabs-accordion-title');
 
 					// Set attr on the related content tab
 					const tabId = subElem.getAttribute('data-tab');
 					const contentTab = thisElem.querySelector(
 						':scope > .kt-tabs-content-wrap > .kt-inner-tab-' + tabId
 					);
-					contentTab.setAttribute('aria-labelledby', parentId);
+
+					if (!isAccordion) {
+						contentTab.setAttribute('aria-labelledby', parentId);
+						parentListItem.setAttribute('role', 'presentation');
+						subElem.setAttribute('role', 'tab');
+						subElem.setAttribute('aria-controls', parentId);
+						subElem.setAttribute('tabindex', isActive ? '0' : '-1');
+					} else {
+						subElem.setAttribute('aria-selected', isActive ? true : false);
+					}
+
 					contentTab.setAttribute('aria-hidden', isActive ? 'false' : 'true');
 
 					if (isActive) {
@@ -73,7 +80,6 @@
 				});
 			});
 
-			const ktAccordions = document.querySelectorAll('.kt-create-accordion');
 			ktAccordions.forEach((thisElem) => {
 				thisElem.querySelectorAll(':scope > .kt-tabs-title-list .kt-title-item').forEach((listItem) => {
 					const tabId = listItem.querySelector('a').getAttribute('data-tab');

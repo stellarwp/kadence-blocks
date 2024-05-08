@@ -36,6 +36,7 @@ import {
 	ResponsiveMeasureRangeControl,
 	SpacingVisualizer,
 	CopyPasteAttributes,
+	DynamicTextInputControl,
 } from '@kadence/components';
 import {
 	getPreviewSize,
@@ -326,12 +327,13 @@ export function Edit(props) {
 								blockSlug={'kadence/googlemaps'}
 								panelName={'mapLocation'}
 							>
-								<TextControl
+								<DynamicTextInputControl
 									label={__('Location', 'kadence-blocks')}
 									value={location}
-									onChange={(value) => {
-										setAttributes({ location: value });
-									}}
+									onChange={(value) => setAttributes({ location: value })}
+									dynamicAttribute={'location'}
+									allowClear={true}
+									{...props}
 								/>
 
 								{apiType === 'javascript' && (

@@ -5,6 +5,7 @@
 	"name": "kadence/singlebtn",
 	"parent": ["kadence/advancedbtn"],
 	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
 	"attributes": {
 		"uniqueID": {
 			"type": "string",

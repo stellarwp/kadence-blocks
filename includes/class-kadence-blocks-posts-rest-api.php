@@ -214,7 +214,8 @@ class Kadence_Blocks_Post_Rest_Controller extends WP_REST_Controller {
 			if( !empty( $request->get_param( self::PROP_INCLUDE ) ) ) {
 				$query_args['post__in']            = $request->get_param( self::PROP_INCLUDE );
 			}
-			if ( ! empty( $current_post_id ) ) {
+			//Post id might be a template identifier in a fse context, so lets make sure we got an actual post id before using it this way.
+			if ( ! empty( $current_post_id ) && is_numeric($current_post_id) ) {
 				$query_args['post__not_in']        = array( $current_post_id );
 			}
 			if ( 'post' !== $prop_type || $request->get_param( self::PROP_CUSTOM_TAX ) ) {
@@ -483,7 +484,7 @@ class Kadence_Blocks_Post_Rest_Controller extends WP_REST_Controller {
 		);
 		$query_params[ self::PROP_POST_ID ] = array(
 			'description' => __( 'The Current Post ID.', 'kadence-blocks' ),
-			'type'        => 'number',
+			'type'        => 'string',
 		);
 		$query_params[ self::PROP_CUSTOM_TAX ] = array(
 			'description' => __( 'Check if using a custom Taxonomy', 'kadence-blocks' ),

@@ -111,7 +111,7 @@ export default function Result(props) {
 							</label>
 							<InputControl
 								id={'result-detail-filename'}
-								placeholder={__('Optional filename', 'kadence_blocks')}
+								placeholder={__('Optional filename', 'kadence-blocks')}
 								value={filenameValue}
 								onChange={(value) => setFilenameValue(value ?? '')}
 							/>
@@ -122,7 +122,7 @@ export default function Result(props) {
 							</label>
 							<TextareaControl
 								id={'result-detail-alt'}
-								placeholder={__('Enter image alt', 'kadence_blocks')}
+								placeholder={__('Enter image alt', 'kadence-blocks')}
 								value={altValue}
 								onChange={(value) => setAltValue(value ?? '')}
 							/>

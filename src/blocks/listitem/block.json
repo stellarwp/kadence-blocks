@@ -5,6 +5,7 @@
 	"title": "List item",
 	"name": "kadence/listitem",
 	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
 	"attributes": {
 		"uniqueID": {
 			"type": "string",

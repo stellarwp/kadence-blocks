@@ -130,6 +130,7 @@ export function KadenceAiWizard(props) {
 			if (photographyOnly) {
 				// Fire off collection_updated event after data has saved.
 				handleSave().then(() => {
+					onPrimaryAction('photography', false);
 					handleEvent('collection_updated');
 				});
 			} else {

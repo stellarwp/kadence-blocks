@@ -236,7 +236,7 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 					}
 
 				$content .= 'src="' . $this->getAnimationUrl( $attributes ) . '"
-							id="kb-lottie-player' . $unique_id .'"
+							id="kb-lottie-player' . esc_attr( $unique_id ) .'"
 						></dotlottie-player>';
 				if ( isset( $attributes['useRatio'] ) && $attributes['useRatio'] ) {
 					$content .= '</div>';
@@ -252,9 +252,9 @@ class Kadence_Blocks_Lottie_Block extends Kadence_Blocks_Abstract_Block {
 		$rest_url = get_rest_url();
 
 		if ( $attributes['fileSrc'] === 'url' ) {
-			$url = $attributes['fileUrl'];
+			$url = esc_attr( $attributes['fileUrl'] );
 		} else {
-			$url = $rest_url . 'kb-lottieanimation/v1/animations/' . $attributes['localFile'][0]['value'] . '.json';
+			$url = $rest_url . 'kb-lottieanimation/v1/animations/' . esc_attr( $attributes['localFile'][0]['value'] ) . '.json';
 		}
 
 		if ( $url === '' || $url === $rest_url . 'kb-lottieanimation/v1/animations/' ) {

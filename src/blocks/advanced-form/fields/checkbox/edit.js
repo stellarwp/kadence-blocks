@@ -14,7 +14,7 @@ import {
 	KadencePanelBody,
 	InspectorControlTabs,
 	ResponsiveRangeControls,
-	FormInputControl,
+	DynamicTextInputControl,
 	SelectParentBlock,
 } from '@kadence/components';
 import { useEffect, useState, useMemo } from '@wordpress/element';
@@ -303,7 +303,7 @@ function FieldCheckbox({ attributes, setAttributes, isSelected, clientId, contex
 									value={placeholder}
 									onChange={(value) => setAttributes({ placeholder: value })}
 								/>
-								<FormInputControl
+								<DynamicTextInputControl
 									label={__('Default Value', 'kadence-blocks')}
 									value={defaultValue}
 									preview={defaultPreview}

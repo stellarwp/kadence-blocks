@@ -327,21 +327,27 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 						setPagesCategories(JSON.parse(JSON.stringify(pageCats)));
 					} else {
 						const newCatOrder = catOrder ? catOrder : {};
-						const cats = { ...{ all: 'All' }, ...newCatOrder };
+						const tempCats = {};
 						kadence_blocks_params.library_sections = o;
 						{
 							Object.keys(o).map(function (key, index) {
 								if (o[key].categories && typeof o[key].categories === 'object') {
 									{
 										Object.keys(o[key].categories).map(function (ckey, i) {
-											if (!cats.hasOwnProperty(ckey)) {
-												cats[ckey] = o[key].categories[ckey];
+											if (!tempCats.hasOwnProperty(ckey)) {
+												tempCats[ckey] = o[key].categories[ckey];
 											}
 										});
 									}
 								}
 							});
 						}
+						Object.keys(newCatOrder).map(function (key, index) {
+							if (!tempCats.hasOwnProperty(key)) {
+								delete newCatOrder[key];
+							}
+						});
+						const cats = { ...{ all: 'All' }, ...newCatOrder, ...tempCats };
 						setPatterns(o);
 						setCategories(JSON.parse(JSON.stringify(cats)));
 					}

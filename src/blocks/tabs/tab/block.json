@@ -4,6 +4,7 @@
 	"title": "Tab",
 	"name": "kadence/tab",
 	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
 	"parent": ["kadence/tabs"],
 	"attributes": {
 		"id": {

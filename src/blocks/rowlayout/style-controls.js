@@ -25,6 +25,7 @@ import {
 	SubsectionWrap,
 	ColorGroup,
 	ResponsiveBorderControl,
+	BoxShadowControl,
 } from '@kadence/components';
 import { showSettings } from '@kadence/helpers';
 
@@ -177,9 +178,12 @@ function StyleControls({ clientId, attributes, setAttributes, isSelected, contex
 		tabletBorderStyle,
 		mobileBorderStyle,
 		borderRadiusUnit,
+		borderRadiusOverflow,
 		isPrebuiltModal,
 		responsiveMaxWidth,
 		kadenceBlockCSS,
+		displayBoxShadow,
+		boxShadow,
 	} = attributes;
 
 	const editorDocument = document.querySelector('iframe[name="editor-canvas"]')?.contentWindow.document || document;
@@ -199,6 +203,8 @@ function StyleControls({ clientId, attributes, setAttributes, isSelected, contex
 			('gradient' === backgroundSettingTab && '' !== gradient))
 			? true
 			: false;
+	const hasBorderRadius =
+		borderRadius?.[0] || borderRadius?.[1] || borderRadius?.[2] || borderRadius?.[3] ? true : false;
 	const hasBackgroundVideoContent = undefined !== backgroundVideo && undefined !== backgroundVideo[0];
 	const saveSlideItem = (value, thisIndex) => {
 		let currentItems = backgroundSlider;
@@ -297,6 +303,18 @@ function StyleControls({ clientId, attributes, setAttributes, isSelected, contex
 			backgroundSliderSettings: newUpdate,
 		});
 	};
+	function saveBoxShadow(value) {
+		const newItems = boxShadow.map((item, thisIndex) => {
+			if (0 === thisIndex) {
+				item = { ...item, ...value };
+			}
+			return item;
+		});
+
+		setAttributes({
+			boxShadow: newItems,
+		});
+	}
 	const saveVideoSettings = (value) => {
 		let bgVideo;
 		if (undefined === backgroundVideo || (undefined !== backgroundVideo && undefined === backgroundVideo[0])) {
@@ -1541,6 +1559,80 @@ function StyleControls({ clientId, attributes, setAttributes, isSelected, contex
 						min={0}
 						isBorderRadius={true}
 						allowEmpty={true}
+					/>
+					{hasBorderRadius && (
+						<ToggleControl
+							label={__('Overflow Hidden', 'kadence-blocks')}
+							checked={borderRadiusOverflow}
+							onChange={(value) => setAttributes({ borderRadiusOverflow: value })}
+						/>
+					)}
+					<BoxShadowControl
+						label={__('Box Shadow', 'kadence-blocks')}
+						enable={undefined !== displayBoxShadow ? displayBoxShadow : false}
+						color={
+							undefined !== boxShadow && undefined !== boxShadow[0] && undefined !== boxShadow[0].color
+								? boxShadow[0].color
+								: '#000000'
+						}
+						colorDefault={'#000000'}
+						onArrayChange={(color, opacity) => saveBoxShadow({ color, opacity })}
+						opacity={
+							undefined !== boxShadow && undefined !== boxShadow[0] && undefined !== boxShadow[0].opacity
+								? boxShadow[0].opacity
+								: 0.2
+						}
+						hOffset={
+							undefined !== boxShadow && undefined !== boxShadow[0] && undefined !== boxShadow[0].hOffset
+								? boxShadow[0].hOffset
+								: 0
+						}
+						vOffset={
+							undefined !== boxShadow && undefined !== boxShadow[0] && undefined !== boxShadow[0].vOffset
+								? boxShadow[0].vOffset
+								: 0
+						}
+						blur={
+							undefined !== boxShadow && undefined !== boxShadow[0] && undefined !== boxShadow[0].blur
+								? boxShadow[0].blur
+								: 14
+						}
+						spread={
+							undefined !== boxShadow && undefined !== boxShadow[0] && undefined !== boxShadow[0].spread
+								? boxShadow[0].spread
+								: 0
+						}
+						inset={
+							undefined !== boxShadow && undefined !== boxShadow[0] && undefined !== boxShadow[0].inset
+								? boxShadow[0].inset
+								: false
+						}
+						onEnableChange={(value) => {
+							setAttributes({
+								displayBoxShadow: value,
+							});
+						}}
+						onColorChange={(value) => {
+							saveBoxShadow({ color: value });
+						}}
+						onOpacityChange={(value) => {
+							saveBoxShadow({ opacity: value });
+						}}
+						onHOffsetChange={(value) => {
+							saveBoxShadow({ hOffset: value });
+						}}
+						onVOffsetChange={(value) => {
+							saveBoxShadow({ vOffset: value });
+						}}
+						onBlurChange={(value) => {
+							saveBoxShadow({ blur: value });
+						}}
+						onSpreadChange={(value) => {
+							saveBoxShadow({ spread: value });
+						}}
+						onInsetChange={(value) => {
+							saveBoxShadow({ inset: value });
+						}}
 					/>
 				</KadencePanelBody>
 			)}

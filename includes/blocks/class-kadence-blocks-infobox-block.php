@@ -108,6 +108,12 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$css->render_measure_output( $attributes, 'containerPadding', 'padding', array( 'tablet_key' => 'containerTabletPadding', 'mobile_key' => 'containerMobilePadding' ) );
 		$css->render_measure_output( $attributes, 'containerMargin', 'margin', array( 'unit_key' => 'containerMarginUnit' ) );
+		
+		$mw_is_percentage = isset( $attributes['maxWidthUnit'] ) && ! empty( $attributes['maxWidthUnit'] ) && '%' === $attributes['maxWidthUnit'];
+		if( $mw_is_percentage ) {
+			$css->set_selector( $base_selector . ' .kt-blocks-info-box-media-align-top .kt-blocks-info-box-media-container' );
+			$css->add_property( 'max-width', '100%');
+		}
 
 		// Hover.
 		$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap:hover' );

@@ -14,7 +14,21 @@
     padding-bottom: 10px;
     font-size: 16px;
 }
-
+.kb-acccordion-column-layout .components-button.kadence-radio-item svg {width:100%;}
+.kt-accordion-layout-two-column {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+	> .wp-block-kadence-pane {
+		width: 100%;
+	}
+}
+.kt-accordion-layout-three-column {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+	> .wp-block-kadence-pane {
+		width: 100%;
+	}
+}
 .kt-select-starter-style-tabs .kt-inital-tabs-style-btn {
     height: auto;
     width: 320px;

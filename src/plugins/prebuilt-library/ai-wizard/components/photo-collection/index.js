@@ -117,12 +117,15 @@ const styles = {
 		fontSize: '14px',
 		marginTop: '8px',
 	},
+	importWrapper: {
+		position: 'relative',
+		marginBottom: '-24px',
+	},
 	importNotice: {
 		position: 'absolute',
-		top: 0,
-		left: 0,
-		right: 0,
-		bottom: 0,
+		top: '0',
+		width: '100%',
+		height: '318px',
 		backgroundColor: 'rgba(255,255,255,0.9)',
 		display: 'flex',
 		fontSize: '18px',
@@ -205,6 +208,18 @@ export function PhotoCollection({ photos, loading, isLocal, collectionLink, titl
 				<div style={styles.title}>{title} </div>
 				<div style={styles.description}>{description}</div>
 			</div>
+			<div style={styles.importWrapper} className="kb-images-custom-import">
+				{loading && (
+					<div style={styles.importNotice} className="kb-importing-information">
+						<Spinner style={styles.spinner} /> {__('Loading...', 'kadence-blocks')}
+					</div>
+				)}
+				{isDownloading && (
+					<div style={styles.importNotice} className="kb-importing-information">
+						<Spinner style={styles.spinner} /> {__('Importing Images...', 'kadence-blocks')}
+					</div>
+				)}
+			</div>
 			<div style={styles.gridWrapper} className="kb-images-custom-scroll-bar">
 				<div style={styles.grid}>
 					{photoGallery && photoGallery.length > 0
@@ -231,16 +246,6 @@ export function PhotoCollection({ photos, loading, isLocal, collectionLink, titl
 								<FlexBlock style={{ ...styles.square, ...styles.placeholder }} key={item} />
 						  ))}
 				</div>
-				{loading && (
-					<div style={styles.importNotice} className="kb-importing-information">
-						<Spinner style={styles.spinner} /> {__('Loading...', 'kadence')}
-					</div>
-				)}
-				{isDownloading && (
-					<div style={styles.importNotice} className="kb-importing-information">
-						<Spinner style={styles.spinner} /> {__('Importing Images...', 'kadence')}
-					</div>
-				)}
 			</div>
 			<Flex>
 				<FlexBlock style={styles.linkWrapper}>

@@ -20,27 +20,27 @@ class KadenceDashboard extends Component {
 		const tabs = [
 			{
 				name: 'dashboard',
-				title: __('Dashboard', 'kadence'),
+				title: __('Dashboard', 'kadence-blocks'),
 				className: 'kadence-dash-tab',
 			},
 			{
 				name: 'help',
-				title: __('Getting Started', 'kadence'),
+				title: __('Getting Started', 'kadence-blocks'),
 				className: 'kadence-help-tab',
 			},
 			{
 				name: 'changelog',
-				title: __('Changelog', 'kadence'),
+				title: __('Changelog', 'kadence-blocks'),
 				className: 'kadence-changelog-tab',
 			},
 			// {
 			// 	name: 'recommended',
-			// 	title: __( 'Recommended Plugins', 'kadence' ),
+			// 	title: __( 'Recommended Plugins', 'kadence-blocks' ),
 			// 	className: 'kadence-recommended-tab',
 			// },
 			// {
 			// 	name: 'starter',
-			// 	title: __( 'Starter Sites', 'kadence' ),
+			// 	title: __( 'Starter Sites', 'kadence-blocks' ),
 			// 	className: 'kadence-starter-tab',
 			// },
 		];

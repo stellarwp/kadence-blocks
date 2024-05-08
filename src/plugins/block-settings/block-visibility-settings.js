@@ -7,7 +7,7 @@ import { store as noticesStore } from '@wordpress/notices';
 /**
  * Internal block libraries
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 
 function KadenceVisibilitySettings({ blockSlug, blockName, options }) {
 	const [isOpen, setIsOpen] = useState(false);
@@ -66,7 +66,7 @@ function KadenceVisibilitySettings({ blockSlug, blockName, options }) {
 
 	return (
 		<Fragment>
-			<Tooltip text="Block Settings Visibility">
+			<Tooltip text={__('Block Settings Visibility', 'kadence-blocks')}>
 				<Button className="kt-block-settings" onClick={() => setIsOpen(true)}>
 					<Dashicon icon="visibility" />
 				</Button>
@@ -75,7 +75,11 @@ function KadenceVisibilitySettings({ blockSlug, blockName, options }) {
 			{isOpen && (
 				<Modal
 					className="kt-block-settings-modal"
-					title={__(blockName + ' Settings', 'kadence-blocks')}
+					title={sprintf(
+						/* translators: %s is the name of the Kadence Block */
+						__('%s Settings', 'kadence-blocks'),
+						blockName
+					)}
 					onRequestClose={() => {
 						resetSettings();
 					}}

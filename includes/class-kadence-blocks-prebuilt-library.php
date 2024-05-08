@@ -6,7 +6,7 @@
  * @package Kadence Blocks
  */
 
- if ( ! defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -381,13 +381,7 @@ class Kadence_Blocks_Prebuilt_Library {
 	 * @return string Returns the remote URL contents.
 	 */
 	public function get_remote_url_contents() {
-		if ( is_callable( 'network_home_url' ) ) {
-			$site_url = network_home_url( '', 'http' );
-		} else {
-			$site_url = get_bloginfo( 'url' );
-		}
-		$site_url = preg_replace( '/^https/', 'http', $site_url );
-		$site_url = preg_replace( '|/$|', '', $site_url );
+		$site_url = \KadenceWP\KadenceBlocks\StellarWP\Uplink\get_original_domain();
 		$args = array(
 			'key'  => $this->key,
 			'site' => $site_url,
@@ -520,13 +514,7 @@ class Kadence_Blocks_Prebuilt_Library {
 	 * @return string
 	 */
 	public function get_connection_data( $skip_local = false ) {
-		if ( is_callable( 'network_home_url' ) ) {
-			$site_url = network_home_url( '', 'http' );
-		} else {
-			$site_url = get_bloginfo( 'url' );
-		}
-		$site_url = preg_replace( '/^https/', 'http', $site_url );
-		$site_url = preg_replace( '|/$|', '', $site_url );
+		$site_url = \KadenceWP\KadenceBlocks\StellarWP\Uplink\get_original_domain();
 		$args = array(
 			'key'  => $this->key,
 			'site' => $site_url,

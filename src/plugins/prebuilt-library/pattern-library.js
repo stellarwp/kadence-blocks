@@ -10,7 +10,7 @@ const { localStorage } = window;
 /**
  * WordPress dependencies
  */
-const { applyFilters } = wp.hooks;
+import { applyFilters } from '@wordpress/hooks';
 
 import { withSelect, useSelect, withDispatch, useDispatch } from '@wordpress/data';
 /**
@@ -124,6 +124,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 	const [popoverAnchor, setPopoverAnchor] = useState();
 	const [popoverAdvAnchor, setPopoverAdvAnchor] = useState();
 	const [filterPopoverAnchor, setFilterPopoverAnchor] = useState();
+	const [kadenceIcon, setKadenceIcon] = useState(applyFilters('kadence.blocks_icon', kadenceNewIcon));
 	const { updateContextState, updateMassContextState, updateContext, updateMassContext } =
 		useDispatch('kadence/library');
 	const { getContextState, isContextRunning, getContextContent, hasContextContent } = useSelect((select) => {
@@ -159,6 +160,9 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 		triggerAIDataReload((state) => !state);
 	};
 	const handleAiWizardPrimaryAction = (event, rebuild) => {
+		if ('photography' === event) {
+			updateImageCollection();
+		}
 		if (rebuild) {
 			getAllNewData();
 		}
@@ -520,6 +524,26 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 			}
 		}
 	}, [selectedContext, hasInitialAI]);
+	async function getFreshAIUserData() {
+		//console.log( 'Get User Data', Date.now().toString().slice( 8 ) );
+		const response = await getAIWizardData(true);
+		if (!response) {
+			setAINeedsData(true);
+			return {};
+		} else if (!hasCorrectUserData(response)) {
+			const data = response ? SafeParseJSON(response) : {};
+			setAINeedsData(true);
+			if (data?.photoLibrary && data?.customCollections) {
+				return data;
+			}
+			return {};
+		}
+		//	console.log( 'Received User Data', Date.now().toString().slice( 8 ) );
+		const data = response ? SafeParseJSON(response) : {};
+		setAIUserData(data);
+		setAINeedsData(false);
+		return data;
+	}
 	async function getAIUserData() {
 		//console.log( 'Get User Data', Date.now().toString().slice( 8 ) );
 		const response = await getAIWizardData();
@@ -598,6 +622,29 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 			setWaitForImages(false);
 			setImageCollection(response);
 			forceRefreshLibrary();
+		} else {
+			setWaitForImages(false);
+		}
+	}
+	/**
+	 * @returns {Promise<void>}
+	 */
+	async function updateImageCollection() {
+		const tempData = await getFreshAIUserData();
+		if (tempData) {
+			//	console.log( 'Get Image Collection', Date.now().toString().slice( 8 ) );
+			const response = await getCollectionByIndustry(tempData);
+			if (!isEqual(response, imageCollection)) {
+				//console.log( 'Image Collection Updating', Date.now().toString().slice( 8 ) );
+				setTimeout(() => {
+					//console.log( 'Image Collection Updating Trigger', Date.now().toString().slice( 8 ) );
+					setWaitForImages(false);
+				}, 300);
+				setImageCollection(response);
+				forceRefreshLibrary();
+			} else {
+				setWaitForImages(false);
+			}
 		} else {
 			setWaitForImages(false);
 		}
@@ -768,7 +815,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 			<div className="kt-prebuilt-sidebar kb-section-sidebar">
 				<div className="kb-prebuilt-sidebar-header-wrap">
 					<div className="kb-prebuilt-sidebar-header kb-prebuilt-library-logo">
-						<span className="kb-prebuilt-header-logo">{kadenceNewIcon}</span>
+						<span className="kb-prebuilt-header-logo">{kadenceIcon}</span>
 						<div className="kb-library-style-popover">
 							<Button
 								className={'kb-trigger-extra-settings'}
@@ -926,27 +973,29 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 						>
 							{__('By Design', 'kadence-blocks')}
 						</Button>
-						<Button
-							className={
-								'kb-subtab-button kb-trigger-context' +
-								(selectedContextTab === 'context' ? ' is-pressed' : '')
-							}
-							aria-pressed={selectedContextTab === 'context'}
-							icon={aiIcon}
-							iconPosition="left"
-							iconSize={16}
-							text={__('With AI', 'kadence-blocks')}
-							onClick={() => {
-								const tempActiveStorage = SafeParseJSON(
-									localStorage.getItem('kadenceBlocksPrebuilt'),
-									true
-								);
-								tempActiveStorage.contextTab = 'context';
-								localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(tempActiveStorage));
-								forceRefreshLibrary();
-								setContextTab('context');
-							}}
-						/>
+						{!isAIDisabled && (
+							<Button
+								className={
+									'kb-subtab-button kb-trigger-context' +
+									(selectedContextTab === 'context' ? ' is-pressed' : '')
+								}
+								aria-pressed={selectedContextTab === 'context'}
+								icon={aiIcon}
+								iconPosition="left"
+								iconSize={16}
+								text={__('With AI', 'kadence-blocks')}
+								onClick={() => {
+									const tempActiveStorage = SafeParseJSON(
+										localStorage.getItem('kadenceBlocksPrebuilt'),
+										true
+									);
+									tempActiveStorage.contextTab = 'context';
+									localStorage.setItem('kadenceBlocksPrebuilt', JSON.stringify(tempActiveStorage));
+									forceRefreshLibrary();
+									setContextTab('context');
+								}}
+							/>
+						)}
 					</div>
 					<div className="kb-library-sidebar-context-choices">
 						<Button
@@ -1400,7 +1449,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 								</div>
 							)}
 							{!isError && !isLoading && waitForImages && (
-								<div className="kb-loading-library">
+								<div className="kb-loading-library wait-for-images">
 									<Spinner />
 								</div>
 							)}

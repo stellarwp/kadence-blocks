@@ -4,6 +4,7 @@
 	"title": "Advanced Text",
 	"name": "kadence/advancedheading",
 	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
 	"attributes": {
 		"content": {
 			"type": "string",

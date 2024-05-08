@@ -7,6 +7,7 @@ export function ActionCard({ variant, icon, heading, content, link, linkTarget =
 			<div className="kb-action-card__heading">{heading}</div>
 			<div className="kb-action-card__content">{content}</div>
 			{link && (
+				// eslint-disable-next-line jsx-a11y/anchor-has-content
 				<a
 					href={link}
 					className="kb-action-card__link"

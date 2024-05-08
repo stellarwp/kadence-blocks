@@ -5,6 +5,7 @@
 	"name": "kadence/single-icon",
 	"parent": ["kadence/icon"],
 	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
 	"attributes": {
 		"uniqueID": {
 			"type": "string",

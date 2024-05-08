@@ -702,6 +702,10 @@
 									setTimeout(function () {
 										panelToClose.classList.add(_this8.settings.hiddenClass);
 										panelToClose.classList.remove('kt-panel-is-collapsing');
+
+										if (window.AOS && typeof AOS.refresh === 'function') {
+											AOS.refresh();
+										}
 										return (_this8.toggling = false);
 									}, transDuration);
 								}
@@ -737,6 +741,10 @@
 										panelToOpen.classList.add(_this8.settings.activeClass);
 										panelToOpen.style.height = '';
 										panelToOpen.classList.remove('kt-panel-is-expanding');
+
+										if (window.AOS && typeof AOS.refresh === 'function') {
+											AOS.refresh();
+										}
 										return (_this8.toggling = false);
 									}, _transDuration);
 								}
@@ -950,7 +958,7 @@
 				const element = document.getElementById(id);
 				if (element) {
 					if (element.classList.contains('wp-block-kadence-pane')) {
-						const child = document.querySelectorAll('#' + id + ' .kt-blocks-accordion-header')[0];
+						const child = document.querySelectorAll('[id="' + id + '"] .kt-blocks-accordion-header')[0];
 						if (!child.classList.contains('kt-accordion-panel-active')) {
 							if (e.type && e.type === 'initialized') {
 								window.setTimeout(function () {

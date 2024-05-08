@@ -4,6 +4,7 @@
 	"title": "Accordion",
 	"name": "kadence/accordion",
 	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
 	"attributes": {
 		"uniqueID": {
 			"type": "string",
@@ -324,6 +325,18 @@
 		"faqSchema": {
 			"type": "boolean",
 			"default": false
+		},
+		"columnGap": {
+			"type": "array",
+			"default": ["md", "", ""]
+		},
+		"columnGapUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"columnLayout": {
+			"type": "array",
+			"default": ["row", "", "row"]
 		}
 	},
 	"supports": {

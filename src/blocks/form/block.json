@@ -4,6 +4,7 @@
 	"title": "Form",
 	"name": "kadence/form",
 	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
 	"keywords": ["contact", "marketing", "KB"],
 	"attributes": {
 		"uniqueID": {

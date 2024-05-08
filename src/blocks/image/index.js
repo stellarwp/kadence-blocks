@@ -47,7 +47,6 @@ export const settings = {
 				'data-align': attributes.align,
 			};
 		}
-		return;
 	},
 	transforms,
 	edit,
