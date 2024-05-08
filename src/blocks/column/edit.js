@@ -626,32 +626,6 @@ function SectionEdit(props) {
 					],
 				});
 			}
-			
-			// Update row gap to match gutter if layout is horizontal.
-			if (
-				undefined !== rowGap &&
-				(deskDirection === 'horizontal' || tabletDirection === 'horizontal' || mobileDirection === 'horizontal')
-			) {
-				const tempRowGap = JSON.parse(JSON.stringify(rowGap));
-				if (deskDirection === 'horizontal') {
-					tempRowGap[0] = '' !== gutter?.[0] ? gutter[0] : 10;
-				}
-				if (
-					((tabletDirection === '' && deskDirection === 'horizontal') || tabletDirection === 'horizontal') &&
-					'' !== gutter?.[1]
-				) {
-					tempRowGap[1] = gutter?.[1];
-				}
-				if (
-					((mobileDirection === '' && tabletDirection === 'horizontal') ||
-						(mobileDirection === '' && tabletDirection === '' && deskDirection === 'horizontal') ||
-						mobileDirection === 'horizontal') &&
-					'' !== gutter?.[2]
-				) {
-					tempRowGap[2] = gutter?.[2];
-				}
-				setAttributes({ rowGap: tempRowGap, rowGapUnit: gutterUnit ? gutterUnit : 'px' });
-			}
 			if ('' !== rowGap?.[0] || '' !== rowGap?.[1] || '' !== rowGap?.[2]) {
 				setAttributes({
 					rowGapVariable: [
@@ -660,6 +634,36 @@ function SectionEdit(props) {
 						'' !== rowGap?.[2] ? 'custom' : '',
 					],
 				});
+			}
+			// Update row gap to match gutter if layout is horizontal.
+			if (
+				undefined !== rowGap &&
+				(deskDirection === 'horizontal' || tabletDirection === 'horizontal' || mobileDirection === 'horizontal')
+			) {
+				const tempRowGap = JSON.parse(JSON.stringify(rowGap));
+				const tempRowGapVariable = ['', '', ''];
+				if (deskDirection === 'horizontal') {
+					tempRowGap[0] = '' !== gutter?.[0] ? gutter[0] : 10;
+					tempRowGapVariable[0] = '' !== gutter?.[0] ? 'custom' : '';
+				}
+				if (
+					((tabletDirection === '' && deskDirection === 'horizontal') || tabletDirection === 'horizontal') &&
+					'' !== gutter?.[1]
+				) {
+					tempRowGap[1] = '' !== gutter?.[1];
+					tempRowGapVariable[1] = '' !== gutter?.[1] ? 'custom' : '';
+				}
+				if (
+					((mobileDirection === '' && tabletDirection === 'horizontal') ||
+						(mobileDirection === '' && tabletDirection === '' && deskDirection === 'horizontal') ||
+						mobileDirection === 'horizontal') &&
+					'' !== gutter?.[2]
+				) {
+					tempRowGap[2] = '' !== gutter?.[2];
+					tempRowGapVariable[1] = '' !== gutter?.[1] ? 'custom' : '';
+				}
+				
+				setAttributes({ rowGapVariable: tempRowGapVariable, rowGap: tempRowGap, rowGapUnit: gutterUnit ? gutterUnit : 'px' });
 			}
 			setAttributes({ kbVersion: 2 });
 		}
