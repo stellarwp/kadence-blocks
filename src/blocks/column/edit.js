@@ -190,6 +190,8 @@ function SectionEdit(props) {
 		height,
 		maxWidth,
 		maxWidthUnit,
+		maxWidthTabletUnit,
+		maxWidthMobileUnit,
 		htmlTag,
 		sticky,
 		stickyOffset,
@@ -1068,6 +1070,14 @@ function SectionEdit(props) {
 		maxWidth && maxWidth[1] ? maxWidth[1] : '',
 		maxWidth && maxWidth[2] ? maxWidth[2] : ''
 	);
+
+	// Check for falsey to support how units worked before
+	const previewMaxWidthUnit = getPreviewSize(
+		previewDevice,
+		maxWidthUnit ? maxWidthUnit : 'px',
+		maxWidthTabletUnit ? maxWidthTabletUnit : '',
+		maxWidthMobileUnit ? maxWidthMobileUnit : ''
+	);
 	const previewMinHeight = getPreviewSize(
 		previewDevice,
 		height && '' !== height[0] ? height[0] : '',
@@ -1081,7 +1091,6 @@ function SectionEdit(props) {
 		stickyOffset && stickyOffset[2] ? stickyOffset[2] : ''
 	);
 	const previewMinHeightUnit = heightUnit ? heightUnit : 'px';
-	const previewMaxWidthUnit = maxWidthUnit ? maxWidthUnit : 'px';
 	const previewStickyOffsetUnit = stickyOffsetUnit ? stickyOffsetUnit : 'px';
 	const classes = classnames({
 		[className]: className,
@@ -2263,11 +2272,13 @@ function SectionEdit(props) {
 												});
 											}}
 											min={0}
-											max={maxWidthUnit === 'px' ? 2000 : 100}
+											max={previewMaxWidthUnit === 'px' ? 2000 : 100}
 											step={1}
-											unit={maxWidthUnit ? maxWidthUnit : 'px'}
+											unit={previewMaxWidthUnit}
+											allowResponsiveUnitChange={true}
 											onUnit={(value) => {
-												setAttributes({ maxWidthUnit: value });
+												const device = 'Desktop' === previewDevice ? '' : previewDevice;
+												setAttributes({ ['maxWidth' + device + 'Unit']: value });
 											}}
 											units={['px', '%', 'vw']}
 										/>
