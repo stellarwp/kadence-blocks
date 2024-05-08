@@ -643,6 +643,18 @@ export function Edit(props) {
 										aria-pressed={false}
 										onClick={() => {
 											const attributeUpdates = { barType: key };
+											// Update defaults if switching back from line mask
+											if (barType === 'line-mask' && key !== 'line-mask') {
+												if (5 === progressMax && 4 === progressAmount) {
+													attributeUpdates.progressMax = 100;
+													attributeUpdates.progressAmount = 90;
+													if ('' === numberSuffix) {
+														attributeUpdates.numberSuffix = '%';
+													}
+												}
+												attributeUpdates.decimal = 'none';
+												attributeUpdates.displayPercent = true;
+											}
 											if (key !== 'line' && labelPosition === 'inside') {
 												attributeUpdates.hAlign = 'center';
 												attributeUpdates.thAlign = '';
@@ -653,12 +665,15 @@ export function Edit(props) {
 												if (100 == progressMax && 90 == progressAmount) {
 													attributeUpdates.progressMax = 5;
 													attributeUpdates.progressAmount = 4;
-													attributeUpdates.displayPercent = false;
-													attributeUpdates.decimal = 'one';
+													if ('' !== numberSuffix) {
+														attributeUpdates.numberSuffix = '';
+													}
 												}
 												if ('' == label) {
 													attributeUpdates.displayLabel = false;
 												}
+												attributeUpdates.decimal = 'one';
+												attributeUpdates.displayPercent = false;
 											}
 											setAttributes(attributeUpdates);
 										}}
