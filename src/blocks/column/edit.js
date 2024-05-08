@@ -626,15 +626,7 @@ function SectionEdit(props) {
 					],
 				});
 			}
-			if ('' !== rowGap?.[0] || '' !== rowGap?.[1] || '' !== rowGap?.[2]) {
-				setAttributes({
-					rowGapVariable: [
-						'' !== rowGap?.[0] ? 'custom' : '',
-						'' !== rowGap?.[1] ? 'custom' : '',
-						'' !== rowGap?.[2] ? 'custom' : '',
-					],
-				});
-			}
+			
 			// Update row gap to match gutter if layout is horizontal.
 			if (
 				undefined !== rowGap &&
@@ -659,6 +651,15 @@ function SectionEdit(props) {
 					tempRowGap[2] = gutter?.[2];
 				}
 				setAttributes({ rowGap: tempRowGap, rowGapUnit: gutterUnit ? gutterUnit : 'px' });
+			}
+			if ('' !== rowGap?.[0] || '' !== rowGap?.[1] || '' !== rowGap?.[2]) {
+				setAttributes({
+					rowGapVariable: [
+						'' !== rowGap?.[0] ? 'custom' : '',
+						'' !== rowGap?.[1] ? 'custom' : '',
+						'' !== rowGap?.[2] ? 'custom' : '',
+					],
+				});
 			}
 			setAttributes({ kbVersion: 2 });
 		}
