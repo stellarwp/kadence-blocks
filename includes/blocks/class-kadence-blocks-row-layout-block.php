@@ -671,7 +671,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		if ( $has_radius ) {
 			if ( ! isset( $attributes['borderRadiusOverflow'] ) || ( isset( $attributes['borderRadiusOverflow'] ) && false !== $attributes['borderRadiusOverflow'] ) ) {
-				$css->add_property( 'overflow', 'hidden' );
+				$css->add_property( 'overflow', 'clip' );
 			}
 			$css->add_property( 'isolation', 'isolate' );
 			$css->set_selector( $base_selector . ' > .kt-row-layout-overlay' );

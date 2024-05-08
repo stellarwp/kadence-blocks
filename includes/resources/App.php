@@ -5,6 +5,7 @@ namespace KadenceWP\KadenceBlocks;
 use InvalidArgumentException;
 use KadenceWP\KadenceBlocks\Adbar\Dot;
 use KadenceWP\KadenceBlocks\Cache\Cache_Provider;
+use KadenceWP\KadenceBlocks\Health\Health_Provider;
 use KadenceWP\KadenceBlocks\Image_Downloader\Image_Downloader_Provider;
 use KadenceWP\KadenceBlocks\Shutdown\Shutdown_Provider;
 use KadenceWP\KadenceBlocks\StellarWP\ContainerContract\ContainerInterface;
@@ -34,6 +35,7 @@ final class App {
 	 */
 	private $providers = array(
 		Uplink_Provider::class,
+		Health_Provider::class,
 		Image_Downloader_Provider::class,
 		Cache_Provider::class,
 		Shutdown_Provider::class,

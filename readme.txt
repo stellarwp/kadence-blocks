@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.3
 Tested up to: 6.5
-Stable tag: 3.2.36
+Stable tag: 3.2.37
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -175,7 +175,8 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.2.37 =
-Release Date: May TBD 2024
+Release Date: May 8th 2024
+* Add: Allow Max width units for columns and infobox to be set uniquely on tablet and mobile.
 * Fix: Aria roles when using accordion layout in tabs block.
 * Fix: Infobox media alignment when max width is using percentage.
 * Fix: Ability to set progress higher than maximum progress in progress bar.

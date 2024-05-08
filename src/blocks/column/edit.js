@@ -1165,7 +1165,7 @@ function SectionEdit(props) {
 				previewDirection === 'horizontal' || previewDirection === 'horizontal-reverse'
 					? 'horizontal'
 					: 'vertical',
-			templateLock: templateLock ? templateLock : false,
+			templateLock: templateLock ? templateLock : undefined,
 			renderAppender: hasInnerBlocks ? undefined : InnerBlocks.ButtonBlockAppender,
 			allowedBlocks: inFormBlock ? FORM_ALLOWED_BLOCKS : undefined,
 		}
