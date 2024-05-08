@@ -182,13 +182,19 @@ Release Date: May 8th 2024
 * Fix: Infobox media alignment when max width is using percentage.
 * Fix: Ability to set progress higher than maximum progress in progress bar.
 * Fix: Animate on scroll when accordion panes adjust page height.
+* Fix: Issue with sticky when using a row border radius.
+* Fix: Issue locking inner blocks of a row layout block.
+* Fix: Better support for query loop in templates 
+* Fix: Some accordion style issues.
+* Fix: Several admin translation issues.
+* Fix: Advanced Form styling issues for help text and message text.
+
 
 = 3.2.36 =
 Release Date: April 24th 2024
 * Fix: Custom CSS classes being applied to advanced form fields twice.
 * Fix: Issue with custom colors.
 * Fix: Issue with pattern libraries showing empty categories.
-* Fix: Advanced Form styling issues for help text and message text.
 
 = 3.2.35 =
 Release Date: April 22nd 2024
