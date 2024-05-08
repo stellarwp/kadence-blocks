@@ -21,7 +21,7 @@ import {
 	BlockControls,
 } from '@wordpress/block-editor';
 import { TextControl, ExternalLink, Button, Placeholder, ToggleControl, ToolbarGroup } from '@wordpress/components';
-import { formBlockIcon } from '@kadence/icons';
+import { headerBlockIcon } from '@kadence/icons';
 import {
 	KadencePanelBody,
 	InspectorControlTabs,
@@ -43,7 +43,7 @@ import {
 } from '@kadence/components';
 import { getPreviewSize, mouseOverVisualizer, arrayStringToInt, useElementWidth } from '@kadence/helpers';
 
-import { FormTitle, BackendStyles, SelectForm } from './components';
+import { BackendStyles, SelectForm, Onboard } from './components';
 import { HEADER_ALLOWED_BLOCKS, HEADER_INNERBLOCK_TEMPLATE } from './constants';
 
 /**
@@ -289,7 +289,7 @@ export function EditInner(props) {
 	}, [blocks]);
 
 	const [isAdding, addNew] = useEntityPublish('kadence_header', id);
-	const onAdd = async (title, template, initialDescription) => {
+	const onAdd = async (title, template, detail, templateMobile, detailMobile, initialDescription) => {
 		try {
 			const response = await addNew();
 
@@ -623,7 +623,7 @@ export function EditInner(props) {
 	if (headerInnerBlocks.length === 0) {
 		return (
 			<>
-				<FormTitle onAdd={onAdd} isAdding={isAdding} existingTitle={title} />
+				<Onboard onAdd={onAdd} isAdding={isAdding} existingTitle={title} />
 				<div className="kb-form-hide-while-setting-up">
 					<Fragment {...innerBlocksProps} />
 				</div>
@@ -639,14 +639,14 @@ export function EditInner(props) {
 			<>
 				<Placeholder
 					className="kb-select-or-create-placeholder"
-					label={__('Kadence Heading', 'kadence-blocks')}
-					icon={formBlockIcon}
+					label={__('Advanced Header', 'kadence-blocks')}
+					icon={headerBlockIcon}
 				>
 					<p style={{ width: '100%', marginBottom: '10px' }}>
 						{__('Advanced Headers can not be edited within the widgets screen.', 'kadence-blocks')}
 					</p>
 					<Button href={editPostLink} variant="primary" className="kb-form-edit-link">
-						{__('Edit Form', 'kadence-blocks')}
+						{__('Edit Header', 'kadence-blocks')}
 					</Button>
 				</Placeholder>
 				<InspectorControls>
