@@ -641,14 +641,17 @@ function SectionEdit(props) {
 				(deskDirection === 'horizontal' || tabletDirection === 'horizontal' || mobileDirection === 'horizontal')
 			) {
 				const tempRowGap = JSON.parse(JSON.stringify(rowGap));
+				const tempRowGapVariable = ['', '', ''];
 				if (deskDirection === 'horizontal') {
 					tempRowGap[0] = '' !== gutter?.[0] ? gutter[0] : 10;
+					tempRowGapVariable[0] = '' !== gutter?.[0] ? 'custom' : '';
 				}
 				if (
 					((tabletDirection === '' && deskDirection === 'horizontal') || tabletDirection === 'horizontal') &&
 					'' !== gutter?.[1]
 				) {
 					tempRowGap[1] = gutter?.[1];
+					tempRowGapVariable[1] = '' !== gutter?.[1] ? 'custom' : '';
 				}
 				if (
 					((mobileDirection === '' && tabletDirection === 'horizontal') ||
@@ -657,8 +660,14 @@ function SectionEdit(props) {
 					'' !== gutter?.[2]
 				) {
 					tempRowGap[2] = gutter?.[2];
+					tempRowGapVariable[2] = '' !== gutter?.[2] ? 'custom' : '';
 				}
-				setAttributes({ rowGap: tempRowGap, rowGapUnit: gutterUnit ? gutterUnit : 'px' });
+
+				setAttributes({
+					rowGapVariable: tempRowGapVariable,
+					rowGap: tempRowGap,
+					rowGapUnit: gutterUnit ? gutterUnit : 'px',
+				});
 			}
 			setAttributes({ kbVersion: 2 });
 		}
