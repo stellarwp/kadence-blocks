@@ -550,6 +550,25 @@
 	.wp-site-blocks .nav--toggle-sub .kadence-menu-mega-enabled .sub-menu .dropdown-navigation-toggle {
 		display: none;
 	}
+	.nav--toggle-sub .dropdown-nav-special-toggle {
+		position: absolute !important;
+		overflow: hidden;
+		padding: 0 !important;
+		margin: 0 !important;
+		margin-right: -0.1em !important;
+		border: 0 !important;
+		width: 0.9em;
+		top: 0;
+		bottom: 0;
+		height: auto;
+		border-radius: 0;
+		box-shadow: none !important;
+		background: transparent !important;
+		display: block;
+		left: auto;
+		right: calc(1.4em / 2);
+		pointer-events: none;
+	}
 	/*--------------------------------------------------------------
 	 ## Header navigation top item styling
 	 --------------------------------------------------------------*/

@@ -156,12 +156,7 @@ export default function BackendStyles(props) {
 		navigationVerticalSpacingMobile
 	);
 
-	const previewOrientation = getPreviewSize(
-		previewDevice,
-		orientation ? orientation : 'horizontal',
-		orientationTablet,
-		orientationMobile
-	);
+	const previewOrientation = getPreviewSize(previewDevice, orientation, orientationTablet, orientationMobile);
 	const previewStyle = getPreviewSize(previewDevice, style, styleTablet, styleMobile);
 	const previewParentActive = getPreviewSize(previewDevice, parentActive, parentActiveTablet, parentActiveMobile);
 	const previewDropdownWidth = getPreviewSize(previewDevice, dropdownWidth, dropdownWidthTablet, dropdownWidthMobile);
@@ -492,7 +487,7 @@ export default function BackendStyles(props) {
 		'border-bottom-left-radius',
 		getSpacingOptionOutput(previewBorderBottomLeftRadius, dropdownBorderRadiusUnit)
 	);
-	if (previewOrientation == 'horizontal') {
+	if (previewOrientation != 'vertical') {
 		if (dropdownShadow?.[0]?.enable) {
 			css.add_property('box-shadow', css.render_shadow(dropdownShadow[0]));
 		}
@@ -504,7 +499,7 @@ export default function BackendStyles(props) {
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li.menu-item > .link-drop-wrap > a`
 	);
-	if (previewOrientation == 'horizontal') {
+	if (previewOrientation != 'vertical') {
 		css.add_property('width', previewDropdownWidth + dropdownWidthUnit);
 	}
 	css.add_property('padding-top', css.render_size(previewDropdownVerticalSpacing, dropdownVerticalSpacingUnit));
