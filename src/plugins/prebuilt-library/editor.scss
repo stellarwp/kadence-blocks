@@ -15,7 +15,7 @@
 	margin-left: -20px; /* gutter size offset */
 	width: auto;
 	margin-top: 20px;
-	padding-right:12px;
+	padding-right: 12px;
 }
 .kb-css-masonry_column {
 	padding-left: 32px; /* gutter size */
@@ -36,7 +36,7 @@ button.components-button.kb-grid-btns svg {
 	}
 	.kb-css-masonry-btn {
 		padding: 0;
-		border: 1px solid rgba(0, 0, 0, 0.2);
+		border: 1px solid #c1c1c1;
 		border-radius: 0 !important;
 		height: auto;
 		background: #eee;
@@ -44,6 +44,9 @@ button.components-button.kb-grid-btns svg {
 		position: relative;
 		box-shadow: none;
 		transition: border 0.4s ease;
+		&:hover {
+			border: 1px solid #000;
+		}
 	}
 	.kb-css-masonry-btn-inner {
 		padding-bottom: 61%;
@@ -176,6 +179,7 @@ button.components-button.kb-grid-btns svg {
 }
 .components-modal__frame.kt-prebuilt-modal .kb-css-masonry .kb-css-masonry_column .kb-css-masonry-btn:hover,
 .components-modal__frame.kt-prebuilt-modal .kb-css-masonry .kb-css-masonry_column .kb-css-masonry-btn:focus {
+	border-color: #000;
 	.kb-import-btn-title {
 		transform: translate(0, 0%);
 		opacity: 1;
