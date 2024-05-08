@@ -660,7 +660,7 @@ function SectionEdit(props) {
 					'' !== gutter?.[2]
 				) {
 					tempRowGap[2] = gutter?.[2];
-					tempRowGapVariable[1] = '' !== gutter?.[1] ? 'custom' : '';
+					tempRowGapVariable[2] = '' !== gutter?.[2] ? 'custom' : '';
 				}
 
 				setAttributes({
