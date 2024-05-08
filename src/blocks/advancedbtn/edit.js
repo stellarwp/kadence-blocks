@@ -329,8 +329,8 @@ function KadenceButtons(props) {
 			orientation: 'horizontal',
 			templateLock: lockBtnCount ? true : false,
 			templateInsertUpdatesSelection: true,
-			__experimentalDefaultBlock: DEFAULT_BLOCK,
-			__experimentalDirectInsert: true,
+			defaultBlock: DEFAULT_BLOCK,
+			directInsert: true,
 			template: [['kadence/singlebtn']],
 			allowedBlocks: ['kadence/singlebtn'],
 		}
