@@ -90,27 +90,30 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 				$alpha = ( isset( $attributes['containerBackgroundOpacity'] ) && is_numeric( $attributes['containerBackgroundOpacity'] ) ? $attributes['containerBackgroundOpacity'] : 1 );
 				$css->add_property( 'background', $css->render_color( '#f2f2f2', $alpha ) );
 			}
-			$max_width_unit = ( isset( $attributes['maxWidthUnit'] ) && ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' );
+			// Max Width.
+			$max_width_unit        = ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px';
+			$tablet_max_width_unit = ! empty( $attributes['maxWidthTabletUnit'] ) ? $attributes['maxWidthTabletUnit'] : $max_width_unit;
+			$mobile_max_width_unit = ! empty( $attributes['maxWidthMobileUnit'] ) ? $attributes['maxWidthMobileUnit'] : $tablet_max_width_unit;
 			if ( ! empty( $attributes['maxWidth'] ) ) {
 				$css->add_property( 'max-width', $attributes['maxWidth'] . $max_width_unit );
 			}
 			if ( ! empty( $attributes['tabletMaxWidth'] ) ) {
 				$css->set_media_state( 'tablet' );
-				$css->add_property( 'max-width', $attributes['tabletMaxWidth'] . $max_width_unit );
+				$css->add_property( 'max-width', $attributes['tabletMaxWidth'] . $tablet_max_width_unit );
 			}
 			if ( ! empty( $attributes['mobileMaxWidth'] ) ) {
 				$css->set_media_state( 'mobile' );
-				$css->add_property( 'max-width', $attributes['mobileMaxWidth'] . $max_width_unit );
+				$css->add_property( 'max-width', $attributes['mobileMaxWidth'] . $mobile_max_width_unit );
 			}
 			$css->set_media_state( 'desktop' );
 		}
 		$css->render_measure_output( $attributes, 'containerPadding', 'padding', array( 'tablet_key' => 'containerTabletPadding', 'mobile_key' => 'containerMobilePadding' ) );
 		$css->render_measure_output( $attributes, 'containerMargin', 'margin', array( 'unit_key' => 'containerMarginUnit' ) );
-		
-		$mw_is_percentage = isset( $attributes['maxWidthUnit'] ) && ! empty( $attributes['maxWidthUnit'] ) && '%' === $attributes['maxWidthUnit'];
-		if( $mw_is_percentage ) {
+
+		$mw_is_percentage = ! empty( $attributes['maxWidthUnit'] ) && '%' === $attributes['maxWidthUnit'];
+		if ( $mw_is_percentage ) {
 			$css->set_selector( $base_selector . ' .kt-blocks-info-box-media-align-top .kt-blocks-info-box-media-container' );
-			$css->add_property( 'max-width', '100%');
+			$css->add_property( 'max-width', '100%' );
 		}
 
 		// Hover.

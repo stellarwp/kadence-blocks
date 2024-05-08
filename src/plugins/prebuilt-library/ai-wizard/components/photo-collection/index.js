@@ -208,7 +208,7 @@ export function PhotoCollection({ photos, loading, isLocal, collectionLink, titl
 				<div style={styles.title}>{title} </div>
 				<div style={styles.description}>{description}</div>
 			</div>
-			<div style={ styles.importWrapper } className="kb-images-custom-import">
+			<div style={styles.importWrapper} className="kb-images-custom-import">
 				{loading && (
 					<div style={styles.importNotice} className="kb-importing-information">
 						<Spinner style={styles.spinner} /> {__('Loading...', 'kadence-blocks')}

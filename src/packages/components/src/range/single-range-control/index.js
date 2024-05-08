@@ -46,6 +46,7 @@ export default function ResponsiveSingleRangeControl( {
 		onUnit,
 		showUnit = false,
 		units = [ 'px', 'em', 'rem' ],
+		lockUnits = false,
 		className = '',
 	} ) {
 	/**
@@ -79,7 +80,7 @@ export default function ResponsiveSingleRangeControl( {
 				/>
 				{ ( onUnit || showUnit ) && (
 					<div className="kadence-units">
-						{ units.length === 1 ? (
+						{ ( units.length === 1 || lockUnits ) ? (
 							<Button
 								className="is-active is-single"
 								isSmall
