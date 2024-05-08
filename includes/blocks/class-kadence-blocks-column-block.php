@@ -193,26 +193,6 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( '--kb-section-setting-offset', $attributes['stickyOffset'][2] . ( isset( $attributes['stickyOffsetUnit'] ) ? $attributes['stickyOffsetUnit'] : 'px' ) );
 			$css->set_media_state( 'desktop' );
 		}
-		if ( ! empty( $attributes['sticky'] ) && true === $attributes['sticky'] ) {
-			$css->set_selector( '#wrapper.site' );
-			$css->add_property( 'overflow', 'clip' );
-			if ( ! empty( $attributes['stickyOffset'][0] ) ) {
-				$css->set_selector( '.kadence-column' . $unique_id );
-				$css->add_property( '--kb-section-setting-offset', $attributes['stickyOffset'][0] . ( isset( $attributes['stickyOffsetUnit'] ) ? $attributes['stickyOffsetUnit'] : 'px' ) );
-			}
-		}
-		if ( ! empty( $attributes['stickyOffset'][1] ) ) {
-			$css->set_media_state( 'tablet' );
-			$css->set_selector( '.kadence-column' . $unique_id );
-			$css->add_property( '--kb-section-setting-offset', $attributes['stickyOffset'][1] . ( isset( $attributes['stickyOffsetUnit'] ) ? $attributes['stickyOffsetUnit'] : 'px' ) );
-			$css->set_media_state( 'desktop' );
-		}
-		if ( ! empty( $attributes['stickyOffset'][2] ) ) {
-			$css->set_media_state( 'mobile' );
-			$css->set_selector( '.kadence-column' . $unique_id );
-			$css->add_property( '--kb-section-setting-offset', $attributes['stickyOffset'][2] . ( isset( $attributes['stickyOffsetUnit'] ) ? $attributes['stickyOffsetUnit'] : 'px' ) );
-			$css->set_media_state( 'desktop' );
-		}
 
 		$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 		// Padding, check old first.
