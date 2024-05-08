@@ -650,7 +650,7 @@ function SectionEdit(props) {
 					((tabletDirection === '' && deskDirection === 'horizontal') || tabletDirection === 'horizontal') &&
 					'' !== gutter?.[1]
 				) {
-					tempRowGap[1] = '' !== gutter?.[1];
+					tempRowGap[1] = gutter?.[1];
 					tempRowGapVariable[1] = '' !== gutter?.[1] ? 'custom' : '';
 				}
 				if (
@@ -659,7 +659,7 @@ function SectionEdit(props) {
 						mobileDirection === 'horizontal') &&
 					'' !== gutter?.[2]
 				) {
-					tempRowGap[2] = '' !== gutter?.[2];
+					tempRowGap[2] = gutter?.[2];
 					tempRowGapVariable[1] = '' !== gutter?.[1] ? 'custom' : '';
 				}
 
