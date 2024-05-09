@@ -697,6 +697,22 @@ export function EditInner(props) {
 				{activeTab === 'general' && (
 					<>
 						<KadencePanelBody
+							panelName={'kb-header-selected-switch'}
+							title={__('Selected Header', 'kadence-blocks')}
+						>
+							{!direct && (
+								<SelectForm
+									postType="kadence_header"
+									label={__('Selected Header', 'kadence-blocks')}
+									hideLabelFromVision={true}
+									onChange={(nextId) => {
+										setAttributes({ id: parseInt(nextId) });
+									}}
+									value={id}
+								/>
+							)}
+						</KadencePanelBody>
+						<KadencePanelBody
 							title={__('General Settings', 'kadence-blocks')}
 							panelName={'kb-col-header-type-settings'}
 						>
