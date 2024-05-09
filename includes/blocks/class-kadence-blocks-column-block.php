@@ -333,6 +333,10 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			if ( empty( $attributes['gutterVariable'][0] ) ) {
 				$attributes['gutterVariable'][0] = 'sm';
 			}
+			if ( empty( $attributes['rowGapVariable'] ) ) {
+				$css->add_property('display', 'flex');
+				$attributes['rowGapVariable'] = array( 'custom', 'custom', 'custom' );
+			}
 			$css->render_row_gap( $attributes, 'rowGapVariable', 'row-gap', 'rowGap', 'rowGapUnit' );
 			$css->render_row_gap( $attributes, 'gutterVariable', 'column-gap', 'gutter', 'gutterUnit' );
 		}
