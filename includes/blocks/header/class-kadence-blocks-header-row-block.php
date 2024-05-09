@@ -129,10 +129,10 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 
 		//container
 		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id );
-		if ( $sized_attributes['minHeight'] != 0 ) {
+		if ( isset($sized_attributes['minHeight']) && $sized_attributes['minHeight'] != 0 ) {
 			$css->add_property( 'min-height', $sized_attributes['minHeight'] . $sized_attributes['minHeightUnit'] );
 		}
-		if ( $sized_attributes['maxWidth'] != 0 ) {
+		if ( isset($sized_attributes['maxWidth']) && $sized_attributes['maxWidth'] != 0 ) {
 			$css->add_property( 'max-width', $sized_attributes['maxWidth'] . $sized_attributes['maxWidthUnit'] );
 		}
 
