@@ -50,7 +50,7 @@ import {
 	SelectControl,
 } from '@wordpress/components';
 
-import { FormTitle, SelectForm, MenuEditor } from './components';
+import { FormTitle, SelectForm } from './components';
 
 /**
  * Internal dependencies
@@ -491,10 +491,6 @@ export function EditInner(props) {
 		}
 	};
 
-	const [isOpen, setOpen] = useState(false);
-	const openModal = () => setOpen(true);
-	const closeModal = () => setOpen(false);
-
 	const innerBlocksProps = useInnerBlocksProps(
 		{
 			className: innerNavClasses,
@@ -701,21 +697,6 @@ export function EditInner(props) {
 									onChange={(nextId) => setAttributes({ id: parseInt(nextId) })}
 									value={id}
 								/>
-							)}
-
-							<Button variant="secondary" onClick={openModal}>
-								{__('Open Visual Editor', 'kadence-blocks')}
-							</Button>
-
-							{isOpen && (
-								<Modal
-									title={__('Menu Editor', 'kadence-blocks')}
-									onRequestClose={closeModal}
-									size={'large'}
-									style={{ minWidth: '600px' }}
-								>
-									<MenuEditor />
-								</Modal>
 							)}
 						</KadencePanelBody>
 						<div className="kt-sidebar-settings-spacer"></div>
