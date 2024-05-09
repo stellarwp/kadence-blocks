@@ -52,8 +52,10 @@ export default function BackendStyles(props) {
 	css.set_selector(`.wp-block-kadence-header-row${uniqueID}`);
 	css.render_measure_output(padding, paddingTablet, paddingMobile, previewDevice, 'padding', paddingUnit);
 	css.render_measure_output(margin, marginTablet, marginMobile, previewDevice, 'margin', marginUnit);
-	css.add_property('min-height', previewMinHeight + minHeightUnit);
-	if (previewMaxWidth != 0) {
+	if (previewMinHeight != 0 && previewMinHeight) {
+		css.add_property('min-height', previewMinHeight + minHeightUnit);
+	}
+	if (previewMaxWidth != 0 && previewMaxWidth) {
 		css.add_property('max-width', previewMaxWidth + maxWidthUnit);
 	}
 	css.add_property('border-top', css.render_border(border, borderTablet, borderMobile, previewDevice, 'top', false));

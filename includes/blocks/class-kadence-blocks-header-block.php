@@ -78,6 +78,12 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 			$this->sized_dynamic_styles( $css, $header_attributes, $unique_id, $size );
 		}
 
+		// Normal state styles
+		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' .kb-header-container' );
+		$css->render_measure_output( $header_attributes, 'margin', 'margin', ['unit_key' => 'marginUnit']);
+		$css->render_measure_output( $header_attributes, 'padding', 'padding', ['unit_key' => 'paddingUnit']);
+		$css->render_typography( $header_attributes );
+
 		return $css->css_output();
 	}
 
@@ -109,12 +115,13 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( 'border-top', $css->render_border( $sized_attributes['border'], 'top' ) );
 		$css->add_property( 'border-left', $css->render_border( $sized_attributes['border'], 'left' ) );
 		$css->add_property( 'border-right', $css->render_border( $sized_attributes['border'], 'right' ) );
-		$css->add_property( 'min-height', '' !== $min_height ? $min_height . $sized_attributes['heightUnit'] : '' );
-		$css->add_property( 'max-width', 0 !== $max_width ? $max_width . $sized_attributes['widthUnit'] : '' );
+		if ( $min_height ) {
+			$css->add_property( 'min-height', $min_height . $sized_attributes['heightUnit'] );
+		}
+		if ( $max_width ) {
+			$css->add_property( 'max-width', $max_width . $sized_attributes['widthUnit'] );
+		}
 		$css->render_measure_range( $sized_attributes, ( 'Desktop' === $size ? 'borderRadius' : 'borderRadius' . $size ), 'border-radius', '', ['unit_key' => 'borderRadiusUnit']);
-		$css->render_measure_output( $sized_attributes, 'margin', 'margin', '', ['unit_key' => 'marginUnit']);
-		$css->render_measure_output( $sized_attributes, 'padding', 'padding', '', ['unit_key' => 'paddingUnit']);
-		$css->render_typography( $sized_attributes );
 
 		if ( $sized_attributes['shadow'] && isset( $sized_attributes['shadow'][0] ) && $sized_attributes['shadow'][0]['enable'] ) {
 			$css->add_property( 'box-shadow', $css->render_shadow( $sized_attributes['shadow'][0] ) );

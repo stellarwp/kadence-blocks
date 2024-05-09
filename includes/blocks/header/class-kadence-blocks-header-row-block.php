@@ -126,11 +126,13 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 		$bg_transparent = $sized_attributes['backgroundTransparent'];
 
 		$css->set_media_state( strtolower( $size ) );
-		
+
 		//container
 		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id );
-		$css->add_property( 'min-height', $sized_attributes['minHeight'] . $sized_attributes['minHeightUnit'] );
-		if($sized_attributes['maxWidth'] != 0) {
+		if ( $sized_attributes['minHeight'] != 0 ) {
+			$css->add_property( 'min-height', $sized_attributes['minHeight'] . $sized_attributes['minHeightUnit'] );
+		}
+		if ( $sized_attributes['maxWidth'] != 0 ) {
 			$css->add_property( 'max-width', $sized_attributes['maxWidth'] . $sized_attributes['maxWidthUnit'] );
 		}
 

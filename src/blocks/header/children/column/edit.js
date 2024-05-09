@@ -101,8 +101,22 @@ export function Edit(props) {
 				/>
 			</InspectorControls>
 
-			{location === 'center-left' || location === 'center-right' || location === 'center' ? (
+			{/* append a fake column to tablet left and right to better match desktop styling */}
+			{location === 'center-left' ||
+			location === 'center-right' ||
+			location === 'center' ||
+			location === 'tablet-center' ? (
 				<div {...innerBlocksProps} />
+			) : location === 'tablet-left' ? (
+				<div className={innerBlocksClasses}>
+					<Fragment {...innerBlocksProps} />
+					<div className="wp-block-kadence-header-column wp-block-kadence-header-column-center-left" />
+				</div>
+			) : location === 'tablet-right' ? (
+				<div className={innerBlocksClasses}>
+					<div className="wp-block-kadence-header-column wp-block-kadence-header-column-center-right" />
+					<Fragment {...innerBlocksProps} />
+				</div>
 			) : (
 				<Fragment {...innerBlocksProps} />
 			)}

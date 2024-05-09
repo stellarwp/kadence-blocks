@@ -135,15 +135,15 @@
 		},
 		"minHeight": {
 			"type": "number",
-			"default": 0
+			"default": null
 		},
 		"minHeightTablet": {
 			"type": "number",
-			"default": 0
+			"default": null
 		},
 		"minHeightDesktop": {
 			"type": "number",
-			"default": 0
+			"default": null
 		},
 		"minHeightUnit": {
 			"type": "string",
@@ -151,15 +151,15 @@
 		},
 		"maxWidth": {
 			"type": "number",
-			"default": 0
+			"default": null
 		},
 		"maxWidthTablet": {
 			"type": "number",
-			"default": 0
+			"default": null
 		},
 		"maxWidthDesktop": {
 			"type": "number",
-			"default": 0
+			"default": null
 		},
 		"maxWidthUnit": {
 			"type": "string",
@@ -171,11 +171,11 @@
 		},
 		"itemGapTablet": {
 			"type": "number",
-			"default": 0
+			"default": null
 		},
 		"itemGapDesktop": {
 			"type": "number",
-			"default": 0
+			"default": null
 		},
 		"itemGapUnit": {
 			"type": "string",

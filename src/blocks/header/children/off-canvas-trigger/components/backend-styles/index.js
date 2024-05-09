@@ -64,9 +64,11 @@ export default function BackendStyles(props) {
 
 	const css = new KadenceBlocksCSS();
 
+	//container (fix for margin specificty)
+	css.set_selector(`.editor-styles-wrapper .wp-block-kadence-off-canvas-trigger${uniqueID}`);
+	css.render_measure_output(margin, marginTablet, marginMobile, previewDevice, 'margin', marginUnit);
 	//container
 	css.set_selector(`.wp-block-kadence-off-canvas-trigger${uniqueID}`);
-	css.render_measure_output(margin, marginTablet, marginMobile, previewDevice, 'margin', marginUnit);
 	css.render_measure_output(padding, paddingTablet, paddingMobile, previewDevice, 'padding', paddingUnit);
 	css.add_property('background-color', KadenceColorOutput(previewIconBackgroundColor));
 	css.add_property('border-top', css.render_border(border, borderTablet, borderMobile, previewDevice, 'top', false));

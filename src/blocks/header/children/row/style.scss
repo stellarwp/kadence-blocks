@@ -3,18 +3,19 @@
 	grid-template-columns: 1fr auto 1fr;
 	margin: 0 auto;
 
-	.wp-block-kadence-header-column-center {
+	.wp-block-kadence-header-column,
+	.wp-block-kadence-header-section {
+		gap: 10px;
+		align-items: center;
 		display: flex !important;
+	}
+
+	.wp-block-kadence-header-column-center,
+	.wp-block-kadence-header-column-tablet-center {
 		justify-content: center;
 	}
 
 	.wp-block-kadence-header-section {
-		display: flex !important;
-
-		.wp-block-kadence-header-column {
-			display: flex !important;
-		}
-
 		// Override a style we set elsewhere
 		p {
 			margin-bottom: unset;
@@ -23,20 +24,12 @@
 
 	.wp-block-kadence-header-column-center-left {
 		flex-grow: 1;
-		display: flex !important;
 		justify-content: flex-end !important;
 	}
 
 	.wp-block-kadence-header-column-center-right {
 		flex-grow: 1;
-		display: flex !important;
 		justify-content: flex-start !important;
-	}
-
-	.wp-block-kadence-header-column,
-	.wp-block-kadence-header-section {
-		gap: 10px;
-		align-items: center;
 	}
 
 	&.wp-block-kadence-header-row-layout-contained {

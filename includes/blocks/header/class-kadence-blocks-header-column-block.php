@@ -107,6 +107,14 @@ class Kadence_Blocks_Header_Column_Block extends Kadence_Blocks_Abstract_Block {
 
 		if ( ! empty( $attributes['location'] ) ) {
 			$classes[] = 'wp-block-kadence-header-column-' . esc_attr( $attributes['location'] );
+
+			//append a fake column in tablet left and right for more consistent styling compared to desktop
+			if ( $attributes['location'] == 'tablet-left' ) {
+				$content .= '<div class="wp-block-kadence-header-column wp-block-kadence-header-column-center-left"></div>';
+			}
+			if ( $attributes['location'] == 'tablet-right' ) {
+				$content = '<div class="wp-block-kadence-header-column wp-block-kadence-header-column-center-right"></div>' . $content;
+			}
 		}
 
 		$html .= '<div class="' . esc_attr( implode( ' ', $classes ) ) . '">';

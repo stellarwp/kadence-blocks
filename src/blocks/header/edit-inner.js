@@ -796,7 +796,7 @@ export function EditInner(props) {
 						>
 							<ResponsiveRangeControls
 								label={__('Min Height', 'kadence-blocks')}
-								value={undefined !== height?.[0] ? parseFloat(height[0]) : ''}
+								value={height?.[0] ? parseFloat(height[0]) : ''}
 								onChange={(value) => {
 									setMetaAttribute(
 										[
@@ -807,7 +807,7 @@ export function EditInner(props) {
 										'height'
 									);
 								}}
-								tabletValue={undefined !== height?.[1] ? parseFloat(height[1]) : ''}
+								tabletValue={height?.[1] ? parseFloat(height[1]) : ''}
 								onChangeTablet={(value) => {
 									setMetaAttribute(
 										[
@@ -818,7 +818,7 @@ export function EditInner(props) {
 										'height'
 									);
 								}}
-								mobileValue={undefined !== height?.[2] ? parseFloat(height[2]) : ''}
+								mobileValue={height?.[2] ? parseFloat(height[2]) : ''}
 								onChangeMobile={(value) => {
 									setMetaAttribute(
 										[
@@ -840,7 +840,7 @@ export function EditInner(props) {
 							/>
 							<ResponsiveRangeControls
 								label={__('Max Width', 'kadence-blocks')}
-								value={undefined !== width?.[0] ? parseFloat(width[0]) : ''}
+								value={width?.[0] ? parseFloat(width[0]) : ''}
 								onChange={(value) => {
 									setMetaAttribute(
 										[
@@ -851,7 +851,7 @@ export function EditInner(props) {
 										'width'
 									);
 								}}
-								tabletValue={undefined !== width?.[1] ? parseFloat(width[1]) : ''}
+								tabletValue={width?.[1] ? parseFloat(width[1]) : ''}
 								onChangeTablet={(value) => {
 									setMetaAttribute(
 										[
@@ -862,7 +862,7 @@ export function EditInner(props) {
 										'width'
 									);
 								}}
-								mobileValue={undefined !== width?.[2] ? parseFloat(width[2]) : ''}
+								mobileValue={width?.[2] ? parseFloat(width[2]) : ''}
 								onChangeMobile={(value) => {
 									setMetaAttribute(
 										[
