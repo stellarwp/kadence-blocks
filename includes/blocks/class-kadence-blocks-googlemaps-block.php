@@ -188,14 +188,14 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 		if ( $updated_version ) {
 			$wrapper_args = array(
 				'class' => 'kb-google-maps-container kb-google-maps-container' . $unique_id . ' ' . ( ! empty( $attributes['align'] ) ? 'align' . $attributes['align'] : '' ),
-				'data-mapid' => $unique_id,
+				'data-mapid' => $this->escape_for_js_variable( $unique_id ),
 			);
 			$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 
 			$content = '<div ' . $wrapper_attributes . '>';
 
 			if ( isset( $attributes['apiType'] ) && $attributes['apiType'] === 'javascript' ) {
-				$content .= '<div id="kb-google-map' . $unique_id . '" style="width: 100%; height: 100%"></div>';
+				$content .= '<div id="kb-google-map' . $this->escape_for_js_variable( $unique_id ) . '" style="width: 100%; height: 100%"></div>';
 			} else {
 
 				$mapQueryParams = array(
@@ -239,10 +239,10 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 		$gMapLng = empty( $attributes['lng'] ) ? '-122.4781' : $attributes['lng'];
 
 		$content .= '<script>';
-		$content .= 'function kb_google_map' . str_replace( '-', '_', $unique_id ) . '() {';
+		$content .= 'function kb_google_map' . $this->escape_for_js_variable( $unique_id ) . '() {';
 		$content .= ' let center = { lat: ' . $gMapLat . ', lng: ' . $gMapLng . '};';
 
-		$content .= ' let map = new google.maps.Map(document.getElementById("kb-google-map' . $unique_id . '"), {
+		$content .= ' let map = new google.maps.Map(document.getElementById("kb-google-map' . $this->escape_for_js_variable( $unique_id ) . '"), {
 					    zoom: ' . $zoom . ',
 					    center: center,';
 
@@ -266,6 +266,10 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 		$content .= '</script>';
 
 		return $content;
+	}
+
+	private function escape_for_js_variable ( $string ) {
+		return preg_replace('/[^a-zA-Z0-9_]/', '', $string);
 	}
 
 	/**
