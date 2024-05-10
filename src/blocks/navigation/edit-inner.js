@@ -75,10 +75,11 @@ export function EditInner(props) {
 	const { attributes, setAttributes, clientId, direct, id, isSelected, context } = props;
 	const { uniqueID } = attributes;
 
-	const { previewDevice } = useSelect(
+	const { previewDevice, childSelected } = useSelect(
 		(select) => {
 			return {
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
+				childSelected: select('core/block-editor').hasSelectedInnerBlock(clientId, true),
 			};
 		},
 		[clientId]
@@ -1344,7 +1345,7 @@ export function EditInner(props) {
 			<nav className={navClasses}>
 				<div className="menu-container">
 					<ul {...innerBlocksProps} />
-					{isSelected && navAppender()}
+					{(isSelected || childSelected) && navAppender()}
 				</div>
 			</nav>
 			{/*<SpacingVisualizer*/}
