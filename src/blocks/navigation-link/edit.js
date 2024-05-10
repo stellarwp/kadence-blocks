@@ -904,7 +904,7 @@ export default function Edit(props) {
 							return (
 								<MenuItem
 									onClick={() => {
-										addNavLink(parentBlockId);
+										addNavLink(parentBlockId, currentIndex + 1);
 										onClose();
 									}}
 									label={__('Add Navigation Link', 'kadence-blocks')}
