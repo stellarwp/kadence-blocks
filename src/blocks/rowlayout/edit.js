@@ -1013,7 +1013,7 @@ function RowLayoutEditContainer(props) {
 			allowedBlocks: ALLOWED_BLOCKS,
 			orientation: 'horizontal',
 			renderAppender: false,
-			templateLock: templateLock,
+			templateLock,
 		}
 	);
 	const paddingMouseOver = mouseOverVisualizer();
