@@ -51,7 +51,6 @@ import BackendStyles from './components/backend-styles';
 
 export function Edit(props) {
 	const { attributes, setAttributes, clientId, isSelected } = props;
-	const [previewActive, setPreviewActive] = useState(false);
 	const [activeTab, setActiveTab] = useState('general');
 
 	const {
@@ -120,14 +119,14 @@ export function Edit(props) {
 		closeIconBorderRadiusUnit,
 	} = attributes;
 
-	const { addUniqueID } = useDispatch('kadenceblocks/data');
+	const { addUniqueID, setOffCanvasOpenId } = useDispatch('kadenceblocks/data');
 	const { selectBlock } = useDispatch(blockEditorStore);
 
-	const { isUniqueID, isUniqueBlock, parentData, previewDevice, parentClientId } = useSelect(
+	const { isUniqueID, isUniqueBlock, parentData, previewDevice, parentClientId, showOffCanvas } = useSelect(
 		(select) => {
-			const { getBlockParents, getBlockParentsByBlockName } = select(blockEditorStore);
 			return {
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
+				showOffCanvas: select('kadenceblocks/data').getOpenOffCanvasId() === clientId,
 				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
 				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
 				parentData: {
@@ -167,16 +166,16 @@ export function Edit(props) {
 
 	const handleModalClick = (e) => {
 		if (e.target.classList.contains('wp-block-kadence-off-canvas')) {
-			setPreviewActive(false);
+			setOffCanvasOpenId(null);
 			selectBlock(parentClientId);
 		}
 	};
 
-	const editorElement = useEditorElement(ref, [selfOrChildSelected, previewActive]);
+	const editorElement = useEditorElement(ref, [selfOrChildSelected, showOffCanvas]);
 	const previewCloseIconSize = getPreviewSize(previewDevice, closeIconSize, closeIconSizeTablet, closeIconSizeMobile);
 
 	const classes = classnames('wp-block-kadence-off-canvas', `off-canvas-side-${slideFrom}`, {
-		active: selfOrChildSelected() || previewActive,
+		active: selfOrChildSelected() || showOffCanvas,
 		[`wp-block-kadence-off-canvas${uniqueID}`]: uniqueID,
 	});
 
@@ -262,15 +261,15 @@ export function Edit(props) {
 					<>
 						<KadencePanelBody>
 							<KadenceRadioButtons
-								label={__('Show Off cavnas content in editor when not selected', 'kadence-blocks')}
-								value={previewActive}
+								label={__('Show off canvas content in editor when not selected', 'kadence-blocks')}
+								value={showOffCanvas}
 								options={[
 									{ value: true, label: __('Show', 'kadence-blocks') },
 									{ value: false, label: __('Hide', 'kadence-blocks') },
 								]}
 								hideLabel={false}
 								onChange={(value) => {
-									setPreviewActive(value);
+									setOffCanvasOpenId(value ? clientId : null);
 								}}
 							/>
 						</KadencePanelBody>

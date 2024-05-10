@@ -3,6 +3,7 @@ import { Button } from '@wordpress/components';
 import { useEditorElement, capitalizeFirstLetter } from '@kadence/helpers';
 import { __ } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
+import { get } from 'lodash';
 
 import ModalClose from './close';
 import Desktop from './desktop';
@@ -53,13 +54,18 @@ function extractBlocks(blocksData) {
 
 export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 	const [tab, setTab] = useState(previewDevice);
-	const { setPreviewDeviceType, setHeaderVisualBuilderOpenId } = useDispatch('kadenceblocks/data');
+	const { setPreviewDeviceType, setHeaderVisualBuilderOpenId, setOffCanvasOpenId } =
+		useDispatch('kadenceblocks/data');
 
-	const updateTab = (value) => {
+	const updateTab = (value, blocks = null) => {
 		setTab(value);
 
 		if (value !== 'off-canvas') {
 			setPreviewDeviceType(capitalizeFirstLetter(value));
+		} else if (value === 'off-canvas') {
+			if (get(blocks, 'clientId')) {
+				setOffCanvasOpenId(get(blocks, 'clientId'));
+			}
 		}
 	};
 
@@ -132,7 +138,7 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 							<Button
 								isPrimary={tab === 'off-canvas'}
 								disabled={offCanvasBlocks === null}
-								onClick={() => updateTab('off-canvas')}
+								onClick={() => updateTab('off-canvas', offCanvasBlocks)}
 							>
 								{__('Off Canvas', 'kadence-blocks')}
 							</Button>

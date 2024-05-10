@@ -32,6 +32,12 @@ const actions = {
 			clientId,
 		};
 	},
+	*setOffCanvasOpenId(clientId = null) {
+		return {
+			type: 'SET_OPEN_OFF_CANVAS_ID',
+			clientId,
+		};
+	},
 	*toggleEditorPanelOpened(panelName, defaultValue) {
 		return {
 			type: 'TOGGLE_EDITOR_PANEL_OPENED',
@@ -144,12 +150,19 @@ const store = createReduxStore('kadenceblocks/data', {
 	reducer(state = DEFAULT_STATE, action) {
 		switch (action.type) {
 			case 'SET_OPEN_HEADER_VISUAL_BUILDER_ID':
-				const { clientId } = action;
 				return {
 					...state,
 					headerVisualBuilder: {
 						...state.headerVisualBuilder,
-						open: clientId,
+						open: action.clientId,
+					},
+				};
+			case 'SET_OPEN_OFF_CANVAS_ID':
+				return {
+					...state,
+					offCanvas: {
+						...state.offCanvas,
+						open: action.clientId,
 					},
 				};
 			case 'TOGGLE_EDITOR_PANEL_OPENED':
@@ -303,6 +316,9 @@ const store = createReduxStore('kadenceblocks/data', {
 		},
 		getOpenHeaderVisualBuilderId(state) {
 			return get(state, ['headerVisualBuilder', 'open'], null);
+		},
+		getOpenOffCanvasId(state) {
+			return get(state, ['offCanvas', 'open'], null);
 		},
 		isEditorPanelOpened(state, panelName, defaultValue) {
 			const panels = get(state, ['editorPanels'], {});
