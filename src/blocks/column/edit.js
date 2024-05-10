@@ -65,7 +65,7 @@ import { getPreviewGutterSize } from './utils';
 import { __ } from '@wordpress/i18n';
 
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useEffect, useState, Fragment } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import {
 	BlockAlignmentToolbar,
 	BlockVerticalAlignmentControl,
@@ -77,7 +77,6 @@ import {
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
 import { ToggleControl, SelectControl, ToolbarGroup } from '@wordpress/components';
-import { applyFilters } from '@wordpress/hooks';
 const FORM_ALLOWED_BLOCKS = [
 	'core/paragraph',
 	'kadence/advancedheading',
@@ -106,7 +105,6 @@ import { BLEND_OPTIONS } from '../rowlayout/constants';
  */
 function SectionEdit(props) {
 	const { attributes, setAttributes, isSelected, clientId, context, className } = props;
-
 	const {
 		id,
 		topPadding,
@@ -240,7 +238,6 @@ function SectionEdit(props) {
 		gutterVariable,
 		kbVersion,
 	} = attributes;
-
 	const [activeTab, setActiveTab] = useState('general');
 	const [dynamicBackgroundImg, setDynamicBackgroundImg] = useState('');
 
@@ -1165,7 +1162,7 @@ function SectionEdit(props) {
 				previewDirection === 'horizontal' || previewDirection === 'horizontal-reverse'
 					? 'horizontal'
 					: 'vertical',
-			templateLock: templateLock ? templateLock : undefined,
+			templateLock: templateLock,
 			renderAppender: hasInnerBlocks ? undefined : InnerBlocks.ButtonBlockAppender,
 			allowedBlocks: inFormBlock ? FORM_ALLOWED_BLOCKS : undefined,
 		}
