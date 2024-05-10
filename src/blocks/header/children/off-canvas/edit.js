@@ -74,6 +74,10 @@ export function Edit(props) {
 		containerMaxWidth,
 		containerMaxWidthTablet,
 		containerMaxWidthMobile,
+		width,
+		widthTablet,
+		widthMobile,
+		widthUnit,
 		hAlign,
 		hAlignTablet,
 		hAlignMobile,
@@ -301,28 +305,46 @@ export function Edit(props) {
 							/>
 
 							{widthType === 'partial' && (
-								<ResponsiveRangeControls
-									label={__('Max Width', 'kadence-blocks')}
-									value={maxWidth !== 0 ? maxWidth : ''}
-									onChange={(value) => setAttributes({ maxWidth: value })}
-									tabletValue={maxWidthTablet ? maxWidthTablet : ''}
-									onChangeTablet={(value) => setAttributes({ maxWidthTablet: value })}
-									mobileValue={maxWidthMobile ? maxWidthMobile : ''}
-									onChangeMobile={(value) => setAttributes({ maxWidthMobile: value })}
-									min={100}
-									max={1500}
-									step={1}
-									unit={'px'}
-									showUnit={true}
-									units={['px']}
-									reset={() =>
-										setAttributes({ maxWidth: '', maxWidthTablet: '', maxWidthMobile: '' })
-									}
-								/>
+								<>
+									<ResponsiveRangeControls
+										label={__('Max Width', 'kadence-blocks')}
+										value={maxWidth !== 0 ? maxWidth : ''}
+										onChange={(value) => setAttributes({ maxWidth: value })}
+										tabletValue={maxWidthTablet ? maxWidthTablet : ''}
+										onChangeTablet={(value) => setAttributes({ maxWidthTablet: value })}
+										mobileValue={maxWidthMobile ? maxWidthMobile : ''}
+										onChangeMobile={(value) => setAttributes({ maxWidthMobile: value })}
+										min={0}
+										max={maxWidthUnit == 'px' ? 1500 : 100}
+										step={1}
+										unit={maxWidthUnit}
+										showUnit={true}
+										units={['px', 'vw']}
+										reset={() =>
+											setAttributes({ maxWidth: '', maxWidthTablet: '', maxWidthMobile: '' })
+										}
+									/>
+									<ResponsiveRangeControls
+										label={__('Width', 'kadence-blocks')}
+										value={width !== 0 ? width : ''}
+										onChange={(value) => setAttributes({ width: value })}
+										tabletValue={widthTablet ? widthTablet : ''}
+										onChangeTablet={(value) => setAttributes({ widthTablet: value })}
+										mobileValue={widthMobile ? widthMobile : ''}
+										onChangeMobile={(value) => setAttributes({ widthMobile: value })}
+										min={0}
+										max={widthUnit == 'px' ? 1500 : 100}
+										step={1}
+										unit={widthUnit}
+										showUnit={true}
+										units={['px', 'vw']}
+										reset={() => setAttributes({ width: '', widthTablet: '', maxWidthMobile: '' })}
+									/>
+								</>
 							)}
 
 							<ResponsiveRangeControls
-								label={__('Container Max Width', 'kadence-blocks')}
+								label={__('Content Max Width', 'kadence-blocks')}
 								value={containerMaxWidth ? containerMaxWidth : ''}
 								onChange={(value) => setAttributes({ containerMaxWidth: value })}
 								tabletValue={containerMaxWidthTablet ? containerMaxWidthTablet : ''}

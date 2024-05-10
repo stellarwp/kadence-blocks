@@ -5,7 +5,7 @@ $admin-bar-height-mobile: 46px;
 .wp-block-kadence-off-canvas {
 	background-color: white;
 	height: 100%;
-	min-width: 150px;
+	min-width: 250px;
 	// left: -9999rem;
 	// right: 9999rem;
 	position: fixed;
@@ -67,6 +67,15 @@ $admin-bar-height-mobile: 46px;
 
 		&:focus {
 			outline: none;
+		}
+
+		&:hover {
+			margin: 0;
+			padding: 0;
+			color: currentColor;
+			background: none;
+			border: none;
+			border-radius: 0;
 		}
 	}
 }

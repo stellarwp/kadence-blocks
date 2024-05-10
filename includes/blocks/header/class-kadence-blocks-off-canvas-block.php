@@ -161,6 +161,10 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 			if( !empty( $sized_attributes['maxWidth']) ) {
 				$css->add_property( 'max-width', $sized_attributes['maxWidth'] . $max_width_unit );
 			}
+			$width_unit = !empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px';
+			if( !empty( $sized_attributes['width']) ) {
+				$css->add_property( 'width', $sized_attributes['width'] . $width_unit );
+			}
 		}
 		if ( ! empty( $sized_attributes['backgroundColor'] ) ) {
 			$css->add_property( 'background-color', $css->render_color( $sized_attributes['backgroundColor'] ) );

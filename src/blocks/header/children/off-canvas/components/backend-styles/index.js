@@ -25,6 +25,10 @@ export default function BackendStyles(props) {
 		containerMaxWidth,
 		containerMaxWidthTablet,
 		containerMaxWidthMobile,
+		width,
+		widthTablet,
+		widthMobile,
+		widthUnit,
 		hAlign,
 		hAlignTablet,
 		hAlignMobile,
@@ -82,6 +86,12 @@ export default function BackendStyles(props) {
 		undefined !== maxWidth ? maxWidth : '',
 		undefined !== maxWidthTablet ? maxWidthTablet : '',
 		undefined !== maxWidthMobile ? maxWidthMobile : ''
+	);
+	const previewWidth = getPreviewSize(
+		previewDevice,
+		undefined !== width ? width : '',
+		undefined !== widthTablet ? widthTablet : '',
+		undefined !== widthMobile ? widthMobile : ''
 	);
 
 	const previewContainerMaxWidth = getPreviewSize(
@@ -141,12 +151,18 @@ export default function BackendStyles(props) {
 	}
 	css.add_property('height', editorHeight + 'px');
 	css.add_property('top', editorTop + 'px');
-	css.add_property('width', widthType === 'full' ? editorWidth + 'px' : '');
 	css.add_property('background', KadenceColorOutput(previewBackgroundColor));
-	css.add_property(
-		'max-width',
-		widthType !== 'full' ? (previewMaxWidth != 0 ? previewMaxWidth + maxWidthUnit : '') : ''
-	);
+
+	if (widthType == 'full') {
+		css.add_property('width', editorWidth + 'px');
+	} else {
+		if (previewMaxWidth) {
+			css.add_property('max-width', previewMaxWidth + maxWidthUnit);
+		}
+		if (previewWidth) {
+			css.add_property('width', previewWidth + widthUnit);
+		}
+	}
 	css.add_property('border-top', css.render_border(border, borderTablet, borderMobile, previewDevice, 'top', false));
 	css.add_property(
 		'border-right',

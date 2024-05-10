@@ -7,4 +7,13 @@
 	border-radius: 0;
 	svg {
 	}
+
+	&:hover {
+		margin: 0;
+		padding: 0;
+		color: currentColor;
+		background: none;
+		border: none;
+		border-radius: 0;
+	}
 }
