@@ -928,6 +928,19 @@ function KadenceAdvancedHeading(props) {
 		className: wrapperClasses,
 	});
 
+	function sanitizeString(input) {
+		const map = {
+			'&': '&amp;',
+			'<': '&lt;',
+			'>': '&gt;',
+			'"': '&quot;',
+			"'": '&#x27;',
+			'/': '&#x2F;',
+		};
+		const reg = /[&<>"'/]/gi;
+		return input.replace(reg, (match) => map[match]);
+	}
+
 	const typed = useRef(null);
 	useEffect(() => {
 		if (!isSelected && undefined !== attributes.content && attributes.content.includes('kt-typed-text')) {
@@ -945,7 +958,9 @@ function KadenceAdvancedHeading(props) {
 
 				const options = {
 					strings,
-					cursorChar: typedElement.getAttribute('data-cursor-char') ?? '_',
+					cursorChar: typedElement.getAttribute('data-cursor-char')
+						? sanitizeString(typedElement.getAttribute('data-cursor-char'))
+						: '_',
 					startDelay: typedElement.getAttribute('data-start-delay')
 						? parseInt(typedElement.getAttribute('data-start-delay'))
 						: 0,
