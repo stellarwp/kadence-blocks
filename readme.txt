@@ -177,8 +177,10 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 = 3.2.38 =
 Release Date: May 10th 2024
 * Fix: Show more block not seeing input area.
+* Fix: Issue with pexel image sizes.
 * Fix: Issue with accordion margin style in editor.
 * Fix: Sanitize cursor character in typed text.
+* Fix: Sanitize google maps id.
 
 = 3.2.37 =
 Release Date: May 8th 2024
