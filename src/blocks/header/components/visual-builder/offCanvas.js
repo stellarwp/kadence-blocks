@@ -23,9 +23,10 @@ const OffCanvasRow = ({ blocks, offCanvasClientId }) => {
 						isTablet={true}
 						type={'off-canvas'}
 					/>
-					<AddBlockButton position={'off-canvas'} clientId={offCanvasClientId} />
+					{/*<AddBlockButton position={'off-canvas'} clientId={offCanvasClientId} />*/}
 				</div>
 			</div>
+			<AddBlockButton position={'off-canvas'} clientId={offCanvasClientId} />
 		</div>
 	);
 };
