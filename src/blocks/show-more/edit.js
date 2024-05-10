@@ -33,8 +33,8 @@ import {
 	getPostOrFseId,
 } from '@kadence/helpers';
 
-import { useBlockProps, useInnerBlocksProps, BlockControls } from '@wordpress/block-editor';
-import { useEffect, useRef, useState, Fragment } from '@wordpress/element';
+import { useBlockProps, useInnerBlocksProps, BlockControls, store as blockEditorStore } from '@wordpress/block-editor';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import { uniqueId } from 'lodash';
 
 /**
@@ -105,7 +105,27 @@ export function Edit(props) {
 
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 	}, []);
-
+	const { updateBlockAttributes } = useDispatch(blockEditorStore);
+	const { showMoreBlock } = useSelect(
+		(select) => {
+			return {
+				showMoreBlock: select('core/block-editor').getBlock(clientId),
+			};
+		},
+		[clientId]
+	);
+	useEffect(() => {
+		if (
+			showMoreBlock?.innerBlocks?.[0]?.clientId &&
+			showMoreBlock?.innerBlocks?.[0]?.name === 'kadence/column' &&
+			showMoreBlock?.innerBlocks?.[0]?.attributes &&
+			false !== showMoreBlock?.innerBlocks?.[0]?.attributes?.templateLock
+		) {
+			updateBlockAttributes(showMoreBlock.innerBlocks[0].clientId, {
+				templateLock: false,
+			});
+		}
+	}, [clientId]);
 	const [activeTab, setActiveTab] = useState('general');
 
 	const paddingMouseOver = mouseOverVisualizer();
@@ -217,6 +237,7 @@ export function Edit(props) {
 					'kadence/column',
 					{
 						className: 'kb-show-more-content',
+						templateLock: false,
 					},
 				],
 				[
@@ -259,8 +280,7 @@ export function Edit(props) {
 		const fadeSize = enableFadeOut && !isExpanded ? Math.abs(fadeOutSize - 100) : 100;
 
 		return (
-			<div className="Class">
-				<style>{`
+			<style>{`
         .kb-block-show-more-container${uniqueID} .kb-show-more-buttons .wp-block-kadence-singlebtn:last-of-type {
        	display: ${showHideMore ? 'inline-flex' : 'none'};
        	}
@@ -272,12 +292,11 @@ export function Edit(props) {
 
         }
       `}</style>
-			</div>
 		);
 	};
 
 	return (
-		<Fragment>
+		<>
 			<BlockControls>
 				<CopyPasteAttributes
 					attributes={attributes}
@@ -498,7 +517,7 @@ export function Edit(props) {
 					]}
 				/>
 			</div>
-		</Fragment>
+		</>
 	);
 }
 
