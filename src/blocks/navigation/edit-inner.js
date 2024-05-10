@@ -13,6 +13,8 @@ import { get, isEqual } from 'lodash';
 import { addQueryArgs } from '@wordpress/url';
 import { useEntityBlockEditor, useEntityProp } from '@wordpress/core-data';
 import { formBlockIcon } from '@kadence/icons';
+import addNavLink from './helpers/addNavLink';
+
 import {
 	KadencePanelBody,
 	InspectorControlTabs,
@@ -30,7 +32,7 @@ import {
 	BoxShadowControl,
 	ResponsiveMeasurementControls,
 } from '@kadence/components';
-import { getPreviewSize, getSpacingOptionOutput, mouseOverVisualizer, showSettings } from '@kadence/helpers';
+import { getPreviewSize, mouseOverVisualizer, showSettings } from '@kadence/helpers';
 
 import {
 	InspectorControls,
@@ -38,16 +40,18 @@ import {
 	useInnerBlocksProps,
 	InspectorAdvancedControls,
 	store as editorStore,
+	BlockSettingsMenuControls,
 } from '@wordpress/block-editor';
 import {
 	TextControl,
 	ToggleControl,
 	ToolbarGroup,
+	ToolbarButton,
 	ExternalLink,
 	Button,
 	Placeholder,
-	Modal,
-	SelectControl,
+	MenuItem,
+	Icon,
 } from '@wordpress/components';
 
 import { FormTitle, SelectForm } from './components';
@@ -59,6 +63,7 @@ import classnames from 'classnames';
 import { useEntityPublish } from './hooks';
 import { DEFAULT_BLOCK, ALLOWED_BLOCKS, PRIORITIZED_INSERTER_BLOCKS } from './constants';
 import BackendStyles from './components/backend-styles';
+import { plus, plusCircle } from '@wordpress/icons';
 
 /**
  * Regular expression matching invalid anchor characters for replacement.
@@ -491,6 +496,36 @@ export function EditInner(props) {
 		}
 	};
 
+	const navAppender = () => {
+		return (
+			<div
+				style={{
+					display: 'flex',
+					alignItems: 'center',
+				}}
+			>
+				<Button
+					className={classnames(className, {
+						'block-editor-inserter__toggle': true,
+						'has-icon': true,
+					})}
+					style={{
+						minWidth: '24px',
+						padding: '0px',
+						height: '24px',
+						background: '#000',
+						color: '#FFF',
+						borderRadius: '2px',
+					}}
+					onClick={() => {
+						addNavLink(clientId);
+					}}
+					icon={plus}
+				/>
+			</div>
+		);
+	};
+
 	const innerBlocksProps = useInnerBlocksProps(
 		{
 			className: innerNavClasses,
@@ -503,7 +538,7 @@ export function EditInner(props) {
 			onChange: !direct ? (a, b) => onChange([{ ...newBlock, innerBlocks: a }], b) : undefined,
 			templateLock: false,
 			defaultBlock: DEFAULT_BLOCK,
-			// renderAppender: navigationInnerBlocks.length === 0 ? useFieldBlockAppenderBase : useFieldBlockAppender
+			renderAppender: false,
 		}
 	);
 
@@ -675,6 +710,41 @@ export function EditInner(props) {
 
 	return (
 		<>
+			<BlockControls>
+				<ToolbarGroup>
+					<ToolbarButton
+						className="kb-icons-add-icon"
+						icon={plusCircle}
+						onClick={() => {
+							addNavLink(clientId);
+						}}
+						label={__('Add Navigation Link', 'kadence-blocks')}
+						showTooltip={true}
+					/>
+				</ToolbarGroup>
+			</BlockControls>
+			{isSelected && (
+				<BlockSettingsMenuControls>
+					{(props) => {
+						const { selectedBlocks, onClose } = props;
+
+						if (selectedBlocks.length === 1 && selectedBlocks[0] === 'kadence/navigation') {
+							return (
+								<MenuItem
+									onClick={() => {
+										addNavLink(clientId);
+										onClose();
+									}}
+									label={__('Add Navigation Link', 'kadence-blocks')}
+									role={null}
+								>
+									{__('Add Navigation Link', 'kadence-blocks')}
+								</MenuItem>
+							);
+						}
+					}}
+				</BlockSettingsMenuControls>
+			)}
 			<BackendStyles {...props} metaAttributes={metaAttributes} previewDevice={previewDevice} />
 			<InspectorControls>
 				<InspectorControlTabs
@@ -1274,6 +1344,7 @@ export function EditInner(props) {
 			<nav className={navClasses}>
 				<div className="menu-container">
 					<ul {...innerBlocksProps} />
+					{isSelected && navAppender()}
 				</div>
 			</nav>
 			{/*<SpacingVisualizer*/}

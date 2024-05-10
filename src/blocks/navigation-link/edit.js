@@ -20,6 +20,7 @@ import {
 	TabPanel,
 	SelectControl,
 	ExternalLink,
+	MenuItem,
 } from '@wordpress/components';
 import { displayShortcut, isKeyboardEvent, ENTER } from '@wordpress/keycodes';
 import { __ } from '@wordpress/i18n';
@@ -31,15 +32,16 @@ import {
 	store as blockEditorStore,
 	getColorClassName,
 	useInnerBlocksProps,
+	BlockSettingsMenuControls,
 } from '@wordpress/block-editor';
 import { isURL, prependHTTP, safeDecodeURI } from '@wordpress/url';
 import { useState, useEffect, useRef } from '@wordpress/element';
 import { placeCaretAtHorizontalEdge, __unstableStripHTML as stripHTML } from '@wordpress/dom';
 import { decodeEntities } from '@wordpress/html-entities';
-import { link as linkIcon, addSubmenu } from '@wordpress/icons';
+import { link as linkIcon, addSubmenu, plusCircle } from '@wordpress/icons';
 import { store as coreStore } from '@wordpress/core-data';
 import { useMergeRefs } from '@wordpress/compose';
-
+import { last } from 'lodash';
 import {
 	getUniqueId,
 	getPostOrFseId,
@@ -94,59 +96,9 @@ import { updateAttributes } from './update-attributes';
 import './editor.scss';
 import metadata from './block.json';
 import BackendStyles from './components/backend-styles';
+import addNavLink from '../navigation/helpers/addNavLink';
 
 const DEFAULT_BLOCK = { name: 'kadence/navigation-link' };
-
-/**
- * A React hook to determine if it's dragging within the target element.
- *
- * @typedef {import('@wordpress/element').RefObject} RefObject
- *
- * @param {RefObject<HTMLElement>} elementRef The target elementRef object.
- *
- * @return {boolean} Is dragging within the target element.
- */
-const useIsDraggingWithin = (elementRef) => {
-	const [isDraggingWithin, setIsDraggingWithin] = useState(false);
-
-	useEffect(() => {
-		const { ownerDocument } = elementRef.current;
-
-		function handleDragStart(event) {
-			// Check the first time when the dragging starts.
-			handleDragEnter(event);
-		}
-
-		// Set to false whenever the user cancel the drag event by either releasing the mouse or press Escape.
-		function handleDragEnd() {
-			setIsDraggingWithin(false);
-		}
-
-		function handleDragEnter(event) {
-			// Check if the current target is inside the item element.
-			if (elementRef.current.contains(event.target)) {
-				setIsDraggingWithin(true);
-			} else {
-				setIsDraggingWithin(false);
-			}
-		}
-
-		// Bind these events to the document to catch all drag events.
-		// Ideally, we can also use `event.relatedTarget`, but sadly that
-		// doesn't work in Safari.
-		ownerDocument.addEventListener('dragstart', handleDragStart);
-		ownerDocument.addEventListener('dragend', handleDragEnd);
-		ownerDocument.addEventListener('dragenter', handleDragEnter);
-
-		return () => {
-			ownerDocument.removeEventListener('dragstart', handleDragStart);
-			ownerDocument.removeEventListener('dragend', handleDragEnd);
-			ownerDocument.removeEventListener('dragenter', handleDragEnter);
-		};
-	}, []);
-
-	return isDraggingWithin;
-};
 
 const useIsInvalidLink = (kind, type, id) => {
 	const isPostType = kind === 'post-type' || type === 'post' || type === 'page';
@@ -372,7 +324,6 @@ export default function Edit(props) {
 	// re-renders when the popover's anchor updates.
 	const [popoverAnchor, setPopoverAnchor] = useState(null);
 	const listItemRef = useRef(null);
-	const isDraggingWithin = useIsDraggingWithin(listItemRef);
 	const ref = useRef();
 
 	//See if this is the first Nav Item in the menu
@@ -383,12 +334,16 @@ export default function Edit(props) {
 	const [isLabelFieldFocused, setIsLabelFieldFocused] = useState(false);
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData, parentBlockId, currentIndex } = useSelect(
 		(select) => {
+			const parentBlocks = select('core/block-editor').getBlockParents(clientId);
+
 			return {
 				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
 				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
+				currentIndex: select('core/block-editor').getBlockIndex(clientId),
+				parentBlockId: last(parentBlocks),
 				parentData: {
 					rootBlock: select('core/block-editor').getBlock(
 						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
@@ -618,7 +573,6 @@ export default function Edit(props) {
 		ref: useMergeRefs([setPopoverAnchor, listItemRef]),
 		className: classnames('wp-block-kadence-navigation-item', 'menu-item', {
 			'is-editing': isSelected || isParentOfSelectedBlock,
-			'is-dragging-within': isDraggingWithin,
 			'has-link': !!url,
 			'has-child': hasChildren,
 			'has-media': mediaType && mediaType != 'none',
@@ -909,6 +863,17 @@ export default function Edit(props) {
 					onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
 				/>
 				<ToolbarGroup>
+					<ToolbarButton
+						className="kb-icons-add-icon"
+						icon={plusCircle}
+						onClick={() => {
+							addNavLink(parentBlockId, currentIndex + 1);
+						}}
+						label={__('Add Navigation Link', 'kadence-blocks')}
+						showTooltip={true}
+					/>
+				</ToolbarGroup>
+				<ToolbarGroup>
 					{!isAtMaxNesting && !hasChildren && (
 						<ToolbarButton
 							name="submenu"
@@ -930,6 +895,28 @@ export default function Edit(props) {
 					)}
 				</ToolbarGroup>
 			</BlockControls>
+			{isSelected && (
+				<BlockSettingsMenuControls>
+					{(props) => {
+						const { selectedBlocks, onClose } = props;
+
+						if (selectedBlocks.length === 1 && selectedBlocks[0] === 'kadence/navigation-link') {
+							return (
+								<MenuItem
+									onClick={() => {
+										addNavLink(parentBlockId);
+										onClose();
+									}}
+									label={__('Add Navigation Link', 'kadence-blocks')}
+									role={null}
+								>
+									{__('Add Navigation Link', 'kadence-blocks')}
+								</MenuItem>
+							);
+						}
+					}}
+				</BlockSettingsMenuControls>
+			)}
 			{/* Warning, this duplicated in packages/block-library/src/navigation-submenu/edit.js */}
 			<BackendStyles {...props} previewDevice={previewDevice} currentRef={ref} />
 			<InspectorControls>
