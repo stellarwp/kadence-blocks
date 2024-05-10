@@ -18,13 +18,13 @@ import { __ } from '@wordpress/i18n';
 import { isEmpty } from 'lodash';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { formBlockIcon, formTemplateContactIcon } from '@kadence/icons';
-import { KadencePanelBody } from '@kadence/components';
+import { KadencePanelBody, SelectPostFromPostType } from '@kadence/components';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { Placeholder, Spinner } from '@wordpress/components';
 import { store as coreStore, EntityProvider } from '@wordpress/core-data';
 
 import { useEntityAutoDraft } from './hooks';
-import { SelectOrCreatePlaceholder, SelectForm } from './components';
+import { SelectOrCreatePlaceholder } from './components';
 import { getUniqueId, getPostOrFseId } from '@kadence/helpers';
 
 /**
@@ -139,7 +139,7 @@ export function Edit(props) {
 							panelName={'kb-advanced-form-selected-switch'}
 							title={__('Selected Form', 'kadence-blocks')}
 						>
-							<SelectForm
+							<SelectPostFromPostType
 								postType="kadence_form"
 								label={__('Selected Form', 'kadence-blocks')}
 								hideLabelFromVision={true}
@@ -167,7 +167,7 @@ export function Edit(props) {
 							panelName={'kb-advanced-form-selected-switch'}
 							title={__('Selected Form', 'kadence-blocks')}
 						>
-							<SelectForm
+							<SelectPostFromPostType
 								postType="kadence_form"
 								label={__('Selected Form', 'kadence-blocks')}
 								hideLabelFromVision={true}

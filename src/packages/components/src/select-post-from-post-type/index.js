@@ -1,13 +1,11 @@
 /**
  * WordPress dependencies
  */
-import { useState } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
-import { Placeholder, Button, SelectControl } from '@wordpress/components';
-import { advancedFormIcon } from '@kadence/icons';
+import { SelectControl } from '@wordpress/components';
 
-export default function SelectForm({ label, onChange, value, postType = 'post', hideLabelFromVision = false }) {
+export default function SelectPostFromPostType({ label, onChange, value, postType = 'post', hideLabelFromVision = false }) {
 	const { posts } = useSelect(
 		(selectData) => ({
 			posts: selectData('core').getEntityRecords('postType', postType, {
@@ -27,7 +25,7 @@ export default function SelectForm({ label, onChange, value, postType = 'post', 
 	const hasSelected = value && options.some((option) => option.value === value);
 	if (!hasSelected && value) {
 		options.push({
-			label: __('Unknown Form', 'kadence-blocks'),
+			label: __('Unknown Selection', 'kadence-blocks'),
 			value,
 		});
 	}

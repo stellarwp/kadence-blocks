@@ -24,6 +24,7 @@ import {
 	PopColorControl,
 	ResponsiveRangeControls,
 	GradientControl,
+	SelectPostFromPostType,
 } from '@kadence/components';
 import {
 	getPreviewSize,
@@ -74,7 +75,6 @@ import {
 	getFormFields,
 	dedupeFormFieldUniqueIds,
 	FieldBlockAppender,
-	SelectForm,
 } from './components';
 
 /**
@@ -629,7 +629,7 @@ export function EditInner(props) {
 						panelName={'kb-advanced-form-selected-switch'}
 						title={__('Selected Form', 'kadence-blocks')}
 					>
-						<SelectForm
+						<SelectPostFromPostType
 							postType="kadence_form"
 							label={__('Selected Form', 'kadence-blocks')}
 							hideLabelFromVision={true}
@@ -673,7 +673,7 @@ export function EditInner(props) {
 							title={__('Form', 'kadence-blocks')}
 						>
 							{!direct && (
-								<SelectForm
+								<SelectPostFromPostType
 									postType="kadence_form"
 									label={__('Selected Form', 'kadence-blocks')}
 									hideLabelFromVision={true}

@@ -40,10 +40,11 @@ import {
 	ResponsiveSelectControl,
 	SmallResponsiveControl,
 	BoxShadowControl,
+	SelectPostFromPostType,
 } from '@kadence/components';
 import { getPreviewSize, mouseOverVisualizer, arrayStringToInt, useElementWidth } from '@kadence/helpers';
 
-import { BackendStyles, SelectForm, Onboard } from './components';
+import { BackendStyles, Onboard } from './components';
 import { HEADER_ALLOWED_BLOCKS, HEADER_INNERBLOCK_TEMPLATE } from './constants';
 
 /**
@@ -654,7 +655,7 @@ export function EditInner(props) {
 						panelName={'kb-advanced-form-selected-switch'}
 						title={__('Selected Header', 'kadence-blocks')}
 					>
-						<SelectForm
+						<SelectPostFromPostType
 							postType="kadence_header"
 							label={__('Selected Header', 'kadence-blocks')}
 							hideLabelFromVision={true}
@@ -701,7 +702,7 @@ export function EditInner(props) {
 							title={__('Selected Header', 'kadence-blocks')}
 						>
 							{!direct && (
-								<SelectForm
+								<SelectPostFromPostType
 									postType="kadence_header"
 									label={__('Selected Header', 'kadence-blocks')}
 									hideLabelFromVision={true}

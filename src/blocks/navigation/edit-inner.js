@@ -31,6 +31,7 @@ import {
 	SmallResponsiveControl,
 	BoxShadowControl,
 	ResponsiveMeasurementControls,
+	SelectPostFromPostType,
 } from '@kadence/components';
 import { getPreviewSize, mouseOverVisualizer, showSettings } from '@kadence/helpers';
 
@@ -54,7 +55,7 @@ import {
 	Icon,
 } from '@wordpress/components';
 
-import { FormTitle, SelectForm } from './components';
+import { FormTitle } from './components';
 
 /**
  * Internal dependencies
@@ -694,7 +695,7 @@ export function EditInner(props) {
 						panelName={'kb-advanced-navigation-selected-switch'}
 						title={__('Selected Navigation', 'kadence-blocks')}
 					>
-						<SelectForm
+						<SelectPostFromPostType
 							postType="kadence_navigation"
 							label={__('Selected Navigation', 'kadence-blocks')}
 							hideLabelFromVision={true}
@@ -761,7 +762,7 @@ export function EditInner(props) {
 							title={__('Selected Navigation', 'kadence-blocks')}
 						>
 							{!direct && (
-								<SelectForm
+								<SelectPostFromPostType
 									postType="kadence_navigation"
 									label={__('Selected Navigation', 'kadence-blocks')}
 									hideLabelFromVision={true}
