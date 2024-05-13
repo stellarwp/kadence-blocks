@@ -161,7 +161,7 @@ function BuildHTMLPageContent(rows, useImageReplace, imageCollection, contextTab
 	let variation = 0;
 	//console.log( rows );
 	tempArray = Object.keys(rows).map(function (key, index) {
-		if (variation === 11) {
+		if (variation > 11) {
 			variation = 0;
 		}
 		let theContent = '';
@@ -194,7 +194,7 @@ function BuildPageImportContent(rows, useImageReplace, imageCollection, contextT
 	let variation = 0;
 	//console.log( rows );
 	tempArray = Object.keys(rows).map(function (key, index) {
-		if (variation === 11) {
+		if (variation > 11) {
 			variation = 0;
 		}
 		const theContent = '';

@@ -437,7 +437,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 				$link_args = array(
 					'class' => implode( ' ', $link_classes ),
 				);
-				$link_args['href'] = do_shortcode( $attributes['link'] );
+				$link_args['href'] = esc_url( do_shortcode( $attributes['link'] ) );
 				$rel_add = '';
 				if ( ! empty( $attributes['linkTarget'] ) && $attributes['linkTarget'] ) {
 					$link_args['target'] = '_blank';

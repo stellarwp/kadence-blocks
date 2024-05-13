@@ -44,8 +44,8 @@ final class Image_Downloader_Provider extends Provider {
 	}
 
 	private function register_logging(): void {
-		// Enable logging to the error log if WP_DEBUG is enabled.
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+		// Enable logging to the error log if WP_DEBUG is enabled and error_log is not listed in the php.ini/fpm disable_functions directive.
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG && function_exists( 'error_log' ) ) {
 			/**
 			 * Filter the log level to use when debugging.
 			 *

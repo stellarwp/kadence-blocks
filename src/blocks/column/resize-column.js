@@ -60,7 +60,7 @@ function ResizeColumn(props) {
 		>
 			<span className="editor-row-controls-container">
 				{columnsUnlocked && (
-					<Tooltip text={__('Switch to 5% step resizing')}>
+					<Tooltip text={__('Switch to 5% step resizing', 'kadence-blocks')}>
 						<Button
 							className="kt-fluid-grid-btn"
 							isSmall
@@ -84,7 +84,7 @@ function ResizeColumn(props) {
 					</Tooltip>
 				)}
 				{!columnsUnlocked && (
-					<Tooltip text={__('Switch to fluid resizing')}>
+					<Tooltip text={__('Switch to fluid resizing', 'kadence-blocks')}>
 						<Button
 							className="kt-fluid-grid-btn"
 							isSmall

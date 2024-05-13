@@ -259,7 +259,9 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_typography( $tmp_help_font, 'typography' );
 		$css->render_measure_output( $help_style, 'padding', 'padding' );
 		$css->render_measure_output( $help_style, 'margin', 'margin' );
-
+		if( !empty( $help_style['style'] ) && $help_style['style'] === 'normal' ) {
+			$css->add_property('font-style', 'normal');
+		}
 		/*
 		 *
 		 * Message Styles
@@ -268,6 +270,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-adv-form-message' );
 		$css->render_measure_output( $form_attributes, 'messagePadding', 'padding' );
 		$css->render_measure_output( $form_attributes, 'messageMargin', 'margin' );
+		$message_font[0]['sizeType'] = !empty( $message_font[0]['sizetype'] ) ? $message_font[0]['sizetype'] : 'px';
 		$tmp_message_font = array( 'typography' => $message_font );
 		$css->render_typography( $tmp_message_font, 'typography' );
 		$css->render_measure_output( $form_attributes, 'messageBorderRadius', 'border-radius' );
@@ -404,7 +407,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		$inner_wrapper_attributes = implode( ' ', $inner_wrap_attributes );
 		$form_fields = '';
 		if ( ! empty( $attributes['id'] ) ) {
-			$form_fields .= '<input type="hidden" name="_kb_adv_form_post_id" value="' . $attributes['id'] . '">';
+			$form_fields .= '<input type="hidden" name="_kb_adv_form_post_id" value="' . esc_attr( $attributes['id'] ) . '">';
 		}
 		$form_fields .= '<input type="hidden" name="action" value="kb_process_advanced_form_submit">';
 		$form_fields .= '<input type="hidden" name="_kb_adv_form_id" value="' . esc_attr( $unique_id ) . '">';

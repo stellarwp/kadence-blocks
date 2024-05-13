@@ -25,6 +25,7 @@ export default function RangeControl( {
 	unit = '',
 	onUnit,
 	showUnit = false,
+	lockUnits = false,
 	units = [ 'px', 'em', 'rem' ],
 } ) {
 
@@ -58,7 +59,7 @@ export default function RangeControl( {
 									}
 								} }
 								value={ unit }
-								disabled={ units.length === 1 }
+								disabled={ units.length === 1 || lockUnits }
 							>
 								{ units.map( ( option, index ) => (
 									<option value={ option } key={ index }>

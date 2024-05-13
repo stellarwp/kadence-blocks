@@ -4,6 +4,7 @@
 	"title": "Accordion",
 	"name": "kadence/accordion",
 	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
 	"attributes": {
 		"uniqueID": {
 			"type": "string",

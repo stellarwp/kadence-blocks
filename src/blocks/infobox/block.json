@@ -376,6 +376,14 @@
 			"type": "string",
 			"default": "px"
 		},
+		"maxWidthTabletUnit": {
+			"type": "string",
+			"default": ""
+		},
+		"maxWidthMobileUnit": {
+			"type": "string",
+			"default": ""
+		},
 		"containerMargin": {
 			"type": "array",
 			"default": ["", "", "", ""]

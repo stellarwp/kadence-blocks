@@ -4,6 +4,7 @@
 	"title": "Count Up",
 	"name": "kadence/countup",
 	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
 	"description": "",
 	"attributes": {
 		"uniqueID": {

@@ -4,6 +4,7 @@
 	"name": "kadence/spacer",
 	"title": "Spacer / Divider",
 	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
 	"attributes": {
 		"blockAlignment": {
 			"type": "string",

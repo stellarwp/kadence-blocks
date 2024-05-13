@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.3
 Tested up to: 6.5
-Stable tag: 3.2.36
+Stable tag: 3.2.38
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -173,6 +173,30 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 3.2.38 =
+Release Date: May 10th 2024
+* Fix: Show more block not seeing input area.
+* Fix: Issue with pexel image sizes.
+* Fix: Issue with accordion margin style in editor.
+* Fix: Sanitize cursor character in typed text.
+* Fix: Sanitize google maps id.
+
+= 3.2.37 =
+Release Date: May 8th 2024
+* Add: Button to reverse image order in advanced gallery.
+* Add: Allow Max width units for columns and infobox to be set uniquely on tablet and mobile.
+* Fix: Aria roles when using accordion layout in tabs block.
+* Fix: Infobox media alignment when max width is using percentage.
+* Fix: Ability to set progress higher than maximum progress in progress bar.
+* Fix: Animate on scroll when accordion panes adjust page height.
+* Fix: Issue with sticky when using a row border radius.
+* Fix: Issue locking inner blocks of a row layout block.
+* Fix: Better support for query loop in templates 
+* Fix: Some accordion style issues.
+* Fix: Several admin translation issues.
+* Fix: Advanced Form styling issues for help text and message text.
+
 
 = 3.2.36 =
 Release Date: April 24th 2024

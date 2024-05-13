@@ -4,7 +4,7 @@
 	"name": "kadence/googlemaps",
 	"title": "Google Maps",
 	"category": "kadence-blocks",
-	"textdomain": "kadence-google-maps",
+	"textdomain": "kadence-blocks",
 	"attributes": {
 		"uniqueID": {
 			"type": "string"

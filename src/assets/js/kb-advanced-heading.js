@@ -16,25 +16,40 @@ const kbAdvHeadingTypedListener = setInterval(function () {
 			shuffle: false,
 		};
 
+		function sanitizeString(input) {
+			const map = {
+				'&': '&amp;',
+				'<': '&lt;',
+				'>': '&gt;',
+				'"': '&quot;',
+				"'": '&#x27;',
+				'/': '&#x2F;',
+			};
+			const reg = /[&<>"'/]/gi;
+			return input.replace(reg, (match) => map[match]);
+		}
+
 		const typedHeadings = document.querySelectorAll('.kt-typed-text');
 
 		typedHeadings.forEach(function (element) {
 			let strings = element.getAttribute('data-strings');
 			let stringsArray = [];
+			let sanitizedStrings;
 			const kbTypedSettings = { ...kbTypedDefaults };
 
 			try {
 				if (strings) {
 					strings = JSON.parse(strings.replaceAll('&', '&amp;'));
+					sanitizedStrings = strings.map((str) => sanitizeString(str));
 				}
 			} catch (e) {
 				console.log('Could decode typed text strings');
 			}
 
-			if (!strings) {
+			if (!sanitizedStrings) {
 				stringsArray = [];
 			} else {
-				stringsArray = [...strings];
+				stringsArray = [...sanitizedStrings];
 			}
 
 			stringsArray.unshift(element.textContent.replaceAll('&', '&amp;'));
@@ -42,7 +57,7 @@ const kbAdvHeadingTypedListener = setInterval(function () {
 			kbTypedSettings.strings = stringsArray;
 
 			element.getAttribute('data-cursor-char')
-				? (kbTypedSettings.cursorChar = element.getAttribute('data-cursor-char'))
+				? (kbTypedSettings.cursorChar = sanitizeString(element.getAttribute('data-cursor-char')))
 				: null;
 			element.getAttribute('data-cursor-char') === '' ? (kbTypedSettings.showCursor = false) : null;
 

@@ -4,6 +4,7 @@
 	"title": "Countdown",
 	"name": "kadence/countdown",
 	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
 	"description": "",
 	"attributes": {
 		"uniqueID": {

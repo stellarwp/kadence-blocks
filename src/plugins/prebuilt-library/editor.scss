@@ -12,12 +12,13 @@
 }
 .kb-css-masonry {
 	display: flex;
-	margin-left: -15px; /* gutter size offset */
+	margin-left: -20px; /* gutter size offset */
 	width: auto;
-	margin-top: 15px;
+	margin-top: 20px;
+	padding-right: 12px;
 }
 .kb-css-masonry_column {
-	padding-left: 15px; /* gutter size */
+	padding-left: 32px; /* gutter size */
 	background-clip: padding-box;
 }
 button.components-button.kb-grid-btns {
@@ -30,19 +31,22 @@ button.components-button.kb-grid-btns svg {
 }
 .components-modal__frame.kt-prebuilt-modal .kb-css-masonry .kb-css-masonry_column {
 	.kb-css-masonry-inner {
-		padding: 0 0 15px;
+		padding: 0 0 32px;
 		position: relative;
 	}
 	.kb-css-masonry-btn {
 		padding: 0;
-		border: 5px solid #fff;
+		border: 1px solid #c1c1c1;
 		border-radius: 0 !important;
 		height: auto;
 		background: #eee;
 		width: 100%;
 		position: relative;
-		box-shadow: 0 -1px 10px 0 rgba(0, 0, 0, 0.07);
+		box-shadow: none;
 		transition: border 0.4s ease;
+		&:hover {
+			border: 1px solid #000;
+		}
 	}
 	.kb-css-masonry-btn-inner {
 		padding-bottom: 61%;
@@ -175,6 +179,7 @@ button.components-button.kb-grid-btns svg {
 }
 .components-modal__frame.kt-prebuilt-modal .kb-css-masonry .kb-css-masonry_column .kb-css-masonry-btn:hover,
 .components-modal__frame.kt-prebuilt-modal .kb-css-masonry .kb-css-masonry_column .kb-css-masonry-btn:focus {
+	border-color: #000;
 	.kb-import-btn-title {
 		transform: translate(0, 0%);
 		opacity: 1;

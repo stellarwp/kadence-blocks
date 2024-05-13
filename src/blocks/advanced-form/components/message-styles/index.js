@@ -39,6 +39,29 @@ export default function MessageStyling({ setMetaAttribute, useFormMeta }) {
 	const [mobileMessageBorderError] = useFormMeta('_kad_form_mobileMessageBorderError');
 	const [messageFont] = useFormMeta('_kad_form_messageFont');
 
+	const numericToInt = (value) => {
+		if (undefined === value) {
+			return value;
+		}
+
+		let isNumeric = false;
+		let returnValue = value;
+
+		// foreach string in the array, if any is a number, set isNumeric to true
+		value.forEach((element) => {
+			if (!isNaN(element)) {
+				isNumeric = true;
+			}
+		});
+
+		if (isNumeric) {
+			// if isNumeric is true, convert all strings to integers
+			returnValue = value.map((element) => parseInt(element, 10));
+		}
+
+		return returnValue;
+	};
+
 	const saveMessageFont = (value) => {
 		setMetaAttribute([{ ...messageFont[0], ...value }], 'messageFont');
 	};
@@ -102,8 +125,8 @@ export default function MessageStyling({ setMetaAttribute, useFormMeta }) {
 			<TypographyControls
 				fontSize={messageFont[0].size}
 				onFontSize={(value) => saveMessageFont({ size: value })}
-				fontSizeType={messageFont[0].sizeType}
-				onFontSizeType={(value) => saveMessageFont({ sizeType: value })}
+				fontSizeType={messageFont[0].sizetype}
+				onFontSizeType={(value) => saveMessageFont({ sizetype: value })}
 				lineHeight={messageFont[0].lineHeight}
 				onLineHeight={(value) => saveMessageFont({ lineHeight: value })}
 				lineHeightType={messageFont[0].lineType}
@@ -161,50 +184,50 @@ export default function MessageStyling({ setMetaAttribute, useFormMeta }) {
 					fontSubset={messageFont[0].subset}
 					onFontSubset={(value) => saveMessageFont({ subset: value })}
 				/>
+				<ResponsiveMeasureRangeControl
+					label={__('Padding', 'kadence-blocks')}
+					value={numericToInt(messagePadding)}
+					tabletValue={numericToInt(tabletMessagePadding)}
+					mobileValue={numericToInt(mobileMessagePadding)}
+					onChange={(value) => {
+						setMetaAttribute(value.map(String), 'messagePadding');
+					}}
+					onChangeTablet={(value) => {
+						setMetaAttribute(value.map(String), 'tabletMessagePadding');
+					}}
+					onChangeMobile={(value) => {
+						setMetaAttribute(value.map(String), 'mobileMessagePadding');
+					}}
+					min={0}
+					max={messagePaddingUnit === 'em' || messagePaddingUnit === 'rem' ? 24 : 999}
+					step={messagePaddingUnit === 'em' || messagePaddingUnit === 'rem' ? 0.1 : 1}
+					unit={messagePaddingUnit}
+					units={['px', 'em', 'rem', '%', 'vh', 'vw']}
+					onUnit={(value) => setMetaAttribute(value, 'messagePaddingUnit')}
+				/>
+				<ResponsiveMeasureRangeControl
+					label={__('Margin', 'kadence-blocks')}
+					value={numericToInt(messageMargin)}
+					tabletValue={numericToInt(tabletMessageMargin)}
+					mobileValue={numericToInt(mobileMessageMargin)}
+					onChange={(value) => {
+						setMetaAttribute(value.map(String), 'messageMargin');
+					}}
+					onChangeTablet={(value) => {
+						setMetaAttribute(value.map(String), 'tabletMessageMargin');
+					}}
+					onChangeMobile={(value) => {
+						setMetaAttribute(value.map(String), 'mobileMessageMargin');
+					}}
+					min={messageMarginUnit === 'em' || messageMarginUnit === 'rem' ? -24 : -999}
+					max={messageMarginUnit === 'em' || messageMarginUnit === 'rem' ? 24 : 999}
+					step={messageMarginUnit === 'em' || messageMarginUnit === 'rem' ? 0.1 : 1}
+					unit={messageMarginUnit}
+					units={['px', 'em', 'rem', '%', 'vh', 'vw']}
+					onUnit={(value) => setMetaAttribute(value, 'messageMarginUnit')}
+					allowAuto={true}
+				/>
 			</KadencePanelBody>
-			<ResponsiveMeasureRangeControl
-				label={__('Padding', 'kadence-blocks')}
-				value={messagePadding}
-				tabletValue={tabletMessagePadding}
-				mobileValue={mobileMessagePadding}
-				onChange={(value) => {
-					setMetaAttribute(value.map(String), 'messagePadding');
-				}}
-				onChangeTablet={(value) => {
-					setMetaAttribute(value.map(String), 'tabletMessagePadding');
-				}}
-				onChangeMobile={(value) => {
-					setMetaAttribute(value.map(String), 'mobileMessagePadding');
-				}}
-				min={0}
-				max={messagePaddingUnit === 'em' || messagePaddingUnit === 'rem' ? 24 : 999}
-				step={messagePaddingUnit === 'em' || messagePaddingUnit === 'rem' ? 0.1 : 1}
-				unit={messagePaddingUnit}
-				units={['px', 'em', 'rem', '%', 'vh', 'vw']}
-				onUnit={(value) => setMetaAttribute(value, 'messagePaddingUnit')}
-			/>
-			<ResponsiveMeasureRangeControl
-				label={__('Margin', 'kadence-blocks')}
-				value={messageMargin}
-				tabletValue={tabletMessageMargin}
-				mobileValue={mobileMessageMargin}
-				onChange={(value) => {
-					setMetaAttribute(value.map(String), 'messageMargin');
-				}}
-				onChangeTablet={(value) => {
-					setMetaAttribute(value.map(String), 'tabletMessageMargin');
-				}}
-				onChangeMobile={(value) => {
-					setMetaAttribute(value.map(String), 'mobileMessageMargin');
-				}}
-				min={messageMarginUnit === 'em' || messageMarginUnit === 'rem' ? -24 : -999}
-				max={messageMarginUnit === 'em' || messageMarginUnit === 'rem' ? 24 : 999}
-				step={messageMarginUnit === 'em' || messageMarginUnit === 'rem' ? 0.1 : 1}
-				unit={messageMarginUnit}
-				units={['px', 'em', 'rem', '%', 'vh', 'vw']}
-				onUnit={(value) => setMetaAttribute(value, 'messageMarginUnit')}
-				allowAuto={true}
-			/>
 		</>
 	);
 }

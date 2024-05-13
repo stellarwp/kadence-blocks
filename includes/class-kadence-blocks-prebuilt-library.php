@@ -390,6 +390,7 @@ class Kadence_Blocks_Prebuilt_Library {
 			$args['api_email'] = $this->api_email;
 			$args['api_key']   = $this->api_key;
 			$args['product_id']   = $this->product_id;
+			$args['site_url'] = $site_url;
 			if ( 'iThemes' === $this->api_email ) {
 				if ( is_callable( 'network_home_url' ) ) {
 					$site_url = network_home_url( '', 'http' );
@@ -406,7 +407,6 @@ class Kadence_Blocks_Prebuilt_Library {
 		}
 		// Get the response.
 		$api_url  = add_query_arg( $args, $this->url );
-
 		$response = wp_safe_remote_get(
 			$api_url,
 			array(
@@ -1165,6 +1165,7 @@ class Kadence_Blocks_Prebuilt_Library {
 		$this->package   = empty( $_POST['package'] ) ? 'section' : sanitize_text_field( $_POST['package'] );
 		$this->url       = empty( $_POST['url'] ) ? $this->remote_url : rtrim( sanitize_text_field( $_POST['url'] ), '/' ) . '/wp-json/kadence-cloud/v1/get/';
 		$this->key       = empty( $_POST['key'] ) ? 'section' : sanitize_text_field( $_POST['key'] );
+		$this->is_template   = isset( $_POST['is_template'] ) && ! empty( $_POST['is_template'] ) ? true : false;
 
 		// $removed = $this->delete_block_library_folder();
 		// if ( ! $removed ) {
