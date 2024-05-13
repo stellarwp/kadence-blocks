@@ -81,12 +81,6 @@ class Kadence_Blocks_Header_Container_Tablet_Block extends Kadence_Blocks_Abstra
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
-		$css->set_selector( '.wp-block-kadence-header-tablet' . $unique_id );
-		$css->add_property( 'display', 'none' );
-
-		$css->set_media_state( 'tablet' );
-		$css->add_property( 'display', 'block');
-
 		return $css->css_output();
 	}
 
@@ -103,7 +97,6 @@ class Kadence_Blocks_Header_Container_Tablet_Block extends Kadence_Blocks_Abstra
 		$classes = array(
 			'wp-block-kadence-header-tablet',
 			'kb-header-container',
-			'wp-block-kadence-header-tablet' . $unique_id,
 		);
 
 		$html .= '<div class="' . esc_attr( implode( ' ', $classes ) ) . '">';

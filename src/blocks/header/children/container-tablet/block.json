@@ -12,7 +12,8 @@
 	"textdomain": "kadence-blocks",
 	"attributes": {
 		"uniqueID": {
-			"type": "string"
+			"type": "string",
+			"default": "default-uniqueID"
 		}
 	}
 }

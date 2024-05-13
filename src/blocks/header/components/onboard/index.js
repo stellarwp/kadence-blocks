@@ -206,7 +206,7 @@ export default function HeaderOnboard({ isAdding, existingTitle, onAdd, availabl
 				{wizardStep === 'start-mobile' && (
 					<div className="kt-select-starter-style-forms">
 						<div className="kt-select-starter-style-forms-title">
-							{__('Select Initial Desktop Layout', 'kadence-blocks')}
+							{__('Select Initial Mobile Layout', 'kadence-blocks')}
 						</div>
 						<ButtonGroup
 							className="kt-init-forms-btn-group"

@@ -6,7 +6,7 @@
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { useState, useCallback, Fragment, useMemo, useRef } from '@wordpress/element';
+import { useState, Fragment, useMemo, useRef } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import { get } from 'lodash';
@@ -47,6 +47,7 @@ import { getPreviewSize, mouseOverVisualizer, arrayStringToInt, useElementWidth 
 import { BackendStyles, Onboard } from './components';
 import { HEADER_ALLOWED_BLOCKS, HEADER_INNERBLOCK_TEMPLATE } from './constants';
 
+// Import templates
 /**
  * Internal dependencies
  */
@@ -290,25 +291,35 @@ export function EditInner(props) {
 	}, [blocks]);
 
 	const [isAdding, addNew] = useEntityPublish('kadence_header', id);
+
 	const onAdd = async (title, template, detail, templateMobile, detailMobile, initialDescription) => {
 		try {
 			const response = await addNew();
+			let updatedMeta = meta;
 
 			if (response.id) {
-				onChange(
-					[
-						{
-							...newBlock,
-							innerBlocks: HEADER_INNERBLOCK_TEMPLATE,
-						},
-					],
-					clientId
-				);
+				if (template === 'standard') {
+					updatedMeta = SimplePostMeta;
+					onChange(SimpleInnerBlocks(), clientId);
+				} else {
+					// Skip, or template not found
+					onChange(
+						[
+							{
+								...newBlock,
+								innerBlocks: HEADER_INNERBLOCK_TEMPLATE,
+							},
+						],
+						clientId
+					);
+				}
 
 				setTitle(title);
 
 				const updatedMeta = meta;
 				updatedMeta._kad_header_description = initialDescription;
+
+				console.log('updatedMeta', updatedMeta);
 
 				setMeta({ ...meta, updatedMeta });
 				await wp.data.dispatch('core').saveEditedEntityRecord('postType', 'kadence_header', id);
@@ -317,7 +328,6 @@ export function EditInner(props) {
 			console.error(error);
 		}
 	};
-
 	const backgroundStyleControls = (size = '', suffix = '') => {
 		const backgroundValue = metaAttributes['background' + suffix + size];
 		const backgroundHoverValue = metaAttributes['background' + suffix + 'Hover' + size];
