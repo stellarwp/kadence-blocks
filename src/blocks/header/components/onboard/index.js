@@ -28,7 +28,7 @@ export default function HeaderOnboard({ isAdding, existingTitle, onAdd }) {
 		<Placeholder
 			className="kb-select-or-create-placeholder kb-adv-form-select"
 			icon={headerBlockIcon}
-			label={__('Advanced Header', 'kadence-blocks')}
+			label={__('Header', 'kadence-blocks')}
 		>
 			<div className="kb-form-wizard-pagination">
 				{map(FORM_STEPS, ({ name, key }, index) => (
@@ -186,24 +186,30 @@ export default function HeaderOnboard({ isAdding, existingTitle, onAdd }) {
 								className="kt-init-forms-btn-group style-only"
 								aria-label={__('Desktop Detailed Style', 'kadence-blocks')}
 							>
-								{map(headerDetailMobileOptions, ({ name, key, icon, isDisabled }) => (
-									<Button
-										key={key}
-										className="kt-inital-form-style-btn"
-										isSmall
-										onClick={() => {
-											setDetailMobile(key);
-											setWizardStep('title');
-										}}
-										isPressed={detailMobile == key}
-										isDisabled={isDisabled}
-										label={name}
-									>
-										{name}
-										{icon}
-										<span className="template-select">{__('Select', 'kadence-blocks')}</span>
-									</Button>
-								))}
+								{map(headerDetailMobileOptions, ({ name, key, icon, isDisabled, templateKey }) => {
+									if (templateMobile !== templateKey) {
+										return null;
+									}
+
+									return (
+										<Button
+											key={key}
+											className="kt-inital-form-style-btn"
+											isSmall
+											onClick={() => {
+												setDetailMobile(key);
+												setWizardStep('title');
+											}}
+											isPressed={detailMobile == key}
+											isDisabled={isDisabled}
+											label={name}
+										>
+											{name}
+											{icon}
+											<span className="template-select">{__('Select', 'kadence-blocks')}</span>
+										</Button>
+									);
+								})}
 							</ButtonGroup>
 						</div>
 					</>
