@@ -6,6 +6,7 @@
 
 @mixin header-transparent-styles {
 	position: relative;
+	z-index: 100;
 
 	.kb-header-container {
 		background-color: transparent;
