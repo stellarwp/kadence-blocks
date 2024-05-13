@@ -4,30 +4,12 @@
 import { __ } from '@wordpress/i18n';
 import { Placeholder, Button, TextControl, ButtonGroup, TextareaControl } from '@wordpress/components';
 import { useState } from '@wordpress/element';
-import {
-	headerBlockIcon,
-	formTemplateContactIcon,
-	formTemplateContactAdvancedIcon,
-	formTemplateSubscribeIcon,
-	formTemplateSubscribeAdvancedIcon,
-	formTemplateContactInFieldIcon,
-	formTemplateContactDarkIcon,
-	formTemplateContactUnderlineIcon,
-	formTemplateContactAdvancedDarkIcon,
-	formTemplateContactAdvancedUnderlineIcon,
-	formTemplateContactAdvancedInFieldIcon,
-	formTemplateSubscribeDarkIcon,
-	formTemplateSubscribeUnderlineIcon,
-	formTemplateSubscribeInFieldIcon,
-	formTemplateSubscribeAdvancedDarkIcon,
-	formTemplateSubscribeAdvancedUnderlineIcon,
-	formTemplateSubscribeAdvancedInFieldIcon,
-} from '@kadence/icons';
+import { headerBlockIcon } from '@kadence/icons';
 import { applyFilters } from '@wordpress/hooks';
 import { map } from 'lodash';
-import Select from 'react-select';
+import { DETAIL_MOBILE_OPTIONS, DETAIL_OPTIONS, FORM_STEPS, START_MOBILE_OPTIONS, START_OPTIONS } from './constants';
 
-export default function HeaderOnboard({ isAdding, existingTitle, onAdd, availablePostTypes }) {
+export default function HeaderOnboard({ isAdding, existingTitle, onAdd }) {
 	const [tmpTitle, setTmpTitle] = useState(existingTitle);
 	const [initialDescription, setTmpDescription] = useState('');
 	const [wizardStep, setWizardStep] = useState('start');
@@ -37,67 +19,11 @@ export default function HeaderOnboard({ isAdding, existingTitle, onAdd, availabl
 	const [detailMobile, setDetailMobile] = useState('');
 	const [isSaving, setIsSaving] = useState(false);
 
-	const formSteps = [
-		{ key: 'start', name: __('Desktop Layout', 'kadence-blocks') },
-		{ key: 'detail', name: __('Desktop Detail', 'kadence-blocks') },
-		{ key: 'start-mobile', name: __('Mobile Layout', 'kadence-blocks') },
-		{ key: 'detail-mobile', name: __('Mobile Detail', 'kadence-blocks') },
-		{ key: 'title', name: __('Title', 'kadence-blocks') },
-	];
-	const startOptions = [
-		{ key: 'skip', name: __('Skip (blank)', 'kadence-blocks'), icon: '', isDisabled: false },
-		{
-			key: 'standard',
-			name: __('Standard', 'kadence-blocks'),
-			icon: formTemplateContactAdvancedIcon,
-			isDisabled: false,
-		},
-		{
-			key: 'off-canvas',
-			name: __('Off Canvas', 'kadence-blocks'),
-			icon: formTemplateSubscribeIcon,
-			isDisabled: false,
-		},
-		{
-			key: 'multi-row',
-			name: __('Multi Row', 'kadence-blocks'),
-			icon: formTemplateSubscribeAdvancedIcon,
-			isDisabled: false,
-		},
-	];
-	const detailOptions = [
-		{ key: 'skip', name: __('Basic'), icon: formTemplateContactAdvancedIcon, isDisabled: false },
-		{ key: 'dark', name: __('Dark', 'kadence-blocks'), icon: formTemplateSubscribeIcon, isDisabled: false },
-	];
-	const startMobileOptions = [
-		{ key: 'skip', name: __('Skip (blank)', 'kadence-blocks'), icon: '', isDisabled: false },
-		{
-			key: 'standard',
-			name: __('Standard', 'kadence-blocks'),
-			icon: formTemplateContactAdvancedIcon,
-			isDisabled: false,
-		},
-		{
-			key: 'off-canvas',
-			name: __('Off Canvas', 'kadence-blocks'),
-			icon: formTemplateSubscribeIcon,
-			isDisabled: false,
-		},
-		{
-			key: 'multi-row',
-			name: __('Multi Row', 'kadence-blocks'),
-			icon: formTemplateSubscribeAdvancedIcon,
-			isDisabled: false,
-		},
-	];
-	const detailMobileOptions = [
-		{ key: 'skip', name: __('Basic'), icon: formTemplateContactAdvancedIcon, isDisabled: false },
-		{ key: 'dark', name: __('Dark', 'kadence-blocks'), icon: formTemplateSubscribeIcon, isDisabled: false },
-	];
-	const headerLayoutOptions = applyFilters('kadence.HeaderLayoutOptions', startOptions);
-	const headerLayoutMobileOptions = applyFilters('kadence.HeaderLayoutMobileOptions', startMobileOptions);
-	const headerDetailOptions = applyFilters('kadence.HeaderDetailOptions', detailOptions);
-	const headerDetailMobileOptions = applyFilters('kadence.HeaderDetailMobileOptions', detailMobileOptions);
+	const headerLayoutOptions = applyFilters('kadence.HeaderLayoutOptions', START_OPTIONS);
+	const headerLayoutMobileOptions = applyFilters('kadence.HeaderLayoutMobileOptions', START_MOBILE_OPTIONS);
+	const headerDetailOptions = applyFilters('kadence.HeaderDetailOptions', DETAIL_OPTIONS);
+	const headerDetailMobileOptions = applyFilters('kadence.HeaderDetailMobileOptions', DETAIL_MOBILE_OPTIONS);
+
 	return (
 		<Placeholder
 			className="kb-select-or-create-placeholder kb-adv-form-select"
@@ -105,7 +31,7 @@ export default function HeaderOnboard({ isAdding, existingTitle, onAdd, availabl
 			label={__('Advanced Header', 'kadence-blocks')}
 		>
 			<div className="kb-form-wizard-pagination">
-				{map(formSteps, ({ name, key }, index) => (
+				{map(FORM_STEPS, ({ name, key }, index) => (
 					<Button
 						key={key}
 						className="kb-form-pagination-btn"
@@ -122,10 +48,10 @@ export default function HeaderOnboard({ isAdding, existingTitle, onAdd, availabl
 							/* translators: 1: current page number 2: total number of pages */
 							__('Page %1$d of %2$d', 'kadence-blocks'),
 							index + 1,
-							formSteps.length
+							FORM_STEPS.length
 						)}
 						text={name}
-						isPressed={wizardStep == key}
+						isPressed={wizardStep === key}
 					/>
 				))}
 			</div>
@@ -154,10 +80,10 @@ export default function HeaderOnboard({ isAdding, existingTitle, onAdd, availabl
 										if ('skip' === key) {
 											setWizardStep('title');
 										} else {
-											setWizardStep('detail'); // TODO: Set back to detail
+											setWizardStep('detail');
 										}
 									}}
-									isPressed={template == key}
+									isPressed={template === key}
 									label={name}
 									isDisabled={isDisabled}
 								>
@@ -181,24 +107,30 @@ export default function HeaderOnboard({ isAdding, existingTitle, onAdd, availabl
 								className="kt-init-forms-btn-group style-only"
 								aria-label={__('Desktop Detailed Style', 'kadence-blocks')}
 							>
-								{map(headerDetailOptions, ({ name, key, icon, isDisabled }) => (
-									<Button
-										key={key}
-										className="kt-inital-form-style-btn"
-										isSmall
-										onClick={() => {
-											setDetail(key);
-											setWizardStep('start-mobile');
-										}}
-										isPressed={detail == key}
-										isDisabled={isDisabled}
-										label={name}
-									>
-										{name}
-										{icon}
-										<span className="template-select">{__('Select', 'kadence-blocks')}</span>
-									</Button>
-								))}
+								{map(headerDetailOptions, ({ name, key, icon, isDisabled, templateKey }) => {
+									if (template !== templateKey) {
+										return null;
+									}
+
+									return (
+										<Button
+											key={key}
+											className="kt-inital-form-style-btn"
+											isSmall
+											onClick={() => {
+												setDetail(key);
+												setWizardStep('start-mobile');
+											}}
+											isPressed={detail === key}
+											isDisabled={isDisabled}
+											label={name}
+										>
+											{name}
+											{icon}
+											<span className="template-select">{__('Select', 'kadence-blocks')}</span>
+										</Button>
+									);
+								})}
 							</ButtonGroup>
 						</div>
 					</>
@@ -230,7 +162,7 @@ export default function HeaderOnboard({ isAdding, existingTitle, onAdd, availabl
 											setWizardStep('detail-mobile');
 										}
 									}}
-									isPressed={templateMobile == key}
+									isPressed={templateMobile === key}
 									label={name}
 									isDisabled={isDisabled}
 								>

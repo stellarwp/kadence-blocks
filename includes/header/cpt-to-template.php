@@ -161,7 +161,7 @@ class MetaToJs {
 				$innerBlocks = $this->parseBlocks($block['innerBlocks']);
 			}
 
-			$result .= "createBlock('". $blockName . "', " . $attrs . ", [ " . $innerBlocks . " ] ), <br>";
+			$result .= "createBlock('". $blockName . "', " . $attrs . ", [ " . $innerBlocks . " ] ), ";
 		}
 
 
@@ -177,14 +177,16 @@ class MetaToJs {
 		foreach( $all_meta as $key => $value) {
 			if( str_starts_with( $key, '_kad_header_' ) && $value[0] !== '' ) {
 				if ( str_starts_with( $value[0], 'a:' ) ) {
-					$return .= $key . ': ' . json_encode( maybe_unserialize( $value[0] ) ) . ', <br>';
+					$return .= $key . ': ' . json_encode( maybe_unserialize( $value[0] ) ) . ', ';
 				} else {
 					$output = $value[0];
 					if( is_numeric( $value[0] )) {
 						$output = '"' . $value[0] . '"';
+					} else if ( $key === '_kad_header_widthUnit' ) {
+						$output = '"' . $value[0] . '"';
 					}
 
-					$return .= $key . ': ' . $output . ', <br>';
+					$return .= $key . ': ' . $output . ', ';
 				}
 			}
 		}

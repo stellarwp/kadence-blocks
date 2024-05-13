@@ -47,8 +47,23 @@ import { getPreviewSize, mouseOverVisualizer, arrayStringToInt, useElementWidth 
 import { BackendStyles, Onboard } from './components';
 import { HEADER_ALLOWED_BLOCKS, HEADER_INNERBLOCK_TEMPLATE } from './constants';
 
-// Import templates
-import { innerBlocks as SimpleInnerBlocks, postMeta as SimplePostMeta } from './templates/basic-two-buttons';
+// Basic templates
+import { innerBlocks as Basic1InnerBlocks, postMeta as Basic1PostMeta } from './templates/basic-1';
+import { innerBlocks as Basic2InnerBlocks, postMeta as Basic2PostMeta } from './templates/basic-2';
+import { innerBlocks as Basic3InnerBlocks, postMeta as Basic3PostMeta } from './templates/basic-3';
+
+// Multi-Row templates
+import { innerBlocks as MultiRow1InnerBlocks, postMeta as MultiRow1PostMeta } from './templates/multi-row-1';
+import { innerBlocks as MultiRow2InnerBlocks, postMeta as MultiRow2PostMeta } from './templates/multi-row-2';
+import { innerBlocks as MultiRow3InnerBlocks, postMeta as MultiRow3PostMeta } from './templates/multi-row-3';
+import { innerBlocks as MultiRow4InnerBlocks, postMeta as MultiRow4PostMeta } from './templates/multi-row-4';
+import { innerBlocks as MultiRow5InnerBlocks, postMeta as MultiRow5PostMeta } from './templates/multi-row-5';
+
+// Off-Canvas templates
+import { innerBlocks as OffCanvas1InnerBlocks, postMeta as OffCanvas1PostMeta } from './templates/off-canvas-1';
+import { innerBlocks as OffCanvas2InnerBlocks, postMeta as OffCanvas2PostMeta } from './templates/off-canvas-2';
+import { innerBlocks as OffCanvas3InnerBlocks, postMeta as OffCanvas3PostMeta } from './templates/off-canvas-3';
+import { innerBlocks as OffCanvas4InnerBlocks, postMeta as OffCanvas4PostMeta } from './templates/off-canvas-4';
 
 /**
  * Internal dependencies
@@ -300,9 +315,42 @@ export function EditInner(props) {
 			let updatedMeta = meta;
 
 			if (response.id) {
-				if (template === 'standard') {
-					updatedMeta = SimplePostMeta;
-					onChange(SimpleInnerBlocks(), clientId);
+				if (detail === 'basic-1') {
+					updatedMeta = Basic1PostMeta;
+					onChange(Basic1InnerBlocks(), clientId);
+				} else if (detail === 'basic-2') {
+					updatedMeta = Basic2PostMeta;
+					onChange(Basic2InnerBlocks(), clientId);
+				} else if (detail === 'basic-3') {
+					updatedMeta = Basic3PostMeta;
+					onChange(Basic3InnerBlocks(), clientId);
+				} else if (detail === 'multi-row-1') {
+					updatedMeta = MultiRow1PostMeta;
+					onChange(MultiRow1InnerBlocks(), clientId);
+				} else if (detail === 'multi-row-2') {
+					updatedMeta = MultiRow2PostMeta;
+					onChange(MultiRow2InnerBlocks(), clientId);
+				} else if (detail === 'multi-row-3') {
+					updatedMeta = MultiRow3PostMeta;
+					onChange(MultiRow3InnerBlocks(), clientId);
+				} else if (detail === 'multi-row-4') {
+					updatedMeta = MultiRow4PostMeta;
+					onChange(MultiRow4InnerBlocks(), clientId);
+				} else if (detail === 'multi-row-5') {
+					updatedMeta = MultiRow5PostMeta;
+					onChange(MultiRow5InnerBlocks(), clientId);
+				} else if (detail === 'off-canvas-1') {
+					updatedMeta = OffCanvas1PostMeta;
+					onChange(OffCanvas1InnerBlocks(), clientId);
+				} else if (detail === 'off-canvas-2') {
+					updatedMeta = OffCanvas2PostMeta;
+					onChange(OffCanvas2InnerBlocks(), clientId);
+				} else if (detail === 'off-canvas-3') {
+					updatedMeta = OffCanvas3PostMeta;
+					onChange(OffCanvas3InnerBlocks(), clientId);
+				} else if (detail === 'off-canvas-4') {
+					updatedMeta = OffCanvas4PostMeta;
+					onChange(OffCanvas4InnerBlocks(), clientId);
 				} else {
 					// Skip, or template not found
 					onChange(
