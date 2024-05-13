@@ -154,7 +154,7 @@ export default function HeaderOnboard({ isAdding, existingTitle, onAdd, availabl
 										if ('skip' === key) {
 											setWizardStep('title');
 										} else {
-											setWizardStep('detail');
+											setWizardStep('detail'); // TODO: Set back to detail
 										}
 									}}
 									isPressed={template == key}

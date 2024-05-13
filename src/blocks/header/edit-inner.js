@@ -48,6 +48,8 @@ import { BackendStyles, Onboard } from './components';
 import { HEADER_ALLOWED_BLOCKS, HEADER_INNERBLOCK_TEMPLATE } from './constants';
 
 // Import templates
+import { innerBlocks as SimpleInnerBlocks, postMeta as SimplePostMeta } from './templates/basic-two-buttons';
+
 /**
  * Internal dependencies
  */
@@ -316,7 +318,6 @@ export function EditInner(props) {
 
 				setTitle(title);
 
-				const updatedMeta = meta;
 				updatedMeta._kad_header_description = initialDescription;
 
 				console.log('updatedMeta', updatedMeta);

@@ -39,6 +39,12 @@ class Kadence_Blocks_Header_CPT_Controller {
 		add_action( 'init', array( $this, 'register_meta' ), 20 );
 		add_filter( 'user_has_cap', array( $this, 'filter_post_type_user_caps' ) );
 
+		if( is_admin() ) {
+			if ( class_exists( 'Cpt_To_Template' ) ) {
+				new Cpt_To_Template( $this->post_type );
+			}
+		}
+
 	}
 
 	/**
@@ -73,7 +79,7 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'public'                => false,
 				'has_archive'           => false,
 				'show_ui'               => true,
-				'show_in_menu'          => false,
+				'show_in_menu'          => true,
 				'show_in_admin_bar'     => false,
 				'show_in_rest'          => true,
 				'rewrite'               => false,

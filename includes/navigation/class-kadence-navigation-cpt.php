@@ -30,6 +30,12 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 		// Register the meta settings for from post.
 		add_action( 'init', array( $this, 'register_meta' ), 20 );
 		add_filter( 'user_has_cap', array( $this, 'filter_post_type_user_caps' ) );
+
+		if( is_admin() ) {
+			if ( class_exists( 'Cpt_To_Template' ) ) {
+				new Cpt_To_Template( $this->post_type );
+			}
+		}
 	}
 
 	/**
@@ -48,8 +54,8 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 			$this->post_type,
 			array(
 				'labels'                => array(
-					'name'                  => _x( 'Kadence Navigation Menus', 'post type general name', 'kadence-blocks' ),
-					'singular_name'         => _x( 'Kadence Navigation Menu', 'post type singular name', 'kadence-blocks' ),
+					'name'                  => _x( 'Kadence Navigation', 'post type general name', 'kadence-blocks' ),
+					'singular_name'         => _x( 'Kadence Navigation', 'post type singular name', 'kadence-blocks' ),
 					'add_new'               => __( 'Add New Kadence Navigation Menu', 'kadence-blocks' ),
 					'add_new_item'          => __( 'Add New Kadence Navigation Menu', 'kadence-blocks' ),
 					'new_item'              => __( 'New Kadence Navigation Menu', 'kadence-blocks' ),
@@ -69,11 +75,9 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				),
 				'description'           => __( 'Kadence Navigation menus that can be inserted into your site.', 'kadence-blocks' ),
 				'public'                => false,
-				'_builtin'              => true, /* internal use only. don't use this when registering your own post type. */
-				'_edit_link'            => $navigation_post_edit_link, /* internal use only. don't use this when registering your own post type. */
 				'has_archive'           => false,
 				'show_ui'               => true,
-				'show_in_menu'          => false,
+				'show_in_menu'          => true,
 				'show_in_admin_bar'     => false,
 				'show_in_rest'          => true,
 				'rewrite'               => false,
