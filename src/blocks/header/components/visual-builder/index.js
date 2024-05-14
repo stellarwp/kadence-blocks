@@ -11,28 +11,6 @@ import Tablet from './tablet';
 import OffCanvas from './offCanvas';
 import './editor.scss';
 
-const getDescendantIds = (id = '', recursive = true, first_loop = true) => {
-	const { select } = wp.data;
-
-	const ids = id && !first_loop ? [id] : [];
-
-	const children_id = select('core/block-editor').getBlockOrder(id);
-
-	if (children_id) {
-		let descendants_id;
-
-		if (recursive) {
-			descendants_id = children_id.flatMap((_children_id) => getDescendantIds(_children_id, true, false));
-		} else {
-			descendants_id = children_id;
-		}
-
-		ids.push(...descendants_id);
-	}
-
-	return ids;
-};
-
 function extractBlocks(blocksData) {
 	let desktopBlocks,
 		tabletBlocks,
@@ -51,6 +29,21 @@ function extractBlocks(blocksData) {
 
 	return { desktopBlocks, tabletBlocks, offCanvasBlocks };
 }
+
+const blockExists = (blocks, blockName) => {
+	for (const block of blocks) {
+		if (block.name === blockName) {
+			return true;
+		}
+		if (block.innerBlocks && block.innerBlocks.length > 0) {
+			const existsInInnerBlocks = blockExists(block.innerBlocks, blockName);
+			if (existsInInnerBlocks) {
+				return true;
+			}
+		}
+	}
+	return false;
+};
 
 export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 	const [tab, setTab] = useState(previewDevice);
@@ -90,11 +83,16 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 	};
 
 	const { desktopBlocks, tabletBlocks, offCanvasBlocks } = extractBlocks(topLevelBlocks);
+	const hasTrigger = blockExists(topLevelBlocks, 'kadence/off-canvas-trigger');
 
 	const ref = useRef();
 	const editorElement = useEditorElement(ref, []);
 	const editorWidth = editorElement?.clientWidth;
 	const editorLeft = editorElement?.getBoundingClientRect().left;
+
+	if (!hasTrigger && tab === 'off-canvas') {
+		updateTab('Desktop');
+	}
 
 	return (
 		<>
@@ -135,13 +133,15 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 							>
 								{__('Tablet', 'kadence-blocks')}
 							</Button>
-							<Button
-								isPrimary={tab === 'off-canvas'}
-								disabled={offCanvasBlocks === null}
-								onClick={() => updateTab('off-canvas', offCanvasBlocks)}
-							>
-								{__('Off Canvas', 'kadence-blocks')}
-							</Button>
+							{hasTrigger && (
+								<Button
+									isPrimary={tab === 'off-canvas'}
+									disabled={offCanvasBlocks === null}
+									onClick={() => updateTab('off-canvas', offCanvasBlocks)}
+								>
+									{__('Off Canvas', 'kadence-blocks')}
+								</Button>
+							)}
 							<ModalClose isVisible={isVisible} setIsVisible={setIsVisible} />
 						</div>
 
