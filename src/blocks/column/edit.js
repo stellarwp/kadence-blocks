@@ -36,6 +36,7 @@ import {
 	ColorGroup,
 	HoverToggleControl,
 	CopyPasteAttributes,
+	DragPosition,
 } from '@kadence/components';
 
 /**
@@ -58,7 +59,7 @@ import {
 import './editor.scss';
 import metadata from './block.json';
 import { getPreviewGutterSize } from './utils';
-//import ResizeGridSection from './resize-grid-section';
+// import ResizeGridSection from './resize-grid-section';
 /**
  * Import WordPress
  */
@@ -3485,149 +3486,151 @@ function SectionEdit(props) {
 					</InspectorControls>
 				</>
 			)}
-			<div
-				id={`animate-id${uniqueID}`}
-				data-aos={kadenceAnimation ? kadenceAnimation : undefined}
-				data-aos-duration={
-					kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].duration
-						? kadenceAOSOptions[0].duration
-						: undefined
-				}
-				data-aos-easing={
-					kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].easing
-						? kadenceAOSOptions[0].easing
-						: undefined
-				}
-				style={{
-					minHeight: undefined !== previewMinHeight ? previewMinHeight + previewMinHeightUnit : undefined,
-					paddingLeft:
-						undefined !== previewPaddingLeft
-							? getSpacingOptionOutput(previewPaddingLeft, previewPaddingType)
+			<DragPosition {...props}>
+				<div
+					id={`animate-id${uniqueID}`}
+					data-aos={kadenceAnimation ? kadenceAnimation : undefined}
+					data-aos-duration={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].duration
+							? kadenceAOSOptions[0].duration
+							: undefined
+					}
+					data-aos-easing={
+						kadenceAOSOptions && kadenceAOSOptions[0] && kadenceAOSOptions[0].easing
+							? kadenceAOSOptions[0].easing
+							: undefined
+					}
+					style={{
+						minHeight: undefined !== previewMinHeight ? previewMinHeight + previewMinHeightUnit : undefined,
+						paddingLeft:
+							undefined !== previewPaddingLeft
+								? getSpacingOptionOutput(previewPaddingLeft, previewPaddingType)
+								: undefined,
+						paddingRight:
+							undefined !== previewPaddingRight
+								? getSpacingOptionOutput(previewPaddingRight, previewPaddingType)
+								: undefined,
+						paddingTop:
+							undefined !== previewPaddingTop
+								? getSpacingOptionOutput(previewPaddingTop, previewPaddingType)
+								: undefined,
+						paddingBottom:
+							undefined !== previewPaddingBottom
+								? getSpacingOptionOutput(previewPaddingBottom, previewPaddingType)
+								: undefined,
+						marginLeft:
+							undefined !== previewMarginLeft
+								? getSpacingOptionOutput(previewMarginLeft, previewMarginType)
+								: undefined,
+						marginRight:
+							undefined !== previewMarginRight
+								? getSpacingOptionOutput(previewMarginRight, previewMarginType)
+								: undefined,
+						marginTop:
+							undefined !== previewMarginTop
+								? getSpacingOptionOutput(previewMarginTop, previewMarginType)
+								: undefined,
+						marginBottom:
+							undefined !== previewMarginBottom
+								? getSpacingOptionOutput(previewMarginBottom, previewMarginType)
+								: undefined,
+						textAlign: previewAlign ? previewAlign : undefined,
+						backgroundColor: backgroundString,
+						backgroundImage: previewBackground ? previewBackground : undefined,
+						backgroundSize:
+							previewBackgroundImg && previewBackgroundImg[0] && previewBackgroundImg[0].bgImgSize
+								? previewBackgroundImg[0].bgImgSize
+								: undefined,
+						backgroundPosition:
+							previewBackgroundImg && previewBackgroundImg[0] && previewBackgroundImg[0].bgImgPosition
+								? previewBackgroundImg[0].bgImgPosition
+								: undefined,
+						backgroundRepeat:
+							previewBackgroundImg && previewBackgroundImg[0] && previewBackgroundImg[0].bgImgRepeat
+								? previewBackgroundImg[0].bgImgRepeat
+								: undefined,
+						backgroundAttachment:
+							previewBackgroundImg && previewBackgroundImg[0] && previewBackgroundImg[0].bgImgAttachment
+								? previewBackgroundImg[0].bgImgAttachment
+								: undefined,
+						borderTop: previewBorderTopStyle ? previewBorderTopStyle : undefined,
+						borderRight: previewBorderRightStyle ? previewBorderRightStyle : undefined,
+						borderBottom: previewBorderBottomStyle ? previewBorderBottomStyle : undefined,
+						borderLeft: previewBorderLeftStyle ? previewBorderLeftStyle : undefined,
+						borderTopLeftRadius: previewRadiusTop
+							? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
 							: undefined,
-					paddingRight:
-						undefined !== previewPaddingRight
-							? getSpacingOptionOutput(previewPaddingRight, previewPaddingType)
+						borderTopRightRadius: previewRadiusRight
+							? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
 							: undefined,
-					paddingTop:
-						undefined !== previewPaddingTop
-							? getSpacingOptionOutput(previewPaddingTop, previewPaddingType)
+						borderBottomRightRadius: previewRadiusBottom
+							? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
 							: undefined,
-					paddingBottom:
-						undefined !== previewPaddingBottom
-							? getSpacingOptionOutput(previewPaddingBottom, previewPaddingType)
+						borderBottomLeftRadius: previewRadiusLeft
+							? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
 							: undefined,
-					marginLeft:
-						undefined !== previewMarginLeft
-							? getSpacingOptionOutput(previewMarginLeft, previewMarginType)
-							: undefined,
-					marginRight:
-						undefined !== previewMarginRight
-							? getSpacingOptionOutput(previewMarginRight, previewMarginType)
-							: undefined,
-					marginTop:
-						undefined !== previewMarginTop
-							? getSpacingOptionOutput(previewMarginTop, previewMarginType)
-							: undefined,
-					marginBottom:
-						undefined !== previewMarginBottom
-							? getSpacingOptionOutput(previewMarginBottom, previewMarginType)
-							: undefined,
-					textAlign: previewAlign ? previewAlign : undefined,
-					backgroundColor: backgroundString,
-					backgroundImage: previewBackground ? previewBackground : undefined,
-					backgroundSize:
-						previewBackgroundImg && previewBackgroundImg[0] && previewBackgroundImg[0].bgImgSize
-							? previewBackgroundImg[0].bgImgSize
-							: undefined,
-					backgroundPosition:
-						previewBackgroundImg && previewBackgroundImg[0] && previewBackgroundImg[0].bgImgPosition
-							? previewBackgroundImg[0].bgImgPosition
-							: undefined,
-					backgroundRepeat:
-						previewBackgroundImg && previewBackgroundImg[0] && previewBackgroundImg[0].bgImgRepeat
-							? previewBackgroundImg[0].bgImgRepeat
-							: undefined,
-					backgroundAttachment:
-						previewBackgroundImg && previewBackgroundImg[0] && previewBackgroundImg[0].bgImgAttachment
-							? previewBackgroundImg[0].bgImgAttachment
-							: undefined,
-					borderTop: previewBorderTopStyle ? previewBorderTopStyle : undefined,
-					borderRight: previewBorderRightStyle ? previewBorderRightStyle : undefined,
-					borderBottom: previewBorderBottomStyle ? previewBorderBottomStyle : undefined,
-					borderLeft: previewBorderLeftStyle ? previewBorderLeftStyle : undefined,
-					borderTopLeftRadius: previewRadiusTop
-						? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
-						: undefined,
-					borderTopRightRadius: previewRadiusRight
-						? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
-						: undefined,
-					borderBottomRightRadius: previewRadiusBottom
-						? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
-						: undefined,
-					borderBottomLeftRadius: previewRadiusLeft
-						? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
-						: undefined,
-					boxShadow:
-						undefined !== displayShadow &&
-						displayShadow &&
-						undefined !== shadow &&
-						undefined !== shadow[0] &&
-						undefined !== shadow[0].color
-							? (undefined !== shadow[0].inset && shadow[0].inset ? 'inset ' : '') +
-							  (undefined !== shadow[0].hOffset ? shadow[0].hOffset : 0) +
-							  'px ' +
-							  (undefined !== shadow[0].vOffset ? shadow[0].vOffset : 0) +
-							  'px ' +
-							  (undefined !== shadow[0].blur ? shadow[0].blur : 14) +
-							  'px ' +
-							  (undefined !== shadow[0].spread ? shadow[0].spread : 0) +
-							  'px ' +
-							  KadenceColorOutput(
-									undefined !== shadow[0].color ? shadow[0].color : '#000000',
-									undefined !== shadow[0].opacity ? shadow[0].opacity : 1
-							  )
-							: undefined,
-				}}
-				{...innerBlocksProps}
-			></div>
-			<SpacingVisualizer
-				style={{
-					marginLeft:
-						undefined !== previewMarginLeft
-							? getSpacingOptionOutput(previewMarginLeft, previewMarginType)
-							: undefined,
-					marginRight:
-						undefined !== previewMarginRight
-							? getSpacingOptionOutput(previewMarginRight, previewMarginType)
-							: undefined,
-					marginTop:
-						undefined !== previewMarginTop
-							? getSpacingOptionOutput(previewMarginTop, previewMarginType)
-							: undefined,
-					marginBottom:
-						undefined !== previewMarginBottom
-							? getSpacingOptionOutput(previewMarginBottom, previewMarginType)
-							: undefined,
-				}}
-				type="inside"
-				forceShow={paddingMouseOver.isMouseOver}
-				spacing={[
-					getSpacingOptionOutput(previewPaddingTop, previewPaddingType),
-					getSpacingOptionOutput(previewPaddingRight, previewPaddingType),
-					getSpacingOptionOutput(previewPaddingBottom, previewPaddingType),
-					getSpacingOptionOutput(previewPaddingLeft, previewPaddingType),
-				]}
-			/>
-			<SpacingVisualizer
-				type="outsideVertical"
-				forceShow={marginMouseOver.isMouseOver}
-				spacing={[
-					getSpacingOptionOutput(previewMarginTop, previewMarginType),
-					getSpacingOptionOutput(previewMarginRight, previewMarginType),
-					getSpacingOptionOutput(previewMarginBottom, previewMarginType),
-					getSpacingOptionOutput(previewMarginLeft, previewMarginType),
-				]}
-			/>
+						boxShadow:
+							undefined !== displayShadow &&
+							displayShadow &&
+							undefined !== shadow &&
+							undefined !== shadow[0] &&
+							undefined !== shadow[0].color
+								? (undefined !== shadow[0].inset && shadow[0].inset ? 'inset ' : '') +
+								  (undefined !== shadow[0].hOffset ? shadow[0].hOffset : 0) +
+								  'px ' +
+								  (undefined !== shadow[0].vOffset ? shadow[0].vOffset : 0) +
+								  'px ' +
+								  (undefined !== shadow[0].blur ? shadow[0].blur : 14) +
+								  'px ' +
+								  (undefined !== shadow[0].spread ? shadow[0].spread : 0) +
+								  'px ' +
+								  KadenceColorOutput(
+										undefined !== shadow[0].color ? shadow[0].color : '#000000',
+										undefined !== shadow[0].opacity ? shadow[0].opacity : 1
+								  )
+								: undefined,
+					}}
+					{...innerBlocksProps}
+				></div>
+				<SpacingVisualizer
+					style={{
+						marginLeft:
+							undefined !== previewMarginLeft
+								? getSpacingOptionOutput(previewMarginLeft, previewMarginType)
+								: undefined,
+						marginRight:
+							undefined !== previewMarginRight
+								? getSpacingOptionOutput(previewMarginRight, previewMarginType)
+								: undefined,
+						marginTop:
+							undefined !== previewMarginTop
+								? getSpacingOptionOutput(previewMarginTop, previewMarginType)
+								: undefined,
+						marginBottom:
+							undefined !== previewMarginBottom
+								? getSpacingOptionOutput(previewMarginBottom, previewMarginType)
+								: undefined,
+					}}
+					type="inside"
+					forceShow={paddingMouseOver.isMouseOver}
+					spacing={[
+						getSpacingOptionOutput(previewPaddingTop, previewPaddingType),
+						getSpacingOptionOutput(previewPaddingRight, previewPaddingType),
+						getSpacingOptionOutput(previewPaddingBottom, previewPaddingType),
+						getSpacingOptionOutput(previewPaddingLeft, previewPaddingType),
+					]}
+				/>
+				<SpacingVisualizer
+					type="outsideVertical"
+					forceShow={marginMouseOver.isMouseOver}
+					spacing={[
+						getSpacingOptionOutput(previewMarginTop, previewMarginType),
+						getSpacingOptionOutput(previewMarginRight, previewMarginType),
+						getSpacingOptionOutput(previewMarginBottom, previewMarginType),
+						getSpacingOptionOutput(previewMarginLeft, previewMarginType),
+					]}
+				/>
+			</DragPosition>
 		</div>
 	);
 }

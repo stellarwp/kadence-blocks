@@ -1,23 +1,22 @@
 /**
- * BLOCK Section: Kadence Row / Layout Overlay
+ * Drag Position Component.
  */
 
-import memoize from 'memize';
-
-import { KadenceColorOutput, getPreviewSize } from '@kadence/helpers';
-
-import { ToggleControl, SelectControl, ToolbarGroup, TabPanel, ResizableBox, Icon } from '@wordpress/components';
+import { Icon } from '@wordpress/components';
 import { dragHandle } from '@wordpress/icons';
-import { Fragment, useEffect, useMemo, useState } from '@wordpress/element';
+import { useEffect, useMemo, useState, useRef } from '@wordpress/element';
 import { withSelect, withDispatch, useSelect, useDispatch } from '@wordpress/data';
 import Draggable from 'react-draggable';
+
+import "./editor.scss";
 /**
  * Build the row edit
  */
-function ResizeGridSection(props) {
+function DragPosition(props) {
 	const { attributes, setAttributes, clientId, context } = props;
 	const [moveGrid, setMoveGrid] = useState([25, 25]);
 	const [transform, setTransform] = useState(attributes?.dragTransform ? attributes.dragTransform : [0, 0]);
+	const ref = useRef();
 	const { previewDevice } = useSelect(
 		(select) => {
 			return {
@@ -31,6 +30,7 @@ function ResizeGridSection(props) {
 		console.log('transfromState', transform);
 	}, [clientId]);
 	let displayGrid = true;
+	let displayHandle = true;
 	// if (undefined !== context.gridResize && false === context.gridResize) {
 	// 	displayGrid = true;
 	// }
@@ -39,7 +39,8 @@ function ResizeGridSection(props) {
 	}
 	return (
 		<Draggable
-			handle=".grid-section-move-handle"
+			ref={ref}
+			handle=".kb-drag-position-move-handle"
 			defaultPosition={{ x: transform[0], y: transform[1] }}
 			position={null}
 			grid={moveGrid}
@@ -67,13 +68,15 @@ function ResizeGridSection(props) {
 			}}
 			style={{ transform: `translate(${transform[0]}, ${transform[1]})` }}
 		>
-			<div className="grid-section-resize">
+			<div className="kb-drag-position-wrap">
 				{props.children}
-				<span className="grid-section-move-handle">
-					<Icon icon={dragHandle} />
-				</span>
+				{displayHandle && (
+					<span className="kb-drag-position-move-handle">
+						<Icon icon={dragHandle} />
+					</span>
+				)}
 			</div>
 		</Draggable>
 	);
 }
-export default ResizeGridSection;
+export default DragPosition;

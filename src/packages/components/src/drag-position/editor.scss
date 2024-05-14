@@ -1,0 +1,25 @@
+.wp-block-kadence-column.is-selected > .kb-drag-position-wrap, .wp-block-kadence-column.has-child-selected > .kb-drag-position-wrap, .wp-block-kadence-column:hover > .kb-drag-position-wrap, .kb-drag-position-wrap:hover {
+    outline: 2px solid rgb(2 171 75);
+    outline-offset: 0px;
+	z-index: 1000;
+    position: relative;
+	.kb-drag-position-move-handle {
+		opacity: 1;
+	}
+}
+.kb-drag-position-move-handle {
+    position: absolute;
+    left: -28px;
+    top: -2px;
+	opacity: 0;
+    background: rgb(2 171 75);
+    color: white;
+    display: flex;
+    width: 28px;
+    height: 28px;
+    align-items: center;
+    justify-content: center;
+	svg {
+		fill: currentColor;
+	}
+}

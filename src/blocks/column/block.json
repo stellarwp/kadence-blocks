@@ -626,6 +626,10 @@
 		"kbVersion": {
 			"type": "number",
 			"default": ""
+		},
+		"dragTransform": {
+			"type": "array",
+			"default": ["", ""]
 		}
 	},
 	"supports": {

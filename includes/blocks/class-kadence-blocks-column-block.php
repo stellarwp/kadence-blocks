@@ -193,7 +193,11 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( '--kb-section-setting-offset', $attributes['stickyOffset'][2] . ( isset( $attributes['stickyOffsetUnit'] ) ? $attributes['stickyOffsetUnit'] : 'px' ) );
 			$css->set_media_state( 'desktop' );
 		}
-
+		// Transform.
+		$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+		if ( isset( $attributes['dragTransform'][0] ) && $css->is_number( $attributes['dragTransform'][0] ) ) {
+			$css->add_property( 'transform', 'translate(' . $attributes['dragTransform'][0] . 'px, ' . $attributes['dragTransform'][1] . 'px)' );
+		}
 		$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 		// Padding, check old first.
 		if ( $css->is_number( $attributes['topPadding'] ) || $css->is_number( $attributes['bottomPadding'] ) || $css->is_number( $attributes['leftPadding'] ) || $css->is_number( $attributes['rightPadding'] ) || $css->is_number( $attributes['topPaddingT'] ) || $css->is_number( $attributes['bottomPaddingT'] ) || $css->is_number( $attributes['leftPaddingT'] ) || $css->is_number( $attributes['rightPaddingT'] ) || $css->is_number( $attributes['topPaddingM'] ) || $css->is_number( $attributes['bottomPaddingM'] ) || $css->is_number( $attributes['leftPaddingM'] ) || $css->is_number( $attributes['rightPaddingM'] ) ) {
