@@ -1229,9 +1229,10 @@ class Kadence_Blocks_Settings {
 									$btntitle = __( 'Deactivate', 'kadence-blocks' );
 									// echo '<a class="kt_block_button button ' . esc_attr( $btn_enabled_class ) . '" data-inactive-label="' . esc_attr__( 'Activate', 'kadence-blocks' ) . '" data-active-label="' . esc_attr__( 'Deactivate', 'kadence-blocks' ) . '" data-activating-label="' . esc_attr__( 'Activating...', 'kadence-blocks' ) . '" data-activated-label="' . esc_attr__( 'Activated', 'kadence-blocks' ) . '"  data-deactivating-label="' . esc_attr__( 'Deactivating...', 'kadence-blocks' ) . '"  data-deactivated-label="' . esc_attr__( 'Deactivated', 'kadence-blocks' ) . '" data-block-slug="' . esc_attr( $block['slug'] ) . '" href="#">' . esc_html( $btntitle ) . '</a>';
 								}
-								if ( 'kadence/lottie' === $block['slug'] ) {
-									echo '<a class="button" href="' . admin_url( 'edit.php?post_type=kadence_lottie' ) . '">' . esc_html__( 'Manage Lottie Animations', 'kadence-blocks' ) . '</a>';
+								if( !empty( $block['link'] ) && !empty( $block['linkText'] ) ) {
+									echo '<a class="button" href="' . esc_attr( $block['link'] ) . '">' . esc_html( $block['linkText'] ) . '</a>';
 								}
+
 								echo '</div>';
 								echo '</div>';
 							}
@@ -1353,6 +1354,22 @@ class Kadence_Blocks_Settings {
 				'slug'  => 'kadence/lottie',
 				'name'  => __( 'Lottie Animations', 'kadence-blocks' ),
 				'desc'  => __( 'Add an extra "wow" factor to your site with engaging Lottie animations.', 'kadence-blocks' ),
+				'link'  => admin_url( 'edit.php?post_type=kadence_lottie' ),
+				'linkText'  => __( 'Manage Lottie Animations', 'kadence-blocks' ),
+			),
+			'kadence/header'        => array(
+				'slug'  => 'kadence/header',
+				'name'  => __( 'Advanced Header', 'kadence-blocks' ),
+				'desc'  => __( 'Build custom headers in the block editor and full site editing.', 'kadence-blocks' ),
+				'link'  => admin_url( 'edit.php?post_type=kadence_header' ),
+				'linkText'  => __( 'Manage Headers', 'kadence-blocks' ),
+			),
+			'kadence/navigation'        => array(
+				'slug'  => 'kadence/navigation',
+				'name'  => __( 'Advanced Navigation', 'kadence-blocks' ),
+				'desc'  => __( 'Build custom navigation menus', 'kadence-blocks' ),
+				'link'  => admin_url( 'edit.php?post_type=kadence_navigation' ),
+				'linkText'  => __( 'Manage Navigation Menus', 'kadence-blocks' ),
 			),
 			'kadence/icon'        => array(
 				'slug'  => 'kadence/icon',
