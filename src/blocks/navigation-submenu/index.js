@@ -2,6 +2,7 @@
  * WordPress dependencies
  */
 import { customLink as linkIcon } from '@wordpress/icons';
+import { InnerBlocks } from '@wordpress/block-editor';
 
 /**
  * Internal dependencies
@@ -9,7 +10,6 @@ import { customLink as linkIcon } from '@wordpress/icons';
 import initBlock from '../utils/init-block';
 import metadata from './block.json';
 import edit from './edit';
-import save from './save';
 import transforms from './transforms';
 
 const { name } = metadata;
@@ -38,7 +38,9 @@ export const settings = {
 		return label;
 	},
 	edit,
-	save,
+	save: () => {
+		return <InnerBlocks.Content />;
+	},
 	transforms,
 };
 
