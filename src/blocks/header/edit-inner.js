@@ -41,6 +41,7 @@ import {
 	SmallResponsiveControl,
 	BoxShadowControl,
 	SelectPostFromPostType,
+	CopyPasteAttributes,
 } from '@kadence/components';
 import { getPreviewSize, mouseOverVisualizer, arrayStringToInt, useElementWidth } from '@kadence/helpers';
 
@@ -57,6 +58,7 @@ import { innerBlocks as Basic3InnerBlocks, postMeta as Basic3PostMeta } from './
  * Internal dependencies
  */
 import { useEntityPublish } from './hooks';
+import metadata from './block.json';
 /**
  * Regular expression matching invalid anchor characters for replacement.
  *
@@ -694,6 +696,12 @@ export function EditInner(props) {
 				currentRef={componentRef}
 			/>
 			<BlockControls>
+				<CopyPasteAttributes
+					attributes={meta}
+					excludedAttributes={['_kad_header_description']}
+					blockSlug={metadata.name}
+					onPaste={(attributesToPaste) => setMeta({ ...meta, ...attributesToPaste })}
+				/>
 				<ToolbarGroup>
 					<Button
 						className="components-tab-button"

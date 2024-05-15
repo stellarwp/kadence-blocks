@@ -32,6 +32,7 @@ import {
 	BoxShadowControl,
 	ResponsiveMeasurementControls,
 	SelectPostFromPostType,
+	CopyPasteAttributes,
 } from '@kadence/components';
 import { getPreviewSize, mouseOverVisualizer, showSettings } from '@kadence/helpers';
 
@@ -65,6 +66,7 @@ import { useEntityPublish } from './hooks';
 import { DEFAULT_BLOCK, ALLOWED_BLOCKS, PRIORITIZED_INSERTER_BLOCKS } from './constants';
 import BackendStyles from './components/backend-styles';
 import { plus, plusCircle } from '@wordpress/icons';
+import metadata from './block.json';
 
 /**
  * Regular expression matching invalid anchor characters for replacement.
@@ -713,6 +715,12 @@ export function EditInner(props) {
 	return (
 		<>
 			<BlockControls>
+				<CopyPasteAttributes
+					attributes={meta}
+					excludedAttributes={['_kad_navigation_description']}
+					blockSlug={metadata.name}
+					onPaste={(attributesToPaste) => setMeta({ ...meta, ...attributesToPaste })}
+				/>
 				<ToolbarGroup>
 					<ToolbarButton
 						className="kb-icons-add-icon"

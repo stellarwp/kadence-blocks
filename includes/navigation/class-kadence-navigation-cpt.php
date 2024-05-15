@@ -142,6 +142,11 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 	public function register_meta() {
 		$register_meta = array(
 			array(
+				'key'     => '_kad_navigation_description',
+				'default' => '',
+				'type'    => 'string',
+			),
+			array(
 				'key'     => '_kad_navigation_anchor',
 				'default' => '',
 				'type'    => 'string',

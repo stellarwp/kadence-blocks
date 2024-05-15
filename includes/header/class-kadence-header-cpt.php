@@ -145,6 +145,11 @@ class Kadence_Blocks_Header_CPT_Controller {
 	public function register_meta() {
 		$register_meta = array(
 			array(
+				'key'     => '_kad_header_description',
+				'default' => '',
+				'type'    => 'string',
+			),
+			array(
 				'key' => '_kad_header_typography',
 				'type'          => 'object',
 				'default'       => array(
