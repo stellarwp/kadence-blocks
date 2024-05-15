@@ -426,7 +426,7 @@ export default function Edit(props) {
 		if (value) {
 			//enable
 			//TODO put any existing submenus / items into the new mega menu
-			const newMegaMenu = createBlock('kadence/rowlayout', [], []);
+			const newMegaMenu = createBlock('kadence/rowlayout', { templateLock: false }, []);
 			insertBlock(newMegaMenu, 0, clientId);
 			setAttributes({ isMegaMenu: true });
 			setShowSubMenus(true);
@@ -443,7 +443,7 @@ export default function Edit(props) {
 	 */
 	function addSubMenuItem() {
 		if (!isAtMaxNesting) {
-			const newMenuItem = createBlock('kadence/navigation-link', [], []);
+			const newMenuItem = createBlock('kadence/navigation-link', {}, []);
 			insertBlock(newMenuItem, 0, clientId);
 		}
 	}
