@@ -818,7 +818,13 @@ export function EditInner(props) {
 									)
 								}
 								min={0}
-								max={spacingUnit === 'em' || spacingUnit === 'rem' ? 24 : 200}
+								max={
+									spacingUnit === 'em' || spacingUnit === 'rem'
+										? 24
+										: spacingUnit === 'px'
+										? 200
+										: 100
+								}
 								step={spacingUnit === 'em' || spacingUnit === 'rem' ? 0.1 : 1}
 								unit={spacingUnit}
 								units={['em', 'rem', 'px', 'vw']}
@@ -858,7 +864,13 @@ export function EditInner(props) {
 										)
 									}
 									min={0}
-									max={spacingUnit === 'em' || spacingUnit === 'rem' ? 24 : 200}
+									max={
+										spacingUnit === 'em' || spacingUnit === 'rem'
+											? 24
+											: spacingUnit === 'px'
+											? 200
+											: 100
+									}
 									step={spacingUnit === 'em' || spacingUnit === 'rem' ? 0.1 : 1}
 									unit={spacingUnit}
 									units={['em', 'rem', 'px', 'vw']}
@@ -1047,7 +1059,13 @@ export function EditInner(props) {
 											setMetaAttribute(value.toString(), 'dropdownWidthMobile')
 										}
 										min={0}
-										max={dropdownWidthUnit === 'em' || dropdownWidthUnit === 'rem' ? 24 : 2000}
+										max={
+											dropdownWidthUnit === 'em' || dropdownWidthUnit === 'rem'
+												? 24
+												: dropdownWidthUnit === 'px'
+												? 2000
+												: 100
+										}
 										step={dropdownWidthUnit === 'em' || dropdownWidthUnit === 'rem' ? 0.1 : 1}
 										unit={dropdownWidthUnit}
 										units={['em', 'rem', 'px', 'vw']}
@@ -1072,7 +1090,9 @@ export function EditInner(props) {
 								max={
 									dropdownVerticalSpacingUnit === 'em' || dropdownVerticalSpacingUnit === 'rem'
 										? 24
-										: 200
+										: dropdownVerticalSpacingUnit === 'px'
+										? 200
+										: 100
 								}
 								step={
 									dropdownVerticalSpacingUnit === 'em' || dropdownVerticalSpacingUnit === 'rem'
@@ -1105,7 +1125,7 @@ export function EditInner(props) {
 								unit={dropdownBorderRadiusUnit}
 								units={['px', 'em', 'rem', '%']}
 								onUnit={(value) => setMetaAttribute(value, 'dropdownBorderRadiusUnit')}
-								max={dropdownBorderRadiusUnit === 'em' || dropdownBorderRadiusUnit === 'rem' ? 24 : 500}
+								max={dropdownBorderRadiusUnit === 'em' || dropdownBorderRadiusUnit === 'rem' ? 24 : 100}
 								step={dropdownBorderRadiusUnit === 'em' || dropdownBorderRadiusUnit === 'rem' ? 0.1 : 1}
 								min={0}
 								isBorderRadius={true}
@@ -1281,7 +1301,13 @@ export function EditInner(props) {
 									setMetaAttribute(value.map(String), 'mobilePadding');
 								}}
 								min={0}
-								max={paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200}
+								max={
+									paddingUnit === 'em' || paddingUnit === 'rem'
+										? 24
+										: paddingUnit === 'px'
+										? 200
+										: 100
+								}
 								step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
 								unit={paddingUnit}
 								units={['px', 'em', 'rem', '%']}
@@ -1302,7 +1328,7 @@ export function EditInner(props) {
 									setMetaAttribute(value.map(String), 'mobileMargin');
 								}}
 								min={0}
-								max={marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200}
+								max={marginUnit === 'em' || marginUnit === 'rem' ? 24 : marginUnit === 'px' ? 200 : 100}
 								step={paddingUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
 								unit={paddingUnit}
 								units={['px', 'em', 'rem', '%']}

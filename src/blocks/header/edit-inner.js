@@ -981,7 +981,13 @@ export function EditInner(props) {
 											unit={borderRadiusUnit}
 											units={['px', 'em', 'rem', '%']}
 											onUnit={(value) => setMetaAttribute(value, 'borderRadiusUnit')}
-											max={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 500}
+											max={
+												borderRadiusUnit === 'em' || borderRadiusUnit === 'rem'
+													? 24
+													: borderRadiusUnit === 'px'
+													? 500
+													: 100
+											}
 											step={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1}
 											min={0}
 											isBorderRadius={true}
@@ -1020,7 +1026,9 @@ export function EditInner(props) {
 											max={
 												borderRadiusHoverUnit === 'em' || borderRadiusHoverUnit === 'rem'
 													? 24
-													: 500
+													: borderRadiusHoverUnit === 'px'
+													? 500
+													: 100
 											}
 											step={
 												borderRadiusHoverUnit === 'em' || borderRadiusHoverUnit === 'rem'
@@ -1158,7 +1166,9 @@ export function EditInner(props) {
 													borderRadiusTransparentUnit === 'em' ||
 													borderRadiusTransparentUnit === 'rem'
 														? 24
-														: 500
+														: borderRadiusTransparentUnit === 'px'
+														? 500
+														: 100
 												}
 												step={
 													borderRadiusTransparentUnit === 'em' ||
@@ -1212,7 +1222,9 @@ export function EditInner(props) {
 													borderRadiusTransparentHoverUnit === 'em' ||
 													borderRadiusTransparentHoverUnit === 'rem'
 														? 24
-														: 500
+														: borderRadiusTransparentHoverUnit === 'px'
+														? 500
+														: 100
 												}
 												step={
 													borderRadiusTransparentHoverUnit === 'em' ||
@@ -1271,7 +1283,9 @@ export function EditInner(props) {
 												max={
 													borderRadiusStickyUnit === 'em' || borderRadiusStickyUnit === 'rem'
 														? 24
-														: 500
+														: borderRadiusStickyUnit === 'px'
+														? 500
+														: 100
 												}
 												step={
 													borderRadiusStickyUnit === 'em' || borderRadiusStickyUnit === 'rem'
@@ -1322,7 +1336,9 @@ export function EditInner(props) {
 													borderRadiusStickyHoverUnit === 'em' ||
 													borderRadiusStickyHoverUnit === 'rem'
 														? 24
-														: 500
+														: borderRadiusStickyHoverUnit === 'px'
+														? 500
+														: 100
 												}
 												step={
 													borderRadiusStickyHoverUnit === 'em' ||
@@ -1454,7 +1470,13 @@ export function EditInner(props) {
 									setMetaAttribute(value.map(String), 'mobilePadding');
 								}}
 								min={0}
-								max={paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200}
+								max={
+									paddingUnit === 'em' || paddingUnit === 'rem'
+										? 24
+										: paddingUnit === 'px'
+										? 200
+										: 100
+								}
 								step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
 								unit={paddingUnit}
 								units={['px', 'em', 'rem', '%']}
@@ -1477,7 +1499,7 @@ export function EditInner(props) {
 									setMetaAttribute(value.map(String), 'mobileMargin');
 								}}
 								min={marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200}
-								max={marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200}
+								max={marginUnit === 'em' || marginUnit === 'rem' ? 24 : marginUnit === 'px' ? 200 : 100}
 								step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
 								unit={marginUnit}
 								units={['px', 'em', 'rem', '%', 'vh']}

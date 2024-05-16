@@ -546,8 +546,20 @@ export function Edit(props) {
 								}}
 								onChangeTablet={(value) => setAttributes({ paddingTablet: value })}
 								onChangeMobile={(value) => setAttributes({ paddingMobile: value })}
-								min={paddingUnit === 'em' || paddingUnit === 'rem' ? -12 : -999}
-								max={paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 999}
+								min={
+									paddingUnit === 'em' || paddingUnit === 'rem'
+										? -12
+										: paddingUnit === 'px'
+										? -999
+										: -100
+								}
+								max={
+									paddingUnit === 'em' || paddingUnit === 'rem'
+										? 24
+										: paddingUnit === 'px'
+										? 999
+										: 100
+								}
 								step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
 								unit={paddingUnit}
 								units={['px', 'em', 'rem', '%', 'vh']}
@@ -565,7 +577,13 @@ export function Edit(props) {
 								onChangeTablet={(value) => setAttributes({ closeIconPaddingTablet: value })}
 								onChangeMobile={(value) => setAttributes({ closeIconPaddingMobile: value })}
 								min={0}
-								max={closeIconPaddingUnit === 'em' || closeIconPaddingUnit === 'rem' ? 25 : 400}
+								max={
+									closeIconPaddingUnit === 'em' || closeIconPaddingUnit === 'rem'
+										? 25
+										: closeIconPaddingUnit === 'px'
+										? 400
+										: 100
+								}
 								step={closeIconPaddingUnit === 'em' || closeIconPaddingUnit === 'rem' ? 0.1 : 1}
 								unit={closeIconPaddingUnit}
 								units={['px', 'em', 'rem', '%']}

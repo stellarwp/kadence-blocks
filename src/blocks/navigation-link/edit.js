@@ -960,7 +960,7 @@ export default function Edit(props) {
 								onChange={(value) => setAttributes({ megaMenuCustomWidth: value })}
 								onUnit={(value) => setAttributes({ megaMenuCustomWidthUnit: value })}
 								min={120}
-								max={800}
+								max={megaMenuCustomWidthUnit == 'px' ? 2000 : 100}
 								units={['px', 'em', 'rem', '%']}
 								unit={megaMenuCustomWidthUnit}
 								showUnit={true}
@@ -1141,7 +1141,9 @@ export default function Edit(props) {
 								max={
 									dropdownVerticalSpacingUnit === 'em' || dropdownVerticalSpacingUnit === 'rem'
 										? 24
-										: 200
+										: dropdownVerticalSpacingUnit === 'px'
+										? 200
+										: 100
 								}
 								step={
 									dropdownVerticalSpacingUnit === 'em' || dropdownVerticalSpacingUnit === 'rem'
@@ -1258,8 +1260,10 @@ export default function Edit(props) {
 							onChangeTablet={(value) => setAttributes({ tabletPadding: value })}
 							mobileValue={mobilePadding}
 							onChangeMobile={(value) => setAttributes({ mobilePadding: value })}
-							min={paddingUnit === 'em' || paddingUnit === 'rem' ? -25 : -400}
-							max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 400}
+							min={
+								paddingUnit === 'em' || paddingUnit === 'rem' ? -25 : paddingUnit === 'px' ? -400 : -100
+							}
+							max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : paddingUnit === 'px' ? 400 : 100}
 							step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
 							unit={paddingUnit}
 							units={['px', 'em', 'rem']}
@@ -1273,8 +1277,8 @@ export default function Edit(props) {
 							onChangeTablet={(value) => setAttributes({ tabletMargin: value })}
 							mobileValue={mobileMargin}
 							onChangeMobile={(value) => setAttributes({ mobileMargin: value })}
-							min={marginUnit === 'em' || marginUnit === 'rem' ? -25 : -400}
-							max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : 400}
+							min={marginUnit === 'em' || marginUnit === 'rem' ? -25 : marginUnit === 'px' ? -400 : -100}
+							max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : marginUnit === 'px' ? 400 : 100}
 							step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
 							unit={marginUnit}
 							units={['px', 'em', 'rem']}
