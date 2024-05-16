@@ -467,7 +467,8 @@ export default function BackendStyles(props) {
 			'left',
 			-1 *
 				Math.abs(
-					currentRef.current.closest('.wp-block-kadence-navigation-link').getBoundingClientRect().left
+					currentRef.current.closest('.wp-block-kadence-navigation-link').getBoundingClientRect().left -
+						currentRef.current.closest('.editor-styles-wrapper').getBoundingClientRect().left
 				).toString() +
 				'px'
 		);
