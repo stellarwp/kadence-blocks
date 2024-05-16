@@ -188,7 +188,10 @@ export default function BackendStyles(props) {
 	//content area inner
 	css.set_selector(`.wp-block-kadence-off-canvas${uniqueID} .kb-off-canvas-inner`);
 	css.render_measure_output(padding, paddingTablet, paddingMobile, previewDevice, 'padding', paddingUnit);
-	css.add_property('max-width', previewContainerMaxWidth != 0 ? previewContainerMaxWidth + 'px' : '');
+	css.add_property(
+		'max-width',
+		previewContainerMaxWidth != 0 && null !== previewContainerMaxWidth ? previewContainerMaxWidth + 'px' : ''
+	);
 
 	//content area inner alignment
 	if (previewHAlign == 'center') {
