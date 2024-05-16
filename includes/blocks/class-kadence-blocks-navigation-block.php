@@ -111,6 +111,9 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		// Navigation logic from theme styles component.
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation[class*="navigation-style-underline"] .menu-container>ul>li>a:after' );
 		$css->add_property( 'width', 'calc( 100% - ' . $css->render_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) . ' )', $navigation_horizontal_spacing );
+
+		//.wp-block-kadence-navigation .navigation ul li.menu-item > .link-drop-wrap > a
+		//.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap >a
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .menu-container > ul > li.menu-item > .link-drop-wrap > a' );
 		$css->add_property( 'padding-left', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ), $navigation_horizontal_spacing );
 		$css->add_property( 'padding-right', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ), $navigation_horizontal_spacing );
