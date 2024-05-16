@@ -214,8 +214,11 @@ export default function BackendStyles(props) {
 	css.set_selector('.components-popover.block-editor-block-popover');
 	css.add_property('z-index', '10000');
 
+	// For the close icon container styles, they need to get applied to the hover state too, due to resets on hover styles in the css
 	//close icon container
-	css.set_selector(`.wp-block-kadence-off-canvas${uniqueID} .kb-off-canvas-close`);
+	css.set_selector(
+		`.wp-block-kadence-off-canvas${uniqueID} .kb-off-canvas-close, .wp-block-kadence-off-canvas${uniqueID} .kb-off-canvas-close:hover`
+	);
 	css.render_measure_output(
 		closeIconPadding,
 		closeIconPaddingTablet,

@@ -88,9 +88,10 @@ class Kadence_Blocks_Off_Canvas_Trigger_Block extends Kadence_Blocks_Abstract_Bl
 			$this->sized_dynamic_styles( $css, $merged_attributes, $unique_id, $size );
 		}
 		$css->set_media_state( 'desktop' );
-
+		
+		// For the close icon container styles, they need to get applied to the hover state too, due to resets on hover styles in the css
 		//container
-		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id );
+		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ', .wp-block-kadence-off-canvas-trigger' . $unique_id . ':hover' );
 		$css->render_measure_output( $attributes, 'padding', 'padding', array(
 			'desktop_key' => 'padding',
 			'tablet_key'  => 'paddingTablet',
@@ -131,8 +132,9 @@ class Kadence_Blocks_Off_Canvas_Trigger_Block extends Kadence_Blocks_Abstract_Bl
 
 		$css->set_media_state( strtolower( $size ) );
 
+		// For the close icon container styles, they need to get applied to the hover state too, due to resets on hover styles in the css
 		//container
-		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id );
+		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id. ', .wp-block-kadence-off-canvas-trigger' . $unique_id . ':hover' );
 		if ( ! empty( $sized_attributes['iconBackgroundColor'] ) ) {
 			$css->add_property( 'background-color', $css->render_color( $sized_attributes['iconBackgroundColor'] ) );
 		}

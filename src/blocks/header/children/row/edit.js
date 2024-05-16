@@ -71,6 +71,10 @@ export function Edit(props) {
 		minHeightTablet,
 		minHeightMobile,
 		minHeightUnit,
+		height,
+		heightTablet,
+		heightMobile,
+		heightUnit,
 		maxWidth,
 		maxWidthTablet,
 		maxWidthMobile,
@@ -294,11 +298,29 @@ export function Edit(props) {
 								mobileValue={minHeightMobile}
 								onChangeMobile={(value) => setAttributes({ minHeightMobile: value })}
 								min={0}
-								max={600}
+								max={minHeightUnit == 'px' ? 600 : 100}
 								step={1}
 								unit={minHeightUnit}
 								onUnit={(value) => {
 									setAttributes({ minHeightUnit: value });
+								}}
+								units={['px', 'em', 'vh']}
+								showUnit={true}
+							/>
+							<ResponsiveRangeControls
+								label={__('Height', 'kadence-blocks')}
+								value={height}
+								onChange={(value) => setAttributes({ height: value })}
+								tabletValue={heightTablet}
+								onChangeTablet={(value) => setAttributes({ heightTablet: value })}
+								mobileValue={heightMobile}
+								onChangeMobile={(value) => setAttributes({ heightMobile: value })}
+								min={0}
+								max={heightUnit == 'px' ? 600 : 100}
+								step={1}
+								unit={heightUnit}
+								onUnit={(value) => {
+									setAttributes({ heightUnit: value });
 								}}
 								units={['px', 'em', 'vh']}
 								showUnit={true}
@@ -313,7 +335,7 @@ export function Edit(props) {
 									mobileValue={maxWidthMobile}
 									onChangeMobile={(value) => setAttributes({ maxWidthMobile: value })}
 									min={0}
-									max={600}
+									max={maxWidthUnit == 'px' ? 600 : 100}
 									step={1}
 									unit={maxWidthUnit}
 									onUnit={(value) => {

@@ -28,6 +28,10 @@ export default function BackendStyles(props) {
 		minHeightTablet,
 		minHeightMobile,
 		minHeightUnit,
+		height,
+		heightTablet,
+		heightMobile,
+		heightUnit,
 		maxWidth,
 		maxWidthTablet,
 		maxWidthMobile,
@@ -42,6 +46,7 @@ export default function BackendStyles(props) {
 	} = attributes;
 
 	const previewMinHeight = getPreviewSize(previewDevice, minHeight, minHeightTablet, minHeightMobile);
+	const previewHeight = getPreviewSize(previewDevice, height, heightTablet, heightMobile);
 	const previewMaxWidth = getPreviewSize(previewDevice, maxWidth, maxWidthTablet, maxWidthMobile);
 	const previewItemGap = getPreviewSize(previewDevice, itemGap, itemGapTablet, itemGapMobile);
 	const previewVAlign = getPreviewSize(previewDevice, vAlign, vAlignTablet, vAlignMobile);
@@ -54,6 +59,9 @@ export default function BackendStyles(props) {
 	css.render_measure_output(margin, marginTablet, marginMobile, previewDevice, 'margin', marginUnit);
 	if (previewMinHeight != 0 && previewMinHeight) {
 		css.add_property('min-height', previewMinHeight + minHeightUnit);
+	}
+	if (previewHeight != 0 && previewHeight) {
+		css.add_property('min-height', previewHeight + heightUnit);
 	}
 	if (previewMaxWidth != 0 && previewMaxWidth) {
 		css.add_property('max-width', previewMaxWidth + maxWidthUnit);

@@ -64,11 +64,16 @@ export default function BackendStyles(props) {
 
 	const css = new KadenceBlocksCSS();
 
+	// For the contaner styles, they need to get applied to the hover state too, due to resets on hover styles in the css
 	//container (fix for margin specificty)
-	css.set_selector(`.editor-styles-wrapper .wp-block-kadence-off-canvas-trigger${uniqueID}`);
+	css.set_selector(
+		`.editor-styles-wrapper .wp-block-kadence-off-canvas-trigger${uniqueID}, .wp-block-kadence-off-canvas-trigger${uniqueID}:hover`
+	);
 	css.render_measure_output(margin, marginTablet, marginMobile, previewDevice, 'margin', marginUnit);
 	//container
-	css.set_selector(`.wp-block-kadence-off-canvas-trigger${uniqueID}`);
+	css.set_selector(
+		`.wp-block-kadence-off-canvas-trigger${uniqueID}, .wp-block-kadence-off-canvas-trigger${uniqueID}:hover`
+	);
 	css.render_measure_output(padding, paddingTablet, paddingMobile, previewDevice, 'padding', paddingUnit);
 	css.add_property('background-color', KadenceColorOutput(previewIconBackgroundColor));
 	css.add_property('border-top', css.render_border(border, borderTablet, borderMobile, previewDevice, 'top', false));
@@ -86,7 +91,7 @@ export default function BackendStyles(props) {
 	);
 	//fix for editor specificity
 	css.set_selector(
-		`.editor-styles-wrapper .wp-block-kadence-off-canvas-trigger${uniqueID}, .wp-block-kadence-off-canvas-trigger${uniqueID}`
+		`.editor-styles-wrapper .wp-block-kadence-off-canvas-trigger${uniqueID}, .wp-block-kadence-off-canvas-trigger${uniqueID}:hover`
 	);
 	css.render_measure_output(
 		borderRadius,

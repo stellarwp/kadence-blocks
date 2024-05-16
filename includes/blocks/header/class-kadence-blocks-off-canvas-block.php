@@ -113,17 +113,13 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 			'mobile_key'  => 'paddingMobile',
 		) );
 
+		// For the close icon container styles, they need to get applied to the hover state too, due to resets on hover styles in the css
 		//close icon container
-		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close' );
+		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close' . ', .wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close:hover' );
 		$css->render_measure_output( $attributes, 'closeIconPadding', 'padding', array(
 			'desktop_key' => 'closeIconPadding',
 			'tablet_key'  => 'closeIconPaddingTablet',
 			'mobile_key'  => 'closeIconPaddingMobile',
-		) );
-		$css->render_measure_output( $attributes, 'closeIconMargin', 'margin', array(
-			'desktop_key' => 'closeIconMargin',
-			'tablet_key'  => 'closeIconMarginTablet',
-			'mobile_key'  => 'closeIconMarginMobile',
 		) );
 		$css->render_measure_output( $attributes, 'closeIconBorderRadius', 'border-radius', array(
 			'desktop_key' => 'closeIconBorderRadius',
@@ -197,8 +193,9 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'background-color', $css->render_color( $sized_attributes['pageBackgroundColor'] ) );
 		}
 
+		// For the close icon container styles, they need to get applied to the hover state too, due to resets on hover styles in the css
 		//Close Icon container
-		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close' );
+		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close' . ', .wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close:hover' );
 		if ( ! empty( $sized_attributes['closeIconBackgroundColor'] ) ) {
 			$css->add_property( 'background-color', $css->render_color( $sized_attributes['closeIconBackgroundColor'] ) );
 		}
