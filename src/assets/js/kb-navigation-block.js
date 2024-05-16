@@ -101,7 +101,7 @@
 		},
 		initEachNavToggleSubmenu(nav) {
 			// Get the submenus.
-			var SUBMENUS = nav.querySelectorAll('.menu ul');
+			var SUBMENUS = nav.querySelectorAll('.menu .sub-menu');
 
 			// No point if no submenus.
 			if (!SUBMENUS.length) {
