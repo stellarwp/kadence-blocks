@@ -49,11 +49,6 @@ import { BackendStyles, Onboard } from './components';
 import { HEADER_ALLOWED_BLOCKS, HEADER_INNERBLOCK_TEMPLATE } from './constants';
 import { buildTemplateFromSelection } from './helpers';
 
-// Basic templates
-import { innerBlocks as Basic1InnerBlocks, postMeta as Basic1PostMeta } from './templates/basic-1';
-import { innerBlocks as Basic2InnerBlocks, postMeta as Basic2PostMeta } from './templates/basic-2';
-import { innerBlocks as Basic3InnerBlocks, postMeta as Basic3PostMeta } from './templates/basic-3';
-
 /**
  * Internal dependencies
  */
