@@ -8,7 +8,7 @@ export default function useEditorElement(ref, dependencies) {
 
 	function calculateEditorElement() {
 		if (ref?.current?.ownerDocument) {
-			setEditorElement(ref.current.ownerDocument.querySelector('.edit-post-visual-editor'));
+			setEditorElement(ref.current.ownerDocument.querySelector('.editor-styles-wrapper'));
 		}
 	}
 

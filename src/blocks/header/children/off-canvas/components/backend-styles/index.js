@@ -76,7 +76,7 @@ export default function BackendStyles(props) {
 
 	const editorWidth = editorElement?.clientWidth;
 	const editorLeft = editorElement?.getBoundingClientRect().left;
-	const editorRight = window.innerWidth - editorElement?.getBoundingClientRect().right;
+	const editorRight = editorElement?.closest('body').offsetWidth - editorElement?.getBoundingClientRect().right;
 	//editor is actually full height of content, it's parent is the frame
 	const editorHeight = editorElement?.parentElement.clientHeight;
 	const editorTop = editorElement?.parentElement.getBoundingClientRect().top;

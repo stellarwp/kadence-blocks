@@ -171,8 +171,8 @@ export function Edit(props) {
 
 	const ref = useRef();
 
-	const handleModalClick = (e) => {
-		if (e.target.classList.contains('wp-block-kadence-off-canvas')) {
+	const handleModalOverlayClick = (e) => {
+		if (e.target.classList.contains('kb-off-canvas-overlay')) {
 			setOffCanvasOpenId(null);
 			selectBlock(parentClientId);
 		}
@@ -593,7 +593,7 @@ export function Edit(props) {
 				)}
 			</InspectorControls>
 			<BackendStyles {...props} previewDevice={previewDevice} editorElement={editorElement} />
-			<div {...blockProps} onClick={(e) => handleModalClick(e)} ref={ref}>
+			<div {...blockProps}>
 				{closeIcon && previewCloseIconSize && (
 					<button className="kb-off-canvas-close">
 						<IconRender
@@ -606,7 +606,7 @@ export function Edit(props) {
 				{/* <div className="kb-off-canvas-label">{__('Off Canvas Content', 'kadence-blocks')}</div> */}
 				<div {...innerBlocksProps} />
 			</div>
-			<div className={overlayClasses}></div>
+			<div className={overlayClasses} ref={ref} onClick={(e) => handleModalOverlayClick(e)}></div>
 		</>
 	);
 }

@@ -50,14 +50,18 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 	const { setPreviewDeviceType, setHeaderVisualBuilderOpenId, setOffCanvasOpenId } =
 		useDispatch('kadenceblocks/data');
 
+	const { selectBlock } = useDispatch('core/block-editor');
+
 	const updateTab = (value, blocks = null) => {
 		setTab(value);
 
 		if (value !== 'off-canvas') {
 			setPreviewDeviceType(capitalizeFirstLetter(value));
 		} else if (value === 'off-canvas') {
-			if (get(blocks, 'clientId')) {
-				setOffCanvasOpenId(get(blocks, 'clientId'));
+			const clientId = get(blocks, 'clientId');
+			if (clientId) {
+				setOffCanvasOpenId(clientId);
+				selectBlock(clientId);
 			}
 		}
 	};
