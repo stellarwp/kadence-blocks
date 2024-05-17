@@ -12,13 +12,9 @@ import { API } from '../constants/API';
 export default function getQueryOptions(options) {
 	const headers = new Headers();
 	headers.append('Content-Type', 'application/json');
-	const sizes = kadenceExtensionImagePicker.image_sizes.forEach((element) => {
-		element?.crop ? (element.crop = true) : (element.crop = false);
-		return element;
-	});
 	const body = {
 		query: API.defaults.query,
-		sizes,
+		sizes: kadenceExtensionImagePicker.image_sizes,
 		image_type: API.defaults.image_type,
 		page: 1,
 		per_page: API.defaults.per_page,

@@ -225,7 +225,8 @@
 			"default": ""
 		},
 		"templateLock": {
-			"type": "string"
+			"type": ["string", "boolean"],
+			"enum": ["all", "insert", "contentOnly", false]
 		},
 		"direction": {
 			"type": "array",
@@ -416,6 +417,14 @@
 		"maxWidthUnit": {
 			"type": "string",
 			"default": "px"
+		},
+		"maxWidthTabletUnit": {
+			"type": "string",
+			"default": ""
+		},
+		"maxWidthMobileUnit": {
+			"type": "string",
+			"default": ""
 		},
 		"height": {
 			"type": "array",

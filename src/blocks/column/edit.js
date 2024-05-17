@@ -65,7 +65,7 @@ import { getPreviewGutterSize } from './utils';
 import { __ } from '@wordpress/i18n';
 
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useEffect, useState, Fragment } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import {
 	BlockAlignmentToolbar,
 	BlockVerticalAlignmentControl,
@@ -77,7 +77,6 @@ import {
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
 import { ToggleControl, SelectControl, ToolbarGroup } from '@wordpress/components';
-import { applyFilters } from '@wordpress/hooks';
 const FORM_ALLOWED_BLOCKS = [
 	'core/paragraph',
 	'kadence/advancedheading',
@@ -106,7 +105,6 @@ import { BLEND_OPTIONS } from '../rowlayout/constants';
  */
 function SectionEdit(props) {
 	const { attributes, setAttributes, isSelected, clientId, context, className } = props;
-
 	const {
 		id,
 		topPadding,
@@ -190,6 +188,8 @@ function SectionEdit(props) {
 		height,
 		maxWidth,
 		maxWidthUnit,
+		maxWidthTabletUnit,
+		maxWidthMobileUnit,
 		htmlTag,
 		sticky,
 		stickyOffset,
@@ -238,7 +238,6 @@ function SectionEdit(props) {
 		gutterVariable,
 		kbVersion,
 	} = attributes;
-
 	const [activeTab, setActiveTab] = useState('general');
 	const [dynamicBackgroundImg, setDynamicBackgroundImg] = useState('');
 
@@ -639,14 +638,17 @@ function SectionEdit(props) {
 				(deskDirection === 'horizontal' || tabletDirection === 'horizontal' || mobileDirection === 'horizontal')
 			) {
 				const tempRowGap = JSON.parse(JSON.stringify(rowGap));
+				const tempRowGapVariable = ['', '', ''];
 				if (deskDirection === 'horizontal') {
 					tempRowGap[0] = '' !== gutter?.[0] ? gutter[0] : 10;
+					tempRowGapVariable[0] = '' !== gutter?.[0] ? 'custom' : '';
 				}
 				if (
 					((tabletDirection === '' && deskDirection === 'horizontal') || tabletDirection === 'horizontal') &&
 					'' !== gutter?.[1]
 				) {
 					tempRowGap[1] = gutter?.[1];
+					tempRowGapVariable[1] = '' !== gutter?.[1] ? 'custom' : '';
 				}
 				if (
 					((mobileDirection === '' && tabletDirection === 'horizontal') ||
@@ -655,8 +657,14 @@ function SectionEdit(props) {
 					'' !== gutter?.[2]
 				) {
 					tempRowGap[2] = gutter?.[2];
+					tempRowGapVariable[2] = '' !== gutter?.[2] ? 'custom' : '';
 				}
-				setAttributes({ rowGap: tempRowGap, rowGapUnit: gutterUnit ? gutterUnit : 'px' });
+
+				setAttributes({
+					rowGapVariable: tempRowGapVariable,
+					rowGap: tempRowGap,
+					rowGapUnit: gutterUnit ? gutterUnit : 'px',
+				});
 			}
 			setAttributes({ kbVersion: 2 });
 		}
@@ -1068,6 +1076,14 @@ function SectionEdit(props) {
 		maxWidth && maxWidth[1] ? maxWidth[1] : '',
 		maxWidth && maxWidth[2] ? maxWidth[2] : ''
 	);
+
+	// Check for falsey to support how units worked before
+	const previewMaxWidthUnit = getPreviewSize(
+		previewDevice,
+		maxWidthUnit ? maxWidthUnit : 'px',
+		maxWidthTabletUnit ? maxWidthTabletUnit : '',
+		maxWidthMobileUnit ? maxWidthMobileUnit : ''
+	);
 	const previewMinHeight = getPreviewSize(
 		previewDevice,
 		height && '' !== height[0] ? height[0] : '',
@@ -1081,7 +1097,6 @@ function SectionEdit(props) {
 		stickyOffset && stickyOffset[2] ? stickyOffset[2] : ''
 	);
 	const previewMinHeightUnit = heightUnit ? heightUnit : 'px';
-	const previewMaxWidthUnit = maxWidthUnit ? maxWidthUnit : 'px';
 	const previewStickyOffsetUnit = stickyOffsetUnit ? stickyOffsetUnit : 'px';
 	const classes = classnames({
 		[className]: className,
@@ -1147,7 +1162,7 @@ function SectionEdit(props) {
 				previewDirection === 'horizontal' || previewDirection === 'horizontal-reverse'
 					? 'horizontal'
 					: 'vertical',
-			templateLock: templateLock ? templateLock : false,
+			templateLock,
 			renderAppender: hasInnerBlocks ? undefined : InnerBlocks.ButtonBlockAppender,
 			allowedBlocks: inFormBlock ? FORM_ALLOWED_BLOCKS : undefined,
 		}
@@ -2263,11 +2278,13 @@ function SectionEdit(props) {
 												});
 											}}
 											min={0}
-											max={maxWidthUnit === 'px' ? 2000 : 100}
+											max={previewMaxWidthUnit === 'px' ? 2000 : 100}
 											step={1}
-											unit={maxWidthUnit ? maxWidthUnit : 'px'}
+											unit={previewMaxWidthUnit}
+											allowResponsiveUnitChange={true}
 											onUnit={(value) => {
-												setAttributes({ maxWidthUnit: value });
+												const device = 'Desktop' === previewDevice ? '' : previewDevice;
+												setAttributes({ ['maxWidth' + device + 'Unit']: value });
 											}}
 											units={['px', '%', 'vw']}
 										/>

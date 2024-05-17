@@ -36,6 +36,7 @@ export default function ResponsiveRangeControls( {
 	min = 0,
 	unit = '',
 	onUnit,
+	allowResponsiveUnitChange = false,
 	showUnit = false,
 	units = [ 'px', 'em', 'rem' ],
 	allowEmpty = true,
@@ -88,6 +89,7 @@ export default function ResponsiveRangeControls( {
 			onUnit={ onUnit }
 			showUnit={ showUnit }
 			units={ units }
+			lockUnits={ allowResponsiveUnitChange ? false : true }
 		/>
 	);
 	output.Tablet = (
@@ -101,6 +103,7 @@ export default function ResponsiveRangeControls( {
 			onUnit={ onUnit }
 			showUnit={ showUnit }
 			units={ units }
+			lockUnits={ allowResponsiveUnitChange ? false : true }
 		/>
 	);
 	output.Desktop = (

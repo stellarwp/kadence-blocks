@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.3
 Tested up to: 6.5
-Stable tag: 3.2.36
+Stable tag: 3.2.38
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -17,7 +17,7 @@ Kadence Blocks, now enhanced with AI tools, elevates Gutenberg’s editing capab
 
 This toolkit extends the WordPress block editor's functionality, rivaling traditional page builders in creating visually impressive and engaging content without requiring any coding.
 
-With the integration of Kadence AI, enjoy features like AI-powered text generation, smart keyword optimization, and customizable design patterns, making web design more intuitive and efficient than ever before. Kadence AI also includes an inline editor within Kadence blocks so you can edit your content at any time using AI to tailor length, tone, and more. 
+With the integration of Kadence AI, enjoy features like AI-powered text generation, smart keyword optimization, and customizable design patterns, making web design more intuitive and efficient than ever before. Kadence AI also includes an inline editor within Kadence blocks so you can edit your content at any time using AI to tailor length, tone, and more.
 
 = Try Kadence Blocks =
 [Try Kadence Blocks](https://www.kadencewp.com/kadence-blocks/try/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) on a free demo site.
@@ -25,21 +25,21 @@ With the integration of Kadence AI, enjoy features like AI-powered text generati
 
 = Custom Blocks Include =
 * Accordion – Create [beautiful accordions!](https://www.kadencewp.com/kadence-blocks/custom-blocks/accordion-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) Each panel can contain any other block and customized title styles, content background, and borders.
-* Advanced Button – Create an [advanced button](https://www.kadencewp.com/kadence-blocks/custom-blocks/advanced-button-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) or a row of buttons. Style each one, including hover controls. Plus, you can use an icon and display them side-by-side. 
+* Advanced Button – Create an [advanced button](https://www.kadencewp.com/kadence-blocks/custom-blocks/advanced-button-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) or a row of buttons. Style each one, including hover controls. Plus, you can use an icon and display them side-by-side.
 * Advanced Form – Our [powerful form block](https://www.kadencewp.com/kadence-blocks/custom-blocks/form-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) allows you to easily create a contact or marketing form and style it within the block editor.
 * Advanced Gallery – Create [stunning photo galleries](https://www.kadencewp.com/kadence-blocks/custom-blocks/advanced-gallery/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks), carousels, and sliders! Customize links, captions, image sizes and more for optimal performance.
 * Advanced Text – Create a [heading or paragraph](https://www.kadencewp.com/kadence-blocks/custom-blocks/advanced-heading-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) and define sizes for desktop, tablet and mobile along with font family, colors, etc. Use Inline AI editor to improve writing, fix spelling and grammar errors, change tone, etc.
-* Countdown – Increase your conversions by adding a sense of urgency to your offering with a [countdown](https://www.kadencewp.com/kadence-blocks/custom-blocks/countdown-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks). Pro includes evergreen campaigns as well. 
+* Countdown – Increase your conversions by adding a sense of urgency to your offering with a [countdown](https://www.kadencewp.com/kadence-blocks/custom-blocks/countdown-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks). Pro includes evergreen campaigns as well.
 * Count Up - Include an [animated number](https://www.kadencewp.com/help-center/docs/kadence-blocks/count-up-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) counter to pages and posts. This can potentially add interest to what would otherwise be boring numbers on a screen.
 * Info Box – Create an [info box](https://www.kadencewp.com/kadence-blocks/custom-blocks/info-box-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) containing an icon or image and, optionally, a title, description, and learn more text. Style static and hover separately.
 * Icon – Choose from over 1500+ [SVG icons](https://www.kadencewp.com/kadence-blocks/custom-blocks/icon-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) to add into your page and style the size, colors, background, border, etc. You can also add multiple icons side-by-side.
 * Icon List – Add [beautiful icons](https://www.kadencewp.com/kadence-blocks/custom-blocks/icon-list-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) to your lists and make them more engaging and attract viewers’ attention. Over 1500 icons to choose from and unlimited styles.
-* Lottie Animation – You can import [lottie animations](https://www.kadencewp.com/kadence-blocks/custom-blocks/lottie-animations/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) into your site. You can choose how the animation plays and control animation speeds, loops, etc. 
+* Lottie Animation – You can import [lottie animations](https://www.kadencewp.com/kadence-blocks/custom-blocks/lottie-animations/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) into your site. You can choose how the animation plays and control animation speeds, loops, etc.
 * Posts – Display a clean [grid of posts](https://www.kadencewp.com/kadence-blocks/custom-blocks/post-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) anywhere on your site, great for your homepage where you want to tease your blog.
 * Progress Bar - Show [progress visually](https://www.kadencewp.com/help-center/docs/kadence-blocks/progress-bar-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks), including how much of a goal has been met, satisfaction rates, and many other use cases.
 * Row Layout – [Create rows](https://www.kadencewp.com/kadence-blocks/row-layout-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) with nested blocks in columns or as a container. Give style to your rows with a background, overlay, padding, etc.
 * Section – [Design sections](https://www.kadencewp.com/help-center/docs/kadence-blocks/section-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) of content in Row Layout blocks. Add any block to the section and design it using block settings.
-* Show More – Easily [add previews](https://www.kadencewp.com/help-center/docs/kadence-blocks/show-more-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) to content with nested blocks of any type. Adjust preview size by device type, apply a fade out, customize advanced buttons, and more. 
+* Show More – Easily [add previews](https://www.kadencewp.com/help-center/docs/kadence-blocks/show-more-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) to content with nested blocks of any type. Adjust preview size by device type, apply a fade out, customize advanced buttons, and more.
 * Spacer / Divider – Easily [create a divider](https://www.kadencewp.com/kadence-blocks/spacer-divider-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) and determine the space around it, or just create some space in your content. You can even define the height per screen size.
 * Table of Contents – [Quickly navigate](https://www.kadencewp.com/kadence-blocks/table-of-contents/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) to headings within your post or page by automatically creating anchor links and a smooth scroll.
 * Tabs – Create custom vertical or horizontal [tab layouts](https://www.kadencewp.com/kadence-blocks/custom-blocks/tabs-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) with advanced styling controls. Each tab content is an empty canvas able to contain any other blocks.
@@ -50,7 +50,7 @@ https://www.youtube.com/watch?v=46P3kMrpFkQ
 
 = Key Block Features =
 * Inline AI Content Editor – Generate and [improve text on the fly with AI](https://www.kadencewp.com/kadence-ai-wordpress-website-builder/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks). Easily tailor your message and  tone to ensure your content stays polished, impactful, and error-free.
-* Design Library with AI – Overcome creative blocks and assemble a site in no time. Our [AI-powered Design Library](https://www.kadencewp.com/help-center/docs/kadence-blocks/how-to-control-the-kadence-design-library/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) offers hundreds of pre-built patterns and pages tailored to your unique brand 
+* Design Library with AI – Overcome creative blocks and assemble a site in no time. Our [AI-powered Design Library](https://www.kadencewp.com/help-center/docs/kadence-blocks/how-to-control-the-kadence-design-library/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) offers hundreds of pre-built patterns and pages tailored to your unique brand
 * Intelligent Load: Kadence Blocks won’t slow down your website because it only loads CSS or Javascript when you need it- and only for the blocks you are using on a specific page.
 * Responsive Controls: Tweak your design for each screen size. Edit tablet and mobile settings while previewing in WordPress editor.
 * Typography Controls: Choose from 900+ Google fonts and design your site with complete typography control.
@@ -98,10 +98,10 @@ Get over creative blocks and engage your viewers further with these [Premium Fea
 
 Power-up your WordPress site with the comprehensive [Kadence WP suite](https://www.kadencewp.com/wordpress-solutions/all-individual-premium-products/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks):
 * Start with the [Kadence Theme](https://www.kadencewp.com/kadence-theme/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) for a flexible, fast, and lightweight foundation.
-* Create personalized, professionally designed websites in minutes with [AI-powered starter templates](https://www.kadencewp.com/wordpress-solutions/kadence-ai/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks). 
+* Create personalized, professionally designed websites in minutes with [AI-powered starter templates](https://www.kadencewp.com/wordpress-solutions/kadence-ai/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks).
 * Seamlessly integrate powerful WooCommerce capabilities through [ShopKit](https://www.kadencewp.com/kadence-shopkit/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks).
-* Upgrade your marketing strategy and boost revenue with [Kadence Conversions](https://www.kadencewp.com/kadence-conversions/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks). 
-* Create a custom library of templates on [Kadence Pattern Hub](https://www.kadencewp.com/kadence-cloud/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) and commoditize your design talents. 
+* Upgrade your marketing strategy and boost revenue with [Kadence Conversions](https://www.kadencewp.com/kadence-conversions/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks).
+* Create a custom library of templates on [Kadence Pattern Hub](https://www.kadencewp.com/kadence-cloud/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks) and commoditize your design talents.
 
 Each tool is designed to work in harmony, providing a full-suite solution for building, managing, and growing your online presence with ease.
 
@@ -174,19 +174,39 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
-= 3.2.37 =
+= 3.2.39 =
 Release Date: May TBD 2024
+* Fix: Using Google fonts for captions in advanced gallery block.
+
+= 3.2.38 =
+Release Date: May 10th 2024
+* Fix: Show more block not seeing input area.
+* Fix: Issue with pexel image sizes.
+* Fix: Issue with accordion margin style in editor.
+* Fix: Sanitize cursor character in typed text.
+* Fix: Sanitize google maps id.
+
+= 3.2.37 =
+Release Date: May 8th 2024
+* Add: Button to reverse image order in advanced gallery.
+* Add: Allow Max width units for columns and infobox to be set uniquely on tablet and mobile.
 * Fix: Aria roles when using accordion layout in tabs block.
 * Fix: Infobox media alignment when max width is using percentage.
 * Fix: Ability to set progress higher than maximum progress in progress bar.
 * Fix: Animate on scroll when accordion panes adjust page height.
+* Fix: Issue with sticky when using a row border radius.
+* Fix: Issue locking inner blocks of a row layout block.
+* Fix: Better support for query loop in templates
+* Fix: Some accordion style issues.
+* Fix: Several admin translation issues.
+* Fix: Advanced Form styling issues for help text and message text.
+
 
 = 3.2.36 =
 Release Date: April 24th 2024
 * Fix: Custom CSS classes being applied to advanced form fields twice.
 * Fix: Issue with custom colors.
 * Fix: Issue with pattern libraries showing empty categories.
-* Fix: Advanced Form styling issues for help text and message text.
 
 = 3.2.35 =
 Release Date: April 22nd 2024

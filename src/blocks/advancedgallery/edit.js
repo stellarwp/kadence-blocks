@@ -76,9 +76,9 @@ import {
 	ToggleControl,
 	ToolbarGroup,
 	TabPanel,
-	Dashicon,
 	Placeholder,
 	withNotices,
+	BaseControl,
 } from '@wordpress/components';
 import {
 	BlockControls,
@@ -100,7 +100,7 @@ import { withSelect, useSelect, useDispatch } from '@wordpress/data';
 import GalleryImage from './gallery-image';
 import { getRelevantMediaFiles } from './shared';
 
-import { image, closeSmall, plusCircleFilled } from '@wordpress/icons';
+import { image, previous, plusCircleFilled } from '@wordpress/icons';
 
 /**
  * Import Css
@@ -1313,14 +1313,31 @@ export default function GalleryEdit(props) {
 									</>
 								)}
 								{ids && undefined !== ids[0] && !dynamicSource && (
-									<ImageSizeControl
-										label={__('Thumbnail Image Sizes', 'kadence-blocks')}
-										slug={thumbSize}
-										id={ids[0]}
-										fullSelection={true}
-										selectByValue={false}
-										onChange={(value) => changeImageThumbSize(value)}
-									/>
+									<BaseControl>
+										<ImageSizeControl
+											label={__('Thumbnail Image Sizes', 'kadence-blocks')}
+											slug={thumbSize}
+											id={ids[0]}
+											fullSelection={true}
+											selectByValue={false}
+											onChange={(value) => changeImageThumbSize(value)}
+										/>
+									</BaseControl>
+								)}
+								{ids && undefined !== ids[0] && imagesDynamic.length > 1 && !dynamicSource && (
+									<BaseControl __nextHasNoMarginBottom>
+										<Button
+											className="reverse-order"
+											variant="secondary"
+											text={__('Reverse Image Order', 'kadence-blocks')}
+											icon={previous}
+											onClick={() => {
+												// Trigger an update.
+												const tempImages = JSON.parse(JSON.stringify(imagesDynamic.reverse()));
+												setAttributes({ imagesDynamic: tempImages });
+											}}
+										/>
+									</BaseControl>
 								)}
 							</KadencePanelBody>
 							{type &&

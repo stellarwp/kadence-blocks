@@ -44,7 +44,7 @@ const RenameBlockMenuItem = () => {
 							label={'Rename'}
 							role={null}
 						>
-							Rename
+							{__('Rename', 'kadence-blocks')}
 						</MenuItem>
 					);
 				}}

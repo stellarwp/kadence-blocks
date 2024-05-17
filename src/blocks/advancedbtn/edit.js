@@ -5,29 +5,17 @@
  * Import externals
  */
 import classnames from 'classnames';
-import { times, map, isEqual } from 'lodash';
+import { get, isEqual } from 'lodash';
 import {
-	PopColorControl,
-	StepControls,
-	IconRender,
 	KadencePanelBody,
-	URLInputControl,
-	VerticalAlignmentIcon,
-	ResponsiveRangeControls,
 	InspectorControlTabs,
-	RangeControl,
-	KadenceRadioButtons,
 	ResponsiveAlignControls,
 	ResponsiveGapSizeControl,
 	KadenceInspectorControls,
-	SmallResponsiveControl,
-	KadenceBlockDefaults,
-	KadenceIconPicker,
 	ResponsiveMeasureRangeControl,
 	SpacingVisualizer,
 } from '@kadence/components';
 import {
-	KadenceColorOutput,
 	getPreviewSize,
 	setBlockDefaults,
 	showSettings,
@@ -38,7 +26,7 @@ import {
 	getInQueryBlock,
 	getPostOrFseId,
 } from '@kadence/helpers';
-import { useSelect, useDispatch, withDispatch } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 /**
  * Import Css
@@ -79,8 +67,8 @@ const DEFAULT_BLOCK = {
 	attributesToCopy: ['sizePreset', 'inheritStyles', 'widthType'],
 };
 function KadenceButtons(props) {
-	const { attributes, className, setAttributes, buttonsBlock, insertButton, insertButtons, clientId, context } =
-		props;
+	const { attributes, className, setAttributes, clientId, context } = props;
+
 	const {
 		uniqueID,
 		hAlign,
@@ -108,13 +96,16 @@ function KadenceButtons(props) {
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { removeBlock } = useDispatch('core/block-editor');
-	const { isUniqueID, isUniqueBlock, previewDevice, childBlocks, parentData } = useSelect(
+	const { replaceInnerBlocks, insertBlock } = useDispatch(blockEditorStore);
+
+	const { isUniqueID, isUniqueBlock, previewDevice, childBlocks, parentData, thisBlock } = useSelect(
 		(select) => {
 			return {
 				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
 				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 				childBlocks: select('core/block-editor').getBlockOrder(clientId),
+				thisBlock: select('core/block-editor').getBlock(clientId),
 				parentData: {
 					rootBlock: select('core/block-editor').getBlock(
 						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
@@ -129,6 +120,10 @@ function KadenceButtons(props) {
 		},
 		[clientId]
 	);
+
+	const getAddNewAttributes = () => {
+		return get(thisBlock, ['innerBlocks', thisBlock.innerBlocks.length - 1, 'attributes'], {});
+	};
 
 	useEffect(() => {
 		setBlockDefaults('kadence/advancedbtn', attributes);
@@ -157,7 +152,7 @@ function KadenceButtons(props) {
 			) {
 				const migrateUpdate = migrateToInnerblocks(attributes);
 				setAttributes(migrateUpdate[0]);
-				insertButtons(migrateUpdate[1]);
+				replaceInnerBlocks(clientId, migrateUpdate[1]);
 			} else {
 				// Delete if no inner blocks.
 				removeBlock(clientId, true);
@@ -329,8 +324,8 @@ function KadenceButtons(props) {
 			orientation: 'horizontal',
 			templateLock: lockBtnCount ? true : false,
 			templateInsertUpdatesSelection: true,
-			__experimentalDefaultBlock: DEFAULT_BLOCK,
-			__experimentalDirectInsert: true,
+			defaultBlock: DEFAULT_BLOCK,
+			directInsert: true,
 			template: [['kadence/singlebtn']],
 			allowedBlocks: ['kadence/singlebtn'],
 		}
@@ -380,12 +375,11 @@ function KadenceButtons(props) {
 							className="kb-icons-add-icon"
 							icon={plusCircle}
 							onClick={() => {
-								const prevAttributes =
-									buttonsBlock.innerBlocks[buttonsBlock.innerBlocks.length - 1].attributes;
+								const prevAttributes = getAddNewAttributes();
 								const latestAttributes = JSON.parse(JSON.stringify(prevAttributes));
 								latestAttributes.uniqueID = '';
 								const newBlock = createBlock('kadence/singlebtn', latestAttributes);
-								insertButton(newBlock);
+								insertBlock(newBlock, parseInt(thisBlock.innerBlocks.length), clientId);
 							}}
 							label={__('Duplicate Previous Button', 'kadence-blocks')}
 							showTooltip={true}
@@ -457,7 +451,7 @@ function KadenceButtons(props) {
 							}
 							type={'orientation'}
 						/>
-						{undefined !== buttonsBlock?.innerBlocks?.length && buttonsBlock.innerBlocks.length > 1 && (
+						{undefined !== thisBlock?.innerBlocks?.length && thisBlock.innerBlocks.length > 1 && (
 							<ResponsiveGapSizeControl
 								label={__('Button Gap', 'kadence-blocks')}
 								value={undefined !== gap?.[0] ? gap[0] : ''}
@@ -608,33 +602,5 @@ function KadenceButtons(props) {
 		</div>
 	);
 }
-const KadenceButtonsWrapper = withDispatch((dispatch, ownProps, registry) => ({
-	insertButton(newBlock) {
-		const { clientId } = ownProps;
-		const { insertBlock } = dispatch(blockEditorStore);
-		const { getBlock } = registry.select(blockEditorStore);
-		const block = getBlock(clientId);
-		insertBlock(newBlock, parseInt(block.innerBlocks.length), clientId);
-	},
-	insertButtons(newBlocks) {
-		const { clientId } = ownProps;
-		const { replaceInnerBlocks } = dispatch(blockEditorStore);
 
-		replaceInnerBlocks(clientId, newBlocks);
-	},
-}))(KadenceButtons);
-const KadenceButtonsEdit = (props) => {
-	const { clientId } = props;
-	const { buttonsBlock } = useSelect(
-		(select) => {
-			const { getBlock } = select('core/block-editor');
-			const block = getBlock(clientId);
-			return {
-				buttonsBlock: block,
-			};
-		},
-		[clientId]
-	);
-	return <KadenceButtonsWrapper buttonsBlock={buttonsBlock} {...props} />;
-};
-export default KadenceButtonsEdit;
+export default KadenceButtons;

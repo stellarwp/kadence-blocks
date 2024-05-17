@@ -57,7 +57,7 @@ const kbAdvHeadingTypedListener = setInterval(function () {
 			kbTypedSettings.strings = stringsArray;
 
 			element.getAttribute('data-cursor-char')
-				? (kbTypedSettings.cursorChar = element.getAttribute('data-cursor-char'))
+				? (kbTypedSettings.cursorChar = sanitizeString(element.getAttribute('data-cursor-char')))
 				: null;
 			element.getAttribute('data-cursor-char') === '' ? (kbTypedSettings.showCursor = false) : null;
 
