@@ -58,17 +58,23 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 	const { selectBlock } = useDispatch('core/block-editor');
 
 	const updateTab = (value, blocks = null) => {
-		setTab(value);
+		const clientId = get(blocks, 'clientId');
 
 		if (value !== 'off-canvas') {
 			setPreviewDeviceType(capitalizeFirstLetter(value));
+
+			// if tab we're switching away from was off canvas...
+			if (tab == 'off-canvas') {
+				setOffCanvasOpenId(null);
+				selectBlock(clientId);
+			}
 		} else if (value === 'off-canvas') {
-			const clientId = get(blocks, 'clientId');
 			if (clientId) {
 				setOffCanvasOpenId(clientId);
 				selectBlock(clientId);
 			}
 		}
+		setTab(value);
 	};
 
 	const { topLevelBlocks, childSelected, isVisible, modalPosition } = useSelect(
@@ -103,7 +109,7 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 	console.log('editorHeight: ' + editorHeight);
 
 	if (!hasTrigger && tab === 'off-canvas') {
-		updateTab('Desktop');
+		updateTab('Desktop', desktopBlocks);
 	}
 
 	return (
@@ -134,14 +140,14 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 							<Button
 								isPrimary={tab === 'Desktop'}
 								disabled={desktopBlocks === null}
-								onClick={() => updateTab('Desktop')}
+								onClick={() => updateTab('Desktop', desktopBlocks)}
 							>
 								{__('Desktop', 'kadence-blocks')}
 							</Button>
 							<Button
 								isPrimary={tab === 'Tablet'}
 								disabled={tabletBlocks === null}
-								onClick={() => updateTab('Tablet')}
+								onClick={() => updateTab('Tablet', tabletBlocks)}
 							>
 								{__('Tablet', 'kadence-blocks')}
 							</Button>
