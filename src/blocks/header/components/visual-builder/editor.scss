@@ -13,7 +13,7 @@ $fixed_height: 300px;
 	padding: 10px;
 	position: fixed;
 	width: 100%;
-	bottom: $height_bottom_bar;
+	bottom: 0;
 	left: 0;
 	z-index: 9999;
 
@@ -24,6 +24,11 @@ $fixed_height: 300px;
 		bottom: 0;
 	}
 }
+
+// Top of 0 in iFrame
+.block-editor-iframe__body .kb-header-visual-builder-modal.kb-header-visual-builder-modal-top {
+	top: 0;
+}
 .kb-header-visual-builder-modal {
 	background: #eee;
 	border-top: 1px solid #a0aec1;
@@ -33,13 +38,18 @@ $fixed_height: 300px;
 	position: fixed;
 	width: 100%;
 	height: $fixed_height;
-	bottom: $height_bottom_bar;
+	bottom: 0;
 	left: 0;
 	z-index: 9999;
 	display: block;
 
 	@media (min-width: 782px) {
 		height: $fixed_height;
+	}
+
+	&.kb-header-visual-builder-modal-top {
+		top: 98px;
+		bottom: 0;
 	}
 
 	.visual-container__is-dragging .visual-column-wrapper {
@@ -54,6 +64,16 @@ $fixed_height: 300px;
 		border-bottom: 3px solid #a0aec1;
 	}
 
+	.modal-settings {
+		position: absolute;
+		top: 4px;
+		right: 4px;
+
+		button {
+			margin-left: 10px;
+		}
+	}
+
 	.kb-header-visual-builder-modal-close {
 		border: 0;
 		background: transparent;
@@ -65,9 +85,6 @@ $fixed_height: 300px;
 		align-items: center;
 		color: #444444;
 		-webkit-appearance: none;
-		position: absolute;
-		top: 4px;
-		right: 4px;
 
 		&:focus {
 			outline: none;

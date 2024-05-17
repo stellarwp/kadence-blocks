@@ -10,6 +10,7 @@ import Desktop from './desktop';
 import Tablet from './tablet';
 import OffCanvas from './offCanvas';
 import './editor.scss';
+import ModalTogglePosition from './togglePosition';
 
 function extractBlocks(blocksData) {
 	let desktopBlocks,
@@ -47,8 +48,12 @@ const blockExists = (blocks, blockName) => {
 
 export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 	const [tab, setTab] = useState(previewDevice);
-	const { setPreviewDeviceType, setHeaderVisualBuilderOpenId, setOffCanvasOpenId } =
-		useDispatch('kadenceblocks/data');
+	const {
+		setPreviewDeviceType,
+		setHeaderVisualBuilderOpenId,
+		setHeaderVisualBuilderOpenPosition,
+		setOffCanvasOpenId,
+	} = useDispatch('kadenceblocks/data');
 
 	const { selectBlock } = useDispatch('core/block-editor');
 
@@ -66,7 +71,7 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 		}
 	};
 
-	const { topLevelBlocks, childSelected, isVisible, viz } = useSelect(
+	const { topLevelBlocks, childSelected, isVisible, modalPosition } = useSelect(
 		(select) => {
 			const { getBlockOrder, getBlock, hasSelectedInnerBlock } = select('core/block-editor');
 
@@ -76,7 +81,7 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 				topLevelBlocks: topLevelIds.map((_id) => getBlock(_id)),
 				childSelected: hasSelectedInnerBlock(clientId, true),
 				isVisible: select('kadenceblocks/data').getOpenHeaderVisualBuilderId() === clientId,
-				viz: select('kadenceblocks/data').getOpenHeaderVisualBuilderId(),
+				modalPosition: select('kadenceblocks/data').getOpenHeaderVisualBuilderPosition(),
 			};
 		},
 		[clientId]
@@ -90,9 +95,12 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 	const hasTrigger = blockExists(topLevelBlocks, 'kadence/off-canvas-trigger');
 
 	const ref = useRef();
-	const editorElement = useEditorElement(ref, []);
+	const editorElement = useEditorElement(ref, [previewDevice]);
 	const editorWidth = editorElement?.clientWidth;
 	const editorLeft = editorElement?.getBoundingClientRect().left;
+	const editorHeight = editorElement?.clientHeight;
+
+	console.log('editorHeight: ' + editorHeight);
 
 	if (!hasTrigger && tab === 'off-canvas') {
 		updateTab('Desktop');
@@ -116,7 +124,7 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 				)}
 				{isVisible && (
 					<div
-						class={'kb-header-visual-builder-modal'}
+						class={'kb-header-visual-builder-modal kb-header-visual-builder-modal-' + modalPosition}
 						style={{
 							width: editorWidth + 'px',
 							left: editorLeft + 'px',
@@ -146,7 +154,13 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 									{__('Off Canvas', 'kadence-blocks')}
 								</Button>
 							)}
-							<ModalClose isVisible={isVisible} setIsVisible={setIsVisible} />
+							<div className={'modal-settings'}>
+								<ModalTogglePosition
+									position={modalPosition}
+									setPosition={setHeaderVisualBuilderOpenPosition}
+								/>
+								<ModalClose isVisible={isVisible} setIsVisible={setIsVisible} />
+							</div>
 						</div>
 
 						<div class={'content'}>
