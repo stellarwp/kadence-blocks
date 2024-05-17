@@ -606,77 +606,6 @@ export default function Edit(props) {
 		}
 	);
 
-	const styleColorControls = (size = '', suffix = '') => {
-		const linkColorValue = attributes['linkColor' + suffix + size];
-		const backgroundValue = attributes['background' + suffix + size];
-		const linkColorHoverValue = attributes['linkColor' + suffix + 'Hover' + size];
-		const backgroundHoverValue = attributes['background' + suffix + 'Hover' + size];
-		const linkColorActiveValue = attributes['linkColor' + suffix + 'Active' + size];
-		const backgroundActiveValue = attributes['background' + suffix + 'Active' + size];
-		return (
-			<>
-				<HoverToggleControl
-					normal={
-						<>
-							<PopColorControl
-								label={__('Link Color', 'kadence-blocks')}
-								value={linkColorValue}
-								default={''}
-								onChange={(value) => setAttributes({ ['linkColor' + suffix + size]: value })}
-								key={'normal'}
-							/>
-							<PopColorControl
-								label={__('Background', 'kadence-blocks')}
-								value={backgroundValue}
-								default={''}
-								onChange={(value) => setAttributes({ ['background' + suffix + size]: value })}
-								key={'normalb'}
-							/>
-						</>
-					}
-					hover={
-						<>
-							<PopColorControl
-								label={__('Link Color Hover', 'kadence-blocks')}
-								value={linkColorHoverValue}
-								default={''}
-								onChange={(value) => setAttributes({ ['linkColor' + suffix + 'Hover' + size]: value })}
-								key={'hover'}
-							/>
-							<PopColorControl
-								label={__('Background Hover', 'kadence-blocks')}
-								value={backgroundHoverValue}
-								default={''}
-								onChange={(value) => setAttributes({ ['background' + suffix + 'Hover' + size]: value })}
-								key={'hoverb'}
-							/>
-						</>
-					}
-					active={
-						<>
-							<PopColorControl
-								label={__('Link Color Active', 'kadence-blocks')}
-								value={linkColorActiveValue}
-								default={''}
-								onChange={(value) => setAttributes({ ['linkColor' + suffix + 'Active' + size]: value })}
-								key={'active'}
-							/>
-							<PopColorControl
-								label={__('Background Active', 'kadence-blocks')}
-								value={backgroundActiveValue}
-								default={''}
-								onChange={(value) =>
-									setAttributes({ ['background' + suffix + 'Active' + size]: value })
-								}
-								key={'activeb'}
-							/>
-						</>
-					}
-				/>
-			</>
-		);
-	};
-
 	const mediaContent = (
 		<>
 			{mediaType && 'none' !== mediaType && (
@@ -788,8 +717,33 @@ export default function Edit(props) {
 		blockProps.onClick = () => setIsLinkOpen(true);
 	}
 
-	const highlightLabelControls = (
+	//pro feature
+	const megaMenuToolbarControls = <></>;
+
+	//pro feature
+	const megaMenuControls = <></>;
+
+	//pro feature
+	const styleControls = (
 		<>
+			<KadencePanelBody>
+				<div className="kb-pro-notice">
+					<h2>{__('Link Styles', 'kadence-blocks')} </h2>
+					<p>
+						{__(
+							'Make every item in your navigation unique and eye catching with Kadence Pro! Add to your overall navigation styles by setting styles for individual links.',
+							'kadence-blocks'
+						)}{' '}
+					</p>
+					<ExternalLink
+						href={
+							'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=navigation-link'
+						}
+					>
+						{__('Upgrade to Pro', 'kadence-blocks')}
+					</ExternalLink>
+				</div>
+			</KadencePanelBody>
 			<KadencePanelBody
 				title={__('Highlight Label - Pro', 'kadence-blocks')}
 				initialOpen={false}
@@ -812,11 +766,7 @@ export default function Edit(props) {
 					</ExternalLink>
 				</div>
 			</KadencePanelBody>
-		</>
-	);
 
-	const mediaControls = (
-		<>
 			<KadencePanelBody
 				title={__('Icon - Pro', 'kadence-blocks')}
 				initialOpen={false}
@@ -883,17 +833,12 @@ export default function Edit(props) {
 						/>
 					)}
 				</ToolbarGroup>
-				<ToolbarGroup>
-					{isTopLevelLink && (
-						<ToolbarButton
-							name="megamenu"
-							icon={addSubmenu}
-							title={isMegaMenu ? __('Disable mega menu') : __('Add mega menu')}
-							onClick={() => doMegaMenu(!isMegaMenu)}
-							isPressed={isMegaMenu}
-						/>
-					)}
-				</ToolbarGroup>
+				{applyFilters(
+					'kadence.megaMenuToolbarControlsNavigationLink',
+					megaMenuToolbarControls,
+					props,
+					doMegaMenu
+				)}
 			</BlockControls>
 			{isSelected && (
 				<BlockSettingsMenuControls>
@@ -933,38 +878,12 @@ export default function Edit(props) {
 				/>
 				{activeTab === 'general' && (
 					<KadencePanelBody panelName={'navigation-link-general'}>
-						{isTopLevelLink && (
-							<ToggleControl
-								label={__('Mega Menu', 'kadence-blocks')}
-								checked={isMegaMenu}
-								onChange={(value) => doMegaMenu(value)}
-							/>
-						)}
-						{isMegaMenu && (
-							<SelectControl
-								label={__('Mega Menu Width', 'kadence-blocks')}
-								value={megaMenuWidth}
-								options={[
-									{ value: 'container', label: __('Menu Container Width', 'kadence-blocks') },
-									{ value: 'content', label: __('Content', 'kadence-blocks') },
-									{ value: 'full', label: __('Full Width', 'kadence-blocks') },
-									{ value: 'custom', label: __('Custom Width', 'kadence-blocks') },
-								]}
-								onChange={(value) => setAttributes({ megaMenuWidth: value })}
-							/>
-						)}
-						{isMegaMenu && megaMenuWidth == 'custom' && (
-							<RangeControl
-								label={__('Mega Menu Custom Width', 'kadence-blocks')}
-								value={megaMenuCustomWidth}
-								onChange={(value) => setAttributes({ megaMenuCustomWidth: value })}
-								onUnit={(value) => setAttributes({ megaMenuCustomWidthUnit: value })}
-								min={120}
-								max={megaMenuCustomWidthUnit == 'px' ? 2000 : 100}
-								units={['px', 'em', 'rem', '%']}
-								unit={megaMenuCustomWidthUnit}
-								showUnit={true}
-							/>
+						{applyFilters(
+							'kadence.megaMenuControlsNavigationLink',
+							megaMenuControls,
+							props,
+							doMegaMenu,
+							isTopLevelLink
 						)}
 						{isTopLevelLink && hasChildren && (
 							<ToggleControl
@@ -1036,218 +955,8 @@ export default function Edit(props) {
 				)}
 
 				{activeTab === 'style' && (
-					<>
-						<KadencePanelBody panelName={'navigation-link-style-settings'}>
-							<SmallResponsiveControl
-								label={'Colors'}
-								desktopChildren={styleColorControls()}
-								tabletChildren={styleColorControls('Tablet')}
-								mobileChildren={styleColorControls('Mobile')}
-							></SmallResponsiveControl>
-						</KadencePanelBody>
-						{context?.['kadence/headerIsTransparent'] == '1' && (
-							<KadencePanelBody
-								title={__('Transparent Styles', 'kadence-blocks')}
-								initialOpen={false}
-								panelName={'navigation-link-transparent-style-settings'}
-							>
-								<SmallResponsiveControl
-									label={'Colors'}
-									desktopChildren={styleColorControls('', 'Transparent')}
-									tabletChildren={styleColorControls('Tablet', 'Transparent')}
-									mobileChildren={styleColorControls('Mobile', 'Transparent')}
-								></SmallResponsiveControl>
-							</KadencePanelBody>
-						)}
-						{context?.['kadence/headerIsSticky'] == '1' && (
-							<KadencePanelBody
-								title={__('Sticky Styles', 'kadence-blocks')}
-								initialOpen={false}
-								panelName={'navigation-link-sticky-style-settings'}
-							>
-								<SmallResponsiveControl
-									label={'Colors'}
-									desktopChildren={styleColorControls('', 'Sticky')}
-									tabletChildren={styleColorControls('Tablet', 'Sticky')}
-									mobileChildren={styleColorControls('Mobile', 'Sticky')}
-								></SmallResponsiveControl>
-							</KadencePanelBody>
-						)}
-
-						{showSettings('fontSettings', 'kadence/navigation') && (
-							<KadencePanelBody
-								title={__('Typography Settings', 'kadence-blocks')}
-								initialOpen={false}
-								panelName={'kb-adv-btn-font-family'}
-							>
-								<TypographyControls
-									fontSize={typography[0].size}
-									onFontSize={(value) => saveTypography({ size: value })}
-									fontSizeType={typography[0].sizeType}
-									onFontSizeType={(value) => saveTypography({ sizeType: value })}
-									lineHeight={typography[0].lineHeight}
-									onLineHeight={(value) => saveTypography({ lineHeight: value })}
-									lineHeightType={typography[0].lineType}
-									onLineHeightType={(value) => saveTypography({ lineType: value })}
-									reLetterSpacing={typography[0].letterSpacing}
-									onLetterSpacing={(value) => saveTypography({ letterSpacing: value })}
-									letterSpacingType={typography[0].letterType}
-									onLetterSpacingType={(value) => saveTypography({ letterType: value })}
-									textTransform={typography[0].textTransform}
-									onTextTransform={(value) => saveTypography({ textTransform: value })}
-									fontFamily={typography[0].family}
-									onFontFamily={(value) => saveTypography({ family: value })}
-									onFontChange={(select) => {
-										saveTypography({
-											family: select.value,
-											google: select.google,
-										});
-									}}
-									onFontArrayChange={(values) => saveTypography(values)}
-									googleFont={typography[0].google}
-									onGoogleFont={(value) => saveTypography({ google: value })}
-									loadGoogleFont={typography[0].loadGoogle}
-									onLoadGoogleFont={(value) => saveTypography({ loadGoogle: value })}
-									fontVariant={typography[0].variant}
-									onFontVariant={(value) => saveTypography({ variant: value })}
-									fontWeight={typography[0].weight}
-									onFontWeight={(value) => saveTypography({ weight: value })}
-									fontStyle={typography[0].style}
-									onFontStyle={(value) => saveTypography({ style: value })}
-									fontSubset={typography[0].subset}
-									onFontSubset={(value) => saveTypography({ subset: value })}
-								/>
-							</KadencePanelBody>
-						)}
-
-						<KadencePanelBody
-							title={__('Sub Menu Styles', 'kadence-blocks')}
-							panelName={'kb-navigation-style-sub-menus'}
-							initialOpen={false}
-						>
-							<ResponsiveRangeControls
-								label={__('Dropdown Vertical Spacing', 'kadence-blocks')}
-								value={parseFloat(dropdownVerticalSpacing)}
-								valueTablet={parseFloat(dropdownVerticalSpacingTablet)}
-								valueMobile={parseFloat(dropdownVerticalSpacingMobile)}
-								onChange={(value) => setAttributes({ dropdownVerticalSpacing: value.toString() })}
-								onChangeTablet={(value) =>
-									setAttributes({ dropdownVerticalSpacingTablet: value.toString() })
-								}
-								onChangeMobile={(value) =>
-									setAttributes({ dropdownVerticalSpacingMobile: value.toString() })
-								}
-								min={0}
-								max={
-									dropdownVerticalSpacingUnit === 'em' || dropdownVerticalSpacingUnit === 'rem'
-										? 24
-										: dropdownVerticalSpacingUnit === 'px'
-										? 200
-										: 100
-								}
-								step={
-									dropdownVerticalSpacingUnit === 'em' || dropdownVerticalSpacingUnit === 'rem'
-										? 0.1
-										: 1
-								}
-								unit={dropdownVerticalSpacingUnit}
-								units={['em', 'rem', 'px', 'vw']}
-								onUnit={(value) => setAttributes({ dropdownVerticalSpacingUnit: value })}
-								showUnit={true}
-							/>
-							<ResponsiveBorderControl
-								label={__('Dropdown Border', 'kadence-blocks')}
-								value={dropdownBorder}
-								tabletValue={dropdownBorderTablet}
-								mobileValue={dropdownBorderMobile}
-								onChange={(value) => setAttributes({ dropdownBorder: value })}
-								onChangeTablet={(value) => setAttributes({ dropdownBorderTablet: value })}
-								onChangeMobile={(value) => setAttributes({ dropdownBorderMobile: value })}
-							/>
-
-							<ResponsiveMeasurementControls
-								label={__('Dropdown Border Radius', 'kadence-blocks')}
-								value={dropdownBorderRadius}
-								tabletValue={dropdownBorderRadiusTablet}
-								mobileValue={dropdownBorderRadiusMobile}
-								onChange={(value) => setAttributes({ dropdownBorderRadius: value })}
-								onChangeTablet={(value) => setAttributes({ dropdownBorderRadiusTablet: value })}
-								onChangeMobile={(value) => setAttributes({ dropdownBorderRadiusMobile: value })}
-								min={0}
-								max={dropdownBorderRadiusUnit === 'em' || dropdownBorderRadiusUnit === 'rem' ? 24 : 100}
-								step={dropdownBorderRadiusUnit === 'em' || dropdownBorderRadiusUnit === 'rem' ? 0.1 : 1}
-								unit={dropdownBorderRadiusUnit}
-								units={['px', 'em', 'rem', '%']}
-								onUnit={(value) => setAttributes({ dropdownBorderRadiusUnit: value })}
-								isBorderRadius={true}
-								allowEmpty={true}
-							/>
-							<ResponsiveSingleBorderControl
-								label={'Divider'}
-								value={dropdownDivider}
-								tabletValue={dropdownDividerTablet}
-								mobileValue={dropdownDividerMobile}
-								onChange={(value) => setAttributes({ dropdownDivider: value })}
-								onChangeTablet={(value) => setAttributes({ dropdownDividerTablet: value })}
-								onChangeMobile={(value) => setAttributes({ dropdownDividerMobile: value })}
-							/>
-							<SmallResponsiveControl
-								label={'Colors'}
-								desktopChildren={styleColorControls('', 'Dropdown')}
-								tabletChildren={styleColorControls('Tablet', 'Dropdown')}
-								mobileChildren={styleColorControls('Mobile', 'Dropdown')}
-							></SmallResponsiveControl>
-
-							{showSettings('fontSettings', 'kadence/navigation') && (
-								<KadencePanelBody
-									title={__('Typography Settings', 'kadence-blocks')}
-									initialOpen={false}
-									panelName={'kb-adv-btn-font-family'}
-								>
-									<TypographyControls
-										fontSize={dropdownTypography[0].size}
-										onFontSize={(value) => saveDropdownTypography({ size: value })}
-										fontSizeType={dropdownTypography[0].sizeType}
-										onFontSizeType={(value) => saveDropdownTypography({ sizeType: value })}
-										lineHeight={dropdownTypography[0].lineHeight}
-										onLineHeight={(value) => saveDropdownTypography({ lineHeight: value })}
-										lineHeightType={dropdownTypography[0].lineType}
-										onLineHeightType={(value) => saveDropdownTypography({ lineType: value })}
-										reLetterSpacing={dropdownTypography[0].letterSpacing}
-										onLetterSpacing={(value) => saveDropdownTypography({ letterSpacing: value })}
-										letterSpacingType={dropdownTypography[0].letterType}
-										onLetterSpacingType={(value) => saveDropdownTypography({ letterType: value })}
-										textTransform={dropdownTypography[0].textTransform}
-										onTextTransform={(value) => saveDropdownTypography({ textTransform: value })}
-										fontFamily={dropdownTypography[0].family}
-										onFontFamily={(value) => saveDropdownTypography({ family: value })}
-										onFontChange={(select) => {
-											saveDropdownTypography({
-												family: select.value,
-												google: select.google,
-											});
-										}}
-										onFontArrayChange={(values) => saveDropdownTypography(values)}
-										googleFont={dropdownTypography[0].google}
-										onGoogleFont={(value) => saveDropdownTypography({ google: value })}
-										loadGoogleFont={dropdownTypography[0].loadGoogle}
-										onLoadGoogleFont={(value) => saveDropdownTypography({ loadGoogle: value })}
-										fontVariant={dropdownTypography[0].variant}
-										onFontVariant={(value) => saveDropdownTypography({ variant: value })}
-										fontWeight={dropdownTypography[0].weight}
-										onFontWeight={(value) => saveDropdownTypography({ weight: value })}
-										fontStyle={dropdownTypography[0].style}
-										onFontStyle={(value) => saveDropdownTypography({ style: value })}
-										fontSubset={dropdownTypography[0].subset}
-										onFontSubset={(value) => saveDropdownTypography({ subset: value })}
-									/>
-								</KadencePanelBody>
-							)}
-						</KadencePanelBody>
-
-						{applyFilters('kadence.highlightLabelControlsNavigationLink', highlightLabelControls, props)}
-						{applyFilters('kadence.mediaControlsNavigationLink', mediaControls, props)}
-					</>
+					// <>{applyFilters('kadence.styleControlsNavigationLink', styleControls, props)}</>
+					<>{styleControls}</>
 				)}
 
 				{activeTab === 'advanced' && (

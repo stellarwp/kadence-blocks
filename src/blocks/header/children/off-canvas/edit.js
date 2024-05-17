@@ -282,7 +282,7 @@ export function Edit(props) {
 						</KadencePanelBody>
 						<KadencePanelBody title={__('Display Settings', 'kadence-blocks')} initialOpen={true}>
 							<KadenceRadioButtons
-								label={__('Slide Content from', 'kadence-blocks')}
+								label={__('Slide in from', 'kadence-blocks')}
 								value={slideFrom}
 								options={[
 									{ value: 'left', label: __('Left', 'kadence-blocks') },
@@ -369,7 +369,7 @@ export function Edit(props) {
 								}
 							/>
 							<ResponsiveAlignControls
-								label={__('Alignment', 'kadence-blocks')}
+								label={__('Content Alignment', 'kadence-blocks')}
 								value={hAlign ? hAlign : ''}
 								tabletValue={hAlignTablet ? hAlignTablet : ''}
 								mobileValue={hAlignMobile ? hAlignMobile : ''}
@@ -383,7 +383,7 @@ export function Edit(props) {
 								type={'text'}
 							/>
 							<ResponsiveAlignControls
-								label={__('Alignment', 'kadence-blocks')}
+								label={__('Content Vertical Alignment', 'kadence-blocks')}
 								value={vAlign ? vAlign : ''}
 								tabletValue={vAlignTablet ? vAlignTablet : ''}
 								mobileValue={vAlignMobile ? vAlignMobile : ''}
