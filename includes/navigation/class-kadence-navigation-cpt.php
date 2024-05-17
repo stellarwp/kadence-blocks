@@ -1088,7 +1088,7 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'children_type' => 'object',
 				'default' => array(
 					array(
-						'enable' => true,
+						'enable' => false,
 						'color' => '#000000',
 						'opacity' => 0.2,
 						'spread' => 0,
