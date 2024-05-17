@@ -111,7 +111,6 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 	const editorElement = useEditorElement(ref, [previewDevice]);
 	const editorWidth = editorElement?.clientWidth;
 	const editorLeft = editorElement?.getBoundingClientRect().left;
-	const editorHeight = editorElement?.clientHeight;
 
 	if (!hasTrigger && tab === 'off-canvas') {
 		updateTab('Desktop', desktopBlocks);
