@@ -185,9 +185,13 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 								<OffCanvas blocks={offCanvasBlocks} topLevelBlocks={topLevelBlocks} />
 							)}
 						</div>
+						<style>
+							{modalPosition == 'top'
+								? '.editor-styles-wrapper{margin-top: 300px}'
+								: '.editor-styles-wrapper{margin-bottom: 300px}'}
+						</style>
 					</div>
 				)}
-				<style>{modalPosition == 'top' ? `.editor-styles-wrapper{margin-top: 300px}` : ''}</style>
 			</div>
 		</>
 	);
