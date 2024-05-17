@@ -74,6 +74,13 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 				selectBlock(clientId);
 			}
 		}
+
+		//when we switch to tablet, pin the editor to the top
+		if (value == 'Tablet') {
+			setHeaderVisualBuilderOpenPosition('top');
+		} else {
+			setHeaderVisualBuilderOpenPosition('bottom');
+		}
 		setTab(value);
 	};
 
@@ -180,6 +187,7 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 						</div>
 					</div>
 				)}
+				<style>{modalPosition == 'top' ? `.editor-styles-wrapper{margin-top: 300px}` : ''}</style>
 			</div>
 		</>
 	);

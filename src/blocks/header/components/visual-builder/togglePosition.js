@@ -11,6 +11,9 @@ export default function ModalTogglePosition({ position, setPosition }) {
 			onClick={() => {
 				setPosition(position === 'bottom' ? 'top' : 'bottom');
 			}}
+			isSecondary={true}
+			icon={position === 'bottom' ? 'arrow-up-alt2' : 'arrow-down-alt2'}
+			iconSize={20}
 			isLink={true}
 		>
 			{label}
