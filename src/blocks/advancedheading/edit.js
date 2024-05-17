@@ -96,6 +96,7 @@ import {
 } from '@wordpress/components';
 
 import { applyFilters } from '@wordpress/hooks';
+import { get } from 'lodash';
 
 /**
  * Regular expression matching invalid anchor characters for replacement.
@@ -253,6 +254,9 @@ function KadenceAdvancedHeading(props) {
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
+	const config = get(kadence_blocks_params, 'globalSettings') ? JSON.parse(kadence_blocks_params.globalSettings) : {};
+	const isDefaultEditorBlock =
+		undefined !== config.adv_text_is_default_editor_block && config.adv_text_is_default_editor_block;
 
 	useEffect(() => {
 		setBlockDefaults('kadence/advancedheading', attributes);
@@ -861,12 +865,12 @@ function KadenceAdvancedHeading(props) {
 					onChange={(value) => setAttributes({ content: value })}
 					onMerge={mergeBlocks}
 					onSplit={(value) => {
-						if (!value) {
+						if (!value && !isDefaultEditorBlock) {
 							return createBlock('core/paragraph');
 						}
 						return createBlock('kadence/advancedheading', {
 							...attributes,
-							content: value,
+							content: value ?? '',
 						});
 					}}
 					onReplace={onReplace}
