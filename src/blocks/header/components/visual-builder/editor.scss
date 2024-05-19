@@ -3,7 +3,7 @@ $height_top_bar: 92px;
 $height_top_bars_mobile: 155px;
 $height_top_bottom_bars: $height_top_bar + $height_bottom_bar;
 $sidebar_width: 280px;
-$fixed_height: 300px;
+$fixed_height: 320px;
 
 .kb-header-visual-builder-teaser {
 	background: #eee;
@@ -19,6 +19,7 @@ $fixed_height: 300px;
 
 	justify-content: flex-end;
 	display: flex;
+	box-sizing: border-box;
 
 	.block-editor-iframe__body & {
 		bottom: 0;
@@ -42,6 +43,7 @@ $fixed_height: 300px;
 	left: 0;
 	z-index: 9999;
 	display: block;
+	box-sizing: border-box;
 
 	@media (min-width: 782px) {
 		height: $fixed_height;

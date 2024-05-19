@@ -184,8 +184,8 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 						</div>
 						<style>
 							{modalPosition == 'top'
-								? '.editor-styles-wrapper{margin-top: 300px}'
-								: '.editor-styles-wrapper{margin-bottom: 300px}'}
+								? '.editor-styles-wrapper{padding-top: 320px}'
+								: '.editor-styles-wrapper{padding-bottom: 320px}'}
 						</style>
 					</div>
 				)}

@@ -15,23 +15,23 @@ import classnames from 'classnames';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { isEmpty } from 'lodash';
+import { isEmpty, get } from 'lodash';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { formBlockIcon, formTemplateContactIcon } from '@kadence/icons';
 import { KadencePanelBody, SelectPostFromPostType } from '@kadence/components';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { Placeholder, Spinner } from '@wordpress/components';
-import { store as coreStore, EntityProvider, useEntityProp } from '@wordpress/core-data';
+import { store as coreStore, EntityProvider, useEntityProp, useEntityBlockEditor } from '@wordpress/core-data';
 
 import { useEntityAutoDraft } from './hooks';
-import { SelectOrCreatePlaceholder, VisualBuilder } from './components';
+import { SelectOrCreatePlaceholder } from './components';
 import { getUniqueId, getPostOrFseId, getPreviewSize } from '@kadence/helpers';
 
 /**
  * Internal dependencies
  */
 import EditInner from './edit-inner';
-import { useEffect, Fragment, useState } from '@wordpress/element';
+import { useEffect, Fragment, useState, useMemo } from '@wordpress/element';
 
 export function Edit(props) {
 	const { attributes, setAttributes, isSelected, clientId } = props;
@@ -97,6 +97,12 @@ export function Edit(props) {
 		},
 		[clientId]
 	);
+
+	let [blocks] = useEntityBlockEditor('postType', 'kadence_header', id);
+
+	const headerInnerBlocks = useMemo(() => {
+		return get(blocks, [0, 'innerBlocks'], []);
+	}, [blocks]);
 
 	const previewIsSticky = getPreviewSize(previewDevice, isSticky, isStickyTablet, isStickyMobile);
 	const previewIsTransparent = getPreviewSize(previewDevice, isTransparent, isTransparentTablet, isTransparentMobile);
@@ -237,7 +243,6 @@ export function Edit(props) {
 					</EntityProvider>
 				)}
 			</div>
-			<VisualBuilder clientId={clientId} previewDevice={previewDevice} isSelected={isSelected} />
 		</>
 	);
 
@@ -248,7 +253,6 @@ export function Edit(props) {
 				<div {...blockProps}>
 					<EditInner {...props} direct={true} id={postId} />
 				</div>
-				<VisualBuilder clientId={clientId} previewDevice={previewDevice} isSelected={isSelected} />
 			</>
 		);
 	}
