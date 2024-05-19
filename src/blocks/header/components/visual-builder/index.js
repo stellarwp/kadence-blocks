@@ -130,6 +130,7 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 						<Button isPrimary onClick={() => setIsVisible(true)}>
 							{__('Open Visual Builder', 'kadence-blocks')}
 						</Button>
+						<style>{'.editor-styles-wrapper{padding-bottom: 57px}'}</style>
 					</div>
 				)}
 				{isVisible && (
