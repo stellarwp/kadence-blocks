@@ -46,7 +46,7 @@ import {
 import { getPreviewSize, mouseOverVisualizer, arrayStringToInt, useElementWidth } from '@kadence/helpers';
 
 import { BackendStyles, Onboard } from './components';
-import { HEADER_ALLOWED_BLOCKS, HEADER_INNERBLOCK_TEMPLATE } from './constants';
+import { HEADER_ALLOWED_BLOCKS, HEADER_INNERBLOCK_DEFAULTS } from './constants';
 import { buildTemplateFromSelection } from './helpers';
 
 /**
@@ -311,7 +311,7 @@ export function EditInner(props) {
 						[
 							{
 								...newBlock,
-								innerBlocks: HEADER_INNERBLOCK_TEMPLATE,
+								innerBlocks: HEADER_INNERBLOCK_DEFAULTS,
 							},
 						],
 						clientId
@@ -630,7 +630,6 @@ export function EditInner(props) {
 			onInput: !direct ? (a, b) => onInput([{ ...newBlock, innerBlocks: a }], b) : undefined,
 			onChange: !direct ? (a, b) => onChange([{ ...newBlock, innerBlocks: a }], b) : undefined,
 			templateLock: 'all',
-			template: HEADER_INNERBLOCK_TEMPLATE,
 		}
 	);
 

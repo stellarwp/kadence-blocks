@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { createBlock } from '@wordpress/blocks';
 
-export const HEADER_INNERBLOCK_TEMPLATE = [
+export const HEADER_INNERBLOCK_DEFAULTS = [
 	createBlock('kadence/header-container-desktop', {}, [
 		createBlock('kadence/header-row', { metadata: { name: __('Top Row', 'kadence-blocks') }, location: 'top' }, [
 			createBlock(
