@@ -20,7 +20,15 @@ import {
 	BlockContextProvider,
 	BlockControls,
 } from '@wordpress/block-editor';
-import { TextControl, ExternalLink, Button, Placeholder, ToggleControl, ToolbarGroup } from '@wordpress/components';
+import {
+	TextControl,
+	ExternalLink,
+	Button,
+	Placeholder,
+	ToggleControl,
+	ToolbarGroup,
+	ToolbarButton,
+} from '@wordpress/components';
 import { headerBlockIcon } from '@kadence/icons';
 import {
 	KadencePanelBody,
@@ -697,13 +705,13 @@ export function EditInner(props) {
 					onPaste={(attributesToPaste) => setMeta({ ...meta, ...attributesToPaste })}
 				/>
 				<ToolbarGroup>
-					<Button
+					<ToolbarButton
 						className="components-tab-button"
 						isPressed={showVisualBuilder}
 						onClick={() => setHeaderVisualBuilderOpenId(showVisualBuilder ? null : clientId)}
 					>
 						<span>{__('Visual Builder', 'kadence-blocks')}</span>
-					</Button>
+					</ToolbarButton>
 				</ToolbarGroup>
 			</BlockControls>
 			<InspectorControls>

@@ -137,6 +137,13 @@ const controls = {
 };
 
 const getPreviewDeviceType = createRegistrySelector((select) => (state) => {
+	const editor = select('core/editor');
+
+	if (editor) {
+		return editor.getDeviceType();
+	}
+
+	//some backups for older versions or other unusual cases.
 	const editPost = select('core/edit-post');
 
 	if (editPost) {
