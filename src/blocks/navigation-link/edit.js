@@ -601,7 +601,7 @@ export default function Edit(props) {
 			defaultBlock: DEFAULT_BLOCK,
 			directInsert: true,
 			renderAppender: false,
-			template: isMegaMenu ? ['kadence/rowlayout'] : [],
+			template: isMegaMenu ? [['kadence/rowlayout']] : [],
 			templateLock: isMegaMenu ? 'all' : false,
 		}
 	);
