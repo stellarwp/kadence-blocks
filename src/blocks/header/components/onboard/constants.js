@@ -2,9 +2,12 @@ import { __ } from '@wordpress/i18n';
 import {
 	formTemplateContactAdvancedIcon,
 	formTemplateSubscribeIcon,
-	formTemplateSubscribeAdvancedIcon,
 	formTemplateSubscribeInFieldIcon,
 } from '@kadence/icons';
+
+import { OffCavnasIcon } from '../../templates/icons/off-canvas.js';
+import { MultiRowIcon } from '../../templates/icons/multi-row.js';
+import { BasicIcon } from '../../templates/icons/basic.js';
 
 export const FORM_STEPS = [
 	{ key: 'start', name: __('Desktop Layout', 'kadence-blocks') },
@@ -19,19 +22,19 @@ export const START_OPTIONS = [
 	{
 		key: 'basic',
 		name: __('Basic', 'kadence-blocks'),
-		icon: formTemplateContactAdvancedIcon,
+		icon: BasicIcon,
 		isDisabled: false,
 	},
 	{
 		key: 'off-canvas',
 		name: __('Off Canvas', 'kadence-blocks'),
-		icon: formTemplateSubscribeIcon,
+		icon: OffCavnasIcon,
 		isDisabled: false,
 	},
 	{
 		key: 'multi-row',
 		name: __('Multi Row', 'kadence-blocks'),
-		icon: formTemplateSubscribeAdvancedIcon,
+		icon: MultiRowIcon,
 		isDisabled: false,
 	},
 ];
@@ -128,19 +131,19 @@ export const START_MOBILE_OPTIONS = [
 	{
 		key: 'basic',
 		name: __('Basic', 'kadence-blocks'),
-		icon: formTemplateContactAdvancedIcon,
+		icon: BasicIcon,
 		isDisabled: false,
 	},
 	{
 		key: 'off-canvas',
 		name: __('Off Canvas', 'kadence-blocks'),
-		icon: formTemplateSubscribeIcon,
+		icon: OffCavnasIcon,
 		isDisabled: false,
 	},
 	{
 		key: 'multi-row',
 		name: __('Multi Row', 'kadence-blocks'),
-		icon: formTemplateSubscribeAdvancedIcon,
+		icon: MultiRowIcon,
 		isDisabled: false,
 	},
 ];
