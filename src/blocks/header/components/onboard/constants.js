@@ -26,15 +26,15 @@ export const START_OPTIONS = [
 		isDisabled: false,
 	},
 	{
-		key: 'off-canvas',
-		name: __('Off Canvas', 'kadence-blocks'),
-		icon: OffCavnasIcon,
-		isDisabled: false,
-	},
-	{
 		key: 'multi-row',
 		name: __('Multi Row', 'kadence-blocks'),
 		icon: MultiRowIcon,
+		isDisabled: false,
+	},
+	{
+		key: 'off-canvas',
+		name: __('Off Canvas', 'kadence-blocks'),
+		icon: OffCavnasIcon,
 		isDisabled: false,
 	},
 ];
@@ -135,15 +135,15 @@ export const START_MOBILE_OPTIONS = [
 		isDisabled: false,
 	},
 	{
-		key: 'off-canvas',
-		name: __('Off Canvas', 'kadence-blocks'),
-		icon: OffCavnasIcon,
-		isDisabled: false,
-	},
-	{
 		key: 'multi-row',
 		name: __('Multi Row', 'kadence-blocks'),
 		icon: MultiRowIcon,
+		isDisabled: false,
+	},
+	{
+		key: 'off-canvas',
+		name: __('Off Canvas', 'kadence-blocks'),
+		icon: OffCavnasIcon,
 		isDisabled: false,
 	},
 ];
