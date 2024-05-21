@@ -196,6 +196,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		// Transform.
 		$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 		if ( isset( $attributes['dragTransform'][0] ) && $css->is_number( $attributes['dragTransform'][0] ) ) {
+			$css->add_property( 'z-index', '11' );
 			$css->add_property( 'transform', 'translate(' . $attributes['dragTransform'][0] . 'px, ' . $attributes['dragTransform'][1] . 'px)' );
 		}
 		$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );

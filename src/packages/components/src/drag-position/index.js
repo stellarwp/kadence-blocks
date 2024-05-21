@@ -68,7 +68,7 @@ function DragPosition(props) {
 			}}
 			style={{ transform: `translate(${transform[0]}, ${transform[1]})` }}
 		>
-			<div className="kb-drag-position-wrap">
+			<div className={`kb-drag-position-wrap ${props.className}`} style={props.style}>
 				{props.children}
 				{displayHandle && (
 					<span className="kb-drag-position-move-handle">
