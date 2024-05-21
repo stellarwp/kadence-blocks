@@ -25,7 +25,7 @@ export default function DefaultEditorBlock() {
 		<PanelBody title={__('Default Editor Block ', 'kadence-blocks')} initialOpen={false}>
 			<KadenceSetting
 				slug={'adv_text_is_default_editor_block'}
-				label={__('Use default editor block', 'kadence-blocks')}
+				label={__('Set Advanced Text as default block', 'kadence-blocks')}
 				type={'toggle'}
 				theDefault={false}
 				successCallback={successCallback}
