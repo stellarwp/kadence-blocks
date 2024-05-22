@@ -15,10 +15,10 @@ export const MultiRowIcon = (
 			<rect width="75" height="6.09" x="148.23" y="188.49" fill="#efefef" strokeWidth="0" rx="3" ry="3"></rect>
 			<rect width="75" height="6.09" x="248.23" y="188.49" fill="#efefef" strokeWidth="0" rx="3" ry="3"></rect>
 			<rect width="75" height="6.09" x="348.23" y="188.49" fill="#efefef" strokeWidth="0" rx="3" ry="3"></rect>
-			<rect width="75" height="6.09" x="580.77" y="102.49" fill="#616161" strokeWidth="0" rx="3" ry="3"></rect>
-			<rect width="75" height="6.09" x="680.77" y="102.49" fill="#616161" strokeWidth="0" rx="3" ry="3"></rect>
-			<rect width="75" height="6.09" x="780.77" y="102.49" fill="#616161" strokeWidth="0" rx="3" ry="3"></rect>
-			<rect width="75" height="6.09" x="880.77" y="102.49" fill="#616161" strokeWidth="0" rx="3" ry="3"></rect>
+			<rect width="75" height="6.09" x="580.77" y="102.49" fill="#929292" strokeWidth="0" rx="3" ry="3"></rect>
+			<rect width="75" height="6.09" x="680.77" y="102.49" fill="#929292" strokeWidth="0" rx="3" ry="3"></rect>
+			<rect width="75" height="6.09" x="780.77" y="102.49" fill="#929292" strokeWidth="0" rx="3" ry="3"></rect>
+			<rect width="75" height="6.09" x="880.77" y="102.49" fill="#929292" strokeWidth="0" rx="3" ry="3"></rect>
 			<rect
 				width="79.25"
 				height="24.28"
