@@ -218,7 +218,7 @@ export default function HeaderOnboard({ isAdding, existingTitle, onAdd }) {
 					<>
 						<TextControl
 							className={`kb-form-block-title${!tmpTitle ? ' kadence-input-required-warning' : ''}`}
-							label={__('Give your header a title (required)', 'kadence-blocks')}
+							label={__('Give your header a name (required)', 'kadence-blocks')}
 							placeholder={__('Contact Us', 'kadence-blocks')}
 							help={__('This is used for your reference only.', 'kadence-blocks')}
 							value={tmpTitle}
