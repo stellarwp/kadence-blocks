@@ -955,8 +955,7 @@ export default function Edit(props) {
 				)}
 
 				{activeTab === 'style' && (
-					// <>{applyFilters('kadence.styleControlsNavigationLink', styleControls, props)}</>
-					<>{styleControls}</>
+					<>{applyFilters('kadence.styleControlsNavigationLink', styleControls, props)}</>
 				)}
 
 				{activeTab === 'advanced' && (
