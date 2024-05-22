@@ -56,7 +56,7 @@ export default function FormTitle({ setTitle, isAdding, existingTitle, onAdd }) 
 					<>
 						<TextControl
 							className={`kb-form-block-title${!tmpTitle ? ' kadence-input-required-warning' : ''}`}
-							label={__('Give your navigation menu a title (required)', 'kadence-blocks')}
+							label={__('Give your navigation menu a name (required)', 'kadence-blocks')}
 							placeholder={__('Site Navigation', 'kadence-blocks')}
 							help={__('This is used for your reference only.', 'kadence-blocks')}
 							value={tmpTitle}
