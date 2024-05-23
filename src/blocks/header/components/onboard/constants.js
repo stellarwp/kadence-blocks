@@ -12,7 +12,7 @@ import { BasicIcon } from '../../templates/icons/basic.js';
 export const FORM_STEPS = [
 	{ key: 'start', name: __('Layout', 'kadence-blocks') },
 	{ key: 'detail', name: __('Template', 'kadence-blocks') },
-	{ key: 'off-canvas', name: __('Off Canvas', 'kadence-blocks') },
+	{ key: 'off-canvas', name: __('Mobile', 'kadence-blocks') },
 	{ key: 'title', name: __('Name', 'kadence-blocks') },
 ];
 
@@ -30,12 +30,6 @@ export const START_OPTIONS = [
 		icon: MultiRowIcon,
 		isDisabled: false,
 	},
-	{
-		key: 'off-canvas',
-		name: __('Off Canvas', 'kadence-blocks'),
-		icon: OffCavnasIcon,
-		isDisabled: false,
-	},
 ];
 
 export const DETAIL_OPTIONS = [
@@ -44,28 +38,28 @@ export const DETAIL_OPTIONS = [
 		name: __('Off Canvas 1', 'kadence-blocks'),
 		icon: formTemplateSubscribeIcon,
 		isDisabled: false,
-		templateKey: 'off-canvas',
+		templateKey: 'basic',
 	},
 	{
 		key: 'off-canvas-2',
 		name: __('Off Canvas 2', 'kadence-blocks'),
 		icon: formTemplateSubscribeIcon,
 		isDisabled: false,
-		templateKey: 'off-canvas',
+		templateKey: 'basic',
 	},
 	{
 		key: 'off-canvas-3',
 		name: __('Off Canvas 3', 'kadence-blocks'),
 		icon: formTemplateSubscribeIcon,
 		isDisabled: false,
-		templateKey: 'off-canvas',
+		templateKey: 'basic',
 	},
 	{
 		key: 'off-canvas-4',
 		name: __('Off Canvas 4', 'kadence-blocks'),
 		icon: formTemplateSubscribeIcon,
 		isDisabled: false,
-		templateKey: 'off-canvas',
+		templateKey: 'basic',
 	},
 	{
 		key: 'multi-row-1',
@@ -131,27 +125,27 @@ export const OFF_CANVAS_OPTIONS = [
 		name: __('Off Canvas 1', 'kadence-blocks'),
 		icon: formTemplateSubscribeIcon,
 		isDisabled: false,
-		templateKey: 'off-canvas',
+		templateKey: 'basic',
 	},
 	{
 		key: 'off-canvas-2',
 		name: __('Off Canvas 2', 'kadence-blocks'),
 		icon: formTemplateSubscribeIcon,
 		isDisabled: false,
-		templateKey: 'off-canvas',
+		templateKey: 'basic',
 	},
 	{
 		key: 'off-canvas-3',
 		name: __('Off Canvas 3', 'kadence-blocks'),
 		icon: formTemplateSubscribeIcon,
 		isDisabled: false,
-		templateKey: 'off-canvas',
+		templateKey: 'basic',
 	},
 	{
 		key: 'off-canvas-4',
 		name: __('Off Canvas 4', 'kadence-blocks'),
 		icon: formTemplateSubscribeIcon,
 		isDisabled: false,
-		templateKey: 'off-canvas',
+		templateKey: 'basic',
 	},
 ];
