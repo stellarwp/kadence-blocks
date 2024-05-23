@@ -107,10 +107,10 @@ class MetaToJs {
 		$this->output = str_replace( '{inner_blocks}', $inner_blocks, $this->output);
 		$file_name = str_replace( '--', '-', preg_replace('/[^A-Za-z0-9_\-]/', '-', $post_type . ' - ' .$post_title) ) . time() . '.js';
 
-//		header('Content-Disposition: attachment; filename="'. $file_name .'"');
-//		header('Content-Type: text/javascript');
-//		header('Content-Length: ' . strlen($this->output));
-//		header('Connection: close');
+		header('Content-Disposition: attachment; filename="'. $file_name .'"');
+		header('Content-Type: text/javascript');
+		header('Content-Length: ' . strlen($this->output));
+		header('Connection: close');
 
 		echo $this->output;
 		die();
