@@ -23,7 +23,7 @@ import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { Placeholder, Spinner } from '@wordpress/components';
 import { store as coreStore, EntityProvider, useEntityProp } from '@wordpress/core-data';
 
-import { useEntityAutoDraft } from './hooks';
+import { useEntityAutoDraft, useEntityAutoDraftAndPublish } from './hooks';
 import { SelectOrCreatePlaceholder } from './components';
 import { getUniqueId, getPostOrFseId, getPreviewSize } from '@kadence/helpers';
 
@@ -36,7 +36,7 @@ import { useEffect } from '@wordpress/element';
 export function Edit(props) {
 	const { attributes, setAttributes, clientId } = props;
 
-	const { id, uniqueID } = attributes;
+	const { id, uniqueID, templateKey } = attributes;
 
 	// Since we're not in the EntityProvider yet, we need to provide a post id.
 	// 'id' and 'meta' will be undefined untill the actual post is chosen / loaded
@@ -162,6 +162,22 @@ export function Edit(props) {
 		);
 	}
 
+	const [isAdding, addNew] = useEntityAutoDraftAndPublish('kadence_navigation', 'kadence_navigation');
+	const makeNavigationPost = async () => {
+		try {
+			const response = await addNew();
+			setAttributes({ id: response.id });
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	useEffect(() => {
+		if (!id && templateKey) {
+			makeNavigationPost();
+		}
+	}, []);
+
 	return (
 		<div {...blockProps}>
 			{/* No form selected or selected form was deleted from the site, display chooser */}
@@ -232,7 +248,7 @@ export function Edit(props) {
 			)}
 
 			{/* Form selected and loaded, display it */}
-			{id > 0 && !isEmpty(post) && post.status !== 'trash' && (
+			{((id > 0 && templateKey) || (id > 0 && !isEmpty(post) && post.status !== 'trash')) && (
 				<EntityProvider kind="postType" type="kadence_navigation" id={id}>
 					<EditInner {...props} direct={false} id={id} />
 				</EntityProvider>

@@ -76,7 +76,7 @@ import metadata from './block.json';
 const ANCHOR_REGEX = /[\s#]/g;
 export function EditInner(props) {
 	const { attributes, setAttributes, clientId, direct, id, isSelected, context } = props;
-	const { uniqueID } = attributes;
+	const { uniqueID, templateKey } = attributes;
 
 	const { previewDevice, childSelected } = useSelect(
 		(select) => {
@@ -89,6 +89,7 @@ export function EditInner(props) {
 	);
 
 	const [activeTab, setActiveTab] = useState('general');
+	const [navPlaceholderBlocks, setNavPlaceholderBlocks] = useState([]);
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
@@ -459,16 +460,79 @@ export function EditInner(props) {
 	});
 
 	const [title, setTitle] = useNavigationProp('title');
+	const [isAdding, addNew] = useEntityPublish('kadence_navigation', id);
 
 	let [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_navigation', id);
-	const { updateBlockAttributes } = useDispatch(editorStore);
 
-	const emptyNavigation = useMemo(() => {
-		return [createBlock('kadence/navigation', {})];
-	}, [clientId]);
+	const applyTemplateKeyBlocks = (templateKey) => {
+		if (templateKey == 'long-vertical') {
+			setNavPlaceholderBlocks([
+				createBlock('kadence/navigation', {}, [
+					createBlock('kadence/navigation-link', { label: 'about', url: '#' }),
+					createBlock('kadence/navigation-link', { label: 'blog', url: '#' }),
+					createBlock('kadence/navigation-link', { label: 'contact', url: '#' }),
+					createBlock('kadence/navigation-link', { label: 'resources', url: '#' }),
+					createBlock('kadence/navigation-link', { label: 'locations', url: '#' }),
+					createBlock('kadence/navigation-link', { label: 'shop', url: '#' }),
+				]),
+			]);
+			//don't know why this call would be too early, but giving some time seems to help these meta attributes apply
+			setTimeout(() => {
+				setMetaAttribute('vertical', 'orientation');
+				setMetaAttribute('vertical', 'orientationTablet');
+				setMetaAttribute('vertical', 'orientationMobile');
+			}, 100);
+		} else if (templateKey == 'long') {
+			setNavPlaceholderBlocks([
+				createBlock('kadence/navigation', {}, [
+					createBlock('kadence/navigation-link', { label: 'about', url: '#' }),
+					createBlock('kadence/navigation-link', { label: 'blog', url: '#' }),
+					createBlock('kadence/navigation-link', { label: 'contact', url: '#' }),
+					createBlock('kadence/navigation-link', { label: 'resources', url: '#' }),
+					createBlock('kadence/navigation-link', { label: 'locations', url: '#' }),
+					createBlock('kadence/navigation-link', { label: 'shop', url: '#' }),
+				]),
+			]);
+		} else if (templateKey == 'short-vertical') {
+			setNavPlaceholderBlocks([
+				createBlock('kadence/navigation', {}, [
+					createBlock('kadence/navigation-link', { label: 'about', url: '#' }),
+					createBlock('kadence/navigation-link', { label: 'blog', url: '#' }),
+					createBlock('kadence/navigation-link', { label: 'contact', url: '#' }),
+				]),
+			]);
+			//don't know why this call would be too early, but giving some time seems to help these meta attributes apply
+			setTimeout(() => {
+				setMetaAttribute('vertical', 'orientation');
+				setMetaAttribute('vertical', 'orientationTablet');
+				setMetaAttribute('vertical', 'orientationMobile');
+			}, 100);
+		} else {
+			setNavPlaceholderBlocks([
+				createBlock('kadence/navigation', {}, [
+					createBlock('kadence/navigation-link', { label: 'about', url: '#' }),
+					createBlock('kadence/navigation-link', { label: 'blog', url: '#' }),
+					createBlock('kadence/navigation-link', { label: 'contact', url: '#' }),
+				]),
+			]);
+		}
+	};
+
+	useEffect(() => {
+		if (blocks.length == 0) {
+			if (templateKey) {
+				//this nav is meant to be a premade template, set it's title and publish it, and give it innerblocks based on it's template key
+				applyTemplateKeyBlocks(templateKey);
+				setTitle(templateKey + ' navigation');
+			} else {
+				//otherwise it's a normal nav block and just needs the placeholder put in place
+				setNavPlaceholderBlocks([createBlock('kadence/navigation', {})]);
+			}
+		}
+	}, []);
 
 	if (blocks.length === 0) {
-		blocks = emptyNavigation;
+		blocks = navPlaceholderBlocks;
 	}
 
 	const navigationInnerBlocks = useMemo(() => {
@@ -479,7 +543,6 @@ export function EditInner(props) {
 		return get(blocks, [0], {});
 	}, [blocks]);
 
-	const [isAdding, addNew] = useEntityPublish('kadence_navigation', id);
 	const onAdd = async (title, template, initialDescription) => {
 		try {
 			const response = await addNew();
@@ -662,7 +725,7 @@ export function EditInner(props) {
 		);
 	};
 
-	if (navigationInnerBlocks.length === 0) {
+	if (navigationInnerBlocks.length === 0 && !templateKey) {
 		return (
 			<>
 				<FormTitle onAdd={onAdd} isAdding={isAdding} existingTitle={title} />

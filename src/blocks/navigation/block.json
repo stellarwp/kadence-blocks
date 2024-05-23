@@ -14,6 +14,10 @@
 		"id": {
 			"type": "integer",
 			"default": 0
+		},
+		"templateKey": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"supports": {

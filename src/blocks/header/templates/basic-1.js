@@ -110,7 +110,12 @@ function innerBlocks() {
 										location: 'center-left',
 										metadata: { name: 'Center Left' },
 									},
-									[createBlock('kadence/navigation', { uniqueID: '6_adaeb5-22' }, [])]
+									[
+										createBlock('kadence/navigation', {
+											uniqueID: '6_adaeb5-22',
+											templateKey: 'short',
+										}),
+									]
 								),
 							]
 						),
@@ -144,7 +149,13 @@ function innerBlocks() {
 										location: 'center-right',
 										metadata: { name: 'Center Right' },
 									},
-									[createBlock('kadence/navigation', { uniqueID: '6_9c1e43-30' }, [])]
+									[
+										createBlock(
+											'kadence/navigation',
+											{ uniqueID: '6_9c1e43-30', templateKey: 'short' },
+											[]
+										),
+									]
 								),
 								createBlock(
 									'kadence/header-column',
