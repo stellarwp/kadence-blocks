@@ -1,6 +1,6 @@
 import { useRef, useState } from '@wordpress/element';
 import { Button } from '@wordpress/components';
-import { useEditorElement, capitalizeFirstLetter } from '@kadence/helpers';
+import { useEditorElement, capitalizeFirstLetter, blockExists } from '@kadence/helpers';
 import { __ } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { get } from 'lodash';
@@ -30,21 +30,6 @@ function extractBlocks(blocksData) {
 
 	return { desktopBlocks, tabletBlocks, offCanvasBlocks };
 }
-
-const blockExists = (blocks, blockName) => {
-	for (const block of blocks) {
-		if (block.name === blockName) {
-			return true;
-		}
-		if (block.innerBlocks && block.innerBlocks.length > 0) {
-			const existsInInnerBlocks = blockExists(block.innerBlocks, blockName);
-			if (existsInInnerBlocks) {
-				return true;
-			}
-		}
-	}
-	return false;
-};
 
 export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 	const [tab, setTab] = useState(previewDevice);

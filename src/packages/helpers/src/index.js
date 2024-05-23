@@ -44,3 +44,4 @@ export { default as useEditorElement } from './use-editor-element';
 export { default as useElementHeight } from './use-element-height';
 
 export { default as KadenceBlocksCSS } from './css';
+export { blockExists } from './block-exists';
