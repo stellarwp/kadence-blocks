@@ -91,13 +91,15 @@ class Cpt_To_Template {
 class MetaToJs {
 
 	private $output = '';
+
+	private $nav_count = 0;
 	public function meta_to_js( $post_id ) {
 		$this->output = file_get_contents(plugin_dir_path( __FILE__ ) . 'header-template.tpl');
 
-		$post_meta = $this->post_meta( $post_id);
-		$inner_blocks = $this->inner_blocks( $post_id );
-		$post_type = get_post_type( $post_id );
 		$post_title = get_the_title( $post_id );
+		$post_type = get_post_type( $post_id );
+		$post_meta = $this->post_meta( $post_id);
+		$inner_blocks = $this->inner_blocks( $post_id, $post_title );
 
 		$this->output = str_replace( '{post_title}', $post_title, $this->output);
 		$this->output = str_replace( '{post_type}', $post_type, $this->output);
@@ -105,19 +107,19 @@ class MetaToJs {
 		$this->output = str_replace( '{inner_blocks}', $inner_blocks, $this->output);
 		$file_name = str_replace( '--', '-', preg_replace('/[^A-Za-z0-9_\-]/', '-', $post_type . ' - ' .$post_title) ) . time() . '.js';
 
-		header('Content-Disposition: attachment; filename="'. $file_name .'"');
-		header('Content-Type: text/javascript');
-		header('Content-Length: ' . strlen($this->output));
-		header('Connection: close');
+//		header('Content-Disposition: attachment; filename="'. $file_name .'"');
+//		header('Content-Type: text/javascript');
+//		header('Content-Length: ' . strlen($this->output));
+//		header('Connection: close');
 
 		echo $this->output;
 		die();
 	}
 
 
-	public function inner_blocks( $post_id ) {
+	public function inner_blocks( $post_id, $post_title ) {
 		$blocks = parse_blocks( get_post_field( 'post_content', $post_id ) );
-		$blocks_array =  $this->parseBlocks( $blocks );
+		$blocks_array =  $this->parseBlocks( $blocks, $post_title );
 
 		$return = 'function innerBlocks() { return [ ';
 
@@ -128,8 +130,9 @@ class MetaToJs {
 		return $return;
 	}
 
-	public function parseBlocks($blocks) {
+	public function parseBlocks($blocks, $post_title, $navs = null) {
 		$result = '';
+		$navs = empty( $navs ) ? $this->getPlaceholderNavsForTemplate( $post_title ) : $navs;
 
 		foreach ($blocks as $block) {
 			$blockName = $block['blockName'];
@@ -137,6 +140,9 @@ class MetaToJs {
 			// Remove liked id to nav block
 			if( $blockName === 'kadence/navigation') {
 				unset( $block['attrs']['id']);
+				$templateKey = !empty ( $navs[ $this->nav_count ] ) ? $navs[ $this->nav_count ] : 'short';
+				$this->nav_count++;
+				$block['attrs']['templateKey'] = $templateKey;
 			}
 
 			if( $blockName === 'kadence/image') {
@@ -158,7 +164,7 @@ class MetaToJs {
 			// If there are inner blocks, recursively parse them
 			$innerBlocks = '';
 			if (!empty($block['innerBlocks'])) {
-				$innerBlocks = $this->parseBlocks($block['innerBlocks']);
+				$innerBlocks = $this->parseBlocks($block['innerBlocks'], $post_title, $navs);
 			}
 
 			$result .= "createBlock('". $blockName . "', " . $attrs . ", [ " . $innerBlocks . " ] ), ";
@@ -193,6 +199,18 @@ class MetaToJs {
 		$return .= '};';
 
 		return $return;
+	}
+
+	public function getPlaceholderNavsForTemplate( $template_name ) {
+		$long_templates = [ 'Basic: 2 buttons', 'Multi-row 1', 'Multi-row 2', 'Multi-Row 5'];
+
+		if( in_array($template_name, $long_templates) ) {
+			return [ 'long', 'long-vertical' ];
+		} else if( $template_name === 'Multi-Row 4' ) {
+			return [ 'short', 'long', 'long-vertical' ];
+		}
+
+		return [ 'short', 'short-vertical' ];
 	}
 
 }
