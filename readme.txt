@@ -174,6 +174,11 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.2.40 =
+Release Date: May TBD 2024
+* Fix: Advanced form message padding unit on front end
+* Fix: Advanced form input padding unit on front end
+
 = 3.2.39 =
 Release Date: May 22nd 2024
 * Fix: Using Google fonts for captions in advanced gallery block.
