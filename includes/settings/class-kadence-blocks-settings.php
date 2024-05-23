@@ -970,6 +970,17 @@ class Kadence_Blocks_Settings {
 			)
 		);
 		register_setting(
+			'kadence_blocks_header_notice_dismissed',
+			'kadence_blocks_header_notice_dismissed',
+			array(
+				'type'              => 'boolean',
+				'description'       => __( 'Is Kadence header notice dismissed', 'kadence-blocks' ),
+				'sanitize_callback' => 'rest_sanitize_boolean',
+				'show_in_rest'      => true,
+				'default'           => false,
+			)
+		);
+		register_setting(
 			'kadence_blocks_wire_subscribe',
 			'kadence_blocks_wire_subscribe',
 			array(
