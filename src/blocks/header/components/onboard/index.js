@@ -7,7 +7,7 @@ import { useState } from '@wordpress/element';
 import { headerBlockIcon } from '@kadence/icons';
 import { applyFilters } from '@wordpress/hooks';
 import { map } from 'lodash';
-import { DETAIL_MOBILE_OPTIONS, DETAIL_OPTIONS, FORM_STEPS, START_MOBILE_OPTIONS, START_OPTIONS } from './constants';
+import { OFF_CANVAS_OPTIONS, DETAIL_OPTIONS, FORM_STEPS, START_OPTIONS } from './constants';
 
 export default function HeaderOnboard({ isAdding, existingTitle, onAdd }) {
 	const [tmpTitle, setTmpTitle] = useState(existingTitle);
@@ -15,14 +15,12 @@ export default function HeaderOnboard({ isAdding, existingTitle, onAdd }) {
 	const [wizardStep, setWizardStep] = useState('start');
 	const [template, setTemplate] = useState('');
 	const [detail, setDetail] = useState('');
-	const [templateMobile, setTemplateMobile] = useState('');
-	const [detailMobile, setDetailMobile] = useState('');
+	const [offCanvasTemplate, setOffCanvasTemplate] = useState('');
 	const [isSaving, setIsSaving] = useState(false);
 
 	const headerLayoutOptions = applyFilters('kadence.HeaderLayoutOptions', START_OPTIONS);
-	const headerLayoutMobileOptions = applyFilters('kadence.HeaderLayoutMobileOptions', START_MOBILE_OPTIONS);
 	const headerDetailOptions = applyFilters('kadence.HeaderDetailOptions', DETAIL_OPTIONS);
-	const headerDetailMobileOptions = applyFilters('kadence.HeaderDetailMobileOptions', DETAIL_MOBILE_OPTIONS);
+	const headerOffCanvasOptions = applyFilters('kadence.HeaderOffCanvasOptions', OFF_CANVAS_OPTIONS);
 
 	return (
 		<Placeholder
@@ -59,11 +57,11 @@ export default function HeaderOnboard({ isAdding, existingTitle, onAdd }) {
 				{wizardStep === 'start' && (
 					<div className="kt-select-starter-style-forms">
 						<div className="kt-select-starter-style-forms-title">
-							{__('Select Initial Desktop Layout', 'kadence-blocks')}
+							{__('Select Initial Layout', 'kadence-blocks')}
 						</div>
 						<ButtonGroup
 							className="kt-init-forms-btn-group"
-							aria-label={__('Initial Desktop Layout', 'kadence-blocks')}
+							aria-label={__('Initial navigation Layout', 'kadence-blocks')}
 						>
 							{map(headerLayoutOptions, ({ name, key, icon, isDisabled }) => (
 								<Button
@@ -101,11 +99,11 @@ export default function HeaderOnboard({ isAdding, existingTitle, onAdd }) {
 					<>
 						<div className="kt-select-starter-style-forms kt-select-starter-styles-only">
 							<div className="kt-select-starter-style-forms-title">
-								{__('Select Desktop Detailed Style', 'kadence-blocks')}
+								{__('Select Navigation Template', 'kadence-blocks')}
 							</div>
 							<ButtonGroup
 								className="kt-init-forms-btn-group style-only"
-								aria-label={__('Desktop Detailed Style', 'kadence-blocks')}
+								aria-label={__('Desktop navigation templates', 'kadence-blocks')}
 							>
 								{map(headerDetailOptions, ({ name, key, icon, isDisabled, templateKey }) => {
 									if (template !== templateKey) {
@@ -119,7 +117,7 @@ export default function HeaderOnboard({ isAdding, existingTitle, onAdd }) {
 											isSmall
 											onClick={() => {
 												setDetail(key);
-												setWizardStep('start-mobile');
+												setWizardStep('off-canvas');
 											}}
 											isPressed={detail === key}
 											isDisabled={isDisabled}
@@ -135,72 +133,27 @@ export default function HeaderOnboard({ isAdding, existingTitle, onAdd }) {
 						</div>
 					</>
 				)}
-				{wizardStep === 'start-mobile' && (
-					<div className="kt-select-starter-style-forms">
-						<div className="kt-select-starter-style-forms-title">
-							{__('Select Initial Mobile Layout', 'kadence-blocks')}
-						</div>
-						<ButtonGroup
-							className="kt-init-forms-btn-group"
-							aria-label={__('Initial Desktop Layout', 'kadence-blocks')}
-						>
-							{map(headerLayoutMobileOptions, ({ name, key, icon, isDisabled }) => (
-								<Button
-									key={key}
-									className="kt-inital-form-style-btn"
-									isSmall
-									onClick={() => {
-										setTemplateMobile(key);
-										if (tmpTitle === '') {
-											'skip' === key
-												? setTmpTitle(__('Blank Header', 'kadence-blocks'))
-												: setTmpTitle(name + __(' Header', 'kadence-blocks'));
-										}
-										if ('skip' === key) {
-											setWizardStep('title');
-										} else {
-											setWizardStep('detail-mobile');
-										}
-									}}
-									isPressed={templateMobile === key}
-									label={name}
-									isDisabled={isDisabled}
-								>
-									{name}
-									{icon}
-									{key !== 'skip' && (
-										<span className="template-select">{__('Select', 'kadence-blocks')}</span>
-									)}
-								</Button>
-							))}
-						</ButtonGroup>
-					</div>
-				)}
-				{wizardStep === 'detail-mobile' && (
+				{wizardStep === 'off-canvas' && (
 					<>
 						<div className="kt-select-starter-style-forms kt-select-starter-styles-only">
 							<div className="kt-select-starter-style-forms-title">
-								{__('Select Desktop Detailed Style', 'kadence-blocks')}
+								{__('Select Off Canvas Template', 'kadence-blocks')}
 							</div>
 							<ButtonGroup
 								className="kt-init-forms-btn-group style-only"
-								aria-label={__('Desktop Detailed Style', 'kadence-blocks')}
+								aria-label={__('Off canvas templates', 'kadence-blocks')}
 							>
-								{map(headerDetailMobileOptions, ({ name, key, icon, isDisabled, templateKey }) => {
-									if (templateMobile !== templateKey) {
-										return null;
-									}
-
+								{map(headerOffCanvasOptions, ({ name, key, icon, isDisabled }) => {
 									return (
 										<Button
 											key={key}
 											className="kt-inital-form-style-btn"
 											isSmall
 											onClick={() => {
-												setDetailMobile(key);
+												setOffCanvasTemplate(key);
 												setWizardStep('title');
 											}}
-											isPressed={detailMobile == key}
+											isPressed={offCanvasTemplate === key}
 											isDisabled={isDisabled}
 											label={name}
 										>
@@ -236,7 +189,7 @@ export default function HeaderOnboard({ isAdding, existingTitle, onAdd }) {
 							variant="primary"
 							onClick={() => {
 								setIsSaving(true);
-								onAdd(tmpTitle, template, detail, templateMobile, detailMobile, initialDescription);
+								onAdd(tmpTitle, template, detail, offCanvasTemplate, initialDescription);
 							}}
 							isBusy={isAdding}
 							disabled={tmpTitle === '' || isSaving}

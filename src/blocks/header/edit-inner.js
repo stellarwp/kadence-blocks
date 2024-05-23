@@ -302,12 +302,12 @@ export function EditInner(props) {
 
 	const [isAdding, addNew] = useEntityPublish('kadence_header', id);
 
-	const onAdd = async (title, template, detail, templateMobile, detailMobile, initialDescription) => {
+	const onAdd = async (title, template, detail, offCanvasTemplate, initialDescription) => {
 		try {
 			const response = await addNew();
 			let updatedMeta = meta;
 
-			const { templateInnerBlocks, templatePostMeta } = buildTemplateFromSelection(detail, detailMobile);
+			const { templateInnerBlocks, templatePostMeta } = buildTemplateFromSelection(detail, offCanvasTemplate);
 
 			if (response.id) {
 				if (templateInnerBlocks) {
@@ -329,8 +329,6 @@ export function EditInner(props) {
 				setTitle(title);
 
 				updatedMeta._kad_header_description = initialDescription;
-
-				console.log('updatedMeta', updatedMeta);
 
 				setMeta({ ...meta, updatedMeta });
 				await wp.data.dispatch('core').saveEditedEntityRecord('postType', 'kadence_header', id);
