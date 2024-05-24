@@ -178,13 +178,14 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 Release Date: May TBD 2024
 * Fix: Advanced form message padding unit on front end
 * Fix: Advanced form input padding unit on front end
+* Fix: Sanitize custom snazzy maps styles in Google Maps block.
 
 = 3.2.39 =
 Release Date: May 22nd 2024
 * Fix: Using Google fonts for captions in advanced gallery block.
 * Fix: Issue with columns preview in testimonial.
 * Fix: Issue with escaping attribute in testimonial block.
-* Fix: Issue with escaping attribute in countdown block. 
+* Fix: Issue with escaping attribute in countdown block.
 
 = 3.2.38 =
 Release Date: May 10th 2024
