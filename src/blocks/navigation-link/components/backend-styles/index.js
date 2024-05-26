@@ -144,13 +144,29 @@ export default function BackendStyles(props) {
 		dropdownBorderRadiusTablet,
 		dropdownBorderRadiusMobile,
 		dropdownBorderRadiusUnit,
+		descriptionSpacing,
+		descriptionSpacingTablet,
+		descriptionSpacingMobile,
+		descriptionSpacingUnit,
+		descriptionColor,
+		descriptionColorTablet,
+		descriptionColorMobile,
+		descriptionColorHover,
+		descriptionColorHoverTablet,
+		descriptionColorHoverMobile,
+		descriptionColorActive,
+		descriptionColorActiveTablet,
+		descriptionColorActiveMobile,
+		descriptionTypography,
+		description,
+		descriptionPositioning,
+		descriptionPositioningTablet,
+		descriptionPositioningMobile,
 	} = attributes;
 
 	const editorElement = useEditorElement(currentRef, []);
 	const editorWidth = editorElement?.clientWidth;
 	const isFEIcon = 'fe' === mediaIcon[0].icon.substring(0, 2);
-
-	// const previewDivider = getPreviewSize(previewDevice, divider, dividerTablet, dividerMobile);
 
 	const previewLinkColor = getPreviewSize(previewDevice, linkColor, linkColorTablet, linkColorMobile);
 	const previewLinkColorHover = getPreviewSize(
@@ -407,6 +423,37 @@ export default function BackendStyles(props) {
 	const previewIconSide = getPreviewSize(previewDevice, iconSide, iconSideTablet, iconSideMobile);
 	const previewMediaAlign = getPreviewSize(previewDevice, mediaAlign, mediaAlignTablet, mediaAlignMobile);
 
+	const previewDescriptionSpacing = getPreviewSize(
+		previewDevice,
+		descriptionSpacing,
+		descriptionSpacingTablet,
+		descriptionSpacingMobile
+	);
+	const previewDescriptionColor = getPreviewSize(
+		previewDevice,
+		descriptionColor,
+		descriptionColorTablet,
+		descriptionColorMobile
+	);
+	const previewDescriptionColorHover = getPreviewSize(
+		previewDevice,
+		descriptionColorHover,
+		descriptionColorHoverTablet,
+		descriptionColorHoverMobile
+	);
+	const previewDescriptionColorActive = getPreviewSize(
+		previewDevice,
+		descriptionColorActive,
+		descriptionColorActiveTablet,
+		descriptionColorActiveMobile
+	);
+	const previewDescriptionPositioning = getPreviewSize(
+		previewDevice,
+		descriptionPositioning,
+		descriptionPositioningTablet,
+		descriptionPositioningMobile
+	);
+
 	const css = new KadenceBlocksCSS();
 
 	css.set_selector(
@@ -599,6 +646,7 @@ export default function BackendStyles(props) {
 		css.add_property('color', css.render_color(previewMediaStyleColorActive));
 	}
 
+	//label styles
 	css.set_selector(
 		`.wp-block-kadence-navigation-link${uniqueID}.menu-item > .link-drop-wrap > a.wp-block-kadence-navigation-link__content .link-highlight-label`
 	);
@@ -695,6 +743,54 @@ export default function BackendStyles(props) {
 	if ('left' === previewIconSide) {
 		css.add_property('order', '-1');
 	}
+
+	//icon and description placement
+	if (description) {
+		css.set_selector(
+			`.wp-block-kadence-navigation-link${uniqueID} .link-drop-title-wrap:not(.wp-block-kadence-navigation-link${uniqueID} .wp-block-kadence-navigation-link .link-drop-title-wrap)`
+		);
+		css.add_property('display', 'grid');
+		css.add_property('grid-template-columns', '1fr');
+	}
+	if (description && mediaType == 'icon' && (previewMediaAlign == 'left' || previewMediaAlign == 'right')) {
+		css.set_selector(
+			`.wp-block-kadence-navigation-link${uniqueID} .link-drop-title-wrap:not(.wp-block-kadence-navigation-link${uniqueID} .wp-block-kadence-navigation-link .link-drop-title-wrap)`
+		);
+		css.add_property('display', 'grid');
+		css.add_property('grid-template-columns', '1fr auto');
+
+		if (previewDescriptionPositioning == 'title') {
+			css.set_selector(
+				`.wp-block-kadence-navigation-link${uniqueID} .menu-label-description:not(.wp-block-kadence-navigation-link${uniqueID} .wp-block-kadence-navigation-link .menu-label-description)`
+			);
+			css.add_property('grid-column', 'span 2');
+		} else {
+			css.set_selector(
+				`.wp-block-kadence-navigation-link${uniqueID} .link-media-container:not(.wp-block-kadence-navigation-link${uniqueID} .wp-block-kadence-navigation-link .link-media-container)`
+			);
+			css.add_property('grid-row', 'span 2');
+		}
+	}
+
+	//description styles
+	css.set_selector(
+		`.wp-block-kadence-navigation-link${uniqueID} .menu-label-description:not(.wp-block-kadence-navigation-link${uniqueID} .wp-block-kadence-navigation-link .menu-label-description)`
+	);
+	css.add_property('padding-top', css.render_size(previewDescriptionSpacing, descriptionSpacingUnit));
+	css.render_font(descriptionTypography ? descriptionTypography : [], previewDevice);
+	css.add_property('color', css.render_color(previewDescriptionColor));
+
+	//description styles hover
+	css.set_selector(
+		`.wp-block-kadence-navigation-link${uniqueID}:hover .menu-label-description:not(.wp-block-kadence-navigation-link${uniqueID} .wp-block-kadence-navigation-link .menu-label-description)`
+	);
+	css.add_property('color', css.render_color(previewDescriptionColorHover));
+
+	//description styles active
+	css.set_selector(
+		`.wp-block-kadence-navigation-link${uniqueID}.current-menu-item .menu-label-description:not(.wp-block-kadence-navigation-link${uniqueID} .wp-block-kadence-navigation-link .menu-label-description)`
+	);
+	css.add_property('color', css.render_color(previewDescriptionColorActive));
 
 	const cssOutput = css.css_output();
 

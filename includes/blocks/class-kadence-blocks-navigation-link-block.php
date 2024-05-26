@@ -178,6 +178,10 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		) );
 		$css->render_border_styles( $attributes, 'dropdownBorder' );
 
+		//description styles
+		$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' .menu-label-description:not(.wp-block-kadence-navigation-link' . $unique_id . ' .wp-block-kadence-navigation-link .menu-label-description)' );
+		$css->render_typography( $nav_link_attributes, 'descriptionTypography' );
+
 		return $css->css_output();
 	}
 
@@ -297,6 +301,39 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . '.current-menu-item > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .link-svg-icon > svg' );
 			$css->add_property( 'color', $css->render_color( $media_style_color_active ) );
 		}
+
+		//icon and description placement
+		if ( $sized_attributes['description'] ) {
+			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' .link-drop-title-wrap:not(.wp-block-kadence-navigation-link' . $unique_id . ' .wp-block-kadence-navigation-link .link-drop-title-wrap)' );
+			$css->add_property( 'display', 'grid' );
+			$css->add_property( 'grid-template-columns', '1fr' );
+		}
+		if ( $sized_attributes['description'] && $sized_attributes['mediaType'] == 'icon' && ( $sized_attributes['mediaAlign'] == 'left' || $sized_attributes['mediaAlign'] == 'right' ) ) {
+			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' .link-drop-title-wrap:not(.wp-block-kadence-navigation-link' . $unique_id . ' .wp-block-kadence-navigation-link .link-drop-title-wrap)' );
+			$css->add_property( 'display', 'grid');
+			$css->add_property( 'grid-template-columns', '1fr auto' );
+
+			if ( $sized_attributes['descriptionPositioning'] == 'title' ) {
+				$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' .menu-label-description:not(.wp-block-kadence-navigation-link' . $unique_id . ' .wp-block-kadence-navigation-link .menu-label-description)' );
+				$css->add_property( 'grid-column', 'span 2' );
+			} else {
+				$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' .link-media-container:not(.wp-block-kadence-navigation-link' . $unique_id . ' .wp-block-kadence-navigation-link .link-media-container)' );
+				$css->add_property( 'grid-row', 'span 2' );
+			}
+		}
+
+		//description styles
+		$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' .menu-label-description:not(.wp-block-kadence-navigation-link' . $unique_id . ' .wp-block-kadence-navigation-link .menu-label-description)' );
+		$css->add_property( 'padding-top', $css->render_size( $sized_attributes['descriptionSpacing'], $sized_attributes['descriptionSpacingUnit'] ) );
+		$css->add_property( 'color', $css->render_color( $sized_attributes['descriptionColor'] ) );
+
+		//description styles hover
+		$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ':hover .menu-label-description:not(.wp-block-kadence-navigation-link' . $unique_id . ' .wp-block-kadence-navigation-link .menu-label-description)' );
+		$css->add_property( 'color', $css->render_color( $sized_attributes['descriptionColorHover'] ) );
+
+		//description styles active
+		$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . '.current-menu-item .menu-label-description:not(.wp-block-kadence-navigation-link' . $unique_id . ' .wp-block-kadence-navigation-link .menu-label-description)' );
+		$css->add_property( 'color', $css->render_color( $sized_attributes['descriptionColorActive'] ) );
 	}
 
 	/**

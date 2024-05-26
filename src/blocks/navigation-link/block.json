@@ -821,6 +821,91 @@
 		"dropdownBorderRadiusUnit": {
 			"type": "string",
 			"default": "px"
+		},
+		"descriptionSpacing": {
+			"type": "string",
+			"default": ""
+		},
+		"descriptionSpacingTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"descriptionSpacingMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"descriptionSpacingUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"descriptionColor": {
+			"type": "string",
+			"default": ""
+		},
+		"descriptionColorTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"descriptionColorMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"descriptionColorHover": {
+			"type": "string",
+			"default": ""
+		},
+		"descriptionColorHoverTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"descriptionColorHoverMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"descriptionColorActive": {
+			"type": "string",
+			"default": ""
+		},
+		"descriptionColorActiveTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"descriptionColorActiveMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"descriptionPositioning": {
+			"type": "string",
+			"default": ""
+		},
+		"descriptionPositioningTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"descriptionPositioningMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"descriptionTypography": {
+			"type": "array",
+			"default": [
+				{
+					"size": ["", "", ""],
+					"sizeType": "px",
+					"lineHeight": ["", "", ""],
+					"lineType": "",
+					"letterSpacing": ["", "", ""],
+					"letterType": "px",
+					"textTransform": "",
+					"family": "",
+					"google": "",
+					"style": "",
+					"weight": "",
+					"variant": "",
+					"subset": "",
+					"loadGoogle": true
+				}
+			]
 		}
 	},
 	"usesContext": [

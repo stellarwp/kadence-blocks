@@ -448,37 +448,6 @@ export default function Edit(props) {
 		}
 	}
 
-	const saveTypography = (value, attributeName = 'typography') => {
-		const newUpdate = attributes[attributeName].map((item, index) => {
-			if (0 === index) {
-				item = { ...item, ...value };
-			}
-			return item;
-		});
-		setAttributes({ [attributeName]: newUpdate });
-	};
-
-	const saveDropdownTypography = (value) => {
-		const newUpdate = typography.map((item, index) => {
-			if (0 === index) {
-				item = { ...item, ...value };
-			}
-			return item;
-		});
-		setAttributes({ dropdownTypography: newUpdate });
-	};
-	const saveMediaImage = (value) => {
-		const newUpdate = mediaImage.map((item, index) => {
-			if (0 === index) {
-				item = { ...item, ...value };
-			}
-			return item;
-		});
-		setAttributes({
-			mediaImage: newUpdate,
-		});
-	};
-
 	useEffect(() => {
 		// Show the LinkControl on mount if the URL is empty
 		// ( When adding a new menu item)
@@ -837,7 +806,8 @@ export default function Edit(props) {
 					'kadence.megaMenuToolbarControlsNavigationLink',
 					megaMenuToolbarControls,
 					props,
-					doMegaMenu
+					doMegaMenu,
+					previewDevice
 				)}
 			</BlockControls>
 			{isSelected && (
@@ -883,7 +853,8 @@ export default function Edit(props) {
 							megaMenuControls,
 							props,
 							doMegaMenu,
-							isTopLevelLink
+							isTopLevelLink,
+							previewDevice
 						)}
 						{isTopLevelLink && hasChildren && (
 							<ToggleControl
@@ -929,7 +900,7 @@ export default function Edit(props) {
 								setAttributes({ description: descriptionValue });
 							}}
 							label={__('Description', 'kadence-blocks')}
-							help={__('Hidden by default. This can be shown in the style settings.', 'kadence-blocks')}
+							help={__('Supporting text for this item.', 'kadence-blocks')}
 						/>
 						<TextControl
 							__nextHasNoMarginBottom
@@ -955,7 +926,7 @@ export default function Edit(props) {
 				)}
 
 				{activeTab === 'style' && (
-					<>{applyFilters('kadence.styleControlsNavigationLink', styleControls, props)}</>
+					<>{applyFilters('kadence.styleControlsNavigationLink', styleControls, props, previewDevice)}</>
 				)}
 
 				{activeTab === 'advanced' && (

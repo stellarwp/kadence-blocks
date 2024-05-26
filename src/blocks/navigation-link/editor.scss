@@ -57,10 +57,10 @@
 	}
 
 	.link-highlight-label {
-		color: var(--global-palette7, #FFFFFF);
-        background: var(--global-palette2, #2F2FFC);
+		color: var(--global-palette7, #ffffff);
+		background: var(--global-palette2, #2f2ffc);
 		display: flex;
-		align-items:center;
+		align-items: center;
 		padding: 3px;
 		font-size: 12px;
 		margin-left: 5px;
@@ -87,7 +87,7 @@
 
 	.link-media-container {
 		display: flex;
-		grid-row: span 2;
+		align-self: flex-start;
 
 		.link-svg-icon {
 			display: flex;

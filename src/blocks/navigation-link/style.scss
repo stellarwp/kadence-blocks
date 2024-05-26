@@ -14,8 +14,8 @@
 		display: none;
 	}
 	.link-highlight-label {
-		color: var(--global-palette7, #FFFFFF);
-        background: var(--global-palette2, #2F2FFC);
+		color: var(--global-palette7, #ffffff);
+		background: var(--global-palette2, #2f2ffc);
 		padding: 3px;
 		font-size: 12px;
 		margin-left: 5px;
@@ -48,7 +48,7 @@
 			flex-wrap: wrap;
 		}
 	}
-	
+
 	.kadence-menu-has-description.kadence-menu-has-icon {
 		.link-drop-title-wrap {
 			display: grid;
@@ -58,7 +58,8 @@
 
 	.link-media-container {
 		display: flex;
-		grid-row: span 2;
+		align-self: flex-start;
+
 		.link-svg-icon {
 			display: inline-flex;
 			justify-content: center;

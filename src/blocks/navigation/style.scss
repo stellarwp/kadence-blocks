@@ -237,7 +237,7 @@
 		position: relative;
 		display: flex;
 		flex-wrap: nowrap;
-		text-align: center;
+		text-align: left;
 	}
 	/*
 		 * If the dropdown toggle is active with JS, then
@@ -1086,15 +1086,6 @@
 	}
 	.menu-label-content {
 		display: block;
-	}
-	//icon and description placement
-	.kadence-menu-has-description > .link-drop-wrap > a > .link-drop-title-wrap {
-		display: grid;
-		grid-template-columns: 1fr;
-	}
-	.kadence-menu-has-description.kadence-menu-has-icon > .link-drop-wrap > a > .link-drop-title-wrap {
-		display: grid;
-		grid-template-columns: 1fr auto;
 	}
 	// Mega Menu
 	.menu-container {
