@@ -396,6 +396,10 @@
 		"gutter": {
 			"type": "array",
 			"default": [10, "", ""]
+		},
+		"linkPaneCollapse": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"supports": {
