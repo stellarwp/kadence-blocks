@@ -324,16 +324,25 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 		//description styles
 		$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' .menu-label-description:not(.wp-block-kadence-navigation-link' . $unique_id . ' .wp-block-kadence-navigation-link .menu-label-description)' );
-		$css->add_property( 'padding-top', $css->render_size( $sized_attributes['descriptionSpacing'], $sized_attributes['descriptionSpacingUnit'] ) );
-		$css->add_property( 'color', $css->render_color( $sized_attributes['descriptionColor'] ) );
+		if( isset( $sized_attributes['descriptionSpacing'] ) ) {
+			$css->add_property( 'padding-top', $css->render_size( $sized_attributes['descriptionSpacing'], $sized_attributes['descriptionSpacingUnit'] ?? 'px' ) );
+		}
+
+		if( isset( $sized_attributes['descriptionColor'] ) ) {
+			$css->add_property( 'color', $css->render_color( $sized_attributes['descriptionColor'] ) );
+		}
 
 		//description styles hover
 		$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ':hover .menu-label-description:not(.wp-block-kadence-navigation-link' . $unique_id . ' .wp-block-kadence-navigation-link .menu-label-description)' );
-		$css->add_property( 'color', $css->render_color( $sized_attributes['descriptionColorHover'] ) );
+		if( isset( $sized_attributes['descriptionColorHover'] ) ) {
+			$css->add_property( 'color', $css->render_color( $sized_attributes['descriptionColorHover'] ) );
+		}
 
 		//description styles active
 		$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . '.current-menu-item .menu-label-description:not(.wp-block-kadence-navigation-link' . $unique_id . ' .wp-block-kadence-navigation-link .menu-label-description)' );
-		$css->add_property( 'color', $css->render_color( $sized_attributes['descriptionColorActive'] ) );
+		if( isset( $sized_attributes['descriptionColorHover'] ) ) {
+			$css->add_property( 'color', $css->render_color( $sized_attributes['descriptionColorHover'] ) );
+		}
 	}
 
 	/**
