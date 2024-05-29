@@ -503,8 +503,8 @@ export default function BackendStyles(props) {
 			`.wp-block-kadence-navigation .menu-container ul.menu .wp-block-kadence-navigation-link${uniqueID}.kadence-menu-mega-width-custom > ul.sub-menu`
 		);
 		css.add_property('width', css.render_size(megaMenuCustomWidth, megaMenuCustomWidthUnit));
-		// $css->set_selector( '.header-navigation[class*="header-navigation-dropdown-animation-fade"] #menu-item-' . $item->ID . '.kadence-menu-mega-enabled > .sub-menu' );
-		// $css->add_property( 'margin-left', '-' . ( $data['mega_menu_custom_width'] ? floor( $data['mega_menu_custom_width'] / 2 ) : '400' ) . 'px' );
+		// css.set_selector( '.header-navigation[class*="header-navigation-dropdown-animation-fade"] #menu-item-' . $item->ID . '.kadence-menu-mega-enabled > .sub-menu' );
+		// css.add_property( 'margin-left', '-' . ( $data['mega_menu_custom_width'] ? floor( $data['mega_menu_custom_width'] / 2 ) : '400' ) . 'px' );
 	} else if (megaMenuWidth === 'full' && currentRef?.current) {
 		css.set_selector(
 			`.wp-block-kadence-navigation .menu-container ul.menu .wp-block-kadence-navigation-link${uniqueID}.kadence-menu-mega-width-full > ul.sub-menu`
@@ -605,7 +605,7 @@ export default function BackendStyles(props) {
 		css.add_property('padding-bottom', css.render_size(previewMediaStylePadding[2], 'px'));
 		css.add_property('padding-left', css.render_size(previewMediaStylePadding[3], 'px'));
 
-		if (previewMediaAlign == 'left') {
+		if (previewMediaAlign === 'left') {
 			css.add_property('order', '-1');
 			css.add_property('margin-right', css.render_size(previewMediaStyleMargin[0], 'px'));
 
@@ -613,6 +613,26 @@ export default function BackendStyles(props) {
 				`.wp-block-kadence-navigation-link${uniqueID}.kadence-menu-has-description.kadence-menu-has-icon > .link-drop-wrap > a > .link-drop-title-wrap`
 			);
 			css.add_property('grid-template-columns', 'auto 1fr');
+		} else if (previewMediaAlign === 'top') {
+			css.add_property('order', '-1');
+			css.set_selector(
+				`.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a > .link-drop-title-wrap`
+			);
+			css.add_property('flex-direction', 'column');
+			css.set_selector(
+				`.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a > .link-drop-title-wrap .link-media-container`
+			);
+			css.add_property('align-self', 'center !important');
+		} else if (previewMediaAlign === 'bottom') {
+			css.add_property('order', '1');
+			css.set_selector(
+				`.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a > .link-drop-title-wrap`
+			);
+			css.add_property('flex-direction', 'column');
+			css.set_selector(
+				`.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a > .link-drop-title-wrap .link-media-container`
+			);
+			css.add_property('align-self', 'center !important');
 		} else {
 			css.add_property('margin-left', css.render_size(previewMediaStyleMargin[0], 'px'));
 		}

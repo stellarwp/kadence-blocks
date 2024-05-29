@@ -279,6 +279,18 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 				$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . '.kadence-menu-has-description.kadence-menu-has-icon > .link-drop-wrap > a > .link-drop-title-wrap' );
 				$css->add_property( 'grid-template-columns', 'auto 1fr' );
 
+			} else if ( $sized_attributes['mediaAlign'] == 'top' ) {
+				$css->add_property( 'order', '-1' );
+				$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a > .link-drop-title-wrap' );
+				$css->add_property( 'flex-direction', 'column' );
+				$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a > .link-drop-title-wrap .link-media-container' );
+				$css->add_property( 'align-self', 'center' );
+			} else if ( $sized_attributes['mediaAlign'] == 'bottom' ) {
+				$css->add_property( 'order', '1' );
+				$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a > .link-drop-title-wrap' );
+				$css->add_property( 'flex-direction', 'column' );
+				$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a > .link-drop-title-wrap .link-media-container' );
+				$css->add_property( 'align-self', 'center' );
 			} else {
 				$css->add_property( 'margin-left', $css->render_size( $media_style_margin[0], 'px' ) );
 			}
