@@ -2,102 +2,52 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Button, DropdownMenu, MenuGroup, MenuItem } from '@wordpress/components';
 
 import { useState } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { trash } from '@wordpress/icons';
-import CreateNew from './createNew';
+import { PostSelectorCheckbox } from '@kadence/components';
 
 import MenuEdit from './edit';
 import './editor.scss';
 
-// Register the blocks for use outside the block editor
-// import '../../../navigation/index';
-// import '../../../navigation-link/index';
-// import '../../../rowlayout/index';
-// import '../../../column/index';
-// import '../../../advancedheading/block';
+export default function MenuEditor({ clientId }) {
+	const { blocks } = useSelect(
+		(select) => {
+			const { getBlock, getBlockOrder } = select('core/block-editor');
+			const topLevelIds = getBlockOrder(clientId);
 
-export default function MenuEditor() {
-	const [selectedPostId, setSelectedPostId] = useState(0);
-	const { saveEntityRecord } = useDispatch('core');
-
-	const { posts } = useSelect(
-		(selectData) => ({
-			posts: selectData('core').getEntityRecords('postType', 'kadence_navigation', {
-				per_page: -1,
-				orderby: 'title',
-				order: 'asc',
-			}),
-		}),
-		[]
+			return {
+				blocks: topLevelIds.map((_id) => getBlock(_id)),
+			};
+		},
+		[clientId]
 	);
 
-	const trashPost = async (id) => {
-		try {
-			await saveEntityRecord('postType', 'kadence_navigation', {
-				id,
-				status: 'private',
-			});
-			console.log('Post trashed successfully');
-		} catch (error) {
-			console.error('Error trashing post:', error);
-		}
+	const onSelect = (posts) => {
+		console.log('onSelect Posts');
+		console.log(posts);
 	};
 
 	return (
 		<div className="kb-menu-visual-editor">
 			<div className="left-column">
 				<div className="menu-container">
-					{!posts ? (
-						<>Loading navigation items</>
-					) : (
-						posts.map((post) => (
-							<div className={'menu-item' + (selectedPostId === post.id ? ' selected' : '')}>
-								<Button
-									key={post.id}
-									className={'menu-name'}
-									onClick={() => {
-										setSelectedPostId(post.id);
-									}}
-								>
-									{post.title.rendered === ''
-										? __('(no title)', 'kadence-blocks')
-										: post.title.rendered}
-								</Button>
-								<DropdownMenu icon={'ellipsis'} className={'menu-options'} label="Select a direction">
-									{({ onClose }) => (
-										<>
-											<MenuGroup>
-												<MenuItem
-													icon={trash}
-													onClick={() => {
-														trashPost(post.id);
-														onClose();
-													}}
-												>
-													Trash
-												</MenuItem>
-											</MenuGroup>
-										</>
-									)}
-								</DropdownMenu>
-							</div>
-						))
-					)}
+					<PostSelectorCheckbox title={__('Posts', 'kadence-blocks')} onSelect={onSelect} />
 
-					<div className="menu-create">
-						<CreateNew />
-					</div>
+					<PostSelectorCheckbox
+						initialOpen={false}
+						postType={'pages'}
+						title={__('Pages', 'kadence-blocks')}
+						onSelect={onSelect}
+					/>
 				</div>
 				<div className={'add-menu'}></div>
 			</div>
 			<div className="right-column">
-				{selectedPostId ? (
-					<MenuEdit selectedPostId={selectedPostId} />
+				{blocks.length !== 0 ? (
+					<MenuEdit blocks={blocks} />
 				) : (
-					<>{__('Select or create a navigation item to continue', 'kadence-blocks')}</>
+					<>{__('Insert some blocks to get started.', 'kadence-blocks')}</>
 				)}
 			</div>
 		</div>

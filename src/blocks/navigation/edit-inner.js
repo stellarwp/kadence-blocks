@@ -53,10 +53,10 @@ import {
 	Button,
 	Placeholder,
 	MenuItem,
-	Icon,
+	Modal,
 } from '@wordpress/components';
 
-import { FormTitle } from './components';
+import { FormTitle, MenuEditor } from './components';
 
 /**
  * Internal dependencies
@@ -90,6 +90,10 @@ export function EditInner(props) {
 
 	const [activeTab, setActiveTab] = useState('general');
 	const [navPlaceholderBlocks, setNavPlaceholderBlocks] = useState([]);
+
+	const [isOpen, setOpen] = useState(false);
+	const openModal = () => setOpen(true);
+	const closeModal = () => setOpen(false);
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
@@ -828,6 +832,14 @@ export function EditInner(props) {
 
 				{activeTab === 'general' && (
 					<>
+						<Button variant="secondary" onClick={openModal}>
+							Open Modal
+						</Button>
+						{isOpen && (
+							<Modal size={'large'} title="Menu Editor" onRequestClose={closeModal}>
+								<MenuEditor clientId={clientId} />
+							</Modal>
+						)}
 						<KadencePanelBody
 							panelName={'kb-navigation-selected-switch'}
 							title={__('Selected Navigation', 'kadence-blocks')}
