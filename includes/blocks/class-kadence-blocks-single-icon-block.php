@@ -47,7 +47,6 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block {
 
 		return self::$instance;
 	}
-
 	/**
 	 * Builds CSS for block.
 	 *

@@ -37,8 +37,8 @@ import metadata from './block.json';
 import { __ } from '@wordpress/i18n';
 
 import { useBlockProps, BlockControls } from '@wordpress/block-editor';
-import { useEffect, useState } from '@wordpress/element';
-import { TextControl } from '@wordpress/components';
+import { useEffect, useState, useRef } from '@wordpress/element';
+import { TextControl, TextareaControl } from '@wordpress/components';
 
 function KadenceSingleIcon(props) {
 	const { attributes, className, setAttributes, clientId, isSelected, name, context } = props;
@@ -73,6 +73,7 @@ function KadenceSingleIcon(props) {
 		marginUnit,
 		mobileSize,
 		uniqueID,
+		tooltip,
 	} = attributes;
 
 	const icons = {
@@ -99,7 +100,6 @@ function KadenceSingleIcon(props) {
 		style,
 		level,
 	};
-
 	const nonTransAttrs = ['icon', 'link', 'target'];
 
 	const [activeTab, setActiveTab] = useState('general');
@@ -332,6 +332,14 @@ function KadenceSingleIcon(props) {
 								clientId={clientId}
 								context={context}
 							/>
+							<TextareaControl
+								label={__('Tooltip', 'kadence-blocks')}
+								help={__('Add a tooltip for mouse hovers and focus.', 'kadence-blocks')}
+								value={tooltip}
+								onChange={(value) => {
+									setAttributes({ tooltip: value });
+								}}
+							/>
 							<TextControl
 								label={__('Title for screen readers', 'kadence-blocks')}
 								help={__(
@@ -359,7 +367,6 @@ function KadenceSingleIcon(props) {
 					</>
 				)}
 			</KadenceInspectorControls>
-
 			<PreviewIcon attributes={attributes} previewDevice={previewDevice} />
 		</div>
 	);

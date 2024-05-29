@@ -1,7 +1,10 @@
 import { getPreviewSize, KadenceColorOutput, getSpacingOptionOutput } from '@kadence/helpers';
+import { useRef } from '@wordpress/element';
 import { IconRender } from '@kadence/components';
-
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css'; // optional
 export function PreviewIcon({ attributes, previewDevice }) {
+	const ref = useRef();
 	const {
 		inQueryBlock,
 		icon,
@@ -38,6 +41,7 @@ export function PreviewIcon({ attributes, previewDevice }) {
 		mobileSize,
 		uniqueID,
 		verticalAlignment,
+		tooltip,
 	} = attributes;
 
 	const previewSize = getPreviewSize(
@@ -100,54 +104,57 @@ export function PreviewIcon({ attributes, previewDevice }) {
 	const previewMarginUnit = undefined !== marginUnit && marginUnit ? marginUnit : 'px';
 
 	return (
-		<div className={`kt-svg-style-${style} kt-svg-icon-wrap kt-svg-item-${uniqueID}`}>
-			{icon && (
-				<>
-					<IconRender
-						className={`kt-svg-icon kt-svg-icon-${icon}`}
-						name={icon}
-						size={previewSize}
-						strokeWidth={'fe' === icon.substring(0, 2) ? width : undefined}
-						title={title ? title : ''}
-						style={{
-							color: color ? KadenceColorOutput(color) : undefined,
-							backgroundColor:
-								background && style !== 'default' ? KadenceColorOutput(background) : undefined,
-							paddingTop:
-								previewPaddingTop && style !== 'default'
-									? getSpacingOptionOutput(previewPaddingTop, previewPaddingUnit)
+		<>
+			<div ref={ref} className={`kt-svg-style-${style} kt-svg-icon-wrap kt-svg-item-${uniqueID}`}>
+				{icon && (
+					<>
+						<IconRender
+							className={`kt-svg-icon kt-svg-icon-${icon}`}
+							name={icon}
+							size={previewSize}
+							strokeWidth={'fe' === icon.substring(0, 2) ? width : undefined}
+							title={title ? title : ''}
+							style={{
+								color: color ? KadenceColorOutput(color) : undefined,
+								backgroundColor:
+									background && style !== 'default' ? KadenceColorOutput(background) : undefined,
+								paddingTop:
+									previewPaddingTop && style !== 'default'
+										? getSpacingOptionOutput(previewPaddingTop, previewPaddingUnit)
+										: undefined,
+								paddingRight:
+									previewPaddingRight && style !== 'default'
+										? getSpacingOptionOutput(previewPaddingRight, previewPaddingUnit)
+										: undefined,
+								paddingBottom:
+									previewPaddingBottom && style !== 'default'
+										? getSpacingOptionOutput(previewPaddingBottom, previewPaddingUnit)
+										: undefined,
+								paddingLeft:
+									previewPaddingLeft && style !== 'default'
+										? getSpacingOptionOutput(previewPaddingLeft, previewPaddingUnit)
+										: undefined,
+								borderColor: border && style !== 'default' ? KadenceColorOutput(border) : undefined,
+								borderWidth: borderWidth && style !== 'default' ? borderWidth + 'px' : undefined,
+								borderRadius: borderRadius && style !== 'default' ? borderRadius + '%' : undefined,
+								marginTop: previewMarginTop
+									? getSpacingOptionOutput(previewMarginTop, previewMarginUnit)
 									: undefined,
-							paddingRight:
-								previewPaddingRight && style !== 'default'
-									? getSpacingOptionOutput(previewPaddingRight, previewPaddingUnit)
+								marginRight: previewMarginRight
+									? getSpacingOptionOutput(previewMarginRight, previewMarginUnit)
 									: undefined,
-							paddingBottom:
-								previewPaddingBottom && style !== 'default'
-									? getSpacingOptionOutput(previewPaddingBottom, previewPaddingUnit)
+								marginBottom: previewMarginBottom
+									? getSpacingOptionOutput(previewMarginBottom, previewMarginUnit)
 									: undefined,
-							paddingLeft:
-								previewPaddingLeft && style !== 'default'
-									? getSpacingOptionOutput(previewPaddingLeft, previewPaddingUnit)
+								marginLeft: previewMarginLeft
+									? getSpacingOptionOutput(previewMarginLeft, previewMarginUnit)
 									: undefined,
-							borderColor: border && style !== 'default' ? KadenceColorOutput(border) : undefined,
-							borderWidth: borderWidth && style !== 'default' ? borderWidth + 'px' : undefined,
-							borderRadius: borderRadius && style !== 'default' ? borderRadius + '%' : undefined,
-							marginTop: previewMarginTop
-								? getSpacingOptionOutput(previewMarginTop, previewMarginUnit)
-								: undefined,
-							marginRight: previewMarginRight
-								? getSpacingOptionOutput(previewMarginRight, previewMarginUnit)
-								: undefined,
-							marginBottom: previewMarginBottom
-								? getSpacingOptionOutput(previewMarginBottom, previewMarginUnit)
-								: undefined,
-							marginLeft: previewMarginLeft
-								? getSpacingOptionOutput(previewMarginLeft, previewMarginUnit)
-								: undefined,
-						}}
-					/>
-				</>
-			)}
-		</div>
+							}}
+						/>
+					</>
+				)}
+			</div>
+			<Tippy content={tooltip} reference={ref}></Tippy>
+		</>
 	);
 }

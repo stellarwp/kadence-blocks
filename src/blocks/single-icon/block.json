@@ -115,6 +115,10 @@
 			"type": "array",
 			"default": ["", "", "", ""]
 		},
+		"tooltip": {
+			"type": "string",
+			"default": ""
+		},
 		"inQueryBlock": {
 			"type": "boolean",
 			"default": false
