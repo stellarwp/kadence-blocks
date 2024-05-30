@@ -201,6 +201,8 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 		$is_fe_icon = 'fe' === substr( $attributes['mediaIcon'][0]['icon'], 0, 2 );
 
+		$is_mega_menu = ! empty( $attributes['isMegaMenu'] );
+
 		$css->set_media_state( strtolower( $size ) );
 
 		$css->set_selector( '.wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a, .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap' );
@@ -348,38 +350,40 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		}
 
 		//mega menu width styles
-		if ($sized_attributes['megaMenuWidth'] === 'custom') {
-			$css->set_selector(
-				'.wp-block-kadence-navigation .menu-container ul.menu .wp-block-kadence-navigation-link' . $unique_id . ' > ul.sub-menu'
-			);
-			$css->add_property('width', $css->render_size($sized_attributes['megaMenuCustomWidth'], $sized_attributes['megaMenuCustomWidthUnit']));
-	
-			$css->set_selector(
-				'.wp-block-kadence-navigation .navigation[class*="header-navigation-dropdown-animation-fade"] .menu-container ul.menu .wp-block-kadence-navigation-link' . $unique_id . ' > ul.sub-menu'
-			);
-			$css->add_property('margin-left', '-50%');
-			$css->add_property('left', '50%');
-	
-			$css->set_selector(
-				'.wp-block-kadence-navigation .navigation.navigation-dropdown-animation-none .menu-container ul.menu .wp-block-kadence-navigation-link' . $unique_id . ' > ul.sub-menu'
-			);
-			$css->add_property('transform', 'translate(-50%, 0)');
-			$css->add_property('left', '50%');
-			
-			// $css->set_selector( '.header-navigation[class*="header-navigation-dropdown-animation-fade"] #menu-item-' . $item->ID . '.kadence-menu-mega-enabled > .sub-menu' );
-			// $css->add_property( 'margin-left', '-' . ( $data['mega_menu_custom_width'] ? floor( $data['mega_menu_custom_width'] / 2 ) : '400' ) . 'px' );
-		} else if ($sized_attributes['megaMenuWidth'] === 'full') {
-			//this is handled by a seperate js file
-		} else if ($sized_attributes['megaMenuWidth'] === 'container' || $sized_attributes['megaMenuWidth'] === '') {
-			$css->set_selector(
-				'.wp-block-kadence-navigation .menu-container ul.menu .wp-block-kadence-navigation-link' . $unique_id
-			);
-			$css->add_property('position', 'static');
-			$css->set_selector(
-				'.wp-block-kadence-navigation .menu-container ul.menu .wp-block-kadence-navigation-link' . $unique_id . ' > ul.sub-menu'
-			);
-			$css->add_property('width', '100%');
-			$css->add_property('left', '0');
+		if ( $is_mega_menu ) {
+			if ($sized_attributes['megaMenuWidth'] === 'custom') {
+				$css->set_selector(
+					'.wp-block-kadence-navigation .menu-container ul.menu .wp-block-kadence-navigation-link' . $unique_id . ' > ul.sub-menu'
+				);
+				$css->add_property('width', $css->render_size($sized_attributes['megaMenuCustomWidth'], $sized_attributes['megaMenuCustomWidthUnit']));
+		
+				$css->set_selector(
+					'.wp-block-kadence-navigation .navigation[class*="header-navigation-dropdown-animation-fade"] .menu-container ul.menu .wp-block-kadence-navigation-link' . $unique_id . ' > ul.sub-menu'
+				);
+				$css->add_property('margin-left', '-50%');
+				$css->add_property('left', '50%');
+		
+				$css->set_selector(
+					'.wp-block-kadence-navigation .navigation.navigation-dropdown-animation-none .menu-container ul.menu .wp-block-kadence-navigation-link' . $unique_id . ' > ul.sub-menu'
+				);
+				$css->add_property('transform', 'translate(-50%, 0)');
+				$css->add_property('left', '50%');
+				
+				// $css->set_selector( '.header-navigation[class*="header-navigation-dropdown-animation-fade"] #menu-item-' . $item->ID . '.kadence-menu-mega-enabled > .sub-menu' );
+				// $css->add_property( 'margin-left', '-' . ( $data['mega_menu_custom_width'] ? floor( $data['mega_menu_custom_width'] / 2 ) : '400' ) . 'px' );
+			} else if ($sized_attributes['megaMenuWidth'] === 'full') {
+				//this is handled by a seperate js file
+			} else if ($sized_attributes['megaMenuWidth'] === 'container' || $sized_attributes['megaMenuWidth'] === '') {
+				$css->set_selector(
+					'.wp-block-kadence-navigation .menu-container ul.menu .wp-block-kadence-navigation-link' . $unique_id
+				);
+				$css->add_property('position', 'static');
+				$css->set_selector(
+					'.wp-block-kadence-navigation .menu-container ul.menu .wp-block-kadence-navigation-link' . $unique_id . ' > ul.sub-menu'
+				);
+				$css->add_property('width', '100%');
+				$css->add_property('left', '0');
+			}
 		}
 	}
 
