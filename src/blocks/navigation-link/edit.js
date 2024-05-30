@@ -776,7 +776,7 @@ export default function Edit(props) {
 			<BlockControls>
 				<CopyPasteAttributes
 					attributes={attributes}
-					excludedAttrs={[]}
+					excludedAttrs={['url', 'id', 'rel', 'kind', 'isMegaMenu', 'isTopLevelLink', 'label']}
 					defaultAttributes={metadata.attributes}
 					blockSlug={metadata.name}
 					onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
