@@ -487,9 +487,25 @@
 			"type": "string",
 			"default": ""
 		},
+		"megaMenuWidthTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"megaMenuWidthMobile": {
+			"type": "string",
+			"default": ""
+		},
 		"megaMenuCustomWidth": {
 			"type": "number",
 			"default": 400
+		},
+		"megaMenuCustomWidthTablet": {
+			"type": "number",
+			"default": 0
+		},
+		"megaMenuCustomWidthMobile": {
+			"type": "number",
+			"default": 0
 		},
 		"megaMenuCustomWidthUnit": {
 			"type": "string",

@@ -1132,38 +1132,6 @@ $anchor: #5000b9;
 					}
 				}
 			}
-			> li.kadence-menu-mega-width-container {
-				position: static;
-				> ul.sub-menu {
-					width: 100%;
-					left: 0;
-				}
-			}
-		}
-	}
-	// Sub menu show/hide mega menu fixes
-	.navigation[class*="header-navigation-dropdown-animation-fade"] {
-		.menu-container {
-			ul.menu {
-				> li.kadence-menu-mega-width-custom {
-					> ul.sub-menu {
-						margin-left: -50%;
-						left: 50%;
-					}
-				}
-			}
-		}
-	}
-	.navigation.navigation-dropdown-animation-none {
-		.menu-container {
-			ul.menu {
-				> li.kadence-menu-mega-width-custom {
-					> ul.sub-menu {
-						transform: translate(-50%, 0);
-						left: 50%;
-					}
-				}
-			}
 		}
 	}
 
