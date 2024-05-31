@@ -174,6 +174,10 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.2.42 =
+Release Date: TBD 2024
+* Fix: Issue with progress bars default width attribute.
+
 = 3.2.41 =
 Release Date: May 31st 2024
 * Fix: Issue with custom colors sometimes causing the picker to crash.
