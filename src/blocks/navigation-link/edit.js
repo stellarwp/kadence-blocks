@@ -389,11 +389,10 @@ export default function Edit(props) {
 	}, []);
 
 	//hasChildren is a proxy for isSubmenu
-	const { innerBlocks, isAtMaxNesting, isSubMenuChild, isTopLevelLink, isParentOfSelectedBlock, hasChildren } =
+	const { isAtMaxNesting, isSubMenuChild, isTopLevelLink, isParentOfSelectedBlock, hasChildren, inMegaMenu } =
 		useSelect(
 			(select) => {
 				const {
-					getBlocks,
 					getBlockCount,
 					getBlockName,
 					getBlockRootClientId,
@@ -408,12 +407,12 @@ export default function Edit(props) {
 				]);
 
 				return {
-					innerBlocks: getBlocks(clientId),
 					isAtMaxNesting: navLinkParents.length >= maxNestingLevel,
 					isSubMenuChild: navLinkParents.length > 0,
 					isTopLevelLink: rootBlockName === 'core/navigation' || rootBlockName === 'kadence/navigation',
 					isParentOfSelectedBlock: hasSelectedInnerBlock(clientId, true),
 					hasChildren: !!getBlockCount(clientId),
+					inMegaMenu: getBlockParentsByBlockName(clientId, 'kadence/navigation').length !== 1,
 				};
 			},
 			[clientId]
@@ -854,7 +853,8 @@ export default function Edit(props) {
 							props,
 							doMegaMenu,
 							isTopLevelLink,
-							previewDevice
+							previewDevice,
+							inMegaMenu
 						)}
 						{isTopLevelLink && hasChildren && (
 							<ToggleControl
