@@ -33,6 +33,7 @@ function KadenceTabsSave({ attributes }) {
 		enableSubtitle,
 		widthType,
 		tabWidth,
+		linkPaneCollapse,
 	} = attributes;
 	const layoutClass = !layout ? 'tabs' : layout;
 	const tabLayoutClass = !tabletLayout ? 'inherit' : tabletLayout;
@@ -134,7 +135,7 @@ function KadenceTabsSave({ attributes }) {
 
 	return (
 		<div {...blockProps}>
-			<div className={innerClasses}>
+			<div className={innerClasses} data-no-allow-multiple-open={linkPaneCollapse ? true : null}>
 				<ul
 					className={`kt-tabs-title-list${
 						'tabs' === layout && widthType === 'percent'

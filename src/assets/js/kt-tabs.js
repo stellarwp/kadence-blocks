@@ -107,28 +107,9 @@
 
 			const ktAccordionAnchor = document.querySelectorAll('.kt-tabs-accordion-title a');
 			ktAccordionAnchor.forEach((thisElem) => {
+				const noAllowMultipleOpen = thisElem.closest('.kt-create-accordion')?.dataset?.noAllowMultipleOpen;
 				thisElem.addEventListener('click', function (evt) {
-					evt.preventDefault();
-
-					const tabId = thisElem.getAttribute('data-tab');
-					const accTitle = thisElem.parentElement;
-					const tabWrap = thisElem.closest('.kt-tabs-wrap');
-					const tabContent = tabWrap.querySelector(':scope > .kt-tabs-content-wrap > .kt-inner-tab-' + tabId);
-
-					if (accTitle.classList.contains('kt-tab-title-active')) {
-						tabWrap.classList.remove('kt-active-tab-' + tabId);
-						accTitle.classList.replace('kt-tab-title-active', 'kt-tab-title-inactive');
-						tabContent.style.display = 'none';
-					} else {
-						tabWrap.classList.add('kt-active-tab-' + tabId);
-						accTitle.classList.replace('kt-tab-title-inactive', 'kt-tab-title-active');
-						tabContent.style.display = 'block';
-					}
-
-					const resizeEvent = new Event('resize');
-					window.dispatchEvent(resizeEvent);
-					const tabEvent = new Event('kadence-tabs-open');
-					window.dispatchEvent(tabEvent);
+					window.KBTabs.setActiveAccordion(evt, thisElem, noAllowMultipleOpen);
 				});
 			});
 			window.KBTabs.setActiveWithHash();
@@ -170,6 +151,46 @@
 		},
 		isTabletSize() {
 			return window.innerWidth > 767 && window.innerWidth <= 1024;
+		},
+		setActiveAccordion(evt, thisElem, noAllowMultipleOpen) {
+			evt.preventDefault();
+
+			const clickedTabId = thisElem.getAttribute('data-tab');
+			const accTitle = thisElem.parentElement;
+			const tabWrap = thisElem.closest('.kt-tabs-wrap');
+			const tabContent = tabWrap.querySelector(':scope > .kt-tabs-content-wrap > .kt-inner-tab-' + clickedTabId);
+
+			if (accTitle.classList.contains('kt-tab-title-active')) {
+				tabWrap.classList.remove('kt-active-tab-' + clickedTabId);
+				accTitle.classList.replace('kt-tab-title-active', 'kt-tab-title-inactive');
+				tabContent.style.display = 'none';
+			} else {
+				tabWrap.classList.add('kt-active-tab-' + clickedTabId);
+				accTitle.classList.replace('kt-tab-title-inactive', 'kt-tab-title-active');
+				tabContent.style.display = 'block';
+			}
+
+			//if the appropriate setting is active, close all other accordions in this accordion
+			if (noAllowMultipleOpen) {
+				const currentAccordionAnchors = tabWrap.querySelectorAll('.kt-tabs-accordion-title a');
+				currentAccordionAnchors.forEach((otherElem) => {
+					const otherTabId = otherElem.getAttribute('data-tab');
+					const otherAccTitle = otherElem.parentElement;
+					const otherTabContent = tabWrap.querySelector(
+						':scope > .kt-tabs-content-wrap > .kt-inner-tab-' + otherTabId
+					);
+
+					if (otherTabId != clickedTabId) {
+						otherAccTitle.classList.replace('kt-tab-title-active', 'kt-tab-title-inactive');
+						otherTabContent.style.display = 'none';
+					}
+				});
+			}
+
+			const resizeEvent = new Event('resize');
+			window.dispatchEvent(resizeEvent);
+			const tabEvent = new Event('kadence-tabs-open');
+			window.dispatchEvent(tabEvent);
 		},
 		setActiveTab(wrapper, tabNumber, moveFocus = true) {
 			const prevActiveAnchor = wrapper.querySelector(':scope > .kt-tabs-title-list > li.kt-tab-title-active a');

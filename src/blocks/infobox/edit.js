@@ -191,6 +191,7 @@ function KadenceInfoBox(props) {
 		mobileMaxWidth,
 		kbVersion,
 		titleTagType,
+		fullHeight,
 	} = attributes;
 	const [mediaBorderControl, setMediaBorderControl] = useState('linked');
 	const [mediaPaddingControl, setMediaPaddingControl] = useState('linked');
@@ -1550,6 +1551,9 @@ function KadenceInfoBox(props) {
 			: false;
 	const renderCSS = (
 		<style>
+			{fullHeight
+				? `.kb-info-box-wrap${uniqueID} { height: 100%; } .kadence-inner-column-direction-horizontal > .kb-info-box-wrap${uniqueID} { height: auto; align-self: stretch; }`
+				: ''}
 			{mediaIcon[0].hoverColor
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-info-svg-icon, .kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-number { color: ${KadenceColorOutput(
 						mediaIcon[0].hoverColor
@@ -3654,6 +3658,15 @@ function KadenceInfoBox(props) {
 									}}
 									units={['px', '%', 'vw']}
 								/>
+								<ToggleControl
+									label={__('Set Height 100%', 'kadence-blocks')}
+									help={__(
+										'This will only work if the parent container is set to a height or you are in a row layout with 100% inner block height.',
+										'kadence-blocks'
+									)}
+									checked={undefined !== fullHeight ? fullHeight : false}
+									onChange={(value) => setAttributes({ fullHeight: value })}
+								/>
 							</KadencePanelBody>
 
 							<div className="kt-sidebar-settings-spacer"></div>
@@ -3732,6 +3745,7 @@ function KadenceInfoBox(props) {
 						'' !== previewContainerMarginLeft
 							? getSpacingOptionOutput(previewContainerMarginLeft, containerMarginUnit)
 							: undefined,
+					height: fullHeight ? '100%' : undefined,
 				}}
 			>
 				{'none' !== mediaType && (

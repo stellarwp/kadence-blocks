@@ -64,8 +64,17 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
-
+		if ( isset( $attributes['fullHeight'] ) && $attributes['fullHeight'] ) {
+			$css->set_selector( $base_selector );
+			$css->add_property( 'height', '100%' );
+			$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal > .kt-inside-inner-col > ' . $base_selector );
+			$css->add_property( 'height', 'auto' );
+			$css->add_property( 'align-self', 'stretch' );
+		}
 		$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap' );
+		if ( isset( $attributes['fullHeight'] ) && $attributes['fullHeight'] ) {
+			$css->add_property( 'height', '100%' );
+		}
 		// Container Border, check old first.
 		if ( ! empty( $attributes['containerBorder'] ) || $css->is_number( $attributes['containerBorderWidth'][0] ) || $css->is_number( $attributes['containerBorderWidth'][1] ) || $css->is_number( $attributes['containerBorderWidth'][2] ) || $css->is_number( $attributes['containerBorderWidth'][3] ) || $css->is_number( $attributes['containerBorderRadius'] ) ) {
 			if ( ! empty( $attributes['containerBorder'] ) ) {

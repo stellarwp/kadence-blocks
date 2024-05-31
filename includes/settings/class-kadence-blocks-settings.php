@@ -341,7 +341,7 @@ class Kadence_Blocks_Settings {
 					$theme_palette = get_theme_support( 'editor-color-palette' );
 					if ( isset( $settings['colors'] ) && is_array( $settings['colors'] ) ) {
 						$newpalette = array_merge( $settings['colors'], $san_palette );
-						$newpalette = array_map( 'unserialize', array_unique( array_map( 'serialize',$newpalette ) ) );
+						$newpalette = array_values( array_map( 'unserialize', array_unique( array_map( 'serialize', $newpalette ) ) ) );
 					} else {
 						$default_palette = array(
 							array(
@@ -400,13 +400,17 @@ class Kadence_Blocks_Settings {
 								'color' => '#313131',
 							),
 						);
-						$newpalette = array_merge( $default_palette, $san_palette );
+						$newpalette = array_values( array_merge( $default_palette, $san_palette ) );
 					}
 				} else {
-					$newpalette = $san_palette;
+					$newpalette = array_values( $san_palette );
 				}
 				$settings['colors'] = $newpalette;
 				if ( function_exists( 'get_block_editor_settings' ) ) {
+					if ( isset( $settings['__experimentalFeatures']['color']['palette']['theme'] ) && is_array( $settings['__experimentalFeatures']['color']['palette']['theme'] ) ) {
+						$newpalette = array_merge( $settings['__experimentalFeatures']['color']['palette']['theme'], $san_palette );
+						$newpalette = array_values( array_map( 'unserialize', array_unique( array_map( 'serialize', $newpalette ) ) ) );
+					}
 					$settings['__experimentalFeatures']['color']['palette']['theme'] = $newpalette;
 				}
 			}

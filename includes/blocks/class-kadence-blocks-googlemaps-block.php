@@ -223,7 +223,7 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 			'cobalt'                 => '[{"featureType":"all","elementType":"all","stylers":[{"invert_lightness":true},{"saturation":10},{"lightness":30},{"gamma":0.5},{"hue":"#435158"}]}]',
 			'avocado'                => '[{"featureType":"water","elementType":"geometry","stylers":[{"visibility":"on"},{"color":"#aee2e0"}]},{"featureType":"landscape","elementType":"geometry.fill","stylers":[{"color":"#abce83"}]},{"featureType":"poi","elementType":"geometry.fill","stylers":[{"color":"#769E72"}]},{"featureType":"poi","elementType":"labels.text.fill","stylers":[{"color":"#7B8758"}]},{"featureType":"poi","elementType":"labels.text.stroke","stylers":[{"color":"#EBF4A4"}]},{"featureType":"poi.park","elementType":"geometry","stylers":[{"visibility":"simplified"},{"color":"#8dab68"}]},{"featureType":"road","elementType":"geometry.fill","stylers":[{"visibility":"simplified"}]},{"featureType":"road","elementType":"labels.text.fill","stylers":[{"color":"#5B5B3F"}]},{"featureType":"road","elementType":"labels.text.stroke","stylers":[{"color":"#ABCE83"}]},{"featureType":"road","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#A4C67D"}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":"#9BBF72"}]},{"featureType":"road.highway","elementType":"geometry","stylers":[{"color":"#EBF4A4"}]},{"featureType":"transit","stylers":[{"visibility":"off"}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"visibility":"on"},{"color":"#87ae79"}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#7f2200"},{"visibility":"off"}]},{"featureType":"administrative","elementType":"labels.text.stroke","stylers":[{"color":"#ffffff"},{"visibility":"on"},{"weight":4.1}]},{"featureType":"administrative","elementType":"labels.text.fill","stylers":[{"color":"#495421"}]},{"featureType":"administrative.neighborhood","elementType":"labels","stylers":[{"visibility":"off"}]}]',
 			'night_mode'             => '[{elementType:"geometry",stylers:[{color:"#242f3e"}]},{elementType:"labels.text.stroke",stylers:[{color:"#242f3e"}]},{elementType:"labels.text.fill",stylers:[{color:"#746855"}]},{featureType:"administrative.locality",elementType:"labels.text.fill",stylers:[{color:"#d59563"}]},{featureType:"poi",elementType:"labels.text.fill",stylers:[{color:"#d59563"}]},{featureType:"poi.park",elementType:"geometry",stylers:[{color:"#263c3f"}]},{featureType:"poi.park",elementType:"labels.text.fill",stylers:[{color:"#6b9a76"}]},{featureType:"road",elementType:"geometry",stylers:[{color:"#38414e"}]},{featureType:"road",elementType:"geometry.stroke",stylers:[{color:"#212a37"}]},{featureType:"road",elementType:"labels.text.fill",stylers:[{color:"#9ca5b3"}]},{featureType:"road.highway",elementType:"geometry",stylers:[{color:"#746855"}]},{featureType:"road.highway",elementType:"geometry.stroke",stylers:[{color:"#1f2835"}]},{featureType:"road.highway",elementType:"labels.text.fill",stylers:[{color:"#f3d19c"}]},{featureType:"transit",elementType:"geometry",stylers:[{color:"#2f3948"}]},{featureType:"transit.station",elementType:"labels.text.fill",stylers:[{color:"#d59563"}]},{featureType:"water",elementType:"geometry",stylers:[{color:"#17263c"}]},{featureType:"water",elementType:"labels.text.fill",stylers:[{color:"#515c6d"}]},{featureType:"water",elementType:"labels.text.stroke",stylers:[{color:"#17263c"}]}]',
-			'custom'                 => isset( $attributes['customSnazzy'] ) ? $attributes['customSnazzy'] : '[]'
+			'custom'                 => isset( $attributes['customSnazzy'] ) ? $this->sanitize_custom_snazzy_styles( $attributes['customSnazzy'] ) : '[]'
 		];
 
 		// Replace API key with default or users set key.
@@ -270,6 +270,51 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 
 	private function escape_for_js_variable ( $string ) {
 		return preg_replace('/[^a-zA-Z0-9_]/', '', $string);
+	}
+
+	/**
+	 * Sanitize custom Snazzy styles.
+	 *
+	 * @param mixed $input The input to sanitize.
+	 * @return string The sanitized JSON string.
+	 */
+	public function sanitize_custom_snazzy_styles( $input ) {
+		if ( ! is_string( $input ) ) {
+			return '[]';
+		}
+
+		$sanitized_array = array();
+		$decoded_input = json_decode( $input, true );
+
+		if ( json_last_error() === JSON_ERROR_NONE && is_array( $decoded_input ) ) {
+			foreach ( $decoded_input as $item ) {
+				$sanitized_array[] = $this->sanitize_snazzy_item( $item );
+			}
+		}
+
+		return wp_json_encode( $sanitized_array );
+	}
+
+	/**
+	 * Recursively sanitize each item in the Snazzy styles array.
+	 *
+	 * @param mixed $item The item to sanitize.
+	 * @return mixed The sanitized item.
+	 */
+	public function sanitize_snazzy_item( $item ) {
+		if ( is_array( $item ) ) {
+			$sanitized_item = array();
+			foreach ( $item as $key => $value ) {
+				$sanitized_key = is_string( $key ) ? sanitize_text_field( $key ) : $key;
+				$sanitized_item[ $sanitized_key ] = $this->sanitize_snazzy_item( $value );
+			}
+			return $sanitized_item;
+		} elseif ( is_string( $item ) ) {
+			return sanitize_text_field( $item );
+		} elseif ( is_numeric( $item ) ) {
+			return $item;
+		}
+		return null;
 	}
 
 	/**
