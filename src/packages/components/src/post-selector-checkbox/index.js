@@ -11,13 +11,14 @@ import './editor.scss';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { useEffect, useState, useRef } from '@wordpress/element';
-import { Button, TabPanel, Spinner, CheckboxControl, PanelBody } from '@wordpress/components';
+import { useEffect, useState, useRef, useCallback, useMemo } from '@wordpress/element';
+import { Button, TabPanel, Spinner, CheckboxControl, TextControl, PanelBody } from '@wordpress/components';
+import { decodeEntities } from '@wordpress/html-entities';
 import { addQueryArgs } from '@wordpress/url';
-import KadencePanelBody from '../panel-body';
 import apiFetch from '@wordpress/api-fetch';
+import { debounce } from 'lodash';
 
-export default function PostSelectorCheckbox( { postType = 'posts', title = '', onSelect, initialOpen = true } ) {
+export default function PostSelectorCheckbox( { postType = 'posts', title = '', onSelect, initialOpen = true, useForceState = false, forceOpen = false, onPanelBodyToggle } ) {
 
 	const PanelBodyTitle = title === '' ? __( 'Posts', 'kadence-blocks' ) : title;
 	const [ selectedPosts, setSelectedPosts ] = useState( [] );
@@ -25,11 +26,13 @@ export default function PostSelectorCheckbox( { postType = 'posts', title = '', 
 	const [ isLoadingMore, setIsLoadingMore ] = useState( false );
 	const [ page, setPage ] = useState( 1 );
 	const [ posts, setPosts ] = useState( [] );
+	const [ searchPosts, setSearchPosts ] = useState( [] );
 	const [ hasMore, setHasMore ] = useState( false );
 	const [ searchQuery, setSearchQuery ] = useState( '' );
 	const [ tab, setTab ] = useState( 'recent' );
 
 	const scrollableDivRef = useRef( null );
+	const searchRef = useRef( null );
 
 	useEffect( () => {
 		getPosts();
@@ -38,12 +41,10 @@ export default function PostSelectorCheckbox( { postType = 'posts', title = '', 
 	useEffect( () => {
 		const handleScroll = () => {
 			const div = scrollableDivRef.current;
-			if ( ( div.scrollTop + div.clientHeight + 25 ) >= div.scrollHeight ) {
+			if ( ( div.scrollTop + div.clientHeight + 25 ) >= div.scrollHeight && tab !== 'search' ) {
 				if ( !isLoading && !isLoadingMore && hasMore ) {
 					setPage( page + 1 );
 					setIsLoadingMore( true );
-
-					// loadMore().finally(() => setIsLoading(false));
 				}
 			}
 		};
@@ -69,18 +70,26 @@ export default function PostSelectorCheckbox( { postType = 'posts', title = '', 
 		}
 	};
 
-	const getPosts = () => {
+	const getPosts = ( type = 'standard', query = '') => {
 		if ( !isLoadingMore ) {
 			setIsLoading( true );
 		}
 
+		const args = {
+			per_page: 30,
+			page
+		};
+
+		if( type === 'search' ) {
+			args.search = query;
+		} else {
+			args.orderby = tab === 'all' ? 'title' : 'date';
+			args.order = tab === 'all' ? 'asc' : 'desc';
+		}
+
+
 		apiFetch( {
-			path : addQueryArgs( `/wp/v2/${postType}`, {
-				per_page: 20,
-				orderby : tab === 'all' ? 'title' : 'date',
-				order   : tab === 'all' ? 'asc' : 'desc',
-				page,
-			} ),
+			path : addQueryArgs( `/wp/v2/${postType}`, args),
 			parse: false,
 		} )
 			.then( ( response ) => {
@@ -88,6 +97,8 @@ export default function PostSelectorCheckbox( { postType = 'posts', title = '', 
 
 					if ( isLoadingMore ) {
 						setPosts( ( prevPosts ) => [ ...prevPosts, ...postResults ] );
+					} else if( type === 'search' ) {
+						setSearchPosts( postResults );
 					} else {
 						setPosts( postResults );
 					}
@@ -103,28 +114,10 @@ export default function PostSelectorCheckbox( { postType = 'posts', title = '', 
 				// Dont clear existing posts if we were loading more
 				if ( !isLoadingMore ) {
 					setPosts( [] );
+					setSearchPosts( [] );
 				}
 				setIsLoading( false );
 				setIsLoadingMore( false );
-			} );
-	};
-
-	const handleSearch = () => {
-		setIsLoading( true );
-
-		apiFetch( {
-			path: addQueryArgs( `/wp/v2/${postType}`, {
-				search  : searchQuery,
-				per_page: 20,
-			} ),
-		} )
-			.then( ( searchResults ) => {
-				setPosts( searchResults );
-				setIsLoading( false );
-			} )
-			.catch( () => {
-				setPosts( [] );
-				setIsLoading( false );
 			} );
 	};
 
@@ -144,30 +137,26 @@ export default function PostSelectorCheckbox( { postType = 'posts', title = '', 
 		}
 	};
 
-	const Search = () => (
-		<div>
-			<input
-				type="text"
-				value={searchQuery}
-				onChange={( e ) => setSearchQuery( e.target.value )}
-				placeholder={__( 'Search posts...', 'kadence-blocks' )}
-			/>
-			<Button isPrimary onClick={handleSearch} size={'compact'}>
-				{__( 'Search', 'kadence-blocks' )}
-			</Button>
-		</div>
-	);
+	const debouncedSearch = useMemo(() => debounce((value) => {
+		getPosts('search', value);
+	}, 300), []);
 
-	const renderPosts = () => (
+	// Wrap handleSearchChange with useCallback to prevent unnecessary re-renders
+	const handleSearchChange = useCallback((value) => {
+		setSearchQuery(value);
+		debouncedSearch(value);
+	}, [debouncedSearch]);
+
+	const renderPosts = ( overridePosts = null ) => {
+		const postsToRender = overridePosts || posts;
+
+		return (
 		<div>
-			<div ref={scrollableDivRef}
-				 style={{
-					 maxHeight: '200px', overflowY: 'scroll', border: 'solid 1px #dcdcde', padding: '10px',
-				 }}>
-				{posts.map( ( post ) => (
+			<div ref={scrollableDivRef} className={'posts-container'}>
+				{postsToRender.map( ( post ) => (
 					<div key={post.id}>
 						<CheckboxControl
-							label={post.title.rendered}
+							label={ decodeEntities( post.title.rendered ) }
 							checked={selectedPosts.some( ( p ) => p.id === post.id )}
 							onChange={() => handleCheckboxChange( post )}
 						/>
@@ -176,7 +165,7 @@ export default function PostSelectorCheckbox( { postType = 'posts', title = '', 
 				{isLoadingMore && <div><Spinner/></div>}
 			</div>
 
-			<div style={{ marginTop: '10px', paddingTop: '10px' }}>
+			<div style={{ marginTop: '10px' }}>
 				<CheckboxControl
 					label={__( 'Select All', 'kadence-blocks' )}
 					checked={selectedPosts.length === posts.length}
@@ -185,12 +174,25 @@ export default function PostSelectorCheckbox( { postType = 'posts', title = '', 
 				/>
 			</div>
 		</div>
-	);
+	) };
+
+	const panelBodyProps = {};
+
+	if( useForceState ) {
+		panelBodyProps.opened = forceOpen;
+	} else {
+		panelBodyProps.initialOpen = initialOpen;
+	}
+
+	if( onPanelBodyToggle ) {
+		panelBodyProps.onToggle = onPanelBodyToggle;
+	}
+
 
 	return (
-		<KadencePanelBody title={PanelBodyTitle} initialOpen={initialOpen}>
+		<PanelBody className={'kb-post-selector-checkbox'} title={PanelBodyTitle} {...panelBodyProps}>
 			<TabPanel
-				className="my-tab-panel"
+				className="tab-panel"
 				activeClass="active-tab"
 				onSelect={onTabSelect}
 				tabs={[
@@ -211,18 +213,24 @@ export default function PostSelectorCheckbox( { postType = 'posts', title = '', 
 					},
 				]}
 			>
-				{( tab ) => (
-					<>
-						{isLoading ? (
-							<Spinner/>
-						) : (
-							<>
-								{tab.name === 'recent' && renderPosts()}
-								{tab.name === 'all' && renderPosts()}
-								{tab.name === 'search' && <Search/>}
-							</>
-						)}
-					</>
+				{(tab) => (
+					<div className="tab-content-container">
+							<div className="tab-content">
+								{tab.name === 'recent' || tab.name === 'all' ? (
+									<>{( isLoading ? <Spinner /> : renderPosts() ) }</>
+								) : (
+									<div className="search-container">
+										<TextControl
+											ref={searchRef}
+											value={searchQuery}
+											onChange={(value) => handleSearchChange(value)}
+											placeholder={__('Search posts...', 'kadence-blocks')}
+										/>
+										<>{( isLoading ? <Spinner /> : renderPosts( searchPosts ) ) }</>
+									</div>
+								)}
+							</div>
+					</div>
 				)}
 			</TabPanel>
 			<Button
@@ -234,6 +242,6 @@ export default function PostSelectorCheckbox( { postType = 'posts', title = '', 
 			>
 				{__( 'Add to Menu', 'kadence-blocks' )}
 			</Button>
-		</KadencePanelBody>
+		</PanelBody>
 	);
 }
