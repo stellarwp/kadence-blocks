@@ -176,6 +176,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 = 3.2.42 =
 Release Date: TBD 2024
+* Add: Ability to reset max width on Advanced Text block.
 * Fix: Issue with progress bars default width attribute.
 
 = 3.2.41 =
