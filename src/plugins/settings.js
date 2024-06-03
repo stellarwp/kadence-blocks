@@ -10,7 +10,7 @@ import { store as noticesStore } from '@wordpress/notices';
 import { __ } from '@wordpress/i18n';
 
 function KadenceSetting(props) {
-	const { slug, label, type, theDefault } = props;
+	const { slug, label, type, theDefault, successCallback } = props;
 
 	const [isSaving, setIsSaving] = useState(false);
 	const [settings, setSettings] = useState(
@@ -33,6 +33,7 @@ function KadenceSetting(props) {
 			setIsSaving(false);
 			setSettings(config);
 			kadence_blocks_params.globalSettings = JSON.stringify(config);
+			successCallback && successCallback(key, value);
 		});
 	};
 
