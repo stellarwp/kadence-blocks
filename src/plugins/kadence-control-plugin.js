@@ -25,7 +25,7 @@ import KadenceVisibilitySettings from './block-visibility-settings';
 import ExportDefaults from './block-defaults/export-defaults';
 import ImportDefaults from './block-defaults/import-defaults';
 import ResetDefaults from './block-defaults/reset-defaults';
-
+import DefaultEditorBlock from './default-editor-block';
 /**
  * Build the row edit
  */
@@ -731,6 +731,8 @@ function KadenceConfig() {
 								))}
 							</div>
 						</PanelBody>
+
+						<DefaultEditorBlock />
 
 						<PanelBody title={__('Import/Export Block Settings', 'kadence-blocks')} initialOpen={false}>
 							<ExportDefaults />

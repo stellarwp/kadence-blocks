@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.3
 Tested up to: 6.5
-Stable tag: 3.2.40
+Stable tag: 3.2.41
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -173,6 +173,17 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 3.2.42 =
+Release Date: TBD 2024
+* Add: Ability to set Advanced Text as default block in editor.
+* Add: Ability to reset max width on Advanced Text block.
+* Fix: Issue with progress bars default width attribute.
+* Fix: Issue with fullwidth synced patterns.
+
+= 3.2.41 =
+Release Date: May 31st 2024
+* Fix: Issue with custom colors sometimes causing the picker to crash.
 
 = 3.2.40 =
 Release Date: May 29th 2024
