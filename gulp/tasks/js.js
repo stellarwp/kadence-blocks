@@ -43,6 +43,25 @@ function copyVendorFiles() {
 		.pipe(dest(config.dirs.dist + '/js'));
 }
 
+function copyStaticFiles() {
+	return src(['src/assets/js/vendor/static/*.js'])
+		.pipe(
+			rename(function (path) {
+				// We don't need to rename if .min is already in filename
+				if (path.basename.endsWith('.min')) {
+					return path;
+				}
+
+				return {
+					dirname: path.dirname,
+					basename: path.basename,
+					extname: '.min.js',
+				};
+			})
+		)
+		.pipe(dest(config.dirs.dist + '/js'));
+}
+
 /**
  * Build standalone js files.
  *
@@ -52,6 +71,7 @@ function miscJs() {
 	let process = processFiles();
 
 	let copy = copyVendorFiles();
+	let static = copyStaticFiles();
 
 	return copy;
 }
