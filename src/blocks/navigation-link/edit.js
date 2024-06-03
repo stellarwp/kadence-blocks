@@ -33,6 +33,7 @@ import {
 	getColorClassName,
 	useInnerBlocksProps,
 	BlockSettingsMenuControls,
+	AlignmentToolbar,
 } from '@wordpress/block-editor';
 import { isURL, prependHTTP, safeDecodeURI } from '@wordpress/url';
 import { useState, useEffect, useRef } from '@wordpress/element';
@@ -310,6 +311,7 @@ export default function Edit(props) {
 		dropdownBorderRadiusTablet,
 		dropdownBorderRadiusMobile,
 		dropdownBorderRadiusUnit,
+		align,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
@@ -808,6 +810,13 @@ export default function Edit(props) {
 					doMegaMenu,
 					previewDevice
 				)}
+
+				<AlignmentToolbar
+					value={align}
+					onChange={(nextAlign) => {
+						setAttributes({ align: nextAlign });
+					}}
+				/>
 			</BlockControls>
 			{isSelected && (
 				<BlockSettingsMenuControls>

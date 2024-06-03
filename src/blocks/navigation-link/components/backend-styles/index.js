@@ -167,6 +167,7 @@ export default function BackendStyles(props) {
 		descriptionPositioningTablet,
 		descriptionPositioningMobile,
 		isMegaMenu,
+		align,
 	} = attributes;
 
 	const editorElement = useEditorElement(currentRef, []);
@@ -851,6 +852,12 @@ export default function BackendStyles(props) {
 		`.wp-block-kadence-navigation-link${uniqueID}.current-menu-item .menu-label-description:not(.wp-block-kadence-navigation-link${uniqueID} .wp-block-kadence-navigation-link .menu-label-description)`
 	);
 	css.add_property('color', css.render_color(previewDescriptionColorActive));
+
+	//link and description text alignment
+	css.set_selector(
+		`.wp-block-kadence-navigation-link${uniqueID} .link-drop-title-wrap:not(.wp-block-kadence-navigation-link${uniqueID} .wp-block-kadence-navigation-link .link-drop-title-wrap)`
+	);
+	css.add_property('text-align', align != '' ? align : 'left');
 
 	const cssOutput = css.css_output();
 

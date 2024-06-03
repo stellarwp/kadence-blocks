@@ -922,6 +922,10 @@
 					"loadGoogle": true
 				}
 			]
+		},
+		"align": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"usesContext": [

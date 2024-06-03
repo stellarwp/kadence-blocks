@@ -385,6 +385,10 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 				$css->add_property('left', '0');
 			}
 		}
+
+		//text and description text alignment
+		$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' .link-drop-title-wrap:not(.wp-block-kadence-navigation-link' . $unique_id . ' .wp-block-kadence-navigation-link .link-drop-title-wrap)' );
+		$css->add_property( 'text-align', $sized_attributes['align'] ? $sized_attributes['align'] : 'left' );
 	}
 
 	/**
