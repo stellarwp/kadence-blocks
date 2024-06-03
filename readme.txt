@@ -179,6 +179,7 @@ Release Date: TBD 2024
 * Add: Ability to set Advanced Text as default block in editor.
 * Add: Ability to reset max width on Advanced Text block.
 * Fix: Issue with progress bars default width attribute.
+* Fix: Issue with fullwidth synced patterns.
 
 = 3.2.41 =
 Release Date: May 31st 2024
