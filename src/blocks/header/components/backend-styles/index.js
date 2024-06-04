@@ -504,7 +504,10 @@ export default function BackendStyles(props) {
 	css.add_property('padding-bottom', getSpacingOptionOutput(previewPaddingBottom, paddingUnit));
 	css.add_property('padding-left', getSpacingOptionOutput(previewPaddingLeft, paddingUnit));
 	css.add_property('min-height', getSpacingOptionOutput(previewHeight, heightUnit));
-	css.add_property('max-width', getSpacingOptionOutput(previewWidth, widthUnit));
+	if (previewWidth != 0) {
+		css.add_property('max-width', getSpacingOptionOutput(previewWidth, widthUnit));
+		css.add_property('margin', '0 auto');
+	}
 
 	if (previewIsTransparent != '1') {
 		if ('normal' === background?.type && background?.image) {
