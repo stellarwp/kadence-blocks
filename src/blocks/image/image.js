@@ -719,6 +719,13 @@ export default function Image({
 									unit={'px'}
 									showUnit={true}
 									units={['px']}
+									reset={() =>
+										setAttributes({
+											imgMaxWidth: '',
+											imgMaxWidthTablet: '',
+											imgMaxWidthMobile: '',
+										})
+									}
 								/>
 							)}
 							{(!globalAlt || !image) && (

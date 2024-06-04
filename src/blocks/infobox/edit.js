@@ -2363,6 +2363,13 @@ function KadenceInfoBox(props) {
 												min={5}
 												max={800}
 												step={1}
+												reset={() => {
+													//empty value does not re-render component, so doing it this way to force a re-render
+													saveMediaImage({ maxWidth: 4000 });
+													setTimeout(() => {
+														saveMediaImage({ maxWidth: '' });
+													}, 20);
+												}}
 											/>
 											<div className="components-base-control">
 												<TextareaControl
