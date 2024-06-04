@@ -25,6 +25,7 @@ export default function BackendStyles(props) {
 		containerMaxWidth,
 		containerMaxWidthTablet,
 		containerMaxWidthMobile,
+		containerMaxWidthUnit,
 		width,
 		widthTablet,
 		widthMobile,
@@ -190,14 +191,19 @@ export default function BackendStyles(props) {
 	css.render_measure_output(padding, paddingTablet, paddingMobile, previewDevice, 'padding', paddingUnit);
 	css.add_property(
 		'max-width',
-		previewContainerMaxWidth != 0 && null !== previewContainerMaxWidth ? previewContainerMaxWidth + 'px' : ''
+		previewContainerMaxWidth != 0 && null !== previewContainerMaxWidth
+			? previewContainerMaxWidth + containerMaxWidthUnit
+			: ''
 	);
 
 	//content area inner alignment
 	if (previewHAlign == 'center') {
 		css.add_property('align-items', 'center');
+		css.add_property('margin-left', 'auto');
+		css.add_property('margin-right', 'auto');
 	} else if (previewHAlign == 'right') {
 		css.add_property('align-items', 'flex-end');
+		css.add_property('margin-left', 'auto');
 	}
 	if (previewVAlign == 'center') {
 		css.add_property('justify-content', 'center');
