@@ -72,6 +72,42 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		}
 		$css->set_media_state( 'desktop' );
 
+		//container
+		$css->set_selector( '.wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap' );
+		$css->render_measure_output( $nav_link_attributes, 'borderRadius', 'border-radius', array(
+			'desktop_key' => 'borderRadius',
+			'tablet_key'  => 'borderRadiusTablet',
+			'mobile_key'  => 'borderRadiusMobile',
+		) );
+		$css->render_border_styles( $nav_link_attributes, 'border' );
+		if ( $nav_link_attributes['shadow'] && isset( $nav_link_attributes['shadow'][0] ) && $nav_link_attributes['shadow'][0]['enable'] ) {
+			$css->add_property( 'box-shadow', $css->render_shadow( $nav_link_attributes['shadow'][0] ) );
+		}
+
+		//container hover
+		$css->set_selector( '.wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap:hover' );
+		$css->render_measure_output( $nav_link_attributes, 'borderRadiusHover', 'border-radius', array(
+			'desktop_key' => 'borderRadiusHover',
+			'tablet_key'  => 'borderRadiusHoverTablet',
+			'mobile_key'  => 'borderRadiusHoverMobile',
+		) );
+		$css->render_border_styles( $nav_link_attributes, 'borderHover' );
+		if ( $nav_link_attributes['shadowHover'] && isset( $nav_link_attributes['shadowHover'][0] ) && $nav_link_attributes['shadowHover'][0]['enable'] ) {
+			$css->add_property( 'box-shadow', $css->render_shadow( $nav_link_attributes['shadowHover'][0] ) );
+		}
+
+		//container active
+		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container > ul > li.menu-item.current-menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap' );
+		$css->render_measure_output( $nav_link_attributes, 'borderRadiusActive', 'border-radius', array(
+			'desktop_key' => 'borderRadiusActive',
+			'tablet_key'  => 'borderRadiusActiveTablet',
+			'mobile_key'  => 'borderRadiusActiveMobile',
+		) );
+		$css->render_border_styles( $nav_link_attributes, 'borderActive' );
+		if ( $nav_link_attributes['shadowActive'] && isset( $nav_link_attributes['shadowActive'][0] ) && $nav_link_attributes['shadowActive'][0]['enable'] ) {
+			$css->add_property( 'box-shadow', $css->render_shadow( $nav_link_attributes['shadowActive'][0] ) );
+		}
+
 		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container > ul li.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a' );
 		$css->render_typography( $nav_link_attributes );
 		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container > ul li.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a .link-highlight-label' );
@@ -162,12 +198,15 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 		// Dropdown.
 		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container ul .wp-block-kadence-navigation-link' . $unique_id . ' ul.sub-menu, .wp-block-kadence-navigation .navigation .menu-container ul .wp-block-kadence-navigation-link' . $unique_id . ' ul.submenu' );
-		$css->render_measure_output( $attributes, 'dropdownBorderRadius', 'border-radius', array(
+		$css->render_measure_output( $nav_link_attributes, 'dropdownBorderRadius', 'border-radius', array(
 			'desktop_key' => 'dropdownBorderRadius',
 			'tablet_key'  => 'dropdownBorderRadiusTablet',
 			'mobile_key'  => 'dropdownBorderRadiusMobile',
 		) );
-		$css->render_border_styles( $attributes, 'dropdownBorder' );
+		$css->render_border_styles( $nav_link_attributes, 'dropdownBorder' );
+		if ( $sized_attributes['dropdownShadow'] && isset( $sized_attributes['dropdownShadow'][0] ) && $sized_attributes['dropdownShadow'][0]['enable'] ) {
+			$css->add_property( 'box-shadow', $css->render_shadow( $sized_attributes['dropdownShadow'][0] ) );
+		}
 
 		//description styles
 		$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' .menu-label-description:not(.wp-block-kadence-navigation-link' . $unique_id . ' .wp-block-kadence-navigation-link .menu-label-description)' );
@@ -205,15 +244,34 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 		$css->set_media_state( strtolower( $size ) );
 
+		//container
 		$css->set_selector( '.wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a, .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap' );
 		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColor'] ), $sized_attributes['linkColor'] );
-		$css->add_property( 'background', $css->render_color( $sized_attributes['background'] ) );
+		$css->set_selector( '.wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap' );
+		if ( 'gradient' === $sized_attributes['backgroundType'] && ! empty( $sized_attributes['backgroundGradient'] ) ) {
+			$css->add_property( 'background', $sized_attributes['backgroundGradient'] );
+		} else {
+			$css->add_property( 'background', $css->render_color( $sized_attributes['background'] ) );
+		}
+
+		//container hover
 		$css->set_selector( '.wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap:hover > a, .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap:hover' );
 		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorHover'] ) );
-		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundHover'] ) );
+		$css->set_selector( '.wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap:hover' );
+		if ( 'gradient' === $sized_attributes['backgroundTypeHover'] && ! empty( $sized_attributes['backgroundGradientHover'] ) ) {
+			$css->add_property( 'background', $sized_attributes['backgroundGradientHover'] );
+		} else {
+			$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundHover'] ) );
+		}
+		//container active
 		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container > ul > li.menu-item.current-menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a, .wp-block-kadence-navigation .navigation .menu-container > ul > li.menu-item.current-menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap' );
 		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorActive'] ) );
-		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundActive'] ) );
+		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container > ul > li.menu-item.current-menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap' );
+		if ( 'gradient' === $sized_attributes['backgroundTypeActive'] && ! empty( $sized_attributes['backgroundGradientActive'] ) ) {
+			$css->add_property( 'background', $sized_attributes['backgroundGradientActive'] );
+		} else {
+			$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundActive'] ) );
+		}
 
 		// Styles For Links in Transparent Header.
 		$css->set_selector( '.header-' . strtolower( $size ) . '-transparent .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a, .header-' . strtolower( $size ) . '-transparent .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap' );

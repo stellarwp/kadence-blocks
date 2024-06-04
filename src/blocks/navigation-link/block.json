@@ -267,6 +267,30 @@
 			"type": "string",
 			"default": ""
 		},
+		"backgroundGradient": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundTypeHover": {
+			"type": "string",
+			"default": "normal"
+		},
+		"backgroundGradientHover": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundTypeActive": {
+			"type": "string",
+			"default": "normal"
+		},
+		"backgroundGradientActive": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundType": {
+			"type": "string",
+			"default": "normal"
+		},
 		"background": {
 			"type": "string",
 			"default": ""
@@ -926,6 +950,199 @@
 		"align": {
 			"type": "string",
 			"default": ""
+		},
+		"border": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"borderTablet": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"borderMobile": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"borderHover": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"borderHoverTablet": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"borderHoverMobile": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"borderActive": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"borderActiveTablet": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"borderActiveMobile": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"borderRadius": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"borderRadiusTablet": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"borderRadiusMobile": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"borderRadiusHover": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"borderRadiusHoverTablet": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"borderRadiusHoverMobile": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"borderRadiusActive": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"borderRadiusActiveTablet": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"borderRadiusActiveMobile": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"borderRadiusUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"shadow": {
+			"type": "array",
+			"default": [
+				{
+					"enable": false,
+					"color": "#000000",
+					"opacity": 0.2,
+					"spread": 0,
+					"blur": 2,
+					"hOffset": 1,
+					"vOffset": 1,
+					"inset": false
+				}
+			]
+		},
+		"shadowHover": {
+			"type": "array",
+			"default": [
+				{
+					"enable": false,
+					"color": "#000000",
+					"opacity": 0.2,
+					"spread": 0,
+					"blur": 2,
+					"hOffset": 1,
+					"vOffset": 1,
+					"inset": false
+				}
+			]
+		},
+		"shadowActive": {
+			"type": "array",
+			"default": [
+				{
+					"enable": false,
+					"color": "#000000",
+					"opacity": 0.2,
+					"spread": 0,
+					"blur": 2,
+					"hOffset": 1,
+					"vOffset": 1,
+					"inset": false
+				}
+			]
 		}
 	},
 	"usesContext": [

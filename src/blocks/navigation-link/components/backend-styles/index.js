@@ -168,6 +168,36 @@ export default function BackendStyles(props) {
 		descriptionPositioningMobile,
 		isMegaMenu,
 		align,
+		border,
+		borderHover,
+		borderActive,
+		borderTablet,
+		borderHoverTablet,
+		borderActiveTablet,
+		borderMobile,
+		borderHoverMobile,
+		borderActiveMobile,
+		borderRadius,
+		borderRadiusHover,
+		borderRadiusActive,
+		borderRadiusTablet,
+		borderRadiusHoverTablet,
+		borderRadiusActiveTablet,
+		borderRadiusMobile,
+		borderRadiusHoverMobile,
+		borderRadiusActiveMobile,
+		borderRadiusUnit,
+		borderRadiusUnitHover,
+		borderRadiusUnitActive,
+		shadow,
+		shadowHover,
+		shadowActive,
+		backgroundType,
+		backgroundTypeHover,
+		backgroundTypeActive,
+		backgroundGradient,
+		backgroundGradientHover,
+		backgroundGradientActive,
 	} = attributes;
 
 	const editorElement = useEditorElement(currentRef, []);
@@ -471,11 +501,65 @@ export default function BackendStyles(props) {
 
 	const css = new KadenceBlocksCSS();
 
+	let backgroundString;
+	if (undefined !== backgroundType && 'gradient' === backgroundType) {
+		backgroundString = backgroundGradient;
+	} else {
+		backgroundString =
+			'transparent' === background || undefined === background ? undefined : css.render_color(previewBackground);
+	}
+	let backgroundStringHover;
+	if (undefined !== backgroundTypeHover && 'gradient' === backgroundTypeHover) {
+		backgroundStringHover = backgroundGradientHover;
+	} else {
+		backgroundStringHover =
+			'transparent' === previewBackgroundHover || undefined === previewBackgroundHover
+				? undefined
+				: css.render_color(previewBackgroundHover);
+	}
+	let backgroundStringActive;
+	if (undefined !== backgroundTypeActive && 'gradient' === backgroundTypeActive) {
+		backgroundStringActive = backgroundGradientActive;
+	} else {
+		backgroundStringActive =
+			'transparent' === previewBackgroundActive || undefined === previewBackgroundActive
+				? undefined
+				: css.render_color(previewBackgroundActive);
+	}
+
 	css.set_selector(
 		`.wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a, .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap`
 	);
 	css.add_property('color', css.render_color(previewLinkColor));
-	css.add_property('background', css.render_color(previewBackground));
+
+	css.set_selector(
+		`.wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap`
+	);
+	css.add_property('background', backgroundString);
+	css.add_property('border-top', css.render_border(border, borderTablet, borderMobile, previewDevice, 'top', false));
+	css.add_property(
+		'border-right',
+		css.render_border(border, borderTablet, borderMobile, previewDevice, 'right', false)
+	);
+	css.add_property(
+		'border-bottom',
+		css.render_border(border, borderTablet, borderMobile, previewDevice, 'bottom', false)
+	);
+	css.add_property(
+		'border-left',
+		css.render_border(border, borderTablet, borderMobile, previewDevice, 'left', false)
+	);
+	css.render_measure_output(
+		borderRadius,
+		borderRadiusTablet,
+		borderRadiusMobile,
+		previewDevice,
+		'border-radius',
+		borderRadiusUnit
+	);
+	if (shadow?.[0]?.enable) {
+		css.add_property('box-shadow', css.render_shadow(shadow[0]));
+	}
 	if (context?.['kadence/headerIsTransparent'] == '1') {
 		css.add_property('color', css.render_color(previewLinkColorTransparent));
 		css.add_property('background', css.render_color(previewBackgroundTransparent));
@@ -488,7 +572,38 @@ export default function BackendStyles(props) {
 		`.wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap:hover > a, .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap:hover`
 	);
 	css.add_property('color', css.render_color(previewLinkColorHover));
-	css.add_property('background', css.render_color(previewBackgroundHover));
+
+	css.set_selector(
+		`.wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap:hover`
+	);
+	css.add_property('background', backgroundStringHover);
+	css.add_property(
+		'border-top',
+		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'top', false)
+	);
+	css.add_property(
+		'border-right',
+		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'right', false)
+	);
+	css.add_property(
+		'border-bottom',
+		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'bottom', false)
+	);
+	css.add_property(
+		'border-left',
+		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'left', false)
+	);
+	css.render_measure_output(
+		borderRadiusHover,
+		borderRadiusHoverTablet,
+		borderRadiusHoverMobile,
+		previewDevice,
+		'border-radius',
+		borderRadiusUnitHover
+	);
+	if (shadowHover?.[0]?.enable) {
+		css.add_property('box-shadow', css.render_shadow(shadowHover[0]));
+	}
 	if (context?.['kadence/headerIsTransparent'] == '1') {
 		css.add_property('color', css.render_color(previewLinkColorTransparentHover));
 		css.add_property('background', css.render_color(previewBackgroundTransparentHover));
@@ -503,7 +618,38 @@ export default function BackendStyles(props) {
 		.wp-block-kadence-navigation .navigation .menu-container > ul > li.menu-item.current-menu-item.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap`
 	);
 	css.add_property('color', css.render_color(previewLinkColorActive));
-	css.add_property('background', css.render_color(previewBackgroundActive));
+
+	css.set_selector(
+		`.wp-block-kadence-navigation .navigation .menu-container > ul > li.menu-item.current-menu-item.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap`
+	);
+	css.add_property('background', backgroundStringActive);
+	css.add_property(
+		'border-top',
+		css.render_border(borderActive, borderActiveTablet, borderActiveMobile, previewDevice, 'top', false)
+	);
+	css.add_property(
+		'border-right',
+		css.render_border(borderActive, borderActiveTablet, borderActiveMobile, previewDevice, 'right', false)
+	);
+	css.add_property(
+		'border-bottom',
+		css.render_border(borderActive, borderActiveTablet, borderActiveMobile, previewDevice, 'bottom', false)
+	);
+	css.add_property(
+		'border-left',
+		css.render_border(borderActive, borderActiveTablet, borderActiveMobile, previewDevice, 'left', false)
+	);
+	css.render_measure_output(
+		borderRadiusActive,
+		borderRadiusActiveTablet,
+		borderRadiusActiveMobile,
+		previewDevice,
+		'border-radius',
+		borderRadiusUnitActive
+	);
+	if (shadowActive?.[0]?.enable) {
+		css.add_property('box-shadow', css.render_shadow(shadowActive[0]));
+	}
 	if (context?.['kadence/headerIsTransparent'] == '1') {
 		css.add_property('color', css.render_color(previewLinkColorTransparentActive));
 		css.add_property('background', css.render_color(previewBackgroundTransparentActive));
