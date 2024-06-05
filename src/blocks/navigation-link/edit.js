@@ -22,6 +22,7 @@ import {
 	ExternalLink,
 	MenuItem,
 } from '@wordpress/components';
+import { image, starFilled, plusCircleFilled } from '@wordpress/icons';
 import { displayShortcut, isKeyboardEvent, ENTER } from '@wordpress/keycodes';
 import { __ } from '@wordpress/i18n';
 import {
@@ -42,7 +43,7 @@ import { decodeEntities } from '@wordpress/html-entities';
 import { link as linkIcon, addSubmenu, plusCircle } from '@wordpress/icons';
 import { store as coreStore } from '@wordpress/core-data';
 import { useMergeRefs } from '@wordpress/compose';
-import { last } from 'lodash';
+import { last, map, get } from 'lodash';
 import {
 	getUniqueId,
 	getPostOrFseId,
@@ -51,7 +52,6 @@ import {
 	getBorderStyle,
 	showSettings,
 	getPreviewSize,
-	KadenceColorOutput,
 	getGapSizeOptionOutput,
 } from '@kadence/helpers';
 
@@ -81,6 +81,7 @@ import {
 	ResponsiveMeasurementControls,
 	IconRender,
 	ResponsiveSelectControl,
+	KadenceMediaPlaceholder,
 } from '@kadence/components';
 
 import { ArrowDown, ArrowUp } from '@kadence/icons';
@@ -100,6 +101,7 @@ import BackendStyles from './components/backend-styles';
 import addNavLink from '../navigation/helpers/addNavLink';
 
 const DEFAULT_BLOCK = { name: 'kadence/navigation-link' };
+const ALLOWED_MEDIA_TYPES = ['image'];
 
 const useIsInvalidLink = (kind, type, id) => {
 	const isPostType = kind === 'post-type' || type === 'post' || type === 'page';
@@ -298,6 +300,7 @@ export default function Edit(props) {
 		mediaType,
 		mediaAlign,
 		mediaImage,
+		imageRatio,
 		mediaIcon,
 		mediaStyle,
 		highlightIcon,
@@ -312,6 +315,7 @@ export default function Edit(props) {
 		dropdownBorderRadiusMobile,
 		dropdownBorderRadiusUnit,
 		align,
+		kadenceDynamic,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
@@ -552,6 +556,8 @@ export default function Edit(props) {
 			'kadence-menu-mega-enabled': isMegaMenu,
 			[`${megaMenuWidthClass}`]: isMegaMenu,
 			'kadence-menu-has-icon': mediaType == 'icon',
+			'kadence-menu-has-image': mediaType == 'image',
+			'kadence-menu-has-media': mediaType !== 'none',
 			'kadence-menu-has-description': description,
 			[`wp-block-kadence-navigation-link${uniqueID}`]: uniqueID,
 		}),
@@ -576,92 +582,162 @@ export default function Edit(props) {
 		}
 	);
 
+	const saveMediaImage = (value) => {
+		const newUpdate = mediaImage.map((item, index) => {
+			if (0 === index) {
+				item = { ...item, ...value };
+			}
+			return item;
+		});
+		setAttributes({
+			mediaImage: newUpdate,
+		});
+	};
+
+	const onSelectImage = (media) => {
+		let url;
+		let itemSize;
+		if (mediaImage[0] && mediaImage[0].width && mediaImage[0].height) {
+			const sizes = undefined !== media.sizes ? media.sizes : [];
+			const imgSizes = Object.keys(sizes).map((item) => {
+				return { slug: item, name: item };
+			});
+			map(imgSizes, ({ name, slug }) => {
+				const type = get(media, ['mime_type']);
+				if ('image/svg+xml' === type) {
+					return null;
+				}
+				const sizeUrl = get(media, ['sizes', slug, 'url']);
+				if (!sizeUrl) {
+					return null;
+				}
+				const sizeWidth = get(media, ['sizes', slug, 'width']);
+				if (!sizeWidth) {
+					return null;
+				}
+				const sizeHeight = get(media, ['sizes', slug, 'height']);
+				if (!sizeHeight) {
+					return null;
+				}
+				if (sizeHeight === mediaImage[0].height && sizeWidth === mediaImage[0].width) {
+					itemSize = slug;
+					return null;
+				}
+			});
+		}
+		const size = itemSize && '' !== itemSize ? itemSize : 'full';
+		if (size !== 'full') {
+			url = get(media, ['sizes', size, 'url']) || get(media, ['media_details', 'sizes', size, 'source_url']);
+		}
+		const width =
+			get(media, ['sizes', size, 'width']) ||
+			get(media, ['media_details', 'sizes', size, 'width']) ||
+			get(media, ['width']) ||
+			get(media, ['media_details', 'width']);
+		const height =
+			get(media, ['sizes', size, 'height']) ||
+			get(media, ['media_details', 'sizes', size, 'height']) ||
+			get(media, ['height']) ||
+			get(media, ['media_details', 'height']);
+		const maxwidth = mediaImage[0] && mediaImage[0].maxWidth ? mediaImage[0].maxWidth : media.width;
+		saveMediaImage({
+			id: media.id,
+			url: url || media.url,
+			alt: media.alt,
+			width,
+			height,
+			maxWidth: maxwidth ? maxwidth : 50,
+			subtype: media.subtype,
+		});
+	};
+	let hasRatio = false;
+	if (imageRatio && 'inherit' !== imageRatio) {
+		hasRatio = true;
+	}
+	let showImageToolbar = 'image' === mediaType && mediaImage[0].url ? true : false;
+	if (
+		showImageToolbar &&
+		kadenceDynamic &&
+		kadenceDynamic['mediaImage:0:url'] &&
+		kadenceDynamic['mediaImage:0:url'].enable
+	) {
+		showImageToolbar = false;
+	}
+
 	const mediaContent = (
 		<>
 			{mediaType && 'none' !== mediaType && (
 				<div className={'link-media-container'}>
-					{/* {!mediaImage[0].url && 'image' === mediaType && (
-						<>
-							<Fragment>
-								<KadenceMediaPlaceholder
-									labels={''}
-									selectIcon={plusCircleFilled}
-									selectLabel={__('Select Image', 'kadence-blocks')}
-									onSelect={onSelectImage}
-									accept="image/*"
-									className={'kadence-image-upload'}
-									allowedTypes={ALLOWED_MEDIA_TYPES}
-									disableMediaButtons={false}
-								/>
-							</Fragment>
-
+					{!mediaImage[0].url && 'image' === mediaType && (
+						<Fragment>
+							<KadenceMediaPlaceholder
+								labels={''}
+								selectIcon={plusCircleFilled}
+								selectLabel={__('Select Image', 'kadence-blocks')}
+								onSelect={onSelectImage}
+								accept="image/*"
+								className={'kadence-image-upload'}
+								allowedTypes={ALLOWED_MEDIA_TYPES}
+								disableMediaButtons={true}
+							/>
+						</Fragment>
+					)}
+					{mediaImage[0].url && 'image' === mediaType && (
+						<div className="kadence-navigation-link-image-inner-intrisic-container">
 							<div
-								className="link-image-inner-intrisic-container"
-								style={{
-									maxWidth: mediaImage[0].maxWidth + 'px',
-								}}
+								className={`kadence-navigation-link-image-intrisic kt-info-animate-${
+									mediaImage[0].hoverAnimation
+								}${'svg+xml' === mediaImage[0].subtype ? ' kb-navigation-link-image-type-svg' : ''}${
+									hasRatio
+										? ' kb-navigation-link-image-ratio kb-navigation-link-image-ratio-' + imageRatio
+										: ''
+								}`}
 							>
-								<div
-									className={`link-image-intrisic link-animate-${mediaImage[0].hoverAnimation}${
-										'svg+xml' === mediaImage[0].subtype ? ' link-image-type-svg' : ''
-									}${hasRatio ? ' link-image-ratio link-image-ratio-' + imageRatio : ''}`}
-									style={{
-										paddingBottom: imageRatioPadding,
-										height: imageRatioHeight,
-										width: isNaN(mediaImage[0].width) ? undefined : mediaImage[0].width + 'px',
-										maxWidth: '100%',
-									}}
-								>
-									<div className="link-image-inner-intrisic">
+								<div className="kadence-navigation-link-image-inner-intrisic">
+									<img
+										src={mediaImage[0].url}
+										alt={mediaImage[0].alt ? mediaImage[0].alt : mediaImage[0].alt}
+										width={
+											mediaImage[0].subtype && 'svg+xml' === mediaImage[0].subtype
+												? mediaImage[0].maxWidth
+												: mediaImage[0].width
+										}
+										height={mediaImage[0].height}
+										className={`${
+											mediaImage[0].id
+												? `kt-navigation-link-image wp-image-${mediaImage[0].id}`
+												: 'kt-navigation-link-image wp-image-offsite'
+										} ${
+											mediaImage[0].subtype && 'svg+xml' === mediaImage[0].subtype
+												? ' kt-navigation-link-svg-image'
+												: ''
+										}`}
+									/>
+									{mediaImage[0].flipUrl && 'flip' === mediaImage[0].hoverAnimation && (
 										<img
-											src={mediaImage[0].url}
-											alt={mediaImage[0].alt ? mediaImage[0].alt : mediaImage[0].alt}
+											src={mediaImage[0].flipUrl}
+											alt={mediaImage[0].flipAlt ? mediaImage[0].flipAlt : mediaImage[0].flipAlt}
 											width={
-												mediaImage[0].subtype && 'svg+xml' === mediaImage[0].subtype
+												mediaImage[0].flipSubtype && 'svg+xml' === mediaImage[0].flipSubtype
 													? mediaImage[0].maxWidth
-													: mediaImage[0].width
+													: mediaImage[0].flipWidth
 											}
-											height={mediaImage[0].height}
+											height={mediaImage[0].flipHeight}
 											className={`${
-												mediaImage[0].id
-													? `link-image wp-image-${mediaImage[0].id}`
-													: 'link-image wp-image-offsite'
+												mediaImage[0].flipId
+													? `kt-navigation-link-image-flip wp-image-${mediaImage[0].flipId}`
+													: 'kt-navigation-link-image-flip wp-image-offsite'
 											} ${
-												mediaImage[0].subtype && 'svg+xml' === mediaImage[0].subtype
-													? ' link-svg-image'
+												mediaImage[0].flipSubtype && 'svg+xml' === mediaImage[0].flipSubtype
+													? ' kt-navigation-link-svg-image'
 													: ''
 											}`}
 										/>
-										{mediaImage[0].flipUrl && 'flip' === mediaImage[0].hoverAnimation && (
-											<img
-												src={mediaImage[0].flipUrl}
-												alt={
-													mediaImage[0].flipAlt
-														? mediaImage[0].flipAlt
-														: mediaImage[0].flipAlt
-												}
-												width={
-													mediaImage[0].flipSubtype && 'svg+xml' === mediaImage[0].flipSubtype
-														? mediaImage[0].maxWidth
-														: mediaImage[0].flipWidth
-												}
-												height={mediaImage[0].flipHeight}
-												className={`${
-													mediaImage[0].flipId
-														? `link-image-flip wp-image-${mediaImage[0].flipId}`
-														: 'link-image-flip wp-image-offsite'
-												} ${
-													mediaImage[0].flipSubtype && 'svg+xml' === mediaImage[0].flipSubtype
-														? ' link-svg-image'
-														: ''
-												}`}
-											/>
-										)}
-									</div>
+									)}
 								</div>
 							</div>
-						</>
-					)} */}
+						</div>
+					)}
 					{'icon' === mediaType && (
 						<>
 							<IconRender

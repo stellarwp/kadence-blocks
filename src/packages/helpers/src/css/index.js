@@ -425,9 +425,10 @@ export default class KadenceBlocksCSS {
 		previewDevice = null,
 		property = 'padding',
 		unit = 'px',
-		args = {}
+		args = {},
+		nohook = false
 	) {
-		const previewValue = getPreviewSize(previewDevice, value, tabletValue, mobileValue);
+		const previewValue = getPreviewSize(previewDevice, value, tabletValue, mobileValue, nohook);
 
 		var prop_args = {};
 		switch (property) {

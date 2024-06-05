@@ -198,6 +198,52 @@ export default function BackendStyles(props) {
 		backgroundGradient,
 		backgroundGradientHover,
 		backgroundGradientActive,
+		imageRatio,
+		mediaBorder,
+		mediaBorderTablet,
+		mediaBorderMobile,
+		mediaBorderHover,
+		mediaBorderHoverTablet,
+		mediaBorderHoverMobile,
+		mediaBorderActive,
+		mediaBorderActiveTablet,
+		mediaBorderActiveMobile,
+		mediaBorderRadius,
+		mediaBorderRadiusTablet,
+		mediaBorderRadiusMobile,
+		mediaBorderRadiusHover,
+		mediaBorderRadiusHoverTablet,
+		mediaBorderRadiusHoverMobile,
+		mediaBorderRadiusActive,
+		mediaBorderRadiusActiveTablet,
+		mediaBorderRadiusActiveMobile,
+		mediaBorderRadiusUnit,
+		mediaBorderRadiusUnitHover,
+		mediaBorderRadiusUnitActive,
+		mediaColor,
+		mediaColorHover,
+		mediaColorActive,
+		mediaColorTablet,
+		mediaColorHoverTablet,
+		mediaColorActiveTablet,
+		mediaColorMobile,
+		mediaColorHoverMobile,
+		mediaColorActiveMobile,
+		mediaBackground,
+		mediaBackgroundHover,
+		mediaBackgroundActive,
+		mediaBackgroundTablet,
+		mediaBackgroundHoverTablet,
+		mediaBackgroundActiveTablet,
+		mediaBackgroundMobile,
+		mediaBackgroundHoverMobile,
+		mediaBackgroundActiveMobile,
+		mediaBackgroundType,
+		mediaBackgroundTypeHover,
+		mediaBackgroundTypeActive,
+		mediaBackgroundGradient,
+		mediaBackgroundGradientHover,
+		mediaBackgroundGradientActive,
 	} = attributes;
 
 	const editorElement = useEditorElement(currentRef, []);
@@ -499,6 +545,38 @@ export default function BackendStyles(props) {
 		megaMenuCustomWidthMobile
 	);
 
+	const previewMediaBackground = getPreviewSize(
+		previewDevice,
+		mediaBackground,
+		mediaBackgroundTablet,
+		mediaBackgroundMobile
+	);
+	const previewMediaBackgroundHover = getPreviewSize(
+		previewDevice,
+		mediaBackgroundHover,
+		mediaBackgroundHoverTablet,
+		mediaBackgroundHoverMobile
+	);
+	const previewMediaBackgroundActive = getPreviewSize(
+		previewDevice,
+		mediaBackgroundActive,
+		mediaBackgroundActiveTablet,
+		mediaBackgroundActiveMobile
+	);
+	const previewMediaColor = getPreviewSize(previewDevice, mediaColor, mediaColorTablet, mediaColorMobile);
+	const previewMediaColorHover = getPreviewSize(
+		previewDevice,
+		mediaColorHover,
+		mediaColorHoverTablet,
+		mediaColorHoverMobile
+	);
+	const previewMediaColorActive = getPreviewSize(
+		previewDevice,
+		mediaColorActive,
+		mediaColorActiveTablet,
+		mediaColorActiveMobile
+	);
+
 	const css = new KadenceBlocksCSS();
 
 	let backgroundString;
@@ -506,7 +584,9 @@ export default function BackendStyles(props) {
 		backgroundString = backgroundGradient;
 	} else {
 		backgroundString =
-			'transparent' === background || undefined === background ? undefined : css.render_color(previewBackground);
+			'transparent' === previewBackground || undefined === previewBackground
+				? undefined
+				: css.render_color(previewBackground);
 	}
 	let backgroundStringHover;
 	if (undefined !== backgroundTypeHover && 'gradient' === backgroundTypeHover) {
@@ -526,6 +606,172 @@ export default function BackendStyles(props) {
 				? undefined
 				: css.render_color(previewBackgroundActive);
 	}
+
+	let mediaBackgroundString;
+	if (undefined !== mediaBackgroundType && 'gradient' === mediaBackgroundType) {
+		mediaBackgroundString = mediaBackgroundGradient;
+	} else {
+		mediaBackgroundString =
+			'transparent' === previewMediaBackground || undefined === previewMediaBackground
+				? undefined
+				: css.render_color(previewMediaBackground);
+	}
+	let mediaBackgroundStringHover;
+	if (undefined !== mediaBackgroundTypeHover && 'gradient' === mediaBackgroundTypeHover) {
+		mediaBackgroundStringHover = mediaBackgroundGradientHover;
+	} else {
+		mediaBackgroundStringHover =
+			'transparent' === previewMediaBackgroundHover || undefined === previewMediaBackgroundHover
+				? undefined
+				: css.render_color(previewMediaBackgroundHover);
+	}
+	let mediaBackgroundStringActive;
+	if (undefined !== mediaBackgroundTypeActive && 'gradient' === mediaBackgroundTypeActive) {
+		mediaBackgroundStringActive = mediaBackgroundGradientActive;
+	} else {
+		mediaBackgroundStringActive =
+			'transparent' === previewMediaBackgroundActive || undefined === previewMediaBackgroundActive
+				? undefined
+				: css.render_color(previewMediaBackgroundActive);
+	}
+
+	let imageRatioPadding = isNaN(mediaImage[0].height)
+		? undefined
+		: (mediaImage[0].height / mediaImage[0].width) * 100 + '%';
+	let imageRatioHeight = isNaN(mediaImage[0].height) ? undefined : 0;
+	let hasRatio = false;
+	if (imageRatio && 'inherit' !== imageRatio) {
+		hasRatio = true;
+		imageRatioHeight = 0;
+		switch (imageRatio) {
+			case 'land43':
+				imageRatioPadding = '75%';
+				break;
+			case 'land32':
+				imageRatioPadding = '66.67%';
+				break;
+			case 'land169':
+				imageRatioPadding = '56.25%';
+				break;
+			case 'land21':
+				imageRatioPadding = '50%';
+				break;
+			case 'land31':
+				imageRatioPadding = '33%';
+				break;
+			case 'land41':
+				imageRatioPadding = '25%';
+				break;
+			case 'port34':
+				imageRatioPadding = '133.33%';
+				break;
+			case 'port23':
+				imageRatioPadding = '150%';
+				break;
+			default:
+				imageRatioPadding = '100%';
+				break;
+		}
+	}
+
+	const previewMediaBorderTop = css.render_border(
+		mediaBorder,
+		mediaBorderTablet,
+		mediaBorderMobile,
+		previewDevice,
+		'top',
+		false
+	);
+	const previewMediaBorderRight = css.render_border(
+		mediaBorder,
+		mediaBorderTablet,
+		mediaBorderMobile,
+		previewDevice,
+		'right',
+		false
+	);
+	const previewMediaBorderBottom = css.render_border(
+		mediaBorder,
+		mediaBorderTablet,
+		mediaBorderMobile,
+		previewDevice,
+		'bottom',
+		false
+	);
+	const previewMediaBorderLeft = css.render_border(
+		mediaBorder,
+		mediaBorderTablet,
+		mediaBorderMobile,
+		previewDevice,
+		'left',
+		false
+	);
+
+	const previewMediaBorderHoverTop = css.render_border(
+		mediaBorderHover,
+		mediaBorderHoverTablet,
+		mediaBorderHoverMobile,
+		previewDevice,
+		'top',
+		false
+	);
+	const previewMediaBorderHoverRight = css.render_border(
+		mediaBorderHover,
+		mediaBorderHoverTablet,
+		mediaBorderHoverMobile,
+		previewDevice,
+		'right',
+		false
+	);
+	const previewMediaBorderHoverBottom = css.render_border(
+		mediaBorderHover,
+		mediaBorderHoverTablet,
+		mediaBorderHoverMobile,
+		previewDevice,
+		'bottom',
+		false
+	);
+	const previewMediaBorderHoverLeft = css.render_border(
+		mediaBorderHover,
+		mediaBorderHoverTablet,
+		mediaBorderHoverMobile,
+		previewDevice,
+		'left',
+		false
+	);
+
+	const previewMediaBorderActiveTop = css.render_border(
+		mediaBorderActive,
+		mediaBorderActiveTablet,
+		mediaBorderActiveMobile,
+		previewDevice,
+		'top',
+		false
+	);
+	const previewMediaBorderActiveRight = css.render_border(
+		mediaBorderActive,
+		mediaBorderActiveTablet,
+		mediaBorderActiveMobile,
+		previewDevice,
+		'right',
+		false
+	);
+	const previewMediaBorderActiveBottom = css.render_border(
+		mediaBorderActive,
+		mediaBorderActiveTablet,
+		mediaBorderActiveMobile,
+		previewDevice,
+		'bottom',
+		false
+	);
+	const previewMediaBorderActiveLeft = css.render_border(
+		mediaBorderActive,
+		mediaBorderActiveTablet,
+		mediaBorderActiveMobile,
+		previewDevice,
+		'left',
+		false
+	);
 
 	css.set_selector(
 		`.wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a, .wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap`
@@ -797,7 +1043,7 @@ export default function BackendStyles(props) {
 			css.add_property('margin-right', css.render_size(previewMediaStyleMargin[0], 'px'));
 
 			css.set_selector(
-				`.wp-block-kadence-navigation-link${uniqueID}.kadence-menu-has-description.kadence-menu-has-icon > .link-drop-wrap > a > .link-drop-title-wrap`
+				`.wp-block-kadence-navigation-link${uniqueID}.kadence-menu-has-description.kadence-menu-has-media > .link-drop-wrap > a > .link-drop-title-wrap`
 			);
 			css.add_property('grid-template-columns', 'auto 1fr');
 		} else if (previewMediaAlign === 'top') {
@@ -809,7 +1055,7 @@ export default function BackendStyles(props) {
 			css.set_selector(
 				`.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a > .link-drop-title-wrap .link-media-container`
 			);
-			css.add_property('align-self', 'center !important');
+			css.add_property('justify-content', 'center');
 		} else if (previewMediaAlign === 'bottom') {
 			css.add_property('order', '1');
 			css.set_selector(
@@ -819,7 +1065,7 @@ export default function BackendStyles(props) {
 			css.set_selector(
 				`.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a > .link-drop-title-wrap .link-media-container`
 			);
-			css.add_property('align-self', 'center !important');
+			css.add_property('justify-content', 'center');
 		} else {
 			css.add_property('margin-left', css.render_size(previewMediaStyleMargin[0], 'px'));
 		}
@@ -831,6 +1077,47 @@ export default function BackendStyles(props) {
 		css.add_property('height', css.render_size(previewMediaIconSize, 'px'));
 		css.add_property('stroke-width', css.render_size(isFEIcon ? previewMediaIconWidth : null, 'px'));
 		css.add_property('color', css.render_color(previewMediaStyleColor));
+
+		//image styles
+		//outer container
+		css.set_selector(
+			`.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .kadence-navigation-link-image-inner-intrisic-container`
+		);
+		css.add_property('max-width', mediaImage[0].maxWidth + 'px');
+		if (hasRatio) {
+			//next level container
+			css.set_selector(
+				`.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .kadence-navigation-link-image-inner-intrisic-container > .kadence-navigation-link-image-intrisic`
+			);
+			css.add_property('padding-bottom', imageRatioPadding);
+			css.add_property('height', imageRatioHeight == 0 ? '0px' : imageRatioHeight, null, true);
+			css.add_property('width', isNaN(mediaImage[0].width) ? undefined : mediaImage[0].width + 'px');
+			css.add_property('max-width', '100%');
+			css.add_property('position', 'relative');
+			css.add_property('overflow', 'hidden');
+
+			//inner container
+			css.set_selector(
+				`.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .kadence-navigation-link-image-inner-intrisic-container > .kadence-navigation-link-image-intrisic > .kadence-navigation-link-image-inner-intrisic`
+			);
+			css.add_property('position', 'absolute');
+			css.add_property('top', '0');
+			css.add_property('left', '0');
+			css.add_property('right', '0');
+			css.add_property('bottom', '0');
+
+			//img
+			css.set_selector(
+				`.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .kadence-navigation-link-image-inner-intrisic-container > .kadence-navigation-link-image-intrisic > .kadence-navigation-link-image-inner-intrisic > img`
+			);
+			css.add_property('position', 'absolute');
+			css.add_property('flex', '1');
+			css.add_property('height', '100%');
+			css.add_property('object-fit', 'cover');
+			css.add_property('width', '100%');
+			css.add_property('top', '0');
+			css.add_property('left', '0');
+		}
 
 		//hover style
 		css.set_selector(
@@ -851,6 +1138,27 @@ export default function BackendStyles(props) {
 			`.wp-block-kadence-navigation-link${uniqueID}.current-menu-item > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .link-svg-icon > svg`
 		);
 		css.add_property('color', css.render_color(previewMediaStyleColorActive));
+	}
+	if (mediaType && 'image' === mediaType) {
+		css.set_selector(
+			`.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .kadence-navigation-link-image-inner-intrisic-container`
+		);
+		css.add_property('color', css.render_color(previewMediaColor));
+		css.add_property('background', mediaBackgroundString);
+		css.add_property('border-top', previewMediaBorderTop);
+		css.add_property('border-right', previewMediaBorderRight);
+		css.add_property('border-bottom', previewMediaBorderBottom);
+		css.add_property('border-left', previewMediaBorderLeft);
+		css.render_measure_output(
+			mediaBorderRadius,
+			mediaBorderRadiusTablet,
+			mediaBorderRadiusMobile,
+			previewDevice,
+			'border-radius',
+			mediaBorderRadiusUnit,
+			{},
+			true
+		);
 	}
 
 	//label styles
@@ -951,7 +1259,7 @@ export default function BackendStyles(props) {
 		css.add_property('order', '-1');
 	}
 
-	//icon and description placement
+	//media and description placement
 	if (description) {
 		css.set_selector(
 			`.wp-block-kadence-navigation-link${uniqueID} .link-drop-title-wrap:not(.wp-block-kadence-navigation-link${uniqueID} .wp-block-kadence-navigation-link .link-drop-title-wrap)`
@@ -959,7 +1267,7 @@ export default function BackendStyles(props) {
 		css.add_property('display', 'grid');
 		css.add_property('grid-template-columns', '1fr');
 	}
-	if (description && mediaType == 'icon' && (previewMediaAlign == 'left' || previewMediaAlign == 'right')) {
+	if (description && mediaType != 'none' && (previewMediaAlign == 'left' || previewMediaAlign == 'right')) {
 		css.set_selector(
 			`.wp-block-kadence-navigation-link${uniqueID} .link-drop-title-wrap:not(.wp-block-kadence-navigation-link${uniqueID} .wp-block-kadence-navigation-link .link-drop-title-wrap)`
 		);
