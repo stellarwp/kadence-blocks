@@ -42,6 +42,7 @@ export function PreviewIcon({ attributes, previewDevice }) {
 		uniqueID,
 		verticalAlignment,
 		tooltip,
+		tooltipPlacement,
 	} = attributes;
 
 	const previewSize = getPreviewSize(
@@ -154,7 +155,7 @@ export function PreviewIcon({ attributes, previewDevice }) {
 					</>
 				)}
 			</div>
-			<Tippy content={tooltip} reference={ref}></Tippy>
+			{tooltip && <Tippy content={tooltip} placement={tooltipPlacement || undefined} reference={ref}></Tippy>}
 		</>
 	);
 }

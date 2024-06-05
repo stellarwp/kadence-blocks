@@ -4,37 +4,37 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
- .wp-block-kadence-icon {
-    min-width: 20px;
+.wp-block-kadence-icon {
+	min-width: 20px;
 	min-height: 10px;
- }
+}
 .block-editor-block-list__block[data-type="kadence/single-icon"] {
-  margin-bottom: 0;
-  margin-top: 0;
+	margin-bottom: 0;
+	margin-top: 0;
 }
 .kt-svg-icons {
-    display: flex;
-    gap: 0.2em;
-    align-items:center;
+	display: flex;
+	gap: 0.2em;
+	align-items: center;
 }
 .kt-svg-icon-wrap {
 	display: flex;
 }
 .kt-svg-style-stacked .kt-svg-icon {
 	border: 0px solid #444444;
-	transition: all .3s ease-in-out;
+	transition: all 0.3s ease-in-out;
 	padding: 20px;
 }
 .kt-svg-icons {
-  &.kb-icon-valign-top {
-    align-items: flex-start;
-  }
-  &.kb-icon-valign-middle {
-      align-items: center;
-  }
-  &.kb-icon-valign-bottom {
-    align-items: flex-end;
-  }
+	&.kb-icon-valign-top {
+		align-items: flex-start;
+	}
+	&.kb-icon-valign-middle {
+		align-items: center;
+	}
+	&.kb-icon-valign-bottom {
+		align-items: flex-end;
+	}
 	&.kb-icon-halign-center {
 		justify-content: center;
 	}
@@ -44,20 +44,24 @@
 	&.kb-icon-halign-left {
 		justify-content: flex-start;
 	}
-  &.kb-icon-halign-space-between {
+	&.kb-icon-halign-space-between {
 		justify-content: space-between;
 	}
-  &.kb-icon-wrap {
-    flex-wrap: wrap;
-  }
-  .kb-icon-transparent {
-    opacity: 0.5;
-  }
+	&.kb-icon-wrap {
+		flex-wrap: wrap;
+	}
+	.kb-icon-transparent {
+		opacity: 0.5;
+	}
 }
 .wp-block-kadence-icon .kt-svg-icons .wp-block-kadence-single-icon {
-  margin: 0;
+	margin: 0;
 }
-.editor-styles-wrapper .block-editor-block-list__block[data-type="kadence/icon"], .editor-styles-wrapper .block-editor-block-list__block[data-type="kadence/icon"] > .wp-block {
-    margin-bottom: 0;
-    margin-top: 0;
+.editor-styles-wrapper .block-editor-block-list__block[data-type="kadence/icon"],
+.editor-styles-wrapper .block-editor-block-list__block[data-type="kadence/icon"] > .wp-block {
+	margin-bottom: 0;
+	margin-top: 0;
+}
+.kb-inline-tooltip-control {
+	min-width: 200px;
 }

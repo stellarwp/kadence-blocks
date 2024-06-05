@@ -119,6 +119,10 @@
 			"type": "string",
 			"default": ""
 		},
+		"tooltipPlacement": {
+			"type": "string",
+			"default": ""
+		},
 		"inQueryBlock": {
 			"type": "boolean",
 			"default": false

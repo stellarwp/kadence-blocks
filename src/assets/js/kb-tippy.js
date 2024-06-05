@@ -17,7 +17,7 @@
 	'use strict';
 
 	var css =
-		':root{--kb-tooltip-color:#fff;--kb-tooltip-background:#333}.tippy-box[data-animation=fade][data-state=hidden]{opacity:0}[data-tippy-root]{max-width:calc(100vw - 10px)}.tippy-box{position:relative;background-color:var(--kb-tooltip-background);color:var(--kb-tooltip-color);border-radius:4px;font-size:14px;line-height:1.4;white-space:normal;outline:0;transition-property:transform,visibility,opacity}.tippy-box[data-placement^=top]>.tippy-arrow{bottom:0}.tippy-box[data-placement^=top]>.tippy-arrow:before{bottom:-7px;left:0;border-width:8px 8px 0;border-top-color:initial;transform-origin:center top}.tippy-box[data-placement^=bottom]>.tippy-arrow{top:0}.tippy-box[data-placement^=bottom]>.tippy-arrow:before{top:-7px;left:0;border-width:0 8px 8px;border-bottom-color:initial;transform-origin:center bottom}.tippy-box[data-placement^=left]>.tippy-arrow{right:0}.tippy-box[data-placement^=left]>.tippy-arrow:before{border-width:8px 0 8px 8px;border-left-color:initial;right:-7px;transform-origin:center left}.tippy-box[data-placement^=right]>.tippy-arrow{left:0}.tippy-box[data-placement^=right]>.tippy-arrow:before{left:-7px;border-width:8px 8px 8px 0;border-right-color:initial;transform-origin:center right}.tippy-box[data-inertia][data-state=visible]{transition-timing-function:cubic-bezier(.54,1.5,.38,1.11)}.tippy-arrow{width:16px;height:16px;color:#333}.tippy-arrow:before{content:"";position:absolute;border-color:transparent;border-style:solid}.tippy-content{position:relative;padding:5px 9px;z-index:1}[data-kb-tooltip-content]{border-bottom: 1px dashed currentColor;}';
+		':root{--kb-tooltip-color:#fff;--kb-tooltip-background:#333}.tippy-box[data-animation=fade][data-state=hidden]{opacity:0}[data-tippy-root]{max-width:calc(100vw - 10px)}.tippy-box{position:relative;background-color:var(--kb-tooltip-background);color:var(--kb-tooltip-color);border-radius:4px;font-size:14px;line-height:1.4;white-space:normal;outline:0;transition-property:transform,visibility,opacity}.tippy-box[data-placement^=top]>.tippy-arrow{bottom:0}.tippy-box[data-placement^=top]>.tippy-arrow:before{bottom:-7px;left:0;border-width:8px 8px 0;border-top-color:initial;transform-origin:center top}.tippy-box[data-placement^=bottom]>.tippy-arrow{top:0}.tippy-box[data-placement^=bottom]>.tippy-arrow:before{top:-7px;left:0;border-width:0 8px 8px;border-bottom-color:initial;transform-origin:center bottom}.tippy-box[data-placement^=left]>.tippy-arrow{right:0}.tippy-box[data-placement^=left]>.tippy-arrow:before{border-width:8px 0 8px 8px;border-left-color:initial;right:-7px;transform-origin:center left}.tippy-box[data-placement^=right]>.tippy-arrow{left:0}.tippy-box[data-placement^=right]>.tippy-arrow:before{left:-7px;border-width:8px 8px 8px 0;border-right-color:initial;transform-origin:center right}.tippy-box[data-inertia][data-state=visible]{transition-timing-function:cubic-bezier(.54,1.5,.38,1.11)}.tippy-arrow{width:16px;height:16px;color:#333}.tippy-arrow:before{content:"";position:absolute;border-color:transparent;border-style:solid}.tippy-content{position:relative;padding:5px 9px;z-index:1}[data-kb-tooltip-content]:not([href]){color:inherit;border-bottom: 1px dashed currentColor;}';
 
 	function injectCSS(css) {
 		var style = document.createElement('style');
@@ -109,6 +109,9 @@
 		});
 	}
 	function getBasePlacement(placement) {
+		if (!placement) {
+			return 'auto';
+		}
 		return placement.split('-')[0];
 	}
 	function arrayFrom(value) {
@@ -188,8 +191,8 @@
 				popperState = _ref.popperState,
 				props = _ref.props;
 			var interactiveBorder = props.interactiveBorder;
-			var basePlacement = getBasePlacement(popperState.placement);
-			var offsetData = popperState.modifiersData.offset;
+			var basePlacement = getBasePlacement(popperState?.placement);
+			var offsetData = popperState?.modifiersData?.offset;
 
 			if (!offsetData) {
 				return true;
@@ -482,7 +485,7 @@
 			  )
 			: defaultKeys;
 		var props = propKeys.reduce(function (acc, key) {
-			var valueAsString = (reference.getAttribute('data-kb-tooltip-' + key) || '').trim();
+			var valueAsString = (reference.getAttribute('data-tooltip-' + key) || '').trim();
 
 			if (!valueAsString) {
 				return acc;
@@ -2727,7 +2730,7 @@
 		init() {
 			if (typeof tippy === 'function') {
 				// Select all elements with the attribute data-kb-tooltip-content
-				const elements = document.querySelectorAll('[data-kb-tooltip-content]');
+				const elements = document.querySelectorAll('.kb-tooltips:not([href])');
 
 				// Loop through each element and add the index attribute
 				elements.forEach((element) => {
@@ -2735,6 +2738,7 @@
 				});
 				tippy('[data-kb-tooltip-content]', {
 					allowHTML: true,
+					interactive: true,
 					content: (reference) =>
 						window.kadenceTippy.strip_tags(
 							reference.getAttribute('data-kb-tooltip-content'),

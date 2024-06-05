@@ -28,7 +28,7 @@ import {
 import { useSelect, useDispatch } from '@wordpress/data';
 import { PreviewIcon } from './preview-icon';
 import { AdvancedSettings } from './advanced-settings';
-
+import { tooltip as tooltipIcon } from '@kadence/icons';
 import metadata from './block.json';
 
 /**
@@ -38,7 +38,7 @@ import { __ } from '@wordpress/i18n';
 
 import { useBlockProps, BlockControls } from '@wordpress/block-editor';
 import { useEffect, useState, useRef } from '@wordpress/element';
-import { TextControl, TextareaControl } from '@wordpress/components';
+import { TextControl, TextareaControl, Dropdown, Button, SelectControl } from '@wordpress/components';
 
 function KadenceSingleIcon(props) {
 	const { attributes, className, setAttributes, clientId, isSelected, name, context } = props;
@@ -74,6 +74,7 @@ function KadenceSingleIcon(props) {
 		mobileSize,
 		uniqueID,
 		tooltip,
+		tooltipPlacement,
 	} = attributes;
 
 	const icons = {
@@ -169,6 +170,55 @@ function KadenceSingleIcon(props) {
 		<div {...blockProps}>
 			{renderCSS}
 			<BlockControls>
+				<Dropdown
+					className="kb-popover-inline-tooltip-container components-dropdown-menu components-toolbar"
+					contentClassName="kb-popover-inline-tooltip"
+					placement="bottom"
+					renderToggle={({ isOpen, onToggle }) => (
+						<Button
+							className="components-dropdown-menu__toggle kb-inline-tooltip-toolbar-icon"
+							label={__('Tooltip Settings', 'kadence-blocks')}
+							icon={tooltipIcon}
+							onClick={onToggle}
+							aria-expanded={isOpen}
+						/>
+					)}
+					renderContent={() => (
+						<>
+							<div className="kb-inline-tooltip-control">
+								<TextareaControl
+									label={__('Tooltip Content', 'kadence-blocks')}
+									value={tooltip}
+									onChange={(newValue) => setAttributes({ tooltip: newValue })}
+								/>
+								<SelectControl
+									label={__('Placement', 'kadence-blocks')}
+									value={tooltipPlacement || 'top'}
+									options={[
+										{ label: __('Top', 'kadence-blocks'), value: 'top' },
+										{ label: __('Top Start', 'kadence-blocks'), value: 'top-start' },
+										{ label: __('Top End', 'kadence-blocks'), value: 'top-end' },
+										{ label: __('Right', 'kadence-blocks'), value: 'right' },
+										{ label: __('Right Start', 'kadence-blocks'), value: 'right-start' },
+										{ label: __('Right End', 'kadence-blocks'), value: 'right-end' },
+										{ label: __('Bottom', 'kadence-blocks'), value: 'bottom' },
+										{ label: __('Bottom Start', 'kadence-blocks'), value: 'bottom-start' },
+										{ label: __('Bottom End', 'kadence-blocks'), value: 'bottom-end' },
+										{ label: __('Left', 'kadence-blocks'), value: 'left' },
+										{ label: __('Left Start', 'kadence-blocks'), value: 'left-start' },
+										{ label: __('Left End', 'kadence-blocks'), value: 'left-end' },
+										{ label: __('Auto', 'kadence-blocks'), value: 'auto' },
+										{ label: __('Auto Start', 'kadence-blocks'), value: 'auto-start' },
+										{ label: __('Auto End', 'kadence-blocks'), value: 'auto-end' },
+									]}
+									onChange={(val) => {
+										setAttributes({ tooltipPlacement: val });
+									}}
+								/>
+							</div>
+						</>
+					)}
+				/>
 				<CopyPasteAttributes
 					attributes={attributes}
 					excludedAttrs={nonTransAttrs}
@@ -331,14 +381,6 @@ function KadenceSingleIcon(props) {
 								name={name}
 								clientId={clientId}
 								context={context}
-							/>
-							<TextareaControl
-								label={__('Tooltip', 'kadence-blocks')}
-								help={__('Add a tooltip for mouse hovers and focus.', 'kadence-blocks')}
-								value={tooltip}
-								onChange={(value) => {
-									setAttributes({ tooltip: value });
-								}}
 							/>
 							<TextControl
 								label={__('Title for screen readers', 'kadence-blocks')}

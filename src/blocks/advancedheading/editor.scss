@@ -19,7 +19,8 @@
 .kb-advanced-heading-svg-icon svg {
 	display: block !important;
 }
-[data-kb-tooltip-content] {
+[data-kb-tooltip-content]:not([href]) {
+	color: inherit;
 	border-bottom: 1px dashed currentColor;
 }
 .kb-colors-selector.components-dropdown-menu.components-toolbar {
@@ -580,4 +581,15 @@ button.components-button.kt-font-clear-btn {
 	width: 1em;
 	height: 1em;
 	margin-left: 0.8em;
+}
+.kb-typing-popover.kb-tooltip-popover .components-popover__content {
+	max-width: 350px;
+	min-width: auto;
+	width: 90vw;
+}
+.kb-tooltip-popover .block-editor-link-control__search-item {
+	padding: 10px 0;
+}
+.kb-tooltip-popover .components-popover__content .block-editor-link-control {
+	width: auto;
 }
