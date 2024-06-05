@@ -1303,7 +1303,7 @@ function SectionEdit(props) {
 				{'' !== previewFlexBasis && null !== previewFlexBasis
 					? `.wp-block-kadence-column.kadence-column-${uniqueID} > .kadence-inner-column-direction-horizontal > *, .wp-block-kadence-column.kadence-column-${uniqueID} > .kadence-inner-column-direction-horizontal-reverse > * { flex-basis: ${
 							previewFlexBasis + (flexBasisUnit ? flexBasisUnit : 'px')
-					  }; }`
+					  }; }.kadence-column-${uniqueID} > .kadence-inner-column-direction-horizontal > .wp-block-kadence-infobox, .kadence-column-${uniqueID} > .kadence-inner-column-direction-horizontal-reverse > .wp-block-kadence-infobox { width:0px; }`
 					: ''}
 				{'' !== previewFlexBasis
 					? `.kadence-column-${uniqueID} > .kadence-inner-column-direction-horizontal > .wp-block-kadence-image:not(:last-child), .kadence-column-${uniqueID} > .kadence-inner-column-direction-horizontal-reverse > .wp-block-kadence-image:not(:last-child) { margin-bottom: unset; }`
@@ -2287,6 +2287,11 @@ function SectionEdit(props) {
 												setAttributes({ ['maxWidth' + device + 'Unit']: value });
 											}}
 											units={['px', '%', 'vw']}
+											reset={() => {
+												setAttributes({
+													maxWidth: ['', '', ''],
+												});
+											}}
 										/>
 									</KadencePanelBody>
 								)}

@@ -210,7 +210,9 @@
 					"padding": ["", "", "", ""],
 					"paddingControl": "linked",
 					"margin": ["", "", "", ""],
-					"marginControl": "individual"
+					"marginControl": "individual",
+					"paddingUnit": "px",
+					"marginUnit": "px"
 				}
 			]
 		},

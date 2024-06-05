@@ -516,6 +516,8 @@ function KadenceInfoBox(props) {
 		undefined !== tabletBorderRadius ? tabletBorderRadius[3] : '',
 		undefined !== mobileBorderRadius ? mobileBorderRadius[3] : ''
 	);
+	const previewLearnMoreMarginUnit = learnMoreStyles[0]?.marginUnit ? learnMoreStyles[0].marginUnit : 'px';
+	const previewLearnMorePaddingUnit = learnMoreStyles[0]?.paddingUnit ? learnMoreStyles[0].paddingUnit : 'px';
 	// Hover Border
 	const previewBorderHoverTopStyle = getBorderStyle(
 		previewDevice,
@@ -1544,13 +1546,20 @@ function KadenceInfoBox(props) {
 			});
 		}
 	};
-
+	const learnMoreHasAlign =
+		displayLearnMore && previewMediaAlign === 'top' && fullHeight ? 'learn-more-has-align' : '';
 	const mediaImagedraw =
 		'drawborder' === mediaImage[0].hoverAnimation || 'grayscale-border-draw' === mediaImage[0].hoverAnimation
 			? true
 			: false;
 	const renderCSS = (
 		<style>
+			{previewMaxWidth
+				? `.kadence-inner-column-direction-horizontal > .kb-info-box-wrap${uniqueID} {max-width:${
+						previewMaxWidth + previewMaxWidthUnit
+				  };}
+				  .kadence-inner-column-direction-horizontal > .kb-info-box-wrap${uniqueID} > .kt-blocks-info-box-link-wrap {max-width:none !important;}`
+				: ''}
 			{fullHeight
 				? `.kb-info-box-wrap${uniqueID} { height: 100%; } .kadence-inner-column-direction-horizontal > .kb-info-box-wrap${uniqueID} { height: auto; align-self: stretch; }`
 				: ''}
@@ -1587,7 +1596,6 @@ function KadenceInfoBox(props) {
 						learnMoreStyles[0].backgroundHover
 				  )} !important; }`
 				: ''}
-
 			{previewBorderHoverTopStyle
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-top:${previewBorderHoverTopStyle} !important; }`
 				: ''}
@@ -1600,7 +1608,6 @@ function KadenceInfoBox(props) {
 			{previewBorderHoverLeftStyle
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-left:${previewBorderHoverLeftStyle} !important; }`
 				: ''}
-
 			{'' !== previewHoverRadiusTop
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { border-top-left-radius:${
 						previewHoverRadiusTop + (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px')
@@ -1621,7 +1628,6 @@ function KadenceInfoBox(props) {
 						previewHoverRadiusLeft + (borderHoverRadiusUnit ? borderHoverRadiusUnit : 'px')
 				  } !important; }`
 				: ''}
-
 			{containerHoverBackground
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { background:${KadenceColorOutput(
 						containerHoverBackground
@@ -1640,7 +1646,6 @@ function KadenceInfoBox(props) {
 						KadenceColorOutput(shadowHover[0].color, shadowHover[0].opacity)
 				  } !important; }`
 				: ''}
-
 			{mediaStyle[0].hoverBackground
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { background: ${KadenceColorOutput(
 						mediaStyle[0].hoverBackground
@@ -3279,6 +3284,17 @@ function KadenceInfoBox(props) {
 												unit={'px'}
 												units={['px']}
 												showUnit={true}
+												reset={() => {
+													//empty value does not re-render component. Need to pass 0.
+													setAttributes({
+														titleMinHeight: ['0', '0', '0'],
+													});
+													setTimeout(() => {
+														setAttributes({
+															titleMinHeight: ['', '', ''],
+														});
+													}, 20);
+												}}
 											/>
 										</Fragment>
 									)}
@@ -3467,7 +3483,7 @@ function KadenceInfoBox(props) {
 										onChange={(value) => setAttributes({ displayLearnMore: value })}
 									/>
 									{displayLearnMore && (
-										<Fragment>
+										<>
 											<ColorGroup>
 												<PopColorControl
 													label={__('Text Color', 'kadence-blocks')}
@@ -3577,20 +3593,69 @@ function KadenceInfoBox(props) {
 												onFontStyle={(value) => saveLearnMoreStyles({ style: value })}
 												fontSubset={learnMoreStyles[0].subset}
 												onFontSubset={(value) => saveLearnMoreStyles({ subset: value })}
-												padding={learnMoreStyles[0].padding}
-												onPadding={(value) => saveLearnMoreStyles({ padding: value })}
-												paddingControl={learnMoreStyles[0].paddingControl}
-												onPaddingControl={(value) =>
-													saveLearnMoreStyles({ paddingControl: value })
-												}
-												margin={learnMoreStyles[0].margin}
-												onMargin={(value) => saveLearnMoreStyles({ margin: value })}
-												marginControl={learnMoreStyles[0].marginControl}
-												onMarginControl={(value) =>
-													saveLearnMoreStyles({ marginControl: value })
-												}
 											/>
-										</Fragment>
+											<MeasurementControls
+												label={__('Padding', 'kadence-blocks')}
+												reset={true}
+												measurement={learnMoreStyles[0].padding}
+												control={learnMoreStyles[0].paddingControl}
+												onChange={(value) => saveLearnMoreStyles({ padding: value })}
+												onControl={(value) => saveLearnMoreStyles({ paddingControl: value })}
+												min={0}
+												max={
+													learnMoreStyles[0]?.paddingUnit === 'em' ||
+													learnMoreStyles[0]?.paddingUnit === 'rem'
+														? 12
+														: 999
+												}
+												step={
+													learnMoreStyles[0]?.paddingUnit === 'em' ||
+													learnMoreStyles[0]?.paddingUnit === 'rem'
+														? 0.1
+														: 1
+												}
+												units={['px', 'em', 'rem']}
+												unit={
+													learnMoreStyles[0]?.paddingUnit
+														? learnMoreStyles[0]?.paddingUnit
+														: 'px'
+												}
+												onUnit={(value) => saveLearnMoreStyles({ paddingUnit: value })}
+											/>
+											<MeasurementControls
+												label={__('Margin', 'kadence-blocks')}
+												measurement={learnMoreStyles[0].margin}
+												control={learnMoreStyles[0].marginControl}
+												onChange={(value) => saveLearnMoreStyles({ margin: value })}
+												reset={true}
+												onControl={(value) => saveLearnMoreStyles({ marginControl: value })}
+												min={
+													learnMoreStyles[0]?.marginUnit === 'em' ||
+													learnMoreStyles[0]?.marginUnit === 'rem'
+														? -2
+														: -999
+												}
+												max={
+													learnMoreStyles[0]?.marginUnit === 'em' ||
+													learnMoreStyles[0]?.marginUnit === 'rem'
+														? 12
+														: 999
+												}
+												step={
+													learnMoreStyles[0]?.marginUnit === 'em' ||
+													learnMoreStyles[0]?.marginUnit === 'rem'
+														? 0.1
+														: 1
+												}
+												units={['px', 'em', 'rem']}
+												unit={
+													learnMoreStyles[0]?.marginUnit
+														? learnMoreStyles[0]?.marginUnit
+														: 'px'
+												}
+												onUnit={(value) => saveLearnMoreStyles({ marginUnit: value })}
+											/>
+										</>
 									)}
 								</KadencePanelBody>
 							)}
@@ -3664,6 +3729,9 @@ function KadenceInfoBox(props) {
 										setAttributes({ ['maxWidth' + device + 'Unit']: value });
 									}}
 									units={['px', '%', 'vw']}
+									reset={() => {
+										setAttributes({ maxWidth: '', tabletMaxWidth: '', mobileMaxWidth: '' });
+									}}
 								/>
 								<ToggleControl
 									label={__('Set Height 100%', 'kadence-blocks')}
@@ -3689,7 +3757,7 @@ function KadenceInfoBox(props) {
 				</InspectorControls>
 			)}
 			<div
-				className={`kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${previewMediaAlign} ${isSelectedClass} kt-info-halign-${previewhAlign} kb-info-box-vertical-media-align-${mediaVAlign}`}
+				className={`kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${previewMediaAlign} ${isSelectedClass} kt-info-halign-${previewhAlign} kb-info-box-vertical-media-align-${mediaVAlign} ${learnMoreHasAlign}`}
 				style={{
 					boxShadow: displayShadow
 						? shadow[0].hOffset +
@@ -4111,21 +4179,7 @@ function KadenceInfoBox(props) {
 					)}
 					{displayLearnMore && learnMoreStyles[0].google && <WebfontLoader config={lconfig}></WebfontLoader>}
 					{displayLearnMore && (
-						<div
-							className="kt-blocks-info-box-learnmore-wrap"
-							style={{
-								margin: learnMoreStyles[0].margin
-									? learnMoreStyles[0].margin[0] +
-									  'px ' +
-									  learnMoreStyles[0].margin[1] +
-									  'px ' +
-									  learnMoreStyles[0].margin[2] +
-									  'px ' +
-									  learnMoreStyles[0].margin[3] +
-									  'px'
-									: '',
-							}}
-						>
+						<div className="kt-blocks-info-box-learnmore-wrap">
 							<RichText
 								allowedFormats={applyFilters('kadence.whitelist_richtext_formats', [
 									'kadence/insert-dynamic',
@@ -4167,16 +4221,46 @@ function KadenceInfoBox(props) {
 										  learnMoreStyles[0].borderWidth[3] +
 										  'px'
 										: '',
-									padding: learnMoreStyles[0].padding
-										? learnMoreStyles[0].padding[0] +
-										  'px ' +
-										  learnMoreStyles[0].padding[1] +
-										  'px ' +
-										  learnMoreStyles[0].padding[2] +
-										  'px ' +
-										  learnMoreStyles[0].padding[3] +
-										  'px'
-										: '',
+									paddingTop:
+										undefined !== learnMoreStyles?.[0]?.padding?.[0] &&
+										'' !== learnMoreStyles?.[0]?.padding?.[0]
+											? learnMoreStyles[0].padding[0] + previewLearnMorePaddingUnit
+											: undefined,
+									paddingRight:
+										undefined !== learnMoreStyles?.[0]?.padding?.[1] &&
+										'' !== learnMoreStyles?.[0]?.padding?.[1]
+											? learnMoreStyles[0].padding[1] + previewLearnMorePaddingUnit
+											: undefined,
+									paddingBottom:
+										undefined !== learnMoreStyles?.[0]?.padding?.[2] &&
+										'' !== learnMoreStyles?.[0]?.padding?.[2]
+											? learnMoreStyles[0].padding[2] + previewLearnMorePaddingUnit
+											: undefined,
+									paddingLeft:
+										undefined !== learnMoreStyles?.[0]?.padding?.[3] &&
+										'' !== learnMoreStyles?.[0]?.padding?.[3]
+											? learnMoreStyles[0].padding[3] + previewLearnMorePaddingUnit
+											: undefined,
+									marginTop:
+										undefined !== learnMoreStyles?.[0]?.margin?.[0] &&
+										'' !== learnMoreStyles?.[0]?.margin?.[0]
+											? learnMoreStyles[0].margin[0] + previewLearnMoreMarginUnit
+											: undefined,
+									marginRight:
+										undefined !== learnMoreStyles?.[0]?.margin?.[1] &&
+										'' !== learnMoreStyles?.[0]?.margin?.[1]
+											? learnMoreStyles[0].margin[1] + previewLearnMoreMarginUnit
+											: undefined,
+									marginBottom:
+										undefined !== learnMoreStyles?.[0]?.margin?.[2] &&
+										'' !== learnMoreStyles?.[0]?.margin?.[2]
+											? learnMoreStyles[0].margin[2] + previewLearnMoreMarginUnit
+											: undefined,
+									marginLeft:
+										undefined !== learnMoreStyles?.[0]?.margin?.[3] &&
+										'' !== learnMoreStyles?.[0]?.margin?.[3]
+											? learnMoreStyles[0].margin[3] + previewLearnMoreMarginUnit
+											: undefined,
 								}}
 								keepPlaceholderOnFocus
 							/>

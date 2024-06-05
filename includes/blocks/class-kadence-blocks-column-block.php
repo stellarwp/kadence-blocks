@@ -410,6 +410,8 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *' );
 				$basis_unit = ! empty( $attributes['flexBasisUnit'] ) ? $attributes['flexBasisUnit'] : 'px';
 				$css->add_property( 'flex-basis', $attributes['flexBasis'][0] . $basis_unit );
+				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > .wp-block-kadence-infobox' );
+				$css->add_property( 'width', '0px' );
 			}
 		}
 		// inside of Row.
@@ -664,6 +666,8 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *' );
 				$css->add_property( 'flex', '1' );
 				$css->add_property( 'max-width', '100%' );
+				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > .wp-block-kadence-infobox' );
+				$css->add_property( 'width', 'auto' );
 			}
 		} elseif ( 'horizontal' === $tablet_direction || 'horizontal-reverse' === $tablet_direction ) {
 			if ( ! empty( $attributes['flexBasis'][1] ) ) {
@@ -775,6 +779,8 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *,.wp-block-kadence-column.kb-section-md-dir-vertical.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *' );
 				$css->add_property( 'flex', '1' );
 				$css->add_property( 'max-width', '100%' );
+				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > .wp-block-kadence-infobox' );
+				$css->add_property( 'width', 'auto' );
 			}
 		} elseif ( 'horizontal' === $mobile_direction || 'horizontal-reverse' === $mobile_direction ) {
 
