@@ -1350,6 +1350,14 @@
 			"type": "string",
 			"default": "px"
 		},
+		"borderRadiusUnitHover": {
+			"type": "string",
+			"default": "px"
+		},
+		"borderRadiusUnitActive": {
+			"type": "string",
+			"default": "px"
+		},
 		"shadow": {
 			"type": "array",
 			"default": [

@@ -517,7 +517,7 @@ export default class KadenceBlocksCSS {
 	 * @param string nohook If this function should run without using any react hooks.
 	 * @return string
 	 */
-	render_button_styles_with_states(args = {}, attributes, previewDevice, nohook = false) {
+	render_button_styles_with_states(args, attributes, previewDevice, nohook = false) {
 		const {
 			colorBase,
 			backgroundBase,

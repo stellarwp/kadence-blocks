@@ -779,7 +779,7 @@ export default function BackendStyles(props) {
 			css.add_property('margin-right', css.render_size(previewMediaStyleMargin[0], 'px'));
 
 			css.set_selector(
-				`.wp-block-kadence-navigation-link${uniqueID}.kadence-menu-has-description.kadence-menu-has-media > .link-drop-wrap > a > .link-drop-title-wrap`
+				`.wp-block-kadence-navigation-link${uniqueID}.kadence-menu-has-description.has-media > .link-drop-wrap > a > .link-drop-title-wrap`
 			);
 			css.add_property('grid-template-columns', 'auto 1fr');
 		} else if (previewMediaAlign === 'top') {
@@ -817,13 +817,13 @@ export default function BackendStyles(props) {
 		//image styles
 		//outer container
 		css.set_selector(
-			`.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .kadence-navigation-link-image-inner-intrisic-container`
+			`.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .kadence-navigation-link-image-inner-intrinsic-container`
 		);
 		css.add_property('max-width', mediaImage[0].maxWidth + 'px');
 		if (hasRatio) {
 			//next level container
 			css.set_selector(
-				`.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .kadence-navigation-link-image-inner-intrisic-container > .kadence-navigation-link-image-intrisic`
+				`.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .kadence-navigation-link-image-inner-intrinsic-container > .kadence-navigation-link-image-intrinsic`
 			);
 			css.add_property('padding-bottom', imageRatioPadding);
 			css.add_property('height', imageRatioHeight == 0 ? '0px' : imageRatioHeight, null, true);
@@ -834,7 +834,7 @@ export default function BackendStyles(props) {
 
 			//inner container
 			css.set_selector(
-				`.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .kadence-navigation-link-image-inner-intrisic-container > .kadence-navigation-link-image-intrisic > .kadence-navigation-link-image-inner-intrisic`
+				`.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .kadence-navigation-link-image-inner-intrinsic-container > .kadence-navigation-link-image-intrinsic > .kadence-navigation-link-image-inner-intrinsic`
 			);
 			css.add_property('position', 'absolute');
 			css.add_property('top', '0');
@@ -844,7 +844,7 @@ export default function BackendStyles(props) {
 
 			//img
 			css.set_selector(
-				`.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .kadence-navigation-link-image-inner-intrisic-container > .kadence-navigation-link-image-intrisic > .kadence-navigation-link-image-inner-intrisic > img`
+				`.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .kadence-navigation-link-image-inner-intrinsic-container > .kadence-navigation-link-image-intrinsic > .kadence-navigation-link-image-inner-intrinsic > img`
 			);
 			css.add_property('position', 'absolute');
 			css.add_property('flex', '1');
@@ -885,9 +885,9 @@ export default function BackendStyles(props) {
 				borderBase: 'mediaBorder',
 				borderRadiusBase: 'mediaBorderRadius',
 				borderRadiusUnitBase: 'mediaBorderRadiusUnit',
-				selector: `.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .kadence-navigation-link-image-inner-intrisic-container`,
-				selectorHover: `.wp-block-kadence-navigation-link${uniqueID}:hover > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .kadence-navigation-link-image-inner-intrisic-container`,
-				selectorActive: `.wp-block-kadence-navigation-link${uniqueID}.current-menu-item > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .kadence-navigation-link-image-inner-intrisic-container`,
+				selector: `.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .kadence-navigation-link-image-inner-intrinsic-container`,
+				selectorHover: `.wp-block-kadence-navigation-link${uniqueID}:hover > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .kadence-navigation-link-image-inner-intrinsic-container`,
+				selectorActive: `.wp-block-kadence-navigation-link${uniqueID}.current-menu-item > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .kadence-navigation-link-image-inner-intrinsic-container`,
 			},
 			attributes,
 			previewDevice,

@@ -556,7 +556,6 @@ export default function Edit(props) {
 			[`${megaMenuWidthClass}`]: isMegaMenu,
 			'kadence-menu-has-icon': mediaType == 'icon',
 			'kadence-menu-has-image': mediaType == 'image',
-			'kadence-menu-has-media': mediaType !== 'none',
 			'kadence-menu-has-description': description,
 			[`wp-block-kadence-navigation-link${uniqueID}`]: uniqueID,
 		}),
@@ -680,9 +679,9 @@ export default function Edit(props) {
 						/>
 					)}
 					{mediaImage[0].url && 'image' === mediaType && (
-						<div className="kadence-navigation-link-image-inner-intrisic-container">
+						<div className="kadence-navigation-link-image-inner-intrinsic-container">
 							<div
-								className={`kadence-navigation-link-image-intrisic kt-info-animate-${
+								className={`kadence-navigation-link-image-intrinsic kt-info-animate-${
 									mediaImage[0].hoverAnimation
 								}${'svg+xml' === mediaImage[0].subtype ? ' kb-navigation-link-image-type-svg' : ''}${
 									hasRatio
@@ -690,7 +689,7 @@ export default function Edit(props) {
 										: ''
 								}`}
 							>
-								<div className="kadence-navigation-link-image-inner-intrisic">
+								<div className="kadence-navigation-link-image-inner-intrinsic">
 									<img
 										src={mediaImage[0].url}
 										alt={mediaImage[0].alt ? mediaImage[0].alt : mediaImage[0].alt}
