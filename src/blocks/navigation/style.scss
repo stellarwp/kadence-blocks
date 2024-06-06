@@ -58,7 +58,6 @@
 		flex-direction: column;
 		background: #fff;
 		margin-left: 0;
-		box-shadow: 0 2px 13px rgba(0, 0, 0, 0.1);
 		z-index: 1000;
 		width: initial;
 
@@ -69,6 +68,10 @@
 			right: auto;
 			min-height: 100%;
 		}
+	}
+	.navigation ul ul.sub-menu:not(.mega-menu),
+	.navigation ul ul.submenu:not(.mega-menu) {
+		box-shadow: 0 2px 13px rgba(0, 0, 0, 0.1);
 	}
 	.navigation ul ul.quadmenu-row {
 		flex-direction: row;
