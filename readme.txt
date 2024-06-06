@@ -177,7 +177,9 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 = 3.2.42 =
 Release Date: TBD 2024
 * Add: Ability to set Advanced Text as default block in editor.
-* Add: Ability to reset max width on Advanced Text block.
+* Update: Ability to reset max width control in various places.
+* Update: Info box to align button to the bottom when using full height mode.
+* Fix: Issue with flex basis and infobox layouts.
 * Fix: Issue with progress bars default width attribute.
 * Fix: Issue with fullwidth synced patterns.
 

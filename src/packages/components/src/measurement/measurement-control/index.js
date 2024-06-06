@@ -89,6 +89,7 @@ export default function MeasurementControls( {
 		link: isBorderRadius ? radiusLinkedIcon : linkIcon,
 		unlink: isBorderRadius ? radiusIndividualIcon : unlinkIcon,
 	}
+	const liveValue = ( measurement ? measurement : [ '', '', '', '' ] );
 	const zero = ( allowEmpty ? '' : 0 );
 	const [ localControl, setLocalControl ] = useState( control );
 	const realControl = onControl ? control : localControl;
