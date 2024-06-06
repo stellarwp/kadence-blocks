@@ -1394,6 +1394,9 @@
 					"inset": false
 				}
 			]
+		},
+		"kadenceConditional": {
+			"type": "object"
 		}
 	},
 	"usesContext": [
@@ -1423,6 +1426,7 @@
 		"ktdynamic": true,
 		"kbContentLabel": "label",
 		"renaming": false,
+		"ktdynamic": true,
 		"interactivity": {
 			"clientNavigation": true
 		}
