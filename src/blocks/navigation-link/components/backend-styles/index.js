@@ -318,20 +318,6 @@ export default function BackendStyles(props) {
 		linkColorStickyActiveMobile
 	);
 
-	const previewBackground = getPreviewSize(previewDevice, background, backgroundTablet, backgroundMobile);
-	const previewBackgroundHover = getPreviewSize(
-		previewDevice,
-		backgroundHover,
-		backgroundHoverTablet,
-		backgroundHoverMobile
-	);
-	const previewBackgroundActive = getPreviewSize(
-		previewDevice,
-		backgroundActive,
-		backgroundActiveTablet,
-		backgroundActiveMobile
-	);
-
 	const previewBackgroundTransparent = getPreviewSize(
 		previewDevice,
 		backgroundTransparent,
@@ -545,95 +531,7 @@ export default function BackendStyles(props) {
 		megaMenuCustomWidthMobile
 	);
 
-	const previewMediaBackground = getPreviewSize(
-		previewDevice,
-		mediaBackground,
-		mediaBackgroundTablet,
-		mediaBackgroundMobile
-	);
-	const previewMediaBackgroundHover = getPreviewSize(
-		previewDevice,
-		mediaBackgroundHover,
-		mediaBackgroundHoverTablet,
-		mediaBackgroundHoverMobile
-	);
-	const previewMediaBackgroundActive = getPreviewSize(
-		previewDevice,
-		mediaBackgroundActive,
-		mediaBackgroundActiveTablet,
-		mediaBackgroundActiveMobile
-	);
-	const previewMediaColor = getPreviewSize(previewDevice, mediaColor, mediaColorTablet, mediaColorMobile);
-	const previewMediaColorHover = getPreviewSize(
-		previewDevice,
-		mediaColorHover,
-		mediaColorHoverTablet,
-		mediaColorHoverMobile
-	);
-	const previewMediaColorActive = getPreviewSize(
-		previewDevice,
-		mediaColorActive,
-		mediaColorActiveTablet,
-		mediaColorActiveMobile
-	);
-
 	const css = new KadenceBlocksCSS();
-
-	let backgroundString;
-	if (undefined !== backgroundType && 'gradient' === backgroundType) {
-		backgroundString = backgroundGradient;
-	} else {
-		backgroundString =
-			'transparent' === previewBackground || undefined === previewBackground
-				? undefined
-				: css.render_color(previewBackground);
-	}
-	let backgroundStringHover;
-	if (undefined !== backgroundTypeHover && 'gradient' === backgroundTypeHover) {
-		backgroundStringHover = backgroundGradientHover;
-	} else {
-		backgroundStringHover =
-			'transparent' === previewBackgroundHover || undefined === previewBackgroundHover
-				? undefined
-				: css.render_color(previewBackgroundHover);
-	}
-	let backgroundStringActive;
-	if (undefined !== backgroundTypeActive && 'gradient' === backgroundTypeActive) {
-		backgroundStringActive = backgroundGradientActive;
-	} else {
-		backgroundStringActive =
-			'transparent' === previewBackgroundActive || undefined === previewBackgroundActive
-				? undefined
-				: css.render_color(previewBackgroundActive);
-	}
-
-	let mediaBackgroundString;
-	if (undefined !== mediaBackgroundType && 'gradient' === mediaBackgroundType) {
-		mediaBackgroundString = mediaBackgroundGradient;
-	} else {
-		mediaBackgroundString =
-			'transparent' === previewMediaBackground || undefined === previewMediaBackground
-				? undefined
-				: css.render_color(previewMediaBackground);
-	}
-	let mediaBackgroundStringHover;
-	if (undefined !== mediaBackgroundTypeHover && 'gradient' === mediaBackgroundTypeHover) {
-		mediaBackgroundStringHover = mediaBackgroundGradientHover;
-	} else {
-		mediaBackgroundStringHover =
-			'transparent' === previewMediaBackgroundHover || undefined === previewMediaBackgroundHover
-				? undefined
-				: css.render_color(previewMediaBackgroundHover);
-	}
-	let mediaBackgroundStringActive;
-	if (undefined !== mediaBackgroundTypeActive && 'gradient' === mediaBackgroundTypeActive) {
-		mediaBackgroundStringActive = mediaBackgroundGradientActive;
-	} else {
-		mediaBackgroundStringActive =
-			'transparent' === previewMediaBackgroundActive || undefined === previewMediaBackgroundActive
-				? undefined
-				: css.render_color(previewMediaBackgroundActive);
-	}
 
 	let imageRatioPadding = isNaN(mediaImage[0].height)
 		? undefined
@@ -674,103 +572,21 @@ export default function BackendStyles(props) {
 		}
 	}
 
-	const previewMediaBorderTop = css.render_border(
-		mediaBorder,
-		mediaBorderTablet,
-		mediaBorderMobile,
-		previewDevice,
-		'top',
-		false
-	);
-	const previewMediaBorderRight = css.render_border(
-		mediaBorder,
-		mediaBorderTablet,
-		mediaBorderMobile,
-		previewDevice,
-		'right',
-		false
-	);
-	const previewMediaBorderBottom = css.render_border(
-		mediaBorder,
-		mediaBorderTablet,
-		mediaBorderMobile,
-		previewDevice,
-		'bottom',
-		false
-	);
-	const previewMediaBorderLeft = css.render_border(
-		mediaBorder,
-		mediaBorderTablet,
-		mediaBorderMobile,
-		previewDevice,
-		'left',
-		false
-	);
-
-	const previewMediaBorderHoverTop = css.render_border(
-		mediaBorderHover,
-		mediaBorderHoverTablet,
-		mediaBorderHoverMobile,
-		previewDevice,
-		'top',
-		false
-	);
-	const previewMediaBorderHoverRight = css.render_border(
-		mediaBorderHover,
-		mediaBorderHoverTablet,
-		mediaBorderHoverMobile,
-		previewDevice,
-		'right',
-		false
-	);
-	const previewMediaBorderHoverBottom = css.render_border(
-		mediaBorderHover,
-		mediaBorderHoverTablet,
-		mediaBorderHoverMobile,
-		previewDevice,
-		'bottom',
-		false
-	);
-	const previewMediaBorderHoverLeft = css.render_border(
-		mediaBorderHover,
-		mediaBorderHoverTablet,
-		mediaBorderHoverMobile,
-		previewDevice,
-		'left',
-		false
-	);
-
-	const previewMediaBorderActiveTop = css.render_border(
-		mediaBorderActive,
-		mediaBorderActiveTablet,
-		mediaBorderActiveMobile,
-		previewDevice,
-		'top',
-		false
-	);
-	const previewMediaBorderActiveRight = css.render_border(
-		mediaBorderActive,
-		mediaBorderActiveTablet,
-		mediaBorderActiveMobile,
-		previewDevice,
-		'right',
-		false
-	);
-	const previewMediaBorderActiveBottom = css.render_border(
-		mediaBorderActive,
-		mediaBorderActiveTablet,
-		mediaBorderActiveMobile,
-		previewDevice,
-		'bottom',
-		false
-	);
-	const previewMediaBorderActiveLeft = css.render_border(
-		mediaBorderActive,
-		mediaBorderActiveTablet,
-		mediaBorderActiveMobile,
-		previewDevice,
-		'left',
-		false
+	css.render_button_styles_with_states(
+		{
+			backgroundBase: 'background',
+			backgroundTypeBase: 'backgroundType',
+			backgroundGradientBase: 'backgroundGradient',
+			borderBase: 'border',
+			borderRadiusBase: 'borderRadius',
+			borderRadiusUnitBase: 'borderRadiusUnit',
+			shadowBase: 'shadow',
+			selector: `.wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap`,
+			selectorHover: `.wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap:hover`,
+			selectorActive: `.wp-block-kadence-navigation .navigation .menu-container > ul > li.menu-item.current-menu-item.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap`,
+		},
+		attributes,
+		previewDevice
 	);
 
 	css.set_selector(
@@ -781,31 +597,7 @@ export default function BackendStyles(props) {
 	css.set_selector(
 		`.wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap`
 	);
-	css.add_property('background', backgroundString);
-	css.add_property('border-top', css.render_border(border, borderTablet, borderMobile, previewDevice, 'top', false));
-	css.add_property(
-		'border-right',
-		css.render_border(border, borderTablet, borderMobile, previewDevice, 'right', false)
-	);
-	css.add_property(
-		'border-bottom',
-		css.render_border(border, borderTablet, borderMobile, previewDevice, 'bottom', false)
-	);
-	css.add_property(
-		'border-left',
-		css.render_border(border, borderTablet, borderMobile, previewDevice, 'left', false)
-	);
-	css.render_measure_output(
-		borderRadius,
-		borderRadiusTablet,
-		borderRadiusMobile,
-		previewDevice,
-		'border-radius',
-		borderRadiusUnit
-	);
-	if (shadow?.[0]?.enable) {
-		css.add_property('box-shadow', css.render_shadow(shadow[0]));
-	}
+
 	if (context?.['kadence/headerIsTransparent'] == '1') {
 		css.add_property('color', css.render_color(previewLinkColorTransparent));
 		css.add_property('background', css.render_color(previewBackgroundTransparent));
@@ -822,34 +614,6 @@ export default function BackendStyles(props) {
 	css.set_selector(
 		`.wp-block-kadence-navigation .menu-container > ul > li.menu-item.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap:hover`
 	);
-	css.add_property('background', backgroundStringHover);
-	css.add_property(
-		'border-top',
-		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'top', false)
-	);
-	css.add_property(
-		'border-right',
-		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'right', false)
-	);
-	css.add_property(
-		'border-bottom',
-		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'bottom', false)
-	);
-	css.add_property(
-		'border-left',
-		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'left', false)
-	);
-	css.render_measure_output(
-		borderRadiusHover,
-		borderRadiusHoverTablet,
-		borderRadiusHoverMobile,
-		previewDevice,
-		'border-radius',
-		borderRadiusUnitHover
-	);
-	if (shadowHover?.[0]?.enable) {
-		css.add_property('box-shadow', css.render_shadow(shadowHover[0]));
-	}
 	if (context?.['kadence/headerIsTransparent'] == '1') {
 		css.add_property('color', css.render_color(previewLinkColorTransparentHover));
 		css.add_property('background', css.render_color(previewBackgroundTransparentHover));
@@ -868,34 +632,6 @@ export default function BackendStyles(props) {
 	css.set_selector(
 		`.wp-block-kadence-navigation .navigation .menu-container > ul > li.menu-item.current-menu-item.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap`
 	);
-	css.add_property('background', backgroundStringActive);
-	css.add_property(
-		'border-top',
-		css.render_border(borderActive, borderActiveTablet, borderActiveMobile, previewDevice, 'top', false)
-	);
-	css.add_property(
-		'border-right',
-		css.render_border(borderActive, borderActiveTablet, borderActiveMobile, previewDevice, 'right', false)
-	);
-	css.add_property(
-		'border-bottom',
-		css.render_border(borderActive, borderActiveTablet, borderActiveMobile, previewDevice, 'bottom', false)
-	);
-	css.add_property(
-		'border-left',
-		css.render_border(borderActive, borderActiveTablet, borderActiveMobile, previewDevice, 'left', false)
-	);
-	css.render_measure_output(
-		borderRadiusActive,
-		borderRadiusActiveTablet,
-		borderRadiusActiveMobile,
-		previewDevice,
-		'border-radius',
-		borderRadiusUnitActive
-	);
-	if (shadowActive?.[0]?.enable) {
-		css.add_property('box-shadow', css.render_shadow(shadowActive[0]));
-	}
 	if (context?.['kadence/headerIsTransparent'] == '1') {
 		css.add_property('color', css.render_color(previewLinkColorTransparentActive));
 		css.add_property('background', css.render_color(previewBackgroundTransparentActive));
@@ -1140,23 +876,21 @@ export default function BackendStyles(props) {
 		css.add_property('color', css.render_color(previewMediaStyleColorActive));
 	}
 	if (mediaType && 'image' === mediaType) {
-		css.set_selector(
-			`.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .kadence-navigation-link-image-inner-intrisic-container`
-		);
-		css.add_property('color', css.render_color(previewMediaColor));
-		css.add_property('background', mediaBackgroundString);
-		css.add_property('border-top', previewMediaBorderTop);
-		css.add_property('border-right', previewMediaBorderRight);
-		css.add_property('border-bottom', previewMediaBorderBottom);
-		css.add_property('border-left', previewMediaBorderLeft);
-		css.render_measure_output(
-			mediaBorderRadius,
-			mediaBorderRadiusTablet,
-			mediaBorderRadiusMobile,
+		css.render_button_styles_with_states(
+			{
+				colorBase: 'mediaColor',
+				backgroundBase: 'mediaBackground',
+				backgroundTypeBase: 'mediaBackgroundType',
+				backgroundGradientBase: 'mediaBackgroundGradient',
+				borderBase: 'mediaBorder',
+				borderRadiusBase: 'mediaBorderRadius',
+				borderRadiusUnitBase: 'mediaBorderRadiusUnit',
+				selector: `.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .kadence-navigation-link-image-inner-intrisic-container`,
+				selectorHover: `.wp-block-kadence-navigation-link${uniqueID}:hover > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .kadence-navigation-link-image-inner-intrisic-container`,
+				selectorActive: `.wp-block-kadence-navigation-link${uniqueID}.current-menu-item > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container > .kadence-navigation-link-image-inner-intrisic-container`,
+			},
+			attributes,
 			previewDevice,
-			'border-radius',
-			mediaBorderRadiusUnit,
-			{},
 			true
 		);
 	}
