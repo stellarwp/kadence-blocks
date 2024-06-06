@@ -22,7 +22,7 @@ import {
 	ExternalLink,
 	MenuItem,
 } from '@wordpress/components';
-import { image, starFilled, plusCircleFilled } from '@wordpress/icons';
+import { plusCircle, addSubmenu, plusCircleFilled } from '@wordpress/icons';
 import { displayShortcut, isKeyboardEvent, ENTER } from '@wordpress/keycodes';
 import { __ } from '@wordpress/i18n';
 import {
@@ -40,7 +40,6 @@ import { isURL, prependHTTP, safeDecodeURI } from '@wordpress/url';
 import { useState, useEffect, useRef } from '@wordpress/element';
 import { placeCaretAtHorizontalEdge, __unstableStripHTML as stripHTML } from '@wordpress/dom';
 import { decodeEntities } from '@wordpress/html-entities';
-import { link as linkIcon, addSubmenu, plusCircle } from '@wordpress/icons';
 import { store as coreStore } from '@wordpress/core-data';
 import { useMergeRefs } from '@wordpress/compose';
 import { last, map, get } from 'lodash';
@@ -669,18 +668,16 @@ export default function Edit(props) {
 			{mediaType && 'none' !== mediaType && (
 				<div className={'link-media-container'}>
 					{!mediaImage[0].url && 'image' === mediaType && (
-						<Fragment>
-							<KadenceMediaPlaceholder
-								labels={''}
-								selectIcon={plusCircleFilled}
-								selectLabel={__('Select Image', 'kadence-blocks')}
-								onSelect={onSelectImage}
-								accept="image/*"
-								className={'kadence-image-upload'}
-								allowedTypes={ALLOWED_MEDIA_TYPES}
-								disableMediaButtons={true}
-							/>
-						</Fragment>
+						<KadenceMediaPlaceholder
+							labels={''}
+							selectIcon={plusCircleFilled}
+							selectLabel={__('Select Image', 'kadence-blocks')}
+							onSelect={onSelectImage}
+							accept="image/*"
+							className={'kadence-image-upload'}
+							allowedTypes={ALLOWED_MEDIA_TYPES}
+							disableMediaButtons={true}
+						/>
 					)}
 					{mediaImage[0].url && 'image' === mediaType && (
 						<div className="kadence-navigation-link-image-inner-intrisic-container">
