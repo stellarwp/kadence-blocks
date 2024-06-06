@@ -1,48 +1,50 @@
-import { useCallback, useEffect, useState } from '@wordpress/element';
+import { useCallback, useEffect, useState, useMemo } from '@wordpress/element';
 import { TextControl, Button, Icon } from '@wordpress/components';
-import { useEntityBlockEditor, useEntityProp } from '@wordpress/core-data';
+import { useEntityBlockEditor, EntityProvider } from '@wordpress/core-data';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { get } from 'lodash';
 import { createBlock, serialize } from '@wordpress/blocks';
-import { RichText } from '@wordpress/block-editor';
+import { RichText, ListView, BlockEditorProvider } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
 import { EDITABLE_BLOCK_ATTRIBUTES, PREVENT_BLOCK_DELETE } from './constants';
 import { link } from '@wordpress/icons';
+import { debounce } from 'lodash';
 
-function BlockItem({ thisBlock, allBlocks, index, maxIndex, depth }) {
-	const [isEditing, setIsEditing] = useState(false);
+import {
+	Announcements,
+	DndContext,
+	closestCenter,
+	PointerSensor,
+	useSensor,
+	useSensors,
+	DragStartEvent,
+	DragOverlay,
+	DragMoveEvent,
+	DragEndEvent,
+	DragOverEvent,
+	MeasuringStrategy,
+	DropAnimation,
+	defaultDropAnimation,
+	Modifier,
+} from '@dnd-kit/core';
+import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 
-	const hasChildren = thisBlock?.innerBlocks?.length > 0;
-	const hasEditableAttributes = EDITABLE_BLOCK_ATTRIBUTES.some((block) => block.name === thisBlock.name);
-	const editableAttributes = hasEditableAttributes
-		? EDITABLE_BLOCK_ATTRIBUTES.find((block) => block.name === thisBlock.name).attributes
-		: [];
+const DragHandle = React.memo((props) => (
+	<div className={'drag-handle'} style={{ cursor: 'grab', marginRight: '5px' }} {...props}>
+		<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+			<path d="M13 8c.6 0 1-.4 1-1s-.4-1-1-1-1 .4-1 1 .4 1 1 1zM5 6c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1zm0 4c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1zm8 0c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1zM9 6c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1zm0 4c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1z"></path>
+		</svg>
+	</div>
+));
+
+function BlockItem({ thisBlock, activeBlock, toggleCollapse, collapsed }) {
+	const parentProps = {};
+
+	const hasChildren = thisBlock?.children?.length > 0;
 
 	const blockMeta = useSelect((select) => {
 		return select('core/blocks').getBlockType(thisBlock.name);
 	}, []);
-
-	// const renderEditableAttributes = () => {
-	// 	return editableAttributes.map((attribute) => {
-	// 		const value = get(thisBlock, ['attributes', attribute.name], '');
-	//
-	// 		if (attribute.type === 'string') {
-	// 			return (
-	// 				<p key={attribute.name} style={{ textTransform: 'capitalize' }}>
-	// 					{attribute.name}:{' '}
-	// 					<TextControl
-	// 						value={value}
-	// 						onChange={(newValue) => {
-	// 							console.log('Update Attribute');
-	// 						}}
-	// 					/>
-	// 				</p>
-	// 			);
-	// 		}
-	//
-	// 		return <p>Attribute type of {attribute.type} is not supported yet.</p>;
-	// 	});
-	// };
 
 	function stripHtml(html) {
 		const tmp = document.createElement('DIV');
@@ -55,73 +57,165 @@ function BlockItem({ thisBlock, allBlocks, index, maxIndex, depth }) {
 		labelOrTitle = get(blockMeta, ['title'], '');
 	}
 
-	return (
-		<>
-			<div
-				onClick={() => {
-					// hasEditableAttributes ? setIsEditing(!isEditing) : null;
-				}}
-				className={`menu-block ${isEditing ? 'active' : ''} ${!hasChildren ? 'no-children' : ''}`}
-				style={{ marginLeft: depth * 20 + 'px' }}
-			>
-				{/* Expand all for the time being */}
-				{/*{hasChildren && !isEditing && <Icon className={'has-children'} icon="arrow-right-alt2" />}*/}
-				{/*{hasChildren && isEditing && <Icon className={'has-children'} icon="arrow-down-alt2" />}				{hasChildren && !isEditing && <Icon className={'has-children'} icon="arrow-right-alt2" />}*/}
-				{hasChildren && <Icon className={'has-children'} icon="arrow-down-alt2" />}
-				<Icon className={'block-icon'} icon={blockMeta?.icon?.src} />
-				<span className={'block-label'}>{labelOrTitle}</span>
-				<Icon className={'block-settings'} icon="ellipsis" />
-			</div>
-			{/*{isEditing && (*/}
-			{/*	<div className={'edit-block'}>*/}
-			{/*		{renderEditableAttributes()}*/}
-			{/*		{index !== 0 && (*/}
-			{/*			<Button isSmall isPrimary onClick={() => moveBlock('up', thisBlock.clientId, allBlocks)}>*/}
-			{/*				Move Up*/}
-			{/*			</Button>*/}
-			{/*		)}*/}
-			{/*		&nbsp;&nbsp;&nbsp;*/}
-			{/*		{index < maxIndex && (*/}
-			{/*			<Button isSmall isPrimary onClick={() => moveBlock('down', thisBlock.clientId, allBlocks)}>*/}
-			{/*				Move Down*/}
-			{/*			</Button>*/}
-			{/*		)}*/}
-			{/*	</div>*/}
-			{/*)}*/}
+	const depth = () => {
+		if (thisBlock.depth === 0) {
+			return 0;
+		}
 
-			{hasChildren && <div>{renderBlocks(allBlocks, thisBlock.innerBlocks, depth + 1)}</div>}
-		</>
+		return thisBlock.depth * 15 + 30;
+	};
+
+	const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+		id: thisBlock.clientId,
+		data: {
+			name: thisBlock.name,
+			attributes: thisBlock.attributes,
+		},
+	});
+
+	const style = transform
+		? {
+				backgroundColor: activeBlock ? 'rgba(0, 0, 0, 0.1)' : 'transparent',
+				transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+				marginLeft: depth() + 'px',
+		  }
+		: {
+				marginLeft: depth() + 'px',
+		  };
+
+	parentProps.ref = setNodeRef;
+	parentProps.style = style;
+	const dragHandleProps = { ...listeners, ...attributes };
+
+	return (
+		<div className={`menu-block ${!hasChildren ? 'no-children' : ''}`} {...parentProps}>
+			<DragHandle {...dragHandleProps} />
+
+			{/* Expand all for the time being */}
+			{hasChildren && (
+				<Icon
+					className={'has-children'}
+					icon={collapsed ? 'arrow-right-alt2' : 'arrow-down-alt2'}
+					onClick={() => toggleCollapse(thisBlock.clientId)}
+				/>
+			)}
+			<Icon className={'block-icon'} icon={blockMeta?.icon?.src} />
+			<span className={'block-label'}>{labelOrTitle}</span>
+			<Icon className={'block-settings'} icon="ellipsis" />
+		</div>
 	);
 }
 
-const renderBlocks = (allBlocks, innerBlocks, depth = 0) => {
-	const maxIndex = innerBlocks.length - 1;
+export default function MenuEdit({ closeModal, blocks }) {
+	const [collapsed, setCollapsed] = useState([]);
+	const [activeBlock, setActiveBlock] = useState(null);
 
-	return innerBlocks.map((block, index) => (
-		<BlockItem
-			key={block.clientId}
-			depth={depth}
-			index={index}
-			maxIndex={maxIndex}
-			thisBlock={block}
-			allBlocks={allBlocks}
-		/>
-	));
-};
+	function handleDragStart({ active }) {
+		setActiveBlock(active.id);
+	}
 
-export default function MenuEdit({ blocks }) {
-	const discardChanges = () => {
-		console.log('Discarding changes');
+	const getIndex = (clientId) => {
+		return wp.data.select('core/block-editor').getBlockIndex(clientId);
 	};
 
-	const saveChanges = async () => {
-		console.log('Save changes');
+	function handleDragOver({ active, over }) {
+		if (over && active) {
+			let destinationClientId = over.id;
+			const currentClientID = active.id;
+
+			const parentClientID = wp.data.select('core/block-editor').getBlockRootClientId(currentClientID);
+			const destinationParentClientID = wp.data
+				.select('core/block-editor')
+				.getBlockRootClientId(destinationClientId);
+			const newIndex = getIndex(destinationClientId);
+			const currentIndex = getIndex(currentClientID);
+			const destName = wp.data.select('core/block-editor').getBlockName(destinationClientId);
+			const parentName = wp.data.select('core/block-editor').getBlockName(parentClientID);
+
+			// We're moving within the same parent
+			if (parentClientID === destinationParentClientID) {
+				destinationClientId = parentClientID;
+			}
+
+			// Sorting into same position, no action needed.
+			if (destinationClientId === parentClientID && newIndex === currentIndex) {
+				return;
+			}
+
+			// clientID, fromRootClientId, toRootClientId, newIndex
+			wp.data
+				.dispatch('core/block-editor')
+				.moveBlockToPosition(currentClientID, parentClientID, destinationClientId, newIndex);
+		}
+	}
+
+	function handleDragEnd({ active, over }) {
+		setActiveBlock(null);
+	}
+
+	function handleDragCancel() {
+		setActiveBlock(null);
+	}
+
+	function hideCollapsedItems(array, idsToCollapse) {
+		let isChild = [];
+
+		return array.filter((item) => {
+			if (isChild.includes(item.id)) {
+				return false;
+			}
+			if ((idsToCollapse.includes(item.id) || isChild.includes(item.id)) && item.children) {
+				isChild = [...isChild, ...item.children];
+			}
+			return true;
+		});
+	}
+
+	const flattenBlocks = (blocks, depth = 0) => {
+		const result = [];
+
+		const traverse = (block, depth) => {
+			const { innerBlocks, clientId } = block;
+			const children = innerBlocks.map((innerBlock) => innerBlock.clientId);
+			// delete block.innerBlocks; // Just for cleanup
+
+			result.push({
+				id: block.clientId,
+				...block,
+				depth,
+				children,
+			});
+
+			innerBlocks.forEach((innerBlock) => traverse(innerBlock, depth + 1));
+		};
+
+		blocks.forEach((block) => traverse(block, depth));
+
+		return result;
 	};
+
+	const toggleCollapse = (id) => {
+		setCollapsed((prev) => {
+			if (prev.includes(id)) {
+				return prev.filter((i) => i !== id);
+			}
+			return [...prev, id];
+		});
+	};
+
+	const flattenedItems = useMemo(() => {
+		// Foreach block in blocks, add a property called children
+		// This will be an array of all the innerBlocks
+		const flat = flattenBlocks(blocks);
+		return hideCollapsedItems(flat, collapsed);
+	}, [blocks, collapsed]);
+
+	const sortedIds = useMemo(() => flattenedItems.map(({ id }) => id), [flattenedItems]);
 
 	return (
 		<div className={'menu-management'}>
 			<div className={'edit-menu-name'}>
-				MENU NAME:{' '}
+				NAME:{' '}
 				<RichText
 					tagName={'span'}
 					placeholder={__('Set a Title', 'kadence-blocks')}
@@ -132,7 +226,24 @@ export default function MenuEdit({ blocks }) {
 				/>
 			</div>
 
-			{renderBlocks(blocks, blocks)}
+			<DndContext
+				// collisionDetection={closestCenter}
+				onDragStart={handleDragStart}
+				onDragOver={debounce(handleDragOver, 50)}
+				onDragEnd={handleDragEnd}
+			>
+				<SortableContext items={sortedIds} strategy={verticalListSortingStrategy}>
+					{flattenedItems.map((block) => (
+						<BlockItem
+							activeBlock={activeBlock === block.clientId}
+							key={block.clientId}
+							thisBlock={block}
+							toggleCollapse={toggleCollapse}
+							collapsed={collapsed.includes(block.clientId)}
+						/>
+					))}
+				</SortableContext>
+			</DndContext>
 
 			<div style={{ marginTop: '20px' }}>
 				<Button
@@ -156,11 +267,8 @@ export default function MenuEdit({ blocks }) {
 			</div>
 
 			<div style={{ marginTop: '30px', float: 'right' }}>
-				<Button isTertiary onClick={discardChanges} style={{ marginRight: '20px' }}>
-					Cancel
-				</Button>
-				<Button isPrimary onClick={saveChanges}>
-					Apply
+				<Button isPrimary onClick={closeModal}>
+					{__('Done', 'kadence-blocks')}
 				</Button>
 			</div>
 		</div>

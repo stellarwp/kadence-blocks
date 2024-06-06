@@ -105,9 +105,9 @@
 			line-height: 16px;
 			cursor: pointer;
 
-			&.no-children{
-				padding-left: 29px;
-			}
+			//&.no-children{
+			//	padding-left: 29px;
+			//}
 		}
 
 		.block-label {
@@ -136,4 +136,8 @@
 
 	}
 
+	.drag-handle svg {
+		pointer-events: none;
+		transform: rotate(90deg);
+	}
 }

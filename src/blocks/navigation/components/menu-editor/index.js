@@ -11,7 +11,7 @@ import { createBlock } from '@wordpress/blocks';
 import MenuEdit from './edit';
 import './editor.scss';
 
-export default function MenuEditor({ clientId }) {
+export default function MenuEditor({ clientId, closeModal }) {
 	const [sidebarTab, setSidebarTab] = useState('posts');
 
 	const { blocks } = useSelect(
@@ -80,7 +80,7 @@ export default function MenuEditor({ clientId }) {
 			</div>
 			<div className="right-column">
 				{blocks.length !== 0 ? (
-					<MenuEdit blocks={blocks} />
+					<MenuEdit blocks={blocks} closeModal={closeModal} />
 				) : (
 					<>{__('Insert some blocks to get started.', 'kadence-blocks')}</>
 				)}
