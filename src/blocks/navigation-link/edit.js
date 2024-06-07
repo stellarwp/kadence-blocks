@@ -21,7 +21,10 @@ import {
 	SelectControl,
 	ExternalLink,
 	MenuItem,
+	Button,
+	ButtonGroup,
 } from '@wordpress/components';
+import { plusCircle, addSubmenu, plusCircleFilled } from '@wordpress/icons';
 import { displayShortcut, isKeyboardEvent, ENTER } from '@wordpress/keycodes';
 import { __ } from '@wordpress/i18n';
 import {
@@ -33,15 +36,15 @@ import {
 	getColorClassName,
 	useInnerBlocksProps,
 	BlockSettingsMenuControls,
+	AlignmentToolbar,
 } from '@wordpress/block-editor';
 import { isURL, prependHTTP, safeDecodeURI } from '@wordpress/url';
 import { useState, useEffect, useRef } from '@wordpress/element';
 import { placeCaretAtHorizontalEdge, __unstableStripHTML as stripHTML } from '@wordpress/dom';
 import { decodeEntities } from '@wordpress/html-entities';
-import { link as linkIcon, addSubmenu, plusCircle } from '@wordpress/icons';
 import { store as coreStore } from '@wordpress/core-data';
 import { useMergeRefs } from '@wordpress/compose';
-import { last } from 'lodash';
+import { last, map, get } from 'lodash';
 import {
 	getUniqueId,
 	getPostOrFseId,
@@ -50,7 +53,6 @@ import {
 	getBorderStyle,
 	showSettings,
 	getPreviewSize,
-	KadenceColorOutput,
 	getGapSizeOptionOutput,
 } from '@kadence/helpers';
 
@@ -80,9 +82,10 @@ import {
 	ResponsiveMeasurementControls,
 	IconRender,
 	ResponsiveSelectControl,
+	KadenceMediaPlaceholder,
 } from '@kadence/components';
 
-import { ArrowDown, ArrowUp } from '@kadence/icons';
+import { ArrowDown, ArrowUp, rowIcon, twoColIcon, threeColIcon, twoRightGoldenIcon } from '@kadence/icons';
 
 /**
  * Internal dependencies
@@ -99,6 +102,7 @@ import BackendStyles from './components/backend-styles';
 import addNavLink from '../navigation/helpers/addNavLink';
 
 const DEFAULT_BLOCK = { name: 'kadence/navigation-link' };
+const ALLOWED_MEDIA_TYPES = ['image'];
 
 const useIsInvalidLink = (kind, type, id) => {
 	const isPostType = kind === 'post-type' || type === 'post' || type === 'page';
@@ -297,6 +301,7 @@ export default function Edit(props) {
 		mediaType,
 		mediaAlign,
 		mediaImage,
+		imageRatio,
 		mediaIcon,
 		mediaStyle,
 		highlightIcon,
@@ -310,10 +315,14 @@ export default function Edit(props) {
 		dropdownBorderRadiusTablet,
 		dropdownBorderRadiusMobile,
 		dropdownBorderRadiusUnit,
+		align,
+		kadenceDynamic,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
 	const [showSubMenus, setShowSubMenus] = useState(false);
+	const [megaMenuOnboardingStep, setMegaMenuOnboardingStep] = useState('');
+	const [megaMenuColumnChoice, setMegaMenuColumnChoice] = useState('');
 
 	const [isInvalid, isDraft] = useIsInvalidLink(kind, type, id);
 	const { maxNestingLevel } = context;
@@ -389,11 +398,10 @@ export default function Edit(props) {
 	}, []);
 
 	//hasChildren is a proxy for isSubmenu
-	const { innerBlocks, isAtMaxNesting, isSubMenuChild, isTopLevelLink, isParentOfSelectedBlock, hasChildren } =
+	const { isAtMaxNesting, isSubMenuChild, isTopLevelLink, isParentOfSelectedBlock, hasChildren, inMegaMenu } =
 		useSelect(
 			(select) => {
 				const {
-					getBlocks,
 					getBlockCount,
 					getBlockName,
 					getBlockRootClientId,
@@ -408,32 +416,94 @@ export default function Edit(props) {
 				]);
 
 				return {
-					innerBlocks: getBlocks(clientId),
 					isAtMaxNesting: navLinkParents.length >= maxNestingLevel,
 					isSubMenuChild: navLinkParents.length > 0,
 					isTopLevelLink: rootBlockName === 'core/navigation' || rootBlockName === 'kadence/navigation',
 					isParentOfSelectedBlock: hasSelectedInnerBlock(clientId, true),
 					hasChildren: !!getBlockCount(clientId),
+					inMegaMenu: getBlockParentsByBlockName(clientId, 'kadence/navigation').length !== 1,
 				};
 			},
 			[clientId]
 		);
 
+	const isMegaMenuOnboarding = isMegaMenu && !hasChildren;
+	const megaMenuColumnOptions = [
+		{ key: 'equal|1', name: __('Row', 'kadence-blocks'), icon: rowIcon },
+		{ key: 'equal|2', name: __('Two: Equal', 'kadence-blocks'), icon: twoColIcon },
+		{ key: 'equal|3', name: __('Three: Equal', 'kadence-blocks'), icon: threeColIcon },
+		{
+			key: 'right-golden|2',
+			name: __('Two: Right Heavy 33/66', 'kadence-blocks'),
+			icon: twoRightGoldenIcon,
+		},
+	];
+	const megaMenuDesignOptions =
+		megaMenuColumnChoice == 'equal|1'
+			? [
+					{ key: 'equal|1|simple', name: __('Simple', 'kadence-blocks'), icon: rowIcon },
+					{ key: 'equal|1|complex', name: __('Complex', 'kadence-blocks'), icon: twoColIcon },
+			  ]
+			: megaMenuColumnChoice == 'equal|2'
+			? [
+					{ key: 'equal|2|simple', name: __('Simple2', 'kadence-blocks'), icon: rowIcon },
+					{ key: 'equal|2|complex', name: __('Complex2', 'kadence-blocks'), icon: twoColIcon },
+			  ]
+			: megaMenuColumnChoice == 'equal|3'
+			? [
+					{ key: 'equal|3|simple', name: __('Simple3', 'kadence-blocks'), icon: rowIcon },
+					{ key: 'equal|3|complex', name: __('Complex3', 'kadence-blocks'), icon: twoColIcon },
+			  ]
+			: [
+					{ key: 'right-golden|2|simple', name: __('Simple2', 'kadence-blocks'), icon: rowIcon },
+					{ key: 'right-golden|2|complex', name: __('Complex2', 'kadence-blocks'), icon: twoColIcon },
+			  ];
+
 	/**
 	 * Enable or disable the mega menu by changing the row layout and setting the attribute.
 	 */
-	function doMegaMenu(value) {
+	function doMegaMenu(key) {
+		//TODO put any existing submenus / items into the new mega menu
+		if (key) {
+			const keyParts = key.split('|');
+			let newMegaMenu;
+			switch (key) {
+				case 'simple|1':
+					newMegaMenu = createBlock(
+						'kadence/rowlayout',
+						{ templateLock: false, colLayout: keyParts[0], columns: keyParts[1] },
+						[createBlock('kadence/column', {}, [])]
+					);
+					break;
+
+				default:
+					newMegaMenu = createBlock(
+						'kadence/rowlayout',
+						{ templateLock: false, colLayout: keyParts[0], columns: keyParts[1] },
+						[createBlock('kadence/column', {}, [])]
+					);
+					break;
+			}
+			insertBlock(newMegaMenu, 0, clientId);
+			setShowSubMenus(true);
+		}
+	}
+
+	/**
+	 * Enable or disable the mega menu by changing the row layout and setting the attribute.
+	 */
+	function doMegaMenuEnable(value) {
 		if (value) {
 			//enable
-			//TODO put any existing submenus / items into the new mega menu
-			const newMegaMenu = createBlock('kadence/rowlayout', { templateLock: false }, []);
-			insertBlock(newMegaMenu, 0, clientId);
 			setAttributes({ isMegaMenu: true });
 			setShowSubMenus(true);
 		} else {
 			//disable
 			replaceInnerBlocks(clientId, []);
 			setAttributes({ isMegaMenu: false });
+			setMegaMenuColumnChoice('');
+			setMegaMenuOnboardingStep('');
+			setShowSubMenus(false);
 		}
 	}
 
@@ -551,17 +621,18 @@ export default function Edit(props) {
 			'kadence-menu-mega-enabled': isMegaMenu,
 			[`${megaMenuWidthClass}`]: isMegaMenu,
 			'kadence-menu-has-icon': mediaType == 'icon',
+			'kadence-menu-has-image': mediaType == 'image',
 			'kadence-menu-has-description': description,
 			[`wp-block-kadence-navigation-link${uniqueID}`]: uniqueID,
 		}),
 		onKeyDown,
 	});
 
-	const innerBlocksProps = useInnerBlocksProps(
+	const { children, ...innerBlocksProps } = useInnerBlocksProps(
 		{
 			...blockProps,
 			className: classnames('remove-outline', {
-				'sub-menu': hasChildren,
+				'sub-menu': hasChildren || isMegaMenuOnboarding,
 				'show-sub-menus': showSubMenus,
 				'mega-menu': isMegaMenu,
 			}),
@@ -575,92 +646,160 @@ export default function Edit(props) {
 		}
 	);
 
+	const saveMediaImage = (value) => {
+		const newUpdate = mediaImage.map((item, index) => {
+			if (0 === index) {
+				item = { ...item, ...value };
+			}
+			return item;
+		});
+		setAttributes({
+			mediaImage: newUpdate,
+		});
+	};
+
+	const onSelectImage = (media) => {
+		let url;
+		let itemSize;
+		if (mediaImage[0] && mediaImage[0].width && mediaImage[0].height) {
+			const sizes = undefined !== media.sizes ? media.sizes : [];
+			const imgSizes = Object.keys(sizes).map((item) => {
+				return { slug: item, name: item };
+			});
+			map(imgSizes, ({ name, slug }) => {
+				const type = get(media, ['mime_type']);
+				if ('image/svg+xml' === type) {
+					return null;
+				}
+				const sizeUrl = get(media, ['sizes', slug, 'url']);
+				if (!sizeUrl) {
+					return null;
+				}
+				const sizeWidth = get(media, ['sizes', slug, 'width']);
+				if (!sizeWidth) {
+					return null;
+				}
+				const sizeHeight = get(media, ['sizes', slug, 'height']);
+				if (!sizeHeight) {
+					return null;
+				}
+				if (sizeHeight === mediaImage[0].height && sizeWidth === mediaImage[0].width) {
+					itemSize = slug;
+					return null;
+				}
+			});
+		}
+		const size = itemSize && '' !== itemSize ? itemSize : 'full';
+		if (size !== 'full') {
+			url = get(media, ['sizes', size, 'url']) || get(media, ['media_details', 'sizes', size, 'source_url']);
+		}
+		const width =
+			get(media, ['sizes', size, 'width']) ||
+			get(media, ['media_details', 'sizes', size, 'width']) ||
+			get(media, ['width']) ||
+			get(media, ['media_details', 'width']);
+		const height =
+			get(media, ['sizes', size, 'height']) ||
+			get(media, ['media_details', 'sizes', size, 'height']) ||
+			get(media, ['height']) ||
+			get(media, ['media_details', 'height']);
+		const maxwidth = mediaImage[0] && mediaImage[0].maxWidth ? mediaImage[0].maxWidth : media.width;
+		saveMediaImage({
+			id: media.id,
+			url: url || media.url,
+			alt: media.alt,
+			width,
+			height,
+			maxWidth: maxwidth ? maxwidth : 50,
+			subtype: media.subtype,
+		});
+	};
+	let hasRatio = false;
+	if (imageRatio && 'inherit' !== imageRatio) {
+		hasRatio = true;
+	}
+	let showImageToolbar = 'image' === mediaType && mediaImage[0].url ? true : false;
+	if (
+		showImageToolbar &&
+		kadenceDynamic &&
+		kadenceDynamic['mediaImage:0:url'] &&
+		kadenceDynamic['mediaImage:0:url'].enable
+	) {
+		showImageToolbar = false;
+	}
+
 	const mediaContent = (
 		<>
 			{mediaType && 'none' !== mediaType && (
 				<div className={'link-media-container'}>
-					{/* {!mediaImage[0].url && 'image' === mediaType && (
-						<>
-							<Fragment>
-								<KadenceMediaPlaceholder
-									labels={''}
-									selectIcon={plusCircleFilled}
-									selectLabel={__('Select Image', 'kadence-blocks')}
-									onSelect={onSelectImage}
-									accept="image/*"
-									className={'kadence-image-upload'}
-									allowedTypes={ALLOWED_MEDIA_TYPES}
-									disableMediaButtons={false}
-								/>
-							</Fragment>
-
+					{!mediaImage[0].url && 'image' === mediaType && (
+						<KadenceMediaPlaceholder
+							labels={''}
+							selectIcon={plusCircleFilled}
+							selectLabel={__('Select Image', 'kadence-blocks')}
+							onSelect={onSelectImage}
+							accept="image/*"
+							className={'kadence-image-upload'}
+							allowedTypes={ALLOWED_MEDIA_TYPES}
+							disableMediaButtons={true}
+						/>
+					)}
+					{mediaImage[0].url && 'image' === mediaType && (
+						<div className="kadence-navigation-link-image-inner-intrinsic-container">
 							<div
-								className="link-image-inner-intrisic-container"
-								style={{
-									maxWidth: mediaImage[0].maxWidth + 'px',
-								}}
+								className={`kadence-navigation-link-image-intrinsic kt-info-animate-${
+									mediaImage[0].hoverAnimation
+								}${'svg+xml' === mediaImage[0].subtype ? ' kb-navigation-link-image-type-svg' : ''}${
+									hasRatio
+										? ' kb-navigation-link-image-ratio kb-navigation-link-image-ratio-' + imageRatio
+										: ''
+								}`}
 							>
-								<div
-									className={`link-image-intrisic link-animate-${mediaImage[0].hoverAnimation}${
-										'svg+xml' === mediaImage[0].subtype ? ' link-image-type-svg' : ''
-									}${hasRatio ? ' link-image-ratio link-image-ratio-' + imageRatio : ''}`}
-									style={{
-										paddingBottom: imageRatioPadding,
-										height: imageRatioHeight,
-										width: isNaN(mediaImage[0].width) ? undefined : mediaImage[0].width + 'px',
-										maxWidth: '100%',
-									}}
-								>
-									<div className="link-image-inner-intrisic">
+								<div className="kadence-navigation-link-image-inner-intrinsic">
+									<img
+										src={mediaImage[0].url}
+										alt={mediaImage[0].alt ? mediaImage[0].alt : mediaImage[0].alt}
+										width={
+											mediaImage[0].subtype && 'svg+xml' === mediaImage[0].subtype
+												? mediaImage[0].maxWidth
+												: mediaImage[0].width
+										}
+										height={mediaImage[0].height}
+										className={`${
+											mediaImage[0].id
+												? `kt-navigation-link-image wp-image-${mediaImage[0].id}`
+												: 'kt-navigation-link-image wp-image-offsite'
+										} ${
+											mediaImage[0].subtype && 'svg+xml' === mediaImage[0].subtype
+												? ' kt-navigation-link-svg-image'
+												: ''
+										}`}
+									/>
+									{mediaImage[0].flipUrl && 'flip' === mediaImage[0].hoverAnimation && (
 										<img
-											src={mediaImage[0].url}
-											alt={mediaImage[0].alt ? mediaImage[0].alt : mediaImage[0].alt}
+											src={mediaImage[0].flipUrl}
+											alt={mediaImage[0].flipAlt ? mediaImage[0].flipAlt : mediaImage[0].flipAlt}
 											width={
-												mediaImage[0].subtype && 'svg+xml' === mediaImage[0].subtype
+												mediaImage[0].flipSubtype && 'svg+xml' === mediaImage[0].flipSubtype
 													? mediaImage[0].maxWidth
-													: mediaImage[0].width
+													: mediaImage[0].flipWidth
 											}
-											height={mediaImage[0].height}
+											height={mediaImage[0].flipHeight}
 											className={`${
-												mediaImage[0].id
-													? `link-image wp-image-${mediaImage[0].id}`
-													: 'link-image wp-image-offsite'
+												mediaImage[0].flipId
+													? `kt-navigation-link-image-flip wp-image-${mediaImage[0].flipId}`
+													: 'kt-navigation-link-image-flip wp-image-offsite'
 											} ${
-												mediaImage[0].subtype && 'svg+xml' === mediaImage[0].subtype
-													? ' link-svg-image'
+												mediaImage[0].flipSubtype && 'svg+xml' === mediaImage[0].flipSubtype
+													? ' kt-navigation-link-svg-image'
 													: ''
 											}`}
 										/>
-										{mediaImage[0].flipUrl && 'flip' === mediaImage[0].hoverAnimation && (
-											<img
-												src={mediaImage[0].flipUrl}
-												alt={
-													mediaImage[0].flipAlt
-														? mediaImage[0].flipAlt
-														: mediaImage[0].flipAlt
-												}
-												width={
-													mediaImage[0].flipSubtype && 'svg+xml' === mediaImage[0].flipSubtype
-														? mediaImage[0].maxWidth
-														: mediaImage[0].flipWidth
-												}
-												height={mediaImage[0].flipHeight}
-												className={`${
-													mediaImage[0].flipId
-														? `link-image-flip wp-image-${mediaImage[0].flipId}`
-														: 'link-image-flip wp-image-offsite'
-												} ${
-													mediaImage[0].flipSubtype && 'svg+xml' === mediaImage[0].flipSubtype
-														? ' link-svg-image'
-														: ''
-												}`}
-											/>
-										)}
-									</div>
+									)}
 								</div>
 							</div>
-						</>
-					)} */}
+						</div>
+					)}
 					{'icon' === mediaType && (
 						<>
 							<IconRender
@@ -776,7 +915,7 @@ export default function Edit(props) {
 			<BlockControls>
 				<CopyPasteAttributes
 					attributes={attributes}
-					excludedAttrs={[]}
+					excludedAttrs={['url', 'id', 'rel', 'kind', 'isMegaMenu', 'isTopLevelLink', 'label']}
 					defaultAttributes={metadata.attributes}
 					blockSlug={metadata.name}
 					onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
@@ -806,9 +945,16 @@ export default function Edit(props) {
 					'kadence.megaMenuToolbarControlsNavigationLink',
 					megaMenuToolbarControls,
 					props,
-					doMegaMenu,
+					doMegaMenuEnable,
 					previewDevice
 				)}
+
+				<AlignmentToolbar
+					value={align}
+					onChange={(nextAlign) => {
+						setAttributes({ align: nextAlign });
+					}}
+				/>
 			</BlockControls>
 			{isSelected && (
 				<BlockSettingsMenuControls>
@@ -852,9 +998,10 @@ export default function Edit(props) {
 							'kadence.megaMenuControlsNavigationLink',
 							megaMenuControls,
 							props,
-							doMegaMenu,
+							doMegaMenuEnable,
 							isTopLevelLink,
-							previewDevice
+							previewDevice,
+							inMegaMenu
 						)}
 						{isTopLevelLink && hasChildren && (
 							<ToggleControl
@@ -1094,7 +1241,68 @@ export default function Edit(props) {
 						</button>
 					)}
 				</div>
-				<ul {...innerBlocksProps} />
+				<ul {...innerBlocksProps}>
+					{!isMegaMenuOnboarding && children}
+					{isMegaMenuOnboarding && (
+						<div className="kt-select-layout">
+							{megaMenuOnboardingStep == '' && (
+								<>
+									<div className="kt-select-layout-title">
+										{__('Select Your Columns', 'kadence-blocks')}
+									</div>
+									<ButtonGroup aria-label={__('Column Layout', 'kadence-blocks')}>
+										{map(megaMenuColumnOptions, ({ name, key, icon }) => (
+											<Button
+												key={key}
+												className="kt-layout-btn"
+												isSmall
+												label={name}
+												icon={icon}
+												onClick={() => {
+													setMegaMenuColumnChoice(key);
+													setMegaMenuOnboardingStep('design');
+												}}
+											/>
+										))}
+									</ButtonGroup>
+									<Button className="kt-prebuilt" onClick={() => doMegaMenu('simple|1')}>
+										{__('Skip', 'kadence-blocks')}
+									</Button>
+									{/* <Button className="kt-prebuilt" onClick={() => setAttributes({ isPrebuiltModal: true })}>
+										{__('Design Library', 'kadence-blocks')}
+									</Button> */}
+								</>
+							)}
+							{megaMenuOnboardingStep == 'design' && (
+								<>
+									<div className="kt-select-layout-title">
+										{__('Select Your Content', 'kadence-blocks')}
+									</div>
+									<ButtonGroup aria-label={__('Content Layout', 'kadence-blocks')}>
+										{map(megaMenuDesignOptions, ({ name, key, icon }) => (
+											<Button
+												key={key}
+												className="kt-layout-btn"
+												isSmall
+												label={name}
+												icon={icon}
+												onClick={() => {
+													doMegaMenu(key);
+												}}
+											/>
+										))}
+									</ButtonGroup>
+									<Button className="kt-prebuilt" onClick={() => doMegaMenu('simple|1')}>
+										{__('Skip', 'kadence-blocks')}
+									</Button>
+									{/* <Button className="kt-prebuilt" onClick={() => setAttributes({ isPrebuiltModal: true })}>
+										{__('Design Library', 'kadence-blocks')}
+									</Button> */}
+								</>
+							)}
+						</div>
+					)}
+				</ul>
 			</li>
 		</>
 	);

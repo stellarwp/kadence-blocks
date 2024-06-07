@@ -145,7 +145,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'box-shadow', ( isset( $field_style['boxShadow'][7] ) && true === $field_style['boxShadow'][7] ? 'inset ' : '' ) . ( isset( $field_style['boxShadow'][3] ) && is_numeric( $field_style['boxShadow'][3] ) ? $field_style['boxShadow'][3] : '2' ) . 'px ' . ( isset( $field_style['boxShadow'][4] ) && is_numeric( $field_style['boxShadow'][4] ) ? $field_style['boxShadow'][4] : '2' ) . 'px ' . ( isset( $field_style['boxShadow'][5] ) && is_numeric( $field_style['boxShadow'][5] ) ? $field_style['boxShadow'][5] : '3' ) . 'px ' . ( isset( $field_style['boxShadow'][6] ) && is_numeric( $field_style['boxShadow'][6] ) ? $field_style['boxShadow'][6] : '0' ) . 'px ' . $css->render_color( ( isset( $field_style['boxShadow'][1] ) && ! empty( $field_style['boxShadow'][1] ) ? $field_style['boxShadow'][1] : '#000000' ), ( isset( $field_style['boxShadow'][2] ) && is_numeric( $field_style['boxShadow'][2] ) ? $field_style['boxShadow'][2] : 0.4 ) ) );
 		}
 
-		$css->render_measure_output( $field_style, 'padding', 'padding' );
+		$css->render_measure_output( $field_style, 'padding', 'padding', array( 'unit_key' => 'paddingUnit' ) );
 
 		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id );
 		if ( isset( $field_style['isDark'] ) && $field_style['isDark'] === true ) {
@@ -226,7 +226,7 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		 */
 		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-adv-form-field .kb-adv-form-label' );
 
-		$css->render_measure_output( $label_style, 'padding', 'padding' );
+		$css->render_measure_output( $label_style, 'padding', 'padding', array( 'unit_key' => 'paddingUnit' ) );
 		$css->render_measure_output( $label_style, 'margin', 'margin' );
 
 		$tmp_label_style = array( 'typography' => $label_style );
@@ -268,8 +268,18 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 		 *
 		 */
 		$css->set_selector( '.wp-block-kadence-advanced-form' . $unique_id . ' .kb-adv-form-message' );
-		$css->render_measure_output( $form_attributes, 'messagePadding', 'padding' );
-		$css->render_measure_output( $form_attributes, 'messageMargin', 'margin' );
+		$padding_array = array(
+			'messagePadding' => !empty( $form_attributes['messagePadding'] ) ? $form_attributes['messagePadding'] : array(),
+			'messagePaddingType' => !empty( $form_attributes['messagePaddingUnit'] ) ? $form_attributes['messagePaddingUnit'] : 'px'
+		);
+		$css->render_measure_output( $padding_array, 'messagePadding', 'padding' );
+
+		$margin_array = array(
+			'messageMargin' => !empty( $form_attributes['messageMargin'] ) ? $form_attributes['messageMargin'] : array(),
+			'messageMarginType' => !empty( $form_attributes['messageMarginUnit'] ) ? $form_attributes['messageMarginUnit'] : 'px'
+		);
+		$css->render_measure_output( $margin_array, 'messageMargin', 'margin' );
+		
 		$message_font[0]['sizeType'] = !empty( $message_font[0]['sizetype'] ) ? $message_font[0]['sizetype'] : 'px';
 		$tmp_message_font = array( 'typography' => $message_font );
 		$css->render_typography( $tmp_message_font, 'typography' );

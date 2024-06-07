@@ -1912,7 +1912,7 @@ function KadenceTestimonials(props) {
 			[`kt-testimonial-style-${style}`]: true,
 			[`kt-testimonials-media-${displayMedia ? 'on' : 'off'}`]: true,
 			[`kt-testimonials-icon-${displayIcon ? 'on' : 'off'}`]: true,
-			[`kt-testimonial-columns-${columns[0]}`]: true,
+			[`kt-testimonial-columns-${previewColumns}`]: true,
 			[`kt-blocks-testimonials-wrap${uniqueID}`]: uniqueID,
 			[`kt-t-xxl-col-${columns[0]}`]: true,
 			[`kt-t-xl-col-${columns[1]}`]: true,

@@ -212,6 +212,7 @@ function KadenceTabs(props) {
 		mobileContentBorderStyles,
 		verticalTabWidth,
 		verticalTabWidthUnit,
+		linkPaneCollapse,
 	} = attributes;
 
 	const [showPreset, setShowPreset] = useState(false);
@@ -1440,6 +1441,13 @@ function KadenceTabs(props) {
 										tabletChildren={tabletControls}
 										mobileChildren={mobileControls}
 									></SmallResponsiveControl>
+									{previewLayout == 'accordion' && (
+										<ToggleControl
+											label={__('Accordions close when another opens', 'kadence-blocks')}
+											checked={linkPaneCollapse}
+											onChange={(value) => setAttributes({ linkPaneCollapse: value })}
+										/>
+									)}
 								</KadencePanelBody>
 							)}
 							{!showSettings('tabLayout', 'kadence/tabs') && (

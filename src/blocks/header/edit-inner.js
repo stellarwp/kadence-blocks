@@ -310,20 +310,12 @@ export function EditInner(props) {
 			const { templateInnerBlocks, templatePostMeta } = buildTemplateFromSelection(detail, offCanvasTemplate);
 
 			if (response.id) {
-				if (templateInnerBlocks) {
+				if (templateInnerBlocks && template !== 'skip') {
 					updatedMeta = { ...meta, ...templatePostMeta };
 					onChange(templateInnerBlocks, clientId);
 				} else {
 					// Skip, or template not found
-					onChange(
-						[
-							{
-								...newBlock,
-								innerBlocks: HEADER_INNERBLOCK_DEFAULTS,
-							},
-						],
-						clientId
-					);
+					onChange([createBlock('kadence/header', {}, HEADER_INNERBLOCK_DEFAULTS)], clientId);
 				}
 
 				setTitle(title);

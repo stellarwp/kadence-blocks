@@ -167,7 +167,7 @@ export default class KadenceBlocksCSS {
 				this._output += selector_output;
 			}
 
-			// Reset the css.
+			// Reset the this.
 			this.reset_css();
 		}
 
@@ -404,9 +404,10 @@ export default class KadenceBlocksCSS {
 		mobileValue = null,
 		previewDevice = null,
 		side = 'top',
-		inheritBorder = false
+		inheritBorder = false,
+		nohook = false
 	) {
-		return getBorderStyle(previewDevice, side, value, tabletValue, mobileValue, inheritBorder);
+		return getBorderStyle(previewDevice, side, value, tabletValue, mobileValue, inheritBorder, nohook);
 	}
 
 	/**
@@ -425,9 +426,10 @@ export default class KadenceBlocksCSS {
 		previewDevice = null,
 		property = 'padding',
 		unit = 'px',
-		args = {}
+		args = {},
+		nohook = false
 	) {
-		const previewValue = getPreviewSize(previewDevice, value, tabletValue, mobileValue);
+		const previewValue = getPreviewSize(previewDevice, value, tabletValue, mobileValue, nohook);
 
 		var prop_args = {};
 		switch (property) {
@@ -503,6 +505,139 @@ export default class KadenceBlocksCSS {
 				this.add_property(args['fourth_prop'], this.get_variable_value(previewValue[3]));
 			}
 		}
+	}
+
+	/**
+	 * Generates styles for the attributes in the button style controls with states component.
+	 * Attributes must be in the format {attributeBase}{state}{size} e.g. linkColorHoverTablet
+	 *
+	 * @param array  args an array of settings.
+	 * @param array  attributes an array of attributes.
+	 * @param string previewDevice the current editor device.
+	 * @param string nohook If this function should run without using any react hooks.
+	 * @return string
+	 */
+	render_button_styles_with_states(args, attributes, previewDevice, nohook = false) {
+		const {
+			colorBase,
+			backgroundBase,
+			backgroundTypeBase,
+			backgroundGradientBase,
+			borderBase,
+			borderRadiusBase,
+			borderRadiusUnitBase,
+			shadowBase,
+			selector,
+			selectorHover,
+			selectorActive,
+		} = args;
+
+		const states = ['', 'Hover', 'Active'];
+
+		states.forEach((state) => {
+			if (args['selector' + state]) {
+				const stateSelector = args['selector' + state];
+
+				const colorValue = attributes[colorBase + state];
+				const colorTabletValue = attributes[colorBase + state + 'Tablet'];
+				const colorMobileValue = attributes[colorBase + state + 'Mobile'];
+				const backgroundValue = attributes[backgroundBase + state];
+				const backgroundTabletValue = attributes[backgroundBase + state + 'Tablet'];
+				const backgroundMobileValue = attributes[backgroundBase + state + 'Mobile'];
+				const backgroundTypeValue = attributes[backgroundTypeBase + state];
+				const backgroundGradientValue = attributes[backgroundGradientBase + state];
+				const borderValue = attributes[borderBase + state];
+				const borderTabletValue = attributes[borderBase + state + 'Tablet'];
+				const borderMobileValue = attributes[borderBase + state + 'Mobile'];
+				const borderRadiusValue = attributes[borderRadiusBase + state];
+				const borderRadiusTabletValue = attributes[borderRadiusBase + state + 'Tablet'];
+				const borderRadiusMobileValue = attributes[borderRadiusBase + state + 'Mobile'];
+				const borderRadiusUnitValue = attributes[borderRadiusUnitBase + state];
+				const shadowValue = attributes[shadowBase + state];
+
+				const previewColorValue = getPreviewSize(
+					previewDevice,
+					colorValue,
+					colorTabletValue,
+					colorMobileValue,
+					nohook
+				);
+				const previewBackgroundValue = getPreviewSize(
+					previewDevice,
+					backgroundValue,
+					backgroundTabletValue,
+					backgroundMobileValue,
+					nohook
+				);
+				const previewBorderTopValue = this.render_border(
+					borderValue,
+					borderTabletValue,
+					borderMobileValue,
+					previewDevice,
+					'top',
+					false,
+					nohook
+				);
+				const previewBorderRightValue = this.render_border(
+					borderValue,
+					borderTabletValue,
+					borderMobileValue,
+					previewDevice,
+					'right',
+					false,
+					nohook
+				);
+				const previewBorderBottomValue = this.render_border(
+					borderValue,
+					borderTabletValue,
+					borderMobileValue,
+					previewDevice,
+					'bottom',
+					false,
+					nohook
+				);
+				const previewBorderLeftValue = this.render_border(
+					borderValue,
+					borderTabletValue,
+					borderMobileValue,
+					previewDevice,
+					'left',
+					false,
+					nohook
+				);
+
+				let backgroundString;
+				if (undefined !== backgroundTypeValue && 'gradient' === backgroundTypeValue) {
+					backgroundString = backgroundGradientValue;
+				} else {
+					backgroundString =
+						'transparent' === previewBackgroundValue || undefined === previewBackgroundValue
+							? undefined
+							: this.render_color(previewBackgroundValue);
+				}
+
+				this.set_selector(stateSelector);
+				this.add_property('color', this.render_color(previewColorValue));
+				this.add_property('background', backgroundString);
+				this.add_property('border-top', previewBorderTopValue);
+				this.add_property('border-right', previewBorderRightValue);
+				this.add_property('border-bottom', previewBorderBottomValue);
+				this.add_property('border-left', previewBorderLeftValue);
+				this.render_measure_output(
+					borderRadiusValue,
+					borderRadiusTabletValue,
+					borderRadiusMobileValue,
+					previewDevice,
+					'border-radius',
+					borderRadiusUnitValue ? borderRadiusUnitValue : 'px',
+					{},
+					nohook
+				);
+				if (shadowValue?.[0]?.enable) {
+					this.add_property('box-shadow', this.render_shadow(shadowValue[0]));
+				}
+			}
+		});
 	}
 
 	/**

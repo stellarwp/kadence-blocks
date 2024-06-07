@@ -1263,6 +1263,12 @@ function KadenceAdvancedHeading(props) {
 									onChangeMobile={(nextAlign) => setAttributes({ mobileAlign: nextAlign })}
 								/>
 								<ResponsiveRangeControls
+									reset={() => {
+										setAttributes({
+											maxWidth: ['', '', ''],
+											maxWidthType: 'px',
+										});
+									}}
 									label={__('Max Width', 'kadence-blocks')}
 									value={undefined !== maxWidth && undefined !== maxWidth[0] ? maxWidth[0] : ''}
 									onChange={(value) => {

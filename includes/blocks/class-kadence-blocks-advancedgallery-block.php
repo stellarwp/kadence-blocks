@@ -395,65 +395,14 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		}
 
 		if ( isset( $attributes['showCaption'] ) && true === $attributes['showCaption'] && isset( $attributes['captionStyles'] ) && is_array( $attributes['captionStyles'] ) && is_array( $attributes['captionStyles'][0] ) ) {
-			$caption_font = $attributes['captionStyles'][0];
+			$caption_font = [ 'caption' => $attributes['captionStyles'][0] ];
 			$css->set_selector('.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner .kadence-blocks-gallery-item__caption' );
-			if ( isset( $caption_font['color'] ) && ! empty( $caption_font['color'] ) ) {
-				$css->add_property('color', $css->render_color( $caption_font['color'] ) );
-			}
-			if ( isset( $caption_font['background'] ) && ! empty( $caption_font['background'] ) ) {
-				$css->add_property('background', 'linear-gradient( 0deg, ' . $css->render_color( $caption_font['background'], ( isset( $caption_font['backgroundOpacity'] ) && is_numeric(  $caption_font['backgroundOpacity'] ) ) ?  $caption_font['backgroundOpacity'] : '0.5' ) . ' 0, ' . $css->render_color( $caption_font['background'], 0 ) . ' 100% )' );
-			}
-			if ( ! empty( $caption_font['size'][0] ) ) {
-				$css->add_property('font-size', $css->get_font_size( $caption_font['size'][0], ( ! isset( $caption_font['sizeType'] ) ? 'px' : $caption_font['sizeType'] ) ) );
-			}
-			if ( isset( $caption_font['lineHeight'] ) && is_array( $caption_font['lineHeight'] ) && ! empty( $caption_font['lineHeight'][0] ) ) {
-				$css->add_property('line-height', $caption_font['lineHeight'][0] . ( ! isset( $caption_font['lineType'] ) ? 'px' : $caption_font['lineType'] ) );
-			}
-			if ( isset( $caption_font['letterSpacing'] ) && ! empty( $caption_font['letterSpacing'] ) ) {
-				$css->add_property('letter-spacing', $caption_font['letterSpacing'] . 'px' );
-			}
-			if ( isset( $caption_font['textTransform'] ) && ! empty( $caption_font['textTransform'] ) ) {
-				$css->add_property('text-transform', $caption_font['textTransform'] );
-			}
-			if ( isset( $caption_font['family'] ) && ! empty( $caption_font['family'] ) ) {
-				$css->add_property('font-family', $caption_font['family'] );
-			}
-			if ( isset( $caption_font['style'] ) && ! empty( $caption_font['style'] ) ) {
-				$css->add_property('font-style', $caption_font['style'] );
-			}
-			if ( isset( $caption_font['weight'] ) && ! empty( $caption_font['weight'] ) ) {
-				$css->add_property('font-weight', $caption_font['weight'] );
-			}
+			$css->render_typography( $caption_font, 'caption');
 
-			if ( isset( $caption_font['background'] ) && ! empty( $caption_font['background'] ) ) {
+			if ( isset( $caption_font['caption']['background'] ) && ! empty( $caption_font['caption']['background'] ) ) {
 				$css->set_selector('.kb-gallery-caption-style-cover-hover.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner .kadence-blocks-gallery-item__caption, .kb-gallery-caption-style-below.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner .kadence-blocks-gallery-item__caption' );
-				$css->add_property('background', $css->render_color( $caption_font['background'], ( isset( $caption_font['backgroundOpacity'] ) && is_numeric(  $caption_font['backgroundOpacity'] ) ) ?  $caption_font['backgroundOpacity'] : '0.5' ) );
+				$css->add_property('background', $css->render_color( $caption_font['caption']['background'], ( isset( $caption_font['caption']['backgroundOpacity'] ) && is_numeric(  $caption_font['caption']['backgroundOpacity'] ) ) ?  $caption_font['caption']['backgroundOpacity'] : '0.5' ) );
 			}
-		}
-
-		if ( isset( $attributes['showCaption'] ) && true === $attributes['showCaption'] && isset( $attributes['captionStyles'] ) && is_array( $attributes['captionStyles'] ) && isset( $attributes['captionStyles'][0] ) && is_array( $attributes['captionStyles'][0] ) && ( ( isset( $attributes['captionStyles'][0]['size'] ) && is_array( $attributes['captionStyles'][0]['size'] ) && isset( $attributes['captionStyles'][0]['size'][1] ) && ! empty( $attributes['captionStyles'][0]['size'][1] ) ) || ( isset( $attributes['captionStyles'][0]['lineHeight'] ) && is_array( $attributes['captionStyles'][0]['lineHeight'] ) && isset( $attributes['captionStyles'][0]['lineHeight'][1] ) && ! empty( $attributes['captionStyles'][0]['lineHeight'][1] ) ) ) ) {
-			$css->set_media_state( 'tablet' );
-			$css->set_selector('.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner .kadence-blocks-gallery-item__caption' );
-			if ( isset( $attributes['captionStyles'][0]['size'][1] ) && ! empty( $attributes['captionStyles'][0]['size'][1] ) ) {
-				$css->add_property('font-size', $css->get_font_size( $attributes['captionStyles'][0]['size'][1], ( ! isset( $attributes['captionStyles'][0]['sizeType'] ) ? 'px' : $attributes['captionStyles'][0]['sizeType'] ) ) );
-			}
-			if ( isset( $attributes['captionStyles'][0]['lineHeight'][1] ) && ! empty( $attributes['captionStyles'][0]['lineHeight'][1] ) ) {
-				$css->add_property('line-height', $attributes['captionStyles'][0]['lineHeight'][1] . ( ! isset( $attributes['captionStyles'][0]['lineType'] ) ? 'px' : $attributes['captionStyles'][0]['lineType'] ) );
-			}
-
-			$css->set_media_state( 'desktop' );
-		}
-
-		if ( isset( $attributes['showCaption'] ) && true === $attributes['showCaption'] && isset( $attributes['captionStyles'] ) && is_array( $attributes['captionStyles'] ) && isset( $attributes['captionStyles'][0] ) && is_array( $attributes['captionStyles'][0] ) && ( ( isset( $attributes['captionStyles'][0]['size'] ) && is_array( $attributes['captionStyles'][0]['size'] ) && isset( $attributes['captionStyles'][0]['size'][2] ) && ! empty( $attributes['captionStyles'][0]['size'][2] ) ) || ( isset( $attributes['captionStyles'][0]['lineHeight'] ) && is_array( $attributes['captionStyles'][0]['lineHeight'] ) && isset( $attributes['captionStyles'][0]['lineHeight'][2] ) && ! empty( $attributes['captionStyles'][0]['lineHeight'][2] ) ) ) ) {
-			$css->set_media_state( 'mobile' );
-			$css->set_selector('.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner .kadence-blocks-gallery-item__caption' );
-			if ( isset( $attributes['captionStyles'][0]['size'][2] ) && ! empty( $attributes['captionStyles'][0]['size'][2] ) ) {
-				$css->add_property('font-size', $css->get_font_size( $attributes['captionStyles'][0]['size'][2], ( ! isset( $attributes['captionStyles'][0]['sizeType'] ) ? 'px' : $attributes['captionStyles'][0]['sizeType'] ) ) );
-			}
-			if ( isset( $attributes['captionStyles'][0]['lineHeight'][2] ) && ! empty( $attributes['captionStyles'][0]['lineHeight'][2] ) ) {
-				$css->add_property('line-height', $attributes['captionStyles'][0]['lineHeight'][2] . ( ! isset( $attributes['captionStyles'][0]['lineType'] ) ? 'px' : $attributes['captionStyles'][0]['lineType'] ) );
-			}
-			$css->set_media_state( 'desktop' );
 		}
 
 		return $css->css_output();

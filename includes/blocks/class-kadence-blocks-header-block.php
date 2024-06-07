@@ -120,6 +120,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		if ( $max_width ) {
 			$css->add_property( 'max-width', $max_width . $sized_attributes['widthUnit'] );
+			$css->add_property( 'margin', '0 auto' );
 		}
 		$css->render_measure_range( $sized_attributes, ( 'Desktop' === $size ? 'borderRadius' : 'borderRadius' . $size ), 'border-radius', '', ['unit_key' => 'borderRadiusUnit']);
 

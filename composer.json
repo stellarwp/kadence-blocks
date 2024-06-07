@@ -70,7 +70,7 @@
 			"vendor/bin/stellar-uplink domain=kadence-blocks"
 		],
 		"strauss-install": [
-			"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.17.0/strauss.phar"
+			"test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.19.1/strauss.phar"
 		],
 		"strauss": [
 			"@strauss-install",
@@ -81,6 +81,9 @@
 			"@strauss-install",
 			"@php bin/strauss.phar --deleteVendorPackages=true",
 			"@composer dump-autoload"
+		],
+		"strauss-clean": [
+			"rm -f ./bin/strauss.phar"
 		],
 		"pup": [
 			"test -f ./bin/pup.phar || curl -o bin/pup.phar -L -C - https://github.com/stellarwp/pup/releases/download/1.2.2/pup.phar",

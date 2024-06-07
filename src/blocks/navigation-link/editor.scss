@@ -88,6 +88,7 @@
 	.link-media-container {
 		display: flex;
 		align-self: flex-start;
+		max-width: 150px;
 
 		.link-svg-icon {
 			display: flex;

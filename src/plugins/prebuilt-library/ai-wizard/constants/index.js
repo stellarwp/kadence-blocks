@@ -13,7 +13,7 @@ import SpaBg from '../assets/spa-bg.jpg';
 import TaxesBg from '../assets/taxes-bg.jpg';
 
 export const SEARCH_APP_ID = 'A3VQNQXTF3';
-export const SEARCH_API_KEY = 'cc59dfc943ec5810607801b4247d449e';
+export const SEARCH_API_KEY = '1490aefba5f869d86cc5e27099af3306';
 export const SEARCH_INDEX = 'ai_modal_industries';
 export const API_MAX_ATTEMPTS = 3;
 export const API_ROUTE_GET_COLLECTIONS = '/kb-design-library/v1/get_image_collections';

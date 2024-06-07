@@ -2057,6 +2057,83 @@ class Kadence_Blocks_CSS {
 
 		return $return_value;
 	}
+
+	/**
+	 * Generates styles for the attributes in the button style controls with states component.
+	 * Attributes must be in the format {attributeBase}{state}{size} e.g. linkColorHoverTablet
+	 *
+	 * @param array $args an array of settings.
+	 * @param array $attributes an array of attributes.
+	 * @return void
+	 */
+	public function render_button_styles_with_states( $args, $attributes ) {
+		$default_args = array(
+			'colorBase' => '',
+			'backgroundBase' => '',
+			'backgroundTypeBase' => '',
+			'backgroundGradientBase' => '',
+			'borderBase' => '',
+			'borderRadiusBase' => '',
+			'borderRadiusUnitBase' => '',
+			'shadowBase' => '',
+			'selector' => '',
+			'selectorHover' => '',
+			'selectorActive' => '',
+		);
+
+		$args = array_merge( $default_args, $args );
+
+		$color_base = $args['colorBase'];
+		$background_base = $args['backgroundBase'];
+		$background_type_base = $args['backgroundTypeBase'];
+		$background_gradient_base = $args['backgroundGradientBase'];
+		$border_base = $args['borderBase'];
+		$border_radius_base = $args['borderRadiusBase'];
+		$border_radius_unit_base = $args['borderRadiusUnitBase'];
+		$shadow_base = $args['shadowBase'];
+
+		$states = array( '', 'Hover', 'Active' );
+		$sizes = array( '', 'Tablet', 'Mobile' );
+
+		foreach ( $states as $state ) {
+			if ( $args[ 'selector' . $state ] ) {
+				$state_selector = $args[ 'selector' . $state ];
+				$this->set_selector( $state_selector );
+
+				foreach ( $sizes as $size ) {
+					$this->set_media_state( $size ? lcfirst( $size ) : 'desktop' );
+
+					$color_value = $color_base ? $attributes[ $color_base . $state . $size ] : '';
+					$background_value = $background_base ? $attributes[ $background_base . $state . $size ] : '';
+					$background_type_value = $background_type_base ? $attributes[ $background_type_base . $state ] : '';
+					$background_gradient_value = $background_gradient_base ? $attributes[ $background_gradient_base . $state ] : '';
+					$border_value = $border_base ? $attributes[ $border_base . $state . $size ] : '';
+					$border_radius_value = $border_radius_base ? $attributes[ $border_radius_base . $state . $size ] : '';
+					$border_radius_unit_value = $border_radius_unit_base ? $attributes[ $border_radius_unit_base . $state ] : '';
+					$shadow_value = $shadow_base ? $attributes[ $shadow_base . $state ] : '';
+
+					$this->add_property( 'color', $this->render_color( $color_value ) );
+					if ( 'gradient' === $background_type_value && ! empty( $background_gradient_value ) ) {
+						$this->add_property( 'background', $background_gradient_value );
+					} else {
+						$this->add_property( 'background', $this->render_color( $background_value ) );
+					}
+				}
+				$this->set_media_state( 'desktop' );
+				$this->render_measure_output( $attributes, $border_radius_base . $state, 'border-radius', array(
+					'desktop_key' => $border_radius_base . $state,
+					'tablet_key'  => $border_radius_base . $state . 'Tablet',
+					'mobile_key'  => $border_radius_base . $state . 'Mobile',
+					'unit_key'  => $border_radius_unit_base . $state,
+				) );
+				$this->render_border_styles( $attributes, $border_base . $state );
+				if ( $shadow_value && isset( $shadow_value[0] ) && $shadow_value[0]['enable'] ) {
+					$this->add_property( 'box-shadow', $this->render_shadow( $shadow_value[0] ) );
+				}
+			}
+		}
+	}
+
 	/**
 	 * Generates the measure output.
 	 *

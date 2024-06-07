@@ -45,6 +45,10 @@
 			"type": "number",
 			"default": null
 		},
+		"containerMaxWidthUnit": {
+			"type": "string",
+			"default": "px"
+		},
 		"maxWidthUnit": {
 			"type": "string",
 			"default": "px"

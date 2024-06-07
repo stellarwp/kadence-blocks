@@ -545,6 +545,10 @@
 			"type": "string",
 			"default": "px"
 		},
+		"fullHeight": {
+			"type": "boolean",
+			"default": false
+		},
 		"kbVersion": {
 			"type": "number",
 			"default": ""

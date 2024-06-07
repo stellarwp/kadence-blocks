@@ -913,7 +913,7 @@
 			window.kadenceNavigation.initTrackOrientation();
 
 			//pro mega menu
-			window.kadenceNavigation.initContentSubMenuSize();
+			//window.kadenceNavigation.initContentSubMenuSize();
 			window.kadenceNavigation.initFullSubMenuSize();
 		},
 	};

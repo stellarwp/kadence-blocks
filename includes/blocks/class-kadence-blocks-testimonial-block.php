@@ -273,9 +273,11 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 	private function render_title( $attributes, $titleFont ) {
 		$title = '<div class="kt-testimonial-title-wrap">';
 
-		$title .= '<h'. $titleFont[0]['level'] .' class="kt-testimonial-title">';
+		$level = ( ! empty( $titleFont[0]['level'] ) && is_numeric( $titleFont[0]['level'] ) ? $titleFont[0]['level'] : 2 );
+
+		$title .= '<h'. $level .' class="kt-testimonial-title">';
 		$title .= $attributes['title'];
-		$title .= '</h'. $titleFont[0]['level'] .'>';
+		$title .= '</h'. $level .'>';
 
 		$title .= '</div>';
 
