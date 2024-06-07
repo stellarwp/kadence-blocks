@@ -36,6 +36,7 @@ import {
 	IconRender,
 	DynamicTextControl,
 	DynamicInlineReplaceControl,
+	Tooltip,
 } from '@kadence/components';
 
 import { dynamicIcon } from '@kadence/icons';
@@ -229,6 +230,7 @@ function KadenceAdvancedHeading(props) {
 		markBorderRadiusUnit,
 		altTitle,
 		iconTooltipPlacement,
+		iconTooltipDash,
 		iconTooltip,
 	} = attributes;
 
@@ -790,29 +792,35 @@ function KadenceAdvancedHeading(props) {
 		}
 
 		return (
-			<IconRender
-				className={`kb-advanced-heading-svg-icon kb-advanced-heading-svg-icon-${icon} kb-advanced-heading-icon-side-${iconSide}`}
-				name={icon}
-				size={'1em'}
-				style={{
-					fontSize: previewIconSize
-						? getFontSizeOptionOutput(previewIconSize, undefined !== iconSizeUnit ? iconSizeUnit : 'px')
-						: undefined,
-					color: '' !== iconColor ? KadenceColorOutput(iconColor) : undefined,
-					paddingTop: previewIconPaddingTop
-						? getSpacingOptionOutput(previewIconPaddingTop, iconPaddingUnit)
-						: undefined,
-					paddingRight: previewIconPaddingRight
-						? getSpacingOptionOutput(previewIconPaddingRight, iconPaddingUnit)
-						: undefined,
-					paddingBottom: previewIconPaddingBottom
-						? getSpacingOptionOutput(previewIconPaddingBottom, iconPaddingUnit)
-						: undefined,
-					paddingLeft: previewIconPaddingLeft
-						? getSpacingOptionOutput(previewIconPaddingLeft, iconPaddingUnit)
-						: undefined,
-				}}
-			/>
+			<Tooltip
+				text={iconTooltip}
+				className={iconTooltipDash ? 'kb-adv-text-icon-dash' : undefined}
+				placement={iconTooltipPlacement || 'top'}
+			>
+				<IconRender
+					className={`kb-advanced-heading-svg-icon kb-advanced-heading-svg-icon-${icon} kb-advanced-heading-icon-side-${iconSide}`}
+					name={icon}
+					size={'1em'}
+					style={{
+						fontSize: previewIconSize
+							? getFontSizeOptionOutput(previewIconSize, undefined !== iconSizeUnit ? iconSizeUnit : 'px')
+							: undefined,
+						color: '' !== iconColor ? KadenceColorOutput(iconColor) : undefined,
+						paddingTop: previewIconPaddingTop
+							? getSpacingOptionOutput(previewIconPaddingTop, iconPaddingUnit)
+							: undefined,
+						paddingRight: previewIconPaddingRight
+							? getSpacingOptionOutput(previewIconPaddingRight, iconPaddingUnit)
+							: undefined,
+						paddingBottom: previewIconPaddingBottom
+							? getSpacingOptionOutput(previewIconPaddingBottom, iconPaddingUnit)
+							: undefined,
+						paddingLeft: previewIconPaddingLeft
+							? getSpacingOptionOutput(previewIconPaddingLeft, iconPaddingUnit)
+							: undefined,
+					}}
+				/>
+			</Tooltip>
 		);
 	};
 
@@ -1794,6 +1802,13 @@ function KadenceAdvancedHeading(props) {
 										]}
 										onChange={(val) => {
 											setAttributes({ iconTooltipPlacement: val });
+										}}
+									/>
+									<ToggleControl
+										label={__('Show indicator underline', 'kadence-blocks')}
+										checked={iconTooltipDash}
+										onChange={(value) => {
+											setAttributes({ iconTooltipDash: value });
 										}}
 									/>
 								</KadencePanelBody>

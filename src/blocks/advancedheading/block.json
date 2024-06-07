@@ -512,6 +512,10 @@
 		"iconTooltipPlacement": {
 			"type": "string",
 			"default": ""
+		},
+		"iconTooltipDash": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"usesContext": ["postId", "queryId", "kadence/dynamicSource", "kadence/repeaterRowData", "kadence/repeaterRow"],

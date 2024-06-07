@@ -560,6 +560,9 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		if ( ! empty( $attributes['iconTooltip'] ) && ! empty( $attributes['iconTooltipPlacement'] ) ) {
 			$tooltip_placement = ' data-tooltip-placement="' . esc_attr( $attributes['iconTooltipPlacement'] ) . '"';
 		}
+		if ( ! empty( $attributes['iconTooltip'] ) && isset( $attributes['iconTooltipDash'] ) && $attributes['iconTooltipDash'] ) {
+			$tooltip_placement = ' data-kb-tooltip-dash="border"';
+		}
 		return '<span class="kb-svg-icon-wrap kb-adv-heading-icon kb-svg-icon-' . esc_attr( $attributes['icon'] ) . ' kb-adv-heading-icon-side-' . esc_attr( $icon_side ) . '"' . ( ! empty( $attributes['iconTooltip'] ) ? ' data-kb-tooltip-content="' . esc_attr( $attributes['iconTooltip'] ) . '" tabindex="0"' . $tooltip_placement : '' ) . '>' . $svg_icon . '</span>';
 	}
 

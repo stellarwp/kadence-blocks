@@ -23,6 +23,14 @@
 	color: inherit;
 	border-bottom: 1px dashed currentColor;
 }
+.kb-adv-text-icon-dash .kb-advanced-heading-svg-icon {
+	border-bottom: 1px dashed currentColor;
+}
+.kadence-advancedheading-text > .tooltip-ref-wrap {
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+}
 .kb-colors-selector.components-dropdown-menu.components-toolbar {
 	padding: 0;
 }
