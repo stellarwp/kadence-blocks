@@ -1,7 +1,9 @@
 /**
  * File kb-tippy.js.
  * Gets the tooltip working.
+ *
  */
+/* eslint no-use-before-define: 0 */
 /**!
  * tippy.js v6.3.7
  * (c) 2017-2021 atomiks
