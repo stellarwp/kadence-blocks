@@ -1,32 +1,13 @@
-import { useCallback, useEffect, useState, useMemo } from '@wordpress/element';
-import { TextControl, Button, Icon } from '@wordpress/components';
-import { useEntityBlockEditor, EntityProvider } from '@wordpress/core-data';
-import { useDispatch, useSelect } from '@wordpress/data';
+import { useState, useMemo } from '@wordpress/element';
+import { DropdownMenu, Button, Icon, TextControl } from '@wordpress/components';
+import { useSelect } from '@wordpress/data';
 import { get } from 'lodash';
-import { createBlock, serialize } from '@wordpress/blocks';
-import { RichText, ListView, BlockEditorProvider } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
-import { EDITABLE_BLOCK_ATTRIBUTES, PREVENT_BLOCK_DELETE } from './constants';
-import { link } from '@wordpress/icons';
+import { PREVENT_BLOCK_DELETE } from './constants';
+import { ellipsis, edit, trash } from '@wordpress/icons';
 import { debounce } from 'lodash';
 
-import {
-	Announcements,
-	DndContext,
-	closestCenter,
-	PointerSensor,
-	useSensor,
-	useSensors,
-	DragStartEvent,
-	DragOverlay,
-	DragMoveEvent,
-	DragEndEvent,
-	DragOverEvent,
-	MeasuringStrategy,
-	DropAnimation,
-	defaultDropAnimation,
-	Modifier,
-} from '@dnd-kit/core';
+import { DndContext } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 
 const DragHandle = React.memo((props) => (
@@ -38,6 +19,7 @@ const DragHandle = React.memo((props) => (
 ));
 
 function BlockItem({ thisBlock, activeBlock, toggleCollapse, collapsed }) {
+	const [isEditing, setIsEditing] = useState(false);
 	const parentProps = {};
 
 	const hasChildren = thisBlock?.children?.length > 0;
@@ -88,23 +70,72 @@ function BlockItem({ thisBlock, activeBlock, toggleCollapse, collapsed }) {
 	const dragHandleProps = { ...listeners, ...attributes };
 
 	return (
-		<div className={`menu-block ${!hasChildren ? 'no-children' : ''}`} {...parentProps}>
-			<DragHandle {...dragHandleProps} />
+		<div {...parentProps}>
+			<div className={`menu-block ${!hasChildren ? 'no-children' : ''}`}>
+				<DragHandle {...dragHandleProps} />
 
-			{/* Expand all for the time being */}
-			{hasChildren && (
-				<Icon
-					className={'has-children'}
-					icon={collapsed ? 'arrow-right-alt2' : 'arrow-down-alt2'}
-					onClick={() => toggleCollapse(thisBlock.clientId)}
+				{/* Expand all for the time being */}
+				{hasChildren && (
+					<Icon
+						className={'has-children'}
+						icon={collapsed ? 'arrow-right-alt2' : 'arrow-down-alt2'}
+						onClick={() => toggleCollapse(thisBlock.clientId)}
+					/>
+				)}
+				<Icon className={'block-icon'} icon={blockMeta?.icon?.src} />
+				<span className={'block-label'}>{labelOrTitle}</span>
+				<DropdownMenu
+					icon={ellipsis}
+					label={__('Options', 'kadence-blocks')}
+					controls={[
+						{
+							title: 'Edit',
+							icon: edit,
+							isDisabled: thisBlock.name !== 'kadence/navigation-link',
+							onClick: () => setIsEditing(!isEditing),
+						},
+						{
+							title: 'Delete',
+							icon: trash,
+							isDisabled: PREVENT_BLOCK_DELETE.includes(thisBlock.name),
+							onClick: () => deleteBlock(thisBlock.clientId),
+						},
+					]}
 				/>
+			</div>
+			{isEditing && (
+				<div
+					key={thisBlock.clientId}
+					style={{ display: 'block', marginLeft: '25px', backgroundColor: '#EEE', padding: '15px' }}
+				>
+					<TextControl
+						label={__('Label', 'kadence-blocks')}
+						value={thisBlock.attributes.label}
+						onChange={(value) => {
+							wp.data
+								.dispatch('core/block-editor')
+								.updateBlockAttributes(thisBlock.clientId, { label: value });
+						}}
+					/>
+
+					<TextControl
+						label={__('URL', 'kadence-blocks')}
+						value={thisBlock.attributes.url}
+						onChange={(value) => {
+							wp.data
+								.dispatch('core/block-editor')
+								.updateBlockAttributes(thisBlock.clientId, { url: value });
+						}}
+					/>
+				</div>
 			)}
-			<Icon className={'block-icon'} icon={blockMeta?.icon?.src} />
-			<span className={'block-label'}>{labelOrTitle}</span>
-			<Icon className={'block-settings'} icon="ellipsis" />
 		</div>
 	);
 }
+
+const deleteBlock = (clientId) => {
+	wp.data.dispatch('core/block-editor').removeBlock(clientId, false);
+};
 
 export default function MenuEdit({ closeModal, blocks }) {
 	const [collapsed, setCollapsed] = useState([]);
@@ -214,17 +245,17 @@ export default function MenuEdit({ closeModal, blocks }) {
 
 	return (
 		<div className={'menu-management'}>
-			<div className={'edit-menu-name'}>
-				NAME:{' '}
-				<RichText
-					tagName={'span'}
-					placeholder={__('Set a Title', 'kadence-blocks')}
-					onChange={(value) => console.log(value)}
-					value={''}
-					withoutInteractiveFormatting={true}
-					allowedFormats={[]}
-				/>
-			</div>
+			{/*<div className={'edit-menu-name'}>*/}
+			{/*	NAME:{' '}*/}
+			{/*	<RichText*/}
+			{/*		tagName={'span'}*/}
+			{/*		placeholder={__('Set a Title', 'kadence-blocks')}*/}
+			{/*		onChange={(value) => console.log(value)}*/}
+			{/*		value={''}*/}
+			{/*		withoutInteractiveFormatting={true}*/}
+			{/*		allowedFormats={[]}*/}
+			{/*	/>*/}
+			{/*</div>*/}
 
 			<DndContext
 				// collisionDetection={closestCenter}
@@ -245,26 +276,26 @@ export default function MenuEdit({ closeModal, blocks }) {
 				</SortableContext>
 			</DndContext>
 
-			<div style={{ marginTop: '20px' }}>
-				<Button
-					icon={link}
-					isSecondary
-					iconPosition="left"
-					onClick={() => {
-						console.log('INSERT NEW BLOCK');
-					}}
-					style={{
-						width: '100%',
-						color: '#000',
-						borderColor: '#000',
-						display: 'flex',
-						alignItems: 'center',
-						justifyContent: 'center',
-					}}
-				>
-					Add Navigation Item
-				</Button>
-			</div>
+			{/*<div style={{ marginTop: '20px' }}>*/}
+			{/*	<Button*/}
+			{/*		icon={link}*/}
+			{/*		isSecondary*/}
+			{/*		iconPosition="left"*/}
+			{/*		onClick={() => {*/}
+			{/*			console.log('INSERT NEW BLOCK');*/}
+			{/*		}}*/}
+			{/*		style={{*/}
+			{/*			width: '100%',*/}
+			{/*			color: '#000',*/}
+			{/*			borderColor: '#000',*/}
+			{/*			display: 'flex',*/}
+			{/*			alignItems: 'center',*/}
+			{/*			justifyContent: 'center',*/}
+			{/*		}}*/}
+			{/*	>*/}
+			{/*		Add Navigation Item*/}
+			{/*	</Button>*/}
+			{/*</div>*/}
 
 			<div style={{ marginTop: '30px', float: 'right' }}>
 				<Button isPrimary onClick={closeModal}>

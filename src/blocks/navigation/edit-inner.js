@@ -466,7 +466,7 @@ export function EditInner(props) {
 	const [title, setTitle] = useNavigationProp('title');
 	const [isAdding, addNew] = useEntityPublish('kadence_navigation', id);
 
-	let [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_navigation', id);
+	const [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_navigation', id);
 
 	const applyTemplateKeyBlocks = (templateKey) => {
 		if (templateKey == 'long-vertical') {
@@ -547,20 +547,43 @@ export function EditInner(props) {
 		return get(blocks, [0], {});
 	}, [blocks]);
 
-	const onAdd = async (title, template, initialDescription) => {
+	const onAdd = async (title, direction, style, initialDescription) => {
 		try {
 			const response = await addNew();
 
 			if (response.id) {
-				onChange([{ ...newBlock, innerBlocks: [createBlock('kadence/navigation-link', {})] }], clientId);
+				onChange(
+					[
+						{
+							...newBlock,
+							innerBlocks: [
+								createBlock('kadence/navigation-link', {
+									label: __('Home', 'kadence-blocks'),
+									url: '/',
+								}),
+							],
+						},
+					],
+					clientId
+				);
 
 				setTitle(title);
 
 				const updatedMeta = meta;
 				updatedMeta._kad_navigation_description = initialDescription;
+				updatedMeta._kad_navigation_orientation = direction === 'skip' ? 'horizontal' : direction;
+
+				// Once we get templates, they'll go here
+				// if( style === 'a' ) {
+				//
+				// } else if ( style === 'b' ) {
+				//
+				// }
 
 				setMeta({ ...meta, updatedMeta });
 				await wp.data.dispatch('core').saveEditedEntityRecord('postType', 'kadence_navigation', id);
+
+				openModal();
 			}
 		} catch (error) {
 			console.error(error);
@@ -729,7 +752,7 @@ export function EditInner(props) {
 		);
 	};
 
-	if (navigationInnerBlocks.length === 0 && !templateKey) {
+	if (navigationInnerBlocks.length === 0 && !templateKey && !isOpen) {
 		return (
 			<>
 				<FormTitle onAdd={onAdd} isAdding={isAdding} existingTitle={title} />
@@ -837,7 +860,7 @@ export function EditInner(props) {
 						</Button>
 						{isOpen && (
 							<Modal size={'large'} title="Menu Editor" onRequestClose={closeModal}>
-								<MenuEditor clientId={clientId} />
+								<MenuEditor clientId={clientId} closeModal={closeModal} />
 							</Modal>
 						)}
 						<KadencePanelBody

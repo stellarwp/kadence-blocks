@@ -82,7 +82,7 @@ export default function MenuEditor({ clientId, closeModal }) {
 				{blocks.length !== 0 ? (
 					<MenuEdit blocks={blocks} closeModal={closeModal} />
 				) : (
-					<>{__('Insert some blocks to get started.', 'kadence-blocks')}</>
+					<p>{__('Insert links to get started.', 'kadence-blocks')}</p>
 				)}
 			</div>
 		</div>
