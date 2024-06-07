@@ -57,6 +57,7 @@ export { default as GapSizeControl } from './gap-controls';
 export { default as ResponsiveGapSizeControl } from './gap-controls/responsive';
 export { default as CopyPasteAttributes } from './copy-paste-attributes';
 export { default as DynamicTextInputControl } from './dynamic-text-input-control';
+export { default as Tooltip } from './tooltip';
 
 /* Panels */
 export { default as ColorGroup } from './panels/color-group';

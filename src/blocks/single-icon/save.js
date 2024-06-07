@@ -14,7 +14,8 @@ import { IconSpanTag } from '@kadence/components';
 import classnames from 'classnames';
 
 function Save({ attributes, className }) {
-	const { icon, link, target, width, title, style, linkTitle, uniqueID, tooltip, tooltipPlacement } = attributes;
+	const { icon, link, target, width, title, style, linkTitle, uniqueID, tooltip, tooltipPlacement, tooltipDash } =
+		attributes;
 
 	const classes = classnames({
 		[`kt-svg-style-${style}`]: style,
@@ -31,7 +32,7 @@ function Save({ attributes, className }) {
 			{icon && link && (
 				<a
 					href={link}
-					className={'kt-svg-icon-link'}
+					className={`kt-svg-icon-link${tooltipDash && tooltipID ? ' kb-icon-tooltip-border' : ''}`}
 					data-tooltip-id={tooltipID ? tooltipID : undefined}
 					data-tooltip-placement={tooltipID && tooltipPlacement ? tooltipPlacement : undefined}
 					target={'_blank' === target ? target : undefined}
@@ -47,6 +48,7 @@ function Save({ attributes, className }) {
 			)}
 			{icon && !link && (
 				<IconSpanTag
+					extraClass={tooltipDash && tooltipID ? 'kb-icon-tooltip-border' : undefined}
 					name={icon}
 					strokeWidth={'fe' === icon.substring(0, 2) ? width : undefined}
 					title={title ? title : ''}
@@ -59,7 +61,9 @@ function Save({ attributes, className }) {
 					className={'kb-tooltip-hidden-content'}
 					style={{ display: 'none' }}
 					id={tooltipID}
-					dangerouslySetInnerHTML={{ __html: tooltip }}
+					dangerouslySetInnerHTML={{
+						__html: tooltip, // Because this is saved into the post as html WordPress core will sanitize it if the user does not have the unfiltered_html capability.
+					}}
 				/>
 			)}
 		</div>

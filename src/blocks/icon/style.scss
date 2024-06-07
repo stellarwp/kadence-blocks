@@ -8,7 +8,6 @@
 	border: 0px solid var(--global-palette5, #444444);
 	transition: all 0.3s ease-in-out;
 }
-
 .wp-block-kadence-icon,
 .wp-block-kadence-icon.aligncenter:not(.specificity) {
 	display: flex;
@@ -32,6 +31,12 @@
 			box-shadow: none;
 		}
 	}
+}
+.kt-svg-icon-wrap a.kt-svg-icon-link.kb-icon-tooltip-border {
+	border-bottom: 1px dashed currentColor;
+}
+.kt-svg-icon-wrap .kb-icon-tooltip-border {
+	border-bottom: 1px dashed currentColor;
 }
 .kb-icon-valign-top {
 	align-items: flex-start;

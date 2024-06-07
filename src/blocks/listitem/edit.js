@@ -15,6 +15,7 @@ import {
 	URLInputControl,
 	InspectorControlTabs,
 	SelectParentBlock,
+	Tooltip,
 } from '@kadence/components';
 
 import metadata from './block.json';
@@ -140,22 +141,29 @@ function KadenceListItem(props) {
 	const listItemOutput = (
 		<>
 			{displayIcon && showIcon && (
-				<IconRender
-					className={`kt-svg-icon-list-single kt-svg-icon-list-single-${displayIcon}${
-						iconOnlyTooltip && tooltip ? ' kb-icon-list-tooltip' : ''
-					}${!tooltipDash && iconOnlyTooltip && tooltip ? ' kb-list-tooltip-no-border' : ''}`}
-					name={displayIcon}
-					size={size ? size : '1em'}
-					strokeWidth={'fe' === displayIcon.substring(0, 2) ? displayWidth : undefined}
-					style={{
-						color: color ? KadenceColorOutput(color) : undefined,
-						backgroundColor: background && style === 'stacked' ? KadenceColorOutput(background) : undefined,
-						padding: padding && style === 'stacked' ? padding + 'px' : undefined,
-						borderColor: border && style === 'stacked' ? KadenceColorOutput(border) : undefined,
-						borderWidth: borderWidth && style === 'stacked' ? borderWidth + 'px' : undefined,
-						borderRadius: borderRadius && style === 'stacked' ? borderRadius + '%' : undefined,
-					}}
-				/>
+				<Tooltip
+					className="kb-icon-list-single-wrap"
+					text={tooltip && iconOnlyTooltip ? tooltip : undefined}
+					placement={tooltipPlacement || 'top'}
+				>
+					<IconRender
+						className={`kt-svg-icon-list-single kt-svg-icon-list-single-${displayIcon}${
+							iconOnlyTooltip && tooltip ? ' kb-icon-list-tooltip' : ''
+						}${!tooltipDash && iconOnlyTooltip && tooltip ? ' kb-list-tooltip-no-border' : ''}`}
+						name={displayIcon}
+						size={size ? size : '1em'}
+						strokeWidth={'fe' === displayIcon.substring(0, 2) ? displayWidth : undefined}
+						style={{
+							color: color ? KadenceColorOutput(color) : undefined,
+							backgroundColor:
+								background && style === 'stacked' ? KadenceColorOutput(background) : undefined,
+							padding: padding && style === 'stacked' ? padding + 'px' : undefined,
+							borderColor: border && style === 'stacked' ? KadenceColorOutput(border) : undefined,
+							borderWidth: borderWidth && style === 'stacked' ? borderWidth + 'px' : undefined,
+							borderRadius: borderRadius && style === 'stacked' ? borderRadius + '%' : undefined,
+						}}
+					/>
+				</Tooltip>
 			)}
 
 			{!showIcon && size !== 0 && (
@@ -175,39 +183,44 @@ function KadenceListItem(props) {
 					></svg>
 				</div>
 			)}
+			<Tooltip
+				className="kb-icon-list-text-wrap"
+				text={tooltip && textOnlyTooltip ? tooltip : undefined}
+				placement={tooltipPlacement || 'top'}
+			>
+				<RichText
+					tagName="div"
+					ref={textRef}
+					identifier="text"
+					value={text}
+					onChange={(value) => {
+						setAttributes({ text: value });
+					}}
+					onSplit={(value, isOriginal) => {
+						const newAttributes = { ...attributes };
+						newAttributes.text = value;
+						if (!isOriginal) {
+							newAttributes.uniqueID = '';
+							newAttributes.link = '';
+						}
 
-			<RichText
-				tagName="div"
-				ref={textRef}
-				identifier="text"
-				value={text}
-				onChange={(value) => {
-					setAttributes({ text: value });
-				}}
-				onSplit={(value, isOriginal) => {
-					const newAttributes = { ...attributes };
-					newAttributes.text = value;
-					if (!isOriginal) {
-						newAttributes.uniqueID = '';
-						newAttributes.link = '';
-					}
+						const block = createBlock('kadence/listitem', newAttributes);
 
-					const block = createBlock('kadence/listitem', newAttributes);
+						if (isOriginal) {
+							block.clientId = clientId;
+						}
 
-					if (isOriginal) {
-						block.clientId = clientId;
-					}
-
-					return block;
-				}}
-				onMerge={mergeBlocks}
-				onRemove={onRemove}
-				onReplace={onReplace}
-				className={`kt-svg-icon-list-text${textOnlyTooltip && tooltip ? ' kb-icon-list-tooltip' : ''}${
-					!tooltipDash && textOnlyTooltip && tooltip ? ' kb-list-tooltip-no-border' : ''
-				}`}
-				data-empty={!text}
-			/>
+						return block;
+					}}
+					onMerge={mergeBlocks}
+					onRemove={onRemove}
+					onReplace={onReplace}
+					className={`kt-svg-icon-list-text${textOnlyTooltip && tooltip ? ' kb-icon-list-tooltip' : ''}${
+						!tooltipDash && textOnlyTooltip && tooltip ? ' kb-list-tooltip-no-border' : ''
+					}`}
+					data-empty={!text}
+				/>
+			</Tooltip>
 		</>
 	);
 	return (
@@ -478,7 +491,8 @@ function KadenceListItem(props) {
 					style ? ' kt-svg-icon-list-style-' + style : ''
 				}`}
 			>
-				<WrapTag
+				<Tooltip
+					TagName={WrapTag}
 					className={`kb-icon-list-tooltip-wrap${
 						!link && tooltip && !iconOnlyTooltip && !textOnlyTooltip ? ' kb-icon-list-tooltip' : ''
 					}${
@@ -486,9 +500,11 @@ function KadenceListItem(props) {
 							? ' kb-list-tooltip-no-border'
 							: ''
 					}${link ? ' kt-svg-icon-link' : ''}`}
+					text={tooltip && !iconOnlyTooltip && !textOnlyTooltip ? tooltip : undefined}
+					placement={tooltipPlacement || 'top'}
 				>
 					{listItemOutput}
-				</WrapTag>
+				</Tooltip>
 			</div>
 		</div>
 	);

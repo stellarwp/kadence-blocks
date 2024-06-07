@@ -1,8 +1,6 @@
 import { getPreviewSize, KadenceColorOutput, getSpacingOptionOutput } from '@kadence/helpers';
 import { useRef } from '@wordpress/element';
-import { IconRender } from '@kadence/components';
-import Tippy from '@tippyjs/react';
-import 'tippy.js/dist/tippy.css'; // optional
+import { IconRender, Tooltip } from '@kadence/components';
 export function PreviewIcon({ attributes, previewDevice }) {
 	const ref = useRef();
 	const {
@@ -43,6 +41,7 @@ export function PreviewIcon({ attributes, previewDevice }) {
 		verticalAlignment,
 		tooltip,
 		tooltipPlacement,
+		tooltipDash,
 	} = attributes;
 
 	const previewSize = getPreviewSize(
@@ -103,10 +102,13 @@ export function PreviewIcon({ attributes, previewDevice }) {
 
 	const previewPaddingUnit = undefined !== paddingUnit && paddingUnit ? paddingUnit : 'px';
 	const previewMarginUnit = undefined !== marginUnit && marginUnit ? marginUnit : 'px';
-
 	return (
-		<>
-			<div ref={ref} className={`kt-svg-style-${style} kt-svg-icon-wrap kt-svg-item-${uniqueID}`}>
+		<Tooltip text={tooltip} placement={tooltipPlacement || 'top'}>
+			<div
+				className={`kt-svg-style-${style} kt-svg-icon-wrap kt-svg-item-${uniqueID}${
+					tooltipDash && tooltip ? ' kb-icon-tooltip-border' : ''
+				}`}
+			>
 				{icon && (
 					<>
 						<IconRender
@@ -155,7 +157,6 @@ export function PreviewIcon({ attributes, previewDevice }) {
 					</>
 				)}
 			</div>
-			{tooltip && <Tippy content={tooltip} placement={tooltipPlacement || undefined} reference={ref}></Tippy>}
-		</>
+		</Tooltip>
 	);
 }

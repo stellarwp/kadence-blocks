@@ -12,6 +12,9 @@
 	margin-bottom: 0;
 	margin-top: 0;
 }
+.kb-icon-tooltip-border {
+	border-bottom: 1px dashed currentColor;
+}
 .kt-svg-icons {
 	display: flex;
 	gap: 0.2em;
@@ -63,5 +66,5 @@
 	margin-top: 0;
 }
 .kb-inline-tooltip-control {
-	min-width: 200px;
+	min-width: 220px;
 }

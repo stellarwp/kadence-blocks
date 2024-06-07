@@ -104,7 +104,7 @@ class Kadence_Blocks_Listitem_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		if ( ! empty( $attributes['tooltip'] ) ) {
+		if ( strpos( $content, 'kb-tooltip-hidden-content') !== false ) {
 			$this->enqueue_script( 'kadence-blocks-tippy' );
 		}
 		if ( isset( $block_instance ) && is_object( $block_instance ) && isset( $block_instance->context['kadence/listIcon'] ) ) {

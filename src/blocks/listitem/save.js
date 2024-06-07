@@ -58,7 +58,7 @@ function Save(props) {
 	const iconSpan = (
 		<IconSpanTag
 			extraClass={`kt-svg-icon-list-single${iconOnlyTooltip && tooltipID ? ' kb-icon-list-tooltip' : ''}${
-				!tooltipDash && iconOnlyTooltip && tooltip ? ' kb-list-tooltip-no-border' : ''
+				!tooltipDash && iconOnlyTooltip && tooltipID ? ' kb-list-tooltip-no-border' : ''
 			}`}
 			name={iconName}
 			strokeWidth={iconWidth}
@@ -175,7 +175,7 @@ function Save(props) {
 					className={'kb-tooltip-hidden-content'}
 					style={{ display: 'none' }}
 					id={tooltipID}
-					dangerouslySetInnerHTML={{ __html: tooltip }}
+					dangerouslySetInnerHTML={{ __html: tooltip }} // Because this is saved into the post as html WordPress core will sanitize it if the user does not have the unfiltered_html capability.
 				/>
 			)}
 		</li>

@@ -46,15 +46,23 @@
 	display: flex;
 	align-items: center;
 }
-.kb-icon-list-tooltip-wrap:not(.kb-icon-list-tooltip) {
-	width: 100%;
-}
 .wp-block-kadence-listitem {
 	.kb-icon-list-tooltip:where(:not(.kb-list-tooltip-no-border)) {
 		border-bottom: 1px dashed currentColor;
 	}
 }
-.wp-block-kadence-listitem .kt-svg-icon-link > .kb-icon-list-tooltip {
+// Tooltip Stuff
+.kt-svg-icon-list-item-wrap > .tooltip-ref-wrap:not(.kb-icon-list-tooltip) {
+	width: 100%;
+}
+.kb-icon-list-text-wrap:not(.tooltip-ref-has-tip) {
+	width: 100%;
+}
+// .kb-icon-list-tooltip > .kb-icon-list-text-wrap {
+// 	width: auto;
+// }
+
+.wp-block-kadence-listitem .kt-svg-icon-link > .tooltip-ref-wrap > .kb-icon-list-tooltip {
 	border-bottom-width: 0px;
 }
 .kt-svg-icon-list-style-stacked .kt-svg-icon-list-single {
