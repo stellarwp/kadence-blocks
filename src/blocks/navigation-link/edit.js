@@ -21,6 +21,8 @@ import {
 	SelectControl,
 	ExternalLink,
 	MenuItem,
+	Button,
+	ButtonGroup,
 } from '@wordpress/components';
 import { plusCircle, addSubmenu, plusCircleFilled } from '@wordpress/icons';
 import { displayShortcut, isKeyboardEvent, ENTER } from '@wordpress/keycodes';
@@ -83,7 +85,7 @@ import {
 	KadenceMediaPlaceholder,
 } from '@kadence/components';
 
-import { ArrowDown, ArrowUp } from '@kadence/icons';
+import { ArrowDown, ArrowUp, rowIcon, twoColIcon, threeColIcon, twoRightGoldenIcon } from '@kadence/icons';
 
 /**
  * Internal dependencies
@@ -319,6 +321,8 @@ export default function Edit(props) {
 
 	const [activeTab, setActiveTab] = useState('general');
 	const [showSubMenus, setShowSubMenus] = useState(false);
+	const [megaMenuOnboardingStep, setMegaMenuOnboardingStep] = useState('');
+	const [megaMenuColumnChoice, setMegaMenuColumnChoice] = useState('');
 
 	const [isInvalid, isDraft] = useIsInvalidLink(kind, type, id);
 	const { maxNestingLevel } = context;
@@ -423,21 +427,83 @@ export default function Edit(props) {
 			[clientId]
 		);
 
+	const isMegaMenuOnboarding = isMegaMenu && !hasChildren;
+	const megaMenuColumnOptions = [
+		{ key: 'equal|1', name: __('Row', 'kadence-blocks'), icon: rowIcon },
+		{ key: 'equal|2', name: __('Two: Equal', 'kadence-blocks'), icon: twoColIcon },
+		{ key: 'equal|3', name: __('Three: Equal', 'kadence-blocks'), icon: threeColIcon },
+		{
+			key: 'right-golden|2',
+			name: __('Two: Right Heavy 33/66', 'kadence-blocks'),
+			icon: twoRightGoldenIcon,
+		},
+	];
+	const megaMenuDesignOptions =
+		megaMenuColumnChoice == 'equal|1'
+			? [
+					{ key: 'equal|1|simple', name: __('Simple', 'kadence-blocks'), icon: rowIcon },
+					{ key: 'equal|1|complex', name: __('Complex', 'kadence-blocks'), icon: twoColIcon },
+			  ]
+			: megaMenuColumnChoice == 'equal|2'
+			? [
+					{ key: 'equal|2|simple', name: __('Simple2', 'kadence-blocks'), icon: rowIcon },
+					{ key: 'equal|2|complex', name: __('Complex2', 'kadence-blocks'), icon: twoColIcon },
+			  ]
+			: megaMenuColumnChoice == 'equal|3'
+			? [
+					{ key: 'equal|3|simple', name: __('Simple3', 'kadence-blocks'), icon: rowIcon },
+					{ key: 'equal|3|complex', name: __('Complex3', 'kadence-blocks'), icon: twoColIcon },
+			  ]
+			: [
+					{ key: 'right-golden|2|simple', name: __('Simple2', 'kadence-blocks'), icon: rowIcon },
+					{ key: 'right-golden|2|complex', name: __('Complex2', 'kadence-blocks'), icon: twoColIcon },
+			  ];
+
 	/**
 	 * Enable or disable the mega menu by changing the row layout and setting the attribute.
 	 */
-	function doMegaMenu(value) {
+	function doMegaMenu(key) {
+		//TODO put any existing submenus / items into the new mega menu
+		if (key) {
+			const keyParts = key.split('|');
+			let newMegaMenu;
+			switch (key) {
+				case 'simple|1':
+					newMegaMenu = createBlock(
+						'kadence/rowlayout',
+						{ templateLock: false, colLayout: keyParts[0], columns: keyParts[1] },
+						[createBlock('kadence/column', {}, [])]
+					);
+					break;
+
+				default:
+					newMegaMenu = createBlock(
+						'kadence/rowlayout',
+						{ templateLock: false, colLayout: keyParts[0], columns: keyParts[1] },
+						[createBlock('kadence/column', {}, [])]
+					);
+					break;
+			}
+			insertBlock(newMegaMenu, 0, clientId);
+			setShowSubMenus(true);
+		}
+	}
+
+	/**
+	 * Enable or disable the mega menu by changing the row layout and setting the attribute.
+	 */
+	function doMegaMenuEnable(value) {
 		if (value) {
 			//enable
-			//TODO put any existing submenus / items into the new mega menu
-			const newMegaMenu = createBlock('kadence/rowlayout', { templateLock: false }, []);
-			insertBlock(newMegaMenu, 0, clientId);
 			setAttributes({ isMegaMenu: true });
 			setShowSubMenus(true);
 		} else {
 			//disable
 			replaceInnerBlocks(clientId, []);
 			setAttributes({ isMegaMenu: false });
+			setMegaMenuColumnChoice('');
+			setMegaMenuOnboardingStep('');
+			setShowSubMenus(false);
 		}
 	}
 
@@ -562,11 +628,11 @@ export default function Edit(props) {
 		onKeyDown,
 	});
 
-	const innerBlocksProps = useInnerBlocksProps(
+	const { children, ...innerBlocksProps } = useInnerBlocksProps(
 		{
 			...blockProps,
 			className: classnames('remove-outline', {
-				'sub-menu': hasChildren,
+				'sub-menu': hasChildren || isMegaMenuOnboarding,
 				'show-sub-menus': showSubMenus,
 				'mega-menu': isMegaMenu,
 			}),
@@ -879,7 +945,7 @@ export default function Edit(props) {
 					'kadence.megaMenuToolbarControlsNavigationLink',
 					megaMenuToolbarControls,
 					props,
-					doMegaMenu,
+					doMegaMenuEnable,
 					previewDevice
 				)}
 
@@ -932,7 +998,7 @@ export default function Edit(props) {
 							'kadence.megaMenuControlsNavigationLink',
 							megaMenuControls,
 							props,
-							doMegaMenu,
+							doMegaMenuEnable,
 							isTopLevelLink,
 							previewDevice,
 							inMegaMenu
@@ -1175,7 +1241,68 @@ export default function Edit(props) {
 						</button>
 					)}
 				</div>
-				<ul {...innerBlocksProps} />
+				<ul {...innerBlocksProps}>
+					{!isMegaMenuOnboarding && children}
+					{isMegaMenuOnboarding && (
+						<div className="kt-select-layout">
+							{megaMenuOnboardingStep == '' && (
+								<>
+									<div className="kt-select-layout-title">
+										{__('Select Your Columns', 'kadence-blocks')}
+									</div>
+									<ButtonGroup aria-label={__('Column Layout', 'kadence-blocks')}>
+										{map(megaMenuColumnOptions, ({ name, key, icon }) => (
+											<Button
+												key={key}
+												className="kt-layout-btn"
+												isSmall
+												label={name}
+												icon={icon}
+												onClick={() => {
+													setMegaMenuColumnChoice(key);
+													setMegaMenuOnboardingStep('design');
+												}}
+											/>
+										))}
+									</ButtonGroup>
+									<Button className="kt-prebuilt" onClick={() => doMegaMenu('simple|1')}>
+										{__('Skip', 'kadence-blocks')}
+									</Button>
+									{/* <Button className="kt-prebuilt" onClick={() => setAttributes({ isPrebuiltModal: true })}>
+										{__('Design Library', 'kadence-blocks')}
+									</Button> */}
+								</>
+							)}
+							{megaMenuOnboardingStep == 'design' && (
+								<>
+									<div className="kt-select-layout-title">
+										{__('Select Your Content', 'kadence-blocks')}
+									</div>
+									<ButtonGroup aria-label={__('Content Layout', 'kadence-blocks')}>
+										{map(megaMenuDesignOptions, ({ name, key, icon }) => (
+											<Button
+												key={key}
+												className="kt-layout-btn"
+												isSmall
+												label={name}
+												icon={icon}
+												onClick={() => {
+													doMegaMenu(key);
+												}}
+											/>
+										))}
+									</ButtonGroup>
+									<Button className="kt-prebuilt" onClick={() => doMegaMenu('simple|1')}>
+										{__('Skip', 'kadence-blocks')}
+									</Button>
+									{/* <Button className="kt-prebuilt" onClick={() => setAttributes({ isPrebuiltModal: true })}>
+										{__('Design Library', 'kadence-blocks')}
+									</Button> */}
+								</>
+							)}
+						</div>
+					)}
+				</ul>
 			</li>
 		</>
 	);
