@@ -47,7 +47,8 @@
 		},
 		"text": {
 			"type": "string",
-			"default": "",
+			"source": "html",
+			"selector": ".kt-svg-icon-list-text",
 			"__experimentalRole": "content"
 		},
 		"color": {
@@ -88,7 +89,9 @@
 		},
 		"tooltip": {
 			"type": "string",
-			"default": ""
+			"source": "html",
+			"selector": ".kb-tooltip-hidden-content",
+			"__experimentalRole": "content"
 		},
 		"tooltipPlacement": {
 			"type": "string",
