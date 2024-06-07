@@ -4,11 +4,11 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
- .block-editor-block-list__block[data-type="kadence/iconlist"] {
+.block-editor-block-list__block[data-type="kadence/iconlist"] {
 	margin-bottom: 0;
 	margin-top: 0;
-  }
- .kt-svg-icon-list-item-wrap {
+}
+.kt-svg-icon-list-item-wrap {
 	display: flex;
 	align-items: center;
 	text-align: left;
@@ -22,30 +22,46 @@
 	padding: 4px 0;
 }
 .rtl .kt-svg-icon-list-single {
-	margin-left:10px;
-	margin-right:0;
+	margin-left: 10px;
+	margin-right: 0;
 }
 .kt-svg-icon-list-item-wrap {
-	.editor-rich-text, .kt-svg-icon-list-text {
+	.editor-rich-text,
+	.kt-svg-icon-list-text {
 		flex-grow: 2;
 	}
 }
 .kt-svg-icon-list-container .block-editor-block-list__layout {
 	display: grid;
-    grid-template-rows: auto;
+	grid-template-rows: auto;
 }
-.block-editor-block-list__block[data-align=center] .kt-svg-icon-list-item-wrap {
+.block-editor-block-list__block[data-align="center"] .kt-svg-icon-list-item-wrap {
 	justify-content: center;
 	.editor-rich-text {
 		min-width: 20px;
 		flex-grow: 0;
 	}
 }
+.kb-icon-list-tooltip-wrap {
+	display: flex;
+	align-items: center;
+}
+.kb-icon-list-tooltip-wrap:not(.kb-icon-list-tooltip) {
+	width: 100%;
+}
+.wp-block-kadence-listitem {
+	.kb-icon-list-tooltip:where(:not(.kb-list-tooltip-no-border)) {
+		border-bottom: 1px dashed currentColor;
+	}
+}
+.wp-block-kadence-listitem .kt-svg-icon-link > .kb-icon-list-tooltip {
+	border-bottom-width: 0px;
+}
 .kt-svg-icon-list-style-stacked .kt-svg-icon-list-single {
-    border: 0px solid transparent;
+	border: 0px solid transparent;
 }
 .kb-icon-list-style-stacked .kt-svg-icon-list-single {
-    border: 0px solid transparent;
+	border: 0px solid transparent;
 }
 /* Remove padding from innerblocks */
 .kt-svg-icon-list-container .block-editor-block-list__layout .wp-block {
@@ -60,13 +76,13 @@
 	margin-right: auto;
 }
 .kt-svg-icon-list-columns-1 .block-editor-block-list__layout {
-    grid-template-columns: minmax(0, 1fr);
+	grid-template-columns: minmax(0, 1fr);
 }
 .kt-svg-icon-list-columns-2 .block-editor-block-list__layout {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+	grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .kt-svg-icon-list-columns-3 .block-editor-block-list__layout {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+	grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 .kt-list-icon-aligntop .kt-svg-icon-list-item-wrap {
 	align-items: flex-start;

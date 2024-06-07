@@ -57,6 +57,9 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
+		if ( ! empty( $attributes['tooltip'] ) ) {
+			$this->enqueue_script( 'kadence-blocks-tippy' );
+		}
 		if ( isset( $attributes ) && is_array( $attributes ) ) {
 			$css->set_selector( '.kt-svg-item-' . $unique_id . ' .kb-svg-icon-wrap' );
 			$css->render_color_output( $attributes, 'color', 'color' );
@@ -94,6 +97,23 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		return $css->css_output();
+	}
+	/**
+	 * Registers scripts and styles.
+	 */
+	public function register_scripts() {
+
+		// Skip calling parent because this block does not have a dedicated CSS or JS file.
+
+		// If in the backend, bail out.
+		if ( is_admin() ) {
+			return;
+		}
+		if ( apply_filters( 'kadence_blocks_check_if_rest', false ) && kadence_blocks_is_rest() ) {
+			return;
+		}
+		wp_register_script( 'kadence-blocks-popper', KADENCE_BLOCKS_URL . 'includes/assets/js/popper.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-tippy', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-tippy.min.js', array( 'kadence-blocks-popper' ), KADENCE_BLOCKS_VERSION, true );
 	}
 }
 

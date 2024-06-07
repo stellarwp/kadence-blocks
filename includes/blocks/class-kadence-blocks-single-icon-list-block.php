@@ -104,6 +104,9 @@ class Kadence_Blocks_Listitem_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
+		if ( ! empty( $attributes['tooltip'] ) ) {
+			$this->enqueue_script( 'kadence-blocks-tippy' );
+		}
 		if ( isset( $block_instance ) && is_object( $block_instance ) && isset( $block_instance->context['kadence/listIcon'] ) ) {
 			$parent_default = $block_instance->context['kadence/listIcon'];
 
@@ -118,6 +121,23 @@ class Kadence_Blocks_Listitem_Block extends Kadence_Blocks_Abstract_Block {
 			$content = str_replace( 'USE_PARENT_DEFAULT_WIDTH', $parent_default_width, $content );
 		}
 		return $content;
+	}
+	/**
+	 * Registers scripts and styles.
+	 */
+	public function register_scripts() {
+
+		// Skip calling parent because this block does not have a dedicated CSS or JS file.
+
+		// If in the backend, bail out.
+		if ( is_admin() ) {
+			return;
+		}
+		if ( apply_filters( 'kadence_blocks_check_if_rest', false ) && kadence_blocks_is_rest() ) {
+			return;
+		}
+		wp_register_script( 'kadence-blocks-popper', KADENCE_BLOCKS_URL . 'includes/assets/js/popper.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-tippy', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-tippy.min.js', array( 'kadence-blocks-popper' ), KADENCE_BLOCKS_VERSION, true );
 	}
 }
 

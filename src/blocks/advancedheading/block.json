@@ -504,6 +504,14 @@
 		"altTitle": {
 			"type": "string",
 			"default": ""
+		},
+		"iconTooltip": {
+			"type": "string",
+			"default": ""
+		},
+		"iconTooltipPlacement": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"usesContext": ["postId", "queryId", "kadence/dynamicSource", "kadence/repeaterRowData", "kadence/repeaterRow"],

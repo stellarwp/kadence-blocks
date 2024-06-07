@@ -111,7 +111,9 @@
 				"file_patterns": [
 					"/symfony\\/polyfill-(.*)/"
 				]
-			}
+			},
+			"include_modified_date": false,
+			"include_author": false
 		}
 	}
 }

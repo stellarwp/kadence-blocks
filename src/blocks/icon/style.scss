@@ -5,25 +5,26 @@
  */
 // Old keep for backward compatablity.
 .kt-svg-style-stacked .kt-svg-icon {
-	border: 0px solid var(--global-palette5, #444444 );
-	transition: all .3s ease-in-out;
+	border: 0px solid var(--global-palette5, #444444);
+	transition: all 0.3s ease-in-out;
 }
 
-.wp-block-kadence-icon, .wp-block-kadence-icon.aligncenter:not(.specificity) {
+.wp-block-kadence-icon,
+.wp-block-kadence-icon.aligncenter:not(.specificity) {
 	display: flex;
 	gap: 0.2em;
-	align-items:center;
+	align-items: center;
 	justify-content: center;
 }
-.kt-svg-style-stacked .kb-svg-icon-wrap  {
-	border: 2px solid var(--global-palette5, #444444 );
-	transition: all .3s ease-in-out;
+.kt-svg-style-stacked .kb-svg-icon-wrap {
+	border: 2px solid var(--global-palette5, #444444);
+	transition: all 0.3s ease-in-out;
 	padding: 20px;
 }
 .kt-svg-icon-wrap {
 	display: flex;
 	a.kt-svg-icon-link {
-		display: block;
+		display: flex;
 		border: 0;
 		text-decoration: none;
 		box-shadow: none;
@@ -33,20 +34,21 @@
 	}
 }
 .kb-icon-valign-top {
-    align-items: flex-start;
+	align-items: flex-start;
 }
-.kb-icon-valign-middle, .kb-icon-valign-center {
-    align-items: center;
+.kb-icon-valign-middle,
+.kb-icon-valign-center {
+	align-items: center;
 }
 .kb-icon-valign-bottom {
-    align-items: flex-end;
+	align-items: flex-end;
 }
 .kb-svg-icon-wrap {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
 	border-width: 0;
-	
+
 	svg {
 		width: 1em;
 		height: 1em;

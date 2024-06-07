@@ -334,13 +334,6 @@ function KadenceIconLists(props) {
 		});
 	};
 
-	const { childBlocks, getBlockAttrs } = useSelect((select) => {
-		return {
-			childBlocks: select('core/block-editor').getBlockOrder(clientId),
-			getBlockAttrs: (blockClientId) => select('core/block-editor').getBlockAttributes(blockClientId),
-		};
-	}, []);
-
 	const iconAlignOptions = [
 		{ key: 'top', name: __('Top', 'kadence-blocks'), icon: alignTopIcon },
 		{ key: 'middle', name: __('Middle', 'kadence-blocks'), icon: alignMiddleIcon },
@@ -755,25 +748,36 @@ function KadenceIconLists(props) {
 				</InspectorControls>
 			)}
 			<style>
-				{`body:not(.rtl) .kt-svg-icon-list-items${uniqueID} .kt-svg-icon-list-single { margin-right: ${listLabelGap}px; }`}
-				{`body.rtl .kt-svg-icon-list-items${uniqueID} .kt-svg-icon-list-single { margin-left: ${listLabelGap}px; }`}
-				{`.kt-svg-icon-list-items${uniqueID} .kt-svg-icon-list-item-wrap {
-						font-weight: ${listStyles[0].weight ? listStyles[0].weight : ''};
-						font-style: ${listStyles[0].style ? listStyles[0].style : ''};
-						color:  ${listStyles[0].color ? KadenceColorOutput(listStyles[0].color) : ''};
-						font-size: ${previewFontSize ? getFontSizeOptionOutput(previewFontSize, listStyles[0].sizeType) : ''};
-						line-height: ${previewLineHeight ? previewLineHeight + listStyles[0].lineType : ''};
-						letter-spacing: ${listStyles[0].letterSpacing ? listStyles[0].letterSpacing + 'px' : ''};
-						font-family: ${listStyles[0].family ? listStyles[0].family : ''};
-						text-transform: ${listStyles[0].textTransform ? listStyles[0].textTransform : ''};
-					}`}
+				{listLabelGap
+					? `body:not(.rtl) .kt-svg-icon-list-items${uniqueID} .kt-svg-icon-list-single { margin-right: ${listLabelGap}px; }`
+					: ''}
+				{listLabelGap
+					? `body.rtl .kt-svg-icon-list-items${uniqueID} .kt-svg-icon-list-single { margin-left: ${listLabelGap}px; }`
+					: ''}
+				{listStyles?.[0]
+					? `.kt-svg-icon-list-items${uniqueID} .kt-svg-icon-list-item-wrap {
+						${listStyles[0].weight ? `font-weight:${listStyles[0].weight};` : ''}
+						${listStyles[0].style ? `font-style:${listStyles[0].style};` : ''}
+						${listStyles[0].color ? `color:${KadenceColorOutput(listStyles[0].color)};` : ''}
+						${previewFontSize ? `font-size:${getFontSizeOptionOutput(previewFontSize, listStyles[0].sizeType)};` : ''}
+						${previewLineHeight ? `line-height:${previewLineHeight + listStyles[0].lineType};` : ''}
+						${listStyles[0].letterSpacing ? `letter-spacing:${listStyles[0].letterSpacing}px;` : ''}
+						${listStyles[0].family ? `font-family:${listStyles[0].family};` : ''}
+						${listStyles[0].textTransform ? `text-transform:${listStyles[0].textTransform};` : ''}
+					}`
+					: ''}
+				{listStyles[0].color
+					? `.kt-svg-icon-list-items${uniqueID} .kt-svg-icon-list-item-wrap a {
+						color:${KadenceColorOutput(listStyles[0].color)};
+					}`
+					: ''}
 				{`.kt-svg-icon-list-items${uniqueID} .kt-svg-icon-list-item-wrap a {
-						color:  ${linkColor ? KadenceColorOutput(linkColor) : ''};
+						${linkColor ? `color:${KadenceColorOutput(linkColor)};` : ''}
 						${linkUnderline && linkUnderline === 'always' ? 'text-decoration: underline;' : ''}
 						${linkUnderline && (linkUnderline === 'none' || linkUnderline === 'hover') ? 'text-decoration: none;' : ''}
 					}`}
 				{`.kt-svg-icon-list-items${uniqueID} .kt-svg-icon-list-item-wrap a:hover {
-						color:  ${linkHoverColor ? KadenceColorOutput(linkHoverColor) : ''};
+						${linkHoverColor ? `color:${KadenceColorOutput(linkHoverColor)};` : ''}
 						${linkUnderline && linkUnderline === 'hover' ? 'text-decoration: underline;' : ''}
 					}`}
 				{'' !== previewListGap

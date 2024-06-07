@@ -85,6 +85,22 @@
 		"iconTitle": {
 			"type": "string",
 			"default": ""
+		},
+		"tooltip": {
+			"type": "string",
+			"default": ""
+		},
+		"tooltipPlacement": {
+			"type": "string",
+			"default": ""
+		},
+		"tooltipSelection": {
+			"type": "string",
+			"default": "both"
+		},
+		"tooltipDash": {
+			"type": "boolean",
+			"default": true
 		}
 	},
 	"usesContext": ["kadence/listIcon", "kadence/listIconWidth"],

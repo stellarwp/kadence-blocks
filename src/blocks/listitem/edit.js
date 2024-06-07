@@ -36,10 +36,14 @@ import {
 	ToolbarGroup,
 	ToolbarButton,
 	TextControl,
+	Dropdown,
+	Button,
+	TextareaControl,
 } from '@wordpress/components';
 
 import { useSelect, useDispatch } from '@wordpress/data';
 import { formatIndent, formatOutdent } from '@wordpress/icons';
+import { tooltip as tooltipIcon } from '@kadence/icons';
 
 function KadenceListItem(props) {
 	const {
@@ -74,6 +78,10 @@ function KadenceListItem(props) {
 		style,
 		level,
 		showIcon,
+		tooltipSelection,
+		tooltip,
+		tooltipPlacement,
+		tooltipDash,
 	} = attributes;
 	const displayIcon = icon ? icon : context['kadence/listIcon'];
 	const displayWidth = width ? width : context['kadence/listIconWidth'];
@@ -126,6 +134,82 @@ function KadenceListItem(props) {
 	const onMoveRight = () => {
 		setAttributes({ level: level + 1 });
 	};
+	const iconOnlyTooltip = 'icon' === tooltipSelection ? true : false;
+	const textOnlyTooltip = 'text' === tooltipSelection ? true : false;
+	const WrapTag = link ? 'a' : 'span';
+	const listItemOutput = (
+		<>
+			{displayIcon && showIcon && (
+				<IconRender
+					className={`kt-svg-icon-list-single kt-svg-icon-list-single-${displayIcon}${
+						iconOnlyTooltip && tooltip ? ' kb-icon-list-tooltip' : ''
+					}${!tooltipDash && iconOnlyTooltip && tooltip ? ' kb-list-tooltip-no-border' : ''}`}
+					name={displayIcon}
+					size={size ? size : '1em'}
+					strokeWidth={'fe' === displayIcon.substring(0, 2) ? displayWidth : undefined}
+					style={{
+						color: color ? KadenceColorOutput(color) : undefined,
+						backgroundColor: background && style === 'stacked' ? KadenceColorOutput(background) : undefined,
+						padding: padding && style === 'stacked' ? padding + 'px' : undefined,
+						borderColor: border && style === 'stacked' ? KadenceColorOutput(border) : undefined,
+						borderWidth: borderWidth && style === 'stacked' ? borderWidth + 'px' : undefined,
+						borderRadius: borderRadius && style === 'stacked' ? borderRadius + '%' : undefined,
+					}}
+				/>
+			)}
+
+			{!showIcon && size !== 0 && (
+				<div
+					style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center' }}
+					className={'kt-svg-icon-list-single'}
+				>
+					<svg
+						style={{ display: 'inline-block', verticalAlign: 'middle' }}
+						viewBox={'0 0 24 24'}
+						height={size ? size : '1em'}
+						width={size ? size : '1em'}
+						fill={'none'}
+						stroke={displayWidth}
+						preserveAspectRatio={true ? 'xMinYMin meet' : undefined}
+						stroke-width={displayWidth}
+					></svg>
+				</div>
+			)}
+
+			<RichText
+				tagName="div"
+				ref={textRef}
+				identifier="text"
+				value={text}
+				onChange={(value) => {
+					setAttributes({ text: value });
+				}}
+				onSplit={(value, isOriginal) => {
+					const newAttributes = { ...attributes };
+					newAttributes.text = value;
+					if (!isOriginal) {
+						newAttributes.uniqueID = '';
+						newAttributes.link = '';
+					}
+
+					const block = createBlock('kadence/listitem', newAttributes);
+
+					if (isOriginal) {
+						block.clientId = clientId;
+					}
+
+					return block;
+				}}
+				onMerge={mergeBlocks}
+				onRemove={onRemove}
+				onReplace={onReplace}
+				className={`kt-svg-icon-list-text${textOnlyTooltip && tooltip ? ' kb-icon-list-tooltip' : ''}${
+					!tooltipDash && textOnlyTooltip && tooltip ? ' kb-list-tooltip-no-border' : ''
+				}`}
+				data-empty={!text}
+			/>
+		</>
+	);
 	return (
 		<div {...blockProps}>
 			<BlockControls>
@@ -143,6 +227,78 @@ function KadenceListItem(props) {
 						describedBy={__('Indent list item', 'kadence-blocks')}
 						isDisabled={level === 5}
 						onClick={() => onMoveRight()}
+					/>
+				</ToolbarGroup>
+				<ToolbarGroup group="tooltip">
+					<Dropdown
+						className="kb-popover-inline-tooltip-container components-dropdown-menu components-toolbar"
+						contentClassName="kb-popover-inline-tooltip"
+						placement="bottom"
+						renderToggle={({ isOpen, onToggle }) => (
+							<Button
+								className="components-dropdown-menu__toggle kb-inline-tooltip-toolbar-icon"
+								label={__('Tooltip Settings', 'kadence-blocks')}
+								icon={tooltipIcon}
+								onClick={onToggle}
+								aria-expanded={isOpen}
+							/>
+						)}
+						renderContent={() => (
+							<>
+								<div className="kb-inline-tooltip-control">
+									<TextareaControl
+										label={__('Tooltip Content', 'kadence-blocks')}
+										value={tooltip}
+										onChange={(newValue) => setAttributes({ tooltip: newValue })}
+									/>
+									<SelectControl
+										label={__('Placement', 'kadence-blocks')}
+										value={tooltipPlacement || 'top'}
+										options={[
+											{ label: __('Top', 'kadence-blocks'), value: 'top' },
+											{ label: __('Top Start', 'kadence-blocks'), value: 'top-start' },
+											{ label: __('Top End', 'kadence-blocks'), value: 'top-end' },
+											{ label: __('Right', 'kadence-blocks'), value: 'right' },
+											{ label: __('Right Start', 'kadence-blocks'), value: 'right-start' },
+											{ label: __('Right End', 'kadence-blocks'), value: 'right-end' },
+											{ label: __('Bottom', 'kadence-blocks'), value: 'bottom' },
+											{ label: __('Bottom Start', 'kadence-blocks'), value: 'bottom-start' },
+											{ label: __('Bottom End', 'kadence-blocks'), value: 'bottom-end' },
+											{ label: __('Left', 'kadence-blocks'), value: 'left' },
+											{ label: __('Left Start', 'kadence-blocks'), value: 'left-start' },
+											{ label: __('Left End', 'kadence-blocks'), value: 'left-end' },
+											{ label: __('Auto', 'kadence-blocks'), value: 'auto' },
+											{ label: __('Auto Start', 'kadence-blocks'), value: 'auto-start' },
+											{ label: __('Auto End', 'kadence-blocks'), value: 'auto-end' },
+										]}
+										onChange={(val) => {
+											setAttributes({ tooltipPlacement: val });
+										}}
+									/>
+									<SelectControl
+										label={__('Only apply tooltip to:', 'kadence-blocks')}
+										value={tooltipSelection || 'both'}
+										options={[
+											{ label: __('Text and Icon', 'kadence-blocks'), value: 'both' },
+											{ label: __('Text Only', 'kadence-blocks'), value: 'text' },
+											{ label: __('Icon Only', 'kadence-blocks'), value: 'icon' },
+										]}
+										onChange={(val) => {
+											setAttributes({ tooltipSelection: val });
+										}}
+									/>
+									{!link && (
+										<ToggleControl
+											label={__('Show indicator underline', 'kadence-blocks')}
+											checked={tooltipDash}
+											onChange={(value) => {
+												setAttributes({ tooltipDash: value });
+											}}
+										/>
+									)}
+								</div>
+							</>
+						)}
 					/>
 				</ToolbarGroup>
 			</BlockControls>
@@ -202,19 +358,17 @@ function KadenceListItem(props) {
 									allowClear={true}
 									placeholder={__('Select Icon', 'kadence-blocks')}
 								/>
-								{icon && (
-									<TextControl
-										label={__('Title for screen readers', 'kadence-blocks')}
-										help={__(
-											'If no title added screen readers will ignore, good if the icon is purely decorative.',
-											'kadence-blocks'
-										)}
-										value={iconTitle}
-										onChange={(value) => {
-											setAttributes({ iconTitle: value });
-										}}
-									/>
-								)}
+								<TextControl
+									label={__('Icon title for screen readers', 'kadence-blocks')}
+									help={__(
+										'If no title added screen readers will ignore, good if the icon is purely decorative.',
+										'kadence-blocks'
+									)}
+									value={iconTitle}
+									onChange={(value) => {
+										setAttributes({ iconTitle: value });
+									}}
+								/>
 							</>
 						)}
 					</KadencePanelBody>
@@ -324,72 +478,17 @@ function KadenceListItem(props) {
 					style ? ' kt-svg-icon-list-style-' + style : ''
 				}`}
 			>
-				{displayIcon && showIcon && (
-					<IconRender
-						className={`kt-svg-icon-list-single kt-svg-icon-list-single-${displayIcon}`}
-						name={displayIcon}
-						size={size ? size : '1em'}
-						strokeWidth={'fe' === displayIcon.substring(0, 2) ? displayWidth : undefined}
-						style={{
-							color: color ? KadenceColorOutput(color) : undefined,
-							backgroundColor:
-								background && style === 'stacked' ? KadenceColorOutput(background) : undefined,
-							padding: padding && style === 'stacked' ? padding + 'px' : undefined,
-							borderColor: border && style === 'stacked' ? KadenceColorOutput(border) : undefined,
-							borderWidth: borderWidth && style === 'stacked' ? borderWidth + 'px' : undefined,
-							borderRadius: borderRadius && style === 'stacked' ? borderRadius + '%' : undefined,
-						}}
-					/>
-				)}
-
-				{!showIcon && size !== 0 && (
-					<div
-						style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center' }}
-						className={'kt-svg-icon-list-single'}
-					>
-						<svg
-							style={{ display: 'inline-block', verticalAlign: 'middle' }}
-							viewBox={'0 0 24 24'}
-							height={size ? size : '1em'}
-							width={size ? size : '1em'}
-							fill={'none'}
-							stroke={displayWidth}
-							preserveAspectRatio={true ? 'xMinYMin meet' : undefined}
-							stroke-width={displayWidth}
-						></svg>
-					</div>
-				)}
-
-				<RichText
-					tagName="div"
-					ref={textRef}
-					identifier="text"
-					value={text}
-					onChange={(value) => {
-						setAttributes({ text: value });
-					}}
-					onSplit={(value, isOriginal) => {
-						const newAttributes = { ...attributes };
-						newAttributes.text = value;
-						if (!isOriginal) {
-							newAttributes.uniqueID = '';
-							newAttributes.link = '';
-						}
-
-						const block = createBlock('kadence/listitem', newAttributes);
-
-						if (isOriginal) {
-							block.clientId = clientId;
-						}
-
-						return block;
-					}}
-					onMerge={mergeBlocks}
-					onRemove={onRemove}
-					onReplace={onReplace}
-					className={'kt-svg-icon-list-text'}
-					data-empty={!text}
-				/>
+				<WrapTag
+					className={`kb-icon-list-tooltip-wrap${
+						!link && tooltip && !iconOnlyTooltip && !textOnlyTooltip ? ' kb-icon-list-tooltip' : ''
+					}${
+						!link && tooltip && !iconOnlyTooltip && !textOnlyTooltip && !tooltipDash
+							? ' kb-list-tooltip-no-border'
+							: ''
+					}${link ? ' kt-svg-icon-link' : ''}`}
+				>
+					{listItemOutput}
+				</WrapTag>
 			</div>
 		</div>
 	);

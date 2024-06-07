@@ -378,7 +378,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		if ( strpos( $content, 'kt-typed-text') !== false ) {
 			$this->enqueue_script( 'kadence-blocks-' . $this->block_name );
 		}
-		if ( strpos( $content, 'kb-tooltips') !== false ) {
+		if ( strpos( $content, 'kb-tooltips') !== false || ( ! empty( $attributes['icon'] ) && ! empty( $attributes['iconTooltip'] ) ) ) {
 			$this->enqueue_script( 'kadence-blocks-tippy' );
 		}
 		if ( ! empty( $attributes['icon'] ) ) {
@@ -519,7 +519,6 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/kb-advanced-heading.min.js', array( 'kadence-blocks-typed-js' ), KADENCE_BLOCKS_VERSION, true );
 
 		wp_register_script( 'kadence-blocks-popper', KADENCE_BLOCKS_URL . 'includes/assets/js/popper.min.js', array(), KADENCE_BLOCKS_VERSION, true );
-		// wp_register_script( 'kadence-blocks-tippy', KADENCE_BLOCKS_URL . 'includes/assets/js/tippy-bundle.min.js', array( 'kadence-blocks-popper' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-tippy', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-tippy.min.js', array( 'kadence-blocks-popper' ), KADENCE_BLOCKS_VERSION, true );
 	}
 	/**
@@ -557,7 +556,11 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$hidden = ( empty( $title ) ? true : false );
 			$svg_icon = Kadence_Blocks_Svg_Render::render( $attributes['icon'], $fill, $stroke_width, $title, $hidden );
 		}
-		return '<span class="kb-svg-icon-wrap kb-adv-heading-icon kb-svg-icon-' . esc_attr( $attributes['icon'] ) . ' kb-adv-heading-icon-side-' . esc_attr( $icon_side ) . '">' . $svg_icon . '</span>';
+		$tooltip_placement = '';
+		if ( ! empty( $attributes['iconTooltip'] ) && ! empty( $attributes['iconTooltipPlacement'] ) ) {
+			$tooltip_placement = ' data-tooltip-placement="' . esc_attr( $attributes['iconTooltipPlacement'] ) . '"';
+		}
+		return '<span class="kb-svg-icon-wrap kb-adv-heading-icon kb-svg-icon-' . esc_attr( $attributes['icon'] ) . ' kb-adv-heading-icon-side-' . esc_attr( $icon_side ) . '"' . ( ! empty( $attributes['iconTooltip'] ) ? ' data-kb-tooltip-content="' . esc_attr( $attributes['iconTooltip'] ) . '" tabindex="0"' . $tooltip_placement : '' ) . '>' . $svg_icon . '</span>';
 	}
 
 }
