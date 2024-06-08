@@ -466,7 +466,7 @@ export function EditInner(props) {
 	const [title, setTitle] = useNavigationProp('title');
 	const [isAdding, addNew] = useEntityPublish('kadence_navigation', id);
 
-	const [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_navigation', id);
+	let [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_navigation', id);
 
 	const applyTemplateKeyBlocks = (templateKey) => {
 		if (templateKey == 'long-vertical') {
