@@ -667,7 +667,7 @@ function PatternList({
 				}
 				if (item?.html) {
 					item.html = replaceContent(item.html, allContext, item.categories, aiContext, item.variation, true);
-					item.content = replaceContent(item.content, allContext, item.categories, aiContext, item.variation);
+					// item.content = replaceContent(item.content, allContext, item.categories, aiContext, item.variation);
 					if (userData?.locationType && 'Online Only' !== userData?.locationType && userData?.locationInput) {
 						item.html = replaceAddressContent(item.html, userData.locationInput);
 					}
