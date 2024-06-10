@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-06-10T21:24:52+00:00\n"
+"POT-Creation-Date: 2024-06-10T21:35:43+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: kadence-blocks\n"
@@ -1608,14 +1608,6 @@ msgstr ""
 msgid "Sent from %s"
 msgstr ""
 
-#: tests/wpunit/Resources/Notice/NoticeHandlerTest.php:22
-msgid "Notice 1 message"
-msgstr ""
-
-#: tests/wpunit/Resources/Notice/NoticeHandlerTest.php:27
-msgid "Notice 2 message"
-msgstr ""
-
 #: dist/admin-kadence-home.js:1
 #: dist/admin-kadence-home.js:2
 #: dist/blocks-rowlayout.js:8
@@ -3176,7 +3168,6 @@ msgstr ""
 
 #: dist/blocks-accordion.js:1
 #: dist/blocks/accordion/block.json
-#: src/blocks/accordion/block.json
 msgctxt "block title"
 msgid "Accordion"
 msgstr ""
@@ -4936,7 +4927,6 @@ msgstr ""
 
 #: dist/blocks-advanced-form.js:14
 #: dist/blocks/advanced-form/block.json
-#: src/blocks/advanced-form/block.json
 msgctxt "block description"
 msgid "Create an advanced contact or marketing form for your website."
 msgstr ""
@@ -6251,7 +6241,6 @@ msgstr ""
 
 #: dist/blocks-column.js:1
 #: dist/blocks/column/block.json
-#: src/blocks/column/block.json
 msgctxt "block title"
 msgid "Section"
 msgstr ""
@@ -6491,7 +6480,6 @@ msgstr ""
 
 #: dist/blocks-countdown.js:1
 #: dist/blocks/countdown/block.json
-#: src/blocks/countdown/block.json
 msgctxt "block title"
 msgid "Countdown"
 msgstr ""
@@ -6732,7 +6720,6 @@ msgstr ""
 
 #: dist/blocks-countup.js:1
 #: dist/blocks/countup/block.json
-#: src/blocks/countup/block.json
 msgctxt "block title"
 msgid "Count Up"
 msgstr ""
@@ -6781,7 +6768,6 @@ msgstr ""
 #: dist/blocks-form.js:1
 #: dist/blocks/form/block.json
 #: includes/blocks/form/block.json
-#: src/blocks/form/block.json
 msgctxt "block title"
 msgid "Form"
 msgstr ""
@@ -7262,7 +7248,6 @@ msgstr ""
 
 #: dist/blocks-googlemaps.js:1
 #: dist/blocks/googlemaps/block.json
-#: src/blocks/googlemaps/block.json
 msgctxt "block title"
 msgid "Google Maps"
 msgstr ""
@@ -7456,7 +7441,6 @@ msgstr ""
 
 #: dist/blocks-icon.js:1
 #: dist/blocks/icon/block.json
-#: src/blocks/icon/block.json
 msgctxt "block title"
 msgid "Icon"
 msgstr ""
@@ -7609,7 +7593,6 @@ msgstr ""
 
 #: dist/blocks-iconlist.js:1
 #: dist/blocks/iconlist/block.json
-#: src/blocks/iconlist/block.json
 msgctxt "block title"
 msgid "Icon List"
 msgstr ""
@@ -7852,7 +7835,6 @@ msgstr ""
 
 #: dist/blocks-image.js:2
 #: dist/blocks/image/block.json
-#: src/blocks/image/block.json
 msgctxt "block description"
 msgid "Image block with greater controls and advanced features"
 msgstr ""
@@ -7864,14 +7846,12 @@ msgstr ""
 
 #: dist/blocks-infobox.js:1
 #: dist/blocks/infobox/block.json
-#: src/blocks/infobox/block.json
 msgctxt "block title"
 msgid "Info Box"
 msgstr ""
 
 #: dist/blocks-infobox.js:1
 #: dist/blocks/infobox/block.json
-#: src/blocks/infobox/block.json
 msgctxt "block description"
 msgid "Create beautiful information boxes using icons or images."
 msgstr ""
@@ -8125,7 +8105,6 @@ msgstr ""
 
 #: dist/blocks-lottie.js:1
 #: dist/blocks/lottie/block.json
-#: src/blocks/lottie/block.json
 msgctxt "block title"
 msgid "Lottie Animations"
 msgstr ""
@@ -8571,7 +8550,6 @@ msgstr ""
 
 #: dist/blocks-posts.js:9
 #: dist/blocks/posts/block.json
-#: src/blocks/posts/block.json
 msgctxt "block title"
 msgid "Posts"
 msgstr ""
@@ -9380,7 +9358,6 @@ msgstr ""
 
 #: dist/blocks-rowlayout.js:22
 #: dist/blocks/rowlayout/block.json
-#: src/blocks/rowlayout/block.json
 msgctxt "block title"
 msgid "Row Layout"
 msgstr ""
@@ -9403,7 +9380,6 @@ msgstr ""
 
 #: dist/blocks-show-more.js:1
 #: dist/blocks/show-more/block.json
-#: src/blocks/show-more/block.json
 msgctxt "block title"
 msgid "Show More"
 msgstr ""
@@ -9472,7 +9448,6 @@ msgstr ""
 
 #: dist/blocks-spacer.js:1
 #: dist/blocks/spacer/block.json
-#: src/blocks/spacer/block.json
 msgctxt "block title"
 msgid "Spacer / Divider"
 msgstr ""
@@ -9641,7 +9616,6 @@ msgstr ""
 
 #: dist/blocks-tableofcontents.js:1
 #: dist/blocks/tableofcontents/block.json
-#: src/blocks/tableofcontents/block.json
 msgctxt "block title"
 msgid "Table of Contents"
 msgstr ""
@@ -9829,7 +9803,6 @@ msgstr ""
 
 #: dist/blocks-tabs.js:3
 #: dist/blocks/tabs/block.json
-#: src/blocks/tabs/block.json
 msgctxt "block title"
 msgid "Tabs"
 msgstr ""
@@ -9841,7 +9814,6 @@ msgstr ""
 #: dist/blocks-testimonial.js:1
 #: dist/blocks-testimonials.js:1
 #: dist/blocks/testimonial/block.json
-#: src/blocks/testimonial/block.json
 msgctxt "block title"
 msgid "Testimonial"
 msgstr ""
@@ -10040,7 +10012,6 @@ msgstr ""
 
 #: dist/blocks-testimonials.js:1
 #: dist/blocks/testimonials/block.json
-#: src/blocks/testimonials/block.json
 msgctxt "block title"
 msgid "Testimonials"
 msgstr ""
@@ -11201,13 +11172,11 @@ msgid "Block Name"
 msgstr ""
 
 #: dist/blocks/accordion/pane/block.json
-#: src/blocks/accordion/pane/block.json
 msgctxt "block title"
 msgid "Pane"
 msgstr ""
 
 #: dist/blocks/advanced-form/block.json
-#: src/blocks/advanced-form/block.json
 msgctxt "block title"
 msgid "Advanced Form"
 msgstr ""
@@ -11216,16 +11185,11 @@ msgstr ""
 #: dist/blocks/image/block.json
 #: dist/blocks/infobox/block.json
 #: dist/blocks/progress-bar/block.json
-#: src/blocks/advanced-form/block.json
-#: src/blocks/image/block.json
-#: src/blocks/infobox/block.json
-#: src/blocks/progress-bar/block.json
 msgctxt "block keyword"
 msgid "kb"
 msgstr ""
 
 #: dist/blocks/advanced-form/block.json
-#: src/blocks/advanced-form/block.json
 msgctxt "block keyword"
 msgid "form"
 msgstr ""
@@ -11233,142 +11197,118 @@ msgstr ""
 #: dist/blocks/advanced-form/block.json
 #: dist/blocks/form/block.json
 #: includes/blocks/form/block.json
-#: src/blocks/advanced-form/block.json
-#: src/blocks/form/block.json
 msgctxt "block keyword"
 msgid "contact"
 msgstr ""
 
 #: dist/blocks/advanced-form/fields/captcha/block.json
-#: src/blocks/advanced-form/fields/captcha/block.json
 msgctxt "block title"
 msgid "Captcha"
 msgstr ""
 
 #: dist/blocks/advanced-form/fields/submit/block.json
-#: src/blocks/advanced-form/fields/submit/block.json
 msgctxt "block title"
 msgid "Submit Button"
 msgstr ""
 
 #: dist/blocks/advancedbtn/block.json
-#: src/blocks/advancedbtn/block.json
 msgctxt "block title"
 msgid "Advanced Button"
 msgstr ""
 
 #: dist/blocks/advancedgallery/block.json
-#: src/blocks/advancedgallery/block.json
 msgctxt "block title"
 msgid "Advanced Gallery"
 msgstr ""
 
 #: dist/blocks/advancedheading/block.json
-#: src/blocks/advancedheading/block.json
 msgctxt "block title"
 msgid "Advanced Text"
 msgstr ""
 
 #: dist/blocks/countdown/countdown-inner/block.json
-#: src/blocks/countdown/countdown-inner/block.json
 msgctxt "block title"
 msgid "Countdown Content"
 msgstr ""
 
 #: dist/blocks/countdown/countdown-timer/block.json
-#: src/blocks/countdown/countdown-timer/block.json
 msgctxt "block title"
 msgid "Countdown Timer"
 msgstr ""
 
 #: dist/blocks/form/block.json
 #: includes/blocks/form/block.json
-#: src/blocks/form/block.json
 msgctxt "block keyword"
 msgid "marketing"
 msgstr ""
 
 #: dist/blocks/form/block.json
 #: includes/blocks/form/block.json
-#: src/blocks/form/block.json
 msgctxt "block keyword"
 msgid "KB"
 msgstr ""
 
 #: dist/blocks/image/block.json
-#: src/blocks/image/block.json
 msgctxt "block title"
 msgid "Advanced Image"
 msgstr ""
 
 #: dist/blocks/image/block.json
-#: src/blocks/image/block.json
 msgctxt "block keyword"
 msgid "img"
 msgstr ""
 
 #: dist/blocks/image/block.json
-#: src/blocks/image/block.json
 msgctxt "block keyword"
 msgid "image"
 msgstr ""
 
 #: dist/blocks/image/block.json
-#: src/blocks/image/block.json
 msgctxt "block keyword"
 msgid "photo"
 msgstr ""
 
 #: dist/blocks/infobox/block.json
-#: src/blocks/infobox/block.json
 msgctxt "block keyword"
 msgid "info"
 msgstr ""
 
 #: dist/blocks/infobox/block.json
-#: src/blocks/infobox/block.json
 msgctxt "block keyword"
 msgid "icon"
 msgstr ""
 
 #: dist/blocks/listitem/block.json
-#: src/blocks/listitem/block.json
 msgctxt "block title"
 msgid "List item"
 msgstr ""
 
 #: dist/blocks/progress-bar/block.json
-#: src/blocks/progress-bar/block.json
 msgctxt "block title"
 msgid "Progress Bar"
 msgstr ""
 
 #: dist/blocks/progress-bar/block.json
-#: src/blocks/progress-bar/block.json
 msgctxt "block description"
 msgid "Kadence progress bar"
 msgstr ""
 
 #: dist/blocks/progress-bar/block.json
-#: src/blocks/progress-bar/block.json
 msgctxt "block keyword"
 msgid "progress bar"
 msgstr ""
 
 #: dist/blocks/single-icon/block.json
-#: src/blocks/single-icon/block.json
 msgctxt "block title"
 msgid "Single Icon"
 msgstr ""
 
 #: dist/blocks/singlebtn/block.json
-#: src/blocks/singlebtn/block.json
 msgctxt "block title"
 msgid "Single Button"
 msgstr ""
 
 #: dist/blocks/tabs/tab/block.json
-#: src/blocks/tabs/tab/block.json
 msgctxt "block title"
 msgid "Tab"
 msgstr ""
