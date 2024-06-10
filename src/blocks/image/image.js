@@ -95,6 +95,7 @@ import {
 	CopyPasteAttributes,
 	GradientControl,
 	BackgroundTypeControl,
+	KadenceFocalPicker,
 } from '@kadence/components';
 
 export default function Image({
@@ -178,7 +179,7 @@ export default function Image({
 		overlayOpacity,
 		overlayBlendMode,
 		globalAlt,
-		objectPosition,
+		imagePosition,
 	} = attributes;
 
 	const previewURL = dynamicURL ? dynamicURL : url;
@@ -705,32 +706,11 @@ export default function Image({
 										]}
 										onChange={(value) => setAttributes({ ratio: value })}
 									/>
-									<SelectControl
-										label={__('Position', 'kadence-blocks')}
-										value={objectPosition}
-										options={[
-											{
-												label: __('Default', 'kadence-blocks'),
-												value: '',
-											},
-											{
-												label: __('Right', 'kadence-blocks'),
-												value: 'right',
-											},
-											{
-												label: __('Left', 'kadence-blocks'),
-												value: 'left',
-											},
-											{
-												label: __('Top', 'kadence-blocks'),
-												value: 'top',
-											},
-											{
-												label: __('Bottom', 'kadence-blocks'),
-												value: 'bottom',
-											},
-										]}
-										onChange={(value) => setAttributes({ objectPosition: value })}
+
+									<KadenceFocalPicker
+										url={url ? url : ''}
+										value={imagePosition ? imagePosition : 'center center'}
+										onChange={(value) => setAttributes({ imagePosition: value })}
 									/>
 								</>
 							)}
@@ -1556,7 +1536,7 @@ export default function Image({
 									: undefined) +
 							  ')'
 							: undefined,
-					objectPosition: objectPosition ? objectPosition : undefined,
+					objectPosition: imagePosition ? imagePosition : undefined,
 				}}
 				onError={() => onImageError()}
 				onLoad={(event) => {
