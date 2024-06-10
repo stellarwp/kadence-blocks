@@ -19,6 +19,7 @@
 		"@algolia/autocomplete-js": "^1.10.0",
 		"@dotlottie/player-component": "^1.2.2",
 		"@dr-kobros/react-webfont-loader": "^8.0.0",
+		"@floating-ui/react": "^0.26.16",
 		"@hcaptcha/react-hcaptcha": "^1.8.1",
 		"@react-google-maps/api": "^2.12.0",
 		"@splidejs/react-splide": "^0.7.12",

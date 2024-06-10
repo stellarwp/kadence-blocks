@@ -219,6 +219,9 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
+		if ( ! empty( $attributes['tooltip'] ) ) {
+			$this->enqueue_script( 'kadence-blocks-tippy' );
+		}
 		$classes = array( 'kb-button', 'kt-button', 'button', 'kb-btn' . $unique_id );
 		$classes[] = ! empty( $attributes['sizePreset'] ) ? 'kt-btn-size-' . $attributes['sizePreset'] : 'kt-btn-size-standard';
 		$classes[] = ! empty( $attributes['widthType'] ) ? 'kt-btn-width-type-' . $attributes['widthType'] : 'kt-btn-width-type-auto';
@@ -258,6 +261,12 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			if ( ! empty( $rel_add ) ) {
 				$wrapper_args['rel'] = $rel_add;
+			}
+		}
+		if ( ! empty( $attributes['tooltip'] ) ) {
+			$wrapper_args['data-kb-tooltip-content'] = esc_attr( $attributes['tooltip'] );
+			if ( ! empty( $attributes['tooltipPlacement'] ) ) {
+				$wrapper_args['data-tooltip-placement'] = esc_attr( $attributes['tooltipPlacement'] );
 			}
 		}
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
@@ -320,6 +329,8 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		wp_register_style( 'kadence-glightbox', KADENCE_BLOCKS_URL . 'includes/assets/css/kb-glightbox.min.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_script( 'kadence-glightbox', KADENCE_BLOCKS_URL . 'includes/assets/js/glightbox.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-glight-video-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-glight-video-init.min.js', array( 'kadence-glightbox' ), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-popper', KADENCE_BLOCKS_URL . 'includes/assets/js/popper.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-tippy', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-tippy.min.js', array( 'kadence-blocks-popper' ), KADENCE_BLOCKS_VERSION, true );
 	}
 }
 

@@ -47,7 +47,6 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block {
 
 		return self::$instance;
 	}
-
 	/**
 	 * Builds CSS for block.
 	 *
@@ -95,6 +94,40 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		return $css->css_output();
+	}
+	/**
+	 * Return dynamically generated HTML for block
+	 *
+	 * @param $attributes
+	 * @param $unique_id
+	 * @param $content
+	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
+	 *
+	 * @return mixed
+	 */
+	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
+		if ( strpos( $content, 'kb-tooltip-hidden-content') !== false ) {
+			$this->enqueue_script( 'kadence-blocks-tippy' );
+		}
+
+		return $content;
+	}
+	/**
+	 * Registers scripts and styles.
+	 */
+	public function register_scripts() {
+
+		// Skip calling parent because this block does not have a dedicated CSS or JS file.
+
+		// If in the backend, bail out.
+		if ( is_admin() ) {
+			return;
+		}
+		if ( apply_filters( 'kadence_blocks_check_if_rest', false ) && kadence_blocks_is_rest() ) {
+			return;
+		}
+		wp_register_script( 'kadence-blocks-popper', KADENCE_BLOCKS_URL . 'includes/assets/js/popper.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-tippy', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-tippy.min.js', array( 'kadence-blocks-popper' ), KADENCE_BLOCKS_VERSION, true );
 	}
 }
 

@@ -4,17 +4,20 @@
  * CSS for both Frontend+Backend.
  */
 // Item
-.wp-block-kadence-iconlist ul.kt-svg-icon-list:not(.this-prevents-issues):not(.this-stops-third-party-issues):not(.tijsloc) {
-    list-style: none;
-    padding: 0;
+.wp-block-kadence-iconlist
+	ul.kt-svg-icon-list:not(.this-prevents-issues):not(.this-stops-third-party-issues):not(.tijsloc) {
+	list-style: none;
+	padding: 0;
 	display: grid;
 }
-.wp-block-kadence-iconlist ul.kt-svg-icon-list li.kt-svg-icon-list-item-wrap:not(.this-prevents-issues):not(.this-stops-third-party-issues):not(.tijsloc) {
-    display: flex;
+.wp-block-kadence-iconlist
+	ul.kt-svg-icon-list
+	li.kt-svg-icon-list-item-wrap:not(.this-prevents-issues):not(.this-stops-third-party-issues):not(.tijsloc) {
+	display: flex;
 }
 .wp-block-kadence-iconlist ul.kt-svg-icon-list {
-    padding: 0;
-    list-style: none;
+	padding: 0;
+	list-style: none;
 	margin: 0 0 10px 0;
 	text-align: left;
 	grid-template-rows: auto;
@@ -28,7 +31,7 @@
 		display: flex;
 		align-items: center;
 		padding: 0;
-		
+
 		.kt-svg-icon-list-single {
 			margin-right: 10px;
 			padding: 4px 0;
@@ -74,9 +77,21 @@
 	.kt-svg-icon-list-item-wrap {
 		.kt-svg-icon-list-single {
 			margin-left: 10px;
-			margin-right:0;
+			margin-right: 0;
 		}
 	}
+}
+.kb-icon-list-tooltip-wrap {
+	display: flex;
+	align-items: center;
+}
+.wp-block-kadence-listitem {
+	.kb-icon-list-tooltip:where(:not(.kb-list-tooltip-no-border)) {
+		border-bottom: 1px dashed currentColor;
+	}
+}
+.wp-block-kadence-listitem .kt-svg-icon-link > .kb-icon-list-tooltip {
+	border-bottom: none;
 }
 .wp-block-kadence-iconlist.kt-list-icon-aligntop ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap {
 	align-items: flex-start;
@@ -88,16 +103,16 @@
 	justify-content: center;
 }
 .kt-svg-icon-list-style-stacked .kt-svg-icon-list-single {
-    border: 0px solid transparent;
+	border: 0px solid transparent;
 }
 .kt-svg-icon-list-columns-2 ul.kt-svg-icon-list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+	grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .kt-svg-icon-list-columns-3 ul.kt-svg-icon-list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+	grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 .wp-block-kadence-iconlist.kt-list-icon-aligntop ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap a.kt-svg-icon-link {
-    align-items: flex-start;
+	align-items: flex-start;
 }
 .wp-block-kadence-iconlist.kt-list-icon-alignbottom ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap a.kt-svg-icon-link {
 	align-items: flex-end;

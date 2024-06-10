@@ -60,7 +60,6 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
-
 		if ( isset( $attributes['listStyles'] ) && is_array( $attributes['listStyles'] ) && isset( $attributes['listStyles'][0] ) && is_array( $attributes['listStyles'][0] ) && isset( $attributes['listStyles'][0]['google'] ) && $attributes['listStyles'][0]['google'] && ( ! isset( $attributes['listStyles'][0]['loadGoogle'] ) || true === $attributes['listStyles'][0]['loadGoogle'] ) && isset( $attributes['listStyles'][0]['family'] ) ) {
 			$list_font    = $attributes['listStyles'][0];
 			$font_variant = ( isset( $list_font['variant'] ) && ! empty( $list_font['variant'] ) ? $list_font['variant'] : null );
@@ -187,13 +186,13 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'text-decoration', 'underline' );
 		}
 
-		if( !empty( $attributes['linkColor']) ) {
-			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' .wp-block-kadence-listitem a' );
+		if ( ! empty( $attributes['linkColor'] ) ) {
+			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .wp-block-kadence-listitem a' );
 			$css->add_property( 'color', $css->sanitize_color( $attributes['linkColor'] ) );
 		}
-		if( !empty( $attributes['linkHoverColor']) ) {
-			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' .wp-block-kadence-listitem a:hover' );
-			$css->add_property('color', $css->sanitize_color( $attributes['linkHoverColor'] ) );
+		if ( ! empty( $attributes['linkHoverColor'] ) ) {
+			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .wp-block-kadence-listitem a:hover' );
+			$css->add_property( 'color', $css->sanitize_color( $attributes['linkHoverColor'] ) );
 		}
 
 		return $css->css_output();

@@ -93,8 +93,15 @@ class Kadence_Blocks_Svg_Render {
 						$stroke_width = ( ! empty( $args['stroke'] ) ? $args['stroke'] : 2 );
 					}
 					$hidden = ( empty( $args['title'] ) ? true : false );
+					$extras = '';
+					if ( ! empty( $args['tooltip-id'] ) ) {
+						$extras = 'data-tooltip-id="' . esc_attr( $args['tooltip-id'] ) . '"';
+						if ( ! empty( $args['tooltip-placement'] ) ) {
+							$extras .= ' data-tooltip-placement="' . esc_attr( $args['tooltip-placement'] ) . '"';
+						}
+					}
 					$svg    = self::render( $args['name'], $fill, $stroke_width, $args['title'], $hidden );
-					return '<span class="kb-svg-icon-wrap kb-svg-icon-' . esc_attr( $args['name'] ) . ( ! empty( $args['class'] ) ? ' ' . esc_attr( $args['class'] ) : '' ) . '">' . $svg . '</span>';
+					return '<span class="kb-svg-icon-wrap kb-svg-icon-' . esc_attr( $args['name'] ) . ( ! empty( $args['class'] ) ? ' ' . esc_attr( $args['class'] ) : '' ) . '"' . $extras . '>' . $svg . '</span>';
 				},
 				$block_content
 			);
