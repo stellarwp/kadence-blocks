@@ -178,6 +178,7 @@ export default function Image({
 		overlayOpacity,
 		overlayBlendMode,
 		globalAlt,
+		objectPosition,
 	} = attributes;
 
 	const previewURL = dynamicURL ? dynamicURL : url;
@@ -660,49 +661,78 @@ export default function Image({
 								onChange={(value) => setAttributes({ useRatio: value })}
 							/>
 							{useRatio && (
-								<SelectControl
-									label={__('Size Ratio', 'kadence-blocks')}
-									value={ratio}
-									options={[
-										{
-											label: __('Landscape 4:3', 'kadence-blocks'),
-											value: 'land43',
-										},
-										{
-											label: __('Landscape 3:2', 'kadence-blocks'),
-											value: 'land32',
-										},
-										{
-											label: __('Landscape 16:9', 'kadence-blocks'),
-											value: 'land169',
-										},
-										{
-											label: __('Landscape 2:1', 'kadence-blocks'),
-											value: 'land21',
-										},
-										{
-											label: __('Landscape 3:1', 'kadence-blocks'),
-											value: 'land31',
-										},
-										{
-											label: __('Landscape 4:1', 'kadence-blocks'),
-											value: 'land41',
-										},
-										{
-											label: __('Portrait 3:4', 'kadence-blocks'),
-											value: 'port34',
-										},
-										{
-											label: __('Portrait 2:3', 'kadence-blocks'),
-											value: 'port23',
-										},
-										{
-											label: __('Square 1:1', 'kadence-blocks'),
-											value: 'square',
-										},
-									]}
-									onChange={(value) => setAttributes({ ratio: value })}
-								/>
+								<>
+									<SelectControl
+										label={__('Size Ratio', 'kadence-blocks')}
+										value={ratio}
+										options={[
+											{
+												label: __('Landscape 4:3', 'kadence-blocks'),
+												value: 'land43',
+											},
+											{
+												label: __('Landscape 3:2', 'kadence-blocks'),
+												value: 'land32',
+											},
+											{
+												label: __('Landscape 16:9', 'kadence-blocks'),
+												value: 'land169',
+											},
+											{
+												label: __('Landscape 2:1', 'kadence-blocks'),
+												value: 'land21',
+											},
+											{
+												label: __('Landscape 3:1', 'kadence-blocks'),
+												value: 'land31',
+											},
+											{
+												label: __('Landscape 4:1', 'kadence-blocks'),
+												value: 'land41',
+											},
+											{
+												label: __('Portrait 3:4', 'kadence-blocks'),
+												value: 'port34',
+											},
+											{
+												label: __('Portrait 2:3', 'kadence-blocks'),
+												value: 'port23',
+											},
+											{
+												label: __('Square 1:1', 'kadence-blocks'),
+												value: 'square',
+											},
+										]}
+										onChange={(value) => setAttributes({ ratio: value })}
+									/>
+									<SelectControl
+										label={__('Position', 'kadence-blocks')}
+										value={objectPosition}
+										options={[
+											{
+												label: __('Default', 'kadence-blocks'),
+												value: '',
+											},
+											{
+												label: __('Right', 'kadence-blocks'),
+												value: 'right',
+											},
+											{
+												label: __('Left', 'kadence-blocks'),
+												value: 'left',
+											},
+											{
+												label: __('Top', 'kadence-blocks'),
+												value: 'top',
+											},
+											{
+												label: __('Bottom', 'kadence-blocks'),
+												value: 'bottom',
+											},
+										]}
+										onChange={(value) => setAttributes({ objectPosition: value })}
+									/>
+								</>
 							)}
 							{showMaxWidth && (
 								<ResponsiveRangeControls
@@ -1526,6 +1556,7 @@ export default function Image({
 									: undefined) +
 							  ')'
 							: undefined,
+					objectPosition: objectPosition ? objectPosition : undefined,
 				}}
 				onError={() => onImageError()}
 				onLoad={(event) => {
