@@ -180,6 +180,7 @@ Release Date: June 10th 2024
 * Add: Ability to set advanced text as default block in editor.
 * Update: Ability to reset max width control in various places.
 * Update: Info box to align button to the bottom when using full height mode.
+* Fix: Issue where pot files were not generating.
 * Fix: Issue with icon list link color not applying.
 * Fix: Issue with flex basis and infobox layouts.
 * Fix: Issue with progress bars default width attribute.
