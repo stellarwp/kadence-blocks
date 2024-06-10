@@ -84,6 +84,7 @@ final class WordPress_Importer {
 			}
 
 			$info         = wp_check_filetype( $scaled->file );
+			// Translators: %s is the photographer's name.
 			$title        = sprintf( __( 'Photo by %s', 'kadence-blocks' ), $scaled->photographer );
 			$filename     = $this->get_file_name( $scaled );
 			$uploaded_url = $upload['url'] . "/$filename";

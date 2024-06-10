@@ -92,6 +92,7 @@ class Kadence_Blocks_Duplicate_Form {
 	public function duplicate( $post ) {
 
 		$new_post_status    = 'draft';
+		// translators: %s: post title.
 		$title              = sprintf( esc_html__( '%s (Copy)', 'kadence-blocks' ), $post->post_title );
 		$new_post_author    = wp_get_current_user();
 		$new_post_author_id = $new_post_author->ID;

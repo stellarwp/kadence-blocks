@@ -44,8 +44,9 @@ final class Required_Function_Verifier {
 
 			$this->notice_handler->add( new Notice(
 				$type,
+				// translators: %1$s is the function name, %2$s is "required" or "suggested".
 				sprintf(
-					__( 'The "%s" function is disabled via PHP and is %s by Kadence Blocks. Ask your administrator to enable it.', 'kadence-blocks' ),
+					__( 'The "%1$s" function is disabled via PHP and is %2$s by Kadence Blocks. Ask your administrator to enable it.', 'kadence-blocks' ),
 					$function,
 					$type === Notice::ERROR ? __( 'required', 'kadence-blocks' ) : __( 'suggested', 'kadence-blocks' ),
 				),
