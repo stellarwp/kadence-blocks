@@ -7,8 +7,9 @@
 		</gutenberg-block>
 		<gutenberg-block type="kadence/icon" translate="0"/>
 		<gutenberg-block type="kadence/single-icon" translate="1">
-			<key name="link" />
-			<key name="title" />
+			<xpath>//div/a/@href</xpath>
+			<xpath>//div/a/@aria-label</xpath>
+			<xpath>//div/a/span/@data-title</xpath>
 		</gutenberg-block>
 		<gutenberg-block type="kadence/progress-bar" translate="1">
 			<key name="label" />
