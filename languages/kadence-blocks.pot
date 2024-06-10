@@ -2,14 +2,14 @@
 # This file is distributed under the GPL2+.
 msgid ""
 msgstr ""
-"Project-Id-Version: Kadence Blocks – Gutenberg Blocks for Page Builder Features 3.2.32\n"
+"Project-Id-Version: Kadence Blocks – Gutenberg Blocks for Page Builder Features 3.2.42\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/kadence-blocks\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-04-02T19:22:33+00:00\n"
+"POT-Creation-Date: 2024-06-10T21:24:52+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: kadence-blocks\n"
@@ -55,46 +55,46 @@ msgstr ""
 msgid "CAPTCHA Failed"
 msgstr ""
 
-#: includes/advanced-form/advanced-form-ajax.php:122
+#: includes/advanced-form/advanced-form-ajax.php:124
 #: includes/form-ajax.php:444
 msgid "Third Party Failed"
 msgstr ""
 
-#: includes/advanced-form/advanced-form-ajax.php:128
+#: includes/advanced-form/advanced-form-ajax.php:130
 #: includes/form-ajax.php:453
 msgid "Submission failed"
 msgstr ""
 
-#: includes/advanced-form/advanced-form-ajax.php:128
+#: includes/advanced-form/advanced-form-ajax.php:130
 #: includes/form-ajax.php:453
 msgid "No Data"
 msgstr ""
 
 #. translators: %s: the name of the block when there is only one
-#: includes/advanced-form/advanced-form-ajax.php:164
+#: includes/advanced-form/advanced-form-ajax.php:166
 #: includes/form-ajax.php:488
 #: dist/blocks-advanced-form.js:10
 #: dist/blocks-form.js:1
 msgid "Accept"
 msgstr ""
 
-#: includes/advanced-form/advanced-form-ajax.php:164
+#: includes/advanced-form/advanced-form-ajax.php:166
 msgid "Did not accept"
 msgstr ""
 
-#: includes/advanced-form/advanced-form-ajax.php:253
-#: includes/advanced-form/advanced-form-ajax.php:266
-#: includes/advanced-form/advanced-form-ajax.php:273
-#: includes/advanced-form/advanced-form-ajax.php:297
+#: includes/advanced-form/advanced-form-ajax.php:255
+#: includes/advanced-form/advanced-form-ajax.php:268
+#: includes/advanced-form/advanced-form-ajax.php:275
+#: includes/advanced-form/advanced-form-ajax.php:299
 msgid "Missing a required field"
 msgstr ""
 
-#: includes/advanced-form/advanced-form-ajax.php:254
-#: includes/advanced-form/advanced-form-ajax.php:267
-#: includes/advanced-form/advanced-form-ajax.php:274
-#: includes/advanced-form/advanced-form-ajax.php:299
-#: includes/advanced-form/advanced-form-ajax.php:615
-#: includes/advanced-form/advanced-form-ajax.php:670
+#: includes/advanced-form/advanced-form-ajax.php:256
+#: includes/advanced-form/advanced-form-ajax.php:269
+#: includes/advanced-form/advanced-form-ajax.php:276
+#: includes/advanced-form/advanced-form-ajax.php:301
+#: includes/advanced-form/advanced-form-ajax.php:617
+#: includes/advanced-form/advanced-form-ajax.php:672
 #: includes/form-ajax.php:55
 #: includes/form-ajax.php:75
 #: includes/form-ajax.php:711
@@ -103,60 +103,60 @@ msgstr ""
 msgid "Submission Failed"
 msgstr ""
 
-#: includes/advanced-form/advanced-form-ajax.php:291
+#: includes/advanced-form/advanced-form-ajax.php:293
 msgid "Submission Failed. Trying to include too many files."
 msgstr ""
 
-#: includes/advanced-form/advanced-form-ajax.php:291
+#: includes/advanced-form/advanced-form-ajax.php:293
 msgid "Too many files"
 msgstr ""
 
-#: includes/advanced-form/advanced-form-ajax.php:310
+#: includes/advanced-form/advanced-form-ajax.php:312
 msgid "Submission Failed. File too large"
 msgstr ""
 
-#: includes/advanced-form/advanced-form-ajax.php:310
+#: includes/advanced-form/advanced-form-ajax.php:312
 msgid "File too large"
 msgstr ""
 
-#: includes/advanced-form/advanced-form-ajax.php:315
+#: includes/advanced-form/advanced-form-ajax.php:317
 msgid "Submission Failed. File could not be uploaded"
 msgstr ""
 
-#: includes/advanced-form/advanced-form-ajax.php:315
+#: includes/advanced-form/advanced-form-ajax.php:317
 msgid "File was not uploaded"
 msgstr ""
 
-#: includes/advanced-form/advanced-form-ajax.php:331
+#: includes/advanced-form/advanced-form-ajax.php:333
 msgid "Submission Failed. Not enough disk quota on this website."
 msgstr ""
 
-#: includes/advanced-form/advanced-form-ajax.php:331
+#: includes/advanced-form/advanced-form-ajax.php:333
 msgid "Not enough disk quota on this website."
 msgstr ""
 
-#: includes/advanced-form/advanced-form-ajax.php:354
 #: includes/advanced-form/advanced-form-ajax.php:356
+#: includes/advanced-form/advanced-form-ajax.php:358
 msgid "Failed to upload file"
 msgstr ""
 
-#: includes/advanced-form/advanced-form-ajax.php:356
+#: includes/advanced-form/advanced-form-ajax.php:358
 msgid "Submission Failed. Failed to upload file"
 msgstr ""
 
-#: includes/advanced-form/advanced-form-ajax.php:615
+#: includes/advanced-form/advanced-form-ajax.php:617
 #: includes/form-ajax.php:711
 msgid "Data not found"
 msgstr ""
 
-#: includes/advanced-form/advanced-form-ajax.php:669
+#: includes/advanced-form/advanced-form-ajax.php:671
 #: includes/form-ajax.php:74
 #: dist/blocks-advanced-form.js:2
 #: dist/blocks-form.js:2
 msgid "Submission Success, Thanks for getting in touch!"
 msgstr ""
 
-#: includes/advanced-form/advanced-form-ajax.php:671
+#: includes/advanced-form/advanced-form-ajax.php:673
 #: includes/form-ajax.php:76
 msgid "Submission Failed, reCaptcha spam prevention. Please reload your page and try again."
 msgstr ""
@@ -176,6 +176,79 @@ msgstr ""
 msgid "Entries (Pro Only)"
 msgstr ""
 
+#: includes/advanced-form/advanced-form-cpt.php:126
+msgctxt "Post Type General Name"
+msgid "Forms"
+msgstr ""
+
+#: includes/advanced-form/advanced-form-cpt.php:127
+msgctxt "Post Type Singular Name"
+msgid "Form"
+msgstr ""
+
+#: includes/advanced-form/advanced-form-cpt.php:128
+#: includes/advanced-form/advanced-form-cpt.php:133
+msgid "Forms"
+msgstr ""
+
+#: includes/advanced-form/advanced-form-cpt.php:129
+msgctxt "Admin Menu text"
+msgid "Forms"
+msgstr ""
+
+#: includes/advanced-form/advanced-form-cpt.php:130
+msgid "Form Archives"
+msgstr ""
+
+#: includes/advanced-form/advanced-form-cpt.php:131
+msgid "Form Attributes"
+msgstr ""
+
+#: includes/advanced-form/advanced-form-cpt.php:132
+msgid "Parent Form:"
+msgstr ""
+
+#: includes/advanced-form/advanced-form-cpt.php:134
+msgid "Add New Form"
+msgstr ""
+
+#: includes/advanced-form/advanced-form-cpt.php:135
+msgid "New Form"
+msgstr ""
+
+#: includes/advanced-form/advanced-form-cpt.php:136
+#: dist/blocks-advanced-form.js:14
+msgid "Edit Form"
+msgstr ""
+
+#: includes/advanced-form/advanced-form-cpt.php:137
+msgid "Update Form"
+msgstr ""
+
+#: includes/advanced-form/advanced-form-cpt.php:138
+msgid "View Form"
+msgstr ""
+
+#: includes/advanced-form/advanced-form-cpt.php:139
+msgid "View Forms"
+msgstr ""
+
+#: includes/advanced-form/advanced-form-cpt.php:140
+msgid "Search Forms"
+msgstr ""
+
+#: includes/advanced-form/advanced-form-cpt.php:141
+msgid "Not found"
+msgstr ""
+
+#: includes/advanced-form/advanced-form-cpt.php:142
+msgid "Not found in Trash"
+msgstr ""
+
+#: includes/advanced-form/advanced-form-cpt.php:143
+msgid "Filter items list"
+msgstr ""
+
 #: includes/advanced-form/advanced-form-duplicate.php:55
 msgid "Make a duplicate from this."
 msgstr ""
@@ -193,7 +266,8 @@ msgstr ""
 msgid "Post creation failed, could not find original post: %s"
 msgstr ""
 
-#: includes/advanced-form/advanced-form-duplicate.php:95
+#. translators: %s: post title.
+#: includes/advanced-form/advanced-form-duplicate.php:96
 msgid "%s (Copy)"
 msgstr ""
 
@@ -232,18 +306,18 @@ msgid "Empty data from GetResponse"
 msgstr ""
 
 #. translators: Visible only in the front end, this warning takes the place of a faulty block.
-#: includes/blocks/class-kadence-blocks-advanced-form-block.php:329
+#: includes/blocks/class-kadence-blocks-advanced-form-block.php:342
 msgid "[block rendering halted]"
 msgstr ""
 
-#: includes/blocks/class-kadence-blocks-advanced-form-block.php:490
+#: includes/blocks/class-kadence-blocks-advanced-form-block.php:503
 #: includes/blocks/class-kadence-blocks-form-block.php:807
 #: dist/blocks-advanced-form.js:2
 #: dist/blocks-form.js:2
 msgid "Please fix the errors to proceed"
 msgstr ""
 
-#: includes/blocks/class-kadence-blocks-advanced-form-block.php:492
+#: includes/blocks/class-kadence-blocks-advanced-form-block.php:505
 #: includes/blocks/class-kadence-blocks-form-block.php:809
 #: dist/blocks-advanced-form.js:10
 #: dist/blocks-advanced-form.js:12
@@ -252,32 +326,32 @@ msgstr ""
 msgid "is required"
 msgstr ""
 
-#: includes/blocks/class-kadence-blocks-advanced-form-block.php:493
+#: includes/blocks/class-kadence-blocks-advanced-form-block.php:506
 #: includes/blocks/class-kadence-blocks-form-block.php:810
 msgid "does not match"
 msgstr ""
 
-#: includes/blocks/class-kadence-blocks-advanced-form-block.php:494
+#: includes/blocks/class-kadence-blocks-advanced-form-block.php:507
 #: includes/blocks/class-kadence-blocks-form-block.php:811
 #: dist/blocks-form.js:1
 msgid "is not valid"
 msgstr ""
 
-#: includes/blocks/class-kadence-blocks-advanced-form-block.php:495
+#: includes/blocks/class-kadence-blocks-advanced-form-block.php:508
 #: includes/blocks/class-kadence-blocks-form-block.php:812
 msgid "requires a unique entry and this value has already been used"
 msgstr ""
 
-#: includes/blocks/class-kadence-blocks-advanced-form-block.php:496
+#: includes/blocks/class-kadence-blocks-advanced-form-block.php:509
 #: includes/blocks/class-kadence-blocks-form-block.php:813
 msgid "Item"
 msgstr ""
 
-#: includes/blocks/class-kadence-blocks-advancedgallery-block.php:880
+#: includes/blocks/class-kadence-blocks-advancedgallery-block.php:829
 msgid "See more"
 msgstr ""
 
-#: includes/blocks/class-kadence-blocks-advancedgallery-block.php:881
+#: includes/blocks/class-kadence-blocks-advancedgallery-block.php:830
 msgid "Display this image in a lightbox"
 msgstr ""
 
@@ -306,7 +380,7 @@ msgid "Please enable JavaScript in your browser to submit the form"
 msgstr ""
 
 #. translators: %s is the location.
-#: includes/blocks/class-kadence-blocks-googlemaps-block.php:202
+#: includes/blocks/class-kadence-blocks-googlemaps-block.php:208
 msgid "Google map of %s"
 msgstr ""
 
@@ -322,32 +396,32 @@ msgstr ""
 msgid "Progressbar Label"
 msgstr ""
 
-#: includes/blocks/class-kadence-blocks-row-layout-block.php:1454
-#: dist/blocks-rowlayout.js:14
+#: includes/blocks/class-kadence-blocks-row-layout-block.php:1467
+#: dist/blocks-rowlayout.js:22
 msgid "Play"
 msgstr ""
 
-#: includes/blocks/class-kadence-blocks-row-layout-block.php:1455
-#: dist/blocks-rowlayout.js:14
+#: includes/blocks/class-kadence-blocks-row-layout-block.php:1468
+#: dist/blocks-rowlayout.js:22
 msgid "Pause"
 msgstr ""
 
-#: includes/blocks/class-kadence-blocks-row-layout-block.php:1460
-#: dist/blocks-rowlayout.js:14
+#: includes/blocks/class-kadence-blocks-row-layout-block.php:1473
+#: dist/blocks-rowlayout.js:22
 msgid "Unmute"
 msgstr ""
 
-#: includes/blocks/class-kadence-blocks-row-layout-block.php:1461
-#: dist/blocks-rowlayout.js:14
+#: includes/blocks/class-kadence-blocks-row-layout-block.php:1474
+#: dist/blocks-rowlayout.js:22
 msgid "Mute"
 msgstr ""
 
 #. translators: %d is the number for the star rating.
-#: includes/blocks/class-kadence-blocks-testimonial-block.php:292
+#: includes/blocks/class-kadence-blocks-testimonial-block.php:294
 msgid "%d star rating"
 msgstr ""
 
-#: includes/blocks/form/class-kadence-blocks-captcha-block.php:146
+#: includes/blocks/form/class-kadence-blocks-captcha-block.php:143
 #: dist/blocks-advanced-form.js:10
 msgid "This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply"
 msgstr ""
@@ -442,75 +516,75 @@ msgstr ""
 msgid "View on Pexels"
 msgstr ""
 
-#: includes/class-kadence-blocks-posts-rest-api.php:427
+#: includes/class-kadence-blocks-posts-rest-api.php:428
 msgid "Limit results to items of a specific post type."
 msgstr ""
 
-#: includes/class-kadence-blocks-posts-rest-api.php:446
+#: includes/class-kadence-blocks-posts-rest-api.php:447
 msgid "Include posts by ID."
 msgstr ""
 
-#: includes/class-kadence-blocks-posts-rest-api.php:452
-#: includes/class-kadence-blocks-posts-rest-api.php:545
+#: includes/class-kadence-blocks-posts-rest-api.php:453
+#: includes/class-kadence-blocks-posts-rest-api.php:546
 msgid "Number of results to return."
 msgstr ""
 
-#: includes/class-kadence-blocks-posts-rest-api.php:458
+#: includes/class-kadence-blocks-posts-rest-api.php:459
 msgid "Define Type of Query."
 msgstr ""
 
-#: includes/class-kadence-blocks-posts-rest-api.php:462
+#: includes/class-kadence-blocks-posts-rest-api.php:463
 msgid "Define Query Order."
 msgstr ""
 
-#: includes/class-kadence-blocks-posts-rest-api.php:466
-#: includes/class-kadence-blocks-posts-rest-api.php:494
+#: includes/class-kadence-blocks-posts-rest-api.php:467
+#: includes/class-kadence-blocks-posts-rest-api.php:495
 msgid "Define Query Order By."
 msgstr ""
 
-#: includes/class-kadence-blocks-posts-rest-api.php:470
+#: includes/class-kadence-blocks-posts-rest-api.php:471
 msgid "Allow Sticky in Query."
 msgstr ""
 
-#: includes/class-kadence-blocks-posts-rest-api.php:475
+#: includes/class-kadence-blocks-posts-rest-api.php:476
 msgid "Exclude Category."
 msgstr ""
 
-#: includes/class-kadence-blocks-posts-rest-api.php:479
+#: includes/class-kadence-blocks-posts-rest-api.php:480
 msgid "Number of items to offset in query."
 msgstr ""
 
-#: includes/class-kadence-blocks-posts-rest-api.php:485
+#: includes/class-kadence-blocks-posts-rest-api.php:486
 msgid "The Current Post ID."
 msgstr ""
 
-#: includes/class-kadence-blocks-posts-rest-api.php:489
+#: includes/class-kadence-blocks-posts-rest-api.php:490
 msgid "Check if using a custom Taxonomy"
 msgstr ""
 
-#: includes/class-kadence-blocks-posts-rest-api.php:498
+#: includes/class-kadence-blocks-posts-rest-api.php:499
 msgid "Include posts category."
 msgstr ""
 
-#: includes/class-kadence-blocks-posts-rest-api.php:503
+#: includes/class-kadence-blocks-posts-rest-api.php:504
 msgid "Include posts tags."
 msgstr ""
 
-#: includes/class-kadence-blocks-posts-rest-api.php:518
+#: includes/class-kadence-blocks-posts-rest-api.php:519
 msgid "Taxonomy Type."
 msgstr ""
 
-#: includes/class-kadence-blocks-posts-rest-api.php:522
-#: includes/class-kadence-blocks-posts-rest-api.php:538
+#: includes/class-kadence-blocks-posts-rest-api.php:523
+#: includes/class-kadence-blocks-posts-rest-api.php:539
 msgid "The source of the content."
 msgstr ""
 
-#: includes/class-kadence-blocks-posts-rest-api.php:551
+#: includes/class-kadence-blocks-posts-rest-api.php:552
 msgid "Page of results to return."
 msgstr ""
 
 #: includes/class-kadence-blocks-prebuilt-library-rest-api.php:901
-#: includes/class-kadence-blocks-prebuilt-library.php:828
+#: includes/class-kadence-blocks-prebuilt-library.php:816
 msgid "Photo by"
 msgstr ""
 
@@ -566,46 +640,46 @@ msgstr ""
 msgid "The industries to return"
 msgstr ""
 
-#: includes/class-kadence-blocks-prebuilt-library.php:500
-#: includes/class-kadence-blocks-prebuilt-library.php:512
+#: includes/class-kadence-blocks-prebuilt-library.php:494
+#: includes/class-kadence-blocks-prebuilt-library.php:506
 msgid "No Connection data"
 msgstr ""
 
-#: includes/class-kadence-blocks-prebuilt-library.php:579
-#: includes/class-kadence-blocks-prebuilt-library.php:602
-#: includes/class-kadence-blocks-prebuilt-library.php:625
-#: includes/class-kadence-blocks-prebuilt-library.php:659
-#: includes/class-kadence-blocks-prebuilt-library.php:693
-#: includes/class-kadence-blocks-prebuilt-library.php:1190
+#: includes/class-kadence-blocks-prebuilt-library.php:567
+#: includes/class-kadence-blocks-prebuilt-library.php:590
+#: includes/class-kadence-blocks-prebuilt-library.php:613
+#: includes/class-kadence-blocks-prebuilt-library.php:647
+#: includes/class-kadence-blocks-prebuilt-library.php:681
+#: includes/class-kadence-blocks-prebuilt-library.php:1179
 msgid "No library data"
 msgstr ""
 
-#: includes/class-kadence-blocks-prebuilt-library.php:761
-#: includes/class-kadence-blocks-prebuilt-library.php:776
-#: includes/class-kadence-blocks-prebuilt-library.php:863
+#: includes/class-kadence-blocks-prebuilt-library.php:749
+#: includes/class-kadence-blocks-prebuilt-library.php:764
+#: includes/class-kadence-blocks-prebuilt-library.php:851
 msgid "No data"
 msgstr ""
 
-#: includes/class-kadence-blocks-prebuilt-library.php:1246
+#: includes/class-kadence-blocks-prebuilt-library.php:1235
 msgid "Once Monthly"
 msgstr ""
 
-#: includes/class-kadence-blocks-table-of-contents.php:375
-#: includes/class-kadence-blocks-table-of-contents.php:838
-#: includes/class-kadence-blocks-table-of-contents.php:847
+#: includes/class-kadence-blocks-table-of-contents.php:353
+#: includes/class-kadence-blocks-table-of-contents.php:827
+#: includes/class-kadence-blocks-table-of-contents.php:836
 msgid "Expand Table of Contents"
 msgstr ""
 
-#: includes/class-kadence-blocks-table-of-contents.php:376
-#: includes/class-kadence-blocks-table-of-contents.php:838
-#: includes/class-kadence-blocks-table-of-contents.php:847
+#: includes/class-kadence-blocks-table-of-contents.php:354
+#: includes/class-kadence-blocks-table-of-contents.php:827
+#: includes/class-kadence-blocks-table-of-contents.php:836
 msgid "Collapse Table of Contents"
 msgstr ""
 
-#: includes/class-kadence-blocks-table-of-contents.php:833
-#: includes/class-kadence-blocks-table-of-contents.php:841
-#: includes/settings/class-kadence-blocks-settings.php:1396
-#: dist/plugin-kadence-control.js:5
+#: includes/class-kadence-blocks-table-of-contents.php:822
+#: includes/class-kadence-blocks-table-of-contents.php:830
+#: includes/settings/class-kadence-blocks-settings.php:1398
+#: dist/plugin-kadence-control.js:6
 msgid "Table of Contents"
 msgstr ""
 
@@ -765,14 +839,28 @@ msgstr ""
 
 #: includes/init.php:862
 #: includes/init.php:889
-#: includes/settings/class-kadence-blocks-settings.php:620
-#: includes/settings/class-kadence-blocks-settings.php:629
+#: includes/settings/class-kadence-blocks-settings.php:622
+#: includes/settings/class-kadence-blocks-settings.php:631
 #: includes/settings/class-kadence-blocks-site-health.php:150
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Kadence Blocks"
 msgstr ""
 
-#: includes/resources/Image_Downloader/WordPress_Importer.php:87
+#. translators: %1$s is the function name, %2$s is "required" or "suggested".
+#: includes/resources/Health/Required_Function_Verifier.php:49
+msgid "The \"%1$s\" function is disabled via PHP and is %2$s by Kadence Blocks. Ask your administrator to enable it."
+msgstr ""
+
+#: includes/resources/Health/Required_Function_Verifier.php:51
+msgid "required"
+msgstr ""
+
+#: includes/resources/Health/Required_Function_Verifier.php:51
+msgid "suggested"
+msgstr ""
+
+#. Translators: %s is the photographer's name.
+#: includes/resources/Image_Downloader/WordPress_Importer.php:88
 msgid "Photo by %s"
 msgstr ""
 
@@ -805,565 +893,577 @@ msgstr ""
 msgid "Hi, %1$s! At KadenceWP, we're always looking for more ways to make our products better for you. If you opt into sharing some data on your usage of Kadence Blocks, it helps us identify key areas where we can improve. In return, we'll also email helpful articles and guides to get more out of Kadence, WordPress, and more. If you skip this, that's okay. Kadence Blocks will work just fine. We hope you love building with Kadence."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:347
-#: includes/settings/class-kadence-blocks-settings.php:442
+#: includes/settings/class-kadence-blocks-settings.php:348
+#: includes/settings/class-kadence-blocks-settings.php:444
 msgid "Pale pink"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:352
-#: includes/settings/class-kadence-blocks-settings.php:447
+#: includes/settings/class-kadence-blocks-settings.php:353
+#: includes/settings/class-kadence-blocks-settings.php:449
 msgid "Vivid red"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:357
-#: includes/settings/class-kadence-blocks-settings.php:452
+#: includes/settings/class-kadence-blocks-settings.php:358
+#: includes/settings/class-kadence-blocks-settings.php:454
 msgid "Luminous vivid orange"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:362
-#: includes/settings/class-kadence-blocks-settings.php:457
+#: includes/settings/class-kadence-blocks-settings.php:363
+#: includes/settings/class-kadence-blocks-settings.php:459
 msgid "Luminous vivid amber"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:367
-#: includes/settings/class-kadence-blocks-settings.php:462
+#: includes/settings/class-kadence-blocks-settings.php:368
+#: includes/settings/class-kadence-blocks-settings.php:464
 msgid "Light green cyan"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:372
-#: includes/settings/class-kadence-blocks-settings.php:467
+#: includes/settings/class-kadence-blocks-settings.php:373
+#: includes/settings/class-kadence-blocks-settings.php:469
 msgid "Vivid green cyan"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:377
-#: includes/settings/class-kadence-blocks-settings.php:472
+#: includes/settings/class-kadence-blocks-settings.php:378
+#: includes/settings/class-kadence-blocks-settings.php:474
 msgid "Pale cyan blue"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:382
-#: includes/settings/class-kadence-blocks-settings.php:477
+#: includes/settings/class-kadence-blocks-settings.php:383
+#: includes/settings/class-kadence-blocks-settings.php:479
 msgid "Vivid cyan blue"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:387
-#: includes/settings/class-kadence-blocks-settings.php:482
+#: includes/settings/class-kadence-blocks-settings.php:388
+#: includes/settings/class-kadence-blocks-settings.php:484
 msgid "Very light gray"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:392
-#: includes/settings/class-kadence-blocks-settings.php:487
+#: includes/settings/class-kadence-blocks-settings.php:393
+#: includes/settings/class-kadence-blocks-settings.php:489
 msgid "Cyan bluish gray"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:397
-#: includes/settings/class-kadence-blocks-settings.php:492
+#: includes/settings/class-kadence-blocks-settings.php:398
+#: includes/settings/class-kadence-blocks-settings.php:494
 msgid "Very dark gray"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:619
-#: includes/settings/class-kadence-blocks-settings.php:628
+#: includes/settings/class-kadence-blocks-settings.php:621
 #: includes/settings/class-kadence-blocks-settings.php:630
-msgid "Kadence Blocks -  Gutenberg Page Builder Blocks"
+msgid "Kadence Blocks - Gutenberg Page Builder Blocks"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:619
-#: includes/settings/class-kadence-blocks-settings.php:628
-#: dist/blocks-rowlayout.js:14
+#: includes/settings/class-kadence-blocks-settings.php:621
+#: includes/settings/class-kadence-blocks-settings.php:630
+#: dist/blocks-rowlayout.js:22
 msgid "Kadence"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:639
-#: dist/plugin-kadence-control.js:5
+#: includes/settings/class-kadence-blocks-settings.php:622
+#: includes/settings/class-kadence-blocks-settings.php:631
+#: dist/blocks-rowlayout.js:1
+msgid "Home"
+msgstr ""
+
+#: includes/settings/class-kadence-blocks-settings.php:632
+msgid "Kadence Blocks -  Gutenberg Page Builder Blocks"
+msgstr ""
+
+#: includes/settings/class-kadence-blocks-settings.php:632
+#: includes/settings/class-kadence-blocks-settings.php:1551
+#: dist/blocks-form.js:1
+#: dist/blocks-rowlayout.js:22
+msgid "Settings"
+msgstr ""
+
+#: includes/settings/class-kadence-blocks-settings.php:641
+#: dist/plugin-kadence-control.js:6
 msgid "Close"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:640
+#: includes/settings/class-kadence-blocks-settings.php:642
 #: dist/admin-kadence-home.js:1
 #: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 #: dist/blocks-advanced-form.js:2
 #: dist/blocks-advanced-form.js:10
 #: dist/blocks-form.js:1
 #: dist/blocks-form.js:2
 #: dist/blocks-rowlayout.js:8
 #: dist/blocks-rowlayout.js:9
+#: dist/blocks-rowlayout.js:17
 #: dist/components.js:29
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Save"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:641
+#: includes/settings/class-kadence-blocks-settings.php:643
 msgid "Updating"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:642
+#: includes/settings/class-kadence-blocks-settings.php:644
 msgid "Updated"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:643
+#: includes/settings/class-kadence-blocks-settings.php:645
 msgid "Config"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:644
+#: includes/settings/class-kadence-blocks-settings.php:646
 msgid "Default Settings"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:650
-#: includes/settings/class-kadence-blocks-settings.php:656
-#: includes/settings/class-kadence-blocks-settings.php:662
-#: includes/settings/class-kadence-blocks-settings.php:668
-#: includes/settings/class-kadence-blocks-settings.php:674
-#: includes/settings/class-kadence-blocks-settings.php:680
-#: includes/settings/class-kadence-blocks-settings.php:686
-#: includes/settings/class-kadence-blocks-settings.php:692
-#: includes/settings/class-kadence-blocks-settings.php:698
-#: includes/settings/class-kadence-blocks-settings.php:704
+#: includes/settings/class-kadence-blocks-settings.php:652
+#: includes/settings/class-kadence-blocks-settings.php:658
+#: includes/settings/class-kadence-blocks-settings.php:664
+#: includes/settings/class-kadence-blocks-settings.php:670
+#: includes/settings/class-kadence-blocks-settings.php:676
+#: includes/settings/class-kadence-blocks-settings.php:682
+#: includes/settings/class-kadence-blocks-settings.php:688
+#: includes/settings/class-kadence-blocks-settings.php:694
+#: includes/settings/class-kadence-blocks-settings.php:700
+#: includes/settings/class-kadence-blocks-settings.php:706
 msgid "Setting defaults has moved into Gutenberg, click on the top right corner settings and go to Kadence Blocks Controls"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:803
+#: includes/settings/class-kadence-blocks-settings.php:805
 msgid "Config Kadence Block Defaults"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:814
+#: includes/settings/class-kadence-blocks-settings.php:816
 msgid "Config Kadence Block visibility settings"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:825
+#: includes/settings/class-kadence-blocks-settings.php:827
 msgid "Config Kadence Block Settings"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:836
+#: includes/settings/class-kadence-blocks-settings.php:838
 msgid "Config Kadence Block Prophecy AI"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:847
+#: includes/settings/class-kadence-blocks-settings.php:849
 msgid "Config Kadence Blocks Color Palette"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:858
+#: includes/settings/class-kadence-blocks-settings.php:860
 msgid "Config Kadence Blocks Global Settings"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:869
+#: includes/settings/class-kadence-blocks-settings.php:871
 msgid "Google reCaptcha Site Key"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:880
+#: includes/settings/class-kadence-blocks-settings.php:882
 msgid "Google reCaptcha Secret Key"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:891
+#: includes/settings/class-kadence-blocks-settings.php:893
 msgid "Google reCaptcha Language"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:902
+#: includes/settings/class-kadence-blocks-settings.php:904
 msgid "Cloudflare Turnstile Site Key"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:913
+#: includes/settings/class-kadence-blocks-settings.php:915
 msgid "Cloudflare Turnstile Secret Key"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:924
+#: includes/settings/class-kadence-blocks-settings.php:926
 msgid "hCaptcha Turnstile Site Key"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:935
+#: includes/settings/class-kadence-blocks-settings.php:937
 #: dist/blocks-advanced-form.js:10
 msgid "hCaptcha Secret Key"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:946
+#: includes/settings/class-kadence-blocks-settings.php:948
 msgid "MailerLite API Key"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:957
+#: includes/settings/class-kadence-blocks-settings.php:959
 msgid "Google Maps API Key"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:968
+#: includes/settings/class-kadence-blocks-settings.php:970
 msgid "Config Kadence Blocks Cloud"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:979
+#: includes/settings/class-kadence-blocks-settings.php:981
 msgid "Subscribe to Wireframe library"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:990
-#: includes/settings/class-kadence-blocks-settings.php:1001
-#: includes/settings/class-kadence-blocks-settings.php:1012
+#: includes/settings/class-kadence-blocks-settings.php:992
+#: includes/settings/class-kadence-blocks-settings.php:1003
+#: includes/settings/class-kadence-blocks-settings.php:1014
 msgid "ConvertKit API Key"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1028
+#: includes/settings/class-kadence-blocks-settings.php:1030
 msgid "Small Template"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1029
+#: includes/settings/class-kadence-blocks-settings.php:1031
 msgid "Large Template"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1031
+#: includes/settings/class-kadence-blocks-settings.php:1033
 msgid "Post default"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1032
+#: includes/settings/class-kadence-blocks-settings.php:1034
 msgid "Page Default"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1034
+#: includes/settings/class-kadence-blocks-settings.php:1036
 msgid "Enable Editor Width"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1039
+#: includes/settings/class-kadence-blocks-settings.php:1041
 msgid "Load Google Fonts Locally"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1048
+#: includes/settings/class-kadence-blocks-settings.php:1050
 msgid "Allows for changes to the editor width on per page/post basis with preset defaults."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1050
-#: includes/settings/class-kadence-blocks-settings.php:1063
-#: includes/settings/class-kadence-blocks-settings.php:1121
+#: includes/settings/class-kadence-blocks-settings.php:1052
+#: includes/settings/class-kadence-blocks-settings.php:1065
+#: includes/settings/class-kadence-blocks-settings.php:1123
 msgid "False"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1051
-#: includes/settings/class-kadence-blocks-settings.php:1064
-#: includes/settings/class-kadence-blocks-settings.php:1122
+#: includes/settings/class-kadence-blocks-settings.php:1053
+#: includes/settings/class-kadence-blocks-settings.php:1066
+#: includes/settings/class-kadence-blocks-settings.php:1124
 msgid "True"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1061
+#: includes/settings/class-kadence-blocks-settings.php:1063
 msgid "Experimental editor CSS for less excess margins in Gutenberg in an attempt to get a closer WYSIWYG editing experience."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1075
-#: includes/settings/class-kadence-blocks-settings.php:1085
+#: includes/settings/class-kadence-blocks-settings.php:1077
+#: includes/settings/class-kadence-blocks-settings.php:1087
 msgid "px"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1095
-#: includes/settings/class-kadence-blocks-settings.php:1108
+#: includes/settings/class-kadence-blocks-settings.php:1097
+#: includes/settings/class-kadence-blocks-settings.php:1110
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 #: dist/helpers.js:1
 #: dist/plugin-kadence-control.js:1
 msgid "Small"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1096
-#: includes/settings/class-kadence-blocks-settings.php:1109
+#: includes/settings/class-kadence-blocks-settings.php:1098
+#: includes/settings/class-kadence-blocks-settings.php:1111
 #: dist/blocks-column.js:1
 #: dist/blocks-posts.js:9
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 #: dist/helpers.js:1
 #: dist/plugin-kadence-control.js:1
 msgid "Large"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1097
-#: includes/settings/class-kadence-blocks-settings.php:1110
+#: includes/settings/class-kadence-blocks-settings.php:1099
+#: includes/settings/class-kadence-blocks-settings.php:1112
 msgid "Fullwidth"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1228
-#: includes/settings/class-kadence-blocks-settings.php:1229
+#: includes/settings/class-kadence-blocks-settings.php:1230
+#: includes/settings/class-kadence-blocks-settings.php:1231
 msgid "Activate"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1229
 #: includes/settings/class-kadence-blocks-settings.php:1231
+#: includes/settings/class-kadence-blocks-settings.php:1233
 msgid "Deactivate"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1229
+#: includes/settings/class-kadence-blocks-settings.php:1231
 msgid "Activating..."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1229
+#: includes/settings/class-kadence-blocks-settings.php:1231
 msgid "Activated"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1229
+#: includes/settings/class-kadence-blocks-settings.php:1231
 msgid "Deactivating..."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1229
+#: includes/settings/class-kadence-blocks-settings.php:1231
 msgid "Deactivated"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1235
+#: includes/settings/class-kadence-blocks-settings.php:1237
 msgid "Manage Lottie Animations"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1244
+#: includes/settings/class-kadence-blocks-settings.php:1246
 msgid "Editor Max Widths"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1244
+#: includes/settings/class-kadence-blocks-settings.php:1246
 msgid "Match the editor width to your sites width."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1246
+#: includes/settings/class-kadence-blocks-settings.php:1248
 msgid "Note: The current active themes \"content_width\" is set to:"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1253
+#: includes/settings/class-kadence-blocks-settings.php:1255
 msgid "Save Changes"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1260
+#: includes/settings/class-kadence-blocks-settings.php:1262
 #: dist/components.js:28
 msgid "Google Fonts"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1278
+#: includes/settings/class-kadence-blocks-settings.php:1280
 msgid "Web Creators Community"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1279
+#: includes/settings/class-kadence-blocks-settings.php:1281
 msgid "Join our community of fellow kadence users creating effective websites! Share your site, ask a question and help others."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1280
+#: includes/settings/class-kadence-blocks-settings.php:1282
 msgid "Join our Facebook Group"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1285
+#: includes/settings/class-kadence-blocks-settings.php:1287
 msgid "Documentation"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1286
+#: includes/settings/class-kadence-blocks-settings.php:1288
 msgid "Need help? We have a knowledge base full of articles to get you started."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1287
+#: includes/settings/class-kadence-blocks-settings.php:1289
 msgid "Browse Docs"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1292
-#: dist/admin-kadence-home.js:2
+#: includes/settings/class-kadence-blocks-settings.php:1294
+#: dist/admin-kadence-home.js:10
 #: dist/blocks-rowlayout.js:1
 msgid "Support"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1293
+#: includes/settings/class-kadence-blocks-settings.php:1295
 msgid "Have a question, we are happy to help! Get in touch with our support team."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1294
+#: includes/settings/class-kadence-blocks-settings.php:1296
 msgid "Submit a Ticket"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1314
-#: dist/admin-kadence-home.js:2
+#: includes/settings/class-kadence-blocks-settings.php:1316
+#: dist/admin-kadence-home.js:10
 msgid "Kadence Blocks Pro"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1316
+#: includes/settings/class-kadence-blocks-settings.php:1318
 msgid "10 Pro Blocks"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1317
+#: includes/settings/class-kadence-blocks-settings.php:1319
 msgid "Pro Block Addons"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1318
+#: includes/settings/class-kadence-blocks-settings.php:1320
 #: dist/components.js:13
 #: dist/components.js:28
 msgid "Dynamic Content"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1319
+#: includes/settings/class-kadence-blocks-settings.php:1321
 msgid "Custom Icons"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1320
+#: includes/settings/class-kadence-blocks-settings.php:1322
 #: dist/components.js:28
 #: dist/components.js:29
 msgid "Custom Fonts"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1321
+#: includes/settings/class-kadence-blocks-settings.php:1323
 msgid "Premium Design Library"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1323
+#: includes/settings/class-kadence-blocks-settings.php:1325
 msgid "Upgrade Kadence Blocks"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1336
-#: dist/plugin-kadence-control.js:5
+#: includes/settings/class-kadence-blocks-settings.php:1338
+#: dist/plugin-kadence-control.js:6
 msgid "Row Layout"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1337
+#: includes/settings/class-kadence-blocks-settings.php:1339
 msgid "Create rows with nested blocks either in columns or as a container. Give style to your rows with background, overlay, padding, etc."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1341
+#: includes/settings/class-kadence-blocks-settings.php:1343
 #: dist/blocks-advanced-form.js:14
 #: dist/blocks-rowlayout.js:1
 msgid "Form"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1342
+#: includes/settings/class-kadence-blocks-settings.php:1344
 msgid "Create a contact form or marketing form and style it within the block editor."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1346
-#: dist/plugin-kadence-control.js:5
+#: includes/settings/class-kadence-blocks-settings.php:1348
+#: dist/plugin-kadence-control.js:6
 msgid "Advanced Gallery"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1347
+#: includes/settings/class-kadence-blocks-settings.php:1349
 msgid "Photo galleries, carousels, and sliders! Enable custom links, captions, and more. Plus, you can select image sizes."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1351
-#: dist/plugin-kadence-control.js:5
+#: includes/settings/class-kadence-blocks-settings.php:1353
+#: dist/plugin-kadence-control.js:6
 msgid "Advanced Button"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1352
+#: includes/settings/class-kadence-blocks-settings.php:1354
 msgid "Create an advanced button or a row of buttons. Style each one including hover controls plus you can use an icon and display them side by side"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1356
+#: includes/settings/class-kadence-blocks-settings.php:1358
 msgid "Lottie Animations"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1357
+#: includes/settings/class-kadence-blocks-settings.php:1359
 msgid "Add an extra \"wow\" factor to your site with engaging Lottie animations."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1361
+#: includes/settings/class-kadence-blocks-settings.php:1363
 #: dist/blocks-icon.js:1
 #: dist/blocks-infobox.js:1
 #: dist/blocks-single-icon.js:1
 #: dist/blocks-tabs.js:3
 #: dist/blocks-testimonial.js:1
 #: dist/blocks-testimonials.js:1
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Icon"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1362
+#: includes/settings/class-kadence-blocks-settings.php:1364
 msgid "Choose from over 1500+ SVG Icons to add into your page and style the size, colors, background, border, etc."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1366
-#: dist/plugin-kadence-control.js:5
+#: includes/settings/class-kadence-blocks-settings.php:1368
+#: dist/plugin-kadence-control.js:6
 msgid "Spacer/Divider"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1367
+#: includes/settings/class-kadence-blocks-settings.php:1369
 msgid "Easily create a divider and determine the space around it or just create some space in your content."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1371
-#: dist/plugin-kadence-control.js:5
+#: includes/settings/class-kadence-blocks-settings.php:1373
+#: dist/plugin-kadence-control.js:6
 msgid "Advanced Text"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1372
+#: includes/settings/class-kadence-blocks-settings.php:1374
 #: dist/blocks-advancedheading.js:1
 msgid "Create a heading or paragraph and define sizes for desktop, tablet and mobile along with font family, colors, etc."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1376
+#: includes/settings/class-kadence-blocks-settings.php:1378
 #: dist/blocks-rowlayout.js:1
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Tabs"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1377
+#: includes/settings/class-kadence-blocks-settings.php:1379
 msgid "Create custom vertical or horizontal tabs with advanced styling controls. Each tab content is an empty canvas able to contain any other blocks."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1381
-#: dist/plugin-kadence-control.js:5
+#: includes/settings/class-kadence-blocks-settings.php:1383
+#: dist/plugin-kadence-control.js:6
 msgid "Info Box"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1382
+#: includes/settings/class-kadence-blocks-settings.php:1384
 msgid "Create a box containing an icon or image and, optionally, a title, description, and learn more text. Style static and hover separately."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1386
+#: includes/settings/class-kadence-blocks-settings.php:1388
 #: dist/blocks-rowlayout.js:1
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Accordion"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1387
+#: includes/settings/class-kadence-blocks-settings.php:1389
 #: dist/blocks-accordion.js:1
 msgid "Create beautiful accordions! Each pane can contain any other block, customize title styles, content background, and borders."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1391
-#: dist/plugin-kadence-control.js:5
+#: includes/settings/class-kadence-blocks-settings.php:1393
+#: dist/plugin-kadence-control.js:6
 msgid "Icon List"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1392
+#: includes/settings/class-kadence-blocks-settings.php:1394
 msgid "Add beautiful icons to your lists and make them more engaging. Over 1500 icons to choose from and unlimited styles."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1397
+#: includes/settings/class-kadence-blocks-settings.php:1399
 msgid "Allow your readers to navigate your content easily with a table of contents block. Includes smooth scroll to anchor."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1401
+#: includes/settings/class-kadence-blocks-settings.php:1403
 #: dist/blocks-posts.js:9
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Posts"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1402
+#: includes/settings/class-kadence-blocks-settings.php:1404
 msgid "Display a clean grid of posts anywhere on your site, great for your home page where you want to tease your blog."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1406
-#: dist/plugin-kadence-control.js:5
+#: includes/settings/class-kadence-blocks-settings.php:1408
+#: dist/plugin-kadence-control.js:6
 msgid "Countdown"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1407
+#: includes/settings/class-kadence-blocks-settings.php:1409
 msgid "Increase your conversions by adding a sense of urgency to your offering. Pro includes evergreen campaigns as well."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1411
+#: includes/settings/class-kadence-blocks-settings.php:1413
 #: dist/blocks-rowlayout.js:1
-#: dist/blocks-rowlayout.js:12
-#: dist/plugin-kadence-control.js:5
+#: dist/blocks-rowlayout.js:20
+#: dist/plugin-kadence-control.js:6
 msgid "Testimonials"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1412
+#: includes/settings/class-kadence-blocks-settings.php:1414
 msgid "Create confidence in your brand or product by showing off beautiful unique testimonials, add as a carousel or a grid."
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1422
+#: includes/settings/class-kadence-blocks-settings.php:1424
 msgid "Invalid nonce"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1425
+#: includes/settings/class-kadence-blocks-settings.php:1427
 msgid "Missing Content"
 msgstr ""
 
-#: includes/settings/class-kadence-blocks-settings.php:1431
+#: includes/settings/class-kadence-blocks-settings.php:1433
 msgid "Nothing to Save"
-msgstr ""
-
-#: includes/settings/class-kadence-blocks-settings.php:1549
-#: dist/blocks-form.js:1
-#: dist/blocks-rowlayout.js:14
-msgid "Settings"
 msgstr ""
 
 #: includes/settings/class-kadence-blocks-site-health.php:195
@@ -1400,7 +1500,7 @@ msgstr ""
 #: dist/blocks-iconlist.js:1
 #: dist/blocks-image.js:1
 #: dist/blocks-infobox.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-singlebtn.js:1
 #: dist/blocks-tableofcontents.js:1
 #: dist/blocks-testimonials.js:1
@@ -1506,6 +1606,14 @@ msgstr ""
 #. translators: %s - link to a site.
 #: includes/templates/form-email.php:170
 msgid "Sent from %s"
+msgstr ""
+
+#: tests/wpunit/Resources/Notice/NoticeHandlerTest.php:22
+msgid "Notice 1 message"
+msgstr ""
+
+#: tests/wpunit/Resources/Notice/NoticeHandlerTest.php:27
+msgid "Notice 2 message"
 msgstr ""
 
 #: dist/admin-kadence-home.js:1
@@ -1925,6 +2033,26 @@ msgstr ""
 
 #: dist/admin-kadence-home.js:1
 #: dist/blocks-rowlayout.js:8
+msgid "Featured Images"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "Featured images are meant to draw attention, they are used to represent the content on your website."
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "Background Images"
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
+msgid "Background images are meant to enhance the overall look and feel, styling the background of sections in your website."
+msgstr ""
+
+#: dist/admin-kadence-home.js:1
+#: dist/blocks-rowlayout.js:8
 msgid "Kadence AI is writing"
 msgstr ""
 
@@ -1984,6 +2112,16 @@ msgstr ""
 #: dist/admin-kadence-home.js:2
 #: dist/blocks-rowlayout.js:9
 msgid "Edit Collection"
+msgstr ""
+
+#: dist/admin-kadence-home.js:2
+#: dist/blocks-rowlayout.js:9
+msgid "Loading..."
+msgstr ""
+
+#: dist/admin-kadence-home.js:2
+#: dist/blocks-rowlayout.js:9
+msgid "Importing Images..."
 msgstr ""
 
 #: dist/admin-kadence-home.js:2
@@ -2332,339 +2470,345 @@ msgid "Find your industry"
 msgstr ""
 
 #: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 #: dist/blocks-rowlayout.js:9
+#: dist/blocks-rowlayout.js:17
 msgid "Not sure where to start? Here's some real life examples!"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
-#: dist/blocks-rowlayout.js:9
-msgid "Tell us about your%s"
+#. translators: %s: entity type
+#: dist/admin-kadence-home.js:4
+#: dist/blocks-rowlayout.js:11
+msgid "Tell us about your %s"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
-#: dist/blocks-rowlayout.js:9
+#. translators: %s: language
+#: dist/admin-kadence-home.js:6
+#: dist/blocks-rowlayout.js:13
 msgid "This should be written in %s."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
-#: dist/blocks-rowlayout.js:9
+#. translators: %s: company or individual name
+#: dist/admin-kadence-home.js:8
+#: dist/blocks-rowlayout.js:15
 msgid "I am %s, a..."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
-#: dist/blocks-rowlayout.js:9
+#. translators: %s: company or individual name
+#: dist/admin-kadence-home.js:10
+#: dist/blocks-rowlayout.js:17
 msgid "%s is a..."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
-#: dist/blocks-rowlayout.js:9
+#: dist/admin-kadence-home.js:10
+#: dist/blocks-rowlayout.js:17
 msgid "Thought Starters"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
-#: dist/blocks-rowlayout.js:9
+#: dist/admin-kadence-home.js:10
+#: dist/blocks-rowlayout.js:17
 msgid "Improve with AI"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
-#: dist/blocks-rowlayout.js:9
+#: dist/admin-kadence-home.js:10
+#: dist/blocks-rowlayout.js:17
 msgid "Hide Tips"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
-#: dist/blocks-rowlayout.js:9
+#: dist/admin-kadence-home.js:10
+#: dist/blocks-rowlayout.js:17
 msgid "Show Tips"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
-#: dist/blocks-rowlayout.js:9
+#: dist/admin-kadence-home.js:10
+#: dist/blocks-rowlayout.js:17
 msgid "Add some keywords"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
-#: dist/blocks-rowlayout.js:9
+#: dist/admin-kadence-home.js:10
+#: dist/blocks-rowlayout.js:17
 msgid "Keywords assist the AI in identifying the most relevant topics to write about."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
-#: dist/blocks-rowlayout.js:9
+#: dist/admin-kadence-home.js:10
+#: dist/blocks-rowlayout.js:17
 msgid "Keywords"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
-#: dist/blocks-rowlayout.js:9
+#: dist/admin-kadence-home.js:10
+#: dist/blocks-rowlayout.js:17
 msgid "Add Keyword..."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
-#: dist/blocks-rowlayout.js:9
+#: dist/admin-kadence-home.js:10
+#: dist/blocks-rowlayout.js:17
 msgid "Separate with commas or the Enter key. Enter between 5 and 10 keywords"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
-#: dist/blocks-rowlayout.js:9
+#: dist/admin-kadence-home.js:10
+#: dist/blocks-rowlayout.js:17
 msgid "Choose your tone"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
-#: dist/blocks-rowlayout.js:9
+#: dist/admin-kadence-home.js:10
+#: dist/blocks-rowlayout.js:17
 msgid "The tone allows the AI to reflect your personality in its communication style. Select a tone that closely aligns with your own."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
-#: dist/blocks-rowlayout.js:9
+#: dist/admin-kadence-home.js:10
+#: dist/blocks-rowlayout.js:17
 msgid "What are the goals of this site?"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
-#: dist/blocks-rowlayout.js:9
+#: dist/admin-kadence-home.js:10
+#: dist/blocks-rowlayout.js:17
 msgid "Select all that apply, it is ok to select none. This will be used to help determine content to show for your specific site. NOTE: This is in early stages and has minimal effects currently, but is improving."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
-#: dist/blocks-rowlayout.js:9
+#: dist/admin-kadence-home.js:10
+#: dist/blocks-rowlayout.js:17
 msgid "Update My Design Library"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
-#: dist/blocks-rowlayout.js:9
+#: dist/admin-kadence-home.js:10
+#: dist/blocks-rowlayout.js:17
 msgid "Generate Initial Content"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Something Great!"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Connect Blocks Pro License to Site"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Authorization needed from network admin"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
-#: dist/blocks-rowlayout.js:9
+#: dist/admin-kadence-home.js:10
+#: dist/blocks-rowlayout.js:17
 msgid "Update Kadence AI Details"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Credits Available"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Let's build,"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Start Building with Kadence AI"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Build a page with AI-powered patterns"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Take your site further with hundreds of beautiful patterns filled with custom content developed just for your site."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Get started with full pages"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Choose from a variety of pages featuring exclusively tailored content for your site."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Fine-tune your content"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Write your own prompts to generate AI content from scratch or fine-tune existing copy."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Upgrade"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Elevate your pages with Blocks Pro"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Unleash limitless creativity with our custom block library - enhance your content with animations, dynamic texts, custom fonts and icons, and more!"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Upgrade to Blocks Pro"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Go Pro"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Achieve more with Bundles"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Elevate your site development process with our Pro Bundles. Jump start your site with a Pro Starter Template, and turbocharge your page building with Theme Pro and Blocks Pro – now powered by Kadence AI. Plus, unlock the potential of Custom Fonts, Cloud, Conversions, and so much more."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Go Pro with a Bundle"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid " Need Help Getting Started?"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 #: dist/blocks-advancedheading.js:1
 msgid "Kadence AI"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Update AI Settings"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Update Kadence AI settings. Regenerate contexts for patterns and pages to reflect your updated needs."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Customize Image Collections"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Update your Design Library imagery using premade collections or create and customize your own."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Row Layout Block"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Use the Row Layout block to improve the column functionality and create responsive post/page layouts."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Advanced Text Block"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Use the Advanced Text block to add text to your page/post with advanced customization - now with AI."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Need more help?"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Didn't find what you were looking for? Find more articles in our knowledge base."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Kadence is better with AI."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Elevate your web development game with Kadence AI. Supercharge your pattern and page library's potential with tailored content - get building pages in no time. Try Kadence AI today with 250 free credits!"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Elevate your web development game with Kadence AI. Supercharge your pattern and page library's potential with tailored content - get building pages in no time. Connect to your account to use Kadence AI with Kadence Blocks Pro"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Get Started with Kadence AI"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Streamlined site building"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "A content-rich design library that is uniquely yours"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Jump-start your site-building process with unique content and gorgeous designs. Learn more about the AI-Powered Design Library."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Fine-Tuned Editing"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Get your messaging on point with in-line AI-assisted editing. Learn More about the inline AI."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Kadence Blocks works better with Kadence Theme"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Level up with Kadence Blocks and Theme. Kickstart your site using Starter Templates, customize with ease, and elevate your pattern library's style with the Kadence Theme."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Try Kadence Theme Free"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Using the Design Library"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Use fully designed patterns and pages on your site with your own customizer settings - now with AI."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Kadence Blocks Pro Plugin"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Install and activate the Kadence Blocks Pro plugin, and get an overview of the Pro features available."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Advanced Slider"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Showcase products or highlight important visual content using the Advanced Slider block."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Elevate your web development game with Kadence AI. Supercharge your pattern and page library's potential with tailored content - get building pages in no time."
 msgstr ""
 
 #. translators: %d: number of results.
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 #: dist/blocks-rowlayout.js:6
 #: dist/blocks-rowlayout.js:8
 msgid "Kadence AI is disabled by site admin."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "AI Content generated. You can find AI content in your design library in the editor."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "AI access authorized."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Disconnect?"
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "Generating AI Content, this happens in the background, you can leave this page. You can find AI content in your design library in the editor."
 msgstr ""
 
-#: dist/admin-kadence-home.js:2
+#: dist/admin-kadence-home.js:10
 msgid "AI access is not authorized."
 msgstr ""
 
@@ -2681,7 +2825,13 @@ msgid "Icon Side"
 msgstr ""
 
 #: dist/blocks-accordion.js:1
+#: dist/blocks-advancedbtn.js:1
+#: dist/blocks-advancedheading.js:1
+#: dist/blocks-icon.js:1
+#: dist/blocks-iconlist.js:1
 #: dist/blocks-infobox.js:1
+#: dist/blocks-single-icon.js:1
+#: dist/blocks-singlebtn.js:1
 #: dist/blocks-tabs.js:3
 #: dist/components.js:27
 #: dist/components.js:28
@@ -2689,8 +2839,14 @@ msgid "Right"
 msgstr ""
 
 #: dist/blocks-accordion.js:1
+#: dist/blocks-advancedbtn.js:1
+#: dist/blocks-advancedheading.js:1
+#: dist/blocks-icon.js:1
+#: dist/blocks-iconlist.js:1
 #: dist/blocks-infobox.js:1
 #: dist/blocks-posts.js:9
+#: dist/blocks-single-icon.js:1
+#: dist/blocks-singlebtn.js:1
 #: dist/blocks-tabs.js:3
 #: dist/components.js:27
 #: dist/components.js:28
@@ -2710,11 +2866,33 @@ msgid "Add Title"
 msgstr ""
 
 #: dist/blocks-accordion.js:1
+msgid "One Row"
+msgstr ""
+
+#: dist/blocks-accordion.js:1
+msgid "Two Columns"
+msgstr ""
+
+#: dist/blocks-accordion.js:1
+#: dist/blocks-tableofcontents.js:1
+msgid "Three Columns"
+msgstr ""
+
+#: dist/blocks-accordion.js:1
 msgid "Panes close when another opens"
 msgstr ""
 
 #: dist/blocks-accordion.js:1
 msgid "Start with all panes collapsed"
+msgstr ""
+
+#: dist/blocks-accordion.js:1
+#: dist/blocks-rowlayout.js:22
+msgid "Column Layout"
+msgstr ""
+
+#: dist/blocks-accordion.js:1
+msgid "Column Gap"
 msgstr ""
 
 #: dist/blocks-accordion.js:1
@@ -2778,7 +2956,7 @@ msgstr ""
 #: dist/blocks-advancedheading.js:1
 #: dist/blocks-icon.js:1
 #: dist/blocks-iconlist.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-single-icon.js:1
 #: dist/blocks-singlebtn.js:1
 #: dist/blocks-tableofcontents.js:1
@@ -2839,7 +3017,7 @@ msgstr ""
 #: dist/blocks-column.js:1
 #: dist/blocks-image.js:1
 #: dist/blocks-infobox.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-singlebtn.js:1
 #: dist/blocks-tableofcontents.js:1
 #: dist/blocks-tabs.js:3
@@ -2858,7 +3036,7 @@ msgstr ""
 #: dist/blocks-form.js:2
 #: dist/blocks-image.js:1
 #: dist/blocks-infobox.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-singlebtn.js:1
 #: dist/blocks-tableofcontents.js:1
 #: dist/blocks-tabs.js:3
@@ -2879,7 +3057,7 @@ msgstr ""
 #: dist/blocks-column.js:1
 #: dist/blocks-form.js:2
 #: dist/blocks-infobox.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Text Color"
 msgstr ""
 
@@ -2898,7 +3076,7 @@ msgstr ""
 #: dist/blocks-advancedheading.js:1
 #: dist/blocks-column.js:1
 #: dist/blocks-infobox.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-tableofcontents.js:1
 #: dist/blocks-testimonials.js:1
 msgid "Background"
@@ -2923,7 +3101,7 @@ msgstr ""
 #: dist/blocks-image.js:1
 #: dist/blocks-infobox.js:1
 #: dist/blocks-lottie.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-show-more.js:1
 #: dist/blocks-singlebtn.js:1
 #: dist/blocks-tableofcontents.js:1
@@ -2950,7 +3128,7 @@ msgstr ""
 
 #: dist/blocks-accordion.js:1
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Structure Settings"
 msgstr ""
 
@@ -3056,7 +3234,7 @@ msgstr ""
 
 #: dist/blocks-advanced-form.js:1
 #: dist/blocks-advanced-form.js:4
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-tabs.js:1
 #: dist/blocks-tabs.js:3
 #: dist/blocks-testimonials.js:1
@@ -3065,8 +3243,8 @@ msgstr ""
 
 #: dist/blocks-advanced-form.js:1
 #: dist/blocks-posts.js:9
-#: dist/blocks-rowlayout.js:11
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:19
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 msgid "Style"
 msgstr ""
@@ -3102,8 +3280,8 @@ msgstr ""
 #: dist/blocks-advanced-form.js:1
 #: dist/blocks-advanced-form.js:10
 #: dist/blocks-advancedgallery.js:1
-#: dist/blocks-rowlayout.js:9
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:17
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-testimonials.js:1
 msgid "Dark"
 msgstr ""
@@ -3218,7 +3396,7 @@ msgstr ""
 #: dist/blocks-countdown.js:1
 #: dist/blocks-icon.js:1
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-single-icon.js:1
 #: dist/blocks-singlebtn.js:1
 msgid "Background Color"
@@ -3263,7 +3441,7 @@ msgstr ""
 #: dist/blocks-image.js:1
 #: dist/blocks-infobox.js:1
 #: dist/blocks-lottie.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-show-more.js:1
 #: dist/blocks-singlebtn.js:1
 #: dist/blocks-tableofcontents.js:1
@@ -3280,7 +3458,7 @@ msgstr ""
 #: dist/blocks-advanced-form.js:12
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-singlebtn.js:1
 #: dist/components.js:27
 #: dist/helpers.js:1
@@ -3291,7 +3469,7 @@ msgstr ""
 #: dist/blocks-advanced-form.js:12
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-singlebtn.js:1
 #: dist/components.js:27
 #: dist/helpers.js:1
@@ -3302,7 +3480,7 @@ msgstr ""
 #: dist/blocks-advanced-form.js:12
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-singlebtn.js:1
 #: dist/components.js:27
 #: dist/helpers.js:1
@@ -3376,7 +3554,7 @@ msgstr ""
 #: dist/blocks-advanced-form.js:2
 #: dist/blocks-advancedheading.js:1
 #: dist/blocks-form.js:2
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Border Settings"
 msgstr ""
 
@@ -3396,8 +3574,8 @@ msgstr ""
 #: dist/blocks-image.js:1
 #: dist/blocks-infobox.js:1
 #: dist/blocks-posts.js:9
-#: dist/blocks-rowlayout.js:9
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:17
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 #: dist/components.js:28
 #: dist/components.js:29
@@ -3710,7 +3888,7 @@ msgid "Search for Tag"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:2
-#: dist/blocks-rowlayout.js:9
+#: dist/blocks-rowlayout.js:17
 #: dist/extension-image-picker.js:1
 msgid "Search"
 msgstr ""
@@ -3877,8 +4055,8 @@ msgid "Fields"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:4
-#: dist/blocks-rowlayout.js:9
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:17
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 msgid "Advanced"
 msgstr ""
@@ -4067,6 +4245,14 @@ msgid "hCaptcha Site Key"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:10
+msgid "Use Global Kadence Settings"
+msgstr ""
+
+#: dist/blocks-advanced-form.js:10
+msgid "Use settings shared for all Kadence Form Captchas"
+msgstr ""
+
+#: dist/blocks-advanced-form.js:10
 msgid "Hide reCAPTCHA badge"
 msgstr ""
 
@@ -4096,8 +4282,8 @@ msgstr ""
 
 #: dist/blocks-advanced-form.js:10
 #: dist/blocks-advancedgallery.js:1
-#: dist/blocks-rowlayout.js:9
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:17
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-testimonials.js:1
 msgid "Light"
 msgstr ""
@@ -4381,7 +4567,7 @@ msgstr ""
 #: dist/blocks-advanced-form.js:12
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-singlebtn.js:1
 #: dist/components.js:27
 #: dist/helpers.js:1
@@ -4390,8 +4576,12 @@ msgstr ""
 
 #: dist/blocks-advanced-form.js:12
 #: dist/blocks-advancedbtn.js:1
+#: dist/blocks-advancedheading.js:1
+#: dist/blocks-icon.js:1
+#: dist/blocks-iconlist.js:1
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
+#: dist/blocks-single-icon.js:1
 #: dist/blocks-singlebtn.js:1
 #: dist/blocks-testimonials.js:1
 #: dist/components.js:13
@@ -4488,6 +4678,7 @@ msgstr ""
 #: dist/blocks-column.js:1
 #: dist/blocks-image.js:1
 #: dist/blocks-infobox.js:1
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-singlebtn.js:1
 #: dist/blocks-tableofcontents.js:1
 #: dist/blocks-testimonials.js:1
@@ -4500,10 +4691,11 @@ msgstr ""
 #: dist/blocks-column.js:1
 #: dist/blocks-countdown.js:1
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-singlebtn.js:1
 #: dist/blocks-testimonials.js:1
 #: dist/components.js:29
+#: dist/plugin-kadence-control.js:1
 msgid "Color"
 msgstr ""
 
@@ -4511,7 +4703,7 @@ msgstr ""
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-column.js:1
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-singlebtn.js:1
 msgid "Type"
 msgstr ""
@@ -4626,10 +4818,6 @@ msgstr ""
 
 #: dist/blocks-advanced-form.js:14
 msgid "Advanced forms can not be edited within the widgets screen."
-msgstr ""
-
-#: dist/blocks-advanced-form.js:14
-msgid "Edit Form"
 msgstr ""
 
 #: dist/blocks-advanced-form.js:14
@@ -4767,6 +4955,27 @@ msgid "The selected from is in the trash."
 msgstr ""
 
 #: dist/blocks-advancedbtn.js:1
+msgctxt "block title"
+msgid "Buttons (Adv)"
+msgstr ""
+
+#: dist/blocks-advancedbtn.js:1
+msgid "Create an advanced button or a row of buttons. Style each one, including hover controls"
+msgstr ""
+
+#: dist/blocks-advancedbtn.js:1
+msgid "button"
+msgstr ""
+
+#: dist/blocks-advancedbtn.js:1
+#: dist/blocks-icon.js:1
+#: dist/blocks-iconlist.js:1
+#: dist/blocks-infobox.js:1
+#: dist/blocks-single-icon.js:1
+msgid "icon"
+msgstr ""
+
+#: dist/blocks-advancedbtn.js:1
 msgid "Duplicate Previous Button"
 msgstr ""
 
@@ -4789,27 +4998,6 @@ msgstr ""
 
 #: dist/blocks-advancedbtn.js:1
 msgid "Button Gap"
-msgstr ""
-
-#: dist/blocks-advancedbtn.js:1
-msgctxt "block title"
-msgid "Buttons (Adv)"
-msgstr ""
-
-#: dist/blocks-advancedbtn.js:1
-msgid "Create an advanced button or a row of buttons. Style each one, including hover controls"
-msgstr ""
-
-#: dist/blocks-advancedbtn.js:1
-msgid "button"
-msgstr ""
-
-#: dist/blocks-advancedbtn.js:1
-#: dist/blocks-icon.js:1
-#: dist/blocks-iconlist.js:1
-#: dist/blocks-infobox.js:1
-#: dist/blocks-single-icon.js:1
-msgid "icon"
 msgstr ""
 
 #: dist/blocks-advancedbtn.js:1
@@ -4838,12 +5026,159 @@ msgid "btn"
 msgstr ""
 
 #: dist/blocks-advancedbtn.js:1
+#: dist/blocks-advancedheading.js:1
 #: dist/blocks-icon.js:1
 #: dist/blocks-iconlist.js:1
 #: dist/blocks-infobox.js:1
 #: dist/blocks-single-icon.js:1
 #: dist/blocks-singlebtn.js:1
 msgid "Link"
+msgstr ""
+
+#: dist/blocks-advancedbtn.js:1
+#: dist/blocks-icon.js:1
+#: dist/blocks-iconlist.js:1
+#: dist/blocks-single-icon.js:1
+#: dist/blocks-singlebtn.js:1
+msgid "Tooltip Settings"
+msgstr ""
+
+#: dist/blocks-advancedbtn.js:1
+#: dist/blocks-advancedheading.js:1
+#: dist/blocks-icon.js:1
+#: dist/blocks-iconlist.js:1
+#: dist/blocks-single-icon.js:1
+#: dist/blocks-singlebtn.js:1
+msgid "Tooltip Content"
+msgstr ""
+
+#: dist/blocks-advancedbtn.js:1
+#: dist/blocks-advancedheading.js:1
+#: dist/blocks-icon.js:1
+#: dist/blocks-iconlist.js:1
+#: dist/blocks-single-icon.js:1
+#: dist/blocks-singlebtn.js:1
+msgid "Placement"
+msgstr ""
+
+#: dist/blocks-advancedbtn.js:1
+#: dist/blocks-advancedheading.js:1
+#: dist/blocks-icon.js:1
+#: dist/blocks-iconlist.js:1
+#: dist/blocks-infobox.js:1
+#: dist/blocks-posts.js:9
+#: dist/blocks-single-icon.js:1
+#: dist/blocks-singlebtn.js:1
+#: dist/blocks-tabs.js:3
+#: dist/blocks-testimonials.js:1
+#: dist/components.js:13
+#: dist/components.js:27
+#: dist/components.js:28
+msgid "Top"
+msgstr ""
+
+#: dist/blocks-advancedbtn.js:1
+#: dist/blocks-advancedheading.js:1
+#: dist/blocks-icon.js:1
+#: dist/blocks-iconlist.js:1
+#: dist/blocks-single-icon.js:1
+#: dist/blocks-singlebtn.js:1
+msgid "Top Start"
+msgstr ""
+
+#: dist/blocks-advancedbtn.js:1
+#: dist/blocks-advancedheading.js:1
+#: dist/blocks-icon.js:1
+#: dist/blocks-iconlist.js:1
+#: dist/blocks-single-icon.js:1
+#: dist/blocks-singlebtn.js:1
+msgid "Top End"
+msgstr ""
+
+#: dist/blocks-advancedbtn.js:1
+#: dist/blocks-advancedheading.js:1
+#: dist/blocks-icon.js:1
+#: dist/blocks-iconlist.js:1
+#: dist/blocks-single-icon.js:1
+#: dist/blocks-singlebtn.js:1
+msgid "Right Start"
+msgstr ""
+
+#: dist/blocks-advancedbtn.js:1
+#: dist/blocks-advancedheading.js:1
+#: dist/blocks-icon.js:1
+#: dist/blocks-iconlist.js:1
+#: dist/blocks-single-icon.js:1
+#: dist/blocks-singlebtn.js:1
+msgid "Right End"
+msgstr ""
+
+#: dist/blocks-advancedbtn.js:1
+#: dist/blocks-advancedheading.js:1
+#: dist/blocks-icon.js:1
+#: dist/blocks-iconlist.js:1
+#: dist/blocks-infobox.js:1
+#: dist/blocks-single-icon.js:1
+#: dist/blocks-singlebtn.js:1
+#: dist/blocks-testimonials.js:1
+#: dist/components.js:13
+#: dist/components.js:27
+#: dist/components.js:28
+msgid "Bottom"
+msgstr ""
+
+#: dist/blocks-advancedbtn.js:1
+#: dist/blocks-advancedheading.js:1
+#: dist/blocks-icon.js:1
+#: dist/blocks-iconlist.js:1
+#: dist/blocks-single-icon.js:1
+#: dist/blocks-singlebtn.js:1
+msgid "Bottom Start"
+msgstr ""
+
+#: dist/blocks-advancedbtn.js:1
+#: dist/blocks-advancedheading.js:1
+#: dist/blocks-icon.js:1
+#: dist/blocks-iconlist.js:1
+#: dist/blocks-single-icon.js:1
+#: dist/blocks-singlebtn.js:1
+msgid "Bottom End"
+msgstr ""
+
+#: dist/blocks-advancedbtn.js:1
+#: dist/blocks-advancedheading.js:1
+#: dist/blocks-icon.js:1
+#: dist/blocks-iconlist.js:1
+#: dist/blocks-single-icon.js:1
+#: dist/blocks-singlebtn.js:1
+msgid "Left Start"
+msgstr ""
+
+#: dist/blocks-advancedbtn.js:1
+#: dist/blocks-advancedheading.js:1
+#: dist/blocks-icon.js:1
+#: dist/blocks-iconlist.js:1
+#: dist/blocks-single-icon.js:1
+#: dist/blocks-singlebtn.js:1
+msgid "Left End"
+msgstr ""
+
+#: dist/blocks-advancedbtn.js:1
+#: dist/blocks-advancedheading.js:1
+#: dist/blocks-icon.js:1
+#: dist/blocks-iconlist.js:1
+#: dist/blocks-single-icon.js:1
+#: dist/blocks-singlebtn.js:1
+msgid "Auto Start"
+msgstr ""
+
+#: dist/blocks-advancedbtn.js:1
+#: dist/blocks-advancedheading.js:1
+#: dist/blocks-icon.js:1
+#: dist/blocks-iconlist.js:1
+#: dist/blocks-single-icon.js:1
+#: dist/blocks-singlebtn.js:1
+msgid "Auto End"
 msgstr ""
 
 #: dist/blocks-advancedbtn.js:1
@@ -4859,7 +5194,6 @@ msgstr ""
 #: dist/blocks-advancedbtn.js:1
 #: dist/blocks-advancedheading.js:1
 #: dist/blocks-icon.js:1
-#: dist/blocks-iconlist.js:1
 #: dist/blocks-infobox.js:1
 #: dist/blocks-single-icon.js:1
 #: dist/blocks-singlebtn.js:1
@@ -4885,7 +5219,7 @@ msgstr ""
 #: dist/blocks-advancedheading.js:1
 #: dist/blocks-form.js:1
 #: dist/blocks-form.js:2
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-singlebtn.js:1
 #: dist/components.js:27
 #: dist/helpers.js:1
@@ -5099,7 +5433,7 @@ msgstr ""
 #: dist/blocks-advancedgallery.js:1
 #: dist/blocks-posts.js:9
 #: dist/blocks-rowlayout.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-tabs.js:1
 #: dist/blocks-testimonials.js:1
 msgid "Columns"
@@ -5165,6 +5499,10 @@ msgid "Thumbnail Image Sizes"
 msgstr ""
 
 #: dist/blocks-advancedgallery.js:1
+msgid "Reverse Image Order"
+msgstr ""
+
+#: dist/blocks-advancedgallery.js:1
 #: dist/blocks-testimonials.js:1
 msgid "Carousel Settings"
 msgstr ""
@@ -5175,23 +5513,23 @@ msgid "Carousel Auto Play"
 msgstr ""
 
 #: dist/blocks-advancedgallery.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-testimonials.js:1
 msgid "Autoplay Speed"
 msgstr ""
 
 #: dist/blocks-advancedgallery.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Transition Style"
 msgstr ""
 
 #: dist/blocks-advancedgallery.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Fade"
 msgstr ""
 
 #: dist/blocks-advancedgallery.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Slide"
 msgstr ""
 
@@ -5206,31 +5544,31 @@ msgid "Slides to Scroll"
 msgstr ""
 
 #: dist/blocks-advancedgallery.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-testimonials.js:1
 msgid "Arrow Style"
 msgstr ""
 
 #: dist/blocks-advancedgallery.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-testimonials.js:1
 msgid "White on Dark"
 msgstr ""
 
 #: dist/blocks-advancedgallery.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-testimonials.js:1
 msgid "Black on Light"
 msgstr ""
 
 #: dist/blocks-advancedgallery.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-testimonials.js:1
 msgid "Outline Black"
 msgstr ""
 
 #: dist/blocks-advancedgallery.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-testimonials.js:1
 msgid "Outline White"
 msgstr ""
@@ -5241,13 +5579,13 @@ msgid "Dot Style"
 msgstr ""
 
 #: dist/blocks-advancedgallery.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-testimonials.js:1
 msgid "Outline Dark"
 msgstr ""
 
 #: dist/blocks-advancedgallery.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-testimonials.js:1
 msgid "Outline Light"
 msgstr ""
@@ -5351,7 +5689,7 @@ msgstr ""
 #: dist/blocks-advancedgallery.js:1
 #: dist/blocks-column.js:1
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Saturation"
 msgstr ""
 
@@ -5469,12 +5807,19 @@ msgstr ""
 msgid "Backspace Speed (ms)"
 msgstr ""
 
-#. translators: %s: the current context
+#: dist/blocks-advancedheading.js:1
+msgid "Content"
+msgstr ""
+
+#: dist/blocks-advancedheading.js:1
+msgid "Tooltips"
+msgstr ""
+
 #: dist/blocks-advancedheading.js:1
 #: dist/blocks-rowlayout.js:4
 #: dist/blocks-rowlayout.js:5
 #: dist/blocks-rowlayout.js:7
-#: dist/blocks-rowlayout.js:9
+#: dist/blocks-rowlayout.js:17
 msgid "Activate Kadence AI"
 msgstr ""
 
@@ -5619,7 +5964,7 @@ msgid "Text Alignment"
 msgstr ""
 
 #: dist/blocks-advancedheading.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Link Color"
 msgstr ""
 
@@ -5699,6 +6044,21 @@ msgid "Text Shadow"
 msgstr ""
 
 #: dist/blocks-advancedheading.js:1
+msgid "Icon Tooltip Content"
+msgstr ""
+
+#: dist/blocks-advancedheading.js:1
+msgid "Icon Tooltip Placement"
+msgstr ""
+
+#: dist/blocks-advancedheading.js:1
+#: dist/blocks-icon.js:1
+#: dist/blocks-iconlist.js:1
+#: dist/blocks-single-icon.js:1
+msgid "Show indicator underline"
+msgstr ""
+
+#: dist/blocks-advancedheading.js:1
 msgid "Advanced Highlight Settings"
 msgstr ""
 
@@ -5725,94 +6085,94 @@ msgstr ""
 
 #: dist/blocks-column.js:1
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Multiply"
 msgstr ""
 
 #: dist/blocks-column.js:1
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Screen"
 msgstr ""
 
 #: dist/blocks-column.js:1
 #: dist/blocks-image.js:1
 #: dist/blocks-infobox.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Overlay"
 msgstr ""
 
 #: dist/blocks-column.js:1
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Darken"
 msgstr ""
 
 #: dist/blocks-column.js:1
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Lighten"
 msgstr ""
 
 #: dist/blocks-column.js:1
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Color Dodge"
 msgstr ""
 
 #: dist/blocks-column.js:1
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Color Burn"
 msgstr ""
 
 #: dist/blocks-column.js:1
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Difference"
 msgstr ""
 
 #: dist/blocks-column.js:1
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Exclusion"
 msgstr ""
 
 #: dist/blocks-column.js:1
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Hue"
 msgstr ""
 
 #: dist/blocks-column.js:1
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Luminosity"
 msgstr ""
 
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 #: dist/helpers.js:1
 msgid "XXS"
 msgstr ""
 
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 #: dist/helpers.js:1
 msgid "2X Small"
 msgstr ""
 
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 #: dist/helpers.js:1
 msgid "XS"
 msgstr ""
 
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 #: dist/helpers.js:1
 msgid "X Small"
@@ -5820,70 +6180,70 @@ msgstr ""
 
 #: dist/blocks-column.js:1
 #: dist/blocks-posts.js:9
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 #: dist/helpers.js:1
 msgid "Medium"
 msgstr ""
 
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 #: dist/helpers.js:1
 msgid "X Large"
 msgstr ""
 
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 #: dist/helpers.js:1
 msgid "XXL"
 msgstr ""
 
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 #: dist/helpers.js:1
 msgid "2X Large"
 msgstr ""
 
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 #: dist/helpers.js:1
 msgid "3XL"
 msgstr ""
 
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 #: dist/helpers.js:1
 msgid "3X Large"
 msgstr ""
 
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 #: dist/helpers.js:1
 msgid "4XL"
 msgstr ""
 
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 #: dist/helpers.js:1
 msgid "4X Large"
 msgstr ""
 
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 #: dist/helpers.js:1
 msgid "5XL"
 msgstr ""
 
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 #: dist/helpers.js:1
 msgid "5X Large"
@@ -5901,7 +6261,7 @@ msgid "A container to style a section of content."
 msgstr ""
 
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "column"
 msgstr ""
 
@@ -5922,17 +6282,17 @@ msgid "Horizontal Gap"
 msgstr ""
 
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Sm"
 msgstr ""
 
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Md"
 msgstr ""
 
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Lg"
 msgstr ""
 
@@ -5961,7 +6321,7 @@ msgid "Flex Basis"
 msgstr ""
 
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Content Max Width"
 msgstr ""
 
@@ -5978,7 +6338,7 @@ msgid "Link entire section"
 msgstr ""
 
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Container HTML tag"
 msgstr ""
 
@@ -6009,34 +6369,34 @@ msgstr ""
 
 #: dist/blocks-column.js:1
 #: dist/blocks-countdown.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-spacer.js:1
 msgid "Visibility Settings"
 msgstr ""
 
 #: dist/blocks-column.js:1
 #: dist/blocks-countdown.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-spacer.js:1
 msgid "Hide on Desktop"
 msgstr ""
 
 #: dist/blocks-column.js:1
 #: dist/blocks-countdown.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-spacer.js:1
 msgid "Hide on Tablet"
 msgstr ""
 
 #: dist/blocks-column.js:1
 #: dist/blocks-countdown.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-spacer.js:1
 msgid "Hide on Mobile"
 msgstr ""
 
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Background Image"
 msgstr ""
 
@@ -6046,13 +6406,13 @@ msgstr ""
 
 #: dist/blocks-column.js:1
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Overlay Opacity"
 msgstr ""
 
 #: dist/blocks-column.js:1
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Notice: Blend Mode not supported in all browsers"
 msgstr ""
 
@@ -6061,7 +6421,7 @@ msgid "Border Styles"
 msgstr ""
 
 #: dist/blocks-column.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Text Color Settings"
 msgstr ""
 
@@ -6741,63 +7101,63 @@ msgstr ""
 
 #: dist/blocks-form.js:2
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 msgid "Center Top"
 msgstr ""
 
 #: dist/blocks-form.js:2
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 msgid "Center Center"
 msgstr ""
 
 #: dist/blocks-form.js:2
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 msgid "Center Bottom"
 msgstr ""
 
 #: dist/blocks-form.js:2
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 msgid "Left Top"
 msgstr ""
 
 #: dist/blocks-form.js:2
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 msgid "Left Center"
 msgstr ""
 
 #: dist/blocks-form.js:2
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 msgid "Left Bottom"
 msgstr ""
 
 #: dist/blocks-form.js:2
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 msgid "Right Top"
 msgstr ""
 
 #: dist/blocks-form.js:2
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 msgid "Right Center"
 msgstr ""
 
 #: dist/blocks-form.js:2
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:27
 msgid "Right Bottom"
 msgstr ""
@@ -6901,6 +7261,8 @@ msgid "Align field labels with submit alignment?"
 msgstr ""
 
 #: dist/blocks-googlemaps.js:1
+#: dist/blocks/googlemaps/block.json
+#: src/blocks/googlemaps/block.json
 msgctxt "block title"
 msgid "Google Maps"
 msgstr ""
@@ -7068,7 +7430,7 @@ msgstr ""
 #: dist/blocks-lottie.js:1
 #: dist/components.js:13
 #: dist/components.js:29
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Cancel"
 msgstr ""
 
@@ -7173,12 +7535,32 @@ msgid "Indent list item"
 msgstr ""
 
 #: dist/blocks-iconlist.js:1
+msgid "Only apply tooltip to:"
+msgstr ""
+
+#: dist/blocks-iconlist.js:1
+msgid "Text and Icon"
+msgstr ""
+
+#: dist/blocks-iconlist.js:1
+msgid "Text Only"
+msgstr ""
+
+#: dist/blocks-iconlist.js:1
+msgid "Icon Only"
+msgstr ""
+
+#: dist/blocks-iconlist.js:1
 msgid "Hide icon"
 msgstr ""
 
 #: dist/blocks-iconlist.js:1
 #: dist/components.js:29
 msgid "Select Icon"
+msgstr ""
+
+#: dist/blocks-iconlist.js:1
+msgid "Icon title for screen readers"
 msgstr ""
 
 #: dist/blocks-iconlist.js:1
@@ -7204,29 +7586,9 @@ msgstr ""
 
 #: dist/blocks-iconlist.js:1
 #: dist/blocks-infobox.js:1
-#: dist/blocks-posts.js:9
-#: dist/blocks-tabs.js:3
-#: dist/blocks-testimonials.js:1
-#: dist/components.js:13
-#: dist/components.js:27
-#: dist/components.js:28
-msgid "Top"
-msgstr ""
-
-#: dist/blocks-iconlist.js:1
-#: dist/blocks-infobox.js:1
 #: dist/blocks-testimonials.js:1
 #: dist/components.js:13
 msgid "Middle"
-msgstr ""
-
-#: dist/blocks-iconlist.js:1
-#: dist/blocks-infobox.js:1
-#: dist/blocks-testimonials.js:1
-#: dist/components.js:13
-#: dist/components.js:27
-#: dist/components.js:28
-msgid "Bottom"
 msgstr ""
 
 #: dist/blocks-iconlist.js:1
@@ -7396,14 +7758,14 @@ msgid "Mask Size"
 msgstr ""
 
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-testimonials.js:1
 #: dist/components.js:13
 msgid "Contain"
 msgstr ""
 
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-testimonials.js:1
 #: dist/components.js:13
 msgid "Cover"
@@ -7418,25 +7780,25 @@ msgid "Mask Repeat"
 msgstr ""
 
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:13
 msgid "No Repeat"
 msgstr ""
 
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:13
 msgid "Repeat"
 msgstr ""
 
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:13
 msgid "Repeat-x"
 msgstr ""
 
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:13
 msgid "Repeat-y"
 msgstr ""
@@ -7446,7 +7808,7 @@ msgid "Enable Caption"
 msgstr ""
 
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Overlay Color"
 msgstr ""
 
@@ -7459,7 +7821,7 @@ msgid "This adds a class to tell lazy load plugins to skip this image for lazy l
 msgstr ""
 
 #: dist/blocks-image.js:1
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Z-Index Control"
 msgstr ""
 
@@ -7743,6 +8105,14 @@ msgstr ""
 
 #: dist/blocks-infobox.js:1
 msgid "Learn More Border Radius (px)"
+msgstr ""
+
+#: dist/blocks-infobox.js:1
+msgid "Set Height 100%"
+msgstr ""
+
+#: dist/blocks-infobox.js:1
+msgid "This will only work if the parent container is set to a height or you are in a row layout with 100% inner block height."
 msgstr ""
 
 #: dist/blocks-infobox.js:1
@@ -8227,9 +8597,9 @@ msgid "Requires Kadence Blocks Pro"
 msgstr ""
 
 #: dist/blocks-rowlayout.js:1
-#: dist/blocks-rowlayout.js:12
-#: dist/blocks-rowlayout.js:13
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:20
+#: dist/blocks-rowlayout.js:21
+#: dist/blocks-rowlayout.js:22
 msgid "Pro"
 msgstr ""
 
@@ -8238,12 +8608,12 @@ msgid "Block Patterns"
 msgstr ""
 
 #: dist/blocks-rowlayout.js:1
-#: dist/blocks-rowlayout.js:12
+#: dist/blocks-rowlayout.js:20
 msgid "Category"
 msgstr ""
 
 #: dist/blocks-rowlayout.js:1
-#: dist/blocks-rowlayout.js:12
+#: dist/blocks-rowlayout.js:20
 msgid "Hero"
 msgstr ""
 
@@ -8368,10 +8738,6 @@ msgid "Volunteer"
 msgstr ""
 
 #: dist/blocks-rowlayout.js:1
-msgid "Home"
-msgstr ""
-
-#: dist/blocks-rowlayout.js:1
 msgid "Services"
 msgstr ""
 
@@ -8393,6 +8759,11 @@ msgstr ""
 #. translators: %s: the current context
 #: dist/blocks-rowlayout.js:3
 msgid "Would you like to generate AI powered content for the %s context?"
+msgstr ""
+
+#. translators: %s: the current context
+#: dist/blocks-rowlayout.js:4
+msgid "Using the site information you provided we will generate copy for the %s context."
 msgstr ""
 
 #: dist/blocks-rowlayout.js:4
@@ -8455,9 +8826,9 @@ msgid "Generate Content AI Content"
 msgstr ""
 
 #: dist/blocks-rowlayout.js:6
-#: dist/blocks-rowlayout.js:11
-#: dist/blocks-rowlayout.js:12
-#: dist/blocks-rowlayout.js:13
+#: dist/blocks-rowlayout.js:19
+#: dist/blocks-rowlayout.js:20
+#: dist/blocks-rowlayout.js:21
 msgid "Preparing Content..."
 msgstr ""
 
@@ -8473,560 +8844,560 @@ msgstr ""
 msgid "Drop in professionally designed pages with AI Generated Content"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:9
-#: dist/blocks-rowlayout.js:11
+#: dist/blocks-rowlayout.js:17
+#: dist/blocks-rowlayout.js:19
 #: dist/blocks-testimonials.js:1
 msgid "All"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:9
+#: dist/blocks-rowlayout.js:17
 msgid "Highlight"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:9
+#: dist/blocks-rowlayout.js:17
 msgid "Smaller"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:9
+#: dist/blocks-rowlayout.js:17
 msgid "Update Design Library Images"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:9
+#: dist/blocks-rowlayout.js:17
 msgid "Custom Image Selection"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:9
+#: dist/blocks-rowlayout.js:17
 msgid "If disabled you will import and preview only wireframe images."
 msgstr ""
 
-#: dist/blocks-rowlayout.js:9
+#: dist/blocks-rowlayout.js:17
 msgid "Live Preview"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:9
+#: dist/blocks-rowlayout.js:17
 msgid "If disabled you will not see a live preview of how the patterns will look on your site."
 msgstr ""
 
-#: dist/blocks-rowlayout.js:9
+#: dist/blocks-rowlayout.js:17
 msgid "By Design"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:9
+#: dist/blocks-rowlayout.js:17
 msgid "With AI"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:9
+#: dist/blocks-rowlayout.js:17
 msgid "Patterns"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:9
+#: dist/blocks-rowlayout.js:17
 msgid "Pages"
 msgstr ""
 
 #. translators: %s is the credit amount
-#: dist/blocks-rowlayout.js:10
+#: dist/blocks-rowlayout.js:18
 msgid "You can regenerate AI content for this context. This will use %s credits and your current ai text will be forever lost. Would you like to regenerate AI content for this context?"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:10
+#: dist/blocks-rowlayout.js:18
 msgid "Credits Remaining"
 msgstr ""
 
 #. translators: %s is the credit amount
-#: dist/blocks-rowlayout.js:11
+#: dist/blocks-rowlayout.js:19
 msgid "Regenerate Content (%s Credits)"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:11
-#: dist/blocks-rowlayout.js:12
-#: dist/blocks-rowlayout.js:13
+#: dist/blocks-rowlayout.js:19
+#: dist/blocks-rowlayout.js:20
+#: dist/blocks-rowlayout.js:21
 msgid "Error, Unable to access library database, please try re-syncing"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:11
-#: dist/blocks-rowlayout.js:12
-#: dist/blocks-rowlayout.js:13
+#: dist/blocks-rowlayout.js:19
+#: dist/blocks-rowlayout.js:20
+#: dist/blocks-rowlayout.js:21
 msgid " Sync with Cloud"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:11
+#: dist/blocks-rowlayout.js:19
 msgid "Error, Unable to access library, please reload this page in your browser."
 msgstr ""
 
 #. translators: %s is Prebuilt Name
-#: dist/blocks-rowlayout.js:12
-#: dist/blocks-rowlayout.js:13
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:20
+#: dist/blocks-rowlayout.js:21
+#: dist/blocks-rowlayout.js:22
 msgid "Add %s"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:12
+#: dist/blocks-rowlayout.js:20
 msgid "Pro required for this item"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:12
+#: dist/blocks-rowlayout.js:20
 msgid "Feature"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:12
+#: dist/blocks-rowlayout.js:20
 msgid "Call To Action"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:12
+#: dist/blocks-rowlayout.js:20
 msgid "Staff"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:13
+#: dist/blocks-rowlayout.js:21
 msgid "Back to Starter Packs"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/components.js:13
 #: dist/components.js:28
 msgid "Upgrade to Pro"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Remove Connection"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Connection URL"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Connection Access Key"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Add Connection"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Learn about connecting libraries at:"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Kadence Pattern Hub"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Starter Packs"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
-#: dist/plugin-kadence-control.js:5
+#: dist/blocks-rowlayout.js:22
+#: dist/plugin-kadence-control.js:6
 msgid "Design Library"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Cloud Connect"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Sync with Cloud"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Close Dialog"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Equal"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Left Heavy 66/33"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Right Heavy 33/66"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Collapse to Rows"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Left Heavy 50/25/25"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Right Heavy 25/25/50"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Center Heavy 25/50/25"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Wide Center 20/60/20"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Wider Center 15/70/15"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "First Row, Next Columns 100 - 50/50"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Last Row, Previous Columns 50/50 - 100"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Left Heavy 40/20/20/20"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Right Heavy 20/20/20/40"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Two Column Grid"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Three Column Grid"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Single Row"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-testimonials.js:1
 msgid "Column Gutter"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Row Gutter"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Collapse Order"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Normal ->"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Reverse <-"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Inherit Max Width from Theme?"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Custom Content Max Width"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Break Left Section Full Width?"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Break Right Section Full Width?"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Top Divider"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Select Divider"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-spacer.js:1
 msgid "Divider Height"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-spacer.js:1
 msgid "Divider Width"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Bottom Divider"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks-spacer.js:1
 msgid "Divider Color"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Overlay Image"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Set custom background for Mobile?"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Force no image for mobile"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Set custom background overlay for mobile?"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Overlay Type"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Blend Mode"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Set custom background for tablets?"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Force no image/gradient for tablet"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Set custom background overlay for tablets?"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Slider Item Count"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Slide Background Color"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Slide Background Image"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Slider Image Size"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Slider Image Position"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Slider Image Repeat"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Slider Auto Play"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Slider Transition Speed"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Background Video"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "HTML5 Video File URL"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "YouTube ID ( example: OZBOEnHhR14 )"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Vimeo ID ( example: 789006133 )"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Background Video Ratio"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Mute Video"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Loop Video"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Show Mute Unmute Buttons?"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Show Play Pause Buttons?"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Select Video Poster"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Background Settings"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Background Overlay Settings"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
+msgid "Overflow Hidden"
+msgstr ""
+
+#: dist/blocks-rowlayout.js:22
 msgid "Switch to 5% step resizing"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Switch to fluid resizing"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Row"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Two: Equal"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Two: Left Heavy 66/33"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Two: Right Heavy 33/66"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Three: Equal"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Three: Left Heavy 50/25/25"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Three: Right Heavy 25/25/50"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Three: Center Heavy 25/50/25"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Three: Wide Center 20/60/20"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Three: Wider Center 15/70/15"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Four: Equal"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Four: Left Heavy 40/20/20/20"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Four: Right Heavy 20/20/20/40"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Five: Equal"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Six: Equal"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Inner Content Width"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Use Theme Content Inner Width?"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Add Another Section"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Minimum Height"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Inner Column Height 100%"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "User Visibility Settings"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Hide from Logged in Users"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Optional: Hide from Specific User Roles"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Optional: Show Only to Specific User Roles"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Hide from Loggedout Users"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Restrict based on Membership"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Minimum Access Level"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Specific Memberships"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Row Content Only Editing"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Select Your Layout"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
-msgid "Column Layout"
-msgstr ""
-
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 #: dist/blocks/rowlayout/block.json
 #: src/blocks/rowlayout/block.json
 msgctxt "block title"
 msgid "Row Layout"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "A container to hold a grid layout."
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "row/layout"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Column 1"
 msgstr ""
 
-#: dist/blocks-rowlayout.js:14
+#: dist/blocks-rowlayout.js:22
 msgid "Column 2"
 msgstr ""
 
@@ -9051,7 +9422,7 @@ msgid "hide"
 msgstr ""
 
 #: dist/blocks-show-more.js:1
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Show More"
 msgstr ""
 
@@ -9162,10 +9533,6 @@ msgstr ""
 
 #: dist/blocks-tableofcontents.js:1
 msgid "Two columns"
-msgstr ""
-
-#: dist/blocks-tableofcontents.js:1
-msgid "Three Columns"
 msgstr ""
 
 #: dist/blocks-tableofcontents.js:1
@@ -9374,6 +9741,10 @@ msgstr ""
 
 #: dist/blocks-tabs.js:3
 msgid "Add Tab"
+msgstr ""
+
+#: dist/blocks-tabs.js:3
+msgid "Accordions close when another opens"
 msgstr ""
 
 #: dist/blocks-tabs.js:3
@@ -9664,6 +10035,10 @@ msgid "Wrapper"
 msgstr ""
 
 #: dist/blocks-testimonials.js:1
+msgid "Testimonial Carousel"
+msgstr ""
+
+#: dist/blocks-testimonials.js:1
 #: dist/blocks/testimonials/block.json
 #: src/blocks/testimonials/block.json
 msgctxt "block title"
@@ -9687,6 +10062,8 @@ msgstr ""
 #: dist/components.js:13
 #: dist/components.js:21
 #: dist/components.js:27
+#: dist/plugin-kadence-control.js:3
+#: dist/plugin-kadence-control.js:5
 msgid "Color code: %s"
 msgstr ""
 
@@ -9873,6 +10250,7 @@ msgid "Ellipse"
 msgstr ""
 
 #: dist/components.js:27
+#: dist/plugin-kadence-control.js:6
 msgid "Reset"
 msgstr ""
 
@@ -10089,6 +10467,7 @@ msgid "Select a Unit"
 msgstr ""
 
 #: dist/components.js:29
+#: dist/plugin-kadence-control.js:5
 msgid "Block Defaults"
 msgstr ""
 
@@ -10173,6 +10552,18 @@ msgid "Download Complete"
 msgstr ""
 
 #: dist/extension-image-picker.js:1
+msgid "Optional filename"
+msgstr ""
+
+#: dist/extension-image-picker.js:1
+msgid "Enter image alt"
+msgstr ""
+
+#: dist/extension-image-picker.js:1
+msgid "Search Images..."
+msgstr ""
+
+#: dist/extension-image-picker.js:1
 msgid "Pexels"
 msgstr ""
 
@@ -10204,544 +10595,608 @@ msgstr ""
 msgid "Failed to save colors"
 msgstr ""
 
-#. translators: %s: color hex code e.g: "#f00".
+#: dist/plugin-kadence-control.js:5
+msgid "Remove Last Color"
+msgstr ""
+
+#: dist/plugin-kadence-control.js:5
+msgid "Add Color"
+msgstr ""
+
+#: dist/plugin-kadence-control.js:5
+msgid "Use only Custom Colors?"
+msgstr ""
+
+#: dist/plugin-kadence-control.js:5
+msgid "Refresh page to reload theme defined colors"
+msgstr ""
+
 #: dist/plugin-kadence-control.js:5
 msgid "Block defaults saved!"
 msgstr ""
 
 #: dist/plugin-kadence-control.js:5
+msgid "Font Family Options"
+msgstr ""
+
+#: dist/plugin-kadence-control.js:5
+msgid "Kadence Font Family Options"
+msgstr ""
+
+#: dist/plugin-kadence-control.js:5
+msgid "Show All Font Family Options"
+msgstr ""
+
+#: dist/plugin-kadence-control.js:5
+msgid "Select the font families you want"
+msgstr ""
+
+#: dist/plugin-kadence-control.js:5
+msgid "Save/Close"
+msgstr ""
+
+#: dist/plugin-kadence-control.js:5
+msgid "Block Settings Visibility"
+msgstr ""
+
+#. translators: %s is the name of the Kadence Block
+#: dist/plugin-kadence-control.js:6
+msgid "%s Settings"
+msgstr ""
+
+#: dist/plugin-kadence-control.js:6
 msgid "Control All Block Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enabled All Settings For"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "All Users"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Minimum User Role Contributor"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Minimum User Role Author"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Minimum User Role Editor"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Minimum User Role Admin"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "No Users"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Control Individual Settings Groups"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Block visibility saved!"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Create an export of block default settings that can be imported into another site."
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Include Block Defaults"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "No custom defaults to export."
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Include Block Visibility"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "No custom visibility settings to export."
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Download Export"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Import settings from an export file."
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Select File"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Invalid file"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Invalid JSON"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Invalid File. No block defaults or visibility settings."
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Block defaults imported"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Block visbility imported"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Import"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Reset all custom block defaults or visability settings. This will not modify any existing blocks."
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Reset Block Visibility Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Reset Block Defaults"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Block defaults reset"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Block visibility reset"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Are you sure you'd like to reset these settings?"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
+msgid "Default Editor Block "
+msgstr ""
+
+#: dist/plugin-kadence-control.js:6
+msgid "Set Advanced Text as default block"
+msgstr ""
+
+#: dist/plugin-kadence-control.js:6
+msgid "This will set the Advanced Text block as the default block in the editor and update its default styles to use the paragraph tag."
+msgstr ""
+
+#: dist/plugin-kadence-control.js:6
+msgid "If Kadence Blocks is disabled Advanced Text blocks will continue to display, but may lose some of their styling."
+msgstr ""
+
+#: dist/plugin-kadence-control.js:6
 msgid "Kadence Blocks Controls"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Color Palette"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Block Visibility"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Pane Close/Open Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Title Color Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Title Trigger Icon Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Title Spacing Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Title Border Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Title Font Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Inner Content Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Title Tag Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Structure Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Count Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Size Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Color Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Icon Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Font Family Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Gutter Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Lightbox Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Image Style Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Caption Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Image Shadow Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Gallery Spacing Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Typography Settings in Toolbar"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Color Settings in Toolbar"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Advanced Typography Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Highlight Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Margin Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Container Style Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Item Style Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Number Style Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Label Style Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Visibility Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Count Up"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Title Style Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Google Maps"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable API Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Map Location Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Icon Spacing Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable List Column Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable List Spacing Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Text Style Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable All List Icon Control"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable individual List Item Control"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Container Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Media Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Title Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Text Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Learn More Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Shadow Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Lottie"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Source File Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Playback Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Size Control Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Layout Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Image Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Category Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Meta Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Content Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Basic Layout Controls"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Padding/Margin Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Background Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Background Overlay Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Border Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Dividers Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Text Color Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Section"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Text Align Control"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Text Color Control"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Padding/Margin Control"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Show More Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Spacing Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Expand Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Height Units"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Height Control"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Divider Toggle Control"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Divider Styles Control"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Allowed Headers Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Collapsible Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable List Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Scroll Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Non static Content"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Title Spacing/Border Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Title Icon Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Style Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Column Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Carousel Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Top Icon Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Rating Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Name Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Occupation Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Individual Item Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Components"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Show Design Library Button For"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Show Kadence Library For"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Show Starter Packs Library For"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Import/Export Block Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Pexels Library Search"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Enable Pexels Image Picker"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Dynamic Content Settings"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Always show all fields"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Editor Width"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
+msgid "Rename"
+msgstr ""
+
+#: dist/plugin-kadence-control.js:6
 msgid "Rename Block"
 msgstr ""
 
-#: dist/plugin-kadence-control.js:5
+#: dist/plugin-kadence-control.js:6
 msgid "Block Name"
 msgstr ""
 
