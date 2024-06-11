@@ -643,6 +643,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			$rel_attr .= ( ! empty( $rel_attr ) ? ' sponsored' : 'sponsored' );
 		}
 		$caption       = apply_filters( 'kadence_blocks_pro_dynamic_gallery_caption', $caption, $image, $attributes );
+		$caption       = strip_tags( html_entity_decode($caption, ENT_QUOTES, 'UTF-8') );
 		$href = '';
 		$image_src  = ( ! empty( $image['thumbUrl'] ) ? $image['thumbUrl'] : $image['url'] );
 		$image_full = ( ! empty( $image['fullUrl'] ) ? $image['fullUrl'] : $image['url'] );
@@ -726,7 +727,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		}
 		$item_tag = ( ( 'carousel' === $type || 'slider' === $type || 'thumbslider' === $type || 'fluidcarousel' === $type ) ? 'div' : 'li' );
 		$fig_tag = ( empty( $href ) && 'below' === $caption_style ? 'figcaption' : 'div' );
-		$figcap = '<' . $fig_tag . ' class="kadence-blocks-gallery-item__caption">' . ( ! empty( $caption ) && is_string( $caption ) ? $caption : '' ) . '</' . $fig_tag . '>';
+		$figcap = '<' . $fig_tag . ' class="kadence-blocks-gallery-item__caption">' . ( ! empty( $caption ) && is_string( $caption ) ? esc_attr( $caption ) : '' ) . '</' . $fig_tag . '>';
 		$image_classes = array( 'wp-image-' . $image_id );
 		if ( 'carousel' === $type || 'slider' === $type || 'thumbslider' === $type || 'fluidcarousel' === $type ) {
 			$image_classes[] = 'skip-lazy';
