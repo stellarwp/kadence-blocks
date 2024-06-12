@@ -40,7 +40,6 @@ export const kadenceToolTips = {
 				...activeAttributes,
 				...newValue,
 			};
-			console.log(newAttributes);
 			onChange(
 				applyFormat(value, {
 					type: name,
