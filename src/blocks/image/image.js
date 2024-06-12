@@ -95,6 +95,7 @@ import {
 	CopyPasteAttributes,
 	GradientControl,
 	BackgroundTypeControl,
+	KadenceFocalPicker,
 } from '@kadence/components';
 
 export default function Image({
@@ -178,6 +179,7 @@ export default function Image({
 		overlayOpacity,
 		overlayBlendMode,
 		globalAlt,
+		imagePosition,
 	} = attributes;
 
 	const previewURL = dynamicURL ? dynamicURL : url;
@@ -660,49 +662,57 @@ export default function Image({
 								onChange={(value) => setAttributes({ useRatio: value })}
 							/>
 							{useRatio && (
-								<SelectControl
-									label={__('Size Ratio', 'kadence-blocks')}
-									value={ratio}
-									options={[
-										{
-											label: __('Landscape 4:3', 'kadence-blocks'),
-											value: 'land43',
-										},
-										{
-											label: __('Landscape 3:2', 'kadence-blocks'),
-											value: 'land32',
-										},
-										{
-											label: __('Landscape 16:9', 'kadence-blocks'),
-											value: 'land169',
-										},
-										{
-											label: __('Landscape 2:1', 'kadence-blocks'),
-											value: 'land21',
-										},
-										{
-											label: __('Landscape 3:1', 'kadence-blocks'),
-											value: 'land31',
-										},
-										{
-											label: __('Landscape 4:1', 'kadence-blocks'),
-											value: 'land41',
-										},
-										{
-											label: __('Portrait 3:4', 'kadence-blocks'),
-											value: 'port34',
-										},
-										{
-											label: __('Portrait 2:3', 'kadence-blocks'),
-											value: 'port23',
-										},
-										{
-											label: __('Square 1:1', 'kadence-blocks'),
-											value: 'square',
-										},
-									]}
-									onChange={(value) => setAttributes({ ratio: value })}
-								/>
+								<>
+									<SelectControl
+										label={__('Size Ratio', 'kadence-blocks')}
+										value={ratio}
+										options={[
+											{
+												label: __('Landscape 4:3', 'kadence-blocks'),
+												value: 'land43',
+											},
+											{
+												label: __('Landscape 3:2', 'kadence-blocks'),
+												value: 'land32',
+											},
+											{
+												label: __('Landscape 16:9', 'kadence-blocks'),
+												value: 'land169',
+											},
+											{
+												label: __('Landscape 2:1', 'kadence-blocks'),
+												value: 'land21',
+											},
+											{
+												label: __('Landscape 3:1', 'kadence-blocks'),
+												value: 'land31',
+											},
+											{
+												label: __('Landscape 4:1', 'kadence-blocks'),
+												value: 'land41',
+											},
+											{
+												label: __('Portrait 3:4', 'kadence-blocks'),
+												value: 'port34',
+											},
+											{
+												label: __('Portrait 2:3', 'kadence-blocks'),
+												value: 'port23',
+											},
+											{
+												label: __('Square 1:1', 'kadence-blocks'),
+												value: 'square',
+											},
+										]}
+										onChange={(value) => setAttributes({ ratio: value })}
+									/>
+
+									<KadenceFocalPicker
+										url={url ? url : ''}
+										value={imagePosition ? imagePosition : 'center center'}
+										onChange={(value) => setAttributes({ imagePosition: value })}
+									/>
+								</>
 							)}
 							{showMaxWidth && (
 								<ResponsiveRangeControls
@@ -1526,6 +1536,7 @@ export default function Image({
 									: undefined) +
 							  ')'
 							: undefined,
+					objectPosition: imagePosition ? imagePosition : undefined,
 				}}
 				onError={() => onImageError()}
 				onLoad={(event) => {
