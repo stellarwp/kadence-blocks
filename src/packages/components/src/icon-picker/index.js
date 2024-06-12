@@ -5,12 +5,14 @@ import {
     PanelBody,
     SelectControl,
     Icon,
+	Modal
 } from '@wordpress/components'
 import {__} from '@wordpress/i18n'
 import { debounce } from 'lodash';
 import {applyFilters} from '@wordpress/hooks'
 import {useState, useMemo} from '@wordpress/element';
 import {default as GenIcon} from '../icons/gen-icon';
+import { plus } from '@wordpress/icons';
 import './editor.scss';
 import {
 	chevronDown,
@@ -32,6 +34,9 @@ export default function KadenceIconPicker({
     const [isVisible, setIsVisible] = useState(false);
     const [search, setSearch] = useState('');
     const [filter, setFilter] = useState('all');
+	const [isOpen, setIsOpen] = useState(false);
+	const [uploadView, setUploadView ] = useState( 'upload');
+
     const toggleVisible = () => {
         setIsVisible( ! isVisible );
     }
@@ -88,8 +93,42 @@ export default function KadenceIconPicker({
         return results
     }, [search, filter])
 
+
+
     return (
         <div className={'kadence-icon-picker'}>
+			{ isOpen && (
+				<Modal title={ __( 'Upload Your SVG') } onRequestClose={ () => setIsOpen(false) }>
+					<div className={'security-notice'}>
+						<h4>{ __( 'Important: SVG Upload Safety', 'kadence-blocks')}</h4>
+						<p>
+							Custom SVG...
+						</p>
+					</div>
+
+						{ uploadView === 'upload' && (
+							<div className={'drag-drop-container'}>
+								<h3>{ __('Select a file or drop it here', 'kadence-blocks') }</h3>
+								<p>{ __( 'File upload dimensions: 24px by 24px', 'kadence-blocks') }</p>
+
+								<Button type={'link'} onClick={ () => setUploadView( 'paste') }>{ __( 'Paste your SVG instead', 'kadence-blocks') }</Button>
+							</div>
+						)}
+
+						{ uploadView === 'paste' && (
+							<div className={'paste-container'}>
+								<h3>{ __('Paste your SVG code here', 'kadence-blocks') }</h3>
+								{/*Textarea*/}
+
+								<Button type={'link'} onClick={ () => setUploadView( 'upload') }>{ __( 'Upload your SVG instead', 'kadence-blocks') }</Button>
+							</div>
+						)}
+
+					<Button variant="secondary" onClick={ () => setIsOpen(false) }>
+						{ __( 'Cancel', 'kadence-blocks') }
+					</Button>
+				</Modal>
+			) }
             <div className={ `kadence-icon-picker-selection kadence-icon-picker-theme-${ theme ? theme : 'default' }${ className ? ' ' + className : '' }`}>
                 { label && (
                     <div className="kadence-icon-picker__title">
@@ -106,7 +145,7 @@ export default function KadenceIconPicker({
                         <span className='kadence-icon-picker-selection-arrow'><Icon icon={ chevronDown }></Icon></span>
                     </button>
                     { value && allowClear && (
-                        <button className='kadence-icon-picker-clear' onClick={ () => { onChange(''); setIsVisible( false ); } }><Icon icon={ closeSmall }></Icon></button> 
+                        <button className='kadence-icon-picker-clear' onClick={ () => { onChange(''); setIsVisible( false ); } }><Icon icon={ closeSmall }></Icon></button>
                     ) }
                 </div>
             </div>
@@ -173,10 +212,23 @@ export default function KadenceIconPicker({
                                                 title={results[groupKey].label}
                                             >
                                                 <div className='kadence-icon-grid-wrap'>
+													{ results[groupKey].label === 'Kadence Custom SVG' && search === '' && (
+														<button
+															className={'kadence-icon-picker-link add-custom-svg'}
+															onClick={() => {
+																console.log( 'Add Custom' );
+																setIsOpen(true);
+																debounceToggle();
+															}}
+														>
+															<Icon icon={plus} />
+														</button>
+													)}
                                                     {Object.keys(results[groupKey].icons).map((iconKey) => {
                                                         return (
                                                             <button
                                                                 className={'kadence-icon-picker-link'}
+																key={ results[groupKey].label + iconKey }
                                                                 onClick={() => {
                                                                     onChange(iconKey);
                                                                     debounceToggle();
