@@ -174,6 +174,12 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.2.43 =
+Release Date: June TBD 2024
+* Add: Option to set focal point in Adv Image block when using a ratio.
+* Fix: Escape HTML in advanced gallery block.
+* Fix: Issue with escaping attribute in google maps block.
+
 = 3.2.42 =
 Release Date: June 10th 2024
 * Add: Tooltips to advanced text, button, icon block and icon list.
