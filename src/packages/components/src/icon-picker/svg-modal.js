@@ -5,7 +5,8 @@ import {
 	Icon,
 	Modal,
 	TextareaControl,
-	DropZone
+	DropZone,
+	FormFileUpload
 } from '@wordpress/components';
 import { has, get } from 'lodash';
 import apiFetch from '@wordpress/api-fetch';
@@ -90,6 +91,15 @@ export default function SvgModal( { isOpen, setIsOpen }) {
 									/>
 									<h3>{__( 'Select a file or drop it here', 'kadence-blocks' )}</h3>
 									<p>{__( 'SVG dimensions: 24px by 24px', 'kadence-blocks' )}</p>
+									<FormFileUpload
+										accept="image/svg+xml"
+										onChange={ ( event ) => setFile( event.currentTarget.files ) }
+										render={ ( { openFileDialog } ) => (
+											<Button onClick={ openFileDialog } isPrimary={true}>
+												Browse
+											</Button>
+										) }
+									/>
 								</div>
 
 								<Button type={'link'} onClick={() => {
