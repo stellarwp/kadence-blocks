@@ -80,41 +80,43 @@ export default function SvgModal( { isOpen, setIsOpen }) {
 
 						{uploadView === 'upload' && (
 							<div className={'drag-drop-container'}>
-								<div className={'drag-drop-target'} style={{ position: 'relative' }}>
-									<DropZone
-										label={__( 'Upload SVG', 'kadence-blocks' )}
-										onFilesDrop={( file ) => {
-											console.log( 'onFilesDrop' );
-											console.log( file );
-											setFile( file );
-										}}
-									/>
-									<h3>{__( 'Select a file or drop it here', 'kadence-blocks' )}</h3>
-									<p>{__( 'SVG dimensions: 24px by 24px', 'kadence-blocks' )}</p>
-									<FormFileUpload
-										accept="image/svg+xml"
-										onChange={ ( event ) => setFile( event.currentTarget.files ) }
-										render={ ( { openFileDialog } ) => (
-											<Button onClick={ openFileDialog } isPrimary={true}>
-												Browse
+
+								<FormFileUpload
+									accept="image/svg+xml"
+									onChange={( event ) => setFile( event.currentTarget.files )}
+									render={( { openFileDialog } ) => (
+										<div onClick={openFileDialog} className={'drag-drop-target'} style={{ position: 'relative' }}>
+											<DropZone
+												label={__( 'Upload SVG', 'kadence-blocks' )}
+												onFilesDrop={( file ) => {
+													console.log( 'onFilesDrop' );
+													console.log( file );
+													setFile( file );
+												}}
+											/>
+											<h3>{__( 'Select a file or drop it here', 'kadence-blocks' )}</h3>
+											<p>{__( 'SVG dimensions: 24px by 24px', 'kadence-blocks' )}</p>
+
+											<Button isPrimary={true}>
+												{__( 'Select a file', 'kadence-blocks' )}
 											</Button>
-										) }
-									/>
-								</div>
+										</div>
+									)}
+								/>
 
-								<Button type={'link'} onClick={() => {
-									setUploadView( 'paste' );
-									setFile( null );
-								}}>{__( 'Paste an SVG', 'kadence-blocks' )}</Button>
-							</div>
-						)}
+							<Button type={'link'} onClick={() => {
+						setUploadView( 'paste' );
+						setFile( null );
+					}}>{__( 'Paste an SVG', 'kadence-blocks' )}</Button>
+				</div>
+			)}
 
-						{uploadView === 'paste' && (
-							<div className={'paste-container'}>
-								<h3>{__( 'Paste your SVG', 'kadence-blocks' )}</h3>
-								{/*Textarea*/}
+			{uploadView === 'paste' && (
+				<div className={'paste-container'}>
+					<h3>{__( 'Paste your SVG', 'kadence-blocks' )}</h3>
+					{/*Textarea*/}
 
-								<TextareaControl value={pastedSVG} onChange={( value ) => setPastedSVG( value )}/>
+					<TextareaControl value={pastedSVG} onChange={( value ) => setPastedSVG( value )}/>
 
 								<Button type={'link'} onClick={() => {
 									setUploadView( 'upload' );
