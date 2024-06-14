@@ -321,6 +321,18 @@
 		"secondColumnWidth": {
 			"type": "number"
 		},
+		"thirdColumnWidth": {
+			"type": "number"
+		},
+		"fourthColumnWidth": {
+			"type": "number"
+		},
+		"fithColumnWidth": {
+			"type": "number"
+		},
+		"sixthColumnWidth": {
+			"type": "number"
+		},
 		"textColor": {
 			"type": "string",
 			"default": ""

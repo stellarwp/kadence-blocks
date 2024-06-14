@@ -314,7 +314,7 @@ function LayoutControls({
 	} else {
 		mobileLayoutOptions = [{ value: 'row', label: __('Single Row', 'kadence-blocks'), icon: rowIcon }];
 	}
-	const selectColLayout = columns && (2 === columns || 3 === columns) ? widthString : colLayout;
+	const selectColLayout = columns ? widthString : colLayout;
 	return (
 		<Fragment>
 			<>
@@ -355,6 +355,10 @@ function LayoutControls({
 												setAttributes({
 													firstColumnWidth: undefined,
 													secondColumnWidth: undefined,
+													thirdColumnWidth: undefined,
+													fourthColumnWidth: undefined,
+													fifthColumnWidth: undefined,
+													sixthColumnWidth: undefined,
 												});
 											}}
 										/>

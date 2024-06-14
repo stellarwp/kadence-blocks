@@ -41,6 +41,7 @@ import {
 	KadenceBlockDefaults,
 	SpacingVisualizer,
 	CopyPasteAttributes,
+	ColumnDragResizer,
 } from '@kadence/components';
 
 import {
@@ -70,7 +71,7 @@ import PaddingResizer from './padding-resizer';
 import renderSVGDivider from './render-svg-divider';
 import GridVisualizer from './gridvisualizer';
 import { getGutterTotal, getPreviewGutterSize, getSpacingOptionOutput } from './utils';
-import { SPACING_SIZES_MAP } from './constants';
+import { SPACING_SIZES_MAP, COLUMN_WIDTH_MAP } from './constants';
 /**
  * Import Css
  */
@@ -188,6 +189,10 @@ function RowLayoutEditContainer(props) {
 		topSepWidthTab,
 		firstColumnWidth,
 		secondColumnWidth,
+		thirdColumnWidth,
+		fourthColumnWidth,
+		fifthColumnWidth,
+		sixthColumnWidth,
 		textColor,
 		linkColor,
 		linkHoverColor,
@@ -814,85 +819,107 @@ function RowLayoutEditContainer(props) {
 		borderRadiusOverflow !== false
 			? true
 			: false;
-	const widthString = `${firstColumnWidth || colLayout}`;
-	const secondWidthString = `${secondColumnWidth || colLayout}`;
+
+	const multiRowColLayouts = ['row', 'last-row', 'first-row', 'grid-layout', 'two-grid', 'three-grid'];
+	const columnAttributes = [
+		'firstColumnWidth',
+		'secondColumnWidth',
+		'thirdColumnWidth',
+		'fourthColumnWidth',
+		'fithColumnWidth',
+		'sixthColumnWidth',
+	];
 	let widthNumber;
 	let secondWidthNumber;
 	let thirdWidthNumber;
+
+	let columnWidthNumbers = [];
+	let widthStrings = [];
+	for (let column = 0; column < columnAttributes.length; column++) {
+		const attributeColumnWidth = attributes[columnAttributes[column]];
+		const mappedWidth = COLUMN_WIDTH_MAP?.[columns]?.[colLayout]?.[column];
+		const widthString = attributeColumnWidth || colLayout;
+
+		columnWidthNumbers.push(
+			Math.abs(widthString) === parseFloat(widthString) ? attributeColumnWidth : mappedWidth ?? 0
+		);
+		widthStrings.push(`${widthString}`);
+	}
 	if (3 === columns) {
-		if (Math.abs(widthString) === parseFloat(widthString)) {
-			widthNumber = widthString;
-		} else if ('first-row' === widthString) {
+		if (Math.abs(widthStrings[0]) === parseFloat(widthStrings[0])) {
+			widthNumber = widthStrings[0];
+		} else if ('first-row' === widthStrings[0]) {
 			widthNumber = 100;
-		} else if ('left-half' === widthString) {
+		} else if ('left-half' === widthStrings[0]) {
 			widthNumber = 50;
-		} else if ('right-half' === widthString) {
+		} else if ('right-half' === widthStrings[0]) {
 			widthNumber = 25;
-		} else if ('center-half' === widthString) {
+		} else if ('center-half' === widthStrings[0]) {
 			widthNumber = 25;
-		} else if ('center-wide' === widthString) {
+		} else if ('center-wide' === widthStrings[0]) {
 			widthNumber = 20;
-		} else if ('center-exwide' === widthString) {
+		} else if ('center-exwide' === widthStrings[0]) {
 			widthNumber = 15;
-		} else if ('equal' === widthString) {
+		} else if ('equal' === widthStrings[0]) {
 			widthNumber = 33.33;
 		}
-		if (Math.abs(secondWidthString) === parseFloat(secondWidthString)) {
-			secondWidthNumber = secondWidthString;
-		} else if ('left-half' === secondWidthString) {
+		if (Math.abs(widthStrings[1]) === parseFloat(widthStrings[1])) {
+			secondWidthNumber = widthStrings[1];
+		} else if ('left-half' === widthStrings[1]) {
 			secondWidthNumber = 25;
-		} else if ('first-row' === secondWidthString) {
+		} else if ('first-row' === widthStrings[1]) {
 			secondWidthNumber = 50;
-		} else if ('right-half' === secondWidthString) {
+		} else if ('right-half' === widthStrings[1]) {
 			secondWidthNumber = 25;
-		} else if ('center-half' === secondWidthString) {
+		} else if ('center-half' === widthStrings[1]) {
 			secondWidthNumber = 50;
-		} else if ('center-wide' === secondWidthString) {
+		} else if ('center-wide' === widthStrings[1]) {
 			secondWidthNumber = 60;
-		} else if ('center-exwide' === secondWidthString) {
+		} else if ('center-exwide' === widthStrings[1]) {
 			secondWidthNumber = 70;
-		} else if ('equal' === secondWidthString) {
+		} else if ('equal' === widthStrings[1]) {
 			secondWidthNumber = 33.33;
 		}
 		if (Math.abs(firstColumnWidth) === parseFloat(firstColumnWidth)) {
 			thirdWidthNumber = Math.abs(
 				Math.round((parseFloat(firstColumnWidth) + parseFloat(secondColumnWidth) - 100) * 10) / 10
 			);
-		} else if ('first-row' === widthString) {
+		} else if ('first-row' === widthStrings[0]) {
 			thirdWidthNumber = 50;
-		} else if ('left-half' === widthString) {
+		} else if ('left-half' === widthStrings[0]) {
 			thirdWidthNumber = 25;
-		} else if ('right-half' === widthString) {
+		} else if ('right-half' === widthStrings[0]) {
 			thirdWidthNumber = 50;
-		} else if ('center-half' === widthString) {
+		} else if ('center-half' === widthStrings[0]) {
 			thirdWidthNumber = 25;
-		} else if ('center-wide' === widthString) {
+		} else if ('center-wide' === widthStrings[0]) {
 			thirdWidthNumber = 20;
-		} else if ('center-exwide' === widthString) {
+		} else if ('center-exwide' === widthStrings[0]) {
 			thirdWidthNumber = 15;
-		} else if ('equal' === widthString) {
+		} else if ('equal' === widthStrings[0]) {
 			thirdWidthNumber = 33.33;
 		}
 	} else if (2 === columns) {
-		if (Math.abs(widthString) === parseFloat(widthString)) {
-			widthNumber = widthString;
-		} else if ('left-golden' === widthString) {
+		if (Math.abs(widthStrings[0]) === parseFloat(widthStrings[0])) {
+			widthNumber = widthStrings[0];
+		} else if ('left-golden' === widthStrings[0]) {
 			widthNumber = 66.67;
-		} else if ('right-golden' === widthString) {
+		} else if ('right-golden' === widthStrings[0]) {
 			widthNumber = 33.37;
-		} else if ('equal' === widthString) {
+		} else if ('equal' === widthStrings[0]) {
 			widthNumber = 50;
 		}
-		if (Math.abs(secondWidthString) === parseFloat(secondWidthString)) {
-			secondWidthNumber = secondWidthString;
-		} else if ('left-golden' === secondWidthString) {
+		if (Math.abs(widthStrings[1]) === parseFloat(widthStrings[1])) {
+			secondWidthNumber = widthStrings[1];
+		} else if ('left-golden' === widthStrings[1]) {
 			secondWidthNumber = 33.37;
-		} else if ('right-golden' === secondWidthString) {
+		} else if ('right-golden' === widthStrings[1]) {
 			secondWidthNumber = 66.67;
-		} else if ('equal' === secondWidthString) {
+		} else if ('equal' === widthStrings[1]) {
 			secondWidthNumber = 50;
 		}
 	}
+	// console.log(columns, widthStrings, columnWidthNumbers, columns, colLayout, firstColumnWidth, secondColumnWidth);
 
 	const previewColumnGutter = getPreviewSize(previewDevice, columnGutter, tabletGutter, mobileGutter);
 	const columnGap = getPreviewGutterSize(previewDevice, previewColumnGutter, customGutter, gutterType);
@@ -914,9 +941,12 @@ function RowLayoutEditContainer(props) {
 		[`current-tab-${currentTab}`]: currentTab,
 		[`kt-v-gutter-${collapseGutter}`]: collapseGutter,
 		[`kt-m-colapse-${collapseOrder}`]: previewDevice !== 'Desktop' ? collapseOrder : false,
-		[`kt-custom-first-width-${widthString}`]: widthString,
-		[`kt-custom-second-width-${secondWidthString}`]: secondWidthString,
-		[`kt-custom-third-width-${thirdWidthNumber}`]: thirdWidthNumber,
+		[`kt-custom-first-width-${columnWidthNumbers[0]}`]: widthStrings[0],
+		[`kt-custom-second-width-${columnWidthNumbers[1]}`]: widthStrings[1],
+		[`kt-custom-third-width-${columnWidthNumbers[2]}`]: widthStrings[2],
+		[`kt-custom-fourth-width-${columnWidthNumbers[3]}`]: widthStrings[3],
+		[`kt-custom-fith-width-${columnWidthNumbers[4]}`]: widthStrings[4],
+		[`kt-custom-sixth-width-${columnWidthNumbers[5]}`]: widthStrings[5],
 		[hasBG]: hasBG,
 		'has-border-radius': hasBorderRadius,
 		'kt-inner-column-height-full': columnsInnerHeight,
@@ -971,6 +1001,18 @@ function RowLayoutEditContainer(props) {
 		{ key: 'equal', col: 6, name: __('Six: Equal', 'kadence-blocks'), icon: sixColIcon },
 		//{ key: 'grid-layout', col: 1, name: __( 'Grid Layout', 'kadence-blocks' ), icon: sixColIcon },
 	];
+
+	let columnsString = '';
+	for (let column = 0; column < columns; column++) {
+		const columnWidthToUse = columnWidthNumbers[column];
+		let columnString = ` minmax(0, calc( ${parseFloat(columnWidthToUse)}%${
+			gapTotal ? ' - (' + gapTotal + ' / ' + columns + ')' : ''
+		} ) )`;
+		columnsString += columnString;
+	}
+
+	//minmax(0, calc( NaN% - ((var(--global-row-gutter-md, 2rem) * 2) / 3) ) ) minmax(0, calc( NaN% - ((var(--global-row-gutter-md, 2rem) * 2) / 3) ) ) minmax(0, calc( NaN% - ((var(--global-row-gutter-md, 2rem) * 2) / 3) ) )
+
 	const innerClasses = classnames({
 		'innerblocks-wrap': true,
 		'kb-theme-content-width': inheritMaxWidth,
@@ -978,7 +1020,8 @@ function RowLayoutEditContainer(props) {
 		[`kb-grid-columns-${columns}`]: columns,
 	});
 	const containerRef = useRef(null);
-	const innerBlocksProps = useInnerBlocksProps(
+
+	const { children, ...innerBlocksProps } = useInnerBlocksProps(
 		{
 			ref: containerRef,
 			className: innerClasses,
@@ -1188,7 +1231,7 @@ function RowLayoutEditContainer(props) {
 									setAttributes={setAttributes}
 									updateColumns={updateColumns}
 									innerItemCount={innerItemCount}
-									widthString={widthString}
+									widthString={widthStrings[0]}
 									previewDevice={previewDevice}
 								/>
 							</>
@@ -1535,73 +1578,14 @@ function RowLayoutEditContainer(props) {
 					{undefined !== rowGap
 						? `.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kt-layout-inner-wrap-id${uniqueID}, .wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .kb-grid-align-display-wrap > .kb-grid-align-display { row-gap:${rowGap} }`
 						: ''}
+
 					{columns &&
-						columns === 2 &&
-						'grid-layout' !== previewLayout &&
+						!multiRowColLayouts.includes(colLayout) &&
+						firstColumnWidth &&
 						('Desktop' === previewDevice ||
 							('Tablet' === previewDevice && tabLayoutClass === 'inherit')) && (
 							<>
-								{widthNumber && secondWidthNumber
-									? `.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} { grid-template-columns: minmax(0, calc( ${parseFloat(
-											widthNumber
-									  )}%${
-											gapTotal ? ' - (' + gapTotal + ' / 2)' : ''
-									  } ) ) minmax(0, calc( ${parseFloat(secondWidthNumber)}%${
-											gapTotal ? ' - (' + gapTotal + ' / 2)' : ''
-									  } ) ) }`
-									: ''}
-							</>
-						)}
-					{columns &&
-						columns === 2 &&
-						inheritMaxWidth &&
-						(breakoutLeft || breakoutRight) &&
-						'row' !== previewLayout &&
-						'full' === align &&
-						'Desktop' === previewDevice && (
-							<>
-								{breakoutRight
-									? `@media (min-width: 1290px) {.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(2) > .kadence-inner-column-inner { margin-right: calc( ( ( ( var( --global-kb-editor-full-width ) - ( var( --kb-global-content-width ) - ( ${paddingRightBreakout} *2 ) ) ) /2 ) *-1) ) !important; }}@media (max-width: 1289px) {.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(2) > .kadence-inner-column-inner { margin-right: calc( ${paddingRightBreakout} * -1 ) !important; }}`
-									: ''}
-								{breakoutLeft
-									? `@media (min-width: 1290px) {.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(1) > .kadence-inner-column-inner { margin-left: calc( ( ( ( var( --global-kb-editor-full-width ) - ( var( --kb-global-content-width ) - ( ${paddingLeftBreakout} *2 ) ) ) /2 ) *-1) ) !important; }}@media (max-width: 1289px) {.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(1) > .kadence-inner-column-inner { margin-left: calc( ${paddingRightBreakout} * -1 ) !important; }}`
-									: ''}
-							</>
-						)}
-					{columns &&
-						columns === 2 &&
-						inheritMaxWidth &&
-						(breakoutLeft || breakoutRight) &&
-						'row' !== previewLayout &&
-						'full' === align &&
-						'Tablet' === previewDevice &&
-						tabLayoutClass !== 'row' && (
-							<>
-								{breakoutRight
-									? `.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(2) > .kadence-inner-column-inner { margin-right: calc( ${paddingRightBreakout} *-1 ) !important; }`
-									: ''}
-								{breakoutLeft
-									? `.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(1) > .kadence-inner-column-inner { margin-left: calc( ${paddingLeftBreakout} *-1 ) !important; }`
-									: ''}
-							</>
-						)}
-					{columns &&
-						columns === 3 &&
-						'grid-layout' !== previewLayout &&
-						('Desktop' === previewDevice ||
-							('Tablet' === previewDevice && tabLayoutClass === 'inherit')) && (
-							<>
-								{widthNumber && secondWidthNumber && thirdWidthNumber
-									? `.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-3.kt-layout-inner-wrap-id${uniqueID} { grid-template-columns: minmax(0, calc( ${parseFloat(
-											widthNumber
-									  )}%${
-											gapTotal ? ' - (' + gapTotal + ' / 3)' : ''
-									  } ) ) minmax(0, calc( ${parseFloat(secondWidthNumber)}%${
-											gapTotal ? ' - (' + gapTotal + ' / 3)' : ''
-									  } ) )  minmax(0, calc( ${parseFloat(thirdWidthNumber)}%${
-											gapTotal ? ' - (' + gapTotal + ' / 3)' : ''
-									  } ) ) }`
-									: ''}
+								{`.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kt-layout-inner-wrap-id${uniqueID} { grid-template-columns: ${columnsString} }`}
 							</>
 						)}
 					{'Desktop' !== previewDevice &&
@@ -1678,6 +1662,12 @@ function RowLayoutEditContainer(props) {
 										setAttributes({
 											colLayout: key,
 											columns: col,
+											firstColumnWidth: 0,
+											secondColumnWidth: 0,
+											thirdColumnWidth: 0,
+											fourthColumnWidth: 0,
+											fifthColumnWidth: 0,
+											sixthColumnWidth: 0,
 										});
 									}}
 								/>
@@ -1730,26 +1720,46 @@ function RowLayoutEditContainer(props) {
 							showSettings('columnResize', 'kadence/rowlayout') && (
 								<TwoColumnResizer attributes={attributes} setAttributes={setAttributes} />
 							)}
-						{isSelected &&
-							colLayout &&
-							'contentOnly' !== templateLock &&
-							'row' !== colLayout &&
-							'first-row' !== colLayout &&
-							'last-row' !== colLayout &&
-							'grid-layout' !== colLayout &&
-							columns &&
-							3 === columns &&
-							showSettings('allSettings', 'kadence/rowlayout') &&
-							'Desktop' === previewDevice &&
-							showSettings('columnResize', 'kadence/rowlayout') && (
-								<ThreeColumnDrag
-									attributes={attributes}
-									setAttributes={setAttributes}
-									widthString={widthString}
-									secondWidthString={secondWidthString}
-								/>
-							)}
-						<div {...innerBlocksProps} />
+
+						<div {...innerBlocksProps}>
+							{isSelected &&
+								colLayout &&
+								'contentOnly' !== templateLock &&
+								!multiRowColLayouts.includes(colLayout) &&
+								columns &&
+								(3 === columns || 4 === columns) &&
+								showSettings('allSettings', 'kadence/rowlayout') &&
+								showSettings('columnResize', 'kadence/rowlayout') && (
+									// <ThreeColumnDrag
+									// 	attributes={attributes}
+									// 	setAttributes={setAttributes}
+									// 	widthString={widthString}
+									// 	widthStrings[1]={widthStrings[1]}
+									// />
+									<ColumnDragResizer
+										attributes={attributes}
+										setAttributes={setAttributes}
+										previewDevice={previewDevice}
+										columns={columns}
+										columnWidths={columnWidthNumbers}
+										columnGap={columnGap}
+										columnsUnlocked={columnsUnlocked}
+										onColumnsUnlocked={(value) => setAttributes({ columnsUnlocked: value })}
+										onResize={(newColumnWidths) =>
+											setAttributes({
+												firstColumnWidth: newColumnWidths?.[0],
+												secondColumnWidth: newColumnWidths?.[1],
+												thirdColumnWidth: newColumnWidths?.[2],
+												fourthColumnWidth: newColumnWidths?.[3],
+												fifthColumnWidth: newColumnWidths?.[4],
+												sixthColumnWidth: newColumnWidths?.[5],
+											})
+										}
+										onResizeStop={(newColumnWidths) => console.log('resize stop')}
+									/>
+								)}
+							{children}
+						</div>
 					</>
 				)}
 				{colLayout && (
