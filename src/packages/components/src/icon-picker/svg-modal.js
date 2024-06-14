@@ -10,13 +10,15 @@ import {
 } from '@wordpress/components';
 import { has, get } from 'lodash';
 import apiFetch from '@wordpress/api-fetch';
-
+import { useDispatch } from '@wordpress/data';
+import { store as noticesStore } from '@wordpress/notices';
 
 export default function SvgModal( { isOpen, setIsOpen }) {
 	const [uploadView, setUploadView ] = useState( 'upload');
 	const [pastedSVG, setPastedSVG] = useState('');
-	const [saveError, setSaveError] = useState('');
+	const [error, setError] = useState('');
 	const [file, setFile] = useState( null );
+	const { createSuccessNotice } = useDispatch(noticesStore);
 
 	function parseAndUpload() {
 		const fileread = new FileReader();
@@ -26,14 +28,20 @@ export default function SvgModal( { isOpen, setIsOpen }) {
 		if( source === 'upload' ) {
 			if (!file || file.length === 0) {
 				console.log('No file selected');
-				setSaveError(__('No file selected', 'kadence-blocks'));
+				setError(__('No file selected', 'kadence-blocks'));
 				return;
 			}
 			fileBlob = file[0];
+
+			// Check MIME type
+			if (fileBlob.type !== 'image/svg+xml') {
+				setError(__('The selected file is not an SVG', 'kadence-blocks'));
+				return;
+			}
 		} else {
 			if (!pastedSVG.trim()) {
 				console.log('No SVG content pasted');
-				setSaveError(__('No SVG content pasted', 'kadence-blocks'));
+				setError(__('No SVG content pasted', 'kadence-blocks'));
 				return;
 			}
 			fileBlob = new Blob([pastedSVG], { type: 'image/svg+xml' });
@@ -45,18 +53,21 @@ export default function SvgModal( { isOpen, setIsOpen }) {
 			console.log( 'fileContent' );
 			console.log( fileContent );
 
-			if (typeof fileContent === 'object') {
+			if (fileContent !== '') {
 				apiFetch({
-					path: '/kb-custom-svg/v1/upload',
-					data: { file: fileContent, title: 'title' },
+					path: '/kb-custom-svg/v1/manage',
+					data: { file: fileContent, title: get( fileBlob, [ '0', 'name' ], 'Custom SVG' ) },
 					method: 'POST',
 				}).then((response) => {
 					if (has(response, 'value') && has(response, 'label')) {
-						// Success
+						createSuccessNotice(__('SVG Saved.', 'kadence-blocks'), {
+							type: 'snackbar',
+						});
+						console.log('Success');
 					} else if (has(response, 'error') && has(response, 'message')) {
-						setSaveError(response.message);
+						setError(response.message);
 					} else {
-						setSaveError(__('An error occurred when uploading your file', 'kadence-blocks'));
+						setError(__('An error occurred when uploading your file', 'kadence-blocks'));
 					}
 				});
 			}
@@ -78,6 +89,12 @@ export default function SvgModal( { isOpen, setIsOpen }) {
 							</p>
 						</div>
 
+						{ error !== '' && (
+							<div className={'error-message'}>
+								{error}
+							</div>
+						)}
+
 						{uploadView === 'upload' && (
 							<div className={'drag-drop-container'}>
 
@@ -89,16 +106,23 @@ export default function SvgModal( { isOpen, setIsOpen }) {
 											<DropZone
 												label={__( 'Upload SVG', 'kadence-blocks' )}
 												onFilesDrop={( file ) => {
-													console.log( 'onFilesDrop' );
-													console.log( file );
 													setFile( file );
 												}}
 											/>
-											<h3>{__( 'Select a file or drop it here', 'kadence-blocks' )}</h3>
-											<p>{__( 'SVG dimensions: 24px by 24px', 'kadence-blocks' )}</p>
+											{file === null || file.length === 0  ? (
+												<>
+													<h3>{__( 'Select a file or drop it here', 'kadence-blocks' )}</h3>
+													<p>{__( 'SVG dimensions: 24px by 24px', 'kadence-blocks' )}</p>
+												</>
+											) : (
+												<>
+													<h3>{__( 'File Selected', 'kadence-blocks' )}</h3>
+													<p>{ get( file, [ '0', 'name' ], '' )}</p>
+												</>
+											)}
 
 											<Button isPrimary={true}>
-												{__( 'Select a file', 'kadence-blocks' )}
+												{ file === null ? __( 'Select a file', 'kadence-blocks' ) : __( 'Change file', 'kadence-blocks' )}
 											</Button>
 										</div>
 									)}

@@ -130,6 +130,10 @@ class Kadence_Blocks_Svg_Render {
 			self::$all_icons = self::get_icons();
 		}
 
+//		if( str_starts_with() ) {
+//
+//		}
+
 		$svg = '';
 		if ( 'fa_facebook' === $name ) {
 			$name = 'fa_facebook-n';
