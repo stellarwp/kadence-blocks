@@ -826,7 +826,7 @@ function RowLayoutEditContainer(props) {
 		'secondColumnWidth',
 		'thirdColumnWidth',
 		'fourthColumnWidth',
-		'fithColumnWidth',
+		'fifthColumnWidth',
 		'sixthColumnWidth',
 	];
 	let widthNumber;
@@ -1707,60 +1707,44 @@ function RowLayoutEditContainer(props) {
 					/>
 				)}
 				{colLayout && (
-					<>
+					<div {...innerBlocksProps}>
 						{isSelected &&
 							colLayout &&
 							'contentOnly' !== templateLock &&
-							'row' !== colLayout &&
+							!multiRowColLayouts.includes(colLayout) &&
 							columns &&
-							2 === columns &&
-							'grid-layout' !== colLayout &&
 							showSettings('allSettings', 'kadence/rowlayout') &&
-							'Desktop' === previewDevice &&
 							showSettings('columnResize', 'kadence/rowlayout') && (
-								<TwoColumnResizer attributes={attributes} setAttributes={setAttributes} />
+								// <ThreeColumnDrag
+								// 	attributes={attributes}
+								// 	setAttributes={setAttributes}
+								// 	widthString={widthString}
+								// 	widthStrings[1]={widthStrings[1]}
+								// />
+								<ColumnDragResizer
+									attributes={attributes}
+									setAttributes={setAttributes}
+									previewDevice={previewDevice}
+									columns={columns}
+									columnWidths={columnWidthNumbers}
+									columnGap={columnGap}
+									columnsUnlocked={columnsUnlocked}
+									onColumnsUnlocked={(value) => setAttributes({ columnsUnlocked: value })}
+									onResize={(newColumnWidths) =>
+										setAttributes({
+											firstColumnWidth: newColumnWidths?.[0],
+											secondColumnWidth: newColumnWidths?.[1],
+											thirdColumnWidth: newColumnWidths?.[2],
+											fourthColumnWidth: newColumnWidths?.[3],
+											fifthColumnWidth: newColumnWidths?.[4],
+											sixthColumnWidth: newColumnWidths?.[5],
+										})
+									}
+									onResizeStop={(newColumnWidths) => console.log('resize stop')}
+								/>
 							)}
-
-						<div {...innerBlocksProps}>
-							{isSelected &&
-								colLayout &&
-								'contentOnly' !== templateLock &&
-								!multiRowColLayouts.includes(colLayout) &&
-								columns &&
-								(3 === columns || 4 === columns) &&
-								showSettings('allSettings', 'kadence/rowlayout') &&
-								showSettings('columnResize', 'kadence/rowlayout') && (
-									// <ThreeColumnDrag
-									// 	attributes={attributes}
-									// 	setAttributes={setAttributes}
-									// 	widthString={widthString}
-									// 	widthStrings[1]={widthStrings[1]}
-									// />
-									<ColumnDragResizer
-										attributes={attributes}
-										setAttributes={setAttributes}
-										previewDevice={previewDevice}
-										columns={columns}
-										columnWidths={columnWidthNumbers}
-										columnGap={columnGap}
-										columnsUnlocked={columnsUnlocked}
-										onColumnsUnlocked={(value) => setAttributes({ columnsUnlocked: value })}
-										onResize={(newColumnWidths) =>
-											setAttributes({
-												firstColumnWidth: newColumnWidths?.[0],
-												secondColumnWidth: newColumnWidths?.[1],
-												thirdColumnWidth: newColumnWidths?.[2],
-												fourthColumnWidth: newColumnWidths?.[3],
-												fifthColumnWidth: newColumnWidths?.[4],
-												sixthColumnWidth: newColumnWidths?.[5],
-											})
-										}
-										onResizeStop={(newColumnWidths) => console.log('resize stop')}
-									/>
-								)}
-							{children}
-						</div>
-					</>
+						{children}
+					</div>
 				)}
 				{colLayout && (
 					<PaddingResizer

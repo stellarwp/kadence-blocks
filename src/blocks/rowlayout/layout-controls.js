@@ -331,6 +331,10 @@ function LayoutControls({
 										colLayout: 'equal',
 										firstColumnWidth: undefined,
 										secondColumnWidth: undefined,
+										thirdColumnWidth: undefined,
+										fourthColumnWidth: undefined,
+										fifthColumnWidth: undefined,
+										sixthColumnWidth: undefined,
 										tabletLayout: 'inherit',
 										mobileLayout: 'row',
 									});
