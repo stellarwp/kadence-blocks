@@ -716,6 +716,7 @@ function RowLayoutEditContainer(props) {
 	const [activeTab, setActiveTab] = useState('general');
 	const [dynamicBackgroundImg, setDynamicBackgroundImg] = useState('');
 	const debouncedSetDynamicState = debounce(setDynamicState, 200);
+	const areColumnsCustom = firstColumnWidth || resizeColumnWidthNumbers ? true : false;
 
 	const editorDocument = document.querySelector('iframe[name="editor-canvas"]')?.contentWindow.document || document;
 	const hasBG = bgColor || bgImg || gradient || overlay || overlayGradient || overlayBgImg ? 'kt-row-has-bg' : '';
@@ -1486,13 +1487,11 @@ function RowLayoutEditContainer(props) {
 						? `.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kt-layout-inner-wrap-id${uniqueID}, .wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .kb-grid-align-display-wrap > .kb-grid-align-display { row-gap:${rowGap} }`
 						: ''}
 
-					{columns &&
-						!multiRowColLayouts.includes(colLayout) &&
-						(firstColumnWidth || resizeColumnWidthNumbers) && (
-							<>
-								{`.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kt-layout-inner-wrap-id${uniqueID} { grid-template-columns: ${columnsString} }`}
-							</>
-						)}
+					{columns && !multiRowColLayouts.includes(colLayout) && areColumnsCustom && (
+						<>
+							{`.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kt-layout-inner-wrap-id${uniqueID} { grid-template-columns: ${columnsString} }`}
+						</>
+					)}
 					{'Desktop' !== previewDevice &&
 						'right-to-left' === collapseOrder &&
 						('grid-layout' === previewLayout ||
@@ -1646,7 +1645,7 @@ function RowLayoutEditContainer(props) {
 										});
 										setResizeColumnWidthNumbers(null);
 									}}
-									active={firstColumnWidth || resizeColumnWidthNumbers ? true : false}
+									active={areColumnsCustom}
 									tempDuringResize={true}
 								/>
 							)}
