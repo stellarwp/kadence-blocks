@@ -10,6 +10,7 @@ import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { getPreviewGutterSize, getGutterTotal } from './utils';
 import ContainerDimensions from 'react-container-dimensions';
+import { getPreviewSize } from '@kadence/helpers';
 
 /**
  * Import Css
@@ -32,57 +33,36 @@ export default function ColumnDragResizer(props) {
 		onResizeStop,
 		active,
 	} = props;
-	const { firstColumnWidth, secondColumnWidth, uniqueID, columnGutter, customGutter, gutterType } = attributes;
-	const currentGutter = getPreviewGutterSize(previewDevice, columnGutter, customGutter, gutterType);
-	const currentGutterTotal = getGutterTotal(currentGutter, columns);
-	const gutterAdjuster = `calc( -1 * ( ${currentGutter} / 3 ) / 2)`;
-	const [resizeStyles, setResizeStyles] = useState(null);
-	const editorDocument = document.querySelector('iframe[name="editor-canvas"]')?.contentWindow.document || document;
+	const { uniqueID, columnGutter, customGutter, gutterType } = attributes;
+	// const currentGutter = getPreviewGutterSize(previewDevice, columnGutter, customGutter, gutterType);
+	// const currentGutterTotal = getGutterTotal(currentGutter, columns);
+	// const gutterAdjuster = `calc( -1 * ( ${currentGutter} / 3 ) / 2)`;
 
-	const throttledSetAttributes = throttle(setAttributes, 300);
+	//TODO use actual mobile values
+	const previewColumnWidths = getPreviewSize(previewDevice, columnWidths, columnWidths, columnWidths);
 
 	const localOnResizeStop = (event, direction, elt) => {
-		// let tempColumnW;
-		// let tempChange;
-		// let tempNextColumnW;
-		// if (columnsUnlocked) {
-		// 	tempColumnW = Math.round(parseFloat(elt.style.width) * 10) / 10;
-		// 	tempChange = tempColumnW - (!firstColumnWidth ? widthNumberThirds : firstColumnWidth);
-		// 	tempNextColumnW =
-		// 		Math.round(Math.abs((!secondColumnWidth ? secondWidthNumber : secondColumnWidth) - tempChange) * 10) /
-		// 		10;
-		// } else {
-		// 	tempColumnW = Math.round(parseInt(elt.style.width) / 5) * 5;
-		// 	tempChange = tempColumnW - (!firstColumnWidth ? widthNumberThirds : firstColumnWidth);
-		// 	tempNextColumnW =
-		// 		Math.round(Math.abs((!secondColumnWidth ? secondWidthNumber : secondColumnWidth) - tempChange) / 5) * 5;
-		// }
-		// const tempThird = Math.abs(Math.round((tempNextColumnW + tempColumnW - 100) * 10) / 10);
-
-		//set text width percentages on resizer flags
-		// editorDocument.getElementById('left-column-width-' + uniqueID).innerHTML = tempColumnW + '%';
-		// editorDocument.getElementById('right-column-width-' + uniqueID).innerHTML = tempNextColumnW + '%';
-		// editorDocument.getElementById('third-right-column-width-' + uniqueID).innerHTML = tempNextColumnW + '%';
-		// editorDocument.getElementById('third-column-width-' + uniqueID).innerHTML =
-		// 	Math.abs(Math.round((tempNextColumnW + tempColumnW - 100) * 10) / 10) + '%';
-
-		//set the temp resized styles on underlying columns
-		// setResizeStyles(
-		// 	`.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-3.kt-layout-inner-wrap-id${uniqueID} { grid-template-columns: minmax(0, calc( ${tempColumnW}% - (${currentGutterTotal} / 3 ) ) ) minmax(0, calc( ${tempNextColumnW}% - (${currentGutterTotal} / 3 ) ) )  minmax(0, calc( ${tempThird}% - (${currentGutterTotal} / 3 ) ) ) !important;}`
-		// );
-		onResizeStop([0, 0, 0, 0, 0, 0]);
+		const newColumnWidths = packageWidths(event, direction, elt);
+		onResizeStop(newColumnWidths);
 	};
-	const localOnResize = (event, direction, elt, delta) => {
+	const localOnResize = (event, direction, elt) => {
+		const newColumnWidths = packageWidths(event, direction, elt);
+		onResize(newColumnWidths);
+	};
+
+	const packageWidths = (event, direction, elt) => {
 		let tempColumnW;
 		let tempChange;
 		let tempNextColumnW;
 		const currentElementWidth = elt.style.width;
 		const currentColumn = parseInt(elt.dataset?.column);
-		const currentColumnWidth = columnWidths[currentColumn];
+		const currentColumnWidth = previewColumnWidths[currentColumn];
 		const nextColumn = currentColumn + 1;
-		const nextColumnWidth = columnWidths[nextColumn];
+		const nextColumnWidth = previewColumnWidths[nextColumn];
 		const sumPreviousColumnWidths =
-			currentColumn == 0 ? 0 : columnWidths.slice(0, currentColumn).reduce((partialSum, a) => partialSum + a, 0);
+			currentColumn == 0
+				? 0
+				: previewColumnWidths.slice(0, currentColumn).reduce((partialSum, a) => partialSum + a, 0);
 
 		//calculate width changes depending on unlocked status
 		if (columnsUnlocked) {
@@ -95,36 +75,30 @@ export default function ColumnDragResizer(props) {
 			tempNextColumnW = Math.round(Math.abs((!nextColumnWidth ? 10 : nextColumnWidth) - tempChange) / 5) * 5;
 		}
 
-		//For performance reasons, only dispatch if the delta is over a threshold
-		if (Math.abs(currentColumnWidth - tempColumnW) >= 0.3) {
-			//package new widths to be dispatched
-			var newColumnWidths = [...columnWidths];
-			newColumnWidths[currentColumn] = tempColumnW;
-			newColumnWidths[nextColumn] = tempNextColumnW;
+		//package new widths to be dispatched
+		var newColumnWidths = [...previewColumnWidths];
+		newColumnWidths[currentColumn] = tempColumnW;
+		newColumnWidths[nextColumn] = tempNextColumnW;
 
-			//if this row had previously assumed column widths like 33.33%, than moving this column may have made it so the whole thing doesn't add up to 100% anymore.
-			//For instance now the columns are [30,35,33.33]
-			//this ensures the grid adds up to 100% and is in 5% incriments if it was set to snap
-			if (columns > 2) {
-				//make sure all column values are rounded
-				newColumnWidths = newColumnWidths.map((x) =>
-					columnsUnlocked ? Math.round(parseFloat(x) * 10) / 10 : Math.round(parseInt(x) / 5) * 5
-				);
+		//if this row had previously assumed column widths like 33.33%, than moving this column may have made it so the whole thing doesn't add up to 100% anymore.
+		//For instance now the columns are [30,35,33.33]
+		//this ensures the grid adds up to 100% and is in 5% incriments if it was set to snap
+		if (columns > 2) {
+			//make sure all column values are rounded
+			newColumnWidths = newColumnWidths.map((x) =>
+				columnsUnlocked ? Math.round(parseFloat(x) * 10) / 10 : Math.round(parseInt(x) / 5) * 5
+			);
 
-				//if we don't add to one hundred, add that to the last other column
-				const sumAllColumnWidths = newColumnWidths.reduce((partialSum, a) => partialSum + a, 0);
-				const needToAddToLast = 100 - sumAllColumnWidths;
+			//if we don't add to one hundred, add that to the last other column
+			const sumAllColumnWidths = newColumnWidths.reduce((partialSum, a) => partialSum + a, 0);
+			const needToAddToLast = 100 - sumAllColumnWidths;
 
-				//need to add some to a column not just adjusted to make us equal 100
-				const columnToAddTo = currentColumn == columns - 2 ? 0 : newColumnWidths.length - 1;
-				newColumnWidths[columnToAddTo] = newColumnWidths[columnToAddTo] + needToAddToLast;
-			}
-
-			onResize(newColumnWidths);
+			//need to add some to a column not just adjusted to make us equal 100
+			const columnToAddTo = currentColumn == columns - 2 ? 0 : newColumnWidths.length - 1;
+			newColumnWidths[columnToAddTo] = newColumnWidths[columnToAddTo] + needToAddToLast;
 		}
-		// setTimeout(() => {
-		// 	setResizeStyles(null);
-		// }, 400);
+
+		return newColumnWidths;
 	};
 
 	const innerResizeClasses = classnames({
@@ -136,10 +110,10 @@ export default function ColumnDragResizer(props) {
 	var resizableBoxes = (width) => {
 		var resizableBoxArray = [];
 		for (let column = 0; column < columns - 1; column++) {
-			const columnWidth = columnWidths?.[column];
-			const nextColumnWidth = columnWidths?.[column + 1];
+			const columnWidth = previewColumnWidths?.[column];
+			const nextColumnWidth = previewColumnWidths?.[column + 1];
 			const sumPreviousColumnWidths =
-				column == 0 ? 0 : columnWidths.slice(0, column).reduce((partialSum, a) => partialSum + a, 0);
+				column == 0 ? 0 : previewColumnWidths.slice(0, column).reduce((partialSum, a) => partialSum + a, 0);
 			const minWidth = 10;
 			//columns aren't actually as big as the raw percent value. They have the columnGap portioned out. This adjusts for that.
 			//It's in the form of a left offset because I can't calc() the width of a ResizableBox
@@ -256,7 +230,6 @@ export default function ColumnDragResizer(props) {
 	// });
 	return (
 		<div className={innerResizeClasses}>
-			{resizeStyles && <style>{resizeStyles}</style>}
 			<ContainerDimensions>{({ width }) => <>{resizableBoxes(width)}</>}</ContainerDimensions>
 		</div>
 	);

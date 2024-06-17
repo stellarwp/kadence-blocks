@@ -706,6 +706,7 @@ function RowLayoutEditContainer(props) {
 
 	const [contentWidthPop, setContentWidthPop] = useState(false);
 	const [resizingVisually, setResizingVisually] = useState(false);
+	const [resizeColumnWidthNumbers, setResizeColumnWidthNumbers] = useState(null);
 	const timeoutRef = useRef();
 	const clearTimer = () => {
 		if (timeoutRef.current) {
@@ -910,7 +911,9 @@ function RowLayoutEditContainer(props) {
 
 	let columnsString = '';
 	for (let column = 0; column < columns; column++) {
-		const columnWidthToUse = columnWidthNumbers[column];
+		const columnWidthToUse = resizeColumnWidthNumbers
+			? resizeColumnWidthNumbers[column]
+			: columnWidthNumbers[column];
 		const columnString = ` minmax(0, calc( ${parseFloat(columnWidthToUse)}%${
 			gapTotal ? ' - (' + gapTotal + ' / ' + columns + ')' : ''
 		} ) )`;
@@ -1485,11 +1488,13 @@ function RowLayoutEditContainer(props) {
 						? `.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kt-layout-inner-wrap-id${uniqueID}, .wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .kb-grid-align-display-wrap > .kb-grid-align-display { row-gap:${rowGap} }`
 						: ''}
 
-					{columns && !multiRowColLayouts.includes(colLayout) && firstColumnWidth && (
-						<>
-							{`.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kt-layout-inner-wrap-id${uniqueID} { grid-template-columns: ${columnsString} }`}
-						</>
-					)}
+					{columns &&
+						!multiRowColLayouts.includes(colLayout) &&
+						(firstColumnWidth || resizeColumnWidthNumbers) && (
+							<>
+								{`.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kt-layout-inner-wrap-id${uniqueID} { grid-template-columns: ${columnsString} }`}
+							</>
+						)}
 					{'Desktop' !== previewDevice &&
 						'right-to-left' === collapseOrder &&
 						('grid-layout' === previewLayout ||
@@ -1622,11 +1627,17 @@ function RowLayoutEditContainer(props) {
 									setAttributes={setAttributes}
 									previewDevice={previewDevice}
 									columns={columns}
-									columnWidths={columnWidthNumbers}
+									columnWidths={
+										resizeColumnWidthNumbers ? resizeColumnWidthNumbers : columnWidthNumbers
+									}
 									columnGap={columnGap}
 									columnsUnlocked={columnsUnlocked}
 									onColumnsUnlocked={(value) => setAttributes({ columnsUnlocked: value })}
-									onResize={(newColumnWidths) =>
+									onResize={(newColumnWidths) => {
+										//for performance reasons, we set a temporary state for the widths during resize
+										setResizeColumnWidthNumbers(newColumnWidths);
+									}}
+									onResizeStop={(newColumnWidths) => {
 										setAttributes({
 											firstColumnWidth: newColumnWidths?.[0],
 											secondColumnWidth: newColumnWidths?.[1],
@@ -1634,10 +1645,11 @@ function RowLayoutEditContainer(props) {
 											fourthColumnWidth: newColumnWidths?.[3],
 											fifthColumnWidth: newColumnWidths?.[4],
 											sixthColumnWidth: newColumnWidths?.[5],
-										})
-									}
-									onResizeStop={(newColumnWidths) => console.log('resize stop')}
-									active={firstColumnWidth ? true : false}
+										});
+										setResizeColumnWidthNumbers(null);
+									}}
+									active={firstColumnWidth || resizeColumnWidthNumbers ? true : false}
+									tempDuringResize={true}
 								/>
 							)}
 						{children}
