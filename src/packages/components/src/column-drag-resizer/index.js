@@ -30,6 +30,7 @@ export default function ColumnDragResizer(props) {
 		onColumnsUnlocked,
 		onResize,
 		onResizeStop,
+		active,
 	} = props;
 	const { firstColumnWidth, secondColumnWidth, uniqueID, columnGutter, customGutter, gutterType } = attributes;
 	const currentGutter = getPreviewGutterSize(previewDevice, columnGutter, customGutter, gutterType);
@@ -101,7 +102,7 @@ export default function ColumnDragResizer(props) {
 			newColumnWidths[currentColumn] = tempColumnW;
 			newColumnWidths[nextColumn] = tempNextColumnW;
 
-			//if this row had previously assumed column widths like 33.33%, than moving this column may have made it some the whole thing doesn't add up to 100% anymore.
+			//if this row had previously assumed column widths like 33.33%, than moving this column may have made it so the whole thing doesn't add up to 100% anymore.
 			//For instance now the columns are [30,35,33.33]
 			//this ensures the grid adds up to 100% and is in 5% incriments if it was set to snap
 			if (columns > 2) {
@@ -129,6 +130,7 @@ export default function ColumnDragResizer(props) {
 	const innerResizeClasses = classnames({
 		'kt-resizeable-column-container': true,
 		[`kt-resizeable-column-container${uniqueID}`]: uniqueID,
+		'kt-resizeable-column-inactive': !active,
 	});
 
 	var resizableBoxes = (width) => {
@@ -177,23 +179,13 @@ export default function ColumnDragResizer(props) {
 						left: 'components-resizable-box__handle components-resizable-box__handle-left',
 					}}
 					handleWrapperClass="editor-row-controls-container"
-					handleWrapperStyle={{
-						right: isRTL ? undefined : gutterAdjuster,
-						left: isRTL ? gutterAdjuster : undefined,
-					}}
 					grid={columnsUnlocked ? [width / 1000, 1] : [width / 20, 1]}
 					onResize={localOnResize}
 					onResizeStop={localOnResizeStop}
 					axis="x"
 					data-column={column}
 				>
-					<span
-						className="editor-row-controls-container kadence-resize-extra-controls"
-						style={{
-							right: isRTL ? undefined : gutterAdjuster,
-							left: isRTL ? gutterAdjuster : undefined,
-						}}
-					>
+					<span className="editor-row-controls-container kadence-resize-extra-controls">
 						{columnsUnlocked && (
 							<Tooltip text={__('Switch to 5% step resizing', 'kadence-blocks')}>
 								<Button className="kt-fluid-grid-btn" isSmall onClick={() => onColumnsUnlocked(false)}>

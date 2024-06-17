@@ -65,8 +65,6 @@ import RowBackground from './row-background';
 import ContentWidthIcon from './content-width-icons';
 import LayoutControls from './layout-controls';
 import StyleControls from './style-controls';
-import TwoColumnResizer from './twocolumnresizer';
-import ThreeColumnDrag from './threecolumndrag';
 import PaddingResizer from './padding-resizer';
 import renderSVGDivider from './render-svg-divider';
 import GridVisualizer from './gridvisualizer';
@@ -795,20 +793,13 @@ function RowLayoutEditContainer(props) {
 		undefined !== bottomSepWidthTab ? bottomSepWidthTab : '',
 		undefined !== bottomSepWidthMobile ? bottomSepWidthMobile : ''
 	);
-	const paddingRightBreakout =
-		'' !== previewPaddingRight
-			? getSpacingOptionOutput(previewPaddingRight, paddingUnit ? paddingUnit : 'px')
-			: paddingSidesTheme;
-	const paddingLeftBreakout = previewPaddingLeft
-		? getSpacingOptionOutput(previewPaddingLeft, paddingUnit ? paddingUnit : 'px')
-		: paddingSidesTheme;
 	const previewLayout = getPreviewSize(
 		previewDevice,
 		!colLayout ? 'equal' : colLayout,
 		!tabletLayout ? '' : tabletLayout,
 		!mobileLayout ? '' : mobileLayout
 	);
-	const previewLayoutActual = getPreviewSize(
+	const previewColLayout = getPreviewSize(
 		previewDevice,
 		!colLayout ? 'equal' : colLayout,
 		!tabletLayout || 'inherit' === tabletLayout ? '' : tabletLayout,
@@ -829,12 +820,9 @@ function RowLayoutEditContainer(props) {
 		'fifthColumnWidth',
 		'sixthColumnWidth',
 	];
-	let widthNumber;
-	let secondWidthNumber;
-	let thirdWidthNumber;
 
-	let columnWidthNumbers = [];
-	let widthStrings = [];
+	const columnWidthNumbers = [];
+	const widthStrings = [];
 	for (let column = 0; column < columnAttributes.length; column++) {
 		const attributeColumnWidth = attributes[columnAttributes[column]];
 		const mappedWidth = COLUMN_WIDTH_MAP?.[columns]?.[colLayout]?.[column];
@@ -845,80 +833,7 @@ function RowLayoutEditContainer(props) {
 		);
 		widthStrings.push(`${widthString}`);
 	}
-	if (3 === columns) {
-		if (Math.abs(widthStrings[0]) === parseFloat(widthStrings[0])) {
-			widthNumber = widthStrings[0];
-		} else if ('first-row' === widthStrings[0]) {
-			widthNumber = 100;
-		} else if ('left-half' === widthStrings[0]) {
-			widthNumber = 50;
-		} else if ('right-half' === widthStrings[0]) {
-			widthNumber = 25;
-		} else if ('center-half' === widthStrings[0]) {
-			widthNumber = 25;
-		} else if ('center-wide' === widthStrings[0]) {
-			widthNumber = 20;
-		} else if ('center-exwide' === widthStrings[0]) {
-			widthNumber = 15;
-		} else if ('equal' === widthStrings[0]) {
-			widthNumber = 33.33;
-		}
-		if (Math.abs(widthStrings[1]) === parseFloat(widthStrings[1])) {
-			secondWidthNumber = widthStrings[1];
-		} else if ('left-half' === widthStrings[1]) {
-			secondWidthNumber = 25;
-		} else if ('first-row' === widthStrings[1]) {
-			secondWidthNumber = 50;
-		} else if ('right-half' === widthStrings[1]) {
-			secondWidthNumber = 25;
-		} else if ('center-half' === widthStrings[1]) {
-			secondWidthNumber = 50;
-		} else if ('center-wide' === widthStrings[1]) {
-			secondWidthNumber = 60;
-		} else if ('center-exwide' === widthStrings[1]) {
-			secondWidthNumber = 70;
-		} else if ('equal' === widthStrings[1]) {
-			secondWidthNumber = 33.33;
-		}
-		if (Math.abs(firstColumnWidth) === parseFloat(firstColumnWidth)) {
-			thirdWidthNumber = Math.abs(
-				Math.round((parseFloat(firstColumnWidth) + parseFloat(secondColumnWidth) - 100) * 10) / 10
-			);
-		} else if ('first-row' === widthStrings[0]) {
-			thirdWidthNumber = 50;
-		} else if ('left-half' === widthStrings[0]) {
-			thirdWidthNumber = 25;
-		} else if ('right-half' === widthStrings[0]) {
-			thirdWidthNumber = 50;
-		} else if ('center-half' === widthStrings[0]) {
-			thirdWidthNumber = 25;
-		} else if ('center-wide' === widthStrings[0]) {
-			thirdWidthNumber = 20;
-		} else if ('center-exwide' === widthStrings[0]) {
-			thirdWidthNumber = 15;
-		} else if ('equal' === widthStrings[0]) {
-			thirdWidthNumber = 33.33;
-		}
-	} else if (2 === columns) {
-		if (Math.abs(widthStrings[0]) === parseFloat(widthStrings[0])) {
-			widthNumber = widthStrings[0];
-		} else if ('left-golden' === widthStrings[0]) {
-			widthNumber = 66.67;
-		} else if ('right-golden' === widthStrings[0]) {
-			widthNumber = 33.37;
-		} else if ('equal' === widthStrings[0]) {
-			widthNumber = 50;
-		}
-		if (Math.abs(widthStrings[1]) === parseFloat(widthStrings[1])) {
-			secondWidthNumber = widthStrings[1];
-		} else if ('left-golden' === widthStrings[1]) {
-			secondWidthNumber = 33.37;
-		} else if ('right-golden' === widthStrings[1]) {
-			secondWidthNumber = 66.67;
-		} else if ('equal' === widthStrings[1]) {
-			secondWidthNumber = 50;
-		}
-	}
+
 	// console.log(columns, widthStrings, columnWidthNumbers, columns, colLayout, firstColumnWidth, secondColumnWidth);
 
 	const previewColumnGutter = getPreviewSize(previewDevice, columnGutter, tabletGutter, mobileGutter);
@@ -926,27 +841,18 @@ function RowLayoutEditContainer(props) {
 	const previewRowGutter = getPreviewSize(previewDevice, collapseGutter, tabletRowGutter, mobileRowGutter);
 	const rowGap = getPreviewGutterSize(previewDevice, previewRowGutter, customRowGutter, rowType);
 	const gapTotal = getGutterTotal(columnGap, columns);
-	const layoutClass = !colLayout ? 'equal' : colLayout;
-	const tabLayoutClass = !tabletLayout ? 'inherit' : tabletLayout;
-	const mobileLayoutClass = !mobileLayout ? 'inherit' : mobileLayout;
 	const classes = classnames({
 		'kt-row-column-wrap': true,
 		[`align${align}`]: align,
 		[`kb-row-id-${uniqueID}`]: uniqueID,
 		[`kt-has-${columns}-columns`]: columns,
-		[`kt-row-layout-${previewLayoutActual}`]: previewLayoutActual,
+		[`kt-row-layout-${previewColLayout}`]: previewColLayout,
 		[`kt-row-valign-${verticalAlignment}`]: verticalAlignment,
 		// [ `kt-tab-layout-${ tabLayoutClass }` ]: tabLayoutClass,
 		// [ `kt-mobile-layout-${ mobileLayoutClass }` ]: mobileLayoutClass,
 		[`current-tab-${currentTab}`]: currentTab,
 		[`kt-v-gutter-${collapseGutter}`]: collapseGutter,
 		[`kt-m-colapse-${collapseOrder}`]: previewDevice !== 'Desktop' ? collapseOrder : false,
-		[`kt-custom-first-width-${columnWidthNumbers[0]}`]: widthStrings[0],
-		[`kt-custom-second-width-${columnWidthNumbers[1]}`]: widthStrings[1],
-		[`kt-custom-third-width-${columnWidthNumbers[2]}`]: widthStrings[2],
-		[`kt-custom-fourth-width-${columnWidthNumbers[3]}`]: widthStrings[3],
-		[`kt-custom-fith-width-${columnWidthNumbers[4]}`]: widthStrings[4],
-		[`kt-custom-sixth-width-${columnWidthNumbers[5]}`]: widthStrings[5],
 		[hasBG]: hasBG,
 		'has-border-radius': hasBorderRadius,
 		'kt-inner-column-height-full': columnsInnerHeight,
@@ -1005,7 +911,7 @@ function RowLayoutEditContainer(props) {
 	let columnsString = '';
 	for (let column = 0; column < columns; column++) {
 		const columnWidthToUse = columnWidthNumbers[column];
-		let columnString = ` minmax(0, calc( ${parseFloat(columnWidthToUse)}%${
+		const columnString = ` minmax(0, calc( ${parseFloat(columnWidthToUse)}%${
 			gapTotal ? ' - (' + gapTotal + ' / ' + columns + ')' : ''
 		} ) )`;
 		columnsString += columnString;
@@ -1579,15 +1485,11 @@ function RowLayoutEditContainer(props) {
 						? `.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kt-layout-inner-wrap-id${uniqueID}, .wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .kb-grid-align-display-wrap > .kb-grid-align-display { row-gap:${rowGap} }`
 						: ''}
 
-					{columns &&
-						!multiRowColLayouts.includes(colLayout) &&
-						firstColumnWidth &&
-						('Desktop' === previewDevice ||
-							('Tablet' === previewDevice && tabLayoutClass === 'inherit')) && (
-							<>
-								{`.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kt-layout-inner-wrap-id${uniqueID} { grid-template-columns: ${columnsString} }`}
-							</>
-						)}
+					{columns && !multiRowColLayouts.includes(colLayout) && firstColumnWidth && (
+						<>
+							{`.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kt-layout-inner-wrap-id${uniqueID} { grid-template-columns: ${columnsString} }`}
+						</>
+					)}
 					{'Desktop' !== previewDevice &&
 						'right-to-left' === collapseOrder &&
 						('grid-layout' === previewLayout ||
@@ -1715,12 +1617,6 @@ function RowLayoutEditContainer(props) {
 							columns &&
 							showSettings('allSettings', 'kadence/rowlayout') &&
 							showSettings('columnResize', 'kadence/rowlayout') && (
-								// <ThreeColumnDrag
-								// 	attributes={attributes}
-								// 	setAttributes={setAttributes}
-								// 	widthString={widthString}
-								// 	widthStrings[1]={widthStrings[1]}
-								// />
 								<ColumnDragResizer
 									attributes={attributes}
 									setAttributes={setAttributes}
@@ -1741,6 +1637,7 @@ function RowLayoutEditContainer(props) {
 										})
 									}
 									onResizeStop={(newColumnWidths) => console.log('resize stop')}
+									active={firstColumnWidth ? true : false}
 								/>
 							)}
 						{children}
