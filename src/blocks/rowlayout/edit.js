@@ -920,8 +920,6 @@ function RowLayoutEditContainer(props) {
 		columnsString += columnString;
 	}
 
-	//minmax(0, calc( NaN% - ((var(--global-row-gutter-md, 2rem) * 2) / 3) ) ) minmax(0, calc( NaN% - ((var(--global-row-gutter-md, 2rem) * 2) / 3) ) ) minmax(0, calc( NaN% - ((var(--global-row-gutter-md, 2rem) * 2) / 3) ) )
-
 	const innerClasses = classnames({
 		'innerblocks-wrap': true,
 		'kb-theme-content-width': inheritMaxWidth,
