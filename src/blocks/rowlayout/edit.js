@@ -1508,7 +1508,7 @@ function RowLayoutEditContainer(props) {
 						? `.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kt-layout-inner-wrap-id${uniqueID}, .wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .kb-grid-align-display-wrap > .kb-grid-align-display { row-gap:${rowGap} }`
 						: ''}
 
-					{columns && !multiRowColLayouts.includes(colLayout) && areColumnsCustom && (
+					{columns && !multiRowColLayouts.includes(previewColLayout) && areColumnsCustom && (
 						<>
 							{`.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kt-layout-inner-wrap-id${uniqueID} { grid-template-columns: ${columnsString} }`}
 						</>
@@ -1636,7 +1636,7 @@ function RowLayoutEditContainer(props) {
 						{isSelected &&
 							colLayout &&
 							'contentOnly' !== templateLock &&
-							!multiRowColLayouts.includes(colLayout) &&
+							!multiRowColLayouts.includes(previewColLayout) &&
 							columns &&
 							showSettings('allSettings', 'kadence/rowlayout') &&
 							showSettings('columnResize', 'kadence/rowlayout') && (
