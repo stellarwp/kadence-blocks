@@ -31,6 +31,10 @@ export default function ColumnDragResizer(props) {
 		onColumnsUnlocked,
 		onResize,
 		onResizeStop,
+		onResizeTablet,
+		onResizeStopTablet,
+		onResizeMobile,
+		onResizeStopMobile,
 		active,
 	} = props;
 	const { uniqueID, columnGutter, customGutter, gutterType } = attributes;
@@ -43,11 +47,23 @@ export default function ColumnDragResizer(props) {
 
 	const localOnResizeStop = (event, direction, elt) => {
 		const newColumnWidths = packageWidths(event, direction, elt);
-		onResizeStop(newColumnWidths);
+		if (onResizeStopMobile && previewDevice == 'Mobile') {
+			onResizeStopMobile(newColumnWidths);
+		} else if (onResizeStopTablet && previewDevice == 'Tablet') {
+			onResizeStopTablet(newColumnWidths);
+		} else {
+			onResizeStop(newColumnWidths);
+		}
 	};
 	const localOnResize = (event, direction, elt) => {
 		const newColumnWidths = packageWidths(event, direction, elt);
-		onResize(newColumnWidths);
+		if (onResizeMobile && previewDevice == 'Mobile') {
+			onResizeMobile(newColumnWidths);
+		} else if (onResizeTablet && previewDevice == 'Tablet') {
+			onResizeTablet(newColumnWidths);
+		} else {
+			onResize(newColumnWidths);
+		}
 	};
 
 	const packageWidths = (event, direction, elt) => {

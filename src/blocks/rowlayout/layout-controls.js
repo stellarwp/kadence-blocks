@@ -335,6 +335,18 @@ function LayoutControls({
 										fourthColumnWidth: undefined,
 										fifthColumnWidth: undefined,
 										sixthColumnWidth: undefined,
+										firstColumnWidthTablet: undefined,
+										secondColumnWidthTablet: undefined,
+										thirdColumnWidthTablet: undefined,
+										fourthColumnWidthTablet: undefined,
+										fifthColumnWidthTablet: undefined,
+										sixthColumnWidthTablet: undefined,
+										firstColumnWidthMobile: undefined,
+										secondColumnWidthMobile: undefined,
+										thirdColumnWidthMobile: undefined,
+										fourthColumnWidthMobile: undefined,
+										fifthColumnWidthMobile: undefined,
+										sixthColumnWidthMobile: undefined,
 										tabletLayout: 'inherit',
 										mobileLayout: 'row',
 									});
@@ -378,10 +390,22 @@ function LayoutControls({
 												if (value === tabletLayout) {
 													setAttributes({
 														tabletLayout: 'inherit',
+														firstColumnWidthTablet: undefined,
+														secondColumnWidthTablet: undefined,
+														thirdColumnWidthTablet: undefined,
+														fourthColumnWidthTablet: undefined,
+														fifthColumnWidthTablet: undefined,
+														sixthColumnWidthTablet: undefined,
 													});
 												} else {
 													setAttributes({
 														tabletLayout: value,
+														firstColumnWidthTablet: undefined,
+														secondColumnWidthTablet: undefined,
+														thirdColumnWidthTablet: undefined,
+														fourthColumnWidthTablet: undefined,
+														fifthColumnWidthTablet: undefined,
+														sixthColumnWidthTablet: undefined,
 													});
 												}
 											}}
@@ -397,6 +421,12 @@ function LayoutControls({
 											onChange={(value) => {
 												setAttributes({
 													mobileLayout: value,
+													firstColumnWidthMobile: undefined,
+													secondColumnWidthMobile: undefined,
+													thirdColumnWidthMobile: undefined,
+													fourthColumnWidthMobile: undefined,
+													fifthColumnWidthMobile: undefined,
+													sixthColumnWidthMobile: undefined,
 												});
 											}}
 										/>

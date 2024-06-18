@@ -333,6 +333,42 @@
 		"sixthColumnWidth": {
 			"type": "number"
 		},
+		"firstColumnWidthTablet": {
+			"type": "number"
+		},
+		"secondColumnWidthTablet": {
+			"type": "number"
+		},
+		"thirdColumnWidthTablet": {
+			"type": "number"
+		},
+		"fourthColumnWidthTablet": {
+			"type": "number"
+		},
+		"fithColumnWidthTablet": {
+			"type": "number"
+		},
+		"sixthColumnWidthTablet": {
+			"type": "number"
+		},
+		"firstColumnWidthMobile": {
+			"type": "number"
+		},
+		"secondColumnWidthMobile": {
+			"type": "number"
+		},
+		"thirdColumnWidthMobile": {
+			"type": "number"
+		},
+		"fourthColumnWidthMobile": {
+			"type": "number"
+		},
+		"fithColumnWidthMobile": {
+			"type": "number"
+		},
+		"sixthColumnWidthMobile": {
+			"type": "number"
+		},
 		"textColor": {
 			"type": "string",
 			"default": ""

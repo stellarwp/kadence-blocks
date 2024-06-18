@@ -186,11 +186,8 @@ function RowLayoutEditContainer(props) {
 		topSepWidthMobile,
 		topSepWidthTab,
 		firstColumnWidth,
-		secondColumnWidth,
-		thirdColumnWidth,
-		fourthColumnWidth,
-		fifthColumnWidth,
-		sixthColumnWidth,
+		firstColumnWidthTablet,
+		firstColumnWidthMobile,
 		textColor,
 		linkColor,
 		linkHoverColor,
@@ -716,7 +713,12 @@ function RowLayoutEditContainer(props) {
 	const [activeTab, setActiveTab] = useState('general');
 	const [dynamicBackgroundImg, setDynamicBackgroundImg] = useState('');
 	const debouncedSetDynamicState = debounce(setDynamicState, 200);
-	const areColumnsCustom = firstColumnWidth || resizeColumnWidthNumbers ? true : false;
+	const previewFirstColumnWidth = getPreviewSize(
+		previewDevice,
+		firstColumnWidth,
+		firstColumnWidthTablet,
+		firstColumnWidthMobile
+	);
 
 	const editorDocument = document.querySelector('iframe[name="editor-canvas"]')?.contentWindow.document || document;
 	const hasBG = bgColor || bgImg || gradient || overlay || overlayGradient || overlayBgImg ? 'kt-row-has-bg' : '';
@@ -823,20 +825,39 @@ function RowLayoutEditContainer(props) {
 		'sixthColumnWidth',
 	];
 
+	//An array that has the number (in percent) of each column
 	const columnWidthNumbers = [];
+	//An array that has a string representing the layout (or width) of each column
 	const widthStrings = [];
 	for (let column = 0; column < columnAttributes.length; column++) {
+		const deviceSuffix = previewDevice == 'Desktop' ? '' : previewDevice;
+
+		//this needs to inherit if the layout does, but should be the sized custom value otherwise
 		const attributeColumnWidth = attributes[columnAttributes[column]];
-		const mappedWidth = COLUMN_WIDTH_MAP?.[columns]?.[colLayout]?.[column];
-		const widthString = attributeColumnWidth || colLayout;
+		const attributeColumnWidthTablet = attributes[columnAttributes[column] + 'Tablet'];
+		const attributeColumnWidthMobile = attributes[columnAttributes[column] + 'Mobile'];
+		const previewAttributeColumnWidth = getPreviewSize(
+			previewDevice,
+			attributeColumnWidth,
+			attributeColumnWidthTablet,
+			attributeColumnWidthMobile,
+			true
+		);
+		const attributeColumnWidthToUse =
+			previewLayout == 'inherit'
+				? previewAttributeColumnWidth
+				: attributes[columnAttributes[column] + deviceSuffix];
+
+		const mappedWidth = COLUMN_WIDTH_MAP?.[columns]?.[previewColLayout]?.[column];
+		const widthString = attributeColumnWidthToUse || previewColLayout;
 
 		columnWidthNumbers.push(
-			Math.abs(widthString) === parseFloat(widthString) ? attributeColumnWidth : mappedWidth ?? 0
+			Math.abs(widthString) === parseFloat(widthString) ? attributeColumnWidthToUse : mappedWidth ?? 0
 		);
 		widthStrings.push(`${widthString}`);
 	}
-
-	// console.log(columns, widthStrings, columnWidthNumbers, columns, colLayout, firstColumnWidth, secondColumnWidth);
+	const areColumnsCustom =
+		(previewFirstColumnWidth && widthStrings[0] != previewLayout) || resizeColumnWidthNumbers ? true : false;
 
 	const previewColumnGutter = getPreviewSize(previewDevice, columnGutter, tabletGutter, mobileGutter);
 	const columnGap = getPreviewGutterSize(previewDevice, previewColumnGutter, customGutter, gutterType);
@@ -1634,6 +1655,12 @@ function RowLayoutEditContainer(props) {
 										//for performance reasons, we set a temporary state for the widths during resize
 										setResizeColumnWidthNumbers(newColumnWidths);
 									}}
+									onResizeTablet={(newColumnWidths) => {
+										setResizeColumnWidthNumbers(newColumnWidths);
+									}}
+									onResizeMobile={(newColumnWidths) => {
+										setResizeColumnWidthNumbers(newColumnWidths);
+									}}
 									onResizeStop={(newColumnWidths) => {
 										setAttributes({
 											firstColumnWidth: newColumnWidths?.[0],
@@ -1642,6 +1669,28 @@ function RowLayoutEditContainer(props) {
 											fourthColumnWidth: newColumnWidths?.[3],
 											fifthColumnWidth: newColumnWidths?.[4],
 											sixthColumnWidth: newColumnWidths?.[5],
+										});
+										setResizeColumnWidthNumbers(null);
+									}}
+									onResizeStopTablet={(newColumnWidths) => {
+										setAttributes({
+											firstColumnWidthTablet: newColumnWidths?.[0],
+											secondColumnWidthTablet: newColumnWidths?.[1],
+											thirdColumnWidthTablet: newColumnWidths?.[2],
+											fourthColumnWidthTablet: newColumnWidths?.[3],
+											fifthColumnWidthTablet: newColumnWidths?.[4],
+											sixthColumnWidthTablet: newColumnWidths?.[5],
+										});
+										setResizeColumnWidthNumbers(null);
+									}}
+									onResizeStopMobile={(newColumnWidths) => {
+										setAttributes({
+											firstColumnWidthMobile: newColumnWidths?.[0],
+											secondColumnWidthMobile: newColumnWidths?.[1],
+											thirdColumnWidthMobile: newColumnWidths?.[2],
+											fourthColumnWidthMobile: newColumnWidths?.[3],
+											fifthColumnWidthMobile: newColumnWidths?.[4],
+											sixthColumnWidthMobile: newColumnWidths?.[5],
 										});
 										setResizeColumnWidthNumbers(null);
 									}}
