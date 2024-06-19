@@ -42,7 +42,7 @@ function kadence_blocks_activate(): void {
 register_activation_hook( __FILE__, 'kadence_blocks_activate' );
 
 /**
- * Load Plugin
+ * Load Plugin.
  */
 function kadence_blocks_init(): void {
 	$container = new ContainerAdapter( new \KadenceWP\KadenceBlocks\lucatume\DI52\Container() );
