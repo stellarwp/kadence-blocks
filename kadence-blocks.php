@@ -34,7 +34,7 @@ use KadenceWP\KadenceBlocks\StellarWP\Uplink\Register;
 use KadenceWP\KadenceBlocks\StellarWP\Uplink\Uplink;
 
 /**
- * Add a check before redirecting
+ * Add a check before redirecting.
  */
 function kadence_blocks_activate(): void {
 	add_option( 'kadence_blocks_redirect_on_activation', true );
