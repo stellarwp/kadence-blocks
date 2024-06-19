@@ -178,7 +178,8 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 Release Date: June TBD 2024
 * Add: Option to set focal point in Adv Image block when using a ratio.
 * Fix: Escape HTML in advanced gallery block.
-* Fix: Issue with escaping attribute in google maps block.
+* Fix: Issue with escaping attribute in Google Maps block.
+* Fix: Advanced text block not working in editor for WP 6.3.
 
 = 3.2.42 =
 Release Date: June 10th 2024
