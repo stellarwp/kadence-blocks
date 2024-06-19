@@ -1,12 +1,7 @@
 name: PHP Compatibility
 
 on:
-    pull_request:
-        paths:
-            - '**.php'
     push:
-        branches:
-            - main
         paths:
             - '**.php'
 
