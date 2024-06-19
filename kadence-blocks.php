@@ -53,6 +53,7 @@ function kadence_blocks_init(): void {
 	require_once KADENCE_BLOCKS_PATH . 'includes/init.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/form-ajax.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/helper-functions.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-editor-assets.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-schema-updater.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-prebuilt-library.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-google-fonts.php';
