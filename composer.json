@@ -102,15 +102,17 @@
 		"post-update-cmd": [
 			"@strauss"
 		],
-		"compatibility:php-7.4": "phpcs -d memory_limit=2048M -p ./src -s --standard=PHPCompatibilityWP --runtime-set testVersion 7.4",
-		"compatibility:php-8.0": "phpcs -d memory_limit=2048M -p ./src -s --standard=PHPCompatibilityWP --runtime-set testVersion 8.0",
-		"compatibility:php-8.1": "phpcs -d memory_limit=2048M -p ./src -s --standard=PHPCompatibilityWP --runtime-set testVersion 8.1",
-		"compatibility:php-8.2": "phpcs -d memory_limit=2048M -p ./src -s --standard=PHPCompatibilityWP --runtime-set testVersion 8.2",
+		"compatibility:php-7.4": "phpcs -d memory_limit=2048M -p -s --standard=PHPCompatibilityWP --runtime-set testVersion 7.4 --ignore=./vendor,./node_modules,./dist,./src/packages/icons/,./includes/assets/ --extensions=php ./",
+		"compatibility:php-8.0": "phpcs -d memory_limit=2048M -p -s --standard=PHPCompatibilityWP --runtime-set testVersion 8.0 --ignore=./vendor,./node_modules,./dist,./src/packages/icons/,./includes/assets/ --extensions=php ./",
+		"compatibility:php-8.1": "phpcs -d memory_limit=2048M -p -s --standard=PHPCompatibilityWP --runtime-set testVersion 8.1 --ignore=./vendor,./node_modules,./dist,./src/packages/icons/,./includes/assets/ --extensions=php ./",
+		"compatibility:php-8.2": "phpcs -d memory_limit=2048M -p -s --standard=PHPCompatibilityWP --runtime-set testVersion 8.2 --ignore=./vendor,./node_modules,./dist,./src/packages/icons/,./includes/assets/ --extensions=php ./",
+		"compatibility:php-8.3": "phpcs -d memory_limit=2048M -p -s --standard=PHPCompatibilityWP --runtime-set testVersion 8.3 --ignore=./vendor,./node_modules,./dist,./src/packages/icons/,./includes/assets/ --extensions=php ./",
 		"compatibility": [
 			"@compatibility:php-7.4",
 			"@compatibility:php-8.0",
 			"@compatibility:php-8.1",
-			"@compatibility:php-8.2"
+			"@compatibility:php-8.2",
+			"@compatibility:php-8.3"
 		]
 	},
 	"extra": {
