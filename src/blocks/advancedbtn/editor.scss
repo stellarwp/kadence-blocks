@@ -4,240 +4,242 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
- 
- .components-button-group.kb-button-global-styles.kt-style-btn-group {
-    width: 100%;
-    text-align: center;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+
+.components-button-group.kb-button-global-styles.kt-style-btn-group {
+	width: 100%;
+	text-align: center;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 10px;
 }
 // Fix Spacing issue with Astra Theme.
 .kadence-controls-content .components-base-control .components-base-control__field {
-    padding: 0;
+	padding: 0;
 }
 .components-button-group.kb-button-global-styles.kt-style-btn-group button.components-button.kt-style-btn {
-    border: 2px solid #eeeeee;
-    color: #555;
-    width: auto;
-    text-align: center;
-    justify-content: center;
-    border-radius: 3px;
+	border: 2px solid #eeeeee;
+	color: #555;
+	width: auto;
+	text-align: center;
+	justify-content: center;
+	border-radius: 3px;
 }
 .components-button-group.kb-button-global-styles.kt-style-btn-group button.components-button.kt-style-btn:hover {
-    border: 2px solid #ddd;
-    color: #555;
+	border: 2px solid #ddd;
+	color: #555;
 }
 .components-button-group.kb-button-global-styles.kt-style-btn-group button.components-button.kt-style-btn.is-primary {
-    border: 2px solid #777;
-    color: #333;
+	border: 2px solid #777;
+	color: #333;
 }
 
 .kt-button-text.is-selected {
-    min-width: 5px;
+	min-width: 5px;
 }
 .components-base-control.block-editor-url-input.kt-btn-link-input {
-    margin-bottom: 0;
+	margin-bottom: 0;
 }
 .block-editor-rich-text__editable.kt-button-text [data-rich-text-placeholder]:after {
-    display:inline-block;
+	display: inline-block;
 }
 .block-editor-rich-text__editable.kt-button-text.is-selected:focus [data-rich-text-placeholder]:after {
-    display:none;
+	display: none;
 }
- .kt-block-defaults-modal h2.kt-beside-btn-group, .kt-block-defaults-modal h2.kt-beside-color-label {
-    font-size: 14px;
-    color: #555d66;
+.kt-block-defaults-modal h2.kt-beside-btn-group,
+.kt-block-defaults-modal h2.kt-beside-color-label {
+	font-size: 14px;
+	color: #555d66;
 }
 .kt-block-defaults-modal h2.kt-tab-wrap-title.kt-color-settings-title {
-    text-align: center;
-    background: #f2f2f2;
-    margin-bottom: 0;
-        font-size: 14px;
-    color: #555d66;
+	text-align: center;
+	background: #f2f2f2;
+	margin-bottom: 0;
+	font-size: 14px;
+	color: #555d66;
 }
 
 .edit-post-sidebar h2.kt-tab-wrap-title.kt-color-settings-title {
-    text-align: center;
-    background: #f2f2f2;
-    margin-bottom: 0;
+	text-align: center;
+	background: #f2f2f2;
+	margin-bottom: 0;
 }
 .kt-advanced-color-settings-container .kt-has-alpha {
-    background-image: linear-gradient(45deg, #ddd 25%, transparent 0), linear-gradient(-45deg, #ddd 25%, transparent 0), linear-gradient(45deg, transparent 75%, #ddd 0), linear-gradient(-45deg, transparent 75%, #ddd 0);
-    background-size: 10px 10px;
-    background-position: 0 0,0 5px,5px -5px,-5px 0;
+	background-image: linear-gradient(45deg, #ddd 25%, transparent 0), linear-gradient(-45deg, #ddd 25%, transparent 0),
+		linear-gradient(45deg, transparent 75%, #ddd 0), linear-gradient(-45deg, transparent 75%, #ddd 0);
+	background-size: 10px 10px;
+	background-position: 0 0, 0 5px, 5px -5px, -5px 0;
 }
 .kt-advanced-color-settings-container .kt-color-icon-indicate {
-    height:auto;
-    position: relative;
-    transform: scale(1);
-	transition: transform .1s ease;
+	height: auto;
+	position: relative;
+	transform: scale(1);
+	transition: transform 0.1s ease;
 	border-radius: 50%;
-    padding: 0;
+	padding: 0;
 }
 .kt-advanced-color-settings-container .kt-color-icon-indicate:hover {
-    transform: scale(1.1);
+	transform: scale(1.1);
 }
 .components-popover__content .components-range-control.kt-opacity-value {
-    padding: 0 12px 12px;
+	padding: 0 12px 12px;
 }
 .components-popover__content .components-range-control.kt-opacity-value .components-base-control__field {
-    flex-wrap: nowrap;
+	flex-wrap: nowrap;
 }
 
 .components-popover__content .components-range-control.kt-opacity-value .components-range-control__slider {
-    flex-grow: 10;
+	flex-grow: 10;
 }
 .components-popover__content .components-range-control.kt-opacity-value .components-base-control__label {
-    width: auto;
-    margin-right: 5px;
+	width: auto;
+	margin-right: 5px;
 }
 .kt-advanced-color-settings-container .components-color-palette__clear svg {
-	width:16px;
+	width: 16px;
 }
 .kt-advanced-color-settings-container .components-color-palette__clear span.dashicon {
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
 }
 .kt-advanced-color-settings-container .components-color-palette__clear {
-    background: transparent;
-    padding: 4px;
-    height: auto;
-    box-shadow: none;
-    border: 1px solid transparent;
+	background: transparent;
+	padding: 4px;
+	height: auto;
+	box-shadow: none;
+	border: 1px solid transparent;
 }
 .kt-beside-color-click {
-    display: flex;
-    align-items: center;
+	display: flex;
+	align-items: center;
 }
 .kt-advanced-color-settings-container .kt-color-icon-indicate .component-color-indicator.kt-advanced-color-indicate {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    margin: 0;
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	margin: 0;
 }
 .components-popover__content .components-color-palette .components-color-palette__item-wrapper {
 	margin-right: 5px;
-    margin-bottom: 10px;
-    margin-left: 5px;
+	margin-bottom: 10px;
+	margin-left: 5px;
 }
 .components-popover__content .components-color-palette .components-color-palette__item-wrapper:last-child {
-    margin-right: 0;
+	margin-right: 0;
 }
 .components-popover__content .components-color-palette {
-    margin: 0;
-    padding: 0px 12px 12px;
-    width: 100%;
+	margin: 0;
+	padding: 0px 12px 12px;
+	width: 100%;
 }
 .kt-advanced-color-settings-container {
-    display: flex;
-    align-items: center;
+	display: flex;
+	align-items: center;
 }
 .kt-advanced-color-settings-container h2.kt-beside-color-label {
-    flex-grow: 1;
-    font-weight: 400;
+	flex-grow: 1;
+	font-weight: 400;
 }
-
 
 .kt-inner-sub-section .kt-size-tabs .components-tab-panel__tabs {
-    margin-bottom: 10px;
+	margin-bottom: 10px;
 }
 .btn-text-size-range {
-    margin-top: 8px;
+	margin-top: 8px;
 }
 .edit-post-sidebar h2.kt-heading-size-title.kt-secondary-color-size {
-    margin-top: 0;
-    font-weight: normal;
+	margin-top: 0;
+	font-weight: normal;
 }
 
- // Controls
-.components-base-control__field .components-range-control__slider+.dashicon.dashicons-editor-textcolor {
-    width: 30px;
-    height: 30px;
+// Controls
+.components-base-control__field .components-range-control__slider + .dashicon.dashicons-editor-textcolor {
+	width: 30px;
+	height: 30px;
 }
 .kt-popover-container {
-    float: left;
-    margin-top: -20px;
+	float: left;
+	margin-top: -20px;
 }
 .components-popover.kt-popover-opacity .components-popover__content {
-    padding: 10px;
+	padding: 10px;
 }
-.components-popover.kt-popover-opacity .components-popover__content .components-base-control .components-base-control__field {
-    margin:0;
+.components-popover.kt-popover-opacity
+	.components-popover__content
+	.components-base-control
+	.components-base-control__field {
+	margin: 0;
 }
 .kt-popover-container .components-button {
-    background: transparent;
-    height: 20px;
-    padding: 0;
-    width: 20px;
-    border: 0;
-    box-shadow: none !important;
+	background: transparent;
+	height: 20px;
+	padding: 0;
+	width: 20px;
+	border: 0;
+	box-shadow: none !important;
 }
 .kt-popover-container .components-button svg {
-	opacity:1;
-	transition: all .3s ease-in-out;
+	opacity: 1;
+	transition: all 0.3s ease-in-out;
 }
 .kt-popover-container .components-button:hover svg {
-    opacity:0.7;
+	opacity: 0.7;
 }
 .kt-color-indicate {
-    display: block;
-    float: right;
+	display: block;
+	float: right;
 	margin-bottom: -18px;
-    margin-top: 10px;
+	margin-top: 10px;
 }
 // Item
-
-
 
 // NEW CSS.
 .kt-button {
 	z-index: 1;
-    position: relative;
-    overflow: hidden;
-    border: 0 solid transparent;
-    display: flex;
+	position: relative;
+	overflow: hidden;
+	border: 0 solid transparent;
+	display: flex;
 	text-align: center;
 	align-items: center;
 	justify-content: center;
 }
 .kt-button.kb-btn-underline-none {
-    text-decoration: none;
+	text-decoration: none;
 }
 .kt-button.kb-btn-underline-underline {
-    text-decoration: underline;
+	text-decoration: underline;
 }
 .kt-button:not(.kb-btn-global-inherit) {
-    padding: 0.4em 1em;
-    cursor: pointer;
+	padding: 0.4em 1em;
+	cursor: pointer;
 	font-size: 1.125rem;
-    border-radius: 3px;
-    transition: all .3s ease-in-out;
+	border-radius: 3px;
+	transition: all 0.3s ease-in-out;
 	box-shadow: none;
 }
 .kt-button.kb-btn-global-fill {
-    border: 0px solid transparent;
+	border: 0px solid transparent;
 	border-radius: 3px;
-    background: var(--global-palette-btn-bg, #3633E1);
-    color: var(--global-palette-btn, #FFFFFF);
-    &:hover {
-        color: var(--global-palette-btn-hover, #FFFFFF);
-    }
+	background: var(--global-palette-btn-bg, #3633e1);
+	color: var(--global-palette-btn, #ffffff);
+	&:hover {
+		color: var(--global-palette-btn-hover, #ffffff);
+	}
 }
 .kt-button.kb-btn-global-outline {
-    border: 2px solid var(--global-palette-btn-bg, #3633E1);
-	background:transparent;
-    padding: calc( 0.4em - 2px ) calc( 1em - 2px );
-	color: var(--global-palette-btn-bg, #3633E1);
-    &:hover {
-        border-color: var(--global-palette-btn-bg-hover, #2F2FFC);
-        background: transparent;
-        color: var(--global-palette-btn-bg-hover, #2F2FFC);
-    }
+	border: 2px solid var(--global-palette-btn-bg, #3633e1);
+	background: transparent;
+	padding: calc(0.4em - 2px) calc(1em - 2px);
+	color: var(--global-palette-btn-bg, #3633e1);
+	&:hover {
+		border-color: var(--global-palette-btn-bg-hover, #2f2ffc);
+		background: transparent;
+		color: var(--global-palette-btn-bg-hover, #2f2ffc);
+	}
 }
 .kt-button::before {
-    position: absolute;
+	position: absolute;
 	content: "";
 	top: 0;
 	right: 0;
@@ -245,131 +247,135 @@
 	left: 0;
 	z-index: -1;
 	opacity: 0;
-	background:transparent;
-	transition: all .3s ease-in-out;
+	background: transparent;
+	transition: all 0.3s ease-in-out;
 }
 .kt-button.kb-btn-global-fill::before {
-    background: var(--global-palette-btn-bg-hover, #2F2FFC);
+	background: var(--global-palette-btn-bg-hover, #2f2ffc);
 }
 .editor-styles-wrapper .wp-block-kadence-advancedbtn .kt-button:not(.kb-btn-global-inherit):hover {
-    box-shadow: none;
+	box-shadow: none;
 }
 .kt-button:hover::before {
 	opacity: 1;
 }
 .kt-btn-width-type-fixed .kt-button {
-    width: 100%;
+	width: 100%;
 }
-.editor-styles-wrapper .wp-block-kadence-advancedbtn .kt-button.kt-btn-size-small{
-    font-size: 0.9rem;
+.editor-styles-wrapper .wp-block-kadence-advancedbtn .kt-button.kt-btn-size-small {
+	font-size: 0.9rem;
 }
 .editor-styles-wrapper .wp-block-kadence-advancedbtn .kt-button.kt-btn-size-large {
-    font-size: 1.35rem;
+	font-size: 1.35rem;
 }
 .editor-styles-wrapper .wp-block-kadence-advancedbtn .kt-button.kt-btn-size-xlarge {
-    font-size: 1.65rem;
+	font-size: 1.65rem;
 }
 .kt-button.kb-btn-global-outline.kt-btn-size-xlarge {
-    border-width: 4px;
-    border-style: solid;
+	border-width: 4px;
+	border-style: solid;
 }
 .kt-button.kb-btn-global-outline.kt-btn-size-large {
-    border-width: 3px;
-    border-style: solid;
-    padding: calc( 0.4em - 3px ) calc( 1em - 3px );
+	border-width: 3px;
+	border-style: solid;
+	padding: calc(0.4em - 3px) calc(1em - 3px);
 }
 .kt-button.kb-btn-global-outline.kt-btn-size-small {
-    border-width: 1px;
-    border-style: solid;
-    padding: calc( 0.4em - 1px ) calc( 1em - 1px );
+	border-width: 1px;
+	border-style: solid;
+	padding: calc(0.4em - 1px) calc(1em - 1px);
 }
 // .wp-block-kadence-advancedbtn .kb-btn-global-inherit.kb-btn-has-icon {
 //     display: flex;
 // 	justify-content: center;
 // 	align-items: center;
 // }
-.wp-block[data-type="kadence/advancedbtn"], .wp-block[data-type="kadence/singlebtn"] {
-    margin-top: 0;
-    margin-bottom: 0;
+.wp-block[data-type="kadence/advancedbtn"],
+.wp-block[data-type="kadence/singlebtn"] {
+	margin-top: 0;
+	margin-bottom: 0;
 }
 .wp-block-kadence-advancedbtn {
-    .kb-btns-outer-wrap {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-wrap: wrap;
-        .wp-block-kadence-singlebtn {
-            display: inline-flex;
-            margin-left: 0;
-            margin-right: 0;
-            &.kt-btn-width-type-full {
-                flex: 1 0 fit-content;
-                width: 100%;
-                .kt-button {
-                    width: 100%;
-                }
-            }
-            .kt-button {
-                display: flex;
-            }
-        }
-    }
+	.kb-btns-outer-wrap {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-wrap: wrap;
+		.wp-block-kadence-singlebtn {
+			display: inline-flex;
+			margin-left: 0;
+			margin-right: 0;
+			&.kt-btn-width-type-full {
+				flex: 1 0 fit-content;
+				width: 100%;
+				.tooltip-ref-wrap {
+					width: 100%;
+				}
+				.kt-button {
+					width: 100%;
+				}
+			}
+			.kt-button {
+				display: flex;
+			}
+		}
+	}
 }
 // Button Alignment.
 .wp-block-kadence-advancedbtn .kt-btn-align-center {
-    justify-content: center;
+	justify-content: center;
 }
 .wp-block-kadence-advancedbtn .kt-btn-align-left {
-    justify-content: flex-start;
+	justify-content: flex-start;
 }
 .wp-block-kadence-advancedbtn .kt-btn-align-right {
-    justify-content: flex-end;
+	justify-content: flex-end;
 }
 .wp-block-kadence-advancedbtn .kt-btn-align-space-between {
-    justify-content: space-between;
+	justify-content: space-between;
 }
 .wp-block-kadence-advancedbtn .kt-btn-align-center.kb-direction-columns {
-    align-items: center;
+	align-items: center;
 }
 .wp-block-kadence-advancedbtn .kt-btn-align-left.kb-direction-columns {
-    align-items: flex-start;
+	align-items: flex-start;
 }
 .wp-block-kadence-advancedbtn .kt-btn-align-right.kb-direction-columns {
-    align-items: flex-end;
+	align-items: flex-end;
 }
 .wp-block-kadence-advancedbtn .kt-btn-align-space-between.kb-direction-columns {
-    align-items: center;
+	align-items: center;
 }
 .wp-block-kadence-advancedbtn .kt-btn-valign-center {
-    align-items: center;
+	align-items: center;
 }
 .wp-block-kadence-advancedbtn .kt-btn-valign-top {
-   align-items: flex-start;
+	align-items: flex-start;
 }
 .wp-block-kadence-advancedbtn .kt-btn-valign-bottom {
-   align-items: flex-end;
+	align-items: flex-end;
 }
 .wp-block-kadence-advancedbtn .kt-btn-valign-center.kb-direction-columns {
-    justify-content: center;
+	justify-content: center;
 }
 .wp-block-kadence-advancedbtn .kt-btn-valign-top.kb-direction-columns {
-    justify-content: flex-start;
+	justify-content: flex-start;
 }
 .wp-block-kadence-advancedbtn .kt-btn-valign-bottom.kb-direction-columns {
-    justify-content: flex-end;
+	justify-content: flex-end;
 }
 .btn-inner-wrap {
-    display: flex;
-    width: 100%;
+	display: flex;
+	width: 100%;
 }
 // Icon Settings.
 .kb-btn-has-icon {
-    gap: 0.5em;
+	gap: 0.5em;
 }
 .kb-btn-only-icon .kt-button-text {
-    display:none;
+	display: none;
 }
 
 .kb-btn-only-text .kt-btn-svg-icon {
-    display: none !important;
+	display: none !important;
 }
