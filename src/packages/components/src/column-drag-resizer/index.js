@@ -241,9 +241,6 @@ export default function ColumnDragResizer(props) {
 		return resizableBoxArray;
 	};
 
-	// const memoizedResizableBoxes = useMemo(() => {
-	//     resizableBoxes(width);
-	// });
 	return (
 		<div className={innerResizeClasses}>
 			<ContainerDimensions>{({ width }) => <>{resizableBoxes(width)}</>}</ContainerDimensions>

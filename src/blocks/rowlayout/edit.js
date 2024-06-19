@@ -1508,7 +1508,7 @@ function RowLayoutEditContainer(props) {
 						? `.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kt-layout-inner-wrap-id${uniqueID}, .wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .kb-grid-align-display-wrap > .kb-grid-align-display { row-gap:${rowGap} }`
 						: ''}
 
-					{columns && !multiRowColLayouts.includes(previewColLayout) && areColumnsCustom && (
+					{columns && !multiRowColLayouts.includes(previewColLayout) && (
 						<>
 							{`.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kt-layout-inner-wrap-id${uniqueID} { grid-template-columns: ${columnsString} }`}
 						</>

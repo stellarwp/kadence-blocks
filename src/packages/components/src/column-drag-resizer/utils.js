@@ -25,7 +25,6 @@ export function getGutterPercentUnit(columnGutter, customGutter, gutterType) {
 	}
 	return gutter;
 }
-
 export function getGutterTotal(gutter, columns) {
 	if (gutter && columns > 1) {
 		return `(${gutter} * ${columns - 1})`;
