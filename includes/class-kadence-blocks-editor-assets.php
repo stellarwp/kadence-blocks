@@ -457,7 +457,8 @@ class Editor_Assets {
 							if ( in_array( $value, $new_weight_variant ) ) {
 								$weights[] = array( 'value' => ( $value === 'regular' ? '400' : $value ), 'label' => $label );
 							} else {
-								$weights[] = array( 'value' => $value, 'label' => $label . ' ' . __( '(Not Globally Used)', 'kadence-blocks' ) );
+								// For now, don't add until we smart load when used.
+								// $weights[] = array( 'value' => $value, 'label' => $label . ' ' . __( '(Not Globally Used)', 'kadence-blocks' ) );
 							}
 						}
 					}
@@ -526,7 +527,8 @@ class Editor_Assets {
 							if ( in_array( $value, $new_weight_variant ) ) {
 								$weights[] = array( 'value' => ( $value === 'regular' ? '400' : $value ), 'label' => $label );
 							} else {
-								$weights[] = array( 'value' => $value, 'label' => $label . ' ' . __( '(Not Globally Used)', 'kadence-blocks' ) );
+								// For now, don't add until we smart load when used.
+								// $weights[] = array( 'value' => $value, 'label' => $label . ' ' . __( '(Not Globally Used)', 'kadence-blocks' ) );
 							}
 						}
 					}
@@ -621,7 +623,8 @@ class Editor_Assets {
 							if ( in_array( $value, $new_weight_variant ) ) {
 								$weights[] = array( 'value' => ( $value === 'regular' ? '400' : $value ), 'label' => $label );
 							} else {
-								$weights[] = array( 'value' => $value, 'label' => $label . ' ' . __( '(Not Globally Used)', 'kadence-blocks' ) );
+								// For now, don't add until we smart load when used.
+								// $weights[] = array( 'value' => $value, 'label' => $label . ' ' . __( '(Not Globally Used)', 'kadence-blocks' ) );
 							}
 						}
 					}
