@@ -1,6 +1,7 @@
 name: PHP Compatibility
 
 on:
+    workflow_dispatch:
     push:
         paths:
             - '**.php'
