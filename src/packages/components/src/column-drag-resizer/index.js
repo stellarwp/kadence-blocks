@@ -131,7 +131,10 @@ export default function ColumnDragResizer(props) {
 			const sumPreviousColumnWidths =
 				column == 0 ? 0 : previewColumnWidths.slice(0, column).reduce((partialSum, a) => partialSum + a, 0);
 			const minWidth = 10;
-			//columns aren't actually as big as the raw percent value. They have the columnGap portioned out. This adjusts for that.
+			//This takes out the column's portion of the gap from the overall percent width.
+			//the preset columns aren't actually displayed as percents on the frontend for the row layout. They use fr's.
+			//This also adjusts for the difference in how gaps are potioned out between fr's and % grids.
+			//The same calculation is run for the row layout grid.
 			//It's in the form of a left offset because I can't calc() the width of a ResizableBox
 			//It attempts to place the edge of the resizable box right in the middle of the joint.
 			const gutterAdjustment =
