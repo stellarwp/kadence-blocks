@@ -108,7 +108,6 @@ export const AIText = {
 				value?.end &&
 				value.start !== value.end
 			) {
-				console.log(value.text.substring(value.start, value.end));
 				setSelectedContent(value.text.substring(value.start, value.end));
 				if (!isOpen && value?.text.length > 30) {
 					setIsOpen(true);
