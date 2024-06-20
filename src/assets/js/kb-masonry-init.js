@@ -27,10 +27,7 @@
 				// 		subitems[n].classList.add( 'kt-masonry-trigger-animation' );
 				// 	}, n * 75, n );
 				// }
-				imagesLoaded(masonryitems[i]).on('progress', function () {
-					// layout Masonry after each image loads
-					masGrid.layout();
-				});
+				masGrid.layout();
 				masGrid.once('layoutComplete', function (items) {
 					// Create a new event
 					const event = new CustomEvent('layoutComplete');
