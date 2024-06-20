@@ -178,6 +178,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 Release Date: June TBD 2024
 * Add: Option to set focal point in Adv Image block when using a ratio.
 * Add: Option to set flex grow in section block.
+* Update: Section vertical align to include stretch.
 * Update: Font weight options to be in better sync with inherited theme settings.
 * Fix: Issue with fullwidth button not showing fullwidth in the editor.
 * Fix: Escape HTML in advanced gallery block.
