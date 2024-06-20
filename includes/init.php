@@ -80,21 +80,6 @@ function kadence_blocks_convert_custom_fonts() {
 	}
 }
 add_filter( 'init', 'kadence_blocks_convert_custom_fonts', 11 );
-/**
- * Get an array of visibility options.
- */
-function kadence_blocks_get_user_visibility_options() {
-	$specific_roles = array();
-	if ( function_exists( 'get_editable_roles' ) ) {
-		foreach ( get_editable_roles() as $role_slug => $role_info ) {
-			$specific_roles[] = array(
-				'value' => $role_slug,
-				'label' => $role_info['name'],
-			);
-		}
-	}
-	return apply_filters( 'kadence_blocks_user_visibility_options', $specific_roles );
-}
 
 /**
  * Callback for the excerpt_length filter used by
