@@ -177,6 +177,9 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 = 3.2.43 =
 Release Date: June TBD 2024
 * Add: Option to set focal point in Adv Image block when using a ratio.
+* Add: Option to set flex grow in section block.
+* Update: Font weight options to be in better sync with inherited theme settings.
+* Fix: Issue with fullwidth button not showing fullwidth in the editor.
 * Fix: Escape HTML in advanced gallery block.
 * Fix: Issue with escaping attribute in Google Maps block.
 * Fix: Advanced text block not working in editor for WP 6.3.
