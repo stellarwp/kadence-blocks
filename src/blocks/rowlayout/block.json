@@ -345,7 +345,7 @@
 		"fourthColumnWidthTablet": {
 			"type": "number"
 		},
-		"fithColumnWidthTablet": {
+		"fifthColumnWidthTablet": {
 			"type": "number"
 		},
 		"sixthColumnWidthTablet": {
@@ -363,7 +363,7 @@
 		"fourthColumnWidthMobile": {
 			"type": "number"
 		},
-		"fithColumnWidthMobile": {
+		"fifthColumnWidthMobile": {
 			"type": "number"
 		},
 		"sixthColumnWidthMobile": {
