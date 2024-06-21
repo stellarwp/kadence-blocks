@@ -2,44 +2,45 @@ import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import {
 	Button,
-	Icon,
 	Modal,
-	TextareaControl,
-	DropZone,
-	FormFileUpload,
 } from '@wordpress/components';
 import { has, get } from 'lodash';
-import apiFetch from '@wordpress/api-fetch';
 import { useDispatch } from '@wordpress/data';
 import { store as noticesStore } from '@wordpress/notices';
+import apiFetch from '@wordpress/api-fetch';
 
-export default function SvgDeleteModal( { isOpen, setIsOpen, id, setId, callback } ) {
-	const { createSuccessNotice } = useDispatch(noticesStore);
+export default function SvgDeleteModal( { isOpen, setIsOpen, id, callback } ) {
+	const { createSuccessNotice, createErrorNotice } = useDispatch(noticesStore);
 
-	const deletePost = async ( id ) => {
-		const response = await fetch( `/wp-json/kb-custom-svg/v1/manage/${id}`, {
-			method: 'DELETE',
-		} );
-
-		if ( !response.ok ) {
-			throw new Error( 'Network response was not ok' );
-		}
-
-		return response.json();
+	const deleteFailedSnacbkar = () => {
+		createErrorNotice(__('There was an error deleting the SVG.', 'kadence-blocks'), {
+			type: 'snackbar',
+		});
 	};
 
 	const handleDelete = ( id ) => {
-		deletePost( id ).then( ( response ) => {
-			if ( get( response, 'success', false ) ) {
+		apiFetch({
+			path: `/wp/v2/kadence_custom_svg/${id}`,
+			method: 'DELETE',
+		}).then((response) => {
+			console.log('response');
+			console.log(response);
+			if ( get( response, 'id', false ) ) {
 				createSuccessNotice(__('SVG Deleted.', 'kadence-blocks'), {
 					type: 'snackbar',
 				});
 				callback();
+			} else if (has(response, 'error') && has(response, 'message')) {
+				console.log(response.message);
+				deleteFailedSnacbkar();
+			} else {
+				console.log('An error occurred when delete your svg');
+				deleteFailedSnacbkar();
 			}
-
-			setId( null );
-		} );
-
+		}).catch((error) => {
+			console.log(error);
+			deleteFailedSnacbkar();
+		});
 	};
 
 	return (

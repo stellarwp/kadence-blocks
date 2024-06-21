@@ -77,6 +77,7 @@ export default function KadenceIconPicker({
 
 	const deleteCallback = () => {
 		getCustomSvgs( true );
+		setDeleteId( null );
 	};
 
 	const addCallback = () => {
@@ -165,7 +166,7 @@ export default function KadenceIconPicker({
 	return (
 		<div className={'kadence-icon-picker'}>
 			<SvgAddModal isOpen={isOpen} setIsOpen={setIsOpen} callback={addCallback} />
-			<SvgDeleteModal isOpen={isDeleteOpen} setIsOpen={setIsDeleteOpen} id={deleteId} setId={setDeleteId} callback={deleteCallback}/>
+			<SvgDeleteModal isOpen={isDeleteOpen} setIsOpen={setIsDeleteOpen} id={deleteId} callback={deleteCallback}/>
 			<div className={`kadence-icon-picker-selection kadence-icon-picker-theme-${theme ? theme : 'default'}${className ? ' ' + className : ''}`}>
 				{label && (
 					<div className="kadence-icon-picker__title">
