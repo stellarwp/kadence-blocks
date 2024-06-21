@@ -83,8 +83,9 @@ export default function KadenceIconPicker({
 		getCustomSvgs( true );
 	};
 
+	const hasPro = kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false;
+	const translatedCustomSvgString = __( 'My Icons', 'kadence-blocks' );
 	const iconNames = useMemo( () => {
-		const hasPro = true;
 
 		if ( icons ) {
 			const iconNames = icons.map( ( slug ) => {
@@ -92,9 +93,9 @@ export default function KadenceIconPicker({
 			} );
 
 			if ( customSvgs.length > 0 ) {
-				return { 'Your Custom SVGs': customSvgs, ...iconNames };
+				return { [translatedCustomSvgString]: customSvgs, ...iconNames };
 			} else if( hasPro ) {
-				return { 'Your Custom SVGs': [ 'placeholder' ], ...iconNames };
+				return { [translatedCustomSvgString]: [ 'placeholder' ], ...iconNames };
 			} else {
 				return iconNames;
 			}
@@ -102,9 +103,9 @@ export default function KadenceIconPicker({
 		const svgs = applyFilters( 'kadence.icon_options_names', kadence_blocks_params.icon_names );
 
 		if ( customSvgs.length > 0 ) {
-			return { 'Your Custom SVGs': customSvgs, ...svgs };
+			return { [translatedCustomSvgString]: customSvgs, ...svgs };
 		} else if( hasPro ) {
-			return { 'Your Custom SVGs': [ 'placeholder' ], ...svgs };
+			return { [translatedCustomSvgString]: [ 'placeholder' ], ...svgs };
 		}
 
 		return svgs;
@@ -250,7 +251,7 @@ export default function KadenceIconPicker({
 												key={groupKey}
 											>
 												<div className='kadence-icon-grid-wrap'>
-													{results[ groupKey ].label === 'Your Custom SVGs' && search === '' && (
+													{results[ groupKey ].label === translatedCustomSvgString && search === '' && hasPro && (
 														<button
 															className={'kadence-icon-picker-link add-custom-svg'}
 															onClick={() => {
@@ -262,7 +263,7 @@ export default function KadenceIconPicker({
 														</button>
 													)}
 													{Object.keys( results[ groupKey ].icons ).map( ( iconKey ) => {
-														if ( results[ groupKey ].label === 'Your Custom SVGs' ) {
+														if ( results[ groupKey ].label === translatedCustomSvgString ) {
 															if( iconKey === 'placeholder'){
 																return;
 															}
