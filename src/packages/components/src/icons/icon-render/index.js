@@ -34,6 +34,13 @@ const IconRender = (props) => {
 
 	const getCustomSvg = async ( id ) => {
 		try {
+			// Check if the SVG is in localStorage
+			const cachedSvg = localStorage.getItem(`kb-custom-${id}`);
+			if (cachedSvg) {
+				setCustomSvg(JSON.parse(cachedSvg));
+				return;
+			}
+
 			setIsLoading( true );
 			const response = await fetchCustomSvg( id );
 
@@ -43,6 +50,9 @@ const IconRender = (props) => {
 					.replace(/&#8243;/g, '"');
 
 				const jsonObject = JSON.parse(svgContent);
+
+				// Save the fetched SVG to localStorage
+				localStorage.setItem(`kb-custom-${id}`, JSON.stringify(jsonObject));
 
 				setCustomSvg( jsonObject );
 
@@ -61,7 +71,7 @@ const IconRender = (props) => {
 		}
 
 	}, [name]);
-	
+
 	if( name.startsWith('kb-custom') && isLoading ) {
 		return <Spinner />;
 	} else if ( name.startsWith('kb-custom') && customSvg !== '' ) {

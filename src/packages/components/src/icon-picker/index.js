@@ -39,7 +39,6 @@ export default function KadenceIconPicker({
 	const [ isDeleteOpen, setIsDeleteOpen ] = useState( false );
 	const [ deleteId, setDeleteId ] = useState( null );
 	const [ customSvgs, setCustomSvgs ] = useState( false );
-	const [ customSvgContent, setCustomSvgContent ] = useState( false );
 	const [ customSvgTitles, setCustomSvgTitles ] = useState( [] );
 	const [ isLoading, setIsLoading ] = useState( false );
 
@@ -56,13 +55,6 @@ export default function KadenceIconPicker({
 
 				if( response.length > 0 ) {
 					const svgIds = response.map( svg => svg.id.toString() );
-					const svgContent = {};
-					response.forEach( item => {
-						svgContent[ 'kb-custom-' + item.id ] = JSON.parse( item.content.rendered.replace( '<p>', '' ).replace( '</p>', '' ).replace( /&#8220;/g, '"' )
-							.replace( /&#8221;/g, '"' )
-							.replace( /&#8243;/g, '"' ) );
-					});
-
 					const svgTitles = {};
 					response.forEach( item => {
 						svgTitles[ item.id.toString() ] = item.title.rendered.toLowerCase();
@@ -70,12 +62,10 @@ export default function KadenceIconPicker({
 
 					if ( !isEqual( svgIds, customSvgs ) && svgIds.length > 0 ) {
 						setCustomSvgs( svgIds );
-						setCustomSvgContent( svgContent );
 						setCustomSvgTitles( svgTitles );
 					}
 				} else {
 					setCustomSvgs( [] );
-					setCustomSvgContent( [] );
 				}
 			} catch ( error ) {
 				console.error( 'Failed to fetch custom SVGs (picker):', error );
@@ -133,8 +123,8 @@ export default function KadenceIconPicker({
 
 	const iconRenderFunc = useCallback( ( iconSlug ) => {
 		// Using GenIcon directly is less overhead, but IconRender allows for custom SVGs to be fetched and rendered
-		if( iconSlug.startsWith( 'kb-custom' ) && customSvgContent[ iconSlug ] ) {
-			return <IconRender className={`kt-svg-icon-single-${iconSlug}`} name={iconSlug} icon={customSvgContent[ iconSlug ]}/>;
+		if( iconSlug.startsWith( 'kb-custom' ) ) {
+			return <IconRender className={`kt-svg-icon-single-${iconSlug}`} name={iconSlug} />;
 		}
 
 		return <GenIcon className={`kt-svg-icon-single-${iconSlug}`} name={iconSlug} icon={iconOptions[ iconSlug ]}/>;
@@ -257,6 +247,7 @@ export default function KadenceIconPicker({
 										return (
 											<PanelBody
 												title={results[ groupKey ].label}
+												key={groupKey}
 											>
 												<div className='kadence-icon-grid-wrap'>
 													{results[ groupKey ].label === 'Your Custom SVGs' && search === '' && (
@@ -292,7 +283,6 @@ export default function KadenceIconPicker({
 																			onChange( 'kb-custom-' + iconKey );
 																			debounceToggle();
 																		}}
-																		// dangerouslySetInnerHTML={{__html: customSvgContent[ 'kb-custom-' + iconKey ]}}
 																	>
 																		{iconRenderFunction( 'kb-custom-' + iconKey )}
 																	</button>

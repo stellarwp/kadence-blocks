@@ -31,7 +31,7 @@ class Kadence_Blocks_Svg_Render {
 	 * @var null
 	 */
 	private static $all_icons = null;
-
+	
 	/**
 	 * Instance Control
 	 */
@@ -130,14 +130,21 @@ class Kadence_Blocks_Svg_Render {
 			self::$all_icons = self::get_icons();
 		}
 
-//		if( str_starts_with() ) {
-//
-//		}
-
 		$svg = '';
 		if ( 'fa_facebook' === $name ) {
 			$name = 'fa_facebook-n';
 		}
+
+		// Custom SVGs
+		$is_custom_svg = strpos($name, 'kb-custom-') === 0;
+		if ( $is_custom_svg && !isset(  self::$all_icons[ $name ] ) ) {
+			$custom_post = get_post( str_replace('kb-custom-', '', $name) );
+
+			if ( ! empty( $custom_post ) && ! is_wp_error( $custom_post ) && 'kadence_custom_svg' === $custom_post->post_type && 'publish' === $custom_post->post_status ) {
+				self::$all_icons[ $name ] = json_decode( $custom_post->post_content, true );
+			}
+		}
+
 		if ( ! empty( self::$all_icons[ $name ] ) ) {
 			$icon = self::$all_icons[ $name ];
 			$vb = ( ! empty( $icon['vB'] ) ? $icon['vB'] : '0 0 24 24' );
