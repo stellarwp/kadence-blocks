@@ -18,7 +18,6 @@ export const getRelevantMediaFiles = async (images, lightSize, thumbSize, oldIma
 			imageProps.caption =
 				get(image, ['caption']) ||
 				get(theImage, ['caption', 'rendered']) ||
-				get(theImage, ['caption']) ||
 				undefined;
 			imageProps.url = theImage.source_url || image.url;
 			if (image.id && typeof oldImages === 'object' && oldImages !== null) {
@@ -123,40 +122,6 @@ export const pickRelevantMediaFilesCore = (image) => {
 		get(image, ['sizes', 'large', 'url']) ||
 		get(image, ['media_details', 'sizes', 'large', 'source_url']) ||
 		image.url;
-	return imageProps;
-};
-
-export const pickRelevantMediaFilesUpdate = (image, lightSize, thumbSize) => {
-	let theImage = wp.data.select('core').getMedia(image.id, { context: 'view' });
-	if (!theImage) {
-		theImage = image;
-	}
-	const imageProps = pick(theImage, ['id', 'link']);
-	imageProps.alt = get(theImage, ['alt_text']) || get(theImage, ['alt']) || undefined;
-	imageProps.caption = get(theImage, ['caption', 'rendered']) || get(theImage, ['caption']) || undefined;
-	imageProps.url = theImage.source_url || image.url;
-	imageProps.customLink = image.customLink;
-	imageProps.linkTarget = image.linkTarget;
-	imageProps.thumbUrl =
-		get(theImage, ['sizes', thumbSize, 'url']) ||
-		get(theImage, ['media_details', 'sizes', thumbSize, 'source_url']) ||
-		theImage.source_url ||
-		image.url;
-	imageProps.lightUrl =
-		get(theImage, ['sizes', lightSize, 'url']) ||
-		get(theImage, ['media_details', 'sizes', lightSize, 'source_url']) ||
-		theImage.source_url ||
-		image.url;
-	imageProps.width =
-		get(theImage, ['sizes', thumbSize, 'width']) ||
-		get(theImage, ['media_details', 'sizes', thumbSize, 'width']) ||
-		get(theImage, ['media_details', 'width']) ||
-		undefined;
-	imageProps.height =
-		get(theImage, ['sizes', thumbSize, 'height']) ||
-		get(theImage, ['media_details', 'sizes', thumbSize, 'height']) ||
-		get(theImage, ['media_details', 'height']) ||
-		undefined;
 	return imageProps;
 };
 
