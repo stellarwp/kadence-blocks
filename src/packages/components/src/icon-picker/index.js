@@ -270,13 +270,13 @@ export default function KadenceIconPicker({
 
 															return (
 																<div className={'kb-custom-svg'}>
-																	<div className={'custom-svg-delete'}
+																	{ hasPro && ( <div className={'custom-svg-delete'}
 																		 onClick={() => {
 																			setDeleteId( iconKey );
 																			setIsDeleteOpen( true );
 																		 }}>
 																		<Icon icon={closeSmall} size={20}/>
-																	</div>
+																	</div> ) }
 																	<button
 																		className={'kadence-icon-picker-link'}
 																		key={results[ groupKey ].label + iconKey}
