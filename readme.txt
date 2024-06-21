@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.3
 Tested up to: 6.5
-Stable tag: 3.2.42
+Stable tag: 3.2.45
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -174,11 +174,24 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.2.45 =
+Release Date: June 21st 2024
+* Fix: Gallery output of caption to allow basic html.
+
+= 3.2.44 =
+Release Date: June 20th 2024
+* Fix: Possible issue with gallery html_entity_decode error.
+
 = 3.2.43 =
-Release Date: June TBD 2024
+Release Date: June 20th 2024
 * Add: Option to set focal point in Adv Image block when using a ratio.
+* Add: Option to set flex grow in section block.
+* Update: Section vertical align to include stretch.
+* Update: Font weight options to be in better sync with inherited theme settings.
+* Fix: Issue with fullwidth button not showing fullwidth in the editor.
 * Fix: Escape HTML in advanced gallery block.
-* Fix: Issue with escaping attribute in google maps block.
+* Fix: Issue with escaping attribute in Google Maps block.
+* Fix: Advanced text block not working in editor for WP 6.3.
 
 = 3.2.42 =
 Release Date: June 10th 2024

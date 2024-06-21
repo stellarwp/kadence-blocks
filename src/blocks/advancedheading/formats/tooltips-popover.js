@@ -6,8 +6,18 @@ import { KadencePanelBody } from '@kadence/components';
 import { useMemo } from '@wordpress/element';
 import { kadenceToolTips as settings } from './tooltips';
 
+// Ensure DEFAULT_LINK_SETTINGS is iterable (WP 6.3 compatibility).
+const defaultLinkSettings = Array.isArray(LinkControl?.DEFAULT_LINK_SETTINGS)
+	? LinkControl.DEFAULT_LINK_SETTINGS
+	: [
+			{
+				id: '"opensInNewTab"',
+				title: __('Open in new tab'),
+			},
+	  ];
+
 const LINK_SETTINGS = [
-	...LinkControl.DEFAULT_LINK_SETTINGS,
+	...defaultLinkSettings,
 	{
 		id: 'nofollow',
 		title: __('Mark as nofollow'),

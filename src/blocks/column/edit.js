@@ -1182,7 +1182,8 @@ function SectionEdit(props) {
 	return (
 		<div {...blockProps}>
 			<style>
-				{'' !== previewFlexGrow ? `.kadence-column-${uniqueID} { flex-grow: ${previewFlexGrow} }.kadence-column-${uniqueID} > .kadence-inner-column-inner{height:100%;}`
+				{'' !== previewFlexGrow
+					? `.kadence-column-${uniqueID} { flex-grow: ${previewFlexGrow} }.kadence-column-${uniqueID} > .kadence-inner-column-inner{height:100%;}`
 					: ''}
 				{overlayOpacity !== undefined && overlayOpacity !== ''
 					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:before { opacity: ${overlayOpacity} }`
@@ -1460,7 +1461,7 @@ function SectionEdit(props) {
 						)}
 						<BlockVerticalAlignmentToolbar
 							value={actualVerticalAlign === 'middle' ? 'center' : actualVerticalAlign}
-							controls={[ 'top', 'center', 'bottom', 'stretch']}
+							controls={['top', 'center', 'bottom', 'stretch']}
 							onChange={(value) => {
 								if (value === 'center') {
 									setAttributes({ verticalAlignment: 'middle' });
@@ -2476,20 +2477,18 @@ function SectionEdit(props) {
 												setAttributes({ heightUnit: value });
 											}}
 											units={['px', 'vw', 'vh']}
-											reset={ () => {
+											reset={() => {
 												setAttributes({
 													heightUnit: 'px',
-													height: [
-														'',
-														'',
-														'',
-													],
+													height: ['', '', ''],
 												});
 											}}
 										/>
 										<ResponsiveRangeControls
 											label={__('Flex Grow', 'kadence-blocks')}
-											value={undefined !== flexGrow && undefined !== flexGrow[0] ? flexGrow[0] : ''}
+											value={
+												undefined !== flexGrow && undefined !== flexGrow[0] ? flexGrow[0] : ''
+											}
 											onChange={(value) => {
 												setAttributes({
 													flexGrow: [
@@ -2539,13 +2538,9 @@ function SectionEdit(props) {
 											max={200}
 											step={1}
 											showUnits={false}
-											reset={ () => {
+											reset={() => {
 												setAttributes({
-													flexGrow: [
-														'',
-														'',
-														'',
-													],
+													flexGrow: ['', '', ''],
 												});
 											}}
 										/>

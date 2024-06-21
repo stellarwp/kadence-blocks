@@ -1522,7 +1522,7 @@ function KadenceAdvancedHeading(props) {
 									panelName={'kb-adv-heading-typography-settings'}
 								>
 									<TypographyControls
-										fontGroup={'heading'}
+										fontGroup={ htmlTag !== 'heading' ? 'body' : 'heading' }
 										reLetterSpacing={[letterSpacing, tabletLetterSpacing, mobileLetterSpacing]}
 										onLetterSpacing={(value) =>
 											setAttributes({
