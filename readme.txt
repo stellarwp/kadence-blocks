@@ -176,7 +176,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 = 3.2.45 =
 Release Date: June 21st 2024
-* Fix: Output Caption to allow basic html.
+* Fix: Gallery output of caption to allow basic html.
 
 = 3.2.44 =
 Release Date: June 20th 2024
