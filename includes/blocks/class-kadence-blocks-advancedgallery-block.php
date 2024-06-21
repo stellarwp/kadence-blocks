@@ -643,7 +643,7 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			$rel_attr .= ( ! empty( $rel_attr ) ? ' sponsored' : 'sponsored' );
 		}
 		$caption       = apply_filters( 'kadence_blocks_pro_dynamic_gallery_caption', $caption, $image, $attributes );
-		if ( ! empty( $caption ) ) {
+		if ( ! empty( $caption ) && is_string( $caption ) ) {
 			$caption = wp_kses_post( $caption );
 		}
 		$href = '';
