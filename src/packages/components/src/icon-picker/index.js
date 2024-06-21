@@ -6,17 +6,19 @@ import {
 	Icon
 } from '@wordpress/components';
 import {__} from '@wordpress/i18n'
-import { debounce, isEqual } from 'lodash';
+import { debounce, isEqual, has } from 'lodash';
 import {applyFilters} from '@wordpress/hooks'
 import { useState, useMemo, useEffect, useCallback } from '@wordpress/element';
 import {default as GenIcon} from '../icons/gen-icon';
 import { plus } from '@wordpress/icons';
 import './editor.scss';
-import SvgModal from './svg-modal';
+import SvgAddModal from './svg-add-modal';
+import SvgDeleteModal from './svg-delete-modal';
 import {
 	chevronDown,
 	closeSmall,
 } from '@wordpress/icons';
+import { default as IconRender } from '../icons/icon-render';
 export default function KadenceIconPicker({
 											  value,
 											  onChange,
@@ -27,15 +29,18 @@ export default function KadenceIconPicker({
 											  className,
 											  theme = 'default',
 											  allowClear = false,
-											  icons = null,
+											  icons = null
 										  }) {
 	const [ popoverAnchor, setPopoverAnchor ] = useState();
 	const [ isVisible, setIsVisible ] = useState( false );
 	const [ search, setSearch ] = useState( '' );
 	const [ filter, setFilter ] = useState( 'all' );
 	const [ isOpen, setIsOpen ] = useState( false );
+	const [ isDeleteOpen, setIsDeleteOpen ] = useState( false );
+	const [ deleteId, setDeleteId ] = useState( null );
 	const [ customSvgs, setCustomSvgs ] = useState( false );
 	const [ customSvgContent, setCustomSvgContent ] = useState( false );
+	const [ customSvgTitles, setCustomSvgTitles ] = useState( [] );
 	const [ isLoading, setIsLoading ] = useState( false );
 
 	const toggleVisible = () => {
@@ -44,76 +49,78 @@ export default function KadenceIconPicker({
 	const debounceToggle = debounce( toggleVisible, 100 );
 
 	const getCustomSvgs = async ( force = false) => {
-		console.log( 'Calling getCustomSvgs ' );
 		if ( force || ( customSvgs === false && !isLoading ) ) {
 			try {
 				setIsLoading( true );
 				const response = await fetchCustomSvgs();
-				const svgIds = response.map( svg => svg.id.toString() );
-				const svgContent = response.reduce( ( acc, svg ) => {
-					acc[ svg.id ] = svg.content.rendered.replace('<p>', '').replace('</p>', '');
-					return acc;
-				});
 
-				if ( !isEqual( svgIds, customSvgs ) ) {
-					setCustomSvgs( svgIds );
-					setCustomSvgContent( svgContent );
+				if( response.length > 0 ) {
+					const svgIds = response.map( svg => svg.id.toString() );
+					const svgContent = {};
+					response.forEach( item => {
+						svgContent[ 'kb-custom-' + item.id ] = JSON.parse( item.content.rendered.replace( '<p>', '' ).replace( '</p>', '' ).replace( /&#8220;/g, '"' )
+							.replace( /&#8221;/g, '"' )
+							.replace( /&#8243;/g, '"' ) );
+					});
+
+					const svgTitles = {};
+					response.forEach( item => {
+						svgTitles[ item.id.toString() ] = item.title.rendered.toLowerCase();
+					});
+
+					if ( !isEqual( svgIds, customSvgs ) && svgIds.length > 0 ) {
+						setCustomSvgs( svgIds );
+						setCustomSvgContent( svgContent );
+						setCustomSvgTitles( svgTitles );
+					}
+				} else {
+					setCustomSvgs( [] );
+					setCustomSvgContent( [] );
 				}
 			} catch ( error ) {
-				console.error( 'Failed to fetch custom SVGs:', error );
+				console.error( 'Failed to fetch custom SVGs (picker):', error );
 			}
 			setIsLoading( false );
 		}
 	};
 	useEffect( () => { getCustomSvgs(), [] } );
 
-	const deletePost = async ( id ) => {
-		const response = await fetch(`/wp-json/wp/v2/kadence_custom_svg/manage/${id}`, {
-			method: 'DELETE',
-		});
+	const deleteCallback = () => {
+		getCustomSvgs( true );
+	};
 
-		if (!response.ok) {
-			throw new Error('Network response was not ok');
-		}
-
-		return response.json();
-	}
-
-	const handleDelete = ( id ) => {
-		console.log( 'id: ' + id );
-		deletePost( id ).then( ( response ) => {
-
-			console.log( response );
-			getCustomSvgs( true );
-		});
-
-	}
+	const addCallback = () => {
+		getCustomSvgs( true );
+	};
 
 	const iconNames = useMemo( () => {
+		const hasPro = true;
+
 		if ( icons ) {
 			const iconNames = icons.map( ( slug ) => {
 				return { value: slug, label: slug }
 			} );
 
-			if ( customSvgs ) {
-				return { 'Kadence Custom SVG': customSvgs, ...iconNames };
+			if ( customSvgs.length > 0 ) {
+				return { 'Your Custom SVGs': customSvgs, ...iconNames };
+			} else if( hasPro ) {
+				return { 'Your Custom SVGs': [ 'placeholder' ], ...iconNames };
 			} else {
 				return iconNames;
 			}
 		}
 		const svgs = applyFilters( 'kadence.icon_options_names', kadence_blocks_params.icon_names );
 
-		if ( customSvgs ) {
-			return { 'Kadence Custom SVG': customSvgs, ...svgs };
+		if ( customSvgs.length > 0 ) {
+			return { 'Your Custom SVGs': customSvgs, ...svgs };
+		} else if( hasPro ) {
+			return { 'Your Custom SVGs': [ 'placeholder' ], ...svgs };
 		}
 
 		return svgs;
 	}, [ kadence_blocks_params.icon_names, icons, customSvgs ] );
 
 	const iconOptions = useMemo( () => {
-		const customAppen = customSvgs ? customSvgs : [];
-		console.log( { ...kadence_blocks_params_ico.icons, ...kadence_blocks_params_fa.icons, ...customSvgs } );
-
 		return applyFilters( 'kadence.icon_options', { ...kadence_blocks_params_ico.icons, ...kadence_blocks_params_fa.icons } )
 	}, [ kadence_blocks_params_ico.icons, kadence_blocks_params_fa.icons, customSvgs ] )
 	const iconFilterOptions = useMemo( () => {
@@ -124,10 +131,16 @@ export default function KadenceIconPicker({
 		return [ { value: 'all', label: __( 'Show All', 'kadence-blocks' ) }, ...options ]
 	}, [ kadence_blocks_params.icon_names, iconNames ] )
 
-	const iconRender = useCallback( ( iconSlug ) => {
+	const iconRenderFunc = useCallback( ( iconSlug ) => {
+		// Using GenIcon directly is less overhead, but IconRender allows for custom SVGs to be fetched and rendered
+		if( iconSlug.startsWith( 'kb-custom' ) && customSvgContent[ iconSlug ] ) {
+			return <IconRender className={`kt-svg-icon-single-${iconSlug}`} name={iconSlug} icon={customSvgContent[ iconSlug ]}/>;
+		}
+
 		return <GenIcon className={`kt-svg-icon-single-${iconSlug}`} name={iconSlug} icon={iconOptions[ iconSlug ]}/>;
 	}, [ iconOptions ] );
-	const iconRenderFunction = renderFunc ? renderFunc : iconRender;
+
+	const iconRenderFunction = renderFunc ? renderFunc : iconRenderFunc;
 
 	const results = useMemo( () => {
 		let results = {}
@@ -139,7 +152,7 @@ export default function KadenceIconPicker({
 						iconNames[ label ].map( ( icon, iconIndex ) => {
 							const iconLower = icon.toLowerCase();
 
-							if ( search === '' || iconLower.includes( searchLower ) ) {
+							if ( search === '' || iconLower.includes( searchLower ) || ( groupIndex === 0 && has(customSvgTitles, iconLower.toString()) && customSvgTitles[iconLower.toString() ].includes( searchLower ) ) ) {
 
 								results = {
 									...results, [ groupIndex ]: {
@@ -160,7 +173,8 @@ export default function KadenceIconPicker({
 
 	return (
 		<div className={'kadence-icon-picker'}>
-			<SvgModal isOpen={isOpen} setIsOpen={setIsOpen}/>
+			<SvgAddModal isOpen={isOpen} setIsOpen={setIsOpen} callback={addCallback} />
+			<SvgDeleteModal isOpen={isDeleteOpen} setIsOpen={setIsDeleteOpen} id={deleteId} setId={setDeleteId} callback={deleteCallback}/>
 			<div className={`kadence-icon-picker-selection kadence-icon-picker-theme-${theme ? theme : 'default'}${className ? ' ' + className : ''}`}>
 				{label && (
 					<div className="kadence-icon-picker__title">
@@ -245,11 +259,10 @@ export default function KadenceIconPicker({
 												title={results[ groupKey ].label}
 											>
 												<div className='kadence-icon-grid-wrap'>
-													{results[ groupKey ].label === 'Kadence Custom SVG' && search === '' && (
+													{results[ groupKey ].label === 'Your Custom SVGs' && search === '' && (
 														<button
 															className={'kadence-icon-picker-link add-custom-svg'}
 															onClick={() => {
-																console.log( 'Add Custom' );
 																setIsOpen( true );
 																debounceToggle();
 															}}
@@ -258,13 +271,17 @@ export default function KadenceIconPicker({
 														</button>
 													)}
 													{Object.keys( results[ groupKey ].icons ).map( ( iconKey ) => {
-														if ( results[ groupKey ].label === 'Kadence Custom SVG' ) {
+														if ( results[ groupKey ].label === 'Your Custom SVGs' ) {
+															if( iconKey === 'placeholder'){
+																return;
+															}
+
 															return (
 																<div className={'kb-custom-svg'}>
 																	<div className={'custom-svg-delete'}
 																		 onClick={() => {
-																			 console.log( 'Delete Custo: ' + iconKey );
-																			 handleDelete( iconKey );
+																			setDeleteId( iconKey );
+																			setIsDeleteOpen( true );
 																		 }}>
 																		<Icon icon={closeSmall} size={20}/>
 																	</div>
@@ -272,12 +289,13 @@ export default function KadenceIconPicker({
 																		className={'kadence-icon-picker-link'}
 																		key={results[ groupKey ].label + iconKey}
 																		onClick={() => {
-																			onChange( iconKey );
+																			onChange( 'kb-custom-' + iconKey );
 																			debounceToggle();
 																		}}
-																		dangerouslySetInnerHTML={{__html: customSvgContent[ iconKey ]}}
-
-																	/>
+																		// dangerouslySetInnerHTML={{__html: customSvgContent[ 'kb-custom-' + iconKey ]}}
+																	>
+																		{iconRenderFunction( 'kb-custom-' + iconKey )}
+																	</button>
 																</div>
 															);
 														} else {
@@ -312,7 +330,11 @@ export default function KadenceIconPicker({
 }
 
 const fetchCustomSvgs = async () => {
-	const response = await fetch('/wp-json/wp/v2/kadence_custom_svg', {
+	const params = new URLSearchParams({
+		per_page: 100
+	});
+
+	const response = await fetch(`/wp-json/wp/v2/kadence_custom_svg?${params.toString()}`, {
 		method: 'GET'
 	});
 
