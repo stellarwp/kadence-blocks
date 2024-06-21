@@ -643,7 +643,9 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 			$rel_attr .= ( ! empty( $rel_attr ) ? ' sponsored' : 'sponsored' );
 		}
 		$caption       = apply_filters( 'kadence_blocks_pro_dynamic_gallery_caption', $caption, $image, $attributes );
-		$caption       = strip_tags( html_entity_decode($caption, ENT_QUOTES, 'UTF-8') );
+		if ( ! empty( $caption ) ) {
+			$caption = wp_kses_post( $caption );
+		}
 		$href = '';
 		$image_src  = ( ! empty( $image['thumbUrl'] ) ? $image['thumbUrl'] : $image['url'] );
 		$image_full = ( ! empty( $image['fullUrl'] ) ? $image['fullUrl'] : $image['url'] );
