@@ -6,7 +6,7 @@ import {
 	Icon
 } from '@wordpress/components';
 import {__} from '@wordpress/i18n'
-import { debounce, isEqual, has } from 'lodash';
+import { debounce, isEqual, has, get } from 'lodash';
 import {applyFilters} from '@wordpress/hooks'
 import { useState, useMemo, useEffect, useCallback } from '@wordpress/element';
 import {default as GenIcon} from '../icons/gen-icon';
@@ -14,6 +14,7 @@ import { plus } from '@wordpress/icons';
 import './editor.scss';
 import SvgAddModal from './svg-add-modal';
 import SvgDeleteModal from './svg-delete-modal';
+import { compareVersions } from '@kadence/helpers';
 import {
 	chevronDown,
 	closeSmall,
@@ -84,8 +85,13 @@ export default function KadenceIconPicker({
 		getCustomSvgs( true );
 	};
 
+	// Make sure user has pro and the appropriate version that has the rest endpoint to accept SVGs
 	const hasPro = kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false;
+	const proVersion =get( kbpData, ['pVersion'], '1.0.0');
+	const isSupportedProVersion = compareVersions(proVersion, '2.3.10') >= 0;
+
 	const translatedCustomSvgString = __( 'My Icons', 'kadence-blocks' );
+
 	const iconNames = useMemo( () => {
 
 		if ( icons ) {
@@ -95,7 +101,7 @@ export default function KadenceIconPicker({
 
 			if ( customSvgs.length > 0 ) {
 				return { [translatedCustomSvgString]: customSvgs, ...iconNames };
-			} else if( hasPro ) {
+			} else if( hasPro && isSupportedProVersion ) {
 				return { [translatedCustomSvgString]: [ 'placeholder' ], ...iconNames };
 			} else {
 				return iconNames;
@@ -105,7 +111,7 @@ export default function KadenceIconPicker({
 
 		if ( customSvgs.length > 0 ) {
 			return { [translatedCustomSvgString]: customSvgs, ...svgs };
-		} else if( hasPro ) {
+		} else if( hasPro && isSupportedProVersion ) {
 			return { [translatedCustomSvgString]: [ 'placeholder' ], ...svgs };
 		}
 
@@ -252,7 +258,7 @@ export default function KadenceIconPicker({
 												key={groupKey}
 											>
 												<div className='kadence-icon-grid-wrap'>
-													{results[ groupKey ].label === translatedCustomSvgString && search === '' && hasPro && (
+													{results[ groupKey ].label === translatedCustomSvgString && search === '' && isSupportedProVersion && hasPro && (
 														<button
 															className={'kadence-icon-picker-link add-custom-svg'}
 															onClick={() => {
@@ -271,7 +277,7 @@ export default function KadenceIconPicker({
 
 															return (
 																<div className={'kb-custom-svg'}>
-																	{ hasPro && ( <div className={'custom-svg-delete'}
+																	{ hasPro && isSupportedProVersion && ( <div className={'custom-svg-delete'}
 																		 onClick={() => {
 																			setDeleteId( iconKey );
 																			setIsDeleteOpen( true );
