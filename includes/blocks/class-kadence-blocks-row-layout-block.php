@@ -819,7 +819,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				break;
 			case 'gradient':
 				if ( ! empty( $attributes['gradient'] ) ) {
-					$css->add_property( 'background-image', $attributes['gradient'] );
+					$css->add_property( 'background-image', $css->render_gradient( $attributes['gradient'] ) );
 				}
 				break;
 		}
@@ -878,7 +878,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 						if ( isset( $attributes['backgroundInline'] ) && true === $attributes['backgroundInline'] ) {
 							$is_important = '!important';
 						}
-						$css->add_property( 'background-image', $tablet_background['gradient'] . $is_important );
+						$css->add_property( 'background-image', $css->render_gradient( $tablet_background['gradient'] ) . $is_important );
 						if ( 'normal' === $background_type && ! empty( $attributes['bgImg'] ) && ! empty( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] ) {
 							$css->set_selector( $base_selector . ' [id*="jarallax-container-"]' );
 							$css->add_property( 'display', 'none !important' );
@@ -949,7 +949,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 						if ( isset( $attributes['backgroundInline'] ) && true === $attributes['backgroundInline'] ) {
 							$is_important = '!important';
 						}
-						$css->add_property( 'background-image', $mobile_background['gradient'] . $is_important );
+						$css->add_property( 'background-image', $css->render_gradient( $mobile_background['gradient'] ) . $is_important );
 						if ( ( 'normal' === $background_type && ! empty( $attributes['bgImg'] ) && ! empty( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] ) || ( 'normal' === $mobile_background_type && ! empty( $tablet_background['bgImg'] ) && isset( $tablet_background['bgImgAttachment'] ) && 'parallax' === $tablet_background['bgImgAttachment'] ) ) {
 							$css->set_selector( $base_selector . ' [id*="jarallax-container-"]' );
 							$css->add_property( 'display', 'none !important' );
@@ -996,7 +996,10 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 					}
 					break;
 				case 'gradient':
-					$css->add_property( 'background', $attributes['overlayGradient'] );
+					if ( ! empty( $attributes['overlayGradient'] ) ) {
+						$css->add_property( 'background', $css->render_gradient( $attributes['overlayGradient'] ) );
+					}
+
 					break;
 				case 'grad':
 					// Old Gradient Support.
@@ -1051,7 +1054,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 					}
 					break;
 				case 'gradient':
-					$css->add_property( 'background', $tablet_overlay['gradient'] );
+					$css->add_property( 'background', $css->render_gradient( $tablet_overlay['gradient'] ) );
 					break;
 				case 'grad':
 					// Old Gradient Support.
@@ -1107,7 +1110,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 					}
 					break;
 				case 'gradient':
-					$css->add_property( 'background', $mobile_overlay['gradient'] );
+					$css->add_property( 'background', $css->render_gradient( $mobile_overlay['gradient'] ) );
 					break;
 				case 'grad':
 					$type = ( ! empty( $mobile_overlay['overlayGradType'] ) ? $mobile_overlay['overlayGradType'] : 'linear' );
