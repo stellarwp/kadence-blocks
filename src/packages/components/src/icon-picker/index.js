@@ -88,7 +88,7 @@ export default function KadenceIconPicker({
 	// Make sure user has pro and the appropriate version that has the rest endpoint to accept SVGs
 	const hasPro = kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false;
 	const proVersion =get( kbpData, ['pVersion'], '1.0.0');
-	const isSupportedProVersion = compareVersions(proVersion, '2.3.10') >= 0;
+	const isSupportedProVersion = compareVersions(proVersion, '2.4.0') >= 0;
 
 	const translatedCustomSvgString = __( 'My Icons', 'kadence-blocks' );
 
