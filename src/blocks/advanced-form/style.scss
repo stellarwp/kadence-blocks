@@ -66,6 +66,15 @@
 			var(--kb-form-background-color, var(--global-palette9, #fff))
 		);
 	}
+
+	//Fix for placeholder content not present for date fields on mobile browsers. The field needs a min height to not shrink
+	@media (max-width: 768px) {
+		input[type="date"] {
+			box-sizing: content-box;
+			min-height: calc(var(--kb-form-font-size, 1rem) * var(--kb-form-line-height, 1.6));
+		}
+	}
+
 	select {
 		border: var(--kb-form-border-width, 1px) solid var(--kb-form-border-color, var(--global-gray-400, #cbd5e0));
 		background-size: 16px 100%;
@@ -73,8 +82,7 @@
 		font-size: var(--kb-form-font-size, 1rem);
 		line-height: var(--kb-form-line-height, 1.6);
 		border-radius: var(--kb-form-border-radius, 3px);
-		background:
-			url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNSIgaGVpZ2h0PSIyNSIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2U9IiNiYmIiPjxwYXRoIGQ9Ik02IDlsNiA2IDYtNiIvPjwvc3ZnPg==)
+		background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNSIgaGVpZ2h0PSIyNSIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2U9IiNiYmIiPjxwYXRoIGQ9Ik02IDlsNiA2IDYtNiIvPjwvc3ZnPg==)
 				no-repeat calc(100% - 6px) 50%,
 			var(--kb-form-background-color, var(--global-palette9, #fff));
 		-moz-appearance: none;
@@ -94,8 +102,7 @@
 	select:focus {
 		color: var(--kb-form-text-focus-color, var(--kb-form-text-color, var(--global-palette, #241e1a)));
 		border-color: var(--kb-form-border-focus-color, var(--global-palette6, #6e6e70));
-		background:
-			url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNSIgaGVpZ2h0PSIyNSIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2U9IiNiYmIiPjxwYXRoIGQ9Ik02IDlsNiA2IDYtNiIvPjwvc3ZnPg==)
+		background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNSIgaGVpZ2h0PSIyNSIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2U9IiNiYmIiPjxwYXRoIGQ9Ik02IDlsNiA2IDYtNiIvPjwvc3ZnPg==)
 				no-repeat calc(100% - 6px) 50%,
 			var(--kb-form-background-focus-color, var(--kb-form-background-color, var(--global-palette9, #fff)));
 		box-shadow: 0px 5px 15px -7px rgba(0, 0, 0, 0.1);
@@ -486,4 +493,9 @@
 }
 .kb-adv-form-input-size-small {
 	--kb-form-font-size: 0.85rem;
+}
+
+.kb-date-field::before {
+	// content: "a";
+	// content: attr(placeholder);
 }
