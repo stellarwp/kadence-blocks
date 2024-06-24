@@ -5,12 +5,17 @@
 	align-items: center;
 	.kadence-control-title {
 		flex-grow: 1;
+		display: flex;
+		align-items: center;
 	}
 	button.components-button.has-icon.is-reset {
 		width: 20px;
 		min-width: 20px;
 		padding: 0 3px;
 		margin: 0 5px 0 0;
+	}
+	.kadence-control-title button.components-button.is-reset.has-icon {
+		margin: 0 0 0 5px;
 	}
 }
 .kadence-range-control-range .components-range-control__root svg {
