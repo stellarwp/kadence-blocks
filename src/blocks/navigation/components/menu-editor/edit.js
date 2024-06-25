@@ -1,11 +1,10 @@
 import { useState, useMemo } from '@wordpress/element';
 import { DropdownMenu, Button, Icon, TextControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
-import { get } from 'lodash';
+import { get, debounce } from 'lodash';
 import { __ } from '@wordpress/i18n';
 import { PREVENT_BLOCK_DELETE } from './constants';
 import { ellipsis, edit, trash } from '@wordpress/icons';
-import { debounce } from 'lodash';
 
 import { DndContext } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
