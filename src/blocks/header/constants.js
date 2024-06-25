@@ -135,7 +135,7 @@ export const HEADER_INNERBLOCK_DEFAULTS = [
 			),
 			createBlock(
 				'kadence/header-column',
-				{ metadata: { name: __('Center', 'kadence-blocks'), location: 'tablet-center' } },
+				{ metadata: { name: __('Center', 'kadence-blocks') }, location: 'tablet-center' },
 				[]
 			),
 			createBlock(
@@ -152,7 +152,7 @@ export const HEADER_INNERBLOCK_DEFAULTS = [
 			),
 			createBlock(
 				'kadence/header-column',
-				{ metadata: { name: __('Center', 'kadence-blocks'), location: 'tablet-center' } },
+				{ metadata: { name: __('Center', 'kadence-blocks') }, location: 'tablet-center' },
 				[]
 			),
 			createBlock(
@@ -169,7 +169,7 @@ export const HEADER_INNERBLOCK_DEFAULTS = [
 			),
 			createBlock(
 				'kadence/header-column',
-				{ metadata: { name: __('Center', 'kadence-blocks'), location: 'tablet-center' } },
+				{ metadata: { name: __('Center', 'kadence-blocks') }, location: 'tablet-center' },
 				[]
 			),
 			createBlock(

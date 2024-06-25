@@ -257,7 +257,7 @@ function innerBlocks() {
 					),
 					createBlock(
 						'kadence/header-column',
-						{ uniqueID: '6_96ebcd-88', metadata: { name: 'Center', location: 'tablet-center' } },
+						{ uniqueID: '6_96ebcd-88', metadata: { name: 'Center' }, location: 'tablet-center' },
 						[]
 					),
 					createBlock(
@@ -295,7 +295,7 @@ function innerBlocks() {
 						),
 						createBlock(
 							'kadence/header-column',
-							{ uniqueID: '6_4503bc-d7', metadata: { name: 'Center', location: 'tablet-center' } },
+							{ uniqueID: '6_4503bc-d7', metadata: { name: 'Center' }, location: 'tablet-center' },
 							[
 								createBlock(
 									'kadence/image',
@@ -325,7 +325,7 @@ function innerBlocks() {
 					),
 					createBlock(
 						'kadence/header-column',
-						{ uniqueID: '6_1241a8-a6', metadata: { name: 'Center', location: 'tablet-center' } },
+						{ uniqueID: '6_1241a8-a6', metadata: { name: 'Center' }, location: 'tablet-center' },
 						[]
 					),
 					createBlock(
