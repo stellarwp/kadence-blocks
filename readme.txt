@@ -174,6 +174,10 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.2.46 =
+Release Date: June TBD 2024
+* Fix: Setting up conditional display based on taxonomy inside query loops.
+
 = 3.2.45 =
 Release Date: June 21st 2024
 * Fix: Gallery output of caption to allow basic html.
