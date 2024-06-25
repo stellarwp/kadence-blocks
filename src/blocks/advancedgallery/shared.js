@@ -15,10 +15,7 @@ export const getRelevantMediaFiles = async (images, lightSize, thumbSize, oldIma
 			}
 			const imageProps = pick(theImage, ['id', 'link']);
 			(imageProps.alt = get(image, ['alt'])), get(theImage, ['alt_text']) || get(theImage, ['alt']) || undefined;
-			imageProps.caption =
-				get(image, ['caption']) ||
-				get(theImage, ['caption', 'rendered']) ||
-				undefined;
+			imageProps.caption = get(image, ['caption']) || get(theImage, ['caption', 'rendered']) || undefined;
 			imageProps.url = theImage.source_url || image.url;
 			if (image.id && typeof oldImages === 'object' && oldImages !== null) {
 				for (const k in oldImages) {
