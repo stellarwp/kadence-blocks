@@ -111,7 +111,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 					//assume the last column width to make 100
 					$column_width = abs( $column_width_sum - 100 );
 				}
-				$grid_layout_string .= 'minmax(0, calc(' . $column_width . '% - ((' . $gap_string . ' * ' . $columns - 1 . ' )/' . $columns . ')))';
+				$grid_layout_string .= 'minmax(0, calc(' . $column_width . '% - ((' . $gap_string . ' * ' . ($columns - 1) . ' )/' . $columns . ')))';
 				$column_width_sum += $column_width;
 			}
 		}
