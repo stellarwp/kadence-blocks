@@ -5,7 +5,7 @@
  * Description: Advanced Page Building Blocks for Gutenberg. Create custom column layouts, backgrounds, dual buttons, icons etc.
  * Author: Kadence WP
  * Author URI: https://www.kadencewp.com
- * Version: 3.2.42
+ * Version: 3.2.45
  * Requires PHP: 7.4
  * Text Domain: kadence-blocks
  * License: GPL2+
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 define( 'KADENCE_BLOCKS_PATH', realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR );
 define( 'KADENCE_BLOCKS_URL', plugin_dir_url( __FILE__ ) );
-define( 'KADENCE_BLOCKS_VERSION', '3.2.42' );
+define( 'KADENCE_BLOCKS_VERSION', '3.2.45' );
 
 require_once plugin_dir_path( __FILE__ ) . 'vendor/vendor-prefixed/autoload.php';
 require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
@@ -34,7 +34,7 @@ use KadenceWP\KadenceBlocks\StellarWP\Uplink\Register;
 use KadenceWP\KadenceBlocks\StellarWP\Uplink\Uplink;
 
 /**
- * Add a check before redirecting
+ * Add a check before redirecting.
  */
 function kadence_blocks_activate(): void {
 	add_option( 'kadence_blocks_redirect_on_activation', true );
@@ -42,7 +42,7 @@ function kadence_blocks_activate(): void {
 register_activation_hook( __FILE__, 'kadence_blocks_activate' );
 
 /**
- * Load Plugin
+ * Load Plugin.
  */
 function kadence_blocks_init(): void {
 	$container = new ContainerAdapter( new \KadenceWP\KadenceBlocks\lucatume\DI52\Container() );
@@ -53,6 +53,7 @@ function kadence_blocks_init(): void {
 	require_once KADENCE_BLOCKS_PATH . 'includes/init.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/form-ajax.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/helper-functions.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-editor-assets.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-schema-updater.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-prebuilt-library.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-google-fonts.php';
@@ -105,7 +106,7 @@ function kadence_blocks_init(): void {
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-image-picker.php';
 
 	/**
-	 * Site Health
+	 * Site Health.
 	 */
 	require_once KADENCE_BLOCKS_PATH . 'includes/settings/class-kadence-blocks-site-health.php';
 

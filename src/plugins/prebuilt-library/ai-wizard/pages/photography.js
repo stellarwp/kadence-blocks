@@ -292,6 +292,19 @@ export function Photography(props) {
 									value === '' ? setIsSearchQueryCleared(true) : setIsSearchQueryCleared(false);
 									setLocalSearchQuery(value);
 								}}
+								onKeyDown={(event) => {
+									if (event.keyCode === ENTER) {
+										event.preventDefault();
+										if (localSearchQuery && localSearchQuery !== imageSearchQuery) {
+											dispatch({
+												type: 'SET_IMAGE_SEARCH_QUERY',
+												payload: localSearchQuery,
+											});
+											setSelectedCollection([{}, {}]);
+										}
+										setIsOpen(false);
+									}
+								}}
 							/>
 							<Button
 								variant="primary"

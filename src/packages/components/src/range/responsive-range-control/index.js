@@ -123,17 +123,19 @@ export default function ResponsiveRangeControls( {
 		onChange && onChangeTablet && onChangeMobile && (
 			<div className={ `components-base-control kb-responsive-range-control${ '' !== className ? ' ' + className : '' }` }>
 				<div className="kadence-title-bar">
-					{ reset && (
-						<Button
-							className="is-reset is-single"
-							isSmall
-							disabled={ ( ( isEqual( '', value ) ) ? true : false ) }
-							icon={ undo }
-							onClick={ () => reset() }
-						></Button>
-					) }
 					{ label && (
-						<span className="kadence-control-title">{ label }</span>
+						<span className="kadence-control-title">
+							{ label }
+							{ reset && (
+								<Button
+									className="is-reset is-single"
+									isSmall
+									disabled={ ( ( isEqual( '', value ) ) ? true : false ) }
+									icon={ undo }
+									onClick={ () => reset() }
+								></Button>
+							) }
+						</span>
 					) }
 					<ButtonGroup className="kb-measure-responsive-options" aria-label={ __( 'Device', 'kadence-blocks' ) }>
 						{ map( devices, ( { name, key, title, itemClass } ) => (

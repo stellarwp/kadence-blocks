@@ -78,6 +78,7 @@ import {
 	TabPanel,
 	Placeholder,
 	withNotices,
+	ToolbarButton,
 	BaseControl,
 } from '@wordpress/components';
 import {
@@ -745,7 +746,7 @@ export default function GalleryEdit(props) {
 						gallery
 						value={imagesDynamic.map((img) => img.id)}
 						render={({ open }) => (
-							<Button
+							<ToolbarButton
 								className="components-toolbar__control"
 								label={__('Edit/Add gallery images', 'kadence-blocks')}
 								icon="edit"

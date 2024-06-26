@@ -314,7 +314,7 @@ function LayoutControls({
 	} else {
 		mobileLayoutOptions = [{ value: 'row', label: __('Single Row', 'kadence-blocks'), icon: rowIcon }];
 	}
-	const selectColLayout = columns && (2 === columns || 3 === columns) ? widthString : colLayout;
+	const selectColLayout = columns ? widthString : colLayout;
 	return (
 		<Fragment>
 			<>
@@ -331,6 +331,22 @@ function LayoutControls({
 										colLayout: 'equal',
 										firstColumnWidth: undefined,
 										secondColumnWidth: undefined,
+										thirdColumnWidth: undefined,
+										fourthColumnWidth: undefined,
+										fifthColumnWidth: undefined,
+										sixthColumnWidth: undefined,
+										firstColumnWidthTablet: undefined,
+										secondColumnWidthTablet: undefined,
+										thirdColumnWidthTablet: undefined,
+										fourthColumnWidthTablet: undefined,
+										fifthColumnWidthTablet: undefined,
+										sixthColumnWidthTablet: undefined,
+										firstColumnWidthMobile: undefined,
+										secondColumnWidthMobile: undefined,
+										thirdColumnWidthMobile: undefined,
+										fourthColumnWidthMobile: undefined,
+										fifthColumnWidthMobile: undefined,
+										sixthColumnWidthMobile: undefined,
 										tabletLayout: 'inherit',
 										mobileLayout: 'row',
 									});
@@ -355,6 +371,10 @@ function LayoutControls({
 												setAttributes({
 													firstColumnWidth: undefined,
 													secondColumnWidth: undefined,
+													thirdColumnWidth: undefined,
+													fourthColumnWidth: undefined,
+													fifthColumnWidth: undefined,
+													sixthColumnWidth: undefined,
 												});
 											}}
 										/>
@@ -370,10 +390,22 @@ function LayoutControls({
 												if (value === tabletLayout) {
 													setAttributes({
 														tabletLayout: 'inherit',
+														firstColumnWidthTablet: undefined,
+														secondColumnWidthTablet: undefined,
+														thirdColumnWidthTablet: undefined,
+														fourthColumnWidthTablet: undefined,
+														fifthColumnWidthTablet: undefined,
+														sixthColumnWidthTablet: undefined,
 													});
 												} else {
 													setAttributes({
 														tabletLayout: value,
+														firstColumnWidthTablet: undefined,
+														secondColumnWidthTablet: undefined,
+														thirdColumnWidthTablet: undefined,
+														fourthColumnWidthTablet: undefined,
+														fifthColumnWidthTablet: undefined,
+														sixthColumnWidthTablet: undefined,
 													});
 												}
 											}}
@@ -389,6 +421,12 @@ function LayoutControls({
 											onChange={(value) => {
 												setAttributes({
 													mobileLayout: value,
+													firstColumnWidthMobile: undefined,
+													secondColumnWidthMobile: undefined,
+													thirdColumnWidthMobile: undefined,
+													fourthColumnWidthMobile: undefined,
+													fifthColumnWidthMobile: undefined,
+													sixthColumnWidthMobile: undefined,
 												});
 											}}
 										/>

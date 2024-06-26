@@ -243,6 +243,11 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
+		// Object position
+		if ( isset( $attributes['imagePosition'] ) && $attributes['imagePosition'] ) {
+			$css->add_property( 'object-position', $attributes['imagePosition'] );
+		}
+
 		// Caption Font
 		if ( ! isset( $attributes['showCaption'] ) && isset( $attributes['captionStyles'] ) && is_array( $attributes['captionStyles'] ) && is_array( $attributes['captionStyles'][0] ) ) {
 			$caption_font = $attributes['captionStyles'][0];

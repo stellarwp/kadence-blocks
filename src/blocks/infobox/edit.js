@@ -92,6 +92,7 @@ import {
 	TabPanel,
 	Dashicon,
 	ToolbarGroup,
+	ToolbarButton,
 	TextControl,
 	ToggleControl,
 	SelectControl,
@@ -1866,7 +1867,7 @@ function KadenceInfoBox(props) {
 						contentClassName="kb-popover-inline-icon"
 						placement="top"
 						renderToggle={({ isOpen, onToggle }) => (
-							<Button
+							<ToolbarButton
 								className="components-dropdown-menu__toggle kb-inline-icon-toolbar-icon"
 								label={__('Icon Settings', 'kadence-blocks')}
 								icon={starFilled}

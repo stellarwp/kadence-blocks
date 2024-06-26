@@ -119,6 +119,12 @@ const controls = {
 };
 
 const getPreviewDeviceType = createRegistrySelector((select) => (state) => {
+	const coreEditor = select('core/editor');
+
+	if (coreEditor && coreEditor.getDeviceType) {
+		return select('core/editor').getDeviceType();
+	}
+
 	const editPost = select('core/edit-post');
 
 	if (editPost) {

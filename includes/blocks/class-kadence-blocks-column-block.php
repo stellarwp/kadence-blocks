@@ -96,6 +96,12 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_media_state( 'desktop' );
 			}
 		}
+		if ( isset( $attributes['flexGrow'][0] ) && $css->is_number( $attributes['flexGrow'][0] ) ) {
+			$css->set_selector( '.kadence-column' . $unique_id );
+			$css->add_property( 'flex-grow', $attributes['flexGrow'][0] );
+			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+			$css->add_property( 'height', '100%' );
+		}
 		if ( ! empty( $attributes['maxWidth'][0] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id );
 			$css->add_property( 'max-width', $attributes['maxWidth'][0] . $max_width_unit );
@@ -339,6 +345,9 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 					case 'space-evenly':
 						$align = 'space-evenly';
 						break;
+					case 'stretch':
+						$align = 'stretch';
+						break;
 					default:
 						$align = 'center';
 						break;
@@ -373,6 +382,9 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 					break;
 				case 'space-evenly':
 					$align = 'space-evenly';
+					break;
+				case 'stretch':
+					$align = 'stretch';
 					break;
 				default:
 					$align = 'center';
@@ -432,10 +444,13 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 					$justify_content = 'space-between';
 					break;
 				case 'space-around':
-					$justify_content= 'space-around';
+					$justify_content = 'space-around';
 					break;
 				case 'space-evenly':
 					$justify_content = 'space-evenly';
+					break;
+				case 'stretch':
+					$justify_content = 'stretch';
 					break;
 				default:
 					$justify_content = 'center';

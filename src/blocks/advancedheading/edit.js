@@ -392,7 +392,7 @@ function KadenceAdvancedHeading(props) {
 	richTextFormatsBase = !kadenceDynamic?.content?.shouldReplace
 		? [...['kadence/insert-dynamic'], ...richTextFormatsBase]
 		: richTextFormatsBase;
-	const richTextFormats = link || isDynamicReplaced ? richTextFormatsBase : undefined;
+	const richTextFormats = link || kadenceDynamic?.content?.shouldReplace ? richTextFormatsBase : undefined;
 	const renderTypography = typography && !typography.includes(',') ? "'" + typography + "'" : typography;
 	const markBGString = markBG ? KadenceColorOutput(markBG, markBGOpacity) : '';
 	const markBorderString = markBorder ? KadenceColorOutput(markBorder, markBorderOpacity) : '';
@@ -1522,7 +1522,7 @@ function KadenceAdvancedHeading(props) {
 									panelName={'kb-adv-heading-typography-settings'}
 								>
 									<TypographyControls
-										fontGroup={'heading'}
+										fontGroup={htmlTag !== 'heading' ? 'body' : 'heading'}
 										reLetterSpacing={[letterSpacing, tabletLetterSpacing, mobileLetterSpacing]}
 										onLetterSpacing={(value) =>
 											setAttributes({
