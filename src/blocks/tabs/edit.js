@@ -858,7 +858,7 @@ function KadenceTabs(props) {
 		const ucKey = key.charAt(0).toUpperCase() + key.slice(1);
 
 		setAttributes({
-			[key]: value[0],
+			[key]: String(value[0]),
 			['tab' + ucKey]: value[1],
 			['mobile' + ucKey]: value[2],
 		});

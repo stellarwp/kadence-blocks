@@ -36,7 +36,7 @@ function KadenceTabsSave({ attributes }) {
 		linkPaneCollapse,
 		size,
 		tabSize,
-		mobileSize
+		mobileSize,
 	} = attributes;
 	const layoutClass = !layout ? 'tabs' : layout;
 	const tabLayoutClass = !tabletLayout ? 'inherit' : tabletLayout;
