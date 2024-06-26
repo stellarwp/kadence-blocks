@@ -197,13 +197,16 @@ class InlineTypographyControls extends Component {
 				fontStandardStyles = activeFont[ 0 ].styles;
 			}
 		}
-		if ( this.props.googleFont && this.props.fontFamily && typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.g_fonts && kadence_blocks_params.g_fonts[ this.props.fontFamily ] ) {
+		if ( this.props.fontFamily === '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"' ) {
+			fontStandardWeights = systemWeights;
+		} else if ( this.props.fontFamily === 'var( --global-heading-font-family, inherit )' ) {
+			fontStandardWeights = headingWeights;
+		} else if ( this.props.fontFamily === 'var( --global-body-font-family, inherit )' ) {
+			fontStandardWeights = bodyWeights;
+		} else if ( this.props.googleFont && this.props.fontFamily && typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.g_fonts && kadence_blocks_params.g_fonts[ this.props.fontFamily ] ) {
 			fontStandardWeights = kadence_blocks_params.g_fonts[ this.props.fontFamily ].w.map( opt => ( { label: capitalizeFirstLetter( opt ), value: opt } ) );
 			fontStandardStyles = kadence_blocks_params.g_fonts[ this.props.fontFamily ].i.map( opt => ( { label: capitalizeFirstLetter( opt ), value: opt } ) );
 			typographySubsets = kadence_blocks_params.g_fonts[ this.props.fontFamily ].s.map( opt => ( { label: capitalizeFirstLetter( opt ), value: opt } ) );
-		}
-		if ( this.props.fontFamily === '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"' ) {
-			fontStandardWeights = systemWeights;
 		}
 		this.setState( { typographyWeights: fontStandardWeights } );
 		this.setState( { typographyStyles: fontStandardStyles } );

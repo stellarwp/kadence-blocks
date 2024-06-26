@@ -269,13 +269,16 @@ class Kadence_Blocks_Post_Rest_Controller extends WP_REST_Controller {
 			$type = get_post_type( $source );
 			if ( empty( $type ) ) {
 				return '';
+			} else if( $type === 'kadence_query' ) { // If it's a query block, return all post type for conditional display.
+				$post_types = kadence_blocks_get_post_types();
+			} else {
+				$post_types = array(
+					array(
+						'value' => $type,
+						'label' => $type,
+					),
+				);
 			}
-			$post_types = array(
-				array(
-					'value' => $type,
-					'label' => $type,
-				),
-			);
 		}
 		$taxs = array();
 		foreach ( $post_types as $key => $post_type ) {

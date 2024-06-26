@@ -41,8 +41,13 @@
 }
 .kt-inner-column-height-full:not(.kt-row-layout-row) {
 	grid-auto-rows: minmax(0, 1fr);
-	> .wp-block-kadence-column > .kt-inside-inner-col {
-		height: 100%;
+
+	> .wp-block-kadence-column {
+		align-self: stretch;
+
+		& > .kt-inside-inner-col {
+			height: 100%;
+		}
 	}
 }
 .kt-row-valign-middle.kt-inner-column-height-full

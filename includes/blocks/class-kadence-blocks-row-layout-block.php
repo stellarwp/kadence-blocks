@@ -84,6 +84,40 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$this->enqueue_script( 'kadence-blocks-video-bg' );
 		}
 	}
+
+	/**
+	 * Return a grid tempate coulmns string for custom column widths.
+	 *
+	 * @param object $css the css object.
+	 * @param int    $columns the amount of columns.
+	 * @param string $gap the gap.
+	 * @param int    $column1 the first column width.
+	 * @param int    $column2 the second column width.
+	 * @param int    $column3 the third column width.
+	 * @param int    $column4 the fourth column width.
+	 * @param int    $column5 the fifth column width.
+	 * @param int    $column6 the sixth column width.
+	 */
+	public function get_custom_layout( $css, $columns, $gap = '', $column1 = null, $column2 = null, $column3 = null, $column4 = null, $column5 = null, $column6 = null ) {
+		$grid_layout_string = '';
+		if ( $columns > 1 ) {
+			$gap_string = ! empty( $gap ) ? $gap : 'var(--kb-default-row-gutter, var(--global-row-gutter-md, 2rem))';
+			$column_widths = array( $column1, $column2, $column3, $column4, $column5, $column6 );
+			$column_width_sum = 0;
+
+			foreach ( range( 0, $columns - 1 ) as $column ) {
+				$column_width = $column_widths[ $column ];
+				if ( $column == $columns - 1 ) {
+					//assume the last column width to make 100
+					$column_width = abs( $column_width_sum - 100 );
+				}
+				$grid_layout_string .= 'minmax(0, calc(' . $column_width . '% - ((' . $gap_string . ' * ' . ($columns - 1) . ' )/' . $columns . ')))';
+				$column_width_sum += $column_width;
+			}
+		}
+		return $grid_layout_string;
+	}
+
 	/**
 	 * Render for block scripts block.
 	 *
@@ -91,11 +125,15 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param int    $columns the amount of columns.
 	 * @param string $layout the layout of the row.
 	 * @param string $inner_selector the inner selector.
+	 * @param string $gap the gap.
 	 * @param int    $column1 the first column width.
 	 * @param int    $column2 the second column width.
 	 * @param int    $column3 the third column width.
+	 * @param int    $column4 the fourth column width.
+	 * @param int    $column5 the fifth column width.
+	 * @param int    $column6 the sixth column width.
 	 */
-	public function get_template_columns( $css, $columns, $layout, $inner_selector, $gap = '', $column1 = null, $column2 = null, $column3 = null ) {
+	public function get_template_columns( $css, $columns, $layout, $inner_selector, $gap = '', $column1 = null, $column2 = null, $column3 = null, $column4 = null, $column5 = null, $column6 = null ) {
 		$grid_layout = 'minmax(0, 1fr)';
 		switch ( $columns ) {
 			case 1:
@@ -107,11 +145,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				break;
 			case 2:
 				if ( ! empty( $column1 ) ) {
-					if ( ! empty( $gap ) ) {
-						$grid_layout = 'minmax(0, calc(' . $column1 . '% - ((' . $gap . ' * 1 )/2))) minmax(0, calc(' . abs( $column1 - 100 ) . '% - ((' . $gap . ' * 1 )/2)))';
-					} else {
-						$grid_layout = 'minmax(0, calc(' . $column1 . '% - ((var(--kb-default-row-gutter, var(--global-row-gutter-md, 2rem)) * 1 )/2))) minmax(0, calc(' . abs( $column1 - 100 ) . '% - ((var(--kb-default-row-gutter, var(--global-row-gutter-md, 2rem)) * 1 )/2)))';
-					}
+					$grid_layout = $this->get_custom_layout( $css, $columns, $gap, $column1, $column2, $column3, $column4, $column5, $column6 );
 				} else {
 					switch ( $layout ) {
 						case 'left-golden':
@@ -138,11 +172,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 					} else if ( abs( $column1 ) === 25 && abs( $column2 ) === 25 ) {
 						$grid_layout = 'minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr)';
 					} else {
-						if ( ! empty( $gap ) ) {
-							$grid_layout = 'minmax(0, calc(' . $column1 . '% - ((' . $gap . ' * 2 )/3))) minmax(0, calc(' . $column2 . '% - ((' . $gap . ' * 2 )/3))) minmax(0, calc(' . abs( ( $column1 + $column2 ) - 100 ) . '% - ((' . $gap . ' * 2 )/3)))';
-						} else {
-							$grid_layout = 'minmax(0, calc(' . $column1 . '% - ((var(--kb-default-row-gutter, var(--global-row-gutter-md, 2rem)) * 2 )/3))) minmax(0, calc(' . $column2 . '% - ((var(--kb-default-row-gutter, var(--global-row-gutter-md, 2rem)) * 2 )/3))) minmax(0, calc(' . abs( ( $column1 + $column2 ) - 100 ) . '% - ((var(--kb-default-row-gutter, var(--global-row-gutter-md, 2rem)) * 2 )/3)))';
-						}
+						$grid_layout = $this->get_custom_layout( $css, $columns, $gap, $column1, $column2, $column3, $column4, $column5, $column6 );
 					}
 				} else {
 					switch ( $layout ) {
@@ -186,66 +216,78 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				}
 				break;
 			case 4:
-				switch ( $layout ) {
-					case 'left-forty':
-						$grid_layout = 'minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)';
-						break;
-					case 'right-forty':
-						$grid_layout = 'minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr)';
-						break;
-					case 'two-grid':
-						$grid_layout = 'repeat(2, minmax(0, 1fr))';
-						break;
-					case 'row':
-						$grid_layout = 'minmax(0, 1fr)';
-						break;
-					default:
-						$grid_layout = 'repeat(4, minmax(0, 1fr))';
-						break;
+				if ( ! empty( $column1 ) && ! empty( $column2 ) && ! empty( $column3 ) ) {
+					$grid_layout = $this->get_custom_layout( $css, $columns, $gap, $column1, $column2, $column3, $column4, $column5, $column6 );
+				} else {
+					switch ( $layout ) {
+						case 'left-forty':
+							$grid_layout = 'minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)';
+							break;
+						case 'right-forty':
+							$grid_layout = 'minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr)';
+							break;
+						case 'two-grid':
+							$grid_layout = 'repeat(2, minmax(0, 1fr))';
+							break;
+						case 'row':
+							$grid_layout = 'minmax(0, 1fr)';
+							break;
+						default:
+							$grid_layout = 'repeat(4, minmax(0, 1fr))';
+							break;
+					}
 				}
 				break;
 			case 5:
-				switch ( $layout ) {
-					case 'first-row':
-						$grid_layout = 'repeat(4, minmax(0, 1fr))';
-						$css->set_selector( $inner_selector . ' > *:nth-child(5n+1 of *:not(style))' );
-						$css->add_property( 'grid-column', '1 / -1' );
-						$css->set_selector( $inner_selector );
-						break;
-					case 'last-row':
-						$grid_layout = 'repeat(4, minmax(0, 1fr))';
-						$css->set_selector( $inner_selector . ' > *:nth-child(5n of *:not(style))' );
-						$css->add_property( 'grid-column', '1 / -1' );
-						$css->set_selector( $inner_selector );
-						break;
-					case 'two-grid':
-						$grid_layout = 'repeat(2, minmax(0, 1fr))';
-						break;
-					case 'three-grid':
-						$grid_layout = 'repeat(3, minmax(0, 1fr))';
-						break;
-					case 'row':
-						$grid_layout = 'minmax(0, 1fr)';
-						break;
-					default:
-						$grid_layout = 'repeat(5, minmax(0, 1fr))';
-						break;
+				if ( ! empty( $column1 ) && ! empty( $column2 ) && ! empty( $column3 ) && ! empty( $column4 ) ) {
+					$grid_layout = $this->get_custom_layout( $css, $columns, $gap, $column1, $column2, $column3, $column4, $column5, $column6 );
+				} else {
+					switch ( $layout ) {
+						case 'first-row':
+							$grid_layout = 'repeat(4, minmax(0, 1fr))';
+							$css->set_selector( $inner_selector . ' > *:nth-child(5n+1 of *:not(style))' );
+							$css->add_property( 'grid-column', '1 / -1' );
+							$css->set_selector( $inner_selector );
+							break;
+						case 'last-row':
+							$grid_layout = 'repeat(4, minmax(0, 1fr))';
+							$css->set_selector( $inner_selector . ' > *:nth-child(5n of *:not(style))' );
+							$css->add_property( 'grid-column', '1 / -1' );
+							$css->set_selector( $inner_selector );
+							break;
+						case 'two-grid':
+							$grid_layout = 'repeat(2, minmax(0, 1fr))';
+							break;
+						case 'three-grid':
+							$grid_layout = 'repeat(3, minmax(0, 1fr))';
+							break;
+						case 'row':
+							$grid_layout = 'minmax(0, 1fr)';
+							break;
+						default:
+							$grid_layout = 'repeat(5, minmax(0, 1fr))';
+							break;
+					}
 				}
 				break;
 			case 6:
-				switch ( $layout ) {
-					case 'two-grid':
-						$grid_layout = 'repeat(2, minmax(0, 1fr))';
-						break;
-					case 'three-grid':
-						$grid_layout = 'repeat(3, minmax(0, 1fr))';
-						break;
-					case 'row':
-						$grid_layout = 'minmax(0, 1fr)';
-						break;
-					default:
-						$grid_layout = 'repeat(6, minmax(0, 1fr))';
-						break;
+				if ( ! empty( $column1 ) && ! empty( $column2 ) && ! empty( $column3 ) && ! empty( $column4 ) && ! empty( $column5 ) ) {
+					$grid_layout = $this->get_custom_layout( $css, $columns, $gap, $column1, $column2, $column3, $column4, $column5, $column6 );
+				} else {
+					switch ( $layout ) {
+						case 'two-grid':
+							$grid_layout = 'repeat(2, minmax(0, 1fr))';
+							break;
+						case 'three-grid':
+							$grid_layout = 'repeat(3, minmax(0, 1fr))';
+							break;
+						case 'row':
+							$grid_layout = 'minmax(0, 1fr)';
+							break;
+						default:
+							$grid_layout = 'repeat(6, minmax(0, 1fr))';
+							break;
+					}
 				}
 				break;
 		}
@@ -445,14 +487,35 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'min-height', $attributes['minHeightMobile'] . ( ! empty( $attributes['minHeightUnit'] ) ? $attributes['minHeightUnit'] : 'px' ) );
 			$css->set_media_state( 'desktop' );
 		}
+
 		// Layout.
 		$columns = ( ! empty( $attributes['columns'] ) ? $attributes['columns'] : 2 );
 		$layout  = ( ! empty( $attributes['colLayout'] ) ? $attributes['colLayout'] : 'equal' );
 		$column1  = ( ! empty( $attributes['firstColumnWidth'] ) ? $attributes['firstColumnWidth'] : '' );
 		$column2  = ( ! empty( $attributes['secondColumnWidth'] ) ? $attributes['secondColumnWidth'] : '' );
+		$column3  = ( ! empty( $attributes['thirdColumnWidth'] ) ? $attributes['thirdColumnWidth'] : '' );
+		$column4  = ( ! empty( $attributes['fourthColumnWidth'] ) ? $attributes['fourthColumnWidth'] : '' );
+		$column5  = ( ! empty( $attributes['fifthColumnWidth'] ) ? $attributes['fifthColumnWidth'] : '' );
+		$column6  = ( ! empty( $attributes['sixthColumnWidth'] ) ? $attributes['sixthColumnWidth'] : '' );
+		$column1_tablet  = ( ! empty( $attributes['firstColumnWidthTablet'] ) ? $attributes['firstColumnWidthTablet'] : '' );
+		$column2_tablet  = ( ! empty( $attributes['secondColumnWidthTablet'] ) ? $attributes['secondColumnWidthTablet'] : '' );
+		$column3_tablet  = ( ! empty( $attributes['thirdColumnWidthTablet'] ) ? $attributes['thirdColumnWidthTablet'] : '' );
+		$column4_tablet  = ( ! empty( $attributes['fourthColumnWidthTablet'] ) ? $attributes['fourthColumnWidthTablet'] : '' );
+		$column5_tablet  = ( ! empty( $attributes['fifthColumnWidthTablet'] ) ? $attributes['fifthColumnWidthTablet'] : '' );
+		$column6_tablet  = ( ! empty( $attributes['sixthColumnWidthTablet'] ) ? $attributes['sixthColumnWidthTablet'] : '' );
+		$column1_mobile  = ( ! empty( $attributes['firstColumnWidthMobile'] ) ? $attributes['firstColumnWidthMobile'] : '' );
+		$column2_mobile  = ( ! empty( $attributes['secondColumnWidthMobile'] ) ? $attributes['secondColumnWidthMobile'] : '' );
+		$column3_mobile  = ( ! empty( $attributes['thirdColumnWidthMobile'] ) ? $attributes['thirdColumnWidthMobile'] : '' );
+		$column4_mobile  = ( ! empty( $attributes['fourthColumnWidthMobile'] ) ? $attributes['fourthColumnWidthMobile'] : '' );
+		$column5_mobile  = ( ! empty( $attributes['fifthColumnWidthMobile'] ) ? $attributes['fifthColumnWidthMobile'] : '' );
+		$column6_mobile  = ( ! empty( $attributes['sixthColumnWidthMobile'] ) ? $attributes['sixthColumnWidthMobile'] : '' );
 		$collapse_layouts = array( 'row', 'two-grid', 'three-grid', 'last-row', 'first-row' );
-		$grid_layout = $this->get_template_columns( $css, $columns, $layout, $inner_selector, $css->render_row_gap_property( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'desktop', 'customGutter', 'gutterType' ), $column1, $column2 );
+
+		//base desktop layout.
+		$grid_layout = $this->get_template_columns( $css, $columns, $layout, $inner_selector, $css->render_row_gap_property( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'desktop', 'customGutter', 'gutterType' ), $column1, $column2, $column3, $column4, $column5, $column6 );
 		$css->add_property( 'grid-template-columns', $grid_layout );
+
+		//Desktop ordering
 		if ( ! empty( $attributes['collapseOrder'] ) && 'left-to-right' !== $attributes['collapseOrder'] && in_array( $layout, $collapse_layouts ) ) {
 			$css->set_media_state( 'tablet' );
 			foreach ( range( 1, $columns ) as $item_count ) {
@@ -476,17 +539,22 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			$css->set_media_state( 'desktop' );
 		}
+
+		//Tablet layout
 		if ( empty( $attributes['tabletLayout'] ) && ! empty( $css->render_row_gap_property( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'tablet', 'customGutter', 'gutterType' ) ) ) {
+			//no tablet layout, but we have a tablet guttter width, so render the inherited column layout from desktop, potentially with custom widths.
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( $inner_selector );
-			$grid_layout = $this->get_template_columns( $css, $columns, $layout, $inner_selector, $css->render_row_gap_property( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'tablet', 'customGutter', 'gutterType' ), $column1, $column2 );
+			$grid_layout = $this->get_template_columns( $css, $columns, $layout, $inner_selector, $css->render_row_gap_property( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'tablet', 'customGutter', 'gutterType' ), $column1_tablet, $column2_tablet, $column3_tablet, $column4_tablet, $column5_tablet, $column6_tablet );
 			$css->add_property( 'grid-template-columns', $grid_layout );
 		}
-		if ( ! empty( $attributes['tabletLayout'] ) ) {
+		if ( ! empty( $attributes['tabletLayout'] ) || $column1_tablet ) {
+			//use tablet layout. Potentially with custom widths
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( $inner_selector );
-			$grid_layout = $this->get_template_columns( $css, $columns, $attributes['tabletLayout'], $inner_selector, $css->render_row_gap_property( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'tablet', 'customGutter', 'gutterType' ) );
+			$grid_layout = $this->get_template_columns( $css, $columns, $attributes['tabletLayout'], $inner_selector, $css->render_row_gap_property( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'tablet', 'customGutter', 'gutterType' ), $column1_tablet, $column2_tablet, $column3_tablet, $column4_tablet, $column5_tablet, $column6_tablet );
 			$css->add_property( 'grid-template-columns', $grid_layout );
+			//tablet ordering
 			if ( ! empty( $attributes['collapseOrder'] ) && 'left-to-right' !== $attributes['collapseOrder'] && in_array( $attributes['tabletLayout'], $collapse_layouts ) ) {
 				foreach ( range( 1, $columns ) as $item_count ) {
 					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . $item_count . ')' );
@@ -510,11 +578,13 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			$css->set_media_state( 'desktop' );
 		} elseif ( $columns > 4 ) {
+			//If no tablet layout and more than 4 columns use mobile layout. (this does not match editor behavior)
 			$collapse_tab_layout  = ( ! empty( $attributes['mobileLayout'] ) ? $attributes['mobileLayout'] : 'row' );
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( $inner_selector );
-			$grid_layout = $this->get_template_columns( $css, $columns, $collapse_tab_layout, $inner_selector, $css->render_row_gap_property( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'tablet', 'customGutter', 'gutterType' ) );
+			$grid_layout = $this->get_template_columns( $css, $columns, $collapse_tab_layout, $inner_selector, $css->render_row_gap_property( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'tablet', 'customGutter', 'gutterType' ), $column1_mobile, $column2_mobile, $column3_mobile, $column4_mobile, $column5_mobile, $column6_mobile );
 			$css->add_property( 'grid-template-columns', $grid_layout );
+			//tablet collapse ordering
 			if ( ! empty( $attributes['collapseOrder'] ) && 'left-to-right' !== $attributes['collapseOrder'] && in_array( $collapse_tab_layout, $collapse_layouts ) ) {
 				foreach ( range( 1, $columns ) as $item_count ) {
 					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . $item_count . ')' );
@@ -538,11 +608,14 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			$css->set_media_state( 'desktop' );
 		}
+
+		//mobile layout
 		$mobile_layout  = ( ! empty( $attributes['mobileLayout'] ) ? $attributes['mobileLayout'] : 'row' );
 		$css->set_media_state( 'mobile' );
 		$css->set_selector( $inner_selector );
-		$grid_layout = $this->get_template_columns( $css, $columns, $mobile_layout, $inner_selector, $css->render_row_gap_property( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'mobile', 'customGutter', 'gutterType' ) );
+		$grid_layout = $this->get_template_columns( $css, $columns, $mobile_layout, $inner_selector, $css->render_row_gap_property( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'mobile', 'customGutter', 'gutterType' ), $column1_mobile, $column2_mobile, $column3_mobile, $column4_mobile, $column5_mobile, $column6_mobile );
 		$css->add_property( 'grid-template-columns', $grid_layout );
+		//mobile ordering
 		if ( ! empty( $attributes['collapseOrder'] ) && 'left-to-right' !== $attributes['collapseOrder'] && in_array( $mobile_layout, $collapse_layouts ) ) {
 			foreach ( range( 1, $columns ) as $item_count ) {
 				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . $item_count . ')' );
@@ -564,6 +637,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'order', ( $columns - $item_count + 31 ) );
 			}
 		}
+
 		$css->set_media_state( 'desktop' );
 		if ( isset( $attributes['inheritMaxWidth'] ) && true === $attributes['inheritMaxWidth'] && ! empty( $attributes['align'] ) && 'full' === $attributes['align'] && 2 === $columns && 'row' !== $layout && ( ( isset( $attributes['breakoutLeft'] ) && true === $attributes['breakoutLeft'] ) || ( isset( $attributes['breakoutRight'] ) && true === $attributes['breakoutRight'] ) ) ) {
 			global $content_width;
@@ -745,7 +819,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				break;
 			case 'gradient':
 				if ( ! empty( $attributes['gradient'] ) ) {
-					$css->add_property( 'background-image', $attributes['gradient'] );
+					$css->add_property( 'background-image', $css->render_gradient( $attributes['gradient'] ) );
 				}
 				break;
 		}
@@ -804,7 +878,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 						if ( isset( $attributes['backgroundInline'] ) && true === $attributes['backgroundInline'] ) {
 							$is_important = '!important';
 						}
-						$css->add_property( 'background-image', $tablet_background['gradient'] . $is_important );
+						$css->add_property( 'background-image', $css->render_gradient( $tablet_background['gradient'] ) . $is_important );
 						if ( 'normal' === $background_type && ! empty( $attributes['bgImg'] ) && ! empty( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] ) {
 							$css->set_selector( $base_selector . ' [id*="jarallax-container-"]' );
 							$css->add_property( 'display', 'none !important' );
@@ -875,7 +949,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 						if ( isset( $attributes['backgroundInline'] ) && true === $attributes['backgroundInline'] ) {
 							$is_important = '!important';
 						}
-						$css->add_property( 'background-image', $mobile_background['gradient'] . $is_important );
+						$css->add_property( 'background-image', $css->render_gradient( $mobile_background['gradient'] ) . $is_important );
 						if ( ( 'normal' === $background_type && ! empty( $attributes['bgImg'] ) && ! empty( $attributes['bgImgAttachment'] ) && 'parallax' === $attributes['bgImgAttachment'] ) || ( 'normal' === $mobile_background_type && ! empty( $tablet_background['bgImg'] ) && isset( $tablet_background['bgImgAttachment'] ) && 'parallax' === $tablet_background['bgImgAttachment'] ) ) {
 							$css->set_selector( $base_selector . ' [id*="jarallax-container-"]' );
 							$css->add_property( 'display', 'none !important' );
@@ -922,7 +996,10 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 					}
 					break;
 				case 'gradient':
-					$css->add_property( 'background', $attributes['overlayGradient'] );
+					if ( ! empty( $attributes['overlayGradient'] ) ) {
+						$css->add_property( 'background', $css->render_gradient( $attributes['overlayGradient'] ) );
+					}
+
 					break;
 				case 'grad':
 					// Old Gradient Support.
@@ -977,7 +1054,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 					}
 					break;
 				case 'gradient':
-					$css->add_property( 'background', $tablet_overlay['gradient'] );
+					$css->add_property( 'background', $css->render_gradient( $tablet_overlay['gradient'] ) );
 					break;
 				case 'grad':
 					// Old Gradient Support.
@@ -1033,7 +1110,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 					}
 					break;
 				case 'gradient':
-					$css->add_property( 'background', $mobile_overlay['gradient'] );
+					$css->add_property( 'background', $css->render_gradient( $mobile_overlay['gradient'] ) );
 					break;
 				case 'grad':
 					$type = ( ! empty( $mobile_overlay['overlayGradType'] ) ? $mobile_overlay['overlayGradType'] : 'linear' );

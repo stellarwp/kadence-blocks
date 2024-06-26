@@ -45,6 +45,14 @@
 				});
 			}
 		},
+		strip_tags(input, allowed) {
+			allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
+			const tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+				commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
+			return input.replace(commentsAndPhpTags, '').replace(tags, function ($0, $1) {
+				return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
+			});
+		},
 		findGalleries() {
 			const foundGalleries = document.querySelectorAll('.kb-gallery-magnific-init');
 			if (!foundGalleries.length) {
@@ -69,11 +77,18 @@
 						}
 					}
 					if ('true' == showCaption && !foundGalleries[i].classList.contains('kb-gallery-non-static')) {
+						// Static gallery is basically only for backward compatibility.
 						const foundImages = foundGalleries[i].querySelectorAll('a.kb-gallery-item-link');
 						for (let x = 0; x < foundImages.length; x++) {
 							const caption = foundImages[x].querySelector('.kadence-blocks-gallery-item__caption');
 							if (caption) {
-								foundImages[x].setAttribute('data-description', caption.innerText);
+								foundImages[x].setAttribute(
+									'data-description',
+									kadenceBlocksGLight.strip_tags(
+										caption.innerText,
+										'<a><br><b><i><u><p><ol><ul><li><strong><small>'
+									)
+								);
 							}
 						}
 					}

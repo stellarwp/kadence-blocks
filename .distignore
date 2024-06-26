@@ -22,3 +22,5 @@ codeception.dist.yml
 .env
 .env.testing
 .prettierignore
+phpcs.xml.dist
+phpcs.xml

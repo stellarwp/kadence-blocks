@@ -68,7 +68,7 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
 import {
 	BlockAlignmentToolbar,
-	BlockVerticalAlignmentControl,
+	BlockVerticalAlignmentToolbar,
 	BlockControls,
 	InnerBlocks,
 	InspectorControls,
@@ -237,6 +237,7 @@ function SectionEdit(props) {
 		rowGapVariable,
 		gutterVariable,
 		kbVersion,
+		flexGrow,
 	} = attributes;
 	const [activeTab, setActiveTab] = useState('general');
 	const [dynamicBackgroundImg, setDynamicBackgroundImg] = useState('');
@@ -1096,6 +1097,12 @@ function SectionEdit(props) {
 		stickyOffset && stickyOffset[1] ? stickyOffset[1] : '',
 		stickyOffset && stickyOffset[2] ? stickyOffset[2] : ''
 	);
+	const previewFlexGrow = getPreviewSize(
+		previewDevice,
+		flexGrow && flexGrow[0] ? flexGrow[0] : '',
+		flexGrow && flexGrow[1] ? flexGrow[1] : '',
+		flexGrow && flexGrow[2] ? flexGrow[2] : ''
+	);
 	const previewMinHeightUnit = heightUnit ? heightUnit : 'px';
 	const previewStickyOffsetUnit = stickyOffsetUnit ? stickyOffsetUnit : 'px';
 	const classes = classnames({
@@ -1175,6 +1182,9 @@ function SectionEdit(props) {
 	return (
 		<div {...blockProps}>
 			<style>
+				{'' !== previewFlexGrow
+					? `.kadence-column-${uniqueID} { flex-grow: ${previewFlexGrow} }.kadence-column-${uniqueID} > .kadence-inner-column-inner{height:100%;}`
+					: ''}
 				{overlayOpacity !== undefined && overlayOpacity !== ''
 					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:before { opacity: ${overlayOpacity} }`
 					: ''}
@@ -1449,22 +1459,23 @@ function SectionEdit(props) {
 								onChange={(value) => setAttributes({ align: value })}
 							/>
 						)}
-						<ToolbarGroup group="align">
-							<BlockVerticalAlignmentControl
-								value={actualVerticalAlign === 'middle' ? 'center' : actualVerticalAlign}
-								onChange={(value) => {
-									if (value === 'center') {
-										setAttributes({ verticalAlignment: 'middle' });
-									} else if (value === 'bottom') {
-										setAttributes({ verticalAlignment: 'bottom' });
-									} else if (value === 'top') {
-										setAttributes({ verticalAlignment: 'top' });
-									} else {
-										setAttributes({ verticalAlignment: '' });
-									}
-								}}
-							/>
-						</ToolbarGroup>
+						<BlockVerticalAlignmentToolbar
+							value={actualVerticalAlign === 'middle' ? 'center' : actualVerticalAlign}
+							controls={['top', 'center', 'bottom', 'stretch']}
+							onChange={(value) => {
+								if (value === 'center') {
+									setAttributes({ verticalAlignment: 'middle' });
+								} else if (value === 'bottom') {
+									setAttributes({ verticalAlignment: 'bottom' });
+								} else if (value === 'top') {
+									setAttributes({ verticalAlignment: 'top' });
+								} else if (value === 'stretch') {
+									setAttributes({ verticalAlignment: 'stretch' });
+								} else {
+									setAttributes({ verticalAlignment: '' });
+								}
+							}}
+						/>
 						<CopyPasteAttributes
 							attributes={attributes}
 							excludedAttrs={nonTransAttrs}
@@ -2466,6 +2477,72 @@ function SectionEdit(props) {
 												setAttributes({ heightUnit: value });
 											}}
 											units={['px', 'vw', 'vh']}
+											reset={() => {
+												setAttributes({
+													heightUnit: 'px',
+													height: ['', '', ''],
+												});
+											}}
+										/>
+										<ResponsiveRangeControls
+											label={__('Flex Grow', 'kadence-blocks')}
+											value={
+												undefined !== flexGrow && undefined !== flexGrow[0] ? flexGrow[0] : ''
+											}
+											onChange={(value) => {
+												setAttributes({
+													flexGrow: [
+														value,
+														undefined !== flexGrow && undefined !== flexGrow[1]
+															? flexGrow[1]
+															: '',
+														undefined !== flexGrow && undefined !== flexGrow[2]
+															? flexGrow[2]
+															: '',
+													],
+												});
+											}}
+											tabletValue={
+												undefined !== flexGrow && undefined !== flexGrow[1] ? flexGrow[1] : ''
+											}
+											onChangeTablet={(value) => {
+												setAttributes({
+													flexGrow: [
+														undefined !== flexGrow && undefined !== flexGrow[0]
+															? flexGrow[0]
+															: '',
+														value,
+														undefined !== flexGrow && undefined !== flexGrow[2]
+															? flexGrow[2]
+															: '',
+													],
+												});
+											}}
+											mobileValue={
+												undefined !== flexGrow && undefined !== flexGrow[2] ? flexGrow[2] : ''
+											}
+											onChangeMobile={(value) => {
+												setAttributes({
+													flexGrow: [
+														undefined !== flexGrow && undefined !== flexGrow[0]
+															? flexGrow[0]
+															: '',
+														undefined !== flexGrow && undefined !== flexGrow[1]
+															? flexGrow[1]
+															: '',
+														value,
+													],
+												});
+											}}
+											min={0}
+											max={200}
+											step={1}
+											showUnits={false}
+											reset={() => {
+												setAttributes({
+													flexGrow: ['', '', ''],
+												});
+											}}
 										/>
 										<RangeControl
 											label={__('Z Index Control', 'kadence-blocks')}
