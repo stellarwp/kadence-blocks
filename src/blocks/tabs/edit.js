@@ -854,6 +854,16 @@ function KadenceTabs(props) {
 		</>
 	);
 
+	const saveFontSize = (key, value) => {
+		const ucKey = key.charAt(0).toUpperCase() + key.slice(1);
+
+		setAttributes({
+			[key]: String(value[0]),
+			['tab' + ucKey]: String(value[1]),
+			['mobile' + ucKey]: String(value[2]),
+		});
+	};
+
 	const saveFontAttribute = (key, value) => {
 		const ucKey = key.charAt(0).toUpperCase() + key.slice(1);
 
@@ -1945,7 +1955,7 @@ function KadenceTabs(props) {
 									<TypographyControls
 										fontGroup={'body'}
 										fontSize={[size, tabSize, mobileSize]}
-										onFontSize={(value) => saveFontAttribute('size', value)}
+										onFontSize={(value) => saveFontSize('size', value)}
 										fontSizeType={sizeType ? sizeType : 'px'}
 										onFontSizeType={(value) => setAttributes({ sizeType: value })}
 										lineHeight={[lineHeight, tabLineHeight, mobileLineHeight]}
