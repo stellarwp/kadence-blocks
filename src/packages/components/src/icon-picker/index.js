@@ -21,17 +21,17 @@ import {
 } from '@wordpress/icons';
 import { default as IconRender } from '../icons/icon-render';
 export default function KadenceIconPicker({
-											  value,
-											  onChange,
-											  label,
-											  placeholder = __( 'Select Icon', 'kadence-blocks' ),
-											  showSearch = true,
-											  renderFunc = null,
-											  className,
-											  theme = 'default',
-											  allowClear = false,
-											  icons = null
-										  }) {
+		value,
+		onChange,
+		label,
+		placeholder = __( 'Select Icon', 'kadence-blocks' ),
+		showSearch = true,
+		renderFunc = null,
+		className,
+		theme = 'default',
+		allowClear = false,
+		icons = null
+	}) {
 	const [ popoverAnchor, setPopoverAnchor ] = useState();
 	const [ isVisible, setIsVisible ] = useState( false );
 	const [ search, setSearch ] = useState( '' );
@@ -42,7 +42,10 @@ export default function KadenceIconPicker({
 	const [ customSvgs, setCustomSvgs ] = useState( false );
 	const [ customSvgTitles, setCustomSvgTitles ] = useState( [] );
 	const [ isLoading, setIsLoading ] = useState( false );
-
+	// Make sure user has pro and the appropriate version that has the rest endpoint to accept SVGs
+	const hasPro = kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false;
+	const proVersion = window?.kbpData ? get( window.kbpData, ['pVersion'], '1.0.0' ) : '1.0.0';
+	const isSupportedProVersion = compareVersions(proVersion, '2.4.0') >= 0;
 	const toggleVisible = () => {
 		setIsVisible( !isVisible );
 	}
@@ -69,6 +72,7 @@ export default function KadenceIconPicker({
 					setCustomSvgs( [] );
 				}
 			} catch ( error ) {
+				setCustomSvgs( [] );
 				console.error( 'Failed to fetch custom SVGs (picker):', error );
 			}
 			setIsLoading( false );
@@ -84,11 +88,6 @@ export default function KadenceIconPicker({
 	const addCallback = () => {
 		getCustomSvgs( true );
 	};
-
-	// Make sure user has pro and the appropriate version that has the rest endpoint to accept SVGs
-	const hasPro = kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false;
-	const proVersion =get( kbpData, ['pVersion'], '1.0.0');
-	const isSupportedProVersion = compareVersions(proVersion, '2.4.0') >= 0;
 
 	const translatedCustomSvgString = __( 'My Icons', 'kadence-blocks' );
 
