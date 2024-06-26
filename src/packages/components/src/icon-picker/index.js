@@ -52,7 +52,7 @@ export default function KadenceIconPicker({
 	const debounceToggle = debounce( toggleVisible, 100 );
 
 	const getCustomSvgs = async ( force = false) => {
-		if ( force || ( customSvgs === false && !isLoading ) ) {
+		if ( force || ( hasPro && isSupportedProVersion && customSvgs === false && !isLoading ) ) {
 			try {
 				setIsLoading( true );
 				const response = await fetchCustomSvgs();

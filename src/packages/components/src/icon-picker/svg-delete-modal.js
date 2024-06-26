@@ -23,8 +23,6 @@ export default function SvgDeleteModal( { isOpen, setIsOpen, id, callback } ) {
 			path: `/wp/v2/kadence_custom_svg/${id}`,
 			method: 'DELETE',
 		}).then((response) => {
-			console.log('response');
-			console.log(response);
 			if ( get( response, 'id', false ) ) {
 				createSuccessNotice(__('SVG Deleted.', 'kadence-blocks'), {
 					type: 'snackbar',
