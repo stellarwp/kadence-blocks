@@ -1,0 +1,9 @@
+{
+	"apiVersion": 3,
+	"name": "kadence/page-wizard",
+	"title": "Page Wizard",
+	"category": "kadence-blocks",
+	"description": "Kadence Page Creation Wizard",
+	"textdomain": "kadence-blocks",
+	"keywords": ["kb", "wizard", "page"]
+}
