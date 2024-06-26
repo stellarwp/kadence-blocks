@@ -176,6 +176,8 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 = 3.2.46 =
 Release Date: June TBD 2024
+* Fix: Tab title font size not saving when using numeric value.
+* Fix: Gutter unit in advanced gallery carousel.
 * Fix: Setting up conditional display based on taxonomy inside query loops.
 
 = 3.2.45 =
