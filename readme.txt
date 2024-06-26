@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.3
 Tested up to: 6.5
-Stable tag: 3.2.45
+Stable tag: 3.2.46
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -175,8 +175,11 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.2.46 =
-Release Date: June TBD 2024
+Release Date: June 26th 2024
+* Add: Custom column width for 4,5,6 column rows.
+* Add: Custom column width for tablet, mobile.
 * Fix: Tab title font size not saving when using numeric value.
+* Fix: Issue with lightbox description.
 * Fix: Gutter unit in advanced gallery carousel.
 * Fix: Setting up conditional display based on taxonomy inside query loops.
 
