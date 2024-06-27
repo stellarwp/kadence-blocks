@@ -17,7 +17,6 @@ const IconRender = (props) => {
 
 	useEffect(() => {
 		const icons = applyFilters('kadence.icon_options', { ...kadence_blocks_params_ico.icons, ...kadence_blocks_params_fa.icons } );
-		console.log( 'Icons:', icons );
 		setIconOptions(icons);
 	}, []);
 
