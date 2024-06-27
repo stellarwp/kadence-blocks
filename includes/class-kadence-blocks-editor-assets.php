@@ -138,6 +138,9 @@ class Editor_Assets {
 			'tabs',
 			'testimonials',
 			'advanced-form',
+			'header',
+			'navigation',
+			'navigation-link',
 		);
 		foreach ( $blocks as $block ) {
 			$meta   = kadence_blocks_get_asset_file( sprintf( 'dist/blocks-%s', $block ) );
