@@ -96,6 +96,12 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_media_state( 'desktop' );
 			}
 		}
+		if ( isset( $attributes['flexGrow'][0] ) && $css->is_number( $attributes['flexGrow'][0] ) ) {
+			$css->set_selector( '.kadence-column' . $unique_id );
+			$css->add_property( 'flex-grow', $attributes['flexGrow'][0] );
+			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+			$css->add_property( 'height', '100%' );
+		}
 		if ( ! empty( $attributes['maxWidth'][0] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id );
 			$css->add_property( 'max-width', $attributes['maxWidth'][0] . $max_width_unit );
@@ -339,6 +345,9 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 					case 'space-evenly':
 						$align = 'space-evenly';
 						break;
+					case 'stretch':
+						$align = 'stretch';
+						break;
 					default:
 						$align = 'center';
 						break;
@@ -373,6 +382,9 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 					break;
 				case 'space-evenly':
 					$align = 'space-evenly';
+					break;
+				case 'stretch':
+					$align = 'stretch';
 					break;
 				default:
 					$align = 'center';
@@ -410,6 +422,8 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *' );
 				$basis_unit = ! empty( $attributes['flexBasisUnit'] ) ? $attributes['flexBasisUnit'] : 'px';
 				$css->add_property( 'flex-basis', $attributes['flexBasis'][0] . $basis_unit );
+				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > .wp-block-kadence-infobox' );
+				$css->add_property( 'width', '0px' );
 			}
 		}
 		// inside of Row.
@@ -430,10 +444,13 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 					$justify_content = 'space-between';
 					break;
 				case 'space-around':
-					$justify_content= 'space-around';
+					$justify_content = 'space-around';
 					break;
 				case 'space-evenly':
 					$justify_content = 'space-evenly';
+					break;
+				case 'stretch':
+					$justify_content = 'stretch';
 					break;
 				default:
 					$justify_content = 'center';
@@ -664,6 +681,8 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *' );
 				$css->add_property( 'flex', '1' );
 				$css->add_property( 'max-width', '100%' );
+				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > .wp-block-kadence-infobox' );
+				$css->add_property( 'width', 'auto' );
 			}
 		} elseif ( 'horizontal' === $tablet_direction || 'horizontal-reverse' === $tablet_direction ) {
 			if ( ! empty( $attributes['flexBasis'][1] ) ) {
@@ -775,6 +794,8 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *,.wp-block-kadence-column.kb-section-md-dir-vertical.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *' );
 				$css->add_property( 'flex', '1' );
 				$css->add_property( 'max-width', '100%' );
+				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > .wp-block-kadence-infobox' );
+				$css->add_property( 'width', 'auto' );
 			}
 		} elseif ( 'horizontal' === $mobile_direction || 'horizontal-reverse' === $mobile_direction ) {
 

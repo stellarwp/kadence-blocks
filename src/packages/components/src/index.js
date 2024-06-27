@@ -61,6 +61,7 @@ export { default as ResponsiveGapSizeControl } from './gap-controls/responsive';
 export { default as CopyPasteAttributes } from './copy-paste-attributes';
 export { default as DynamicTextInputControl } from './dynamic-text-input-control';
 export { default as SelectPostFromPostType } from './select-post-from-post-type';
+export { default as Tooltip } from './tooltip';
 
 /* Panels */
 export { default as ColorGroup } from './panels/color-group';
@@ -112,3 +113,4 @@ export { default as SelectParentBlock } from './select-parent-block';
 export { default as ObfuscateTextControl } from './obfuscate-text-control';
 
 export { default as PostSelectorCheckbox } from './post-selector-checkbox';
+export { default as ColumnDragResizer } from './column-drag-resizer';

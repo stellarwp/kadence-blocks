@@ -115,6 +115,20 @@
 			"type": "array",
 			"default": ["", "", "", ""]
 		},
+		"tooltip": {
+			"type": "string",
+			"source": "html",
+			"selector": ".kb-tooltip-hidden-content",
+			"__experimentalRole": "content"
+		},
+		"tooltipPlacement": {
+			"type": "string",
+			"default": ""
+		},
+		"tooltipDash": {
+			"type": "boolean",
+			"default": false
+		},
 		"inQueryBlock": {
 			"type": "boolean",
 			"default": false

@@ -7,8 +7,9 @@
 		</gutenberg-block>
 		<gutenberg-block type="kadence/icon" translate="0"/>
 		<gutenberg-block type="kadence/single-icon" translate="1">
-			<key name="link" />
-			<key name="title" />
+			<xpath>//div/a/@href</xpath>
+			<xpath>//div/a/@aria-label</xpath>
+			<xpath>//div/a/span/@data-title</xpath>
 		</gutenberg-block>
 		<gutenberg-block type="kadence/progress-bar" translate="1">
 			<key name="label" />
@@ -104,5 +105,13 @@
 		<gutenberg-block type="kadence/column" translate="0"/>
 		<gutenberg-block type="kadence/tab" translate="0"/>
 		<gutenberg-block type="kadence/accordion" translate="0"/>
+		<gutenberg-block type="kadence/advancedgallery" translate="1">
+			<key name="imagesDynamic">
+				<key name="*">
+					<key name="alt" />
+					<key name="caption" />
+				</key>
+			</key>
+		</gutenberg-block>		
 	</gutenberg-blocks>
 </wpml-config>

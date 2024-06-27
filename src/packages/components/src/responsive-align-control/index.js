@@ -175,6 +175,11 @@ export default function ResponsiveAlignControls( {
 				title: __( 'Bottom', 'kadence-blocks' ),
 				align: 'bottom',
 			},
+			{
+				icon: alignStretch,
+				title: __( 'Stretch', 'kadence-blocks' ),
+				align: 'stretch',
+			},
 		]
 	} else if ( type === 'orientation-column' ) {
 		alignmentControls = [

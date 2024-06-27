@@ -7,7 +7,7 @@ import { useDispatch, useSelect, subscribe } from '@wordpress/data';
 import { createBlock, isUnmodifiedDefaultBlock } from '@wordpress/blocks';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
-import { Button } from '@wordpress/components';
+import { ToolbarButton } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
 /**
  * Internal dependencies
@@ -22,10 +22,10 @@ function ToolbarLibrary() {
 	const { replaceBlocks, insertBlocks } = useDispatch(blockEditorStore);
 	const [kadenceIcon, setKadenceIcon] = useState(applyFilters('kadence.blocks_icon', kadenceBlocksIcon));
 	const LibraryButton = () => (
-		<Button
+		<ToolbarButton
 			className="kb-toolbar-prebuilt-button"
 			icon={kadenceIcon}
-			isPrimary
+			// isPrimary
 			onClick={() => {
 				const selectedBlock = getSelectedBlock();
 				if (selectedBlock && isUnmodifiedDefaultBlock(selectedBlock)) {
@@ -64,7 +64,7 @@ function ToolbarLibrary() {
 			}}
 		>
 			{__('Design Library', 'kadence-blocks')}
-		</Button>
+		</ToolbarButton>
 	);
 	const renderButton = (selector) => {
 		const patternButton = document.createElement('div');

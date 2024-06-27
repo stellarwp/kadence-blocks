@@ -192,7 +192,7 @@
 			// Auto-parse all values in the elements dataset
 			return Object.keys(elementDataset).reduce((acc, key) => {
 				const parsedInt = parseInt(elementDataset[key]);
-				if (!Number.isNaN(parsedInt)) {
+				if (!Number.isNaN(parsedInt) && !key.includes('sliderGap')) {
 					return { ...acc, [key]: parsedInt };
 				}
 				if (elementDataset[key] === 'true' || elementDataset[key] === 'false') {

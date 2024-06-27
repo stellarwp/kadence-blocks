@@ -96,11 +96,10 @@ function isCustomOption( optionsArray, value ) {
 						{ options.map( ( option, index ) =>
 							<Button
 								key={`${option.label}-${option.value}-${index}`}
-								isTertiary={value !== option.value}
 								className={'kadence-radio-item radio-' + option.value}
-								isPrimary={value === option.value}
 								icon={ undefined !== option.icon ? option.icon : undefined }
 								aria-pressed={value === option.value}
+								variant={value === option.value ? 'primary' : 'tertiary'}
 								onClick={ () => {
 									onChange( option.value ) }
 								}
@@ -115,7 +114,7 @@ function isCustomOption( optionsArray, value ) {
 								icon={ settings }
 								onClick={ () => setIsCustom( true ) }
 								isPressed={ false }
-								isTertiary={ true }
+								variant={'tertiary'}
 							/>
 						) }
 					</ButtonGroup>
@@ -131,6 +130,7 @@ function isCustomOption( optionsArray, value ) {
 						units={ [ { value: '%', label: '%' }, { value: 'px', label: 'px' } ] }
 						value={ width }
 						onChange={ onWidthChange }
+						className='kb-background-size-custom-input'
 						placeholder={ 'auto' }
 					/>
 					<UnitControl
@@ -141,6 +141,7 @@ function isCustomOption( optionsArray, value ) {
 						value={ height }
 						units={ [ { value: '%', label: '%' }, { value: 'px', label: 'px' } ] }
 						onChange={ onHeightChange }
+						className='kb-background-size-custom-input'
 						placeholder={ 'auto' }
 					/>
 					{ allowCustom && (
@@ -149,9 +150,9 @@ function isCustomOption( optionsArray, value ) {
 								className={'kadence-radio-item radio-custom only-icon'}
 								label={ __( 'Use size preset', 'kadence-blocks' ) }
 								icon={ settings }
-								isPrimary={true}
 								onClick={ () => setIsCustom( false ) }
 								isPressed={ true }
+								variant={'primary'}
 							/>
 						</ButtonGroup>
 					) }

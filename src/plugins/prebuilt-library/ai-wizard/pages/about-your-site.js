@@ -97,9 +97,14 @@ export function AboutYourSite() {
 	const [error, setError] = useState('');
 	const { state, dispatch } = useKadenceAi();
 	const { missionStatement, entityType, lang, companyName } = state;
-	const title = sprintf(__('Tell us about your%s', 'kadence-blocks'), titlePartial[entityType]);
+	const title = sprintf(
+		// translators: %s: entity type
+		__('Tell us about your %s', 'kadence-blocks'),
+		titlePartial[entityType]
+	);
 	const langObject = LANG_TYPE.filter((option) => option.value === (lang ? lang : 'en-US'));
 	const language = sprintf(
+		// translators: %s: language
 		__('This should be written in %s.', 'kadence-blocks'),
 		langObject?.[0]?.label ? langObject[0].label : 'your site language'
 	);
@@ -135,10 +140,17 @@ export function AboutYourSite() {
 
 	function getPlaceholderText() {
 		if (entityType === ENTITY_TYPE_INDIVIDUAL) {
-			return sprintf(__('I am %s, a...', 'kadence-blocks'), companyName);
+			return sprintf(
+				// translators: %s: company or individual name
+				__('I am %s, a...', 'kadence-blocks'),
+				companyName
+			);
 		}
-
-		return sprintf(__('%s is a...', 'kadence-blocks'), companyName);
+		return sprintf(
+			// translators: %s: company or individual name
+			__('%s is a...', 'kadence-blocks'),
+			companyName
+		);
 	}
 
 	function handleMissionStatement(value) {

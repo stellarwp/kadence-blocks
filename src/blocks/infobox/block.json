@@ -168,8 +168,8 @@
 			"default": true
 		},
 		"title": {
-			"type": "array",
-			"source": "children",
+			"type": "rich-text",
+			"source": "rich-text",
 			"selector": ".kt-blocks-info-box-title",
 			"default": "Title"
 		},
@@ -210,7 +210,9 @@
 					"padding": ["", "", "", ""],
 					"paddingControl": "linked",
 					"margin": ["", "", "", ""],
-					"marginControl": "individual"
+					"marginControl": "individual",
+					"paddingUnit": "px",
+					"marginUnit": "px"
 				}
 			]
 		},
@@ -219,8 +221,8 @@
 			"default": true
 		},
 		"contentText": {
-			"type": "array",
-			"source": "children",
+			"type": "rich-text",
+			"source": "rich-text",
 			"selector": ".kt-blocks-info-box-text",
 			"default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo."
 		},
@@ -272,8 +274,8 @@
 			"default": false
 		},
 		"learnMore": {
-			"type": "array",
-			"source": "children",
+			"type": "rich-text",
+			"source": "rich-text",
 			"selector": ".kt-blocks-info-box-learnmore",
 			"default": "Learn More"
 		},
@@ -409,8 +411,8 @@
 			"default": false
 		},
 		"number": {
-			"type": "array",
-			"source": "children",
+			"type": "rich-text",
+			"source": "rich-text",
 			"selector": "div.kt-blocks-info-box-number",
 			"default": ""
 		},

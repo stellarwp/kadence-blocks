@@ -45,6 +45,7 @@ import {
 	CopyPasteAttributes,
 	DynamicTextControl,
 	DynamicInlineReplaceControl,
+	Tooltip,
 } from '@kadence/components';
 import classnames from 'classnames';
 import { times, filter, map, uniqueId } from 'lodash';
@@ -55,10 +56,10 @@ import metadata from './block.json';
  */
 import { __ } from '@wordpress/i18n';
 import { useDispatch, useSelect } from '@wordpress/data';
-
+import { tooltip as tooltipIcon } from '@kadence/icons';
 import { link as linkIcon } from '@wordpress/icons';
 import { displayShortcut, isKeyboardEvent } from '@wordpress/keycodes';
-import { Fragment, useEffect, useState } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import {
 	RichText,
 	InspectorControls,
@@ -70,7 +71,17 @@ import {
 	useBlockProps,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
-import { TextControl, ToolbarGroup, SelectControl, ToggleControl, ToolbarButton, Spinner } from '@wordpress/components';
+import {
+	TextControl,
+	ToolbarGroup,
+	SelectControl,
+	ToggleControl,
+	ToolbarButton,
+	Spinner,
+	TextareaControl,
+	Dropdown,
+	Button,
+} from '@wordpress/components';
 import { addFilter, applyFilters, doAction } from '@wordpress/hooks';
 import BackendStyles from './components/backend-styles';
 
@@ -198,6 +209,8 @@ export default function KadenceButtonEdit(props) {
 		shadowSticky,
 		displayHoverShadowSticky,
 		shadowStickyHover,
+		tooltip,
+		tooltipPlacement,
 	} = attributes;
 
 	// Support rank math content analysis.
@@ -215,7 +228,6 @@ export default function KadenceButtonEdit(props) {
 			return content.replace(regex, '') + rankMathContent;
 		});
 	}
-
 	const { updateBlockAttributes } = useDispatch(blockEditorStore);
 	const { btnsBlock, rootID } = useSelect(
 		(select) => {
@@ -582,6 +594,57 @@ export default function KadenceButtonEdit(props) {
 						/>
 					</ToolbarGroup>
 				)}
+				<ToolbarGroup group="tooltip">
+					<Dropdown
+						className="kb-popover-inline-tooltip-container components-dropdown-menu components-toolbar"
+						contentClassName="kb-popover-inline-tooltip"
+						placement="bottom"
+						renderToggle={({ isOpen, onToggle }) => (
+							<Button
+								className="components-dropdown-menu__toggle kb-inline-tooltip-toolbar-icon"
+								label={__('Tooltip Settings', 'kadence-blocks')}
+								icon={tooltipIcon}
+								onClick={onToggle}
+								aria-expanded={isOpen}
+							/>
+						)}
+						renderContent={() => (
+							<>
+								<div className="kb-inline-tooltip-control">
+									<TextareaControl
+										label={__('Tooltip Content', 'kadence-blocks')}
+										value={tooltip}
+										onChange={(newValue) => setAttributes({ tooltip: newValue })}
+									/>
+									<SelectControl
+										label={__('Placement', 'kadence-blocks')}
+										value={tooltipPlacement || 'top'}
+										options={[
+											{ label: __('Top', 'kadence-blocks'), value: 'top' },
+											{ label: __('Top Start', 'kadence-blocks'), value: 'top-start' },
+											{ label: __('Top End', 'kadence-blocks'), value: 'top-end' },
+											{ label: __('Right', 'kadence-blocks'), value: 'right' },
+											{ label: __('Right Start', 'kadence-blocks'), value: 'right-start' },
+											{ label: __('Right End', 'kadence-blocks'), value: 'right-end' },
+											{ label: __('Bottom', 'kadence-blocks'), value: 'bottom' },
+											{ label: __('Bottom Start', 'kadence-blocks'), value: 'bottom-start' },
+											{ label: __('Bottom End', 'kadence-blocks'), value: 'bottom-end' },
+											{ label: __('Left', 'kadence-blocks'), value: 'left' },
+											{ label: __('Left Start', 'kadence-blocks'), value: 'left-start' },
+											{ label: __('Left End', 'kadence-blocks'), value: 'left-end' },
+											{ label: __('Auto', 'kadence-blocks'), value: 'auto' },
+											{ label: __('Auto Start', 'kadence-blocks'), value: 'auto-start' },
+											{ label: __('Auto End', 'kadence-blocks'), value: 'auto-end' },
+										]}
+										onChange={(val) => {
+											setAttributes({ tooltipPlacement: val });
+										}}
+									/>
+								</div>
+							</>
+						)}
+					/>
+				</ToolbarGroup>
 				<CopyPasteAttributes
 					attributes={attributes}
 					excludedAttrs={nonTransAttrs}
@@ -2323,101 +2386,77 @@ export default function KadenceButtonEdit(props) {
 						: undefined
 				}
 			>
-				<span className={btnClassName}>
-					{icon && 'left' === iconSide && (
-						<IconRender
-							className={`kt-btn-svg-icon kt-btn-svg-icon-${icon} kt-btn-side-${iconSide}`}
-							name={icon}
-							size={'1em'}
-							style={{
-								fontSize: previewIconSize
-									? getFontSizeOptionOutput(
-											previewIconSize,
-											undefined !== iconSizeUnit ? iconSizeUnit : 'px'
-									  )
-									: undefined,
-								color: '' !== iconColor ? KadenceColorOutput(iconColor) : undefined,
-								paddingTop: previewIconPaddingTop
-									? getSpacingOptionOutput(previewIconPaddingTop, iconPaddingUnit)
-									: undefined,
-								paddingRight: previewIconPaddingRight
-									? getSpacingOptionOutput(previewIconPaddingRight, iconPaddingUnit)
-									: undefined,
-								paddingBottom: previewIconPaddingBottom
-									? getSpacingOptionOutput(previewIconPaddingBottom, iconPaddingUnit)
-									: undefined,
-								paddingLeft: previewIconPaddingLeft
-									? getSpacingOptionOutput(previewIconPaddingLeft, iconPaddingUnit)
-									: undefined,
-							}}
+				<Tooltip text={tooltip} placement={tooltipPlacement || 'top'}>
+					<span className={btnClassName}>
+						{icon && 'left' === iconSide && (
+							<IconRender
+								className={`kt-btn-svg-icon kt-btn-svg-icon-${icon} kt-btn-side-${iconSide}`}
+								name={icon}
+								size={'1em'}
+								style={{
+									fontSize: previewIconSize
+										? getFontSizeOptionOutput(
+												previewIconSize,
+												undefined !== iconSizeUnit ? iconSizeUnit : 'px'
+										  )
+										: undefined,
+								}}
+							/>
+						)}
+						{!isDynamicReplaced && (
+							<RichText
+								tagName="div"
+								placeholder={__('Button...', 'kadence-blocks')}
+								value={text}
+								onChange={(value) => setAttributes({ text: value })}
+								allowedFormats={applyFilters(
+									'kadence.whitelist_richtext_formats',
+									richTextFormats,
+									'kadence/advancedbtn'
+								)}
+								className={'kt-button-text'}
+								keepPlaceholderOnFocus
+							/>
+						)}
+						{isDynamicReplaced && (
+							<>
+								{applyFilters(
+									'kadence.dynamicContent',
+									<Spinner />,
+									attributes,
+									'text',
+									setAttributes,
+									context
+								)}
+							</>
+						)}
+						{icon && 'left' !== iconSide && (
+							<IconRender
+								className={`kt-btn-svg-icon kt-btn-svg-icon-${icon} kt-btn-side-${iconSide}`}
+								name={icon}
+								size={'1em'}
+								style={{
+									fontSize: previewIconSize
+										? getFontSizeOptionOutput(
+												previewIconSize,
+												undefined !== iconSizeUnit ? iconSizeUnit : 'px'
+										  )
+										: undefined,
+								}}
+							/>
+						)}
+						<SpacingVisualizer
+							type="inside"
+							forceShow={paddingMouseOver.isMouseOver}
+							spacing={[
+								getSpacingOptionOutput(previewPaddingTop, paddingUnit),
+								getSpacingOptionOutput(previewPaddingRight, paddingUnit),
+								getSpacingOptionOutput(previewPaddingBottom, paddingUnit),
+								getSpacingOptionOutput(previewPaddingLeft, paddingUnit),
+							]}
 						/>
-					)}
-					{!isDynamicReplaced && (
-						<RichText
-							tagName="div"
-							placeholder={__('Button...', 'kadence-blocks')}
-							value={text}
-							onChange={(value) => setAttributes({ text: value })}
-							allowedFormats={applyFilters(
-								'kadence.whitelist_richtext_formats',
-								richTextFormats,
-								'kadence/advancedbtn'
-							)}
-							className={'kt-button-text'}
-							keepPlaceholderOnFocus
-						/>
-					)}
-					{isDynamicReplaced && (
-						<>
-							{applyFilters(
-								'kadence.dynamicContent',
-								<Spinner />,
-								attributes,
-								'text',
-								setAttributes,
-								context
-							)}
-						</>
-					)}
-					{icon && 'left' !== iconSide && (
-						<IconRender
-							className={`kt-btn-svg-icon kt-btn-svg-icon-${icon} kt-btn-side-${iconSide}`}
-							name={icon}
-							size={'1em'}
-							style={{
-								fontSize: previewIconSize
-									? getFontSizeOptionOutput(
-											previewIconSize,
-											undefined !== iconSizeUnit ? iconSizeUnit : 'px'
-									  )
-									: undefined,
-								color: '' !== iconColor ? KadenceColorOutput(iconColor) : undefined,
-								paddingTop: previewIconPaddingTop
-									? getSpacingOptionOutput(previewIconPaddingTop, iconPaddingUnit)
-									: undefined,
-								paddingRight: previewIconPaddingRight
-									? getSpacingOptionOutput(previewIconPaddingRight, iconPaddingUnit)
-									: undefined,
-								paddingBottom: previewIconPaddingBottom
-									? getSpacingOptionOutput(previewIconPaddingBottom, iconPaddingUnit)
-									: undefined,
-								paddingLeft: previewIconPaddingLeft
-									? getSpacingOptionOutput(previewIconPaddingLeft, iconPaddingUnit)
-									: undefined,
-							}}
-						/>
-					)}
-					<SpacingVisualizer
-						type="inside"
-						forceShow={paddingMouseOver.isMouseOver}
-						spacing={[
-							getSpacingOptionOutput(previewPaddingTop, paddingUnit),
-							getSpacingOptionOutput(previewPaddingRight, paddingUnit),
-							getSpacingOptionOutput(previewPaddingBottom, paddingUnit),
-							getSpacingOptionOutput(previewPaddingLeft, paddingUnit),
-						]}
-					/>
-				</span>
+					</span>
+				</Tooltip>
 				<SpacingVisualizer
 					type="inside"
 					forceShow={marginMouseOver.isMouseOver}

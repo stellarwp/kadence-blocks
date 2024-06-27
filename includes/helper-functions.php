@@ -25,6 +25,22 @@ function kadence_blocks_is_not_amp() {
 }
 
 /**
+ * Get the asset file produced by wp scripts.
+ *
+ * @param string $filepath the file path.
+ * @return array
+ */
+function kadence_blocks_get_asset_file( $filepath ) {
+	$asset_path = KADENCE_BLOCKS_PATH . $filepath . '.asset.php';
+	return file_exists( $asset_path )
+		? include $asset_path
+		: array(
+			'dependencies' => array( 'lodash', 'react', 'react-dom', 'wp-block-editor', 'wp-blocks', 'wp-data', 'wp-element', 'wp-i18n', 'wp-polyfill', 'wp-primitives', 'wp-api' ),
+			'version'      => KADENCE_BLOCKS_VERSION,
+		);
+}
+
+/**
  * Check if we are in a rest api call.
  */
 function kadence_blocks_is_rest() {

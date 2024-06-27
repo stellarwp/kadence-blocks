@@ -139,7 +139,7 @@ const controls = {
 const getPreviewDeviceType = createRegistrySelector((select) => (state) => {
 	const editor = select('core/editor');
 
-	if (editor) {
+	if (editor && editor?.getDeviceType) {
 		return editor.getDeviceType();
 	}
 

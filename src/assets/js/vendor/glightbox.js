@@ -1229,6 +1229,17 @@
 			return (
 				n(e, [
 					{
+						key: 'stripTags',
+						value: function e(input) {
+							var allowed = ((('<a><br><b><i><u><p><ol><ul><li><strong><small>') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
+							const tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+								commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
+							return input.replace(commentsAndPhpTags, '').replace(tags, function ($0, $1) {
+								return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
+							});
+						},
+					},
+					{
 						key: 'sourceType',
 						value: function e(t) {
 							var i = t;
@@ -1314,6 +1325,9 @@
 							if (!o.description) {
 								var p = t.querySelector('.glightbox-desc');
 								p && (o.description = p.innerHTML);
+							}
+							if ( o.description ) {
+								o.description = this.stripTags(o.description);
 							}
 							return this.setSize(o, i, t), (this.slideConfig = o), o;
 						},

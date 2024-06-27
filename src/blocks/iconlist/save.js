@@ -25,7 +25,6 @@ function Save({ attributes }) {
 				: ''
 		}`,
 	});
-
 	return (
 		<div {...blockProps}>
 			<ul className="kt-svg-icon-list">

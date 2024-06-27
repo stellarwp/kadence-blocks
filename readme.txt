@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.3
 Tested up to: 6.5
-Stable tag: 3.2.41
+Stable tag: 3.2.46
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -174,10 +174,45 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.2.46 =
+Release Date: June 26th 2024
+* Add: Custom column width for 4,5,6 column rows.
+* Add: Custom column width for tablet, mobile.
+* Fix: Tab title font size not saving when using numeric value.
+* Fix: Issue with lightbox description.
+* Fix: Gutter unit in advanced gallery carousel.
+* Fix: Setting up conditional display based on taxonomy inside query loops.
+
+= 3.2.45 =
+Release Date: June 21st 2024
+* Fix: Gallery output of caption to allow basic html.
+
+= 3.2.44 =
+Release Date: June 20th 2024
+* Fix: Possible issue with gallery html_entity_decode error.
+
+= 3.2.43 =
+Release Date: June 20th 2024
+* Add: Option to set focal point in Adv Image block when using a ratio.
+* Add: Option to set flex grow in section block.
+* Update: Section vertical align to include stretch.
+* Update: Font weight options to be in better sync with inherited theme settings.
+* Fix: Issue with fullwidth button not showing fullwidth in the editor.
+* Fix: Escape HTML in advanced gallery block.
+* Fix: Issue with escaping attribute in Google Maps block.
+* Fix: Advanced text block not working in editor for WP 6.3.
+
 = 3.2.42 =
-Release Date: TBD 2024
-* Add: Ability to reset max width on Advanced Text block.
+Release Date: June 10th 2024
+* Add: Tooltips to advanced text, button, icon block and icon list.
+* Add: Ability to set advanced text as default block in editor.
+* Update: Ability to reset max width control in various places.
+* Update: Info box to align button to the bottom when using full height mode.
+* Fix: Issue where pot files were not generating.
+* Fix: Issue with icon list link color not applying.
+* Fix: Issue with flex basis and infobox layouts.
 * Fix: Issue with progress bars default width attribute.
+* Fix: Issue with fullwidth synced patterns.
 
 = 3.2.41 =
 Release Date: May 31st 2024

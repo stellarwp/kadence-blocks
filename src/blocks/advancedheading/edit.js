@@ -36,6 +36,7 @@ import {
 	IconRender,
 	DynamicTextControl,
 	DynamicInlineReplaceControl,
+	Tooltip,
 } from '@kadence/components';
 
 import { dynamicIcon } from '@kadence/icons';
@@ -60,6 +61,7 @@ import {
  */
 import './formats/markformat';
 import './formats/typed-text';
+import './formats/tooltips';
 import AIText from './ai-text/ai-text.js';
 
 import Typed from 'typed.js';
@@ -93,9 +95,11 @@ import {
 	ToolbarDropdownMenu,
 	TextControl,
 	ToggleControl,
+	TextareaControl,
 } from '@wordpress/components';
 
 import { applyFilters } from '@wordpress/hooks';
+import { get } from 'lodash';
 
 /**
  * Regular expression matching invalid anchor characters for replacement.
@@ -225,6 +229,9 @@ function KadenceAdvancedHeading(props) {
 		mobileMarkBorderRadius,
 		markBorderRadiusUnit,
 		altTitle,
+		iconTooltipPlacement,
+		iconTooltipDash,
+		iconTooltip,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('style');
@@ -253,6 +260,9 @@ function KadenceAdvancedHeading(props) {
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
+	const config = get(kadence_blocks_params, 'globalSettings') ? JSON.parse(kadence_blocks_params.globalSettings) : {};
+	const isDefaultEditorBlock =
+		undefined !== config.adv_text_is_default_editor_block && config.adv_text_is_default_editor_block;
 
 	useEffect(() => {
 		setBlockDefaults('kadence/advancedheading', attributes);
@@ -382,7 +392,7 @@ function KadenceAdvancedHeading(props) {
 	richTextFormatsBase = !kadenceDynamic?.content?.shouldReplace
 		? [...['kadence/insert-dynamic'], ...richTextFormatsBase]
 		: richTextFormatsBase;
-	const richTextFormats = link || isDynamicReplaced ? richTextFormatsBase : undefined;
+	const richTextFormats = link || kadenceDynamic?.content?.shouldReplace ? richTextFormatsBase : undefined;
 	const renderTypography = typography && !typography.includes(',') ? "'" + typography + "'" : typography;
 	const markBGString = markBG ? KadenceColorOutput(markBG, markBGOpacity) : '';
 	const markBorderString = markBorder ? KadenceColorOutput(markBorder, markBorderOpacity) : '';
@@ -782,29 +792,35 @@ function KadenceAdvancedHeading(props) {
 		}
 
 		return (
-			<IconRender
-				className={`kb-advanced-heading-svg-icon kb-advanced-heading-svg-icon-${icon} kb-advanced-heading-icon-side-${iconSide}`}
-				name={icon}
-				size={'1em'}
-				style={{
-					fontSize: previewIconSize
-						? getFontSizeOptionOutput(previewIconSize, undefined !== iconSizeUnit ? iconSizeUnit : 'px')
-						: undefined,
-					color: '' !== iconColor ? KadenceColorOutput(iconColor) : undefined,
-					paddingTop: previewIconPaddingTop
-						? getSpacingOptionOutput(previewIconPaddingTop, iconPaddingUnit)
-						: undefined,
-					paddingRight: previewIconPaddingRight
-						? getSpacingOptionOutput(previewIconPaddingRight, iconPaddingUnit)
-						: undefined,
-					paddingBottom: previewIconPaddingBottom
-						? getSpacingOptionOutput(previewIconPaddingBottom, iconPaddingUnit)
-						: undefined,
-					paddingLeft: previewIconPaddingLeft
-						? getSpacingOptionOutput(previewIconPaddingLeft, iconPaddingUnit)
-						: undefined,
-				}}
-			/>
+			<Tooltip
+				text={iconTooltip}
+				className={iconTooltipDash ? 'kb-adv-text-icon-dash' : undefined}
+				placement={iconTooltipPlacement || 'top'}
+			>
+				<IconRender
+					className={`kb-advanced-heading-svg-icon kb-advanced-heading-svg-icon-${icon} kb-advanced-heading-icon-side-${iconSide}`}
+					name={icon}
+					size={'1em'}
+					style={{
+						fontSize: previewIconSize
+							? getFontSizeOptionOutput(previewIconSize, undefined !== iconSizeUnit ? iconSizeUnit : 'px')
+							: undefined,
+						color: '' !== iconColor ? KadenceColorOutput(iconColor) : undefined,
+						paddingTop: previewIconPaddingTop
+							? getSpacingOptionOutput(previewIconPaddingTop, iconPaddingUnit)
+							: undefined,
+						paddingRight: previewIconPaddingRight
+							? getSpacingOptionOutput(previewIconPaddingRight, iconPaddingUnit)
+							: undefined,
+						paddingBottom: previewIconPaddingBottom
+							? getSpacingOptionOutput(previewIconPaddingBottom, iconPaddingUnit)
+							: undefined,
+						paddingLeft: previewIconPaddingLeft
+							? getSpacingOptionOutput(previewIconPaddingLeft, iconPaddingUnit)
+							: undefined,
+					}}
+				/>
+			</Tooltip>
 		);
 	};
 
@@ -861,12 +877,12 @@ function KadenceAdvancedHeading(props) {
 					onChange={(value) => setAttributes({ content: value })}
 					onMerge={mergeBlocks}
 					onSplit={(value) => {
-						if (!value) {
+						if (!value && !isDefaultEditorBlock) {
 							return createBlock('core/paragraph');
 						}
 						return createBlock('kadence/advancedheading', {
 							...attributes,
-							content: value,
+							content: value ?? '',
 						});
 					}}
 					onReplace={onReplace}
@@ -1506,7 +1522,7 @@ function KadenceAdvancedHeading(props) {
 									panelName={'kb-adv-heading-typography-settings'}
 								>
 									<TypographyControls
-										fontGroup={'heading'}
+										fontGroup={htmlTag !== 'heading' ? 'body' : 'heading'}
 										reLetterSpacing={[letterSpacing, tabletLetterSpacing, mobileLetterSpacing]}
 										onLetterSpacing={(value) =>
 											setAttributes({
@@ -1757,6 +1773,42 @@ function KadenceAdvancedHeading(props) {
 										value={iconTitle}
 										onChange={(value) => {
 											setAttributes({ iconTitle: value });
+										}}
+									/>
+									<TextareaControl
+										label={__('Icon Tooltip Content', 'kadence-blocks')}
+										value={iconTooltip}
+										onChange={(newValue) => setAttributes({ iconTooltip: newValue })}
+									/>
+									<SelectControl
+										label={__('Icon Tooltip Placement', 'kadence-blocks')}
+										value={iconTooltipPlacement || 'top'}
+										options={[
+											{ label: __('Top', 'kadence-blocks'), value: 'top' },
+											{ label: __('Top Start', 'kadence-blocks'), value: 'top-start' },
+											{ label: __('Top End', 'kadence-blocks'), value: 'top-end' },
+											{ label: __('Right', 'kadence-blocks'), value: 'right' },
+											{ label: __('Right Start', 'kadence-blocks'), value: 'right-start' },
+											{ label: __('Right End', 'kadence-blocks'), value: 'right-end' },
+											{ label: __('Bottom', 'kadence-blocks'), value: 'bottom' },
+											{ label: __('Bottom Start', 'kadence-blocks'), value: 'bottom-start' },
+											{ label: __('Bottom End', 'kadence-blocks'), value: 'bottom-end' },
+											{ label: __('Left', 'kadence-blocks'), value: 'left' },
+											{ label: __('Left Start', 'kadence-blocks'), value: 'left-start' },
+											{ label: __('Left End', 'kadence-blocks'), value: 'left-end' },
+											{ label: __('Auto', 'kadence-blocks'), value: 'auto' },
+											{ label: __('Auto Start', 'kadence-blocks'), value: 'auto-start' },
+											{ label: __('Auto End', 'kadence-blocks'), value: 'auto-end' },
+										]}
+										onChange={(val) => {
+											setAttributes({ iconTooltipPlacement: val });
+										}}
+									/>
+									<ToggleControl
+										label={__('Show indicator underline', 'kadence-blocks')}
+										checked={iconTooltipDash}
+										onChange={(value) => {
+											setAttributes({ iconTooltipDash: value });
 										}}
 									/>
 								</KadencePanelBody>

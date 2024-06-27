@@ -715,6 +715,15 @@
 					"inset": false
 				}
 			]
+		},
+		"tooltip": {
+			"type": "string",
+			"default": "",
+			"__experimentalRole": "content"
+		},
+		"tooltipPlacement": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"supports": {

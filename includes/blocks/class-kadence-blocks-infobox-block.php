@@ -74,7 +74,72 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap' );
 		if ( isset( $attributes['fullHeight'] ) && $attributes['fullHeight'] ) {
 			$css->add_property( 'height', '100%' );
+			if ( isset( $attributes['displayLearnMore'] ) && $attributes['displayLearnMore'] && ( ! isset( $attributes['mediaAlign'] ) || ( isset( $attributes['mediaAlign'] ) && 'top' === $attributes['mediaAlign'] ) ) && ( ! isset( $attributes['alignLearnMore'] ) || ( isset( $attributes['alignLearnMore'] ) && $attributes['alignLearnMore'] ) ) ) {
+				$flex_align = 'center';
+				if ( ! empty( $attributes['hAlign'] ) && 'right' === $attributes['hAlign'] ) {
+					$flex_align = 'flex-end';
+				} else if ( ! empty( $attributes['hAlign'] ) && 'left' === $attributes['hAlign'] ) {
+					$flex_align = 'flex-start';
+				}
+				$css->add_property( 'display', 'flex' );
+				$css->add_property( 'flex-direction', 'column' );
+				$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap .kt-infobox-textcontent' );
+				$css->add_property( 'display', 'flex' );
+				$css->add_property( 'flex-direction', 'column' );
+				$css->add_property( 'align-items', $flex_align );
+				$css->add_property( 'flex-grow', '1' );
+				$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap .kt-infobox-textcontent .kt-blocks-info-box-learnmore-wrap' );
+				$css->add_property( 'margin-top', 'auto' );
+				$flex_align_tablet = '';
+				if ( ! empty( $attributes['hAlignTablet'] ) && 'right' === $attributes['hAlignTablet'] ) {
+					$flex_align_tablet = 'flex-end';
+				} else if ( ! empty( $attributes['hAlignTablet'] ) && 'left' === $attributes['hAlignTablet'] ) {
+					$flex_align_tablet = 'flex-start';
+				} else if ( ! empty( $attributes['hAlignTablet'] ) && 'center' === $attributes['hAlignTablet'] ) {
+					$flex_align_tablet = 'center';
+				}
+				if ( ! empty( $flex_align_tablet ) ) {
+					$css->set_media_state( 'tablet' );
+					$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap .kt-infobox-textcontent' );
+					$css->add_property( 'align-items', $flex_align_tablet );
+					$css->set_media_state( 'desktop' );
+				}
+				$flex_align_mobile = '';
+				if ( ! empty( $attributes['hAlignMobile'] ) && 'right' === $attributes['hAlignMobile'] ) {
+					$flex_align_mobile = 'flex-end';
+				} else if ( ! empty( $attributes['hAlignMobile'] ) && 'left' === $attributes['hAlignMobile'] ) {
+					$flex_align_mobile = 'flex-start';
+				} else if ( ! empty( $attributes['hAlignMobile'] ) && 'center' === $attributes['hAlignMobile'] ) {
+					$flex_align_mobile = 'center';
+				}
+				if ( ! empty( $flex_align_mobile ) ) {
+					$css->set_media_state( 'mobile' );
+					$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap .kt-infobox-textcontent' );
+					$css->add_property( 'align-items', $flex_align_mobile );
+					$css->set_media_state( 'desktop' );
+				}
+			}
 		}
+		// Max Width.
+		$max_width_unit        = ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px';
+		$tablet_max_width_unit = ! empty( $attributes['maxWidthTabletUnit'] ) ? $attributes['maxWidthTabletUnit'] : $max_width_unit;
+		$mobile_max_width_unit = ! empty( $attributes['maxWidthMobileUnit'] ) ? $attributes['maxWidthMobileUnit'] : $tablet_max_width_unit;
+		$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal > .kt-inside-inner-col > ' . $base_selector );
+		if ( ! empty( $attributes['maxWidth'] ) ) {
+			$css->add_property( 'max-width', $attributes['maxWidth'] . $max_width_unit );
+		}
+		if ( ! empty( $attributes['tabletMaxWidth'] ) ) {
+			$css->set_media_state( 'tablet' );
+			$css->add_property( 'max-width', $attributes['tabletMaxWidth'] . $tablet_max_width_unit );
+		}
+		if ( ! empty( $attributes['mobileMaxWidth'] ) ) {
+			$css->set_media_state( 'mobile' );
+			$css->add_property( 'max-width', $attributes['mobileMaxWidth'] . $mobile_max_width_unit );
+		}
+		$css->set_media_state( 'desktop' );
+		$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal > .kt-inside-inner-col > ' . $base_selector . ' .kt-blocks-info-box-link-wrap' );
+		$css->add_property( 'max-width', 'unset' );
+		$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap' );
 		// Container Border, check old first.
 		if ( ! empty( $attributes['containerBorder'] ) || $css->is_number( $attributes['containerBorderWidth'][0] ) || $css->is_number( $attributes['containerBorderWidth'][1] ) || $css->is_number( $attributes['containerBorderWidth'][2] ) || $css->is_number( $attributes['containerBorderWidth'][3] ) || $css->is_number( $attributes['containerBorderRadius'] ) ) {
 			if ( ! empty( $attributes['containerBorder'] ) ) {
@@ -89,7 +154,16 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 			$css->render_border_styles( $attributes, 'borderStyle' );
 			$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array( 'unit_key' => 'borderRadiusUnit' ) );
 		}
-
+		// Alignment.
+		if ( ! empty( $attributes['hAlignTablet'] ) ) {
+			$css->set_media_state( 'tablet' );
+			$css->add_property( 'text-align', $attributes['hAlignTablet'] );
+		}
+		if ( ! empty( $attributes['hAlignMobile'] ) ) {
+			$css->set_media_state( 'mobile' );
+			$css->add_property( 'text-align', $attributes['hAlignMobile'] );
+		}
+		$css->set_media_state( 'desktop' );
 		// Style.
 		if ( ! empty( $attributes['containerBackground'] ) || $css->is_number( $attributes['containerBackgroundOpacity'] ) || ! empty( $attributes['maxWidth'] ) || ! empty( $attributes['tabletMaxWidth'] ) || ! empty( $attributes['mobileMaxWidth'] ) ) {
 			if ( isset( $attributes['containerBackground'] ) && ! empty( $attributes['containerBackground'] ) ) {
@@ -691,23 +765,31 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $learn_more_styles['borderWidth'] ) && is_array( $learn_more_styles['borderWidth'] ) ) {
 				$css->add_property( 'border-width', $learn_more_styles['borderWidth'][0] . 'px ' . $learn_more_styles['borderWidth'][1] . 'px ' . $learn_more_styles['borderWidth'][2] . 'px ' . $learn_more_styles['borderWidth'][3] . 'px' );
 			}
+			$learn_more_padding_unit = ( ! empty( $learn_more_styles['paddingUnit'] ) ? $learn_more_styles['paddingUnit'] : 'px' );
 			if ( isset( $learn_more_styles['padding'][0] ) && $css->is_number( $learn_more_styles['padding'][0] ) ) {
-				$css->add_property( 'padding-top', $learn_more_styles['padding'][0] . 'px' );
+				$css->add_property( 'padding-top', $learn_more_styles['padding'][0] . $learn_more_padding_unit );
 			}
 			if ( isset( $learn_more_styles['padding'][1] ) && $css->is_number( $learn_more_styles['padding'][1] ) ) {
-				$css->add_property( 'padding-right', $learn_more_styles['padding'][1] . 'px' );
+				$css->add_property( 'padding-right', $learn_more_styles['padding'][1] . $learn_more_padding_unit );
 			}
 			if ( isset( $learn_more_styles['padding'][2] ) && $css->is_number( $learn_more_styles['padding'][2] ) ) {
-				$css->add_property( 'padding-bottom', $learn_more_styles['padding'][2] . 'px' );
+				$css->add_property( 'padding-bottom', $learn_more_styles['padding'][2] . $learn_more_padding_unit );
 			}
 			if ( isset( $learn_more_styles['padding'][3] ) && $css->is_number( $learn_more_styles['padding'][3] ) ) {
-				$css->add_property( 'padding-left', $learn_more_styles['padding'][3] . 'px' );
+				$css->add_property( 'padding-left', $learn_more_styles['padding'][3] . $learn_more_padding_unit );
 			}
-			// if ( isset( $learn_more_styles['padding'] ) && is_array( $learn_more_styles['padding'] ) ) {
-			// 	$css->add_property( 'padding', $learn_more_styles['padding'][0] . 'px ' . $learn_more_styles['padding'][1] . 'px ' . $learn_more_styles['padding'][2] . 'px ' . $learn_more_styles['padding'][3] . 'px' );
-			// }
-			if ( isset( $learn_more_styles['margin'] ) && is_array( $learn_more_styles['margin'] ) ) {
-				$css->add_property( 'margin', $learn_more_styles['margin'][0] . 'px ' . $learn_more_styles['margin'][1] . 'px ' . $learn_more_styles['margin'][2] . 'px ' . $learn_more_styles['margin'][3] . 'px' );
+			$learn_more_margin_unit = ( ! empty( $learn_more_styles['marginUnit'] ) ? $learn_more_styles['marginUnit'] : 'px' );
+			if ( isset( $learn_more_styles['margin'][0] ) && $css->is_number( $learn_more_styles['margin'][0] ) ) {
+				$css->add_property( 'margin-top', $learn_more_styles['margin'][0] . $learn_more_margin_unit );
+			}
+			if ( isset( $learn_more_styles['margin'][1] ) && $css->is_number( $learn_more_styles['margin'][1] ) ) {
+				$css->add_property( 'margin-right', $learn_more_styles['margin'][1] . $learn_more_margin_unit );
+			}
+			if ( isset( $learn_more_styles['margin'][2] ) && $css->is_number( $learn_more_styles['margin'][2] ) ) {
+				$css->add_property( 'margin-bottom', $learn_more_styles['margin'][2] . $learn_more_margin_unit );
+			}
+			if ( isset( $learn_more_styles['margin'][3] ) && $css->is_number( $learn_more_styles['margin'][3] ) ) {
+				$css->add_property( 'margin-left', $learn_more_styles['margin'][3] . $learn_more_margin_unit );
 			}
 			if ( isset( $learn_more_styles['colorHover'] ) || isset( $learn_more_styles['colorHover'] ) || isset( $learn_more_styles['borderHover'] ) ) {
 				$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore' );

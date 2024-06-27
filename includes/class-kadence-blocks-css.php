@@ -2375,7 +2375,7 @@ class Kadence_Blocks_CSS {
 				}
 			}
 		} elseif ( 'gradient' === $type && isset( $background['gradient'] ) && ! empty( $background['gradient'] ) ) {
-			$css->add_property( 'background', $background['gradient'] );
+			$css->add_property( 'background', $this->render_gradient( $background['gradient'] ) );
 		} else {
 			if ( ! empty( $color_type ) ) {
 				$background_string = $color_type;
@@ -2384,6 +2384,19 @@ class Kadence_Blocks_CSS {
 		}
 	}
 
+	/**
+	 * Sanitizes a gradient value.
+	 *
+	 * @param string $gradient an string of gradient markup.
+	 * @return string
+	 */
+	public function render_gradient( $gradient ) {
+		if ( empty( $gradient ) ) {
+			return false;
+		}
+		$gradient = str_replace( 'var(u002du002dglobal', 'var(--global', $gradient );
+		return $gradient;
+	}
 	/**
 	 * Generates the size output.
 	 *

@@ -234,9 +234,9 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 			$content = str_replace( 'KADENCE_GOOGLE_MAPS_KEY', $user_google_maps_key, $content );
 		}
 
-		$zoom    = empty( $attributes['zoom'] ) ? 11 : $attributes['zoom'];
-		$gMapLat = empty( $attributes['lat'] ) ? '37.8201' : $attributes['lat'];
-		$gMapLng = empty( $attributes['lng'] ) ? '-122.4781' : $attributes['lng'];
+		$zoom    = empty( $attributes['zoom'] ) ? 11 : esc_attr( $attributes['zoom'] );
+		$gMapLat = empty( $attributes['lat'] ) ? '37.8201' : esc_attr($attributes['lat'] );
+		$gMapLng = empty( $attributes['lng'] ) ? '-122.4781' : esc_attr( $attributes['lng'] );
 
 		$content .= '<script>';
 		$content .= 'function kb_google_map' . $this->escape_for_js_variable( $unique_id ) . '() {';

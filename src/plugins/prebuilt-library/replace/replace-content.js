@@ -24,19 +24,19 @@ export default function replaceContent(content, aiContent, categories, context, 
 		case 'columns':
 			// Headline.
 			if (baseContent?.heading?.short) {
-				content = content.replace(/Write a short headline/g, baseContent?.heading?.short);
+				content = content.replaceAll('Write a short headline', baseContent.heading.short);
 			}
 			// Headline.
 			if (baseContent?.heading?.medium) {
-				content = content.replace(
-					/Compose a captivating title for this section./g,
+				content = content.replaceAll(
+					'Compose a captivating title for this section.',
 					baseContent?.heading?.medium
 				);
 			}
 			// Paragraph
 			if (baseContent?.sentence?.short) {
-				content = content.replace(
-					/Support your idea with a clear, descriptive sentence or phrase that has a consistent writing style./g,
+				content = content.replaceAll(
+					'Support your idea with a clear, descriptive sentence or phrase that has a consistent writing style.',
 					baseContent?.sentence?.short
 				);
 			}

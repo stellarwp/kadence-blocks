@@ -26,10 +26,14 @@
     }
 }
 .kadence-font-size-control .kadence-single-unit-control .components-unit-control-wrapper .components-input-control__backdrop {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border: 1px solid var(--kb-border-color, #859CB6 );
-    border-right: 0;
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border: 1px solid var(--kb-border-color, #859CB6 ) !important;
+    border-right: 0 !important;
+}
+.kb-responsive-unit-control .kadence-component__header__title.kadence-unit__title {
+    white-space: nowrap;
+    overflow: hidden;
 }
 .kadence-font-size-control .kadence-single-unit-control .components-input-control__input:not(.specific) {
     height: 32px;

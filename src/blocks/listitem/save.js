@@ -29,8 +29,14 @@ function Save(props) {
 		showIcon,
 		size,
 		iconTitle,
+		tooltip,
+		tooltipSelection,
+		tooltipPlacement,
+		tooltipDash,
 	} = attributes;
-
+	const tooltipID = tooltip && uniqueID ? `kt-svg-tooltip-${uniqueID}` : undefined;
+	const iconOnlyTooltip = 'icon' === tooltipSelection ? true : false;
+	const textOnlyTooltip = 'text' === tooltipSelection ? true : false;
 	const classes = classnames({
 		'kt-svg-icon-list-item-wrap': true,
 		[`kt-svg-icon-list-item-${uniqueID}`]: uniqueID,
@@ -46,16 +52,20 @@ function Save(props) {
 
 	const iconWidth = icon && width ? width : 'USE_PARENT_DEFAULT_WIDTH';
 
-	const iconTitleOutput = icon && iconTitle ? iconTitle : '';
+	const iconTitleOutput = iconTitle ? iconTitle : '';
 	const iconHidden = icon && iconTitle ? 'false' : 'true';
 
 	const iconSpan = (
 		<IconSpanTag
-			extraClass={'kt-svg-icon-list-single'}
+			extraClass={`kt-svg-icon-list-single${iconOnlyTooltip && tooltipID ? ' kb-icon-list-tooltip' : ''}${
+				!tooltipDash && iconOnlyTooltip && tooltipID ? ' kb-list-tooltip-no-border' : ''
+			}`}
 			name={iconName}
 			strokeWidth={iconWidth}
 			title={iconTitleOutput}
 			ariaHidden={iconHidden}
+			tooltipID={iconOnlyTooltip && tooltipID ? tooltipID : undefined}
+			tooltipPlacement={iconOnlyTooltip && tooltipPlacement ? tooltipPlacement : undefined}
 		/>
 	);
 
@@ -99,7 +109,6 @@ function Save(props) {
 			rel = 'sponsored';
 		}
 	}
-
 	return (
 		<li {...blockProps}>
 			{link && (
@@ -107,17 +116,67 @@ function Save(props) {
 					href={link}
 					className={'kt-svg-icon-link'}
 					target={'_blank' === target ? target : undefined}
+					data-tooltip-id={!iconOnlyTooltip && !textOnlyTooltip && tooltipID ? tooltipID : undefined}
+					data-tooltip-placement={
+						!iconOnlyTooltip && !textOnlyTooltip && tooltipID && tooltipPlacement
+							? tooltipPlacement
+							: undefined
+					}
 					rel={'' !== rel ? rel : undefined}
 				>
 					{showIcon ? iconSpan : emptyIcon}
-					<RichText.Content tagName="span" value={text} className={'kt-svg-icon-list-text'} />
+					<RichText.Content
+						tagName="span"
+						value={text}
+						className={`kt-svg-icon-list-text${
+							tooltipID && textOnlyTooltip ? ' kb-icon-list-tooltip' : ''
+						}${tooltipID && textOnlyTooltip && !tooltipDash ? ' kb-list-tooltip-no-border' : ''}`}
+						data-tooltip-id={tooltipID && textOnlyTooltip ? tooltipID : undefined}
+						data-tooltip-placement={
+							tooltipID && textOnlyTooltip && tooltipPlacement ? tooltipPlacement : undefined
+						}
+					/>
 				</a>
 			)}
 			{!link && (
 				<>
-					{showIcon ? iconSpan : emptyIcon}
-					<RichText.Content tagName="span" value={text} className={'kt-svg-icon-list-text'} />
+					{!iconOnlyTooltip && !textOnlyTooltip && tooltipID && (
+						<span
+							className={`kb-icon-list-tooltip-wrap kb-icon-list-tooltip${
+								!tooltipDash ? ' kb-list-tooltip-no-border' : ''
+							}`}
+							data-tooltip-id={tooltipID}
+							data-tooltip-placement={tooltipPlacement}
+						>
+							{showIcon ? iconSpan : emptyIcon}
+							<RichText.Content tagName="span" value={text} className={'kt-svg-icon-list-text'} />
+						</span>
+					)}
+					{(!tooltipID || iconOnlyTooltip || textOnlyTooltip) && (
+						<>
+							{showIcon ? iconSpan : emptyIcon}
+							<RichText.Content
+								tagName="span"
+								value={text}
+								className={`kt-svg-icon-list-text${
+									tooltipID && textOnlyTooltip ? ' kb-icon-list-tooltip' : ''
+								}${tooltipID && textOnlyTooltip && !tooltipDash ? ' kb-list-tooltip-no-border' : ''}`}
+								data-tooltip-id={tooltipID && textOnlyTooltip ? tooltipID : undefined}
+								data-tooltip-placement={
+									tooltipID && textOnlyTooltip && tooltipPlacement ? tooltipPlacement : undefined
+								}
+							/>
+						</>
+					)}
 				</>
+			)}
+			{tooltipID && (
+				<span
+					className={'kb-tooltip-hidden-content'}
+					style={{ display: 'none' }}
+					id={tooltipID}
+					dangerouslySetInnerHTML={{ __html: tooltip }} // Because this is saved into the post as html WordPress core will sanitize it if the user does not have the unfiltered_html capability.
+				/>
 			)}
 		</li>
 	);

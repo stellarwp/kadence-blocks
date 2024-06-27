@@ -31,7 +31,7 @@ class Kadence_Blocks_Svg_Render {
 	 * @var null
 	 */
 	private static $all_icons = null;
-
+	
 	/**
 	 * Instance Control
 	 */
@@ -93,8 +93,15 @@ class Kadence_Blocks_Svg_Render {
 						$stroke_width = ( ! empty( $args['stroke'] ) ? $args['stroke'] : 2 );
 					}
 					$hidden = ( empty( $args['title'] ) ? true : false );
+					$extras = '';
+					if ( ! empty( $args['tooltip-id'] ) ) {
+						$extras = 'data-tooltip-id="' . esc_attr( $args['tooltip-id'] ) . '"';
+						if ( ! empty( $args['tooltip-placement'] ) ) {
+							$extras .= ' data-tooltip-placement="' . esc_attr( $args['tooltip-placement'] ) . '"';
+						}
+					}
 					$svg    = self::render( $args['name'], $fill, $stroke_width, $args['title'], $hidden );
-					return '<span class="kb-svg-icon-wrap kb-svg-icon-' . esc_attr( $args['name'] ) . ( ! empty( $args['class'] ) ? ' ' . esc_attr( $args['class'] ) : '' ) . '">' . $svg . '</span>';
+					return '<span class="kb-svg-icon-wrap kb-svg-icon-' . esc_attr( $args['name'] ) . ( ! empty( $args['class'] ) ? ' ' . esc_attr( $args['class'] ) : '' ) . '"' . $extras . '>' . $svg . '</span>';
 				},
 				$block_content
 			);
@@ -127,6 +134,17 @@ class Kadence_Blocks_Svg_Render {
 		if ( 'fa_facebook' === $name ) {
 			$name = 'fa_facebook-n';
 		}
+
+		// Custom SVGs
+		$is_custom_svg = strpos($name, 'kb-custom-') === 0;
+		if ( $is_custom_svg && !isset(  self::$all_icons[ $name ] ) ) {
+			$custom_post = get_post( str_replace('kb-custom-', '', $name) );
+
+			if ( ! empty( $custom_post ) && ! is_wp_error( $custom_post ) && 'kadence_custom_svg' === $custom_post->post_type && 'publish' === $custom_post->post_status ) {
+				self::$all_icons[ $name ] = json_decode( $custom_post->post_content, true );
+			}
+		}
+
 		if ( ! empty( self::$all_icons[ $name ] ) ) {
 			$icon = self::$all_icons[ $name ];
 			$vb = ( ! empty( $icon['vB'] ) ? $icon['vB'] : '0 0 24 24' );

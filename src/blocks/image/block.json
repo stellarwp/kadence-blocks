@@ -377,6 +377,10 @@
 		},
 		"sizeSlugTransparent": {
 			"type": "string"
+		},
+		"imagePosition": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"supports": {

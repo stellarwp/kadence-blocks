@@ -98,4 +98,36 @@ export const SPACING_SIZES_MAP = [
 	},
 ];
 
+//Mapping of column amounts and their colLayout values to what each column width should be.
+export const COLUMN_WIDTH_MAP = {
+	1: {
+		equal: [100],
+	},
+	2: {
+		'left-golden': [66.67, 33.33],
+		'right-golden': [33.33, 66.67],
+		equal: [50, 50],
+	},
+	3: {
+		'first-row': [100, 50, 50],
+		'left-half': [50, 25, 25],
+		'right-half': [25, 25, 50],
+		'center-half': [25, 50, 25],
+		'center-wide': [20, 60, 20],
+		'center-exwide': [15, 70, 15],
+		equal: [33.33, 33.33, 33.33],
+	},
+	4: {
+		'left-forty': [40, 20, 20, 20],
+		'right-forty': [20, 20, 20, 40],
+		equal: [25, 25, 25, 25],
+	},
+	5: {
+		equal: [20, 20, 20, 20, 20],
+	},
+	6: {
+		equal: [16.66, 16.66, 16.66, 16.66, 16.66, 16.66],
+	},
+};
+
 export const PADDING_RESIZE_MAP = [0, 8, 16, 24, 32, 48, 64, 80, 104, 128, 160];

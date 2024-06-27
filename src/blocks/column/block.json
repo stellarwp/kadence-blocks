@@ -623,6 +623,10 @@
 		"kadenceFieldConditional": {
 			"type": "object"
 		},
+		"flexGrow": {
+			"type": "array",
+			"default": ["", "", ""]
+		},
 		"kbVersion": {
 			"type": "number",
 			"default": ""
