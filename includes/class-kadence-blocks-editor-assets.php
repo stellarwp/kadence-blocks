@@ -106,6 +106,11 @@ class Editor_Assets {
 		// wp_register_style( 'kadence-extension-block-css', KADENCE_BLOCKS_URL . 'dist/extension/block-css.css', array( 'wp-edit-blocks' ), $kadence_block_css_meta['version'] );
 		wp_set_script_translations( 'kadence-extension-block-css', 'kadence-blocks' );
 
+		// Block CSS Scripts & Styles.
+		$kadence_lazy_render_meta = kadence_blocks_get_asset_file( 'dist/extension-lazy-render' );
+		wp_register_script( 'kadence-extension-lazy-render', KADENCE_BLOCKS_URL . 'dist/extension-lazy-render.js', array_merge( $kadence_lazy_render_meta['dependencies'], array( 'wp-api', 'kadence-blocks-js' ) ), $kadence_lazy_render_meta['version'], true );
+		wp_set_script_translations( 'kadence-extension-lazy-render', 'kadence-blocks' );
+
 		// Plugin Scripts & Styles.
 		$kadence_control_meta = kadence_blocks_get_asset_file( 'dist/plugin-kadence-control' );
 		wp_register_script( 'kadence-blocks-plugin-js', KADENCE_BLOCKS_URL . 'dist/plugin-kadence-control.js', array_merge( $kadence_control_meta['dependencies'], array( 'wp-api', 'kadence-blocks-js' ) ), $kadence_control_meta['version'], true );
@@ -143,7 +148,7 @@ class Editor_Assets {
 			$meta   = kadence_blocks_get_asset_file( sprintf( 'dist/blocks-%s', $block ) );
 			$handle = sprintf( 'kadence-blocks-%s', $block );
 
-			$item = wp_register_script( $handle, sprintf( '%sdist/blocks-%s.js', KADENCE_BLOCKS_URL, $block ), array_merge( $meta['dependencies'], array( 'wp-api', 'kadence-blocks-js', 'kadence-extension-stores', 'kadence-extension-block-css' ) ), $meta['version'], true );
+			$item = wp_register_script( $handle, sprintf( '%sdist/blocks-%s.js', KADENCE_BLOCKS_URL, $block ), array_merge( $meta['dependencies'], array( 'wp-api', 'kadence-blocks-js', 'kadence-extension-stores', 'kadence-extension-block-css', 'kadence-extension-lazy-render' ) ), $meta['version'], true );
 			wp_register_style( $handle, sprintf( '%sdist/blocks-%s.css', KADENCE_BLOCKS_URL, $block ), array( 'wp-edit-blocks', 'kadence-components' ), $meta['version'] );
 			wp_set_script_translations( $handle, 'kadence-blocks' );
 		}
