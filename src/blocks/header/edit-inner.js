@@ -869,6 +869,9 @@ export function EditInner(props) {
 								onUnit={(value) => {
 									setMetaAttribute(value, 'heightUnit');
 								}}
+								reset={() => {
+									setMetaAttribute(['', '', ''], 'height');
+								}}
 								units={['px', 'vh', 'vw']}
 							/>
 							<ResponsiveRangeControls
@@ -912,6 +915,9 @@ export function EditInner(props) {
 								unit={widthUnit ? widthUnit : 'px'}
 								onUnit={(value) => {
 									setMetaAttribute(value, 'widthUnit');
+								}}
+								reset={() => {
+									setMetaAttribute(['', '', ''], 'width');
 								}}
 								units={['px', '%', 'vw']}
 							/>

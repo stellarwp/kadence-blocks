@@ -89,8 +89,8 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_typography( $nav_attributes, 'dropdownTypography' );
 
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' > .navigation > .menu-container > .menu' );
-		$css->render_measure_output( $nav_attributes, 'padding' );
-		$css->render_measure_output( $nav_attributes, 'margin' );
+		$css->render_measure_output( $nav_attributes, 'margin', 'margin', ['unit_key' => 'marginUnit']);
+		$css->render_measure_output( $nav_attributes, 'padding', 'padding', ['unit_key' => 'paddingUnit']);
 
 		return $css->css_output();
 	}

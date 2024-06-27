@@ -70,6 +70,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		foreach ( $sizes as $size ) {
 			$this->sized_dynamic_styles( $css, $nav_link_attributes, $unique_id, $size );
 		}
+		$css->set_media_state( 'desktop' );
 
 		$image_ratio_padding = ! is_numeric( $nav_link_attributes['mediaImage'][0]['height'] )
 			? null
@@ -110,16 +111,14 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			}
 		}
 
-		$css->set_media_state( 'desktop' );
-
 		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container > ul li.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a' );
 		$css->render_typography( $nav_link_attributes );
 		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container > ul li.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a .link-highlight-label' );
 		$css->render_typography( $nav_link_attributes, 'highlightTypography' );
 
 		$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a' );
-		$css->render_measure_output( $nav_link_attributes, 'padding' );
-		$css->render_measure_output( $nav_link_attributes, 'margin', 'margin' );
+		$css->render_measure_output( $nav_link_attributes, 'margin', 'margin', ['unit_key' => 'marginUnit']);
+		$css->render_measure_output( $nav_link_attributes, 'padding', 'padding', ['unit_key' => 'paddingUnit']);
 
 		if ( ! empty( $nav_link_attributes['highlightLabel'] ) || ! empty( $nav_link_attributes['highlightIcon']['icon'] ) ) {
 			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a .link-highlight-label' );

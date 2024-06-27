@@ -77,6 +77,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		foreach ( $sizes as $size ) {
 			$this->sized_dynamic_styles( $css, $header_attributes, $unique_id, $size );
 		}
+		$css->set_media_state( 'desktop' );
 
 		// Normal state styles
 		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' .kb-header-container' );

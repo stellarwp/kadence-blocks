@@ -1165,6 +1165,7 @@ export function EditInner(props) {
 												: 100
 										}
 										step={dropdownWidthUnit === 'em' || dropdownWidthUnit === 'rem' ? 0.1 : 1}
+										reset={() => setMetaAttribute('', 'dropdownWidth')}
 										unit={dropdownWidthUnit}
 										units={['em', 'rem', 'px', 'vw']}
 										onUnit={(value) => setMetaAttribute(value, 'dropdownWidthUnit')}
@@ -1197,6 +1198,7 @@ export function EditInner(props) {
 										? 0.1
 										: 1
 								}
+								reset={() => setMetaAttribute('', 'dropdownVerticalSpacing')}
 								unit={dropdownVerticalSpacingUnit}
 								units={['em', 'rem', 'px', 'vw']}
 								onUnit={(value) => setMetaAttribute(value, 'dropdownVerticalSpacingUnit')}
