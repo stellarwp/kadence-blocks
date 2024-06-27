@@ -11,24 +11,15 @@ import { Spinner } from '@wordpress/components';
  * @returns {object} typography settings.
  */
 const IconRender = (props) => {
-	const [iconOptions, setIconOptions] = useState(undefined);
+	const [iconOptions, setIconOptions] = useState({});
 	const [isLoading, setIsLoading] = useState(false);
 	const [customSvg, setCustomSvg] = useState('');
 
 	useEffect(() => {
-		const icons = { ...kadence_blocks_params_ico.icons, ...kadence_blocks_params_fa.icons };
-		setIconOptions(applyFilters('kadence.icon_options', icons));
+		const icons = applyFilters('kadence.icon_options', { ...kadence_blocks_params_ico.icons, ...kadence_blocks_params_fa.icons } );
+		console.log( 'Icons:', icons );
+		setIconOptions(icons);
 	}, []);
-
-	const updateIcons = () => {
-		const icons = { ...kadence_blocks_params_ico.icons, ...kadence_blocks_params_fa.icons };
-		return applyFilters('kadence.icon_options', icons);
-	};
-
-	let options = iconOptions;
-	if (!options) {
-		options = updateIcons();
-	}
 
 	const { name } = props;
 
@@ -78,7 +69,7 @@ const IconRender = (props) => {
 		return <GenIcon name={name} icon={ customSvg } {...props} />;
 	}
 
-	return <GenIcon name={name} icon={options[name]} {...props} />;
+	return <GenIcon name={name} icon={iconOptions && iconOptions?.[name] ? iconOptions[name] : '' } {...props} />;
 };
 
 const fetchCustomSvg = async ( id ) => {
