@@ -198,6 +198,7 @@ export function Edit(props) {
 											desktopChildren={styleColorControls()}
 											tabletChildren={styleColorControls('Tablet')}
 											mobileChildren={styleColorControls('Mobile')}
+											key={'normalc'}
 										></SmallResponsiveControl>
 										<ResponsiveBorderControl
 											label={__('Border', 'kadence-blocks')}
@@ -218,6 +219,7 @@ export function Edit(props) {
 											desktopChildren={styleColorControls('', 'Hover')}
 											tabletChildren={styleColorControls('Tablet', 'Hover')}
 											mobileChildren={styleColorControls('Mobile', 'Hover')}
+											key={'hoverc'}
 										></SmallResponsiveControl>
 										<ResponsiveBorderControl
 											label={__('Hover Border', 'kadence-blocks')}
