@@ -92,7 +92,7 @@ class IconRender extends Component {
 		if( name.startsWith('kb-custom') && isLoading ) {
 			return <Spinner />;
 		} else if ( name.startsWith('kb-custom') && customSvg !== '' ) {
-			return <GenIcon name={name} icon={ customSvg } {...props} />;
+			return <GenIcon name={name} icon={ customSvg } {...this.props} />;
 		}
 		return <GenIcon name={ name } icon={ iconOptions[ name ] } { ...this.props } />;
 	}
