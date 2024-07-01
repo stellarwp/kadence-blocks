@@ -12,20 +12,6 @@
 			throw new TypeError('Cannot call a class as a function');
 		}
 	}
-	(function () {
-		if (typeof window.CustomEvent === 'function') return false;
-
-		function CustomEvent(event, params) {
-			params = params || { bubbles: false, cancelable: false, detail: undefined };
-			const evt = document.createEvent('CustomEvent');
-			evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
-			return evt;
-		}
-
-		CustomEvent.prototype = window.Event.prototype;
-
-		window.CustomEvent = CustomEvent;
-	})();
 
 	function _defineProperties(target, props) {
 		for (let i = 0; i < props.length; i++) {
@@ -454,10 +440,7 @@
 					value: function _finishInitialization() {
 						this.container.classList.add(this.settings.initializedClass);
 						this._setRole('presentation', this.container);
-						// Create a new event
-						const event = new CustomEvent('initialized');
-						// Dispatch the event
-						this.container.dispatchEvent(event);
+						this.container.dispatchEvent(new Event('initialized'));
 					},
 					/**
 					 *  ADD LISTENERS
@@ -732,9 +715,7 @@
 									panelToOpen.offsetHeight;
 									_header.classList.add(this.settings.activeClass); // 4. Set aria attrs
 									_header.setAttribute('aria-expanded', true); // 5. Resetting toggling so a new event can be fired
-									const resizeEvent = window.document.createEvent('UIEvents');
-									resizeEvent.initUIEvent('resize', true, false, window, 0);
-									window.dispatchEvent(resizeEvent);
+									window.dispatchEvent(new Event('resize'));
 									const _transDuration =
 										1000 * parseFloat(getComputedStyle(panelToOpen).transitionDuration);
 									setTimeout(function () {
