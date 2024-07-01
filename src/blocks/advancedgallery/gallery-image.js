@@ -23,6 +23,7 @@ import {
 	getPreviewSize,
 	getFontSizeOptionOutput,
 } from '@kadence/helpers';
+import { chevronRightSmall, chevronLeftSmall, closeSmall } from '@wordpress/icons';
 
 function GalleryImage(props) {
 	const {
@@ -290,7 +291,7 @@ function GalleryImage(props) {
 							<>
 								<div className="kadence-blocks-library-gallery-item__move-menu">
 									<Button
-										icon="arrow-left"
+										icon={chevronLeftSmall}
 										onClick={isFirstItem ? undefined : onMoveBackward}
 										className="kadence-blocks-gallery-item__move-backward"
 										label={__('Move Image Backward', 'kadence-blocks')}
@@ -298,7 +299,7 @@ function GalleryImage(props) {
 										disabled={!isSelected}
 									/>
 									<Button
-										icon="arrow-right"
+										icon={chevronRightSmall}
 										onClick={isLastItem ? undefined : onMoveForward}
 										className="kadence-blocks-gallery-item__move-forward"
 										label={__('Move Image Forward', 'kadence-blocks')}
@@ -308,7 +309,7 @@ function GalleryImage(props) {
 								</div>
 								<div className="kadence-blocks-library-gallery-item__inline-menu">
 									<Button
-										icon="no-alt"
+										icon={closeSmall}
 										onClick={onRemove}
 										className="kadence-blocks-gallery-item__remove"
 										label={__('Remove Image', 'kadence-blocks')}

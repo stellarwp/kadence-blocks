@@ -101,7 +101,7 @@ import { withSelect, useSelect, useDispatch } from '@wordpress/data';
 import GalleryImage from './gallery-image';
 import { getRelevantMediaFiles } from './shared';
 
-import { image, previous, plusCircleFilled } from '@wordpress/icons';
+import { gallery, previous, plusCircleFilled } from '@wordpress/icons';
 
 /**
  * Import Css
@@ -689,6 +689,7 @@ export default function GalleryEdit(props) {
 		speed: transSpeed,
 		interval: autoSpeed,
 		autoWidth: true,
+		drag: false,
 		pagination: dotStyle === 'none' ? false : true,
 		focus: carouselAlign === false ? 0 : 'center',
 		gap: previewGutter ? previewGutter + previewGutterUnit : '0',
@@ -701,6 +702,7 @@ export default function GalleryEdit(props) {
 		rewind: true,
 		perPage: 1,
 		fade: true,
+		clones: 0,
 		speed: transSpeed,
 		drag: false,
 		interval: autoSpeed,
@@ -749,7 +751,7 @@ export default function GalleryEdit(props) {
 							<ToolbarButton
 								className="components-toolbar__control"
 								label={__('Edit/Add gallery images', 'kadence-blocks')}
-								icon="edit"
+								icon={gallery}
 								onClick={open}
 							/>
 						)}

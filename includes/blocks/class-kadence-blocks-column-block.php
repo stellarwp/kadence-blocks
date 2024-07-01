@@ -97,7 +97,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 		if ( isset( $attributes['flexGrow'][0] ) && $css->is_number( $attributes['flexGrow'][0] ) ) {
-			$css->set_selector( '.kadence-column' . $unique_id );
+			$css->set_selector( '.kadence-column' . $unique_id . ', .wp-block-kadence-column.kb-section-dir-horizontal > .kt-inside-inner-col > .kadence-column' . $unique_id );
 			$css->add_property( 'flex-grow', $attributes['flexGrow'][0] );
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 			$css->add_property( 'height', '100%' );
