@@ -376,7 +376,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			//normal styles
 			$css->set_selector( '.wp-block-kadence-navigation-link' . $unique_id . ' > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container' );
 			$css->add_property( 'background-color', $css->render_color( $media_style_background ) );
-			$css->add_property( 'border-radius', $css->render_size( $media_style_border_radius ) );
+			$css->add_property( 'border-radius', $css->render_size( $media_style_border_radius, 'px' ) );
 			$css->add_property( 'padding', $css->render_measure( $media_style_padding, 'px' ) );
 			if ( $sized_attributes['mediaAlign'] == 'left' ) {
 				$css->add_property( 'order', '-1' );

@@ -768,7 +768,7 @@ export default function BackendStyles(props) {
 			`.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a > .link-drop-title-wrap > .link-media-container`
 		);
 		css.add_property('background-color', css.render_color(previewMediaStyleBackground));
-		css.add_property('border-radius', css.render_size(previewMediaStyleBorderRadius));
+		css.add_property('border-radius', css.render_size(previewMediaStyleBorderRadius, 'px'));
 		css.add_property('padding-top', css.render_size(previewMediaStylePadding[0], 'px'));
 		css.add_property('padding-right', css.render_size(previewMediaStylePadding[1], 'px'));
 		css.add_property('padding-bottom', css.render_size(previewMediaStylePadding[2], 'px'));
