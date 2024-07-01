@@ -1,10 +1,10 @@
-.wp-block[data-align=center] .wp-block-kadence-header-desktop {
+.wp-block[data-align="center"] .wp-block-kadence-header-desktop {
 	margin: 0 auto;
 }
-.wp-block[data-align=left] .wp-block-kadence-header-desktop {
+.wp-block[data-align="left"] .wp-block-kadence-header-desktop {
 	margin-right: auto;
 }
-.wp-block[data-align=right] .wp-block-kadence-header-desktop {
+.wp-block[data-align="right"] .wp-block-kadence-header-desktop {
 	margin-left: auto;
 }
 
@@ -59,6 +59,12 @@
 		position: absolute;
 		height: 100%;
 	}
+
+	//fix for columns in editor setting a base 100% width
+	//only needed during initial selection
+	.wp-block-kadence-column:not(:has(.kb-section-only-appender)) {
+		width: initial;
+	}
 }
 
 /** Onboarding Flow **/
@@ -112,7 +118,7 @@
 		opacity: 0.5;
 		margin: 0;
 		right: 0;
-		bottom: calc( 100% + 5px);
+		bottom: calc(100% + 5px);
 		min-width: 0;
 	}
 	.kt-init-forms-btn-group:not(.style-only) .kt-inital-form-style-btn:first-child:hover {
