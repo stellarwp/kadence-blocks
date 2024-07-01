@@ -125,6 +125,9 @@ export default function BackendStyles(props) {
 		dropdownVerticalSpacingTablet,
 		dropdownVerticalSpacingMobile,
 		dropdownVerticalSpacingUnit,
+		dropdownHorizontalAlignment,
+		dropdownHorizontalAlignmentTablet,
+		dropdownHorizontalAlignmentMobile,
 		dropdownShadow,
 		dropdownBorder,
 		dropdownBorderTablet,
@@ -325,6 +328,12 @@ export default function BackendStyles(props) {
 		undefined !== dropdownBorderRadiusTablet ? dropdownBorderRadiusTablet[3] : '',
 		undefined !== dropdownBorderRadiusMobile ? dropdownBorderRadiusMobile[3] : ''
 	);
+	const previewDropdownHorizontalAlignment = getPreviewSize(
+		previewDevice,
+		dropdownHorizontalAlignment,
+		dropdownHorizontalAlignmentTablet,
+		dropdownHorizontalAlignmentMobile
+	);
 	//need to caclulate this outside of conditionals because it uses a hook underneath.
 	const dividerValue = css.render_border(divider, dividerTablet, dividerMobile, previewDevice, 'bottom');
 	const dropdownDividerValue = css.render_border(
@@ -490,6 +499,16 @@ export default function BackendStyles(props) {
 	if (previewOrientation != 'vertical') {
 		if (dropdownShadow?.[0]?.enable) {
 			css.add_property('box-shadow', css.render_shadow(dropdownShadow[0]));
+		}
+
+		css.set_selector(
+			`.wp-block-kadence-navigation${uniqueID}.wp-block-kadence-navigation .navigation ul.menu li:hover > ul.sub-menu`
+		);
+		if (previewDropdownHorizontalAlignment == 'center') {
+			css.add_property('left', '50%');
+			css.add_property('transform', 'translate(-50%, 0)');
+		} else if (previewDropdownHorizontalAlignment == 'right') {
+			css.add_property('right', '0');
 		}
 	}
 	css.set_selector(

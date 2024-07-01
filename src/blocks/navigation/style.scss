@@ -28,7 +28,7 @@
 @mixin hide-sub-menu {
 	opacity: 0;
 	visibility: hidden;
-	transform: translate3d(0, 0, 0);
+	transform: translate(0, 0);
 	clip: rect(1px, 1px, 1px, 1px);
 	height: 1px;
 	overflow: hidden;
@@ -37,17 +37,17 @@
 @mixin show-sub-menu {
 	opacity: 1;
 	visibility: visible;
-	transform: translate3d(0, 0, 0);
+	transform: translate(0, 0);
 	clip: auto;
 	height: auto;
 	overflow: visible;
 }
 
 @mixin navigation-fade-up-styles {
-	transform: translate3d(0, 10px, 0);
+	transform: translate(0, 10px);
 }
 @mixin navigation-fade-down-styles {
-	transform: translate3d(0, -10px, 0);
+	transform: translate(0, -10px);
 }
 
 @mixin horizontal-navigation-base-styles {
@@ -638,7 +638,7 @@
 		text-decoration: none;
 		color: var(--global-palette4);
 		transition: all 0.2s ease-in-out;
-		transform: translate3d(0, 0, 0);
+		transform: translate(0, 0);
 	}
 	.navigation .menu-item > .link-drop-wrap > a:hover,
 	.navigation .menu-item > .link-drop-wrap > a:focus {

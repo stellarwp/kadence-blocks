@@ -164,7 +164,17 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 			if ( $sized_attributes['dropdownShadow'] && isset( $sized_attributes['dropdownShadow'][0] ) && $sized_attributes['dropdownShadow'][0]['enable'] ) {
 				$css->add_property( 'box-shadow', $css->render_shadow( $sized_attributes['dropdownShadow'][0] ) );
 			}
+
+			$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . '.wp-block-kadence-navigation .navigation ul.menu li:hover > ul.sub-menu' );
+			if ( $sized_attributes['dropdownHorizontalAlignment'] == 'center' ) {
+				$css->add_property( 'left', '50%' );
+				$css->add_property( 'transform', 'translate(-50%, 0)' );
+			} else if ( $sized_attributes['dropdownHorizontalAlignment'] == 'right' ) {
+				$css->add_property( 'right', '0' );
+			}
 		}
+
+
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul li:not(:last-of-type), .wp-block-kadence-navigation' . $unique_id . ' .menu-container ul.menu > li.kadence-menu-mega-enabled > ul > li.menu-item > a' );
 		$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['dropdownDivider'], 'bottom' ) );
 

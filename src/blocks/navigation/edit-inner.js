@@ -235,6 +235,13 @@ export function EditInner(props) {
 		dropdownVerticalSpacingTablet: meta?._kad_navigation_dropdownVerticalSpacingTablet,
 		dropdownVerticalSpacingMobile: meta?._kad_navigation_dropdownVerticalSpacingMobile,
 		dropdownVerticalSpacingUnit: meta?._kad_navigation_dropdownVerticalSpacingUnit,
+		dropdownHorizontalAlignment: meta?._kad_navigation_dropdownHorizontalAlignment,
+		dropdownHorizontalAlignmentTablet: meta?._kad_navigation_dropdownHorizontalAlignmentTablet,
+		dropdownHorizontalAlignmentMobile: meta?._kad_navigation_dropdownHorizontalAlignmentMobile,
+		dropdownHorizontalAlignmentCustom: meta?._kad_navigation_dropdownHorizontalAlignmentCustom,
+		dropdownHorizontalAlignmentCustomTablet: meta?._kad_navigation_dropdownHorizontalAlignmentCustomTablet,
+		dropdownHorizontalAlignmentCustomMobile: meta?._kad_navigation_dropdownHorizontalAlignmentCustomMobile,
+		dropdownHorizontalAlignmentCustomUnit: meta?._kad_navigation_dropdownHorizontalAlignmentCustomUnit,
 		dropdownShadow: meta?._kad_navigation_dropdownShadow,
 		dropdownReveal: meta?._kad_navigation_dropdownReveal,
 		dropdownRevealTablet: meta?._kad_navigation_dropdownRevealTablet,
@@ -382,6 +389,9 @@ export function EditInner(props) {
 		dropdownVerticalSpacingTablet,
 		dropdownVerticalSpacingMobile,
 		dropdownVerticalSpacingUnit,
+		dropdownHorizontalAlignment,
+		dropdownHorizontalAlignmentTablet,
+		dropdownHorizontalAlignmentMobile,
 		dropdownShadow,
 		dropdownReveal,
 		dropdownRevealTablet,
@@ -396,6 +406,12 @@ export function EditInner(props) {
 	} = metaAttributes;
 
 	const previewOrientation = getPreviewSize(previewDevice, orientation, orientationTablet, orientationMobile);
+	const previewDropdownHorizontalAlignment = getPreviewSize(
+		previewDevice,
+		dropdownHorizontalAlignment,
+		dropdownHorizontalAlignmentTablet,
+		dropdownHorizontalAlignmentMobile
+	);
 	const previewStyle = getPreviewSize(previewDevice, style, styleTablet, styleMobile);
 	const previewCollapseSubMenus = getPreviewSize(
 		previewDevice,
@@ -977,7 +993,7 @@ export function EditInner(props) {
 								/>
 							)}
 							<SmallResponsiveControl
-								label={'layout toggles'}
+								label={'layout options'}
 								desktopChildren={generalToggleControls()}
 								tabletChildren={generalToggleControls('Tablet')}
 								mobileChildren={generalToggleControls('Mobile')}
@@ -1174,7 +1190,7 @@ export function EditInner(props) {
 								</>
 							)}
 							<ResponsiveRangeControls
-								label={__('Dropdown Vertical Spacing', 'kadence-blocks')}
+								label={__('Dropdown Item Vertical Spacing', 'kadence-blocks')}
 								value={parseFloat(dropdownVerticalSpacing)}
 								valueTablet={parseFloat(dropdownVerticalSpacingTablet)}
 								valueMobile={parseFloat(dropdownVerticalSpacingMobile)}
@@ -1203,6 +1219,21 @@ export function EditInner(props) {
 								units={['em', 'rem', 'px', 'vw']}
 								onUnit={(value) => setMetaAttribute(value, 'dropdownVerticalSpacingUnit')}
 								showUnit={true}
+							/>
+
+							<ResponsiveSelectControl
+								label={__('Dropdown Horizontal Alignment', 'kadence-blocks')}
+								value={dropdownHorizontalAlignment}
+								tabletValue={dropdownHorizontalAlignmentTablet}
+								mobileValue={dropdownHorizontalAlignmentMobile}
+								options={[
+									{ value: '', label: __('Left') },
+									{ value: 'center', label: __('Center') },
+									{ value: 'right', label: __('Right') },
+								]}
+								onChange={(value) => setMetaAttribute(value, 'dropdownHorizontalAlignment')}
+								onChangeTablet={(value) => setMetaAttribute(value, 'dropdownHorizontalAlignmentTablet')}
+								onChangeMobile={(value) => setMetaAttribute(value, 'dropdownHorizontalAlignmentMobile')}
 							/>
 							<ResponsiveBorderControl
 								label={__('Dropdown Border', 'kadence-blocks')}

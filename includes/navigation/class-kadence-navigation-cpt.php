@@ -1083,6 +1083,21 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'default' => 'em',
 			),
 			array(
+				'key'     => '_kad_navigation_dropdownHorizontalAlignment',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_dropdownHorizontalAlignmentTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_dropdownHorizontalAlignmentMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
 				'key' => '_kad_navigation_dropdownShadow',
 				'type' => 'array',
 				'children_type' => 'object',
