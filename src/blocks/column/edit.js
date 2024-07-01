@@ -1697,8 +1697,8 @@ function SectionEdit(props) {
 											<ResponsiveAlignControls
 												label={__('Vertical Alignment', 'kadence-blocks')}
 												value={verticalAlignment ? verticalAlignment : ''}
-												mobileValue={verticalAlignmentTablet ? verticalAlignmentTablet : ''}
-												tabletValue={verticalAlignmentMobile ? verticalAlignmentMobile : ''}
+												tabletValue={verticalAlignmentTablet ? verticalAlignmentTablet : ''}
+												mobileValue={verticalAlignmentMobile ? verticalAlignmentMobile : ''}
 												onChange={(value) => {
 													let tempValue = value;
 													if ((verticalAlignment ? verticalAlignment : '') === value) {
@@ -1734,8 +1734,8 @@ function SectionEdit(props) {
 											<ResponsiveAlignControls
 												label={__('Vertical Alignment', 'kadence-blocks')}
 												value={verticalAlignment ? verticalAlignment : ''}
-												mobileValue={verticalAlignmentTablet ? verticalAlignmentTablet : ''}
-												tabletValue={verticalAlignmentMobile ? verticalAlignmentMobile : ''}
+												tabletValue={verticalAlignmentTablet ? verticalAlignmentTablet : ''}
+												mobileValue={verticalAlignmentMobile ? verticalAlignmentMobile : ''}
 												onChange={(value) => {
 													let tempValue = value;
 													if ((verticalAlignment ? verticalAlignment : '') === value) {
