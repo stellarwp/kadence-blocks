@@ -1183,7 +1183,7 @@ function SectionEdit(props) {
 		<div {...blockProps}>
 			<style>
 				{'' !== previewFlexGrow
-					? `.kadence-column-${uniqueID} { flex-grow: ${previewFlexGrow} }.kadence-column-${uniqueID} > .kadence-inner-column-inner{height:100%;}`
+					? `.kadence-column-${uniqueID}, .wp-block-kadence-column > .kadence-inner-column-direction-horizontal > .kadence-column-${uniqueID} { flex-grow: ${previewFlexGrow} }.kadence-column-${uniqueID} > .kadence-inner-column-inner{height:100%;}`
 					: ''}
 				{overlayOpacity !== undefined && overlayOpacity !== ''
 					? `.kadence-column-${uniqueID} > .kadence-inner-column-inner:before { opacity: ${overlayOpacity} }`
@@ -1697,8 +1697,8 @@ function SectionEdit(props) {
 											<ResponsiveAlignControls
 												label={__('Vertical Alignment', 'kadence-blocks')}
 												value={verticalAlignment ? verticalAlignment : ''}
-												mobileValue={verticalAlignmentTablet ? verticalAlignmentTablet : ''}
-												tabletValue={verticalAlignmentMobile ? verticalAlignmentMobile : ''}
+												tabletValue={verticalAlignmentTablet ? verticalAlignmentTablet : ''}
+												mobileValue={verticalAlignmentMobile ? verticalAlignmentMobile : ''}
 												onChange={(value) => {
 													let tempValue = value;
 													if ((verticalAlignment ? verticalAlignment : '') === value) {
@@ -1734,8 +1734,8 @@ function SectionEdit(props) {
 											<ResponsiveAlignControls
 												label={__('Vertical Alignment', 'kadence-blocks')}
 												value={verticalAlignment ? verticalAlignment : ''}
-												mobileValue={verticalAlignmentTablet ? verticalAlignmentTablet : ''}
-												tabletValue={verticalAlignmentMobile ? verticalAlignmentMobile : ''}
+												tabletValue={verticalAlignmentTablet ? verticalAlignmentTablet : ''}
+												mobileValue={verticalAlignmentMobile ? verticalAlignmentMobile : ''}
 												onChange={(value) => {
 													let tempValue = value;
 													if ((verticalAlignment ? verticalAlignment : '') === value) {

@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.3
 Tested up to: 6.5
-Stable tag: 3.2.46
+Stable tag: 3.2.48
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -173,6 +173,17 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 3.2.48 =
+Release Date: June 27th 2024
+* Fix: Issue with vertical alignment in tablet for sections.
+* Fix: Issue with css priority of flex in sections.
+
+= 3.2.47 =
+Release Date: June 27th 2024
+* Update: WPML config.
+* Fix: Possible issue with editor react error 311.
+* Fix: Gallery image control buttons.
 
 = 3.2.46 =
 Release Date: June 26th 2024

@@ -97,10 +97,26 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 		if ( isset( $attributes['flexGrow'][0] ) && $css->is_number( $attributes['flexGrow'][0] ) ) {
-			$css->set_selector( '.kadence-column' . $unique_id );
+			$css->set_selector( '.kadence-column' . $unique_id . ', .wp-block-kadence-column.kb-section-dir-horizontal > .kt-inside-inner-col > .kadence-column' . $unique_id );
 			$css->add_property( 'flex-grow', $attributes['flexGrow'][0] );
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 			$css->add_property( 'height', '100%' );
+		}
+		if ( isset( $attributes['flexGrow'][1] ) && $css->is_number( $attributes['flexGrow'][1] ) ) {
+			$css->set_media_state( 'tablet' );
+			$css->set_selector( '.kadence-column' . $unique_id . ', .wp-block-kadence-column.kb-section-dir-horizontal > .kt-inside-inner-col > .kadence-column' . $unique_id );
+			$css->add_property( 'flex-grow', $attributes['flexGrow'][1] );
+			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+			$css->add_property( 'height', '100%' );
+			$css->set_media_state( 'desktop' );
+		}
+		if ( isset( $attributes['flexGrow'][2] ) && $css->is_number( $attributes['flexGrow'][2] ) ) {
+			$css->set_media_state( 'mobile' );
+			$css->set_selector( '.kadence-column' . $unique_id . ', .wp-block-kadence-column.kb-section-dir-horizontal > .kt-inside-inner-col > .kadence-column' . $unique_id );
+			$css->add_property( 'flex-grow', $attributes['flexGrow'][2] );
+			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+			$css->add_property( 'height', '100%' );
+			$css->set_media_state( 'desktop' );
 		}
 		if ( ! empty( $attributes['maxWidth'][0] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id );
@@ -676,6 +692,10 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			if ( ( 'horizontal' === $desktop_direction || 'horizontal-reverse' === $desktop_direction ) ) {
 				$css->add_property( 'flex-wrap', 'nowrap' );
+			}
+			if ( ( 'horizontal' === $desktop_direction || 'horizontal-reverse' === $desktop_direction ) ) {
+				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *' );
+				$css->add_property( 'flex', 'unset' );
 			}
 			if ( ( 'horizontal' === $desktop_direction || 'horizontal-reverse' === $desktop_direction ) && ! empty( $attributes['flexBasis'][0] ) ) {
 				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *' );
