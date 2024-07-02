@@ -1566,14 +1566,14 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			if ( ! empty( $attributes['bottomSep'] ) && 'none' !== $attributes['bottomSep'] ) {
 				$extra_content .= $this->get_divider_render( $attributes['bottomSep'], 'bottom' );
 			}
-			if ( ! empty( $attributes['bgImg'] ) && $attributes['bgImgAttachment'] == 'parallax' ) {
+			if ( ! empty( $attributes['bgImg'] ) && !empty($attributes['bgImgAttachment']) && $attributes['bgImgAttachment'] == 'parallax' ) {
 				if ( ! empty( $attributes['bgImgPosition'] ) ) {
-					$wrapper_args['data-imgposition'] = $attributes['bgImgPosition'];
+					$wrapper_args['data-img-position'] = $attributes['bgImgPosition'];
 				}
 				if ( ! empty( $attributes['bgImgSize'] ) ) {
-					$wrapper_args['data-imgsize'] = $attributes['bgImgSize'];
+					$wrapper_args['data-img-size'] = $attributes['bgImgSize'];
 					if ( $attributes['bgImgSize'] !== 'cover' && ! empty( $attributes['bgImgRepeat'] ) ) {
-						$wrapper_args['data-imgrepeat'] = $attributes['bgImgRepeat'];
+						$wrapper_args['data-img-repeat'] = $attributes['bgImgRepeat'];
 					}
 				}
 			}

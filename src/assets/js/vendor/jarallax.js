@@ -235,9 +235,9 @@
 					  e.image.src &&
 							(o = e.extend(
 								{
-									'background-position': e.$item.dataset['imgposition'] ? e.$item.dataset['imgposition'] : e.options.imgPosition,
-									'background-size': e.$item.dataset['imgsize'] ? e.$item.dataset['imgsize'] : e.options.imgSize,
-									'background-repeat': e.$item.dataset['imgrepeat'] ? e.$item.dataset['imgrepeat'] :  e.options.imgRepeat,
+									'background-position': e.options.imgPosition,
+									'background-size': e.options.imgSize,
+									'background-repeat': e.options.imgRepeat,
 									'background-image': e.image.bgImage || `url("${e.image.src}")`,
 								},
 								t,
