@@ -9,7 +9,6 @@ import { Spinner } from '@wordpress/components';
 import { Fragment, Component, useEffect, useState } from '@wordpress/element';
 
 const fetchCustomSvg = async ( id ) => {
-	console.log( 'Fetching SVG');
 	const response = await fetch(`/wp-json/wp/v2/kadence_custom_svg/${id}`, {
 		method: 'GET'
 	});
