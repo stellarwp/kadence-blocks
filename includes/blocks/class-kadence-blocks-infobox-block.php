@@ -237,6 +237,8 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 			$media_number = array();
 		}
 		if ( isset( $attributes['mediaType'] ) && 'image' === $attributes['mediaType'] ) {
+			$css->set_selector( $base_selector . '.wp-block-kadence-infobox' );
+			$css->add_property( 'max-width', '100%' );
 			if ( isset( $media_image['maxWidth'] ) && ! empty( $media_image['maxWidth'] ) ) {
 				$css->set_selector( $base_selector . ' .kadence-info-box-image-inner-intrisic-container' );
 				$css->add_property( 'max-width', $media_image['maxWidth'] . 'px' );
@@ -275,6 +277,12 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'padding-bottom', $image_ratio_padding );
 			} elseif ( isset( $media_image['height'] ) && is_numeric( $media_image['height'] ) && isset( $media_image['width'] ) && is_numeric( $media_image['width'] ) ) {
 				$css->add_property( 'padding-bottom', round( ( absint( $media_image['height'] ) / absint( $media_image['width'] ) ) * 100, 4 ) . '%' );
+			}
+			if ( isset( $media_image['width'] ) && ! empty( $media_image['width'] ) ) {
+				$css->add_property( 'width', $media_image['width'] . 'px' );
+			}
+			if ( isset( $media_image['height'] ) && ! empty( $media_image['height'] ) ) {
+				$css->add_property( 'height', '0px' );
 			}
 			$css->add_property( 'max-width', '100%' );
 		}
