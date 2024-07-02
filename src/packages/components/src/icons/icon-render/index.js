@@ -45,6 +45,13 @@ class IconRender extends Component {
 		 	this.getCustomSvg( this.props.name.replace('kb-custom-', '') );
 		}
 	}
+
+	componentDidUpdate( prevProps, prevState, snapshot ) {
+		if ( this.props.name !== prevProps.name && this.props.name.startsWith( 'kb-custom' ) ) {
+			this.getCustomSvg( this.props.name.replace( 'kb-custom-', '' ) );
+		}
+	}
+
 	getCustomSvg = async ( id ) => {
 		try {
 			// Check if the SVG is in localStorage
