@@ -237,6 +237,8 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 			$media_number = array();
 		}
 		if ( isset( $attributes['mediaType'] ) && 'image' === $attributes['mediaType'] ) {
+			$css->set_selector( $base_selector . '.wp-block-kadence-infobox' );
+			$css->add_property( 'max-width', '100%' );
 			if ( isset( $media_image['maxWidth'] ) && ! empty( $media_image['maxWidth'] ) ) {
 				$css->set_selector( $base_selector . ' .kadence-info-box-image-inner-intrisic-container' );
 				$css->add_property( 'max-width', $media_image['maxWidth'] . 'px' );
