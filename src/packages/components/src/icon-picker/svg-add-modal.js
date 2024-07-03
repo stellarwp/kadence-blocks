@@ -183,10 +183,6 @@ export default function SvgAddModal( { isOpen, setIsOpen, callback } ) {
 								</Button>
 							</div>
 						)}
-
-						<a href={'https://www.kadencewp.com/help-center/?post_type=docs&p=8510'} target={'_blank'}>
-							{__( 'What SVGs are supported?', 'kadence-blocks' )}
-						</a>
 					</div>
 
 					<div className={'footer'}>
