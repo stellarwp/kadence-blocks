@@ -194,12 +194,10 @@
 			"default": 25
 		},
 		"closeIconSizeTablet": {
-			"type": "number",
-			"default": 0
+			"type": "number"
 		},
 		"closeIconSizeMobile": {
-			"type": "number",
-			"default": 0
+			"type": "number"
 		},
 		"closeIconColor": {
 			"type": "string",
