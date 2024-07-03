@@ -14,6 +14,14 @@ export default function BackendStyles(props) {
 		tabletMargin,
 		mobileMargin,
 		marginUnit,
+		paddingDropdown,
+		tabletPaddingDropdown,
+		mobilePaddingDropdown,
+		paddingDropdownUnit,
+		marginDropdown,
+		tabletMarginDropdown,
+		mobileMarginDropdown,
+		marginDropdownUnit,
 		linkColor,
 		linkColorHover,
 		linkColorActive,
@@ -415,6 +423,8 @@ export default function BackendStyles(props) {
 		dropdownVerticalSpacingTablet,
 		dropdownVerticalSpacingMobile
 	);
+	const previewDropdownWidth = getPreviewSize(previewDevice, dropdownWidth, dropdownWidthTablet, dropdownWidthMobile);
+
 	const previewMediaStyleMargin = getPreviewSize(
 		previewDevice,
 		mediaStyle[0].margin,
@@ -694,6 +704,23 @@ export default function BackendStyles(props) {
 	// Dropdown.
 	css.set_selector(
 		`.wp-block-kadence-navigation .navigation .menu-container ul .wp-block-kadence-navigation-link${uniqueID} ul.sub-menu, .wp-block-kadence-navigation .navigation .menu-container ul .wp-block-kadence-navigation-link${uniqueID} ul.submenu`
+	);
+	css.add_property('width', previewDropdownWidth + dropdownWidthUnit);
+	css.render_measure_output(
+		paddingDropdown,
+		tabletPaddingDropdown,
+		mobilePaddingDropdown,
+		previewDevice,
+		'padding',
+		paddingDropdownUnit
+	);
+	css.render_measure_output(
+		marginDropdown,
+		tabletMarginDropdown,
+		mobileMarginDropdown,
+		previewDevice,
+		'margin',
+		marginDropdownUnit
 	);
 	css.add_property('background', css.render_color(previewBackgroundDropdown));
 

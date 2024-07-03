@@ -1299,8 +1299,8 @@ export function EditInner(props) {
 										? 200
 										: 100
 								}
-								step={paddingUnit === 'em' || marginDropdownUnit === 'rem' ? 0.1 : 1}
-								unit={paddingUnit}
+								step={marginDropdownUnit === 'em' || marginDropdownUnit === 'rem' ? 0.1 : 1}
+								unit={marginDropdownUnit}
 								units={['px', 'em', 'rem', '%']}
 								onUnit={(value) => setMetaAttribute(value, 'marginDropdownUnit')}
 							/>

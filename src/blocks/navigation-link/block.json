@@ -95,6 +95,38 @@
 			"type": "string",
 			"default": "px"
 		},
+		"paddingDropdown": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"tabletPaddingDropdown": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"mobilePaddingDropdown": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"paddingDropdownUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"marginDropdown": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"tabletMarginDropdown": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"mobileMarginDropdown": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"marginDropdownUnit": {
+			"type": "string",
+			"default": "px"
+		},
 		"linkColorDropdown": {
 			"type": "string",
 			"default": ""
@@ -1431,7 +1463,6 @@
 		"reusable": false,
 		"anchor": true,
 		"kbMetadata": true,
-		"ktdynamic": true,
 		"kbContentLabel": "label",
 		"renaming": false,
 		"ktdynamic": true,
