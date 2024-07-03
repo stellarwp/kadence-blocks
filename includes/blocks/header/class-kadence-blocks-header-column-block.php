@@ -96,6 +96,12 @@ class Kadence_Blocks_Header_Column_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		if ( ! empty( $attributes['location'] ) && ! in_array( $attributes['location'], array( 'tablet-left', 'tablet-right', 'center-left', 'center', 'center-right' ) ) ) {
+
+			// If no center content, return empty div to keep layout consistent.
+			if( $attributes['location'] === 'tablet-center' && empty( $content ) ) {
+				return '<div></div>';
+			}
+
 			return $content;
 		}
 
