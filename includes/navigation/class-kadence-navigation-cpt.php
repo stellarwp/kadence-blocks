@@ -203,6 +203,52 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'type'    => 'string',
 			),
 			array(
+				'key'           => '_kad_navigation_paddingDropdown',
+				'default'       => array( '', '', '', '' ),
+				'type'          => 'array',
+				'children_type' => 'string',
+			),
+			array(
+				'key'           => '_kad_navigation_tabletPaddingDropdown',
+				'default'       => array( '', '', '', '' ),
+				'type'          => 'array',
+				'children_type' => 'string',
+			),
+			array(
+				'key'           => '_kad_navigation_mobilePaddingDropdown',
+				'default'       => array( '', '', '', '' ),
+				'type'          => 'array',
+				'children_type' => 'string',
+			),
+			array(
+				'key'     => '_kad_navigation_paddingDropdownUnit',
+				'default' => 'px',
+				'type'    => 'string',
+			),
+			array(
+				'key'           => '_kad_navigation_marginDropdown',
+				'default'       => array( '', '', '', '' ),
+				'type'          => 'array',
+				'children_type' => 'string',
+			),
+			array(
+				'key'           => '_kad_navigation_tabletMarginDropdown',
+				'default'       => array( '', '', '', '' ),
+				'type'          => 'array',
+				'children_type' => 'string',
+			),
+			array(
+				'key'           => '_kad_navigation_mobileMarginDropdown',
+				'default'       => array( '', '', '', '' ),
+				'type'          => 'array',
+				'children_type' => 'string',
+			),
+			array(
+				'key'     => '_kad_navigation_marginDropdownUnit',
+				'default' => 'px',
+				'type'    => 'string',
+			),
+			array(
 				'key'           => '_kad_navigation_border',
 				'default'       => array( '', '', '', '' ),
 				'type'          => 'array',

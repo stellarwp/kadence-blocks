@@ -14,6 +14,14 @@ export default function BackendStyles(props) {
 		tabletMargin,
 		mobileMargin,
 		marginUnit,
+		paddingDropdown,
+		tabletPaddingDropdown,
+		mobilePaddingDropdown,
+		paddingDropdownUnit,
+		marginDropdown,
+		tabletMarginDropdown,
+		mobileMarginDropdown,
+		marginDropdownUnit,
 		orientation,
 		orientationTablet,
 		orientationMobile,
@@ -462,6 +470,22 @@ export default function BackendStyles(props) {
 	// Dropdown.
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul.sub-menu, .wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul.submenu`
+	);
+	css.render_measure_output(
+		paddingDropdown,
+		tabletPaddingDropdown,
+		mobilePaddingDropdown,
+		previewDevice,
+		'padding',
+		paddingDropdownUnit
+	);
+	css.render_measure_output(
+		marginDropdown,
+		tabletMarginDropdown,
+		mobileMarginDropdown,
+		previewDevice,
+		'margin',
+		marginDropdownUnit
 	);
 	css.add_property('background', css.render_color(previewBackgroundDropdown));
 	css.add_property(
