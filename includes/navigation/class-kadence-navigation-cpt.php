@@ -249,28 +249,6 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'type'    => 'string',
 			),
 			array(
-				'key'           => '_kad_navigation_border',
-				'default'       => array( '', '', '', '' ),
-				'type'          => 'array',
-				'children_type' => 'string',
-			),
-			array(
-				'key'           => '_kad_navigation_borderRadius',
-				'default'       => array( '', '', '', '' ),
-				'type'          => 'array',
-				'children_type' => 'string',
-			),
-			array(
-				'key'           => '_kad_navigation_borderColor',
-				'default'       => '',
-				'type'          => 'string',
-			),
-			array(
-				'key'     => '_kad_navigation_borderUnit',
-				'default' => 'px',
-				'type'    => 'string',
-			),
-			array(
 				'key'     => '_kad_navigation_orientation',
 				'type' => 'string',
 				'default' => '',
@@ -1271,6 +1249,366 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'default' => 'px',
 				'type'    => 'string',
 			),
+			array(
+				'key'     => '_kad_navigation_backgroundType',
+				'default' => 'normal',
+				'type'    => 'string',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundTypeHover',
+				'default' => 'normal',
+				'type'    => 'string',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundTypeActive',
+				'default' => 'normal',
+				'type'    => 'string',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundGradient',
+				'default' => '',
+				'type'    => 'string',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundGradientHover',
+				'default' => '',
+				'type'    => 'string',
+			),
+			array(
+				'key'     => '_kad_navigation_backgroundGradientActive',
+				'default' => '',
+				'type'    => 'string',
+			),
+			array(
+				'key' => '_kad_navigation_border',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
+					),
+				),
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
+				),
+			),
+			array(
+				'key' => '_kad_navigation_borderTablet',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
+					),
+				),
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
+				),
+			),
+			array(
+				'key' => '_kad_navigation_borderMobile',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
+					),
+				),
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
+				),
+			),
+			array(
+				'key' => '_kad_navigation_borderHover',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
+					),
+				),
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
+				),
+			),
+			array(
+				'key' => '_kad_navigation_borderHoverTablet',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
+					),
+				),
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
+				),
+			),
+			array(
+				'key' => '_kad_navigation_borderHoverMobile',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
+					),
+				),
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
+				),
+			),
+			array(
+				'key' => '_kad_navigation_borderActive',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
+					),
+				),
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
+				),
+			),
+			array(
+				'key' => '_kad_navigation_borderActiveTablet',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
+					),
+				),
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
+				),
+			),
+			array(
+				'key' => '_kad_navigation_borderActiveMobile',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'top'    => array( '', 'solid', '' ),
+						'right'  => array( '', 'solid', '' ),
+						'bottom' => array( '', 'solid', '' ),
+						'left'   => array( '', 'solid', '' ),
+						'unit'   => 'px',
+					),
+				),
+				'properties' => array(
+					'top'    => array( 'type' => 'array' ),
+					'right'  => array( 'type' => 'array' ),
+					'bottom' => array( 'type' => 'array' ),
+					'left'   => array( 'type' => 'array' ),
+					'unit'   => array( 'type' => 'string' ),
+				),
+			),
+			array(
+				'key'           => '_kad_navigation_borderRadius',
+				'default'       => array( '', '','', '' ),
+				'type'          => 'array',
+			),
+			array(
+				'key'           => '_kad_navigation_borderRadiusTablet',
+				'default'       => array( '', '','', '' ),
+				'type'          => 'array',
+			),
+			array(
+				'key'           => '_kad_navigation_borderRadiusMobile',
+				'default'       => array( '', '','', '' ),
+				'type'          => 'array',
+			),
+			array(
+				'key'           => '_kad_navigation_borderRadiusHover',
+				'default'       => array( '', '','', '' ),
+				'type'          => 'array',
+			),
+			array(
+				'key'           => '_kad_navigation_borderRadiusHoverTablet',
+				'default'       => array( '', '','', '' ),
+				'type'          => 'array',
+			),
+			array(
+				'key'           => '_kad_navigation_borderRadiusHoverMobile',
+				'default'       => array( '', '','', '' ),
+				'type'          => 'array',
+			),
+			array(
+				'key'           => '_kad_navigation_borderRadiusActive',
+				'default'       => array( '', '','', '' ),
+				'type'          => 'array',
+			),
+			array(
+				'key'           => '_kad_navigation_borderRadiusActiveTablet',
+				'default'       => array( '', '','', '' ),
+				'type'          => 'array',
+			),
+			array(
+				'key'           => '_kad_navigation_borderRadiusActiveMobile',
+				'default'       => array( '', '','', '' ),
+				'type'          => 'array',
+			),
+			array(
+				'key'     => '_kad_navigation_borderRadiusUnit',
+				'default' => 'px',
+				'type'    => 'string',
+			),
+			array(
+				'key'     => '_kad_navigation_borderRadiusUnitHover',
+				'default' => 'px',
+				'type'    => 'string',
+			),
+			array(
+				'key'     => '_kad_navigation_borderRadiusUnitActive',
+				'default' => 'px',
+				'type'    => 'string',
+			),
+			array(
+				'key' => '_kad_navigation_shadow',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'enable' => false,
+						'color' => '#000000',
+						'opacity' => 0.2,
+						'spread' => 0,
+						'blur' => 2,
+						'hOffset' => 1,
+						'vOffset' => 1,
+						'inset' => false,
+					),
+				),
+				'properties' => array(
+					'enable'    => array( 'type' => 'boolean' ),
+					'color'    => array( 'type' => 'string' ),
+					'opacity'  => array( 'type' => 'number' ),
+					'spread'  => array( 'type' => 'number' ),
+					'blur'  => array( 'type' => 'number' ),
+					'hOffset'  => array( 'type' => 'number' ),
+					'vOffset'  => array( 'type' => 'number' ),
+					'inset'    => array( 'type' => 'boolean' ),
+				),
+			),
+			array(
+				'key' => '_kad_navigation_shadowHover',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'enable' => false,
+						'color' => '#000000',
+						'opacity' => 0.2,
+						'spread' => 0,
+						'blur' => 2,
+						'hOffset' => 1,
+						'vOffset' => 1,
+						'inset' => false,
+					),
+				),
+				'properties' => array(
+					'enable'    => array( 'type' => 'boolean' ),
+					'color'    => array( 'type' => 'string' ),
+					'opacity'  => array( 'type' => 'number' ),
+					'spread'  => array( 'type' => 'number' ),
+					'blur'  => array( 'type' => 'number' ),
+					'hOffset'  => array( 'type' => 'number' ),
+					'vOffset'  => array( 'type' => 'number' ),
+					'inset'    => array( 'type' => 'boolean' ),
+				),
+			),
+			array(
+				'key' => '_kad_navigation_shadowActive',
+				'type' => 'array',
+				'children_type' => 'object',
+				'default' => array(
+					array(
+						'enable' => false,
+						'color' => '#000000',
+						'opacity' => 0.2,
+						'spread' => 0,
+						'blur' => 2,
+						'hOffset' => 1,
+						'vOffset' => 1,
+						'inset' => false,
+					),
+				),
+				'properties' => array(
+					'enable'    => array( 'type' => 'boolean' ),
+					'color'    => array( 'type' => 'string' ),
+					'opacity'  => array( 'type' => 'number' ),
+					'spread'  => array( 'type' => 'number' ),
+					'blur'  => array( 'type' => 'number' ),
+					'hOffset'  => array( 'type' => 'number' ),
+					'vOffset'  => array( 'type' => 'number' ),
+					'inset'    => array( 'type' => 'boolean' ),
+				),
+			),
 		);
 
 		foreach ( $register_meta as $meta ) {
@@ -1282,7 +1620,7 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 					'schema' => array(
 						'type'  => $meta['type'],
 						'items' => array(
-							'type' => $meta['children_type']
+							'type' => isset($meta['children_type']) ? $meta['children_type'] : ''
 						),
 					),
 				);

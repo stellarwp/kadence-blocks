@@ -4,7 +4,10 @@
 import './editor.scss';
 
 export { default as PopColorControl } from './pop-color-control';
+export { default as ResponsivePopColorControl } from './responsive-pop-color-control';
 export { default as SinglePopColorControl } from './single-pop-color-control';
+export { default as ColorControlWithStates } from './color-control-with-states';
+export { default as ResponsiveButtonStyleControlsWithStates } from './responsive-button-style-controls-with-states';
 export { default as ColorIcons } from './color-icons';
 export { default as ColorPicker } from './color-picker';
 export { default as ColorFields } from './color-fields';

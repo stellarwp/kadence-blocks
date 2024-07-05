@@ -427,7 +427,8 @@ export default class KadenceBlocksCSS {
 		property = 'padding',
 		unit = 'px',
 		args = {},
-		nohook = false
+		nohook = false,
+		checkZero = false
 	) {
 		const previewValue = getPreviewSize(previewDevice, value, tabletValue, mobileValue, nohook);
 
@@ -476,28 +477,29 @@ export default class KadenceBlocksCSS {
 		args = { ...defaults, ...args };
 
 		if (previewValue && Array.isArray(previewValue)) {
-			if (this.isNumeric(previewValue[0])) {
+			const zeroCheck = !checkZero || previewValue[0] != '0' || previewValue[0] != 0;
+			if (this.isNumeric(previewValue[0]) && zeroCheck) {
 				this.add_property(args['first_prop'], previewValue[0] + unit);
 			} else if ('position' === property && !this.empty(previewValue[0])) {
 				this.add_property(args['first_prop'], previewValue[0]);
 			} else if (!this.empty(previewValue[0]) && this.is_variable_value(previewValue[0])) {
 				this.add_property(args['first_prop'], this.get_variable_value(previewValue[0]));
 			}
-			if (this.isNumeric(previewValue[1])) {
+			if (this.isNumeric(previewValue[1]) && zeroCheck) {
 				this.add_property(args['second_prop'], previewValue[1] + unit);
 			} else if ('position' === property && !this.empty(previewValue[1])) {
 				this.add_property(args['second_prop'], previewValue[1]);
 			} else if (!this.empty(previewValue[1]) && this.is_variable_value(previewValue[1])) {
 				this.add_property(args['second_prop'], this.get_variable_value(previewValue[1]));
 			}
-			if (this.isNumeric(previewValue[2])) {
+			if (this.isNumeric(previewValue[2]) && zeroCheck) {
 				this.add_property(args['third_prop'], previewValue[2] + unit);
 			} else if ('position' === property && !this.empty(previewValue[2])) {
 				this.add_property(args['third_prop'], previewValue[2]);
 			} else if (!this.empty(previewValue[2]) && this.is_variable_value(previewValue[2])) {
 				this.add_property(args['third_prop'], this.get_variable_value(previewValue[2]));
 			}
-			if (this.isNumeric(previewValue[3])) {
+			if (this.isNumeric(previewValue[3]) && zeroCheck) {
 				this.add_property(args['fourth_prop'], previewValue[3] + unit);
 			} else if ('position' === property && !this.empty(previewValue[3])) {
 				this.add_property(args['fourth_prop'], previewValue[3]);
@@ -623,6 +625,7 @@ export default class KadenceBlocksCSS {
 				this.add_property('border-right', previewBorderRightValue);
 				this.add_property('border-bottom', previewBorderBottomValue);
 				this.add_property('border-left', previewBorderLeftValue);
+				console.log(1, borderRadiusValue);
 				this.render_measure_output(
 					borderRadiusValue,
 					borderRadiusTabletValue,

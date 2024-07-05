@@ -299,6 +299,10 @@
 			"type": "string",
 			"default": ""
 		},
+		"backgroundType": {
+			"type": "string",
+			"default": "normal"
+		},
 		"backgroundGradient": {
 			"type": "string",
 			"default": ""
@@ -318,10 +322,6 @@
 		"backgroundGradientActive": {
 			"type": "string",
 			"default": ""
-		},
-		"backgroundType": {
-			"type": "string",
-			"default": "normal"
 		},
 		"background": {
 			"type": "string",

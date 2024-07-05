@@ -33,6 +33,7 @@ import {
 	ResponsiveMeasurementControls,
 	SelectPostFromPostType,
 	CopyPasteAttributes,
+	ResponsiveButtonStyleControlsWithStates,
 } from '@kadence/components';
 import { getPreviewSize, mouseOverVisualizer, showSettings } from '@kadence/helpers';
 
@@ -118,10 +119,6 @@ export function EditInner(props) {
 		tabletMarginDropdown: meta?._kad_navigation_tabletMarginDropdown,
 		mobileMarginDropdown: meta?._kad_navigation_mobileMarginDropdown,
 		marginDropdownUnit: meta?._kad_navigation_marginDropdownUnit,
-		border: meta?._kad_navigation_border,
-		borderRadius: meta?._kad_navigation_borderRadius,
-		borderColor: meta?._kad_navigation_borderColor,
-		borderUnit: meta?._kad_navigation_borderUnit,
 		className: meta?._kad_navigation_className,
 		anchor: meta?._kad_navigation_anchor,
 		orientation: meta?._kad_navigation_orientation,
@@ -261,6 +258,36 @@ export function EditInner(props) {
 		dropdownBorderRadiusTablet: meta?._kad_navigation_dropdownBorderRadiusTablet,
 		dropdownBorderRadiusMobile: meta?._kad_navigation_dropdownBorderRadiusMobile,
 		dropdownBorderRadiusUnit: meta?._kad_navigation_dropdownBorderRadiusUnit,
+		backgroundType: meta?._kad_navigation_backgroundType,
+		backgroundTypeHover: meta?._kad_navigation_backgroundTypeHover,
+		backgroundTypeActive: meta?._kad_navigation_backgroundTypeActive,
+		backgroundGradient: meta?._kad_navigation_backgroundGradient,
+		backgroundGradientHover: meta?._kad_navigation_backgroundGradientHover,
+		backgroundGradientActive: meta?._kad_navigation_backgroundGradientActive,
+		border: meta?._kad_navigation_border,
+		borderTablet: meta?._kad_navigation_borderTablet,
+		borderMobile: meta?._kad_navigation_borderMobile,
+		borderHover: meta?._kad_navigation_borderHover,
+		borderHoverTablet: meta?._kad_navigation_borderHoverTablet,
+		borderHoverMobile: meta?._kad_navigation_borderHoverMobile,
+		borderActive: meta?._kad_navigation_borderActive,
+		borderActiveTablet: meta?._kad_navigation_borderActiveTablet,
+		borderActiveMobile: meta?._kad_navigation_borderActiveMobile,
+		borderRadius: meta?._kad_navigation_borderRadius,
+		borderRadiusTablet: meta?._kad_navigation_borderRadiusTablet,
+		borderRadiusMobile: meta?._kad_navigation_borderRadiusMobile,
+		borderRadiusHover: meta?._kad_navigation_borderRadiusHover,
+		borderRadiusHoverTablet: meta?._kad_navigation_borderRadiusHoverTablet,
+		borderRadiusHoverMobile: meta?._kad_navigation_borderRadiusHoverMobile,
+		borderRadiusActive: meta?._kad_navigation_borderRadiusActive,
+		borderRadiusActiveTablet: meta?._kad_navigation_borderRadiusActiveTablet,
+		borderRadiusActiveMobile: meta?._kad_navigation_borderRadiusActiveMobile,
+		borderUnit: meta?._kad_navigation_borderUnit,
+		borderUnitHover: meta?._kad_navigation_borderUnitHover,
+		borderUnitActive: meta?._kad_navigation_borderUnitActive,
+		shadow: meta?._kad_navigation_shadow,
+		shadowHover: meta?._kad_navigation_shadowHover,
+		shadowActive: meta?._kad_navigation_shadowActive,
 	};
 
 	const {
@@ -1038,12 +1065,24 @@ export function EditInner(props) {
 								onChangeTablet={(value) => setMetaAttribute(value, 'styleTablet')}
 								onChangeMobile={(value) => setMetaAttribute(value, 'styleMobile')}
 							/>
-							<SmallResponsiveControl
-								label={'Colors'}
-								desktopChildren={styleColorControls()}
-								tabletChildren={styleColorControls('Tablet')}
-								mobileChildren={styleColorControls('Mobile')}
-							></SmallResponsiveControl>
+						</KadencePanelBody>
+						<KadencePanelBody
+							title={__('Nav Item Styles', 'kadence-blocks')}
+							initialOpen={false}
+							panelName={'kb-navigation-nav-item-styles'}
+						>
+							<ResponsiveButtonStyleControlsWithStates
+								colorBase={'linkColor'}
+								backgroundBase={'background'}
+								backgroundTypeBase={'backgroundType'}
+								backgroundGradientBase={'backgroundGradient'}
+								borderBase={'border'}
+								borderRadiusBase={'borderRadius'}
+								borderRadiusUnitBase={'borderRadiusUnit'}
+								shadowBase={'shadow'}
+								setMetaAttribute={setMetaAttribute}
+								attributes={metaAttributes}
+							/>
 						</KadencePanelBody>
 						{context?.['kadence/headerIsTransparent'] == '1' && (
 							<KadencePanelBody
