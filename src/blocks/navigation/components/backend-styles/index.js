@@ -407,28 +407,41 @@ export default function BackendStyles(props) {
 		`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap > a, .wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap`
 	);
 	css.add_property('color', css.render_color(previewLinkColor));
-	css.add_property('background', css.render_color(previewBackground));
 	if (context?.['kadence/headerIsTransparent'] == '1') {
 		css.add_property('color', css.render_color(previewLinkColorTransparent));
-		css.add_property('background', css.render_color(previewBackgroundTransparent));
 	}
 	if (context?.['kadence/headerIsSticky'] == '1') {
 		css.add_property('color', css.render_color(previewLinkColorSticky));
+	}
+	css.set_selector(`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap`);
+	css.add_property('background', css.render_color(previewBackground));
+	if (context?.['kadence/headerIsTransparent'] == '1') {
+		css.add_property('background', css.render_color(previewBackgroundTransparent));
+	}
+	if (context?.['kadence/headerIsSticky'] == '1') {
 		css.add_property('background', css.render_color(previewBackgroundSticky));
 	}
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap:hover > a, .wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap:hover`
 	);
 	css.add_property('color', css.render_color(previewLinkColorHover));
-	css.add_property('background', css.render_color(previewBackgroundHover));
 	if (context?.['kadence/headerIsTransparent'] == '1') {
 		css.add_property('color', css.render_color(previewLinkColorTransparentHover));
-		css.add_property('background', css.render_color(previewBackgroundTransparentHover));
 	}
 	if (context?.['kadence/headerIsSticky'] == '1') {
 		css.add_property('color', css.render_color(previewLinkColorStickyHover));
+	}
+	css.set_selector(
+		`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap:hover`
+	);
+	css.add_property('background', css.render_color(previewBackgroundHover));
+	if (context?.['kadence/headerIsTransparent'] == '1') {
+		css.add_property('background', css.render_color(previewBackgroundTransparentHover));
+	}
+	if (context?.['kadence/headerIsSticky'] == '1') {
 		css.add_property('background', css.render_color(previewBackgroundStickyHover));
 	}
+
 	if (previewParentActive) {
 		css.set_selector(
 			`.wp-block-kadence-navigation${uniqueID} .navigation[class*="navigation-style-underline"] .menu-container.menu-container>ul>li.current-menu-ancestor>a:after`
@@ -447,13 +460,28 @@ export default function BackendStyles(props) {
 		);
 	}
 	css.add_property('color', css.render_color(previewLinkColorActive));
-	css.add_property('background', css.render_color(previewBackgroundActive));
 	if (context?.['kadence/headerIsTransparent'] == '1') {
 		css.add_property('color', css.render_color(previewLinkColorTransparentActive));
-		css.add_property('background', css.render_color(previewBackgroundTransparentActive));
 	}
 	if (context?.['kadence/headerIsSticky'] == '1') {
 		css.add_property('color', css.render_color(previewLinkColorStickyActive));
+	}
+
+	if (previewParentActive) {
+		css.set_selector(
+			`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-item > .link-drop-wrap,
+			.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-ancestor > .link-drop-wrap`
+		);
+	} else {
+		css.set_selector(
+			`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-item > .link-drop-wrap`
+		);
+	}
+	css.add_property('background', css.render_color(previewBackgroundActive));
+	if (context?.['kadence/headerIsTransparent'] == '1') {
+		css.add_property('background', css.render_color(previewBackgroundTransparentActive));
+	}
+	if (context?.['kadence/headerIsSticky'] == '1') {
 		css.add_property('background', css.render_color(previewBackgroundStickyActive));
 	}
 
