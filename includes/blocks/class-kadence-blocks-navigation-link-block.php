@@ -559,6 +559,8 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$has_image = $nav_link_attributes['mediaType'] == 'image' && ! empty( $nav_link_attributes['mediaImage'][0]['url'] );
 
 		$mega_menu_width_class = 'kadence-menu-mega-width-' . ( $nav_link_attributes['megaMenuWidth'] ? $nav_link_attributes['megaMenuWidth'] : 'container' );
+		$mega_menu_width_class_tablet = 'kadence-menu-mega-width-tablet-' . ( $nav_link_attributes['megaMenuWidthTablet'] ? $nav_link_attributes['megaMenuWidthTablet'] : 'container' );
+		$mega_menu_width_class_mobile = 'kadence-menu-mega-width-mobile-' . ( $nav_link_attributes['megaMenuWidthMobile'] ? $nav_link_attributes['megaMenuWidthMobile'] : 'container' );
 
 		$wrapper_classes = array();
 		$wrapper_classes[] = 'wp-block-kadence-navigation-link' . $unique_id;
@@ -569,6 +571,8 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 		$wrapper_classes[] = $is_mega_menu ? 'kadence-menu-mega-enabled' : '';
 		$wrapper_classes[] = $is_mega_menu ? $mega_menu_width_class : '';
+		$wrapper_classes[] = $is_mega_menu ? $mega_menu_width_class_tablet : '';
+		$wrapper_classes[] = $is_mega_menu ? $mega_menu_width_class_mobile : '';
 		$wrapper_classes[] = ! empty( $nav_link_attributes['description'] ) ? 'kadence-menu-has-description' : '';
 		$wrapper_classes[] = $has_icon ? 'kadence-menu-has-icon' : '';
 		$wrapper_classes[] = $has_image ? 'kadence-menu-has-image' : '';

@@ -864,15 +864,27 @@
 		 * Setup the Fullwith Menu.
 		 */
 		runSubMenuFullSize() {
-			var contentSubmenus = document.querySelectorAll(
-				'.wp-block-kadence-navigation .kadence-menu-mega-width-full > ul.sub-menu'
-			);
+			var contentSubmenus = null;
+			if (window.innerWidth > 1024) {
+				contentSubmenus = document.querySelectorAll(
+					'.wp-block-kadence-navigation .kadence-menu-mega-width-full > ul.sub-menu'
+				);
+			} else if (window.innerWidth > 768) {
+				contentSubmenus = document.querySelectorAll(
+					'.wp-block-kadence-navigation .kadence-menu-mega-width-tablet-full > ul.sub-menu'
+				);
+			} else {
+				contentSubmenus = document.querySelectorAll(
+					'.wp-block-kadence-navigation .kadence-menu-mega-width-mobile-full > ul.sub-menu'
+				);
+			}
 			for (let i = 0; i < contentSubmenus.length; i++) {
 				var parentMenuItem = contentSubmenus[i].parentNode;
 				contentSubmenus[i].style.left = '';
 				contentSubmenus[i].style.width = window.innerWidth + 'px';
 				contentSubmenus[i].style.left =
 					-1 * Math.abs(parentMenuItem.getBoundingClientRect().left).toString() + 'px';
+				contentSubmenus[i].style.transform = 'initial';
 			}
 		},
 		/**
