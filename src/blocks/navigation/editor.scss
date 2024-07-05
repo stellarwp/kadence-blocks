@@ -115,7 +115,7 @@ $anchor: #5000b9;
 @mixin hide-sub-menu {
 	opacity: 0;
 	visibility: hidden;
-	transform: translate3d(0, 0, 0);
+	transform: translate(0, 0);
 	clip: rect(1px, 1px, 1px, 1px);
 	height: 1px;
 	overflow: hidden;
@@ -124,17 +124,17 @@ $anchor: #5000b9;
 @mixin show-sub-menu {
 	opacity: 1;
 	visibility: visible;
-	transform: translate3d(0, 0, 0);
+	transform: translate(0, 0);
 	clip: auto;
 	height: auto;
 	overflow: visible;
 }
 
 @mixin navigation-fade-up-styles {
-	transform: translate3d(0, 10px, 0);
+	transform: translate(0, 10px);
 }
 @mixin navigation-fade-down-styles {
-	transform: translate3d(0, -10px, 0);
+	transform: translate(0, -10px);
 }
 
 @mixin horizontal-navigation-base-styles {
@@ -149,7 +149,8 @@ $anchor: #5000b9;
 		width: initial;
 
 		//third level nav
-		ul.submenu {
+		ul.submenu,
+		ul.sub-menu {
 			top: 0;
 			left: 100%;
 			right: auto;
@@ -671,7 +672,7 @@ $anchor: #5000b9;
 		text-decoration: none;
 		color: var(--global-palette4);
 		transition: all 0.2s ease-in-out;
-		transform: translate3d(0, 0, 0);
+		transform: translate(0, 0);
 	}
 	.navigation li.menu-item > .link-drop-wrap > a:hover,
 	.navigation li.menu-item > .link-drop-wrap > a:focus {
