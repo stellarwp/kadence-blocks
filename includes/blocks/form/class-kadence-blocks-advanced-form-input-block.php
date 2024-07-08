@@ -208,7 +208,7 @@ class Kadence_Blocks_Advanced_Form_Input_Block extends Kadence_Blocks_Abstract_B
 
 		if ( ! empty( $attributes['ariaDescription'] ) || ! empty( $attributes['helpText'] ) ) {
 			$form_id = ! empty( $attributes['formID'] ) ? $attributes['formID'] : '';
-			return ' aria-describedby="#aria-describe' . esc_attr( $form_id ) . esc_attr( $attributes['uniqueID'] ) . '"';
+			return ' aria-describedby="aria-describe' . esc_attr( $form_id ) . esc_attr( $attributes['uniqueID'] ) . '"';
 		}
 
 		return '';
