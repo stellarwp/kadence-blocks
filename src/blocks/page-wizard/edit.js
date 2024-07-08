@@ -48,25 +48,39 @@ import {
 	TextareaControl,
 	Dropdown,
 	Modal,
+	Spinner,
 	Button,
 	SelectControl,
 	ToggleControl,
 	ToolbarGroup,
 } from '@wordpress/components';
 import { KadencePageWizardAiProvider } from './context-provider';
+import { AboutYourPage } from './pages';
+import { KadencePageAiWizard } from './wizard';
 import { useDatabase } from './database';
+import { KadenceK } from './components/icons';
+const pages = [
+	{
+		id: 'about-your-site',
+		content: <AboutYourPage />,
+		step: 'page-info',
+		required: ['pageTitle', 'pageDescription'],
+	},
+];
 
 function KadencePageWizard(props) {
-	const { attributes, className, setAttributes, clientId, onDelete, isSelected, name, context } = props;
-
-	const [open, setOpen] = useState(false);
+	const { attributes, className, setAttributes, clientId, onDelete, isSelected, importContent, name, context } =
+		props;
 	const [wizardData, setWizardData] = useState({});
+	const [isLoading, setIsLoading] = useState(true);
+	const [isImporting, setIsImporting] = useState(false);
 	const { getAiWizardData } = useDatabase();
 	async function getPreviousData() {
 		const response = SafeParseJSON(await getAiWizardData());
 		wizardData.wizardData = response;
 		console.log('wizardData', wizardData);
 		setWizardData(wizardData);
+		setIsLoading(false);
 	}
 
 	useEffect(() => {
@@ -77,26 +91,35 @@ function KadencePageWizard(props) {
 	const blockProps = useBlockProps({
 		className,
 	});
+	async function processImportContent(blockCode) {
+		const response = await processPattern(blockCode, imageCollection);
+		if (response === 'failed') {
+			console.log('Import Process Failed when processing data through rest api.');
+		} else {
+			importContent(response, clientId);
+			setIsImporting(false);
+		}
+	}
+	async function onClose() {
+		onDelete();
+	}
+	if (isLoading) {
+		return (
+			<div {...blockProps}>
+				<Spinner></Spinner>
+			</div>
+		);
+	}
 	return (
 		<div {...blockProps}>
 			<KadencePageWizardAiProvider value={wizardData}>
-				<Button className="kb-wizard-launch" onClick={() => setOpen(true)}>
-					{__('AI Page Wizard', 'kadence-blocks')}
-				</Button>
-				{open && (
-					<Modal
-						className="kb-wizard-modal"
-						title={__('AI Page Wizard', 'kadence-blocks')}
-						onRequestClose={(event) => {
-							// No action on blur event (prevents AI modal from closing when Media Library modal opens).
-							if (event?.type && event.type === 'blur') {
-								return;
-							}
-
-							setOpen(false);
-						}}
-					></Modal>
-				)}
+				<KadencePageAiWizard
+					logo={<KadenceK />}
+					pages={pages}
+					onClose={onClose}
+					onPrimaryClick={processImportContent}
+					primaryButtonText={__('Import Content', 'kadence-blocks')}
+				/>
 			</KadencePageWizardAiProvider>
 		</div>
 	);
@@ -107,6 +130,18 @@ const KadencePageWizardWrapper = withDispatch((dispatch, ownProps, registry) => 
 		const { clientId } = ownProps;
 		const { removeBlock } = dispatch(blockEditorStore);
 		removeBlock(clientId, true);
+	},
+	importContent(blockcode) {
+		const { clientId } = ownProps;
+		const { replaceBlocks } = dispatch(blockEditorStore);
+		replaceBlocks(
+			clientId,
+			rawHandler({
+				HTML: blockcode,
+				mode: 'BLOCKS',
+				canUserUseUnfilteredHTML,
+			})
+		);
 	},
 }))(KadencePageWizard);
 const KadencePageWizardEdit = (props) => {

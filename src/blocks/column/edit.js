@@ -1051,7 +1051,8 @@ function SectionEdit(props) {
 		wrapContent && '' !== wrapContent[1] ? wrapContent[1] : '',
 		wrapContent && '' !== wrapContent[2] ? wrapContent[2] : ''
 	);
-	const backgroundString = background ? KadenceColorOutput(background, backgroundOpacity) : undefined;
+	const backgroundString =
+		backgroundType !== 'gradient' && background ? KadenceColorOutput(background, backgroundOpacity) : undefined;
 	const previewFlexBasis = getPreviewSize(
 		previewDevice,
 		(previewDirection === 'horizontal' || previewDirection === 'horizontal-reverse') &&
