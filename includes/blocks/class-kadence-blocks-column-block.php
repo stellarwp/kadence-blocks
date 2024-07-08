@@ -729,6 +729,9 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 					case 'bottom':
 						$align = 'flex-end';
 						break;
+					case 'stretch':
+						$align = 'stretch';
+						break;
 					default:
 						$align = 'center';
 						break;
@@ -843,6 +846,9 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 						break;
 					case 'bottom':
 						$align = 'flex-end';
+						break;
+					case 'stretch':
+						$align = 'stretch';
 						break;
 					default:
 						$align = 'center';
