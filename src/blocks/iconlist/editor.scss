@@ -92,10 +92,10 @@
 .kt-svg-icon-list-columns-3 .block-editor-block-list__layout {
 	grid-template-columns: repeat(3, minmax(0, 1fr));
 }
-.kt-list-icon-aligntop .kt-svg-icon-list-item-wrap {
+.kt-list-icon-aligntop .kt-svg-icon-list-item-wrap .kb-icon-list-tooltip-wrap {
 	align-items: flex-start;
 }
-.kt-list-icon-alignbottom .kt-svg-icon-list-item-wrap {
+.kt-list-icon-alignbottom .kt-svg-icon-list-item-wrap .kb-icon-list-tooltip-wrap {
 	align-items: flex-end;
 }
 
