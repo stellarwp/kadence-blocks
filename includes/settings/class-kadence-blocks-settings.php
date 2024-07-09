@@ -1265,6 +1265,7 @@ class Kadence_Blocks_Settings {
 								echo '<form action="options.php" method="post">';
 									settings_fields( 'kadence_blocks_font_settings' );
 									do_settings_sections( 'kt_blocks_fonts_section' );
+									submit_button( __( 'Save Changes', 'kadence-blocks' ) );
 								echo '</form>';
 								?>
 							</div>
