@@ -1558,7 +1558,7 @@ function KadenceInfoBox(props) {
 			{previewMaxWidth
 				? `.kadence-inner-column-direction-horizontal > .kb-info-box-wrap${uniqueID} {max-width:${
 						previewMaxWidth + previewMaxWidthUnit
-				  };}
+				  } !important;}
 				  .kadence-inner-column-direction-horizontal > .kb-info-box-wrap${uniqueID} > .kt-blocks-info-box-link-wrap {max-width:none !important;}`
 				: ''}
 			{fullHeight
