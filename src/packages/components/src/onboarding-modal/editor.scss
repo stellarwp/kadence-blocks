@@ -13,6 +13,11 @@
 		img {
 			width: 40px;
 		}
+
+		.close {
+			padding: 10px;
+			cursor: pointer;
+		}
 	}
 
 	.body {
@@ -35,6 +40,7 @@
 
 		.step-indicator {
 			display: flex;
+			cursor: default;
 
 			.step {
 				margin-right: 20px;

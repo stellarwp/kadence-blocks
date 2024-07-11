@@ -43,7 +43,9 @@ const OnboardingModal = ({ steps, isOpen, onRequestClose, onSubmit }) => {
 		<Modal className={'kadence-onboarding-modal'} __experimentalHideHeader={true} size={'fill'} onRequestClose={onRequestClose}>
 			<div className={'header'}>
 				<img src={kadence_blocks_params.kadenceBlocksUrl + '/includes/settings/img/kadence-logo.png'} alt={'Kadence Blocks'} />
-				<Dashicon icon="no-alt" />
+				<div className={'close'} onClick={onRequestClose}>
+					<Dashicon icon="no-alt" />
+				</div>
 			</div>
 			<div className={'body'}>
 				<div>
