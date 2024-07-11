@@ -1520,6 +1520,7 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'key'           => '_kad_navigation_borderRadiusActiveMobile',
 				'default'       => array( '', '','', '' ),
 				'type'          => 'array',
+				'children_type' => 'string',
 			),
 			array(
 				'key'     => '_kad_navigation_borderRadiusUnit',
