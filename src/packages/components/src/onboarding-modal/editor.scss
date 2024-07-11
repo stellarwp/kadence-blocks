@@ -1,0 +1,67 @@
+.kadence-onboarding-modal {
+
+	.components-modal__content {
+		padding: 0;
+	}
+
+	.header {
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 25px;
+		padding: 20px;
+
+		img {
+			width: 40px;
+		}
+	}
+
+	.body {
+		display: flex;
+		justify-content: center;
+		padding: 30px;
+	}
+
+	.footer {
+		position: fixed;
+		bottom: 0;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		height: 70px;
+		border-top: 1px solid #d9d9d9;
+		width: 100%;
+		padding: 0 35px;
+		font-weight: bold;
+
+		.step-indicator {
+			display: flex;
+
+			.step {
+				margin-right: 20px;
+				color: #757575;
+
+				.number {
+					display: inline-flex;
+					background-color: #757575;
+					color: #fff;
+					border-radius: 50%;
+					line-height: 10px;
+					width: 20px;
+					height: 20px;
+					padding: 5px 5px 0px 6px;
+					margin-right: 5px;
+					font-weight: 400;
+				}
+
+				&.active {
+					color: #0073e6;
+
+					.number {
+						background-color: #0073e6;
+						color: #FFF;
+					}
+				}
+			}
+		}
+	}
+}

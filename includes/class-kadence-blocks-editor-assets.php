@@ -376,6 +376,7 @@ class Editor_Assets {
 				'hasKadenceCaptcha' => ( is_plugin_active( 'kadence-recaptcha/kadence-recaptcha.php' ) ? true : false ),
 				'adminUrl' => get_admin_url(),
 				'aiLang' => ( ! empty( $prophecy_data['lang'] ) ? $prophecy_data['lang'] : '' ),
+				'kadenceBlocksUrl' => KADENCE_BLOCKS_URL,
 			)
 		);
 		wp_localize_script(

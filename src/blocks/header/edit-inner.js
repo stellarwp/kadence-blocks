@@ -50,6 +50,7 @@ import {
 	BoxShadowControl,
 	SelectPostFromPostType,
 	CopyPasteAttributes,
+	OnboardingModal,
 } from '@kadence/components';
 import { getPreviewSize, mouseOverVisualizer, arrayStringToInt, useElementWidth } from '@kadence/helpers';
 
@@ -86,6 +87,22 @@ export function EditInner(props) {
 	const componentRef = useRef();
 
 	const [activeTab, setActiveTab] = useState('general');
+	const [isOnboarindOpen, setIsOnboardingOpen] = useState(true);
+
+	const handleSubmit = (formData) => {
+		console.log('handleSubmit formdata');
+		console.log(formData);
+	};
+
+	const StepOne = () => {
+		return <>Hello World!</>;
+	};
+
+	const steps = [
+		{ key: 'step-one', name: 'Step One', component: StepOne },
+		{ key: 'step-two', name: 'Step Two', component: StepOne },
+		{ key: 'step-three', name: 'Step Three', component: StepOne },
+	];
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
@@ -1552,6 +1569,12 @@ export function EditInner(props) {
 					help={__('Separate multiple classes with spaces.')}
 				/>
 			</InspectorAdvancedControls>
+			<OnboardingModal
+				steps={steps}
+				isOpen={isOnboarindOpen}
+				onRequestClose={() => setIsOnboardingOpen(false)}
+				onSubmit={handleSubmit}
+			/>
 			<BlockContextProvider
 				value={{
 					'kadence/headerPostId': id,

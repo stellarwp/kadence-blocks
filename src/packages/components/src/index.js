@@ -117,3 +117,5 @@ export { default as ObfuscateTextControl } from './obfuscate-text-control';
 
 export { default as PostSelectorCheckbox } from './post-selector-checkbox';
 export { default as ColumnDragResizer } from './column-drag-resizer';
+
+export { default as OnboardingModal } from './onboarding-modal';
