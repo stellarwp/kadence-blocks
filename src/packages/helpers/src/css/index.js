@@ -625,7 +625,6 @@ export default class KadenceBlocksCSS {
 				this.add_property('border-right', previewBorderRightValue);
 				this.add_property('border-bottom', previewBorderBottomValue);
 				this.add_property('border-left', previewBorderLeftValue);
-				console.log(1, borderRadiusValue);
 				this.render_measure_output(
 					borderRadiusValue,
 					borderRadiusTabletValue,

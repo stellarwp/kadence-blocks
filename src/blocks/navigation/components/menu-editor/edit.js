@@ -4,7 +4,7 @@ import { useSelect } from '@wordpress/data';
 import { get, debounce } from 'lodash';
 import { __ } from '@wordpress/i18n';
 import { PREVENT_BLOCK_DELETE } from './constants';
-import { ellipsis, edit, trash } from '@wordpress/icons';
+import { moreHorizontal, edit, trash } from '@wordpress/icons';
 
 import { DndContext } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -84,7 +84,7 @@ function BlockItem({ thisBlock, activeBlock, toggleCollapse, collapsed }) {
 				<Icon className={'block-icon'} icon={blockMeta?.icon?.src} />
 				<span className={'block-label'}>{labelOrTitle}</span>
 				<DropdownMenu
-					icon={ellipsis}
+					icon={moreHorizontal}
 					label={__('Options', 'kadence-blocks')}
 					controls={[
 						{

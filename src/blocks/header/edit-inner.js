@@ -53,7 +53,7 @@ import {
 } from '@kadence/components';
 import { getPreviewSize, mouseOverVisualizer, arrayStringToInt, useElementWidth } from '@kadence/helpers';
 
-import { BackendStyles, Onboard } from './components';
+import { BackendStyles, Onboard, PopoverTutorial } from './components';
 import { HEADER_ALLOWED_BLOCKS, HEADER_INNERBLOCK_DEFAULTS } from './constants';
 import { buildTemplateFromSelection } from './helpers';
 
@@ -70,7 +70,7 @@ import metadata from './block.json';
 const ANCHOR_REGEX = /[\s#]/g;
 
 export function EditInner(props) {
-	const { attributes, setAttributes, clientId, context, direct, id, isSelected } = props;
+	const { attributes, setAttributes, clientId, context, direct, id, isSelected, headerRef } = props;
 	const { setHeaderVisualBuilderOpenId } = useDispatch('kadenceblocks/data');
 
 	const { previewDevice, showVisualBuilder } = useSelect(
@@ -1578,6 +1578,7 @@ export function EditInner(props) {
 			{/*	forceShow={ marginMouseOver.isMouseOver }*/}
 			{/*	spacing={ [ getSpacingOptionOutput( previewMarginTop, marginUnit ), getSpacingOptionOutput( previewMarginRight, marginUnit ), getSpacingOptionOutput( previewMarginBottom, marginUnit ), getSpacingOptionOutput( previewMarginLeft, marginUnit ) ] }*/}
 			{/*/>*/}
+			<PopoverTutorial {...props} />
 		</>
 	);
 }

@@ -39,6 +39,7 @@ export function Edit(props) {
 	const { id, uniqueID } = attributes;
 
 	const [meta, setMeta] = useHeaderProp('meta', id);
+	const [headerRef, setHeaderRef] = useState();
 
 	const metaAttributes = {
 		isSticky: meta?._kad_header_isSticky,
@@ -162,7 +163,7 @@ export function Edit(props) {
 
 	let mainBlockContent = (
 		<>
-			<div {...blockProps}>
+			<div {...blockProps} ref={setHeaderRef}>
 				{/* No form selected or selected form was deleted from the site, display chooser */}
 				{(id === 0 || (undefined === postExists && !isLoading)) && (
 					<Chooser
@@ -233,7 +234,7 @@ export function Edit(props) {
 				{/* Form selected and loaded, display it */}
 				{id > 0 && !isEmpty(post) && post.status !== 'trash' && (
 					<EntityProvider kind="postType" type="kadence_header" id={id}>
-						<EditInner {...props} direct={false} id={id} />
+						<EditInner {...props} direct={false} id={id} headerRef={headerRef} />
 					</EntityProvider>
 				)}
 			</div>

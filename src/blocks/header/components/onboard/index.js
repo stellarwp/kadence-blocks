@@ -7,7 +7,7 @@ import { useState } from '@wordpress/element';
 import { headerBlockIcon } from '@kadence/icons';
 import { applyFilters } from '@wordpress/hooks';
 import { map } from 'lodash';
-import { OFF_CANVAS_OPTIONS, DETAIL_OPTIONS, FORM_STEPS, START_OPTIONS } from './constants';
+import { OFF_CANVAS_OPTIONS, DETAIL_OPTIONS, FORM_STEPS, START_OPTIONS } from '../constants';
 
 export default function HeaderOnboard({ isAdding, existingTitle, onAdd }) {
 	const [tmpTitle, setTmpTitle] = useState(existingTitle);
