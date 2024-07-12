@@ -527,6 +527,8 @@ export function EditInner(props) {
 
 	let [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_navigation', id);
 
+	//if this nav block is getting created through the header onboarding
+	//then we need to auto create some basic block structure
 	const applyTemplateKeyBlocks = (templateKey) => {
 		if (templateKey == 'long-vertical') {
 			setNavPlaceholderBlocks([
@@ -593,6 +595,14 @@ export function EditInner(props) {
 			}
 		}
 	}, []);
+
+	//if this was a templated placeholder nav
+	//on it's first selection, replace it with the nav onboarding
+	useEffect(() => {
+		if (isSelected && templateKey) {
+			setAttributes({ templateKey: '', id: 0 });
+		}
+	}, [isSelected]);
 
 	if (blocks.length === 0) {
 		blocks = navPlaceholderBlocks;

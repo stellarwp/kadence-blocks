@@ -172,6 +172,8 @@ export function Edit(props) {
 		}
 	};
 
+	//if this is a templated navigation (usually coming from header onboarding)
+	//then it should get premade with some templated content based on templateKey
 	useEffect(() => {
 		if (!id && templateKey) {
 			makeNavigationPost();
@@ -214,6 +216,16 @@ export function Edit(props) {
 								}}
 								value={id}
 							/>
+
+							<Button
+								isLink={true}
+								onClick={() => {
+									setAttributes({ id: 0 });
+								}}
+								style={{ marginBottom: '10px' }}
+							>
+								{__('Create a New Navigation', 'kadence-blocks')}
+							</Button>
 						</KadencePanelBody>
 					</InspectorControls>
 				</>
@@ -242,6 +254,16 @@ export function Edit(props) {
 								}}
 								value={id}
 							/>
+
+							<Button
+								isLink={true}
+								onClick={() => {
+									setAttributes({ id: 0 });
+								}}
+								style={{ marginBottom: '10px' }}
+							>
+								{__('Create a New Navigation', 'kadence-blocks')}
+							</Button>
 						</KadencePanelBody>
 					</InspectorControls>
 				</>
