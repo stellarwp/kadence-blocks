@@ -55,9 +55,14 @@
 		margin-bottom: 0;
 	}
 
-	.height-ref {
+	//just a div that the same size as the header for ref purposes
+	.placeholder-ref {
 		position: absolute;
 		height: 100%;
+		width: 100%;
+		top: 0;
+		pointer-events: none;
+		z-index: -1;
 	}
 
 	//fix for columns in editor setting a base 100% width

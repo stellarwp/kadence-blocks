@@ -83,7 +83,7 @@ export function EditInner(props) {
 		[clientId]
 	);
 
-	const componentRef = useRef();
+	const [componentRef, setComponentRef] = useState();
 
 	const [activeTab, setActiveTab] = useState('general');
 
@@ -674,6 +674,16 @@ export function EditInner(props) {
 							}}
 							value={id}
 						/>
+
+						<Button
+							isLink={true}
+							onClick={() => {
+								setAttributes({ id: 0 });
+							}}
+							style={{ marginBottom: '10px' }}
+						>
+							{__('Create a New Header', 'kadence-blocks-pro')}
+						</Button>
 					</KadencePanelBody>
 				</InspectorControls>
 			</>
@@ -1561,7 +1571,7 @@ export function EditInner(props) {
 			>
 				<Fragment {...innerBlocksProps} />
 			</BlockContextProvider>
-			<span className="height-ref" ref={componentRef} />
+			<span className="placeholder-ref" ref={setComponentRef} />
 			{/*<SpacingVisualizer*/}
 			{/*	style={ {*/}
 			{/*		marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),*/}
@@ -1578,7 +1588,7 @@ export function EditInner(props) {
 			{/*	forceShow={ marginMouseOver.isMouseOver }*/}
 			{/*	spacing={ [ getSpacingOptionOutput( previewMarginTop, marginUnit ), getSpacingOptionOutput( previewMarginRight, marginUnit ), getSpacingOptionOutput( previewMarginBottom, marginUnit ), getSpacingOptionOutput( previewMarginLeft, marginUnit ) ] }*/}
 			{/*/>*/}
-			<PopoverTutorial {...props} />
+			<PopoverTutorial {...props} headerRef={componentRef} />
 		</>
 	);
 }
