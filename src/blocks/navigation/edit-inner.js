@@ -541,12 +541,9 @@ export function EditInner(props) {
 					createBlock('kadence/navigation-link', { label: 'shop', url: '#' }),
 				]),
 			]);
-			//don't know why this call would be too early, but giving some time seems to help these meta attributes apply
-			setTimeout(() => {
-				setMetaAttribute('vertical', 'orientation');
-				setMetaAttribute('vertical', 'orientationTablet');
-				setMetaAttribute('vertical', 'orientationMobile');
-			}, 100);
+			setMetaAttribute('vertical', 'orientationMobile');
+			setMetaAttribute('vertical', 'orientationTablet');
+			setMetaAttribute('vertical', 'orientation');
 		} else if (templateKey == 'long') {
 			setNavPlaceholderBlocks([
 				createBlock('kadence/navigation', {}, [
@@ -566,12 +563,9 @@ export function EditInner(props) {
 					createBlock('kadence/navigation-link', { label: 'contact', url: '#' }),
 				]),
 			]);
-			//don't know why this call would be too early, but giving some time seems to help these meta attributes apply
-			setTimeout(() => {
-				setMetaAttribute('vertical', 'orientation');
-				setMetaAttribute('vertical', 'orientationTablet');
-				setMetaAttribute('vertical', 'orientationMobile');
-			}, 100);
+			setMetaAttribute('vertical', 'orientationMobile');
+			setMetaAttribute('vertical', 'orientationTablet');
+			setMetaAttribute('vertical', 'orientation');
 		} else {
 			setNavPlaceholderBlocks([
 				createBlock('kadence/navigation', {}, [

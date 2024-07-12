@@ -36,6 +36,13 @@ class Kadence_Blocks_Navigation_CPT_Rest_Controller extends WP_REST_Posts_Contro
 		unset( $_REQUEST['content'], $_REQUEST['excerpt'] );
 		$post = get_default_post_to_edit( $this->post_type, true );
 
+		// $update_post = array(
+		// 	'post_type' => 'kadence_navigation',
+		// 	'ID' => $post->ID,
+		// 	'post_status' => 'draft'
+		// );
+		// $statusTest = wp_update_post($update_post);
+
 		$request->set_param( 'context', 'edit' );
 
 		return $this->prepare_item_for_response( $post, $request );
