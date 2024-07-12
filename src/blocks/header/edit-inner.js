@@ -682,7 +682,7 @@ export function EditInner(props) {
 							}}
 							style={{ marginBottom: '10px' }}
 						>
-							{__('Create a New Header', 'kadence-blocks-pro')}
+							{__('Create a New Header', 'kadence-blocks')}
 						</Button>
 					</KadencePanelBody>
 				</InspectorControls>
@@ -728,15 +728,27 @@ export function EditInner(props) {
 							title={__('Selected Header', 'kadence-blocks')}
 						>
 							{!direct && (
-								<SelectPostFromPostType
-									postType="kadence_header"
-									label={__('Selected Header', 'kadence-blocks')}
-									hideLabelFromVision={true}
-									onChange={(nextId) => {
-										setAttributes({ id: parseInt(nextId) });
-									}}
-									value={id}
-								/>
+								<>
+									<SelectPostFromPostType
+										postType="kadence_header"
+										label={__('Selected Header', 'kadence-blocks')}
+										hideLabelFromVision={true}
+										onChange={(nextId) => {
+											setAttributes({ id: parseInt(nextId) });
+										}}
+										value={id}
+									/>
+
+									<Button
+										isLink={true}
+										onClick={() => {
+											setAttributes({ id: 0 });
+										}}
+										style={{ marginBottom: '10px' }}
+									>
+										{__('Create a New Header', 'kadence-blocks')}
+									</Button>
+								</>
 							)}
 						</KadencePanelBody>
 						<KadencePanelBody

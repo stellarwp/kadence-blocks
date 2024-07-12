@@ -180,7 +180,7 @@ export function Edit(props) {
 
 	return (
 		<div {...blockProps}>
-			{/* No form selected or selected form was deleted from the site, display chooser */}
+			{/* No navigation selected or selected navigation was deleted from the site, display chooser */}
 			{(id === 0 || (undefined === postExists && !isLoading)) && (
 				<Chooser
 					id={id}
@@ -190,7 +190,7 @@ export function Edit(props) {
 				/>
 			)}
 
-			{/* Form selected but not loaded yet, show spinner */}
+			{/* Navigation selected but not loaded yet, show spinner */}
 			{id > 0 && isEmpty(post) && undefined === postExists && isLoading && (
 				<>
 					<Placeholder
@@ -218,7 +218,7 @@ export function Edit(props) {
 					</InspectorControls>
 				</>
 			)}
-			{/* Form selected is in the trash */}
+			{/* Navigation selected is in the trash */}
 			{id > 0 && !isEmpty(post) && post.status === 'trash' && (
 				<>
 					<Placeholder
@@ -247,7 +247,7 @@ export function Edit(props) {
 				</>
 			)}
 
-			{/* Form selected and loaded, display it */}
+			{/* Navigation selected and loaded, display it */}
 			{((id > 0 && templateKey) || (id > 0 && !isEmpty(post) && post.status !== 'trash')) && (
 				<EntityProvider kind="postType" type="kadence_navigation" id={id}>
 					<EditInner {...props} direct={false} id={id} />

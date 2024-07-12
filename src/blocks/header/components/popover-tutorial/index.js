@@ -65,9 +65,8 @@ export default function HeaderOnboard(props) {
 					</div>
 				</Popover>
 			);
-		} else {
-			return <></>;
 		}
+		return <></>;
 	};
 
 	return (

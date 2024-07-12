@@ -163,7 +163,7 @@ export function Edit(props) {
 	let mainBlockContent = (
 		<>
 			<div {...blockProps}>
-				{/* No form selected or selected form was deleted from the site, display chooser */}
+				{/* No headerselected or selected header was deleted from the site, display chooser */}
 				{(id === 0 || (undefined === postExists && !isLoading)) && (
 					<Chooser
 						id={id}
@@ -173,7 +173,7 @@ export function Edit(props) {
 					/>
 				)}
 
-				{/* Form selected but not loaded yet, show spinner */}
+				{/* header selected but not loaded yet, show spinner */}
 				{id > 0 && isEmpty(post) && undefined === postExists && isLoading && (
 					<>
 						<Placeholder
@@ -186,11 +186,11 @@ export function Edit(props) {
 						<InspectorControls>
 							<KadencePanelBody
 								panelName={'kb-advanced-form-selected-switch'}
-								title={__('Selected Form', 'kadence-blocks')}
+								title={__('Selected Header', 'kadence-blocks')}
 							>
 								<SelectPostFromPostType
 									postType="kadence_header"
-									label={__('Selected Form', 'kadence-blocks')}
+									label={__('Selected Header', 'kadence-blocks')}
 									hideLabelFromVision={true}
 									onChange={(nextId) => {
 										setAttributes({ id: parseInt(nextId) });
@@ -201,7 +201,7 @@ export function Edit(props) {
 						</InspectorControls>
 					</>
 				)}
-				{/* Form selected is in the trash */}
+				{/* Header selected is in the trash */}
 				{id > 0 && !isEmpty(post) && post.status === 'trash' && (
 					<>
 						<Placeholder
@@ -214,11 +214,11 @@ export function Edit(props) {
 						<InspectorControls>
 							<KadencePanelBody
 								panelName={'kb-advanced-form-selected-switch'}
-								title={__('Selected Form', 'kadence-blocks')}
+								title={__('Selected Header', 'kadence-blocks')}
 							>
 								<SelectPostFromPostType
 									postType="kadence_header"
-									label={__('Selected Form', 'kadence-blocks')}
+									label={__('Selected Header', 'kadence-blocks')}
 									hideLabelFromVision={true}
 									onChange={(nextId) => {
 										setAttributes({ id: parseInt(nextId) });
@@ -230,7 +230,7 @@ export function Edit(props) {
 					</>
 				)}
 
-				{/* Form selected and loaded, display it */}
+				{/* Header selected and loaded, display it */}
 				{id > 0 && !isEmpty(post) && post.status !== 'trash' && (
 					<EntityProvider kind="postType" type="kadence_header" id={id}>
 						<EditInner {...props} direct={false} id={id} />
