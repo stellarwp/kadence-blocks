@@ -92,6 +92,8 @@ export function EditInner(props) {
 
 	const [meta, setMeta] = useHeaderProp('meta');
 
+	const justCompletedOnboarding = true;
+
 	const metaAttributes = {
 		padding: meta?._kad_header_padding,
 		tabletPadding: meta?._kad_header_tabletPadding,
@@ -1600,7 +1602,7 @@ export function EditInner(props) {
 			{/*	forceShow={ marginMouseOver.isMouseOver }*/}
 			{/*	spacing={ [ getSpacingOptionOutput( previewMarginTop, marginUnit ), getSpacingOptionOutput( previewMarginRight, marginUnit ), getSpacingOptionOutput( previewMarginBottom, marginUnit ), getSpacingOptionOutput( previewMarginLeft, marginUnit ) ] }*/}
 			{/*/>*/}
-			<PopoverTutorial {...props} headerRef={componentRef} />
+			{justCompletedOnboarding && <PopoverTutorial {...props} headerRef={componentRef} />}
 		</>
 	);
 }

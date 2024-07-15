@@ -1028,6 +1028,17 @@ class Kadence_Blocks_Settings {
 				'default'           => '',
 			)
 		);
+		register_setting(
+			'kadence_blocks_header_popover_tutorial_complete',
+			'kadence_blocks_header_popover_tutorial_complete',
+			array(
+				'type'              => 'boolean',
+				'description'       => __( 'Mark the Header popover tutorial Complete', 'kadence-blocks' ),
+				'sanitize_callback' => 'rest_sanitize_boolean',
+				'show_in_rest'      => true,
+				'default'           => false,
+			)
+		);
 	}
 	/**
 	 * Register settings

@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Button, Popover } from '@wordpress/components';
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { POPOVER_TUTORIAL_OPTIONS, POPOVER_TUTORIAL_OPTIONS_CONTENT } from '../constants';
 import './editor.scss';
 
@@ -13,12 +13,36 @@ export default function HeaderOnboard(props) {
 	// Use internal state instead of a ref to make sure that the component
 	// re-renders when the popover's anchor updates.
 	const [onboardingFinished, setOnboardingFinished] = useState(true);
-	const [isPopoverTutorialActive, setIsPopoverTutorialActive] = useState(false);
 	const [popoverTutorialStep, setPopoverTutorialStep] = useState(0);
+	const [popoverTutorialComplete, setPopoverTutorialComplete] = useState(true);
 
 	const hasCompletedPopoverTutorial = false;
 	const key = 'basic';
 	const popoverTutorialOptions = POPOVER_TUTORIAL_OPTIONS?.[key];
+
+	useEffect(() => {
+		const settingModel = new wp.api.models.Settings();
+		settingModel.fetch().then((response) => {
+			if (response) {
+				const setting = response?.kadence_blocks_header_popover_tutorial_complete;
+				setPopoverTutorialComplete(setting !== undefined ? setting : false);
+			}
+		});
+	}, []);
+
+	const savePopoverTutorialComplete = (status) => {
+		setPopoverTutorialComplete(true);
+		const settingModel2 = new wp.api.models.Settings({
+			kadence_blocks_header_popover_tutorial_complete: status,
+		});
+		settingModel.save();
+		// settingModel2.save().then((response) => {
+		// 	console.log(3, response);
+		// 	createSuccessNotice(__('Totorial completed', 'kadence-blocks'), {
+		// 		type: 'snackbar',
+		// 	});
+		// });
+	};
 
 	const popoverStepContent = () => {
 		if (popoverTutorialOptions) {
@@ -50,7 +74,7 @@ export default function HeaderOnboard(props) {
 								variant="primary"
 								onClick={() => {
 									if (popoverTutorialStep + 1 == popoverTutorialOptions.length) {
-										setIsPopoverTutorialActive(false);
+										savePopoverTutorialComplete(true);
 									} else {
 										setPopoverTutorialStep(popoverTutorialStep + 1);
 									}
@@ -71,12 +95,12 @@ export default function HeaderOnboard(props) {
 
 	return (
 		<>
-			{/* {!isPopoverTutorialActive && (
-				<Button variant="secondary" onClick={() => setIsPopoverTutorialActive(true)}>
+			{/* {popoverTutorialComplete && (
+				<Button variant="secondary" onClick={() => setPopoverTutorialComplete(false)}>
 					Start popover tutorial
 				</Button>
 			)} */}
-			{isPopoverTutorialActive && <>{popoverStepContent()}</>}
+			{!popoverTutorialComplete && <>{popoverStepContent()}</>}
 		</>
 	);
 }
