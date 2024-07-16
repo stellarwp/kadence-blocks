@@ -227,7 +227,7 @@ function FieldSelect({ attributes, setAttributes, isSelected, clientId, context,
 													icon="arrow-up"
 													onClick={n === 0 ? undefined : onOptionMoveUp(n)}
 													className="kadence-blocks-list-item__move-up"
-													label={__('Move Item Up')}
+													label={__('Move Item Up', 'kadence-blocks')}
 													aria-disabled={n === 0}
 													disabled={n === 0}
 												/>
@@ -235,7 +235,7 @@ function FieldSelect({ attributes, setAttributes, isSelected, clientId, context,
 													icon="arrow-down"
 													onClick={n + 1 === options.length ? undefined : onOptionMoveDown(n)}
 													className="kadence-blocks-list-item__move-down"
-													label={__('Move Item Down')}
+													label={__('Move Item Down', 'kadence-blocks')}
 													aria-disabled={n + 1 === options.length}
 													disabled={n + 1 === options.length}
 												/>
@@ -243,7 +243,7 @@ function FieldSelect({ attributes, setAttributes, isSelected, clientId, context,
 													icon="no-alt"
 													onClick={() => removeOptionItem(n)}
 													className="kadence-blocks-list-item__remove"
-													label={__('Remove Item')}
+													label={__('Remove Item', 'kadence-blocks')}
 													disabled={1 === options.length}
 												/>
 											</div>
