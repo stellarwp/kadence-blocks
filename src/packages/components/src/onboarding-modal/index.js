@@ -1,18 +1,16 @@
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import {
 	Button,
 	Modal,
 	Dashicon
 } from '@wordpress/components';
-import { useDispatch } from '@wordpress/data';
-import { store as noticesStore } from '@wordpress/notices';
 
 import './editor.scss';
 
 const OnboardingModal = ({ steps, isOpen, onRequestClose, onSubmit }) => {
 	const [currentStep, setCurrentStep] = useState(0);
-	const [formData, setFormData] = useState({});
+	const [formData, setFormData] = useState({ meta: { isValid: true }});
 
 	const handleNextStep = () => {
 		if (currentStep < steps.length - 1) {
@@ -26,36 +24,46 @@ const OnboardingModal = ({ steps, isOpen, onRequestClose, onSubmit }) => {
 		}
 	};
 
-	const handleChange = (stepName, data) => {
-		setFormData((prevData) => ({ ...prevData, [stepName]: data }));
+	const handleChange = (data) => {
+		setFormData((prevData) => ({ ...prevData, ...data }));
 	};
 
 	const handleFinish = () => {
+		delete formData.meta;
 		onSubmit(formData);
 		onRequestClose();
 	};
+
+	useEffect(() => {
+		if( Number.isInteger(formData.meta.exitAndCalbackStep ) && formData.meta.exitAndCalbackStep === currentStep ) {
+			handleFinish();
+		}
+	}, [formData, currentStep]);
 
 	if( !isOpen ) {
 		return;
 	}
 
 	return (
-		<Modal className={'kadence-onboarding-modal'} __experimentalHideHeader={true} size={'fill'} onRequestClose={onRequestClose}>
+		<Modal
+			className={'kadence-onboarding-modal'}
+			isDismissible={false}
+			__experimentalHideHeader={true}
+			size={'fill'}
+			onRequestClose={onRequestClose}
+		>
 			<div className={'header'}>
 				<img src={kadence_blocks_params.kadenceBlocksUrl + '/includes/settings/img/kadence-logo.png'} alt={'Kadence Blocks'} />
 				<div className={'close'} onClick={onRequestClose}>
 					<Dashicon icon="no-alt" />
 				</div>
 			</div>
+				{/*{JSON.stringify(formData)}<br/>*/}
 			<div className={'body'}>
-				<div>
-				<h2>{steps[ currentStep ].name}</h2>
-
 				{React.createElement( steps[ currentStep ].component, {
-					data    : formData[ steps[ currentStep ].name ],
-					onChange: ( data ) => handleChange( steps[ currentStep ].name, data ),
+					data    : formData,
+					onChange: ( data ) => handleChange( data ),
 				} )}
-				</div>
 			</div>
 			<div className={'footer'}>
 				<div className={'back'}>
@@ -63,17 +71,25 @@ const OnboardingModal = ({ steps, isOpen, onRequestClose, onSubmit }) => {
 				</div>
 
 				<div className={'step-indicator'}>
-					{steps.map( ( step, index ) => (
-						<div key={index} className={`step ${index === currentStep ? 'active' : ''}`}>
-							<div className={'number'}>{index + 1}</div>
-							{__( step.name, 'kadence-blocks' )}
-						</div>
-					) )}
+					{steps[ currentStep ]?.hideSteps ? null : (
+						steps.map( ( step, index ) => {
+							if ( !step?.hideSteps ) {
+								return (
+									<div key={index} className={`step ${index === currentStep ? 'active' : ''}`}>
+										<div className={'number'}>{step.visualNumber}</div>
+										{__( step.name, 'kadence-blocks' )}
+									</div>
+								);
+							}
+							return null;
+						} )
+					)}
 				</div>
+
 
 				<div className={'next'}>
 					{currentStep < steps.length - 1 ? (
-						<Button isPrimary={true} onClick={handleNextStep}>{__( 'Next', 'kadence-blocks' )}</Button>
+						<Button isPrimary={true} disabled={ !formData.meta.isValid } onClick={handleNextStep}>{ formData.meta?.nextText ? formData.meta.nextText : __( 'Next', 'kadence-blocks' )}</Button>
 					) : (
 						<Button isPrimary={true} onClick={handleFinish}>{__( 'Finish', 'kadence-blocks' )}</Button>
 					)}

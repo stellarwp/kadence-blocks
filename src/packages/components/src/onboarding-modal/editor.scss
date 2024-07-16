@@ -7,7 +7,6 @@
 	.header {
 		display: flex;
 		justify-content: space-between;
-		margin-bottom: 25px;
 		padding: 20px;
 
 		img {
@@ -23,7 +22,90 @@
 	.body {
 		display: flex;
 		justify-content: center;
-		padding: 30px;
+		padding: 0 30px 30px 30px;
+
+		.width-m {
+			max-width: 600px;
+			width: 100%;
+		}
+
+		.width-l {
+			max-width: 850px;
+			width: 100%;
+		}
+
+		input[type=text], input[type=textarea] {
+
+		}
+
+		.type-selection {
+			display: flex;
+			border-bottom: 1px solid #d9d9d9;
+
+			.is-pressed {
+				border-bottom: 1px solid #000 !important;
+				background: #FFF;
+				color: #000;
+				font-weight: bold;
+			}
+		}
+
+		.options {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			margin-top: 20px;
+			text-align: center;
+			//overflow-y: scroll;
+
+			&.options-mobile .option:not(.blank) {
+				width: 48%;
+			}
+
+			.blank {
+				padding: 20px;
+				border: 2px dashed #d9d9d9;
+				border-radius: 5px;
+
+				.components-button:focus {
+					outline: none;
+					box-shadow: none;
+				}
+
+				&:hover {
+					border: 2px dashed #0073e6;
+				}
+
+				&.is-selected {
+					border: 2px dashed #0073e6;
+				}
+			}
+
+			.option {
+				width: 100%;
+				margin-bottom: 25px;
+			}
+
+			.option-mobile {
+				width: 48%;
+				margin-bottom: 20px;
+			}
+
+			.option-image {
+				margin-bottom: 10px;
+				border: 2px solid #d9d9d9;
+				border-radius: 5px;
+				cursor: pointer;
+
+				&:hover {
+					border: 2px solid #0073e6;
+				}
+
+				&.is-selected {
+					border: 2px solid #0073e6;
+				}
+			}
+		}
 	}
 
 	.footer {
@@ -37,6 +119,11 @@
 		width: 100%;
 		padding: 0 35px;
 		font-weight: bold;
+		background: #FFF;
+
+		.next .is-primary {
+			background-color: #0073e6;
+		}
 
 		.step-indicator {
 			display: flex;
@@ -44,11 +131,11 @@
 
 			.step {
 				margin-right: 20px;
-				color: #757575;
+				color: #000;
 
 				.number {
 					display: inline-flex;
-					background-color: #757575;
+					background-color: #000;
 					color: #fff;
 					border-radius: 50%;
 					line-height: 10px;
