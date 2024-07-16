@@ -57,6 +57,10 @@ import { getPreviewSize, mouseOverVisualizer, arrayStringToInt, useElementWidth 
 import { BackendStyles, Onboard } from './components';
 import { HEADER_ALLOWED_BLOCKS, HEADER_INNERBLOCK_DEFAULTS } from './constants';
 import { buildTemplateFromSelection } from './helpers';
+import HeaderName from './components/onboard/name';
+import HeaderDesktop from './components/onboard/desktop';
+import HeaderMobile from './components/onboard/mobile';
+import HeaderExisting from './components/onboard/existing';
 
 /**
  * Internal dependencies
@@ -87,21 +91,18 @@ export function EditInner(props) {
 	const componentRef = useRef();
 
 	const [activeTab, setActiveTab] = useState('general');
-	const [isOnboarindOpen, setIsOnboardingOpen] = useState(true);
+	const [isOnboardingOpen, setIsOnboardingOpen] = useState(true);
 
 	const handleSubmit = (formData) => {
 		console.log('handleSubmit formdata');
 		console.log(formData);
 	};
 
-	const StepOne = () => {
-		return <>Hello World!</>;
-	};
-
 	const steps = [
-		{ key: 'step-one', name: 'Step One', component: StepOne },
-		{ key: 'step-two', name: 'Step Two', component: StepOne },
-		{ key: 'step-three', name: 'Step Three', component: StepOne },
+		{ key: 'select-existing', name: 'Header Selection', hideSteps: true, component: HeaderExisting },
+		{ key: 'name', name: 'Header Name', visualNumber: 1, component: HeaderName },
+		{ key: 'desktop', name: 'Desktop Layout', visualNumber: 2, component: HeaderDesktop },
+		{ key: 'mobile', name: 'Mobile Layout', visualNumber: 3, component: HeaderMobile },
 	];
 
 	const paddingMouseOver = mouseOverVisualizer();
@@ -1571,7 +1572,7 @@ export function EditInner(props) {
 			</InspectorAdvancedControls>
 			<OnboardingModal
 				steps={steps}
-				isOpen={isOnboarindOpen}
+				isOpen={isOnboardingOpen}
 				onRequestClose={() => setIsOnboardingOpen(false)}
 				onSubmit={handleSubmit}
 			/>
