@@ -527,6 +527,8 @@ export function EditInner(props) {
 
 	let [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_navigation', id);
 
+	//if this nav block is getting created through the header onboarding
+	//then we need to auto create some basic block structure
 	const applyTemplateKeyBlocks = (templateKey) => {
 		if (templateKey == 'long-vertical') {
 			setNavPlaceholderBlocks([
@@ -539,12 +541,9 @@ export function EditInner(props) {
 					createBlock('kadence/navigation-link', { label: 'shop', url: '#' }),
 				]),
 			]);
-			//don't know why this call would be too early, but giving some time seems to help these meta attributes apply
-			setTimeout(() => {
-				setMetaAttribute('vertical', 'orientation');
-				setMetaAttribute('vertical', 'orientationTablet');
-				setMetaAttribute('vertical', 'orientationMobile');
-			}, 100);
+			setMetaAttribute('vertical', 'orientationMobile');
+			setMetaAttribute('vertical', 'orientationTablet');
+			setMetaAttribute('vertical', 'orientation');
 		} else if (templateKey == 'long') {
 			setNavPlaceholderBlocks([
 				createBlock('kadence/navigation', {}, [
@@ -564,12 +563,9 @@ export function EditInner(props) {
 					createBlock('kadence/navigation-link', { label: 'contact', url: '#' }),
 				]),
 			]);
-			//don't know why this call would be too early, but giving some time seems to help these meta attributes apply
-			setTimeout(() => {
-				setMetaAttribute('vertical', 'orientation');
-				setMetaAttribute('vertical', 'orientationTablet');
-				setMetaAttribute('vertical', 'orientationMobile');
-			}, 100);
+			setMetaAttribute('vertical', 'orientationMobile');
+			setMetaAttribute('vertical', 'orientationTablet');
+			setMetaAttribute('vertical', 'orientation');
 		} else {
 			setNavPlaceholderBlocks([
 				createBlock('kadence/navigation', {}, [
@@ -593,6 +589,14 @@ export function EditInner(props) {
 			}
 		}
 	}, []);
+
+	//if this was a templated placeholder nav
+	//on it's first selection, replace it with the nav onboarding
+	useEffect(() => {
+		if (isSelected && templateKey) {
+			setAttributes({ templateKey: '', id: 0 });
+		}
+	}, [isSelected]);
 
 	if (blocks.length === 0) {
 		blocks = navPlaceholderBlocks;

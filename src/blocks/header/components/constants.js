@@ -5,9 +5,9 @@ import {
 	formTemplateSubscribeInFieldIcon,
 } from '@kadence/icons';
 
-import { OffCavnasIcon } from '../../templates/icons/off-canvas.js';
-import { MultiRowIcon } from '../../templates/icons/multi-row.js';
-import { BasicIcon } from '../../templates/icons/basic.js';
+import { OffCavnasIcon } from '../templates/icons/off-canvas.js';
+import { MultiRowIcon } from '../templates/icons/multi-row.js';
+import { BasicIcon } from '../templates/icons/basic.js';
 
 export const FORM_STEPS = [
 	{ key: 'start', name: __('Layout', 'kadence-blocks') },
@@ -149,3 +149,57 @@ export const OFF_CANVAS_OPTIONS = [
 		templateKey: 'basic',
 	},
 ];
+
+export const POPOVER_TUTORIAL_OPTIONS = {
+	basic: [
+		{
+			key: 'add-logo',
+			placement: 'bottom-end',
+		},
+		{
+			key: 'add-navigation',
+			placement: 'bottom-end',
+		},
+		{
+			key: 'edit-button',
+			placement: 'bottom-end',
+		},
+		{
+			key: 'edit-appearance',
+			placement: 'bottom-end',
+		},
+	],
+	'multi-row': [
+		{
+			key: 'add-logo',
+			placement: 'bottom-end',
+		},
+		{
+			key: 'edit-button',
+			placement: 'bottom-end',
+		},
+		{
+			key: 'edit-appearance',
+			placement: 'bottom-end',
+		},
+	],
+};
+
+export const POPOVER_TUTORIAL_OPTIONS_CONTENT = {
+	'add-logo': {
+		title: __('Add Logo', 'kadence-blocks'),
+		content: __("Replace the preset logo with your website's logo.", 'kadence-blocks'),
+	},
+	'add-navigation': {
+		title: __('Add Navigation', 'kadence-blocks'),
+		content: __('Create a new navigation, or use an existing one.', 'kadence-blocks'),
+	},
+	'edit-button': {
+		title: __('Customize CTAs', 'kadence-blocks'),
+		content: __('Edit and customize your Call to Actions and Social Links.', 'kadence-blocks'),
+	},
+	'edit-appearance': {
+		title: __('Edit Appearance', 'kadence-blocks'),
+		content: __("Customize your header's appearance to your own needs.", 'kadence-blocks'),
+	},
+};

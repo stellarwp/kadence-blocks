@@ -20,7 +20,7 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { formBlockIcon, formTemplateContactIcon } from '@kadence/icons';
 import { KadencePanelBody, SelectPostFromPostType } from '@kadence/components';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import { Placeholder, Spinner } from '@wordpress/components';
+import { Placeholder, Spinner, Button } from '@wordpress/components';
 import { store as coreStore, EntityProvider, useEntityProp } from '@wordpress/core-data';
 
 import { useEntityAutoDraft, useEntityAutoDraftAndPublish } from './hooks';
@@ -172,6 +172,8 @@ export function Edit(props) {
 		}
 	};
 
+	//if this is a templated navigation (usually coming from header onboarding)
+	//then it should get premade with some templated content based on templateKey
 	useEffect(() => {
 		if (!id && templateKey) {
 			makeNavigationPost();
@@ -180,7 +182,7 @@ export function Edit(props) {
 
 	return (
 		<div {...blockProps}>
-			{/* No form selected or selected form was deleted from the site, display chooser */}
+			{/* No navigation selected or selected navigation was deleted from the site, display chooser */}
 			{(id === 0 || (undefined === postExists && !isLoading)) && (
 				<Chooser
 					id={id}
@@ -190,7 +192,7 @@ export function Edit(props) {
 				/>
 			)}
 
-			{/* Form selected but not loaded yet, show spinner */}
+			{/* Navigation selected but not loaded yet, show spinner */}
 			{id > 0 && isEmpty(post) && undefined === postExists && isLoading && (
 				<>
 					<Placeholder
@@ -214,11 +216,21 @@ export function Edit(props) {
 								}}
 								value={id}
 							/>
+
+							<Button
+								isLink={true}
+								onClick={() => {
+									setAttributes({ id: 0 });
+								}}
+								style={{ marginBottom: '10px' }}
+							>
+								{__('Create a New Navigation', 'kadence-blocks')}
+							</Button>
 						</KadencePanelBody>
 					</InspectorControls>
 				</>
 			)}
-			{/* Form selected is in the trash */}
+			{/* Navigation selected is in the trash */}
 			{id > 0 && !isEmpty(post) && post.status === 'trash' && (
 				<>
 					<Placeholder
@@ -242,12 +254,22 @@ export function Edit(props) {
 								}}
 								value={id}
 							/>
+
+							<Button
+								isLink={true}
+								onClick={() => {
+									setAttributes({ id: 0 });
+								}}
+								style={{ marginBottom: '10px' }}
+							>
+								{__('Create a New Navigation', 'kadence-blocks')}
+							</Button>
 						</KadencePanelBody>
 					</InspectorControls>
 				</>
 			)}
 
-			{/* Form selected and loaded, display it */}
+			{/* Navigation selected and loaded, display it */}
 			{((id > 0 && templateKey) || (id > 0 && !isEmpty(post) && post.status !== 'trash')) && (
 				<EntityProvider kind="postType" type="kadence_navigation" id={id}>
 					<EditInner {...props} direct={false} id={id} />

@@ -54,7 +54,7 @@ import {
 } from '@kadence/components';
 import { getPreviewSize, mouseOverVisualizer, arrayStringToInt, useElementWidth } from '@kadence/helpers';
 
-import { BackendStyles, Onboard } from './components';
+import { BackendStyles, Onboard, PopoverTutorial } from './components';
 import { HEADER_ALLOWED_BLOCKS, HEADER_INNERBLOCK_DEFAULTS } from './constants';
 import { buildTemplateFromSelection } from './helpers';
 import HeaderName from './components/onboard/name';
@@ -75,7 +75,7 @@ import metadata from './block.json';
 const ANCHOR_REGEX = /[\s#]/g;
 
 export function EditInner(props) {
-	const { attributes, setAttributes, clientId, context, direct, id, isSelected } = props;
+	const { attributes, setAttributes, clientId, context, direct, id, isSelected, headerRef } = props;
 	const { setHeaderVisualBuilderOpenId } = useDispatch('kadenceblocks/data');
 
 	const { previewDevice, showVisualBuilder } = useSelect(
@@ -88,7 +88,7 @@ export function EditInner(props) {
 		[clientId]
 	);
 
-	const componentRef = useRef();
+	const [componentRef, setComponentRef] = useState();
 
 	const [activeTab, setActiveTab] = useState('general');
 	const [isOnboardingOpen, setIsOnboardingOpen] = useState(true);
@@ -109,6 +109,8 @@ export function EditInner(props) {
 	const marginMouseOver = mouseOverVisualizer();
 
 	const [meta, setMeta] = useHeaderProp('meta');
+
+	const justCompletedOnboarding = true;
 
 	const metaAttributes = {
 		padding: meta?._kad_header_padding,
@@ -692,6 +694,16 @@ export function EditInner(props) {
 							}}
 							value={id}
 						/>
+
+						<Button
+							isLink={true}
+							onClick={() => {
+								setAttributes({ id: 0 });
+							}}
+							style={{ marginBottom: '10px' }}
+						>
+							{__('Create a New Header', 'kadence-blocks')}
+						</Button>
 					</KadencePanelBody>
 				</InspectorControls>
 			</>
@@ -736,15 +748,27 @@ export function EditInner(props) {
 							title={__('Selected Header', 'kadence-blocks')}
 						>
 							{!direct && (
-								<SelectPostFromPostType
-									postType="kadence_header"
-									label={__('Selected Header', 'kadence-blocks')}
-									hideLabelFromVision={true}
-									onChange={(nextId) => {
-										setAttributes({ id: parseInt(nextId) });
-									}}
-									value={id}
-								/>
+								<>
+									<SelectPostFromPostType
+										postType="kadence_header"
+										label={__('Selected Header', 'kadence-blocks')}
+										hideLabelFromVision={true}
+										onChange={(nextId) => {
+											setAttributes({ id: parseInt(nextId) });
+										}}
+										value={id}
+									/>
+
+									<Button
+										isLink={true}
+										onClick={() => {
+											setAttributes({ id: 0 });
+										}}
+										style={{ marginBottom: '10px' }}
+									>
+										{__('Create a New Header', 'kadence-blocks')}
+									</Button>
+								</>
 							)}
 						</KadencePanelBody>
 						<KadencePanelBody
@@ -1585,7 +1609,7 @@ export function EditInner(props) {
 			>
 				<Fragment {...innerBlocksProps} />
 			</BlockContextProvider>
-			<span className="height-ref" ref={componentRef} />
+			<span className="placeholder-ref" ref={setComponentRef} />
 			{/*<SpacingVisualizer*/}
 			{/*	style={ {*/}
 			{/*		marginLeft: ( undefined !== previewMarginLeft ? getSpacingOptionOutput( previewMarginLeft, marginUnit ) : undefined ),*/}
@@ -1602,6 +1626,7 @@ export function EditInner(props) {
 			{/*	forceShow={ marginMouseOver.isMouseOver }*/}
 			{/*	spacing={ [ getSpacingOptionOutput( previewMarginTop, marginUnit ), getSpacingOptionOutput( previewMarginRight, marginUnit ), getSpacingOptionOutput( previewMarginBottom, marginUnit ), getSpacingOptionOutput( previewMarginLeft, marginUnit ) ] }*/}
 			{/*/>*/}
+			{justCompletedOnboarding && <PopoverTutorial {...props} headerRef={componentRef} />}
 		</>
 	);
 }
