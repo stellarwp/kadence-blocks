@@ -15,54 +15,54 @@ const HeaderDesktop = ({ data, onChange }) => {
 	}, [data, onChange]);
 
 	const basicOptions = {
-		basic1: {
+		'basic-1': {
 			title: __('Basic 1', 'kadence-blocks'),
 			icon: <DesktopIcons.BasicHdr1 />,
 		},
-		basic2: {
+		'basic-2': {
 			title: __('Basic 2', 'kadence-blocks'),
 			icon: <DesktopIcons.BasicHdr2 />,
 		},
-		basic3: {
+		'basic-3': {
 			title: __('Basic 3', 'kadence-blocks'),
 			icon: <DesktopIcons.BasicHdr3 />,
 		},
-		basic4: {
+		'basic-4': {
 			title: __('Basic 4', 'kadence-blocks'),
 			icon: <DesktopIcons.BasicHdr4 />,
 		},
-		basic5: {
+		'basic-5': {
 			title: __('Basic 5', 'kadence-blocks'),
 			icon: <DesktopIcons.BasicHdr5 />,
 		},
-		basic6: {
+		'basic-6': {
 			title: __('Basic 6', 'kadence-blocks'),
 			icon: <DesktopIcons.BasicHdr6 />,
 		},
-		basic7: {
+		'basic-7': {
 			title: __('Basic 7', 'kadence-blocks'),
 			icon: <DesktopIcons.BasicHdr7 />,
 		},
 	};
 
 	const muiltiRowOptions = {
-		multi1: {
+		'multi-row-1': {
 			title: __('Multi Row 1', 'kadence-blocks'),
 			icon: <DesktopIcons.MultiHeader1 />,
 		},
-		multi2: {
+		'multi-row-2': {
 			title: __('Multi Row 2', 'kadence-blocks'),
 			icon: <DesktopIcons.MultiHeader2 />,
 		},
-		multi3: {
+		'multi-row-3': {
 			title: __('Multi Row 3', 'kadence-blocks'),
 			icon: <DesktopIcons.MultiHeader3 />,
 		},
-		multi4: {
+		'multi-row-4': {
 			title: __('Multi Row 4', 'kadence-blocks'),
 			icon: <DesktopIcons.MultiHeader4 />,
 		},
-		multi5: {
+		'multi-row-5': {
 			title: __('Multi Row 5', 'kadence-blocks'),
 			icon: <DesktopIcons.MultiHeader5 />,
 		},

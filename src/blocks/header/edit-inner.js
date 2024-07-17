@@ -50,13 +50,11 @@ import {
 	BoxShadowControl,
 	SelectPostFromPostType,
 	CopyPasteAttributes,
-	OnboardingModal,
 } from '@kadence/components';
 import { getPreviewSize, mouseOverVisualizer, arrayStringToInt, useElementWidth } from '@kadence/helpers';
 
-import { BackendStyles, Onboard, PopoverTutorial } from './components';
-import { HEADER_ALLOWED_BLOCKS, HEADER_INNERBLOCK_DEFAULTS } from './constants';
-import { buildTemplateFromSelection } from './helpers';
+import { BackendStyles, PopoverTutorial } from './components';
+import { HEADER_ALLOWED_BLOCKS } from './constants';
 
 /**
  * Internal dependencies
@@ -281,10 +279,7 @@ export function EditInner(props) {
 		stickySectionMobile
 	);
 
-	const [title, setTitle] = useHeaderProp('title');
-
 	let [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_header', id);
-	const { updateBlockAttributes } = useDispatch(editorStore);
 
 	const emptyHeader = useMemo(() => {
 		return [createBlock('kadence/header', {})];
@@ -302,35 +297,6 @@ export function EditInner(props) {
 		return get(blocks, [0], {});
 	}, [blocks]);
 
-	const [isAdding, addNew] = useEntityPublish('kadence_header', id);
-
-	const onAdd = async (title, template, detail, offCanvasTemplate, initialDescription) => {
-		try {
-			const response = await addNew();
-			let updatedMeta = meta;
-
-			const { templateInnerBlocks, templatePostMeta } = buildTemplateFromSelection(detail, offCanvasTemplate);
-
-			if (response.id) {
-				if (templateInnerBlocks && template !== 'skip') {
-					updatedMeta = { ...meta, ...templatePostMeta };
-					onChange(templateInnerBlocks, clientId);
-				} else {
-					// Skip, or template not found
-					onChange([createBlock('kadence/header', {}, HEADER_INNERBLOCK_DEFAULTS)], clientId);
-				}
-
-				setTitle(title);
-
-				updatedMeta._kad_header_description = initialDescription;
-
-				setMeta({ ...meta, updatedMeta });
-				await wp.data.dispatch('core').saveEditedEntityRecord('postType', 'kadence_header', id);
-			}
-		} catch (error) {
-			console.error(error);
-		}
-	};
 	const backgroundStyleControls = (size = '', suffix = '') => {
 		const backgroundValue = metaAttributes['background' + suffix + size];
 		const backgroundHoverValue = metaAttributes['background' + suffix + 'Hover' + size];
@@ -633,16 +599,16 @@ export function EditInner(props) {
 		}
 	);
 
-	if (headerInnerBlocks.length === 0) {
-		return (
-			<>
-				<Onboard onAdd={onAdd} isAdding={isAdding} existingTitle={title} />
-				<div className="kb-form-hide-while-setting-up">
-					<Fragment {...innerBlocksProps} />
-				</div>
-			</>
-		);
-	}
+	// if (headerInnerBlocks.length === 0) {
+	// 	return (
+	// 		<>
+	// 			<Onboard onAdd={onAdd} isAdding={isAdding} existingTitle={title} />
+	// 			<div className="kb-form-hide-while-setting-up">
+	// 				<Fragment {...innerBlocksProps} />
+	// 			</div>
+	// 		</>
+	// 	);
+	// }
 	if (typeof pagenow !== 'undefined' && ('widgets' === pagenow || 'customize' === pagenow)) {
 		const editPostLink = addQueryArgs('post.php', {
 			post: id,

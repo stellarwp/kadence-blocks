@@ -21,10 +21,11 @@ import { formBlockIcon, formTemplateContactIcon } from '@kadence/icons';
 import { KadencePanelBody, SelectPostFromPostType, OnboardingModal } from '@kadence/components';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { Placeholder, Spinner } from '@wordpress/components';
-import { store as coreStore, EntityProvider, useEntityProp } from '@wordpress/core-data';
+import { store as coreStore, EntityProvider, useEntityBlockEditor, useEntityProp } from '@wordpress/core-data';
+import { createBlock } from '@wordpress/blocks';
 
-import { useEntityAutoDraft } from './hooks';
-import { SelectOrCreatePlaceholder, VisualBuilder } from './components';
+import { useEntityAutoDraft, useEntityPublish } from './hooks';
+import { VisualBuilder } from './components';
 import { getUniqueId, getPostOrFseId, getPreviewSize } from '@kadence/helpers';
 import HeaderName from './components/onboard/name';
 import HeaderDesktop from './components/onboard/desktop';
@@ -36,6 +37,8 @@ import HeaderExisting from './components/onboard/existing';
  */
 import EditInner from './edit-inner';
 import { useEffect, Fragment, useState } from '@wordpress/element';
+import { buildTemplateFromSelection } from './helpers';
+import { HEADER_INNERBLOCK_DEFAULTS } from './constants';
 
 export function Edit(props) {
 	const { attributes, setAttributes, isSelected, clientId } = props;
@@ -57,15 +60,6 @@ export function Edit(props) {
 	const { isSticky, isStickyTablet, isStickyMobile, isTransparent, isTransparentTablet, isTransparentMobile } =
 		metaAttributes;
 
-	const { previewDevice } = useSelect(
-		(select) => {
-			return {
-				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
-			};
-		},
-		[clientId]
-	);
-
 	const { post, postExists, isLoading, currentPostType, postId } = useSelect(
 		(select) => {
 			return {
@@ -82,12 +76,13 @@ export function Edit(props) {
 	);
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, parentData, isPreviewMode } = useSelect(
+	const { isUniqueID, isUniqueBlock, parentData, previewDevice, isPreviewMode } = useSelect(
 		(select) => {
 			return {
 				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
 				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
 				isPreviewMode: select('core/block-editor').getSettings().__unstableIsPreviewMode,
+				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 				parentData: {
 					rootBlock: select('core/block-editor').getBlock(
 						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
@@ -103,32 +98,7 @@ export function Edit(props) {
 		[clientId]
 	);
 
-	const previewIsSticky = getPreviewSize(previewDevice, isSticky, isStickyTablet, isStickyMobile);
 	const previewIsTransparent = getPreviewSize(previewDevice, isTransparent, isTransparentTablet, isTransparentMobile);
-	const style =
-		isSticky && isTransparent
-			? 'sticky-transparent'
-			: isSticky
-			? 'sticky '
-			: isTransparent
-			? 'transparent'
-			: 'standard';
-	const styleTablet =
-		isStickyTablet && isTransparentTablet
-			? 'sticky-transparent'
-			: isStickyTablet
-			? 'sticky '
-			: isTransparentTablet
-			? 'transparent'
-			: 'standard';
-	const styleMobile =
-		isStickyMobile && isTransparentMobile
-			? 'sticky-transparent'
-			: isStickyMobile
-			? 'sticky '
-			: isTransparentMobile
-			? 'transparent'
-			: 'standard';
 
 	const blockClasses = classnames({
 		'wp-block-kadence-header': true,
@@ -171,10 +141,7 @@ export function Edit(props) {
 				{/* No headerselected or selected header was deleted from the site, display chooser */}
 				{(id === 0 || (undefined === postExists && !isLoading)) && (
 					<Chooser
-						id={id}
 						clientId={clientId}
-						postExists={postExists}
-						post={post}
 						commit={(nextId) => setAttributes({ id: nextId })}
 						setJustCompletedOnboarding={setJustCompletedOnboarding}
 					/>
@@ -273,21 +240,84 @@ export function Edit(props) {
 
 export default Edit;
 
-function Chooser({ id, post, commit, postExists, clientId, setJustCompletedOnboarding }) {
+function Chooser({ commit, clientId, setJustCompletedOnboarding }) {
+	const [tmpId, setTmpId] = useState(0);
+	const [formData, setFormData] = useState(null);
+
+	const [isPublishing, publishNew] = useEntityPublish('kadence_header', tmpId);
+	const [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_header', { id: tmpId });
+	const [existingTitle, setTitle] = useHeaderProp('title', tmpId);
+	const [meta, setMeta] = useHeaderProp('meta', tmpId);
+
 	const [isAdding, addNew] = useEntityAutoDraft('kadence_header', 'kadence_header');
+
 	const [isOnboardingOpen, setIsOnboardingOpen] = useState(true);
-	const onAdd = async () => {
+
+	useEffect(() => {
+		if (tmpId && formData) {
+			updateTemplate(tmpId, formData);
+		}
+	}, [formData, tmpId]);
+
+	const createPost = async () => {
 		try {
 			const response = await addNew();
-			commit(response.id);
+			return response.id;
+		} catch (error) {
+			console.error(error);
+			return false;
+		}
+	};
+
+	const updateTemplate = async (id, formData) => {
+		const { headerName, headerDesktop, headerMobile, headerDescription } = formData;
+
+		console.log('formData');
+		console.log(formData);
+
+		try {
+			const response = await publishNew();
+			let updatedMeta = meta;
+
+			const { templateInnerBlocks, templatePostMeta } = buildTemplateFromSelection(headerDesktop, headerMobile);
+
+			if (response.id) {
+				if (templateInnerBlocks && headerDesktop !== 'skip' && headerMobile !== 'skip') {
+					updatedMeta = { ...meta, ...templatePostMeta };
+					onChange(templateInnerBlocks, clientId);
+				} else {
+					// Skip, or template not found
+					onChange([createBlock('kadence/header', {}, HEADER_INNERBLOCK_DEFAULTS)], clientId);
+				}
+
+				setTitle(headerName);
+
+				updatedMeta._kad_header_description = headerDescription;
+
+				setMeta({ ...meta, updatedMeta });
+				await wp.data
+					.dispatch('core')
+					.saveEditedEntityRecord('postType', 'kadence_header', id)
+					.then(() => {
+						commit(id);
+					});
+			}
 		} catch (error) {
 			console.error(error);
 		}
 	};
 
 	const handleSubmit = (formData) => {
-		console.log('handleSubmit formdata');
-		console.log(formData);
+		if (formData.headerExisting && Number.isInteger(formData.headerExisting)) {
+			commit(formData.headerExisting);
+		} else if (formData.headerExisting === 'blank') {
+			createPost().then((id) => {
+				if (id !== false) {
+					setFormData(formData);
+					setTmpId(id);
+				}
+			});
+		}
 	};
 
 	const steps = [
@@ -298,16 +328,6 @@ function Chooser({ id, post, commit, postExists, clientId, setJustCompletedOnboa
 	];
 
 	return (
-		// <SelectOrCreatePlaceholder
-		// 	postType="kadence_header"
-		// 	label={__('Advanced Header', 'kadence-blocks')}
-		// 	instructions={__('Select an existing header or create a new one.', 'kadence-blocks')}
-		// 	placeholder={__('Select header', 'kadence-blocks')}
-		// 	onSelect={commit}
-		// 	isSelecting={id && isEmpty(post) && undefined !== postExists}
-		// 	onAdd={onAdd}
-		// 	isAdding={isAdding}
-		// />
 		<OnboardingModal
 			steps={steps}
 			isOpen={isOnboardingOpen}
