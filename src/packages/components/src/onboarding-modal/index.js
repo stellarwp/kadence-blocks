@@ -1,16 +1,12 @@
 import { __ } from '@wordpress/i18n';
 import { useEffect, useState } from '@wordpress/element';
-import {
-	Button,
-	Modal,
-	Dashicon
-} from '@wordpress/components';
+import { Button, Modal, Dashicon } from '@wordpress/components';
 
 import './editor.scss';
 
 const OnboardingModal = ({ steps, isOpen, onRequestClose, onSubmit }) => {
 	const [currentStep, setCurrentStep] = useState(0);
-	const [formData, setFormData] = useState({ meta: { isValid: true }});
+	const [formData, setFormData] = useState({ meta: { isValid: true } });
 
 	const handleNextStep = () => {
 		if (currentStep < steps.length - 1) {
@@ -31,16 +27,21 @@ const OnboardingModal = ({ steps, isOpen, onRequestClose, onSubmit }) => {
 	const handleFinish = () => {
 		delete formData.meta;
 		onSubmit(formData);
-		onRequestClose();
+		onRequestClose({ complete: true });
+	};
+
+	const handleClose = () => {
+		delete formData.meta;
+		onRequestClose({ complete: false });
 	};
 
 	useEffect(() => {
-		if( Number.isInteger(formData.meta.exitAndCalbackStep ) && formData.meta.exitAndCalbackStep === currentStep ) {
+		if (Number.isInteger(formData.meta.exitAndCalbackStep) && formData.meta.exitAndCalbackStep === currentStep) {
 			handleFinish();
 		}
 	}, [formData, currentStep]);
 
-	if( !isOpen ) {
+	if (!isOpen) {
 		return;
 	}
 
@@ -53,45 +54,53 @@ const OnboardingModal = ({ steps, isOpen, onRequestClose, onSubmit }) => {
 			onRequestClose={onRequestClose}
 		>
 			<div className={'header'}>
-				<img src={kadence_blocks_params.kadenceBlocksUrl + '/includes/settings/img/kadence-logo.png'} alt={'Kadence Blocks'} />
-				<div className={'close'} onClick={onRequestClose}>
+				<img
+					src={kadence_blocks_params.kadenceBlocksUrl + '/includes/settings/img/kadence-logo.png'}
+					alt={'Kadence Blocks'}
+				/>
+				<div className={'close'} onClick={handleClose}>
 					<Dashicon icon="no-alt" />
 				</div>
 			</div>
-				{/*{JSON.stringify(formData)}<br/>*/}
+			{/*{JSON.stringify(formData)}<br/>*/}
 			<div className={'body'}>
-				{React.createElement( steps[ currentStep ].component, {
-					data    : formData,
-					onChange: ( data ) => handleChange( data ),
-				} )}
+				{React.createElement(steps[currentStep].component, {
+					data: formData,
+					onChange: (data) => handleChange(data),
+				})}
 			</div>
 			<div className={'footer'}>
 				<div className={'back'}>
-					<Button onClick={handlePreviousStep} icon={'arrow-left-alt'} disabled={currentStep === 0}>{__( 'Back', 'kadence-blocks' )}</Button>
+					<Button onClick={handlePreviousStep} icon={'arrow-left-alt'} disabled={currentStep === 0}>
+						{__('Back', 'kadence-blocks')}
+					</Button>
 				</div>
 
 				<div className={'step-indicator'}>
-					{steps[ currentStep ]?.hideSteps ? null : (
-						steps.map( ( step, index ) => {
-							if ( !step?.hideSteps ) {
-								return (
-									<div key={index} className={`step ${index === currentStep ? 'active' : ''}`}>
-										<div className={'number'}>{step.visualNumber}</div>
-										{__( step.name, 'kadence-blocks' )}
-									</div>
-								);
-							}
-							return null;
-						} )
-					)}
+					{steps[currentStep]?.hideSteps
+						? null
+						: steps.map((step, index) => {
+								if (!step?.hideSteps) {
+									return (
+										<div key={index} className={`step ${index === currentStep ? 'active' : ''}`}>
+											<div className={'number'}>{step.visualNumber}</div>
+											{__(step.name, 'kadence-blocks')}
+										</div>
+									);
+								}
+								return null;
+						  })}
 				</div>
-
 
 				<div className={'next'}>
 					{currentStep < steps.length - 1 ? (
-						<Button isPrimary={true} disabled={ !formData.meta.isValid } onClick={handleNextStep}>{ formData.meta?.nextText ? formData.meta.nextText : __( 'Next', 'kadence-blocks' )}</Button>
+						<Button isPrimary={true} disabled={!formData.meta.isValid} onClick={handleNextStep}>
+							{formData.meta?.nextText ? formData.meta.nextText : __('Next', 'kadence-blocks')}
+						</Button>
 					) : (
-						<Button isPrimary={true} onClick={handleFinish}>{__( 'Finish', 'kadence-blocks' )}</Button>
+						<Button isPrimary={true} onClick={handleFinish}>
+							{__('Finish', 'kadence-blocks')}
+						</Button>
 					)}
 				</div>
 			</div>
