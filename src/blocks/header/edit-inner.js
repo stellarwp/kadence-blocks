@@ -57,10 +57,6 @@ import { getPreviewSize, mouseOverVisualizer, arrayStringToInt, useElementWidth 
 import { BackendStyles, Onboard, PopoverTutorial } from './components';
 import { HEADER_ALLOWED_BLOCKS, HEADER_INNERBLOCK_DEFAULTS } from './constants';
 import { buildTemplateFromSelection } from './helpers';
-import HeaderName from './components/onboard/name';
-import HeaderDesktop from './components/onboard/desktop';
-import HeaderMobile from './components/onboard/mobile';
-import HeaderExisting from './components/onboard/existing';
 
 /**
  * Internal dependencies
@@ -75,7 +71,8 @@ import metadata from './block.json';
 const ANCHOR_REGEX = /[\s#]/g;
 
 export function EditInner(props) {
-	const { attributes, setAttributes, clientId, context, direct, id, isSelected, headerRef } = props;
+	const { attributes, setAttributes, clientId, context, direct, id, isSelected, headerRef, justCompletedOnboarding } =
+		props;
 	const { setHeaderVisualBuilderOpenId } = useDispatch('kadenceblocks/data');
 
 	const { previewDevice, showVisualBuilder } = useSelect(
@@ -91,26 +88,11 @@ export function EditInner(props) {
 	const [componentRef, setComponentRef] = useState();
 
 	const [activeTab, setActiveTab] = useState('general');
-	const [isOnboardingOpen, setIsOnboardingOpen] = useState(true);
-
-	const handleSubmit = (formData) => {
-		console.log('handleSubmit formdata');
-		console.log(formData);
-	};
-
-	const steps = [
-		{ key: 'select-existing', name: 'Header Selection', hideSteps: true, component: HeaderExisting },
-		{ key: 'name', name: 'Header Name', visualNumber: 1, component: HeaderName },
-		{ key: 'desktop', name: 'Desktop Layout', visualNumber: 2, component: HeaderDesktop },
-		{ key: 'mobile', name: 'Mobile Layout', visualNumber: 3, component: HeaderMobile },
-	];
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
 
 	const [meta, setMeta] = useHeaderProp('meta');
-
-	const justCompletedOnboarding = true;
 
 	const metaAttributes = {
 		padding: meta?._kad_header_padding,
@@ -1594,12 +1576,6 @@ export function EditInner(props) {
 					help={__('Separate multiple classes with spaces.')}
 				/>
 			</InspectorAdvancedControls>
-			<OnboardingModal
-				steps={steps}
-				isOpen={isOnboardingOpen}
-				onRequestClose={() => setIsOnboardingOpen(false)}
-				onSubmit={handleSubmit}
-			/>
 			<BlockContextProvider
 				value={{
 					'kadence/headerPostId': id,

@@ -18,7 +18,7 @@ import { __ } from '@wordpress/i18n';
 import { isEmpty } from 'lodash';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { formBlockIcon, formTemplateContactIcon } from '@kadence/icons';
-import { KadencePanelBody, SelectPostFromPostType } from '@kadence/components';
+import { KadencePanelBody, SelectPostFromPostType, OnboardingModal } from '@kadence/components';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { Placeholder, Spinner } from '@wordpress/components';
 import { store as coreStore, EntityProvider, useEntityProp } from '@wordpress/core-data';
@@ -26,6 +26,10 @@ import { store as coreStore, EntityProvider, useEntityProp } from '@wordpress/co
 import { useEntityAutoDraft } from './hooks';
 import { SelectOrCreatePlaceholder, VisualBuilder } from './components';
 import { getUniqueId, getPostOrFseId, getPreviewSize } from '@kadence/helpers';
+import HeaderName from './components/onboard/name';
+import HeaderDesktop from './components/onboard/desktop';
+import HeaderMobile from './components/onboard/mobile';
+import HeaderExisting from './components/onboard/existing';
 
 /**
  * Internal dependencies
@@ -39,6 +43,7 @@ export function Edit(props) {
 	const { id, uniqueID } = attributes;
 
 	const [meta, setMeta] = useHeaderProp('meta', id);
+	const [justCompletedOnboarding, setJustCompletedOnboarding] = useState(false);
 
 	const metaAttributes = {
 		isSticky: meta?._kad_header_isSticky,
@@ -167,9 +172,11 @@ export function Edit(props) {
 				{(id === 0 || (undefined === postExists && !isLoading)) && (
 					<Chooser
 						id={id}
+						clientId={clientId}
 						postExists={postExists}
 						post={post}
 						commit={(nextId) => setAttributes({ id: nextId })}
+						setJustCompletedOnboarding={setJustCompletedOnboarding}
 					/>
 				)}
 
@@ -233,7 +240,12 @@ export function Edit(props) {
 				{/* Header selected and loaded, display it */}
 				{id > 0 && !isEmpty(post) && post.status !== 'trash' && (
 					<EntityProvider kind="postType" type="kadence_header" id={id}>
-						<EditInner {...props} direct={false} id={id} />
+						<EditInner
+							{...props}
+							direct={false}
+							id={id}
+							justCompletedOnboarding={justCompletedOnboarding}
+						/>
 					</EntityProvider>
 				)}
 			</div>
@@ -246,7 +258,7 @@ export function Edit(props) {
 		mainBlockContent = (
 			<>
 				<div {...blockProps}>
-					<EditInner {...props} direct={true} id={postId} />
+					<EditInner {...props} direct={true} id={postId} justCompletedOnboarding={justCompletedOnboarding} />
 				</div>
 				<VisualBuilder clientId={clientId} previewDevice={previewDevice} isSelected={isSelected} />
 			</>
@@ -261,8 +273,9 @@ export function Edit(props) {
 
 export default Edit;
 
-function Chooser({ id, post, commit, postExists }) {
+function Chooser({ id, post, commit, postExists, clientId, setJustCompletedOnboarding }) {
 	const [isAdding, addNew] = useEntityAutoDraft('kadence_header', 'kadence_header');
+	const [isOnboardingOpen, setIsOnboardingOpen] = useState(true);
 	const onAdd = async () => {
 		try {
 			const response = await addNew();
@@ -272,16 +285,41 @@ function Chooser({ id, post, commit, postExists }) {
 		}
 	};
 
+	const handleSubmit = (formData) => {
+		console.log('handleSubmit formdata');
+		console.log(formData);
+	};
+
+	const steps = [
+		{ key: 'select-existing', name: 'Header Selection', hideSteps: true, component: HeaderExisting },
+		{ key: 'name', name: 'Header Name', visualNumber: 1, component: HeaderName },
+		{ key: 'desktop', name: 'Desktop Layout', visualNumber: 2, component: HeaderDesktop },
+		{ key: 'mobile', name: 'Mobile Layout', visualNumber: 3, component: HeaderMobile },
+	];
+
 	return (
-		<SelectOrCreatePlaceholder
-			postType="kadence_header"
-			label={__('Advanced Header', 'kadence-blocks')}
-			instructions={__('Select an existing header or create a new one.', 'kadence-blocks')}
-			placeholder={__('Select header', 'kadence-blocks')}
-			onSelect={commit}
-			isSelecting={id && isEmpty(post) && undefined !== postExists}
-			onAdd={onAdd}
-			isAdding={isAdding}
+		// <SelectOrCreatePlaceholder
+		// 	postType="kadence_header"
+		// 	label={__('Advanced Header', 'kadence-blocks')}
+		// 	instructions={__('Select an existing header or create a new one.', 'kadence-blocks')}
+		// 	placeholder={__('Select header', 'kadence-blocks')}
+		// 	onSelect={commit}
+		// 	isSelecting={id && isEmpty(post) && undefined !== postExists}
+		// 	onAdd={onAdd}
+		// 	isAdding={isAdding}
+		// />
+		<OnboardingModal
+			steps={steps}
+			isOpen={isOnboardingOpen}
+			onRequestClose={(response) => {
+				setIsOnboardingOpen(false);
+				if (!response?.complete) {
+					wp.data.dispatch('core/block-editor').removeBlock(clientId);
+				} else {
+					setJustCompletedOnboarding(true);
+				}
+			}}
+			onSubmit={handleSubmit}
 		/>
 	);
 }
