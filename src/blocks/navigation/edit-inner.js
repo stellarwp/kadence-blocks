@@ -477,7 +477,7 @@ export function EditInner(props) {
 		setMetaAttribute(newUpdate, 'typography');
 	};
 	const saveDropdownTypography = (value) => {
-		const newUpdate = typography.map((item, index) => {
+		const newUpdate = dropdownTypography.map((item, index) => {
 			if (0 === index) {
 				item = { ...item, ...value };
 			}

@@ -582,7 +582,7 @@ export default function BackendStyles(props) {
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li.menu-item > .link-drop-wrap > a`
 	);
 	if (previewOrientation != 'vertical') {
-		css.add_property('width', previewDropdownWidth + dropdownWidthUnit);
+		css.add_property('width', css.render_size(previewDropdownWidth, dropdownWidthUnit));
 	}
 	css.add_property('padding-top', css.render_size(previewDropdownVerticalSpacing, dropdownVerticalSpacingUnit));
 	css.add_property('padding-bottom', css.render_size(previewDropdownVerticalSpacing, dropdownVerticalSpacingUnit));
