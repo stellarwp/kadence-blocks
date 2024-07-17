@@ -244,6 +244,8 @@ function Chooser({ commit, clientId, setJustCompletedOnboarding }) {
 	const [tmpId, setTmpId] = useState(0);
 	const [formData, setFormData] = useState(null);
 
+	const { setHeaderVisualBuilderOpenId } = useDispatch('kadenceblocks/data');
+
 	const [isPublishing, publishNew] = useEntityPublish('kadence_header', tmpId);
 	const [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_header', { id: tmpId });
 	const [existingTitle, setTitle] = useHeaderProp('title', tmpId);
@@ -318,6 +320,9 @@ function Chooser({ commit, clientId, setJustCompletedOnboarding }) {
 				}
 			});
 		}
+
+		//automatically open the visual editor when we've just created a new header
+		setHeaderVisualBuilderOpenId(clientId);
 	};
 
 	const steps = [
