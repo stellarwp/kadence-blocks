@@ -163,7 +163,7 @@ export function Edit(props) {
 				<InspectorControlTabs panelName={'off-canvas'} setActiveTab={setActiveTab} activeTab={activeTab} />
 				{activeTab === 'general' && (
 					<>
-						<KadencePanelBody title={__('Icon Settings', 'kadence-blocks')} initialOpen={true}>
+						<KadencePanelBody panelName={'kb-off-canvas-icon'}>
 							<KadenceIconPicker
 								value={icon}
 								onChange={(value) => setAttributes({ icon: value })}
@@ -194,7 +194,7 @@ export function Edit(props) {
 								normal={
 									<>
 										<SmallResponsiveControl
-											label={'Colors'}
+											label={'Trigger Colors'}
 											desktopChildren={styleColorControls()}
 											tabletChildren={styleColorControls('Tablet')}
 											mobileChildren={styleColorControls('Mobile')}

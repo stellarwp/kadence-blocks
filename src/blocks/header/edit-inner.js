@@ -663,14 +663,10 @@ export function EditInner(props) {
 					</Button>
 				</Placeholder>
 				<InspectorControls>
-					<KadencePanelBody
-						panelName={'kb-advanced-form-selected-switch'}
-						title={__('Selected Header', 'kadence-blocks')}
-					>
+					<KadencePanelBody panelName={'kb-advanced-form-selected-switch'}>
 						<SelectPostFromPostType
 							postType="kadence_header"
 							label={__('Selected Header', 'kadence-blocks')}
-							hideLabelFromVision={true}
 							onChange={(nextId) => {
 								setAttributes({ id: parseInt(nextId) });
 							}}
@@ -725,16 +721,12 @@ export function EditInner(props) {
 
 				{activeTab === 'general' && (
 					<>
-						<KadencePanelBody
-							panelName={'kb-header-selected-switch'}
-							title={__('Selected Header', 'kadence-blocks')}
-						>
+						<KadencePanelBody panelName={'kb-header-selected-switch'}>
 							{!direct && (
 								<>
 									<SelectPostFromPostType
 										postType="kadence_header"
 										label={__('Selected Header', 'kadence-blocks')}
-										hideLabelFromVision={true}
 										onChange={(nextId) => {
 											setAttributes({ id: parseInt(nextId) });
 										}}
@@ -753,10 +745,7 @@ export function EditInner(props) {
 								</>
 							)}
 						</KadencePanelBody>
-						<KadencePanelBody
-							title={__('General Settings', 'kadence-blocks')}
-							panelName={'kb-col-header-type-settings'}
-						>
+						<KadencePanelBody panelName={'kb-header-general-settings'}>
 							<ResponsiveSelectControl
 								label={__('Sticky Header', 'kadence-blocks')}
 								value={isSticky}
@@ -849,6 +838,7 @@ export function EditInner(props) {
 						</KadencePanelBody>
 						<KadencePanelBody
 							title={__('Content Size Settings', 'kadence-blocks')}
+							initialOpen={false}
 							panelName={'kb-header-size-settings'}
 						>
 							<ResponsiveRangeControls

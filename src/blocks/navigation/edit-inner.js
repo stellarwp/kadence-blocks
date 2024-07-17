@@ -846,19 +846,26 @@ export function EditInner(props) {
 					</Button>
 				</Placeholder>
 				<InspectorControls>
-					<KadencePanelBody
-						panelName={'kb-advanced-navigation-selected-switch'}
-						title={__('Selected Navigation', 'kadence-blocks')}
-					>
+					<KadencePanelBody panelName={'kb-advanced-navigation-selected-switch'}>
 						<SelectPostFromPostType
 							postType="kadence_navigation"
 							label={__('Selected Navigation', 'kadence-blocks')}
-							hideLabelFromVision={true}
+							hideLabelFromVision={false}
 							onChange={(nextId) => {
 								setAttributes({ id: parseInt(nextId) });
 							}}
 							value={id}
 						/>
+
+						<Button
+							isLink={true}
+							onClick={() => {
+								setAttributes({ id: 0 });
+							}}
+							style={{ marginBottom: '10px' }}
+						>
+							{__('Create a New Navigation', 'kadence-blocks')}
+						</Button>
 					</KadencePanelBody>
 				</InspectorControls>
 			</>
@@ -918,26 +925,31 @@ export function EditInner(props) {
 
 				{activeTab === 'general' && (
 					<>
-						<Button variant="secondary" onClick={openModal}>
-							Open Modal
-						</Button>
 						{isOpen && (
 							<Modal size={'large'} title="Menu Editor" onRequestClose={closeModal}>
 								<MenuEditor clientId={clientId} closeModal={closeModal} />
 							</Modal>
 						)}
-						<KadencePanelBody
-							panelName={'kb-navigation-selected-switch'}
-							title={__('Selected Navigation', 'kadence-blocks')}
-						>
+						<KadencePanelBody panelName={'kb-navigation-selected-switch'}>
 							{!direct && (
-								<SelectPostFromPostType
-									postType="kadence_navigation"
-									label={__('Selected Navigation', 'kadence-blocks')}
-									hideLabelFromVision={true}
-									onChange={(nextId) => setAttributes({ id: parseInt(nextId) })}
-									value={id}
-								/>
+								<>
+									<SelectPostFromPostType
+										postType="kadence_navigation"
+										label={__('Selected Navigation', 'kadence-blocks')}
+										onChange={(nextId) => setAttributes({ id: parseInt(nextId) })}
+										value={id}
+									/>
+
+									<Button
+										isLink={true}
+										onClick={() => {
+											setAttributes({ id: 0 });
+										}}
+										style={{ marginBottom: '10px' }}
+									>
+										{__('Create a New Navigation', 'kadence-blocks')}
+									</Button>
+								</>
 							)}
 						</KadencePanelBody>
 						<div className="kt-sidebar-settings-spacer"></div>
@@ -1040,7 +1052,7 @@ export function EditInner(props) {
 								/>
 							)}
 							<SmallResponsiveControl
-								label={'layout options'}
+								label={'Layout Options'}
 								desktopChildren={generalToggleControls()}
 								tabletChildren={generalToggleControls('Tablet')}
 								mobileChildren={generalToggleControls('Mobile')}
@@ -1529,7 +1541,7 @@ export function EditInner(props) {
 
 				{activeTab === 'advanced' && (
 					<>
-						<KadencePanelBody panelName={'kb-row-padding'}>
+						<KadencePanelBody panelName={'kb-navigation-padding'}>
 							<ResponsiveMeasureRangeControl
 								label={__('Padding', 'kadence-blocks')}
 								value={padding}
@@ -1582,6 +1594,12 @@ export function EditInner(props) {
 								onMouseOver={marginMouseOver.onMouseOver}
 								onMouseOut={marginMouseOver.onMouseOut}
 							/>
+						</KadencePanelBody>
+
+						<KadencePanelBody panelName={'kb-navigation-modal'}>
+							<Button variant="secondary" onClick={openModal}>
+								Open Navigation Editor
+							</Button>
 						</KadencePanelBody>
 					</>
 				)}

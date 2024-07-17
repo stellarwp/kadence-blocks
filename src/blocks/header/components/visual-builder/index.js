@@ -96,6 +96,7 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 	const editorElement = useEditorElement(ref, [previewDevice]);
 	const editorWidth = editorElement?.clientWidth;
 	const editorLeft = editorElement?.getBoundingClientRect().left;
+	const editorFooterHeight = previewDevice == 'Desktop' ? '25px' : '0';
 
 	if (!hasTrigger && tab === 'off-canvas') {
 		updateTab('Desktop', desktopBlocks);
@@ -110,6 +111,7 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 						style={{
 							width: editorWidth + 'px',
 							left: editorLeft + 'px',
+							bottom: editorFooterHeight,
 						}}
 					>
 						<Button isPrimary onClick={() => setIsVisible(true)}>
@@ -123,6 +125,7 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 						style={{
 							width: editorWidth + 'px',
 							left: editorLeft + 'px',
+							bottom: editorFooterHeight,
 						}}
 					>
 						<div class={'tabs'}>

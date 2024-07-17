@@ -81,9 +81,9 @@ export function Edit(props) {
 		<>
 			<InspectorControls>
 				<SelectParentBlock
-					label={__('View Header Settings', 'kadence-blocks')}
+					label={__('View Header Row Settings', 'kadence-blocks')}
 					clientId={clientId}
-					parentSlug={'kadence/header'}
+					parentSlug={'kadence/header-row'}
 				/>
 			</InspectorControls>
 			<div {...innerBlocksProps} />
