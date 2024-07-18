@@ -292,6 +292,11 @@ function Chooser({ id, post, commit, postExists }) {
 		}
 	};
 
+	const onAddOtherType = (selected) => {
+		onAdd();
+		window.kb_navigation_import_core = selected;
+	};
+
 	return (
 		<SelectOrCreatePlaceholder
 			postType="kadence_navigation"
@@ -301,6 +306,7 @@ function Chooser({ id, post, commit, postExists }) {
 			onSelect={commit}
 			isSelecting={id && isEmpty(post) && undefined !== postExists}
 			onAdd={onAdd}
+			onAddOtherType={onAddOtherType}
 			isAdding={isAdding}
 		/>
 	);
