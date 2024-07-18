@@ -274,9 +274,6 @@ function Chooser({ commit, clientId, setJustCompletedOnboarding }) {
 	const updateTemplate = async (id, formData) => {
 		const { headerName, headerDesktop, headerMobile, headerDescription } = formData;
 
-		console.log('formData');
-		console.log(formData);
-
 		try {
 			const response = await publishNew();
 			let updatedMeta = meta;
