@@ -323,30 +323,32 @@ export default function Edit(props) {
 	const [isLabelFieldFocused, setIsLabelFieldFocused] = useState(false);
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, previewDevice, parentData, parentBlockId, currentIndex } = useSelect(
-		(select) => {
-			const parentBlocks = select('core/block-editor').getBlockParents(clientId);
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData, parentBlockId, currentIndex, childSelected } =
+		useSelect(
+			(select) => {
+				const parentBlocks = select('core/block-editor').getBlockParents(clientId);
 
-			return {
-				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
-				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
-				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
-				currentIndex: select('core/block-editor').getBlockIndex(clientId),
-				parentBlockId: last(parentBlocks),
-				parentData: {
-					rootBlock: select('core/block-editor').getBlock(
-						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
-					),
-					postId: select('core/editor').getCurrentPostId(),
-					reusableParent: select('core/block-editor').getBlockAttributes(
-						select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-					),
-					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
-				},
-			};
-		},
-		[clientId]
-	);
+				return {
+					isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
+					isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
+					previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
+					currentIndex: select('core/block-editor').getBlockIndex(clientId),
+					parentBlockId: last(parentBlocks),
+					parentData: {
+						rootBlock: select('core/block-editor').getBlock(
+							select('core/block-editor').getBlockHierarchyRootClientId(clientId)
+						),
+						postId: select('core/editor').getCurrentPostId(),
+						reusableParent: select('core/block-editor').getBlockAttributes(
+							select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
+						),
+						editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
+					},
+					childSelected: select('core/block-editor').hasSelectedInnerBlock(clientId, true),
+				};
+			},
+			[clientId]
+		);
 
 	const previewMediaIconSize = getPreviewSize(
 		previewDevice,
@@ -587,6 +589,7 @@ export default function Edit(props) {
 	}
 
 	const megaMenuWidthClass = 'kadence-menu-mega-width-' + (megaMenuWidth ? megaMenuWidth : 'container');
+	const showSubMenusWithLogic = showSubMenus || isSelected || childSelected;
 
 	const blockProps = useBlockProps({
 		ref: useMergeRefs([setPopoverAnchor, listItemRef]),
@@ -596,7 +599,7 @@ export default function Edit(props) {
 			'has-child': hasChildren,
 			'has-media': mediaType && mediaType != 'none',
 			'menu-item-has-children': hasChildren,
-			'menu-item--toggled-on': showSubMenus,
+			'menu-item--toggled-on': showSubMenusWithLogic,
 			'current-menu-item': hasNoBlockBefore,
 			'kadence-menu-mega-enabled': isMegaMenu,
 			[`${megaMenuWidthClass}`]: isMegaMenu,
@@ -613,7 +616,7 @@ export default function Edit(props) {
 			...blockProps,
 			className: classnames('remove-outline', {
 				'sub-menu': hasChildren || isMegaMenuOnboarding,
-				'show-sub-menus': showSubMenus,
+				'show-sub-menus': showSubMenusWithLogic,
 				'mega-menu': isMegaMenu,
 			}),
 		},
@@ -974,22 +977,6 @@ export default function Edit(props) {
 				/>
 				{activeTab === 'general' && (
 					<KadencePanelBody panelName={'navigation-link-general'}>
-						{applyFilters(
-							'kadence.megaMenuControlsNavigationLink',
-							megaMenuControls,
-							props,
-							doMegaMenuEnable,
-							isTopLevelLink,
-							previewDevice,
-							inMegaMenu
-						)}
-						{isTopLevelLink && hasChildren && (
-							<ToggleControl
-								label={__('Show Sub Menus', 'kadence-blocks')}
-								checked={showSubMenus}
-								onChange={(value) => setShowSubMenus(value)}
-							/>
-						)}
 						<TextControl
 							__nextHasNoMarginBottom
 							value={label ? stripHTML(label) : ''}
@@ -1020,6 +1007,16 @@ export default function Edit(props) {
 							checked={disableLink}
 							onChange={(value) => setAttributes({ disableLink: value })}
 						/>
+
+						{applyFilters(
+							'kadence.megaMenuControlsNavigationLink',
+							megaMenuControls,
+							props,
+							doMegaMenuEnable,
+							isTopLevelLink,
+							previewDevice,
+							inMegaMenu
+						)}
 						<TextareaControl
 							__nextHasNoMarginBottom
 							value={description || ''}
@@ -1058,38 +1055,66 @@ export default function Edit(props) {
 
 				{activeTab === 'advanced' && (
 					<>
-						<ResponsiveMeasureRangeControl
-							label={__('Padding', 'kadence-blocks')}
-							value={padding}
-							onChange={(value) => setAttributes({ padding: value })}
-							tabletValue={tabletPadding}
-							onChangeTablet={(value) => setAttributes({ tabletPadding: value })}
-							mobileValue={mobilePadding}
-							onChangeMobile={(value) => setAttributes({ mobilePadding: value })}
-							min={
-								paddingUnit === 'em' || paddingUnit === 'rem' ? -25 : paddingUnit === 'px' ? -400 : -100
-							}
-							max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : paddingUnit === 'px' ? 400 : 100}
-							step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
-							unit={paddingUnit}
-							units={['px', 'em', 'rem']}
-							onUnit={(value) => setAttributes({ paddingUnit: value })}
-						/>
-						<ResponsiveMeasureRangeControl
-							label={__('Margin', 'kadence-blocks')}
-							value={margin}
-							onChange={(value) => setAttributes({ margin: value })}
-							tabletValue={tabletMargin}
-							onChangeTablet={(value) => setAttributes({ tabletMargin: value })}
-							mobileValue={mobileMargin}
-							onChangeMobile={(value) => setAttributes({ mobileMargin: value })}
-							min={marginUnit === 'em' || marginUnit === 'rem' ? -25 : marginUnit === 'px' ? -400 : -100}
-							max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : marginUnit === 'px' ? 400 : 100}
-							step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
-							unit={marginUnit}
-							units={['px', 'em', 'rem']}
-							onUnit={(value) => setAttributes({ marginUnit: value })}
-						/>
+						<KadencePanelBody panelName={'kb-navigation-link-padding'}>
+							<ResponsiveMeasureRangeControl
+								label={__('Padding', 'kadence-blocks')}
+								value={padding}
+								onChange={(value) => setAttributes({ padding: value })}
+								tabletValue={tabletPadding}
+								onChangeTablet={(value) => setAttributes({ tabletPadding: value })}
+								mobileValue={mobilePadding}
+								onChangeMobile={(value) => setAttributes({ mobilePadding: value })}
+								min={
+									paddingUnit === 'em' || paddingUnit === 'rem'
+										? -25
+										: paddingUnit === 'px'
+										? -400
+										: -100
+								}
+								max={
+									paddingUnit === 'em' || paddingUnit === 'rem'
+										? 25
+										: paddingUnit === 'px'
+										? 400
+										: 100
+								}
+								step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
+								unit={paddingUnit}
+								units={['px', 'em', 'rem']}
+								onUnit={(value) => setAttributes({ paddingUnit: value })}
+							/>
+							<ResponsiveMeasureRangeControl
+								label={__('Margin', 'kadence-blocks')}
+								value={margin}
+								onChange={(value) => setAttributes({ margin: value })}
+								tabletValue={tabletMargin}
+								onChangeTablet={(value) => setAttributes({ tabletMargin: value })}
+								mobileValue={mobileMargin}
+								onChangeMobile={(value) => setAttributes({ mobileMargin: value })}
+								min={
+									marginUnit === 'em' || marginUnit === 'rem'
+										? -25
+										: marginUnit === 'px'
+										? -400
+										: -100
+								}
+								max={marginUnit === 'em' || marginUnit === 'rem' ? 25 : marginUnit === 'px' ? 400 : 100}
+								step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
+								unit={marginUnit}
+								units={['px', 'em', 'rem']}
+								onUnit={(value) => setAttributes({ marginUnit: value })}
+							/>
+						</KadencePanelBody>
+
+						<KadencePanelBody panelName={'kb-navigation-link-sub-menus'}>
+							{isTopLevelLink && hasChildren && (
+								<ToggleControl
+									label={__('Show Sub Menus', 'kadence-blocks')}
+									checked={showSubMenus}
+									onChange={(value) => setShowSubMenus(value)}
+								/>
+							)}
+						</KadencePanelBody>
 
 						<div className="kt-sidebar-settings-spacer"></div>
 

@@ -5,7 +5,8 @@ import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { SelectControl } from '@wordpress/components';
 
-export default function SelectPostFromPostType({ label, onChange, value, postType = 'post', hideLabelFromVision = false }) {
+export default function SelectPostFromPostType(props) {
+	const { label, onChange, value, postType = 'post', hideLabelFromVision = false } = props;
 	const { posts } = useSelect(
 		(selectData) => ({
 			posts: selectData('core').getEntityRecords('postType', postType, {
