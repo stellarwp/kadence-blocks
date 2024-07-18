@@ -42,7 +42,6 @@ export default function FormTitle({ setTitle, isAdding, existingTitle, onAdd }) 
 	const navigationDirection = applyFilters('kadence.navigationDirection', startStyleOptions);
 	const navigationTemplates = applyFilters('kadence.navigationTemplates', startLayoutOptions);
 
-	console.log(wizardStep);
 	return (
 		<Placeholder
 			className="kb-select-or-create-placeholder kb-adv-form-select"
