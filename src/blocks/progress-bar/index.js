@@ -1,6 +1,6 @@
 import { progressIcon } from '@kadence/icons';
 import { registerBlockType } from '@wordpress/blocks';
-import { _x } from '@wordpress/i18n';
+import { _x, __ } from '@wordpress/i18n';
 
 import './editor.scss';
 import './style.scss';
@@ -14,6 +14,8 @@ import metadata from './block.json';
 registerBlockType('kadence/progress-bar', {
 	...metadata,
 	title: _x('Progress Bar', 'block title', 'kadence-blocks'),
+	description: _x('Kadence progress bar', 'block description', 'kadence-blocks'),
+	keywords: [__('progress bar', 'kadence-blocks'), 'kb'],
 	icon: {
 		src: progressIcon,
 	},
