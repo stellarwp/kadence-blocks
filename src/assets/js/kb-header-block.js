@@ -360,7 +360,7 @@ class KBHeader {
 				if (this.revealScrollUp) {
 					if (window.scrollY > this.lastScrollTop) {
 						var totalOffsetDelay = Math.floor(
-							Math.floor(this.activeOffsetTop) - Math.floor(offsetTop) + Math.floor(startHeight)
+							Math.floor(this.activeOffsetTop) - Math.floor(offsetTop) + Math.floor(shrinkHeight)
 						);
 					} else {
 						var totalOffsetDelay = Math.floor(this.activeOffsetTop - offsetTop);
