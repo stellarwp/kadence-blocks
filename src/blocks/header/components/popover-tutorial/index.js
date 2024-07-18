@@ -35,10 +35,10 @@ export default function HeaderOnboard(props) {
 		const settingModel2 = new wp.api.models.Settings({
 			kadence_blocks_header_popover_tutorial_complete: status,
 		});
-		settingModel.save();
+		settingModel2.save();
 		// settingModel2.save().then((response) => {
 		// 	console.log(3, response);
-		// 	createSuccessNotice(__('Totorial completed', 'kadence-blocks'), {
+		// 	createSuccessNotice(__('Tutorial completed', 'kadence-blocks'), {
 		// 		type: 'snackbar',
 		// 	});
 		// });
