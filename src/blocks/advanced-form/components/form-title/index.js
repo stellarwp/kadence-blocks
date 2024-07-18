@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Placeholder, Button, TextControl, ButtonGroup, TextareaControl } from '@wordpress/components';
 import { KadenceRadioButtons } from '@kadence/components';
 import { useState } from '@wordpress/element';
