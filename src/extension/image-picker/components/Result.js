@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { Button, Icon } from '@wordpress/components';
 import { download as DownloadIcon, check as CheckIcon } from '@wordpress/icons';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useRef } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import downloadToMediaLibrary from '../functions/downloadToMediaLibrary';
 import { __ } from '@wordpress/i18n';
@@ -52,7 +52,7 @@ export default function Result(props) {
 			setLocalIsDownloading(false);
 		}
 	}, [isDownloading]);
-	const resultButton = React.useRef(null);
+	const resultButton = useRef(null);
 
 	const isCurrent = index == currentUserSelectionIndex;
 
