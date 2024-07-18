@@ -313,6 +313,8 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 			return sanitize_text_field( $item );
 		} elseif ( is_numeric( $item ) ) {
 			return $item;
+		} elseif ( is_bool( $item ) ) {
+			return $item;
 		}
 		return null;
 	}

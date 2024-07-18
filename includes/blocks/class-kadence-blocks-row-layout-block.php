@@ -1643,6 +1643,17 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			if ( ! empty( $attributes['bottomSep'] ) && 'none' !== $attributes['bottomSep'] ) {
 				$extra_content .= $this->get_divider_render( $attributes['bottomSep'], 'bottom' );
 			}
+			if ( ! empty( $attributes['bgImg'] ) && !empty($attributes['bgImgAttachment']) && $attributes['bgImgAttachment'] == 'parallax' ) {
+				if ( ! empty( $attributes['bgImgPosition'] ) ) {
+					$wrapper_args['data-img-position'] = $attributes['bgImgPosition'];
+				}
+				if ( ! empty( $attributes['bgImgSize'] ) ) {
+					$wrapper_args['data-img-size'] = $attributes['bgImgSize'];
+					if ( $attributes['bgImgSize'] !== 'cover' && ! empty( $attributes['bgImgRepeat'] ) ) {
+						$wrapper_args['data-img-repeat'] = $attributes['bgImgRepeat'];
+					}
+				}
+			}
 			$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 			$inner_wrapper_attributes = implode( ' ', $inner_wrap_attributes );
 			$content = sprintf( '<%1$s %2$s>%3$s<div %4$s>%5$s</div></%1$s>', $html_tag, $wrapper_attributes, $extra_content, $inner_wrapper_attributes, $content );

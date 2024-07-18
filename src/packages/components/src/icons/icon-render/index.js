@@ -9,7 +9,6 @@ import { Spinner } from '@wordpress/components';
 import { Fragment, Component, useEffect, useState } from '@wordpress/element';
 
 const fetchCustomSvg = async ( id ) => {
-	console.log( 'Fetching SVG');
 	const response = await fetch(`/wp-json/wp/v2/kadence_custom_svg/${id}`, {
 		method: 'GET'
 	});
@@ -45,6 +44,13 @@ class IconRender extends Component {
 		 	this.getCustomSvg( this.props.name.replace('kb-custom-', '') );
 		}
 	}
+
+	componentDidUpdate( prevProps, prevState, snapshot ) {
+		if ( this.props.name !== prevProps.name && this.props.name.startsWith( 'kb-custom' ) ) {
+			this.getCustomSvg( this.props.name.replace( 'kb-custom-', '' ) );
+		}
+	}
+
 	getCustomSvg = async ( id ) => {
 		try {
 			// Check if the SVG is in localStorage

@@ -736,7 +736,7 @@ class Kadence_Blocks_Settings {
 		$license_key    = kadence_blocks_get_current_license_key();
 		$disconnect_url = '';
 		$is_authorized  = false;
-		if ( ! empty( $license_key ) ) {
+		if ( ! empty( $license_key ) && ! kadence_blocks_is_ai_disabled() ) {
 			$is_authorized = is_authorized( $license_key, 'kadence-blocks', ( ! empty( $token ) ? $token : '' ), get_license_domain() );
 		}
 
@@ -1288,6 +1288,7 @@ class Kadence_Blocks_Settings {
 								echo '<form action="options.php" method="post">';
 									settings_fields( 'kadence_blocks_font_settings' );
 									do_settings_sections( 'kt_blocks_fonts_section' );
+									submit_button( __( 'Save Changes', 'kadence-blocks' ) );
 								echo '</form>';
 								?>
 							</div>
