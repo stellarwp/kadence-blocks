@@ -5,11 +5,12 @@ import { get, debounce } from 'lodash';
 import { __ } from '@wordpress/i18n';
 import { PREVENT_BLOCK_DELETE } from './constants';
 import { moreHorizontal, edit, trash } from '@wordpress/icons';
+import { memo } from 'react';
 
 import { DndContext } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 
-const DragHandle = React.memo((props) => (
+const DragHandle = memo((props) => (
 	<div className={'drag-handle'} style={{ cursor: 'grab', marginRight: '5px' }} {...props}>
 		<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
 			<path d="M13 8c.6 0 1-.4 1-1s-.4-1-1-1-1 .4-1 1 .4 1 1 1zM5 6c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1zm0 4c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1zm8 0c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1zM9 6c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1zm0 4c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1z"></path>

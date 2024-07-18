@@ -39,7 +39,7 @@ export default function SelectOrCreatePlaceholder({
 		return (
 			<Placeholder
 				className="kb-select-or-create-placeholder"
-				icon={heading}
+				icon={headerBlockIcon}
 				label={label}
 				instructions={instructions}
 			>
