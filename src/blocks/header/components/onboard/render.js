@@ -1,14 +1,13 @@
-import { InnerBlocks } from '@wordpress/block-editor';
 import { useEntityBlockEditor } from '@wordpress/core-data';
+import { BlockPreview } from '@wordpress/block-editor';
+import { get } from 'lodash';
 
 const HeaderRender = ({ id }) => {
-	const [blocks] = useEntityBlockEditor('postType', 'kadence_header', id);
+	const [blocks] = useEntityBlockEditor('postType', 'kadence_header', { id });
 
-	return (
-		<>
-			<InnerBlocks blocks={blocks} />
-		</>
-	);
+	const desktopBlocks = get(blocks, [0, 'innerBlocks', 0], []);
+
+	return <BlockPreview blocks={desktopBlocks} viewportWidth={800} />;
 };
 
 export default HeaderRender;

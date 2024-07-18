@@ -2,8 +2,6 @@ import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
-import { InnerBlocks } from '@wordpress/block-editor';
-import { useEntityBlockEditor } from '@wordpress/core-data';
 import HeaderRender from './render';
 
 const HeaderExisting = ({ data, onChange }) => {
