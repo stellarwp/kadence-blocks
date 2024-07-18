@@ -1,6 +1,6 @@
 import { progressIcon } from '@kadence/icons';
 import { registerBlockType } from '@wordpress/blocks';
-import { _x } from '@wordpress/i18n';
+import { _x, __ } from '@wordpress/i18n';
 
 import './editor.scss';
 import './style.scss';
