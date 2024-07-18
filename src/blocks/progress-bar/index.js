@@ -14,6 +14,8 @@ import metadata from './block.json';
 registerBlockType('kadence/progress-bar', {
 	...metadata,
 	title: _x('Progress Bar', 'block title', 'kadence-blocks'),
+	description: _x('Kadence progress bar', 'block description', 'kadence-blocks'),
+	keywords: [__('progress bar', 'kadence-blocks'), 'kb'],
 	icon: {
 		src: progressIcon,
 	},
