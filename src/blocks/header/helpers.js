@@ -1,5 +1,5 @@
 import { createBlock } from '@wordpress/blocks';
-import { get } from 'lodash';
+import { get, has } from 'lodash';
 
 // Basic templates
 import { innerBlocks as Basic1InnerBlocks, postMeta as Basic1PostMeta } from './templates/basic-1';
@@ -17,36 +17,195 @@ import { innerBlocks as MultiRow3InnerBlocks, postMeta as MultiRow3PostMeta } fr
 import { innerBlocks as MultiRow4InnerBlocks, postMeta as MultiRow4PostMeta } from './templates/multi-row-4';
 import { innerBlocks as MultiRow5InnerBlocks, postMeta as MultiRow5PostMeta } from './templates/multi-row-5';
 
-export function buildTemplateFromSelection(desktop, offCanvasTemplate) {
-	const data = getDataFromKey(desktop);
-	const offCanvasData = getDataFromKey(offCanvasTemplate);
+export function buildTemplateFromSelection(desktop, mobile) {
+	// If it's an exact match to existing template, return that template
+	if (desktop === mobile) {
+		return getDataFromKey(desktop);
+	}
+
+	// If it's not an exact match, build the template from scratch
+	const desktopData = getDataFromKey(desktop);
+	const mobileData = getDataFromKey(mobile);
+
+	const desktopInnerBlocks = getInnerBlocksFromOffset(desktopData);
+	const mobileInnerBlocks = getInnerBlocksFromOffset(mobileData, 1);
+	const offCanvasInnerBlocks = getInnerBlocksFromOffset(mobileData, 2);
+
+	const postMeta = mergeDesktopAndMobilePostMeta(desktopData, mobileData);
 
 	return {
 		templateInnerBlocks: [
 			createBlock('kadence/header', {}, [
-				createBlock(
-					'kadence/header-container-desktop',
-					{ uniqueID: '8_eac20d-0e' },
-					getInnerBlocksFromOffset(data, 0)
-				),
-				createBlock(
-					'kadence/header-container-tablet',
-					{ uniqueID: '8_eac21d-0e' },
-					getInnerBlocksFromOffset(data, 1)
-				),
-				createBlock(
-					'kadence/off-canvas',
-					{ uniqueID: '8_eac22d-0e' },
-					getInnerBlocksFromOffset(offCanvasData, 2)
-				),
+				createBlock('kadence/header-container-desktop', { uniqueID: '8_eac20d-0e' }, desktopInnerBlocks),
+				createBlock('kadence/header-container-tablet', { uniqueID: '8_eac20d-1e' }, mobileInnerBlocks),
+				createBlock('kadence/off-canvas', { uniqueID: '8_eac20d-2e' }, offCanvasInnerBlocks),
 			]),
 		],
-		templatePostMeta: data.templatePostMeta,
+		templatePostMeta: postMeta,
 	};
 }
 
+function mergeDesktopAndMobilePostMeta(desktopData, mobileData) {
+	const desktop = desktopData.templatePostMeta;
+	const mobile = mobileData.templatePostMeta;
+
+	// Unset all the mobile/tablet values from Desktop
+	for (const key in desktop) {
+		if (
+			desktop.hasOwnProperty(key) &&
+			(key.includes('tablet') || key.includes('mobile') || key.includes('Tablet') || key.includes('Mobile'))
+		) {
+			delete desktop[key];
+		}
+	}
+
+	let response = desktop;
+
+	// _kad_header_height
+	if (!has(response, '_kad_header_height') && has(mobile, '_kad_header_height')) {
+		response._kad_header_height = ['', mobile._kad_header_height[1], mobile._kad_header_height[2]];
+	} else if (has(response, '_kad_header_height') && has(mobile, '_kad_header_height')) {
+		response._kad_header_height = [
+			desktop._kad_header_height[0],
+			mobile._kad_header_height[1],
+			mobile._kad_header_height[2],
+		];
+	} else if (has(response, '_kad_header_height') && !has(mobile, '_kad_header_height')) {
+		response._kad_header_height = [desktop._kad_header_height[0], '', ''];
+	}
+
+	// _kad_header_flex
+	if (!has(response, '_kad_header_flex') && has(mobile, '_kad_header_flex')) {
+		response._kad_header_flex = {
+			direction: ['', mobile._kad_header_flex.direction[1], mobile._kad_header_flex.direction[2]],
+			justifyContent: ['', mobile._kad_header_flex.justifyContent[1], mobile._kad_header_flex.justifyContent[2]],
+			verticalAlignment: [
+				'',
+				mobile._kad_header_flex.verticalAlignment[1],
+				mobile._kad_header_flex.verticalAlignment[2],
+			],
+		};
+	} else if (has(response, '_kad_header_flex') && has(mobile, '_kad_header_flex')) {
+		response._kad_header_flex = {
+			direction: [
+				desktop._kad_header_flex.direction[0],
+				mobile._kad_header_flex.direction[1],
+				mobile._kad_header_flex.direction[2],
+			],
+			justifyContent: [
+				desktop._kad_header_flex.justifyContent[0],
+				mobile._kad_header_flex.justifyContent[1],
+				mobile._kad_header_flex.justifyContent[2],
+			],
+			verticalAlignment: [
+				desktop._kad_header_flex.verticalAlignment[0],
+				mobile._kad_header_flex.verticalAlignment[1],
+				mobile._kad_header_flex.verticalAlignment[2],
+			],
+		};
+	} else if (has(response, '_kad_header_flex') && !has(mobile, '_kad_header_flex')) {
+		response._kad_header_flex = {
+			direction: [desktop._kad_header_flex.direction[0], '', ''],
+			justifyContent: [desktop._kad_header_flex.justifyContent[0], '', ''],
+			verticalAlignment: [desktop._kad_header_flex.verticalAlignment[0], '', ''],
+		};
+	}
+
+	// _kad_header_typography
+	if (!has(response, '_kad_header_typography') && has(mobile, '_kad_header_typography')) {
+		response._kad_header_typography = {
+			color: '',
+			size: ['', mobile._kad_header_typography.size[1], mobile._kad_header_typography.size[2]],
+			sizeType: 'px',
+			lineHeight: ['', mobile._kad_header_typography.lineHeight[1], mobile._kad_header_typography.lineHeight[2]],
+			lineType: '',
+			letterSpacing: [
+				'',
+				mobile._kad_header_typography.letterSpacing[1],
+				mobile._kad_header_typography.letterSpacing[2],
+			],
+			letterType: 'px',
+			textTransform: '',
+			family: '',
+			google: false,
+			style: '',
+			weight: '400',
+			variant: '',
+			subset: '',
+			loadGoogle: true,
+		};
+	} else if (has(response, '_kad_header_typography') && has(mobile, '_kad_header_typography')) {
+		response._kad_header_typography = {
+			color: '',
+			size: [
+				desktop._kad_header_typography.size[0],
+				mobile._kad_header_typography.size[1],
+				mobile._kad_header_typography.size[2],
+			],
+			sizeType: 'px',
+			lineHeight: [
+				desktop._kad_header_typography.lineHeight[0],
+				mobile._kad_header_typography.lineHeight[1],
+				mobile._kad_header_typography.lineHeight[2],
+			],
+			lineType: '',
+			letterSpacing: [
+				desktop._kad_header_typography.letterSpacing[0],
+				mobile._kad_header_typography.letterSpacing[1],
+				mobile._kad_header_typography.letterSpacing[2],
+			],
+			letterType: 'px',
+			textTransform: '',
+			family: '',
+			google: false,
+			style: '',
+			weight: '400',
+			variant: '',
+			subset: '',
+			loadGoogle: true,
+		};
+	} else if (has(response, '_kad_header_typography') && !has(mobile, '_kad_header_typography')) {
+		response._kad_header_typography = {
+			color: '',
+			size: [desktop._kad_header_typography.size[0], '', ''],
+			sizeType: 'px',
+			lineHeight: [desktop._kad_header_typography.lineHeight[0], '', ''],
+			lineType: '',
+			letterSpacing: [desktop._kad_header_typography.letterSpacing[0], '', ''],
+			letterType: 'px',
+			textTransform: '',
+			family: '',
+			google: false,
+			style: '',
+			weight: '400',
+			variant: '',
+			subset: '',
+			loadGoogle: true,
+		};
+	}
+
+	// unset mobile _kad_header_height
+	if (has(mobile, '_kad_header_height')) {
+		delete mobile._kad_header_height;
+	}
+
+	// unset mobile _kad_header_flex
+	if (has(mobile, '_kad_header_flex')) {
+		delete mobile._kad_header_flex;
+	}
+
+	// unset mobile _kad_header_typography
+	if (has(mobile, '_kad_header_typography')) {
+		delete mobile._kad_header_typography;
+	}
+
+	response = { ...response, ...mobile };
+
+	return response;
+}
+
 function getInnerBlocksFromOffset({ templateInnerBlocks }, offset = 0) {
-	return get(templateInnerBlocks, [0, 'innerBlocks', offset, 'innerBlocks']);
+	return get(templateInnerBlocks, [0, 'innerBlocks', offset, 'innerBlocks'], []);
 }
 
 function getDataFromKey(key) {

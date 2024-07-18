@@ -15,17 +15,17 @@ const HeaderMobile = ({ data, onChange }) => {
 	}, [data, onChange]);
 
 	const basicOptions = {
-		basicOne: {
+		'basic-1': {
 			title: __('Mobile 1', 'kadence-blocks'),
 			icon: <MobileIcons.Mobile1 />,
 			iconHover: <MobileIcons.Mobile1Hover />,
 		},
-		advancedTwo: {
+		'basic-2': {
 			title: __('Mobile 2', 'kadence-blocks'),
 			icon: <MobileIcons.Mobile2 />,
 			iconHover: <MobileIcons.Mobile2Hover />,
 		},
-		advancedThree: {
+		'basic-3': {
 			title: __('Mobile 3', 'kadence-blocks'),
 			icon: <MobileIcons.Mobile3 />,
 			iconHover: <MobileIcons.Mobile3Hover />,
