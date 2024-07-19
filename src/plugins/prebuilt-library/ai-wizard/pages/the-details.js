@@ -193,7 +193,7 @@ export function TheDetails() {
 									id="2"
 									label={__('Keywords', 'kadence-blocks')}
 									hideLabelFromVision
-									placeholder={__('Add Keyword...', 'kadence-blocks')}
+									placeholder={__('Add Keyword…', 'kadence-blocks')}
 									tags={keywords}
 									maxTags={maxTags}
 									selectedTags={(selectedTags) =>

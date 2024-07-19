@@ -93,7 +93,8 @@ function KadenceTabsSave({ attributes }) {
 							value={
 								titles[index] && titles[index].text
 									? titles[index].text
-									: sprintf(__('Tab %d'), 1 + index)
+									: // translators: %d: Tab number
+									  sprintf(__('Tab %d'), 1 + index)
 							}
 							className={'kt-title-text'}
 						/>
@@ -109,7 +110,8 @@ function KadenceTabsSave({ attributes }) {
 									value={
 										titles[index] && titles[index].text
 											? titles[index].text
-											: sprintf(__('Tab %d'), 1 + index)
+											: // translators: %d: Tab number
+											  sprintf(__('Tab %d'), 1 + index)
 									}
 									className={'kt-title-text'}
 								/>

@@ -211,7 +211,7 @@ class TemplatesLibrary extends Component {
 						{!this.state.errorItems && this.state.isImporting && (
 							<div className="preparing-importing-images">
 								<Spinner />
-								<h2>{__('Preparing Content...', 'kadence-blocks')}</h2>
+								<h2>{__('Preparing Content…', 'kadence-blocks')}</h2>
 							</div>
 						)}
 						{this.state.errorItems && (

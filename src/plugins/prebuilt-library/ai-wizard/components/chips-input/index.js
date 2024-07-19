@@ -43,12 +43,12 @@ export function ChipsInput(props) {
 	function maybeUpdateTags() {
 		const trimmedInput = inputValue.replace(',', '').trim();
 		const newSelectedItems = [...tags];
-		const duplicatedValues = newSelectedItems.indexOf(trimmedInput);
 
 		if (trimmedInput.length === 0) {
 			return;
 		}
 
+		const duplicatedValues = newSelectedItems.indexOf(trimmedInput);
 		if (duplicatedValues !== -1) {
 			setInputValue('');
 			return;

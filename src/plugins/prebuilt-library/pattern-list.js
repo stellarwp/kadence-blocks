@@ -16,17 +16,6 @@ import {
 	Icon,
 	__experimentalHeading as Heading,
 } from '@wordpress/components';
-import {
-	arrowLeft,
-	download,
-	previous,
-	next,
-	chevronLeft,
-	chevronDown,
-	update,
-	close,
-	plusCircle,
-} from '@wordpress/icons';
 import { kadenceNewIcon, aiIcon, aiSettings } from '@kadence/icons';
 import { tryParseJSON } from '@kadence/helpers';
 import { useMemo, useEffect, useState } from '@wordpress/element';
@@ -81,7 +70,7 @@ function BannerHeader({ selectedCategory }) {
 					</ExternalLink>
 				</>
 			)}
-			{selectedCategory == 'post-loop' && (
+			{selectedCategory === 'post-loop' && (
 				<>
 					{__('These patterns require you to have some posts.', 'kadence-blocks')}{' '}
 					<ExternalLink href={kadence_blocks_params.addPostsLink ? kadence_blocks_params.addPostsLink : '#'}>
@@ -208,6 +197,7 @@ function GenerateHeader({ context, contextLabel, contextState, generateContext }
 }
 function LaunchWizard({ launchWizard }) {
 	const launchWizardHeadline = __('Supercharge your web design process with Kadence AI', 'kadence-blocks');
+	// eslint-disable-next-line @wordpress/i18n-no-collapsible-whitespace
 	const launchWizardBody = __(
 		`To fill your library with thoughtful, relevant, and unique content, simply enter your site goals and information into our prompt wizard.
 		Our design library includes context-driven design patterns that are easy to use, saving you time and effort during the design process. It
@@ -346,6 +336,7 @@ function ProOnlyHeader({ launchWizard }) {
 	const data_key = window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '';
 	const activateLink = window?.kadence_blocks_params?.homeLink ? kadence_blocks_params.homeLink : '';
 	const hasPro = kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false;
+	// eslint-disable-next-line @wordpress/i18n-no-collapsible-whitespace
 	const launchWizardBody = __(
 		`Fill your library with thoughtful, relevant, and unique content. It
 		only takes a few minutes to get started.`,
@@ -861,7 +852,7 @@ function PatternList({
 				>
 					<div className="preparing-importing-images">
 						<Spinner />
-						<h2>{__('Preparing Content...', 'kadence-blocks')}</h2>
+						<h2>{__('Preparing Content…', 'kadence-blocks')}</h2>
 					</div>
 				</div>
 			</div>

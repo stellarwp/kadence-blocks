@@ -1,6 +1,5 @@
 import { useState } from '@wordpress/element';
-import { Dashicon, Tooltip, SelectControl, Button, Modal, ToggleControl } from '@wordpress/components';
-import { map } from 'lodash';
+import { ToggleControl } from '@wordpress/components';
 import { useDispatch } from '@wordpress/data';
 import { store as noticesStore } from '@wordpress/notices';
 
@@ -39,7 +38,7 @@ function KadenceSetting(props) {
 
 	return (
 		<>
-			{type == 'toggle' && (
+			{type === 'toggle' && (
 				<ToggleControl
 					label={label}
 					isBusy={isSaving}

@@ -555,7 +555,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 					{!isError && isImporting && (
 						<div className="preparing-importing-images">
 							<Spinner />
-							<h2>{__('Preparing Content...', 'kadence-blocks')}</h2>
+							<h2>{__('Preparing Content…', 'kadence-blocks')}</h2>
 						</div>
 					)}
 					{isError && (
@@ -611,7 +611,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 									(keywords && keywords.some((x) => x.toLowerCase().includes(search.toLowerCase()))))
 							) {
 								return (
-									<div className="kb-css-masonry-inner">
+									<div className="kb-css-masonry-inner" key={index}>
 										<Button
 											key={key}
 											className="kb-css-masonry-btn"

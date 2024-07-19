@@ -126,7 +126,7 @@ function KadenceIcons(props) {
 
 	const blockProps = useBlockProps({
 		className,
-		['data-align']:
+		'data-align':
 			'left' === blockAlignment || 'right' === blockAlignment || 'center' === blockAlignment
 				? blockAlignment
 				: undefined,
