@@ -147,10 +147,6 @@ export function Edit(props) {
 		className: blockClasses,
 	});
 
-	if (isPreviewMode) {
-		return <>{formTemplateContactIcon}</>;
-	}
-
 	{
 		/* Directly editing from via kadence_navigation post type */
 	}
