@@ -142,13 +142,13 @@ export function AboutYourSite() {
 		if (entityType === ENTITY_TYPE_INDIVIDUAL) {
 			return sprintf(
 				// translators: %s: company or individual name
-				__('I am %s, a...', 'kadence-blocks'),
+				__('I am %s, a…', 'kadence-blocks'),
 				companyName
 			);
 		}
 		return sprintf(
 			// translators: %s: company or individual name
-			__('%s is a...', 'kadence-blocks'),
+			__('%s is a…', 'kadence-blocks'),
 			companyName
 		);
 	}

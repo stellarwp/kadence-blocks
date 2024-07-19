@@ -777,7 +777,7 @@ function KadenceAdvancedHeading(props) {
 
 	const classes = classnames({
 		[`kt-adv-heading${uniqueID}`]: uniqueID,
-		['kadence-advancedheading-text']: true,
+		'kadence-advancedheading-text': true,
 		'kb-content-is-dynamic': isDynamicReplaced,
 		[textColorClass]: textColorClass,
 		'has-text-color': textColorClass,

@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { useResizeObserver } from '@wordpress/compose';
-import { useState, useMemo, useRef, useEffect } from '@wordpress/element';
+import { useState, useRef, useEffect } from '@wordpress/element';
 import { Disabled, Spinner } from '@wordpress/components';
 import root from 'react-shadow';
 

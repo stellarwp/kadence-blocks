@@ -36,8 +36,6 @@ import {
 	getPostOrFseId,
 } from '@kadence/helpers';
 
-/* global wp */
-
 /**
  * Import Css
  */
@@ -548,7 +546,7 @@ export function ImageEdit(props) {
 	const blockProps = useBlockProps({
 		ref,
 		className: classes,
-		['data-align']: 'center' === align ? align : undefined,
+		'data-align': 'center' === align ? align : undefined,
 	});
 
 	return (

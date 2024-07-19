@@ -11,7 +11,7 @@ import { hexToRGBA } from '@kadence/helpers';
 import { map }from 'lodash';
 import { useSetting } from '@wordpress/block-editor';
 import { useState } from '@wordpress/element';
- 
+
  /**
   * Internal block libraries
   */
@@ -26,7 +26,6 @@ import {
 	Path,
 } from '@wordpress/components';
  import { DOWN } from '@wordpress/keycodes';
- /* global kadence_blocks_params */
  // eslint-disable-next-line camelcase
  const ColorSelectorSVGIcon = () => (
 	 <SVG xmlns="https://www.w3.org/2000/svg" viewBox="0 0 20 20">

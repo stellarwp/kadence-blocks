@@ -3,8 +3,6 @@
  *
  */
 
-/* global kadence_blocks_params */
-
 
 /**
  * Import External

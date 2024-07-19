@@ -152,10 +152,10 @@
 	 */
 	const isInView = function (elem, settings, bottom) {
 		const bounds = elem.getBoundingClientRect();
-		const offset = getOffset(settings);
 		if (bottom) {
 			return parseInt(bounds.bottom, 10) < (window.innerHeight || document.documentElement.clientHeight);
 		}
+		const offset = getOffset(settings);
 		return parseInt(bounds.top, 10) <= offset;
 	};
 
