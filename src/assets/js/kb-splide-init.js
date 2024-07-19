@@ -316,4 +316,7 @@
 	document.addEventListener('kadenceJSInitReload', function () {
 		kadenceBlocksSplide.init();
 	});
+	document.addEventListener('kb-query-loaded', function () {
+		kadenceBlocksSplide.init();
+	});
 })();
