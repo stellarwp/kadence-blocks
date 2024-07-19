@@ -98,8 +98,6 @@ export function Edit(props) {
 		[clientId]
 	);
 
-	const previewIsTransparent = getPreviewSize(previewDevice, isTransparent, isTransparentTablet, isTransparentMobile);
-
 	const blockClasses = classnames({
 		'wp-block-kadence-header': true,
 		[`wp-block-kadence-header${uniqueID}`]: uniqueID,
@@ -232,6 +230,7 @@ export function Edit(props) {
 		);
 	}
 
+	const previewIsTransparent = getPreviewSize(previewDevice, isTransparent, isTransparentTablet, isTransparentMobile);
 	if (previewIsTransparent) {
 		return <div className="kb-header-transparent-placeholder">{mainBlockContent}</div>;
 	}

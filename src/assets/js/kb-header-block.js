@@ -148,7 +148,7 @@ class KBHeader {
 	constructor(target, options = {}) {
 		//target the target
 		const self = this;
-		this.root = 'string' == typeof target ? document.querySelector(target) : target;
+		this.root = 'string' === typeof target ? document.querySelector(target) : target;
 		//TODO get a real root id parsed from the block unique id.
 		this.rootID = 'aaa';
 		this.autoTransparentSpacing = this.root.dataset?.autoTransparentSpacing === '1';
@@ -260,17 +260,15 @@ class KBHeader {
 
 	updateSticky(e) {
 		const self = this;
-		//TODO change wrapper to something that also applies to fse themes
-		var wrapper = document.getElementById('wrapper'),
-			proSticky = document.querySelectorAll('.kadence-pro-fixed-above'),
-			proElements = document.querySelectorAll('.kadence-before-wrapper-item');
-		var offsetTop = this.getOffset(wrapper).top;
-		this.anchorOffset = this.getOffset(this.root).top;
-		var currScrollTop = window.scrollY;
-
 		if (!this.activeHeader) {
 			return;
 		}
+
+		//TODO change wrapper to something that also applies to fse themes
+		const wrapper = document.getElementById('wrapper');
+		var offsetTop = this.getOffset(wrapper).top;
+		this.anchorOffset = this.getOffset(this.root).top;
+		var currScrollTop = window.scrollY;
 
 		// Set current active screen size
 		if (parseInt(kadenceHeaderConfig.breakPoints.desktop) < window.innerWidth) {
@@ -285,9 +283,9 @@ class KBHeader {
 		//don't do sticky stuff if the current screen size is not set to style sticky
 		if (
 			!(
-				(this.activeSize == 'desktop' && this.sticky) ||
-				(this.activeSize == 'tablet' && this.stickyTablet) ||
-				(this.activeSize == 'mobile' && this.stickyMobile)
+				(this.activeSize === 'desktop' && this.sticky) ||
+				(this.activeSize === 'tablet' && this.stickyTablet) ||
+				(this.activeSize === 'mobile' && this.stickyMobile)
 			)
 		) {
 			//reset all state classes and end
@@ -315,7 +313,7 @@ class KBHeader {
 		//set the container anchor height to create a sized placeholder for the header (but only if we're not also transparent)
 		var elHeight = this.activeHeader.offsetHeight;
 		const activeSizeCased =
-			this.activeSize == 'desktop' ? '' : this.activeSize.charAt(0).toUpperCase() + this.activeSize.slice(1);
+			this.activeSize === 'desktop' ? '' : this.activeSize.charAt(0).toUpperCase() + this.activeSize.slice(1);
 		if (!this['transparent' + activeSizeCased]) {
 			this.root.style.height = elHeight + 'px';
 		}
@@ -325,6 +323,8 @@ class KBHeader {
 			var boomBar = document.querySelector('.boom_bar');
 			offsetTop = this.getOffset(wrapper).top - boomBar.offsetHeight;
 		}
+
+		var proElements = document.querySelectorAll('.kadence-before-wrapper-item');
 		if (proElements.length) {
 			var proElementOffset = 0;
 			for (let i = 0; i < proElements.length; i++) {
@@ -332,6 +332,8 @@ class KBHeader {
 			}
 			offsetTop = this.getOffset(wrapper).top - proElementOffset;
 		}
+
+		var proSticky = document.querySelectorAll('.kadence-pro-fixed-above');
 		if (proSticky.length) {
 			var proOffset = 0;
 			for (let i = 0; i < proSticky.length; i++) {
@@ -349,9 +351,9 @@ class KBHeader {
 		// Run the shrinking / unshrinking processing
 		if (this.shrinkMain) {
 			var shrinkHeight =
-				this.activeSize == 'mobile'
+				this.activeSize === 'mobile'
 					? this.shrinkMainHeightMobile
-					: this.activeSize == 'tablet'
+					: this.activeSize === 'tablet'
 					? this.shrinkMainHeightTablet
 					: this.shrinkMainHeight;
 			if (shrinkHeight) {

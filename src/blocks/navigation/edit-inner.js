@@ -497,24 +497,24 @@ export function EditInner(props) {
 	};
 
 	const navClasses = classnames('navigation', {
-		['nav--toggle-sub']: true,
+		'nav--toggle-sub': true,
 		[`navigation-desktop-dropdown-animation-${dropdownReveal ? dropdownReveal : 'none'}`]:
-			!previewDevice || previewDevice == 'Desktop',
-		[`navigation-tablet-dropdown-animation-${dropdownRevealTablet}`]: previewDevice == 'Tablet',
-		[`navigation-mobile-dropdown-animation-${dropdownRevealMobile}`]: previewDevice == 'Mobile',
-		[`navigation-desktop-style-${style}`]: !previewDevice || previewDevice == 'Desktop',
-		[`navigation-tablet-style-${styleTablet}`]: previewDevice == 'Tablet',
-		[`navigation-mobile-style-${styleMobile}`]: previewDevice == 'Mobile',
-		[`navigation-desktop-collapse-sub-menus-${collapseSubMenus}`]: !previewDevice || previewDevice == 'Desktop',
-		[`navigation-tablet-collapse-sub-menus-${collapseSubMenusTablet}`]: previewDevice == 'Tablet',
-		[`navigation-mobile-collapse-sub-menus-${collapseSubMenusMobile}`]: previewDevice == 'Mobile',
+			!previewDevice || previewDevice === 'Desktop',
+		[`navigation-tablet-dropdown-animation-${dropdownRevealTablet}`]: previewDevice === 'Tablet',
+		[`navigation-mobile-dropdown-animation-${dropdownRevealMobile}`]: previewDevice === 'Mobile',
+		[`navigation-desktop-style-${style}`]: !previewDevice || previewDevice === 'Desktop',
+		[`navigation-tablet-style-${styleTablet}`]: previewDevice === 'Tablet',
+		[`navigation-mobile-style-${styleMobile}`]: previewDevice === 'Mobile',
+		[`navigation-desktop-collapse-sub-menus-${collapseSubMenus}`]: !previewDevice || previewDevice === 'Desktop',
+		[`navigation-tablet-collapse-sub-menus-${collapseSubMenusTablet}`]: previewDevice === 'Tablet',
+		[`navigation-mobile-collapse-sub-menus-${collapseSubMenusMobile}`]: previewDevice === 'Mobile',
 		//we don't need to apply this setting in the editor
 		// [`navigation-desktop-parent-toggles-menus-${parentTogglesMenus}`]: !previewDevice || previewDevice == 'Desktop',
-		// [`navigation-tablet-parent-toggles-menus-${parentTogglesMenusTablet}`]: previewDevice == 'Tablet',
-		// [`navigation-mobile-parent-toggles-menus-${parentTogglesMenusMobile}`]: previewDevice == 'Mobile',
-		[`navigation-desktop-parent-active-${parentActive}`]: !previewDevice || previewDevice == 'Desktop',
-		[`navigation-tablet-parent-active-${parentActiveTablet}`]: previewDevice == 'Tablet',
-		[`navigation-mobile-parent-active-${parentActiveMobile}`]: previewDevice == 'Mobile',
+		// [`navigation-tablet-parent-toggles-menus-${parentTogglesMenusTablet}`]: previewDevice === 'Tablet',
+		// [`navigation-mobile-parent-toggles-menus-${parentTogglesMenusMobile}`]: previewDevice === 'Mobile',
+		[`navigation-desktop-parent-active-${parentActive}`]: !previewDevice || previewDevice === 'Desktop',
+		[`navigation-tablet-parent-active-${parentActiveTablet}`]: previewDevice === 'Tablet',
+		[`navigation-mobile-parent-active-${parentActiveMobile}`]: previewDevice === 'Mobile',
 	});
 
 	const innerNavClasses = classnames('menu', {
