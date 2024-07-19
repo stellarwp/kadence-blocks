@@ -1586,9 +1586,7 @@ export default function Image({
 				onLoad={(event) => {
 					setNaturalSize(pick(event.target, ['naturalWidth', 'naturalHeight']));
 				}}
-				className={ `kb-img ${
-					tooltipDash && tooltip ? ' kb-image-tooltip-border' : ''
-				}`}
+				className={ `kb-img ${tooltipDash && tooltip ? ' kb-image-tooltip-border' : ''}`}
 			/>
 			{temporaryURL && <Spinner />}
 			{!useRatio && (
