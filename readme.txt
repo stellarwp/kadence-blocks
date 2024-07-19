@@ -3,8 +3,8 @@ Contributors: britner, oakesjosh, woodardmc
 Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.3
-Tested up to: 6.5
-Stable tag: 3.2.48
+Tested up to: 6.6
+Stable tag: 3.2.49
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -175,7 +175,8 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.2.49 =
-Release Date: July TBD 2024
+Release Date: July 19th 2024
+* Add: Tooltips for images.
 * Fix: Prevent API call when Kadence AI is disabled.
 * Fix: Icon list alignment not showing properly in editor.
 * Fix: Issue with aria describedby attributes in advanced form.
