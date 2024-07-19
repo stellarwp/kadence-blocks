@@ -180,6 +180,9 @@ export default function Image({
 		overlayBlendMode,
 		globalAlt,
 		imagePosition,
+		tooltip,
+		tooltipPlacement,
+		tooltipDash,
 	} = attributes;
 
 	const previewURL = dynamicURL ? dynamicURL : url;
@@ -1340,7 +1343,48 @@ export default function Image({
 						</KadencePanelBody>
 
 						<div className="kt-sidebar-settings-spacer"></div>
-
+						<KadencePanelBody
+							title={__('Tooltip', 'kadence-blocks')}
+							initialOpen={false}
+							panelName={'kb-image-tooltip-settings'}
+						>
+							<TextareaControl
+								label={__('Tooltip Content', 'kadence-blocks')}
+								value={tooltip}
+								onChange={(newValue) => setAttributes({ tooltip: newValue })}
+							/>
+							<SelectControl
+								label={__('Tooltip Placement', 'kadence-blocks')}
+								value={tooltipPlacement || 'top'}
+								options={[
+									{ label: __('Top', 'kadence-blocks'), value: 'top' },
+									{ label: __('Top Start', 'kadence-blocks'), value: 'top-start' },
+									{ label: __('Top End', 'kadence-blocks'), value: 'top-end' },
+									{ label: __('Right', 'kadence-blocks'), value: 'right' },
+									{ label: __('Right Start', 'kadence-blocks'), value: 'right-start' },
+									{ label: __('Right End', 'kadence-blocks'), value: 'right-end' },
+									{ label: __('Bottom', 'kadence-blocks'), value: 'bottom' },
+									{ label: __('Bottom Start', 'kadence-blocks'), value: 'bottom-start' },
+									{ label: __('Bottom End', 'kadence-blocks'), value: 'bottom-end' },
+									{ label: __('Left', 'kadence-blocks'), value: 'left' },
+									{ label: __('Left Start', 'kadence-blocks'), value: 'left-start' },
+									{ label: __('Left End', 'kadence-blocks'), value: 'left-end' },
+									{ label: __('Auto', 'kadence-blocks'), value: 'auto' },
+									{ label: __('Auto Start', 'kadence-blocks'), value: 'auto-start' },
+									{ label: __('Auto End', 'kadence-blocks'), value: 'auto-end' },
+								]}
+								onChange={(val) => {
+									setAttributes({ tooltipPlacement: val });
+								}}
+							/>
+							<ToggleControl
+								label={__('Show indicator underline', 'kadence-blocks')}
+								checked={tooltipDash}
+								onChange={(value) => {
+									setAttributes({ tooltipDash: value });
+								}}
+							/>
+						</KadencePanelBody>
 						<KadenceBlockDefaults
 							attributes={attributes}
 							defaultAttributes={metadata.attributes}
@@ -1542,6 +1586,9 @@ export default function Image({
 				onLoad={(event) => {
 					setNaturalSize(pick(event.target, ['naturalWidth', 'naturalHeight']));
 				}}
+				className={ `kb-img ${
+					tooltipDash && tooltip ? ' kb-image-tooltip-border' : ''
+				}`}
 			/>
 			{temporaryURL && <Spinner />}
 			{!useRatio && (
