@@ -174,6 +174,18 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.2.49 =
+Release Date: July TBD 2024
+* Fix: Prevent API call when Kadence AI is disabled.
+* Fix: Icon list alignment not showing properly in editor.
+* Fix: Issue with aria describedby attributes in advanced form.
+* Fix: Stretch vertical align not being applied to sections on mobile and tablet.
+* Fix: Center aligned infobox image when used inside a section.
+* Fix: Accordion pane spacing issue.
+* Fix: Load google fonts locally option not saving in Dashboard > Kadence > Home.
+* Fix: Focal point not being used for row layout with background images when parallax is enabled.
+* Fix: Gallery block not initializing when used in a query loop card.
+
 = 3.2.48 =
 Release Date: June 27th 2024
 * Fix: Issue with vertical alignment in tablet for sections.
