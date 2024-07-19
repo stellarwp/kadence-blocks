@@ -124,6 +124,7 @@ class Kadence_Blocks_Show_More_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( 'max-height', 'none' );
 		$css->add_property( '-webkit-mask-image', 'none' );
 		$css->add_property( 'mask-image', 'none' );
+		$css->add_property( 'overflow-y', 'unset' );
 
 		$css->set_selector( '.kb-block-show-more-container' . $unique_id . '.kb-smc-open > .wp-block-kadence-advancedbtn .kt-btn-wrap:nth-child(1), .kb-block-show-more-container' . $unique_id . '.kb-smc-open > .wp-block-kadence-advancedbtn .wp-block-kadence-singlebtn:nth-of-type(1)' );
 		$css->add_property( 'display', 'none' );
