@@ -268,7 +268,7 @@ export function Edit(props) {
 				/>
 
 				<InspectorControlTabs
-					panelName={'advanced-header-row'}
+					panelName={'header-row'}
 					setActiveTab={(value) => setActiveTab(value)}
 					activeTab={activeTab}
 				/>
