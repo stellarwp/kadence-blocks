@@ -588,7 +588,7 @@ export default function Edit(props) {
 		}
 	}
 
-	const megaMenuWidthClass = 'kadence-menu-mega-width-' + (megaMenuWidth ? megaMenuWidth : 'container');
+	const megaMenuWidthClass = 'kadence-menu-mega-width-' + (megaMenuWidth ? megaMenuWidth : 'full');
 	const showSubMenusWithLogic = showSubMenus || isSelected || childSelected;
 
 	const blockProps = useBlockProps({
