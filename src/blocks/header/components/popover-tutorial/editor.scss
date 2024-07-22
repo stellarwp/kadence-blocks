@@ -29,6 +29,11 @@
 		color: $color-primary;
 	}
 
+	.kb-header-popover-btns {
+		display: flex;
+		gap: 5px;
+	}
+
 	button {
 		font-size: 14px;
 

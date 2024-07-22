@@ -47,6 +47,7 @@ export function Edit(props) {
 
 	const [meta, setMeta] = useHeaderProp('meta', id);
 	const [justCompletedOnboarding, setJustCompletedOnboarding] = useState(false);
+	const [formData, setFormData] = useState(null);
 
 	const metaAttributes = {
 		isSticky: meta?._kad_header_isSticky,
@@ -142,6 +143,8 @@ export function Edit(props) {
 						clientId={clientId}
 						commit={(nextId) => setAttributes({ id: nextId })}
 						setJustCompletedOnboarding={setJustCompletedOnboarding}
+						formData={formData}
+						setFormData={setFormData}
 					/>
 				)}
 
@@ -210,6 +213,7 @@ export function Edit(props) {
 							direct={false}
 							id={id}
 							justCompletedOnboarding={justCompletedOnboarding}
+							formData={formData}
 						/>
 					</EntityProvider>
 				)}
@@ -223,7 +227,13 @@ export function Edit(props) {
 		mainBlockContent = (
 			<>
 				<div {...blockProps}>
-					<EditInner {...props} direct={true} id={postId} justCompletedOnboarding={justCompletedOnboarding} />
+					<EditInner
+						{...props}
+						direct={true}
+						id={postId}
+						justCompletedOnboarding={justCompletedOnboarding}
+						formData={formData}
+					/>
 				</div>
 				<VisualBuilder clientId={clientId} previewDevice={previewDevice} isSelected={isSelected} />
 			</>
@@ -239,9 +249,8 @@ export function Edit(props) {
 
 export default Edit;
 
-function Chooser({ commit, clientId, setJustCompletedOnboarding }) {
+function Chooser({ commit, clientId, setJustCompletedOnboarding, formData, setFormData }) {
 	const [tmpId, setTmpId] = useState(0);
-	const [formData, setFormData] = useState(null);
 
 	const { setHeaderVisualBuilderOpenId } = useDispatch('kadenceblocks/data');
 
@@ -315,7 +324,9 @@ function Chooser({ commit, clientId, setJustCompletedOnboarding }) {
 					setTmpId(id);
 				}
 			});
+			console.log(1, formData);
 		}
+		setJustCompletedOnboarding(true);
 
 		//automatically open the visual editor when we've just created a new header
 		setHeaderVisualBuilderOpenId(clientId);
@@ -336,8 +347,6 @@ function Chooser({ commit, clientId, setJustCompletedOnboarding }) {
 				setIsOnboardingOpen(false);
 				if (!response?.complete) {
 					wp.data.dispatch('core/block-editor').removeBlock(clientId);
-				} else {
-					setJustCompletedOnboarding(true);
 				}
 			}}
 			onSubmit={handleSubmit}
