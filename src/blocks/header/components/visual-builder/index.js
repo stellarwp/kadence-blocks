@@ -156,7 +156,7 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 								disabled={tabletBlocks === null}
 								onClick={() => updateTab('Tablet', tabletBlocks)}
 							>
-								{__('Tablet', 'kadence-blocks')}
+								{__('Tablet / Mobile', 'kadence-blocks')}
 							</Button>
 							{hasTrigger && (
 								<Button
