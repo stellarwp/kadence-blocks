@@ -221,8 +221,8 @@ function getDataFromKey(key) {
 		response.templatePostMeta = Basic3PostMeta;
 		response.templateInnerBlocks = Basic3InnerBlocks();
 	} else if (key === 'basic-4') {
-		response.templatePostMeta = Basic4InnerBlocks;
-		response.templateInnerBlocks = Basic4PostMeta();
+		response.templatePostMeta = Basic4PostMeta;
+		response.templateInnerBlocks = Basic4InnerBlocks();
 	} else if (key === 'basic-5') {
 		response.templatePostMeta = Basic5PostMeta;
 		response.templateInnerBlocks = Basic5InnerBlocks();
