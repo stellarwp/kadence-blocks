@@ -18,7 +18,7 @@ export default function PopoverTutorial(props) {
 	const key = formData?.headerDesktop ?? 'basic-1';
 	const popoverTutorialOptions = POPOVER_TUTORIAL_OPTIONS?.[key]
 		? POPOVER_TUTORIAL_OPTIONS?.[key]
-		: POPOVER_TUTORIAL_OPTIONS?.['generic'];
+		: POPOVER_TUTORIAL_OPTIONS?.generic;
 
 	useEffect(() => {
 		const settingModel = new wp.api.models.Settings();
