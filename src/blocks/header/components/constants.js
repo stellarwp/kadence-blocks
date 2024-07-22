@@ -453,7 +453,7 @@ export const POPOVER_TUTORIAL_OPTIONS_CONTENT = {
 	'off-canvas-content': {
 		title: __('Manage Off Canvas Content', 'kadence-blocks'),
 		content: __(
-			'Edit your off canvas content by selecting the off canvas area from the visual builder.',
+			'Edit your off canvas content by selecting the off canvas tab from the visual builder.',
 			'kadence-blocks'
 		),
 	},
