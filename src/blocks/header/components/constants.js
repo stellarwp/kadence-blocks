@@ -409,18 +409,6 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 	],
 	generic: [
 		{
-			key: 'add-logo',
-			placement: 'bottom-start',
-		},
-		{
-			key: 'add-navigation',
-			placement: 'bottom-start',
-		},
-		{
-			key: 'edit-button',
-			placement: 'bottom-start',
-		},
-		{
 			key: 'edit-appearance',
 			placement: 'bottom-start',
 		},

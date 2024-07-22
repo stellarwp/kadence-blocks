@@ -324,7 +324,6 @@ function Chooser({ commit, clientId, setJustCompletedOnboarding, formData, setFo
 					setTmpId(id);
 				}
 			});
-			console.log(1, formData);
 		}
 		setJustCompletedOnboarding(true);
 

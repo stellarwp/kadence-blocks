@@ -15,7 +15,7 @@ export default function PopoverTutorial(props) {
 	const [popoverTutorialStep, setPopoverTutorialStep] = useState(0);
 	const [popoverTutorialComplete, setPopoverTutorialComplete] = useState(true);
 
-	const key = formData?.headerDesktop ?? 'basic-1';
+	const key = formData?.headerDesktop ?? 'generic';
 	const popoverTutorialOptions = POPOVER_TUTORIAL_OPTIONS?.[key]
 		? POPOVER_TUTORIAL_OPTIONS?.[key]
 		: POPOVER_TUTORIAL_OPTIONS?.generic;
