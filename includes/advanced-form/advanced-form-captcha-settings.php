@@ -119,7 +119,7 @@ class Kadence_Blocks_Form_Captcha_Settings {
 	}
 
 	private function is_using_kadence_blocks_settings( $attributes ) {
-		if ( isset( $attributes['useKbSettings'] ) && $attributes['useKbSettings'] ) {
+		if ( !isset( $attributes['useKbSettings'] ) || ( isset( $attributes['useKbSettings'] ) && $attributes['useKbSettings'] ) ) {
 			$this->using_kadence_blocks_settings = true;
 		} else {
 			$this->using_kadence_blocks_settings = false;
