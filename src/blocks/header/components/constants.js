@@ -287,7 +287,7 @@ export const POPOVER_TUTORIAL_OPTIONS_CONTENT = {
 		content: __("Customize your header's appearance to your own needs.", 'kadence-blocks'),
 	},
 	'visual-builder': {
-		title: __('Use the Visual Header Builder', 'kadence-blocks'),
+		title: __('Use the Visual Builder', 'kadence-blocks'),
 		content: __(
 			'Easily arrange the layout of your header with the Visual Builder. Look for it at the bottom of the editor.',
 			'kadence-blocks'

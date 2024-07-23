@@ -31,10 +31,12 @@
 
 	.kb-header-popover-btns {
 		display: flex;
+		//showing buttons in reverse order so "next" is first in the dom and first focused
+		flex-direction: row-reverse;
 		gap: 5px;
 	}
 
-	button {
+	button.kb-header-popover-btn {
 		font-size: 14px;
 
 		&.is-primary {
