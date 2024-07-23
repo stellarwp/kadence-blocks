@@ -21,6 +21,7 @@ export default function PopoverTutorial(props) {
 		: POPOVER_TUTORIAL_OPTIONS?.generic;
 
 	useEffect(() => {
+		// savePopoverTutorialComplete(false);
 		const settingModel = new wp.api.models.Settings();
 		settingModel.fetch().then((response) => {
 			if (response) {
@@ -63,19 +64,6 @@ export default function PopoverTutorial(props) {
 							</b>
 						</div>
 						<div className={'kb-header-popover-btns'}>
-							{/* {popoverTutorialStep > 0 && (
-								<Button
-									className={'kb-header-popover-btn kb-header-popover-btn-next'}
-									variant="secondary"
-									onClick={() => {
-										setPopoverTutorialStep(popoverTutorialStep - 1);
-									}}
-								>
-									<b>
-										<>{__('Back', 'kadence-blocks')}</>
-									</b>
-								</Button>
-							)} */}
 							<Button
 								className={'kb-header-popover-btn kb-header-popover-btn-next'}
 								variant="primary"
@@ -96,6 +84,19 @@ export default function PopoverTutorial(props) {
 									)}
 								</b>
 							</Button>
+							{popoverTutorialStep > 0 && (
+								<Button
+									className={'kb-header-popover-btn kb-header-popover-btn-next'}
+									variant="tertiary"
+									onClick={() => {
+										setPopoverTutorialStep(popoverTutorialStep - 1);
+									}}
+								>
+									<b>
+										<>{__('Back', 'kadence-blocks')}</>
+									</b>
+								</Button>
+							)}
 						</div>
 					</div>
 				</Popover>
