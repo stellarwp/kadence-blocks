@@ -530,7 +530,7 @@ export function EditInner(props) {
 	//if this nav block is getting created through the header onboarding
 	//then we need to auto create some basic block structure
 	const applyTemplateKeyBlocks = (templateKey) => {
-		if (templateKey == 'long-vertical') {
+		if (templateKey === 'long-vertical') {
 			setNavPlaceholderBlocks([
 				createBlock('kadence/navigation', {}, [
 					createBlock('kadence/navigation-link', { label: 'about', url: '#' }),
@@ -544,7 +544,7 @@ export function EditInner(props) {
 			setMetaAttribute('vertical', 'orientationMobile');
 			setMetaAttribute('vertical', 'orientationTablet');
 			setMetaAttribute('vertical', 'orientation');
-		} else if (templateKey == 'long') {
+		} else if (templateKey === 'long') {
 			setNavPlaceholderBlocks([
 				createBlock('kadence/navigation', {}, [
 					createBlock('kadence/navigation-link', { label: 'about', url: '#' }),
@@ -555,7 +555,7 @@ export function EditInner(props) {
 					createBlock('kadence/navigation-link', { label: 'shop', url: '#' }),
 				]),
 			]);
-		} else if (templateKey == 'short-vertical') {
+		} else if (templateKey === 'short-vertical') {
 			setNavPlaceholderBlocks([
 				createBlock('kadence/navigation', {}, [
 					createBlock('kadence/navigation-link', { label: 'about', url: '#' }),
@@ -709,28 +709,28 @@ export function EditInner(props) {
 
 		return (
 			<>
-				{orientationValue == 'vertical' && (
+				{orientationValue === 'vertical' && (
 					<ToggleControl
 						label={__('Collapse Vertical Sub Menus', 'kadence-blocks')}
 						checked={collapseSubMenusValue}
 						onChange={(value) => setMetaAttribute(value, 'collapseSubMenus' + size)}
 					/>
 				)}
-				{orientationValue == 'vertical' && collapseSubMenusValue && (
+				{orientationValue === 'vertical' && collapseSubMenusValue && (
 					<ToggleControl
 						label={__('Entire Item Expands Vertical Sub Menu', 'kadence-blocks')}
 						checked={parentTogglesMenusValue}
 						onChange={(value) => setMetaAttribute(value, 'parentTogglesMenus' + size)}
 					/>
 				)}
-				{orientationValue != 'vertical' && (
+				{orientationValue !== 'vertical' && (
 					<ToggleControl
 						label={__('Stretch Menu', 'kadence-blocks')}
 						checked={stretchValue}
 						onChange={(value) => setMetaAttribute(value, 'stretch' + size)}
 					/>
 				)}
-				{orientationValue != 'vertical' && stretchValue && (
+				{orientationValue !== 'vertical' && stretchValue && (
 					<ToggleControl
 						label={__('Fill and Center Menu Items?', 'kadence-blocks')}
 						checked={fillStretchValue}
@@ -1004,8 +1004,8 @@ export function EditInner(props) {
 								onUnit={(value) => setMetaAttribute(value, 'spacingUnit')}
 								showUnit={true}
 							/>
-							{(previewOrientation == 'vertical' ||
-								style == 'underline' ||
+							{(previewOrientation === 'vertical' ||
+								style === 'underline' ||
 								style === 'standard' ||
 								style === '') && (
 								<ResponsiveRangeControls
