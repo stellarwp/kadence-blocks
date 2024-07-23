@@ -31,12 +31,29 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 		add_action( 'init', array( $this, 'register_meta' ), 20 );
 		add_filter( 'user_has_cap', array( $this, 'filter_post_type_user_caps' ) );
 
+		// Define the form post gutenberg template.
+		add_action( 'init', array( $this, 'form_gutenberg_template' ) );
+
 		if( is_admin() ) {
 			if ( class_exists( 'Cpt_To_Template' ) ) {
 				new Cpt_To_Template( $this->post_type );
 			}
 		}
 	}
+
+	/**
+	 * Add filters for element content output.
+	 */
+	public function form_gutenberg_template() {
+		$post_type_object = get_post_type_object( $this->post_type );
+		$post_type_object->template = array(
+			array(
+				'kadence/navigation',
+			),
+		);
+		$post_type_object->template_lock = 'all';
+	}
+
 
 	/**
 	 * Registers the form post type.
@@ -56,28 +73,28 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'labels'                => array(
 					'name'                  => _x( 'Kadence Navigation', 'post type general name', 'kadence-blocks' ),
 					'singular_name'         => _x( 'Kadence Navigation', 'post type singular name', 'kadence-blocks' ),
-					'add_new'               => __( 'Add New Kadence Navigation Menu', 'kadence-blocks' ),
-					'add_new_item'          => __( 'Add New Kadence Navigation Menu', 'kadence-blocks' ),
-					'new_item'              => __( 'New Kadence Navigation Menu', 'kadence-blocks' ),
-					'edit_item'             => __( 'Edit Kadence Navigation Menu', 'kadence-blocks' ),
-					'view_item'             => __( 'View Kadence Navigation Menu', 'kadence-blocks' ),
-					'all_items'             => __( 'Kadence Navigation Menus', 'kadence-blocks' ),
-					'search_items'          => __( 'Search Kadence Navigation Menus', 'kadence-blocks' ),
-					'parent_item_colon'     => __( 'Parent Kadence Navigation Menu:', 'kadence-blocks' ),
-					'not_found'             => __( 'No Kadence Navigation Menu found.', 'kadence-blocks' ),
-					'not_found_in_trash'    => __( 'No Kadence Navigation Menu found in Trash.', 'kadence-blocks' ),
-					'archives'              => __( 'Kadence Navigation Menu archives', 'kadence-blocks' ),
-					'insert_into_item'      => __( 'Insert into Kadence Navigation Menu', 'kadence-blocks' ),
-					'uploaded_to_this_item' => __( 'Uploaded to this Kadence Navigation Menu', 'kadence-blocks' ),
-					'filter_items_list'     => __( 'Filter Kadence Navigation Menu list', 'kadence-blocks' ),
-					'items_list_navigation' => __( 'Kadence Navigation Menus list navigation', 'kadence-blocks' ),
-					'items_list'            => __( 'Kadence Navigation Menus list', 'kadence-blocks' ),
+					'add_new'               => __( 'Add New Kadence Navigation', 'kadence-blocks' ),
+					'add_new_item'          => __( 'Add New Kadence Navigation', 'kadence-blocks' ),
+					'new_item'              => __( 'New Kadence Navigation', 'kadence-blocks' ),
+					'edit_item'             => __( 'Edit Kadence Navigation', 'kadence-blocks' ),
+					'view_item'             => __( 'View Kadence Navigation', 'kadence-blocks' ),
+					'all_items'             => __( 'Kadence Navigations', 'kadence-blocks' ),
+					'search_items'          => __( 'Search Kadence Navigations', 'kadence-blocks' ),
+					'parent_item_colon'     => __( 'Parent Kadence Navigation:', 'kadence-blocks' ),
+					'not_found'             => __( 'No Kadence Navigation found.', 'kadence-blocks' ),
+					'not_found_in_trash'    => __( 'No Kadence Navigation found in Trash.', 'kadence-blocks' ),
+					'archives'              => __( 'Kadence Navigation archives', 'kadence-blocks' ),
+					'insert_into_item'      => __( 'Insert into Kadence Navigation', 'kadence-blocks' ),
+					'uploaded_to_this_item' => __( 'Uploaded to this Kadence Navigation', 'kadence-blocks' ),
+					'filter_items_list'     => __( 'Filter Kadence Navigation list', 'kadence-blocks' ),
+					'items_list_navigation' => __( 'Kadence Navigation list navigation', 'kadence-blocks' ),
+					'items_list'            => __( 'Kadence Navigation list', 'kadence-blocks' ),
 				),
-				'description'           => __( 'Kadence Navigation menus that can be inserted into your site.', 'kadence-blocks' ),
+				'description'           => __( 'Kadence Navigations that can be inserted into your site.', 'kadence-blocks' ),
 				'public'                => false,
 				'has_archive'           => false,
 				'show_ui'               => true,
-				'show_in_menu'          => true,
+				'show_in_menu'          => 'kadence-blocks',
 				'show_in_admin_bar'     => false,
 				'show_in_rest'          => true,
 				'rewrite'               => false,
