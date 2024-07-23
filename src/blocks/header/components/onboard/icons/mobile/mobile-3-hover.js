@@ -14,27 +14,10 @@ function Icon() {
 			</defs>
 			<g>
 				<g>
-					<path
-						fill="#f2f1ef"
-						strokeWidth="0"
-						d="M23.03 21.3H1148.03V2085.82H23.03z"
-					></path>
-					<path
-						fill="#616161"
-						strokeWidth="0"
-						d="M23.03 23.96H965.18V2085.83H23.03z"
-						filter="url(#e)"
-					></path>
-					<path
-						fill="#fff"
-						strokeWidth="0"
-						d="M23.03 23.96H965.18V245.37H23.03z"
-					></path>
-					<path
-						fill="#929292"
-						strokeWidth="0"
-						d="M23.03 245.86H965.18V424.74H23.03z"
-					></path>
+					<path fill="#f2f1ef" strokeWidth="0" d="M23.03 21.3H1148.03V2085.82H23.03z"></path>
+					<path fill="#616161" strokeWidth="0" d="M23.03 23.96H965.18V2085.83H23.03z" filter="url(#e)"></path>
+					<path fill="#fff" strokeWidth="0" d="M23.03 23.96H965.18V245.37H23.03z"></path>
+					<path fill="#929292" strokeWidth="0" d="M23.03 245.86H965.18V424.74H23.03z"></path>
 					<path
 						fill="none"
 						stroke="#465866"

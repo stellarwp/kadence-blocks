@@ -33,37 +33,39 @@ const HeaderMobile = ({ data, onChange }) => {
 	};
 
 	return (
-		<div className="width-l">
-			<h1>{__('Mobile Layout', 'kadence-blocks')}</h1>
-			<p>{__('Choose a header layout for mobile.', 'kadence-blocks')}</p>
+		<div className={'body'}>
+			<div className="width-l">
+				<h1>{__('Mobile Layout', 'kadence-blocks')}</h1>
+				<p>{__('Choose a header layout for mobile.', 'kadence-blocks')}</p>
 
-			<div className="type-selection">
-				<Button className="basic" isPressed={true}>
-					{__('Basic', 'kadence-blocks')}
-				</Button>
-			</div>
-
-			<div className="options options-mobile">
-				<div
-					className={'option blank' + (data.headerMobile === 'blank' ? ' is-selected' : '')}
-					onClick={() => onChange({ headerMobile: 'blank' })}
-				>
-					<Button>{__('Create blank mobile header.', 'kadence-blocks')}</Button>
+				<div className="type-selection">
+					<Button className="basic" isPressed={true}>
+						{__('Basic', 'kadence-blocks')}
+					</Button>
 				</div>
 
-				{Object.keys(basicOptions).map((key) => (
-					<div key={key} className={'option'}>
-						<div
-							className={'option-image' + (data.headerMobile === key ? ' is-selected' : '')}
-							onClick={() => onChange({ headerMobile: key })}
-							onMouseEnter={() => setHoveredOption(key)}
-							onMouseLeave={() => setHoveredOption(null)}
-						>
-							{hoveredOption === key ? basicOptions[key].iconHover : basicOptions[key].icon}
-						</div>
-						<span>{basicOptions[key].title}</span>
+				<div className="options options-mobile">
+					<div
+						className={'option blank' + (data.headerMobile === 'blank' ? ' is-selected' : '')}
+						onClick={() => onChange({ headerMobile: 'blank' })}
+					>
+						<Button>{__('Create blank mobile header.', 'kadence-blocks')}</Button>
 					</div>
-				))}
+
+					{Object.keys(basicOptions).map((key) => (
+						<div key={key} className={'option'}>
+							<div
+								className={'option-image' + (data.headerMobile === key ? ' is-selected' : '')}
+								onClick={() => onChange({ headerMobile: key })}
+								onMouseEnter={() => setHoveredOption(key)}
+								onMouseLeave={() => setHoveredOption(null)}
+							>
+								{hoveredOption === key ? basicOptions[key].iconHover : basicOptions[key].icon}
+							</div>
+							<span>{basicOptions[key].title}</span>
+						</div>
+					))}
+				</div>
 			</div>
 		</div>
 	);

@@ -62,8 +62,7 @@ const OnboardingModal = ({ steps, isOpen, onRequestClose, onSubmit }) => {
 					<Dashicon icon="no-alt" />
 				</div>
 			</div>
-			{/*{JSON.stringify(formData)}<br/>*/}
-			<div className={'body'}>
+			<div>
 				{React.createElement(steps[currentStep].component, {
 					data: formData,
 					onChange: (data) => handleChange(data),
