@@ -448,7 +448,13 @@ export function EditInner(props) {
 		dropdownBorderRadiusUnit,
 	} = metaAttributes;
 
-	const previewOrientation = getPreviewSize(previewDevice, orientation, orientationTablet, orientationMobile);
+	const inTemplatePreviewMode = !id && templateKey;
+
+	const previewOrientation = inTemplatePreviewMode
+		? templateKey.includes('vertical')
+			? 'vertical'
+			: 'horizontal'
+		: getPreviewSize(previewDevice, orientation, orientationTablet, orientationMobile);
 	const previewDropdownHorizontalAlignment = getPreviewSize(
 		previewDevice,
 		dropdownHorizontalAlignment,
@@ -541,9 +547,6 @@ export function EditInner(props) {
 					createBlock('kadence/navigation-link', { label: 'shop', url: '#' }),
 				]),
 			]);
-			setMetaAttribute('vertical', 'orientationMobile');
-			setMetaAttribute('vertical', 'orientationTablet');
-			setMetaAttribute('vertical', 'orientation');
 		} else if (templateKey === 'long') {
 			setNavPlaceholderBlocks([
 				createBlock('kadence/navigation', {}, [
@@ -563,9 +566,6 @@ export function EditInner(props) {
 					createBlock('kadence/navigation-link', { label: 'contact', url: '#' }),
 				]),
 			]);
-			setMetaAttribute('vertical', 'orientationMobile');
-			setMetaAttribute('vertical', 'orientationTablet');
-			setMetaAttribute('vertical', 'orientation');
 		} else {
 			setNavPlaceholderBlocks([
 				createBlock('kadence/navigation', {}, [
@@ -578,11 +578,11 @@ export function EditInner(props) {
 	};
 
 	useEffect(() => {
-		if (blocks.length == 0) {
+		if (!blocks || blocks.length == 0) {
 			if (templateKey) {
-				//this nav is meant to be a premade template, set it's title and publish it, and give it innerblocks based on it's template key
+				//this nav is meant to be a premade template, set it's title and give it innerblocks based on it's template key
 				applyTemplateKeyBlocks(templateKey);
-				setTitle(templateKey + ' navigation');
+				//setTitle(templateKey + ' navigation');
 			} else {
 				//otherwise it's a normal nav block and just needs the placeholder put in place
 				setNavPlaceholderBlocks([createBlock('kadence/navigation', {})]);
@@ -598,7 +598,7 @@ export function EditInner(props) {
 		}
 	}, [isSelected]);
 
-	if (blocks.length === 0) {
+	if (!blocks || blocks.length === 0) {
 		blocks = navPlaceholderBlocks;
 	}
 
@@ -612,6 +612,7 @@ export function EditInner(props) {
 
 	const onAdd = async (title, direction, style, initialDescription) => {
 		try {
+			console.log(2);
 			const response = await addNew();
 
 			if (response.id) {
@@ -823,6 +824,18 @@ export function EditInner(props) {
 					<div {...innerBlocksProps} />
 				</div>
 			</>
+		);
+	}
+
+	if (inTemplatePreviewMode) {
+		//This displays this block as a preview. It should have some temporary inner blocks to display
+		//it will not work in any other function. As soon as it's clicked, it should be replaced with a real nav onboarding to make a post.
+		return (
+			<nav className={navClasses}>
+				<div className="menu-container">
+					<ul {...innerBlocksProps} />
+				</div>
+			</nav>
 		);
 	}
 

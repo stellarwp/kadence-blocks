@@ -3,7 +3,7 @@ import { KadenceBlocksCSS, getPreviewSize, getSpacingOptionOutput } from '@kaden
 export default function BackendStyles(props) {
 	const { attributes, isSelected, previewDevice, metaAttributes, context } = props;
 
-	const { uniqueID } = attributes;
+	const { uniqueID, id, templateKey } = attributes;
 
 	const {
 		padding,
@@ -167,7 +167,12 @@ export default function BackendStyles(props) {
 		navigationVerticalSpacingMobile
 	);
 
-	const previewOrientation = getPreviewSize(previewDevice, orientation, orientationTablet, orientationMobile);
+	const inTemplatePreviewMode = !id && templateKey;
+	const previewOrientation = inTemplatePreviewMode
+		? templateKey.includes('vertical')
+			? 'vertical'
+			: 'horizontal'
+		: getPreviewSize(previewDevice, orientation, orientationTablet, orientationMobile);
 	const previewStyle = getPreviewSize(previewDevice, style, styleTablet, styleMobile);
 	const previewParentActive = getPreviewSize(previewDevice, parentActive, parentActiveTablet, parentActiveMobile);
 	const previewDropdownWidth = getPreviewSize(previewDevice, dropdownWidth, dropdownWidthTablet, dropdownWidthMobile);

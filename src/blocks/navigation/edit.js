@@ -66,6 +66,24 @@ export function Edit(props) {
 		fillStretchMobile,
 	} = metaAttributes;
 
+	const inTemplatePreviewMode = !id && templateKey;
+
+	const previewOrientation = inTemplatePreviewMode
+		? templateKey.includes('vertical')
+			? 'vertical'
+			: 'horizontal'
+		: orientation;
+	const previewOrientationTablet = inTemplatePreviewMode
+		? templateKey.includes('vertical')
+			? 'vertical'
+			: 'horizontal'
+		: orientationTablet;
+	const previewOrientationMobile = inTemplatePreviewMode
+		? templateKey.includes('vertical')
+			? 'vertical'
+			: 'horizontal'
+		: orientationMobile;
+
 	const { post, postExists, isLoading, currentPostType, postId } = useSelect(
 		(select) => {
 			return {
@@ -136,11 +154,11 @@ export function Edit(props) {
 		[`navigation-desktop-layout-fill-stretch-${fillStretch}`]: !previewDevice || previewDevice == 'Desktop',
 		[`navigation-tablet-layout-fill-stretch-${fillStretchTablet}`]: previewDevice == 'Tablet',
 		[`navigation-mobile-layout-fill-stretch-${fillStretchMobile}`]: previewDevice == 'Mobile',
-		[`navigation-desktop-orientation-${orientation ? orientation : 'horizontal'}`]:
+		[`navigation-desktop-orientation-${previewOrientation ? previewOrientation : 'horizontal'}`]:
 			!previewDevice || previewDevice == 'Desktop',
-		[`navigation-tablet-orientation-${orientationTablet ? orientationTablet : 'horizontal'}`]:
+		[`navigation-tablet-orientation-${previewOrientationTablet ? previewOrientationTablet : 'horizontal'}`]:
 			previewDevice == 'Tablet',
-		[`navigation-mobile-orientation-${orientationMobile ? orientationMobile : 'horizontal'}`]:
+		[`navigation-mobile-orientation-${previewOrientationMobile ? previewOrientationMobile : 'horizontal'}`]:
 			previewDevice == 'Mobile',
 	});
 	const blockProps = useBlockProps({
@@ -170,16 +188,17 @@ export function Edit(props) {
 
 	//if this is a templated navigation (usually coming from header onboarding)
 	//then it should get premade with some templated content based on templateKey
-	useEffect(() => {
-		if (!id && templateKey) {
-			makeNavigationPost();
-		}
-	}, []);
+	// commented out for now because we just make placeholder content instead of an actual post
+	// useEffect(() => {
+	// 	if (!id && templateKey) {
+	// 		makeNavigationPost();
+	// 	}
+	// }, []);
 
 	return (
 		<div {...blockProps}>
 			{/* No navigation selected or selected navigation was deleted from the site, display chooser */}
-			{(id === 0 || (undefined === postExists && !isLoading)) && (
+			{((id === 0 && !templateKey) || (undefined === postExists && !isLoading)) && (
 				<Chooser
 					id={id}
 					postExists={postExists}
@@ -265,8 +284,8 @@ export function Edit(props) {
 				</>
 			)}
 
-			{/* Navigation selected and loaded, display it */}
-			{((id > 0 && templateKey) || (id > 0 && !isEmpty(post) && post.status !== 'trash')) && (
+			{/* Navigation selected and loaded (or this is a template), display it */}
+			{((!id && templateKey) || (id > 0 && !isEmpty(post) && post.status !== 'trash')) && (
 				<EntityProvider kind="postType" type="kadence_navigation" id={id}>
 					<EditInner {...props} direct={false} id={id} />
 				</EntityProvider>
