@@ -99,22 +99,14 @@ export function Edit(props) {
 		[id]
 	);
 
-	const { previewDevice } = useSelect(
-		(select) => {
-			return {
-				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
-			};
-		},
-		[clientId]
-	);
-
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, parentData, isPreviewMode } = useSelect(
+	const { isUniqueID, isUniqueBlock, parentData, previewDevice, isPreviewMode } = useSelect(
 		(select) => {
 			return {
 				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
 				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
 				isPreviewMode: select('core/block-editor').getSettings().__unstableIsPreviewMode,
+				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 				parentData: {
 					rootBlock: select('core/block-editor').getBlock(
 						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
@@ -297,7 +289,7 @@ export function Edit(props) {
 export default Edit;
 
 function Chooser({ id, post, commit, postExists }) {
-	const [isAdding, addNew] = useEntityAutoDraft('kadence_navigation', 'kadence_navigation');
+	const [isAdding, addNew] = useEntityAutoDraftAndPublish('kadence_navigation', 'kadence_navigation');
 	const onAdd = async () => {
 		try {
 			const response = await addNew();
