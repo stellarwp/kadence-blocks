@@ -321,6 +321,7 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 
 		return $css->css_output();
 	}
+
 	/**
 	 * Build HTML for dynamic blocks
 	 *
@@ -340,6 +341,9 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 				$content = str_replace( 'alt=""', 'alt="' . esc_attr( $alt ) . '"', $content );
 			}
 		}
+		if ( strpos( $content, 'kb-tooltip-hidden-content') !== false ) {
+			$this->enqueue_script( 'kadence-blocks-tippy' );
+		}
 		return $content;
 	}
 
@@ -356,8 +360,9 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 			return;
 		}
 		wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/kb-image-block.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-popper', KADENCE_BLOCKS_URL . 'includes/assets/js/popper.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-tippy', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-tippy.min.js', array( 'kadence-blocks-popper' ), KADENCE_BLOCKS_VERSION, true );
 	}
-
 }
 
 Kadence_Blocks_Image_Block::get_instance();

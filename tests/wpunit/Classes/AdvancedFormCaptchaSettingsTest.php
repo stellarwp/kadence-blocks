@@ -27,13 +27,23 @@ class AdvancedFormCaptchaSettingsTest extends KadenceBlocksTestCase {
 	}
 
 	public function testIsUsingKadenceBlocksSettings() {
-		$attributes = [ 'useKbSettings' => null ];
+		$attributes = [];
 		$captchaSettings = new Kadence_Blocks_Form_Captcha_Settings( $attributes );
-		$this->assertFalse($captchaSettings->using_kadence_blocks_settings);
+		$this->assertTrue($captchaSettings->using_kadence_blocks_settings);
 
 		$attributes = [ 'useKbSettings' => true ];
 		$captchaSettings = new Kadence_Blocks_Form_Captcha_Settings( $attributes );
 		$this->assertTrue($captchaSettings->using_kadence_blocks_settings);
+
+		$attributes = [ 'useKbSettings' => false ];
+		$captchaSettings = new Kadence_Blocks_Form_Captcha_Settings( $attributes );
+		$this->assertFalse($captchaSettings->using_kadence_blocks_settings);
+	}
+
+	public function testBlankDefaults() {
+		$attributes = [];
+		$captchaSettings = new Kadence_Blocks_Form_Captcha_Settings( $attributes );
+		$this->assertEquals('googlev2', $captchaSettings->service);
 	}
 
 	public function testGetCaptchaService() {
@@ -56,19 +66,19 @@ class AdvancedFormCaptchaSettingsTest extends KadenceBlocksTestCase {
 
 	public function testGetPublicKey () {
 		// Using Block settings
-		$attributes = [ 'type' => '', 'recaptchaSiteKey' => 'my_recaptchaSiteKey' ];
+		$attributes = [ 'type' => '', 'useKbSettings' => false, 'recaptchaSiteKey' => 'my_recaptchaSiteKey' ];
 		$captchaSettings = new Kadence_Blocks_Form_Captcha_Settings( $attributes );
 		$this->assertEquals( 'my_recaptchaSiteKey', $captchaSettings->public_key);
 
-		$attributes = [ 'type' => 'turnstile', 'turnstileSiteKey' => 'my_turnstileSiteKey' ];
+		$attributes = [ 'type' => 'turnstile', 'useKbSettings' => false, 'turnstileSiteKey' => 'my_turnstileSiteKey' ];
 		$captchaSettings = new Kadence_Blocks_Form_Captcha_Settings( $attributes );
 		$this->assertEquals( 'my_turnstileSiteKey', $captchaSettings->public_key);
 
-		$attributes = [ 'type' => 'hcaptcha', 'hCaptchaSiteKey' => 'hCaptchaSiteKey' ];
+		$attributes = [ 'type' => 'hcaptcha', 'useKbSettings' => false, 'hCaptchaSiteKey' => 'hCaptchaSiteKey' ];
 		$captchaSettings = new Kadence_Blocks_Form_Captcha_Settings( $attributes );
 		$this->assertEquals( 'hCaptchaSiteKey', $captchaSettings->public_key);
 
-		// Using global settings
+		// Using using_kadence_blocks_settings settings
 		add_option( 'kadence_blocks_recaptcha_site_key', 'my_option_recaptchaSiteKey' );
 		$attributes = [ 'type' => 'googlev3', 'useKbSettings' => true, 'recaptchaSiteKey' => 'my_recaptchaSiteKey' ];
 		$captchaSettings = new Kadence_Blocks_Form_Captcha_Settings( $attributes );
@@ -89,19 +99,19 @@ class AdvancedFormCaptchaSettingsTest extends KadenceBlocksTestCase {
 
 	public function testGetPrivateKey () {
 		// Using Block settings
-		$attributes = [ 'type' => '', 'recaptchaSecretKey' => 'my_recaptchaSecretKey' ];
+		$attributes = [ 'type' => '',  'useKbSettings' => false, 'recaptchaSecretKey' => 'my_recaptchaSecretKey' ];
 		$captchaSettings = new Kadence_Blocks_Form_Captcha_Settings( $attributes );
 		$this->assertEquals( 'my_recaptchaSecretKey', $captchaSettings->secret_key);
 
-		$attributes = [ 'type' => 'turnstile', 'turnstileSecretKey' => 'my_turnstileSecretKey' ];
+		$attributes = [ 'type' => 'turnstile',  'useKbSettings' => false, 'turnstileSecretKey' => 'my_turnstileSecretKey' ];
 		$captchaSettings = new Kadence_Blocks_Form_Captcha_Settings( $attributes );
 		$this->assertEquals( 'my_turnstileSecretKey', $captchaSettings->secret_key);
 
-		$attributes = [ 'type' => 'hcaptcha', 'hCaptchaSecretKey' => 'hCaptchaSecretKey' ];
+		$attributes = [ 'type' => 'hcaptcha', 'useKbSettings' => false, 'hCaptchaSecretKey' => 'hCaptchaSecretKey' ];
 		$captchaSettings = new Kadence_Blocks_Form_Captcha_Settings( $attributes );
 		$this->assertEquals( 'hCaptchaSecretKey', $captchaSettings->secret_key);
 
-		// Using global settings
+		// Using using_kadence_blocks_settings settings
 		add_option( 'kadence_blocks_recaptcha_secret_key', 'my_option_recaptchaSecretKey' );
 		$attributes = [ 'type' => 'googlev3', 'useKbSettings' => true, 'recaptchaSecretKey' => 'my_recaptchaSecretKey' ];
 		$captchaSettings = new Kadence_Blocks_Form_Captcha_Settings( $attributes );

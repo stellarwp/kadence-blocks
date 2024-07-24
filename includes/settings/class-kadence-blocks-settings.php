@@ -789,6 +789,7 @@ class Kadence_Blocks_Settings {
 				'isNetworkEnabled'    => $using_network_enabled,
 			)
 		);
+		wp_set_script_translations( 'admin-kadence-home', 'kadence-blocks' );
 		wp_enqueue_style( 'kadence-blocks-admin-css', KADENCE_BLOCKS_URL . 'includes/assets/css/admin-dashboard.min.css', array( 'wp-jquery-ui-dialog', 'wp-color-picker' ), KADENCE_BLOCKS_VERSION, 'all' );
 		wp_enqueue_media();
 	}

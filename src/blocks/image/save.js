@@ -50,8 +50,11 @@ export default function save({ attributes }) {
 		widthTransparent,
 		heightTransparent,
 		sizeSlugTransparent,
+		tooltip,
+		tooltipPlacement,
+		tooltipDash,
 	} = attributes;
-
+	const tooltipID = tooltip && uniqueID ? `kb-image-tooltip-${uniqueID}` : undefined;
 	const classes = classnames({
 		[`align${align}`]: align,
 		[`size-${sizeSlug}`]: sizeSlug,
@@ -83,6 +86,7 @@ export default function save({ attributes }) {
 		[`wp-image-${id}`]: id,
 		[`skip-lazy`]: preventLazyLoad,
 		[`kb-skip-lazy`]: preventLazyLoad,
+		[`kb-image-tooltip-border`]: !link && tooltipDash && tooltipID,
 	});
 	const imgClassesSticky = classnames({
 		'kb-img': true,
@@ -115,7 +119,16 @@ export default function save({ attributes }) {
 		relAttr = relAttr ? relAttr.concat(' sponsored') : 'sponsored';
 	}
 	let image = (
-		<img src={url} alt={globalAlt ? '' : alt} className={imgClasses} width={width} height={height} title={title} />
+		<img
+			src={url}
+			alt={globalAlt ? '' : alt}
+			className={imgClasses}
+			width={width}
+			height={height}
+			title={title}
+			data-tooltip-id={!link && tooltipID ? tooltipID : undefined}
+			data-tooltip-placement={!link && tooltipID && tooltipPlacement ? tooltipPlacement : undefined}
+		/>
 	);
 	if (useRatio) {
 		image = (
@@ -169,7 +182,9 @@ export default function save({ attributes }) {
 			{link && true ? (
 				<a
 					href={link}
-					className={'kb-advanced-image-link'}
+					className={`kb-advanced-image-link${tooltipDash && tooltipID ? ' kb-image-tooltip-border' : ''}`}
+					data-tooltip-id={tooltipID ? tooltipID : undefined}
+					data-tooltip-placement={tooltipID && tooltipPlacement ? tooltipPlacement : undefined}
 					target={linkTarget ? '_blank' : undefined}
 					aria-label={linkTitle ? linkTitle : undefined}
 					rel={relAttr ? relAttr : undefined}
@@ -195,9 +210,33 @@ export default function save({ attributes }) {
 		return (
 			<div {...useBlockProps.save({ className: containerClasses })}>
 				<figure className={classes}>{figure}</figure>
+				{tooltipID && (
+					<span
+						className={'kb-tooltip-hidden-content'}
+						style={{ display: 'none' }}
+						id={tooltipID}
+						dangerouslySetInnerHTML={{
+							__html: tooltip, // Because this is saved into the post as html WordPress core will sanitize it if the user does not have the unfiltered_html capability.
+						}}
+					/>
+				)}
 			</div>
 		);
 	}
 
-	return <figure {...useBlockProps.save({ className: allClasses })}>{figure}</figure>;
+	return (
+		<figure {...useBlockProps.save({ className: allClasses })}>
+			{figure}
+			{tooltipID && (
+				<span
+					className={'kb-tooltip-hidden-content'}
+					style={{ display: 'none' }}
+					id={tooltipID}
+					dangerouslySetInnerHTML={{
+						__html: tooltip, // Because this is saved into the post as html WordPress core will sanitize it if the user does not have the unfiltered_html capability.
+					}}
+				/>
+			)}
+		</figure>
+	);
 }

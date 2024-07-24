@@ -4,6 +4,9 @@ figure.wp-block-kadence-image:not(.wp-block) {
 .editor-styles-wrapper .wp-block-kadence-image:not(:last-child) {
 	margin-bottom: var(--global-md-spacing, 1em );
 }
+.kb-image-tooltip-border {
+	border-bottom: 1px dashed currentColor;
+}
 .wp-block-kadence-image {
 	position: relative;
 	img {

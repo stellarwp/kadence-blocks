@@ -15,6 +15,12 @@
 	margin-bottom: 1em;
 }
 .wp-block-kadence-image {
+	.kb-image-tooltip-border {
+		border-bottom: 1px dashed currentColor;
+		&.kb-advanced-image-link {
+			display: block;
+		}
+	}
 	img {
 		max-width: 100%;
 		border: 0 solid currentColor;
