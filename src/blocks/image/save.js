@@ -90,7 +90,16 @@ export default function save({ attributes }) {
 		relAttr = relAttr ? relAttr.concat(' sponsored') : 'sponsored';
 	}
 	let image = (
-		<img src={url} alt={globalAlt ? '' : alt} className={imgClasses} width={width} height={height} title={title} data-tooltip-id={!link && tooltipID ? tooltipID : undefined} data-tooltip-placement={!link && tooltipID && tooltipPlacement ? tooltipPlacement : undefined} />
+		<img
+			src={url}
+			alt={globalAlt ? '' : alt}
+			className={imgClasses}
+			width={width}
+			height={height}
+			title={title}
+			data-tooltip-id={!link && tooltipID ? tooltipID : undefined}
+			data-tooltip-placement={!link && tooltipID && tooltipPlacement ? tooltipPlacement : undefined}
+		/>
 	);
 	if (useRatio) {
 		image = (
