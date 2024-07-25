@@ -724,7 +724,7 @@ function RowLayoutEditContainer(props) {
 	const hasBG = bgColor || bgImg || gradient || overlay || overlayGradient || overlayBgImg ? 'kt-row-has-bg' : '';
 	const isKadenceT = typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.isKadenceT ? true : false;
 	const paddingSidesTheme = isKadenceT && true === inheritMaxWidth ? 'var(--global-content-edge-padding)' : '0px';
-	const paddingSidesDefault = hasBG && !(isKadenceT && true === inheritMaxWidth) ? 'sm' : '';
+	const paddingSidesDefault = hasBG && !(isKadenceT && true === inheritMaxWidth) ? 'var(--global-content-edge-padding)' : '';
 	const previewPaddingTop = getPreviewSize(
 		previewDevice,
 		undefined !== padding?.[0] ? padding[0] : '',
@@ -972,11 +972,11 @@ function RowLayoutEditContainer(props) {
 						  ')'
 						: undefined,
 				paddingLeft:
-					'' !== previewPaddingLeft
+					'' !== previewPaddingLeft && "var(--global-content-edge-padding)" !== previewPaddingLeft
 						? getSpacingOptionOutput(previewPaddingLeft, paddingUnit ? paddingUnit : 'px')
 						: undefined,
 				paddingRight:
-					'' !== previewPaddingRight
+					'' !== previewPaddingRight && "var(--global-content-edge-padding)" !== previewPaddingRight
 						? getSpacingOptionOutput(previewPaddingRight, paddingUnit ? paddingUnit : 'px')
 						: undefined,
 			},
