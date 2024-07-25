@@ -301,7 +301,7 @@ class KBHeader {
 		}
 
 		//set current active header for current size
-		if (this.activeSize == 'desktop') {
+		if (this.activeSize === 'desktop') {
 			this.activeHeader = this.root.querySelector('.wp-block-kadence-header-desktop');
 		} else {
 			this.activeHeader = this.root.querySelector('.wp-block-kadence-header-tablet');
