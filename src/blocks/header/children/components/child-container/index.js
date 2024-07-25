@@ -71,7 +71,7 @@ export default function ChildContainer(props, size = 'Desktop') {
 		{
 			className: innerBlockClasses,
 			style: {
-				display: previewDevice === size ? 'block' : 'none',
+				display: previewDevice === size || (previewDevice == 'Mobile' && size == 'Tablet') ? 'block' : 'none',
 			},
 		},
 		{

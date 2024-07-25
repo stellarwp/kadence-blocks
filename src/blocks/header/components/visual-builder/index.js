@@ -1,4 +1,4 @@
-import { useRef, useState } from '@wordpress/element';
+import { useRef, useState, useEffect } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import { useEditorElement, capitalizeFirstLetter, blockExists } from '@kadence/helpers';
 import { __ } from '@wordpress/i18n';
@@ -86,7 +86,16 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 		[clientId]
 	);
 
+	useEffect(() => {
+		//if we're already in a tablet / mobile device than we should automatically switch the tab, etc
+		if (previewDevice === 'Tablet' || previewDevice === 'Mobile') {
+			setHeaderVisualBuilderOpenPosition('top');
+		}
+		setTab(previewDevice == 'Mobile' || previewDevice == 'Tablet' ? 'Tablet' : 'Desktop');
+	}, [isVisible, previewDevice]);
+
 	const setIsVisible = () => {
+		console.log(1, previewDevice);
 		setHeaderVisualBuilderOpenId(isVisible ? null : clientId);
 	};
 
