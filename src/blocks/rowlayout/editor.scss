@@ -561,8 +561,8 @@ div.kb-blocks-bg-video {
 }
 
 .kt-row-has-bg > .innerblocks-wrap {
-	padding-left: var(--global-kb-spacing-sm, 1.5rem);
-	padding-right: var(--global-kb-spacing-sm, 1.5rem);
+	padding-left: var(--global-content-edge-padding, 1.5rem);
+	padding-right: var(--global-content-edge-padding, 1.5rem);
 }
 .block-editor-block-list__block[data-align="full"] > .is-block-content > .wp-block-kadence-rowlayout {
 	padding-left: 46px;
