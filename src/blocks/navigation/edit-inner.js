@@ -935,6 +935,9 @@ export function EditInner(props) {
 						closeModal={closeModal}
 						title={title}
 						setTitle={setTitle}
+						setMetaAttribute={setMetaAttribute}
+						orientation={meta?._kad_navigation_orientation}
+						orientationTablet={meta?._kad_navigation_orientationTablet}
 					/>
 				</Modal>
 			)}

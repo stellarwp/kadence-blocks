@@ -12,7 +12,16 @@ import { TextControl } from '@wordpress/components';
 import MenuEdit from './edit';
 import './editor.scss';
 
-export default function MenuEditor({ clientId, closeModal, title, setTitle, updateBlocksCallback }) {
+export default function MenuEditor({
+	clientId,
+	closeModal,
+	title,
+	setTitle,
+	updateBlocksCallback,
+	orientation,
+	orientationTablet,
+	setMetaAttribute,
+}) {
 	const [sidebarTab, setSidebarTab] = useState('posts');
 	const [direction, setDirection] = useState('vertical');
 	const [directionTablet, setDirectionTablet] = useState('vertical');
@@ -53,28 +62,28 @@ export default function MenuEditor({ clientId, closeModal, title, setTitle, upda
 			<div className="left-column">
 				<div className="menu-container">
 					<KadenceRadioButtons
-						label={__('Desktop Direction', 'kadence-blocks')}
-						value={direction}
+						label={__('Desktop Orientation', 'kadence-blocks')}
+						value={orientation !== '' ? orientation : 'horizontal'}
 						options={[
 							{ value: 'vertical', label: __('Vertical', 'kadence-blocks') },
 							{ value: 'horizontal', label: __('Horizontal', 'kadence-blocks') },
 						]}
 						hideLabel={false}
 						onChange={(value) => {
-							setDirection(value);
+							setMetaAttribute(value, 'orientation');
 						}}
 					/>
 
 					<KadenceRadioButtons
-						label={__('Tablet Direction', 'kadence-blocks')}
-						value={directionTablet}
+						label={__('Tablet Orientation', 'kadence-blocks')}
+						value={orientationTablet !== '' ? orientationTablet : 'horizontal'}
 						options={[
 							{ value: 'vertical', label: __('Vertical', 'kadence-blocks') },
 							{ value: 'horizontal', label: __('Horizontal', 'kadence-blocks') },
 						]}
 						hideLabel={false}
 						onChange={(value) => {
-							setDirectionTablet(value);
+							setMetaAttribute(value, 'orientationTablet');
 						}}
 					/>
 
