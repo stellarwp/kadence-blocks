@@ -126,12 +126,13 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 						style={{
 							width: editorWidth + 'px',
 							left: editorLeft + 'px',
-							bottom: editorFooterHeight,
 						}}
 					>
 						<Button isPrimary onClick={() => setIsVisible(true)}>
 							{__('Open Visual Builder', 'kadence-blocks')}
 						</Button>
+
+						<style>{'.editor-styles-wrapper{padding-bottom: 57px}'}</style>
 					</div>
 				)}
 				{isVisible && (
@@ -140,7 +141,6 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 						style={{
 							width: editorWidth + 'px',
 							left: editorLeft + 'px',
-							bottom: editorFooterHeight,
 						}}
 					>
 						<div class={'tabs'}>

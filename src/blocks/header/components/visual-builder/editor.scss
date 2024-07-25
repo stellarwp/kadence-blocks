@@ -13,9 +13,10 @@ $fixed_height: 300px;
 	padding: 10px;
 	position: fixed;
 	width: 100%;
-	bottom: 0;
+	bottom: $height_bottom_bar;
 	left: 0;
 	z-index: 9999;
+	box-sizing: border-box;
 
 	justify-content: flex-end;
 	display: flex;
@@ -38,10 +39,11 @@ $fixed_height: 300px;
 	position: fixed;
 	width: 100%;
 	height: $fixed_height;
-	bottom: 0;
+	bottom: $height_bottom_bar;
 	left: 0;
 	z-index: 9999;
 	display: block;
+	box-sizing: border-box;
 
 	@media (min-width: 782px) {
 		height: $fixed_height;
