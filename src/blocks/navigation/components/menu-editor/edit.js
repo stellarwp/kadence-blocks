@@ -83,9 +83,12 @@ function BlockItem({ thisBlock, activeBlock, toggleCollapse, collapsed }) {
 					/>
 				)}
 				<Icon className={'block-icon'} icon={blockMeta?.icon?.src} />
-				<span className={'block-label'}>{labelOrTitle}</span>
+				<span className={'block-label'} onClick={() => setIsEditing(!isEditing)}>
+					{labelOrTitle}
+				</span>
 				<DropdownMenu
 					icon={moreHorizontal}
+					className={'block-settings'}
 					label={__('Options', 'kadence-blocks')}
 					controls={[
 						{
@@ -137,7 +140,7 @@ const deleteBlock = (clientId) => {
 	wp.data.dispatch('core/block-editor').removeBlock(clientId, false);
 };
 
-export default function MenuEdit({ closeModal, blocks }) {
+export default function MenuEdit({ blocks }) {
 	const [collapsed, setCollapsed] = useState([]);
 	const [activeBlock, setActiveBlock] = useState(null);
 
@@ -267,12 +270,6 @@ export default function MenuEdit({ closeModal, blocks }) {
 					</SortableContext>
 				</DndContext>
 			)}
-
-			<div className={'footer'}>
-				<Button isPrimary onClick={closeModal}>
-					{__('Done', 'kadence-blocks')}
-				</Button>
-			</div>
 		</div>
 	);
 }

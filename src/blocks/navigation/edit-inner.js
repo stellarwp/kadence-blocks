@@ -973,6 +973,11 @@ export function EditInner(props) {
 								</>
 							)}
 						</KadencePanelBody>
+						<KadencePanelBody panelName={'kb-navigation-modal'}>
+							<Button variant="secondary" onClick={() => setOpen(true)} style={{ margin: '0 auto' }}>
+								{__('Open Navigation Builder', 'kadence-blocks')}
+							</Button>
+						</KadencePanelBody>
 						<div className="kt-sidebar-settings-spacer"></div>
 						<KadencePanelBody panelName={'kb-navigation-general'}>
 							<ResponsiveSelectControl
@@ -1615,12 +1620,6 @@ export function EditInner(props) {
 								onMouseOver={marginMouseOver.onMouseOver}
 								onMouseOut={marginMouseOver.onMouseOut}
 							/>
-						</KadencePanelBody>
-
-						<KadencePanelBody panelName={'kb-navigation-modal'}>
-							<Button variant="secondary" onClick={() => setOpen(true)}>
-								Open Navigation Editor
-							</Button>
 						</KadencePanelBody>
 					</>
 				)}

@@ -10,18 +10,18 @@
 	}
 
 	.right-column {
+		display: flex;
+		flex-direction: column;
 		flex: 2;
-		padding: 0 20px 50px 40px;
+		padding: 0 20px 0 40px;
+		justify-content: space-between;
 
 		.footer {
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			padding: 10px 0;
-			position: fixed;
-			bottom: 0;
+			padding: 10px 0 0 0;
 			width: 100%;
-			flex-direction: column-reverse;
 			background-color: #FFF;
 		}
 	}
@@ -125,6 +125,7 @@
 		.block-label {
 			flex: 1;
 		}
+
 
 		.block-settings {
 			transform: rotate(90deg);

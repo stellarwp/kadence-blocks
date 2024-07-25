@@ -7,7 +7,8 @@ import { useState } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import { PostSelectorCheckbox, KadenceRadioButtons } from '@kadence/components';
 import { createBlock } from '@wordpress/blocks';
-import { TextControl } from '@wordpress/components';
+import { TextControl, Button } from '@wordpress/components';
+import { link } from '@wordpress/icons';
 
 import MenuEdit from './edit';
 import './editor.scss';
@@ -23,8 +24,6 @@ export default function MenuEditor({
 	setMetaAttribute,
 }) {
 	const [sidebarTab, setSidebarTab] = useState('posts');
-	const [direction, setDirection] = useState('vertical');
-	const [directionTablet, setDirectionTablet] = useState('vertical');
 
 	const { blocks } = useSelect(
 		(select) => {
@@ -87,6 +86,20 @@ export default function MenuEditor({
 						}}
 					/>
 
+					{kadence_blocks_params.postTypesSearchable.map((postType) => (
+						<PostSelectorCheckbox
+							key={postType.value}
+							forceOpen={sidebarTab === postType.value}
+							useForceState={true}
+							onPanelBodyToggle={() =>
+								setSidebarTab(sidebarTab === postType.value ? null : postType.value)
+							}
+							postType={postType.value}
+							title={postType.label}
+							onSelect={onSelect}
+						/>
+					))}
+
 					<PostSelectorCheckbox
 						forceOpen={sidebarTab === 'posts'}
 						useForceState={true}
@@ -118,14 +131,37 @@ export default function MenuEditor({
 				<div className={'add-menu'}></div>
 			</div>
 			<div className="right-column">
-				<TextControl
-					value={title === 'Auto Draft' ? '' : title}
-					onChange={setTitle}
-					label={__('Menu Name', 'kadence-blocks')}
-					help={__('This is used for your reference only.', 'kadence-blocks')}
-				/>
+				<div>
+					<TextControl
+						value={title === 'Auto Draft' ? '' : title}
+						onChange={setTitle}
+						label={__('Menu Name', 'kadence-blocks')}
+						help={__('This is used for your reference only.', 'kadence-blocks')}
+					/>
 
-				<MenuEdit blocks={blocks} closeModal={closeModal} />
+					<MenuEdit blocks={blocks} />
+				</div>
+
+				<div className={'footer'}>
+					<Button
+						isSecondary
+						onClick={() => {
+							updateBlocksCallback([
+								createBlock('kadence/navigation-link', {
+									label: __('New Link', 'kadence-blocks'),
+									url: '',
+									kind: 'custom',
+								}),
+							]);
+						}}
+						icon={link}
+					>
+						{__('Add Link', 'kadence-blocks')}
+					</Button>
+					<Button isPrimary onClick={closeModal}>
+						{__('Done', 'kadence-blocks')}
+					</Button>
+				</div>
 			</div>
 		</div>
 	);
