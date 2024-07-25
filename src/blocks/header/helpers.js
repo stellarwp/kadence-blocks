@@ -17,6 +17,12 @@ import { innerBlocks as MultiRow3InnerBlocks, postMeta as MultiRow3PostMeta } fr
 import { innerBlocks as MultiRow4InnerBlocks, postMeta as MultiRow4PostMeta } from './templates/multi-row-4';
 import { innerBlocks as MultiRow5InnerBlocks, postMeta as MultiRow5PostMeta } from './templates/multi-row-5';
 
+// Mobile templates
+import { innerBlocks as Mobile1InnerBlocks, postMeta as Mobile1PostMeta } from './templates/mobile-1';
+import { innerBlocks as Mobile2InnerBlocks, postMeta as Mobile2PostMeta } from './templates/mobile-2';
+import { innerBlocks as Mobile3InnerBlocks, postMeta as Mobile3PostMeta } from './templates/mobile-3';
+import { innerBlocks as Mobile4InnerBlocks, postMeta as Mobile4PostMeta } from './templates/mobile-4';
+
 export function buildTemplateFromSelection(desktop, mobile) {
 	// If it's an exact match to existing template, return that template
 	if (desktop === mobile) {
@@ -247,6 +253,18 @@ function getDataFromKey(key) {
 	} else if (key === 'multi-row-5') {
 		response.templatePostMeta = MultiRow5PostMeta;
 		response.templateInnerBlocks = MultiRow5InnerBlocks();
+	} else if (key === 'mobile-1') {
+		response.templatePostMeta = Mobile1PostMeta;
+		response.templateInnerBlocks = Mobile1InnerBlocks();
+	} else if (key === 'mobile-2') {
+		response.templatePostMeta = Mobile2PostMeta;
+		response.templateInnerBlocks = Mobile2InnerBlocks();
+	} else if (key === 'mobile-3') {
+		response.templatePostMeta = Mobile3PostMeta;
+		response.templateInnerBlocks = Mobile3InnerBlocks();
+	} else if (key === 'mobile-4') {
+		response.templatePostMeta = Mobile4PostMeta;
+		response.templateInnerBlocks = Mobile4InnerBlocks();
 	}
 
 	// Replace placeholder relative URL with absolute URL

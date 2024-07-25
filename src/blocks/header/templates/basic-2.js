@@ -14,7 +14,7 @@ const postMeta = {
 		{
 			enable: false,
 			color: '#000000',
-			opacity: 0.20000000000000001,
+			opacity: 0.2,
 			spread: 0,
 			blur: 2,
 			hOffset: 1,
