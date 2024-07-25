@@ -193,6 +193,11 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 					</div>
 				)}
 			</div>
+
+			{/* hide the metaboxes area that currently take up the same space as the visual builder while the teaser or builder is active */}
+			{(isVisible || (!isVisible && (isSelected || childSelected))) && (
+				<style>{'.edit-post-layout__metaboxes{display: none}'}</style>
+			)}
 		</>
 	);
 }

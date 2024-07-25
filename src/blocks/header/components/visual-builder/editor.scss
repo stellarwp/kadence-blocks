@@ -1,5 +1,5 @@
 $height_bottom_bar: 25px;
-$height_top_bar: 92px;
+$height_top_bar: 60px;
 $height_top_bars_mobile: 155px;
 $height_top_bottom_bars: $height_top_bar + $height_bottom_bar;
 $sidebar_width: 280px;
@@ -48,7 +48,7 @@ $fixed_height: 300px;
 	}
 
 	&.kb-header-visual-builder-modal-top {
-		top: 98px;
+		top: $height_top_bar;
 		bottom: 0;
 	}
 
