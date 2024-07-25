@@ -175,7 +175,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.2.50 =
-Release Date: July 24th 2024
+Release Date: July 25th 2024
 * Fix: Resolved instance where advanced form was not validating captcha.
 
 = 3.2.49 =
