@@ -6,11 +6,24 @@
 	.left-column {
 		flex: 1;
 		padding-bottom: 30px;
+		max-width: 350px;
 	}
 
 	.right-column {
 		flex: 2;
-		padding: 0 20px 0 40px;
+		padding: 0 20px 50px 40px;
+
+		.footer {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 10px 0;
+			position: fixed;
+			bottom: 0;
+			width: 100%;
+			flex-direction: column-reverse;
+			background-color: #FFF;
+		}
 	}
 
 	.menu-container {
@@ -85,7 +98,6 @@
 		font-weight: 400;
 		line-height: 16px;
 		letter-spacing: 0em;
-
 
 		.edit-menu-name {
 			color: #757575;

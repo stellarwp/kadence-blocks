@@ -245,59 +245,30 @@ export default function MenuEdit({ closeModal, blocks }) {
 
 	return (
 		<div className={'menu-management'}>
-			{/*<div className={'edit-menu-name'}>*/}
-			{/*	NAME:{' '}*/}
-			{/*	<RichText*/}
-			{/*		tagName={'span'}*/}
-			{/*		placeholder={__('Set a Title', 'kadence-blocks')}*/}
-			{/*		onChange={(value) => console.log(value)}*/}
-			{/*		value={''}*/}
-			{/*		withoutInteractiveFormatting={true}*/}
-			{/*		allowedFormats={[]}*/}
-			{/*	/>*/}
-			{/*</div>*/}
+			{blocks.length === 0 ? (
+				<p>{__('Insert links to get started.', 'kadence-blocks')}</p>
+			) : (
+				<DndContext
+					// collisionDetection={closestCenter}
+					onDragStart={handleDragStart}
+					onDragOver={debounce(handleDragOver, 50)}
+					onDragEnd={handleDragEnd}
+				>
+					<SortableContext items={sortedIds} strategy={verticalListSortingStrategy}>
+						{flattenedItems.map((block) => (
+							<BlockItem
+								activeBlock={activeBlock === block.clientId}
+								key={block.clientId}
+								thisBlock={block}
+								toggleCollapse={toggleCollapse}
+								collapsed={collapsed.includes(block.clientId)}
+							/>
+						))}
+					</SortableContext>
+				</DndContext>
+			)}
 
-			<DndContext
-				// collisionDetection={closestCenter}
-				onDragStart={handleDragStart}
-				onDragOver={debounce(handleDragOver, 50)}
-				onDragEnd={handleDragEnd}
-			>
-				<SortableContext items={sortedIds} strategy={verticalListSortingStrategy}>
-					{flattenedItems.map((block) => (
-						<BlockItem
-							activeBlock={activeBlock === block.clientId}
-							key={block.clientId}
-							thisBlock={block}
-							toggleCollapse={toggleCollapse}
-							collapsed={collapsed.includes(block.clientId)}
-						/>
-					))}
-				</SortableContext>
-			</DndContext>
-
-			{/*<div style={{ marginTop: '20px' }}>*/}
-			{/*	<Button*/}
-			{/*		icon={link}*/}
-			{/*		isSecondary*/}
-			{/*		iconPosition="left"*/}
-			{/*		onClick={() => {*/}
-			{/*			console.log('INSERT NEW BLOCK');*/}
-			{/*		}}*/}
-			{/*		style={{*/}
-			{/*			width: '100%',*/}
-			{/*			color: '#000',*/}
-			{/*			borderColor: '#000',*/}
-			{/*			display: 'flex',*/}
-			{/*			alignItems: 'center',*/}
-			{/*			justifyContent: 'center',*/}
-			{/*		}}*/}
-			{/*	>*/}
-			{/*		Add Navigation Item*/}
-			{/*	</Button>*/}
-			{/*</div>*/}
-
-			<div style={{ marginTop: '30px', float: 'right' }}>
+			<div className={'footer'}>
 				<Button isPrimary onClick={closeModal}>
 					{__('Done', 'kadence-blocks')}
 				</Button>

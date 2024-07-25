@@ -4,15 +4,18 @@
 import { __ } from '@wordpress/i18n';
 
 import { useState } from '@wordpress/element';
-import { useSelect, useDispatch } from '@wordpress/data';
-import { PostSelectorCheckbox } from '@kadence/components';
+import { useSelect } from '@wordpress/data';
+import { PostSelectorCheckbox, KadenceRadioButtons } from '@kadence/components';
 import { createBlock } from '@wordpress/blocks';
+import { TextControl } from '@wordpress/components';
 
 import MenuEdit from './edit';
 import './editor.scss';
 
-export default function MenuEditor({ clientId, closeModal }) {
+export default function MenuEditor({ clientId, closeModal, title, setTitle, updateBlocksCallback }) {
 	const [sidebarTab, setSidebarTab] = useState('posts');
+	const [direction, setDirection] = useState('vertical');
+	const [directionTablet, setDirectionTablet] = useState('vertical');
 
 	const { blocks } = useSelect(
 		(select) => {
@@ -40,7 +43,8 @@ export default function MenuEditor({ clientId, closeModal }) {
 		});
 
 		if (navItems.length !== 0) {
-			wp.data.dispatch('core/block-editor').insertBlocks(navItems, 99999, clientId, false, null);
+			updateBlocksCallback(navItems);
+			// wp.data.dispatch('core/block-editor').insertBlocks(navItems, 99999, clientId, false, null);
 		}
 	};
 
@@ -48,6 +52,32 @@ export default function MenuEditor({ clientId, closeModal }) {
 		<div className="kb-menu-visual-editor">
 			<div className="left-column">
 				<div className="menu-container">
+					<KadenceRadioButtons
+						label={__('Desktop Direction', 'kadence-blocks')}
+						value={direction}
+						options={[
+							{ value: 'vertical', label: __('Vertical', 'kadence-blocks') },
+							{ value: 'horizontal', label: __('Horizontal', 'kadence-blocks') },
+						]}
+						hideLabel={false}
+						onChange={(value) => {
+							setDirection(value);
+						}}
+					/>
+
+					<KadenceRadioButtons
+						label={__('Tablet Direction', 'kadence-blocks')}
+						value={directionTablet}
+						options={[
+							{ value: 'vertical', label: __('Vertical', 'kadence-blocks') },
+							{ value: 'horizontal', label: __('Horizontal', 'kadence-blocks') },
+						]}
+						hideLabel={false}
+						onChange={(value) => {
+							setDirectionTablet(value);
+						}}
+					/>
+
 					<PostSelectorCheckbox
 						forceOpen={sidebarTab === 'posts'}
 						useForceState={true}
@@ -79,11 +109,14 @@ export default function MenuEditor({ clientId, closeModal }) {
 				<div className={'add-menu'}></div>
 			</div>
 			<div className="right-column">
-				{blocks.length !== 0 ? (
-					<MenuEdit blocks={blocks} closeModal={closeModal} />
-				) : (
-					<p>{__('Insert links to get started.', 'kadence-blocks')}</p>
-				)}
+				<TextControl
+					value={title === 'Auto Draft' ? '' : title}
+					onChange={setTitle}
+					label={__('Menu Name', 'kadence-blocks')}
+					help={__('This is used for your reference only.', 'kadence-blocks')}
+				/>
+
+				<MenuEdit blocks={blocks} closeModal={closeModal} />
 			</div>
 		</div>
 	);

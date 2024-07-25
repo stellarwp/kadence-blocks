@@ -93,8 +93,9 @@ export function EditInner(props) {
 	const [navPlaceholderBlocks, setNavPlaceholderBlocks] = useState([]);
 
 	const [isOpen, setOpen] = useState(false);
-	const openModal = () => setOpen(true);
-	const closeModal = () => setOpen(false);
+	const closeModal = () => {
+		setOpen(false);
+	};
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
@@ -529,7 +530,6 @@ export function EditInner(props) {
 	});
 
 	const [title, setTitle] = useNavigationProp('title');
-	const [isAdding, addNew] = useEntityPublish('kadence_navigation', id);
 
 	let [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_navigation', id);
 
@@ -610,49 +610,41 @@ export function EditInner(props) {
 		return get(blocks, [0], {});
 	}, [blocks]);
 
-	const onAdd = async (title, direction, style, initialDescription) => {
-		try {
-			console.log(2);
-			const response = await addNew();
-
-			if (response.id) {
-				onChange(
-					[
-						{
-							...newBlock,
-							innerBlocks: [
-								createBlock('kadence/navigation-link', {
-									label: __('Home', 'kadence-blocks'),
-									url: '/',
-								}),
-							],
-						},
-					],
-					clientId
-				);
-
-				setTitle(title);
-
-				const updatedMeta = meta;
-				updatedMeta._kad_navigation_description = initialDescription;
-				updatedMeta._kad_navigation_orientation = direction === 'skip' ? 'horizontal' : direction;
-
-				// Once we get templates, they'll go here
-				// if( style === 'a' ) {
-				//
-				// } else if ( style === 'b' ) {
-				//
-				// }
-
-				setMeta({ ...meta, updatedMeta });
-				await wp.data.dispatch('core').saveEditedEntityRecord('postType', 'kadence_navigation', id);
-
-				openModal();
-			}
-		} catch (error) {
-			console.error(error);
-		}
-	};
+	// const onAdd = async () => {
+	// 	try {
+	// 		const response = await addNew();
+	//
+	// 		if (response.id) {
+	// 			onChange(
+	// 				[
+	// 					{
+	// 						...newBlock,
+	// 						innerBlocks: [
+	// 							createBlock('kadence/navigation-link', {
+	// 								label: __('Home', 'kadence-blocks'),
+	// 								url: '/',
+	// 							}),
+	// 						],
+	// 					},
+	// 				],
+	// 				clientId
+	// 			);
+	//
+	// 			// setTitle('');
+	//
+	// 			const updatedMeta = meta;
+	// 			// updatedMeta._kad_navigation_description = initialDescription;
+	// 			// updatedMeta._kad_navigation_orientation = direction === 'skip' ? 'horizontal' : direction;
+	//
+	// 			setMeta({ ...meta, updatedMeta });
+	// 			await wp.data.dispatch('core').saveEditedEntityRecord('postType', 'kadence_navigation', id);
+	//
+	// 			openModal();
+	// 		}
+	// 	} catch (error) {
+	// 		console.error(error);
+	// 	}
+	// };
 
 	const navAppender = () => {
 		return (
@@ -816,16 +808,23 @@ export function EditInner(props) {
 		);
 	};
 
-	if (navigationInnerBlocks.length === 0 && !templateKey && !isOpen) {
-		return (
-			<>
-				<FormTitle onAdd={onAdd} isAdding={isAdding} existingTitle={title} />
-				<div className="kb-form-hide-while-setting-up">
-					<div {...innerBlocksProps} />
-				</div>
-			</>
+	const updateBlocksCallback = (navItems) => {
+		onChange(
+			[
+				{
+					...newBlock,
+					innerBlocks: [...navigationInnerBlocks, ...navItems],
+				},
+			],
+			clientId
 		);
-	}
+	};
+
+	useEffect(() => {
+		if (navigationInnerBlocks.length === 0 && !templateKey) {
+			setOpen(true);
+		}
+	}, [navigationInnerBlocks.length]);
 
 	if (inTemplatePreviewMode) {
 		//This displays this block as a preview. It should have some temporary inner blocks to display
@@ -928,6 +927,17 @@ export function EditInner(props) {
 					}}
 				</BlockSettingsMenuControls>
 			)}
+			{isOpen && (
+				<Modal size={'fill'} title={__('Navigation Builder', 'kadence-blocks')} onRequestClose={closeModal}>
+					<MenuEditor
+						updateBlocksCallback={updateBlocksCallback}
+						clientId={clientId}
+						closeModal={closeModal}
+						title={title}
+						setTitle={setTitle}
+					/>
+				</Modal>
+			)}
 			<BackendStyles {...props} metaAttributes={metaAttributes} previewDevice={previewDevice} />
 			<InspectorControls>
 				<InspectorControlTabs
@@ -938,11 +948,6 @@ export function EditInner(props) {
 
 				{activeTab === 'general' && (
 					<>
-						{isOpen && (
-							<Modal size={'large'} title="Menu Editor" onRequestClose={closeModal}>
-								<MenuEditor clientId={clientId} closeModal={closeModal} />
-							</Modal>
-						)}
 						<KadencePanelBody panelName={'kb-navigation-selected-switch'}>
 							{!direct && (
 								<>
@@ -1610,7 +1615,7 @@ export function EditInner(props) {
 						</KadencePanelBody>
 
 						<KadencePanelBody panelName={'kb-navigation-modal'}>
-							<Button variant="secondary" onClick={openModal}>
+							<Button variant="secondary" onClick={() => setOpen(true)}>
 								Open Navigation Editor
 							</Button>
 						</KadencePanelBody>
