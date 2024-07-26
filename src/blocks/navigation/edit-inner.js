@@ -536,7 +536,7 @@ export function EditInner(props) {
 	//if this nav block is getting created through the header onboarding
 	//then we need to auto create some basic block structure
 	const applyTemplateKeyBlocks = (templateKey) => {
-		if (templateKey === 'long-vertical') {
+		if (templateKey.includes('long')) {
 			setNavPlaceholderBlocks([
 				createBlock('kadence/navigation', {}, [
 					createBlock('kadence/navigation-link', { label: 'about', url: '#' }),
@@ -545,25 +545,6 @@ export function EditInner(props) {
 					createBlock('kadence/navigation-link', { label: 'resources', url: '#' }),
 					createBlock('kadence/navigation-link', { label: 'locations', url: '#' }),
 					createBlock('kadence/navigation-link', { label: 'shop', url: '#' }),
-				]),
-			]);
-		} else if (templateKey === 'long') {
-			setNavPlaceholderBlocks([
-				createBlock('kadence/navigation', {}, [
-					createBlock('kadence/navigation-link', { label: 'about', url: '#' }),
-					createBlock('kadence/navigation-link', { label: 'blog', url: '#' }),
-					createBlock('kadence/navigation-link', { label: 'contact', url: '#' }),
-					createBlock('kadence/navigation-link', { label: 'resources', url: '#' }),
-					createBlock('kadence/navigation-link', { label: 'locations', url: '#' }),
-					createBlock('kadence/navigation-link', { label: 'shop', url: '#' }),
-				]),
-			]);
-		} else if (templateKey === 'short-vertical') {
-			setNavPlaceholderBlocks([
-				createBlock('kadence/navigation', {}, [
-					createBlock('kadence/navigation-link', { label: 'about', url: '#' }),
-					createBlock('kadence/navigation-link', { label: 'blog', url: '#' }),
-					createBlock('kadence/navigation-link', { label: 'contact', url: '#' }),
 				]),
 			]);
 		} else {
@@ -574,6 +555,10 @@ export function EditInner(props) {
 					createBlock('kadence/navigation-link', { label: 'contact', url: '#' }),
 				]),
 			]);
+		}
+
+		if (templateKey.includes('vertical')) {
+			setMetaAttribute('vertical', 'orientation');
 		}
 	};
 
