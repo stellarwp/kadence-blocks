@@ -299,12 +299,16 @@ export function Edit(props) {
 								onChangeMobile={(value) => setAttributes({ minHeightMobile: value })}
 								min={0}
 								max={minHeightUnit === 'px' ? 600 : 100}
+								initialPosition={0}
 								step={1}
 								unit={minHeightUnit}
 								onUnit={(value) => {
 									setAttributes({ minHeightUnit: value });
 								}}
 								units={['px', 'em', 'vh']}
+								reset={() =>
+									setAttributes({ minHeight: null, minHeightTablet: null, minHeightMobile: null })
+								}
 								showUnit={true}
 							/>
 							<ResponsiveRangeControls
@@ -316,6 +320,7 @@ export function Edit(props) {
 								mobileValue={heightMobile}
 								onChangeMobile={(value) => setAttributes({ heightMobile: value })}
 								min={0}
+								initialPosition={0}
 								max={heightUnit === 'px' ? 600 : 100}
 								step={1}
 								unit={heightUnit}
@@ -323,6 +328,7 @@ export function Edit(props) {
 									setAttributes({ heightUnit: value });
 								}}
 								units={['px', 'em', 'vh']}
+								reset={() => setAttributes({ height: null, heightTablet: null, heightMobile: null })}
 								showUnit={true}
 							/>
 							{layout !== 'contained' && layout !== 'fullwidth' && (
@@ -335,12 +341,16 @@ export function Edit(props) {
 									mobileValue={maxWidthMobile}
 									onChangeMobile={(value) => setAttributes({ maxWidthMobile: value })}
 									min={0}
+									initialPosition={0}
 									max={maxWidthUnit === 'px' ? 600 : 100}
 									step={1}
 									unit={maxWidthUnit}
 									onUnit={(value) => {
 										setAttributes({ maxWidthUnit: value });
 									}}
+									reset={() =>
+										setAttributes({ maxWidth: null, maxWidthTablet: null, maxWidthMobile: null })
+									}
 									units={['px', 'em', 'vw', '%']}
 									showUnit={true}
 								/>
