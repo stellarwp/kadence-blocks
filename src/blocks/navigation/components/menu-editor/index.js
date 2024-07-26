@@ -135,7 +135,7 @@ export default function MenuEditor({
 					<TextControl
 						value={title === 'Auto Draft' ? '' : title}
 						onChange={setTitle}
-						label={__('Menu Name', 'kadence-blocks')}
+						label={__('Navigation Name', 'kadence-blocks')}
 						help={__('This is used for your reference only.', 'kadence-blocks')}
 					/>
 
