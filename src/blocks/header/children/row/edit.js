@@ -298,7 +298,7 @@ export function Edit(props) {
 								mobileValue={minHeightMobile}
 								onChangeMobile={(value) => setAttributes({ minHeightMobile: value })}
 								min={0}
-								max={minHeightUnit == 'px' ? 600 : 100}
+								max={minHeightUnit === 'px' ? 600 : 100}
 								step={1}
 								unit={minHeightUnit}
 								onUnit={(value) => {
@@ -316,7 +316,7 @@ export function Edit(props) {
 								mobileValue={heightMobile}
 								onChangeMobile={(value) => setAttributes({ heightMobile: value })}
 								min={0}
-								max={heightUnit == 'px' ? 600 : 100}
+								max={heightUnit === 'px' ? 600 : 100}
 								step={1}
 								unit={heightUnit}
 								onUnit={(value) => {
@@ -325,7 +325,7 @@ export function Edit(props) {
 								units={['px', 'em', 'vh']}
 								showUnit={true}
 							/>
-							{layout != 'contained' && layout != 'fullwidth' && (
+							{layout !== 'contained' && layout !== 'fullwidth' && (
 								<ResponsiveRangeControls
 									label={__('Max Width', 'kadence-blocks')}
 									value={maxWidth}
@@ -335,7 +335,7 @@ export function Edit(props) {
 									mobileValue={maxWidthMobile}
 									onChangeMobile={(value) => setAttributes({ maxWidthMobile: value })}
 									min={0}
-									max={maxWidthUnit == 'px' ? 600 : 100}
+									max={maxWidthUnit === 'px' ? 600 : 100}
 									step={1}
 									unit={maxWidthUnit}
 									onUnit={(value) => {
@@ -363,7 +363,6 @@ export function Edit(props) {
 								units={['px', 'em', 'vw']}
 								showUnit={true}
 							/>
-
 							<ResponsiveAlignControls
 								label={__('Vertical Alignment', 'kadence-blocks')}
 								value={vAlign ? vAlign : ''}
