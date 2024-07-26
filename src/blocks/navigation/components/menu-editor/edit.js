@@ -5,11 +5,12 @@ import { get, debounce } from 'lodash';
 import { __ } from '@wordpress/i18n';
 import { PREVENT_BLOCK_DELETE } from './constants';
 import { moreHorizontal, edit, trash } from '@wordpress/icons';
+import { memo } from 'react';
 
 import { DndContext } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 
-const DragHandle = React.memo((props) => (
+const DragHandle = memo((props) => (
 	<div className={'drag-handle'} style={{ cursor: 'grab', marginRight: '5px' }} {...props}>
 		<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
 			<path d="M13 8c.6 0 1-.4 1-1s-.4-1-1-1-1 .4-1 1 .4 1 1 1zM5 6c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1zm0 4c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1zm8 0c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1zM9 6c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1zm0 4c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1z"></path>
@@ -82,9 +83,12 @@ function BlockItem({ thisBlock, activeBlock, toggleCollapse, collapsed }) {
 					/>
 				)}
 				<Icon className={'block-icon'} icon={blockMeta?.icon?.src} />
-				<span className={'block-label'}>{labelOrTitle}</span>
+				<span className={'block-label'} onClick={() => setIsEditing(!isEditing)}>
+					{labelOrTitle}
+				</span>
 				<DropdownMenu
 					icon={moreHorizontal}
+					className={'block-settings'}
 					label={__('Options', 'kadence-blocks')}
 					controls={[
 						{
@@ -136,7 +140,7 @@ const deleteBlock = (clientId) => {
 	wp.data.dispatch('core/block-editor').removeBlock(clientId, false);
 };
 
-export default function MenuEdit({ closeModal, blocks }) {
+export default function MenuEdit({ blocks }) {
 	const [collapsed, setCollapsed] = useState([]);
 	const [activeBlock, setActiveBlock] = useState(null);
 
@@ -244,63 +248,28 @@ export default function MenuEdit({ closeModal, blocks }) {
 
 	return (
 		<div className={'menu-management'}>
-			{/*<div className={'edit-menu-name'}>*/}
-			{/*	NAME:{' '}*/}
-			{/*	<RichText*/}
-			{/*		tagName={'span'}*/}
-			{/*		placeholder={__('Set a Title', 'kadence-blocks')}*/}
-			{/*		onChange={(value) => console.log(value)}*/}
-			{/*		value={''}*/}
-			{/*		withoutInteractiveFormatting={true}*/}
-			{/*		allowedFormats={[]}*/}
-			{/*	/>*/}
-			{/*</div>*/}
-
-			<DndContext
-				// collisionDetection={closestCenter}
-				onDragStart={handleDragStart}
-				onDragOver={debounce(handleDragOver, 50)}
-				onDragEnd={handleDragEnd}
-			>
-				<SortableContext items={sortedIds} strategy={verticalListSortingStrategy}>
-					{flattenedItems.map((block) => (
-						<BlockItem
-							activeBlock={activeBlock === block.clientId}
-							key={block.clientId}
-							thisBlock={block}
-							toggleCollapse={toggleCollapse}
-							collapsed={collapsed.includes(block.clientId)}
-						/>
-					))}
-				</SortableContext>
-			</DndContext>
-
-			{/*<div style={{ marginTop: '20px' }}>*/}
-			{/*	<Button*/}
-			{/*		icon={link}*/}
-			{/*		isSecondary*/}
-			{/*		iconPosition="left"*/}
-			{/*		onClick={() => {*/}
-			{/*			console.log('INSERT NEW BLOCK');*/}
-			{/*		}}*/}
-			{/*		style={{*/}
-			{/*			width: '100%',*/}
-			{/*			color: '#000',*/}
-			{/*			borderColor: '#000',*/}
-			{/*			display: 'flex',*/}
-			{/*			alignItems: 'center',*/}
-			{/*			justifyContent: 'center',*/}
-			{/*		}}*/}
-			{/*	>*/}
-			{/*		Add Navigation Item*/}
-			{/*	</Button>*/}
-			{/*</div>*/}
-
-			<div style={{ marginTop: '30px', float: 'right' }}>
-				<Button isPrimary onClick={closeModal}>
-					{__('Done', 'kadence-blocks')}
-				</Button>
-			</div>
+			{blocks.length === 0 ? (
+				<p>{__('Insert links to get started.', 'kadence-blocks')}</p>
+			) : (
+				<DndContext
+					// collisionDetection={closestCenter}
+					onDragStart={handleDragStart}
+					onDragOver={debounce(handleDragOver, 50)}
+					onDragEnd={handleDragEnd}
+				>
+					<SortableContext items={sortedIds} strategy={verticalListSortingStrategy}>
+						{flattenedItems.map((block) => (
+							<BlockItem
+								activeBlock={activeBlock === block.clientId}
+								key={block.clientId}
+								thisBlock={block}
+								toggleCollapse={toggleCollapse}
+								collapsed={collapsed.includes(block.clientId)}
+							/>
+						))}
+					</SortableContext>
+				</DndContext>
+			)}
 		</div>
 	);
 }

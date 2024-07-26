@@ -10,7 +10,7 @@ const postMeta = {
 		{
 			enable: false,
 			color: '#000000',
-			opacity: 0.20000000000000001,
+			opacity: 0.2,
 			spread: 0,
 			blur: 2,
 			hOffset: 1,
@@ -29,15 +29,27 @@ function innerBlocks() {
 			createBlock('kadence/header-container-desktop', { uniqueID: '10_9b8274-df' }, [
 				createBlock(
 					'kadence/header-row',
-					{ uniqueID: '10_f4816d-58', location: 'top', metadata: { name: 'Top Row' } },
+					{
+						uniqueID: '10_f4816d-58',
+						location: 'top',
+						metadata: { name: 'Top Row' },
+					},
 					[
 						createBlock(
 							'kadence/header-section',
-							{ uniqueID: '10_1db117-66', location: 'left', metadata: { name: 'Left Section' } },
+							{
+								uniqueID: '10_1db117-66',
+								location: 'left',
+								metadata: { name: 'Left Section' },
+							},
 							[
 								createBlock(
 									'kadence/header-column',
-									{ uniqueID: '10_eeb809-55', location: 'left', metadata: { name: 'Left' } },
+									{
+										uniqueID: '10_eeb809-55',
+										location: 'left',
+										metadata: { name: 'Left' },
+									},
 									[]
 								),
 								createBlock(
@@ -53,12 +65,20 @@ function innerBlocks() {
 						),
 						createBlock(
 							'kadence/header-column',
-							{ uniqueID: '10_a6253a-9a', location: 'center', metadata: { name: 'Center' } },
+							{
+								uniqueID: '10_a6253a-9a',
+								location: 'center',
+								metadata: { name: 'Center' },
+							},
 							[]
 						),
 						createBlock(
 							'kadence/header-section',
-							{ uniqueID: '10_817efa-f4', location: 'right', metadata: { name: 'Right Section' } },
+							{
+								uniqueID: '10_817efa-f4',
+								location: 'right',
+								metadata: { name: 'Right Section' },
+							},
 							[
 								createBlock(
 									'kadence/header-column',
@@ -71,7 +91,11 @@ function innerBlocks() {
 								),
 								createBlock(
 									'kadence/header-column',
-									{ uniqueID: '10_be6fab-2d', location: 'right', metadata: { name: 'Right' } },
+									{
+										uniqueID: '10_be6fab-2d',
+										location: 'right',
+										metadata: { name: 'Right' },
+									},
 									[]
 								),
 							]
@@ -83,7 +107,6 @@ function innerBlocks() {
 					{
 						uniqueID: '10_38d32f-b3',
 						location: 'center',
-						layout: 'fullwidth',
 						minHeight: 60,
 						vAlign: 'center',
 						metadata: { name: 'Middle Row' },
@@ -91,11 +114,19 @@ function innerBlocks() {
 					[
 						createBlock(
 							'kadence/header-section',
-							{ uniqueID: '10_e3294a-db', location: 'left', metadata: { name: 'Left Section' } },
+							{
+								uniqueID: '10_e3294a-db',
+								location: 'left',
+								metadata: { name: 'Left Section' },
+							},
 							[
 								createBlock(
 									'kadence/header-column',
-									{ uniqueID: '10_93f2a8-d7', location: 'left', metadata: { name: 'Left' } },
+									{
+										uniqueID: '10_93f2a8-d7',
+										location: 'left',
+										metadata: { name: 'Left' },
+									},
 									[
 										createBlock(
 											'kadence/off-canvas-trigger',
@@ -139,7 +170,11 @@ function innerBlocks() {
 						),
 						createBlock(
 							'kadence/header-section',
-							{ uniqueID: '10_9225e0-a4', location: 'right', metadata: { name: 'Right Section' } },
+							{
+								uniqueID: '10_9225e0-a4',
+								location: 'right',
+								metadata: { name: 'Right Section' },
+							},
 							[
 								createBlock(
 									'kadence/header-column',
@@ -152,7 +187,11 @@ function innerBlocks() {
 								),
 								createBlock(
 									'kadence/header-column',
-									{ uniqueID: '10_38aa24-cf', location: 'right', metadata: { name: 'Right' } },
+									{
+										uniqueID: '10_38aa24-cf',
+										location: 'right',
+										metadata: { name: 'Right' },
+									},
 									[
 										createBlock('kadence/icon', { uniqueID: '10_b26f06-67' }, [
 											createBlock(
@@ -177,15 +216,27 @@ function innerBlocks() {
 				),
 				createBlock(
 					'kadence/header-row',
-					{ uniqueID: '10_be279b-96', location: 'bottom', metadata: { name: 'Bottom Row' } },
+					{
+						uniqueID: '10_be279b-96',
+						location: 'bottom',
+						metadata: { name: 'Bottom Row' },
+					},
 					[
 						createBlock(
 							'kadence/header-section',
-							{ uniqueID: '10_156db1-12', location: 'left', metadata: { name: 'Left Section' } },
+							{
+								uniqueID: '10_156db1-12',
+								location: 'left',
+								metadata: { name: 'Left Section' },
+							},
 							[
 								createBlock(
 									'kadence/header-column',
-									{ uniqueID: '10_4fd11e-d8', location: 'left', metadata: { name: 'Left' } },
+									{
+										uniqueID: '10_4fd11e-d8',
+										location: 'left',
+										metadata: { name: 'Left' },
+									},
 									[]
 								),
 								createBlock(
@@ -201,12 +252,20 @@ function innerBlocks() {
 						),
 						createBlock(
 							'kadence/header-column',
-							{ uniqueID: '10_662575-4d', location: 'center', metadata: { name: 'Center' } },
+							{
+								uniqueID: '10_662575-4d',
+								location: 'center',
+								metadata: { name: 'Center' },
+							},
 							[]
 						),
 						createBlock(
 							'kadence/header-section',
-							{ uniqueID: '10_bad89b-9f', location: 'right', metadata: { name: 'Right Section' } },
+							{
+								uniqueID: '10_bad89b-9f',
+								location: 'right',
+								metadata: { name: 'Right Section' },
+							},
 							[
 								createBlock(
 									'kadence/header-column',
@@ -219,7 +278,11 @@ function innerBlocks() {
 								),
 								createBlock(
 									'kadence/header-column',
-									{ uniqueID: '10_1bcc4f-41', location: 'right', metadata: { name: 'Right' } },
+									{
+										uniqueID: '10_1bcc4f-41',
+										location: 'right',
+										metadata: { name: 'Right' },
+									},
 									[]
 								),
 							]
@@ -228,27 +291,49 @@ function innerBlocks() {
 				),
 			]),
 			createBlock('kadence/header-container-tablet', { uniqueID: '10_ea8334-1d' }, [
-				createBlock('kadence/header-row', { uniqueID: '10_b87809-b2', metadata: { name: 'Top Row' } }, [
-					createBlock(
-						'kadence/header-column',
-						{ uniqueID: '10_a5fe2e-3d', location: 'tablet-left', metadata: { name: 'Left' } },
-						[]
-					),
-					createBlock(
-						'kadence/header-column',
-						{ uniqueID: '10_a628c2-31', metadata: { name: 'Center' }, location: 'tablet-center' },
-						[]
-					),
-					createBlock(
-						'kadence/header-column',
-						{ uniqueID: '10_835e6f-11', location: 'tablet-right', metadata: { name: 'Right' } },
-						[]
-					),
-				]),
+				createBlock(
+					'kadence/header-row',
+					{
+						uniqueID: '10_b87809-b2',
+						metadata: { name: 'Top Row' },
+					},
+					[
+						createBlock(
+							'kadence/header-column',
+							{
+								uniqueID: '10_a5fe2e-3d',
+								location: 'tablet-left',
+								metadata: { name: 'Left' },
+							},
+							[]
+						),
+						createBlock(
+							'kadence/header-column',
+							{
+								uniqueID: '10_a628c2-31',
+								metadata: { name: 'Center', location: 'tablet-center' },
+							},
+							[]
+						),
+						createBlock(
+							'kadence/header-column',
+							{
+								uniqueID: '10_835e6f-11',
+								location: 'tablet-right',
+								metadata: { name: 'Right' },
+							},
+							[]
+						),
+					]
+				),
 				createBlock('kadence/header-row', { uniqueID: '10_5922ae-0e', metadata: { name: 'Middle Row' } }, [
 					createBlock(
 						'kadence/header-column',
-						{ uniqueID: '10_748893-45', location: 'tablet-left', metadata: { name: 'Left' } },
+						{
+							uniqueID: '10_748893-45',
+							location: 'tablet-left',
+							metadata: { name: 'Left' },
+						},
 						[
 							createBlock(
 								'kadence/image',
@@ -265,12 +350,19 @@ function innerBlocks() {
 					),
 					createBlock(
 						'kadence/header-column',
-						{ uniqueID: '10_c2fbc3-92', metadata: { name: 'Center' }, location: 'tablet-center' },
+						{
+							uniqueID: '10_c2fbc3-92',
+							metadata: { name: 'Center', location: 'tablet-center' },
+						},
 						[]
 					),
 					createBlock(
 						'kadence/header-column',
-						{ uniqueID: '10_42c593-4d', location: 'tablet-right', metadata: { name: 'Right' } },
+						{
+							uniqueID: '10_42c593-4d',
+							location: 'tablet-right',
+							metadata: { name: 'Right' },
+						},
 						[
 							createBlock('kadence/icon', { uniqueID: '10_875530-ba', tabletTextAlignment: 'right' }, [
 								createBlock(
@@ -287,23 +379,41 @@ function innerBlocks() {
 						]
 					),
 				]),
-				createBlock('kadence/header-row', { uniqueID: '10_b4c9b8-ca', metadata: { name: 'Bottom Row' } }, [
-					createBlock(
-						'kadence/header-column',
-						{ uniqueID: '10_722118-db', location: 'tablet-left', metadata: { name: 'Left' } },
-						[]
-					),
-					createBlock(
-						'kadence/header-column',
-						{ uniqueID: '10_d5ddbd-e2', metadata: { name: 'Center' }, location: 'tablet-center' },
-						[]
-					),
-					createBlock(
-						'kadence/header-column',
-						{ uniqueID: '10_3f8aab-6f', location: 'tablet-right', metadata: { name: 'Right' } },
-						[]
-					),
-				]),
+				createBlock(
+					'kadence/header-row',
+					{
+						uniqueID: '10_b4c9b8-ca',
+						metadata: { name: 'Bottom Row' },
+					},
+					[
+						createBlock(
+							'kadence/header-column',
+							{
+								uniqueID: '10_722118-db',
+								location: 'tablet-left',
+								metadata: { name: 'Left' },
+							},
+							[]
+						),
+						createBlock(
+							'kadence/header-column',
+							{
+								uniqueID: '10_d5ddbd-e2',
+								metadata: { name: 'Center', location: 'tablet-center' },
+							},
+							[]
+						),
+						createBlock(
+							'kadence/header-column',
+							{
+								uniqueID: '10_3f8aab-6f',
+								location: 'tablet-right',
+								metadata: { name: 'Right' },
+							},
+							[]
+						),
+					]
+				),
 			]),
 			createBlock(
 				'kadence/off-canvas',
@@ -330,7 +440,7 @@ function innerBlocks() {
 						},
 						[]
 					),
-					createBlock('kadence/navigation', { uniqueID: '10_6f903e-a7' }, []),
+					createBlock('kadence/navigation', { uniqueID: '10_6f903e-a7', templateKey: 'short' }, []),
 				]
 			),
 		]),

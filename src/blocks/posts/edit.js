@@ -1026,6 +1026,7 @@ function KadencePosts(props) {
 				}
 			>
 				{image && post.featured_image_src_large && post.featured_image_src_large[0] !== undefined && (
+					// eslint-disable-next-line jsx-a11y/anchor-is-valid
 					<a href={'#'} className={`post-thumbnail kadence-thumbnail-ratio-${imageRatio}`}>
 						<div className="post-thumbnail-inner">
 							<img
@@ -1081,6 +1082,7 @@ function KadencePosts(props) {
 								textTransform: titleFont[0].textTransform ? titleFont[0].textTransform : undefined,
 							}}
 						>
+							{/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
 							<a
 								href={'#'}
 								dangerouslySetInnerHTML={{ __html: post.title.rendered.trim() || __('(Untitled)') }}
@@ -1122,6 +1124,7 @@ function KadencePosts(props) {
 										)}
 										<span className="author vcard">
 											{authorLink ? (
+												// eslint-disable-next-line jsx-a11y/anchor-is-valid
 												<a className="url fn n" href={'#'}>
 													{post.author_info.display_name}
 												</a>
@@ -1218,6 +1221,7 @@ function KadencePosts(props) {
 						{readmore && (
 							<div className="entry-actions">
 								<p className="more-link-wrap">
+									{/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
 									<a href={'#'} className="post-more-link">
 										{readmoreLabel ? readmoreLabel : __('Read More', 'kadence-blocks')}
 									</a>

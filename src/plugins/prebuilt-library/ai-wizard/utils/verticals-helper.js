@@ -14,7 +14,7 @@ export function verticalsHelper() {
 		if (!cachedData) {
 			getVerticalsFromProphecy();
 		} else {
-			setPexelLinks(SafeParseJSON(cachedData, false));
+			// setPexelLinks(SafeParseJSON(cachedData, false));
 			setLoading(false);
 		}
 	}, []);

@@ -1,4 +1,3 @@
-/* global kadence_blocks_params */
 import { TypographyControls, MeasurementControls, PopColorControl } from '@kadence/components';
 import { map, debounce } from 'lodash';
 /**

@@ -69,56 +69,58 @@ const HeaderDesktop = ({ data, onChange }) => {
 	};
 
 	return (
-		<div className="width-l">
-			<h1>{__('Desktop Layout', 'kadence-blocks')}</h1>
-			<p>{__('Choose a header layout for desktop.', 'kadence-blocks')}</p>
+		<div className={'body'}>
+			<div className="width-l">
+				<h1>{__('Desktop Layout', 'kadence-blocks')}</h1>
+				<p>{__('Choose a header layout for desktop.', 'kadence-blocks')}</p>
 
-			<div className="type-selection">
-				<Button className="basic" onClick={() => setActiveTab('basic')} isPressed={activeTab === 'basic'}>
-					{__('Basic', 'kadence-blocks')}
-				</Button>
-				<Button
-					className="multi-row"
-					onClick={() => setActiveTab('multi-row')}
-					isPressed={activeTab === 'multi-row'}
-				>
-					{__('Multi Row', 'kadence-blocks')}
-				</Button>
-			</div>
-
-			<div className="options">
-				<div
-					className={'option blank' + (data.headerDesktop === 'blank' ? ' is-selected' : '')}
-					onClick={() => onChange({ headerDesktop: 'blank' })}
-				>
-					<Button>{__('Create blank desktop header.', 'kadence-blocks')}</Button>
+				<div className="type-selection">
+					<Button className="basic" onClick={() => setActiveTab('basic')} isPressed={activeTab === 'basic'}>
+						{__('Basic', 'kadence-blocks')}
+					</Button>
+					<Button
+						className="multi-row"
+						onClick={() => setActiveTab('multi-row')}
+						isPressed={activeTab === 'multi-row'}
+					>
+						{__('Multi Row', 'kadence-blocks')}
+					</Button>
 				</div>
 
-				{activeTab === 'basic' &&
-					Object.keys(basicOptions).map((key) => (
-						<div key={key} className={'option'}>
-							<div
-								className={'option-image' + (data.headerDesktop === key ? ' is-selected' : '')}
-								onClick={() => onChange({ headerDesktop: key })}
-							>
-								{basicOptions[key].icon}
-							</div>
-							<span>{basicOptions[key].title}</span>
-						</div>
-					))}
+				<div className="options">
+					<div
+						className={'option blank' + (data.headerDesktop === 'blank' ? ' is-selected' : '')}
+						onClick={() => onChange({ headerDesktop: 'blank' })}
+					>
+						<Button>{__('Create blank desktop header.', 'kadence-blocks')}</Button>
+					</div>
 
-				{activeTab === 'multi-row' &&
-					Object.keys(muiltiRowOptions).map((key) => (
-						<div key={key} className={'option'}>
-							<div
-								className={'option-image' + (data.headerDesktop === key ? ' is-selected' : '')}
-								onClick={() => onChange({ headerDesktop: key })}
-							>
-								{muiltiRowOptions[key].icon}
+					{activeTab === 'basic' &&
+						Object.keys(basicOptions).map((key) => (
+							<div key={key} className={'option'}>
+								<div
+									className={'option-image' + (data.headerDesktop === key ? ' is-selected' : '')}
+									onClick={() => onChange({ headerDesktop: key })}
+								>
+									{basicOptions[key].icon}
+								</div>
+								<span>{basicOptions[key].title}</span>
 							</div>
-							<span>{muiltiRowOptions[key].title}</span>
-						</div>
-					))}
+						))}
+
+					{activeTab === 'multi-row' &&
+						Object.keys(muiltiRowOptions).map((key) => (
+							<div key={key} className={'option'}>
+								<div
+									className={'option-image' + (data.headerDesktop === key ? ' is-selected' : '')}
+									onClick={() => onChange({ headerDesktop: key })}
+								>
+									{muiltiRowOptions[key].icon}
+								</div>
+								<span>{muiltiRowOptions[key].title}</span>
+							</div>
+						))}
+				</div>
 			</div>
 		</div>
 	);

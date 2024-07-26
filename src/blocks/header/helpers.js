@@ -17,6 +17,12 @@ import { innerBlocks as MultiRow3InnerBlocks, postMeta as MultiRow3PostMeta } fr
 import { innerBlocks as MultiRow4InnerBlocks, postMeta as MultiRow4PostMeta } from './templates/multi-row-4';
 import { innerBlocks as MultiRow5InnerBlocks, postMeta as MultiRow5PostMeta } from './templates/multi-row-5';
 
+// Mobile templates
+import { innerBlocks as Mobile1InnerBlocks, postMeta as Mobile1PostMeta } from './templates/mobile-1';
+import { innerBlocks as Mobile2InnerBlocks, postMeta as Mobile2PostMeta } from './templates/mobile-2';
+import { innerBlocks as Mobile3InnerBlocks, postMeta as Mobile3PostMeta } from './templates/mobile-3';
+import { innerBlocks as Mobile4InnerBlocks, postMeta as Mobile4PostMeta } from './templates/mobile-4';
+
 export function buildTemplateFromSelection(desktop, mobile) {
 	// If it's an exact match to existing template, return that template
 	if (desktop === mobile) {
@@ -221,8 +227,8 @@ function getDataFromKey(key) {
 		response.templatePostMeta = Basic3PostMeta;
 		response.templateInnerBlocks = Basic3InnerBlocks();
 	} else if (key === 'basic-4') {
-		response.templatePostMeta = Basic4InnerBlocks;
-		response.templateInnerBlocks = Basic4PostMeta();
+		response.templatePostMeta = Basic4PostMeta;
+		response.templateInnerBlocks = Basic4InnerBlocks();
 	} else if (key === 'basic-5') {
 		response.templatePostMeta = Basic5PostMeta;
 		response.templateInnerBlocks = Basic5InnerBlocks();
@@ -247,7 +253,51 @@ function getDataFromKey(key) {
 	} else if (key === 'multi-row-5') {
 		response.templatePostMeta = MultiRow5PostMeta;
 		response.templateInnerBlocks = MultiRow5InnerBlocks();
+	} else if (key === 'mobile-1') {
+		response.templatePostMeta = Mobile1PostMeta;
+		response.templateInnerBlocks = Mobile1InnerBlocks();
+	} else if (key === 'mobile-2') {
+		response.templatePostMeta = Mobile2PostMeta;
+		response.templateInnerBlocks = Mobile2InnerBlocks();
+	} else if (key === 'mobile-3') {
+		response.templatePostMeta = Mobile3PostMeta;
+		response.templateInnerBlocks = Mobile3InnerBlocks();
+	} else if (key === 'mobile-4') {
+		response.templatePostMeta = Mobile4PostMeta;
+		response.templateInnerBlocks = Mobile4InnerBlocks();
+	}
+
+	// Replace placeholder relative URL with absolute URL
+	if (response.templateInnerBlocks) {
+		response.templateInnerBlocks = replaceInAttributes(
+			response.templateInnerBlocks,
+			'/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/',
+			kadence_blocks_params.kadenceBlocksUrl + '/includes/assets/images/placeholder/'
+		);
 	}
 
 	return response;
+}
+
+function replaceInAttributes(obj, searchValue, replaceValue) {
+	// Check if the input is an array
+	if (Array.isArray(obj)) {
+		// Loop through each item in the array
+		obj.forEach((item, index) => {
+			obj[index] = replaceInAttributes(item, searchValue, replaceValue);
+		});
+	} else if (typeof obj === 'object' && obj !== null) {
+		// Loop through each key in the object
+		for (const key in obj) {
+			if (typeof obj[key] === 'string') {
+				// If the value is a string, replace the substring
+				obj[key] = obj[key].replace(searchValue, replaceValue);
+			} else {
+				// If the value is an object or array, call the function recursively
+				obj[key] = replaceInAttributes(obj[key], searchValue, replaceValue);
+			}
+		}
+	}
+	// Return the modified object
+	return obj;
 }

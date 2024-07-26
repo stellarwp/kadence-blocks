@@ -503,7 +503,7 @@ class Kadence_Blocks_Prebuilt_Library {
 			if ( ! empty( $final_data['name'] ) ) {
 				wp_send_json( $final_data );
 			}
-			wp_send_json( esc_html__( 'No Connection data', 'kadence-blocks' ) );
+			wp_send_json( esc_html__( 'No Connection data available', 'kadence-blocks' ) );
 		}
 		die;
 	}

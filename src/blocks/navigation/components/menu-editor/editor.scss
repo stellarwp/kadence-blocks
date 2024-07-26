@@ -6,11 +6,24 @@
 	.left-column {
 		flex: 1;
 		padding-bottom: 30px;
+		max-width: 350px;
 	}
 
 	.right-column {
+		display: flex;
+		flex-direction: column;
 		flex: 2;
 		padding: 0 20px 0 40px;
+		justify-content: space-between;
+
+		.footer {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 10px 0 0 0;
+			width: 100%;
+			background-color: #FFF;
+		}
 	}
 
 	.menu-container {
@@ -86,7 +99,6 @@
 		line-height: 16px;
 		letter-spacing: 0em;
 
-
 		.edit-menu-name {
 			color: #757575;
 			font-size: 12px;
@@ -113,6 +125,7 @@
 		.block-label {
 			flex: 1;
 		}
+
 
 		.block-settings {
 			transform: rotate(90deg);

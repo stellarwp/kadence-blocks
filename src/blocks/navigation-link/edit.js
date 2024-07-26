@@ -25,7 +25,7 @@ import {
 	ButtonGroup,
 } from '@wordpress/components';
 import { plusCircle, addSubmenu, plusCircleFilled } from '@wordpress/icons';
-import { displayShortcut, isKeyboardEvent, ENTER } from '@wordpress/keycodes';
+import { isKeyboardEvent, ENTER } from '@wordpress/keycodes';
 import { __ } from '@wordpress/i18n';
 import {
 	BlockControls,
@@ -588,7 +588,7 @@ export default function Edit(props) {
 		}
 	}
 
-	const megaMenuWidthClass = 'kadence-menu-mega-width-' + (megaMenuWidth ? megaMenuWidth : 'container');
+	const megaMenuWidthClass = 'kadence-menu-mega-width-' + (megaMenuWidth ? megaMenuWidth : 'full');
 	const showSubMenusWithLogic = showSubMenus || isSelected || childSelected;
 
 	const blockProps = useBlockProps({
@@ -836,9 +836,10 @@ export default function Edit(props) {
 				</div>
 			</KadencePanelBody>
 			<KadencePanelBody
-				title={__('Highlight Label - Pro', 'kadence-blocks')}
+				title={__('Highlight Label', 'kadence-blocks')}
 				initialOpen={false}
 				panelName={'navigation-link-highlight-settings'}
+				proTag={true}
 			>
 				<div className="kb-pro-notice">
 					<h2>{__('Higlight Labels', 'kadence-blocks')} </h2>
@@ -859,9 +860,10 @@ export default function Edit(props) {
 			</KadencePanelBody>
 
 			<KadencePanelBody
-				title={__('Icon - Pro', 'kadence-blocks')}
+				title={__('Icon', 'kadence-blocks')}
 				initialOpen={false}
 				panelName={'navigation-media-settings'}
+				proTag={true}
 			>
 				<div className="kb-pro-notice">
 					<h2>{__('Icons', 'kadence-blocks')} </h2>

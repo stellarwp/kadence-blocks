@@ -69,8 +69,18 @@ import metadata from './block.json';
 const ANCHOR_REGEX = /[\s#]/g;
 
 export function EditInner(props) {
-	const { attributes, setAttributes, clientId, context, direct, id, isSelected, headerRef, justCompletedOnboarding } =
-		props;
+	const {
+		attributes,
+		setAttributes,
+		clientId,
+		context,
+		direct,
+		id,
+		isSelected,
+		headerRef,
+		justCompletedOnboarding,
+		formData,
+	} = props;
 	const { setHeaderVisualBuilderOpenId } = useDispatch('kadenceblocks/data');
 
 	const { previewDevice, showVisualBuilder } = useSelect(
@@ -740,14 +750,14 @@ export function EditInner(props) {
 								onChangeTablet={(value) => setMetaAttribute(value, 'isTransparentTablet')}
 								onChangeMobile={(value) => setMetaAttribute(value, 'isTransparentMobile')}
 							/>
-							{previewIsTransparent == '1' && (
+							{previewIsTransparent === '1' && (
 								<ToggleControl
 									label={__('Auto spacing under', 'kadence-blocks')}
 									checked={autoTransparentSpacing}
 									onChange={(value) => setMetaAttribute(value, 'autoTransparentSpacing')}
 								/>
 							)}
-							{previewIsSticky == '1' && (
+							{previewIsSticky === '1' && (
 								<>
 									<ResponsiveSelectControl
 										label={__('Sticky Section', 'kadence-blocks')}
@@ -907,7 +917,7 @@ export function EditInner(props) {
 
 				{activeTab === 'style' && (
 					<>
-						{previewIsTransparent != '1' && (
+						{previewIsTransparent !== '1' && (
 							<KadencePanelBody
 								title={__('Background Settings', 'kadence-blocks')}
 								initialOpen={true}
@@ -916,7 +926,7 @@ export function EditInner(props) {
 								{backgroundStyleControls()}
 							</KadencePanelBody>
 						)}
-						{previewIsTransparent == '1' && (
+						{previewIsTransparent === '1' && (
 							<KadencePanelBody
 								title={__('Transparent Background Settings', 'kadence-blocks')}
 								initialOpen={false}
@@ -925,7 +935,7 @@ export function EditInner(props) {
 								{backgroundStyleControls('', 'Transparent')}
 							</KadencePanelBody>
 						)}
-						{previewIsSticky == '1' && (
+						{previewIsSticky === '1' && (
 							<KadencePanelBody
 								title={__('Sticky Background Settings', 'kadence-blocks')}
 								initialOpen={false}
@@ -1104,7 +1114,7 @@ export function EditInner(props) {
 								}}
 							/>
 						</KadencePanelBody>
-						{previewIsTransparent == '1' && (
+						{previewIsTransparent === '1' && (
 							<KadencePanelBody
 								title={__('Transparent Border Settings', 'kadence-blocks')}
 								initialOpen={false}
@@ -1224,7 +1234,7 @@ export function EditInner(props) {
 								/>
 							</KadencePanelBody>
 						)}
-						{previewIsSticky == '1' && (
+						{previewIsSticky === '1' && (
 							<KadencePanelBody
 								title={__('Sticky Border Settings', 'kadence-blocks')}
 								initialOpen={false}

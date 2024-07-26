@@ -13,23 +13,33 @@ const HeaderName = ({ data, onChange }) => {
 	}, [data]);
 
 	return (
-		<div className={'width-m'}>
-			<h1>{__('Header Name', 'kadence-blocks')}</h1>
-			<p>{__('Give your header a name and a description', 'kadence-blocks')}</p>
-			<TextControl
-				label={__('Header Name', 'kadence-blocks')}
-				placeholder={__('My New Header', 'kadence-blocks')}
-				value={data?.headerName}
-				onChange={(headerName) => onChange({ headerName })}
-				autoFocus={true}
-			/>
+		<div className={'body-name'}>
+			<div className={'width-f'}>
+				<div className={'image'}>
+					<img
+						alt={__('Headers you can build with Kadence Blocks', 'kadence-blocks')}
+						src={kadence_blocks_params.kadenceBlocksUrl + '/includes/header/img/onboarding.png'}
+					/>
+				</div>
+				<div className={'form-container'}>
+					<h1>{__('Header Name', 'kadence-blocks')}</h1>
+					<p>{__('Give your header a name and a description', 'kadence-blocks')}</p>
+					<TextControl
+						label={__('Header Name', 'kadence-blocks')}
+						placeholder={__('My New Header', 'kadence-blocks')}
+						value={data?.headerName}
+						onChange={(headerName) => onChange({ headerName })}
+						autoFocus={true}
+					/>
 
-			<TextareaControl
-				label={__('Header Description', 'kadence-blocks')}
-				placeholder={__('My New Header is', 'kadence-blocks')}
-				value={data?.headerDescription}
-				onChange={(headerDescription) => onChange({ headerDescription })}
-			/>
+					<TextareaControl
+						label={__('Header Description', 'kadence-blocks')}
+						placeholder={__('My New Header is', 'kadence-blocks')}
+						value={data?.headerDescription}
+						onChange={(headerDescription) => onChange({ headerDescription })}
+					/>
+				</div>
+			</div>
 		</div>
 	);
 };

@@ -93,8 +93,9 @@ export function EditInner(props) {
 	const [navPlaceholderBlocks, setNavPlaceholderBlocks] = useState([]);
 
 	const [isOpen, setOpen] = useState(false);
-	const openModal = () => setOpen(true);
-	const closeModal = () => setOpen(false);
+	const closeModal = () => {
+		setOpen(false);
+	};
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
@@ -448,7 +449,13 @@ export function EditInner(props) {
 		dropdownBorderRadiusUnit,
 	} = metaAttributes;
 
-	const previewOrientation = getPreviewSize(previewDevice, orientation, orientationTablet, orientationMobile);
+	const inTemplatePreviewMode = !id && templateKey;
+
+	const previewOrientation = inTemplatePreviewMode
+		? templateKey.includes('vertical')
+			? 'vertical'
+			: 'horizontal'
+		: getPreviewSize(previewDevice, orientation, orientationTablet, orientationMobile);
 	const previewDropdownHorizontalAlignment = getPreviewSize(
 		previewDevice,
 		dropdownHorizontalAlignment,
@@ -497,24 +504,24 @@ export function EditInner(props) {
 	};
 
 	const navClasses = classnames('navigation', {
-		['nav--toggle-sub']: true,
+		'nav--toggle-sub': true,
 		[`navigation-desktop-dropdown-animation-${dropdownReveal ? dropdownReveal : 'none'}`]:
-			!previewDevice || previewDevice == 'Desktop',
-		[`navigation-tablet-dropdown-animation-${dropdownRevealTablet}`]: previewDevice == 'Tablet',
-		[`navigation-mobile-dropdown-animation-${dropdownRevealMobile}`]: previewDevice == 'Mobile',
-		[`navigation-desktop-style-${style}`]: !previewDevice || previewDevice == 'Desktop',
-		[`navigation-tablet-style-${styleTablet}`]: previewDevice == 'Tablet',
-		[`navigation-mobile-style-${styleMobile}`]: previewDevice == 'Mobile',
-		[`navigation-desktop-collapse-sub-menus-${collapseSubMenus}`]: !previewDevice || previewDevice == 'Desktop',
-		[`navigation-tablet-collapse-sub-menus-${collapseSubMenusTablet}`]: previewDevice == 'Tablet',
-		[`navigation-mobile-collapse-sub-menus-${collapseSubMenusMobile}`]: previewDevice == 'Mobile',
+			!previewDevice || previewDevice === 'Desktop',
+		[`navigation-tablet-dropdown-animation-${dropdownRevealTablet}`]: previewDevice === 'Tablet',
+		[`navigation-mobile-dropdown-animation-${dropdownRevealMobile}`]: previewDevice === 'Mobile',
+		[`navigation-desktop-style-${style}`]: !previewDevice || previewDevice === 'Desktop',
+		[`navigation-tablet-style-${styleTablet}`]: previewDevice === 'Tablet',
+		[`navigation-mobile-style-${styleMobile}`]: previewDevice === 'Mobile',
+		[`navigation-desktop-collapse-sub-menus-${collapseSubMenus}`]: !previewDevice || previewDevice === 'Desktop',
+		[`navigation-tablet-collapse-sub-menus-${collapseSubMenusTablet}`]: previewDevice === 'Tablet',
+		[`navigation-mobile-collapse-sub-menus-${collapseSubMenusMobile}`]: previewDevice === 'Mobile',
 		//we don't need to apply this setting in the editor
 		// [`navigation-desktop-parent-toggles-menus-${parentTogglesMenus}`]: !previewDevice || previewDevice == 'Desktop',
-		// [`navigation-tablet-parent-toggles-menus-${parentTogglesMenusTablet}`]: previewDevice == 'Tablet',
-		// [`navigation-mobile-parent-toggles-menus-${parentTogglesMenusMobile}`]: previewDevice == 'Mobile',
-		[`navigation-desktop-parent-active-${parentActive}`]: !previewDevice || previewDevice == 'Desktop',
-		[`navigation-tablet-parent-active-${parentActiveTablet}`]: previewDevice == 'Tablet',
-		[`navigation-mobile-parent-active-${parentActiveMobile}`]: previewDevice == 'Mobile',
+		// [`navigation-tablet-parent-toggles-menus-${parentTogglesMenusTablet}`]: previewDevice === 'Tablet',
+		// [`navigation-mobile-parent-toggles-menus-${parentTogglesMenusMobile}`]: previewDevice === 'Mobile',
+		[`navigation-desktop-parent-active-${parentActive}`]: !previewDevice || previewDevice === 'Desktop',
+		[`navigation-tablet-parent-active-${parentActiveTablet}`]: previewDevice === 'Tablet',
+		[`navigation-mobile-parent-active-${parentActiveMobile}`]: previewDevice === 'Mobile',
 	});
 
 	const innerNavClasses = classnames('menu', {
@@ -523,14 +530,13 @@ export function EditInner(props) {
 	});
 
 	const [title, setTitle] = useNavigationProp('title');
-	const [isAdding, addNew] = useEntityPublish('kadence_navigation', id);
 
 	let [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_navigation', id);
 
 	//if this nav block is getting created through the header onboarding
 	//then we need to auto create some basic block structure
 	const applyTemplateKeyBlocks = (templateKey) => {
-		if (templateKey == 'long-vertical') {
+		if (templateKey === 'long-vertical') {
 			setNavPlaceholderBlocks([
 				createBlock('kadence/navigation', {}, [
 					createBlock('kadence/navigation-link', { label: 'about', url: '#' }),
@@ -541,10 +547,7 @@ export function EditInner(props) {
 					createBlock('kadence/navigation-link', { label: 'shop', url: '#' }),
 				]),
 			]);
-			setMetaAttribute('vertical', 'orientationMobile');
-			setMetaAttribute('vertical', 'orientationTablet');
-			setMetaAttribute('vertical', 'orientation');
-		} else if (templateKey == 'long') {
+		} else if (templateKey === 'long') {
 			setNavPlaceholderBlocks([
 				createBlock('kadence/navigation', {}, [
 					createBlock('kadence/navigation-link', { label: 'about', url: '#' }),
@@ -555,7 +558,7 @@ export function EditInner(props) {
 					createBlock('kadence/navigation-link', { label: 'shop', url: '#' }),
 				]),
 			]);
-		} else if (templateKey == 'short-vertical') {
+		} else if (templateKey === 'short-vertical') {
 			setNavPlaceholderBlocks([
 				createBlock('kadence/navigation', {}, [
 					createBlock('kadence/navigation-link', { label: 'about', url: '#' }),
@@ -563,9 +566,6 @@ export function EditInner(props) {
 					createBlock('kadence/navigation-link', { label: 'contact', url: '#' }),
 				]),
 			]);
-			setMetaAttribute('vertical', 'orientationMobile');
-			setMetaAttribute('vertical', 'orientationTablet');
-			setMetaAttribute('vertical', 'orientation');
 		} else {
 			setNavPlaceholderBlocks([
 				createBlock('kadence/navigation', {}, [
@@ -578,11 +578,11 @@ export function EditInner(props) {
 	};
 
 	useEffect(() => {
-		if (blocks.length == 0) {
+		if (!blocks || blocks.length == 0) {
 			if (templateKey) {
-				//this nav is meant to be a premade template, set it's title and publish it, and give it innerblocks based on it's template key
+				//this nav is meant to be a premade template, set it's title and give it innerblocks based on it's template key
 				applyTemplateKeyBlocks(templateKey);
-				setTitle(templateKey + ' navigation');
+				//setTitle(templateKey + ' navigation');
 			} else {
 				//otherwise it's a normal nav block and just needs the placeholder put in place
 				setNavPlaceholderBlocks([createBlock('kadence/navigation', {})]);
@@ -598,7 +598,7 @@ export function EditInner(props) {
 		}
 	}, [isSelected]);
 
-	if (blocks.length === 0) {
+	if (!blocks || blocks.length === 0) {
 		blocks = navPlaceholderBlocks;
 	}
 
@@ -610,48 +610,41 @@ export function EditInner(props) {
 		return get(blocks, [0], {});
 	}, [blocks]);
 
-	const onAdd = async (title, direction, style, initialDescription) => {
-		try {
-			const response = await addNew();
-
-			if (response.id) {
-				onChange(
-					[
-						{
-							...newBlock,
-							innerBlocks: [
-								createBlock('kadence/navigation-link', {
-									label: __('Home', 'kadence-blocks'),
-									url: '/',
-								}),
-							],
-						},
-					],
-					clientId
-				);
-
-				setTitle(title);
-
-				const updatedMeta = meta;
-				updatedMeta._kad_navigation_description = initialDescription;
-				updatedMeta._kad_navigation_orientation = direction === 'skip' ? 'horizontal' : direction;
-
-				// Once we get templates, they'll go here
-				// if( style === 'a' ) {
-				//
-				// } else if ( style === 'b' ) {
-				//
-				// }
-
-				setMeta({ ...meta, updatedMeta });
-				await wp.data.dispatch('core').saveEditedEntityRecord('postType', 'kadence_navigation', id);
-
-				openModal();
-			}
-		} catch (error) {
-			console.error(error);
-		}
-	};
+	// const onAdd = async () => {
+	// 	try {
+	// 		const response = await addNew();
+	//
+	// 		if (response.id) {
+	// 			onChange(
+	// 				[
+	// 					{
+	// 						...newBlock,
+	// 						innerBlocks: [
+	// 							createBlock('kadence/navigation-link', {
+	// 								label: __('Home', 'kadence-blocks'),
+	// 								url: '/',
+	// 							}),
+	// 						],
+	// 					},
+	// 				],
+	// 				clientId
+	// 			);
+	//
+	// 			// setTitle('');
+	//
+	// 			const updatedMeta = meta;
+	// 			// updatedMeta._kad_navigation_description = initialDescription;
+	// 			// updatedMeta._kad_navigation_orientation = direction === 'skip' ? 'horizontal' : direction;
+	//
+	// 			setMeta({ ...meta, updatedMeta });
+	// 			await wp.data.dispatch('core').saveEditedEntityRecord('postType', 'kadence_navigation', id);
+	//
+	// 			openModal();
+	// 		}
+	// 	} catch (error) {
+	// 		console.error(error);
+	// 	}
+	// };
 
 	const navAppender = () => {
 		return (
@@ -709,28 +702,28 @@ export function EditInner(props) {
 
 		return (
 			<>
-				{orientationValue == 'vertical' && (
+				{orientationValue === 'vertical' && (
 					<ToggleControl
 						label={__('Collapse Vertical Sub Menus', 'kadence-blocks')}
 						checked={collapseSubMenusValue}
 						onChange={(value) => setMetaAttribute(value, 'collapseSubMenus' + size)}
 					/>
 				)}
-				{orientationValue == 'vertical' && collapseSubMenusValue && (
+				{orientationValue === 'vertical' && collapseSubMenusValue && (
 					<ToggleControl
 						label={__('Entire Item Expands Vertical Sub Menu', 'kadence-blocks')}
 						checked={parentTogglesMenusValue}
 						onChange={(value) => setMetaAttribute(value, 'parentTogglesMenus' + size)}
 					/>
 				)}
-				{orientationValue != 'vertical' && (
+				{orientationValue !== 'vertical' && (
 					<ToggleControl
 						label={__('Stretch Menu', 'kadence-blocks')}
 						checked={stretchValue}
 						onChange={(value) => setMetaAttribute(value, 'stretch' + size)}
 					/>
 				)}
-				{orientationValue != 'vertical' && stretchValue && (
+				{orientationValue !== 'vertical' && stretchValue && (
 					<ToggleControl
 						label={__('Fill and Center Menu Items?', 'kadence-blocks')}
 						checked={fillStretchValue}
@@ -815,14 +808,33 @@ export function EditInner(props) {
 		);
 	};
 
-	if (navigationInnerBlocks.length === 0 && !templateKey && !isOpen) {
+	const updateBlocksCallback = (navItems) => {
+		onChange(
+			[
+				{
+					...newBlock,
+					innerBlocks: [...navigationInnerBlocks, ...navItems],
+				},
+			],
+			clientId
+		);
+	};
+
+	useEffect(() => {
+		if (navigationInnerBlocks.length === 0 && !templateKey) {
+			setOpen(true);
+		}
+	}, [navigationInnerBlocks.length]);
+
+	if (inTemplatePreviewMode) {
+		//This displays this block as a preview. It should have some temporary inner blocks to display
+		//it will not work in any other function. As soon as it's clicked, it should be replaced with a real nav onboarding to make a post.
 		return (
-			<>
-				<FormTitle onAdd={onAdd} isAdding={isAdding} existingTitle={title} />
-				<div className="kb-form-hide-while-setting-up">
-					<div {...innerBlocksProps} />
+			<nav className={navClasses}>
+				<div className="menu-container">
+					<ul {...innerBlocksProps} />
 				</div>
-			</>
+			</nav>
 		);
 	}
 
@@ -915,6 +927,20 @@ export function EditInner(props) {
 					}}
 				</BlockSettingsMenuControls>
 			)}
+			{isOpen && (
+				<Modal size={'fill'} title={__('Navigation Builder', 'kadence-blocks')} onRequestClose={closeModal}>
+					<MenuEditor
+						updateBlocksCallback={updateBlocksCallback}
+						clientId={clientId}
+						closeModal={closeModal}
+						title={title}
+						setTitle={setTitle}
+						setMetaAttribute={setMetaAttribute}
+						orientation={meta?._kad_navigation_orientation}
+						orientationTablet={meta?._kad_navigation_orientationTablet}
+					/>
+				</Modal>
+			)}
 			<BackendStyles {...props} metaAttributes={metaAttributes} previewDevice={previewDevice} />
 			<InspectorControls>
 				<InspectorControlTabs
@@ -925,11 +951,6 @@ export function EditInner(props) {
 
 				{activeTab === 'general' && (
 					<>
-						{isOpen && (
-							<Modal size={'large'} title="Menu Editor" onRequestClose={closeModal}>
-								<MenuEditor clientId={clientId} closeModal={closeModal} />
-							</Modal>
-						)}
 						<KadencePanelBody panelName={'kb-navigation-selected-switch'}>
 							{!direct && (
 								<>
@@ -951,6 +972,11 @@ export function EditInner(props) {
 									</Button>
 								</>
 							)}
+						</KadencePanelBody>
+						<KadencePanelBody panelName={'kb-navigation-modal'}>
+							<Button variant="secondary" onClick={() => setOpen(true)} style={{ margin: '0 auto' }}>
+								{__('Open Navigation Builder', 'kadence-blocks')}
+							</Button>
 						</KadencePanelBody>
 						<div className="kt-sidebar-settings-spacer"></div>
 						<KadencePanelBody panelName={'kb-navigation-general'}>
@@ -1004,8 +1030,8 @@ export function EditInner(props) {
 								onUnit={(value) => setMetaAttribute(value, 'spacingUnit')}
 								showUnit={true}
 							/>
-							{(previewOrientation == 'vertical' ||
-								style == 'underline' ||
+							{(previewOrientation === 'vertical' ||
+								style === 'underline' ||
 								style === 'standard' ||
 								style === '') && (
 								<ResponsiveRangeControls
@@ -1594,12 +1620,6 @@ export function EditInner(props) {
 								onMouseOver={marginMouseOver.onMouseOver}
 								onMouseOut={marginMouseOver.onMouseOut}
 							/>
-						</KadencePanelBody>
-
-						<KadencePanelBody panelName={'kb-navigation-modal'}>
-							<Button variant="secondary" onClick={openModal}>
-								Open Navigation Editor
-							</Button>
 						</KadencePanelBody>
 					</>
 				)}

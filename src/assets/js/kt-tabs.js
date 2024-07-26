@@ -272,7 +272,6 @@
 		},
 
 		init() {
-			console.log(1);
 			window.KBTabs.setupTabs();
 			window.addEventListener('hashchange', window.KBTabs.setActiveWithHash, false);
 		},

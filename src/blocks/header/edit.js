@@ -47,6 +47,7 @@ export function Edit(props) {
 
 	const [meta, setMeta] = useHeaderProp('meta', id);
 	const [justCompletedOnboarding, setJustCompletedOnboarding] = useState(false);
+	const [formData, setFormData] = useState(null);
 
 	const metaAttributes = {
 		isSticky: meta?._kad_header_isSticky,
@@ -75,6 +76,17 @@ export function Edit(props) {
 		[id]
 	);
 
+	const { directPostData } = useSelect(
+		(select) => {
+			return {
+				directPostData: postId
+					? select(coreStore).getEditedEntityRecord('postType', 'kadence_header', postId)
+					: '',
+			};
+		},
+		[justCompletedOnboarding]
+	);
+
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, parentData, previewDevice, isPreviewMode } = useSelect(
 		(select) => {
@@ -97,8 +109,6 @@ export function Edit(props) {
 		},
 		[clientId]
 	);
-
-	const previewIsTransparent = getPreviewSize(previewDevice, isTransparent, isTransparentTablet, isTransparentMobile);
 
 	const blockClasses = classnames({
 		'wp-block-kadence-header': true,
@@ -138,12 +148,14 @@ export function Edit(props) {
 	let mainBlockContent = (
 		<>
 			<div {...blockProps}>
-				{/* No headerselected or selected header was deleted from the site, display chooser */}
+				{/* No header selected or selected header was deleted from the site, display chooser */}
 				{(id === 0 || (undefined === postExists && !isLoading)) && (
 					<Chooser
 						clientId={clientId}
 						commit={(nextId) => setAttributes({ id: nextId })}
 						setJustCompletedOnboarding={setJustCompletedOnboarding}
+						formData={formData}
+						setFormData={setFormData}
 					/>
 				)}
 
@@ -212,6 +224,7 @@ export function Edit(props) {
 							direct={false}
 							id={id}
 							justCompletedOnboarding={justCompletedOnboarding}
+							formData={formData}
 						/>
 					</EntityProvider>
 				)}
@@ -224,14 +237,28 @@ export function Edit(props) {
 	if (currentPostType === 'kadence_header') {
 		mainBlockContent = (
 			<>
+				{justCompletedOnboarding === false && isEmpty(directPostData?.content) && id === 0 && !isLoading && (
+					<CreateNewOnly
+						clientId={clientId}
+						postId={postId}
+						setJustCompletedOnboarding={setJustCompletedOnboarding}
+					/>
+				)}
 				<div {...blockProps}>
-					<EditInner {...props} direct={true} id={postId} justCompletedOnboarding={justCompletedOnboarding} />
+					<EditInner
+						{...props}
+						direct={true}
+						id={postId}
+						justCompletedOnboarding={justCompletedOnboarding}
+						formData={formData}
+					/>
 				</div>
 				<VisualBuilder clientId={clientId} previewDevice={previewDevice} isSelected={isSelected} />
 			</>
 		);
 	}
 
+	const previewIsTransparent = getPreviewSize(previewDevice, isTransparent, isTransparentTablet, isTransparentMobile);
 	if (previewIsTransparent) {
 		return <div className="kb-header-transparent-placeholder">{mainBlockContent}</div>;
 	}
@@ -240,9 +267,78 @@ export function Edit(props) {
 
 export default Edit;
 
-function Chooser({ commit, clientId, setJustCompletedOnboarding }) {
+function CreateNewOnly({ clientId, setJustCompletedOnboarding, postId }) {
+	const { setHeaderVisualBuilderOpenId } = useDispatch('kadenceblocks/data');
+
+	const [isOnboardingOpen, setIsOnboardingOpen] = useState(true);
+	const [isPublishing, publishNew] = useEntityPublish('kadence_header', postId);
+	const [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_header', { id: postId });
+	const [existingTitle, setTitle] = useHeaderProp('title', postId);
+	const [meta, setMeta] = useHeaderProp('meta', postId);
+	const updateTemplate = async (id, formData) => {
+		const { headerName, headerDesktop, headerMobile, headerDescription } = formData;
+
+		try {
+			const response = await publishNew();
+			let updatedMeta = meta;
+
+			const { templateInnerBlocks, templatePostMeta } = buildTemplateFromSelection(headerDesktop, headerMobile);
+
+			if (response.id) {
+				if (templateInnerBlocks && headerDesktop !== 'skip' && headerMobile !== 'skip') {
+					updatedMeta = { ...meta, ...templatePostMeta };
+					onChange(templateInnerBlocks, clientId);
+				} else {
+					// Skip, or template not found
+					onChange([createBlock('kadence/header', {}, HEADER_INNERBLOCK_DEFAULTS)], clientId);
+				}
+
+				setTitle(headerName);
+
+				updatedMeta._kad_header_description = headerDescription;
+
+				setMeta({ ...meta, updatedMeta });
+				await wp.data
+					.dispatch('core')
+					.saveEditedEntityRecord('postType', 'kadence_header', id)
+					.then(() => {
+						setIsOnboardingOpen(false);
+						setJustCompletedOnboarding(true);
+					});
+			}
+		} catch (error) {
+			console.error(error);
+			setJustCompletedOnboarding(true);
+		}
+	};
+
+	const handleSubmit = (formData) => {
+		updateTemplate(postId, formData);
+
+		//automatically open the visual editor when we've just created a new header
+		setHeaderVisualBuilderOpenId(clientId);
+	};
+
+	const steps = [
+		{ key: 'name', name: 'Header Name', visualNumber: 1, component: HeaderName },
+		{ key: 'desktop', name: 'Desktop Layout', visualNumber: 2, component: HeaderDesktop },
+		{ key: 'mobile', name: 'Mobile Layout', visualNumber: 3, component: HeaderMobile },
+	];
+
+	return (
+		<OnboardingModal
+			steps={steps}
+			isOpen={isOnboardingOpen}
+			onRequestClose={(response) => {
+				setIsOnboardingOpen(false);
+			}}
+			onSubmit={handleSubmit}
+		/>
+	);
+}
+
+function Chooser({ commit, clientId, setJustCompletedOnboarding, formData, setFormData }) {
 	const [tmpId, setTmpId] = useState(0);
-	const [formData, setFormData] = useState(null);
 
 	const { setHeaderVisualBuilderOpenId } = useDispatch('kadenceblocks/data');
 
@@ -254,22 +350,6 @@ function Chooser({ commit, clientId, setJustCompletedOnboarding }) {
 	const [isAdding, addNew] = useEntityAutoDraft('kadence_header', 'kadence_header');
 
 	const [isOnboardingOpen, setIsOnboardingOpen] = useState(true);
-
-	useEffect(() => {
-		if (tmpId && formData) {
-			updateTemplate(tmpId, formData);
-		}
-	}, [formData, tmpId]);
-
-	const createPost = async () => {
-		try {
-			const response = await addNew();
-			return response.id;
-		} catch (error) {
-			console.error(error);
-			return false;
-		}
-	};
 
 	const updateTemplate = async (id, formData) => {
 		const { headerName, headerDesktop, headerMobile, headerDescription } = formData;
@@ -306,6 +386,22 @@ function Chooser({ commit, clientId, setJustCompletedOnboarding }) {
 		}
 	};
 
+	useEffect(() => {
+		if (tmpId && formData) {
+			updateTemplate(tmpId, formData);
+		}
+	}, [formData, tmpId]);
+
+	const createPost = async () => {
+		try {
+			const response = await addNew();
+			return response.id;
+		} catch (error) {
+			console.error(error);
+			return false;
+		}
+	};
+
 	const handleSubmit = (formData) => {
 		if (formData.headerExisting && Number.isInteger(formData.headerExisting)) {
 			commit(formData.headerExisting);
@@ -317,6 +413,7 @@ function Chooser({ commit, clientId, setJustCompletedOnboarding }) {
 				}
 			});
 		}
+		setJustCompletedOnboarding(true);
 
 		//automatically open the visual editor when we've just created a new header
 		setHeaderVisualBuilderOpenId(clientId);
@@ -337,8 +434,6 @@ function Chooser({ commit, clientId, setJustCompletedOnboarding }) {
 				setIsOnboardingOpen(false);
 				if (!response?.complete) {
 					wp.data.dispatch('core/block-editor').removeBlock(clientId);
-				} else {
-					setJustCompletedOnboarding(true);
 				}
 			}}
 			onSubmit={handleSubmit}

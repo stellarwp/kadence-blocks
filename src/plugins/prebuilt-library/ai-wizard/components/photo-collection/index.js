@@ -211,12 +211,12 @@ export function PhotoCollection({ photos, loading, isLocal, collectionLink, titl
 			<div style={styles.importWrapper} className="kb-images-custom-import">
 				{loading && (
 					<div style={styles.importNotice} className="kb-importing-information">
-						<Spinner style={styles.spinner} /> {__('Loading...', 'kadence-blocks')}
+						<Spinner style={styles.spinner} /> {__('Loading…', 'kadence-blocks')}
 					</div>
 				)}
 				{isDownloading && (
 					<div style={styles.importNotice} className="kb-importing-information">
-						<Spinner style={styles.spinner} /> {__('Importing Images...', 'kadence-blocks')}
+						<Spinner style={styles.spinner} /> {__('Importing Images…', 'kadence-blocks')}
 					</div>
 				)}
 			</div>

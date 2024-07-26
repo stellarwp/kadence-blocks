@@ -304,18 +304,24 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		$nav_block = get_post( $attributes['id'] );
+		$nav_block = null;
+		$in_template_preview = isset($attributes['templateKey']) && $attributes['templateKey'];
 
-		if ( ! $nav_block || 'kadence_navigation' !== $nav_block->post_type ) {
-			return '';
-		}
+		//If this is a templated navigation placeholder, we're going to skip a bunch of the normal logic and checks
+		if ( ! $in_template_preview ) {
+			$nav_block = get_post( $attributes['id'] );
 
-		if ( 'publish' !== $nav_block->post_status || ! empty( $nav_block->post_password ) ) {
-			return '';
+			if ( ! $nav_block || 'kadence_navigation' !== $nav_block->post_type ) {
+				return '';
+			}
+
+			if ( 'publish' !== $nav_block->post_status || ! empty( $nav_block->post_password ) ) {
+				return '';
+			}
 		}
 
 		// Prevent a nav block from being rendered inside itself.
-		if ( isset( self::$seen_refs[ $attributes['id'] ] ) ) {
+		if ( isset( self::$seen_refs[ $attributes['id'] ] ) && ! $attributes['templateKey'] ) {
 			// WP_DEBUG_DISPLAY must only be honored when WP_DEBUG. This precedent
 			// is set in `wp_debug_mode()`.
 			$is_debug = WP_DEBUG && WP_DEBUG_DISPLAY;
@@ -330,8 +336,15 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$nav_attributes = $this->get_attributes_with_defaults_cpt( $attributes['id'], 'kadence_navigation', '_kad_navigation_' );
 		$nav_attributes = json_decode( json_encode( $nav_attributes ), true );
 
-		// Remove the advanced nav block so it doesn't try and render.
-		$content = preg_replace( '/<!-- wp:kadence\/navigation {.*?} -->/', '', $nav_block->post_content );
+		if ( ! $in_template_preview ) {
+			// Remove the advanced nav block so it doesn't try and render.
+			$content = preg_replace( '/<!-- wp:kadence\/navigation {.*?} -->/', '', $nav_block->post_content );
+		} else {
+			$content = $this->applyTemplateKeyBlocks($attributes);
+			$nav_attributes['orientation'] = str_contains( $attributes['templateKey'], 'vertical' ) ? 'vertical' : 'horizontal';
+			$nav_attributes['orientationTablet'] = str_contains( $attributes['templateKey'], 'vertical' ) ? 'vertical' : 'horizontal';
+			$nav_attributes['orientationMobile'] = str_contains( $attributes['templateKey'], 'vertical' ) ? 'vertical' : 'horizontal';
+		}
 		$content = str_replace( '<!-- wp:kadence/navigation  -->', '', $content );
 		$content = str_replace( '<!-- wp:kadence/navigation -->', '', $content );
 		$content = str_replace( '<!-- /wp:kadence/navigation -->', '', $content );
@@ -444,6 +457,63 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 			$menu_attributes,
 			$content
 		);
+	}
+
+	/**
+	 * Generates content to replace actual blocks for templated navigation placeholders.
+	 * This should match the templated blocks created in the editor for the same template keys
+	 * 
+	 * @param array $attributes The database attribtues.
+	 */
+	public function applyTemplateKeyBlocks( $attributes ) {
+		if ( isset($attributes['templateKey']) && $attributes['templateKey'] ) {
+			switch ($attributes['templateKey']) {
+				case 'long':
+					return '
+						<!-- wp:kadence/navigation -->
+							<!-- wp:kadence/navigation-link {"uniqueID":"494_d2e014-e0","label":"about","url":"#"} /-->
+							<!-- wp:kadence/navigation-link {"uniqueID":"494_a59d22-g7","label":"blog","url":"#"} /-->
+							<!-- wp:kadence/navigation-link {"uniqueID":"494_0ee46f-b7","label":"contact","url":"#"} /-->
+							<!-- wp:kadence/navigation-link {"uniqueID":"494_321f15-sb","label":"resources","url":"#"} /-->
+							<!-- wp:kadence/navigation-link {"uniqueID":"494_321f15-qb","label":"locations","url":"#"} /-->
+							<!-- wp:kadence/navigation-link {"uniqueID":"494_321f15-zb","label":"shop","url":"#"} /-->
+						<!-- /wp:kadence/navigation -->
+					';
+					break;
+				case 'long-vertical':
+					return '
+						<!-- wp:kadence/navigation -->
+							<!-- wp:kadence/navigation-link {"uniqueID":"494_d2e014-e0","label":"about","url":"#"} /-->
+							<!-- wp:kadence/navigation-link {"uniqueID":"494_a59d22-g7","label":"blog","url":"#"} /-->
+							<!-- wp:kadence/navigation-link {"uniqueID":"494_0ee46f-b7","label":"contact","url":"#"} /-->
+							<!-- wp:kadence/navigation-link {"uniqueID":"494_321f15-sb","label":"resources","url":"#"} /-->
+							<!-- wp:kadence/navigation-link {"uniqueID":"494_321f15-qb","label":"locations","url":"#"} /-->
+							<!-- wp:kadence/navigation-link {"uniqueID":"494_321f15-zb","label":"shop","url":"#"} /-->
+						<!-- /wp:kadence/navigation -->
+					';
+					break;
+				case 'short':
+					return '
+						<!-- wp:kadence/navigation -->
+							<!-- wp:kadence/navigation-link {"uniqueID":"494_d2e014-e0","label":"about","url":"#"} /-->
+							<!-- wp:kadence/navigation-link {"uniqueID":"494_a59d22-g7","label":"blog","url":"#"} /-->
+							<!-- wp:kadence/navigation-link {"uniqueID":"494_0ee46f-b7","label":"contact","url":"#"} /-->
+						<!-- /wp:kadence/navigation -->
+					';
+					break;
+				
+				default:
+					return '
+						<!-- wp:kadence/navigation -->
+							<!-- wp:kadence/navigation-link {"uniqueID":"494_d2e014-e0","label":"about","url":"#"} /-->
+							<!-- wp:kadence/navigation-link {"uniqueID":"494_a59d22-g7","label":"blog","url":"#"} /-->
+							<!-- wp:kadence/navigation-link {"uniqueID":"494_0ee46f-b7","label":"contact","url":"#"} /-->
+						<!-- /wp:kadence/navigation -->
+					';
+					break;
+			}
+		}
+		return '';
 	}
 
 	/**

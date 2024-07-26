@@ -7,20 +7,21 @@ import { useState, useEffect } from '@wordpress/element';
 import { POPOVER_TUTORIAL_OPTIONS, POPOVER_TUTORIAL_OPTIONS_CONTENT } from '../constants';
 import './editor.scss';
 
-export default function HeaderOnboard(props) {
-	const { headerRef } = props;
+export default function PopoverTutorial(props) {
+	const { headerRef, formData } = props;
 
 	// Use internal state instead of a ref to make sure that the component
 	// re-renders when the popover's anchor updates.
-	const [onboardingFinished, setOnboardingFinished] = useState(true);
 	const [popoverTutorialStep, setPopoverTutorialStep] = useState(0);
 	const [popoverTutorialComplete, setPopoverTutorialComplete] = useState(true);
 
-	const hasCompletedPopoverTutorial = false;
-	const key = 'basic';
-	const popoverTutorialOptions = POPOVER_TUTORIAL_OPTIONS?.[key];
+	const key = formData?.headerDesktop ?? 'generic';
+	const popoverTutorialOptions = POPOVER_TUTORIAL_OPTIONS?.[key]
+		? POPOVER_TUTORIAL_OPTIONS?.[key]
+		: POPOVER_TUTORIAL_OPTIONS?.generic;
 
 	useEffect(() => {
+		// savePopoverTutorialComplete(false);
 		const settingModel = new wp.api.models.Settings();
 		settingModel.fetch().then((response) => {
 			if (response) {
@@ -31,17 +32,11 @@ export default function HeaderOnboard(props) {
 	}, []);
 
 	const savePopoverTutorialComplete = (status) => {
-		setPopoverTutorialComplete(true);
+		setPopoverTutorialComplete(status);
 		const settingModel2 = new wp.api.models.Settings({
 			kadence_blocks_header_popover_tutorial_complete: status,
 		});
-		settingModel.save();
-		// settingModel2.save().then((response) => {
-		// 	console.log(3, response);
-		// 	createSuccessNotice(__('Totorial completed', 'kadence-blocks'), {
-		// 		type: 'snackbar',
-		// 	});
-		// });
+		settingModel2.save();
 	};
 
 	const popoverStepContent = () => {
@@ -81,10 +76,27 @@ export default function HeaderOnboard(props) {
 								}}
 							>
 								<b>
-									{popoverTutorialStep + 1 == popoverTutorialOptions.length && <>Finish</>}
-									{popoverTutorialStep + 1 != popoverTutorialOptions.length && <>Next</>}
+									{popoverTutorialStep + 1 == popoverTutorialOptions.length && (
+										<>{__('Finish', 'kadence-blocks')}</>
+									)}
+									{popoverTutorialStep + 1 != popoverTutorialOptions.length && (
+										<>{__('Next', 'kadence-blocks')}</>
+									)}
 								</b>
 							</Button>
+							{popoverTutorialStep > 0 && (
+								<Button
+									className={'kb-header-popover-btn kb-header-popover-btn-next'}
+									variant="tertiary"
+									onClick={() => {
+										setPopoverTutorialStep(popoverTutorialStep - 1);
+									}}
+								>
+									<b>
+										<>{__('Back', 'kadence-blocks')}</>
+									</b>
+								</Button>
+							)}
 						</div>
 					</div>
 				</Popover>

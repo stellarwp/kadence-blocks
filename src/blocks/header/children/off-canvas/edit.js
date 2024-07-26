@@ -319,7 +319,7 @@ export function Edit(props) {
 										mobileValue={maxWidthMobile ? maxWidthMobile : ''}
 										onChangeMobile={(value) => setAttributes({ maxWidthMobile: value })}
 										min={0}
-										max={maxWidthUnit == 'px' ? 1500 : 100}
+										max={maxWidthUnit === 'px' ? 1500 : 100}
 										step={1}
 										unit={maxWidthUnit}
 										showUnit={true}

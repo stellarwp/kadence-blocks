@@ -10,36 +10,17 @@ const { localStorage } = window;
 /**
  * External dependencies
  */
-import { debounce } from 'lodash';
-import Masonry from 'react-masonry-css';
-import InfiniteScroll from 'react-infinite-scroller';
+
 /**
  * WordPress dependencies
  */
-
-import { rawHandler, parse } from '@wordpress/blocks';
-import {
-	Button,
-	TextControl,
-	SelectControl,
-	VisuallyHidden,
-	ExternalLink,
-	Spinner,
-	Icon,
-	Tooltip,
-	__experimentalHeading as Heading,
-	__unstableComposite as Composite,
-	__unstableUseCompositeState as useCompositeState,
-	__unstableCompositeItem as CompositeItem,
-} from '@wordpress/components';
-import { arrowLeft, download, previous, update, next, chevronLeft, chevronDown } from '@wordpress/icons';
-import { BlockPreview } from './block-preview';
+import { Button, Spinner, Icon, __experimentalHeading as Heading } from '@wordpress/components';
 import { useMemo, useEffect, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { useDebounce, useAsyncList, useInstanceId } from '@wordpress/compose';
-import { useDispatch, useSelect } from '@wordpress/data';
+import { useDebounce } from '@wordpress/compose';
+import { useSelect } from '@wordpress/data';
 import { speak } from '@wordpress/a11y';
-import { kadenceNewIcon, aiIcon, aiSettings } from '@kadence/icons';
+import { aiIcon } from '@kadence/icons';
 import { searchItems } from './search-items';
 import replaceColors from './replace/replace-colors';
 import replaceImages from './replace/replace-images';
@@ -47,10 +28,6 @@ import replaceContent from './replace/replace-content';
 import deleteContent from './replace/remove-content';
 import replaceMasks from './replace/replace-masks';
 import KadenceBlockPatternList from './block-pattern-list';
-import {
-	//BlockPreview,
-	store as blockEditorStore,
-} from '@wordpress/block-editor';
 const INITIAL_INSERTER_RESULTS = 2;
 function PatternsListHeader({ filterValue, filteredBlockPatternsLength }) {
 	if (!filterValue) {

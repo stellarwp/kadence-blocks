@@ -81,13 +81,14 @@ const kadenceHeaderTemplatePartNotice = createHigherOrderComponent((BlockEdit) =
 		const showNotice = isHeaderTemplate && props.clientId === firstBlock && !blockExists(blocks, 'kadence/header');
 		const { getEntityRecord } = select('core');
 		const { saveEntityRecord } = useDispatch('core');
+		const { removeBlocks, insertBlock } = useDispatch('core/block-editor');
 
 		const siteSettings = getEntityRecord('root', 'site');
 		const isNoticeDismissed = get(siteSettings, 'kadence_blocks_header_notice_dismissed', false);
 
 		const deleteBlocksAndInsert = () => {
-			useDispatch('core/block-editor').removeBlocks(blocks.map((block) => block.clientId));
-			useDispatch('core/block-editor').insertBlock(createBlock('kadence/header', {}));
+			removeBlocks(blocks.map((block) => block.clientId));
+			insertBlock(createBlock('kadence/header', {}));
 			saveEntityRecord('root', 'site', {
 				kadence_blocks_header_notice_dismissed: true,
 			});

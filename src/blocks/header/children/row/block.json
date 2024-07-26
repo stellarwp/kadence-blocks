@@ -7,7 +7,8 @@
 	"category": "design",
 	"description": "Kadence header row",
 	"supports": {
-		"inserter": true
+		"inserter": true,
+		"ktdynamic": true
 	},
 	"textdomain": "kadence-blocks",
 	"attributes": {
@@ -157,7 +158,7 @@
 			"type": "number",
 			"default": null
 		},
-		"heightDesktop": {
+		"heightMobile": {
 			"type": "number",
 			"default": null
 		},

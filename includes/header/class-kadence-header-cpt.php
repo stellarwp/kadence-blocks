@@ -39,12 +39,28 @@ class Kadence_Blocks_Header_CPT_Controller {
 		add_action( 'init', array( $this, 'register_meta' ), 20 );
 		add_filter( 'user_has_cap', array( $this, 'filter_post_type_user_caps' ) );
 
+		// Define the form post gutenberg template.
+		add_action( 'init', array( $this, 'form_gutenberg_template' ) );
+
 		if( is_admin() ) {
 			if ( class_exists( 'Cpt_To_Template' ) ) {
 				new Cpt_To_Template( $this->post_type );
 			}
 		}
 
+	}
+
+	/**
+	 * Add filters for element content output.
+	 */
+	public function form_gutenberg_template() {
+		$post_type_object = get_post_type_object( $this->post_type );
+		$post_type_object->template = array(
+			array(
+				'kadence/header',
+			),
+		);
+		$post_type_object->template_lock = 'all';
 	}
 
 	/**
@@ -79,7 +95,7 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'public'                => false,
 				'has_archive'           => false,
 				'show_ui'               => true,
-				'show_in_menu'          => true,
+				'show_in_menu'          => 'kadence-blocks',
 				'show_in_admin_bar'     => false,
 				'show_in_rest'          => true,
 				'rewrite'               => false,

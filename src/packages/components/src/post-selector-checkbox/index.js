@@ -34,6 +34,16 @@ export default function PostSelectorCheckbox( { postType = 'posts', title = '', 
 	const scrollableDivRef = useRef( null );
 	const searchRef = useRef( null );
 
+	function correctPostType( postType ) {
+		if( postType === 'post' ) {
+			return 'posts';
+		} else if ( postType === 'page' ) {
+			return 'pages';
+		}
+
+		return postType;
+	}
+
 	useEffect( () => {
 		getPosts();
 	}, [ tab, page ] );
@@ -89,7 +99,7 @@ export default function PostSelectorCheckbox( { postType = 'posts', title = '', 
 
 
 		apiFetch( {
-			path : addQueryArgs( `/wp/v2/${postType}`, args),
+			path : addQueryArgs( `/wp/v2/${ correctPostType(postType) }`, args),
 			parse: false,
 		} )
 			.then( ( response ) => {

@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Placeholder, Button, TextControl, TextareaControl, ButtonGroup } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { formBlockIcon } from '@kadence/icons';

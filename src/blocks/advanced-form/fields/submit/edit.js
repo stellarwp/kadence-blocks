@@ -1556,7 +1556,7 @@ export default function KadenceButtonEdit({
 					)}
 					<RichText
 						tagName="div"
-						placeholder={__('Button...', 'kadence-blocks')}
+						placeholder={__('Button…', 'kadence-blocks')}
 						value={text}
 						onChange={(value) => setAttributes({ text: value })}
 						allowedFormats={applyFilters(

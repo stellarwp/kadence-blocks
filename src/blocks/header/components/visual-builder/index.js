@@ -1,8 +1,8 @@
-import { useRef, useState } from '@wordpress/element';
+import { useRef, useState, useEffect } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import { useEditorElement, capitalizeFirstLetter, blockExists } from '@kadence/helpers';
 import { __ } from '@wordpress/i18n';
-import { useSelect, useDispatch } from '@wordpress/data';
+import { useSelect, useDispatch, select } from '@wordpress/data';
 import { get } from 'lodash';
 
 import ModalClose from './close';
@@ -49,7 +49,7 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 			setPreviewDeviceType(capitalizeFirstLetter(value));
 
 			// if tab we're switching away from was off canvas...
-			if (tab == 'off-canvas') {
+			if (tab === 'off-canvas') {
 				setOffCanvasOpenId(null);
 				selectBlock(clientId);
 			}
@@ -61,7 +61,7 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 		}
 
 		//when we switch to tablet, pin the editor to the top
-		if (value == 'Tablet') {
+		if (value === 'Tablet') {
 			setHeaderVisualBuilderOpenPosition('top');
 		} else {
 			setHeaderVisualBuilderOpenPosition('bottom');
@@ -69,7 +69,7 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 		setTab(value);
 	};
 
-	const { topLevelBlocks, childSelected, isVisible, modalPosition } = useSelect(
+	const { topLevelBlocks, childSelected, isVisible, modalPosition, isHeaderTemplate } = useSelect(
 		(select) => {
 			const { getBlockOrder, getBlock, hasSelectedInnerBlock } = select('core/block-editor');
 
@@ -80,12 +80,22 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 				childSelected: hasSelectedInnerBlock(clientId, true),
 				isVisible: select('kadenceblocks/data').getOpenHeaderVisualBuilderId() === clientId,
 				modalPosition: select('kadenceblocks/data').getOpenHeaderVisualBuilderPosition(),
+				isHeaderTemplate: select('core/editor').getEditedPostAttribute('area') === 'header',
 			};
 		},
 		[clientId]
 	);
 
+	useEffect(() => {
+		//if we're already in a tablet / mobile device than we should automatically switch the tab, etc
+		if (previewDevice === 'Tablet' || previewDevice === 'Mobile') {
+			setHeaderVisualBuilderOpenPosition('top');
+		}
+		setTab(previewDevice == 'Mobile' || previewDevice == 'Tablet' ? 'Tablet' : 'Desktop');
+	}, [isVisible, previewDevice]);
+
 	const setIsVisible = () => {
+		console.log(1, previewDevice);
 		setHeaderVisualBuilderOpenId(isVisible ? null : clientId);
 	};
 
@@ -96,7 +106,7 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 	const editorElement = useEditorElement(ref, [previewDevice]);
 	const editorWidth = editorElement?.clientWidth;
 	const editorLeft = editorElement?.getBoundingClientRect().left;
-	const editorFooterHeight = previewDevice == 'Desktop' ? '25px' : '0';
+	const editorFooterHeight = previewDevice === 'Desktop' ? '25px' : '0';
 
 	if (!hasTrigger && tab === 'off-canvas') {
 		updateTab('Desktop', desktopBlocks);
@@ -104,6 +114,20 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 
 	return (
 		<>
+			{isVisible && (
+				<style>
+					{/* Prevent off canvas from being hidden by visual builder when moved to top*/}
+					{modalPosition === 'top' && <>{`.kb-off-canvas-inner { margin-top: 250px; }`}</>}
+
+					{/* Make sure space exists for the visual builder when using in FSE */}
+					{isHeaderTemplate && modalPosition === 'bottom' && (
+						<>{`.is-root-container { padding-bottom: 350px; }`}</>
+					)}
+					{isHeaderTemplate && modalPosition === 'top' && (
+						<>{`.is-root-container { min-height: 675px !important; }`}</>
+					)}
+				</style>
+			)}
 			<div ref={ref}>
 				{!isVisible && (isSelected || childSelected) && (
 					<div
@@ -111,12 +135,13 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 						style={{
 							width: editorWidth + 'px',
 							left: editorLeft + 'px',
-							bottom: editorFooterHeight,
 						}}
 					>
 						<Button isPrimary onClick={() => setIsVisible(true)}>
 							{__('Open Visual Builder', 'kadence-blocks')}
 						</Button>
+
+						<style>{'.editor-styles-wrapper{padding-bottom: 57px}'}</style>
 					</div>
 				)}
 				{isVisible && (
@@ -125,7 +150,6 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 						style={{
 							width: editorWidth + 'px',
 							left: editorLeft + 'px',
-							bottom: editorFooterHeight,
 						}}
 					>
 						<div class={'tabs'}>
@@ -141,7 +165,7 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 								disabled={tabletBlocks === null}
 								onClick={() => updateTab('Tablet', tabletBlocks)}
 							>
-								{__('Tablet', 'kadence-blocks')}
+								{__('Tablet / Mobile', 'kadence-blocks')}
 							</Button>
 							{hasTrigger && (
 								<Button
@@ -171,13 +195,18 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 							)}
 						</div>
 						<style>
-							{modalPosition == 'top'
+							{modalPosition === 'top'
 								? '.editor-styles-wrapper{margin-top: 300px}'
 								: '.editor-styles-wrapper{margin-bottom: 300px}'}
 						</style>
 					</div>
 				)}
 			</div>
+
+			{/* hide the metaboxes area that currently take up the same space as the visual builder while the teaser or builder is active */}
+			{(isVisible || (!isVisible && (isSelected || childSelected))) && (
+				<style>{'.edit-post-layout__metaboxes{display: none}'}</style>
+			)}
 		</>
 	);
 }

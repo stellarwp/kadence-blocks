@@ -673,7 +673,7 @@ export default function BackendStyles(props) {
 
 			// css.set_selector( '.header-navigation[class*="header-navigation-dropdown-animation-fade"] #menu-item-' . $item->ID . '.kadence-menu-mega-enabled > .sub-menu' );
 			// css.add_property( 'margin-left', '-' . ( $data['mega_menu_custom_width'] ? floor( $data['mega_menu_custom_width'] / 2 ) : '400' ) . 'px' );
-		} else if (previewMegaMenuWidth === 'full' && currentRef?.current) {
+		} else if ((previewMegaMenuWidth === 'full' || previewMegaMenuWidth === '') && currentRef?.current) {
 			css.set_selector(
 				`.wp-block-kadence-navigation .menu-container ul.menu .wp-block-kadence-navigation-link${uniqueID} > ul.sub-menu`
 			);
@@ -687,7 +687,7 @@ export default function BackendStyles(props) {
 					).toString() +
 					'px'
 			);
-		} else if (previewMegaMenuWidth === 'container' || previewMegaMenuWidth === '') {
+		} else if (previewMegaMenuWidth === 'container') {
 			css.set_selector(
 				` .wp-block-kadence-navigation .menu-container ul.menu .wp-block-kadence-navigation-link${uniqueID}`
 			);

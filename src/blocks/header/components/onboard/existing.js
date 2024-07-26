@@ -47,32 +47,34 @@ const HeaderExisting = ({ data, onChange }) => {
 	];
 
 	return (
-		<div className="width-l">
-			<h1>{__('Header Selection', 'kadence-blocks')}</h1>
-			<p>{__('Select and existing header or create a new one.', 'kadence-blocks')}</p>
+		<div className={'body'}>
+			<div className="width-l">
+				<h1>{__('Header Selection', 'kadence-blocks')}</h1>
+				<p>{__('Select and existing header or create a new one.', 'kadence-blocks')}</p>
 
-			<div className="options">
-				<div
-					className={'option blank' + (data.headerExisting === 'blank' ? ' is-selected' : '')}
-					onClick={() => onChange({ headerExisting: 'blank' })}
-				>
-					<Button>{__('Create new header.', 'kadence-blocks')}</Button>
-				</div>
-
-				{Object.keys(options).map((key) => (
-					<div key={key} className={'option'}>
-						<div
-							className={
-								'option-image' + (data.headerExisting === options[key].value ? ' is-selected' : '')
-							}
-							onClick={() => onChange({ headerExisting: options[key].value })}
-							style={{ padding: '20px' }}
-						>
-							<HeaderRender id={options[key].value} />
-						</div>
-						<span>{options[key].label}</span>
+				<div className="options">
+					<div
+						className={'option blank' + (data.headerExisting === 'blank' ? ' is-selected' : '')}
+						onClick={() => onChange({ headerExisting: 'blank' })}
+					>
+						<Button>{__('Create new header.', 'kadence-blocks')}</Button>
 					</div>
-				))}
+
+					{Object.keys(options).map((key) => (
+						<div key={key} className={'option'}>
+							<div
+								className={
+									'option-image' + (data.headerExisting === options[key].value ? ' is-selected' : '')
+								}
+								onClick={() => onChange({ headerExisting: options[key].value })}
+								style={{ padding: '20px' }}
+							>
+								<HeaderRender id={options[key].value} />
+							</div>
+							<span>{options[key].label}</span>
+						</div>
+					))}
+				</div>
 			</div>
 		</div>
 	);

@@ -29,7 +29,14 @@
 		color: $color-primary;
 	}
 
-	button {
+	.kb-header-popover-btns {
+		display: flex;
+		//showing buttons in reverse order so "next" is first in the dom and first focused
+		flex-direction: row-reverse;
+		gap: 5px;
+	}
+
+	button.kb-header-popover-btn {
 		font-size: 14px;
 
 		&.is-primary {
