@@ -30,6 +30,7 @@ export default function RangeControl({
 	lockUnits = false,
 	units = ['px', 'em', 'rem'],
 	reset,
+ 	initialPosition = undefined,
 }) {
 	return [
 		onChange && (
@@ -58,6 +59,7 @@ export default function RangeControl({
 							step={step}
 							help={help}
 							allowReset={true}
+							initialPosition={initialPosition}
 						/>
 					</div>
 					{(onUnit || showUnit) && (

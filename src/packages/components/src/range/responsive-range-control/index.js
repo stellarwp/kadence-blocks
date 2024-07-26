@@ -37,6 +37,7 @@ export default function ResponsiveRangeControls({
 	units = ['px', 'em', 'rem'],
 	allowEmpty = true,
 	className = '',
+	initialPosition = undefined,
 	reset,
 }) {
 	const [deviceType, setDeviceType] = useState('Desktop');
@@ -84,6 +85,7 @@ export default function ResponsiveRangeControls({
 			showUnit={showUnit}
 			units={units}
 			lockUnits={allowResponsiveUnitChange ? false : true}
+			initialPosition={initialPosition}
 		/>
 	);
 	output.Tablet = (
@@ -98,6 +100,7 @@ export default function ResponsiveRangeControls({
 			showUnit={showUnit}
 			units={units}
 			lockUnits={allowResponsiveUnitChange ? false : true}
+			initialPosition={initialPosition}
 		/>
 	);
 	output.Desktop = (
@@ -111,6 +114,7 @@ export default function ResponsiveRangeControls({
 			onUnit={onUnit}
 			showUnit={showUnit}
 			units={units}
+			initialPosition={initialPosition}
 		/>
 	);
 	return [
