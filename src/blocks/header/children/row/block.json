@@ -158,7 +158,7 @@
 			"type": "number",
 			"default": null
 		},
-		"heightDesktop": {
+		"heightMobile": {
 			"type": "number",
 			"default": null
 		},
