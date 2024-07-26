@@ -40,8 +40,8 @@ const HeaderMobile = ({ data, onChange }) => {
 	return (
 		<div className={'body'}>
 			<div className="width-l">
-				<h1>{__('Mobile Layout', 'kadence-blocks')}</h1>
-				<p>{__('Choose a header layout for mobile.', 'kadence-blocks')}</p>
+				<h1>{__('Tablet / mobile Layout', 'kadence-blocks')}</h1>
+				<p>{__('Choose a header layout for tablet / mobile.', 'kadence-blocks')}</p>
 
 				<div className="type-selection">
 					<Button className="basic" isPressed={true}>
@@ -54,7 +54,7 @@ const HeaderMobile = ({ data, onChange }) => {
 						className={'option blank' + (data.headerMobile === 'blank' ? ' is-selected' : '')}
 						onClick={() => onChange({ headerMobile: 'blank' })}
 					>
-						<Button>{__('Create blank mobile header.', 'kadence-blocks')}</Button>
+						<Button>{__('Create blank tablet / mobile header.', 'kadence-blocks')}</Button>
 					</div>
 
 					{Object.keys(basicOptions).map((key) => (
