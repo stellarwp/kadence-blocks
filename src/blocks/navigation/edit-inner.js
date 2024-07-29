@@ -575,9 +575,9 @@ export function EditInner(props) {
 			]);
 		}
 
-		if (templateKey.includes('vertical')) {
-			setMetaAttribute('vertical', 'orientation');
-		}
+		// if (templateKey.includes('vertical')) {
+		// 	setMetaAttribute('vertical', 'orientation');
+		// }
 	};
 
 	useEffect(() => {

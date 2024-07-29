@@ -97,9 +97,11 @@ import { updateAttributes } from './update-attributes';
  * Import Css
  */
 import './editor.scss';
+
 import metadata from './block.json';
 import BackendStyles from './components/backend-styles';
 import addNavLink from '../navigation/helpers/addNavLink';
+import { buildTemplateFromSelection } from './helpers';
 
 const DEFAULT_BLOCK = { name: 'kadence/navigation-link' };
 const ALLOWED_MEDIA_TYPES = ['image'];
@@ -411,8 +413,8 @@ export default function Edit(props) {
 
 	const isMegaMenuOnboarding = isMegaMenu && !hasChildren;
 	const megaMenuColumnOptions = [
-		{ key: 'equal|1', name: __('Row', 'kadence-blocks'), icon: rowIcon },
-		{ key: 'equal|2', name: __('Two: Equal', 'kadence-blocks'), icon: twoColIcon },
+		// { key: 'equal|1', name: __('Row', 'kadence-blocks'), icon: rowIcon },
+		// { key: 'equal|2', name: __('Two: Equal', 'kadence-blocks'), icon: twoColIcon },
 		{ key: 'equal|3', name: __('Three: Equal', 'kadence-blocks'), icon: threeColIcon },
 		{
 			key: 'right-golden|2',
@@ -423,7 +425,7 @@ export default function Edit(props) {
 	const megaMenuDesignOptions =
 		megaMenuColumnChoice == 'equal|1'
 			? [
-					{ key: 'equal|1|simple', name: __('Simple', 'kadence-blocks'), icon: rowIcon },
+					{ key: 'mega-1', name: __('Simple', 'kadence-blocks'), icon: rowIcon },
 					{ key: 'equal|1|complex', name: __('Complex', 'kadence-blocks'), icon: twoColIcon },
 			  ]
 			: megaMenuColumnChoice == 'equal|2'
@@ -433,13 +435,10 @@ export default function Edit(props) {
 			  ]
 			: megaMenuColumnChoice == 'equal|3'
 			? [
-					{ key: 'equal|3|simple', name: __('Simple3', 'kadence-blocks'), icon: rowIcon },
-					{ key: 'equal|3|complex', name: __('Complex3', 'kadence-blocks'), icon: twoColIcon },
+					{ key: 'mega-1', name: __('Simple', 'kadence-blocks'), icon: rowIcon },
+					{ key: 'mega-3', name: __('Simple', 'kadence-blocks'), icon: rowIcon },
 			  ]
-			: [
-					{ key: 'right-golden|2|simple', name: __('Simple2', 'kadence-blocks'), icon: rowIcon },
-					{ key: 'right-golden|2|complex', name: __('Complex2', 'kadence-blocks'), icon: twoColIcon },
-			  ];
+			: [{ key: 'mega-2', name: __('Simple', 'kadence-blocks'), icon: rowIcon }];
 
 	/**
 	 * Enable or disable the mega menu by changing the row layout and setting the attribute.
@@ -447,27 +446,14 @@ export default function Edit(props) {
 	function doMegaMenu(key) {
 		//TODO put any existing submenus / items into the new mega menu
 		if (key) {
-			const keyParts = key.split('|');
-			let newMegaMenu;
-			switch (key) {
-				case 'simple|1':
-					newMegaMenu = createBlock(
-						'kadence/rowlayout',
-						{ templateLock: false, colLayout: keyParts[0], columns: keyParts[1] },
-						[createBlock('kadence/column', {}, [])]
-					);
-					break;
+			const { templateInnerBlocks, templatePostMeta } = buildTemplateFromSelection(key);
 
-				default:
-					newMegaMenu = createBlock(
-						'kadence/rowlayout',
-						{ templateLock: false, colLayout: keyParts[0], columns: keyParts[1] },
-						[createBlock('kadence/column', {}, [])]
-					);
-					break;
+			//for mega menus inner blocks should always just be a single rowlayout block.
+			//so just insert the first inner block from the template
+			if (templateInnerBlocks) {
+				insertBlock(templateInnerBlocks[0], 0, clientId);
+				setShowSubMenus(true);
 			}
-			insertBlock(newMegaMenu, 0, clientId);
-			setShowSubMenus(true);
 		}
 	}
 
