@@ -22,6 +22,22 @@ export default function BackendStyles(props) {
 		tabletMarginDropdown,
 		mobileMarginDropdown,
 		marginDropdownUnit,
+		paddingLink,
+		tabletPaddingLink,
+		mobilePaddingLink,
+		paddingLinkUnit,
+		marginLink,
+		tabletMarginLink,
+		mobileMarginLink,
+		marginLinkUnit,
+		paddingDropdownLink,
+		tabletPaddingDropdownLink,
+		mobilePaddingDropdownLink,
+		paddingDropdownLinkUnit,
+		marginDropdownLink,
+		tabletMarginDropdownLink,
+		mobileMarginDropdownLink,
+		marginDropdownLinkUnit,
 		orientation,
 		orientationTablet,
 		orientationMobile,
@@ -430,6 +446,7 @@ export default function BackendStyles(props) {
 		css.add_property('padding-bottom', css.render_half_size(previewNavigationVerticalSpacing, spacingUnit));
 	}
 
+	//nav item
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap > a, .wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap`
 	);
@@ -440,6 +457,16 @@ export default function BackendStyles(props) {
 	if (context?.['kadence/headerIsSticky'] == '1') {
 		css.add_property('color', css.render_color(previewLinkColorSticky));
 	}
+	css.render_measure_output(
+		paddingLink,
+		tabletPaddingLink,
+		mobilePaddingLink,
+		previewDevice,
+		'padding',
+		paddingLinkUnit
+	);
+	css.render_measure_output(marginLink, tabletMarginLink, mobileMarginLink, previewDevice, 'margin', marginLinkUnit);
+
 	css.set_selector(`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap`);
 	if (context?.['kadence/headerIsTransparent'] == '1') {
 		css.add_property('background', css.render_color(previewBackgroundTransparent));
@@ -531,6 +558,7 @@ export default function BackendStyles(props) {
 		'margin',
 		marginDropdownUnit
 	);
+
 	css.add_property('background', css.render_color(previewBackgroundDropdown));
 	css.add_property(
 		'border-top',
@@ -592,10 +620,29 @@ export default function BackendStyles(props) {
 	css.add_property('padding-top', css.render_size(previewDropdownVerticalSpacing, dropdownVerticalSpacingUnit));
 	css.add_property('padding-bottom', css.render_size(previewDropdownVerticalSpacing, dropdownVerticalSpacingUnit));
 	css.render_font(dropdownTypography ? dropdownTypography : [], previewDevice);
+
+	//dropdown nav item
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li.menu-item > .link-drop-wrap > a, .wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul.sub-menu `
 	);
 	css.add_property('color', css.render_color(previewLinkColorDropdown));
+	css.render_measure_output(
+		paddingDropdownLink,
+		tabletPaddingDropdownLink,
+		mobilePaddingDropdownLink,
+		previewDevice,
+		'padding',
+		paddingDropdownLinkUnit
+	);
+	css.render_measure_output(
+		marginDropdownLink,
+		tabletMarginDropdownLink,
+		mobileMarginDropdownLink,
+		previewDevice,
+		'margin',
+		marginDropdownLinkUnit
+	);
+
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li.menu-item > .link-drop-wrap > a:hover`
 	);

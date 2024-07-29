@@ -323,7 +323,7 @@ export function Edit(props) {
 										step={1}
 										unit={maxWidthUnit}
 										showUnit={true}
-										units={['px', 'vw']}
+										units={['px', 'vw', '%']}
 										reset={() =>
 											setAttributes({ maxWidth: '', maxWidthTablet: '', maxWidthMobile: '' })
 										}
@@ -341,7 +341,7 @@ export function Edit(props) {
 										step={1}
 										unit={widthUnit}
 										showUnit={true}
-										units={['px', 'vw']}
+										units={['px', 'vw', '%']}
 										reset={() => setAttributes({ width: '', widthTablet: '', maxWidthMobile: '' })}
 									/>
 								</>

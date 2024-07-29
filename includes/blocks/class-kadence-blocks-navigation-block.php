@@ -118,6 +118,15 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_measure_output( $nav_attributes, 'marginDropdown', 'margin', ['unit_key' => 'marginDropdownUnit']);
 		$css->render_measure_output( $nav_attributes, 'paddingDropdown', 'padding', ['unit_key' => 'paddingDropdownUnit']);
 
+		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation > .menu-container ul ul.sub-menu .wp-block-kadence-navigation-link > .link-drop-wrap > a' );
+		$css->render_measure_output( $nav_attributes, 'marginDropdownLink', 'margin', ['unit_key' => 'marginDropdownLinkUnit']);
+		$css->render_measure_output( $nav_attributes, 'paddingDropdownLink', 'padding', ['unit_key' => 'paddingDropdownLinkUnit']);
+
+		//nav item
+		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' > .navigation > .menu > .menu-container > .wp-block-kadence-navigation-link > .link-drop-wrap > a' );
+		$css->render_measure_output( $nav_attributes, 'marginLink', 'margin', ['unit_key' => 'marginLinkUnit']);
+		$css->render_measure_output( $nav_attributes, 'paddingLink', 'padding', ['unit_key' => 'paddingLinkUnit']);
+
 		return $css->css_output();
 	}
 

@@ -120,6 +120,22 @@ export function EditInner(props) {
 		tabletMarginDropdown: meta?._kad_navigation_tabletMarginDropdown,
 		mobileMarginDropdown: meta?._kad_navigation_mobileMarginDropdown,
 		marginDropdownUnit: meta?._kad_navigation_marginDropdownUnit,
+		paddingLink: meta?._kad_navigation_paddingLink,
+		tabletPaddingLink: meta?._kad_navigation_tabletPaddingLink,
+		mobilePaddingLink: meta?._kad_navigation_mobilePaddingLink,
+		paddingLinkUnit: meta?._kad_navigation_paddingLinkUnit,
+		marginLink: meta?._kad_navigation_marginLink,
+		tabletMarginLink: meta?._kad_navigation_tabletMarginLink,
+		mobileMarginLink: meta?._kad_navigation_mobileMarginLink,
+		marginLinkUnit: meta?._kad_navigation_marginLinkUnit,
+		paddingDropdownLink: meta?._kad_navigation_paddingDropdownLink,
+		tabletPaddingDropdownLink: meta?._kad_navigation_tabletPaddingDropdownLink,
+		mobilePaddingDropdownLink: meta?._kad_navigation_mobilePaddingDropdownLink,
+		paddingDropdownLinkUnit: meta?._kad_navigation_paddingDropdownLinkUnit,
+		marginDropdownLink: meta?._kad_navigation_marginDropdownLink,
+		tabletMarginDropdownLink: meta?._kad_navigation_tabletMarginDropdownLink,
+		mobileMarginDropdownLink: meta?._kad_navigation_mobileMarginDropdownLink,
+		marginDropdownLinkUnit: meta?._kad_navigation_marginDropdownLinkUnit,
 		className: meta?._kad_navigation_className,
 		anchor: meta?._kad_navigation_anchor,
 		orientation: meta?._kad_navigation_orientation,
@@ -308,6 +324,22 @@ export function EditInner(props) {
 		tabletMarginDropdown,
 		mobileMarginDropdown,
 		marginDropdownUnit,
+		paddingLink,
+		tabletPaddingLink,
+		mobilePaddingLink,
+		paddingLinkUnit,
+		marginLink,
+		tabletMarginLink,
+		mobileMarginLink,
+		marginLinkUnit,
+		paddingDropdownLink,
+		tabletPaddingDropdownLink,
+		mobilePaddingDropdownLink,
+		paddingDropdownLinkUnit,
+		marginDropdownLink,
+		tabletMarginDropdownLink,
+		mobileMarginDropdownLink,
+		marginDropdownLinkUnit,
 		border,
 		borderRadius,
 		borderColor,
@@ -1385,6 +1417,60 @@ export function EditInner(props) {
 								units={['px', 'em', 'rem', '%']}
 								onUnit={(value) => setMetaAttribute(value, 'marginDropdownUnit')}
 							/>
+							<ResponsiveMeasureRangeControl
+								label={__('Padding Link', 'kadence-blocks')}
+								value={paddingDropdownLink}
+								tabletValue={tabletPaddingDropdownLink}
+								mobileValue={mobilePaddingDropdownLink}
+								onChange={(value) => {
+									setMetaAttribute(value.map(String), 'paddingDropdownLink');
+								}}
+								onChangeTablet={(value) => {
+									setMetaAttribute(value.map(String), 'tabletPaddingDropdownLink');
+								}}
+								onChangeMobile={(value) => {
+									setMetaAttribute(value.map(String), 'mobilePaddingDropdownLink');
+								}}
+								min={0}
+								max={
+									paddingDropdownUnit === 'em' || paddingDropdownLinkUnit === 'rem'
+										? 24
+										: paddingDropdownLinkUnit === 'px'
+										? 200
+										: 100
+								}
+								step={paddingDropdownLinkUnit === 'em' || paddingDropdownLinkUnit === 'rem' ? 0.1 : 1}
+								unit={paddingDropdownLinkUnit}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setMetaAttribute(value, 'paddingDropdownLinkUnit')}
+							/>
+							<ResponsiveMeasureRangeControl
+								label={__('Margin Link', 'kadence-blocks')}
+								value={marginDropdownLink}
+								tabletValue={tabletMarginDropdownLink}
+								mobileValue={mobileMarginDropdownLink}
+								onChange={(value) => {
+									setMetaAttribute(value.map(String), 'marginDropdownLink');
+								}}
+								onChangeTablet={(value) => {
+									setMetaAttribute(value.map(String), 'tabletMarginDropdownLink');
+								}}
+								onChangeMobile={(value) => {
+									setMetaAttribute(value.map(String), 'mobileMarginDropdownLink');
+								}}
+								min={0}
+								max={
+									marginDropdownLinkUnit === 'em' || marginDropdownLinkUnit === 'rem'
+										? 24
+										: marginDropdownLinkUnit === 'px'
+										? 200
+										: 100
+								}
+								step={marginDropdownLinkUnit === 'em' || marginDropdownLinkUnit === 'rem' ? 0.1 : 1}
+								unit={marginDropdownLinkUnit}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setMetaAttribute(value, 'marginDropdownLinkUnit')}
+							/>
 							<ResponsiveBorderControl
 								label={__('Dropdown Border', 'kadence-blocks')}
 								value={dropdownBorder}
@@ -1613,12 +1699,66 @@ export function EditInner(props) {
 								}}
 								min={0}
 								max={marginUnit === 'em' || marginUnit === 'rem' ? 24 : marginUnit === 'px' ? 200 : 100}
-								step={paddingUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
-								unit={paddingUnit}
+								step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
+								unit={marginUnit}
 								units={['px', 'em', 'rem', '%']}
 								onUnit={(value) => setMetaAttribute(value, 'marginUnit')}
 								onMouseOver={marginMouseOver.onMouseOver}
 								onMouseOut={marginMouseOver.onMouseOut}
+							/>
+							<ResponsiveMeasureRangeControl
+								label={__('Nav Link Padding', 'kadence-blocks')}
+								value={paddingLink}
+								tabletValue={tabletPaddingLink}
+								mobileValue={mobilePaddingLink}
+								onChange={(value) => {
+									setMetaAttribute(value.map(String), 'paddingLink');
+								}}
+								onChangeTablet={(value) => {
+									setMetaAttribute(value.map(String), 'tabletPaddingLink');
+								}}
+								onChangeMobile={(value) => {
+									setMetaAttribute(value.map(String), 'mobilePaddingLink');
+								}}
+								min={0}
+								max={
+									paddingLinkUnit === 'em' || paddingLinkUnit === 'rem'
+										? 24
+										: paddingLinkUnit === 'px'
+										? 200
+										: 100
+								}
+								step={paddingLinkUnit === 'em' || paddingLinkUnit === 'rem' ? 0.1 : 1}
+								unit={paddingLinkUnit}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setMetaAttribute(value, 'linkPaddinggUnit')}
+							/>
+							<ResponsiveMeasureRangeControl
+								label={__('Nav Link Margin', 'kadence-blocks')}
+								value={marginLink}
+								tabletValue={tabletMarginLink}
+								mobileValue={mobileMarginLink}
+								onChange={(value) => {
+									setMetaAttribute(value.map(String), 'marginLink');
+								}}
+								onChangeTablet={(value) => {
+									setMetaAttribute(value.map(String), 'tabletMarginLink');
+								}}
+								onChangeMobile={(value) => {
+									setMetaAttribute(value.map(String), 'mobileMarginLink');
+								}}
+								min={0}
+								max={
+									marginLinkUnit === 'em' || marginLinkUnit === 'rem'
+										? 24
+										: marginLinkUnit === 'px'
+										? 200
+										: 100
+								}
+								step={marginLinkUnit === 'em' || marginLinkUnit === 'rem' ? 0.1 : 1}
+								unit={marginLinkUnit}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setMetaAttribute(value, 'marginLinkUnit')}
 							/>
 						</KadencePanelBody>
 					</>
