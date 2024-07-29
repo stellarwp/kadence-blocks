@@ -151,9 +151,7 @@ export default function SelectOrCreatePlaceholder({
 						}
 					}}
 				>
-					{selected.type === 'kadence_navigation'
-						? __('Select', 'kadence-blocks')
-						: __('Import', 'kadence-blocks')}{' '}
+					{selected.type === 'nav_menu' ? __('Import', 'kadence-blocks') : __('Select', 'kadence-blocks')}{' '}
 				</Button>
 				<Button variant="secondary" onClick={onAdd} disabled={isSelecting} isBusy={isAdding}>
 					{__('Create New', 'kadence-blocks')}
