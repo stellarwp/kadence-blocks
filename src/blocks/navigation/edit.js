@@ -17,7 +17,7 @@ import classnames from 'classnames';
 import { __ } from '@wordpress/i18n';
 import { isEmpty } from 'lodash';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { formBlockIcon, formTemplateContactIcon } from '@kadence/icons';
+import { navigationBlockIcon } from '@kadence/icons';
 import { KadencePanelBody, SelectPostFromPostType } from '@kadence/components';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { Placeholder, Spinner, Button } from '@wordpress/components';
@@ -205,7 +205,7 @@ export function Edit(props) {
 					<Placeholder
 						className="kb-select-or-create-placeholder"
 						label={__('Kadence Navigation', 'kadence-blocks')}
-						icon={formBlockIcon}
+						icon={navigationBlockIcon}
 					>
 						<Spinner />
 					</Placeholder>
@@ -243,9 +243,9 @@ export function Edit(props) {
 					<Placeholder
 						className="kb-select-or-create-placeholder"
 						label={__('Kadence Navigation', 'kadence-blocks')}
-						icon={formBlockIcon}
+						icon={navigationBlockIcon}
 					>
-						{__('The selected from is in the trash.', 'kadence-blocks')}
+						{__('The selected navigation is in the trash.', 'kadence-blocks')}
 					</Placeholder>
 					<InspectorControls>
 						<KadencePanelBody
@@ -299,6 +299,17 @@ function Chooser({ id, post, commit, postExists }) {
 		}
 	};
 
+	const onAddOtherType = async (selected) => {
+		try {
+			const response = await addNew();
+			commit(response.id);
+
+			window.kb_navigation_import_core = { coreMenuId: selected.id, id: response.id };
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
 	return (
 		<SelectOrCreatePlaceholder
 			postType="kadence_navigation"
@@ -307,6 +318,7 @@ function Chooser({ id, post, commit, postExists }) {
 			placeholder={__('Select navigation', 'kadence-blocks')}
 			onSelect={commit}
 			isSelecting={id && isEmpty(post) && undefined !== postExists}
+			onAddOtherType={onAddOtherType}
 			onAdd={onAdd}
 			isAdding={isAdding}
 		/>

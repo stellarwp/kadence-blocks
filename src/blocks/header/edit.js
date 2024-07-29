@@ -17,7 +17,7 @@ import classnames from 'classnames';
 import { __ } from '@wordpress/i18n';
 import { isEmpty } from 'lodash';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { formBlockIcon, formTemplateContactIcon } from '@kadence/icons';
+import { headerBlockIcon, formTemplateContactIcon } from '@kadence/icons';
 import { KadencePanelBody, SelectPostFromPostType, OnboardingModal } from '@kadence/components';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { Placeholder, Spinner } from '@wordpress/components';
@@ -165,7 +165,7 @@ export function Edit(props) {
 						<Placeholder
 							className="kb-select-or-create-placeholder"
 							label={__('Kadence Heading', 'kadence-blocks')}
-							icon={formBlockIcon}
+							icon={headerBlockIcon}
 						>
 							<Spinner />
 						</Placeholder>
@@ -193,9 +193,9 @@ export function Edit(props) {
 						<Placeholder
 							className="kb-select-or-create-placeholder"
 							label={__('Kadence Heading', 'kadence-blocks')}
-							icon={formBlockIcon}
+							icon={headerBlockIcon}
 						>
-							{__('The selected from is in the trash.', 'kadence-blocks')}
+							{__('The selected header is in the trash.', 'kadence-blocks')}
 						</Placeholder>
 						<InspectorControls>
 							<KadencePanelBody

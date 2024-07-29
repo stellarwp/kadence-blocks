@@ -14,13 +14,12 @@ import { addQueryArgs } from '@wordpress/url';
 import { useEntityBlockEditor, useEntityProp } from '@wordpress/core-data';
 import { formBlockIcon } from '@kadence/icons';
 import addNavLink from './helpers/addNavLink';
-
+import { coreMenuToBlocks } from './helpers/coreMenuToBlocks';
 import {
 	KadencePanelBody,
 	InspectorControlTabs,
 	SpacingVisualizer,
 	ResponsiveMeasureRangeControl,
-	RangeControl,
 	ResponsiveRangeControls,
 	PopColorControl,
 	HoverToggleControl,
@@ -57,13 +56,12 @@ import {
 	Modal,
 } from '@wordpress/components';
 
-import { FormTitle, MenuEditor } from './components';
+import { MenuEditor } from './components';
 
 /**
  * Internal dependencies
  */
 import classnames from 'classnames';
-import { useEntityPublish } from './hooks';
 import { DEFAULT_BLOCK, ALLOWED_BLOCKS, PRIORITIZED_INSERTER_BLOCKS } from './constants';
 import BackendStyles from './components/backend-styles';
 import { plus, plusCircle } from '@wordpress/icons';
@@ -91,6 +89,7 @@ export function EditInner(props) {
 
 	const [activeTab, setActiveTab] = useState('general');
 	const [navPlaceholderBlocks, setNavPlaceholderBlocks] = useState([]);
+	const [blocksToInsert, setBlocksToInsert] = useState([]);
 
 	const [isOpen, setOpen] = useState(false);
 	const closeModal = () => {
@@ -488,19 +487,6 @@ export function EditInner(props) {
 			? 'vertical'
 			: 'horizontal'
 		: getPreviewSize(previewDevice, orientation, orientationTablet, orientationMobile);
-	const previewDropdownHorizontalAlignment = getPreviewSize(
-		previewDevice,
-		dropdownHorizontalAlignment,
-		dropdownHorizontalAlignmentTablet,
-		dropdownHorizontalAlignmentMobile
-	);
-	const previewStyle = getPreviewSize(previewDevice, style, styleTablet, styleMobile);
-	const previewCollapseSubMenus = getPreviewSize(
-		previewDevice,
-		collapseSubMenus,
-		collapseSubMenusTablet,
-		collapseSubMenusMobile
-	);
 
 	const setMetaAttribute = (value, key) => {
 		setMeta({ ...meta, ['_kad_navigation_' + key]: value });
@@ -595,7 +581,7 @@ export function EditInner(props) {
 	};
 
 	useEffect(() => {
-		if (!blocks || blocks.length == 0) {
+		if (!blocks || blocks.length === 0) {
 			if (templateKey) {
 				//this nav is meant to be a premade template, set it's title and give it innerblocks based on it's template key
 				applyTemplateKeyBlocks(templateKey);
@@ -615,6 +601,38 @@ export function EditInner(props) {
 		}
 	}, [isSelected]);
 
+	// Handle importing existing core menus
+	useEffect(() => {
+		let isMounted = true; // To handle component unmounting
+
+		const fetchCoreMenu = async () => {
+			if (window.kb_navigation_import_core !== undefined && id === window.kb_navigation_import_core.id) {
+				const coreMenuBlocks = await coreMenuToBlocks(window.kb_navigation_import_core.coreMenuId);
+				if (isMounted) {
+					if (coreMenuBlocks !== false) {
+						// Hacky workaround because the blocks are not being when calling the onChange directly here
+						// I think the entity is still swapping out because the ID has just changed
+						setBlocksToInsert(coreMenuBlocks);
+					}
+					window.kb_navigation_import_core = undefined;
+				}
+			}
+		};
+
+		fetchCoreMenu();
+
+		return () => {
+			isMounted = false; // Cleanup to avoid setting state on unmounted component
+		};
+	}, [id]);
+
+	useEffect(() => {
+		if (blocksToInsert.length !== 0) {
+			updateBlocksCallback(blocksToInsert);
+			setBlocksToInsert([]);
+		}
+	}, [blocksToInsert]);
+
 	if (!blocks || blocks.length === 0) {
 		blocks = navPlaceholderBlocks;
 	}
@@ -626,42 +644,6 @@ export function EditInner(props) {
 	const newBlock = useMemo(() => {
 		return get(blocks, [0], {});
 	}, [blocks]);
-
-	// const onAdd = async () => {
-	// 	try {
-	// 		const response = await addNew();
-	//
-	// 		if (response.id) {
-	// 			onChange(
-	// 				[
-	// 					{
-	// 						...newBlock,
-	// 						innerBlocks: [
-	// 							createBlock('kadence/navigation-link', {
-	// 								label: __('Home', 'kadence-blocks'),
-	// 								url: '/',
-	// 							}),
-	// 						],
-	// 					},
-	// 				],
-	// 				clientId
-	// 			);
-	//
-	// 			// setTitle('');
-	//
-	// 			const updatedMeta = meta;
-	// 			// updatedMeta._kad_navigation_description = initialDescription;
-	// 			// updatedMeta._kad_navigation_orientation = direction === 'skip' ? 'horizontal' : direction;
-	//
-	// 			setMeta({ ...meta, updatedMeta });
-	// 			await wp.data.dispatch('core').saveEditedEntityRecord('postType', 'kadence_navigation', id);
-	//
-	// 			openModal();
-	// 		}
-	// 	} catch (error) {
-	// 		console.error(error);
-	// 	}
-	// };
 
 	const navAppender = () => {
 		return (

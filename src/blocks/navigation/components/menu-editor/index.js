@@ -46,6 +46,7 @@ export default function MenuEditor({
 					label: post.title.rendered,
 					url: post.link,
 					kind: 'custom',
+					uniqueID: Math.random().toString(36).substr(2, 9),
 				})
 			);
 		});
@@ -151,6 +152,7 @@ export default function MenuEditor({
 									label: __('New Link', 'kadence-blocks'),
 									url: '',
 									kind: 'custom',
+									uniqueID: Math.random().toString(36).substr(2, 9),
 								}),
 							]);
 						}}
