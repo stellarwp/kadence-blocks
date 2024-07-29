@@ -613,6 +613,7 @@ export function EditInner(props) {
 						// Hacky workaround because the blocks are not being when calling the onChange directly here
 						// I think the entity is still swapping out because the ID has just changed
 						setBlocksToInsert(coreMenuBlocks);
+						setTitle(window.kb_navigation_import_core.label);
 					}
 					window.kb_navigation_import_core = undefined;
 				}

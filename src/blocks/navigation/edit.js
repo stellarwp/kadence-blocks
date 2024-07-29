@@ -304,7 +304,7 @@ function Chooser({ id, post, commit, postExists }) {
 			const response = await addNew();
 			commit(response.id);
 
-			window.kb_navigation_import_core = { coreMenuId: selected.id, id: response.id };
+			window.kb_navigation_import_core = { coreMenuId: selected.id, id: response.id, label: selected.label };
 		} catch (error) {
 			console.error(error);
 		}
