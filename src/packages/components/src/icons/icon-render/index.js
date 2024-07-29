@@ -63,9 +63,13 @@ class IconRender extends Component {
 			const response = await fetchCustomSvg( id );
 
 			if ( response ) {
-				const svgContent = response.content.rendered.replace('<p>', '').replace('</p>', '').replace(/&#8220;/g, '"')
-					.replace(/&#8221;/g, '"')
-					.replace(/&#8243;/g, '"');
+				const svgContent = response.content.rendered
+					.replace( '<p>', '' )
+					.replace( '</p>', '' )
+					.replace( /&#8220;/g, '"' )
+					.replace( /&#8221;/g, '"' )
+					.replace( /&#8222;/g, '"' )
+					.replace( /&#8243;/g, '"' );
 
 				const jsonObject = JSON.parse(svgContent);
 

@@ -80,7 +80,6 @@ function KadenceSpacerDivider(props) {
 		vstablet,
 		vsmobile,
 	} = attributes;
-
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		(select) => {
