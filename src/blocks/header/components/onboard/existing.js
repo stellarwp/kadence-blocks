@@ -4,7 +4,7 @@ import { useEffect, useState } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import HeaderRender from './render';
 
-const HeaderExisting = ({ data, onChange }) => {
+const HeaderExisting = ({ data, onChange, handleNextStep }) => {
 	const selectTranslation = __('Select', 'kadence-blocks');
 	// Require a selection
 	useEffect(() => {
@@ -18,12 +18,12 @@ const HeaderExisting = ({ data, onChange }) => {
 			) {
 				onChange({
 					...data,
-					meta: { ...data.meta, isValid: true, nextText: selectTranslation, exitAndCalbackStep: 1 },
+					meta: { ...data.meta, isValid: true, nextText: selectTranslation, exitAndCallbackStep: 1 },
 				});
 			} else if (data.headerExisting === 'blank' && (data.meta.nextText !== undefined || !data.meta.isValid)) {
 				onChange({
 					...data,
-					meta: { ...data.meta, isValid: true, nextText: undefined, exitAndCalbackStep: false },
+					meta: { ...data.meta, isValid: true, nextText: undefined, exitAndCallbackStep: false },
 				});
 			}
 		}
@@ -39,6 +39,7 @@ const HeaderExisting = ({ data, onChange }) => {
 		}),
 		[]
 	);
+
 	const options = [
 		...(posts || []).map((post) => ({
 			label: stripTags(post.title.rendered),
@@ -55,7 +56,12 @@ const HeaderExisting = ({ data, onChange }) => {
 				<div className="options">
 					<div
 						className={'option blank' + (data.headerExisting === 'blank' ? ' is-selected' : '')}
-						onClick={() => onChange({ headerExisting: 'blank' })}
+						onClick={() => {
+							onChange({ headerExisting: 'blank' });
+							if (options.length === 0) {
+								handleNextStep();
+							}
+						}}
 					>
 						<Button>{__('Create new header.', 'kadence-blocks')}</Button>
 					</div>

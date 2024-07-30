@@ -36,7 +36,7 @@ const OnboardingModal = ({ steps, isOpen, onRequestClose, onSubmit }) => {
 	};
 
 	useEffect(() => {
-		if (Number.isInteger(formData.meta.exitAndCalbackStep) && formData.meta.exitAndCalbackStep === currentStep) {
+		if (Number.isInteger(formData.meta.exitAndCallbackStep) && formData.meta.exitAndCallbackStep === currentStep) {
 			handleFinish();
 		}
 	}, [formData, currentStep]);
@@ -66,6 +66,8 @@ const OnboardingModal = ({ steps, isOpen, onRequestClose, onSubmit }) => {
 				{React.createElement(steps[currentStep].component, {
 					data: formData,
 					onChange: (data) => handleChange(data),
+					handleNextStep,
+					handlePreviousStep,
 				})}
 			</div>
 			<div className={'footer'}>
