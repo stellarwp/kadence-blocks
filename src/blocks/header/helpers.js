@@ -23,6 +23,9 @@ import { innerBlocks as Mobile2InnerBlocks, postMeta as Mobile2PostMeta } from '
 import { innerBlocks as Mobile3InnerBlocks, postMeta as Mobile3PostMeta } from './templates/mobile-3';
 import { innerBlocks as Mobile4InnerBlocks, postMeta as Mobile4PostMeta } from './templates/mobile-4';
 
+// Blank
+import { innerBlocks as BlankInnerBlocks, postMeta as BlankPostMeta } from './templates/blank';
+
 export function buildTemplateFromSelection(desktop, mobile) {
 	// If it's an exact match to existing template, return that template
 	if (desktop === mobile) {
@@ -265,6 +268,9 @@ function getDataFromKey(key) {
 	} else if (key === 'mobile-4') {
 		response.templatePostMeta = Mobile4PostMeta;
 		response.templateInnerBlocks = Mobile4InnerBlocks();
+	} else {
+		response.templatePostMeta = BlankPostMeta;
+		response.templateInnerBlocks = BlankInnerBlocks();
 	}
 
 	// Replace placeholder relative URL with absolute URL
