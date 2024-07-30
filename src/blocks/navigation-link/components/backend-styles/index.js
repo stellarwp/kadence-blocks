@@ -22,6 +22,14 @@ export default function BackendStyles(props) {
 		tabletMarginDropdown,
 		mobileMarginDropdown,
 		marginDropdownUnit,
+		paddingDropdownLink,
+		tabletPaddingDropdownLink,
+		mobilePaddingDropdownLink,
+		paddingDropdownLinkUnit,
+		marginDropdownLink,
+		tabletMarginDropdownLink,
+		mobileMarginDropdownLink,
+		marginDropdownLinkUnit,
 		linkColor,
 		linkColorHover,
 		linkColorActive,
@@ -757,6 +765,22 @@ export default function BackendStyles(props) {
 	);
 	css.set_selector(
 		`.wp-block-kadence-navigation .navigation .menu-container ul .wp-block-kadence-navigation-link${uniqueID} ul li.menu-item > .link-drop-wrap > a`
+	);
+	css.render_measure_output(
+		paddingDropdownLink,
+		tabletPaddingDropdownLink,
+		mobilePaddingDropdownLink,
+		previewDevice,
+		'padding',
+		paddingDropdownLinkUnit
+	);
+	css.render_measure_output(
+		marginDropdownLink,
+		tabletMarginDropdownLink,
+		mobileMarginDropdownLink,
+		previewDevice,
+		'margin',
+		marginDropdownLinkUnit
 	);
 	css.add_property('padding-top', css.render_size(previewDropdownVerticalSpacing, dropdownVerticalSpacingUnit));
 	css.add_property('padding-bottom', css.render_size(previewDropdownVerticalSpacing, dropdownVerticalSpacingUnit));

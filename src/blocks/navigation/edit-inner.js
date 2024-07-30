@@ -1401,7 +1401,7 @@ export function EditInner(props) {
 								}}
 								min={0}
 								max={
-									paddingDropdownUnit === 'em' || paddingDropdownLinkUnit === 'rem'
+									paddingDropdownLinkUnit === 'em' || paddingDropdownLinkUnit === 'rem'
 										? 24
 										: paddingDropdownLinkUnit === 'px'
 										? 200

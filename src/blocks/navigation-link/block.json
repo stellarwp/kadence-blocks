@@ -127,6 +127,38 @@
 			"type": "string",
 			"default": "px"
 		},
+		"paddingDropdownLink": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"tabletPaddingDropdownLink": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"mobilePaddingDropdownLink": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"paddingDropdownLinkUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"marginDropdownLink": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"tabletMarginDropdownLink": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"mobileMarginDropdownLink": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"marginDropdownLinkUnit": {
+			"type": "string",
+			"default": "px"
+		},
 		"linkColorDropdown": {
 			"type": "string",
 			"default": ""

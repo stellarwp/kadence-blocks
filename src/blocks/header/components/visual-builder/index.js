@@ -95,7 +95,6 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 	}, [isVisible, previewDevice]);
 
 	const setIsVisible = () => {
-		console.log(1, previewDevice);
 		setHeaderVisualBuilderOpenId(isVisible ? null : clientId);
 	};
 
