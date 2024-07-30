@@ -1116,6 +1116,7 @@
 					"mobileBorderRadius": [5, 5, 5, 5],
 					"borderWidth": [0, 0, 0, 0],
 					"gap": ["", "", ""],
+					"textGap": ["", "", ""],
 					"padding": [5, 5, 5, 5],
 					"tabletPadding": [5, 5, 5, 5],
 					"mobilePadding": [5, 5, 5, 5],

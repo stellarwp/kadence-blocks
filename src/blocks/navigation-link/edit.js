@@ -369,6 +369,10 @@ export default function Edit(props) {
 			: ''
 	);
 
+	const hasHighlightLabel =
+		(undefined !== highlightIcon?.[0]?.icon && '' !== highlightIcon[0].icon) ||
+		(undefined !== highlightLabel && '' !== highlightLabel);
+
 	useEffect(() => {
 		const postOrFseId = getPostOrFseId(props, parentData);
 		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
@@ -873,6 +877,7 @@ export default function Edit(props) {
 
 	const classes = classnames('wp-block-kadence-navigation-link__content', {
 		'wp-block-kadence-navigation-link__placeholder': !url || isInvalid || isDraft,
+		'has-highlight-label': hasHighlightLabel,
 	});
 
 	const missingText = getMissingText(type);
@@ -1206,8 +1211,7 @@ export default function Edit(props) {
 							{description && <span className="menu-label-description">{description}</span>}
 							{hasChildren && <span className="title-dropdown-navigation-toggle">{ArrowDown}</span>}
 						</span>
-						{((undefined !== highlightIcon?.[0]?.icon && '' !== highlightIcon[0].icon) ||
-							(undefined !== highlightLabel && '' !== highlightLabel)) && (
+						{hasHighlightLabel && (
 							<span className="link-highlight-label">
 								<span className="link-highlight-label-text">{highlightLabel}</span>
 								{undefined !== highlightIcon?.[0]?.icon && '' !== highlightIcon[0].icon && (

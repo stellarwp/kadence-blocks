@@ -18,7 +18,6 @@
 		background: var(--global-palette2, #2f2ffc);
 		padding: 3px;
 		font-size: 12px;
-		margin-left: 5px;
 		line-height: 1;
 		padding: 5px;
 		border-radius: 5px;
@@ -28,6 +27,8 @@
 	}
 	.link-drop-wrap .wp-block-kadence-navigation-link__content.has-highlight-label {
 		display: flex !important;
+		gap: 5px;
+
 		.link-highlight-label {
 			display: flex !important;
 			flex-wrap: nowrap;

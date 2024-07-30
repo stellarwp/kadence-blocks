@@ -505,6 +505,13 @@ export default function BackendStyles(props) {
 		highlightSpacing[0].gap[1],
 		highlightSpacing[0].gap[2]
 	);
+	const previewHighlightLabelTextGap = getPreviewSize(
+		previewDevice,
+		highlightSpacing[0].textGap[0],
+		highlightSpacing[0].textGap[1],
+		highlightSpacing[0].textGap[2]
+	);
+
 	const previewHighlightSide = getPreviewSize(previewDevice, highlightSide, highlightSideTablet, highlightSideMobile);
 	const previewIconSide = getPreviewSize(previewDevice, iconSide, iconSideTablet, iconSideMobile);
 	const previewMediaAlign = getPreviewSize(previewDevice, mediaAlign, mediaAlignTablet, mediaAlignMobile);
@@ -960,14 +967,14 @@ export default function BackendStyles(props) {
 		'padding',
 		'px'
 	);
-	css.render_measure_output(
-		highlightSpacing[0].margin,
-		highlightSpacing[0].tabletMargin,
-		highlightSpacing[0].mobileMargin,
-		previewDevice,
-		'margin',
-		'px'
-	);
+	// css.render_measure_output(
+	// 	highlightSpacing[0].margin,
+	// 	highlightSpacing[0].tabletMargin,
+	// 	highlightSpacing[0].mobileMargin,
+	// 	previewDevice,
+	// 	'margin',
+	// 	'px'
+	// );
 	css.add_property(
 		'border-top',
 		css.render_border(
@@ -1026,6 +1033,14 @@ export default function BackendStyles(props) {
 	if (undefined !== previewHighlightLabelGap && previewHighlightLabelGap) {
 		css.add_property('gap', css.get_gap_size(previewHighlightLabelGap, 'px'));
 	}
+
+	css.set_selector(
+		`.navigation ul.kb-navigation .wp-block-kadence-navigation-link${uniqueID}.menu-item > .link-drop-wrap > a.wp-block-kadence-navigation-link__content.has-highlight-label`
+	);
+	if (undefined !== previewHighlightLabelTextGap && previewHighlightLabelTextGap) {
+		css.add_property('gap', css.get_gap_size(previewHighlightLabelTextGap, 'px'));
+	}
+
 	css.set_selector(
 		`.wp-block-kadence-navigation-link${uniqueID}.menu-item > .link-drop-wrap > a:hover .link-highlight-label`
 	);

@@ -130,7 +130,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 				$css->add_property( 'background-color', $css->render_color( $nav_link_attributes['labelBackground'] ) );
 			}
 			if ( isset( $nav_link_attributes['highlightSpacing'][0] ) && is_array( $nav_link_attributes['highlightSpacing'][0] ) ) {
-				$css->render_measure_output( $nav_link_attributes['highlightSpacing'][0], 'margin', 'margin' );
+				//$css->render_measure_output( $nav_link_attributes['highlightSpacing'][0], 'margin', 'margin' );
 				$css->render_measure_output( $nav_link_attributes['highlightSpacing'][0], 'padding' );
 				$css->render_border_styles( $nav_link_attributes['highlightSpacing'][0], 'border' );
 				$css->render_border_radius( $nav_link_attributes['highlightSpacing'][0] );
@@ -196,6 +196,12 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 					$css->add_property( 'height',  $nav_link_attributes['highlightIcon'][0]['sizeMobile'] . 'px' );
 				}
 				$css->set_media_state( 'desktop' );
+			}
+
+			$temppp = '.navigation ul.kb-navigation .wp-block-kadence-navigation-link' . $unique_id . ' .menu-item > .link-drop-wrap > a.wp-block-kadence-navigation-link__content.has-highlight-label';
+			$css->set_selector('.navigation ul.kb-navigation .wp-block-kadence-navigation-link' . $unique_id . '.menu-item > .link-drop-wrap > a.wp-block-kadence-navigation-link__content.has-highlight-label');
+			if ( isset( $nav_link_attributes['highlightSpacing'][0] ) && is_array( $nav_link_attributes['highlightSpacing'][0] ) ) {
+				$css->render_gap($nav_link_attributes['highlightSpacing'][0], 'textGap');
 			}
 		}
 

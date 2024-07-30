@@ -63,13 +63,16 @@
 		align-items: center;
 		padding: 3px;
 		font-size: 12px;
-		margin-left: 5px;
 		line-height: 1;
 		padding: 5px;
 		border-radius: 5px;
 		.kt-svg-icon {
 			padding-left: 5px;
 		}
+	}
+
+	.link-drop-wrap .wp-block-kadence-navigation-link__content.has-highlight-label {
+		gap: 5px;
 	}
 
 	&.is-editing,

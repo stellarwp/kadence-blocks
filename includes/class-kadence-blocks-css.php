@@ -1250,9 +1250,9 @@ class Kadence_Blocks_CSS {
 		}
 	}
 	/**
-	 * Generates the shadow output.
+	 * Generates the gap output.
 	 *
-	 * @param array  $shadow an array of shadow settings.
+	 * @param array  $attributes an array of spacing settings.
 	 * @return string
 	 */
 	public function render_gap( $attributes, $name = 'gap', $property = 'gap', $unit_name = 'gapUnit' ) {
