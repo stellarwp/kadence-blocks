@@ -55,11 +55,11 @@ import { getPreviewSize, mouseOverVisualizer, arrayStringToInt, useElementWidth 
 
 import { BackendStyles, PopoverTutorial } from './components';
 import { HEADER_ALLOWED_BLOCKS } from './constants';
+import { findHeaderBlockClientId } from './helpers';
 
 /**
  * Internal dependencies
  */
-import { useEntityPublish } from './hooks';
 import metadata from './block.json';
 /**
  * Regular expression matching invalid anchor characters for replacement.
@@ -291,6 +291,8 @@ export function EditInner(props) {
 
 	let [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_header', id);
 
+	// console.log(blocks);
+
 	const emptyHeader = useMemo(() => {
 		return [createBlock('kadence/header', {})];
 	}, [clientId]);
@@ -300,7 +302,14 @@ export function EditInner(props) {
 	}
 
 	const headerInnerBlocks = useMemo(() => {
-		return get(blocks, [0, 'innerBlocks'], []);
+		const innerBlocks = get(blocks, [0, 'innerBlocks'], []);
+		const findHeader = findHeaderBlockClientId(innerBlocks);
+
+		if (findHeader !== null) {
+			console.log('remove block');
+			wp.data.dispatch('core/block-editor').removeBlock(findHeader);
+		}
+		return innerBlocks;
 	}, [blocks]);
 
 	const newBlock = useMemo(() => {
@@ -609,16 +618,6 @@ export function EditInner(props) {
 		}
 	);
 
-	// if (headerInnerBlocks.length === 0) {
-	// 	return (
-	// 		<>
-	// 			<Onboard onAdd={onAdd} isAdding={isAdding} existingTitle={title} />
-	// 			<div className="kb-form-hide-while-setting-up">
-	// 				<Fragment {...innerBlocksProps} />
-	// 			</div>
-	// 		</>
-	// 	);
-	// }
 	if (typeof pagenow !== 'undefined' && ('widgets' === pagenow || 'customize' === pagenow)) {
 		const editPostLink = addQueryArgs('post.php', {
 			post: id,

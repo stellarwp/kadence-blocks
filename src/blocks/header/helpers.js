@@ -307,3 +307,16 @@ function replaceInAttributes(obj, searchValue, replaceValue) {
 	// Return the modified object
 	return obj;
 }
+
+export const findHeaderBlockClientId = (blocks) => {
+	for (const block of blocks) {
+		if (block.name === 'kadence/header') {
+			return block.clientId;
+		}
+		const childHeaderBlockClientId = findHeaderBlockClientId(block.innerBlocks);
+		if (childHeaderBlockClientId) {
+			return childHeaderBlockClientId;
+		}
+	}
+	return null;
+};
