@@ -794,7 +794,7 @@ function KadenceAdvancedHeading(props) {
 		return (
 			<Tooltip
 				text={iconTooltip ? iconTooltip : undefined}
-				className='kb-custom-tooltip'
+				className="kb-custom-tooltip"
 				placement={iconTooltipPlacement || 'top'}
 			>
 				<span
@@ -803,14 +803,18 @@ function KadenceAdvancedHeading(props) {
 						display: 'inline-flex',
 						justifyContent: 'center',
 						alignItems: 'center',
-					}}>
+					}}
+				>
 					<IconRender
 						className={`kb-advanced-heading-svg-icon kb-advanced-heading-svg-icon-${icon} kb-advanced-heading-icon-side-${iconSide}`}
 						name={icon}
 						size={'1em'}
 						style={{
 							fontSize: previewIconSize
-								? getFontSizeOptionOutput(previewIconSize, undefined !== iconSizeUnit ? iconSizeUnit : 'px')
+								? getFontSizeOptionOutput(
+										previewIconSize,
+										undefined !== iconSizeUnit ? iconSizeUnit : 'px'
+								  )
 								: undefined,
 							color: '' !== iconColor ? KadenceColorOutput(iconColor) : undefined,
 							paddingTop: previewIconPaddingTop
