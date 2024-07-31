@@ -23,7 +23,8 @@
 	"supports": {
 		"align": ["wide", "full"],
 		"ariaLabel": true,
-		"html": false
+		"html": false,
+		"customClassName": false
 	},
 	"usesContext": ["kadence/headerPostId", "kadence/headerIsSticky", "kadence/headerIsTransparent"]
 }
