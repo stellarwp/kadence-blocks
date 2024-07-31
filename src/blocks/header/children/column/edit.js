@@ -32,7 +32,6 @@ export function Edit(props) {
 
 	const { uniqueID, location } = attributes;
 
-
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, parentData, previewDevice } = useSelect(
 		(select) => {

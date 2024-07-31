@@ -1470,6 +1470,10 @@
 		},
 		"kadenceConditional": {
 			"type": "object"
+		},
+		"forceOpenInEditor": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"usesContext": [

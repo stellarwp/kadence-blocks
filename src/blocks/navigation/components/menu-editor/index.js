@@ -125,6 +125,7 @@ export default function MenuEditor({
 									url: '',
 									kind: 'custom',
 									uniqueID: Math.random().toString(36).substr(2, 9),
+									forceOpenInEditor: true,
 								}),
 							]);
 						}}

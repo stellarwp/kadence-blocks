@@ -19,8 +19,13 @@ const DragHandle = memo((props) => (
 ));
 
 function BlockItem({ thisBlock, activeBlock, toggleCollapse, collapsed }) {
-	const [isEditing, setIsEditing] = useState(false);
+	const forceOpenInEditor = get(thisBlock, ['attributes', 'forceOpenInEditor'], false);
+	const [isEditing, setIsEditing] = useState(forceOpenInEditor);
 	const parentProps = {};
+
+	if (forceOpenInEditor) {
+		wp.data.dispatch('core/block-editor').updateBlockAttributes(thisBlock.clientId, { forceOpenInEditor: false });
+	}
 
 	const hasChildren = thisBlock?.children?.length > 0;
 
