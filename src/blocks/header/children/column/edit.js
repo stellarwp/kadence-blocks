@@ -32,13 +32,6 @@ export function Edit(props) {
 
 	const { uniqueID, location } = attributes;
 
-	// const blockClasses = classnames({
-	// 	'wp-block-kadence-header-column': true,
-	// 	[`kadence-header${uniqueID}`]: uniqueID,
-	// });
-	// const blockProps = useBlockProps({
-	// 	className: blockClasses,
-	// });
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, parentData, previewDevice } = useSelect(
