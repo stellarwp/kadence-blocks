@@ -8,7 +8,7 @@ import { useSelect } from '@wordpress/data';
 import { PostSelectorCheckbox, KadenceRadioButtons } from '@kadence/components';
 import { createBlock } from '@wordpress/blocks';
 import { TextControl, Button } from '@wordpress/components';
-import { link } from '@wordpress/icons';
+import { plus } from '@wordpress/icons';
 
 import MenuEdit from './edit';
 import './editor.scss';
@@ -23,7 +23,7 @@ export default function MenuEditor({
 	orientationTablet,
 	setMetaAttribute,
 }) {
-	const [sidebarTab, setSidebarTab] = useState('posts');
+	const [sidebarTab, setSidebarTab] = useState('page');
 
 	const { blocks } = useSelect(
 		(select) => {
@@ -100,34 +100,6 @@ export default function MenuEditor({
 							onSelect={onSelect}
 						/>
 					))}
-
-					<PostSelectorCheckbox
-						forceOpen={sidebarTab === 'posts'}
-						useForceState={true}
-						title={__('Posts', 'kadence-blocks')}
-						onPanelBodyToggle={() => setSidebarTab(sidebarTab === 'posts' ? null : 'posts')}
-						onSelect={onSelect}
-					/>
-
-					<PostSelectorCheckbox
-						forceOpen={sidebarTab === 'pages'}
-						useForceState={true}
-						onPanelBodyToggle={() => setSidebarTab(sidebarTab === 'pages' ? null : 'pages')}
-						postType={'pages'}
-						title={__('Pages', 'kadence-blocks')}
-						onSelect={onSelect}
-					/>
-
-					{kadence_blocks_params.hasProducts && (
-						<PostSelectorCheckbox
-							forceOpen={sidebarTab === 'product'}
-							useForceState={true}
-							onPanelBodyToggle={() => setSidebarTab(sidebarTab === 'product' ? null : 'product')}
-							postType={'product'}
-							title={__('Products', 'kadence-blocks')}
-							onSelect={onSelect}
-						/>
-					)}
 				</div>
 				<div className={'add-menu'}></div>
 			</div>
@@ -156,9 +128,9 @@ export default function MenuEditor({
 								}),
 							]);
 						}}
-						icon={link}
+						icon={plus}
 					>
-						{__('Add Link', 'kadence-blocks')}
+						{__('Custom Link', 'kadence-blocks')}
 					</Button>
 					<Button isPrimary onClick={closeModal}>
 						{__('Done', 'kadence-blocks')}
