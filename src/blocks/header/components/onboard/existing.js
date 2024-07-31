@@ -51,7 +51,7 @@ const HeaderExisting = ({ data, onChange, handleNextStep }) => {
 		<div className={'body'}>
 			<div className="width-l">
 				<h1>{__('Header Selection', 'kadence-blocks')}</h1>
-				<p>{__('Select and existing header or create a new one.', 'kadence-blocks')}</p>
+				<p>{__('Select an existing header or create a new one.', 'kadence-blocks')}</p>
 
 				<div className="options">
 					<div
