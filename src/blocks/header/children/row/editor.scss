@@ -39,4 +39,8 @@
 	&.wp-block-kadence-header-row-layout-fullwidth {
 		//don't do anything with fullwidth in the editor too much of a pain to try and get full editor width.
 	}
+
+	&.wp-block-kadence-header-row--force-hide {
+		display: none !important;
+	}
 }
