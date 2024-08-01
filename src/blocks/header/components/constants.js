@@ -354,7 +354,10 @@ export const POPOVER_TUTORIAL_OPTIONS_CONTENT = {
 	},
 	'edit-appearance': {
 		title: __('Edit Appearance', 'kadence-blocks'),
-		content: __("Customize your header's appearance with the block options in the sidebar.", 'kadence-blocks'),
+		content: __(
+			"Customize your header's appearance by selecting the Header (adv) block and using the options in the sidebar.",
+			'kadence-blocks'
+		),
 	},
 	'visual-builder': {
 		title: __('The Visual Builder', 'kadence-blocks'),
