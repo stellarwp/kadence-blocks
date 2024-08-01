@@ -178,6 +178,14 @@ class Kadence_Blocks_Svg_Render {
 
 	}
 
+	/**
+	 * Recursively generate SVG elements
+	 * Out native SVGs do not have children, but user uploaded SVGs in pro can contain children elements.
+	 *
+	 * @param $elements
+	 *
+	 * @return string
+	 */
 	private static function generate_svg_elements( $elements ) {
 		$output = '';
 		foreach ( $elements as $element ) {
