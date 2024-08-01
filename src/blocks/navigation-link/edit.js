@@ -1102,7 +1102,11 @@ export default function Edit(props) {
 						<KadencePanelBody panelName={'kb-navigation-link-sub-menus'}>
 							{isTopLevelLink && hasChildren && (
 								<ToggleControl
-									label={__('Show Sub Menus', 'kadence-blocks')}
+									label={
+										isMegaMenu
+											? __('Show Meag Menu', 'kadence-blocks')
+											: __('Show Sub Menu', 'kadence-blocks')
+									}
 									checked={showSubMenus}
 									onChange={(value) => setShowSubMenus(value)}
 								/>
