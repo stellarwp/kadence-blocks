@@ -76,16 +76,11 @@ export function Edit(props) {
 		[id]
 	);
 
-	const { directPostData } = useSelect(
-		(select) => {
-			return {
-				directPostData: postId
-					? select(coreStore).getEditedEntityRecord('postType', 'kadence_header', postId)
-					: '',
-			};
-		},
-		[justCompletedOnboarding]
-	);
+	const { directPostData } = useSelect((select) => {
+		return {
+			directPostData: postId ? select(coreStore).getEditedEntityRecord('postType', 'kadence_header', postId) : '',
+		};
+	}, []);
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, parentData, previewDevice, isPreviewMode } = useSelect(
@@ -237,13 +232,17 @@ export function Edit(props) {
 	if (currentPostType === 'kadence_header') {
 		mainBlockContent = (
 			<>
-				{justCompletedOnboarding === false && isEmpty(directPostData?.content) && id === 0 && !isLoading && (
-					<CreateNewOnly
-						clientId={clientId}
-						postId={postId}
-						setJustCompletedOnboarding={setJustCompletedOnboarding}
-					/>
-				)}
+				{justCompletedOnboarding === false &&
+					'function' !== typeof directPostData?.content &&
+					isEmpty(directPostData?.content) &&
+					id === 0 &&
+					!isLoading && (
+						<CreateNewOnly
+							clientId={clientId}
+							postId={postId}
+							setJustCompletedOnboarding={setJustCompletedOnboarding}
+						/>
+					)}
 				<div {...blockProps}>
 					<EditInner
 						{...props}
