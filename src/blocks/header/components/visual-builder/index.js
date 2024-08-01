@@ -153,14 +153,16 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 					>
 						<div class={'tabs'}>
 							<Button
-								isPrimary={tab === 'Desktop'}
+								className="kb-device-tab"
+								isPressed={tab === 'Desktop'}
 								disabled={desktopBlocks === null}
 								onClick={() => updateTab('Desktop', desktopBlocks)}
 							>
 								{__('Desktop', 'kadence-blocks')}
 							</Button>
 							<Button
-								isPrimary={tab === 'Tablet'}
+								className="kb-device-tab"
+								isPressed={tab === 'Tablet'}
 								disabled={tabletBlocks === null}
 								onClick={() => updateTab('Tablet', tabletBlocks)}
 							>
@@ -168,7 +170,8 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 							</Button>
 							{hasTrigger && (
 								<Button
-									isPrimary={tab === 'off-canvas'}
+									className="kb-device-tab"
+									isPressed={tab === 'off-canvas'}
 									disabled={offCanvasBlocks === null}
 									onClick={() => updateTab('off-canvas', offCanvasBlocks)}
 								>

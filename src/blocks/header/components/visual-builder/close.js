@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
+import { closeSmall } from '@wordpress/icons';
 
 export default function ModalClose({ isVisible, setIsVisible }) {
 	return (
@@ -9,9 +10,9 @@ export default function ModalClose({ isVisible, setIsVisible }) {
 			onClick={() => {
 				setIsVisible(!isVisible);
 			}}
-			isSecondary={true}
-			icon={'no-alt'}
-			iconSize={20}
+			variant={'secondary'}
+			icon={closeSmall}
+			iconSize={18}
 		>
 			{__('Hide', 'kadence-blocks')}
 		</Button>

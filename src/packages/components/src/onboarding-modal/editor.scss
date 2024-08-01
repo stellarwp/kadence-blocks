@@ -84,7 +84,7 @@
 			margin-left: -30px;
 			background-color: #011227;
 			//flex: 1;
-			height: calc(100vh - 70px); /* Adjust height to span to footer */
+			height: calc(100vh - 80px); /* Adjust height to span to footer */
 
 			display: flex;
 			align-items: baseline;
@@ -101,12 +101,20 @@
 	.type-selection {
 		display: flex;
 		border-bottom: 1px solid #d9d9d9;
-
-		.is-pressed {
-			border-bottom: 1px solid #000 !important;
+		.components-button {
+			margin-bottom: -1px;
+			border-radius: 0;
+			border-bottom: 2px solid transparent;
+		}
+		.components-button.is-pressed {
+			border-bottom: 2px solid #3c434a;
 			background: #FFF;
-			color: #000;
+			color: #3c434a;
 			font-weight: bold;
+			&:hover {
+				background: #FFF;
+				color: #3c434a;
+			}
 		}
 	}
 
@@ -153,16 +161,17 @@
 
 		.option-image {
 			margin-bottom: 10px;
-			border: 2px solid #d9d9d9;
+			border: 3px solid #d9d9d9;
 			border-radius: 5px;
 			cursor: pointer;
+			display:flex;
 
 			&:hover {
-				border: 2px solid #0073e6;
+				border: 3px solid #0073e6;
 			}
 
 			&.is-selected {
-				border: 2px solid #0073e6;
+				border: 3px solid #0073e6;
 			}
 		}
 	}
@@ -190,11 +199,12 @@
 
 			.step {
 				margin-right: 20px;
-				color: #000;
+				color: #3c434a;
+    			font-weight: 500;
 
 				.number {
 					display: inline-flex;
-					background-color: #000;
+					background-color: #3c434a;
 					color: #fff;
 					border-radius: 50%;
 					line-height: 10px;

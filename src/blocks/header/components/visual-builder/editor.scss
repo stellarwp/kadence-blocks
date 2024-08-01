@@ -6,7 +6,7 @@ $sidebar_width: 280px;
 $fixed_height: 300px;
 
 .kb-header-visual-builder-teaser {
-	background: #eee;
+	background: #f0f0f1;
 	border-top: 1px solid #a0aec1;
 
 	margin: 0;
@@ -31,7 +31,7 @@ $fixed_height: 300px;
 	top: 0;
 }
 .kb-header-visual-builder-modal {
-	background: #eee;
+	background: #f0f0f1;
 	border-top: 1px solid #a0aec1;
 
 	margin: 0;
@@ -63,16 +63,37 @@ $fixed_height: 300px;
 	}
 
 	.tabs {
-		border-bottom: 3px solid #a0aec1;
+		border-bottom: 2px solid #a0aec1;
+		gap: 3px;
+		display: flex;
+		flex-direction: row;
+		.components-button {
+			font-size: 13px;
+		}
+		.kb-device-tab {
+			border: 0;
+			border-bottom: 2px solid transparent;
+			margin-bottom: -2px;
+			font-size: 13px;
+			border-top-left-radius: 3px;
+			border-top-right-radius: 3px;
+			&.is-pressed {
+				color: var(--wp-components-color-foreground-inverted, #fff);
+				background: var(--wp-admin-theme-color, #007cba);
+				border-bottom: 2px solid var(--wp-admin-theme-color, #007cba);
+			}
+		}
 	}
 
 	.modal-settings {
 		position: absolute;
-		top: 4px;
-		right: 4px;
-
-		button.components-button {
-			margin-left: 10px;
+		top: 5px;
+		right: 10px;
+		display: flex;
+		flex-direction: row;
+		gap: 10px;
+		.kb-header-visual-builder-modal-close {
+			height: 32px;
 		}
 	}
 
@@ -86,8 +107,10 @@ $fixed_height: 300px;
 		justify-content: center;
 		align-items: center;
 		color: #444444;
-		-webkit-appearance: none;
-
+		box-shadow: inset 0 0 0 1px #a0aec1;
+		&:hover {
+			box-shadow: inset 0 0 0 1px var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
+		}
 		&:focus {
 			outline: none;
 		}
@@ -228,7 +251,7 @@ $fixed_height: 300px;
 	}
 
 	.visual-inner-block {
-		background: #dedede;
+		background: #f0f0f1;
 		padding: 3px 6px;
 		border-radius: 3px;
 		font-size: 13px;
@@ -266,6 +289,16 @@ $fixed_height: 300px;
 		.drag-handle svg {
 			pointer-events: none;
 			transform: rotate(90deg);
+		}
+	}
+	.visual-row-wrapper .components-button.block-select {
+		height: auto;
+		padding-top: 0;
+		padding-bottom: 0;
+		align-self: stretch;
+		&.is-pressed {
+			color: var(--wp-components-color-foreground-inverted, #fff);
+			background: var(--wp-admin-theme-color, #007cba);
 		}
 	}
 }

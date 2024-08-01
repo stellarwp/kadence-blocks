@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
+import { chevronUp, chevronDown } from '@wordpress/icons';
 
 export default function ModalTogglePosition({ position, setPosition }) {
 	const label = position === 'bottom' ? __('Move to top', 'kadence-blocks') : __('Move to bottom', 'kadence-blocks');
@@ -11,10 +12,9 @@ export default function ModalTogglePosition({ position, setPosition }) {
 			onClick={() => {
 				setPosition(position === 'bottom' ? 'top' : 'bottom');
 			}}
-			isSecondary={true}
-			icon={position === 'bottom' ? 'arrow-up-alt2' : 'arrow-down-alt2'}
-			iconSize={20}
-			isLink={true}
+			variant={'secondary'}
+			icon={position === 'bottom' ? chevronUp : chevronDown}
+			iconSize={18}
 		>
 			{label}
 		</Button>

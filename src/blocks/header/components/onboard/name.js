@@ -23,7 +23,7 @@ const HeaderName = ({ data, onChange }) => {
 				</div>
 				<div className={'form-container'}>
 					<h1>{__('Header Name', 'kadence-blocks')}</h1>
-					<p>{__('Give your header a name and a description', 'kadence-blocks')}</p>
+					<p>{__('Give your header a name and an optional description', 'kadence-blocks')}</p>
 					<TextControl
 						label={__('Header Name', 'kadence-blocks')}
 						placeholder={__('My New Header', 'kadence-blocks')}
