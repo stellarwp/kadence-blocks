@@ -4,11 +4,13 @@
 import { __ } from '@wordpress/i18n';
 import { Button, Popover } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
+import { useSelect } from '@wordpress/data';
+import { closeSmall } from '@wordpress/icons';
 import { POPOVER_TUTORIAL_OPTIONS, POPOVER_TUTORIAL_OPTIONS_CONTENT } from '../constants';
 import './editor.scss';
 
 export default function PopoverTutorial(props) {
-	const { headerRef, formData } = props;
+	const { headerRef, formData, isSelected, clientId } = props;
 
 	// Use internal state instead of a ref to make sure that the component
 	// re-renders when the popover's anchor updates.
@@ -30,6 +32,17 @@ export default function PopoverTutorial(props) {
 			}
 		});
 	}, []);
+
+	const { childSelected } = useSelect(
+		(select) => {
+			const { hasSelectedInnerBlock } = select('core/block-editor');
+
+			return {
+				childSelected: hasSelectedInnerBlock(clientId, true),
+			};
+		},
+		[clientId]
+	);
 
 	const savePopoverTutorialComplete = (status) => {
 		setPopoverTutorialComplete(status);
@@ -54,9 +67,12 @@ export default function PopoverTutorial(props) {
 					<h2 className={'kb-header-popover-title'}>
 						{POPOVER_TUTORIAL_OPTIONS_CONTENT[popoverTutorialOption.key].title}
 					</h2>
-					<p className={'kb-header-popover-content'}>
-						{POPOVER_TUTORIAL_OPTIONS_CONTENT[popoverTutorialOption.key].content}
-					</p>
+					<p
+						className={'kb-header-popover-content'}
+						dangerouslySetInnerHTML={{
+							__html: POPOVER_TUTORIAL_OPTIONS_CONTENT[popoverTutorialOption.key].content,
+						}}
+					></p>
 					<div className={'kb-header-popover-lower'}>
 						<div className={'kb-header-popover-step'}>
 							<b>
@@ -99,6 +115,15 @@ export default function PopoverTutorial(props) {
 							)}
 						</div>
 					</div>
+					<Button
+						className={'kb-header-popover-btn kb-header-popover-btn-close'}
+						isSmall
+						onClick={() => {
+							savePopoverTutorialComplete(true);
+						}}
+						icon={closeSmall}
+						aria-label={__('Close', 'kadence-blocks')}
+					/>
 				</Popover>
 			);
 		}
@@ -112,7 +137,7 @@ export default function PopoverTutorial(props) {
 					Start popover tutorial
 				</Button>
 			)} */}
-			{!popoverTutorialComplete && <>{popoverStepContent()}</>}
+			{!popoverTutorialComplete && (isSelected || childSelected) && <>{popoverStepContent()}</>}
 		</>
 	);
 }

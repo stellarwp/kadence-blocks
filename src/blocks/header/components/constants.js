@@ -3,6 +3,10 @@ import { __ } from '@wordpress/i18n';
 export const POPOVER_TUTORIAL_OPTIONS = {
 	'basic-1': [
 		{
+			key: 'welcome',
+			placement: 'bottom-start',
+		},
+		{
 			key: 'add-logo',
 			placement: 'bottom-start',
 		},
@@ -24,6 +28,10 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 		},
 	],
 	'basic-2': [
+		{
+			key: 'welcome',
+			placement: 'bottom-start',
+		},
 		{
 			key: 'add-logo',
 			placement: 'bottom-end',
@@ -47,6 +55,10 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 	],
 	'basic-3': [
 		{
+			key: 'welcome',
+			placement: 'bottom-start',
+		},
+		{
 			key: 'add-logo',
 			placement: 'bottom-center',
 		},
@@ -68,6 +80,10 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 		},
 	],
 	'basic-4': [
+		{
+			key: 'welcome',
+			placement: 'bottom-start',
+		},
 		{
 			key: 'add-logo',
 			placement: 'bottom-center',
@@ -95,6 +111,10 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 	],
 	'basic-5': [
 		{
+			key: 'welcome',
+			placement: 'bottom-start',
+		},
+		{
 			key: 'add-logo',
 			placement: 'bottom-start',
 		},
@@ -116,6 +136,10 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 		},
 	],
 	'basic-6': [
+		{
+			key: 'welcome',
+			placement: 'bottom-start',
+		},
 		{
 			key: 'add-logo',
 			placement: 'bottom-center',
@@ -143,6 +167,10 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 	],
 	'basic-7': [
 		{
+			key: 'welcome',
+			placement: 'bottom-start',
+		},
+		{
 			key: 'add-logo',
 			placement: 'bottom-center',
 		},
@@ -165,6 +193,10 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 	],
 	'multi-row-1': [
 		{
+			key: 'welcome',
+			placement: 'bottom-start',
+		},
+		{
 			key: 'add-logo',
 			placement: 'bottom-center',
 		},
@@ -182,6 +214,10 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 		},
 	],
 	'multi-row-2': [
+		{
+			key: 'welcome',
+			placement: 'bottom-start',
+		},
 		{
 			key: 'add-logo',
 			placement: 'bottom-start',
@@ -205,6 +241,10 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 	],
 	'multi-row-3': [
 		{
+			key: 'welcome',
+			placement: 'bottom-start',
+		},
+		{
 			key: 'add-logo',
 			placement: 'bottom-center',
 		},
@@ -222,6 +262,10 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 		},
 	],
 	'multi-row-4': [
+		{
+			key: 'welcome',
+			placement: 'bottom-start',
+		},
 		{
 			key: 'add-logo',
 			placement: 'bottom-start',
@@ -241,6 +285,10 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 	],
 	'multi-row-5': [
 		{
+			key: 'welcome',
+			placement: 'bottom-start',
+		},
+		{
 			key: 'add-logo',
 			placement: 'bottom-start',
 		},
@@ -259,6 +307,10 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 	],
 	generic: [
 		{
+			key: 'welcome',
+			placement: 'bottom-start',
+		},
+		{
 			key: 'edit-appearance',
 			placement: 'bottom-start',
 		},
@@ -270,40 +322,58 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 };
 
 export const POPOVER_TUTORIAL_OPTIONS_CONTENT = {
+	welcome: {
+		title: __('Introduction to your Header', 'kadence-blocks'),
+		content:
+			__(
+				'The Header (adv) Block has many options to customize and extend your header. Keep reading to learn more or close this to get started. You can always read the ',
+				'kadence-blocks'
+			) +
+			'<a tabindex="-1" href="www.kadencewp.com/help-center/docs/kadence-blocks/form-block/">' +
+			__('documentation', 'kadence-blocks') +
+			'</a>' +
+			__(' later.', 'kadence-blocks'),
+	},
 	'add-logo': {
-		title: __('Add Logo', 'kadence-blocks'),
-		content: __("Replace the preset logo with your website's logo.", 'kadence-blocks'),
+		title: __('Logo Image', 'kadence-blocks'),
+		content: __(
+			"This header came with a placeholder logo. You can replace it with your website's logo.",
+			'kadence-blocks'
+		),
 	},
 	'add-navigation': {
-		title: __('Add Navigation', 'kadence-blocks'),
-		content: __('Create a new navigation, or use an existing one.', 'kadence-blocks'),
+		title: __('Manage Navigation', 'kadence-blocks'),
+		content: __(
+			'You can use the Navigation (adv) block to build a new navigation or use an existing one.',
+			'kadence-blocks'
+		),
 	},
 	'edit-button': {
 		title: __('Customize CTAs', 'kadence-blocks'),
-		content: __('Edit and customize your Call to Actions and Social Links.', 'kadence-blocks'),
+		content: __('Use Button blocks to add your Call to Actions and Social Links.', 'kadence-blocks'),
 	},
 	'edit-appearance': {
 		title: __('Edit Appearance', 'kadence-blocks'),
-		content: __("Customize your header's appearance to your own needs.", 'kadence-blocks'),
+		content: __("Customize your header's appearance with the block options in the sidebar.", 'kadence-blocks'),
 	},
 	'visual-builder': {
-		title: __('Use the Visual Builder', 'kadence-blocks'),
+		title: __('The Visual Builder', 'kadence-blocks'),
 		content: __(
-			'Easily arrange the layout of your header with the Visual Builder. Look for it at the bottom of the editor.',
+			'Easily arrange the layout and content of your header with the Visual Builder. Look for it at the bottom of the editor.',
 			'kadence-blocks'
 		),
 	},
 	'off-canvas-trigger': {
 		title: __('Off Canvas Trigger', 'kadence-blocks'),
 		content: __(
-			'Your header has an off canvas area that opens when the trigger block is clicked/tapped.',
+			'Your header has an off canvas area. The Off Canvas Trigger block in your header will open it on the live page.',
 			'kadence-blocks'
 		),
 	},
 	'off-canvas-content': {
 		title: __('Manage Off Canvas Content', 'kadence-blocks'),
 		content: __(
-			'Edit your off canvas content by selecting the off canvas tab from the visual builder.',
+			'To edit your off canvas content, select the "Off Canvas" tab from the visual builder.',
 			'kadence-blocks'
 		),
 	},
