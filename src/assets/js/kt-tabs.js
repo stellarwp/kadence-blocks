@@ -3,114 +3,124 @@
 	window.KBTabs = {
 		setupTabs() {
 			const ktTabWraps = document.querySelectorAll('.kt-tabs-wrap');
-			const ktAccordions = document.querySelectorAll('.kt-create-accordion');
 
 			ktTabWraps.forEach((thisElem) => {
-				thisElem.querySelectorAll(':scope > .kt-tabs-title-list').forEach((subElem) => {
-					subElem.setAttribute('role', 'tablist');
-				});
-				thisElem
-					.querySelectorAll(':scope > .kt-tabs-content-wrap > .kt-tab-inner-content')
-					.forEach((subElem) => {
-						subElem.setAttribute('role', 'tabpanel');
-						subElem.setAttribute('aria-hidden', 'true');
+				if (!thisElem.classList.contains('initialized')) {
+					thisElem.querySelectorAll(':scope > .kt-tabs-title-list').forEach((subElem) => {
+						subElem.setAttribute('role', 'tablist');
 					});
+					thisElem
+						.querySelectorAll(':scope > .kt-tabs-content-wrap > .kt-tab-inner-content')
+						.forEach((subElem) => {
+							subElem.setAttribute('role', 'tabpanel');
+							subElem.setAttribute('aria-hidden', 'true');
+						});
 
-				thisElem.querySelectorAll(':scope > .kt-tabs-title-list li a').forEach((subElem) => {
-					const parentListItem = subElem.parentElement;
-					const parentId = parentListItem.getAttribute('id');
-					const isActive = parentListItem.classList.contains('kt-tab-title-active');
-					const isAccordion = parentListItem.classList.contains('kt-tabs-accordion-title');
+					thisElem.querySelectorAll(':scope > .kt-tabs-title-list li a').forEach((subElem) => {
+						const parentListItem = subElem.parentElement;
+						const parentId = parentListItem.getAttribute('id');
+						const isActive = parentListItem.classList.contains('kt-tab-title-active');
+						const isAccordion = parentListItem.classList.contains('kt-tabs-accordion-title');
 
-					// Set attr on the related content tab
-					const tabId = subElem.getAttribute('data-tab');
-					const contentTab = thisElem.querySelector(
-						':scope > .kt-tabs-content-wrap > .kt-inner-tab-' + tabId
-					);
+						// Set attr on the related content tab
+						const tabId = subElem.getAttribute('data-tab');
+						const contentTab = thisElem.querySelector(
+							':scope > .kt-tabs-content-wrap > .kt-inner-tab-' + tabId
+						);
 
-					if (!isAccordion) {
-						contentTab.setAttribute('aria-labelledby', parentId);
-						parentListItem.setAttribute('role', 'presentation');
-						subElem.setAttribute('role', 'tab');
-						subElem.setAttribute('aria-controls', parentId);
-						subElem.setAttribute('tabindex', isActive ? '0' : '-1');
-					} else {
-						subElem.setAttribute('aria-selected', isActive ? true : false);
-					}
+						if (!isAccordion) {
+							contentTab.setAttribute('aria-labelledby', parentId);
+							parentListItem.setAttribute('role', 'presentation');
+							subElem.setAttribute('role', 'tab');
+							subElem.setAttribute('aria-controls', parentId);
+							subElem.setAttribute('tabindex', isActive ? '0' : '-1');
+						} else {
+							subElem.setAttribute('aria-selected', isActive ? true : false);
+						}
 
-					contentTab.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+						contentTab.setAttribute('aria-hidden', isActive ? 'false' : 'true');
 
-					if (isActive) {
-						contentTab.style.display = 'block';
-					}
-				});
-
-				thisElem.querySelectorAll(':scope > .kt-tabs-title-list li').forEach((listItem) => {
-					listItem.addEventListener('keydown', function (evt) {
-						//const listItem = this.parentElement;
-						switch (evt.which) {
-							case 37:
-								if (listItem.previousElementSibling) {
-									listItem.previousElementSibling.querySelector('a').click();
-								} else {
-									listItem.parentElement.querySelector('li:last-of-type > a').click();
-								}
-								break;
-							case 39:
-								if (listItem.nextElementSibling) {
-									listItem.nextElementSibling.querySelector('a').click();
-								} else {
-									listItem.parentElement.querySelector('li:first-of-type > a').click();
-								}
-								break;
+						if (isActive) {
+							contentTab.style.display = 'block';
 						}
 					});
-				});
-				const resizeEvent = new Event('resize');
-				window.dispatchEvent(resizeEvent);
-			});
 
-			const ktTabButtons = document.querySelectorAll('.kt-tabs-title-list li a');
-			ktTabButtons.forEach((thisElem) => {
-				thisElem.addEventListener('click', function (evt) {
-					evt.preventDefault();
-					const newActiveTabId = thisElem.getAttribute('data-tab');
-					const tabWrap = thisElem.closest('.kt-tabs-wrap');
-					window.KBTabs.setActiveTab(tabWrap, newActiveTabId);
-				});
-			});
+					thisElem.querySelectorAll(':scope > .kt-tabs-title-list li').forEach((listItem) => {
+						listItem.addEventListener('keydown', function (evt) {
+							//const listItem = this.parentElement;
+							switch (evt.which) {
+								case 37:
+									if (listItem.previousElementSibling) {
+										listItem.previousElementSibling.querySelector('a').click();
+									} else {
+										listItem.parentElement.querySelector('li:last-of-type > a').click();
+									}
+									break;
+								case 39:
+									if (listItem.nextElementSibling) {
+										listItem.nextElementSibling.querySelector('a').click();
+									} else {
+										listItem.parentElement.querySelector('li:first-of-type > a').click();
+									}
+									break;
+							}
+						});
+					});
+					const resizeEvent = new Event('resize');
+					window.dispatchEvent(resizeEvent);
 
-			ktAccordions.forEach((thisElem) => {
-				thisElem.querySelectorAll(':scope > .kt-tabs-title-list .kt-title-item').forEach((listItem) => {
-					const tabId = listItem.querySelector('a').getAttribute('data-tab');
+					const ktTabButtons = thisElem.querySelectorAll('.kt-tabs-title-list li a');
+					ktTabButtons.forEach((tabButtonElem) => {
+						tabButtonElem.addEventListener('click', function (evt) {
+							evt.preventDefault();
+							const newActiveTabId = tabButtonElem.getAttribute('data-tab');
+							const tabWrap = tabButtonElem.closest('.kt-tabs-wrap');
+							window.KBTabs.setActiveTab(tabWrap, newActiveTabId);
+						});
+					});
 
-					const titleClasses = listItem.classList;
-					const accordionTitleClasses = ['kt-tabs-accordion-title', 'kt-tabs-accordion-title-' + tabId];
+					if (thisElem.classList.contains('kt-create-accordion')) {
+						thisElem.querySelectorAll(':scope > .kt-tabs-title-list .kt-title-item').forEach((listItem) => {
+							const tabId = listItem.querySelector('a').getAttribute('data-tab');
 
-					const closestTabWrap = listItem.closest('.kt-tabs-wrap');
-					const ktContentWrap = closestTabWrap.querySelector(':scope > .kt-tabs-content-wrap');
+							const titleClasses = listItem.classList;
+							const accordionTitleClasses = [
+								'kt-tabs-accordion-title',
+								'kt-tabs-accordion-title-' + tabId,
+							];
 
-					const newElem = window.document.createElement('div');
-					newElem.className = [...titleClasses].concat(accordionTitleClasses).join(' ');
-					newElem.innerHTML = listItem.innerHTML;
+							const closestTabWrap = listItem.closest('.kt-tabs-wrap');
+							const ktContentWrap = closestTabWrap.querySelector(':scope > .kt-tabs-content-wrap');
 
-					ktContentWrap.insertBefore(newElem, ktContentWrap.querySelector(':scope > .kt-inner-tab-' + tabId));
+							const newElem = window.document.createElement('div');
+							newElem.className = [...titleClasses].concat(accordionTitleClasses).join(' ');
+							newElem.innerHTML = listItem.innerHTML;
 
-					ktContentWrap
-						.querySelector(':scope > .kt-tabs-accordion-title-' + tabId + '  a')
-						.removeAttribute('role');
-					ktContentWrap
-						.querySelector(':scope > .kt-tabs-accordion-title-' + tabId + '  a')
-						.removeAttribute('tabindex');
-				});
-			});
+							ktContentWrap.insertBefore(
+								newElem,
+								ktContentWrap.querySelector(':scope > .kt-inner-tab-' + tabId)
+							);
 
-			const ktAccordionAnchor = document.querySelectorAll('.kt-tabs-accordion-title a');
-			ktAccordionAnchor.forEach((thisElem) => {
-				const noAllowMultipleOpen = thisElem.closest('.kt-create-accordion')?.dataset?.noAllowMultipleOpen;
-				thisElem.addEventListener('click', function (evt) {
-					window.KBTabs.setActiveAccordion(evt, thisElem, noAllowMultipleOpen);
-				});
+							ktContentWrap
+								.querySelector(':scope > .kt-tabs-accordion-title-' + tabId + '  a')
+								.removeAttribute('role');
+							ktContentWrap
+								.querySelector(':scope > .kt-tabs-accordion-title-' + tabId + '  a')
+								.removeAttribute('tabindex');
+						});
+					}
+
+					const ktAccordionAnchor = thisElem.querySelectorAll('.kt-tabs-accordion-title a');
+					ktAccordionAnchor.forEach((accordionTitleElem) => {
+						const noAllowMultipleOpen =
+							accordionTitleElem.closest('.kt-create-accordion')?.dataset?.noAllowMultipleOpen;
+						accordionTitleElem.addEventListener('click', function (evt) {
+							window.KBTabs.setActiveAccordion(evt, accordionTitleElem, noAllowMultipleOpen);
+						});
+					});
+
+					thisElem.classList.add('initialized');
+				}
 			});
 			window.KBTabs.setActiveWithHash();
 		},

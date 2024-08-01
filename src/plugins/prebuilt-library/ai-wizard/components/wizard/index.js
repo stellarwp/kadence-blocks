@@ -8,7 +8,7 @@ import classnames from 'classnames';
  */
 import { useState, useEffect, useRef } from '@wordpress/element';
 import { Modal } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { focus } from '@wordpress/dom';
 
 /**

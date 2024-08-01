@@ -36,7 +36,6 @@ import {
 	IconRender,
 	DynamicTextControl,
 	DynamicInlineReplaceControl,
-	Tooltip,
 } from '@kadence/components';
 
 import { dynamicIcon } from '@kadence/icons';
@@ -96,6 +95,7 @@ import {
 	TextControl,
 	ToggleControl,
 	TextareaControl,
+	Tooltip,
 } from '@wordpress/components';
 
 import { applyFilters } from '@wordpress/hooks';
@@ -793,33 +793,45 @@ function KadenceAdvancedHeading(props) {
 
 		return (
 			<Tooltip
-				text={iconTooltip}
-				className={iconTooltipDash ? 'kb-adv-text-icon-dash' : undefined}
+				text={iconTooltip ? iconTooltip : undefined}
+				className="kb-custom-tooltip"
 				placement={iconTooltipPlacement || 'top'}
 			>
-				<IconRender
-					className={`kb-advanced-heading-svg-icon kb-advanced-heading-svg-icon-${icon} kb-advanced-heading-icon-side-${iconSide}`}
-					name={icon}
-					size={'1em'}
+				<span
+					className={`kb-advanced-heading-icon-wrap${iconTooltipDash ? ' kb-adv-text-icon-dash' : ''}`}
 					style={{
-						fontSize: previewIconSize
-							? getFontSizeOptionOutput(previewIconSize, undefined !== iconSizeUnit ? iconSizeUnit : 'px')
-							: undefined,
-						color: '' !== iconColor ? KadenceColorOutput(iconColor) : undefined,
-						paddingTop: previewIconPaddingTop
-							? getSpacingOptionOutput(previewIconPaddingTop, iconPaddingUnit)
-							: undefined,
-						paddingRight: previewIconPaddingRight
-							? getSpacingOptionOutput(previewIconPaddingRight, iconPaddingUnit)
-							: undefined,
-						paddingBottom: previewIconPaddingBottom
-							? getSpacingOptionOutput(previewIconPaddingBottom, iconPaddingUnit)
-							: undefined,
-						paddingLeft: previewIconPaddingLeft
-							? getSpacingOptionOutput(previewIconPaddingLeft, iconPaddingUnit)
-							: undefined,
+						display: 'inline-flex',
+						justifyContent: 'center',
+						alignItems: 'center',
 					}}
-				/>
+				>
+					<IconRender
+						className={`kb-advanced-heading-svg-icon kb-advanced-heading-svg-icon-${icon} kb-advanced-heading-icon-side-${iconSide}`}
+						name={icon}
+						size={'1em'}
+						style={{
+							fontSize: previewIconSize
+								? getFontSizeOptionOutput(
+										previewIconSize,
+										undefined !== iconSizeUnit ? iconSizeUnit : 'px'
+								  )
+								: undefined,
+							color: '' !== iconColor ? KadenceColorOutput(iconColor) : undefined,
+							paddingTop: previewIconPaddingTop
+								? getSpacingOptionOutput(previewIconPaddingTop, iconPaddingUnit)
+								: undefined,
+							paddingRight: previewIconPaddingRight
+								? getSpacingOptionOutput(previewIconPaddingRight, iconPaddingUnit)
+								: undefined,
+							paddingBottom: previewIconPaddingBottom
+								? getSpacingOptionOutput(previewIconPaddingBottom, iconPaddingUnit)
+								: undefined,
+							paddingLeft: previewIconPaddingLeft
+								? getSpacingOptionOutput(previewIconPaddingLeft, iconPaddingUnit)
+								: undefined,
+						}}
+					/>
+				</span>
 			</Tooltip>
 		);
 	};

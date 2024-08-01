@@ -336,6 +336,20 @@
 		"imagePosition": {
 			"type": "string",
 			"default": ""
+		},
+		"tooltip": {
+			"type": "string",
+			"source": "html",
+			"selector": ".kb-tooltip-hidden-content",
+			"__experimentalRole": "content"
+		},
+		"tooltipPlacement": {
+			"type": "string",
+			"default": ""
+		},
+		"tooltipDash": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"supports": {

@@ -27,6 +27,7 @@ function KadenceCoundownTimer(props) {
 	const { attributes, setAttributes, clientId, parentBlock } = props;
 	const { uniqueID } = attributes;
 
+	// eslint-disable-next-line no-undef
 	const parentID = undefined !== parentBlock[0].attributes.uniqueID ? parentBlock[0].attributes.uniqueID : rootID;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');

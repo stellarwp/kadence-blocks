@@ -65,7 +65,7 @@ jobs:
             slack_channel: ${{ needs.set_vars.outputs.slack_channel }}
             slack_thread: ${{ needs.set_vars.outputs.slack_thread }}
         secrets:
-            COMPOSER_TOKEN: ${{ secrets.COMPOSER_TOKEN }}
+            COMPOSER_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
             GH_BOT_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
             JENKINS_SECRET: ${{ secrets.ZIP_JENKINS_SECRET }}
             S3_BUCKET: ${{ secrets.ZIP_S3_BUCKET }}
