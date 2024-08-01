@@ -2055,7 +2055,7 @@ export default function GalleryEdit(props) {
 			}; }
 					.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item .kb-gal-image-radius {
 						${
-							imageRadius && undefined !== imageRadius[0] && '' !== imageRadius[0]
+							previewDevice === 'Desktop' && imageRadius && undefined !== imageRadius[0] && '' !== imageRadius[0]
 								? 'border-radius:' +
 								  imageRadius[0] +
 								  'px ' +
@@ -2065,6 +2065,32 @@ export default function GalleryEdit(props) {
 								  'px ' +
 								  imageRadius[3] +
 								  'px;'
+								: ''
+						}
+						${
+							previewDevice === 'Tablet' && tabletImageRadius && undefined !== tabletImageRadius[0] && '' !== tabletImageRadius[0]
+								? 'border-radius:' +
+								tabletImageRadius[0] +
+								'px ' +
+								tabletImageRadius[1] +
+								'px ' +
+								tabletImageRadius[2] +
+								'px ' +
+								tabletImageRadius[3] +
+								'px;'
+								: ''
+						}
+						${
+							previewDevice === 'Mobile' && mobileImageRadius && undefined !== mobileImageRadius[0] && '' !== mobileImageRadius[0]
+								? 'border-radius:' +
+								mobileImageRadius[0] +
+								'px ' +
+								mobileImageRadius[1] +
+								'px ' +
+								mobileImageRadius[2] +
+								'px ' +
+								mobileImageRadius[3] +
+								'px;'
 								: ''
 						}
 					}
