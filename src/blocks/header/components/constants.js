@@ -20,7 +20,7 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 		},
 		{
 			key: 'edit-appearance',
-			placement: 'bottom-start',
+			placement: 'bottom-end',
 		},
 		{
 			key: 'visual-builder',
@@ -46,7 +46,7 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 		},
 		{
 			key: 'edit-appearance',
-			placement: 'bottom-start',
+			placement: 'bottom-end',
 		},
 		{
 			key: 'visual-builder',
@@ -72,7 +72,7 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 		},
 		{
 			key: 'edit-appearance',
-			placement: 'bottom-start',
+			placement: 'bottom-end',
 		},
 		{
 			key: 'visual-builder',
@@ -94,7 +94,7 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 		},
 		{
 			key: 'edit-appearance',
-			placement: 'bottom-start',
+			placement: 'bottom-end',
 		},
 		{
 			key: 'visual-builder',
@@ -120,7 +120,7 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 		},
 		{
 			key: 'edit-appearance',
-			placement: 'bottom-start',
+			placement: 'bottom-end',
 		},
 		{
 			key: 'visual-builder',
@@ -150,7 +150,7 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 		},
 		{
 			key: 'edit-appearance',
-			placement: 'bottom-start',
+			placement: 'bottom-end',
 		},
 		{
 			key: 'visual-builder',
@@ -176,7 +176,7 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 		},
 		{
 			key: 'edit-appearance',
-			placement: 'bottom-start',
+			placement: 'bottom-end',
 		},
 		{
 			key: 'visual-builder',
@@ -206,7 +206,7 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 		},
 		{
 			key: 'edit-appearance',
-			placement: 'bottom-start',
+			placement: 'bottom-end',
 		},
 		{
 			key: 'visual-builder',
@@ -232,7 +232,7 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 		},
 		{
 			key: 'edit-appearance',
-			placement: 'bottom-start',
+			placement: 'bottom-end',
 		},
 		{
 			key: 'visual-builder',
@@ -254,7 +254,7 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 		},
 		{
 			key: 'edit-appearance',
-			placement: 'bottom-start',
+			placement: 'bottom-end',
 		},
 		{
 			key: 'visual-builder',
@@ -276,7 +276,7 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 		},
 		{
 			key: 'edit-appearance',
-			placement: 'bottom-start',
+			placement: 'bottom-end',
 		},
 		{
 			key: 'visual-builder',
@@ -298,7 +298,7 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 		},
 		{
 			key: 'edit-appearance',
-			placement: 'bottom-start',
+			placement: 'bottom-end',
 		},
 		{
 			key: 'visual-builder',
@@ -312,7 +312,7 @@ export const POPOVER_TUTORIAL_OPTIONS = {
 		},
 		{
 			key: 'edit-appearance',
-			placement: 'bottom-start',
+			placement: 'bottom-end',
 		},
 		{
 			key: 'visual-builder',
