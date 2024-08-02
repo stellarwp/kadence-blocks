@@ -30,7 +30,7 @@ class Kadence_Blocks_Off_Canvas_Trigger_Block extends Kadence_Blocks_Abstract_Bl
 	 *
 	 * @var string
 	 */
-	protected $block_name = 'off-canvas-trigger';
+	protected $block_name = 'header-off-canvas-trigger';
 
 	/**
 	 * Block determines in scripts need to be loaded for block.
@@ -61,7 +61,7 @@ class Kadence_Blocks_Off_Canvas_Trigger_Block extends Kadence_Blocks_Abstract_Bl
 	 */
 	public function on_init() {
 		register_block_type(
-			KADENCE_BLOCKS_PATH . 'dist/blocks/header/children/' . $this->block_name . '/block.json',
+			KADENCE_BLOCKS_PATH . 'dist/blocks/header/children/off-canvas-trigger/block.json',
 			array(
 				'render_callback' => array( $this, 'render_css' ),
 			)

@@ -307,11 +307,12 @@ class Kadence_Blocks_Abstract_Block {
 
 		$attributes_with_defaults = $this->merge_defaults( $attributes, $block_name );
 
-		if ( $this->attributes_with_defaults[ $unique_id ] = $attributes_with_defaults ) {
+		if ( $attributes_with_defaults ) {
+			$this->attributes_with_defaults[ $unique_id ] = $attributes_with_defaults;
 			return $this->attributes_with_defaults[ $unique_id ];
 		}
 
-		return array();
+		return [];
 	}
 
 	/**
@@ -322,7 +323,7 @@ class Kadence_Blocks_Abstract_Block {
 	 */
 	public function merge_defaults( $attributes, $block_name ) {
 		$registry = WP_Block_Type_Registry::get_instance()->get_registered( $block_name );
-		$default_attributes = array();
+		$default_attributes = [];
 
 		if ( $registry && property_exists( $registry, 'attributes' ) && ! empty( $registry->attributes ) ) {
 			foreach ( $registry->attributes as $key => $value ) {
@@ -334,7 +335,7 @@ class Kadence_Blocks_Abstract_Block {
 						}
 					}
 
-					//standard case
+					// standard case.
 					$default_attributes[ $key ] = $value['default'];
 				}
 			}
@@ -356,7 +357,7 @@ class Kadence_Blocks_Abstract_Block {
 		}
 
 		$post_meta = get_post_meta( $post_id );
-		$attributes_with_defaults = array();
+		$attributes_with_defaults = [];
 		if ( is_array( $post_meta ) ) {
 			foreach ( $post_meta as $meta_key => $meta_value ) {
 				if ( strpos( $meta_key, $meta_prefix ) === 0 && isset( $meta_value[0] ) ) {
@@ -367,11 +368,12 @@ class Kadence_Blocks_Abstract_Block {
 
 		$attributes_with_defaults = $this->merge_defaults_cpt( $attributes_with_defaults, $cpt_name, $meta_prefix );
 
-		if ( $this->attributes_with_defaults[ $post_id ] = $attributes_with_defaults ) {
+		if ( $attributes_with_defaults ) {
+			$this->attributes_with_defaults[ $post_id ] = $attributes_with_defaults;
 			return $this->attributes_with_defaults[ $post_id ];
 		}
 
-		return array();
+		return [];
 	}
 
 
@@ -383,7 +385,7 @@ class Kadence_Blocks_Abstract_Block {
 	 */
 	public function merge_defaults_cpt( $attributes, $cpt_name, $meta_prefix ) {
 		$meta_keys = get_registered_meta_keys( 'post', $cpt_name );
-		$default_attributes = array();
+		$default_attributes = [];
 
 		foreach ( $meta_keys as $key => $value ) {
 			if ( str_starts_with( $key, $meta_prefix ) && array_key_exists( 'default', $value ) ) {
@@ -396,7 +398,7 @@ class Kadence_Blocks_Abstract_Block {
 					}
 				}
 
-				//standard case
+				//standard case.
 				$default_attributes[ $attr_name ] = $value['default'];
 			}
 		}

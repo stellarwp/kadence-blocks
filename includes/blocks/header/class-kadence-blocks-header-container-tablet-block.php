@@ -30,7 +30,7 @@ class Kadence_Blocks_Header_Container_Tablet_Block extends Kadence_Blocks_Abstra
 	 *
 	 * @var string
 	 */
-	protected $block_name = 'container-tablet';
+	protected $block_name = 'header-container-tablet';
 
 	/**
 	 * Block determines in scripts need to be loaded for block.
@@ -61,7 +61,7 @@ class Kadence_Blocks_Header_Container_Tablet_Block extends Kadence_Blocks_Abstra
 	 */
 	public function on_init() {
 		register_block_type(
-			KADENCE_BLOCKS_PATH . 'dist/blocks/header/children/' . $this->block_name . '/block.json',
+			KADENCE_BLOCKS_PATH . 'dist/blocks/header/children/container-tablet/block.json',
 			array(
 				'render_callback' => array( $this, 'render_css' ),
 			)

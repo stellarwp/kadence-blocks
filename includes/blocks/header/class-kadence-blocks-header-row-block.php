@@ -30,7 +30,7 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 	 *
 	 * @var string
 	 */
-	protected $block_name = 'row';
+	protected $block_name = 'header-row';
 
 	/**
 	 * Block determines in scripts need to be loaded for block.
@@ -61,7 +61,7 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	public function on_init() {
 		register_block_type(
-			KADENCE_BLOCKS_PATH . 'dist/blocks/header/children/' . $this->block_name . '/block.json',
+			KADENCE_BLOCKS_PATH . 'dist/blocks/header/children/row/block.json',
 			array(
 				'render_callback' => array( $this, 'render_css' ),
 			)
@@ -78,9 +78,7 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
-
 		$header_row_attributes = $this->get_attributes_with_defaults( $unique_id, $attributes, 'kadence/' . $this->block_name );
-
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
 		$sizes = array( 'Desktop', 'Tablet', 'Mobile' );
@@ -127,7 +125,7 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_media_state( strtolower( $size ) );
 
-		//container
+		// Container.
 		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id );
 		if ( isset( $sized_attributes['minHeight'] ) && $sized_attributes['minHeight'] != 0 ) {
 			$css->add_property( 'min-height', $sized_attributes['minHeight'] . $sized_attributes['minHeightUnit'] );
@@ -222,7 +220,7 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 	 *
 	 * @return bool
 	 */
-	public function are_innerblocks_empty ( $block_instance ) {
+	public function are_innerblocks_empty( $block_instance ) {
 		$is_empty = true;
 
 		$inner_blocks = $block_instance->parsed_block['innerBlocks'] ?? [];
