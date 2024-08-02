@@ -161,23 +161,7 @@ class Kadence_Blocks_Svg_Render {
 				$svg .= '<title>' . $title . '</title>';
 			}
 			if ( ! empty( $icon['cD'] ) ) {
-				foreach ( $icon['cD'] as $cd ) {
-					$nE      = $cd['nE'];
-					$aBs     = $cd['aBs'];
-					$tmpAttr = array();
-
-					foreach ( $aBs as $key => $attribute ) {
-						if ( ! in_array( $key, array( 'fill', 'stroke', 'none' ) ) ) {
-							$tmpAttr[ $key ] = $key . '="' . $attribute . '"';
-						}
-					}
-
-					if ( isset( $aBs['fill'], $aBs['stroke'] ) && $aBs['fill'] === 'none' ) {
-						$tmpAttr['stroke'] = 'stroke="currentColor"';
-					}
-
-					$svg .= '<' . $nE . ' ' . implode( ' ', $tmpAttr ) . '/>';
-				}
+				$svg .= self::generate_svg_elements($icon['cD']);
 			}
 
 			$svg .= '</svg>';
@@ -192,6 +176,43 @@ class Kadence_Blocks_Svg_Render {
 
 		return $svg;
 
+	}
+
+	/**
+	 * Recursively generate SVG elements
+	 * Out native SVGs do not have children, but user uploaded SVGs in pro can contain children elements.
+	 *
+	 * @param $elements
+	 *
+	 * @return string
+	 */
+	private static function generate_svg_elements( $elements ) {
+		$output = '';
+		foreach ( $elements as $element ) {
+			$nE       = $element['nE'];
+			$aBs      = $element['aBs'];
+			$children = ! empty( $element['children'] ) ? $element['children'] : [];
+			$tmpAttr  = array();
+
+			foreach ( $aBs as $key => $attribute ) {
+				if ( ! in_array( $key, array( 'fill', 'stroke', 'none' ) ) ) {
+					$tmpAttr[ $key ] = $key . '="' . esc_attr( $attribute ) . '"';
+				}
+			}
+
+			if ( isset( $aBs['fill'], $aBs['stroke'] ) && $aBs['fill'] === 'none' ) {
+				$tmpAttr['stroke'] = 'stroke="currentColor"';
+			}
+
+			$output .= '<' . $nE . ' ' . implode( ' ', $tmpAttr );
+			if ( ! empty( $children ) ) {
+				$output .= '>' . self::generate_svg_elements( $children ) . '</' . $nE . '>';
+			} else {
+				$output .= '/>';
+			}
+		}
+
+		return $output;
 	}
 	/**
 	 * Return an array of icons.
