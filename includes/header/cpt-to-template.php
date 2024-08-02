@@ -195,6 +195,21 @@ class MetaToJs {
 					$return .= $key . ': ' . $output . ', ';
 				}
 			}
+
+			if( str_starts_with( $key, '_kad_navigation_' ) && $value[0] !== '' ) {
+				if ( str_starts_with( $value[0], 'a:' ) ) {
+					$return .= $key . ': ' . json_encode( maybe_unserialize( $value[0] ) ) . ', ';
+				} else {
+					$output = $value[0];
+					if( is_numeric( $value[0] )) {
+						$output = '"' . $value[0] . '"';
+					} else if ( $key === '_kad_navigation_widthUnit' ) {
+						$output = '"' . $value[0] . '"';
+					}
+
+					$return .= $key . ': ' . $output . ', ';
+				}
+			}
 		}
 		$return .= '};';
 
