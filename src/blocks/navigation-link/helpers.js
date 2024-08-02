@@ -2,6 +2,7 @@ import { createBlock } from '@wordpress/blocks';
 import { get, has } from 'lodash';
 
 // Basic templates
+import { innerBlocks as MegaBlankInnerBlocks, postMeta as MegaBlankPostMeta } from './templates/mega-blank';
 import { innerBlocks as Mega1InnerBlocks, postMeta as Mega1PostMeta } from './templates/mega-1';
 import { innerBlocks as Mega2InnerBlocks, postMeta as Mega2PostMeta } from './templates/mega-2';
 import { innerBlocks as Mega3InnerBlocks, postMeta as Mega3PostMeta } from './templates/mega-3';
@@ -30,6 +31,9 @@ function getDataFromKey(key) {
 	} else if (key === 'mega-3') {
 		response.templatePostMeta = Mega3PostMeta;
 		response.templateInnerBlocks = Mega3InnerBlocks();
+	} else {
+		response.templatePostMeta = MegaBlankPostMeta;
+		response.templateInnerBlocks = MegaBlankInnerBlocks();
 	}
 
 	// Replace placeholder relative URL with absolute URL

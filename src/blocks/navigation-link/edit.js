@@ -456,7 +456,6 @@ export default function Edit(props) {
 			//so just insert the first inner block from the template
 			if (templateInnerBlocks) {
 				insertBlock(templateInnerBlocks[0], 0, clientId);
-				setShowSubMenus(true);
 			}
 		}
 	}
@@ -468,14 +467,12 @@ export default function Edit(props) {
 		if (value) {
 			//enable
 			setAttributes({ isMegaMenu: true });
-			setShowSubMenus(true);
 		} else {
 			//disable
 			replaceInnerBlocks(clientId, []);
 			setAttributes({ isMegaMenu: false });
 			setMegaMenuColumnChoice('');
 			setMegaMenuOnboardingStep('');
-			setShowSubMenus(false);
 		}
 	}
 
@@ -908,7 +905,7 @@ export default function Edit(props) {
 					/>
 				</ToolbarGroup>
 				<ToolbarGroup>
-					{!isAtMaxNesting && !hasChildren && (
+					{!isAtMaxNesting && !hasChildren && !isMegaMenu && (
 						<ToolbarButton
 							name="submenu"
 							icon={addSubmenu}
@@ -1104,7 +1101,7 @@ export default function Edit(props) {
 								<ToggleControl
 									label={
 										isMegaMenu
-											? __('Show Meag Menu', 'kadence-blocks')
+											? __('Show Mega Menu', 'kadence-blocks')
 											: __('Show Sub Menu', 'kadence-blocks')
 									}
 									checked={showSubMenus}
@@ -1266,7 +1263,7 @@ export default function Edit(props) {
 											/>
 										))}
 									</ButtonGroup>
-									<Button className="kt-prebuilt" onClick={() => doMegaMenu('simple|1')}>
+									<Button className="kt-prebuilt" onClick={() => doMegaMenu('mega-blank')}>
 										{__('Skip', 'kadence-blocks')}
 									</Button>
 									{/* <Button className="kt-prebuilt" onClick={() => setAttributes({ isPrebuiltModal: true })}>

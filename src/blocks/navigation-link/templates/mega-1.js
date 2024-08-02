@@ -147,6 +147,7 @@ function innerBlocks() {
 								htmlTag: 'div',
 								fontSize: ['md', '', ''],
 								fontHeight: [1.3, '', ''],
+								content: 'Briefly and concisely explain what you do for your audience.',
 							},
 							[]
 						),
@@ -227,6 +228,7 @@ function innerBlocks() {
 								iconColor: 'palette1',
 								iconColorHover: 'palette2',
 								iconSide: 'right',
+								content: '<a href="#">Ask a question</a>',
 							},
 							[]
 						),

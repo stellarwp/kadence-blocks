@@ -105,6 +105,7 @@ function innerBlocks() {
 												colorClass: 'theme-palette4',
 												htmlTag: 'div',
 												fontSize: ['md', '', ''],
+												content: 'Type a short headline',
 											},
 											[]
 										),
