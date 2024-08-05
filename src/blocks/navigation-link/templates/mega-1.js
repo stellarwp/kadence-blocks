@@ -58,7 +58,8 @@ function innerBlocks() {
 							'kadence/navigation',
 							{
 								uniqueID: '252_89e8a2-53',
-								templateKey: 'short-vertical',
+								templateKey: 'features-with-icon',
+								makePost: true,
 							},
 							[]
 						),

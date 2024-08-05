@@ -1,33 +1,22 @@
 import { createBlock } from '@wordpress/blocks';
 import { get, has } from 'lodash';
 
-// Basic templates
-import { innerBlocks as MegaBlankInnerBlocks, postMeta as MegaBlankPostMeta } from './templates/mega-blank';
-import { innerBlocks as Mega1InnerBlocks, postMeta as Mega1PostMeta } from './templates/mega-1';
-import { innerBlocks as Mega2InnerBlocks, postMeta as Mega2PostMeta } from './templates/mega-2';
-import { innerBlocks as Mega3InnerBlocks, postMeta as Mega3PostMeta } from './templates/mega-3';
+// mega menu supporting templates
+import {
+	innerBlocks as FeaturesWithIconInnerBlocks,
+	postMeta as FeaturesWithIconPostMeta,
+} from './templates/features-with-icon';
 
 export function buildTemplateFromSelection(selection) {
-	const data = getDataFromKey(selection);
-
-	return data;
+	return getDataFromKey(selection);
 }
 
 function getDataFromKey(key) {
 	const response = {};
 
-	if (key === 'mega-1') {
-		response.templatePostMeta = Mega1PostMeta;
-		response.templateInnerBlocks = Mega1InnerBlocks();
-	} else if (key === 'mega-2') {
-		response.templatePostMeta = Mega2PostMeta;
-		response.templateInnerBlocks = Mega2InnerBlocks();
-	} else if (key === 'mega-3') {
-		response.templatePostMeta = Mega3PostMeta;
-		response.templateInnerBlocks = Mega3InnerBlocks();
-	} else {
-		response.templatePostMeta = MegaBlankPostMeta;
-		response.templateInnerBlocks = MegaBlankInnerBlocks();
+	if (key === 'features-with-icon') {
+		response.templatePostMeta = FeaturesWithIconPostMeta;
+		response.templateInnerBlocks = FeaturesWithIconInnerBlocks();
 	}
 
 	// Replace placeholder relative URL with absolute URL

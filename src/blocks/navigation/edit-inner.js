@@ -554,7 +554,8 @@ export function EditInner(props) {
 	//if this nav block is getting created through the header onboarding
 	//then we need to auto create some basic block structure
 	const applyTemplateKeyBlocks = (templateKey) => {
-		if (templateKey.includes('long')) {
+		if (templateKey == 'features-with-icon.js') {
+		} else if (templateKey.includes('long')) {
 			setNavPlaceholderBlocks([
 				createBlock('kadence/navigation', {}, [
 					createBlock('kadence/navigation-link', { label: 'about', url: '#' }),

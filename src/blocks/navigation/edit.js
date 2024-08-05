@@ -36,7 +36,7 @@ import { useEffect } from '@wordpress/element';
 export function Edit(props) {
 	const { attributes, setAttributes, clientId } = props;
 
-	const { id, uniqueID, templateKey } = attributes;
+	const { id, uniqueID, templateKey, makePost } = attributes;
 
 	// Since we're not in the EntityProvider yet, we need to provide a post id.
 	// 'id' and 'meta' will be undefined untill the actual post is chosen / loaded
@@ -169,23 +169,51 @@ export function Edit(props) {
 	}
 
 	const [isAdding, addNew] = useEntityAutoDraftAndPublish('kadence_navigation', 'kadence_navigation');
-	const makeNavigationPost = async () => {
+	const [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_navigation', { id: id });
+	const makeTemplatedNavigationPost = async () => {
 		try {
 			const response = await addNew();
-			setAttributes({ id: response.id });
+			const newPostId = response?.id;
+
+			if (newPostId) {
+				setAttributes({ id: newPostId, makePost: false });
+				let updatedMeta = meta;
+
+				const { templateInnerBlocks, templatePostMeta } = buildTemplateFromSelection(templateKey);
+
+				if (templateInnerBlocks) {
+					updatedMeta = { ...meta, ...templatePostMeta };
+					onChange(templateInnerBlocks, clientId);
+				} else {
+					// Skip, or template not found
+					onChange([createBlock('kadence/navigation', {}, [])], clientId);
+				}
+
+				setTitle(templateKey);
+
+				updatedMeta._kad_navigation_description = 'A placeholder navigation';
+
+				setMeta({ ...meta, updatedMeta });
+				await wp.data
+					.dispatch('core')
+					.saveEditedEntityRecord('postType', 'kadence_navigation', id)
+					.then(() => {
+						console.log('finished');
+					});
+			}
 		} catch (error) {
 			console.error(error);
 		}
 	};
 
-	//if this is a templated navigation (usually coming from header onboarding)
-	//then it should get premade with some templated content based on templateKey
+	// if this is a templated navigation (usually coming from mega menu onboarding)
+	// then it should get premade with some templated content based on templateKey
 	// commented out for now because we just make placeholder content instead of an actual post
-	// useEffect(() => {
-	// 	if (!id && templateKey) {
-	// 		makeNavigationPost();
-	// 	}
-	// }, []);
+	useEffect(() => {
+		if (!id && templateKey && makePost) {
+			makeTemplatedNavigationPost();
+		}
+	}, []);
 
 	return (
 		<div {...blockProps}>
