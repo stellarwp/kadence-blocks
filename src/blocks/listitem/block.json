@@ -51,6 +51,11 @@
 			"selector": ".kt-svg-icon-list-text",
 			"__experimentalRole": "content"
 		},
+		"fullContent": {
+			"type": "string",
+			"source": "raw",
+			"__experimentalRole": "content"
+		},
 		"color": {
 			"type": "string",
 			"default": ""

@@ -83,7 +83,14 @@ function KadenceListItem(props) {
 		tooltip,
 		tooltipPlacement,
 		tooltipDash,
+		fullContent,
 	} = attributes;
+
+	const parser = new DOMParser();
+	const doc = parser.parseFromString(fullContent, 'text/xml');
+	const rawTexts = doc.getElementsByClassName('kt-svg-icon-list-text');
+	const rawText = rawTexts?.[0]?.innerHTML ? rawTexts[0].innerHTML : text;
+
 	const displayIcon = icon ? icon : context['kadence/listIcon'];
 	const displayWidth = width ? width : context['kadence/listIconWidth'];
 	const [activeTab, setActiveTab] = useState('general');
@@ -192,7 +199,7 @@ function KadenceListItem(props) {
 					tagName="div"
 					ref={textRef}
 					identifier="text"
-					value={text}
+					value={rawText}
 					onChange={(value) => {
 						setAttributes({ text: value });
 					}}
@@ -218,7 +225,7 @@ function KadenceListItem(props) {
 					className={`kt-svg-icon-list-text${textOnlyTooltip && tooltip ? ' kb-icon-list-tooltip' : ''}${
 						!tooltipDash && textOnlyTooltip && tooltip ? ' kb-list-tooltip-no-border' : ''
 					}`}
-					data-empty={!text}
+					data-empty={!rawText}
 				/>
 			</Tooltip>
 		</>

@@ -33,7 +33,14 @@ function Save(props) {
 		tooltipSelection,
 		tooltipPlacement,
 		tooltipDash,
+		fullContent,
 	} = attributes;
+
+	const parser = new DOMParser();
+	const doc = parser.parseFromString(fullContent, 'text/xml');
+	const rawTexts = doc.getElementsByClassName('kt-svg-icon-list-text');
+	const rawText = rawTexts?.[0]?.innerHTML ? rawTexts[0].innerHTML : text;
+
 	const tooltipID = tooltip && uniqueID ? `kt-svg-tooltip-${uniqueID}` : undefined;
 	const iconOnlyTooltip = 'icon' === tooltipSelection ? true : false;
 	const textOnlyTooltip = 'text' === tooltipSelection ? true : false;
@@ -127,7 +134,7 @@ function Save(props) {
 					{showIcon ? iconSpan : emptyIcon}
 					<RichText.Content
 						tagName="span"
-						value={text}
+						value={rawText}
 						className={`kt-svg-icon-list-text${
 							tooltipID && textOnlyTooltip ? ' kb-icon-list-tooltip' : ''
 						}${tooltipID && textOnlyTooltip && !tooltipDash ? ' kb-list-tooltip-no-border' : ''}`}
@@ -157,7 +164,7 @@ function Save(props) {
 							{showIcon ? iconSpan : emptyIcon}
 							<RichText.Content
 								tagName="span"
-								value={text}
+								value={rawText}
 								className={`kt-svg-icon-list-text${
 									tooltipID && textOnlyTooltip ? ' kb-icon-list-tooltip' : ''
 								}${tooltipID && textOnlyTooltip && !tooltipDash ? ' kb-list-tooltip-no-border' : ''}`}
@@ -180,6 +187,9 @@ function Save(props) {
 			)}
 		</li>
 	);
+
+	// <script dangerouslySetInnerHTML={{ __html: `</script>${html}<script>` }} />
+	// return <Fragment dangerouslySetInnerHTML={{ __html: fullContent }}></Fragment>;
 }
 
 export default Save;
