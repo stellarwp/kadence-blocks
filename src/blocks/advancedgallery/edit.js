@@ -354,6 +354,13 @@ export default function GalleryEdit(props) {
 		undefined !== carouselHeight[2] ? carouselHeight[2] : ''
 	);
 
+	const previewImageRadius = getPreviewSize(
+		previewDevice,
+		undefined !== imageRadius ? imageRadius : '',
+		undefined !== tabletImageRadius ? tabletImageRadius : '',
+		undefined !== mobileImageRadius ? mobileImageRadius : ''
+	);
+
 	const blockProps = useBlockProps({
 		className: `kb-gallery-container`,
 	});
@@ -2054,45 +2061,7 @@ export default function GalleryEdit(props) {
 					: 'none'
 			}; }
 					.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item .kb-gal-image-radius {
-						${
-							previewDevice === 'Desktop' && imageRadius && undefined !== imageRadius[0] && '' !== imageRadius[0]
-								? 'border-radius:' +
-								  imageRadius[0] +
-								  'px ' +
-								  imageRadius[1] +
-								  'px ' +
-								  imageRadius[2] +
-								  'px ' +
-								  imageRadius[3] +
-								  'px;'
-								: ''
-						}
-						${
-							previewDevice === 'Tablet' && tabletImageRadius && undefined !== tabletImageRadius[0] && '' !== tabletImageRadius[0]
-								? 'border-radius:' +
-								tabletImageRadius[0] +
-								'px ' +
-								tabletImageRadius[1] +
-								'px ' +
-								tabletImageRadius[2] +
-								'px ' +
-								tabletImageRadius[3] +
-								'px;'
-								: ''
-						}
-						${
-							previewDevice === 'Mobile' && mobileImageRadius && undefined !== mobileImageRadius[0] && '' !== mobileImageRadius[0]
-								? 'border-radius:' +
-								mobileImageRadius[0] +
-								'px ' +
-								mobileImageRadius[1] +
-								'px ' +
-								mobileImageRadius[2] +
-								'px ' +
-								mobileImageRadius[3] +
-								'px;'
-								: ''
-						}
+						${previewImageRadius ? 'border-radius:' + previewImageRadius[0] + imageRadiusUnit + ' ' + previewImageRadius[1] + imageRadiusUnit + ' ' + previewImageRadius[2] + imageRadiusUnit + ' ' + previewImageRadius[3] + imageRadiusUnit + ';' : ''}
 					}
 					.kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-id-${uniqueID} .kt-blocks-carousel .splide__list figure .kb-gal-image-radius, .kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-id-${uniqueID} .kt-blocks-carousel .splide__list figure .kb-gal-image-radius img {
 						${previewHeight ? 'height:' + previewHeight + 'px;' : ''}
