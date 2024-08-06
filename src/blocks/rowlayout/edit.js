@@ -724,7 +724,7 @@ function RowLayoutEditContainer(props) {
 	const hasBG = bgColor || bgImg || gradient || overlay || overlayGradient || overlayBgImg ? 'kt-row-has-bg' : '';
 	const isKadenceT = typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.isKadenceT ? true : false;
 	const paddingSidesTheme = isKadenceT && true === inheritMaxWidth ? 'var(--global-content-edge-padding)' : '0px';
-	const paddingSidesDefault = hasBG && !(isKadenceT && true === inheritMaxWidth) ? 'var(--global-content-edge-padding)' : '';
+	const paddingSidesDefault = hasBG && !(isKadenceT && true === inheritMaxWidth) ? 'sm' : '';
 	const previewPaddingTop = getPreviewSize(
 		previewDevice,
 		undefined !== padding?.[0] ? padding[0] : '',
@@ -972,11 +972,11 @@ function RowLayoutEditContainer(props) {
 						  ')'
 						: undefined,
 				paddingLeft:
-					'' !== previewPaddingLeft && "var(--global-content-edge-padding)" !== previewPaddingLeft
+					'' !== previewPaddingLeft
 						? getSpacingOptionOutput(previewPaddingLeft, paddingUnit ? paddingUnit : 'px')
 						: undefined,
 				paddingRight:
-					'' !== previewPaddingRight && "var(--global-content-edge-padding)" !== previewPaddingRight
+					'' !== previewPaddingRight
 						? getSpacingOptionOutput(previewPaddingRight, paddingUnit ? paddingUnit : 'px')
 						: undefined,
 			},
@@ -1181,9 +1181,10 @@ function RowLayoutEditContainer(props) {
 										<ResponsiveMeasureRangeControl
 											label={__('Padding', 'kadence-blocks')}
 											value={
-												undefined !== padding && undefined !== padding[0]
+												hasBG && padding[1] === '' && padding[3] === '' && undefined !== padding && undefined !== padding[0] ? ['sm', 'sm', 'sm', 'sm'] :
+													(undefined !== padding && undefined !== padding[0]
 													? padding
-													: ['sm', '', 'sm', '']
+													: ['sm', '', 'sm', ''])
 											}
 											tabletValue={tabletPadding}
 											mobileValue={
