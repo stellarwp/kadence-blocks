@@ -187,9 +187,6 @@ function Save(props) {
 			)}
 		</li>
 	);
-
-	// <script dangerouslySetInnerHTML={{ __html: `</script>${html}<script>` }} />
-	// return <Fragment dangerouslySetInnerHTML={{ __html: fullContent }}></Fragment>;
 }
 
 export default Save;
