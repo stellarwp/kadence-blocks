@@ -1181,10 +1181,15 @@ function RowLayoutEditContainer(props) {
 										<ResponsiveMeasureRangeControl
 											label={__('Padding', 'kadence-blocks')}
 											value={
-												hasBG && padding[1] === '' && padding[3] === '' && undefined !== padding && undefined !== padding[0] ? ['sm', 'sm', 'sm', 'sm'] :
-													(undefined !== padding && undefined !== padding[0]
+												hasBG &&
+												padding[1] === '' &&
+												padding[3] === '' &&
+												undefined !== padding &&
+												undefined !== padding[0]
+													? ['sm', 'sm', 'sm', 'sm']
+													: undefined !== padding && undefined !== padding[0]
 													? padding
-													: ['sm', '', 'sm', ''])
+													: ['sm', '', 'sm', '']
 											}
 											tabletValue={tabletPadding}
 											mobileValue={
