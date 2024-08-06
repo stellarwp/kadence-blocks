@@ -2061,7 +2061,23 @@ export default function GalleryEdit(props) {
 					: 'none'
 			}; }
 					.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item .kb-gal-image-radius {
-						${previewImageRadius ? 'border-radius:' + previewImageRadius[0] + imageRadiusUnit + ' ' + previewImageRadius[1] + imageRadiusUnit + ' ' + previewImageRadius[2] + imageRadiusUnit + ' ' + previewImageRadius[3] + imageRadiusUnit + ';' : ''}
+						${
+							previewImageRadius
+								? 'border-radius:' +
+								  previewImageRadius[0] +
+								  imageRadiusUnit +
+								  ' ' +
+								  previewImageRadius[1] +
+								  imageRadiusUnit +
+								  ' ' +
+								  previewImageRadius[2] +
+								  imageRadiusUnit +
+								  ' ' +
+								  previewImageRadius[3] +
+								  imageRadiusUnit +
+								  ';'
+								: ''
+						}
 					}
 					.kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-id-${uniqueID} .kt-blocks-carousel .splide__list figure .kb-gal-image-radius, .kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-id-${uniqueID} .kt-blocks-carousel .splide__list figure .kb-gal-image-radius img {
 						${previewHeight ? 'height:' + previewHeight + 'px;' : ''}
