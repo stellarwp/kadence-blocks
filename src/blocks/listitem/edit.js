@@ -87,6 +87,8 @@ function KadenceListItem(props) {
 		fullContent,
 	} = attributes;
 
+	//'rawText' is meant to find the same content that 'text' does. Only via xml parsing instead of html parsing
+	//it can find content in the block that's invalid to an html parser
 	const parser = new DOMParser();
 	const doc = parser.parseFromString(fullContent, 'text/xml');
 	const rawTexts = doc.getElementsByClassName('kt-svg-icon-list-text');
