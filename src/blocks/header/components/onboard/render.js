@@ -7,7 +7,7 @@ const HeaderRender = ({ id }) => {
 
 	const desktopBlocks = get(blocks, [0, 'innerBlocks', 0], []);
 
-	return <BlockPreview blocks={desktopBlocks} viewportWidth={800} />;
+	return <BlockPreview blocks={desktopBlocks} viewportWidth={1400} />;
 };
 
 export default HeaderRender;

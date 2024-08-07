@@ -28,10 +28,6 @@ export default function BackendStyles(props) {
 		minHeightTablet,
 		minHeightMobile,
 		minHeightUnit,
-		height,
-		heightTablet,
-		heightMobile,
-		heightUnit,
 		maxWidth,
 		maxWidthTablet,
 		maxWidthMobile,
@@ -43,24 +39,21 @@ export default function BackendStyles(props) {
 		vAlign,
 		vAlignTablet,
 		vAlignMobile,
+		layout,
 	} = attributes;
 
 	const previewMinHeight = getPreviewSize(previewDevice, minHeight, minHeightTablet, minHeightMobile);
-	const previewHeight = getPreviewSize(previewDevice, height, heightTablet, heightMobile);
 	const previewMaxWidth = getPreviewSize(previewDevice, maxWidth, maxWidthTablet, maxWidthMobile);
 	const previewItemGap = getPreviewSize(previewDevice, itemGap, itemGapTablet, itemGapMobile);
 	const previewVAlign = getPreviewSize(previewDevice, vAlign, vAlignTablet, vAlignMobile);
 
 	const css = new KadenceBlocksCSS();
 	//container
-	css.set_selector(`.wp-block-kadence-header-row${uniqueID} .kadence-header-row-inner`);
+	css.set_selector(`.wp-block-kadence-header-row.wp-block-kadence-header-row${uniqueID} .kadence-header-row-inner`);
 	css.render_measure_output(padding, paddingTablet, paddingMobile, previewDevice, 'padding', paddingUnit);
 	css.render_measure_output(margin, marginTablet, marginMobile, previewDevice, 'margin', marginUnit);
 	if (previewMinHeight != 0 && previewMinHeight) {
 		css.add_property('min-height', previewMinHeight + minHeightUnit);
-	}
-	if (previewHeight != 0 && previewHeight) {
-		css.add_property('min-height', previewHeight + heightUnit);
 	}
 	if (previewMaxWidth != 0 && previewMaxWidth) {
 		css.add_property('max-width', previewMaxWidth + maxWidthUnit);
@@ -86,6 +79,11 @@ export default function BackendStyles(props) {
 		'border-radius',
 		borderRadiusUnit
 	);
+	if ('contained' === layout) {
+		css.set_selector(`.wp-block-kadence-header-row${uniqueID} .kadence-header-row-inner`);
+	} else {
+		css.set_selector(`.wp-block-kadence-header-row${uniqueID}`);
+	}
 	if ('normal' === background?.type && background?.image) {
 		css.add_property('background-image', background.image);
 		css.add_property('background-size', background.size);

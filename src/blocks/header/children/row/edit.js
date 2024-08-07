@@ -71,10 +71,6 @@ export function Edit(props) {
 		minHeightTablet,
 		minHeightMobile,
 		minHeightUnit,
-		height,
-		heightTablet,
-		heightMobile,
-		heightUnit,
 		maxWidth,
 		maxWidthTablet,
 		maxWidthMobile,
@@ -310,7 +306,6 @@ export function Edit(props) {
 							onChangeMobile={(value) => setAttributes({ minHeightMobile: value })}
 							min={0}
 							max={minHeightUnit === 'px' ? 600 : 100}
-							initialPosition={0}
 							step={1}
 							unit={minHeightUnit}
 							onUnit={(value) => {
@@ -322,50 +317,6 @@ export function Edit(props) {
 							}
 							showUnit={true}
 						/>
-						<ResponsiveRangeControls
-							label={__('Height', 'kadence-blocks')}
-							value={height}
-							onChange={(value) => setAttributes({ height: value })}
-							tabletValue={heightTablet}
-							onChangeTablet={(value) => setAttributes({ heightTablet: value })}
-							mobileValue={heightMobile}
-							onChangeMobile={(value) => setAttributes({ heightMobile: value })}
-							min={0}
-							initialPosition={0}
-							max={heightUnit === 'px' ? 600 : 100}
-							step={1}
-							unit={heightUnit}
-							onUnit={(value) => {
-								setAttributes({ heightUnit: value });
-							}}
-							units={['px', 'em', 'vh']}
-							reset={() => setAttributes({ height: null, heightTablet: null, heightMobile: null })}
-							showUnit={true}
-						/>
-						{layout !== 'contained' && layout !== 'fullwidth' && (
-							<ResponsiveRangeControls
-								label={__('Max Width', 'kadence-blocks')}
-								value={maxWidth}
-								onChange={(value) => setAttributes({ maxWidth: value })}
-								tabletValue={maxWidthTablet}
-								onChangeTablet={(value) => setAttributes({ maxWidthTablet: value })}
-								mobileValue={maxWidthMobile}
-								onChangeMobile={(value) => setAttributes({ maxWidthMobile: value })}
-								min={0}
-								initialPosition={0}
-								max={maxWidthUnit === 'px' ? 600 : 100}
-								step={1}
-								unit={maxWidthUnit}
-								onUnit={(value) => {
-									setAttributes({ maxWidthUnit: value });
-								}}
-								reset={() =>
-									setAttributes({ maxWidth: null, maxWidthTablet: null, maxWidthMobile: null })
-								}
-								units={['px', 'em', 'vw', '%']}
-								showUnit={true}
-							/>
-						)}
 						<ResponsiveRangeControls
 							label={__('Item Gap', 'kadence-blocks')}
 							value={itemGap}
@@ -482,6 +433,31 @@ export function Edit(props) {
 							unit={marginUnit}
 							units={['px', 'em', 'rem', '%']}
 							onUnit={(value) => setAttributes({ marginUnit: value })}
+						/>
+					</KadencePanelBody>
+					<KadencePanelBody
+						panelName={'kb-header-row-max-width'}
+						title={__('Container Width', 'kadence-blocks')}
+						initialOpen={false}
+					>
+						<ResponsiveRangeControls
+							label={__('Max Width', 'kadence-blocks')}
+							value={maxWidth}
+							onChange={(value) => setAttributes({ maxWidth: value })}
+							tabletValue={maxWidthTablet}
+							onChangeTablet={(value) => setAttributes({ maxWidthTablet: value })}
+							mobileValue={maxWidthMobile}
+							onChangeMobile={(value) => setAttributes({ maxWidthMobile: value })}
+							min={0}
+							max={maxWidthUnit === 'px' ? 600 : 100}
+							step={1}
+							unit={maxWidthUnit}
+							onUnit={(value) => {
+								setAttributes({ maxWidthUnit: value });
+							}}
+							reset={() => setAttributes({ maxWidth: null, maxWidthTablet: null, maxWidthMobile: null })}
+							units={['px', 'em', 'vw', '%']}
+							showUnit={true}
 						/>
 					</KadencePanelBody>
 				</>

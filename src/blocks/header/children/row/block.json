@@ -150,22 +150,6 @@
 			"type": "string",
 			"default": "px"
 		},
-		"height": {
-			"type": "number",
-			"default": null
-		},
-		"heightTablet": {
-			"type": "number",
-			"default": null
-		},
-		"heightMobile": {
-			"type": "number",
-			"default": null
-		},
-		"heightUnit": {
-			"type": "string",
-			"default": "px"
-		},
 		"maxWidth": {
 			"type": "number",
 			"default": null

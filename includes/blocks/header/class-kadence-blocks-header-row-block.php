@@ -87,9 +87,24 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 			$this->sized_dynamic_styles( $css, $header_row_attributes, $unique_id, $size );
 		}
 		$css->set_media_state( 'desktop' );
-
-		//container
+		$layout         = ( ! empty( $header_row_attributes['layout'] ) ? $header_row_attributes['layout'] : 'standard' );
+		$bg             = $header_row_attributes['background'];
+		$bg_transparent = $header_row_attributes['backgroundTransparent'];
+		if ( 'contained' !== $layout ) {
+			$css->set_selector( '.wp-block-kadence-header-row' . $unique_id );
+			$css->render_background( $bg, $css );
+			// Transparent overrides.
+			$css->set_selector( '.header-' . strtolower( $size ) . '-transparent .wp-block-kadence-header-row' . $unique_id );
+			$css->render_background( $bg_transparent, $css );
+		}
+		// Container.
 		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .kadence-header-row-inner' );
+		if ( 'contained' === $layout ) {
+			$css->render_background( $bg, $css );
+			$css->set_selector( '.header-' . strtolower( $size ) . '-transparent .wp-block-kadence-header-row' . $unique_id . ' .kadence-header-row-inner' );
+			$css->render_background( $bg_transparent, $css );
+			$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .kadence-header-row-inner' );
+		}
 		$css->render_measure_output( $attributes, 'padding', 'padding', array(
 			'desktop_key' => 'padding',
 			'tablet_key'  => 'paddingTablet',
@@ -120,29 +135,16 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 		$sized_attributes = $css->get_sized_attributes_auto( $attributes, $size, false );
 		$sized_attributes_inherit = $css->get_sized_attributes_auto( $attributes, $size );
 
-		$bg = $sized_attributes['background'];
-		$bg_transparent = $sized_attributes['backgroundTransparent'];
-
 		$css->set_media_state( strtolower( $size ) );
 
 		// Container.
-		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .kadence-header-row-inner' );
+		$css->set_selector( '.wp-block-kadence-header-row.wp-block-kadence-header-row' . $unique_id . ' .kadence-header-row-inner' );
 		if ( isset( $sized_attributes['minHeight'] ) && $sized_attributes['minHeight'] != 0 ) {
 			$css->add_property( 'min-height', $sized_attributes['minHeight'] . $sized_attributes['minHeightUnit'] );
-		}
-		if ( isset( $sized_attributes['height'] ) && $sized_attributes['height'] != 0 ) {
-			$css->add_property( 'min-height', $sized_attributes['height'] . $sized_attributes['heightUnit'] );
 		}
 		if ( isset( $sized_attributes['maxWidth'] ) && $sized_attributes['maxWidth'] != 0 ) {
 			$css->add_property( 'max-width', $sized_attributes['maxWidth'] . $sized_attributes['maxWidthUnit'] );
 		}
-
-		$css->render_background( $bg, $css );
-
-		// Transparent overrides.
-		$css->set_selector( '.header-' . strtolower( $size ) . '-transparent .wp-block-kadence-header-row' . $unique_id . ' .kadence-header-row-inner' );
-
-		$css->render_background( $bg_transparent, $css );
 
 		// Pass down to sections.
 		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .wp-block-kadence-header-column, .wp-block-kadence-header-row' . $unique_id . ' .wp-block-kadence-header-section' );

@@ -35,7 +35,7 @@
 		flex-grow: 1;
 		justify-content: flex-start !important;
 	}
-	&.wp-block-kadence-header-row-layout-contained {
+	&.wp-block-kadence-header-row-layout-contained:not(.specific):not(.extra-specific) {
 		padding: 0 var(--global-content-edge-padding, 15px);
 		max-width: var(--global-content-width);
 		margin: 0 auto;
