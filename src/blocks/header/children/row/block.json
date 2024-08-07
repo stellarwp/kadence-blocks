@@ -39,7 +39,7 @@
 		"backgroundTransparent": {
 			"type": "object",
 			"default": {
-				"color": "",
+				"color": "transparent",
 				"image": "",
 				"imageID": "",
 				"position": "center center",

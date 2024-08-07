@@ -16,7 +16,7 @@ import classnames from 'classnames';
  * Internal block libraries
  */
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useInnerBlocksProps, InspectorControls } from '@wordpress/block-editor';
+import { useInnerBlocksProps, InspectorControls, useBlockProps } from '@wordpress/block-editor';
 
 import { getUniqueId, getPostOrFseId } from '@kadence/helpers';
 import {
@@ -136,20 +136,23 @@ export function Edit(props) {
 
 		return true;
 	}, [innerBlocks]);
-
-	const innerBlockClasses = classnames({
+	const blockClasses = classnames({
 		'wp-block-kadence-header-row': true,
 		[`wp-block-kadence-header-row-${location}`]: location,
 		[`wp-block-kadence-header-row${uniqueID}`]: uniqueID,
 		[`wp-block-kadence-header-row-layout-${layout}`]: layout,
+		[`wp-block-kadence-header-row-layout-standard`]: !layout,
 		'wp-block-kadence-header-row--force-hide': !hasInsertedChildBlocks,
+	});
+	const blockProps = useBlockProps({
+		className: blockClasses,
+		style: {
+			display: previewDevice === 'Desktop' ? 'block' : 'none',
+		},
 	});
 	const innerBlocksProps = useInnerBlocksProps(
 		{
-			className: innerBlockClasses,
-			style: {
-				display: previewDevice === 'Desktop' ? 'block' : 'none',
-			},
+			className: 'kadence-header-row-inner',
 		},
 		{
 			renderAppender: false,
@@ -182,16 +185,17 @@ export function Edit(props) {
 									['background' + suffix + size]: { ...backgroundValue, color: value },
 								});
 							}}
+							defaultValue={suffix === 'Transparent' ? 'transparent' : undefined}
 						/>
 						<KadenceBackgroundControl
 							label={__('Background Image', 'kadence-blocks')}
 							hasImage={backgroundValue?.image}
-							imageURL={backgroundValue.image ? backgroundValue.image : ''}
-							imageID={backgroundValue.imageID}
-							imagePosition={backgroundValue.position ? backgroundValue.position : 'center center'}
-							imageSize={backgroundValue.size ? backgroundValue.size : 'cover'}
-							imageRepeat={backgroundValue.repeat ? backgroundValue.repeat : 'no-repeat'}
-							imageAttachment={backgroundValue.attachment ? backgroundValue.attachment : 'scroll'}
+							imageURL={backgroundValue?.image ? backgroundValue.image : ''}
+							imageID={backgroundValue?.imageID}
+							imagePosition={backgroundValue?.position ? backgroundValue.position : 'center center'}
+							imageSize={backgroundValue?.size ? backgroundValue.size : 'cover'}
+							imageRepeat={backgroundValue?.repeat ? backgroundValue.repeat : 'no-repeat'}
+							imageAttachment={backgroundValue?.attachment ? backgroundValue.attachment : 'scroll'}
 							onRemoveImage={() => {
 								setAttributes({
 									['background' + suffix + size]: { ...backgroundValue, imageID: undefined },
@@ -244,7 +248,7 @@ export function Edit(props) {
 									['background' + suffix + size]: { ...backgroundValue, attachment: value },
 								})
 							}
-							disableMediaButtons={backgroundValue.image ? true : false}
+							disableMediaButtons={backgroundValue?.image ? true : false}
 							dynamicAttribute={'background' + suffix + size + ':image'}
 							isSelected={isSelected}
 							attributes={attributes}
@@ -490,7 +494,7 @@ export function Edit(props) {
 	);
 
 	return (
-		<>
+		<div {...blockProps}>
 			<BackendStyles {...props} previewDevice={previewDevice} />
 			<InspectorControls>
 				<SelectParentBlock
@@ -502,7 +506,7 @@ export function Edit(props) {
 				{hasInsertedChildBlocks ? <DefaultInspectorControls /> : <NoInnerBlocksInspectorControls />}
 			</InspectorControls>
 			<div {...innerBlocksProps} />
-		</>
+		</div>
 	);
 }
 

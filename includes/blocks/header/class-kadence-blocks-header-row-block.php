@@ -89,7 +89,7 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_media_state( 'desktop' );
 
 		//container
-		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id );
+		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .kadence-header-row-inner' );
 		$css->render_measure_output( $attributes, 'padding', 'padding', array(
 			'desktop_key' => 'padding',
 			'tablet_key'  => 'paddingTablet',
@@ -126,7 +126,7 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_media_state( strtolower( $size ) );
 
 		// Container.
-		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id );
+		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .kadence-header-row-inner' );
 		if ( isset( $sized_attributes['minHeight'] ) && $sized_attributes['minHeight'] != 0 ) {
 			$css->add_property( 'min-height', $sized_attributes['minHeight'] . $sized_attributes['minHeightUnit'] );
 		}
@@ -138,40 +138,13 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		$css->render_background( $bg, $css );
-		if ( '' !== $bg && ! empty( $bg['type'] ) && 'normal' === $bg['type'] && ! empty( $bg['image'] ) ) {
-			$img_bg = array(
-				'type' => 'image',
-				'image' => array(
-					'url' => ! empty($bg['image']) ? 'url("' . $bg['image'] . '")' : '',
-					'imageID' => ! empty($bg['imageID']) ? $bg['imageID'] : '',
-					'position' => ! empty($bg['position']) ? $bg['position'] : '',
-					'attachment' => ! empty($bg['attachment']) ? $bg['attachment'] : '',
-					'size' => ! empty($bg['size']) ? $bg['size'] : '',
-					'repeat' => ! empty($bg['repeat']) ? $bg['repeat'] : '',
-				)
-			);
-			$css->render_background( $img_bg, $css );
-		}
 
-		//transparent overrides
-		$css->set_selector( '.header-' . strtolower( $size ) . '-transparent .wp-block-kadence-header-row' . $unique_id );
+		// Transparent overrides.
+		$css->set_selector( '.header-' . strtolower( $size ) . '-transparent .wp-block-kadence-header-row' . $unique_id . ' .kadence-header-row-inner' );
+
 		$css->render_background( $bg_transparent, $css );
-		if ( '' !== $bg_transparent && ! empty( $bg_transparent['type'] ) && 'normal' === $bg_transparent['type'] && ! empty( $bg_transparent['image'] ) ) {
-			$img_bg = array(
-				'type' => 'image',
-				'image' => array(
-					'url' => ! empty($bg_transparent['image']) ? 'url("' . $bg_transparent['image'] . '")' : '',
-					'imageID' => ! empty($bg_transparent['imageID']) ? $bg_transparent['imageID'] : '',
-					'position' => ! empty($bg_transparent['position']) ? $bg_transparent['position'] : '',
-					'attachment' => ! empty($bg_transparent['attachment']) ? $bg_transparent['attachment'] : '',
-					'size' => ! empty($bg_transparent['size']) ? $bg_transparent['size'] : '',
-					'repeat' => ! empty($bg_transparent['repeat']) ? $bg_transparent['repeat'] : '',
-				)
-			);
-			$css->render_background( $img_bg, $css );
-		}
 
-		//pass down to sections
+		// Pass down to sections.
 		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .wp-block-kadence-header-column, .wp-block-kadence-header-row' . $unique_id . ' .wp-block-kadence-header-section' );
 		$css->add_property( 'gap', $sized_attributes['itemGap'] . $sized_attributes['itemGapUnit'] );
 		if ( $sized_attributes['vAlign'] == 'top' ) {
@@ -204,12 +177,13 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! empty( $attributes['location'] ) ) {
 			$classes[] = 'wp-block-kadence-header-row-' . esc_attr( $attributes['location'] );
 		}
-		if ( ! empty( $attributes['layout'] ) ) {
-			$classes[] = 'wp-block-kadence-header-row-layout-' . esc_attr( $attributes['layout'] );
-		}
+		$layout = ! empty( $attributes['layout'] ) ? $attributes['layout'] : 'standard';
+		$classes[] = 'wp-block-kadence-header-row-layout-' . esc_attr( $layout  );
 
 		$html .= '<div class="' . esc_attr( implode( ' ', $classes ) ) . '">';
+		$html .= '<div class="kadence-header-row-inner">';
 		$html .= $content;
+		$html .= '</div>';
 		$html .= '</div>';
 
 		return $html;

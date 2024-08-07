@@ -1,8 +1,12 @@
 .wp-block-kadence-header-row {
-	display: grid !important;
-	grid-template-columns: 1fr auto 1fr;
-	margin: 0 auto;
-
+	margin-top: 0;
+	margin-bottom: 0;
+	.kadence-header-row-inner {
+		padding: 0 var(--global-content-edge-padding, 15px);
+		display: grid !important;
+		grid-template-columns: 1fr auto 1fr;
+		margin: 0 auto;
+	}
 	.wp-block-kadence-header-column,
 	.wp-block-kadence-header-section {
 		gap: 10px;
@@ -31,10 +35,15 @@
 		flex-grow: 1;
 		justify-content: flex-start !important;
 	}
-
 	&.wp-block-kadence-header-row-layout-contained {
-		padding: 0 var(--global-content-edge-padding);
+		padding: 0 var(--global-content-edge-padding, 15px);
 		max-width: var(--global-content-width);
+		margin: 0 auto;
+	}
+	&.wp-block-kadence-header-row-layout-standard {
+		.kadence-header-row-inner {
+			max-width: var(--global-content-width);
+		}
 	}
 	&.wp-block-kadence-header-row-layout-fullwidth {
 		//don't do anything with fullwidth in the editor too much of a pain to try and get full editor width.

@@ -133,21 +133,6 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 
 		if ( $sized_attributes['isTransparent'] != '1' ) {
 			$css->render_background( $bg, $css );
-			// Restructure background image attributes to render $css with method
-			if ( '' !== $bg && ! empty( $bg['type'] ) && 'normal' === $bg['type'] && ! empty( $bg['image'] ) ) {
-				$img_bg = array(
-					'type' => 'image',
-					'image' => array(
-						'url' => ! empty($bg['image']) ? 'url("' . $bg['image'] . '")' : '',
-						'imageID' => ! empty($bg['imageID']) ? $bg['imageID'] : '',
-						'position' => ! empty($bg['imagePosition']) ? $bg['imagePosition'] : '',
-						'attachment' => ! empty($bg['imageAttachment']) ? $bg['imageAttachment'] : '',
-						'size' => ! empty($bg['imageSize']) ? $bg['imageSize'] : '',
-						'repeat' => ! empty($bg['imageRepeat']) ? $bg['imageRepeat'] : '',
-					)
-				);
-				$css->render_background( $img_bg, $css );
-			}
 		}
 
 		//hover styles
