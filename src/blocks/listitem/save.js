@@ -156,7 +156,7 @@ function Save(props) {
 							data-tooltip-placement={tooltipPlacement}
 						>
 							{showIcon ? iconSpan : emptyIcon}
-							<RichText.Content tagName="span" value={text} className={'kt-svg-icon-list-text'} />
+							<RichText.Content tagName="span" value={rawText} className={'kt-svg-icon-list-text'} />
 						</span>
 					)}
 					{(!tooltipID || iconOnlyTooltip || textOnlyTooltip) && (
