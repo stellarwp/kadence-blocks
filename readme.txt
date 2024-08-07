@@ -174,6 +174,15 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.2.51 =
+Release Date: August TBD 2024
+* Fix: Using Dynamic content in Google Maps block
+* Fix: Carousel not looping in Advanced Gallery block.
+* Fix: Tabs block columns not updating in editor when viewed in Tablet or Mobile.
+* Fix: Prevent invalid HTML with multiple wrapped links in Icon List items.
+* Fix: Caption background color in Advanced Gallery block.
+* Fix: Rendering custom SVGs with group tags.
+
 = 3.2.50 =
 Release Date: July 25th 2024
 * Fix: Resolved instance where advanced form was not validating captcha.
