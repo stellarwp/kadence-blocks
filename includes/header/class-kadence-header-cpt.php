@@ -983,19 +983,19 @@ class Kadence_Blocks_Header_CPT_Controller {
 			),
 			array(
 				'key'           => '_kad_header_padding',
-				'default'       => array( '20', '20', '20', '20' ),
+				'default'       => array( '', '', '', '' ),
 				'type'          => 'array',
 				'children_type' => 'string',
 			),
 			array(
 				'key'           => '_kad_header_tabletPadding',
-				'default'       => array( '20', '20', '20', '20' ),
+				'default'       => array( '', '', '', '' ),
 				'type'          => 'array',
 				'children_type' => 'string',
 			),
 			array(
 				'key'           => '_kad_header_mobilePadding',
-				'default'       => array( '20', '20', '20', '20' ),
+				'default'       => array( '', '', '', '' ),
 				'type'          => 'array',
 				'children_type' => 'string',
 			),
