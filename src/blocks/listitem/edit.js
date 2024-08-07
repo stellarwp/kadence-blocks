@@ -89,6 +89,23 @@ function KadenceListItem(props) {
 	const [activeTab, setActiveTab] = useState('general');
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 
+	let richTextFormats = applyFilters(
+		'kadence.whitelist_richtext_formats',
+		[
+			'core/bold',
+			'core/italic',
+			'kadence/mark',
+			'kadence/typed',
+			'core/strikethrough',
+			'core/superscript',
+			'core/superscript',
+			'toolset/inline-field',
+		],
+		'kadence/listitem'
+	);
+
+	richTextFormats = link ? richTextFormats : undefined;
+
 	const textRef = useRef(clientId);
 	const { isUniqueID, isUniqueBlock, parentData } = useSelect(
 		(select) => {
@@ -191,6 +208,7 @@ function KadenceListItem(props) {
 				<RichText
 					tagName="div"
 					ref={textRef}
+					allowedFormats={richTextFormats ? richTextFormats : undefined}
 					identifier="text"
 					value={text}
 					onChange={(value) => {
