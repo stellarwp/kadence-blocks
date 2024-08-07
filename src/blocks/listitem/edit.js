@@ -18,6 +18,8 @@ import {
 	Tooltip,
 } from '@kadence/components';
 
+import { applyFilters } from '@wordpress/hooks';
+
 import metadata from './block.json';
 
 /**
