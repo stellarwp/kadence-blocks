@@ -67,7 +67,9 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param string             $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
-
+		if ( empty( $attributes['id'] ) ) {
+			return;
+		}
 		$header_attributes = $this->get_attributes_with_defaults_cpt( $attributes['id'], 'kadence_header', '_kad_header_' );
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
@@ -79,10 +81,10 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$css->set_media_state( 'desktop' );
 
-		// Normal state styles
+		// Normal state styles.
 		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' .kb-header-container' );
-		$css->render_measure_output( $header_attributes, 'margin', 'margin', ['unit_key' => 'marginUnit']);
-		$css->render_measure_output( $header_attributes, 'padding', 'padding', ['unit_key' => 'paddingUnit']);
+		$css->render_measure_output( $header_attributes, 'margin', 'margin', [ 'unit_key' => 'marginUnit' ] );
+		$css->render_measure_output( $header_attributes, 'padding', 'padding', [ 'unit_key' => 'paddingUnit' ] );
 		$css->render_typography( $header_attributes );
 
 		return $css->css_output();
@@ -260,6 +262,9 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
+		if ( empty( $attributes['id'] ) ) {
+			return '';
+		}
 		$header_block = get_post( $attributes['id'] );
 
 		if ( ! $header_block || 'kadence_header' !== $header_block->post_type ) {
@@ -282,17 +287,18 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 				'';
 		}
 		self::$seen_refs[ $attributes['id'] ] = true;
+		
 
 		$header_attributes = $this->get_attributes_with_defaults_cpt( $attributes['id'], 'kadence_header', '_kad_header_' );
 		$header_attributes = json_decode( json_encode( $header_attributes ), true );
-
-		// Remove the advanced nav block so it doesn't try and render.
+		// Remove the advanced Header block so it doesn't try and re-render.
 		$content = preg_replace( '/<!-- wp:kadence\/header {.*?} -->/', '', $header_block->post_content );
 		$content = str_replace( '<!-- wp:kadence/header  -->', '', $content );
 		$content = str_replace( '<!-- wp:kadence/header -->', '', $content );
 		$content = str_replace( '<!-- /wp:kadence/header -->', '', $content );
 
-		// Handle embeds for nav block.
+
+		// Handle embeds for header block.
 		global $wp_embed;
 		$content = $wp_embed->run_shortcode( $content );
 		$content = $wp_embed->autoembed( $content );
@@ -344,9 +350,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$wrapper_classes[] = $is_transparent ? 'header-desktop-transparent' : '';
 		$wrapper_classes[] = $is_transparent_tablet ? 'header-tablet-transparent' : '';
 		$wrapper_classes[] = $is_transparent_mobile ? 'header-mobile-transparent' : '';
-
-		$wrapper_attributes = get_block_wrapper_attributes(
-			array(
+		$wrapper_args = array(
 				'class'      => implode( ' ', $wrapper_classes ),
 				'aria-label' => $name,
 				'data-auto-transparent-spacing' => $header_attributes['autoTransparentSpacing'],
@@ -364,9 +368,11 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 				'data-shrink-main-height-tablet' => $header_attributes['shrinkMainHeightTablet'] ?: '',
 				'data-shrink-main-height-mobile' => $header_attributes['shrinkMainHeightMobile'] ?: '',
 				'data-reveal-scroll-up' => $header_attributes['revealScrollUp'],
-			)
 		);
-
+		if ( ! empty( $name ) ) {
+			$wrapper_args['aria-label'] = $name;
+		}
+		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 		return sprintf(
 			'<div %1$s>%2$s</div>',
 			$wrapper_attributes,
