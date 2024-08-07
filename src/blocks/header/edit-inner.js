@@ -352,21 +352,17 @@ export function EditInner(props) {
 												? false
 												: true
 										}
-										imageURL={backgroundValue.image ? backgroundValue.image : ''}
-										imageID={backgroundValue.imageID}
+										imageURL={backgroundValue?.image ? backgroundValue.image : ''}
+										imageID={backgroundValue?.imageID}
 										imagePosition={
-											backgroundValue.imagePosition
-												? backgroundValue.imagePosition
-												: 'center center'
+											backgroundValue?.position ? backgroundValue.position : 'center center'
 										}
-										imageSize={backgroundValue.imageSize ? backgroundValue.imageSize : 'cover'}
-										imageRepeat={
-											backgroundValue.imageRepeat ? backgroundValue.imageRepeat : 'no-repeat'
-										}
+										imageSize={backgroundValue?.size ? backgroundValue.size : 'cover'}
+										imageRepeat={backgroundValue?.repeat ? backgroundValue.repeat : 'no-repeat'}
 										imageAttachment={
-											backgroundValue.imageAttachment ? backgroundValue.imageAttachment : 'scroll'
+											backgroundValue?.attachment ? backgroundValue.attachment : 'scroll'
 										}
-										imageAttachmentParallax={true}
+										imageAttachmentParallax={false}
 										onRemoveImage={() => {
 											setMetaAttribute(
 												{ ...backgroundValue, imageID: undefined },
@@ -423,7 +419,7 @@ export function EditInner(props) {
 												'background' + suffix + size
 											)
 										}
-										disableMediaButtons={backgroundValue.image ? true : false}
+										disableMediaButtons={backgroundValue?.image ? true : false}
 										dynamicAttribute={'background' + suffix + size + ':image'}
 										isSelected={isSelected}
 										attributes={attributes}
@@ -481,32 +477,28 @@ export function EditInner(props) {
 									<KadenceBackgroundControl
 										label={__('Background Image', 'kadence-blocks')}
 										hasImage={
-											undefined === backgroundHoverValue.image ||
+											undefined === backgroundHoverValue?.image ||
 											'' === backgroundHoverValue.image
 												? false
 												: true
 										}
-										imageURL={backgroundHoverValue.image ? backgroundHoverValue.image : ''}
-										imageID={backgroundHoverValue.imageID}
+										imageURL={backgroundHoverValue?.image ? backgroundHoverValue.image : ''}
+										imageID={backgroundHoverValue?.imageID}
 										imagePosition={
-											backgroundHoverValue.imagePosition
-												? backgroundHoverValue.imagePosition
+											backgroundHoverValue?.position
+												? backgroundHoverValue.position
 												: 'center center'
 										}
-										imageSize={
-											backgroundHoverValue.imageSize ? backgroundHoverValue.imageSize : 'cover'
-										}
+										imageSize={backgroundHoverValue?.size ? backgroundHoverValue.size : 'cover'}
 										imageRepeat={
-											backgroundHoverValue.imageRepeat
-												? backgroundHoverValue.imageRepeat
-												: 'no-repeat'
+											backgroundHoverValue?.repeat ? backgroundHoverValue.repeat : 'no-repeat'
 										}
 										imageAttachment={
-											backgroundHoverValue.imageAttachment
-												? backgroundHoverValue.imageAttachment
+											backgroundHoverValue?.attachment
+												? backgroundHoverValue.attachment
 												: 'scroll'
 										}
-										imageAttachmentParallax={true}
+										imageAttachmentParallax={false}
 										onRemoveImage={() => {
 											setMetaAttribute(
 												{ ...backgroundHoverValue, imageID: undefined },
@@ -563,7 +555,7 @@ export function EditInner(props) {
 												'background' + suffix + 'Hover' + size
 											)
 										}
-										disableMediaButtons={backgroundHoverValue.image ? true : false}
+										disableMediaButtons={backgroundHoverValue?.image ? true : false}
 										dynamicAttribute={'backgroundHover:image'}
 										isSelected={isSelected}
 										attributes={attributes}
@@ -649,7 +641,7 @@ export function EditInner(props) {
 						/>
 
 						<Button
-							isLink={true}
+							variant="link"
 							onClick={() => {
 								setAttributes({ id: 0 });
 							}}
@@ -709,7 +701,7 @@ export function EditInner(props) {
 									/>
 
 									<Button
-										isLink={true}
+										variant="link"
 										onClick={() => {
 											setAttributes({ id: 0 });
 										}}
@@ -810,106 +802,6 @@ export function EditInner(props) {
 										)}
 								</>
 							)}
-						</KadencePanelBody>
-						<KadencePanelBody
-							title={__('Content Size Settings', 'kadence-blocks')}
-							initialOpen={false}
-							panelName={'kb-header-size-settings'}
-						>
-							<ResponsiveRangeControls
-								label={__('Min Height', 'kadence-blocks')}
-								value={height?.[0] ? parseFloat(height[0]) : ''}
-								onChange={(value) => {
-									setMetaAttribute(
-										[
-											value.toString(),
-											undefined !== height?.[1] ? height[1] : '',
-											undefined !== height?.[2] ? height[2] : '',
-										],
-										'height'
-									);
-								}}
-								tabletValue={height?.[1] ? parseFloat(height[1]) : ''}
-								onChangeTablet={(value) => {
-									setMetaAttribute(
-										[
-											undefined !== height?.[0] ? height[0] : '',
-											value.toString(),
-											undefined !== height?.[2] ? height[2] : '',
-										],
-										'height'
-									);
-								}}
-								mobileValue={height?.[2] ? parseFloat(height[2]) : ''}
-								onChangeMobile={(value) => {
-									setMetaAttribute(
-										[
-											undefined !== height?.[0] ? height[0] : '',
-											undefined !== height?.[1] ? height[1] : '',
-											value.toString(),
-										],
-										'height'
-									);
-								}}
-								min={0}
-								max={heightUnit === 'px' ? 2000 : 200}
-								step={1}
-								unit={heightUnit ? heightUnit : 'px'}
-								onUnit={(value) => {
-									setMetaAttribute(value, 'heightUnit');
-								}}
-								reset={() => {
-									setMetaAttribute(['', '', ''], 'height');
-								}}
-								units={['px', 'vh', 'vw']}
-							/>
-							<ResponsiveRangeControls
-								label={__('Max Width', 'kadence-blocks')}
-								value={width?.[0] ? parseFloat(width[0]) : ''}
-								onChange={(value) => {
-									setMetaAttribute(
-										[
-											value.toString(),
-											undefined !== width?.[1] ? width[1] : '',
-											undefined !== width?.[2] ? width[2] : '',
-										],
-										'width'
-									);
-								}}
-								tabletValue={width?.[1] ? parseFloat(width[1]) : ''}
-								onChangeTablet={(value) => {
-									setMetaAttribute(
-										[
-											undefined !== width?.[0] ? width[0] : '',
-											value.toString(),
-											undefined !== width?.[2] ? width[2] : '',
-										],
-										'width'
-									);
-								}}
-								mobileValue={width?.[2] ? parseFloat(width[2]) : ''}
-								onChangeMobile={(value) => {
-									setMetaAttribute(
-										[
-											undefined !== width?.[0] ? width[0] : '',
-											undefined !== width?.[1] ? width[1] : '',
-											value.toString(),
-										],
-										'width'
-									);
-								}}
-								min={0}
-								max={widthUnit === 'px' ? 2000 : 200}
-								step={1}
-								unit={widthUnit ? widthUnit : 'px'}
-								onUnit={(value) => {
-									setMetaAttribute(value, 'widthUnit');
-								}}
-								reset={() => {
-									setMetaAttribute(['', '', ''], 'width');
-								}}
-								units={['px', '%', 'vw']}
-							/>
 						</KadencePanelBody>
 					</>
 				)}
@@ -1499,6 +1391,106 @@ export function EditInner(props) {
 								onMouseOver={marginMouseOver.onMouseOver}
 								onMouseOut={marginMouseOver.onMouseOut}
 								allowAuto={true}
+							/>
+						</KadencePanelBody>
+						<KadencePanelBody
+							title={__('Container Size Settings', 'kadence-blocks')}
+							initialOpen={false}
+							panelName={'kb-header-size-settings'}
+						>
+							<ResponsiveRangeControls
+								label={__('Min Height', 'kadence-blocks')}
+								value={height?.[0] ? parseFloat(height[0]) : ''}
+								onChange={(value) => {
+									setMetaAttribute(
+										[
+											value.toString(),
+											undefined !== height?.[1] ? height[1] : '',
+											undefined !== height?.[2] ? height[2] : '',
+										],
+										'height'
+									);
+								}}
+								tabletValue={height?.[1] ? parseFloat(height[1]) : ''}
+								onChangeTablet={(value) => {
+									setMetaAttribute(
+										[
+											undefined !== height?.[0] ? height[0] : '',
+											value.toString(),
+											undefined !== height?.[2] ? height[2] : '',
+										],
+										'height'
+									);
+								}}
+								mobileValue={height?.[2] ? parseFloat(height[2]) : ''}
+								onChangeMobile={(value) => {
+									setMetaAttribute(
+										[
+											undefined !== height?.[0] ? height[0] : '',
+											undefined !== height?.[1] ? height[1] : '',
+											value.toString(),
+										],
+										'height'
+									);
+								}}
+								min={0}
+								max={heightUnit === 'px' ? 2000 : 200}
+								step={1}
+								unit={heightUnit ? heightUnit : 'px'}
+								onUnit={(value) => {
+									setMetaAttribute(value, 'heightUnit');
+								}}
+								reset={() => {
+									setMetaAttribute(['', '', ''], 'height');
+								}}
+								units={['px', 'vh', 'vw']}
+							/>
+							<ResponsiveRangeControls
+								label={__('Max Width', 'kadence-blocks')}
+								value={width?.[0] ? parseFloat(width[0]) : ''}
+								onChange={(value) => {
+									setMetaAttribute(
+										[
+											value.toString(),
+											undefined !== width?.[1] ? width[1] : '',
+											undefined !== width?.[2] ? width[2] : '',
+										],
+										'width'
+									);
+								}}
+								tabletValue={width?.[1] ? parseFloat(width[1]) : ''}
+								onChangeTablet={(value) => {
+									setMetaAttribute(
+										[
+											undefined !== width?.[0] ? width[0] : '',
+											value.toString(),
+											undefined !== width?.[2] ? width[2] : '',
+										],
+										'width'
+									);
+								}}
+								mobileValue={width?.[2] ? parseFloat(width[2]) : ''}
+								onChangeMobile={(value) => {
+									setMetaAttribute(
+										[
+											undefined !== width?.[0] ? width[0] : '',
+											undefined !== width?.[1] ? width[1] : '',
+											value.toString(),
+										],
+										'width'
+									);
+								}}
+								min={0}
+								max={widthUnit === 'px' ? 2000 : 200}
+								step={1}
+								unit={widthUnit ? widthUnit : 'px'}
+								onUnit={(value) => {
+									setMetaAttribute(value, 'widthUnit');
+								}}
+								reset={() => {
+									setMetaAttribute(['', '', ''], 'width');
+								}}
+								units={['px', '%', 'vw']}
 							/>
 						</KadencePanelBody>
 					</>
