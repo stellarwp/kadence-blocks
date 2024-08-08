@@ -319,7 +319,7 @@ export function Edit(props) {
 										onChangeTablet={(value) => setAttributes({ maxWidthTablet: value })}
 										mobileValue={maxWidthMobile ? maxWidthMobile : ''}
 										onChangeMobile={(value) => setAttributes({ maxWidthMobile: value })}
-										min={0}
+										min={maxWidthUnit === 'px' ? 250 : 0}
 										max={maxWidthUnit === 'px' ? 1500 : 100}
 										step={1}
 										unit={maxWidthUnit}
@@ -337,7 +337,7 @@ export function Edit(props) {
 										onChangeTablet={(value) => setAttributes({ widthTablet: value })}
 										mobileValue={widthMobile ? widthMobile : ''}
 										onChangeMobile={(value) => setAttributes({ widthMobile: value })}
-										min={0}
+										min={widthUnit === 'px' ? 250 : 0}
 										max={widthUnit == 'px' ? 1500 : 100}
 										step={1}
 										unit={widthUnit}
