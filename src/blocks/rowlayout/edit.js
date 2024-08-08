@@ -1182,11 +1182,11 @@ function RowLayoutEditContainer(props) {
 											label={__('Padding', 'kadence-blocks')}
 											value={
 												hasBG &&
-												padding[1] === '' &&
-												padding[3] === '' &&
 												undefined !== padding &&
-												undefined !== padding[0]
-													? ['sm', 'sm', 'sm', 'sm']
+												undefined !== padding[0] &&
+												padding[1] === '' &&
+												padding[3] === ''
+													? [padding[0], 'sm', padding[2], 'sm']
 													: undefined !== padding && undefined !== padding[0]
 													? padding
 													: ['sm', '', 'sm', '']
