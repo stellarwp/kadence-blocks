@@ -30,7 +30,7 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 	 *
 	 * @var string
 	 */
-	protected $block_name = 'header-off-canvas';
+	protected $block_name = 'off-canvas';
 
 	/**
 	 * Block determines in scripts need to be loaded for block.
