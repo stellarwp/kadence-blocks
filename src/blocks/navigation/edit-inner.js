@@ -489,6 +489,13 @@ export function EditInner(props) {
 		: getPreviewSize(previewDevice, orientation, orientationTablet, orientationMobile);
 
 	const setMetaAttribute = (value, key) => {
+		/*
+		 * Some attribute values are typed one way and our components return a different type.
+		 */
+		if (key === 'borderRadius') {
+			value = value.map(String);
+		}
+
 		setMeta({ ...meta, ['_kad_navigation_' + key]: value });
 	};
 
