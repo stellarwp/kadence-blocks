@@ -181,9 +181,10 @@ export function Edit(props) {
 
 	const editorElement = useEditorElement(ref, [selfOrChildSelected, showOffCanvas]);
 	const previewCloseIconSize = getPreviewSize(previewDevice, closeIconSize, closeIconSizeTablet, closeIconSizeMobile);
+	const active = selfOrChildSelected() || showOffCanvas;
 
 	const classes = classnames('wp-block-kadence-off-canvas', `off-canvas-side-${slideFrom}`, {
-		active: selfOrChildSelected() || showOffCanvas,
+		active: active,
 		[`wp-block-kadence-off-canvas${uniqueID}`]: uniqueID,
 	});
 
@@ -595,7 +596,7 @@ export function Edit(props) {
 					</>
 				)}
 			</InspectorControls>
-			<BackendStyles {...props} previewDevice={previewDevice} editorElement={editorElement} />
+			<BackendStyles {...props} previewDevice={previewDevice} editorElement={editorElement} active={active} />
 			<div {...blockProps}>
 				{closeIcon && previewCloseIconSize && (
 					<button className="kb-off-canvas-close">

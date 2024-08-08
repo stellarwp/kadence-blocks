@@ -168,11 +168,9 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 
 		//inner container
 		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-inner');
-		if( empty( $attributes['widthType'] ) || ( isset( $attributes['widthType'] ) &&  $attributes['widthType'] === 'partial') ) {
-			$max_width_unit = !empty( $attributes['containerMaxWidthUnit'] ) ? $attributes['containerMaxWidthUnit'] : 'px';
-			if( !empty( $sized_attributes['containerMaxWidth']) ) {
-				$css->add_property( 'max-width', $sized_attributes['containerMaxWidth'] . $max_width_unit );
-			}
+		$max_width_unit = !empty( $sized_attributes['containerMaxWidthUnit'] ) ? $sized_attributes['containerMaxWidthUnit'] : 'px';
+		if( !empty( $sized_attributes['containerMaxWidth']) ) {
+			$css->add_property( 'max-width', $sized_attributes['containerMaxWidth'] . $max_width_unit );
 		}
 
 		//content area inner alignment
