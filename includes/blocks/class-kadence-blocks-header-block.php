@@ -244,8 +244,6 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 
 		unset( self::$seen_refs[ $attributes['id'] ] );
 
-		$name = ! empty( $attributes['name'] ) ? $attributes['name'] : '';
-
 		// Inherit values.
 		// Just getting a css class for access to methods.
 		$css = Kadence_Blocks_CSS::get_instance();
@@ -282,37 +280,70 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 				: 'standard' ) );
 
 		$wrapper_classes = array( 'wp-block-kadence-header' . $unique_id );
-		$wrapper_classes[] = $is_sticky ? 'header-desktop-sticky' : '';
-		$wrapper_classes[] = $is_sticky_tablet ? 'header-tablet-sticky' : '';
-		$wrapper_classes[] = $is_sticky_mobile ? 'header-mobile-sticky' : '';
-		$wrapper_classes[] = $is_transparent ? 'header-desktop-transparent' : '';
-		$wrapper_classes[] = $is_transparent_tablet ? 'header-tablet-transparent' : '';
-		$wrapper_classes[] = $is_transparent_mobile ? 'header-mobile-transparent' : '';
+		if ( $is_sticky ) {
+			$wrapper_classes[] = 'header-desktop-sticky';
+		}
+		if ( $is_sticky_tablet ) {
+			$wrapper_classes[] = 'header-tablet-sticky';
+		}
+		if ( $is_sticky_mobile ) {
+			$wrapper_classes[] = 'header-mobile-sticky';
+		}
+		if ( $is_transparent ) {
+			$wrapper_classes[] = 'header-desktop-transparent';
+		}
+		if ( $is_transparent_tablet ) {
+			$wrapper_classes[] = 'header-tablet-transparent';
+		}
+		if ( $is_transparent_mobile ) {
+			$wrapper_classes[] = 'header-mobile-transparent';
+		}
 		$wrapper_args = array(
-				'class'      => implode( ' ', $wrapper_classes ),
-				'aria-label' => $name,
-				'data-auto-transparent-spacing' => $header_attributes['autoTransparentSpacing'],
-				'data-sticky' => $is_sticky,
-				'data-sticky-tablet' => $is_sticky_tablet,
-				'data-sticky-mobile' => $is_sticky_mobile,
-				'data-transparent' => $is_transparent,
-				'data-transparent-tablet' => $is_transparent_tablet,
-				'data-transparent-mobile' => $is_transparent_mobile,
-				'data-sticky-section' => $header_attributes['stickySection'] ?: 'main',
-				'data-sticky-section-tablet' => $header_attributes['stickySectionTablet'] ?: 'main',
-				'data-sticky-section-mobile' => $header_attributes['stickySectionMobile'] ?: 'main',
-				'data-shrink-main' => $header_attributes['shrinkMain'],
-				'data-shrink-main-height' => $header_attributes['shrinkMainHeight'] ?: '',
-				'data-shrink-main-height-tablet' => $header_attributes['shrinkMainHeightTablet'] ?: '',
-				'data-shrink-main-height-mobile' => $header_attributes['shrinkMainHeightMobile'] ?: '',
-				'data-reveal-scroll-up' => $header_attributes['revealScrollUp'],
+				'class' => implode( ' ', $wrapper_classes ),
+				'role'  => 'banner',
 		);
-		if ( ! empty( $name ) ) {
-			$wrapper_args['aria-label'] = $name;
+		if ( $header_attributes['autoTransparentSpacing'] ) {
+			$wrapper_args['data-auto-transparent-spacing'] = $header_attributes['autoTransparentSpacing'];
+		}
+		if ( $is_transparent ) {
+			$wrapper_args['data-transparent'] = $is_transparent;
+		}
+		if ( $is_transparent_tablet ) {
+			$wrapper_args['data-transparent-tablet'] = $is_transparent_tablet;
+		}
+		if ( $is_transparent_mobile ) {
+			$wrapper_args['data-transparent-mobile'] = $is_transparent_mobile;
+		}
+		if ( $header_attributes['shrinkMain'] ) {
+			$wrapper_args['data-shrink-main'] = $header_attributes['shrinkMain'];
+		}
+		if ( $header_attributes['shrinkMainHeight'] ) {
+			$wrapper_args['data-shrink-main-height'] = $header_attributes['shrinkMainHeight'];
+		}
+		if ( $header_attributes['shrinkMainHeightTablet'] ) {
+			$wrapper_args['data-shrink-main-height-tablet'] = $header_attributes['shrinkMainHeightTablet'];
+		}
+		if ( $header_attributes['shrinkMainHeightMobile'] ) {
+			$wrapper_args['data-shrink-main-height-mobile'] = $header_attributes['shrinkMainHeightMobile'];
+		}
+		if ( $header_attributes['revealScrollUp'] ) {
+			$wrapper_args['data-reveal-scroll-up'] = $header_attributes['revealScrollUp'];
+		}
+		if ( $is_sticky ) {
+			$wrapper_args['data-sticky'] = $is_sticky;
+			$wrapper_args['data-sticky-section'] = $header_attributes['stickySection'] ?: 'main';
+		}
+		if ( $is_sticky_tablet ) {
+			$wrapper_args['data-sticky-tablet'] = $is_sticky_tablet;
+			$wrapper_args['data-sticky-section-tablet'] = $header_attributes['stickySectionTablet'] ?: 'main';
+		}
+		if ( $is_sticky_mobile ) {
+			$wrapper_args['data-sticky-mobile'] = $is_sticky_mobile;
+			$wrapper_args['data-sticky-section-mobile'] = $header_attributes['stickySectionMobile'] ?: 'main';
 		}
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 		return sprintf(
-			'<div %1$s>%2$s</div>',
+			'<header %1$s>%2$s</header>',
 			$wrapper_attributes,
 			$content
 		);
