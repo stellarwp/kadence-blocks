@@ -30,8 +30,8 @@
 	margin-right: auto;
 }
 .kt-row-has-bg > .kt-row-column-wrap {
-	padding-left: var(--content-edge-padding, 15px);
-	padding-right: var(--content-edge-padding, 15px);
+	padding-left: var(--global-content-edge-padding, 15px);
+	padding-right: var(--global-content-edge-padding, 15px);
 }
 
 .alignfull > .kt-row-layout-inner > .kt-row-column-wrap,
