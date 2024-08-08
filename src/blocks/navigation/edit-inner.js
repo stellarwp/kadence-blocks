@@ -959,6 +959,7 @@ export function EditInner(props) {
 										label={__('Selected Navigation', 'kadence-blocks')}
 										onChange={(nextId) => setAttributes({ id: parseInt(nextId) })}
 										value={id}
+										overrideLabel={title}
 									/>
 
 									<Button
