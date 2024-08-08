@@ -772,14 +772,14 @@ export function EditInner(props) {
 										onChange={(value) => setMetaAttribute(value, 'revealScrollUp')}
 									/>
 									<ToggleControl
-										label={__('Shrink Main Row', 'kadence-blocks')}
+										label={__('Shrink Middle Row', 'kadence-blocks')}
 										checked={shrinkMain}
 										onChange={(value) => setMetaAttribute(value, 'shrinkMain')}
 									/>
 									{shrinkMain &&
-										(previewStickySection.includes('main') || previewStickySection == '') && (
+										(previewStickySection.includes('main') || previewStickySection === '') && (
 											<ResponsiveRangeControls
-												label={__('Main Row Shrink Height', 'kadence-blocks')}
+												label={__('Middle Row Shrink Height', 'kadence-blocks')}
 												value={parseFloat(shrinkMainHeight)}
 												valueTablet={parseFloat(shrinkMainHeightTablet)}
 												valueMobile={parseFloat(shrinkMainHeightMobile)}
