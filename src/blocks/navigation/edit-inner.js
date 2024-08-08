@@ -1117,7 +1117,7 @@ export function EditInner(props) {
 							/>
 						</KadencePanelBody>
 						<KadencePanelBody
-							title={__('Nav Item Styles', 'kadence-blocks')}
+							title={__('Navigation Item Styles', 'kadence-blocks')}
 							initialOpen={false}
 							panelName={'kb-navigation-nav-item-styles'}
 						>
