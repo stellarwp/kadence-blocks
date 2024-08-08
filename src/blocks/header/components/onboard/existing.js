@@ -13,7 +13,7 @@ const HeaderExisting = ({ data, onChange, handleNextStep }) => {
 			if (data.headerExisting !== undefined && data.headerExisting !== 'blank') {
 				onChange({
 					...data,
-					meta: { ...data.meta, isValid: true, exitAndCallbackStep: 1 },
+					meta: { ...data.meta, isValid: true, exitAndCallbackStep: 0 },
 				});
 			} else if (data.headerExisting === 'blank' && !data.meta.isValid) {
 				onChange({
@@ -67,7 +67,6 @@ const HeaderExisting = ({ data, onChange, handleNextStep }) => {
 								}
 								onClick={() => {
 									onChange({ headerExisting: options[key].value });
-									handleNextStep();
 								}}
 								style={{ padding: '20px' }}
 							>
