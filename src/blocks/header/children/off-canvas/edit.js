@@ -391,7 +391,7 @@ export function Edit(props) {
 								value={vAlign ? vAlign : ''}
 								tabletValue={vAlignTablet ? vAlignTablet : ''}
 								mobileValue={vAlignMobile ? vAlignMobile : ''}
-								onChange={(nextAlign) => setAttributes({ vAlign: nextAlign ? nextAlign : 'center' })}
+								onChange={(nextAlign) => setAttributes({ vAlign: nextAlign ? nextAlign : '' })}
 								onChangeTablet={(nextAlign) =>
 									setAttributes({ vAlignTablet: nextAlign ? nextAlign : '' })
 								}

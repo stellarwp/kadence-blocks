@@ -30,7 +30,7 @@ class Kadence_Blocks_Off_Canvas_Trigger_Block extends Kadence_Blocks_Abstract_Bl
 	 *
 	 * @var string
 	 */
-	protected $block_name = 'header-off-canvas-trigger';
+	protected $block_name = 'off-canvas-trigger';
 
 	/**
 	 * Block determines in scripts need to be loaded for block.
@@ -92,26 +92,26 @@ class Kadence_Blocks_Off_Canvas_Trigger_Block extends Kadence_Blocks_Abstract_Bl
 		// For the close icon container styles, they need to get applied to the hover state too, due to resets on hover styles in the css
 		//container
 		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ', .wp-block-kadence-off-canvas-trigger' . $unique_id . ':hover' );
-		$css->render_measure_output( $attributes, 'padding', 'padding', array(
+		$css->render_measure_output( $merged_attributes, 'padding', 'padding', array(
 			'desktop_key' => 'padding',
 			'tablet_key'  => 'paddingTablet',
 			'mobile_key'  => 'paddingMobile',
 		) );
-		$css->render_measure_output( $attributes, 'margin', 'margin', array(
+		$css->render_measure_output( $merged_attributes, 'margin', 'margin', array(
 			'desktop_key' => 'margin',
 			'tablet_key'  => 'marginTablet',
 			'mobile_key'  => 'marginMobile',
 		) );
-		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array(
+		$css->render_measure_output( $merged_attributes, 'borderRadius', 'border-radius', array(
 			'desktop_key' => 'borderRadius',
 			'tablet_key'  => 'borderRadiusTablet',
 			'mobile_key'  => 'borderRadiusMobile',
 		) );
-		$css->render_border_styles( $attributes, 'border' );
+		$css->render_border_styles( $merged_attributes, 'border' );
 
 		//container hover
 		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ':hover' );
-		$css->render_border_styles( $attributes, 'borderHover' );
+		$css->render_border_styles( $merged_attributes, 'borderHover' );
 
 		//icon
 		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ' svg' );
