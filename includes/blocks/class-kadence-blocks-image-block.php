@@ -139,6 +139,11 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 		$overlay_type = ! empty( $attributes['overlayType'] ) ? $attributes['overlayType'] : 'normal';
 		$css->set_selector( '.kb-image' . $unique_id . ' .kb-image-has-overlay:after' );
 		$opacity = isset( $attributes['overlayOpacity'] ) ? $attributes['overlayOpacity'] : 0.3;
+		$desktopBorderRadius = isset( $attributes['borderRadius'] ) ? $attributes['borderRadius'] : '0';
+		$tabletBorderRadius = isset( $attributes['tabletBorderRadius'] ) ? $attributes['tabletBorderRadius'] : '0';
+		$mobileBorderRadius = isset( $attributes['mobileBorderRadius'] ) ? $attributes['mobileBorderRadius'] : '0';
+		$borderRadiusUnit = isset( $attributes['borderRadiusUnit'] ) ? $attributes['borderRadiusUnit'] : 'px';
+
 		if ( $css->is_number( $opacity ) ) {
 			$css->add_property( 'opacity', $opacity );
 		}
@@ -157,8 +162,29 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 				}
 				break;
 		}
-		$css->set_selector( '.kb-image' . $unique_id . ' img.kb-img, .kb-image' . $unique_id . ' .kb-img img' );
+		if ( $desktopBorderRadius ) {
+			$css->add_property( 'border-top-left-radius', $desktopBorderRadius[0] . $borderRadiusUnit );
+			$css->add_property( 'border-top-right-radius', $desktopBorderRadius[1] . $borderRadiusUnit );
+			$css->add_property( 'border-bottom-right-radius', $desktopBorderRadius[2] . $borderRadiusUnit );
+			$css->add_property( 'border-bottom-left-radius', $desktopBorderRadius[3] . $borderRadiusUnit );
+		}
+		$css->set_media_state( 'tablet' );
+		if ( $tabletBorderRadius ) {
+			$css->add_property( 'border-top-left-radius', $tabletBorderRadius[0] . $borderRadiusUnit );
+			$css->add_property( 'border-top-right-radius', $tabletBorderRadius[1] . $borderRadiusUnit );
+			$css->add_property( 'border-bottom-right-radius', $tabletBorderRadius[2] . $borderRadiusUnit );
+			$css->add_property( 'border-bottom-left-radius', $tabletBorderRadius[3] . $borderRadiusUnit );
+		}
+		$css->set_media_state( 'mobile' );
+		if ( $mobileBorderRadius ) {
+			$css->add_property( 'border-top-left-radius', $mobileBorderRadius[0] . $borderRadiusUnit );
+			$css->add_property( 'border-top-right-radius', $mobileBorderRadius[1] . $borderRadiusUnit );
+			$css->add_property( 'border-bottom-right-radius', $mobileBorderRadius[2] . $borderRadiusUnit );
+			$css->add_property( 'border-bottom-left-radius', $mobileBorderRadius[3] . $borderRadiusUnit );
+		}
 
+		$css->set_media_state( 'desktop' );
+		$css->set_selector( '.kb-image' . $unique_id . ' img.kb-img, .kb-image' . $unique_id . ' .kb-img img' );
 		// Support borders saved pre 3.0
 		if ( !empty( $attributes['borderColor'] ) ) {
 			$css->add_property( 'border-style', 'solid' );
