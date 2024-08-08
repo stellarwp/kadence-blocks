@@ -6,7 +6,8 @@
 	"category": "design",
 	"description": "Off Canvas block",
 	"supports": {
-		"inserter": true
+		"inserter": true,
+		"className": true
 	},
 	"textdomain": "kadence-blocks",
 	"attributes": {
