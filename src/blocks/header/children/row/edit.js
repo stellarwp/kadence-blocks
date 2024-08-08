@@ -368,7 +368,7 @@ export function Edit(props) {
 					)}
 					<KadencePanelBody
 						title={__('Border Settings', 'kadence-blocks')}
-						initialOpen={true}
+						initialOpen={false}
 						panelName={'kb-header-row-border-settings'}
 					>
 						<ResponsiveBorderControl

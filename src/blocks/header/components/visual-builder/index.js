@@ -120,7 +120,7 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 
 					{/* Make sure space exists for the visual builder when using in FSE */}
 					{isHeaderTemplate && modalPosition === 'bottom' && (
-						<>{`.is-root-container { padding-bottom: 350px; }`}</>
+						<>{`.is-root-container { min-height: 400px !important; }`}</>
 					)}
 					{isHeaderTemplate && modalPosition === 'top' && (
 						<>{`.is-root-container { min-height: 675px !important; }`}</>

@@ -475,8 +475,7 @@ export default function BackendStyles(props) {
 	const previewIsSticky = getPreviewSize(previewDevice, isSticky, isStickyTablet, isStickyMobile);
 	const previewIsTransparent = getPreviewSize(previewDevice, isTransparent, isTransparentTablet, isTransparentMobile);
 
-	//const elementHeight = useElementHeight(currentRef, [isSelected]);
-	const elementHeight = currentRef?.current?.clientHeight;
+	const elementHeight = currentRef?.clientHeight ? currentRef.clientHeight : currentRef?.current?.clientHeight;
 
 	if (isSelected) {
 		css.set_selector(
@@ -759,6 +758,9 @@ export default function BackendStyles(props) {
 			css.set_selector(`.kb-header-transparent-placeholder + *`);
 			css.add_property('padding-top', elementHeight + 'px');
 		}
+
+		css.set_selector(`.is-root-container`);
+		css.add_property('min-height', elementHeight + 'px !important');
 	}
 
 	const cssOutput = css.css_output();
