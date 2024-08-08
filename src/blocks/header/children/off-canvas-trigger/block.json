@@ -19,10 +19,12 @@
 			"default": 25
 		},
 		"iconSizeTablet": {
-			"type": "number"
+			"type": "number",
+			"default": ""
 		},
 		"iconSizeMobile": {
-			"type": "number"
+			"type": "number",
+			"default": ""
 		},
 		"iconColor": {
 			"type": "string",
