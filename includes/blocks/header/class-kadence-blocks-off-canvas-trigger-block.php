@@ -88,7 +88,7 @@ class Kadence_Blocks_Off_Canvas_Trigger_Block extends Kadence_Blocks_Abstract_Bl
 			$this->sized_dynamic_styles( $css, $merged_attributes, $unique_id, $size );
 		}
 		$css->set_media_state( 'desktop' );
-		
+
 		// For the close icon container styles, they need to get applied to the hover state too, due to resets on hover styles in the css
 		//container
 		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ', .wp-block-kadence-off-canvas-trigger' . $unique_id . ':hover' );
@@ -181,19 +181,15 @@ class Kadence_Blocks_Off_Canvas_Trigger_Block extends Kadence_Blocks_Abstract_Bl
 			$content = Kadence_Blocks_Svg_Render::render( $attributes['icon'], 'currentColor', false, '', false );
 		}
 
-		$attributes = array(
+		$wrapper_args = array(
+			'class'         => implode( ' ', $classes ),
 			'aria-label'    => __( 'Toggle Off Canvas', 'kadence-blocks' ),
 			'aria-expanded' => 'false',
-			'class'         => implode( ' ', $classes ),
 			'id'            => 'kadence-off-canvas-trigger' . $unique_id,
 		);
+		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 
-		foreach ( $attributes as $key => $value ) {
-			$wrap_attributes[] = $key . '="' . esc_attr( $value ) . '"';
-		}
-		$wrap_attributes = implode( ' ', $wrap_attributes );
-
-		$html .= sprintf( '<button %1$s>%2$s</button>', $wrap_attributes, $content );
+		$html .= sprintf( '<button %1$s>%2$s</button>', $wrapper_attributes, $content );
 
 		return $html;
 	}

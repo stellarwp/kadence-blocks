@@ -184,7 +184,7 @@ export function Edit(props) {
 	const active = selfOrChildSelected() || showOffCanvas;
 
 	const classes = classnames('wp-block-kadence-off-canvas', `off-canvas-side-${slideFrom}`, {
-		active: active,
+		active,
 		[`wp-block-kadence-off-canvas${uniqueID}`]: uniqueID,
 	});
 
