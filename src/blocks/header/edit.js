@@ -120,7 +120,6 @@ export function Edit(props) {
 	const blockProps = useBlockProps({
 		className: blockClasses,
 	});
-	const previewIsTransparent = getPreviewSize(previewDevice, isTransparent, isTransparentTablet, isTransparentMobile);
 
 	if (isPreviewMode) {
 		return <>{formTemplateContactIcon}</>;
@@ -270,6 +269,7 @@ export function Edit(props) {
 			</div>
 		);
 	}
+	const previewIsTransparent = getPreviewSize(previewDevice, isTransparent, isTransparentTablet, isTransparentMobile);
 	if (previewIsTransparent) {
 		return <div className="kb-header-transparent-placeholder">{mainBlockContent}</div>;
 	}
