@@ -107,11 +107,19 @@ class Kadence_Blocks_Off_Canvas_Trigger_Block extends Kadence_Blocks_Abstract_Bl
 			'tablet_key'  => 'borderRadiusTablet',
 			'mobile_key'  => 'borderRadiusMobile',
 		) );
-		$css->render_border_styles( $merged_attributes, 'border' );
+		$css->render_border_styles( $merged_attributes, 'border', false, array(
+			'desktop_key' => 'border',
+			'tablet_key'  => 'borderTablet',
+			'mobile_key'  => 'borderMobile',
+		));
 
 		//container hover
 		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ':hover' );
-		$css->render_border_styles( $merged_attributes, 'borderHover' );
+		$css->render_border_styles( $merged_attributes, 'borderHover', false, array(
+			'desktop_key' => 'borderHover',
+			'tablet_key'  => 'borderHoverTablet',
+			'mobile_key'  => 'borderHoverMobile',
+		) );
 
 		//icon
 		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ' svg' );
