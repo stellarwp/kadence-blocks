@@ -120,6 +120,7 @@ export function Edit(props) {
 	const blockProps = useBlockProps({
 		className: blockClasses,
 	});
+	// eslint-disable-next-line @wordpress/no-unused-vars-before-return
 	const previewIsTransparent = getPreviewSize(previewDevice, isTransparent, isTransparentTablet, isTransparentMobile);
 
 	if (isPreviewMode) {
