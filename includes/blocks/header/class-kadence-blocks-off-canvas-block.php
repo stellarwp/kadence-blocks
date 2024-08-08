@@ -251,12 +251,13 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 			'kb-off-canvas-overlay' . $unique_id,
 		);
 
-		$html .= '<div class="' . esc_attr( implode( ' ', $classes ) ) . '">';
-		$html .= $icon;
-		$html .= '<div class="kb-off-canvas-inner">';
-		$html .= $content;
-		$html .= '</div>';
-		$html .= '</div>';
+
+		$wrapper_args = array(
+			'class'         => implode( ' ', $classes ),
+		);
+		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
+
+		$html .= sprintf( '<div %1$s>%2$s<div class="kb-off-canvas-inner">%3$s</div></div>', $wrapper_attributes, $icon, $content );
 
 		if ( empty( $attributes['widthType'] ) || $attributes['widthType'] === 'partial' ) {
 			$html .= '<div data-unique-id="' . esc_attr( $unique_id ) . '" class="' . esc_attr( implode( ' ', $overlay_classes ) ) . '"></div>';
