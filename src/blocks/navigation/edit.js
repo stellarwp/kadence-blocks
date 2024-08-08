@@ -31,16 +31,17 @@ import { getUniqueId, getPostOrFseId, getPreviewSize } from '@kadence/helpers';
  * Internal dependencies
  */
 import EditInner from './edit-inner';
-import { useEffect } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 
 export function Edit(props) {
-	const { attributes, setAttributes, clientId } = props;
+	const { attributes, setAttributes, isSelected, clientId } = props;
 
 	const { id, uniqueID, templateKey } = attributes;
 
 	// Since we're not in the EntityProvider yet, we need to provide a post id.
 	// 'id' and 'meta' will be undefined untill the actual post is chosen / loaded
 	const [meta, setMeta] = useNavigationProp('meta', id);
+	const [tmpTemplateKey, setTmpTemplateKey] = useState(templateKey);
 
 	const metaAttributes = {
 		orientation: meta?._kad_navigation_orientation,
@@ -186,6 +187,19 @@ export function Edit(props) {
 	// 		makeNavigationPost();
 	// 	}
 	// }, []);
+
+	useEffect(() => {
+		// Revert to the template if no nav was created/selected.
+		if (
+			currentPostType !== 'kadence_navigation' &&
+			!isSelected &&
+			id === 0 &&
+			templateKey === '' &&
+			tmpTemplateKey !== ''
+		) {
+			setAttributes({ templateKey: tmpTemplateKey });
+		}
+	}, [isSelected]);
 
 	return (
 		<div {...blockProps}>
