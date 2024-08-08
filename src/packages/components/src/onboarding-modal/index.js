@@ -41,6 +41,14 @@ const OnboardingModal = ({ steps, isOpen, onRequestClose, onSubmit }) => {
 		}
 	}, [formData, currentStep]);
 
+	// Scroll to top on step change
+	useEffect(() => {
+		const elements = document.getElementsByClassName('has-scrolled-content');
+		for (let i = 0; i < elements.length; i++) {
+			elements[i].scrollTo(0, 0);
+		}
+	}, [currentStep]);
+
 	if (!isOpen) {
 		return;
 	}
@@ -62,7 +70,7 @@ const OnboardingModal = ({ steps, isOpen, onRequestClose, onSubmit }) => {
 					<Dashicon icon="no-alt" />
 				</div>
 			</div>
-			<div>
+			<div key={currentStep}>
 				{React.createElement(steps[currentStep].component, {
 					data: formData,
 					onChange: (data) => handleChange(data),
