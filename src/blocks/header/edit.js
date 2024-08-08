@@ -243,8 +243,7 @@ export function Edit(props) {
 				{justCompletedOnboarding === false &&
 					'function' !== typeof directPostData?.content &&
 					isEmpty(directPostData?.content) &&
-					id === 0 &&
-					!isLoading && (
+					id === 0 && (
 						<CreateNewOnly
 							clientId={clientId}
 							postId={postId}
