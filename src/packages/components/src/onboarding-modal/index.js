@@ -68,6 +68,7 @@ const OnboardingModal = ({ steps, isOpen, onRequestClose, onSubmit }) => {
 					onChange: (data) => handleChange(data),
 					handleNextStep,
 					handlePreviousStep,
+					handleFinish,
 				})}
 			</div>
 			<div className={'footer'}>
