@@ -33,6 +33,7 @@ import {
 	InspectorControlTabs,
 	KadencePanelBody,
 	ResponsiveAlignControls,
+	ResponsiveGapSizeControl,
 } from '@kadence/components';
 
 /**
@@ -317,23 +318,22 @@ export function Edit(props) {
 							}
 							showUnit={true}
 						/>
-						<ResponsiveRangeControls
+						<ResponsiveGapSizeControl
 							label={__('Item Gap', 'kadence-blocks')}
 							value={itemGap}
-							onChange={(value) => setAttributes({ itemGap: value })}
+							onChange={(value) => setAttributes({ itemGap: String(value) })}
 							tabletValue={itemGapTablet}
-							onChangeTablet={(value) => setAttributes({ itemGapTablet: value })}
+							onChangeTablet={(value) => setAttributes({ itemGapTablet: String(value) })}
 							mobileValue={itemGapMobile}
-							onChangeMobile={(value) => setAttributes({ itemGapMobile: value })}
+							onChangeMobile={(value) => setAttributes({ itemGapMobile: String(value) })}
 							min={0}
-							max={maxWidthUnit === 'px' ? 2000 : 100}
-							step={1}
+							max={itemGapUnit === 'px' ? 200 : 12}
+							step={itemGapUnit === 'px' ? 1 : 0.1}
 							unit={itemGapUnit}
 							onUnit={(value) => {
 								setAttributes({ itemGapUnit: value });
 							}}
-							units={['px', 'em', 'vw']}
-							showUnit={true}
+							units={['px', 'em', 'rem']}
 						/>
 						<ResponsiveAlignControls
 							label={__('Vertical Alignment', 'kadence-blocks')}

@@ -105,22 +105,32 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 			$css->render_background( $bg_transparent, $css );
 			$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .kadence-header-row-inner' );
 		}
-		$css->render_measure_output( $attributes, 'padding', 'padding', array(
+		$css->render_measure_output( $header_row_attributes, 'padding', 'padding', array(
 			'desktop_key' => 'padding',
 			'tablet_key'  => 'paddingTablet',
 			'mobile_key'  => 'paddingMobile',
 		) );
-		$css->render_measure_output( $attributes, 'margin', 'margin', array(
+		$css->render_measure_output( $header_row_attributes, 'margin', 'margin', array(
 			'desktop_key' => 'margin',
 			'tablet_key'  => 'marginTablet',
 			'mobile_key'  => 'marginMobile',
 		) );
-		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array(
+		$css->render_measure_output( $header_row_attributes, 'borderRadius', 'border-radius', array(
 			'desktop_key' => 'borderRadius',
 			'tablet_key'  => 'borderRadiusTablet',
 			'mobile_key'  => 'borderRadiusMobile',
 		) );
-		$css->render_border_styles( $attributes, 'border' );
+		$css->render_border_styles( $header_row_attributes, 'border' );
+
+		// Pass down to sections.
+		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .wp-block-kadence-header-column, .wp-block-kadence-header-row' . $unique_id . ' .wp-block-kadence-header-section' );
+		// $css->render_row_gap( $header_row_attributes, array( 'itemGap', 'itemGapTablet', 'itemGapMobile' ), 'gap', '', 'itemGapUnit' );
+		$css->render_gap( $header_row_attributes, 'itemGap', 'gap', 'itemGapUnit', array(
+			'desktop_key' => 'itemGap',
+			'tablet_key'  => 'itemGapTablet',
+			'mobile_key'  => 'itemGapMobile',
+		) );
+
 
 		return $css->css_output();
 	}
@@ -148,7 +158,6 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 
 		// Pass down to sections.
 		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .wp-block-kadence-header-column, .wp-block-kadence-header-row' . $unique_id . ' .wp-block-kadence-header-section' );
-		$css->add_property( 'gap', $sized_attributes['itemGap'] . $sized_attributes['itemGapUnit'] );
 		if ( $sized_attributes['vAlign'] == 'top' ) {
 			$css->add_property( 'align-items', 'flex-start' );
 		} else if ( $sized_attributes['vAlign'] == 'bottom' ) {

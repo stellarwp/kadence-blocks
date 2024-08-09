@@ -1,4 +1,10 @@
-import { KadenceBlocksCSS, getPreviewSize, KadenceColorOutput, getSpacingOptionOutput } from '@kadence/helpers';
+import {
+	KadenceBlocksCSS,
+	getPreviewSize,
+	KadenceColorOutput,
+	getSpacingOptionOutput,
+	getGapSizeOptionOutput,
+} from '@kadence/helpers';
 import { min } from 'lodash';
 
 export default function BackendStyles(props) {
@@ -45,6 +51,7 @@ export default function BackendStyles(props) {
 	const previewMinHeight = getPreviewSize(previewDevice, minHeight, minHeightTablet, minHeightMobile);
 	const previewMaxWidth = getPreviewSize(previewDevice, maxWidth, maxWidthTablet, maxWidthMobile);
 	const previewItemGap = getPreviewSize(previewDevice, itemGap, itemGapTablet, itemGapMobile);
+
 	const previewVAlign = getPreviewSize(previewDevice, vAlign, vAlignTablet, vAlignMobile);
 
 	const css = new KadenceBlocksCSS();
@@ -119,7 +126,8 @@ export default function BackendStyles(props) {
 	css.set_selector(
 		`.wp-block-kadence-header-row${uniqueID} .wp-block-kadence-header-section, .wp-block-kadence-header-row${uniqueID} .wp-block-kadence-header-column`
 	);
-	css.add_property('gap', previewItemGap + itemGapUnit);
+	css.add_property('gap', getGapSizeOptionOutput(previewItemGap, itemGapUnit));
+
 	if (previewVAlign == 'top') {
 		css.add_property('align-items', 'flex-start');
 	} else if (previewVAlign == 'bottom') {

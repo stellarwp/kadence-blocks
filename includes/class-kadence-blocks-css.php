@@ -1255,7 +1255,7 @@ class Kadence_Blocks_CSS {
 	 * @param array  $attributes an array of spacing settings.
 	 * @return string
 	 */
-	public function render_gap( $attributes, $name = 'gap', $property = 'gap', $unit_name = 'gapUnit' ) {
+	public function render_gap( $attributes, $name = 'gap', $property = 'gap', $unit_name = 'gapUnit', $args = array() ) {
 		if ( empty( $attributes ) || empty( $name ) ) {
 			return false;
 		}
@@ -1263,16 +1263,40 @@ class Kadence_Blocks_CSS {
 			return false;
 		}
 		$unit = ! empty( $attributes[ $unit_name ] ) ? $attributes[ $unit_name ] : 'px';
-		if ( isset( $attributes[ $name ][0] ) && '' !== $attributes[ $name ][0] && ! is_array( $attributes[ $name ][0] ) ) {
-			$this->add_property( $property, $this->get_gap_size( $attributes[ $name ][0], $unit ) );
+		
+		$defaults = array(
+			'desktop_key' => '',
+			'tablet_key'  => '',
+			'mobile_key'  => '',
+		);
+		$args = wp_parse_args( $args, $defaults );
+
+		$name = $args['desktop_key'] ? $args['desktop_key'] : $name;
+
+		$attribute = '';
+		$attributeTablet = '';
+		$attributeMobile = '';
+
+		if ( is_array( $attributes[ $name ] ) ) {
+			$attribute = isset( $attributes[ $name ][0] ) ? $attributes[ $name ][0] : '';
+			$attributeTablet = isset( $attributes[ $name ][1] ) ? $attributes[ $name ][1] : '';
+			$attributeMobile = isset( $attributes[ $name ][2] ) ? $attributes[ $name ][2] : '';
+		} else {
+			$attribute = isset( $attributes[ $args['desktop_key'] ] ) ? $attributes[ $args['desktop_key'] ] : '';
+			$attributeTablet = isset( $attributes[ $args['tablet_key'] ] ) ? $attributes[ $args['tablet_key'] ] : '';
+			$attributeMobile = isset( $attributes[ $args['mobile_key'] ] ) ? $attributes[ $args['mobile_key'] ] : '';
 		}
-		if ( isset( $attributes[ $name ][1] ) && '' !== $attributes[ $name ][1] && ! is_array( $attributes[ $name ][1] ) ) {
+
+		if ( '' !== $attribute && ! is_array( $attribute ) ) {
+			$this->add_property( $property, $this->get_gap_size( $attribute, $unit ) );
+		}
+		if ( '' !== $attributeTablet && ! is_array( $attributeTablet ) ) {
 			$this->set_media_state( 'tablet' );
-			$this->add_property( $property, $this->get_gap_size( $attributes[ $name ][1], $unit ) );
+			$this->add_property( $property, $this->get_gap_size( $attributeTablet, $unit ) );
 		}
-		if ( isset( $attributes[ $name ][2] ) && '' !== $attributes[ $name ][2] && ! is_array( $attributes[ $name ][2] ) ) {
+		if ( '' !== $attributeMobile && ! is_array( $attributeMobile ) ) {
 			$this->set_media_state( 'mobile' );
-			$this->add_property( $property, $this->get_gap_size( $attributes[ $name ][2], $unit ) );
+			$this->add_property( $property, $this->get_gap_size( $attributeMobile, $unit ) );
 		}
 		$this->set_media_state( 'desktop' );
 	}

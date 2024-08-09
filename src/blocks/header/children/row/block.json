@@ -167,16 +167,16 @@
 			"default": "px"
 		},
 		"itemGap": {
-			"type": "number",
-			"default": 10
+			"type": "string",
+			"default": "10"
 		},
 		"itemGapTablet": {
-			"type": "number",
-			"default": null
+			"type": "string",
+			"default": ""
 		},
-		"itemGapDesktop": {
-			"type": "number",
-			"default": null
+		"itemGapMobile": {
+			"type": "string",
+			"default": ""
 		},
 		"itemGapUnit": {
 			"type": "string",
