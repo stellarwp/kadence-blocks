@@ -73,6 +73,7 @@ const OnboardingModal = ({ steps, isOpen, onRequestClose, onSubmit }) => {
 			<div key={currentStep}>
 				{React.createElement(steps[currentStep].component, {
 					data: formData,
+					componentData: steps[currentStep].componentData,
 					onChange: (data) => handleChange(data),
 					handleNextStep,
 					handlePreviousStep,

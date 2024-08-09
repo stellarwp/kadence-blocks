@@ -331,7 +331,7 @@ function CreateNewOnly({ clientId, setJustCompletedOnboarding, postId }) {
 	};
 
 	const steps = [
-		{ key: 'name', name: 'Header Name', visualNumber: 1, component: HeaderName },
+		{ key: 'name', name: 'Header Name', visualNumber: 1, component: HeaderName, componentData: { postId } },
 		{ key: 'desktop', name: 'Desktop Layout', visualNumber: 2, component: HeaderDesktop },
 		{ key: 'mobile', name: 'Mobile Layout', visualNumber: 3, component: HeaderMobile },
 	];
