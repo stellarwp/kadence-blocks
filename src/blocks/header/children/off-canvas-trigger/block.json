@@ -12,11 +12,15 @@
 		},
 		"icon": {
 			"type": "string",
-			"default": "ic_menu"
+			"default": "fe_menu"
 		},
 		"iconSize": {
 			"type": "number",
 			"default": 25
+		},
+		"lineWidth": {
+			"type": "number",
+			"default": 2
 		},
 		"iconSizeTablet": {
 			"type": "number",
@@ -28,7 +32,7 @@
 		},
 		"iconColor": {
 			"type": "string",
-			"default": "#000000"
+			"default": ""
 		},
 		"iconColorTablet": {
 			"type": "string",

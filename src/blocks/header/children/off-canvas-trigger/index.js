@@ -9,8 +9,6 @@ import { offCanvasTriggerBlockIcon } from '@kadence/icons';
 import edit from './edit';
 import metadata from './block.json';
 
-import { InnerBlocks } from '@wordpress/block-editor';
-
 registerBlockType('kadence/off-canvas-trigger', {
 	...metadata,
 	title: _x('Off Canvas Trigger', 'block title', 'kadence-blocks'),
@@ -19,7 +17,7 @@ registerBlockType('kadence/off-canvas-trigger', {
 		src: offCanvasTriggerBlockIcon,
 	},
 	edit,
-	save: () => {
-		return <InnerBlocks.Content />;
+	save() {
+		return null;
 	},
 });

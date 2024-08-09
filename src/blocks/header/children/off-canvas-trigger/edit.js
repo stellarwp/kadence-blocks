@@ -34,6 +34,7 @@ import {
 	ResponsiveBorderControl,
 	ResponsiveMeasurementControls,
 } from '@kadence/components';
+import { TextControl, RangeControl } from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -51,6 +52,7 @@ export function Edit(props) {
 		iconSize,
 		iconSizeTablet,
 		iconSizeMobile,
+		lineWidth,
 		iconColor,
 		iconColorTablet,
 		iconColorMobile,
@@ -184,6 +186,21 @@ export function Edit(props) {
 								max={250}
 								step={1}
 							/>
+							{icon && 'fe' === icon.substring(0, 2) && (
+								<RangeControl
+									label={__('Icon Line Width', 'kadence-blocks')}
+									value={lineWidth}
+									onChange={(value) => setAttributes({ lineWidth: value })}
+									step={0.5}
+									min={0.5}
+									max={4}
+								/>
+							)}
+							<TextControl
+								label={__('Button Label Attribute for Accessibility', 'kadence-blocks')}
+								value={label}
+								onChange={(value) => setAttributes({ label: value })}
+							/>
 						</KadencePanelBody>
 					</>
 				)}
@@ -274,6 +291,7 @@ export function Edit(props) {
 										? 400
 										: 100
 								}
+								ghostDefault={['xxs', 'xxs', 'xxs', 'xxs']}
 								step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
 								unit={paddingUnit}
 								units={['px', 'em', 'rem', '%']}
@@ -301,7 +319,12 @@ export function Edit(props) {
 			<BackendStyles {...props} previewDevice={previewDevice} />
 
 			{icon && previewIconSize && (
-				<IconRender className={`kb-off-canvas-trigger-icon`} name={icon} size={previewIconSize} />
+				<IconRender
+					className={`kb-off-canvas-trigger-icon`}
+					name={icon}
+					size={previewIconSize}
+					strokeWidth={'fe' === icon.substring(0, 2) ? lineWidth : undefined}
+				/>
 			)}
 		</button>
 	);
