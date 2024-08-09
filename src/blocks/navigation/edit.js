@@ -37,6 +37,7 @@ export function Edit(props) {
 	const { attributes, setAttributes, isSelected, clientId } = props;
 
 	const { id, uniqueID, templateKey } = attributes;
+	const [hasStartedLoading, setHasStartedLoading] = useState(false);
 
 	// Since we're not in the EntityProvider yet, we need to provide a post id.
 	// 'id' and 'meta' will be undefined untill the actual post is chosen / loaded
@@ -201,10 +202,15 @@ export function Edit(props) {
 		}
 	}, [isSelected]);
 
+	if (!hasStartedLoading && isLoading) {
+		setHasStartedLoading(true);
+	}
+
 	return (
 		<div {...blockProps}>
 			{/* No navigation selected or selected navigation was deleted from the site, display chooser */}
-			{((id === 0 && !templateKey) || (undefined === postExists && !isLoading)) && (
+			{((id === 0 && !templateKey) ||
+				(undefined === postExists && hasStartedLoading && !isLoading && post !== null)) && (
 				<Chooser
 					id={id}
 					postExists={postExists}
