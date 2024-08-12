@@ -1273,11 +1273,7 @@ class Kadence_Blocks_CSS {
 
 		$name = $args['desktop_key'] ? $args['desktop_key'] : $name;
 
-		$attribute = '';
-		$attributeTablet = '';
-		$attributeMobile = '';
-
-		if ( is_array( $attributes[ $name ] ) ) {
+		if ( isset( $attributes[ $name ] ) && is_array( $attributes[ $name ] ) ) {
 			$attribute = isset( $attributes[ $name ][0] ) ? $attributes[ $name ][0] : '';
 			$attributeTablet = isset( $attributes[ $name ][1] ) ? $attributes[ $name ][1] : '';
 			$attributeMobile = isset( $attributes[ $name ][2] ) ? $attributes[ $name ][2] : '';
