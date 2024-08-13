@@ -344,7 +344,8 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 
-		$header_tag = $header_attributes['headerTag'] ?: 'header';
+		$allowed_tags = [ 'header', 'div'];
+		$header_tag = $this->get_html_tag( $header_attributes, 'headerTag', 'header', $allowed_tags);
 
 		return sprintf(
 			'<%1$s %2$s>%3$s</%1$s>',
