@@ -17,7 +17,7 @@ import classnames from 'classnames';
 import { __ } from '@wordpress/i18n';
 import { isEmpty } from 'lodash';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { headerBlockIcon, formTemplateContactIcon } from '@kadence/icons';
+import { headerBlockIcon } from '@kadence/icons';
 import { KadencePanelBody, SelectPostFromPostType, OnboardingModal } from '@kadence/components';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { Placeholder, Spinner } from '@wordpress/components';
@@ -123,9 +123,6 @@ export function Edit(props) {
 	// eslint-disable-next-line @wordpress/no-unused-vars-before-return
 	const previewIsTransparent = getPreviewSize(previewDevice, isTransparent, isTransparentTablet, isTransparentMobile);
 
-	if (isPreviewMode) {
-		return <>{formTemplateContactIcon}</>;
-	}
 	useEffect(() => {
 		const postOrFseId = getPostOrFseId(props, parentData);
 		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
