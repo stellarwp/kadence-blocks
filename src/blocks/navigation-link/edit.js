@@ -1040,7 +1040,7 @@ export default function Edit(props) {
 				)}
 
 				{activeTab === 'style' && (
-					<>{applyFilters('kadence.styleControlsNavigationLink', styleControls, props, previewDevice)}</>
+					<>{applyFilters('kadence.styleControlsNavigationLink', styleControls, props, hasChildren)}</>
 				)}
 
 				{activeTab === 'advanced' && (
