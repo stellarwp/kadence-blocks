@@ -28,6 +28,7 @@ import {
 	ToggleControl,
 	ToolbarGroup,
 	ToolbarButton,
+	SelectControl,
 } from '@wordpress/components';
 import { headerBlockIcon } from '@kadence/icons';
 import {
@@ -190,6 +191,7 @@ export function EditInner(props) {
 		shrinkMainHeightMobile: meta?._kad_header_shrinkMainHeightMobile,
 		revealScrollUp: meta?._kad_header_revealScrollUp,
 		shadow: meta?._kad_header_shadow,
+		headerTag: meta?._kad_header_headerTag,
 	};
 
 	const {
@@ -274,6 +276,7 @@ export function EditInner(props) {
 		shrinkMainHeightMobile,
 		revealScrollUp,
 		shadow,
+		headerTag,
 	} = metaAttributes;
 
 	const setMetaAttribute = (value, key) => {
@@ -1497,6 +1500,15 @@ export function EditInner(props) {
 				)}
 			</InspectorControls>
 			<InspectorAdvancedControls>
+				<SelectControl
+					label={__('Header Tag', 'kadence-blocks')}
+					value={headerTag}
+					options={[
+						{ value: '', label: __('<header>', 'kadence-blocks') },
+						{ value: 'div', label: __('<div>', 'kadence-blocks') },
+					]}
+					onChange={(value) => setMetaAttribute(value, 'headerTag')}
+				/>
 				<TextControl
 					__nextHasNoMarginBottom
 					className="html-anchor-control"

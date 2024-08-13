@@ -341,9 +341,14 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 			$wrapper_args['data-sticky-mobile'] = $is_sticky_mobile;
 			$wrapper_args['data-sticky-section-mobile'] = $header_attributes['stickySectionMobile'] ?: 'main';
 		}
+
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
+
+		$header_tag = $header_attributes['headerTag'] ?: 'header';
+
 		return sprintf(
-			'<header %1$s>%2$s</header>',
+			'<%1$s %2$s>%3$s</%1$s>',
+			$header_tag,
 			$wrapper_attributes,
 			$content
 		);

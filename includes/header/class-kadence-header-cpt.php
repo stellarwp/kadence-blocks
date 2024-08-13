@@ -1161,6 +1161,11 @@ class Kadence_Blocks_Header_CPT_Controller {
 					'inset'    => array( 'type' => 'boolean' ),
 				),
 			),
+			array(
+				'key'     => '_kad_header_headerTag',
+				'default' => '',
+				'type'    => 'string',
+			),
 		);
 
 		foreach ( $register_meta as $meta ) {
