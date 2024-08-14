@@ -28,16 +28,18 @@ jobs:
         steps:
             - name: Checkout the repository
               uses: actions/checkout@v4
+              with:
+                submodules: 'true'
 
             - name: Checkout slic
               uses: actions/checkout@v4
               with:
                   repository: stellarwp/slic
-                  ref: 1.5.4
+                  ref: 1.7.0
                   path: slic
                   fetch-depth: 1
 
-            - uses: oven-sh/setup-bun@v1
+            - uses: oven-sh/setup-bun@v2
               with:
                   bun-version: latest
 

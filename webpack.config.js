@@ -1,16 +1,12 @@
 const defaultConfig = require('@wordpress/scripts/config/webpack.config');
 const DependencyExtractionWebpackPlugin = require('@wordpress/dependency-extraction-webpack-plugin');
 const StyleOnlyEntryPlugin = require('./src/config/style-only-entry-plugin');
-const EXTERNAL_NAME = 'kadence';
-const HANDLE_NAME = 'kadence';
-const PROJECT_NAMESPACE = '@kadence/';
-
-function camelCaseDash(string) {
-	return string.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
-}
 
 module.exports = {
 	...defaultConfig,
+	watchOptions: {
+		ignored: /node_modules/,
+	},
 	entry: {
 		'blocks-googlemaps': './src/blocks/googlemaps/block.js',
 		'blocks-lottie': './src/blocks/lottie/index.js',

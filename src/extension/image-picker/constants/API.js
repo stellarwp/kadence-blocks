@@ -1,5 +1,3 @@
-import { PexelsIcon } from '@kadence/icons';
-
 export const API = {
 	proxy: 'https://content.startertemplatecloud.com/',
 	defaults: {
@@ -17,6 +15,5 @@ export const API = {
 		requires_key: true,
 		new: false,
 		api_var: 'key',
-		icon: PexelsIcon,
 	},
 };
