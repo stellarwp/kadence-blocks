@@ -183,6 +183,7 @@ Release Date: August TBD 2024
 * Fix: Caption background color in Advanced Gallery block.
 * Fix: Rendering custom SVGs with group tags.
 * Fix: Spacer height when using vh with default height value.
+* Fix: Border radius with overlay colors on Advanced Image block.
 
 = 3.2.50 =
 Release Date: July 25th 2024
