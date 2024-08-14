@@ -12,9 +12,6 @@ function camelCaseDash(string) {
 module.exports = {
 	...defaultConfig,
 	entry: {
-		icons: './src/packages/icons/src/index.js',
-		components: './src/packages/components/src/index.js',
-		helpers: './src/packages/helpers/src/index.js',
 		'blocks-googlemaps': './src/blocks/googlemaps/block.js',
 		'blocks-lottie': './src/blocks/lottie/index.js',
 		'blocks-image': './src/blocks/image/index.js',
@@ -62,15 +59,6 @@ module.exports = {
 			requestToExternal(request) {
 				if (request.endsWith('.css')) {
 					return false;
-				}
-
-				if (request.startsWith(PROJECT_NAMESPACE)) {
-					return [EXTERNAL_NAME, camelCaseDash(request.substring(PROJECT_NAMESPACE.length))];
-				}
-			},
-			requestToHandle(request) {
-				if (request.startsWith(PROJECT_NAMESPACE)) {
-					return `${HANDLE_NAME}-${request.substring(PROJECT_NAMESPACE.length)}`;
 				}
 			},
 		}),
