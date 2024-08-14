@@ -139,6 +139,7 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 		$overlay_type = ! empty( $attributes['overlayType'] ) ? $attributes['overlayType'] : 'normal';
 		$css->set_selector( '.kb-image' . $unique_id . ' .kb-image-has-overlay:after' );
 		$opacity = isset( $attributes['overlayOpacity'] ) ? $attributes['overlayOpacity'] : 0.3;
+
 		if ( $css->is_number( $opacity ) ) {
 			$css->add_property( 'opacity', $opacity );
 		}
@@ -157,8 +158,12 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 				}
 				break;
 		}
-		$css->set_selector( '.kb-image' . $unique_id . ' img.kb-img, .kb-image' . $unique_id . ' .kb-img img' );
 
+		// Border Radius.
+		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array( 'unit_key' => 'borderRadiusUnit' ) );
+
+		$css->set_media_state( 'desktop' );
+		$css->set_selector( '.kb-image' . $unique_id . ' img.kb-img, .kb-image' . $unique_id . ' .kb-img img' );
 		// Support borders saved pre 3.0
 		if ( !empty( $attributes['borderColor'] ) ) {
 			$css->add_property( 'border-style', 'solid' );
