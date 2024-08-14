@@ -21,6 +21,7 @@
 		"@dr-kobros/react-webfont-loader": "^8.0.0",
 		"@floating-ui/react": "^0.26.16",
 		"@hcaptcha/react-hcaptcha": "^1.8.1",
+		"@kadence/components": "file:src/packages/components",
 		"@kadence/helpers": "file:src/packages/helpers",
 		"@kadence/icons": "file:src/packages/icons",
 		"@react-google-maps/api": "^2.12.0",
