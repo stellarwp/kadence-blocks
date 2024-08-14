@@ -683,6 +683,8 @@ export function EditInner(props) {
 		);
 	};
 
+	const TEMPLATE = [['kadence/navigation-link', { label: 'Home', url: '/' }]];
+
 	const innerBlocksProps = useInnerBlocksProps(
 		{
 			className: innerNavClasses,
@@ -696,6 +698,7 @@ export function EditInner(props) {
 			templateLock: false,
 			defaultBlock: DEFAULT_BLOCK,
 			renderAppender: false,
+			template: TEMPLATE,
 		}
 	);
 
