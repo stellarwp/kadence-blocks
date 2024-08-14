@@ -127,6 +127,9 @@
 			"exclude_from_prefix": {
 				"file_patterns": [
 					"/symfony\\/polyfill-(.*)/"
+				],
+				"packages": [
+					"stellarwp/container-contract"
 				]
 			},
 			"include_modified_date": false,

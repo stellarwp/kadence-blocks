@@ -8,7 +8,7 @@
 namespace KadenceWP\KadenceBlocks;
 
 use KadenceWP\KadenceBlocks\App;
-use KadenceWP\KadenceBlocks\StellarWP\ContainerContract\ContainerInterface;
+use StellarWP\ContainerContract\ContainerInterface;
 use Kadence_Blocks_Prebuilt_Library_REST_Controller;
 
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;

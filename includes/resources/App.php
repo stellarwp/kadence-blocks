@@ -8,7 +8,7 @@ use KadenceWP\KadenceBlocks\Cache\Cache_Provider;
 use KadenceWP\KadenceBlocks\Health\Health_Provider;
 use KadenceWP\KadenceBlocks\Image_Downloader\Image_Downloader_Provider;
 use KadenceWP\KadenceBlocks\Shutdown\Shutdown_Provider;
-use KadenceWP\KadenceBlocks\StellarWP\ContainerContract\ContainerInterface;
+use StellarWP\ContainerContract\ContainerInterface;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Container;
 use KadenceWP\KadenceBlocks\StellarWP\ProphecyMonorepo\Container\Contracts\Providable;
 use KadenceWP\KadenceBlocks\Uplink\Uplink_Provider;

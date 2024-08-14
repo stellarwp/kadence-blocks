@@ -3,7 +3,7 @@
 namespace KadenceWP\KadenceBlocks;
 
 use KadenceWP\KadenceBlocks\lucatume\DI52\Container as DI52Container;
-use KadenceWP\KadenceBlocks\StellarWP\ContainerContract\ContainerInterface;
+use StellarWP\ContainerContract\ContainerInterface;
 
 class Container implements ContainerInterface {
 
