@@ -1,0 +1,3 @@
+[submodule "src/packages/helpers"]
+	path = src/packages/helpers
+	url = https://github.com/stellarwp/kadence-helpers/
