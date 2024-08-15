@@ -24,7 +24,7 @@
 		},
 		"maxWidth": {
 			"type": "number",
-			"default": null
+			"default": 400
 		},
 		"maxWidthTablet": {
 			"type": "number",
@@ -33,6 +33,10 @@
 		"maxWidthMobile": {
 			"type": "number",
 			"default": null
+		},
+		"maxWidthUnit": {
+			"type": "string",
+			"default": "px"
 		},
 		"containerMaxWidth": {
 			"type": "number",
@@ -47,26 +51,6 @@
 			"default": null
 		},
 		"containerMaxWidthUnit": {
-			"type": "string",
-			"default": "px"
-		},
-		"maxWidthUnit": {
-			"type": "string",
-			"default": "px"
-		},
-		"width": {
-			"type": "number",
-			"default": null
-		},
-		"widthTablet": {
-			"type": "number",
-			"default": null
-		},
-		"widthMobile": {
-			"type": "number",
-			"default": null
-		},
-		"widthUnit": {
 			"type": "string",
 			"default": "px"
 		},

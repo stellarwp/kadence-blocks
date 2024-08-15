@@ -75,10 +75,6 @@ export function Edit(props) {
 		containerMaxWidthTablet,
 		containerMaxWidthMobile,
 		containerMaxWidthUnit,
-		width,
-		widthTablet,
-		widthMobile,
-		widthUnit,
 		hAlign,
 		hAlignTablet,
 		hAlignMobile,
@@ -323,27 +319,16 @@ export function Edit(props) {
 										max={maxWidthUnit === 'px' ? 1500 : 100}
 										step={1}
 										unit={maxWidthUnit}
-										showUnit={true}
+										onUnit={(value) => setAttributes({ maxWidthUnit: value })}
 										units={['px', 'vw', '%']}
 										reset={() =>
-											setAttributes({ maxWidth: '', maxWidthTablet: '', maxWidthMobile: '' })
+											setAttributes({
+												maxWidth: '',
+												maxWidthTablet: '',
+												maxWidthMobile: '',
+												maxWidthUnit: 'px',
+											})
 										}
-									/>
-									<ResponsiveRangeControls
-										label={__('Width', 'kadence-blocks')}
-										value={width !== 0 ? width : ''}
-										onChange={(value) => setAttributes({ width: value })}
-										tabletValue={widthTablet ? widthTablet : ''}
-										onChangeTablet={(value) => setAttributes({ widthTablet: value })}
-										mobileValue={widthMobile ? widthMobile : ''}
-										onChangeMobile={(value) => setAttributes({ widthMobile: value })}
-										min={widthUnit === 'px' ? 250 : 0}
-										max={widthUnit == 'px' ? 1500 : 100}
-										step={1}
-										unit={widthUnit}
-										showUnit={true}
-										units={['px', 'vw', '%']}
-										reset={() => setAttributes({ width: '', widthTablet: '', maxWidthMobile: '' })}
 									/>
 								</>
 							)}

@@ -88,12 +88,6 @@ export default function BackendStyles(props) {
 		undefined !== maxWidthTablet ? maxWidthTablet : '',
 		undefined !== maxWidthMobile ? maxWidthMobile : ''
 	);
-	const previewWidth = getPreviewSize(
-		previewDevice,
-		undefined !== width ? width : '',
-		undefined !== widthTablet ? widthTablet : '',
-		undefined !== widthMobile ? widthMobile : ''
-	);
 
 	const previewContainerMaxWidth = getPreviewSize(
 		previewDevice,
@@ -159,9 +153,6 @@ export default function BackendStyles(props) {
 	} else {
 		if (previewMaxWidth) {
 			css.add_property('max-width', previewMaxWidth + maxWidthUnit);
-		}
-		if (previewWidth) {
-			css.add_property('width', previewWidth + widthUnit);
 		}
 	}
 	css.add_property('border-top', css.render_border(border, borderTablet, borderMobile, previewDevice, 'top', false));
