@@ -683,7 +683,7 @@ export function EditInner(props) {
 		);
 	};
 
-	const TEMPLATE = [['kadence/navigation-link', { label: 'Home', url: '/' }]];
+	const TEMPLATE = [['kadence/navigation-link', { label: __('Home', 'kadence-blocks'), url: '/' }]];
 
 	const innerBlocksProps = useInnerBlocksProps(
 		{
