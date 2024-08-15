@@ -143,9 +143,6 @@ export function Edit(props) {
 	});
 	const blockProps = useBlockProps({
 		className: blockClasses,
-		style: {
-			display: previewDevice === 'Desktop' ? 'block' : 'none',
-		},
 	});
 	const innerBlocksProps = useInnerBlocksProps(
 		{
