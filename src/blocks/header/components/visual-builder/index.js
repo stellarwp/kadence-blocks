@@ -119,12 +119,8 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 					{modalPosition === 'top' && <>{`.kb-off-canvas-inner { margin-top: 250px; }`}</>}
 
 					{/* Make sure space exists for the visual builder when using in FSE */}
-					{isHeaderTemplate && modalPosition === 'bottom' && (
-						<>{`.is-root-container { min-height: 400px !important; }`}</>
-					)}
-					{isHeaderTemplate && modalPosition === 'top' && (
-						<>{`.is-root-container { min-height: 675px !important; }`}</>
-					)}
+					{isHeaderTemplate && modalPosition === 'bottom' && <>{`:root { --kb-editor-height-vb: 400px; }`}</>}
+					{isHeaderTemplate && modalPosition === 'top' && <>{`:root { --kb-editor-height-vb: 675px ; }`}</>}
 				</style>
 			)}
 			<div ref={ref}>
@@ -140,7 +136,7 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 							{__('Open Visual Builder', 'kadence-blocks')}
 						</Button>
 
-						<style>{'.editor-styles-wrapper{padding-bottom: 57px}'}</style>
+						<style>{':root{--kb-editor-height-vb: 57px}'}</style>
 					</div>
 				)}
 				{isVisible && (

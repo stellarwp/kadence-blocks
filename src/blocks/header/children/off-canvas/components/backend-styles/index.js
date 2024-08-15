@@ -320,8 +320,8 @@ export default function BackendStyles(props) {
 
 	if (active) {
 		//make sure the full site editing canvas is some what up to the height of editing this component
-		css.set_selector(`div.is-root-container`);
-		css.add_property('min-height', 600 + 'px !important');
+		css.set_selector(`:root`);
+		css.add_property('--kb-editor-height-oc', 600 + 'px');
 	}
 
 	const cssOutput = css.css_output();
