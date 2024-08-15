@@ -8,11 +8,11 @@
 	cursor: pointer;
 	display: flex;
 	overflow: auto;
-	svg {
-	}
+	box-shadow: none;
 	&:hover,
 	&:focus {
 		color: currentColor;
 		background: none;
+		box-shadow: none;
 	}
 }
