@@ -82,7 +82,7 @@
 	background:transparent;
 	//transition: opacity .3s ease-in-out;
 }
-.kb-button:hover::before {
+.kb-button:hover::before, .kb-button:focus::before{
 	opacity: 1;
 }
 .wp-block-kadence-advancedbtn .kb-button.kt-btn-size-small{
