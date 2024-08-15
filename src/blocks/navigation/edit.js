@@ -21,7 +21,7 @@ import { navigationBlockIcon } from '@kadence/icons';
 import { KadencePanelBody, SelectPostFromPostType } from '@kadence/components';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { Placeholder, Spinner, Button } from '@wordpress/components';
-import { store as coreStore, EntityProvider, useEntityProp } from '@wordpress/core-data';
+import { store as coreStore, EntityProvider, useEntityProp, useEntityBlockEditor } from '@wordpress/core-data';
 
 import { useEntityAutoDraft, useEntityAutoDraftAndPublish } from './hooks';
 import { SelectOrCreatePlaceholder } from './components';
@@ -31,6 +31,7 @@ import { getUniqueId, getPostOrFseId, getPreviewSize } from '@kadence/helpers';
  * Internal dependencies
  */
 import EditInner from './edit-inner';
+import { buildTemplateFromSelection } from './helpers';
 import { useEffect, useState } from '@wordpress/element';
 
 export function Edit(props) {
@@ -38,6 +39,7 @@ export function Edit(props) {
 
 	const { id, uniqueID, templateKey, makePost } = attributes;
 	const [hasStartedLoading, setHasStartedLoading] = useState(false);
+	const [isLoadingTemplateContent, setIsLoadingTemplateContent] = useState(false);
 
 	// Since we're not in the EntityProvider yet, we need to provide a post id.
 	// 'id' and 'meta' will be undefined untill the actual post is chosen / loaded
@@ -172,36 +174,16 @@ export function Edit(props) {
 
 	const [isAdding, addNew] = useEntityAutoDraftAndPublish('kadence_navigation', 'kadence_navigation');
 	const [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_navigation', { id: id });
+	const [existingTitle, setTitle] = useNavigationProp('title', id);
+
 	const makeTemplatedNavigationPost = async () => {
 		try {
+			setIsLoadingTemplateContent(true);
 			const response = await addNew();
 			const newPostId = response?.id;
 
 			if (newPostId) {
-				setAttributes({ id: newPostId, makePost: false });
-				let updatedMeta = meta;
-
-				const { templateInnerBlocks, templatePostMeta } = buildTemplateFromSelection(templateKey);
-
-				if (templateInnerBlocks) {
-					updatedMeta = { ...meta, ...templatePostMeta };
-					onChange(templateInnerBlocks, clientId);
-				} else {
-					// Skip, or template not found
-					onChange([createBlock('kadence/navigation', {}, [])], clientId);
-				}
-
-				setTitle(templateKey);
-
-				updatedMeta._kad_navigation_description = 'A placeholder navigation';
-
-				setMeta({ ...meta, updatedMeta });
-				await wp.data
-					.dispatch('core')
-					.saveEditedEntityRecord('postType', 'kadence_navigation', id)
-					.then(() => {
-						console.log('finished');
-					});
+				setAttributes({ id: newPostId });
 			}
 		} catch (error) {
 			console.error(error);
@@ -218,6 +200,35 @@ export function Edit(props) {
 	}, []);
 
 	useEffect(() => {
+		if (id && templateKey && makePost) {
+			//do the inner blocks and meta
+			let updatedMeta = meta;
+
+			const { templateInnerBlocks, templatePostMeta } = buildTemplateFromSelection(templateKey);
+
+			if (templateInnerBlocks) {
+				updatedMeta = { ...meta, ...templatePostMeta };
+				onChange(templateInnerBlocks, clientId);
+			} else {
+				// Skip, or template not found
+				onChange([createBlock('kadence/navigation', {}, [])], clientId);
+			}
+
+			setTitle(templateKey);
+
+			updatedMeta._kad_navigation_description = 'A placeholder navigation';
+
+			setMeta({ ...meta, updatedMeta });
+			wp.data
+				.dispatch('core')
+				.saveEditedEntityRecord('postType', 'kadence_navigation', id)
+				.then(() => {
+					setIsLoadingTemplateContent(false);
+				});
+		}
+	}, [id]);
+
+	useEffect(() => {
 		// Revert to the template if no nav was created/selected.
 		if (
 			currentPostType !== 'kadence_navigation' &&
@@ -232,6 +243,11 @@ export function Edit(props) {
 
 	if (!hasStartedLoading && isLoading) {
 		setHasStartedLoading(true);
+	}
+
+	//todo, handle this short circuit better
+	if (isLoadingTemplateContent) {
+		return <Spinner />;
 	}
 
 	return (
