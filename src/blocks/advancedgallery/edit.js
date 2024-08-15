@@ -354,6 +354,13 @@ export default function GalleryEdit(props) {
 		undefined !== carouselHeight[2] ? carouselHeight[2] : ''
 	);
 
+	const previewImageRadius = getPreviewSize(
+		previewDevice,
+		undefined !== imageRadius ? imageRadius : '',
+		undefined !== tabletImageRadius ? tabletImageRadius : '',
+		undefined !== mobileImageRadius ? mobileImageRadius : ''
+	);
+
 	const blockProps = useBlockProps({
 		className: `kb-gallery-container`,
 	});
@@ -2055,16 +2062,20 @@ export default function GalleryEdit(props) {
 			}; }
 					.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item .kb-gal-image-radius {
 						${
-							imageRadius && undefined !== imageRadius[0] && '' !== imageRadius[0]
+							previewImageRadius
 								? 'border-radius:' +
-								  imageRadius[0] +
-								  'px ' +
-								  imageRadius[1] +
-								  'px ' +
-								  imageRadius[2] +
-								  'px ' +
-								  imageRadius[3] +
-								  'px;'
+								  previewImageRadius[0] +
+								  imageRadiusUnit +
+								  ' ' +
+								  previewImageRadius[1] +
+								  imageRadiusUnit +
+								  ' ' +
+								  previewImageRadius[2] +
+								  imageRadiusUnit +
+								  ' ' +
+								  previewImageRadius[3] +
+								  imageRadiusUnit +
+								  ';'
 								: ''
 						}
 					}

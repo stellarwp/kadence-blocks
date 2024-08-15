@@ -2059,6 +2059,18 @@ export default function Image({
 				{previewOverlay
 					? `.kadence-image${uniqueID} .kb-image-has-overlay:after { background:${previewOverlay}; }`
 					: ''}
+				{previewOverlay && previewRadiusTop
+					? `.kadence-image${uniqueID} .kb-image-has-overlay:after { border-top-left-radius:${previewRadiusTop}${borderRadiusUnit}; }`
+					: ''}
+				{previewOverlay && previewRadiusRight
+					? `.kadence-image${uniqueID} .kb-image-has-overlay:after { border-top-right-radius:${previewRadiusRight}${borderRadiusUnit}; }`
+					: ''}
+				{previewOverlay && previewRadiusBottom
+					? `.kadence-image${uniqueID} .kb-image-has-overlay:after { border-bottom-right-radius:${previewRadiusBottom}${borderRadiusUnit}; }`
+					: ''}
+				{previewOverlay && previewRadiusLeft
+					? `.kadence-image${uniqueID} .kb-image-has-overlay:after { border-bottom-left-radius:${previewRadiusLeft}${borderRadiusUnit}; }`
+					: ''}
 				{previewMaxWidth
 					? `.kadence-inner-column-inner:where(.section-is-flex) > .kadence-image${uniqueID} { max-width: ${previewMaxWidth}px; }`
 					: ''}
