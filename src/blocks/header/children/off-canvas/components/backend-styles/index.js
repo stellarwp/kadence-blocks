@@ -2,7 +2,7 @@ import { KadenceBlocksCSS, getPreviewSize, KadenceColorOutput, getSpacingOptionO
 import { useRef } from '@wordpress/element';
 
 export default function BackendStyles(props) {
-	const { attributes, isSelected, previewDevice, editorElement, context } = props;
+	const { attributes, isSelected, previewDevice, editorElement, context, active } = props;
 
 	const {
 		uniqueID,
@@ -317,6 +317,12 @@ export default function BackendStyles(props) {
 	//close icon hover
 	css.set_selector(`.wp-block-kadence-off-canvas${uniqueID} .kb-off-canvas-close:hover svg`);
 	css.add_property('color', KadenceColorOutput(previewCloseIconColorHover));
+
+	if (active) {
+		//make sure the full site editing canvas is some what up to the height of editing this component
+		css.set_selector(`:root`);
+		css.add_property('--kb-editor-height-oc', 600 + 'px');
+	}
 
 	const cssOutput = css.css_output();
 

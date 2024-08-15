@@ -1,4 +1,10 @@
-import { KadenceBlocksCSS, getPreviewSize, KadenceColorOutput, getSpacingOptionOutput } from '@kadence/helpers';
+import {
+	KadenceBlocksCSS,
+	getPreviewSize,
+	KadenceColorOutput,
+	getSpacingOptionOutput,
+	getGapSizeOptionOutput,
+} from '@kadence/helpers';
 import { min } from 'lodash';
 
 export default function BackendStyles(props) {
@@ -28,10 +34,6 @@ export default function BackendStyles(props) {
 		minHeightTablet,
 		minHeightMobile,
 		minHeightUnit,
-		height,
-		heightTablet,
-		heightMobile,
-		heightUnit,
 		maxWidth,
 		maxWidthTablet,
 		maxWidthMobile,
@@ -43,25 +45,22 @@ export default function BackendStyles(props) {
 		vAlign,
 		vAlignTablet,
 		vAlignMobile,
+		layout,
 	} = attributes;
 
 	const previewMinHeight = getPreviewSize(previewDevice, minHeight, minHeightTablet, minHeightMobile);
-	const previewHeight = getPreviewSize(previewDevice, height, heightTablet, heightMobile);
 	const previewMaxWidth = getPreviewSize(previewDevice, maxWidth, maxWidthTablet, maxWidthMobile);
 	const previewItemGap = getPreviewSize(previewDevice, itemGap, itemGapTablet, itemGapMobile);
+
 	const previewVAlign = getPreviewSize(previewDevice, vAlign, vAlignTablet, vAlignMobile);
 
 	const css = new KadenceBlocksCSS();
-
 	//container
-	css.set_selector(`.wp-block-kadence-header-row${uniqueID}`);
+	css.set_selector(`.wp-block-kadence-header-row.wp-block-kadence-header-row${uniqueID} .kadence-header-row-inner`);
 	css.render_measure_output(padding, paddingTablet, paddingMobile, previewDevice, 'padding', paddingUnit);
 	css.render_measure_output(margin, marginTablet, marginMobile, previewDevice, 'margin', marginUnit);
 	if (previewMinHeight != 0 && previewMinHeight) {
 		css.add_property('min-height', previewMinHeight + minHeightUnit);
-	}
-	if (previewHeight != 0 && previewHeight) {
-		css.add_property('min-height', previewHeight + heightUnit);
 	}
 	if (previewMaxWidth != 0 && previewMaxWidth) {
 		css.add_property('max-width', previewMaxWidth + maxWidthUnit);
@@ -87,12 +86,17 @@ export default function BackendStyles(props) {
 		'border-radius',
 		borderRadiusUnit
 	);
+	if ('contained' === layout) {
+		css.set_selector(`.wp-block-kadence-header-row${uniqueID} .kadence-header-row-inner`);
+	} else {
+		css.set_selector(`.wp-block-kadence-header-row${uniqueID}`);
+	}
 	if ('normal' === background?.type && background?.image) {
 		css.add_property('background-image', background.image);
-		css.add_property('background-size', background.imageSize);
-		css.add_property('background-repeat', background.imageRepeat);
-		css.add_property('background-attachment', background.imageAttachment);
-		css.add_property('background-position', background.imagePosition);
+		css.add_property('background-size', background.size);
+		css.add_property('background-repeat', background.repeat);
+		css.add_property('background-attachment', background.attachment);
+		css.add_property('background-position', background.position);
 	}
 	if ('normal' === background?.type && background?.color) {
 		css.add_property('background-color', KadenceColorOutput(background.color));
@@ -103,15 +107,15 @@ export default function BackendStyles(props) {
 
 	//transparent overrides
 	if (context?.['kadence/headerIsTransparent'] == '1') {
-		if ('normal' === backgroundTransparent?.type && backgroundTransparent?.image) {
-			css.add_property('background-image', backgroundTransparent.image);
-			css.add_property('background-size', backgroundTransparent.imageSize);
-			css.add_property('background-repeat', backgroundTransparent.imageRepeat);
-			css.add_property('background-attachment', backgroundTransparent.imageAttachment);
-			css.add_property('background-position', backgroundTransparent.imagePosition);
-		}
 		if ('normal' === backgroundTransparent?.type && backgroundTransparent?.color) {
 			css.add_property('background-color', KadenceColorOutput(backgroundTransparent.color));
+		}
+		if ('normal' === backgroundTransparent?.type && backgroundTransparent?.image) {
+			css.add_property('background-image', backgroundTransparent.image);
+			css.add_property('background-size', backgroundTransparent.size);
+			css.add_property('background-repeat', backgroundTransparent.repeat);
+			css.add_property('background-attachment', backgroundTransparent.attachment);
+			css.add_property('background-position', backgroundTransparent.position);
 		}
 		if ('gradient' === backgroundTransparent?.type && backgroundTransparent?.gradient) {
 			css.add_property('background', backgroundTransparent.gradient);
@@ -122,7 +126,8 @@ export default function BackendStyles(props) {
 	css.set_selector(
 		`.wp-block-kadence-header-row${uniqueID} .wp-block-kadence-header-section, .wp-block-kadence-header-row${uniqueID} .wp-block-kadence-header-column`
 	);
-	css.add_property('gap', previewItemGap + itemGapUnit);
+	css.add_property('gap', getGapSizeOptionOutput(previewItemGap, itemGapUnit));
+
 	if (previewVAlign == 'top') {
 		css.add_property('align-items', 'flex-start');
 	} else if (previewVAlign == 'bottom') {

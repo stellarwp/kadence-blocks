@@ -3,7 +3,7 @@ import { Button } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import * as MobileIcons from './icons/mobile';
 
-const HeaderMobile = ({ data, onChange }) => {
+const HeaderMobile = ({ data, onChange, handleFinish }) => {
 	const [hoveredOption, setHoveredOption] = useState(null);
 
 	useEffect(() => {
@@ -52,7 +52,10 @@ const HeaderMobile = ({ data, onChange }) => {
 				<div className="options options-mobile">
 					<div
 						className={'option blank' + (data.headerMobile === 'blank' ? ' is-selected' : '')}
-						onClick={() => onChange({ headerMobile: 'blank' })}
+						onClick={() => {
+							onChange({ headerMobile: 'blank' });
+							handleFinish();
+						}}
 					>
 						<Button>{__('Create blank tablet / mobile header.', 'kadence-blocks')}</Button>
 					</div>
@@ -61,7 +64,10 @@ const HeaderMobile = ({ data, onChange }) => {
 						<div key={key} className={'option'}>
 							<div
 								className={'option-image' + (data.headerMobile === key ? ' is-selected' : '')}
-								onClick={() => onChange({ headerMobile: key })}
+								onClick={() => {
+									onChange({ headerMobile: key });
+									handleFinish();
+								}}
 								onMouseEnter={() => setHoveredOption(key)}
 								onMouseLeave={() => setHoveredOption(null)}
 							>

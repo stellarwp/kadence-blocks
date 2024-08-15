@@ -181,9 +181,10 @@ export function Edit(props) {
 
 	const editorElement = useEditorElement(ref, [selfOrChildSelected, showOffCanvas]);
 	const previewCloseIconSize = getPreviewSize(previewDevice, closeIconSize, closeIconSizeTablet, closeIconSizeMobile);
+	const active = selfOrChildSelected() || showOffCanvas;
 
 	const classes = classnames('wp-block-kadence-off-canvas', `off-canvas-side-${slideFrom}`, {
-		active: selfOrChildSelected() || showOffCanvas,
+		active,
 		[`wp-block-kadence-off-canvas${uniqueID}`]: uniqueID,
 	});
 
@@ -318,7 +319,7 @@ export function Edit(props) {
 										onChangeTablet={(value) => setAttributes({ maxWidthTablet: value })}
 										mobileValue={maxWidthMobile ? maxWidthMobile : ''}
 										onChangeMobile={(value) => setAttributes({ maxWidthMobile: value })}
-										min={0}
+										min={maxWidthUnit === 'px' ? 250 : 0}
 										max={maxWidthUnit === 'px' ? 1500 : 100}
 										step={1}
 										unit={maxWidthUnit}
@@ -336,7 +337,7 @@ export function Edit(props) {
 										onChangeTablet={(value) => setAttributes({ widthTablet: value })}
 										mobileValue={widthMobile ? widthMobile : ''}
 										onChangeMobile={(value) => setAttributes({ widthMobile: value })}
-										min={0}
+										min={widthUnit === 'px' ? 250 : 0}
 										max={widthUnit == 'px' ? 1500 : 100}
 										step={1}
 										unit={widthUnit}
@@ -390,7 +391,7 @@ export function Edit(props) {
 								value={vAlign ? vAlign : ''}
 								tabletValue={vAlignTablet ? vAlignTablet : ''}
 								mobileValue={vAlignMobile ? vAlignMobile : ''}
-								onChange={(nextAlign) => setAttributes({ vAlign: nextAlign ? nextAlign : 'center' })}
+								onChange={(nextAlign) => setAttributes({ vAlign: nextAlign ? nextAlign : '' })}
 								onChangeTablet={(nextAlign) =>
 									setAttributes({ vAlignTablet: nextAlign ? nextAlign : '' })
 								}
@@ -595,7 +596,7 @@ export function Edit(props) {
 					</>
 				)}
 			</InspectorControls>
-			<BackendStyles {...props} previewDevice={previewDevice} editorElement={editorElement} />
+			<BackendStyles {...props} previewDevice={previewDevice} editorElement={editorElement} active={active} />
 			<div {...blockProps}>
 				{closeIcon && previewCloseIconSize && (
 					<button className="kb-off-canvas-close">

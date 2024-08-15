@@ -22,10 +22,12 @@ $admin-bar-height-mobile: 46px;
 	}
 
 	.kb-off-canvas-inner {
-		width: 100%;
+		width: auto;
+		max-width: 100vw;
 		height: 100%;
 		display: flex;
 		flex-direction: column;
+		box-sizing: border-box;
 	}
 
 	&.active {
@@ -55,7 +57,7 @@ $admin-bar-height-mobile: 46px;
 		padding: 0;
 		z-index: 11;
 		display: inline-flex;
-		justify-content: center;
+		justify-content: top;
 		align-items: center;
 		color: #444444;
 		-webkit-appearance: none;

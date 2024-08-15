@@ -30,7 +30,7 @@ class Kadence_Blocks_Off_Canvas_Trigger_Block extends Kadence_Blocks_Abstract_Bl
 	 *
 	 * @var string
 	 */
-	protected $block_name = 'header-off-canvas-trigger';
+	protected $block_name = 'off-canvas-trigger';
 
 	/**
 	 * Block determines in scripts need to be loaded for block.
@@ -88,30 +88,38 @@ class Kadence_Blocks_Off_Canvas_Trigger_Block extends Kadence_Blocks_Abstract_Bl
 			$this->sized_dynamic_styles( $css, $merged_attributes, $unique_id, $size );
 		}
 		$css->set_media_state( 'desktop' );
-		
+
 		// For the close icon container styles, they need to get applied to the hover state too, due to resets on hover styles in the css
 		//container
 		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ', .wp-block-kadence-off-canvas-trigger' . $unique_id . ':hover' );
-		$css->render_measure_output( $attributes, 'padding', 'padding', array(
+		$css->render_measure_output( $merged_attributes, 'padding', 'padding', array(
 			'desktop_key' => 'padding',
 			'tablet_key'  => 'paddingTablet',
 			'mobile_key'  => 'paddingMobile',
 		) );
-		$css->render_measure_output( $attributes, 'margin', 'margin', array(
+		$css->render_measure_output( $merged_attributes, 'margin', 'margin', array(
 			'desktop_key' => 'margin',
 			'tablet_key'  => 'marginTablet',
 			'mobile_key'  => 'marginMobile',
 		) );
-		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array(
+		$css->render_measure_output( $merged_attributes, 'borderRadius', 'border-radius', array(
 			'desktop_key' => 'borderRadius',
 			'tablet_key'  => 'borderRadiusTablet',
 			'mobile_key'  => 'borderRadiusMobile',
 		) );
-		$css->render_border_styles( $attributes, 'border' );
+		$css->render_border_styles( $merged_attributes, 'border', false, array(
+			'desktop_key' => 'border',
+			'tablet_key'  => 'borderTablet',
+			'mobile_key'  => 'borderMobile',
+		));
 
 		//container hover
 		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ':hover' );
-		$css->render_border_styles( $attributes, 'borderHover' );
+		$css->render_border_styles( $merged_attributes, 'borderHover', false, array(
+			'desktop_key' => 'borderHover',
+			'tablet_key'  => 'borderHoverTablet',
+			'mobile_key'  => 'borderHoverMobile',
+		) );
 
 		//icon
 		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ' svg' );
@@ -133,32 +141,27 @@ class Kadence_Blocks_Off_Canvas_Trigger_Block extends Kadence_Blocks_Abstract_Bl
 		$css->set_media_state( strtolower( $size ) );
 
 		// For the close icon container styles, they need to get applied to the hover state too, due to resets on hover styles in the css
-		//container
-		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id. ', .wp-block-kadence-off-canvas-trigger' . $unique_id . ':hover' );
+		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id. ', .wp-block-kadence-off-canvas-trigger' . $unique_id . ':hover, .wp-block-kadence-off-canvas-trigger' . $unique_id . ':focus' );
 		if ( ! empty( $sized_attributes['iconBackgroundColor'] ) ) {
 			$css->add_property( 'background-color', $css->render_color( $sized_attributes['iconBackgroundColor'] ) );
 		}
-
-		//container hover
-		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ':hover' );
-		if ( ! empty( $sized_attributes['iconBackgroundColorHover'] ) ) {
-			$css->add_property( 'background-color', $css->render_color( $sized_attributes['iconBackgroundColorHover'] ) );
-		}
-
-		//icon
-		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ' svg' );
 		if ( ! empty( $sized_attributes['iconColor'] ) ) {
 			$css->add_property( 'color', $css->render_color( $sized_attributes['iconColor'] ) );
 		}
+
+		// Hover styles.
+		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ':hover, .wp-block-kadence-off-canvas-trigger' . $unique_id . ':focus' );
+		if ( ! empty( $sized_attributes['iconBackgroundColorHover'] ) ) {
+			$css->add_property( 'background-color', $css->render_color( $sized_attributes['iconBackgroundColorHover'] ) );
+		}
+		if ( ! empty( $sized_attributes['iconColorHover'] ) ) {
+			$css->add_property( 'color', $css->render_color( $sized_attributes['iconColorHover'] ) );
+		}
+		// Icon styles.
+		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ' svg' );
 		if ( ! empty( $sized_attributes['iconSize'] ) ) {
 			$css->add_property( 'width', $sized_attributes['iconSize'] . 'px' );
 			$css->add_property( 'height', $sized_attributes['iconSize'] . 'px' );
-		}
-
-		//icon hover
-		$css->set_selector( '.wp-block-kadence-off-canvas-trigger' . $unique_id . ':hover svg' );
-		if ( ! empty( $sized_attributes['iconColorHover'] ) ) {
-			$css->add_property( 'color', $css->render_color( $sized_attributes['iconColorHover'] ) );
 		}
 	}
 
@@ -170,32 +173,41 @@ class Kadence_Blocks_Off_Canvas_Trigger_Block extends Kadence_Blocks_Abstract_Bl
 	 * @return string Returns the block output.
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		$html = '';
 
 		$classes = array(
 			'wp-block-kadence-off-canvas-trigger',
 			'wp-block-kadence-off-canvas-trigger' . $unique_id,
 		);
-
-		if ( ! empty( $attributes['icon'] ) ) {
-			$content = Kadence_Blocks_Svg_Render::render( $attributes['icon'], 'currentColor', false, '', false );
+		$icon         = ( ! empty( $attributes['icon'] ) ? $attributes['icon'] : 'fe_menu' );
+		$type         = substr( $icon, 0, 2 );
+		$line_icon    = ( ! empty( $type ) && 'fe' == $type ? true : false );
+		$fill         = ( $line_icon ? 'none' : 'currentColor' );
+		$stroke_width = false;
+		if ( $line_icon ) {
+			$stroke_width = ( ! empty( $attributes['lineWidth'] ) ? $attributes['lineWidth'] : 2 );
 		}
+		$type         = substr( $attributes['icon'], 0, 2 );
+		$line_icon    = ( ! empty( $type ) && 'fe' == $type ? true : false );
+		$fill         = ( $line_icon ? 'none' : 'currentColor' );
+		$stroke_width = false;
 
-		$attributes = array(
-			'aria-label'    => __( 'Toggle Off Canvas', 'kadence-blocks' ),
-			'aria-expanded' => 'false',
+		if ( $line_icon ) {
+			$stroke_width = 2;
+		}
+		$title   = '';
+		$hidden  = true;
+		$content = Kadence_Blocks_Svg_Render::render( $icon, $fill, $stroke_width, $title, $hidden );
+		$label   = ( ! empty( $attributes['label'] ) ? $attributes['label'] : esc_attr__( 'Toggle Popover', 'kadence-blocks' ) );
+
+		$wrapper_args = array(
 			'class'         => implode( ' ', $classes ),
+			'aria-label'    => $label,
+			'aria-expanded' => 'false',
 			'id'            => 'kadence-off-canvas-trigger' . $unique_id,
 		);
+		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 
-		foreach ( $attributes as $key => $value ) {
-			$wrap_attributes[] = $key . '="' . esc_attr( $value ) . '"';
-		}
-		$wrap_attributes = implode( ' ', $wrap_attributes );
-
-		$html .= sprintf( '<button %1$s>%2$s</button>', $wrap_attributes, $content );
-
-		return $html;
+		return sprintf( '<button %1$s>%2$s</button>', $wrapper_attributes, $content );
 	}
 
 	/**

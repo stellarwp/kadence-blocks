@@ -17,14 +17,14 @@ import classnames from 'classnames';
 import { __ } from '@wordpress/i18n';
 import { isEmpty } from 'lodash';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { headerBlockIcon, formTemplateContactIcon } from '@kadence/icons';
+import { headerBlockIcon } from '@kadence/icons';
 import { KadencePanelBody, SelectPostFromPostType, OnboardingModal } from '@kadence/components';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { Placeholder, Spinner } from '@wordpress/components';
 import { store as coreStore, EntityProvider, useEntityBlockEditor, useEntityProp } from '@wordpress/core-data';
 import { createBlock } from '@wordpress/blocks';
 
-import { useEntityAutoDraft, useEntityPublish } from './hooks';
+import { useEntityAutoDraft, useEntityPublish, useEntityAutoDraftAndPublish } from './hooks';
 import { VisualBuilder } from './components';
 import { getUniqueId, getPostOrFseId, getPreviewSize } from '@kadence/helpers';
 import HeaderName from './components/onboard/name';
@@ -47,6 +47,7 @@ export function Edit(props) {
 
 	const [meta, setMeta] = useHeaderProp('meta', id);
 	const [justCompletedOnboarding, setJustCompletedOnboarding] = useState(false);
+	const [initialLoad, setInitialLoad] = useState(true);
 	const [formData, setFormData] = useState(null);
 
 	const metaAttributes = {
@@ -119,10 +120,8 @@ export function Edit(props) {
 	const blockProps = useBlockProps({
 		className: blockClasses,
 	});
-
-	if (isPreviewMode) {
-		return <>{formTemplateContactIcon}</>;
-	}
+	// eslint-disable-next-line @wordpress/no-unused-vars-before-return
+	const previewIsTransparent = getPreviewSize(previewDevice, isTransparent, isTransparentTablet, isTransparentMobile);
 
 	useEffect(() => {
 		const postOrFseId = getPostOrFseId(props, parentData);
@@ -139,6 +138,12 @@ export function Edit(props) {
 			window.wp.data.dispatch('core/block-editor').setTemplateValidity(true);
 		}
 	}, []);
+
+	useEffect(() => {
+		if ((id && postExists) || (id && postExists === 0) || !id) {
+			setInitialLoad(false);
+		}
+	}, [postExists]);
 
 	let mainBlockContent = (
 		<>
@@ -235,8 +240,7 @@ export function Edit(props) {
 				{justCompletedOnboarding === false &&
 					'function' !== typeof directPostData?.content &&
 					isEmpty(directPostData?.content) &&
-					id === 0 &&
-					!isLoading && (
+					id === 0 && (
 						<CreateNewOnly
 							clientId={clientId}
 							postId={postId}
@@ -256,8 +260,13 @@ export function Edit(props) {
 			</>
 		);
 	}
-
-	const previewIsTransparent = getPreviewSize(previewDevice, isTransparent, isTransparentTablet, isTransparentMobile);
+	if (initialLoad) {
+		return (
+			<div {...blockProps}>
+				<Spinner />
+			</div>
+		);
+	}
 	if (previewIsTransparent) {
 		return <div className="kb-header-transparent-placeholder">{mainBlockContent}</div>;
 	}
@@ -319,7 +328,7 @@ function CreateNewOnly({ clientId, setJustCompletedOnboarding, postId }) {
 	};
 
 	const steps = [
-		{ key: 'name', name: 'Header Name', visualNumber: 1, component: HeaderName },
+		{ key: 'name', name: 'Header Name', visualNumber: 1, component: HeaderName, componentData: { postId } },
 		{ key: 'desktop', name: 'Desktop Layout', visualNumber: 2, component: HeaderDesktop },
 		{ key: 'mobile', name: 'Mobile Layout', visualNumber: 3, component: HeaderMobile },
 	];
@@ -346,7 +355,7 @@ function Chooser({ commit, clientId, setJustCompletedOnboarding, formData, setFo
 	const [existingTitle, setTitle] = useHeaderProp('title', tmpId);
 	const [meta, setMeta] = useHeaderProp('meta', tmpId);
 
-	const [isAdding, addNew] = useEntityAutoDraft('kadence_header', 'kadence_header');
+	const [isAdding, addNew] = useEntityAutoDraftAndPublish('kadence_header', 'kadence_header');
 
 	const [isOnboardingOpen, setIsOnboardingOpen] = useState(true);
 

@@ -3,7 +3,7 @@ import { Button } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import * as DesktopIcons from './icons/desktop';
 
-const HeaderDesktop = ({ data, onChange }) => {
+const HeaderDesktop = ({ data, onChange, handleNextStep }) => {
 	const [activeTab, setActiveTab] = useState('basic');
 
 	useEffect(() => {
@@ -90,7 +90,10 @@ const HeaderDesktop = ({ data, onChange }) => {
 				<div className="options">
 					<div
 						className={'option blank' + (data.headerDesktop === 'blank' ? ' is-selected' : '')}
-						onClick={() => onChange({ headerDesktop: 'blank' })}
+						onClick={() => {
+							onChange({ headerDesktop: 'blank' });
+							handleNextStep();
+						}}
 					>
 						<Button>{__('Create blank desktop header.', 'kadence-blocks')}</Button>
 					</div>
@@ -100,7 +103,10 @@ const HeaderDesktop = ({ data, onChange }) => {
 							<div key={key} className={'option'}>
 								<div
 									className={'option-image' + (data.headerDesktop === key ? ' is-selected' : '')}
-									onClick={() => onChange({ headerDesktop: key })}
+									onClick={() => {
+										onChange({ headerDesktop: key });
+										handleNextStep();
+									}}
 								>
 									{basicOptions[key].icon}
 								</div>
@@ -113,7 +119,10 @@ const HeaderDesktop = ({ data, onChange }) => {
 							<div key={key} className={'option'}>
 								<div
 									className={'option-image' + (data.headerDesktop === key ? ' is-selected' : '')}
-									onClick={() => onChange({ headerDesktop: key })}
+									onClick={() => {
+										onChange({ headerDesktop: key });
+										handleNextStep();
+									}}
 								>
 									{muiltiRowOptions[key].icon}
 								</div>

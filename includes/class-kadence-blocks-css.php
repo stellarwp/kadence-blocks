@@ -1255,7 +1255,7 @@ class Kadence_Blocks_CSS {
 	 * @param array  $attributes an array of spacing settings.
 	 * @return string
 	 */
-	public function render_gap( $attributes, $name = 'gap', $property = 'gap', $unit_name = 'gapUnit' ) {
+	public function render_gap( $attributes, $name = 'gap', $property = 'gap', $unit_name = 'gapUnit', $args = array() ) {
 		if ( empty( $attributes ) || empty( $name ) ) {
 			return false;
 		}
@@ -1263,16 +1263,36 @@ class Kadence_Blocks_CSS {
 			return false;
 		}
 		$unit = ! empty( $attributes[ $unit_name ] ) ? $attributes[ $unit_name ] : 'px';
-		if ( isset( $attributes[ $name ][0] ) && '' !== $attributes[ $name ][0] && ! is_array( $attributes[ $name ][0] ) ) {
-			$this->add_property( $property, $this->get_gap_size( $attributes[ $name ][0], $unit ) );
+		
+		$defaults = array(
+			'desktop_key' => '',
+			'tablet_key'  => '',
+			'mobile_key'  => '',
+		);
+		$args = wp_parse_args( $args, $defaults );
+
+		$name = $args['desktop_key'] ? $args['desktop_key'] : $name;
+
+		if ( isset( $attributes[ $name ] ) && is_array( $attributes[ $name ] ) ) {
+			$attribute = isset( $attributes[ $name ][0] ) ? $attributes[ $name ][0] : '';
+			$attributeTablet = isset( $attributes[ $name ][1] ) ? $attributes[ $name ][1] : '';
+			$attributeMobile = isset( $attributes[ $name ][2] ) ? $attributes[ $name ][2] : '';
+		} else {
+			$attribute = isset( $attributes[ $args['desktop_key'] ] ) ? $attributes[ $args['desktop_key'] ] : '';
+			$attributeTablet = isset( $attributes[ $args['tablet_key'] ] ) ? $attributes[ $args['tablet_key'] ] : '';
+			$attributeMobile = isset( $attributes[ $args['mobile_key'] ] ) ? $attributes[ $args['mobile_key'] ] : '';
 		}
-		if ( isset( $attributes[ $name ][1] ) && '' !== $attributes[ $name ][1] && ! is_array( $attributes[ $name ][1] ) ) {
+
+		if ( '' !== $attribute && ! is_array( $attribute ) ) {
+			$this->add_property( $property, $this->get_gap_size( $attribute, $unit ) );
+		}
+		if ( '' !== $attributeTablet && ! is_array( $attributeTablet ) ) {
 			$this->set_media_state( 'tablet' );
-			$this->add_property( $property, $this->get_gap_size( $attributes[ $name ][1], $unit ) );
+			$this->add_property( $property, $this->get_gap_size( $attributeTablet, $unit ) );
 		}
-		if ( isset( $attributes[ $name ][2] ) && '' !== $attributes[ $name ][2] && ! is_array( $attributes[ $name ][2] ) ) {
+		if ( '' !== $attributeMobile && ! is_array( $attributeMobile ) ) {
 			$this->set_media_state( 'mobile' );
-			$this->add_property( $property, $this->get_gap_size( $attributes[ $name ][2], $unit ) );
+			$this->add_property( $property, $this->get_gap_size( $attributeMobile, $unit ) );
 		}
 		$this->set_media_state( 'desktop' );
 	}
@@ -2344,43 +2364,22 @@ class Kadence_Blocks_CSS {
 		if ( ! is_array( $background ) ) {
 			return false;
 		}
-		$background_string = '';
-		$type              = ( isset( $background['type'] ) && ! empty( $background['type'] ) ? $background['type'] : 'color' );
-		$color_type        = '';
-		if ( isset( $background['color'] ) && ! empty( $background['color'] ) ) {
-			if ( strpos( $background['color'], 'palette' ) !== false ) {
-				$color_type = 'var(--global-' . $background['color'] . ')';
-			} else {
-				$color_type = $background['color'];
+		$type              = ( isset( $background['type'] ) && ! empty( $background['type'] ) ? $background['type'] : 'normal' );
+		if ( 'normal' === $type ) {
+			if ( ! empty( $background['color'] ) ) {
+				$css->add_property( 'background-color', $this->render_color( $background['color'] ) );
 			}
-		}
-		if ( 'image' === $type && isset( $background['image'] ) ) {
-			$image_url = ( isset( $background['image']['url'] ) && ! empty( $background['image']['url'] ) ? $background['image']['url'] : '' );
+			$image_url = ( ! empty( $background['image'] ) ? 'url("' .  $background['image'] . '")' : '' );
 			if ( ! empty( $image_url ) ) {
-				$repeat            = ( isset( $background['image']['repeat'] ) && ! empty( $background['image']['repeat'] ) ? $background['image']['repeat'] : '' );
-				$size              = ( isset( $background['image']['size'] ) && ! empty( $background['image']['size'] ) ? $background['image']['size'] : '' );
-				$position          = ( isset( $background['image']['position'] ) && is_array( $background['image']['position'] ) && isset( $background['image']['position']['x'] ) && ! empty( $background['image']['position']['x'] ) && isset( $background['image']['position']['y'] ) && ! empty( $background['image']['position']['y'] ) ? ( $background['image']['position']['x'] * 100 ) . '% ' . ( $background['image']['position']['y'] * 100 ) . '%' : 'center' );
-				$attachement       = ( isset( $background['image']['attachment'] ) && ! empty( $background['image']['attachment'] ) ? $background['image']['attachment'] : '' );
-				$background_string = ( ! empty( $color_type ) ? $color_type . ' ' : '' ) . $image_url . ( ! empty( $repeat ) ? ' ' . $repeat : '' ) . ( ! empty( $position ) ? ' ' . $position : '' ) . ( ! empty( $size ) ? ' ' . $size : '' ) . ( ! empty( $attachement ) ? ' ' . $attachement : '' );
-				$css->add_property( 'background-color', $color_type );
 				$css->add_property( 'background-image', $image_url );
-				$css->add_property( 'background-repeat', $repeat );
-				$css->add_property( 'background-position', $position );
-				$css->add_property( 'background-size', $size );
-				$css->add_property( 'background-attachment', $attachement );
-			} else {
-				if ( ! empty( $color_type ) ) {
-					$background_string = $color_type;
-					$css->add_property( 'background-color', $color_type );
-				}
+				$css->add_property( 'background-size', ( ! empty( $background['size'] ) ? $background['size'] : 'cover' ) );
+				$css->add_property( 'background-position', ( ! empty( $background['position'] ) ? $background['position'] : 'center center' ) );
+				$css->add_property( 'background-attachment', ( ! empty( $background['attachment'] ) ? $background['attachment'] : 'scroll' ) );
+				$css->add_property( 'background-repeat', ( ! empty( $background['repeat'] ) ? $background['repeat'] : 'no-repeat' ) );
+				
 			}
 		} elseif ( 'gradient' === $type && isset( $background['gradient'] ) && ! empty( $background['gradient'] ) ) {
 			$css->add_property( 'background', $this->render_gradient( $background['gradient'] ) );
-		} else {
-			if ( ! empty( $color_type ) ) {
-				$background_string = $color_type;
-				$css->add_property( 'background', $color_type );
-			}
 		}
 	}
 

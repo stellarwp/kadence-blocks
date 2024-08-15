@@ -6,7 +6,8 @@
 	"category": "design",
 	"description": "Off Canvas block",
 	"supports": {
-		"inserter": true
+		"inserter": true,
+		"className": true
 	},
 	"textdomain": "kadence-blocks",
 	"attributes": {
@@ -95,7 +96,7 @@
 		},
 		"padding": {
 			"type": "array",
-			"default": ["20", "20", "20", "20"]
+			"default": ["md", "md", "md", "md"]
 		},
 		"paddingTablet": {
 			"type": "array",
@@ -123,7 +124,7 @@
 		},
 		"vAlign": {
 			"type": "string",
-			"default": "top"
+			"default": ""
 		},
 		"vAlignTablet": {
 			"type": "string",

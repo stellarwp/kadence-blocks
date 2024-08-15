@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { TextControl, Button, TextareaControl } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 
-const HeaderName = ({ data, onChange }) => {
+const HeaderName = ({ data, onChange, componentData }) => {
 	// Require a header name
 	useEffect(() => {
 		if (data.meta.isValid && (!data.headerName || data.headerName === '')) {
@@ -10,7 +10,13 @@ const HeaderName = ({ data, onChange }) => {
 		} else if (!data.meta.isValid && data.headerName && data.headerName !== '') {
 			onChange({ ...data, meta: { ...data.meta, isValid: true } });
 		}
-	}, [data]);
+	}, [data, componentData]);
+
+	useEffect(() => {
+		if (componentData?.postId && (!data.headerName || data.headerName === '')) {
+			onChange({ headerName: __('Header') + ' ' + componentData.postId, meta: { ...data.meta, isValid: true } });
+		}
+	}, []);
 
 	return (
 		<div className={'body-name'}>
@@ -28,7 +34,9 @@ const HeaderName = ({ data, onChange }) => {
 						label={__('Header Name', 'kadence-blocks')}
 						placeholder={__('My New Header', 'kadence-blocks')}
 						value={data?.headerName}
-						onChange={(headerName) => onChange({ headerName })}
+						onChange={(value) => {
+							onChange({ headerName: value });
+						}}
 						autoFocus={true}
 					/>
 

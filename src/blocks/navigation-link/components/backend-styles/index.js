@@ -2,7 +2,7 @@ import { KadenceBlocksCSS, getPreviewSize, useEditorElement } from '@kadence/hel
 import { useRef } from '@wordpress/element';
 
 export default function BackendStyles(props) {
-	const { attributes, isSelected, previewDevice, currentRef, context } = props;
+	const { attributes, isSelected, previewDevice, currentRef, subMenuRef, showSubMenusWithLogic, context } = props;
 
 	const {
 		uniqueID,
@@ -264,6 +264,8 @@ export default function BackendStyles(props) {
 
 	const editorElement = useEditorElement(currentRef, []);
 	const editorWidth = editorElement?.clientWidth;
+	const subMenuHeight = subMenuRef?.clientHeight ? subMenuRef.clientHeight : subMenuRef?.current?.clientHeight;
+
 	const isFEIcon = 'fe' === mediaIcon[0].icon.substring(0, 2);
 
 	const previewLinkColor = getPreviewSize(previewDevice, linkColor, linkColorTablet, linkColorMobile);
@@ -1112,6 +1114,11 @@ export default function BackendStyles(props) {
 		`.wp-block-kadence-navigation-link${uniqueID} .link-drop-title-wrap:not(.wp-block-kadence-navigation-link${uniqueID} .wp-block-kadence-navigation-link .link-drop-title-wrap)`
 	);
 	css.add_property('text-align', align != '' ? align : 'left');
+
+	if (showSubMenusWithLogic && subMenuHeight) {
+		css.set_selector(`:root`);
+		css.add_property('--kb-editor-height-nv', subMenuHeight + 'px');
+	}
 
 	const cssOutput = css.css_output();
 

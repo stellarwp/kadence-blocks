@@ -5,25 +5,20 @@ import { useSelect } from '@wordpress/data';
 import HeaderRender from './render';
 
 const HeaderExisting = ({ data, onChange, handleNextStep }) => {
-	const selectTranslation = __('Select', 'kadence-blocks');
 	// Require a selection
 	useEffect(() => {
 		if (data.meta.isValid && !data.headerExisting) {
 			onChange({ ...data, meta: { ...data.meta, isValid: false } });
 		} else if (data.headerExisting && data.headerExisting !== '') {
-			if (
-				data.headerExisting !== undefined &&
-				data.headerExisting !== 'blank' &&
-				data.meta.nextText !== selectTranslation
-			) {
+			if (data.headerExisting !== undefined && data.headerExisting !== 'blank') {
 				onChange({
 					...data,
-					meta: { ...data.meta, isValid: true, nextText: selectTranslation, exitAndCallbackStep: 1 },
+					meta: { ...data.meta, isValid: true, exitAndCallbackStep: 0 },
 				});
-			} else if (data.headerExisting === 'blank' && (data.meta.nextText !== undefined || !data.meta.isValid)) {
+			} else if (data.headerExisting === 'blank' && !data.meta.isValid) {
 				onChange({
 					...data,
-					meta: { ...data.meta, isValid: true, nextText: undefined, exitAndCallbackStep: false },
+					meta: { ...data.meta, isValid: true, exitAndCallbackStep: false },
 				});
 			}
 		}
@@ -58,9 +53,7 @@ const HeaderExisting = ({ data, onChange, handleNextStep }) => {
 						className={'option blank' + (data.headerExisting === 'blank' ? ' is-selected' : '')}
 						onClick={() => {
 							onChange({ headerExisting: 'blank' });
-							if (options.length === 0) {
-								handleNextStep();
-							}
+							handleNextStep();
 						}}
 					>
 						<Button>{__('Create new header.', 'kadence-blocks')}</Button>
@@ -72,7 +65,9 @@ const HeaderExisting = ({ data, onChange, handleNextStep }) => {
 								className={
 									'option-image' + (data.headerExisting === options[key].value ? ' is-selected' : '')
 								}
-								onClick={() => onChange({ headerExisting: options[key].value })}
+								onClick={() => {
+									onChange({ headerExisting: options[key].value });
+								}}
 								style={{ padding: '20px' }}
 							>
 								<HeaderRender id={options[key].value} />

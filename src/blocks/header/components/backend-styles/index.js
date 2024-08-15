@@ -475,8 +475,7 @@ export default function BackendStyles(props) {
 	const previewIsSticky = getPreviewSize(previewDevice, isSticky, isStickyTablet, isStickyMobile);
 	const previewIsTransparent = getPreviewSize(previewDevice, isTransparent, isTransparentTablet, isTransparentMobile);
 
-	//const elementHeight = useElementHeight(currentRef, [isSelected]);
-	const elementHeight = currentRef?.current?.clientHeight;
+	const elementHeight = currentRef?.clientHeight ? currentRef.clientHeight : currentRef?.current?.clientHeight;
 
 	if (isSelected) {
 		css.set_selector(
@@ -760,6 +759,18 @@ export default function BackendStyles(props) {
 			css.add_property('padding-top', elementHeight + 'px');
 		}
 	}
+
+	css.set_selector(`:root`);
+	css.add_property('--kb-editor-height-hd', elementHeight + 'px');
+
+	//This statement sets a min height for the editor based on incoming factors
+	//that could affect how much screen real estate is required to effectively edit the header.
+	//Things like the header size, off canvas, sub menus, etc
+	css.set_selector(`.block-editor-iframe__body .is-root-container`);
+	css.add_property(
+		'min-height',
+		'calc(max(var(--kb-editor-height-vb, 0px), var(--kb-editor-height-oc, 0px)) + var(--kb-editor-height-hd, 0px) + var(--kb-editor-height-nv, 0px)) !important'
+	);
 
 	const cssOutput = css.css_output();
 

@@ -33,6 +33,8 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 
 		// Define the form post gutenberg template.
 		add_action( 'init', array( $this, 'form_gutenberg_template' ) );
+		add_filter( 'kadence_post_layout', array( $this, 'navigation_single_layout' ), 99 );
+		add_action( 'enqueue_block_editor_assets', array( $this, 'script_enqueue' ) );
 
 		if( is_admin() ) {
 			if ( class_exists( 'Cpt_To_Template' ) ) {
@@ -40,7 +42,100 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 			}
 		}
 	}
+	/**
+	 * Renders the navigation single template on the front end.
+	 *
+	 * @param array $layout the layout array.
+	 */
+	public function navigation_single_layout( $layout ) {
+		global $post;
+		if ( is_singular( $this->post_type ) || ( is_admin() && is_object( $post ) && $this->post_type === $post->post_type ) ) {
+			$layout = wp_parse_args(
+				array(
+					'layout'           => 'fullwidth',
+					'boxed'            => 'unboxed',
+					'feature'          => 'hide',
+					'feature_position' => 'above',
+					'comments'         => 'hide',
+					'navigation'       => 'hide',
+					'title'            => 'hide',
+					'transparent'      => 'disable',
+					'sidebar'          => 'disable',
+					'vpadding'         => 'hide',
+					'footer'           => 'disable',
+					'header'           => 'disable',
+					'content'          => 'enable',
+				),
+				$layout
+			);
+		}
 
+		return $layout;
+	}
+	/**
+	 * Enqueue Script for Meta options
+	 */
+	public function script_enqueue() {
+		$post_type = get_post_type();
+		if ( $this->post_type !== $post_type ) {
+			return;
+		}
+		$output = '.post-type-kadence_navigation.block-editor-page .editor-styles-wrapper .editor-post-title__block .editor-post-title__input, .post-type-kadence_navigation .edit-post-visual-editor__post-title-wrapper {
+	font-size: 1.5em;
+    line-height: 1;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    border: 1px solid var(--wp-admin-theme-color);
+	margin-top: 0 !important;
+	padding-top: 24px;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+	font-size: 1em;
+	position: relative;
+}
+.post-type-kadence_navigation .editor-styles-wrapper .edit-post-visual-editor__post-title-wrapper:not(.specificity)  {
+	padding-top: 24px !important;
+    padding-bottom: 20px !important;
+    margin-bottom: 20px !important;
+    margin-top: 0 !important;
+	font-size: 1em;
+	position: relative;
+}
+.post-type-kadence_navigation .editor-styles-wrapper .edit-post-visual-editor__post-title-wrapper .editor-post-title:before, .post-type-kadence_navigation .edit-post-visual-editor__post-title-wrapper:before {
+    content: "Title";
+    position: absolute;
+    top: 0px;
+    left: 0;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 1;
+    background: var(--wp-admin-theme-color);
+    padding: 4px 6px;
+    color: white;
+    text-transform: uppercase;
+}
+	/* Iframe CSS */
+.post-type-kadence_navigation .edit-post-visual-editor__post-title-wrapper .editor-post-title {
+	font-size: 1.2em;
+    font-weight: 500;
+    line-height: 1;
+	margin: 0;
+}
+.post-type-kadence_navigation .editor-styles-wrapper .edit-post-visual-editor__post-title-wrapper .editor-post-title {
+	font-size: 1.2em;
+
+    font-weight: 500;
+    line-height: 1;
+}
+.post-type-kadence_navigation .editor-styles-wrapper {
+	padding:8px;
+	margin: 0;
+}
+.post-type-kadence_navigation .wp-block {max-width: none;} .post-type-kadence_navigation .editor-styles-wrapper .wp-block {max-width: none;}';
+		wp_register_style( 'kadence_navigation_css', false );
+		wp_enqueue_style( 'kadence_navigation_css' );
+		wp_add_inline_style( 'kadence_navigation_css', $output );
+	}
 	/**
 	 * Add filters for element content output.
 	 */
@@ -78,7 +173,7 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 					'new_item'              => __( 'New Kadence Navigation', 'kadence-blocks' ),
 					'edit_item'             => __( 'Edit Kadence Navigation', 'kadence-blocks' ),
 					'view_item'             => __( 'View Kadence Navigation', 'kadence-blocks' ),
-					'all_items'             => __( 'Kadence Navigations', 'kadence-blocks' ),
+					'all_items'             => __( 'Navigations', 'kadence-blocks' ),
 					'search_items'          => __( 'Search Kadence Navigations', 'kadence-blocks' ),
 					'parent_item_colon'     => __( 'Parent Kadence Navigation:', 'kadence-blocks' ),
 					'not_found'             => __( 'No Kadence Navigation found.', 'kadence-blocks' ),
@@ -94,7 +189,7 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'public'                => false,
 				'has_archive'           => false,
 				'show_ui'               => true,
-				'show_in_menu'          => 'kadence-blocks',
+				'show_in_menu'          => false,
 				'show_in_admin_bar'     => false,
 				'show_in_rest'          => true,
 				'rewrite'               => false,

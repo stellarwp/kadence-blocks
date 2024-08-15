@@ -164,14 +164,15 @@
 			border: 3px solid #d9d9d9;
 			border-radius: 5px;
 			cursor: pointer;
-			display:flex;
-
 			&:hover {
 				border: 3px solid #0073e6;
 			}
 
 			&.is-selected {
 				border: 3px solid #0073e6;
+			}
+			svg {
+				display: block;
 			}
 		}
 	}

@@ -2,7 +2,7 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
 	"name": "kadence/navigation-link",
-	"title": "Kadence Nav Link",
+	"title": "Kadence Navigation Link",
 	"category": "design",
 	"ancestor": ["kadence/navigation", "core/navigation"],
 	"allowedBlocks": ["kadence/navigation-link", "core/navigation-link", "kadence/rowlayout", "core/page-list"],

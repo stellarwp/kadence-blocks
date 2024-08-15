@@ -1,7 +1,7 @@
 $height_bottom_bar: 25px;
-$height_top_bar: 60px;
+$height_top_bar: 90px;
+$full_screen_height_top_bar: 60px;
 $height_top_bars_mobile: 155px;
-$height_top_bottom_bars: $height_top_bar + $height_bottom_bar;
 $sidebar_width: 280px;
 $fixed_height: 300px;
 
@@ -30,6 +30,11 @@ $fixed_height: 300px;
 .block-editor-iframe__body .kb-header-visual-builder-modal.kb-header-visual-builder-modal-top {
 	top: 0;
 }
+
+.is-fullscreen-mode .kb-header-visual-builder-modal .kb-header-visual-builder-modal-top {
+	top: $full_screen_height_top_bar;
+}
+
 .kb-header-visual-builder-modal {
 	background: #f0f0f1;
 	border-top: 1px solid #a0aec1;

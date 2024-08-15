@@ -506,6 +506,12 @@ function KadenceTabs(props) {
 		undefined !== tabletLayout && '' !== tabletLayout && 'inherit' !== tabletLayout ? tabletLayout : '',
 		undefined !== mobileLayout && '' !== mobileLayout && 'inherit' !== mobileLayout ? mobileLayout : ''
 	);
+	const previewTabWidth = getPreviewSize(
+		previewDevice,
+		tabWidth && tabWidth[0] ? tabWidth[0] : '',
+		tabWidth && tabWidth[1] ? tabWidth[1] : '',
+		tabWidth && tabWidth[2] ? tabWidth[2] : ''
+	);
 	const previewVerticalTabWidth = getPreviewSize(
 		previewDevice,
 		verticalTabWidth && verticalTabWidth[0] ? verticalTabWidth[0] : '',
@@ -2315,7 +2321,7 @@ function KadenceTabs(props) {
 						<ul
 							className={`kt-tabs-title-list${
 								'tabs' === layout && widthType === 'percent'
-									? ' kb-tabs-list-columns kb-tab-title-columns-' + tabWidth[0]
+									? ' kb-tabs-list-columns kb-tab-title-columns-' + previewTabWidth
 									: ''
 							}`}
 							style={{

@@ -164,7 +164,7 @@ $anchor: #5000b9;
 	.navigation ul ul.quadmenu-row {
 		flex-direction: row;
 	}
-	.navigation ul ul li.menu-item > .link-drop-wrap > a {
+	.navigation ul ul.sub-menu > li.menu-item > .link-drop-wrap > a {
 		padding: 1em;
 		width: 200px;
 	}
@@ -319,9 +319,9 @@ $anchor: #5000b9;
 		text-align: left;
 	}
 	/*
-		 * If the dropdown toggle is active with JS, then
-		 * we'll take care of showing the submenu with JS.
-		 */
+	 * If the dropdown toggle is active with JS, then
+	 * we'll take care of showing the submenu with JS.
+	 */
 	.nav--toggle-sub li:hover > ul,
 	.nav--toggle-sub li.menu-item--toggled-on > ul,
 	.nav--toggle-sub li:not(.menu-item--has-toggle):focus > ul {
@@ -329,13 +329,13 @@ $anchor: #5000b9;
 	}
 
 	/*
-		 * "focus-within" is an alternative to focus class for
-		 * supporting browsers (all but IE/Edge) for no-JS context
-		 * (e.g. AMP) See https://caniuse.com/#feat=css-focus-within
-		 *
-		 * This selector needs to stay separated, otherwise submenus
-		 * will not be displayed with IE/Edge.
-		 */
+	 * "focus-within" is an alternative to focus class for
+	 * supporting browsers (all but IE/Edge) for no-JS context
+	 * (e.g. AMP) See https://caniuse.com/#feat=css-focus-within
+	 *
+	 * This selector needs to stay separated, otherwise submenus
+	 * will not be displayed with IE/Edge.
+	 */
 	.nav--toggle-sub li:not(.menu-item--has-toggle):focus-within > ul {
 		display: block;
 	}
@@ -589,6 +589,13 @@ $anchor: #5000b9;
 		ul.menu li.menu-item--toggled-on > ul,
 		ul.menu li:not(.menu-item--has-toggle):focus > ul {
 			@include show-sub-menu();
+		}
+	}
+
+	//small fix for editor default margins on empty sub menu lists
+	.navigation {
+		ul {
+			margin: 0;
 		}
 	}
 

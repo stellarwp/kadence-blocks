@@ -489,6 +489,13 @@ export function EditInner(props) {
 		: getPreviewSize(previewDevice, orientation, orientationTablet, orientationMobile);
 
 	const setMetaAttribute = (value, key) => {
+		/*
+		 * Some attribute values are typed one way and our components return a different type.
+		 */
+		if (key === 'borderRadius') {
+			value = value.map(String);
+		}
+
 		setMeta({ ...meta, ['_kad_navigation_' + key]: value });
 	};
 
@@ -677,6 +684,8 @@ export function EditInner(props) {
 		);
 	};
 
+	const TEMPLATE = [['kadence/navigation-link', { label: __('Home', 'kadence-blocks'), url: '/' }]];
+
 	const innerBlocksProps = useInnerBlocksProps(
 		{
 			className: innerNavClasses,
@@ -690,6 +699,7 @@ export function EditInner(props) {
 			templateLock: false,
 			defaultBlock: DEFAULT_BLOCK,
 			renderAppender: false,
+			template: TEMPLATE,
 		}
 	);
 
@@ -960,6 +970,7 @@ export function EditInner(props) {
 										label={__('Selected Navigation', 'kadence-blocks')}
 										onChange={(nextId) => setAttributes({ id: parseInt(nextId) })}
 										value={id}
+										overrideLabel={title}
 									/>
 
 									<Button
@@ -1110,7 +1121,7 @@ export function EditInner(props) {
 							/>
 						</KadencePanelBody>
 						<KadencePanelBody
-							title={__('Nav Item Styles', 'kadence-blocks')}
+							title={__('Navigation Item Styles', 'kadence-blocks')}
 							initialOpen={false}
 							panelName={'kb-navigation-nav-item-styles'}
 						>

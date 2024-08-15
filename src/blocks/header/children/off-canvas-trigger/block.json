@@ -12,21 +12,27 @@
 		},
 		"icon": {
 			"type": "string",
-			"default": "ic_menu"
+			"default": "fe_menu"
 		},
 		"iconSize": {
 			"type": "number",
 			"default": 25
 		},
+		"lineWidth": {
+			"type": "number",
+			"default": 2
+		},
 		"iconSizeTablet": {
-			"type": "number"
+			"type": "number",
+			"default": ""
 		},
 		"iconSizeMobile": {
-			"type": "number"
+			"type": "number",
+			"default": ""
 		},
 		"iconColor": {
 			"type": "string",
-			"default": "#000000"
+			"default": ""
 		},
 		"iconColorTablet": {
 			"type": "string",
@@ -196,5 +202,8 @@
 			"type": "string",
 			"default": "px"
 		}
+	},
+	"supports": {
+		"className": true
 	}
 }

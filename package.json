@@ -71,7 +71,7 @@
 		"del": "^6.0.0",
 		"eslint-import-resolver-webpack": "^0.13.8",
 		"eslint-plugin-prettier": "^3.4.1",
-		"gulp": "^4.0.2",
+		"gulp": "^5.0.0",
 		"gulp-babel": "^8.0.0",
 		"gulp-babel-minify": "^0.5.2",
 		"gulp-clean-css": "^4.3.0",

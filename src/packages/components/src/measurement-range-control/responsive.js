@@ -66,6 +66,7 @@ export default function ResponsiveMeasureRangeControl( {
 		deskDefault = [ '', '', '', '' ],
 		tabletDefault = [ '', '', '', '' ],
 		mobileDefault = [ '', '', '', '' ],
+		ghostDefault = [ '', '', '', '' ],
 		reset = true,
 		setCustomControl = null,
 		onMouseOver,
@@ -288,6 +289,7 @@ export default function ResponsiveMeasureRangeControl( {
 			parentLabel={ label }
 			label={ ( subLabel ? subLabel : undefined ) }
 			value={ ( value ? value : [ '', '', '', '' ] ) }
+			placeholder={ ( ghostDefault ? ghostDefault : [ '', '', '', '' ] ) }
 			onChange={ ( size ) => onChange( clearNonMatchingValues( value, size ) ) }
 			control={ realControl }
 			onControl={ ( value ) => realSetOnControl( value ) }

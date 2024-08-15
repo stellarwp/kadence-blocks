@@ -101,7 +101,7 @@ export function Edit(props) {
 	 * Also skip if using Embed API as we don't need Lat/Lng for that
 	 */
 	useEffect(() => {
-		if (apiType === 'javascript') {
+		if (apiType === 'javascript' && !attributes?.kadenceDynamic?.location?.enable) {
 			const timeOutId = setTimeout(() => locationChange(location), 600);
 			return () => clearTimeout(timeOutId);
 		}

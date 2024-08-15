@@ -316,6 +316,7 @@ export default function Edit(props) {
 	const [popoverAnchor, setPopoverAnchor] = useState(null);
 	const listItemRef = useRef(null);
 	const ref = useRef();
+	const subMenuRef = useRef();
 
 	//See if this is the first Nav Item in the menu
 	const hasNoBlockBefore = wp.data.select('core/block-editor').getPreviousBlockClientId(clientId) === null;
@@ -952,7 +953,13 @@ export default function Edit(props) {
 				</BlockSettingsMenuControls>
 			)}
 			{/* Warning, this duplicated in packages/block-library/src/navigation-submenu/edit.js */}
-			<BackendStyles {...props} previewDevice={previewDevice} currentRef={ref} />
+			<BackendStyles
+				{...props}
+				previewDevice={previewDevice}
+				currentRef={ref}
+				subMenuRef={subMenuRef}
+				showSubMenusWithLogic={showSubMenusWithLogic}
+			/>
 			<InspectorControls>
 				<SelectParentBlock
 					label={__('View Navigation Settings', 'kadence-blocks')}
@@ -1040,7 +1047,7 @@ export default function Edit(props) {
 				)}
 
 				{activeTab === 'style' && (
-					<>{applyFilters('kadence.styleControlsNavigationLink', styleControls, props, previewDevice)}</>
+					<>{applyFilters('kadence.styleControlsNavigationLink', styleControls, props, hasChildren)}</>
 				)}
 
 				{activeTab === 'advanced' && (
@@ -1239,7 +1246,7 @@ export default function Edit(props) {
 						</button>
 					)}
 				</div>
-				<ul {...innerBlocksProps}>
+				<ul {...innerBlocksProps} ref={subMenuRef}>
 					{!isMegaMenuOnboarding && children}
 					{isMegaMenuOnboarding && (
 						<div className="kt-select-layout">

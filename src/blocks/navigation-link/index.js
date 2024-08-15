@@ -25,7 +25,7 @@ import './style.scss';
 
 registerBlockType(name, {
 	...metadata,
-	title: __('Kadence Nav Link', 'kadence-blocks'),
+	title: __('Kadence Navigation Link', 'kadence-blocks'),
 	icon: navigationItemIcon,
 	__experimentalLabel: ({ label }) => label,
 	edit,

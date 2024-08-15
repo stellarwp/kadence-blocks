@@ -30,7 +30,7 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 	 *
 	 * @var string
 	 */
-	protected $block_name = 'header-off-canvas';
+	protected $block_name = 'off-canvas';
 
 	/**
 	 * Block determines in scripts need to be loaded for block.
@@ -94,12 +94,12 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 		if( !empty( $attributes['widthType'] ) && $attributes['widthType'] === 'full') {
 			$css->add_property( 'width', '100%' );
 		}
-		$css->render_border_styles( $attributes, 'border', false, array(
+		$css->render_border_styles( $merged_attributes, 'border', false, array(
 			'desktop_key' => 'border',
 			'tablet_key'  => 'borderTablet',
 			'mobile_key'  => 'borderMobile',
 		) );
-		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array(
+		$css->render_measure_output( $merged_attributes, 'borderRadius', 'border-radius', array(
 			'desktop_key' => 'borderRadius',
 			'tablet_key'  => 'borderRadiusTablet',
 			'mobile_key'  => 'borderRadiusMobile',
@@ -107,7 +107,7 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 
 		// inner container.
 		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-inner');
-		$css->render_measure_output( $attributes, 'padding', 'padding', array(
+		$css->render_measure_output( $merged_attributes, 'padding', 'padding', array(
 			'desktop_key' => 'padding',
 			'tablet_key'  => 'paddingTablet',
 			'mobile_key'  => 'paddingMobile',
@@ -116,21 +116,29 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 		// For the close icon container styles, they need to get applied to the hover state too, due to resets on hover styles in the css
 		//close icon container
 		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close' . ', .wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close:hover' );
-		$css->render_measure_output( $attributes, 'closeIconPadding', 'padding', array(
+		$css->render_measure_output( $merged_attributes, 'closeIconPadding', 'padding', array(
 			'desktop_key' => 'closeIconPadding',
 			'tablet_key'  => 'closeIconPaddingTablet',
 			'mobile_key'  => 'closeIconPaddingMobile',
 		) );
-		$css->render_measure_output( $attributes, 'closeIconBorderRadius', 'border-radius', array(
+		$css->render_measure_output( $merged_attributes, 'closeIconBorderRadius', 'border-radius', array(
 			'desktop_key' => 'closeIconBorderRadius',
 			'tablet_key'  => 'closeIconBorderRadiusTablet',
 			'mobile_key'  => 'closeIconBorderRadiusMobile',
 		) );
-		$css->render_border_styles( $attributes, 'closeIconBorder' );
+		$css->render_border_styles( $merged_attributes, 'closeIconBorder', false, array(
+			'desktop_key' => 'closeIconBorder',
+			'tablet_key'  => 'closeIconBorderTablet',
+			'mobile_key'  => 'closeIconBorderMobile',
+		) );
 
 		//close icon container hover
 		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close:hover' );
-		$css->render_border_styles( $attributes, 'closeIconBorderHover' );
+		$css->render_border_styles( $merged_attributes, 'closeIconBorderHover', false, array(
+			'desktop_key' => 'closeIconBorderHover',
+			'tablet_key'  => 'closeIconBorderHoverTablet',
+			'mobile_key'  => 'closeIconBorderHoverMobile',
+		) );
 
 		//close icon
 		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close svg' );
@@ -168,11 +176,9 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 
 		//inner container
 		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-inner');
-		if( empty( $attributes['widthType'] ) || ( isset( $attributes['widthType'] ) &&  $attributes['widthType'] === 'partial') ) {
-			$max_width_unit = !empty( $attributes['containerMaxWidthUnit'] ) ? $attributes['containerMaxWidthUnit'] : 'px';
-			if( !empty( $sized_attributes['containerMaxWidth']) ) {
-				$css->add_property( 'max-width', $sized_attributes['containerMaxWidth'] . $max_width_unit );
-			}
+		$max_width_unit = !empty( $sized_attributes['containerMaxWidthUnit'] ) ? $sized_attributes['containerMaxWidthUnit'] : 'px';
+		if( !empty( $sized_attributes['containerMaxWidth']) ) {
+			$css->add_property( 'max-width', $sized_attributes['containerMaxWidth'] . $max_width_unit );
 		}
 
 		//content area inner alignment
@@ -253,12 +259,13 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 			'kb-off-canvas-overlay' . $unique_id,
 		);
 
-		$html .= '<div class="' . esc_attr( implode( ' ', $classes ) ) . '">';
-		$html .= $icon;
-		$html .= '<div class="kb-off-canvas-inner">';
-		$html .= $content;
-		$html .= '</div>';
-		$html .= '</div>';
+
+		$wrapper_args = array(
+			'class'         => implode( ' ', $classes ),
+		);
+		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
+
+		$html .= sprintf( '<div %1$s>%2$s<div class="kb-off-canvas-inner">%3$s</div></div>', $wrapper_attributes, $icon, $content );
 
 		if ( empty( $attributes['widthType'] ) || $attributes['widthType'] === 'partial' ) {
 			$html .= '<div data-unique-id="' . esc_attr( $unique_id ) . '" class="' . esc_attr( implode( ' ', $overlay_classes ) ) . '"></div>';
