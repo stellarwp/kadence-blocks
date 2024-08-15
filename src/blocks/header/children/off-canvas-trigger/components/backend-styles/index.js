@@ -76,6 +76,7 @@ export default function BackendStyles(props) {
 	);
 	css.render_measure_output(padding, paddingTablet, paddingMobile, previewDevice, 'padding', paddingUnit);
 	css.add_property('background-color', KadenceColorOutput(previewIconBackgroundColor));
+	css.add_property('color', KadenceColorOutput(previewIconColor));
 	css.add_property('border-top', css.render_border(border, borderTablet, borderMobile, previewDevice, 'top', false));
 	css.add_property(
 		'border-right',
@@ -103,8 +104,11 @@ export default function BackendStyles(props) {
 	);
 
 	//container hover
-	css.set_selector(`.wp-block-kadence-off-canvas-trigger${uniqueID}:hover`);
+	css.set_selector(
+		`.wp-block-kadence-off-canvas-trigger${uniqueID}:hover, .wp-block-kadence-off-canvas-trigger${uniqueID}:focus`
+	);
 	css.add_property('background-color', KadenceColorOutput(previewIconBackgroundColorHover));
+	css.add_property('color', KadenceColorOutput(previewIconColorHover));
 	css.add_property(
 		'border-top',
 		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'top', false)
@@ -121,14 +125,6 @@ export default function BackendStyles(props) {
 		'border-left',
 		css.render_border(borderHover, borderHoverTablet, borderHoverMobile, previewDevice, 'left', false)
 	);
-
-	//icon
-	css.set_selector(`.wp-block-kadence-off-canvas-trigger${uniqueID} svg`);
-	css.add_property('color', KadenceColorOutput(previewIconColor));
-
-	//icon hover
-	css.set_selector(`.wp-block-kadence-off-canvas-trigger${uniqueID}:hover svg`);
-	css.add_property('color', KadenceColorOutput(previewIconColorHover));
 
 	const cssOutput = css.css_output();
 

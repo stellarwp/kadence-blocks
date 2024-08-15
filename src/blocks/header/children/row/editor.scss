@@ -7,6 +7,9 @@
 		grid-template-columns: 1fr auto 1fr;
 		margin: 0 auto;
 	}
+	.kadence-header-row-inner:has(div.no-content) {
+		grid-template-columns: auto auto auto;
+	}
 	.wp-block-kadence-header-column,
 	.wp-block-kadence-header-section {
 		gap: 10px;
