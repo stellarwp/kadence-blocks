@@ -123,6 +123,10 @@ class Kadence_Blocks_Header_Column_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
+		if( empty( $content ) ) {
+			$classes[] = 'no-content';
+		}
+
 		$html .= '<div class="' . esc_attr( implode( ' ', $classes ) ) . '">';
 		$html .= $content;
 		$html .= '</div>';
