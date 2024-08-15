@@ -81,15 +81,16 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 		$header_row_attributes = $this->get_attributes_with_defaults( $unique_id, $attributes, 'kadence/' . $this->block_name );
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
+		$layout         = ( ! empty( $header_row_attributes['layout'] ) ? $header_row_attributes['layout'] : 'standard' );
+		$bg             = $header_row_attributes['background'];
+		$bg_transparent = $header_row_attributes['backgroundTransparent'];
 		$sizes = array( 'Desktop', 'Tablet', 'Mobile' );
 
 		foreach ( $sizes as $size ) {
 			$this->sized_dynamic_styles( $css, $header_row_attributes, $unique_id, $size );
 		}
 		$css->set_media_state( 'desktop' );
-		$layout         = ( ! empty( $header_row_attributes['layout'] ) ? $header_row_attributes['layout'] : 'standard' );
-		$bg             = $header_row_attributes['background'];
-		$bg_transparent = $header_row_attributes['backgroundTransparent'];
+	
 		if ( 'contained' !== $layout ) {
 			$css->set_selector( '.wp-block-kadence-header-row' . $unique_id );
 			$css->render_background( $bg, $css );

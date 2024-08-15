@@ -165,23 +165,19 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 			if( !empty( $sized_attributes['maxWidth']) ) {
 				$css->add_property( 'max-width', $sized_attributes['maxWidth'] . $max_width_unit );
 			}
-			$width_unit = !empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px';
-			if( !empty( $sized_attributes['width']) ) {
-				$css->add_property( 'width', $sized_attributes['width'] . $width_unit );
-			}
 		}
 		if ( ! empty( $sized_attributes['backgroundColor'] ) ) {
 			$css->add_property( 'background-color', $css->render_color( $sized_attributes['backgroundColor'] ) );
 		}
 
-		//inner container
+		// Inner container.
 		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-inner');
 		$max_width_unit = !empty( $sized_attributes['containerMaxWidthUnit'] ) ? $sized_attributes['containerMaxWidthUnit'] : 'px';
 		if( !empty( $sized_attributes['containerMaxWidth']) ) {
 			$css->add_property( 'max-width', $sized_attributes['containerMaxWidth'] . $max_width_unit );
 		}
 
-		//content area inner alignment
+		// Content area inner alignment
 		if ($sized_attributes['hAlign'] == 'center') {
 			$css->add_property('align-items', 'center');
 			$css->add_property('margin-left', 'auto');

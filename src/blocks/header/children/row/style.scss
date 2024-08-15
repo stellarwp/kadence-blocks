@@ -41,12 +41,12 @@
 	}
 	&.wp-block-kadence-header-row-layout-contained {
 		padding: 0 var(--global-content-edge-padding, 15px);
-		max-width: var(--global-content-width);
+		max-width: var(--global-content-width, var(--wp--style--global--wide-size));
 		margin: 0 auto;
 	}
 	&.wp-block-kadence-header-row-layout-standard {
 		.kadence-header-row-inner {
-			max-width: var(--global-content-width);
+			max-width: var(--global-content-width, var(--wp--style--global--wide-size));
 		}
 	}
 	// &.wp-block-kadence-header-row-layout-fullwidth {
