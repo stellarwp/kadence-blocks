@@ -9,9 +9,9 @@
 
 /* Form Styles */
 .aa-Autocomplete {
-  @include input_base;
-
   padding: 0;
+
+  @include input_base;
 
   &:focus-within {
     .aa-ClearButton,

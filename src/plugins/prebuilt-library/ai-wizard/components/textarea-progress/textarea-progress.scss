@@ -1,8 +1,8 @@
 @import "../../scss/mixins.scss";
 
 .stellarwp-textarea-progress {
-	@include input_base;
 	padding: 0;
+	@include input_base;
 
 	&--suggestion-active {
 		background-color: #f0f1f9;
