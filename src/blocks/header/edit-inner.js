@@ -687,91 +687,39 @@ export function EditInner(props) {
 							initialOpen={false}
 							panelName={'kb-header-border'}
 						>
-							<HoverToggleControl
-								normal={
-									<>
-										<ResponsiveBorderControl
-											label={__('Border', 'kadence-blocks')}
-											value={border}
-											tabletValue={borderTablet}
-											mobileValue={borderMobile}
-											onChange={(value) => {
-												setMetaAttribute(value, 'border');
-											}}
-											onChangeTablet={(value) => setMetaAttribute(value, 'borderTablet')}
-											onChangeMobile={(value) => setMetaAttribute(value, 'borderMobile')}
-										/>
-										<ResponsiveMeasurementControls
-											label={__('Border Radius', 'kadence-blocks')}
-											value={borderRadius}
-											tabletValue={borderRadiusTablet}
-											mobileValue={borderRadiusMobile}
-											onChange={(value) => setMetaAttribute(value, 'borderRadius')}
-											onChangeTablet={(value) => setMetaAttribute(value, 'borderRadiusTablet')}
-											onChangeMobile={(value) => setMetaAttribute(value, 'borderRadiusMobile')}
-											unit={borderRadiusUnit}
-											units={['px', 'em', 'rem', '%']}
-											onUnit={(value) => setMetaAttribute(value, 'borderRadiusUnit')}
-											max={
-												borderRadiusUnit === 'em' || borderRadiusUnit === 'rem'
-													? 24
-													: borderRadiusUnit === 'px'
-													? 500
-													: 100
-											}
-											step={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1}
-											min={0}
-											isBorderRadius={true}
-											allowEmpty={true}
-										/>
-									</>
+							<ResponsiveBorderControl
+								label={__('Border', 'kadence-blocks')}
+								value={border}
+								tabletValue={borderTablet}
+								mobileValue={borderMobile}
+								onChange={(value) => {
+									setMetaAttribute(value, 'border');
+								}}
+								onChangeTablet={(value) => setMetaAttribute(value, 'borderTablet')}
+								onChangeMobile={(value) => setMetaAttribute(value, 'borderMobile')}
+							/>
+							<ResponsiveMeasurementControls
+								label={__('Border Radius', 'kadence-blocks')}
+								value={borderRadius}
+								tabletValue={borderRadiusTablet}
+								mobileValue={borderRadiusMobile}
+								onChange={(value) => setMetaAttribute(value, 'borderRadius')}
+								onChangeTablet={(value) => setMetaAttribute(value, 'borderRadiusTablet')}
+								onChangeMobile={(value) => setMetaAttribute(value, 'borderRadiusMobile')}
+								unit={borderRadiusUnit}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setMetaAttribute(value, 'borderRadiusUnit')}
+								max={
+									borderRadiusUnit === 'em' || borderRadiusUnit === 'rem'
+										? 24
+										: borderRadiusUnit === 'px'
+										? 500
+										: 100
 								}
-								hover={
-									<>
-										<ResponsiveBorderControl
-											label={__('Hover Border', 'kadence-blocks')}
-											value={borderHover}
-											tabletValue={borderHoverTablet}
-											mobileValue={borderHoverMobile}
-											onChange={(value) => {
-												setMetaAttribute(value, 'borderHover');
-											}}
-											onChangeTablet={(value) => setMetaAttribute(value, 'borderHoverTablet')}
-											onChangeMobile={(value) => setMetaAttribute(value, 'borderHoverMobile')}
-										/>
-										<ResponsiveMeasurementControls
-											label={__('Border Radius', 'kadence-blocks')}
-											value={borderRadiusHover}
-											tabletValue={borderRadiusHoverTablet}
-											mobileValue={borderRadiusHoverMobile}
-											onChange={(value) => setMetaAttribute(value, 'borderRadiusHover')}
-											onChangeTablet={(value) =>
-												setMetaAttribute(value, 'borderRadiusHoverTablet')
-											}
-											onChangeMobile={(value) =>
-												setMetaAttribute(value, 'borderRadiusHoverMobile')
-											}
-											unit={borderRadiusHoverUnit}
-											units={['px', 'em', 'rem', '%']}
-											onUnit={(value) => setMetaAttribute(value, 'borderRadiusHoverUnit')}
-											max={
-												borderRadiusHoverUnit === 'em' || borderRadiusHoverUnit === 'rem'
-													? 24
-													: borderRadiusHoverUnit === 'px'
-													? 500
-													: 100
-											}
-											step={
-												borderRadiusHoverUnit === 'em' || borderRadiusHoverUnit === 'rem'
-													? 0.1
-													: 1
-											}
-											min={0}
-											isBorderRadius={true}
-											allowEmpty={true}
-										/>
-									</>
-								}
+								step={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1}
+								min={0}
+								isBorderRadius={true}
+								allowEmpty={true}
 							/>
 						</KadencePanelBody>
 

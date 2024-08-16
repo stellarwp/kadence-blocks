@@ -45,39 +45,25 @@ $admin-bar-height-mobile: 46px;
 
 	.kb-off-canvas-close {
 		margin: 0;
-		padding: 0;
+		padding: 0.5rem;
 		color: currentColor;
-		background: none;
-		border: none;
 		border-radius: 0;
-
 		border: 0;
 		background: transparent;
 		cursor: pointer;
-		padding: 0;
 		z-index: 11;
 		display: inline-flex;
-		justify-content: top;
 		align-items: center;
-		color: #444444;
 		-webkit-appearance: none;
 		position: absolute;
-		top: 4px;
-		right: 4px;
-		svg {
-		}
-
+		top: 5px;
+		right: 5px;
+		box-shadow: none;
+		&:hover,
 		&:focus {
-			outline: none;
-		}
-
-		&:hover {
-			margin: 0;
-			padding: 0;
 			color: currentColor;
 			background: none;
-			border: none;
-			border-radius: 0;
+			box-shadow: none;
 		}
 	}
 }

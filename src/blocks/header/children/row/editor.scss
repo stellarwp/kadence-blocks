@@ -7,7 +7,7 @@
 		grid-template-columns: 1fr auto 1fr;
 		margin: 0 auto;
 	}
-	.kadence-header-row-inner:has(div.no-content) {
+	.kadence-header-row-inner:has(> div.no-content-column-center) {
 		grid-template-columns: auto auto auto;
 	}
 	.wp-block-kadence-header-column,
@@ -40,12 +40,12 @@
 	}
 	&.wp-block-kadence-header-row-layout-contained:not(.specific):not(.extra-specific) {
 		padding: 0 var(--global-content-edge-padding, 15px);
-		max-width: var(--global-content-width);
+		max-width: var(--global-content-width, var(--wp--style--global--wide-size));
 		margin: 0 auto;
 	}
 	&.wp-block-kadence-header-row-layout-standard {
 		.kadence-header-row-inner {
-			max-width: var(--global-content-width);
+			max-width: var(--global-content-width, var(--wp--style--global--wide-size));
 		}
 	}
 	&.wp-block-kadence-header-row-layout-fullwidth {
