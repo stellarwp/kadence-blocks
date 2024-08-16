@@ -240,11 +240,22 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 		$icon = '';
 
 		if ( ! empty( $attributes['closeIcon'] ) ) {
-			$icon = '<button class="kb-off-canvas-close">' . Kadence_Blocks_Svg_Render::render( $attributes['closeIcon'], 'currentColor', false, '', false ) . '</button>';
+			$close_icon         = $attributes['closeIcon'];
+			$type         = substr( $close_icon, 0, 2 );
+			$line_icon    = ( ! empty( $type ) && 'fe' == $type ? true : false );
+			$fill         = ( $line_icon ? 'none' : 'currentColor' );
+			$stroke_width = false;
+			if ( $line_icon ) {
+				$stroke_width = ( ! empty( $attributes['closeLineWidth'] ) ? $attributes['closeLineWidth'] : 2 );
+			}
+			$title   = '';
+			$hidden  = true;
+			$label   = ( ! empty( $attributes['closeLabel'] ) ? $attributes['closeLabel'] : esc_attr__( 'Close Menu', 'kadence-blocks' ) );
+			$icon    = '<button aria-label="' . esc_attr( $label ) . '" aria-expanded="false" class="kb-off-canvas-close">' . Kadence_Blocks_Svg_Render::render( $close_icon, $fill, $stroke_width, $title, $hidden ) . '</button>';
 		}
 
-		$open_side = !empty( $attributes['slideFrom'] ) ? $attributes['slideFrom'] : 'left';
-		$classes = array(
+		$open_side = ! empty( $attributes['slideFrom'] ) ? $attributes['slideFrom'] : 'left';
+		$classes   = array(
 			'wp-block-kadence-off-canvas',
 			'wp-block-kadence-off-canvas' . $unique_id,
 			'open-' . $open_side,

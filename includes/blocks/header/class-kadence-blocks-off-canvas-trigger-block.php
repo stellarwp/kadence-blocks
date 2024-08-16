@@ -186,23 +186,16 @@ class Kadence_Blocks_Off_Canvas_Trigger_Block extends Kadence_Blocks_Abstract_Bl
 		if ( $line_icon ) {
 			$stroke_width = ( ! empty( $attributes['lineWidth'] ) ? $attributes['lineWidth'] : 2 );
 		}
-		$type         = substr( $attributes['icon'], 0, 2 );
-		$line_icon    = ( ! empty( $type ) && 'fe' == $type ? true : false );
-		$fill         = ( $line_icon ? 'none' : 'currentColor' );
-		$stroke_width = false;
-
-		if ( $line_icon ) {
-			$stroke_width = 2;
-		}
 		$title   = '';
 		$hidden  = true;
 		$content = Kadence_Blocks_Svg_Render::render( $icon, $fill, $stroke_width, $title, $hidden );
-		$label   = ( ! empty( $attributes['label'] ) ? $attributes['label'] : esc_attr__( 'Toggle Popover', 'kadence-blocks' ) );
+		$label   = ( ! empty( $attributes['label'] ) ? $attributes['label'] : esc_attr__( 'Toggle Menu', 'kadence-blocks' ) );
 
 		$wrapper_args = array(
 			'class'         => implode( ' ', $classes ),
 			'aria-label'    => $label,
 			'aria-expanded' => 'false',
+			'aria-haspopup' => 'true',
 			'id'            => 'kadence-off-canvas-trigger' . $unique_id,
 		);
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );

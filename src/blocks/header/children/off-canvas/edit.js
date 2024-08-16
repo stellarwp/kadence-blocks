@@ -41,7 +41,7 @@ import {
 	HoverToggleControl,
 	IconRender,
 } from '@kadence/components';
-
+import { TextControl, RangeControl } from '@wordpress/components';
 /**
  * Internal dependencies
  */
@@ -89,6 +89,8 @@ export function Edit(props) {
 		borderRadiusMobile,
 		borderRadiusUnit,
 		closeIcon,
+		closeLabel,
+		closeLineWidth,
 		closeIconSize,
 		closeIconSizeTablet,
 		closeIconSizeMobile,
@@ -393,7 +395,16 @@ export function Edit(props) {
 								onChange={(value) => setAttributes({ closeIcon: value })}
 								allowClear={true}
 							/>
-
+							{closeIcon && 'fe' === closeIcon.substring(0, 2) && (
+								<RangeControl
+									label={__('Icon Line Width', 'kadence-blocks')}
+									value={closeLineWidth}
+									onChange={(value) => setAttributes({ closeLineWidth: value })}
+									step={0.5}
+									min={0.5}
+									max={4}
+								/>
+							)}
 							<ResponsiveRangeControls
 								label={__('Icon Size', 'kadence-blocks')}
 								value={closeIconSize}
@@ -407,6 +418,12 @@ export function Edit(props) {
 								min={5}
 								max={250}
 								step={1}
+							/>
+							<TextControl
+								label={__('Button Label Attribute for Accessibility', 'kadence-blocks')}
+								value={closeLabel}
+								placeholder={__('Close Menu', 'kadence-blocks')}
+								onChange={(value) => setAttributes({ closeLabel: value })}
 							/>
 						</KadencePanelBody>
 					</>
@@ -589,6 +606,7 @@ export function Edit(props) {
 							className={`kb-off-canvas-close-icon`}
 							name={closeIcon}
 							size={previewCloseIconSize}
+							strokeWidth={'fe' === closeIcon.substring(0, 2) ? closeLineWidth : undefined}
 						/>
 					</button>
 				)}

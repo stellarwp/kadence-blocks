@@ -27,28 +27,23 @@
 			"default": 400
 		},
 		"maxWidthTablet": {
-			"type": "number",
-			"default": null
+			"type": "number"
 		},
 		"maxWidthMobile": {
-			"type": "number",
-			"default": null
+			"type": "number"
 		},
 		"maxWidthUnit": {
 			"type": "string",
 			"default": "px"
 		},
 		"containerMaxWidth": {
-			"type": "number",
-			"default": null
+			"type": "number"
 		},
 		"containerMaxWidthTablet": {
-			"type": "number",
-			"default": null
+			"type": "number"
 		},
 		"containerMaxWidthMobile": {
-			"type": "number",
-			"default": null
+			"type": "number"
 		},
 		"containerMaxWidthUnit": {
 			"type": "string",
@@ -172,11 +167,19 @@
 		},
 		"closeIcon": {
 			"type": "string",
-			"default": "fas_times"
+			"default": "fe_x"
+		},
+		"closeLabel": {
+			"type": "string",
+			"default": ""
 		},
 		"closeIconSize": {
 			"type": "number",
 			"default": 25
+		},
+		"closeLineWidth": {
+			"type": "number",
+			"default": 2
 		},
 		"closeIconSizeTablet": {
 			"type": "number"
