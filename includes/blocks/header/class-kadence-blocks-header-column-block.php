@@ -123,8 +123,11 @@ class Kadence_Blocks_Header_Column_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-		if( empty( $content ) ) {
+		if ( empty( $content ) ) {
 			$classes[] = 'no-content';
+			if ( ! empty( $attributes['location'] ) && $attributes['location'] == 'center' ) {
+				$classes[] = 'no-content-column-center';
+			}
 		}
 
 		$html .= '<div class="' . esc_attr( implode( ' ', $classes ) ) . '">';

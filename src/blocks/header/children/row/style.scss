@@ -7,7 +7,7 @@
 		grid-template-columns: 1fr auto 1fr;
 		margin: 0 auto;
 	}
-	.kadence-header-row-inner:has(div.no-content) {
+	.kadence-header-row-inner:has(> div.no-content-column-center) {
 		grid-template-columns: auto auto auto;
 	}
 
