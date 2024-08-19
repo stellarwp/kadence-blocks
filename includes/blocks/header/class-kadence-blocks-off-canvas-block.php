@@ -90,7 +90,7 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_media_state( 'desktop' );
 
 		// container.
-		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id );
+		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-inner-wrap' );
 		if( !empty( $attributes['widthType'] ) && $attributes['widthType'] === 'full') {
 			$css->add_property( 'width', '100%' );
 		}
@@ -113,14 +113,19 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 			'mobile_key'  => 'paddingMobile',
 		) );
 
-		// For the close icon container styles, they need to get applied to the hover state too, due to resets on hover styles in the css
-		//close icon container
-		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close' . ', .wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close:hover' );
-		$css->render_measure_output( $merged_attributes, 'closeIconPadding', 'padding', array(
-			'desktop_key' => 'closeIconPadding',
-			'tablet_key'  => 'closeIconPaddingTablet',
-			'mobile_key'  => 'closeIconPaddingMobile',
-		) );
+		// For the close icon container styles.
+		// close icon container.
+		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close' );
+		$css->render_measure_output(
+			$merged_attributes,
+			'closeIconPadding',
+			'padding',
+			[
+				'desktop_key' => 'closeIconPadding',
+				'tablet_key'  => 'closeIconPaddingTablet',
+				'mobile_key'  => 'closeIconPaddingMobile',
+			]
+		);
 		$css->render_measure_output( $merged_attributes, 'closeIconBorderRadius', 'border-radius', array(
 			'desktop_key' => 'closeIconBorderRadius',
 			'tablet_key'  => 'closeIconBorderRadiusTablet',
@@ -132,16 +137,18 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 			'mobile_key'  => 'closeIconBorderMobile',
 		) );
 
-		//close icon container hover
-		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close:hover' );
-		$css->render_border_styles( $merged_attributes, 'closeIconBorderHover', false, array(
-			'desktop_key' => 'closeIconBorderHover',
-			'tablet_key'  => 'closeIconBorderHoverTablet',
-			'mobile_key'  => 'closeIconBorderHoverMobile',
-		) );
-
-		//close icon
-		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close svg' );
+		// Close icon container hover.
+		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close:hover, .wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close:focus' );
+		$css->render_border_styles(
+			$merged_attributes,
+			'closeIconBorderHover',
+			false,
+			[
+				'desktop_key' => 'closeIconBorderHover',
+				'tablet_key'  => 'closeIconBorderHoverTablet',
+				'mobile_key'  => 'closeIconBorderHoverMobile',
+			]
+		);
 
 		return $css->css_output();
 	}
@@ -158,11 +165,11 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_media_state( strtolower( $size ) );
 
-		//container
-		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id );
-		if( empty( $attributes['widthType'] ) || $attributes['widthType'] !== 'full') {
-			$max_width_unit = !empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px';
-			if( !empty( $sized_attributes['maxWidth']) ) {
+		// Container.
+		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-inner-wrap' );
+		if ( empty( $attributes['widthType'] ) || $attributes['widthType'] !== 'full' ) {
+			$max_width_unit = ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px';
+			if ( ! empty( $sized_attributes['maxWidth']) ) {
 				$css->add_property( 'max-width', $sized_attributes['maxWidth'] . $max_width_unit );
 			}
 		}
@@ -171,60 +178,57 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		// Inner container.
-		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-inner');
-		$max_width_unit = !empty( $sized_attributes['containerMaxWidthUnit'] ) ? $sized_attributes['containerMaxWidthUnit'] : 'px';
-		if( !empty( $sized_attributes['containerMaxWidth']) ) {
+		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-inner' );
+		$max_width_unit = ! empty( $sized_attributes['containerMaxWidthUnit'] ) ? $sized_attributes['containerMaxWidthUnit'] : 'px';
+		if ( ! empty( $sized_attributes['containerMaxWidth'] ) ) {
 			$css->add_property( 'max-width', $sized_attributes['containerMaxWidth'] . $max_width_unit );
 		}
 
-		// Content area inner alignment
-		if ($sized_attributes['hAlign'] == 'center') {
-			$css->add_property('align-items', 'center');
-			$css->add_property('margin-left', 'auto');
-			$css->add_property('margin-right', 'auto');
-		} else if ($sized_attributes['hAlign'] == 'right') {
-			$css->add_property('align-items', 'flex-end');
-			$css->add_property('margin-left', 'auto');
+		// Content area inner alignment.
+		if ( $sized_attributes['hAlign'] == 'center') {
+			$css->add_property( 'align-items', 'center' );
+			$css->add_property( 'margin-left', 'auto' );
+			$css->add_property( 'margin-right', 'auto' );
+		} elseif ( $sized_attributes['hAlign'] == 'right' ) {
+			$css->add_property( 'align-items', 'flex-end' );
+			$css->add_property( 'margin-left', 'auto' );
 		}
-		if ($sized_attributes['vAlign'] == 'center') {
-			$css->add_property('justify-content', 'center');
-		} else if ($sized_attributes['vAlign'] == 'bottom') {
-			$css->add_property('justify-content', 'flex-end');
+		if ( $sized_attributes['vAlign'] == 'center' ) {
+			$css->add_property( 'justify-content', 'center' );
+		} elseif ( $sized_attributes['vAlign'] == 'bottom' ) {
+			$css->add_property( 'justify-content', 'flex-end' );
 		}
 
-		// Overlay
+		// Overlay.
 		$css->set_selector( '.kb-off-canvas-overlay' . $unique_id );
 		if ( ! empty( $sized_attributes['pageBackgroundColor'] ) ) {
 			$css->add_property( 'background-color', $css->render_color( $sized_attributes['pageBackgroundColor'] ) );
 		}
 
 		// For the close icon container styles, they need to get applied to the hover state too, due to resets on hover styles in the css
-		//Close Icon container
-		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close' . ', .wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close:hover' );
+		// Close Icon container.
+		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close' );
 		if ( ! empty( $sized_attributes['closeIconBackgroundColor'] ) ) {
 			$css->add_property( 'background-color', $css->render_color( $sized_attributes['closeIconBackgroundColor'] ) );
 		}
-
-		//Close Icon container hover
-		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close:hover' );
-		if ( ! empty( $sized_attributes['closeIconBackgroundColorHover'] ) ) {
-			$css->add_property( 'background-color', $css->render_color( $sized_attributes['closeIconBackgroundColorHover'] ) );
-		}
-
-		//Close Icon
-		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close svg' );
 		if ( ! empty( $sized_attributes['closeIconColor'] ) ) {
 			$css->add_property( 'color', $css->render_color( $sized_attributes['closeIconColor'] ) );
 		}
+
+		// Close Icon container hover.
+		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close:hover, .wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close:focus' );
+		if ( ! empty( $sized_attributes['closeIconBackgroundColorHover'] ) ) {
+			$css->add_property( 'background-color', $css->render_color( $sized_attributes['closeIconBackgroundColorHover'] ) );
+		}
+		if ( ! empty( $sized_attributes['closeIconColorHover'] ) ) {
+			$css->add_property( 'color', $css->render_color( $sized_attributes['closeIconColorHover'] ) );
+		}
+
+		// Close Icon.
+		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close svg' );
 		if ( ! empty( $sized_attributes['closeIconSize'] ) ) {
 			$css->add_property( 'width', $sized_attributes['closeIconSize'] . 'px' );
 			$css->add_property( 'height', $sized_attributes['closeIconSize'] . 'px' );
-		}
-
-		//Close Icon hover
-		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close:hover svg' );
-		if ( ! empty( $sized_attributes['closeIconColorHover'] ) ) {
-			$css->add_property( 'color', $css->render_color( $sized_attributes['closeIconColorHover'] ) );
 		}
 	}
 
@@ -236,8 +240,9 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return string Returns the block output.
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		$html = '';
-		$icon = '';
+		$html    = '';
+		$overlay = '';
+		$icon    = '';
 
 		if ( ! empty( $attributes['closeIcon'] ) ) {
 			$close_icon         = $attributes['closeIcon'];
@@ -265,18 +270,16 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 			'kb-off-canvas-overlay',
 			'kb-off-canvas-overlay' . $unique_id,
 		);
-
+		if ( empty( $attributes['widthType'] ) || $attributes['widthType'] === 'partial' ) {
+			$overlay = '<div data-unique-id="' . esc_attr( $unique_id ) . '" class="' . esc_attr( implode( ' ', $overlay_classes ) ) . '"></div>';
+		}
 
 		$wrapper_args = array(
 			'class'         => implode( ' ', $classes ),
 		);
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 
-		$html .= sprintf( '<div %1$s>%2$s<div class="kb-off-canvas-inner">%3$s</div></div>', $wrapper_attributes, $icon, $content );
-
-		if ( empty( $attributes['widthType'] ) || $attributes['widthType'] === 'partial' ) {
-			$html .= '<div data-unique-id="' . esc_attr( $unique_id ) . '" class="' . esc_attr( implode( ' ', $overlay_classes ) ) . '"></div>';
-		}
+		$html .= sprintf( '<div %1$s>%2$s<div class="kb-off-canvas-inner-wrap">%3$s<div class="kb-off-canvas-inner">%4$s</div></div></div>', $wrapper_attributes, $overlay, $icon, $content );
 
 		return $html;
 	}

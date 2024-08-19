@@ -3,22 +3,44 @@ $admin-bar-height-mobile: 46px;
 
 /* The off canvas area */
 .wp-block-kadence-off-canvas {
-	background-color: white;
-	height: 100%;
-	min-width: 250px;
-	// left: -9999rem;
-	// right: 9999rem;
 	position: fixed;
-	z-index: 9999;
+	display: none;
 	top: 0;
-	overflow-x: scroll;
-	transition: 0.5s ease-in-out;
-
-	&.open-right {
-		right: -100%;
+	bottom: 0;
+	left: -99999rem;
+	right: 99999rem;
+	transition: opacity 0.25s ease-in, left 0s 0.25s, right 0s 0.25s;
+	z-index: 100000;
+	.kb-off-canvas-inner-wrap {
+		background-color: white;
+		max-width: 100vw;
+		transform: translateX(-100%);
+		width: 100%;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		opacity: 0;
+		position: fixed;
+		overflow: auto;
+		transition: transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1), opacity 0.25s cubic-bezier(0.77, 0.2, 0.05, 1),
+			-webkit-transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1);
 	}
-	&.open-left {
-		left: -100%;
+	&.open-right {
+		.kb-off-canvas-inner-wrap {
+			transform: translateX(100%);
+			right: 0;
+			left: auto;
+		}
+	}
+	.kb-off-canvas-overlay {
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		background-color: rgba(0, 0, 0, 0.5); /* Adjust opacity here */
+		opacity: 0;
+		transition: opacity 0.2s ease-in-out;
 	}
 
 	.kb-off-canvas-inner {
@@ -29,17 +51,21 @@ $admin-bar-height-mobile: 46px;
 		flex-direction: column;
 		box-sizing: border-box;
 	}
-
+	&.show-off-canvas {
+		display: block;
+	}
 	&.active {
-		&.open-right {
-			right: 0;
+		left: 0;
+		opacity: 1;
+		right: 0;
+		transition: opacity 0.25s ease-out;
+		.kb-off-canvas-inner-wrap {
+			opacity: 1;
+			transform: translateX(0%);
 		}
-		&.open-left {
-			left: 0;
-		}
-
-		& + .kb-off-canvas-overlay {
-			display: block;
+		.kb-off-canvas-overlay {
+			opacity: 1;
+			cursor: pointer;
 		}
 	}
 
@@ -69,32 +95,12 @@ $admin-bar-height-mobile: 46px;
 }
 
 //admin bar top adjustment
-body.admin-bar .wp-block-kadence-off-canvas {
+body.admin-bar .wp-block-kadence-off-canvas,
+body.admin-bar .kb-off-canvas-overlay,
+body.admin-bar .kb-off-canvas-inner-wrap {
 	top: $admin-bar-height-mobile;
-	height: calc(100% - $admin-bar-height-mobile);
 
 	@media screen and (min-width: 783px) {
 		top: $admin-bar-height;
-		height: calc(100% - $admin-bar-height);
 	}
-}
-
-/* Overlay for grey-out effect */
-.kb-off-canvas-overlay {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background-color: rgba(0, 0, 0, 0.5); /* Adjust opacity here */
-	z-index: 9998; /* Ensure overlay is below off-canvas menu */
-	display: none; /* Initially hidden */
-}
-
-.sidenav .closebtn {
-	position: absolute;
-	top: 0;
-	right: 25px;
-	font-size: 36px;
-	margin-left: 50px;
 }

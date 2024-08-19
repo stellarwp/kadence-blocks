@@ -366,7 +366,8 @@ function innerBlocks() {
 							'kadence/header-column',
 							{
 								uniqueID: '8_450dc9-7d',
-								metadata: { name: 'Center', location: 'tablet-center' },
+								location: 'tablet-center',
+								metadata: { name: 'Center' },
 							},
 							[]
 						),
@@ -413,7 +414,8 @@ function innerBlocks() {
 							'kadence/header-column',
 							{
 								uniqueID: '8_a273a9-b3',
-								metadata: { name: 'Center', location: 'tablet-center' },
+								location: 'tablet-center',
+								metadata: { name: 'Center' },
 							},
 							[
 								createBlock(

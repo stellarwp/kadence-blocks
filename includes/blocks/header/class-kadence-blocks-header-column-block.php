@@ -98,7 +98,7 @@ class Kadence_Blocks_Header_Column_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! empty( $attributes['location'] ) && ! in_array( $attributes['location'], array( 'tablet-left', 'tablet-right', 'center-left', 'center', 'center-right' ) ) ) {
 
 			// If no center content, return empty div to keep layout consistent.
-			if( $attributes['location'] === 'tablet-center' && empty( $content ) ) {
+			if ( $attributes['location'] === 'tablet-center' && empty( $content ) ) {
 				return '<div></div>';
 			}
 
@@ -122,10 +122,9 @@ class Kadence_Blocks_Header_Column_Block extends Kadence_Blocks_Abstract_Block {
 				$content = '<div class="wp-block-kadence-header-column wp-block-kadence-header-column-center-right"></div>' . $content;
 			}
 		}
-
 		if ( empty( $content ) ) {
 			$classes[] = 'no-content';
-			if ( ! empty( $attributes['location'] ) && $attributes['location'] == 'center' ) {
+			if ( ! empty( $attributes['location'] ) && ( 'center' === $attributes['location'] || 'tablet-center' === $attributes['location'] ) ) {
 				$classes[] = 'no-content-column-center';
 			}
 		}
