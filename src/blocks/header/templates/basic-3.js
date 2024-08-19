@@ -193,7 +193,7 @@ function innerBlocks() {
 									[
 										createBlock(
 											'kadence/navigation',
-											{ uniqueID: '6_9c1e43-30', templateKey: 'short-vertical' },
+											{ uniqueID: '6_9c1e43-30', templateKey: 'short' },
 											[]
 										),
 									]
