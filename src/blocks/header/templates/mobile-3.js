@@ -292,7 +292,8 @@ function innerBlocks() {
 							'kadence/header-column',
 							{
 								uniqueID: '75_98c204-ff',
-								metadata: { name: 'Center', location: 'tablet-center' },
+								location: 'tablet-center',
+								metadata: { name: 'Center' },
 							},
 							[]
 						),
@@ -343,7 +344,8 @@ function innerBlocks() {
 							'kadence/header-column',
 							{
 								uniqueID: '75_aba572-6e',
-								metadata: { name: 'Center', location: 'tablet-center' },
+								location: 'tablet-center',
+								metadata: { name: 'Center' },
 							},
 							[]
 						),
@@ -381,7 +383,8 @@ function innerBlocks() {
 						'kadence/header-column',
 						{
 							uniqueID: '75_218b70-b2',
-							metadata: { name: 'Center', location: 'tablet-center' },
+							location: 'tablet-center',
+							metadata: { name: 'Center' },
 						},
 						[]
 					),
