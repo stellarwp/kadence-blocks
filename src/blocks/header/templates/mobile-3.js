@@ -176,20 +176,7 @@ function innerBlocks() {
 								createBlock(
 									'kadence/header-column',
 									{ uniqueID: '75_924e83-33', location: 'right', metadata: { name: 'Right' } },
-									[
-										createBlock(
-											'kadence/image',
-											{
-												imgMaxWidth: 100,
-												sizeSlug: 'full',
-												linkDestination: 'none',
-												uniqueID: '75_21fad1-2e',
-												globalAlt: true,
-												url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
-											},
-											[]
-										),
-									]
+									[]
 								),
 							]
 						),
@@ -345,11 +332,6 @@ function innerBlocks() {
 								uniqueID: '75_aba572-6e',
 								metadata: { name: 'Center', location: 'tablet-center' },
 							},
-							[]
-						),
-						createBlock(
-							'kadence/header-column',
-							{ uniqueID: '75_20930f-fd', location: 'tablet-right', metadata: { name: 'Right' } },
 							[
 								createBlock(
 									'kadence/image',
@@ -364,6 +346,11 @@ function innerBlocks() {
 									[]
 								),
 							]
+						),
+						createBlock(
+							'kadence/header-column',
+							{ uniqueID: '75_20930f-fd', location: 'tablet-right', metadata: { name: 'Right' } },
+							[]
 						),
 					]
 				),
