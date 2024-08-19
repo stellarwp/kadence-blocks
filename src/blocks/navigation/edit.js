@@ -45,9 +45,9 @@ export function Edit(props) {
 	// Since we're not in the EntityProvider yet, we need to provide a post id.
 	// 'id' and 'meta' will be undefined untill the actual post is chosen / loaded
 	const [meta, setMeta] = useNavigationProp('meta', id);
+	const [existingTitle, setTitle] = useNavigationProp('title', id);
 	const [isAdding, addNew] = useEntityAutoDraftAndPublish('kadence_navigation', 'kadence_navigation');
 	const [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_navigation', { id: id });
-	const [existingTitle, setTitle] = useNavigationProp('title', id);
 
 	const metaAttributes = {
 		orientation: meta?._kad_navigation_orientation,
@@ -204,27 +204,20 @@ export function Edit(props) {
 	//it will fill out the meta and inner blocks based on the templatekey
 	useEffect(() => {
 		if (id && templateKey && makePost) {
-			//do the inner blocks and meta
-			//let updatedMeta = meta;
-
 			const { templateInnerBlocks, templatePostMeta } = buildTemplateFromSelection(templateKey);
 
 			if (templateInnerBlocks) {
-				//updatedMeta = { ...meta, ...templatePostMeta };
 				onChange(templateInnerBlocks, clientId);
 			} else {
 				// Skip, or template not found
 				onChange([createBlock('kadence/navigation', {}, [])], clientId);
 			}
 
-			// console.log(1, id, templatePostMeta, meta);
-
 			setTitle(templateKey);
 
-			//updatedMeta._kad_navigation_description = 'A placeholder navigation';
 			templatePostMeta._kad_navigation_description = 'A placeholder navigation';
 
-			setMeta({ ...meta, templatePostMeta });
+			setMeta({ ...meta, ...templatePostMeta });
 			wp.data
 				.dispatch('core')
 				.saveEditedEntityRecord('postType', 'kadence_navigation', id)
