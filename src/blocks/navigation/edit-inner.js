@@ -698,7 +698,7 @@ export function EditInner(props) {
 			templateLock: false,
 			defaultBlock: DEFAULT_BLOCK,
 			renderAppender: false,
-			template: TEMPLATE,
+			//template: TEMPLATE,
 		}
 	);
 
