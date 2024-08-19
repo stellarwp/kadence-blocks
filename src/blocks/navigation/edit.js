@@ -40,11 +40,14 @@ export function Edit(props) {
 	const { id, uniqueID, templateKey, makePost } = attributes;
 	const [hasStartedLoading, setHasStartedLoading] = useState(false);
 	const [isLoadingTemplateContent, setIsLoadingTemplateContent] = useState(false);
+	const [tmpTemplateKey, setTmpTemplateKey] = useState(templateKey);
 
 	// Since we're not in the EntityProvider yet, we need to provide a post id.
 	// 'id' and 'meta' will be undefined untill the actual post is chosen / loaded
 	const [meta, setMeta] = useNavigationProp('meta', id);
-	const [tmpTemplateKey, setTmpTemplateKey] = useState(templateKey);
+	const [isAdding, addNew] = useEntityAutoDraftAndPublish('kadence_navigation', 'kadence_navigation');
+	const [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_navigation', { id: id });
+	const [existingTitle, setTitle] = useNavigationProp('title', id);
 
 	const metaAttributes = {
 		orientation: meta?._kad_navigation_orientation,
@@ -72,6 +75,8 @@ export function Edit(props) {
 
 	const inTemplatePreviewMode = !id && templateKey;
 
+	//some workarounds in here because we can't set meta attributes on no-post templated navs
+	//this allows them to be vertical or horizontal
 	const previewOrientation = inTemplatePreviewMode
 		? templateKey.includes('vertical')
 			? 'vertical'
@@ -161,9 +166,7 @@ export function Edit(props) {
 		className: blockClasses,
 	});
 
-	{
-		/* Directly editing from via kadence_navigation post type */
-	}
+	//Directly editing from via kadence_navigation post type
 	if (currentPostType === 'kadence_navigation') {
 		return (
 			<div {...blockProps}>
@@ -172,10 +175,6 @@ export function Edit(props) {
 		);
 	}
 
-	const [isAdding, addNew] = useEntityAutoDraftAndPublish('kadence_navigation', 'kadence_navigation');
-	const [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_navigation', { id: id });
-	const [existingTitle, setTitle] = useNavigationProp('title', id);
-
 	const makeTemplatedNavigationPost = async () => {
 		try {
 			setIsLoadingTemplateContent(true);
@@ -183,6 +182,8 @@ export function Edit(props) {
 			const newPostId = response?.id;
 
 			if (newPostId) {
+				//set the newly created post id.
+				//This should trigger another useeffect on the next render to build out the inner blocks
 				setAttributes({ id: newPostId });
 			}
 		} catch (error) {
@@ -192,33 +193,38 @@ export function Edit(props) {
 
 	// if this is a templated navigation (usually coming from mega menu onboarding)
 	// then it should get premade with some templated content based on templateKey
-	// commented out for now because we just make placeholder content instead of an actual post
+	// This process is for heavier templated navs that require a post for meta attributes / etc
 	useEffect(() => {
 		if (!id && templateKey && makePost) {
 			makeTemplatedNavigationPost();
 		}
 	}, []);
 
+	//this effect should trigger after we've made a new post for this templated nav
+	//it will fill out the meta and inner blocks based on the templatekey
 	useEffect(() => {
 		if (id && templateKey && makePost) {
 			//do the inner blocks and meta
-			let updatedMeta = meta;
+			//let updatedMeta = meta;
 
 			const { templateInnerBlocks, templatePostMeta } = buildTemplateFromSelection(templateKey);
 
 			if (templateInnerBlocks) {
-				updatedMeta = { ...meta, ...templatePostMeta };
+				//updatedMeta = { ...meta, ...templatePostMeta };
 				onChange(templateInnerBlocks, clientId);
 			} else {
 				// Skip, or template not found
 				onChange([createBlock('kadence/navigation', {}, [])], clientId);
 			}
 
+			// console.log(1, id, templatePostMeta, meta);
+
 			setTitle(templateKey);
 
-			updatedMeta._kad_navigation_description = 'A placeholder navigation';
+			//updatedMeta._kad_navigation_description = 'A placeholder navigation';
+			templatePostMeta._kad_navigation_description = 'A placeholder navigation';
 
-			setMeta({ ...meta, updatedMeta });
+			setMeta({ ...meta, templatePostMeta });
 			wp.data
 				.dispatch('core')
 				.saveEditedEntityRecord('postType', 'kadence_navigation', id)

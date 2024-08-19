@@ -303,7 +303,7 @@ export default function Edit(props) {
 
 	const [activeTab, setActiveTab] = useState('general');
 	const [showSubMenus, setShowSubMenus] = useState(false);
-	const [megaMenuOnboardingStep, setMegaMenuOnboardingStep] = useState('');
+	const [megaMenuOnboardingStep, setMegaMenuOnboardingStep] = useState('design');
 	const [megaMenuColumnChoice, setMegaMenuColumnChoice] = useState('');
 
 	const [isInvalid, isDraft] = useIsInvalidLink(kind, type, id);
@@ -427,23 +427,15 @@ export default function Edit(props) {
 			icon: twoRightGoldenIcon,
 		},
 	];
-	const megaMenuDesignOptions =
-		megaMenuColumnChoice == 'equal|1'
-			? [
-					{ key: 'mega-1', name: __('Simple', 'kadence-blocks'), icon: rowIcon },
-					{ key: 'equal|1|complex', name: __('Complex', 'kadence-blocks'), icon: twoColIcon },
-			  ]
-			: megaMenuColumnChoice == 'equal|2'
-			? [
-					{ key: 'equal|2|simple', name: __('Simple2', 'kadence-blocks'), icon: rowIcon },
-					{ key: 'equal|2|complex', name: __('Complex2', 'kadence-blocks'), icon: twoColIcon },
-			  ]
-			: megaMenuColumnChoice == 'equal|3'
-			? [
-					{ key: 'mega-1', name: __('Simple', 'kadence-blocks'), icon: rowIcon },
-					{ key: 'mega-3', name: __('Simple', 'kadence-blocks'), icon: rowIcon },
-			  ]
-			: [{ key: 'mega-2', name: __('Simple', 'kadence-blocks'), icon: rowIcon }];
+	const megaMenuDesignOptions = [
+		{ key: 'mega-1', name: __('Simple', 'kadence-blocks'), icon: rowIcon },
+		{ key: 'mega-2', name: __('Simple', 'kadence-blocks'), icon: rowIcon },
+		{ key: 'mega-3', name: __('Simple', 'kadence-blocks'), icon: rowIcon },
+		{ key: 'mega-4', name: __('Simple', 'kadence-blocks'), icon: rowIcon },
+		{ key: 'mega-5', name: __('Simple', 'kadence-blocks'), icon: rowIcon },
+		{ key: 'mega-6', name: __('Simple', 'kadence-blocks'), icon: rowIcon },
+		{ key: 'mega-7', name: __('Simple', 'kadence-blocks'), icon: rowIcon },
+	];
 
 	/**
 	 * Enable or disable the mega menu by changing the row layout and setting the attribute.
@@ -473,7 +465,7 @@ export default function Edit(props) {
 			replaceInnerBlocks(clientId, []);
 			setAttributes({ isMegaMenu: false });
 			setMegaMenuColumnChoice('');
-			setMegaMenuOnboardingStep('');
+			setMegaMenuOnboardingStep('design');
 		}
 	}
 

@@ -2,10 +2,8 @@ import { createBlock } from '@wordpress/blocks';
 import { get, has } from 'lodash';
 
 // mega menu supporting templates
-import {
-	innerBlocks as FeaturesWithIconInnerBlocks,
-	postMeta as FeaturesWithIconPostMeta,
-} from './templates/features-with-icon';
+import { innerBlocks as Mega2Nav1InnerBlocks, postMeta as Mega2Nav1PostMeta } from './templates/mega-2-nav-1';
+import { innerBlocks as Mega2Nav2InnerBlocks, postMeta as Mega2Nav2PostMeta } from './templates/mega-2-nav-2';
 
 export function buildTemplateFromSelection(selection) {
 	return getDataFromKey(selection);
@@ -14,9 +12,12 @@ export function buildTemplateFromSelection(selection) {
 function getDataFromKey(key) {
 	const response = {};
 
-	if (key === 'features-with-icon') {
-		response.templatePostMeta = FeaturesWithIconPostMeta;
-		response.templateInnerBlocks = FeaturesWithIconInnerBlocks();
+	if (key === 'mega-2-nav-1') {
+		response.templatePostMeta = Mega2Nav1PostMeta;
+		response.templateInnerBlocks = Mega2Nav1InnerBlocks();
+	} else if (key === 'mega-2-nav-2') {
+		response.templatePostMeta = Mega2Nav2PostMeta;
+		response.templateInnerBlocks = Mega2Nav2InnerBlocks();
 	}
 
 	// Replace placeholder relative URL with absolute URL
