@@ -189,7 +189,7 @@
 		},
 		"closeIconColor": {
 			"type": "string",
-			"default": "#fffff"
+			"default": ""
 		},
 		"closeIconColorTablet": {
 			"type": "string",
