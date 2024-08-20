@@ -1,7 +1,6 @@
 export default (
 	<svg id="b" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 427.5 208.96">
 		<g id="c">
-			<rect x=".5" y=".5" width="426.5" height="207.96" fill="#fff" stroke="#d5dadf" stroke-miterlimit="10" />
 			<rect x="15.97" y="46.99" width="243.71" height="143.88" fill="#d5dadf" stroke-width="0px" />
 			<rect x="286.88" y="46.76" width="124.18" height="90.84" fill="#d5dadf" stroke-width="0px" />
 			<rect x="286.91" y="20.04" width="112" height="6" rx="3" ry="3" fill="#d5dadf" stroke-width="0px" />
