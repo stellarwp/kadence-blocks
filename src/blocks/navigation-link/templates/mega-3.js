@@ -4,6 +4,7 @@
  */
 
 import { createBlock } from '@wordpress/blocks';
+import { __ } from '@wordpress/i18n';
 
 const postMeta = {};
 
@@ -57,7 +58,7 @@ function innerBlocks() {
 								linkDestination: 'none',
 								uniqueID: '356_966520-f4',
 								globalAlt: true,
-								url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
+								url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/gray.png',
 							},
 							[]
 						),
@@ -110,7 +111,7 @@ function innerBlocks() {
 								linkDestination: 'none',
 								uniqueID: '356_c78042-04',
 								globalAlt: true,
-								url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
+								url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/gray.png',
 							},
 							[]
 						),
@@ -171,7 +172,7 @@ function innerBlocks() {
 								linkDestination: 'none',
 								uniqueID: '356_fb70e2-00',
 								globalAlt: true,
-								url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
+								url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/gray.png',
 							},
 							[]
 						),
@@ -233,7 +234,7 @@ function innerBlocks() {
 								linkDestination: 'none',
 								uniqueID: '356_38c2f8-eb',
 								globalAlt: true,
-								url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
+								url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/gray.png',
 							},
 							[]
 						),
@@ -294,7 +295,7 @@ function innerBlocks() {
 								linkDestination: 'none',
 								uniqueID: '356_97546e-4e',
 								globalAlt: true,
-								url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
+								url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/gray.png',
 							},
 							[]
 						),
@@ -355,7 +356,7 @@ function innerBlocks() {
 								linkDestination: 'none',
 								uniqueID: '356_ed3c5b-d1',
 								globalAlt: true,
-								url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
+								url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/gray.png',
 							},
 							[]
 						),

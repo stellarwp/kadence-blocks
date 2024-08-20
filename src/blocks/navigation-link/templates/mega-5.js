@@ -4,6 +4,7 @@
  */
 
 import { createBlock } from '@wordpress/blocks';
+import { __ } from '@wordpress/i18n';
 
 const postMeta = {};
 
@@ -105,7 +106,7 @@ function innerBlocks() {
 												colorClass: 'theme-palette4',
 												htmlTag: 'div',
 												fontSize: ['md', '', ''],
-												content: 'Type a short headline',
+												content: __('Type a short headline', 'kadence-blocks'),
 											},
 											[]
 										),

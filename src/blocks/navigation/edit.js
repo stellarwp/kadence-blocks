@@ -17,14 +17,15 @@ import classnames from 'classnames';
 import { __ } from '@wordpress/i18n';
 import { isEmpty } from 'lodash';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { navigationBlockIcon } from '@kadence/icons';
-import { KadencePanelBody, SelectPostFromPostType } from '@kadence/components';
+import { createBlock } from '@wordpress/blocks';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { Placeholder, Spinner, Button } from '@wordpress/components';
 import { store as coreStore, EntityProvider, useEntityProp, useEntityBlockEditor } from '@wordpress/core-data';
 
 import { useEntityAutoDraft, useEntityAutoDraftAndPublish } from './hooks';
 import { SelectOrCreatePlaceholder } from './components';
+import { navigationBlockIcon } from '@kadence/icons';
+import { KadencePanelBody, SelectPostFromPostType } from '@kadence/components';
 import { getUniqueId, getPostOrFseId, getPreviewSize } from '@kadence/helpers';
 
 /**

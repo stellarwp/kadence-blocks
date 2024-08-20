@@ -4,6 +4,7 @@
  */
 
 import { createBlock } from '@wordpress/blocks';
+import { __ } from '@wordpress/i18n';
 
 const postMeta = {};
 
@@ -103,7 +104,7 @@ function innerBlocks() {
 								colorClass: 'theme-palette6',
 								htmlTag: 'div',
 								fontSize: ['sm', '', ''],
-								content: 'Premium Features',
+								content: __('Premium Features', 'kadence-blocks'),
 							},
 							[]
 						),
@@ -170,7 +171,7 @@ function innerBlocks() {
 								colorClass: 'theme-palette6',
 								htmlTag: 'div',
 								fontSize: ['sm', '', ''],
-								content: 'Others',
+								content: __('Others', 'kadence-blocks'),
 							},
 							[]
 						),
@@ -217,7 +218,7 @@ function innerBlocks() {
 								htmlTag: 'div',
 								icon: 'fe_arrowRight',
 								iconSide: 'right',
-								content: 'Learn More',
+								content: '<a href="#">' + __('Learn More', 'kadence-blocks') + '</a>',
 							},
 							[]
 						),

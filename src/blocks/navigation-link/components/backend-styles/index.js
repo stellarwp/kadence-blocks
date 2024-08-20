@@ -509,9 +509,9 @@ export default function BackendStyles(props) {
 	);
 	const previewHighlightLabelTextGap = getPreviewSize(
 		previewDevice,
-		highlightSpacing[0].textGap[0],
-		highlightSpacing[0].textGap[1],
-		highlightSpacing[0].textGap[2]
+		highlightSpacing[0]?.textGap?.[0],
+		highlightSpacing[0]?.textGap?.[1],
+		highlightSpacing[0]?.textGap?.[2]
 	);
 
 	const previewHighlightSide = getPreviewSize(previewDevice, highlightSide, highlightSideTablet, highlightSideMobile);

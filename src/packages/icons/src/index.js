@@ -233,14 +233,21 @@ export { default as ArrowUp } from './arrow-up';
 export { default as ArrowDown } from './arrow-down';
 
 // Navigation & Header Block
-export { default as headerBlockIcon } from './block-icons/header'
-export { default as navigationBlockIcon } from './block-icons/navigation/block-icon'
-export { default as navigationMegaMenuIcon } from './block-icons/navigation/mega-menu'
-export { default as navigationItemIcon } from './block-icons/navigation/navigation-item'
-export { default as offCanvasBlockIcon } from './block-icons/off-canvas'
-export { default as offCanvasTriggerBlockIcon } from './block-icons/off-canvas-trigger'
-export { default as headerDesktopBlockIcon } from './block-icons/header-container-desktop'
-export { default as headerTabletBlockIcon } from './block-icons/header-container-tablet'
-export { default as headerSectionBlockIcon } from './block-icons/header-section'
-export { default as headerRowBlockIcon } from './block-icons/header-row'
-export { default as headerColumnBlockIcon } from './block-icons/header-column'
+export { default as headerBlockIcon } from './block-icons/header';
+export { default as navigationBlockIcon } from './block-icons/navigation/block-icon';
+export { default as navigationMegaMenuIcon } from './block-icons/navigation/mega-menu';
+export { default as navigationItemIcon } from './block-icons/navigation/navigation-item';
+export { default as navigationItemMega1Icon } from './block-icons/navigation/templates/mega-1';
+export { default as navigationItemMega2Icon } from './block-icons/navigation/templates/mega-2';
+export { default as navigationItemMega3Icon } from './block-icons/navigation/templates/mega-3';
+export { default as navigationItemMega4Icon } from './block-icons/navigation/templates/mega-4';
+export { default as navigationItemMega5Icon } from './block-icons/navigation/templates/mega-5';
+export { default as navigationItemMega6Icon } from './block-icons/navigation/templates/mega-6';
+export { default as navigationItemMega7Icon } from './block-icons/navigation/templates/mega-7';
+export { default as offCanvasBlockIcon } from './block-icons/off-canvas';
+export { default as offCanvasTriggerBlockIcon } from './block-icons/off-canvas-trigger';
+export { default as headerDesktopBlockIcon } from './block-icons/header-container-desktop';
+export { default as headerTabletBlockIcon } from './block-icons/header-container-tablet';
+export { default as headerSectionBlockIcon } from './block-icons/header-section';
+export { default as headerRowBlockIcon } from './block-icons/header-row';
+export { default as headerColumnBlockIcon } from './block-icons/header-column';
