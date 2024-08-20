@@ -150,8 +150,8 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		//.wp-block-kadence-navigation .navigation ul li.menu-item > .link-drop-wrap > a
 		//.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap >a
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .menu-container > ul > li.menu-item > .link-drop-wrap > a' );
-		$css->add_property( 'padding-left', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ), $navigation_horizontal_spacing );
-		$css->add_property( 'padding-right', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ), $navigation_horizontal_spacing );
+		$css->add_property( 'padding-left', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) );
+		$css->add_property( 'padding-right', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) );
 		if (
 			( $sized_attributes_inherit['orientation'] == 'vertical' ||
 			$sized_attributes_inherit['style'] === 'standard' ||
