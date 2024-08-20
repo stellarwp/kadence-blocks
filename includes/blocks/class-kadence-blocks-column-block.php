@@ -489,6 +489,103 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'justify-content', $justify_content );
 			}
 		}
+		// inside of Row - tablet.
+		if ( ! empty( $tablet_vertical_align ) ) {
+			// Restart $align variable to avoid inherit from above value assignment
+			$align = 'center';
+			$justify_content = '';
+			switch ( $tablet_vertical_align ) {
+				case 'top':
+					$align = 'flex-start';
+					$justify_content = 'flex-start';
+					break;
+				case 'bottom':
+					$align = 'flex-end';
+					$justify_content = 'flex-end';
+					break;
+				case 'space-between':
+					$justify_content = 'space-between';
+					break;
+				case 'space-around':
+					$justify_content = 'space-around';
+					break;
+				case 'space-evenly':
+					$justify_content = 'space-evenly';
+					break;
+				case 'stretch':
+					$justify_content = 'stretch';
+					break;
+				default:
+					$justify_content = 'center';
+					break;
+			}
+			$css->set_media_state('tablet');
+			if ( 'horizontal' === $tablet_direction || 'horizontal-reverse' === $tablet_direction ) {
+				$css->set_selector( '.kt-row-column-wrap > .kadence-column' . $unique_id );
+				$css->add_property( 'align-self', $align );
+				$css->set_selector( '.kt-inner-column-height-full:not(.kt-has-1-columns) > .wp-block-kadence-column.kadence-column' . $unique_id );
+				$css->add_property( 'align-self', 'auto' );
+				$css->set_selector( '.kt-inner-column-height-full:not(.kt-has-1-columns) > .wp-block-kadence-column.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+				$css->add_property( 'align-items', $align );
+			} else {
+				$css->set_selector( '.kt-row-column-wrap > .kadence-column' . $unique_id );
+				$css->add_property( 'align-self', $align );
+				$css->set_selector( '.kt-inner-column-height-full:not(.kt-has-1-columns) > .wp-block-kadence-column.kadence-column' . $unique_id );
+				$css->add_property( 'align-self', 'auto' );
+				$css->set_selector( '.kt-inner-column-height-full:not(.kt-has-1-columns) > .wp-block-kadence-column.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+				$css->add_property( 'flex-direction', 'column' );
+				$css->add_property( 'justify-content', $justify_content );
+			}
+		}
+		// inside of Row - mobile
+		if ( ! empty( $mobile_vertical_align ) ) {
+			// Restart $align variable to avoid inherit from above value assignment
+			$align = 'center';
+			$justify_content = '';
+			switch ( $mobile_vertical_align ) {
+				case 'top':
+					$align = 'flex-start';
+					$justify_content = 'flex-start';
+					break;
+				case 'bottom':
+					$align = 'flex-end';
+					$justify_content = 'flex-end';
+					break;
+				case 'space-between':
+					$justify_content = 'space-between';
+					break;
+				case 'space-around':
+					$justify_content = 'space-around';
+					break;
+				case 'space-evenly':
+					$justify_content = 'space-evenly';
+					break;
+				case 'stretch':
+					$justify_content = 'stretch';
+					break;
+				default:
+					$justify_content = 'center';
+					break;
+			}
+			$css->set_media_state('mobile');
+			if ( 'horizontal' === $mobile_direction || 'horizontal-reverse' === $mobile_direction ) {
+				$css->set_selector( '.kt-row-column-wrap > .kadence-column' . $unique_id );
+				$css->add_property( 'align-self', $align );
+				$css->set_selector( '.kt-inner-column-height-full:not(.kt-has-1-columns) > .wp-block-kadence-column.kadence-column' . $unique_id );
+				$css->add_property( 'align-self', 'auto' );
+				$css->set_selector( '.kt-inner-column-height-full:not(.kt-has-1-columns) > .wp-block-kadence-column.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+				$css->add_property( 'align-items', $align );
+			} else {
+				$css->set_selector( '.kt-row-column-wrap > .kadence-column' . $unique_id );
+				$css->add_property( 'align-self', $align );
+				$css->set_selector( '.kt-inner-column-height-full:not(.kt-has-1-columns) > .wp-block-kadence-column.kadence-column' . $unique_id );
+				$css->add_property( 'align-self', 'auto' );
+				$css->set_selector( '.kt-inner-column-height-full:not(.kt-has-1-columns) > .wp-block-kadence-column.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+				$css->add_property( 'flex-direction', 'column' );
+				$css->add_property( 'justify-content', $justify_content );
+			}
+		}
+		$css->set_media_state('desktop');
 		// Background.
 		$background_type = ! empty( $attributes['backgroundType'] ) ? $attributes['backgroundType'] : 'normal';
 		$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
