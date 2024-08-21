@@ -265,7 +265,7 @@ class KBHeader {
 		}
 
 		//TODO change wrapper to something that also applies to fse themes
-		const wrapper = document.getElementById('wrapper');
+		const wrapper = document.getElementsByClassName('wp-site-blocks')?.[0];
 		var offsetTop = this.getOffset(wrapper).top;
 		this.anchorOffset = this.getOffset(this.root).top;
 		var currScrollTop = window.scrollY;
@@ -341,6 +341,10 @@ class KBHeader {
 			}
 			offsetTop = this.getOffset(wrapper).top + proOffset;
 		}
+
+		const topPosThatSticksToTop = currScrollTop - this.anchorOffset + offsetTop;
+		const topPosThatSticksAboveTop = currScrollTop - this.anchorOffset + offsetTop - elHeight;
+		const currentBottomPosition = this.currentTopPosition + elHeight;
 
 		// set initial shrink starting height
 		var parent = this.activeHeader.parentNode;
@@ -418,39 +422,42 @@ class KBHeader {
 			var isScrollingDown = currScrollTop > this.lastScrollTop;
 			var totalOffset = Math.floor(this.anchorOffset + elHeight);
 			if (currScrollTop <= this.anchorOffset - offsetTop) {
-				//above the header, ignore the header
+				//above the initial header area, ignore the header
 				this.activeHeader.style.top = 0;
 				this.currentTopPosition = 0;
 				this.setStickyChanged(false);
 			} else if (currScrollTop <= totalOffset) {
-				//scrolling in the header area, ignore the header if scrolling down, keep sticking if scrolling up
+				//scrolling in the initial header area
 				if (isScrollingDown) {
+					//ignore the header if scrolling down
 					this.activeHeader.style.top = 0;
 					this.currentTopPosition = 0;
 					this.setStickyChanged(false);
 				} else {
+					//keep sticking if scrolling up
 					this.activeHeader.classList.remove('item-hidden-above');
-					var topPos = currScrollTop - this.anchorOffset + offsetTop;
-					this.activeHeader.style.top = topPos + 'px';
-					this.currentTopPosition = topPos;
+					this.activeHeader.style.top = topPosThatSticksToTop + 'px';
+					this.currentTopPosition = topPosThatSticksToTop;
 					this.setStickyChanged(true);
 				}
-			} else if (isScrollingDown) {
-				//below the header and scrolling down, keep the header top just above the screen
-				this.activeHeader.classList.add('item-hidden-above');
-				var topPos = currScrollTop - this.anchorOffset + offsetTop - elHeight;
-				this.activeHeader.style.top = topPos + 'px';
-				this.currentTopPosition = topPos;
-				this.setStickyChanged(true);
+			} else if (currScrollTop >= this.currentTopPosition && currScrollTop <= currentBottomPosition) {
+				//in current sticky header area, ignore it
+				this.setStickyChanged(false);
 			} else {
-				//below the header and scrolling up, keep the header top at scroll position
-				this.activeHeader.classList.remove('item-hidden-above');
-				var topPos = currScrollTop - this.anchorOffset + offsetTop;
-				this.activeHeader.style.top = topPos + 'px';
-				this.currentTopPosition = topPos;
+				//below the initial header area, but above or below the current sticky area
+				if (isScrollingDown) {
+					//scrolling down, keep the header top just above the screen
+					this.activeHeader.classList.add('item-hidden-above');
+					this.activeHeader.style.top = topPosThatSticksAboveTop + 'px';
+					this.currentTopPosition = topPosThatSticksAboveTop;
+				} else {
+					//scrolling up, keep the header top at scroll position
+					this.activeHeader.classList.remove('item-hidden-above');
+					this.activeHeader.style.top = topPosThatSticksToTop + 'px';
+					this.currentTopPosition = topPosThatSticksToTop;
+				}
 				this.setStickyChanged(true);
 			}
-			this.activeHeader.style.top = topPos + 'px';
 		} else {
 			// Run the sticking process
 			var totalOffset = Math.floor(this.anchorOffset - offsetTop);
@@ -461,9 +468,8 @@ class KBHeader {
 				this.setStickyChanged(false);
 			} else {
 				//below the header anchor, match it's top to the scroll position
-				var topPos = currScrollTop - this.anchorOffset + offsetTop;
-				this.activeHeader.style.top = topPos + 'px';
-				this.currentTopPosition = topPos;
+				this.activeHeader.style.top = topPosThatSticksToTop + 'px';
+				this.currentTopPosition = topPosThatSticksToTop;
 				this.setStickyChanged(true);
 			}
 		}
