@@ -450,7 +450,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		];
 		foreach ($alignments as $media_state => $align) {
 			if ( ! empty($align['vertical_align']) ) {
-				$this->setVerticalAlign($media_state, $align['vertical_align'], $align['direction'], $css, $unique_id);
+				$this->set_vertical_align($media_state, $align['vertical_align'], $align['direction'], $css, $unique_id);
 			}
 		}
 		$css->set_media_state('desktop');
@@ -855,7 +855,7 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 		return $css->css_output();
 	}
 
-	private function setVerticalAlign($media_state, $media_vertical_align, $media_direction, $css, $unique_id) {
+	private function set_vertical_align($media_state, $media_vertical_align, $media_direction, $css, $unique_id) {
 		// Restart $align variable to avoid inherit from above value assignment
 		$align = 'center';
 		$justify_content = '';
