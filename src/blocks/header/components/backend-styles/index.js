@@ -760,8 +760,10 @@ export default function BackendStyles(props) {
 		}
 	}
 
-	css.set_selector(`:root`);
-	css.add_property('--kb-editor-height-hd', elementHeight + 'px');
+	if (elementHeight) {
+		css.set_selector(`:root`);
+		css.add_property('--kb-editor-height-hd', elementHeight + 'px');
+	}
 
 	//This statement sets a min height for the editor based on incoming factors
 	//that could affect how much screen real estate is required to effectively edit the header.
