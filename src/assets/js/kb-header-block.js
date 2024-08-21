@@ -354,7 +354,7 @@ class KBHeader {
 
 		// Run the shrinking / unshrinking processing
 		if (this.shrinkMain) {
-			var shrinkHeight =
+			const shrinkHeight =
 				this.activeSize === 'mobile'
 					? this.shrinkMainHeightMobile
 					: this.activeSize === 'tablet'
@@ -372,8 +372,8 @@ class KBHeader {
 						var totalOffsetDelay = Math.floor(this.activeOffsetTop - offsetTop);
 					}
 				}
-				var shrinkLogos = this.activeHeader.querySelectorAll('.custom-logo');
-				var shrinkHeader = this.activeHeader.querySelector('.wp-block-kadence-header-row-center');
+				const shrinkLogos = this.activeHeader.querySelectorAll('.custom-logo');
+				const shrinkHeader = this.activeHeader.querySelector('.wp-block-kadence-header-row-center');
 
 				//set shrink starting height
 				if (!this.shrinkStartHeight) {
@@ -381,28 +381,21 @@ class KBHeader {
 				}
 
 				// either shrink or unshrink the header based on scroll position
-				if (window.scrollY <= totalOffsetDelay) {
-					//Unshrink
-					shrinkHeader.style.height = this.shrinkStartHeight + 'px';
-					shrinkHeader.style.minHeight = this.shrinkStartHeight + 'px';
-					shrinkHeader.style.maxHeight = this.shrinkStartHeight + 'px';
-					//also unshrink the logo
+				const shrinkingHeight = Math.max(shrinkHeight, this.shrinkStartHeight - window.scrollY);
+				shrinkHeader.style.height = shrinkingHeight + 'px';
+				shrinkHeader.style.minHeight = shrinkingHeight + 'px';
+				shrinkHeader.style.maxHeight = shrinkingHeight + 'px';
+
+				if ((window.scrollY = 0)) {
+					//at top, release logos
 					if (shrinkLogos) {
 						for (let i = 0; i < shrinkLogos.length; i++) {
 							const shrinkLogo = shrinkLogos[i];
 							shrinkLogo.style.maxHeight = '100%';
 						}
 					}
-				} else if (window.scrollY > totalOffsetDelay) {
-					//Shrink
-					var shrinkingHeight = Math.max(
-						shrinkHeight,
-						this.shrinkStartHeight - (window.scrollY - (this.activeOffsetTop - offsetTop))
-					);
-					shrinkHeader.style.height = shrinkingHeight + 'px';
-					shrinkHeader.style.minHeight = shrinkingHeight + 'px';
-					shrinkHeader.style.maxHeight = shrinkingHeight + 'px';
-					//also shrink the logo
+				} else {
+					//in shrinking state, reduce logos
 					if (shrinkLogos) {
 						for (let i = 0; i < shrinkLogos.length; i++) {
 							const shrinkLogo = shrinkLogos[i];
