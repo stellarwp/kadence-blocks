@@ -6,7 +6,6 @@ import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { Placeholder, Button, SelectControl } from '@wordpress/components';
 import { heading } from '@wordpress/icons';
-import Select from 'react-select';
 
 export default function SelectOrCreatePlaceholder({
 	onSelect,
@@ -64,6 +63,18 @@ export default function SelectOrCreatePlaceholder({
 		},
 	];
 
+	const groupedOptionsHTML = groupedOptions.map((group) => (
+		<>
+			{group.options?.length && (
+				<optgroup label={group.label}>
+					{group.options.map((options) => (
+						<option value={options.value}>{options.label}</option>
+					))}
+				</optgroup>
+			)}
+		</>
+	));
+
 	const groupStyles = {
 		display: 'flex',
 		alignItems: 'center',
@@ -88,6 +99,11 @@ export default function SelectOrCreatePlaceholder({
 			<span style={groupBadgeStyles}>{GroupedOption.options.length}</span>
 		</div>
 	);
+
+	let selectedObject = allOptions.find((option) => option.value == selected);
+	if (selectedObject) {
+		selectedObject.id = selectedObject.value;
+	}
 
 	if (typeof pagenow !== 'undefined' && ('widgets' === pagenow || 'customize' === pagenow)) {
 		return (
@@ -127,16 +143,9 @@ export default function SelectOrCreatePlaceholder({
 			instructions={instructions}
 		>
 			<form className="kb-select-or-create-placeholder__actions">
-				<Select
-					styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-					menuPortalTarget={document.body}
-					value={undefined !== selected?.id ? allOptions.filter(({ value }) => value === selected.id) : ''}
-					options={groupedOptions}
-					onChange={(val) => {
-						setSelected({ ...val, id: val.value });
-					}}
-					formatGroupLabel={formatGroupLabel}
-				/>
+				<SelectControl label={label} value={selected} onChange={setSelected} hideLabelFromVision>
+					{groupedOptionsHTML}
+				</SelectControl>
 				<Button
 					style={{ marginTop: '20px' }}
 					variant="primary"
@@ -144,14 +153,16 @@ export default function SelectOrCreatePlaceholder({
 					disabled={!selected || isAdding}
 					isBusy={isSelecting}
 					onClick={() => {
-						if (selected.type === 'kadence_navigation') {
-							onSelect(Number.parseInt(selected.id));
+						if (selectedObject?.type === 'kadence_navigation') {
+							onSelect(Number.parseInt(selectedObject?.id));
 						} else {
-							onAddOtherType(selected);
+							onAddOtherType(selectedObject);
 						}
 					}}
 				>
-					{selected.type === 'nav_menu' ? __('Import', 'kadence-blocks') : __('Select', 'kadence-blocks')}{' '}
+					{selectedObject?.type === 'nav_menu'
+						? __('Import', 'kadence-blocks')
+						: __('Select', 'kadence-blocks')}{' '}
 				</Button>
 				<Button variant="secondary" onClick={onAdd} disabled={isSelecting} isBusy={isAdding}>
 					{__('Create New', 'kadence-blocks')}
