@@ -2,7 +2,7 @@ import React from 'react';
 
 function Icon() {
 	return (
-		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1148.47 2128">
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="20 30 1128.47 2098">
 			<defs>
 				<filter id="e" filterUnits="userSpaceOnUse">
 					<feOffset dx="7"></feOffset>
