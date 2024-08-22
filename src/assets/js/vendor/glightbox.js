@@ -1584,7 +1584,7 @@
 			closeButton: !0,
 			startAt: null,
 			autoplayVideos: !0,
-			autofocusVideos: !0,
+			autofocusVideos: false,
 			descPosition: 'bottom',
 			width: '900px',
 			height: '506px',
@@ -1888,7 +1888,6 @@
 										withCallback: function e(i, n) {
 											var s = (i = i || window.event).keyCode;
 											if (9 == s) {
-												// If not a video player.
 												var l = document.querySelector('.gbtn.focused');
 												if (!l) {
 													var r =
