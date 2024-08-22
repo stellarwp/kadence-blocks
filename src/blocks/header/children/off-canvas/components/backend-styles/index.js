@@ -150,10 +150,8 @@ export default function BackendStyles(props) {
 
 	if (widthType == 'full') {
 		css.add_property('width', editorWidth + 'px');
-	} else {
-		if (previewMaxWidth) {
-			css.add_property('max-width', previewMaxWidth + maxWidthUnit);
-		}
+	} else if (previewMaxWidth) {
+		css.add_property('max-width', previewMaxWidth + maxWidthUnit);
 	}
 	css.add_property('border-top', css.render_border(border, borderTablet, borderMobile, previewDevice, 'top', false));
 	css.add_property(

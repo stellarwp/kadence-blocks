@@ -394,13 +394,11 @@ class KBHeader {
 							shrinkLogo.style.maxHeight = '100%';
 						}
 					}
-				} else {
+				} else if (shrinkLogos) {
 					//in shrinking state, reduce logos
-					if (shrinkLogos) {
-						for (let i = 0; i < shrinkLogos.length; i++) {
-							const shrinkLogo = shrinkLogos[i];
-							shrinkLogo.style.maxHeight = shrinkingHeight + 'px';
-						}
+					for (let i = 0; i < shrinkLogos.length; i++) {
+						const shrinkLogo = shrinkLogos[i];
+						shrinkLogo.style.maxHeight = shrinkingHeight + 'px';
 					}
 				}
 			}

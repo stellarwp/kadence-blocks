@@ -48,7 +48,7 @@ export function Edit(props) {
 	const [meta, setMeta] = useNavigationProp('meta', id);
 	const [existingTitle, setTitle] = useNavigationProp('title', id);
 	const [isAdding, addNew] = useEntityAutoDraftAndPublish('kadence_navigation', 'kadence_navigation');
-	const [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_navigation', { id: id });
+	const [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_navigation', { id });
 
 	const metaAttributes = {
 		orientation: meta?._kad_navigation_orientation,

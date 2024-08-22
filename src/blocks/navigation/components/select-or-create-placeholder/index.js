@@ -100,7 +100,7 @@ export default function SelectOrCreatePlaceholder({
 		</div>
 	);
 
-	let selectedObject = allOptions.find((option) => option.value == selected);
+	const selectedObject = allOptions.find((option) => option.value == selected);
 	if (selectedObject) {
 		selectedObject.id = selectedObject.value;
 	}
