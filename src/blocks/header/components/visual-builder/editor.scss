@@ -3,7 +3,7 @@ $height_top_bar: 90px;
 $full_screen_height_top_bar: 60px;
 $height_top_bars_mobile: 155px;
 $sidebar_width: 280px;
-$fixed_height: 300px;
+$fixed_height: 290px;
 
 .kb-header-visual-builder-teaser {
 	background: #f0f0f1;
@@ -14,7 +14,6 @@ $fixed_height: 300px;
 	position: fixed;
 	width: 100%;
 	bottom: $height_bottom_bar;
-	left: 0;
 	z-index: 9999;
 	box-sizing: border-box;
 
@@ -27,11 +26,11 @@ $fixed_height: 300px;
 }
 
 // Top of 0 in iFrame
-.block-editor-iframe__body .kb-header-visual-builder-modal.kb-header-visual-builder-modal-top {
-	top: 0;
-}
+//.block-editor-iframe__body .kb-header-visual-builder-modal.kb-header-visual-builder-modal-top {
+//	top: 0;
+//}
 
-.is-fullscreen-mode .kb-header-visual-builder-modal .kb-header-visual-builder-modal-top {
+.is-fullscreen-mode .kb-header-visual-builder-modal.kb-header-visual-builder-modal-top {
 	top: $full_screen_height_top_bar;
 }
 

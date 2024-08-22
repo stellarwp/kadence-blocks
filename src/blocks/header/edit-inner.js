@@ -6,7 +6,7 @@
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { useState, Fragment, useMemo, useRef } from '@wordpress/element';
+import { useState, Fragment, useMemo, useRef, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import { get } from 'lodash';
@@ -82,7 +82,7 @@ export function EditInner(props) {
 		justCompletedOnboarding,
 		formData,
 	} = props;
-	const { setHeaderVisualBuilderOpenId } = useDispatch('kadenceblocks/data');
+	const { setHeaderVisualBuilderOpenId, setHeaderVisualBuilderSelectedId } = useDispatch('kadenceblocks/data');
 
 	const { previewDevice, showVisualBuilder } = useSelect(
 		(select) => {
@@ -102,6 +102,12 @@ export function EditInner(props) {
 	const marginMouseOver = mouseOverVisualizer();
 
 	const [meta, setMeta] = useHeaderProp('meta');
+
+	useEffect(() => {
+		if (isSelected) {
+			setHeaderVisualBuilderSelectedId(clientId);
+		}
+	}, [isSelected]);
 
 	const metaAttributes = {
 		padding: meta?._kad_header_padding,

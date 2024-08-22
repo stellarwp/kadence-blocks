@@ -54,6 +54,13 @@ class Kadence_Blocks_Header_CPT_Controller {
 	 * Enqueue Script for Meta options
 	 */
 	public function script_enqueue() {
+		wp_enqueue_script(
+			'kb-header-visual-builder',
+			KADENCE_BLOCKS_URL . 'dist/header-visual-builder.js',
+			array('kadence-components', 'kadence-helpers', 'kadence-icons', 'lodash', 'react', 'react-dom', 'wp-api-fetch', 'wp-block-editor', 'wp-blocks', 'wp-components', 'wp-core-data', 'wp-data', 'wp-element', 'wp-i18n', 'wp-primitives', 'wp-url'),
+			rand(0,time())
+		);
+
 		$post_type = get_post_type();
 		if ( $this->post_type !== $post_type ) {
 			return;

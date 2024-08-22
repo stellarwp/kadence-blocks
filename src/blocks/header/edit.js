@@ -25,7 +25,6 @@ import { store as coreStore, EntityProvider, useEntityBlockEditor, useEntityProp
 import { createBlock } from '@wordpress/blocks';
 
 import { useEntityAutoDraft, useEntityPublish, useEntityAutoDraftAndPublish } from './hooks';
-import { VisualBuilder } from './components';
 import { getUniqueId, getPostOrFseId, getPreviewSize } from '@kadence/helpers';
 import HeaderName from './components/onboard/name';
 import HeaderDesktop from './components/onboard/desktop';
@@ -229,7 +228,6 @@ export function Edit(props) {
 					</EntityProvider>
 				)}
 			</div>
-			<VisualBuilder clientId={clientId} previewDevice={previewDevice} isSelected={isSelected} />
 		</>
 	);
 
@@ -256,7 +254,6 @@ export function Edit(props) {
 						formData={formData}
 					/>
 				</div>
-				<VisualBuilder clientId={clientId} previewDevice={previewDevice} isSelected={isSelected} />
 			</>
 		);
 	}

@@ -32,6 +32,12 @@ const actions = {
 			clientId,
 		};
 	},
+	*setHeaderVisualBuilderSelectedId(clientId = null) {
+		return {
+			type: 'SET_SELECTED_HEADER_VISUAL_BUILDER_ID',
+			clientId,
+		};
+	},
 	*setHeaderVisualBuilderOpenPosition(position = 'bottom') {
 		return {
 			type: 'SET_OPEN_HEADER_VISUAL_BUILDER_POSITION',
@@ -168,6 +174,14 @@ const store = createReduxStore('kadenceblocks/data', {
 					headerVisualBuilder: {
 						...state.headerVisualBuilder,
 						open: action.clientId,
+					},
+				};
+			case 'SET_SELECTED_HEADER_VISUAL_BUILDER_ID':
+				return {
+					...state,
+					headerVisualBuilder: {
+						...state.headerVisualBuilder,
+						selected: action.clientId,
 					},
 				};
 			case 'SET_OPEN_HEADER_VISUAL_BUILDER_POSITION':
@@ -337,6 +351,9 @@ const store = createReduxStore('kadenceblocks/data', {
 		},
 		getOpenHeaderVisualBuilderId(state) {
 			return get(state, ['headerVisualBuilder', 'open'], null);
+		},
+		getSelectedHeaderVisualBuilderId(state) {
+			return get(state, ['headerVisualBuilder', 'selected'], null);
 		},
 		getOpenHeaderVisualBuilderPosition(state) {
 			return get(state, ['headerVisualBuilder', 'position'], 'bottom');
