@@ -99,7 +99,7 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 	const hasTrigger = blockExists(topLevelBlocks, 'kadence/off-canvas-trigger');
 
 	const ref = useRef();
-	const editorElement = useEditorElement(ref, [previewDevice, tab, isListViewOpen]);
+	const editorElement = useEditorElement(ref, [previewDevice, tab, isListViewOpen], 'editor-visual-editor');
 	const editorWidth = editorElement?.clientWidth;
 	const editorLeft = editorElement?.getBoundingClientRect().left;
 	const editorFooterHeight = previewDevice === 'Desktop' ? '25px' : '0';

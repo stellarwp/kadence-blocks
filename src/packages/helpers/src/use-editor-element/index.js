@@ -3,12 +3,12 @@
  */
 import { useState, useEffect } from '@wordpress/element';
 
-export default function useEditorElement(ref, dependencies) {
+export default function useEditorElement(ref, dependencies, className = 'editor-styles-wrapper') {
 	const [editorElement, setEditorElement] = useState();
 
 	function calculateEditorElement() {
 		if (ref?.current?.ownerDocument) {
-			setEditorElement(ref.current.ownerDocument.querySelector('.editor-styles-wrapper'));
+			setEditorElement(ref.current.ownerDocument.querySelector('.' + className ));
 		}
 	}
 
