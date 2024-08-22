@@ -9,8 +9,8 @@
 			'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex="0"], [contenteditable]';
 		let focusableElements = offCanvasArea.querySelectorAll(focusableElementsString);
 		focusableElements = Array.prototype.slice.call(focusableElements);
-		let firstFocusableElement = focusableElements[0];
-		let lastFocusableElement = focusableElements[focusableElements.length - 1];
+		const firstFocusableElement = focusableElements[0];
+		const lastFocusableElement = focusableElements[focusableElements.length - 1];
 
 		const openOffCanvas = function (event) {
 			event.target.classList.add('triggered');
@@ -54,11 +54,9 @@
 					event.preventDefault();
 					lastFocusableElement.focus();
 				}
-			} else {
-				if (document.activeElement === lastFocusableElement) {
-					event.preventDefault();
-					firstFocusableElement.focus();
-				}
+			} else if (document.activeElement === lastFocusableElement) {
+				event.preventDefault();
+				firstFocusableElement.focus();
 			}
 		}
 
