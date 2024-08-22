@@ -1340,7 +1340,7 @@ function SectionEdit(props) {
 					: ''}
 
 				{previewJustify
-					? `.kadence-column-${uniqueID}.wp-block-kadence-column > .kadence-inner-column-direction-vertical > *, .kadence-column-${uniqueID}.wp-block-kadence-column > .kadence-inner-column-direction-vertical-reverse > * { max-width: 100%; }`
+					? `.kadence-column-${uniqueID}.wp-block-kadence-column > .kadence-inner-column-direction-vertical > *, .kadence-column-${uniqueID}.wp-block-kadence-column > .kadence-inner-column-direction-vertical-reverse > * { max-width: 100%; width: 100%}`
 					: ''}
 
 				{previewVerticalAlignCSS
