@@ -4,6 +4,7 @@
  */
 
 import { createBlock } from '@wordpress/blocks';
+import { __ } from '@wordpress/i18n';
 
 const postMeta = {};
 
@@ -147,7 +148,10 @@ function innerBlocks() {
 								htmlTag: 'div',
 								fontSize: ['md', '', ''],
 								fontHeight: [1.3, '', ''],
-								content: 'Briefly and concisely explain what you do for your audience.',
+								content: __(
+									'Briefly and concisely explain what you do for your audience.',
+									'kadence-blocks'
+								),
 							},
 							[]
 						),
@@ -228,7 +232,7 @@ function innerBlocks() {
 								iconColor: 'palette1',
 								iconColorHover: 'palette2',
 								iconSide: 'right',
-								content: '<a href="#">Ask a question</a>',
+								content: '<a href="#">' + __('Ask a question', 'kadence-blocks') + '</a>',
 							},
 							[]
 						),

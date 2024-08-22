@@ -85,7 +85,21 @@ import {
 	KadenceMediaPlaceholder,
 } from '@kadence/components';
 
-import { ArrowDown, ArrowUp, rowIcon, twoColIcon, threeColIcon, twoRightGoldenIcon } from '@kadence/icons';
+import {
+	ArrowDown,
+	ArrowUp,
+	rowIcon,
+	twoColIcon,
+	threeColIcon,
+	twoRightGoldenIcon,
+	navigationItemMega1Icon,
+	navigationItemMega2Icon,
+	navigationItemMega3Icon,
+	navigationItemMega4Icon,
+	navigationItemMega5Icon,
+	navigationItemMega6Icon,
+	navigationItemMega7Icon,
+} from '@kadence/icons';
 
 /**
  * Internal dependencies
@@ -303,7 +317,7 @@ export default function Edit(props) {
 
 	const [activeTab, setActiveTab] = useState('general');
 	const [showSubMenus, setShowSubMenus] = useState(false);
-	const [megaMenuOnboardingStep, setMegaMenuOnboardingStep] = useState('');
+	const [megaMenuOnboardingStep, setMegaMenuOnboardingStep] = useState('design');
 	const [megaMenuColumnChoice, setMegaMenuColumnChoice] = useState('');
 
 	const [isInvalid, isDraft] = useIsInvalidLink(kind, type, id);
@@ -427,23 +441,15 @@ export default function Edit(props) {
 			icon: twoRightGoldenIcon,
 		},
 	];
-	const megaMenuDesignOptions =
-		megaMenuColumnChoice == 'equal|1'
-			? [
-					{ key: 'mega-1', name: __('Simple', 'kadence-blocks'), icon: rowIcon },
-					{ key: 'equal|1|complex', name: __('Complex', 'kadence-blocks'), icon: twoColIcon },
-			  ]
-			: megaMenuColumnChoice == 'equal|2'
-			? [
-					{ key: 'equal|2|simple', name: __('Simple2', 'kadence-blocks'), icon: rowIcon },
-					{ key: 'equal|2|complex', name: __('Complex2', 'kadence-blocks'), icon: twoColIcon },
-			  ]
-			: megaMenuColumnChoice == 'equal|3'
-			? [
-					{ key: 'mega-1', name: __('Simple', 'kadence-blocks'), icon: rowIcon },
-					{ key: 'mega-3', name: __('Simple', 'kadence-blocks'), icon: rowIcon },
-			  ]
-			: [{ key: 'mega-2', name: __('Simple', 'kadence-blocks'), icon: rowIcon }];
+	const megaMenuDesignOptions = [
+		{ key: 'mega-1', name: __('3 Column Text CTA', 'kadence-blocks'), icon: navigationItemMega1Icon },
+		{ key: 'mega-2', name: __('3 Column Image CTA', 'kadence-blocks'), icon: navigationItemMega2Icon },
+		{ key: 'mega-3', name: __('Vertical Nav with Image Nav', 'kadence-blocks'), icon: navigationItemMega3Icon },
+		{ key: 'mega-4', name: __('3 Colum Stacked Simple', 'kadence-blocks'), icon: navigationItemMega4Icon },
+		{ key: 'mega-5', name: __('3 Column with Button CTA', 'kadence-blocks'), icon: navigationItemMega5Icon },
+		{ key: 'mega-6', name: __('2 Column with Image CTA', 'kadence-blocks'), icon: navigationItemMega6Icon },
+		{ key: 'mega-7', name: __('3 Column Stacked with Lower Nav', 'kadence-blocks'), icon: navigationItemMega7Icon },
+	];
 
 	/**
 	 * Enable or disable the mega menu by changing the row layout and setting the attribute.
@@ -473,7 +479,7 @@ export default function Edit(props) {
 			replaceInnerBlocks(clientId, []);
 			setAttributes({ isMegaMenu: false });
 			setMegaMenuColumnChoice('');
-			setMegaMenuOnboardingStep('');
+			setMegaMenuOnboardingStep('design');
 		}
 	}
 

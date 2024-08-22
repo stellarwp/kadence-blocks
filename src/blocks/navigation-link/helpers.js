@@ -6,17 +6,15 @@ import { innerBlocks as MegaBlankInnerBlocks, postMeta as MegaBlankPostMeta } fr
 import { innerBlocks as Mega1InnerBlocks, postMeta as Mega1PostMeta } from './templates/mega-1';
 import { innerBlocks as Mega2InnerBlocks, postMeta as Mega2PostMeta } from './templates/mega-2';
 import { innerBlocks as Mega3InnerBlocks, postMeta as Mega3PostMeta } from './templates/mega-3';
+import { innerBlocks as Mega4InnerBlocks, postMeta as Mega4PostMeta } from './templates/mega-4';
+import { innerBlocks as Mega5InnerBlocks, postMeta as Mega5PostMeta } from './templates/mega-5';
+import { innerBlocks as Mega6InnerBlocks, postMeta as Mega6PostMeta } from './templates/mega-6';
+import { innerBlocks as Mega7InnerBlocks, postMeta as Mega7PostMeta } from './templates/mega-7';
 
 export function buildTemplateFromSelection(selection) {
 	const data = getDataFromKey(selection);
 
-	// const innerBlocks = getInnerBlocksFromOffset(data);
-
 	return data;
-}
-
-function getInnerBlocksFromOffset({ templateInnerBlocks }, offset = 0) {
-	return get(templateInnerBlocks, [0, 'innerBlocks', offset, 'innerBlocks'], []);
 }
 
 function getDataFromKey(key) {
@@ -31,6 +29,18 @@ function getDataFromKey(key) {
 	} else if (key === 'mega-3') {
 		response.templatePostMeta = Mega3PostMeta;
 		response.templateInnerBlocks = Mega3InnerBlocks();
+	} else if (key === 'mega-4') {
+		response.templatePostMeta = Mega4PostMeta;
+		response.templateInnerBlocks = Mega4InnerBlocks();
+	} else if (key === 'mega-5') {
+		response.templatePostMeta = Mega5PostMeta;
+		response.templateInnerBlocks = Mega5InnerBlocks();
+	} else if (key === 'mega-6') {
+		response.templatePostMeta = Mega6PostMeta;
+		response.templateInnerBlocks = Mega6InnerBlocks();
+	} else if (key === 'mega-7') {
+		response.templatePostMeta = Mega7PostMeta;
+		response.templateInnerBlocks = Mega7InnerBlocks();
 	} else {
 		response.templatePostMeta = MegaBlankPostMeta;
 		response.templateInnerBlocks = MegaBlankInnerBlocks();

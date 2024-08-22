@@ -18,6 +18,10 @@
 		"templateKey": {
 			"type": "string",
 			"default": ""
+		},
+		"makePost": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"supports": {

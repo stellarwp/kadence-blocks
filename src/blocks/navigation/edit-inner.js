@@ -558,9 +558,9 @@ export function EditInner(props) {
 
 	let [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_navigation', id);
 
-	//if this nav block is getting created through the header onboarding
-	//then we need to auto create some basic block structure
 	const applyTemplateKeyBlocks = (templateKey) => {
+		//if this nav block is getting created through the header onboarding, but doesn't need a whole post
+		//then we need to auto create some basic block structure
 		if (templateKey.includes('long')) {
 			setNavPlaceholderBlocks([
 				createBlock('kadence/navigation', {}, [
@@ -581,18 +581,13 @@ export function EditInner(props) {
 				]),
 			]);
 		}
-
-		// if (templateKey.includes('vertical')) {
-		// 	setMetaAttribute('vertical', 'orientation');
-		// }
 	};
 
 	useEffect(() => {
 		if (!blocks || blocks.length === 0) {
 			if (templateKey) {
-				//this nav is meant to be a premade template, set it's title and give it innerblocks based on it's template key
+				//this nav is meant to be a premade template (with no post associated), set innerblocks based on it's template key
 				applyTemplateKeyBlocks(templateKey);
-				//setTitle(templateKey + ' navigation');
 			} else {
 				//otherwise it's a normal nav block and just needs the placeholder put in place
 				setNavPlaceholderBlocks([createBlock('kadence/navigation', {})]);
@@ -603,7 +598,7 @@ export function EditInner(props) {
 	//if this was a templated placeholder nav
 	//on it's first selection, replace it with the nav onboarding
 	useEffect(() => {
-		if (isSelected && templateKey) {
+		if (isSelected && templateKey && !id) {
 			setAttributes({ templateKey: '', id: 0 });
 		}
 	}, [isSelected]);
@@ -698,7 +693,7 @@ export function EditInner(props) {
 			templateLock: false,
 			defaultBlock: DEFAULT_BLOCK,
 			renderAppender: false,
-			template: TEMPLATE,
+			//template: TEMPLATE,
 		}
 	);
 

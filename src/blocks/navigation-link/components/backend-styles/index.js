@@ -509,9 +509,9 @@ export default function BackendStyles(props) {
 	);
 	const previewHighlightLabelTextGap = getPreviewSize(
 		previewDevice,
-		highlightSpacing[0].textGap[0],
-		highlightSpacing[0].textGap[1],
-		highlightSpacing[0].textGap[2]
+		highlightSpacing[0]?.textGap?.[0],
+		highlightSpacing[0]?.textGap?.[1],
+		highlightSpacing[0]?.textGap?.[2]
 	);
 
 	const previewHighlightSide = getPreviewSize(previewDevice, highlightSide, highlightSideTablet, highlightSideMobile);
@@ -810,7 +810,7 @@ export default function BackendStyles(props) {
 	css.add_property('background', css.render_color(previewBackgroundDropdownActive));
 
 	css.set_selector(
-		`.wp-block-kadence-navigation .navigation .menu-container > ul li.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap > a`
+		`.wp-block-kadence-navigation .navigation .menu-container > ul li.wp-block-kadence-navigation-link${uniqueID} > .link-drop-wrap.link-drop-wrap.link-drop-wrap > a`
 	);
 	css.render_font(typography ? typography : [], previewDevice);
 	css.set_selector(

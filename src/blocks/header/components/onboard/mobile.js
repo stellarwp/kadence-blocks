@@ -5,14 +5,23 @@ import * as MobileIcons from './icons/mobile';
 
 const HeaderMobile = ({ data, onChange, handleFinish }) => {
 	const [hoveredOption, setHoveredOption] = useState(null);
+	const [handleFinishTrigger, setHandleFinishTrigger] = useState(false);
 
 	useEffect(() => {
-		if (data.meta.isValid && (!data.headerMobile || data.headerMobile === '')) {
+		if (data?.meta?.isValid && (!data.headerMobile || data.headerMobile === '')) {
 			onChange({ ...data, meta: { ...data.meta, isValid: false } });
-		} else if (!data.meta.isValid && data.headerMobile && data.headerMobile !== '') {
+		} else if (!data?.meta?.isValid && data.headerMobile && data.headerMobile !== '') {
 			onChange({ ...data, meta: { ...data.meta, isValid: true } });
 		}
 	}, [data, onChange]);
+
+	//we need a cycle for the headerMobile data to set up in the state
+	//so lets wait for the trigger to set, then finish
+	useEffect(() => {
+		if (handleFinishTrigger) {
+			handleFinish();
+		}
+	}, [handleFinishTrigger]);
 
 	const basicOptions = {
 		'mobile-1': {
@@ -66,7 +75,7 @@ const HeaderMobile = ({ data, onChange, handleFinish }) => {
 								className={'option-image' + (data.headerMobile === key ? ' is-selected' : '')}
 								onClick={() => {
 									onChange({ headerMobile: key });
-									handleFinish();
+									setHandleFinishTrigger(true);
 								}}
 								onMouseEnter={() => setHoveredOption(key)}
 								onMouseLeave={() => setHoveredOption(null)}

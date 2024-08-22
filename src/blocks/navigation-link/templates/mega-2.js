@@ -1,9 +1,10 @@
 /**
- * Template: Mega Menu 2 (free)
+ * Template: Mega Menu 1 Pro
  * Post Type: kadence_navigation
  */
 
 import { createBlock } from '@wordpress/blocks';
+import { __ } from '@wordpress/i18n';
 
 const postMeta = {};
 
@@ -12,72 +13,107 @@ function innerBlocks() {
 		createBlock(
 			'kadence/rowlayout',
 			{
-				uniqueID: '356_64edcb-b5',
-				columns: 6,
-				tabletLayout: 'three-grid',
-				mobileRowGutter: 'none',
-				customRowGutter: ['', '', 0],
-				columnGutter: 'skinny',
-				customGutter: [16, '', ''],
-				colLayout: 'equal',
-				columnsInnerHeight: true,
-				borderRadius: [6, 6, 6, 6],
+				uniqueID: '320_c84714-9c',
+				columnGutter: 'none',
+				customGutter: [0, '', ''],
+				colLayout: 'left-golden',
+				borderRadius: ['', '', 15, 15],
 				padding: ['', '', '', ''],
-				mobilePadding: ['md', 'md', '', 'md'],
+				borderStyle: [
+					{
+						top: ['palette6', '', 5],
+						right: ['', '', ''],
+						bottom: ['', '', ''],
+						left: ['', '', ''],
+						unit: 'px',
+					},
+				],
 				templateLock: false,
 				displayBoxShadow: true,
+				boxShadow: [
+					{
+						color: '#000000',
+						opacity: 0.20000000000000001,
+						spread: 0,
+						blur: 7,
+						hOffset: 0,
+						vOffset: 11,
+						inset: false,
+					},
+				],
 				kbVersion: 2,
 			},
 			[
 				createBlock(
 					'kadence/column',
 					{
-						background: 'palette7',
 						borderWidth: ['', '', '', ''],
-						uniqueID: '356_196251-23',
-						textAlign: ['', '', 'center'],
-						direction: ['', '', 'vertical'],
-						justifyContent: ['', '', 'center'],
-						rowGap: [10, 16, 0],
-						rowGapVariable: ['', '', 'none'],
-						verticalAlignment: 'middle',
-						verticalAlignmentMobile: 'middle',
+						uniqueID: '320_e96bab-e5',
 						padding: ['sm', 'sm', 'sm', 'sm'],
-						tabletPadding: ['', '', 'sm', ''],
+						borderStyle: [
+							{
+								top: ['palette7', '', ''],
+								right: ['palette7', '', 3],
+								bottom: ['palette7', '', ''],
+								left: ['palette7', '', ''],
+								unit: 'px',
+							},
+						],
 						kbVersion: 2,
 					},
 					[
 						createBlock(
-							'kadence/image',
+							'kadence/advancedheading',
 							{
-								align: 'center',
-								imgMaxWidth: 100,
-								imgMaxWidthMobile: 100,
-								sizeSlug: 'full',
-								linkDestination: 'none',
-								uniqueID: '356_966520-f4',
-								globalAlt: true,
-								url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
+								uniqueID: '320_10512c-58',
+								color: 'palette6',
+								letterSpacing: 0.5,
+								tabletLetterSpacing: '',
+								mobileLetterSpacing: '',
+								fontWeight: '600',
+								margin: ['', '', 'xs', ''],
+								markBorder: '',
+								markBorderStyles: [
+									{
+										top: [null, '', ''],
+										right: [null, '', ''],
+										bottom: [null, '', ''],
+										left: [null, '', ''],
+										unit: 'px',
+									},
+								],
+								tabletMarkBorderStyles: [
+									{
+										top: [null, '', ''],
+										right: [null, '', ''],
+										bottom: [null, '', ''],
+										left: [null, '', ''],
+										unit: 'px',
+									},
+								],
+								mobileMarkBorderStyles: [
+									{
+										top: [null, '', ''],
+										right: [null, '', ''],
+										bottom: [null, '', ''],
+										left: [null, '', ''],
+										unit: 'px',
+									},
+								],
+								textTransform: 'uppercase',
+								colorClass: 'theme-palette6',
+								htmlTag: 'div',
+								fontSize: ['sm', '', ''],
+								content: __('Premium Features', 'kadence-blocks'),
 							},
 							[]
 						),
 						createBlock(
-							'kadence/navigation-link',
+							'kadence/navigation',
 							{
-								uniqueID: '356_6ed1df-cc',
-								label: 'New Arrivals',
-								url: 'New%20Arrivals',
-								kind: 'custom',
-							},
-							[]
-						),
-						createBlock(
-							'kadence/navigation-link',
-							{
-								uniqueID: '356_754bd9-ff',
-								label: 'Best Sellers',
-								url: 'Best%20Sellers',
-								kind: 'custom',
+								uniqueID: '320_0b009a-4e',
+								templateKey: 'mega-2-nav-1',
+								makePost: true,
 							},
 							[]
 						),
@@ -88,302 +124,114 @@ function innerBlocks() {
 					{
 						id: 2,
 						borderWidth: ['', '', '', ''],
-						uniqueID: '356_162b49-5e',
-						direction: ['', '', 'horizontal'],
-						justifyContent: ['', '', 'center'],
-						gutter: ['', '', 0],
-						gutterVariable: ['', '', 'none'],
-						rowGap: [10, '', 0],
-						rowGapVariable: ['', '', 'none'],
-						verticalAlignmentMobile: 'middle',
-						padding: ['xs', '', 'xs', ''],
+						uniqueID: '320_5f1481-29',
+						padding: ['sm', 'sm', 'sm', 'sm'],
 						kbVersion: 2,
 					},
 					[
 						createBlock(
-							'kadence/image',
+							'kadence/advancedheading',
 							{
-								imgMaxWidthMobile: 75,
-								sizeSlug: 'large',
-								ratio: 'square',
-								useRatio: true,
-								linkDestination: 'none',
-								uniqueID: '356_c78042-04',
-								globalAlt: true,
-								url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
-							},
-							[]
-						),
-						createBlock(
-							'kadence/navigation-link',
-							{
-								uniqueID: '356_a30122-0e',
-								label: 'Women',
-								url: 'Women',
-								kind: 'custom',
-								typography: [
+								uniqueID: '320_29bfa2-26',
+								color: 'palette6',
+								letterSpacing: 0.5,
+								tabletLetterSpacing: '',
+								mobileLetterSpacing: '',
+								fontWeight: '600',
+								margin: ['', '', 'xs', ''],
+								markBorder: '',
+								markBorderStyles: [
 									{
-										size: [16, '', ''],
-										sizeType: 'px',
-										lineHeight: ['', '', ''],
-										lineType: '',
-										letterSpacing: [1, '', ''],
-										letterType: 'px',
-										textTransform: 'uppercase',
-										family: '',
-										google: '',
-										style: '',
-										weight: 'bold',
-										variant: '',
-										subset: '',
-										loadGoogle: true,
+										top: [null, '', ''],
+										right: [null, '', ''],
+										bottom: [null, '', ''],
+										left: [null, '', ''],
+										unit: 'px',
 									},
 								],
-							},
-							[]
-						),
-					]
-				),
-				createBlock(
-					'kadence/column',
-					{
-						id: 2,
-						borderWidth: ['', '', '', ''],
-						uniqueID: '356_4fdb6e-9f',
-						direction: ['', '', 'horizontal'],
-						justifyContent: ['', '', 'center'],
-						gutter: ['', '', 0],
-						gutterVariable: ['', '', 'none'],
-						rowGap: [10, 16, 0],
-						rowGapVariable: ['', '', 'none'],
-						verticalAlignmentMobile: 'middle',
-						padding: ['xs', '', 'xs', ''],
-						kbVersion: 2,
-					},
-					[
-						createBlock(
-							'kadence/image',
-							{
-								imgMaxWidthMobile: 75,
-								sizeSlug: 'large',
-								ratio: 'square',
-								useRatio: true,
-								linkDestination: 'none',
-								uniqueID: '356_fb70e2-00',
-								globalAlt: true,
-								url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
-							},
-							[]
-						),
-						createBlock(
-							'kadence/navigation-link',
-							{
-								uniqueID: '356_8dd1df-5c',
-								label: 'Children',
-								url: 'Children',
-								kind: 'custom',
-								padding: ['0', '0', '0', '0'],
-								typography: [
+								tabletMarkBorderStyles: [
 									{
-										size: [16, '', ''],
-										sizeType: 'px',
-										lineHeight: ['', '', ''],
-										lineType: '',
-										letterSpacing: [1, '', ''],
-										letterType: 'px',
-										textTransform: 'uppercase',
-										family: '',
-										google: '',
-										style: '',
-										weight: 'bold',
-										variant: '',
-										subset: '',
-										loadGoogle: true,
+										top: [null, '', ''],
+										right: [null, '', ''],
+										bottom: [null, '', ''],
+										left: [null, '', ''],
+										unit: 'px',
 									},
 								],
+								mobileMarkBorderStyles: [
+									{
+										top: [null, '', ''],
+										right: [null, '', ''],
+										bottom: [null, '', ''],
+										left: [null, '', ''],
+										unit: 'px',
+									},
+								],
+								textTransform: 'uppercase',
+								colorClass: 'theme-palette6',
+								htmlTag: 'div',
+								fontSize: ['sm', '', ''],
+								content: __('Others', 'kadence-blocks'),
 							},
 							[]
 						),
-					]
-				),
-				createBlock(
-					'kadence/column',
-					{
-						id: 2,
-						borderWidth: ['', '', '', ''],
-						uniqueID: '356_a26c05-fc',
-						direction: ['', '', 'horizontal'],
-						justifyContent: ['', '', 'center'],
-						gutter: ['', '', 0],
-						gutterVariable: ['', '', 'none'],
-						rowGap: [10, 64, 0],
-						rowGapVariable: ['', '', 'none'],
-						verticalAlignmentMobile: 'middle',
-						padding: ['xs', '', 'xs', ''],
-						kbVersion: 2,
-					},
-					[
+						createBlock(
+							'kadence/navigation',
+							{ uniqueID: '320_54dc7c-74', templateKey: 'mega-2-nav-2', makePost: true },
+							[]
+						),
+						createBlock(
+							'kadence/advancedheading',
+							{
+								uniqueID: '320_4806f6-d6',
+								color: 'palette1',
+								margin: ['xs', '', 'xs', ''],
+								markBorder: '',
+								markBorderStyles: [
+									{
+										top: [null, '', ''],
+										right: [null, '', ''],
+										bottom: [null, '', ''],
+										left: [null, '', ''],
+										unit: 'px',
+									},
+								],
+								tabletMarkBorderStyles: [
+									{
+										top: [null, '', ''],
+										right: [null, '', ''],
+										bottom: [null, '', ''],
+										left: [null, '', ''],
+										unit: 'px',
+									},
+								],
+								mobileMarkBorderStyles: [
+									{
+										top: [null, '', ''],
+										right: [null, '', ''],
+										bottom: [null, '', ''],
+										left: [null, '', ''],
+										unit: 'px',
+									},
+								],
+								colorClass: 'theme-palette1',
+								htmlTag: 'div',
+								icon: 'fe_arrowRight',
+								iconSide: 'right',
+								content: '<a href="#">' + __('Learn More', 'kadence-blocks') + '</a>',
+							},
+							[]
+						),
 						createBlock(
 							'kadence/image',
 							{
-								imgMaxWidthMobile: 75,
 								sizeSlug: 'large',
-								ratio: 'square',
 								useRatio: true,
 								linkDestination: 'none',
-								uniqueID: '356_38c2f8-eb',
+								uniqueID: '320_36d6df-af',
+								borderRadius: [7, 7, 7, 7],
 								globalAlt: true,
-								url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
-							},
-							[]
-						),
-						createBlock(
-							'kadence/navigation-link',
-							{
-								uniqueID: '356_1deae2-98',
-								label: 'Men',
-								url: 'Men',
-								kind: 'custom',
-								typography: [
-									{
-										size: [16, '', ''],
-										sizeType: 'px',
-										lineHeight: ['', '', ''],
-										lineType: '',
-										letterSpacing: [1, '', ''],
-										letterType: 'px',
-										textTransform: 'uppercase',
-										family: '',
-										google: '',
-										style: '',
-										weight: 'bold',
-										variant: '',
-										subset: '',
-										loadGoogle: true,
-									},
-								],
-							},
-							[]
-						),
-					]
-				),
-				createBlock(
-					'kadence/column',
-					{
-						id: 2,
-						borderWidth: ['', '', '', ''],
-						uniqueID: '356_12ad71-7d',
-						direction: ['', '', 'horizontal'],
-						justifyContent: ['', '', 'center'],
-						gutter: ['', '', 0],
-						gutterVariable: ['', '', 'none'],
-						rowGap: [10, '', 0],
-						rowGapVariable: ['', '', 'none'],
-						verticalAlignmentMobile: 'middle',
-						padding: ['xs', '', 'xs', ''],
-						kbVersion: 2,
-					},
-					[
-						createBlock(
-							'kadence/image',
-							{
-								imgMaxWidthMobile: 75,
-								sizeSlug: 'large',
-								ratio: 'square',
-								useRatio: true,
-								linkDestination: 'none',
-								uniqueID: '356_97546e-4e',
-								globalAlt: true,
-								url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
-							},
-							[]
-						),
-						createBlock(
-							'kadence/navigation-link',
-							{
-								uniqueID: '356_dc2bce-56',
-								label: 'Accessories',
-								url: 'Men',
-								kind: 'custom',
-								typography: [
-									{
-										size: [16, '', ''],
-										sizeType: 'px',
-										lineHeight: ['', '', ''],
-										lineType: '',
-										letterSpacing: [1, '', ''],
-										letterType: 'px',
-										textTransform: 'uppercase',
-										family: '',
-										google: '',
-										style: '',
-										weight: 'bold',
-										variant: '',
-										subset: '',
-										loadGoogle: true,
-									},
-								],
-							},
-							[]
-						),
-					]
-				),
-				createBlock(
-					'kadence/column',
-					{
-						id: 2,
-						borderWidth: ['', '', '', ''],
-						uniqueID: '356_b1ced8-77',
-						direction: ['', '', 'horizontal'],
-						justifyContent: ['', '', 'center'],
-						gutter: ['', '', 0],
-						gutterVariable: ['', '', 'none'],
-						rowGap: [10, '', 0],
-						rowGapVariable: ['', '', 'none'],
-						verticalAlignmentMobile: 'middle',
-						padding: ['xs', '', 'xs', ''],
-						kbVersion: 2,
-					},
-					[
-						createBlock(
-							'kadence/image',
-							{
-								imgMaxWidthMobile: 75,
-								sizeSlug: 'large',
-								ratio: 'square',
-								useRatio: true,
-								linkDestination: 'none',
-								uniqueID: '356_ed3c5b-d1',
-								globalAlt: true,
-								url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
-							},
-							[]
-						),
-						createBlock(
-							'kadence/navigation-link',
-							{
-								uniqueID: '356_2084d3-fc',
-								label: 'Sale',
-								url: 'Men',
-								kind: 'custom',
-								typography: [
-									{
-										size: [16, '', ''],
-										sizeType: 'px',
-										lineHeight: ['', '', ''],
-										lineType: '',
-										letterSpacing: [1, '', ''],
-										letterType: 'px',
-										textTransform: 'uppercase',
-										family: '',
-										google: '',
-										style: '',
-										weight: 'bold',
-										variant: '',
-										subset: '',
-										loadGoogle: true,
-									},
-								],
+								url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/gray.png',
 							},
 							[]
 						),

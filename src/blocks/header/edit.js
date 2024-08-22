@@ -302,7 +302,7 @@ function CreateNewOnly({ clientId, setJustCompletedOnboarding, postId }) {
 
 				updatedMeta._kad_header_description = headerDescription;
 
-				setMeta({ ...meta, updatedMeta });
+				setMeta({ ...meta, ...updatedMeta });
 				await wp.data
 					.dispatch('core')
 					.saveEditedEntityRecord('postType', 'kadence_header', id)
@@ -378,7 +378,7 @@ function Chooser({ commit, clientId, setJustCompletedOnboarding, formData, setFo
 
 				updatedMeta._kad_header_description = headerDescription;
 
-				setMeta({ ...meta, updatedMeta });
+				setMeta({ ...meta, ...updatedMeta });
 				await wp.data
 					.dispatch('core')
 					.saveEditedEntityRecord('postType', 'kadence_header', id)

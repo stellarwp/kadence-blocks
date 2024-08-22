@@ -36,7 +36,10 @@ const OnboardingModal = ({ steps, isOpen, onRequestClose, onSubmit }) => {
 	};
 
 	useEffect(() => {
-		if (Number.isInteger(formData.meta.exitAndCallbackStep) && formData.meta.exitAndCallbackStep === currentStep) {
+		if (
+			Number.isInteger(formData?.meta?.exitAndCallbackStep) &&
+			formData?.meta?.exitAndCallbackStep === currentStep
+		) {
 			handleFinish();
 		}
 	}, [formData, currentStep]);

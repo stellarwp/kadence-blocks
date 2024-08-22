@@ -265,7 +265,7 @@ class KBHeader {
 		}
 
 		//TODO change wrapper to something that also applies to fse themes
-		const wrapper = document.getElementById('wrapper');
+		const wrapper = document.getElementsByClassName('wp-site-blocks')?.[0];
 		var offsetTop = this.getOffset(wrapper).top;
 		this.anchorOffset = this.getOffset(this.root).top;
 		var currScrollTop = window.scrollY;
@@ -342,6 +342,10 @@ class KBHeader {
 			offsetTop = this.getOffset(wrapper).top + proOffset;
 		}
 
+		const topPosThatSticksToTop = currScrollTop - this.anchorOffset + offsetTop;
+		const topPosThatSticksAboveTop = currScrollTop - this.anchorOffset + offsetTop - elHeight;
+		const currentBottomPosition = this.currentTopPosition + elHeight;
+
 		// set initial shrink starting height
 		var parent = this.activeHeader.parentNode;
 		if (!this.shrinkStartHeight || (e && undefined !== e.type && 'orientationchange' === e.type)) {
@@ -350,7 +354,7 @@ class KBHeader {
 
 		// Run the shrinking / unshrinking processing
 		if (this.shrinkMain) {
-			var shrinkHeight =
+			const shrinkHeight =
 				this.activeSize === 'mobile'
 					? this.shrinkMainHeightMobile
 					: this.activeSize === 'tablet'
@@ -368,8 +372,8 @@ class KBHeader {
 						var totalOffsetDelay = Math.floor(this.activeOffsetTop - offsetTop);
 					}
 				}
-				var shrinkLogos = this.activeHeader.querySelectorAll('.custom-logo');
-				var shrinkHeader = this.activeHeader.querySelector('.wp-block-kadence-header-row-center');
+				const shrinkLogos = this.activeHeader.querySelectorAll('.custom-logo');
+				const shrinkHeader = this.activeHeader.querySelector('.wp-block-kadence-header-row-center');
 
 				//set shrink starting height
 				if (!this.shrinkStartHeight) {
@@ -377,28 +381,21 @@ class KBHeader {
 				}
 
 				// either shrink or unshrink the header based on scroll position
-				if (window.scrollY <= totalOffsetDelay) {
-					//Unshrink
-					shrinkHeader.style.height = this.shrinkStartHeight + 'px';
-					shrinkHeader.style.minHeight = this.shrinkStartHeight + 'px';
-					shrinkHeader.style.maxHeight = this.shrinkStartHeight + 'px';
-					//also unshrink the logo
+				const shrinkingHeight = Math.max(shrinkHeight, this.shrinkStartHeight - window.scrollY);
+				shrinkHeader.style.height = shrinkingHeight + 'px';
+				shrinkHeader.style.minHeight = shrinkingHeight + 'px';
+				shrinkHeader.style.maxHeight = shrinkingHeight + 'px';
+
+				if ((window.scrollY = 0)) {
+					//at top, release logos
 					if (shrinkLogos) {
 						for (let i = 0; i < shrinkLogos.length; i++) {
 							const shrinkLogo = shrinkLogos[i];
 							shrinkLogo.style.maxHeight = '100%';
 						}
 					}
-				} else if (window.scrollY > totalOffsetDelay) {
-					//Shrink
-					var shrinkingHeight = Math.max(
-						shrinkHeight,
-						this.shrinkStartHeight - (window.scrollY - (this.activeOffsetTop - offsetTop))
-					);
-					shrinkHeader.style.height = shrinkingHeight + 'px';
-					shrinkHeader.style.minHeight = shrinkingHeight + 'px';
-					shrinkHeader.style.maxHeight = shrinkingHeight + 'px';
-					//also shrink the logo
+				} else {
+					//in shrinking state, reduce logos
 					if (shrinkLogos) {
 						for (let i = 0; i < shrinkLogos.length; i++) {
 							const shrinkLogo = shrinkLogos[i];
@@ -418,39 +415,42 @@ class KBHeader {
 			var isScrollingDown = currScrollTop > this.lastScrollTop;
 			var totalOffset = Math.floor(this.anchorOffset + elHeight);
 			if (currScrollTop <= this.anchorOffset - offsetTop) {
-				//above the header, ignore the header
+				//above the initial header area, ignore the header
 				this.activeHeader.style.top = 0;
 				this.currentTopPosition = 0;
 				this.setStickyChanged(false);
 			} else if (currScrollTop <= totalOffset) {
-				//scrolling in the header area, ignore the header if scrolling down, keep sticking if scrolling up
+				//scrolling in the initial header area
 				if (isScrollingDown) {
+					//ignore the header if scrolling down
 					this.activeHeader.style.top = 0;
 					this.currentTopPosition = 0;
 					this.setStickyChanged(false);
 				} else {
+					//keep sticking if scrolling up
 					this.activeHeader.classList.remove('item-hidden-above');
-					var topPos = currScrollTop - this.anchorOffset + offsetTop;
-					this.activeHeader.style.top = topPos + 'px';
-					this.currentTopPosition = topPos;
+					this.activeHeader.style.top = topPosThatSticksToTop + 'px';
+					this.currentTopPosition = topPosThatSticksToTop;
 					this.setStickyChanged(true);
 				}
-			} else if (isScrollingDown) {
-				//below the header and scrolling down, keep the header top just above the screen
-				this.activeHeader.classList.add('item-hidden-above');
-				var topPos = currScrollTop - this.anchorOffset + offsetTop - elHeight;
-				this.activeHeader.style.top = topPos + 'px';
-				this.currentTopPosition = topPos;
-				this.setStickyChanged(true);
+			} else if (currScrollTop >= this.currentTopPosition && currScrollTop <= currentBottomPosition) {
+				//in current sticky header area, ignore it
+				this.setStickyChanged(false);
 			} else {
-				//below the header and scrolling up, keep the header top at scroll position
-				this.activeHeader.classList.remove('item-hidden-above');
-				var topPos = currScrollTop - this.anchorOffset + offsetTop;
-				this.activeHeader.style.top = topPos + 'px';
-				this.currentTopPosition = topPos;
+				//below the initial header area, but above or below the current sticky area
+				if (isScrollingDown) {
+					//scrolling down, keep the header top just above the screen
+					this.activeHeader.classList.add('item-hidden-above');
+					this.activeHeader.style.top = topPosThatSticksAboveTop + 'px';
+					this.currentTopPosition = topPosThatSticksAboveTop;
+				} else {
+					//scrolling up, keep the header top at scroll position
+					this.activeHeader.classList.remove('item-hidden-above');
+					this.activeHeader.style.top = topPosThatSticksToTop + 'px';
+					this.currentTopPosition = topPosThatSticksToTop;
+				}
 				this.setStickyChanged(true);
 			}
-			this.activeHeader.style.top = topPos + 'px';
 		} else {
 			// Run the sticking process
 			var totalOffset = Math.floor(this.anchorOffset - offsetTop);
@@ -461,9 +461,8 @@ class KBHeader {
 				this.setStickyChanged(false);
 			} else {
 				//below the header anchor, match it's top to the scroll position
-				var topPos = currScrollTop - this.anchorOffset + offsetTop;
-				this.activeHeader.style.top = topPos + 'px';
-				this.currentTopPosition = topPos;
+				this.activeHeader.style.top = topPosThatSticksToTop + 'px';
+				this.currentTopPosition = topPosThatSticksToTop;
 				this.setStickyChanged(true);
 			}
 		}

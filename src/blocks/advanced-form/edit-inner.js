@@ -544,7 +544,7 @@ export function EditInner(props) {
 					updatedMeta._kad_form_fieldBorderStyle = borderStyle;
 					updatedMeta._kad_form_fieldBorderRadius = [0, 0, 0, 0];
 				}
-				setMeta({ ...meta, updatedMeta });
+				setMeta({ ...meta, ...updatedMeta });
 				await wp.data.dispatch('core').saveEditedEntityRecord('postType', 'kadence_form', id);
 			}
 		} catch (error) {

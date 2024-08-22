@@ -2403,7 +2403,7 @@ class Kadence_Blocks_CSS {
 	 * @return string
 	 */
 	public function render_half_size( $size, $unit = 'px' ) {
-		if ( empty( $size ) ) {
+		if ( empty( $size ) && $size != 0 && $size != '0' ) {
 			return false;
 		}
 		$size_number = $size ? $size : '0';

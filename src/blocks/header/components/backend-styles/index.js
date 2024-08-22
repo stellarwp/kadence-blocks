@@ -760,8 +760,10 @@ export default function BackendStyles(props) {
 		}
 	}
 
-	css.set_selector(`:root`);
-	css.add_property('--kb-editor-height-hd', elementHeight + 'px');
+	if (elementHeight) {
+		css.set_selector(`:root`);
+		css.add_property('--kb-editor-height-hd', elementHeight + 'px');
+	}
 
 	const cssOutput = css.css_output();
 

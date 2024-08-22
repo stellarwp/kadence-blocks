@@ -17,32 +17,38 @@ import classnames from 'classnames';
 import { __ } from '@wordpress/i18n';
 import { isEmpty } from 'lodash';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { navigationBlockIcon } from '@kadence/icons';
-import { KadencePanelBody, SelectPostFromPostType } from '@kadence/components';
+import { createBlock } from '@wordpress/blocks';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { Placeholder, Spinner, Button } from '@wordpress/components';
-import { store as coreStore, EntityProvider, useEntityProp } from '@wordpress/core-data';
+import { store as coreStore, EntityProvider, useEntityProp, useEntityBlockEditor } from '@wordpress/core-data';
 
 import { useEntityAutoDraft, useEntityAutoDraftAndPublish } from './hooks';
 import { SelectOrCreatePlaceholder } from './components';
+import { navigationBlockIcon } from '@kadence/icons';
+import { KadencePanelBody, SelectPostFromPostType } from '@kadence/components';
 import { getUniqueId, getPostOrFseId, getPreviewSize } from '@kadence/helpers';
 
 /**
  * Internal dependencies
  */
 import EditInner from './edit-inner';
+import { buildTemplateFromSelection } from './helpers';
 import { useEffect, useState } from '@wordpress/element';
 
 export function Edit(props) {
 	const { attributes, setAttributes, isSelected, clientId } = props;
 
-	const { id, uniqueID, templateKey } = attributes;
+	const { id, uniqueID, templateKey, makePost } = attributes;
 	const [hasStartedLoading, setHasStartedLoading] = useState(false);
+	const [isLoadingTemplateContent, setIsLoadingTemplateContent] = useState(false);
+	const [tmpTemplateKey, setTmpTemplateKey] = useState(templateKey);
 
 	// Since we're not in the EntityProvider yet, we need to provide a post id.
 	// 'id' and 'meta' will be undefined untill the actual post is chosen / loaded
 	const [meta, setMeta] = useNavigationProp('meta', id);
-	const [tmpTemplateKey, setTmpTemplateKey] = useState(templateKey);
+	const [existingTitle, setTitle] = useNavigationProp('title', id);
+	const [isAdding, addNew] = useEntityAutoDraftAndPublish('kadence_navigation', 'kadence_navigation');
+	const [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_navigation', { id: id });
 
 	const metaAttributes = {
 		orientation: meta?._kad_navigation_orientation,
@@ -70,6 +76,8 @@ export function Edit(props) {
 
 	const inTemplatePreviewMode = !id && templateKey;
 
+	//some workarounds in here because we can't set meta attributes on no-post templated navs
+	//this allows them to be vertical or horizontal
 	const previewOrientation = inTemplatePreviewMode
 		? templateKey.includes('vertical')
 			? 'vertical'
@@ -159,9 +167,7 @@ export function Edit(props) {
 		className: blockClasses,
 	});
 
-	{
-		/* Directly editing from via kadence_navigation post type */
-	}
+	//Directly editing from via kadence_navigation post type
 	if (currentPostType === 'kadence_navigation') {
 		return (
 			<div {...blockProps}>
@@ -170,24 +176,57 @@ export function Edit(props) {
 		);
 	}
 
-	const [isAdding, addNew] = useEntityAutoDraftAndPublish('kadence_navigation', 'kadence_navigation');
-	const makeNavigationPost = async () => {
+	const makeTemplatedNavigationPost = async () => {
 		try {
+			setIsLoadingTemplateContent(true);
 			const response = await addNew();
-			setAttributes({ id: response.id });
+			const newPostId = response?.id;
+
+			if (newPostId) {
+				//set the newly created post id.
+				//This should trigger another useeffect on the next render to build out the inner blocks
+				setAttributes({ id: newPostId });
+			}
 		} catch (error) {
 			console.error(error);
 		}
 	};
 
-	//if this is a templated navigation (usually coming from header onboarding)
-	//then it should get premade with some templated content based on templateKey
-	// commented out for now because we just make placeholder content instead of an actual post
-	// useEffect(() => {
-	// 	if (!id && templateKey) {
-	// 		makeNavigationPost();
-	// 	}
-	// }, []);
+	// if this is a templated navigation (usually coming from mega menu onboarding)
+	// then it should get premade with some templated content based on templateKey
+	// This process is for heavier templated navs that require a post for meta attributes / etc
+	useEffect(() => {
+		if (!id && templateKey && makePost) {
+			makeTemplatedNavigationPost();
+		}
+	}, []);
+
+	//this effect should trigger after we've made a new post for this templated nav
+	//it will fill out the meta and inner blocks based on the templatekey
+	useEffect(() => {
+		if (id && templateKey && makePost) {
+			const { templateInnerBlocks, templatePostMeta } = buildTemplateFromSelection(templateKey);
+
+			if (templateInnerBlocks) {
+				onChange(templateInnerBlocks, clientId);
+			} else {
+				// Skip, or template not found
+				onChange([createBlock('kadence/navigation', {}, [])], clientId);
+			}
+
+			setTitle(templateKey);
+
+			templatePostMeta._kad_navigation_description = 'A placeholder navigation';
+
+			setMeta({ ...meta, ...templatePostMeta });
+			wp.data
+				.dispatch('core')
+				.saveEditedEntityRecord('postType', 'kadence_navigation', id)
+				.then(() => {
+					setIsLoadingTemplateContent(false);
+				});
+		}
+	}, [id]);
 
 	useEffect(() => {
 		// Revert to the template if no nav was created/selected.
@@ -204,6 +243,11 @@ export function Edit(props) {
 
 	if (!hasStartedLoading && isLoading) {
 		setHasStartedLoading(true);
+	}
+
+	//todo, handle this short circuit better
+	if (isLoadingTemplateContent) {
+		return <Spinner />;
 	}
 
 	return (
