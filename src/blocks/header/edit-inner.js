@@ -315,7 +315,6 @@ export function EditInner(props) {
 		const findHeader = findHeaderBlockClientId(innerBlocks);
 
 		if (findHeader !== null) {
-			console.log('remove block');
 			wp.data.dispatch('core/block-editor').removeBlock(findHeader);
 		}
 		return innerBlocks;
