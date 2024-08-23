@@ -36,9 +36,18 @@
 							js: kadence_video_pop.plyr_js,
 							config: {
 								muted: false,
-      							hideControls: true,
+								hideControls: true,
 							},
-							controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
+							controls: [
+								'play-large',
+								'play',
+								'progress',
+								'current-time',
+								'mute',
+								'volume',
+								'settings',
+								'fullscreen',
+							],
 						},
 					});
 					kadenceBlocksVideoLightbox.lightboxes[i].on('slide_before_load', (data) => {

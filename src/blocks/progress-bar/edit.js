@@ -898,7 +898,10 @@ export function Edit(props) {
 								label={__('Aria Label', 'kadence-blocks')}
 								value={ariaLabel}
 								onChange={(value) => setAttributes({ ariaLabel: value })}
-								help={__('Describe the purpose of this progress bar for screen readers, leave blank if label describes and the bar is purely decorative.', 'kadence-blocks')}
+								help={__(
+									'Describe the purpose of this progress bar for screen readers, leave blank if label describes and the bar is purely decorative.',
+									'kadence-blocks'
+								)}
 								className={'kb-textbox-style'}
 							/>
 						</KadencePanelBody>
