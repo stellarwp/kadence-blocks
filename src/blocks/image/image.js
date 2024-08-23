@@ -96,6 +96,7 @@ import {
 	GradientControl,
 	BackgroundTypeControl,
 	KadenceFocalPicker,
+	KadenceWebfontLoader,
 } from '@kadence/components';
 
 export default function Image({
@@ -1843,6 +1844,18 @@ export default function Image({
 					}}
 					inlineToolbar
 					__unstableOnSplitAtEnd={() => insertBlocksAfter(createBlock('core/paragraph'))}
+				/>
+			)}
+			{captionStyles[0].google && captionStyles[0].family && (
+				<KadenceWebfontLoader
+					typography={[
+						{
+							family: captionStyles[0].family,
+							variant: captionStyles[0].variant ? captionStyles[0].variant : '',
+						},
+					]}
+					clientId={clientId}
+					id={'advancedImage'}
 				/>
 			)}
 		</>

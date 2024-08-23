@@ -291,7 +291,12 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $caption_font['textTransform'] ) && ! empty( $caption_font['textTransform'] ) ) {
 				$css->add_property( 'text-transform', $caption_font['textTransform'] );
 			}
-			if ( isset( $caption_font['family'] ) && ! empty( $caption_font['family'] ) ) {
+			if ( isset( $caption_font['google']) && ! empty($caption_font['google'] ) ) {
+				$google = $caption_font['google'] ? true : false;
+				$google = $google && ( isset( $caption_font['loadGoogle'] ) && $caption_font['loadGoogle'] || ! isset( $caption_font['loadGoogle'] ) ) ? true : false;
+				$variant = ! empty( $caption_font['variant'] ) ? $caption_font['variant'] : null;
+				$css->add_property( 'font-family', $css->render_font_family( $caption_font['family'], $google, $variant ) );
+			} elseif ( isset( $caption_font['family'] ) && ! empty( $caption_font['family'] ) ) {
 				$css->add_property( 'font-family', $caption_font['family'] );
 			}
 			if ( isset( $caption_font['style'] ) && ! empty( $caption_font['style'] ) ) {
