@@ -1848,7 +1848,12 @@ export default function Image({
 			)}
 			{captionStyles[0].google && captionStyles[0].family && (
 				<KadenceWebfontLoader
-					typography={[{ family: captionStyles[0].family, variant: captionStyles[0].variant ? captionStyles[0].variant : '' }]}
+					typography={[
+						{
+							family: captionStyles[0].family,
+							variant: captionStyles[0].variant ? captionStyles[0].variant : '',
+						},
+					]}
 					clientId={clientId}
 					id={'advancedImage'}
 				/>
