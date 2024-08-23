@@ -1525,17 +1525,17 @@ function RowLayoutEditContainer(props) {
 						(breakoutLeft || breakoutRight) &&
 						'row' !== previewLayout &&
 						'full' === align &&
-						'Tablet' ===
-							previewDevice(
-								<>
-									{breakoutRight
-										? `.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(2) > .kadence-inner-column-inner { margin-right: calc( ${paddingRightBreakout} *-1 ) !important; }`
-										: ''}
-									{breakoutLeft
-										? `.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(1) > .kadence-inner-column-inner { margin-left: calc( ${paddingLeftBreakout} *-1 ) !important; }`
-										: ''}
-								</>
-							)}
+						'Tablet' === previewDevice &&
+						tabLayoutClass !== 'row' && (
+							<>
+								{breakoutRight
+									? `.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(2) > .kadence-inner-column-inner { margin-right: calc( ${paddingRightBreakout} *-1 ) !important; }`
+									: ''}
+								{breakoutLeft
+									? `.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(1) > .kadence-inner-column-inner { margin-left: calc( ${paddingLeftBreakout} *-1 ) !important; }`
+									: ''}
+							</>
+						)}
 					{linkColor
 						? `.kb-row-id-${uniqueID} a:not(.use-for-specificity) { color: ${KadenceColorOutput(
 								linkColor
