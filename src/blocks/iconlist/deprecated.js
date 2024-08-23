@@ -138,6 +138,9 @@ export default [
 				attributes;
 
 			const renderItems = (index) => {
+				if (undefined === items?.[index]) {
+					return;
+				}
 				return (
 					<li
 						className={`kt-svg-icon-list-style-${items[index].style} kt-svg-icon-list-item-wrap kt-svg-icon-list-item-${index} kt-svg-icon-list-level-${items[index].level}`}
@@ -363,6 +366,9 @@ export default [
 			const { items, listCount, columns, blockAlignment, iconAlign, uniqueID, tabletColumns, mobileColumns } =
 				attributes;
 			const renderItems = (index) => {
+				if (undefined === items?.[index]) {
+					return;
+				}
 				return (
 					<li
 						className={`kt-svg-icon-list-style-${items[index].style} kt-svg-icon-list-item-wrap kt-svg-icon-list-item-${index}`}
@@ -566,6 +572,9 @@ export default [
 		save: ({ attributes }) => {
 			const { items, listCount, columns, blockAlignment, iconAlign, uniqueID } = attributes;
 			const renderItems = (index) => {
+				if (undefined === items?.[index]) {
+					return;
+				}
 				return (
 					<li
 						className={`kt-svg-icon-list-style-${items[index].style} kt-svg-icon-list-item-wrap kt-svg-icon-list-item-${index}`}

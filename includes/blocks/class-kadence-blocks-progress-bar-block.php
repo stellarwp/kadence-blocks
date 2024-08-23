@@ -236,10 +236,29 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 
 		$content .= $this->get_label( $attributes, 'above' );
 
-		// aria-valuenow="50".
-		
-		$content .= '<div id="kb-progress-bar' . esc_attr( $unique_id ) . '" class="kb-progress-bar" role="progressbar" aria-labelledby="kt-progress-label' . esc_attr( $attributes['uniqueID'] ) . '" aria-label="' . ( empty($attributes['label']) ? __('Progress', 'kadence-blocks') : esc_attr( strip_tags( $attributes['label'] ) ) ) . '" aria-valuemin="' . esc_attr( $progress_min ) . '" aria-valuemax="' . ( $is_relative ? 100 : $progress_max ) . '">' . ( $this->get_label( $attributes, 'inside' ) ) . '</div>';
+		$progress_args = [
+			'id' => 'kb-progress-bar' . esc_attr( $unique_id ),
+			'class' => 'kb-progress-bar',
+		];
+		if ( ! empty( $attributes['label'] ) && ( ! isset( $attributes['displayLabel'] ) || ( isset( $attributes['displayLabel'] ) && $attributes['displayLabel'] !== false ) ) ) {
+			$progress_args['aria-labelledby'] = 'kt-progress-label' . esc_attr( $unique_id );
+		}
+		$mask = ! empty( $attributes['maskSvg'] ) ? $attributes['maskSvg'] : 'star';
+		if ( ! empty( $attributes['ariaLabel'] ) ) {
+			$progress_args['aria-label'] = $attributes['ariaLabel'];
+		} elseif ( ! empty( $attributes['barType'] ) && $attributes['barType'] === 'line-mask' && 'star' === $mask ) {
+			// translators: %1$s is the current progress amount, %2$s is the max progress amount.
+			$progress_args['aria-label'] = sprintf( __( '%1$s out of %2$s Stars', 'kadence-blocks' ), $progress_amount, $progress_max );
+		}
+		$progress_div_attributes = [];
+		foreach ( $progress_args as $key => $value ) {
+			$progress_div_attributes[] = $key . '="' . esc_attr( $value ) . '"';
+		}
+		$progress_attributes = implode( ' ', $progress_div_attributes );
+		// $content .= '<div id="kb-progress-bar' . esc_attr( $unique_id ) . '" class="kb-progress-bar" aria-labelledby="kt-progress-label' . esc_attr( $attributes['uniqueID'] ) . '" aria-label="' . ( empty( $attributes['label'] ) ? __( 'Progress', 'kadence-blocks' ) : esc_attr( strip_tags( $attributes['label'] ) ) ) . '">' . ( $this->get_label( $attributes, 'inside' ) ) . '</div>';
+		$inside_label = $this->get_label( $attributes, 'inside' );
 
+		$content .= sprintf( '<div %1$s>%2$s</div>', $progress_attributes, $inside_label );
 		$content .= $this->get_label( $attributes, 'below' );
 
 		$content .= '</div>';
@@ -339,8 +358,6 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 									} else if ( elementBelow ){
 										elementBelow.innerHTML = "' . $prefix . '" + value + "' . $suffix . '";
 									}
-
-									elementContainer.setAttribute("aria-valuenow", value);
 								 }
 				            } ,
 				            function(){}
@@ -368,16 +385,17 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $attributes['labelPosition'] ) && $attributes['labelPosition'] !== $position ) {
 			return '';
 		}
+		$label = '';
+		if ( ! empty( $attributes['label'] ) && ( ! isset( $attributes['displayLabel'] ) || ( isset( $attributes['displayLabel'] ) && $attributes['displayLabel'] !== false ) ) ) {
+			$label = '<span id="kt-progress-label' . esc_attr( $attributes['uniqueID'] ) . '" role="textbox" class="kt-progress-label" contenteditable="false" aria-label="' . esc_attr__( 'Progressbar Label', 'kadence-blocks' ) . '">' . wp_kses_post( $attributes['label'] ) . '</span>';
+		}
+		$percent = $this->get_percent( $attributes );
 
-		$label = '<span id="kt-progress-label' . esc_attr( $attributes['uniqueID'] ) . '" role="textbox" class="kt-progress-label" contenteditable="false" aria-label="' . esc_attr__( 'Progressbar Label', 'kadence-blocks' ). '">' . $attributes['label'] . '</span>';
-		
-		if ( isset( $attributes['displayLabel'] ) && $attributes['displayLabel'] !== true ) {
-			$label = '';
+		if ( empty( $label ) && empty( $percent ) ) {
+			return '';
 		}
 
-		$response = '<div class="kb-progress-label-wrap ' . ( $position === 'inside' ? 'kt-progress-label-inside' : '' ) . '">';
-
-		$percent = $this->get_percent( $attributes );
+		$response = '<div class="kb-progress-label-wrap' . ( $position === 'inside' ? ' kt-progress-label-inside' : '' ) . '">';
 
 		if ( isset( $attributes['labelLayout'] ) && ( $attributes['labelLayout'] === 'pl' || $attributes['labelLayout'] === 'lb' ) ) {
 			$response .= $percent . $label;

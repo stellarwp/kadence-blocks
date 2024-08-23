@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.3
 Tested up to: 6.6
-Stable tag: 3.2.50
+Stable tag: 3.2.52
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -174,14 +174,21 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.2.52 =
+Release Date: August 23rd 2024
+* Fix: Row layout responsive preview in editor when using break left or break right.
+
 = 3.2.51 =
-Release Date: August TBD 2024
+Release Date: August 22nd 2024
+* Update: Improve accessibility for progress bar block.
+* Update: Improve accessibility for buttons with video popup.
 * Fix: Using Dynamic content in Google Maps block
 * Fix: Carousel not looping in Advanced Gallery block.
 * Fix: Tabs block columns not updating in editor when viewed in Tablet or Mobile.
 * Fix: Prevent invalid HTML with multiple wrapped links in Icon List items.
 * Fix: Caption background color in Advanced Gallery block.
 * Fix: Rendering custom SVGs with group tags.
+* Fix: Issue with row layout break left and break right not showing in the editor.
 * Fix: Spacer height when using vh with default height value.
 * Fix: Border radius with overlay colors on Advanced Image block.
 

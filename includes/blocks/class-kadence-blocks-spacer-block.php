@@ -61,8 +61,12 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
-			$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-block-spacer' );
-			$css->add_property( 'height', ($attributes['spacerHeight'] ?? '60') . (isset($attributes['spacerHeightUnits']) ? $attributes['spacerHeightUnits'] : 'px'));
+		$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-block-spacer' );
+		$units = ! empty( $attributes['spacerHeightUnits'] ) ? $attributes['spacerHeightUnits'] : 'px';
+		if ( ! empty( $attributes['spacerHeight'] ) || $units !== 'px' ) {
+			$height = ( ! empty( $attributes['spacerHeight'] ) ? $attributes['spacerHeight'] : '60' );
+			$css->add_property( 'height', $height . $units );
+		}
 		if ( ! empty( $attributes['tabletSpacerHeight'] ) ) {
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-block-spacer' );

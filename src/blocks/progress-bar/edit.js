@@ -111,6 +111,7 @@ export function Edit(props) {
 		maskIterations,
 		maskSvg,
 		maskUrl,
+		ariaLabel,
 	} = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
@@ -893,6 +894,16 @@ export function Edit(props) {
 								max={1000}
 								step={decimal === 'two' ? 0.01 : decimal === 'one' ? 0.1 : 1}
 							/>
+							<TextControl
+								label={__('Aria Label', 'kadence-blocks')}
+								value={ariaLabel}
+								onChange={(value) => setAttributes({ ariaLabel: value })}
+								help={__(
+									'Describe the purpose of this progress bar for screen readers, leave blank if label describes and the bar is purely decorative.',
+									'kadence-blocks'
+								)}
+								className={'kb-textbox-style'}
+							/>
 						</KadencePanelBody>
 
 						<KadencePanelBody
@@ -907,7 +918,7 @@ export function Edit(props) {
 							/>
 
 							{displayPercent && (
-								<Fragment>
+								<>
 									<TextControl
 										label={__('Number Prefix', 'kadence-blocks')}
 										value={numberPrefix}
@@ -931,7 +942,7 @@ export function Edit(props) {
 											onChange={(value) => setAttributes({ numberIsRelative: value })}
 										/>
 									)}
-								</Fragment>
+								</>
 							)}
 						</KadencePanelBody>
 
