@@ -1,10 +1,11 @@
 import { useState, useMemo } from '@wordpress/element';
 import { DropdownMenu, Button, Icon, TextControl } from '@wordpress/components';
+import { createBlock } from '@wordpress/blocks';
 import { useSelect } from '@wordpress/data';
 import { get, debounce } from 'lodash';
 import { __ } from '@wordpress/i18n';
 import { PREVENT_BLOCK_DELETE } from './constants';
-import { moreHorizontal, edit, trash } from '@wordpress/icons';
+import { moreHorizontal, edit, trash, plus } from '@wordpress/icons';
 import { memo } from 'react';
 
 import { DndContext } from '@dnd-kit/core';
@@ -49,7 +50,7 @@ function BlockItem({ thisBlock, activeBlock, toggleCollapse, collapsed }) {
 			return 0;
 		}
 
-		return thisBlock.depth * 15 + 30;
+		return thisBlock.depth * 20 + 30;
 	};
 
 	const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
@@ -114,7 +115,12 @@ function BlockItem({ thisBlock, activeBlock, toggleCollapse, collapsed }) {
 			{isEditing && (
 				<div
 					key={thisBlock.clientId}
-					style={{ display: 'block', marginLeft: '25px', backgroundColor: '#EEE', padding: '15px' }}
+					style={{
+						display: 'block',
+						marginLeft: '25px',
+						backgroundColor: 'rgb(242, 242, 242)',
+						padding: '15px',
+					}}
 				>
 					<TextControl
 						label={__('Label', 'kadence-blocks')}
@@ -135,6 +141,37 @@ function BlockItem({ thisBlock, activeBlock, toggleCollapse, collapsed }) {
 								.updateBlockAttributes(thisBlock.clientId, { url: value });
 						}}
 					/>
+
+					<div style={{ marginTop: '15px', display: 'flex' }}>
+						<Button
+							style={{ marginRight: '10px' }}
+							onClick={() => {
+								wp.data.dispatch('core/block-editor').insertBlocks(
+									[
+										createBlock('kadence/navigation-link', {
+											label: __('New Link', 'kadence-blocks'),
+											url: '',
+											kind: 'custom',
+											uniqueID: Math.random().toString(36).substr(2, 9),
+											forceOpenInEditor: true,
+										}),
+									],
+									99999,
+									thisBlock.clientId,
+									false,
+									null
+								);
+							}}
+							icon={plus}
+							isSecondary
+						>
+							{__('Add sub menu link', 'kadence-blocks')}
+						</Button>
+
+						<Button onClick={() => setIsEditing(false)} isPrimary>
+							{__('Close', 'kadence-blocks')}
+						</Button>
+					</div>
 				</div>
 			)}
 		</div>

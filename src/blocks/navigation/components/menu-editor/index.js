@@ -131,7 +131,7 @@ export default function MenuEditor({
 						}}
 						icon={plus}
 					>
-						{__('Custom Link', 'kadence-blocks')}
+						{__('Custom link', 'kadence-blocks')}
 					</Button>
 					<Button isPrimary onClick={closeModal}>
 						{__('Done', 'kadence-blocks')}
