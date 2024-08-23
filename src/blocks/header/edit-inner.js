@@ -84,11 +84,12 @@ export function EditInner(props) {
 	} = props;
 	const { setHeaderVisualBuilderOpenId, setHeaderVisualBuilderSelectedId } = useDispatch('kadenceblocks/data');
 
-	const { previewDevice, showVisualBuilder } = useSelect(
+	const { previewDevice, showVisualBuilder, visualBuilderClientId } = useSelect(
 		(select) => {
 			return {
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 				showVisualBuilder: select('kadenceblocks/data').getOpenHeaderVisualBuilderId() === clientId,
+				visualBuilderClientId: select('kadenceblocks/data').getSelectedHeaderVisualBuilderId(),
 			};
 		},
 		[clientId]
@@ -104,8 +105,10 @@ export function EditInner(props) {
 	const [meta, setMeta] = useHeaderProp('meta');
 
 	useEffect(() => {
-		if (isSelected) {
-			setHeaderVisualBuilderSelectedId(clientId);
+		const setValue = isSelected || showVisualBuilder ? clientId : null;
+
+		if (visualBuilderClientId !== setValue) {
+			setHeaderVisualBuilderSelectedId(setValue);
 		}
 	}, [isSelected]);
 

@@ -147,7 +147,7 @@ export default function SelectOrCreatePlaceholder({
 					{groupedOptionsHTML}
 				</SelectControl>
 				<Button
-					style={{ marginTop: '20px' }}
+					style={{ marginTop: '20px', marginRight: '10px' }}
 					variant="primary"
 					type="submit"
 					disabled={!selected || isAdding}
