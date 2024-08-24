@@ -7,73 +7,97 @@
 	.wp-block-kadence-navigation-link__label {
 		overflow-wrap: break-word;
 	}
-
 	// Hide the description by default.
 	// If a theme opts-in to show descriptions, they will need to provide styles for them.
 	.wp-block-kadence-navigation-link__description {
 		display: none;
 	}
 	.link-highlight-label {
-		color: var(--global-palette7, #ffffff);
-		background: var(--global-palette2, #2f2ffc);
-		padding: 3px;
-		font-size: 12px;
-		line-height: 1;
-		padding: 5px;
-		border-radius: 5px;
+		color: var(--global-palette9, #ffffff);
+		background: var(--global-palette1, #2f2ffc);
+		font-size: 0.7em;
+		margin-left: 0.2em;
+		line-height: normal;
+		padding: 0.3em;
+		border-radius: 2px;
 		.kt-svg-icon {
 			padding-left: 5px;
+			svg {
+				width: 1em;
+				height: 1em;
+			}
 		}
 	}
-	.link-drop-wrap .wp-block-kadence-navigation-link__content.has-highlight-label {
-		display: flex !important;
+	.kb-link-wrap .kb-nav-link-content.has-highlight-label {
+		display: flex;
 		gap: 5px;
 
 		.link-highlight-label {
-			display: flex !important;
+			display: flex;
 			flex-wrap: nowrap;
-			align-items: center !important;
-
-			.link-svg-icon {
-				padding-left: 5px;
-				svg {
-					width: 12px;
-					height: 12px;
-				}
-			}
+			align-items: center;
 		}
 	}
 
 	.sub-menu {
-		.wp-block-kadence-navigation-link__content {
+		.kb-nav-link-content {
 			flex-wrap: wrap;
 		}
 	}
-
+	.kb-nav-arrow-svg {
+		top: 0.125em;
+		position: relative;
+		width: 1em;
+		height: 1em;
+		align-self: center;
+	}
+	.kb-nav-dropdown-toggle {
+		display: block;
+		background: transparent;
+		position: absolute;
+		right: 0;
+		top: 50%;
+		font-size: inherit;
+		width: 0.9em;
+		height: 0.9em;
+		font-size: 0.9em;
+		display: inline-flex;
+		line-height: inherit;
+		margin: 0;
+		padding: 0;
+		border: none;
+		border-radius: 0;
+		transform: translateY(-50%);
+		overflow: visible;
+		transition: opacity 0.2s ease;
+	}
 	.kadence-menu-has-description.kadence-menu-has-icon {
-		.link-drop-title-wrap {
+		.kb-nav-item-title-wrap {
 			display: grid;
 			grid-template-columns: 1fr auto;
 		}
+	}
+	&.menu-item-has-children {
+		position: relative;
 	}
 
 	.link-media-container {
 		display: flex;
 		align-self: flex-start;
 		max-width: 150px;
-
-		.link-svg-icon {
-			display: inline-flex;
-			justify-content: center;
-			align-items: center;
-
-			svg {
-				stroke: currentColor;
-			}
-		}
+		padding: 0.3em;
+	}
+}
+.link-svg-icon {
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	svg {
+		width: 1em;
+		height: 1em;
 	}
 }
 
-.sub-menu .wp-block-kadence-navigation-link > .link-drop-wrap > a > .link-drop-title-wrap .link-media-container {
+.sub-menu .wp-block-kadence-navigation-link > .kb-link-wrap > a > .kb-nav-item-title-wrap .link-media-container {
 	justify-content: flex-start;
 }

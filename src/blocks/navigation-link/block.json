@@ -277,11 +277,11 @@
 		},
 		"highlightSideTablet": {
 			"type": "string",
-			"default": "right"
+			"default": ""
 		},
 		"highlightSideMobile": {
 			"type": "string",
-			"default": "right"
+			"default": ""
 		},
 		"iconSide": {
 			"type": "string",
@@ -289,11 +289,11 @@
 		},
 		"iconSideTablet": {
 			"type": "string",
-			"default": "right"
+			"default": ""
 		},
 		"iconSideMobile": {
 			"type": "string",
-			"default": "right"
+			"default": ""
 		},
 		"labelColor": {
 			"type": "string",
@@ -751,7 +751,7 @@
 		},
 		"mediaAlign": {
 			"type": "string",
-			"default": ""
+			"default": "left"
 		},
 		"mediaAlignTablet": {
 			"type": "string",
@@ -783,15 +783,11 @@
 			"default": [
 				{
 					"icon": "fe_aperture",
-					"size": 20,
+					"size": "",
 					"sizeTablet": "",
 					"sizeMobile": "",
 					"width": 2,
-					"widthTablet": 2,
-					"widthMobile": 2,
-					"hoverAnimation": "none",
-					"title": "",
-					"flipIcon": ""
+					"title": ""
 				}
 			]
 		},
@@ -1055,15 +1051,11 @@
 			"default": [
 				{
 					"icon": "",
-					"size": 12,
+					"size": "",
 					"sizeTablet": "",
 					"sizeMobile": "",
 					"width": 2,
-					"widthTablet": 2,
-					"widthMobile": 2,
-					"hoverAnimation": "none",
-					"title": "",
-					"flipIcon": ""
+					"title": ""
 				}
 			]
 		},
@@ -1094,10 +1086,10 @@
 					"borderRadius": "",
 					"borderRadiusTablet": "",
 					"borderRadiusMobile": "",
-					"borderWidth": [0, 0, 0, 0],
-					"padding": [5, 5, 5, 5],
-					"paddingTablet": [5, 5, 5, 5],
-					"paddingMobile": [5, 5, 5, 5],
+					"borderWidth": ["", "", "", ""],
+					"padding": ["", "", "", ""],
+					"paddingTablet": ["", "", "", ""],
+					"paddingMobile": ["", "", "", ""],
 					"margin": ["", "", "", ""],
 					"marginTablet": ["", "", "", ""],
 					"marginMobile": ["", "", "", ""]
@@ -1111,15 +1103,15 @@
 					"border": "",
 					"tabletBorder": "",
 					"mobileBorder": "",
-					"borderRadius": [5, 5, 5, 5],
-					"tabletBorderRadius": [5, 5, 5, 5],
-					"mobileBorderRadius": [5, 5, 5, 5],
-					"borderWidth": [0, 0, 0, 0],
+					"borderRadius": ["", "", "", ""],
+					"tabletBorderRadius": ["", "", "", ""],
+					"mobileBorderRadius": ["", "", "", ""],
+					"borderWidth": ["", "", "", ""],
 					"gap": ["", "", ""],
 					"textGap": ["", "", ""],
-					"padding": [5, 5, 5, 5],
-					"tabletPadding": [5, 5, 5, 5],
-					"mobilePadding": [5, 5, 5, 5],
+					"padding": ["", "", "", ""],
+					"tabletPadding": ["", "", "", ""],
+					"mobilePadding": ["", "", "", ""],
 					"margin": ["", "", "", ""],
 					"tabletMargin": ["", "", "", ""],
 					"mobileMargin": ["", "", "", ""]
@@ -1232,7 +1224,7 @@
 		},
 		"descriptionPositioning": {
 			"type": "string",
-			"default": ""
+			"default": "normal"
 		},
 		"descriptionPositioningTablet": {
 			"type": "string",

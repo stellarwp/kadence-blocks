@@ -44,14 +44,14 @@
  */
 
 .navigation ul.kb-navigation li.wp-block-kadence-navigation-link {
-	.wp-block-kadence-navigation-link__content {
+	.kb-nav-link-content {
 		cursor: text;
 		display: flex;
 		align-items: center;
 	}
 
 	.sub-menu {
-		.wp-block-kadence-navigation-link__content {
+		.kb-nav-link-content {
 			flex-wrap: wrap;
 		}
 	}
@@ -71,7 +71,7 @@
 		}
 	}
 
-	.link-drop-wrap .wp-block-kadence-navigation-link__content.has-highlight-label {
+	.kb-link-wrap .kb-nav-link-content.has-highlight-label {
 		gap: 5px;
 	}
 
@@ -92,9 +92,11 @@
 		display: flex;
 		align-self: flex-start;
 		max-width: 150px;
-
+		padding: 0.3em;
 		.link-svg-icon {
-			display: flex;
+			display: inline-flex;
+			justify-content: center;
+			align-items: center;
 		}
 	}
 }
@@ -151,7 +153,7 @@
 	}
 
 	// This needs extra specificity.
-	&.wp-block-kadence-navigation-link__content {
+	&.kb-nav-link-content {
 		cursor: pointer;
 	}
 }

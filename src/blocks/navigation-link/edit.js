@@ -369,10 +369,12 @@ export default function Edit(props) {
 
 	const previewMediaIconSize = getPreviewSize(
 		previewDevice,
-		undefined !== mediaIcon[0] && undefined !== mediaIcon[0].size ? mediaIcon[0].size : '14',
+		undefined !== mediaIcon[0] && undefined !== mediaIcon[0].size ? mediaIcon[0].size : '20',
 		undefined !== mediaIcon[0].tabletSize && undefined !== mediaIcon[0].tabletSize ? mediaIcon[0].tabletSize : '',
 		undefined !== mediaIcon[0].mobileSize && undefined !== mediaIcon[0].mobileSize ? mediaIcon[0].mobileSize : ''
 	);
+	const previewMediaIconWidth =
+		undefined !== mediaIcon[0] && undefined !== mediaIcon[0].width ? mediaIcon[0].width : '2';
 	const previewHighlightIconSize = getPreviewSize(
 		previewDevice,
 		undefined !== highlightIcon[0] && undefined !== highlightIcon[0].size ? highlightIcon[0].size : '14',
@@ -383,6 +385,8 @@ export default function Edit(props) {
 			? highlightIcon[0].mobileSize
 			: ''
 	);
+	const previewHighlightIconWidth =
+		undefined !== highlightIcon[0] && undefined !== highlightIcon[0].width ? highlightIcon[0].width : '2';
 
 	const hasHighlightLabel =
 		(undefined !== highlightIcon?.[0]?.icon && '' !== highlightIcon[0].icon) ||
@@ -600,7 +604,7 @@ export default function Edit(props) {
 			'kadence-menu-has-icon': mediaType == 'icon',
 			'kadence-menu-has-image': mediaType == 'image',
 			'kadence-menu-has-description': description,
-			[`wp-block-kadence-navigation-link${uniqueID}`]: uniqueID,
+			[`kb-nav-link-${uniqueID}`]: uniqueID,
 		}),
 		onKeyDown,
 	});
@@ -783,14 +787,11 @@ export default function Edit(props) {
 								className={`link-svg-icon link-svg-icon-${mediaIcon[0].icon}`}
 								name={mediaIcon[0].icon}
 								htmltag="span"
+								size={previewMediaIconSize}
+								strokeWidth={
+									'fe' === mediaIcon[0].icon.substring(0, 2) ? previewMediaIconWidth : undefined
+								}
 							/>
-							{mediaIcon[0].flipIcon && 'flip' === mediaIcon[0].hoverAnimation && (
-								<IconRender
-									className={`link-svg-icon-flip link-svg-icon-${mediaIcon[0].flipIcon}`}
-									name={mediaIcon[0].flipIcon}
-									htmltag="span"
-								/>
-							)}
 						</>
 					)}
 				</div>
@@ -879,7 +880,7 @@ export default function Edit(props) {
 		</>
 	);
 
-	const classes = classnames('wp-block-kadence-navigation-link__content', {
+	const classes = classnames('kb-nav-link-content', {
 		'wp-block-kadence-navigation-link__placeholder': !url || isInvalid || isDraft,
 		'has-highlight-label': hasHighlightLabel,
 	});
@@ -1139,9 +1140,9 @@ export default function Edit(props) {
 			<li {...blockProps}>
 				{/* eslint-disable jsx-a11y/anchor-is-valid */}
 
-				<div class="link-drop-wrap">
+				<div class="kb-link-wrap">
 					<a className={classes}>
-						<span className="link-drop-title-wrap">
+						<span className="kb-nav-item-title-wrap">
 							{/* eslint-enable */}
 							{!hideLabel && (
 								<>
@@ -1233,6 +1234,12 @@ export default function Edit(props) {
 										className={`kt-highlight-label-icon`}
 										name={highlightIcon[0].icon}
 										size={previewHighlightIconSize}
+										htmltag="span"
+										strokeWidth={
+											'fe' === highlightIcon[0].icon.substring(0, 2)
+												? previewHighlightIconWidth
+												: undefined
+										}
 									/>
 								)}
 							</span>
@@ -1244,7 +1251,7 @@ export default function Edit(props) {
 							aria-label="Expand child menu"
 							class="dropdown-navigation-toggle vertical-sub-toggle"
 							data-toggle-duration="10"
-							data-toggle-target={`wp-block-kadence-navigation-link${uniqueID} .sub-menu`}
+							data-toggle-target={`kb-nav-link-${uniqueID} .sub-menu`}
 							aria-expanded="false"
 						>
 							<span class="screen-reader-text">Expand child menu</span>

@@ -92,7 +92,7 @@ $imdb: #f5c518;
 $anchor: #5000b9;
 
 @mixin parent-toggles-menus-styles {
-	.link-drop-wrap .dropdown-navigation-toggle {
+	.kb-link-wrap .dropdown-navigation-toggle {
 		position: absolute;
 		left: 0;
 		z-index: 10;
@@ -107,7 +107,7 @@ $anchor: #5000b9;
 	ul.menu ul.sub-menu {
 		@include show-sub-menu();
 	}
-	.link-drop-wrap .dropdown-navigation-toggle {
+	.kb-link-wrap .dropdown-navigation-toggle {
 		display: none;
 	}
 }
@@ -164,14 +164,14 @@ $anchor: #5000b9;
 	.navigation ul ul.quadmenu-row {
 		flex-direction: row;
 	}
-	.navigation ul ul > li > .link-drop-wrap > a {
-		padding: 1em;
+	.navigation ul ul > li > .kb-link-wrap > a {
+		padding: 0.5em 1em;
 		width: 200px;
 	}
 	body:not(.hide-focus-outline)
 		.navigation
 		li.menu-item--has-toggle
-		> .link-drop-wrap
+		> .kb-link-wrap
 		> a:focus
 		.title-dropdown-navigation-toggle {
 		opacity: 0.2;
@@ -242,7 +242,7 @@ $anchor: #5000b9;
 	/*--------------------------------------------------------------
 		 ## Submenu Toggles for Header Menus
 		 --------------------------------------------------------------*/
-	.nav--toggle-sub .dropdown-navigation-toggle {
+	.kb-nav-toggle-sub .dropdown-navigation-toggle {
 		position: absolute !important;
 		overflow: hidden;
 		padding: 0 !important;
@@ -264,15 +264,15 @@ $anchor: #5000b9;
 		//this is editor only, don't need to see this for horizontal navs at all while editing
 		display: none;
 	}
-	.nav--toggle-sub .sub-menu .dropdown-navigation-toggle {
+	.kb-nav-toggle-sub .sub-menu .dropdown-navigation-toggle {
 		width: 2.6em;
 		margin: 0 !important;
 		right: 0;
 	}
-	.nav--toggle-sub .dropdown-navigation-toggle:focus {
+	.kb-nav-toggle-sub .dropdown-navigation-toggle:focus {
 		z-index: 10;
 	}
-	.nav--toggle-sub .title-dropdown-navigation-toggle {
+	.kb-nav-toggle-sub .title-dropdown-navigation-toggle {
 		display: block;
 		background: transparent;
 		position: absolute;
@@ -298,21 +298,17 @@ $anchor: #5000b9;
 			align-self: center;
 		}
 	}
-	.nav--toggle-sub ul ul .title-dropdown-navigation-toggle {
+	.kb-nav-toggle-sub ul ul .title-dropdown-navigation-toggle {
 		right: 0.2em;
 	}
 
-	.nav--toggle-sub ul ul .title-dropdown-navigation-toggle .kadence-svg-iconset {
+	.kb-nav-toggle-sub ul ul .title-dropdown-navigation-toggle .kadence-svg-iconset {
 		transform: rotate(-90deg);
 	}
-	.nav--toggle-sub li.menu-item-has-children {
+	.kb-nav-toggle-sub li.menu-item-has-children {
 		position: relative;
-
-		.link-drop-wrap > a > .link-drop-title-wrap {
-			padding-right: 1em;
-		}
 	}
-	.link-drop-title-wrap {
+	.kb-nav-item-title-wrap {
 		position: relative;
 		display: flex;
 		flex-wrap: nowrap;
@@ -322,9 +318,9 @@ $anchor: #5000b9;
 	 * If the dropdown toggle is active with JS, then
 	 * we'll take care of showing the submenu with JS.
 	 */
-	.nav--toggle-sub li:hover > ul,
-	.nav--toggle-sub li.menu-item--toggled-on > ul,
-	.nav--toggle-sub li:not(.menu-item--has-toggle):focus > ul {
+	.kb-nav-toggle-sub li:hover > ul,
+	.kb-nav-toggle-sub li.menu-item--toggled-on > ul,
+	.kb-nav-toggle-sub li:not(.menu-item--has-toggle):focus > ul {
 		display: block;
 	}
 
@@ -336,13 +332,13 @@ $anchor: #5000b9;
 	 * This selector needs to stay separated, otherwise submenus
 	 * will not be displayed with IE/Edge.
 	 */
-	.nav--toggle-sub li:not(.menu-item--has-toggle):focus-within > ul {
+	.kb-nav-toggle-sub li:not(.menu-item--has-toggle):focus-within > ul {
 		display: block;
 	}
 	// This makes the dropdowns work a little better on a touch device.
 	@media (hover: none) {
 		.wp-site-blocks
-			.nav--toggle-sub
+			.kb-nav-toggle-sub
 			.menu-item--has-toggle:not(.menu-item--toggled-on)
 			.dropdown-navigation-toggle {
 			left: 0;
@@ -351,7 +347,7 @@ $anchor: #5000b9;
 			width: 100%;
 			pointer-events: all;
 		}
-		.wp-site-blocks .nav--toggle-sub .menu-item--has-toggle:not(.menu-item--toggled-on) > .link-drop-wrap > a {
+		.wp-site-blocks .kb-nav-toggle-sub .menu-item--has-toggle:not(.menu-item--toggled-on) > .kb-link-wrap > a {
 			pointer-events: none;
 		}
 	}
@@ -371,7 +367,7 @@ $anchor: #5000b9;
 				}
 			}
 		}
-		ul ul li.menu-item > .link-drop-wrap > a {
+		ul ul li.menu-item > .kb-link-wrap > a {
 			width: 100%;
 		}
 	}
@@ -388,7 +384,7 @@ $anchor: #5000b9;
 		margin: 0;
 		padding: 0;
 	}
-	.link-drop-wrap {
+	.kb-link-wrap {
 		display: flex;
 		position: relative;
 		a {
@@ -457,7 +453,7 @@ $anchor: #5000b9;
 	.navigation ul ul ul ul ul ul {
 		padding-left: 0;
 	}
-	.navigation > .menu-container > ul > li:not(:last-of-type) > .link-drop-wrap {
+	.navigation > .menu-container > ul > li:not(:last-of-type) > .kb-link-wrap {
 		border-right: none;
 	}
 }
@@ -478,7 +474,7 @@ $anchor: #5000b9;
 				& > .menu-item {
 					margin: 0;
 					flex: 1 1 auto;
-					& > .link-drop-wrap > a {
+					& > .kb-link-wrap > a {
 						width: fit-content;
 						margin-left: auto;
 						margin-right: auto;
@@ -501,7 +497,7 @@ $anchor: #5000b9;
 
 				& > .menu-item {
 					text-align: center;
-					& > .link-drop-wrap > a {
+					& > .kb-link-wrap > a {
 						width: initial;
 					}
 				}
@@ -513,7 +509,7 @@ $anchor: #5000b9;
 @mixin navigation-underline-styles {
 	.menu-container {
 		> ul > li {
-			> .link-drop-wrap > a {
+			> .kb-link-wrap > a {
 				position: relative;
 				&:after {
 					content: "";
@@ -532,7 +528,7 @@ $anchor: #5000b9;
 			}
 			&.current-menu-item,
 			&.current-page-item {
-				> .link-drop-wrap > a:after {
+				> .kb-link-wrap > a:after {
 					transform: scale(1, 1) translate(50%, 0);
 				}
 			}
@@ -552,7 +548,7 @@ $anchor: #5000b9;
 			> li {
 				height: 100%;
 				align-items: center;
-				> .link-drop-wrap {
+				> .kb-link-wrap {
 					height: 100%;
 					> a {
 						display: flex;
@@ -599,7 +595,7 @@ $anchor: #5000b9;
 		}
 	}
 
-	.rtl .nav--toggle-sub .title-dropdown-navigation-toggle {
+	.rtl .kb-nav-toggle-sub .title-dropdown-navigation-toggle {
 		right: auto;
 		left: 0;
 	}
@@ -607,11 +603,11 @@ $anchor: #5000b9;
 		right: auto;
 		left: calc(1.4em / 2);
 	}
-	.rtl .wp-site-blocks .nav--toggle-sub .sub-menu .dropdown-navigation-toggle {
+	.rtl .wp-site-blocks .kb-nav-toggle-sub .sub-menu .dropdown-navigation-toggle {
 		left: 0;
 		right: auto;
 	}
-	.rtl .nav--toggle-sub ul ul .title-dropdown-navigation-toggle .kadence-svg-iconset {
+	.rtl .kb-nav-toggle-sub ul ul .title-dropdown-navigation-toggle .kadence-svg-iconset {
 		transform: rotate(-270deg);
 	}
 	.rtl .navigation ul ul ul.sub-menu,
@@ -619,11 +615,11 @@ $anchor: #5000b9;
 		right: 100%;
 		left: auto;
 	}
-	.rtl .link-drop-title-wrap {
-		padding-left: 1em;
-		padding-right: 0;
+	.rtl .wp-block-kadence-navigation .navigation ul .menu-item.menu-item-has-children > .kb-link-wrap > a {
+		padding-left: calc(var(--kb-nav-left-padding, 0.5em) + var(--kb-nav-drop-icon-width, 1.6em));
+		padding-right: var(--kb-nav-right-padding, 0.5em);
 	}
-	.wp-site-blocks .nav--toggle-sub .kadence-menu-mega-enabled .sub-menu .dropdown-navigation-toggle {
+	.wp-site-blocks .kb-nav-toggle-sub .kadence-menu-mega-enabled .sub-menu .dropdown-navigation-toggle {
 		display: none;
 	}
 	/*--------------------------------------------------------------
@@ -670,19 +666,19 @@ $anchor: #5000b9;
 	.menu-container {
 		display: flex;
 	}
-	.navigation li.menu-item > .link-drop-wrap {
+	.navigation li.menu-item > .kb-link-wrap {
 		transition: all 0.2s ease-in-out;
 		position: relative;
 	}
-	.navigation li.menu-item > .link-drop-wrap > a {
+	.navigation li.menu-item > .kb-link-wrap > a {
 		display: block;
 		text-decoration: none;
 		color: var(--global-palette4);
 		transition: all 0.2s ease-in-out;
 		transform: translate(0, 0);
 	}
-	.navigation li.menu-item > .link-drop-wrap > a:hover,
-	.navigation li.menu-item > .link-drop-wrap > a:focus {
+	.navigation li.menu-item > .kb-link-wrap > a:hover,
+	.navigation li.menu-item > .kb-link-wrap > a:focus {
 		color: var(--global-palette-highlight);
 	}
 	.navigation ul.sub-menu,
@@ -692,7 +688,7 @@ $anchor: #5000b9;
 		margin: 0;
 		padding: 0;
 	}
-	.navigation ul li.menu-item > .link-drop-wrap > a {
+	.navigation ul li.menu-item > .kb-link-wrap > a {
 		padding: 0.6em 0.5em;
 	}
 	.navigation .menu {
@@ -1043,52 +1039,25 @@ $anchor: #5000b9;
 	.navigation ul li a:not([href]) {
 		cursor: default;
 	}
-	.link-drop-title-wrap {
+	.kb-nav-item-title-wrap {
 		display: flex;
 		align-items: center;
 	}
-	.navigation > div > ul > li > .link-drop-wrap > a {
+	.navigation > div > ul > li > .kb-link-wrap > a {
 		display: flex;
 		align-items: center;
 	}
 	.kadence-menu-hidden-title:not(.kadence-menu-has-icon):not(.menu-item-has-children) {
 		display: none;
 	}
-	.kadence-menu-hidden-title.menu-item-has-children:not(.kadence-menu-has-icon) > .link-drop-wrap > a,
+	.kadence-menu-hidden-title.menu-item-has-children:not(.kadence-menu-has-icon) > .kb-link-wrap > a,
 	.navigation
 		.menu-container
 		.kadence-menu-hidden-title.menu-item-has-children:not(.kadence-menu-has-icon)
-		> .link-drop-wrap
+		> .kb-link-wrap
 		> a {
 		padding: 0;
 		border: 0;
-	}
-	.menu-highlight-item {
-		font-size: 0.6em;
-		margin-left: 0.2em;
-		line-height: normal;
-		padding: 0.2em 0.3em;
-		border-radius: 2px;
-		background: var(--global-palette1);
-		color: white;
-	}
-	.link-drop-title-wrap .menu-highlight-item {
-		font-size: 0.7em;
-		margin-left: 0.5em;
-	}
-	.menu-highlight-icon {
-		display: inline-flex;
-		align-self: center;
-		margin-left: 0.2em;
-		svg {
-			width: 1em;
-			height: 1em;
-			top: 0.125em;
-			position: relative;
-		}
-	}
-	.menu-highlight-item.only-icon-highlight .menu-highlight-icon {
-		margin-left: 0;
 	}
 	.kadence-menu-hidden-title .menu-label-icon-wrap {
 		margin-left: 0;
@@ -1110,13 +1079,13 @@ $anchor: #5000b9;
 			position: relative;
 		}
 	}
-	.menu-label-description {
+	.kb-nav-label-description {
 		display: block;
 		font-size: 0.8em;
 		text-transform: none;
 		letter-spacing: normal;
 	}
-	.menu-label-content {
+	.kb-nav-label-content {
 		display: block;
 	}
 
@@ -1134,10 +1103,10 @@ $anchor: #5000b9;
 					}
 					> li {
 						border-bottom: 0 !important;
-						> .link-drop-wrap > a {
+						> .kb-link-wrap > a {
 							border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 						}
-						&:not(.menu-item-has-children):last-child > .link-drop-wrap > a {
+						&:not(.menu-item-has-children):last-child > .kb-link-wrap > a {
 							border-bottom: 0 !important;
 						}
 					}

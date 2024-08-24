@@ -389,9 +389,9 @@ export default function BackendStyles(props) {
 
 	//container styles
 	const containerActiveSelector = previewParentActive
-		? `.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-item > .link-drop-wrap,
-			.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-ancestor > .link-drop-wrap`
-		: `.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-item > .link-drop-wrap`;
+		? `.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-item > .kb-link-wrap,
+			.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-ancestor > .kb-link-wrap`
+		: `.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-item > .kb-link-wrap`;
 	css.render_button_styles_with_states(
 		{
 			backgroundBase: 'background',
@@ -401,8 +401,8 @@ export default function BackendStyles(props) {
 			borderRadiusBase: 'borderRadius',
 			borderRadiusUnitBase: 'borderRadiusUnit',
 			shadowBase: 'shadow',
-			selector: `.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap`,
-			selectorHover: `.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap:hover`,
+			selector: `.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .kb-link-wrap`,
+			selectorHover: `.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .kb-link-wrap:hover`,
 			selectorActive: containerActiveSelector,
 		},
 		metaAttributes,
@@ -421,9 +421,7 @@ export default function BackendStyles(props) {
 		`.wp-block-kadence-navigation${uniqueID} .navigation[class*="navigation-style-underline"] .menu-container>ul>li>a:after`
 	);
 	css.add_property('width', 'calc( 100% - ' + css.render_size(previewNavigationHorizontalSpacing, spacingUnit) + ')');
-	css.set_selector(
-		`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap >a`
-	);
+	css.set_selector(`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .kb-link-wrap >a`);
 	css.add_property(
 		'padding-left',
 		css.render_half_size(previewNavigationHorizontalSpacing, spacingUnit),
@@ -448,7 +446,7 @@ export default function BackendStyles(props) {
 
 	//nav item
 	css.set_selector(
-		`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap > a, .wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap`
+		`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .kb-link-wrap > a, .wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .kb-link-wrap`
 	);
 	css.add_property('color', css.render_color(previewLinkColor));
 	if (context?.['kadence/headerIsTransparent'] == '1') {
@@ -467,7 +465,7 @@ export default function BackendStyles(props) {
 	);
 	css.render_measure_output(marginLink, tabletMarginLink, mobileMarginLink, previewDevice, 'margin', marginLinkUnit);
 
-	css.set_selector(`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap`);
+	css.set_selector(`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .kb-link-wrap`);
 	if (context?.['kadence/headerIsTransparent'] == '1') {
 		css.add_property('background', css.render_color(previewBackgroundTransparent));
 	}
@@ -475,7 +473,7 @@ export default function BackendStyles(props) {
 		css.add_property('background', css.render_color(previewBackgroundSticky));
 	}
 	css.set_selector(
-		`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap:hover > a, .wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap:hover`
+		`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .kb-link-wrap:hover > a, .wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .kb-link-wrap:hover`
 	);
 	css.add_property('color', css.render_color(previewLinkColorHover));
 	if (context?.['kadence/headerIsTransparent'] == '1') {
@@ -485,7 +483,7 @@ export default function BackendStyles(props) {
 		css.add_property('color', css.render_color(previewLinkColorStickyHover));
 	}
 	css.set_selector(
-		`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .link-drop-wrap:hover`
+		`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .kb-link-wrap:hover`
 	);
 	if (context?.['kadence/headerIsTransparent'] == '1') {
 		css.add_property('background', css.render_color(previewBackgroundTransparentHover));
@@ -500,15 +498,15 @@ export default function BackendStyles(props) {
 		);
 		css.add_property('transform', 'scale(1, 1) translate(50%, 0)');
 		css.set_selector(
-			`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-item > .link-drop-wrap > a,
-			.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-item > .link-drop-wrap,
-			.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-ancestor > .link-drop-wrap > a,
-			.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-ancestor > .link-drop-wrap`
+			`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-item > .kb-link-wrap > a,
+			.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-item > .kb-link-wrap,
+			.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-ancestor > .kb-link-wrap > a,
+			.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-ancestor > .kb-link-wrap`
 		);
 	} else {
 		css.set_selector(
-			`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-item > .link-drop-wrap > a,
-			.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-item > .link-drop-wrap`
+			`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-item > .kb-link-wrap > a,
+			.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-item > .kb-link-wrap`
 		);
 	}
 	css.add_property('color', css.render_color(previewLinkColorActive));
@@ -533,7 +531,7 @@ export default function BackendStyles(props) {
 	);
 	css.add_property('right', css.render_half_size(previewNavigationHorizontalSpacing, spacingUnit));
 	css.set_selector(
-		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul li.menu-item > .link-drop-wrap > a`
+		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul li.menu-item > .kb-link-wrap > a`
 	);
 	css.render_font(typography ? typography : [], previewDevice);
 
@@ -612,7 +610,7 @@ export default function BackendStyles(props) {
 	);
 	css.add_property('border-bottom', dropdownDividerValue);
 	css.set_selector(
-		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li.menu-item > .link-drop-wrap > a`
+		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li.menu-item > .kb-link-wrap > a`
 	);
 	if (previewOrientation != 'vertical') {
 		css.add_property('width', css.render_size(previewDropdownWidth, dropdownWidthUnit));
@@ -623,7 +621,7 @@ export default function BackendStyles(props) {
 
 	//dropdown nav item
 	css.set_selector(
-		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li.menu-item > .link-drop-wrap > a, .wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul.sub-menu `
+		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li.menu-item > .kb-link-wrap > a, .wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul.sub-menu `
 	);
 	css.add_property('color', css.render_color(previewLinkColorDropdown));
 	css.render_measure_output(
@@ -644,19 +642,19 @@ export default function BackendStyles(props) {
 	);
 
 	css.set_selector(
-		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li.menu-item > .link-drop-wrap > a:hover`
+		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li.menu-item > .kb-link-wrap > a:hover`
 	);
 	css.add_property('color', css.render_color(previewLinkColorDropdownHover));
 	css.add_property('background', css.render_color(previewBackgroundDropdownHover));
 	css.set_selector(
-		`.wp-block-kadence-navigation${uniqueID}.navigation .menu-container ul ul li.menu-item.current-menu-item > .link-drop-wrap > a`
+		`.wp-block-kadence-navigation${uniqueID}.navigation .menu-container ul ul li.menu-item.current-menu-item > .kb-link-wrap > a`
 	);
 	css.add_property('color', css.render_color(previewLinkColorDropdownActive));
 	css.add_property('background', css.render_color(previewBackgroundDropdownActive));
 
 	//New Logic for block
 	if (previewOrientation == 'vertical') {
-		css.set_selector(`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul li .link-drop-wrap`);
+		css.set_selector(`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul li .kb-link-wrap`);
 		css.add_property('border-bottom', dividerValue);
 		if (context?.['kadence/headerIsTransparent'] == '1') {
 			css.add_property('border-bottom', transparentDividerValue);
@@ -665,7 +663,7 @@ export default function BackendStyles(props) {
 			css.add_property('border-bottom', stickyDividerValue);
 		}
 		css.set_selector(
-			`.wp-block-kadence-navigation${uniqueID} .navigation:not(.drawer-navigation-parent-toggle-true) ul li .link-drop-wrap button`
+			`.wp-block-kadence-navigation${uniqueID} .navigation:not(.drawer-navigation-parent-toggle-true) ul li .kb-link-wrap button`
 		);
 		css.add_property('border-left', dividerValue);
 		if (context?.['kadence/headerIsTransparent'] == '1') {
@@ -676,7 +674,7 @@ export default function BackendStyles(props) {
 		}
 	} else {
 		css.set_selector(
-			`.wp-block-kadence-navigation${uniqueID} .navigation > .menu-container > ul > li:not(:last-of-type) > .link-drop-wrap`
+			`.wp-block-kadence-navigation${uniqueID} .navigation > .menu-container > ul > li:not(:last-of-type) > .kb-link-wrap`
 		);
 		css.add_property('border-right', dividerValue);
 		if (context?.['kadence/headerIsTransparent'] == '1') {

@@ -87,7 +87,7 @@
 		 * navigation menus with submenu toggle enabled.
 		 */
 		initNavToggleSubmenus() {
-			var navTOGGLE = document.querySelectorAll('.wp-block-kadence-navigation .nav--toggle-sub');
+			var navTOGGLE = document.querySelectorAll('.wp-block-kadence-navigation .kb-nav-toggle-sub');
 
 			// No point if no navs.
 			if (!navTOGGLE.length) {
@@ -113,33 +113,33 @@
 				const dropdown = parentMenuItem.querySelector('.title-dropdown-navigation-toggle');
 				// If dropdown.
 				if (dropdown) {
-					var dropdown_label = parentMenuItem
-						.querySelector('.link-drop-title-wrap')
-						.firstChild.textContent.trim();
-					var dropdownBtn = document.createElement('BUTTON'); // Create a <button> element
-					dropdownBtn.setAttribute(
-						'aria-label',
-						dropdown_label
-							? kadenceNavigationConfig.screenReader.expandOf + ' ' + dropdown_label
-							: kadenceNavigationConfig.screenReader.expand
-					);
-					dropdownBtn.classList.add('dropdown-navigation-toggle');
-					dropdownBtn.classList.add('vertical-sub-toggle');
+					// var dropdown_label = parentMenuItem
+					// 	.querySelector('.kb-nav-dropdown-title-wrap')
+					// 	.firstChild.textContent.trim();
+					// var dropdownBtn = document.createElement('BUTTON'); // Create a <button> element
+					// dropdownBtn.setAttribute(
+					// 	'aria-label',
+					// 	dropdown_label
+					// 		? kadenceNavigationConfig.screenReader.expandOf + ' ' + dropdown_label
+					// 		: kadenceNavigationConfig.screenReader.expand
+					// );
+					// dropdownBtn.classList.add('dropdown-navigation-toggle');
+					// dropdownBtn.classList.add('vertical-sub-toggle');
 
-					const downArrowIcon =
-						'<span class="screen-reader-text">Expand child menu</span><svg class="kadence-svg-icon kadence-arrow-down-svg" fill="currentColor" version="1.1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M5.293 9.707l6 6c0.391 0.391 1.024 0.391 1.414 0l6-6c0.391-0.391 0.391-1.024 0-1.414s-1.024-0.391-1.414 0l-5.293 5.293-5.293-5.293c-0.391-0.391-1.024-0.391-1.414 0s-0.391 1.024 0 1.414z"></path></svg>';
-					dropdownBtn.innerHTML = downArrowIcon;
+					// const downArrowIcon =
+					// 	'<span class="screen-reader-text">Expand child menu</span><svg class="kadence-svg-icon kadence-arrow-down-svg" fill="currentColor" version="1.1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M5.293 9.707l6 6c0.391 0.391 1.024 0.391 1.414 0l6-6c0.391-0.391 0.391-1.024 0-1.414s-1.024-0.391-1.414 0l-5.293 5.293-5.293-5.293c-0.391-0.391-1.024-0.391-1.414 0s-0.391 1.024 0 1.414z"></path></svg>';
+					// dropdownBtn.innerHTML = downArrowIcon;
 
-					var dropdownBtnSpecial = document.createElement('BUTTON'); // Create a <button> element
-					dropdownBtnSpecial.setAttribute(
-						'aria-label',
-						dropdown_label
-							? kadenceNavigationConfig.screenReader.expandOf + ' ' + dropdown_label
-							: kadenceNavigationConfig.screenReader.expand
-					);
-					dropdownBtnSpecial.classList.add('dropdown-nav-special-toggle');
+					// var dropdownBtnSpecial = document.createElement('BUTTON'); // Create a <button> element
+					// dropdownBtnSpecial.setAttribute(
+					// 	'aria-label',
+					// 	dropdown_label
+					// 		? kadenceNavigationConfig.screenReader.expandOf + ' ' + dropdown_label
+					// 		: kadenceNavigationConfig.screenReader.expand
+					// );
+					// dropdownBtnSpecial.classList.add('dropdown-nav-special-toggle');
 
-					const linkDropWrap = parentMenuItem.querySelector('.link-drop-wrap');
+					const linkDropWrap = parentMenuItem.querySelector('.kb-link-wrap');
 					linkDropWrap.appendChild(dropdownBtn);
 					linkDropWrap.appendChild(dropdownBtnSpecial);
 					// Toggle the submenu when we click the dropdown button.
