@@ -13,6 +13,7 @@
 		display: none;
 	}
 	.link-highlight-label {
+		transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out;
 		color: var(--global-palette9, #ffffff);
 		background: var(--global-palette1, #2f2ffc);
 		font-size: 0.7em;
@@ -20,6 +21,10 @@
 		line-height: normal;
 		padding: 0.3em;
 		border-radius: 2px;
+		gap: 0.5em;
+		display: flex;
+		flex-wrap: nowrap;
+		align-items: center;
 		.kt-svg-icon {
 			padding-left: 5px;
 			svg {
@@ -31,12 +36,6 @@
 	.kb-link-wrap .kb-nav-link-content.has-highlight-label {
 		display: flex;
 		gap: 5px;
-
-		.link-highlight-label {
-			display: flex;
-			flex-wrap: nowrap;
-			align-items: center;
-		}
 	}
 
 	.sub-menu {

@@ -118,12 +118,11 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$css->render_typography( $nav_link_attributes, 'highlightTypography' );
 
 		$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .kb-link-wrap > a' );
-		$css->render_measure_output( $nav_link_attributes, 'margin', 'margin', ['unit_key' => 'marginUnit']);
-		$css->render_measure_output( $nav_link_attributes, 'padding', 'padding', ['unit_key' => 'paddingUnit']);
+		$css->render_measure_output( $nav_link_attributes, 'margin', 'margin', [ 'unit_key' => 'marginUnit' ] );
+		$css->render_measure_output( $nav_link_attributes, 'padding', 'padding', [ 'unit_key' => 'paddingUnit' ] );
 
 		if ( ! empty( $nav_link_attributes['highlightLabel'] ) || ! empty( $nav_link_attributes['highlightIcon']['icon'] ) ) {
 			$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .kb-link-wrap > a .link-highlight-label' );
-			$css->add_property( 'transition', 'color 0.35s ease-in-out, background-color 0.35s ease-in-out' );
 			if ( ! empty( $nav_link_attributes['labelColor'] ) ) {
 				$css->add_property( 'color', $css->render_color( $nav_link_attributes['labelColor'] ) );
 			}
@@ -611,7 +610,10 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 		$sub_menu_classes    = [];
 		$sub_menu_classes[]  = 'sub-menu';
-		$sub_menu_classes[]  = $is_mega_menu ? 'mega-menu' : '';
+		$sub_menu_classes[]  = 'kb-nav-sub-menu';
+		if ( $is_mega_menu ) {
+			$sub_menu_classes[] = 'mega-menu';
+		}
 		$sub_menu_attributes = $this->build_html_attributes(
 			[
 				'class' => implode( ' ', $sub_menu_classes ),

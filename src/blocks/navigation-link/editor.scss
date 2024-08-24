@@ -93,11 +93,15 @@
 		align-self: flex-start;
 		max-width: 150px;
 		padding: 0.3em;
-		.link-svg-icon {
-			display: inline-flex;
-			justify-content: center;
-			align-items: center;
-		}
+	}
+}
+.link-svg-icon {
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	svg {
+		width: 1em;
+		height: 1em;
 	}
 }
 
