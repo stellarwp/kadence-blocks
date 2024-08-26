@@ -127,7 +127,7 @@ export const HEADER_INNERBLOCK_DEFAULTS = [
 		),
 	]),
 	createBlock('kadence/header-container-tablet', {}, [
-		createBlock('kadence/header-row', { metadata: { name: __('Top Row', 'kadence-blocks') } }, [
+		createBlock('kadence/header-row', { metadata: { name: __('Top Row', 'kadence-blocks') }, location: 'top' }, [
 			createBlock(
 				'kadence/header-column',
 				{ metadata: { name: __('Left', 'kadence-blocks') }, location: 'tablet-left' },
@@ -144,40 +144,48 @@ export const HEADER_INNERBLOCK_DEFAULTS = [
 				[]
 			),
 		]),
-		createBlock('kadence/header-row', { metadata: { name: __('Middle Row', 'kadence-blocks') } }, [
-			createBlock(
-				'kadence/header-column',
-				{ metadata: { name: __('Left', 'kadence-blocks') }, location: 'tablet-left' },
-				[]
-			),
-			createBlock(
-				'kadence/header-column',
-				{ metadata: { name: __('Center', 'kadence-blocks') }, location: 'tablet-center' },
-				[]
-			),
-			createBlock(
-				'kadence/header-column',
-				{ metadata: { name: __('Right', 'kadence-blocks') }, location: 'tablet-right' },
-				[]
-			),
-		]),
-		createBlock('kadence/header-row', { metadata: { name: __('Bottom Row', 'kadence-blocks') } }, [
-			createBlock(
-				'kadence/header-column',
-				{ metadata: { name: __('Left', 'kadence-blocks') }, location: 'tablet-left' },
-				[]
-			),
-			createBlock(
-				'kadence/header-column',
-				{ metadata: { name: __('Center', 'kadence-blocks') }, location: 'tablet-center' },
-				[]
-			),
-			createBlock(
-				'kadence/header-column',
-				{ metadata: { name: __('Right', 'kadence-blocks') }, location: 'tablet-right' },
-				[]
-			),
-		]),
+		createBlock(
+			'kadence/header-row',
+			{ metadata: { name: __('Middle Row', 'kadence-blocks') }, location: 'center' },
+			[
+				createBlock(
+					'kadence/header-column',
+					{ metadata: { name: __('Left', 'kadence-blocks') }, location: 'tablet-left' },
+					[]
+				),
+				createBlock(
+					'kadence/header-column',
+					{ metadata: { name: __('Center', 'kadence-blocks') }, location: 'tablet-center' },
+					[]
+				),
+				createBlock(
+					'kadence/header-column',
+					{ metadata: { name: __('Right', 'kadence-blocks') }, location: 'tablet-right' },
+					[]
+				),
+			]
+		),
+		createBlock(
+			'kadence/header-row',
+			{ metadata: { name: __('Bottom Row', 'kadence-blocks') }, location: 'bottom' },
+			[
+				createBlock(
+					'kadence/header-column',
+					{ metadata: { name: __('Left', 'kadence-blocks') }, location: 'tablet-left' },
+					[]
+				),
+				createBlock(
+					'kadence/header-column',
+					{ metadata: { name: __('Center', 'kadence-blocks') }, location: 'tablet-center' },
+					[]
+				),
+				createBlock(
+					'kadence/header-column',
+					{ metadata: { name: __('Right', 'kadence-blocks') }, location: 'tablet-right' },
+					[]
+				),
+			]
+		),
 	]),
 	createBlock('kadence/off-canvas', {}, []),
 ];
