@@ -38,6 +38,7 @@ module.exports = {
 		'blocks-form': './src/blocks/form/block.js',
 		'blocks-tableofcontents': './src/blocks/tableofcontents/index.js',
 		'blocks-posts': './src/blocks/posts/block.js',
+		'blocks-search': './src/blocks/search/index.js',
 		'blocks-show-more': './src/blocks/show-more/index.js',
 		'blocks-countdown': './src/blocks/countdown/block.js',
 		'blocks-testimonial': './src/blocks/testimonial/block.js',

@@ -132,6 +132,7 @@ class Editor_Assets {
 			'posts',
 			'rowlayout',
 			'progress-bar',
+			'search',
 			'show-more',
 			'spacer',
 			'tableofcontents',
