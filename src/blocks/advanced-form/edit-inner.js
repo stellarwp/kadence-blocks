@@ -36,6 +36,7 @@ import {
 	getSpacingOptionOutput,
 	mouseOverVisualizer,
 	arrayStringToInt,
+	allowOneBlockOfType,
 } from '@kadence/helpers';
 
 import {
@@ -298,6 +299,12 @@ export function EditInner(props) {
 	const formInnerBlocks = useMemo(() => {
 		return get(blocks, [0, 'innerBlocks'], []);
 	}, [blocks]);
+
+	const filterDuplicateBlocks = allowOneBlockOfType();
+	useEffect(() => {
+		filterDuplicateBlocks(formInnerBlocks, 'kadence/advanced-form-submit', __('submit button', 'kadence-blocks'));
+		filterDuplicateBlocks(formInnerBlocks, 'kadence/advanced-form-captcha', __('captcha', 'kadence-blocks'));
+	}, [formInnerBlocks]);
 
 	const newBlock = useMemo(() => {
 		return get(blocks, [0], {});
