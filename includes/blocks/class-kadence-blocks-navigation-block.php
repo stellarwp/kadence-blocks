@@ -424,7 +424,6 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 
 		// Update animation classes with responsive actual animation stuff.
 		$navigation_classes[] = 'navigation';
-		$navigation_classes[] = 'kb-nav-toggle-sub';
 		$navigation_classes[] = 'navigation-desktop-style-' . ( $style ? $style : 'standard' );
 		$navigation_classes[] = 'navigation-tablet-style-' . ( $style_tablet ? $style_tablet : 'standard' );
 		$navigation_classes[] = 'navigation-mobile-style-' . ( $style_mobile ? $style_mobile : 'standard' );

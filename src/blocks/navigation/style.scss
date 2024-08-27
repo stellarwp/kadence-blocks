@@ -154,6 +154,17 @@
 				border-bottom: 0;
 			}
 		}
+
+		//horizontal sub menu toggles
+		.kb-nav-dropdown-toggle-btn {
+			width: 2.6em;
+			margin: 0;
+			right: 0;
+
+			&:focus {
+				z-index: 10;
+			}
+		}
 	}
 
 	// Handle Reveal Animation for horizontal navs, hover only
@@ -168,25 +179,6 @@
 		text-align: left;
 	}
 
-	/*--------------------------------------------------------------
-	 ## Submenu Toggles for Horizontal Header Menus
-	--------------------------------------------------------------*/
-	.kb-nav-toggle-sub {
-		.sub-menu .kb-nav-dropdown-toggle-btn {
-			width: 2.6em;
-			margin: 0 !important;
-			right: 0;
-		}
-		.kb-nav-dropdown-toggle-btn:focus {
-			z-index: 10;
-		}
-		li:hover > ul,
-		.menu-item--toggled-on > ul,
-		li:not(.menu-item--has-toggle):focus > ul {
-			display: block;
-		}
-	}
-
 	/**
 	 * "focus-within" is an alternative to focus class for
 	 * supporting browsers (all but IE/Edge) for no-JS context
@@ -195,23 +187,22 @@
 	 * This selector needs to stay separated, otherwise submenus
 	 * will not be displayed with IE/Edge.
 	 */
-	.kb-nav-toggle-sub li:not(.menu-item--has-toggle):focus-within > ul {
+	.menu-item:not(.menu-item--has-toggle):focus-within > ul {
 		display: block;
 	}
 	// This makes the dropdowns work a little better on a touch device.
 	@media (hover: none) {
-		.wp-site-blocks
-			.kb-nav-toggle-sub
-			.menu-item--has-toggle:not(.menu-item--toggled-on)
+		.menu-item--has-toggle:not(.menu-item--toggled-on) {
 			.kb-nav-dropdown-toggle-btn {
-			left: 0;
-			right: 0 !important;
-			margin-right: 0 !important;
-			width: 100%;
-			pointer-events: all;
-		}
-		.wp-site-blocks .kb-nav-toggle-sub .menu-item--has-toggle:not(.menu-item--toggled-on) > .kb-link-wrap > a {
-			pointer-events: none;
+				left: 0;
+				right: 0;
+				margin-right: 0;
+				width: 100%;
+				pointer-events: all;
+			}
+			& > .kb-link-wrap > a {
+				pointer-events: none;
+			}
 		}
 	}
 }
@@ -623,24 +614,21 @@
 		}
 	}
 
-	// Mega Menu
-	.menu-container {
-		.menu {
-			position: relative;
-			> li.kadence-menu-mega-enabled {
-				> ul {
-					a {
-						width: 100%;
-					}
-					> li {
-						border-bottom: 0 !important;
-						> .kb-link-wrap > a {
-							border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-						}
-						&:not(.menu-item-has-children):last-child > .kb-link-wrap > a {
-							border-bottom: 0 !important;
-						}
-					}
+	// Mega Menu adjustments
+	.menu-item.kadence-menu-mega-enabled {
+		> ul {
+			a {
+				width: 100%;
+			}
+
+			//nav items sitting alone in a mega menu container
+			> .menu-item {
+				border-bottom: 0;
+				> .kb-link-wrap > a {
+					border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+				}
+				&:not(.menu-item-has-children):last-child > .kb-link-wrap > a {
+					border-bottom: 0;
 				}
 			}
 		}
@@ -708,25 +696,27 @@
 	}
 
 	/*
-	 * rtl support
+	 * rtl fixes
+	 * TODO test these styles
 	 */
 	.rtl {
-		.wp-site-blocks .kb-nav-toggle-sub .sub-menu .kb-nav-dropdown-toggle-btn {
+		.sub-menu .kb-nav-dropdown-toggle-btn {
 			left: 0;
 			right: auto;
 		}
-		.kb-nav-toggle-sub ul ul .kb-nav-dropdown-toggle-btn .kb-nav-arrow-svg {
-			transform: rotate(-270deg);
+		ul ul {
+			.kb-nav-dropdown-toggle-btn .kb-nav-arrow-svg {
+				transform: rotate(-270deg);
+			}
+			.sub-menu {
+				right: 100%;
+				left: auto;
+			}
 		}
-		.navigation ul ul .sub-menu {
-			right: 100%;
-			left: auto;
+		.menu-container > .menu-item .kb-nav-dropdown-toggle-btn {
+			right: auto;
+			left: calc(1.4em / 2);
 		}
-	}
-
-	//TODO not sure what this does
-	.wp-site-blocks .kb-nav-toggle-sub .kadence-menu-mega-enabled .sub-menu .kb-nav-dropdown-toggle-btn {
-		display: none;
 	}
 
 	/*--------------------------------------------------------------

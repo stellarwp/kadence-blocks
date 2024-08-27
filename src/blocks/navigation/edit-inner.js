@@ -529,7 +529,6 @@ export function EditInner(props) {
 	};
 
 	const navClasses = classnames('navigation', {
-		'kb-nav-toggle-sub': true,
 		[`navigation-desktop-dropdown-animation-${dropdownReveal ? dropdownReveal : 'none'}`]:
 			!previewDevice || previewDevice === 'Desktop',
 		[`navigation-tablet-dropdown-animation-${dropdownRevealTablet}`]: previewDevice === 'Tablet',
