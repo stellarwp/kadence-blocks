@@ -107,11 +107,6 @@ import {
 import { LinkUI } from './link-ui';
 import { updateAttributes } from './update-attributes';
 
-/**
- * Import Css
- */
-import './editor.scss';
-
 import metadata from './block.json';
 import BackendStyles from './components/backend-styles';
 import addNavLink from '../navigation/helpers/addNavLink';
@@ -1189,7 +1184,7 @@ export default function Edit(props) {
 												</>
 											)}
 											{(isInvalid || isDraft || isLabelFieldFocused) && (
-												<div className="wp-block-navigation-link__placeholder-text wp-block-navigation-link__label">
+												<div className="wp-block-navigation-link__placeholder-text">
 													<Tooltip text={tooltipText}>
 														<span aria-label={__('Navigation link text')}>
 															{
@@ -1224,7 +1219,7 @@ export default function Edit(props) {
 							)}
 							{mediaContent}
 							{description && <span className="menu-label-description">{description}</span>}
-							{hasChildren && <span className="title-dropdown-navigation-toggle">{ArrowDown}</span>}
+							{/* {hasChildren && <span className="kb-nav-dropdown-toggle">{ArrowDown}</span>} */}
 						</span>
 						{hasHighlightLabel && (
 							<span className="link-highlight-label">
@@ -1249,7 +1244,7 @@ export default function Edit(props) {
 					{hasChildren && (
 						<button
 							aria-label="Expand child menu"
-							class="dropdown-navigation-toggle vertical-sub-toggle"
+							class="kb-nav-dropdown-toggle-btn"
 							data-toggle-duration="10"
 							data-toggle-target={`kb-nav-link-${uniqueID} .sub-menu`}
 							aria-expanded="false"

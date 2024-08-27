@@ -41,6 +41,14 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 	protected $nav_link_attributes = array();
 
 	/**
+	 * Block determines if style needs to be loaded for block.
+	 * This block doesn't because it's stylesheet is merged with the parent nav block's
+	 *
+	 * @var string
+	 */
+	protected $has_style = false;
+
+	/**
 	 * Instance Control
 	 */
 	public static function get_instance() {
