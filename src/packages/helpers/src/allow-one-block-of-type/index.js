@@ -12,7 +12,6 @@ export const allowOneBlockOfType = () => {
 			return blocks.map(block => {
 				if (block.name === blockName) {
 					if (!has(existingUniqueIds, blockName)) {
-						console.log( existingUniqueIds );
 						setExistingUniqueIds({ ...existingUniqueIds, [blockName]: block.attributes.uniqueID });
 					} else if( existingUniqueIds[blockName] != block.attributes.uniqueID ) {
 						dispatch('core/block-editor').removeBlock(block.clientId);
