@@ -1425,46 +1425,39 @@ function KadenceCountdown(props) {
 										panelName={'kb-countdown-repeater'}
 									>
 										<ToggleControl
-											label={__('Repeat Countdown Concurrently?', 'kadence-blocks')}
+											label={__('Repeat Countdown', 'kadence-blocks')}
 											checked={repeat}
 											onChange={(value) => setAttributes({ repeat: value })}
 											help={__(
-												'This will give the option to restart the countdown concurrently.',
+												'After the coutdown reaches zero, repeat instead of expiring.',
 												'kadence-blocks'
 											)}
 										/>
 										{repeat && (
 											<>
 												<SelectControl
-													label={__('Repeat Countdown Frequency', 'kadence-blocks')}
+													label={__('Frequency', 'kadence-blocks')}
 													options={frequencyOptions}
 													value={frequency}
 													onChange={(value) => setAttributes({ frequency: value })}
 												/>
 
 												<ToggleControl
-													label={__('Stop Repeating the Countdown', 'kadence-blocks')}
+													label={__('Repeat Until', 'kadence-blocks')}
 													checked={stopRepeating}
 													onChange={(value) => setAttributes({ stopRepeating: value })}
 													help={__(
-														'This will give the option to stop repeating the countdown at a specific date.',
+														'The countdown will stop repeating and expire after the given date.',
 														'kadence-blocks'
 													)}
 												/>
 
 												{stopRepeating && (
 													<div className="components-base-control kb-datepicker-fix">
-														<h2>
-															{__('End Date for Recurrent Countdown', 'kadence-blocks')}
-														</h2>
 														<DateTimePicker
 															currentDate={!endDate ? undefined : endDate}
 															onChange={(value) => setAttributes({ endDate: value })}
 															is12Hour={is12HourTime}
-															help={__(
-																'Pick a date to stop recurrent repetition of the countdown.',
-																'kadence-blocks'
-															)}
 														/>
 													</div>
 												)}
