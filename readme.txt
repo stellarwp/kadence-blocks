@@ -174,6 +174,11 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.2.53 =
+Release Date: September TBD 2024
+* Fix: Show more block inside query loop.
+* Fix: Countdown repeater not working.
+
 = 3.2.52 =
 Release Date: August 23rd 2024
 * Fix: Row layout responsive preview in editor when using break left or break right.
