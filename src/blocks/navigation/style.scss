@@ -294,7 +294,6 @@
 		display: block;
 		width: 100%;
 		text-decoration: none;
-		padding: 0.6em 0.5em;
 		color: inherit;
 	}
 
@@ -328,6 +327,11 @@
 	}
 	.kb-nav-dropdown-toggle-btn[aria-expanded="true"] svg {
 		transform: rotate(180deg);
+	}
+
+	//vertical link padding on the right no longer needs to account for the drop down icon
+	.menu-item-has-children > .kb-link-wrap > a {
+		padding-right: calc(var(--kb-nav-right-padding, 0.5em));
 	}
 
 	//top level nav links only
@@ -679,6 +683,7 @@
 		display: inline-flex;
 		justify-content: center;
 		pointer-events: none;
+
 		svg {
 			pointer-events: none;
 		}

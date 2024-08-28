@@ -127,7 +127,10 @@
 		//sub menu menu items
 		& > li {
 			& > .kb-link-wrap > a {
-				padding: 0.5em 1em;
+				--kb-nav-top-padding: 0.5em;
+				--kb-nav-right-padding: 1em;
+				--kb-nav-bottom-padding: 0.5em;
+				--kb-nav-left-padding: 1em;
 				width: 200px;
 			}
 			& > .kb-link-wrap .kb-nav-arrow-svg {
@@ -267,7 +270,6 @@
 		display: block;
 		width: 100%;
 		text-decoration: none;
-		padding: 0.6em 0.5em;
 		color: inherit;
 	}
 
@@ -582,11 +584,12 @@
 
 	.kb-nav-link-content {
 		display: block;
+		color: var(--kb-nav-link-color, inherit);
 		text-decoration: none;
-		color: var(--global-palette4);
 		transition: all 0.2s ease-in-out;
 		transform: translate(0, 0);
-		padding: 0.6em 0.5em;
+		padding: var(--kb-nav-top-padding, 0.6em) var(--kb-nav-right-padding, 0.5em) var(--kb-nav-bottom-padding, 0.6em)
+			var(--kb-nav-left-padding, 0.5em);
 
 		&:not([href]) {
 			cursor: default;
@@ -594,7 +597,7 @@
 
 		&:hover,
 		&:focus {
-			color: var(--global-palette-highlight);
+			color: var(--kb-nav-link-hover-color, inherit);
 		}
 	}
 
