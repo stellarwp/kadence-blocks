@@ -995,18 +995,15 @@ export function Edit(props) {
 							<KadenceRadioButtons
 								label={__('Text Position', 'kadence-blocks')}
 								value={labelPosition}
-								options={
-									barType === 'line-mask'
-										? [
-												{ value: 'above', label: __('Above', 'kadence-blocks') },
-												{ value: 'below', label: __('Below', 'kadence-blocks') },
-										  ]
-										: [
-												{ value: 'above', label: __('Above', 'kadence-blocks') },
-												{ value: 'inside', label: __('Inside', 'kadence-blocks') },
-												{ value: 'below', label: __('Below', 'kadence-blocks') },
-										  ]
-								}
+								options={[
+									{ value: 'above', label: __('Above', 'kadence-blocks') },
+									{
+										value: 'inside',
+										label: __('Inside', 'kadence-blocks'),
+										isDisabled: barType === 'line-mask',
+									},
+									{ value: 'below', label: __('Below', 'kadence-blocks') },
+								]}
 								className={'kb-letter-case'}
 								allowClear={false}
 								onChange={(value) => setAttributes({ labelPosition: value })}
