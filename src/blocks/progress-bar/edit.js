@@ -1031,8 +1031,12 @@ export function Edit(props) {
 									onChange={(nextAlign) =>
 										setAttributes({ hAlign: nextAlign ? nextAlign : 'space-between' })
 									}
-									onChangeTablet={(nextAlign) => setAttributes({ thAlign: nextAlign ? nextAlign : '' })}
-									onChangeMobile={(nextAlign) => setAttributes({ mhAlign: nextAlign ? nextAlign : '' })}
+									onChangeTablet={(nextAlign) =>
+										setAttributes({ thAlign: nextAlign ? nextAlign : '' })
+									}
+									onChangeMobile={(nextAlign) =>
+										setAttributes({ mhAlign: nextAlign ? nextAlign : '' })
+									}
 									type={'justify'}
 								/>
 							)}
