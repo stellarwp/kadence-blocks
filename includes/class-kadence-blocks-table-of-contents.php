@@ -572,8 +572,6 @@ class Kadence_Blocks_Table_Of_Contents {
 					$headingWrapper['include'] = true;
 				} else if ( $heading->getAttribute( 'data-toc-include' ) === 'false' ) {
 					$headingWrapper['include'] = false;
-				} else {
-					$headingWrapper['include'] = '';
 				}
 
 				if ( $anchor_string ) {
