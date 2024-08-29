@@ -84,7 +84,8 @@ export function Edit(props) {
 		borderHoverStyle,
 		tabletBorderHoverStyle,
 		mobileBorderHoverStyle,
-		typography,
+		buttonTypography,
+		inputTypography,
 		borderRadius,
 		tabletBorderRadius,
 		mobileBorderRadius,
@@ -164,15 +165,26 @@ export function Edit(props) {
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
 
-	const saveTypography = (value) => {
-		const newUpdate = typography.map((item, index) => {
+	const saveButtonTypography = (value) => {
+		const newUpdate = buttonTypography.map((item, index) => {
 			if (0 === index) {
 				item = { ...item, ...value };
 			}
 			return item;
 		});
 		setAttributes({
-			typography: newUpdate,
+			buttonTypography: newUpdate,
+		});
+	};
+	const saveInputTypography = (value) => {
+		const newUpdate = inputTypography.map((item, index) => {
+			if (0 === index) {
+				item = { ...item, ...value };
+			}
+			return item;
+		});
+		setAttributes({
+			inputTypography: newUpdate,
 		});
 	};
 	const saveShadow = (value) => {
@@ -582,7 +594,7 @@ export function Edit(props) {
 		btnBox = 'none';
 	}
 	const previewTypographyCSS = typographyStyle(
-		typography,
+		buttonTypography,
 		`.editor-styles-wrapper .wp-block-kadence-search-button.kb-single-btn-${uniqueID} .kt-button-${uniqueID}`,
 		previewDevice
 	);
@@ -698,7 +710,7 @@ export function Edit(props) {
 						<KadencePanelBody
 							title={__('Button Settings', 'kadence-blocks')}
 							initialOpen={true}
-							panelName={'kb-adv-single-btn'}
+							panelName={'search-button-settings'}
 						>
 							<KadenceRadioButtons
 								value={inheritStyles}
@@ -782,6 +794,50 @@ export function Edit(props) {
 									)}
 								</>
 							)}
+						</KadencePanelBody>
+
+						<KadencePanelBody
+							title={__('Input Settings', 'kadence-blocks')}
+							initialOpen={true}
+							panelName={'search-input-settings'}
+						>
+							<TypographyControls
+								fontSize={inputTypography[0].size}
+								onFontSize={(value) => saveInputTypography({ size: value })}
+								fontSizeType={inputTypography[0].sizeType}
+								onFontSizeType={(value) => saveInputTypography({ sizeType: value })}
+								lineHeight={inputTypography[0].lineHeight}
+								onLineHeight={(value) => saveInputTypography({ lineHeight: value })}
+								lineHeightType={inputTypography[0].lineType}
+								onLineHeightType={(value) => saveInputTypography({ lineType: value })}
+								reLetterSpacing={inputTypography[0].letterSpacing}
+								onLetterSpacing={(value) => saveInputTypography({ letterSpacing: value })}
+								letterSpacingType={inputTypography[0].letterType}
+								onLetterSpacingType={(value) => saveInputTypography({ letterType: value })}
+								textTransform={inputTypography[0].textTransform}
+								onTextTransform={(value) => saveInputTypography({ textTransform: value })}
+								fontFamily={inputTypography[0].family}
+								onFontFamily={(value) => saveInputTypography({ family: value })}
+								onFontChange={(select) => {
+									saveInputTypography({
+										family: select.value,
+										google: select.google,
+									});
+								}}
+								onFontArrayChange={(values) => saveInputTypography(values)}
+								googleFont={inputTypography[0].google}
+								onGoogleFont={(value) => saveInputTypography({ google: value })}
+								loadGoogleFont={inputTypography[0].loadGoogle}
+								onLoadGoogleFont={(value) => saveInputTypography({ loadGoogle: value })}
+								fontVariant={inputTypography[0].variant}
+								onFontVariant={(value) => saveInputTypography({ variant: value })}
+								fontWeight={inputTypography[0].weight}
+								onFontWeight={(value) => saveInputTypography({ weight: value })}
+								fontStyle={inputTypography[0].style}
+								onFontStyle={(value) => saveInputTypography({ style: value })}
+								fontSubset={inputTypography[0].subset}
+								onFontSubset={(value) => saveInputTypography({ subset: value })}
+							/>
 						</KadencePanelBody>
 					</>
 				)}
@@ -1096,7 +1152,7 @@ export function Edit(props) {
 						)}
 						{showSettings('iconSettings', 'kadence/advancedbtn') && (
 							<KadencePanelBody
-								title={__('Icon Settings', 'kadence-blocks')}
+								title={__('Button Icon Settings', 'kadence-blocks')}
 								initialOpen={false}
 								panelName={'kb-adv-single-btn-icons'}
 							>
@@ -1295,47 +1351,47 @@ export function Edit(props) {
 						)}
 						{showSettings('fontSettings', 'kadence/advancedbtn') && (
 							<KadencePanelBody
-								title={__('Typography Settings', 'kadence-blocks')}
+								title={__('Button Typography Settings', 'kadence-blocks')}
 								initialOpen={false}
 								panelName={'kb-adv-btn-font-family'}
 							>
 								<TypographyControls
 									fontGroup={'button'}
-									fontSize={typography[0].size}
-									onFontSize={(value) => saveTypography({ size: value })}
-									fontSizeType={typography[0].sizeType}
-									onFontSizeType={(value) => saveTypography({ sizeType: value })}
-									lineHeight={typography[0].lineHeight}
-									onLineHeight={(value) => saveTypography({ lineHeight: value })}
-									lineHeightType={typography[0].lineType}
-									onLineHeightType={(value) => saveTypography({ lineType: value })}
-									reLetterSpacing={typography[0].letterSpacing}
-									onLetterSpacing={(value) => saveTypography({ letterSpacing: value })}
-									letterSpacingType={typography[0].letterType}
-									onLetterSpacingType={(value) => saveTypography({ letterType: value })}
-									textTransform={typography[0].textTransform}
-									onTextTransform={(value) => saveTypography({ textTransform: value })}
-									fontFamily={typography[0].family}
-									onFontFamily={(value) => saveTypography({ family: value })}
+									fontSize={buttonTypography[0].size}
+									onFontSize={(value) => saveButtonTypography({ size: value })}
+									fontSizeType={buttonTypography[0].sizeType}
+									onFontSizeType={(value) => saveButtonTypography({ sizeType: value })}
+									lineHeight={buttonTypography[0].lineHeight}
+									onLineHeight={(value) => saveButtonTypography({ lineHeight: value })}
+									lineHeightType={buttonTypography[0].lineType}
+									onLineHeightType={(value) => saveButtonTypography({ lineType: value })}
+									reLetterSpacing={buttonTypography[0].letterSpacing}
+									onLetterSpacing={(value) => saveButtonTypography({ letterSpacing: value })}
+									letterSpacingType={buttonTypography[0].letterType}
+									onLetterSpacingType={(value) => saveButtonTypography({ letterType: value })}
+									textTransform={buttonTypography[0].textTransform}
+									onTextTransform={(value) => saveButtonTypography({ textTransform: value })}
+									fontFamily={buttonTypography[0].family}
+									onFontFamily={(value) => saveButtonTypography({ family: value })}
 									onFontChange={(select) => {
-										saveTypography({
+										saveButtonTypography({
 											family: select.value,
 											google: select.google,
 										});
 									}}
-									onFontArrayChange={(values) => saveTypography(values)}
-									googleFont={typography[0].google}
-									onGoogleFont={(value) => saveTypography({ google: value })}
-									loadGoogleFont={typography[0].loadGoogle}
-									onLoadGoogleFont={(value) => saveTypography({ loadGoogle: value })}
-									fontVariant={typography[0].variant}
-									onFontVariant={(value) => saveTypography({ variant: value })}
-									fontWeight={typography[0].weight}
-									onFontWeight={(value) => saveTypography({ weight: value })}
-									fontStyle={typography[0].style}
-									onFontStyle={(value) => saveTypography({ style: value })}
-									fontSubset={typography[0].subset}
-									onFontSubset={(value) => saveTypography({ subset: value })}
+									onFontArrayChange={(values) => saveButtonTypography(values)}
+									googleFont={buttonTypography[0].google}
+									onGoogleFont={(value) => saveButtonTypography({ google: value })}
+									loadGoogleFont={buttonTypography[0].loadGoogle}
+									onLoadGoogleFont={(value) => saveButtonTypography({ loadGoogle: value })}
+									fontVariant={buttonTypography[0].variant}
+									onFontVariant={(value) => saveButtonTypography({ variant: value })}
+									fontWeight={buttonTypography[0].weight}
+									onFontWeight={(value) => saveButtonTypography({ weight: value })}
+									fontStyle={buttonTypography[0].style}
+									onFontStyle={(value) => saveButtonTypography({ style: value })}
+									fontSubset={buttonTypography[0].subset}
+									onFontSubset={(value) => saveButtonTypography({ subset: value })}
 								/>
 							</KadencePanelBody>
 						)}
@@ -1540,7 +1596,7 @@ export function Edit(props) {
 						)}
 						<RichText
 							tagName="div"
-							placeholder={__('Button…', 'kadence-blocks')}
+							placeholder={__('Search', 'kadence-blocks')}
 							value={text}
 							onChange={(value) => setAttributes({ text: value })}
 							allowedFormats={applyFilters(
@@ -1606,8 +1662,15 @@ export function Edit(props) {
 							getSpacingOptionOutput(previewMarginLeft, previewMarginUnit),
 						]}
 					/>
-					{typography?.[0]?.google && (
-						<KadenceWebfontLoader typography={typography} clientId={clientId} id={'typography'} />
+					{buttonTypography?.[0]?.google && (
+						<KadenceWebfontLoader
+							typography={buttonTypography}
+							clientId={clientId}
+							id={'buttonTypography'}
+						/>
+					)}
+					{inputTypography?.[0]?.google && (
+						<KadenceWebfontLoader typography={inputTypography} clientId={clientId} id={'inputTypography'} />
 					)}
 				</div>
 				<SpacingVisualizer
