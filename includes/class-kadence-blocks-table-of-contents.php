@@ -564,12 +564,14 @@ class Kadence_Blocks_Table_Of_Contents {
 					$heading->textContent = $heading->getAttribute( 'data-alt-title' );
 				}
 
+				$headingWrapper = [
+					'element' => $heading,
+					'include' => ''
+				];
 				if( $heading->getAttribute( 'data-toc-include' ) === 'true' ){
-					$heading->include = true;
+					$headingWrapper['include'] = true;
 				} else if ( $heading->getAttribute( 'data-toc-include' ) === 'false' ) {
-					$heading->include = false;
-				} else {
-					$heading->include = '';
+					$headingWrapper['include'] = false;
 				}
 
 				if ( $anchor_string ) {
@@ -584,7 +586,7 @@ class Kadence_Blocks_Table_Of_Contents {
 							'anchor'  => $anchor_string,
 							'content' => $this->convert_smart_quotes( $heading->textContent ),
 							'level'   => $level,
-							'include'   => $heading->include,
+							'include'   => $headingWrapper['include'],
 							'page'    => $headings_page,
 						);
 					}
@@ -593,7 +595,7 @@ class Kadence_Blocks_Table_Of_Contents {
 					'anchor'  => $anchor,
 					'content' => $this->convert_smart_quotes( $heading->textContent ),
 					'level'   => $level,
-					'include'   => $heading->include,
+					'include'   => $headingWrapper['include'],
 					'page'    => $headings_page,
 				);
 			},
