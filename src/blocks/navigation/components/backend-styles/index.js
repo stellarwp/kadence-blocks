@@ -387,6 +387,53 @@ export default function BackendStyles(props) {
 		'bottom'
 	);
 
+	//non specific styles/variables
+	css.set_selector(`.wp-block-kadence-navigation${uniqueID}`);
+	css.render_measure_output(
+		paddingDropdown,
+		tabletPaddingDropdown,
+		mobilePaddingDropdown,
+		previewDevice,
+		'--kb-nav-dropdown-padding',
+		paddingDropdownUnit
+	);
+	css.render_measure_output(
+		marginDropdown,
+		tabletMarginDropdown,
+		mobileMarginDropdown,
+		previewDevice,
+		'--kb-nav-dropdown-margin',
+		marginDropdownUnit
+	);
+	css.add_property(
+		'--kb-nav-link-padding-left',
+		css.render_half_size(previewNavigationHorizontalSpacing, spacingUnit),
+		previewNavigationHorizontalSpacing
+	);
+	css.add_property(
+		'--kb-nav-link-padding-right',
+		css.render_half_size(previewNavigationHorizontalSpacing, spacingUnit),
+		previewNavigationHorizontalSpacing
+	);
+
+	if (
+		(previewOrientation == 'vertical' ||
+			previewStyle === 'standard' ||
+			previewStyle === 'underline' ||
+			previewStyle === '') &&
+		!isNaN(parseFloat(previewNavigationVerticalSpacing)) &&
+		isFinite(previewNavigationVerticalSpacing)
+	) {
+		css.add_property(
+			'--kb-nav-link-padding-top',
+			css.render_half_size(previewNavigationVerticalSpacing, spacingUnit)
+		);
+		css.add_property(
+			'--kb-nav-link-padding-bottom',
+			css.render_half_size(previewNavigationVerticalSpacing, spacingUnit)
+		);
+	}
+
 	//container styles
 	const containerActiveSelector = previewParentActive
 		? `.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item.current-menu-item > .kb-link-wrap,
@@ -416,40 +463,14 @@ export default function BackendStyles(props) {
 		css.add_property('display', 'none');
 	}
 
-	// Navigation logic from theme styles component.
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .navigation[class*="navigation-style-underline"] .menu-container>ul>li>a:after`
 	);
 	css.add_property('width', 'calc( 100% - ' + css.render_size(previewNavigationHorizontalSpacing, spacingUnit) + ')');
-	css.set_selector(`.wp-block-kadence-navigation${uniqueID}`);
-	css.add_property(
-		'--kb-nav-left-padding',
-		css.render_half_size(previewNavigationHorizontalSpacing, spacingUnit),
-		previewNavigationHorizontalSpacing
-	);
-	css.add_property(
-		'--kb-nav-right-padding',
-		css.render_half_size(previewNavigationHorizontalSpacing, spacingUnit),
-		previewNavigationHorizontalSpacing
-	);
-	if (
-		(previewOrientation == 'vertical' ||
-			previewStyle === 'standard' ||
-			previewStyle === 'underline' ||
-			previewStyle === '') &&
-		!isNaN(parseFloat(previewNavigationVerticalSpacing)) &&
-		isFinite(previewNavigationVerticalSpacing)
-	) {
-		css.add_property('--kb-nav-top-padding', css.render_half_size(previewNavigationVerticalSpacing, spacingUnit));
-		css.add_property(
-			'--kb-nav-bottom-padding',
-			css.render_half_size(previewNavigationVerticalSpacing, spacingUnit)
-		);
-	}
 
-	//nav item
+	//nav item link(top level only)
 	css.set_selector(
-		`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .kb-link-wrap > a, .wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .kb-link-wrap`
+		`.wp-block-kadence-navigation${uniqueID} > .navigation > .menu-container > .menu >  .menu-item > .kb-link-wrap > .kb-nav-link-content`
 	);
 	css.add_property('color', css.render_color(previewLinkColor));
 	if (context?.['kadence/headerIsTransparent'] == '1') {
@@ -463,18 +484,30 @@ export default function BackendStyles(props) {
 		tabletPaddingLink,
 		mobilePaddingLink,
 		previewDevice,
-		'padding',
+		'--kb-nav-link-padding',
 		paddingLinkUnit
 	);
-	css.render_measure_output(marginLink, tabletMarginLink, mobileMarginLink, previewDevice, 'margin', marginLinkUnit);
+	css.render_measure_output(
+		marginLink,
+		tabletMarginLink,
+		mobileMarginLink,
+		previewDevice,
+		'--kb-nav-link-margin',
+		marginLinkUnit
+	);
 
-	css.set_selector(`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .kb-link-wrap`);
+	//nav item container (top level only)
+	css.set_selector(
+		`.wp-block-kadence-navigation${uniqueID} > .navigation > .menu-container > .menu > .menu-item > .kb-link-wrap`
+	);
 	if (context?.['kadence/headerIsTransparent'] == '1') {
 		css.add_property('background', css.render_color(previewBackgroundTransparent));
 	}
 	if (context?.['kadence/headerIsSticky'] == '1') {
 		css.add_property('background', css.render_color(previewBackgroundSticky));
 	}
+
+	//nav item link hover (top level only)
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .kb-link-wrap:hover > a, .wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .kb-link-wrap:hover`
 	);
@@ -538,28 +571,8 @@ export default function BackendStyles(props) {
 	);
 	css.render_font(typography ? typography : [], previewDevice);
 
-	//Dropdown logic from theme Styles Component
-	// Dropdown.
-	css.set_selector(
-		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul.sub-menu, .wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul.submenu`
-	);
-	css.render_measure_output(
-		paddingDropdown,
-		tabletPaddingDropdown,
-		mobilePaddingDropdown,
-		previewDevice,
-		'padding',
-		paddingDropdownUnit
-	);
-	css.render_measure_output(
-		marginDropdown,
-		tabletMarginDropdown,
-		mobileMarginDropdown,
-		previewDevice,
-		'margin',
-		marginDropdownUnit
-	);
-
+	// Dropdown container.
+	css.set_selector(`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul.sub-menu`);
 	css.add_property('background', css.render_color(previewBackgroundDropdown));
 	css.add_property(
 		'border-top',
@@ -598,9 +611,8 @@ export default function BackendStyles(props) {
 			css.add_property('box-shadow', css.render_shadow(dropdownShadow[0]));
 		}
 
-		css.set_selector(
-			`.wp-block-kadence-navigation${uniqueID}.wp-block-kadence-navigation .navigation ul.menu li:hover > ul.sub-menu`
-		);
+		//sub menus (first level only)
+		css.set_selector(`.wp-block-kadence-navigation${uniqueID} > .navigation > .menu > .menu-item > .sub-menu`);
 		if (previewDropdownHorizontalAlignment == 'center') {
 			css.add_property('left', '50%');
 			css.add_property('transform', 'translate(-50%, 0)');
@@ -632,7 +644,7 @@ export default function BackendStyles(props) {
 		tabletPaddingDropdownLink,
 		mobilePaddingDropdownLink,
 		previewDevice,
-		'padding',
+		'--kb-nav-link-padding',
 		paddingDropdownLinkUnit
 	);
 	css.render_measure_output(
@@ -640,7 +652,7 @@ export default function BackendStyles(props) {
 		tabletMarginDropdownLink,
 		mobileMarginDropdownLink,
 		previewDevice,
-		'margin',
+		'--kb-nav-link-margin',
 		marginDropdownLinkUnit
 	);
 
@@ -687,9 +699,11 @@ export default function BackendStyles(props) {
 			css.add_property('border-right', stickyDividerValue);
 		}
 	}
+
+	//main container
 	css.set_selector(`.wp-block-kadence-navigation${uniqueID} > .navigation > .menu-container > .menu`);
-	css.render_measure_output(padding, tabletPadding, mobilePadding, previewDevice, 'padding', paddingUnit);
-	css.render_measure_output(margin, tabletMargin, mobileMargin, previewDevice, 'margin', marginUnit);
+	css.render_measure_output(margin, tabletMargin, mobileMargin, previewDevice, '--kb-nav-margin', marginUnit);
+	css.render_measure_output(padding, tabletPadding, mobilePadding, previewDevice, '--kb-nav-padding', paddingUnit);
 
 	if (previewStyle.includes('fullheight')) {
 		css.set_selector(`.wp-block-kadence-header .wp-block-kadence-navigation${uniqueID}`);

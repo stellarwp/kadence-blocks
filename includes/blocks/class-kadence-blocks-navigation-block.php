@@ -81,13 +81,16 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 			$this->sized_dynamic_styles( $css, $nav_attributes, $unique_id, $size );
 		}
 		$css->set_media_state( 'desktop' );
-		//main continer
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' > .navigation > .menu-container > .menu' );
-		$css->render_measure_output( $nav_attributes, 'margin', 'margin', ['unit_key' => 'marginUnit']);
-		$css->render_measure_output( $nav_attributes, 'padding', 'padding', ['unit_key' => 'paddingUnit']);
-		
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > ul li.menu-item > .kb-link-wrap > a' );
-		$css->render_typography( $nav_attributes );
+	
+		//no added specificty needed for these variables
+		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id );
+		$css->render_measure_output( $nav_attributes, 'marginDropdown', '--kb-nav-dropdown-margin', ['unit_key' => 'marginDropdownUnit']);
+		$css->render_measure_output( $nav_attributes, 'paddingDropdown', '--kb-nav-dropdown-padding', ['unit_key' => 'paddingDropdownUnit']);
+
+		//main container (don't apply to children)
+		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' > .navigation > .menu-container > .menu');
+		$css->render_measure_output( $nav_attributes, 'margin', '--kb-nav-margin', ['unit_key' => 'marginUnit']);
+		$css->render_measure_output( $nav_attributes, 'padding', '--kb-nav-padding', ['unit_key' => 'paddingUnit']);
 
 		//container styles
 		$container_active_selector = $nav_attributes['parentActive'] ? 
@@ -110,22 +113,17 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 			$nav_attributes
 		);
 
-		// Dropdown.
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul li.menu-item > .kb-link-wrap > a' );
+		//nav item (top level only)
+		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' > .navigation > .menu > .menu-container > .wp-block-kadence-navigation-link > .kb-link-wrap > .kb-nav-link-content' );
+		$css->render_typography( $nav_attributes );
+		$css->render_measure_output( $nav_attributes, 'marginLink', '--kb-nav-link-margin', ['unit_key' => 'marginLinkUnit']);
+		$css->render_measure_output( $nav_attributes, 'paddingLink', '--kb-nav-link-padding', ['unit_key' => 'paddingLinkUnit']);
+
+		//dropdown links
+		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .sub-menu > .wp-block-kadence-navigation-link > .kb-link-wrap > .kb-nav-link-content' );
 		$css->render_typography( $nav_attributes, 'dropdownTypography' );
-
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul.sub-menu, .wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul.submenu' );
-		$css->render_measure_output( $nav_attributes, 'marginDropdown', 'margin', ['unit_key' => 'marginDropdownUnit']);
-		$css->render_measure_output( $nav_attributes, 'paddingDropdown', 'padding', ['unit_key' => 'paddingDropdownUnit']);
-
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation > .menu-container ul ul.sub-menu .wp-block-kadence-navigation-link > .kb-link-wrap > a' );
-		$css->render_measure_output( $nav_attributes, 'marginDropdownLink', 'margin', ['unit_key' => 'marginDropdownLinkUnit']);
-		$css->render_measure_output( $nav_attributes, 'paddingDropdownLink', 'padding', ['unit_key' => 'paddingDropdownLinkUnit']);
-
-		//nav item
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' > .navigation > .menu > .menu-container > .wp-block-kadence-navigation-link > .kb-link-wrap > a' );
-		$css->render_measure_output( $nav_attributes, 'marginLink', 'margin', ['unit_key' => 'marginLinkUnit']);
-		$css->render_measure_output( $nav_attributes, 'paddingLink', 'padding', ['unit_key' => 'paddingLinkUnit']);
+		$css->render_measure_output( $nav_attributes, 'marginDropdownLink', '--kb-nav-link-margin', ['unit_key' => 'marginDropdownLinkUnit']);
+		$css->render_measure_output( $nav_attributes, 'paddingDropdownLink', '--kb-nav-link-padding', ['unit_key' => 'paddingDropdownLinkUnit']);
 
 		return $css->css_output();
 	}
@@ -148,8 +146,8 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( 'width', 'calc( 100% - ' . $css->render_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) . ' )', $navigation_horizontal_spacing );
 
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id );
-		$css->add_property( '--kb-nav-left-padding', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) );
-		$css->add_property( '--kb-nav-right-padding', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) );
+		$css->add_property( '--kb-nav-link-padding-left', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) );
+		$css->add_property( '--kb-nav-link-padding-right', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) );
 		
 		if (
 			( $sized_attributes_inherit['orientation'] == 'vertical' ||
@@ -158,8 +156,8 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 			$sized_attributes_inherit['style'] === '' ) &&
 			is_numeric( $navigation_vertical_spacing )
 		) {
-			$css->add_property( '--kb-nav-top-padding', $css->render_half_size( $navigation_vertical_spacing, $attributes['spacingUnit'] ) );
-			$css->add_property( '--kb-nav-bottom-padding', $css->render_half_size( $navigation_vertical_spacing, $attributes['spacingUnit'] ) );
+			$css->add_property( '--kb-nav-link-padding-top', $css->render_half_size( $navigation_vertical_spacing, $attributes['spacingUnit'] ) );
+			$css->add_property( '--kb-nav-link-padding-bottom', $css->render_half_size( $navigation_vertical_spacing, $attributes['spacingUnit'] ) );
 		}
 
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .menu-container > ul > li.menu-item > .kb-link-wrap > a, .wp-block-kadence-navigation' . $unique_id . ' .menu-container > ul > li.menu-item > .kb-link-wrap' );

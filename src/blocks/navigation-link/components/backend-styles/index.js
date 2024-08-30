@@ -616,6 +616,33 @@ export default function BackendStyles(props) {
 		previewDevice
 	);
 
+	//non specific styles and variables
+	css.set_selector(`kb-nav-link-${uniqueID}`);
+	css.add_property(
+		'--kb-nav-dropdown-link-padding-top',
+		css.render_size(previewDropdownVerticalSpacing, dropdownVerticalSpacingUnit)
+	);
+	css.add_property(
+		'--kb-nav-dropdown-link-padding-bottom',
+		css.render_size(previewDropdownVerticalSpacing, dropdownVerticalSpacingUnit)
+	);
+	css.render_measure_output(
+		paddingDropdown,
+		tabletPaddingDropdown,
+		mobilePaddingDropdown,
+		previewDevice,
+		'--kb-nav-dropdown-padding',
+		paddingDropdownUnit
+	);
+	css.render_measure_output(
+		marginDropdown,
+		tabletMarginDropdown,
+		mobileMarginDropdown,
+		previewDevice,
+		'--kb-nav-dropdown-margin',
+		marginDropdownUnit
+	);
+
 	css.set_selector(
 		`.wp-block-kadence-navigation .menu-container > ul > li.menu-item.kb-nav-link-${uniqueID} > .kb-link-wrap > a, .wp-block-kadence-navigation .menu-container > ul > li.menu-item.kb-nav-link-${uniqueID} > .kb-link-wrap`
 	);
@@ -721,22 +748,6 @@ export default function BackendStyles(props) {
 		`.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-${uniqueID} ul.sub-menu, .wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-${uniqueID} ul.submenu`
 	);
 	css.add_property('width', previewDropdownWidth + dropdownWidthUnit);
-	css.render_measure_output(
-		paddingDropdown,
-		tabletPaddingDropdown,
-		mobilePaddingDropdown,
-		previewDevice,
-		'padding',
-		paddingDropdownUnit
-	);
-	css.render_measure_output(
-		marginDropdown,
-		tabletMarginDropdown,
-		mobileMarginDropdown,
-		previewDevice,
-		'margin',
-		marginDropdownUnit
-	);
 	css.add_property('background', css.render_color(previewBackgroundDropdown));
 
 	css.add_property(
@@ -770,15 +781,17 @@ export default function BackendStyles(props) {
 		'border-bottom',
 		css.render_border(dropdownDivider, dropdownDividerTablet, dropdownDividerMobile, previewDevice, 'bottom')
 	);
-	css.set_selector(
-		`.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-${uniqueID} ul li.menu-item > .kb-link-wrap > a`
-	);
+
+	//dropdown nav link
+	css.set_selector(`.kb-nav-link-${uniqueID} .sub-menu li.menu-item > .kb-link-wrap > a`);
+	css.render_font(dropdownTypography ? dropdownTypography : [], previewDevice);
+
 	css.render_measure_output(
 		paddingDropdownLink,
 		tabletPaddingDropdownLink,
 		mobilePaddingDropdownLink,
 		previewDevice,
-		'padding',
+		'--kb-nav-link-padding',
 		paddingDropdownLinkUnit
 	);
 	css.render_measure_output(
@@ -786,12 +799,10 @@ export default function BackendStyles(props) {
 		tabletMarginDropdownLink,
 		mobileMarginDropdownLink,
 		previewDevice,
-		'margin',
+		'--kb-nav-link-margin',
 		marginDropdownLinkUnit
 	);
-	css.add_property('padding-top', css.render_size(previewDropdownVerticalSpacing, dropdownVerticalSpacingUnit));
-	css.add_property('padding-bottom', css.render_size(previewDropdownVerticalSpacing, dropdownVerticalSpacingUnit));
-	css.render_font(dropdownTypography ? dropdownTypography : [], previewDevice);
+
 	css.set_selector(
 		`.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-${uniqueID} ul li.menu-item > .kb-link-wrap > a, .wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-${uniqueID} ul.sub-menu `
 	);
@@ -815,9 +826,18 @@ export default function BackendStyles(props) {
 		`.wp-block-kadence-navigation .navigation .menu-container > ul li.kb-nav-link-${uniqueID} > .kb-link-wrap > a .link-highlight-label`
 	);
 	css.render_font(highlightTypography ? highlightTypography : [], previewDevice);
-	css.set_selector(`.kb-nav-link-${uniqueID} > .kb-link-wrap > a`);
-	css.render_measure_output(padding, tabletPadding, mobilePadding, previewDevice, 'padding', paddingUnit);
-	css.render_measure_output(margin, tabletMargin, mobileMargin, previewDevice, 'margin', marginUnit);
+
+	//nav link
+	css.set_selector(`.kb-nav-link-${uniqueID} > .kb-link-wrap > .kb-nav-link-content`);
+	css.render_measure_output(
+		padding,
+		tabletPadding,
+		mobilePadding,
+		previewDevice,
+		'--kb-nav-link-padding',
+		paddingUnit
+	);
+	css.render_measure_output(margin, tabletMargin, mobileMargin, previewDevice, '--kb-nav-link-margin', marginUnit);
 
 	//media styles
 	if (mediaType && 'none' !== mediaType) {
