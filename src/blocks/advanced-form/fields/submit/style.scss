@@ -63,7 +63,7 @@
 	background:transparent;
 	//transition: all .3s ease-in-out;
 }
-.kb-adv-form-submit-button:hover::before {
+.kb-adv-form-submit-button:hover::before, .kb-adv-form-submit-button:focus::before {
 	opacity: 1;
 }
 .wp-block-kadence-advanced-form-submit .kb-adv-form-submit-button.kt-btn-size-small{
