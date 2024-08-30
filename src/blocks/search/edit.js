@@ -9,7 +9,7 @@ import metadata from './block.json';
  */
 import { __ } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { TextControl, ToolbarGroup, SelectControl } from '@wordpress/components';
+import { TextControl, ToggleControl, SelectControl } from '@wordpress/components';
 import {
 	ResponsiveRangeControls,
 	InspectorControlTabs,
@@ -33,6 +33,7 @@ import {
 	GradientControl,
 	BoxShadowControl,
 	SelectParentBlock,
+	ResponsiveButtonStyleControlsWithStates,
 } from '@kadence/components';
 import {
 	setBlockDefaults,
@@ -64,6 +65,7 @@ export function Edit(props) {
 	const {
 		uniqueID,
 		displayStyle,
+		showButton,
 		text,
 		sizePreset,
 		padding,
@@ -76,7 +78,7 @@ export function Edit(props) {
 		gradient,
 		colorHover,
 		backgroundHover,
-		backgroundHoverType,
+		backgroundTypeHover,
 		gradientHover,
 		borderStyle,
 		tabletBorderStyle,
@@ -542,7 +544,7 @@ export function Edit(props) {
 	let btnRad = '0';
 	let btnBox = '';
 	let btnBox2 = '';
-	const btnbgHover = 'gradient' === backgroundHoverType ? gradientHover : KadenceColorOutput(backgroundHover);
+	const btnbgHover = 'gradient' === backgroundTypeHover ? gradientHover : KadenceColorOutput(backgroundHover);
 	if (
 		undefined !== displayHoverShadow &&
 		displayHoverShadow &&
@@ -712,6 +714,13 @@ export function Edit(props) {
 							initialOpen={true}
 							panelName={'search-button-settings'}
 						>
+							<ToggleControl
+								label={__('Show Button', 'kadence-blocks')}
+								checked={showButton}
+								onChange={(value) => {
+									setAttributes({ showButton: value });
+								}}
+							/>
 							<KadenceRadioButtons
 								value={inheritStyles}
 								options={buttonStyleOptions}
@@ -850,303 +859,18 @@ export function Edit(props) {
 								initialOpen={true}
 								panelName={'kb-adv-single-btn-styles'}
 							>
-								<HoverToggleControl
-									hover={
-										<>
-											<PopColorControl
-												label={__('Color Hover', 'kadence-blocks')}
-												value={colorHover ? colorHover : ''}
-												default={''}
-												onChange={(value) => setAttributes({ colorHover: value })}
-											/>
-											<BackgroundTypeControl
-												label={__('Hover Type', 'kadence-blocks')}
-												type={backgroundHoverType ? backgroundHoverType : 'normal'}
-												onChange={(value) => setAttributes({ backgroundHoverType: value })}
-												allowedTypes={['normal', 'gradient']}
-											/>
-											{'gradient' === backgroundHoverType && (
-												<GradientControl
-													value={gradientHover}
-													onChange={(value) => setAttributes({ gradientHover: value })}
-													gradients={[]}
-												/>
-											)}
-											{'normal' === backgroundHoverType && (
-												<PopColorControl
-													label={__('Background Color', 'kadence-blocks')}
-													value={backgroundHover ? backgroundHover : ''}
-													default={''}
-													onChange={(value) => setAttributes({ backgroundHover: value })}
-												/>
-											)}
-											<ResponsiveBorderControl
-												label={__('Border', 'kadence-blocks')}
-												value={borderHoverStyle}
-												tabletValue={tabletBorderHoverStyle}
-												mobileValue={mobileBorderHoverStyle}
-												onChange={(value) => setAttributes({ borderHoverStyle: value })}
-												onChangeTablet={(value) =>
-													setAttributes({ tabletBorderHoverStyle: value })
-												}
-												onChangeMobile={(value) =>
-													setAttributes({ mobileBorderHoverStyle: value })
-												}
-											/>
-											<ResponsiveMeasurementControls
-												label={__('Border Radius', 'kadence-blocks')}
-												value={borderHoverRadius}
-												tabletValue={tabletBorderHoverRadius}
-												mobileValue={mobileBorderHoverRadius}
-												onChange={(value) => setAttributes({ borderHoverRadius: value })}
-												onChangeTablet={(value) =>
-													setAttributes({ tabletBorderHoverRadius: value })
-												}
-												onChangeMobile={(value) =>
-													setAttributes({ mobileBorderHoverRadius: value })
-												}
-												unit={borderHoverRadiusUnit}
-												units={['px', 'em', 'rem', '%']}
-												onUnit={(value) => setAttributes({ borderHoverRadiusUnit: value })}
-												max={
-													borderHoverRadiusUnit === 'em' || borderHoverRadiusUnit === 'rem'
-														? 24
-														: 500
-												}
-												step={
-													borderHoverRadiusUnit === 'em' || borderHoverRadiusUnit === 'rem'
-														? 0.1
-														: 1
-												}
-												min={0}
-												isBorderRadius={true}
-												allowEmpty={true}
-											/>
-											<BoxShadowControl
-												label={__('Box Shadow', 'kadence-blocks')}
-												enable={undefined !== displayHoverShadow ? displayHoverShadow : false}
-												color={
-													undefined !== shadowHover &&
-													undefined !== shadowHover[0] &&
-													undefined !== shadowHover[0].color
-														? shadowHover[0].color
-														: '#000000'
-												}
-												colorDefault={'#000000'}
-												onArrayChange={(color, opacity) => {
-													saveShadowHover({ color, opacity });
-												}}
-												opacity={
-													undefined !== shadowHover &&
-													undefined !== shadowHover[0] &&
-													undefined !== shadowHover[0].opacity
-														? shadowHover[0].opacity
-														: 0.2
-												}
-												hOffset={
-													undefined !== shadowHover &&
-													undefined !== shadowHover[0] &&
-													undefined !== shadowHover[0].hOffset
-														? shadowHover[0].hOffset
-														: 0
-												}
-												vOffset={
-													undefined !== shadowHover &&
-													undefined !== shadowHover[0] &&
-													undefined !== shadowHover[0].vOffset
-														? shadowHover[0].vOffset
-														: 0
-												}
-												blur={
-													undefined !== shadowHover &&
-													undefined !== shadowHover[0] &&
-													undefined !== shadowHover[0].blur
-														? shadowHover[0].blur
-														: 14
-												}
-												spread={
-													undefined !== shadowHover &&
-													undefined !== shadowHover[0] &&
-													undefined !== shadowHover[0].spread
-														? shadowHover[0].spread
-														: 0
-												}
-												inset={
-													undefined !== shadowHover &&
-													undefined !== shadowHover[0] &&
-													undefined !== shadowHover[0].inset
-														? shadowHover[0].inset
-														: false
-												}
-												onEnableChange={(value) => {
-													setAttributes({
-														displayHoverShadow: value,
-													});
-												}}
-												onColorChange={(value) => {
-													saveShadowHover({ color: value });
-												}}
-												onOpacityChange={(value) => {
-													saveShadowHover({ opacity: value });
-												}}
-												onHOffsetChange={(value) => {
-													saveShadowHover({ hOffset: value });
-												}}
-												onVOffsetChange={(value) => {
-													saveShadowHover({ vOffset: value });
-												}}
-												onBlurChange={(value) => {
-													saveShadowHover({ blur: value });
-												}}
-												onSpreadChange={(value) => {
-													saveShadowHover({ spread: value });
-												}}
-												onInsetChange={(value) => {
-													saveShadowHover({ inset: value });
-												}}
-											/>
-										</>
-									}
-									normal={
-										<>
-											<PopColorControl
-												label={__('Color', 'kadence-blocks')}
-												value={color ? color : ''}
-												default={''}
-												onChange={(value) => setAttributes({ color: value })}
-											/>
-											<BackgroundTypeControl
-												label={__('Type', 'kadence-blocks')}
-												type={backgroundType ? backgroundType : 'normal'}
-												onChange={(value) => setAttributes({ backgroundType: value })}
-												allowedTypes={['normal', 'gradient']}
-											/>
-											{'gradient' === backgroundType && (
-												<GradientControl
-													value={gradient}
-													onChange={(value) => setAttributes({ gradient: value })}
-													gradients={[]}
-												/>
-											)}
-											{'normal' === backgroundType && (
-												<PopColorControl
-													label={__('Background Color', 'kadence-blocks')}
-													value={background ? background : ''}
-													default={''}
-													onChange={(value) => setAttributes({ background: value })}
-												/>
-											)}
-											<ResponsiveBorderControl
-												label={__('Border', 'kadence-blocks')}
-												value={borderStyle}
-												tabletValue={tabletBorderStyle}
-												mobileValue={mobileBorderStyle}
-												onChange={(value) => setAttributes({ borderStyle: value })}
-												onChangeTablet={(value) => setAttributes({ tabletBorderStyle: value })}
-												onChangeMobile={(value) => setAttributes({ mobileBorderStyle: value })}
-											/>
-											<ResponsiveMeasurementControls
-												label={__('Border Radius', 'kadence-blocks')}
-												value={borderRadius}
-												tabletValue={tabletBorderRadius}
-												mobileValue={mobileBorderRadius}
-												onChange={(value) => setAttributes({ borderRadius: value })}
-												onChangeTablet={(value) => setAttributes({ tabletBorderRadius: value })}
-												onChangeMobile={(value) => setAttributes({ mobileBorderRadius: value })}
-												unit={borderRadiusUnit}
-												units={['px', 'em', 'rem', '%']}
-												onUnit={(value) => setAttributes({ borderRadiusUnit: value })}
-												max={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 500}
-												step={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1}
-												min={0}
-												isBorderRadius={true}
-												allowEmpty={true}
-											/>
-											<BoxShadowControl
-												label={__('Box Shadow', 'kadence-blocks')}
-												enable={undefined !== displayShadow ? displayShadow : false}
-												color={
-													undefined !== shadow &&
-													undefined !== shadow[0] &&
-													undefined !== shadow[0].color
-														? shadow[0].color
-														: '#000000'
-												}
-												colorDefault={'#000000'}
-												onArrayChange={(color, opacity) => {
-													saveShadow({ color, opacity });
-												}}
-												opacity={
-													undefined !== shadow &&
-													undefined !== shadow[0] &&
-													undefined !== shadow[0].opacity
-														? shadow[0].opacity
-														: 0.2
-												}
-												hOffset={
-													undefined !== shadow &&
-													undefined !== shadow[0] &&
-													undefined !== shadow[0].hOffset
-														? shadow[0].hOffset
-														: 0
-												}
-												vOffset={
-													undefined !== shadow &&
-													undefined !== shadow[0] &&
-													undefined !== shadow[0].vOffset
-														? shadow[0].vOffset
-														: 0
-												}
-												blur={
-													undefined !== shadow &&
-													undefined !== shadow[0] &&
-													undefined !== shadow[0].blur
-														? shadow[0].blur
-														: 14
-												}
-												spread={
-													undefined !== shadow &&
-													undefined !== shadow[0] &&
-													undefined !== shadow[0].spread
-														? shadow[0].spread
-														: 0
-												}
-												inset={
-													undefined !== shadow &&
-													undefined !== shadow[0] &&
-													undefined !== shadow[0].inset
-														? shadow[0].inset
-														: false
-												}
-												onEnableChange={(value) => {
-													setAttributes({
-														displayShadow: value,
-													});
-												}}
-												onColorChange={(value) => {
-													saveShadow({ color: value });
-												}}
-												onOpacityChange={(value) => {
-													saveShadow({ opacity: value });
-												}}
-												onHOffsetChange={(value) => {
-													saveShadow({ hOffset: value });
-												}}
-												onVOffsetChange={(value) => {
-													saveShadow({ vOffset: value });
-												}}
-												onBlurChange={(value) => {
-													saveShadow({ blur: value });
-												}}
-												onSpreadChange={(value) => {
-													saveShadow({ spread: value });
-												}}
-												onInsetChange={(value) => {
-													saveShadow({ inset: value });
-												}}
-											/>
-										</>
-									}
+								<ResponsiveButtonStyleControlsWithStates
+									colorBase={'linkColor'}
+									backgroundBase={'background'}
+									backgroundTypeBase={'backgroundType'}
+									backgroundGradientBase={'gradient'}
+									borderBase={'borderStyle'}
+									borderRadiusBase={'borderRadius'}
+									borderRadiusUnitBase={'borderRadiusUnit'}
+									shadowBase={'shadow'}
+									setAttributes={setAttributes}
+									attributes={attributes}
+									includeActive={false}
 								/>
 							</KadencePanelBody>
 						)}
@@ -1486,193 +1210,404 @@ export function Edit(props) {
 						'' !== previewPaddingLeft ? getSpacingOptionOutput(previewPaddingLeft, paddingUnit) : undefined,
 				}}
 			>
-				<div className={wrapperClasses}>
-					<span
-						className={btnClassName}
-						style={{
-							paddingTop: previewPaddingTop
-								? getSpacingOptionOutput(previewPaddingTop, paddingUnit)
-								: undefined,
-							paddingRight: previewPaddingRight
-								? getSpacingOptionOutput(previewPaddingRight, paddingUnit)
-								: undefined,
-							paddingBottom: previewPaddingBottom
-								? getSpacingOptionOutput(previewPaddingBottom, paddingUnit)
-								: undefined,
-							paddingLeft: previewPaddingLeft
-								? getSpacingOptionOutput(previewPaddingLeft, paddingUnit)
-								: undefined,
-							marginTop: previewMarginTop
-								? getSpacingOptionOutput(previewMarginTop, previewMarginUnit)
-								: undefined,
-							marginRight: previewMarginRight
-								? getSpacingOptionOutput(previewMarginRight, previewMarginUnit)
-								: undefined,
-							marginBottom: previewMarginBottom
-								? getSpacingOptionOutput(previewMarginBottom, previewMarginUnit)
-								: undefined,
-							marginLeft: previewMarginLeft
-								? getSpacingOptionOutput(previewMarginLeft, previewMarginUnit)
-								: undefined,
-							borderTop: previewBorderTopStyle ? previewBorderTopStyle : undefined,
-							borderRight: previewBorderRightStyle ? previewBorderRightStyle : undefined,
-							borderBottom: previewBorderBottomStyle ? previewBorderBottomStyle : undefined,
-							borderLeft: previewBorderLeftStyle ? previewBorderLeftStyle : undefined,
-							borderTopLeftRadius:
-								'' !== previewRadiusTop
-									? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
-									: undefined,
-							borderTopRightRadius:
-								'' !== previewRadiusRight
-									? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
-									: undefined,
-							borderBottomRightRadius:
-								'' !== previewRadiusBottom
-									? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
-									: undefined,
-							borderBottomLeftRadius:
-								'' !== previewRadiusLeft
-									? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
-									: undefined,
-							boxShadow:
-								undefined !== displayShadow &&
-								displayShadow &&
-								undefined !== shadow &&
-								undefined !== shadow[0] &&
-								undefined !== shadow[0].color
-									? (undefined !== shadow[0].inset && shadow[0].inset ? 'inset ' : '') +
-									  (undefined !== shadow[0].hOffset ? shadow[0].hOffset : 0) +
-									  'px ' +
-									  (undefined !== shadow[0].vOffset ? shadow[0].vOffset : 0) +
-									  'px ' +
-									  (undefined !== shadow[0].blur ? shadow[0].blur : 14) +
-									  'px ' +
-									  (undefined !== shadow[0].spread ? shadow[0].spread : 0) +
-									  'px ' +
-									  KadenceColorOutput(
-											undefined !== shadow[0].color ? shadow[0].color : '#000000',
-											undefined !== shadow[0].opacity ? shadow[0].opacity : 1
-									  )
-									: undefined,
+				{displayStyle === 'input' ? (
+					<>
+						<input
+							type="text"
+							style={{
+								color: undefined !== color ? KadenceColorOutput(color) : undefined,
+							}}
+						/>
+						{showButton && (
+							<div className={wrapperClasses}>
+								<span
+									className={btnClassName}
+									style={{
+										paddingTop: previewPaddingTop
+											? getSpacingOptionOutput(previewPaddingTop, paddingUnit)
+											: undefined,
+										paddingRight: previewPaddingRight
+											? getSpacingOptionOutput(previewPaddingRight, paddingUnit)
+											: undefined,
+										paddingBottom: previewPaddingBottom
+											? getSpacingOptionOutput(previewPaddingBottom, paddingUnit)
+											: undefined,
+										paddingLeft: previewPaddingLeft
+											? getSpacingOptionOutput(previewPaddingLeft, paddingUnit)
+											: undefined,
+										marginTop: previewMarginTop
+											? getSpacingOptionOutput(previewMarginTop, previewMarginUnit)
+											: undefined,
+										marginRight: previewMarginRight
+											? getSpacingOptionOutput(previewMarginRight, previewMarginUnit)
+											: undefined,
+										marginBottom: previewMarginBottom
+											? getSpacingOptionOutput(previewMarginBottom, previewMarginUnit)
+											: undefined,
+										marginLeft: previewMarginLeft
+											? getSpacingOptionOutput(previewMarginLeft, previewMarginUnit)
+											: undefined,
+										borderTop: previewBorderTopStyle ? previewBorderTopStyle : undefined,
+										borderRight: previewBorderRightStyle ? previewBorderRightStyle : undefined,
+										borderBottom: previewBorderBottomStyle ? previewBorderBottomStyle : undefined,
+										borderLeft: previewBorderLeftStyle ? previewBorderLeftStyle : undefined,
+										borderTopLeftRadius:
+											'' !== previewRadiusTop
+												? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
+												: undefined,
+										borderTopRightRadius:
+											'' !== previewRadiusRight
+												? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
+												: undefined,
+										borderBottomRightRadius:
+											'' !== previewRadiusBottom
+												? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
+												: undefined,
+										borderBottomLeftRadius:
+											'' !== previewRadiusLeft
+												? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
+												: undefined,
+										boxShadow:
+											undefined !== displayShadow &&
+											displayShadow &&
+											undefined !== shadow &&
+											undefined !== shadow[0] &&
+											undefined !== shadow[0].color
+												? (undefined !== shadow[0].inset && shadow[0].inset ? 'inset ' : '') +
+												  (undefined !== shadow[0].hOffset ? shadow[0].hOffset : 0) +
+												  'px ' +
+												  (undefined !== shadow[0].vOffset ? shadow[0].vOffset : 0) +
+												  'px ' +
+												  (undefined !== shadow[0].blur ? shadow[0].blur : 14) +
+												  'px ' +
+												  (undefined !== shadow[0].spread ? shadow[0].spread : 0) +
+												  'px ' +
+												  KadenceColorOutput(
+														undefined !== shadow[0].color ? shadow[0].color : '#000000',
+														undefined !== shadow[0].opacity ? shadow[0].opacity : 1
+												  )
+												: undefined,
 
-							background: undefined !== btnbg ? btnbg : undefined,
-							color: undefined !== color ? KadenceColorOutput(color) : undefined,
-							width:
-								undefined !== widthType &&
-								'fixed' === widthType &&
-								'px' === (undefined !== widthUnit ? widthUnit : 'px') &&
-								'' !== previewFixedWidth
-									? previewFixedWidth + (undefined !== widthUnit ? widthUnit : 'px')
-									: undefined,
-						}}
-					>
-						{icon && 'left' === iconSide && (
-							<IconRender
-								className={`kt-btn-svg-icon kt-btn-svg-icon-${icon} kt-btn-side-${iconSide}`}
-								name={icon}
-								size={'1em'}
-								style={{
-									fontSize: previewIconSize
-										? getFontSizeOptionOutput(
-												previewIconSize,
-												undefined !== iconSizeUnit ? iconSizeUnit : 'px'
-										  )
-										: undefined,
-									color: '' !== iconColor ? KadenceColorOutput(iconColor) : undefined,
-									paddingTop: previewIconPaddingTop
-										? getSpacingOptionOutput(previewIconPaddingTop, iconPaddingUnit)
-										: undefined,
-									paddingRight: previewIconPaddingRight
-										? getSpacingOptionOutput(previewIconPaddingRight, iconPaddingUnit)
-										: undefined,
-									paddingBottom: previewIconPaddingBottom
-										? getSpacingOptionOutput(previewIconPaddingBottom, iconPaddingUnit)
-										: undefined,
-									paddingLeft: previewIconPaddingLeft
-										? getSpacingOptionOutput(previewIconPaddingLeft, iconPaddingUnit)
-										: undefined,
-								}}
-							/>
+										background: undefined !== btnbg ? btnbg : undefined,
+										color: undefined !== color ? KadenceColorOutput(color) : undefined,
+										width:
+											undefined !== widthType &&
+											'fixed' === widthType &&
+											'px' === (undefined !== widthUnit ? widthUnit : 'px') &&
+											'' !== previewFixedWidth
+												? previewFixedWidth + (undefined !== widthUnit ? widthUnit : 'px')
+												: undefined,
+									}}
+								>
+									{icon && 'left' === iconSide && (
+										<IconRender
+											className={`kt-btn-svg-icon kt-btn-svg-icon-${icon} kt-btn-side-${iconSide}`}
+											name={icon}
+											size={'1em'}
+											style={{
+												fontSize: previewIconSize
+													? getFontSizeOptionOutput(
+															previewIconSize,
+															undefined !== iconSizeUnit ? iconSizeUnit : 'px'
+													  )
+													: undefined,
+												color: '' !== iconColor ? KadenceColorOutput(iconColor) : undefined,
+												paddingTop: previewIconPaddingTop
+													? getSpacingOptionOutput(previewIconPaddingTop, iconPaddingUnit)
+													: undefined,
+												paddingRight: previewIconPaddingRight
+													? getSpacingOptionOutput(previewIconPaddingRight, iconPaddingUnit)
+													: undefined,
+												paddingBottom: previewIconPaddingBottom
+													? getSpacingOptionOutput(previewIconPaddingBottom, iconPaddingUnit)
+													: undefined,
+												paddingLeft: previewIconPaddingLeft
+													? getSpacingOptionOutput(previewIconPaddingLeft, iconPaddingUnit)
+													: undefined,
+											}}
+										/>
+									)}
+									<RichText
+										tagName="div"
+										placeholder={__('Search', 'kadence-blocks')}
+										value={text}
+										onChange={(value) => setAttributes({ text: value })}
+										allowedFormats={applyFilters(
+											'kadence.whitelist_richtext_formats',
+											[
+												'kadence/insert-dynamic',
+												'core/bold',
+												'core/italic',
+												'core/strikethrough',
+												'toolset/inline-field',
+											],
+											'kadence/advancedbtn'
+										)}
+										className={'kt-button-text'}
+										keepPlaceholderOnFocus
+									/>
+									{icon && 'left' !== iconSide && (
+										<IconRender
+											className={`kt-btn-svg-icon kt-btn-svg-icon-${icon} kt-btn-side-${iconSide}`}
+											name={icon}
+											size={'1em'}
+											style={{
+												fontSize: previewIconSize
+													? getFontSizeOptionOutput(
+															previewIconSize,
+															undefined !== iconSizeUnit ? iconSizeUnit : 'px'
+													  )
+													: undefined,
+												color: '' !== iconColor ? KadenceColorOutput(iconColor) : undefined,
+												paddingTop: previewIconPaddingTop
+													? getSpacingOptionOutput(previewIconPaddingTop, iconPaddingUnit)
+													: undefined,
+												paddingRight: previewIconPaddingRight
+													? getSpacingOptionOutput(previewIconPaddingRight, iconPaddingUnit)
+													: undefined,
+												paddingBottom: previewIconPaddingBottom
+													? getSpacingOptionOutput(previewIconPaddingBottom, iconPaddingUnit)
+													: undefined,
+												paddingLeft: previewIconPaddingLeft
+													? getSpacingOptionOutput(previewIconPaddingLeft, iconPaddingUnit)
+													: undefined,
+											}}
+										/>
+									)}
+									<SpacingVisualizer
+										type="inside"
+										forceShow={paddingMouseOver.isMouseOver}
+										spacing={[
+											getSpacingOptionOutput(previewPaddingTop, paddingUnit),
+											getSpacingOptionOutput(previewPaddingRight, paddingUnit),
+											getSpacingOptionOutput(previewPaddingBottom, paddingUnit),
+											getSpacingOptionOutput(previewPaddingLeft, paddingUnit),
+										]}
+									/>
+								</span>
+								<SpacingVisualizer
+									type="inside"
+									forceShow={marginMouseOver.isMouseOver}
+									spacing={[
+										getSpacingOptionOutput(previewMarginTop, previewMarginUnit),
+										getSpacingOptionOutput(previewMarginRight, previewMarginUnit),
+										getSpacingOptionOutput(previewMarginBottom, previewMarginUnit),
+										getSpacingOptionOutput(previewMarginLeft, previewMarginUnit),
+									]}
+								/>
+								{buttonTypography?.[0]?.google && (
+									<KadenceWebfontLoader
+										typography={buttonTypography}
+										clientId={clientId}
+										id={'buttonTypography'}
+									/>
+								)}
+								{inputTypography?.[0]?.google && (
+									<KadenceWebfontLoader
+										typography={inputTypography}
+										clientId={clientId}
+										id={'inputTypography'}
+									/>
+								)}
+							</div>
 						)}
-						<RichText
-							tagName="div"
-							placeholder={__('Search', 'kadence-blocks')}
-							value={text}
-							onChange={(value) => setAttributes({ text: value })}
-							allowedFormats={applyFilters(
-								'kadence.whitelist_richtext_formats',
-								[
-									'kadence/insert-dynamic',
-									'core/bold',
-									'core/italic',
-									'core/strikethrough',
-									'toolset/inline-field',
-								],
-								'kadence/advancedbtn'
+					</>
+				) : (
+					<>
+						<div className={wrapperClasses}>
+							<span
+								className={btnClassName}
+								style={{
+									paddingTop: previewPaddingTop
+										? getSpacingOptionOutput(previewPaddingTop, paddingUnit)
+										: undefined,
+									paddingRight: previewPaddingRight
+										? getSpacingOptionOutput(previewPaddingRight, paddingUnit)
+										: undefined,
+									paddingBottom: previewPaddingBottom
+										? getSpacingOptionOutput(previewPaddingBottom, paddingUnit)
+										: undefined,
+									paddingLeft: previewPaddingLeft
+										? getSpacingOptionOutput(previewPaddingLeft, paddingUnit)
+										: undefined,
+									marginTop: previewMarginTop
+										? getSpacingOptionOutput(previewMarginTop, previewMarginUnit)
+										: undefined,
+									marginRight: previewMarginRight
+										? getSpacingOptionOutput(previewMarginRight, previewMarginUnit)
+										: undefined,
+									marginBottom: previewMarginBottom
+										? getSpacingOptionOutput(previewMarginBottom, previewMarginUnit)
+										: undefined,
+									marginLeft: previewMarginLeft
+										? getSpacingOptionOutput(previewMarginLeft, previewMarginUnit)
+										: undefined,
+									borderTop: previewBorderTopStyle ? previewBorderTopStyle : undefined,
+									borderRight: previewBorderRightStyle ? previewBorderRightStyle : undefined,
+									borderBottom: previewBorderBottomStyle ? previewBorderBottomStyle : undefined,
+									borderLeft: previewBorderLeftStyle ? previewBorderLeftStyle : undefined,
+									borderTopLeftRadius:
+										'' !== previewRadiusTop
+											? previewRadiusTop + (borderRadiusUnit ? borderRadiusUnit : 'px')
+											: undefined,
+									borderTopRightRadius:
+										'' !== previewRadiusRight
+											? previewRadiusRight + (borderRadiusUnit ? borderRadiusUnit : 'px')
+											: undefined,
+									borderBottomRightRadius:
+										'' !== previewRadiusBottom
+											? previewRadiusBottom + (borderRadiusUnit ? borderRadiusUnit : 'px')
+											: undefined,
+									borderBottomLeftRadius:
+										'' !== previewRadiusLeft
+											? previewRadiusLeft + (borderRadiusUnit ? borderRadiusUnit : 'px')
+											: undefined,
+									boxShadow:
+										undefined !== displayShadow &&
+										displayShadow &&
+										undefined !== shadow &&
+										undefined !== shadow[0] &&
+										undefined !== shadow[0].color
+											? (undefined !== shadow[0].inset && shadow[0].inset ? 'inset ' : '') +
+											  (undefined !== shadow[0].hOffset ? shadow[0].hOffset : 0) +
+											  'px ' +
+											  (undefined !== shadow[0].vOffset ? shadow[0].vOffset : 0) +
+											  'px ' +
+											  (undefined !== shadow[0].blur ? shadow[0].blur : 14) +
+											  'px ' +
+											  (undefined !== shadow[0].spread ? shadow[0].spread : 0) +
+											  'px ' +
+											  KadenceColorOutput(
+													undefined !== shadow[0].color ? shadow[0].color : '#000000',
+													undefined !== shadow[0].opacity ? shadow[0].opacity : 1
+											  )
+											: undefined,
+
+									background: undefined !== btnbg ? btnbg : undefined,
+									color: undefined !== color ? KadenceColorOutput(color) : undefined,
+									width:
+										undefined !== widthType &&
+										'fixed' === widthType &&
+										'px' === (undefined !== widthUnit ? widthUnit : 'px') &&
+										'' !== previewFixedWidth
+											? previewFixedWidth + (undefined !== widthUnit ? widthUnit : 'px')
+											: undefined,
+								}}
+							>
+								{icon && 'left' === iconSide && (
+									<IconRender
+										className={`kt-btn-svg-icon kt-btn-svg-icon-${icon} kt-btn-side-${iconSide}`}
+										name={icon}
+										size={'1em'}
+										style={{
+											fontSize: previewIconSize
+												? getFontSizeOptionOutput(
+														previewIconSize,
+														undefined !== iconSizeUnit ? iconSizeUnit : 'px'
+												  )
+												: undefined,
+											color: '' !== iconColor ? KadenceColorOutput(iconColor) : undefined,
+											paddingTop: previewIconPaddingTop
+												? getSpacingOptionOutput(previewIconPaddingTop, iconPaddingUnit)
+												: undefined,
+											paddingRight: previewIconPaddingRight
+												? getSpacingOptionOutput(previewIconPaddingRight, iconPaddingUnit)
+												: undefined,
+											paddingBottom: previewIconPaddingBottom
+												? getSpacingOptionOutput(previewIconPaddingBottom, iconPaddingUnit)
+												: undefined,
+											paddingLeft: previewIconPaddingLeft
+												? getSpacingOptionOutput(previewIconPaddingLeft, iconPaddingUnit)
+												: undefined,
+										}}
+									/>
+								)}
+								<RichText
+									tagName="div"
+									placeholder={__('Search', 'kadence-blocks')}
+									value={text}
+									onChange={(value) => setAttributes({ text: value })}
+									allowedFormats={applyFilters(
+										'kadence.whitelist_richtext_formats',
+										[
+											'kadence/insert-dynamic',
+											'core/bold',
+											'core/italic',
+											'core/strikethrough',
+											'toolset/inline-field',
+										],
+										'kadence/advancedbtn'
+									)}
+									className={'kt-button-text'}
+									keepPlaceholderOnFocus
+								/>
+								{icon && 'left' !== iconSide && (
+									<IconRender
+										className={`kt-btn-svg-icon kt-btn-svg-icon-${icon} kt-btn-side-${iconSide}`}
+										name={icon}
+										size={'1em'}
+										style={{
+											fontSize: previewIconSize
+												? getFontSizeOptionOutput(
+														previewIconSize,
+														undefined !== iconSizeUnit ? iconSizeUnit : 'px'
+												  )
+												: undefined,
+											color: '' !== iconColor ? KadenceColorOutput(iconColor) : undefined,
+											paddingTop: previewIconPaddingTop
+												? getSpacingOptionOutput(previewIconPaddingTop, iconPaddingUnit)
+												: undefined,
+											paddingRight: previewIconPaddingRight
+												? getSpacingOptionOutput(previewIconPaddingRight, iconPaddingUnit)
+												: undefined,
+											paddingBottom: previewIconPaddingBottom
+												? getSpacingOptionOutput(previewIconPaddingBottom, iconPaddingUnit)
+												: undefined,
+											paddingLeft: previewIconPaddingLeft
+												? getSpacingOptionOutput(previewIconPaddingLeft, iconPaddingUnit)
+												: undefined,
+										}}
+									/>
+								)}
+								<SpacingVisualizer
+									type="inside"
+									forceShow={paddingMouseOver.isMouseOver}
+									spacing={[
+										getSpacingOptionOutput(previewPaddingTop, paddingUnit),
+										getSpacingOptionOutput(previewPaddingRight, paddingUnit),
+										getSpacingOptionOutput(previewPaddingBottom, paddingUnit),
+										getSpacingOptionOutput(previewPaddingLeft, paddingUnit),
+									]}
+								/>
+							</span>
+							<SpacingVisualizer
+								type="inside"
+								forceShow={marginMouseOver.isMouseOver}
+								spacing={[
+									getSpacingOptionOutput(previewMarginTop, previewMarginUnit),
+									getSpacingOptionOutput(previewMarginRight, previewMarginUnit),
+									getSpacingOptionOutput(previewMarginBottom, previewMarginUnit),
+									getSpacingOptionOutput(previewMarginLeft, previewMarginUnit),
+								]}
+							/>
+							{buttonTypography?.[0]?.google && (
+								<KadenceWebfontLoader
+									typography={buttonTypography}
+									clientId={clientId}
+									id={'buttonTypography'}
+								/>
 							)}
-							className={'kt-button-text'}
-							keepPlaceholderOnFocus
-						/>
-						{icon && 'left' !== iconSide && (
-							<IconRender
-								className={`kt-btn-svg-icon kt-btn-svg-icon-${icon} kt-btn-side-${iconSide}`}
-								name={icon}
-								size={'1em'}
-								style={{
-									fontSize: previewIconSize
-										? getFontSizeOptionOutput(
-												previewIconSize,
-												undefined !== iconSizeUnit ? iconSizeUnit : 'px'
-										  )
-										: undefined,
-									color: '' !== iconColor ? KadenceColorOutput(iconColor) : undefined,
-									paddingTop: previewIconPaddingTop
-										? getSpacingOptionOutput(previewIconPaddingTop, iconPaddingUnit)
-										: undefined,
-									paddingRight: previewIconPaddingRight
-										? getSpacingOptionOutput(previewIconPaddingRight, iconPaddingUnit)
-										: undefined,
-									paddingBottom: previewIconPaddingBottom
-										? getSpacingOptionOutput(previewIconPaddingBottom, iconPaddingUnit)
-										: undefined,
-									paddingLeft: previewIconPaddingLeft
-										? getSpacingOptionOutput(previewIconPaddingLeft, iconPaddingUnit)
-										: undefined,
-								}}
-							/>
-						)}
-						<SpacingVisualizer
-							type="inside"
-							forceShow={paddingMouseOver.isMouseOver}
-							spacing={[
-								getSpacingOptionOutput(previewPaddingTop, paddingUnit),
-								getSpacingOptionOutput(previewPaddingRight, paddingUnit),
-								getSpacingOptionOutput(previewPaddingBottom, paddingUnit),
-								getSpacingOptionOutput(previewPaddingLeft, paddingUnit),
-							]}
-						/>
-					</span>
-					<SpacingVisualizer
-						type="inside"
-						forceShow={marginMouseOver.isMouseOver}
-						spacing={[
-							getSpacingOptionOutput(previewMarginTop, previewMarginUnit),
-							getSpacingOptionOutput(previewMarginRight, previewMarginUnit),
-							getSpacingOptionOutput(previewMarginBottom, previewMarginUnit),
-							getSpacingOptionOutput(previewMarginLeft, previewMarginUnit),
-						]}
-					/>
-					{buttonTypography?.[0]?.google && (
-						<KadenceWebfontLoader
-							typography={buttonTypography}
-							clientId={clientId}
-							id={'buttonTypography'}
-						/>
-					)}
-					{inputTypography?.[0]?.google && (
-						<KadenceWebfontLoader typography={inputTypography} clientId={clientId} id={'inputTypography'} />
-					)}
-				</div>
+							{inputTypography?.[0]?.google && (
+								<KadenceWebfontLoader
+									typography={inputTypography}
+									clientId={clientId}
+									id={'inputTypography'}
+								/>
+							)}
+						</div>
+					</>
+				)}
+
 				<SpacingVisualizer
 					style={{
 						marginLeft:

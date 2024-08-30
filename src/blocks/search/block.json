@@ -13,6 +13,10 @@
 			"enum": [ "input", "modal" ],
 			"default": "input"
 		},
+		"showButton": {
+			"type": "boolean",
+			"default": true
+		},
 		"text": {
 			"type": "string",
 			"default": "",
@@ -98,7 +102,7 @@
 			"type": "string",
 			"default": ""
 		},
-		"backgroundHoverType": {
+		"backgroundTypeHover": {
 			"type": "string",
 			"default": "normal"
 		},
@@ -212,7 +216,7 @@
 		},
 		"icon": {
 			"type": "string",
-			"default": ""
+			"default": "fe_search"
 		},
 		"iconColor": {
 			"type": "string",
