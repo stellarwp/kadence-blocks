@@ -1097,7 +1097,7 @@ function StyleControls({ clientId, attributes, setAttributes, isSelected, contex
 						onChange={(value) => saveSliderSettings({ arrowStyle: value })}
 					/>
 					<SelectControl
-						label={__('Dot Style')}
+						label={__('Dot Style', 'kadence-blocks')}
 						options={[
 							{
 								label: __('Dark', 'kadence-blocks'),
@@ -1134,18 +1134,18 @@ function StyleControls({ clientId, attributes, setAttributes, isSelected, contex
 			{'video' === backgroundSettingTab && (
 				<>
 					<SelectControl
-						label={__('Background Video Type')}
+						label={__('Background Video Type', 'kadence-blocks')}
 						options={[
 							{
-								label: __('Local (MP4)'),
+								label: __('Local (MP4)', 'kadence-blocks'),
 								value: 'local',
 							},
 							{
-								label: __('YouTube'),
+								label: __('YouTube', 'kadence-blocks'),
 								value: 'youtube',
 							},
 							{
-								label: __('Vimeo'),
+								label: __('Vimeo', 'kadence-blocks'),
 								value: 'vimeo',
 							},
 						]}
@@ -1462,7 +1462,7 @@ function StyleControls({ clientId, attributes, setAttributes, isSelected, contex
 			)}
 			{'gradient' !== currentOverlayTab && <>{overControls}</>}
 			<SelectControl
-				label={__('Blend Mode')}
+				label={__('Blend Mode', 'kadence-blocks')}
 				value={overlayBlendMode}
 				options={BLEND_OPTIONS}
 				onChange={(value) => setAttributes({ overlayBlendMode: value })}
