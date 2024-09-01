@@ -1559,12 +1559,12 @@ function KadenceCountdown(props) {
 												onChange={(value) => setAttributes({ timeNumbers: value })}
 											/>
 											<TextControl
-												label={__('Countdown Pre Text')}
+												label={__('Countdown Pre Text', 'kadence-blocks')}
 												value={preLabel}
 												onChange={(value) => setAttributes({ preLabel: value })}
 											/>
 											<TextControl
-												label={__('Countdown Post Text')}
+												label={__('Countdown Post Text', 'kadence-blocks')}
 												value={postLabel}
 												onChange={(value) => setAttributes({ postLabel: value })}
 											/>
@@ -1619,22 +1619,22 @@ function KadenceCountdown(props) {
 												)}
 											<h2>{__('Labels', 'kadence-blocks')}</h2>
 											<TextControl
-												label={__('Days Label')}
+												label={__('Days Label', 'kadence-blocks')}
 												value={daysLabel}
 												onChange={(value) => setAttributes({ daysLabel: value })}
 											/>
 											<TextControl
-												label={__('Hours Label')}
+												label={__('Hours Label', 'kadence-blocks')}
 												value={hoursLabel}
 												onChange={(value) => setAttributes({ hoursLabel: value })}
 											/>
 											<TextControl
-												label={__('Minutes Label')}
+												label={__('Minutes Label', 'kadence-blocks')}
 												value={minutesLabel}
 												onChange={(value) => setAttributes({ minutesLabel: value })}
 											/>
 											<TextControl
-												label={__('Seconds Label')}
+												label={__('Seconds Label', 'kadence-blocks')}
 												value={secondsLabel}
 												onChange={(value) => setAttributes({ secondsLabel: value })}
 											/>
