@@ -3083,7 +3083,7 @@ function SectionEdit(props) {
 															context={context}
 														/>
 														<SelectControl
-															label={__('Hover Blend Mode')}
+															label={__('Hover Blend Mode', 'kadence-blocks')}
 															value={
 																hoverOverlayBlendMode ? hoverOverlayBlendMode : 'none'
 															}
