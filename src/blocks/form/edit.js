@@ -2877,7 +2877,7 @@ function KadenceForm(props) {
 							/>
 
 							<div className="kt-btn-size-settings-container">
-								<h2 className="kt-beside-btn-group">{__('Input Size')}</h2>
+								<h2 className="kt-beside-btn-group">{__('Input Size', 'kadence-blocks')}</h2>
 								<ButtonGroup
 									className="kt-button-size-type-options"
 									aria-label={__('Input Size', 'kadence-blocks')}
@@ -3984,7 +3984,7 @@ function KadenceForm(props) {
 								}}
 							</TabPanel>
 							<div className="kt-btn-size-settings-container">
-								<h2 className="kt-beside-btn-group">{__('Button Size')}</h2>
+								<h2 className="kt-beside-btn-group">{__('Button Size', 'kadence-blocks')}</h2>
 								<ButtonGroup
 									className="kt-button-size-type-options"
 									aria-label={__('Button Size', 'kadence-blocks')}
@@ -4089,8 +4089,8 @@ function KadenceForm(props) {
 								</div>
 							)}
 							<div className="kt-btn-size-settings-container">
-								<h2 className="kt-beside-btn-group">{__('Button Width')}</h2>
-								<ButtonGroup className="kt-button-size-type-options" aria-label={__('Button Width')}>
+								<h2 className="kt-beside-btn-group">{__('Button Width', 'kadence-blocks')}</h2>
+								<ButtonGroup className="kt-button-size-type-options" aria-label={__('Button Width', 'kadence-blocks')}>
 									{map(btnWidths, ({ name, key }) => (
 										<Button
 											key={key}
@@ -4108,7 +4108,7 @@ function KadenceForm(props) {
 							{'fixed' === submit[0].widthType && (
 								<div className="kt-inner-sub-section">
 									<h2 className="kt-heading-size-title kt-secondary-color-size">
-										{__('Fixed Width')}
+										{__('Fixed Width', 'kadence-blocks')}
 									</h2>
 									<TabPanel
 										className="kt-size-tabs"
