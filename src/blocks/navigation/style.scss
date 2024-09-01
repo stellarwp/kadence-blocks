@@ -637,33 +637,14 @@
 		}
 
 		//only submenu nav links, don't bleed
-		.menu-item {
-			//active sub menu items
-			&.current-menu-item {
-				& > .kb-link-wrap {
-					--kb-nav-link-color: var(--kb-nav-dropdown-link-color-active);
-				}
-			}
-			&.current-menu-ancestor {
-				& > .kb-link-wrap {
-					--kb-nav-link-color: var(
-						--kb-nav-dropdown-link-color-active-ancestor,
-						var(--kb-nav-link-color-active)
-					);
-				}
-			}
+		& > .menu-item > .kb-link-wrap {
+			--kb-nav-link-color: var(--kb-nav-dropdown-link-color);
+			--kb-nav-link-color-hover: var(--kb-nav-dropdown-link-color-hover);
+			--kb-nav-link-color-active: var(--kb-nav-dropdown-link-color-active);
+			--kb-nav-link-color-active-ancestor: var(--kb-nav-dropdown-link-color-active-ancestor);
 
-			//standard sub menu items
-			& > .kb-link-wrap {
-				--kb-nav-link-color: var(--kb-nav-dropdown-link-color);
-
-				& > .kb-nav-link-content {
-					width: var(--kb-nav-dropdown-link-width);
-
-					&:hover {
-						--kb-nav-link-color: var(--kb-nav-dropdown-link-color-hover);
-					}
-				}
+			& > .kb-nav-link-content {
+				width: var(--kb-nav-dropdown-link-width);
 			}
 		}
 	}
@@ -671,6 +652,14 @@
 	//menu item wrapper
 	.menu-item {
 		border-bottom: var(--kb-nav-link-border-bottom);
+
+		//active nav links (extra specificty to hack correct ordering against direct styling)
+		&.current-menu-item > .kb-link-wrap.kb-link-wrap.kb-link-wrap {
+			--kb-nav-link-color: var(--kb-nav-link-color-active);
+		}
+		&.current-menu-ancestor > .kb-link-wrap.kb-link-wrap.kb-link-wrap {
+			--kb-nav-link-color: var(--kb-nav-link-color-active-ancestor, var(--kb-nav-link-color-active));
+		}
 	}
 
 	// Mega Menu adjustments
@@ -761,28 +750,15 @@
 	}
 
 	//top level nav links only
-	.navigation > .menu-container > .menu > .menu-item {
-		//top level active items
-		&.current-menu-item {
-			& > .kb-link-wrap {
-				--kb-nav-link-color: var(--kb-nav-top-link-color-active);
-			}
-		}
-		&.current-menu-ancestor {
-			& > .kb-link-wrap {
-				--kb-nav-link-color: var(--kb-nav-top-link-color-active-ancestor, var(--kb-nav-top-link-color-active));
-			}
-		}
+	.menu-container > .menu > .menu-item > .kb-link-wrap {
+		--kb-nav-link-color: var(--kb-nav-top-link-color);
+		--kb-nav-link-color-hover: var(--kb-nav-top-link-color-hover);
+		--kb-nav-link-color-active: var(--kb-nav-top-link-color-active);
+		--kb-nav-link-color-active-ancestor: var(--kb-nav-top-link-color-active-ancestor);
 
-		//top level standard items
-		& > .kb-link-wrap {
-			--kb-nav-link-color: var(--kb-nav-top-link-color);
-			--kb-nav-link-color-hover: var(--kb-nav-top-link-color-hover);
-
-			& > .kb-nav-link-content {
-				display: flex;
-				align-items: center;
-			}
+		& > .kb-nav-link-content {
+			display: flex;
+			align-items: center;
 		}
 	}
 

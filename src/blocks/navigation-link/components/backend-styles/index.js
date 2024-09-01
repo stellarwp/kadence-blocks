@@ -643,18 +643,6 @@ export default function BackendStyles(props) {
 		'--kb-nav-dropdown-margin',
 		marginDropdownUnit
 	);
-	css.add_property('--kb-nav-top-link-color', css.render_color(previewLinkColor), previewLinkColor);
-	css.add_property('--kb-nav-top-link-color-hover', css.render_color(previewLinkColorHover), previewLinkColorHover);
-	css.add_property(
-		'--kb-nav-top-link-color-active',
-		css.render_color(previewLinkColorActive),
-		previewLinkColorActive
-	);
-	css.add_property(
-		'--kb-nav-top-link-color-active-ancestor',
-		css.render_color(previewLinkColorActive),
-		previewLinkColorActive
-	);
 	css.add_property(
 		'--kb-nav-dropdown-link-color',
 		css.render_color(previewLinkColorDropdown),
@@ -674,6 +662,17 @@ export default function BackendStyles(props) {
 		'--kb-nav-dropdown-link-color-active-ancestor',
 		css.render_color(previewLinkColorDropdownActive),
 		previewLinkColorDropdownActive
+	);
+
+	//no bleed variables (extra specific to beat things like dropdown or top level styling)
+	css.set_selector(`.kb-nav-link-${uniqueID} > .kb-link-wrap.kb-link-wrap.kb-link-wrap.kb-link-wrap`);
+	css.add_property('--kb-nav-link-color', css.render_color(previewLinkColor), previewLinkColor);
+	css.add_property('--kb-nav-link-color-hover', css.render_color(previewLinkColorHover), previewLinkColorHover);
+	css.add_property('--kb-nav-link-color-active', css.render_color(previewLinkColorActive), previewLinkColorActive);
+	css.add_property(
+		'--kb-nav-link-color-active-ancestor',
+		css.render_color(previewLinkColorActive),
+		previewLinkColorActive
 	);
 
 	css.set_selector(
