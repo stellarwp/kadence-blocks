@@ -1979,17 +1979,17 @@ function KadenceAccordionComponent(props) {
 										tabs={[
 											{
 												name: 'normal',
-												title: __('Normal'),
+												title: __('Normal', 'kadence-blocks'),
 												className: 'kt-normal-tab',
 											},
 											{
 												name: 'hover',
-												title: __('Hover'),
+												title: __('Hover', 'kadence-blocks'),
 												className: 'kt-hover-tab',
 											},
 											{
 												name: 'active',
-												title: __('Active'),
+												title: __('Active', 'kadence-blocks'),
 												className: 'kt-active-tab',
 											},
 										]}
@@ -2356,7 +2356,7 @@ function KadenceAccordionComponent(props) {
 			<div className={classes}>
 				{showPreset && (
 					<div className="kt-select-starter-style-tabs">
-						<div className="kt-select-starter-style-tabs-title">{__('Select Initial Style')}</div>
+						<div className="kt-select-starter-style-tabs-title">{__('Select Initial Style', 'kadence-blocks')}</div>
 						<ButtonGroup
 							className="kt-init-tabs-btn-group"
 							aria-label={__('Initial Style', 'kadence-blocks')}
