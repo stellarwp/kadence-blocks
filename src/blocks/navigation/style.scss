@@ -38,10 +38,13 @@
 @mixin show-sub-menu {
 	opacity: 1;
 	visibility: visible;
-	transform: translate(0, 0);
 	clip: auto;
 	height: auto;
 	overflow: visible;
+
+	left: var(--kb-nav-dropdown-show-left);
+	right: var(--kb-nav-dropdown-show-right);
+	transform: var(--kb-nav-dropdown-show-transform, translate(0, 0));
 }
 
 @mixin navigation-fade-up-styles {
@@ -131,13 +134,14 @@
 		//third level nav
 		.sub-menu {
 			top: 0;
-			left: 100%;
-			right: auto;
+			--kb-nav-dropdown-show-left: 100%;
+			--kb-nav-dropdown-show-right: auto;
+			--kb-nav-dropdown-show-transform: none;
 			min-height: 100%;
 
 			&.sub-menu-edge {
-				left: auto;
-				right: 100%;
+				--kb-nav-dropdown-show-left: auto;
+				--kb-nav-dropdown-show-right: 100%;
 			}
 		}
 
@@ -160,7 +164,7 @@
 		.kb-nav-dropdown-toggle-btn {
 			width: 2.6em;
 			margin: 0;
-			right: 0;
+			right: var(--kb-nav-dropdown-toggle-right, 0);
 
 			&:focus {
 				z-index: 10;
@@ -393,21 +397,20 @@
 				position: relative;
 				&:after {
 					content: "";
-					width: 100%;
+					width: var(--kb-nav-link-underline-width, 100%);
 					position: absolute;
 					bottom: 0px;
 					height: 2px;
 					right: 50%;
 					background: currentColor;
-					transform: scale(0, 0) translate(-50%, 0);
+					transform: var(--kb-nav-link-underline-transform, scale(0, 0) translate(-50%, 0));
 					transition: transform 0.2s ease-in-out, color 0s ease-in-out;
 				}
 				&:hover:after {
 					transform: scale(1, 1) translate(50%, 0);
 				}
 			}
-			&.current-menu-item,
-			&.current-page-item {
+			&.current-menu-item {
 				> .kb-link-wrap > a:after {
 					transform: scale(1, 1) translate(50%, 0);
 				}
@@ -613,6 +616,17 @@
 		margin: var(--kb-nav-dropdown-margin-top, 0) var(--kb-nav-dropdown-margin-right, 0)
 			var(--kb-nav-dropdown-margin-bottom, 0) var(--kb-nav-dropdown-margin-left, 0);
 		transition: all 0.2s ease;
+		background: var(--kb-nav-dropdown-background);
+		border-bottom: var(--kb-nav-dropdown-border-bottom);
+		border-top: var(--kb-nav-dropdown-border-top);
+		border-left: var(--kb-nav-dropdown-border-left);
+		border-right: var(--kb-nav-dropdown-border-right);
+		//these border radius names are a bit weird just because of the way the dynamic render function outputs things.
+		border-top-left-radius: var(--kb-nav-dropdown-border-radius-top);
+		border-top-right-radius: var(--kb-nav-dropdown-border-radius-right);
+		border-bottom-right-radius: var(--kb-nav-dropdown-border-radius-bottom);
+		border-bottom-left-radius: var(--kb-nav-dropdown-border-radius-left);
+		box-shadow: var(--kb-nav-dropdown-box-shadow);
 
 		//sub menus are hidden by default
 		@include hide-sub-menu();
@@ -621,6 +635,42 @@
 		.link-media-container {
 			justify-content: flex-start;
 		}
+
+		//only submenu nav links, don't bleed
+		.menu-item {
+			//active sub menu items
+			&.current-menu-item {
+				& > .kb-link-wrap {
+					--kb-nav-link-color: var(--kb-nav-dropdown-link-color-active);
+				}
+			}
+			&.current-menu-ancestor {
+				& > .kb-link-wrap {
+					--kb-nav-link-color: var(
+						--kb-nav-dropdown-link-color-active-ancestor,
+						var(--kb-nav-link-color-active)
+					);
+				}
+			}
+
+			//standard sub menu items
+			& > .kb-link-wrap {
+				--kb-nav-link-color: var(--kb-nav-dropdown-link-color);
+
+				& > .kb-nav-link-content {
+					width: var(--kb-nav-dropdown-link-width);
+
+					&:hover {
+						--kb-nav-link-color: var(--kb-nav-dropdown-link-color-hover);
+					}
+				}
+			}
+		}
+	}
+
+	//menu item wrapper
+	.menu-item {
+		border-bottom: var(--kb-nav-link-border-bottom);
 	}
 
 	// Mega Menu adjustments
@@ -647,6 +697,11 @@
 		transition: all 0.2s ease-in-out;
 		position: relative;
 		display: flex;
+		color: var(--kb-nav-link-color, inherit);
+
+		&:hover {
+			--kb-nav-link-color: var(--kb-nav-link-color-hover, inherit);
+		}
 	}
 
 	.kb-nav-link-content {
@@ -670,7 +725,7 @@
 
 		&:hover,
 		&:focus {
-			color: var(--kb-nav-link-hover-color, inherit);
+			--kb-nav-link-color: var(--kb-nav-link-color-hover);
 		}
 	}
 
@@ -706,9 +761,29 @@
 	}
 
 	//top level nav links only
-	.navigation > .menu-container > .menu > .menu-item > .kb-link-wrap > .kb-nav-link-content {
-		display: flex;
-		align-items: center;
+	.navigation > .menu-container > .menu > .menu-item {
+		//top level active items
+		&.current-menu-item {
+			& > .kb-link-wrap {
+				--kb-nav-link-color: var(--kb-nav-top-link-color-active);
+			}
+		}
+		&.current-menu-ancestor {
+			& > .kb-link-wrap {
+				--kb-nav-link-color: var(--kb-nav-top-link-color-active-ancestor, var(--kb-nav-top-link-color-active));
+			}
+		}
+
+		//top level standard items
+		& > .kb-link-wrap {
+			--kb-nav-link-color: var(--kb-nav-top-link-color);
+			--kb-nav-link-color-hover: var(--kb-nav-top-link-color-hover);
+
+			& > .kb-nav-link-content {
+				display: flex;
+				align-items: center;
+			}
+		}
 	}
 
 	/*

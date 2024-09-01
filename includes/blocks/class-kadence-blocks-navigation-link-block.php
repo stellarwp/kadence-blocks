@@ -337,17 +337,21 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 		$css->set_media_state( strtolower( $size ) );
 
-		//container
-		$css->set_selector( '.wp-block-kadence-navigation .menu-container > ul > li.menu-item.kb-nav-link-' . $unique_id . ' > .kb-link-wrap > a, .wp-block-kadence-navigation .menu-container > ul > li.menu-item.kb-nav-link-' . $unique_id . ' > .kb-link-wrap' );
-		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColor'] ), $sized_attributes['linkColor'] );
+		//no added specificty needed for these variables
+		//these variable will slot into selectors found in the static stylesheet.
 
-		//container hover
-		$css->set_selector( '.wp-block-kadence-navigation .menu-container > ul > li.menu-item.kb-nav-link-' . $unique_id . ' > .kb-link-wrap:hover > a, .wp-block-kadence-navigation .menu-container > ul > li.menu-item.kb-nav-link-' . $unique_id . ' > .kb-link-wrap:hover' );
-		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorHover'] ) );
+		$css->set_selector( '.kb-nav-link-' . $unique_id );
+		$css->add_property( '--kb-nav-top-link-color', $css->render_color( $sized_attributes['linkColor'] ), $sized_attributes['linkColor'] );		
+		$css->add_property( '--kb-nav-top-link-color-hover', $css->render_color( $sized_attributes['linkColorHover'] ), $sized_attributes['linkColorHover'] );
+		$css->add_property( '--kb-nav-top-link-color-active', $css->render_color( $sized_attributes['linkColorActive']), $sized_attributes['linkColorActive'] );
+		$css->add_property( '--kb-nav-top-link-color-active-ancestor', $css->render_color( $sized_attributes['linkColorActive']), $sized_attributes['parentActive'] && $sized_attributes['linkColorActive'] );
 
-		//container active
-		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container > ul > li.menu-item.current-menu-item.kb-nav-link-' . $unique_id . ' > .kb-link-wrap > a, .wp-block-kadence-navigation .navigation .menu-container > ul > li.menu-item.current-menu-item.kb-nav-link-' . $unique_id . ' > .kb-link-wrap' );
-		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorActive'] ) );
+		$css->add_property( '--kb-nav-dropdown-link-color', $css->render_color( $sized_attributes['linkColorDropdown'] ), $sized_attributes['linkColorDropdown'] );		
+		$css->add_property( '--kb-nav-dropdown-link-color-hover', $css->render_color( $sized_attributes['linkColorDropdownHover'] ), $sized_attributes['linkColorDropdownHover'] );
+		$css->add_property( '--kb-nav-dropdown-link-color-active', $css->render_color( $sized_attributes['linkColorDropdownActive']), $sized_attributes['linkColorDropdownActive'] );
+		$css->add_property( '--kb-nav-dropdown-link-color-active-ancestor', $css->render_color( $sized_attributes['linkColorDropdownActive']), $sized_attributes['parentActive'] && $sized_attributes['linkColorDropdownActive'] );
+
+		//additional dynamic logic, but still lands in a slot in the static stylesheet
 
 		// Styles For Links in Transparent Header.
 		$css->set_selector( '.header-' . strtolower( $size ) . '-transparent .wp-block-kadence-navigation .menu-container > ul > li.menu-item.kb-nav-link-' . $unique_id . ' > .kb-link-wrap > a, .header-' . strtolower( $size ) . '-transparent .wp-block-kadence-navigation .menu-container > ul > li.menu-item.kb-nav-link-' . $unique_id . ' > .kb-link-wrap' );
@@ -383,14 +387,10 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$css->add_property( 'width', $css->render_size( $sized_attributes['dropdownWidth'], $sized_attributes['dropdownWidthUnit'] ) );
 		$css->add_property( 'padding-top', $css->render_size( $sized_attributes['dropdownVerticalSpacing'], $attributes['dropdownVerticalSpacingUnit'] ) );
 		$css->add_property( 'padding-bottom', $css->render_size( $sized_attributes['dropdownVerticalSpacing'], $attributes['dropdownVerticalSpacingUnit'] ) );
-		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-' . $unique_id . ' ul li.menu-item > .kb-link-wrap > a, .wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-' . $unique_id . ' ul.sub-menu ' );
-		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorDropdown']));
 
 		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-' . $unique_id . ' ul li.menu-item > .kb-link-wrap > a:hover' );
-		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorDropdownHover'] ));
 		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundDropdownHover'] ));
 		$css->set_selector( '.wp-block-kadence-navigation.navigation .menu-container ul .kb-nav-link-' . $unique_id . ' ul li.menu-item.current-menu-item > .kb-link-wrap > a' );
-		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorDropdownActive'] ));
 		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundDropdownActive']));
 
 		// Media styles (icons).

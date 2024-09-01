@@ -616,8 +616,9 @@ export default function BackendStyles(props) {
 		previewDevice
 	);
 
-	//non specific styles and variables
-	css.set_selector(`kb-nav-link-${uniqueID}`);
+	//no added specificty needed for these variables
+	//these variable will slot into selectors found in the static stylesheet.
+	css.set_selector(`.kb-nav-link-${uniqueID}`);
 	css.add_property(
 		'--kb-nav-dropdown-link-padding-top',
 		css.render_size(previewDropdownVerticalSpacing, dropdownVerticalSpacingUnit)
@@ -642,11 +643,38 @@ export default function BackendStyles(props) {
 		'--kb-nav-dropdown-margin',
 		marginDropdownUnit
 	);
-
-	css.set_selector(
-		`.wp-block-kadence-navigation .menu-container > ul > li.menu-item.kb-nav-link-${uniqueID} > .kb-link-wrap > a, .wp-block-kadence-navigation .menu-container > ul > li.menu-item.kb-nav-link-${uniqueID} > .kb-link-wrap`
+	css.add_property('--kb-nav-top-link-color', css.render_color(previewLinkColor), previewLinkColor);
+	css.add_property('--kb-nav-top-link-color-hover', css.render_color(previewLinkColorHover), previewLinkColorHover);
+	css.add_property(
+		'--kb-nav-top-link-color-active',
+		css.render_color(previewLinkColorActive),
+		previewLinkColorActive
 	);
-	css.add_property('color', css.render_color(previewLinkColor));
+	css.add_property(
+		'--kb-nav-top-link-color-active-ancestor',
+		css.render_color(previewLinkColorActive),
+		previewLinkColorActive
+	);
+	css.add_property(
+		'--kb-nav-dropdown-link-color',
+		css.render_color(previewLinkColorDropdown),
+		previewLinkColorDropdown
+	);
+	css.add_property(
+		'--kb-nav-dropdown-link-color-hover',
+		css.render_color(previewLinkColorDropdownHover),
+		previewLinkColorDropdownHover
+	);
+	css.add_property(
+		'--kb-nav-dropdown-link-color-active',
+		css.render_color(previewLinkColorDropdownActive),
+		previewLinkColorDropdownActive
+	);
+	css.add_property(
+		'--kb-nav-dropdown-link-color-active-ancestor',
+		css.render_color(previewLinkColorDropdownActive),
+		previewLinkColorDropdownActive
+	);
 
 	css.set_selector(
 		`.wp-block-kadence-navigation .menu-container > ul > li.menu-item.kb-nav-link-${uniqueID} > .kb-link-wrap`
@@ -660,10 +688,6 @@ export default function BackendStyles(props) {
 		css.add_property('color', css.render_color(previewLinkColorSticky));
 		css.add_property('background', css.render_color(previewBackgroundSticky));
 	}
-	css.set_selector(
-		`.wp-block-kadence-navigation .menu-container > ul > li.menu-item.kb-nav-link-${uniqueID} > .kb-link-wrap:hover > a, .wp-block-kadence-navigation .menu-container > ul > li.menu-item.kb-nav-link-${uniqueID} > .kb-link-wrap:hover`
-	);
-	css.add_property('color', css.render_color(previewLinkColorHover));
 
 	css.set_selector(
 		`.wp-block-kadence-navigation .menu-container > ul > li.menu-item.kb-nav-link-${uniqueID} > .kb-link-wrap:hover`
@@ -676,12 +700,6 @@ export default function BackendStyles(props) {
 		css.add_property('color', css.render_color(previewLinkColorStickyHover));
 		css.add_property('background', css.render_color(previewBackgroundStickyHover));
 	}
-
-	css.set_selector(
-		`.wp-block-kadence-navigation .navigation .menu-container > ul > li.menu-item.current-menu-item.kb-nav-link-${uniqueID} > .kb-link-wrap > a,
-		.wp-block-kadence-navigation .navigation .menu-container > ul > li.menu-item.current-menu-item.kb-nav-link-${uniqueID} > .kb-link-wrap`
-	);
-	css.add_property('color', css.render_color(previewLinkColorActive));
 
 	css.set_selector(
 		`.wp-block-kadence-navigation .navigation .menu-container > ul > li.menu-item.current-menu-item.kb-nav-link-${uniqueID} > .kb-link-wrap`
@@ -803,19 +821,10 @@ export default function BackendStyles(props) {
 		marginDropdownLinkUnit
 	);
 
-	css.set_selector(
-		`.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-${uniqueID} ul li.menu-item > .kb-link-wrap > a, .wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-${uniqueID} ul.sub-menu `
-	);
-	css.add_property('color', css.render_color(previewLinkColorDropdown));
-	css.set_selector(
-		`.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-${uniqueID} ul li.menu-item > .kb-link-wrap > a:hover`
-	);
-	css.add_property('color', css.render_color(previewLinkColorDropdownHover));
 	css.add_property('background', css.render_color(previewBackgroundDropdownHover));
 	css.set_selector(
 		`.wp-block-kadence-navigation.navigation .menu-container ul .kb-nav-link-${uniqueID} ul li.menu-item.current-menu-item > .kb-link-wrap > a`
 	);
-	css.add_property('color', css.render_color(previewLinkColorDropdownActive));
 	css.add_property('background', css.render_color(previewBackgroundDropdownActive));
 
 	css.set_selector(

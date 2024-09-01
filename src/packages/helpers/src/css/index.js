@@ -355,8 +355,12 @@ export default class KadenceBlocksCSS {
 	 * @return string
 	 */
 	render_half_size(value, unit = null) {
-		var size_number = !this.empty(value) ? value : '0';
-		var size_unit = !this.empty(unit) ? unit : 'em';
+		if (this.empty(value) && value !== 0 && value != '0') {
+			return false;
+		}
+
+		var size_number = value ? value : '0';
+		var size_unit = unit ? unit : 'em';
 
 		var size_string = 'calc(' + size_number + size_unit + ' / 2)';
 
