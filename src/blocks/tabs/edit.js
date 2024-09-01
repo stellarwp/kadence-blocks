@@ -844,7 +844,7 @@ function KadenceTabs(props) {
 				))}
 			</ButtonGroup>
 			<p className="kadence-control-title" style={{ marginTop: '24px', marginBottom: '5px' }}>
-				{__('Set initial Open Tab')}
+				{__('Set initial Open Tab', 'kadence-blocks')}
 			</p>
 			<Select
 				value={initialTabOptions.filter(function (option) {
@@ -1549,17 +1549,17 @@ function KadenceTabs(props) {
 										tabs={[
 											{
 												name: 'normal',
-												title: __('Normal'),
+												title: __('Normal', 'kadence-blocks'),
 												className: 'kt-normal-tab',
 											},
 											{
 												name: 'hover',
-												title: __('Hover'),
+												title: __('Hover', 'kadence-blocks'),
 												className: 'kt-hover-tab',
 											},
 											{
 												name: 'active',
-												title: __('Active'),
+												title: __('Active', 'kadence-blocks'),
 												className: 'kt-active-tab',
 											},
 										]}
@@ -1678,12 +1678,12 @@ function KadenceTabs(props) {
 												tabs={[
 													{
 														name: 'normal',
-														title: __('Normal'),
+														title: __('Normal', 'kadence-blocks'),
 														className: 'kt-normal-tab',
 													},
 													{
 														name: 'percent',
-														title: __('% Width'),
+														title: __('% Width', 'kadence-blocks'),
 														className: 'kt-hover-tab',
 													},
 												]}
