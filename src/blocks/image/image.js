@@ -1290,7 +1290,7 @@ export default function Image({
 									</>
 								)}
 								<SelectControl
-									label={__('Blend Mode')}
+									label={__('Blend Mode', 'kadence-blocks')}
 									value={overlayBlendMode ? overlayBlendMode : 'none'}
 									options={BLEND_OPTIONS}
 									onChange={(value) => setAttributes({ overlayBlendMode: value })}
