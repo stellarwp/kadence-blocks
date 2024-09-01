@@ -797,7 +797,7 @@ export default function GalleryEdit(props) {
 									wrap={true}
 									hideLabel={true}
 									label={
-										__('Gallery Type:') +
+										__('Gallery Type:', 'kadence-blocks') +
 										' ' +
 										(undefined !== typeLabel && undefined !== typeLabel[0] && typeLabel[0].label
 											? typeLabel[0].label
