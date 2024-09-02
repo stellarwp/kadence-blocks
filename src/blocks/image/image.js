@@ -564,7 +564,7 @@ export default function Image({
 						}}
 						icon={captionIcon}
 						isPressed={stateShowCaption}
-						label={stateShowCaption ? __('Remove caption') : __('Add caption')}
+						label={stateShowCaption ? __('Remove caption', 'kadence-blocks') : __('Add caption', 'kadence-blocks')}
 					/>
 				)}
 				{!isEditingImage && !isDynamic && !isDynamicLink && (
@@ -593,7 +593,7 @@ export default function Image({
 						context={context}
 					/>
 				)}
-				{allowCrop && <ToolbarButton onClick={() => setIsEditingImage(true)} icon={crop} label={__('Crop')} />}
+				{allowCrop && <ToolbarButton onClick={() => setIsEditingImage(true)} icon={crop} label={__('Crop', 'kadence-blocks')} />}
 				{externalBlob && !isDynamic && (
 					<ToolbarButton
 						onClick={uploadExternal}
@@ -1445,11 +1445,11 @@ export default function Image({
 	} else if (filename) {
 		defaultedAlt = sprintf(
 			/* translators: %s: file name */
-			__('This image has an empty alt attribute; its file name is %s'),
+			__('This image has an empty alt attribute; its file name is %s', 'kadence-blocks'),
 			filename
 		);
 	} else {
-		defaultedAlt = __('This image has an empty alt attribute');
+		defaultedAlt = __('This image has an empty alt attribute', 'kadence-blocks');
 	}
 	let hasMask = false;
 	let theMaskRepeat = 'no-repeat';
