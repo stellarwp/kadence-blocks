@@ -613,12 +613,12 @@ function KadenceIconLists(props) {
 							</KadencePanelBody>
 							{showSettings('textStyle', 'kadence/iconlist') && (
 								<KadencePanelBody
-									title={__('Text Styling')}
+									title={__('Text Styling', 'kadence-blocks')}
 									initialOpen={false}
 									panelName={'kb-list-text-styling'}
 								>
 									<PopColorControl
-										label={__('Color')}
+										label={__('Color', 'kadence-blocks')}
 										value={listStyles[0].color ? listStyles[0].color : ''}
 										default={''}
 										onChange={(value) => {
@@ -665,12 +665,12 @@ function KadenceIconLists(props) {
 							)}
 
 							<KadencePanelBody
-								title={__('Link Styling')}
+								title={__('Link Styling', 'kadence-blocks')}
 								initialOpen={false}
 								panelName={'kb-list-link-styling'}
 							>
 								<PopColorControl
-									label={__('Link Color')}
+									label={__('Link Color', 'kadence-blocks')}
 									value={linkColor}
 									default={''}
 									onChange={(value) => {
