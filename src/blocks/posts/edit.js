@@ -814,7 +814,7 @@ function KadencePosts(props) {
 											/>
 											{authorImage && (
 												<RangeControl
-													label={__('Author Image Size')}
+													label={__('Author Image Size', 'kadence-blocks')}
 													value={authorImageSize}
 													onChange={(value) => setAttributes({ authorImageSize: value })}
 													min={5}
@@ -1083,7 +1083,7 @@ function KadencePosts(props) {
 						>
 							<a
 								href={'#'}
-								dangerouslySetInnerHTML={{ __html: post.title.rendered.trim() || __('(Untitled)') }}
+								dangerouslySetInnerHTML={{ __html: post.title.rendered.trim() || __('(Untitled)', 'kadence-blocks') }}
 							/>
 						</HtmlTagOut>
 						{meta && (
