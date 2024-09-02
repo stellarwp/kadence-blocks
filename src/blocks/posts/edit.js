@@ -833,7 +833,7 @@ function KadencePosts(props) {
 											/>
 											{authorEnabledLabel && (
 												<TextControl
-													label={__('Author Label')}
+													label={__('Author Label', 'kadence-blocks')}
 													value={authorLabel ? authorLabel : __('By', 'kadence-blocks')}
 													onChange={(value) => setAttributes({ authorLabel: value })}
 												/>
@@ -854,7 +854,7 @@ function KadencePosts(props) {
 											/>
 											{dateEnabledLabel && (
 												<TextControl
-													label={__('Date Label')}
+													label={__('Date Label', 'kadence-blocks')}
 													value={dateLabel ? dateLabel : __('Posted On', 'kadence-blocks')}
 													onChange={(value) => setAttributes({ dateLabel: value })}
 												/>
@@ -875,7 +875,7 @@ function KadencePosts(props) {
 											/>
 											{dateUpdatedEnabledLabel && (
 												<TextControl
-													label={__('Modified Date Label')}
+													label={__('Modified Date Label', 'kadence-blocks')}
 													value={
 														dateUpdatedLabel
 															? dateUpdatedLabel
@@ -904,7 +904,7 @@ function KadencePosts(props) {
 													/>
 													{metaCategoriesEnabledLabel && (
 														<TextControl
-															label={__('Categories Label')}
+															label={__('Categories Label', 'kadence-blocks')}
 															value={
 																metaCategoriesLabel
 																	? metaCategoriesLabel
