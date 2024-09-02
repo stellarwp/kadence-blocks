@@ -1088,7 +1088,7 @@ export default function GalleryEdit(props) {
 										)}
 										{thumbnailControl && thumbnailControl === 'individual' && (
 											<>
-												<h4>{__('Columns')}</h4>
+												<h4>{__('Columns', 'kadence-blocks')}</h4>
 												<RangeControl
 													label={__('Screen Above 1500px', 'kadence-blocks')}
 													value={thumbnailColumns[0]}
@@ -1407,11 +1407,11 @@ export default function GalleryEdit(props) {
 														label={__('Slides to Scroll', 'kadence-blocks')}
 														options={[
 															{
-																label: __('One'),
+																label: __('One', 'kadence-blocks'),
 																value: '1',
 															},
 															{
-																label: __('All'),
+																label: __('All', 'kadence-blocks'),
 																value: 'all',
 															},
 														]}
@@ -1750,12 +1750,12 @@ export default function GalleryEdit(props) {
 											tabs={[
 												{
 													name: 'normal',
-													title: __('Normal'),
+													title: __('Normal', 'kadence-blocks'),
 													className: 'kt-normal-tab',
 												},
 												{
 													name: 'hover',
-													title: __('Hover'),
+													title: __('Hover', 'kadence-blocks'),
 													className: 'kt-hover-tab',
 												},
 											]}
