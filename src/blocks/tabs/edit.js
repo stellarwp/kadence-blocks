@@ -620,11 +620,11 @@ function KadenceTabs(props) {
 		});
 	};
 	const startlayoutOptions = [
-		{ key: 'skip', name: __('Skip'), icon: __('Skip') },
-		{ key: 'simple', name: __('Simple'), icon: tabsSimpleIcon },
-		{ key: 'boldbg', name: __('Boldbg'), icon: tabsBoldIcon },
-		{ key: 'center', name: __('Center'), icon: tabsCenterIcon },
-		{ key: 'vertical', name: __('Vertical'), icon: tabsVerticalIcon },
+		{ key: 'skip', name: __('Skip', 'kadence-blocks'), icon: __('Skip', 'kadence-blocks') },
+		{ key: 'simple', name: __('Simple', 'kadence-blocks'), icon: tabsSimpleIcon },
+		{ key: 'boldbg', name: __('Boldbg', 'kadence-blocks'), icon: tabsBoldIcon },
+		{ key: 'center', name: __('Center', 'kadence-blocks'), icon: tabsCenterIcon },
+		{ key: 'vertical', name: __('Vertical', 'kadence-blocks'), icon: tabsVerticalIcon },
 	];
 	const setInitalLayout = (key) => {
 		if ('skip' === key) {
@@ -776,13 +776,13 @@ function KadenceTabs(props) {
 		(previewDevice == 'Mobile' && mobileLayout == 'accordion');
 
 	const mLayoutOptions = [
-		{ value: 'tabs', label: __('Tabs'), icon: tabsIcon },
-		{ value: 'vtabs', label: __('Vertical Tabs'), icon: vTabsIcon },
-		{ value: 'accordion', label: __('Accordion'), icon: accordionIcon },
+		{ value: 'tabs', label: __('Tabs', 'kadence-blocks'), icon: tabsIcon },
+		{ value: 'vtabs', label: __('Vertical Tabs', 'kadence-blocks'), icon: vTabsIcon },
+		{ value: 'accordion', label: __('Accordion', 'kadence-blocks'), icon: accordionIcon },
 	];
 	const layoutOptions = [
-		{ value: 'tabs', label: __('Tabs'), icon: tabsIcon },
-		{ value: 'vtabs', label: __('Vertical Tabs'), icon: vTabsIcon },
+		{ value: 'tabs', label: __('Tabs', 'kadence-blocks'), icon: tabsIcon },
+		{ value: 'vtabs', label: __('Vertical Tabs', 'kadence-blocks'), icon: vTabsIcon },
 	];
 
 	const initialTabOptions = times(titles.length, (n) => {
