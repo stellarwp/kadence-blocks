@@ -1569,12 +1569,12 @@ function KadenceAdvancedButton(props) {
 							tabs={[
 								{
 									name: 'normal' + index,
-									title: __('Normal'),
+									title: __('Normal', 'kadence-blocks'),
 									className: 'kt-normal-tab',
 								},
 								{
 									name: 'hover' + index,
-									title: __('Hover'),
+									title: __('Hover', 'kadence-blocks'),
 									className: 'kt-hover-tab',
 								},
 							]}
@@ -1597,7 +1597,7 @@ function KadenceAdvancedButton(props) {
 						</TabPanel>
 						<h2>{__('Border Settings', 'kadence-blocks')}</h2>
 						<RangeControl
-							label={__('Border Width')}
+							label={__('Border Width', 'kadence-blocks')}
 							value={btns[index].borderWidth}
 							onChange={(value) => {
 								saveArrayUpdate({ borderWidth: value }, index);
@@ -1959,8 +1959,8 @@ function KadenceAdvancedButton(props) {
 							label={__('Icon Location', 'kadence-blocks')}
 							value={btns[index].iconSide}
 							options={[
-								{ value: 'right', label: __('Right') },
-								{ value: 'left', label: __('Left') },
+								{ value: 'right', label: __('Right', 'kadence-blocks') },
+								{ value: 'left', label: __('Left', 'kadence-blocks') },
 							]}
 							onChange={(value) => {
 								saveArrayUpdate({ iconSide: value }, index);
