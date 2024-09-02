@@ -2583,7 +2583,7 @@ const v3 = {
 						<div className="kb-background-video-buttons-wrapper kb-background-video-buttons-html5">
 							<button
 								className="kb-background-video-play kb-toggle-video-btn"
-								aria-label={__('Play')}
+								aria-label={__('Play', 'kadence-blocks')}
 								aria-hidden="true"
 								style="display: none;"
 							>
@@ -2599,7 +2599,7 @@ const v3 = {
 							</button>
 							<button
 								className="kb-background-video-pause kb-toggle-video-btn"
-								aria-label={__('Pause')}
+								aria-label={__('Pause', 'kadence-blocks')}
 								aria-hidden="false"
 							>
 								<svg
@@ -2616,7 +2616,7 @@ const v3 = {
 								<Fragment>
 									<button
 										className="kb-background-video-unmute kb-toggle-video-btn"
-										aria-label={__('Unmute')}
+										aria-label={__('Unmute', 'kadence-blocks')}
 										aria-hidden="true"
 										style="display: none;"
 									>
@@ -2632,7 +2632,7 @@ const v3 = {
 									</button>
 									<button
 										className="kb-background-video-mute kb-toggle-video-btn"
-										aria-label={__('Mute')}
+										aria-label={__('Mute', 'kadence-blocks')}
 										aria-hidden="false"
 									>
 										<svg
