@@ -429,23 +429,23 @@ function KadenceAdvancedButton(props) {
 	const marginMax = marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200;
 	const marginStep = marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1;
 	const btnSizes = [
-		{ key: 'small', name: __('S') },
-		{ key: 'standard', name: __('M') },
-		{ key: 'large', name: __('L') },
+		{ key: 'small', name: __('S', 'kadence-blocks') },
+		{ key: 'standard', name: __('M', 'kadence-blocks') },
+		{ key: 'large', name: __('L', 'kadence-blocks') },
 		{ key: 'custom', name: <Icon icon={cog} /> },
 	];
 	const btnWidths = [
-		{ key: 'auto', name: __('Auto') },
-		{ key: 'fixed', name: __('Fixed') },
-		{ key: 'full', name: __('Full') },
+		{ key: 'auto', name: __('Auto', 'kadence-blocks') },
+		{ key: 'fixed', name: __('Fixed', 'kadence-blocks') },
+		{ key: 'full', name: __('Full', 'kadence-blocks') },
 	];
 	const gradTypes = [
-		{ key: 'linear', name: __('Linear') },
-		{ key: 'radial', name: __('Radial') },
+		{ key: 'linear', name: __('Linear', 'kadence-blocks') },
+		{ key: 'radial', name: __('Radial', 'kadence-blocks') },
 	];
 	const bgType = [
-		{ key: 'solid', name: __('Solid') },
-		{ key: 'gradient', name: __('Gradient') },
+		{ key: 'solid', name: __('Solid', 'kadence-blocks') },
+		{ key: 'gradient', name: __('Gradient', 'kadence-blocks') },
 	];
 	const config = googleFont ? gconfig : '';
 	const renderBtns = (index) => {
@@ -1245,7 +1245,7 @@ function KadenceAdvancedButton(props) {
 							units={['px', 'em', 'rem']}
 						/>
 						<div className="kt-btn-size-settings-container">
-							<h2 className="kt-beside-btn-group">{__('Button Size')}</h2>
+							<h2 className="kt-beside-btn-group">{__('Button Size', 'kadence-blocks')}</h2>
 							<ButtonGroup
 								className="kt-button-size-type-options"
 								aria-label={__('Button Size', 'kadence-blocks')}
