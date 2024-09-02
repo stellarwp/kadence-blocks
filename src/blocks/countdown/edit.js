@@ -1352,7 +1352,7 @@ function KadenceCountdown(props) {
 														step={1}
 													/>
 													<TextControl
-														label={__('Campaign ID')}
+														label={__('Campaign ID', 'kadence-blocks')}
 														help={__(
 															'Create a unique ID. To reset the timer for everyone change this id. To link with other timers give them all the same ID.',
 															'kadence-blocks'
