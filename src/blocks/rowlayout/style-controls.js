@@ -650,7 +650,7 @@ function StyleControls({ clientId, attributes, setAttributes, isSelected, contex
 			{mobileOverlay && mobileOverlay[0] && mobileOverlay[0].enable && (
 				<>
 					<RangeControl
-						label={__('Overlay Opacity')}
+						label={__('Overlay Opacity', 'kadence-blocks')}
 						value={mobileOverlay && mobileOverlay[0] ? mobileOverlay[0].overlayOpacity : 30}
 						onChange={(value) => {
 							saveMobileOverlay({
@@ -844,7 +844,7 @@ function StyleControls({ clientId, attributes, setAttributes, isSelected, contex
 					)}
 					{'gradient' !== tabletOverlay[0].currentOverlayTab && overTabControls}
 					<SelectControl
-						label={__('Blend Mode')}
+						label={__('Blend Mode', 'kadence-blocks')}
 						value={tabletOverlay && tabletOverlay[0] ? tabletOverlay[0].overlayBlendMode : 'none'}
 						options={BLEND_OPTIONS}
 						onChange={(value) => saveTabletOverlay({ overlayBlendMode: value })}
