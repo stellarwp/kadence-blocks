@@ -112,6 +112,11 @@ import BackendStyles from './components/backend-styles';
 import addNavLink from '../navigation/helpers/addNavLink';
 import { buildTemplateFromSelection } from './helpers';
 
+/**
+ * Import Css
+ */
+import './editor.scss';
+
 const DEFAULT_BLOCK = { name: 'kadence/navigation-link' };
 const ALLOWED_MEDIA_TYPES = ['image'];
 
