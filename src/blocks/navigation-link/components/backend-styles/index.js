@@ -608,9 +608,9 @@ export default function BackendStyles(props) {
 			borderRadiusBase: 'borderRadius',
 			borderRadiusUnitBase: 'borderRadiusUnit',
 			shadowBase: 'shadow',
-			selector: `.wp-block-kadence-navigation .menu-container > ul > li.menu-item.kb-nav-link-${uniqueID} > .kb-link-wrap`,
-			selectorHover: `.wp-block-kadence-navigation .menu-container > ul > li.menu-item.kb-nav-link-${uniqueID} > .kb-link-wrap:hover`,
-			selectorActive: `.wp-block-kadence-navigation .navigation .menu-container > ul > li.menu-item.current-menu-item.kb-nav-link-${uniqueID} > .kb-link-wrap`,
+			selector: `.kb-nav-link-${uniqueID} > .kb-link-wrap.kb-link-wrap.kb-link-wrap.kb-link-wrap `,
+			selectorHover: `.kb-nav-link-${uniqueID} > .kb-link-wrap:hover > .kb-nav-link-content`,
+			selectorActive: `.current-menu-item.kb-nav-link-${uniqueID} > .kb-link-wrap > .kb-nav-link-content`,
 		},
 		attributes,
 		previewDevice
@@ -619,14 +619,6 @@ export default function BackendStyles(props) {
 	//no added specificty needed for these variables
 	//these variable will slot into selectors found in the static stylesheet.
 	css.set_selector(`.kb-nav-link-${uniqueID}`);
-	css.add_property(
-		'--kb-nav-dropdown-link-padding-top',
-		css.render_size(previewDropdownVerticalSpacing, dropdownVerticalSpacingUnit)
-	);
-	css.add_property(
-		'--kb-nav-dropdown-link-padding-bottom',
-		css.render_size(previewDropdownVerticalSpacing, dropdownVerticalSpacingUnit)
-	);
 	css.render_measure_output(
 		paddingDropdown,
 		tabletPaddingDropdown,
@@ -663,6 +655,19 @@ export default function BackendStyles(props) {
 		css.render_color(previewLinkColorDropdownActive),
 		previewLinkColorDropdownActive
 	);
+	css.add_property('--kb-nav-dropdown-background', css.render_color(previewBackgroundDropdown));
+
+	css.add_property('--kb-nav-dropdown-link-background-hover', css.render_color(previewBackgroundDropdownHover));
+	css.add_property('--kb-nav-dropdown-link-background-active', css.render_color(previewBackgroundDropdownActive));
+	css.add_property('width', previewDropdownWidth + dropdownWidthUnit);
+	css.add_property(
+		'--kb-nav-dropdown-link-padding-top',
+		css.render_size(previewDropdownVerticalSpacing, dropdownVerticalSpacingUnit)
+	);
+	css.add_property(
+		'--kb-nav-dropdown-link-padding-bottom',
+		css.render_size(previewDropdownVerticalSpacing, dropdownVerticalSpacingUnit)
+	);
 
 	//no bleed variables (extra specific to beat things like dropdown or top level styling)
 	css.set_selector(`.kb-nav-link-${uniqueID} > .kb-link-wrap.kb-link-wrap.kb-link-wrap.kb-link-wrap`);
@@ -673,6 +678,15 @@ export default function BackendStyles(props) {
 		'--kb-nav-link-color-active-ancestor',
 		css.render_color(previewLinkColorActive),
 		previewLinkColorActive
+	);
+
+	//placement logic where an additional selector is needed
+	css.set_selector(
+		`.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-${uniqueID} ul li:not(:last-of-type), .wp-block-kadence-navigation .menu-container ul.menu li.kb-nav-link-${uniqueID}.kadence-menu-mega-enabled > ul > li.menu-item > a`
+	);
+	css.add_property(
+		'--kb-nav-menu-item-border-bottom',
+		css.render_border(dropdownDivider, dropdownDividerTablet, dropdownDividerMobile, previewDevice, 'bottom')
 	);
 
 	css.set_selector(
@@ -764,8 +778,6 @@ export default function BackendStyles(props) {
 	css.set_selector(
 		`.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-${uniqueID} ul.sub-menu, .wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-${uniqueID} ul.submenu`
 	);
-	css.add_property('width', previewDropdownWidth + dropdownWidthUnit);
-	css.add_property('background', css.render_color(previewBackgroundDropdown));
 
 	css.add_property(
 		'border-top',
@@ -791,13 +803,6 @@ export default function BackendStyles(props) {
 		'border-radius',
 		dropdownBorderRadiusUnit
 	);
-	css.set_selector(
-		`.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-${uniqueID} ul li:not(:last-of-type), .wp-block-kadence-navigation .menu-container ul.menu li.kb-nav-link-${uniqueID}.kadence-menu-mega-enabled > ul > li.menu-item > a`
-	);
-	css.add_property(
-		'border-bottom',
-		css.render_border(dropdownDivider, dropdownDividerTablet, dropdownDividerMobile, previewDevice, 'bottom')
-	);
 
 	//dropdown nav link
 	css.set_selector(`.kb-nav-link-${uniqueID} .sub-menu li.menu-item > .kb-link-wrap > a`);
@@ -819,12 +824,6 @@ export default function BackendStyles(props) {
 		'--kb-nav-link-margin',
 		marginDropdownLinkUnit
 	);
-
-	css.add_property('background', css.render_color(previewBackgroundDropdownHover));
-	css.set_selector(
-		`.wp-block-kadence-navigation.navigation .menu-container ul .kb-nav-link-${uniqueID} ul li.menu-item.current-menu-item > .kb-link-wrap > a`
-	);
-	css.add_property('background', css.render_color(previewBackgroundDropdownActive));
 
 	css.set_selector(
 		`.wp-block-kadence-navigation .navigation .menu-container > ul li.kb-nav-link-${uniqueID} > .kb-link-wrap.kb-link-wrap.kb-link-wrap > a`

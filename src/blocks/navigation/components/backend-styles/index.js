@@ -454,7 +454,10 @@ export default function BackendStyles(props) {
 		css.render_color(previewLinkColorDropdownActive),
 		previewParentActive && previewLinkColorDropdownActive
 	);
+
 	css.add_property('--kb-nav-dropdown-background', css.render_color(previewBackgroundDropdown));
+	css.add_property('--kb-nav-dropdown-link-background-hover', css.render_color(previewBackgroundDropdownHover));
+	css.add_property('--kb-nav-dropdown-link-background-active', css.render_color(previewBackgroundDropdownActive));
 
 	css.add_property(
 		'--kb-nav-dropdown-border-top',
@@ -509,6 +512,9 @@ export default function BackendStyles(props) {
 	}
 
 	if (previewOrientation != 'vertical') {
+		css.add_property('--kb-nav-dropdown-link-width', css.render_size(previewDropdownWidth, dropdownWidthUnit));
+		css.add_property('--kb-nav-top-not-last-link-border-right', dividerValue);
+
 		if (dropdownShadow?.[0]?.enable) {
 			css.add_property('--kb-nav-dropdown-box-shadow', css.render_shadow(dropdownShadow[0]));
 		}
@@ -521,9 +527,9 @@ export default function BackendStyles(props) {
 		} else if (previewDropdownHorizontalAlignment == 'right') {
 			css.add_property('--kb-nav-dropdown-show-right', '0');
 		}
-	}
-	if (previewOrientation != 'vertical') {
-		css.add_property('--kb-nav-dropdown-link-width', css.render_size(previewDropdownWidth, dropdownWidthUnit));
+	} else {
+		css.add_property('--kb-nav-link-border-bottom', dividerValue);
+		css.add_property('--kb-nav-dropdown-toggle-border-left', dividerValue);
 	}
 
 	//placement logic where an additional selector is needed
@@ -639,7 +645,6 @@ export default function BackendStyles(props) {
 	}
 
 	css.set_selector(containerActiveSelector);
-	css.add_property('background', css.render_color(previewBackgroundActive));
 	if (context?.['kadence/headerIsTransparent'] == '1') {
 		css.add_property('background', css.render_color(previewBackgroundTransparentActive));
 	}
@@ -649,7 +654,7 @@ export default function BackendStyles(props) {
 
 	//can't do a slot/css var with this one. "right" messes with the margin-inline positioning.
 	css.set_selector(
-		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > ul > li.menu-item .kb-nav-dropdown-toggle-btn`
+		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > .menu > .menu-item .kb-nav-dropdown-toggle-btn`
 	);
 	css.add_property('right', css.render_half_size(previewNavigationHorizontalSpacing, spacingUnit));
 
@@ -661,7 +666,7 @@ export default function BackendStyles(props) {
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li:not(:last-of-type), .wp-block-kadence-navigation${uniqueID} .menu-container ul.menu > li.kadence-menu-mega-enabled > ul > li.menu-item > a`
 	);
-	css.add_property('--kb-nav-link-border-bottom', dropdownDividerValue);
+	css.add_property('--kb-nav-menu-item-border-bottom', dropdownDividerValue);
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li.menu-item > .kb-link-wrap > a`
 	);
@@ -690,19 +695,9 @@ export default function BackendStyles(props) {
 		marginDropdownLinkUnit
 	);
 
-	css.set_selector(
-		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul ul li.menu-item > .kb-link-wrap > a:hover`
-	);
-	css.add_property('background', css.render_color(previewBackgroundDropdownHover));
-	css.set_selector(
-		`.wp-block-kadence-navigation${uniqueID}.navigation .menu-container ul ul li.menu-item.current-menu-item > .kb-link-wrap > a`
-	);
-	css.add_property('background', css.render_color(previewBackgroundDropdownActive));
-
 	//New Logic for block
 	if (previewOrientation == 'vertical') {
 		css.set_selector(`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container ul li .kb-link-wrap`);
-		css.add_property('border-bottom', dividerValue);
 		if (context?.['kadence/headerIsTransparent'] == '1') {
 			css.add_property('border-bottom', transparentDividerValue);
 		}
@@ -712,7 +707,6 @@ export default function BackendStyles(props) {
 		css.set_selector(
 			`.wp-block-kadence-navigation${uniqueID} .navigation:not(.drawer-navigation-parent-toggle-true) ul li .kb-link-wrap button`
 		);
-		css.add_property('border-left', dividerValue);
 		if (context?.['kadence/headerIsTransparent'] == '1') {
 			css.add_property('border-left', transparentDividerValue);
 		}
@@ -723,7 +717,6 @@ export default function BackendStyles(props) {
 		css.set_selector(
 			`.wp-block-kadence-navigation${uniqueID} .navigation > .menu-container > ul > li:not(:last-of-type) > .kb-link-wrap`
 		);
-		css.add_property('border-right', dividerValue);
 		if (context?.['kadence/headerIsTransparent'] == '1') {
 			css.add_property('border-right', transparentDividerValue);
 		}

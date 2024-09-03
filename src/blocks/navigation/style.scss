@@ -111,7 +111,7 @@
 		position: absolute;
 		top: 100%;
 		flex-direction: column;
-		background: #fff;
+		background: var(--kb-nav-dropdown-background, #fff);
 		margin-left: 0;
 		z-index: 1000;
 		width: initial;
@@ -642,6 +642,10 @@
 			--kb-nav-link-color-hover: var(--kb-nav-dropdown-link-color-hover);
 			--kb-nav-link-color-active: var(--kb-nav-dropdown-link-color-active);
 			--kb-nav-link-color-active-ancestor: var(--kb-nav-dropdown-link-color-active-ancestor);
+			--kb-nav-link-background-hover: var(--kb-nav-dropdown-link-background-hover);
+			--kb-nav-link-background-active: var(--kb-nav-dropdown-link-background-active);
+			--kb-nav-link-padding-top: var(--kb-nav-dropdown-link-padding-top);
+			--kb-nav-link-padding-bottom: var(--kb-nav-dropdown-link-padding-bottom);
 
 			& > .kb-nav-link-content {
 				width: var(--kb-nav-dropdown-link-width);
@@ -651,14 +655,19 @@
 
 	//menu item wrapper
 	.menu-item {
-		border-bottom: var(--kb-nav-link-border-bottom);
+		border-bottom: var(--kb-nav-menu-item-border-bottom);
 
 		//active nav links (extra specificty to hack correct ordering against direct styling)
 		&.current-menu-item > .kb-link-wrap.kb-link-wrap.kb-link-wrap {
 			--kb-nav-link-color: var(--kb-nav-link-color-active);
+			--kb-nav-link-background: var(--kb-nav-link-background-active);
 		}
 		&.current-menu-ancestor > .kb-link-wrap.kb-link-wrap.kb-link-wrap {
 			--kb-nav-link-color: var(--kb-nav-link-color-active-ancestor, var(--kb-nav-link-color-active));
+			--kb-nav-link-background: var(
+				--kb-nav-link-background-active-ancestor,
+				var(--kb-nav-link-background-active)
+			);
 		}
 	}
 
@@ -687,15 +696,19 @@
 		position: relative;
 		display: flex;
 		color: var(--kb-nav-link-color, inherit);
+		border-right: var(--kb-nav-link-border-right);
+		border-bottom: var(--kb-nav-link-border-bottom);
 
 		&:hover {
 			--kb-nav-link-color: var(--kb-nav-link-color-hover, inherit);
+			--kb-nav-link-background: var(--kb-nav-link-background-hover, inherit);
 		}
 	}
 
 	.kb-nav-link-content {
 		display: block;
 		color: var(--kb-nav-link-color, inherit);
+		background: var(--kb-nav-link-background, inherit);
 		text-decoration: none;
 		transition: all 0.2s ease-in-out;
 		transform: translate(0, 0);
@@ -715,6 +728,7 @@
 		&:hover,
 		&:focus {
 			--kb-nav-link-color: var(--kb-nav-link-color-hover);
+			--kb-nav-link-background: var(--kb-nav-link-background-hover);
 		}
 	}
 
@@ -727,6 +741,7 @@
 		margin-inline-end: calc(var(--kb-nav-drop-icon-width, 1.6em) * -1);
 		inset-inline-end: calc(calc(var(--kb-nav-drop-icon-width, 1.6em) + var(--kb-nav-link-padding-right, 0.5em)));
 		border: 0;
+		border-left: var(--kb-nav-dropdown-toggle-border-left);
 		width: var(--kb-nav-drop-icon-width, 1.6em);
 		height: auto;
 		border-radius: 0;
@@ -750,15 +765,26 @@
 	}
 
 	//top level nav links only
-	.menu-container > .menu > .menu-item > .kb-link-wrap {
-		--kb-nav-link-color: var(--kb-nav-top-link-color);
-		--kb-nav-link-color-hover: var(--kb-nav-top-link-color-hover);
-		--kb-nav-link-color-active: var(--kb-nav-top-link-color-active);
-		--kb-nav-link-color-active-ancestor: var(--kb-nav-top-link-color-active-ancestor);
+	.menu-container > .menu > .menu-item {
+		& > .kb-link-wrap {
+			--kb-nav-link-color: var(--kb-nav-top-link-color);
+			--kb-nav-link-color-hover: var(--kb-nav-top-link-color-hover);
+			--kb-nav-link-color-active: var(--kb-nav-top-link-color-active);
+			--kb-nav-link-color-active-ancestor: var(--kb-nav-top-link-color-active-ancestor);
+			--kb-nav-link-background: var(--kb-nav-top-link-background);
+			--kb-nav-link-background-hover: var(--kb-nav-top-link-background-hover);
+			--kb-nav-link-background-active: var(--kb-nav-top-link-background-active);
+			--kb-nav-link-background-active-ancestor: var(--kb-nav-top-link-background-active-ancestor);
 
-		& > .kb-nav-link-content {
-			display: flex;
-			align-items: center;
+			& > .kb-nav-link-content {
+				display: flex;
+				align-items: center;
+			}
+
+			//not last top links
+			&:not(:last-of-type) > .kb-link-wrap {
+				--kb-nav-link-border-right: var(--kb-nav-top-not-last-link-border-right);
+			}
 		}
 	}
 
