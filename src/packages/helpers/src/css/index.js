@@ -765,7 +765,7 @@ export default class KadenceBlocksCSS {
 				'px ' +
 				(!this.empty(value['spread']) ? value['spread'] : '0') +
 				'px ' +
-				(!this.empty(value['color']) ? this.render_color(value['color']) : 'rgba(0,0,0,0.0)');
+				(!this.empty(value['color']) ? this.render_color(value['color'], ( value?.['opacity'] ? value?.['opacity'] : null )) : 'rgba(0,0,0,0.0)');
 		} else {
 			shadowString =
 				(!this.empty(value['hOffset']) ? value['hOffset'] : '0') +
@@ -776,7 +776,7 @@ export default class KadenceBlocksCSS {
 				'px ' +
 				(!this.empty(value['spread']) ? value['spread'] : '0') +
 				'px ' +
-				(!this.empty(value['color']) ? this.render_color(value['color']) : 'rgba(0,0,0,0.0)');
+				(!this.empty(value['color']) ? this.render_color(value['color'], ( value?.['opacity'] ? value?.['opacity'] : null )) : 'rgba(0,0,0,0.0)');
 		}
 
 		return shadowString;
