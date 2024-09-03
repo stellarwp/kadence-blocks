@@ -648,7 +648,7 @@
 			--kb-nav-link-padding-bottom: var(--kb-nav-dropdown-link-padding-bottom);
 
 			& > .kb-nav-link-content {
-				width: var(--kb-nav-dropdown-link-width);
+				width: var(--kb-nav-dropdown-link-width, 200px);
 			}
 		}
 	}

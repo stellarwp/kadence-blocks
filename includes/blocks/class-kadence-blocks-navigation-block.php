@@ -82,10 +82,13 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$css->set_media_state( 'desktop' );
 	
-		//no added specificty needed for these variables
+		// No added specificty needed for these variables.
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id );
-		$css->render_measure_output( $nav_attributes, 'marginDropdown', '--kb-nav-dropdown-margin', ['unit_key' => 'marginDropdownUnit']);
-		$css->render_measure_output( $nav_attributes, 'paddingDropdown', '--kb-nav-dropdown-padding', ['unit_key' => 'paddingDropdownUnit']);
+		$css->render_measure_output( $nav_attributes, 'marginDropdown', '--kb-nav-dropdown-margin', [ 'unit_key' => 'marginDropdownUnit' ] );
+		$css->render_measure_output( $nav_attributes, 'paddingDropdown', '--kb-nav-dropdown-padding', [ 'unit_key' => 'paddingDropdownUnit' ] );
+		if ( isset( $nav_attributes['dropdownShadow'][0]['enable'] ) && $nav_attributes['dropdownShadow'][0]['enable'] ) {
+			$css->add_property( '--kb-nav-dropdown-box-shadow', $css->render_shadow( $nav_attributes['dropdownShadow'][0] ) );
+		}
 
 		//main container (don't apply to children)
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' > .navigation > .menu-container > .menu');
@@ -178,12 +181,15 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		if ( $sized_attributes['orientation'] != 'vertical' ) {
+<<<<<<< Updated upstream
 			$css->add_property( '--kb-nav-dropdown-link-width', $css->render_size( $sized_attributes['dropdownWidth'], $sized_attributes['dropdownWidthUnit'] ) );
 			$css->add_property( '--kb-nav-top-not-last-link-border-right', $css->render_border( $sized_attributes['divider'], 'bottom' ) );
 
 			if ( $sized_attributes['dropdownShadow'] && isset( $sized_attributes['dropdownShadow'][0] ) && $sized_attributes['dropdownShadow'][0]['enable'] ) {
 				$css->add_property( '--kb-nav-dropdown-box-shadow', $css->render_shadow( $sized_attributes['dropdownShadow'][0] ) );
 			}
+=======
+>>>>>>> Stashed changes
 
 			if ( $sized_attributes['dropdownHorizontalAlignment'] == 'center' ) {
 				$css->add_property( '--kb-nav-dropdown-show-left', '50%' );
