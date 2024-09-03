@@ -112,6 +112,11 @@ import BackendStyles from './components/backend-styles';
 import addNavLink from '../navigation/helpers/addNavLink';
 import { buildTemplateFromSelection } from './helpers';
 
+/**
+ * Import Css
+ */
+import './editor.scss';
+
 const DEFAULT_BLOCK = { name: 'kadence/navigation-link' };
 const ALLOWED_MEDIA_TYPES = ['image'];
 
@@ -1121,8 +1126,8 @@ export default function Edit(props) {
 								<ToggleControl
 									label={
 										isMegaMenu
-											? __('Show Mega Menu', 'kadence-blocks')
-											: __('Show Sub Menu', 'kadence-blocks')
+											? __('Freeze Mega Menu Preview', 'kadence-blocks')
+											: __('Freeze Sub Menu Preview', 'kadence-blocks')
 									}
 									checked={showSubMenus}
 									onChange={(value) => setShowSubMenus(value)}
