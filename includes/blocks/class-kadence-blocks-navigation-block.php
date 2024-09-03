@@ -181,15 +181,8 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		if ( $sized_attributes['orientation'] != 'vertical' ) {
-<<<<<<< Updated upstream
 			$css->add_property( '--kb-nav-dropdown-link-width', $css->render_size( $sized_attributes['dropdownWidth'], $sized_attributes['dropdownWidthUnit'] ) );
 			$css->add_property( '--kb-nav-top-not-last-link-border-right', $css->render_border( $sized_attributes['divider'], 'bottom' ) );
-
-			if ( $sized_attributes['dropdownShadow'] && isset( $sized_attributes['dropdownShadow'][0] ) && $sized_attributes['dropdownShadow'][0]['enable'] ) {
-				$css->add_property( '--kb-nav-dropdown-box-shadow', $css->render_shadow( $sized_attributes['dropdownShadow'][0] ) );
-			}
-=======
->>>>>>> Stashed changes
 
 			if ( $sized_attributes['dropdownHorizontalAlignment'] == 'center' ) {
 				$css->add_property( '--kb-nav-dropdown-show-left', '50%' );
