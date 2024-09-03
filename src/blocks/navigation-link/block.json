@@ -734,13 +734,13 @@
 			"type": "array",
 			"default": [
 				{
-					"enable": true,
+					"enable": false,
 					"color": "#000000",
-					"opacity": 0.2,
+					"opacity": 0.1,
 					"spread": 0,
-					"blur": 2,
-					"hOffset": 1,
-					"vOffset": 1,
+					"blur": 13,
+					"hOffset": 0,
+					"vOffset": 2,
 					"inset": false
 				}
 			]

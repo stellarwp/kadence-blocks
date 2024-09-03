@@ -307,6 +307,7 @@ export default function Edit(props) {
 		iconSideTablet,
 		iconSideMobile,
 		align,
+		dropdownShadow,
 		kadenceDynamic,
 	} = attributes;
 

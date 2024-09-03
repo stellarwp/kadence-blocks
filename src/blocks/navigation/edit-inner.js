@@ -1264,9 +1264,9 @@ export function EditInner(props) {
 
 									<ResponsiveRangeControls
 										label={__('Dropdown Width', 'kadence-blocks')}
-										value={parseFloat(dropdownWidth)}
-										valueTablet={parseFloat(dropdownWidthTablet)}
-										valueMobile={parseFloat(dropdownWidthMobile)}
+										value={dropdownWidth ? parseFloat(dropdownWidth) : ''}
+										valueTablet={dropdownWidthTablet ? parseFloat(dropdownWidthTablet) : ''}
+										valueMobile={dropdownWidthMobile ? parseFloat(dropdownWidthMobile) : ''}
 										onChange={(value) => setMetaAttribute(value.toString(), 'dropdownWidth')}
 										onChangeTablet={(value) =>
 											setMetaAttribute(value.toString(), 'dropdownWidthTablet')
@@ -1293,9 +1293,13 @@ export function EditInner(props) {
 							)}
 							<ResponsiveRangeControls
 								label={__('Dropdown Item Vertical Spacing', 'kadence-blocks')}
-								value={parseFloat(dropdownVerticalSpacing)}
-								valueTablet={parseFloat(dropdownVerticalSpacingTablet)}
-								valueMobile={parseFloat(dropdownVerticalSpacingMobile)}
+								value={dropdownVerticalSpacing ? parseFloat(dropdownVerticalSpacing) : ''}
+								valueTablet={
+									dropdownVerticalSpacingTablet ? parseFloat(dropdownVerticalSpacingTablet) : ''
+								}
+								valueMobile={
+									dropdownVerticalSpacingMobile ? parseFloat(dropdownVerticalSpacingMobile) : ''
+								}
 								onChange={(value) => setMetaAttribute(value.toString(), 'dropdownVerticalSpacing')}
 								onChangeTablet={(value) =>
 									setMetaAttribute(value.toString(), 'dropdownVerticalSpacingTablet')
