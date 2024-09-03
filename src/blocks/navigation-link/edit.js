@@ -1121,8 +1121,8 @@ export default function Edit(props) {
 								<ToggleControl
 									label={
 										isMegaMenu
-											? __('Show Mega Menu', 'kadence-blocks')
-											: __('Show Sub Menu', 'kadence-blocks')
+											? __('Freeze Mega Menu Preview', 'kadence-blocks')
+											: __('Freeze Sub Menu Preview', 'kadence-blocks')
 									}
 									checked={showSubMenus}
 									onChange={(value) => setShowSubMenus(value)}
