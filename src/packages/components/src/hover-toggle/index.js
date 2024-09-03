@@ -39,6 +39,8 @@ export default function HoverToggleControl({
 	icon = hoverToggle,
 	activeIcon = click,
 	tabUI = true,
+	setActivePreview,
+	activePreview,
 }) {
 	const [isHover, setIsHover] = useState(initial === 'hover' ? true : false);
 	const [isActive, setIsActive] = useState(initial === 'active' ? true : false);
@@ -78,7 +80,26 @@ export default function HoverToggleControl({
 							if ('hover' === tab.name) {
 								return <>{hover}</>;
 							} else if ('active' === tab.name) {
-								return <>{active}</>;
+								return (
+									<>
+										{setActivePreview && (
+											<Button
+												className={'kb-hover-toggle-active-preview'}
+												isPressed={activePreview}
+												text={
+													activePreview
+														? __('Hide Active State', 'kadence-blocks')
+														: __('Preview Active State', 'kadence-blocks')
+												}
+												onClick={() => {
+													setActivePreview(!activePreview);
+												}}
+												variant="secondary"
+											></Button>
+										)}
+										{active}
+									</>
+								);
 							} else {
 								return <>{normal}</>;
 							}

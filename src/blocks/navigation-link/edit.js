@@ -315,6 +315,7 @@ export default function Edit(props) {
 	const [showSubMenus, setShowSubMenus] = useState(false);
 	const [megaMenuOnboardingStep, setMegaMenuOnboardingStep] = useState('design');
 	const [megaMenuColumnChoice, setMegaMenuColumnChoice] = useState('');
+	const [activePreview, setActivePreview] = useState(false);
 
 	const [isInvalid, isDraft] = useIsInvalidLink(kind, type, id);
 	const { maxNestingLevel } = context;
@@ -594,7 +595,7 @@ export default function Edit(props) {
 			'has-media': mediaType && mediaType != 'none',
 			'menu-item-has-children': hasChildren,
 			'menu-item--toggled-on': showSubMenusWithLogic,
-			'current-menu-item': hasNoBlockBefore,
+			'current-menu-item': activePreview,
 			'kadence-menu-mega-enabled': isMegaMenu,
 			[`${megaMenuWidthClass}`]: isMegaMenu,
 			'kadence-menu-has-icon': mediaType == 'icon',
@@ -1050,7 +1051,16 @@ export default function Edit(props) {
 				)}
 
 				{activeTab === 'style' && (
-					<>{applyFilters('kadence.styleControlsNavigationLink', styleControls, props, hasChildren)}</>
+					<>
+						{applyFilters(
+							'kadence.styleControlsNavigationLink',
+							styleControls,
+							props,
+							hasChildren,
+							setActivePreview,
+							activePreview
+						)}
+					</>
 				)}
 
 				{activeTab === 'advanced' && (
