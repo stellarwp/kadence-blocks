@@ -655,11 +655,16 @@ export default function BackendStyles(props) {
 		css.render_color(previewLinkColorDropdownActive),
 		previewLinkColorDropdownActive
 	);
+	if (dropdownShadow?.[0]?.enable) {
+		css.add_property('--kb-nav-dropdown-box-shadow', css.render_shadow(dropdownShadow[0]));
+	}
 	css.add_property('--kb-nav-dropdown-background', css.render_color(previewBackgroundDropdown));
 
 	css.add_property('--kb-nav-dropdown-link-background-hover', css.render_color(previewBackgroundDropdownHover));
 	css.add_property('--kb-nav-dropdown-link-background-active', css.render_color(previewBackgroundDropdownActive));
-	css.add_property('width', previewDropdownWidth + dropdownWidthUnit);
+	if (previewDropdownWidth) {
+		css.add_property('width', previewDropdownWidth + dropdownWidthUnit);
+	}
 	css.add_property(
 		'--kb-nav-dropdown-link-padding-top',
 		css.render_size(previewDropdownVerticalSpacing, dropdownVerticalSpacingUnit)

@@ -1235,7 +1235,6 @@ export default function Edit(props) {
 							)}
 							{mediaContent}
 							{description && <span className="menu-label-description">{description}</span>}
-							{/* {hasChildren && <span className="kb-nav-dropdown-toggle">{ArrowDown}</span>} */}
 						</span>
 						{hasHighlightLabel && (
 							<span className="link-highlight-label">

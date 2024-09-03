@@ -115,16 +115,16 @@
 		margin-left: 0;
 		z-index: 1000;
 		width: initial;
-
+		box-shadow: var(--kb-nav-dropdown-box-shadow, 0 2px 13px 0 rgba(0, 0, 0, 0.1));
 		--kb-nav-link-padding-top: 1em;
 		--kb-nav-link-padding-right: 1em;
 		--kb-nav-link-padding-bottom: 1em;
 		--kb-nav-link-padding-left: 1em;
 
-		//sub menus that aren't mega get a default box shadow
-		&:not(.mega-menu) {
-			box-shadow: var(--kb-nav-dropdown-box-shadow, 0 2px 13px 0 rgba(0, 0, 0, 0.1));
-		}
+		// //sub menus that aren't mega get a default box shadow
+		// &:not(.mega-menu) {
+		// 	box-shadow: var(--kb-nav-dropdown-box-shadow, 0 2px 13px 0 rgba(0, 0, 0, 0.1));
+		// }
 
 		&.sub-menu-edge {
 			left: auto;
@@ -162,9 +162,10 @@
 
 		//horizontal sub menu toggles
 		.kb-nav-dropdown-toggle-btn {
-			width: 2.6em;
-			margin: 0;
-			right: var(--kb-nav-dropdown-toggle-right, 0);
+			width: calc(var(--kb-nav-drop-icon-width, 1.6em) + var(--kb-nav-link-padding-right, 0.5em));
+			margin-inline-end: calc(
+				(var(--kb-nav-drop-icon-width, 1.6em) + var(--kb-nav-link-padding-right, 0.5em)) * -1
+			);
 
 			&:focus {
 				z-index: 10;
@@ -173,7 +174,8 @@
 	}
 
 	// Handle Reveal Animation for horizontal navs, hover only
-	.menu-item:hover > .sub-menu {
+	.menu-item:hover > .sub-menu,
+	.menu-item.menu-item--toggled-on > .sub-menu {
 		@include show-sub-menu();
 	}
 
@@ -197,16 +199,9 @@
 	}
 	// This makes the dropdowns work a little better on a touch device.
 	@media (hover: none) {
-		.menu-item--has-toggle:not(.menu-item--toggled-on) {
+		.menu-item--has-toggle {
 			.kb-nav-dropdown-toggle-btn {
-				left: 0;
-				right: 0;
-				margin-right: 0;
-				width: 100%;
 				pointer-events: all;
-			}
-			& > .kb-link-wrap > a {
-				pointer-events: none;
 			}
 		}
 	}
@@ -284,6 +279,7 @@
 	.sub-menu {
 		padding-left: 1em;
 		transition: all 0.2s ease-in-out;
+		box-shadow: none;
 
 		.menu-item > .kb-link-wrap > a {
 			width: 100%;
