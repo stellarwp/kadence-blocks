@@ -123,7 +123,7 @@
 
 		//sub menus that aren't mega get a default box shadow
 		&:not(.mega-menu) {
-			box-shadow: 0 2px 13px rgba(0, 0, 0, 0.1);
+			box-shadow: var(--kb-nav-dropdown-box-shadow, 0 2px 13px 0 rgba(0, 0, 0, 0.1));
 		}
 
 		&.sub-menu-edge {
@@ -626,7 +626,6 @@
 		border-top-right-radius: var(--kb-nav-dropdown-border-radius-right);
 		border-bottom-right-radius: var(--kb-nav-dropdown-border-radius-bottom);
 		border-bottom-left-radius: var(--kb-nav-dropdown-border-radius-left);
-		box-shadow: var(--kb-nav-dropdown-box-shadow);
 
 		//sub menus are hidden by default
 		@include hide-sub-menu();
