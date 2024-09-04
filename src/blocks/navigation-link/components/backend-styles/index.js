@@ -757,7 +757,11 @@ export default function BackendStyles(props) {
 			css.set_selector(
 				`.wp-block-kadence-navigation .menu-container ul.menu .kb-nav-link-${uniqueID} > ul.sub-menu`
 			);
-			css.add_property('width', editorWidth + 'px');
+			if (editorElement?.clientWidth) {
+				css.add_property('width', editorElement.clientWidth + 'px');
+			} else {
+				css.add_property('width', '100vw');
+			}
 			css.add_property(
 				'left',
 				-1 *
