@@ -58,7 +58,7 @@
 	 * @param {boolean} forceToggle Force the menu toggle.
 	 * @return {void}
 	 */
-	const toggleSubMenu = function (parentMenuItem, forceToggle) {
+	const toggleSubMenu = function (parentMenuItem, forceToggle = null, isVertical = false) {
 		const toggleButton = parentMenuItem.querySelector('.kb-nav-dropdown-toggle-btn'),
 			subMenu = parentMenuItem.querySelector('ul.sub-menu');
 		let parentMenuItemToggled = parentMenuItem.classList.contains('menu-item--toggled-on');
@@ -85,10 +85,12 @@
 				toggleSubMenu(subMenuItemsToggled[i], false);
 			}
 		} else {
-			// Make sure siblings are closed.
-			var parentMenuItemsToggled = parentMenuItem.parentNode.querySelectorAll('li.menu-item--toggled-on');
-			for (let i = 0; i < parentMenuItemsToggled.length; i++) {
-				toggleSubMenu(parentMenuItemsToggled[i], false);
+			if (!isVertical) {
+				// Make sure siblings are closed.
+				var parentMenuItemsToggled = parentMenuItem.parentNode.querySelectorAll('li.menu-item--toggled-on');
+				for (let i = 0; i < parentMenuItemsToggled.length; i++) {
+					toggleSubMenu(parentMenuItemsToggled[i], false);
+				}
 			}
 
 			// Toggle "on" the submenu.
@@ -145,16 +147,24 @@
 			// Toggle the submenu when we click the dropdown button.
 			submenus[i].parentNode.querySelector('.kb-nav-dropdown-toggle-btn').addEventListener('click', function (e) {
 				e.preventDefault();
-				toggleSubMenu(submenus[i].parentNode);
+				toggleSubMenu(submenus[i].parentNode, null, nav.classList.contains('is-vertical'));
 			});
 
 			// Clean up the toggle if a mouse takes over from keyboard.
 			submenus[i].parentNode.addEventListener('mouseleave', function (e) {
+				// If we're vertical, we don't need to do anything.
+				if (nav.classList.contains('is-vertical')) {
+					return;
+				}
 				toggleSubMenu(e.target, false);
 			});
 
 			// When we focus on a menu link, make sure all siblings are closed.
 			submenus[i].parentNode.querySelector('a').addEventListener('focus', function (e) {
+				// If we're vertical, we don't need to do anything.
+				if (nav.classList.contains('is-vertical')) {
+					return;
+				}
 				var parentMenuItemsToggled =
 					e.target.parentNode.parentNode.querySelectorAll('li.menu-item--toggled-on');
 				for (let j = 0; j < parentMenuItemsToggled.length; j++) {
@@ -166,6 +176,10 @@
 
 			// Handle keyboard accessibility for traversing menu.
 			submenus[i].addEventListener('keydown', function (e) {
+				// If we're vertical, we don't need to do anything.
+				if (nav.classList.contains('is-vertical')) {
+					return;
+				}
 				// These specific selectors help us only select items that are visible.
 				var focusSelector =
 					'ul.toggle-show > li > .kb-link-wrap > a, ul.toggle-show > li > .kb-link-wrap > .kb-nav-dropdown-toggle-btn';
