@@ -45,6 +45,14 @@
 	left: var(--kb-nav-dropdown-show-left);
 	right: var(--kb-nav-dropdown-show-right);
 	transform: var(--kb-nav-dropdown-show-transform, translate(0, 0));
+	border-bottom: var(--kb-nav-dropdown-border-bottom);
+	border-top: var(--kb-nav-dropdown-border-top);
+	border-left: var(--kb-nav-dropdown-border-left);
+	border-right: var(--kb-nav-dropdown-border-right);
+	padding: var(--kb-nav-dropdown-padding-top, 0) var(--kb-nav-dropdown-padding-right, 0)
+		var(--kb-nav-dropdown-padding-bottom, 0) var(--kb-nav-dropdown-padding-left, 0);
+	margin: var(--kb-nav-dropdown-margin-top, 0) var(--kb-nav-dropdown-margin-right, 0)
+		var(--kb-nav-dropdown-margin-bottom, 0) var(--kb-nav-dropdown-margin-left, 0);
 }
 
 @mixin navigation-fade-up-styles {
@@ -116,15 +124,6 @@
 		z-index: 1000;
 		width: initial;
 		box-shadow: var(--kb-nav-dropdown-box-shadow, 0 2px 13px 0 rgba(0, 0, 0, 0.1));
-		--kb-nav-link-padding-top: 1em;
-		--kb-nav-link-padding-right: 1em;
-		--kb-nav-link-padding-bottom: 1em;
-		--kb-nav-link-padding-left: 1em;
-
-		// //sub menus that aren't mega get a default box shadow
-		// &:not(.mega-menu) {
-		// 	box-shadow: var(--kb-nav-dropdown-box-shadow, 0 2px 13px 0 rgba(0, 0, 0, 0.1));
-		// }
 
 		&.sub-menu-edge {
 			left: auto;
@@ -147,9 +146,6 @@
 
 		//sub menu menu items
 		& > li {
-			& > .kb-link-wrap > a {
-				width: 200px;
-			}
 			& > .kb-link-wrap .kb-nav-arrow-svg {
 				transform: rotate(270deg);
 			}
@@ -173,7 +169,7 @@
 		}
 	}
 
-	// Handle Reveal Animation for horizontal navs, hover only
+	// Handle Reveal Animation for horizontal navs, hover and triggered via arrow.
 	.menu-item:hover > .sub-menu,
 	.menu-item.menu-item--toggled-on > .sub-menu {
 		@include show-sub-menu();
@@ -271,14 +267,11 @@
 	ul {
 		display: block;
 		list-style: none;
-		margin: 0;
-		padding: 0;
 	}
 
 	//sub menus
 	.sub-menu {
-		padding-left: 1em;
-		transition: all 0.2s ease-in-out;
+		--kb-nav-dropdown-margin-left: 1em;
 		box-shadow: none;
 
 		.menu-item > .kb-link-wrap > a {
@@ -288,7 +281,7 @@
 
 	//if we get this deep stop indenting
 	ul .sub-menu .sub-menu .sub-menu .sub-menu ul {
-		padding-left: 0;
+		--kb-nav-dropdown-margin-left: 0;
 	}
 
 	.kb-nav-link-content {
@@ -597,7 +590,7 @@
 		margin: var(--kb-nav-margin-top, 0) var(--kb-nav-margin-right, 0) var(--kb-nav-margin-bottom, 0)
 			var(--kb-nav-margin-left, 0);
 
-		//show a sub menu when this menu is toggled or gains focus
+		//show a sub menu when this menu is toggled or gains focus if no js.
 		.menu-item--toggled-on > .sub-menu,
 		li:not(.menu-item--has-toggle):focus > .sub-menu {
 			@include show-sub-menu();
@@ -607,16 +600,10 @@
 	.sub-menu {
 		display: block;
 		list-style: none;
-		padding: var(--kb-nav-dropdown-padding-top, 0) var(--kb-nav-dropdown-padding-right, 0)
-			var(--kb-nav-dropdown-padding-bottom, 0) var(--kb-nav-dropdown-padding-left, 0);
-		margin: var(--kb-nav-dropdown-margin-top, 0) var(--kb-nav-dropdown-margin-right, 0)
-			var(--kb-nav-dropdown-margin-bottom, 0) var(--kb-nav-dropdown-margin-left, 0);
-		transition: all 0.2s ease;
+		padding: 0;
+		margin: 0;
+		transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
 		background: var(--kb-nav-dropdown-background);
-		border-bottom: var(--kb-nav-dropdown-border-bottom);
-		border-top: var(--kb-nav-dropdown-border-top);
-		border-left: var(--kb-nav-dropdown-border-left);
-		border-right: var(--kb-nav-dropdown-border-right);
 		//these border radius names are a bit weird just because of the way the dynamic render function outputs things.
 		border-top-left-radius: var(--kb-nav-dropdown-border-radius-top);
 		border-top-right-radius: var(--kb-nav-dropdown-border-radius-right);
