@@ -20,7 +20,7 @@ export default function ZoomDropdown() {
 			renderToggle={({ isOpen, onToggle }) => (
 				<ToolbarButton
 					icon={search}
-					label={__('Zoom')}
+					label={__('Zoom', 'kadence-blocks')}
 					onClick={onToggle}
 					aria-expanded={isOpen}
 					disabled={isInProgress}
@@ -28,7 +28,7 @@ export default function ZoomDropdown() {
 			)}
 			renderContent={() => (
 				<RangeControl
-					label={__('Zoom')}
+					label={__('Zoom', 'kadence-blocks')}
 					min={MIN_ZOOM}
 					max={MAX_ZOOM}
 					value={Math.round(zoom)}
