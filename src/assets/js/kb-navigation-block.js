@@ -267,7 +267,27 @@
 		}
 	};
 	/**
-	 * Initiate the script to toggle cart when product is added.
+	 * Initiate the script to process all
+	 * navigation menus inside the offcanvas.
+	 */
+	const initMobileToggleSub = function () {
+		var modalMenus = document.querySelectorAll(
+			'.kb-off-canvas-inner .wp-block-kadence-navigation .menu-item-has-children'
+		);
+		// No point if no submenus.
+		if (!modalMenus.length) {
+			return;
+		}
+
+		for (let i = 0; i < modalMenus.length; i++) {
+			var activeMenuItem = modalMenus[i].querySelector('.current-menu-item');
+			if (activeMenuItem) {
+				toggleSubMenu(modalMenus[i], true);
+			}
+		}
+	};
+	/**
+	 * Initiate the script to handle fullwith mega menus.
 	 */
 	const initFullSubMenuSize = function () {
 		var megaMenus = document.querySelectorAll(
@@ -309,4 +329,5 @@
 	// Initialize immediately for already loaded DOM
 	initNavigation();
 	initFullSubMenuSize();
+	initMobileToggleSub();
 })();
