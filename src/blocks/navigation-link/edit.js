@@ -479,6 +479,7 @@ export default function Edit(props) {
 	function doMegaMenuEnable(value) {
 		if (value) {
 			//enable
+			replaceInnerBlocks(clientId, []);
 			setAttributes({ isMegaMenu: true });
 		} else {
 			//disable
