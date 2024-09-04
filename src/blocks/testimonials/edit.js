@@ -1286,7 +1286,7 @@ function KadenceTestimonials(props) {
 		{ key: 'inlineimage', name: __('Image In Content', 'kadence-blocks'), icon: testimonialInLineIcon },
 	];
 	const startlayoutOptions = [
-		{ key: 'skip', name: __('Skip', 'kadence-blocks'), icon: __('Skip') },
+		{ key: 'skip', name: __('Skip', 'kadence-blocks'), icon: __('Skip', 'kadence-blocks') },
 		{ key: 'basic', name: __('Basic', 'kadence-blocks'), icon: testimonialBasicIcon },
 		{ key: 'card', name: __('Card', 'kadence-blocks'), icon: testimonialCardIcon },
 		{ key: 'bubble', name: __('Bubble', 'kadence-blocks'), icon: testimonialBubbleIcon },
