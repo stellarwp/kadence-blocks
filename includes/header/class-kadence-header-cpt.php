@@ -121,6 +121,16 @@ class Kadence_Blocks_Header_CPT_Controller {
 	padding: 0;
 }
 :where(.post-type-kadence_header) :where(.wp-block) {max-width: none;} :where(.post-type-kadence_header) :where(.editor-styles-wrapper) :where(.wp-block) {max-width: none;}';
+		global $content_width;
+		if ( isset( $content_width ) ) {
+			if ( class_exists( 'Kadence\Theme' ) ) {
+				$output .= '.kb-header-container { --global-content-width:' . \Kadence\kadence()->sub_option( 'content_width', 'size' ) . \Kadence\kadence()->sub_option( 'content_width', 'unit' ) . ';}';
+			} else {
+				$output .= '.kb-header-container { --global-content-width: ' . absint( $content_width ) . 'px )}';
+			}
+		} else {
+			$output .= '.kb-header-container { --global-content-width: var(--wp--style--global--content-size);}';
+		}
 		wp_register_style( 'kadence_header_css', false );
 		wp_enqueue_style( 'kadence_header_css' );
 		wp_add_inline_style( 'kadence_header_css', $output );
