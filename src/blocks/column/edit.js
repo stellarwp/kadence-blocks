@@ -2561,7 +2561,7 @@ function SectionEdit(props) {
 										/>
 										{inRowBlock && (
 											<RangeControl
-												label={__('Mobile Collapse Order')}
+												label={__('Mobile Collapse Order', 'kadence-blocks')}
 												value={collapseOrder}
 												onChange={(value) => {
 													setAttributes({
@@ -3083,7 +3083,7 @@ function SectionEdit(props) {
 															context={context}
 														/>
 														<SelectControl
-															label={__('Hover Blend Mode')}
+															label={__('Hover Blend Mode', 'kadence-blocks')}
 															value={
 																hoverOverlayBlendMode ? hoverOverlayBlendMode : 'none'
 															}
@@ -3220,7 +3220,7 @@ function SectionEdit(props) {
 															context={context}
 														/>
 														<SelectControl
-															label={__('Blend Mode')}
+															label={__('Blend Mode', 'kadence-blocks')}
 															value={overlayBlendMode ? overlayBlendMode : 'none'}
 															options={BLEND_OPTIONS}
 															onChange={(value) =>
