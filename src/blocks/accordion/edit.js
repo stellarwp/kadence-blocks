@@ -2356,7 +2356,9 @@ function KadenceAccordionComponent(props) {
 			<div className={classes}>
 				{showPreset && (
 					<div className="kt-select-starter-style-tabs">
-						<div className="kt-select-starter-style-tabs-title">{__('Select Initial Style', 'kadence-blocks')}</div>
+						<div className="kt-select-starter-style-tabs-title">
+							{__('Select Initial Style', 'kadence-blocks')}
+						</div>
 						<ButtonGroup
 							className="kt-init-tabs-btn-group"
 							aria-label={__('Initial Style', 'kadence-blocks')}

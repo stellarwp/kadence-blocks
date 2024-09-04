@@ -450,7 +450,9 @@ function KadenceIconLists(props) {
 											max={60}
 										/>
 										<div className="kt-btn-size-settings-container">
-											<h2 className="kt-beside-btn-group">{__('Icon Align', 'kadence-blocks')}</h2>
+											<h2 className="kt-beside-btn-group">
+												{__('Icon Align', 'kadence-blocks')}
+											</h2>
 											<ButtonGroup
 												className="kt-button-size-type-options"
 												aria-label={__('Icon Align', 'kadence-blocks')}

@@ -4090,7 +4090,10 @@ function KadenceForm(props) {
 							)}
 							<div className="kt-btn-size-settings-container">
 								<h2 className="kt-beside-btn-group">{__('Button Width', 'kadence-blocks')}</h2>
-								<ButtonGroup className="kt-button-size-type-options" aria-label={__('Button Width', 'kadence-blocks')}>
+								<ButtonGroup
+									className="kt-button-size-type-options"
+									aria-label={__('Button Width', 'kadence-blocks')}
+								>
 									{map(btnWidths, ({ name, key }) => (
 										<Button
 											key={key}

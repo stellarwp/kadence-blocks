@@ -1083,7 +1083,9 @@ function KadencePosts(props) {
 						>
 							<a
 								href={'#'}
-								dangerouslySetInnerHTML={{ __html: post.title.rendered.trim() || __('(Untitled)', 'kadence-blocks') }}
+								dangerouslySetInnerHTML={{
+									__html: post.title.rendered.trim() || __('(Untitled)', 'kadence-blocks'),
+								}}
 							/>
 						</HtmlTagOut>
 						{meta && (

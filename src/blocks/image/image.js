@@ -564,7 +564,11 @@ export default function Image({
 						}}
 						icon={captionIcon}
 						isPressed={stateShowCaption}
-						label={stateShowCaption ? __('Remove caption', 'kadence-blocks') : __('Add caption', 'kadence-blocks')}
+						label={
+							stateShowCaption
+								? __('Remove caption', 'kadence-blocks')
+								: __('Add caption', 'kadence-blocks')
+						}
 					/>
 				)}
 				{!isEditingImage && !isDynamic && !isDynamicLink && (
@@ -593,7 +597,13 @@ export default function Image({
 						context={context}
 					/>
 				)}
-				{allowCrop && <ToolbarButton onClick={() => setIsEditingImage(true)} icon={crop} label={__('Crop', 'kadence-blocks')} />}
+				{allowCrop && (
+					<ToolbarButton
+						onClick={() => setIsEditingImage(true)}
+						icon={crop}
+						label={__('Crop', 'kadence-blocks')}
+					/>
+				)}
 				{externalBlob && !isDynamic && (
 					<ToolbarButton
 						onClick={uploadExternal}

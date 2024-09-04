@@ -478,7 +478,12 @@ export function ImageEdit(props) {
 	const isExternal = isExternalImage(id, url);
 	const src = isExternal ? url : undefined;
 	const mediaPreview = !!url && (
-		<img alt={__('Edit image', 'kadence-blocks')} title={__('Edit image', 'kadence-blocks')} className={'edit-image-preview'} src={url} />
+		<img
+			alt={__('Edit image', 'kadence-blocks')}
+			title={__('Edit image', 'kadence-blocks')}
+			className={'edit-image-preview'}
+			src={url}
+		/>
 	);
 	const previewMarginTop = getPreviewSize(
 		previewDevice,

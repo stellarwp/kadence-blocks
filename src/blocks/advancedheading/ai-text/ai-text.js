@@ -410,9 +410,13 @@ export const AIText = {
 										<div className={'kb-ai-error-content'}>
 											{error === 'credits'
 												? __(
-														'Error, Can not generate AI content because of insufficient credits.', 'kadence-blocks'
+														'Error, Can not generate AI content because of insufficient credits.',
+														'kadence-blocks'
 												  )
-												: __('Error, AI content generation failed, please try again.', 'kadence-blocks')}
+												: __(
+														'Error, AI content generation failed, please try again.',
+														'kadence-blocks'
+												  )}
 										</div>
 									</div>
 								)}
