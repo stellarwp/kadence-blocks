@@ -785,11 +785,12 @@ export default function Edit(props) {
 					)}
 					{'icon' === mediaType && (
 						<>
+							{console.log(1, previewMediaIconSize, mediaIcon)}
 							<IconRender
 								className={`link-svg-icon link-svg-icon-${mediaIcon[0].icon}`}
 								name={mediaIcon[0].icon}
 								htmltag="span"
-								size={previewMediaIconSize}
+								size={previewMediaIconSize ? previewMediaIconSize : null}
 								strokeWidth={
 									'fe' === mediaIcon[0].icon.substring(0, 2) ? previewMediaIconWidth : undefined
 								}
@@ -1243,7 +1244,7 @@ export default function Edit(props) {
 									<IconRender
 										className={`kt-highlight-label-icon`}
 										name={highlightIcon[0].icon}
-										size={previewHighlightIconSize}
+										size={previewHighlightIconSize ? previewHighlightIconSize : null}
 										htmltag="span"
 										strokeWidth={
 											'fe' === highlightIcon[0].icon.substring(0, 2)
