@@ -785,7 +785,6 @@ export default function Edit(props) {
 					)}
 					{'icon' === mediaType && (
 						<>
-							{console.log(1, previewMediaIconSize, mediaIcon)}
 							<IconRender
 								className={`link-svg-icon link-svg-icon-${mediaIcon[0].icon}`}
 								name={mediaIcon[0].icon}
