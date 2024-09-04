@@ -53,6 +53,13 @@ class Kadence_Blocks_Abstract_Block {
 	protected $attributes_with_defaults = array();
 
 	/**
+	 * Cache for default attributes by block name.
+	 *
+	 * @var array
+	 */
+	protected static $default_attributes_cache = array();
+
+	/**
 	 * Class Constructor.
 	 */
 	public function __construct() {
@@ -127,6 +134,7 @@ class Kadence_Blocks_Abstract_Block {
 		if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 			$attributes = $block['attrs'];
 			if ( isset( $attributes['uniqueID'] ) ) {
+				$attributes = $this->get_attributes_with_defaults( $attributes['uniqueID'], $attributes );
 				// Check and enqueue stylesheets and scripts if needed.
 				$this->render_scripts( $attributes, false );
 
@@ -176,6 +184,8 @@ class Kadence_Blocks_Abstract_Block {
 			$unique_id = str_replace( '/', '-', $unique_id );
 			$unique_style_id = apply_filters( 'kadence_blocks_build_render_unique_id', $attributes['uniqueID'], $this->block_name, $attributes );
 			$css_class = Kadence_Blocks_CSS::get_instance();
+
+			$attributes = $this->get_attributes_with_defaults( $attributes['uniqueID'], $attributes );
 
 			// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 			$attributes = apply_filters( 'kadence_blocks_' . str_replace( '-', '_', $this->block_name ) . '_render_block_attributes', $attributes, $block_instance );
@@ -295,114 +305,128 @@ class Kadence_Blocks_Abstract_Block {
 	/**
 	 * Get this blocks attributes merged with defaults from the registration.
 	 *
-	 * @param int $unique_id The unique id.
+	 * @param string $unique_id The unique id.
+	 * @param array $attributes The block's attributes.
+	 * @param string $block_name The name of the block.
 	 * @return array
 	 */
-	public function get_attributes_with_defaults( $unique_id, $attributes, $block_name ) {
-		global $wp_meta_keys;
-
-		if ( ! empty( $this->attributes_with_defaults[ $unique_id ] ) ) {
-			return $this->attributes_with_defaults[ $unique_id ];
+	public function get_attributes_with_defaults($unique_id, $attributes) {
+		if (!empty($this->attributes_with_defaults[$unique_id])) {
+			return $this->attributes_with_defaults[$unique_id];
 		}
 
-		$attributes_with_defaults = $this->merge_defaults( $attributes, $block_name );
+		$default_attributes = $this->get_block_default_attributes();
+		$merged_attributes = $this->merge_attributes_with_defaults($attributes, $default_attributes);
 
-		if ( $attributes_with_defaults ) {
-			$this->attributes_with_defaults[ $unique_id ] = $attributes_with_defaults;
-			return $this->attributes_with_defaults[ $unique_id ];
-		}
-
-		return [];
+		$this->attributes_with_defaults[$unique_id] = $merged_attributes;
+		return $merged_attributes;
 	}
 
 	/**
-	 * Merges in default values from the block registry to the meta attributes from the database.
+	 * Get default attributes for a block.
 	 *
-	 * @param array $attributes The database attribtues.
 	 * @return array
 	 */
-	public function merge_defaults( $attributes, $block_name ) {
-		$registry = WP_Block_Type_Registry::get_instance()->get_registered( $block_name );
-		$default_attributes = [];
+	protected function get_block_default_attributes() {
+		$block_name = 'kadence/' . $this->block_name;
+		if (!isset($this->default_attributes_cache[$block_name])) {
+			$registry = WP_Block_Type_Registry::get_instance()->get_registered($block_name);
+			$default_attributes = [];
 
-		if ( $registry && property_exists( $registry, 'attributes' ) && ! empty( $registry->attributes ) ) {
-			foreach ( $registry->attributes as $key => $value ) {
-				if ( isset( $value['default'] ) ) {
-					//handle types of attributes that are an array with a single object that actually contains the actual attributes
-					if ( is_array( $value['default'] ) && count( $value['default'] ) == 1 && isset( $value['default'][0] ) ) {
-						if ( isset( $attributes[ $key ] ) && is_array( $attributes[ $key ] ) && count( $attributes[ $key ] ) == 1 && isset( $attributes[ $key ][0] ) ) {
-							$attributes[ $key ][0] = array_merge( $value['default'][0], $attributes[ $key ][0] );
-						}
+			if ($registry && property_exists($registry, 'attributes') && !empty($registry->attributes)) {
+				foreach ($registry->attributes as $key => $value) {
+					if (isset($value['default'])) {
+						$default_attributes[$key] = $value['default'];
 					}
-
-					// standard case.
-					$default_attributes[ $key ] = $value['default'];
 				}
+			}
+
+			$this->default_attributes_cache[$block_name] = $default_attributes;
+		}
+
+		return $this->default_attributes_cache[$block_name];
+	}
+
+	/**
+	 * Merge attributes with defaults.
+	 *
+	 * @param array $attributes The block's attributes.
+	 * @param array $default_attributes The default attributes.
+	 * @return array
+	 */
+	protected function merge_attributes_with_defaults($attributes, $default_attributes) {
+		$merged_attributes = $default_attributes;
+
+		foreach ($attributes as $key => $value) {
+			if (isset($merged_attributes[$key]) && is_array($merged_attributes[$key]) &&
+			    count($merged_attributes[$key]) == 1 && isset($merged_attributes[$key][0]) &&
+			    is_array($value) && count($value) == 1 && isset($value[0])) {
+				// Handle attributes that are an array with a single object
+				$merged_attributes[$key][0] = array_merge($merged_attributes[$key][0], $value[0]);
+			} else {
+				$merged_attributes[$key] = $value;
 			}
 		}
 
-		return array_merge( $default_attributes, $attributes );
+		return $merged_attributes;
 	}
 
 	/**
 	 * Get this blocks attributes merged with defaults from the registration for post type based blocks.
 	 *
 	 * @param int $post_id Post ID.
+	 * @param string $cpt_name Custom post type name.
+	 * @param string $meta_prefix Meta prefix.
 	 * @return array
 	 */
-	public function get_attributes_with_defaults_cpt( $post_id, $cpt_name, $meta_prefix  ) {
-
-		if ( ! empty( $this->attributes_with_defaults[ $post_id ] ) ) {
-			return $this->attributes_with_defaults[ $post_id ];
+	public function get_attributes_with_defaults_cpt($post_id, $cpt_name, $meta_prefix) {
+		if (!empty($this->attributes_with_defaults[$post_id])) {
+			return $this->attributes_with_defaults[$post_id];
 		}
 
-		$post_meta = get_post_meta( $post_id );
-		$attributes_with_defaults = [];
-		if ( is_array( $post_meta ) ) {
-			foreach ( $post_meta as $meta_key => $meta_value ) {
-				if ( strpos( $meta_key, $meta_prefix ) === 0 && isset( $meta_value[0] ) ) {
-					$attributes_with_defaults[ str_replace( $meta_prefix, '', $meta_key ) ] = maybe_unserialize( $meta_value[0] );
+		$default_attributes = $this->get_cpt_default_attributes($cpt_name, $meta_prefix);
+		$post_meta = get_post_meta($post_id);
+		$attributes = [];
+
+		if (is_array($post_meta)) {
+			foreach ($post_meta as $meta_key => $meta_value) {
+				if (strpos($meta_key, $meta_prefix) === 0 && isset($meta_value[0])) {
+					$attributes[str_replace($meta_prefix, '', $meta_key)] = maybe_unserialize($meta_value[0]);
 				}
 			}
 		}
 
-		$attributes_with_defaults = $this->merge_defaults_cpt( $attributes_with_defaults, $cpt_name, $meta_prefix );
+		$merged_attributes = $this->merge_attributes_with_defaults($attributes, $default_attributes);
 
-		if ( $attributes_with_defaults ) {
-			$this->attributes_with_defaults[ $post_id ] = $attributes_with_defaults;
-			return $this->attributes_with_defaults[ $post_id ];
-		}
-
-		return [];
+		$this->attributes_with_defaults[$post_id] = $merged_attributes;
+		return $merged_attributes;
 	}
 
 
 	/**
-	 * Merges in default values from the cpt registration to the meta attributes from the database.
+	 * Get default attributes for a custom post type.
 	 *
-	 * @param array $attributes The database attribtues.
+	 * @param string $cpt_name Custom post type name.
+	 * @param string $meta_prefix Meta prefix.
 	 * @return array
 	 */
-	public function merge_defaults_cpt( $attributes, $cpt_name, $meta_prefix ) {
-		$meta_keys = get_registered_meta_keys( 'post', $cpt_name );
-		$default_attributes = [];
+	protected function get_cpt_default_attributes($cpt_name, $meta_prefix) {
+		$cache_key = $cpt_name . '_' . $meta_prefix;
 
-		foreach ( $meta_keys as $key => $value ) {
-			if ( str_starts_with( $key, $meta_prefix ) && array_key_exists( 'default', $value ) ) {
-				$attr_name = str_replace( $meta_prefix, '', $key );
+		if (!isset($this->default_attributes_cache[$cache_key])) {
+			$meta_keys = get_registered_meta_keys('post', $cpt_name);
+			$default_attributes = [];
 
-				//handle types of attributes that are an array with a single object that actually contains the actual attributes
-				if ( is_array( $value['default'] ) && count( $value['default'] ) == 1 && isset( $value['default'][0] ) ) {
-					if ( isset( $attributes[ $attr_name ] ) && is_array( $attributes[ $attr_name ] ) && count( $attributes[ $attr_name ] ) == 1 && isset( $attributes[ $attr_name ][0] ) ) {
-						$attributes[ $attr_name ][0] = array_merge( $value['default'][0], $attributes[ $attr_name ][0] );
-					}
+			foreach ($meta_keys as $key => $value) {
+				if (str_starts_with($key, $meta_prefix) && array_key_exists('default', $value)) {
+					$attr_name = str_replace($meta_prefix, '', $key);
+					$default_attributes[$attr_name] = $value['default'];
 				}
-
-				//standard case.
-				$default_attributes[ $attr_name ] = $value['default'];
 			}
+
+			$this->default_attributes_cache[$cache_key] = $default_attributes;
 		}
 
-		return array_merge( $default_attributes, $attributes );
+		return $this->default_attributes_cache[$cache_key];
 	}
 }
