@@ -69,9 +69,10 @@
 
 	//fix for columns in editor setting a base 100% width
 	//only needed during initial selection
-	.wp-block-kadence-column:not(:has(.kb-section-only-appender)) {
-		width: initial;
-	}
+	// BR I don't think this is needed anymore.
+	// .wp-block-kadence-column:not(:has(.kb-section-only-appender)) {
+	// 	width: initial;
+	// }
 }
 
 /** Onboarding Flow **/
