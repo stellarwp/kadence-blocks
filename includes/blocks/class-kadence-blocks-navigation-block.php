@@ -280,7 +280,7 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		$nav_block = null;
-		$in_template_preview = isset($attributes['templateKey']) && $attributes['templateKey'];
+		$in_template_preview = isset( $attributes['templateKey'] ) && $attributes['templateKey'] && ( ! isset( $attributes['id'] ) || ! $attributes['id'] );
 
 		//If this is a templated navigation placeholder, we're going to skip a bunch of the normal logic and checks
 		if ( ! $in_template_preview ) {
