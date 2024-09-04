@@ -224,10 +224,21 @@ class Kadence_Blocks_Search_Block extends Kadence_Blocks_Abstract_Block {
 		);
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 
-		$content .= $this->build_button( $attributes, $unique_id, $content );
+		if( !empty( $attributes['input'] ) && $attributes['input'] === 'modal' ) {
+			$content .= 'Modal';
+		} else {
+
+			$content .= $this->build_input( $attributes, $unique_id );
+			$content .= $this->build_button( $attributes, $unique_id, $content );
+		}
 
 
 		return sprintf( '<div %1$s>%2$s</div>', $wrapper_attributes, $content );
+	}
+
+	private function build_input( $attributes, $unique_id ) {
+		$placeholder = ! empty( $attributes['inputPlaceholder'] ) ? $attributes['inputPlaceholder'] : '';
+		return sprintf( '<input type="text" class="kb-search-input" placeholder="%s">', esc_attr( $placeholder ) );
 	}
 
 	private function build_button( $attributes, $unique_id, $content ) {

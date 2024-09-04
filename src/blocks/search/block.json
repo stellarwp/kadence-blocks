@@ -17,6 +17,10 @@
 			"type": "boolean",
 			"default": true
 		},
+		"inputPlaceholder": {
+			"type": "string",
+			"default": ""
+		},
 		"text": {
 			"type": "string",
 			"default": "",

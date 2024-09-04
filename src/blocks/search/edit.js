@@ -124,6 +124,7 @@ export function Edit(props) {
 		hAlign,
 		thAlign,
 		mhAlign,
+		inputPlaceholder,
 	} = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
@@ -522,8 +523,8 @@ export function Edit(props) {
 	});
 	const classes = classnames({
 		className,
-		[`kb-single-btn-${uniqueID}`]: true,
-		[`kt-btn-width-type-${widthType ? widthType : 'auto'}`]: true,
+		[`kb-search`]: true,
+		[`kb-search-${uniqueID}`]: true,
 	});
 	const wrapperClasses = classnames({
 		'btn-inner-wrap': true,
@@ -595,14 +596,20 @@ export function Edit(props) {
 		btnRad = undefined !== borderRadius ? borderRadius : '3';
 		btnBox = 'none';
 	}
-	const previewTypographyCSS = typographyStyle(
+	const previewButtonTypographyCSS = typographyStyle(
 		buttonTypography,
 		`.editor-styles-wrapper .wp-block-kadence-search-button.kb-single-btn-${uniqueID} .kt-button-${uniqueID}`,
 		previewDevice
 	);
+	const previewInputTypographyCSS = typographyStyle(
+		inputTypography,
+		`.kb-search.kb-search-${uniqueID} .kb-search-input`,
+		previewDevice
+	);
 	const renderCSS = (
 		<style>
-			{'' !== previewTypographyCSS ? previewTypographyCSS : ''}
+			{'' !== previewButtonTypographyCSS ? previewButtonTypographyCSS : ''}
+			{'' !== previewInputTypographyCSS ? previewInputTypographyCSS : ''}
 			{`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}.kb-btn-global-outline {`}
 			{!previewBorderTopStyle && previewBorderTopColor ? 'border-top-color:' + previewBorderTopColor + ';' : ''}
 			{!previewBorderRightStyle && previewBorderRightColor
@@ -1213,7 +1220,9 @@ export function Edit(props) {
 				{displayStyle === 'input' ? (
 					<>
 						<input
+							className={'kb-search-input'}
 							type="text"
+							placeholder={inputPlaceholder}
 							style={{
 								color: undefined !== color ? KadenceColorOutput(color) : undefined,
 							}}
