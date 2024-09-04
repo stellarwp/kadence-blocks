@@ -502,6 +502,14 @@ function LayoutControls({
 											setAttributes({ gutterType: value });
 										}}
 										units={['px', 'em', 'rem']}
+										reset={() => {
+											setAttributes({
+												columnGutter: 'default',
+												tabletGutter: 'default',
+												mobileGutter: 'default',
+												customGutter: ['', '', ''],
+											});
+										}}
 									/>
 								</>
 							)}
@@ -572,6 +580,14 @@ function LayoutControls({
 									setAttributes({ rowGutterType: value });
 								}}
 								units={['px', 'em', 'rem']}
+								reset={() => {
+									setAttributes({
+										collapseGutter: 'default',
+										tabletRowGutter: 'default',
+										mobileRowGutter: 'default',
+										customRowGutter: ['', '', ''],
+									});
+								}}
 							/>
 							{(colLayout === 'grid-layout' ||
 								innerItemCount > columns ||
@@ -644,6 +660,12 @@ function LayoutControls({
 										setAttributes({ maxWidthUnit: value });
 									}}
 									units={['px', '%', 'vw']}
+									reset={() => {
+										setAttributes({
+											maxWidth: '',
+											responsiveMaxWidth: ['', ''],
+										});
+									}}
 								/>
 							)}
 							{align === 'full' && 2 === columns && inheritMaxWidth === true && (
@@ -733,6 +755,13 @@ function LayoutControls({
 							}}
 							units={['px', 'em', 'vh']}
 							showUnit={true}
+							reset={() => {
+								setAttributes({
+									topSepHeight: 100,
+									topSepHeightTab: 100,
+									topSepHeightMobile: 100,
+								});
+							}}
 						/>
 						<ResponsiveRangeControls
 							label={__('Divider Width', 'kadence-blocks')}
@@ -754,6 +783,13 @@ function LayoutControls({
 							showUnit={true}
 							unit={'%'}
 							units={['%']}
+							reset={() => {
+								setAttributes({
+									topSepWidth: 100,
+									topSepWidthTab: 100,
+									topSepWidthMobile: 100,
+								});
+							}}
 						/>
 					</KadencePanelBody>
 					<KadencePanelBody
@@ -822,6 +858,13 @@ function LayoutControls({
 							}}
 							units={['px', 'em', 'vh']}
 							showUnit={true}
+							reset={() => {
+								setAttributes({
+									bottomSepHeight: 100,
+									bottomSepHeightTab: 100,
+									bottomSepHeightMobile: 100,
+								});
+							}}
 						/>
 						<ResponsiveRangeControls
 							label={__('Divider Width', 'kadence-blocks')}
@@ -843,6 +886,13 @@ function LayoutControls({
 							showUnit={true}
 							unit={'%'}
 							units={['%']}
+							reset={() => {
+								setAttributes({
+									bottomSepWidth: 100,
+									bottomSepWidthTab: 100,
+									bottomSepWidthMobile: 100,
+								});
+							}}
 						/>
 					</KadencePanelBody>
 				</>

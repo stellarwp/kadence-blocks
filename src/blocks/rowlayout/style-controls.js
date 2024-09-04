@@ -659,6 +659,11 @@ function StyleControls({ clientId, attributes, setAttributes, isSelected, contex
 						}}
 						min={0}
 						max={100}
+						reset={() => {
+							saveMobileOverlay({
+								overlayOpacity: '',
+							});
+						}}
 					/>
 					<BackgroundTypeControl
 						label={__('Overlay Type', 'kadence-blocks')}
@@ -828,6 +833,11 @@ function StyleControls({ clientId, attributes, setAttributes, isSelected, contex
 						}}
 						min={0}
 						max={100}
+						reset={() => {
+							saveTabletOverlay({
+								overlayOpacity: '',
+							});
+						}}
 					/>
 					<BackgroundTypeControl
 						label={__('Overlay Type', 'kadence-blocks')}
@@ -1446,6 +1456,9 @@ function StyleControls({ clientId, attributes, setAttributes, isSelected, contex
 				}}
 				min={0}
 				max={100}
+				reset={() => {
+					setAttributes({ overlayOpacity: '' });
+				}}
 			/>
 			<BackgroundTypeControl
 				label={__('Overlay Type', 'kadence-blocks')}
