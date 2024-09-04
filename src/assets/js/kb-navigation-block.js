@@ -246,15 +246,15 @@
 		var contentSubmenus = null;
 		if (window.innerWidth > 1024) {
 			contentSubmenus = document.querySelectorAll(
-				'.wp-block-kadence-navigation .kadence-menu-mega-width-full > ul.sub-menu'
+				'.wp-block-kadence-navigation .kb-menu-mega-width-full > ul.sub-menu'
 			);
 		} else if (window.innerWidth > 768) {
 			contentSubmenus = document.querySelectorAll(
-				'.wp-block-kadence-navigation .kadence-menu-mega-width-tablet-full > ul.sub-menu'
+				'.wp-block-kadence-navigation .kb-menu-mega-width-tablet-full > ul.sub-menu'
 			);
 		} else {
 			contentSubmenus = document.querySelectorAll(
-				'.wp-block-kadence-navigation .kadence-menu-mega-width-mobile-full > ul.sub-menu'
+				'.wp-block-kadence-navigation .kb-menu-mega-width-mobile-full > ul.sub-menu'
 			);
 		}
 		for (let i = 0; i < contentSubmenus.length; i++) {
@@ -291,7 +291,7 @@
 	 */
 	const initFullSubMenuSize = function () {
 		var megaMenus = document.querySelectorAll(
-			'.wp-block-kadence-navigation .kadence-menu-mega-width-full > ul.sub-menu'
+			'.wp-block-kadence-navigation .kb-menu-mega-width-full > ul.sub-menu'
 		);
 		// No point if no Mega Menus.
 		if (!megaMenus.length) {

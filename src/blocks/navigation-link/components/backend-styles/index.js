@@ -867,7 +867,7 @@ export default function BackendStyles(props) {
 			css.add_property('margin-right', css.render_size(previewMediaStyleMargin[0], 'px'));
 
 			css.set_selector(
-				`.kb-nav-link-${uniqueID}.kadence-menu-has-description.has-media > .kb-link-wrap > a > .kb-nav-item-title-wrap`
+				`.kb-nav-link-${uniqueID}.kb-menu-has-description.kb-menu-has-media > .kb-link-wrap > a > .kb-nav-item-title-wrap`
 			);
 			css.add_property('grid-template-columns', 'auto 1fr');
 		} else if (previewMediaAlign === 'top') {

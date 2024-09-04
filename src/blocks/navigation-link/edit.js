@@ -588,7 +588,7 @@ export default function Edit(props) {
 		}
 	}
 
-	const megaMenuWidthClass = 'kadence-menu-mega-width-' + (megaMenuWidth ? megaMenuWidth : 'full');
+	const megaMenuWidthClass = 'kb-menu-mega-width-' + (megaMenuWidth ? megaMenuWidth : 'full');
 	const showSubMenusWithLogic = showSubMenus || isSelected || childSelected;
 
 	const blockProps = useBlockProps({
@@ -597,15 +597,15 @@ export default function Edit(props) {
 			'is-editing': isSelected || isParentOfSelectedBlock,
 			'has-link': !!url,
 			'has-child': hasChildren,
-			'has-media': mediaType && mediaType != 'none',
+			'kb-menu-has-media': mediaType && mediaType != 'none',
 			'menu-item-has-children': hasChildren,
 			'menu-item--toggled-on': showSubMenusWithLogic,
 			'current-menu-item': activePreview,
 			'kadence-menu-mega-enabled': isMegaMenu,
 			[`${megaMenuWidthClass}`]: isMegaMenu,
-			'kadence-menu-has-icon': mediaType == 'icon',
-			'kadence-menu-has-image': mediaType == 'image',
-			'kadence-menu-has-description': description,
+			'kb-menu-has-icon': mediaType == 'icon',
+			'kb-menu-has-image': mediaType == 'image',
+			'kb-menu-has-description': description,
 			[`kb-nav-link-${uniqueID}`]: uniqueID,
 		}),
 		onKeyDown,

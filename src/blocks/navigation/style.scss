@@ -126,8 +126,8 @@
 		box-shadow: var(--kb-nav-dropdown-box-shadow, 0 2px 13px 0 rgba(0, 0, 0, 0.1));
 
 		&.sub-menu-edge {
-			left: auto;
-			right: 0;
+			--kb-nav-dropdown-show-left: auto;
+			--kb-nav-dropdown-show-right: 0;
 		}
 
 		//third level nav
@@ -168,7 +168,15 @@
 			}
 		}
 	}
-
+	.kb-menu-mega-width-custom > .sub-menu {
+		--kb-nav-dropdown-show-transform: translate(-50%, 0);
+		--kb-nav-dropdown-show-left: 50%;
+		&.sub-menu-edge {
+			--kb-nav-dropdown-show-left: auto;
+			--kb-nav-dropdown-show-right: 0;
+			--kb-nav-dropdown-show-transform: translate(0, 0);
+		}
+	}
 	// Handle Reveal Animation for horizontal navs, hover and triggered via arrow.
 	.menu-item:hover > .sub-menu,
 	.menu-item.menu-item--toggled-on > .sub-menu {
@@ -872,7 +880,7 @@
 		overflow: visible;
 		transition: opacity 0.2s ease;
 	}
-	.kadence-menu-has-description.kadence-menu-has-icon {
+	.kb-menu-has-description.kb-menu-has-icon {
 		.kb-nav-item-title-wrap {
 			display: grid;
 			grid-template-columns: 1fr auto;

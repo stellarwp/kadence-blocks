@@ -401,7 +401,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 				$css->add_property( 'order', '-1' );
 				$css->add_property( 'margin-right', $css->render_size( $media_style_margin[0], 'px' ) );
 
-				$css->set_selector( '.kb-nav-link-' . $unique_id . '.kadence-menu-has-description.kadence-menu-has-media > .kb-link-wrap > a .kb-nav-item-title-wrap' );
+				$css->set_selector( '.kb-nav-link-' . $unique_id . '.kb-menu-has-description.kb-menu-has-media > .kb-link-wrap > a .kb-nav-item-title-wrap' );
 				$css->add_property( 'grid-template-columns', 'auto 1fr' );
 
 			} else if ( $sized_attributes['mediaAlign'] == 'top' ) {
@@ -571,9 +571,13 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$has_icon            = $nav_link_attributes['mediaType'] == 'icon' && ! empty( $nav_link_attributes['mediaIcon'][0]['icon'] );
 		$has_image           = $nav_link_attributes['mediaType'] == 'image' && ! empty( $nav_link_attributes['mediaImage'][0]['url'] );
 
-		$mega_menu_width_class        = 'kadence-menu-mega-width-' . ( $nav_link_attributes['megaMenuWidth'] ? $nav_link_attributes['megaMenuWidth'] : 'full' );
-		$mega_menu_width_class_tablet = 'kadence-menu-mega-width-tablet-' . ( $nav_link_attributes['megaMenuWidthTablet'] ? $nav_link_attributes['megaMenuWidthTablet'] : 'full' );
-		$mega_menu_width_class_mobile = 'kadence-menu-mega-width-mobile-' . ( $nav_link_attributes['megaMenuWidthMobile'] ? $nav_link_attributes['megaMenuWidthMobile'] : 'full' );
+		$desktop_width = ! empty( $nav_link_attributes['megaMenuWidth'] ) ? $nav_link_attributes['megaMenuWidth'] : 'full';
+		$tablet_width  = ! empty( $nav_link_attributes['megaMenuWidthTablet'] ) ? $nav_link_attributes['megaMenuWidthTablet'] : $desktop_width;
+		$mobile_width  = ! empty( $nav_link_attributes['megaMenuWidthMobile'] ) ? $nav_link_attributes['megaMenuWidthMobile'] : $tablet_width;
+
+		$mega_menu_width_class        = 'kb-menu-mega-width-' . $desktop_width;
+		$mega_menu_width_class_tablet = 'kb-menu-mega-width-tablet-' . $tablet_width;
+		$mega_menu_width_class_mobile = 'kb-menu-mega-width-mobile-' . $mobile_width;
 
 		$temp                = get_queried_object_id();
 
@@ -596,16 +600,16 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$wrapper_classes[] = $mega_menu_width_class_mobile;
 		}
 		if ( ! empty( $nav_link_attributes['description'] ) ) {
-			$wrapper_classes[] = 'kadence-menu-has-description';
+			$wrapper_classes[] = 'kb-menu-has-description';
 		}
 		if ( $has_icon ) {
-			$wrapper_classes[] = 'kadence-menu-has-icon';
+			$wrapper_classes[] = 'kb-menu-has-icon';
 		}
 		if ( $has_image ) {
-			$wrapper_classes[] = 'kadence-menu-has-image';
+			$wrapper_classes[] = 'kb-menu-has-image';
 		}
 		if ( $has_icon || $has_image ) {
-			$wrapper_classes[] = 'kadence-menu-has-media';
+			$wrapper_classes[] = 'kb-menu-has-media';
 		}
 		$wrapper_args = [ 'class' => implode( ' ', $wrapper_classes ) ];
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
