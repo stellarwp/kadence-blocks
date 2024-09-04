@@ -94,8 +94,6 @@ export function Edit(props) {
 			: 'horizontal'
 		: orientationMobile;
 
-	const thisBlock = wp.data.select('core/block-editor').getBlocksByClientId(clientId);
-
 	const { post, postExists, isLoading, currentPostType, postId } = useSelect(
 		(select) => {
 			return {
@@ -206,7 +204,6 @@ export function Edit(props) {
 	//this effect should trigger after we've made a new post for this templated nav
 	//it will fill out the meta and inner blocks based on the templatekey
 	useEffect(() => {
-		console.log(1, id, templateKey, makePost, clientId, thisBlock);
 		if (id && templateKey && makePost) {
 			setAttributes({ makePost: false });
 			const { templateInnerBlocks, templatePostMeta } = buildTemplateFromSelection(templateKey);
