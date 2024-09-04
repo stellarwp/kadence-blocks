@@ -753,6 +753,10 @@ export default class KadenceBlocksCSS {
 		if (!('inset' in value)) {
 			return false;
 		}
+		var opacity = null;
+		if (('opacity' in value)) {
+			opacity = ( ('opacity' in value) && !this.empty(value?.['opacity']) ? value?.['opacity'] : 0);
+		}
 		var shadowString = '';
 		if (value['inset']) {
 			shadowString =
@@ -765,7 +769,7 @@ export default class KadenceBlocksCSS {
 				'px ' +
 				(!this.empty(value['spread']) ? value['spread'] : '0') +
 				'px ' +
-				(!this.empty(value['color']) ? this.render_color(value['color'], ( value?.['opacity'] ? value?.['opacity'] : null )) : 'rgba(0,0,0,0.0)');
+				(!this.empty(value['color']) ? this.render_color(value['color'], opacity) : 'rgba(0,0,0,0.0)');
 		} else {
 			shadowString =
 				(!this.empty(value['hOffset']) ? value['hOffset'] : '0') +
@@ -776,7 +780,7 @@ export default class KadenceBlocksCSS {
 				'px ' +
 				(!this.empty(value['spread']) ? value['spread'] : '0') +
 				'px ' +
-				(!this.empty(value['color']) ? this.render_color(value['color'], ( value?.['opacity'] ? value?.['opacity'] : null )) : 'rgba(0,0,0,0.0)');
+				(!this.empty(value['color']) ? this.render_color(value['color'], opacity) : 'rgba(0,0,0,0.0)');
 		}
 
 		return shadowString;
