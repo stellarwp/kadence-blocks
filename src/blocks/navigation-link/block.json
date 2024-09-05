@@ -699,15 +699,15 @@
 			]
 		},
 		"dropdownWidth": {
-			"type": "string",
+			"type": "number",
 			"default": ""
 		},
 		"dropdownWidthTablet": {
-			"type": "string",
+			"type": "number",
 			"default": ""
 		},
 		"dropdownWidthMobile": {
-			"type": "string",
+			"type": "number",
 			"default": ""
 		},
 		"dropdownWidthUnit": {
@@ -715,15 +715,15 @@
 			"default": "px"
 		},
 		"dropdownVerticalSpacing": {
-			"type": "string",
+			"type": "number",
 			"default": ""
 		},
 		"dropdownVerticalSpacingTablet": {
-			"type": "string",
+			"type": "number",
 			"default": ""
 		},
 		"dropdownVerticalSpacingMobile": {
-			"type": "string",
+			"type": "number",
 			"default": ""
 		},
 		"dropdownVerticalSpacingUnit": {
@@ -1171,15 +1171,15 @@
 			"default": "px"
 		},
 		"descriptionSpacing": {
-			"type": "string",
+			"type": "number",
 			"default": ""
 		},
 		"descriptionSpacingTablet": {
-			"type": "string",
+			"type": "number",
 			"default": ""
 		},
 		"descriptionSpacingMobile": {
-			"type": "string",
+			"type": "number",
 			"default": ""
 		},
 		"descriptionSpacingUnit": {
