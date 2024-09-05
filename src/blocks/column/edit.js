@@ -1868,6 +1868,12 @@ function SectionEdit(props) {
 														setAttributes({ gutterUnit: value });
 													}}
 													units={['px', 'em', 'rem', '%', 'vh']}
+													reset={() => {
+														setAttributes({
+															gutterVariable: ['', '', ''],
+															gutter: ['', '', ''],
+														});
+													}}
 												/>
 												<ResponsiveRadioRangeControls
 													label={__('Vertical Gap', 'kadence-blocks')}
@@ -1958,8 +1964,8 @@ function SectionEdit(props) {
 													units={['px', 'em', 'rem', '%', 'vh']}
 													reset={() => {
 														setAttributes({
-															rowGapVariable: ['', '', ''],
-															rowGap: ['', '', ''],
+															rowGapVariable: ['none', 'none', 'none'],
+															rowGap: ['none', 'none', 'none'],
 														});
 													}}
 												/>
@@ -2194,8 +2200,8 @@ function SectionEdit(props) {
 													units={['px', 'em', 'rem', '%', 'vh']}
 													reset={() => {
 														setAttributes({
-															rowGapVariable: ['', '', ''],
-															rowGap: ['', '', ''],
+															rowGapVariable: ['none', 'none', 'none'],
+															rowGap: ['none', 'none', 'none'],
 														});
 													}}
 												/>
@@ -2558,6 +2564,11 @@ function SectionEdit(props) {
 											}}
 											min={-200}
 											max={200}
+											reset={() => {
+												setAttributes({
+													zIndex: '',
+												});
+											}}
 										/>
 										{inRowBlock && (
 											<RangeControl
@@ -2570,6 +2581,11 @@ function SectionEdit(props) {
 												}}
 												min={-10}
 												max={10}
+												reset={() => {
+													setAttributes({
+														collapseOrder: '',
+													});
+												}}
 											/>
 										)}
 									</KadencePanelBody>
@@ -2653,6 +2669,11 @@ function SectionEdit(props) {
 												setAttributes({ stickyOffsetUnit: value });
 											}}
 											units={['px', 'rem', 'vh']}
+											reset={() => {
+												setAttributes({
+													stickyOffset: ['', '', ''],
+												});
+											}}
 										/>
 									)}
 								</KadencePanelBody>
@@ -2970,6 +2991,11 @@ function SectionEdit(props) {
 													step={0.01}
 													min={0}
 													max={1}
+													reset={() => {
+														setAttributes({
+															overlayHoverOpacity: 0.3,
+														});
+													}}
 												/>
 												{'gradient' === overlayHoverType && (
 													<GradientControl
@@ -3121,6 +3147,11 @@ function SectionEdit(props) {
 													step={0.01}
 													min={0}
 													max={1}
+													reset={() => {
+														setAttributes({
+															overlayOpacity: 0.3,
+														});
+													}}
 												/>
 												{'gradient' === overlayType && (
 													<GradientControl
