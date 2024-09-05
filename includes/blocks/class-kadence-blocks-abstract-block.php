@@ -185,7 +185,7 @@ class Kadence_Blocks_Abstract_Block {
 			$unique_style_id = apply_filters( 'kadence_blocks_build_render_unique_id', $attributes['uniqueID'], $this->block_name, $attributes );
 			$css_class = Kadence_Blocks_CSS::get_instance();
 
-			$attributes = $this->get_attributes_with_defaults( $attributes['uniqueID'], $attributes );
+			$attributes = $this->get_attributes_with_defaults( $attributes['uniqueID'], $attributes, false );
 
 			// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 			$attributes = apply_filters( 'kadence_blocks_' . str_replace( '-', '_', $this->block_name ) . '_render_block_attributes', $attributes, $block_instance );
@@ -310,7 +310,7 @@ class Kadence_Blocks_Abstract_Block {
 	 * @param string $block_name The name of the block.
 	 * @return array
 	 */
-	public function get_attributes_with_defaults($unique_id, $attributes) {
+	public function get_attributes_with_defaults($unique_id, $attributes, $cache = true ) {
 		if (!empty($this->attributes_with_defaults[$unique_id])) {
 			return $this->attributes_with_defaults[$unique_id];
 		}
@@ -318,7 +318,9 @@ class Kadence_Blocks_Abstract_Block {
 		$default_attributes = $this->get_block_default_attributes();
 		$merged_attributes = $this->merge_attributes_with_defaults($attributes, $default_attributes);
 
-		$this->attributes_with_defaults[$unique_id] = $merged_attributes;
+		if( $cache ) {
+			$this->attributes_with_defaults[ $unique_id ] = $merged_attributes;
+		}
 		return $merged_attributes;
 	}
 
