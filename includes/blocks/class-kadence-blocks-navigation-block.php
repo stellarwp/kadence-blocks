@@ -117,7 +117,7 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		);
 
 		//nav item (top level only)
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' > .navigation > .menu > .menu-container > .wp-block-kadence-navigation-link > .kb-link-wrap > .kb-nav-link-content' );
+		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' > .navigation > .menu-container > .menu > .wp-block-kadence-navigation-link > .kb-link-wrap > .kb-nav-link-content' );
 		$css->render_typography( $nav_attributes );
 		$css->render_measure_output( $nav_attributes, 'marginLink', '--kb-nav-link-margin', ['unit_key' => 'marginLinkUnit']);
 		$css->render_measure_output( $nav_attributes, 'paddingLink', '--kb-nav-link-padding', ['unit_key' => 'paddingLinkUnit']);

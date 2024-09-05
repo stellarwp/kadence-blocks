@@ -520,7 +520,9 @@ export default function BackendStyles(props) {
 		}
 
 		//sub menus (first level only)
-		css.set_selector(`.wp-block-kadence-navigation${uniqueID} > .navigation > .menu > .menu-item > .sub-menu`);
+		css.set_selector(
+			`.wp-block-kadence-navigation${uniqueID} > .navigation > .menu-container > .menu > .menu-item > .sub-menu`
+		);
 		if (previewDropdownHorizontalAlignment == 'center') {
 			css.add_property('--kb-nav-dropdown-show-left', '50%');
 			css.add_property('--kb-nav-dropdown-show-transform', 'translate(-50%, 0)');
