@@ -34,7 +34,7 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 		// Define the form post gutenberg template.
 		add_action( 'init', array( $this, 'form_gutenberg_template' ) );
 		add_filter( 'kadence_post_layout', array( $this, 'navigation_single_layout' ), 99 );
-		add_action( 'enqueue_block_editor_assets', array( $this, 'script_enqueue' ) );
+		add_action( 'enqueue_block_assets', array( $this, 'script_enqueue' ) );
 
 		if( is_admin() ) {
 			if ( class_exists( 'Cpt_To_Template' ) ) {
@@ -1333,11 +1333,11 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 					array(
 						'enable' => false,
 						'color' => '#000000',
-						'opacity' => 0.2,
+						'opacity' => 0.1,
 						'spread' => 0,
-						'blur' => 2,
-						'hOffset' => 1,
-						'vOffset' => 1,
+						'blur' => 13,
+						'hOffset' => 0,
+						'vOffset' => 2,
 						'inset' => false,
 					),
 				),

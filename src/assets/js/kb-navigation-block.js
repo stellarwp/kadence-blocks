@@ -47,7 +47,6 @@
 	 */
 	const islastFocusableElement = function (container, element, focusSelector) {
 		var focusableElements = container.querySelectorAll(focusSelector);
-		console.log(focusableElements);
 		if (0 < focusableElements.length) {
 			return element === focusableElements[focusableElements.length - 1];
 		}
@@ -59,7 +58,7 @@
 	 * @param {boolean} forceToggle Force the menu toggle.
 	 * @return {void}
 	 */
-	const toggleSubMenu = function (parentMenuItem, forceToggle) {
+	const toggleSubMenu = function (parentMenuItem, forceToggle = null, isVertical = false) {
 		const toggleButton = parentMenuItem.querySelector('.kb-nav-dropdown-toggle-btn'),
 			subMenu = parentMenuItem.querySelector('ul.sub-menu');
 		let parentMenuItemToggled = parentMenuItem.classList.contains('menu-item--toggled-on');
@@ -86,10 +85,12 @@
 				toggleSubMenu(subMenuItemsToggled[i], false);
 			}
 		} else {
-			// Make sure siblings are closed.
-			var parentMenuItemsToggled = parentMenuItem.parentNode.querySelectorAll('li.menu-item--toggled-on');
-			for (let i = 0; i < parentMenuItemsToggled.length; i++) {
-				toggleSubMenu(parentMenuItemsToggled[i], false);
+			if (!isVertical) {
+				// Make sure siblings are closed.
+				var parentMenuItemsToggled = parentMenuItem.parentNode.querySelectorAll('li.menu-item--toggled-on');
+				for (let i = 0; i < parentMenuItemsToggled.length; i++) {
+					toggleSubMenu(parentMenuItemsToggled[i], false);
+				}
 			}
 
 			// Toggle "on" the submenu.
@@ -143,59 +144,65 @@
 		}
 
 		for (let i = 0; i < submenus.length; i++) {
-			var parentMenuItem = submenus[i].parentNode;
-			const dropdownBtn = parentMenuItem.querySelector('.kb-nav-dropdown-toggle-btn');
-			// If dropdown.
-			if (dropdownBtn) {
-				// Toggle the submenu when we click the dropdown button.
-				dropdownBtn.addEventListener('click', function (e) {
-					e.preventDefault();
-					toggleSubMenu(parentMenuItem);
-				});
+			// Toggle the submenu when we click the dropdown button.
+			submenus[i].parentNode.querySelector('.kb-nav-dropdown-toggle-btn').addEventListener('click', function (e) {
+				e.preventDefault();
+				toggleSubMenu(submenus[i].parentNode, null, nav.classList.contains('is-vertical'));
+			});
 
-				// Clean up the toggle if a mouse takes over from keyboard.
-				parentMenuItem.addEventListener('mouseleave', function (e) {
-					toggleSubMenu(e.target, false);
-				});
+			// Clean up the toggle if a mouse takes over from keyboard.
+			submenus[i].parentNode.addEventListener('mouseleave', function (e) {
+				// If we're vertical, we don't need to do anything.
+				if (nav.classList.contains('is-vertical')) {
+					return;
+				}
+				toggleSubMenu(e.target, false);
+			});
 
-				// When we focus on a menu link, make sure all siblings are closed.
-				parentMenuItem.querySelector('a').addEventListener('focus', function (e) {
-					var parentMenuItemsToggled =
-						e.target.parentNode.parentNode.querySelectorAll('li.menu-item--toggled-on');
-					for (let j = 0; j < parentMenuItemsToggled.length; j++) {
-						if (parentMenuItem !== parentMenuItemsToggled[j]) {
-							toggleSubMenu(parentMenuItemsToggled[j], false);
-						}
+			// When we focus on a menu link, make sure all siblings are closed.
+			submenus[i].parentNode.querySelector('a').addEventListener('focus', function (e) {
+				// If we're vertical, we don't need to do anything.
+				if (nav.classList.contains('is-vertical')) {
+					return;
+				}
+				var parentMenuItemsToggled =
+					e.target.parentNode.parentNode.querySelectorAll('li.menu-item--toggled-on');
+				for (let j = 0; j < parentMenuItemsToggled.length; j++) {
+					if (submenus[i].parentNode !== parentMenuItemsToggled[j]) {
+						toggleSubMenu(parentMenuItemsToggled[j], false);
 					}
-				});
+				}
+			});
 
-				// Handle keyboard accessibility for traversing menu.
-				submenus[i].addEventListener('keydown', function (e) {
-					// These specific selectors help us only select items that are visible.
-					var focusSelector =
-						'ul.toggle-show > li > .kb-link-wrap > a, ul.toggle-show > li > .kb-nav-dropdown-toggle-btn';
+			// Handle keyboard accessibility for traversing menu.
+			submenus[i].addEventListener('keydown', function (e) {
+				// If we're vertical, we don't need to do anything.
+				if (nav.classList.contains('is-vertical')) {
+					return;
+				}
+				// These specific selectors help us only select items that are visible.
+				var focusSelector =
+					'ul.toggle-show > li > .kb-link-wrap > a, ul.toggle-show > li > .kb-link-wrap > .kb-nav-dropdown-toggle-btn';
 
-					// 9 is tab KeyMap
-					if (9 === e.keyCode) {
-						if (e.shiftKey) {
-							// Means we're tabbing out of the beginning of the submenu.
-							if (isfirstFocusableElement(submenus[i], document.activeElement, focusSelector)) {
-								toggleSubMenu(submenus[i].parentNode, false);
-							}
-							// Means we're tabbing out of the end of the submenu.
-						} else if (islastFocusableElement(submenus[i], document.activeElement, focusSelector)) {
-							console.log('last');
+				// 9 is tab KeyMap
+				if (9 === e.keyCode) {
+					if (e.shiftKey) {
+						// Means we're tabbing out of the beginning of the submenu.
+						if (isfirstFocusableElement(submenus[i], document.activeElement, focusSelector)) {
 							toggleSubMenu(submenus[i].parentNode, false);
 						}
-					}
-					// 27 is keymap for esc key.
-					if (e.keyCode === 27) {
+						// Means we're tabbing out of the end of the submenu.
+					} else if (islastFocusableElement(submenus[i], document.activeElement, focusSelector)) {
 						toggleSubMenu(submenus[i].parentNode, false);
 					}
-				});
+				}
+				// 27 is keymap for esc key.
+				if (e.keyCode === 27) {
+					toggleSubMenu(submenus[i].parentNode, false);
+				}
+			});
 
-				submenus[i].parentNode.classList.add('menu-item--has-toggle');
-			}
+			submenus[i].parentNode.classList.add('menu-item--has-toggle');
 		}
 	};
 	/**
@@ -239,15 +246,15 @@
 		var contentSubmenus = null;
 		if (window.innerWidth > 1024) {
 			contentSubmenus = document.querySelectorAll(
-				'.wp-block-kadence-navigation .kadence-menu-mega-width-full > ul.sub-menu'
+				'.wp-block-kadence-navigation .kb-menu-mega-width-full > ul.sub-menu'
 			);
 		} else if (window.innerWidth > 768) {
 			contentSubmenus = document.querySelectorAll(
-				'.wp-block-kadence-navigation .kadence-menu-mega-width-tablet-full > ul.sub-menu'
+				'.wp-block-kadence-navigation .kb-menu-mega-width-tablet-full > ul.sub-menu'
 			);
 		} else {
 			contentSubmenus = document.querySelectorAll(
-				'.wp-block-kadence-navigation .kadence-menu-mega-width-mobile-full > ul.sub-menu'
+				'.wp-block-kadence-navigation .kb-menu-mega-width-mobile-full > ul.sub-menu'
 			);
 		}
 		for (let i = 0; i < contentSubmenus.length; i++) {
@@ -260,11 +267,31 @@
 		}
 	};
 	/**
-	 * Initiate the script to toggle cart when product is added.
+	 * Initiate the script to process all
+	 * navigation menus inside the offcanvas.
+	 */
+	const initMobileToggleSub = function () {
+		var modalMenus = document.querySelectorAll(
+			'.kb-off-canvas-inner .wp-block-kadence-navigation .menu-item-has-children'
+		);
+		// No point if no submenus.
+		if (!modalMenus.length) {
+			return;
+		}
+
+		for (let i = 0; i < modalMenus.length; i++) {
+			var activeMenuItem = modalMenus[i].querySelector('.current-menu-item');
+			if (activeMenuItem) {
+				toggleSubMenu(modalMenus[i], true);
+			}
+		}
+	};
+	/**
+	 * Initiate the script to handle fullwith mega menus.
 	 */
 	const initFullSubMenuSize = function () {
 		var megaMenus = document.querySelectorAll(
-			'.wp-block-kadence-navigation .kadence-menu-mega-width-full > ul.sub-menu'
+			'.wp-block-kadence-navigation .kb-menu-mega-width-full > ul.sub-menu'
 		);
 		// No point if no Mega Menus.
 		if (!megaMenus.length) {
@@ -302,4 +329,5 @@
 	// Initialize immediately for already loaded DOM
 	initNavigation();
 	initFullSubMenuSize();
+	initMobileToggleSub();
 })();

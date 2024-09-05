@@ -55,7 +55,7 @@ function innerBlocks() {
 				uniqueID: '376_6aa4e4-be',
 				columns: 1,
 				colLayout: 'equal',
-				maxWidth: 1150,
+				inheritMaxWidth: true,
 				padding: ['', '', '', ''],
 				templateLock: false,
 				kbVersion: 2,

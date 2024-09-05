@@ -19,7 +19,6 @@ function innerBlocks() {
 				bgColor: 'palette9',
 				inheritMaxWidth: true,
 				bgColorClass: 'theme-palette9',
-				borderRadius: [6, 6, 6, 6],
 				padding: ['sm', '', 'lg', ''],
 				borderStyle: [
 					{
@@ -31,18 +30,6 @@ function innerBlocks() {
 					},
 				],
 				templateLock: false,
-				displayBoxShadow: true,
-				boxShadow: [
-					{
-						color: 'palette7',
-						opacity: 1,
-						spread: 0,
-						blur: 14,
-						hOffset: 0,
-						vOffset: 0,
-						inset: false,
-					},
-				],
 				kbVersion: 2,
 			},
 			[

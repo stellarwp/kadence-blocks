@@ -1,630 +1,16 @@
 /**
- * Editor only CSS.
- */
-/**
- * Custom Properties
+ * Editor only CSS. (uses frontend styles as it's base)
+ * Styles for both the navigation and nav link block
  */
 
-$global-font-color: #333;
-$global-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell,
-	"Helvetica Neue", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-$global-font-size: 20;
-$global-font-line-height: 1.4;
+@import "../../assets/css/variables.scss";
 
-$color-gray-100: #f7fafc;
-$color-gray-200: #edf2f7;
-$color-gray-300: #e2e8f0;
-$color-gray-400: #cbd5e0;
-$color-gray-500: #a0aec0;
-$color-gray-600: #718096;
-$color-gray-700: #4a5568;
-$color-gray-800: #2d3748;
-$color-gray-900: #1a202c;
-
-$content-width: 1000px;
-$dropdown-symbol-width: 0.7em;
-
-$color-quote-border: #000;
-$color-quote-citation: #6c7781;
-
-$green: #7ad03a !default;
-$red: #a00 !default;
-$orange: #ffba00 !default;
-$blue: #2ea2cc !default;
-
-$secondary: desaturate(lighten(#3182ce, 40%), 21%) !default; // Secondary buttons
-$secondarytext: desaturate(darken($secondary, 60%), 21%) !default; // Text on secondary color bg
-
-$font-size-small: calc(16 / 20 * 1rem);
-$font-size-regular: calc(20 / 16 * 1rem);
-$font-size-large: calc(36 / 20 * 1rem);
-$font-size-larger: calc(48 / 20 * 1rem);
-
-$landscape-phone-minus-query: 540px;
-$landscape-phone-plus-query: 576px;
-$phone-minus-query: 719px;
-$before-tablet-plus-query: 720px;
-$before-tablet-query: 767px;
-$tablet-plus-query: 768px;
-$tablet-minus-query: 1024px;
-$laptop-plus-query: 1025px;
-$desktop-plus-query: 1200px;
-
-// Social Colors.
-$facebook: #3b5998;
-$facebook_group: #3b5998;
-$twitter: #1da1f2;
-$google: #db4437;
-$dribbble: #ea4c89;
-$youtube: #ff3333;
-$linkedin: #4875b4;
-$flickr: #fe0883;
-$tumblr: #32506d;
-$vimeo: #4ebbff;
-$blogger: #ff6600;
-$rss: #ff6200;
-$picasa: #05a136;
-$github: #4078c0;
-$deviantart: #43534d;
-$yahoo: #f52815;
-$pinterest: #c92228;
-$instagram: #405de6;
-$stumbleupon: #f74425;
-$xing: #006567;
-$soundcloud: #ff7700;
-$yelp: #c41200;
-$snapchat: #fffc00;
-$vk: #45668e;
-$viadeo: #f4982b;
-$periscope: #3aa4c6;
-$behance: #1769ff;
-$reddit: #ff4500;
-$medium: #181818;
-$wordpress: #00749c;
-$patreon: #052d49;
-$email: #181818;
-$phone: #181818;
-$whatsapp: #28cf54;
-$google_reviews: #db4437;
-$telegram: #0088cc;
-$trip_advisor: #00af87;
-$imdb: #f5c518;
-$anchor: #5000b9;
-
-@mixin parent-toggles-menus-styles {
-	.kb-link-wrap .dropdown-navigation-toggle {
-		position: absolute;
-		left: 0;
-		z-index: 10;
-		top: 0;
-		bottom: 0;
-		justify-content: flex-end;
-		width: 100%;
-	}
-}
-
-@mixin uncollapse-sub-menus {
-	ul.menu ul.sub-menu {
-		@include show-sub-menu();
-	}
-	.kb-link-wrap .dropdown-navigation-toggle {
-		display: none;
-	}
-}
-
-@mixin hide-sub-menu {
-	opacity: 0;
-	visibility: hidden;
-	transform: translate(0, 0);
-	clip: rect(1px, 1px, 1px, 1px);
-	height: 1px;
-	overflow: hidden;
-}
-
-@mixin show-sub-menu {
-	opacity: 1;
-	visibility: visible;
-	transform: translate(0, 0);
-	clip: auto;
-	height: auto;
-	overflow: visible;
-}
-
-@mixin navigation-fade-up-styles {
-	transform: translate(0, 10px);
-}
-@mixin navigation-fade-down-styles {
-	transform: translate(0, -10px);
-}
-
-@mixin horizontal-navigation-base-styles {
-	.navigation ul ul.sub-menu,
-	.navigation ul ul.submenu {
-		position: absolute;
-		top: 100%;
-		flex-direction: column;
-		background: #fff;
-		margin-left: 0;
-		z-index: 1000;
-		width: initial;
-
-		//third level nav
-		ul.submenu,
-		ul.sub-menu {
-			top: 0;
-			left: 100%;
-			right: auto;
-			min-height: 100%;
-		}
-	}
-	.navigation ul ul.sub-menu:not(.mega-menu),
-	.navigation ul ul.submenu:not(.mega-menu) {
-		box-shadow: 0 2px 13px rgba(0, 0, 0, 0.1);
-	}
-	.navigation ul ul.quadmenu-row {
-		flex-direction: row;
-	}
-	.navigation ul ul > li > .kb-link-wrap > a {
-		padding: 0.5em 1em;
-		width: 200px;
-	}
-	body:not(.hide-focus-outline)
-		.navigation
-		li.menu-item--has-toggle
-		> .kb-link-wrap
-		> a:focus
-		.title-dropdown-navigation-toggle {
-		opacity: 0.2;
-	}
-	// Hide divider for last item.
-	.navigation ul ul.sub-menu > li:last-child,
-	.navigation ul ul.submenu > li:last-child {
-		border-bottom: 0;
-	}
-	.navigation ul ul.sub-menu.sub-menu-edge {
-		left: auto;
-		right: 0;
-	}
-	.navigation ul ul ul.sub-menu.sub-menu-edge {
-		left: auto;
-		right: 100%;
-	}
-	// Handle Reveal Animation for horizontal navs, hover only
-	.navigation {
-		ul.menu li:hover > ul {
-			@include show-sub-menu();
-		}
-	}
-	//In the editor we just look for these classes as they will come and go as the preview device changes.
-	//In the frontend, they will all be present, so must each be wrapped in a media query
-	//Desktop fade up style
-	.navigation.navigation-desktop-dropdown-animation-fade-up {
-		ul ul.sub-menu,
-		ul ul.submenu {
-			@include navigation-fade-up-styles();
-		}
-	}
-	//Tablet fade up style
-	.navigation.navigation-tablet-dropdown-animation-fade-up {
-		ul ul.sub-menu,
-		ul ul.submenu {
-			@include navigation-fade-up-styles();
-		}
-	}
-	//Mobile fade up style
-	.navigation.navigation-mobile-dropdown-animation-fade-up {
-		ul ul.sub-menu,
-		ul ul.submenu {
-			@include navigation-fade-up-styles();
-		}
-	}
-	.navigation.navigation-desktop-dropdown-animation-fade-down {
-		ul ul.sub-menu,
-		ul ul.submenu {
-			@include navigation-fade-down-styles();
-		}
-	}
-	//Tablet fade up style
-	.navigation.navigation-tablet-dropdown-animation-fade-down {
-		ul ul.sub-menu,
-		ul ul.submenu {
-			@include navigation-fade-down-styles();
-		}
-	}
-	//Mobile fade up style
-	.navigation.navigation-mobile-dropdown-animation-fade-down {
-		ul ul.sub-menu,
-		ul ul.submenu {
-			@include navigation-fade-down-styles();
-		}
-	}
-
-	/*--------------------------------------------------------------
-		 ## Submenu Toggles for Header Menus
-		 --------------------------------------------------------------*/
-	.kb-nav-toggle-sub .dropdown-navigation-toggle {
-		position: absolute !important;
-		overflow: hidden;
-		padding: 0 !important;
-		margin: 0 !important;
-		margin-right: -0.1em !important;
-		border: 0 !important;
-		width: 0.9em;
-		top: 0;
-		bottom: 0;
-		height: auto;
-		border-radius: 0;
-		box-shadow: none !important;
-		background: transparent !important;
-		display: block;
-		left: auto;
-		right: calc(1.4em / 2);
-		pointer-events: none;
-
-		//this is editor only, don't need to see this for horizontal navs at all while editing
-		display: none;
-	}
-	.kb-nav-toggle-sub .sub-menu .dropdown-navigation-toggle {
-		width: 2.6em;
-		margin: 0 !important;
-		right: 0;
-	}
-	.kb-nav-toggle-sub .dropdown-navigation-toggle:focus {
-		z-index: 10;
-	}
-	.kb-nav-toggle-sub .title-dropdown-navigation-toggle {
-		display: block;
-		background: transparent;
-		position: absolute;
-		right: 0;
-		top: 50%;
-		width: 0.7em;
-		height: 0.7em;
-		font-size: inherit;
-		width: 0.9em;
-		height: 0.9em;
-		font-size: 0.9em;
-		display: inline-flex;
-		line-height: inherit;
-		margin: 0;
-		padding: 0;
-		border: none;
-		border-radius: 0;
-		transform: translateY(-50%);
-		overflow: visible;
-		transition: opacity 0.2s ease;
-
-		.kadence-svg-icon {
-			align-self: center;
-		}
-	}
-	.kb-nav-toggle-sub ul ul .title-dropdown-navigation-toggle {
-		right: 0.2em;
-	}
-
-	.kb-nav-toggle-sub ul ul .title-dropdown-navigation-toggle .kadence-svg-iconset {
-		transform: rotate(-90deg);
-	}
-	.kb-nav-toggle-sub li.menu-item-has-children {
-		position: relative;
-	}
-	.kb-nav-item-title-wrap {
-		position: relative;
-		display: flex;
-		flex-wrap: nowrap;
-		text-align: left;
-	}
-	/*
-	 * If the dropdown toggle is active with JS, then
-	 * we'll take care of showing the submenu with JS.
-	 */
-	.kb-nav-toggle-sub li:hover > ul,
-	.kb-nav-toggle-sub li.menu-item--toggled-on > ul,
-	.kb-nav-toggle-sub li:not(.menu-item--has-toggle):focus > ul {
-		display: block;
-	}
-
-	/*
-	 * "focus-within" is an alternative to focus class for
-	 * supporting browsers (all but IE/Edge) for no-JS context
-	 * (e.g. AMP) See https://caniuse.com/#feat=css-focus-within
-	 *
-	 * This selector needs to stay separated, otherwise submenus
-	 * will not be displayed with IE/Edge.
-	 */
-	.kb-nav-toggle-sub li:not(.menu-item--has-toggle):focus-within > ul {
-		display: block;
-	}
-	// This makes the dropdowns work a little better on a touch device.
-	@media (hover: none) {
-		.wp-site-blocks
-			.kb-nav-toggle-sub
-			.menu-item--has-toggle:not(.menu-item--toggled-on)
-			.dropdown-navigation-toggle {
-			left: 0;
-			right: 0 !important;
-			margin-right: 0 !important;
-			width: 100%;
-			pointer-events: all;
-		}
-		.wp-site-blocks .kb-nav-toggle-sub .menu-item--has-toggle:not(.menu-item--toggled-on) > .kb-link-wrap > a {
-			pointer-events: none;
-		}
-	}
-}
-
-@mixin vertical-navigation-base-styles {
-	.navigation {
-		width: 100%;
-		display: block;
-		.menu-container {
-			display: block;
-			.menu {
-				display: block;
-				.menu-item {
-					display: list-item;
-					//margin: initial;
-				}
-			}
-		}
-		ul ul li.menu-item > .kb-link-wrap > a {
-			width: 100%;
-		}
-	}
-
-	.navigation a {
-		display: block;
-		width: 100%;
-		text-decoration: none;
-		padding: 0.6em 0.5em;
-	}
-	.navigation ul {
-		display: block;
-		list-style: none;
-		margin: 0;
-		padding: 0;
-	}
-	.kb-link-wrap {
-		display: flex;
-		position: relative;
-		a {
-			color: inherit;
-		}
-		.vertical-sub-toggle {
-			background: transparent;
-			color: inherit;
-			padding: 0.5em 0.7em;
-			display: flex;
-			border: 0;
-			border-radius: 0;
-			box-shadow: none;
-			line-height: normal;
-			display: flex;
-			align-items: center;
-		}
-		.vertical-sub-toggle[aria-expanded="true"] svg {
-			transform: rotate(180deg);
-		}
-
-		.title-dropdown-navigation-toggle {
-			display: none;
-		}
-	}
-
-	//In the editor we just look for these classes as they will come and go as the preview device changes.
-	//In the frontend, they will all be present, so must each be wrapped in a media query
-	//Desktop parent toggle sub menus
-	.navigation-desktop-parent-toggles-menus-true {
-		@include parent-toggles-menus-styles();
-	}
-	//Tablet parent toggle sub menus
-	.navigation-tablet-parent-toggles-menus-true {
-		@include parent-toggles-menus-styles();
-	}
-	//Mobiel parent toggle sub menus
-	.navigation-mobile-parent-toggles-menus-true {
-		@include parent-toggles-menus-styles();
-	}
-
-	//navs that indicate all sub menus should not be collapsed should be shown
-	//In the editor we just look for these classes as they will come and go as the preview device changes.
-	//In the frontend, they will all be present, so must each be wrapped in a media query
-	//Desktop collapse sub menus
-	.navigation-desktop-collapse-sub-menus-false {
-		@include uncollapse-sub-menus();
-	}
-	//Tablet collapse sub menus
-	.navigation-tablet-collapse-sub-menus-false {
-		@include uncollapse-sub-menus();
-	}
-	//Mobile collapse sub menus
-	.navigation-mobile-collapse-sub-menus-false {
-		@include uncollapse-sub-menus();
-	}
-
-	.navigation ul ul {
-		padding-left: 1em;
-		transition: all 0.2s ease-in-out;
-	}
-
-	body[class*="amp-mode-"] .navigation ul ul {
-		display: block;
-	}
-	.navigation ul ul ul ul ul ul {
-		padding-left: 0;
-	}
-	.navigation > .menu-container > ul > li:not(:last-of-type) > .kb-link-wrap {
-		border-right: none;
-	}
-}
-
-@mixin layout-stretch-styles {
-	/*
-	 FROM KADENCE THEME HEADER
-	 */
-	flex-grow: 1;
-	.navigation {
-		flex-grow: 1;
-		& > .menu-container {
-			flex-grow: 1;
-			& > .menu {
-				flex-grow: 1;
-				justify-content: space-between;
-
-				& > .menu-item {
-					margin: 0;
-					flex: 1 1 auto;
-					& > .kb-link-wrap > a {
-						width: fit-content;
-						margin-left: auto;
-						margin-right: auto;
-					}
-				}
-			}
-		}
-	}
-}
-
-@mixin layout-fill-stretch-styles {
-	/*
-	 FROM KADENCE THEME HEADER
-	 */
-	.navigation {
-		& > .menu-container {
-			& > .menu {
-				display: grid;
-				grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-
-				& > .menu-item {
-					text-align: center;
-					& > .kb-link-wrap > a {
-						width: initial;
-					}
-				}
-			}
-		}
-	}
-}
-
-@mixin navigation-underline-styles {
-	.menu-container {
-		> ul > li {
-			> .kb-link-wrap > a {
-				position: relative;
-				&:after {
-					content: "";
-					width: 100%;
-					position: absolute;
-					bottom: 0px;
-					height: 2px;
-					right: 50%;
-					background: currentColor;
-					transform: scale(0, 0) translate(-50%, 0);
-					transition: transform 0.2s ease-in-out, color 0s ease-in-out;
-				}
-				&:hover:after {
-					transform: scale(1, 1) translate(50%, 0);
-				}
-			}
-			&.current-menu-item,
-			&.current-page-item {
-				> .kb-link-wrap > a:after {
-					transform: scale(1, 1) translate(50%, 0);
-				}
-			}
-		}
-	}
-}
-
-@mixin navigation-full-height-styles {
-	height: 100%;
-	align-items: center;
-	.menu-container {
-		height: 100%;
-		align-items: center;
-		> ul {
-			height: 100%;
-			align-items: center;
-			> li {
-				height: 100%;
-				align-items: center;
-				> .kb-link-wrap {
-					height: 100%;
-					> a {
-						display: flex;
-						height: 100%;
-						align-items: center;
-					}
-				}
-			}
-		}
-	}
-}
+@import "./style.scss";
 
 .wp-block-kadence-navigation {
+	//make sure margin top/bottom default to 0
 	margin-top: 0;
 	margin-bottom: 0;
-
-	/*
-	 FROM KADENCE THEME NAV
-	 */
-	/*--------------------------------------------------------------
-	 ## Dropdown navigation for header Menus
-	 --------------------------------------------------------------*/
-
-	//handle reveal for all navs, clicking / toggling only
-	.navigation {
-		//menus are hidden by default
-		ul.menu ul.sub-menu,
-		ul.menu ul.submenu {
-			transition: all 0.2s ease;
-			display: block;
-			@include hide-sub-menu();
-		}
-		//menus that are toggled on (clicked) or have focus are shown
-		ul.menu li.menu-item--toggled-on > ul,
-		ul.menu li:not(.menu-item--has-toggle):focus > ul {
-			@include show-sub-menu();
-		}
-	}
-
-	//small fix for editor default margins on empty sub menu lists
-	.navigation {
-		ul {
-			margin: 0;
-		}
-	}
-
-	.rtl .kb-nav-toggle-sub .title-dropdown-navigation-toggle {
-		right: auto;
-		left: 0;
-	}
-	.rtl .primary-menu-container > ul > li.menu-item .dropdown-navigation-toggle {
-		right: auto;
-		left: calc(1.4em / 2);
-	}
-	.rtl .wp-site-blocks .kb-nav-toggle-sub .sub-menu .dropdown-navigation-toggle {
-		left: 0;
-		right: auto;
-	}
-	.rtl .kb-nav-toggle-sub ul ul .title-dropdown-navigation-toggle .kadence-svg-iconset {
-		transform: rotate(-270deg);
-	}
-	.rtl .navigation ul ul ul.sub-menu,
-	.rtl .navigation ul ul ul.submenu {
-		right: 100%;
-		left: auto;
-	}
-	.rtl .wp-block-kadence-navigation .navigation ul .menu-item.menu-item-has-children > .kb-link-wrap > a {
-		padding-left: calc(var(--kb-nav-left-padding, 0.5em) + var(--kb-nav-drop-icon-width, 1.6em));
-		padding-right: var(--kb-nav-right-padding, 0.5em);
-	}
-	.wp-site-blocks .kb-nav-toggle-sub .kadence-menu-mega-enabled .sub-menu .dropdown-navigation-toggle {
-		display: none;
-	}
-	/*--------------------------------------------------------------
-	 ## Header navigation top item styling
-	 --------------------------------------------------------------*/
 
 	//In the editor we just look for these classes as they will come and go as the preview device changes.
 	//In the frontend, they will all be present, so must each be wrapped in a media query
@@ -659,48 +45,6 @@ $anchor: #5000b9;
 		@include navigation-underline-styles();
 	}
 
-	/*--------------------------------------------------------------
-	 ## Header navigation menus
-	 --------------------------------------------------------------*/
-	.navigation,
-	.menu-container {
-		display: flex;
-	}
-	.navigation li.menu-item > .kb-link-wrap {
-		transition: all 0.2s ease-in-out;
-		position: relative;
-	}
-	.navigation li.menu-item > .kb-link-wrap > a {
-		display: block;
-		text-decoration: none;
-		color: var(--global-palette4);
-		transition: all 0.2s ease-in-out;
-		transform: translate(0, 0);
-	}
-	.navigation li.menu-item > .kb-link-wrap > a:hover,
-	.navigation li.menu-item > .kb-link-wrap > a:focus {
-		color: var(--global-palette-highlight);
-	}
-	.navigation ul.sub-menu,
-	.navigation ul.submenu {
-		display: block;
-		list-style: none;
-		margin: 0;
-		padding: 0;
-	}
-	.navigation ul li.menu-item > .kb-link-wrap > a {
-		padding: 0.6em 0.5em;
-	}
-	.navigation .menu {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: center;
-		align-items: center;
-		list-style: none;
-		margin: 0;
-		padding: 0;
-	}
-
 	//In the editor we just look for these classes as they will come and go as the preview device changes.
 	//In the frontend, they will all be present, so must each be wrapped in a media query
 	//Desktop horizontal menu
@@ -715,9 +59,7 @@ $anchor: #5000b9;
 	&.navigation-mobile-orientation-horizontal {
 		@include horizontal-navigation-base-styles;
 	}
-	/*--------------------------------------------------------------
-	 ## Mobile Menu
-	 --------------------------------------------------------------*/
+
 	//In the editor we just look for these classes as they will come and go as the preview device changes.
 	//In the frontend, they will all be present, so must each be wrapped in a media query
 	//Desktop vertical menu
@@ -728,391 +70,9 @@ $anchor: #5000b9;
 	&.navigation-tablet-orientation-vertical {
 		@include vertical-navigation-base-styles;
 	}
-	//Mobiel vertical menu
+	//Mobile vertical menu
 	&.navigation-mobile-orientation-vertical {
 		@include vertical-navigation-base-styles;
-	}
-	/*--------------------------------------------------------------
-	 ## Mobile menu drawer Trigger
-	 --------------------------------------------------------------*/
-	.menu-toggle-open {
-		display: flex;
-		background: transparent;
-		align-items: center;
-		box-shadow: none;
-		.menu-toggle-label {
-			padding-right: 5px;
-		}
-		.menu-toggle-icon {
-			display: flex;
-		}
-		.menu-toggle-label:empty {
-			padding-right: 0px;
-		}
-		&:hover,
-		&:focus {
-			border-color: currentColor;
-			background: transparent;
-			box-shadow: none;
-		}
-		&.menu-toggle-style-default {
-			border: 0;
-		}
-	}
-	.wp-site-blocks .menu-toggle-open {
-		box-shadow: none;
-	}
-	/*--------------------------------------------------------------
-	 ## Mobile Menu Drawer
-	 --------------------------------------------------------------*/
-	.popup-drawer {
-		position: fixed;
-		display: none;
-		top: 0;
-		bottom: 0;
-		left: -99999rem;
-		right: 99999rem;
-		transition: opacity 0.25s ease-in, left 0s 0.25s, right 0s 0.25s;
-		z-index: 100000;
-		.drawer-overlay {
-			background-color: rgba(0, 0, 0, 0.4);
-			position: fixed;
-			top: 0;
-			right: 0;
-			bottom: 0;
-			left: 0;
-			opacity: 0;
-			transition: opacity 0.2s ease-in-out;
-		}
-		.drawer-inner {
-			width: 100%;
-			transform: translateX(100%);
-			max-width: 90%;
-			right: 0;
-			top: 0;
-			overflow: auto;
-			background: #090c10;
-			color: #fff;
-			bottom: 0;
-			opacity: 0;
-			position: fixed;
-			box-shadow: 0 0 2rem 0 rgba(0, 0, 0, 0.1);
-			display: flex;
-			flex-direction: column;
-			transition: transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1), opacity 0.25s cubic-bezier(0.77, 0.2, 0.05, 1);
-		}
-		.drawer-header {
-			padding: 0 1.5em;
-			display: flex;
-			justify-content: flex-end;
-			// Fixes safair bug.
-			min-height: calc(1.2em + 24px);
-			.drawer-toggle {
-				background: transparent;
-				border: 0;
-				font-size: 24px;
-				line-height: 1;
-				padding: 0.6em 0.15em;
-				color: inherit;
-				display: flex;
-				box-shadow: none;
-				border-radius: 0;
-				&:hover {
-					box-shadow: none;
-				}
-			}
-		}
-		.drawer-content {
-			padding: 0 1.5em 1.5em;
-		}
-	}
-	.popup-drawer-layout-sidepanel.popup-drawer-side-left {
-		.drawer-inner {
-			transform: translateX(-100%);
-			right: auto;
-			left: 0;
-		}
-	}
-	@media screen and (max-width: $tablet-minus-query) {
-		.showing-popup-drawer-from-right.animate-body-popup #inner-wrap,
-		.showing-popup-drawer-from-right.animate-body-popup #colophon,
-		.showing-popup-drawer-from-right.animate-body-popup .site-header-row {
-			transform: translateX(-200px);
-		}
-		.showing-popup-drawer-from-left.animate-body-popup #inner-wrap,
-		.showing-popup-drawer-from-left.animate-body-popup #colophon,
-		.showing-popup-drawer-from-left.animate-body-popup .site-header-row {
-			transform: translateX(200px);
-		}
-		.animate-body-popup #inner-wrap,
-		.animate-body-popup .site-header-row,
-		.animate-body-popup #colophon {
-			transform: none;
-			transition: transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1);
-		}
-	}
-	.popup-drawer-animation-scale.popup-drawer-layout-fullwidth .drawer-inner {
-		transform: scale(0);
-		transform-origin: top right;
-		transition: transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1), opacity 0.3s cubic-bezier(0.77, 0.2, 0.05, 1);
-	}
-	.popup-drawer-animation-scale.popup-drawer-layout-fullwidth.popup-drawer-side-left .drawer-inner {
-		transform-origin: top left;
-	}
-	.popup-drawer-animation-scale.popup-drawer-layout-fullwidth.active .drawer-inner {
-		transform: scale(1);
-	}
-	#mobile-drawer.popup-drawer-animation-slice.popup-drawer-layout-fullwidth .drawer-overlay,
-	#mobile-drawer.popup-drawer-animation-slice.popup-drawer-layout-fullwidth .drawer-inner {
-		background: transparent;
-	}
-
-	.popup-drawer .drawer-header .drawer-toggle {
-		width: 1em;
-		position: relative;
-		height: 1em;
-		box-sizing: content-box;
-		font-size: 24px;
-	}
-	.drawer-toggle .toggle-close-bar {
-		width: 0.75em;
-		height: 0.08em;
-		background: currentColor;
-		transform-origin: center center;
-		position: absolute;
-		margin-top: -0.04em;
-		opacity: 0;
-		border-radius: 0.08em;
-		left: 50%;
-		margin-left: -0.375em;
-		top: 50%;
-		transform: rotate(45deg) translateX(-50%);
-		transition: transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1), opacity 0.3s cubic-bezier(0.77, 0.2, 0.05, 1);
-		transition-delay: 0.2s;
-	}
-	.drawer-toggle .toggle-close-bar:last-child {
-		transform: rotate(-45deg) translateX(50%);
-	}
-	.popup-drawer.active {
-		.drawer-toggle .toggle-close-bar {
-			transform: rotate(45deg);
-			opacity: 1;
-		}
-		.drawer-toggle .toggle-close-bar:last-child {
-			transform: rotate(-45deg);
-			opacity: 1;
-		}
-	}
-	.popup-drawer .drawer-content.content-valign-middle {
-		min-height: calc(100% - (1.2em + 24px));
-		display: flex;
-		justify-content: center;
-		flex-direction: column;
-		padding-bottom: calc(1.2em + 24px);
-		max-height: calc(100% - (1.2em + 24px));
-		overflow: auto;
-	}
-	.popup-drawer .drawer-content.content-valign-bottom {
-		min-height: calc(100% - (1.2em + 24px));
-		display: flex;
-		justify-content: flex-end;
-		flex-direction: column;
-		padding-bottom: calc(1.2em + 24px);
-		max-height: calc(100% - (1.2em + 24px));
-		overflow: auto;
-		.site-header-item-mobile-navigation {
-			display: block;
-			overflow: auto;
-			max-height: calc(100% - (1.2em + 24px));
-		}
-	}
-	.popup-drawer .drawer-content.content-align-center {
-		text-align: center;
-	}
-	.popup-drawer .drawer-content.content-align-center .site-header-item {
-		justify-content: center;
-	}
-	.popup-drawer .drawer-content.content-align-right {
-		text-align: right;
-	}
-	.popup-drawer .drawer-content.content-align-right .site-header-item {
-		justify-content: flex-end;
-	}
-	.popup-drawer-layout-fullwidth.popup-drawer-animation-slice {
-		.drawer-inner {
-			transform: none;
-		}
-		.pop-slice-background {
-			transform-origin: center;
-			transform: none;
-			position: absolute;
-			display: flex;
-			flex-flow: column;
-			align-items: stretch;
-			top: 0;
-			left: 0;
-			right: 0;
-			bottom: 0;
-			z-index: -1;
-		}
-		.pop-portion-bg {
-			flex: 1 1 100%;
-			background: rgba(9, 12, 16, 0.97);
-			transform: translateX(-100%);
-			transition: transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1);
-		}
-		.pop-portion-bg:nth-child(odd) {
-			transform: translateX(100%);
-		}
-		.drawer-content {
-			transform: translateY(20px);
-			opacity: 0;
-			transition: all 0.4s ease;
-		}
-	}
-	.popup-drawer-layout-fullwidth.popup-drawer-animation-slice.active {
-		.pop-portion-bg {
-			transform: translateX(0);
-		}
-		.drawer-content {
-			transform: translateY(0px);
-			opacity: 1;
-			transition: all 0.4s ease;
-			transition-delay: 0.2s;
-		}
-	}
-
-	@media screen and (max-width: $tablet-minus-query) {
-		.popup-drawer-layout-sidepanel.popup-mobile-drawer-side-right {
-			.drawer-inner {
-				transform: translateX(100%);
-				right: 0;
-				left: auto;
-			}
-		}
-		.popup-drawer-layout-sidepanel.popup-mobile-drawer-side-left {
-			.drawer-inner {
-				transform: translateX(-100%);
-				right: auto;
-				left: 0;
-			}
-		}
-	}
-	body.admin-bar .popup-drawer {
-		top: 46px;
-		.drawer-inner {
-			top: 46px;
-		}
-	}
-	@media screen and (min-width: 783px) {
-		body.admin-bar .popup-drawer {
-			top: 32px;
-			.drawer-inner {
-				top: 32px;
-			}
-		}
-	}
-	.popup-drawer.show-drawer {
-		display: block;
-	}
-	.popup-drawer.active {
-		left: 0;
-		opacity: 1;
-		right: 0;
-		transition: opacity 0.25s ease-out;
-		.drawer-inner {
-			opacity: 1;
-			transform: translateX(0%);
-		}
-		.drawer-overlay {
-			opacity: 1;
-			cursor: pointer;
-		}
-	}
-	body[class*="showing-popup-drawer-"] {
-		overflow: hidden;
-	}
-
-	/*
-	 FROM KADENCE PRO MENU-ADDON
-	 */
-	.navigation ul li a:not([href]) {
-		cursor: default;
-	}
-	.kb-nav-item-title-wrap {
-		display: flex;
-		align-items: center;
-	}
-	.navigation > div > ul > li > .kb-link-wrap > a {
-		display: flex;
-		align-items: center;
-	}
-	.kadence-menu-hidden-title:not(.kadence-menu-has-icon):not(.menu-item-has-children) {
-		display: none;
-	}
-	.kadence-menu-hidden-title.menu-item-has-children:not(.kadence-menu-has-icon) > .kb-link-wrap > a,
-	.navigation
-		.menu-container
-		.kadence-menu-hidden-title.menu-item-has-children:not(.kadence-menu-has-icon)
-		> .kb-link-wrap
-		> a {
-		padding: 0;
-		border: 0;
-	}
-	.kadence-menu-hidden-title .menu-label-icon-wrap {
-		margin-left: 0;
-	}
-	.menu-label-icon-wrap {
-		margin-left: 0.3em;
-	}
-	.kadence-menu-icon-side-left .menu-label-icon-wrap {
-		margin-right: 0.3em;
-		margin-left: 0;
-	}
-	.menu-label-icon {
-		display: inline-flex;
-		justify-content: center;
-		svg {
-			width: 1em;
-			height: 1em;
-			top: 0.125em;
-			position: relative;
-		}
-	}
-	.kb-nav-label-description {
-		display: block;
-		font-size: 0.8em;
-		text-transform: none;
-		letter-spacing: normal;
-	}
-	.kb-nav-label-content {
-		display: block;
-	}
-
-	// Mega Menu
-	.menu-container {
-		ul.menu {
-			position: relative;
-			> li.kadence-menu-mega-enabled {
-				> ul {
-					a {
-						width: 100%;
-					}
-					.title-dropdown-navigation-toggle {
-						display: none;
-					}
-					> li {
-						border-bottom: 0 !important;
-						> .kb-link-wrap > a {
-							border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-						}
-						&:not(.menu-item-has-children):last-child > .kb-link-wrap > a {
-							border-bottom: 0 !important;
-						}
-					}
-				}
-			}
-		}
 	}
 
 	//In the editor we just look for these classes as they will come and go as the preview device changes.
@@ -1145,7 +105,151 @@ $anchor: #5000b9;
 		@include layout-fill-stretch-styles();
 	}
 
-	/*
-	 NEW STYLES FOR BLOCK
-	 */
+	//Some random editor stuff
+	.kb-nav-item-title-wrap {
+		display: flex;
+		align-items: center;
+	}
+	.has-child {
+		cursor: pointer;
+
+		.wp-block-kadence-navigation__submenu-container {
+			z-index: z-index(".has-child .wp-block-kadence-navigation__submenu-container");
+		}
+
+		&:hover {
+			.wp-block-kadence-navigation__submenu-container {
+				z-index: z-index(".has-child:hover .wp-block-kadence-navigation__submenu-container");
+			}
+		}
+
+		// Show on editor selected, even if on frontend it only stays open on focus-within.
+		&.is-selected,
+		&.has-child-selected {
+			> .wp-block-kadence-navigation__submenu-container {
+				// We use important here because if the parent block is selected and submenus are present, they should always be visible.
+				visibility: visible !important;
+				opacity: 1 !important;
+				min-width: 200px !important;
+				height: auto !important;
+				width: auto !important;
+				overflow: visible !important;
+			}
+		}
+	}
+	//small fix for editor default margins on empty sub menu lists
+	ul {
+		margin: 0;
+	}
+}
+
+/*--------------------------------------------------------------
+ ## Navigation Link item styles. (pulled in from their separated file for performance)
+--------------------------------------------------------------*/
+.wp-block-kadence-navigation-link {
+	/*--------------------------------------------------------------
+	 ## Other Editor Stuff
+	--------------------------------------------------------------*/
+	&.is-editing,
+	&.is-selected {
+		min-width: 20px;
+	}
+
+	.block-list-appender {
+		margin-top: 20px;
+		// The right margin should be set to auto, so as to not shift layout in flex containers.
+		margin-right: auto;
+		margin-bottom: 20px;
+		margin-left: 20px;
+		position: relative;
+	}
+
+	//in editor the nav item <a> shouldn't get the clicky pointer
+	.kb-nav-link-content {
+		cursor: text;
+	}
+}
+
+/*--------------------------------------------------------------
+ ## Nav link editor features from the core copy
+--------------------------------------------------------------*/
+.wp-block-kadence-navigation-link__invalid-item {
+	color: #000;
+}
+
+/**
+ * Nav item setup state. Is shown when a nav item has no URL configured.
+ */
+.wp-block-kadence-navigation-link__placeholder {
+	position: relative;
+
+	// While in a placeholder state, hide any underlines the theme might add.
+	text-decoration: none !important;
+	box-shadow: none !important;
+	background-image: none !important;
+
+	// Draw a wavy underline.
+	.wp-block-kadence-navigation-link__placeholder-text span {
+		$blur: 10%;
+		$width: 6%;
+		$stop1: 30%;
+		$stop2: 64%;
+
+		--wp-underline-color: var(--wp-admin-theme-color);
+		.is-dark-theme & {
+			--wp-underline-color: darkgray;
+		}
+
+		background-image: linear-gradient(
+				45deg,
+				transparent ($stop1 - $blur),
+				var(--wp-underline-color) $stop1,
+				var(--wp-underline-color) ($stop1 + $width),
+				transparent ($stop1 + $width + $blur)
+			),
+			linear-gradient(
+				135deg,
+				transparent ($stop2 - $blur),
+				var(--wp-underline-color) $stop2,
+				var(--wp-underline-color) ($stop2 + $width),
+				transparent ($stop2 + $width + $blur)
+			);
+		background-position: 0 100%;
+		background-size: 6px 3px;
+		background-repeat: repeat-x;
+
+		// Since applied to a span, it doesn't change the footprint of the item,
+		// but it does vertically shift the underline to better align.
+		padding-bottom: 0.1em;
+	}
+
+	// This needs extra specificity.
+	&.kb-nav-link-content {
+		cursor: pointer;
+	}
+}
+
+/**
+* Link Control Transforms
+*/
+.link-control-transform {
+	border-top: 1px solid gray;
+	padding: 0 20px 10px 20px;
+}
+.link-control-transform__subheading {
+	font-size: 11px;
+	text-transform: uppercase;
+	font-weight: 500;
+	color: darkgray;
+	margin-bottom: 1.5em;
+}
+.link-control-transform__items {
+	display: flex;
+	justify-content: space-between;
+}
+.link-control-transform__item {
+	flex-basis: 33%;
+	flex-direction: column;
+	gap: 10px;
+	height: auto;
 }

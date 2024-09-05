@@ -81,13 +81,19 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 			$this->sized_dynamic_styles( $css, $nav_attributes, $unique_id, $size );
 		}
 		$css->set_media_state( 'desktop' );
-		//main continer
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' > .navigation > .menu-container > .menu' );
-		$css->render_measure_output( $nav_attributes, 'margin', 'margin', ['unit_key' => 'marginUnit']);
-		$css->render_measure_output( $nav_attributes, 'padding', 'padding', ['unit_key' => 'paddingUnit']);
-		
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > ul li.menu-item > .kb-link-wrap > a' );
-		$css->render_typography( $nav_attributes );
+	
+		// No added specificty needed for these variables.
+		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id );
+		$css->render_measure_output( $nav_attributes, 'marginDropdown', '--kb-nav-dropdown-margin', [ 'unit_key' => 'marginDropdownUnit' ] );
+		$css->render_measure_output( $nav_attributes, 'paddingDropdown', '--kb-nav-dropdown-padding', [ 'unit_key' => 'paddingDropdownUnit' ] );
+		if ( isset( $nav_attributes['dropdownShadow'][0]['enable'] ) && $nav_attributes['dropdownShadow'][0]['enable'] ) {
+			$css->add_property( '--kb-nav-dropdown-box-shadow', $css->render_shadow( $nav_attributes['dropdownShadow'][0] ) );
+		}
+
+		//main container (don't apply to children)
+		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' > .navigation > .menu-container > .menu');
+		$css->render_measure_output( $nav_attributes, 'margin', '--kb-nav-margin', ['unit_key' => 'marginUnit']);
+		$css->render_measure_output( $nav_attributes, 'padding', '--kb-nav-padding', ['unit_key' => 'paddingUnit']);
 
 		//container styles
 		$container_active_selector = $nav_attributes['parentActive'] ? 
@@ -110,22 +116,17 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 			$nav_attributes
 		);
 
-		// Dropdown.
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul li.menu-item > .kb-link-wrap > a' );
+		//nav item (top level only)
+		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' > .navigation > .menu > .menu-container > .wp-block-kadence-navigation-link > .kb-link-wrap > .kb-nav-link-content' );
+		$css->render_typography( $nav_attributes );
+		$css->render_measure_output( $nav_attributes, 'marginLink', '--kb-nav-link-margin', ['unit_key' => 'marginLinkUnit']);
+		$css->render_measure_output( $nav_attributes, 'paddingLink', '--kb-nav-link-padding', ['unit_key' => 'paddingLinkUnit']);
+
+		//dropdown links (only this nav's dropdowns, exclude embedded navigations in mega menus, etc)
+		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .sub-menu > .wp-block-kadence-navigation-link > .kb-link-wrap > .kb-nav-link-content' );
 		$css->render_typography( $nav_attributes, 'dropdownTypography' );
-
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul.sub-menu, .wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul.submenu' );
-		$css->render_measure_output( $nav_attributes, 'marginDropdown', 'margin', ['unit_key' => 'marginDropdownUnit']);
-		$css->render_measure_output( $nav_attributes, 'paddingDropdown', 'padding', ['unit_key' => 'paddingDropdownUnit']);
-
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation > .menu-container ul ul.sub-menu .wp-block-kadence-navigation-link > .kb-link-wrap > a' );
-		$css->render_measure_output( $nav_attributes, 'marginDropdownLink', 'margin', ['unit_key' => 'marginDropdownLinkUnit']);
-		$css->render_measure_output( $nav_attributes, 'paddingDropdownLink', 'padding', ['unit_key' => 'paddingDropdownLinkUnit']);
-
-		//nav item
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' > .navigation > .menu > .menu-container > .wp-block-kadence-navigation-link > .kb-link-wrap > a' );
-		$css->render_measure_output( $nav_attributes, 'marginLink', 'margin', ['unit_key' => 'marginLinkUnit']);
-		$css->render_measure_output( $nav_attributes, 'paddingLink', 'padding', ['unit_key' => 'paddingLinkUnit']);
+		$css->render_measure_output( $nav_attributes, 'marginDropdownLink', '--kb-nav-link-margin', ['unit_key' => 'marginDropdownLinkUnit']);
+		$css->render_measure_output( $nav_attributes, 'paddingDropdownLink', '--kb-nav-link-padding', ['unit_key' => 'paddingDropdownLinkUnit']);
 
 		return $css->css_output();
 	}
@@ -143,15 +144,31 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$navigation_vertical_spacing = $sized_attributes['spacing'][0];
 
 		$css->set_media_state( strtolower( $size ) );
-		// Navigation logic from theme styles component.
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation[class*="navigation-style-underline"] .menu-container>ul>li>a:after' );
-		$css->add_property( 'width', 'calc( 100% - ' . $css->render_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) . ' )', $navigation_horizontal_spacing );
 
-		//.wp-block-kadence-navigation .navigation ul li.menu-item > .kb-link-wrap > a
-		//.wp-block-kadence-navigation${uniqueID} .menu-container > ul > li.menu-item > .kb-link-wrap >a
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .menu-container > ul > li.menu-item > .kb-link-wrap > a' );
-		$css->add_property( 'padding-left', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) );
-		$css->add_property( 'padding-right', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) );
+		//no added specificty needed for these variables
+		//these variable will slot into selectors found in the static stylesheet.
+		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id );
+		$css->add_property( '--kb-nav-link-padding-left', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) );
+		$css->add_property( '--kb-nav-link-padding-right', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) );
+		$css->add_property( '--kb-nav-link-underline-width', 'calc( 100% - ' . $css->render_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) . ' )', $navigation_horizontal_spacing );
+		$css->add_property( '--kb-nav-top-link-color', $css->render_color( $sized_attributes['linkColor'] ) );		
+		$css->add_property( '--kb-nav-top-link-color-hover', $css->render_color( $sized_attributes['linkColorHover'] ) );
+		$css->add_property( '--kb-nav-top-link-color-active', $css->render_color( $sized_attributes['linkColorActive']) );
+		$css->add_property( '--kb-nav-top-link-color-active-ancestor', $css->render_color( $sized_attributes['linkColorActive']), $sized_attributes['parentActive'] );
+		$css->add_property( '--kb-nav-dropdown-link-color', $css->render_color( $sized_attributes['linkColorDropdown'] ));		
+		$css->add_property( '--kb-nav-dropdown-link-color-hover', $css->render_color( $sized_attributes['linkColorDropdownHover'] ) );
+		$css->add_property( '--kb-nav-dropdown-link-color-active', $css->render_color( $sized_attributes['linkColorDropdownActive']) );
+		$css->add_property( '--kb-nav-dropdown-link-color-active-ancestor', $css->render_color( $sized_attributes['linkColorDropdownActive']), $sized_attributes['parentActive'] );
+		$css->add_property( '--kb-nav-dropdown-background', $css->render_color( $sized_attributes['backgroundDropdown'] ) );
+		$css->add_property( '--kb-nav-dropdown-link-background-hover', $css->render_color( $sized_attributes['backgroundDropdownHover'] ));
+		$css->add_property( '--kb-nav-dropdown-link-background-active', $css->render_color( $sized_attributes['backgroundDropdownActive']));
+		$css->add_property( '--kb-nav-dropdown-border-bottom', $css->render_border( $sized_attributes['dropdownBorder'], 'bottom' ) );
+		$css->add_property( '--kb-nav-dropdown-border-top', $css->render_border( $sized_attributes['dropdownBorder'], 'top' ) );
+		$css->add_property( '--kb-nav-dropdown-border-left', $css->render_border( $sized_attributes['dropdownBorder'], 'left' ) );
+		$css->add_property( '--kb-nav-dropdown-border-right', $css->render_border( $sized_attributes['dropdownBorder'], 'right' ) );
+		$css->render_measure_range( $sized_attributes, ( 'Desktop' === $size ? 'dropdownBorderRadius' : 'dropdownBorderRadius' . $size ), '--kb-nav-dropdown-border-radius', '', ['unit_key' => 'dropdownBorderRadiusUnit']);
+		
+		//additional dynamic logic, but still lands in a slot in the static stylesheet
 		if (
 			( $sized_attributes_inherit['orientation'] == 'vertical' ||
 			$sized_attributes_inherit['style'] === 'standard' ||
@@ -159,84 +176,33 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 			$sized_attributes_inherit['style'] === '' ) &&
 			is_numeric( $navigation_vertical_spacing )
 		) {
-			$css->add_property( 'padding-top', $css->render_half_size( $navigation_vertical_spacing, $attributes['spacingUnit'] ) );
-			$css->add_property( 'padding-bottom', $css->render_half_size( $navigation_vertical_spacing, $attributes['spacingUnit'] ) );
+			$css->add_property( '--kb-nav-link-padding-top', $css->render_half_size( $navigation_vertical_spacing, $attributes['spacingUnit'] ) );
+			$css->add_property( '--kb-nav-link-padding-bottom', $css->render_half_size( $navigation_vertical_spacing, $attributes['spacingUnit'] ) );
 		}
 
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .menu-container > ul > li.menu-item > .kb-link-wrap > a, .wp-block-kadence-navigation' . $unique_id . ' .menu-container > ul > li.menu-item > .kb-link-wrap' );
-		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColor'] ), $sized_attributes['linkColor'] );
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .menu-container > ul > li.menu-item > .kb-link-wrap:hover > a, .wp-block-kadence-navigation' . $unique_id . ' .menu-container > ul > li.menu-item > .kb-link-wrap:hover' );
-		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorHover'] ) );
-		
-		if ( $sized_attributes['parentActive'] ) {
-			$css->set_selector(	'.wp-block-kadence-navigation' . $unique_id . ' .navigation[class*="navigation-style-underline"] .menu-container.menu-container>ul>li.current-menu-ancestor>a:after' );
-			$css->add_property( 'transform', 'scale(1, 1) translate(50%, 0)' );
-			$css->set_selector(	'.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > ul > li.menu-item.current-menu-item > .kb-link-wrap > a,
-				.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > ul > li.menu-item.current-menu-item > .kb-link-wrap, 
-				.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > ul > li.menu-item.current-menu-ancestor > .kb-link-wrap > a,
-				.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > ul > li.menu-item.current-menu-ancestor > .kb-link-wrap' );
-		} else {
-			$css->set_selector(	'.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > ul > li.menu-item.current-menu-item > .kb-link-wrap > a,
-				.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > ul > li.menu-item.current-menu-item > .kb-link-wrap' );
-		}
-		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorActive']) );
-
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > ul > li.menu-item .dropdown-navigation-toggle' );
-		$css->add_property( 'right', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit']) );
-
-		//Dropdown logic from theme Styles Component
-		// Dropdown.
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul.sub-menu, .wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul.submenu' );
-		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundDropdown'] ) );
-		$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['dropdownBorder'], 'bottom' ) );
-		$css->add_property( 'border-top', $css->render_border( $sized_attributes['dropdownBorder'], 'top' ) );
-		$css->add_property( 'border-left', $css->render_border( $sized_attributes['dropdownBorder'], 'left' ) );
-		$css->add_property( 'border-right', $css->render_border( $sized_attributes['dropdownBorder'], 'right' ) );
-		$css->render_measure_range( $sized_attributes, ( 'Desktop' === $size ? 'dropdownBorderRadius' : 'dropdownBorderRadius' . $size ), 'border-radius', '', ['unit_key' => 'dropdownBorderRadiusUnit']);
 		if ( $sized_attributes['orientation'] != 'vertical' ) {
-			if ( $sized_attributes['dropdownShadow'] && isset( $sized_attributes['dropdownShadow'][0] ) && $sized_attributes['dropdownShadow'][0]['enable'] ) {
-				$css->add_property( 'box-shadow', $css->render_shadow( $sized_attributes['dropdownShadow'][0] ) );
-			}
+			$css->add_property( '--kb-nav-dropdown-link-width', $css->render_size( $sized_attributes['dropdownWidth'], $sized_attributes['dropdownWidthUnit'] ) );
+			$css->add_property( '--kb-nav-top-not-last-link-border-right', $css->render_border( $sized_attributes['divider'], 'bottom' ) );
 
-			$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . '.wp-block-kadence-navigation .navigation ul.menu li:hover > ul.sub-menu' );
 			if ( $sized_attributes['dropdownHorizontalAlignment'] == 'center' ) {
-				$css->add_property( 'left', '50%' );
-				$css->add_property( 'transform', 'translate(-50%, 0)' );
+				$css->add_property( '--kb-nav-dropdown-show-left', '50%' );
+				$css->add_property( '--kb-nav-dropdown-show-transform', 'translate(-50%, 0)' );
 			} else if ( $sized_attributes['dropdownHorizontalAlignment'] == 'right' ) {
-				$css->add_property( 'right', '0' );
+				$css->add_property( '--kb-nav-dropdown-show-right', '0' );
 			}
-		}
-
-
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul li:not(:last-of-type), .wp-block-kadence-navigation' . $unique_id . ' .menu-container ul.menu > li.kadence-menu-mega-enabled > ul > li.menu-item > a' );
-		$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['dropdownDivider'], 'bottom' ) );
-
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul li.menu-item > .kb-link-wrap > a' );
-		if ( $sized_attributes['orientation'] != 'vertical' ) {
-			$css->add_property( 'width', $css->render_size( $sized_attributes['dropdownWidth'], $sized_attributes['dropdownWidthUnit'] ) );
-		}
-		$css->add_property( 'padding-top', $css->render_size( $sized_attributes['dropdownVerticalSpacing'], $attributes['dropdownVerticalSpacingUnit'] ) );
-		$css->add_property( 'padding-bottom', $css->render_size( $sized_attributes['dropdownVerticalSpacing'], $attributes['dropdownVerticalSpacingUnit'] ) );
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul li.menu-item > .kb-link-wrap > a, .wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul.sub-menu ' );
-		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorDropdown']));
-		// $css->render_font( kadence()->option( 'dropdown_navigation_typography' ), $css );
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul ul li.menu-item > .kb-link-wrap > a:hover' );
-		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorDropdownHover'] ));
-		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundDropdownHover'] ));
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . '.navigation .menu-container ul ul li.menu-item.current-menu-item > .kb-link-wrap > a' );
-		$css->add_property( 'color', $css->render_color( $sized_attributes['linkColorDropdownActive'] ));
-		$css->add_property( 'background', $css->render_color( $sized_attributes['backgroundDropdownActive']));
-
-		//divider
-		if ( $sized_attributes['orientation'] == 'vertical' ) {
-			$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container ul li .kb-link-wrap' );
-			$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['divider'], 'bottom' ) );
-			$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation:not(.drawer-navigation-parent-toggle-true) ul li .kb-link-wrap button' );
-			$css->add_property( 'border-left', $css->render_border( $sized_attributes['divider'], 'bottom' ) );
 		} else {
-			$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation > .menu-container > ul > li:not(:last-of-type) > .kb-link-wrap' );
-			$css->add_property( 'border-right', $css->render_border( $sized_attributes['divider'], 'bottom' ) );
+			$css->add_property( '--kb-nav-link-border-bottom', $css->render_border( $sized_attributes['divider'], 'bottom' ) );
+			$css->add_property( '--kb-nav-dropdown-toggle-border-left', $css->render_border( $sized_attributes['divider'], 'bottom' ) );
 		}
+
+		//placement logic where an additional selector is needed
+		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .menu > .menu-item.kadence-menu-mega-enabled > .sub-menu > .menu-item:not(:last-of-type), .wp-block-kadence-navigation' . $unique_id . ' .menu > .menu-item.kadence-menu-mega-enabled > .sub-menu > .menu-item' );
+		$css->add_property( '--kb-nav-menu-item-border-bottom', $css->render_border( $sized_attributes['dropdownDivider'], 'bottom' ) );		
+
+		//can't do a slot/css var with this one. "right" messes with the margin-inline positioning.
+		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > .menu > .menu-item .kb-nav-dropdown-toggle-btn' );
+		$css->add_property( 'right', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit']), $navigation_horizontal_spacing );
+
 
 		//transparent styles
 		$css->set_selector( '.header-' . strtolower( $size ) . '-transparent .wp-block-kadence-navigation' . $unique_id . ' .menu-container > ul > li.menu-item > .kb-link-wrap > a, .header-' . strtolower( $size ) . '-transparent .wp-block-kadence-navigation' . $unique_id . ' .menu-container > ul > li.menu-item > .kb-link-wrap' );
@@ -314,7 +280,7 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		$nav_block = null;
-		$in_template_preview = isset($attributes['templateKey']) && $attributes['templateKey'];
+		$in_template_preview = isset( $attributes['templateKey'] ) && $attributes['templateKey'] && ( ! isset( $attributes['id'] ) || ! $attributes['id'] );
 
 		//If this is a templated navigation placeholder, we're going to skip a bunch of the normal logic and checks
 		if ( ! $in_template_preview ) {
@@ -424,7 +390,6 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 
 		// Update animation classes with responsive actual animation stuff.
 		$navigation_classes[] = 'navigation';
-		$navigation_classes[] = 'kb-nav-toggle-sub';
 		$navigation_classes[] = 'navigation-desktop-style-' . ( $style ? $style : 'standard' );
 		$navigation_classes[] = 'navigation-tablet-style-' . ( $style_tablet ? $style_tablet : 'standard' );
 		$navigation_classes[] = 'navigation-mobile-style-' . ( $style_mobile ? $style_mobile : 'standard' );

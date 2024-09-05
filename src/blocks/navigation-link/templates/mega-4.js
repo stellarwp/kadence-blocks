@@ -18,7 +18,6 @@ function innerBlocks() {
 				collapseGutter: 'none',
 				customRowGutter: [0, '', ''],
 				colLayout: 'equal',
-				maxWidth: 907,
 				inheritMaxWidth: true,
 				padding: ['', '', '', ''],
 				templateLock: false,

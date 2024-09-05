@@ -107,15 +107,15 @@ import {
 import { LinkUI } from './link-ui';
 import { updateAttributes } from './update-attributes';
 
-/**
- * Import Css
- */
-import './editor.scss';
-
 import metadata from './block.json';
 import BackendStyles from './components/backend-styles';
 import addNavLink from '../navigation/helpers/addNavLink';
 import { buildTemplateFromSelection } from './helpers';
+
+/**
+ * Import Css
+ */
+import './editor.scss';
 
 const DEFAULT_BLOCK = { name: 'kadence/navigation-link' };
 const ALLOWED_MEDIA_TYPES = ['image'];
@@ -312,6 +312,7 @@ export default function Edit(props) {
 		iconSideTablet,
 		iconSideMobile,
 		align,
+		dropdownShadow,
 		kadenceDynamic,
 	} = attributes;
 
@@ -319,6 +320,7 @@ export default function Edit(props) {
 	const [showSubMenus, setShowSubMenus] = useState(false);
 	const [megaMenuOnboardingStep, setMegaMenuOnboardingStep] = useState('design');
 	const [megaMenuColumnChoice, setMegaMenuColumnChoice] = useState('');
+	const [activePreview, setActivePreview] = useState(false);
 
 	const [isInvalid, isDraft] = useIsInvalidLink(kind, type, id);
 	const { maxNestingLevel } = context;
@@ -477,6 +479,7 @@ export default function Edit(props) {
 	function doMegaMenuEnable(value) {
 		if (value) {
 			//enable
+			replaceInnerBlocks(clientId, []);
 			setAttributes({ isMegaMenu: true });
 		} else {
 			//disable
@@ -586,7 +589,7 @@ export default function Edit(props) {
 		}
 	}
 
-	const megaMenuWidthClass = 'kadence-menu-mega-width-' + (megaMenuWidth ? megaMenuWidth : 'full');
+	const megaMenuWidthClass = 'kb-menu-mega-width-' + (megaMenuWidth ? megaMenuWidth : 'full');
 	const showSubMenusWithLogic = showSubMenus || isSelected || childSelected;
 
 	const blockProps = useBlockProps({
@@ -595,15 +598,15 @@ export default function Edit(props) {
 			'is-editing': isSelected || isParentOfSelectedBlock,
 			'has-link': !!url,
 			'has-child': hasChildren,
-			'has-media': mediaType && mediaType != 'none',
+			'kb-menu-has-media': mediaType && mediaType != 'none',
 			'menu-item-has-children': hasChildren,
 			'menu-item--toggled-on': showSubMenusWithLogic,
-			'current-menu-item': hasNoBlockBefore,
+			'current-menu-item': activePreview,
 			'kadence-menu-mega-enabled': isMegaMenu,
 			[`${megaMenuWidthClass}`]: isMegaMenu,
-			'kadence-menu-has-icon': mediaType == 'icon',
-			'kadence-menu-has-image': mediaType == 'image',
-			'kadence-menu-has-description': description,
+			'kb-menu-has-icon': mediaType == 'icon',
+			'kb-menu-has-image': mediaType == 'image',
+			'kb-menu-has-description': description,
 			[`kb-nav-link-${uniqueID}`]: uniqueID,
 		}),
 		onKeyDown,
@@ -787,7 +790,7 @@ export default function Edit(props) {
 								className={`link-svg-icon link-svg-icon-${mediaIcon[0].icon}`}
 								name={mediaIcon[0].icon}
 								htmltag="span"
-								size={previewMediaIconSize}
+								size={previewMediaIconSize ? previewMediaIconSize : null}
 								strokeWidth={
 									'fe' === mediaIcon[0].icon.substring(0, 2) ? previewMediaIconWidth : undefined
 								}
@@ -1054,7 +1057,16 @@ export default function Edit(props) {
 				)}
 
 				{activeTab === 'style' && (
-					<>{applyFilters('kadence.styleControlsNavigationLink', styleControls, props, hasChildren)}</>
+					<>
+						{applyFilters(
+							'kadence.styleControlsNavigationLink',
+							styleControls,
+							props,
+							hasChildren,
+							setActivePreview,
+							activePreview
+						)}
+					</>
 				)}
 
 				{activeTab === 'advanced' && (
@@ -1115,8 +1127,8 @@ export default function Edit(props) {
 								<ToggleControl
 									label={
 										isMegaMenu
-											? __('Show Mega Menu', 'kadence-blocks')
-											: __('Show Sub Menu', 'kadence-blocks')
+											? __('Freeze Mega Menu Preview', 'kadence-blocks')
+											: __('Freeze Sub Menu Preview', 'kadence-blocks')
 									}
 									checked={showSubMenus}
 									onChange={(value) => setShowSubMenus(value)}
@@ -1189,7 +1201,7 @@ export default function Edit(props) {
 												</>
 											)}
 											{(isInvalid || isDraft || isLabelFieldFocused) && (
-												<div className="wp-block-navigation-link__placeholder-text wp-block-navigation-link__label">
+												<div className="wp-block-navigation-link__placeholder-text">
 													<Tooltip text={tooltipText}>
 														<span aria-label={__('Navigation link text')}>
 															{
@@ -1224,7 +1236,6 @@ export default function Edit(props) {
 							)}
 							{mediaContent}
 							{description && <span className="menu-label-description">{description}</span>}
-							{hasChildren && <span className="title-dropdown-navigation-toggle">{ArrowDown}</span>}
 						</span>
 						{hasHighlightLabel && (
 							<span className="link-highlight-label">
@@ -1233,7 +1244,7 @@ export default function Edit(props) {
 									<IconRender
 										className={`kt-highlight-label-icon`}
 										name={highlightIcon[0].icon}
-										size={previewHighlightIconSize}
+										size={previewHighlightIconSize ? previewHighlightIconSize : null}
 										htmltag="span"
 										strokeWidth={
 											'fe' === highlightIcon[0].icon.substring(0, 2)
@@ -1249,7 +1260,7 @@ export default function Edit(props) {
 					{hasChildren && (
 						<button
 							aria-label="Expand child menu"
-							class="dropdown-navigation-toggle vertical-sub-toggle"
+							class="kb-nav-dropdown-toggle-btn"
 							data-toggle-duration="10"
 							data-toggle-target={`kb-nav-link-${uniqueID} .sub-menu`}
 							aria-expanded="false"

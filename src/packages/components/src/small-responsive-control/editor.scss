@@ -23,6 +23,10 @@
         }
     }
 }
+.components-button-group.kb-measure-responsive-options, .components-button-group.kb-small-responsive-options {
+    min-width: 68px;
+}
+
 .kb-small-responsive-control.responsive-title-area-spacing .kadence-title-bar {
 	margin-bottom: 24px;
 }
