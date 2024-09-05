@@ -135,13 +135,13 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$css->render_measure_output( $attributes, 'iconPadding', 'padding', array( 'unit_key' => 'iconPaddingUnit' ) );
 		$css->render_responsive_range( $attributes, 'iconSize', 'font-size', 'iconSizeUnit' );
-		// Icon Hover styles.
-		$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover .kb-svg-icon-wrap' );
+		// Icon Hover-Focus.
+		$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover .kb-svg-icon-wrap, .kb-btn' . $unique_id . '.kb-button:focus .kb-svg-icon-wrap' );
 		if ( ! empty( $attributes['iconColorHover'] ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['iconColorHover'] ) );
 		}
-		// Hover styles.
-		$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:hover' );
+		// Hover-Focus.
+		$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:hover, .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:focus' );
 		if ( ! empty( $attributes['colorHover'] ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['colorHover'] ) );
 		}

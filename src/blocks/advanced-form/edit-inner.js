@@ -1104,20 +1104,23 @@ export function EditInner(props) {
 				<TextControl
 					__nextHasNoMarginBottom
 					className="html-anchor-control"
-					label={__('HTML anchor')}
+					label={__('HTML anchor', 'kadence-blocks')}
 					help={
 						<>
 							{__(
-								'Enter a word or two — without spaces — to make a unique web address just for this block, called an “anchor.” Then, you’ll be able to link directly to this section of your page.'
+								'Enter a word or two — without spaces — to make a unique web address just for this block, called an “anchor.” Then, you’ll be able to link directly to this section of your page.',
+								'kadence-blocks'
 							)}
 
-							<ExternalLink href={__('https://wordpress.org/documentation/article/page-jumps/')}>
-								{__('Learn more about anchors')}
+							<ExternalLink
+								href={__('https://wordpress.org/documentation/article/page-jumps/', 'kadence-blocks')}
+							>
+								{__('Learn more about anchors', 'kadence-blocks')}
 							</ExternalLink>
 						</>
 					}
 					value={anchor}
-					placeholder={__('Add an anchor')}
+					placeholder={__('Add an anchor', 'kadence-blocks')}
 					onChange={(nextValue) => {
 						nextValue = nextValue.replace(ANCHOR_REGEX, '-');
 						setMetaAttribute(nextValue, 'anchor');
@@ -1129,12 +1132,12 @@ export function EditInner(props) {
 				<TextControl
 					__nextHasNoMarginBottom
 					autoComplete="off"
-					label={__('Additional CSS class(es)')}
+					label={__('Additional CSS class(es)', 'kadence-blocks')}
 					value={className}
 					onChange={(nextValue) => {
 						setMetaAttribute(nextValue !== '' ? nextValue : undefined, 'className');
 					}}
-					help={__('Separate multiple classes with spaces.')}
+					help={__('Separate multiple classes with spaces.', 'kadence-blocks')}
 				/>
 			</InspectorAdvancedControls>
 			<BackendStyles

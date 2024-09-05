@@ -31,7 +31,7 @@
 		},
 		getRepeaterTimeStamp(id) {
 			const currentDate = new Date();
-			const initialDate = new Date(window.kadenceCountdown.timers[id].timestamp);
+			const initialDate = new Date(parseInt(window.kadenceCountdown.timers[id].timestamp));
 			const seconds = initialDate.getSeconds();
 			const minutes = initialDate.getMinutes();
 			const hours = initialDate.getHours();

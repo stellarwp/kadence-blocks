@@ -620,11 +620,11 @@ function KadenceTabs(props) {
 		});
 	};
 	const startlayoutOptions = [
-		{ key: 'skip', name: __('Skip'), icon: __('Skip') },
-		{ key: 'simple', name: __('Simple'), icon: tabsSimpleIcon },
-		{ key: 'boldbg', name: __('Boldbg'), icon: tabsBoldIcon },
-		{ key: 'center', name: __('Center'), icon: tabsCenterIcon },
-		{ key: 'vertical', name: __('Vertical'), icon: tabsVerticalIcon },
+		{ key: 'skip', name: __('Skip', 'kadence-blocks'), icon: __('Skip', 'kadence-blocks') },
+		{ key: 'simple', name: __('Simple', 'kadence-blocks'), icon: tabsSimpleIcon },
+		{ key: 'boldbg', name: __('Boldbg', 'kadence-blocks'), icon: tabsBoldIcon },
+		{ key: 'center', name: __('Center', 'kadence-blocks'), icon: tabsCenterIcon },
+		{ key: 'vertical', name: __('Vertical', 'kadence-blocks'), icon: tabsVerticalIcon },
 	];
 	const setInitalLayout = (key) => {
 		if ('skip' === key) {
@@ -776,13 +776,13 @@ function KadenceTabs(props) {
 		(previewDevice == 'Mobile' && mobileLayout == 'accordion');
 
 	const mLayoutOptions = [
-		{ value: 'tabs', label: __('Tabs'), icon: tabsIcon },
-		{ value: 'vtabs', label: __('Vertical Tabs'), icon: vTabsIcon },
-		{ value: 'accordion', label: __('Accordion'), icon: accordionIcon },
+		{ value: 'tabs', label: __('Tabs', 'kadence-blocks'), icon: tabsIcon },
+		{ value: 'vtabs', label: __('Vertical Tabs', 'kadence-blocks'), icon: vTabsIcon },
+		{ value: 'accordion', label: __('Accordion', 'kadence-blocks'), icon: accordionIcon },
 	];
 	const layoutOptions = [
-		{ value: 'tabs', label: __('Tabs'), icon: tabsIcon },
-		{ value: 'vtabs', label: __('Vertical Tabs'), icon: vTabsIcon },
+		{ value: 'tabs', label: __('Tabs', 'kadence-blocks'), icon: tabsIcon },
+		{ value: 'vtabs', label: __('Vertical Tabs', 'kadence-blocks'), icon: vTabsIcon },
 	];
 
 	const initialTabOptions = times(titles.length, (n) => {
@@ -844,7 +844,7 @@ function KadenceTabs(props) {
 				))}
 			</ButtonGroup>
 			<p className="kadence-control-title" style={{ marginTop: '24px', marginBottom: '5px' }}>
-				{__('Set initial Open Tab')}
+				{__('Set initial Open Tab', 'kadence-blocks')}
 			</p>
 			<Select
 				value={initialTabOptions.filter(function (option) {
@@ -1550,17 +1550,17 @@ function KadenceTabs(props) {
 										tabs={[
 											{
 												name: 'normal',
-												title: __('Normal'),
+												title: __('Normal', 'kadence-blocks'),
 												className: 'kt-normal-tab',
 											},
 											{
 												name: 'hover',
-												title: __('Hover'),
+												title: __('Hover', 'kadence-blocks'),
 												className: 'kt-hover-tab',
 											},
 											{
 												name: 'active',
-												title: __('Active'),
+												title: __('Active', 'kadence-blocks'),
 												className: 'kt-active-tab',
 											},
 										]}
@@ -1679,12 +1679,12 @@ function KadenceTabs(props) {
 												tabs={[
 													{
 														name: 'normal',
-														title: __('Normal'),
+														title: __('Normal', 'kadence-blocks'),
 														className: 'kt-normal-tab',
 													},
 													{
 														name: 'percent',
-														title: __('% Width'),
+														title: __('% Width', 'kadence-blocks'),
 														className: 'kt-hover-tab',
 													},
 												]}
@@ -2265,7 +2265,9 @@ function KadenceTabs(props) {
 			<div className={classes}>
 				{showPreset && (
 					<div className="kt-select-starter-style-tabs">
-						<div className="kt-select-starter-style-tabs-title">{__('Select Initial Style')}</div>
+						<div className="kt-select-starter-style-tabs-title">
+							{__('Select Initial Style', 'kadence-blocks')}
+						</div>
 						<ButtonGroup
 							className="kt-init-tabs-btn-group"
 							aria-label={__('Initial Style', 'kadence-blocks')}
