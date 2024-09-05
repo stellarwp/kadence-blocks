@@ -267,13 +267,7 @@ export function Edit(props) {
 			{/* Navigation selected but not loaded yet, show spinner */}
 			{id > 0 && isEmpty(post) && undefined === postExists && isLoading && (
 				<>
-					<Placeholder
-						className="kb-select-or-create-placeholder"
-						label={__('Kadence Navigation', 'kadence-blocks')}
-						icon={navigationBlockIcon}
-					>
-						<Spinner />
-					</Placeholder>
+					<Spinner />
 					<InspectorControls>
 						<KadencePanelBody
 							panelName={'kb-navigation-selected-switch'}
