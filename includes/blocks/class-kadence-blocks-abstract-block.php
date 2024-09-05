@@ -48,16 +48,33 @@ class Kadence_Blocks_Abstract_Block {
 	/**
 	 * Block determines if scripts need to be loaded for block.
 	 *
-	 * @var string
+	 * @var array
 	 */
-	protected $attributes_with_defaults = array();
+	protected $attributes_with_defaults = [];
 
 	/**
 	 * Cache for default attributes by block name.
 	 *
 	 * @var array
 	 */
-	protected static $default_attributes_cache = array();
+	protected $default_attributes_cache = [];
+
+	/**
+	 * Allow us to enable merged defaults on blocks individually.
+	 * Considered setting this as a property within each block,
+	 * but it's easier to see an exhaustive list here.
+	 *
+	 * @var array
+	 */
+	protected $supports_merged_defaults = [
+		'navigation',
+		'header',
+		'navigation-list',
+		'singlebtn',
+		'header-row',
+		'off-canvas',
+		'header-column'
+	];
 
 	/**
 	 * Class Constructor.
@@ -134,7 +151,9 @@ class Kadence_Blocks_Abstract_Block {
 		if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 			$attributes = $block['attrs'];
 			if ( isset( $attributes['uniqueID'] ) ) {
-				$attributes = $this->get_attributes_with_defaults( $attributes['uniqueID'], $attributes );
+				if( in_array( $this->block_name, $this->supports_merged_defaults ) ) {
+					$attributes = $this->get_attributes_with_defaults( $attributes['uniqueID'], $attributes );
+				}
 				// Check and enqueue stylesheets and scripts if needed.
 				$this->render_scripts( $attributes, false );
 
@@ -185,7 +204,9 @@ class Kadence_Blocks_Abstract_Block {
 			$unique_style_id = apply_filters( 'kadence_blocks_build_render_unique_id', $attributes['uniqueID'], $this->block_name, $attributes );
 			$css_class = Kadence_Blocks_CSS::get_instance();
 
-			$attributes = $this->get_attributes_with_defaults( $attributes['uniqueID'], $attributes, false );
+			if( in_array( $this->block_name, $this->supports_merged_defaults ) ) {
+				$attributes = $this->get_attributes_with_defaults( $attributes['uniqueID'], $attributes, false );
+			}
 
 			// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 			$attributes = apply_filters( 'kadence_blocks_' . str_replace( '-', '_', $this->block_name ) . '_render_block_attributes', $attributes, $block_instance );
