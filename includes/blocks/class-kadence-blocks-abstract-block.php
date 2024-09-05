@@ -62,8 +62,8 @@ class Kadence_Blocks_Abstract_Block {
 
 	/**
 	 * Allow us to enable merged defaults on blocks individually.
-	 * Considered setting this as a property within each block,
-	 * but it's easier to see an exhaustive list here.
+	 * Considered setting this as a property within each block, but it's easier to see an exhaustive list here.
+	 * Eventually all blocks will be supported.
 	 *
 	 * @var array
 	 */
@@ -74,7 +74,8 @@ class Kadence_Blocks_Abstract_Block {
 		'singlebtn',
 		'header-row',
 		'off-canvas',
-		'header-column'
+		'header-column',
+		'search'
 	];
 
 	/**
