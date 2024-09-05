@@ -78,14 +78,12 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
-		$merged_attributes = $this->get_attributes_with_defaults( $unique_id, $attributes, 'kadence/' . $this->block_name );
-
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
 		$sizes = array( 'Desktop', 'Tablet', 'Mobile' );
 
 		foreach ( $sizes as $size ) {
-			$this->sized_dynamic_styles( $css, $merged_attributes, $unique_id, $size );
+			$this->sized_dynamic_styles( $css, $attributes, $unique_id, $size );
 		}
 		$css->set_media_state( 'desktop' );
 
@@ -94,12 +92,12 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 		if( !empty( $attributes['widthType'] ) && $attributes['widthType'] === 'full') {
 			$css->add_property( 'width', '100%' );
 		}
-		$css->render_border_styles( $merged_attributes, 'border', false, array(
+		$css->render_border_styles( $attributes, 'border', false, array(
 			'desktop_key' => 'border',
 			'tablet_key'  => 'borderTablet',
 			'mobile_key'  => 'borderMobile',
 		) );
-		$css->render_measure_output( $merged_attributes, 'borderRadius', 'border-radius', array(
+		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array(
 			'desktop_key' => 'borderRadius',
 			'tablet_key'  => 'borderRadiusTablet',
 			'mobile_key'  => 'borderRadiusMobile',
@@ -107,7 +105,7 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 
 		// inner container.
 		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-inner');
-		$css->render_measure_output( $merged_attributes, 'padding', 'padding', array(
+		$css->render_measure_output( $attributes, 'padding', 'padding', array(
 			'desktop_key' => 'padding',
 			'tablet_key'  => 'paddingTablet',
 			'mobile_key'  => 'paddingMobile',
@@ -117,7 +115,7 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 		// close icon container.
 		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close' );
 		$css->render_measure_output(
-			$merged_attributes,
+			$attributes,
 			'closeIconPadding',
 			'padding',
 			[
@@ -126,12 +124,12 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 				'mobile_key'  => 'closeIconPaddingMobile',
 			]
 		);
-		$css->render_measure_output( $merged_attributes, 'closeIconBorderRadius', 'border-radius', array(
+		$css->render_measure_output( $attributes, 'closeIconBorderRadius', 'border-radius', array(
 			'desktop_key' => 'closeIconBorderRadius',
 			'tablet_key'  => 'closeIconBorderRadiusTablet',
 			'mobile_key'  => 'closeIconBorderRadiusMobile',
 		) );
-		$css->render_border_styles( $merged_attributes, 'closeIconBorder', false, array(
+		$css->render_border_styles( $attributes, 'closeIconBorder', false, array(
 			'desktop_key' => 'closeIconBorder',
 			'tablet_key'  => 'closeIconBorderTablet',
 			'mobile_key'  => 'closeIconBorderMobile',
@@ -140,7 +138,7 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 		// Close icon container hover.
 		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close:hover, .wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close:focus' );
 		$css->render_border_styles(
-			$merged_attributes,
+			$attributes,
 			'closeIconBorderHover',
 			false,
 			[
