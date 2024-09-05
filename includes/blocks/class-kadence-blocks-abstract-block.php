@@ -46,7 +46,8 @@ class Kadence_Blocks_Abstract_Block {
 	protected $has_script = false;
 
 	/**
-	 * Block determines if scripts need to be loaded for block.
+	 * Cache for a blocks attributes with defaults based on uniqueId
+	 * Stored as: uniqueId => attributes
 	 *
 	 * @var array
 	 */
@@ -54,7 +55,7 @@ class Kadence_Blocks_Abstract_Block {
 
 	/**
 	 * Cache for default attributes by block name.
-	 *
+	 * Stored as: blockName => attributes
 	 * @var array
 	 */
 	protected $default_attributes_cache = [];
