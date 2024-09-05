@@ -7218,7 +7218,7 @@ const deprecated = [
 				source: 'children',
 				selector: 'p',
 				default: __(
-					'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo.'
+					'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo.',
 					'kadence-blocks'
 				),
 			},
