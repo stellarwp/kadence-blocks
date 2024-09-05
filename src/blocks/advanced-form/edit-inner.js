@@ -1117,7 +1117,9 @@ export function EditInner(props) {
 								'kadence-blocks'
 							)}
 
-							<ExternalLink href={__('https://wordpress.org/documentation/article/page-jumps/', 'kadence-blocks')}>
+							<ExternalLink
+								href={__('https://wordpress.org/documentation/article/page-jumps/', 'kadence-blocks')}
+							>
 								{__('Learn more about anchors', 'kadence-blocks')}
 							</ExternalLink>
 						</>
