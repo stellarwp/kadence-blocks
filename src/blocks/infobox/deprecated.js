@@ -3491,7 +3491,7 @@ const deprecated = [
 				type: 'array',
 				source: 'children',
 				selector: 'h1,h2,h3,h4,h5,h6',
-				default: __('Title'),
+				default: __('Title', 'kadence-blocks'),
 			},
 			titleColor: {
 				type: 'string',
@@ -3539,7 +3539,8 @@ const deprecated = [
 				source: 'children',
 				selector: 'p',
 				default: __(
-					'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo.'
+					'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo.',
+					'kadence-blocks'
 				),
 			},
 			textColor: {
@@ -3592,7 +3593,7 @@ const deprecated = [
 				type: 'array',
 				source: 'children',
 				selector: '.kt-blocks-info-box-learnmore',
-				default: __('Learn More'),
+				default: __('Learn More', 'kadence-blocks'),
 			},
 			learnMoreStyles: {
 				type: 'array',
@@ -4077,7 +4078,7 @@ const deprecated = [
 				type: 'array',
 				source: 'children',
 				selector: 'h1,h2,h3,h4,h5,h6',
-				default: __('Title'),
+				default: __('Title', 'kadence-blocks'),
 			},
 			titleColor: {
 				type: 'string',
@@ -4125,7 +4126,8 @@ const deprecated = [
 				source: 'children',
 				selector: 'p',
 				default: __(
-					'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo.'
+					'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo.',
+					'kadence-blocks'
 				),
 			},
 			textColor: {
@@ -4178,7 +4180,7 @@ const deprecated = [
 				type: 'array',
 				source: 'children',
 				selector: '.kt-blocks-info-box-learnmore',
-				default: __('Learn More'),
+				default: __('Learn More', 'kadence-blocks'),
 			},
 			learnMoreStyles: {
 				type: 'array',
@@ -4770,7 +4772,7 @@ const deprecated = [
 				type: 'array',
 				source: 'children',
 				selector: 'h1,h2,h3,h4,h5,h6',
-				default: __('Title'),
+				default: __('Title', 'kadence-blocks'),
 			},
 			titleColor: {
 				type: 'string',
@@ -4818,7 +4820,8 @@ const deprecated = [
 				source: 'children',
 				selector: 'p',
 				default: __(
-					'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo.'
+					'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo.',
+					'kadence-blocks'
 				),
 			},
 			textColor: {
@@ -4871,7 +4874,7 @@ const deprecated = [
 				type: 'array',
 				source: 'children',
 				selector: '.kt-blocks-info-box-learnmore',
-				default: __('Learn More'),
+				default: __('Learn More', 'kadence-blocks'),
 			},
 			learnMoreStyles: {
 				type: 'array',
@@ -5441,7 +5444,7 @@ const deprecated = [
 				type: 'array',
 				source: 'children',
 				selector: 'h1,h2,h3,h4,h5,h6',
-				default: __('Title'),
+				default: __('Title', 'kadence-blocks'),
 			},
 			titleColor: {
 				type: 'string',
@@ -5489,7 +5492,8 @@ const deprecated = [
 				source: 'children',
 				selector: 'p',
 				default: __(
-					'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo.'
+					'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo.',
+					'kadence-blocks'
 				),
 			},
 			textColor: {
@@ -5542,7 +5546,7 @@ const deprecated = [
 				type: 'array',
 				source: 'children',
 				selector: '.kt-blocks-info-box-learnmore',
-				default: __('Learn More'),
+				default: __('Learn More', 'kadence-blocks'),
 			},
 			learnMoreStyles: {
 				type: 'array',
@@ -6080,7 +6084,7 @@ const deprecated = [
 				type: 'array',
 				source: 'children',
 				selector: 'h1,h2,h3,h4,h5,h6',
-				default: __('Title'),
+				default: __('Title', 'kadence-blocks'),
 			},
 			titleColor: {
 				type: 'string',
@@ -6124,7 +6128,8 @@ const deprecated = [
 				source: 'children',
 				selector: 'p',
 				default: __(
-					'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo.'
+					'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo.',
+					'kadence-blocks'
 				),
 			},
 			textColor: {
@@ -6162,7 +6167,7 @@ const deprecated = [
 				type: 'array',
 				source: 'children',
 				selector: '.kt-blocks-info-box-learnmore',
-				default: __('Learn More'),
+				default: __('Learn More', 'kadence-blocks'),
 			},
 			learnMoreStyles: {
 				type: 'array',
@@ -6633,7 +6638,7 @@ const deprecated = [
 				type: 'array',
 				source: 'children',
 				selector: 'h1,h2,h3,h4,h5,h6',
-				default: __('Title'),
+				default: __('Title', 'kadence-blocks'),
 			},
 			titleColor: {
 				type: 'string',
@@ -6677,7 +6682,8 @@ const deprecated = [
 				source: 'children',
 				selector: 'p',
 				default: __(
-					'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo.'
+					'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo.',
+					'kadence-blocks'
 				),
 			},
 			textColor: {
@@ -6715,7 +6721,7 @@ const deprecated = [
 				type: 'array',
 				source: 'children',
 				selector: '.kt-blocks-info-box-learnmore',
-				default: __('Learn More'),
+				default: __('Learn More', 'kadence-blocks'),
 			},
 			learnMoreStyles: {
 				type: 'array',
@@ -7168,7 +7174,7 @@ const deprecated = [
 				type: 'array',
 				source: 'children',
 				selector: 'h1,h2,h3,h4,h5,h6',
-				default: __('Title'),
+				default: __('Title', 'kadence-blocks'),
 			},
 			titleColor: {
 				type: 'string',
@@ -7213,6 +7219,7 @@ const deprecated = [
 				selector: 'p',
 				default: __(
 					'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo.'
+					'kadence-blocks'
 				),
 			},
 			textColor: {
@@ -7250,7 +7257,7 @@ const deprecated = [
 				type: 'array',
 				source: 'children',
 				selector: '.kt-blocks-info-box-learnmore',
-				default: __('Learn More'),
+				default: __('Learn More', 'kadence-blocks'),
 			},
 			learnMoreStyles: {
 				type: 'array',
