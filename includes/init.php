@@ -112,15 +112,25 @@ function kadence_blocks_add_global_gutenberg_inline_styles() {
 	}
 	$css .= '}';
 	if ( isset( $content_width ) ) {
-		$css .= '.editor-styles-wrapper{ --kb-global-content-width:' . absint( $content_width ) . 'px;}';
-		$css .= '.wp-block-kadence-rowlayout > .kb-theme-content-width {
-			max-width:' . esc_attr( $content_width ) . 'px;
-		}';
+		if ( class_exists( 'Kadence\Theme' ) ) {
+			$css .= '.kb-header-container { --global-content-width:' . \Kadence\kadence()->sub_option( 'content_width', 'size' ) . \Kadence\kadence()->sub_option( 'content_width', 'unit' ) . ';}';
+			$css .= '.editor-styles-wrapper{ --kb-global-content-width:' . \Kadence\kadence()->sub_option( 'content_width', 'size' ) . \Kadence\kadence()->sub_option( 'content_width', 'unit' ) . ';}';
+			$css .= '.wp-block-kadence-rowlayout > .kb-theme-content-width {
+				max-width:' . \Kadence\kadence()->sub_option( 'content_width', 'size' ) . \Kadence\kadence()->sub_option( 'content_width', 'unit' ) . ';
+			}';
+		} else {
+			$css .= '.kb-header-container { --global-content-width: ' . absint( $content_width ) . 'px;}';
+			$css .= '.editor-styles-wrapper{ --kb-global-content-width:' . absint( $content_width ) . 'px;}';
+			$css .= '.wp-block-kadence-rowlayout > .kb-theme-content-width {
+				max-width:' . esc_attr( $content_width ) . 'px;
+			}';
+		}
 	} else {
 		$css .= '.editor-styles-wrapper{ --kb-global-content-width:var(--wp--style--global--content-size);}';
 		$css .= '.wp-block-kadence-rowlayout > .kb-theme-content-width {
 			max-width:var(--wp--style--global--content-size);
 		}';
+		$css .= '.kb-header-container { --global-content-width: var(--wp--style--global--content-size) }';
 	}
 	$css .= ':root {
 		--global-kb-spacing-xxs: 0.5rem;
