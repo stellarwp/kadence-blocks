@@ -34,7 +34,7 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 		// Define the form post gutenberg template.
 		add_action( 'init', array( $this, 'form_gutenberg_template' ) );
 		add_filter( 'kadence_post_layout', array( $this, 'navigation_single_layout' ), 99 );
-		add_action( 'enqueue_block_editor_assets', array( $this, 'script_enqueue' ) );
+		add_action( 'enqueue_block_assets', array( $this, 'script_enqueue' ) );
 
 		if( is_admin() ) {
 			if ( class_exists( 'Cpt_To_Template' ) ) {
