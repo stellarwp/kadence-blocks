@@ -106,10 +106,12 @@
 	}
 
 	//Some random editor stuff
-	.kb-nav-item-title-wrap {
-		display: flex;
-		align-items: center;
+	.kb-link-warp {
+		--kb-nav-link-title-wrap-display: flex;
 	}
+	// .kb-nav-item-title-wrap {
+	// 	align-items: center;
+	// }
 	.has-child {
 		cursor: pointer;
 

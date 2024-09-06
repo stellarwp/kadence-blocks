@@ -715,7 +715,7 @@ export default function Edit(props) {
 	const mediaContent = (
 		<>
 			{mediaType && 'none' !== mediaType && (
-				<div className={'link-media-container'}>
+				<div className={'link-media-container '}>
 					{!mediaImage[0].url && 'image' === mediaType && (
 						<KadenceMediaPlaceholder
 							labels={''}
@@ -787,7 +787,7 @@ export default function Edit(props) {
 					{'icon' === mediaType && (
 						<>
 							<IconRender
-								className={`link-svg-icon link-svg-icon-${mediaIcon[0].icon}`}
+								className={`link-media-icon-wrap link-svg-icon link-svg-icon-${mediaIcon[0].icon}`}
 								name={mediaIcon[0].icon}
 								htmltag="span"
 								size={previewMediaIconSize ? previewMediaIconSize : null}
@@ -1171,7 +1171,7 @@ export default function Edit(props) {
 													<RichText
 														ref={ref}
 														identifier="label"
-														className="wp-block-navigation-item__label"
+														className="wp-block-navigation-item__label kb-nav-label-content"
 														value={hideLabel ? '' : label}
 														onChange={(labelValue) =>
 															setAttributes({
