@@ -38,8 +38,6 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 	 */
 	private static $seen_refs = array();
 
-	protected $nav_link_attributes = array();
-
 	/**
 	 * Block determines if style needs to be loaded for block.
 	 * This block doesn't because it's stylesheet is merged with the parent nav block's
@@ -68,27 +66,24 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
-
-		$nav_link_attributes = $this->get_attributes_with_defaults( $unique_id, $attributes, 'kadence/' . $this->block_name );
-
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
 		$sizes = array( 'Desktop', 'Tablet', 'Mobile' );
 
 		foreach ( $sizes as $size ) {
-			$this->sized_dynamic_styles( $css, $nav_link_attributes, $unique_id, $size );
+			$this->sized_dynamic_styles( $css, $attributes, $unique_id, $size );
 		}
 		$css->set_media_state( 'desktop' );
 
-		$image_ratio_padding = ! is_numeric( $nav_link_attributes['mediaImage'][0]['height'] )
+		$image_ratio_padding = ! is_numeric( $attributes['mediaImage'][0]['height'] )
 			? null
-			: ( $nav_link_attributes['mediaImage'][0]['height'] / $nav_link_attributes['mediaImage'][0]['width'] ) * 100 . '%';
-		$image_ratio_height = ! is_numeric( $nav_link_attributes['mediaImage'][0]['height'] ) ? null : 0;
+			: ( $attributes['mediaImage'][0]['height'] / $attributes['mediaImage'][0]['width'] ) * 100 . '%';
+		$image_ratio_height = ! is_numeric( $attributes['mediaImage'][0]['height'] ) ? null : 0;
 		$has_ratio = false;
-		if ( $nav_link_attributes['imageRatio'] && 'inherit' !== $nav_link_attributes['imageRatio'] ) {
+		if ( $attributes['imageRatio'] && 'inherit' !== $attributes['imageRatio'] ) {
 			$has_ratio = true;
 			$image_ratio_height = 0;
-			switch ( $nav_link_attributes['imageRatio'] ) {
+			switch ( $attributes['imageRatio'] ) {
 				case 'land43':
 					$image_ratio_padding = '75%';
 					break;
@@ -121,14 +116,14 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 		//non specific syles / variables
 		$css->set_selector( '.kb-nav-link-' . $unique_id );
-		$css->render_measure_output( $nav_link_attributes, 'marginDropdown', '--kb-nav-dropdown-margin', ['unit_key' => 'marginDropdownUnit']);
-		$css->render_measure_output( $nav_link_attributes, 'paddingDropdown', '--kb-nav-dropdown-padding', ['unit_key' => 'paddingDropdownUnit']);
-		$css->render_measure_output( $nav_link_attributes, 'marginDropdownLink', '--kb-nav-dropdown-link-margin', ['unit_key' => 'marginDropdownLinkUnit']);
-		$css->render_measure_output( $nav_link_attributes, 'paddingDropdownLink', '--kb-nav-dropdown-link-padding', ['unit_key' => 'paddingDropdownLinkUnit']);
-		if ( isset( $nav_link_attributes['dropdownShadow'][0]['enable'] ) && $nav_link_attributes['dropdownShadow'][0]['enable'] ) {
-			$css->add_property( '--kb-nav-dropdown-box-shadow', $css->render_shadow( $nav_link_attributes['dropdownShadow'][0] ) );
+		$css->render_measure_output( $attributes, 'marginDropdown', '--kb-nav-dropdown-margin', ['unit_key' => 'marginDropdownUnit']);
+		$css->render_measure_output( $attributes, 'paddingDropdown', '--kb-nav-dropdown-padding', ['unit_key' => 'paddingDropdownUnit']);
+		$css->render_measure_output( $attributes, 'marginDropdownLink', '--kb-nav-dropdown-link-margin', ['unit_key' => 'marginDropdownLinkUnit']);
+		$css->render_measure_output( $attributes, 'paddingDropdownLink', '--kb-nav-dropdown-link-padding', ['unit_key' => 'paddingDropdownLinkUnit']);
+		if ( isset( $attributes['dropdownShadow'][0]['enable'] ) && $attributes['dropdownShadow'][0]['enable'] ) {
+			$css->add_property( '--kb-nav-dropdown-box-shadow', $css->render_shadow( $attributes['dropdownShadow'][0] ) );
 		}
-		$css->render_measure_output( $nav_link_attributes, 'dropdownBorderRadius', 'border-radius', array(
+		$css->render_measure_output( $attributes, 'dropdownBorderRadius', 'border-radius', array(
 			'desktop_key' => 'dropdownBorderRadius',
 			'tablet_key'  => 'dropdownBorderRadiusTablet',
 			'mobile_key'  => 'dropdownBorderRadiusMobile',
@@ -137,12 +132,12 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			'third_prop' => '--kb-nav-dropdown-border-bottom-right-radius',
 			'fourth_prop' => '--kb-nav-dropdown-border-bottom-left-radius' 
 		) );
-		$css->render_border_styles( $nav_link_attributes, 'dropdownBorder', false, [
+		$css->render_border_styles( $attributes, 'dropdownBorder', false, [
 			'renderAsVars' => true,
 			'varBase' => '--kb-nav-dropdown-',
 		] );
-		if ( !empty( $nav_link_attributes['mediaStyle'][0] ) ) {
-			$css->render_measure_output( $nav_link_attributes['mediaStyle'][0], 'padding', 'padding', array(
+		if ( !empty( $attributes['mediaStyle'][0] ) ) {
+			$css->render_measure_output( $attributes['mediaStyle'][0], 'padding', 'padding', array(
 				'desktop_key' => 'padding',
 				'tablet_key'  => 'paddingTablet',
 				'mobile_key'  => 'paddingMobile',
@@ -156,8 +151,8 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 		//no bleed variables (extra specific to beat things like dropdown or top level styling)
 		$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .kb-link-wrap.kb-link-wrap.kb-link-wrap.kb-link-wrap' );
-		$css->render_measure_output( $nav_link_attributes, 'margin', '--kb-nav-link-margin', [ 'unit_key' => 'marginUnit' ] );
-		$css->render_measure_output( $nav_link_attributes, 'padding', '--kb-nav-link-padding', [ 'unit_key' => 'paddingUnit' ] );
+		$css->render_measure_output( $attributes, 'margin', '--kb-nav-link-margin', [ 'unit_key' => 'marginUnit' ] );
+		$css->render_measure_output( $attributes, 'padding', '--kb-nav-link-padding', [ 'unit_key' => 'paddingUnit' ] );
 
 		//container styles
 		$css->render_button_styles_with_states(
@@ -173,27 +168,27 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 				'renderAsVars' => true,
 				'varBase' => '--kb-nav-link-'
 			),
-			$nav_link_attributes
+			$attributes
 		);
-		if ( ! empty( $nav_link_attributes['highlightLabel'] ) || ! empty( $nav_link_attributes['highlightIcon']['icon'] ) ) {
-			if ( isset( $nav_link_attributes['highlightSpacing'][0] ) && is_array( $nav_link_attributes['highlightSpacing'][0] ) ) {
-				//$css->render_measure_output( $nav_link_attributes['highlightSpacing'][0], 'margin', '--kb-nav-link-highlight-margin' );
-				$css->render_measure_output( $nav_link_attributes['highlightSpacing'][0], 'padding', '--kb-nav-link-highlight-padding' );
-				$css->render_border_styles( $nav_link_attributes['highlightSpacing'][0], 'border', false, [
+		if ( ! empty( $attributes['highlightLabel'] ) || ! empty( $attributes['highlightIcon']['icon'] ) ) {
+			if ( isset( $attributes['highlightSpacing'][0] ) && is_array( $attributes['highlightSpacing'][0] ) ) {
+				//$css->render_measure_output( $attributes['highlightSpacing'][0], 'margin', '--kb-nav-link-highlight-margin' );
+				$css->render_measure_output( $attributes['highlightSpacing'][0], 'padding', '--kb-nav-link-highlight-padding' );
+				$css->render_border_styles( $attributes['highlightSpacing'][0], 'border', false, [
 					'renderAsVars' => true,
 					'varBase' => '--kb-nav-link-highlight-',
 				] );
-				$css->render_measure_output( $nav_link_attributes['highlightSpacing'][0],  'border-radius', 'borderRadius', [
+				$css->render_measure_output( $attributes['highlightSpacing'][0],  'border-radius', 'borderRadius', [
 					'first_prop' => '--kb-nav-link-highlight-border-radius-top-left',
 					'second_prop' => '--kb-nav-link-highlight-border-radius-top-right',
 					'third_prop' => '--kb-nav-link-highlight-border-radius-bottom-right',
 					'fourth_prop' => '--kb-nav-link-highlight-border-radius-bottom-left' 
 				] );
-				$css->render_gap($nav_link_attributes['highlightSpacing'][0],'gap', 'gap','gapUnit', [
+				$css->render_gap($attributes['highlightSpacing'][0],'gap', 'gap','gapUnit', [
 					'renderAsVars' => true,
 					'varBase' => '--kb-nav-link-highlight-',
 				]);
-				$css->render_gap($nav_link_attributes['highlightSpacing'][0], 'textGap', 'gap', 'gapUnit', [
+				$css->render_gap($attributes['highlightSpacing'][0], 'textGap', 'gap', 'gapUnit', [
 					'renderAsVars' => true,
 					'varBase' => '--kb-nav-link-highlight-text-',
 				]);
@@ -211,31 +206,31 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 				'renderAsVars' => true,
 				'varBase' => '--kb-nav-link-media-'
 			),
-			$nav_link_attributes
+			$attributes
 		);
-		$css->add_property( '--kb-nav-link-media-max-width', $nav_link_attributes['mediaImage'][0]['maxWidth'] . 'px' );
+		$css->add_property( '--kb-nav-link-media-max-width', $attributes['mediaImage'][0]['maxWidth'] . 'px' );
 		if ( $has_ratio ) {
 			//next level container
 			$css->add_property( '--kb-nav-link-media-intrinsic-padding-bottom', $image_ratio_padding );
 			$css->add_property( '--kb-nav-link-media-intrinsic-height', $image_ratio_height == 0 ? '0px' : $image_ratio_height, null, true );
-			$css->add_property( '--kb-nav-link-media-intrinsic-width', ! is_numeric( $nav_link_attributes['mediaImage'][0]['width'] ) ? null : $nav_link_attributes['mediaImage'][0]['width'] . 'px' );
+			$css->add_property( '--kb-nav-link-media-intrinsic-width', ! is_numeric( $attributes['mediaImage'][0]['width'] ) ? null : $attributes['mediaImage'][0]['width'] . 'px' );
 		}
 
 		//styles that need a more speicifc selector
 		$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .kb-link-wrap.kb-link-wrap.kb-link-wrap > .kb-nav-link-content' );
-		$css->render_typography( $nav_link_attributes );
+		$css->render_typography( $attributes );
 
 		$css->set_selector( '.kb-nav-link-' . $unique_id . ' .sub-menu li.menu-item > .kb-link-wrap > .kb-nav-link-content' );
-		$css->render_typography( $nav_link_attributes, 'dropdownTypography' );
+		$css->render_typography( $attributes, 'dropdownTypography' );
 
-		if ( ! empty( $nav_link_attributes['highlightLabel'] ) || ! empty( $nav_link_attributes['highlightIcon']['icon'] ) ) {
+		if ( ! empty( $attributes['highlightLabel'] ) || ! empty( $attributes['highlightIcon']['icon'] ) ) {
 			$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .kb-link-wrap > .kb-nav-link-content .link-highlight-label' );
-			$css->render_typography( $nav_link_attributes, 'highlightTypography' );
+			$css->render_typography( $attributes, 'highlightTypography' );
 		}
 
 		//description styles
 		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-' . $unique_id . ' .kb-nav-label-description' );
-		$css->render_typography( $nav_link_attributes, 'descriptionTypography' );
+		$css->render_typography( $attributes, 'descriptionTypography' );
 
 		return $css->css_output();
 	}
@@ -464,7 +459,6 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			self::$seen_refs[ $attributes['id'] ] = true;
 		}
 
-		$nav_link_attributes = $this->get_attributes_with_defaults( $unique_id, $attributes, 'kadence/' . $this->block_name );
 		$child_info          = $this->get_child_info( $block_instance );
 
 		// Handle embeds for nav block.
@@ -477,20 +471,20 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			unset( self::$seen_refs[ $attributes['id'] ] );
 		}
 
-		$label               = ! empty( $nav_link_attributes['label'] ) ? $nav_link_attributes['label'] : '';
-		$url                 = ! empty( $nav_link_attributes['url'] ) ? $nav_link_attributes['url'] : '';
+		$label               = ! empty( $attributes['label'] ) ? $attributes['label'] : '';
+		$url                 = ! empty( $attributes['url'] ) ? $attributes['url'] : '';
 		$has_children        = ! empty( $content );
-		$has_highlight_label = ! empty( $nav_link_attributes['highlightLabel'] ) || ! empty( $nav_link_attributes['highlightIcon'][0]['icon'] );
+		$has_highlight_label = ! empty( $attributes['highlightLabel'] ) || ! empty( $attributes['highlightIcon'][0]['icon'] );
 		$kind                = ! empty( $attributes['kind'] ) ? str_replace( '-', '_', $attributes['kind'] ) : 'post_type';
 		$is_active_ancestor  = $child_info['has_active_child'];
 		$is_active           = $this->is_current( $attributes );
-		$is_mega_menu        = ! empty( $nav_link_attributes['isMegaMenu'] );
-		$has_icon            = $nav_link_attributes['mediaType'] == 'icon' && ! empty( $nav_link_attributes['mediaIcon'][0]['icon'] );
-		$has_image           = $nav_link_attributes['mediaType'] == 'image' && ! empty( $nav_link_attributes['mediaImage'][0]['url'] );
+		$is_mega_menu        = ! empty( $attributes['isMegaMenu'] );
+		$has_icon            = $attributes['mediaType'] == 'icon' && ! empty( $attributes['mediaIcon'][0]['icon'] );
+		$has_image           = $attributes['mediaType'] == 'image' && ! empty( $attributes['mediaImage'][0]['url'] );
 
-		$desktop_width = ! empty( $nav_link_attributes['megaMenuWidth'] ) ? $nav_link_attributes['megaMenuWidth'] : 'full';
-		$tablet_width  = ! empty( $nav_link_attributes['megaMenuWidthTablet'] ) ? $nav_link_attributes['megaMenuWidthTablet'] : $desktop_width;
-		$mobile_width  = ! empty( $nav_link_attributes['megaMenuWidthMobile'] ) ? $nav_link_attributes['megaMenuWidthMobile'] : $tablet_width;
+		$desktop_width = ! empty( $attributes['megaMenuWidth'] ) ? $attributes['megaMenuWidth'] : 'full';
+		$tablet_width  = ! empty( $attributes['megaMenuWidthTablet'] ) ? $attributes['megaMenuWidthTablet'] : $desktop_width;
+		$mobile_width  = ! empty( $attributes['megaMenuWidthMobile'] ) ? $attributes['megaMenuWidthMobile'] : $tablet_width;
 
 		$mega_menu_width_class        = 'kb-menu-mega-width-' . $desktop_width;
 		$mega_menu_width_class_tablet = 'kb-menu-mega-width-tablet-' . $tablet_width;
@@ -514,7 +508,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$wrapper_classes[] = $mega_menu_width_class_tablet;
 			$wrapper_classes[] = $mega_menu_width_class_mobile;
 		}
-		if ( ! empty( $nav_link_attributes['description'] ) ) {
+		if ( ! empty( $attributes['description'] ) ) {
 			$wrapper_classes[] = 'kb-menu-has-description';
 		}
 		if ( $has_icon ) {
@@ -545,77 +539,77 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 				'class' => implode( ' ', $sub_menu_classes ),
 			]
 		);
-		$title            = ! empty( $nav_link_attributes['hideLabel'] ) && true === $nav_link_attributes['hideLabel'] ? '' : esc_html( $label );
+		$title            = ! empty( $attributes['hideLabel'] ) && true === $attributes['hideLabel'] ? '' : esc_html( $label );
 		$sub_menu_content = $has_children ? '<ul ' . $sub_menu_attributes . '>' . $content . '</ul>' : '';
 		$sub_menu_btn     = $has_children ? '<button aria-label="' . esc_attr__( 'Toggle child menu of', 'kadence-blocks' ) . ' ' . esc_attr( $title ) . '" class="kb-nav-dropdown-toggle-btn" aria-expanded="false">' . $down_arrow_icon . '</button>' : '';
 		$media            = '';
 		$svg_icon         = '';
 		if ( $has_icon ) {
-			$type      = substr( $nav_link_attributes['mediaIcon'][0]['icon'], 0, 2 );
+			$type      = substr( $attributes['mediaIcon'][0]['icon'], 0, 2 );
 
 			$line_icon = ( ! empty( $type ) && 'fe' == $type ? true : false );
 			$fill      = ( $line_icon ? 'none' : 'currentColor' );
 			$stroke_width = false;
 
 			if ( $line_icon ) {
-				$stroke_width = ( ! empty( $nav_link_attributes['mediaIcon'][0]['width'] ) ? $nav_link_attributes['mediaIcon'][0]['width'] : 2 );
+				$stroke_width = ( ! empty( $attributes['mediaIcon'][0]['width'] ) ? $attributes['mediaIcon'][0]['width'] : 2 );
 			}
-			$icon_title  = ( ! empty( $nav_link_attributes['mediaIcon'][0]['title'] ) ? $nav_link_attributes['mediaIcon'][0]['title'] : '' );
+			$icon_title  = ( ! empty( $attributes['mediaIcon'][0]['title'] ) ? $attributes['mediaIcon'][0]['title'] : '' );
 			$hidden = ( empty( $icon_title ) ? true : false );
-			$svg_icon = Kadence_Blocks_Svg_Render::render( $nav_link_attributes['mediaIcon'][0]['icon'], $fill, $stroke_width, $icon_title, $hidden );
+			$svg_icon = Kadence_Blocks_Svg_Render::render( $attributes['mediaIcon'][0]['icon'], $fill, $stroke_width, $icon_title, $hidden );
 
-			$media       = ! empty( $svg_icon ) ? '<div class="link-media-container"><span class="link-media-icon-wrap link-svg-icon link-svg-icon-' . esc_attr( $nav_link_attributes['mediaIcon'][0]['icon'] ) . '">' . $svg_icon . '</span></div>' : '';
+			$media       = ! empty( $svg_icon ) ? '<div class="link-media-container"><span class="link-media-icon-wrap link-svg-icon link-svg-icon-' . esc_attr( $attributes['mediaIcon'][0]['icon'] ) . '">' . $svg_icon . '</span></div>' : '';
 		} elseif ( $has_image ) {
 			$has_ratio = false;
-			if ( $nav_link_attributes['imageRatio'] && 'inherit' !== $nav_link_attributes['imageRatio'] ) {
+			if ( $attributes['imageRatio'] && 'inherit' !== $attributes['imageRatio'] ) {
 				$has_ratio = true;         
 			}
-			$image = wp_get_attachment_image( $nav_link_attributes['mediaImage'][0]['id'], [ $nav_link_attributes['mediaImage'][0]['width'], $nav_link_attributes['mediaImage'][0]['height'] ] );
+			$image = wp_get_attachment_image( $attributes['mediaImage'][0]['id'], [ $attributes['mediaImage'][0]['width'], $attributes['mediaImage'][0]['height'] ] );
 
 			$container_start = '<div class="kadence-navigation-link-image-inner-intrinsic-container">
-				<div class="kadence-navigation-link-image-intrinsic' . ('svg+xml' == $nav_link_attributes['mediaImage'][0]['subtype'] ? ' kb-navigation-link-image-type-svg' : '') . ( $has_ratio ? ' kb-navigation-link-image-ratio kb-navigation-link-image-ratio-' . $nav_link_attributes['imageRatio'] : '') . '">
+				<div class="kadence-navigation-link-image-intrinsic' . ('svg+xml' == $attributes['mediaImage'][0]['subtype'] ? ' kb-navigation-link-image-type-svg' : '') . ( $has_ratio ? ' kb-navigation-link-image-ratio kb-navigation-link-image-ratio-' . $attributes['imageRatio'] : '') . '">
 					<div class="kadence-navigation-link-image-inner-intrinsic">';
 			$container_end   = '</div></div></div>';
 
 			$media       = $image ? '<div class="link-media-container">' . $container_start . $image . $container_end . '</div>' : '';
 		}
 		$highlight_icon   = '';
-		if ( ! empty( $nav_link_attributes['highlightIcon'][0]['icon'] ) ) {
-			$type         = substr( $nav_link_attributes['highlightIcon'][0]['icon'], 0, 2 );
-			$icon_size    = isset( $nav_link_attributes['highlightIcon'][0]['size'] ) && is_numeric( $nav_link_attributes['highlightIcon'][0]['size'] ) ? $nav_link_attributes['highlightIcon'][0]['size'] : '';
+		if ( ! empty( $attributes['highlightIcon'][0]['icon'] ) ) {
+			$type         = substr( $attributes['highlightIcon'][0]['icon'], 0, 2 );
+			$icon_size    = isset( $attributes['highlightIcon'][0]['size'] ) && is_numeric( $attributes['highlightIcon'][0]['size'] ) ? $attributes['highlightIcon'][0]['size'] : '';
 			$line_icon    = ( ! empty( $type ) && 'fe' == $type ? true : false );
 			$fill         = ( $line_icon ? 'none' : 'currentColor' );
 
 			$stroke_width = false;
 
 			if ( $line_icon ) {
-				$stroke_width = ( ! empty( $nav_link_attributes['highlightIcon'][0]['width'] ) ? $nav_link_attributes['highlightIcon'][0]['width'] : 2 );
+				$stroke_width = ( ! empty( $attributes['highlightIcon'][0]['width'] ) ? $attributes['highlightIcon'][0]['width'] : 2 );
 			}
-			$high_icon_title  = ( ! empty( $nav_link_attributes['highlightIcon'][0]['title'] ) ? $nav_link_attributes['highlightIcon'][0]['title'] : '' );
+			$high_icon_title  = ( ! empty( $attributes['highlightIcon'][0]['title'] ) ? $attributes['highlightIcon'][0]['title'] : '' );
 			$hidden           = ( empty( $high_icon_title ) ? true : false );
-			$highlight_icon = Kadence_Blocks_Svg_Render::render( $nav_link_attributes['highlightIcon'][0]['icon'], $fill, $stroke_width, $high_icon_title, $hidden );
+			$highlight_icon = Kadence_Blocks_Svg_Render::render( $attributes['highlightIcon'][0]['icon'], $fill, $stroke_width, $high_icon_title, $hidden );
 		}
-		$hl_icon  = ! empty( $highlight_icon ) && $has_highlight_label ? '<span class="link-highlight-icon-wrap link-svg-icon link-svg-icon-' . esc_attr( $nav_link_attributes['highlightIcon'][0]['icon'] ) . '">' . $highlight_icon . '</span>' : '';
+		$hl_icon  = ! empty( $highlight_icon ) && $has_highlight_label ? '<span class="link-highlight-icon-wrap link-svg-icon link-svg-icon-' . esc_attr( $attributes['highlightIcon'][0]['icon'] ) . '">' . $highlight_icon . '</span>' : '';
 		$highlight_label = '';
 		$link_classes = [ 'kb-nav-link-content' ];
 		
 		if ( $has_highlight_label ) {
 			$link_classes[]  = 'has-highlight-label';
-			$highlight_label = '<span class="link-highlight-label"><span class="link-highlight-label-text">' . $nav_link_attributes['highlightLabel'] . '</span>' . $hl_icon . '</span>';
+			$highlight_label = '<span class="link-highlight-label"><span class="link-highlight-label-text">' . $attributes['highlightLabel'] . '</span>' . $hl_icon . '</span>';
 		}
 
-		$title_html  = ! empty( $media ) || ! empty( $nav_link_attributes['description'] ) ? '<span class="kb-nav-item-title-wrap">' : '';
-		$title_html .= ! empty( $nav_link_attributes['description'] ) || ! empty( $media ) ? '<span class="kb-nav-label-content">' . $title . '</span>' : $title;
+		$title_html  = ! empty( $media ) || ! empty( $attributes['description'] ) ? '<span class="kb-nav-item-title-wrap">' : '';
+		$title_html .= ! empty( $attributes['description'] ) || ! empty( $media ) ? '<span class="kb-nav-label-content">' . $title . '</span>' : $title;
 		$title_html .= $media;
-		$title_html .= ! empty( $nav_link_attributes['description'] ) ? '<span class="kb-nav-label-description">' . $nav_link_attributes['description'] . '</span>' : '';
+		$title_html .= ! empty( $attributes['description'] ) ? '<span class="kb-nav-label-description">' . $attributes['description'] . '</span>' : '';
 
 		//$title_html .= $has_children ? '<span class="kb-nav-dropdown-toggle">' . $down_arrow_icon . '</span>' : '';
-		$title_html .= ! empty( $media ) || ! empty( $nav_link_attributes['description'] ) ? '</span>' : '';
+		$title_html .= ! empty( $media ) || ! empty( $attributes['description'] ) ? '</span>' : '';
 		$title_html .= $highlight_label;
 		$link_class  = implode( ' ', $link_classes );
-		$link_url    = ! empty( $nav_link_attributes['disableLink'] ) && true === $nav_link_attributes['disableLink'] ? '' : ' href="' . esc_url( $url ) . '"';
-		if ( ! empty( $nav_link_attributes['name'] ) ) {
-			$link_url .= ' aria-label="' . esc_attr( $nav_link_attributes['name'] ) . '"';
+		$link_url    = ! empty( $attributes['disableLink'] ) && true === $attributes['disableLink'] ? '' : ' href="' . esc_url( $url ) . '"';
+		if ( ! empty( $attributes['name'] ) ) {
+			$link_url .= ' aria-label="' . esc_attr( $attributes['name'] ) . '"';
 		}
 		return sprintf(
 			'<li %1$s><div class="kb-link-wrap"><a class="%2$s"%3$s>%4$s</a>%5$s</div>%6$s</li>',

@@ -78,19 +78,18 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
-		$header_row_attributes = $this->get_attributes_with_defaults( $unique_id, $attributes, 'kadence/' . $this->block_name );
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
-		$layout         = ( ! empty( $header_row_attributes['layout'] ) ? $header_row_attributes['layout'] : 'standard' );
-		$bg             = $header_row_attributes['background'];
-		$bg_transparent = $header_row_attributes['backgroundTransparent'];
+		$layout         = ( ! empty( $attributes['layout'] ) ? $attributes['layout'] : 'standard' );
+		$bg             = $attributes['background'];
+		$bg_transparent = $attributes['backgroundTransparent'];
 		$sizes = array( 'Desktop', 'Tablet', 'Mobile' );
 
 		foreach ( $sizes as $size ) {
-			$this->sized_dynamic_styles( $css, $header_row_attributes, $unique_id, $size );
+			$this->sized_dynamic_styles( $css, $attributes, $unique_id, $size );
 		}
 		$css->set_media_state( 'desktop' );
-	
+
 		if ( 'contained' !== $layout ) {
 			$css->set_selector( '.wp-block-kadence-header-row' . $unique_id );
 			$css->render_background( $bg, $css );
@@ -106,27 +105,27 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 			$css->render_background( $bg_transparent, $css );
 			$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .kadence-header-row-inner' );
 		}
-		$css->render_measure_output( $header_row_attributes, 'padding', 'padding', array(
+		$css->render_measure_output( $attributes, 'padding', 'padding', array(
 			'desktop_key' => 'padding',
 			'tablet_key'  => 'paddingTablet',
 			'mobile_key'  => 'paddingMobile',
 		) );
-		$css->render_measure_output( $header_row_attributes, 'margin', 'margin', array(
+		$css->render_measure_output( $attributes, 'margin', 'margin', array(
 			'desktop_key' => 'margin',
 			'tablet_key'  => 'marginTablet',
 			'mobile_key'  => 'marginMobile',
 		) );
-		$css->render_measure_output( $header_row_attributes, 'borderRadius', 'border-radius', array(
+		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array(
 			'desktop_key' => 'borderRadius',
 			'tablet_key'  => 'borderRadiusTablet',
 			'mobile_key'  => 'borderRadiusMobile',
 		) );
-		$css->render_border_styles( $header_row_attributes, 'border' );
+		$css->render_border_styles( $attributes, 'border' );
 
 		// Pass down to sections.
 		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .wp-block-kadence-header-column, .wp-block-kadence-header-row' . $unique_id . ' .wp-block-kadence-header-section' );
-		// $css->render_row_gap( $header_row_attributes, array( 'itemGap', 'itemGapTablet', 'itemGapMobile' ), 'gap', '', 'itemGapUnit' );
-		$css->render_gap( $header_row_attributes, 'itemGap', 'gap', 'itemGapUnit', array(
+		// $css->render_row_gap( $attributes, array( 'itemGap', 'itemGapTablet', 'itemGapMobile' ), 'gap', '', 'itemGapUnit' );
+		$css->render_gap( $attributes, 'itemGap', 'gap', 'itemGapUnit', array(
 			'desktop_key' => 'itemGap',
 			'tablet_key'  => 'itemGapTablet',
 			'mobile_key'  => 'itemGapMobile',

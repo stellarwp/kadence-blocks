@@ -81,13 +81,11 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
-		$button_attributes = $this->get_attributes_with_defaults( $unique_id, $attributes, 'kadence/' . $this->block_name );
-
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
 		$sizes = array( 'Desktop', 'Tablet', 'Mobile' );
 		foreach ( $sizes as $size ) {
-			$this->sized_dynamic_styles( $css, $button_attributes, $unique_id, $size );
+			$this->sized_dynamic_styles( $css, $attributes, $unique_id, $size );
 		}
 		$css->set_media_state( 'desktop' );
 
