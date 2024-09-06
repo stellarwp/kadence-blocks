@@ -13,7 +13,7 @@ export const kadenceToolTips = {
 	title: __('Tooltips', 'kadence-blocks'),
 	tagName: 'a',
 	className: 'kb-tooltips',
-	keywords: [__('tooltips')],
+	keywords: [__('tooltips', 'kadence-blocks')],
 	attributes: {
 		content: 'data-kb-tooltip-content',
 		placement: 'data-tooltip-placement',

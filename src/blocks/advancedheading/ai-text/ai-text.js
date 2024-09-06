@@ -29,10 +29,10 @@ import { sendEvent } from '../../../extension/analytics/send-event';
 const name = 'kadence/ai-text';
 const allowedBlocks = ['kadence/advancedheading'];
 export const AIText = {
-	title: __('Kadence AI'),
+	title: __('Kadence AI', 'kadence-blocks'),
 	tagName: 'span',
 	className: 'kt-ai-text',
-	keywords: [__('ai'), __('kadence')],
+	keywords: [__('ai', 'kadence-blocks'), __('kadence', 'kadence-blocks')],
 	attributes: {},
 	edit({ activeAttributes, isActive, value, onChange, contentRef }) {
 		const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
@@ -410,9 +410,13 @@ export const AIText = {
 										<div className={'kb-ai-error-content'}>
 											{error === 'credits'
 												? __(
-														'Error, Can not generate AI content because of insufficient credits.'
+														'Error, Can not generate AI content because of insufficient credits.',
+														'kadence-blocks'
 												  )
-												: __('Error, AI content generation failed, please try again.')}
+												: __(
+														'Error, AI content generation failed, please try again.',
+														'kadence-blocks'
+												  )}
 										</div>
 									</div>
 								)}

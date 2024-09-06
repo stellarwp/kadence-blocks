@@ -1352,7 +1352,7 @@ function KadenceCountdown(props) {
 														step={1}
 													/>
 													<TextControl
-														label={__('Campaign ID')}
+														label={__('Campaign ID', 'kadence-blocks')}
 														help={__(
 															'Create a unique ID. To reset the timer for everyone change this id. To link with other timers give them all the same ID.',
 															'kadence-blocks'
@@ -1425,46 +1425,39 @@ function KadenceCountdown(props) {
 										panelName={'kb-countdown-repeater'}
 									>
 										<ToggleControl
-											label={__('Repeat Countdown Concurrently?', 'kadence-blocks')}
+											label={__('Repeat Countdown', 'kadence-blocks')}
 											checked={repeat}
 											onChange={(value) => setAttributes({ repeat: value })}
 											help={__(
-												'This will give the option to restart the countdown concurrently.',
+												'After the coutdown reaches zero, repeat instead of expiring.',
 												'kadence-blocks'
 											)}
 										/>
 										{repeat && (
 											<>
 												<SelectControl
-													label={__('Repeat Countdown Frequency', 'kadence-blocks')}
+													label={__('Frequency', 'kadence-blocks')}
 													options={frequencyOptions}
 													value={frequency}
 													onChange={(value) => setAttributes({ frequency: value })}
 												/>
 
 												<ToggleControl
-													label={__('Stop Repeating the Countdown', 'kadence-blocks')}
+													label={__('Repeat Until', 'kadence-blocks')}
 													checked={stopRepeating}
 													onChange={(value) => setAttributes({ stopRepeating: value })}
 													help={__(
-														'This will give the option to stop repeating the countdown at a specific date.',
+														'The countdown will stop repeating and expire after the given date.',
 														'kadence-blocks'
 													)}
 												/>
 
 												{stopRepeating && (
 													<div className="components-base-control kb-datepicker-fix">
-														<h2>
-															{__('End Date for Recurrent Countdown', 'kadence-blocks')}
-														</h2>
 														<DateTimePicker
 															currentDate={!endDate ? undefined : endDate}
 															onChange={(value) => setAttributes({ endDate: value })}
 															is12Hour={is12HourTime}
-															help={__(
-																'Pick a date to stop recurrent repetition of the countdown.',
-																'kadence-blocks'
-															)}
 														/>
 													</div>
 												)}
@@ -1566,12 +1559,12 @@ function KadenceCountdown(props) {
 												onChange={(value) => setAttributes({ timeNumbers: value })}
 											/>
 											<TextControl
-												label={__('Countdown Pre Text')}
+												label={__('Countdown Pre Text', 'kadence-blocks')}
 												value={preLabel}
 												onChange={(value) => setAttributes({ preLabel: value })}
 											/>
 											<TextControl
-												label={__('Countdown Post Text')}
+												label={__('Countdown Post Text', 'kadence-blocks')}
 												value={postLabel}
 												onChange={(value) => setAttributes({ postLabel: value })}
 											/>
@@ -1626,22 +1619,22 @@ function KadenceCountdown(props) {
 												)}
 											<h2>{__('Labels', 'kadence-blocks')}</h2>
 											<TextControl
-												label={__('Days Label')}
+												label={__('Days Label', 'kadence-blocks')}
 												value={daysLabel}
 												onChange={(value) => setAttributes({ daysLabel: value })}
 											/>
 											<TextControl
-												label={__('Hours Label')}
+												label={__('Hours Label', 'kadence-blocks')}
 												value={hoursLabel}
 												onChange={(value) => setAttributes({ hoursLabel: value })}
 											/>
 											<TextControl
-												label={__('Minutes Label')}
+												label={__('Minutes Label', 'kadence-blocks')}
 												value={minutesLabel}
 												onChange={(value) => setAttributes({ minutesLabel: value })}
 											/>
 											<TextControl
-												label={__('Seconds Label')}
+												label={__('Seconds Label', 'kadence-blocks')}
 												value={secondsLabel}
 												onChange={(value) => setAttributes({ secondsLabel: value })}
 											/>

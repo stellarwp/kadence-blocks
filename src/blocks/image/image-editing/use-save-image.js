@@ -49,7 +49,7 @@ export default function useSaveImage({ crop, rotation, height, width, aspect, ur
 				createErrorNotice(
 					sprintf(
 						/* translators: 1. Error message */
-						__('Could not edit image. %s'),
+						__('Could not edit image. %s', 'kadence-blocks'),
 						error.message
 					),
 					{

@@ -705,7 +705,7 @@ function LayoutControls({
 							placeholder={__('Select Divider', 'kadence-blocks')}
 						/>
 						<PopColorControl
-							label={__('Divider Color')}
+							label={__('Divider Color', 'kadence-blocks')}
 							value={topSepColor ? topSepColor : ''}
 							default={'#ffffff'}
 							onChange={(value) => setAttributes({ topSepColor: value })}

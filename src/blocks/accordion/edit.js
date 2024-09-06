@@ -472,11 +472,11 @@ function KadenceAccordionComponent(props) {
 	}, []);
 
 	const startlayoutOptions = [
-		{ key: 'skip', name: __('Skip'), icon: __('Skip') },
-		{ key: 'base', name: __('Base'), icon: accord1Icon },
-		{ key: 'highlight', name: __('Highlight'), icon: accord2Icon },
-		{ key: 'subtle', name: __('Subtle'), icon: accord3Icon },
-		{ key: 'bottom', name: __('Bottom Border'), icon: accord4Icon },
+		{ key: 'skip', name: __('Skip', 'kadence-blocks'), icon: __('Skip', 'kadence-blocks') },
+		{ key: 'base', name: __('Base', 'kadence-blocks'), icon: accord1Icon },
+		{ key: 'highlight', name: __('Highlight', 'kadence-blocks'), icon: accord2Icon },
+		{ key: 'subtle', name: __('Subtle', 'kadence-blocks'), icon: accord3Icon },
+		{ key: 'bottom', name: __('Bottom Border', 'kadence-blocks'), icon: accord4Icon },
 	];
 	const layoutOptions = [
 		{ value: 'row', label: __('One Row', 'kadence-blocks'), icon: rowIcon },
@@ -1777,8 +1777,8 @@ function KadenceAccordionComponent(props) {
 										label={__('Icon Side', 'kadence-blocks')}
 										value={iconSide}
 										options={[
-											{ value: 'right', label: __('Right') },
-											{ value: 'left', label: __('Left') },
+											{ value: 'right', label: __('Right', 'kadence-blocks') },
+											{ value: 'left', label: __('Left', 'kadence-blocks') },
 										]}
 										onChange={(value) => setAttributes({ iconSide: value })}
 									/>
@@ -1789,17 +1789,17 @@ function KadenceAccordionComponent(props) {
 										tabs={[
 											{
 												name: 'normal',
-												title: __('Normal'),
+												title: __('Normal', 'kadence-blocks'),
 												className: 'kt-normal-tab',
 											},
 											{
 												name: 'hover',
-												title: __('Hover'),
+												title: __('Hover', 'kadence-blocks'),
 												className: 'kt-hover-tab',
 											},
 											{
 												name: 'active',
-												title: __('Active'),
+												title: __('Active', 'kadence-blocks'),
 												className: 'kt-active-tab',
 											},
 										]}
@@ -1872,17 +1872,17 @@ function KadenceAccordionComponent(props) {
 										tabs={[
 											{
 												name: 'normal',
-												title: __('Normal'),
+												title: __('Normal', 'kadence-blocks'),
 												className: 'kt-normal-tab',
 											},
 											{
 												name: 'hover',
-												title: __('Hover'),
+												title: __('Hover', 'kadence-blocks'),
 												className: 'kt-hover-tab',
 											},
 											{
 												name: 'active',
-												title: __('Active'),
+												title: __('Active', 'kadence-blocks'),
 												className: 'kt-active-tab',
 											},
 										]}
@@ -1979,17 +1979,17 @@ function KadenceAccordionComponent(props) {
 										tabs={[
 											{
 												name: 'normal',
-												title: __('Normal'),
+												title: __('Normal', 'kadence-blocks'),
 												className: 'kt-normal-tab',
 											},
 											{
 												name: 'hover',
-												title: __('Hover'),
+												title: __('Hover', 'kadence-blocks'),
 												className: 'kt-hover-tab',
 											},
 											{
 												name: 'active',
-												title: __('Active'),
+												title: __('Active', 'kadence-blocks'),
 												className: 'kt-active-tab',
 											},
 										]}
@@ -2356,7 +2356,9 @@ function KadenceAccordionComponent(props) {
 			<div className={classes}>
 				{showPreset && (
 					<div className="kt-select-starter-style-tabs">
-						<div className="kt-select-starter-style-tabs-title">{__('Select Initial Style')}</div>
+						<div className="kt-select-starter-style-tabs-title">
+							{__('Select Initial Style', 'kadence-blocks')}
+						</div>
 						<ButtonGroup
 							className="kt-init-tabs-btn-group"
 							aria-label={__('Initial Style', 'kadence-blocks')}

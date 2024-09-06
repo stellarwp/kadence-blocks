@@ -905,7 +905,9 @@
 		&:not([href]) {
 			cursor: default;
 		}
-
+		.kb-nav-label-description {
+			color: var(--kb-nav-description-color, inherit);
+		}
 		&:hover,
 		&:focus {
 			--kb-nav-link-color: var(--kb-nav-link-color-hover);
@@ -1036,6 +1038,10 @@
 			--kb-nav-link-box-shadow-hover: var(--kb-nav-top-link-box-shadow-hover);
 			--kb-nav-link-box-shadow-active: var(--kb-nav-top-link-box-shadow-active);
 			--kb-nav-link-box-shadow-active-ancestor: var(--kb-nav-top-link-box-shadow-active-ancestor);
+			--kb-nav-link-description-color: var(--kb-nav-top-link-description-color);
+			--kb-nav-link-description-color-hover: var(--kb-nav-top-link-description-color-hover);
+			--kb-nav-link-description-color-active: var(--kb-nav-top-link-description-color-active);
+			--kb-nav-link-description-color-active-ancestor: var(--kb-nav-top-link-description-color-active-ancestor);
 
 			& > .kb-nav-link-content {
 				display: flex;

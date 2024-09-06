@@ -1541,7 +1541,7 @@ function KadenceInfoBox(props) {
 			});
 
 			saveEditedEntityRecord('postType', 'attachment', id).then(() => {
-				createSuccessNotice(__('Media default alt text updated.'), {
+				createSuccessNotice(__('Media default alt text updated.', 'kadence-blocks'), {
 					type: 'snackbar',
 				});
 			});

@@ -14,9 +14,9 @@ export default function FormControls() {
 	return (
 		<>
 			<ToolbarButton onClick={apply} disabled={isInProgress}>
-				{__('Apply')}
+				{__('Apply', 'kadence-blocks')}
 			</ToolbarButton>
-			<ToolbarButton onClick={cancel}>{__('Cancel')}</ToolbarButton>
+			<ToolbarButton onClick={cancel}>{__('Cancel', 'kadence-blocks')}</ToolbarButton>
 		</>
 	);
 }

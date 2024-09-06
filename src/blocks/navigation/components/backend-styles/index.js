@@ -127,6 +127,7 @@ export default function BackendStyles(props) {
 		backgroundStickyActiveMobile,
 		typography,
 		dropdownTypography,
+		descriptionTypography,
 		collapseSubMenus,
 		parentTogglesMenus,
 		divider,
@@ -524,6 +525,23 @@ export default function BackendStyles(props) {
 		marginLinkUnit
 	);
 
+	css.render_measure_output(
+		paddingDropdownLink,
+		tabletPaddingDropdownLink,
+		mobilePaddingDropdownLink,
+		previewDevice,
+		'--kb-nav-link-padding',
+		paddingDropdownLinkUnit
+	);
+	css.render_measure_output(
+		marginDropdownLink,
+		tabletMarginDropdownLink,
+		mobileMarginDropdownLink,
+		previewDevice,
+		'--kb-nav-link-margin',
+		marginDropdownLinkUnit
+	);
+
 	css.add_property(
 		'--kb-nav-dropdown-link-padding-top',
 		css.render_size(previewDropdownVerticalSpacing, dropdownVerticalSpacingUnit),
@@ -571,25 +589,6 @@ export default function BackendStyles(props) {
 		previewDevice
 	);
 
-	if (previewOrientation != 'vertical') {
-		css.add_property('--kb-nav-dropdown-link-width', css.render_size(previewDropdownWidth, dropdownWidthUnit));
-		css.add_property('--kb-nav-top-not-last-link-border-right', dividerValue);
-
-		if (dropdownShadow?.[0]?.enable) {
-			css.add_property('--kb-nav-dropdown-box-shadow', css.render_shadow(dropdownShadow[0]));
-		}
-
-		if (previewDropdownHorizontalAlignment == 'center') {
-			css.add_property('--kb-nav-dropdown-show-left', '50%');
-			css.add_property('--kb-nav-dropdown-show-transform', 'translate(-50%, 0)');
-		} else if (previewDropdownHorizontalAlignment == 'right') {
-			css.add_property('--kb-nav-dropdown-show-right', '0');
-		}
-	} else {
-		css.add_property('--kb-nav-link-border-bottom', dividerValue);
-		css.add_property('--kb-nav-dropdown-toggle-border-left', dividerValue);
-	}
-
 	//transparent styles
 	if (context?.['kadence/headerIsTransparent'] == '1') {
 		css.add_property('--kb-nav-top-link-color', css.render_color(previewLinkColorTransparent));
@@ -616,6 +615,7 @@ export default function BackendStyles(props) {
 			css.add_property('--kb-nav-top-not-last-link-border-right', transparentDividerValue);
 		}
 	}
+
 	//sticky styles
 	if (context?.['kadence/headerIsSticky'] == '1') {
 		css.add_property('--kb-nav-top-link-color', css.render_color(previewLinkColorSticky));
@@ -644,6 +644,29 @@ export default function BackendStyles(props) {
 	}
 
 	//placement logic where an additional selector is needed
+	if (previewOrientation != 'vertical') {
+		css.add_property('--kb-nav-dropdown-link-width', css.render_size(previewDropdownWidth, dropdownWidthUnit));
+		css.add_property('--kb-nav-top-not-last-link-border-right', dividerValue);
+
+		if (dropdownShadow?.[0]?.enable) {
+			css.add_property('--kb-nav-dropdown-box-shadow', css.render_shadow(dropdownShadow[0]));
+		}
+
+		//sub menus (first level only)
+		css.set_selector(
+			`.wp-block-kadence-navigation${uniqueID} > .navigation > .menu-container > .menu > .menu-item > .sub-menu`
+		);
+		if (previewDropdownHorizontalAlignment == 'center') {
+			css.add_property('--kb-nav-dropdown-show-left', '50%');
+			css.add_property('--kb-nav-dropdown-show-transform', 'translate(-50%, 0)');
+		} else if (previewDropdownHorizontalAlignment == 'right') {
+			css.add_property('--kb-nav-dropdown-show-right', '0');
+		}
+	} else {
+		css.add_property('--kb-nav-link-border-bottom', dividerValue);
+		css.add_property('--kb-nav-dropdown-toggle-border-left', dividerValue);
+	}
+
 	//not last submenu items and mega menu nav links
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .sub-menu > .menu-item:not(:last-of-type), .wp-block-kadence-navigation${uniqueID} .sub-menu.mega-menu > .menu-item > .kb-link-wrap > .kb-nav-link-content`
@@ -656,7 +679,7 @@ export default function BackendStyles(props) {
 	);
 	css.add_property('right', css.render_half_size(previewNavigationHorizontalSpacing, spacingUnit));
 
-	//main container (don't apply to children)
+	//main container(don't apply to children)
 	css.set_selector(`.wp-block-kadence-navigation${uniqueID} > .navigation > .menu-container > .menu`);
 	css.render_measure_output(margin, tabletMargin, mobileMargin, previewDevice, '--kb-nav-margin', marginUnit);
 	css.render_measure_output(padding, tabletPadding, mobilePadding, previewDevice, '--kb-nav-padding', paddingUnit);
@@ -672,6 +695,11 @@ export default function BackendStyles(props) {
 		`.wp-block-kadence-navigation${uniqueID} .sub-menu > .menu-item > .kb-link-wrap > .kb-nav-link-content`
 	);
 	css.render_font(dropdownTypography ? dropdownTypography : [], previewDevice);
+
+	css.set_selector(
+		`.wp-block-kadence-navigation${uniqueID} .wp-block-kadence-navigation-link .menu-label-description`
+	);
+	css.render_font(descriptionTypography ? descriptionTypography : [], previewDevice);
 
 	if (previewStyle.includes('fullheight')) {
 		css.set_selector(`.wp-block-kadence-header .wp-block-kadence-navigation${uniqueID}`);

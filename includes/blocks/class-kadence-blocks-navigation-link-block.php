@@ -146,6 +146,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .kb-link-wrap.kb-link-wrap.kb-link-wrap.kb-link-wrap' );
 		$css->render_measure_output( $nav_link_attributes, 'margin', '--kb-nav-link-margin', [ 'unit_key' => 'marginUnit' ] );
 		$css->render_measure_output( $nav_link_attributes, 'padding', '--kb-nav-link-padding', [ 'unit_key' => 'paddingUnit' ] );
+
 		$css->render_button_styles_with_states(
 			array(
 				'colorBase' => 'linkColor',
@@ -214,7 +215,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$css->set_selector( '.kb-nav-link-' . $unique_id . ' .sub-menu li.menu-item > .kb-link-wrap > .kb-nav-link-content' );
 		$css->render_typography( $nav_link_attributes, 'dropdownTypography' );
 		
-		$css->set_selector( '.kb-nav-link-' . $unique_id . ' .menu-label-description:not(.kb-nav-link-' . $unique_id . ' .wp-block-kadence-navigation-link .menu-label-description)' );
+		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-' . $unique_id . ' .menu-label-description' );
 		$css->render_typography( $nav_link_attributes, 'descriptionTypography' );
 
 		if ( ! empty( $nav_link_attributes['highlightLabel'] ) || ! empty( $nav_link_attributes['highlightIcon']['icon'] ) ) {

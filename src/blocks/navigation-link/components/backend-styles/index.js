@@ -978,7 +978,13 @@ export default function BackendStyles(props) {
 		css.add_property('--kb-nav-link-title-wrap-display', 'grid');
 		css.add_property('--kb-nav-link-title-wrap-grid-template-columns', '1fr');
 	}
-	if (description && mediaType != 'none' && (previewMediaAlign == 'left' || previewMediaAlign == 'right')) {
+
+	if (
+		description &&
+		mediaType != 'none' &&
+		mediaType != '' &&
+		(previewMediaAlign == 'left' || previewMediaAlign == 'right')
+	) {
 		css.add_property('--kb-nav-link-title-wrap-display', 'grid');
 		css.add_property('--kb-nav-link-title-wrap-grid-template-columns', '1fr auto');
 
@@ -1070,7 +1076,9 @@ export default function BackendStyles(props) {
 	);
 	css.render_font(highlightTypography ? highlightTypography : [], previewDevice);
 
-	css.set_selector(`.kb-nav-link-${uniqueID} > .kb-link-wrap > a .menu-label-description:not(.specificity)`);
+	css.set_selector(
+		`.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-${uniqueID} > .kb-link-wrap > a .menu-label-description:not(.specificity)`
+	);
 	css.render_font(descriptionTypography ? descriptionTypography : [], previewDevice);
 
 	css.set_selector(`.kb-nav-link-${uniqueID}.menu-item > .kb-link-wrap > a:hover .link-highlight-label`);
