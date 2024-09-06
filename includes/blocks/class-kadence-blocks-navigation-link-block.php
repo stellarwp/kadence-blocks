@@ -296,6 +296,27 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( '--kb-nav-link-media-container-order', '-1' );
 		}
 
+
+		// Icon and description placement.
+		if ( $sized_attributes['description'] ) {
+			$css->add_property( '--kb-nav-link-title-wrap-display', 'grid' );
+			$css->add_property( '--kb-nav-link-title-wrap-grid-template-columns', '1fr' );
+		}
+		if ( $sized_attributes['description'] && $sized_attributes['mediaType'] == 'icon' && ( $sized_attributes['mediaAlign'] == 'left' || $sized_attributes['mediaAlign'] == 'right' ) ) {
+			$css->add_property( '--kb-nav-link-title-wrap-display', 'grid' );
+			$css->add_property( '--kb-nav-link-title-wrap-grid-template-columns', '1fr auto' );
+
+			if ( $sized_attributes['descriptionPositioning'] == 'icon' ) {
+				$css->add_property( '--kb-nav-link-description-grid-column', 'span 2' );
+			} else {
+				if($sized_attributes['mediaAlign'] == 'right') {
+					$css->add_property( '--kb-nav-link-description-grid-column', '1' );
+				} else {
+					$css->add_property( '--kb-nav-link-description-grid-column', '2' );
+				}
+			}
+		}
+
 		// Media styles (icons).
 		if ( $attributes['mediaType'] && 'none' !== $attributes['mediaType'] ) {
 			// Normal styles.
@@ -321,31 +342,19 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 				$css->add_property( '--kb-nav-link-title-wrap-has-media-grid-template-columns', 'auto 1fr' );
 
 			} else if ( $sized_attributes['mediaAlign'] == 'top' ) {
+				$css->add_property( '--kb-nav-link-title-wrap-display', 'flex' );
 				$css->add_property( '--kb-nav-link-media-container-order', '-1' );
 				$css->add_property( '--kb-nav-link-title-wrap-flex-direction', 'column' );
 				$css->add_property( '--kb-nav-link-media-container-justify-content', 'center' );
+				$css->add_property('--kb-nav-link-media-container-align-self', 'center');
 			} else if ( $sized_attributes['mediaAlign'] == 'bottom' ) {
+				$css->add_property( '--kb-nav-link-title-wrap-display', 'flex' );
 				$css->add_property( '--kb-nav-link-media-container-order', '1' );
 				$css->add_property( '--kb-nav-link-title-wrap-flex-direction', 'column' );
 				$css->add_property( '--kb-nav-link-media-container-justify-content', 'center' );
+				$css->add_property('--kb-nav-link-media-container-align-self', 'center');
 			} else {
 				$css->add_property( '--kb-nav-link-media-container-margin-left', $css->render_size( $media_style_margin[0], 'px' ) );
-			}
-		}
-
-		// Icon and description placement.
-		if ( $sized_attributes['description'] ) {
-			$css->add_property( '--kb-nav-link-title-wrap-display', 'grid' );
-			$css->add_property( '--kb-nav-link-title-wrap-grid-template-columns', '1fr' );
-		}
-		if ( $sized_attributes['description'] && $sized_attributes['mediaType'] == 'icon' && ( $sized_attributes['mediaAlign'] == 'left' || $sized_attributes['mediaAlign'] == 'right' ) ) {
-			$css->add_property( '--kb-nav-link-title-wrap-display', 'grid' );
-			$css->add_property( '--kb-nav-link-title-wrap-grid-template-columns', '1fr auto' );
-
-			if ( $sized_attributes['descriptionPositioning'] == 'icon' ) {
-				$css->add_property( '--kb-nav-link-description-grid-column', 'span 2' );
-			} else {
-				$css->add_property( '--kb-nav-link-description-grid-column', '2' );
 			}
 		}
 

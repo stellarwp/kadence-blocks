@@ -1181,6 +1181,7 @@
 		display: var(--kb-nav-link-title-wrap-display, flex);
 		text-align: var(--kb-nav-link-title-wrap-text-align);
 		flex-wrap: nowrap;
+		align-items: center;
 	}
 
 	.kb-menu-has-description {
@@ -1194,7 +1195,6 @@
 
 		&.kb-menu-has-icon {
 			.kb-nav-item-title-wrap {
-				display: grid;
 				--kb-nav-link-title-wrap-grid-template-columns: var(
 					--kb-nav-link-title-wrap-has-media-grid-template-columns,
 					1fr auto
@@ -1225,6 +1225,7 @@
 		background: var(--kb-nav-link-media-container-background);
 		order: var(--kb-nav-link-media-container-order);
 		justify-content: var(--kb-nav-link-media-container-justify-content);
+		align-self: var(--kb-nav-link-media-container-align-self);
 	}
 	.kadence-navigation-link-image-inner-intrinsic-container {
 		color: var(--kb-nav-link-media-color);

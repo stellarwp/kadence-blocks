@@ -851,84 +851,6 @@ export default function BackendStyles(props) {
 	if ('left' === previewIconSide) {
 		css.add_property('--kb-nav-link-media-container-order', '-1');
 	}
-	//media styles
-	if (mediaType && 'none' !== mediaType) {
-		//normal styles
-		css.add_property('--kb-nav-link-media-container-background', css.render_color(previewMediaStyleBackground));
-		css.add_property(
-			'--kb-nav-link-media-container-backgroundhover',
-			css.render_color(previewMediaStyleBackgroundHover)
-		);
-		css.add_property(
-			'--kb-nav-link-media-container-background-active',
-			css.render_color(previewMediaStyleBackgroundActive)
-		);
-		css.add_property(
-			'--kb-nav-link-media-container-background-active-ancestor',
-			css.render_color(previewMediaStyleBackgroundActive)
-		);
-		css.add_property(
-			'--kb-nav-link-media-container-border-radius',
-			css.render_size(previewMediaStyleBorderRadius, 'px')
-		);
-		css.add_property(
-			'--kb-nav-link-media-container-padding-top',
-			css.render_size(previewMediaStylePadding[0], 'px')
-		);
-		css.add_property(
-			'--kb-nav-link-media-container-padding-right',
-			css.render_size(previewMediaStylePadding[1], 'px')
-		);
-		css.add_property(
-			'--kb-nav-link-media-container-padding-bottom',
-			css.render_size(previewMediaStylePadding[2], 'px')
-		);
-		css.add_property(
-			'--kb-nav-link-media-container-padding-left',
-			css.render_size(previewMediaStylePadding[3], 'px')
-		);
-		css.add_property('--kb-nav-link-icon-color', css.render_color(previewMediaStyleColor));
-		css.add_property('--kb-nav-link-icon-color-hover', css.render_color(previewMediaStyleColorHover));
-		css.add_property('--kb-nav-link-icon-color-active', css.render_color(previewMediaStyleColorActive));
-		css.add_property('--kb-nav-link-icon-color-active-ancestor', css.render_color(previewMediaStyleColorActive));
-
-		if (previewMediaAlign === 'left') {
-			css.add_property('--kb-nav-link-media-container-order', '-1');
-			css.add_property(
-				'--kb-nav-link-media-container-margin-right',
-				css.render_size(previewMediaStyleMargin[0], 'px')
-			);
-			css.add_property('--kb-nav-link-title-wrap-has-media-grid-template-columns', 'auto 1fr');
-		} else if (previewMediaAlign === 'top') {
-			css.add_property('--kb-nav-link-media-container-order', '-1');
-			css.add_property('--kb-nav-link-title-wrap-flex-direction', 'column');
-			css.add_property('--kb-nav-link-media-container-justify-content', 'center');
-		} else if (previewMediaAlign === 'bottom') {
-			css.add_property('--kb-nav-link-media-container-order', '1');
-			css.add_property('--kb-nav-link-title-wrap-flex-direction', 'column');
-			css.add_property('--kb-nav-link-media-container-justify-content', 'center');
-		} else {
-			css.add_property(
-				'--kb-nav-link-media-container-margin-left',
-				css.render_size(previewMediaStyleMargin[0], 'px')
-			);
-		}
-		css.add_property('--kb-nav-link-media-max-width', mediaImage[0].maxWidth + 'px');
-		if (hasRatio) {
-			//next level container
-			css.add_property('--kb-nav-link-media-intrinsic-padding-bottom', imageRatioPadding);
-			css.add_property(
-				'--kb-nav-link-media-intrinsic-height',
-				imageRatioHeight == 0 ? '0px' : imageRatioHeight,
-				null,
-				true
-			);
-			css.add_property(
-				'--kb-nav-link-media-intrinsic-width',
-				isNaN(mediaImage[0].width) ? undefined : mediaImage[0].width + 'px'
-			);
-		}
-	}
 	css.render_measure_output(
 		padding,
 		tabletPadding,
@@ -1097,7 +1019,11 @@ export default function BackendStyles(props) {
 		if (previewDescriptionPositioning === 'icon') {
 			css.add_property('--kb-nav-link-description-grid-column', 'span 2');
 		} else {
-			css.add_property('--kb-nav-link-description-grid-column', '2');
+			if (previewMediaAlign == 'right') {
+				css.add_property('--kb-nav-link-description-grid-column', '1');
+			} else {
+				css.add_property('--kb-nav-link-description-grid-column', '2');
+			}
 		}
 	}
 	//description styles
@@ -1112,6 +1038,89 @@ export default function BackendStyles(props) {
 		'--kb-nav-link-description-color-active-ancestor',
 		css.render_color(previewDescriptionColorActive)
 	);
+
+	//media styles
+	if (mediaType && 'none' !== mediaType) {
+		//normal styles
+		css.add_property('--kb-nav-link-media-container-background', css.render_color(previewMediaStyleBackground));
+		css.add_property(
+			'--kb-nav-link-media-container-backgroundhover',
+			css.render_color(previewMediaStyleBackgroundHover)
+		);
+		css.add_property(
+			'--kb-nav-link-media-container-background-active',
+			css.render_color(previewMediaStyleBackgroundActive)
+		);
+		css.add_property(
+			'--kb-nav-link-media-container-background-active-ancestor',
+			css.render_color(previewMediaStyleBackgroundActive)
+		);
+		css.add_property(
+			'--kb-nav-link-media-container-border-radius',
+			css.render_size(previewMediaStyleBorderRadius, 'px')
+		);
+		css.add_property(
+			'--kb-nav-link-media-container-padding-top',
+			css.render_size(previewMediaStylePadding[0], 'px')
+		);
+		css.add_property(
+			'--kb-nav-link-media-container-padding-right',
+			css.render_size(previewMediaStylePadding[1], 'px')
+		);
+		css.add_property(
+			'--kb-nav-link-media-container-padding-bottom',
+			css.render_size(previewMediaStylePadding[2], 'px')
+		);
+		css.add_property(
+			'--kb-nav-link-media-container-padding-left',
+			css.render_size(previewMediaStylePadding[3], 'px')
+		);
+		css.add_property('--kb-nav-link-icon-color', css.render_color(previewMediaStyleColor));
+		css.add_property('--kb-nav-link-icon-color-hover', css.render_color(previewMediaStyleColorHover));
+		css.add_property('--kb-nav-link-icon-color-active', css.render_color(previewMediaStyleColorActive));
+		css.add_property('--kb-nav-link-icon-color-active-ancestor', css.render_color(previewMediaStyleColorActive));
+
+		if (previewMediaAlign === 'left') {
+			css.add_property('--kb-nav-link-media-container-order', '-1');
+			css.add_property(
+				'--kb-nav-link-media-container-margin-right',
+				css.render_size(previewMediaStyleMargin[0], 'px')
+			);
+			css.add_property('--kb-nav-link-title-wrap-has-media-grid-template-columns', 'auto 1fr');
+		} else if (previewMediaAlign === 'top') {
+			css.add_property('--kb-nav-link-title-wrap-display', 'flex');
+			css.add_property('--kb-nav-link-media-container-order', '-1');
+			css.add_property('--kb-nav-link-title-wrap-flex-direction', 'column');
+			css.add_property('--kb-nav-link-media-container-justify-content', 'center');
+			css.add_property('--kb-nav-link-media-container-align-self', 'center');
+		} else if (previewMediaAlign === 'bottom') {
+			css.add_property('--kb-nav-link-title-wrap-display', 'flex');
+			css.add_property('--kb-nav-link-media-container-order', '1');
+			css.add_property('--kb-nav-link-title-wrap-flex-direction', 'column');
+			css.add_property('--kb-nav-link-media-container-justify-content', 'center');
+			css.add_property('--kb-nav-link-media-container-align-self', 'center');
+		} else {
+			css.add_property(
+				'--kb-nav-link-media-container-margin-left',
+				css.render_size(previewMediaStyleMargin[0], 'px')
+			);
+		}
+		css.add_property('--kb-nav-link-media-max-width', mediaImage[0].maxWidth + 'px');
+		if (hasRatio) {
+			//next level container
+			css.add_property('--kb-nav-link-media-intrinsic-padding-bottom', imageRatioPadding);
+			css.add_property(
+				'--kb-nav-link-media-intrinsic-height',
+				imageRatioHeight == 0 ? '0px' : imageRatioHeight,
+				null,
+				true
+			);
+			css.add_property(
+				'--kb-nav-link-media-intrinsic-width',
+				isNaN(mediaImage[0].width) ? undefined : mediaImage[0].width + 'px'
+			);
+		}
+	}
 
 	//link and description text alignment
 	css.add_property('--kb-nav-link-title-wrap-text-align', align != '' ? align : 'left');
