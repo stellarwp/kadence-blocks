@@ -684,6 +684,15 @@ export default function BackendStyles(props) {
 		css.render_color(previewLinkColorActive),
 		previewLinkColorActive
 	);
+	css.add_property(
+		'--kb-nav-description-padding-top',
+		css.render_size(previewDescriptionSpacing, descriptionSpacingUnit)
+	);
+	css.add_property('--kb-nav-description-color', css.render_color(previewDescriptionColor));
+	//description styles hover
+	css.add_property('--kb-nav-description-color-hover', css.render_color(previewDescriptionColorHover));
+	//description styles active
+	css.add_property('--kb-nav-description-color-active', css.render_color(previewDescriptionColorActive));
 
 	//placement logic where an additional selector is needed
 	css.set_selector(
@@ -1092,7 +1101,9 @@ export default function BackendStyles(props) {
 		css.add_property('grid-template-columns', '1fr auto');
 
 		if (previewDescriptionPositioning === 'icon') {
-			css.set_selector(`.kb-nav-link-${uniqueID} > .kb-link-wrap > a .menu-label-description:not(.specificity)`);
+			css.set_selector(
+				`.kb-nav-link-${uniqueID} > .kb-link-wrap > a .kb-nav-label-description:not(.specificity)`
+			);
 			css.add_property('grid-column', 'span 2');
 		} else {
 			css.set_selector(`.kb-nav-link-${uniqueID} > .kb-link-wrap > a .link-media-container:not(.specificity)`);
@@ -1102,21 +1113,9 @@ export default function BackendStyles(props) {
 
 	//description styles
 	css.set_selector(
-		`.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-${uniqueID} > .kb-link-wrap > a .menu-label-description:not(.specificity)`
+		`.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-${uniqueID} > .kb-link-wrap > a .kb-nav-label-description:not(.specificity)`
 	);
-	css.add_property('padding-top', css.render_size(previewDescriptionSpacing, descriptionSpacingUnit));
 	css.render_font(descriptionTypography ? descriptionTypography : [], previewDevice);
-	css.add_property('color', css.render_color(previewDescriptionColor));
-
-	//description styles hover
-	css.set_selector(`.kb-nav-link-${uniqueID}:hover > .kb-link-wrap > a .menu-label-description:not(.specificity)`);
-	css.add_property('color', css.render_color(previewDescriptionColorHover));
-
-	//description styles active
-	css.set_selector(
-		`.kb-nav-link-${uniqueID}.current-menu-item  > .kb-link-wrap > a .menu-label-description:not(.specificity)`
-	);
-	css.add_property('color', css.render_color(previewDescriptionColorActive));
 
 	//link and description text alignment
 	css.set_selector(`.kb-nav-link-${uniqueID}  > .kb-link-wrap > a .kb-nav-item-title-wrap:not(.specificity)`);

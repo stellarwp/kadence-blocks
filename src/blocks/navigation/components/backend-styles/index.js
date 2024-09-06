@@ -128,6 +128,23 @@ export default function BackendStyles(props) {
 		typography,
 		dropdownTypography,
 		descriptionTypography,
+		descriptionSpacing,
+		descriptionSpacingTablet,
+		descriptionSpacingMobile,
+		descriptionSpacingUnit,
+		descriptionColor,
+		descriptionColorTablet,
+		descriptionColorMobile,
+		descriptionColorHover,
+		descriptionColorHoverTablet,
+		descriptionColorHoverMobile,
+		descriptionColorActive,
+		descriptionColorActiveTablet,
+		descriptionColorActiveMobile,
+		description,
+		descriptionPositioning,
+		descriptionPositioningTablet,
+		descriptionPositioningMobile,
 		collapseSubMenus,
 		parentTogglesMenus,
 		divider,
@@ -333,7 +350,30 @@ export default function BackendStyles(props) {
 		dropdownVerticalSpacingTablet,
 		dropdownVerticalSpacingMobile
 	);
-
+	const previewDescriptionSpacing = getPreviewSize(
+		previewDevice,
+		descriptionSpacing,
+		descriptionSpacingTablet,
+		descriptionSpacingMobile
+	);
+	const previewDescriptionColor = getPreviewSize(
+		previewDevice,
+		descriptionColor,
+		descriptionColorTablet,
+		descriptionColorMobile
+	);
+	const previewDescriptionColorHover = getPreviewSize(
+		previewDevice,
+		descriptionColorHover,
+		descriptionColorHoverTablet,
+		descriptionColorHoverMobile
+	);
+	const previewDescriptionColorActive = getPreviewSize(
+		previewDevice,
+		descriptionColorActive,
+		descriptionColorActiveTablet,
+		descriptionColorActiveMobile
+	);
 	const previewDropdownBorderTopLeftRadius = getPreviewSize(
 		previewDevice,
 		undefined !== dropdownBorderRadius ? dropdownBorderRadius[0] : '',
@@ -511,6 +551,15 @@ export default function BackendStyles(props) {
 			css.render_half_size(previewNavigationVerticalSpacing, spacingUnit)
 		);
 	}
+	css.add_property(
+		'--kb-nav-description-padding-top',
+		css.render_size(previewDescriptionSpacing, descriptionSpacingUnit)
+	);
+	css.add_property('--kb-nav-top-description-color', css.render_color(previewDescriptionColor));
+	//description styles hover
+	css.add_property('--kb-nav-top-description-color-hover', css.render_color(previewDescriptionColorHover));
+	//description styles active
+	css.add_property('--kb-nav-top-description-color-active', css.render_color(previewDescriptionColorActive));
 
 	if (previewOrientation != 'vertical') {
 		css.add_property('--kb-nav-dropdown-link-width', css.render_size(previewDropdownWidth, dropdownWidthUnit));
@@ -678,7 +727,7 @@ export default function BackendStyles(props) {
 	css.render_font(dropdownTypography ? dropdownTypography : [], previewDevice);
 
 	css.set_selector(
-		`.wp-block-kadence-navigation${uniqueID} .wp-block-kadence-navigation-link .menu-label-description`
+		`.wp-block-kadence-navigation${uniqueID} .wp-block-kadence-navigation-link .kb-nav-label-description`
 	);
 	css.render_font(descriptionTypography ? descriptionTypography : [], previewDevice);
 

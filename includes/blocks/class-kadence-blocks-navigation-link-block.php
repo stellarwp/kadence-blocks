@@ -234,7 +234,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 
 		//description styles
-		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-' . $unique_id . ' .menu-label-description' );
+		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-' . $unique_id . ' .kb-nav-label-description' );
 		$css->render_typography( $nav_link_attributes, 'descriptionTypography' );
 
 		//container styles
@@ -460,7 +460,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( 'grid-template-columns', '1fr auto' );
 
 			if ( $sized_attributes['descriptionPositioning'] == 'icon' ) {
-				$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .kb-link-wrap > a .menu-label-description:not(.specificity)' );
+				$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .kb-link-wrap > a .kb-nav-label-description:not(.specificity)' );
 				$css->add_property( 'grid-column', 'span 2' );
 			} else {
 				$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .kb-link-wrap > a .link-media-container:not(.specificity)' );
@@ -468,10 +468,10 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			}
 		}
 
-		//description styles
-		$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .kb-link-wrap > a .menu-label-description:not(.specificity)' );
+		// Description styles.
+		$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .kb-link-wrap > a' );
 		if( isset( $sized_attributes['descriptionSpacing'] ) ) {
-			$css->add_property( 'padding-top', $css->render_size( $sized_attributes['descriptionSpacing'], $sized_attributes['descriptionSpacingUnit'] ?? 'px' ) );
+			$css->add_property( '--kb-nav-description-padding-top', $css->render_size( $sized_attributes['descriptionSpacing'], $sized_attributes['descriptionSpacingUnit'] ?? 'px' ) );
 		}
 
 		// Mega menu width styles.
