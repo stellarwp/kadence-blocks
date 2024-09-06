@@ -5,48 +5,7 @@
 
 import { createBlock } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
-
-const postMeta = {
-	_kad_navigation_parentActive: '1',
-	_kad_navigation_collapseSubMenus: '1',
-	_kad_navigation_collapseSubMenusTablet: '1',
-	_kad_navigation_collapseSubMenusMobile: '1',
-	_kad_navigation_dropdownShadow: [
-		{
-			enable: false,
-			color: '#000000',
-			opacity: 0.20000000000000001,
-			spread: 0,
-			blur: 2,
-			hOffset: 1,
-			vOffset: 1,
-			inset: false,
-		},
-	],
-	_kad_navigation_spacing: ['', '3', '', '3'],
-	_kad_navigation_linkColor: 'palette6',
-	_kad_navigation_linkColorHover: 'palette1',
-	_kad_navigation_linkColorActive: 'palette1',
-	_kad_navigation_typography: [
-		{
-			size: ['', '', ''],
-			sizetype: 'px',
-			lineHeight: ['', '', ''],
-			lineType: '',
-			letterSpacing: [0.5, '', ''],
-			letterType: 'px',
-			textTransform: '',
-			family: '',
-			google: false,
-			style: '',
-			weight: 'bold',
-			variant: '',
-			subset: '',
-			loadgoogle: true,
-		},
-	],
-};
-
+const postMeta = {};
 function innerBlocks() {
 	return [
 		createBlock(
@@ -84,35 +43,6 @@ function innerBlocks() {
 												color: 'palette6',
 												typography: 'var( --global-heading-font-family, inherit )',
 												fontWeight: '600',
-												markBorder: '',
-												markBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
-												tabletMarkBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
-												mobileMarkBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
-												textTransform: 'capitalize',
 												colorClass: 'theme-palette6',
 												htmlTag: 'div',
 												content: __('Design', 'kadence-blocks'),
@@ -142,35 +72,6 @@ function innerBlocks() {
 												color: 'palette6',
 												typography: 'var( --global-heading-font-family, inherit )',
 												fontWeight: '600',
-												markBorder: '',
-												markBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
-												tabletMarkBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
-												mobileMarkBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
-												textTransform: 'capitalize',
 												colorClass: 'theme-palette6',
 												htmlTag: 'div',
 												content: __('Development', 'kadence-blocks'),
@@ -200,35 +101,6 @@ function innerBlocks() {
 												color: 'palette6',
 												typography: 'var( --global-heading-font-family, inherit )',
 												fontWeight: '600',
-												markBorder: '',
-												markBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
-												tabletMarkBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
-												mobileMarkBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
-												textTransform: 'capitalize',
 												colorClass: 'theme-palette6',
 												htmlTag: 'div',
 												content: __('SEO', 'kadence-blocks'),
@@ -277,35 +149,6 @@ function innerBlocks() {
 												color: 'palette4',
 												typography: 'var( --global-heading-font-family, inherit )',
 												fontWeight: '600',
-												markBorder: '',
-												markBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
-												tabletMarkBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
-												mobileMarkBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
-												textTransform: 'capitalize',
 												colorClass: 'theme-palette4',
 												htmlTag: 'div',
 												content: __('Type A Short Headline', 'kadence-blocks'),
@@ -319,34 +162,6 @@ function innerBlocks() {
 												color: 'palette6',
 												typography: 'var( --global-body-font-family, inherit )',
 												fontWeight: 'inherit',
-												markBorder: '',
-												markBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
-												tabletMarkBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
-												mobileMarkBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
 												colorClass: 'theme-palette6',
 												htmlTag: 'p',
 												fontSize: ['sm', '', ''],
@@ -375,35 +190,6 @@ function innerBlocks() {
 												color: 'palette4',
 												typography: 'var( --global-heading-font-family, inherit )',
 												fontWeight: '600',
-												markBorder: '',
-												markBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
-												tabletMarkBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
-												mobileMarkBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
-												textTransform: 'capitalize',
 												colorClass: 'theme-palette4',
 												htmlTag: 'div',
 												content: __('Type A Short Headline', 'kadence-blocks'),
@@ -417,34 +203,6 @@ function innerBlocks() {
 												color: 'palette6',
 												typography: 'var( --global-body-font-family, inherit )',
 												fontWeight: 'inherit',
-												markBorder: '',
-												markBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
-												tabletMarkBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
-												mobileMarkBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
 												colorClass: 'theme-palette6',
 												htmlTag: 'p',
 												fontSize: ['sm', '', ''],
@@ -473,35 +231,6 @@ function innerBlocks() {
 												color: 'palette4',
 												typography: 'var( --global-heading-font-family, inherit )',
 												fontWeight: '600',
-												markBorder: '',
-												markBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
-												tabletMarkBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
-												mobileMarkBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
-												textTransform: 'capitalize',
 												colorClass: 'theme-palette4',
 												htmlTag: 'div',
 												content: __('Type A Short Headline', 'kadence-blocks'),
@@ -515,34 +244,6 @@ function innerBlocks() {
 												color: 'palette6',
 												typography: 'var( --global-body-font-family, inherit )',
 												fontWeight: 'inherit',
-												markBorder: '',
-												markBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
-												tabletMarkBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
-												mobileMarkBorderStyles: [
-													{
-														top: [null, '', ''],
-														right: [null, '', ''],
-														bottom: [null, '', ''],
-														left: [null, '', ''],
-														unit: 'px',
-													},
-												],
 												colorClass: 'theme-palette6',
 												htmlTag: 'p',
 												fontSize: ['sm', '', ''],

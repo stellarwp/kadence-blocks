@@ -127,6 +127,7 @@ export default function BackendStyles(props) {
 		backgroundStickyActiveMobile,
 		typography,
 		dropdownTypography,
+		descriptionTypography,
 		collapseSubMenus,
 		parentTogglesMenus,
 		divider,
@@ -675,6 +676,11 @@ export default function BackendStyles(props) {
 	css.add_property('padding-top', css.render_size(previewDropdownVerticalSpacing, dropdownVerticalSpacingUnit));
 	css.add_property('padding-bottom', css.render_size(previewDropdownVerticalSpacing, dropdownVerticalSpacingUnit));
 	css.render_font(dropdownTypography ? dropdownTypography : [], previewDevice);
+
+	css.set_selector(
+		`.wp-block-kadence-navigation${uniqueID} .wp-block-kadence-navigation-link .menu-label-description`
+	);
+	css.render_font(descriptionTypography ? descriptionTypography : [], previewDevice);
 
 	//dropdown nav item
 	css.set_selector(

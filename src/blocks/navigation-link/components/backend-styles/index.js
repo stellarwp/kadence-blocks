@@ -1081,7 +1081,12 @@ export default function BackendStyles(props) {
 		css.add_property('display', 'grid');
 		css.add_property('grid-template-columns', '1fr');
 	}
-	if (description && mediaType != 'none' && (previewMediaAlign == 'left' || previewMediaAlign == 'right')) {
+	if (
+		description &&
+		mediaType != 'none' &&
+		mediaType != '' &&
+		(previewMediaAlign == 'left' || previewMediaAlign == 'right')
+	) {
 		css.set_selector(`.kb-nav-link-${uniqueID} > .kb-link-wrap > a .kb-nav-item-title-wrap:not(.specificity)`);
 		css.add_property('display', 'grid');
 		css.add_property('grid-template-columns', '1fr auto');
@@ -1096,7 +1101,9 @@ export default function BackendStyles(props) {
 	}
 
 	//description styles
-	css.set_selector(`.kb-nav-link-${uniqueID} > .kb-link-wrap > a .menu-label-description:not(.specificity)`);
+	css.set_selector(
+		`.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-${uniqueID} > .kb-link-wrap > a .menu-label-description:not(.specificity)`
+	);
 	css.add_property('padding-top', css.render_size(previewDescriptionSpacing, descriptionSpacingUnit));
 	css.render_font(descriptionTypography ? descriptionTypography : [], previewDevice);
 	css.add_property('color', css.render_color(previewDescriptionColor));

@@ -43,10 +43,27 @@ export function Edit(props) {
 	const [isLoadingTemplateContent, setIsLoadingTemplateContent] = useState(false);
 	const [tmpTemplateKey, setTmpTemplateKey] = useState(templateKey);
 
+	const { post, postExists, isLoading, currentPostType, postId } = useSelect(
+		(select) => {
+			return {
+				post: id && select(coreStore).getEditedEntityRecord('postType', 'kadence_navigation', id),
+				postExists: id && select(coreStore).getEntityRecord('postType', 'kadence_navigation', id),
+				isLoading: select(coreStore).isResolving('getEntityRecord', ['postType', 'kadence_navigation', id]),
+				currentPostType: select('core/editor')?.getCurrentPostType()
+					? select('core/editor')?.getCurrentPostType()
+					: '',
+				postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
+			};
+		},
+		[id]
+	);
 	// Since we're not in the EntityProvider yet, we need to provide a post id.
 	// 'id' and 'meta' will be undefined untill the actual post is chosen / loaded
-	const [meta, setMeta] = useNavigationProp('meta', id);
-	const [existingTitle, setTitle] = useNavigationProp('title', id);
+	const [meta, setMeta] = useNavigationProp('meta', currentPostType === 'kadence_navigation' ? postId : id);
+	const [existingTitle, setTitle] = useNavigationProp(
+		'title',
+		currentPostType === 'kadence_navigation' ? postId : id
+	);
 	const [isAdding, addNew] = useEntityAutoDraftAndPublish('kadence_navigation', 'kadence_navigation');
 	const [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_navigation', { id });
 
@@ -73,7 +90,6 @@ export function Edit(props) {
 		fillStretchTablet,
 		fillStretchMobile,
 	} = metaAttributes;
-
 	const inTemplatePreviewMode = !id && templateKey;
 
 	//some workarounds in here because we can't set meta attributes on no-post templated navs
@@ -93,21 +109,6 @@ export function Edit(props) {
 			? 'vertical'
 			: 'horizontal'
 		: orientationMobile;
-
-	const { post, postExists, isLoading, currentPostType, postId } = useSelect(
-		(select) => {
-			return {
-				post: id && select(coreStore).getEditedEntityRecord('postType', 'kadence_navigation', id),
-				postExists: id && select(coreStore).getEntityRecord('postType', 'kadence_navigation', id),
-				isLoading: select(coreStore).isResolving('getEntityRecord', ['postType', 'kadence_navigation', id]),
-				currentPostType: select('core/editor')?.getCurrentPostType()
-					? select('core/editor')?.getCurrentPostType()
-					: '',
-				postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
-			};
-		},
-		[id]
-	);
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, parentData, previewDevice, isPreviewMode } = useSelect(

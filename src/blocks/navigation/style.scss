@@ -656,12 +656,17 @@
 		&.current-menu-item > .kb-link-wrap.kb-link-wrap.kb-link-wrap {
 			--kb-nav-link-color: var(--kb-nav-link-color-active);
 			--kb-nav-link-background: var(--kb-nav-link-background-active);
+			--kb-nav-description-color: var(--kb-nav-description-color-active);
 		}
 		&.current-menu-ancestor > .kb-link-wrap.kb-link-wrap.kb-link-wrap {
 			--kb-nav-link-color: var(--kb-nav-link-color-active-ancestor, var(--kb-nav-link-color-active));
 			--kb-nav-link-background: var(
 				--kb-nav-link-background-active-ancestor,
 				var(--kb-nav-link-background-active)
+			);
+			--kb-nav-description-color: var(
+				--kb-nav-description-color-active-ancestor,
+				var(--kb-nav-description-color-active)
 			);
 		}
 	}
@@ -719,11 +724,16 @@
 		&:not([href]) {
 			cursor: default;
 		}
-
+		.kb-nav-label-description {
+			color: var(--kb-nav-description-color, inherit);
+		}
 		&:hover,
 		&:focus {
 			--kb-nav-link-color: var(--kb-nav-link-color-hover);
 			--kb-nav-link-background: var(--kb-nav-link-background-hover);
+			.kb-nav-label-description {
+				color: var(--kb-nav-description-color-hover);
+			}
 		}
 	}
 
@@ -770,6 +780,10 @@
 			--kb-nav-link-background-hover: var(--kb-nav-top-link-background-hover);
 			--kb-nav-link-background-active: var(--kb-nav-top-link-background-active);
 			--kb-nav-link-background-active-ancestor: var(--kb-nav-top-link-background-active-ancestor);
+			--kb-nav-description-color: var(--kb-nav-top-description-color);
+			--kb-nav-description-color-hover: var(--kb-nav-top-description-color-hover);
+			--kb-nav-description-color-active: var(--kb-nav-top-description-color-active);
+			--kb-nav-description-color-active-ancestor: var(--kb-nav-top-description-color-active-ancestor);
 
 			& > .kb-nav-link-content {
 				display: flex;

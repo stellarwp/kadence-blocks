@@ -127,7 +127,9 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_typography( $nav_attributes, 'dropdownTypography' );
 		$css->render_measure_output( $nav_attributes, 'marginDropdownLink', '--kb-nav-link-margin', ['unit_key' => 'marginDropdownLinkUnit']);
 		$css->render_measure_output( $nav_attributes, 'paddingDropdownLink', '--kb-nav-link-padding', ['unit_key' => 'paddingDropdownLinkUnit']);
-
+		
+		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .wp-block-kadence-navigation-link .menu-label-description' );
+		$css->render_typography( $nav_attributes, 'descriptionTypography' );
 		return $css->css_output();
 	}
 
@@ -167,6 +169,10 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( '--kb-nav-dropdown-border-left', $css->render_border( $sized_attributes['dropdownBorder'], 'left' ) );
 		$css->add_property( '--kb-nav-dropdown-border-right', $css->render_border( $sized_attributes['dropdownBorder'], 'right' ) );
 		$css->render_measure_range( $sized_attributes, ( 'Desktop' === $size ? 'dropdownBorderRadius' : 'dropdownBorderRadius' . $size ), '--kb-nav-dropdown-border-radius', '', ['unit_key' => 'dropdownBorderRadiusUnit']);
+		$css->add_property( '--kb-nav-top-description-color', $css->render_color( $sized_attributes['descriptionColor'] ));		
+		$css->add_property( '--kb-nav-top-description-color-hover', $css->render_color( $sized_attributes['descriptionColorHover'] ) );
+		$css->add_property( '--kb-nav-top-description-color-active', $css->render_color( $sized_attributes['descriptionColorActive']) );
+		$css->add_property( '--kb-nav-top-description-color-active-ancestor', $css->render_color( $sized_attributes['descriptionColorActive']), $sized_attributes['parentActive'] );
 		
 		//additional dynamic logic, but still lands in a slot in the static stylesheet
 		if (

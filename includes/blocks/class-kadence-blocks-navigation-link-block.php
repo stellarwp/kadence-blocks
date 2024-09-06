@@ -234,7 +234,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 
 		//description styles
-		$css->set_selector( '.kb-nav-link-' . $unique_id . ' .menu-label-description:not(.kb-nav-link-' . $unique_id . ' .wp-block-kadence-navigation-link .menu-label-description)' );
+		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-' . $unique_id . ' .menu-label-description' );
 		$css->render_typography( $nav_link_attributes, 'descriptionTypography' );
 
 		//container styles
@@ -357,6 +357,16 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$css->add_property( '--kb-nav-link-color-hover', $css->render_color( $sized_attributes['linkColorHover'] ), $sized_attributes['linkColorHover'] );
 		$css->add_property( '--kb-nav-link-color-active', $css->render_color( $sized_attributes['linkColorActive']), $sized_attributes['linkColorActive'] );
 		$css->add_property( '--kb-nav-link-color-active-ancestor', $css->render_color( $sized_attributes['linkColorActive']), $sized_attributes['linkColorActive'] );
+		if( isset( $sized_attributes['descriptionColor'] ) ) {
+			$css->add_property( '--kb-nav-description-color', $css->render_color( $sized_attributes['descriptionColor'] ) );
+		}
+		if( isset( $sized_attributes['descriptionColorHover'] ) ) {
+			$css->add_property( '--kb-nav-description-color-hover', $css->render_color( $sized_attributes['descriptionColorHover'] ) );
+		}
+		if( isset( $sized_attributes['descriptionColorActive'] ) ) {
+			$css->add_property( '--kb-nav-description-color-active', $css->render_color( $sized_attributes['descriptionColorActive'] ) );
+			$css->add_property( '--kb-nav-description-color-active-ancestor', $css->render_color( $sized_attributes['descriptionColorActive'] ) );
+		}
 
 
 
@@ -462,21 +472,6 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .kb-link-wrap > a .menu-label-description:not(.specificity)' );
 		if( isset( $sized_attributes['descriptionSpacing'] ) ) {
 			$css->add_property( 'padding-top', $css->render_size( $sized_attributes['descriptionSpacing'], $sized_attributes['descriptionSpacingUnit'] ?? 'px' ) );
-		}
-		if( isset( $sized_attributes['descriptionColor'] ) ) {
-			$css->add_property( 'color', $css->render_color( $sized_attributes['descriptionColor'] ) );
-		}
-
-		//description styles hover
-		$css->set_selector( '.kb-nav-link-' . $unique_id . ':hover > .kb-link-wrap > a .menu-label-description:not(.specificity)' );
-		if( isset( $sized_attributes['descriptionColorHover'] ) ) {
-			$css->add_property( 'color', $css->render_color( $sized_attributes['descriptionColorHover'] ) );
-		}
-
-		//description styles active
-		$css->set_selector( '.kb-nav-link-' . $unique_id . '.current-menu-item > .kb-link-wrap > a .menu-label-description:not(.specificity)' );
-		if( isset( $sized_attributes['descriptionColorHover'] ) ) {
-			$css->add_property( 'color', $css->render_color( $sized_attributes['descriptionColorHover'] ) );
 		}
 
 		// Mega menu width styles.
