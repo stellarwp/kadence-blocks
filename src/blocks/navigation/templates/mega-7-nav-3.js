@@ -17,6 +17,10 @@ const postMeta = {
 	_kad_navigation_dropdownDividerMobile: [
 		{ top: ['', '', ''], right: ['', '', ''], bottom: ['', '', ''], left: ['', '', ''], unit: '' },
 	],
+	_kad_navigation_linkColor: 'palette4',
+	_kad_navigation_linkColorHover: 'palette1',
+	_kad_navigation_linkColorActive: 'palette1',
+	_kad_navigation_descriptionColor: 'palette6',
 	_kad_navigation_typography: [
 		{
 			size: ['sm', '', ''],
@@ -84,10 +88,6 @@ function innerBlocks() {
 					description: 'Use this space to add a short description.',
 					url: '#',
 					kind: 'custom',
-					linkColorDropdown: 'palette4',
-					linkColor: 'palette4',
-					linkColorHover: 'palette1',
-					linkColorActive: 'palette1',
 					highlightLabel: 'New',
 					iconSide: 'left',
 					highlightIcon: [
@@ -122,7 +122,6 @@ function innerBlocks() {
 							mobileMargin: ['', '', '', ''],
 						},
 					],
-					descriptionColor: 'palette6',
 				},
 				[]
 			),
@@ -134,11 +133,6 @@ function innerBlocks() {
 					description: 'Use this space to add a short description.',
 					url: '#',
 					kind: 'custom',
-					linkColorDropdown: 'palette4',
-					linkColor: 'palette4',
-					linkColorHover: 'palette1',
-					linkColorActive: 'palette1',
-					descriptionColor: 'palette6',
 				},
 				[]
 			),
@@ -150,11 +144,6 @@ function innerBlocks() {
 					description: 'Use this space to add a short description.',
 					url: '#',
 					kind: 'custom',
-					linkColorDropdown: 'palette4',
-					linkColor: 'palette4',
-					linkColorHover: 'palette1',
-					linkColorActive: 'palette1',
-					descriptionColor: 'palette6',
 				},
 				[]
 			),
@@ -166,11 +155,6 @@ function innerBlocks() {
 					description: 'Use this space to add a short description.',
 					url: '#',
 					kind: 'custom',
-					linkColorDropdown: 'palette4',
-					linkColor: 'palette4',
-					linkColorHover: 'palette1',
-					linkColorActive: 'palette1',
-					descriptionColor: 'palette6',
 				},
 				[]
 			),

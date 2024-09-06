@@ -147,6 +147,12 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$css->render_measure_output( $nav_link_attributes, 'margin', '--kb-nav-link-margin', [ 'unit_key' => 'marginUnit' ] );
 		$css->render_measure_output( $nav_link_attributes, 'padding', '--kb-nav-link-padding', [ 'unit_key' => 'paddingUnit' ] );
 
+
+		//description styles
+		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-' . $unique_id . ' .kb-nav-label-description' );
+		$css->render_typography( $nav_link_attributes, 'descriptionTypography' );
+
+		//container styles
 		$css->render_button_styles_with_states(
 			array(
 				'colorBase' => 'linkColor',
@@ -214,9 +220,6 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 		$css->set_selector( '.kb-nav-link-' . $unique_id . ' .sub-menu li.menu-item > .kb-link-wrap > .kb-nav-link-content' );
 		$css->render_typography( $nav_link_attributes, 'dropdownTypography' );
-		
-		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-' . $unique_id . ' .menu-label-description' );
-		$css->render_typography( $nav_link_attributes, 'descriptionTypography' );
 
 		if ( ! empty( $nav_link_attributes['highlightLabel'] ) || ! empty( $nav_link_attributes['highlightIcon']['icon'] ) ) {
 			$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .kb-link-wrap > .kb-nav-link-content .link-highlight-label' );
@@ -347,9 +350,9 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			}
 		}
 
-		//description styles
+		// Description styles.
 		if( isset( $sized_attributes['descriptionSpacing'] ) ) {
-			$css->add_property( '--kb-nav-link-description-padding-top', $css->render_size( $sized_attributes['descriptionSpacing'], $sized_attributes['descriptionSpacingUnit'] ?? 'px' ) );
+			$css->add_property( '--kb-nav-description-padding-top', $css->render_size( $sized_attributes['descriptionSpacing'], $sized_attributes['descriptionSpacingUnit'] ?? 'px' ) );
 		}
 		if( isset( $sized_attributes['descriptionColor'] ) ) {
 			$css->add_property( '--kb-nav-link-description-color', $css->render_color( $sized_attributes['descriptionColor'] ) );

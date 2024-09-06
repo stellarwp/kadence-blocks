@@ -122,7 +122,7 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_measure_output( $nav_attributes, 'marginDropdownLink', '--kb-nav-dropdown-link-margin', ['unit_key' => 'marginDropdownLinkUnit']);
 		$css->render_measure_output( $nav_attributes, 'paddingDropdownLink', '--kb-nav-dropdown-link-padding', ['unit_key' => 'paddingDropdownLinkUnit']);
 		
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .wp-block-kadence-navigation-link .menu-label-description' );
+		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .wp-block-kadence-navigation-link .kb-nav-label-description' );
 		$css->render_typography( $nav_attributes, 'descriptionTypography' );
 		return $css->css_output();
 	}
@@ -175,10 +175,12 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 				'third_prop' => '--kb-nav-dropdown-border-radius-bottom-left' 
 			]
 		);
-		$css->add_property( '--kb-nav-top-link-description-color', $css->render_color( $sized_attributes['descriptionColor'] ));		
-		$css->add_property( '--kb-nav-top-link-description-color-hover', $css->render_color( $sized_attributes['descriptionColorHover'] ) );
-		$css->add_property( '--kb-nav-top-link-description-color-active', $css->render_color( $sized_attributes['descriptionColorActive']) );
-		$css->add_property( '--kb-nav-top-link-description-color-active-ancestor', $css->render_color( $sized_attributes['descriptionColorActive']), $sized_attributes['parentActive'] );
+		$css->render_measure_range( $sized_attributes, ( 'Desktop' === $size ? 'dropdownBorderRadius' : 'dropdownBorderRadius' . $size ), '--kb-nav-dropdown-border-radius', '', ['unit_key' => 'dropdownBorderRadiusUnit']);
+		$css->add_property( '--kb-nav-top-description-color', $css->render_color( $sized_attributes['descriptionColor'] ));		
+		$css->add_property( '--kb-nav-top-description-color-hover', $css->render_color( $sized_attributes['descriptionColorHover'] ) );
+		$css->add_property( '--kb-nav-top-description-color-active', $css->render_color( $sized_attributes['descriptionColorActive']) );
+		$css->add_property( '--kb-nav-top-description-color-active-ancestor', $css->render_color( $sized_attributes['descriptionColorActive']), $sized_attributes['parentActive'] );
+		$css->add_property( '--kb-nav-description-padding-top', $css->render_size( $sized_attributes['descriptionSpacing'], $sized_attributes['descriptionSpacingUnit'] ?? 'px' ) );
 		
 		//additional dynamic logic, but still lands in a slot in the static stylesheet
 		if (

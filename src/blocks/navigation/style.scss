@@ -907,6 +907,7 @@
 		}
 		.kb-nav-label-description {
 			color: var(--kb-nav-description-color, inherit);
+			padding-top: var(--kb-nav-description-padding-top, 0);
 		}
 		&:hover,
 		&:focus {
@@ -1170,7 +1171,7 @@
 		transition: opacity 0.2s ease;
 	}
 
-	.menu-label-description {
+	.kb-nav-label-description {
 		color: var(--kb-nav-link-description-color);
 		padding-top: var(--kb-nav-link-description-padding-top);
 		padding-right: var(--kb-nav-link-description-padding-right);
