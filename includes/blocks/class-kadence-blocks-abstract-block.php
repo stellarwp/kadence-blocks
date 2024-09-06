@@ -69,6 +69,7 @@ class Kadence_Blocks_Abstract_Block {
 	 */
 	protected $supports_merged_defaults = [
 		'navigation',
+		'navigation-link',
 		'header',
 		'navigation-list',
 		'singlebtn',
