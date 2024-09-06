@@ -192,8 +192,6 @@
 
 	.kb-nav-item-title-wrap {
 		position: relative;
-		display: flex;
-		flex-wrap: nowrap;
 		text-align: left;
 	}
 
@@ -905,10 +903,6 @@
 		&:not([href]) {
 			cursor: default;
 		}
-		.kb-nav-label-description {
-			color: var(--kb-nav-link-description-color, inherit);
-			padding-top: var(--kb-nav-link-description-padding-top, 0);
-		}
 		&:hover,
 		&:focus {
 			--kb-nav-link-color: var(--kb-nav-link-color-hover);
@@ -1172,7 +1166,7 @@
 	}
 
 	.kb-nav-label-description {
-		color: var(--kb-nav-link-description-color);
+		color: var(--kb-nav-link-description-color, inherit);
 		padding-top: var(--kb-nav-link-description-padding-top);
 		padding-right: var(--kb-nav-link-description-padding-right);
 		padding-bottom: var(--kb-nav-link-description-padding-bottom);
@@ -1184,8 +1178,9 @@
 	.kb-nav-item-title-wrap {
 		grid-template-columns: var(--kb-nav-link-title-wrap-grid-template-columns);
 		flex-direction: var(--kb-nav-link-title-wrap-flex-direction);
-		display: var(--kb-nav-link-title-wrap-display);
+		display: var(--kb-nav-link-title-wrap-display, flex);
 		text-align: var(--kb-nav-link-title-wrap-text-align);
+		flex-wrap: nowrap;
 	}
 
 	.kb-menu-has-description {

@@ -106,8 +106,10 @@
 	}
 
 	//Some random editor stuff
+	.kb-link-warp {
+		--kb-nav-link-title-wrap-display: flex;
+	}
 	.kb-nav-item-title-wrap {
-		display: flex;
 		align-items: center;
 	}
 	.has-child {

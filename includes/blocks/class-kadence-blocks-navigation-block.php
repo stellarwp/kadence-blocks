@@ -180,7 +180,7 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( '--kb-nav-top-description-color-hover', $css->render_color( $sized_attributes['descriptionColorHover'] ) );
 		$css->add_property( '--kb-nav-top-description-color-active', $css->render_color( $sized_attributes['descriptionColorActive']) );
 		$css->add_property( '--kb-nav-top-description-color-active-ancestor', $css->render_color( $sized_attributes['descriptionColorActive']), $sized_attributes['parentActive'] );
-		$css->add_property( '--kb-nav-description-padding-top', $css->render_size( $sized_attributes['descriptionSpacing'], $sized_attributes['descriptionSpacingUnit'] ?? 'px' ) );
+		$css->add_property( '--kb-nav-link-description-padding-top', $css->render_size( $sized_attributes['descriptionSpacing'], $sized_attributes['descriptionSpacingUnit'] ?? 'px' ) );
 		
 		//additional dynamic logic, but still lands in a slot in the static stylesheet
 		if (

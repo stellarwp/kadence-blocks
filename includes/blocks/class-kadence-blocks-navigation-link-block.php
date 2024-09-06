@@ -351,10 +351,11 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 		// Description styles.
 		if( isset( $sized_attributes['descriptionSpacing'] ) ) {
-			$css->add_property( '--kb-nav-description-padding-top', $css->render_size( $sized_attributes['descriptionSpacing'], $sized_attributes['descriptionSpacingUnit'] ?? 'px' ) );
+			$css->add_property( '--kb-nav-link-description-padding-top', $css->render_size( $sized_attributes['descriptionSpacing'], $sized_attributes['descriptionSpacingUnit'] ?? 'px' ) );
 		}
+		if( isset( $sized_attributes['descriptionColor'] ) ) {
 			$css->add_property( '--kb-nav-link-description-color', $css->render_color( $sized_attributes['descriptionColor'] ) );
-
+		}
 		if( isset( $sized_attributes['descriptionColorHover'] ) ) {
 			$css->add_property( '--kb-nav-link-description-color-hover', $css->render_color( $sized_attributes['descriptionColorHover'] ) );
 		}

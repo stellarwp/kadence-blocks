@@ -612,7 +612,7 @@ export default function BackendStyles(props) {
 		);
 	}
 	css.add_property(
-		'--kb-nav-description-padding-top',
+		'--kb-nav-link-description-padding-top',
 		css.render_size(previewDescriptionSpacing, descriptionSpacingUnit)
 	);
 	css.add_property('--kb-nav-top-description-color', css.render_color(previewDescriptionColor));
