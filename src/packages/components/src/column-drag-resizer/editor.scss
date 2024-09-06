@@ -253,3 +253,10 @@
 		}
 	}
 }
+
+//fix for max width image blocks breaking out of their columns
+.block-editor-block-list__block[data-type="kadence/rowlayout"]
+	.kb-image-max-width-set
+	.components-resizable-box__container {
+	max-width: 100% !important;
+}

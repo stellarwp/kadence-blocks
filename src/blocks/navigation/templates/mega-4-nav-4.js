@@ -10,18 +10,6 @@ const postMeta = {
 	_kad_navigation_collapseSubMenus: '1',
 	_kad_navigation_collapseSubMenusTablet: '1',
 	_kad_navigation_collapseSubMenusMobile: '1',
-	_kad_navigation_dropdownShadow: [
-		{
-			enable: false,
-			color: '#000000',
-			opacity: 0.20000000000000001,
-			spread: 0,
-			blur: 2,
-			hOffset: 1,
-			vOffset: 1,
-			inset: false,
-		},
-	],
 	_kad_navigation_margin: ['xs', '', 'sm', ''],
 	_kad_navigation_spacing: ['', '2', '', '2'],
 	_kad_navigation_linkColor: 'palette5',
@@ -37,7 +25,7 @@ const postMeta = {
 	_kad_navigation_typography: [
 		{
 			size: [12, '', ''],
-			sizetype: 'px',
+			sizeType: 'px',
 			lineHeight: ['', '', ''],
 			lineType: '',
 			letterSpacing: ['', '', ''],
@@ -49,7 +37,7 @@ const postMeta = {
 			weight: '',
 			variant: '',
 			subset: '',
-			loadgoogle: true,
+			loadGoogle: true,
 		},
 	],
 };

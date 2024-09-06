@@ -17,7 +17,6 @@ function innerBlocks() {
 				columnGutter: 'none',
 				customGutter: [0, '', ''],
 				colLayout: 'left-golden',
-				borderRadius: ['', '', 15, 15],
 				padding: ['', '', '', ''],
 				borderStyle: [
 					{
@@ -29,18 +28,6 @@ function innerBlocks() {
 					},
 				],
 				templateLock: false,
-				displayBoxShadow: true,
-				boxShadow: [
-					{
-						color: '#000000',
-						opacity: 0.20000000000000001,
-						spread: 0,
-						blur: 7,
-						hOffset: 0,
-						vOffset: 11,
-						inset: false,
-					},
-				],
 				kbVersion: 2,
 			},
 			[

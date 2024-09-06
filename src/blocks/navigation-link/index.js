@@ -18,11 +18,6 @@ const { name } = metadata;
 
 export { metadata, name };
 
-/**
- * Import Css
- */
-import './style.scss';
-
 registerBlockType(name, {
 	...metadata,
 	title: __('Kadence Navigation Link', 'kadence-blocks'),

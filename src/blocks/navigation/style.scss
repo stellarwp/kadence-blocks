@@ -1,11 +1,12 @@
 /**
  * Frontend only CSS.
+ * Styles for both the navigation and nav link block
  */
 
 @import "../../assets/css/variables.scss";
 
 @mixin parent-toggles-menus-styles {
-	.link-drop-wrap .dropdown-navigation-toggle {
+	.kb-link-wrap .kb-nav-dropdown-toggle-btn {
 		position: absolute;
 		left: 0;
 		z-index: 10;
@@ -17,10 +18,10 @@
 }
 
 @mixin uncollapse-sub-menus {
-	ul.menu ul.sub-menu {
+	.menu .sub-menu {
 		@include show-sub-menu();
 	}
-	.link-drop-wrap .dropdown-navigation-toggle {
+	.kb-link-wrap .kb-nav-dropdown-toggle-btn {
 		display: none;
 	}
 }
@@ -28,7 +29,6 @@
 @mixin hide-sub-menu {
 	opacity: 0;
 	visibility: hidden;
-	transform: translate(0, 0);
 	clip: rect(1px, 1px, 1px, 1px);
 	height: 1px;
 	overflow: hidden;
@@ -37,310 +37,186 @@
 @mixin show-sub-menu {
 	opacity: 1;
 	visibility: visible;
-	transform: translate(0, 0);
 	clip: auto;
 	height: auto;
 	overflow: visible;
+
+	left: var(--kb-nav-dropdown-show-left);
+	right: var(--kb-nav-dropdown-show-right);
+	transform: translate(var(--kb-nav-dropdown-show-transform-x, 0), var(--kb-nav-dropdown-show-transform-y, 0));
+	border-bottom: var(--kb-nav-dropdown-border-bottom);
+	border-top: var(--kb-nav-dropdown-border-top);
+	border-left: var(--kb-nav-dropdown-border-left);
+	border-right: var(--kb-nav-dropdown-border-right);
+	border-top-left-radius: var(--kb-nav-dropdown-border-top-left-radius);
+	border-top-right-radius: var(--kb-nav-dropdown-border-top-right-radius);
+	border-bottom-right-radius: var(--kb-nav-dropdown-border-bottom-right-radius);
+	border-bottom-left-radius: var(--kb-nav-dropdown-border-bottom-left-radius);
+	padding: var(--kb-nav-dropdown-padding-top, 0) var(--kb-nav-dropdown-padding-right, 0)
+		var(--kb-nav-dropdown-padding-bottom, 0) var(--kb-nav-dropdown-padding-left, 0);
+	margin: var(--kb-nav-dropdown-margin-top, 0) var(--kb-nav-dropdown-margin-right, 0)
+		var(--kb-nav-dropdown-margin-bottom, 0) var(--kb-nav-dropdown-margin-left, 0);
 }
 
 @mixin navigation-fade-up-styles {
-	transform: translate(0, 10px);
+	--kb-nav-dropdown-hide-transform-y: 10px;
 }
 @mixin navigation-fade-down-styles {
-	transform: translate(0, -10px);
+	--kb-nav-dropdown-hide-transform-y: -10px;
 }
 
 @mixin horizontal-navigation-base-styles {
-	.navigation ul ul.sub-menu,
-	.navigation ul ul.submenu {
-		position: absolute;
-		top: 100%;
-		flex-direction: column;
-		background: #fff;
-		margin-left: 0;
-		z-index: 1000;
-		width: initial;
-
-		//third level nav
-		ul.submenu,
-		ul.sub-menu {
-			top: 0;
-			left: 100%;
-			right: auto;
-			min-height: 100%;
-		}
-	}
-	.navigation ul ul.sub-menu:not(.mega-menu),
-	.navigation ul ul.submenu:not(.mega-menu) {
-		box-shadow: 0 2px 13px rgba(0, 0, 0, 0.1);
-	}
-	.navigation ul ul.quadmenu-row {
-		flex-direction: row;
-	}
-	.navigation ul ul > li > .link-drop-wrap > a {
-		padding: 1em;
-		width: 200px;
-	}
-	body:not(.hide-focus-outline)
-		.navigation
-		li.menu-item--has-toggle
-		> .link-drop-wrap
-		> a:focus
-		.title-dropdown-navigation-toggle {
-		opacity: 0.2;
-	}
-	// Hide divider for last item.
-	.navigation ul ul.sub-menu > li:last-child,
-	.navigation ul ul.submenu > li:last-child {
-		border-bottom: 0;
-	}
-	.navigation ul ul.sub-menu.sub-menu-edge {
-		left: auto;
-		right: 0;
-	}
-	.navigation ul ul ul.sub-menu.sub-menu-edge {
-		left: auto;
-		right: 100%;
-	}
-	// Handle Reveal Animation for horizontal navs, hover only
-	.navigation {
-		ul.menu li:hover > ul {
-			@include show-sub-menu();
-		}
-	}
 	//In the editor we just look for these classes as they will come and go as the preview device changes.
 	//In the frontend, they will all be present, so must each be wrapped in a media query
 	//Desktop fade up style
-	.navigation.navigation-desktop-dropdown-animation-fade-up {
-		ul ul.sub-menu,
-		ul ul.submenu {
+	.navigation-desktop-dropdown-animation-fade-up {
+		.sub-menu {
 			@media (min-width: $laptop-plus-query) {
 				@include navigation-fade-up-styles();
 			}
 		}
 	}
 	//Tablet fade up style
-	.navigation.navigation-tablet-dropdown-animation-fade-up {
-		ul ul.sub-menu,
-		ul ul.submenu {
+	.navigation-tablet-dropdown-animation-fade-up {
+		.sub-menu {
 			@media (min-width: $before-tablet-plus-query) and (max-width: $tablet-minus-query) {
 				@include navigation-fade-up-styles();
 			}
 		}
 	}
 	//Mobile fade up style
-	.navigation.navigation-mobile-dropdown-animation-fade-up {
-		ul ul.sub-menu,
-		ul ul.submenu {
+	.navigation-mobile-dropdown-animation-fade-up {
+		.sub-menu {
 			@media (max-width: $phone-minus-query) {
 				@include navigation-fade-up-styles();
 			}
 		}
 	}
-	.navigation.navigation-desktop-dropdown-animation-fade-down {
-		ul ul.sub-menu,
-		ul ul.submenu {
+	//Desktop fade down style
+	.navigation-desktop-dropdown-animation-fade-down {
+		.sub-menu {
 			@media (min-width: $laptop-plus-query) {
 				@include navigation-fade-down-styles();
 			}
 		}
 	}
-	//Tablet fade up style
-	.navigation.navigation-tablet-dropdown-animation-fade-down {
-		ul ul.sub-menu,
-		ul ul.submenu {
+	//Tablet fade down style
+	.navigation-tablet-dropdown-animation-fade-down {
+		.sub-menu {
 			@media (min-width: $before-tablet-plus-query) and (max-width: $tablet-minus-query) {
 				@include navigation-fade-down-styles();
 			}
 		}
 	}
-	//Mobile fade up style
-	.navigation.navigation-mobile-dropdown-animation-fade-down {
-		ul ul.sub-menu,
-		ul ul.submenu {
+	//Mobile fade down style
+	.navigation-mobile-dropdown-animation-fade-down {
+		.sub-menu {
 			@media (max-width: $phone-minus-query) {
 				@include navigation-fade-down-styles();
 			}
 		}
 	}
 
-	/*--------------------------------------------------------------
-		 ## Submenu Toggles for Header Menus
-		 --------------------------------------------------------------*/
-	.nav--toggle-sub .dropdown-navigation-toggle {
-		position: absolute !important;
-		overflow: hidden;
-		padding: 0 !important;
-		margin: 0 !important;
-		margin-right: -0.1em !important;
-		border: 0 !important;
-		width: 0.9em;
-		top: 0;
-		bottom: 0;
-		height: auto;
-		border-radius: 0;
-		box-shadow: none !important;
-		background: transparent !important;
-		display: block;
-		left: auto;
-		right: calc(1.4em / 2);
-		pointer-events: none;
-
-		//this is editor only, don't need to see this for horizontal navs at all while editing
-		display: none;
-	}
-	.nav--toggle-sub .sub-menu .dropdown-navigation-toggle {
-		width: 2.6em;
-		margin: 0 !important;
-		right: 0;
-	}
-	.nav--toggle-sub .dropdown-navigation-toggle:focus {
-		z-index: 10;
-	}
-	.nav--toggle-sub .title-dropdown-navigation-toggle {
-		display: block;
-		background: transparent;
+	//horizontal submenus
+	.sub-menu {
 		position: absolute;
-		right: 0;
-		top: 50%;
-		width: 0.7em;
-		height: 0.7em;
-		font-size: inherit;
-		width: 0.9em;
-		height: 0.9em;
-		font-size: 0.9em;
-		display: inline-flex;
-		line-height: inherit;
-		margin: 0;
-		padding: 0;
-		border: none;
-		border-radius: 0;
-		transform: translateY(-50%);
-		overflow: visible;
-		transition: opacity 0.2s ease;
+		top: 100%;
+		flex-direction: column;
+		background: var(--kb-nav-dropdown-background, #fff);
+		margin-left: 0;
+		z-index: 1000;
+		box-shadow: var(--kb-nav-dropdown-box-shadow, 0 2px 13px 0 rgba(0, 0, 0, 0.1));
 
-		.kadence-svg-icon {
-			align-self: center;
+		&.sub-menu-edge {
+			--kb-nav-dropdown-show-left: auto;
+			--kb-nav-dropdown-show-right: 0;
+		}
+
+		//third level nav
+		.sub-menu {
+			top: 0;
+			--kb-nav-dropdown-show-left: 100%;
+			--kb-nav-dropdown-show-right: auto;
+			--kb-nav-dropdown-show-transform-x: 0;
+			--kb-nav-dropdown-show-transform-y: 0;
+			min-height: 100%;
+
+			&.sub-menu-edge {
+				--kb-nav-dropdown-show-left: auto;
+				--kb-nav-dropdown-show-right: 100%;
+			}
+		}
+
+		//sub menu menu items
+		& > li {
+			& > .kb-link-wrap .kb-nav-arrow-svg {
+				transform: rotate(270deg);
+			}
+
+			// Hide divider for last item.
+			&:last-child {
+				border-bottom: 0;
+			}
+		}
+
+		//horizontal sub menu toggles
+		.kb-nav-dropdown-toggle-btn {
+			width: calc(var(--kb-nav-drop-icon-width, 1.6em) + var(--kb-nav-link-padding-right, 0.5em));
+			margin-inline-end: calc(
+				(var(--kb-nav-drop-icon-width, 1.6em) + var(--kb-nav-link-padding-right, 0.5em)) * -1
+			);
+
+			&:focus {
+				z-index: 10;
+			}
 		}
 	}
-	.nav--toggle-sub ul ul .title-dropdown-navigation-toggle {
-		right: 0.2em;
-	}
-
-	.nav--toggle-sub ul ul .title-dropdown-navigation-toggle .kadence-svg-iconset {
-		transform: rotate(-90deg);
-	}
-	.nav--toggle-sub li.menu-item-has-children {
-		position: relative;
-
-		.link-drop-wrap > a > .link-drop-title-wrap {
-			padding-right: 1em;
+	.kb-menu-mega-width-custom > .sub-menu {
+		--kb-nav-dropdown-show-transform-y: 0;
+		--kb-nav-dropdown-show-transform-x: -50%;
+		--kb-nav-dropdown-hide-transform-x: -50%;
+		--kb-nav-dropdown-show-left: 50%;
+		&.sub-menu-edge {
+			--kb-nav-dropdown-show-left: auto;
+			--kb-nav-dropdown-show-right: 0;
+			--kb-nav-dropdown-show-transform-y: 0;
+			--kb-nav-dropdown-show-transform-x: 0;
+			--kb-nav-dropdown-hide-transform-x: 0;
 		}
 	}
-	.link-drop-title-wrap {
+	// Handle Reveal Animation for horizontal navs, hover and triggered via arrow.
+	.menu-item:hover > .sub-menu,
+	.menu-item.menu-item--toggled-on > .sub-menu {
+		@include show-sub-menu();
+	}
+
+	.kb-nav-item-title-wrap {
 		position: relative;
-		display: flex;
-		flex-wrap: nowrap;
 		text-align: left;
 	}
-	/*
-		 * If the dropdown toggle is active with JS, then
-		 * we'll take care of showing the submenu with JS.
-		 */
-	.nav--toggle-sub li:hover > ul,
-	.nav--toggle-sub li.menu-item--toggled-on > ul,
-	.nav--toggle-sub li:not(.menu-item--has-toggle):focus > ul {
-		display: block;
-	}
 
-	/*
-		 * "focus-within" is an alternative to focus class for
-		 * supporting browsers (all but IE/Edge) for no-JS context
-		 * (e.g. AMP) See https://caniuse.com/#feat=css-focus-within
-		 *
-		 * This selector needs to stay separated, otherwise submenus
-		 * will not be displayed with IE/Edge.
-		 */
-	.nav--toggle-sub li:not(.menu-item--has-toggle):focus-within > ul {
+	/**
+	 * "focus-within" is an alternative to focus class for
+	 * supporting browsers (all but IE/Edge) for no-JS context
+	 * (e.g. AMP) See https://caniuse.com/#feat=css-focus-within
+	 *
+	 * This selector needs to stay separated, otherwise submenus
+	 * will not be displayed with IE/Edge.
+	 */
+	.menu-item:not(.menu-item--has-toggle):focus-within > ul {
 		display: block;
 	}
 	// This makes the dropdowns work a little better on a touch device.
 	@media (hover: none) {
-		.wp-site-blocks
-			.nav--toggle-sub
-			.menu-item--has-toggle:not(.menu-item--toggled-on)
-			.dropdown-navigation-toggle {
-			left: 0;
-			right: 0 !important;
-			margin-right: 0 !important;
-			width: 100%;
-			pointer-events: all;
-		}
-		.wp-site-blocks .nav--toggle-sub .menu-item--has-toggle:not(.menu-item--toggled-on) > .link-drop-wrap > a {
-			pointer-events: none;
+		.menu-item--has-toggle {
+			.kb-nav-dropdown-toggle-btn {
+				pointer-events: all;
+			}
 		}
 	}
 }
 
 @mixin vertical-navigation-base-styles {
-	.navigation {
-		width: 100%;
-		display: block;
-		.menu-container {
-			display: block;
-			.menu {
-				display: block;
-				.menu-item {
-					display: list-item;
-					//margin: initial;
-				}
-			}
-		}
-		ul ul .menu-item > .link-drop-wrap > a {
-			width: 100%;
-		}
-	}
-
-	.navigation a {
-		display: block;
-		width: 100%;
-		text-decoration: none;
-		padding: 0.6em 0.5em;
-	}
-	.navigation ul {
-		display: block;
-		list-style: none;
-		margin: 0;
-		padding: 0;
-	}
-	.link-drop-wrap {
-		display: flex;
-		position: relative;
-		a {
-			color: inherit;
-		}
-		.vertical-sub-toggle {
-			background: transparent;
-			color: inherit;
-			padding: 0.5em 0.7em;
-			display: flex;
-			border: 0;
-			border-radius: 0;
-			box-shadow: none;
-			line-height: normal;
-			width: initial;
-			display: flex;
-			align-items: center;
-		}
-		.vertical-sub-toggle[aria-expanded="true"] svg {
-			transform: rotate(180deg);
-		}
-
-		.title-dropdown-navigation-toggle {
-			display: none;
-		}
-	}
-
 	//In the editor we just look for these classes as they will come and go as the preview device changes.
 	//In the frontend, they will all be present, so must each be wrapped in a media query
 	//Desktop parent toggle sub menus
@@ -384,43 +260,114 @@
 		}
 	}
 
-	.navigation ul ul {
-		padding-left: 1em;
-		transition: all 0.2s ease-in-out;
-	}
-
-	body[class*="amp-mode-"] .navigation ul ul {
+	.navigation {
+		width: 100%;
 		display: block;
 	}
-	.navigation ul ul ul ul ul ul {
-		padding-left: 0;
+
+	.menu-container {
+		display: block;
+		.menu {
+			display: block;
+			.menu-item {
+				display: list-item;
+				//margin: initial;
+			}
+		}
 	}
-	.navigation > .menu-container > ul > li:not(:last-of-type) > .link-drop-wrap {
+
+	//all menus
+	ul {
+		display: block;
+		list-style: none;
+	}
+
+	//sub menus
+	.sub-menu {
+		--kb-nav-dropdown-margin-left: 1em;
+		box-shadow: none;
+
+		.menu-item > .kb-link-wrap > a {
+			width: 100%;
+		}
+	}
+
+	//if we get this deep stop indenting
+	ul .sub-menu .sub-menu .sub-menu .sub-menu ul {
+		--kb-nav-dropdown-margin-left: 0;
+	}
+
+	.kb-nav-link-content {
+		display: block;
+		width: 100%;
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.kb-link-wrap {
+		display: flex;
+		position: relative;
+	}
+
+	// Dropdown Toggle Styles for vertical
+	.kb-nav-dropdown-toggle-btn {
+		background: transparent;
+		color: inherit;
+		padding: 0.5em 0.7em;
+		margin: 0;
+		display: flex;
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+		line-height: normal;
+		align-items: center;
+		bottom: auto;
+		pointer-events: all;
+		width: auto;
+		cursor: pointer;
+		right: 0px;
+
+		svg {
+			height: auto;
+			display: block;
+		}
+	}
+	.kb-nav-dropdown-toggle-btn[aria-expanded="true"] svg {
+		transform: rotate(180deg);
+	}
+
+	//vertical link padding on the right no longer needs to account for the drop down icon
+	.menu-item-has-children > .kb-link-wrap > a {
+		padding-right: calc(var(--kb-nav-link-padding-right, 0.5em));
+	}
+
+	//top level nav links only
+	.navigation > .menu-container > .menu > .menu-item:not(:last-of-type) > .kb-link-wrap {
 		border-right: none;
 	}
 }
 
 @mixin layout-stretch-styles {
-	/*
-	 FROM KADENCE THEME HEADER
-	 */
 	flex-grow: 1;
+
 	.navigation {
 		flex-grow: 1;
-		& > .menu-container {
-			flex-grow: 1;
-			& > .menu {
-				flex-grow: 1;
-				justify-content: space-between;
+	}
 
-				& > .menu-item {
-					margin: 0;
-					flex: 1 1 auto;
-					& > .link-drop-wrap > a {
-						width: fit-content;
-						margin-left: auto;
-						margin-right: auto;
-					}
+	//only apply stretching to top level menu items
+	.menu-container {
+		flex-grow: 1;
+		& > .menu {
+			flex-grow: 1;
+			justify-content: space-between;
+
+			& > .menu-item {
+				margin: 0;
+				flex: 1 1 auto;
+				& > .kb-link-wrap > .kb-nav-link-content {
+					width: fit-content;
+					margin-left: auto;
+					margin-right: auto;
 				}
 			}
 		}
@@ -428,20 +375,16 @@
 }
 
 @mixin layout-fill-stretch-styles {
-	/*
-	 FROM KADENCE THEME HEADER
-	 */
-	.navigation {
-		& > .menu-container {
-			& > .menu {
-				display: grid;
-				grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+	//only apply stretching to top level menu items
+	.menu-container {
+		& > .menu {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
 
-				& > .menu-item {
-					text-align: center;
-					& > .link-drop-wrap > a {
-						width: initial;
-					}
+			& > .menu-item {
+				text-align: center;
+				& > .kb-link-wrap > .kb-nav-link-content {
+					width: initial;
 				}
 			}
 		}
@@ -449,28 +392,28 @@
 }
 
 @mixin navigation-underline-styles {
+	//only apply underline to top level menu items
 	.menu-container {
-		> ul > li {
-			> .link-drop-wrap > a {
+		> .menu > .menu-item {
+			> .kb-link-wrap > .kb-nav-link-content {
 				position: relative;
 				&:after {
 					content: "";
-					width: 100%;
+					width: var(--kb-nav-link-underline-width, 100%);
 					position: absolute;
 					bottom: 0px;
 					height: 2px;
 					right: 50%;
 					background: currentColor;
-					transform: scale(0, 0) translate(-50%, 0);
+					transform: var(--kb-nav-link-underline-transform, scale(0, 0) translate(-50%, 0));
 					transition: transform 0.2s ease-in-out, color 0s ease-in-out;
 				}
 				&:hover:after {
 					transform: scale(1, 1) translate(50%, 0);
 				}
 			}
-			&.current-menu-item,
-			&.current-page-item {
-				> .link-drop-wrap > a:after {
+			&.current-menu-item {
+				> .kb-link-wrap > a:after {
 					transform: scale(1, 1) translate(50%, 0);
 				}
 			}
@@ -481,18 +424,24 @@
 @mixin navigation-full-height-styles {
 	height: 100%;
 	align-items: center;
+
+	//only apply full height to top level menu items
 	.menu-container {
 		height: 100%;
 		align-items: center;
-		> ul {
+
+		> .menu {
 			height: 100%;
 			align-items: center;
-			> li {
+
+			> .menu-item {
 				height: 100%;
 				align-items: center;
-				> .link-drop-wrap {
+
+				> .kb-link-wrap {
 					height: 100%;
-					> a {
+
+					> .kb-nav-link-content {
 						display: flex;
 						height: 100%;
 						align-items: center;
@@ -504,78 +453,8 @@
 }
 
 .wp-block-kadence-navigation {
-	/*
-	 FROM KADENCE THEME NAV
-	 */
-	/*--------------------------------------------------------------
-	 ## Dropdown navigation for header Menus
-	 --------------------------------------------------------------*/
-
-	//handle reveal for all navs, clicking / toggling only
-	.navigation {
-		//menus are hidden by default
-		ul.menu ul.sub-menu,
-		ul.menu ul.submenu {
-			transition: all 0.2s ease;
-			display: block;
-			@include hide-sub-menu();
-		}
-		//menus that are toggled on (clicked) or have focus are shown
-		ul.menu li.menu-item--toggled-on > ul,
-		ul.menu li:not(.menu-item--has-toggle):focus > ul {
-			@include show-sub-menu();
-		}
-	}
-
-	.rtl .nav--toggle-sub .title-dropdown-navigation-toggle {
-		right: auto;
-		left: 0;
-	}
-	.rtl .primary-menu-container > ul > li.menu-item .dropdown-navigation-toggle {
-		right: auto;
-		left: calc(1.4em / 2);
-	}
-	.rtl .wp-site-blocks .nav--toggle-sub .sub-menu .dropdown-navigation-toggle {
-		left: 0;
-		right: auto;
-	}
-	.rtl .nav--toggle-sub ul ul .title-dropdown-navigation-toggle .kadence-svg-iconset {
-		transform: rotate(-270deg);
-	}
-	.rtl .navigation ul ul ul.sub-menu,
-	.rtl .navigation ul ul ul.submenu {
-		right: 100%;
-		left: auto;
-	}
-	.rtl .link-drop-title-wrap {
-		padding-left: 1em;
-		padding-right: 0;
-	}
-	.wp-site-blocks .nav--toggle-sub .kadence-menu-mega-enabled .sub-menu .dropdown-navigation-toggle {
-		display: none;
-	}
-	.nav--toggle-sub .dropdown-nav-special-toggle {
-		position: absolute !important;
-		overflow: hidden;
-		padding: 0 !important;
-		margin: 0 !important;
-		margin-right: -0.1em !important;
-		border: 0 !important;
-		width: 0.9em;
-		top: 0;
-		bottom: 0;
-		height: auto;
-		border-radius: 0;
-		box-shadow: none !important;
-		background: transparent !important;
-		display: block;
-		left: auto;
-		right: calc(1.4em / 2);
-		pointer-events: none;
-	}
-	/*--------------------------------------------------------------
-	 ## Header navigation top item styling
-	 --------------------------------------------------------------*/
+	max-width: 100%;
+	height: var(--kb-nav-height);
 
 	//In the editor we just look for these classes as they will come and go as the preview device changes.
 	//In the frontend, they will all be present, so must each be wrapped in a media query
@@ -622,49 +501,6 @@
 		}
 	}
 
-	/*--------------------------------------------------------------
-	 ## Header navigation menus
-	 --------------------------------------------------------------*/
-	.navigation,
-	.menu-container {
-		display: flex;
-	}
-	.navigation li.menu-item > .link-drop-wrap {
-		transition: all 0.2s ease-in-out;
-		position: relative;
-	}
-	.navigation .menu-item > .link-drop-wrap > a {
-		display: block;
-		//width: 100%;
-		text-decoration: none;
-		color: var(--global-palette4);
-		transition: all 0.2s ease-in-out;
-		transform: translate(0, 0);
-	}
-	.navigation .menu-item > .link-drop-wrap > a:hover,
-	.navigation .menu-item > .link-drop-wrap > a:focus {
-		color: var(--global-palette-highlight);
-	}
-	.navigation ul.sub-menu,
-	.navigation ul.submenu {
-		display: block;
-		list-style: none;
-		margin: 0;
-		padding: 0;
-	}
-	.navigation ul .menu-item > .link-drop-wrap > a {
-		padding: 0.6em 0.5em;
-	}
-	.navigation .menu {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: center;
-		align-items: center;
-		list-style: none;
-		margin: 0;
-		padding: 0;
-	}
-
 	//In the editor we just look for these classes as they will come and go as the preview device changes.
 	//In the frontend, they will all be present, so must each be wrapped in a media query
 	//Desktop horizontal menu
@@ -685,9 +521,7 @@
 			@include horizontal-navigation-base-styles;
 		}
 	}
-	/*--------------------------------------------------------------
-	 ## Mobile Menu
-	 --------------------------------------------------------------*/
+
 	//In the editor we just look for these classes as they will come and go as the preview device changes.
 	//In the frontend, they will all be present, so must each be wrapped in a media query
 	//Desktop vertical menu
@@ -702,418 +536,10 @@
 			@include vertical-navigation-base-styles;
 		}
 	}
-	//Mobiel vertical menu
+	//Mobile vertical menu
 	&.navigation-mobile-orientation-vertical {
 		@media (max-width: $phone-minus-query) {
 			@include vertical-navigation-base-styles;
-		}
-	}
-	/*--------------------------------------------------------------
-	 ## Mobile menu drawer Trigger
-	 --------------------------------------------------------------*/
-	.menu-toggle-open {
-		display: flex;
-		background: transparent;
-		align-items: center;
-		box-shadow: none;
-		.menu-toggle-label {
-			padding-right: 5px;
-		}
-		.menu-toggle-icon {
-			display: flex;
-		}
-		.menu-toggle-label:empty {
-			padding-right: 0px;
-		}
-		&:hover,
-		&:focus {
-			border-color: currentColor;
-			background: transparent;
-			box-shadow: none;
-		}
-		&.menu-toggle-style-default {
-			border: 0;
-		}
-	}
-	.wp-site-blocks .menu-toggle-open {
-		box-shadow: none;
-	}
-	/*--------------------------------------------------------------
-	 ## Mobile Menu Drawer
-	 --------------------------------------------------------------*/
-	.popup-drawer {
-		position: fixed;
-		display: none;
-		top: 0;
-		bottom: 0;
-		left: -99999rem;
-		right: 99999rem;
-		transition: opacity 0.25s ease-in, left 0s 0.25s, right 0s 0.25s;
-		z-index: 100000;
-		.drawer-overlay {
-			background-color: rgba(0, 0, 0, 0.4);
-			position: fixed;
-			top: 0;
-			right: 0;
-			bottom: 0;
-			left: 0;
-			opacity: 0;
-			transition: opacity 0.2s ease-in-out;
-		}
-		.drawer-inner {
-			width: 100%;
-			transform: translateX(100%);
-			max-width: 90%;
-			right: 0;
-			top: 0;
-			overflow: auto;
-			background: #090c10;
-			color: #fff;
-			bottom: 0;
-			opacity: 0;
-			position: fixed;
-			box-shadow: 0 0 2rem 0 rgba(0, 0, 0, 0.1);
-			display: flex;
-			flex-direction: column;
-			transition: transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1), opacity 0.25s cubic-bezier(0.77, 0.2, 0.05, 1);
-		}
-		.drawer-header {
-			padding: 0 1.5em;
-			display: flex;
-			justify-content: flex-end;
-			// Fixes safair bug.
-			min-height: calc(1.2em + 24px);
-			.drawer-toggle {
-				background: transparent;
-				border: 0;
-				font-size: 24px;
-				line-height: 1;
-				padding: 0.6em 0.15em;
-				color: inherit;
-				display: flex;
-				box-shadow: none;
-				border-radius: 0;
-				&:hover {
-					box-shadow: none;
-				}
-			}
-		}
-		.drawer-content {
-			padding: 0 1.5em 1.5em;
-		}
-	}
-	.popup-drawer-layout-sidepanel.popup-drawer-side-left {
-		.drawer-inner {
-			transform: translateX(-100%);
-			right: auto;
-			left: 0;
-		}
-	}
-	@media screen and (max-width: $tablet-minus-query) {
-		.showing-popup-drawer-from-right.animate-body-popup #inner-wrap,
-		.showing-popup-drawer-from-right.animate-body-popup #colophon,
-		.showing-popup-drawer-from-right.animate-body-popup .site-header-row {
-			transform: translateX(-200px);
-		}
-		.showing-popup-drawer-from-left.animate-body-popup #inner-wrap,
-		.showing-popup-drawer-from-left.animate-body-popup #colophon,
-		.showing-popup-drawer-from-left.animate-body-popup .site-header-row {
-			transform: translateX(200px);
-		}
-		.animate-body-popup #inner-wrap,
-		.animate-body-popup .site-header-row,
-		.animate-body-popup #colophon {
-			transform: none;
-			transition: transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1);
-		}
-	}
-	.popup-drawer-animation-scale.popup-drawer-layout-fullwidth .drawer-inner {
-		transform: scale(0);
-		transform-origin: top right;
-		transition: transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1), opacity 0.3s cubic-bezier(0.77, 0.2, 0.05, 1);
-	}
-	.popup-drawer-animation-scale.popup-drawer-layout-fullwidth.popup-drawer-side-left .drawer-inner {
-		transform-origin: top left;
-	}
-	.popup-drawer-animation-scale.popup-drawer-layout-fullwidth.active .drawer-inner {
-		transform: scale(1);
-	}
-	#mobile-drawer.popup-drawer-animation-slice.popup-drawer-layout-fullwidth .drawer-overlay,
-	#mobile-drawer.popup-drawer-animation-slice.popup-drawer-layout-fullwidth .drawer-inner {
-		background: transparent;
-	}
-
-	.popup-drawer .drawer-header .drawer-toggle {
-		width: 1em;
-		position: relative;
-		height: 1em;
-		box-sizing: content-box;
-		font-size: 24px;
-	}
-	.drawer-toggle .toggle-close-bar {
-		width: 0.75em;
-		height: 0.08em;
-		background: currentColor;
-		transform-origin: center center;
-		position: absolute;
-		margin-top: -0.04em;
-		opacity: 0;
-		border-radius: 0.08em;
-		left: 50%;
-		margin-left: -0.375em;
-		top: 50%;
-		transform: rotate(45deg) translateX(-50%);
-		transition: transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1), opacity 0.3s cubic-bezier(0.77, 0.2, 0.05, 1);
-		transition-delay: 0.2s;
-	}
-	.drawer-toggle .toggle-close-bar:last-child {
-		transform: rotate(-45deg) translateX(50%);
-	}
-	.popup-drawer.active {
-		.drawer-toggle .toggle-close-bar {
-			transform: rotate(45deg);
-			opacity: 1;
-		}
-		.drawer-toggle .toggle-close-bar:last-child {
-			transform: rotate(-45deg);
-			opacity: 1;
-		}
-	}
-	.popup-drawer .drawer-content.content-valign-middle {
-		min-height: calc(100% - (1.2em + 24px));
-		display: flex;
-		justify-content: center;
-		flex-direction: column;
-		padding-bottom: calc(1.2em + 24px);
-		max-height: calc(100% - (1.2em + 24px));
-		overflow: auto;
-	}
-	.popup-drawer .drawer-content.content-valign-bottom {
-		min-height: calc(100% - (1.2em + 24px));
-		display: flex;
-		justify-content: flex-end;
-		flex-direction: column;
-		padding-bottom: calc(1.2em + 24px);
-		max-height: calc(100% - (1.2em + 24px));
-		overflow: auto;
-		.site-header-item-mobile-navigation {
-			display: block;
-			overflow: auto;
-			max-height: calc(100% - (1.2em + 24px));
-		}
-	}
-	.popup-drawer .drawer-content.content-align-center {
-		text-align: center;
-	}
-	.popup-drawer .drawer-content.content-align-center .site-header-item {
-		justify-content: center;
-	}
-	.popup-drawer .drawer-content.content-align-right {
-		text-align: right;
-	}
-	.popup-drawer .drawer-content.content-align-right .site-header-item {
-		justify-content: flex-end;
-	}
-	.popup-drawer-layout-fullwidth.popup-drawer-animation-slice {
-		.drawer-inner {
-			transform: none;
-		}
-		.pop-slice-background {
-			transform-origin: center;
-			transform: none;
-			position: absolute;
-			display: flex;
-			flex-flow: column;
-			align-items: stretch;
-			top: 0;
-			left: 0;
-			right: 0;
-			bottom: 0;
-			z-index: -1;
-		}
-		.pop-portion-bg {
-			flex: 1 1 100%;
-			background: rgba(9, 12, 16, 0.97);
-			transform: translateX(-100%);
-			transition: transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1);
-		}
-		.pop-portion-bg:nth-child(odd) {
-			transform: translateX(100%);
-		}
-		.drawer-content {
-			transform: translateY(20px);
-			opacity: 0;
-			transition: all 0.4s ease;
-		}
-	}
-	.popup-drawer-layout-fullwidth.popup-drawer-animation-slice.active {
-		.pop-portion-bg {
-			transform: translateX(0);
-		}
-		.drawer-content {
-			transform: translateY(0px);
-			opacity: 1;
-			transition: all 0.4s ease;
-			transition-delay: 0.2s;
-		}
-	}
-
-	@media screen and (max-width: $tablet-minus-query) {
-		.popup-drawer-layout-sidepanel.popup-mobile-drawer-side-right {
-			.drawer-inner {
-				transform: translateX(100%);
-				right: 0;
-				left: auto;
-			}
-		}
-		.popup-drawer-layout-sidepanel.popup-mobile-drawer-side-left {
-			.drawer-inner {
-				transform: translateX(-100%);
-				right: auto;
-				left: 0;
-			}
-		}
-	}
-	body.admin-bar .popup-drawer {
-		top: 46px;
-		.drawer-inner {
-			top: 46px;
-		}
-	}
-	@media screen and (min-width: 783px) {
-		body.admin-bar .popup-drawer {
-			top: 32px;
-			.drawer-inner {
-				top: 32px;
-			}
-		}
-	}
-	.popup-drawer.show-drawer {
-		display: block;
-	}
-	.popup-drawer.active {
-		left: 0;
-		opacity: 1;
-		right: 0;
-		transition: opacity 0.25s ease-out;
-		.drawer-inner {
-			opacity: 1;
-			transform: translateX(0%);
-		}
-		.drawer-overlay {
-			opacity: 1;
-			cursor: pointer;
-		}
-	}
-	body[class*="showing-popup-drawer-"] {
-		overflow: hidden;
-	}
-
-	/*
-	 FROM KADENCE PRO MENU-ADDON
-	 */
-	.navigation ul li a:not([href]) {
-		cursor: default;
-	}
-	.link-drop-title-wrap {
-		display: flex;
-		align-items: center;
-	}
-	.navigation > div > ul > li > .link-drop-wrap > a {
-		display: flex;
-		align-items: center;
-	}
-	.kadence-menu-hidden-title:not(.kadence-menu-has-icon):not(.menu-item-has-children) {
-		display: none;
-	}
-	.kadence-menu-hidden-title.menu-item-has-children:not(.kadence-menu-has-icon) > .link-drop-wrap > a,
-	.navigation
-		.menu-container
-		.kadence-menu-hidden-title.menu-item-has-children:not(.kadence-menu-has-icon)
-		> .link-drop-wrap
-		> a {
-		padding: 0;
-		border: 0;
-	}
-	.menu-highlight-item {
-		font-size: 0.6em;
-		margin-left: 0.2em;
-		line-height: normal;
-		padding: 0.2em 0.3em;
-		border-radius: 2px;
-		background: var(--global-palette1);
-		color: white;
-	}
-	.link-drop-title-wrap .menu-highlight-item {
-		font-size: 0.7em;
-		margin-left: 0.5em;
-	}
-	.menu-highlight-icon {
-		display: inline-flex;
-		align-self: center;
-		margin-left: 0.2em;
-		svg {
-			width: 1em;
-			height: 1em;
-			top: 0.125em;
-			position: relative;
-		}
-	}
-	.menu-highlight-item.only-icon-highlight .menu-highlight-icon {
-		margin-left: 0;
-	}
-	.kadence-menu-hidden-title .menu-label-icon-wrap {
-		margin-left: 0;
-	}
-	.menu-label-icon-wrap {
-		margin-left: 0.3em;
-	}
-	.kadence-menu-icon-side-left .menu-label-icon-wrap {
-		margin-right: 0.3em;
-		margin-left: 0;
-	}
-	.menu-label-icon {
-		display: inline-flex;
-		justify-content: center;
-		svg {
-			width: 1em;
-			height: 1em;
-			top: 0.125em;
-			position: relative;
-		}
-	}
-	.menu-label-description {
-		display: block;
-		font-size: 0.8em;
-		text-transform: none;
-		letter-spacing: normal;
-	}
-	.menu-label-content {
-		display: block;
-	}
-	// Mega Menu
-	.menu-container {
-		ul.menu {
-			position: relative;
-			> li.kadence-menu-mega-enabled {
-				> ul {
-					a {
-						width: 100%;
-					}
-					.title-dropdown-navigation-toggle {
-						display: none;
-					}
-					> li {
-						border-bottom: 0 !important;
-						> .link-drop-wrap > a {
-							border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-						}
-						&:not(.menu-item-has-children):last-child > .link-drop-wrap > a {
-							border-bottom: 0 !important;
-						}
-					}
-				}
-			}
 		}
 	}
 
@@ -1141,7 +567,6 @@
 	//In the editor we just look for these classes as they will come and go as the preview device changes.
 	//In the frontend, they will all be present, so must each be wrapped in a media query
 	//Desktop fill-stretch
-
 	&.navigation-desktop-layout-stretch-true.navigation-desktop-layout-fill-stretch-true.navigation-desktop-orientation-horizontal {
 		@media (min-width: $laptop-plus-query) {
 			@include layout-fill-stretch-styles();
@@ -1160,7 +585,709 @@
 		}
 	}
 
+	/*--------------------------------------------------------------
+	 ## Header navigation menus. Base styles for menus, menu items, and their links
+	--------------------------------------------------------------*/
+	.navigation,
+	.menu-container {
+		display: flex;
+	}
+
+	.menu {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+		list-style: none;
+		position: relative;
+
+		padding: var(--kb-nav-padding-top, 0) var(--kb-nav-padding-right, 0) var(--kb-nav-padding-bottom, 0)
+			var(--kb-nav-padding-left, 0);
+		margin: var(--kb-nav-margin-top, 0) var(--kb-nav-margin-right, 0) var(--kb-nav-margin-bottom, 0)
+			var(--kb-nav-margin-left, 0);
+
+		//show a sub menu when this menu is toggled or gains focus if no js.
+		.menu-item--toggled-on > .sub-menu,
+		li:not(.menu-item--has-toggle):focus > .sub-menu {
+			@include show-sub-menu();
+		}
+	}
+
+	.sub-menu {
+		display: block;
+		list-style: none;
+		padding: 0;
+		transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+		background: var(--kb-nav-dropdown-background);
+		//these border radius names are a bit weird just because of the way the dynamic render function outputs things.
+		border-top-left-radius: var(--kb-nav-dropdown-border-radius-top-left);
+		border-top-right-radius: var(--kb-nav-dropdown-border-radius-top-right);
+		border-bottom-right-radius: var(--kb-nav-dropdown-border-radius-bottom-right);
+		border-bottom-left-radius: var(--kb-nav-dropdown-border-radius-bottom-left);
+
+		width: var(--kb-nav-dropdown-width);
+		left: var(--kb-nav-dropdown-width);
+		transform: var(
+			--kb-nav-dropdown-transform,
+			translate(var(--kb-nav-dropdown-hide-transform-x, 0), var(--kb-nav-dropdown-hide-transform-y, 0))
+		);
+		margin-top: var(--kb-nav-dropdown-margin-top, 0);
+		margin-right: var(--kb-nav-dropdown-margin-right, 0);
+		margin-bottom: var(--kb-nav-dropdown-margin-bottom, 0);
+		margin-left: var(--kb-nav-dropdown-margin-left, 0);
+
+		//sub menus are hidden by default
+		@include hide-sub-menu();
+
+		//small fix for media in sub menus
+		.link-media-container {
+			justify-content: flex-start;
+		}
+
+		//only submenu nav links, don't bleed
+		& > .menu-item > .kb-link-wrap {
+			--kb-nav-link-color: var(--kb-nav-dropdown-link-color);
+			--kb-nav-link-color-hover: var(--kb-nav-dropdown-link-color-hover);
+			--kb-nav-link-color-active: var(--kb-nav-dropdown-link-color-active);
+			--kb-nav-link-color-active-ancestor: var(--kb-nav-dropdown-link-color-active-ancestor);
+			--kb-nav-link-background-hover: var(--kb-nav-dropdown-link-background-hover);
+			--kb-nav-link-background-active: var(--kb-nav-dropdown-link-background-active);
+			--kb-nav-link-padding-top: var(--kb-nav-dropdown-link-padding-top);
+			--kb-nav-link-padding-bottom: var(--kb-nav-dropdown-link-padding-bottom);
+			--kb-nav-link-padding-left: var(--kb-nav-dropdown-link-padding-left);
+			--kb-nav-link-padding-right: var(--kb-nav-dropdown-link-padding-right);
+			--kb-nav-link-border-top: var(--kb-nav-dropdown-link-border-top);
+			--kb-nav-link-border-right: var(--kb-nav-dropdown-link-border-right);
+			--kb-nav-link-border-bottom: var(--kb-nav-dropdown-link-border-bottom);
+			--kb-nav-link-border-left: var(--kb-nav-dropdown-link-border-left);
+			--kb-nav-link-hover-border-top: var(--kb-nav-dropdown-link-hover-border-top);
+			--kb-nav-link-hover-border-right: var(--kb-nav-dropdown-link-hover-border-right);
+			--kb-nav-link-hover-border-bottom: var(--kb-nav-dropdown-link-hover-border-bottom);
+			--kb-nav-link-hover-border-left: var(--kb-nav-dropdown-link-hover-border-left);
+			--kb-nav-link-active-border-top: var(--kb-nav-dropdown-link-active-border-top);
+			--kb-nav-link-active-border-right: var(--kb-nav-dropdown-link-active-border-right);
+			--kb-nav-link-active-border-bottom: var(--kb-nav-dropdown-link-active-border-bottom);
+			--kb-nav-link-active-border-left: var(--kb-nav-dropdown-link-active-border-left);
+			--kb-nav-link-active-ancestor-border-top: var(--kb-nav-dropdown-link-active-ancestor-border-top);
+			--kb-nav-link-active-ancestor-border-right: var(--kb-nav-dropdown-link-active-ancestor-border-right);
+			--kb-nav-link-active-ancestor-border-bottom: var(--kb-nav-dropdown-link-active-ancestor-border-bottom);
+			--kb-nav-link-active-ancestor-border-left: var(--kb-nav-dropdown-link-active-ancestor-border-left);
+			--kb-nav-link-border-top-left-radius: var(--kb-nav-dropdown-link-border-top-left-radius);
+			--kb-nav-link-border-top-right-radius: var(--kb-nav-dropdown-link-border-top-right-radius);
+			--kb-nav-link-border-bottom-right-radius: var(--kb-nav-dropdown-link-border-bottom-right-radius);
+			--kb-nav-link-border-bottom-left-radius: var(--kb-nav-dropdown-link-border-bottom-left-radius);
+			--kb-nav-link-hover-border-top-left-radius: var(--kb-nav-dropdown-link-hover-border-top-left-radius);
+			--kb-nav-link-hover-border-top-right-radius: var(--kb-nav-dropdown-link-hover-border-top-right-radius);
+			--kb-nav-link-hover-border-bottom-right-radius: var(
+				--kb-nav-dropdown-link-hover-border-bottom-right-radius
+			);
+			--kb-nav-link-hover-border-bottom-left-radius: var(--kb-nav-dropdown-link-hover-border-bottom-left-radius);
+			--kb-nav-link-active-border-top-left-radius: var(--kb-nav-dropdown-link-active-border-top-left-radius);
+			--kb-nav-link-active-border-top-right-radius: var(--kb-nav-dropdown-link-active-border-top-right-radius);
+			--kb-nav-link-active-border-bottom-right-radius: var(
+				--kb-nav-dropdown-link-active-border-bottom-right-radius
+			);
+			--kb-nav-link-active-border-bottom-left-radius: var(
+				--kb-nav-dropdown-link-active-border-bottom-left-radius
+			);
+			--kb-nav-link-active-ancestor-border-top-left-radius: var(
+				--kb-nav-dropdown-link-active-ancestor-border-top-left-radius
+			);
+			--kb-nav-link-active-ancestor-border-top-right-radius: var(
+				--kb-nav-dropdown-link-active-ancestor-border-top-right-radius
+			);
+			--kb-nav-link-active-ancestor-border-bottom-right-radius: var(
+				--kb-nav-dropdown-link-active-ancestor-border-bottom-right-radius
+			);
+			--kb-nav-link-active-ancestor-border-bottom-left-radius: var(
+				--kb-nav-dropdown-link-active-ancestor-border-bottom-left-radius
+			);
+			--kb-nav-link-box-shadow: var(--kb-nav-dropdown-link-box-shadow);
+			--kb-nav-link-box-shadow-hover: var(--kb-nav-dropdown-link-box-shadow-hover);
+			--kb-nav-link-box-shadow-active: var(--kb-nav-dropdown-link-box-shadow-active);
+			--kb-nav-link-box-shadow-active-ancestor: var(--kb-nav-dropdown-link-box-shadow-active-ancestor);
+
+			& > .kb-nav-link-content {
+				width: var(--kb-nav-dropdown-link-width, 200px);
+			}
+		}
+	}
+
+	//menu item wrapper
+	.menu-item {
+		position: var(--kb-nav-link-position);
+		border-bottom: var(--kb-nav-menu-item-border-bottom);
+
+		//active nav links (extra specificty to hack correct ordering against direct styling)
+		&.current-menu-item > .kb-link-wrap.kb-link-wrap.kb-link-wrap {
+			--kb-nav-link-color: var(--kb-nav-link-color-active);
+			--kb-nav-link-background: var(--kb-nav-link-background-active);
+			--kb-nav-link-border-top: var(--kb-nav-link-active-border-top);
+			--kb-nav-link-border-right: var(--kb-nav-link-active-border-right);
+			--kb-nav-link-border-bottom: var(--kb-nav-link-active-border-bottom);
+			--kb-nav-link-border-left: var(--kb-nav-link-active-border-left);
+			--kb-nav-link-border-top-left-radius: var(--kb-nav-link-active-border-top-left-radius);
+			--kb-nav-link-border-top-right-radius: var(--kb-nav-link-active-border-top-right-radius);
+			--kb-nav-link-border-bottom-right-radius: var(--kb-nav-link-active-border-bottom-right-radius);
+			--kb-nav-link-border-bottom-left-radius: var(--kb-nav-link-active-border-bottom-left-radius);
+			--kb-nav-link-box-shadow: var(--kb-nav-link-box-shadow-active);
+			--kb-nav-link-highlight-color: var(--kb-nav-link-highlight-color-active);
+			--kb-nav-link-highlight-background: var(--kb-nav-link-highlight-background-active);
+			--kb-nav-link-media-color: var(--kb-nav-link-media-color-active);
+			--kb-nav-link-media-background: var(--kb-nav-link-media-background-active);
+			--kb-nav-link-media-border-top: var(--kb-nav-link-media-active-border-top);
+			--kb-nav-link-media-border-right: var(--kb-nav-link-media-active-border-right);
+			--kb-nav-link-media-border-bottom: var(--kb-nav-link-media-active-border-bottom);
+			--kb-nav-link-media-border-left: var(--kb-nav-link-media-active-border-left);
+			--kb-nav-link-media-border-top-left-radius: var(--kb-nav-link-media-active-border-top-left-radius);
+			--kb-nav-link-media-border-top-right-radius: var(--kb-nav-link-media-active-border-top-right-radius);
+			--kb-nav-link-media-border-bottom-right-radius: var(--kb-nav-link-media-active-border-bottom-right-radius);
+			--kb-nav-link-media-border-bottom-left-radius: var(--kb-nav-link-media-active-border-bottom-left-radius);
+			--kb-nav-link-media-container-background: var(--kb-nav-link-media-container-background-active);
+			--kb-nav-link-icon-color: var(--kb-nav-link-icon-color-active);
+			--kb-nav-link-description-color: var(--kb-nav-link-description-color-active);
+		}
+		&.current-menu-ancestor > .kb-link-wrap.kb-link-wrap.kb-link-wrap {
+			--kb-nav-link-color: var(--kb-nav-link-color-active-ancestor, var(--kb-nav-link-color-active));
+			--kb-nav-link-background: var(
+				--kb-nav-link-background-active-ancestor,
+				var(--kb-nav-link-background-active)
+			);
+			--kb-nav-link-border-top: var(
+				--kb-nav-link-active-ancestor-border-top,
+				var(--kb-nav-link-active-border-top)
+			);
+			--kb-nav-link-border-right: var(
+				--kb-nav-link-active-ancestor-border-right,
+				var(--kb-nav-link-active-border-right)
+			);
+			--kb-nav-link-border-bottom: var(
+				--kb-nav-link-active-ancestor-border-bottom,
+				var(--kb-nav-link-active-border-bottom)
+			);
+			--kb-nav-link-border-left: var(
+				--kb-nav-link-active-ancestor-border-left,
+				var(--kb-nav-link-active-border-left)
+			);
+			--kb-nav-link-border-top-left-radius: var(
+				--kb-nav-link-active-ancestor-border-top-left-radius,
+				var(--kb-nav-link-active-border-to-left-radiusp)
+			);
+			--kb-nav-link-border-top-right-radius: var(
+				--kb-nav-link-active-ancestor-border-top-right-radius,
+				var(--kb-nav-link-active-border-top-right-radius)
+			);
+			--kb-nav-link-border-bottom-right-radius: var(
+				--kb-nav-link-active-ancestor-border-bottom-right-radius,
+				var(--kb-nav-link-active-border-bottom-right-radius)
+			);
+			--kb-nav-link-border-bottom-left-radius: var(
+				--kb-nav-link-active-ancestor-border-bottom-left-radius,
+				var(--kb-nav-link-active-border-bottom-left-radius)
+			);
+			--kb-nav-link-box-shadow: var(
+				--kb-nav-link-box-shadow-active-ancestor,
+				var(--kb-nav-link-box-shadow-active)
+			);
+			--kb-nav-link-highlight-color: var(--kb-nav-link-highlight-color-active-ancestor);
+			--kb-nav-link-highlight-background: var(--kb-nav-link-highlight-background-active-ancestor);
+			--kb-nav-link-media-color: var(
+				--kb-nav-link-media-color-active-ancestor,
+				var(--kb-nav-link-media-color-active)
+			);
+			--kb-nav-link-media-background: var(
+				--kb-nav-link-media-background-active-ancestor,
+				var(--kb-nav-link-media-background-active)
+			);
+			--kb-nav-link-media-border-top: var(
+				--kb-nav-link-media-active-ancestor-border-top,
+				var(--kb-nav-link-media-active-border-top)
+			);
+			--kb-nav-link-media-border-right: var(
+				--kb-nav-link-media-active-ancestor-border-right,
+				var(--kb-nav-link-media-active-border-right)
+			);
+			--kb-nav-link-media-border-bottom: var(
+				--kb-nav-link-media-active-ancestor-border-bottom,
+				var(--kb-nav-link-media-active-border-bottom)
+			);
+			--kb-nav-link-media-border-left: var(
+				--kb-nav-link-media-active-ancestor-border-left,
+				var(--kb-nav-link-media-active-border-left)
+			);
+			--kb-nav-link-media-border-top-left-radius: var(
+				--kb-nav-link-media-active-ancestor-border-top-left-radius,
+				var(--kb-nav-link-media-active-border-to-left-radiusp)
+			);
+			--kb-nav-link-media-border-top-right-radius: var(
+				--kb-nav-link-media-active-ancestor-border-top-right-radius,
+				var(--kb-nav-link-media-active-border-top-right-radius)
+			);
+			--kb-nav-link-media-border-bottom-right-radius: var(
+				--kb-nav-link-media-active-ancestor-border-bottom-right-radius,
+				var(--kb-nav-link-media-active-border-bottom-right-radius)
+			);
+			--kb-nav-link-media-border-bottom-left-radius: var(
+				--kb-nav-link-media-active-ancestor-border-bottom-left-radius,
+				var(--kb-nav-link-media-active-border-bottom-left-radius)
+			);
+			--kb-nav-link-media-container-background: var(--kb-nav-link-media-container-background-active-ancestor);
+			--kb-nav-link-icon-color: var(--kb-nav-link-icon-color-active-ancestor);
+			--kb-nav-link-description-color: var(--kb-nav-link-description-color-active-ancestor);
+		}
+	}
+
+	// Mega Menu adjustments
+	.menu-item.kadence-menu-mega-enabled {
+		> ul {
+			a {
+				width: 100%;
+			}
+
+			//nav items sitting alone in a mega menu container
+			> .menu-item {
+				border-bottom: 0;
+				> .kb-link-wrap > a {
+					border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+				}
+				&:not(.menu-item-has-children):last-child > .kb-link-wrap > a {
+					border-bottom: 0;
+				}
+			}
+		}
+	}
+
+	.kb-link-wrap {
+		transition: all 0.2s ease-in-out;
+		position: relative;
+		display: flex;
+		color: var(--kb-nav-link-color, inherit);
+		border-right: var(--kb-nav-link-border-right);
+		border-bottom: var(--kb-nav-link-border-bottom);
+
+		&:hover {
+			--kb-nav-link-color: var(--kb-nav-link-color-hover, inherit);
+			--kb-nav-link-background: var(--kb-nav-link-background-hover, inherit);
+			--kb-nav-link-highlight-color: var(--kb-nav-link-highlight-color-hover);
+			--kb-nav-link-highlight-background: var(--kb-nav-link-highlight-background-hover);
+			--kb-nav-link-description-color: var(--kb-nav-link-description-color-hover);
+		}
+	}
+
+	.kb-nav-link-content {
+		display: block;
+		color: var(--kb-nav-link-color, inherit);
+		background: var(--kb-nav-link-background, inherit);
+		text-decoration: none;
+		transition: all 0.2s ease-in-out;
+		transform: translate(0, 0);
+		padding-top: var(--kb-nav-link-padding-top, 0.6em);
+		padding-right: var(--kb-nav-link-padding-right, 0.5em);
+		padding-bottom: var(--kb-nav-link-padding-bottom, 0.6em);
+		padding-left: var(--kb-nav-link-padding-left, 0.5em);
+		margin-top: var(--kb-nav-link-margin-top);
+		margin-right: var(--kb-nav-link-margin-right);
+		margin-bottom: var(--kb-nav-link-margin-bottom);
+		margin-left: var(--kb-nav-link-margin-left);
+		border-top: var(--kb-nav-link-border-top);
+		border-right: var(--kb-nav-link-border-right);
+		border-bottom: var(--kb-nav-link-border-bottom);
+		border-left: var(--kb-nav-link-border-left);
+		border-top-left-radius: var(--kb-nav-link-border-top-left-radius);
+		border-top-right-radius: var(--kb-nav-link-border-top-right-radius);
+		border-bottom-right-radius: var(--kb-nav-link-border-bottom-right-radius);
+		border-bottom-left-radius: var(--kb-nav-link-border-bottom-left-radius);
+		box-shadow: var(--kb-nav-link-box-shadow);
+		gap: var(--kb-nav-link-gap);
+
+		&:not([href]) {
+			cursor: default;
+		}
+		&:hover,
+		&:focus {
+			--kb-nav-link-color: var(--kb-nav-link-color-hover);
+			--kb-nav-link-background: var(--kb-nav-link-background-hover);
+			--kb-nav-link-border-top: var(--kb-nav-link-hover-border-top);
+			--kb-nav-link-border-right: var(--kb-nav-link-hover-border-right);
+			--kb-nav-link-border-bottom: var(--kb-nav-link-hover-border-bottom);
+			--kb-nav-link-border-left: var(--kb-nav-link-hover-border-left);
+			--kb-nav-link-border-top-left-radius: var(--kb-nav-link-hover-border-top-left-radius);
+			--kb-nav-link-border-top-right-radius: var(--kb-nav-link-hover-border-top-right-radius);
+			--kb-nav-link-border-bottom-right-radius: var(--kb-nav-link-hover-border-bottom-right-radius);
+			--kb-nav-link-border-bottom-left-radius: var(--kb-nav-link-hover-border-bottom-left-radius);
+			--kb-nav-link-box-shadow: var(--kb-nav-link-box-shadow-hover);
+			--kb-nav-link-highlight-color: var(--kb-nav-link-highlight-color-hover);
+			--kb-nav-link-highlight-background: var(--kb-nav-link-highlight-background-hover);
+			--kb-nav-link-media-color: var(--kb-nav-link-color-hover);
+			--kb-nav-link-media-background: var(--kb-nav-link-media-background-hover);
+			--kb-nav-link-media-border-top: var(--kb-nav-link-media-hover-border-top);
+			--kb-nav-link-media-border-right: var(--kb-nav-link-media-hover-border-right);
+			--kb-nav-link-media-border-bottom: var(--kb-nav-link-media-hover-border-bottom);
+			--kb-nav-link-media-border-left: var(--kb-nav-link-media-hover-border-left);
+			--kb-nav-link-media-border-top-left-radius: var(--kb-nav-link-media-hover-border-top-left-radius);
+			--kb-nav-link-media-border-top-right-radius: var(--kb-nav-link-media-hover-border-top-right-radius);
+			--kb-nav-link-media-border-bottom-right-radius: var(--kb-nav-link-media-hover-border-bottom-right-radius);
+			--kb-nav-link-media-border-bottom-left-radius: var(--kb-nav-link-media-hover-border-bottom-left-radius);
+			--kb-nav-link-media-container-background: var(--kb-nav-link-media-container-background-hover);
+			--kb-nav-link-icon-color: var(--kb-nav-link-icon-color-hover);
+			--kb-nav-link-description-color: var(--kb-nav-link-description-color-hover);
+		}
+
+		&.has-highlight-label {
+			--kb-nav-link-gap: var(--kb-nav-link-highlight-text-gap);
+		}
+	}
+
+	// Dropdown Toggle Styles
+	.kb-nav-dropdown-toggle-btn {
+		position: relative;
+		overflow: hidden;
+		padding: 0;
+		margin: 0;
+		margin-inline-end: calc(var(--kb-nav-drop-icon-width, 1.6em) * -1);
+		inset-inline-end: calc(calc(var(--kb-nav-drop-icon-width, 1.6em) + var(--kb-nav-link-padding-right, 0.5em)));
+		border: 0;
+		border-left: var(--kb-nav-dropdown-toggle-border-left);
+		width: var(--kb-nav-drop-icon-width, 1.6em);
+		height: auto;
+		border-radius: 0;
+		box-shadow: none;
+		background: transparent;
+		color: inherit;
+		left: auto;
+		font-size: inherit;
+		display: inline-flex;
+		justify-content: center;
+		pointer-events: none;
+
+		svg {
+			pointer-events: none;
+		}
+	}
+
+	//link padding on the right added to make space for the dropdown toggle
+	.menu-item-has-children > .kb-link-wrap > a {
+		padding-right: calc(var(--kb-nav-link-padding-right, 0.5em) + var(--kb-nav-drop-icon-width, 1.6em));
+	}
+
+	//top level nav links only
+	.menu-container > .menu > .menu-item {
+		& > .kb-link-wrap {
+			--kb-nav-link-color: var(--kb-nav-top-link-color);
+			--kb-nav-link-color-hover: var(--kb-nav-top-link-color-hover);
+			--kb-nav-link-color-active: var(--kb-nav-top-link-color-active);
+			--kb-nav-link-color-active-ancestor: var(--kb-nav-top-link-color-active-ancestor);
+			--kb-nav-link-background: var(--kb-nav-top-link-background);
+			--kb-nav-link-background-hover: var(--kb-nav-top-link-background-hover);
+			--kb-nav-link-background-active: var(--kb-nav-top-link-background-active);
+			--kb-nav-link-background-active-ancestor: var(--kb-nav-top-link-background-active-ancestor);
+			--kb-nav-link-margin-top: var(--kb-nav-top-link-margin-top);
+			--kb-nav-link-margin-right: var(--kb-nav-top-link-margin-right);
+			--kb-nav-link-margin-bottom: var(--kb-nav-top-link-margin-bottom);
+			--kb-nav-link-margin-left: var(--kb-nav-top-link-margin-left);
+			--kb-nav-link-padding-top: var(--kb-nav-top-link-padding-top);
+			--kb-nav-link-padding-right: var(--kb-nav-top-link-padding-right);
+			--kb-nav-link-padding-bottom: var(--kb-nav-top-link-padding-bottom);
+			--kb-nav-link-padding-left: var(--kb-nav-top-link-padding-left);
+			--kb-nav-link-border-top: var(--kb-nav-top-link-border-top);
+			--kb-nav-link-border-right: var(--kb-nav-top-link-border-right);
+			--kb-nav-link-border-bottom: var(--kb-nav-top-link-border-bottom);
+			--kb-nav-link-border-left: var(--kb-nav-top-link-border-left);
+			--kb-nav-link-hover-border-top: var(--kb-nav-top-link-hover-border-top);
+			--kb-nav-link-hover-border-right: var(--kb-nav-top-link-hover-border-right);
+			--kb-nav-link-hover-border-bottom: var(--kb-nav-top-link-hover-border-bottom);
+			--kb-nav-link-hover-border-left: var(--kb-nav-top-link-hover-border-left);
+			--kb-nav-link-active-border-top: var(--kb-nav-top-link-active-border-top);
+			--kb-nav-link-active-border-right: var(--kb-nav-top-link-active-border-right);
+			--kb-nav-link-active-border-bottom: var(--kb-nav-top-link-active-border-bottom);
+			--kb-nav-link-active-border-left: var(--kb-nav-top-link-active-border-left);
+			--kb-nav-link-active-ancestor-border-top: var(--kb-nav-top-link-active-ancestor-border-top);
+			--kb-nav-link-active-ancestor-border-right: var(--kb-nav-top-link-active-ancestor-border-right);
+			--kb-nav-link-active-ancestor-border-bottom: var(--kb-nav-top-link-active-ancestor-border-bottom);
+			--kb-nav-link-active-ancestor-border-left: var(--kb-nav-top-link-active-ancestor-border-left);
+			--kb-nav-link-border-top-left-radius: var(--kb-nav-top-link-border-top-left-radius);
+			--kb-nav-link-border-top-right-radius: var(--kb-nav-top-link-border-top-right-radius);
+			--kb-nav-link-border-bottom-right-radius: var(--kb-nav-top-link-border-bottom-right-radius);
+			--kb-nav-link-border-bottom-left-radius: var(--kb-nav-top-link-border-bottom-left-radius);
+			--kb-nav-link-hover-border-top-left-radius: var(--kb-nav-top-link-hover-border-top-left-radius);
+			--kb-nav-link-hover-border-top-right-radius: var(--kb-nav-top-link-hover-border-top-right-radius);
+			--kb-nav-link-hover-border-bottom-right-radius: var(--kb-nav-top-link-hover-border-bottom-right-radius);
+			--kb-nav-link-hover-border-bottom-left-radius: var(--kb-nav-top-link-hover-border-bottom-left-radius);
+			--kb-nav-link-active-border-top-left-radius: var(--kb-nav-top-link-active-border-top-left-radius);
+			--kb-nav-link-active-border-top-right-radius: var(--kb-nav-top-link-active-border-top-right-radius);
+			--kb-nav-link-active-border-bottom-right-radius: var(--kb-nav-top-link-active-border-bottom-right-radius);
+			--kb-nav-link-active-border-bottom-left-radius: var(--kb-nav-top-link-active-border-bottom-left-radius);
+			--kb-nav-link-active-ancestor-border-top-left-radius: var(
+				--kb-nav-top-link-active-ancestor-border-top-left-radius
+			);
+			--kb-nav-link-active-ancestor-border-top-right-radius: var(
+				--kb-nav-top-link-active-ancestor-border-top-right-radius
+			);
+			--kb-nav-link-active-ancestor-border-bottom-right-radius: var(
+				--kb-nav-top-link-active-ancestor-border-bottom-right-radius
+			);
+			--kb-nav-link-active-ancestor-border-bottom-left-radius: var(
+				--kb-nav-top-link-active-ancestor-border-bottom-left-radius
+			);
+			--kb-nav-link-box-shadow: var(--kb-nav-top-link-box-shadow);
+			--kb-nav-link-box-shadow-hover: var(--kb-nav-top-link-box-shadow-hover);
+			--kb-nav-link-box-shadow-active: var(--kb-nav-top-link-box-shadow-active);
+			--kb-nav-link-box-shadow-active-ancestor: var(--kb-nav-top-link-box-shadow-active-ancestor);
+			--kb-nav-link-description-color: var(--kb-nav-top-link-description-color);
+			--kb-nav-link-description-color-hover: var(--kb-nav-top-link-description-color-hover);
+			--kb-nav-link-description-color-active: var(--kb-nav-top-link-description-color-active);
+			--kb-nav-link-description-color-active-ancestor: var(--kb-nav-top-link-description-color-active-ancestor);
+
+			& > .kb-nav-link-content {
+				display: flex;
+				align-items: center;
+			}
+
+			//not last top links
+			&:not(:last-of-type) > .kb-link-wrap {
+				--kb-nav-link-border-right: var(--kb-nav-top-not-last-link-border-right);
+			}
+		}
+	}
+
 	/*
-	 NEW STYLES FOR BLOCK
+	 * rtl fixes
+	 * TODO test these styles
 	 */
+	.rtl {
+		.sub-menu .kb-nav-dropdown-toggle-btn {
+			left: 0;
+			right: auto;
+		}
+		ul ul {
+			.kb-nav-dropdown-toggle-btn .kb-nav-arrow-svg {
+				transform: rotate(-270deg);
+			}
+			.sub-menu {
+				--kb-nav-dropdown-show-left: auto;
+				--kb-nav-dropdown-show-right: 100%;
+			}
+		}
+		.menu-container > .menu-item .kb-nav-dropdown-toggle-btn {
+			right: auto;
+			left: calc(1.4em / 2);
+		}
+	}
+
+	/*--------------------------------------------------------------
+	 ## Misc features
+	 --------------------------------------------------------------*/
+	.kb-nav-label-description {
+		display: block;
+		font-size: 0.8em;
+		text-transform: none;
+		letter-spacing: normal;
+	}
+	.kb-nav-label-content {
+		display: block;
+	}
+}
+
+/*--------------------------------------------------------------
+ ## Navigation Link item styles. (pulled in from their separated file for performance)
+--------------------------------------------------------------*/
+.wp-block-kadence-navigation-link {
+	.link-highlight-label {
+		transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out;
+		font-size: 0.7em;
+		margin-left: 0.2em;
+		line-height: normal;
+		display: flex;
+		flex-wrap: nowrap;
+		align-items: center;
+
+		color: var(--kb-nav-link-highlight-color, var(--global-palette9, #ffffff));
+		background: var(--kb-nav-link-highlight-background, var(--global-palette1, #2f2ffc));
+		padding-top: var(--kb-nav-link-highlight-padding-top, 0.3em);
+		padding-right: var(--kb-nav-link-highlight-padding-right, 0.3em);
+		padding-bottom: var(--kb-nav-link-highlight-padding-bottom, 0.3em);
+		padding-left: var(--kb-nav-link-highlight-padding-left, 0.3em);
+		border-top: var(--kb-nav-link-highlight-border-top);
+		border-right: var(--kb-nav-link-highlight-border-right);
+		border-bottom: var(--kb-nav-link-highlight-border-bottom);
+		border-left: var(--kb-nav-link-highlight-border-left);
+		border-top-left-radius: var(--kb-nav-link-highlight-border-top-left-radius, 2px);
+		border-top-right-radius: var(--kb-nav-link-highlight-border-top-right-radius, 2px);
+		border-bottom-right-radius: var(--kb-nav-link-highlight-border-bottom-right-radius, 2px);
+		border-bottom-left-radius: var(--kb-nav-link-highlight-border-bottom-left-radius, 2px);
+		gap: var(--kb-nav-link-highlight-gap, 0.5em);
+		order: var(--kb-nav-link-highlight-order);
+
+		.kt-svg-icon {
+			padding-left: 5px;
+			svg {
+				width: 1em;
+				height: 1em;
+			}
+		}
+	}
+	.kb-link-wrap .kb-nav-link-content.has-highlight-label {
+		display: flex;
+		gap: 5px;
+	}
+
+	.sub-menu {
+		.kb-nav-link-content {
+			flex-wrap: wrap;
+		}
+	}
+	.kb-nav-arrow-svg,
+	.kadence-svg-icon {
+		top: 0.125em;
+		position: relative;
+		width: 1em;
+		height: 1em;
+		align-self: center;
+	}
+	.kb-nav-dropdown-toggle {
+		display: block;
+		background: transparent;
+		position: absolute;
+		right: 0;
+		top: 50%;
+		font-size: inherit;
+		width: 0.9em;
+		height: 0.9em;
+		font-size: 0.9em;
+		display: inline-flex;
+		line-height: inherit;
+		margin: 0;
+		padding: 0;
+		border: none;
+		border-radius: 0;
+		transform: translateY(-50%);
+		overflow: visible;
+		transition: opacity 0.2s ease;
+	}
+
+	.kb-nav-label-description {
+		color: var(--kb-nav-link-description-color, inherit);
+		padding-top: var(--kb-nav-link-description-padding-top);
+		padding-right: var(--kb-nav-link-description-padding-right);
+		padding-bottom: var(--kb-nav-link-description-padding-bottom);
+		padding-left: var(--kb-nav-link-description-padding-left);
+		grid-row: var(--kb-nav-link-description-grid-row);
+		grid-column: var(--kb-nav-link-description-grid-column);
+	}
+
+	.kb-nav-item-title-wrap {
+		grid-template-columns: var(--kb-nav-link-title-wrap-grid-template-columns);
+		flex-direction: var(--kb-nav-link-title-wrap-flex-direction);
+		display: var(--kb-nav-link-title-wrap-display, flex);
+		text-align: var(--kb-nav-link-title-wrap-text-align);
+		flex-wrap: nowrap;
+		align-items: center;
+	}
+
+	.kb-menu-has-description {
+		&.kb-menu-has-media {
+			.kb-nav-item-title-wrap {
+				--kb-nav-link-title-wrap-grid-template-columns: var(
+					--kb-nav-link-title-wrap-has-media-grid-template-columns
+				);
+			}
+		}
+
+		&.kb-menu-has-icon {
+			.kb-nav-item-title-wrap {
+				--kb-nav-link-title-wrap-grid-template-columns: var(
+					--kb-nav-link-title-wrap-has-media-grid-template-columns,
+					1fr auto
+				);
+			}
+		}
+	}
+
+	&.menu-item-has-children {
+		--kb-nav-link-position: var(--kb-nav-link-has-children-position, relative);
+	}
+
+	.link-media-container {
+		display: flex;
+		align-self: flex-start;
+		max-width: 150px;
+
+		padding-top: var(--kb-nav-link-media-container-padding-top, 0.3em);
+		padding-right: var(--kb-nav-link-media-container-padding-right, 0.3em);
+		padding-bottom: var(--kb-nav-link-media-container-padding-bottom, 0.3em);
+		padding-left: var(--kb-nav-link-media-container-padding-left, 0.3em);
+		margin-top: var(--kb-nav-link-media-container-margin-top);
+		margin-right: var(--kb-nav-link-media-container-margin-right);
+		margin-bottom: var(--kb-nav-link-media-container-margin-bottom);
+		margin-left: var(--kb-nav-link-media-container-margin-left);
+		border-radius: var(--kb-nav-link-media-container-border-radius);
+		color: var(--kb-nav-link-media-container-color);
+		background: var(--kb-nav-link-media-container-background);
+		order: var(--kb-nav-link-media-container-order);
+		justify-content: var(--kb-nav-link-media-container-justify-content);
+		align-self: var(--kb-nav-link-media-container-align-self);
+	}
+	.kadence-navigation-link-image-inner-intrinsic-container {
+		color: var(--kb-nav-link-media-color);
+		background: var(--kb-nav-link-media-background);
+		border-top: var(--kb-nav-link-media-border-top);
+		border-right: var(--kb-nav-link-media-border-right);
+		border-bottom: var(--kb-nav-link-media-border-bottom);
+		border-left: var(--kb-nav-link-media-border-left);
+		border-top-left-radius: var(--kb-nav-link-media-border-top-left-radius);
+		border-top-right-radius: var(--kb-nav-link-media-border-top-right-radius);
+		border-bottom-right-radius: var(--kb-nav-link-media-border-bottom-right-radius);
+		border-bottom-left-radius: var(--kb-nav-link-media-border-bottom-left-radius);
+
+		max-width: var(--kb-nav-link-media-max-width);
+	}
+	.kadence-navigation-link-image-intrinsic {
+		padding-bottom: var(--kb-nav-link-media-intrinsic-padding-bottom);
+		height: var(--kb-nav-link-media-intrinsic-height);
+		width: var(--kb-nav-link-media-intrinsic-width);
+
+		&.kb-navigation-link-image-ratio {
+			max-width: 100%;
+			position: relative;
+			overflow: hidden;
+
+			.kadence-navigation-link-image-inner-intrinsic {
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				right: 0px;
+				bottom: 0px;
+				& > img {
+					position: absolute;
+					flex: 1;
+					height: 100%;
+					object-fit: cover;
+					width: 100%;
+					top: 0px;
+					left: 0px;
+				}
+			}
+		}
+	}
+
+	.link-svg-icon {
+		display: inline-flex;
+		justify-content: center;
+		align-items: center;
+
+		svg {
+			width: 1em;
+			height: 1em;
+		}
+	}
+
+	.link-media-icon-wrap {
+		font-size: var(--kb-nav-link-icon-font-size);
+		height: var(--kb-nav-link-icon-height);
+		color: var(--kb-nav-link-icon-color);
+	}
+
+	.link-highlight-icon-wrap {
+		font-size: var(--kb-nav-link-highlight-icon-font-size);
+	}
 }

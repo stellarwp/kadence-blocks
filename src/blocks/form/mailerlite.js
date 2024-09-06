@@ -290,7 +290,7 @@ class MailerLiteControls extends Component {
 																	</p>
 																</div>
 																<SelectControl
-																	label={__('Select Field:')}
+																	label={__('Select Field:', 'kadence-blocks')}
 																	options={groupFields}
 																	value={
 																		undefined !== this.props.settings[0].map &&

@@ -375,6 +375,9 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				// Handle Ratio Images.
 				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > .kb-image-is-ratio-size' );
 				$css->add_property( 'align-self', 'stretch' );
+				// Handle Advanced Gallery
+				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > .wp-block-kadence-advancedgallery' );
+				$css->add_property( 'align-self', 'stretch' );
 			}
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > .aligncenter' );
 			$css->add_property( 'width', '100%' );

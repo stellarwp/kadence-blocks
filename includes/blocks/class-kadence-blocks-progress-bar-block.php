@@ -99,10 +99,10 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 			$this->responsive_alignment( $attributes['hAlign'], $css );
 		} else {
 			$css->add_property( 'justify-content', 'space-between' );
+		}
 
-			if( $is_inside && $barType === 'line' ) {
-				$css->add_property( 'width', '100%' );
-			}
+		if( $is_inside && $barType === 'line' ) {
+			$css->add_property( 'width', '100%' );
 		}
 
 		if ( ! empty( $attributes['thAlign'] ) ) {
@@ -350,7 +350,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 	                                }
 									' . ( $is_relative ? 'value = bar.value() * 100;' : 'value = bar.value() * ' . $progress_max . ';' ) . '
 									' . ( $decimal === 'one' ? 'value = Math.round( value * 10) / 10;value = value.toFixed(1);' : ( $decimal === 'two' ? 'value = Math.round( value * 100) / 100;value = value.toFixed(2);' : 'value = Math.round( value );' ) ) . '
-									
+
 									if( elementAbove ){
 										elementAbove.innerHTML = "' . $prefix . '" + value + "' . $suffix . '";
 									} else if ( elementInside ){

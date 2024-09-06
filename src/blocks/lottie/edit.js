@@ -527,7 +527,7 @@ export function Edit(props) {
 								<>
 									<div style={{ marginBottom: '15px' }}>
 										<NumberControl
-											label={__('Starting Frame')}
+											label={__('Starting Frame', 'kadence-blocks')}
 											value={startFrame}
 											onChange={(value) => setAttributes({ startFrame: parseInt(value) })}
 											min={0}
@@ -539,7 +539,7 @@ export function Edit(props) {
 
 									<div style={{ marginBottom: '15px' }}>
 										<NumberControl
-											label={__('Ending Frame')}
+											label={__('Ending Frame', 'kadence-blocks')}
 											value={endFrame}
 											onChange={(value) => setAttributes({ endFrame: parseInt(value) })}
 											min={0}

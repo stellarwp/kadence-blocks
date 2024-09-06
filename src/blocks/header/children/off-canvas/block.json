@@ -75,7 +75,7 @@
 		},
 		"padding": {
 			"type": "array",
-			"default": ["md", "md", "md", "md"]
+			"default": ["", "", "", ""]
 		},
 		"paddingTablet": {
 			"type": "array",

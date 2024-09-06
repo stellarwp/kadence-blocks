@@ -2153,8 +2153,8 @@ export default function KadenceButtonEdit(props) {
 											label={__('Icon Location', 'kadence-blocks')}
 											value={iconSide}
 											options={[
-												{ value: 'right', label: __('Right') },
-												{ value: 'left', label: __('Left') },
+												{ value: 'right', label: __('Right', 'kadence-blocks') },
+												{ value: 'left', label: __('Left', 'kadence-blocks') },
 											]}
 											onChange={(value) => {
 												setAttributes({ iconSide: value });
