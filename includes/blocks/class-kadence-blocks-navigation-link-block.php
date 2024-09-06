@@ -345,7 +345,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			if ( $sized_attributes['descriptionPositioning'] == 'icon' ) {
 				$css->add_property( '--kb-nav-link-description-grid-column', 'span 2' );
 			} else {
-				$css->add_property( '--kb-nav-link-description-grid-row', 'span 2' );
+				$css->add_property( '--kb-nav-link-description-grid-column', '2' );
 			}
 		}
 

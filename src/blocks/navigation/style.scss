@@ -1195,7 +1195,10 @@
 		&.kb-menu-has-icon {
 			.kb-nav-item-title-wrap {
 				display: grid;
-				--kb-nav-link-title-wrap-grid-template-columns: 1fr auto;
+				--kb-nav-link-title-wrap-grid-template-columns: var(
+					--kb-nav-link-title-wrap-has-media-grid-template-columns,
+					1fr auto
+				);
 			}
 		}
 	}
