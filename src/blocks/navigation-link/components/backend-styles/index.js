@@ -669,11 +669,11 @@ export default function BackendStyles(props) {
 		'--kb-nav-description-padding-top',
 		css.render_size(previewDescriptionSpacing, descriptionSpacingUnit)
 	);
-	css.add_property('--kb-nav-description-color', css.render_color(previewDescriptionColor));
+	css.add_property('--kb-nav-link-description-color', css.render_color(previewDescriptionColor));
 	//description styles hover
-	css.add_property('--kb-nav-description-color-hover', css.render_color(previewDescriptionColorHover));
+	css.add_property('--kb-nav-link-description-color-hover', css.render_color(previewDescriptionColorHover));
 	//description styles active
-	css.add_property('--kb-nav-description-color-active', css.render_color(previewDescriptionColorActive));
+	css.add_property('--kb-nav-link-description-color-active', css.render_color(previewDescriptionColorActive));
 
 	//placement logic where an additional selector is needed
 	css.set_selector(

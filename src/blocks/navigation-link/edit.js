@@ -1171,7 +1171,7 @@ export default function Edit(props) {
 													<RichText
 														ref={ref}
 														identifier="label"
-														className="wp-block-navigation-item__label"
+														className="wp-block-navigation-item__label kb-nav-label-content"
 														value={hideLabel ? '' : label}
 														onChange={(labelValue) =>
 															setAttributes({

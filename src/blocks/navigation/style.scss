@@ -906,8 +906,8 @@
 			cursor: default;
 		}
 		.kb-nav-label-description {
-			color: var(--kb-nav-description-color, inherit);
-			padding-top: var(--kb-nav-description-padding-top, 0);
+			color: var(--kb-nav-link-description-color, inherit);
+			padding-top: var(--kb-nav-link-description-padding-top, 0);
 		}
 		&:hover,
 		&:focus {
