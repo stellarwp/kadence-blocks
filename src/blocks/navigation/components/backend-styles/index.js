@@ -658,7 +658,7 @@ export default function BackendStyles(props) {
 		);
 		if (previewDropdownHorizontalAlignment == 'center') {
 			css.add_property('--kb-nav-dropdown-show-left', '50%');
-			css.add_property('--kb-nav-dropdown-show-transform', 'translate(-50%, 0)');
+			css.add_property('--kb-nav-dropdown-show-transform-x', '-50%');
 		} else if (previewDropdownHorizontalAlignment == 'right') {
 			css.add_property('--kb-nav-dropdown-show-right', '0');
 		}
