@@ -276,10 +276,14 @@
 						var timeNumbers = window.kadenceCountdown.timers[id].stopWatch;
 						var units = window.kadenceCountdown.timers[id].units;
 						var labels = {};
-						labels.days = window.kadenceCountdown.timers[id].daysLabel;
-						labels.hours = window.kadenceCountdown.timers[id].hoursLabel;
-						labels.minutes = window.kadenceCountdown.timers[id].minutesLabel;
-						labels.seconds = window.kadenceCountdown.timers[id].secondsLabel;
+						labels.days = window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].daysLabel);
+						labels.hours = window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].hoursLabel);
+						labels.minutes = window.kadenceCountdown.stripHtml(
+							window.kadenceCountdown.timers[id].minutesLabel
+						);
+						labels.seconds = window.kadenceCountdown.stripHtml(
+							window.kadenceCountdown.timers[id].secondsLabel
+						);
 						var parts = {};
 						if (
 							undefined !== units &&
@@ -362,10 +366,10 @@
 				var timeNumbers = window.kadenceCountdown.timers[id].stopWatch;
 				var units = window.kadenceCountdown.timers[id].units;
 				var labels = {};
-				labels.days = window.kadenceCountdown.timers[id].daysLabel;
-				labels.hours = window.kadenceCountdown.timers[id].hoursLabel;
-				labels.minutes = window.kadenceCountdown.timers[id].minutesLabel;
-				labels.seconds = window.kadenceCountdown.timers[id].secondsLabel;
+				labels.days = window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].daysLabel);
+				labels.hours = window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].hoursLabel);
+				labels.minutes = window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].minutesLabel);
+				labels.seconds = window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].secondsLabel);
 				let calculateHours = Math.floor((total / (1000 * 60 * 60)) % 24);
 				let calculateMinutes = Math.floor((total / 1000 / 60) % 60);
 				let calculateSeconds = Math.floor((total / 1000) % 60);
