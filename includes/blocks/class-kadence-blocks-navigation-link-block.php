@@ -135,12 +135,24 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			'first_prop' => '--kb-nav-dropdown-border-top-left-radius',
 			'second_prop' => '--kb-nav-dropdown-border-top-right-radius',
 			'third_prop' => '--kb-nav-dropdown-border-bottom-right-radius',
-			'third_prop' => '--kb-nav-dropdown-border-bottom-left-radius' 
+			'fourth_prop' => '--kb-nav-dropdown-border-bottom-left-radius' 
 		) );
 		$css->render_border_styles( $nav_link_attributes, 'dropdownBorder', false, [
 			'renderAsVars' => true,
 			'varBase' => '--kb-nav-dropdown-',
 		] );
+		if ( !empty( $nav_link_attributes['mediaStyle'][0] ) ) {
+			$css->render_measure_output( $nav_link_attributes['mediaStyle'][0], 'padding', 'padding', array(
+				'desktop_key' => 'padding',
+				'tablet_key'  => 'paddingTablet',
+				'mobile_key'  => 'paddingMobile',
+				'unit_key'    => 'paddingType',
+				'first_prop' => '--kb-nav-link-media-container-padding-top',
+				'second_prop' => '--kb-nav-link-media-container-padding-right',
+				'third_prop' => '--kb-nav-link-media-container-padding-bottom',
+				'fourth_prop' => '--kb-nav-link-media-container-padding-left' 
+			) );
+		}
 
 		//no bleed variables (extra specific to beat things like dropdown or top level styling)
 		$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .kb-link-wrap.kb-link-wrap.kb-link-wrap.kb-link-wrap' );
@@ -175,7 +187,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 					'first_prop' => '--kb-nav-link-highlight-border-radius-top-left',
 					'second_prop' => '--kb-nav-link-highlight-border-radius-top-right',
 					'third_prop' => '--kb-nav-link-highlight-border-radius-bottom-right',
-					'third_prop' => '--kb-nav-link-highlight-border-radius-bottom-left' 
+					'fourth_prop' => '--kb-nav-link-highlight-border-radius-bottom-left' 
 				] );
 				$css->render_gap($nav_link_attributes['highlightSpacing'][0],'gap', 'gap','gapUnit', [
 					'renderAsVars' => true,
@@ -246,7 +258,6 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$media_style_color_active = $css->get_inherited_value( $attributes['mediaStyle'][0]['colorActive'], $attributes['mediaStyle'][0]['colorActiveTablet'], $attributes['mediaStyle'][0]['colorActiveMobile'], $size, true );
 
 		$media_style_border_radius = $css->get_inherited_value( $attributes['mediaStyle'][0]['borderRadius'], $attributes['mediaStyle'][0]['borderRadiusTablet'], $attributes['mediaStyle'][0]['borderRadiusMobile'], $size, true );
-		$media_style_padding = $css->get_inherited_value( $attributes['mediaStyle'][0]['padding'], $attributes['mediaStyle'][0]['paddingTablet'], $attributes['mediaStyle'][0]['paddingMobile'], $size, true );
 		$media_style_margin  = $css->get_inherited_value( $attributes['mediaStyle'][0]['margin'], $attributes['mediaStyle'][0]['marginTablet'], $attributes['mediaStyle'][0]['marginMobile'], $size, true );
 		$media_icon_size     = $css->get_inherited_value( $attributes['mediaIcon'][0]['size'], $attributes['mediaIcon'][0]['sizeTablet'], $attributes['mediaIcon'][0]['sizeMobile'], $size, true );
 
@@ -325,10 +336,6 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( '--kb-nav-link-media-container-background-active', $css->render_color( $media_style_background_active ) );
 			$css->add_property( '--kb-nav-link-media-container-background-active-ancestor', $css->render_color( $media_style_background_active ) );
 			$css->add_property( '--kb-nav-link-media-container-border-radius', $css->render_size( $media_style_border_radius, 'px' ) );
-			$css->add_property( '--kb-nav-link-media-container-padding-top', $css->render_measure( $media_style_padding, 'px' ) );
-			$css->add_property( '--kb-nav-link-media-container-padding-right', $css->render_measure( $media_style_padding, 'px' ) );
-			$css->add_property( '--kb-nav-link-media-container-padding-bottom', $css->render_measure( $media_style_padding, 'px' ) );
-			$css->add_property( '--kb-nav-link-media-container-padding-left', $css->render_measure( $media_style_padding, 'px' ) );
 			$css->add_property( '--kb-nav-link-icon-color', $css->render_color( $media_style_color ) );
 			$css->add_property( '--kb-nav-link-icon-color-hover', $css->render_color( $media_style_color_hover ) );
 			$css->add_property( '--kb-nav-link-icon-color-active', $css->render_color( $media_style_color_active ) );

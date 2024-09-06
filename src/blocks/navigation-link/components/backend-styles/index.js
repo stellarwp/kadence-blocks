@@ -447,12 +447,6 @@ export default function BackendStyles(props) {
 		mediaStyle[0].marginTablet,
 		mediaStyle[0].marginMobile
 	);
-	const previewMediaStylePadding = getPreviewSize(
-		previewDevice,
-		mediaStyle[0].padding,
-		mediaStyle[0].paddingTablet,
-		mediaStyle[0].paddingMobile
-	);
 	const previewMediaStyleColor = getPreviewSize(
 		previewDevice,
 		mediaStyle[0].color,
@@ -623,6 +617,20 @@ export default function BackendStyles(props) {
 		previewDevice,
 		'--kb-nav-dropdown-margin',
 		marginDropdownUnit
+	);
+	css.render_measure_output(
+		mediaStyle?.[0]?.padding,
+		mediaStyle?.[0]?.paddingTablet,
+		mediaStyle?.[0]?.paddingMobile,
+		previewDevice,
+		'--kb-nav-link-media-container-padding',
+		mediaStyle[0].paddingType,
+		{
+			first_prop: '--kb-nav-link-media-container-padding-top',
+			second_prop: '--kb-nav-link-media-container-padding-right',
+			third_prop: '--kb-nav-link-media-container-padding-bottom',
+			fourth_prop: '--kb-nav-link-media-container-padding-left',
+		}
 	);
 	css.add_property(
 		'--kb-nav-dropdown-link-color',
@@ -1058,22 +1066,6 @@ export default function BackendStyles(props) {
 		css.add_property(
 			'--kb-nav-link-media-container-border-radius',
 			css.render_size(previewMediaStyleBorderRadius, 'px')
-		);
-		css.add_property(
-			'--kb-nav-link-media-container-padding-top',
-			css.render_size(previewMediaStylePadding[0], 'px')
-		);
-		css.add_property(
-			'--kb-nav-link-media-container-padding-right',
-			css.render_size(previewMediaStylePadding[1], 'px')
-		);
-		css.add_property(
-			'--kb-nav-link-media-container-padding-bottom',
-			css.render_size(previewMediaStylePadding[2], 'px')
-		);
-		css.add_property(
-			'--kb-nav-link-media-container-padding-left',
-			css.render_size(previewMediaStylePadding[3], 'px')
 		);
 		css.add_property('--kb-nav-link-icon-color', css.render_color(previewMediaStyleColor));
 		css.add_property('--kb-nav-link-icon-color-hover', css.render_color(previewMediaStyleColorHover));
