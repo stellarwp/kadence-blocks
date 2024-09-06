@@ -2173,7 +2173,7 @@ class Kadence_Blocks_CSS {
 
 				$border_args = [
 					'renderAsVars' => $args['renderAsVars'], 
-					'baseVar' => $args['baseVar'] . $property_addition
+					'varBase' => $args['varBase'] . $property_addition
 				];
 
 				$this->render_measure_output( $attributes, $border_radius_base . $state, 'border-radius', $border_radius_args );

@@ -170,7 +170,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 					'renderAsVars' => true,
 					'varBase' => '--kb-nav-link-highlight-',
 				] );
-				$this->render_measure_output( $nav_link_attributes['highlightSpacing'][0],  'border-radius', 'borderRadius', [
+				$css->render_measure_output( $nav_link_attributes['highlightSpacing'][0],  'border-radius', 'borderRadius', [
 					'first_prop' => '--kb-nav-link-highlight-border-radius-top-left',
 					'second_prop' => '--kb-nav-link-highlight-border-radius-top-right',
 					'third_prop' => '--kb-nav-link-highlight-border-radius-bottom-right',
@@ -280,7 +280,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$css->add_property( '--kb-nav-link-highlight-color', $css->render_color( $sized_attributes['labelColor'] ), $sized_attributes['labelColor'] );
 		$css->add_property( '--kb-nav-link-highlight-color-hover', $css->render_color( $sized_attributes['labelColorHover'] ), $sized_attributes['labelColorHover'] );
 		$css->add_property( '--kb-nav-link-highlight-color-active', $css->render_color( $sized_attributes['labelColorActive'] ), $sized_attributes['labelColorActive'] );
-		$css->add_property( '--kb-nav-link-highlight-color-active-ancestor', $css->render_color( $sized_attributes['labelColorHoverActive'] ), $sized_attributes['labelColorActive'] );
+		$css->add_property( '--kb-nav-link-highlight-color-active-ancestor', $css->render_color( $sized_attributes['labelColorActive'] ), $sized_attributes['labelColorActive'] );
 		$css->add_property( '--kb-nav-link-highlight-background', $css->render_color( $sized_attributes['labelBackground'] ), $sized_attributes['labelBackground'] );
 		$css->add_property( '--kb-nav-link-highlight-background-hover', $css->render_color( $sized_attributes['labelBackgroundHover'] ), $sized_attributes['labelBackgroundHover'] );
 		$css->add_property( '--kb-nav-link-highlight-background-active', $css->render_color( $sized_attributes['labelBackgroundActive'] ), $sized_attributes['labelBackgroundActive'] );
@@ -290,7 +290,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		if( 'left' === $sized_attributes['highlightSide'] ) {
 			$css->add_property('--kb-nav-link-highlight-order', '-1');
 		}
-		if( 'left' === $nav_link_attributes['iconSide'] ) {
+		if( 'left' === $sized_attributes['iconSide'] ) {
 			$css->add_property( '--kb-nav-link-media-container-order', '-1' );
 		}
 
