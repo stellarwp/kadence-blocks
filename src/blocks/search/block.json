@@ -21,6 +21,74 @@
 			"type": "string",
 			"default": ""
 		},
+		"inputColor": {
+			"type": "string",
+			"default": ""
+		},
+		"inputBackgroundType": {
+			"type": "string",
+			"default": "normal"
+		},
+		"inputFocusBackgroundType": {
+			"type": "string",
+			"default": "normal"
+		},
+		"inputFocusBackgroundColor": {
+			"type": "string",
+			"default": ""
+		},
+		"inputFocusGradientActive": {
+			"type": "boolean",
+			"default": false
+		},
+		"inputBoxShadow": {
+			"type": "array",
+			"default": [false, "#000000", 0.4, 2, 2, 3, 0, false]
+		},
+		"inputFocusBoxShadowActive": {
+			"type": "array",
+			"default": [false, "#000000", 0.4, 2, 2, 3, 0, false]
+		},
+		"inputPlaceholderColor": {
+			"type": "string",
+			"default": ""
+		},
+		"inputFocusBorderColor": {
+			"type": "string",
+			"default": ""
+		},
+		"inputBorderRadius": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"tabletInputBorderRadius": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"mobileInputBorderRadius": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"inputBorderRadiusUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"inputPadding": {
+			"type": "array",
+			"default": ["sm", "sm", "sm", "sm"]
+		},
+		"inputTabletPadding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"inputMobilePadding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"inputPaddingType": {
+			"type": "string",
+			"default": "px"
+		},
 		"text": {
 			"type": "string",
 			"default": "",
@@ -182,6 +250,42 @@
 					"right": [ "", "", "" ],
 					"bottom": [ "", "", "" ],
 					"left": [ "", "", "" ],
+					"unit": "px"
+				}
+			]
+		},
+		"inputBorderStyles": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["#dee2e6", "", 1],
+					"right": ["#dee2e6", "", 1],
+					"bottom": ["#dee2e6", "", 1],
+					"left": ["#dee2e6", "", 1],
+					"unit": "px"
+				}
+			]
+		},
+		"tabletInputBorderStyles": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"mobileInputBorderStyles": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
 					"unit": "px"
 				}
 			]

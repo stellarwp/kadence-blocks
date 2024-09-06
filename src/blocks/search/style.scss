@@ -2,3 +2,115 @@
 .kb-search {
 	display: flex;
 }
+
+body.admin-bar .popup-drawer {
+	top: 46px;
+}
+
+@media screen and (min-width: 783px) {
+	body.admin-bar .popup-drawer {
+		top: 32px;
+	}
+}
+
+.popup-drawer.active {
+	left: 0;
+	right: 0;
+	transition: opacity 0.25s ease-out, left 0s, right 0s;
+}
+
+.popup-drawer.active .drawer-overlay {
+	opacity: 1;
+}
+
+.popup-drawer.active .drawer-inner {
+	opacity: 1;
+	transform: translateX(0);
+}
+
+.popup-drawer {
+	position: fixed;
+	display: block;
+	top: 0;
+	bottom: 0;
+	left: -99999rem;
+	right: 99999rem;
+	transition: opacity 0.25s ease-in, left 0s 0.25s, right 0s 0.25s;
+	z-index: 100000;
+}
+
+.popup-drawer .drawer-overlay {
+	background-color: rgba(0, 0, 0, 0.4);
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	opacity: 0;
+	transition: opacity 0.2s ease-in-out;
+}
+
+.popup-drawer-layout-fullwidth .drawer-inner {
+	max-width: none;
+	background: rgba(9, 12, 16, 0.97);
+	transition: opacity 0.2s ease-in, -webkit-transform 0s ease-in;
+	transition: transform 0s ease-in, opacity 0.2s ease-in;
+	transition: transform 0s ease-in, opacity 0.2s ease-in, -webkit-transform 0s ease-in;
+}
+
+.popup-drawer .drawer-inner {
+	width: 100%;
+	-webkit-transform: translateX(100%);
+	transform: translateX(100%);
+	max-width: 90%;
+	right: 0;
+	top: 0;
+	overflow: auto;
+	background: #090c10;
+	color: #fff;
+	bottom: 0;
+	opacity: 0;
+	position: fixed;
+	box-shadow: 0 0 2rem 0 rgba(0, 0, 0, 0.1);
+	display: flex;
+	flex-direction: column;
+	transition: opacity 0.25s cubic-bezier(0.77, 0.2, 0.05, 1), -webkit-transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1);
+	transition: transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1), opacity 0.25s cubic-bezier(0.77, 0.2, 0.05, 1);
+	transition: transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1), opacity 0.25s cubic-bezier(0.77, 0.2, 0.05, 1), -webkit-transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1);
+}
+
+#search-drawer .drawer-inner .drawer-content {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	padding: 2em;
+}
+
+#search-drawer .drawer-inner form {
+	max-width: 800px;
+	width: 100%;
+	margin: 0 auto;
+	display: flex;
+}
+
+form.kb-search-form {
+	position: relative;
+}
+
+#search-drawer .drawer-inner form label {
+	flex-grow: 2;
+}
+
+#search-drawer .drawer-inner input.kb-search-input {
+	width: 100%;
+	background: transparent;
+	color: var(--global-palette6);
+	padding: 0.8em 80px 0.8em 0.8em;
+	font-size: 20px;
+	border: 1px solid currentColor;
+}
