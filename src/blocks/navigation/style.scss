@@ -29,7 +29,6 @@
 @mixin hide-sub-menu {
 	opacity: 0;
 	visibility: hidden;
-	transform: translate(var(--kb-nav-dropdown-hide-transform-x, 0), var(--kb-nav-dropdown-hide-transform-y, 0));
 	clip: rect(1px, 1px, 1px, 1px);
 	height: 1px;
 	overflow: hidden;
@@ -49,6 +48,10 @@
 	border-top: var(--kb-nav-dropdown-border-top);
 	border-left: var(--kb-nav-dropdown-border-left);
 	border-right: var(--kb-nav-dropdown-border-right);
+	border-top-left-radius: var(--kb-nav-dropdown-border-top-left-radius);
+	border-top-right-radius: var(--kb-nav-dropdown-border-top-right-radius);
+	border-bottom-right-radius: var(--kb-nav-dropdown-border-bottom-right-radius);
+	border-bottom-left-radius: var(--kb-nav-dropdown-border-bottom-left-radius);
 	padding: var(--kb-nav-dropdown-padding-top, 0) var(--kb-nav-dropdown-padding-right, 0)
 		var(--kb-nav-dropdown-padding-bottom, 0) var(--kb-nav-dropdown-padding-left, 0);
 	margin: var(--kb-nav-dropdown-margin-top, 0) var(--kb-nav-dropdown-margin-right, 0)
@@ -454,6 +457,8 @@
 
 .wp-block-kadence-navigation {
 	max-width: 100%;
+	height: var(--kb-nav-height);
+
 	//In the editor we just look for these classes as they will come and go as the preview device changes.
 	//In the frontend, they will all be present, so must each be wrapped in a media query
 	//Desktop full-height-menu
@@ -614,14 +619,24 @@
 		display: block;
 		list-style: none;
 		padding: 0;
-		margin: 0;
 		transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
 		background: var(--kb-nav-dropdown-background);
 		//these border radius names are a bit weird just because of the way the dynamic render function outputs things.
-		border-top-left-radius: var(--kb-nav-dropdown-border-radius-top);
-		border-top-right-radius: var(--kb-nav-dropdown-border-radius-right);
-		border-bottom-right-radius: var(--kb-nav-dropdown-border-radius-bottom);
-		border-bottom-left-radius: var(--kb-nav-dropdown-border-radius-left);
+		border-top-left-radius: var(--kb-nav-dropdown-border-radius-top-left);
+		border-top-right-radius: var(--kb-nav-dropdown-border-radius-top-right);
+		border-bottom-right-radius: var(--kb-nav-dropdown-border-radius-bottom-right);
+		border-bottom-left-radius: var(--kb-nav-dropdown-border-radius-bottom-left);
+
+		width: var(--kb-nav-dropdown-width);
+		left: var(--kb-nav-dropdown-width);
+		transform: var(
+			--kb-nav-dropdown-transform,
+			translate(var(--kb-nav-dropdown-hide-transform-x, 0), var(--kb-nav-dropdown-hide-transform-y, 0))
+		);
+		margin-top: var(--kb-nav-dropdown-margin-top, 0);
+		margin-right: var(--kb-nav-dropdown-margin-right, 0);
+		margin-bottom: var(--kb-nav-dropdown-margin-bottom, 0);
+		margin-left: var(--kb-nav-dropdown-margin-left, 0);
 
 		//sub menus are hidden by default
 		@include hide-sub-menu();
@@ -641,6 +656,58 @@
 			--kb-nav-link-background-active: var(--kb-nav-dropdown-link-background-active);
 			--kb-nav-link-padding-top: var(--kb-nav-dropdown-link-padding-top);
 			--kb-nav-link-padding-bottom: var(--kb-nav-dropdown-link-padding-bottom);
+			--kb-nav-link-padding-left: var(--kb-nav-dropdown-link-padding-left);
+			--kb-nav-link-padding-right: var(--kb-nav-dropdown-link-padding-right);
+			--kb-nav-link-border-top: var(--kb-nav-dropdown-link-border-top);
+			--kb-nav-link-border-right: var(--kb-nav-dropdown-link-border-right);
+			--kb-nav-link-border-bottom: var(--kb-nav-dropdown-link-border-bottom);
+			--kb-nav-link-border-left: var(--kb-nav-dropdown-link-border-left);
+			--kb-nav-link-hover-border-top: var(--kb-nav-dropdown-link-hover-border-top);
+			--kb-nav-link-hover-border-right: var(--kb-nav-dropdown-link-hover-border-right);
+			--kb-nav-link-hover-border-bottom: var(--kb-nav-dropdown-link-hover-border-bottom);
+			--kb-nav-link-hover-border-left: var(--kb-nav-dropdown-link-hover-border-left);
+			--kb-nav-link-active-border-top: var(--kb-nav-dropdown-link-active-border-top);
+			--kb-nav-link-active-border-right: var(--kb-nav-dropdown-link-active-border-right);
+			--kb-nav-link-active-border-bottom: var(--kb-nav-dropdown-link-active-border-bottom);
+			--kb-nav-link-active-border-left: var(--kb-nav-dropdown-link-active-border-left);
+			--kb-nav-link-active-ancestor-border-top: var(--kb-nav-dropdown-link-active-ancestor-border-top);
+			--kb-nav-link-active-ancestor-border-right: var(--kb-nav-dropdown-link-active-ancestor-border-right);
+			--kb-nav-link-active-ancestor-border-bottom: var(--kb-nav-dropdown-link-active-ancestor-border-bottom);
+			--kb-nav-link-active-ancestor-border-left: var(--kb-nav-dropdown-link-active-ancestor-border-left);
+			--kb-nav-link-border-top-left-radius: var(--kb-nav-dropdown-link-border-top-left-radius);
+			--kb-nav-link-border-top-right-radius: var(--kb-nav-dropdown-link-border-top-right-radius);
+			--kb-nav-link-border-bottom-right-radius: var(--kb-nav-dropdown-link-border-bottom-right-radius);
+			--kb-nav-link-border-bottom-left-radius: var(--kb-nav-dropdown-link-border-bottom-left-radius);
+			--kb-nav-link-hover-border-top-left-radius: var(--kb-nav-dropdown-link-hover-border-top-left-radius);
+			--kb-nav-link-hover-border-top-right-radius: var(--kb-nav-dropdown-link-hover-border-top-right-radius);
+			--kb-nav-link-hover-border-bottom-right-radius: var(
+				--kb-nav-dropdown-link-hover-border-bottom-right-radius
+			);
+			--kb-nav-link-hover-border-bottom-left-radius: var(--kb-nav-dropdown-link-hover-border-bottom-left-radius);
+			--kb-nav-link-active-border-top-left-radius: var(--kb-nav-dropdown-link-active-border-top-left-radius);
+			--kb-nav-link-active-border-top-right-radius: var(--kb-nav-dropdown-link-active-border-top-right-radius);
+			--kb-nav-link-active-border-bottom-right-radius: var(
+				--kb-nav-dropdown-link-active-border-bottom-right-radius
+			);
+			--kb-nav-link-active-border-bottom-left-radius: var(
+				--kb-nav-dropdown-link-active-border-bottom-left-radius
+			);
+			--kb-nav-link-active-ancestor-border-top-left-radius: var(
+				--kb-nav-dropdown-link-active-ancestor-border-top-left-radius
+			);
+			--kb-nav-link-active-ancestor-border-top-right-radius: var(
+				--kb-nav-dropdown-link-active-ancestor-border-top-right-radius
+			);
+			--kb-nav-link-active-ancestor-border-bottom-right-radius: var(
+				--kb-nav-dropdown-link-active-ancestor-border-bottom-right-radius
+			);
+			--kb-nav-link-active-ancestor-border-bottom-left-radius: var(
+				--kb-nav-dropdown-link-active-ancestor-border-bottom-left-radius
+			);
+			--kb-nav-link-box-shadow: var(--kb-nav-dropdown-link-box-shadow);
+			--kb-nav-link-box-shadow-hover: var(--kb-nav-dropdown-link-box-shadow-hover);
+			--kb-nav-link-box-shadow-active: var(--kb-nav-dropdown-link-box-shadow-active);
+			--kb-nav-link-box-shadow-active-ancestor: var(--kb-nav-dropdown-link-box-shadow-active-ancestor);
 
 			& > .kb-nav-link-content {
 				width: var(--kb-nav-dropdown-link-width, 200px);
@@ -650,12 +717,37 @@
 
 	//menu item wrapper
 	.menu-item {
+		position: var(--kb-nav-link-position);
 		border-bottom: var(--kb-nav-menu-item-border-bottom);
 
 		//active nav links (extra specificty to hack correct ordering against direct styling)
 		&.current-menu-item > .kb-link-wrap.kb-link-wrap.kb-link-wrap {
 			--kb-nav-link-color: var(--kb-nav-link-color-active);
 			--kb-nav-link-background: var(--kb-nav-link-background-active);
+			--kb-nav-link-border-top: var(--kb-nav-link-active-border-top);
+			--kb-nav-link-border-right: var(--kb-nav-link-active-border-right);
+			--kb-nav-link-border-bottom: var(--kb-nav-link-active-border-bottom);
+			--kb-nav-link-border-left: var(--kb-nav-link-active-border-left);
+			--kb-nav-link-border-top-left-radius: var(--kb-nav-link-active-border-top-left-radius);
+			--kb-nav-link-border-top-right-radius: var(--kb-nav-link-active-border-top-right-radius);
+			--kb-nav-link-border-bottom-right-radius: var(--kb-nav-link-active-border-bottom-right-radius);
+			--kb-nav-link-border-bottom-left-radius: var(--kb-nav-link-active-border-bottom-left-radius);
+			--kb-nav-link-box-shadow: var(--kb-nav-link-box-shadow-active);
+			--kb-nav-link-highlight-color: var(--kb-nav-link-highlight-color-active);
+			--kb-nav-link-highlight-background: var(--kb-nav-link-highlight-background-active);
+			--kb-nav-link-media-color: var(--kb-nav-link-media-color-active);
+			--kb-nav-link-media-background: var(--kb-nav-link-media-background-active);
+			--kb-nav-link-media-border-top: var(--kb-nav-link-media-active-border-top);
+			--kb-nav-link-media-border-right: var(--kb-nav-link-media-active-border-right);
+			--kb-nav-link-media-border-bottom: var(--kb-nav-link-media-active-border-bottom);
+			--kb-nav-link-media-border-left: var(--kb-nav-link-media-active-border-left);
+			--kb-nav-link-media-border-top-left-radius: var(--kb-nav-link-media-active-border-top-left-radius);
+			--kb-nav-link-media-border-top-right-radius: var(--kb-nav-link-media-active-border-top-right-radius);
+			--kb-nav-link-media-border-bottom-right-radius: var(--kb-nav-link-media-active-border-bottom-right-radius);
+			--kb-nav-link-media-border-bottom-left-radius: var(--kb-nav-link-media-active-border-bottom-left-radius);
+			--kb-nav-link-media-container-background: var(--kb-nav-link-media-container-background-active);
+			--kb-nav-link-icon-color: var(--kb-nav-link-icon-color-active);
+			--kb-nav-link-description-color: var(--kb-nav-link-description-color-active);
 		}
 		&.current-menu-ancestor > .kb-link-wrap.kb-link-wrap.kb-link-wrap {
 			--kb-nav-link-color: var(--kb-nav-link-color-active-ancestor, var(--kb-nav-link-color-active));
@@ -663,6 +755,87 @@
 				--kb-nav-link-background-active-ancestor,
 				var(--kb-nav-link-background-active)
 			);
+			--kb-nav-link-border-top: var(
+				--kb-nav-link-active-ancestor-border-top,
+				var(--kb-nav-link-active-border-top)
+			);
+			--kb-nav-link-border-right: var(
+				--kb-nav-link-active-ancestor-border-right,
+				var(--kb-nav-link-active-border-right)
+			);
+			--kb-nav-link-border-bottom: var(
+				--kb-nav-link-active-ancestor-border-bottom,
+				var(--kb-nav-link-active-border-bottom)
+			);
+			--kb-nav-link-border-left: var(
+				--kb-nav-link-active-ancestor-border-left,
+				var(--kb-nav-link-active-border-left)
+			);
+			--kb-nav-link-border-top-left-radius: var(
+				--kb-nav-link-active-ancestor-border-top-left-radius,
+				var(--kb-nav-link-active-border-to-left-radiusp)
+			);
+			--kb-nav-link-border-top-right-radius: var(
+				--kb-nav-link-active-ancestor-border-top-right-radius,
+				var(--kb-nav-link-active-border-top-right-radius)
+			);
+			--kb-nav-link-border-bottom-right-radius: var(
+				--kb-nav-link-active-ancestor-border-bottom-right-radius,
+				var(--kb-nav-link-active-border-bottom-right-radius)
+			);
+			--kb-nav-link-border-bottom-left-radius: var(
+				--kb-nav-link-active-ancestor-border-bottom-left-radius,
+				var(--kb-nav-link-active-border-bottom-left-radius)
+			);
+			--kb-nav-link-box-shadow: var(
+				--kb-nav-link-box-shadow-active-ancestor,
+				var(--kb-nav-link-box-shadow-active)
+			);
+			--kb-nav-link-highlight-color: var(--kb-nav-link-highlight-color-active-ancestor);
+			--kb-nav-link-highlight-background: var(--kb-nav-link-highlight-background-active-ancestor);
+			--kb-nav-link-media-color: var(
+				--kb-nav-link-media-color-active-ancestor,
+				var(--kb-nav-link-media-color-active)
+			);
+			--kb-nav-link-media-background: var(
+				--kb-nav-link-media-background-active-ancestor,
+				var(--kb-nav-link-media-background-active)
+			);
+			--kb-nav-link-media-border-top: var(
+				--kb-nav-link-media-active-ancestor-border-top,
+				var(--kb-nav-link-media-active-border-top)
+			);
+			--kb-nav-link-media-border-right: var(
+				--kb-nav-link-media-active-ancestor-border-right,
+				var(--kb-nav-link-media-active-border-right)
+			);
+			--kb-nav-link-media-border-bottom: var(
+				--kb-nav-link-media-active-ancestor-border-bottom,
+				var(--kb-nav-link-media-active-border-bottom)
+			);
+			--kb-nav-link-media-border-left: var(
+				--kb-nav-link-media-active-ancestor-border-left,
+				var(--kb-nav-link-media-active-border-left)
+			);
+			--kb-nav-link-media-border-top-left-radius: var(
+				--kb-nav-link-media-active-ancestor-border-top-left-radius,
+				var(--kb-nav-link-media-active-border-to-left-radiusp)
+			);
+			--kb-nav-link-media-border-top-right-radius: var(
+				--kb-nav-link-media-active-ancestor-border-top-right-radius,
+				var(--kb-nav-link-media-active-border-top-right-radius)
+			);
+			--kb-nav-link-media-border-bottom-right-radius: var(
+				--kb-nav-link-media-active-ancestor-border-bottom-right-radius,
+				var(--kb-nav-link-media-active-border-bottom-right-radius)
+			);
+			--kb-nav-link-media-border-bottom-left-radius: var(
+				--kb-nav-link-media-active-ancestor-border-bottom-left-radius,
+				var(--kb-nav-link-media-active-border-bottom-left-radius)
+			);
+			--kb-nav-link-media-container-background: var(--kb-nav-link-media-container-background-active-ancestor);
+			--kb-nav-link-icon-color: var(--kb-nav-link-icon-color-active-ancestor);
+			--kb-nav-link-description-color: var(--kb-nav-link-description-color-active-ancestor);
 		}
 	}
 
@@ -697,6 +870,9 @@
 		&:hover {
 			--kb-nav-link-color: var(--kb-nav-link-color-hover, inherit);
 			--kb-nav-link-background: var(--kb-nav-link-background-hover, inherit);
+			--kb-nav-link-highlight-color: var(--kb-nav-link-highlight-color-hover);
+			--kb-nav-link-highlight-background: var(--kb-nav-link-highlight-background-hover);
+			--kb-nav-link-description-color: var(--kb-nav-link-description-color-hover);
 		}
 	}
 
@@ -715,6 +891,16 @@
 		margin-right: var(--kb-nav-link-margin-right);
 		margin-bottom: var(--kb-nav-link-margin-bottom);
 		margin-left: var(--kb-nav-link-margin-left);
+		border-top: var(--kb-nav-link-border-top);
+		border-right: var(--kb-nav-link-border-right);
+		border-bottom: var(--kb-nav-link-border-bottom);
+		border-left: var(--kb-nav-link-border-left);
+		border-top-left-radius: var(--kb-nav-link-border-top-left-radius);
+		border-top-right-radius: var(--kb-nav-link-border-top-right-radius);
+		border-bottom-right-radius: var(--kb-nav-link-border-bottom-right-radius);
+		border-bottom-left-radius: var(--kb-nav-link-border-bottom-left-radius);
+		box-shadow: var(--kb-nav-link-box-shadow);
+		gap: var(--kb-nav-link-gap);
 
 		&:not([href]) {
 			cursor: default;
@@ -724,6 +910,34 @@
 		&:focus {
 			--kb-nav-link-color: var(--kb-nav-link-color-hover);
 			--kb-nav-link-background: var(--kb-nav-link-background-hover);
+			--kb-nav-link-border-top: var(--kb-nav-link-hover-border-top);
+			--kb-nav-link-border-right: var(--kb-nav-link-hover-border-right);
+			--kb-nav-link-border-bottom: var(--kb-nav-link-hover-border-bottom);
+			--kb-nav-link-border-left: var(--kb-nav-link-hover-border-left);
+			--kb-nav-link-border-top-left-radius: var(--kb-nav-link-hover-border-top-left-radius);
+			--kb-nav-link-border-top-right-radius: var(--kb-nav-link-hover-border-top-right-radius);
+			--kb-nav-link-border-bottom-right-radius: var(--kb-nav-link-hover-border-bottom-right-radius);
+			--kb-nav-link-border-bottom-left-radius: var(--kb-nav-link-hover-border-bottom-left-radius);
+			--kb-nav-link-box-shadow: var(--kb-nav-link-box-shadow-hover);
+			--kb-nav-link-highlight-color: var(--kb-nav-link-highlight-color-hover);
+			--kb-nav-link-highlight-background: var(--kb-nav-link-highlight-background-hover);
+			--kb-nav-link-media-color: var(--kb-nav-link-color-hover);
+			--kb-nav-link-media-background: var(--kb-nav-link-media-background-hover);
+			--kb-nav-link-media-border-top: var(--kb-nav-link-media-hover-border-top);
+			--kb-nav-link-media-border-right: var(--kb-nav-link-media-hover-border-right);
+			--kb-nav-link-media-border-bottom: var(--kb-nav-link-media-hover-border-bottom);
+			--kb-nav-link-media-border-left: var(--kb-nav-link-media-hover-border-left);
+			--kb-nav-link-media-border-top-left-radius: var(--kb-nav-link-media-hover-border-top-left-radius);
+			--kb-nav-link-media-border-top-right-radius: var(--kb-nav-link-media-hover-border-top-right-radius);
+			--kb-nav-link-media-border-bottom-right-radius: var(--kb-nav-link-media-hover-border-bottom-right-radius);
+			--kb-nav-link-media-border-bottom-left-radius: var(--kb-nav-link-media-hover-border-bottom-left-radius);
+			--kb-nav-link-media-container-background: var(--kb-nav-link-media-container-background-hover);
+			--kb-nav-link-icon-color: var(--kb-nav-link-icon-color-hover);
+			--kb-nav-link-description-color: var(--kb-nav-link-description-color-hover);
+		}
+
+		&.has-highlight-label {
+			--kb-nav-link-gap: var(--kb-nav-link-highlight-text-gap);
 		}
 	}
 
@@ -770,6 +984,58 @@
 			--kb-nav-link-background-hover: var(--kb-nav-top-link-background-hover);
 			--kb-nav-link-background-active: var(--kb-nav-top-link-background-active);
 			--kb-nav-link-background-active-ancestor: var(--kb-nav-top-link-background-active-ancestor);
+			--kb-nav-link-margin-top: var(--kb-nav-top-link-margin-top);
+			--kb-nav-link-margin-right: var(--kb-nav-top-link-margin-right);
+			--kb-nav-link-margin-bottom: var(--kb-nav-top-link-margin-bottom);
+			--kb-nav-link-margin-left: var(--kb-nav-top-link-margin-left);
+			--kb-nav-link-padding-top: var(--kb-nav-top-link-padding-top);
+			--kb-nav-link-padding-right: var(--kb-nav-top-link-padding-right);
+			--kb-nav-link-padding-bottom: var(--kb-nav-top-link-padding-bottom);
+			--kb-nav-link-padding-left: var(--kb-nav-top-link-padding-left);
+			--kb-nav-link-border-top: var(--kb-nav-top-link-border-top);
+			--kb-nav-link-border-right: var(--kb-nav-top-link-border-right);
+			--kb-nav-link-border-bottom: var(--kb-nav-top-link-border-bottom);
+			--kb-nav-link-border-left: var(--kb-nav-top-link-border-left);
+			--kb-nav-link-hover-border-top: var(--kb-nav-top-link-hover-border-top);
+			--kb-nav-link-hover-border-right: var(--kb-nav-top-link-hover-border-right);
+			--kb-nav-link-hover-border-bottom: var(--kb-nav-top-link-hover-border-bottom);
+			--kb-nav-link-hover-border-left: var(--kb-nav-top-link-hover-border-left);
+			--kb-nav-link-active-border-top: var(--kb-nav-top-link-active-border-top);
+			--kb-nav-link-active-border-right: var(--kb-nav-top-link-active-border-right);
+			--kb-nav-link-active-border-bottom: var(--kb-nav-top-link-active-border-bottom);
+			--kb-nav-link-active-border-left: var(--kb-nav-top-link-active-border-left);
+			--kb-nav-link-active-ancestor-border-top: var(--kb-nav-top-link-active-ancestor-border-top);
+			--kb-nav-link-active-ancestor-border-right: var(--kb-nav-top-link-active-ancestor-border-right);
+			--kb-nav-link-active-ancestor-border-bottom: var(--kb-nav-top-link-active-ancestor-border-bottom);
+			--kb-nav-link-active-ancestor-border-left: var(--kb-nav-top-link-active-ancestor-border-left);
+			--kb-nav-link-border-top-left-radius: var(--kb-nav-top-link-border-top-left-radius);
+			--kb-nav-link-border-top-right-radius: var(--kb-nav-top-link-border-top-right-radius);
+			--kb-nav-link-border-bottom-right-radius: var(--kb-nav-top-link-border-bottom-right-radius);
+			--kb-nav-link-border-bottom-left-radius: var(--kb-nav-top-link-border-bottom-left-radius);
+			--kb-nav-link-hover-border-top-left-radius: var(--kb-nav-top-link-hover-border-top-left-radius);
+			--kb-nav-link-hover-border-top-right-radius: var(--kb-nav-top-link-hover-border-top-right-radius);
+			--kb-nav-link-hover-border-bottom-right-radius: var(--kb-nav-top-link-hover-border-bottom-right-radius);
+			--kb-nav-link-hover-border-bottom-left-radius: var(--kb-nav-top-link-hover-border-bottom-left-radius);
+			--kb-nav-link-active-border-top-left-radius: var(--kb-nav-top-link-active-border-top-left-radius);
+			--kb-nav-link-active-border-top-right-radius: var(--kb-nav-top-link-active-border-top-right-radius);
+			--kb-nav-link-active-border-bottom-right-radius: var(--kb-nav-top-link-active-border-bottom-right-radius);
+			--kb-nav-link-active-border-bottom-left-radius: var(--kb-nav-top-link-active-border-bottom-left-radius);
+			--kb-nav-link-active-ancestor-border-top-left-radius: var(
+				--kb-nav-top-link-active-ancestor-border-top-left-radius
+			);
+			--kb-nav-link-active-ancestor-border-top-right-radius: var(
+				--kb-nav-top-link-active-ancestor-border-top-right-radius
+			);
+			--kb-nav-link-active-ancestor-border-bottom-right-radius: var(
+				--kb-nav-top-link-active-ancestor-border-bottom-right-radius
+			);
+			--kb-nav-link-active-ancestor-border-bottom-left-radius: var(
+				--kb-nav-top-link-active-ancestor-border-bottom-left-radius
+			);
+			--kb-nav-link-box-shadow: var(--kb-nav-top-link-box-shadow);
+			--kb-nav-link-box-shadow-hover: var(--kb-nav-top-link-box-shadow-hover);
+			--kb-nav-link-box-shadow-active: var(--kb-nav-top-link-box-shadow-active);
+			--kb-nav-link-box-shadow-active-ancestor: var(--kb-nav-top-link-box-shadow-active-ancestor);
 
 			& > .kb-nav-link-content {
 				display: flex;
@@ -827,17 +1093,29 @@
 .wp-block-kadence-navigation-link {
 	.link-highlight-label {
 		transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out;
-		color: var(--global-palette9, #ffffff);
-		background: var(--global-palette1, #2f2ffc);
 		font-size: 0.7em;
 		margin-left: 0.2em;
 		line-height: normal;
-		padding: 0.3em;
-		border-radius: 2px;
-		gap: 0.5em;
 		display: flex;
 		flex-wrap: nowrap;
 		align-items: center;
+
+		color: var(--kb-nav-link-highlight-color, var(--global-palette9, #ffffff));
+		background: var(--kb-nav-link-highlight-background, var(--global-palette1, #2f2ffc));
+		padding-top: var(--kb-nav-link-highlight-padding-top, 0.3em);
+		padding-right: var(--kb-nav-link-highlight-padding-right, 0.3em);
+		padding-bottom: var(--kb-nav-link-highlight-padding-bottom, 0.3em);
+		padding-left: var(--kb-nav-link-highlight-padding-left, 0.3em);
+		border-top: var(--kb-nav-link-highlight-border-top);
+		border-right: var(--kb-nav-link-highlight-border-right);
+		border-bottom: var(--kb-nav-link-highlight-border-bottom);
+		border-left: var(--kb-nav-link-highlight-border-left);
+		border-top-left-radius: var(--kb-nav-link-highlight-border-top-left-radius, 2px);
+		border-top-right-radius: var(--kb-nav-link-highlight-border-top-right-radius, 2px);
+		border-bottom-right-radius: var(--kb-nav-link-highlight-border-bottom-right-radius, 2px);
+		border-bottom-left-radius: var(--kb-nav-link-highlight-border-bottom-left-radius, 2px);
+		gap: var(--kb-nav-link-highlight-gap, 0.5em);
+		order: var(--kb-nav-link-highlight-order);
 
 		.kt-svg-icon {
 			padding-left: 5px;
@@ -885,12 +1163,41 @@
 		overflow: visible;
 		transition: opacity 0.2s ease;
 	}
-	.kb-menu-has-description.kb-menu-has-icon {
-		.kb-nav-item-title-wrap {
-			display: grid;
-			grid-template-columns: 1fr auto;
+
+	.menu-label-description {
+		color: var(--kb-nav-link-description-color);
+		padding-top: var(--kb-nav-link-description-padding-top);
+		padding-right: var(--kb-nav-link-description-padding-right);
+		padding-bottom: var(--kb-nav-link-description-padding-bottom);
+		padding-left: var(--kb-nav-link-description-padding-left);
+		grid-row: var(--kb-nav-link-description-grid-row);
+		grid-column: var(--kb-nav-link-description-grid-column);
+	}
+
+	.kb-nav-item-title-wrap {
+		grid-template-columns: var(--kb-nav-link-title-wrap-grid-template-columns);
+		flex-direction: var(--kb-nav-link-title-wrap-flex-direction);
+		display: var(--kb-nav-link-title-wrap-display);
+		text-align: var(--kb-nav-link-title-wrap-text-align);
+	}
+
+	.kb-menu-has-description {
+		&.kb-menu-has-media {
+			.kb-nav-item-title-wrap {
+				--kb-nav-link-title-wrap-grid-template-columns: var(
+					--kb-nav-link-title-wrap-has-media-grid-template-columns
+				);
+			}
+		}
+
+		&.kb-menu-has-icon {
+			.kb-nav-item-title-wrap {
+				display: grid;
+				--kb-nav-link-title-wrap-grid-template-columns: 1fr auto;
+			}
 		}
 	}
+
 	&.menu-item-has-children {
 		position: relative;
 	}
@@ -899,16 +1206,82 @@
 		display: flex;
 		align-self: flex-start;
 		max-width: 150px;
-		padding: 0.3em;
+
+		padding-top: var(--kb-nav-link-media-container-padding-top, 0.3em);
+		padding-right: var(--kb-nav-link-media-container-padding-right, 0.3em);
+		padding-bottom: var(--kb-nav-link-media-container-padding-bottom, 0.3em);
+		padding-left: var(--kb-nav-link-media-container-padding-left, 0.3em);
+		margin-top: var(--kb-nav-link-media-container-margin-top);
+		margin-right: var(--kb-nav-link-media-container-margin-right);
+		margin-bottom: var(--kb-nav-link-media-container-margin-bottom);
+		margin-left: var(--kb-nav-link-media-container-margin-left);
+		border-radius: var(--kb-nav-link-media-container-border-radius);
+		color: var(--kb-nav-link-media-container-color);
+		background: var(--kb-nav-link-media-container-background);
+		order: var(--kb-nav-link-media-container-order);
+		justify-content: var(--kb-nav-link-media-container-justify-content);
+	}
+	.kadence-navigation-link-image-inner-intrinsic-container {
+		color: var(--kb-nav-link-media-color);
+		background: var(--kb-nav-link-media-background);
+		border-top: var(--kb-nav-link-media-border-top);
+		border-right: var(--kb-nav-link-media-border-right);
+		border-bottom: var(--kb-nav-link-media-border-bottom);
+		border-left: var(--kb-nav-link-media-border-left);
+		border-top-left-radius: var(--kb-nav-link-media-border-top-left-radius);
+		border-top-right-radius: var(--kb-nav-link-media-border-top-right-radius);
+		border-bottom-right-radius: var(--kb-nav-link-media-border-bottom-right-radius);
+		border-bottom-left-radius: var(--kb-nav-link-media-border-bottom-left-radius);
+
+		max-width: var(--kb-nav-link-media-max-width);
+	}
+	.kadence-navigation-link-image-intrinsic {
+		padding-bottom: var(--kb-nav-link-media-intrinsic-padding-bottom);
+		height: var(--kb-nav-link-media-intrinsic-height);
+		width: var(--kb-nav-link-media-intrinsic-width);
+
+		&.kb-navigation-link-image-ratio {
+			max-width: 100%;
+			position: relative;
+			overflow: hidden;
+
+			.kadence-navigation-link-image-inner-intrinsic {
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				right: 0px;
+				bottom: 0px;
+				& > img {
+					position: absolute;
+					flex: 1;
+					height: 100%;
+					object-fit: cover;
+					width: 100%;
+					top: 0px;
+					left: 0px;
+				}
+			}
+		}
 	}
 
 	.link-svg-icon {
 		display: inline-flex;
 		justify-content: center;
 		align-items: center;
+
 		svg {
 			width: 1em;
 			height: 1em;
 		}
+	}
+
+	.link-media-icon-wrap {
+		font-size: var(--kb-nav-link-icon-font-size);
+		height: var(--kb-nav-link-icon-height);
+		color: var(--kb-nav-link-icon-color);
+	}
+
+	.link-highlight-icon-wrap {
+		font-size: var(--kb-nav-link-highlight-icon-font-size);
 	}
 }

@@ -1268,10 +1268,13 @@ class Kadence_Blocks_CSS {
 			'desktop_key' => '',
 			'tablet_key'  => '',
 			'mobile_key'  => '',
+			'renderAsVars' => false,
+			'varBase' => '--kb-'
 		);
 		$args = wp_parse_args( $args, $defaults );
 
 		$name = $args['desktop_key'] ? $args['desktop_key'] : $name;
+		$property_prefix = $args['renderAsVars'] ? $args['varBase'] : '';
 
 		if ( isset( $attributes[ $name ] ) && is_array( $attributes[ $name ] ) ) {
 			$attribute = isset( $attributes[ $name ][0] ) ? $attributes[ $name ][0] : '';
@@ -1284,15 +1287,15 @@ class Kadence_Blocks_CSS {
 		}
 
 		if ( '' !== $attribute && ! is_array( $attribute ) ) {
-			$this->add_property( $property, $this->get_gap_size( $attribute, $unit ) );
+			$this->add_property( $property_prefix . $property, $this->get_gap_size( $attribute, $unit ) );
 		}
 		if ( '' !== $attributeTablet && ! is_array( $attributeTablet ) ) {
 			$this->set_media_state( 'tablet' );
-			$this->add_property( $property, $this->get_gap_size( $attributeTablet, $unit ) );
+			$this->add_property( $property_prefix . $property, $this->get_gap_size( $attributeTablet, $unit ) );
 		}
 		if ( '' !== $attributeMobile && ! is_array( $attributeMobile ) ) {
 			$this->set_media_state( 'mobile' );
-			$this->add_property( $property, $this->get_gap_size( $attributeMobile, $unit ) );
+			$this->add_property( $property_prefix . $property, $this->get_gap_size( $attributeMobile, $unit ) );
 		}
 		$this->set_media_state( 'desktop' );
 	}
@@ -1939,6 +1942,8 @@ class Kadence_Blocks_CSS {
 				'bottom' => 'third_prop',
 				'left' => 'fourth_prop',
 			),
+			'renderAsVars' => false,
+			'varBase' => '--kb-',
 		);
 		$args = wp_parse_args( $args, $defaults );
 		$sizes = array(
@@ -1946,6 +1951,8 @@ class Kadence_Blocks_CSS {
 			'tablet',
 			'mobile',
 		);
+		$property_prefix = $args['renderAsVars'] ? $args['varBase'] : '';
+
 		foreach ( $sizes as $size ) {
 			$this->set_media_state( $size );
 			foreach ( $args['sides_prop_keys'] as $side => $prop_key ) {
@@ -1953,11 +1960,11 @@ class Kadence_Blocks_CSS {
 				$color = $this->get_border_value( $attributes, $args, $side, $size, 'color', $single_styles );
 				$style = $this->get_border_value( $attributes, $args, $side, $size, 'style', $single_styles );
 				if ( $width ) {
-					$this->add_property( $args[ $prop_key ], $width . ' ' . $style . ' ' . $color );
+					$this->add_property( $property_prefix . $args[ $prop_key ], $width . ' ' . $style . ' ' . $color );
 				} elseif ( $single_styles && $color ) {
-					$this->add_property( $args[ $prop_key ] . '-color', $color );
+					$this->add_property( $property_prefix . $args[ $prop_key ] . '-color', $color );
 					if ( $style ) {
-						$this->add_property( $args[ $prop_key ] . '-style', $style );
+						$this->add_property( $property_prefix . $args[ $prop_key ] . '-style', $style );
 					}
 				} elseif ( $single_styles && $style ) {
 					$desktop_width = $this->get_border_value( $attributes, $args, $side, 'desktop', 'width', $single_styles );
@@ -1965,7 +1972,7 @@ class Kadence_Blocks_CSS {
 
 					// Only need to output *just* the border-style if we're inheriting a width
 					if( ( $size === 'tablet' && !empty( $desktop_width ) ) || ( $size === 'mobile' && !empty( $desktop_width ) && !empty( $tablet_width ) ) ) {
-						$this->add_property( $args[ $prop_key ] . '-style', $style );
+						$this->add_property( $property_prefix . $args[ $prop_key ] . '-style', $style );
 					}
 				}
 			}
@@ -2099,6 +2106,8 @@ class Kadence_Blocks_CSS {
 			'selector' => '',
 			'selectorHover' => '',
 			'selectorActive' => '',
+			'renderAsVars' => false,
+			'varBase' => '--kb-',
 		);
 
 		$args = array_merge( $default_args, $args );
@@ -2115,10 +2124,17 @@ class Kadence_Blocks_CSS {
 		$states = array( '', 'Hover', 'Active' );
 		$sizes = array( '', 'Tablet', 'Mobile' );
 
+		$property_prefix = $args['renderAsVars'] ? $args['varBase'] : '';
+
 		foreach ( $states as $state ) {
-			if ( $args[ 'selector' . $state ] ) {
+			if ( $args[ 'selector' . $state ] || $args['renderAsVars'] ) {
 				$state_selector = $args[ 'selector' . $state ];
-				$this->set_selector( $state_selector );
+				$property_suffix = $args['renderAsVars'] ? ( $state ? '-' . strtolower($state) : '' ) : '';
+				$property_addition = $args['renderAsVars'] ? ( $state ? strtolower($state) . '-' : '' ) : '';
+
+				if ( ! $args['renderAsVars'] ) {
+					$this->set_selector( $state_selector );
+				}
 
 				foreach ( $sizes as $size ) {
 					$this->set_media_state( $size ? lcfirst( $size ) : 'desktop' );
@@ -2132,23 +2148,38 @@ class Kadence_Blocks_CSS {
 					$border_radius_unit_value = $border_radius_unit_base ? $attributes[ $border_radius_unit_base . $state ] : '';
 					$shadow_value = $shadow_base ? $attributes[ $shadow_base . $state ] : '';
 
-					$this->add_property( 'color', $this->render_color( $color_value ) );
+					$this->add_property( $property_prefix . 'color' . $property_suffix, $this->render_color( $color_value ) );
 					if ( 'gradient' === $background_type_value && ! empty( $background_gradient_value ) ) {
-						$this->add_property( 'background', $background_gradient_value );
+						$this->add_property( $property_prefix . 'background' . $property_suffix, $background_gradient_value );
 					} else {
-						$this->add_property( 'background', $this->render_color( $background_value ) );
+						$this->add_property( $property_prefix . 'background' . $property_suffix, $this->render_color( $background_value ) );
 					}
 				}
 				$this->set_media_state( 'desktop' );
-				$this->render_measure_output( $attributes, $border_radius_base . $state, 'border-radius', array(
+
+				$border_radius_base_args = array(
 					'desktop_key' => $border_radius_base . $state,
 					'tablet_key'  => $border_radius_base . $state . 'Tablet',
 					'mobile_key'  => $border_radius_base . $state . 'Mobile',
 					'unit_key'  => $border_radius_unit_base . $state,
-				) );
-				$this->render_border_styles( $attributes, $border_base . $state );
+				);
+				$border_radius_args = $args['renderAsVars'] ? array_merge($border_radius_base_args,
+				[
+					'first_prop' => $property_prefix . $property_addition . 'top-left',
+					'second_prop' => $property_prefix . $property_addition . 'top-right',
+					'third_prop' => $property_prefix . $property_addition . 'bottom-right',
+					'third_prop' => $property_prefix . $property_addition . 'bottom-left' 
+				]) : $border_radius_base_args;
+
+				$border_args = [
+					'renderAsVars' => $args['renderAsVars'], 
+					'baseVar' => $args['baseVar'] . $property_addition
+				];
+
+				$this->render_measure_output( $attributes, $border_radius_base . $state, 'border-radius', $border_radius_args );
+				$this->render_border_styles( $attributes, $border_base . $state, $border_args );
 				if ( $shadow_value && isset( $shadow_value[0] ) && $shadow_value[0]['enable'] ) {
-					$this->add_property( 'box-shadow', $this->render_shadow( $shadow_value[0] ) );
+					$this->add_property( $property_prefix . 'box-shadow' . $property_suffix, $this->render_shadow( $shadow_value[0] ) );
 				}
 			}
 		}

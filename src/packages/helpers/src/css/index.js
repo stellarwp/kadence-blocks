@@ -536,13 +536,18 @@ export default class KadenceBlocksCSS {
 			selector,
 			selectorHover,
 			selectorActive,
+			renderAsVars,
+			varBase,
 		} = args;
 
-		const states = ['', 'Hover', 'Active'];
+		const propertyPrefix = renderAsVars ? varBase : '';
 
+		const states = ['', 'Hover', 'Active'];
 		states.forEach((state) => {
-			if (args['selector' + state]) {
+			if (args['selector' + state] || renderAsVars) {
 				const stateSelector = args['selector' + state];
+				const propertySuffix = renderAsVars ? (state ? '-' + state.toLowerCase() : '') : '';
+				const propertyAddition = renderAsVars ? (state ? state.toLowerCase() + '-' : '') : '';
 
 				const colorValue = attributes[colorBase + state];
 				const colorTabletValue = attributes[colorBase + state + 'Tablet'];
@@ -622,13 +627,25 @@ export default class KadenceBlocksCSS {
 							: this.render_color(previewBackgroundValue);
 				}
 
-				this.set_selector(stateSelector);
-				this.add_property('color', this.render_color(previewColorValue));
-				this.add_property('background', backgroundString);
-				this.add_property('border-top', previewBorderTopValue);
-				this.add_property('border-right', previewBorderRightValue);
-				this.add_property('border-bottom', previewBorderBottomValue);
-				this.add_property('border-left', previewBorderLeftValue);
+				if (!renderAsVars) {
+					this.set_selector(stateSelector);
+				}
+				this.add_property(propertyPrefix + 'color' + propertySuffix, this.render_color(previewColorValue));
+				this.add_property(propertyPrefix + 'background' + propertySuffix, backgroundString);
+				this.add_property(propertyPrefix + propertyAddition + 'border-top', previewBorderTopValue);
+				this.add_property(propertyPrefix + propertyAddition + 'border-right', previewBorderRightValue);
+				this.add_property(propertyPrefix + propertyAddition + 'border-bottom', previewBorderBottomValue);
+				this.add_property(propertyPrefix + propertyAddition + 'border-left', previewBorderLeftValue);
+
+				const borderRadiusArgs = renderAsVars
+					? {
+							first_prop: propertyPrefix + propertyAddition + 'top-left',
+							second_prop: propertyPrefix + propertyAddition + 'top-right',
+							third_prop: propertyPrefix + propertyAddition + 'bottom-right',
+							third_prop: propertyPrefix + propertyAddition + 'bottom-left',
+					  }
+					: {};
+
 				this.render_measure_output(
 					borderRadiusValue,
 					borderRadiusTabletValue,
@@ -636,11 +653,14 @@ export default class KadenceBlocksCSS {
 					previewDevice,
 					'border-radius',
 					borderRadiusUnitValue ? borderRadiusUnitValue : 'px',
-					{},
+					borderRadiusArgs,
 					nohook
 				);
 				if (shadowValue?.[0]?.enable) {
-					this.add_property('box-shadow', this.render_shadow(shadowValue[0]));
+					this.add_property(
+						propertyPrefix + 'box-shadow' + propertySuffix,
+						this.render_shadow(shadowValue[0])
+					);
 				}
 			}
 		});
@@ -754,8 +774,8 @@ export default class KadenceBlocksCSS {
 			return false;
 		}
 		var opacity = null;
-		if (('opacity' in value)) {
-			opacity = ( ('opacity' in value) && !this.empty(value?.['opacity']) ? value?.['opacity'] : 0);
+		if ('opacity' in value) {
+			opacity = 'opacity' in value && !this.empty(value?.['opacity']) ? value?.['opacity'] : 0;
 		}
 		var shadowString = '';
 		if (value['inset']) {
