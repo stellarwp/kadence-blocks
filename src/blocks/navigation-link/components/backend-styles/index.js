@@ -854,20 +854,17 @@ export default function BackendStyles(props) {
 	//media styles
 	if (mediaType && 'none' !== mediaType) {
 		//normal styles
+		css.add_property('--kb-nav-link-media-container-background', css.render_color(previewMediaStyleBackground));
 		css.add_property(
-			'--kb-nav-link-media-container-background-color',
-			css.render_color(previewMediaStyleBackground)
-		);
-		css.add_property(
-			'--kb-nav-link-media-container-background-color-hover',
+			'--kb-nav-link-media-container-backgroundhover',
 			css.render_color(previewMediaStyleBackgroundHover)
 		);
 		css.add_property(
-			'--kb-nav-link-media-container-background-color-active',
+			'--kb-nav-link-media-container-background-active',
 			css.render_color(previewMediaStyleBackgroundActive)
 		);
 		css.add_property(
-			'--kb-nav-link-media-container-background-color-active-ancestor',
+			'--kb-nav-link-media-container-background-active-ancestor',
 			css.render_color(previewMediaStyleBackgroundActive)
 		);
 		css.add_property(
@@ -1100,7 +1097,7 @@ export default function BackendStyles(props) {
 		if (previewDescriptionPositioning === 'icon') {
 			css.add_property('--kb-nav-link-description-grid-column', 'span 2');
 		} else {
-			css.add_property('--kb-nav-link-description-grid-row', 'span 2');
+			css.add_property('--kb-nav-link-description-grid-column', '2');
 		}
 	}
 	//description styles
