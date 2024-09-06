@@ -601,6 +601,7 @@
 		justify-content: center;
 		align-items: center;
 		list-style: none;
+		position: relative;
 
 		padding: var(--kb-nav-padding-top, 0) var(--kb-nav-padding-right, 0) var(--kb-nav-padding-bottom, 0)
 			var(--kb-nav-padding-left, 0);
@@ -1205,7 +1206,7 @@
 	}
 
 	&.menu-item-has-children {
-		position: relative;
+		--kb-nav-link-position: var(--kb-nav-link-has-children-position, relative);
 	}
 
 	.link-media-container {
