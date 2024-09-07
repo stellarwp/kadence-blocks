@@ -515,19 +515,19 @@ export default function BackendStyles(props) {
 		css.render_border(dropdownBorder, dropdownBorderTablet, dropdownBorderMobile, previewDevice, 'left')
 	);
 	css.add_property(
-		'--kb-nav-dropdown-border-radius-top-left',
+		'--kb-nav-dropdown-border-top-left-radius',
 		getSpacingOptionOutput(previewDropdownBorderTopLeftRadius, dropdownBorderRadiusUnit)
 	);
 	css.add_property(
-		'--kb-nav-dropdown-border-radius-top-right',
+		'--kb-nav-dropdown-border-top-right-radius',
 		getSpacingOptionOutput(previewDropdownBorderTopRightRadius, dropdownBorderRadiusUnit)
 	);
 	css.add_property(
-		'--kb-nav-dropdown-border-radius-bottom-right',
+		'--kb-nav-dropdown-border-bottom-right-radius',
 		getSpacingOptionOutput(previewDropdownBorderBottomRightRadius, dropdownBorderRadiusUnit)
 	);
 	css.add_property(
-		'--kb-nav-dropdown-border-radius-bottom-left',
+		'--kb-nav-dropdown-border-bottom-left-radius',
 		getSpacingOptionOutput(previewDropdownBorderBottomLeftRadius, dropdownBorderRadiusUnit)
 	);
 

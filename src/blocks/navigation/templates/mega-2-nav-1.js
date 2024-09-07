@@ -65,6 +65,13 @@ function innerBlocks() {
 							flipIcon: '',
 						},
 					],
+					mediaColor: 'palette9',
+					mediaColorHover: 'palette9',
+					mediaColorActive: 'palette9',
+					mediaBackground: 'palette6',
+					mediaBackgroundHover: 'palette6',
+					mediaBackgroundActive: 'palette6',
+					mediaBorderRadius: ['7', '7', '7', '7'],
 					mediaStyle: [
 						{
 							color: 'palette9',
@@ -129,6 +136,13 @@ function innerBlocks() {
 							flipIcon: '',
 						},
 					],
+					mediaColor: 'palette9',
+					mediaColorHover: 'palette9',
+					mediaColorActive: 'palette9',
+					mediaBackground: 'palette6',
+					mediaBackgroundHover: 'palette6',
+					mediaBackgroundActive: 'palette6',
+					mediaBorderRadius: ['7', '7', '7', '7'],
 					mediaStyle: [
 						{
 							color: 'palette9',
@@ -193,6 +207,13 @@ function innerBlocks() {
 							flipIcon: '',
 						},
 					],
+					mediaColor: 'palette9',
+					mediaColorHover: 'palette9',
+					mediaColorActive: 'palette9',
+					mediaBackground: 'palette6',
+					mediaBackgroundHover: 'palette6',
+					mediaBackgroundActive: 'palette6',
+					mediaBorderRadius: ['7', '7', '7', '7'],
 					mediaStyle: [
 						{
 							color: 'palette9',

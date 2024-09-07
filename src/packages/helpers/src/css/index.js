@@ -639,10 +639,10 @@ export default class KadenceBlocksCSS {
 
 				const borderRadiusArgs = renderAsVars
 					? {
-							first_prop: propertyPrefix + propertyAddition + 'top-left',
-							second_prop: propertyPrefix + propertyAddition + 'top-right',
-							third_prop: propertyPrefix + propertyAddition + 'bottom-right',
-							third_prop: propertyPrefix + propertyAddition + 'bottom-left',
+							first_prop: propertyPrefix + propertyAddition + 'border-top-left-radius',
+							second_prop: propertyPrefix + propertyAddition + 'border-top-right-radius',
+							third_prop: propertyPrefix + propertyAddition + 'border-bottom-right-radius',
+							fourth_prop: propertyPrefix + propertyAddition + 'border-bottom-left-radius',
 					  }
 					: {};
 

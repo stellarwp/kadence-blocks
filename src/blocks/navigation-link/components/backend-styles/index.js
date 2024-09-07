@@ -489,12 +489,12 @@ export default function BackendStyles(props) {
 		mediaStyle[0].borderRadiusTablet,
 		mediaStyle[0].borderRadiusMobile
 	);
-	// const previewMediaIconSize = getPreviewSize(
-	// 	previewDevice,
-	// 	mediaIcon[0].size,
-	// 	mediaIcon[0].sizeTablet,
-	// 	mediaIcon[0].sizeMobile
-	// );
+	const previewMediaIconSize = getPreviewSize(
+		previewDevice,
+		mediaIcon[0].size,
+		mediaIcon[0].sizeTablet,
+		mediaIcon[0].sizeMobile
+	);
 	// const previewMediaIconWidth = getPreviewSize(
 	// 	previewDevice,
 	// 	mediaIcon[0].width,
@@ -884,6 +884,7 @@ export default function BackendStyles(props) {
 		attributes,
 		previewDevice
 	);
+
 	css.render_button_styles_with_states(
 		{
 			colorBase: 'mediaColor',
@@ -894,7 +895,7 @@ export default function BackendStyles(props) {
 			borderRadiusBase: 'mediaBorderRadius',
 			borderRadiusUnitBase: 'mediaBorderRadiusUnit',
 			renderAsVars: true,
-			varBase: '--kb-nav-link-media-',
+			varBase: '--kb-nav-link-media-container-',
 		},
 		attributes,
 		previewDevice
@@ -1049,28 +1050,8 @@ export default function BackendStyles(props) {
 
 	//media styles
 	if (mediaType && 'none' !== mediaType) {
-		//normal styles
-		css.add_property('--kb-nav-link-media-container-background', css.render_color(previewMediaStyleBackground));
-		css.add_property(
-			'--kb-nav-link-media-container-backgroundhover',
-			css.render_color(previewMediaStyleBackgroundHover)
-		);
-		css.add_property(
-			'--kb-nav-link-media-container-background-active',
-			css.render_color(previewMediaStyleBackgroundActive)
-		);
-		css.add_property(
-			'--kb-nav-link-media-container-background-active-ancestor',
-			css.render_color(previewMediaStyleBackgroundActive)
-		);
-		css.add_property(
-			'--kb-nav-link-media-container-border-radius',
-			css.render_size(previewMediaStyleBorderRadius, 'px')
-		);
-		css.add_property('--kb-nav-link-icon-color', css.render_color(previewMediaStyleColor));
-		css.add_property('--kb-nav-link-icon-color-hover', css.render_color(previewMediaStyleColorHover));
-		css.add_property('--kb-nav-link-icon-color-active', css.render_color(previewMediaStyleColorActive));
-		css.add_property('--kb-nav-link-icon-color-active-ancestor', css.render_color(previewMediaStyleColorActive));
+		css.add_property('--kb-nav-link-icon-font-size', css.render_size(previewMediaIconSize, 'px'));
+		//$css->add_property( '--kb-nav-link-icon-height', $css->render_size( $media_icon_size, 'px' ) );
 
 		if (previewMediaAlign === 'left') {
 			css.add_property('--kb-nav-link-media-container-order', '-1');

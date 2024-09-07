@@ -81,6 +81,9 @@ function innerBlocks() {
 							flipIcon: '',
 						},
 					],
+					mediaColor: 'palette9',
+					mediaBackground: 'palette1',
+					mediaBorderRadius: ['3', '3', '3', '3'],
 					mediaStyle: [
 						{
 							color: 'palette9',
@@ -168,6 +171,9 @@ function innerBlocks() {
 							flipIcon: '',
 						},
 					],
+					mediaColor: 'palette9',
+					mediaBackground: 'palette2',
+					mediaBorderRadius: ['3', '3', '3', '3'],
 					mediaStyle: [
 						{
 							color: 'palette9',
@@ -253,6 +259,9 @@ function innerBlocks() {
 							flipIcon: '',
 						},
 					],
+					mediaColor: 'palette9',
+					mediaBackground: 'palette4',
+					mediaBorderRadius: ['3', '3', '3', '3'],
 					mediaStyle: [
 						{
 							color: 'palette9',

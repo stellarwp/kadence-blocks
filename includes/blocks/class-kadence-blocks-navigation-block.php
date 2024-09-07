@@ -169,10 +169,10 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 			'', 
 			[
 				'unit_key' => 'dropdownBorderRadiusUnit', 
-				'first_prop' => '--kb-nav-dropdown-border-radius-top-left',
-				'second_prop' => '--kb-nav-dropdown-border-radius-top-right',
-				'third_prop' => '--kb-nav-dropdown-border-radius-bottom-right',
-				'fourth_prop' => '--kb-nav-dropdown-border-radius-bottom-left' 
+				'first_prop' => '--kb-nav-dropdown-border-top-left-radius',
+				'second_prop' => '--kb-nav-dropdown-border-top-right-radius',
+				'third_prop' => '--kb-nav-dropdown-border-bottom-right-radius',
+				'fourth_prop' => '--kb-nav-dropdown-border-bottom-left-radius' 
 			]
 		);
 		$css->render_measure_range( $sized_attributes, ( 'Desktop' === $size ? 'dropdownBorderRadius' : 'dropdownBorderRadius' . $size ), '--kb-nav-dropdown-border-radius', '', ['unit_key' => 'dropdownBorderRadiusUnit']);

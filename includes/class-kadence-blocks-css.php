@@ -2165,19 +2165,19 @@ class Kadence_Blocks_CSS {
 				);
 				$border_radius_args = $args['renderAsVars'] ? array_merge($border_radius_base_args,
 				[
-					'first_prop' => $property_prefix . $property_addition . 'top-left',
-					'second_prop' => $property_prefix . $property_addition . 'top-right',
-					'third_prop' => $property_prefix . $property_addition . 'bottom-right',
-					'third_prop' => $property_prefix . $property_addition . 'bottom-left' 
+					'first_prop' => $property_prefix . $property_addition . 'border-top-left-radius',
+					'second_prop' => $property_prefix . $property_addition . 'border-top-right-radius',
+					'third_prop' => $property_prefix . $property_addition . 'border-bottom-right-radius',
+					'fourth_prop' => $property_prefix . $property_addition . 'border-bottom-left-radius' 
 				]) : $border_radius_base_args;
 
 				$border_args = [
 					'renderAsVars' => $args['renderAsVars'], 
-					'varBase' => $args['varBase'] . $property_addition
+					'varBase' => $property_prefix . $property_addition
 				];
 
 				$this->render_measure_output( $attributes, $border_radius_base . $state, 'border-radius', $border_radius_args );
-				$this->render_border_styles( $attributes, $border_base . $state, $border_args );
+				$this->render_border_styles( $attributes, $border_base . $state, false, $border_args );
 				if ( $shadow_value && isset( $shadow_value[0] ) && $shadow_value[0]['enable'] ) {
 					$this->add_property( $property_prefix . 'box-shadow' . $property_suffix, $this->render_shadow( $shadow_value[0] ) );
 				}

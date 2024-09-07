@@ -62,6 +62,9 @@ function innerBlocks() {
 							flipIcon: '',
 						},
 					],
+					mediaColor: 'palette1',
+					mediaColorHover: 'palette1',
+					mediaColorActive: 'palette1',
 					mediaStyle: [
 						{
 							color: 'palette1',
@@ -125,6 +128,9 @@ function innerBlocks() {
 							flipIcon: '',
 						},
 					],
+					mediaColor: 'palette1',
+					mediaColorHover: 'palette1',
+					mediaColorActive: 'palette1',
 					mediaStyle: [
 						{
 							color: 'palette1',
@@ -188,6 +194,9 @@ function innerBlocks() {
 							flipIcon: '',
 						},
 					],
+					mediaColor: 'palette1',
+					mediaColorHover: 'palette1',
+					mediaColorActive: 'palette1',
 					mediaStyle: [
 						{
 							color: 'palette1',
@@ -251,6 +260,9 @@ function innerBlocks() {
 							flipIcon: '',
 						},
 					],
+					mediaColor: 'palette1',
+					mediaColorHover: 'palette1',
+					mediaColorActive: 'palette1',
 					mediaStyle: [
 						{
 							color: 'palette1',

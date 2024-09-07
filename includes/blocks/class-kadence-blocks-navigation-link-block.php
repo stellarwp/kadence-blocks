@@ -179,10 +179,10 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 					'varBase' => '--kb-nav-link-highlight-',
 				] );
 				$css->render_measure_output( $attributes['highlightSpacing'][0],  'border-radius', 'borderRadius', [
-					'first_prop' => '--kb-nav-link-highlight-border-radius-top-left',
-					'second_prop' => '--kb-nav-link-highlight-border-radius-top-right',
-					'third_prop' => '--kb-nav-link-highlight-border-radius-bottom-right',
-					'fourth_prop' => '--kb-nav-link-highlight-border-radius-bottom-left' 
+					'first_prop' => '--kb-nav-link-highlight-border-top-left-radius',
+					'second_prop' => '--kb-nav-link-highlight-border-top-right-radius',
+					'third_prop' => '--kb-nav-link-highlight-border-bottom-right-radius',
+					'fourth_prop' => '--kb-nav-link-highlight-border-bottom-left-radius' 
 				] );
 				$css->render_gap($attributes['highlightSpacing'][0],'gap', 'gap','gapUnit', [
 					'renderAsVars' => true,
@@ -204,7 +204,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 				'borderRadiusBase' => 'mediaBorderRadius',
 				'borderRadiusUnitBase' => 'mediaBorderRadiusUnit',
 				'renderAsVars' => true,
-				'varBase' => '--kb-nav-link-media-'
+				'varBase' => '--kb-nav-link-media-container-'
 			),
 			$attributes
 		);
@@ -323,18 +323,8 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			}
 		}
 
-		// Media styles (icons).
+		// Media styles.
 		if ( $attributes['mediaType'] && 'none' !== $attributes['mediaType'] ) {
-			// Normal styles.
-			$css->add_property( '--kb-nav-link-media-container-background', $css->render_color( $media_style_background ) );
-			$css->add_property( '--kb-nav-link-media-container-background-hover', $css->render_color( $media_style_background_hover ) );
-			$css->add_property( '--kb-nav-link-media-container-background-active', $css->render_color( $media_style_background_active ) );
-			$css->add_property( '--kb-nav-link-media-container-background-active-ancestor', $css->render_color( $media_style_background_active ) );
-			$css->add_property( '--kb-nav-link-media-container-border-radius', $css->render_size( $media_style_border_radius, 'px' ) );
-			$css->add_property( '--kb-nav-link-icon-color', $css->render_color( $media_style_color ) );
-			$css->add_property( '--kb-nav-link-icon-color-hover', $css->render_color( $media_style_color_hover ) );
-			$css->add_property( '--kb-nav-link-icon-color-active', $css->render_color( $media_style_color_active ) );
-			$css->add_property( '--kb-nav-link-icon-color-active-ancestor', $css->render_color( $media_style_color_active ) );
 			$css->add_property( '--kb-nav-link-icon-font-size', $css->render_size( $media_icon_size, 'px' ) );
 			//$css->add_property( '--kb-nav-link-icon-height', $css->render_size( $media_icon_size, 'px' ) );
 

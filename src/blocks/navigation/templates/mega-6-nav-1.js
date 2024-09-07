@@ -51,6 +51,13 @@ function innerBlocks() {
 					url: '#',
 					mediaType: 'icon',
 					mediaAlign: 'top',
+					mediaColor: 'palette3',
+					mediaColorHover: 'palette9',
+					mediaColorActive: 'palette9',
+					mediaBackground: 'rgba(43,108,176,0.1)',
+					mediaBackgroundHover: 'palette1',
+					mediaBackgroundActive: 'palette1',
+					mediaBorderRadius: ['50', '50', '50', '50'],
 					mediaStyle: [
 						{
 							color: 'palette3',
@@ -100,6 +107,13 @@ function innerBlocks() {
 					kind: 'custom',
 					mediaType: 'icon',
 					mediaAlign: 'top',
+					mediaColor: 'palette3',
+					mediaColorHover: 'palette9',
+					mediaColorActive: 'palette9',
+					mediaBackground: 'rgba(43,108,176,0.1)',
+					mediaBackgroundHover: 'palette1',
+					mediaBackgroundActive: 'palette1',
+					mediaBorderRadius: ['50', '50', '50', '50'],
 					mediaStyle: [
 						{
 							color: 'palette3',
@@ -149,6 +163,13 @@ function innerBlocks() {
 					kind: 'custom',
 					mediaType: 'icon',
 					mediaAlign: 'top',
+					mediaColor: 'palette3',
+					mediaColorHover: 'palette9',
+					mediaColorActive: 'palette9',
+					mediaBackground: 'rgba(43,108,176,0.1)',
+					mediaBackgroundHover: 'palette1',
+					mediaBackgroundActive: 'palette1',
+					mediaBorderRadius: ['50', '50', '50', '50'],
 					mediaStyle: [
 						{
 							color: 'palette3',
@@ -198,6 +219,13 @@ function innerBlocks() {
 					kind: 'custom',
 					mediaType: 'icon',
 					mediaAlign: 'top',
+					mediaColor: 'palette3',
+					mediaColorHover: 'palette9',
+					mediaColorActive: 'palette9',
+					mediaBackground: 'rgba(43,108,176,0.1)',
+					mediaBackgroundHover: 'palette1',
+					mediaBackgroundActive: 'palette1',
+					mediaBorderRadius: ['50', '50', '50', '50'],
 					mediaStyle: [
 						{
 							color: 'palette3',
@@ -247,6 +275,13 @@ function innerBlocks() {
 					kind: 'custom',
 					mediaType: 'icon',
 					mediaAlign: 'top',
+					mediaColor: 'palette3',
+					mediaColorHover: 'palette9',
+					mediaColorActive: 'palette9',
+					mediaBackground: 'rgba(43,108,176,0.1)',
+					mediaBackgroundHover: 'palette1',
+					mediaBackgroundActive: 'palette1',
+					mediaBorderRadius: ['50', '50', '50', '50'],
 					mediaStyle: [
 						{
 							color: 'palette3',
