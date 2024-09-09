@@ -175,7 +175,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.2.53 =
-Release Date: September TBD 2024
+Release Date: September 9th 2024
 * Fix: Show more block inside query loop.
 * Fix: Countdown repeater not working.
 * Fix: Issue with progress label position.
