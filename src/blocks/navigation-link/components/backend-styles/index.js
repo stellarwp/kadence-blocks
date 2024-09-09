@@ -1027,12 +1027,10 @@ export default function BackendStyles(props) {
 
 		if (previewDescriptionPositioning === 'icon') {
 			css.add_property('--kb-nav-link-description-grid-column', 'span 2');
+		} else if (previewMediaAlign == 'right') {
+			css.add_property('--kb-nav-link-description-grid-column', '1');
 		} else {
-			if (previewMediaAlign == 'right') {
-				css.add_property('--kb-nav-link-description-grid-column', '1');
-			} else {
-				css.add_property('--kb-nav-link-description-grid-column', '2');
-			}
+			css.add_property('--kb-nav-link-description-grid-column', '2');
 		}
 	}
 	//description styles
