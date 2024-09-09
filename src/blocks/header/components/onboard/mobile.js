@@ -4,7 +4,6 @@ import { useEffect, useState } from '@wordpress/element';
 import * as MobileIcons from './icons/mobile';
 
 const HeaderMobile = ({ data, onChange, handleFinish }) => {
-	const [hoveredOption, setHoveredOption] = useState(null);
 	const [handleFinishTrigger, setHandleFinishTrigger] = useState(false);
 
 	useEffect(() => {
@@ -27,22 +26,18 @@ const HeaderMobile = ({ data, onChange, handleFinish }) => {
 		'mobile-1': {
 			title: __('Mobile 1', 'kadence-blocks'),
 			icon: <MobileIcons.Mobile1 />,
-			iconHover: <MobileIcons.Mobile1Hover />,
 		},
 		'mobile-2': {
 			title: __('Mobile 2', 'kadence-blocks'),
 			icon: <MobileIcons.Mobile2 />,
-			iconHover: <MobileIcons.Mobile2Hover />,
 		},
 		'mobile-3': {
 			title: __('Mobile 3', 'kadence-blocks'),
 			icon: <MobileIcons.Mobile3 />,
-			iconHover: <MobileIcons.Mobile3Hover />,
 		},
 		'mobile-4': {
 			title: __('Mobile 4', 'kadence-blocks'),
 			icon: <MobileIcons.Mobile4 />,
-			iconHover: <MobileIcons.Mobile4Hover />,
 		},
 	};
 
@@ -77,10 +72,8 @@ const HeaderMobile = ({ data, onChange, handleFinish }) => {
 									onChange({ headerMobile: key });
 									setHandleFinishTrigger(true);
 								}}
-								onMouseEnter={() => setHoveredOption(key)}
-								onMouseLeave={() => setHoveredOption(null)}
 							>
-								{hoveredOption === key ? basicOptions[key].iconHover : basicOptions[key].icon}
+								{basicOptions[key].icon}
 							</div>
 							<span>{basicOptions[key].title}</span>
 						</div>
