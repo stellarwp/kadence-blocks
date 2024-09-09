@@ -450,50 +450,6 @@ function innerBlocks() {
 						},
 						[]
 					),
-					createBlock('kadence/advancedbtn', { uniqueID: '6_c13bb6-27' }, [
-						createBlock(
-							'kadence/singlebtn',
-							{
-								uniqueID: '6_d23d99-07',
-								text: 'Call to action',
-								sizePreset: 'small',
-								tabletMargin: ['md', '', '', ''],
-								color: 'palette9',
-								background: 'palette3',
-								colorHover: 'palette9',
-								backgroundHover: 'palette6',
-								tabletBorderStyle: [
-									{
-										top: ['palette9', '', ''],
-										right: ['palette9', '', ''],
-										bottom: ['palette9', '', ''],
-										left: ['palette9', '', ''],
-										unit: '',
-									},
-								],
-								inheritStyles: 'outline',
-								typography: [
-									{
-										size: ['sm', '', ''],
-										sizeType: 'px',
-										lineHeight: ['', '', ''],
-										lineType: '',
-										letterSpacing: ['', '', ''],
-										letterType: 'px',
-										textTransform: 'uppercase',
-										family: '',
-										google: '',
-										style: '',
-										weight: '',
-										variant: '',
-										subset: '',
-										loadGoogle: true,
-									},
-								],
-							},
-							[]
-						),
-					]),
 				]
 			),
 		]),

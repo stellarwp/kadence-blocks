@@ -596,28 +596,6 @@ function innerBlocks() {
 						},
 						[]
 					),
-					createBlock('kadence/advancedbtn', { uniqueID: '8_270dc9-47' }, [
-						createBlock(
-							'kadence/singlebtn',
-							{
-								uniqueID: '8_19f697-ce',
-								link: '#',
-								widthType: 'full',
-								color: 'palette3',
-								tabletBorderStyle: [
-									{
-										top: ['palette3', '', 2],
-										right: ['palette3', '', 2],
-										bottom: ['palette3', '', 2],
-										left: ['palette3', '', 2],
-										unit: '',
-									},
-								],
-								inheritStyles: 'outline',
-							},
-							[]
-						),
-					]),
 				]
 			),
 		]),

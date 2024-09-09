@@ -430,21 +430,7 @@ function innerBlocks() {
 					closeIconColor: 'palette9',
 					closeIconColorHover: 'palette7',
 				},
-				[
-					createBlock(
-						'kadence/image',
-						{
-							imgMaxWidth: 60,
-							sizeSlug: 'full',
-							linkDestination: 'none',
-							uniqueID: '10_70af32-57',
-							globalAlt: true,
-							url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-light.png',
-						},
-						[]
-					),
-					createBlock('kadence/navigation', { uniqueID: '10_6f903e-a7', templateKey: 'short' }, []),
-				]
+				[createBlock('kadence/navigation', { uniqueID: '10_6f903e-a7', templateKey: 'short' }, [])]
 			),
 		]),
 	];

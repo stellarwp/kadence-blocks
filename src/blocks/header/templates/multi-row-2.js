@@ -565,61 +565,7 @@ function innerBlocks() {
 					closeIconColorTablet: 'palette9',
 					closeIconPaddingTablet: ['xs', 'xs', 'xs', 'xs'],
 				},
-				[
-					createBlock('kadence/navigation', { uniqueID: '8_6c2466-33', templateKey: 'long-vertical' }, []),
-					createBlock(
-						'kadence/navigation',
-						{
-							uniqueID: '8_292fe2-6c',
-							templateKey: 'short',
-						},
-						[]
-					),
-					createBlock('kadence/advancedbtn', { uniqueID: '8_c305dd-3b' }, [
-						createBlock(
-							'kadence/singlebtn',
-							{
-								uniqueID: '8_3445b2-5a',
-								text: 'Subscribe',
-								sizePreset: 'small',
-								widthType: 'full',
-								tabletPadding: ['0', '0', '0', '0'],
-								tabletMargin: ['0', '0', '', ''],
-								color: 'palette9',
-								colorHover: 'palette9',
-								tabletBorderStyle: [
-									{
-										top: ['palette9', '', ''],
-										right: ['palette9', '', ''],
-										bottom: ['palette9', '', ''],
-										left: ['palette9', '', ''],
-										unit: '',
-									},
-								],
-								inheritStyles: 'outline',
-								typography: [
-									{
-										size: ['', 'sm', ''],
-										sizeType: 'px',
-										lineHeight: ['', '', ''],
-										lineType: '',
-										letterSpacing: ['', 1, ''],
-										letterType: 'px',
-										textTransform: 'uppercase',
-										family: 'var( --global-heading-font-family, inherit )',
-										google: false,
-										style: 'normal',
-										weight: '300',
-										variant: '',
-										subset: '',
-										loadGoogle: true,
-									},
-								],
-							},
-							[]
-						),
-					]),
-				]
+				[createBlock('kadence/navigation', { uniqueID: '8_6c2466-33', templateKey: 'long-vertical' }, [])]
 			),
 		]),
 	];
