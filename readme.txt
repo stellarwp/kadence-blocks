@@ -178,7 +178,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 Release Date: September 9th 2024
 * Fix: Show more block inside query loop.
 * Fix: Countdown repeater not working.
-* Fix: Issue with progress label position.
+* Fix: Issue with progress block label position.
 * Fix: Accordion pane spacing issue on front end.
 * Fix: Infobox text alignment in some layouts.
 * Fix: Warning about multiple submit buttons when two advanced forms are on the same page.
