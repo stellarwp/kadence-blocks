@@ -719,118 +719,124 @@
 
 		//active nav links (extra specificty to hack correct ordering against direct styling)
 		&.current-menu-item > .kb-link-wrap.kb-link-wrap.kb-link-wrap {
-			--kb-nav-link-color: var(--kb-nav-link-color-active);
-			--kb-nav-link-background: var(--kb-nav-link-background-active);
-			--kb-nav-link-border-top: var(--kb-nav-link-active-border-top);
-			--kb-nav-link-border-right: var(--kb-nav-link-active-border-right);
-			--kb-nav-link-border-bottom: var(--kb-nav-link-active-border-bottom);
-			--kb-nav-link-border-left: var(--kb-nav-link-active-border-left);
-			--kb-nav-link-border-top-left-radius: var(--kb-nav-link-active-border-top-left-radius);
-			--kb-nav-link-border-top-right-radius: var(--kb-nav-link-active-border-top-right-radius);
-			--kb-nav-link-border-bottom-right-radius: var(--kb-nav-link-active-border-bottom-right-radius);
-			--kb-nav-link-border-bottom-left-radius: var(--kb-nav-link-active-border-bottom-left-radius);
-			--kb-nav-link-box-shadow: var(--kb-nav-link-box-shadow-active);
-			--kb-nav-link-highlight-color: var(--kb-nav-link-highlight-color-active);
-			--kb-nav-link-highlight-background: var(--kb-nav-link-highlight-background-active);
-			--kb-nav-link-media-container-background: var(--kb-nav-link-media-container-background-active);
-			--kb-nav-link-media-container-color: var(--kb-nav-link-media-container-color-active);
-			--kb-nav-link-media-container-border-top: var(--kb-nav-link-media-container-active-border-top);
-			--kb-nav-link-media-container-border-right: var(--kb-nav-link-media-container-active-border-right);
-			--kb-nav-link-media-container-border-bottom: var(--kb-nav-link-media-container-active-border-bottom);
-			--kb-nav-link-media-container-border-left: var(--kb-nav-link-media-container-active-border-left);
-			--kb-nav-link-media-container-border-top-left-radius: var(
+			--kb-nav-link-color-active-lv: var(--kb-nav-link-color-active);
+			--kb-nav-link-background-active-lv: var(--kb-nav-link-background-active);
+			--kb-nav-link-active-border-top-lv: var(--kb-nav-link-active-border-top);
+			--kb-nav-link-active-border-right-lv: var(--kb-nav-link-active-border-right);
+			--kb-nav-link-active-border-bottom-lv: var(--kb-nav-link-active-border-bottom);
+			--kb-nav-link-active-border-left-lv: var(--kb-nav-link-active-border-left);
+			--kb-nav-link-active-border-top-left-radius-lv: var(--kb-nav-link-active-border-top-left-radius);
+			--kb-nav-link-active-border-top-right-radius-lv: var(--kb-nav-link-active-border-top-right-radius);
+			--kb-nav-link-active-border-bottom-right-radius-lv: var(--kb-nav-link-active-border-bottom-right-radius);
+			--kb-nav-link-active-border-bottom-left-radius-lv: var(--kb-nav-link-active-border-bottom-left-radius);
+			--kb-nav-link-box-shadow-active-lv: var(--kb-nav-link-box-shadow-active);
+			--kb-nav-link-highlight-color-active-lv: var(--kb-nav-link-highlight-color-active);
+			--kb-nav-link-highlight-background-active-lv: var(--kb-nav-link-highlight-background-active);
+			--kb-nav-link-media-container-background-active-lv: var(--kb-nav-link-media-container-background-active);
+			--kb-nav-link-media-container-color-active-lv: var(--kb-nav-link-media-container-color-active);
+			--kb-nav-link-media-container-active-border-top-lv: var(--kb-nav-link-media-container-active-border-top);
+			--kb-nav-link-media-container-active-border-right-lv: var(
+				--kb-nav-link-media-container-active-border-right
+			);
+			--kb-nav-link-media-container-active-border-bottom-lv: var(
+				--kb-nav-link-media-container-active-border-bottom
+			);
+			--kb-nav-link-media-container-active-border-left-lv: var(--kb-nav-link-media-container-active-border-left);
+			--kb-nav-link-media-container-active-border-top-left-radius-lv: var(
 				--kb-nav-link-media-container-active-border-top-left-radius
 			);
-			--kb-nav-link-media-container-border-top-right-radius: var(
+			--kb-nav-link-media-container-active-border-top-right-radius-lv: var(
 				--kb-nav-link-media-container-active-border-top-right-radius
 			);
-			--kb-nav-link-media-container-border-bottom-right-radius: var(
+			--kb-nav-link-media-container-active-border-bottom-right-radius-lv: var(
 				--kb-nav-link-media-container-active-border-bottom-right-radius
 			);
-			--kb-nav-link-media-container-border-bottom-left-radius: var(
+			--kb-nav-link-media-container-active-border-bottom-left-radius-lv: var(
 				--kb-nav-link-media-container-active-border-bottom-left-radius
 			);
-			--kb-nav-link-description-color: var(--kb-nav-link-description-color-active);
+			--kb-nav-link-description-color-active-lv: var(--kb-nav-link-description-color-active);
 		}
 		&.current-menu-ancestor > .kb-link-wrap.kb-link-wrap.kb-link-wrap {
-			--kb-nav-link-color: var(--kb-nav-link-color-active-ancestor, var(--kb-nav-link-color-active));
-			--kb-nav-link-background: var(
+			--kb-nav-link-color-active-lv: var(--kb-nav-link-color-active-ancestor, var(--kb-nav-link-color-active));
+			--kb-nav-link-background-active-lv: var(
 				--kb-nav-link-background-active-ancestor,
 				var(--kb-nav-link-background-active)
 			);
-			--kb-nav-link-border-top: var(
+			--kb-nav-link-border-top-active-lv: var(
 				--kb-nav-link-active-ancestor-border-top,
 				var(--kb-nav-link-active-border-top)
 			);
-			--kb-nav-link-border-right: var(
+			--kb-nav-link-border-right-active-lv: var(
 				--kb-nav-link-active-ancestor-border-right,
 				var(--kb-nav-link-active-border-right)
 			);
-			--kb-nav-link-border-bottom: var(
+			--kb-nav-link-border-bottom-active-lv: var(
 				--kb-nav-link-active-ancestor-border-bottom,
 				var(--kb-nav-link-active-border-bottom)
 			);
-			--kb-nav-link-border-left: var(
+			--kb-nav-link-border-left-active-lv: var(
 				--kb-nav-link-active-ancestor-border-left,
 				var(--kb-nav-link-active-border-left)
 			);
-			--kb-nav-link-border-top-left-radius: var(
+			--kb-nav-link-border-top-left-radius-active-lv: var(
 				--kb-nav-link-active-ancestor-border-top-left-radius,
 				var(--kb-nav-link-active-border-to-left-radiusp)
 			);
-			--kb-nav-link-border-top-right-radius: var(
+			--kb-nav-link-border-top-right-radius-active-lv: var(
 				--kb-nav-link-active-ancestor-border-top-right-radius,
 				var(--kb-nav-link-active-border-top-right-radius)
 			);
-			--kb-nav-link-border-bottom-right-radius: var(
+			--kb-nav-link-border-bottom-right-radius-active-lv: var(
 				--kb-nav-link-active-ancestor-border-bottom-right-radius,
 				var(--kb-nav-link-active-border-bottom-right-radius)
 			);
-			--kb-nav-link-border-bottom-left-radius: var(
+			--kb-nav-link-border-bottom-left-radius-active-lv: var(
 				--kb-nav-link-active-ancestor-border-bottom-left-radius,
 				var(--kb-nav-link-active-border-bottom-left-radius)
 			);
-			--kb-nav-link-box-shadow: var(
+			--kb-nav-link-box-shadow-active-lv: var(
 				--kb-nav-link-box-shadow-active-ancestor,
 				var(--kb-nav-link-box-shadow-active)
 			);
-			--kb-nav-link-highlight-color: var(--kb-nav-link-highlight-color-active-ancestor);
-			--kb-nav-link-highlight-background: var(--kb-nav-link-highlight-background-active-ancestor);
-			--kb-nav-link-media-container-background: var(--kb-nav-link-media-container-background-active-ancestor);
-			--kb-nav-link-media-container-color: var(--kb-nav-link-media-container-color-active-ancestor);
-			--kb-nav-link-media-container-border-top: var(
+			--kb-nav-link-highlight-color-active-lv: var(--kb-nav-link-highlight-color-active-ancestor);
+			--kb-nav-link-highlight-background-active-lv: var(--kb-nav-link-highlight-background-active-ancestor);
+			--kb-nav-link-media-container-background-active-lv: var(
+				--kb-nav-link-media-container-background-active-ancestor
+			);
+			--kb-nav-link-media-container-color-active-lv: var(--kb-nav-link-media-container-color-active-ancestor);
+			--kb-nav-link-media-container-active-border-top-lv: var(
 				--kb-nav-link-media-container-active-ancestor-border-top,
 				var(--kb-nav-link-media-container-active-border-top)
 			);
-			--kb-nav-link-media-container-border-right: var(
+			--kb-nav-link-media-container-active-border-right-lv: var(
 				--kb-nav-link-media-container-active-ancestor-border-right,
 				var(--kb-nav-link-media-container-active-border-right)
 			);
-			--kb-nav-link-media-container-border-bottom: var(
+			--kb-nav-link-media-container-active-border-bottom-lv: var(
 				--kb-nav-link-media-container-active-ancestor-border-bottom,
 				var(--kb-nav-link-media-container-active-border-bottom)
 			);
-			--kb-nav-link-media-container-border-left: var(
+			--kb-nav-link-media-container-active-border-left-lv: var(
 				--kb-nav-link-media-container-active-ancestor-border-left,
 				var(--kb-nav-link-media-container-active-border-left)
 			);
-			--kb-nav-link-media-container-border-top-left-radius: var(
+			--kb-nav-link-media-container-active-border-top-left-radius-lv: var(
 				--kb-nav-link-media-container-active-ancestor-border-top-left-radius,
 				var(--kb-nav-link-media-container-active-border-to-left-radiusp)
 			);
-			--kb-nav-link-media-container-border-top-right-radius: var(
+			--kb-nav-link-media-container-active-border-top-right-radius-lv: var(
 				--kb-nav-link-media-container-active-ancestor-border-top-right-radius,
 				var(--kb-nav-link-media-container-active-border-top-right-radius)
 			);
-			--kb-nav-link-media-container-border-bottom-right-radius: var(
+			--kb-nav-link-media-container-active-border-bottom-right-radius-lv: var(
 				--kb-nav-link-media-container-active-ancestor-border-bottom-right-radius,
 				var(--kb-nav-link-media-container-active-border-bottom-right-radius)
 			);
-			--kb-nav-link-media-container-border-bottom-left-radius: var(
+			--kb-nav-link-media-container-active-border-bottom-left-radius-lv: var(
 				--kb-nav-link-media-container-active-ancestor-border-bottom-left-radius,
 				var(--kb-nav-link-media-container-active-border-bottom-left-radius)
 			);
-			--kb-nav-link-description-color: var(--kb-nav-link-description-color-active-ancestor);
+			--kb-nav-link-description-color-active-lv: var(--kb-nav-link-description-color-active-ancestor);
 		}
 	}
 
@@ -863,18 +869,16 @@
 		border-bottom: var(--kb-nav-link-border-bottom);
 
 		&:hover {
-			--kb-nav-link-color: var(--kb-nav-link-color-hover, inherit);
-			--kb-nav-link-background: var(--kb-nav-link-background-hover, inherit);
-			--kb-nav-link-highlight-color: var(--kb-nav-link-highlight-color-hover);
-			--kb-nav-link-highlight-background: var(--kb-nav-link-highlight-background-hover);
-			--kb-nav-link-description-color: var(--kb-nav-link-description-color-hover);
+			--kb-nav-link-color-hover-lv: var(--kb-nav-link-color-hover, inherit);
+			--kb-nav-link-background-hover-lv: var(--kb-nav-link-background-hover, inherit);
+			--kb-nav-link-highlight-color-hover-lv: var(--kb-nav-link-highlight-color-hover);
+			--kb-nav-link-highlight-background-hover-lv: var(--kb-nav-link-highlight-background-hover);
+			--kb-nav-link-description-color-hover-lv: var(--kb-nav-link-description-color-hover);
 		}
 	}
 
 	.kb-nav-link-content {
 		display: block;
-		color: var(--kb-nav-link-color, inherit);
-		background: var(--kb-nav-link-background, inherit);
 		text-decoration: none;
 		transition: all 0.2s ease-in-out;
 		transform: translate(0, 0);
@@ -886,15 +890,47 @@
 		margin-right: var(--kb-nav-link-margin-right);
 		margin-bottom: var(--kb-nav-link-margin-bottom);
 		margin-left: var(--kb-nav-link-margin-left);
-		border-top: var(--kb-nav-link-border-top);
-		border-right: var(--kb-nav-link-border-right);
-		border-bottom: var(--kb-nav-link-border-bottom);
-		border-left: var(--kb-nav-link-border-left);
-		border-top-left-radius: var(--kb-nav-link-border-top-left-radius);
-		border-top-right-radius: var(--kb-nav-link-border-top-right-radius);
-		border-bottom-right-radius: var(--kb-nav-link-border-bottom-right-radius);
-		border-bottom-left-radius: var(--kb-nav-link-border-bottom-left-radius);
-		box-shadow: var(--kb-nav-link-box-shadow);
+		color: var(--kb-nav-link-color-hover-lv, var(--kb-nav-link-color-active-lv, var(--kb-nav-link-color, inherit)));
+		background: var(
+			--kb-nav-link-background-hover-lv,
+			var(--kb-nav-link-background-active-lv, var(--kb-nav-link-background, inherit))
+		);
+		border-top: var(
+			--kb-nav-link-hover-border-top-lv,
+			var(--kb-nav-link-active-border-top-lv, var(--kb-nav-link-border-top))
+		);
+		border-right: var(
+			--kb-nav-link-hover-border-right-lv,
+			var(--kb-nav-link-active-border-right-lv, var(--kb-nav-link-border-right))
+		);
+		border-bottom: var(
+			--kb-nav-link-hover-border-bottom-lv,
+			var(--kb-nav-link-active-border-bottom-lv, ar(--kb-nav-link-border-bottom))
+		);
+		border-left: var(
+			--kb-nav-link-hover-border-left-lv,
+			var(--kb-nav-link-active-border-left-lv, var(--kb-nav-link-border-left))
+		);
+		border-top-left-radius: var(
+			--kb-nav-link-hover-border-top-left-radius-lv,
+			var(--kb-nav-link-active-border-top-left-radius-lv, var(--kb-nav-link-border-top-left-radius))
+		);
+		border-top-right-radius: var(
+			--kb-nav-link-hover-border-top-right-radius-lv,
+			var(--kb-nav-link-active-border-top-right-radius-lv, var(--kb-nav-link-border-top-right-radius))
+		);
+		border-bottom-right-radius: var(
+			--kb-nav-link-hover-border-bottom-right-radius-lv,
+			var(--kb-nav-link-active-bottom-right-left-radius-lv, var(--kb-nav-link-border-bottom-right-radius))
+		);
+		border-bottom-left-radius: var(
+			--kb-nav-link-hover-border-bottom-left-radius-lv,
+			var(--kb-nav-link-active-bottom-top-left-radius-lv, var(--kb-nav-link-border-bottom-left-radius))
+		);
+		box-shadow: var(
+			--kb-nav-link-hover-box-shadow-lv,
+			var(--kb-nav-link-active-box-shadow-lv, var(--kb-nav-link-box-shadow))
+		);
 		gap: var(--kb-nav-link-gap);
 
 		&:not([href]) {
@@ -902,38 +938,40 @@
 		}
 		&:hover,
 		&:focus {
-			--kb-nav-link-color: var(--kb-nav-link-color-hover);
-			--kb-nav-link-background: var(--kb-nav-link-background-hover);
-			--kb-nav-link-border-top: var(--kb-nav-link-hover-border-top);
-			--kb-nav-link-border-right: var(--kb-nav-link-hover-border-right);
-			--kb-nav-link-border-bottom: var(--kb-nav-link-hover-border-bottom);
-			--kb-nav-link-border-left: var(--kb-nav-link-hover-border-left);
-			--kb-nav-link-border-top-left-radius: var(--kb-nav-link-hover-border-top-left-radius);
-			--kb-nav-link-border-top-right-radius: var(--kb-nav-link-hover-border-top-right-radius);
-			--kb-nav-link-border-bottom-right-radius: var(--kb-nav-link-hover-border-bottom-right-radius);
-			--kb-nav-link-border-bottom-left-radius: var(--kb-nav-link-hover-border-bottom-left-radius);
-			--kb-nav-link-box-shadow: var(--kb-nav-link-box-shadow-hover);
-			--kb-nav-link-highlight-color: var(--kb-nav-link-highlight-color-hover);
-			--kb-nav-link-highlight-background: var(--kb-nav-link-highlight-background-hover);
-			--kb-nav-link-media-container-background: var(--kb-nav-link-media-container-background-hover);
-			--kb-nav-link-media-container-color: var(--kb-nav-link-media-container-color-hover);
-			--kb-nav-link-media-container-border-top: var(--kb-nav-link-media-container-hover-border-top);
-			--kb-nav-link-media-container-border-right: var(--kb-nav-link-media-container-hover-border-right);
-			--kb-nav-link-media-container-border-bottom: var(--kb-nav-link-media-container-hover-border-bottom);
-			--kb-nav-link-media-container-border-left: var(--kb-nav-link-media-container-hover-border-left);
-			--kb-nav-link-media-container-border-top-left-radius: var(
+			--kb-nav-link-color-hover-lv: var(--kb-nav-link-color-hover, inherit);
+			--kb-nav-link-background-hover-lv: var(--kb-nav-link-background-hover, inherit);
+			--kb-nav-link-hover-border-top-lv: var(--kb-nav-link-hover-border-top);
+			--kb-nav-link-hover-border-right-lv: var(--kb-nav-link-hover-border-right);
+			--kb-nav-link-hover-border-bottom-lv: var(--kb-nav-link-hover-border-bottom);
+			--kb-nav-link-hover-border-left-lv: var(--kb-nav-link-hover-border-left);
+			--kb-nav-link-hover-border-top-left-radius-lv: var(--kb-nav-link-hover-border-top-left-radius);
+			--kb-nav-link-hover-border-top-right-radius-lv: var(--kb-nav-link-hover-border-top-right-radius);
+			--kb-nav-link-hover-border-bottom-right-radius-lv: var(--kb-nav-link-hover-border-bottom-right-radius);
+			--kb-nav-link-hover-border-bottom-left-radius-lv: var(--kb-nav-link-hover-border-bottom-left-radius);
+			--kb-nav-link-box-shadow-hover-lv: var(--kb-nav-link-box-shadow-hover);
+			--kb-nav-link-highlight-color-hover-lv: var(--kb-nav-link-highlight-color-hover);
+			--kb-nav-link-highlight-background-hover-lv: var(--kb-nav-link-highlight-background-hover);
+			--kb-nav-link-media-container-background-hover-lv: var(--kb-nav-link-media-container-background-hover);
+			--kb-nav-link-media-container-color-hover-lv: var(--kb-nav-link-media-container-color-hover);
+			--kb-nav-link-media-container-hover-border-top-lv: var(--kb-nav-link-media-container-hover-border-top);
+			--kb-nav-link-media-container-hover-border-right-lv: var(--kb-nav-link-media-container-hover-border-right);
+			--kb-nav-link-media-container-hover-border-bottom-lv: var(
+				--kb-nav-link-media-container-hover-border-bottom
+			);
+			--kb-nav-link-media-container-hover-border-left-lv: var(--kb-nav-link-media-container-hover-border-left);
+			--kb-nav-link-media-container-hover-border-top-left-radius-lv: var(
 				--kb-nav-link-media-container-hover-border-top-left-radius
 			);
-			--kb-nav-link-media-container-border-top-right-radius: var(
+			--kb-nav-link-media-container-hover-border-top-right-radius-lv: var(
 				--kb-nav-link-media-container-hover-border-top-right-radius
 			);
-			--kb-nav-link-media-container-border-bottom-right-radius: var(
+			--kb-nav-link-media-container-hover-border-bottom-right-radius-lv: var(
 				--kb-nav-link-media-container-hover-border-bottom-right-radius
 			);
-			--kb-nav-link-media-container-border-bottom-left-radius: var(
+			--kb-nav-link-media-container-hover-border-bottom-left-radius-lv: var(
 				--kb-nav-link-media-container-hover-border-bottom-left-radius
 			);
-			--kb-nav-link-description-color: var(--kb-nav-link-description-color-hover);
+			--kb-nav-link-description-color-hover-lv: var(--kb-nav-link-description-color-hover);
 		}
 
 		&.has-highlight-label {
@@ -1104,20 +1142,68 @@
 		flex-wrap: nowrap;
 		align-items: center;
 
-		color: var(--kb-nav-link-highlight-color, var(--global-palette9, #ffffff));
-		background: var(--kb-nav-link-highlight-background, var(--global-palette1, #2f2ffc));
 		padding-top: var(--kb-nav-link-highlight-padding-top, 0.3em);
 		padding-right: var(--kb-nav-link-highlight-padding-right, 0.3em);
 		padding-bottom: var(--kb-nav-link-highlight-padding-bottom, 0.3em);
 		padding-left: var(--kb-nav-link-highlight-padding-left, 0.3em);
-		border-top: var(--kb-nav-link-highlight-border-top);
-		border-right: var(--kb-nav-link-highlight-border-right);
-		border-bottom: var(--kb-nav-link-highlight-border-bottom);
-		border-left: var(--kb-nav-link-highlight-border-left);
-		border-top-left-radius: var(--kb-nav-link-highlight-border-top-left-radius, 2px);
-		border-top-right-radius: var(--kb-nav-link-highlight-border-top-right-radius, 2px);
-		border-bottom-right-radius: var(--kb-nav-link-highlight-border-bottom-right-radius, 2px);
-		border-bottom-left-radius: var(--kb-nav-link-highlight-border-bottom-left-radius, 2px);
+		color: var(
+			--kb-nav-link-highlight-color-hover-lv,
+			var(
+				--kb-nav-link-highlight-color-active-lv,
+				var(--kb-nav-link-highlight-color, var(--global-palette9, #ffffff))
+			)
+		);
+		background: var(
+			--kb-nav-link-highlight-background-hover-lv,
+			var(
+				--kb-nav-link-highlight-background-active-lv,
+				var(--kb-nav-link-highlight-background, var(--global-palette1, #2f2ffc))
+			)
+		);
+		border-top: var(
+			--kb-nav-link-highlight-hover-border-top-lv,
+			var(--kb-nav-link-highlight-active-border-top-lv, var(--kb-nav-link-highlight-border-top))
+		);
+		border-right: var(
+			--kb-nav-link-highlight-hover-border-right-lv,
+			var(--kb-nav-link-highlight-active-border-right-lv, var(--kb-nav-link-highlight-border-right))
+		);
+		border-bottom: var(
+			--kb-nav-link-highlight-hover-border-bottom-lv,
+			var(--kb-nav-link-highlight-active-border-bottom-lv, var(--kb-nav-link-highlight-border-bottom))
+		);
+		border-left: var(
+			--kb-nav-link-highlight-hover-border-left-lv,
+			var(--kb-nav-link-highlight-active-border-left-lv, var(--kb-nav-link-highlight-border-left))
+		);
+		border-top-left-radius: var(
+			--kb-nav-link-highlight-hover-border-top-left-radius-lv,
+			var(
+				--kb-nav-link-highlight-active-border-top-left-radius-lv,
+				var(--kb-nav-link-highlight-border-top-left-radius, 2px)
+			)
+		);
+		border-top-right-radius: var(
+			--kb-nav-link-highlight-hover-border-top-right-radius-lv,
+			var(
+				--kb-nav-link-highlight-active-border-top-right-radius-lv,
+				var(--kb-nav-link-highlight-border-top-right-radius, 2px)
+			)
+		);
+		border-bottom-right-radius: var(
+			--kb-nav-link-highlight-hover-border-bottom-right-radius-lv,
+			var(
+				--kb-nav-link-highlight-active-border-bottom-right-radius-lv,
+				var(--kb-nav-link-highlight-border-bottom-right-radius, 2px)
+			)
+		);
+		border-bottom-left-radius: var(
+			--kb-nav-link-highlight-hover-border-bottom-left-radius-lv,
+			var(
+				--kb-nav-link-highlight-active-border-bottom-left-radius-lv,
+				var(--kb-nav-link-highlight-border-bottom-left-radius, 2px)
+			)
+		);
 		gap: var(--kb-nav-link-highlight-gap, 0.5em);
 		order: var(--kb-nav-link-highlight-order);
 
@@ -1169,7 +1255,10 @@
 	}
 
 	.kb-nav-label-description {
-		color: var(--kb-nav-link-description-color, inherit);
+		color: var(
+			--kb-nav-link-description-color-hover-lv,
+			var(--kb-nav-link-description-color-active-lv, var(--kb-nav-link-description-color, inherit))
+		);
 		padding-top: var(--kb-nav-link-description-padding-top);
 		padding-right: var(--kb-nav-link-description-padding-right);
 		padding-bottom: var(--kb-nav-link-description-padding-bottom);
@@ -1223,16 +1312,58 @@
 		margin-right: var(--kb-nav-link-media-container-margin-right);
 		margin-bottom: var(--kb-nav-link-media-container-margin-bottom);
 		margin-left: var(--kb-nav-link-media-container-margin-left);
-		border-top: var(--kb-nav-link-media-container-border-top);
-		border-right: var(--kb-nav-link-media-container-border-right);
-		border-bottom: var(--kb-nav-link-media-container-border-bottom);
-		border-left: var(--kb-nav-link-media-container-border-left);
-		border-top-left-radius: var(--kb-nav-link-media-container-border-top-left-radius);
-		border-top-right-radius: var(--kb-nav-link-media-container-border-top-right-radius);
-		border-bottom-right-radius: var(--kb-nav-link-media-container-border-bottom-right-radius);
-		border-bottom-left-radius: var(--kb-nav-link-media-container-border-bottom-left-radius);
-		color: var(--kb-nav-link-media-container-color);
-		background: var(--kb-nav-link-media-container-background);
+		color: var(
+			--kb-nav-link-media-container-color-hover-lv,
+			var(--kb-nav-link-media-container-color-active-lv, var(--kb-nav-link-media-container-color))
+		);
+		background: var(
+			--kb-nav-link-media-container-background-hover-lv,
+			var(--kb-nav-link-media-container-background-active-lv, var(--kb-nav-link-media-container-background))
+		);
+		border-top: var(
+			--kb-nav-link-media-container-hover-border-top-lv,
+			var(--kb-nav-link-media-container-active-border-top-lv, var(--kb-nav-link-media-container-border-top))
+		);
+		border-right: var(
+			--kb-nav-link-media-container-hover-border-right-lv,
+			var(--kb-nav-link-media-container-active-border-right-lv, var(--kb-nav-link-media-container-border-right))
+		);
+		border-bottom: var(
+			--kb-nav-link-media-container-hover-border-bottom-lv,
+			var(--kb-nav-link-media-container-active-border-bottom-lv, var(--kb-nav-link-media-container-border-bottom))
+		);
+		border-left: var(
+			--kb-nav-link-media-container-hover-border-left-lv,
+			var(--kb-nav-link-media-container-active-border-left-lv, var(--kb-nav-link-media-container-border-left))
+		);
+		border-top-left-radius: var(
+			--kb-nav-link-media-container-hover-border-top-left-radius-lv,
+			var(
+				--kb-nav-link-media-container-active-border-top-left-radius-lv,
+				var(--kb-nav-link-media-container-border-top-left-radius)
+			)
+		);
+		border-top-right-radius: var(
+			--kb-nav-link-media-container-hover-border-top-right-radius-lv,
+			var(
+				--kb-nav-link-media-container-active-border-top-right-radius-lv,
+				var(--kb-nav-link-media-container-border-top-right-radius)
+			)
+		);
+		border-bottom-right-radius: var(
+			--kb-nav-link-media-container-hover-border-bottom-right-radius-lv,
+			var(
+				--kb-nav-link-media-container-active-border-bottom-right-radius-lv,
+				var(--kb-nav-link-media-container-border-bottom-right-radius)
+			)
+		);
+		border-bottom-left-radius: var(
+			--kb-nav-link-media-container-hover-border-bottom-left-radius-lv,
+			var(
+				--kb-nav-link-media-container-active-border-bottom-left-radius-lv,
+				var(--kb-nav-link-media-container-border-bottom-left-radius)
+			)
+		);
 		order: var(--kb-nav-link-media-container-order);
 		justify-content: var(--kb-nav-link-media-container-justify-content);
 		align-self: var(--kb-nav-link-media-container-align-self);
