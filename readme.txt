@@ -176,6 +176,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 = 3.2.53 =
 Release Date: September 9th 2024
+* Add: ID to from tag in advanced form block for targeting with custom scripts.
 * Fix: Show more block inside query loop.
 * Fix: Countdown repeater not working.
 * Fix: Issue with progress block label position.
