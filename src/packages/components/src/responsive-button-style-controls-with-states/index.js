@@ -30,6 +30,8 @@ export default function ResponsiveButtonStyleControlsWithStates({
 	setAttributes,
 	setMetaAttribute,
 	attributes,
+	setActivePreview,
+	activePreview,
 }) {
 	const colorValue = attributes[colorBase];
 	const colorValueTablet = attributes[colorBase + 'Tablet'];
@@ -628,7 +630,13 @@ export default function ResponsiveButtonStyleControlsWithStates({
 
 	return (
 		<>
-			<HoverToggleControl normal={normalComponents} hover={hoverComponents} active={activeComponents} />
+			<HoverToggleControl
+				normal={normalComponents}
+				hover={hoverComponents}
+				active={activeComponents}
+				setActivePreview={setActivePreview}
+				activePreview={activePreview}
+			/>
 		</>
 	);
 }

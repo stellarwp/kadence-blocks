@@ -79,7 +79,12 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! empty( $attributes['columnLayout'][1] ) ) {
 			switch ( $attributes['columnLayout'][1] ) {
 				case 'row':
-					$css->add_property( 'display', 'block' );
+					$css->add_property( 'display', 'block' ); // removes row-gap from one column tablet layouts
+					if ( isset( $attributes['titleStyles'][0]['marginTop'] ) ) { // adds margin top to panes for one column layouts
+						$css->set_selector( '.kt-accordion-id' . $unique_id . ' .kt-accordion-inner-wrap .kt-accordion-pane:not(:first-child)' );
+						$css->render_range( $attributes['titleStyles'][0], 'marginTop', 'margin-top' );
+						$css->set_selector( '.kt-accordion-id' . $unique_id . ' .kt-accordion-inner-wrap' );
+					}
 					break;
 				case 'two-column':
 					$css->add_property( 'display', 'grid' );
@@ -95,7 +100,12 @@ class Kadence_Blocks_Accordion_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! empty( $attributes['columnLayout'][2] ) ) {
 			switch ( $attributes['columnLayout'][2] ) {
 				case 'row':
-					$css->add_property( 'display', 'block' );
+					$css->add_property( 'display', 'block' ); // removes row gap from one column mobile layouts
+					if ( isset( $attributes['titleStyles'][0]['marginTop'] ) ) { // adds margin top to panes for one column layouts
+						$css->set_selector( '.kt-accordion-id' . $unique_id . ' .kt-accordion-inner-wrap .kt-accordion-pane:not(:first-child)' );
+						$css->render_range( $attributes['titleStyles'][0], 'marginTop', 'margin-top' );
+						$css->set_selector( '.kt-accordion-id' . $unique_id . ' .kt-accordion-inner-wrap' );
+					}
 					break;
 				case 'two-column':
 					$css->add_property( 'display', 'grid' );

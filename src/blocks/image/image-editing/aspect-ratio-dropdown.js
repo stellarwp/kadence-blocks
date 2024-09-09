@@ -38,7 +38,7 @@ export default function AspectRatioDropdown({ toggleProps }) {
 	return (
 		<DropdownMenu
 			icon={aspectRatioIcon}
-			label={__('Aspect Ratio')}
+			label={__('Aspect Ratio', 'kadence-blocks')}
 			popoverProps={POPOVER_PROPS}
 			toggleProps={toggleProps}
 			className="wp-block-kadence-image__aspect-ratio"
@@ -54,17 +54,17 @@ export default function AspectRatioDropdown({ toggleProps }) {
 						value={aspect}
 						aspectRatios={[
 							{
-								title: __('Original'),
+								title: __('Original', 'kadence-blocks'),
 								aspect: defaultAspect,
 							},
 							{
-								title: __('Square'),
+								title: __('Square', 'kadence-blocks'),
 								aspect: 1,
 							},
 						]}
 					/>
 					<AspectGroup
-						label={__('Landscape')}
+						label={__('Landscape', 'kadence-blocks')}
 						isDisabled={isInProgress}
 						onClick={(newAspect) => {
 							setAspect(newAspect);
@@ -91,7 +91,7 @@ export default function AspectRatioDropdown({ toggleProps }) {
 						]}
 					/>
 					<AspectGroup
-						label={__('Portrait')}
+						label={__('Portrait', 'kadence-blocks')}
 						isDisabled={isInProgress}
 						onClick={(newAspect) => {
 							setAspect(newAspect);

@@ -43,6 +43,7 @@ class Kadence_Blocks_Header_CPT_Controller {
 		add_action( 'init', array( $this, 'form_gutenberg_template' ) );
 		add_filter( 'kadence_post_layout', array( $this, 'header_single_layout' ), 99 );
 		add_action( 'enqueue_block_editor_assets', array( $this, 'script_enqueue' ) );
+		add_action( 'enqueue_block_assets', array( $this, 'title_styles_enqueue' ) );
 		if( is_admin() ) {
 			if ( class_exists( 'Cpt_To_Template' ) ) {
 				new Cpt_To_Template( $this->post_type );
@@ -60,6 +61,11 @@ class Kadence_Blocks_Header_CPT_Controller {
 			array('kadence-components', 'kadence-helpers', 'kadence-icons', 'lodash', 'react', 'react-dom', 'wp-api-fetch', 'wp-block-editor', 'wp-blocks', 'wp-components', 'wp-core-data', 'wp-data', 'wp-element', 'wp-i18n', 'wp-primitives', 'wp-url'),
 			rand(0,time())
 		);
+	}
+	/**
+	 * Enqueue Title Styles
+	 */
+	public function title_styles_enqueue() {
 
 		$post_type = get_post_type();
 		if ( $this->post_type !== $post_type ) {
@@ -1156,7 +1162,7 @@ class Kadence_Blocks_Header_CPT_Controller {
 						'opacity' => 0.2,
 						'spread' => 0,
 						'blur' => 2,
-						'hOffset' => 1,
+						'hOffset' => 0,
 						'vOffset' => 1,
 						'inset' => false,
 					),

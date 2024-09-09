@@ -1343,6 +1343,10 @@ function SectionEdit(props) {
 					? `.kadence-column-${uniqueID}.wp-block-kadence-column > .kadence-inner-column-direction-vertical > *, .kadence-column-${uniqueID}.wp-block-kadence-column > .kadence-inner-column-direction-vertical-reverse > * { max-width: 100%; }`
 					: ''}
 
+				{previewJustify
+					? `.kadence-column-${uniqueID}.wp-block-kadence-column > .kadence-inner-column-direction-vertical > .block-editor-block-list__block.wp-block.kb-gallery-container.wp-block-kadence-advancedgallery, .kadence-column-${uniqueID}.wp-block-kadence-column > .kadence-inner-column-direction-vertical-reverse > .block-editor-block-list__block.wp-block.kb-gallery-container.wp-block-kadence-advancedgallery { align-self:stretch; }`
+					: ''}
+
 				{previewVerticalAlignCSS
 					? `.kadence-column-${uniqueID} > .kadence-inner-column-direction-vertical, .kadence-column-${uniqueID} > .kadence-inner-column-direction-vertical-reverse { justify-content: ${previewVerticalAlignCSS}; }`
 					: ''}
@@ -2557,7 +2561,7 @@ function SectionEdit(props) {
 										/>
 										{inRowBlock && (
 											<RangeControl
-												label={__('Mobile Collapse Order')}
+												label={__('Mobile Collapse Order', 'kadence-blocks')}
 												value={collapseOrder}
 												onChange={(value) => {
 													setAttributes({
@@ -3079,7 +3083,7 @@ function SectionEdit(props) {
 															context={context}
 														/>
 														<SelectControl
-															label={__('Hover Blend Mode')}
+															label={__('Hover Blend Mode', 'kadence-blocks')}
 															value={
 																hoverOverlayBlendMode ? hoverOverlayBlendMode : 'none'
 															}
@@ -3216,7 +3220,7 @@ function SectionEdit(props) {
 															context={context}
 														/>
 														<SelectControl
-															label={__('Blend Mode')}
+															label={__('Blend Mode', 'kadence-blocks')}
 															value={overlayBlendMode ? overlayBlendMode : 'none'}
 															options={BLEND_OPTIONS}
 															onChange={(value) =>

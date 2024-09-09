@@ -25,6 +25,10 @@
 		display: flex;
 		flex-direction: column;
 		box-sizing: border-box;
+		padding-top: var(--kb-nav-canvas-padding-top, var(--global-kb-spacing-md, 2rem));
+		padding-right: var(--kb-nav-canvas-padding-right, var(--global-kb-spacing-md, 2rem));
+		padding-bottom: var(--kb-nav-canvas-padding-bottom, var(--global-kb-spacing-md, 2rem));
+		padding-left: var(--kb-nav-canvas-padding-left, var(--global-kb-spacing-md, 2rem));
 
 		.kt-close-position-inside {
 			position: relative;

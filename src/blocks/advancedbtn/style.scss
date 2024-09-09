@@ -49,6 +49,10 @@
         color: var(--global-palette-btn-hover, #FFFFFF);
         background: var(--global-palette-btn-bg-hover, #2F2FFC);
     }
+    &:focus {
+      color: var(--global-palette-btn-hover, #FFFFFF);
+      background: var(--global-palette-btn-bg-hover, #2F2FFC);
+    }
 }
 .kb-button.kb-btn-global-outline {
     border: 2px solid var(--global-palette-btn-bg, #3633E1);
@@ -59,6 +63,11 @@
         border-color: var(--global-palette-btn-bg-hover, #2F2FFC);
         background: transparent;
         color: var(--global-palette-btn-bg-hover, #2F2FFC);
+    }
+    &:focus {
+      border-color: var(--global-palette-btn-bg-hover, #2F2FFC);
+      background: transparent;
+      color: var(--global-palette-btn-bg-hover, #2F2FFC);
     }
 }
 .kb-button::before {
@@ -73,7 +82,7 @@
 	background:transparent;
 	//transition: opacity .3s ease-in-out;
 }
-.kb-button:hover::before {
+.kb-button:hover::before, .kb-button:focus::before{
 	opacity: 1;
 }
 .wp-block-kadence-advancedbtn .kb-button.kt-btn-size-small{

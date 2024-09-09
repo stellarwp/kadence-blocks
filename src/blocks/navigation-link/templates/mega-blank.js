@@ -12,9 +12,11 @@ function innerBlocks() {
 		createBlock(
 			'kadence/rowlayout',
 			{
-				uniqueID: '252_56a3cc-f8',
+				uniqueID: '252_56a2cc-f8',
 				columns: 3,
 				colLayout: 'equal',
+				templateLock: false,
+				kbVersion: 2,
 			},
 			[]
 		),

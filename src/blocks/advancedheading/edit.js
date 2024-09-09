@@ -1681,8 +1681,8 @@ function KadenceAdvancedHeading(props) {
 										label={__('Icon Location', 'kadence-blocks')}
 										value={iconSide}
 										options={[
-											{ value: 'left', label: __('Left') },
-											{ value: 'right', label: __('Right') },
+											{ value: 'left', label: __('Left', 'kadence-blocks') },
+											{ value: 'right', label: __('Right', 'kadence-blocks') },
 										]}
 										onChange={(value) => {
 											setAttributes({ iconSide: value });
@@ -1692,11 +1692,11 @@ function KadenceAdvancedHeading(props) {
 										label={__('Vertical Alignment', 'kadence-blocks')}
 										value={iconVerticalAlign}
 										options={[
-											{ value: 'unset', label: __('Unset') },
-											{ value: 'baseline', label: __('Baseline') },
-											{ value: 'center', label: __('Center') },
-											{ value: 'end', label: __('End') },
-											{ value: 'start', label: __('Start') },
+											{ value: 'unset', label: __('Unset', 'kadence-blocks') },
+											{ value: 'baseline', label: __('Baseline', 'kadence-blocks') },
+											{ value: 'center', label: __('Center', 'kadence-blocks') },
+											{ value: 'end', label: __('End', 'kadence-blocks') },
+											{ value: 'start', label: __('Start', 'kadence-blocks') },
 										]}
 										onChange={(value) => {
 											setAttributes({ iconVerticalAlign: value });

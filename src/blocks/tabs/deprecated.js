@@ -65,7 +65,7 @@ export default [
 				const backupAnchor = `tab-${
 					titles[index] && titles[index].text
 						? stripStringRender(titles[index].text.toString())
-						: stripStringRender(__('Tab') + (1 + index))
+						: stripStringRender(__('Tab', 'kadence-blocks') + (1 + index))
 				}`;
 				return (
 					<li
@@ -100,8 +100,8 @@ export default [
 									value={
 										titles[index] && titles[index].text
 											? titles[index].text
-											: // translators: %d: Tab number
-											  sprintf(__('Tab %d'), 1 + index)
+											: // Translators: %d is the tab number.
+											  sprintf(__('Tab %d', 'kadence-blocks'), 1 + index)
 									}
 									className={'kt-title-text'}
 								/>
@@ -116,8 +116,8 @@ export default [
 											value={
 												titles[index] && titles[index].text
 													? titles[index].text
-													: // translators: %d: Tab number
-													  sprintf(__('Tab %d'), 1 + index)
+													: // Translators: %d is the tab number.
+													  sprintf(__('Tab %d', 'kadence-blocks'), 1 + index)
 											}
 											className={'kt-title-text'}
 										/>
@@ -472,7 +472,7 @@ export default [
 				const backupAnchor = `tab-${
 					titles[index] && titles[index].text
 						? stripStringRender(titles[index].text.toString())
-						: stripStringRender(__('Tab') + (1 + index))
+						: stripStringRender(__('Tab', 'kadence-blocks') + (1 + index))
 				}`;
 				return (
 					<li
@@ -507,8 +507,8 @@ export default [
 									value={
 										titles[index] && titles[index].text
 											? titles[index].text
-											: // translators: %d: Tab number
-											  sprintf(__('Tab %d'), 1 + index)
+											: // Translators: %d is the tab number.
+											  sprintf(__('Tab %d', 'kadence-blocks'), 1 + index)
 									}
 									className={'kt-title-text'}
 								/>
@@ -523,8 +523,8 @@ export default [
 											value={
 												titles[index] && titles[index].text
 													? titles[index].text
-													: // translators: %d: Tab number
-													  sprintf(__('Tab %d'), 1 + index)
+													: // Translators: %d is the tab number.
+													  sprintf(__('Tab %d', 'kadence-blocks'), 1 + index)
 											}
 											className={'kt-title-text'}
 										/>
@@ -881,7 +881,7 @@ export default [
 				const backupAnchor = `tab-${
 					titles[index] && titles[index].text
 						? kt_stripStringRender(titles[index].text.toString())
-						: kt_stripStringRender(__('Tab') + (1 + index))
+						: kt_stripStringRender(__('Tab', 'kadence-blocks') + (1 + index))
 				}`;
 				return (
 					<Fragment>
@@ -918,8 +918,8 @@ export default [
 										value={
 											titles[index] && titles[index].text
 												? titles[index].text
-												: // translators: %d: Tab number
-												  sprintf(__('Tab %d'), 1 + index)
+												: // Translators: %d is the tab number.
+												  sprintf(__('Tab %d', 'kadence-blocks'), 1 + index)
 										}
 										className={'kt-title-text'}
 									/>
@@ -934,8 +934,8 @@ export default [
 												value={
 													titles[index] && titles[index].text
 														? titles[index].text
-														: // translators: %d: Tab number
-														  sprintf(__('Tab %d'), 1 + index)
+														: // Translators: %d is the tab number.
+														  sprintf(__('Tab %d', 'kadence-blocks'), 1 + index)
 												}
 												className={'kt-title-text'}
 											/>
@@ -1057,19 +1057,19 @@ export default [
 				type: 'array',
 				default: [
 					{
-						text: __('Tab 1'),
+						text: __('Tab 1', 'kadence-blocks'),
 						icon: '',
 						iconSide: 'right',
 						onlyIcon: false,
 					},
 					{
-						text: __('Tab 2'),
+						text: __('Tab 2', 'kadence-blocks'),
 						icon: '',
 						iconSide: 'right',
 						onlyIcon: false,
 					},
 					{
-						text: __('Tab 3'),
+						text: __('Tab 3', 'kadence-blocks'),
 						icon: '',
 						iconSide: 'right',
 						onlyIcon: false,
@@ -1227,7 +1227,7 @@ export default [
 							id={`tab-${
 								titles[index] && titles[index].text
 									? kt_stripStringRender(titles[index].text.toString())
-									: kt_stripStringRender(__('Tab') + (1 + index))
+									: kt_stripStringRender(__('Tab', 'kadence-blocks') + (1 + index))
 							}`}
 							className={`kt-title-item kt-title-item-${1 + index} kt-tabs-svg-show-${
 								titles[index] && titles[index].onlyIcon ? 'only' : 'always'
@@ -1239,7 +1239,7 @@ export default [
 								href={`#tab-${
 									titles[index] && titles[index].text
 										? kt_stripStringRender(titles[index].text.toString())
-										: kt_stripStringRender(__('Tab') + (1 + index))
+										: kt_stripStringRender(__('Tab', 'kadence-blocks') + (1 + index))
 								}`}
 								data-tab={1 + index}
 								className={`kt-tab-title kt-tab-title-${1 + index} `}
@@ -1256,8 +1256,8 @@ export default [
 									value={
 										titles[index] && titles[index].text
 											? titles[index].text
-											: // translators: %d: Tab number
-											  sprintf(__('Tab %d'), 1 + index)
+											: // Translators: %d is the tab number.
+											  sprintf(__('Tab %d', 'kadence-blocks'), 1 + index)
 									}
 									className={'kt-title-text'}
 								/>

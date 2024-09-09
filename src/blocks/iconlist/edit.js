@@ -415,7 +415,7 @@ function KadenceIconLists(props) {
 								{showSettings('spacing', 'kadence/iconlist') && (
 									<Fragment>
 										<ResponsiveRangeControls
-											label={__('List Column Gap')}
+											label={__('List Column Gap', 'kadence-blocks')}
 											value={columnGap}
 											onChange={(value) => setAttributes({ columnGap: value })}
 											tabletValue={tabletColumnGap ? tabletColumnGap : ''}
@@ -428,7 +428,7 @@ function KadenceIconLists(props) {
 											showUnit={false}
 										/>
 										<ResponsiveRangeControls
-											label={__('List Vertical Spacing')}
+											label={__('List Vertical Spacing', 'kadence-blocks')}
 											value={listGap}
 											onChange={(value) => setAttributes({ listGap: value })}
 											tabletValue={undefined !== tabletListGap ? tabletListGap : ''}
@@ -441,7 +441,7 @@ function KadenceIconLists(props) {
 											showUnit={false}
 										/>
 										<RangeControl
-											label={__('List Horizontal Icon and Label Spacing')}
+											label={__('List Horizontal Icon and Label Spacing', 'kadence-blocks')}
 											value={listLabelGap}
 											onChange={(value) => {
 												setAttributes({ listLabelGap: value });
@@ -450,10 +450,12 @@ function KadenceIconLists(props) {
 											max={60}
 										/>
 										<div className="kt-btn-size-settings-container">
-											<h2 className="kt-beside-btn-group">{__('Icon Align')}</h2>
+											<h2 className="kt-beside-btn-group">
+												{__('Icon Align', 'kadence-blocks')}
+											</h2>
 											<ButtonGroup
 												className="kt-button-size-type-options"
-												aria-label={__('Icon Align')}
+												aria-label={__('Icon Align', 'kadence-blocks')}
 											>
 												{map(iconAlignOptions, ({ name, icon, key }) => (
 													<Tooltip text={name}>
@@ -613,12 +615,12 @@ function KadenceIconLists(props) {
 							</KadencePanelBody>
 							{showSettings('textStyle', 'kadence/iconlist') && (
 								<KadencePanelBody
-									title={__('Text Styling')}
+									title={__('Text Styling', 'kadence-blocks')}
 									initialOpen={false}
 									panelName={'kb-list-text-styling'}
 								>
 									<PopColorControl
-										label={__('Color')}
+										label={__('Color', 'kadence-blocks')}
 										value={listStyles[0].color ? listStyles[0].color : ''}
 										default={''}
 										onChange={(value) => {
@@ -665,12 +667,12 @@ function KadenceIconLists(props) {
 							)}
 
 							<KadencePanelBody
-								title={__('Link Styling')}
+								title={__('Link Styling', 'kadence-blocks')}
 								initialOpen={false}
 								panelName={'kb-list-link-styling'}
 							>
 								<PopColorControl
-									label={__('Link Color')}
+									label={__('Link Color', 'kadence-blocks')}
 									value={linkColor}
 									default={''}
 									onChange={(value) => {

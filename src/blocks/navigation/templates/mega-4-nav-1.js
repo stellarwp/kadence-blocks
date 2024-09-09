@@ -9,18 +9,6 @@ const postMeta = {
 	_kad_navigation_collapseSubMenus: '1',
 	_kad_navigation_collapseSubMenusTablet: '1',
 	_kad_navigation_collapseSubMenusMobile: '1',
-	_kad_navigation_dropdownShadow: [
-		{
-			enable: false,
-			color: '#000000',
-			opacity: 0.20000000000000001,
-			spread: 0,
-			blur: 2,
-			hOffset: 1,
-			vOffset: 1,
-			inset: false,
-		},
-	],
 	_kad_navigation_orientation: 'vertical',
 	_kad_navigation_spacing: ['1', '1', '1', '1'],
 	_kad_navigation_linkColor: 'palette3',
@@ -31,7 +19,7 @@ const postMeta = {
 	_kad_navigation_typography: [
 		{
 			size: ['sm', '', ''],
-			sizetype: 'px',
+			sizeType: 'px',
 			lineHeight: ['', '', ''],
 			lineType: '',
 			letterSpacing: ['', '', ''],
@@ -43,7 +31,7 @@ const postMeta = {
 			weight: 'bold',
 			variant: '',
 			subset: '',
-			loadgoogle: true,
+			loadGoogle: true,
 		},
 	],
 };
@@ -57,7 +45,7 @@ function innerBlocks() {
 					uniqueID: '372_59c297-f5',
 					label: 'Short Title',
 					description: 'Use this space to add a short description.',
-					url: 'Short%20Title',
+					url: '#',
 					kind: 'custom',
 					typography: [
 						{
@@ -93,6 +81,9 @@ function innerBlocks() {
 							flipIcon: '',
 						},
 					],
+					mediaColor: 'palette9',
+					mediaBackground: 'palette1',
+					mediaBorderRadius: ['3', '3', '3', '3'],
 					mediaStyle: [
 						{
 							color: 'palette9',
@@ -120,11 +111,13 @@ function innerBlocks() {
 							borderRadiusMobile: '',
 							borderWidth: [0, 0, 0, 0],
 							padding: [5, 5, 5, 5],
-							paddingTablet: [5, 5, 5, 5],
-							paddingMobile: [5, 5, 5, 5],
+							paddingTablet: ['', '', '', ''],
+							paddingMobile: ['', '', '', ''],
+							paddingType: 'px',
 							margin: [10, '', '', ''],
 							marginTablet: ['', '', '', ''],
 							marginMobile: ['', '', '', ''],
+							marginType: 'px',
 						},
 					],
 					descriptionSpacing: '5',
@@ -142,7 +135,7 @@ function innerBlocks() {
 					uniqueID: '372_833e19-55',
 					label: 'Short Title',
 					description: 'Use this space to add a short description.',
-					url: 'Short%20Title',
+					url: '#',
 					kind: 'custom',
 					typography: [
 						{
@@ -178,6 +171,9 @@ function innerBlocks() {
 							flipIcon: '',
 						},
 					],
+					mediaColor: 'palette9',
+					mediaBackground: 'palette2',
+					mediaBorderRadius: ['3', '3', '3', '3'],
 					mediaStyle: [
 						{
 							color: 'palette9',
@@ -205,11 +201,13 @@ function innerBlocks() {
 							borderRadiusMobile: '',
 							borderWidth: [0, 0, 0, 0],
 							padding: [5, 5, 5, 5],
-							paddingTablet: [5, 5, 5, 5],
-							paddingMobile: [5, 5, 5, 5],
+							paddingTablet: ['', '', '', ''],
+							paddingMobile: ['', '', '', ''],
+							paddingType: 'px',
 							margin: [10, '', '', ''],
 							marginTablet: ['', '', '', ''],
 							marginMobile: ['', '', '', ''],
+							marginType: 'px',
 						},
 					],
 					descriptionSpacing: '5',
@@ -225,7 +223,7 @@ function innerBlocks() {
 					uniqueID: '372_70deb0-0d',
 					label: 'Short Title',
 					description: 'Use this space to add a short description.',
-					url: 'Short%20Title',
+					url: '#',
 					kind: 'custom',
 					typography: [
 						{
@@ -261,6 +259,9 @@ function innerBlocks() {
 							flipIcon: '',
 						},
 					],
+					mediaColor: 'palette9',
+					mediaBackground: 'palette4',
+					mediaBorderRadius: ['3', '3', '3', '3'],
 					mediaStyle: [
 						{
 							color: 'palette9',
@@ -288,11 +289,13 @@ function innerBlocks() {
 							borderRadiusMobile: '',
 							borderWidth: [0, 0, 0, 0],
 							padding: [5, 5, 5, 5],
-							paddingTablet: [5, 5, 5, 5],
-							paddingMobile: [5, 5, 5, 5],
+							paddingTablet: ['', '', '', ''],
+							paddingMobile: ['', '', '', ''],
+							paddingType: 'px',
 							margin: [10, '', '', ''],
 							marginTablet: ['', '', '', ''],
 							marginMobile: ['', '', '', ''],
+							marginType: 'px',
 						},
 					],
 					descriptionSpacing: '5',

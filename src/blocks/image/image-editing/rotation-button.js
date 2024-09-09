@@ -14,6 +14,11 @@ import { useImageEditingContext } from './context';
 export default function RotationButton() {
 	const { isInProgress, rotateClockwise } = useImageEditingContext();
 	return (
-		<ToolbarButton icon={rotateRightIcon} label={__('Rotate')} onClick={rotateClockwise} disabled={isInProgress} />
+		<ToolbarButton
+			icon={rotateRightIcon}
+			label={__('Rotate', 'kadence-blocks')}
+			onClick={rotateClockwise}
+			disabled={isInProgress}
+		/>
 	);
 }

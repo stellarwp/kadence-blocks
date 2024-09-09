@@ -82,4 +82,7 @@
 	document.addEventListener('kadenceJSInitReload', function () {
 		window.kadenceShowMore.init();
 	});
+	document.addEventListener('kb-query-loaded', function () {
+		window.kadenceShowMore.init();
+	});
 })();

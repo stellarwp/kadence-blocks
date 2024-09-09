@@ -62,9 +62,9 @@ class Kadence_Blocks_Header_Column_Block extends Kadence_Blocks_Abstract_Block {
 	public function on_init() {
 		register_block_type(
 			KADENCE_BLOCKS_PATH . 'dist/blocks/header/children/column/block.json',
-			array(
-				'render_callback' => array( $this, 'render_css' ),
-			)
+			[
+				'render_callback' => [ $this, 'render_css' ],
+			]
 		);
 	}
 
@@ -95,7 +95,7 @@ class Kadence_Blocks_Header_Column_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return string Returns the block output.
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		if ( ! empty( $attributes['location'] ) && ! in_array( $attributes['location'], array( 'tablet-left', 'tablet-right', 'center-left', 'center', 'center-right' ) ) ) {
+		if ( ! empty( $attributes['location'] ) && ! in_array( $attributes['location'], [ 'tablet-left', 'tablet-right', 'center-left', 'center', 'center-right' ] ) ) {
 
 			// If no center content, return empty div to keep layout consistent.
 			if ( $attributes['location'] === 'tablet-center' && empty( $content ) ) {
@@ -107,9 +107,7 @@ class Kadence_Blocks_Header_Column_Block extends Kadence_Blocks_Abstract_Block {
 
 		$html = '';
 
-		$classes = array(
-			'wp-block-kadence-header-column'
-		);
+		$classes = [ 'wp-block-kadence-header-column' ];
 
 		if ( ! empty( $attributes['location'] ) ) {
 			$classes[] = 'wp-block-kadence-header-column-' . esc_attr( $attributes['location'] );

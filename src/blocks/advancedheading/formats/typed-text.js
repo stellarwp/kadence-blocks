@@ -45,10 +45,10 @@ const name = 'kadence/typed';
 const allowedBlocks = ['kadence/advancedheading'];
 
 export const kadenceTypedText = {
-	title: __('Typed Text'),
+	title: __('Typed Text', 'kadence-blocks'),
 	tagName: 'span',
 	className: 'kt-typed-text',
-	keywords: [__('typed'), __('typing')],
+	keywords: [__('typed', 'kadence-blocks'), __('typing', 'kadence-blocks')],
 	attributes: {
 		strings: 'data-strings',
 		cursorChar: 'data-cursor-char',
@@ -134,7 +134,7 @@ export const kadenceTypedText = {
 			<>
 				<RichTextToolbarButton
 					icon={icon}
-					title={__('Typed Text')}
+					title={__('Typed Text', 'kadence-blocks')}
 					onClick={onToggle}
 					isActive={isActive}
 					className={`toolbar-button-with-text toolbar-button__${name}`}

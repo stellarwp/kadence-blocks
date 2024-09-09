@@ -26,7 +26,6 @@ function innerBlocks() {
 				padding: ['', '', '', ''],
 				mobilePadding: ['md', 'md', '', 'md'],
 				templateLock: false,
-				displayBoxShadow: true,
 				kbVersion: 2,
 			},
 			[

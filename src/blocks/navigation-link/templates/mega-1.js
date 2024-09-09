@@ -22,7 +22,6 @@ function innerBlocks() {
 				maxWidth: 900,
 				align: 'full',
 				columnsInnerHeight: true,
-				borderRadius: [8, 8, 8, 8],
 				padding: ['', '', '', ''],
 				templateLock: false,
 				kbVersion: 2,

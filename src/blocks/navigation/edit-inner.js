@@ -169,7 +169,7 @@ export function EditInner(props) {
 		linkColorHoverTablet: meta?._kad_navigation_linkColorHoverTablet,
 		linkColorActiveTablet: meta?._kad_navigation_linkColorActiveTablet,
 		linkColorMobile: meta?._kad_navigation_linkColorMobile,
-		linkColorHoveMobiler: meta?._kad_navigation_linkColorHoverMobile,
+		linkColorHoverMobile: meta?._kad_navigation_linkColorHoverMobile,
 		linkColorActiveMobile: meta?._kad_navigation_linkColorActiveMobile,
 		background: meta?._kad_navigation_background,
 		backgroundHover: meta?._kad_navigation_backgroundHover,
@@ -187,7 +187,7 @@ export function EditInner(props) {
 		linkColorDropdownHoverTablet: meta?._kad_navigation_linkColorDropdownHoverTablet,
 		linkColorDropdownActiveTablet: meta?._kad_navigation_linkColorDropdownActiveTablet,
 		linkColorDropdownMobile: meta?._kad_navigation_linkColorDropdownMobile,
-		linkColorDropdownHoveMobiler: meta?._kad_navigation_linkColorDropdownHoverMobile,
+		linkColorDropdownHoverMobile: meta?._kad_navigation_linkColorDropdownHoverMobile,
 		linkColorDropdownActiveMobile: meta?._kad_navigation_linkColorDropdownActiveMobile,
 		backgroundDropdown: meta?._kad_navigation_backgroundDropdown,
 		backgroundDropdownHover: meta?._kad_navigation_backgroundDropdownHover,
@@ -205,7 +205,7 @@ export function EditInner(props) {
 		linkColorTransparentHoverTablet: meta?._kad_navigation_linkColorTransparentHoverTablet,
 		linkColorTransparentActiveTablet: meta?._kad_navigation_linkColorTransparentActiveTablet,
 		linkColorTransparentMobile: meta?._kad_navigation_linkColorTransparentMobile,
-		linkColorTransparentHoveMobiler: meta?._kad_navigation_linkColorTransparentHoverMobile,
+		linkColorTransparentHoverMobile: meta?._kad_navigation_linkColorTransparentHoverMobile,
 		linkColorTransparentActiveMobile: meta?._kad_navigation_linkColorTransparentActiveMobile,
 		backgroundTransparent: meta?._kad_navigation_backgroundTransparent,
 		backgroundTransparentHover: meta?._kad_navigation_backgroundTransparentHover,
@@ -223,7 +223,7 @@ export function EditInner(props) {
 		linkColorStickyHoverTablet: meta?._kad_navigation_linkColorStickyHoverTablet,
 		linkColorStickyActiveTablet: meta?._kad_navigation_linkColorStickyActiveTablet,
 		linkColorStickyMobile: meta?._kad_navigation_linkColorStickyMobile,
-		linkColorStickyHoveMobiler: meta?._kad_navigation_linkColorStickyHoverMobile,
+		linkColorStickyHoverMobile: meta?._kad_navigation_linkColorStickyHoverMobile,
 		linkColorStickyActiveMobile: meta?._kad_navigation_linkColorStickyActiveMobile,
 		backgroundSticky: meta?._kad_navigation_backgroundSticky,
 		backgroundStickyHover: meta?._kad_navigation_backgroundStickyHover,
@@ -234,8 +234,66 @@ export function EditInner(props) {
 		backgroundStickyMobile: meta?._kad_navigation_backgroundStickyMobile,
 		backgroundStickyHoverMobile: meta?._kad_navigation_backgroundStickyHoverMobile,
 		backgroundStickyActiveMobile: meta?._kad_navigation_backgroundStickyActiveMobile,
-		typography: meta?._kad_navigation_typography,
-		dropdownTypography: meta?._kad_navigation_dropdownTypography,
+		typography: meta?._kad_navigation_typography
+			? meta?._kad_navigation_typography
+			: [
+					{
+						size: ['', '', ''],
+						sizeType: 'px',
+						lineHeight: ['', '', ''],
+						lineType: '',
+						letterSpacing: ['', '', ''],
+						letterType: 'px',
+						textTransform: '',
+						family: '',
+						google: false,
+						style: '',
+						weight: '',
+						variant: '',
+						subset: '',
+						loadGoogle: true,
+					},
+			  ],
+		dropdownTypography: meta?._kad_navigation_dropdownTypography
+			? meta?._kad_navigation_dropdownTypography
+			: [
+					{
+						size: ['', '', ''],
+						sizeType: 'px',
+						lineHeight: ['', '', ''],
+						lineType: '',
+						letterSpacing: ['', '', ''],
+						letterType: 'px',
+						textTransform: '',
+						family: '',
+						google: false,
+						style: '',
+						weight: '',
+						variant: '',
+						subset: '',
+						loadGoogle: true,
+					},
+			  ],
+		descriptionTypography: meta?._kad_navigation_descriptionTypography
+			? meta?._kad_navigation_descriptionTypography
+			: [
+					{
+						size: ['', '', ''],
+						sizeType: 'px',
+						lineHeight: ['', '', ''],
+						lineType: '',
+						letterSpacing: ['', '', ''],
+						letterType: 'px',
+						textTransform: '',
+						family: '',
+						google: false,
+						style: '',
+						weight: '',
+						variant: '',
+						subset: '',
+						loadGoogle: true,
+					},
+			  ],
 		divider: meta?._kad_navigation_divider,
 		dividerTablet: meta?._kad_navigation_dividerTablet,
 		dividerMobile: meta?._kad_navigation_dividerMobile,
@@ -304,6 +362,19 @@ export function EditInner(props) {
 		shadow: meta?._kad_navigation_shadow,
 		shadowHover: meta?._kad_navigation_shadowHover,
 		shadowActive: meta?._kad_navigation_shadowActive,
+		descriptionColor: meta?._kad_navigation_descriptionColor,
+		descriptionColorHover: meta?._kad_navigation_descriptionColorHover,
+		descriptionColorActive: meta?._kad_navigation_descriptionColorActive,
+		descriptionColorTablet: meta?._kad_navigation_descriptionColorTablet,
+		descriptionColorHoverTablet: meta?._kad_navigation_descriptionColorHoverTablet,
+		descriptionColorActiveTablet: meta?._kad_navigation_descriptionColorActiveTablet,
+		descriptionColorMobile: meta?._kad_navigation_descriptionColorMobile,
+		descriptionColorHoverMobile: meta?._kad_navigation_descriptionColorHoverMobile,
+		descriptionColorActiveMobile: meta?._kad_navigation_descriptionColorActiveMobile,
+		descriptionSpacing: meta?._kad_navigation_descriptionSpacing,
+		descriptionSpacingTablet: meta?._kad_navigation_descriptionSpacingTablet,
+		descriptionSpacingMobile: meta?._kad_navigation_descriptionSpacingMobile,
+		descriptionSpacingUnit: meta?._kad_navigation_descriptionSpacingUnit,
 	};
 
 	const {
@@ -444,6 +515,7 @@ export function EditInner(props) {
 		backgroundStickyActiveMobile,
 		typography,
 		dropdownTypography,
+		descriptionTypography,
 		divider,
 		dividerTablet,
 		dividerMobile,
@@ -478,6 +550,10 @@ export function EditInner(props) {
 		dropdownBorderRadiusTablet,
 		dropdownBorderRadiusMobile,
 		dropdownBorderRadiusUnit,
+		descriptionSpacing,
+		descriptionSpacingTablet,
+		descriptionSpacingMobile,
+		descriptionSpacingUnit,
 	} = metaAttributes;
 
 	const inTemplatePreviewMode = !id && templateKey;
@@ -517,6 +593,15 @@ export function EditInner(props) {
 		});
 		setMetaAttribute(newUpdate, 'dropdownTypography');
 	};
+	const saveDescriptionTypography = (value) => {
+		const newUpdate = descriptionTypography.map((item, index) => {
+			if (0 === index) {
+				item = { ...item, ...value };
+			}
+			return item;
+		});
+		setMetaAttribute(newUpdate, 'descriptionTypography');
+	};
 
 	const saveShadow = (value) => {
 		const newUpdate = dropdownShadow.map((item, index) => {
@@ -529,7 +614,6 @@ export function EditInner(props) {
 	};
 
 	const navClasses = classnames('navigation', {
-		'nav--toggle-sub': true,
 		[`navigation-desktop-dropdown-animation-${dropdownReveal ? dropdownReveal : 'none'}`]:
 			!previewDevice || previewDevice === 'Desktop',
 		[`navigation-tablet-dropdown-animation-${dropdownRevealTablet}`]: previewDevice === 'Tablet',
@@ -805,6 +889,54 @@ export function EditInner(props) {
 								default={''}
 								onChange={(value) => setMetaAttribute(value, 'background' + suffix + 'Active' + size)}
 								key={'activeb'}
+							/>
+						</>
+					}
+				/>
+			</>
+		);
+	};
+	const styleDescriptionColorControls = (size = '', suffix = '') => {
+		const descriptionColorValue = metaAttributes['descriptionColor' + suffix + size];
+		const descriptionColorHoverValue = metaAttributes['descriptionColor' + suffix + 'Hover' + size];
+		const descriptionColorActiveValue = metaAttributes['descriptionColor' + suffix + 'Active' + size];
+		return (
+			<>
+				<HoverToggleControl
+					normal={
+						<>
+							<PopColorControl
+								label={__('Color', 'kadence-blocks')}
+								value={descriptionColorValue}
+								default={''}
+								onChange={(value) => setMetaAttribute(value, 'descriptionColor' + suffix + size)}
+								key={'normal'}
+							/>
+						</>
+					}
+					hover={
+						<>
+							<PopColorControl
+								label={__('Color Hover', 'kadence-blocks')}
+								value={descriptionColorHoverValue}
+								default={''}
+								onChange={(value) =>
+									setMetaAttribute(value, 'descriptionColor' + suffix + 'Hover' + size)
+								}
+								key={'hover'}
+							/>
+						</>
+					}
+					active={
+						<>
+							<PopColorControl
+								label={__('Color Active', 'kadence-blocks')}
+								value={descriptionColorActiveValue}
+								default={''}
+								onChange={(value) =>
+									setMetaAttribute(value, 'descriptionColor' + suffix + 'Active' + size)
+								}
+								key={'active'}
 							/>
 						</>
 					}
@@ -1139,7 +1271,7 @@ export function EditInner(props) {
 								panelName={'kb-navigation-transparent-styles'}
 							>
 								<SmallResponsiveControl
-									label={'Colors'}
+									label={__('Colors', 'kadence-blocks')}
 									desktopChildren={styleColorControls('', 'Transparent')}
 									tabletChildren={styleColorControls('Tablet', 'Transparent')}
 									mobileChildren={styleColorControls('Mobile', 'Transparent')}
@@ -1162,7 +1294,7 @@ export function EditInner(props) {
 								panelName={'kb-navigation-sticky-styles'}
 							>
 								<SmallResponsiveControl
-									label={'Colors'}
+									label={__('Colors', 'kadence-blocks')}
 									desktopChildren={styleColorControls('', 'Sticky')}
 									tabletChildren={styleColorControls('Tablet', 'Sticky')}
 									mobileChildren={styleColorControls('Mobile', 'Sticky')}
@@ -1202,21 +1334,21 @@ export function EditInner(props) {
 								panelName={'kb-adv-btn-font-family'}
 							>
 								<TypographyControls
-									fontSize={typography[0].size}
+									fontSize={typography?.[0]?.size}
 									onFontSize={(value) => saveTypography({ size: value })}
-									fontSizeType={typography[0].sizeType}
+									fontSizeType={typography?.[0]?.sizeType}
 									onFontSizeType={(value) => saveTypography({ sizeType: value })}
-									lineHeight={typography[0].lineHeight}
+									lineHeight={typography?.[0]?.lineHeight}
 									onLineHeight={(value) => saveTypography({ lineHeight: value })}
-									lineHeightType={typography[0].lineType}
+									lineHeightType={typography?.[0]?.lineType}
 									onLineHeightType={(value) => saveTypography({ lineType: value })}
-									reLetterSpacing={typography[0].letterSpacing}
+									reLetterSpacing={typography?.[0]?.letterSpacing}
 									onLetterSpacing={(value) => saveTypography({ letterSpacing: value })}
-									letterSpacingType={typography[0].letterType}
+									letterSpacingType={typography?.[0]?.letterType}
 									onLetterSpacingType={(value) => saveTypography({ letterType: value })}
-									textTransform={typography[0].textTransform}
+									textTransform={typography?.[0]?.textTransform}
 									onTextTransform={(value) => saveTypography({ textTransform: value })}
-									fontFamily={typography[0].family}
+									fontFamily={typography?.[0]?.family}
 									onFontFamily={(value) => saveTypography({ family: value })}
 									onFontChange={(select) => {
 										saveTypography({
@@ -1225,17 +1357,17 @@ export function EditInner(props) {
 										});
 									}}
 									onFontArrayChange={(values) => saveTypography(values)}
-									googleFont={typography[0].google}
+									googleFont={typography?.[0]?.google}
 									onGoogleFont={(value) => saveTypography({ google: value })}
-									loadGoogleFont={typography[0].loadGoogle}
+									loadGoogleFont={typography?.[0]?.loadGoogle}
 									onLoadGoogleFont={(value) => saveTypography({ loadGoogle: value })}
-									fontVariant={typography[0].variant}
+									fontVariant={typography?.[0]?.variant}
 									onFontVariant={(value) => saveTypography({ variant: value })}
-									fontWeight={typography[0].weight}
+									fontWeight={typography?.[0]?.weight}
 									onFontWeight={(value) => saveTypography({ weight: value })}
-									fontStyle={typography[0].style}
+									fontStyle={typography?.[0]?.style}
 									onFontStyle={(value) => saveTypography({ style: value })}
-									fontSubset={typography[0].subset}
+									fontSubset={typography?.[0]?.subset}
 									onFontSubset={(value) => saveTypography({ subset: value })}
 								/>
 							</KadencePanelBody>
@@ -1265,9 +1397,9 @@ export function EditInner(props) {
 
 									<ResponsiveRangeControls
 										label={__('Dropdown Width', 'kadence-blocks')}
-										value={parseFloat(dropdownWidth)}
-										valueTablet={parseFloat(dropdownWidthTablet)}
-										valueMobile={parseFloat(dropdownWidthMobile)}
+										value={dropdownWidth ? parseFloat(dropdownWidth) : ''}
+										valueTablet={dropdownWidthTablet ? parseFloat(dropdownWidthTablet) : ''}
+										valueMobile={dropdownWidthMobile ? parseFloat(dropdownWidthMobile) : ''}
 										onChange={(value) => setMetaAttribute(value.toString(), 'dropdownWidth')}
 										onChangeTablet={(value) =>
 											setMetaAttribute(value.toString(), 'dropdownWidthTablet')
@@ -1294,9 +1426,13 @@ export function EditInner(props) {
 							)}
 							<ResponsiveRangeControls
 								label={__('Dropdown Item Vertical Spacing', 'kadence-blocks')}
-								value={parseFloat(dropdownVerticalSpacing)}
-								valueTablet={parseFloat(dropdownVerticalSpacingTablet)}
-								valueMobile={parseFloat(dropdownVerticalSpacingMobile)}
+								value={dropdownVerticalSpacing ? parseFloat(dropdownVerticalSpacing) : ''}
+								valueTablet={
+									dropdownVerticalSpacingTablet ? parseFloat(dropdownVerticalSpacingTablet) : ''
+								}
+								valueMobile={
+									dropdownVerticalSpacingMobile ? parseFloat(dropdownVerticalSpacingMobile) : ''
+								}
 								onChange={(value) => setMetaAttribute(value.toString(), 'dropdownVerticalSpacing')}
 								onChangeTablet={(value) =>
 									setMetaAttribute(value.toString(), 'dropdownVerticalSpacingTablet')
@@ -1391,60 +1527,6 @@ export function EditInner(props) {
 								units={['px', 'em', 'rem', '%']}
 								onUnit={(value) => setMetaAttribute(value, 'marginDropdownUnit')}
 							/>
-							<ResponsiveMeasureRangeControl
-								label={__('Padding Link', 'kadence-blocks')}
-								value={paddingDropdownLink}
-								tabletValue={tabletPaddingDropdownLink}
-								mobileValue={mobilePaddingDropdownLink}
-								onChange={(value) => {
-									setMetaAttribute(value.map(String), 'paddingDropdownLink');
-								}}
-								onChangeTablet={(value) => {
-									setMetaAttribute(value.map(String), 'tabletPaddingDropdownLink');
-								}}
-								onChangeMobile={(value) => {
-									setMetaAttribute(value.map(String), 'mobilePaddingDropdownLink');
-								}}
-								min={0}
-								max={
-									paddingDropdownLinkUnit === 'em' || paddingDropdownLinkUnit === 'rem'
-										? 24
-										: paddingDropdownLinkUnit === 'px'
-										? 200
-										: 100
-								}
-								step={paddingDropdownLinkUnit === 'em' || paddingDropdownLinkUnit === 'rem' ? 0.1 : 1}
-								unit={paddingDropdownLinkUnit}
-								units={['px', 'em', 'rem', '%']}
-								onUnit={(value) => setMetaAttribute(value, 'paddingDropdownLinkUnit')}
-							/>
-							<ResponsiveMeasureRangeControl
-								label={__('Margin Link', 'kadence-blocks')}
-								value={marginDropdownLink}
-								tabletValue={tabletMarginDropdownLink}
-								mobileValue={mobileMarginDropdownLink}
-								onChange={(value) => {
-									setMetaAttribute(value.map(String), 'marginDropdownLink');
-								}}
-								onChangeTablet={(value) => {
-									setMetaAttribute(value.map(String), 'tabletMarginDropdownLink');
-								}}
-								onChangeMobile={(value) => {
-									setMetaAttribute(value.map(String), 'mobileMarginDropdownLink');
-								}}
-								min={0}
-								max={
-									marginDropdownLinkUnit === 'em' || marginDropdownLinkUnit === 'rem'
-										? 24
-										: marginDropdownLinkUnit === 'px'
-										? 200
-										: 100
-								}
-								step={marginDropdownLinkUnit === 'em' || marginDropdownLinkUnit === 'rem' ? 0.1 : 1}
-								unit={marginDropdownLinkUnit}
-								units={['px', 'em', 'rem', '%']}
-								onUnit={(value) => setMetaAttribute(value, 'marginDropdownLinkUnit')}
-							/>
 							<ResponsiveBorderControl
 								label={__('Dropdown Border', 'kadence-blocks')}
 								value={dropdownBorder}
@@ -1471,21 +1553,6 @@ export function EditInner(props) {
 								isBorderRadius={true}
 								allowEmpty={true}
 							/>
-							<ResponsiveSingleBorderControl
-								label={'Divider'}
-								value={dropdownDivider}
-								tabletValue={dropdownDividerTablet}
-								mobileValue={dropdownDividerMobile}
-								onChange={(value) => setMetaAttribute(value, 'dropdownDivider')}
-								onChangeTablet={(value) => setMetaAttribute(value, 'dropdownDividerTablet')}
-								onChangeMobile={(value) => setMetaAttribute(value, 'dropdownDividerMobile')}
-							/>
-							<SmallResponsiveControl
-								label={'Colors'}
-								desktopChildren={styleColorControls('', 'Dropdown')}
-								tabletChildren={styleColorControls('Tablet', 'Dropdown')}
-								mobileChildren={styleColorControls('Mobile', 'Dropdown')}
-							></SmallResponsiveControl>
 							{previewOrientation != 'vertical' && (
 								<BoxShadowControl
 									label={__('Box Shadow', 'kadence-blocks')}
@@ -1575,29 +1642,97 @@ export function EditInner(props) {
 									}}
 								/>
 							)}
-
+							<SmallResponsiveControl
+								label={__('Colors', 'kadence-blocks')}
+								desktopChildren={styleColorControls('', 'Dropdown')}
+								tabletChildren={styleColorControls('Tablet', 'Dropdown')}
+								mobileChildren={styleColorControls('Mobile', 'Dropdown')}
+							></SmallResponsiveControl>
+							<ResponsiveSingleBorderControl
+								label={'Divider'}
+								value={dropdownDivider}
+								tabletValue={dropdownDividerTablet}
+								mobileValue={dropdownDividerMobile}
+								onChange={(value) => setMetaAttribute(value, 'dropdownDivider')}
+								onChangeTablet={(value) => setMetaAttribute(value, 'dropdownDividerTablet')}
+								onChangeMobile={(value) => setMetaAttribute(value, 'dropdownDividerMobile')}
+							/>
+							<ResponsiveMeasureRangeControl
+								label={__('Padding Link', 'kadence-blocks')}
+								value={paddingDropdownLink}
+								tabletValue={tabletPaddingDropdownLink}
+								mobileValue={mobilePaddingDropdownLink}
+								onChange={(value) => {
+									setMetaAttribute(value.map(String), 'paddingDropdownLink');
+								}}
+								onChangeTablet={(value) => {
+									setMetaAttribute(value.map(String), 'tabletPaddingDropdownLink');
+								}}
+								onChangeMobile={(value) => {
+									setMetaAttribute(value.map(String), 'mobilePaddingDropdownLink');
+								}}
+								min={0}
+								max={
+									paddingDropdownLinkUnit === 'em' || paddingDropdownLinkUnit === 'rem'
+										? 24
+										: paddingDropdownLinkUnit === 'px'
+										? 200
+										: 100
+								}
+								step={paddingDropdownLinkUnit === 'em' || paddingDropdownLinkUnit === 'rem' ? 0.1 : 1}
+								unit={paddingDropdownLinkUnit}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setMetaAttribute(value, 'paddingDropdownLinkUnit')}
+							/>
+							<ResponsiveMeasureRangeControl
+								label={__('Margin Link', 'kadence-blocks')}
+								value={marginDropdownLink}
+								tabletValue={tabletMarginDropdownLink}
+								mobileValue={mobileMarginDropdownLink}
+								onChange={(value) => {
+									setMetaAttribute(value.map(String), 'marginDropdownLink');
+								}}
+								onChangeTablet={(value) => {
+									setMetaAttribute(value.map(String), 'tabletMarginDropdownLink');
+								}}
+								onChangeMobile={(value) => {
+									setMetaAttribute(value.map(String), 'mobileMarginDropdownLink');
+								}}
+								min={0}
+								max={
+									marginDropdownLinkUnit === 'em' || marginDropdownLinkUnit === 'rem'
+										? 24
+										: marginDropdownLinkUnit === 'px'
+										? 200
+										: 100
+								}
+								step={marginDropdownLinkUnit === 'em' || marginDropdownLinkUnit === 'rem' ? 0.1 : 1}
+								unit={marginDropdownLinkUnit}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setMetaAttribute(value, 'marginDropdownLinkUnit')}
+							/>
 							{showSettings('fontSettings', 'kadence/navigation') && (
 								<KadencePanelBody
 									title={__('Typography Settings', 'kadence-blocks')}
 									initialOpen={false}
-									panelName={'kb-adv-btn-font-family'}
+									panelName={'kb-adv-nav-sub-font'}
 								>
 									<TypographyControls
-										fontSize={dropdownTypography[0].size}
+										fontSize={dropdownTypography?.[0]?.size}
 										onFontSize={(value) => saveDropdownTypography({ size: value })}
-										fontSizeType={dropdownTypography[0].sizeType}
+										fontSizeType={dropdownTypography?.[0]?.sizeType}
 										onFontSizeType={(value) => saveDropdownTypography({ sizeType: value })}
-										lineHeight={dropdownTypography[0].lineHeight}
+										lineHeight={dropdownTypography?.[0]?.lineHeight}
 										onLineHeight={(value) => saveDropdownTypography({ lineHeight: value })}
-										lineHeightType={dropdownTypography[0].lineType}
+										lineHeightType={dropdownTypography?.[0]?.lineType}
 										onLineHeightType={(value) => saveDropdownTypography({ lineType: value })}
-										reLetterSpacing={dropdownTypography[0].letterSpacing}
+										reLetterSpacing={dropdownTypography?.[0]?.letterSpacing}
 										onLetterSpacing={(value) => saveDropdownTypography({ letterSpacing: value })}
-										letterSpacingType={dropdownTypography[0].letterType}
+										letterSpacingType={dropdownTypography?.[0]?.letterType}
 										onLetterSpacingType={(value) => saveDropdownTypography({ letterType: value })}
-										textTransform={dropdownTypography[0].textTransform}
+										textTransform={dropdownTypography?.[0]?.textTransform}
 										onTextTransform={(value) => saveDropdownTypography({ textTransform: value })}
-										fontFamily={dropdownTypography[0].family}
+										fontFamily={dropdownTypography?.[0]?.family}
 										onFontFamily={(value) => saveDropdownTypography({ family: value })}
 										onFontChange={(select) => {
 											saveDropdownTypography({
@@ -1606,18 +1741,105 @@ export function EditInner(props) {
 											});
 										}}
 										onFontArrayChange={(values) => saveDropdownTypography(values)}
-										googleFont={dropdownTypography[0].google}
+										googleFont={dropdownTypography?.[0]?.google}
 										onGoogleFont={(value) => saveDropdownTypography({ google: value })}
-										loadGoogleFont={dropdownTypography[0].loadGoogle}
+										loadGoogleFont={dropdownTypography?.[0]?.loadGoogle}
 										onLoadGoogleFont={(value) => saveDropdownTypography({ loadGoogle: value })}
-										fontVariant={dropdownTypography[0].variant}
+										fontVariant={dropdownTypography?.[0]?.variant}
 										onFontVariant={(value) => saveDropdownTypography({ variant: value })}
-										fontWeight={dropdownTypography[0].weight}
+										fontWeight={dropdownTypography?.[0]?.weight}
 										onFontWeight={(value) => saveDropdownTypography({ weight: value })}
-										fontStyle={dropdownTypography[0].style}
+										fontStyle={dropdownTypography?.[0]?.style}
 										onFontStyle={(value) => saveDropdownTypography({ style: value })}
-										fontSubset={dropdownTypography[0].subset}
+										fontSubset={dropdownTypography?.[0]?.subset}
 										onFontSubset={(value) => saveDropdownTypography({ subset: value })}
+									/>
+								</KadencePanelBody>
+							)}
+						</KadencePanelBody>
+						<KadencePanelBody
+							title={__('Description Styles', 'kadence-blocks')}
+							panelName={'kb-navigation-style-description'}
+							initialOpen={false}
+						>
+							<ResponsiveRangeControls
+								label={__('Spacing from label', 'kadence-blocks')}
+								value={descriptionSpacing ? parseFloat(descriptionSpacing) : ''}
+								valueTablet={descriptionSpacingTablet ? parseFloat(descriptionSpacingTablet) : ''}
+								valueMobile={descriptionSpacingMobile ? parseFloat(descriptionSpacingMobile) : ''}
+								onChange={(value) => setMetaAttribute(value.toString(), 'descriptionSpacing')}
+								onChangeTablet={(value) =>
+									setMetaAttribute(value.toString(), 'descriptionSpacingTablet')
+								}
+								onChangeMobile={(value) =>
+									setMetaAttribute(value.toString(), 'descriptionSpacingMobile')
+								}
+								min={0}
+								max={
+									descriptionSpacingUnit === 'em' || descriptionSpacingUnit === 'rem'
+										? 24
+										: descriptionSpacingUnit === 'px'
+										? 2000
+										: 100
+								}
+								step={descriptionSpacingUnit === 'em' || descriptionSpacingUnit === 'rem' ? 0.1 : 1}
+								reset={() => setMetaAttribute('', 'descriptionSpacing')}
+								unit={descriptionSpacingUnit}
+								units={['em', 'rem', 'px', 'vw']}
+								onUnit={(value) => setMetaAttribute(value, 'descriptionSpacingUnit')}
+								showUnit={true}
+							/>
+							<SmallResponsiveControl
+								label={__('Colors', 'kadence-blocks')}
+								desktopChildren={styleDescriptionColorControls('', '')}
+								tabletChildren={styleDescriptionColorControls('Tablet', '')}
+								mobileChildren={styleDescriptionColorControls('Mobile', '')}
+							></SmallResponsiveControl>
+
+							{showSettings('fontSettings', 'kadence/navigation') && (
+								<KadencePanelBody
+									title={__('Typography Settings', 'kadence-blocks')}
+									initialOpen={false}
+									panelName={'kb-nav-desc-font'}
+								>
+									<TypographyControls
+										fontSize={descriptionTypography?.[0]?.size}
+										onFontSize={(value) => saveDescriptionTypography({ size: value })}
+										fontSizeType={descriptionTypography?.[0]?.sizeType}
+										onFontSizeType={(value) => saveDescriptionTypography({ sizeType: value })}
+										lineHeight={descriptionTypography?.[0]?.lineHeight}
+										onLineHeight={(value) => saveDescriptionTypography({ lineHeight: value })}
+										lineHeightType={descriptionTypography?.[0]?.lineType}
+										onLineHeightType={(value) => saveDescriptionTypography({ lineType: value })}
+										reLetterSpacing={descriptionTypography?.[0]?.letterSpacing}
+										onLetterSpacing={(value) => saveDescriptionTypography({ letterSpacing: value })}
+										letterSpacingType={descriptionTypography?.[0]?.letterType}
+										onLetterSpacingType={(value) =>
+											saveDescriptionTypography({ letterType: value })
+										}
+										textTransform={descriptionTypography?.[0]?.textTransform}
+										onTextTransform={(value) => saveDescriptionTypography({ textTransform: value })}
+										fontFamily={descriptionTypography?.[0]?.family}
+										onFontFamily={(value) => saveDescriptionTypography({ family: value })}
+										onFontChange={(select) => {
+											saveDescriptionTypography({
+												family: select.value,
+												google: select.google,
+											});
+										}}
+										onFontArrayChange={(values) => saveDescriptionTypography(values)}
+										googleFont={descriptionTypography?.[0]?.google}
+										onGoogleFont={(value) => saveDescriptionTypography({ google: value })}
+										loadGoogleFont={descriptionTypography?.[0]?.loadGoogle}
+										onLoadGoogleFont={(value) => saveDescriptionTypography({ loadGoogle: value })}
+										fontVariant={descriptionTypography?.[0]?.variant}
+										onFontVariant={(value) => saveDescriptionTypography({ variant: value })}
+										fontWeight={descriptionTypography?.[0]?.weight}
+										onFontWeight={(value) => saveDescriptionTypography({ weight: value })}
+										fontStyle={descriptionTypography?.[0]?.style}
+										onFontStyle={(value) => saveDescriptionTypography({ style: value })}
+										fontSubset={descriptionTypography?.[0]?.subset}
+										onFontSubset={(value) => saveDescriptionTypography({ subset: value })}
 									/>
 								</KadencePanelBody>
 							)}

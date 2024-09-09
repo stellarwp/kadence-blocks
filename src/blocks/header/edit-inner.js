@@ -95,6 +95,12 @@ export function EditInner(props) {
 		[clientId]
 	);
 
+	const { childSelected } = useSelect((select) => {
+		return {
+			childSelected: select('core/block-editor').hasSelectedInnerBlock(clientId, true),
+		};
+	}, []);
+
 	const [componentRef, setComponentRef] = useState();
 
 	const [activeTab, setActiveTab] = useState('general');
@@ -105,12 +111,12 @@ export function EditInner(props) {
 	const [meta, setMeta] = useHeaderProp('meta');
 
 	useEffect(() => {
-		const setValue = isSelected || showVisualBuilder ? clientId : null;
+		const setValue = isSelected || childSelected || showVisualBuilder ? clientId : null;
 
 		if (visualBuilderClientId !== setValue) {
 			setHeaderVisualBuilderSelectedId(setValue);
 		}
-	}, [isSelected]);
+	}, [isSelected, childSelected]);
 
 	const metaAttributes = {
 		padding: meta?._kad_header_padding,

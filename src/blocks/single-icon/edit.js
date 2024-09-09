@@ -254,7 +254,7 @@ function KadenceSingleIcon(props) {
 							/>
 							{icon && 'fe' === icon.substring(0, 2) && (
 								<RangeControl
-									label={__('Line Width')}
+									label={__('Line Width', 'kadence-blocks')}
 									value={width}
 									onChange={(value) => {
 										setAttributes({ width: value });

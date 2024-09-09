@@ -34,7 +34,7 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 		// Define the form post gutenberg template.
 		add_action( 'init', array( $this, 'form_gutenberg_template' ) );
 		add_filter( 'kadence_post_layout', array( $this, 'navigation_single_layout' ), 99 );
-		add_action( 'enqueue_block_editor_assets', array( $this, 'script_enqueue' ) );
+		add_action( 'enqueue_block_assets', array( $this, 'script_enqueue' ) );
 
 		if( is_admin() ) {
 			if ( class_exists( 'Cpt_To_Template' ) ) {
@@ -941,6 +941,51 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'default' => '',
 			),
 			array(
+				'key'     => '_kad_navigation_descriptionColor',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_descriptionColorHover',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_descriptionColorActive',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_descriptionColorTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_descriptionColorHoverTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_descriptionColorActiveTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_descriptionColorMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_descriptionColorHoverMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_descriptionColorActiveMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
 				'key'     => '_kad_navigation_divider',
 				'type' => 'array',
 				'children_type' => 'object',
@@ -1197,7 +1242,7 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'default'       => array(
 					array(
 						'size'    => array( '', '', '' ),
-						'sizetype'  => 'px',
+						'sizeType'  => 'px',
 						'lineHeight' => array( '', '', '' ),
 						'lineType'   => '',
 						'letterSpacing'   => array( '', '', '' ),
@@ -1209,14 +1254,14 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 						'weight' => '',
 						'variant' => '',
 						'subset' => '',
-						'loadgoogle' => true,
+						'loadGoogle' => true,
 					),
 				),
 				'type'          => 'array',
 				'children_type' => 'object',
 				'properties' => array(
 					'size'    => array( 'type' => 'array' ),
-					'sizetype'  => array( 'type' => 'string' ),
+					'sizeType'  => array( 'type' => 'string' ),
 					'lineHeight' => array( 'type' => 'array' ),
 					'lineType'   => array( 'type' => 'string' ),
 					'letterSpacing'   => array( 'type' => 'array' ),
@@ -1228,7 +1273,7 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 					'weight'   => array( 'type' => 'string' ),
 					'variant'   => array( 'type' => 'string' ),
 					'subset'   => array( 'type' => 'string' ),
-					'loadgoogle'   => array( 'type' => 'boolean' ),
+					'loadGoogle'   => array( 'type' => 'boolean' ),
 				),
 			),
 			array(
@@ -1236,7 +1281,7 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'default'       => array(
 					array(
 						'size'    => array( '', '', '' ),
-						'sizetype'  => 'px',
+						'sizeType'  => 'px',
 						'lineHeight' => array( '', '', '' ),
 						'lineType'   => '',
 						'letterSpacing'   => array( '', '', '' ),
@@ -1248,14 +1293,14 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 						'weight' => '',
 						'variant' => '',
 						'subset' => '',
-						'loadgoogle' => true,
+						'loadGoogle' => true,
 					),
 				),
 				'type'          => 'array',
 				'children_type' => 'object',
 				'properties' => array(
 					'size'    => array( 'type' => 'array' ),
-					'sizetype'  => array( 'type' => 'string' ),
+					'sizeType'  => array( 'type' => 'string' ),
 					'lineHeight' => array( 'type' => 'array' ),
 					'lineType'   => array( 'type' => 'string' ),
 					'letterSpacing'   => array( 'type' => 'array' ),
@@ -1265,9 +1310,48 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 					'google'   => array( 'type' => 'boolean' ),
 					'style'   => array( 'type' => 'string' ),
 					'weight'   => array( 'type' => 'string' ),
-					'variant'   => array( 'type' => 'string' ),
-					'subset'   => array( 'type' => 'string' ),
-					'loadgoogle'   => array( 'type' => 'boolean' ),
+					'variant'     => array( 'type' => 'string' ),
+					'subset'       => array( 'type' => 'string' ),
+					'loadGoogle' => array( 'type' => 'boolean' ),
+				),
+			),
+			array(
+				'key'     => '_kad_navigation_descriptionTypography',
+				'default'       => array(
+					array(
+						'size'    => array( '', '', '' ),
+						'sizeType'  => 'px',
+						'lineHeight' => array( '', '', '' ),
+						'lineType'   => '',
+						'letterSpacing'   => array( '', '', '' ),
+						'letterType' => 'px',
+						'textTransform' => '',
+						'family' => '',
+						'google' => false,
+						'style' => '',
+						'weight' => '',
+						'variant' => '',
+						'subset' => '',
+						'loadGoogle' => true,
+					),
+				),
+				'type'          => 'array',
+				'children_type' => 'object',
+				'properties' => array(
+					'size'    => array( 'type' => 'array' ),
+					'sizeType'  => array( 'type' => 'string' ),
+					'lineHeight' => array( 'type' => 'array' ),
+					'lineType'   => array( 'type' => 'string' ),
+					'letterSpacing'   => array( 'type' => 'array' ),
+					'letterType'   => array( 'type' => 'string' ),
+					'textTransform'   => array( 'type' => 'string' ),
+					'family'   => array( 'type' => 'string' ),
+					'google'   => array( 'type' => 'boolean' ),
+					'style'   => array( 'type' => 'string' ),
+					'weight'   => array( 'type' => 'string' ),
+					'variant'     => array( 'type' => 'string' ),
+					'subset'       => array( 'type' => 'string' ),
+					'loadGoogle' => array( 'type' => 'boolean' ),
 				),
 			),
 			array(
@@ -1326,6 +1410,26 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'default' => '',
 			),
 			array(
+				'key'     => '_kad_navigation_descriptionSpacing',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_descriptionSpacingTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_descriptionSpacingMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_descriptionSpacingUnit',
+				'type' => 'string',
+				'default' => 'px',
+			),
+			array(
 				'key' => '_kad_navigation_dropdownShadow',
 				'type' => 'array',
 				'children_type' => 'object',
@@ -1333,11 +1437,11 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 					array(
 						'enable' => false,
 						'color' => '#000000',
-						'opacity' => 0.2,
+						'opacity' => 0.1,
 						'spread' => 0,
-						'blur' => 2,
-						'hOffset' => 1,
-						'vOffset' => 1,
+						'blur' => 13,
+						'hOffset' => 0,
+						'vOffset' => 2,
 						'inset' => false,
 					),
 				),

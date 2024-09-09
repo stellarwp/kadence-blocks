@@ -929,9 +929,9 @@ function KadenceForm(props) {
 		{ key: 'v2', name: __('V2', 'kadence-blocks') },
 	];
 	const btnWidths = [
-		{ key: 'auto', name: __('Auto') },
-		{ key: 'fixed', name: __('Fixed') },
-		{ key: 'full', name: __('Full') },
+		{ key: 'auto', name: __('Auto', 'kadence-blocks') },
+		{ key: 'fixed', name: __('Fixed', 'kadence-blocks') },
+		{ key: 'full', name: __('Full', 'kadence-blocks') },
 	];
 	const gradTypes = [
 		{ key: 'linear', name: __('Linear', 'kadence-blocks') },
@@ -1189,7 +1189,7 @@ function KadenceForm(props) {
 											icon="arrow-up"
 											onClick={() => (n === 0 ? undefined : onOptionMoveUp(n, index))}
 											className="kadence-blocks-list-item__move-up"
-											label={__('Move Item Up')}
+											label={__('Move Item Up', 'kadence-blocks')}
 											aria-disabled={n === 0}
 											disabled={n === 0}
 										/>
@@ -1201,7 +1201,7 @@ function KadenceForm(props) {
 													: onOptionMoveDown(n, index)
 											}
 											className="kadence-blocks-list-item__move-down"
-											label={__('Move Item Down')}
+											label={__('Move Item Down', 'kadence-blocks')}
 											aria-disabled={n + 1 === fields[index].options.length}
 											disabled={n + 1 === fields[index].options.length}
 										/>
@@ -1209,7 +1209,7 @@ function KadenceForm(props) {
 											icon="no-alt"
 											onClick={() => removeOptionItem(n, index)}
 											className="kadence-blocks-list-item__remove"
-											label={__('Remove Item')}
+											label={__('Remove Item', 'kadence-blocks')}
 											disabled={1 === fields[index].options.length}
 										/>
 									</div>
@@ -1235,7 +1235,7 @@ function KadenceForm(props) {
 				)}
 				{'select' === fields[index].type && (
 					<ToggleControl
-						label={__('Multi Select?')}
+						label={__('Multi Select?', 'kadence-blocks')}
 						checked={undefined !== fields[index].multiSelect ? fields[index].multiSelect : false}
 						onChange={(value) => saveFields({ multiSelect: value }, index)}
 					/>
@@ -2877,7 +2877,7 @@ function KadenceForm(props) {
 							/>
 
 							<div className="kt-btn-size-settings-container">
-								<h2 className="kt-beside-btn-group">{__('Input Size')}</h2>
+								<h2 className="kt-beside-btn-group">{__('Input Size', 'kadence-blocks')}</h2>
 								<ButtonGroup
 									className="kt-button-size-type-options"
 									aria-label={__('Input Size', 'kadence-blocks')}
@@ -3131,7 +3131,7 @@ function KadenceForm(props) {
 																}}
 															/>
 															<RangeControl
-																label={__('Location')}
+																label={__('Location', 'kadence-blocks')}
 																value={
 																	style[0].gradientActive &&
 																	undefined !== style[0].gradientActive[3]
@@ -3984,7 +3984,7 @@ function KadenceForm(props) {
 								}}
 							</TabPanel>
 							<div className="kt-btn-size-settings-container">
-								<h2 className="kt-beside-btn-group">{__('Button Size')}</h2>
+								<h2 className="kt-beside-btn-group">{__('Button Size', 'kadence-blocks')}</h2>
 								<ButtonGroup
 									className="kt-button-size-type-options"
 									aria-label={__('Button Size', 'kadence-blocks')}
@@ -4089,8 +4089,11 @@ function KadenceForm(props) {
 								</div>
 							)}
 							<div className="kt-btn-size-settings-container">
-								<h2 className="kt-beside-btn-group">{__('Button Width')}</h2>
-								<ButtonGroup className="kt-button-size-type-options" aria-label={__('Button Width')}>
+								<h2 className="kt-beside-btn-group">{__('Button Width', 'kadence-blocks')}</h2>
+								<ButtonGroup
+									className="kt-button-size-type-options"
+									aria-label={__('Button Width', 'kadence-blocks')}
+								>
 									{map(btnWidths, ({ name, key }) => (
 										<Button
 											key={key}
@@ -4108,7 +4111,7 @@ function KadenceForm(props) {
 							{'fixed' === submit[0].widthType && (
 								<div className="kt-inner-sub-section">
 									<h2 className="kt-heading-size-title kt-secondary-color-size">
-										{__('Fixed Width')}
+										{__('Fixed Width', 'kadence-blocks')}
 									</h2>
 									<TabPanel
 										className="kt-size-tabs"
@@ -4381,7 +4384,7 @@ function KadenceForm(props) {
 																}}
 															/>
 															<RangeControl
-																label={__('Location')}
+																label={__('Location', 'kadence-blocks')}
 																value={
 																	submit[0].gradientHover &&
 																	undefined !== submit[0].gradientHover[3]
@@ -5299,7 +5302,7 @@ function KadenceForm(props) {
 					>
 						<RichText
 							tagName="div"
-							placeholder={__('Submit')}
+							placeholder={__('Submit', 'kadence-blocks')}
 							onFocus={() => deselectField}
 							value={submit[0].label}
 							onChange={(value) => {
