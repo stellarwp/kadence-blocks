@@ -134,6 +134,9 @@ export default function ResponsiveRadioRangeControls( {
 		onChange && onChangeTablet && onChangeMobile && (
 			<div className={ `components-base-control kb-responsive-radio-range-control${ '' !== className ? ' ' + className : '' }` }>
 				<div className="kadence-title-bar">
+					{ label && (
+						<span className="kadence-control-title">{ label }</span>
+					) }
 					{ reset && (
 						<Button
 							className="is-reset is-single"
@@ -142,9 +145,6 @@ export default function ResponsiveRadioRangeControls( {
 							icon={ undo }
 							onClick={ () => reset() }
 						></Button>
-					) }
-					{ label && (
-						<span className="kadence-control-title">{ label }</span>
 					) }
 					<ButtonGroup className="kb-measure-responsive-options" aria-label={ __( 'Device', 'kadence-blocks' ) }>
 						{ map( devices, ( { name, key, title, itemClass } ) => (

@@ -130,7 +130,7 @@ export default function ResponsiveRangeControls( {
 								<Button
 									className="is-reset is-single"
 									isSmall
-									disabled={ ( ( isEqual( '', value ) ) ? true : false ) }
+									// disabled={ ( ( isEqual( '', value ) ) ? true : false ) }
 									icon={ undo }
 									onClick={ () => reset() }
 								></Button>

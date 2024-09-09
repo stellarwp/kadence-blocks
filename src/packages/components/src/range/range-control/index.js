@@ -35,6 +35,7 @@ export default function RangeControl({
 		onChange && (
 			<div className={`components-base-control kadence-range-control${className ? ' ' + className : ''}`}>
 				<div className="kadence-title-bar">
+					{label && <span className="kadence-control-title">{label}</span>}
 					{reset && (
 						<Button
 							className="is-reset is-single"
@@ -44,7 +45,6 @@ export default function RangeControl({
 							onClick={() => reset()}
 						></Button>
 					)}
-					{label && <span className="kadence-control-title">{label}</span>}
 				</div>
 				<div className={'kadence-controls-content'}>
 					<div className={'kadence-range-control-inner'}>

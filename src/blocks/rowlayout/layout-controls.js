@@ -503,12 +503,24 @@ function LayoutControls({
 										}}
 										units={['px', 'em', 'rem']}
 										reset={() => {
-											setAttributes({
-												columnGutter: 'default',
-												tabletGutter: 'default',
-												mobileGutter: 'default',
-												customGutter: ['', '', ''],
-											});
+											if (previewDevice === 'Tablet') {
+												setAttributes({
+													tabletGutter: 'default',
+													customGutter: ['', '', ''],
+												});
+											} else if(previewDevice === 'Mobile') {
+												setAttributes({
+													mobileGutter: 'default',
+													customGutter: ['', '', ''],
+												});
+											} else {
+												setAttributes({
+													columnGutter: 'default',
+													tabletGutter: 'default',
+													mobileGutter: 'default',
+													customGutter: ['', '', ''],
+												});
+											}
 										}}
 									/>
 								</>
@@ -581,12 +593,25 @@ function LayoutControls({
 								}}
 								units={['px', 'em', 'rem']}
 								reset={() => {
-									setAttributes({
-										collapseGutter: 'default',
-										tabletRowGutter: 'default',
-										mobileRowGutter: 'default',
-										customRowGutter: ['', '', ''],
-									});
+									if(previewDevice === 'Tablet') {
+										setAttributes({
+											tabletRowGutter: 'default',
+											customRowGutter: ['', '', ''],
+										});
+									} else if(previewDevice === 'Mobile') {
+										setAttributes({
+
+											mobileRowGutter: 'default',
+											customRowGutter: ['', '', ''],
+										});
+									} else {
+										setAttributes({
+											collapseGutter: 'default',
+											tabletRowGutter: 'default',
+											mobileRowGutter: 'default',
+											customRowGutter: ['', '', ''],
+										});
+									}
 								}}
 							/>
 							{(colLayout === 'grid-layout' ||
