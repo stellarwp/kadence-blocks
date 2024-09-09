@@ -905,7 +905,7 @@
 		);
 		border-bottom: var(
 			--kb-nav-link-hover-border-bottom-lv,
-			var(--kb-nav-link-active-border-bottom-lv, ar(--kb-nav-link-border-bottom))
+			var(--kb-nav-link-active-border-bottom-lv, var(--kb-nav-link-border-bottom))
 		);
 		border-left: var(
 			--kb-nav-link-hover-border-left-lv,
