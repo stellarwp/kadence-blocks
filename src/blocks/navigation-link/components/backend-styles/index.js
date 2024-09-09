@@ -804,7 +804,7 @@ export default function BackendStyles(props) {
 			first_prop: '--kb-nav-dropdown-border-top-left-radius',
 			second_prop: '--kb-nav-dropdown-border-top-right-radius',
 			third_prop: '--kb-nav-dropdown-border-bottom-right-radius',
-			third_prop: '--kb-nav-dropdown-border-bottom-left-radius',
+			fourth_prop: '--kb-nav-dropdown-border-bottom-left-radius',
 		}
 	);
 	css.render_measure_output(
@@ -999,7 +999,7 @@ export default function BackendStyles(props) {
 			first_prop: '--kb-nav-link-highlight-border-top-left-radius',
 			second_prop: '--kb-nav-link-highlight-border-top-right-radius',
 			third_prop: '--kb-nav-link-highlight-border-bottom-right-radius',
-			third_prop: '--kb-nav-link-highlight-border-bottom-left-radius',
+			fourth_prop: '--kb-nav-link-highlight-border-bottom-left-radius',
 		}
 	);
 	if (undefined !== previewHighlightLabelGap && previewHighlightLabelGap) {
