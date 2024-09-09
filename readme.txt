@@ -179,6 +179,16 @@ Release Date: September 9th 2024
 * Fix: Show more block inside query loop.
 * Fix: Countdown repeater not working.
 * Fix: Issue with progress label position.
+* Fix: Accordion pane spacing issue on front end.
+* Fix: Infobox text alignment in some layouts.
+* Fix: Warning about multiple submit buttons when two advanced forms are on the same page.
+* Fix: Advanced image editor style not matching frontend when inside section.
+* Fix: Advanced image caption not loading google font.
+* Fix: Issues with progress bar label position.
+* Fix: Table of contents line being getting overridden in some situations.
+* Fix: Advanced galleries not showing when inside a section with an alignment set.
+* Fix: Issue with repeating countdown not working.
+* Fix: Escape HTML in countdown block labels.
 
 = 3.2.52 =
 Release Date: August 23rd 2024
