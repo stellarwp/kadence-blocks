@@ -45,6 +45,8 @@ export default function MenuEditor({
 				createBlock('kadence/navigation-link', {
 					label: post.title.rendered,
 					url: post.link,
+					id: post.id,
+					type: post.type,
 					kind: 'custom',
 					uniqueID: Math.random().toString(36).substr(2, 9),
 				})

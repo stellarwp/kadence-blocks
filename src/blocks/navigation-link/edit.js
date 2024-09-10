@@ -24,6 +24,8 @@ import {
 	Button,
 	ButtonGroup,
 } from '@wordpress/components';
+import apiFetch from '@wordpress/api-fetch';
+import { addQueryArgs } from '@wordpress/url';
 import { plusCircle, addSubmenu, plusCircleFilled } from '@wordpress/icons';
 import { isKeyboardEvent, ENTER } from '@wordpress/keycodes';
 import { __ } from '@wordpress/i18n';
@@ -176,6 +178,16 @@ function getMissingText(type) {
 	return missingText;
 }
 
+function correctPostType(postType) {
+	if (postType === 'post') {
+		return 'posts';
+	} else if (postType === 'page') {
+		return 'pages';
+	}
+
+	return postType;
+}
+
 export default function Edit(props) {
 	const { attributes, isSelected, setAttributes, insertBlocksAfter, mergeBlocks, onReplace, context, clientId } =
 		props;
@@ -325,6 +337,9 @@ export default function Edit(props) {
 	const [isInvalid, isDraft] = useIsInvalidLink(kind, type, id);
 	const { maxNestingLevel } = context;
 
+	const isPostType = kind === 'post-type' || type === 'post' || type === 'page';
+	const hasSyncedLink = isPostType && kind === 'post-type' && id && !disableLink;
+
 	const { insertBlock, replaceInnerBlocks, __unstableMarkNextChangeAsNotPersistent } = useDispatch(blockEditorStore);
 	const [isLinkOpen, setIsLinkOpen] = useState(false);
 	// Use internal state instead of a ref to make sure that the component
@@ -405,6 +420,28 @@ export default function Edit(props) {
 			addUniqueID(uniqueId, clientId);
 		}
 	}, []);
+
+	//get the most up to date links for links with a post type and id (non custom)
+	useEffect(() => {
+		const postType = kind == 'post-type' ? correctPostType(type) : '';
+
+		//only get the fields we need
+		const args = { _fields: 'link' };
+
+		if (hasSyncedLink && postType && id) {
+			apiFetch({
+				path: addQueryArgs(`/wp/v2/${postType}/${id}`, args),
+			})
+				.then((response) => {
+					if (response && response.link) {
+						setAttributes({ url: response.link });
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		}
+	}, [type, id, kind]);
 
 	//hasChildren is a proxy for isSubmenu
 	const { isAtMaxNesting, isSubMenuChild, isTopLevelLink, isParentOfSelectedBlock, hasChildren, inMegaMenu } =
@@ -1008,7 +1045,19 @@ export default function Edit(props) {
 							}}
 							label={__('URL')}
 							autoComplete="off"
+							disabled={hasSyncedLink}
 						/>
+						{hasSyncedLink && (
+							<Button
+								variant="link"
+								onClick={() => {
+									setAttributes({ type: '', kind: 'custom' });
+								}}
+								className={'components-base-control kb-nav-link-edit-link-button'}
+							>
+								{__('Edit URL', 'kadence-blocks')}
+							</Button>
+						)}
 						<ToggleControl
 							label={__('Disable Link', 'kadence-blocks')}
 							checked={disableLink}

@@ -462,7 +462,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		}
 
 		$label               = ! empty( $attributes['label'] ) ? $attributes['label'] : '';
-		$url                 = ! empty( $attributes['url'] ) ? $attributes['url'] : '';
+		$url                 = $this->get_url($attributes);
 		$has_children        = ! empty( $content );
 		$has_highlight_label = ! empty( $attributes['highlightLabel'] ) || ! empty( $attributes['highlightIcon'][0]['icon'] );
 		$kind                = ! empty( $attributes['kind'] ) ? str_replace( '-', '_', $attributes['kind'] ) : 'post_type';
@@ -670,6 +670,27 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 	 */
 	public function is_current( $attributes ) {
 		return ! empty( $attributes['id'] ) && get_queried_object_id() === (int) $attributes['id'] && ! empty( get_queried_object()->post_type );
+	}
+
+	/**
+	 * Gets the url from the post id if available, otherwise use the url in attributes.
+	 *
+	 * @param array $attributes an attributes array.
+	 * @return string
+	 */
+	public function get_url( $attributes ) {
+		$temp = $attributes['id'];
+		$is_post_type = $attributes['kind'] === 'post-type' || $attributes['type'] === 'post' || $attributes['type'] === 'page';
+		$has_synced_link = $is_post_type && $attributes['kind'] === 'post-type' && $attributes['id'] && !$attributes['disableLink'];
+
+		if ( $has_synced_link && $attributes['id'] ) {
+			$permalink = get_permalink( $attributes['id'] );
+			if ( $permalink ) {
+				return $permalink;
+			}
+		}
+
+		return ! empty( $attributes['url'] ) ? $attributes['url'] : '';
 	}
 }
 
