@@ -502,6 +502,7 @@ function LayoutControls({
 											setAttributes({ gutterType: value });
 										}}
 										units={['px', 'em', 'rem']}
+										reset={true}
 									/>
 								</>
 							)}
@@ -572,6 +573,7 @@ function LayoutControls({
 									setAttributes({ rowGutterType: value });
 								}}
 								units={['px', 'em', 'rem']}
+								reset={true}
 							/>
 							{(colLayout === 'grid-layout' ||
 								innerItemCount > columns ||
