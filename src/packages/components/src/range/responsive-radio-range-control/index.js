@@ -146,6 +146,7 @@ export default function ResponsiveRadioRangeControls( {
 					{ label && (
 						<span className="kadence-control-title">{ label }</span>
 					) }
+					{ reset && (
 						<Button
 							className="is-reset is-single"
 							isSmall
@@ -159,6 +160,7 @@ export default function ResponsiveRadioRangeControls( {
 								}
 							}}
 						></Button>
+					) }
 					<ButtonGroup className="kb-measure-responsive-options" aria-label={ __( 'Device', 'kadence-blocks' ) }>
 						{ map( devices, ( { name, key, title, itemClass } ) => (
 							<Button

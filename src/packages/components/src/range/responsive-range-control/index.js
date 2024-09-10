@@ -138,7 +138,7 @@ export default function ResponsiveRangeControls( {
 					{ label && (
 						<span className="kadence-control-title">
 							{ label }
-							{/*{ reset && (*/}
+							{ reset && (
 								<Button
 									className="is-reset is-single"
 									isSmall
@@ -152,7 +152,7 @@ export default function ResponsiveRangeControls( {
 										}
 									}}
 								></Button>
-							{/*) }*/}
+							) }
 						</span>
 					) }
 					<ButtonGroup className="kb-measure-responsive-options" aria-label={ __( 'Device', 'kadence-blocks' ) }>
