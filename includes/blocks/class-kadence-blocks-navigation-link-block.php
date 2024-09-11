@@ -679,11 +679,12 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 	 * @return string
 	 */
 	public function get_url( $attributes ) {
-		$temp = $attributes['id'];
-		$is_post_type = $attributes['kind'] === 'post-type' || $attributes['type'] === 'post' || $attributes['type'] === 'page';
-		$has_synced_link = $is_post_type && $attributes['kind'] === 'post-type' && $attributes['id'] && !$attributes['disableLink'];
+		$kind = ! empty( $attributes['kind'] ) ? $attributes['kind'] : '';
+		$type = ! empty( $attributes['type'] ) ? $attributes['type'] : '';
+		$is_post_type = $kind === 'post-type' || $type === 'post' || $type === 'page';
+		$has_synced_link = $is_post_type && $kind === 'post-type' && ! empty( $attributes['id'] ) && ( isset( $attributes['disableLink'] ) && ! $attributes['disableLink'] );
 
-		if ( $has_synced_link && $attributes['id'] ) {
+		if ( $has_synced_link && ! empty( $attributes['id'] ) ) {
 			$permalink = get_permalink( $attributes['id'] );
 			if ( $permalink ) {
 				return $permalink;
