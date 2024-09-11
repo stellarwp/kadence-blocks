@@ -357,28 +357,6 @@ function innerBlocks() {
 							},
 							[
 								createBlock(
-									'kadence/off-canvas-trigger',
-									{
-										uniqueID: '56_b4c1d7-f0',
-										iconSizeTablet: 25,
-										iconColorTablet: 'palette3',
-										iconColorHoverTablet: 'palette3',
-										iconBackgroundColorTablet: 'palette8',
-										iconBackgroundColorHoverTablet: 'palette8',
-									},
-									[]
-								),
-							]
-						),
-						createBlock(
-							'kadence/header-column',
-							{
-								uniqueID: '56_2a5574-34',
-								location: 'tablet-center',
-								metadata: { name: 'Center' },
-							},
-							[
-								createBlock(
 									'kadence/image',
 									{
 										imgMaxWidthTablet: 100,
@@ -394,11 +372,33 @@ function innerBlocks() {
 						createBlock(
 							'kadence/header-column',
 							{
+								uniqueID: '56_2a5574-34',
+								location: 'tablet-center',
+								metadata: { name: 'Center' },
+							},
+							[]
+						),
+						createBlock(
+							'kadence/header-column',
+							{
 								uniqueID: '56_35395a-c2',
 								location: 'tablet-right',
 								metadata: { name: 'Right' },
 							},
-							[]
+							[
+								createBlock(
+									'kadence/off-canvas-trigger',
+									{
+										uniqueID: '56_b4c1d7-f0',
+										iconSizeTablet: 25,
+										iconColorTablet: 'palette3',
+										iconColorHoverTablet: 'palette3',
+										iconBackgroundColorTablet: 'palette8',
+										iconBackgroundColorHoverTablet: 'palette8',
+									},
+									[]
+								),
+							]
 						),
 					]
 				),
