@@ -374,6 +374,9 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 				$wrapper_args['rel'] = $rel_add;
 			}
 		}
+		if( !empty( $attributes['isSubmit'] ) ) {
+			$wrapper_args['type'] = 'submit';
+		}
 		if ( ! empty( $attributes['tooltip'] ) ) {
 			$wrapper_args['data-kb-tooltip-content'] = esc_attr( $attributes['tooltip'] );
 			if ( ! empty( $attributes['tooltipPlacement'] ) ) {

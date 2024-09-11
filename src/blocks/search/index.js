@@ -1,10 +1,16 @@
 import { registerBlockType } from '@wordpress/blocks';
+import { InnerBlocks } from '@wordpress/block-editor';
 import { __, _x } from '@wordpress/i18n';
 
 import { showMoreIcon } from '@kadence/icons';
 
 import edit from './edit';
 import metadata from './block.json';
+
+/**
+ * Import Css
+ */
+import './style.scss';
 
 registerBlockType('kadence/search', {
 	...metadata,
@@ -15,7 +21,9 @@ registerBlockType('kadence/search', {
 		src: showMoreIcon,
 	},
 	edit,
-	save: () => null,
+	save: () => {
+		return <InnerBlocks.Content />;
+	},
 	example: {
 		attributes: {},
 	},

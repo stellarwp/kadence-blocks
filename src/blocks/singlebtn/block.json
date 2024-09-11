@@ -724,6 +724,10 @@
 		"tooltipPlacement": {
 			"type": "string",
 			"default": ""
+		},
+		"isSubmit": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"supports": {

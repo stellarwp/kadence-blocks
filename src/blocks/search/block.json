@@ -10,12 +10,24 @@
 			"type": "string"
 		},
 		"displayStyle": {
-			"enum": [ "input", "modal" ],
-			"default": "input"
+			"type": "string",
+			"default": "standard"
 		},
 		"showButton": {
 			"type": "boolean",
 			"default": true
+		},
+		"searchProductsOnly": {
+			"type": "boolean",
+			"default": false
+		},
+		"buttonSide": {
+			"type": "string",
+			"default": "right"
+		},
+		"modalBackgroundColor": {
+			"type": "string",
+			"default": ""
 		},
 		"inputPlaceholder": {
 			"type": "string",
@@ -89,171 +101,6 @@
 			"type": "string",
 			"default": "px"
 		},
-		"text": {
-			"type": "string",
-			"default": "",
-			"__experimentalRole": "content"
-		},
-		"style": {
-			"type": "string",
-			"default": "basic"
-		},
-		"sizePreset": {
-			"type": "string",
-			"default": "standard"
-		},
-		"gap": {
-			"type": "array",
-			"default": [ "", "", "" ]
-		},
-		"width": {
-			"type": "array",
-			"default": [ "", "", "" ]
-		},
-		"widthUnit": {
-			"type": "string",
-			"default": "px"
-		},
-		"widthType": {
-			"type": "string",
-			"default": "auto"
-		},
-		"padding": {
-			"type": "array",
-			"default": [ "", "", "", "" ]
-		},
-		"tablePadding": {
-			"type": "array",
-			"default": [ "", "", "", "" ]
-		},
-		"mobilePadding": {
-			"type": "array",
-			"default": [ "", "", "", "" ]
-		},
-		"paddingUnit": {
-			"type": "string",
-			"default": "px"
-		},
-		"margin": {
-			"type": "array",
-			"default": [ "", "", "", "" ]
-		},
-		"tabletMargin": {
-			"type": "array",
-			"default": [ "", "", "", "" ]
-		},
-		"mobileMargin": {
-			"type": "array",
-			"default": [ "", "", "", "" ]
-		},
-		"marginUnit": {
-			"type": "string",
-			"default": "px"
-		},
-		"color": {
-			"type": "string",
-			"default": ""
-		},
-		"background": {
-			"type": "string",
-			"default": ""
-		},
-		"gradient": {
-			"type": "string",
-			"default": ""
-		},
-		"backgroundType": {
-			"type": "string",
-			"default": "normal"
-		},
-		"colorHover": {
-			"type": "string",
-			"default": ""
-		},
-		"backgroundHover": {
-			"type": "string",
-			"default": ""
-		},
-		"backgroundTypeHover": {
-			"type": "string",
-			"default": "normal"
-		},
-		"gradientHover": {
-			"type": "string",
-			"default": ""
-		},
-		"borderStyle": {
-			"type": "array",
-			"default": [
-				{
-					"top": [ "", "", "" ],
-					"right": [ "", "", "" ],
-					"bottom": [ "", "", "" ],
-					"left": [ "", "", "" ],
-					"unit": "px"
-				}
-			]
-		},
-		"tabletBorderStyle": {
-			"type": "array",
-			"default": [
-				{
-					"top": [ "", "", "" ],
-					"right": [ "", "", "" ],
-					"bottom": [ "", "", "" ],
-					"left": [ "", "", "" ],
-					"unit": "px"
-				}
-			]
-		},
-		"mobileBorderStyle": {
-			"type": "array",
-			"default": [
-				{
-					"top": [ "", "", "" ],
-					"right": [ "", "", "" ],
-					"bottom": [ "", "", "" ],
-					"left": [ "", "", "" ],
-					"unit": "px"
-				}
-			]
-		},
-		"borderHoverStyle": {
-			"type": "array",
-			"default": [
-				{
-					"top": [ "", "", "" ],
-					"right": [ "", "", "" ],
-					"bottom": [ "", "", "" ],
-					"left": [ "", "", "" ],
-					"unit": "px"
-				}
-			]
-		},
-		"tabletBorderHoverStyle": {
-			"type": "array",
-			"default": [
-				{
-					"top": [ "", "", "" ],
-					"right": [ "", "", "" ],
-					"bottom": [ "", "", "" ],
-					"left": [ "", "", "" ],
-					"unit": "px"
-				}
-			]
-		},
-		"mobileBorderHoverStyle": {
-			"type": "array",
-			"default": [
-				{
-					"top": [ "", "", "" ],
-					"right": [ "", "", "" ],
-					"bottom": [ "", "", "" ],
-					"left": [ "", "", "" ],
-					"unit": "px"
-				}
-			]
-		},
 		"inputBorderStyles": {
 			"type": "array",
 			"default": [
@@ -290,95 +137,7 @@
 				}
 			]
 		},
-		"borderRadius": {
-			"type": "array",
-			"default": [ "", "", "", "" ]
-		},
-		"tabletBorderRadius": {
-			"type": "array",
-			"default": [ "", "", "", "" ]
-		},
-		"mobileBorderRadius": {
-			"type": "array",
-			"default": [ "", "", "", "" ]
-		},
-		"borderRadiusUnit": {
-			"type": "string",
-			"default": "px"
-		},
-		"borderHoverRadius": {
-			"type": "array",
-			"default": [ "", "", "", "" ]
-		},
-		"tabletBorderHoverRadius": {
-			"type": "array",
-			"default": [ "", "", "", "" ]
-		},
-		"mobileBorderHoverRadius": {
-			"type": "array",
-			"default": [ "", "", "", "" ]
-		},
-		"borderHoverRadiusUnit": {
-			"type": "string",
-			"default": "px"
-		},
-		"icon": {
-			"type": "string",
-			"default": "fe_search"
-		},
-		"iconColor": {
-			"type": "string",
-			"default": ""
-		},
-		"iconColorHover": {
-			"type": "string",
-			"default": ""
-		},
-		"iconSide": {
-			"type": "string",
-			"default": "right"
-		},
-		"iconHover": {
-			"type": "boolean",
-			"default": false
-		},
-		"iconPadding": {
-			"type": "array",
-			"default": [ "", "", "", "" ]
-		},
-		"iconPaddingUnit": {
-			"type": "string",
-			"default": "px"
-		},
-		"tabletIconPadding": {
-			"type": "array",
-			"default": [ "", "", "", "" ]
-		},
-		"mobileIconPadding": {
-			"type": "array",
-			"default": [ "", "", "", "" ]
-		},
-		"iconSize": {
-			"type": "array",
-			"default": [ "", "", "" ]
-		},
-		"iconSizeUnit": {
-			"type": "string",
-			"default": "px"
-		},
-		"onlyIcon": {
-			"type": "array",
-			"default": [ false, "", "" ]
-		},
-		"label": {
-			"type": "string",
-			"default": ""
-		},
-		"inheritStyles": {
-			"type": "string",
-			"default": "fill"
-		},
-		"buttonTypography": {
+		"inputTypography": {
 			"type": "array",
 			"default": [
 				{
@@ -398,82 +157,6 @@
 					"loadGoogle": true
 				}
 			]
-		},
-	  "inputTypography": {
-		"type": "array",
-		"default": [
-		  {
-			"size": [ "", "", "" ],
-			"sizeType": "px",
-			"lineHeight": [ "", "", "" ],
-			"lineType": "",
-			"letterSpacing": [ "", "", "" ],
-			"letterType": "px",
-			"textTransform": "",
-			"family": "",
-			"google": "",
-			"style": "",
-			"weight": "",
-			"variant": "",
-			"subset": "",
-			"loadGoogle": true
-		  }
-		]
-	  },
-		"displayShadow": {
-			"type": "boolean",
-			"default": false
-		},
-		"displayHoverShadow": {
-			"type": "boolean",
-			"default": false
-		},
-		"shadow": {
-			"type": "array",
-			"default": [
-				{
-					"color": "#000000",
-					"opacity": 0.2,
-					"spread": 0,
-					"blur": 2,
-					"hOffset": 1,
-					"vOffset": 1,
-					"inset": false
-				}
-			]
-		},
-		"shadowHover": {
-			"type": "array",
-			"default": [
-				{
-					"color": "#000000",
-					"opacity": 0.4,
-					"spread": 0,
-					"blur": 3,
-					"hOffset": 2,
-					"vOffset": 2,
-					"inset": false
-				}
-			]
-		},
-		"anchor": {
-			"type": "string"
-		},
-		"noCustomDefaults": {
-			"type": "boolean",
-			"default": false
-		},
-		"hAlign": {
-			"type": "string",
-			"default": "left"
-		},
-		"thAlign": {
-			"type": "string",
-			"default": ""
-		},
-		"mhAlign": {
-			"type": "string",
-			"default": ""
 		}
 	},
 	"supports": {
