@@ -89,9 +89,13 @@ export function Edit(props) {
 		mobileInputBorderRadius,
 		inputBorderRadiusUnit,
 		inputPadding,
-		inputTabletPadding,
-		inputMobilePadding,
+		tabletInputPadding,
+		mobileInputPadding,
 		inputPaddingType,
+		inputMargin,
+		tabletInputMargin,
+		mobileInputMargin,
+		inputMarginType,
 		inputBackgroundType,
 		inputFocusBackgroundType,
 		inputFocusBackgroundColor,
@@ -107,6 +111,8 @@ export function Edit(props) {
 		mobileInputBorderStyles,
 		modalBackgroundColor,
 		searchProductsOnly,
+		modalGradientActive,
+		modalBackgroundType,
 	} = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
@@ -167,107 +173,6 @@ export function Edit(props) {
 		});
 	};
 
-	const previewMarginTop = getPreviewSize(
-		previewDevice,
-		undefined !== margin?.[0] ? margin[0] : '',
-		undefined !== tabletMargin?.[0] ? tabletMargin[0] : '',
-		undefined !== mobileMargin?.[0] ? mobileMargin[0] : ''
-	);
-	const previewMarginRight = getPreviewSize(
-		previewDevice,
-		undefined !== margin?.[1] ? margin[1] : '',
-		undefined !== tabletMargin?.[1] ? tabletMargin[1] : '',
-		undefined !== mobileMargin?.[1] ? mobileMargin[1] : ''
-	);
-	const previewMarginBottom = getPreviewSize(
-		previewDevice,
-		undefined !== margin?.[2] ? margin[2] : '',
-		undefined !== tabletMargin?.[2] ? tabletMargin[2] : '',
-		undefined !== mobileMargin?.[2] ? mobileMargin[2] : ''
-	);
-	const previewMarginLeft = getPreviewSize(
-		previewDevice,
-		undefined !== margin?.[3] ? margin[3] : '',
-		undefined !== tabletMargin?.[3] ? tabletMargin[3] : '',
-		undefined !== mobileMargin?.[3] ? mobileMargin[3] : ''
-	);
-	const previewMarginUnit = marginUnit ? marginUnit : 'px';
-
-	const previewPaddingTop = getPreviewSize(
-		previewDevice,
-		undefined !== padding?.[0] ? padding[0] : '',
-		undefined !== tabletPadding?.[0] ? tabletPadding[0] : '',
-		undefined !== mobilePadding?.[0] ? mobilePadding[0] : ''
-	);
-	const previewPaddingRight = getPreviewSize(
-		previewDevice,
-		undefined !== padding?.[1] ? padding[1] : '',
-		undefined !== tabletPadding?.[1] ? tabletPadding[1] : '',
-		undefined !== mobilePadding?.[1] ? mobilePadding[1] : ''
-	);
-	const previewPaddingBottom = getPreviewSize(
-		previewDevice,
-		undefined !== padding?.[2] ? padding[2] : '',
-		undefined !== tabletPadding?.[2] ? tabletPadding[2] : '',
-		undefined !== mobilePadding?.[2] ? mobilePadding[2] : ''
-	);
-	const previewPaddingLeft = getPreviewSize(
-		previewDevice,
-		undefined !== padding?.[3] ? padding[3] : '',
-		undefined !== tabletPadding?.[3] ? tabletPadding[3] : '',
-		undefined !== mobilePadding?.[3] ? mobilePadding[3] : ''
-	);
-
-	const previewInputBorderRadiusTop = getPreviewSize(
-		previewDevice,
-		undefined !== inputBorderRadius ? inputBorderRadius[0] : '',
-		undefined !== tabletInputBorderRadius ? tabletInputBorderRadius[0] : '',
-		undefined !== mobileInputBorderRadius ? mobileInputBorderRadius[0] : ''
-	);
-	const previewInputBorderRadiusRight = getPreviewSize(
-		previewDevice,
-		undefined !== inputBorderRadius ? inputBorderRadius[1] : '',
-		undefined !== tabletInputBorderRadius ? tabletInputBorderRadius[1] : '',
-		undefined !== mobileInputBorderRadius ? mobileInputBorderRadius[1] : ''
-	);
-	const previewInputBorderRadiusBottom = getPreviewSize(
-		previewDevice,
-		undefined !== inputBorderRadius ? inputBorderRadius[2] : '',
-		undefined !== tabletInputBorderRadius ? tabletInputBorderRadius[2] : '',
-		undefined !== mobileInputBorderRadius ? mobileInputBorderRadius[2] : ''
-	);
-	const previewInputBorderRadiusLeft = getPreviewSize(
-		previewDevice,
-		undefined !== inputBorderRadius ? inputBorderRadius[3] : '',
-		undefined !== tabletInputBorderRadius ? tabletInputBorderRadius[3] : '',
-		undefined !== mobileInputBorderRadius ? mobileInputBorderRadius[3] : ''
-	);
-
-	const previewInputPaddingTop = getPreviewSize(
-		previewDevice,
-		undefined !== inputPadding ? inputPadding[0] : '',
-		undefined !== inputTabletPadding ? inputTabletPadding[0] : '',
-		undefined !== inputMobilePadding ? inputMobilePadding[0] : ''
-	);
-	const previewInputPaddingRight = getPreviewSize(
-		previewDevice,
-		undefined !== inputPadding ? inputPadding[1] : '',
-		undefined !== inputTabletPadding ? inputTabletPadding[1] : '',
-		undefined !== inputMobilePadding ? inputMobilePadding[1] : ''
-	);
-	const previewInputPaddingBottom = getPreviewSize(
-		previewDevice,
-		undefined !== inputPadding ? inputPadding[2] : '',
-		undefined !== inputTabletPadding ? inputTabletPadding[2] : '',
-		undefined !== inputMobilePadding ? inputMobilePadding[2] : ''
-	);
-	const previewInputPaddingLeft = getPreviewSize(
-		previewDevice,
-		undefined !== inputPadding ? inputPadding[3] : '',
-		undefined !== inputTabletPadding ? inputTabletPadding[3] : '',
-		undefined !== inputMobilePadding ? inputMobilePadding[3] : ''
-	);
-
 	const nonTransAttrs = ['text'];
 	const classes = classnames({
 		className,
@@ -297,6 +202,7 @@ export function Edit(props) {
 								lock: { remove: true, move: true },
 								hideLink: true,
 								text: __('Search', 'kadence-blocks'),
+								icon: 'fe_search',
 								noCustomDefaults: true,
 								isSubmit: true,
 							},
@@ -315,55 +221,6 @@ export function Edit(props) {
 				disabled={true}
 				type="text"
 				placeholder={inputPlaceholder}
-				style={{
-					color: inputColor ? KadenceColorOutput(inputColor) : undefined,
-					fontSize: getFontSizeOptionOutput(inputTypography[0].size, inputTypography[0].sizeType),
-					lineHeight:
-						inputTypography[0].lineHeight && inputTypography[0].lineHeight[0]
-							? inputTypography[0].lineHeight[0] + inputTypography[0].lineType
-							: undefined,
-					fontWeight: inputTypography[0].weight,
-					fontStyle: inputTypography[0].style,
-					letterSpacing: inputTypography[0].letterSpacing + 'px',
-					textTransform: inputTypography[0].textTransform,
-					fontFamily: inputTypography[0].family,
-					borderTopLeftRadius: previewInputBorderRadiusTop + (inputBorderRadiusUnit || 'px'),
-					borderTopRightRadius: previewInputBorderRadiusRight + (inputBorderRadiusUnit || 'px'),
-					borderBottomRightRadius: previewInputBorderRadiusBottom + (inputBorderRadiusUnit || 'px'),
-					borderBottomLeftRadius: previewInputBorderRadiusLeft + (inputBorderRadiusUnit || 'px'),
-					paddingTop: previewInputPaddingTop + (inputPaddingType || 'px'),
-					paddingRight: previewInputPaddingRight + (inputPaddingType || 'px'),
-					paddingBottom: previewInputPaddingBottom + (inputPaddingType || 'px'),
-					paddingLeft: previewInputPaddingLeft + (inputPaddingType || 'px'),
-					// borderTop: getBorderStyle(
-					// 	previewDevice,
-					// 	'top',
-					// 	contentBorderStyle,
-					// 	tabletContentBorderStyle,
-					// 	mobileContentBorderStyle
-					// ),
-					// borderRight: getBorderStyle(
-					// 	previewDevice,
-					// 	'right',
-					// 	contentBorderStyle,
-					// 	tabletContentBorderStyle,
-					// 	mobileContentBorderStyle
-					// ),
-					// borderBottom: getBorderStyle(
-					// 	previewDevice,
-					// 	'bottom',
-					// 	contentBorderStyle,
-					// 	tabletContentBorderStyle,
-					// 	mobileContentBorderStyle
-					// ),
-					// borderLeft: getBorderStyle(
-					// 	previewDevice,
-					// 	'left',
-					// 	contentBorderStyle,
-					// 	tabletContentBorderStyle,
-					// 	mobileContentBorderStyle
-					// ),
-				}}
 			/>
 		);
 	};
@@ -452,25 +309,8 @@ export function Edit(props) {
 
 				{activeTab === 'style' && (
 					<>
-						{displayStyle === 'modal' && (
-							<KadencePanelBody
-								title={__('Modal Settings', 'kadence-blocks')}
-								initialOpen={false}
-								panelName={'kb-adv-btn-modal'}
-							>
-								<PopColorControl
-									label={__('Background Color', 'kadence-blocks')}
-									value={modalBackgroundColor}
-									default={''}
-									onChange={(value) => {
-										setAttributes({ modalBackgroundColor: value });
-									}}
-								/>
-							</KadencePanelBody>
-						)}
-
 						<KadencePanelBody
-							title={__('Input Styling', 'kadence-blocks')}
+							title={__('Input Style', 'kadence-blocks')}
 							initialOpen={true}
 							panelName={'search-input-settings'}
 						>
@@ -554,6 +394,7 @@ export function Edit(props) {
 							/>
 
 							<HoverToggleControl
+								hoverTab={__('Focus', 'kadence-blocks')}
 								hover={
 									<>
 										<BackgroundTypeControl
@@ -694,28 +535,28 @@ export function Edit(props) {
 											spread={undefined !== inputBoxShadow[6] ? inputBoxShadow[6] : 0}
 											inset={undefined !== inputBoxShadow[7] ? inputBoxShadow[7] : false}
 											onEnableChange={(value) => {
-												saveInputBoxShadow({ enable: value });
+												saveInputBoxShadow(value, 0);
 											}}
 											onColorChange={(value) => {
-												saveInputBoxShadow({ color: value });
+												saveInputBoxShadow(value, 1);
 											}}
 											onOpacityChange={(value) => {
-												saveInputBoxShadow({ opacity: value });
+												saveInputBoxShadow(value, 2);
 											}}
 											onHOffsetChange={(value) => {
-												saveInputBoxShadow({ hOffset: value });
+												saveInputBoxShadow(value, 3);
 											}}
 											onVOffsetChange={(value) => {
-												saveInputBoxShadow({ vOffset: value });
+												saveInputBoxShadow(value, 4);
 											}}
 											onBlurChange={(value) => {
-												saveInputBoxShadow({ blur: value });
+												saveInputBoxShadow(value, 5);
 											}}
 											onSpreadChange={(value) => {
-												saveInputBoxShadow({ spread: value });
+												saveInputBoxShadow(value, 6);
 											}}
 											onInsetChange={(value) => {
-												saveInputBoxShadow({ inset: value });
+												saveInputBoxShadow(value, 7);
 											}}
 										/>
 										<ResponsiveBorderControl
@@ -735,6 +576,75 @@ export function Edit(props) {
 								}
 							/>
 						</KadencePanelBody>
+
+						<KadencePanelBody
+							title={__('Input Spacing', 'kadence-blocks')}
+							initialOpen={false}
+							panelName={'search-input-spacing'}
+						>
+							<ResponsiveMeasureRangeControl
+								label={__('Padding', 'kadence-blocks')}
+								value={inputPadding}
+								onChange={(value) => setAttributes({ inputPadding: value })}
+								tabletValue={tabletInputPadding}
+								onChangeTablet={(value) => setAttributes({ tabletInputPadding: value })}
+								mobileValue={mobileInputPadding}
+								onChangeMobile={(value) => setAttributes({ mobileInputPadding: value })}
+								min={inputPaddingType === 'em' || inputPaddingType === 'rem' ? -2 : -200}
+								max={inputPaddingType === 'em' || inputPaddingType === 'rem' ? 12 : 200}
+								step={inputPaddingType === 'em' || inputPaddingType === 'rem' ? 0.1 : 1}
+								unit={inputPaddingType}
+								units={['px', 'em', 'rem']}
+								onUnit={(value) => setAttributes({ inputPaddingType: value })}
+							/>
+							<ResponsiveMeasureRangeControl
+								label={__('Margin', 'kadence-blocks')}
+								value={inputMargin}
+								onChange={(value) => setAttributes({ inputMargin: value })}
+								tabletValue={tabletInputMargin}
+								onChangeTablet={(value) => setAttributes({ tabletInputMargin: value })}
+								mobileValue={mobileInputMargin}
+								onChangeMobile={(value) => setAttributes({ mobileInputMargin: value })}
+								min={inputMarginType === 'em' || inputMarginType === 'rem' ? -2 : -200}
+								max={inputMarginType === 'em' || inputMarginType === 'rem' ? 12 : 200}
+								step={inputMarginType === 'em' || inputMarginType === 'rem' ? 0.1 : 1}
+								unit={inputMarginType}
+								units={['px', 'em', 'rem']}
+								onUnit={(value) => setAttributes({ inputMarginType: value })}
+							/>
+						</KadencePanelBody>
+
+						{displayStyle === 'modal' && (
+							<KadencePanelBody
+								title={__('Modal Style', 'kadence-blocks')}
+								initialOpen={false}
+								panelName={'kb-adv-btn-modal'}
+							>
+								<BackgroundTypeControl
+									label={__('Background Type', 'kadence-blocks')}
+									type={modalBackgroundType}
+									onChange={(value) => setAttributes({ modalBackgroundType: value })}
+									allowedTypes={['normal', 'gradient']}
+								/>
+								{'gradient' !== modalBackgroundType && (
+									<PopColorControl
+										label={__('Background Color', 'kadence-blocks')}
+										value={modalBackgroundColor}
+										default={''}
+										onChange={(value) => {
+											setAttributes({ modalBackgroundColor: value });
+										}}
+									/>
+								)}
+								{'gradient' === modalBackgroundType && (
+									<GradientControl
+										value={modalGradientActive}
+										onChange={(value) => setAttributes({ modalGradientActive: value })}
+										gradients={[]}
+									/>
+								)}
+							</KadencePanelBody>
+						)}
 					</>
 				)}
 
@@ -807,10 +717,10 @@ export function Edit(props) {
 				) : (
 					<>
 						<div {...innerBlocksProps} />
+						{isShowingModal && <style>{`.block-editor-block-popover { display: none; }`}</style>}
 						<div
-							className="kb-search-modal"
+							className={'kb-search-modal ' + (isShowingModal ? 'active' : '')}
 							onClick={() => setIsShowingModal(false)}
-							style={{ display: isShowingModal ? 'block' : 'none' }}
 						>
 							<button
 								className="kb-search-close-btn"
@@ -831,45 +741,6 @@ export function Edit(props) {
 						</div>
 					</>
 				)}
-
-				<SpacingVisualizer
-					style={{
-						marginLeft:
-							undefined !== previewMarginLeft
-								? getSpacingOptionOutput(previewMarginLeft, marginUnit)
-								: undefined,
-						marginRight:
-							undefined !== previewMarginRight
-								? getSpacingOptionOutput(previewMarginRight, marginUnit)
-								: undefined,
-						marginTop:
-							undefined !== previewMarginTop
-								? getSpacingOptionOutput(previewMarginTop, marginUnit)
-								: undefined,
-						marginBottom:
-							undefined !== previewMarginBottom
-								? getSpacingOptionOutput(previewMarginBottom, marginUnit)
-								: undefined,
-					}}
-					type="inside"
-					forceShow={paddingMouseOver.isMouseOver}
-					spacing={[
-						getSpacingOptionOutput(previewPaddingTop, paddingUnit),
-						getSpacingOptionOutput(previewPaddingRight, paddingUnit),
-						getSpacingOptionOutput(previewPaddingBottom, paddingUnit),
-						getSpacingOptionOutput(previewPaddingLeft, paddingUnit),
-					]}
-				/>
-				<SpacingVisualizer
-					type="outside"
-					forceShow={marginMouseOver.isMouseOver}
-					spacing={[
-						getSpacingOptionOutput(previewMarginTop, marginUnit),
-						getSpacingOptionOutput(previewMarginRight, marginUnit),
-						getSpacingOptionOutput(previewMarginBottom, marginUnit),
-						getSpacingOptionOutput(previewMarginLeft, marginUnit),
-					]}
-				/>
 			</div>
 		</>
 	);

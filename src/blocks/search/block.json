@@ -29,6 +29,14 @@
 			"type": "string",
 			"default": ""
 		},
+		"modalBackgroundType": {
+			"type": "string",
+			"default": "normal"
+		},
+		"modalGradientActive": {
+			"type": "string",
+			"default": ""
+		},
 		"inputPlaceholder": {
 			"type": "string",
 			"default": ""
@@ -40,6 +48,10 @@
 		"inputBackgroundType": {
 			"type": "string",
 			"default": "normal"
+		},
+		"inputBackgroundColor": {
+			"type": "string",
+			"default": ""
 		},
 		"inputFocusBackgroundType": {
 			"type": "string",
@@ -87,17 +99,33 @@
 		},
 		"inputPadding": {
 			"type": "array",
-			"default": ["sm", "sm", "sm", "sm"]
+			"default": ["", "", "", ""]
 		},
-		"inputTabletPadding": {
+		"tabletInputPadding": {
 			"type": "array",
 			"default": ["", "", "", ""]
 		},
-		"inputMobilePadding": {
+		"mobileInputPadding": {
 			"type": "array",
 			"default": ["", "", "", ""]
 		},
 		"inputPaddingType": {
+			"type": "string",
+			"default": "px"
+		},
+		"inputMargin": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"tabletInputMargin": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"mobileInputMargin": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"inputMarginType": {
 			"type": "string",
 			"default": "px"
 		},

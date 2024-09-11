@@ -251,3 +251,4 @@ export { default as headerTabletBlockIcon } from './block-icons/header-container
 export { default as headerSectionBlockIcon } from './block-icons/header-section';
 export { default as headerRowBlockIcon } from './block-icons/header-row';
 export { default as headerColumnBlockIcon } from './block-icons/header-column';
+export { default as searchBlockIcon } from './block-icons/search';

@@ -78,66 +78,135 @@ class Kadence_Blocks_Search_Block extends Kadence_Blocks_Abstract_Block {
 		 */
 		$css->render_measure_output( $attributes, 'padding', 'padding' );
 
-		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-modal' );
-		$css->add_property( '--kb-search-modal-background', $css->render_color( $attributes['modalBackgroundColor'] ) );
 
+		// Modal Background
+		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-modal' );
+		if( $attributes['modalBackgroundType'] === 'gradient') {
+			$css->add_property( '--kb-search-modal-background', $attributes['modalGradientActive'] );
+		} else {
+			$css->add_property( '--kb-search-modal-background', $css->render_color( $attributes['modalBackgroundColor'] ) );
+		}
+
+		// Input Styles
+		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-input[type="text"]' );
+		$css->render_typography( $attributes, 'inputTypography' );
+		$css->render_measure_range( $attributes, 'inputBorderRadius', 'border-radius' );
+		$css->render_measure_output( $attributes, 'inputPadding', 'padding' );
+		$css->render_measure_output( $attributes, 'inputMargin', 'margin' );
+		$css->render_border_styles( $attributes, 'inputBorderStyles' );
+
+		if ( $attributes['inputBackgroundType'] === 'gradient' ) {
+			$css->add_property( 'background', $attributes['inputGradient'] );
+		} else {
+			$css->add_property( 'background', $css->render_color( $attributes['inputBackgroundColor'] ) );
+		}
 		return $css->css_output();
 	}
 
 	/**
 	 * Return dynamically generated HTML for block
 	 *
-	 * @param $attributes
-	 * @param $unique_id
-	 * @param $content
+	 * @param array    $attributes    The block attributes.
+	 * @param string   $unique_id     The unique ID for the block.
+	 * @param string   $content       The block inner content.
 	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
 	 *
-	 * @return mixed
+	 * @return string
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		$response = '';
 		$outer_classes = array( 'kb-search', 'kb-search' . $unique_id );
 
-		if( $attributes['displayStyle'] === 'modal' ) {
+		if ( 'modal' === $attributes['displayStyle'] ) {
 			$outer_classes[] = 'kb-search-modal-container';
 		}
 
-		$wrapper_args = array(
-			'class' => implode( ' ', $outer_classes ),
-		);
-		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
+		$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( ' ', $outer_classes ) ) );
 
-		if( ! empty( $attributes['displayStyle'] ) && $attributes['displayStyle'] === 'modal' ) {
-			$response .= $content;
-			$response .= '<div class="kb-search-modal">
-							<button
-								class="kb-search-close-btn"
-								aria-label="Close search"
-								aria-expanded="false"
-								data-set-focus=".search-toggle-open"
-							>
-								&times;
-							</button>
-							<div class="kb-search-modal-content">
-								<label class="screen-reader-text" for="kb-search-input' . $unique_id . '">
-									Search for:
-								</label>';
-			$response .= $this->build_input( $attributes, $unique_id );
-			$response .= '</div></div>';
+		$search_form = $this->build_search_form( $attributes, $unique_id, $content );
 
-		} else {
-			$response .= '<form class="kb-search-form" role="search" method="get" action="http://kbdev.local/">';
-			$response .= $this->build_input( $attributes, $unique_id );
-			$response .= $content;
-			$response .= '</form>';
-		}
-
-		return sprintf( '<div %1$s>%2$s</div>', $wrapper_attributes, $response );
+		return sprintf( '<div %1$s>%2$s</div>', $wrapper_attributes, $search_form );
 	}
 
-	private function build_input( $attributes, $unique_id ) {
+	/**
+	 * Build the search form HTML.
+	 *
+	 * @param array  $attributes The block attributes.
+	 * @param string $unique_id  The unique ID for the block.
+	 * @param string $content    The block inner content.
+	 *
+	 * @return string
+	 */
+	private function build_search_form( $attributes, $unique_id, $content ) {
+		$is_modal = 'modal' === $attributes['displayStyle'];
+		$form_action = esc_url( home_url( '/' ) );
+
+		$search_form = $is_modal ? $content : '';
+
+		if ( $is_modal ) {
+			$search_form .= $this->build_modal_content( $attributes, $unique_id );
+		} else {
+			$search_form .= sprintf(
+				'<form class="kb-search-form" role="search" method="get" action="%s">%s%s</form>',
+				$form_action,
+				$this->build_input( $attributes ),
+				$content
+			);
+		}
+
+		return $search_form;
+	}
+
+	/**
+	 * Build the modal content HTML.
+	 *
+	 * @param array  $attributes The block attributes.
+	 * @param string $unique_id  The unique ID for the block.
+	 *
+	 * @return string
+	 */
+	private function build_modal_content( $attributes, $unique_id ) {
+		$form_action = esc_url( home_url( '/' ) );
+
+		$modal_content = sprintf(
+			'<div class="kb-search-modal">
+            <button class="kb-search-close-btn" aria-label="%1$s" aria-expanded="false" data-set-focus=".search-toggle-open">
+                &times;
+            </button>
+            <div class="kb-search-modal-content">
+                <label class="screen-reader-text" for="kb-search-input%2$s">%3$s</label>
+                <form class="kb-search-form" role="search" method="get" action="%4$s">%5$s</form>
+            </div>
+        </div>',
+			esc_attr__( 'Close search', 'text-domain' ),
+			esc_attr( $unique_id ),
+			esc_html__( 'Search for:', 'text-domain' ),
+			$form_action,
+			$this->build_input( $attributes )
+		);
+
+		return $modal_content;
+	}
+
+	/**
+	 * Build the search input HTML.
+	 *
+	 * @param array $attributes The block attributes.
+	 *
+	 * @return string
+	 */
+	private function build_input( $attributes ) {
 		$placeholder = ! empty( $attributes['inputPlaceholder'] ) ? $attributes['inputPlaceholder'] : '';
-		return sprintf( '<input name="s" type="text" class="kb-search-input" placeholder="%s">', esc_attr( $placeholder ) );
+
+		$input = sprintf(
+			'<input name="s" type="text" class="kb-search-input" placeholder="%s">',
+			esc_attr( $placeholder )
+		);
+
+		if ( ! empty( $attributes['searchProductsOnly'] ) ) {
+			$input .= '<input type="hidden" name="post_type" value="product">';
+		}
+
+		return $input;
 	}
 
 	/**

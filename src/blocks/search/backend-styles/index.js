@@ -17,55 +17,12 @@ export default function BackendStyles(props) {
 		uniqueID,
 		displayStyle,
 		showButton,
-		text,
 		sizePreset,
 		padding,
 		tabletPadding,
 		mobilePadding,
 		paddingUnit,
-		color,
-		background,
-		backgroundType,
-		gradient,
-		colorHover,
-		backgroundHover,
-		backgroundTypeHover,
-		gradientHover,
-		borderStyle,
-		tabletBorderStyle,
-		mobileBorderStyle,
-		borderHoverStyle,
-		tabletBorderHoverStyle,
-		mobileBorderHoverStyle,
-		buttonTypography,
 		inputTypography,
-		borderRadius,
-		tabletBorderRadius,
-		mobileBorderRadius,
-		borderRadiusUnit,
-		borderHoverRadius,
-		tabletBorderHoverRadius,
-		mobileBorderHoverRadius,
-		borderHoverRadiusUnit,
-		icon,
-		iconSide,
-		iconHover,
-		width,
-		widthUnit,
-		widthType,
-		displayShadow,
-		shadow,
-		displayHoverShadow,
-		shadowHover,
-		inheritStyles,
-		iconSize,
-		iconPadding,
-		tabletIconPadding,
-		mobileIconPadding,
-		iconPaddingUnit,
-		onlyIcon,
-		iconColor,
-		iconColorHover,
 		label,
 		marginUnit,
 		margin,
@@ -82,9 +39,13 @@ export default function BackendStyles(props) {
 		mobileInputBorderRadius,
 		inputBorderRadiusUnit,
 		inputPadding,
-		inputTabletPadding,
-		inputMobilePadding,
+		tabletInputPadding,
+		mobileInputPadding,
 		inputPaddingType,
+		inputMargin,
+		tabletInputMargin,
+		mobileInputMargin,
+		inputMarginType,
 		inputBackgroundType,
 		inputFocusBackgroundType,
 		inputFocusBackgroundColor,
@@ -92,7 +53,16 @@ export default function BackendStyles(props) {
 		inputFocusBoxShadowActive,
 		inputFocusBorderColor,
 		inputPlaceholderColor,
+		inputBackgroundColor,
+		inputGradient,
+		inputBoxShadow,
+		inputBorderStyles,
+		tabletInputBorderStyles,
+		mobileInputBorderStyles,
 		modalBackgroundColor,
+		searchProductsOnly,
+		modalGradientActive,
+		modalBackgroundType,
 	} = attributes;
 
 	const css = new KadenceBlocksCSS();
@@ -147,6 +117,90 @@ export default function BackendStyles(props) {
 		undefined !== mobilePadding?.[3] ? mobilePadding[3] : ''
 	);
 
+	const previewInputBorderRadiusTop = getPreviewSize(
+		previewDevice,
+		undefined !== inputBorderRadius ? inputBorderRadius[0] : '',
+		undefined !== tabletInputBorderRadius ? tabletInputBorderRadius[0] : '',
+		undefined !== mobileInputBorderRadius ? mobileInputBorderRadius[0] : ''
+	);
+	const previewInputBorderRadiusRight = getPreviewSize(
+		previewDevice,
+		undefined !== inputBorderRadius ? inputBorderRadius[1] : '',
+		undefined !== tabletInputBorderRadius ? tabletInputBorderRadius[1] : '',
+		undefined !== mobileInputBorderRadius ? mobileInputBorderRadius[1] : ''
+	);
+	const previewInputBorderRadiusBottom = getPreviewSize(
+		previewDevice,
+		undefined !== inputBorderRadius ? inputBorderRadius[2] : '',
+		undefined !== tabletInputBorderRadius ? tabletInputBorderRadius[2] : '',
+		undefined !== mobileInputBorderRadius ? mobileInputBorderRadius[2] : ''
+	);
+	const previewInputBorderRadiusLeft = getPreviewSize(
+		previewDevice,
+		undefined !== inputBorderRadius ? inputBorderRadius[3] : '',
+		undefined !== tabletInputBorderRadius ? tabletInputBorderRadius[3] : '',
+		undefined !== mobileInputBorderRadius ? mobileInputBorderRadius[3] : ''
+	);
+
+	const previewInputPaddingTop = getPreviewSize(
+		previewDevice,
+		undefined !== inputPadding ? inputPadding[0] : '',
+		undefined !== tabletInputPadding ? tabletInputPadding[0] : '',
+		undefined !== mobileInputPadding ? mobileInputPadding[0] : ''
+	);
+	const previewInputPaddingRight = getPreviewSize(
+		previewDevice,
+		undefined !== inputPadding ? inputPadding[1] : '',
+		undefined !== tabletInputPadding ? tabletInputPadding[1] : '',
+		undefined !== mobileInputPadding ? mobileInputPadding[1] : ''
+	);
+	const previewInputPaddingBottom = getPreviewSize(
+		previewDevice,
+		undefined !== inputPadding ? inputPadding[2] : '',
+		undefined !== tabletInputPadding ? tabletInputPadding[2] : '',
+		undefined !== mobileInputPadding ? mobileInputPadding[2] : ''
+	);
+	const previewInputPaddingLeft = getPreviewSize(
+		previewDevice,
+		undefined !== inputPadding ? inputPadding[3] : '',
+		undefined !== tabletInputPadding ? tabletInputPadding[3] : '',
+		undefined !== mobileInputPadding ? mobileInputPadding[3] : ''
+	);
+
+	const previewInputMarginTop = getPreviewSize(
+		previewDevice,
+		undefined !== inputMargin ? inputMargin[0] : '',
+		undefined !== tabletInputMargin ? tabletInputMargin[0] : '',
+		undefined !== mobileInputMargin ? mobileInputMargin[0] : ''
+	);
+	const previewInputMarginRight = getPreviewSize(
+		previewDevice,
+		undefined !== inputMargin ? inputMargin[1] : '',
+		undefined !== tabletInputMargin ? tabletInputMargin[1] : '',
+		undefined !== mobileInputMargin ? mobileInputMargin[1] : ''
+	);
+	const previewInputMarginBottom = getPreviewSize(
+		previewDevice,
+		undefined !== inputMargin ? inputMargin[2] : '',
+		undefined !== tabletInputMargin ? tabletInputMargin[2] : '',
+		undefined !== mobileInputMargin ? mobileInputMargin[2] : ''
+	);
+	const previewInputMarginLeft = getPreviewSize(
+		previewDevice,
+		undefined !== inputMargin ? inputMargin[3] : '',
+		undefined !== tabletInputMargin ? tabletInputMargin[3] : '',
+		undefined !== mobileInputMargin ? mobileInputMargin[3] : ''
+	);
+
+	// previewInputFontSize
+
+	const previewInputFontSize = getPreviewSize(
+		previewDevice,
+		undefined !== inputTypography[0]?.size?.[0] ? inputTypography[0].size[0] : '',
+		undefined !== inputTypography[0]?.size?.[1] ? inputTypography[0].size[1] : '',
+		undefined !== inputTypography[0]?.size?.[2] ? inputTypography[0].size[2] : ''
+	);
+
 	if (isSelected) {
 		css.set_selector(
 			`.block-editor-block-popover__inbetween-container .block-editor-block-list__insertion-point.is-with-inserter`
@@ -166,7 +220,71 @@ export default function BackendStyles(props) {
 	css.add_property('padding-left', getSpacingOptionOutput(previewPaddingLeft, paddingUnit));
 
 	css.set_selector(`.kb-search${uniqueID} .kb-search-modal`);
-	css.add_property('--kb-search-modal-background', KadenceColorOutput(modalBackgroundColor));
+	if (modalBackgroundType === 'gradient') {
+		css.add_property('--kb-search-modal-background', modalGradientActive);
+	} else {
+		css.add_property('--kb-search-modal-background', KadenceColorOutput(modalBackgroundColor));
+	}
+
+	css.set_selector(`.kb-search${uniqueID} .kb-search-input[type="text"]`);
+	css.add_property('color', KadenceColorOutput(inputColor));
+	css.add_property('font-size', getFontSizeOptionOutput(previewInputFontSize, inputTypography[0].sizeType));
+	css.add_property(
+		'line-height',
+		inputTypography[0].lineHeight && inputTypography[0].lineHeight[0]
+			? inputTypography[0].lineHeight[0] + inputTypography[0].lineType
+			: undefined
+	);
+	css.add_property('font-weight', inputTypography[0].weight);
+	css.add_property('font-style', inputTypography[0].style);
+	css.add_property('text-transform', inputTypography[0].transform);
+	css.add_property('letter-spacing', inputTypography[0].letterSpacing + 'px');
+	css.add_property('font-family', inputTypography[0].family);
+	css.add_property(
+		'border-top-left-radius',
+		getSpacingOptionOutput(previewInputBorderRadiusTop, inputBorderRadiusUnit)
+	);
+	css.add_property(
+		'border-top-right-radius',
+		getSpacingOptionOutput(previewInputBorderRadiusRight, inputBorderRadiusUnit)
+	);
+	css.add_property(
+		'border-bottom-right-radius',
+		getSpacingOptionOutput(previewInputBorderRadiusBottom, inputBorderRadiusUnit)
+	);
+	css.add_property(
+		'border-bottom-left-radius',
+		getSpacingOptionOutput(previewInputBorderRadiusLeft, inputBorderRadiusUnit)
+	);
+	css.add_property('padding-top', getSpacingOptionOutput(previewInputPaddingTop, inputPaddingType));
+	css.add_property('padding-right', getSpacingOptionOutput(previewInputPaddingRight, inputPaddingType));
+	css.add_property('padding-bottom', getSpacingOptionOutput(previewInputPaddingBottom, inputPaddingType));
+	css.add_property('padding-left', getSpacingOptionOutput(previewInputPaddingLeft, inputPaddingType));
+	css.add_property('margin-top', getSpacingOptionOutput(previewInputMarginTop, inputMarginType));
+	css.add_property('margin-right', getSpacingOptionOutput(previewInputMarginRight, inputMarginType));
+	css.add_property('margin-bottom', getSpacingOptionOutput(previewInputMarginBottom, inputMarginType));
+	css.add_property('margin-left', getSpacingOptionOutput(previewInputMarginLeft, inputMarginType));
+	css.add_property(
+		'border-top',
+		getBorderStyle(previewDevice, 'top', inputBorderStyles, tabletInputBorderStyles, mobileInputBorderStyles)
+	);
+	css.add_property(
+		'border-right',
+		getBorderStyle(previewDevice, 'right', inputBorderStyles, tabletInputBorderStyles, mobileInputBorderStyles)
+	);
+	css.add_property(
+		'border-bottom',
+		getBorderStyle(previewDevice, 'bottom', inputBorderStyles, tabletInputBorderStyles, mobileInputBorderStyles)
+	);
+	css.add_property(
+		'border-left',
+		getBorderStyle(previewDevice, 'left', inputBorderStyles, tabletInputBorderStyles, mobileInputBorderStyles)
+	);
+	if (inputBackgroundType === 'gradient') {
+		css.add_property('background', inputGradient);
+	} else {
+		css.add_property('background', KadenceColorOutput(inputBackgroundColor));
+	}
 
 	const cssOutput = css.css_output();
 
