@@ -275,6 +275,8 @@ function innerBlocks() {
 												linkDestination: 'none',
 												uniqueID: '8_7793cb-a0',
 												globalAlt: true,
+												link: '/',
+												marginDesktop: ['0', '', '0', ''],
 												url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-light.png',
 											},
 											[]
@@ -425,6 +427,9 @@ function innerBlocks() {
 										sizeSlug: 'full',
 										linkDestination: 'none',
 										uniqueID: '8_777df8-5e',
+										globalAlt: true,
+										link: '/',
+										marginDesktop: ['0', '', '0', ''],
 										url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-light.png',
 									},
 									[]

@@ -126,6 +126,8 @@ function innerBlocks() {
 												sizeSlug: 'full',
 												linkDestination: 'none',
 												uniqueID: '8_aa64a4-35',
+												link: '/',
+												marginDesktop: ['0', '', '0', ''],
 												url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-light-lg.png',
 											},
 											[]
