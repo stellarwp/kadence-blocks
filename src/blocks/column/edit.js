@@ -1868,12 +1868,7 @@ function SectionEdit(props) {
 														setAttributes({ gutterUnit: value });
 													}}
 													units={['px', 'em', 'rem', '%', 'vh']}
-													reset={() => {
-														setAttributes({
-															gutterVariable: ['', '', ''],
-															gutter: ['', '', ''],
-														});
-													}}
+													reset={true}
 												/>
 												<ResponsiveRadioRangeControls
 													label={__('Vertical Gap', 'kadence-blocks')}
@@ -1962,12 +1957,7 @@ function SectionEdit(props) {
 														setAttributes({ rowGapUnit: value });
 													}}
 													units={['px', 'em', 'rem', '%', 'vh']}
-													reset={() => {
-														setAttributes({
-															rowGapVariable: ['none', 'none', 'none'],
-															rowGap: ['none', 'none', 'none'],
-														});
-													}}
+													reset={true}
 												/>
 												<SmallResponsiveControl
 													label={__('Wrap Content', 'kadence-blocks')}
@@ -2198,12 +2188,7 @@ function SectionEdit(props) {
 														setAttributes({ rowGapUnit: value });
 													}}
 													units={['px', 'em', 'rem', '%', 'vh']}
-													reset={() => {
-														setAttributes({
-															rowGapVariable: ['none', 'none', 'none'],
-															rowGap: ['none', 'none', 'none'],
-														});
-													}}
+													reset={true}
 												/>
 											</>
 										)}
@@ -2487,12 +2472,7 @@ function SectionEdit(props) {
 												setAttributes({ heightUnit: value });
 											}}
 											units={['px', 'vw', 'vh']}
-											reset={() => {
-												setAttributes({
-													heightUnit: 'px',
-													height: ['', '', ''],
-												});
-											}}
+											reset={true}
 										/>
 										<ResponsiveRangeControls
 											label={__('Flex Grow', 'kadence-blocks')}
@@ -2548,11 +2528,7 @@ function SectionEdit(props) {
 											max={200}
 											step={1}
 											showUnits={false}
-											reset={() => {
-												setAttributes({
-													flexGrow: ['', '', ''],
-												});
-											}}
+											reset={true}
 										/>
 										<RangeControl
 											label={__('Z Index Control', 'kadence-blocks')}
@@ -2564,11 +2540,7 @@ function SectionEdit(props) {
 											}}
 											min={-200}
 											max={200}
-											reset={() => {
-												setAttributes({
-													zIndex: '',
-												});
-											}}
+											reset={true}
 										/>
 										{inRowBlock && (
 											<RangeControl
@@ -2581,11 +2553,7 @@ function SectionEdit(props) {
 												}}
 												min={-10}
 												max={10}
-												reset={() => {
-													setAttributes({
-														collapseOrder: '',
-													});
-												}}
+												reset={true}
 											/>
 										)}
 									</KadencePanelBody>
@@ -2669,11 +2637,7 @@ function SectionEdit(props) {
 												setAttributes({ stickyOffsetUnit: value });
 											}}
 											units={['px', 'rem', 'vh']}
-											reset={() => {
-												setAttributes({
-													stickyOffset: ['', '', ''],
-												});
-											}}
+											reset={true}
 										/>
 									)}
 								</KadencePanelBody>
@@ -2991,11 +2955,7 @@ function SectionEdit(props) {
 													step={0.01}
 													min={0}
 													max={1}
-													reset={() => {
-														setAttributes({
-															overlayHoverOpacity: 0.3,
-														});
-													}}
+													reset={true}
 												/>
 												{'gradient' === overlayHoverType && (
 													<GradientControl
@@ -3139,6 +3099,7 @@ function SectionEdit(props) {
 												<RangeControl
 													label={__('Overlay Opacity', 'kadence-blocks')}
 													value={overlayOpacity}
+													defaultValue={0.3}
 													onChange={(value) => {
 														setAttributes({
 															overlayOpacity: value,
@@ -3147,11 +3108,7 @@ function SectionEdit(props) {
 													step={0.01}
 													min={0}
 													max={1}
-													reset={() => {
-														setAttributes({
-															overlayOpacity: 0.3,
-														});
-													}}
+													reset={true}
 												/>
 												{'gradient' === overlayType && (
 													<GradientControl
