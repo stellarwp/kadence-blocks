@@ -25,7 +25,6 @@ import {
 	ButtonGroup,
 } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
-import { addQueryArgs } from '@wordpress/url';
 import { plusCircle, addSubmenu, plusCircleFilled } from '@wordpress/icons';
 import { isKeyboardEvent, ENTER } from '@wordpress/keycodes';
 import { __ } from '@wordpress/i18n';
@@ -40,7 +39,7 @@ import {
 	BlockSettingsMenuControls,
 	AlignmentToolbar,
 } from '@wordpress/block-editor';
-import { isURL, prependHTTP, safeDecodeURI } from '@wordpress/url';
+import { isURL, prependHTTP, safeDecodeURI, addQueryArgs } from '@wordpress/url';
 import { useState, useEffect, useRef } from '@wordpress/element';
 import { placeCaretAtHorizontalEdge, __unstableStripHTML as stripHTML } from '@wordpress/dom';
 import { decodeEntities } from '@wordpress/html-entities';
