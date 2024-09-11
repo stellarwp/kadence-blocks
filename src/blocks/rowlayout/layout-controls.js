@@ -646,6 +646,7 @@ function LayoutControls({
 										setAttributes({ maxWidthUnit: value });
 									}}
 									units={['px', '%', 'vw']}
+									reset={true}
 								/>
 							)}
 							{align === 'full' && 2 === columns && inheritMaxWidth === true && (
@@ -738,6 +739,7 @@ function LayoutControls({
 							defaultValue={100}
 							defaultTablet={100}
 							defaultMobile={100}
+							reset={true}
 						/>
 						<ResponsiveRangeControls
 							label={__('Divider Width', 'kadence-blocks')}
@@ -762,6 +764,7 @@ function LayoutControls({
 							defaultValue={100}
 							defaultTablet={100}
 							defaultMobile={100}
+							reset={true}
 						/>
 					</KadencePanelBody>
 					<KadencePanelBody
@@ -833,6 +836,7 @@ function LayoutControls({
 							defaultValue={100}
 							defaultTablet={100}
 							defaultMobile={100}
+							reset={true}
 						/>
 						<ResponsiveRangeControls
 							label={__('Divider Width', 'kadence-blocks')}
@@ -857,6 +861,7 @@ function LayoutControls({
 							defaultValue={100}
 							defaultTablet={100}
 							defaultMobile={100}
+							reset={true}
 						/>
 					</KadencePanelBody>
 				</>
