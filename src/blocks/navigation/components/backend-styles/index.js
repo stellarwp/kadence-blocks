@@ -735,7 +735,7 @@ export default function BackendStyles(props) {
 
 	//nav item (top level only)
 	css.set_selector(
-		`.wp-block-kadence-navigation${uniqueID} .menu-container > .wp-block-kadence-navigation-link > .kb-link-wrap > .kb-nav-link-content`
+		`.wp-block-kadence-navigation${uniqueID} .menu-container > .menu > .wp-block-kadence-navigation-link > .kb-link-wrap > .kb-nav-link-content`
 	);
 	css.render_font(typography ? typography : [], previewDevice);
 

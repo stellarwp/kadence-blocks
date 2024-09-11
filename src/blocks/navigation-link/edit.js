@@ -86,6 +86,7 @@ import {
 	ResponsiveSelectControl,
 	KadenceMediaPlaceholder,
 	SelectPostFromPostType,
+	KadenceWebfontLoader,
 } from '@kadence/components';
 
 import {
@@ -314,6 +315,8 @@ export default function Edit(props) {
 		megaMenuCustomWidthUnit,
 		typography,
 		highlightTypography,
+		dropdownTypography,
+		descriptionTypography,
 		mediaType,
 		mediaAlign,
 		mediaImage,
@@ -1384,6 +1387,23 @@ export default function Edit(props) {
 					)}
 				</ul>
 			</li>
+
+			{typography?.[0]?.google && (
+				<KadenceWebfontLoader typography={typography} clientId={clientId} id={'typography'} />
+			)}
+			{highlightTypography?.[0]?.google && (
+				<KadenceWebfontLoader typography={highlightTypography} clientId={clientId} id={'highlightTypography'} />
+			)}
+			{dropdownTypography?.[0]?.google && (
+				<KadenceWebfontLoader typography={dropdownTypography} clientId={clientId} id={'dropdownTypography'} />
+			)}
+			{descriptionTypography?.[0]?.google && (
+				<KadenceWebfontLoader
+					typography={descriptionTypography}
+					clientId={clientId}
+					id={'descriptionTypography'}
+				/>
+			)}
 		</>
 	);
 }
