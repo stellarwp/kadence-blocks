@@ -32,7 +32,7 @@
 	.wp-block-kadence-header-column-center-left {
 		flex-grow: 1;
 		justify-content: flex-end !important;
-		> * {
+		> *:not(.specificity):not(.specificity-two) {
 			margin-left: 0px;
 			margin-right: 0px;
 		}
@@ -41,7 +41,7 @@
 	.wp-block-kadence-header-column-center-right {
 		flex-grow: 1;
 		justify-content: flex-start !important;
-		> * {
+		> *:not(.specificity):not(.specificity-two) {
 			margin-left: 0px;
 			margin-right: 0px;
 		}
