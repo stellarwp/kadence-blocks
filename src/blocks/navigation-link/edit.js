@@ -513,6 +513,8 @@ export default function Edit(props) {
 							columns: 1,
 							colLayout: 'equal',
 							padding: ['', '', '', ''],
+							templateLock: false,
+							kbVersion: 2,
 						},
 						[
 							createBlock(
