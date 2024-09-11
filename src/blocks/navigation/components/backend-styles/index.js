@@ -448,12 +448,12 @@ export default function BackendStyles(props) {
 		marginDropdownUnit
 	);
 	css.add_property(
-		'--kb-nav-link-padding-left',
+		'--kb-nav-top-link-padding-left',
 		css.render_half_size(previewNavigationHorizontalSpacing, spacingUnit),
 		previewNavigationHorizontalSpacing
 	);
 	css.add_property(
-		'--kb-nav-link-padding-right',
+		'--kb-nav-top-link-padding-right',
 		css.render_half_size(previewNavigationHorizontalSpacing, spacingUnit),
 		previewNavigationHorizontalSpacing
 	);
@@ -721,12 +721,6 @@ export default function BackendStyles(props) {
 		`.wp-block-kadence-navigation${uniqueID} .sub-menu > .menu-item:not(:last-of-type), .wp-block-kadence-navigation${uniqueID} .sub-menu.mega-menu > .menu-item > .kb-link-wrap > .kb-nav-link-content`
 	);
 	css.add_property('--kb-nav-menu-item-border-bottom', dropdownDividerValue);
-
-	//can't do a slot/css var with this one. "right" messes with the margin-inline positioning.
-	css.set_selector(
-		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > .menu > .menu-item .kb-nav-dropdown-toggle-btn`
-	);
-	css.add_property('right', css.render_half_size(previewNavigationHorizontalSpacing, spacingUnit));
 
 	//main container(don't apply to children)
 	css.set_selector(`.wp-block-kadence-navigation${uniqueID} > .navigation > .menu-container > .menu`);

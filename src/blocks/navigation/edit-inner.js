@@ -1168,6 +1168,7 @@ export function EditInner(props) {
 								units={['em', 'rem', 'px', 'vw']}
 								onUnit={(value) => setMetaAttribute(value, 'spacingUnit')}
 								showUnit={true}
+								reset={() => setMetaAttribute([spacingMobile[0], '', spacingMobile[2], ''], 'spacing')}
 							/>
 							{(previewOrientation === 'vertical' ||
 								style === 'underline' ||
@@ -1214,6 +1215,9 @@ export function EditInner(props) {
 									units={['em', 'rem', 'px', 'vw']}
 									onUnit={(value) => setMetaAttribute(value, 'spacingUnit')}
 									showUnit={true}
+									reset={() =>
+										setMetaAttribute(['', spacingMobile[1], '', spacingMobile[3]], 'spacing')
+									}
 								/>
 							)}
 							<SmallResponsiveControl
