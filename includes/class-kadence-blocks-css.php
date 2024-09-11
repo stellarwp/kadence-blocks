@@ -711,7 +711,7 @@ class Kadence_Blocks_CSS {
 	private function add_selector_rules_to_output() {
 		if ( ! empty( $this->_css ) ) {
 			$this->prepare_selector_output();
-			$selector_output = sprintf( '%1$s{%2$s}', $this->_selector_output, safecss_filter_attr( $this->_css ) );
+			$selector_output = sprintf( '%1$s{%2$s}', $this->_selector_output, wp_strip_all_tags( $this->_css ) );
 
 			if ( $this->has_media_query() ) {
 				$this->_media_query_output .= $selector_output;
