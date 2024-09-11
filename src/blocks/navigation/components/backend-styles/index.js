@@ -603,11 +603,11 @@ export default function BackendStyles(props) {
 		isFinite(previewNavigationVerticalSpacing)
 	) {
 		css.add_property(
-			'--kb-nav-link-padding-top',
+			'--kb-nav-top-link-padding-top',
 			css.render_half_size(previewNavigationVerticalSpacing, spacingUnit)
 		);
 		css.add_property(
-			'--kb-nav-link-padding-bottom',
+			'--kb-nav-top-link-padding-bottom',
 			css.render_half_size(previewNavigationVerticalSpacing, spacingUnit)
 		);
 	}
