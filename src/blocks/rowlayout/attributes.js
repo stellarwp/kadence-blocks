@@ -397,7 +397,7 @@ const attributes = {
 	},
 	topSepWidth: {
 		type: 'number',
-		default: '',
+		default: 100,
 	},
 	topSepWidthTablet: {
 		type: 'number',

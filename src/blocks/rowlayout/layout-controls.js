@@ -502,6 +502,7 @@ function LayoutControls({
 											setAttributes({ gutterType: value });
 										}}
 										units={['px', 'em', 'rem']}
+										reset={true}
 									/>
 								</>
 							)}
@@ -572,6 +573,7 @@ function LayoutControls({
 									setAttributes({ rowGutterType: value });
 								}}
 								units={['px', 'em', 'rem']}
+								reset={true}
 							/>
 							{(colLayout === 'grid-layout' ||
 								innerItemCount > columns ||
@@ -644,6 +646,7 @@ function LayoutControls({
 										setAttributes({ maxWidthUnit: value });
 									}}
 									units={['px', '%', 'vw']}
+									reset={true}
 								/>
 							)}
 							{align === 'full' && 2 === columns && inheritMaxWidth === true && (
@@ -733,6 +736,10 @@ function LayoutControls({
 							}}
 							units={['px', 'em', 'vh']}
 							showUnit={true}
+							defaultValue={100}
+							defaultTablet={100}
+							defaultMobile={100}
+							reset={true}
 						/>
 						<ResponsiveRangeControls
 							label={__('Divider Width', 'kadence-blocks')}
@@ -754,6 +761,10 @@ function LayoutControls({
 							showUnit={true}
 							unit={'%'}
 							units={['%']}
+							defaultValue={100}
+							defaultTablet={100}
+							defaultMobile={100}
+							reset={true}
 						/>
 					</KadencePanelBody>
 					<KadencePanelBody
@@ -822,6 +833,10 @@ function LayoutControls({
 							}}
 							units={['px', 'em', 'vh']}
 							showUnit={true}
+							defaultValue={100}
+							defaultTablet={100}
+							defaultMobile={100}
+							reset={true}
 						/>
 						<ResponsiveRangeControls
 							label={__('Divider Width', 'kadence-blocks')}
@@ -843,6 +858,10 @@ function LayoutControls({
 							showUnit={true}
 							unit={'%'}
 							units={['%']}
+							defaultValue={100}
+							defaultTablet={100}
+							defaultMobile={100}
+							reset={true}
 						/>
 					</KadencePanelBody>
 				</>

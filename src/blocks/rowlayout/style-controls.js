@@ -659,6 +659,7 @@ function StyleControls({ clientId, attributes, setAttributes, isSelected, contex
 						}}
 						min={0}
 						max={100}
+						reset={true}
 					/>
 					<BackgroundTypeControl
 						label={__('Overlay Type', 'kadence-blocks')}
@@ -828,6 +829,7 @@ function StyleControls({ clientId, attributes, setAttributes, isSelected, contex
 						}}
 						min={0}
 						max={100}
+						reset={true}
 					/>
 					<BackgroundTypeControl
 						label={__('Overlay Type', 'kadence-blocks')}
@@ -1446,6 +1448,7 @@ function StyleControls({ clientId, attributes, setAttributes, isSelected, contex
 				}}
 				min={0}
 				max={100}
+				reset={true}
 			/>
 			<BackgroundTypeControl
 				label={__('Overlay Type', 'kadence-blocks')}

@@ -61,6 +61,15 @@ export default function ResponsiveRadioRangeControls( {
 		setPreviewDeviceType( capitalizeFirstLetter( device ) );
 		setDeviceType( capitalizeFirstLetter( device ) );
 	};
+	const onReset = () => {
+		if ( deviceType === 'Tablet' ) {
+			onChangeTablet( defaultTablet );
+		} else if ( deviceType === 'Mobile' ) {
+			onChangeMobile( defaultMobile );
+		} else {
+			onChange( defaultValue );
+		}
+	}
 	const devices = [
 		{
 			name: 'Desktop',
@@ -134,17 +143,23 @@ export default function ResponsiveRadioRangeControls( {
 		onChange && onChangeTablet && onChangeMobile && (
 			<div className={ `components-base-control kb-responsive-radio-range-control${ '' !== className ? ' ' + className : '' }` }>
 				<div className="kadence-title-bar">
+					{ label && (
+						<span className="kadence-control-title">{ label }</span>
+					) }
 					{ reset && (
 						<Button
 							className="is-reset is-single"
 							isSmall
-							disabled={ ( ( isEqual( '', value ) ) ? true : false ) }
+							disabled={ ( ( isEqual( '', value ) ) && ( isEqual( '', tabletValue ) ) && ( isEqual( '', mobileValue ) ) ? true : false ) }
 							icon={ undo }
-							onClick={ () => reset() }
+							onClick={() => {
+								if (typeof reset === 'function') {
+									reset();
+								} else {
+									onReset();
+								}
+							}}
 						></Button>
-					) }
-					{ label && (
-						<span className="kadence-control-title">{ label }</span>
 					) }
 					<ButtonGroup className="kb-measure-responsive-options" aria-label={ __( 'Device', 'kadence-blocks' ) }>
 						{ map( devices, ( { name, key, title, itemClass } ) => (
