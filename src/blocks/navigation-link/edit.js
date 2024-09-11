@@ -85,6 +85,7 @@ import {
 	IconRender,
 	ResponsiveSelectControl,
 	KadenceMediaPlaceholder,
+	SelectPostFromPostType,
 } from '@kadence/components';
 
 import {
@@ -500,12 +501,50 @@ export default function Edit(props) {
 	function doMegaMenu(key) {
 		//TODO put any existing submenus / items into the new mega menu
 		if (key) {
-			const { templateInnerBlocks, templatePostMeta } = buildTemplateFromSelection(key);
+			if (typeof key == 'number') {
+				//numeric key means they've selected a Kadence Element ID
+				//make a shortcode block with the id for them
 
-			//for mega menus inner blocks should always just be a single rowlayout block.
-			//so just insert the first inner block from the template
-			if (templateInnerBlocks) {
-				insertBlock(templateInnerBlocks[0], 0, clientId);
+				const shortcodeInnerBlocks = [
+					createBlock(
+						'kadence/rowlayout',
+						{
+							uniqueID: '253_57a3dd-f8',
+							columns: 1,
+							colLayout: 'equal',
+							padding: ['', '', '', ''],
+						},
+						[
+							createBlock(
+								'kadence/column',
+								{
+									uniqueID: '252_cc0e2b-eb',
+								},
+								[
+									createBlock(
+										'core/shortcode',
+										{
+											text: `[kadence_element id="${key}"]`,
+										},
+										[]
+									),
+								]
+							),
+						]
+					),
+				];
+				if (shortcodeInnerBlocks) {
+					insertBlock(shortcodeInnerBlocks[0], 0, clientId);
+				}
+			} else {
+				//main/normal temlpated mega menu construction
+				const { templateInnerBlocks, templatePostMeta } = buildTemplateFromSelection(key);
+
+				//for mega menus inner blocks should always just be a single rowlayout block.
+				//so just insert the first inner block from the template
+				if (templateInnerBlocks) {
+					insertBlock(templateInnerBlocks[0], 0, clientId);
+				}
 			}
 		}
 	}
@@ -1370,9 +1409,21 @@ export default function Edit(props) {
 											/>
 										))}
 									</ButtonGroup>
-									<Button className="kt-prebuilt" onClick={() => doMegaMenu('simple|1')}>
-										{__('Skip', 'kadence-blocks')}
-									</Button>
+									<div className={'kb-mega-onboard-bottom'}>
+										{kadence_blocks_params.hasKadencePro && (
+											<SelectPostFromPostType
+												postType="kadence_element"
+												label={__('Use a Custom Element Shortcode', 'kadence-blocks')}
+												onChange={(id) => {
+													doMegaMenu(parseInt(id));
+												}}
+												value={id}
+											/>
+										)}
+										<Button className="kt-prebuilt" onClick={() => doMegaMenu('simple|1')}>
+											{__('Skip', 'kadence-blocks')}
+										</Button>
+									</div>
 									{/* <Button className="kt-prebuilt" onClick={() => setAttributes({ isPrebuiltModal: true })}>
 										{__('Design Library', 'kadence-blocks')}
 									</Button> */}

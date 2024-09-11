@@ -168,3 +168,13 @@
 .block-editor-iframe__body {
 	min-height: max(var(--kb-editor-height-oc, 0px), var(--kb-editor-height-nv, 0px) + var(--kb-editor-height-hd, 0px));
 }
+
+.kb-mega-onboard-bottom {
+	display: flex;
+	gap: 20px;
+	justify-content: space-around;
+
+	& > .components-base-control {
+		margin-top: 10px;
+	}
+}

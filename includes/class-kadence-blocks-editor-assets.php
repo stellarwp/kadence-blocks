@@ -374,6 +374,7 @@ class Editor_Assets {
 				'replaceProducts' => ( class_exists( 'woocommerce' ) && ! empty( $products ) ? $products : '' ),
 				'addProductsLink' => ( class_exists( 'woocommerce' ) ? admin_url( 'product-new.php' ) : 'https://wordpress.org/plugins/woocommerce/' ),
 				'hasKadenceCaptcha' => ( is_plugin_active( 'kadence-recaptcha/kadence-recaptcha.php' ) ? true : false ),
+				'hasKadencePro' => ( is_plugin_active( 'kadence-pro/kadence-pro.php' ) ? true : false ),
 				'adminUrl' => get_admin_url(),
 				'aiLang' => ( ! empty( $prophecy_data['lang'] ) ? $prophecy_data['lang'] : '' ),
 				'kadenceBlocksUrl' => KADENCE_BLOCKS_URL,
