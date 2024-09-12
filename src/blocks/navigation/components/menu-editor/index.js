@@ -47,7 +47,7 @@ export default function MenuEditor({
 					url: post.link,
 					id: post.id,
 					type: post.type,
-					kind: 'custom',
+					kind: 'post-type',
 					uniqueID: Math.random().toString(36).substr(2, 9),
 				})
 			);
