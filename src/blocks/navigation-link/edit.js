@@ -1043,9 +1043,9 @@ export default function Edit(props) {
 						/>
 						<TextControl
 							__nextHasNoMarginBottom
-							value={url ? safeDecodeURI(url) : ''}
-							onChange={(urlValue) => {
-								updateAttributes({ url: urlValue }, setAttributes, attributes);
+							value={url ? url : ''}
+							onChange={(value) => {
+								setAttributes({ url: value });
 							}}
 							label={__('URL')}
 							autoComplete="off"
