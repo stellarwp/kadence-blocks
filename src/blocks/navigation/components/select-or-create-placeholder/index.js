@@ -65,6 +65,9 @@ export default function SelectOrCreatePlaceholder({
 
 	const groupedOptionsHTML = groupedOptions.map((group) => (
 		<>
+			<option value="0" disabled>
+				{__('Make selection…', 'kadence-blocks')}
+			</option>
 			{group.options?.length && (
 				<optgroup label={group.label}>
 					{group.options.map((options) => (

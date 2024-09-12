@@ -13,7 +13,7 @@ function innerBlocks() {
 			'kadence/rowlayout',
 			{
 				uniqueID: '252_56a2cc-f8',
-				columns: 3,
+				columns: 1,
 				colLayout: 'equal',
 				templateLock: false,
 				kbVersion: 2,

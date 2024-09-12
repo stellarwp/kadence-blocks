@@ -127,6 +127,8 @@ function innerBlocks() {
 												sizeSlug: 'full',
 												linkDestination: 'none',
 												uniqueID: '6_e0ac3d-70',
+												link: '/',
+												marginDesktop: ['0', '', '0', ''],
 												globalAlt: true,
 												url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
 											},
@@ -397,10 +399,12 @@ function innerBlocks() {
 								createBlock(
 									'kadence/image',
 									{
-										imgMaxWidthTablet: 100,
+										imgMaxWidth: 100,
 										sizeSlug: 'full',
 										linkDestination: 'none',
 										uniqueID: '6_947fd5-0f',
+										link: '/',
+										marginDesktop: ['0', '', '0', ''],
 										url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
 									},
 									[]

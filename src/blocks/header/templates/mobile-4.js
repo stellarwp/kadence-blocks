@@ -216,6 +216,7 @@ function innerBlocks() {
 								createBlock(
 									'kadence/image',
 									{
+										imgMaxWidth: 100,
 										sizeSlug: 'full',
 										linkDestination: 'none',
 										uniqueID: '88_9a8fe5-2f',
@@ -502,7 +503,7 @@ function innerBlocks() {
 								createBlock(
 									'kadence/image',
 									{
-										imgMaxWidthTablet: 100,
+										imgMaxWidth: 100,
 										sizeSlug: 'full',
 										linkDestination: 'none',
 										uniqueID: '88_f364a2-34',

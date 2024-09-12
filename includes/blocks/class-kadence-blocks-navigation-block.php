@@ -144,8 +144,8 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		//no added specificty needed for these variables
 		//these variable will slot into selectors found in the static stylesheet.
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id );
-		$css->add_property( '--kb-nav-link-padding-left', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) );
-		$css->add_property( '--kb-nav-link-padding-right', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) );
+		$css->add_property( '--kb-nav-top-link-padding-left', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) );
+		$css->add_property( '--kb-nav-top-link-padding-right', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) );
 		$css->add_property( '--kb-nav-link-underline-width', 'calc( 100% - ' . $css->render_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) . ' )', $navigation_horizontal_spacing );
 		$css->add_property( '--kb-nav-top-link-color-active-ancestor', $css->render_color( $sized_attributes['linkColorActive']), $sized_attributes['parentActive'] );
 		$css->add_property( '--kb-nav-top-link-background-active-ancestor', $css->render_color( $sized_attributes['backgroundActive']), $sized_attributes['parentActive'] );
@@ -254,10 +254,6 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		//not last submenu items and mega menu nav links
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .sub-menu > .menu-item:not(:last-of-type), .wp-block-kadence-navigation' . $unique_id . ' .sub-menu.mega-menu > .menu-item > .kb-link-wrap > .kb-nav-link-content' );
 		$css->add_property( '--kb-nav-menu-item-border-bottom', $css->render_border( $sized_attributes['dropdownDivider'], 'bottom' ) );		
-
-		//can't do a slot/css var with this one. "right" messes with the margin-inline positioning.
-		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .navigation .menu-container > .menu > .menu-item .kb-nav-dropdown-toggle-btn' );
-		$css->add_property( 'right', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit']), $navigation_horizontal_spacing );
 	}
 
 	/**

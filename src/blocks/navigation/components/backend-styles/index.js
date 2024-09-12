@@ -448,12 +448,12 @@ export default function BackendStyles(props) {
 		marginDropdownUnit
 	);
 	css.add_property(
-		'--kb-nav-link-padding-left',
+		'--kb-nav-top-link-padding-left',
 		css.render_half_size(previewNavigationHorizontalSpacing, spacingUnit),
 		previewNavigationHorizontalSpacing
 	);
 	css.add_property(
-		'--kb-nav-link-padding-right',
+		'--kb-nav-top-link-padding-right',
 		css.render_half_size(previewNavigationHorizontalSpacing, spacingUnit),
 		previewNavigationHorizontalSpacing
 	);
@@ -603,11 +603,11 @@ export default function BackendStyles(props) {
 		isFinite(previewNavigationVerticalSpacing)
 	) {
 		css.add_property(
-			'--kb-nav-link-padding-top',
+			'--kb-nav-top-link-padding-top',
 			css.render_half_size(previewNavigationVerticalSpacing, spacingUnit)
 		);
 		css.add_property(
-			'--kb-nav-link-padding-bottom',
+			'--kb-nav-top-link-padding-bottom',
 			css.render_half_size(previewNavigationVerticalSpacing, spacingUnit)
 		);
 	}
@@ -722,12 +722,6 @@ export default function BackendStyles(props) {
 	);
 	css.add_property('--kb-nav-menu-item-border-bottom', dropdownDividerValue);
 
-	//can't do a slot/css var with this one. "right" messes with the margin-inline positioning.
-	css.set_selector(
-		`.wp-block-kadence-navigation${uniqueID} .navigation .menu-container > .menu > .menu-item .kb-nav-dropdown-toggle-btn`
-	);
-	css.add_property('right', css.render_half_size(previewNavigationHorizontalSpacing, spacingUnit));
-
 	//main container(don't apply to children)
 	css.set_selector(`.wp-block-kadence-navigation${uniqueID} > .navigation > .menu-container > .menu`);
 	css.render_measure_output(margin, tabletMargin, mobileMargin, previewDevice, '--kb-nav-margin', marginUnit);
@@ -735,7 +729,7 @@ export default function BackendStyles(props) {
 
 	//nav item (top level only)
 	css.set_selector(
-		`.wp-block-kadence-navigation${uniqueID} .menu-container > .wp-block-kadence-navigation-link > .kb-link-wrap > .kb-nav-link-content`
+		`.wp-block-kadence-navigation${uniqueID} .menu-container > .menu > .wp-block-kadence-navigation-link > .kb-link-wrap > .kb-nav-link-content`
 	);
 	css.render_font(typography ? typography : [], previewDevice);
 

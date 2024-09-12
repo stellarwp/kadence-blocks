@@ -75,6 +75,16 @@ function BlockItem({ thisBlock, activeBlock, toggleCollapse, collapsed }) {
 	parentProps.style = style;
 	const dragHandleProps = { ...listeners, ...attributes };
 
+	const isPostType =
+		thisBlock.attributes.kind === 'post-type' ||
+		thisBlock.attributes.type === 'post' ||
+		thisBlock.attributes.type === 'page';
+	const hasSyncedLink =
+		isPostType &&
+		thisBlock.attributes.kind === 'post-type' &&
+		thisBlock.attributes.id &&
+		!thisBlock.attributes.disableLink;
+
 	return (
 		<div {...parentProps}>
 			<div className={`menu-block ${!hasChildren ? 'no-children' : ''}`}>
@@ -112,7 +122,7 @@ function BlockItem({ thisBlock, activeBlock, toggleCollapse, collapsed }) {
 					]}
 				/>
 			</div>
-			{isEditing && (
+			{isEditing && thisBlock.name == 'kadence/navigation-link' && (
 				<div
 					key={thisBlock.clientId}
 					style={{
@@ -140,6 +150,7 @@ function BlockItem({ thisBlock, activeBlock, toggleCollapse, collapsed }) {
 								.dispatch('core/block-editor')
 								.updateBlockAttributes(thisBlock.clientId, { url: value });
 						}}
+						disabled={hasSyncedLink}
 					/>
 
 					<div style={{ marginTop: '15px', display: 'flex' }}>

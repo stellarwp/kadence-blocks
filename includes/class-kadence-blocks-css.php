@@ -2844,11 +2844,19 @@ class Kadence_Blocks_CSS {
 	 */
 	public function get_sized_attributes_auto( $attributes, $size = 'Desktop', $inherit = true, $special_keys = array() ) {
 		$sized_array = array();
+		$found_for_this_size = array();
 
 		foreach ( $attributes as $key => $value ) {
 			$is_tablet_key = str_ends_with( $key, 'Tablet' );
 			$is_mobile_key = str_ends_with( $key, 'Mobile' );
 			$is_special_key = array_key_exists( $key, $special_keys );
+
+			//if we've already found this attribute for this size and it's already set, we don't need to process this again
+			//this condition would occur if we've already processed iconColorTablet and set the iconColor attribute in $sized_array
+			//Now we come back and find iconColor (the desktop attribute). We don't need to process it again because we've already run get_sized_attribute for it.
+			if ( array_key_exists( $key, $found_for_this_size ) && array_key_exists( $key, $sized_array ) ) {
+				continue;
+			}
 
 			if ( $is_tablet_key || $is_mobile_key ) {
 				$desktop_key = substr( $key, 0, -6 );
@@ -2857,6 +2865,7 @@ class Kadence_Blocks_CSS {
 
 				if ( array_key_exists( $desktop_key, $attributes ) && array_key_exists( $tablet_key, $attributes ) && array_key_exists( $mobile_key, $attributes ) ) {
 					$sized_array[ $desktop_key ] = $this->get_sized_attribute( $attributes, $desktop_key, $size, $inherit );
+					$found_for_this_size[$desktop_key] = true;
 				}
 			} else if ( $is_special_key ) {
 				$desktop_value = $special_keys[ $key ]['Desktop'];

@@ -33,6 +33,7 @@ import {
 	SelectPostFromPostType,
 	CopyPasteAttributes,
 	ResponsiveButtonStyleControlsWithStates,
+	KadenceWebfontLoader,
 } from '@kadence/components';
 import { getPreviewSize, mouseOverVisualizer, showSettings } from '@kadence/helpers';
 
@@ -1167,6 +1168,7 @@ export function EditInner(props) {
 								units={['em', 'rem', 'px', 'vw']}
 								onUnit={(value) => setMetaAttribute(value, 'spacingUnit')}
 								showUnit={true}
+								reset={() => setMetaAttribute([spacingMobile[0], '', spacingMobile[2], ''], 'spacing')}
 							/>
 							{(previewOrientation === 'vertical' ||
 								style === 'underline' ||
@@ -1213,6 +1215,9 @@ export function EditInner(props) {
 									units={['em', 'rem', 'px', 'vw']}
 									onUnit={(value) => setMetaAttribute(value, 'spacingUnit')}
 									showUnit={true}
+									reset={() =>
+										setMetaAttribute(['', spacingMobile[1], '', spacingMobile[3]], 'spacing')
+									}
 								/>
 							)}
 							<SmallResponsiveControl
@@ -2019,6 +2024,23 @@ export function EditInner(props) {
 			{/*	forceShow={ marginMouseOver.isMouseOver }*/}
 			{/*	spacing={ [ getSpacingOptionOutput( previewMarginTop, marginUnit ), getSpacingOptionOutput( previewMarginRight, marginUnit ), getSpacingOptionOutput( previewMarginBottom, marginUnit ), getSpacingOptionOutput( previewMarginLeft, marginUnit ) ] }*/}
 			{/*/>*/}
+
+			{typography?.[0]?.google && (
+				<>
+					{console.log(1)}
+					<KadenceWebfontLoader typography={typography} clientId={clientId} id={'typography'} />
+				</>
+			)}
+			{dropdownTypography?.[0]?.google && (
+				<KadenceWebfontLoader typography={dropdownTypography} clientId={clientId} id={'dropdownTypography'} />
+			)}
+			{descriptionTypography?.[0]?.google && (
+				<KadenceWebfontLoader
+					typography={descriptionTypography}
+					clientId={clientId}
+					id={'descriptionTypography'}
+				/>
+			)}
 		</>
 	);
 }

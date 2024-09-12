@@ -167,8 +167,9 @@ function innerBlocks() {
 										sizeSlug: 'full',
 										linkDestination: 'none',
 										uniqueID: '6_28864c-2f',
-										marginDesktop: ['', 'md', '', 'md'],
+										marginDesktop: ['0', 'md', '0', 'md'],
 										globalAlt: true,
+										link: '/',
 										url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
 									},
 									[]
@@ -391,6 +392,8 @@ function innerBlocks() {
 										sizeSlug: 'full',
 										linkDestination: 'none',
 										uniqueID: '6_267191-57',
+										link: '/',
+										marginDesktop: ['0', '', '0', ''],
 										url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
 									},
 									[]

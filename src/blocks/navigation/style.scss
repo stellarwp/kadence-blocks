@@ -1295,7 +1295,8 @@
 		}
 	}
 
-	&.menu-item-has-children {
+	&.menu-item-has-children,
+	&.kadence-menu-mega-enabled {
 		--kb-nav-link-position: var(--kb-nav-link-has-children-position, relative);
 	}
 

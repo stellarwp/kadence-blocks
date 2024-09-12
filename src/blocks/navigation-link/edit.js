@@ -24,6 +24,7 @@ import {
 	Button,
 	ButtonGroup,
 } from '@wordpress/components';
+import apiFetch from '@wordpress/api-fetch';
 import { plusCircle, addSubmenu, plusCircleFilled } from '@wordpress/icons';
 import { isKeyboardEvent, ENTER } from '@wordpress/keycodes';
 import { __ } from '@wordpress/i18n';
@@ -38,7 +39,7 @@ import {
 	BlockSettingsMenuControls,
 	AlignmentToolbar,
 } from '@wordpress/block-editor';
-import { isURL, prependHTTP, safeDecodeURI } from '@wordpress/url';
+import { isURL, prependHTTP, safeDecodeURI, addQueryArgs } from '@wordpress/url';
 import { useState, useEffect, useRef } from '@wordpress/element';
 import { placeCaretAtHorizontalEdge, __unstableStripHTML as stripHTML } from '@wordpress/dom';
 import { decodeEntities } from '@wordpress/html-entities';
@@ -83,6 +84,8 @@ import {
 	IconRender,
 	ResponsiveSelectControl,
 	KadenceMediaPlaceholder,
+	SelectPostFromPostType,
+	KadenceWebfontLoader,
 } from '@kadence/components';
 
 import {
@@ -174,6 +177,16 @@ function getMissingText(type) {
 	}
 
 	return missingText;
+}
+
+function correctPostType(postType) {
+	if (postType === 'post') {
+		return 'posts';
+	} else if (postType === 'page') {
+		return 'pages';
+	}
+
+	return postType;
 }
 
 export default function Edit(props) {
@@ -301,6 +314,8 @@ export default function Edit(props) {
 		megaMenuCustomWidthUnit,
 		typography,
 		highlightTypography,
+		dropdownTypography,
+		descriptionTypography,
 		mediaType,
 		mediaAlign,
 		mediaImage,
@@ -324,6 +339,9 @@ export default function Edit(props) {
 
 	const [isInvalid, isDraft] = useIsInvalidLink(kind, type, id);
 	const { maxNestingLevel } = context;
+
+	const isPostType = kind === 'post-type' || type === 'post' || type === 'page';
+	const hasSyncedLink = isPostType && kind === 'post-type' && id && !disableLink;
 
 	const { insertBlock, replaceInnerBlocks, __unstableMarkNextChangeAsNotPersistent } = useDispatch(blockEditorStore);
 	const [isLinkOpen, setIsLinkOpen] = useState(false);
@@ -406,6 +424,28 @@ export default function Edit(props) {
 		}
 	}, []);
 
+	//get the most up to date links for links with a post type and id (non custom)
+	useEffect(() => {
+		const postType = kind == 'post-type' ? correctPostType(type) : '';
+
+		//only get the fields we need
+		const args = { _fields: 'link' };
+
+		if (hasSyncedLink && postType && id) {
+			apiFetch({
+				path: addQueryArgs(`/wp/v2/${postType}/${id}`, args),
+			})
+				.then((response) => {
+					if (response && response.link) {
+						setAttributes({ url: response.link });
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		}
+	}, [type, id, kind]);
+
 	//hasChildren is a proxy for isSubmenu
 	const { isAtMaxNesting, isSubMenuChild, isTopLevelLink, isParentOfSelectedBlock, hasChildren, inMegaMenu } =
 		useSelect(
@@ -463,6 +503,7 @@ export default function Edit(props) {
 	function doMegaMenu(key) {
 		//TODO put any existing submenus / items into the new mega menu
 		if (key) {
+			//main/normal temlpated mega menu construction
 			const { templateInnerBlocks, templatePostMeta } = buildTemplateFromSelection(key);
 
 			//for mega menus inner blocks should always just be a single rowlayout block.
@@ -1002,13 +1043,25 @@ export default function Edit(props) {
 						/>
 						<TextControl
 							__nextHasNoMarginBottom
-							value={url ? safeDecodeURI(url) : ''}
-							onChange={(urlValue) => {
-								updateAttributes({ url: urlValue }, setAttributes, attributes);
+							value={url ? url : ''}
+							onChange={(value) => {
+								setAttributes({ url: value });
 							}}
 							label={__('URL')}
 							autoComplete="off"
+							disabled={hasSyncedLink}
 						/>
+						{hasSyncedLink && (
+							<Button
+								variant="link"
+								onClick={() => {
+									setAttributes({ type: '', kind: 'custom' });
+								}}
+								className={'components-base-control kb-nav-link-edit-link-button'}
+							>
+								{__('Edit URL', 'kadence-blocks')}
+							</Button>
+						)}
 						<ToggleControl
 							label={__('Disable Link', 'kadence-blocks')}
 							checked={disableLink}
@@ -1333,6 +1386,23 @@ export default function Edit(props) {
 					)}
 				</ul>
 			</li>
+
+			{typography?.[0]?.google && (
+				<KadenceWebfontLoader typography={typography} clientId={clientId} id={'typography'} />
+			)}
+			{highlightTypography?.[0]?.google && (
+				<KadenceWebfontLoader typography={highlightTypography} clientId={clientId} id={'highlightTypography'} />
+			)}
+			{dropdownTypography?.[0]?.google && (
+				<KadenceWebfontLoader typography={dropdownTypography} clientId={clientId} id={'dropdownTypography'} />
+			)}
+			{descriptionTypography?.[0]?.google && (
+				<KadenceWebfontLoader
+					typography={descriptionTypography}
+					clientId={clientId}
+					id={'descriptionTypography'}
+				/>
+			)}
 		</>
 	);
 }

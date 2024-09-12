@@ -339,10 +339,12 @@ function innerBlocks() {
 									'kadence/image',
 									{
 										align: 'right',
-										imgMaxWidthTablet: 100,
+										imgMaxWidth: 100,
 										sizeSlug: 'full',
 										linkDestination: 'none',
 										uniqueID: '75_851646-0e',
+										link: '/',
+										marginDesktop: ['0', '', '0', ''],
 										url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
 									},
 									[]

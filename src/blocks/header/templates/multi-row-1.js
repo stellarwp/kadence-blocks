@@ -432,6 +432,7 @@ function innerBlocks() {
 								createBlock(
 									'kadence/image',
 									{
+										imgMaxWidth: 80,
 										sizeSlug: 'full',
 										linkDestination: 'none',
 										uniqueID: '8_209c35-41',

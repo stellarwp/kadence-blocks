@@ -128,6 +128,8 @@ function innerBlocks() {
 												linkDestination: 'none',
 												uniqueID: '56_d3383f-53',
 												globalAlt: true,
+												link: '/',
+												marginDesktop: ['0', '', '0', ''],
 												url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
 											},
 											[]
@@ -357,14 +359,15 @@ function innerBlocks() {
 							},
 							[
 								createBlock(
-									'kadence/off-canvas-trigger',
+									'kadence/image',
 									{
-										uniqueID: '56_b4c1d7-f0',
-										iconSizeTablet: 25,
-										iconColorTablet: 'palette3',
-										iconColorHoverTablet: 'palette3',
-										iconBackgroundColorTablet: 'palette8',
-										iconBackgroundColorHoverTablet: 'palette8',
+										imgMaxWidth: 100,
+										sizeSlug: 'full',
+										linkDestination: 'none',
+										uniqueID: '56_6b3b28-b2',
+										link: '/',
+										marginDesktop: ['0', '', '0', ''],
+										url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
 									},
 									[]
 								),
@@ -377,19 +380,7 @@ function innerBlocks() {
 								location: 'tablet-center',
 								metadata: { name: 'Center' },
 							},
-							[
-								createBlock(
-									'kadence/image',
-									{
-										imgMaxWidthTablet: 100,
-										sizeSlug: 'full',
-										linkDestination: 'none',
-										uniqueID: '56_6b3b28-b2',
-										url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
-									},
-									[]
-								),
-							]
+							[]
 						),
 						createBlock(
 							'kadence/header-column',
@@ -398,7 +389,20 @@ function innerBlocks() {
 								location: 'tablet-right',
 								metadata: { name: 'Right' },
 							},
-							[]
+							[
+								createBlock(
+									'kadence/off-canvas-trigger',
+									{
+										uniqueID: '56_b4c1d7-f0',
+										iconSizeTablet: 25,
+										iconColorTablet: 'palette3',
+										iconColorHoverTablet: 'palette3',
+										iconBackgroundColorTablet: 'palette8',
+										iconBackgroundColorHoverTablet: 'palette8',
+									},
+									[]
+								),
+							]
 						),
 					]
 				),

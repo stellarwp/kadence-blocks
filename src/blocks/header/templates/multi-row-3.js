@@ -222,6 +222,8 @@ function innerBlocks() {
 										sizeSlug: 'full',
 										linkDestination: 'none',
 										uniqueID: '8_f36657-ce',
+										link: '/',
+										marginDesktop: ['0', '', '0', ''],
 										url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
 									},
 									[]
@@ -502,6 +504,7 @@ function innerBlocks() {
 								createBlock(
 									'kadence/image',
 									{
+										imgMaxWidthTablet: 100,
 										sizeSlug: 'full',
 										linkDestination: 'none',
 										uniqueID: '8_746f4a-a0',
