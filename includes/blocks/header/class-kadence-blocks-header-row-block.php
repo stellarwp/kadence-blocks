@@ -120,7 +120,11 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 			'tablet_key'  => 'borderRadiusTablet',
 			'mobile_key'  => 'borderRadiusMobile',
 		) );
-		$css->render_border_styles( $attributes, 'border' );
+		$css->render_border_styles( $attributes, 'border', false, array(
+			'desktop_key' => 'border',
+			'tablet_key'  => 'borderTablet',
+			'mobile_key'  => 'borderMobile',
+		) );
 
 		// Pass down to sections.
 		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .wp-block-kadence-header-column, .wp-block-kadence-header-row' . $unique_id . ' .wp-block-kadence-header-section' );
