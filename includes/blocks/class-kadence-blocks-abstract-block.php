@@ -74,6 +74,7 @@ class Kadence_Blocks_Abstract_Block {
 		'navigation-list',
 		'singlebtn',
 		'header-row',
+		'off-canvas-trigger',
 		'off-canvas',
 		'header-column'
 	];
