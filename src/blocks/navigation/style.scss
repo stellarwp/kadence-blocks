@@ -1083,11 +1083,10 @@
 				display: flex;
 				align-items: center;
 			}
-
-			//not last top links
-			&:not(:last-of-type) > .kb-link-wrap {
-				--kb-nav-link-border-right: var(--kb-nav-top-not-last-link-border-right);
-			}
+		}
+		//not last top links
+		&:not(:last-of-type) > .kb-link-wrap {
+			--kb-nav-link-border-right: var(--kb-nav-top-not-last-link-border-right);
 		}
 	}
 
