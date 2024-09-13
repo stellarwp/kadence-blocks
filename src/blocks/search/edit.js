@@ -317,6 +317,11 @@ export function Edit(props) {
 									setAttributes({
 										displayStyle: value,
 									});
+									if (value === 'modal') {
+										saveInputTypography({ size: ['md', '', ''] });
+									} else {
+										saveInputTypography({ size: ['', '', ''] });
+									}
 								}}
 							/>
 
@@ -907,7 +912,13 @@ export function Edit(props) {
 									}}
 								/>
 							</button>
-							<div class="kb-search-modal-content">
+							<div
+								class="kb-search-modal-content"
+								style={{
+									width: editorWidth + 'px',
+									left: editorLeft + 'px',
+								}}
+							>
 								<label className="screen-reader-text" htmlFor={'kb-search-input' + uniqueID}>
 									Search for:
 								</label>
