@@ -18,16 +18,10 @@
 }
 
 @mixin header-sticky-styles {
-	//the sticky header body starts as a 0 height placeholder
-	//javascript sets the height to match thte absolutly positioned inner header later
-	position: relative;
-	z-index: 50;
-
 	.kb-header-container {
 		left: 0;
 		right: 0;
 		z-index: 100;
-
 		//transition: top ease-in-out 0.05s;
 	}
 }
@@ -105,4 +99,13 @@
 .kb-header-container {
 	//fix for bleeding margins in header rows
 	//overflow: auto;
+}
+
+.kb-header-placeholder-wrapper {
+	position: relative;
+	z-index: 50;
+}
+
+.kb-header-sticky-wrapper {
+	width: 100%;
 }

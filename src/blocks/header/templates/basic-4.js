@@ -19,7 +19,7 @@ const postMeta = {
 		},
 	],
 	_kad_header_isSticky: '1',
-	_kad_header_isTransparent: '1',
+	_kad_header_isTransparent: '0',
 };
 
 function innerBlocks() {

@@ -334,15 +334,15 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		if ( $is_sticky ) {
 			$wrapper_args['data-sticky'] = $is_sticky;
-			$wrapper_args['data-sticky-section'] = $header_attributes['stickySection'] ?: 'main';
+			$wrapper_args['data-sticky-section'] = $header_attributes['stickySection'] ?: '';
 		}
 		if ( $is_sticky_tablet ) {
 			$wrapper_args['data-sticky-tablet'] = $is_sticky_tablet;
-			$wrapper_args['data-sticky-section-tablet'] = $header_attributes['stickySectionTablet'] ?: 'main';
+			$wrapper_args['data-sticky-section-tablet'] = $header_attributes['stickySectionTablet'] ?: '';
 		}
 		if ( $is_sticky_mobile ) {
 			$wrapper_args['data-sticky-mobile'] = $is_sticky_mobile;
-			$wrapper_args['data-sticky-section-mobile'] = $header_attributes['stickySectionMobile'] ?: 'main';
+			$wrapper_args['data-sticky-section-mobile'] = $header_attributes['stickySectionMobile'] ?: '';
 		}
 
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );

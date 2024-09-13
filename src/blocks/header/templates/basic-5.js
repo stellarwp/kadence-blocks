@@ -31,18 +31,7 @@ const postMeta = {
 		gradient: '',
 	},
 	_kad_header_isSticky: '1',
-	_kad_header_isTransparent: '1',
-	_kad_header_backgroundTransparent: {
-		color: 'palette9',
-		image: '',
-		imageID: '',
-		position: 'center center',
-		size: 'cover',
-		repeat: 'no-repeat',
-		attachment: 'scroll',
-		type: 'normal',
-		gradient: '',
-	},
+	_kad_header_isTransparent: '0',
 };
 
 function innerBlocks() {
