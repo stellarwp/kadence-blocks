@@ -21,6 +21,7 @@
 				);
 				const modalDiv = rootElement.querySelector('.kb-search-modal');
 				const closeModalButton = rootElement.querySelector('.kb-search-modal .kb-search-close-btn');
+				const searchInput = rootElement.querySelector('.kb-search-input');
 
 				// Initialize listener
 				if (openModalButton) {
@@ -45,6 +46,13 @@
 					openModalButton.addEventListener('click', showModalButton);
 					closeModalButton.addEventListener('click', hideModalButton);
 					closeModalButton.setAttribute('aria-hidden', 'true');
+
+					// New event listener for clicking outside the input
+					modalDiv.addEventListener('click', function (e) {
+						if (e.target !== searchInput && !searchInput.contains(e.target)) {
+							hideModalButton(e);
+						}
+					});
 
 					document.addEventListener('keydown', function (e) {
 						if (e.key === 'Escape' && modalDiv.classList.contains('active')) {

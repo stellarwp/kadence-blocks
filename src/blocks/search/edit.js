@@ -9,7 +9,7 @@ import metadata from './block.json';
  */
 import { __ } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { TextControl, ToggleControl, SelectControl, ToolbarGroup, ToolbarButton } from '@wordpress/components';
+import { TextControl, ToggleControl, RangeControl, ToolbarGroup, ToolbarButton } from '@wordpress/components';
 import {
 	ResponsiveRangeControls,
 	InspectorControlTabs,
@@ -32,8 +32,6 @@ import {
 	BackgroundTypeControl,
 	GradientControl,
 	BoxShadowControl,
-	SelectParentBlock,
-	ResponsiveButtonStyleControlsWithStates,
 } from '@kadence/components';
 import {
 	setBlockDefaults,
@@ -50,9 +48,8 @@ import {
 	getBorderColor,
 } from '@kadence/helpers';
 
-import { useBlockProps, BlockControls, RichText, useInnerBlocksProps } from '@wordpress/block-editor';
+import { useBlockProps, BlockControls, useInnerBlocksProps } from '@wordpress/block-editor';
 import { useEffect, useRef, useState } from '@wordpress/element';
-import { applyFilters } from '@wordpress/hooks';
 import BackendStyles from './backend-styles';
 
 /**
@@ -66,7 +63,6 @@ export function Edit(props) {
 	const {
 		uniqueID,
 		displayStyle,
-		showButton,
 		sizePreset,
 		padding,
 		tabletPadding,
@@ -113,6 +109,18 @@ export function Edit(props) {
 		searchProductsOnly,
 		modalGradientActive,
 		modalBackgroundType,
+		inputMaxWidth,
+		inputMaxWidthType,
+		inputStyle,
+		inputIcon,
+		inputIconColor,
+		inputIconHoverColor,
+		inputIconLineWidth,
+		closeIcon,
+		closeIconSize,
+		closeIconColor,
+		closeIconHoverColor,
+		closeIconLineWidth,
 	} = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
@@ -160,6 +168,7 @@ export function Edit(props) {
 	const ref = useRef();
 	const editorElement = useEditorElement(ref, [previewDevice], 'editor-visual-editor');
 	const editorWidth = editorElement?.clientWidth;
+	const editorLeft = editorElement?.getBoundingClientRect().left;
 
 	const saveInputTypography = (value) => {
 		const newUpdate = inputTypography.map((item, index) => {
@@ -202,7 +211,6 @@ export function Edit(props) {
 								lock: { remove: true, move: true },
 								hideLink: true,
 								text: __('Search', 'kadence-blocks'),
-								icon: 'fe_search',
 								noCustomDefaults: true,
 								isSubmit: true,
 							},
@@ -215,13 +223,27 @@ export function Edit(props) {
 
 	const renderInputField = () => {
 		return (
-			<input
-				id={'kb-search-input' + uniqueID}
-				className={'kb-search-input'}
-				disabled={true}
-				type="text"
-				placeholder={inputPlaceholder}
-			/>
+			<div className={'kb-search-input-wrapper'}>
+				<input
+					id={'kb-search-input' + uniqueID}
+					className={'kb-search-input'}
+					disabled={true}
+					type="text"
+					placeholder={inputPlaceholder}
+				/>
+				{inputIcon && (
+					<>
+						<IconRender
+							className={`kb-search-icon kt-svg-icon kt-svg-icon-${inputIcon}`}
+							name={inputIcon}
+							strokeWidth={'fe' === inputIcon.substring(0, 2) ? inputIconLineWidth : undefined}
+							style={{
+								color: inputIconColor ? KadenceColorOutput(inputIconColor) : undefined,
+							}}
+						/>
+					</>
+				)}
+			</div>
 		);
 	};
 
@@ -248,6 +270,8 @@ export function Edit(props) {
 
 		setAttributes({ inputBoxShadow: newItems });
 	};
+
+	const previewCloseIconSize = getPreviewSize(previewDevice, closeIconSize[0], closeIconSize[1], closeIconSize[2]);
 
 	return (
 		<>
@@ -296,6 +320,23 @@ export function Edit(props) {
 								}}
 							/>
 
+							{displayStyle === 'standard' && (
+								<KadenceRadioButtons
+									label={__('Input Style', 'kadence-blocks')}
+									value={inputStyle}
+									options={[
+										{ value: 'icon', label: __('Field Only', 'kadence-blocks') },
+										{ value: 'no-icon', label: __('Field & Button', 'kadence-blocks') },
+									]}
+									hideLabel={false}
+									onChange={(value) => {
+										setAttributes({
+											inputStyle: value,
+										});
+									}}
+								/>
+							)}
+
 							{kadence_blocks_params.hasWoocommerce && (
 								<ToggleControl
 									label={__('Search products only', 'kadence-blocks')}
@@ -310,10 +351,131 @@ export function Edit(props) {
 				{activeTab === 'style' && (
 					<>
 						<KadencePanelBody
+							title={__('Input Icon', 'kadence-blocks')}
+							initialOpen={true}
+							panelName={'search-input-icon'}
+						>
+							<KadenceIconPicker
+								value={inputIcon}
+								allowClear={true}
+								onChange={(value) => {
+									setAttributes({ inputIcon: value });
+								}}
+							/>
+							{inputIcon && 'fe' === inputIcon.substring(0, 2) && (
+								<RangeControl
+									label={__('Line Width', 'kadence-blocks')}
+									value={inputIconLineWidth}
+									onChange={(value) => {
+										setAttributes({ inputIconLineWidth: value });
+									}}
+									step={0.5}
+									min={0.5}
+									max={4}
+								/>
+							)}
+							<PopColorControl
+								label={__('Icon Color', 'kadence-blocks')}
+								value={inputIconColor}
+								default={''}
+								onChange={(value) => {
+									setAttributes({ inputIconColor: value });
+								}}
+								swatchLabel2={__('Hover Color', 'kadence-blocks')}
+								value2={inputIconHoverColor}
+								default2={''}
+								onChange2={(value) => {
+									setAttributes({ inputIconHoverColor: value });
+								}}
+							/>
+						</KadencePanelBody>
+						{displayStyle === 'modal' && (
+							<KadencePanelBody
+								title={__('Close Icon', 'kadence-blocks')}
+								initialOpen={true}
+								panelName={'search-close-icon'}
+							>
+								<KadenceIconPicker
+									value={closeIcon}
+									onChange={(value) => {
+										setAttributes({ closeIcon: value });
+									}}
+								/>
+								<ResponsiveRangeControls
+									label={__('Icon Size', 'kadence-blocks')}
+									value={closeIconSize[0]}
+									onChange={(value) => {
+										setAttributes({ closeIconSize: [value, closeIconSize[1], closeIconSize[2]] });
+									}}
+									tabletValue={closeIconSize[1]}
+									onChangeTablet={(value) => {
+										setAttributes({ closeIconSize: [closeIconSize[0], value, closeIconSize[2]] });
+									}}
+									mobileValue={closeIconSize[2]}
+									onChangeMobile={(value) => {
+										setAttributes({ closeIconSize: [closeIconSize[0], closeIconSize[1], value] });
+									}}
+									min={0}
+									max={300}
+									step={1}
+									unit={'px'}
+								/>
+								{closeIcon && 'fe' === closeIcon.substring(0, 2) && (
+									<RangeControl
+										label={__('Line Width', 'kadence-blocks')}
+										value={closeIconLineWidth}
+										onChange={(value) => {
+											setAttributes({ closeIconLineWidth: value });
+										}}
+										step={0.5}
+										min={0.5}
+										max={4}
+									/>
+								)}
+								<PopColorControl
+									label={__('Icon Color', 'kadence-blocks')}
+									value={closeIconColor}
+									default={''}
+									onChange={(value) => {
+										setAttributes({ closeIconColor: value });
+									}}
+									swatchLabel2={__('Hover Color', 'kadence-blocks')}
+									value2={closeIconHoverColor}
+									default2={''}
+									onChange2={(value) => {
+										setAttributes({ closeIconHoverColor: value });
+									}}
+								/>
+							</KadencePanelBody>
+						)}
+						<KadencePanelBody
 							title={__('Input Style', 'kadence-blocks')}
 							initialOpen={true}
 							panelName={'search-input-settings'}
 						>
+							<ResponsiveRangeControls
+								label={__('Max Width', 'kadence-blocks')}
+								value={inputMaxWidth[0]}
+								onChange={(value) => {
+									setAttributes({ inputMaxWidth: [value, inputMaxWidth[1], inputMaxWidth[2]] });
+								}}
+								tabletValue={inputMaxWidth[1]}
+								onChangeTablet={(value) => {
+									setAttributes({ inputMaxWidth: [inputMaxWidth[0], value, inputMaxWidth[2]] });
+								}}
+								mobileValue={inputMaxWidth[2]}
+								onChangeMobile={(value) => {
+									setAttributes({ inputMaxWidth: [inputMaxWidth[0], inputMaxWidth[1], value] });
+								}}
+								min={0}
+								max={inputMaxWidthType !== 'px' ? 100 : 1500}
+								step={1}
+								unit={inputMaxWidthType}
+								onUnit={(value) => {
+									setAttributes({ inputMaxWidthType: value });
+								}}
+								units={['px', '%']}
+							/>
 							<PopColorControl
 								label={__('Text Color', 'kadence-blocks')}
 								value={inputColor}
@@ -712,15 +874,20 @@ export function Edit(props) {
 				{displayStyle === 'standard' ? (
 					<>
 						{renderInputField()}
-						<div {...innerBlocksProps} />
+						{inputStyle === 'no-icon' && <div {...innerBlocksProps} />}
 					</>
 				) : (
 					<>
 						<div {...innerBlocksProps} />
 						{isShowingModal && <style>{`.block-editor-block-popover { display: none; }`}</style>}
 						<div
+							ref={ref}
 							className={'kb-search-modal ' + (isShowingModal ? 'active' : '')}
 							onClick={() => setIsShowingModal(false)}
+							style={{
+								width: editorWidth + 'px',
+								left: editorLeft + 'px',
+							}}
 						>
 							<button
 								className="kb-search-close-btn"
@@ -730,7 +897,15 @@ export function Edit(props) {
 								aria-expanded="false"
 								data-set-focus=".search-toggle-open"
 							>
-								&times;
+								<IconRender
+									className={`kb-search-close-icon kt-svg-icon kt-svg-icon-${closeIcon}`}
+									name={inputIcon}
+									size={previewCloseIconSize}
+									strokeWidth={'fe' === closeIcon.substring(0, 2) ? closeIconLineWidth : undefined}
+									style={{
+										color: closeIconColor ? KadenceColorOutput(closeIconColor) : undefined,
+									}}
+								/>
 							</button>
 							<div class="kb-search-modal-content">
 								<label className="screen-reader-text" htmlFor={'kb-search-input' + uniqueID}>

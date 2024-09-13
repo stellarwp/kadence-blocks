@@ -13,9 +13,9 @@
 			"type": "string",
 			"default": "standard"
 		},
-		"showButton": {
-			"type": "boolean",
-			"default": true
+		"inputStyle": {
+			"type": "string",
+			"default": "icon"
 		},
 		"searchProductsOnly": {
 			"type": "boolean",
@@ -185,6 +185,50 @@
 					"loadGoogle": true
 				}
 			]
+		},
+		"inputMaxWidth": {
+			"type": "array",
+			"default": ["", "", ""]
+		},
+		"inputMaxWidthUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"inputIcon": {
+			"type": "string",
+			"default": "fe_search"
+		},
+		"inputIconLineWidth": {
+			"type": "number",
+			"default": 2
+		},
+		"inputIconColor": {
+			"type": "string",
+			"default": ""
+		},
+		"inputIconHoverColor": {
+			"type": "string",
+			"default": ""
+		},
+		"closeIcon": {
+			"type": "string",
+			"default": "fe_x"
+		},
+		"closeIconSize": {
+			"type": "array",
+			"default": [ 50, "", ""]
+		},
+		"closeIconLineWidth": {
+			"type": "number",
+			"default": 2
+		},
+		"closeIconColor": {
+			"type": "string",
+			"default": ""
+		},
+		"closeIconHoverColor": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"supports": {

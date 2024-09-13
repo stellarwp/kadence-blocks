@@ -63,6 +63,8 @@ export default function BackendStyles(props) {
 		searchProductsOnly,
 		modalGradientActive,
 		modalBackgroundType,
+		inputIconColor,
+		inputIconHoverColor,
 	} = attributes;
 
 	const css = new KadenceBlocksCSS();
@@ -285,6 +287,20 @@ export default function BackendStyles(props) {
 	} else {
 		css.add_property('background', KadenceColorOutput(inputBackgroundColor));
 	}
+
+	// Input SVG Icon
+	css.set_selector(`.kb-search${uniqueID} .kb-search-icon svg`);
+	css.add_property('stroke', KadenceColorOutput(inputIconColor));
+
+	css.set_selector(`.kb-search${uniqueID}:hover .kb-search-icon svg`);
+	css.add_property('stroke', KadenceColorOutput(inputIconHoverColor));
+
+	// Close SVG Icon
+	css.set_selector(`.kb-search${uniqueID} .kb-search-close-icon svg`);
+	css.add_property('stroke', KadenceColorOutput(inputIconColor));
+
+	css.set_selector(`.kb-search${uniqueID}:hover .kb-search-close-icon svg`);
+	css.add_property('stroke', KadenceColorOutput(inputIconHoverColor));
 
 	const cssOutput = css.css_output();
 

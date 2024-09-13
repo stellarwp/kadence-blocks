@@ -87,7 +87,7 @@ class Kadence_Blocks_Search_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( '--kb-search-modal-background', $css->render_color( $attributes['modalBackgroundColor'] ) );
 		}
 
-		// Input Styles
+		// Input Styles.
 		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-input[type="text"]' );
 		$css->render_typography( $attributes, 'inputTypography' );
 		$css->render_measure_range( $attributes, 'inputBorderRadius', 'border-radius' );
@@ -100,6 +100,20 @@ class Kadence_Blocks_Search_Block extends Kadence_Blocks_Abstract_Block {
 		} else {
 			$css->add_property( 'background', $css->render_color( $attributes['inputBackgroundColor'] ) );
 		}
+
+		// SVG colors.
+		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-icon svg' );
+		$css->add_property( 'stroke', $css->render_color( $attributes['inputIconColor'] ) );
+
+		$css->set_selector( '.kb-search' . $unique_id . ':hover .kb-search-icon svg' );
+		$css->add_property( 'stroke', $css->render_color( $attributes['inputIconHoverColor'] ) );
+
+		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-close-btn svg' );
+		$css->add_property( 'stroke', $css->render_color( $attributes['closeIconColor'] ) );
+
+		$css->set_selector( '.kb-search' . $unique_id . ':hover .kb-search-close-btn svg' );
+		$css->add_property( 'stroke', $css->render_color( $attributes['closeIconHoverColor'] ) );
+
 		return $css->css_output();
 	}
 
@@ -166,18 +180,32 @@ class Kadence_Blocks_Search_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	private function build_modal_content( $attributes, $unique_id ) {
 		$form_action = esc_url( home_url( '/' ) );
+		$close_icon = '';
+
+		if( !empty( $attributes['closeIcon'] ) ) {
+			$icon         = $attributes['closeIcon'];
+			$type         = substr( $icon, 0, 2 );
+			$line_icon    = ( ! empty( $type ) && 'fe' == $type ? true : false );
+			$fill         = ( $line_icon ? 'none' : 'currentColor' );
+			$stroke_width = false;
+			if ( $line_icon ) {
+				$stroke_width = ( ! empty( $attributes['closeIconLineWidth'] ) ? $attributes['closeIconLineWidth'] : 2 );
+			}
+			$close_icon = Kadence_Blocks_Svg_Render::render( $icon, $fill, $stroke_width, '', false );
+		}
 
 		$modal_content = sprintf(
 			'<div class="kb-search-modal">
             <button class="kb-search-close-btn" aria-label="%1$s" aria-expanded="false" data-set-focus=".search-toggle-open">
-                &times;
+                %2$s
             </button>
             <div class="kb-search-modal-content">
-                <label class="screen-reader-text" for="kb-search-input%2$s">%3$s</label>
-                <form class="kb-search-form" role="search" method="get" action="%4$s">%5$s</form>
+                <label class="screen-reader-text" for="kb-search-input%3$s">%4$s</label>
+                <form class="kb-search-form" role="search" method="get" action="%5$s">%6$s</form>
             </div>
         </div>',
 			esc_attr__( 'Close search', 'text-domain' ),
+			$close_icon,
 			esc_attr( $unique_id ),
 			esc_html__( 'Search for:', 'text-domain' ),
 			$form_action,
@@ -195,16 +223,37 @@ class Kadence_Blocks_Search_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return string
 	 */
 	private function build_input( $attributes ) {
+		$input = '<div class="kb-search-input-wrapper">';
 		$placeholder = ! empty( $attributes['inputPlaceholder'] ) ? $attributes['inputPlaceholder'] : '';
 
-		$input = sprintf(
+
+		$input .= sprintf(
 			'<input name="s" type="text" class="kb-search-input" placeholder="%s">',
 			esc_attr( $placeholder )
 		);
 
+		if( !empty( $attributes['inputIcon'] ) ) {
+			$icon         = $attributes['inputIcon'];
+			$type         = substr( $icon, 0, 2 );
+			$line_icon    = ( ! empty( $type ) && 'fe' == $type ? true : false );
+			$fill         = ( $line_icon ? 'none' : 'currentColor' );
+			$stroke_width = false;
+			if ( $line_icon ) {
+				$stroke_width = ( ! empty( $attributes['inputIconLineWidth'] ) ? $attributes['inputIconLineWidth'] : 2 );
+			}
+			$input_icon = Kadence_Blocks_Svg_Render::render( $icon, $fill, $stroke_width, '', false );
+
+			$input .= sprintf(
+				'<span class="kb-search-icon">%s</span>',
+				$input_icon
+			);
+		}
+
 		if ( ! empty( $attributes['searchProductsOnly'] ) ) {
 			$input .= '<input type="hidden" name="post_type" value="product">';
 		}
+
+		$input .= '</div>';
 
 		return $input;
 	}
