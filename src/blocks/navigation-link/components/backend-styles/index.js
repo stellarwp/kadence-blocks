@@ -667,6 +667,22 @@ export default function BackendStyles(props) {
 		marginDropdownUnit
 	);
 	css.render_measure_output(
+		paddingDropdownLink,
+		tabletPaddingDropdownLink,
+		mobilePaddingDropdownLink,
+		previewDevice,
+		'--kb-nav-dropdown-link-padding',
+		paddingDropdownLinkUnit
+	);
+	css.render_measure_output(
+		marginDropdownLink,
+		tabletMarginDropdownLink,
+		mobileMarginDropdownLink,
+		previewDevice,
+		'--kb-nav-dropdown-link-margin',
+		marginDropdownLinkUnit
+	);
+	css.render_measure_output(
 		mediaStyle?.[0]?.padding,
 		mediaStyle?.[0]?.paddingTablet,
 		mediaStyle?.[0]?.paddingMobile,
@@ -820,22 +836,6 @@ export default function BackendStyles(props) {
 			third_prop: '--kb-nav-dropdown-border-bottom-right-radius',
 			fourth_prop: '--kb-nav-dropdown-border-bottom-left-radius',
 		}
-	);
-	css.render_measure_output(
-		paddingDropdownLink,
-		tabletPaddingDropdownLink,
-		mobilePaddingDropdownLink,
-		previewDevice,
-		'--kb-nav-link-padding',
-		paddingDropdownLinkUnit
-	);
-	css.render_measure_output(
-		marginDropdownLink,
-		tabletMarginDropdownLink,
-		mobileMarginDropdownLink,
-		previewDevice,
-		'--kb-nav-link-margin',
-		marginDropdownLinkUnit
 	);
 	if (isMegaMenu) {
 		if (previewMegaMenuWidth === 'container') {

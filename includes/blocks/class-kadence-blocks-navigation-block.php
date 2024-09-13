@@ -86,8 +86,10 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id );
 		$css->render_measure_output( $nav_attributes, 'marginLink', '--kb-nav-top-link-margin', ['unit_key' => 'marginLinkUnit']);
 		$css->render_measure_output( $nav_attributes, 'paddingLink', '--kb-nav-top-link-padding', ['unit_key' => 'paddingLinkUnit']);
-		$css->render_measure_output( $nav_attributes, 'marginDropdownLink', '--kb-nav-link-margin', ['unit_key' => 'marginDropdownLinkUnit']);
-		$css->render_measure_output( $nav_attributes, 'paddingDropdownLink', '--kb-nav-link-padding', ['unit_key' => 'paddingDropdownLinkUnit']);
+		$css->render_measure_output( $nav_attributes, 'marginDropdown', '--kb-nav-dropdown-margin', ['unit_key' => 'marginDropdownUnit']);
+		$css->render_measure_output( $nav_attributes, 'paddingDropdown', '--kb-nav-dropdown-padding', ['unit_key' => 'paddingDropdownUnit']);
+		$css->render_measure_output( $nav_attributes, 'marginDropdownLink', '--kb-nav-dropdown-link-margin', ['unit_key' => 'marginDropdownLinkUnit']);
+		$css->render_measure_output( $nav_attributes, 'paddingDropdownLink', '--kb-nav-dropdown-link-padding', ['unit_key' => 'paddingDropdownLinkUnit']);
 		if ( isset( $nav_attributes['dropdownShadow'][0]['enable'] ) && $nav_attributes['dropdownShadow'][0]['enable'] ) {
 			$css->add_property( '--kb-nav-dropdown-box-shadow', $css->render_shadow( $nav_attributes['dropdownShadow'][0] ) );
 		}
@@ -119,8 +121,6 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		//dropdown links (only this nav's dropdowns, exclude embedded navigations in mega menus, etc)
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .sub-menu > .wp-block-kadence-navigation-link > .kb-link-wrap > .kb-nav-link-content' );
 		$css->render_typography( $nav_attributes, 'dropdownTypography' );
-		$css->render_measure_output( $nav_attributes, 'marginDropdownLink', '--kb-nav-dropdown-link-margin', ['unit_key' => 'marginDropdownLinkUnit']);
-		$css->render_measure_output( $nav_attributes, 'paddingDropdownLink', '--kb-nav-dropdown-link-padding', ['unit_key' => 'paddingDropdownLinkUnit']);
 		
 		//nav item (top level only) descriptions
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .menu-container > .menu > .wp-block-kadence-navigation-link > .kb-link-wrap .kb-nav-label-description' );
