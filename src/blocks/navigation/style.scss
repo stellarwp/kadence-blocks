@@ -876,8 +876,8 @@
 		position: relative;
 		display: flex;
 		color: var(--kb-nav-link-color, inherit);
-		border-right: var(--kb-nav-link-border-right);
-		border-bottom: var(--kb-nav-link-border-bottom);
+		border-right: var(--kb-nav-link-wrap-border-right);
+		border-bottom: var(--kb-nav-link-wrap-border-bottom);
 
 		&:hover {
 			--kb-nav-link-color-hover-lv: var(--kb-nav-link-color-hover, inherit);
@@ -1101,7 +1101,7 @@
 		}
 		//not last top links
 		&:not(:last-of-type) > .kb-link-wrap {
-			--kb-nav-link-border-right: var(--kb-nav-top-not-last-link-border-right);
+			--kb-nav-link-wrap-border-right: var(--kb-nav-top-not-last-link-border-right);
 		}
 	}
 

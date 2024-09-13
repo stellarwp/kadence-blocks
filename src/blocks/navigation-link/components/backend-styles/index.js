@@ -1160,7 +1160,29 @@ export default function BackendStyles(props) {
 					'px'
 			);
 			css.add_property('--kb-nav-dropdown-show-transform-x', '0');
-		} else if (previewMegaMenuWidth === 'container' || previewMegaMenuWidth === 'content') {
+		} else if (previewMegaMenuWidth === 'content' && currentRef?.current) {
+			css.set_selector(`.kb-nav-link-${uniqueID} > .sub-menu.sub-menu.sub-menu.sub-menu.sub-menu`);
+			var row = currentRef.current.closest('.kadence-header-row-inner');
+			var rowCS = getComputedStyle(row);
+			var rowPaddingX = parseFloat(rowCS.paddingLeft) + parseFloat(rowCS.paddingRight);
+			var rowDistanceToEdge = parseFloat(row.getBoundingClientRect().left) + parseFloat(rowCS.paddingLeft);
+			if (currentRef.current.closest('.kadence-header-row-inner')) {
+				css.add_property('--kb-nav-dropdown-width', row.offsetWidth - rowPaddingX + 'px');
+			} else {
+				css.add_property('--kb-nav-dropdown-width', '100vw');
+			}
+
+			css.add_property(
+				'--kb-nav-dropdown-show-left',
+				-1 *
+					Math.abs(
+						currentRef.current.closest('.wp-block-kadence-navigation-link').getBoundingClientRect().left -
+							rowDistanceToEdge
+					).toString() +
+					'px'
+			);
+			css.add_property('--kb-nav-dropdown-show-transform-x', '0');
+		} else if (previewMegaMenuWidth === 'container') {
 			//first sub menu only, no bleed
 			//extra specificty to beat nav level styling
 			css.set_selector(`.kb-nav-link-${uniqueID} > .sub-menu.sub-menu.sub-menu.sub-menu.sub-menu`);

@@ -94,6 +94,7 @@ import {
 	rowIcon,
 	twoColIcon,
 	threeColIcon,
+	fourColIcon,
 	twoRightGoldenIcon,
 	navigationItemMega1Icon,
 	navigationItemMega2Icon,
@@ -487,6 +488,12 @@ export default function Edit(props) {
 			icon: twoRightGoldenIcon,
 		},
 	];
+	const megaMenuSimpleOptions = [
+		{ key: 'simple|1', name: __('Skip', 'kadence-blocks'), icon: rowIcon },
+		{ key: 'simple|2', name: __('Two Column', 'kadence-blocks'), icon: twoColIcon },
+		{ key: 'simple|3', name: __('Three Column', 'kadence-blocks'), icon: threeColIcon },
+		{ key: 'simple|4', name: __('Four Column', 'kadence-blocks'), icon: fourColIcon },
+	];
 	const megaMenuDesignOptions = [
 		{ key: 'mega-1', name: __('3 Column Text CTA', 'kadence-blocks'), icon: navigationItemMega1Icon },
 		{ key: 'mega-2', name: __('3 Column Image CTA', 'kadence-blocks'), icon: navigationItemMega2Icon },
@@ -509,6 +516,15 @@ export default function Edit(props) {
 			//for mega menus inner blocks should always just be a single rowlayout block.
 			//so just insert the first inner block from the template
 			if (templateInnerBlocks) {
+				if ('simple|1' === key) {
+					setAttributes({ megaMenuWidth: 'custom', megaMenuCustomWidth: 400 });
+				} else if ('simple|2' === key) {
+					setAttributes({ megaMenuWidth: 'custom', megaMenuCustomWidth: 500 });
+				} else if ('simple|3' === key) {
+					setAttributes({ megaMenuWidth: 'custom', megaMenuCustomWidth: 700 });
+				} else {
+					setAttributes({ megaMenuWidth: 'content' });
+				}
 				insertBlock(templateInnerBlocks[0], 0, clientId);
 			}
 		}
@@ -1326,7 +1342,7 @@ export default function Edit(props) {
 				<ul {...innerBlocksProps} ref={subMenuRef}>
 					{!isMegaMenuOnboarding && children}
 					{isMegaMenuOnboarding && (
-						<div className="kt-select-layout">
+						<div className="kt-select-layout kb-mega-onboard-select-layout">
 							{megaMenuOnboardingStep == '' && (
 								<>
 									<div className="kt-select-layout-title">
@@ -1357,15 +1373,52 @@ export default function Edit(props) {
 							)}
 							{megaMenuOnboardingStep == 'design' && (
 								<>
-									<div className="kt-select-layout-title">
-										{__('Select Your Content', 'kadence-blocks')}
+									<div className="kb-mega-onboard-title kt-select-layout-title">
+										{__('Select Initial Layout', 'kadence-blocks')}
 									</div>
-									<ButtonGroup aria-label={__('Content Layout', 'kadence-blocks')}>
+									<ButtonGroup
+										className="kb-mega-onboard-simple-options"
+										aria-label={__('Basic Layout', 'kadence-blocks')}
+									>
+										{map(megaMenuSimpleOptions, ({ name, key, icon }) => (
+											<>
+												{key === 'simple|1' ? (
+													<Button
+														key={key}
+														className="kt-layout-btn kb-mega-onboard-skip"
+														size="small"
+														text={name}
+														onClick={() => {
+															doMegaMenu(key);
+														}}
+													/>
+												) : (
+													<Button
+														key={key}
+														className="kt-layout-btn"
+														size="small"
+														label={name}
+														icon={icon}
+														onClick={() => {
+															doMegaMenu(key);
+														}}
+													/>
+												)}
+											</>
+										))}
+									</ButtonGroup>
+									<div className="kb-mega-onboard-divider-title">
+										<span>{__('or choose a design', 'kadence-blocks')}</span>
+									</div>
+									<ButtonGroup
+										className="kb-mega-onboard-design-options"
+										aria-label={__('Content Layout', 'kadence-blocks')}
+									>
 										{map(megaMenuDesignOptions, ({ name, key, icon }) => (
 											<Button
 												key={key}
 												className="kt-layout-btn"
-												isSmall
+												size="small"
 												label={name}
 												icon={icon}
 												onClick={() => {
@@ -1374,12 +1427,6 @@ export default function Edit(props) {
 											/>
 										))}
 									</ButtonGroup>
-									<Button className="kt-prebuilt" onClick={() => doMegaMenu('simple|1')}>
-										{__('Skip', 'kadence-blocks')}
-									</Button>
-									{/* <Button className="kt-prebuilt" onClick={() => setAttributes({ isPrebuiltModal: true })}>
-										{__('Design Library', 'kadence-blocks')}
-									</Button> */}
 								</>
 							)}
 						</div>

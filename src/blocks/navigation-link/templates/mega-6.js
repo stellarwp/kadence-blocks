@@ -17,7 +17,6 @@ function innerBlocks() {
 				colLayout: 'left-golden',
 				bgColor: 'palette8',
 				bgColorClass: 'theme-palette8',
-				borderRadius: [20, 20, 20, 20],
 				borderStyle: [
 					{
 						top: ['palette7', '', 1],
@@ -28,6 +27,9 @@ function innerBlocks() {
 					},
 				],
 				templateLock: false,
+				inheritMaxWidth: true,
+				align: '',
+				padding: ['sm', 'sm', 'sm', 'sm'],
 				kbVersion: 2,
 			},
 			[
@@ -104,6 +106,7 @@ function innerBlocks() {
 												uniqueID: '374_72fe12-e2',
 												color: 'palette6',
 												markBorder: '',
+												margin: ['0', '', 'sm', ''],
 												markBorderStyles: [
 													{
 														top: [null, '', ''],
@@ -166,6 +169,7 @@ function innerBlocks() {
 								uniqueID: '374_b422c1-22',
 								borderRadius: [10, 10, 10, 10],
 								globalAlt: true,
+								marginDesktop: ['0', '', '0', ''],
 								url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/gray.png',
 							},
 							[]

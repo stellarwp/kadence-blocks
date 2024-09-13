@@ -721,7 +721,7 @@ export default function BackendStyles(props) {
 		);
 
 		if (previewOrientation == 'vertical') {
-			css.add_property('--kb-nav-link-border-bottom', transparentDividerValue);
+			css.add_property('--kb-nav-link-wrap-border-bottom', transparentDividerValue);
 			css.add_property('--kb-nav-dropdown-toggle-border-left', transparentDividerValue);
 		} else {
 			css.add_property('--kb-nav-top-not-last-link-border-right', transparentDividerValue);
@@ -748,7 +748,7 @@ export default function BackendStyles(props) {
 		);
 
 		if (previewOrientation == 'vertical') {
-			css.add_property('--kb-nav-link-border-bottom', stickyDividerValue);
+			css.add_property('--kb-nav-link-wrap-border-bottom', stickyDividerValue);
 			css.add_property('--kb-nav-dropdown-toggle-border-left', stickyDividerValue);
 		} else {
 			css.add_property('--kb-nav-top-not-last-link-border-right', stickyDividerValue);
@@ -775,7 +775,7 @@ export default function BackendStyles(props) {
 			css.add_property('--kb-nav-dropdown-show-right', '0');
 		}
 	} else {
-		css.add_property('--kb-nav-link-border-bottom', dividerValue);
+		css.add_property('--kb-nav-link-wrap-border-bottom', dividerValue);
 		css.add_property('--kb-nav-dropdown-toggle-border-left', dividerValue);
 	}
 

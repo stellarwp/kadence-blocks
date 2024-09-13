@@ -16,7 +16,9 @@ function innerBlocks() {
 				columns: 1,
 				colLayout: 'equal',
 				templateLock: false,
+				inheritMaxWidth: true,
 				kbVersion: 2,
+				padding: ['sm', 'sm', 'sm', 'sm'],
 			},
 			[]
 		),

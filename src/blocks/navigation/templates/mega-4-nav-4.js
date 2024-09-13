@@ -10,7 +10,7 @@ const postMeta = {
 	_kad_navigation_collapseSubMenus: '1',
 	_kad_navigation_collapseSubMenusTablet: '1',
 	_kad_navigation_collapseSubMenusMobile: '1',
-	_kad_navigation_margin: ['xs', '', 'sm', ''],
+	_kad_navigation_margin: ['xs', '', 'xs', ''],
 	_kad_navigation_spacing: ['', '2', '', '2'],
 	_kad_navigation_linkColor: 'palette5',
 	_kad_navigation_divider: [
@@ -47,17 +47,17 @@ function innerBlocks() {
 		createBlock('kadence/navigation', {}, [
 			createBlock(
 				'kadence/navigation-link',
-				{ uniqueID: '372_6fa62d-de', label: 'View Demo', url: 'View%20Demo', kind: 'custom' },
+				{ uniqueID: '372_6fa62d-de', label: 'View Demo', url: '#', kind: 'custom' },
 				[]
 			),
 			createBlock(
 				'kadence/navigation-link',
-				{ uniqueID: '372_6edcc1-8e', label: 'Contact Sales', url: 'Contact%20Sales', kind: 'custom' },
+				{ uniqueID: '372_6edcc1-8e', label: 'Contact Sales', url: '#', kind: 'custom' },
 				[]
 			),
 			createBlock(
 				'kadence/navigation-link',
-				{ uniqueID: '372_c4f166-e5', label: 'Documentation', url: 'Documentaion', kind: 'custom' },
+				{ uniqueID: '372_c4f166-e5', label: 'Documentation', url: '#', kind: 'custom' },
 				[]
 			),
 		]),

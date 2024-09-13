@@ -19,7 +19,7 @@ function innerBlocks() {
 				bgColor: 'palette9',
 				inheritMaxWidth: true,
 				bgColorClass: 'theme-palette9',
-				padding: ['sm', '', 'lg', ''],
+				padding: ['sm', 'sm', 'sm', 'sm'],
 				borderStyle: [
 					{
 						top: ['palette7', '', 1],
@@ -43,7 +43,7 @@ function innerBlocks() {
 								uniqueID: '358_d084f8-f7',
 								colLayout: 'left-golden',
 								verticalAlignment: 'middle',
-								padding: ['sm', '', '', ''],
+								padding: ['0', '0', '0', '0'],
 								kbVersion: 2,
 							},
 							[
@@ -145,7 +145,7 @@ function innerBlocks() {
 								uniqueID: '358_7d6d7c-24',
 								columns: 3,
 								colLayout: 'equal',
-								padding: ['sm', '', '', ''],
+								padding: ['xs', '', '', ''],
 								kbVersion: 2,
 							},
 							[

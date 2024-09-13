@@ -1759,7 +1759,13 @@ export function EditInner(props) {
 									onChangeMobile={(value) => {
 										setMetaAttribute(value.map(String), 'mobileMarginDropdown');
 									}}
-									min={0}
+									min={
+										marginDropdownUnit === 'em' || marginDropdownUnit === 'rem'
+											? -25
+											: marginDropdownUnit === 'px'
+											? -400
+											: -100
+									}
 									max={
 										marginDropdownUnit === 'em' || marginDropdownUnit === 'rem'
 											? 24
@@ -2195,7 +2201,13 @@ export function EditInner(props) {
 								onChangeMobile={(value) => {
 									setMetaAttribute(value.map(String), 'mobileMargin');
 								}}
-								min={0}
+								min={
+									marginUnit === 'em' || marginUnit === 'rem'
+										? -25
+										: marginUnit === 'px'
+										? -400
+										: -100
+								}
 								max={marginUnit === 'em' || marginUnit === 'rem' ? 24 : marginUnit === 'px' ? 200 : 100}
 								step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
 								unit={marginUnit}

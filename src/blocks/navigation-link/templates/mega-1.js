@@ -15,14 +15,14 @@ function innerBlocks() {
 			{
 				uniqueID: '252_56a3cc-f8',
 				columns: 3,
-				tabletLayout: 'equal',
+				tabletLayout: 'row',
 				columnGutter: 'none',
 				customGutter: [0, '', ''],
 				colLayout: 'equal',
-				maxWidth: 900,
-				align: 'full',
+				inheritMaxWidth: true,
+				align: '',
 				columnsInnerHeight: true,
-				padding: ['', '', '', ''],
+				padding: ['0', '0', '0', '0'],
 				templateLock: false,
 				kbVersion: 2,
 			},
@@ -32,11 +32,11 @@ function innerBlocks() {
 					{
 						borderWidth: ['', '', '', ''],
 						uniqueID: '252_bb0e2b-eb',
-						padding: ['xs', 'xs', 'xs', 'xs'],
+						padding: ['md', 'md', 'md', 'md'],
 						borderStyle: [
 							{
 								top: ['', '', ''],
-								right: ['palette6', '', 1],
+								right: ['palette7', '', 1],
 								bottom: ['', '', ''],
 								left: ['', '', ''],
 								unit: 'px',
@@ -70,11 +70,11 @@ function innerBlocks() {
 						id: 2,
 						borderWidth: ['', '', '', ''],
 						uniqueID: '252_d54b45-4f',
-						padding: ['xs', 'xs', 'xs', 'xs'],
+						padding: ['md', 'md', 'md', 'md'],
 						borderStyle: [
 							{
 								top: ['', '', ''],
-								right: ['palette6', '', 1],
+								right: ['palette7', '', 1],
 								bottom: ['', '', ''],
 								left: ['', '', ''],
 								unit: 'px',
@@ -170,7 +170,7 @@ function innerBlocks() {
 										uniqueID: '252_2c1ecd-8d',
 										text: 'Get Started',
 										widthType: 'full',
-										borderRadius: [10, 10, 10, 10],
+										margin: ['', '', 'sm', ''],
 										typography: [
 											{
 												size: ['', '', ''],
