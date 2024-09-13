@@ -168,7 +168,7 @@
 		},
 		"itemGap": {
 			"type": "string",
-			"default": "10"
+			"default": "xs"
 		},
 		"itemGapTablet": {
 			"type": "string",
