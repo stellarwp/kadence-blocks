@@ -436,8 +436,8 @@ export default function Edit(props) {
 				path: addQueryArgs(`/wp/v2/${postType}/${id}`, args),
 			})
 				.then((response) => {
-					if (response && response.link) {
-						setAttributes({ url: response.link });
+					if (response && response.link && response.link !== url) {
+						setAttributesDebug({ url: response.link });
 					}
 				})
 				.catch((error) => {
