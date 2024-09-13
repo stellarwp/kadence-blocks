@@ -142,7 +142,7 @@
 			"type": "number",
 			"default": null
 		},
-		"minHeightDesktop": {
+		"minHeightMobile": {
 			"type": "number",
 			"default": null
 		},
@@ -158,7 +158,7 @@
 			"type": "number",
 			"default": null
 		},
-		"maxWidthDesktop": {
+		"maxWidthMobile": {
 			"type": "number",
 			"default": null
 		},
