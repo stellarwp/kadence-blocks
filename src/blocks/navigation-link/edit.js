@@ -437,7 +437,7 @@ export default function Edit(props) {
 			})
 				.then((response) => {
 					if (response && response.link && response.link !== url) {
-						setAttributesDebug({ url: response.link });
+						setAttributes({ url: response.link });
 					}
 				})
 				.catch((error) => {
