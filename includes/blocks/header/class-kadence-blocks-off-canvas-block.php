@@ -183,7 +183,10 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		// Content area inner alignment.
-		if ( $sized_attributes['hAlign'] == 'center') {
+		if ( $sized_attributes['hAlign'] == 'left' ) {
+			$css->add_property( 'align-items', 'flex-start' );
+			$css->add_property( 'margin-right', 'auto' );
+		} elseif ( $sized_attributes['hAlign'] == 'center') {
 			$css->add_property( 'align-items', 'center' );
 			$css->add_property( 'margin-left', 'auto' );
 			$css->add_property( 'margin-right', 'auto' );
