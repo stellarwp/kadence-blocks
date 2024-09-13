@@ -182,6 +182,24 @@ export default function BackendStyles(props) {
 		descriptionPositioning,
 		descriptionPositioningTablet,
 		descriptionPositioningMobile,
+		dropdownDescriptionSpacing,
+		dropdownDescriptionSpacingTablet,
+		dropdownDescriptionSpacingMobile,
+		dropdownDescriptionSpacingUnit,
+		dropdownDescriptionColor,
+		dropdownDescriptionColorTablet,
+		dropdownDescriptionColorMobile,
+		dropdownDescriptionColorHover,
+		dropdownDescriptionColorHoverTablet,
+		dropdownDescriptionColorHoverMobile,
+		dropdownDescriptionColorActive,
+		dropdownDescriptionColorActiveTablet,
+		dropdownDescriptionColorActiveMobile,
+		dropdownDescriptionTypography,
+		dropdownDescription,
+		dropdownDescriptionPositioning,
+		dropdownDescriptionPositioningTablet,
+		dropdownDescriptionPositioningMobile,
 		isMegaMenu,
 		align,
 		border,
@@ -548,6 +566,36 @@ export default function BackendStyles(props) {
 		descriptionPositioningTablet,
 		descriptionPositioningMobile
 	);
+	const previewDropdownDescriptionSpacing = getPreviewSize(
+		previewDevice,
+		dropdownDescriptionSpacing,
+		dropdownDescriptionSpacingTablet,
+		dropdownDescriptionSpacingMobile
+	);
+	const previewDropdownDescriptionColor = getPreviewSize(
+		previewDevice,
+		dropdownDescriptionColor,
+		dropdownDescriptionColorTablet,
+		dropdownDescriptionColorMobile
+	);
+	const previewDropdownDescriptionColorHover = getPreviewSize(
+		previewDevice,
+		dropdownDescriptionColorHover,
+		dropdownDescriptionColorHoverTablet,
+		dropdownDescriptionColorHoverMobile
+	);
+	const previewDropdownDescriptionColorActive = getPreviewSize(
+		previewDevice,
+		dropdownDescriptionColorActive,
+		dropdownDescriptionColorActiveTablet,
+		dropdownDescriptionColorActiveMobile
+	);
+	const previewDropdownDescriptionPositioning = getPreviewSize(
+		previewDevice,
+		dropdownDescriptionPositioning,
+		dropdownDescriptionPositioningTablet,
+		dropdownDescriptionPositioningMobile
+	);
 
 	const previewMegaMenuWidth = getPreviewSize(previewDevice, megaMenuWidth, megaMenuWidthTablet, megaMenuWidthMobile);
 
@@ -672,6 +720,23 @@ export default function BackendStyles(props) {
 		'--kb-nav-link-color-active-ancestor',
 		css.render_color(previewLinkColorActive),
 		previewLinkColorActive
+	);
+	css.add_property(
+		'--kb-nav-dropdown-link-description-padding-top',
+		css.render_size(previewDropdownDescriptionSpacing, dropdownDescriptionSpacingUnit)
+	);
+	css.add_property('--kb-nav-dropdown-link-description-color', css.render_color(previewDropdownDescriptionColor));
+	css.add_property(
+		'--kb-nav-dropdown-link-description-color-hover',
+		css.render_color(previewDropdownDescriptionColorHover)
+	);
+	css.add_property(
+		'--kb-nav-dropdown-link-description-color-active',
+		css.render_color(previewDropdownDescriptionColorActive)
+	);
+	css.add_property(
+		'--kb-nav-link-dropdown-description-color-active-ancestor',
+		css.render_color(previewDropdownDescriptionColorActive)
 	);
 
 	//placement logic where an additional selector is needed
@@ -1120,6 +1185,11 @@ export default function BackendStyles(props) {
 		`.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-${uniqueID} > .kb-link-wrap > a .kb-nav-label-description:not(.specificity)`
 	);
 	css.render_font(descriptionTypography ? descriptionTypography : [], previewDevice);
+
+	css.set_selector(
+		`.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-${uniqueID} .sub-menu .kb-link-wrap > a .kb-nav-label-description:not(.specificity)`
+	);
+	css.render_font(dropdownDescriptionTypography ? dropdownDescriptionTypography : [], previewDevice);
 
 	css.set_selector(`.kb-nav-link-${uniqueID}.menu-item > .kb-link-wrap > a:hover .link-highlight-label`);
 	css.add_property('transition', 'color 0.35s ease-in-out, background-color 0.35s ease-in-out');

@@ -706,6 +706,17 @@
 			--kb-nav-link-box-shadow-active: var(--kb-nav-dropdown-link-box-shadow-active);
 			--kb-nav-link-box-shadow-active-ancestor: var(--kb-nav-dropdown-link-box-shadow-active-ancestor);
 
+			--kb-nav-link-description-color: var(--kb-nav-dropdown-link-description-color);
+			--kb-nav-link-description-color-hover: var(--kb-nav-dropdown-link-description-color-hover);
+			--kb-nav-link-description-color-active: var(--kb-nav-dropdown-link-description-color-active);
+			--kb-nav-link-description-color-active-ancestor: var(
+				--kb-nav-dropdown-link-description-color-active-ancestor
+			);
+			--kb-nav-link-description-padding-top: var(--kb-nav-dropdown-link-description-padding-top);
+			--kb-nav-link-description-padding-right: var(--kb-nav-dropdown-link-description-padding-right);
+			--kb-nav-link-description-padding-bottom: var(--kb-nav-dropdown-link-description-padding-bottom);
+			--kb-nav-link-description-padding-left: var(--kb-nav-dropdown-link-description-padding-left);
+
 			& > .kb-nav-link-content {
 				width: var(--kb-nav-dropdown-link-width, 200px);
 			}
@@ -1078,6 +1089,10 @@
 			--kb-nav-link-description-color-hover: var(--kb-nav-top-link-description-color-hover);
 			--kb-nav-link-description-color-active: var(--kb-nav-top-link-description-color-active);
 			--kb-nav-link-description-color-active-ancestor: var(--kb-nav-top-link-description-color-active-ancestor);
+			--kb-nav-link-description-padding-top: var(--kb-nav-top-link-description-padding-top);
+			--kb-nav-link-description-padding-right: var(--kb-nav-top-link-description-padding-right);
+			--kb-nav-link-description-padding-bottom: var(--kb-nav-top-link-description-padding-bottom);
+			--kb-nav-link-description-padding-left: var(--kb-nav-top-link-description-padding-left);
 
 			& > .kb-nav-link-content {
 				display: flex;
