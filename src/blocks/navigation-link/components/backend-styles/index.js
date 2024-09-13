@@ -1163,13 +1163,17 @@ export default function BackendStyles(props) {
 		} else if (previewMegaMenuWidth === 'content' && currentRef?.current) {
 			css.set_selector(`.kb-nav-link-${uniqueID} > .sub-menu.sub-menu.sub-menu.sub-menu.sub-menu`);
 			var row = currentRef.current.closest('.kadence-header-row-inner');
-			var rowCS = getComputedStyle(row);
-			var rowPaddingX = parseFloat(rowCS.paddingLeft) + parseFloat(rowCS.paddingRight);
-			var rowDistanceToEdge = parseFloat(row.getBoundingClientRect().left) + parseFloat(rowCS.paddingLeft);
-			if (currentRef.current.closest('.kadence-header-row-inner')) {
-				css.add_property('--kb-nav-dropdown-width', row.offsetWidth - rowPaddingX + 'px');
+			if (row) {
+				var rowCS = getComputedStyle(row);
+				var rowPaddingX = parseFloat(rowCS.paddingLeft) + parseFloat(rowCS.paddingRight);
+				var rowDistanceToEdge = parseFloat(row.getBoundingClientRect().left) + parseFloat(rowCS.paddingLeft);
+				if (currentRef.current.closest('.kadence-header-row-inner')) {
+					css.add_property('--kb-nav-dropdown-width', row.offsetWidth - rowPaddingX + 'px');
+				} else {
+					css.add_property('--kb-nav-dropdown-width', '100%');
+				}
 			} else {
-				css.add_property('--kb-nav-dropdown-width', '100vw');
+				css.add_property('--kb-nav-dropdown-width', '100%');
 			}
 
 			css.add_property(

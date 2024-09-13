@@ -327,13 +327,18 @@
 		for (let i = 0; i < contentSubmenus.length; i++) {
 			var parentMenuItem = contentSubmenus[i].parentNode;
 			var row = contentSubmenus[i].closest('.kadence-header-row-inner');
-			var rowCS = getComputedStyle(row);
-			var rowPaddingX = parseFloat(rowCS.paddingLeft) + parseFloat(rowCS.paddingRight);
-			var rowDistanceToEdge = parseFloat(row.getBoundingClientRect().left) + parseFloat(rowCS.paddingLeft);
-			contentSubmenus[i].style.left = '';
-			contentSubmenus[i].style.width = row.offsetWidth - rowPaddingX + 'px';
-			contentSubmenus[i].style.left =
-				-1 * Math.abs(parentMenuItem.getBoundingClientRect().left - rowDistanceToEdge).toString() + 'px';
+			if (row) {
+				var rowCS = getComputedStyle(row);
+				var rowPaddingX = parseFloat(rowCS.paddingLeft) + parseFloat(rowCS.paddingRight);
+				var rowDistanceToEdge = parseFloat(row.getBoundingClientRect().left) + parseFloat(rowCS.paddingLeft);
+				contentSubmenus[i].style.left = '';
+				contentSubmenus[i].style.width = row.offsetWidth - rowPaddingX + 'px';
+				contentSubmenus[i].style.left =
+					-1 * Math.abs(parentMenuItem.getBoundingClientRect().left - rowDistanceToEdge).toString() + 'px';
+			} else {
+				contentSubmenus[i].style.width = '';
+				contentSubmenus[i].style.left = '';
+			}
 			contentSubmenus[i].style.transform = 'initial';
 		}
 	};
