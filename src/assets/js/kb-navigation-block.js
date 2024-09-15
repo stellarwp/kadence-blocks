@@ -259,11 +259,13 @@
 		}
 		for (let i = 0; i < contentSubmenus.length; i++) {
 			var parentMenuItem = contentSubmenus[i].parentNode;
-			contentSubmenus[i].style.left = '';
-			contentSubmenus[i].style.width = window.innerWidth + 'px';
-			contentSubmenus[i].style.left =
-				-1 * Math.abs(parentMenuItem.getBoundingClientRect().left).toString() + 'px';
-			contentSubmenus[i].style.transform = 'initial';
+			contentSubmenus[i].style.setProperty('--kb-nav-dropdown-width', window.innerWidth + 'px');
+			contentSubmenus[i].style.setProperty(
+				'--kb-nav-dropdown-show-left',
+				-1 * Math.abs(parentMenuItem.getBoundingClientRect().left).toString() + 'px'
+			);
+			contentSubmenus[i].style.setProperty('--kb-nav-dropdown-hide-transform-x', '0');
+			contentSubmenus[i].style.setProperty('--kb-nav-dropdown-show-transform-x', '0');
 		}
 	};
 	/**
@@ -331,15 +333,17 @@
 				var rowCS = getComputedStyle(row);
 				var rowPaddingX = parseFloat(rowCS.paddingLeft) + parseFloat(rowCS.paddingRight);
 				var rowDistanceToEdge = parseFloat(row.getBoundingClientRect().left) + parseFloat(rowCS.paddingLeft);
-				contentSubmenus[i].style.left = '';
-				contentSubmenus[i].style.width = row.offsetWidth - rowPaddingX + 'px';
-				contentSubmenus[i].style.left =
-					-1 * Math.abs(parentMenuItem.getBoundingClientRect().left - rowDistanceToEdge).toString() + 'px';
+				contentSubmenus[i].style.setProperty('--kb-nav-dropdown-width', row.offsetWidth - rowPaddingX + 'px');
+				contentSubmenus[i].style.setProperty(
+					'--kb-nav-dropdown-show-left',
+					-1 * Math.abs(parentMenuItem.getBoundingClientRect().left - rowDistanceToEdge).toString() + 'px'
+				);
 			} else {
-				contentSubmenus[i].style.width = '';
-				contentSubmenus[i].style.left = '';
+				contentSubmenus[i].style.setProperty('--kb-nav-dropdown-width', '100%');
+				contentSubmenus[i].style.setProperty('--kb-nav-dropdown-show-left', '0');
 			}
-			contentSubmenus[i].style.transform = 'initial';
+			contentSubmenus[i].style.setProperty('--kb-nav-dropdown-hide-transform-x', '0');
+			contentSubmenus[i].style.setProperty('--kb-nav-dropdown-show-transform-x', '0');
 		}
 	};
 	/**

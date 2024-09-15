@@ -272,6 +272,10 @@
 			.menu-item {
 				display: list-item;
 				//margin: initial;
+				.sub-menu {
+					--kb-nav-dropdown-width: auto;
+					--kb-nav-dropdown-show-left: 0;
+				}
 			}
 		}
 	}
@@ -286,7 +290,6 @@
 	.sub-menu {
 		--kb-nav-dropdown-margin-left: 1em;
 		box-shadow: none;
-
 		.menu-item > .kb-link-wrap > a {
 			width: 100%;
 		}
