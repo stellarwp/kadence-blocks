@@ -111,7 +111,7 @@ export function Edit(props) {
 		modalBackgroundType,
 		inputMaxWidth,
 		inputMaxWidthType,
-		inputStyle,
+		showButton,
 		inputIcon,
 		inputIconColor,
 		inputIconHoverColor,
@@ -326,19 +326,10 @@ export function Edit(props) {
 							/>
 
 							{displayStyle === 'standard' && (
-								<KadenceRadioButtons
-									label={__('Input Style', 'kadence-blocks')}
-									value={inputStyle}
-									options={[
-										{ value: 'icon', label: __('Field Only', 'kadence-blocks') },
-										{ value: 'no-icon', label: __('Field & Button', 'kadence-blocks') },
-									]}
-									hideLabel={false}
-									onChange={(value) => {
-										setAttributes({
-											inputStyle: value,
-										});
-									}}
+								<ToggleControl
+									label={__('Show Submit Button', 'kadence-blocks')}
+									checked={showButton}
+									onChange={(value) => setAttributes({ showButton: value })}
 								/>
 							)}
 
@@ -879,7 +870,7 @@ export function Edit(props) {
 				{displayStyle === 'standard' ? (
 					<>
 						{renderInputField()}
-						{inputStyle === 'no-icon' && <div {...innerBlocksProps} />}
+						{showButton && <div {...innerBlocksProps} />}
 					</>
 				) : (
 					<>
