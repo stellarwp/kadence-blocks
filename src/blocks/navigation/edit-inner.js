@@ -1493,7 +1493,7 @@ export function EditInner(props) {
 							panelName={'kb-navigation-style-sub-menus'}
 							initialOpen={false}
 						>
-							<KadenceSubPanelBody title={__('Sub Menu Container', 'kadence-blocks-pro')}>
+							<KadenceSubPanelBody title={__('Sub Menu Container', 'kadence-blocks')}>
 								{previewOrientation != 'vertical' && (
 									<>
 										<ResponsiveSelectControl
@@ -1779,7 +1779,7 @@ export function EditInner(props) {
 									onUnit={(value) => setMetaAttribute(value, 'marginDropdownUnit')}
 								/>
 							</KadenceSubPanelBody>
-							<KadenceSubPanelBody title={__('Sub Menu Links', 'kadence-blocks-pro')}>
+							<KadenceSubPanelBody title={__('Sub Menu Links', 'kadence-blocks')}>
 								<SmallResponsiveControl
 									label={__('Colors', 'kadence-blocks')}
 									desktopChildren={styleColorControls('', 'Dropdown')}

@@ -1168,11 +1168,11 @@ export default function BackendStyles(props) {
 			css.set_selector(
 				`.wp-block-kadence-navigation .menu .kb-nav-link-${uniqueID} > .sub-menu.sub-menu.sub-menu.sub-menu`
 			);
-			var row = currentRef.current.closest('.kadence-header-row-inner');
+			const row = currentRef.current.closest('.kadence-header-row-inner');
 			if (row) {
-				var rowCS = getComputedStyle(row);
-				var rowPaddingX = parseFloat(rowCS.paddingLeft) + parseFloat(rowCS.paddingRight);
-				var rowDistanceToEdge = parseFloat(row.getBoundingClientRect().left) + parseFloat(rowCS.paddingLeft);
+				const rowCS = getComputedStyle(row);
+				const rowPaddingX = parseFloat(rowCS.paddingLeft) + parseFloat(rowCS.paddingRight);
+				const rowDistanceToEdge = parseFloat(row.getBoundingClientRect().left) + parseFloat(rowCS.paddingLeft);
 				if (currentRef.current.closest('.kadence-header-row-inner')) {
 					css.add_property('--kb-nav-dropdown-width', row.offsetWidth - rowPaddingX + 'px');
 				} else {

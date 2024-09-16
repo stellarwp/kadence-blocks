@@ -243,10 +243,8 @@ class KBHeader {
 				if (this.stickyTablet) {
 					this.activeOffsetTop = this.getOffset(this.placeholderWrapper).top;
 				}
-			} else {
-				if (this.stickyMobile) {
-					this.activeOffsetTop = this.getOffset(this.placeholderWrapper).top;
-				}
+			} else if (this.stickyMobile) {
+				this.activeOffsetTop = this.getOffset(this.placeholderWrapper).top;
 			}
 			window.addEventListener('resize', this.updateSticky.bind(this), false);
 			window.addEventListener('scroll', this.updateSticky.bind(this), false);

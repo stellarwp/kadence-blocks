@@ -17,7 +17,6 @@ function innerBlocks() {
 				columnGutter: 'none',
 				customGutter: [0, '', ''],
 				colLayout: 'left-golden',
-				padding: ['', '', '', ''],
 				borderStyle: [
 					{
 						top: ['palette6', '', 5],
