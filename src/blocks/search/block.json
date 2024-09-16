@@ -13,9 +13,9 @@
 			"type": "string",
 			"default": "standard"
 		},
-		"inputStyle": {
-			"type": "string",
-			"default": "icon"
+		"showButton": {
+			"type": "boolean",
+			"default": false
 		},
 		"searchProductsOnly": {
 			"type": "boolean",
