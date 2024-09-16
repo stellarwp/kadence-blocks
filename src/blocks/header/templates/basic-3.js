@@ -212,7 +212,7 @@ function innerBlocks() {
 												'kadence/singlebtn',
 												{
 													uniqueID: '6_1dcf73-af',
-													text: 'CAll to action',
+													text: 'Call to action',
 													sizePreset: 'small',
 													color: 'palette9',
 													background: 'palette3',
