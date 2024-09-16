@@ -3,6 +3,9 @@ import { get, has } from 'lodash';
 
 // Basic templates
 import { innerBlocks as MegaBlankInnerBlocks, postMeta as MegaBlankPostMeta } from './templates/mega-blank';
+import { innerBlocks as MegaSimple2InnerBlocks, postMeta as MegaSimple2PostMeta } from './templates/mega-simple-2';
+import { innerBlocks as MegaSimple3InnerBlocks, postMeta as MegaSimple3PostMeta } from './templates/mega-simple-3';
+import { innerBlocks as MegaSimple4InnerBlocks, postMeta as MegaSimple4PostMeta } from './templates/mega-simple-4';
 import { innerBlocks as Mega1InnerBlocks, postMeta as Mega1PostMeta } from './templates/mega-1';
 import { innerBlocks as Mega2InnerBlocks, postMeta as Mega2PostMeta } from './templates/mega-2';
 import { innerBlocks as Mega3InnerBlocks, postMeta as Mega3PostMeta } from './templates/mega-3';
@@ -41,6 +44,15 @@ function getDataFromKey(key) {
 	} else if (key === 'mega-7') {
 		response.templatePostMeta = Mega7PostMeta;
 		response.templateInnerBlocks = Mega7InnerBlocks();
+	} else if (key === 'simple|2') {
+		response.templatePostMeta = MegaSimple2PostMeta;
+		response.templateInnerBlocks = MegaSimple2InnerBlocks();
+	} else if (key === 'simple|3') {
+		response.templatePostMeta = MegaSimple3PostMeta;
+		response.templateInnerBlocks = MegaSimple3InnerBlocks();
+	} else if (key === 'simple|4') {
+		response.templatePostMeta = MegaSimple4PostMeta;
+		response.templateInnerBlocks = MegaSimple4InnerBlocks();
 	} else {
 		response.templatePostMeta = MegaBlankPostMeta;
 		response.templateInnerBlocks = MegaBlankInnerBlocks();

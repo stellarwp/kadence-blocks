@@ -182,6 +182,24 @@ export default function BackendStyles(props) {
 		descriptionPositioning,
 		descriptionPositioningTablet,
 		descriptionPositioningMobile,
+		dropdownDescriptionSpacing,
+		dropdownDescriptionSpacingTablet,
+		dropdownDescriptionSpacingMobile,
+		dropdownDescriptionSpacingUnit,
+		dropdownDescriptionColor,
+		dropdownDescriptionColorTablet,
+		dropdownDescriptionColorMobile,
+		dropdownDescriptionColorHover,
+		dropdownDescriptionColorHoverTablet,
+		dropdownDescriptionColorHoverMobile,
+		dropdownDescriptionColorActive,
+		dropdownDescriptionColorActiveTablet,
+		dropdownDescriptionColorActiveMobile,
+		dropdownDescriptionTypography,
+		dropdownDescription,
+		dropdownDescriptionPositioning,
+		dropdownDescriptionPositioningTablet,
+		dropdownDescriptionPositioningMobile,
 		isMegaMenu,
 		align,
 		border,
@@ -548,6 +566,36 @@ export default function BackendStyles(props) {
 		descriptionPositioningTablet,
 		descriptionPositioningMobile
 	);
+	const previewDropdownDescriptionSpacing = getPreviewSize(
+		previewDevice,
+		dropdownDescriptionSpacing,
+		dropdownDescriptionSpacingTablet,
+		dropdownDescriptionSpacingMobile
+	);
+	const previewDropdownDescriptionColor = getPreviewSize(
+		previewDevice,
+		dropdownDescriptionColor,
+		dropdownDescriptionColorTablet,
+		dropdownDescriptionColorMobile
+	);
+	const previewDropdownDescriptionColorHover = getPreviewSize(
+		previewDevice,
+		dropdownDescriptionColorHover,
+		dropdownDescriptionColorHoverTablet,
+		dropdownDescriptionColorHoverMobile
+	);
+	const previewDropdownDescriptionColorActive = getPreviewSize(
+		previewDevice,
+		dropdownDescriptionColorActive,
+		dropdownDescriptionColorActiveTablet,
+		dropdownDescriptionColorActiveMobile
+	);
+	const previewDropdownDescriptionPositioning = getPreviewSize(
+		previewDevice,
+		dropdownDescriptionPositioning,
+		dropdownDescriptionPositioningTablet,
+		dropdownDescriptionPositioningMobile
+	);
 
 	const previewMegaMenuWidth = getPreviewSize(previewDevice, megaMenuWidth, megaMenuWidthTablet, megaMenuWidthMobile);
 
@@ -619,6 +667,22 @@ export default function BackendStyles(props) {
 		marginDropdownUnit
 	);
 	css.render_measure_output(
+		paddingDropdownLink,
+		tabletPaddingDropdownLink,
+		mobilePaddingDropdownLink,
+		previewDevice,
+		'--kb-nav-dropdown-link-padding',
+		paddingDropdownLinkUnit
+	);
+	css.render_measure_output(
+		marginDropdownLink,
+		tabletMarginDropdownLink,
+		mobileMarginDropdownLink,
+		previewDevice,
+		'--kb-nav-dropdown-link-margin',
+		marginDropdownLinkUnit
+	);
+	css.render_measure_output(
 		mediaStyle?.[0]?.padding,
 		mediaStyle?.[0]?.paddingTablet,
 		mediaStyle?.[0]?.paddingMobile,
@@ -672,6 +736,23 @@ export default function BackendStyles(props) {
 		'--kb-nav-link-color-active-ancestor',
 		css.render_color(previewLinkColorActive),
 		previewLinkColorActive
+	);
+	css.add_property(
+		'--kb-nav-dropdown-link-description-padding-top',
+		css.render_size(previewDropdownDescriptionSpacing, dropdownDescriptionSpacingUnit)
+	);
+	css.add_property('--kb-nav-dropdown-link-description-color', css.render_color(previewDropdownDescriptionColor));
+	css.add_property(
+		'--kb-nav-dropdown-link-description-color-hover',
+		css.render_color(previewDropdownDescriptionColorHover)
+	);
+	css.add_property(
+		'--kb-nav-dropdown-link-description-color-active',
+		css.render_color(previewDropdownDescriptionColorActive)
+	);
+	css.add_property(
+		'--kb-nav-link-dropdown-description-color-active-ancestor',
+		css.render_color(previewDropdownDescriptionColorActive)
 	);
 
 	//placement logic where an additional selector is needed
@@ -755,22 +836,6 @@ export default function BackendStyles(props) {
 			third_prop: '--kb-nav-dropdown-border-bottom-right-radius',
 			fourth_prop: '--kb-nav-dropdown-border-bottom-left-radius',
 		}
-	);
-	css.render_measure_output(
-		paddingDropdownLink,
-		tabletPaddingDropdownLink,
-		mobilePaddingDropdownLink,
-		previewDevice,
-		'--kb-nav-link-padding',
-		paddingDropdownLinkUnit
-	);
-	css.render_measure_output(
-		marginDropdownLink,
-		tabletMarginDropdownLink,
-		mobileMarginDropdownLink,
-		previewDevice,
-		'--kb-nav-link-margin',
-		marginDropdownLinkUnit
 	);
 	if (isMegaMenu) {
 		if (previewMegaMenuWidth === 'container') {
@@ -1058,7 +1123,9 @@ export default function BackendStyles(props) {
 		if (previewMegaMenuWidth === 'custom') {
 			//first sub menu only, no bleed
 			//extra specificty to beat nav level styling
-			css.set_selector(`.kb-nav-link-${uniqueID} > .sub-menu.sub-menu.sub-menu.sub-menu.sub-menu`);
+			css.set_selector(
+				`.wp-block-kadence-navigation .menu .kb-nav-link-${uniqueID} > .sub-menu.sub-menu.sub-menu.sub-menu`
+			);
 			css.add_property(
 				'--kb-nav-dropdown-width',
 				css.render_size(previewMegaMenuCustomWidth, megaMenuCustomWidthUnit)
@@ -1079,7 +1146,9 @@ export default function BackendStyles(props) {
 		} else if ((previewMegaMenuWidth === 'full' || previewMegaMenuWidth === '') && currentRef?.current) {
 			//first sub menu only, no bleed
 			//extra specificty to beat nav level styling
-			css.set_selector(`.kb-nav-link-${uniqueID} > .sub-menu.sub-menu.sub-menu.sub-menu.sub-menu`);
+			css.set_selector(
+				`.wp-block-kadence-navigation .menu .kb-nav-link-${uniqueID} > .sub-menu.sub-menu.sub-menu.sub-menu`
+			);
 			if (editorElement?.clientWidth) {
 				css.add_property('--kb-nav-dropdown-width', editorElement.clientWidth + 'px');
 			} else {
@@ -1095,10 +1164,47 @@ export default function BackendStyles(props) {
 					'px'
 			);
 			css.add_property('--kb-nav-dropdown-show-transform-x', '0');
-		} else if (previewMegaMenuWidth === 'container' || previewMegaMenuWidth === 'content') {
+		} else if (previewMegaMenuWidth === 'content' && currentRef?.current) {
+			css.set_selector(
+				`.wp-block-kadence-navigation .menu .kb-nav-link-${uniqueID} > .sub-menu.sub-menu.sub-menu.sub-menu`
+			);
+			var row = currentRef.current.closest('.kadence-header-row-inner');
+			if (row) {
+				var rowCS = getComputedStyle(row);
+				var rowPaddingX = parseFloat(rowCS.paddingLeft) + parseFloat(rowCS.paddingRight);
+				var rowDistanceToEdge = parseFloat(row.getBoundingClientRect().left) + parseFloat(rowCS.paddingLeft);
+				if (currentRef.current.closest('.kadence-header-row-inner')) {
+					css.add_property('--kb-nav-dropdown-width', row.offsetWidth - rowPaddingX + 'px');
+				} else {
+					css.add_property('--kb-nav-dropdown-width', '100%');
+				}
+				css.add_property(
+					'--kb-nav-dropdown-show-left',
+					-1 *
+						Math.abs(
+							currentRef.current.closest('.wp-block-kadence-navigation-link').getBoundingClientRect()
+								.left - rowDistanceToEdge
+						).toString() +
+						'px'
+				);
+			} else {
+				css.add_property('--kb-nav-dropdown-width', 'var(--wp--style--global--content-size, 100%)');
+				css.add_property(
+					'--kb-nav-dropdown-show-left',
+					'calc( (((100vw - var(--wp--style--global--content-size, 100%)) / 2) - ' +
+						Math.abs(
+							currentRef.current.closest('.wp-block-kadence-navigation-link').getBoundingClientRect().left
+						).toString() +
+						'px))'
+				);
+			}
+			css.add_property('--kb-nav-dropdown-show-transform-x', '0');
+		} else if (previewMegaMenuWidth === 'container') {
 			//first sub menu only, no bleed
 			//extra specificty to beat nav level styling
-			css.set_selector(`.kb-nav-link-${uniqueID} > .sub-menu.sub-menu.sub-menu.sub-menu.sub-menu`);
+			css.set_selector(
+				`.wp-block-kadence-navigation .menu .kb-nav-link-${uniqueID} > .sub-menu.sub-menu.sub-menu.sub-menu`
+			);
 			css.add_property('--kb-nav-dropdown-width', '100%');
 			css.add_property('--kb-nav-dropdown-show-left', '0');
 			css.add_property('--kb-nav-dropdown-show-transform-x', '0');
@@ -1120,6 +1226,11 @@ export default function BackendStyles(props) {
 		`.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-${uniqueID} > .kb-link-wrap > a .kb-nav-label-description:not(.specificity)`
 	);
 	css.render_font(descriptionTypography ? descriptionTypography : [], previewDevice);
+
+	css.set_selector(
+		`.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-${uniqueID} .sub-menu .kb-link-wrap > a .kb-nav-label-description:not(.specificity)`
+	);
+	css.render_font(dropdownDescriptionTypography ? dropdownDescriptionTypography : [], previewDevice);
 
 	css.set_selector(`.kb-nav-link-${uniqueID}.menu-item > .kb-link-wrap > a:hover .link-highlight-label`);
 	css.add_property('transition', 'color 0.35s ease-in-out, background-color 0.35s ease-in-out');

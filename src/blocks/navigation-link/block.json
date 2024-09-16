@@ -1257,6 +1257,91 @@
 				}
 			]
 		},
+		"dropdownDescriptionSpacing": {
+			"type": "number",
+			"default": ""
+		},
+		"dropdownDescriptionSpacingTablet": {
+			"type": "number",
+			"default": ""
+		},
+		"dropdownDescriptionSpacingMobile": {
+			"type": "number",
+			"default": ""
+		},
+		"dropdownDescriptionSpacingUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"dropdownDescriptionColor": {
+			"type": "string",
+			"default": ""
+		},
+		"dropdownDescriptionColorTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"dropdownDescriptionColorMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"dropdownDescriptionColorHover": {
+			"type": "string",
+			"default": ""
+		},
+		"dropdownDescriptionColorHoverTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"dropdownDescriptionColorHoverMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"dropdownDescriptionColorActive": {
+			"type": "string",
+			"default": ""
+		},
+		"dropdownDescriptionColorActiveTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"dropdownDescriptionColorActiveMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"dropdownDescriptionPositioning": {
+			"type": "string",
+			"default": "normal"
+		},
+		"dropdownDescriptionPositioningTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"dropdownDescriptionPositioningMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"dropdownDescriptionTypography": {
+			"type": "array",
+			"default": [
+				{
+					"size": ["", "", ""],
+					"sizeType": "px",
+					"lineHeight": ["", "", ""],
+					"lineType": "",
+					"letterSpacing": ["", "", ""],
+					"letterType": "px",
+					"textTransform": "",
+					"family": "",
+					"google": "",
+					"style": "",
+					"weight": "",
+					"variant": "",
+					"subset": "",
+					"loadGoogle": true
+				}
+			]
+		},
 		"align": {
 			"type": "string",
 			"default": ""

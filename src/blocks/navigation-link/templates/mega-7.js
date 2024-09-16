@@ -15,7 +15,8 @@ function innerBlocks() {
 				columns: 1,
 				colLayout: 'equal',
 				inheritMaxWidth: true,
-				padding: ['', '', '', ''],
+				align: '',
+				padding: ['sm', 'sm', 'sm', 'sm'],
 				templateLock: false,
 				kbVersion: 2,
 			},
@@ -26,7 +27,13 @@ function innerBlocks() {
 					[
 						createBlock(
 							'kadence/rowlayout',
-							{ uniqueID: '376_c6ffcd-d9', columns: 3, colLayout: 'equal', kbVersion: 2 },
+							{
+								uniqueID: '376_c6ffcd-d9',
+								padding: ['0', '0', 'sm', '0'],
+								columns: 3,
+								colLayout: 'equal',
+								kbVersion: 2,
+							},
 							[
 								createBlock(
 									'kadence/column',
@@ -122,6 +129,7 @@ function innerBlocks() {
 								uniqueID: '376_60f53b-5c',
 								columns: 3,
 								colLayout: 'equal',
+								padding: ['sm', '0', '0', '0'],
 								borderStyle: [
 									{
 										top: ['palette6', '', 1],

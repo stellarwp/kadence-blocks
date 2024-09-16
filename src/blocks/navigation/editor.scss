@@ -144,6 +144,10 @@
 		margin: 0;
 	}
 }
+// Fix for editor only.
+.editor-styles-wrapper .wp-block-kadence-rowlayout .wp-block-kadence-navigation .menu {
+	padding-left: var(--kb-nav-padding-left, 0);
+}
 
 /*--------------------------------------------------------------
  ## Navigation Link item styles. (pulled in from their separated file for performance)
@@ -259,4 +263,58 @@
 .components-button.kb-nav-link-edit-link-button {
 	margin-top: -14px;
 	display: block;
+}
+
+// Mega onboarding skip button.
+.kb-mega-onboard-select-layout {
+	.kb-mega-onboard-title {
+		padding-bottom: 8px;
+	}
+	button.components-button.kt-layout-btn.kb-mega-onboard-skip.is-small {
+		width: 100% !important;
+		text-align: center;
+		justify-content: center;
+		border: 0;
+		padding: 2px;
+		margin-right: 0;
+		height: auto;
+		font-size: 11px;
+		margin-bottom: 5px;
+	}
+	.kb-mega-onboard-divider-title {
+		display: flex;
+		align-items: center;
+		max-width: 800px;
+		margin: 0 auto;
+		margin-top: 1px;
+		height: 60px;
+		position: relative;
+		text-align: center;
+		justify-content: center;
+		font-size: 1rem;
+		text-transform: lowercase;
+		&:before {
+			content: "";
+			height: 1px;
+			background-color: #aaa;
+			width: 100%;
+			position: absolute;
+			top: 50%;
+		}
+		span {
+			background: white;
+			padding: 0 10px;
+			position: relative;
+			z-index: 1;
+		}
+	}
+	.kb-mega-onboard-design-options {
+		.components-button.kt-layout-btn {
+			height: 70px;
+			svg {
+				width: 120px;
+				height: 65px;
+			}
+		}
+	}
 }

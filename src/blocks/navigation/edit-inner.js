@@ -34,6 +34,7 @@ import {
 	CopyPasteAttributes,
 	ResponsiveButtonStyleControlsWithStates,
 	KadenceWebfontLoader,
+	KadenceSubPanelBody,
 } from '@kadence/components';
 import { getPreviewSize, mouseOverVisualizer, showSettings } from '@kadence/helpers';
 
@@ -295,6 +296,26 @@ export function EditInner(props) {
 						loadGoogle: true,
 					},
 			  ],
+		dropdownDescriptionTypography: meta?._kad_navigation_dropdownDescriptionTypography
+			? meta?._kad_navigation_dropdownDescriptionTypography
+			: [
+					{
+						size: ['', '', ''],
+						sizeType: 'px',
+						lineHeight: ['', '', ''],
+						lineType: '',
+						letterSpacing: ['', '', ''],
+						letterType: 'px',
+						textTransform: '',
+						family: '',
+						google: false,
+						style: '',
+						weight: '',
+						variant: '',
+						subset: '',
+						loadGoogle: true,
+					},
+			  ],
 		divider: meta?._kad_navigation_divider,
 		dividerTablet: meta?._kad_navigation_dividerTablet,
 		dividerMobile: meta?._kad_navigation_dividerMobile,
@@ -376,6 +397,25 @@ export function EditInner(props) {
 		descriptionSpacingTablet: meta?._kad_navigation_descriptionSpacingTablet,
 		descriptionSpacingMobile: meta?._kad_navigation_descriptionSpacingMobile,
 		descriptionSpacingUnit: meta?._kad_navigation_descriptionSpacingUnit,
+		descriptionPositioning: meta?._kad_navigation_descriptionPositioning,
+		descriptionPositioningTablet: meta?._kad_navigation_descriptionPositioningTablet,
+		descriptionPositioningMobile: meta?._kad_navigation_descriptionPositioningMobile,
+		dropdownDescriptionColor: meta?._kad_navigation_dropdownDescriptionColor,
+		dropdownDescriptionColorHover: meta?._kad_navigation_dropdownDescriptionColorHover,
+		dropdownDescriptionColorActive: meta?._kad_navigation_dropdownDescriptionColorActive,
+		dropdownDescriptionColorTablet: meta?._kad_navigation_dropdownDescriptionColorTablet,
+		dropdownDescriptionColorHoverTablet: meta?._kad_navigation_dropdownDescriptionColorHoverTablet,
+		dropdownDescriptionColorActiveTablet: meta?._kad_navigation_dropdownDescriptionColorActiveTablet,
+		dropdownDescriptionColorMobile: meta?._kad_navigation_dropdownDescriptionColorMobile,
+		dropdownDescriptionColorHoverMobile: meta?._kad_navigation_dropdownDescriptionColorHoverMobile,
+		dropdownDescriptionColorActiveMobile: meta?._kad_navigation_dropdownDescriptionColorActiveMobile,
+		dropdownDescriptionSpacing: meta?._kad_navigation_dropdownDescriptionSpacing,
+		dropdownDescriptionSpacingTablet: meta?._kad_navigation_dropdownDescriptionSpacingTablet,
+		dropdownDescriptionSpacingMobile: meta?._kad_navigation_dropdownDescriptionSpacingMobile,
+		dropdownDescriptionSpacingUnit: meta?._kad_navigation_dropdownDescriptionSpacingUnit,
+		dropdownDescriptionPositioning: meta?._kad_navigation_dropdownDescriptionPositioning,
+		dropdownDescriptionPositioningTablet: meta?._kad_navigation_dropdownDescriptionPositioningTablet,
+		dropdownDescriptionPositioningMobile: meta?._kad_navigation_dropdownDescriptionPositioningMobile,
 	};
 
 	const {
@@ -517,6 +557,7 @@ export function EditInner(props) {
 		typography,
 		dropdownTypography,
 		descriptionTypography,
+		dropdownDescriptionTypography,
 		divider,
 		dividerTablet,
 		dividerMobile,
@@ -555,6 +596,16 @@ export function EditInner(props) {
 		descriptionSpacingTablet,
 		descriptionSpacingMobile,
 		descriptionSpacingUnit,
+		dropdownDescriptionSpacing,
+		dropdownDescriptionSpacingTablet,
+		dropdownDescriptionSpacingMobile,
+		dropdownDescriptionSpacingUnit,
+		descriptionPositioning,
+		descriptionPositioningTablet,
+		descriptionPositioningMobile,
+		dropdownDescriptionPositioning,
+		dropdownDescriptionPositioningTablet,
+		dropdownDescriptionPositioningMobile,
 	} = metaAttributes;
 
 	const inTemplatePreviewMode = !id && templateKey;
@@ -602,6 +653,15 @@ export function EditInner(props) {
 			return item;
 		});
 		setMetaAttribute(newUpdate, 'descriptionTypography');
+	};
+	const saveDropdownDescriptionTypography = (value) => {
+		const newUpdate = dropdownDescriptionTypography.map((item, index) => {
+			if (0 === index) {
+				item = { ...item, ...value };
+			}
+			return item;
+		});
+		setMetaAttribute(newUpdate, 'dropdownDescriptionTypography');
 	};
 
 	const saveShadow = (value) => {
@@ -936,6 +996,57 @@ export function EditInner(props) {
 								default={''}
 								onChange={(value) =>
 									setMetaAttribute(value, 'descriptionColor' + suffix + 'Active' + size)
+								}
+								key={'active'}
+							/>
+						</>
+					}
+				/>
+			</>
+		);
+	};
+	const styleDropdownDescriptionColorControls = (size = '', suffix = '') => {
+		const dropdownDescriptionColorValue = metaAttributes['dropdownDescriptionColor' + suffix + size];
+		const dropdownDescriptionColorHoverValue = metaAttributes['dropdownDescriptionColor' + suffix + 'Hover' + size];
+		const dropdownDescriptionColorActiveValue =
+			metaAttributes['dropdownDescriptionColor' + suffix + 'Active' + size];
+		return (
+			<>
+				<HoverToggleControl
+					normal={
+						<>
+							<PopColorControl
+								label={__('Color', 'kadence-blocks')}
+								value={dropdownDescriptionColorValue}
+								default={''}
+								onChange={(value) =>
+									setMetaAttribute(value, 'dropdownDescriptionColor' + suffix + size)
+								}
+								key={'normal'}
+							/>
+						</>
+					}
+					hover={
+						<>
+							<PopColorControl
+								label={__('Color Hover', 'kadence-blocks')}
+								value={dropdownDescriptionColorHoverValue}
+								default={''}
+								onChange={(value) =>
+									setMetaAttribute(value, 'dropdownDescriptionColor' + suffix + 'Hover' + size)
+								}
+								key={'hover'}
+							/>
+						</>
+					}
+					active={
+						<>
+							<PopColorControl
+								label={__('Color Active', 'kadence-blocks')}
+								value={dropdownDescriptionColorActiveValue}
+								default={''}
+								onChange={(value) =>
+									setMetaAttribute(value, 'dropdownDescriptionColor' + suffix + 'Active' + size)
 								}
 								key={'active'}
 							/>
@@ -1382,391 +1493,583 @@ export function EditInner(props) {
 							panelName={'kb-navigation-style-sub-menus'}
 							initialOpen={false}
 						>
-							{previewOrientation != 'vertical' && (
-								<>
-									<ResponsiveSelectControl
-										label={__('Reveal Animation', 'kadence-blocks')}
-										value={dropdownReveal}
-										tabletValue={dropdownRevealTablet}
-										mobileValue={dropdownRevealMobile}
-										options={[
-											{ value: 'none', label: __('None') },
-											{ value: 'fade', label: __('Fade') },
-											{ value: 'fade-up', label: __('Fade Up') },
-											{ value: 'fade-down', label: __('Fade Down') },
-										]}
-										onChange={(value) => setMetaAttribute(value, 'dropdownReveal')}
-										onChangeTablet={(value) => setMetaAttribute(value, 'dropdownRevealTablet')}
-										onChangeMobile={(value) => setMetaAttribute(value, 'dropdownRevealMobile')}
-									/>
+							<KadenceSubPanelBody title={__('Sub Menu Container', 'kadence-blocks-pro')}>
+								{previewOrientation != 'vertical' && (
+									<>
+										<ResponsiveSelectControl
+											label={__('Reveal Animation', 'kadence-blocks')}
+											value={dropdownReveal}
+											tabletValue={dropdownRevealTablet}
+											mobileValue={dropdownRevealMobile}
+											options={[
+												{ value: 'none', label: __('None') },
+												{ value: 'fade', label: __('Fade') },
+												{ value: 'fade-up', label: __('Fade Up') },
+												{ value: 'fade-down', label: __('Fade Down') },
+											]}
+											onChange={(value) => setMetaAttribute(value, 'dropdownReveal')}
+											onChangeTablet={(value) => setMetaAttribute(value, 'dropdownRevealTablet')}
+											onChangeMobile={(value) => setMetaAttribute(value, 'dropdownRevealMobile')}
+										/>
 
-									<ResponsiveRangeControls
-										label={__('Dropdown Width', 'kadence-blocks')}
-										value={dropdownWidth ? parseFloat(dropdownWidth) : ''}
-										valueTablet={dropdownWidthTablet ? parseFloat(dropdownWidthTablet) : ''}
-										valueMobile={dropdownWidthMobile ? parseFloat(dropdownWidthMobile) : ''}
-										onChange={(value) => setMetaAttribute(value.toString(), 'dropdownWidth')}
-										onChangeTablet={(value) =>
-											setMetaAttribute(value.toString(), 'dropdownWidthTablet')
-										}
-										onChangeMobile={(value) =>
-											setMetaAttribute(value.toString(), 'dropdownWidthMobile')
-										}
-										min={0}
-										max={
-											dropdownWidthUnit === 'em' || dropdownWidthUnit === 'rem'
-												? 24
-												: dropdownWidthUnit === 'px'
-												? 2000
-												: 100
-										}
-										step={dropdownWidthUnit === 'em' || dropdownWidthUnit === 'rem' ? 0.1 : 1}
-										reset={() => setMetaAttribute('', 'dropdownWidth')}
-										unit={dropdownWidthUnit}
-										units={['em', 'rem', 'px', 'vw']}
-										onUnit={(value) => setMetaAttribute(value, 'dropdownWidthUnit')}
-										showUnit={true}
-									/>
-								</>
-							)}
-							<ResponsiveRangeControls
-								label={__('Dropdown Item Vertical Spacing', 'kadence-blocks')}
-								value={dropdownVerticalSpacing ? parseFloat(dropdownVerticalSpacing) : ''}
-								valueTablet={
-									dropdownVerticalSpacingTablet ? parseFloat(dropdownVerticalSpacingTablet) : ''
-								}
-								valueMobile={
-									dropdownVerticalSpacingMobile ? parseFloat(dropdownVerticalSpacingMobile) : ''
-								}
-								onChange={(value) => setMetaAttribute(value.toString(), 'dropdownVerticalSpacing')}
-								onChangeTablet={(value) =>
-									setMetaAttribute(value.toString(), 'dropdownVerticalSpacingTablet')
-								}
-								onChangeMobile={(value) =>
-									setMetaAttribute(value.toString(), 'dropdownVerticalSpacingMobile')
-								}
-								min={0}
-								max={
-									dropdownVerticalSpacingUnit === 'em' || dropdownVerticalSpacingUnit === 'rem'
-										? 24
-										: dropdownVerticalSpacingUnit === 'px'
-										? 200
-										: 100
-								}
-								step={
-									dropdownVerticalSpacingUnit === 'em' || dropdownVerticalSpacingUnit === 'rem'
-										? 0.1
-										: 1
-								}
-								reset={() => setMetaAttribute('', 'dropdownVerticalSpacing')}
-								unit={dropdownVerticalSpacingUnit}
-								units={['em', 'rem', 'px', 'vw']}
-								onUnit={(value) => setMetaAttribute(value, 'dropdownVerticalSpacingUnit')}
-								showUnit={true}
-							/>
-							<ResponsiveSelectControl
-								label={__('Dropdown Horizontal Alignment', 'kadence-blocks')}
-								value={dropdownHorizontalAlignment}
-								tabletValue={dropdownHorizontalAlignmentTablet}
-								mobileValue={dropdownHorizontalAlignmentMobile}
-								options={[
-									{ value: '', label: __('Left') },
-									{ value: 'center', label: __('Center') },
-									{ value: 'right', label: __('Right') },
-								]}
-								onChange={(value) => setMetaAttribute(value, 'dropdownHorizontalAlignment')}
-								onChangeTablet={(value) => setMetaAttribute(value, 'dropdownHorizontalAlignmentTablet')}
-								onChangeMobile={(value) => setMetaAttribute(value, 'dropdownHorizontalAlignmentMobile')}
-							/>
-							<ResponsiveMeasureRangeControl
-								label={__('Padding', 'kadence-blocks')}
-								value={paddingDropdown}
-								tabletValue={tabletPaddingDropdown}
-								mobileValue={mobilePaddingDropdown}
-								onChange={(value) => {
-									setMetaAttribute(value.map(String), 'paddingDropdown');
-								}}
-								onChangeTablet={(value) => {
-									setMetaAttribute(value.map(String), 'tabletPaddingDropdown');
-								}}
-								onChangeMobile={(value) => {
-									setMetaAttribute(value.map(String), 'mobilePaddingDropdown');
-								}}
-								min={0}
-								max={
-									paddingDropdownUnit === 'em' || paddingDropdownUnit === 'rem'
-										? 24
-										: paddingDropdownUnit === 'px'
-										? 200
-										: 100
-								}
-								step={paddingDropdownUnit === 'em' || paddingDropdownUnit === 'rem' ? 0.1 : 1}
-								unit={paddingDropdownUnit}
-								units={['px', 'em', 'rem', '%']}
-								onUnit={(value) => setMetaAttribute(value, 'paddingDropdownUnit')}
-							/>
-							<ResponsiveMeasureRangeControl
-								label={__('Margin', 'kadence-blocks')}
-								value={marginDropdown}
-								tabletValue={tabletMarginDropdown}
-								mobileValue={mobileMarginDropdown}
-								onChange={(value) => {
-									setMetaAttribute(value.map(String), 'marginDropdown');
-								}}
-								onChangeTablet={(value) => {
-									setMetaAttribute(value.map(String), 'tabletMarginDropdown');
-								}}
-								onChangeMobile={(value) => {
-									setMetaAttribute(value.map(String), 'mobileMarginDropdown');
-								}}
-								min={0}
-								max={
-									marginDropdownUnit === 'em' || marginDropdownUnit === 'rem'
-										? 24
-										: marginDropdownUnit === 'px'
-										? 200
-										: 100
-								}
-								step={marginDropdownUnit === 'em' || marginDropdownUnit === 'rem' ? 0.1 : 1}
-								unit={marginDropdownUnit}
-								units={['px', 'em', 'rem', '%']}
-								onUnit={(value) => setMetaAttribute(value, 'marginDropdownUnit')}
-							/>
-							<ResponsiveBorderControl
-								label={__('Dropdown Border', 'kadence-blocks')}
-								value={dropdownBorder}
-								tabletValue={dropdownBorderTablet}
-								mobileValue={dropdownBorderMobile}
-								onChange={(value) => setMetaAttribute(value, 'dropdownBorder')}
-								onChangeTablet={(value) => setMetaAttribute(value, 'dropdownBorderTablet')}
-								onChangeMobile={(value) => setMetaAttribute(value, 'dropdownBorderMobile')}
-							/>
-							<ResponsiveMeasurementControls
-								label={__('Dropdown Border Radius', 'kadence-blocks')}
-								value={dropdownBorderRadius}
-								tabletValue={dropdownBorderRadiusTablet}
-								mobileValue={dropdownBorderRadiusMobile}
-								onChange={(value) => setMetaAttribute(value, 'dropdownBorderRadius')}
-								onChangeTablet={(value) => setMetaAttribute(value, 'dropdownBorderRadiusTablet')}
-								onChangeMobile={(value) => setMetaAttribute(value, 'dropdownBorderRadiusMobile')}
-								unit={dropdownBorderRadiusUnit}
-								units={['px', 'em', 'rem', '%']}
-								onUnit={(value) => setMetaAttribute(value, 'dropdownBorderRadiusUnit')}
-								max={dropdownBorderRadiusUnit === 'em' || dropdownBorderRadiusUnit === 'rem' ? 24 : 100}
-								step={dropdownBorderRadiusUnit === 'em' || dropdownBorderRadiusUnit === 'rem' ? 0.1 : 1}
-								min={0}
-								isBorderRadius={true}
-								allowEmpty={true}
-							/>
-							{previewOrientation != 'vertical' && (
-								<BoxShadowControl
-									label={__('Box Shadow', 'kadence-blocks')}
-									enable={
-										undefined !== dropdownShadow &&
-										undefined !== dropdownShadow[0] &&
-										undefined !== dropdownShadow[0].enable
-											? dropdownShadow[0].enable
-											: true
+										<ResponsiveSelectControl
+											label={__('Dropdown Horizontal Alignment', 'kadence-blocks')}
+											value={dropdownHorizontalAlignment}
+											tabletValue={dropdownHorizontalAlignmentTablet}
+											mobileValue={dropdownHorizontalAlignmentMobile}
+											options={[
+												{ value: '', label: __('Left') },
+												{ value: 'center', label: __('Center') },
+												{ value: 'right', label: __('Right') },
+											]}
+											onChange={(value) => setMetaAttribute(value, 'dropdownHorizontalAlignment')}
+											onChangeTablet={(value) =>
+												setMetaAttribute(value, 'dropdownHorizontalAlignmentTablet')
+											}
+											onChangeMobile={(value) =>
+												setMetaAttribute(value, 'dropdownHorizontalAlignmentMobile')
+											}
+										/>
+
+										<ResponsiveRangeControls
+											label={__('Dropdown Width', 'kadence-blocks')}
+											value={dropdownWidth ? parseFloat(dropdownWidth) : ''}
+											valueTablet={dropdownWidthTablet ? parseFloat(dropdownWidthTablet) : ''}
+											valueMobile={dropdownWidthMobile ? parseFloat(dropdownWidthMobile) : ''}
+											onChange={(value) => setMetaAttribute(value.toString(), 'dropdownWidth')}
+											onChangeTablet={(value) =>
+												setMetaAttribute(value.toString(), 'dropdownWidthTablet')
+											}
+											onChangeMobile={(value) =>
+												setMetaAttribute(value.toString(), 'dropdownWidthMobile')
+											}
+											min={0}
+											max={
+												dropdownWidthUnit === 'em' || dropdownWidthUnit === 'rem'
+													? 24
+													: dropdownWidthUnit === 'px'
+													? 2000
+													: 100
+											}
+											step={dropdownWidthUnit === 'em' || dropdownWidthUnit === 'rem' ? 0.1 : 1}
+											reset={() => setMetaAttribute('', 'dropdownWidth')}
+											unit={dropdownWidthUnit}
+											units={['em', 'rem', 'px', 'vw']}
+											onUnit={(value) => setMetaAttribute(value, 'dropdownWidthUnit')}
+											showUnit={true}
+										/>
+									</>
+								)}
+								<ResponsiveRangeControls
+									label={__('Vertical Spacing', 'kadence-blocks')}
+									value={dropdownVerticalSpacing ? parseFloat(dropdownVerticalSpacing) : ''}
+									valueTablet={
+										dropdownVerticalSpacingTablet ? parseFloat(dropdownVerticalSpacingTablet) : ''
 									}
-									color={
-										undefined !== dropdownShadow &&
-										undefined !== dropdownShadow[0] &&
-										undefined !== dropdownShadow[0].color
-											? dropdownShadow[0].color
-											: '#000000'
+									valueMobile={
+										dropdownVerticalSpacingMobile ? parseFloat(dropdownVerticalSpacingMobile) : ''
 									}
-									colorDefault={'#000000'}
-									onArrayChange={(color, opacity) => {
-										saveShadow({ color, opacity });
-									}}
-									opacity={
-										undefined !== dropdownShadow &&
-										undefined !== dropdownShadow[0] &&
-										undefined !== dropdownShadow[0].opacity
-											? dropdownShadow[0].opacity
-											: 0.2
+									onChange={(value) => setMetaAttribute(value.toString(), 'dropdownVerticalSpacing')}
+									onChangeTablet={(value) =>
+										setMetaAttribute(value.toString(), 'dropdownVerticalSpacingTablet')
 									}
-									hOffset={
-										undefined !== dropdownShadow &&
-										undefined !== dropdownShadow[0] &&
-										undefined !== dropdownShadow[0].hOffset
-											? dropdownShadow[0].hOffset
-											: 0
+									onChangeMobile={(value) =>
+										setMetaAttribute(value.toString(), 'dropdownVerticalSpacingMobile')
 									}
-									vOffset={
-										undefined !== dropdownShadow &&
-										undefined !== dropdownShadow[0] &&
-										undefined !== dropdownShadow[0].vOffset
-											? dropdownShadow[0].vOffset
-											: 0
+									min={0}
+									max={
+										dropdownVerticalSpacingUnit === 'em' || dropdownVerticalSpacingUnit === 'rem'
+											? 24
+											: dropdownVerticalSpacingUnit === 'px'
+											? 200
+											: 100
 									}
-									blur={
-										undefined !== dropdownShadow &&
-										undefined !== dropdownShadow[0] &&
-										undefined !== dropdownShadow[0].blur
-											? dropdownShadow[0].blur
-											: 14
+									step={
+										dropdownVerticalSpacingUnit === 'em' || dropdownVerticalSpacingUnit === 'rem'
+											? 0.1
+											: 1
 									}
-									spread={
-										undefined !== dropdownShadow &&
-										undefined !== dropdownShadow[0] &&
-										undefined !== dropdownShadow[0].spread
-											? dropdownShadow[0].spread
-											: 0
-									}
-									inset={
-										undefined !== dropdownShadow &&
-										undefined !== dropdownShadow[0] &&
-										undefined !== dropdownShadow[0].inset
-											? dropdownShadow[0].inset
-											: false
-									}
-									onEnableChange={(value) => {
-										saveShadow({ enable: value });
-									}}
-									onColorChange={(value) => {
-										saveShadow({ color: value });
-									}}
-									onOpacityChange={(value) => {
-										saveShadow({ opacity: value });
-									}}
-									onHOffsetChange={(value) => {
-										saveShadow({ hOffset: value });
-									}}
-									onVOffsetChange={(value) => {
-										saveShadow({ vOffset: value });
-									}}
-									onBlurChange={(value) => {
-										saveShadow({ blur: value });
-									}}
-									onSpreadChange={(value) => {
-										saveShadow({ spread: value });
-									}}
-									onInsetChange={(value) => {
-										saveShadow({ inset: value });
-									}}
+									reset={() => setMetaAttribute('', 'dropdownVerticalSpacing')}
+									unit={dropdownVerticalSpacingUnit}
+									units={['em', 'rem', 'px', 'vw']}
+									onUnit={(value) => setMetaAttribute(value, 'dropdownVerticalSpacingUnit')}
+									showUnit={true}
 								/>
-							)}
-							<SmallResponsiveControl
-								label={__('Colors', 'kadence-blocks')}
-								desktopChildren={styleColorControls('', 'Dropdown')}
-								tabletChildren={styleColorControls('Tablet', 'Dropdown')}
-								mobileChildren={styleColorControls('Mobile', 'Dropdown')}
-							></SmallResponsiveControl>
-							<ResponsiveSingleBorderControl
-								label={'Divider'}
-								value={dropdownDivider}
-								tabletValue={dropdownDividerTablet}
-								mobileValue={dropdownDividerMobile}
-								onChange={(value) => setMetaAttribute(value, 'dropdownDivider')}
-								onChangeTablet={(value) => setMetaAttribute(value, 'dropdownDividerTablet')}
-								onChangeMobile={(value) => setMetaAttribute(value, 'dropdownDividerMobile')}
-							/>
-							<ResponsiveMeasureRangeControl
-								label={__('Padding Link', 'kadence-blocks')}
-								value={paddingDropdownLink}
-								tabletValue={tabletPaddingDropdownLink}
-								mobileValue={mobilePaddingDropdownLink}
-								onChange={(value) => {
-									setMetaAttribute(value.map(String), 'paddingDropdownLink');
-								}}
-								onChangeTablet={(value) => {
-									setMetaAttribute(value.map(String), 'tabletPaddingDropdownLink');
-								}}
-								onChangeMobile={(value) => {
-									setMetaAttribute(value.map(String), 'mobilePaddingDropdownLink');
-								}}
-								min={0}
-								max={
-									paddingDropdownLinkUnit === 'em' || paddingDropdownLinkUnit === 'rem'
-										? 24
-										: paddingDropdownLinkUnit === 'px'
-										? 200
-										: 100
-								}
-								step={paddingDropdownLinkUnit === 'em' || paddingDropdownLinkUnit === 'rem' ? 0.1 : 1}
-								unit={paddingDropdownLinkUnit}
-								units={['px', 'em', 'rem', '%']}
-								onUnit={(value) => setMetaAttribute(value, 'paddingDropdownLinkUnit')}
-							/>
-							<ResponsiveMeasureRangeControl
-								label={__('Margin Link', 'kadence-blocks')}
-								value={marginDropdownLink}
-								tabletValue={tabletMarginDropdownLink}
-								mobileValue={mobileMarginDropdownLink}
-								onChange={(value) => {
-									setMetaAttribute(value.map(String), 'marginDropdownLink');
-								}}
-								onChangeTablet={(value) => {
-									setMetaAttribute(value.map(String), 'tabletMarginDropdownLink');
-								}}
-								onChangeMobile={(value) => {
-									setMetaAttribute(value.map(String), 'mobileMarginDropdownLink');
-								}}
-								min={0}
-								max={
-									marginDropdownLinkUnit === 'em' || marginDropdownLinkUnit === 'rem'
-										? 24
-										: marginDropdownLinkUnit === 'px'
-										? 200
-										: 100
-								}
-								step={marginDropdownLinkUnit === 'em' || marginDropdownLinkUnit === 'rem' ? 0.1 : 1}
-								unit={marginDropdownLinkUnit}
-								units={['px', 'em', 'rem', '%']}
-								onUnit={(value) => setMetaAttribute(value, 'marginDropdownLinkUnit')}
-							/>
-							{showSettings('fontSettings', 'kadence/navigation') && (
-								<KadencePanelBody
-									title={__('Typography Settings', 'kadence-blocks')}
-									initialOpen={false}
-									panelName={'kb-adv-nav-sub-font'}
-								>
-									<TypographyControls
-										fontSize={dropdownTypography?.[0]?.size}
-										onFontSize={(value) => saveDropdownTypography({ size: value })}
-										fontSizeType={dropdownTypography?.[0]?.sizeType}
-										onFontSizeType={(value) => saveDropdownTypography({ sizeType: value })}
-										lineHeight={dropdownTypography?.[0]?.lineHeight}
-										onLineHeight={(value) => saveDropdownTypography({ lineHeight: value })}
-										lineHeightType={dropdownTypography?.[0]?.lineType}
-										onLineHeightType={(value) => saveDropdownTypography({ lineType: value })}
-										reLetterSpacing={dropdownTypography?.[0]?.letterSpacing}
-										onLetterSpacing={(value) => saveDropdownTypography({ letterSpacing: value })}
-										letterSpacingType={dropdownTypography?.[0]?.letterType}
-										onLetterSpacingType={(value) => saveDropdownTypography({ letterType: value })}
-										textTransform={dropdownTypography?.[0]?.textTransform}
-										onTextTransform={(value) => saveDropdownTypography({ textTransform: value })}
-										fontFamily={dropdownTypography?.[0]?.family}
-										onFontFamily={(value) => saveDropdownTypography({ family: value })}
-										onFontChange={(select) => {
-											saveDropdownTypography({
-												family: select.value,
-												google: select.google,
-											});
+								<ResponsiveBorderControl
+									label={__('Border', 'kadence-blocks')}
+									value={dropdownBorder}
+									tabletValue={dropdownBorderTablet}
+									mobileValue={dropdownBorderMobile}
+									onChange={(value) => setMetaAttribute(value, 'dropdownBorder')}
+									onChangeTablet={(value) => setMetaAttribute(value, 'dropdownBorderTablet')}
+									onChangeMobile={(value) => setMetaAttribute(value, 'dropdownBorderMobile')}
+								/>
+								<ResponsiveMeasurementControls
+									label={__('Border Radius', 'kadence-blocks')}
+									value={dropdownBorderRadius}
+									tabletValue={dropdownBorderRadiusTablet}
+									mobileValue={dropdownBorderRadiusMobile}
+									onChange={(value) => setMetaAttribute(value, 'dropdownBorderRadius')}
+									onChangeTablet={(value) => setMetaAttribute(value, 'dropdownBorderRadiusTablet')}
+									onChangeMobile={(value) => setMetaAttribute(value, 'dropdownBorderRadiusMobile')}
+									unit={dropdownBorderRadiusUnit}
+									units={['px', 'em', 'rem', '%']}
+									onUnit={(value) => setMetaAttribute(value, 'dropdownBorderRadiusUnit')}
+									max={
+										dropdownBorderRadiusUnit === 'em' || dropdownBorderRadiusUnit === 'rem'
+											? 24
+											: 100
+									}
+									step={
+										dropdownBorderRadiusUnit === 'em' || dropdownBorderRadiusUnit === 'rem'
+											? 0.1
+											: 1
+									}
+									min={0}
+									isBorderRadius={true}
+									allowEmpty={true}
+								/>
+								{previewOrientation != 'vertical' && (
+									<BoxShadowControl
+										label={__('Box Shadow', 'kadence-blocks')}
+										enable={
+											undefined !== dropdownShadow &&
+											undefined !== dropdownShadow[0] &&
+											undefined !== dropdownShadow[0].enable
+												? dropdownShadow[0].enable
+												: true
+										}
+										color={
+											undefined !== dropdownShadow &&
+											undefined !== dropdownShadow[0] &&
+											undefined !== dropdownShadow[0].color
+												? dropdownShadow[0].color
+												: '#000000'
+										}
+										colorDefault={'#000000'}
+										onArrayChange={(color, opacity) => {
+											saveShadow({ color, opacity });
 										}}
-										onFontArrayChange={(values) => saveDropdownTypography(values)}
-										googleFont={dropdownTypography?.[0]?.google}
-										onGoogleFont={(value) => saveDropdownTypography({ google: value })}
-										loadGoogleFont={dropdownTypography?.[0]?.loadGoogle}
-										onLoadGoogleFont={(value) => saveDropdownTypography({ loadGoogle: value })}
-										fontVariant={dropdownTypography?.[0]?.variant}
-										onFontVariant={(value) => saveDropdownTypography({ variant: value })}
-										fontWeight={dropdownTypography?.[0]?.weight}
-										onFontWeight={(value) => saveDropdownTypography({ weight: value })}
-										fontStyle={dropdownTypography?.[0]?.style}
-										onFontStyle={(value) => saveDropdownTypography({ style: value })}
-										fontSubset={dropdownTypography?.[0]?.subset}
-										onFontSubset={(value) => saveDropdownTypography({ subset: value })}
+										opacity={
+											undefined !== dropdownShadow &&
+											undefined !== dropdownShadow[0] &&
+											undefined !== dropdownShadow[0].opacity
+												? dropdownShadow[0].opacity
+												: 0.2
+										}
+										hOffset={
+											undefined !== dropdownShadow &&
+											undefined !== dropdownShadow[0] &&
+											undefined !== dropdownShadow[0].hOffset
+												? dropdownShadow[0].hOffset
+												: 0
+										}
+										vOffset={
+											undefined !== dropdownShadow &&
+											undefined !== dropdownShadow[0] &&
+											undefined !== dropdownShadow[0].vOffset
+												? dropdownShadow[0].vOffset
+												: 0
+										}
+										blur={
+											undefined !== dropdownShadow &&
+											undefined !== dropdownShadow[0] &&
+											undefined !== dropdownShadow[0].blur
+												? dropdownShadow[0].blur
+												: 14
+										}
+										spread={
+											undefined !== dropdownShadow &&
+											undefined !== dropdownShadow[0] &&
+											undefined !== dropdownShadow[0].spread
+												? dropdownShadow[0].spread
+												: 0
+										}
+										inset={
+											undefined !== dropdownShadow &&
+											undefined !== dropdownShadow[0] &&
+											undefined !== dropdownShadow[0].inset
+												? dropdownShadow[0].inset
+												: false
+										}
+										onEnableChange={(value) => {
+											saveShadow({ enable: value });
+										}}
+										onColorChange={(value) => {
+											saveShadow({ color: value });
+										}}
+										onOpacityChange={(value) => {
+											saveShadow({ opacity: value });
+										}}
+										onHOffsetChange={(value) => {
+											saveShadow({ hOffset: value });
+										}}
+										onVOffsetChange={(value) => {
+											saveShadow({ vOffset: value });
+										}}
+										onBlurChange={(value) => {
+											saveShadow({ blur: value });
+										}}
+										onSpreadChange={(value) => {
+											saveShadow({ spread: value });
+										}}
+										onInsetChange={(value) => {
+											saveShadow({ inset: value });
+										}}
 									/>
-								</KadencePanelBody>
-							)}
+								)}
+								<ResponsiveMeasureRangeControl
+									label={__('Padding', 'kadence-blocks')}
+									value={paddingDropdown}
+									tabletValue={tabletPaddingDropdown}
+									mobileValue={mobilePaddingDropdown}
+									onChange={(value) => {
+										setMetaAttribute(value.map(String), 'paddingDropdown');
+									}}
+									onChangeTablet={(value) => {
+										setMetaAttribute(value.map(String), 'tabletPaddingDropdown');
+									}}
+									onChangeMobile={(value) => {
+										setMetaAttribute(value.map(String), 'mobilePaddingDropdown');
+									}}
+									min={0}
+									max={
+										paddingDropdownUnit === 'em' || paddingDropdownUnit === 'rem'
+											? 24
+											: paddingDropdownUnit === 'px'
+											? 200
+											: 100
+									}
+									step={paddingDropdownUnit === 'em' || paddingDropdownUnit === 'rem' ? 0.1 : 1}
+									unit={paddingDropdownUnit}
+									units={['px', 'em', 'rem', '%']}
+									onUnit={(value) => setMetaAttribute(value, 'paddingDropdownUnit')}
+								/>
+								<ResponsiveMeasureRangeControl
+									label={__('Margin', 'kadence-blocks')}
+									value={marginDropdown}
+									tabletValue={tabletMarginDropdown}
+									mobileValue={mobileMarginDropdown}
+									onChange={(value) => {
+										setMetaAttribute(value.map(String), 'marginDropdown');
+									}}
+									onChangeTablet={(value) => {
+										setMetaAttribute(value.map(String), 'tabletMarginDropdown');
+									}}
+									onChangeMobile={(value) => {
+										setMetaAttribute(value.map(String), 'mobileMarginDropdown');
+									}}
+									min={
+										marginDropdownUnit === 'em' || marginDropdownUnit === 'rem'
+											? -25
+											: marginDropdownUnit === 'px'
+											? -400
+											: -100
+									}
+									max={
+										marginDropdownUnit === 'em' || marginDropdownUnit === 'rem'
+											? 24
+											: marginDropdownUnit === 'px'
+											? 200
+											: 100
+									}
+									step={marginDropdownUnit === 'em' || marginDropdownUnit === 'rem' ? 0.1 : 1}
+									unit={marginDropdownUnit}
+									units={['px', 'em', 'rem', '%']}
+									onUnit={(value) => setMetaAttribute(value, 'marginDropdownUnit')}
+								/>
+							</KadenceSubPanelBody>
+							<KadenceSubPanelBody title={__('Sub Menu Links', 'kadence-blocks-pro')}>
+								<SmallResponsiveControl
+									label={__('Colors', 'kadence-blocks')}
+									desktopChildren={styleColorControls('', 'Dropdown')}
+									tabletChildren={styleColorControls('Tablet', 'Dropdown')}
+									mobileChildren={styleColorControls('Mobile', 'Dropdown')}
+								></SmallResponsiveControl>
+								<ResponsiveSingleBorderControl
+									label={'Divider'}
+									value={dropdownDivider}
+									tabletValue={dropdownDividerTablet}
+									mobileValue={dropdownDividerMobile}
+									onChange={(value) => setMetaAttribute(value, 'dropdownDivider')}
+									onChangeTablet={(value) => setMetaAttribute(value, 'dropdownDividerTablet')}
+									onChangeMobile={(value) => setMetaAttribute(value, 'dropdownDividerMobile')}
+								/>
+								<ResponsiveMeasureRangeControl
+									label={__('Link Padding', 'kadence-blocks')}
+									value={paddingDropdownLink}
+									tabletValue={tabletPaddingDropdownLink}
+									mobileValue={mobilePaddingDropdownLink}
+									onChange={(value) => {
+										setMetaAttribute(value.map(String), 'paddingDropdownLink');
+									}}
+									onChangeTablet={(value) => {
+										setMetaAttribute(value.map(String), 'tabletPaddingDropdownLink');
+									}}
+									onChangeMobile={(value) => {
+										setMetaAttribute(value.map(String), 'mobilePaddingDropdownLink');
+									}}
+									min={0}
+									max={
+										paddingDropdownLinkUnit === 'em' || paddingDropdownLinkUnit === 'rem'
+											? 24
+											: paddingDropdownLinkUnit === 'px'
+											? 200
+											: 100
+									}
+									step={
+										paddingDropdownLinkUnit === 'em' || paddingDropdownLinkUnit === 'rem' ? 0.1 : 1
+									}
+									unit={paddingDropdownLinkUnit}
+									units={['px', 'em', 'rem', '%']}
+									onUnit={(value) => setMetaAttribute(value, 'paddingDropdownLinkUnit')}
+								/>
+								<ResponsiveMeasureRangeControl
+									label={__('Link Margin', 'kadence-blocks')}
+									value={marginDropdownLink}
+									tabletValue={tabletMarginDropdownLink}
+									mobileValue={mobileMarginDropdownLink}
+									onChange={(value) => {
+										setMetaAttribute(value.map(String), 'marginDropdownLink');
+									}}
+									onChangeTablet={(value) => {
+										setMetaAttribute(value.map(String), 'tabletMarginDropdownLink');
+									}}
+									onChangeMobile={(value) => {
+										setMetaAttribute(value.map(String), 'mobileMarginDropdownLink');
+									}}
+									min={0}
+									max={
+										marginDropdownLinkUnit === 'em' || marginDropdownLinkUnit === 'rem'
+											? 24
+											: marginDropdownLinkUnit === 'px'
+											? 200
+											: 100
+									}
+									step={marginDropdownLinkUnit === 'em' || marginDropdownLinkUnit === 'rem' ? 0.1 : 1}
+									unit={marginDropdownLinkUnit}
+									units={['px', 'em', 'rem', '%']}
+									onUnit={(value) => setMetaAttribute(value, 'marginDropdownLinkUnit')}
+								/>
+								{showSettings('fontSettings', 'kadence/navigation') && (
+									<KadencePanelBody
+										title={__('Typography Settings', 'kadence-blocks')}
+										initialOpen={false}
+										panelName={'kb-adv-nav-sub-font'}
+									>
+										<TypographyControls
+											fontSize={dropdownTypography?.[0]?.size}
+											onFontSize={(value) => saveDropdownTypography({ size: value })}
+											fontSizeType={dropdownTypography?.[0]?.sizeType}
+											onFontSizeType={(value) => saveDropdownTypography({ sizeType: value })}
+											lineHeight={dropdownTypography?.[0]?.lineHeight}
+											onLineHeight={(value) => saveDropdownTypography({ lineHeight: value })}
+											lineHeightType={dropdownTypography?.[0]?.lineType}
+											onLineHeightType={(value) => saveDropdownTypography({ lineType: value })}
+											reLetterSpacing={dropdownTypography?.[0]?.letterSpacing}
+											onLetterSpacing={(value) =>
+												saveDropdownTypography({ letterSpacing: value })
+											}
+											letterSpacingType={dropdownTypography?.[0]?.letterType}
+											onLetterSpacingType={(value) =>
+												saveDropdownTypography({ letterType: value })
+											}
+											textTransform={dropdownTypography?.[0]?.textTransform}
+											onTextTransform={(value) =>
+												saveDropdownTypography({ textTransform: value })
+											}
+											fontFamily={dropdownTypography?.[0]?.family}
+											onFontFamily={(value) => saveDropdownTypography({ family: value })}
+											onFontChange={(select) => {
+												saveDropdownTypography({
+													family: select.value,
+													google: select.google,
+												});
+											}}
+											onFontArrayChange={(values) => saveDropdownTypography(values)}
+											googleFont={dropdownTypography?.[0]?.google}
+											onGoogleFont={(value) => saveDropdownTypography({ google: value })}
+											loadGoogleFont={dropdownTypography?.[0]?.loadGoogle}
+											onLoadGoogleFont={(value) => saveDropdownTypography({ loadGoogle: value })}
+											fontVariant={dropdownTypography?.[0]?.variant}
+											onFontVariant={(value) => saveDropdownTypography({ variant: value })}
+											fontWeight={dropdownTypography?.[0]?.weight}
+											onFontWeight={(value) => saveDropdownTypography({ weight: value })}
+											fontStyle={dropdownTypography?.[0]?.style}
+											onFontStyle={(value) => saveDropdownTypography({ style: value })}
+											fontSubset={dropdownTypography?.[0]?.subset}
+											onFontSubset={(value) => saveDropdownTypography({ subset: value })}
+										/>
+									</KadencePanelBody>
+								)}
+							</KadenceSubPanelBody>
+							<KadenceSubPanelBody title={__('Sub Menu Descriptions', 'kadence-blocks')}>
+								{/* <ResponsiveSelectControl
+									label={__('Align', 'kadence-blocks-pro')}
+									value={dropdownDescriptionPositioning}
+									tabletValue={dropdownDescriptionPositioningTablet}
+									mobileValue={dropdownDescriptionPositioningMobile}
+									options={[
+										{ value: 'normal', label: __('Align with Title', 'kadence-blocks-pro') },
+										{ value: 'icon', label: __('Align with Icon', 'kadence-blocks-pro') },
+									]}
+									tabletOptions={[
+										{ value: '', label: __('Inherit', 'kadence-blocks-pro') },
+										{ value: 'normal', label: __('Align with Title', 'kadence-blocks-pro') },
+										{ value: 'icon', label: __('Align with Icon', 'kadence-blocks-pro') },
+									]}
+									onChange={(value) => setAttributes({ dropdownDescriptionPositioning: value })}
+									onChangeTablet={(value) =>
+										setAttributes({ dropdownDescriptionPositioningTablet: value })
+									}
+									onChangeMobile={(value) =>
+										setAttributes({ dropdownDescriptionPositioningMobile: value })
+									}
+								/> */}
+								<ResponsiveRangeControls
+									label={__('Spacing from label', 'kadence-blocks')}
+									value={dropdownDescriptionSpacing ? parseFloat(dropdownDescriptionSpacing) : ''}
+									valueTablet={
+										dropdownDescriptionSpacingTablet
+											? parseFloat(dropdownDescriptionSpacingTablet)
+											: ''
+									}
+									valueMobile={
+										dropdownDescriptionSpacingMobile
+											? parseFloat(dropdownDescriptionSpacingMobile)
+											: ''
+									}
+									onChange={(value) =>
+										setMetaAttribute(value.toString(), 'dropdownDescriptionSpacing')
+									}
+									onChangeTablet={(value) =>
+										setMetaAttribute(value.toString(), 'dropdownDescriptionSpacingTablet')
+									}
+									onChangeMobile={(value) =>
+										setMetaAttribute(value.toString(), 'dropdownDescriptionSpacingMobile')
+									}
+									min={0}
+									max={
+										dropdownDescriptionSpacingUnit === 'em' ||
+										dropdownDescriptionSpacingUnit === 'rem'
+											? 24
+											: dropdownDescriptionSpacingUnit === 'px'
+											? 2000
+											: 100
+									}
+									step={
+										dropdownDescriptionSpacingUnit === 'em' ||
+										dropdownDescriptionSpacingUnit === 'rem'
+											? 0.1
+											: 1
+									}
+									reset={() => setMetaAttribute('', 'dropdownDescriptionSpacing')}
+									unit={dropdownDescriptionSpacingUnit}
+									units={['em', 'rem', 'px', 'vw']}
+									onUnit={(value) => setMetaAttribute(value, 'dropdownDescriptionSpacingUnit')}
+									showUnit={true}
+								/>
+								<SmallResponsiveControl
+									label={__('Colors', 'kadence-blocks')}
+									desktopChildren={styleDropdownDescriptionColorControls('', '')}
+									tabletChildren={styleDropdownDescriptionColorControls('Tablet', '')}
+									mobileChildren={styleDropdownDescriptionColorControls('Mobile', '')}
+								></SmallResponsiveControl>
+
+								{showSettings('fontSettings', 'kadence/navigation') && (
+									<KadencePanelBody
+										title={__('Typography Settings', 'kadence-blocks')}
+										initialOpen={false}
+										panelName={'kb-nav-desc-font'}
+									>
+										<TypographyControls
+											fontSize={dropdownDescriptionTypography?.[0]?.size}
+											onFontSize={(value) => saveDropdownDescriptionTypography({ size: value })}
+											fontSizeType={dropdownDescriptionTypography?.[0]?.sizeType}
+											onFontSizeType={(value) =>
+												saveDropdownDescriptionTypography({ sizeType: value })
+											}
+											lineHeight={dropdownDescriptionTypography?.[0]?.lineHeight}
+											onLineHeight={(value) =>
+												saveDropdownDescriptionTypography({ lineHeight: value })
+											}
+											lineHeightType={dropdownDescriptionTypography?.[0]?.lineType}
+											onLineHeightType={(value) =>
+												saveDropdownDescriptionTypography({ lineType: value })
+											}
+											reLetterSpacing={dropdownDescriptionTypography?.[0]?.letterSpacing}
+											onLetterSpacing={(value) =>
+												saveDropdownDescriptionTypography({ letterSpacing: value })
+											}
+											letterSpacingType={dropdownDescriptionTypography?.[0]?.letterType}
+											onLetterSpacingType={(value) =>
+												saveDropdownDescriptionTypography({ letterType: value })
+											}
+											textTransform={dropdownDescriptionTypography?.[0]?.textTransform}
+											onTextTransform={(value) =>
+												saveDropdownDescriptionTypography({ textTransform: value })
+											}
+											fontFamily={dropdownDescriptionTypography?.[0]?.family}
+											onFontFamily={(value) =>
+												saveDropdownDescriptionTypography({ family: value })
+											}
+											onFontChange={(select) => {
+												saveDropdownDescriptionTypography({
+													family: select.value,
+													google: select.google,
+												});
+											}}
+											onFontArrayChange={(values) => saveDropdownDescriptionTypography(values)}
+											googleFont={dropdownDescriptionTypography?.[0]?.google}
+											onGoogleFont={(value) =>
+												saveDropdownDescriptionTypography({ google: value })
+											}
+											loadGoogleFont={dropdownDescriptionTypography?.[0]?.loadGoogle}
+											onLoadGoogleFont={(value) =>
+												saveDropdownDescriptionTypography({ loadGoogle: value })
+											}
+											fontVariant={dropdownDescriptionTypography?.[0]?.variant}
+											onFontVariant={(value) =>
+												saveDropdownDescriptionTypography({ variant: value })
+											}
+											fontWeight={dropdownDescriptionTypography?.[0]?.weight}
+											onFontWeight={(value) =>
+												saveDropdownDescriptionTypography({ weight: value })
+											}
+											fontStyle={dropdownDescriptionTypography?.[0]?.style}
+											onFontStyle={(value) => saveDropdownDescriptionTypography({ style: value })}
+											fontSubset={dropdownDescriptionTypography?.[0]?.subset}
+											onFontSubset={(value) =>
+												saveDropdownDescriptionTypography({ subset: value })
+											}
+										/>
+									</KadencePanelBody>
+								)}
+							</KadenceSubPanelBody>
 						</KadencePanelBody>
 						<KadencePanelBody
 							title={__('Description Styles', 'kadence-blocks')}
 							panelName={'kb-navigation-style-description'}
 							initialOpen={false}
 						>
+							{/* <ResponsiveSelectControl
+								label={__('Align', 'kadence-blocks-pro')}
+								value={descriptionPositioning}
+								tabletValue={descriptionPositioningTablet}
+								mobileValue={descriptionPositioningMobile}
+								options={[
+									{ value: 'normal', label: __('Align with Title', 'kadence-blocks-pro') },
+									{ value: 'icon', label: __('Align with Icon', 'kadence-blocks-pro') },
+								]}
+								tabletOptions={[
+									{ value: '', label: __('Inherit', 'kadence-blocks-pro') },
+									{ value: 'normal', label: __('Align with Title', 'kadence-blocks-pro') },
+									{ value: 'icon', label: __('Align with Icon', 'kadence-blocks-pro') },
+								]}
+								onChange={(value) => setAttributes({ descriptionPositioning: value })}
+								onChangeTablet={(value) => setAttributes({ descriptionPositioningTablet: value })}
+								onChangeMobile={(value) => setAttributes({ descriptionPositioningMobile: value })}
+							/> */}
 							<ResponsiveRangeControls
 								label={__('Spacing from label', 'kadence-blocks')}
 								value={descriptionSpacing ? parseFloat(descriptionSpacing) : ''}
@@ -1898,7 +2201,13 @@ export function EditInner(props) {
 								onChangeMobile={(value) => {
 									setMetaAttribute(value.map(String), 'mobileMargin');
 								}}
-								min={0}
+								min={
+									marginUnit === 'em' || marginUnit === 'rem'
+										? -25
+										: marginUnit === 'px'
+										? -400
+										: -100
+								}
 								max={marginUnit === 'em' || marginUnit === 'rem' ? 24 : marginUnit === 'px' ? 200 : 100}
 								step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
 								unit={marginUnit}
@@ -2026,10 +2335,7 @@ export function EditInner(props) {
 			{/*/>*/}
 
 			{typography?.[0]?.google && (
-				<>
-					{console.log(1)}
-					<KadenceWebfontLoader typography={typography} clientId={clientId} id={'typography'} />
-				</>
+				<KadenceWebfontLoader typography={typography} clientId={clientId} id={'typography'} />
 			)}
 			{dropdownTypography?.[0]?.google && (
 				<KadenceWebfontLoader typography={dropdownTypography} clientId={clientId} id={'dropdownTypography'} />

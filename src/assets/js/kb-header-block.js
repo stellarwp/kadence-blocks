@@ -125,9 +125,14 @@ class KBHeader {
 	anchorOffset = 0;
 
 	/**
-	 * activeHeader.
+	 * the wrapper element that holds stickyWrapper's place in the dom.
 	 */
-	activeHeader;
+	placeholderWrapper;
+
+	/**
+	 * the wrapper element that sticks, shrinks, reveals, etc.
+	 */
+	stickyWrapper;
 
 	/**
 	 * isSticking.
@@ -140,6 +145,11 @@ class KBHeader {
 	isTransparent = false;
 
 	/**
+	 * activeHeaderContainer.
+	 */
+	activeHeaderContainer;
+
+	/**
 	 * The main constructor.
 	 *
 	 * @param target  - The selector for the target element, or the element itself.
@@ -149,6 +159,7 @@ class KBHeader {
 		//target the target
 		const self = this;
 		this.root = 'string' === typeof target ? document.querySelector(target) : target;
+		this.activeHeaderContainer = this.root.querySelector('.wp-block-kadence-header-desktop');
 		//TODO get a real root id parsed from the block unique id.
 		this.rootID = 'aaa';
 		this.autoTransparentSpacing = this.root.dataset?.autoTransparentSpacing === '1';
@@ -168,43 +179,43 @@ class KBHeader {
 		this.revealScrollUp = this.root.dataset?.revealScrollUp === '1';
 		this._state = 'CREATED';
 
-		if (this.transparent && this.autoTransparentSpacing) {
-			this.initAutoTransparentSpacing();
-		}
-		if ((this.sticky || this.stickyTablet || this.stickyMobile) && this.stickySection) {
+		// if (this.transparent && this.autoTransparentSpacing) {
+		// 	this.initAutoTransparentSpacing();
+		// }
+		if (this.sticky || this.stickyTablet || this.stickyMobile) {
 			this.initStickyHeader();
 		}
 
 		var event = new Event('MOUNTED', {
 			bubbles: true,
 		});
-		event.qlID = this.rootID;
+		event.ID = this.rootID;
 
 		this.root.dispatchEvent(event);
 		this._state = 'IDLE';
 	}
 
-	initAutoTransparentSpacing() {
-		const self = this;
+	// initAutoTransparentSpacing() {
+	// 	const self = this;
 
-		this.setAutoTransparentSpacing();
+	// 	this.setAutoTransparentSpacing();
 
-		document.onresize = self.setAutoTransparentSpacing;
-	}
+	// 	document.onresize = self.setAutoTransparentSpacing;
+	// }
 
-	setAutoTransparentSpacing() {
-		const self = this;
+	// setAutoTransparentSpacing() {
+	// 	const self = this;
 
-		const height = this.getHeight();
+	// 	const height = this.getHeight();
 
-		const elementToApply = this.root.nextElementSibling;
+	// 	const elementToApply = this.root.nextElementSibling;
 
-		elementToApply.style.paddingTop = height + 'px';
-	}
+	// 	elementToApply.style.paddingTop = height + 'px';
+	// }
 
-	getHeight() {
-		return this.root.querySelector('div').clientHeight;
-	}
+	// getHeight() {
+	// 	return this.root.querySelector('div').clientHeight;
+	// }
 
 	/**
 	 * Initiate the script to stick the header.
@@ -212,36 +223,138 @@ class KBHeader {
 	 */
 	initStickyHeader() {
 		const self = this;
-		this.activeHeader = this.root.querySelector('.wp-block-kadence-header-desktop');
 
+		if (this.sticky) {
+			this.createAndSetPlaceholderAndStickyWrappers('desktop');
+		}
+		if (this.stickyTablet || this.stickyMobile) {
+			//this.createAndSetPlaceholderAndStickyWrappers('tablet');
+		}
+
+		if (this.placeholderWrapper && this.stickyWrapper) {
+			this.setActiveSize();
+			this.updatePlaceholderAndStickyWrappers();
+
+			if (this.activeSize == 'desktop') {
+				if (this.sticky) {
+					this.activeOffsetTop = this.getOffset(this.placeholderWrapper).top;
+				}
+			} else if (this.activeSize == 'tablet') {
+				if (this.stickyTablet) {
+					this.activeOffsetTop = this.getOffset(this.placeholderWrapper).top;
+				}
+			} else {
+				if (this.stickyMobile) {
+					this.activeOffsetTop = this.getOffset(this.placeholderWrapper).top;
+				}
+			}
+			window.addEventListener('resize', this.updateSticky.bind(this), false);
+			window.addEventListener('scroll', this.updateSticky.bind(this), false);
+			window.addEventListener('load', this.updateSticky.bind(this), false);
+			window.addEventListener('orientationchange', this.updateSticky.bind(this));
+			if (document.readyState === 'complete') {
+				this.updateSticky('updateActive');
+			}
+			if (
+				document.body.classList.contains('woocommerce-demo-store') &&
+				document.body.classList.contains('kadence-store-notice-placement-above')
+			) {
+				this.respondToVisibility(document.querySelector('.woocommerce-store-notice'), (visible) => {
+					this.updateSticky('updateActive').bind(this);
+				});
+			}
+		}
+	}
+
+	setActiveSize() {
 		if (parseInt(kadenceHeaderConfig.breakPoints.desktop) < window.innerWidth) {
 			this.activeSize = 'desktop';
-			if (this.sticky) {
-				this.activeOffsetTop = this.getOffset(this.root).top;
-			}
 		} else if (parseInt(kadenceHeaderConfig.breakPoints.tablet) < window.innerWidth) {
 			this.activeSize = 'tablet';
-			if (this.stickyTablet) {
-				this.activeOffsetTop = this.getOffset(this.root).top;
+		} else {
+			this.activeSize = 'mobile';
+		}
+
+		//TODO this could be cached or something
+		const sizedContainerSelector =
+			this.activeSize == 'desktop' ? '.wp-block-kadence-header-desktop' : '.wp-block-kadence-header-tablet';
+		this.activeHeaderContainer = this.root.querySelector(sizedContainerSelector);
+	}
+
+	/**
+	 * setup the placeholderwrapper and stickywrapper variables for the desktop or tablet container based on the given size.
+	 * potentially by creating the neccessary wrappers
+	 */
+	createAndSetPlaceholderAndStickyWrappers(size) {
+		const sizedContainerSelector =
+			size == 'desktop' ? '.wp-block-kadence-header-desktop' : '.wp-block-kadence-header-tablet';
+		const stickySectionToUse = this['stickySection' + this.activeSizeCased(size)];
+		if (stickySectionToUse == 'top' || stickySectionToUse == 'bottom' || stickySectionToUse == 'main') {
+			//single row
+			var rowSelector = '';
+			if (stickySectionToUse == 'top') {
+				rowSelector = '.wp-block-kadence-header-row-top';
+			} else if (stickySectionToUse == 'bottom') {
+				rowSelector = '.wp-block-kadence-header-row-bottom';
+			} else {
+				rowSelector = '.wp-block-kadence-header-row-center';
 			}
-		} else if (this.stickyMobile) {
-			this.activeOffsetTop = this.getOffset(this.root).top;
+			this.stickyWrapper = this.root.querySelector(sizedContainerSelector + ' ' + rowSelector);
+			this.placeholderWrapper = this.wrap([this.stickyWrapper]);
+		} else if (stickySectionToUse == 'top_main' || stickySectionToUse == 'bottom_main') {
+			//multi row
+			var rows = [];
+			if (stickySectionToUse == 'top_main') {
+				rows.push(this.root.querySelector(sizedContainerSelector + ' .wp-block-kadence-header-row-top'));
+				rows.push(this.root.querySelector(sizedContainerSelector + ' .wp-block-kadence-header-row-center'));
+			}
+			if (stickySectionToUse == 'bottom_main') {
+				rows.push(this.root.querySelector(sizedContainerSelector + ' .wp-block-kadence-header-row-center'));
+				rows.push(this.root.querySelector(sizedContainerSelector + ' .wp-block-kadence-header-row-bottom'));
+			}
+			this.stickyWrapper = this.wrap(rows);
+			this.placeholderWrapper = this.wrap([this.stickyWrapper]);
+		} else {
+			//whole header
+			this.stickyWrapper = this.root.querySelector(sizedContainerSelector);
+			this.placeholderWrapper = this.root;
 		}
-		window.addEventListener('resize', this.updateSticky.bind(this), false);
-		window.addEventListener('scroll', this.updateSticky.bind(this), false);
-		window.addEventListener('load', this.updateSticky.bind(this), false);
-		window.addEventListener('orientationchange', this.updateSticky.bind(this));
-		if (document.readyState === 'complete') {
-			this.updateSticky('updateActive');
+
+		if (this.stickyWrapper && this.placeholderWrapper) {
+			this.stickyWrapper.classList.add('kb-header-sticky-wrapper');
+			this.placeholderWrapper.classList.add('kb-header-placeholder-wrapper');
 		}
-		if (
-			document.body.classList.contains('woocommerce-demo-store') &&
-			document.body.classList.contains('kadence-store-notice-placement-above')
-		) {
-			this.respondToVisibility(document.querySelector('.woocommerce-store-notice'), (visible) => {
-				this.updateSticky('updateActive').bind(this);
+	}
+
+	/**
+	 * update placeholderwrapper and stickywrapper variables according to the current active size.
+	 */
+	updatePlaceholderAndStickyWrappers() {
+		const stickySectionToUse = this['stickySection' + this.activeSizeCased()];
+		if (stickySectionToUse) {
+			//single row or multi row
+			this.stickyWrapper = this.activeHeaderContainer.querySelector('.kb-header-sticky-wrapper');
+			this.placeholderWrapper = this.activeHeaderContainer.querySelector('.kb-header-placeholder-wrapper');
+		} else {
+			//whole header
+			this.stickyWrapper = this.activeHeaderContainer;
+			this.placeholderWrapper = this.root;
+		}
+	}
+
+	/**
+	 * wrap an arrray of elements in a wrapper
+	 * http://www.mattmorgante.com/technology/sticky-navigation-bar-javascript
+	 */
+	wrap(toWrap, wrapper) {
+		wrapper = wrapper || document.createElement('div');
+		if (toWrap && toWrap[0]) {
+			toWrap[0].parentNode.insertBefore(wrapper, toWrap[0]);
+			toWrap.forEach((element) => {
+				wrapper.appendChild(element);
 			});
 		}
+		return wrapper;
 	}
 
 	respondToVisibility(element, callback) {
@@ -260,25 +373,18 @@ class KBHeader {
 
 	updateSticky(e) {
 		const self = this;
-		if (!this.activeHeader) {
+		if (!this.stickyWrapper) {
 			return;
 		}
 
 		//TODO change wrapper to something that also applies to fse themes
 		const wrapper = document.getElementsByClassName('wp-site-blocks')?.[0];
 		var offsetTop = this.getOffset(wrapper).top;
-		this.anchorOffset = this.getOffset(this.root).top;
+		this.anchorOffset = this.getOffset(this.placeholderWrapper).top;
 		var currScrollTop = window.scrollY;
 
-		// Set current active screen size
-		if (parseInt(kadenceHeaderConfig.breakPoints.desktop) < window.innerWidth) {
-			this.activeSize = 'desktop';
-		} else if (parseInt(kadenceHeaderConfig.breakPoints.tablet) < window.innerWidth) {
-			this.activeSize = 'tablet';
-		} else {
-			this.activeSize = 'mobile';
-		}
-		this.activeOffsetTop = this.getOffset(this.activeHeader).top;
+		this.setActiveSize();
+		this.activeOffsetTop = this.getOffset(this.stickyWrapper).top;
 
 		//don't do sticky stuff if the current screen size is not set to style sticky
 		if (
@@ -289,33 +395,27 @@ class KBHeader {
 			)
 		) {
 			//reset all state classes and end
-			this.activeHeader.classList.remove('item-is-fixed');
-			this.activeHeader.classList.remove('item-at-start');
-			this.activeHeader.classList.remove('item-is-stuck');
-			this.activeHeader.style.height = null;
-			this.activeHeader.style.top = null;
-			this.activeHeader.style.position = 'initial';
+			this.stickyWrapper.classList.remove('item-is-fixed');
+			this.stickyWrapper.classList.remove('item-at-start');
+			this.stickyWrapper.classList.remove('item-is-stuck');
+			this.stickyWrapper.style.height = null;
+			this.stickyWrapper.style.top = null;
+			this.stickyWrapper.style.position = 'initial';
 			parent.classList.remove('child-is-fixed');
 			document.body.classList.remove('header-is-fixed');
 			return;
 		}
 
 		//set current active header for current size
-		if (this.activeSize === 'desktop') {
-			this.activeHeader = this.root.querySelector('.wp-block-kadence-header-desktop');
-		} else {
-			this.activeHeader = this.root.querySelector('.wp-block-kadence-header-tablet');
-		}
+		this.updatePlaceholderAndStickyWrappers();
 		if (e && e === 'updateActive') {
-			this.activeHeader.style.top = 'auto';
+			this.stickyWrapper.style.top = 'auto';
 		}
 
 		//set the container anchor height to create a sized placeholder for the header (but only if we're not also transparent)
-		var elHeight = this.activeHeader.offsetHeight;
-		const activeSizeCased =
-			this.activeSize === 'desktop' ? '' : this.activeSize.charAt(0).toUpperCase() + this.activeSize.slice(1);
-		if (!this['transparent' + activeSizeCased]) {
-			this.root.style.height = elHeight + 'px';
+		var elHeight = this.stickyWrapper.offsetHeight;
+		if (!this['transparent' + this.activeSizeCased()]) {
+			this.placeholderWrapper.style.height = elHeight + 'px';
 		}
 
 		// Adjust offsetTop depending on certain top of page elements
@@ -346,11 +446,7 @@ class KBHeader {
 		const topPosThatSticksAboveTop = currScrollTop - this.anchorOffset + offsetTop - elHeight;
 		const currentBottomPosition = this.currentTopPosition + elHeight;
 
-		// set initial shrink starting height
-		var parent = this.activeHeader.parentNode;
-		if (!this.shrinkStartHeight || (e && undefined !== e.type && 'orientationchange' === e.type)) {
-			this.shrinkStartHeight = this.activeHeader.offsetHeight;
-		}
+		var parent = this.stickyWrapper.parentNode;
 
 		// Run the shrinking / unshrinking processing
 		if (this.shrinkMain) {
@@ -362,21 +458,21 @@ class KBHeader {
 					: this.shrinkMainHeight;
 			if (shrinkHeight) {
 				// Set totalOffsetDelay
-				var totalOffsetDelay = Math.floor(this.activeOffsetTop - offsetTop);
-				if (this.revealScrollUp) {
-					if (window.scrollY > this.lastScrollTop) {
-						var totalOffsetDelay = Math.floor(
-							Math.floor(this.activeOffsetTop) - Math.floor(offsetTop) + Math.floor(shrinkHeight)
-						);
-					} else {
-						var totalOffsetDelay = Math.floor(this.activeOffsetTop - offsetTop);
-					}
-				}
-				const shrinkLogos = this.activeHeader.querySelectorAll('.custom-logo');
-				const shrinkHeader = this.activeHeader.querySelector('.wp-block-kadence-header-row-center');
+				// var totalOffsetDelay = Math.floor(this.activeOffsetTop - offsetTop);
+				// if (this.revealScrollUp) {
+				// 	if (window.scrollY > this.lastScrollTop) {
+				// 		var totalOffsetDelay = Math.floor(
+				// 			Math.floor(this.activeOffsetTop) - Math.floor(offsetTop) + Math.floor(shrinkHeight)
+				// 		);
+				// 	} else {
+				// 		var totalOffsetDelay = Math.floor(this.activeOffsetTop - offsetTop);
+				// 	}
+				// }
+				const shrinkLogos = this.activeHeaderContainer.querySelectorAll('.custom-logo');
+				const shrinkHeader = this.activeHeaderContainer.querySelector('.wp-block-kadence-header-row-center');
 
 				//set shrink starting height
-				if (!this.shrinkStartHeight) {
+				if (!this.shrinkStartHeight || (e && undefined !== e.type && 'orientationchange' === e.type)) {
 					this.shrinkStartHeight = shrinkHeader.offsetHeight;
 				}
 
@@ -386,7 +482,7 @@ class KBHeader {
 				shrinkHeader.style.minHeight = shrinkingHeight + 'px';
 				shrinkHeader.style.maxHeight = shrinkingHeight + 'px';
 
-				if ((window.scrollY = 0)) {
+				if (window.scrollY == 0) {
 					//at top, release logos
 					if (shrinkLogos) {
 						for (let i = 0; i < shrinkLogos.length; i++) {
@@ -405,7 +501,7 @@ class KBHeader {
 		}
 
 		//set the position to absolute
-		this.activeHeader.style.position = 'absolute';
+		this.stickyWrapper.style.position = 'absolute';
 
 		// Run the revealing / hidding processing or the sticky process
 		if (this.revealScrollUp) {
@@ -414,20 +510,20 @@ class KBHeader {
 			var totalOffset = Math.floor(this.anchorOffset + elHeight);
 			if (currScrollTop <= this.anchorOffset - offsetTop) {
 				//above the initial header area, ignore the header
-				this.activeHeader.style.top = 0;
+				this.stickyWrapper.style.top = 0;
 				this.currentTopPosition = 0;
 				this.setStickyChanged(false);
 			} else if (currScrollTop <= totalOffset) {
 				//scrolling in the initial header area
 				if (isScrollingDown) {
 					//ignore the header if scrolling down
-					this.activeHeader.style.top = 0;
+					this.stickyWrapper.style.top = 0;
 					this.currentTopPosition = 0;
 					this.setStickyChanged(false);
 				} else {
 					//keep sticking if scrolling up
-					this.activeHeader.classList.remove('item-hidden-above');
-					this.activeHeader.style.top = topPosThatSticksToTop + 'px';
+					this.stickyWrapper.classList.remove('item-hidden-above');
+					this.stickyWrapper.style.top = topPosThatSticksToTop + 'px';
 					this.currentTopPosition = topPosThatSticksToTop;
 					this.setStickyChanged(true);
 				}
@@ -438,13 +534,13 @@ class KBHeader {
 				//below the initial header area, but above or below the current sticky area
 				if (isScrollingDown) {
 					//scrolling down, keep the header top just above the screen
-					this.activeHeader.classList.add('item-hidden-above');
-					this.activeHeader.style.top = topPosThatSticksAboveTop + 'px';
+					this.stickyWrapper.classList.add('item-hidden-above');
+					this.stickyWrapper.style.top = topPosThatSticksAboveTop + 'px';
 					this.currentTopPosition = topPosThatSticksAboveTop;
 				} else {
 					//scrolling up, keep the header top at scroll position
-					this.activeHeader.classList.remove('item-hidden-above');
-					this.activeHeader.style.top = topPosThatSticksToTop + 'px';
+					this.stickyWrapper.classList.remove('item-hidden-above');
+					this.stickyWrapper.style.top = topPosThatSticksToTop + 'px';
 					this.currentTopPosition = topPosThatSticksToTop;
 				}
 				this.setStickyChanged(true);
@@ -454,12 +550,12 @@ class KBHeader {
 			var totalOffset = Math.floor(this.anchorOffset - offsetTop);
 			if (currScrollTop <= totalOffset) {
 				//above the header anchor, ignore
-				this.activeHeader.style.top = 0;
+				this.stickyWrapper.style.top = 0;
 				this.currentTopPosition = 0;
 				this.setStickyChanged(false);
 			} else {
 				//below the header anchor, match it's top to the scroll position
-				this.activeHeader.style.top = topPosThatSticksToTop + 'px';
+				this.stickyWrapper.style.top = topPosThatSticksToTop + 'px';
 				this.currentTopPosition = topPosThatSticksToTop;
 				this.setStickyChanged(true);
 			}
@@ -469,46 +565,51 @@ class KBHeader {
 		// Set state classes on the header based on scroll position
 		// TODO not sure if this is neccessary as a seperate block of logic, may be better integrated into the stickychanged function
 		if (window.scrollY == totalOffset) {
-			//this.activeHeader.style.top = offsetTop + 'px';
-			this.activeHeader.classList.add('item-is-fixed');
-			this.activeHeader.classList.add('item-at-start');
-			this.activeHeader.classList.remove('item-is-stuck');
+			//this.stickyWrapper.style.top = offsetTop + 'px';
+			this.stickyWrapper.classList.add('item-is-fixed');
+			this.stickyWrapper.classList.add('item-at-start');
+			this.stickyWrapper.classList.remove('item-is-stuck');
 			parent.classList.add('child-is-fixed');
 			document.body.classList.add('header-is-fixed');
 		} else if (window.scrollY > totalOffset) {
 			if (this.revealScrollUp) {
-				if (window.scrollY < elHeight + 60 && this.activeHeader.classList.contains('item-at-start')) {
-					this.activeHeader.style.height = null;
-					//this.activeHeader.style.top = offsetTop + 'px';
-					this.activeHeader.classList.add('item-is-fixed');
-					this.activeHeader.classList.add('item-is-stuck');
+				if (window.scrollY < elHeight + 60 && this.stickyWrapper.classList.contains('item-at-start')) {
+					this.stickyWrapper.style.height = null;
+					//this.stickyWrapper.style.top = offsetTop + 'px';
+					this.stickyWrapper.classList.add('item-is-fixed');
+					this.stickyWrapper.classList.add('item-is-stuck');
 					parent.classList.add('child-is-fixed');
 					document.body.classList.add('header-is-fixed');
 				} else {
-					//this.activeHeader.style.top = offsetTop + 'px';
-					this.activeHeader.classList.add('item-is-fixed');
-					this.activeHeader.classList.add('item-is-stuck');
-					this.activeHeader.classList.remove('item-at-start');
+					//this.stickyWrapper.style.top = offsetTop + 'px';
+					this.stickyWrapper.classList.add('item-is-fixed');
+					this.stickyWrapper.classList.add('item-is-stuck');
+					this.stickyWrapper.classList.remove('item-at-start');
 					parent.classList.add('child-is-fixed');
 					document.body.classList.add('header-is-fixed');
 				}
 			} else {
-				//this.activeHeader.style.top = offsetTop + 'px';
-				this.activeHeader.classList.add('item-is-fixed');
-				this.activeHeader.classList.remove('item-at-start');
-				this.activeHeader.classList.add('item-is-stuck');
+				//this.stickyWrapper.style.top = offsetTop + 'px';
+				this.stickyWrapper.classList.add('item-is-fixed');
+				this.stickyWrapper.classList.remove('item-at-start');
+				this.stickyWrapper.classList.add('item-is-stuck');
 				parent.classList.add('child-is-fixed');
 				document.body.classList.add('header-is-fixed');
 			}
-		} else if (this.activeHeader.classList.contains('item-is-fixed')) {
-			this.activeHeader.classList.remove('item-is-fixed');
-			this.activeHeader.classList.remove('item-at-start');
-			this.activeHeader.classList.remove('item-is-stuck');
-			this.activeHeader.style.height = null;
-			//this.activeHeader.style.top = null;
+		} else if (this.stickyWrapper.classList.contains('item-is-fixed')) {
+			this.stickyWrapper.classList.remove('item-is-fixed');
+			this.stickyWrapper.classList.remove('item-at-start');
+			this.stickyWrapper.classList.remove('item-is-stuck');
+			this.stickyWrapper.style.height = null;
+			//this.stickyWrapper.style.top = null;
 			parent.classList.remove('child-is-fixed');
 			document.body.classList.remove('header-is-fixed');
 		}
+	}
+
+	activeSizeCased(size) {
+		const sizeTouse = size ? size : this.activeSize;
+		return sizeTouse === 'desktop' ? '' : sizeTouse.charAt(0).toUpperCase() + sizeTouse.slice(1);
 	}
 
 	setStickyChanged(isSticking) {
@@ -575,7 +676,7 @@ class KBHeader {
 
 		var event = new Event('STATE');
 		event.val = val;
-		event.qlID = this.rootID;
+		event.ID = this.rootID;
 
 		this.root.dispatchEvent(event);
 	}

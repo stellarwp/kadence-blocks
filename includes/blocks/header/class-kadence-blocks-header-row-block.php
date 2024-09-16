@@ -90,6 +90,35 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$css->set_media_state( 'desktop' );
 
+		// Min Height.
+		$css->set_selector( '.wp-block-kadence-header-row.wp-block-kadence-header-row' . $unique_id . ' .kadence-header-row-inner' );
+		if ( ! empty( $attributes['minHeight'] ) ) {
+			$css->add_property( 'min-height', $attributes['minHeight'] . ( ! empty( $attributes['minHeightUnit'] ) ? $attributes['minHeightUnit'] : 'px' ) );
+		}
+		if ( $css->is_number( $attributes['minHeightTablet'] ) ) {
+			$css->set_media_state( 'tablet' );
+			$css->add_property( 'min-height', $attributes['minHeightTablet'] . ( ! empty( $attributes['minHeightUnit'] ) ? $attributes['minHeightUnit'] : 'px' ) );
+			$css->set_media_state( 'desktop' );
+		}
+		if ( $css->is_number( $attributes['minHeightMobile'] ) ) {
+			$css->set_media_state( 'mobile' );
+			$css->add_property( 'min-height', $attributes['minHeightMobile'] . ( ! empty( $attributes['minHeightUnit'] ) ? $attributes['minHeightUnit'] : 'px' ) );
+			$css->set_media_state( 'desktop' );
+		}
+		if ( ! empty( $attributes['maxWidth'] ) ) {
+			$css->add_property( 'max-width', $attributes['maxWidth'] . ( ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
+		}
+		if ( $css->is_number( $attributes['maxWidthTablet'] ) ) {
+			$css->set_media_state( 'tablet' );
+			$css->add_property( 'max-width', $attributes['maxWidthTablet'] . ( ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
+			$css->set_media_state( 'desktop' );
+		}
+		if ( $css->is_number( $attributes['maxWidthMobile'] ) ) {
+			$css->set_media_state( 'mobile' );
+			$css->add_property( 'max-width', $attributes['maxWidthMobile'] . ( ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
+			$css->set_media_state( 'desktop' );
+		}
+
 		if ( 'contained' !== $layout ) {
 			$css->set_selector( '.wp-block-kadence-header-row' . $unique_id );
 			$css->render_background( $bg, $css );
@@ -120,7 +149,11 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 			'tablet_key'  => 'borderRadiusTablet',
 			'mobile_key'  => 'borderRadiusMobile',
 		) );
-		$css->render_border_styles( $attributes, 'border' );
+		$css->render_border_styles( $attributes, 'border', false, array(
+			'desktop_key' => 'border',
+			'tablet_key'  => 'borderTablet',
+			'mobile_key'  => 'borderMobile',
+		) );
 
 		// Pass down to sections.
 		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .wp-block-kadence-header-column, .wp-block-kadence-header-row' . $unique_id . ' .wp-block-kadence-header-section' );
@@ -144,23 +177,15 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 	public function sized_dynamic_styles( $css, $attributes, $unique_id, $size = 'Desktop' ) {
 		$sized_attributes = $css->get_sized_attributes_auto( $attributes, $size, false );
 		$sized_attributes_inherit = $css->get_sized_attributes_auto( $attributes, $size );
-
 		$css->set_media_state( strtolower( $size ) );
-
-		// Container.
-		$css->set_selector( '.wp-block-kadence-header-row.wp-block-kadence-header-row' . $unique_id . ' .kadence-header-row-inner' );
-		if ( isset( $sized_attributes['minHeight'] ) && $sized_attributes['minHeight'] != 0 ) {
-			$css->add_property( 'min-height', $sized_attributes['minHeight'] . $sized_attributes['minHeightUnit'] );
-		}
-		if ( isset( $sized_attributes['maxWidth'] ) && $sized_attributes['maxWidth'] != 0 ) {
-			$css->add_property( 'max-width', $sized_attributes['maxWidth'] . $sized_attributes['maxWidthUnit'] );
-		}
 
 		// Pass down to sections.
 		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .wp-block-kadence-header-column, .wp-block-kadence-header-row' . $unique_id . ' .wp-block-kadence-header-section' );
-		if ( isset( $sized_attributes['vAlign'] ) &&  $sized_attributes['vAlign'] === 'top' ) {
+		if ( isset( $sized_attributes['vAlign'] ) && $sized_attributes['vAlign'] === 'top' ) {
 			$css->add_property( 'align-items', 'flex-start' );
-		} else if (  isset( $sized_attributes['vAlign'] ) && $sized_attributes['vAlign'] === 'bottom' ) {
+		} elseif ( isset( $sized_attributes['vAlign'] ) && $sized_attributes['vAlign'] === 'center' ) {
+			$css->add_property( 'align-items', 'center' );
+		} elseif ( isset( $sized_attributes['vAlign'] ) && $sized_attributes['vAlign'] === 'bottom' ) {
 			$css->add_property( 'align-items', 'flex-end' );
 		}
 	}

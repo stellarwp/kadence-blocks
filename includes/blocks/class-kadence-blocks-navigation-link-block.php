@@ -232,6 +232,10 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-' . $unique_id . ' .kb-nav-label-description' );
 		$css->render_typography( $attributes, 'descriptionTypography' );
 
+		//dropdown description styles
+		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-' . $unique_id . ' .sub-menu .kb-nav-label-description' );
+		$css->render_typography( $attributes, 'dropdownDescriptionTypography' );
+
 		return $css->css_output();
 	}
 
@@ -275,6 +279,19 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$css->add_property( '--kb-nav-dropdown-link-width', $css->render_size( $sized_attributes['dropdownWidth'], $sized_attributes['dropdownWidthUnit'] ) );
 		$css->add_property( '--kb-nav-dropdown-link-padding-top', $css->render_size( $sized_attributes['dropdownVerticalSpacing'], $attributes['dropdownVerticalSpacingUnit'] ) );
 		$css->add_property( '--kb-nav-dropdown-link-padding-bottom', $css->render_size( $sized_attributes['dropdownVerticalSpacing'], $attributes['dropdownVerticalSpacingUnit'] ) );
+		if( isset( $sized_attributes['dropdownDescriptionSpacing'] ) ) {
+			$css->add_property( '--kb-nav-dropdown-link-description-padding-top', $css->render_size( $sized_attributes['dropdownDescriptionSpacing'], $sized_attributes['dropdownDescriptionSpacingUnit'] ?? 'px' ) );
+		}
+		if( isset( $sized_attributes['dropdownDescriptionColor'] ) ) {
+			$css->add_property( '--kb-nav-dropdown-link-description-color', $css->render_color( $sized_attributes['dropdownDescriptionColor'] ) );
+		}
+		if( isset( $sized_attributes['dropdownDescriptionColorHover'] ) ) {
+			$css->add_property( '--kb-nav-dropdown-link-description-color-hover', $css->render_color( $sized_attributes['dropdownDescriptionColorHover'] ) );
+		}
+		if( isset( $sized_attributes['dropdownDescriptionColorActive'] ) ) {
+			$css->add_property( '--kb-nav-dropdown-link-description-color-active', $css->render_color( $sized_attributes['dropdownDescriptionColorActive'] ) );
+			$css->add_property( '--kb-nav-dropdown-link-description-color-active-ancestor', $css->render_color( $sized_attributes['dropdownDescriptionColorActive'] ) );
+		}
 		if ( $is_mega_menu ) {
 			if ($sized_attributes['megaMenuWidth'] === 'container' ) {
 				$css->add_property('--kb-nav-link-has-children-position', 'static');

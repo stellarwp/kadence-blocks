@@ -41,6 +41,7 @@ export { default as KadenceImageControl } from './common/image-controls';
 export { default as KadenceVideoControl } from './common/video-control';
 export { default as SubsectionWrap } from './common/subsection-wrap';
 export { default as KadencePanelBody } from './panel-body';
+export { default as KadenceSubPanelBody } from './sub-panel-body';
 export { default as KadenceInspectorControls } from './inspector-controls';
 export { default as KadenceSelectTerms } from './select-terms-control';
 export { default as KadencePostSelectTerms } from './post-select-terms-control';
