@@ -190,7 +190,7 @@
 			"type": "array",
 			"default": ["", "", ""]
 		},
-		"inputMaxWidthUnit": {
+		"inputMaxWidthType": {
 			"type": "string",
 			"default": "px"
 		},

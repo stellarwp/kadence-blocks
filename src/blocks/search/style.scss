@@ -3,6 +3,11 @@
 
 	form {
 		display: flex;
+		width: 100%;
+	}
+
+	.kb-search-input[type="text"] {
+		width: 100%;
 	}
 
 	.kb-buttons-wrap {
@@ -60,6 +65,12 @@
 		left: 50%;
 		transform: translate(-50%, -50%);
 		text-align: center;
+		width: 100%;
+
+		form {
+			margin: 0 auto;
+			max-width: 60%;
+		}
 	}
 	.kb-search-modal-input {
 		padding: 10px;

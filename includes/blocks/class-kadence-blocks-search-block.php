@@ -114,6 +114,8 @@ class Kadence_Blocks_Search_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_selector( '.kb-search' . $unique_id . ':hover .kb-search-close-btn svg' );
 		$css->add_property( 'stroke', $css->render_color( $attributes['closeIconHoverColor'] ) );
 
+		$css->set_selector( '.kb-search.kb-search' . $unique_id . ' form, .kb-search.kb-search' . $unique_id . ' .kb-search-modal-content form form' );
+		$css->render_responsive_range( $attributes, 'inputMaxWidth', 'max-width', 'inputMaxWidthType' );
 		return $css->css_output();
 	}
 
@@ -159,6 +161,9 @@ class Kadence_Blocks_Search_Block extends Kadence_Blocks_Abstract_Block {
 		if ( $is_modal ) {
 			$search_form .= $this->build_modal_content( $attributes, $unique_id );
 		} else {
+			if( empty( $attributes['showButton'] ) ) {
+				$content = '';
+			}
 			$search_form .= sprintf(
 				'<form class="kb-search-form" role="search" method="get" action="%s">%s%s</form>',
 				$form_action,

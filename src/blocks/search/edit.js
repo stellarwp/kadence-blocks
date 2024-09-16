@@ -464,13 +464,14 @@ export function Edit(props) {
 									setAttributes({ inputMaxWidth: [inputMaxWidth[0], inputMaxWidth[1], value] });
 								}}
 								min={0}
-								max={inputMaxWidthType !== 'px' ? 100 : 1500}
+								max={inputMaxWidthType !== 'px' ? 100 : 2000}
 								step={1}
 								unit={inputMaxWidthType}
 								onUnit={(value) => {
 									setAttributes({ inputMaxWidthType: value });
 								}}
 								units={['px', '%']}
+								reset={() => setAttributes({ inputMaxWidth: ['', '', ''], inputMaxWidthType: 'px' })}
 							/>
 							<PopColorControl
 								label={__('Text Color', 'kadence-blocks')}
@@ -869,8 +870,10 @@ export function Edit(props) {
 			<div {...blockProps}>
 				{displayStyle === 'standard' ? (
 					<>
-						{renderInputField()}
-						{showButton && <div {...innerBlocksProps} />}
+						<form className={'kb-search-form'}>
+							{renderInputField()}
+							{showButton && <div {...innerBlocksProps} />}
+						</form>
 					</>
 				) : (
 					<>
@@ -910,10 +913,12 @@ export function Edit(props) {
 									left: editorLeft + 'px',
 								}}
 							>
-								<label className="screen-reader-text" htmlFor={'kb-search-input' + uniqueID}>
-									Search for:
-								</label>
-								{renderInputField()}
+								<form className={'kb-search-form'}>
+									<label className="screen-reader-text" htmlFor={'kb-search-input' + uniqueID}>
+										Search for:
+									</label>
+									{renderInputField()}
+								</form>
 							</div>
 						</div>
 					</>

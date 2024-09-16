@@ -65,6 +65,8 @@ export default function BackendStyles(props) {
 		modalBackgroundType,
 		inputIconColor,
 		inputIconHoverColor,
+		inputMaxWidth,
+		inputMaxWidthType,
 	} = attributes;
 
 	const css = new KadenceBlocksCSS();
@@ -194,13 +196,18 @@ export default function BackendStyles(props) {
 		undefined !== mobileInputMargin ? mobileInputMargin[3] : ''
 	);
 
-	// previewInputFontSize
-
 	const previewInputFontSize = getPreviewSize(
 		previewDevice,
 		undefined !== inputTypography[0]?.size?.[0] ? inputTypography[0].size[0] : '',
 		undefined !== inputTypography[0]?.size?.[1] ? inputTypography[0].size[1] : '',
 		undefined !== inputTypography[0]?.size?.[2] ? inputTypography[0].size[2] : ''
+	);
+
+	const previewInputMaxWidth = getPreviewSize(
+		previewDevice,
+		undefined !== inputMaxWidth ? inputMaxWidth[0] : '',
+		undefined !== inputMaxWidth ? inputMaxWidth[1] : '',
+		undefined !== inputMaxWidth ? inputMaxWidth[2] : ''
 	);
 
 	if (isSelected) {
@@ -301,6 +308,9 @@ export default function BackendStyles(props) {
 
 	css.set_selector(`.kb-search${uniqueID}:hover .kb-search-close-icon svg`);
 	css.add_property('stroke', KadenceColorOutput(inputIconHoverColor));
+
+	css.set_selector(`.kb-search${uniqueID} form`);
+	css.add_property('max-width', getSpacingOptionOutput(previewInputMaxWidth, inputMaxWidthType));
 
 	const cssOutput = css.css_output();
 
