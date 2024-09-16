@@ -339,8 +339,16 @@
 					-1 * Math.abs(parentMenuItem.getBoundingClientRect().left - rowDistanceToEdge).toString() + 'px'
 				);
 			} else {
-				contentSubmenus[i].style.setProperty('--kb-nav-dropdown-width', '100%');
-				contentSubmenus[i].style.setProperty('--kb-nav-dropdown-show-left', '0');
+				contentSubmenus[i].style.setProperty(
+					'--kb-nav-dropdown-width',
+					'var(--wp--style--global--content-size, 100%)'
+				);
+				contentSubmenus[i].style.setProperty(
+					'--kb-nav-dropdown-show-left',
+					'calc( (((100vw - var(--wp--style--global--content-size, 100%)) / 2) - ' +
+						Math.abs(parentMenuItem.getBoundingClientRect().left).toString() +
+						'px))'
+				);
 			}
 			contentSubmenus[i].style.setProperty('--kb-nav-dropdown-hide-transform-x', '0');
 			contentSubmenus[i].style.setProperty('--kb-nav-dropdown-show-transform-x', '0');

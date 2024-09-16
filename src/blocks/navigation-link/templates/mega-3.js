@@ -22,7 +22,6 @@ function innerBlocks() {
 				customGutter: [16, '', ''],
 				colLayout: 'equal',
 				columnsInnerHeight: true,
-				borderRadius: [6, 6, 6, 6],
 				inheritMaxWidth: true,
 				align: '',
 				padding: ['0', 'xs', '0', '0'],
