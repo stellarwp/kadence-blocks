@@ -1096,7 +1096,7 @@ export function EditInner(props) {
 			<>
 				<Placeholder
 					className="kb-select-or-create-placeholder"
-					label={__('Kadence Heading', 'kadence-blocks')}
+					label={__('Kadence Navigation', 'kadence-blocks')}
 					icon={formBlockIcon}
 				>
 					<p style={{ width: '100%', marginBottom: '10px' }}>
