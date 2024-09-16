@@ -4,7 +4,7 @@
 	.kadence-header-row-inner {
 		padding: 0 var(--global-content-edge-padding, 15px);
 		display: grid;
-		grid-template-columns: 1fr auto 1fr;
+		grid-template-columns: 1fr minmax(0, auto) 1fr;
 		margin: 0 auto;
 	}
 	.kadence-header-row-inner:has(> div.no-content-column-center) {

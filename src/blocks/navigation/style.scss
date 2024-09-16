@@ -882,7 +882,11 @@
 		transition: all 0.2s ease-in-out;
 		position: relative;
 		display: flex;
-		color: var(--kb-nav-link-color, inherit);
+		color: var(--kb-nav-link-color-hover-lv, var(--kb-nav-link-color-active-lv, var(--kb-nav-link-color, inherit)));
+		background: var(
+			--kb-nav-link-background-hover-lv,
+			var(--kb-nav-link-background-active-lv, var(--kb-nav-link-background, inherit))
+		);
 		border-right: var(--kb-nav-link-wrap-border-right);
 		border-bottom: var(--kb-nav-link-wrap-border-bottom);
 

@@ -246,15 +246,15 @@
 		var contentSubmenus = null;
 		if (window.innerWidth > 1024) {
 			contentSubmenus = document.querySelectorAll(
-				'.wp-block-kadence-navigation .kb-menu-mega-width-full > ul.sub-menu'
+				'.wp-block-kadence-navigation.navigation-desktop-orientation-horizontal .kb-menu-mega-width-full > ul.sub-menu'
 			);
 		} else if (window.innerWidth > 768) {
 			contentSubmenus = document.querySelectorAll(
-				'.wp-block-kadence-navigation .kb-menu-mega-width-tablet-full > ul.sub-menu'
+				'.wp-block-kadence-navigation.navigation-tablet-orientation-horizontal .kb-menu-mega-width-tablet-full > ul.sub-menu'
 			);
 		} else {
 			contentSubmenus = document.querySelectorAll(
-				'.wp-block-kadence-navigation .kb-menu-mega-width-mobile-full > ul.sub-menu'
+				'.wp-block-kadence-navigation.navigation-mobile-orientation-horizontal .kb-menu-mega-width-mobile-full > ul.sub-menu'
 			);
 		}
 		for (let i = 0; i < contentSubmenus.length; i++) {
@@ -315,15 +315,15 @@
 		var contentSubmenus = null;
 		if (window.innerWidth > 1024) {
 			contentSubmenus = document.querySelectorAll(
-				'.wp-block-kadence-navigation .kb-menu-mega-width-content > ul.sub-menu'
+				'.wp-block-kadence-navigation.navigation-desktop-orientation-horizontal .kb-menu-mega-width-content > ul.sub-menu'
 			);
 		} else if (window.innerWidth > 768) {
 			contentSubmenus = document.querySelectorAll(
-				'.wp-block-kadence-navigation .kb-menu-mega-width-tablet-content > ul.sub-menu'
+				'.wp-block-kadence-navigation.navigation-tablet-orientation-horizontal .kb-menu-mega-width-tablet-content > ul.sub-menu'
 			);
 		} else {
 			contentSubmenus = document.querySelectorAll(
-				'.wp-block-kadence-navigation .kb-menu-mega-width-mobile-content > ul.sub-menu'
+				'.wp-block-kadence-navigation.navigation-mobile-orientation-horizontal .kb-menu-mega-width-mobile-content > ul.sub-menu'
 			);
 		}
 		for (let i = 0; i < contentSubmenus.length; i++) {
