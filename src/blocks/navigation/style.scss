@@ -272,7 +272,7 @@
 			.menu-item {
 				display: list-item;
 				//margin: initial;
-				.sub-menu {
+				.sub-menu.sub-menu {
 					--kb-nav-dropdown-width: auto;
 					--kb-nav-dropdown-show-left: 0;
 				}
