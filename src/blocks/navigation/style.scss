@@ -275,6 +275,8 @@
 				.sub-menu.sub-menu {
 					--kb-nav-dropdown-width: auto;
 					--kb-nav-dropdown-show-left: 0;
+					--kb-nav-dropdown-hide-transform-x: 0;
+					--kb-nav-dropdown-show-transform-x: 0;
 				}
 			}
 		}
