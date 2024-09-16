@@ -124,6 +124,11 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 				'mobile_key'  => 'closeIconPaddingMobile',
 			]
 		);
+		$css->render_measure_output( $attributes, 'closeIconMargin', 'margin', array(
+			'desktop_key' => 'closeIconMargin',
+			'tablet_key'  => 'closeIconMarginTablet',
+			'mobile_key'  => 'closeIconMarginMobile',
+		) );
 		$css->render_measure_output( $attributes, 'closeIconBorderRadius', 'border-radius', array(
 			'desktop_key' => 'closeIconBorderRadius',
 			'tablet_key'  => 'closeIconBorderRadiusTablet',

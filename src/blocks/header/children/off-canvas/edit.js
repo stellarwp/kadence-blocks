@@ -110,6 +110,10 @@ export function Edit(props) {
 		closeIconPaddingTablet,
 		closeIconPaddingMobile,
 		closeIconPaddingUnit,
+		closeIconMargin,
+		closeIconMarginTablet,
+		closeIconMarginMobile,
+		closeIconMarginUnit,
 		closeIconBorder,
 		closeIconBorderTablet,
 		closeIconBorderMobile,
@@ -593,6 +597,28 @@ export function Edit(props) {
 								unit={closeIconPaddingUnit}
 								units={['px', 'em', 'rem', '%']}
 								onUnit={(value) => setAttributes({ closeIconPaddingUnit: value })}
+							/>
+
+							<ResponsiveMeasureRangeControl
+								label={__('Margin', 'kadence-blocks')}
+								value={closeIconMargin}
+								tabletValue={closeIconMarginTablet}
+								mobileValue={closeIconMarginMobile}
+								onChange={(value) => setAttributes({ closeIconMargin: value })}
+								onChangeTablet={(value) => setAttributes({ closeIconMarginTablet: value })}
+								onChangeMobile={(value) => setAttributes({ closeIconMarginMobile: value })}
+								min={0}
+								max={
+									closeIconMarginUnit === 'em' || closeIconMarginUnit === 'rem'
+										? 25
+										: closeIconMarginUnit === 'px'
+										? 400
+										: 100
+								}
+								step={closeIconMarginUnit === 'em' || closeIconMarginUnit === 'rem' ? 0.1 : 1}
+								unit={closeIconMarginUnit}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setAttributes({ closeIconMarginUnit: value })}
 							/>
 						</KadencePanelBody>
 					</>

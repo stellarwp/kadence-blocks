@@ -251,6 +251,22 @@
 			"type": "string",
 			"default": "px"
 		},
+		"closeIconMargin": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"closeIconMarginTablet": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"closeIconMarginMobile": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"closeIconMarginUnit": {
+			"type": "string",
+			"default": "px"
+		},
 		"closeIconBorder": {
 			"type": "array",
 			"default": [

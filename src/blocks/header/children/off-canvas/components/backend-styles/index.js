@@ -63,6 +63,10 @@ export default function BackendStyles(props) {
 		closeIconPaddingTablet,
 		closeIconPaddingMobile,
 		closeIconPaddingUnit,
+		closeIconMargin,
+		closeIconMarginTablet,
+		closeIconMarginMobile,
+		closeIconMarginUnit,
 		closeIconBorder,
 		closeIconBorderTablet,
 		closeIconBorderMobile,
@@ -224,6 +228,14 @@ export default function BackendStyles(props) {
 		previewDevice,
 		'padding',
 		closeIconPaddingUnit
+	);
+	css.render_measure_output(
+		closeIconMargin,
+		closeIconMarginTablet,
+		closeIconMarginMobile,
+		previewDevice,
+		'margin',
+		closeIconMarginUnit
 	);
 	css.add_property('background-color', KadenceColorOutput(previewCloseIconBackgroundColor));
 	css.add_property(
