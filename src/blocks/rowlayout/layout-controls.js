@@ -51,7 +51,7 @@ import { showSettings } from '@kadence/helpers';
  * Import Block Specific Components
  */
 import renderSVGDivider from './render-svg-divider';
-import metadata from './block.json'
+import metadata from './block.json';
 /**
  * Import WordPress Internals
  */
