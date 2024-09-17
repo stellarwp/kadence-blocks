@@ -322,7 +322,7 @@ export function Edit(props) {
 										mobileValue={maxWidthMobile ? maxWidthMobile : ''}
 										onChangeMobile={(value) => setAttributes({ maxWidthMobile: value })}
 										min={maxWidthUnit === 'px' ? 250 : 0}
-										max={maxWidthUnit === 'px' ? 1500 : 100}
+										max={maxWidthUnit === 'px' ? 3000 : 100}
 										step={1}
 										unit={maxWidthUnit}
 										onUnit={(value) => setAttributes({ maxWidthUnit: value })}
@@ -348,7 +348,7 @@ export function Edit(props) {
 								mobileValue={containerMaxWidthMobile ? containerMaxWidthMobile : ''}
 								onChangeMobile={(value) => setAttributes({ containerMaxWidthMobile: value })}
 								min={0}
-								max={containerMaxWidthUnit == 'px' ? 1500 : 100}
+								max={containerMaxWidthUnit == 'px' ? 3000 : 100}
 								step={1}
 								unit={containerMaxWidthUnit}
 								onUnit={(value) => setAttributes({ containerMaxWidthUnit: value })}
