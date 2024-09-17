@@ -44,7 +44,7 @@ export default function RangeControl({
 						<Button
 							className="is-reset is-single"
 							isSmall
-							disabled={isEqual('', value) ? true : false}
+							disabled={isEqual(value, defaultValue)}
 							icon={undo}
 							onClick={() => {
 								if (typeof reset === 'function') {

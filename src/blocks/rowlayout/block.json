@@ -265,11 +265,11 @@
 		},
 		"topSepHeightTab": {
 			"type": "number",
-			"default": ""
+			"default": 100
 		},
 		"topSepHeightMobile": {
 			"type": "number",
-			"default": ""
+			"default": 100
 		},
 		"topSepHeightUnit": {
 			"type": "string",
@@ -297,11 +297,11 @@
 		},
 		"bottomSepWidthTab": {
 			"type": "number",
-			"default": ""
+			"default": 100
 		},
 		"bottomSepWidthMobile": {
 			"type": "number",
-			"default": ""
+			"default": 100
 		},
 		"bottomSepHeightUnit": {
 			"type": "string",
@@ -309,11 +309,11 @@
 		},
 		"bottomSepHeightTab": {
 			"type": "number",
-			"default": ""
+			"default": 100
 		},
 		"bottomSepHeightMobile": {
 			"type": "number",
-			"default": ""
+			"default": 100
 		},
 		"firstColumnWidth": {
 			"type": "number"
@@ -493,15 +493,15 @@
 		},
 		"topSepWidth": {
 			"type": "number",
-			"default": ""
+			"default": 100
 		},
 		"topSepWidthTablet": {
 			"type": "number",
-			"default": ""
+			"default": 100
 		},
 		"topSepWidthMobile": {
 			"type": "number",
-			"default": ""
+			"default": 100
 		},
 		"backgroundInline": {
 			"type": "boolean",

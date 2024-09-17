@@ -51,6 +51,7 @@ import { showSettings } from '@kadence/helpers';
  * Import Block Specific Components
  */
 import renderSVGDivider from './render-svg-divider';
+import metadata from './block.json'
 /**
  * Import WordPress Internals
  */
@@ -736,9 +737,9 @@ function LayoutControls({
 							}}
 							units={['px', 'em', 'vh']}
 							showUnit={true}
-							defaultValue={100}
-							defaultTablet={100}
-							defaultMobile={100}
+							defaultValue={metadata.attributes.topSepHeight}
+							defaultTablet={metadata.attributes.topSepHeightTab}
+							defaultMobile={metadata.attributes.topSepHeightMobile}
 							reset={true}
 						/>
 						<ResponsiveRangeControls
@@ -761,9 +762,9 @@ function LayoutControls({
 							showUnit={true}
 							unit={'%'}
 							units={['%']}
-							defaultValue={100}
-							defaultTablet={100}
-							defaultMobile={100}
+							defaultValue={metadata.attributes.topSepWidth}
+							defaultTablet={metadata.attributes.topSepWidthTablet}
+							defaultMobile={metadata.attributes.topSepWidthMobile}
 							reset={true}
 						/>
 					</KadencePanelBody>
@@ -833,9 +834,9 @@ function LayoutControls({
 							}}
 							units={['px', 'em', 'vh']}
 							showUnit={true}
-							defaultValue={100}
-							defaultTablet={100}
-							defaultMobile={100}
+							defaultValue={metadata.attributes.bottomSepHeight}
+							defaultTablet={metadata.attributes.bottomSepHeightTab}
+							defaultMobile={metadata.attributes.bottomSepHeightMobile}
 							reset={true}
 						/>
 						<ResponsiveRangeControls
@@ -858,9 +859,9 @@ function LayoutControls({
 							showUnit={true}
 							unit={'%'}
 							units={['%']}
-							defaultValue={100}
-							defaultTablet={100}
-							defaultMobile={100}
+							defaultValue={metadata.attributes.bottomSepWidth}
+							defaultTablet={metadata.attributes.bottomSepWidthTab}
+							defaultMobile={metadata.attributes.bottomSepWidthMobile}
 							reset={true}
 						/>
 					</KadencePanelBody>
