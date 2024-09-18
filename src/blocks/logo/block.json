@@ -1,0 +1,29 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "kadence/logo",
+	"title": "Logo",
+	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
+	"attributes": {
+		"uniqueID": {
+			"type": "string"
+		},
+		"showSiteTitle": {
+			"type": "boolean",
+			"default": true
+		},
+		"showSiteTagline": {
+			"type": "boolean",
+			"default": false
+		},
+		"layout": {
+			"type": "string",
+			"default": "logo-title"
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"kbMetadata": true
+	}
+}

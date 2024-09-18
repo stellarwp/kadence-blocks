@@ -81,6 +81,7 @@ function kadence_blocks_init(): void {
 	require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-infobox-block.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-image-block.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-lottie-block.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-logo-block.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-posts-block.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-progress-bar-block.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/blocks/class-kadence-blocks-search-block.php';

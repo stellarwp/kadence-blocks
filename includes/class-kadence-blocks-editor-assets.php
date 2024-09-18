@@ -129,6 +129,7 @@ class Editor_Assets {
 			'image',
 			'infobox',
 			'lottie',
+			'logo',
 			'posts',
 			'rowlayout',
 			'progress-bar',

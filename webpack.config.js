@@ -26,6 +26,7 @@ module.exports = {
 		'blocks-singlebtn': './src/blocks/singlebtn/block.js',
 		'blocks-countup': './src/blocks/countup/block.js',
 		'blocks-rowlayout': './src/blocks/rowlayout/index.js',
+		'blocks-logo': './src/blocks/logo/index.js',
 		'blocks-column': './src/blocks/column/index.js',
 		'blocks-advancedheading': './src/blocks/advancedheading/block.js',
 		'blocks-icon': './src/blocks/icon/block.js',

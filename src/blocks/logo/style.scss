@@ -1,0 +1,53 @@
+.kb-logo {
+	display: flex;
+	align-items: center;
+}
+
+.kb-logo-inner-blocks {
+	display: contents;
+}
+
+/* Logo left, Title right */
+.kb-logo-layout-logo-left {
+	flex-direction: row;
+}
+
+/* Logo right, Title left */
+.kb-logo-layout-logo-right {
+	flex-direction: row-reverse;
+}
+
+/* Logo top, Title below */
+.kb-logo-layout-logo-top {
+	flex-direction: column;
+}
+
+/* Logo bottom, Title above */
+.kb-logo-layout-logo-bottom {
+	flex-direction: column-reverse;
+}
+
+/* Logo left, Title and Tagline stacked right */
+.kb-logo-layout-logo-left-stacked {
+	flex-direction: row;
+}
+.kb-logo-layout-logo-left-stacked .kb-logo-inner-blocks {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+/* Logo right, Title and Tagline stacked left */
+.kb-logo-layout-logo-right-stacked {
+	flex-direction: row-reverse;
+}
+.kb-logo-layout-logo-right-stacked .kb-logo-inner-blocks {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+}
+
+/* Title top, Logo middle, Tagline bottom */
+.kb-logo-layout-title-logo-tagline {
+	flex-direction: column;
+}
