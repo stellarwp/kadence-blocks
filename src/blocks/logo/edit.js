@@ -68,23 +68,29 @@ export function Edit(props) {
 
 	useEffect(() => {
 		updateInnerBlocks();
+
+		if (['logo-right-stacked', 'logo-left-stacked'].includes(layout) && !showSiteTagline) {
+			if (layout === 'logo-right-stacked') {
+				setAttributes({ layout: 'logo-right' });
+			} else {
+				setAttributes({ layout: 'logo-left' });
+			}
+		}
 	}, [showSiteTitle, showSiteTagline, layout]);
 
 	const updateInnerBlocks = () => {
 		const findBlockByMetadata = (blocks, metadata) => {
 			for (const block of blocks) {
-				if (block.attributes.metadata?.for === metadata) {
-					return block;
-				}
-				if (block.innerBlocks && block.innerBlocks.length > 0) {
+				if (block.attributes.metadata?.for === metadata) return block;
+				if (block.innerBlocks?.length > 0) {
 					const foundBlock = findBlockByMetadata(block.innerBlocks, metadata);
-					if (foundBlock) {
-						return foundBlock;
-					}
+					if (foundBlock) return foundBlock;
 				}
 			}
 			return null;
 		};
+
+		const addBlock = (metadata, defaultBlock) => findBlockByMetadata(innerBlocks, metadata) || defaultBlock;
 
 		const newInnerBlocks = [];
 		const imageBlock =
@@ -92,54 +98,25 @@ export function Edit(props) {
 		newInnerBlocks.push(imageBlock);
 
 		if (showSiteTitle || showSiteTagline) {
+			let titleBlock, taglineBlock;
+
+			if (showSiteTitle) titleBlock = addBlock('title', newTitleBlock);
+			if (showSiteTagline) taglineBlock = addBlock('tagline', newTaglineBlock);
+
+			const addBlocksInOrder = (...blocks) => blocks.forEach((block) => block && newInnerBlocks.push(block));
+
 			if (['logo-right-stacked', 'logo-left-stacked'].includes(layout)) {
 				const groupBlock = createBlock('core/group', {}, []);
-
-				if (showSiteTitle) {
-					const titleBlock = findBlockByMetadata(innerBlocks, 'title') || newTitleBlock;
-					groupBlock.innerBlocks.push(titleBlock);
-				}
-
-				if (showSiteTagline) {
-					const taglineBlock = findBlockByMetadata(innerBlocks, 'tagline') || newTaglineBlock;
-					groupBlock.innerBlocks.push(taglineBlock);
-				}
-
-				newInnerBlocks.push(groupBlock);
-			} else if (showSiteTitle && showSiteTagline && ['logo-bottom'].includes(layout)) {
-				if (showSiteTagline) {
-					const taglineBlock = findBlockByMetadata(innerBlocks, 'tagline') || newTaglineBlock;
-					newInnerBlocks.push(taglineBlock);
-				}
-
-				if (showSiteTitle) {
-					const titleBlock = findBlockByMetadata(innerBlocks, 'title') || newTitleBlock;
-					newInnerBlocks.push(titleBlock);
-				}
+				addBlocksInOrder(titleBlock, taglineBlock);
+				groupBlock.innerBlocks.push(...newInnerBlocks.slice(1)); // Add title/tagline inside group
+				newInnerBlocks.splice(1, newInnerBlocks.length, groupBlock); // Replace with group
+			} else if (['logo-bottom'].includes(layout)) {
+				addBlocksInOrder(taglineBlock, titleBlock);
 			} else if (['title-logo-tagline'].includes(layout)) {
-				newInnerBlocks.pop(); // Remove existing image block so we can re-add in order
-
-				if (showSiteTitle) {
-					const titleBlock = findBlockByMetadata(innerBlocks, 'title') || newTitleBlock;
-					newInnerBlocks.push(titleBlock);
-				}
-
-				newInnerBlocks.push(imageBlock);
-
-				if (showSiteTagline) {
-					const taglineBlock = findBlockByMetadata(innerBlocks, 'tagline') || newTaglineBlock;
-					newInnerBlocks.push(taglineBlock);
-				}
+				newInnerBlocks.pop(); // Remove existing image block
+				addBlocksInOrder(titleBlock, imageBlock, taglineBlock);
 			} else {
-				if (showSiteTitle) {
-					const titleBlock = findBlockByMetadata(innerBlocks, 'title') || newTitleBlock;
-					newInnerBlocks.push(titleBlock);
-				}
-
-				if (showSiteTagline) {
-					const taglineBlock = findBlockByMetadata(innerBlocks, 'tagline') || newTaglineBlock;
-					newInnerBlocks.push(taglineBlock);
-				}
+				addBlocksInOrder(titleBlock, taglineBlock);
 			}
 		}
 
