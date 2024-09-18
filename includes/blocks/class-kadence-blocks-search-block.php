@@ -92,7 +92,6 @@ class Kadence_Blocks_Search_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_typography( $attributes, 'inputTypography' );
 		$css->render_measure_range( $attributes, 'inputBorderRadius', 'border-radius' );
 		$css->render_measure_output( $attributes, 'inputPadding', 'padding' );
-		$css->render_measure_output( $attributes, 'inputMargin', 'margin' );
 		$css->render_border_styles( $attributes, 'inputBorderStyles' );
 
 		if ( $attributes['inputBackgroundType'] === 'gradient' ) {
@@ -100,6 +99,9 @@ class Kadence_Blocks_Search_Block extends Kadence_Blocks_Abstract_Block {
 		} else {
 			$css->add_property( 'background', $css->render_color( $attributes['inputBackgroundColor'] ) );
 		}
+
+		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-input-wrapper' );
+		$css->render_measure_output( $attributes, 'inputMargin', 'margin' );
 
 		// SVG colors.
 		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-icon svg' );
