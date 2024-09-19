@@ -178,7 +178,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 					'renderAsVars' => true,
 					'varBase' => '--kb-nav-link-highlight-',
 				] );
-				$css->render_measure_output( $attributes['highlightSpacing'][0],  'border-radius', 'borderRadius', [
+				$css->render_measure_output( $attributes['highlightSpacing'][0],  'borderRadius', 'border-radius', [
 					'first_prop' => '--kb-nav-link-highlight-border-top-left-radius',
 					'second_prop' => '--kb-nav-link-highlight-border-top-right-radius',
 					'third_prop' => '--kb-nav-link-highlight-border-bottom-right-radius',
