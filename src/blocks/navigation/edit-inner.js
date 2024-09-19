@@ -772,7 +772,7 @@ export function EditInner(props) {
 		return () => {
 			isMounted = false; // Cleanup to avoid setting state on unmounted component
 		};
-	}, [id]);
+	}, [window.kb_navigation_import_core]);
 
 	useEffect(() => {
 		if (blocksToInsert.length !== 0) {

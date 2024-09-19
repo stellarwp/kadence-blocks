@@ -269,10 +269,7 @@ export default function BackendStyles(props) {
 	css.add_property('padding-right', getSpacingOptionOutput(previewInputPaddingRight, inputPaddingType));
 	css.add_property('padding-bottom', getSpacingOptionOutput(previewInputPaddingBottom, inputPaddingType));
 	css.add_property('padding-left', getSpacingOptionOutput(previewInputPaddingLeft, inputPaddingType));
-	css.add_property('margin-top', getSpacingOptionOutput(previewInputMarginTop, inputMarginType));
-	css.add_property('margin-right', getSpacingOptionOutput(previewInputMarginRight, inputMarginType));
-	css.add_property('margin-bottom', getSpacingOptionOutput(previewInputMarginBottom, inputMarginType));
-	css.add_property('margin-left', getSpacingOptionOutput(previewInputMarginLeft, inputMarginType));
+
 	css.add_property(
 		'border-top',
 		getBorderStyle(previewDevice, 'top', inputBorderStyles, tabletInputBorderStyles, mobileInputBorderStyles)
@@ -295,12 +292,21 @@ export default function BackendStyles(props) {
 		css.add_property('background', KadenceColorOutput(inputBackgroundColor));
 	}
 
+	css.set_selector(`.kb-search${uniqueID} .kb-search-input-wrapper`);
+	css.add_property('margin-top', getSpacingOptionOutput(previewInputMarginTop, inputMarginType));
+	css.add_property('margin-right', getSpacingOptionOutput(previewInputMarginRight, inputMarginType));
+	css.add_property('margin-bottom', getSpacingOptionOutput(previewInputMarginBottom, inputMarginType));
+	css.add_property('margin-left', getSpacingOptionOutput(previewInputMarginLeft, inputMarginType));
+
 	// Input SVG Icon
 	css.set_selector(`.kb-search${uniqueID} .kb-search-icon svg`);
 	css.add_property('stroke', KadenceColorOutput(inputIconColor));
 
 	css.set_selector(`.kb-search${uniqueID}:hover .kb-search-icon svg`);
 	css.add_property('stroke', KadenceColorOutput(inputIconHoverColor));
+
+	css.set_selector(`.kb-search${uniqueID} .kb-search-icon`);
+	css.add_property('right', getSpacingOptionOutput(previewInputPaddingRight, inputPaddingType));
 
 	// Close SVG Icon
 	css.set_selector(`.kb-search${uniqueID} .kb-search-close-icon svg`);

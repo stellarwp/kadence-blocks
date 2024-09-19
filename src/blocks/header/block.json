@@ -9,7 +9,6 @@
 		"html": false,
 		"customClassName": false,
 		"reusable": false,
-		"multiple": false,
 		"lock": false,
 		"kbMetadata": true
 	},

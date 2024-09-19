@@ -466,8 +466,10 @@ class KBHeader {
 				// 		var totalOffsetDelay = Math.floor(this.activeOffsetTop - offsetTop);
 				// 	}
 				// }
-				const shrinkLogos = this.activeHeaderContainer.querySelectorAll('.custom-logo');
-				const shrinkHeader = this.activeHeaderContainer.querySelector('.wp-block-kadence-header-row-center');
+				const shrinkLogos = this.activeHeaderContainer.querySelectorAll('.kb-img');
+				const shrinkHeader = this.activeHeaderContainer.querySelector(
+					'.wp-block-kadence-header-row-center .kadence-header-row-inner'
+				);
 
 				//set shrink starting height
 				if (!this.shrinkStartHeight || (e && undefined !== e.type && 'orientationchange' === e.type)) {
