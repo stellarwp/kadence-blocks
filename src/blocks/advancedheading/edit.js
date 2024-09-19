@@ -236,8 +236,10 @@ function KadenceAdvancedHeading(props) {
 
 	const [activeTab, setActiveTab] = useState('style');
 	const [contentRef, setContentRef] = useState();
+	const insideBlock = context?.['kadence/insideBlock'];
+
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData, allowedFormats } = useSelect(
 		(select) => {
 			return {
 				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
@@ -253,6 +255,7 @@ function KadenceAdvancedHeading(props) {
 					),
 					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
 				},
+				allowedFormats: select('core/rich-text').getFormatTypes(),
 			};
 		},
 		[clientId]
@@ -389,10 +392,17 @@ function KadenceAdvancedHeading(props) {
 		],
 		'kadence/advancedheading'
 	);
-	richTextFormatsBase = !kadenceDynamic?.content?.shouldReplace
-		? [...['kadence/insert-dynamic'], ...richTextFormatsBase]
-		: richTextFormatsBase;
-	const richTextFormats = link || kadenceDynamic?.content?.shouldReplace ? richTextFormatsBase : undefined;
+
+	let richTextFormats = allowedFormats.map((format) => format.name);
+	if (insideBlock === 'logo') {
+		richTextFormats = allowedFormats.filter((format) => format.name !== 'core/link').map((format) => format.name);
+	} else if (link || kadenceDynamic?.content?.shouldReplace) {
+		richTextFormatsBase = !kadenceDynamic?.content?.shouldReplace
+			? [...['kadence/insert-dynamic'], ...richTextFormatsBase]
+			: richTextFormatsBase;
+		richTextFormats = richTextFormatsBase;
+	}
+
 	const renderTypography = typography && !typography.includes(',') ? "'" + typography + "'" : typography;
 	const markBGString = markBG ? KadenceColorOutput(markBG, markBGOpacity) : '';
 	const markBorderString = markBorder ? KadenceColorOutput(markBorder, markBorderOpacity) : '';
@@ -884,7 +894,7 @@ function KadenceAdvancedHeading(props) {
 					id={'adv-heading' + uniqueID}
 					tagName="span"
 					className={'kb-adv-heading-inner'}
-					allowedFormats={richTextFormats ? richTextFormats : undefined}
+					allowedFormats={richTextFormats}
 					value={content}
 					onChange={(value) => setAttributes({ content: value })}
 					onMerge={mergeBlocks}
@@ -1338,7 +1348,7 @@ function KadenceAdvancedHeading(props) {
 									units={['px', '%', 'vw']}
 								/>
 							</KadencePanelBody>
-							{showSettings('linkSettings', 'kadence/advancedheading') && (
+							{showSettings('linkSettings', 'kadence/advancedheading') && 'logo' !== insideBlock && (
 								<KadencePanelBody
 									title={__('Link Settings', 'kadence-blocks')}
 									initialOpen={false}

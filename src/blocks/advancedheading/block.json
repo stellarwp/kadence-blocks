@@ -518,7 +518,7 @@
 			"default": false
 		}
 	},
-	"usesContext": ["postId", "queryId", "kadence/dynamicSource", "kadence/repeaterRowData", "kadence/repeaterRow"],
+	"usesContext": ["postId", "queryId", "kadence/dynamicSource", "kadence/repeaterRowData", "kadence/repeaterRow", "kadence/insideBlock"],
 	"supports": {
 		"ktanimate": true,
 		"ktanimatereveal": true,

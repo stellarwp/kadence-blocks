@@ -19,11 +19,13 @@ import './editor.scss';
 const newTaglineBlock = createBlock('kadence/advancedheading', {
 	metadata: { name: __('Site Tagline', 'kadence-blocks'), for: 'tagline' },
 	className: 'kb-logo-tagline',
+	fontSize: ['sm', '', ''],
 });
 
 const newTitleBlock = createBlock('kadence/advancedheading', {
 	metadata: { name: __('Site Title', 'kadence-blocks'), for: 'title' },
 	className: 'kb-logo-title',
+	fontSize: ['lg', '', ''],
 });
 
 export function Edit(props) {
