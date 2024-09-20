@@ -150,7 +150,7 @@ export default function ResponsiveRadioRangeControls( {
 						<Button
 							className="is-reset is-single"
 							isSmall
-							disabled={ ( ( isEqual( '', value ) ) && ( isEqual( '', tabletValue ) ) && ( isEqual( '', mobileValue ) ) ? true : false ) }
+							disabled={ ( isEqual( value, defaultValue ) ) && ( isEqual( tabletValue, defaultTablet ) ) && ( isEqual( mobileValue, defaultMobile ) ) }
 							icon={ undo }
 							onClick={() => {
 								if (typeof reset === 'function') {

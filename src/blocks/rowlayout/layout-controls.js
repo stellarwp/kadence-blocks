@@ -51,6 +51,7 @@ import { showSettings } from '@kadence/helpers';
  * Import Block Specific Components
  */
 import renderSVGDivider from './render-svg-divider';
+import metadata from './block.json';
 /**
  * Import WordPress Internals
  */
@@ -736,9 +737,9 @@ function LayoutControls({
 							}}
 							units={['px', 'em', 'vh']}
 							showUnit={true}
-							defaultValue={100}
-							defaultTablet={100}
-							defaultMobile={100}
+							defaultValue={metadata.attributes.topSepHeight.default}
+							defaultTablet={metadata.attributes.topSepHeightTab.default}
+							defaultMobile={metadata.attributes.topSepHeightMobile.default}
 							reset={true}
 						/>
 						<ResponsiveRangeControls
@@ -761,9 +762,9 @@ function LayoutControls({
 							showUnit={true}
 							unit={'%'}
 							units={['%']}
-							defaultValue={100}
-							defaultTablet={100}
-							defaultMobile={100}
+							defaultValue={metadata.attributes.topSepWidth.default}
+							defaultTablet={metadata.attributes.topSepWidthTablet.default}
+							defaultMobile={metadata.attributes.topSepWidthMobile.default}
 							reset={true}
 						/>
 					</KadencePanelBody>
@@ -833,9 +834,9 @@ function LayoutControls({
 							}}
 							units={['px', 'em', 'vh']}
 							showUnit={true}
-							defaultValue={100}
-							defaultTablet={100}
-							defaultMobile={100}
+							defaultValue={metadata.attributes.bottomSepHeight.default}
+							defaultTablet={metadata.attributes.bottomSepHeightTab.default}
+							defaultMobile={metadata.attributes.bottomSepHeightMobile.default}
 							reset={true}
 						/>
 						<ResponsiveRangeControls
@@ -858,9 +859,9 @@ function LayoutControls({
 							showUnit={true}
 							unit={'%'}
 							units={['%']}
-							defaultValue={100}
-							defaultTablet={100}
-							defaultMobile={100}
+							defaultValue={metadata.attributes.bottomSepWidth.default}
+							defaultTablet={metadata.attributes.bottomSepWidthTab.default}
+							defaultMobile={metadata.attributes.bottomSepWidthMobile.default}
 							reset={true}
 						/>
 					</KadencePanelBody>
