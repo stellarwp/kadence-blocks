@@ -36,7 +36,7 @@ class Kadence_Blocks_Logo_Block extends Kadence_Blocks_Abstract_Block {
 	 *
 	 * @var string
 	 */
-	protected $has_script = true;
+	protected $has_script = false;
 
 	/**
 	 * Block determines in scripts need to be loaded for block.
@@ -82,27 +82,50 @@ class Kadence_Blocks_Logo_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return string
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		$outer_classes = array( 'kb-logo', 'kb-logo' . $unique_id );
+		$showSiteTitle = isset( $attributes['showSiteTitle'] ) ? $attributes['showSiteTitle'] : true;
+		$showSiteTagline = isset( $attributes['showSiteTagline'] ) ? $attributes['showSiteTagline'] : false;
+		$layout = isset( $attributes['layout'] ) ? $attributes['layout'] : 'logo-title';
+
+		$outer_classes = array( 'kb-logo', 'kb-logo-' . $unique_id, 'kb-logo-layout-' . $layout );
 
 		$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( ' ', $outer_classes ) ) );
 
-		return sprintf( '<div %1$s>%2$s</div>', $wrapper_attributes, $content );
-	}
+		$inner_content = '';
 
-	/**
-	 * Registers scripts and styles.
-	 */
-	public function register_scripts() {
-		parent::register_scripts();
-		// If in the backend, bail out.
-		if ( is_admin() ) {
-			return;
-		}
-		if ( apply_filters( 'kadence_blocks_check_if_rest', false ) && kadence_blocks_is_rest() ) {
-			return;
+		// Parse inner blocks
+		if ( ! empty( $block_instance->inner_blocks ) ) {
+			foreach ( $block_instance->inner_blocks as $inner_block ) {
+				if ( $inner_block->name === 'kadence/image' ) {
+					$inner_content .= $inner_block->render();
+				} elseif ( $inner_block->name === 'core/group' && ( $layout === 'logo-right-stacked' || $layout === 'logo-left-stacked' ) ) {
+					$inner_content .= '<div class="wp-block-group">';
+					foreach ( $inner_block->inner_blocks as $group_block ) {
+						$inner_content .= $group_block->render();
+					}
+					$inner_content .= '</div>';
+				} elseif ( $inner_block->name === 'kadence/advancedheading' ) {
+					$metadata = $inner_block->attributes['metadata'] ?? array();
+					if ( isset( $metadata['for'] ) && $metadata['for'] === 'title' && $showSiteTitle ) {
+						$inner_content .= '<div class="kb-logo-title">' . $inner_block->render() . '</div>';
+					} elseif ( isset( $metadata['for'] ) && $metadata['for'] === 'tagline' && $showSiteTagline ) {
+						$inner_content .= '<div class="kb-logo-tagline">' . $inner_block->render() . '</div>';
+					}
+				}
+			}
 		}
 
-//		wp_register_script( 'kadence-blocks-logo', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-logo.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		// If no inner blocks, fallback to default content
+		if ( empty( $inner_content ) ) {
+			$inner_content .= '<div class="kb-logo-image">' . get_custom_logo() . '</div>';
+			if ( $showSiteTitle ) {
+				$inner_content .= '<div class="kb-logo-title">' . get_bloginfo( 'name' ) . '</div>';
+			}
+			if ( $showSiteTagline ) {
+				$inner_content .= '<div class="kb-logo-tagline">' . get_bloginfo( 'description' ) . '</div>';
+			}
+		}
+
+		return sprintf( '<div %1$s>%2$s</div>', $wrapper_attributes, $inner_content );
 	}
 
 }

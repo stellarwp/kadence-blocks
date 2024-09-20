@@ -14,8 +14,8 @@ import './style.scss';
 
 registerBlockType('kadence/logo', {
 	...metadata,
-	title: _x('Logo (Adv)', 'block title', 'kadence-blocks'),
-	description: _x('Kadence logo block', 'block description', 'kadence-blocks'),
+	title: _x('Site Logo (Adv)', 'block title', 'kadence-blocks'),
+	description: _x('Kadence site logo block', 'block description', 'kadence-blocks'),
 	keywords: [__('logo', 'kadence-blocks'), __('image', 'kadence-blocks'), 'kb'],
 	icon: {
 		src: searchBlockIcon,

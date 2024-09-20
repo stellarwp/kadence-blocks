@@ -8,6 +8,8 @@ import {
 	KadenceBlockDefaults,
 	CopyPasteAttributes,
 	KadencePanelBody,
+	KadenceRadioButtons,
+	ResponsiveRangeControls,
 } from '@kadence/components';
 import { setBlockDefaults, getUniqueId, getPostOrFseId } from '@kadence/helpers';
 import { useBlockProps, BlockControls, useInnerBlocksProps, BlockContextProvider } from '@wordpress/block-editor';
@@ -15,6 +17,7 @@ import { createBlock } from '@wordpress/blocks';
 import classnames from 'classnames';
 import { ToggleControl, SelectControl } from '@wordpress/components';
 import './editor.scss';
+import Icons from './icons.js';
 
 const newTaglineBlock = createBlock('kadence/advancedheading', {
 	metadata: { name: __('Site Tagline', 'kadence-blocks'), for: 'tagline' },
@@ -30,7 +33,16 @@ const newTitleBlock = createBlock('kadence/advancedheading', {
 
 export function Edit(props) {
 	const { attributes, setAttributes, className, clientId } = props;
-	const { uniqueID, showSiteTitle, showSiteTagline, layout } = attributes;
+	const {
+		uniqueID,
+		showSiteTitle,
+		showSiteTagline,
+		layout,
+		containerMaxWidth,
+		tabletContainerMaxWidth,
+		mobileContainerMaxWidth,
+		containerMaxWidthType,
+	} = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { replaceInnerBlocks } = useDispatch('core/block-editor');
@@ -69,8 +81,6 @@ export function Edit(props) {
 	}, []);
 
 	useEffect(() => {
-		updateInnerBlocks();
-
 		if (['logo-right-stacked', 'logo-left-stacked'].includes(layout) && !showSiteTagline) {
 			if (layout === 'logo-right-stacked') {
 				setAttributes({ layout: 'logo-right' });
@@ -78,7 +88,61 @@ export function Edit(props) {
 				setAttributes({ layout: 'logo-left' });
 			}
 		}
+
+		if (layout !== 'logo-only' && !showSiteTitle && !showSiteTagline) {
+			setAttributes({ layout: 'logo-only' });
+		} else if (layout === 'logo-only' && (showSiteTitle || showSiteTagline)) {
+			setAttributes({ layout: showSiteTagline ? 'logo-left-stacked' : 'logo-left' });
+		}
+
+		updateInnerBlocks();
 	}, [showSiteTitle, showSiteTagline, layout]);
+
+	const iconSize = 125;
+	const allItemsLayoutOptions = [
+		{
+			value: 'logo-left-stacked',
+			label: __('Logo left, Title and Tagline stacked right', 'kadence-blocks'),
+			icon: Icons.logoTitleTag,
+			iconSize,
+		},
+		{
+			value: 'logo-right-stacked',
+			label: __('Logo right, Title and Tagline stacked left', 'kadence-blocks'),
+			icon: Icons.titleTagLogo,
+			iconSize,
+		},
+		{
+			value: 'logo-top',
+			label: __('Logo top, Title and Tagline below', 'kadence-blocks'),
+			icon: Icons.topLogoTitleTag,
+			iconSize,
+		},
+		{
+			value: 'logo-bottom',
+			label: __('Logo bottom, Title and Tagline above', 'kadence-blocks'),
+			icon: Icons.topTitleTagLogo,
+			iconSize,
+		},
+		{
+			value: 'title-logo-tagline',
+			label: __('Title top, Logo middle, Tagline bottom', 'kadence-blocks'),
+			icon: Icons.topTitleLogoTag,
+			iconSize,
+		},
+	];
+
+	const logoAndTitleLayoutOptions = [
+		{ value: 'logo-left', label: __('Logo left, Title right', 'kadence-blocks'), icon: Icons.logoTitle, iconSize },
+		{ value: 'logo-right', label: __('Logo right, Title left', 'kadence-blocks'), icon: Icons.titleLogo, iconSize },
+		{ value: 'logo-top', label: __('Logo top, Title below', 'kadence-blocks'), icon: Icons.topLogoTitle, iconSize },
+		{
+			value: 'logo-bottom',
+			label: __('Logo bottom, Title above', 'kadence-blocks'),
+			icon: Icons.topTitleLogo,
+			iconSize,
+		},
+	];
 
 	const updateInnerBlocks = () => {
 		const findBlockByMetadata = (blocks, metadata) => {
@@ -127,28 +191,11 @@ export function Edit(props) {
 
 	const layoutOptions = useMemo(() => {
 		if (showSiteTitle && showSiteTagline) {
-			return [
-				{
-					value: 'logo-left-stacked',
-					label: __('Logo left, Title and Tagline stacked right', 'kadence-blocks'),
-				},
-				{
-					value: 'logo-right-stacked',
-					label: __('Logo right, Title and Tagline stacked left', 'kadence-blocks'),
-				},
-				{ value: 'logo-top', label: __('Logo top, Title and Tagline below', 'kadence-blocks') },
-				{ value: 'logo-bottom', label: __('Logo bottom, Title and Tagline above', 'kadence-blocks') },
-				{ value: 'title-logo-tagline', label: __('Title top, Logo middle, Tagline bottom', 'kadence-blocks') },
-			];
+			return allItemsLayoutOptions;
 		} else if (showSiteTitle) {
-			return [
-				{ value: 'logo-left', label: __('Logo left, Title right', 'kadence-blocks') },
-				{ value: 'logo-right', label: __('Logo right, Title left', 'kadence-blocks') },
-				{ value: 'logo-top', label: __('Logo top, Title below', 'kadence-blocks') },
-				{ value: 'logo-bottom', label: __('Logo bottom, Title above', 'kadence-blocks') },
-			];
+			return logoAndTitleLayoutOptions;
 		}
-		return [{ value: 'logo-only', label: __('Logo only', 'kadence-blocks') }];
+		return [{ value: 'logo-only', label: __('Logo only', 'kadence-blocks'), icon: Icons.logo }];
 	}, [showSiteTitle, showSiteTagline]);
 
 	const blockProps = useBlockProps({
@@ -198,17 +245,71 @@ export function Edit(props) {
 								onChange={(value) => setAttributes({ showSiteTagline: value })}
 							/>
 						)}
-						<SelectControl
-							label={__('Layout', 'kadence-blocks')}
+
+						<KadenceRadioButtons
 							value={layout}
-							options={layoutOptions}
-							onChange={(value) => setAttributes({ layout: value })}
+							options={layoutOptions.slice(0, 2)}
+							hideLabel={true}
+							label={__('Layout', 'kadence-blocks')}
+							onChange={(value) => {
+								setAttributes({
+									layout: value,
+								});
+							}}
 						/>
+
+						{layoutOptions.length > 2 && (
+							<KadenceRadioButtons
+								value={layout}
+								options={layoutOptions.slice(2, 4)}
+								hideLabel={true}
+								onChange={(value) => {
+									setAttributes({
+										layout: value,
+									});
+								}}
+							/>
+						)}
+
+						{layoutOptions.length > 4 && (
+							<KadenceRadioButtons
+								value={layout}
+								options={layoutOptions.slice(4, 6)}
+								hideLabel={true}
+								onChange={(value) => {
+									setAttributes({
+										layout: value,
+									});
+								}}
+							/>
+						)}
 					</KadencePanelBody>
 				)}
 				{activeTab === 'style' && (
 					<KadencePanelBody panelName={'logo-style'} initialOpen={true}>
-						Style Options
+						<ResponsiveRangeControls
+							label={__('Max Width', 'kadence-blocks')}
+							value={containerMaxWidth}
+							onChange={(value) => setAttributes({ containerMaxWidth: value })}
+							tabletValue={tabletContainerMaxWidth ? tabletContainerMaxWidth : ''}
+							onChangeTablet={(value) => setAttributes({ tabletContainerMaxWidth: value })}
+							mobileValue={mobileContainerMaxWidth ? mobileContainerMaxWidth : ''}
+							onChangeMobile={(value) => setAttributes({ mobileContainerMaxWidth: value })}
+							min={100}
+							max={1250}
+							step={1}
+							unit={'px'}
+							units={['px']}
+							showUnit={true}
+							reset={() =>
+								setAttributes({
+									containerMaxWidth: '',
+									tabletContainerMaxWidth: '',
+									mobileContainerMaxWidth: '',
+									containerMaxWidthType: 'px',
+								})
+							}
+						/>
 					</KadencePanelBody>
 				)}
 				{activeTab === 'advanced' && (

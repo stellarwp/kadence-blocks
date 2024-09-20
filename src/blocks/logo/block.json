@@ -2,7 +2,7 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
 	"name": "kadence/logo",
-	"title": "Logo (Adv)",
+	"title": "Site Logo (Adv)",
 	"category": "kadence-blocks",
 	"textdomain": "kadence-blocks",
 	"attributes": {
@@ -20,6 +20,19 @@
 		"layout": {
 			"type": "string",
 			"default": "logo-title"
+		},
+		"containerMaxWidth": {
+			"type": "number"
+		},
+		"tabletContainerMaxWidth": {
+			"type": "number"
+		},
+		"mobileContainerMaxWidth": {
+			"type": "number"
+		},
+		"containerMaxWidthType": {
+			"type": "string",
+			"default": "px"
 		}
 	},
 	"supports": {
