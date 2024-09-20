@@ -737,9 +737,9 @@ function LayoutControls({
 							}}
 							units={['px', 'em', 'vh']}
 							showUnit={true}
-							defaultValue={metadata.attributes.topSepHeight}
-							defaultTablet={metadata.attributes.topSepHeightTab}
-							defaultMobile={metadata.attributes.topSepHeightMobile}
+							defaultValue={metadata.attributes.topSepHeight.default}
+							defaultTablet={metadata.attributes.topSepHeightTab.default}
+							defaultMobile={metadata.attributes.topSepHeightMobile.default}
 							reset={true}
 						/>
 						<ResponsiveRangeControls
@@ -762,9 +762,9 @@ function LayoutControls({
 							showUnit={true}
 							unit={'%'}
 							units={['%']}
-							defaultValue={metadata.attributes.topSepWidth}
-							defaultTablet={metadata.attributes.topSepWidthTablet}
-							defaultMobile={metadata.attributes.topSepWidthMobile}
+							defaultValue={metadata.attributes.topSepWidth.default}
+							defaultTablet={metadata.attributes.topSepWidthTablet.default}
+							defaultMobile={metadata.attributes.topSepWidthMobile.default}
 							reset={true}
 						/>
 					</KadencePanelBody>
@@ -834,9 +834,9 @@ function LayoutControls({
 							}}
 							units={['px', 'em', 'vh']}
 							showUnit={true}
-							defaultValue={metadata.attributes.bottomSepHeight}
-							defaultTablet={metadata.attributes.bottomSepHeightTab}
-							defaultMobile={metadata.attributes.bottomSepHeightMobile}
+							defaultValue={metadata.attributes.bottomSepHeight.default}
+							defaultTablet={metadata.attributes.bottomSepHeightTab.default}
+							defaultMobile={metadata.attributes.bottomSepHeightMobile.default}
 							reset={true}
 						/>
 						<ResponsiveRangeControls
@@ -859,9 +859,9 @@ function LayoutControls({
 							showUnit={true}
 							unit={'%'}
 							units={['%']}
-							defaultValue={metadata.attributes.bottomSepWidth}
-							defaultTablet={metadata.attributes.bottomSepWidthTab}
-							defaultMobile={metadata.attributes.bottomSepWidthMobile}
+							defaultValue={metadata.attributes.bottomSepWidth.default}
+							defaultTablet={metadata.attributes.bottomSepWidthTab.default}
+							defaultMobile={metadata.attributes.bottomSepWidthMobile.default}
 							reset={true}
 						/>
 					</KadencePanelBody>
