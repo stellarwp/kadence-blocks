@@ -639,7 +639,11 @@ export function Edit(props) {
 				{/* <div className="kb-off-canvas-label">{__('Off Canvas Content', 'kadence-blocks')}</div> */}
 				<div {...innerBlocksProps} />
 			</div>
-			<div className={overlayClasses} ref={ref} onClick={(e) => handleModalOverlayClick(e)}></div>
+			<div
+				className={overlayClasses}
+				ref={ref}
+				onClick={(e) => (!showOffCanvas ? handleModalOverlayClick(e) : null)}
+			></div>
 		</>
 	);
 }
