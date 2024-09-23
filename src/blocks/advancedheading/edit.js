@@ -1742,6 +1742,7 @@ function KadenceAdvancedHeading(props) {
 											setAttributes({ iconSizeUnit: value });
 										}}
 										units={['px', 'em', 'rem']}
+										reset={true}
 									/>
 									<PopColorControl
 										label={__('Icon Color', 'kadence-blocks')}
