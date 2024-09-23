@@ -1314,6 +1314,7 @@ function RowLayoutEditContainer(props) {
 													setAttributes({ minHeightUnit: value });
 												}}
 												units={['px', 'vw', 'vh']}
+												reset={true}
 											/>
 											<ToggleControl
 												label={__('Inner Column Height 100%', 'kadence-blocks')}
@@ -1330,6 +1331,7 @@ function RowLayoutEditContainer(props) {
 												}}
 												min={-200}
 												max={2000}
+												reset={true}
 											/>
 										</KadencePanelBody>
 										<KadencePanelBody
