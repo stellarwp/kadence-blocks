@@ -1868,6 +1868,7 @@ function SectionEdit(props) {
 														setAttributes({ gutterUnit: value });
 													}}
 													units={['px', 'em', 'rem', '%', 'vh']}
+													defaultValue={"sm"}
 													reset={true}
 												/>
 												<ResponsiveRadioRangeControls
@@ -1957,6 +1958,7 @@ function SectionEdit(props) {
 														setAttributes({ rowGapUnit: value });
 													}}
 													units={['px', 'em', 'rem', '%', 'vh']}
+													defaultValue={metadata.attributes.rowGapVariable.default[0]}
 													reset={true}
 												/>
 												<SmallResponsiveControl
@@ -2188,6 +2190,7 @@ function SectionEdit(props) {
 														setAttributes({ rowGapUnit: value });
 													}}
 													units={['px', 'em', 'rem', '%', 'vh']}
+													defaultValue={metadata.attributes.rowGapVariable.default[0]}
 													reset={true}
 												/>
 											</>
@@ -2637,6 +2640,7 @@ function SectionEdit(props) {
 												setAttributes({ stickyOffsetUnit: value });
 											}}
 											units={['px', 'rem', 'vh']}
+											defaultValue={1}
 											reset={true}
 										/>
 									)}
@@ -3099,7 +3103,7 @@ function SectionEdit(props) {
 												<RangeControl
 													label={__('Overlay Opacity', 'kadence-blocks')}
 													value={overlayOpacity}
-													defaultValue={0.3}
+													defaultValue={metadata.attributes.overlayOpacity.default}
 													onChange={(value) => {
 														setAttributes({
 															overlayOpacity: value,

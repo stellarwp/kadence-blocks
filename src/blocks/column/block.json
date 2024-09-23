@@ -262,7 +262,7 @@
 		},
 		"rowGapVariable": {
 			"type": "array",
-			"default": ["", "", ""]
+			"default": ["none", "", ""]
 		},
 		"flexBasis": {
 			"type": "array",
