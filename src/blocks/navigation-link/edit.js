@@ -536,8 +536,11 @@ export default function Edit(props) {
 	function doMegaMenuEnable(value) {
 		if (value) {
 			//enable
-			replaceInnerBlocks(clientId, []);
-			setAttributes({ isMegaMenu: true });
+			const message = __('Are you sure you want to replace this sub menu with a mega menu?', 'kadence-blocks');
+			if (!hasChildren || window.confirm(message)) {
+				replaceInnerBlocks(clientId, []);
+				setAttributes({ isMegaMenu: true });
+			}
 		} else {
 			//disable
 			const message = __('Are you sure you want to delete this mega menu?', 'kadence-blocks');
