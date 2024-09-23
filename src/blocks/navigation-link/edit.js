@@ -540,10 +540,13 @@ export default function Edit(props) {
 			setAttributes({ isMegaMenu: true });
 		} else {
 			//disable
-			replaceInnerBlocks(clientId, []);
-			setAttributes({ isMegaMenu: false });
-			setMegaMenuColumnChoice('');
-			setMegaMenuOnboardingStep('design');
+			const message = __('Are you sure you want to delete this mega menu?', 'kadence-blocks');
+			if (window.confirm(message)) {
+				replaceInnerBlocks(clientId, []);
+				setAttributes({ isMegaMenu: false });
+				setMegaMenuColumnChoice('');
+				setMegaMenuOnboardingStep('design');
+			}
 		}
 	}
 
