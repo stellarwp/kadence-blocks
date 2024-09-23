@@ -1868,7 +1868,7 @@ function SectionEdit(props) {
 														setAttributes({ gutterUnit: value });
 													}}
 													units={['px', 'em', 'rem', '%', 'vh']}
-													defaultValue={"sm"}
+													defaultValue={'sm'}
 													reset={true}
 												/>
 												<ResponsiveRadioRangeControls
