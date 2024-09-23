@@ -97,8 +97,9 @@
 }
 
 .kb-header-container {
-	//fix for bleeding margins in header rows and rows with backgrounds bleeding out of headers with border radiuses
-	overflow: auto;
+	//this fixes bleeding margins in header rows and rows with backgrounds bleeding out of headers with border radiuses
+	//but it also breaks the sub menus being able to break out from the header.
+	//overflow: auto;
 }
 
 .kb-header-placeholder-wrapper {
