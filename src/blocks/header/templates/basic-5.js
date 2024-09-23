@@ -309,6 +309,7 @@ function innerBlocks() {
 					'kadence/header-row',
 					{
 						uniqueID: '10_ff22b0-b9',
+						location: 'top',
 						metadata: { name: 'Top Row' },
 					},
 					[
@@ -341,111 +342,119 @@ function innerBlocks() {
 						),
 					]
 				),
-				createBlock('kadence/header-row', { uniqueID: '10_f501f7-a6', metadata: { name: 'Middle Row' } }, [
-					createBlock(
-						'kadence/header-column',
-						{
-							uniqueID: '10_0d66dd-55',
-							location: 'tablet-left',
-							metadata: { name: 'Left' },
-						},
-						[
-							createBlock(
-								'kadence/image',
-								{
-									imgMaxWidthTablet: 100,
-									sizeSlug: 'full',
-									linkDestination: 'none',
-									uniqueID: '10_015386-a1',
-									marginDesktop: ['0', '', '0', ''],
-									link: '/',
-									url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
-								},
-								[]
-							),
-						]
-					),
-					createBlock(
-						'kadence/header-column',
-						{
-							uniqueID: '10_d71e8e-0c',
-							location: 'tablet-center',
-							metadata: { name: 'Center' },
-						},
-						[]
-					),
-					createBlock(
-						'kadence/header-column',
-						{
-							uniqueID: '10_7f6a43-63',
-							location: 'tablet-right',
-							metadata: { name: 'Right' },
-						},
-						[
-							createBlock(
-								'kadence/off-canvas-trigger',
-								{
-									uniqueID: '10_d85126-03',
-									iconSizeTablet: 25,
-									iconColorTablet: 'palette4',
-									iconColorHoverTablet: 'palette4',
-									iconBackgroundColorTablet: 'palette7',
-									iconBackgroundColorHoverTablet: 'palette7',
-									paddingTablet: ['xxs', 'xxs', '0', 'xxs'],
-									borderTablet: [
-										{
-											top: ['palette7', '', 1],
-											right: ['palette7', '', 1],
-											bottom: ['palette7', '', 1],
-											left: ['palette7', '', 1],
-											unit: '',
-										},
-									],
-									borderHoverTablet: [
-										{
-											top: ['palette4', '', 1],
-											right: ['palette4', '', 1],
-											bottom: ['palette4', '', 1],
-											left: ['palette4', '', 1],
-											unit: '',
-										},
-									],
-									borderRadiusTablet: [3, 3, 3, 3],
-								},
-								[]
-							),
-						]
-					),
-				]),
-				createBlock('kadence/header-row', { uniqueID: '10_8bc98d-52', metadata: { name: 'Bottom Row' } }, [
-					createBlock(
-						'kadence/header-column',
-						{
-							uniqueID: '10_68494a-b5',
-							location: 'tablet-left',
-							metadata: { name: 'Left' },
-						},
-						[]
-					),
-					createBlock(
-						'kadence/header-column',
-						{
-							uniqueID: '10_8716fa-e6',
-							location: 'tablet-center',
-							metadata: { name: 'Center' },
-						},
-						[]
-					),
-					createBlock(
-						'kadence/header-column',
-						{
-							uniqueID: '10_984f70-75',
-							location: 'tablet-right',
-							metadata: { name: 'Right' },
-						},
-						[]
-					),
-				]),
+				createBlock(
+					'kadence/header-row',
+					{ uniqueID: '10_f501f7-a6', location: 'center', metadata: { name: 'Middle Row' } },
+					[
+						createBlock(
+							'kadence/header-column',
+							{
+								uniqueID: '10_0d66dd-55',
+								location: 'tablet-left',
+								metadata: { name: 'Left' },
+							},
+							[
+								createBlock(
+									'kadence/image',
+									{
+										imgMaxWidthTablet: 100,
+										sizeSlug: 'full',
+										linkDestination: 'none',
+										uniqueID: '10_015386-a1',
+										marginDesktop: ['0', '', '0', ''],
+										link: '/',
+										url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
+									},
+									[]
+								),
+							]
+						),
+						createBlock(
+							'kadence/header-column',
+							{
+								uniqueID: '10_d71e8e-0c',
+								location: 'tablet-center',
+								metadata: { name: 'Center' },
+							},
+							[]
+						),
+						createBlock(
+							'kadence/header-column',
+							{
+								uniqueID: '10_7f6a43-63',
+								location: 'tablet-right',
+								metadata: { name: 'Right' },
+							},
+							[
+								createBlock(
+									'kadence/off-canvas-trigger',
+									{
+										uniqueID: '10_d85126-03',
+										iconSizeTablet: 25,
+										iconColorTablet: 'palette4',
+										iconColorHoverTablet: 'palette4',
+										iconBackgroundColorTablet: 'palette7',
+										iconBackgroundColorHoverTablet: 'palette7',
+										paddingTablet: ['xxs', 'xxs', '0', 'xxs'],
+										borderTablet: [
+											{
+												top: ['palette7', '', 1],
+												right: ['palette7', '', 1],
+												bottom: ['palette7', '', 1],
+												left: ['palette7', '', 1],
+												unit: '',
+											},
+										],
+										borderHoverTablet: [
+											{
+												top: ['palette4', '', 1],
+												right: ['palette4', '', 1],
+												bottom: ['palette4', '', 1],
+												left: ['palette4', '', 1],
+												unit: '',
+											},
+										],
+										borderRadiusTablet: [3, 3, 3, 3],
+									},
+									[]
+								),
+							]
+						),
+					]
+				),
+				createBlock(
+					'kadence/header-row',
+					{ uniqueID: '10_8bc98d-52', location: 'bottom', metadata: { name: 'Bottom Row' } },
+					[
+						createBlock(
+							'kadence/header-column',
+							{
+								uniqueID: '10_68494a-b5',
+								location: 'tablet-left',
+								metadata: { name: 'Left' },
+							},
+							[]
+						),
+						createBlock(
+							'kadence/header-column',
+							{
+								uniqueID: '10_8716fa-e6',
+								location: 'tablet-center',
+								metadata: { name: 'Center' },
+							},
+							[]
+						),
+						createBlock(
+							'kadence/header-column',
+							{
+								uniqueID: '10_984f70-75',
+								location: 'tablet-right',
+								metadata: { name: 'Right' },
+							},
+							[]
+						),
+					]
+				),
 			]),
 			createBlock(
 				'kadence/off-canvas',

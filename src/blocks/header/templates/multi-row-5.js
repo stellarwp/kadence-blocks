@@ -419,6 +419,7 @@ function innerBlocks() {
 					'kadence/header-row',
 					{
 						uniqueID: '8_3207a2-2f',
+						location: 'top',
 						layout: 'fullwidth',
 						background: {
 							color: 'palette5',
@@ -512,6 +513,7 @@ function innerBlocks() {
 					'kadence/header-row',
 					{
 						uniqueID: '8_057f8b-cf',
+						location: 'center',
 						layout: 'fullwidth',
 						background: {
 							color: 'palette9',
@@ -578,6 +580,7 @@ function innerBlocks() {
 					'kadence/header-row',
 					{
 						uniqueID: '8_123946-0b',
+						location: 'bottom',
 						metadata: { name: 'Bottom Row' },
 					},
 					[

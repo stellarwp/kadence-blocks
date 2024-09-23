@@ -309,6 +309,7 @@ function innerBlocks() {
 					'kadence/header-row',
 					{
 						uniqueID: '56_b888bd-ad',
+						location: 'top',
 						metadata: { name: 'Top Row' },
 					},
 					[
@@ -345,6 +346,7 @@ function innerBlocks() {
 					'kadence/header-row',
 					{
 						uniqueID: '56_e87b6f-48',
+						location: 'center',
 						layout: 'fullwidth',
 						vAlignTablet: 'center',
 						metadata: { name: 'Middle Row' },
@@ -406,35 +408,39 @@ function innerBlocks() {
 						),
 					]
 				),
-				createBlock('kadence/header-row', { uniqueID: '56_d0d653-cb', metadata: { name: 'Bottom Row' } }, [
-					createBlock(
-						'kadence/header-column',
-						{
-							uniqueID: '56_b87607-e2',
-							location: 'tablet-left',
-							metadata: { name: 'Left' },
-						},
-						[]
-					),
-					createBlock(
-						'kadence/header-column',
-						{
-							uniqueID: '56_1fe859-b7',
-							location: 'tablet-center',
-							metadata: { name: 'Center' },
-						},
-						[]
-					),
-					createBlock(
-						'kadence/header-column',
-						{
-							uniqueID: '56_9289e6-e4',
-							location: 'tablet-right',
-							metadata: { name: 'Right' },
-						},
-						[]
-					),
-				]),
+				createBlock(
+					'kadence/header-row',
+					{ uniqueID: '56_d0d653-cb', location: 'bottom', metadata: { name: 'Bottom Row' } },
+					[
+						createBlock(
+							'kadence/header-column',
+							{
+								uniqueID: '56_b87607-e2',
+								location: 'tablet-left',
+								metadata: { name: 'Left' },
+							},
+							[]
+						),
+						createBlock(
+							'kadence/header-column',
+							{
+								uniqueID: '56_1fe859-b7',
+								location: 'tablet-center',
+								metadata: { name: 'Center' },
+							},
+							[]
+						),
+						createBlock(
+							'kadence/header-column',
+							{
+								uniqueID: '56_9289e6-e4',
+								location: 'tablet-right',
+								metadata: { name: 'Right' },
+							},
+							[]
+						),
+					]
+				),
 			]),
 			createBlock(
 				'kadence/off-canvas',
