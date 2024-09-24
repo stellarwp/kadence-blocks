@@ -537,6 +537,7 @@ export default function Edit(props) {
 		if (value) {
 			//enable
 			const message = __('Are you sure you want to replace this sub menu with a mega menu?', 'kadence-blocks');
+			/* eslint-disable no-alert */
 			if (!hasChildren || window.confirm(message)) {
 				replaceInnerBlocks(clientId, []);
 				setAttributes({ isMegaMenu: true });
@@ -544,6 +545,7 @@ export default function Edit(props) {
 		} else {
 			//disable
 			const message = __('Are you sure you want to delete this mega menu?', 'kadence-blocks');
+			/* eslint-disable no-alert */
 			if (window.confirm(message)) {
 				replaceInnerBlocks(clientId, []);
 				setAttributes({ isMegaMenu: false });
