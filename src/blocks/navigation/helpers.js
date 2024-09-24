@@ -13,12 +13,16 @@ import { innerBlocks as Mega7Nav1InnerBlocks, postMeta as Mega7Nav1PostMeta } fr
 import { innerBlocks as Mega7Nav2InnerBlocks, postMeta as Mega7Nav2PostMeta } from './templates/mega-7-nav-2';
 import { innerBlocks as Mega7Nav3InnerBlocks, postMeta as Mega7Nav3PostMeta } from './templates/mega-7-nav-3';
 import { innerBlocks as MegaSimpleInnerBlocks, postMeta as MegaSimplePostMeta } from './templates/mega-simple-nav-1';
+import {
+	innerBlocks as MegaExistingSubMenuInnerBlocks,
+	postMeta as MegaExistingSubMenuPostMeta,
+} from './templates/mega-existing-sub-menu';
 
-export function buildTemplateFromSelection(selection) {
-	return getDataFromKey(selection);
+export function buildTemplateFromSelection(selection, getStash = null) {
+	return getDataFromKey(selection, getStash);
 }
 
-function getDataFromKey(key) {
+function getDataFromKey(key, getStash = null) {
 	const response = {};
 
 	if (key === 'mega-2-nav-1') {
@@ -63,6 +67,12 @@ function getDataFromKey(key) {
 	} else if (key === 'mega-simple-nav-4') {
 		response.templatePostMeta = MegaSimplePostMeta;
 		response.templateInnerBlocks = MegaSimpleInnerBlocks();
+	} else if (key.includes('mega-existing-sub-menu')) {
+		const uniqueID = key.split('|')?.[1];
+		if (uniqueID && getStash) {
+			response.templatePostMeta = MegaExistingSubMenuPostMeta;
+			response.templateInnerBlocks = MegaExistingSubMenuInnerBlocks(uniqueID, getStash);
+		}
 	}
 
 	// Replace placeholder relative URL with absolute URL
