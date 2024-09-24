@@ -109,6 +109,7 @@ function innerBlocks() {
 						uniqueID: '6_ebec9e-74',
 						location: 'center',
 						vAlign: 'center',
+						minHeight: 80,
 						metadata: { name: 'Middle Row' },
 					},
 					[
@@ -313,6 +314,7 @@ function innerBlocks() {
 					'kadence/header-row',
 					{
 						uniqueID: '6_a08282-68',
+						location: 'top',
 						metadata: { name: 'Top Row' },
 					},
 					[
@@ -368,64 +370,72 @@ function innerBlocks() {
 						),
 					]
 				),
-				createBlock('kadence/header-row', { uniqueID: '6_68c1c3-80', metadata: { name: 'Middle Row' } }, [
-					createBlock(
-						'kadence/header-column',
-						{
-							uniqueID: '6_ee97d8-f1',
-							location: 'tablet-left',
-							metadata: { name: 'Left' },
-						},
-						[]
-					),
-					createBlock(
-						'kadence/header-column',
-						{
-							uniqueID: '6_16a0d7-83',
-							location: 'tablet-center',
-							metadata: { name: 'Center' },
-						},
-						[]
-					),
-					createBlock(
-						'kadence/header-column',
-						{
-							uniqueID: '6_0d1746-3e',
-							location: 'tablet-right',
-							metadata: { name: 'Right' },
-						},
-						[]
-					),
-				]),
-				createBlock('kadence/header-row', { uniqueID: '6_78c60d-7b', metadata: { name: 'Bottom Row' } }, [
-					createBlock(
-						'kadence/header-column',
-						{
-							uniqueID: '6_8e84ad-2c',
-							location: 'tablet-left',
-							metadata: { name: 'Left' },
-						},
-						[]
-					),
-					createBlock(
-						'kadence/header-column',
-						{
-							uniqueID: '6_c839f3-8d',
-							location: 'tablet-center',
-							metadata: { name: 'Center' },
-						},
-						[]
-					),
-					createBlock(
-						'kadence/header-column',
-						{
-							uniqueID: '6_ca5c87-c5',
-							location: 'tablet-right',
-							metadata: { name: 'Right' },
-						},
-						[]
-					),
-				]),
+				createBlock(
+					'kadence/header-row',
+					{ uniqueID: '6_68c1c3-80', location: 'center', metadata: { name: 'Middle Row' } },
+					[
+						createBlock(
+							'kadence/header-column',
+							{
+								uniqueID: '6_ee97d8-f1',
+								location: 'tablet-left',
+								metadata: { name: 'Left' },
+							},
+							[]
+						),
+						createBlock(
+							'kadence/header-column',
+							{
+								uniqueID: '6_16a0d7-83',
+								location: 'tablet-center',
+								metadata: { name: 'Center' },
+							},
+							[]
+						),
+						createBlock(
+							'kadence/header-column',
+							{
+								uniqueID: '6_0d1746-3e',
+								location: 'tablet-right',
+								metadata: { name: 'Right' },
+							},
+							[]
+						),
+					]
+				),
+				createBlock(
+					'kadence/header-row',
+					{ uniqueID: '6_78c60d-7b', location: 'bottom', metadata: { name: 'Bottom Row' } },
+					[
+						createBlock(
+							'kadence/header-column',
+							{
+								uniqueID: '6_8e84ad-2c',
+								location: 'tablet-left',
+								metadata: { name: 'Left' },
+							},
+							[]
+						),
+						createBlock(
+							'kadence/header-column',
+							{
+								uniqueID: '6_c839f3-8d',
+								location: 'tablet-center',
+								metadata: { name: 'Center' },
+							},
+							[]
+						),
+						createBlock(
+							'kadence/header-column',
+							{
+								uniqueID: '6_ca5c87-c5',
+								location: 'tablet-right',
+								metadata: { name: 'Right' },
+							},
+							[]
+						),
+					]
+				),
 			]),
 			createBlock(
 				'kadence/off-canvas',

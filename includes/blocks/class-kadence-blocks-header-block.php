@@ -159,6 +159,11 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'border-top', $css->render_border( $sized_attributes['borderTransparent'], 'top' ) );
 			$css->add_property( 'border-left', $css->render_border( $sized_attributes['borderTransparent'], 'left' ) );
 			$css->add_property( 'border-right', $css->render_border( $sized_attributes['borderTransparent'], 'right' ) );
+
+			// Only output the border radius if it's not 0.
+			if ( $sized_attributes['borderRadiusTransparent'][0] != 0 || ! empty( $sized_attributes['borderRadiusTransparent'][1] ) || ! empty( $sized_attributes['borderRadiusTransparent'][2] ) || ! empty( $sized_attributes['borderRadiusTransparent'][3] ) ) {
+				$css->render_measure_range( $attributes, ( 'Desktop' === $size ? 'borderRadiusTransparent' : 'borderRadiusTransparent' . $size ), 'border-radius', '', ['unit_key' => 'borderRadiusTransparentUnit']);
+			}
 		}
 
 		// //transparent hover
@@ -179,6 +184,11 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'border-top', $css->render_border( $sized_attributes['borderSticky'], 'top' ) );
 			$css->add_property( 'border-left', $css->render_border( $sized_attributes['borderSticky'], 'left' ) );
 			$css->add_property( 'border-right', $css->render_border( $sized_attributes['borderSticky'], 'right' ) );
+
+			// Only output the border radius if it's not 0.
+			if ( $sized_attributes['borderRadiusSticky'][0] != 0 || ! empty( $sized_attributes['borderRadiusSticky'][1] ) || ! empty( $sized_attributes['borderRadiusSticky'][2] ) || ! empty( $sized_attributes['borderRadiusSticky'][3] ) ) {
+				$css->render_measure_range( $attributes, ( 'Desktop' === $size ? 'borderRadiusSticky' : 'borderRadiusSticky' . $size ), 'border-radius', '', ['unit_key' => 'borderRadiusStickyUnit']);
+			}
 		}
 
 		// //sticky hover

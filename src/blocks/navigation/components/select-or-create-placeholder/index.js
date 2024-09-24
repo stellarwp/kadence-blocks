@@ -29,6 +29,7 @@ export default function SelectOrCreatePlaceholder({
 			menus: selectData('core').getEntityRecords('taxonomy', 'nav_menu', {
 				order: 'asc',
 				orderby: 'name',
+				per_page: 50,
 			}),
 		}),
 		[postType]

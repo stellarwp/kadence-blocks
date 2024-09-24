@@ -1208,7 +1208,8 @@ export function EditInner(props) {
 							initialOpen={false}
 							panelName={'kb-header-size-settings'}
 						>
-							<ResponsiveRangeControls
+							{/* unhooking this control, but will leave the backend styling and everything. done during beta so probably safe to remove the whole chain if we want. */}
+							{/* <ResponsiveRangeControls
 								label={__('Min Height', 'kadence-blocks')}
 								value={height?.[0] ? parseFloat(height[0]) : ''}
 								onChange={(value) => {
@@ -1254,7 +1255,7 @@ export function EditInner(props) {
 									setMetaAttribute(['', '', ''], 'height');
 								}}
 								units={['px', 'vh', 'vw']}
-							/>
+							/> */}
 							<ResponsiveRangeControls
 								label={__('Max Width', 'kadence-blocks')}
 								value={width?.[0] ? parseFloat(width[0]) : ''}

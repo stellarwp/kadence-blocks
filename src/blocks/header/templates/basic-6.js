@@ -472,6 +472,7 @@ function innerBlocks() {
 					'kadence/header-row',
 					{
 						uniqueID: '10_ab4dfa-81',
+						location: 'top',
 						metadata: { name: 'Top Row' },
 					},
 					[
@@ -504,142 +505,147 @@ function innerBlocks() {
 						),
 					]
 				),
-				createBlock('kadence/header-row', { uniqueID: '10_c37740-ce', metadata: { name: 'Middle Row' } }, [
-					createBlock(
-						'kadence/header-column',
-						{
-							uniqueID: '10_d16dac-89',
-							location: 'tablet-left',
-							metadata: { name: 'Left' },
-						},
-						[
-							createBlock(
-								'kadence/image',
-								{
-									imgMaxWidthTablet: 100,
-									sizeSlug: 'full',
-									linkDestination: 'none',
-									uniqueID: '10_768b26-c2',
-									marginDesktop: ['0', '', '0', ''],
-									link: '/',
-									url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
-								},
-								[]
-							),
-						]
-					),
-					createBlock(
-						'kadence/header-column',
-						{
-							uniqueID: '10_c2e29f-f3',
-							location: 'tablet-center',
-							metadata: { name: 'Center' },
-						},
-						[]
-					),
-					createBlock(
-						'kadence/header-column',
-						{
-							uniqueID: '10_da4b6e-3f',
-							location: 'tablet-right',
-							metadata: { name: 'Right' },
-						},
-						[
-							createBlock(
-								'kadence/rowlayout',
-								{
-									uniqueID: '10_88b878-5a',
-									tabletLayout: 'equal',
-									tabletGutter: 'skinny',
-									customGutter: ['', 16, ''],
-									colLayout: 'equal',
-									verticalAlignment: 'middle',
-									kbVersion: 2,
-								},
-								[
-									createBlock(
-										'kadence/column',
-										{ borderWidth: ['', '', '', ''], uniqueID: '10_95bbb6-da', kbVersion: 2 },
-										[
-											createBlock(
-												'kadence/advancedheading',
-												{
-													uniqueID: '10_c080ac-97',
-													align: 'right',
-													color: 'palette3',
-													tabletLetterSpacing: 1,
-													markBorder: '',
-													markBorderStyles: [
-														{
-															top: [null, '', ''],
-															right: [null, '', ''],
-															bottom: [null, '', ''],
-															left: [null, '', ''],
-															unit: 'px',
-														},
-													],
-													tabletMarkBorderStyles: [
-														{
-															top: [null, '', ''],
-															right: [null, '', ''],
-															bottom: [null, '', ''],
-															left: [null, '', ''],
-															unit: 'px',
-														},
-													],
-													mobileMarkBorderStyles: [
-														{
-															top: [null, '', ''],
-															right: [null, '', ''],
-															bottom: [null, '', ''],
-															left: [null, '', ''],
-															unit: 'px',
-														},
-													],
-													textTransform: 'uppercase',
-													colorClass: 'theme-palette3',
-													htmlTag: 'div',
-													fontSize: ['', 'sm', ''],
-												},
-												[]
-											),
-										]
-									),
-									createBlock(
-										'kadence/column',
-										{
-											id: 2,
-											borderWidth: ['', '', '', ''],
-											uniqueID: '10_bc8cae-ab',
-											justifyContent: ['', 'flex-start', ''],
-											verticalAlignment: 'middle',
-											kbVersion: 2,
-										},
-										[
-											createBlock(
-												'kadence/off-canvas-trigger',
-												{
-													uniqueID: '10_151eec-16',
-													icon: 'ic_fourUp',
-													iconSizeTablet: 25,
-													iconColorTablet: 'palette3',
-													iconColorHoverTablet: 'palette3',
-													iconBackgroundColorTablet: 'palette8',
-													iconBackgroundColorHoverTablet: 'palette8',
-												},
-												[]
-											),
-										]
-									),
-								]
-							),
-						]
-					),
-				]),
+				createBlock(
+					'kadence/header-row',
+					{ uniqueID: '10_c37740-ce', location: 'center', metadata: { name: 'Middle Row' } },
+					[
+						createBlock(
+							'kadence/header-column',
+							{
+								uniqueID: '10_d16dac-89',
+								location: 'tablet-left',
+								metadata: { name: 'Left' },
+							},
+							[
+								createBlock(
+									'kadence/image',
+									{
+										imgMaxWidthTablet: 100,
+										sizeSlug: 'full',
+										linkDestination: 'none',
+										uniqueID: '10_768b26-c2',
+										marginDesktop: ['0', '', '0', ''],
+										link: '/',
+										url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
+									},
+									[]
+								),
+							]
+						),
+						createBlock(
+							'kadence/header-column',
+							{
+								uniqueID: '10_c2e29f-f3',
+								location: 'tablet-center',
+								metadata: { name: 'Center' },
+							},
+							[]
+						),
+						createBlock(
+							'kadence/header-column',
+							{
+								uniqueID: '10_da4b6e-3f',
+								location: 'tablet-right',
+								metadata: { name: 'Right' },
+							},
+							[
+								createBlock(
+									'kadence/rowlayout',
+									{
+										uniqueID: '10_88b878-5a',
+										tabletLayout: 'equal',
+										tabletGutter: 'skinny',
+										customGutter: ['', 16, ''],
+										colLayout: 'equal',
+										verticalAlignment: 'middle',
+										kbVersion: 2,
+									},
+									[
+										createBlock(
+											'kadence/column',
+											{ borderWidth: ['', '', '', ''], uniqueID: '10_95bbb6-da', kbVersion: 2 },
+											[
+												createBlock(
+													'kadence/advancedheading',
+													{
+														uniqueID: '10_c080ac-97',
+														align: 'right',
+														color: 'palette3',
+														tabletLetterSpacing: 1,
+														markBorder: '',
+														markBorderStyles: [
+															{
+																top: [null, '', ''],
+																right: [null, '', ''],
+																bottom: [null, '', ''],
+																left: [null, '', ''],
+																unit: 'px',
+															},
+														],
+														tabletMarkBorderStyles: [
+															{
+																top: [null, '', ''],
+																right: [null, '', ''],
+																bottom: [null, '', ''],
+																left: [null, '', ''],
+																unit: 'px',
+															},
+														],
+														mobileMarkBorderStyles: [
+															{
+																top: [null, '', ''],
+																right: [null, '', ''],
+																bottom: [null, '', ''],
+																left: [null, '', ''],
+																unit: 'px',
+															},
+														],
+														textTransform: 'uppercase',
+														colorClass: 'theme-palette3',
+														htmlTag: 'div',
+														fontSize: ['', 'sm', ''],
+													},
+													[]
+												),
+											]
+										),
+										createBlock(
+											'kadence/column',
+											{
+												id: 2,
+												borderWidth: ['', '', '', ''],
+												uniqueID: '10_bc8cae-ab',
+												justifyContent: ['', 'flex-start', ''],
+												verticalAlignment: 'middle',
+												kbVersion: 2,
+											},
+											[
+												createBlock(
+													'kadence/off-canvas-trigger',
+													{
+														uniqueID: '10_151eec-16',
+														icon: 'ic_fourUp',
+														iconSizeTablet: 25,
+														iconColorTablet: 'palette3',
+														iconColorHoverTablet: 'palette3',
+														iconBackgroundColorTablet: 'palette8',
+														iconBackgroundColorHoverTablet: 'palette8',
+													},
+													[]
+												),
+											]
+										),
+									]
+								),
+							]
+						),
+					]
+				),
 				createBlock(
 					'kadence/header-row',
 					{
 						uniqueID: '10_063c11-db',
+						location: 'bottom',
 						metadata: { name: 'Bottom Row' },
 					},
 					[

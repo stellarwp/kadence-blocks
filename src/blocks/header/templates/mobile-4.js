@@ -429,6 +429,7 @@ function innerBlocks() {
 					'kadence/header-row',
 					{
 						uniqueID: '88_e14f8f-0b',
+						location: 'top',
 						metadata: { name: 'Top Row' },
 					},
 					[
@@ -465,6 +466,7 @@ function innerBlocks() {
 					'kadence/header-row',
 					{
 						uniqueID: '88_6595d8-c9',
+						location: 'center',
 						layout: 'fullwidth',
 						vAlignTablet: 'center',
 						metadata: { name: 'Middle Row' },
@@ -542,6 +544,7 @@ function innerBlocks() {
 					'kadence/header-row',
 					{
 						uniqueID: '88_acd27e-b5',
+						location: 'bottom',
 						metadata: { name: 'Bottom Row' },
 					},
 					[

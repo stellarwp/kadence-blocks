@@ -564,22 +564,29 @@ export default function BackendStyles(props) {
 		css.add_property('border-right', previewBorderTransparentRight);
 		css.add_property('border-bottom', previewBorderTransparentBottom);
 		css.add_property('border-left', previewBorderTransparentLeft);
-		css.add_property(
-			'border-top-left-radius',
-			getSpacingOptionOutput(previewBorderTopLeftRadiusTransparent, borderRadiusTransparentUnit)
-		);
-		css.add_property(
-			'border-top-right-radius',
-			getSpacingOptionOutput(previewBorderTopRightRadiusTransparent, borderRadiusTransparentUnit)
-		);
-		css.add_property(
-			'border-bottom-right-radius',
-			getSpacingOptionOutput(previewBorderBottomRightRadiusTransparent, borderRadiusTransparentUnit)
-		);
-		css.add_property(
-			'border-bottom-left-radius',
-			getSpacingOptionOutput(previewBorderBottomLeftRadiusTransparent, borderRadiusTransparentUnit)
-		);
+		if (
+			previewBorderTopLeftRadiusTransparent != 0 ||
+			previewBorderTopRightRadiusTransparent != 0 ||
+			previewBorderBottomRightRadiusTransparent != 0 ||
+			previewBorderBottomLeftRadiusTransparent != 0
+		) {
+			css.add_property(
+				'border-top-left-radius',
+				getSpacingOptionOutput(previewBorderTopLeftRadiusTransparent, borderRadiusTransparentUnit)
+			);
+			css.add_property(
+				'border-top-right-radius',
+				getSpacingOptionOutput(previewBorderTopRightRadiusTransparent, borderRadiusTransparentUnit)
+			);
+			css.add_property(
+				'border-bottom-right-radius',
+				getSpacingOptionOutput(previewBorderBottomRightRadiusTransparent, borderRadiusTransparentUnit)
+			);
+			css.add_property(
+				'border-bottom-left-radius',
+				getSpacingOptionOutput(previewBorderBottomLeftRadiusTransparent, borderRadiusTransparentUnit)
+			);
+		}
 	}
 	if (previewIsSticky === '1') {
 		if ('normal' === backgroundSticky?.type && backgroundSticky?.image) {
@@ -601,22 +608,29 @@ export default function BackendStyles(props) {
 		css.add_property('border-right', previewBorderStickyRight);
 		css.add_property('border-bottom', previewBorderStickyBottom);
 		css.add_property('border-left', previewBorderStickyLeft);
-		css.add_property(
-			'border-top-left-radius',
-			getSpacingOptionOutput(previewBorderTopLeftRadiusSticky, borderRadiusStickyUnit)
-		);
-		css.add_property(
-			'border-top-right-radius',
-			getSpacingOptionOutput(previewBorderTopRightRadiusSticky, borderRadiusStickyUnit)
-		);
-		css.add_property(
-			'border-bottom-right-radius',
-			getSpacingOptionOutput(previewBorderBottomRightRadiusSticky, borderRadiusStickyUnit)
-		);
-		css.add_property(
-			'border-bottom-left-radius',
-			getSpacingOptionOutput(previewBorderBottomLeftRadiusSticky, borderRadiusStickyUnit)
-		);
+		if (
+			previewBorderTopLeftRadiusSticky != 0 ||
+			previewBorderTopRightRadiusSticky != 0 ||
+			previewBorderBottomRightRadiusSticky != 0 ||
+			previewBorderBottomLeftRadiusSticky != 0
+		) {
+			css.add_property(
+				'border-top-left-radius',
+				getSpacingOptionOutput(previewBorderTopLeftRadiusSticky, borderRadiusStickyUnit)
+			);
+			css.add_property(
+				'border-top-right-radius',
+				getSpacingOptionOutput(previewBorderTopRightRadiusSticky, borderRadiusStickyUnit)
+			);
+			css.add_property(
+				'border-bottom-right-radius',
+				getSpacingOptionOutput(previewBorderBottomRightRadiusSticky, borderRadiusStickyUnit)
+			);
+			css.add_property(
+				'border-bottom-left-radius',
+				getSpacingOptionOutput(previewBorderBottomLeftRadiusSticky, borderRadiusStickyUnit)
+			);
+		}
 	}
 	if (shadow?.[0]?.enable) {
 		css.add_property('box-shadow', css.render_shadow(shadow[0]));
