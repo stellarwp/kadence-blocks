@@ -550,12 +550,14 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		if ( ! empty( $attributes['tabletLayout'] ) || $column1_tablet ) {
 			//use tablet layout. Potentially with custom widths
+			$layout  = ( ! empty( $attributes['colLayout'] ) ? $attributes['colLayout'] : 'equal' );
+			$tabletLayout  = ( ! empty( $attributes['tabletLayout'] ) && $attributes['tabletLayout'] !== 'inherit' ? $attributes['tabletLayout'] : $layout );
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( $inner_selector );
-			$grid_layout = $this->get_template_columns( $css, $columns, $attributes['tabletLayout'], $inner_selector, $css->render_row_gap_property( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'tablet', 'customGutter', 'gutterType' ), $column1_tablet, $column2_tablet, $column3_tablet, $column4_tablet, $column5_tablet, $column6_tablet );
+			$grid_layout = $this->get_template_columns( $css, $columns, $tabletLayout, $inner_selector, $css->render_row_gap_property( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'tablet', 'customGutter', 'gutterType' ), $column1_tablet, $column2_tablet, $column3_tablet, $column4_tablet, $column5_tablet, $column6_tablet );
 			$css->add_property( 'grid-template-columns', $grid_layout );
 			//tablet ordering
-			if ( ! empty( $attributes['collapseOrder'] ) && 'left-to-right' !== $attributes['collapseOrder'] && in_array( $attributes['tabletLayout'], $collapse_layouts ) ) {
+			if ( ! empty( $attributes['collapseOrder'] ) && 'left-to-right' !== $attributes['collapseOrder'] && in_array( $tabletLayout, $collapse_layouts ) ) {
 				foreach ( range( 1, $columns ) as $item_count ) {
 					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . $item_count . ')' );
 					$css->add_property( 'order', ( $columns - $item_count + 1 ) );
