@@ -136,7 +136,7 @@ export default function MenuEditor({
 						{__('Custom link', 'kadence-blocks')}
 					</Button>
 					<Button isPrimary onClick={closeModal}>
-						{__('Done', 'kadence-blocks')}
+						{__('Done Editing', 'kadence-blocks')}
 					</Button>
 				</div>
 			</div>
