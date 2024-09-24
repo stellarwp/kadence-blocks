@@ -10,14 +10,18 @@ import {
 	KadencePanelBody,
 	KadenceRadioButtons,
 	ResponsiveRangeControls,
+	ResponsiveMeasureRangeControl,
+	ResponsiveMeasurementControls,
+	ResponsiveBorderControl,
 } from '@kadence/components';
 import { setBlockDefaults, getUniqueId, getPostOrFseId } from '@kadence/helpers';
 import { useBlockProps, BlockControls, useInnerBlocksProps, BlockContextProvider } from '@wordpress/block-editor';
 import { createBlock } from '@wordpress/blocks';
 import classnames from 'classnames';
-import { ToggleControl, SelectControl } from '@wordpress/components';
+import { ToggleControl, TextControl } from '@wordpress/components';
 import './editor.scss';
 import Icons from './icons.js';
+import BackendStyles from './backend-styles';
 
 const newTaglineBlock = createBlock('kadence/advancedheading', {
 	metadata: { name: __('Site Tagline', 'kadence-blocks'), for: 'tagline' },
@@ -29,6 +33,7 @@ const newTitleBlock = createBlock('kadence/advancedheading', {
 	metadata: { name: __('Site Title', 'kadence-blocks'), for: 'title' },
 	className: 'kb-logo-title',
 	fontSize: ['lg', '', ''],
+	content: window?.kadence_blocks_params?.site_name ? window.kadence_blocks_params.site_name : '',
 });
 
 export function Edit(props) {
@@ -42,14 +47,32 @@ export function Edit(props) {
 		tabletContainerMaxWidth,
 		mobileContainerMaxWidth,
 		containerMaxWidthType,
+		padding,
+		tabletPadding,
+		mobilePadding,
+		paddingType,
+		margin,
+		tabletMargin,
+		mobileMargin,
+		marginType,
+		borderRadius,
+		tabletBorderRadius,
+		mobileBorderRadius,
+		borderRadiusUnit,
+		borderStyles,
+		tabletBorderStyles,
+		mobileBorderStyles,
+		linkToHomepage,
+		link,
 	} = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { replaceInnerBlocks } = useDispatch('core/block-editor');
-	const { isUniqueID, isUniqueBlock, parentData, innerBlocks } = useSelect(
+	const { isUniqueID, isUniqueBlock, parentData, previewDevice, innerBlocks } = useSelect(
 		(select) => ({
 			isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
 			isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
+			previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 			parentData: {
 				rootBlock: select('core/block-editor').getBlock(
 					select('core/block-editor').getBlockHierarchyRootClientId(clientId)
@@ -199,7 +222,7 @@ export function Edit(props) {
 	}, [showSiteTitle, showSiteTagline]);
 
 	const blockProps = useBlockProps({
-		className: classnames(className, `kb-logo`, `kb-logo-${uniqueID}`, `kb-logo-layout-${layout}`),
+		className: classnames(className, `kb-logo`, `kb-logo${uniqueID}`, `kb-logo-layout-${layout}`),
 	});
 
 	const innerBlocksProps = useInnerBlocksProps(
@@ -207,10 +230,6 @@ export function Edit(props) {
 		{
 			templateLock: 'insert',
 			renderAppender: false,
-			// template: [
-			// 	['kadence/image', {}],
-			// 	['kadence/advancedheading', { metadata: { name: __('Site Title', 'kadence-blocks'), for: 'title' } }],
-			// ],
 		}
 	);
 
@@ -227,70 +246,96 @@ export function Edit(props) {
 			<KadenceInspectorControls blockSlug={'kadence/logo'}>
 				<InspectorControlTabs panelName={'kadence-logo'} setActiveTab={setActiveTab} activeTab={activeTab} />
 				{activeTab === 'general' && (
-					<KadencePanelBody panelName={'logo-general'} initialOpen={true}>
-						<ToggleControl
-							label={__('Show Site Title', 'kadence-blocks')}
-							checked={showSiteTitle}
-							onChange={(value) =>
-								setAttributes({
-									showSiteTitle: value,
-									showSiteTagline: false,
-								})
-							}
-						/>
-						{showSiteTitle && (
+					<>
+						<KadencePanelBody panelName={'logo-general'} initialOpen={true}>
 							<ToggleControl
-								label={__('Show Site Tagline', 'kadence-blocks')}
-								checked={showSiteTagline}
-								onChange={(value) => setAttributes({ showSiteTagline: value })}
+								label={__('Show Site Title', 'kadence-blocks')}
+								checked={showSiteTitle}
+								onChange={(value) =>
+									setAttributes({
+										showSiteTitle: value,
+										showSiteTagline: false,
+									})
+								}
 							/>
-						)}
+							{showSiteTitle && (
+								<ToggleControl
+									label={__('Show Site Tagline', 'kadence-blocks')}
+									checked={showSiteTagline}
+									onChange={(value) => setAttributes({ showSiteTagline: value })}
+								/>
+							)}
 
-						<KadenceRadioButtons
-							value={layout}
-							options={layoutOptions.slice(0, 2)}
-							hideLabel={true}
-							label={__('Layout', 'kadence-blocks')}
-							onChange={(value) => {
-								setAttributes({
-									layout: value,
-								});
-							}}
-						/>
-
-						{layoutOptions.length > 2 && (
 							<KadenceRadioButtons
 								value={layout}
-								options={layoutOptions.slice(2, 4)}
+								options={layoutOptions.slice(0, 2)}
 								hideLabel={true}
+								label={__('Layout', 'kadence-blocks')}
 								onChange={(value) => {
 									setAttributes({
 										layout: value,
 									});
 								}}
 							/>
-						)}
 
-						{layoutOptions.length > 4 && (
-							<KadenceRadioButtons
-								value={layout}
-								options={layoutOptions.slice(4, 6)}
-								hideLabel={true}
-								onChange={(value) => {
-									setAttributes({
-										layout: value,
-									});
-								}}
+							{layoutOptions.length > 2 && (
+								<KadenceRadioButtons
+									value={layout}
+									options={layoutOptions.slice(2, 4)}
+									hideLabel={true}
+									onChange={(value) => {
+										setAttributes({
+											layout: value,
+										});
+									}}
+								/>
+							)}
+
+							{layoutOptions.length > 4 && (
+								<KadenceRadioButtons
+									value={layout}
+									options={layoutOptions.slice(4, 6)}
+									hideLabel={true}
+									onChange={(value) => {
+										setAttributes({
+											layout: value,
+										});
+									}}
+								/>
+							)}
+						</KadencePanelBody>
+						<KadencePanelBody
+							title={__('Link Settings', 'kadence-blocks')}
+							panelName={'logo-link'}
+							initialOpen={true}
+						>
+							<ToggleControl
+								label={__('Link to Homepage', 'kadence-blocks')}
+								help={__('Set in Settings -> Reading.', 'kadence-blocks')}
+								checked={linkToHomepage}
+								onChange={(value) => setAttributes({ linkToHomepage: value })}
 							/>
-						)}
-					</KadencePanelBody>
+
+							{!linkToHomepage && (
+								<>
+									<TextControl
+										label={__('Link URL', 'kadence-blocks')}
+										value={link}
+										onChange={(value) => setAttributes({ link: value })}
+									/>
+								</>
+							)}
+						</KadencePanelBody>
+					</>
 				)}
 				{activeTab === 'style' && (
 					<KadencePanelBody panelName={'logo-style'} initialOpen={true}>
 						<ResponsiveRangeControls
 							label={__('Max Width', 'kadence-blocks')}
 							value={containerMaxWidth}
-							onChange={(value) => setAttributes({ containerMaxWidth: value })}
+							onChange={(value) => {
+								setAttributes({ containerMaxWidth: value });
+							}}
 							tabletValue={tabletContainerMaxWidth ? tabletContainerMaxWidth : ''}
 							onChangeTablet={(value) => setAttributes({ tabletContainerMaxWidth: value })}
 							mobileValue={mobileContainerMaxWidth ? mobileContainerMaxWidth : ''}
@@ -310,10 +355,69 @@ export function Edit(props) {
 								})
 							}
 						/>
+
+						<ResponsiveBorderControl
+							label={__('Border', 'kadence-blocks')}
+							value={borderStyles}
+							tabletValue={tabletBorderStyles}
+							mobileValue={mobileBorderStyles}
+							onChange={(value) => setAttributes({ borderStyles: value })}
+							onChangeTablet={(value) => setAttributes({ tabletBorderStyles: value })}
+							onChangeMobile={(value) => setAttributes({ mobileBorderStyles: value })}
+						/>
+						<ResponsiveMeasurementControls
+							label={__('Border Radius', 'kadence-blocks')}
+							value={borderRadius}
+							tabletValue={tabletBorderRadius}
+							mobileValue={mobileBorderRadius}
+							onChange={(value) => setAttributes({ borderRadius: value })}
+							onChangeTablet={(value) => setAttributes({ tabletBorderRadius: value })}
+							onChangeMobile={(value) => setAttributes({ mobileBorderRadius: value })}
+							min={0}
+							max={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 100}
+							step={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1}
+							unit={borderRadiusUnit}
+							units={['px', 'em', 'rem', '%']}
+							onUnit={(value) => setAttributes({ borderRadiusUnit: value })}
+							isBorderRadius={true}
+							allowEmpty={true}
+						/>
 					</KadencePanelBody>
 				)}
 				{activeTab === 'advanced' && (
 					<KadencePanelBody panelName={'logo-advanced'} initialOpen={true}>
+						<ResponsiveMeasureRangeControl
+							label={__('Padding', 'kadence-blocks')}
+							value={padding}
+							tabletValue={tabletPadding}
+							mobileValue={mobilePadding}
+							onChange={(value) => setAttributes({ padding: value })}
+							onChangeTablet={(value) => setAttributes({ tabletPadding: value })}
+							onChangeMobile={(value) => setAttributes({ mobilePadding: value })}
+							min={0}
+							max={paddingType === 'em' || paddingType === 'rem' ? 25 : paddingType === 'px' ? 400 : 100}
+							step={paddingType === 'em' || paddingType === 'rem' ? 0.1 : 1}
+							unit={paddingType}
+							units={['px', 'em', 'rem', '%']}
+							onUnit={(value) => setAttributes({ paddingType: value })}
+						/>
+
+						<ResponsiveMeasureRangeControl
+							label={__('Margin', 'kadence-blocks')}
+							value={margin}
+							tabletValue={tabletMargin}
+							mobileValue={mobileMargin}
+							onChange={(value) => setAttributes({ margin: value })}
+							onChangeTablet={(value) => setAttributes({ tabletMargin: value })}
+							onChangeMobile={(value) => setAttributes({ mobileMargin: value })}
+							min={0}
+							max={marginType === 'em' || marginType === 'rem' ? 25 : marginType === 'px' ? 400 : 100}
+							step={marginType === 'em' || marginType === 'rem' ? 0.1 : 1}
+							unit={marginType}
+							units={['px', 'em', 'rem', '%']}
+							onUnit={(value) => setAttributes({ marginType: value })}
+						/>
+
 						<KadenceBlockDefaults
 							attributes={attributes}
 							defaultAttributes={metadata.attributes}
@@ -323,6 +427,7 @@ export function Edit(props) {
 					</KadencePanelBody>
 				)}
 			</KadenceInspectorControls>
+			<BackendStyles {...props} previewDevice={previewDevice} />
 			<div {...blockProps}>
 				<BlockContextProvider value={{ 'kadence/insideBlock': 'logo' }}>
 					<Fragment {...innerBlocksProps} />

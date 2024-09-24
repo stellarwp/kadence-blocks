@@ -68,6 +68,12 @@ class Kadence_Blocks_Logo_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 		$css->set_selector( '.kb-logo' . $unique_id );
 
+
+		$css->render_measure_output( $attributes, 'padding', 'padding' );
+		$css->render_measure_output( $attributes, 'margin', 'margin' );
+		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius' );
+		$css->render_border_styles( $attributes, 'borderStyles' );
+
 		return $css->css_output();
 	}
 
@@ -86,7 +92,7 @@ class Kadence_Blocks_Logo_Block extends Kadence_Blocks_Abstract_Block {
 		$showSiteTagline = isset( $attributes['showSiteTagline'] ) ? $attributes['showSiteTagline'] : false;
 		$layout = isset( $attributes['layout'] ) ? $attributes['layout'] : 'logo-title';
 
-		$outer_classes = array( 'kb-logo', 'kb-logo-' . $unique_id, 'kb-logo-layout-' . $layout );
+		$outer_classes = array( 'kb-logo', 'kb-logo' . $unique_id, 'kb-logo-layout-' . $layout );
 
 		$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( ' ', $outer_classes ) ) );
 
