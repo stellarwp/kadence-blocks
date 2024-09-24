@@ -261,24 +261,20 @@ function KadencePosts(props) {
 	} else {
 		aboveSymbol = <>&#124;</>;
 	}
-
-	let columnsClass;
-	if (1 === columns) {
-		columnsClass = 'grid-xs-col-1 grid-sm-col-1 grid-lg-col-1';
-	} else if (2 === columns) {
-		if (undefined !== tabletColumns && 1 === tabletColumns) {
-			columnsClass = 'grid-xs-col-1 grid-sm-col-1 grid-lg-col-2';
-		} else {
-			columnsClass = 'grid-xs-col-1 grid-sm-col-2 grid-lg-col-2';
-		}
-	} else if (undefined !== tabletColumns && 1 === tabletColumns) {
-		columnsClass = 'grid-xs-col-1 grid-sm-col-1 grid-lg-col-3';
-	} else if (undefined !== tabletColumns && 3 === tabletColumns) {
-		columnsClass = 'grid-xs-col-1 grid-sm-col-3 grid-lg-col-3';
-	} else {
-		columnsClass = 'grid-xs-col-1 grid-sm-col-2 grid-lg-col-3';
-	}
-
+	const desktopColumnsClass = undefined !== columns && '' !== columns ? `grid-lg-col-${columns}` : 'grid-lg-col-3';
+	const tabletColumnsClass = undefined !== tabletColumns && '' !== tabletColumns ? `grid-sm-col-${tabletColumns}` : 'grid-sm-col-2';
+	const mobileColumnsClass = undefined !== mobileColumns && '' !== mobileColumns ? `grid-xs-col-${mobileColumns}` : 'grid-xs-col-1';
+	const classes = classnames(className, {
+		'kb-posts': true,
+		'grid-cols': true,
+		'content-wrap': true,
+		[`kb-posts-id-${uniqueID}`]: uniqueID,
+		[`${desktopColumnsClass}`]: desktopColumnsClass,
+		[`${tabletColumnsClass}`]: tabletColumnsClass,
+		[`${mobileColumnsClass}`]: mobileColumnsClass,
+		[`kb-posts-style-${loopStyle ? loopStyle : 'boxed'}`]: true,
+		[`item-image-style-${columns === 1 ? alignImage : 'above'}`]: true,
+	});
 	const titleSize = getPreviewSize(
 		getPreviewDevice,
 		undefined !== titleFont &&
@@ -562,7 +558,7 @@ function KadencePosts(props) {
 								value={columns}
 								onChange={(value) => setAttributes({ columns: value })}
 								min={1}
-								max={3}
+								max={4}
 							/>
 							{1 !== columns && (
 								<RangeControl
@@ -1235,9 +1231,7 @@ function KadencePosts(props) {
 		<div {...blockProps}>
 			{settingspanel}
 			<div
-				className={`${className} kb-posts kb-posts-id-${uniqueID} ${columnsClass} grid-cols content-wrap kb-posts-style-${
-					loopStyle ? loopStyle : 'boxed'
-				} item-image-style-${columns === 1 ? alignImage : 'above'}`}
+				className={classes}
 			>
 				{displayPosts.map((post, i) => renderPosts(post, i))}
 			</div>

@@ -176,6 +176,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 = 3.2.54 =
 Release Date: September TBD 2024
+* Add: Option to set posts columns to four.
 * Update: Add reset option to many settings in row layout.
 * Fix: Adv text highlight setting also applying to core highlight.
 * Fix: Tabs block in accordion mode interfering with slider block.

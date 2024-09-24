@@ -166,6 +166,18 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			$classes[] = 'grid-lg-col-2';
 			$classes[] = 'item-image-style-above';
+		} elseif ( 4 === $columns ) {
+			if ( isset( $attributes['tabletColumns'] ) && ! empty( $attributes['tabletColumns'] ) && 1 === $attributes['tabletColumns'] ) {
+				$classes[] = 'grid-sm-col-1';
+			} elseif ( isset( $attributes['tabletColumns'] ) && ! empty( $attributes['tabletColumns'] ) && 3 === $attributes['tabletColumns'] ) {
+				$classes[] = 'grid-sm-col-3';
+			} elseif ( isset( $attributes['tabletColumns'] ) && ! empty( $attributes['tabletColumns'] ) && 4 === $attributes['tabletColumns'] ) {
+				$classes[] = 'grid-sm-col-4';
+			} else {
+				$classes[] = 'grid-sm-col-2';
+			}
+			$classes[] = 'grid-lg-col-4';
+			$classes[] = 'item-image-style-above';
 		} else {
 			if ( isset( $attributes['tabletColumns'] ) && ! empty( $attributes['tabletColumns'] ) && 1 === $attributes['tabletColumns'] ) {
 				$classes[] = 'grid-sm-col-1';
