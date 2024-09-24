@@ -67,6 +67,8 @@ export default function BackendStyles(props) {
 		inputIconHoverColor,
 		inputMaxWidth,
 		inputMaxWidthType,
+		inputMinWidth,
+		inputMinWidthType,
 	} = attributes;
 
 	const css = new KadenceBlocksCSS();
@@ -210,6 +212,13 @@ export default function BackendStyles(props) {
 		undefined !== inputMaxWidth ? inputMaxWidth[2] : ''
 	);
 
+	const previewInputMinWidth = getPreviewSize(
+		previewDevice,
+		undefined !== inputMinWidth ? inputMinWidth[0] : '',
+		undefined !== inputMinWidth ? inputMinWidth[1] : '',
+		undefined !== inputMinWidth ? inputMinWidth[2] : ''
+	);
+
 	if (isSelected) {
 		css.set_selector(
 			`.block-editor-block-popover__inbetween-container .block-editor-block-list__insertion-point.is-with-inserter`
@@ -317,6 +326,7 @@ export default function BackendStyles(props) {
 
 	css.set_selector(`.kb-search${uniqueID} form`);
 	css.add_property('max-width', getSpacingOptionOutput(previewInputMaxWidth, inputMaxWidthType));
+	css.add_property('min-width', getSpacingOptionOutput(previewInputMinWidth, inputMinWidthType));
 
 	const cssOutput = css.css_output();
 

@@ -118,6 +118,8 @@ class Kadence_Blocks_Search_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_selector( '.kb-search.kb-search' . $unique_id . ' form, .kb-search.kb-search' . $unique_id . ' .kb-search-modal-content form form' );
 		$css->render_responsive_range( $attributes, 'inputMaxWidth', 'max-width', 'inputMaxWidthType' );
+		$css->render_responsive_range( $attributes, 'inputMinWidth', 'min-width', 'inputMinWidthType' );
+
 		return $css->css_output();
 	}
 

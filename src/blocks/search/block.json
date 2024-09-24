@@ -194,6 +194,14 @@
 			"type": "string",
 			"default": "px"
 		},
+		"inputMinWidth": {
+			"type": "array",
+			"default": ["", "", ""]
+		},
+		"inputMinWidthType": {
+			"type": "string",
+			"default": "px"
+		},
 		"inputIcon": {
 			"type": "string",
 			"default": "fe_search"
