@@ -657,7 +657,7 @@ export default function Image({
 	const controls = (
 		<>
 			<BlockControls group="block">
-				<BlockAlignmentControl value={align} onChange={updateAlignment} />
+				{insideBlock !== 'logo' && <BlockAlignmentControl value={align} onChange={updateAlignment} />}
 				{showCaption && (
 					<ToolbarButton
 						onClick={() => {

@@ -48,10 +48,12 @@ export default function BackendStyles(props) {
 	const css = new KadenceBlocksCSS();
 
 	css.set_selector(`.kb-logo${uniqueID}`);
-	css.add_property(
-		'max-width',
-		getSpacingOptionOutput(previewContainerMaxWidth, containerMaxWidthType) + ' !important'
-	);
+	if (previewContainerMaxWidth) {
+		css.add_property(
+			'max-width',
+			getSpacingOptionOutput(previewContainerMaxWidth, containerMaxWidthType) + ' !important'
+		);
+	}
 	css.render_measure_output(
 		borderRadius,
 		tabletBorderRadius,

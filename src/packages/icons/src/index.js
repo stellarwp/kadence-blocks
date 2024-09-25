@@ -84,6 +84,7 @@ export { default as galleryIcon } from './block-icons/advanced-gallery/icon';
 export { default as infoboxIcon } from './block-icons/infobox';
 export { default as lottieIcon } from './block-icons/lottie';
 export { default as tableOfContentsIcon } from './block-icons/table-of-contents/icon';
+export { default as logoBlockIcon } from './block-icons/logo';
 
 // Accordion Block
 export { default as accord1Icon } from './block-icons/accordion-block/accord-1';

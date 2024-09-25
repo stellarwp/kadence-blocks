@@ -9,6 +9,9 @@
 		"uniqueID": {
 			"type": "string"
 		},
+		"align": {
+			"type": "string"
+		},
 		"showSiteTitle": {
 			"type": "boolean",
 			"default": true
@@ -27,7 +30,7 @@
 		},
 		"layout": {
 			"type": "string",
-			"default": "logo-title"
+			"default": "logo-left"
 		},
 		"containerMaxWidth": {
 			"type": "number"

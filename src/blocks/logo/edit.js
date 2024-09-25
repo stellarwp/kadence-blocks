@@ -2,6 +2,7 @@ import metadata from './block.json';
 import React, { useEffect, useState, useMemo, Fragment } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
+import { store as coreDataStore } from '@wordpress/core-data';
 import {
 	InspectorControlTabs,
 	KadenceInspectorControls,
@@ -15,27 +16,19 @@ import {
 	ResponsiveBorderControl,
 } from '@kadence/components';
 import { setBlockDefaults, getUniqueId, getPostOrFseId } from '@kadence/helpers';
-import { useBlockProps, BlockControls, useInnerBlocksProps, BlockContextProvider } from '@wordpress/block-editor';
+import {
+	useBlockProps,
+	BlockControls,
+	useInnerBlocksProps,
+	BlockContextProvider,
+	BlockAlignmentControl,
+} from '@wordpress/block-editor';
 import { createBlock } from '@wordpress/blocks';
 import classnames from 'classnames';
 import { ToggleControl, TextControl } from '@wordpress/components';
 import './editor.scss';
 import Icons from './icons.js';
 import BackendStyles from './backend-styles';
-
-const newTaglineBlock = createBlock('kadence/advancedheading', {
-	metadata: { name: __('Site Tagline', 'kadence-blocks'), for: 'tagline' },
-	className: 'kb-logo-tagline',
-	fontSize: ['sm', '', ''],
-});
-
-const newTitleBlock = createBlock('kadence/advancedheading', {
-	metadata: { name: __('Site Title', 'kadence-blocks'), for: 'title' },
-	className: 'kb-logo-title',
-	fontSize: ['lg', '', ''],
-	content: window?.kadence_blocks_params?.site_name ? window.kadence_blocks_params.site_name : '',
-});
-
 export function Edit(props) {
 	const { attributes, setAttributes, className, clientId } = props;
 	const {
@@ -64,6 +57,7 @@ export function Edit(props) {
 		mobileBorderStyles,
 		linkToHomepage,
 		link,
+		align,
 	} = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
@@ -89,6 +83,26 @@ export function Edit(props) {
 	);
 
 	const [activeTab, setActiveTab] = useState('general');
+
+	const siteData = useSelect((select) => {
+		return select(coreDataStore).getEntityRecord('root', 'site');
+	}, []);
+
+	const newTaglineBlock = createBlock('kadence/advancedheading', {
+		metadata: { name: __('Site Tagline', 'kadence-blocks'), for: 'tagline' },
+		className: 'kb-logo-tagline',
+		fontSize: ['sm', '', ''],
+		content: siteData?.description ? siteData.description : '',
+	});
+
+	const newTitleBlock = createBlock('kadence/advancedheading', {
+		metadata: { name: __('Site Title', 'kadence-blocks'), for: 'title' },
+		className: 'kb-logo-title',
+		fontSize: ['lg', '', ''],
+		content: siteData?.title ? siteData.title : '',
+	});
+
+	const siteUrl = siteData?.url ? siteData.url : '';
 
 	useEffect(() => {
 		setBlockDefaults('kadence/logo', attributes);
@@ -183,7 +197,8 @@ export function Edit(props) {
 
 		const newInnerBlocks = [];
 		const imageBlock =
-			innerBlocks.find((block) => block.name === 'kadence/image') || createBlock('kadence/image', {});
+			innerBlocks.find((block) => block.name === 'kadence/image') ||
+			createBlock('kadence/image', { imgMaxWidth: 250, marginDesktop: ['', 'sm', '', ''] });
 		newInnerBlocks.push(imageBlock);
 
 		if (showSiteTitle || showSiteTagline) {
@@ -222,7 +237,12 @@ export function Edit(props) {
 	}, [showSiteTitle, showSiteTagline]);
 
 	const blockProps = useBlockProps({
-		className: classnames(className, `kb-logo`, `kb-logo${uniqueID}`, `kb-logo-layout-${layout}`),
+		className: classnames({
+			className: true,
+			[`align${align}`]: align,
+			'kb-logo': true,
+			[`kb-logo${uniqueID}`]: true,
+		}),
 	});
 
 	const innerBlocksProps = useInnerBlocksProps(
@@ -235,6 +255,9 @@ export function Edit(props) {
 
 	return (
 		<>
+			<BlockControls group="block">
+				<BlockAlignmentControl value={align} onChange={(value) => setAttributes({ align: value })} />
+			</BlockControls>
 			<BlockControls>
 				<CopyPasteAttributes
 					attributes={attributes}
@@ -311,20 +334,21 @@ export function Edit(props) {
 						>
 							<ToggleControl
 								label={__('Link to Homepage', 'kadence-blocks')}
-								help={__('Set in Settings -> Reading.', 'kadence-blocks')}
 								checked={linkToHomepage}
-								onChange={(value) => setAttributes({ linkToHomepage: value })}
+								onChange={(value) => setAttributes({ linkToHomepage: value, link: '' })}
 							/>
 
-							{!linkToHomepage && (
-								<>
-									<TextControl
-										label={__('Link URL', 'kadence-blocks')}
-										value={link}
-										onChange={(value) => setAttributes({ link: value })}
-									/>
-								</>
-							)}
+							<TextControl
+								label={__('Link URL', 'kadence-blocks')}
+								value={link}
+								placeholder={linkToHomepage ? siteUrl : ''}
+								onChange={(value) =>
+									setAttributes({
+										link: value,
+										linkToHomepage: value !== '' ? false : linkToHomepage,
+									})
+								}
+							/>
 						</KadencePanelBody>
 					</>
 				)}
@@ -429,9 +453,11 @@ export function Edit(props) {
 			</KadenceInspectorControls>
 			<BackendStyles {...props} previewDevice={previewDevice} />
 			<div {...blockProps}>
-				<BlockContextProvider value={{ 'kadence/insideBlock': 'logo' }}>
-					<Fragment {...innerBlocksProps} />
-				</BlockContextProvider>
+				<div className={'kb-logo-layout-container kb-logo-layout-' + layout}>
+					<BlockContextProvider value={{ 'kadence/insideBlock': 'logo' }}>
+						<Fragment {...innerBlocksProps} />
+					</BlockContextProvider>
+				</div>
 			</div>
 		</>
 	);

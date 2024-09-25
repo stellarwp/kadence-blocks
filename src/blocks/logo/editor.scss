@@ -1,2 +1,20 @@
 // Placeholder
 @import "./style";
+
+.editor-styles-wrapper .kb-logo .wp-block-kadence-image {
+	margin-bottom: unset;
+}
+
+.editor-styles-wrapper .wp-block.kb-logo {
+	margin-left: 0;
+	margin-right: 0;
+
+	.kb-adv-text {
+		margin-left: 0;
+		margin-right: 0;
+	}
+}
+
+.kb-logo .wp-block-group {
+	margin: 0;
+}
