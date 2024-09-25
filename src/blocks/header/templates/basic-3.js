@@ -113,7 +113,7 @@ function innerBlocks() {
 						uniqueID: '6_727312-9d',
 						location: 'center',
 						layout: 'fullwidth',
-						minHeight: 110,
+						minHeight: 80,
 						padding: ['sm', 'sm', 'sm', 'sm'],
 						metadata: { name: 'Middle Row' },
 					},
