@@ -177,11 +177,13 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 = 3.2.54 =
 Release Date: September TBD 2024
 * Add: Option to set posts columns to four.
+* Add: Support 4 columns in posts block.
 * Update: Add reset option to many settings in row layout.
 * Fix: Adv text highlight setting also applying to core highlight.
 * Fix: Tabs block in accordion mode interfering with slider block.
 * Fix: Adjustment to wpml config to allow translation of adv text block.
 * Fix: Issue with responsive vertical alignment in section block.
+* Fix: PHP warning for undefined array key
 
 = 3.2.53 =
 Release Date: September 9th 2024
