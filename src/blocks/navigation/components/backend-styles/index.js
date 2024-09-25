@@ -764,13 +764,10 @@ export default function BackendStyles(props) {
 			css.add_property('--kb-nav-dropdown-box-shadow', css.render_shadow(dropdownShadow[0]));
 		}
 
-		//sub menus (first level only)
-		css.set_selector(
-			`.wp-block-kadence-navigation${uniqueID} > .navigation > .menu-container > .menu > .menu-item > .sub-menu`
-		);
 		if (previewDropdownHorizontalAlignment == 'center') {
 			css.add_property('--kb-nav-dropdown-show-left', '50%');
 			css.add_property('--kb-nav-dropdown-show-transform-x', '-50%');
+			css.add_property('--kb-nav-dropdown-hide-transform-x', '-50%');
 		} else if (previewDropdownHorizontalAlignment == 'right') {
 			css.add_property('--kb-nav-dropdown-show-right', '0');
 		}

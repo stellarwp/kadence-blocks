@@ -60,9 +60,14 @@
 
 @mixin navigation-fade-up-styles {
 	--kb-nav-dropdown-hide-transform-y: 10px;
+	--kb-nav-dropdown-transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 @mixin navigation-fade-down-styles {
 	--kb-nav-dropdown-hide-transform-y: -10px;
+	--kb-nav-dropdown-transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+@mixin navigation-fade-styles {
+	--kb-nav-dropdown-transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 
 @mixin horizontal-navigation-base-styles {
@@ -117,6 +122,31 @@
 		}
 	}
 
+	//Desktop fade style
+	.navigation-desktop-dropdown-animation-fade {
+		.sub-menu {
+			@media (min-width: $laptop-plus-query) {
+				@include navigation-fade-styles();
+			}
+		}
+	}
+	//Tablet fade style
+	.navigation-tablet-dropdown-animation-fade {
+		.sub-menu {
+			@media (min-width: $before-tablet-plus-query) and (max-width: $tablet-minus-query) {
+				@include navigation-fade-styles();
+			}
+		}
+	}
+	//Mobile fade style
+	.navigation-mobile-dropdown-animation-fade {
+		.sub-menu {
+			@media (max-width: $phone-minus-query) {
+				@include navigation-fade-styles();
+			}
+		}
+	}
+
 	//horizontal submenus
 	.sub-menu {
 		position: absolute;
@@ -149,6 +179,7 @@
 			--kb-nav-dropdown-show-right: auto;
 			--kb-nav-dropdown-show-transform-x: 0;
 			--kb-nav-dropdown-show-transform-y: 0;
+			--kb-nav-dropdown-hide-transform-x: 0;
 			min-height: 100%;
 
 			&.sub-menu-right-edge {
@@ -647,7 +678,7 @@
 		display: block;
 		list-style: none;
 		padding: 0;
-		transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+		transition: var(--kb-nav-dropdown-transition);
 		background: var(--kb-nav-dropdown-background);
 		border-top-left-radius: var(--kb-nav-dropdown-border-top-left-radius);
 		border-top-right-radius: var(--kb-nav-dropdown-border-top-right-radius);
