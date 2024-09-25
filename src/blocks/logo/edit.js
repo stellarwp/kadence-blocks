@@ -99,7 +99,7 @@ export function Edit(props) {
 	const newTitleBlock = createBlock('kadence/advancedheading', {
 		metadata: { name: __('Site Title', 'kadence-blocks'), for: 'title' },
 		className: 'kb-logo-title',
-		fontSize: ['lg', '', ''],
+		fontSize: ['md', '', ''],
 		content: siteData?.title ? siteData.title : '',
 	});
 
