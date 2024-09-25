@@ -7,7 +7,6 @@ import { createBlock } from '@wordpress/blocks';
 
 const postMeta = {
 	_kad_header_background: { type: 'normal', color: 'palette8' },
-	_kad_header_height: ['80', '', ''],
 	_kad_header_isSticky: '0',
 	_kad_header_isTransparent: '0',
 	_kad_header_shadow: [
