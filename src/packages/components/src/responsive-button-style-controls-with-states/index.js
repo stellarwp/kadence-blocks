@@ -175,9 +175,9 @@ export default function ResponsiveButtonStyleControlsWithStates({
 					value={borderRadiusValue}
 					tabletValue={borderRadiusValueTablet}
 					mobileValue={borderRadiusValueMobile}
-					onChange={(value) => saveFunction(borderRadiusBase, value)}
-					onChangeTablet={(value) => saveFunction(borderRadiusBase + 'Tablet', value)}
-					onChangeMobile={(value) => saveFunction(borderRadiusBase + 'Mobile', value)}
+					onChange={(value) => saveFunction(borderRadiusBase, value.map(String))}
+					onChangeTablet={(value) => saveFunction(borderRadiusBase + 'Tablet', value.map(String))}
+					onChangeMobile={(value) => saveFunction(borderRadiusBase + 'Mobile', value.map(String))}
 					min={0}
 					max={borderRadiusUnitValue === 'em' || borderRadiusUnitValue === 'rem' ? 24 : 100}
 					step={borderRadiusUnitValue === 'em' || borderRadiusUnitValue === 'rem' ? 0.1 : 1}
@@ -344,9 +344,9 @@ export default function ResponsiveButtonStyleControlsWithStates({
 					value={borderRadiusValueHover}
 					tabletValue={borderRadiusValueHoverTablet}
 					mobileValue={borderRadiusValueHoverMobile}
-					onChange={(value) => saveFunction(borderRadiusBase + 'Hover', value)}
-					onChangeTablet={(value) => saveFunction(borderRadiusBase + 'HoverTablet', value)}
-					onChangeMobile={(value) => saveFunction(borderRadiusBase + 'HoverMobile', value)}
+					onChange={(value) => saveFunction(borderRadiusBase + 'Hover', value.map(String))}
+					onChangeTablet={(value) => saveFunction(borderRadiusBase + 'HoverTablet', value.map(String))}
+					onChangeMobile={(value) => saveFunction(borderRadiusBase + 'HoverMobile', value.map(String))}
 					min={0}
 					max={borderRadiusUnitValueHover === 'em' || borderRadiusUnitValueHover === 'rem' ? 24 : 100}
 					step={borderRadiusUnitValueHover === 'em' || borderRadiusUnitValueHover === 'rem' ? 0.1 : 1}
@@ -523,9 +523,9 @@ export default function ResponsiveButtonStyleControlsWithStates({
 					value={borderRadiusValueActive}
 					tabletValue={borderRadiusValueActiveTablet}
 					mobileValue={borderRadiusValueActiveMobile}
-					onChange={(value) => saveFunction(borderRadiusBase + 'Active', value)}
-					onChangeTablet={(value) => saveFunction(borderRadiusBase + 'ActiveTablet', value)}
-					onChangeMobile={(value) => saveFunction(borderRadiusBase + 'ActiveMobile', value)}
+					onChange={(value) => saveFunction(borderRadiusBase + 'Active', value.map(String))}
+					onChangeTablet={(value) => saveFunction(borderRadiusBase + 'ActiveTablet', value.map(String))}
+					onChangeMobile={(value) => saveFunction(borderRadiusBase + 'ActiveMobile', value.map(String))}
 					min={0}
 					max={borderRadiusUnitValueActive === 'em' || borderRadiusUnitValueActive === 'rem' ? 24 : 100}
 					step={borderRadiusUnitValueActive === 'em' || borderRadiusUnitValueActive === 'rem' ? 0.1 : 1}

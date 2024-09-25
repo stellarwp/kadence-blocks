@@ -215,7 +215,7 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( '--kb-nav-dropdown-show-right', '0' );
 			}
 		} else {
-			$css->add_property( '--kb-nav-link-wrap-border-bottom', $css->render_border( $sized_attributes['divider'], 'bottom' ) );
+			$css->add_property( '--kb-nav-top-not-last-link-border-bottom', $css->render_border( $sized_attributes['divider'], 'bottom' ) );
 			$css->add_property( '--kb-nav-dropdown-toggle-border-left', $css->render_border( $sized_attributes['divider'], 'bottom' ) );
 		}
 
