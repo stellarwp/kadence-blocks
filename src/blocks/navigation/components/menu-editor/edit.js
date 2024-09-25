@@ -245,14 +245,26 @@ export default function MenuEdit({ blocks }) {
 	}
 
 	function hideCollapsedItems(array, idsToCollapse) {
-		let isChild = [];
+		const isChild = [];
+
+		function addChildrenRecursively(children) {
+			children.forEach((childId) => {
+				if (!isChild.includes(childId)) {
+					isChild.push(childId);
+					const childItem = array.find((item) => item.id === childId);
+					if (childItem && childItem.children) {
+						addChildrenRecursively(childItem.children);
+					}
+				}
+			});
+		}
 
 		return array.filter((item) => {
 			if (isChild.includes(item.id)) {
 				return false;
 			}
 			if ((idsToCollapse.includes(item.id) || isChild.includes(item.id)) && item.children) {
-				isChild = [...isChild, ...item.children];
+				addChildrenRecursively(item.children);
 			}
 			return true;
 		});
