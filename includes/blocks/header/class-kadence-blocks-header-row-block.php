@@ -213,6 +213,9 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! empty( $attributes['location'] ) ) {
 			$classes[] = 'wp-block-kadence-header-row-' . esc_attr( $attributes['location'] );
 		}
+		if ( ! empty( $attributes['className'] ) ) {
+			$classes[] = $attributes['className'];
+		}
 		$layout = ! empty( $attributes['layout'] ) ? $attributes['layout'] : 'standard';
 		$classes[] = 'wp-block-kadence-header-row-layout-' . esc_attr( $layout  );
 
