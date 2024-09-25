@@ -175,8 +175,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.2.54 =
-Release Date: September TBD 2024
-* Add: Option to set posts columns to four.
+Release Date: September 25th 2024
 * Add: Support 4 columns in posts block.
 * Update: Add reset option to many settings in row layout.
 * Fix: Adv text highlight setting also applying to core highlight.
