@@ -36,6 +36,7 @@ export default function BackendStyles(props) {
 		borderStyles,
 		tabletBorderStyles,
 		mobileBorderStyles,
+		textVerticalAlign,
 	} = attributes;
 
 	const previewContainerMaxWidth = getPreviewSize(
@@ -82,6 +83,17 @@ export default function BackendStyles(props) {
 
 	css.render_measure_output(padding, tabletPadding, mobilePadding, previewDevice, 'padding', paddingType);
 	css.render_measure_output(margin, tabletMargin, mobileMargin, previewDevice, 'margin', marginType);
+
+	if (
+		layout === 'logo-left' ||
+		layout === 'logo-right' ||
+		layout === 'logo-right-stacked' ||
+		layout === 'logo-left-stacked'
+	) {
+		css.set_selector(`.kb-logo${uniqueID} .kb-logo-layout-container`);
+
+		css.add_property('align-items', textVerticalAlign);
+	}
 
 	const cssOutput = css.css_output();
 

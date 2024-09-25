@@ -1,8 +1,10 @@
 .kb-logo {
 	width: fit-content;
+	max-width: 100%;
 
 	.kb-logo-layout-container {
 		display: flex;
+		width: 100%;
 
 		// Logo and Title only layouts
 		&.kb-logo-layout-logo-left,
@@ -54,6 +56,10 @@
 				order: 3;
 			}
 
+		}
+
+		.wp-block-kadence-advancedheading {
+			margin: unset;
 		}
 	}
 }

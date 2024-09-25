@@ -1263,7 +1263,7 @@ class Kadence_Blocks_CSS {
 			return false;
 		}
 		$unit = ! empty( $attributes[ $unit_name ] ) ? $attributes[ $unit_name ] : 'px';
-		
+
 		$defaults = array(
 			'desktop_key' => '',
 			'tablet_key'  => '',
@@ -2168,11 +2168,11 @@ class Kadence_Blocks_CSS {
 					'first_prop' => $property_prefix . $property_addition . 'border-top-left-radius',
 					'second_prop' => $property_prefix . $property_addition . 'border-top-right-radius',
 					'third_prop' => $property_prefix . $property_addition . 'border-bottom-right-radius',
-					'fourth_prop' => $property_prefix . $property_addition . 'border-bottom-left-radius' 
+					'fourth_prop' => $property_prefix . $property_addition . 'border-bottom-left-radius'
 				]) : $border_radius_base_args;
 
 				$border_args = [
-					'renderAsVars' => $args['renderAsVars'], 
+					'renderAsVars' => $args['renderAsVars'],
 					'varBase' => $property_prefix . $property_addition
 				];
 
@@ -2407,7 +2407,7 @@ class Kadence_Blocks_CSS {
 				$css->add_property( 'background-position', ( ! empty( $background['position'] ) ? $background['position'] : 'center center' ) );
 				$css->add_property( 'background-attachment', ( ! empty( $background['attachment'] ) ? $background['attachment'] : 'scroll' ) );
 				$css->add_property( 'background-repeat', ( ! empty( $background['repeat'] ) ? $background['repeat'] : 'no-repeat' ) );
-				
+
 			}
 		} elseif ( 'gradient' === $type && isset( $background['gradient'] ) && ! empty( $background['gradient'] ) ) {
 			$css->add_property( 'background', $this->render_gradient( $background['gradient'] ) );

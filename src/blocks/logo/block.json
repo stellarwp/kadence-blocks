@@ -20,6 +20,10 @@
 			"type": "boolean",
 			"default": true
 		},
+		"textVerticalAlign": {
+			"type": "string",
+			"default": "center"
+		},
 		"link": {
 			"type": "string",
 			"default": ""

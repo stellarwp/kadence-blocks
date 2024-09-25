@@ -74,9 +74,31 @@ class Kadence_Blocks_Logo_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius' );
 		$css->render_border_styles( $attributes, 'borderStyles' );
 
+		$containerMaxWidthType = $attributes['containerMaxWidthType'] ?? 'px';
+		if( !empty( $attributes['containerMaxWidth'])) {
+			$css->add_property( 'max-width', $attributes['containerMaxWidth'] . $containerMaxWidthType );
+		}
+		if ( !empty( $attributes['tabletContainerMaxWidth'] ) ) {
+			$css->set_media_state('tablet');
+			$css->add_property( 'max-width', $attributes['tabletContainerMaxWidth'] . $containerMaxWidthType );
+			$css->set_media_state('desktop');
+		}
+		if( !empty( $attributes['mobileContainerMaxWidth'] ) ) {
+			$css->set_media_state('mobile');
+			$css->add_property( 'max-width', $attributes['mobileContainerMaxWidth'] . $containerMaxWidthType );
+			$css->set_media_state('desktop');
+		}
+
 		$css->set_selector( '.kb-logo' . $unique_id  .' a');
 		$css->add_property('text-decoration', 'inherit');
 		$css->add_property('color', 'inherit');
+
+
+
+		$css->set_selector( '.kb-logo' . $unique_id . ' .kb-logo-layout-container' );
+		if( $attributes['layout'] === 'logo-left' || $attributes['layout'] === 'logo-right' || $attributes['layout'] === 'logo-right-stacked' || $attributes['layout'] === 'logo-left-stacked' ) {
+			$css->add_property( 'align-items', $attributes['textVerticalAlign'] );
+		}
 
 		return $css->css_output();
 	}

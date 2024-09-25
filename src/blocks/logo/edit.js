@@ -25,7 +25,7 @@ import {
 } from '@wordpress/block-editor';
 import { createBlock } from '@wordpress/blocks';
 import classnames from 'classnames';
-import { ToggleControl, TextControl } from '@wordpress/components';
+import { ToggleControl, TextControl, SelectControl } from '@wordpress/components';
 import './editor.scss';
 import Icons from './icons.js';
 import BackendStyles from './backend-styles';
@@ -58,6 +58,7 @@ export function Edit(props) {
 		linkToHomepage,
 		link,
 		align,
+		textVerticalAlign,
 	} = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
@@ -130,6 +131,10 @@ export function Edit(props) {
 			setAttributes({ layout: 'logo-only' });
 		} else if (layout === 'logo-only' && (showSiteTitle || showSiteTagline)) {
 			setAttributes({ layout: showSiteTagline ? 'logo-left-stacked' : 'logo-left' });
+		} else if (showSiteTagline && layout === 'logo-right') {
+			setAttributes({ layout: 'logo-right-stacked' });
+		} else if (showSiteTagline && layout === 'logo-left') {
+			setAttributes({ layout: 'logo-left-stacked' });
 		}
 
 		updateInnerBlocks();
@@ -324,6 +329,22 @@ export function Edit(props) {
 											layout: value,
 										});
 									}}
+								/>
+							)}
+
+							{(layout === 'logo-left' ||
+								layout === 'logo-right' ||
+								layout === 'logo-right-stacked' ||
+								layout === 'logo-left-stacked') && (
+								<SelectControl
+									label={__('Text Vertical Alignment', 'kadence-blocks')}
+									value={textVerticalAlign}
+									options={[
+										{ value: 'center', label: __('Center', 'kadence-blocks') },
+										{ value: 'start', label: __('Top', 'kadence-blocks') },
+										{ value: 'baseline', label: __('Bottom', 'kadence-blocks') },
+									]}
+									onChange={(value) => setAttributes({ textVerticalAlign: value })}
 								/>
 							)}
 						</KadencePanelBody>
