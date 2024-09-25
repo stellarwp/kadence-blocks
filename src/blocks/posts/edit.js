@@ -262,8 +262,10 @@ function KadencePosts(props) {
 		aboveSymbol = <>&#124;</>;
 	}
 	const desktopColumnsClass = undefined !== columns && '' !== columns ? `grid-lg-col-${columns}` : 'grid-lg-col-3';
-	const tabletColumnsClass = undefined !== tabletColumns && '' !== tabletColumns ? `grid-sm-col-${tabletColumns}` : 'grid-sm-col-2';
-	const mobileColumnsClass = undefined !== mobileColumns && '' !== mobileColumns ? `grid-xs-col-${mobileColumns}` : 'grid-xs-col-1';
+	const tabletColumnsClass =
+		undefined !== tabletColumns && '' !== tabletColumns ? `grid-sm-col-${tabletColumns}` : 'grid-sm-col-2';
+	const mobileColumnsClass =
+		undefined !== mobileColumns && '' !== mobileColumns ? `grid-xs-col-${mobileColumns}` : 'grid-xs-col-1';
 	const classes = classnames(className, {
 		'kb-posts': true,
 		'grid-cols': true,
@@ -1230,11 +1232,7 @@ function KadencePosts(props) {
 	return (
 		<div {...blockProps}>
 			{settingspanel}
-			<div
-				className={classes}
-			>
-				{displayPosts.map((post, i) => renderPosts(post, i))}
-			</div>
+			<div className={classes}>{displayPosts.map((post, i) => renderPosts(post, i))}</div>
 		</div>
 	);
 }
