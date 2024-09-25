@@ -118,7 +118,7 @@ class Kadence_Blocks_Logo_Block extends Kadence_Blocks_Abstract_Block {
 		$layout_class = 'kb-logo-layout-container kb-logo-layout-' . $layout;
 
 		$outer_classes = array( 'kb-logo', 'kb-logo' . $unique_id );
-		$outer_classes[] = ! empty( $attributes['align'] ) ? 'align' . $attributes['align'] : 'alignnone';
+		$outer_classes[] = ! empty( $attributes['align'] ) ? 'align' . $attributes['align'] : 'aligncenter';
 
 		$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( ' ', $outer_classes ) ) );
 
