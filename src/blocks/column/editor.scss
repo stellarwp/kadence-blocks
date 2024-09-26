@@ -18,7 +18,11 @@
 .wp-block-kadence-column {
 	margin-top: 0px;
 	margin-bottom: 0px;
-	width: 100%;
+	// width: 100%;
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	min-height: 0;
 
 	.kadence-inner-column-inner:where(.section-is-flex) {
 		display: flex;
