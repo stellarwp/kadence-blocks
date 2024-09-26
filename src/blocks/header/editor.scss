@@ -174,3 +174,8 @@
 	//but it also breaks the sub menus being able to break out from the header.
 	//overflow: auto;
 }
+
+.wp-block-kadence-header :where(.wp-block) {
+	margin-bottom: 0px;
+	margin-top: 0px;
+}
