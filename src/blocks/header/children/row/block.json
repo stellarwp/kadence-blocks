@@ -8,7 +8,8 @@
 	"description": "Kadence header row",
 	"supports": {
 		"inserter": true,
-		"ktdynamic": true
+		"ktdynamic": true,
+		"kbcss": true
 	},
 	"textdomain": "kadence-blocks",
 	"attributes": {
