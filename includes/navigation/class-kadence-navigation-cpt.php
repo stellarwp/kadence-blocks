@@ -187,7 +187,7 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'public'                => false,
 				'has_archive'           => false,
 				'show_ui'               => true,
-				'show_in_menu'          => false,
+				'show_in_menu'          => 'kadence-blocks',
 				'show_in_admin_bar'     => false,
 				'show_in_rest'          => true,
 				'rewrite'               => false,
