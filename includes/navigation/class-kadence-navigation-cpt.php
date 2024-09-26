@@ -35,6 +35,10 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 		add_action( 'init', array( $this, 'form_gutenberg_template' ) );
 		add_filter( 'kadence_post_layout', array( $this, 'navigation_single_layout' ), 99 );
 		add_action( 'enqueue_block_assets', array( $this, 'script_enqueue' ) );
+
+		if( is_admin() && class_exists( 'Kadence_Blocks_Duplicate_Post' ) ) {
+			new Kadence_Blocks_Duplicate_Post( $this->post_type );
+		}
 	}
 	/**
 	 * Renders the navigation single template on the front end.

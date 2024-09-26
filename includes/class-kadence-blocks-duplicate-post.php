@@ -1,6 +1,6 @@
 <?php
 /**
- * Class Kadence_Blocks_Duplicate_Form
+ * Class Kadence_Blocks_Duplicate_Post
  *
  * @package Kadence Blocks
  */
@@ -10,9 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Kadence_Blocks_Duplicate_Form.
+ * Kadence_Blocks_Duplicate_Post.
  */
-class Kadence_Blocks_Duplicate_Form {
+class Kadence_Blocks_Duplicate_Post {
 	/**
 	 * Slug.
 	 *
