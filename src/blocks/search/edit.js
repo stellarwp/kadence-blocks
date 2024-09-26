@@ -111,6 +111,8 @@ export function Edit(props) {
 		modalBackgroundType,
 		inputMaxWidth,
 		inputMaxWidthType,
+		inputMinWidth,
+		inputMinWidthType,
 		showButton,
 		inputIcon,
 		inputIconColor,
@@ -446,7 +448,7 @@ export function Edit(props) {
 						)}
 						<KadencePanelBody
 							title={__('Input Style', 'kadence-blocks')}
-							initialOpen={true}
+							initialOpen={false}
 							panelName={'search-input-settings'}
 						>
 							<ResponsiveRangeControls
@@ -472,6 +474,30 @@ export function Edit(props) {
 								}}
 								units={['px', '%']}
 								reset={() => setAttributes({ inputMaxWidth: ['', '', ''], inputMaxWidthType: 'px' })}
+							/>
+							<ResponsiveRangeControls
+								label={__('Min Width', 'kadence-blocks')}
+								value={inputMinWidth[0]}
+								onChange={(value) => {
+									setAttributes({ inputMinWidth: [value, inputMinWidth[1], inputMinWidth[2]] });
+								}}
+								tabletValue={inputMinWidth[1]}
+								onChangeTablet={(value) => {
+									setAttributes({ inputMinWidth: [inputMinWidth[0], value, inputMinWidth[2]] });
+								}}
+								mobileValue={inputMinWidth[2]}
+								onChangeMobile={(value) => {
+									setAttributes({ inputMinWidth: [inputMinWidth[0], inputMinWidth[1], value] });
+								}}
+								min={0}
+								max={inputMinWidthType !== 'px' ? 100 : 2000}
+								step={1}
+								unit={inputMinWidthType}
+								onUnit={(value) => {
+									setAttributes({ inputMinWidthType: value });
+								}}
+								units={['px', '%']}
+								reset={() => setAttributes({ inputMinWidth: ['', '', ''], inputMinWidthType: 'px' })}
 							/>
 							<PopColorControl
 								label={__('Text Color', 'kadence-blocks')}

@@ -3,6 +3,10 @@ import { get, has } from 'lodash';
 
 // Basic templates
 import { innerBlocks as MegaBlankInnerBlocks, postMeta as MegaBlankPostMeta } from './templates/mega-blank';
+import {
+	innerBlocks as MegaExistingSubMenuInnerBlocks,
+	postMeta as MegaExistingSubMenuMeta,
+} from './templates/mega-existing-sub-menu';
 import { innerBlocks as MegaSimple2InnerBlocks, postMeta as MegaSimple2PostMeta } from './templates/mega-simple-2';
 import { innerBlocks as MegaSimple3InnerBlocks, postMeta as MegaSimple3PostMeta } from './templates/mega-simple-3';
 import { innerBlocks as MegaSimple4InnerBlocks, postMeta as MegaSimple4PostMeta } from './templates/mega-simple-4';
@@ -14,13 +18,13 @@ import { innerBlocks as Mega5InnerBlocks, postMeta as Mega5PostMeta } from './te
 import { innerBlocks as Mega6InnerBlocks, postMeta as Mega6PostMeta } from './templates/mega-6';
 import { innerBlocks as Mega7InnerBlocks, postMeta as Mega7PostMeta } from './templates/mega-7';
 
-export function buildTemplateFromSelection(selection) {
-	const data = getDataFromKey(selection);
+export function buildTemplateFromSelection(selection, uniqueID = '') {
+	const data = getDataFromKey(selection, uniqueID);
 
 	return data;
 }
 
-function getDataFromKey(key) {
+function getDataFromKey(key, uniqueID = '') {
 	const response = {};
 
 	if (key === 'mega-1') {
@@ -53,6 +57,9 @@ function getDataFromKey(key) {
 	} else if (key === 'simple|4') {
 		response.templatePostMeta = MegaSimple4PostMeta;
 		response.templateInnerBlocks = MegaSimple4InnerBlocks();
+	} else if (key == 'mega-existing-sub-menu') {
+		response.templatePostMeta = MegaExistingSubMenuMeta;
+		response.templateInnerBlocks = MegaExistingSubMenuInnerBlocks(uniqueID);
 	} else {
 		response.templatePostMeta = MegaBlankPostMeta;
 		response.templateInnerBlocks = MegaBlankInnerBlocks();

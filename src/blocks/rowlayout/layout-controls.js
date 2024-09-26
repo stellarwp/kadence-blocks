@@ -51,6 +51,7 @@ import { showSettings } from '@kadence/helpers';
  * Import Block Specific Components
  */
 import renderSVGDivider from './render-svg-divider';
+import metadata from './block.json';
 /**
  * Import WordPress Internals
  */
@@ -502,6 +503,7 @@ function LayoutControls({
 											setAttributes({ gutterType: value });
 										}}
 										units={['px', 'em', 'rem']}
+										reset={true}
 									/>
 								</>
 							)}
@@ -572,6 +574,7 @@ function LayoutControls({
 									setAttributes({ rowGutterType: value });
 								}}
 								units={['px', 'em', 'rem']}
+								reset={true}
 							/>
 							{(colLayout === 'grid-layout' ||
 								innerItemCount > columns ||
@@ -644,6 +647,7 @@ function LayoutControls({
 										setAttributes({ maxWidthUnit: value });
 									}}
 									units={['px', '%', 'vw']}
+									reset={true}
 								/>
 							)}
 							{align === 'full' && 2 === columns && inheritMaxWidth === true && (
@@ -733,6 +737,10 @@ function LayoutControls({
 							}}
 							units={['px', 'em', 'vh']}
 							showUnit={true}
+							defaultValue={metadata.attributes.topSepHeight.default}
+							defaultTablet={metadata.attributes.topSepHeightTab.default}
+							defaultMobile={metadata.attributes.topSepHeightMobile.default}
+							reset={true}
 						/>
 						<ResponsiveRangeControls
 							label={__('Divider Width', 'kadence-blocks')}
@@ -754,6 +762,10 @@ function LayoutControls({
 							showUnit={true}
 							unit={'%'}
 							units={['%']}
+							defaultValue={metadata.attributes.topSepWidth.default}
+							defaultTablet={metadata.attributes.topSepWidthTablet.default}
+							defaultMobile={metadata.attributes.topSepWidthMobile.default}
+							reset={true}
 						/>
 					</KadencePanelBody>
 					<KadencePanelBody
@@ -822,6 +834,10 @@ function LayoutControls({
 							}}
 							units={['px', 'em', 'vh']}
 							showUnit={true}
+							defaultValue={metadata.attributes.bottomSepHeight.default}
+							defaultTablet={metadata.attributes.bottomSepHeightTab.default}
+							defaultMobile={metadata.attributes.bottomSepHeightMobile.default}
+							reset={true}
 						/>
 						<ResponsiveRangeControls
 							label={__('Divider Width', 'kadence-blocks')}
@@ -843,6 +859,10 @@ function LayoutControls({
 							showUnit={true}
 							unit={'%'}
 							units={['%']}
+							defaultValue={metadata.attributes.bottomSepWidth.default}
+							defaultTablet={metadata.attributes.bottomSepWidthTab.default}
+							defaultMobile={metadata.attributes.bottomSepWidthMobile.default}
+							reset={true}
 						/>
 					</KadencePanelBody>
 				</>

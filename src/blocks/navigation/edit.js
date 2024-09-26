@@ -111,7 +111,7 @@ export function Edit(props) {
 		: orientationMobile;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, parentData, previewDevice, isPreviewMode } = useSelect(
+	const { isUniqueID, isUniqueBlock, parentData, previewDevice, isPreviewMode, getStash } = useSelect(
 		(select) => {
 			return {
 				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
@@ -128,6 +128,7 @@ export function Edit(props) {
 					),
 					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
 				},
+				getStash: (value) => select('kadenceblocks/data').getStash(value),
 			};
 		},
 		[clientId]
@@ -207,7 +208,7 @@ export function Edit(props) {
 	useEffect(() => {
 		if (id && templateKey && makePost) {
 			setAttributes({ makePost: false });
-			const { templateInnerBlocks, templatePostMeta } = buildTemplateFromSelection(templateKey);
+			const { templateInnerBlocks, templatePostMeta } = buildTemplateFromSelection(templateKey, getStash);
 
 			if (templateInnerBlocks) {
 				onChange(templateInnerBlocks, clientId);

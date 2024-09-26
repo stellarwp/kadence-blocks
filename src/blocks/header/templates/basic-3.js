@@ -13,7 +13,6 @@ const postMeta = {
 		verticalAlignment: ['', '', ''],
 	},
 	_kad_header_padding: ['md', 'md', 'md', 'md'],
-	_kad_header_height: ['110', '', ''],
 	_kad_header_isTransparent: '0',
 	_kad_header_shadow: [
 		{
@@ -114,6 +113,7 @@ function innerBlocks() {
 						uniqueID: '6_727312-9d',
 						location: 'center',
 						layout: 'fullwidth',
+						minHeight: 80,
 						padding: ['sm', 'sm', 'sm', 'sm'],
 						metadata: { name: 'Middle Row' },
 					},

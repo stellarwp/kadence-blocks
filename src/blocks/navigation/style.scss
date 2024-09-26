@@ -60,9 +60,14 @@
 
 @mixin navigation-fade-up-styles {
 	--kb-nav-dropdown-hide-transform-y: 10px;
+	--kb-nav-dropdown-transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 @mixin navigation-fade-down-styles {
 	--kb-nav-dropdown-hide-transform-y: -10px;
+	--kb-nav-dropdown-transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+@mixin navigation-fade-styles {
+	--kb-nav-dropdown-transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 
 @mixin horizontal-navigation-base-styles {
@@ -117,6 +122,31 @@
 		}
 	}
 
+	//Desktop fade style
+	.navigation-desktop-dropdown-animation-fade {
+		.sub-menu {
+			@media (min-width: $laptop-plus-query) {
+				@include navigation-fade-styles();
+			}
+		}
+	}
+	//Tablet fade style
+	.navigation-tablet-dropdown-animation-fade {
+		.sub-menu {
+			@media (min-width: $before-tablet-plus-query) and (max-width: $tablet-minus-query) {
+				@include navigation-fade-styles();
+			}
+		}
+	}
+	//Mobile fade style
+	.navigation-mobile-dropdown-animation-fade {
+		.sub-menu {
+			@media (max-width: $phone-minus-query) {
+				@include navigation-fade-styles();
+			}
+		}
+	}
+
 	//horizontal submenus
 	.sub-menu {
 		position: absolute;
@@ -127,9 +157,19 @@
 		z-index: 1000;
 		box-shadow: var(--kb-nav-dropdown-box-shadow, 0 2px 13px 0 rgba(0, 0, 0, 0.1));
 
-		&.sub-menu-edge {
+		&.sub-menu-right-edge {
 			--kb-nav-dropdown-show-left: auto;
 			--kb-nav-dropdown-show-right: 0;
+			--kb-nav-dropdown-show-transform-y: 0;
+			--kb-nav-dropdown-show-transform-x: 0;
+			--kb-nav-dropdown-hide-transform-x: 0;
+		}
+		&.sub-menu-left-edge {
+			--kb-nav-dropdown-show-left: 0;
+			--kb-nav-dropdown-show-right: auto;
+			--kb-nav-dropdown-show-transform-y: 0;
+			--kb-nav-dropdown-show-transform-x: 0;
+			--kb-nav-dropdown-hide-transform-x: 0;
 		}
 
 		//third level nav
@@ -139,11 +179,16 @@
 			--kb-nav-dropdown-show-right: auto;
 			--kb-nav-dropdown-show-transform-x: 0;
 			--kb-nav-dropdown-show-transform-y: 0;
+			--kb-nav-dropdown-hide-transform-x: 0;
 			min-height: 100%;
 
-			&.sub-menu-edge {
+			&.sub-menu-right-edge {
 				--kb-nav-dropdown-show-left: auto;
 				--kb-nav-dropdown-show-right: 100%;
+			}
+			&.sub-menu-left-edge {
+				--kb-nav-dropdown-show-left: 100%;
+				--kb-nav-dropdown-show-right: auto;
 			}
 		}
 
@@ -176,9 +221,16 @@
 		--kb-nav-dropdown-show-transform-x: -50%;
 		--kb-nav-dropdown-hide-transform-x: -50%;
 		--kb-nav-dropdown-show-left: 50%;
-		&.sub-menu-edge {
+		&.sub-menu-right-edge {
 			--kb-nav-dropdown-show-left: auto;
 			--kb-nav-dropdown-show-right: 0;
+			--kb-nav-dropdown-show-transform-y: 0;
+			--kb-nav-dropdown-show-transform-x: 0;
+			--kb-nav-dropdown-hide-transform-x: 0;
+		}
+		&.sub-menu-left-edge {
+			--kb-nav-dropdown-show-left: 0;
+			--kb-nav-dropdown-show-right: auto;
 			--kb-nav-dropdown-show-transform-y: 0;
 			--kb-nav-dropdown-show-transform-x: 0;
 			--kb-nav-dropdown-hide-transform-x: 0;
@@ -344,11 +396,6 @@
 	//vertical link padding on the right no longer needs to account for the drop down icon
 	.menu-item-has-children > .kb-link-wrap > a {
 		padding-right: calc(var(--kb-nav-link-padding-right, 0.5em));
-	}
-
-	//top level nav links only
-	.navigation > .menu-container > .menu > .menu-item:not(:last-of-type) > .kb-link-wrap {
-		border-right: none;
 	}
 }
 
@@ -626,7 +673,7 @@
 		display: block;
 		list-style: none;
 		padding: 0;
-		transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+		transition: var(--kb-nav-dropdown-transition);
 		background: var(--kb-nav-dropdown-background);
 		border-top-left-radius: var(--kb-nav-dropdown-border-top-left-radius);
 		border-top-right-radius: var(--kb-nav-dropdown-border-top-right-radius);
@@ -889,8 +936,46 @@
 			--kb-nav-link-background-hover-lv,
 			var(--kb-nav-link-background-active-lv, var(--kb-nav-link-background, inherit))
 		);
-		border-right: var(--kb-nav-link-wrap-border-right);
-		border-bottom: var(--kb-nav-link-wrap-border-bottom);
+
+		//top and bottom are a bit different because they determine the "divider" styles which come from a different setting
+		border-right: var(
+			--kb-nav-link-wrap-border-right,
+			var(
+				--kb-nav-link-hover-border-right-lv,
+				var(--kb-nav-link-active-border-right-lv, var(--kb-nav-link-border-right))
+			)
+		);
+		border-bottom: var(
+			--kb-nav-link-wrap-border-bottom,
+			var(
+				--kb-nav-link-hover-border-bottom-lv,
+				var(--kb-nav-link-active-border-bottom-lv, var(--kb-nav-link-border-bottom))
+			)
+		);
+		border-top: var(
+			--kb-nav-link-hover-border-top-lv,
+			var(--kb-nav-link-active-border-top-lv, var(--kb-nav-link-border-top))
+		);
+		border-left: var(
+			--kb-nav-link-hover-border-left-lv,
+			var(--kb-nav-link-active-border-left-lv, var(--kb-nav-link-border-left))
+		);
+		border-top-left-radius: var(
+			--kb-nav-link-hover-border-top-left-radius-lv,
+			var(--kb-nav-link-active-border-top-left-radius-lv, var(--kb-nav-link-border-top-left-radius))
+		);
+		border-top-right-radius: var(
+			--kb-nav-link-hover-border-top-right-radius-lv,
+			var(--kb-nav-link-active-border-top-right-radius-lv, var(--kb-nav-link-border-top-right-radius))
+		);
+		border-bottom-right-radius: var(
+			--kb-nav-link-hover-border-bottom-right-radius-lv,
+			var(--kb-nav-link-active-bottom-right-left-radius-lv, var(--kb-nav-link-border-bottom-right-radius))
+		);
+		border-bottom-left-radius: var(
+			--kb-nav-link-hover-border-bottom-left-radius-lv,
+			var(--kb-nav-link-active-bottom-top-left-radius-lv, var(--kb-nav-link-border-bottom-left-radius))
+		);
 
 		&:hover {
 			--kb-nav-link-color-hover-lv: var(--kb-nav-link-color-hover, inherit);
@@ -914,43 +999,8 @@
 		margin-right: var(--kb-nav-link-margin-right);
 		margin-bottom: var(--kb-nav-link-margin-bottom);
 		margin-left: var(--kb-nav-link-margin-left);
+		//color copied here for specifity reasons
 		color: var(--kb-nav-link-color-hover-lv, var(--kb-nav-link-color-active-lv, var(--kb-nav-link-color, inherit)));
-		background: var(
-			--kb-nav-link-background-hover-lv,
-			var(--kb-nav-link-background-active-lv, var(--kb-nav-link-background, inherit))
-		);
-		border-top: var(
-			--kb-nav-link-hover-border-top-lv,
-			var(--kb-nav-link-active-border-top-lv, var(--kb-nav-link-border-top))
-		);
-		border-right: var(
-			--kb-nav-link-hover-border-right-lv,
-			var(--kb-nav-link-active-border-right-lv, var(--kb-nav-link-border-right))
-		);
-		border-bottom: var(
-			--kb-nav-link-hover-border-bottom-lv,
-			var(--kb-nav-link-active-border-bottom-lv, var(--kb-nav-link-border-bottom))
-		);
-		border-left: var(
-			--kb-nav-link-hover-border-left-lv,
-			var(--kb-nav-link-active-border-left-lv, var(--kb-nav-link-border-left))
-		);
-		border-top-left-radius: var(
-			--kb-nav-link-hover-border-top-left-radius-lv,
-			var(--kb-nav-link-active-border-top-left-radius-lv, var(--kb-nav-link-border-top-left-radius))
-		);
-		border-top-right-radius: var(
-			--kb-nav-link-hover-border-top-right-radius-lv,
-			var(--kb-nav-link-active-border-top-right-radius-lv, var(--kb-nav-link-border-top-right-radius))
-		);
-		border-bottom-right-radius: var(
-			--kb-nav-link-hover-border-bottom-right-radius-lv,
-			var(--kb-nav-link-active-bottom-right-left-radius-lv, var(--kb-nav-link-border-bottom-right-radius))
-		);
-		border-bottom-left-radius: var(
-			--kb-nav-link-hover-border-bottom-left-radius-lv,
-			var(--kb-nav-link-active-bottom-top-left-radius-lv, var(--kb-nav-link-border-bottom-left-radius))
-		);
 		box-shadow: var(
 			--kb-nav-link-hover-box-shadow-lv,
 			var(--kb-nav-link-active-box-shadow-lv, var(--kb-nav-link-box-shadow))
@@ -1115,6 +1165,7 @@
 		//not last top links
 		&:not(:last-of-type) > .kb-link-wrap {
 			--kb-nav-link-wrap-border-right: var(--kb-nav-top-not-last-link-border-right);
+			--kb-nav-link-wrap-border-bottom: var(--kb-nav-top-not-last-link-border-bottom);
 		}
 	}
 

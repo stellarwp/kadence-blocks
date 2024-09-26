@@ -4,6 +4,7 @@ import { get } from 'lodash';
 const DEFAULT_STATE = {
 	previewDevice: 'Desktop',
 	uniqueIDs: {},
+	stashes: {},
 	uniquePanes: {},
 	webFonts: {},
 	imagePickerQuery: '',
@@ -69,6 +70,15 @@ const actions = {
 			type: 'ADD_UNIQUE_ID',
 			uniqueID,
 			clientID,
+		};
+	},
+	//Stash an object on a key.
+	//Usually used to store something and associate it with a block using the block's uniqueID as a key
+	addStash(key, stashContents) {
+		return {
+			type: 'ADD_STASH',
+			key,
+			stashContents,
 		};
 	},
 	addUniquePane(uniqueID, clientID, rootID) {
@@ -236,6 +246,13 @@ const store = createReduxStore('kadenceblocks/data', {
 					...state,
 					uniqueIDs: updatedIDs,
 				};
+			case 'ADD_STASH':
+				const updatedStashes = state.stashes;
+				Object.assign(updatedStashes, { [action.key]: action.stashContents });
+				return {
+					...state,
+					stashes: updatedStashes,
+				};
 			case 'ADD_UNIQUE_PANE':
 				const uniquePanes = state.uniquePanes;
 				if (uniquePanes.hasOwnProperty(action.rootID)) {
@@ -296,6 +313,18 @@ const store = createReduxStore('kadenceblocks/data', {
 		getUniqueIDs(state) {
 			const { uniqueIDs } = state;
 			return uniqueIDs;
+		},
+		getStashes(state) {
+			const { stashes } = state;
+			return stashes;
+		},
+		getStash(state, key) {
+			const { stashes } = state;
+			let stash = null;
+			if (stashes.hasOwnProperty(key)) {
+				stash = stashes[key];
+			}
+			return stash;
 		},
 		isUniqueID(state, uniqueID) {
 			const { uniqueIDs } = state;

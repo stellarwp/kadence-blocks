@@ -174,11 +174,32 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.2.54 =
+Release Date: September 25th 2024
+* Add: Support 4 columns in posts block.
+* Update: Add reset option to many settings in row layout.
+* Fix: Adv text highlight setting also applying to core highlight.
+* Fix: Tabs block in accordion mode interfering with slider block.
+* Fix: Adjustment to wpml config to allow translation of adv text block.
+* Fix: Issue with responsive vertical alignment in section block.
+* Fix: PHP warning for undefined array key.
+
 = 3.2.53 =
-Release Date: September TBD 2024
+Release Date: September 9th 2024
+* Add: ID to from tag in advanced form block for targeting with custom scripts.
 * Fix: Show more block inside query loop.
 * Fix: Countdown repeater not working.
-* Fix: Issue with progress label position.
+* Fix: Issue with progress block label position.
+* Fix: Accordion pane spacing issue on front end.
+* Fix: Infobox text alignment in some layouts.
+* Fix: Warning about multiple submit buttons when two advanced forms are on the same page.
+* Fix: Advanced image editor style not matching frontend when inside section.
+* Fix: Advanced image caption not loading google font.
+* Fix: Issues with progress bar label position.
+* Fix: Table of contents line being getting overridden in some situations.
+* Fix: Advanced galleries not showing when inside a section with an alignment set.
+* Fix: Issue with repeating countdown not working.
+* Fix: Escape HTML in countdown block labels.
 
 = 3.2.52 =
 Release Date: August 23rd 2024

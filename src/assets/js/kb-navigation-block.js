@@ -14,12 +14,14 @@
 			return {
 				top: rect.top + window.pageYOffset,
 				left: rect.left + window.pageXOffset,
+				right: rect.right + window.pageXOffset,
 			};
 		}
 
 		return {
 			top: null,
 			left: null,
+			right: null,
 		};
 	};
 	/**
@@ -118,13 +120,20 @@
 					var elm = submenuParents[i].querySelector('ul.sub-menu');
 					var off = getElmOffset(elm);
 					var l = off.left;
+					var r = off.right;
 					var w = elm.offsetWidth;
 					var docW = window.innerWidth;
 
-					var isEntirelyVisible = l + w <= docW;
+					var isEntirelyVisibleToRight = l + w <= docW;
+					var isEntirelyVisibleToLeft = r - w >= 0;
 
-					if (!isEntirelyVisible) {
-						elm.classList.add('sub-menu-edge');
+					console.log(off, l, r, w, docW, isEntirelyVisibleToRight, isEntirelyVisibleToLeft);
+
+					if (!isEntirelyVisibleToRight) {
+						elm.classList.add('sub-menu-right-edge');
+					}
+					if (!isEntirelyVisibleToLeft) {
+						elm.classList.add('sub-menu-left-edge');
 					}
 				}
 			});

@@ -1046,7 +1046,7 @@ function KadenceAdvancedHeading(props) {
 	return (
 		<div {...blockProps}>
 			<style>
-				{`.kt-adv-heading${uniqueID} mark, .kt-adv-heading${uniqueID} .rich-text:focus mark[data-rich-text-format-boundary] {
+				{`.kt-adv-heading${uniqueID} mark.kt-highlight, .kt-adv-heading${uniqueID} .rich-text:focus mark.kt-highlight[data-rich-text-format-boundary] {
 						color: ${KadenceColorOutput(markColor)};
 						background: ${markBG ? markBGString : 'transparent'};
 						font-weight: ${markFontWeight ? markFontWeight : 'inherit'};

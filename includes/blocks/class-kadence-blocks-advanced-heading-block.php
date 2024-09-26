@@ -263,7 +263,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		}
 
 		// Highlight.
-		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ' mark, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );
+		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ' mark.kt-highlight, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark.kt-highlight' );
 		if ( isset( $attributes['markLetterSpacing'] ) && ! empty( $attributes['markLetterSpacing'] ) ) {
 			$css->add_property( 'letter-spacing', $attributes['markLetterSpacing'] . ( ! isset( $attributes['markLetterSpacingType'] ) ? 'px' : $attributes['markLetterSpacingType'] ) );
 		}
@@ -348,7 +348,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		}
 		// Tablet.
 		$css->set_media_state( 'tablet' );
-		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ' mark, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );
+		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ' mark.kt-highlight, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark.kt-highlight' );
 		if ( ! empty( $attributes['markSize'][1] ) ) {
 			$css->add_property( 'font-size', $css->get_font_size( $attributes['markSize'][1], ( ! isset( $attributes['markSizeType'] ) ? 'px' : $attributes['markSizeType'] ) ) );
 		}

@@ -311,6 +311,9 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		if ( $is_transparent_mobile ) {
 			$wrapper_classes[] = 'header-mobile-transparent';
 		}
+		if ( $header_attributes['className'] ) {
+			$wrapper_classes[] = $header_attributes['className'];
+		}
 		$wrapper_args = array(
 				'class' => implode( ' ', $wrapper_classes ),
 				'role'  => 'banner',

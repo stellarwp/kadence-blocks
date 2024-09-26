@@ -1151,9 +1151,9 @@ export function EditInner(props) {
 						<KadencePanelBody panelName={'kb-header-padding'}>
 							<ResponsiveMeasureRangeControl
 								label={__('Padding', 'kadence-blocks')}
-								value={arrayStringToInt(padding)}
-								tabletValue={arrayStringToInt(tabletPadding)}
-								mobileValue={arrayStringToInt(mobilePadding)}
+								value={padding}
+								tabletValue={tabletPadding}
+								mobileValue={mobilePadding}
 								onChange={(value) => {
 									setMetaAttribute(value.map(String), 'padding');
 								}}
@@ -1180,9 +1180,9 @@ export function EditInner(props) {
 							/>
 							<ResponsiveMeasureRangeControl
 								label={__('Margin', 'kadence-blocks')}
-								value={arrayStringToInt(margin)}
-								tabletValue={arrayStringToInt(tabletMargin)}
-								mobileValue={arrayStringToInt(mobileMargin)}
+								value={margin}
+								tabletValue={tabletMargin}
+								mobileValue={mobileMargin}
 								onChange={(value) => {
 									setMetaAttribute(value.map(String), 'margin');
 								}}

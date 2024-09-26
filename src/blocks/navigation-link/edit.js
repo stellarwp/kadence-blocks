@@ -511,7 +511,7 @@ export default function Edit(props) {
 		//TODO put any existing submenus / items into the new mega menu
 		if (key) {
 			//main/normal temlpated mega menu construction
-			const { templateInnerBlocks, templatePostMeta } = buildTemplateFromSelection(key);
+			const { templateInnerBlocks, templatePostMeta } = buildTemplateFromSelection(key, uniqueID);
 
 			//for mega menus inner blocks should always just be a single rowlayout block.
 			//so just insert the first inner block from the template
@@ -537,8 +537,19 @@ export default function Edit(props) {
 		if (value) {
 			//enable
 			const message = __('Are you sure you want to replace this sub menu with a mega menu?', 'kadence-blocks');
-			/* eslint-disable no-alert */
-			if (!hasChildren || window.confirm(message)) {
+
+			if (hasChildren) {
+				//there was a submenu, proceed to add a special mega menu template with the exisiting sub menu as the first nav
+				/* eslint-disable no-alert */
+				if (window.confirm(message)) {
+					const childBlocksBasicCopy = JSON.parse(JSON.stringify(childBlocksBasic));
+					addStash(uniqueID, childBlocksBasicCopy);
+					replaceInnerBlocks(clientId, []);
+					doMegaMenu('mega-existing-sub-menu');
+					setAttributes({ isMegaMenu: true });
+				}
+			} else {
+				//there were no children, proceed to standard mega onboarding
 				replaceInnerBlocks(clientId, []);
 				setAttributes({ isMegaMenu: true });
 			}
@@ -676,6 +687,28 @@ export default function Edit(props) {
 		}),
 		onKeyDown,
 	});
+
+	const { childBlocksBasic } = useSelect(
+		(select) => {
+			const { getBlock, getBlockOrder } = select('core/block-editor');
+			const topLevelIds = getBlockOrder(clientId);
+
+			return {
+				childBlocksBasic: topLevelIds.map((_id) => getBlock(_id)),
+			};
+		},
+		[clientId]
+	);
+
+	const { addStash } = useDispatch('kadenceblocks/data');
+	const { getStash } = useSelect(
+		(select) => {
+			return {
+				getStash: (value) => select('kadenceblocks/data').getStash(value),
+			};
+		},
+		[uniqueID]
+	);
 
 	const { children, ...innerBlocksProps } = useInnerBlocksProps(
 		{

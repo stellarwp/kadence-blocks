@@ -46,6 +46,7 @@ export default function BackendStyles(props) {
 		vAlignTablet,
 		vAlignMobile,
 		layout,
+		kadenceBlockCSS,
 	} = attributes;
 
 	const previewMinHeight = getPreviewSize(previewDevice, minHeight, minHeightTablet, minHeightMobile);
@@ -136,5 +137,10 @@ export default function BackendStyles(props) {
 
 	const cssOutput = css.css_output();
 
-	return <style>{`${cssOutput}`}</style>;
+	return (
+		<style>
+			{`${cssOutput}`}
+			{kadenceBlockCSS && <>{kadenceBlockCSS.replace(/selector/g, `.wp-block-kadence-header-row${uniqueID}`)}</>}
+		</style>
+	);
 }

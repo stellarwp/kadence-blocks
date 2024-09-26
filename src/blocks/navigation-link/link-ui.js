@@ -191,7 +191,7 @@ export function LinkUI(props) {
 				onChange={props.onChange}
 				onRemove={props.onRemove}
 				onCancel={props.onCancel}
-				renderControlBottom={!url ? () => <LinkControlTransforms clientId={props.clientId} /> : null}
+				// renderControlBottom={!url ? () => <LinkControlTransforms clientId={props.clientId} /> : null}
 			/>
 		</Popover>
 	);

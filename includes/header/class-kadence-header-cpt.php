@@ -44,6 +44,10 @@ class Kadence_Blocks_Header_CPT_Controller {
 		add_filter( 'kadence_post_layout', array( $this, 'header_single_layout' ), 99 );
 		add_action( 'enqueue_block_editor_assets', array( $this, 'script_enqueue' ) );
 		add_action( 'enqueue_block_assets', array( $this, 'title_styles_enqueue' ) );
+
+		if( is_admin() && class_exists( 'Kadence_Blocks_Duplicate_Post' ) ) {
+			new Kadence_Blocks_Duplicate_Post( $this->post_type );
+		}
 	}
 	/**
 	 * Enqueue Script for Meta options

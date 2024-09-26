@@ -50,6 +50,9 @@
 		padding: 0 var(--global-content-edge-padding, 15px);
 		max-width: var(--global-content-width, var(--wp--style--global--wide-size));
 		margin: 0 auto;
+		//left and right centering for if this row gets sticky
+		left: 0;
+		right: 0;
 	}
 	&.wp-block-kadence-header-row-layout-standard {
 		.kadence-header-row-inner {

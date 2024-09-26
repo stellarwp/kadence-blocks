@@ -451,6 +451,8 @@ export default function KadenceButtonEdit(props) {
 		undefined !== mobilePadding?.[3] ? mobilePadding[3] : ''
 	);
 
+	const previewPaddingUnit = paddingUnit ? paddingUnit : 'px';
+
 	const previewIconSize = getPreviewSize(
 		previewDevice,
 		undefined !== iconSize?.[0] ? iconSize[0] : '',
@@ -2449,10 +2451,10 @@ export default function KadenceButtonEdit(props) {
 							type="inside"
 							forceShow={paddingMouseOver.isMouseOver}
 							spacing={[
-								getSpacingOptionOutput(previewPaddingTop, paddingUnit),
-								getSpacingOptionOutput(previewPaddingRight, paddingUnit),
-								getSpacingOptionOutput(previewPaddingBottom, paddingUnit),
-								getSpacingOptionOutput(previewPaddingLeft, paddingUnit),
+								getSpacingOptionOutput(previewPaddingTop, previewPaddingUnit),
+								getSpacingOptionOutput(previewPaddingRight, previewPaddingUnit),
+								getSpacingOptionOutput(previewPaddingBottom, previewPaddingUnit),
+								getSpacingOptionOutput(previewPaddingLeft, previewPaddingUnit),
 							]}
 						/>
 					</span>
