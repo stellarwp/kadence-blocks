@@ -18,7 +18,8 @@ export default function BackendStyles(props) {
 		mobileMargin,
 		marginType,
 		textVerticalAlign,
-		typography,
+		titleTypography,
+		taglineTypography,
 	} = attributes;
 
 	const css = new KadenceBlocksCSS();
@@ -27,7 +28,6 @@ export default function BackendStyles(props) {
 
 	css.render_measure_output(padding, tabletPadding, mobilePadding, previewDevice, 'padding', paddingType);
 	css.render_measure_output(margin, tabletMargin, mobileMargin, previewDevice, 'margin', marginType);
-	css.render_font(typography ? typography : [], previewDevice);
 
 	if (
 		layout === 'logo-left' ||
@@ -40,13 +40,22 @@ export default function BackendStyles(props) {
 		css.add_property('align-items', textVerticalAlign);
 	}
 
+	css.set_selector(`.kb-identity${uniqueID} .wp-block-site-title`);
+	css.render_font(titleTypography ? titleTypography : [], previewDevice);
+
+	css.set_selector(`.kb-identity${uniqueID} .wp-block-site-tagline`);
+	css.render_font(taglineTypography ? taglineTypography : [], previewDevice);
+
 	const cssOutput = css.css_output();
 
 	return (
 		<>
 			<style>{`${cssOutput}`}</style>
-			{typography?.[0]?.google && (
-				<KadenceWebfontLoader typography={typography} clientId={clientId} id={'typography'} />
+			{titleTypography?.[0]?.google && (
+				<KadenceWebfontLoader typography={titleTypography} clientId={clientId} id={'typography'} />
+			)}
+			{taglineTypography?.[0]?.google && (
+				<KadenceWebfontLoader typography={taglineTypography} clientId={clientId} id={'typography'} />
 			)}
 		</>
 	);

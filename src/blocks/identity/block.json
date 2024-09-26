@@ -98,7 +98,40 @@
 			"type": "string",
 			"default": "px"
 		},
-		"typography": {
+		"titleTypography": {
+			"type": "array",
+			"default": [
+				{
+					"size": [
+						"",
+						"",
+						""
+					],
+					"sizeType": "px",
+					"lineHeight": [
+						"",
+						"",
+						""
+					],
+					"lineType": "px",
+					"letterSpacing": [
+						"",
+						"",
+						""
+					],
+					"letterType": "px",
+					"textTransform": "",
+					"family": "",
+					"google": false,
+					"style": "",
+					"weight": "",
+					"variant": "",
+					"subset": "",
+					"loadGoogle": true
+				}
+			]
+		},
+		"taglineTypography": {
 			"type": "array",
 			"default": [
 				{

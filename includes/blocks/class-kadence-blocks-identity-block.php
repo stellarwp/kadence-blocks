@@ -71,13 +71,16 @@ class Kadence_Blocks_Identity_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->render_measure_output( $attributes, 'padding', 'padding' );
 		$css->render_measure_output( $attributes, 'margin', 'margin' );
-		$css->render_typography( $attributes, 'typography' );
 
 		$css->set_selector( '.kb-identity' . $unique_id  .' a');
 		$css->add_property('text-decoration', 'inherit');
 		$css->add_property('color', 'inherit');
 
+		$css->set_selector( '.kb-identity' . $unique_id . ' .wp-block-site-title' );
+		$css->render_typography( $attributes, 'titleTypography' );
 
+		$css->set_selector( '.kb-identity' . $unique_id . ' .wp-block-site-tagline' );
+		$css->render_typography( $attributes, 'taglineTypography' );
 
 		$css->set_selector( '.kb-identity' . $unique_id . ' .kb-identity-layout-container' );
 		if( $attributes['layout'] === 'logo-left' || $attributes['layout'] === 'logo-right' || $attributes['layout'] === 'logo-right-stacked' || $attributes['layout'] === 'logo-left-stacked' ) {

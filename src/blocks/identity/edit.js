@@ -43,7 +43,8 @@ export function Edit(props) {
 		link,
 		align,
 		textVerticalAlign,
-		typography,
+		titleTypography,
+		taglineTypography,
 		urlTransparent,
 		idTransparent,
 		urlSticky,
@@ -181,15 +182,27 @@ export function Edit(props) {
 		return null;
 	};
 
-	const saveFont = (value) => {
-		const newUpdate = typography.map((item, index) => {
+	const saveTitleFont = (value) => {
+		const newUpdate = titleTypography.map((item, index) => {
 			if (0 === index) {
 				item = { ...item, ...value };
 			}
 			return item;
 		});
 		setAttributes({
-			typography: newUpdate,
+			titleTypography: newUpdate,
+		});
+	};
+
+	const saveTaglineFont = (value) => {
+		const newUpdate = taglineTypography.map((item, index) => {
+			if (0 === index) {
+				item = { ...item, ...value };
+			}
+			return item;
+		});
+		setAttributes({
+			taglineTypography: newUpdate,
 		});
 	};
 
@@ -498,35 +511,69 @@ export function Edit(props) {
 				)}
 				{activeTab === 'style' && (
 					<>
-						<KadencePanelBody
-							title={__('Typography', 'kadence-blocks')}
-							panelName={'logo-style'}
-							initialOpen={true}
-						>
-							<TypographyControls
-								fontFamily={typography[0].family}
-								onFontFamily={(value) => saveFont({ family: value })}
-								onFontChange={(select) => {
-									saveFont({
-										family: select.value,
-										google: select.google,
-									});
-								}}
-								onFontArrayChange={(values) => saveFont(values)}
-								googleFont={typography[0].google}
-								onGoogleFont={(value) => saveFont({ google: value })}
-								loadGoogleFont={typography[0].loadGoogle}
-								onLoadGoogleFont={(value) => saveFont({ loadGoogle: value })}
-								fontVariant={typography[0].variant}
-								onFontVariant={(value) => saveFont({ variant: value })}
-								fontWeight={typography[0].weight}
-								onFontWeight={(value) => saveFont({ weight: value })}
-								fontStyle={typography[0].style}
-								onFontStyle={(value) => saveFont({ style: value })}
-								fontSubset={typography[0].subset}
-								onFontSubset={(value) => saveFont({ subset: value })}
-							/>
-						</KadencePanelBody>
+						{showSiteTitle && (
+							<KadencePanelBody
+								title={__('Title Typography', 'kadence-blocks')}
+								panelName={'title-typography'}
+								initialOpen={true}
+							>
+								<TypographyControls
+									fontFamily={titleTypography[0].family}
+									onFontFamily={(value) => saveTitleFont({ family: value })}
+									onFontChange={(select) => {
+										saveTitleFont({
+											family: select.value,
+											google: select.google,
+										});
+									}}
+									onFontArrayChange={(values) => saveTitleFont(values)}
+									googleFont={titleTypography[0].google}
+									onGoogleFont={(value) => saveTitleFont({ google: value })}
+									loadGoogleFont={titleTypography[0].loadGoogle}
+									onLoadGoogleFont={(value) => saveTitleFont({ loadGoogle: value })}
+									fontVariant={titleTypography[0].variant}
+									onFontVariant={(value) => saveTitleFont({ variant: value })}
+									fontWeight={titleTypography[0].weight}
+									onFontWeight={(value) => saveTitleFont({ weight: value })}
+									fontStyle={titleTypography[0].style}
+									onFontStyle={(value) => saveTitleFont({ style: value })}
+									fontSubset={titleTypography[0].subset}
+									onFontSubset={(value) => saveTitleFont({ subset: value })}
+								/>
+							</KadencePanelBody>
+						)}
+
+						{showSiteTagline && (
+							<KadencePanelBody
+								title={__('Tagline Typography', 'kadence-blocks')}
+								panelName={'tagline-typography'}
+								initialOpen={false}
+							>
+								<TypographyControls
+									fontFamily={taglineTypography[0].family}
+									onFontFamily={(value) => saveTaglineFont({ family: value })}
+									onFontChange={(select) => {
+										saveTaglineFont({
+											family: select.value,
+											google: select.google,
+										});
+									}}
+									onFontArrayChange={(values) => saveTaglineFont(values)}
+									googleFont={taglineTypography[0].google}
+									onGoogleFont={(value) => saveTaglineFont({ google: value })}
+									loadGoogleFont={taglineTypography[0].loadGoogle}
+									onLoadGoogleFont={(value) => saveTaglineFont({ loadGoogle: value })}
+									fontVariant={taglineTypography[0].variant}
+									onFontVariant={(value) => saveTaglineFont({ variant: value })}
+									fontWeight={taglineTypography[0].weight}
+									onFontWeight={(value) => saveTaglineFont({ weight: value })}
+									fontStyle={taglineTypography[0].style}
+									onFontStyle={(value) => saveTaglineFont({ style: value })}
+									fontSubset={taglineTypography[0].subset}
+									onFontSubset={(value) => saveTaglineFont({ subset: value })}
+								/>
+							</KadencePanelBody>
+						)}
 					</>
 				)}
 				{activeTab === 'advanced' && (
