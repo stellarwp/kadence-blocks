@@ -8,6 +8,10 @@
 		display: flex;
 		justify-content: space-between;
 		padding: 20px;
+		top: 0;
+		position: sticky;
+		z-index: 100;
+		background: #FFF;
 
 		img {
 			width: 40px;
