@@ -1124,7 +1124,7 @@ export default function BackendStyles(props) {
 			//first sub menu only, no bleed
 			//extra specificty to beat nav level styling
 			css.set_selector(
-				`.wp-block-kadence-navigation .menu .kb-nav-link-${uniqueID} > .sub-menu.sub-menu.sub-menu.sub-menu`
+				`.wp-block-kadence-navigation .menu .kb-nav-link-${uniqueID} > .sub-menu.sub-menu.sub-menu`
 			);
 			css.add_property(
 				'--kb-nav-dropdown-width',
@@ -1147,7 +1147,7 @@ export default function BackendStyles(props) {
 			//first sub menu only, no bleed
 			//extra specificty to beat nav level styling
 			css.set_selector(
-				`.wp-block-kadence-navigation .menu .kb-nav-link-${uniqueID} > .sub-menu.sub-menu.sub-menu.sub-menu`
+				`.wp-block-kadence-navigation .menu .kb-nav-link-${uniqueID} > .sub-menu.sub-menu.sub-menu`
 			);
 			if (editorElement?.clientWidth) {
 				css.add_property('--kb-nav-dropdown-width', editorElement.clientWidth + 'px');
@@ -1166,7 +1166,7 @@ export default function BackendStyles(props) {
 			css.add_property('--kb-nav-dropdown-show-transform-x', '0');
 		} else if (previewMegaMenuWidth === 'content' && currentRef?.current) {
 			css.set_selector(
-				`.wp-block-kadence-navigation .menu .kb-nav-link-${uniqueID} > .sub-menu.sub-menu.sub-menu.sub-menu`
+				`.wp-block-kadence-navigation .menu .kb-nav-link-${uniqueID} > .sub-menu.sub-menu.sub-menu`
 			);
 			const row = currentRef.current.closest('.kadence-header-row-inner');
 			if (row) {
@@ -1203,7 +1203,7 @@ export default function BackendStyles(props) {
 			//first sub menu only, no bleed
 			//extra specificty to beat nav level styling
 			css.set_selector(
-				`.wp-block-kadence-navigation .menu .kb-nav-link-${uniqueID} > .sub-menu.sub-menu.sub-menu.sub-menu`
+				`.wp-block-kadence-navigation .menu .kb-nav-link-${uniqueID} > .sub-menu.sub-menu.sub-menu`
 			);
 			css.add_property('--kb-nav-dropdown-width', '100%');
 			css.add_property('--kb-nav-dropdown-show-left', '0');
