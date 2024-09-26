@@ -1,11 +1,11 @@
 // Placeholder
 @import "./style";
 
-.editor-styles-wrapper .kb-logo .wp-block-kadence-image {
+.editor-styles-wrapper .kb-identity .wp-block-kadence-image {
 	margin-bottom: unset;
 }
 
-.editor-styles-wrapper .wp-block.kb-logo {
+.editor-styles-wrapper .wp-block.kb-identity {
 	margin-left: 0;
 	margin-right: 0;
 
@@ -15,20 +15,20 @@
 	}
 }
 
-.kb-logo .wp-block-group {
+.kb-identity .wp-block-group {
 	margin: 0;
 }
 
 // Hide link styling in editor because we strip it out on front end so there isn't nested links
-.kb-logo .wp-block-site-title a {
+.kb-identity .wp-block-site-title a {
 	color: inherit;
 	text-decoration: inherit;
 }
-.kb-logo .wp-block-site-logo {
+.kb-identity .wp-block-site-logo {
 	margin-top: unset;
 	margin-bottom: unset;
 }
 
-.editor-styles-wrapper .kb-logo p {
+.editor-styles-wrapper .kb-identity p {
 	margin-bottom: unset;
 }

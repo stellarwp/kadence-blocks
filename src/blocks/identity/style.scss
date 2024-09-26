@@ -1,7 +1,7 @@
 @import "../../assets/css/variables.scss";
 
 @mixin header-transparent-styles {
-	.kb-logo.has-transparent-img {
+	.kb-identity.has-transparent-img {
 		.custom-logo {
 			display: none;
 		}
@@ -12,7 +12,7 @@
 }
 
 
-.kb-logo {
+.kb-identity {
 	width: fit-content;
 	max-width: 100%;
 
@@ -20,32 +20,32 @@
 		display: none;
 	}
 
-	.kb-logo-layout-container {
+	.kb-identity-layout-container {
 		display: flex;
 		width: 100%;
 
 		// Logo and Title only layouts
-		&.kb-logo-layout-logo-left,
-		&.kb-logo-layout-logo-right {
+		&.kb-identity-layout-logo-left,
+		&.kb-identity-layout-logo-right {
 			flex-direction: row;
 			justify-content: space-between;
 		}
 
-		&.kb-logo-layout-logo-right {
+		&.kb-identity-layout-logo-right {
 			flex-direction: row-reverse;
 		}
 
-		&.kb-logo-layout-logo-top {
+		&.kb-identity-layout-logo-top {
 			flex-direction: column;
 		}
 
-		&.kb-logo-layout-logo-bottom {
+		&.kb-identity-layout-logo-bottom {
 			flex-direction: column-reverse;
 		}
 
 		// Logo, Title, and Tagline layouts
-		&.kb-logo-layout-logo-left-stacked,
-		&.kb-logo-layout-logo-right-stacked {
+		&.kb-identity-layout-logo-left-stacked,
+		&.kb-identity-layout-logo-right-stacked {
 			flex-direction: row;
 			justify-content: space-between;
 
@@ -55,22 +55,22 @@
 			}
 		}
 
-		&.kb-logo-layout-logo-right-stacked {
+		&.kb-identity-layout-logo-right-stacked {
 			flex-direction: row-reverse;
 		}
 
-		&.kb-logo-layout-title-logo-tagline {
+		&.kb-identity-layout-title-logo-tagline {
 			flex-direction: column;
 
 			.wp-block-kadence-image {
 				order: 2;
 			}
 
-			.kb-logo-title {
+			.kb-identity-title {
 				order: 1;
 			}
 
-			.kb-logo-tagline {
+			.kb-identity-tagline {
 				order: 3;
 			}
 

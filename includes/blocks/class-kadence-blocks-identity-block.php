@@ -1,6 +1,6 @@
 <?php
 /**
- * Class to Build the Logo Block.
+ * Class to Build the Identity Block.
  *
  * @package Kadence Blocks
  */
@@ -11,11 +11,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class to Build the Logo Block.
+ * Class to Build the Identity Block.
  *
  * @category class
  */
-class Kadence_Blocks_Logo_Block extends Kadence_Blocks_Abstract_Block {
+class Kadence_Blocks_Identity_Block extends Kadence_Blocks_Abstract_Block {
 
 	/**
 	 * Instance of this class
@@ -29,7 +29,7 @@ class Kadence_Blocks_Logo_Block extends Kadence_Blocks_Abstract_Block {
 	 *
 	 * @var string
 	 */
-	protected $block_name = 'logo';
+	protected $block_name = 'identity';
 
 	/**
 	 * Block determines in scripts need to be loaded for block.
@@ -66,20 +66,20 @@ class Kadence_Blocks_Logo_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
-		$css->set_selector( '.kb-logo' . $unique_id );
+		$css->set_selector( '.kb-identity' . $unique_id );
 
 
 		$css->render_measure_output( $attributes, 'padding', 'padding' );
 		$css->render_measure_output( $attributes, 'margin', 'margin' );
 		$css->render_typography( $attributes, 'typography' );
 
-		$css->set_selector( '.kb-logo' . $unique_id  .' a');
+		$css->set_selector( '.kb-identity' . $unique_id  .' a');
 		$css->add_property('text-decoration', 'inherit');
 		$css->add_property('color', 'inherit');
 
 
 
-		$css->set_selector( '.kb-logo' . $unique_id . ' .kb-logo-layout-container' );
+		$css->set_selector( '.kb-identity' . $unique_id . ' .kb-identity-layout-container' );
 		if( $attributes['layout'] === 'logo-left' || $attributes['layout'] === 'logo-right' || $attributes['layout'] === 'logo-right-stacked' || $attributes['layout'] === 'logo-left-stacked' ) {
 			$css->add_property( 'align-items', $attributes['textVerticalAlign'] );
 		}
@@ -99,7 +99,7 @@ class Kadence_Blocks_Logo_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		$layout = isset( $attributes['layout'] ) ? $attributes['layout'] : 'logo-title';
-		$layout_class = 'kb-logo-layout-container kb-logo-layout-' . $layout;
+		$layout_class = 'kb-identity-layout-container kb-identity-layout-' . $layout;
 		$content = $this->strip_anchor_tags( $content );
 
 		if (!empty($attributes['urlTransparent'])) {
@@ -140,7 +140,7 @@ class Kadence_Blocks_Logo_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-		$outer_classes = array( 'kb-logo', 'kb-logo' . $unique_id );
+		$outer_classes = array( 'kb-identity', 'kb-identity' . $unique_id );
 		$outer_classes[] = ! empty( $attributes['align'] ) ? 'align' . $attributes['align'] : 'alignnone';
 
 		if (!empty($attributes['urlTransparent'])) {
@@ -184,4 +184,4 @@ class Kadence_Blocks_Logo_Block extends Kadence_Blocks_Abstract_Block {
 	}
 }
 
-Kadence_Blocks_Logo_Block::get_instance();
+Kadence_Blocks_Identity_Block::get_instance();

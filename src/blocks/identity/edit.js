@@ -90,7 +90,7 @@ export function Edit(props) {
 	const siteUrl = siteData?.url ? siteData.url : '';
 
 	useEffect(() => {
-		setBlockDefaults('kadence/logo', attributes);
+		setBlockDefaults('kadence/identity', attributes);
 
 		const postOrFseId = getPostOrFseId(props, parentData);
 		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
@@ -296,8 +296,8 @@ export function Edit(props) {
 		className: classnames({
 			className: true,
 			[`align${align}`]: align,
-			'kb-logo': true,
-			[`kb-logo${uniqueID}`]: true,
+			'kb-identity': true,
+			[`kb-identity${uniqueID}`]: true,
 		}),
 	});
 
@@ -322,8 +322,12 @@ export function Edit(props) {
 					onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
 				/>
 			</BlockControls>
-			<KadenceInspectorControls blockSlug={'kadence/logo'}>
-				<InspectorControlTabs panelName={'kadence-logo'} setActiveTab={setActiveTab} activeTab={activeTab} />
+			<KadenceInspectorControls blockSlug={'kadence/identity'}>
+				<InspectorControlTabs
+					panelName={'kadence-identity'}
+					setActiveTab={setActiveTab}
+					activeTab={activeTab}
+				/>
 				{activeTab === 'general' && (
 					<>
 						<KadencePanelBody panelName={'logo-general'} initialOpen={true}>
@@ -570,7 +574,7 @@ export function Edit(props) {
 			</KadenceInspectorControls>
 			<BackendStyles {...props} previewDevice={previewDevice} />
 			<div {...blockProps}>
-				<div className={'kb-logo-layout-container kb-logo-layout-' + layout}>
+				<div className={'kb-identity-layout-container kb-identity-layout-' + layout}>
 					<Fragment {...innerBlocksProps} />
 				</div>
 			</div>

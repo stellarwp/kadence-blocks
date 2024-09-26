@@ -129,7 +129,7 @@ class Editor_Assets {
 			'image',
 			'infobox',
 			'lottie',
-			'logo',
+			'identity',
 			'posts',
 			'rowlayout',
 			'progress-bar',

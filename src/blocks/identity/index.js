@@ -12,7 +12,7 @@ import metadata from './block.json';
  */
 import './style.scss';
 
-registerBlockType('kadence/logo', {
+registerBlockType('kadence/identity', {
 	...metadata,
 	title: _x('Site Identity', 'block title', 'kadence-blocks'),
 	description: _x('Kadence site identity block', 'block description', 'kadence-blocks'),

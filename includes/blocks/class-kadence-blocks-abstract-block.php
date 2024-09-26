@@ -78,7 +78,7 @@ class Kadence_Blocks_Abstract_Block {
 		'off-canvas',
 		'header-column',
 		'search',
-		'logo'
+		'identity'
 	];
 
 	/**

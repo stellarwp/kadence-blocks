@@ -23,7 +23,7 @@ export default function BackendStyles(props) {
 
 	const css = new KadenceBlocksCSS();
 
-	css.set_selector(`.kb-logo${uniqueID}`);
+	css.set_selector(`.kb-identity${uniqueID}`);
 
 	css.render_measure_output(padding, tabletPadding, mobilePadding, previewDevice, 'padding', paddingType);
 	css.render_measure_output(margin, tabletMargin, mobileMargin, previewDevice, 'margin', marginType);
@@ -35,7 +35,7 @@ export default function BackendStyles(props) {
 		layout === 'logo-right-stacked' ||
 		layout === 'logo-left-stacked'
 	) {
-		css.set_selector(`.kb-logo${uniqueID} .kb-logo-layout-container`);
+		css.set_selector(`.kb-identity${uniqueID} .kb-identity-layout-container`);
 
 		css.add_property('align-items', textVerticalAlign);
 	}

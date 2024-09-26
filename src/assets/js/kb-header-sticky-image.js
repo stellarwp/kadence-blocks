@@ -5,7 +5,7 @@ class KBStickyImage {
 	constructor(target, options = {}) {
 		this.root = typeof target === 'string' ? document.querySelector(target) : target;
 		this.state = 'CREATED';
-		this.isLogo = this.root.classList.contains('kb-logo');
+		this.isLogo = this.root.classList.contains('kb-identity');
 		this.standardElem = this.isLogo
 			? this.root.querySelector('.custom-logo')
 			: this.root.querySelector('.kb-img:not(.kb-img-sticky):not(.kb-img-transparent)');
@@ -81,7 +81,7 @@ class KBStickyImage {
  * Initializes KBImage instances for image and logo blocks.
  */
 function initKBImages() {
-	const stickyBlocks = document.querySelectorAll('.wp-block-kadence-image, .wp-block-kadence-logo');
+	const stickyBlocks = document.querySelectorAll('.wp-block-kadence-image, .wp-block-kadence-identity');
 	window.KBStickyBlocks = Array.from(stickyBlocks).map((block) => new KBStickyImage(block));
 }
 

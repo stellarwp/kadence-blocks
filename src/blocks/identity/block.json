@@ -1,8 +1,8 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "kadence/logo",
-	"title": "Site Logo (Adv)",
+	"name": "kadence/identity",
+	"title": "Site identity",
 	"category": "kadence-blocks",
 	"textdomain": "kadence-blocks",
 	"attributes": {
