@@ -237,7 +237,7 @@
 		}
 	}
 	// Handle Reveal Animation for horizontal navs, hover and triggered via arrow.
-	.menu-item:hover > .sub-menu,
+	.menu-item:not(.kb-nav-link-sub-click):hover > .sub-menu,
 	.menu-item.menu-item--toggled-on > .sub-menu {
 		@include show-sub-menu();
 	}
@@ -460,11 +460,12 @@
 					transform: var(--kb-nav-link-underline-transform, scale(0, 0) translate(-50%, 0));
 					transition: transform 0.2s ease-in-out, color 0s ease-in-out;
 				}
-				&:hover:after {
-					transform: scale(1, 1) translate(50%, 0);
-				}
 			}
-			&.current-menu-item {
+			&:hover > .kb-link-wrap > .kb-nav-link-content:after {
+				transform: scale(1, 1) translate(50%, 0);
+			}
+			&.current-menu-item,
+			&.menu-item--toggled-on {
 				> .kb-link-wrap > a:after {
 					transform: scale(1, 1) translate(50%, 0);
 				}

@@ -87,7 +87,7 @@
 		offCanvasArea.addEventListener('keydown', handleKeyDown);
 		document.addEventListener('keydown', handleEscape);
 		// Handle closing off canvas when a link is clicked.
-		var menuLinks = offCanvasArea.querySelectorAll('a:not(.kt-tab-title)');
+		var menuLinks = offCanvasArea.querySelectorAll('a[href]:not(.kt-tab-title)');
 		// No point if no links.
 		if (menuLinks.length) {
 			for (let i = 0; i < menuLinks.length; i++) {

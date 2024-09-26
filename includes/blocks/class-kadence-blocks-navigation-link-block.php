@@ -503,6 +503,9 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		if ( $has_children ) {
 			$wrapper_classes[] = 'menu-item-has-children';
 		}
+		if ( $has_children && isset( $attributes['dropdownClick'] ) && true === $attributes['dropdownClick'] ) {
+			$wrapper_classes[] = 'kb-nav-link-sub-click';
+		}
 		if ( $is_active ) {
 			$wrapper_classes[] = 'current-menu-item';
 		}
@@ -614,7 +617,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$title_html .= ! empty( $media ) || ! empty( $attributes['description'] ) ? '</span>' : '';
 		$title_html .= $highlight_label;
 		$link_class  = implode( ' ', $link_classes );
-		$link_url    = ! empty( $attributes['disableLink'] ) && true === $attributes['disableLink'] ? '' : ' href="' . esc_url( $url ) . '"';
+		$link_url    = ( ! empty( $attributes['disableLink'] ) && true === $attributes['disableLink'] ) || ( $has_children && isset( $attributes['dropdownClick'] ) && true === $attributes['dropdownClick'] ) ? '' : ' href="' . esc_url( $url ) . '"';
 		if ( ! empty( $attributes['name'] ) ) {
 			$link_url .= ' aria-label="' . esc_attr( $attributes['name'] ) . '"';
 		}
