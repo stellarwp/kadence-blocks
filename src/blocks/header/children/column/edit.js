@@ -82,6 +82,7 @@ export function Edit(props) {
 		{
 			renderAppender: false, // This will get set to false, leaving on for testing until visual editor is done.
 			templateLock: false,
+			orientation: 'horizontal',
 		}
 	);
 

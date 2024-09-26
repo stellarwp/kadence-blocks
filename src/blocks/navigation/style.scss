@@ -402,12 +402,12 @@
 @mixin layout-stretch-styles {
 	flex-grow: 1;
 
-	.navigation {
+	> .navigation {
 		flex-grow: 1;
 	}
 
 	//only apply stretching to top level menu items
-	.menu-container {
+	> .navigation > .menu-container {
 		flex-grow: 1;
 		& > .menu {
 			flex-grow: 1;
@@ -428,7 +428,7 @@
 
 @mixin layout-fill-stretch-styles {
 	//only apply stretching to top level menu items
-	.menu-container {
+	> .navigation > .menu-container {
 		& > .menu {
 			display: grid;
 			grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
@@ -445,7 +445,7 @@
 
 @mixin navigation-underline-styles {
 	//only apply underline to top level menu items
-	.menu-container {
+	> .menu-container {
 		> .menu > .menu-item {
 			> .kb-link-wrap > .kb-nav-link-content {
 				position: relative;
@@ -479,7 +479,7 @@
 	align-items: center;
 
 	//only apply full height to top level menu items
-	.menu-container {
+	> .menu-container {
 		height: 100%;
 		align-items: center;
 
