@@ -347,7 +347,6 @@
 		"anchor": true,
 		"html": false,
 		"reusable": false,
-		"multiple": false,
 		"kbMetadata": true,
 		"kbContentLabel": "text"
 	},

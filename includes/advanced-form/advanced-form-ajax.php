@@ -55,8 +55,8 @@ class KB_Ajax_Advanced_Form {
 
 		if ( isset( $_POST['_kb_adv_form_id'] ) && ! empty( $_POST['_kb_adv_form_id'] ) && isset( $_POST['_kb_adv_form_post_id'] ) && ! empty( $_POST['_kb_adv_form_post_id'] ) ) {
 			$this->start_buffer();
-
-			if ( apply_filters( 'kadence_blocks_form_verify_nonce', is_user_logged_in() ) && ! check_ajax_referer( 'kb_form_nonce', '_kb_form_verify', false ) ) {
+			// Nonce verification isn't used as it's not a login form but can be enabled with a filter. Note that caching the page will cause the nonce to fail after a cetain amount of time.
+			if ( apply_filters( 'kadence_blocks_form_verify_nonce', false ) && ! check_ajax_referer( 'kb_form_nonce', '_kb_form_verify', false ) ) {
 				$this->process_bail( __( 'Submission rejected, invalid security token. Reload the page and try again.', 'kadence-blocks' ), __( 'Token invalid', 'kadence-blocks' ) );
 			}
 			$post_id = sanitize_text_field( wp_unslash( $_POST['_kb_adv_form_post_id'] ) );

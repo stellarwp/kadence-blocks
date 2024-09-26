@@ -587,6 +587,7 @@ class Kadence_Blocks_CSS {
 		if ( null !== $check_empty && empty( $check_empty ) ) {
 			return $this;
 		}
+		$value = wp_strip_all_tags( $value );
 		if ( in_array( $property, $this->_special_properties_list ) ) {
 			$this->add_special_rules( $property, $value );
 		} else {

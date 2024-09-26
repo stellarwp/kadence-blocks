@@ -27,6 +27,9 @@ export default function ResponsiveRangeControls({
 	mobileValue,
 	tabletValue,
 	value,
+	defaultValue = '',
+	defaultTablet = '',
+	defaultMobile = '',
 	step = 1,
 	max = 100,
 	min = 0,
@@ -52,6 +55,15 @@ export default function ResponsiveRangeControls({
 		setPreviewDeviceType(capitalizeFirstLetter(device));
 		setDeviceType(capitalizeFirstLetter(device));
 	};
+	const onReset = () => {
+		if ( deviceType === 'Tablet' ) {
+			onChangeTablet( defaultTablet );
+		} else if ( deviceType === 'Mobile' ) {
+			onChangeMobile( defaultMobile );
+		} else {
+			onChange( defaultValue );
+		}
+	}
 	const devices = [
 		{
 			name: 'Desktop',
@@ -132,9 +144,15 @@ export default function ResponsiveRangeControls({
 								<Button
 									className="is-reset is-single"
 									isSmall
-									disabled={isEqual(['', '', ''], value) ? true : false}
-									icon={undo}
-									onClick={() => reset()}
+									disabled={ ( isEqual( value, defaultValue ) && isEqual( tabletValue, defaultTablet ) && isEqual( mobileValue, defaultMobile ) ) }
+									icon={ undo }
+									onClick={() => {
+										if (typeof reset === 'function') {
+											reset();
+										} else {
+											onReset();
+										}
+									}}
 								></Button>
 							)}
 						</span>

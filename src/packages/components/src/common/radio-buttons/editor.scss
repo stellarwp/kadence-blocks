@@ -1,11 +1,13 @@
 .kadence-radio-container-control {
     display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
     position: relative;
     z-index: 0;
 }
 .kadence-radio-container-control.components-button-group .components-button {
     flex: 1 1 0;
-    display: flex;
+    display: inline-block;
     align-items: center;
     justify-content: center;
     font-size: 10px;
@@ -21,9 +23,8 @@
 	padding: 4px;
 	box-shadow: none;
     white-space: normal;
-}
-.kadence-radio-container-control.components-button-group .components-button:not(:first-child) {
-    margin-left: 4px;
+	max-width: 100%;
+	word-wrap: break-word;
 }
 .kadence-radio-container-control.components-button-group .components-button.is-primary {
 	border-color: var( --wp-admin-theme-color,#00669b);

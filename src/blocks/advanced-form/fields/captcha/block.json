@@ -93,7 +93,6 @@
 	"supports": {
 		"html": false,
 		"reusable": false,
-		"multiple": false,
 		"kbMetadata": true
 	},
 	"ancestor": ["kadence/advanced-form"],
