@@ -108,3 +108,14 @@ body.admin-bar .kb-off-canvas-inner-wrap {
 		top: $admin-bar-height;
 	}
 }
+
+body.kb-modal-open {
+	overflow: hidden;
+}
+
+.kb-scrollbar-fixer {
+	margin-right: var(--kb-scrollbar-offset, unset);
+	.item-is-fixed {
+		right: var(--kb-scrollbar-offset, 0);
+	}
+}

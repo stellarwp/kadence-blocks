@@ -11,10 +11,16 @@
 		focusableElements = Array.prototype.slice.call(focusableElements);
 		const firstFocusableElement = focusableElements[0];
 		const lastFocusableElement = focusableElements[focusableElements.length - 1];
+		const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
 
 		const openOffCanvas = function (event) {
+			document.body.style.setProperty('--kb-scrollbar-offset', scrollBarWidth + 'px');
+			document.body.classList.add('kb-modal-open');
+			document.body.classList.add('kb-scrollbar-fixer');
+
 			event.target.classList.add('triggered');
 			offCanvasArea.classList.add('show-off-canvas');
+
 			setTimeout(function () {
 				offCanvasArea.classList.add('active');
 				triggerButtons.forEach((button) => button.setAttribute('aria-expanded', 'true'));
@@ -23,6 +29,9 @@
 		};
 
 		const closeOffCanvas = function () {
+			document.body.classList.remove('kb-modal-open');
+			document.body.classList.remove('kb-scrollbar-fixer');
+
 			offCanvasArea.classList.remove('active');
 			triggerButtons.forEach((button) => button.setAttribute('aria-expanded', 'false'));
 			for (let i = 0; i < triggerButtons.length; i++) {
