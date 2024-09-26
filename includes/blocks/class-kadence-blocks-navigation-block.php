@@ -207,12 +207,12 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( '--kb-nav-dropdown-link-width', $css->render_size( $sized_attributes['dropdownWidth'], $sized_attributes['dropdownWidthUnit'] ) );
 			$css->add_property( '--kb-nav-top-not-last-link-border-right', $css->render_border( $sized_attributes['divider'], 'bottom' ) );
 
-			if ( $sized_attributes['dropdownHorizontalAlignment'] == 'center' || !$sized_attributes['dropdownHorizontalAlignment']) {
+			if ( $sized_attributes['dropdownHorizontalAlignment'] == 'center') {
 				$css->add_property( '--kb-nav-dropdown-show-left', '50%' );
 				$css->add_property( '--kb-nav-dropdown-show-transform-x', '-50%' );
 				$css->add_property( '--kb-nav-dropdown-hide-transform-x', '-50%' );
 			} else if ( $sized_attributes['dropdownHorizontalAlignment'] == 'right' ) {
-				$css->add_property( '--kb-nav-dropdown-show-right', '0' );
+				$css->add_property( '--kb-nav-dropdown-show-right', '0px' );
 			}
 		} else {
 			$css->add_property( '--kb-nav-top-not-last-link-border-bottom', $css->render_border( $sized_attributes['divider'], 'bottom' ) );

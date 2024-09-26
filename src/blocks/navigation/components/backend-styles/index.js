@@ -755,7 +755,6 @@ export default function BackendStyles(props) {
 		}
 	}
 
-	//placement logic where an additional selector is needed
 	if (previewOrientation != 'vertical') {
 		css.add_property('--kb-nav-dropdown-link-width', css.render_size(previewDropdownWidth, dropdownWidthUnit));
 		css.add_property('--kb-nav-top-not-last-link-border-right', dividerValue);
@@ -769,13 +768,14 @@ export default function BackendStyles(props) {
 			css.add_property('--kb-nav-dropdown-show-transform-x', '-50%');
 			css.add_property('--kb-nav-dropdown-hide-transform-x', '-50%');
 		} else if (previewDropdownHorizontalAlignment == 'right') {
-			css.add_property('--kb-nav-dropdown-show-right', '0');
+			css.add_property('--kb-nav-dropdown-show-right', '0px');
 		}
 	} else {
 		css.add_property('--kb-nav-top-not-last-link-border-bottom', dividerValue);
 		css.add_property('--kb-nav-dropdown-toggle-border-left', dividerValue);
 	}
 
+	//placement logic where an additional selector is needed
 	//not last submenu items and mega menu nav links
 	css.set_selector(
 		`.wp-block-kadence-navigation${uniqueID} .sub-menu > .menu-item:not(:last-of-type), .wp-block-kadence-navigation${uniqueID} .sub-menu.mega-menu > .menu-item > .kb-link-wrap > .kb-nav-link-content`
