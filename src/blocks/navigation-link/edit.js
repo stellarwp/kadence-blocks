@@ -330,6 +330,7 @@ export default function Edit(props) {
 		align,
 		dropdownShadow,
 		kadenceDynamic,
+		dropdownClick,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
@@ -1030,7 +1031,6 @@ export default function Edit(props) {
 					doMegaMenuEnable,
 					previewDevice
 				)}
-
 				<AlignmentToolbar
 					value={align}
 					onChange={(nextAlign) => {
@@ -1133,6 +1133,13 @@ export default function Edit(props) {
 							isTopLevelLink,
 							previewDevice,
 							inMegaMenu
+						)}
+						{isTopLevelLink && hasChildren && (
+							<ToggleControl
+								label={__('Show dropdown with click only', 'kadence-blocks')}
+								checked={dropdownClick}
+								onChange={(value) => setAttributes({ dropdownClick: value })}
+							/>
 						)}
 						<TextareaControl
 							__nextHasNoMarginBottom

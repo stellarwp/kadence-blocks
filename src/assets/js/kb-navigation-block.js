@@ -127,7 +127,7 @@
 					var isEntirelyVisibleToRight = l + w <= docW;
 					var isEntirelyVisibleToLeft = r - w >= 0;
 
-					console.log(off, l, r, w, docW, isEntirelyVisibleToRight, isEntirelyVisibleToLeft);
+					// console.log(off, l, r, w, docW, isEntirelyVisibleToRight, isEntirelyVisibleToLeft);
 
 					if (!isEntirelyVisibleToRight) {
 						elm.classList.add('sub-menu-right-edge');
@@ -158,11 +158,22 @@
 				e.preventDefault();
 				toggleSubMenu(submenus[i].parentNode, null, nav.classList.contains('is-vertical'));
 			});
+			if (submenus[i].parentNode.classList.contains('kb-nav-link-sub-click')) {
+				submenus[i].parentNode
+					.querySelector(':scope > .kb-link-wrap > a')
+					.addEventListener('click', function (e) {
+						e.preventDefault();
+						toggleSubMenu(submenus[i].parentNode, null, nav.classList.contains('is-vertical'));
+					});
+			}
 
 			// Clean up the toggle if a mouse takes over from keyboard.
 			submenus[i].parentNode.addEventListener('mouseleave', function (e) {
 				// If we're vertical, we don't need to do anything.
 				if (nav.classList.contains('is-vertical')) {
+					return;
+				}
+				if (e.target.classList.contains('kb-nav-link-sub-click')) {
 					return;
 				}
 				toggleSubMenu(e.target, false);

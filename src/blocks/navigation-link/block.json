@@ -1553,6 +1553,10 @@
 		"forceOpenInEditor": {
 			"type": "boolean",
 			"default": false
+		},
+		"dropdownClick": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"usesContext": [
