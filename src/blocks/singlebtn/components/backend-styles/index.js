@@ -5,6 +5,7 @@ import {
 	typographyStyle,
 	getBorderStyle,
 	getBorderColor,
+	getSpacingOptionOutput,
 } from '@kadence/helpers';
 
 export default function BackendStyles(props) {
@@ -19,6 +20,10 @@ export default function BackendStyles(props) {
 		download,
 		noFollow,
 		sizePreset,
+		marginUnit,
+		margin,
+		tabletMargin,
+		mobileMargin,
 		padding,
 		tabletPadding,
 		mobilePadding,
@@ -109,6 +114,58 @@ export default function BackendStyles(props) {
 	} = attributes;
 
 	const css = new KadenceBlocksCSS();
+
+	const previewMarginTop = getPreviewSize(
+		previewDevice,
+		undefined !== margin?.[0] ? margin[0] : '',
+		undefined !== tabletMargin?.[0] ? tabletMargin[0] : '',
+		undefined !== mobileMargin?.[0] ? mobileMargin[0] : ''
+	);
+	const previewMarginRight = getPreviewSize(
+		previewDevice,
+		undefined !== margin?.[1] ? margin[1] : '',
+		undefined !== tabletMargin?.[1] ? tabletMargin[1] : '',
+		undefined !== mobileMargin?.[1] ? mobileMargin[1] : ''
+	);
+	const previewMarginBottom = getPreviewSize(
+		previewDevice,
+		undefined !== margin?.[2] ? margin[2] : '',
+		undefined !== tabletMargin?.[2] ? tabletMargin[2] : '',
+		undefined !== mobileMargin?.[2] ? mobileMargin[2] : ''
+	);
+	const previewMarginLeft = getPreviewSize(
+		previewDevice,
+		undefined !== margin?.[3] ? margin[3] : '',
+		undefined !== tabletMargin?.[3] ? tabletMargin[3] : '',
+		undefined !== mobileMargin?.[3] ? mobileMargin[3] : ''
+	);
+	const previewMarginUnit = marginUnit ? marginUnit : 'px';
+
+	const previewPaddingTop = getPreviewSize(
+		previewDevice,
+		undefined !== padding?.[0] ? padding[0] : '',
+		undefined !== tabletPadding?.[0] ? tabletPadding[0] : '',
+		undefined !== mobilePadding?.[0] ? mobilePadding[0] : ''
+	);
+	const previewPaddingRight = getPreviewSize(
+		previewDevice,
+		undefined !== padding?.[1] ? padding[1] : '',
+		undefined !== tabletPadding?.[1] ? tabletPadding[1] : '',
+		undefined !== mobilePadding?.[1] ? mobilePadding[1] : ''
+	);
+	const previewPaddingBottom = getPreviewSize(
+		previewDevice,
+		undefined !== padding?.[2] ? padding[2] : '',
+		undefined !== tabletPadding?.[2] ? tabletPadding[2] : '',
+		undefined !== mobilePadding?.[2] ? mobilePadding[2] : ''
+	);
+	const previewPaddingLeft = getPreviewSize(
+		previewDevice,
+		undefined !== padding?.[3] ? padding[3] : '',
+		undefined !== tabletPadding?.[3] ? tabletPadding[3] : '',
+		undefined !== mobilePadding?.[3] ? mobilePadding[3] : ''
+	);
+	const previewPaddingUnit = paddingUnit ? paddingUnit : 'px';
 
 	const previewRadiusTop = getPreviewSize(
 		previewDevice,
@@ -747,6 +804,31 @@ export default function BackendStyles(props) {
 	}
 	//standard styles
 	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}`);
+	if (previewPaddingTop) {
+		css.add_property('padding-top', getSpacingOptionOutput(previewPaddingTop, previewPaddingUnit));
+	}
+	if (previewPaddingRight) {
+		css.add_property('padding-right', getSpacingOptionOutput(previewPaddingRight, previewPaddingUnit));
+	}
+	if (previewPaddingLeft) {
+		css.add_property('padding-left', getSpacingOptionOutput(previewPaddingLeft, previewPaddingUnit));
+	}
+	if (previewPaddingBottom) {
+		css.add_property('padding-bottom', getSpacingOptionOutput(previewPaddingBottom, previewPaddingUnit));
+	}
+
+	if (previewMarginTop) {
+		css.add_property('margin-top', getSpacingOptionOutput(previewMarginTop, previewMarginUnit));
+	}
+	if (previewMarginRight) {
+		css.add_property('margin-right', getSpacingOptionOutput(previewMarginRight, previewMarginUnit));
+	}
+	if (previewMarginLeft) {
+		css.add_property('margin-left', getSpacingOptionOutput(previewMarginLeft, previewMarginUnit));
+	}
+	if (previewMarginBottom) {
+		css.add_property('margin-bottom', getSpacingOptionOutput(previewMarginBottom, previewMarginUnit));
+	}
 	if (previewBorderTopStyle) {
 		css.add_property('border-top', previewBorderTopStyle);
 	}
