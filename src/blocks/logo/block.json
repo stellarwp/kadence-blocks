@@ -36,19 +36,6 @@
 			"type": "string",
 			"default": "logo-left"
 		},
-		"containerMaxWidth": {
-			"type": "number"
-		},
-		"tabletContainerMaxWidth": {
-			"type": "number"
-		},
-		"mobileContainerMaxWidth": {
-			"type": "number"
-		},
-		"containerMaxWidthType": {
-			"type": "string",
-			"default": "px"
-		},
 		"padding": {
 			"type": "array",
 			"default": [

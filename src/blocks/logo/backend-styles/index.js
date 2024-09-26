@@ -9,10 +9,6 @@ export default function BackendStyles(props) {
 		showSiteTitle,
 		showSiteTagline,
 		layout,
-		containerMaxWidth,
-		tabletContainerMaxWidth,
-		mobileContainerMaxWidth,
-		containerMaxWidthType,
 		padding,
 		tabletPadding,
 		mobilePadding,
@@ -25,22 +21,9 @@ export default function BackendStyles(props) {
 		typography,
 	} = attributes;
 
-	const previewContainerMaxWidth = getPreviewSize(
-		previewDevice,
-		containerMaxWidth,
-		tabletContainerMaxWidth,
-		mobileContainerMaxWidth
-	);
-
 	const css = new KadenceBlocksCSS();
 
 	css.set_selector(`.kb-logo${uniqueID}`);
-	if (previewContainerMaxWidth) {
-		css.add_property(
-			'max-width',
-			getSpacingOptionOutput(previewContainerMaxWidth, containerMaxWidthType) + ' !important'
-		);
-	}
 
 	css.render_measure_output(padding, tabletPadding, mobilePadding, previewDevice, 'padding', paddingType);
 	css.render_measure_output(margin, tabletMargin, mobileMargin, previewDevice, 'margin', marginType);

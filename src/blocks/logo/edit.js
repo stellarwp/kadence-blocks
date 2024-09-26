@@ -31,10 +31,6 @@ export function Edit(props) {
 		showSiteTitle,
 		showSiteTagline,
 		layout,
-		containerMaxWidth,
-		tabletContainerMaxWidth,
-		mobileContainerMaxWidth,
-		containerMaxWidthType,
 		padding,
 		tabletPadding,
 		mobilePadding,
@@ -498,33 +494,6 @@ export function Edit(props) {
 				)}
 				{activeTab === 'style' && (
 					<>
-						<KadencePanelBody panelName={'logo-style'} initialOpen={true}>
-							<ResponsiveRangeControls
-								label={__('Max Width', 'kadence-blocks')}
-								value={containerMaxWidth}
-								onChange={(value) => {
-									setAttributes({ containerMaxWidth: value });
-								}}
-								tabletValue={tabletContainerMaxWidth ? tabletContainerMaxWidth : ''}
-								onChangeTablet={(value) => setAttributes({ tabletContainerMaxWidth: value })}
-								mobileValue={mobileContainerMaxWidth ? mobileContainerMaxWidth : ''}
-								onChangeMobile={(value) => setAttributes({ mobileContainerMaxWidth: value })}
-								min={100}
-								max={1250}
-								step={1}
-								unit={'px'}
-								units={['px']}
-								showUnit={true}
-								reset={() =>
-									setAttributes({
-										containerMaxWidth: '',
-										tabletContainerMaxWidth: '',
-										mobileContainerMaxWidth: '',
-										containerMaxWidthType: 'px',
-									})
-								}
-							/>
-						</KadencePanelBody>
 						<KadencePanelBody
 							title={__('Typography', 'kadence-blocks')}
 							panelName={'logo-style'}
