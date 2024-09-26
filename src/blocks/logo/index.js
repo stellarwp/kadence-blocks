@@ -14,9 +14,9 @@ import './style.scss';
 
 registerBlockType('kadence/logo', {
 	...metadata,
-	title: _x('Site Logo (Adv)', 'block title', 'kadence-blocks'),
-	description: _x('Kadence site logo block', 'block description', 'kadence-blocks'),
-	keywords: [__('logo', 'kadence-blocks'), __('image', 'kadence-blocks'), 'kb'],
+	title: _x('Site Identity', 'block title', 'kadence-blocks'),
+	description: _x('Kadence site identity block', 'block description', 'kadence-blocks'),
+	keywords: [__('logo', 'kadence-blocks'), __('identity', 'kadence-blocks'), 'kb'],
 	icon: {
 		src: logoBlockIcon,
 	},
@@ -25,6 +25,8 @@ registerBlockType('kadence/logo', {
 		return <InnerBlocks.Content />;
 	},
 	example: {
-		attributes: {},
+		attributes: {
+			showSiteTagline: true,
+		},
 	},
 });

@@ -236,7 +236,6 @@ function KadenceAdvancedHeading(props) {
 
 	const [activeTab, setActiveTab] = useState('style');
 	const [contentRef, setContentRef] = useState();
-	const insideBlock = context?.['kadence/insideBlock'];
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, previewDevice, parentData, allowedFormats } = useSelect(
@@ -394,9 +393,7 @@ function KadenceAdvancedHeading(props) {
 	);
 
 	let richTextFormats = allowedFormats.map((format) => format.name);
-	if (insideBlock === 'logo') {
-		richTextFormats = allowedFormats.filter((format) => format.name !== 'core/link').map((format) => format.name);
-	} else if (link || kadenceDynamic?.content?.shouldReplace) {
+	if (link || kadenceDynamic?.content?.shouldReplace) {
 		richTextFormatsBase = !kadenceDynamic?.content?.shouldReplace
 			? [...['kadence/insert-dynamic'], ...richTextFormatsBase]
 			: richTextFormatsBase;
@@ -1348,7 +1345,7 @@ function KadenceAdvancedHeading(props) {
 									units={['px', '%', 'vw']}
 								/>
 							</KadencePanelBody>
-							{showSettings('linkSettings', 'kadence/advancedheading') && 'logo' !== insideBlock && (
+							{showSettings('linkSettings', 'kadence/advancedheading') && (
 								<KadencePanelBody
 									title={__('Link Settings', 'kadence-blocks')}
 									initialOpen={false}

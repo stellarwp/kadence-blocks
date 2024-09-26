@@ -12,17 +12,12 @@ import {
 	KadenceRadioButtons,
 	ResponsiveRangeControls,
 	ResponsiveMeasureRangeControl,
-	ResponsiveMeasurementControls,
-	ResponsiveBorderControl,
+	TypographyControls,
+	ImageSizeControl as KadenceImageSizeControl,
+	KadenceImageControl,
 } from '@kadence/components';
 import { setBlockDefaults, getUniqueId, getPostOrFseId } from '@kadence/helpers';
-import {
-	useBlockProps,
-	BlockControls,
-	useInnerBlocksProps,
-	BlockContextProvider,
-	BlockAlignmentControl,
-} from '@wordpress/block-editor';
+import { useBlockProps, BlockControls, useInnerBlocksProps, BlockAlignmentControl } from '@wordpress/block-editor';
 import { createBlock } from '@wordpress/blocks';
 import classnames from 'classnames';
 import { ToggleControl, TextControl, SelectControl } from '@wordpress/components';
@@ -30,7 +25,7 @@ import './editor.scss';
 import Icons from './icons.js';
 import BackendStyles from './backend-styles';
 export function Edit(props) {
-	const { attributes, setAttributes, className, clientId } = props;
+	const { attributes, setAttributes, context, isSelected, clientId } = props;
 	const {
 		uniqueID,
 		showSiteTitle,
@@ -48,17 +43,15 @@ export function Edit(props) {
 		tabletMargin,
 		mobileMargin,
 		marginType,
-		borderRadius,
-		tabletBorderRadius,
-		mobileBorderRadius,
-		borderRadiusUnit,
-		borderStyles,
-		tabletBorderStyles,
-		mobileBorderStyles,
 		linkToHomepage,
 		link,
 		align,
 		textVerticalAlign,
+		typography,
+		urlTransparent,
+		idTransparent,
+		urlSticky,
+		idSticky,
 	} = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
@@ -89,18 +82,13 @@ export function Edit(props) {
 		return select(coreDataStore).getEntityRecord('root', 'site');
 	}, []);
 
-	const newTaglineBlock = createBlock('kadence/advancedheading', {
-		metadata: { name: __('Site Tagline', 'kadence-blocks'), for: 'tagline' },
-		className: 'kb-logo-tagline',
-		fontSize: ['sm', '', ''],
-		content: siteData?.description ? siteData.description : '',
+	const newTaglineBlock = createBlock('core/site-tagline', {
+		level: 0,
 	});
 
-	const newTitleBlock = createBlock('kadence/advancedheading', {
-		metadata: { name: __('Site Title', 'kadence-blocks'), for: 'title' },
-		className: 'kb-logo-title',
-		fontSize: ['md', '', ''],
-		content: siteData?.title ? siteData.title : '',
+	const newTitleBlock = createBlock('core/site-title', {
+		level: 0,
+		isLink: false,
 	});
 
 	const siteUrl = siteData?.url ? siteData.url : '';
@@ -186,36 +174,103 @@ export function Edit(props) {
 		},
 	];
 
-	const updateInnerBlocks = () => {
-		const findBlockByMetadata = (blocks, metadata) => {
-			for (const block of blocks) {
-				if (block.attributes.metadata?.for === metadata) return block;
-				if (block.innerBlocks?.length > 0) {
-					const foundBlock = findBlockByMetadata(block.innerBlocks, metadata);
-					if (foundBlock) return foundBlock;
-				}
+	const findBlockByName = (blocks, name) => {
+		for (const block of blocks) {
+			if (block.name === name) return block;
+			if (block.innerBlocks?.length > 0) {
+				const foundBlock = findBlockByName(block.innerBlocks, name);
+				if (foundBlock) return foundBlock;
 			}
-			return null;
-		};
+		}
+		return null;
+	};
 
-		const addBlock = (metadata, defaultBlock) => findBlockByMetadata(innerBlocks, metadata) || defaultBlock;
+	const saveFont = (value) => {
+		const newUpdate = typography.map((item, index) => {
+			if (0 === index) {
+				item = { ...item, ...value };
+			}
+			return item;
+		});
+		setAttributes({
+			typography: newUpdate,
+		});
+	};
+
+	function onUpdateSelectImageSticky(mediaUpdate) {
+		setAttributes({
+			urlSticky: mediaUpdate.url,
+			idSticky: mediaUpdate.id ? mediaUpdate.id : undefined,
+			sizeSlugSticky: undefined,
+		});
+	}
+	function clearImageSticky() {
+		setAttributes({
+			urlSticky: undefined,
+			idSticky: undefined,
+			sizeSlugSticky: undefined,
+		});
+	}
+	function changeImageStickySize(imgData) {
+		setAttributes({
+			urlSticky: imgData.value,
+			sizeSlugSticky: imgData.slug,
+		});
+	}
+
+	function onUpdateSelectImageTransparent(mediaUpdate) {
+		setAttributes({
+			urlTransparent: mediaUpdate.url,
+			idTransparent: mediaUpdate.id ? mediaUpdate.id : undefined,
+			sizeSlugTransparent: undefined,
+		});
+	}
+	function clearImageTransparent() {
+		setAttributes({
+			urlTransparent: undefined,
+			idTransparent: undefined,
+			sizeSlugTransparent: undefined,
+		});
+	}
+	function changeImageTransparentSize(imgData) {
+		setAttributes({
+			urlTransparent: imgData.value,
+			sizeSlugTransparent: imgData.slug,
+		});
+	}
+
+	const updateInnerBlocks = () => {
+		const addBlock = (name, defaultBlock) => findBlockByName(innerBlocks, name) || defaultBlock;
 
 		const newInnerBlocks = [];
 		const imageBlock =
-			innerBlocks.find((block) => block.name === 'kadence/image') ||
-			createBlock('kadence/image', { imgMaxWidth: 250, marginDesktop: ['', 'sm', '', ''] });
+			innerBlocks.find((block) => block.name === 'core/site-logo') ||
+			createBlock('core/site-logo', { isLink: false, width: 75 });
 		newInnerBlocks.push(imageBlock);
 
 		if (showSiteTitle || showSiteTagline) {
 			let titleBlock, taglineBlock;
 
-			if (showSiteTitle) titleBlock = addBlock('title', newTitleBlock);
-			if (showSiteTagline) taglineBlock = addBlock('tagline', newTaglineBlock);
+			if (showSiteTitle) titleBlock = addBlock('core/site-title', newTitleBlock);
+			if (showSiteTagline) taglineBlock = addBlock('core/site-tagline', newTaglineBlock);
 
 			const addBlocksInOrder = (...blocks) => blocks.forEach((block) => block && newInnerBlocks.push(block));
 
 			if (['logo-right-stacked', 'logo-left-stacked'].includes(layout)) {
-				const groupBlock = createBlock('core/group', {}, []);
+				const groupBlock = createBlock(
+					'core/group',
+					{
+						style: {
+							spacing: {
+								padding: {
+									right: 'var:preset|spacing|40',
+									left: 'var:preset|spacing|40',
+								},
+							},
+						},
+					},
+					[]
+				);
 				addBlocksInOrder(titleBlock, taglineBlock);
 				groupBlock.innerBlocks.push(...newInnerBlocks.slice(1)); // Add title/tagline inside group
 				newInnerBlocks.splice(1, newInnerBlocks.length, groupBlock); // Replace with group
@@ -371,63 +426,135 @@ export function Edit(props) {
 								}
 							/>
 						</KadencePanelBody>
+						{context?.['kadence/headerIsSticky'] == '1' && (
+							<KadencePanelBody
+								title={__('Sticky Image settings', 'kadence-blocks')}
+								initialOpen={true}
+								panelName={'kb-image-sticky-settings'}
+							>
+								<KadenceImageControl
+									label={__('Image', 'kadence-blocks')}
+									hasImage={!!urlSticky}
+									imageURL={urlSticky ? urlSticky : ''}
+									imageID={idSticky}
+									onRemoveImage={clearImageSticky}
+									onSaveImage={onUpdateSelectImageSticky}
+									disableMediaButtons={!!urlSticky}
+									dynamicAttribute="urlSticky"
+									isSelected={isSelected}
+									attributes={attributes}
+									setAttributes={setAttributes}
+									name={'kadence/image'}
+									clientId={clientId}
+									context={context}
+								/>
+								{idSticky && (
+									<KadenceImageSizeControl
+										label={__('Image File Size', 'kadence-blocks')}
+										id={idSticky}
+										url={urlSticky}
+										fullSelection={true}
+										selectByValue={true}
+										onChange={changeImageStickySize}
+									/>
+								)}
+							</KadencePanelBody>
+						)}
+						{context?.['kadence/headerIsTransparent'] == '1' && (
+							<KadencePanelBody
+								title={__('Transparent Image settings', 'kadence-blocks')}
+								initialOpen={true}
+								panelName={'kb-image-transparent-settings'}
+							>
+								<KadenceImageControl
+									label={__('Image', 'kadence-blocks')}
+									hasImage={!!urlTransparent}
+									imageURL={urlTransparent ? urlTransparent : ''}
+									imageID={idTransparent}
+									onRemoveImage={clearImageTransparent}
+									onSaveImage={onUpdateSelectImageTransparent}
+									disableMediaButtons={!!urlTransparent}
+									dynamicAttribute="urlTransparent"
+									isSelected={isSelected}
+									attributes={attributes}
+									setAttributes={setAttributes}
+									name={'kadence/image'}
+									clientId={clientId}
+									context={context}
+								/>
+								{idTransparent && (
+									<KadenceImageSizeControl
+										label={__('Image File Size', 'kadence-blocks')}
+										id={idTransparent}
+										url={urlTransparent}
+										fullSelection={true}
+										selectByValue={true}
+										onChange={changeImageTransparentSize}
+									/>
+								)}
+							</KadencePanelBody>
+						)}
 					</>
 				)}
 				{activeTab === 'style' && (
-					<KadencePanelBody panelName={'logo-style'} initialOpen={true}>
-						<ResponsiveRangeControls
-							label={__('Max Width', 'kadence-blocks')}
-							value={containerMaxWidth}
-							onChange={(value) => {
-								setAttributes({ containerMaxWidth: value });
-							}}
-							tabletValue={tabletContainerMaxWidth ? tabletContainerMaxWidth : ''}
-							onChangeTablet={(value) => setAttributes({ tabletContainerMaxWidth: value })}
-							mobileValue={mobileContainerMaxWidth ? mobileContainerMaxWidth : ''}
-							onChangeMobile={(value) => setAttributes({ mobileContainerMaxWidth: value })}
-							min={100}
-							max={1250}
-							step={1}
-							unit={'px'}
-							units={['px']}
-							showUnit={true}
-							reset={() =>
-								setAttributes({
-									containerMaxWidth: '',
-									tabletContainerMaxWidth: '',
-									mobileContainerMaxWidth: '',
-									containerMaxWidthType: 'px',
-								})
-							}
-						/>
-
-						<ResponsiveBorderControl
-							label={__('Border', 'kadence-blocks')}
-							value={borderStyles}
-							tabletValue={tabletBorderStyles}
-							mobileValue={mobileBorderStyles}
-							onChange={(value) => setAttributes({ borderStyles: value })}
-							onChangeTablet={(value) => setAttributes({ tabletBorderStyles: value })}
-							onChangeMobile={(value) => setAttributes({ mobileBorderStyles: value })}
-						/>
-						<ResponsiveMeasurementControls
-							label={__('Border Radius', 'kadence-blocks')}
-							value={borderRadius}
-							tabletValue={tabletBorderRadius}
-							mobileValue={mobileBorderRadius}
-							onChange={(value) => setAttributes({ borderRadius: value })}
-							onChangeTablet={(value) => setAttributes({ tabletBorderRadius: value })}
-							onChangeMobile={(value) => setAttributes({ mobileBorderRadius: value })}
-							min={0}
-							max={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 100}
-							step={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1}
-							unit={borderRadiusUnit}
-							units={['px', 'em', 'rem', '%']}
-							onUnit={(value) => setAttributes({ borderRadiusUnit: value })}
-							isBorderRadius={true}
-							allowEmpty={true}
-						/>
-					</KadencePanelBody>
+					<>
+						<KadencePanelBody panelName={'logo-style'} initialOpen={true}>
+							<ResponsiveRangeControls
+								label={__('Max Width', 'kadence-blocks')}
+								value={containerMaxWidth}
+								onChange={(value) => {
+									setAttributes({ containerMaxWidth: value });
+								}}
+								tabletValue={tabletContainerMaxWidth ? tabletContainerMaxWidth : ''}
+								onChangeTablet={(value) => setAttributes({ tabletContainerMaxWidth: value })}
+								mobileValue={mobileContainerMaxWidth ? mobileContainerMaxWidth : ''}
+								onChangeMobile={(value) => setAttributes({ mobileContainerMaxWidth: value })}
+								min={100}
+								max={1250}
+								step={1}
+								unit={'px'}
+								units={['px']}
+								showUnit={true}
+								reset={() =>
+									setAttributes({
+										containerMaxWidth: '',
+										tabletContainerMaxWidth: '',
+										mobileContainerMaxWidth: '',
+										containerMaxWidthType: 'px',
+									})
+								}
+							/>
+						</KadencePanelBody>
+						<KadencePanelBody
+							title={__('Typography', 'kadence-blocks')}
+							panelName={'logo-style'}
+							initialOpen={true}
+						>
+							<TypographyControls
+								fontFamily={typography[0].family}
+								onFontFamily={(value) => saveFont({ family: value })}
+								onFontChange={(select) => {
+									saveFont({
+										family: select.value,
+										google: select.google,
+									});
+								}}
+								onFontArrayChange={(values) => saveFont(values)}
+								googleFont={typography[0].google}
+								onGoogleFont={(value) => saveFont({ google: value })}
+								loadGoogleFont={typography[0].loadGoogle}
+								onLoadGoogleFont={(value) => saveFont({ loadGoogle: value })}
+								fontVariant={typography[0].variant}
+								onFontVariant={(value) => saveFont({ variant: value })}
+								fontWeight={typography[0].weight}
+								onFontWeight={(value) => saveFont({ weight: value })}
+								fontStyle={typography[0].style}
+								onFontStyle={(value) => saveFont({ style: value })}
+								fontSubset={typography[0].subset}
+								onFontSubset={(value) => saveFont({ subset: value })}
+							/>
+						</KadencePanelBody>
+					</>
 				)}
 				{activeTab === 'advanced' && (
 					<KadencePanelBody panelName={'logo-advanced'} initialOpen={true}>
@@ -475,9 +602,7 @@ export function Edit(props) {
 			<BackendStyles {...props} previewDevice={previewDevice} />
 			<div {...blockProps}>
 				<div className={'kb-logo-layout-container kb-logo-layout-' + layout}>
-					<BlockContextProvider value={{ 'kadence/insideBlock': 'logo' }}>
-						<Fragment {...innerBlocksProps} />
-					</BlockContextProvider>
+					<Fragment {...innerBlocksProps} />
 				</div>
 			</div>
 		</>

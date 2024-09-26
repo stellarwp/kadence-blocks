@@ -404,7 +404,6 @@ export default function Image({
 	const { replaceBlocks, toggleSelection } = useDispatch(blockEditorStore);
 	const { createErrorNotice, createSuccessNotice } = useDispatch(noticesStore);
 
-	const insideBlock = context?.['kadence/insideBlock'];
 	const isLargeViewport = useViewportMatch('medium');
 	const isWideAligned = includes(['wide', 'full'], align);
 	const [{ naturalWidth, naturalHeight }, setNaturalSize] = useState({});
@@ -657,7 +656,7 @@ export default function Image({
 	const controls = (
 		<>
 			<BlockControls group="block">
-				{insideBlock !== 'logo' && <BlockAlignmentControl value={align} onChange={updateAlignment} />}
+				<BlockAlignmentControl value={align} onChange={updateAlignment} />
 				{showCaption && (
 					<ToolbarButton
 						onClick={() => {
@@ -675,7 +674,7 @@ export default function Image({
 						}
 					/>
 				)}
-				{!isEditingImage && !isDynamic && !isDynamicLink && 'logo' !== insideBlock && (
+				{!isEditingImage && !isDynamic && !isDynamicLink && (
 					<KadenceImageURLInputUI
 						url={link || ''}
 						onChangeUrl={(value) => setAttributes({ link: value })}
@@ -1096,38 +1095,36 @@ export default function Image({
 								/>
 							</KadencePanelBody>
 						)}
-						{'logo' !== insideBlock && (
-							<KadencePanelBody
-								title={__('Link Settings', 'kadence-blocks')}
-								initialOpen={false}
-								panelName={'kb-image-link-settings'}
-							>
-								<URLInputControl
-									label={__('Image Link', 'kadence-blocks')}
-									url={link}
-									onChangeUrl={(value) => setAttributes({ link: value })}
-									additionalControls={true}
-									opensInNewTab={undefined !== linkTarget ? linkTarget : false}
-									onChangeTarget={(value) => setAttributes({ linkTarget: value })}
-									linkNoFollow={undefined !== linkNoFollow ? linkNoFollow : false}
-									onChangeFollow={(value) => setAttributes({ linkNoFollow: value })}
-									linkSponsored={undefined !== linkSponsored ? linkSponsored : false}
-									onChangeSponsored={(value) => setAttributes({ linkSponsored: value })}
-									allowClear={true}
-									linkTitle={linkTitle}
-									onChangeTitle={(value) => {
-										setAttributes({ linkTitle: value });
-									}}
-									dynamicAttribute={'link'}
-									isSelected={isSelected}
-									attributes={attributes}
-									setAttributes={setAttributes}
-									name={'kadence/image'}
-									clientId={clientId}
-									context={context}
-								/>
-							</KadencePanelBody>
-						)}
+						<KadencePanelBody
+							title={__('Link Settings', 'kadence-blocks')}
+							initialOpen={false}
+							panelName={'kb-image-link-settings'}
+						>
+							<URLInputControl
+								label={__('Image Link', 'kadence-blocks')}
+								url={link}
+								onChangeUrl={(value) => setAttributes({ link: value })}
+								additionalControls={true}
+								opensInNewTab={undefined !== linkTarget ? linkTarget : false}
+								onChangeTarget={(value) => setAttributes({ linkTarget: value })}
+								linkNoFollow={undefined !== linkNoFollow ? linkNoFollow : false}
+								onChangeFollow={(value) => setAttributes({ linkNoFollow: value })}
+								linkSponsored={undefined !== linkSponsored ? linkSponsored : false}
+								onChangeSponsored={(value) => setAttributes({ linkSponsored: value })}
+								allowClear={true}
+								linkTitle={linkTitle}
+								onChangeTitle={(value) => {
+									setAttributes({ linkTitle: value });
+								}}
+								dynamicAttribute={'link'}
+								isSelected={isSelected}
+								attributes={attributes}
+								setAttributes={setAttributes}
+								name={'kadence/image'}
+								clientId={clientId}
+								context={context}
+							/>
+						</KadencePanelBody>
 					</>
 				)}
 				{activeTab === 'style' && (

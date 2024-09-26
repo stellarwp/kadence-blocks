@@ -51,15 +51,30 @@
 		},
 		"padding": {
 			"type": "array",
-			"default": ["", "", "", ""]
+			"default": [
+				"",
+				"",
+				"",
+				""
+			]
 		},
 		"tabletPadding": {
 			"type": "array",
-			"default": ["", "", "", ""]
+			"default": [
+				"",
+				"",
+				"",
+				""
+			]
 		},
 		"mobilePadding": {
 			"type": "array",
-			"default": ["", "", "", ""]
+			"default": [
+				"",
+				"",
+				"",
+				""
+			]
 		},
 		"paddingType": {
 			"type": "string",
@@ -67,73 +82,94 @@
 		},
 		"margin": {
 			"type": "array",
-			"default": ["", "", "", ""]
+			"default": [
+				"",
+				"",
+				"",
+				""
+			]
 		},
 		"tabletMargin": {
 			"type": "array",
-			"default": ["", "", "", ""]
+			"default": [
+				"",
+				"",
+				"",
+				""
+			]
 		},
 		"mobileMargin": {
 			"type": "array",
-			"default": ["", "", "", ""]
+			"default": [
+				"",
+				"",
+				"",
+				""
+			]
 		},
 		"marginType": {
 			"type": "string",
 			"default": "px"
 		},
-		"borderRadius": {
+		"typography": {
 			"type": "array",
-			"default": ["", "", "", ""]
+			"default": [
+				{
+					"size": [
+						"",
+						"",
+						""
+					],
+					"sizeType": "px",
+					"lineHeight": [
+						"",
+						"",
+						""
+					],
+					"lineType": "px",
+					"letterSpacing": [
+						"",
+						"",
+						""
+					],
+					"letterType": "px",
+					"textTransform": "",
+					"family": "",
+					"google": false,
+					"style": "",
+					"weight": "",
+					"variant": "",
+					"subset": "",
+					"loadGoogle": true
+				}
+			]
 		},
-		"tabletBorderRadius": {
-			"type": "array",
-			"default": ["", "", "", ""]
-		},
-		"mobileBorderRadius": {
-			"type": "array",
-			"default": ["", "", "", ""]
-		},
-		"borderRadiusUnit": {
+		"urlTransparent":  {
 			"type": "string",
-			"default": "px"
+			"default": ""
 		},
-		"borderStyles": {
-			"type": "array",
-			"default": [
-				{
-					"top": ["", "", ""],
-					"right": ["", "", ""],
-					"bottom": ["", "", ""],
-					"left": ["", "", ""],
-					"unit": "px"
-				}
-			]
+		"idTransparent": {
+			"type": "number"
 		},
-		"tabletBorderStyles": {
-			"type": "array",
-			"default": [
-				{
-					"top": ["", "", ""],
-					"right": ["", "", ""],
-					"bottom": ["", "", ""],
-					"left": ["", "", ""],
-					"unit": "px"
-				}
-			]
+		"sizeSlugTransparent": {
+			"type": "string"
 		},
-		"mobileBorderStyles": {
-			"type": "array",
-			"default": [
-				{
-					"top": ["", "", ""],
-					"right": ["", "", ""],
-					"bottom": ["", "", ""],
-					"left": ["", "", ""],
-					"unit": "px"
-				}
-			]
+		"urlSticky":  {
+			"type": "string",
+			"default": ""
+		},
+		"idSticky": {
+			"type": "number"
+		},
+		"sizeSlugSticky": {
+			"type": "string"
 		}
 	},
+	"usesContext": [
+		"kadence/headerPostId",
+		"kadence/headerIsSticky",
+		"kadence/headerIsTransparent"
+	],
 	"supports": {
 		"anchor": true,
 		"kbMetadata": true

@@ -71,8 +71,7 @@ class Kadence_Blocks_Logo_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->render_measure_output( $attributes, 'padding', 'padding' );
 		$css->render_measure_output( $attributes, 'margin', 'margin' );
-		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius' );
-		$css->render_border_styles( $attributes, 'borderStyles' );
+		$css->render_typography( $attributes, 'typography' );
 
 		$containerMaxWidthType = $attributes['containerMaxWidthType'] ?? 'px';
 		if( !empty( $attributes['containerMaxWidth'])) {
@@ -116,14 +115,57 @@ class Kadence_Blocks_Logo_Block extends Kadence_Blocks_Abstract_Block {
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		$layout = isset( $attributes['layout'] ) ? $attributes['layout'] : 'logo-title';
 		$layout_class = 'kb-logo-layout-container kb-logo-layout-' . $layout;
+		$content = $this->strip_anchor_tags( $content );
+
+		if (!empty($attributes['urlTransparent'])) {
+			// Use regex to find the existing img tag
+			$pattern = '/<img[^>]+>/i';
+			if (preg_match($pattern, $content, $matches)) {
+				$existing_img = $matches[0];
+
+				// Create the transparent image by cloning and modifying the existing img tag
+				$transparent_img = $existing_img;
+				$transparent_img = preg_replace('/\bsrc=["\'][^"\']+["\']/', 'src="' . esc_url($attributes['urlTransparent']) . '"', $transparent_img);
+				$transparent_img = preg_replace('/\bclass=["\']([^"\']*)["\']/', 'class="kb-img kb-img-transparent"', $transparent_img);
+				$transparent_img = preg_replace('/\bsrcset=["\'][^"\']+["\']/', '', $transparent_img);
+				$transparent_img = preg_replace('/\bsizes=["\'][^"\']+["\']/', '', $transparent_img);
+
+				// Insert the transparent image after the existing image
+				$content = preg_replace($pattern, '$0' . $transparent_img, $content, 1);
+			}
+		}
+
+		if (!empty($attributes['urlSticky'])) {
+			$this->enqueue_script('kadence-blocks-header-sticky-image');
+
+			// Use regex to find the existing img tag
+			$pattern = '/<img[^>]+>/i';
+			if (preg_match($pattern, $content, $matches)) {
+				$existing_img = $matches[0];
+
+				// Create the transparent image by cloning and modifying the existing img tag
+				$sticky_img = $existing_img;
+				$sticky_img = preg_replace('/\bsrc=["\'][^"\']+["\']/', 'src="' . esc_url($attributes['urlSticky']) . '"', $sticky_img);
+				$sticky_img = preg_replace('/\bclass=["\']([^"\']*)["\']/', 'class="kb-img kb-img-sticky"', $sticky_img);
+				$sticky_img = preg_replace('/\bsrcset=["\'][^"\']+["\']/', '', $sticky_img);
+				$sticky_img = preg_replace('/\bsizes=["\'][^"\']+["\']/', '', $sticky_img);
+
+				// Insert the transparent image after the existing image
+				$content = preg_replace($pattern, '$0' . $sticky_img, $content, 1);
+			}
+		}
 
 		$outer_classes = array( 'kb-logo', 'kb-logo' . $unique_id );
 		$outer_classes[] = ! empty( $attributes['align'] ) ? 'align' . $attributes['align'] : 'alignnone';
 
+		if (!empty($attributes['urlTransparent'])) {
+			$outer_classes[] = 'has-transparent-img';
+		}
+
 		$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( ' ', $outer_classes ) ) );
 
-		if( !empty( $attributes['linkToHomepage']) || !empty( $attributes['linkToCustomURL']) ) {
-			$url = !empty( $attributes['linkToCustomURL']) ? esc_url( $attributes['linkToCustomURL'] ) : esc_url( home_url( '/' ) );
+		if( !empty( $attributes['linkToHomepage']) || !empty( $attributes['link']) ) {
+			$url = !empty( $attributes['link']) ? esc_url( $attributes['link'] ) : esc_url( home_url( '/' ) );
 			$content = sprintf( '<a href="%1$s" class="%2$s">%3$s</a>', $url, $layout_class, $content );
 		} else {
 			$content = sprintf( '<div class="%1$s">%2$s</div>', $layout_class, $content );
@@ -132,6 +174,29 @@ class Kadence_Blocks_Logo_Block extends Kadence_Blocks_Abstract_Block {
 		return sprintf( '<div %1$s>%2$s</div>', $wrapper_attributes, $content );
 	}
 
+	 public function strip_anchor_tags($html) {
+		$pattern = '/<a\s[^>]*href=[\'"](.+?)[\'"][^>]*>(.+?)<\/a>/i';
+		$replacement = '$2';
+		$stripped_html = preg_replace($pattern, $replacement, $html);
+
+		return preg_replace('/<\/?a[^>]*>/i', '', $stripped_html);
+	}
+
+	/**
+	 * Registers scripts and styles.
+	 */
+	public function register_scripts() {
+		parent::register_scripts();
+		// If in the backend, bail out.
+		if ( is_admin() ) {
+			return;
+		}
+		if ( apply_filters( 'kadence_blocks_check_if_rest', false ) && kadence_blocks_is_rest() ) {
+			return;
+		}
+
+		wp_register_script( 'kadence-blocks-header-sticky-image', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-header-sticky-image.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+	}
 }
 
 Kadence_Blocks_Logo_Block::get_instance();

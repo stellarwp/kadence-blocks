@@ -1,16 +1,8 @@
-import {
-	KadenceBlocksCSS,
-	getFontSizeOptionOutput,
-	getPreviewSize,
-	getSpacingOptionOutput,
-	KadenceColorOutput,
-	useElementHeight,
-	getBorderStyle,
-	getBorderColor,
-} from '@kadence/helpers';
+import { KadenceBlocksCSS, getPreviewSize, getSpacingOptionOutput } from '@kadence/helpers';
+import { KadenceWebfontLoader } from '@kadence/components';
 
 export default function BackendStyles(props) {
-	const { attributes, isSelected, previewDevice, context, active } = props;
+	const { attributes, clientId, previewDevice } = props;
 
 	const {
 		uniqueID,
@@ -29,14 +21,8 @@ export default function BackendStyles(props) {
 		tabletMargin,
 		mobileMargin,
 		marginType,
-		borderRadius,
-		tabletBorderRadius,
-		mobileBorderRadius,
-		borderRadiusUnit,
-		borderStyles,
-		tabletBorderStyles,
-		mobileBorderStyles,
 		textVerticalAlign,
+		typography,
 	} = attributes;
 
 	const previewContainerMaxWidth = getPreviewSize(
@@ -55,34 +41,10 @@ export default function BackendStyles(props) {
 			getSpacingOptionOutput(previewContainerMaxWidth, containerMaxWidthType) + ' !important'
 		);
 	}
-	css.render_measure_output(
-		borderRadius,
-		tabletBorderRadius,
-		mobileBorderRadius,
-		previewDevice,
-		'border-radius',
-		borderRadiusUnit
-	);
-
-	css.add_property(
-		'border-top',
-		css.render_border(borderStyles, tabletBorderStyles, mobileBorderStyles, previewDevice, 'top', false)
-	);
-	css.add_property(
-		'border-right',
-		css.render_border(borderStyles, tabletBorderStyles, mobileBorderStyles, previewDevice, 'right', false)
-	);
-	css.add_property(
-		'border-bottom',
-		css.render_border(borderStyles, tabletBorderStyles, mobileBorderStyles, previewDevice, 'bottom', false)
-	);
-	css.add_property(
-		'border-left',
-		css.render_border(borderStyles, tabletBorderStyles, mobileBorderStyles, previewDevice, 'left', false)
-	);
 
 	css.render_measure_output(padding, tabletPadding, mobilePadding, previewDevice, 'padding', paddingType);
 	css.render_measure_output(margin, tabletMargin, mobileMargin, previewDevice, 'margin', marginType);
+	css.render_font(typography ? typography : [], previewDevice);
 
 	if (
 		layout === 'logo-left' ||
@@ -97,5 +59,12 @@ export default function BackendStyles(props) {
 
 	const cssOutput = css.css_output();
 
-	return <style>{`${cssOutput}`}</style>;
+	return (
+		<>
+			<style>{`${cssOutput}`}</style>
+			{typography?.[0]?.google && (
+				<KadenceWebfontLoader typography={typography} clientId={clientId} id={'typography'} />
+			)}
+		</>
+	);
 }

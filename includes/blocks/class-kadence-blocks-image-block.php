@@ -36,7 +36,7 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 	 *
 	 * @var string
 	 */
-	protected $has_script = true;
+	protected $has_script = false;
 
 	/**
 	 * Instance Control
@@ -354,6 +354,10 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 		if ( strpos( $content, 'kb-tooltip-hidden-content') !== false ) {
 			$this->enqueue_script( 'kadence-blocks-tippy' );
 		}
+
+		if( !empty( $attributes['urlSticky']) ) {
+			$this->enqueue_script('kadence-blocks-header-sticky-image');
+		}
 		return $content;
 	}
 
@@ -369,7 +373,7 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 		if ( apply_filters( 'kadence_blocks_check_if_rest', false ) && kadence_blocks_is_rest() ) {
 			return;
 		}
-		wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/kb-image-block.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-header-sticky-image', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-header-sticky-image.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-popper', KADENCE_BLOCKS_URL . 'includes/assets/js/popper.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-tippy', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-tippy.min.js', array( 'kadence-blocks-popper' ), KADENCE_BLOCKS_VERSION, true );
 	}
