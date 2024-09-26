@@ -8,6 +8,10 @@
 		display: flex;
 		justify-content: space-between;
 		padding: 20px;
+		top: 0;
+		position: sticky;
+		z-index: 100;
+		background: #FFF;
 
 		img {
 			width: 40px;
@@ -87,7 +91,7 @@
 			height: calc(100vh - 80px); /* Adjust height to span to footer */
 
 			display: flex;
-			align-items: baseline;
+			align-items: center;
 			justify-content: center;
 
 			img {

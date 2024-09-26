@@ -325,7 +325,14 @@ function CreateNewOnly({ clientId, setJustCompletedOnboarding, postId }) {
 	};
 
 	const steps = [
-		{ key: 'name', name: 'Header Name', visualNumber: 1, component: HeaderName, componentData: { postId } },
+		{
+			key: 'name',
+			name: 'Header Name',
+			visualNumber: 1,
+			component: HeaderName,
+			componentData: { postId },
+			containerData: { headerStyle: { position: 'unset' } },
+		},
 		{ key: 'desktop', name: 'Desktop Layout', visualNumber: 2, component: HeaderDesktop },
 		{ key: 'mobile', name: 'Mobile Layout', visualNumber: 3, component: HeaderMobile },
 	];
@@ -426,7 +433,13 @@ function Chooser({ commit, clientId, setJustCompletedOnboarding, formData, setFo
 
 	const steps = [
 		{ key: 'select-existing', name: 'Header Selection', hideSteps: true, component: HeaderExisting },
-		{ key: 'name', name: 'Header Name', visualNumber: 1, component: HeaderName },
+		{
+			key: 'name',
+			name: 'Header Name',
+			visualNumber: 1,
+			component: HeaderName,
+			containerData: { headerStyle: { position: 'unset' } },
+		},
 		{ key: 'desktop', name: 'Desktop Layout', visualNumber: 2, component: HeaderDesktop },
 		{ key: 'mobile', name: 'Mobile Layout', visualNumber: 3, component: HeaderMobile },
 	];

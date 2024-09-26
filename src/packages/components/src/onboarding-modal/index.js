@@ -64,7 +64,7 @@ const OnboardingModal = ({ steps, isOpen, onRequestClose, onSubmit }) => {
 			size={'fill'}
 			onRequestClose={onRequestClose}
 		>
-			<div className={'header'}>
+			<div className={'header'} style={ steps[currentStep]?.containerData?.headerStyle }>
 				<img
 					src={kadence_blocks_params.kadenceBlocksUrl + '/includes/settings/img/kadence-logo.png'}
 					alt={'Kadence Blocks'}
