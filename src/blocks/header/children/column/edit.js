@@ -73,7 +73,7 @@ export function Edit(props) {
 		[`wp-block-kadence-header-column-${location}`]: location,
 		[`wp-block-kadence-header-column${uniqueID}`]: uniqueID,
 		'no-content': !hasChildBlocks,
-		'no-content-column-center': !hasChildBlocks && 'center' === location,
+		'no-content-column-center': !hasChildBlocks && ('center' === location || 'tablet-center' === location),
 	});
 	const innerBlocksProps = useInnerBlocksProps(
 		{

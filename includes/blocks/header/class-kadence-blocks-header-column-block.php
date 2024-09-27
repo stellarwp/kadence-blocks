@@ -95,13 +95,7 @@ class Kadence_Blocks_Header_Column_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return string Returns the block output.
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		if ( ! empty( $attributes['location'] ) && ! in_array( $attributes['location'], [ 'tablet-left', 'tablet-right', 'center-left', 'center', 'center-right' ] ) ) {
-
-			// If no center content, return empty div to keep layout consistent.
-			if ( $attributes['location'] === 'tablet-center' && empty( $content ) ) {
-				return '<div></div>';
-			}
-
+		if ( ! empty( $attributes['location'] ) && ! in_array( $attributes['location'], ['tablet-center', 'tablet-left', 'tablet-right', 'center-left', 'center', 'center-right' ] ) ) {
 			return $content;
 		}
 
@@ -127,12 +121,7 @@ class Kadence_Blocks_Header_Column_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-		$html .= '<div class="' . esc_attr( implode( ' ', $classes ) ) . '">';
-		$html .= $content;
-		$html .= '</div>';
-
-		return $html;
-
+		return sprintf( '<div class="%1$s">%2$s</div>', esc_attr( implode( ' ', $classes ) ), $content );
 	}
 }
 
