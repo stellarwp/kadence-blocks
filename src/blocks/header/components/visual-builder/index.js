@@ -108,6 +108,11 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 		updateTab('Desktop', desktopBlocks);
 	}
 
+	// Happens if the block is removed while the visual builder is open
+	if (topLevelBlocks.length === 0) {
+		return null;
+	}
+
 	return (
 		<>
 			{isVisible && (
