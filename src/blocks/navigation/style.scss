@@ -325,10 +325,11 @@
 				display: list-item;
 				//margin: initial;
 				.sub-menu.sub-menu {
-					--kb-nav-dropdown-width: auto;
-					--kb-nav-dropdown-show-left: 0;
-					--kb-nav-dropdown-hide-transform-x: 0;
-					--kb-nav-dropdown-show-transform-x: 0;
+					// Have to use important here because the javascript can add inline styles that would override
+					--kb-nav-dropdown-width: auto !important;
+					--kb-nav-dropdown-show-left: 0 !important;
+					--kb-nav-dropdown-hide-transform-x: 0 !important;
+					--kb-nav-dropdown-show-transform-x: 0 !important;
 				}
 			}
 		}
@@ -1215,7 +1216,7 @@
 	.link-highlight-label {
 		transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out;
 		font-size: 0.7em;
-		margin-left: 0.2em;
+		//margin-left: 0.2em;
 		line-height: normal;
 		display: flex;
 		flex-wrap: nowrap;
@@ -1297,6 +1298,12 @@
 	.kb-link-wrap .kb-nav-link-content.has-highlight-label {
 		display: flex;
 		gap: 5px;
+		flex-wrap: nowrap;
+		&.highlight-with-title .kb-nav-label-content {
+			display: flex;
+			gap: 5px;
+			flex-wrap: nowrap;
+		}
 	}
 
 	.sub-menu {

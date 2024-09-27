@@ -314,9 +314,13 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		//additional dynamic logic, but still lands in a slot in the static stylesheet
 		if( 'left' === $sized_attributes['highlightSide'] ) {
 			$css->add_property('--kb-nav-link-highlight-order', '-1');
+		} else if( 'right' === $sized_attributes['highlightSide'] ) {
+			$css->add_property('--kb-nav-link-highlight-order', '3');
 		}
 		if( 'left' === $sized_attributes['iconSide'] ) {
 			$css->add_property( '--kb-nav-link-media-container-order', '-1' );
+		} else if( 'right' === $sized_attributes['iconSide'] ) {
+			$css->add_property( '--kb-nav-link-media-container-order', '3' );
 		}
 
 
@@ -549,7 +553,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 				'class' => implode( ' ', $sub_menu_classes ),
 			]
 		);
-		$title            = ! empty( $attributes['hideLabel'] ) && true === $attributes['hideLabel'] ? '' : esc_html( $label );
+		$title            = ! empty( $attributes['hideLabel'] ) && true === $attributes['hideLabel'] ? '' : wp_kses_post( $label );
 		$sub_menu_content = $has_children ? '<ul ' . $sub_menu_attributes . '>' . $content . '</ul>' : '';
 		$sub_menu_btn     = $has_children ? '<button aria-label="' . esc_attr__( 'Toggle child menu of', 'kadence-blocks' ) . ' ' . esc_attr( $title ) . '" class="kb-nav-dropdown-toggle-btn" aria-expanded="false">' . $down_arrow_icon . '</button>' : '';
 		$media            = '';
@@ -602,20 +606,27 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$hl_icon  = ! empty( $highlight_icon ) && $has_highlight_label ? '<span class="link-highlight-icon-wrap link-svg-icon link-svg-icon-' . esc_attr( $attributes['highlightIcon'][0]['icon'] ) . '">' . $highlight_icon . '</span>' : '';
 		$highlight_label = '';
 		$link_classes = [ 'kb-nav-link-content' ];
-		
+		$highlight_with_title = ! empty( $attributes['highlightPosition'] ) && $attributes['highlightPosition'] === 'title' ? true : false;
 		if ( $has_highlight_label ) {
 			$link_classes[]  = 'has-highlight-label';
+			if ( $highlight_with_title ) {
+				$link_classes[] = 'highlight-with-title';
+			}
 			$highlight_label = '<span class="link-highlight-label"><span class="link-highlight-label-text">' . $attributes['highlightLabel'] . '</span>' . $hl_icon . '</span>';
 		}
-
 		$title_html  = ! empty( $media ) || ! empty( $attributes['description'] ) ? '<span class="kb-nav-item-title-wrap">' : '';
-		$title_html .= ! empty( $attributes['description'] ) || ! empty( $media ) ? '<span class="kb-nav-label-content">' . $title . '</span>' : $title;
+		if ( $has_highlight_label && $highlight_with_title ) {
+			$title .= $highlight_label;
+		}
+		$title_html .= ! empty( $attributes['description'] ) || ! empty( $media ) || ( $has_highlight_label && $highlight_with_title ) ? '<span class="kb-nav-label-content">' . $title . '</span>' : $title;
 		$title_html .= $media;
 		$title_html .= ! empty( $attributes['description'] ) ? '<span class="kb-nav-label-description">' . $attributes['description'] . '</span>' : '';
 
 		//$title_html .= $has_children ? '<span class="kb-nav-dropdown-toggle">' . $down_arrow_icon . '</span>' : '';
 		$title_html .= ! empty( $media ) || ! empty( $attributes['description'] ) ? '</span>' : '';
-		$title_html .= $highlight_label;
+		if ( ! $highlight_with_title ) {
+			$title_html .= $highlight_label;
+		}
 		$link_class  = implode( ' ', $link_classes );
 		$link_url    = ( ! empty( $attributes['disableLink'] ) && true === $attributes['disableLink'] ) || ( $has_children && isset( $attributes['dropdownClick'] ) && true === $attributes['dropdownClick'] ) ? '' : ' href="' . esc_url( $url ) . '"';
 		if ( ! empty( $attributes['name'] ) ) {
