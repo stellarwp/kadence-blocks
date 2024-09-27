@@ -290,7 +290,7 @@ function CreateNewOnly({ clientId, setJustCompletedOnboarding, postId }) {
 			const { templateInnerBlocks, templatePostMeta } = buildTemplateFromSelection(headerDesktop, headerMobile);
 
 			if (response.id) {
-				if (templateInnerBlocks && headerDesktop !== 'skip' && headerMobile !== 'skip') {
+				if (templateInnerBlocks && headerDesktop !== 'skip') {
 					updatedMeta = { ...meta, ...templatePostMeta };
 					onChange(templateInnerBlocks, clientId);
 				} else {
@@ -373,7 +373,7 @@ function Chooser({ commit, clientId, setJustCompletedOnboarding, formData, setFo
 			const { templateInnerBlocks, templatePostMeta } = buildTemplateFromSelection(headerDesktop, headerMobile);
 
 			if (response.id) {
-				if (templateInnerBlocks && headerDesktop !== 'skip' && headerMobile !== 'skip') {
+				if (templateInnerBlocks && headerDesktop !== 'skip') {
 					updatedMeta = { ...meta, ...templatePostMeta };
 					onChange(templateInnerBlocks, clientId);
 				} else {
