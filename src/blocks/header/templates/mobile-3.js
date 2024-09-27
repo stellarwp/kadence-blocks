@@ -336,16 +336,10 @@ function innerBlocks() {
 							},
 							[
 								createBlock(
-									'kadence/image',
+									'kadence/identity',
 									{
-										align: 'right',
-										imgMaxWidth: 100,
-										sizeSlug: 'full',
-										linkDestination: 'none',
-										uniqueID: '75_851646-0e',
-										link: '/',
-										marginDesktop: ['0', '', '0', ''],
-										url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
+										uniqueID: '6_eb8552-af',
+										showSiteTitle: false,
 									},
 									[]
 								),

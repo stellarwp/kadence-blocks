@@ -154,16 +154,10 @@ function innerBlocks() {
 							{ uniqueID: '10_95414b-3e', location: 'center', metadata: { name: 'Center' } },
 							[
 								createBlock(
-									'kadence/image',
+									'kadence/identity',
 									{
-										imgMaxWidth: 100,
-										sizeSlug: 'full',
-										linkDestination: 'none',
-										uniqueID: '10_1bcfb7-cb',
-										globalAlt: true,
-										link: '/',
-										marginDesktop: ['0', '', '0', ''],
-										url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
+										uniqueID: '6_eb8552-af',
+										showSiteTitle: false,
 									},
 									[]
 								),
@@ -342,15 +336,10 @@ function innerBlocks() {
 							},
 							[
 								createBlock(
-									'kadence/image',
+									'kadence/identity',
 									{
-										imgMaxWidthTablet: 100,
-										sizeSlug: 'full',
-										linkDestination: 'none',
-										uniqueID: '10_e81621-7a',
-										link: '/',
-										marginDesktop: ['0', '', '0', ''],
-										url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
+										uniqueID: '6_eb8552-af',
+										showSiteTitle: false,
 									},
 									[]
 								),

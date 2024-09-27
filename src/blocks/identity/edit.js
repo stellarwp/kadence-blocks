@@ -254,7 +254,17 @@ export function Edit(props) {
 		const newInnerBlocks = [];
 		const imageBlock =
 			innerBlocks.find((block) => block.name === 'core/site-logo') ||
-			createBlock('core/site-logo', { isLink: false, width: 75 });
+			createBlock('core/site-logo', {
+				isLink: false,
+				width: 75,
+				style: {
+					spacing: {
+						margin: {
+							right: 'var:preset|spacing|40',
+						},
+					},
+				},
+			});
 		newInnerBlocks.push(imageBlock);
 
 		if (showSiteTitle || showSiteTagline) {
@@ -266,20 +276,7 @@ export function Edit(props) {
 			const addBlocksInOrder = (...blocks) => blocks.forEach((block) => block && newInnerBlocks.push(block));
 
 			if (['logo-right-stacked', 'logo-left-stacked'].includes(layout)) {
-				const groupBlock = createBlock(
-					'core/group',
-					{
-						style: {
-							spacing: {
-								padding: {
-									right: 'var:preset|spacing|40',
-									left: 'var:preset|spacing|40',
-								},
-							},
-						},
-					},
-					[]
-				);
+				const groupBlock = createBlock('core/group', {}, []);
 				addBlocksInOrder(titleBlock, taglineBlock);
 				groupBlock.innerBlocks.push(...newInnerBlocks.slice(1)); // Add title/tagline inside group
 				newInnerBlocks.splice(1, newInnerBlocks.length, groupBlock); // Replace with group

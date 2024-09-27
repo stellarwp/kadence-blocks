@@ -214,13 +214,10 @@ function innerBlocks() {
 							{ uniqueID: '88_36bddf-aa', location: 'center', metadata: { name: 'Center' } },
 							[
 								createBlock(
-									'kadence/image',
+									'kadence/identity',
 									{
-										imgMaxWidth: 100,
-										sizeSlug: 'full',
-										linkDestination: 'none',
-										uniqueID: '88_9a8fe5-2f',
-										url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
+										uniqueID: '6_eb8552-af',
+										showSiteTitle: false,
 									},
 									[]
 								),
@@ -501,13 +498,10 @@ function innerBlocks() {
 							},
 							[
 								createBlock(
-									'kadence/image',
+									'kadence/identity',
 									{
-										imgMaxWidth: 100,
-										sizeSlug: 'full',
-										linkDestination: 'none',
-										uniqueID: '88_f364a2-34',
-										url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
+										uniqueID: '6_eb8552-af',
+										showSiteTitle: false,
 									},
 									[]
 								),

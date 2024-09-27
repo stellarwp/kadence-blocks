@@ -143,14 +143,10 @@ function innerBlocks() {
 							{ uniqueID: '10_2b4829-44', location: 'center', metadata: { name: 'Center' } },
 							[
 								createBlock(
-									'kadence/image',
+									'kadence/identity',
 									{
-										sizeSlug: 'full',
-										linkDestination: 'none',
 										uniqueID: '10_997063-66',
-										marginDesktop: ['0', 'xxl', '0', ''],
-										link: '/',
-										url: '/wp-content/plugins/kadence-blocks/includes/assets/images/placeholder/logo-dark.png',
+										showSiteTitle: false,
 									},
 									[]
 								),
