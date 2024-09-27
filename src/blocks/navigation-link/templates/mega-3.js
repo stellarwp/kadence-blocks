@@ -183,7 +183,6 @@ function innerBlocks() {
 								label: 'Children',
 								url: 'Children',
 								kind: 'custom',
-								padding: ['0', '0', '0', '0'],
 								typography: [
 									{
 										size: [16, '', ''],
