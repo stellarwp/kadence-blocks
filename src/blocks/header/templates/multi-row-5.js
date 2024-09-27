@@ -11,8 +11,6 @@ const postMeta = {
 		justifyContent: ['', '', ''],
 		verticalAlignment: ['', '', ''],
 	},
-	_kad_header_width: ['100', '', ''],
-	_kad_header_widthUnit: '%',
 	_kad_header_shadow: [
 		{
 			enable: false,
@@ -342,7 +340,6 @@ function innerBlocks() {
 					{
 						uniqueID: '8_b09dc6-18',
 						location: 'bottom',
-						layout: 'fullwidth',
 						metadata: { name: 'Bottom Row' },
 					},
 					[
@@ -420,7 +417,6 @@ function innerBlocks() {
 					{
 						uniqueID: '8_3207a2-2f',
 						location: 'top',
-						layout: 'fullwidth',
 						background: {
 							color: 'palette5',
 							image: '',
@@ -514,7 +510,6 @@ function innerBlocks() {
 					{
 						uniqueID: '8_057f8b-cf',
 						location: 'center',
-						layout: 'fullwidth',
 						background: {
 							color: 'palette9',
 							image: '',
@@ -527,7 +522,6 @@ function innerBlocks() {
 							gradient: '',
 						},
 						minHeightUnit: 'em',
-						vAlignTablet: 'center',
 						metadata: { name: 'Middle Row' },
 					},
 					[

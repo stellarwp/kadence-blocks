@@ -12,11 +12,15 @@ import { ROW_TO_KEY } from './constants';
 
 const TabletRow = ({ position, blocks }) => {
 	const thisRow = get(blocks, [ROW_TO_KEY[position]], []);
-
+	const isSingleColumn = thisRow?.attributes?.layoutConfig === 'single';
 	return (
 		<div className={'visual-row-wrapper'} key={position}>
 			<SelectBlockButton clientId={thisRow.clientId} />
-			<div className={`visual-tablet-row visual-tablet-row-${position}`}>
+			<div
+				className={`visual-tablet-row visual-tablet-row-${position}${
+					isSingleColumn ? ' kb-single-column-header' : ''
+				}`}
+			>
 				{['left', 'center', 'right'].map((align, index) => (
 					<div className={`visual-section-wrapper visual-section-wrapper-${align}`}>
 						<ColumnBlocks

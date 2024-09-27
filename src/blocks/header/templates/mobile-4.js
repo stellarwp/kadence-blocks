@@ -467,8 +467,6 @@ function innerBlocks() {
 					{
 						uniqueID: '88_6595d8-c9',
 						location: 'center',
-						layout: 'fullwidth',
-						vAlignTablet: 'center',
 						metadata: { name: 'Middle Row' },
 					},
 					[

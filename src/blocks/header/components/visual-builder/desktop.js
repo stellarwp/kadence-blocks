@@ -24,11 +24,15 @@ const DesktopRow = ({ position, blocks, activeBlockData }) => {
 		sections[2].blocks.length === 1 &&
 		activeBlockData.id === sections[2].blocks[0].clientId;
 	const showMidColumns = (!isCenterEmpty && !isActiveDragTheOnlyCenterBlock) || !areMidColumnsEmpty;
-
+	const isSingleColumn = thisRow?.attributes?.layoutConfig === 'single';
 	return (
 		<div className={'visual-row-wrapper'} key={position}>
 			<SelectBlockButton clientId={thisRow.clientId} />
-			<div className={`visual-desktop-row visual-desktop-row-${position}`}>
+			<div
+				className={`visual-desktop-row visual-desktop-row-${position}${
+					isSingleColumn ? ' kb-single-column-header' : ''
+				}`}
+			>
 				<div className={'visual-section-wrapper visual-section-wrapper-left'}>
 					<ColumnBlocks
 						blocks={sections[0].blocks}

@@ -573,7 +573,7 @@ export function Edit(props) {
 								unit={paddingUnit}
 								units={['px', 'em', 'rem', '%', 'vh']}
 								onUnit={(value) => setAttributes({ paddingUnit: value })}
-								deskDefault={['md', 'md', 'md', 'md']}
+								ghostDefault={['md', 'md', 'md', 'md']}
 							/>
 						</KadencePanelBody>
 						<KadencePanelBody title={__('Close Trigger Spacing', 'kadence-blocks')} initialOpen={false}>

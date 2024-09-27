@@ -363,8 +363,6 @@ function innerBlocks() {
 					{
 						uniqueID: '6_0cacf3-2c',
 						location: 'center',
-						layout: 'fullwidth',
-						vAlignTablet: 'center',
 						metadata: { name: 'Middle Row' },
 					},
 					[

@@ -3,7 +3,7 @@
 	margin-bottom: 0;
 	.kadence-header-row-inner {
 		padding: 0 var(--global-content-edge-padding, 15px);
-		display: grid !important;
+		display: grid;
 		grid-template-columns: 1fr minmax(0, auto) 1fr;
 		margin: 0 auto;
 	}
@@ -14,7 +14,7 @@
 	.wp-block-kadence-header-section {
 		gap: 10px;
 		align-items: center;
-		display: flex !important;
+		display: flex;
 	}
 
 	.wp-block-kadence-header-column-center,
@@ -46,7 +46,7 @@
 			margin-right: 0px;
 		}
 	}
-	&.wp-block-kadence-header-row-layout-contained:not(.specific):not(.extra-specific) {
+	&.kb-header-row-layout-contained:not(.specific):not(.extra-specific) {
 		padding: 0 var(--global-content-edge-padding, 15px);
 		max-width: var(--global-content-width, var(--wp--style--global--wide-size));
 		margin: 0 auto;
@@ -54,16 +54,32 @@
 		left: 0;
 		right: 0;
 	}
-	&.wp-block-kadence-header-row-layout-standard {
+	&.kb-header-row-layout-standard {
 		.kadence-header-row-inner {
 			max-width: var(--global-content-width, var(--wp--style--global--wide-size));
 		}
 	}
-	&.wp-block-kadence-header-row-layout-fullwidth {
-		//don't do anything with fullwidth in the editor too much of a pain to try and get full editor width.
-	}
+	// &:where(.kb-header-row-layout-fullwidth) {
+	// 	.kadence-header-row-inner {
+	// 		padding: 0;
+	// 	}
+	// }
 
 	&.wp-block-kadence-header-row--force-hide {
 		display: none !important;
+	}
+	&.kb-header-row-layout-config-single > .kadence-header-row-inner:not(.specificity) {
+		grid-template-columns: auto;
+		> .wp-block-kadence-header-section,
+		> .wp-block-kadence-header-column {
+			display: none;
+		}
+		> .wp-block-kadence-header-section:first-child,
+		> .wp-block-kadence-header-column:first-child {
+			display: block;
+			> .wp-block-kadence-header-column {
+				display: none;
+			}
+		}
 	}
 }

@@ -221,7 +221,10 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 			$classes[] = $attributes['className'];
 		}
 		$layout = ! empty( $attributes['layout'] ) ? $attributes['layout'] : 'standard';
-		$classes[] = 'wp-block-kadence-header-row-layout-' . esc_attr( $layout  );
+		$classes[] = 'kb-header-row-layout-' . esc_attr( $layout );
+		if ( ! empty( $attributes['layoutConfig'] ) ) {
+			$classes[] = 'kb-header-row-layout-config-' . esc_attr( $attributes['layoutConfig'] );
+		}
 
 		$html .= '<div class="' . esc_attr( implode( ' ', $classes ) ) . '">';
 		$html .= '<div class="kadence-header-row-inner">';

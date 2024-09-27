@@ -468,7 +468,6 @@ function innerBlocks() {
 					{
 						uniqueID: '8_987bd4-f2',
 						location: 'bottom',
-						layout: 'fullwidth',
 						background: {
 							color: 'palette4',
 							image: '',
@@ -480,7 +479,6 @@ function innerBlocks() {
 							type: 'normal',
 							gradient: '',
 						},
-						paddingTablet: ['', 'sm', '', 'sm'],
 						metadata: { name: 'Bottom Row' },
 					},
 					[

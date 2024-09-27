@@ -160,7 +160,6 @@ function innerBlocks() {
 					{
 						uniqueID: '8_82a1be-98',
 						location: 'center',
-						layout: 'fullwidth',
 						background: {
 							color: 'palette9',
 							image: '',
@@ -172,8 +171,6 @@ function innerBlocks() {
 							type: 'normal',
 							gradient: '',
 						},
-						padding: ['', 'lg', '', 'lg'],
-						vAlign: 'center',
 						metadata: { name: 'Middle Row' },
 					},
 					[

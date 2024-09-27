@@ -135,6 +135,12 @@ $fixed_height: 290px;
 			width: 100%;
 			overflow-x: auto;
 		}
+		.kb-single-column-header {
+			.visual-section-wrapper-center,
+			.visual-section-wrapper-right {
+				display: none !important;
+			}
+		}
 
 		.visual-off-canvas-row {
 			max-width: 500px;

@@ -51,6 +51,7 @@ export function Edit(props) {
 		uniqueID,
 		location,
 		layout,
+		layoutConfig,
 		background,
 		backgroundTransparent,
 		border,
@@ -137,8 +138,9 @@ export function Edit(props) {
 		'wp-block-kadence-header-row': true,
 		[`wp-block-kadence-header-row-${location}`]: location,
 		[`wp-block-kadence-header-row${uniqueID}`]: uniqueID,
-		[`wp-block-kadence-header-row-layout-${layout}`]: layout,
-		[`wp-block-kadence-header-row-layout-standard`]: !layout,
+		[`kb-header-row-layout-${layout}`]: layout,
+		[`kb-header-row-layout-standard`]: !layout,
+		[`kb-header-row-layout-config-${layoutConfig}`]: layoutConfig,
 		'wp-block-kadence-header-row--force-hide': !hasInsertedChildBlocks,
 	});
 	const blockProps = useBlockProps({
@@ -296,7 +298,19 @@ export function Edit(props) {
 							<>
 								<KadencePanelBody>
 									<KadenceRadioButtons
-										label={__('Layout', 'kadence-blocks')}
+										label={__('Layout Config', 'kadence-blocks')}
+										value={layoutConfig}
+										options={[
+											{ value: '', label: __('Header Row', 'kadence-blocks') },
+											{ value: 'single', label: __('Single Container', 'kadence-blocks') },
+										]}
+										hideLabel={false}
+										onChange={(value) => {
+											setAttributes({ layoutConfig: value });
+										}}
+									/>
+									<KadenceRadioButtons
+										label={__('Layout Width', 'kadence-blocks')}
 										value={layout}
 										options={[
 											{ value: '', label: __('Standard', 'kadence-blocks') },
@@ -445,6 +459,7 @@ export function Edit(props) {
 										unit={paddingUnit}
 										units={['px', 'em', 'rem', '%']}
 										onUnit={(value) => setAttributes({ paddingUnit: value })}
+										ghostDefault={['', 'sm', '', 'sm']}
 									/>
 									<ResponsiveMeasureRangeControl
 										label={__('Margin', 'kadence-blocks')}
