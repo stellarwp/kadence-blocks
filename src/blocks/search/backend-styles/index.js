@@ -324,7 +324,7 @@ export default function BackendStyles(props) {
 	css.set_selector(`.kb-search${uniqueID}:hover .kb-search-close-icon svg`);
 	css.add_property('stroke', KadenceColorOutput(inputIconHoverColor));
 
-	css.set_selector(`.kb-search${uniqueID} form`);
+	css.set_selector(`.kb-search${uniqueID} form, .kb-search.kb-search${uniqueID} .kb-search-modal-content form`);
 	css.add_property('max-width', getSpacingOptionOutput(previewInputMaxWidth, inputMaxWidthType));
 	css.add_property('min-width', getSpacingOptionOutput(previewInputMinWidth, inputMinWidthType));
 
