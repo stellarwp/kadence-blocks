@@ -58,6 +58,7 @@ const eslintConfig = {
 		Masonry: 'readable',
 		IntersectionObserver: 'readable',
 		getComputedStyle: 'readable',
+		MutationObserver: 'readonly',
 	},
 	rules: {
 		'@wordpress/i18n-text-domain': [
