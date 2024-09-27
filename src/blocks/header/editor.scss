@@ -179,3 +179,12 @@
 	margin-bottom: 0px;
 	margin-top: 0px;
 }
+
+//section blocks in the editor do not have the same styles applied as they do on the frontend. This causes issues with spacing in the editor when in headers.
+//instead of aligning the section block overall, which would cause breaking changes for existing users.
+//I'm just aligning it a bit here as a fix.
+.wp-block-kadence-header .wp-block-kadence-column {
+	display: flex;
+	flex-direction: column;
+	width: initial;
+}
