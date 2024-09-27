@@ -5,7 +5,27 @@
 
 import { createBlock } from '@wordpress/blocks';
 
-const postMeta = {};
+const postMeta = {
+	_kad_header_typography: {
+		color: 'palette9',
+		size: ['', '', ''],
+		sizeType: 'px',
+		lineHeight: ['', '', ''],
+		lineType: '',
+		letterSpacing: ['', '', ''],
+		letterType: 'px',
+		textTransform: '',
+		family: '',
+		google: false,
+		style: '',
+		weight: '400',
+		variant: '',
+		subset: '',
+		loadGoogle: true,
+	},
+	_kad_header_linkHoverColor: 'palette1',
+	_kad_header_linkColor: 'palette9',
+};
 
 function innerBlocks() {
 	return [
