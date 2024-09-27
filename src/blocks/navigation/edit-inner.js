@@ -1128,6 +1128,14 @@ export function EditInner(props) {
 
 	return (
 		<>
+			{isOpen && (
+				<style>
+					{`
+						.components-modal__content > div:not(.components-modal__header) { height: 100%; }
+						.components-modal__content { padding-bottom: 0; }
+					`}
+				</style>
+			)}
 			<BlockControls>
 				<CopyPasteAttributes
 					attributes={meta}

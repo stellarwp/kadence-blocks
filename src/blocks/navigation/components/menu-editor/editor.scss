@@ -3,10 +3,18 @@
 	flex-direction: row;
 	height: 100%;
 
+	@media (max-width: 768px) {
+		flex-direction: column;
+	}
+
 	.left-column {
 		flex: 1;
 		padding-bottom: 30px;
 		max-width: 350px;
+
+		@media (max-width: 768px) {
+			max-width: 100%;
+		}
 	}
 
 	.right-column {
@@ -16,13 +24,29 @@
 		padding: 0 20px 0 40px;
 		justify-content: space-between;
 
+		// on mobile padding 0
+		@media (max-width: 768px) {
+			padding: 0;
+		}
+
+		> div:first-child {
+			flex: 1;
+			overflow-y: auto; /* In case content is too long */
+		}
+
 		.footer {
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			padding: 10px 0 0 0;
+			padding: 20px 0 20px 0;
 			width: 100%;
 			background-color: #FFF;
+
+			position: sticky;
+			bottom: 0;
+			border-top-color: #ddd;
+			border-top-width: 1px;
+			border-top-style: solid;
 		}
 	}
 
