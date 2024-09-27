@@ -207,6 +207,7 @@ export function EditInner(props) {
 		revealScrollUp: meta?._kad_header_revealScrollUp,
 		shadow: meta?._kad_header_shadow,
 		headerTag: meta?._kad_header_headerTag,
+		inheritThemeTransparent: meta?._kad_header_inheritThemeTransparent,
 	};
 
 	const {
@@ -292,6 +293,7 @@ export function EditInner(props) {
 		revealScrollUp,
 		shadow,
 		headerTag,
+		inheritThemeTransparent,
 	} = metaAttributes;
 
 	const setMetaAttribute = (value, key) => {
@@ -308,8 +310,6 @@ export function EditInner(props) {
 	);
 
 	let [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_header', id);
-
-	// console.log(blocks);
 
 	const emptyHeader = useMemo(() => {
 		return [createBlock('kadence/header', {})];
@@ -679,7 +679,8 @@ export function EditInner(props) {
 								{backgroundStyleControls()}
 							</KadencePanelBody>
 						)}
-						{previewIsTransparent === '1' && (
+						{(previewIsTransparent === '1' ||
+							(kadence_blocks_params?.isKadenceT && inheritThemeTransparent)) && (
 							<KadencePanelBody
 								title={__('Transparent Background Settings', 'kadence-blocks')}
 								initialOpen={false}
@@ -1304,6 +1305,23 @@ export function EditInner(props) {
 								units={['px', '%', 'vw']}
 							/>
 						</KadencePanelBody>
+						{kadence_blocks_params?.isKadenceT && (
+							<KadencePanelBody
+								title={__('Theme Conditional Settings', 'kadence-blocks')}
+								initialOpen={false}
+								panelName={'kb-header-theme-conditions'}
+							>
+								<ToggleControl
+									label={__('Inherit transparent settings from Kadence theme', 'kadence-blocks')}
+									help={__(
+										'Apply transparent settings for CPT, archive pages, and post metadata set in the customizer.',
+										'kadence-blocks'
+									)}
+									checked={inheritThemeTransparent}
+									onChange={(value) => setMetaAttribute(value, 'inheritThemeTransparent')}
+								/>
+							</KadencePanelBody>
+						)}
 					</>
 				)}
 			</InspectorControls>

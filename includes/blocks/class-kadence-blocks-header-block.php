@@ -45,7 +45,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	private static $seen_refs = array();
 
-	protected $header_attributes = array();
+	protected $response_transparent_settings = null;
 
 	/**
 	 * Instance Control
@@ -134,7 +134,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'box-shadow', $css->render_shadow( $sized_attributes['shadow'][0] ) );
 		}
 
-		if ( $sized_attributes['isTransparent'] != '1' ) {
+		if ( $this->is_header_transparent( $attributes, $size ) ) {
 			$css->render_background( $bg, $css );
 		}
 
@@ -152,7 +152,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 
 		//transparent normal
 		$css->set_selector( '.wp-block-kadence-header' . $unique_id . '.header-' . strtolower( $size ) . '-transparent .kb-header-container' );
-		if ( $sized_attributes['isTransparent'] == '1' ) {
+		if ( $this->is_header_transparent( $attributes, $size ) ) {
 			$css->render_background( $bg_transparent, $css );
 			$css->add_property( 'background-color', $css->render_color( ! empty( $bg_transparent['color'] ) ? $bg_transparent['color'] : '') );
 			$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['borderTransparent'], 'bottom' ) );
@@ -263,34 +263,10 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$is_sticky = $css->get_inherited_value( $header_attributes['isSticky'], $header_attributes['isStickyTablet'], $header_attributes['isStickyMobile'], 'Desktop' );
 		$is_sticky_tablet = $css->get_inherited_value( $header_attributes['isSticky'], $header_attributes['isStickyTablet'], $header_attributes['isStickyMobile'], 'Tablet' );
 		$is_sticky_mobile = $css->get_inherited_value( $header_attributes['isSticky'], $header_attributes['isStickyTablet'], $header_attributes['isStickyMobile'], 'Mobile' );
-		$is_transparent = $css->get_inherited_value( $header_attributes['isTransparent'], $header_attributes['isTransparentTablet'], $header_attributes['isTransparentMobile'], 'Desktop' );
-		$is_transparent_tablet = $css->get_inherited_value( $header_attributes['isTransparent'], $header_attributes['isTransparentTablet'], $header_attributes['isTransparentMobile'], 'Tablet' );
-		$is_transparent_mobile = $css->get_inherited_value( $header_attributes['isTransparent'], $header_attributes['isTransparentTablet'], $header_attributes['isTransparentMobile'], 'Mobile' );
 
-		$style =
-			$is_sticky && $is_transparent
-				? 'sticky-transparent'
-				: ( $is_sticky
-				? 'sticky '
-				: ( $is_transparent
-				? 'transparent'
-				: 'standard' ) );
-		$style_tablet =
-			$is_sticky_tablet && $is_transparent_tablet
-				? 'sticky-transparent'
-				: ( $is_sticky_tablet
-				? 'sticky '
-				: ( $is_transparent_tablet
-				? 'transparent'
-				: 'standard' ) );
-		$style_mobile =
-		$is_sticky_mobile && $is_transparent_mobile
-				? 'sticky-transparent'
-				: ( $is_sticky_mobile
-				? 'sticky '
-				: ( $is_transparent_mobile
-				? 'transparent'
-				: 'standard' ) );
+		$is_transparent = $this->is_header_transparent( $header_attributes, 'desktop' );
+		$is_transparent_tablet = $this->is_header_transparent( $header_attributes, 'tablet' );
+		$is_transparent_mobile = $this->is_header_transparent( $header_attributes, 'mobile' );
 
 		$wrapper_classes = array( 'wp-block-kadence-header' . $unique_id );
 		if ( $is_sticky ) {
@@ -403,6 +379,97 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 				'scrollOffset' => apply_filters( 'kadence_scroll_to_id_additional_offset', 0 ),
 			),
 		);
+	}
+
+	private function is_header_transparent( $header_attributes, $size = 'desktop' ) {
+		if( $this->response_transparent_settings !== null ) {
+			return $this->response_transparent_settings[ strtolower( $size ) ];
+		}
+
+		$inherit_theme_settings = ! empty( $header_attributes['inheritThemeTransparent'] );
+
+		// Get instance to access methods.
+		$css = Kadence_Blocks_CSS::get_instance();
+		$block_settings = [
+			'desktop' => $css->get_inherited_value( $header_attributes['isTransparent'], $header_attributes['isTransparentTablet'], $header_attributes['isTransparentMobile'], 'Desktop' ),
+			'tablet' => $css->get_inherited_value( $header_attributes['isTransparent'], $header_attributes['isTransparentTablet'], $header_attributes['isTransparentMobile'], 'Tablet' ),
+			'mobile' => $css->get_inherited_value( $header_attributes['isTransparent'], $header_attributes['isTransparentTablet'], $header_attributes['isTransparentMobile'], 'Mobile' ),
+		];
+
+		if ( class_exists( 'Kadence\Theme' ) ) {
+			if ( $inherit_theme_settings ) {
+				$enabled_in_theme = $this->check_theme_transparent_settings();
+				$theme_enabled_desktop = \Kadence\kadence()->sub_option( 'transparent_header_device', 'desktop' );
+				$theme_enabled_mobile  = \Kadence\kadence()->sub_option( 'transparent_header_device', 'mobile' );
+
+				if ( $enabled_in_theme ) {
+					$block_settings = [
+						'desktop' => $theme_enabled_desktop ? true : $block_settings['desktop'],
+						'tablet'  => $theme_enabled_desktop ? true : $block_settings['tablet'],
+						'mobile'  => $theme_enabled_mobile ? true : $block_settings['mobile']
+					];
+				}
+			}
+		}
+
+		$this->response_transparent_settings = $block_settings;
+
+		return $this->response_transparent_settings;
+	}
+
+	private function check_theme_transparent_settings () {
+		if (is_singular() || is_front_page()) {
+			if (is_front_page()) {
+				$post_id = get_option('page_on_front');
+				$trans_type = 'page';
+			} else {
+				$post_id = get_the_ID();
+				$post_type = get_post_type();
+				$trans_type = $post_type;
+			}
+
+			$posttrans = get_post_meta($post_id, '_kad_post_transparent', true);
+			if (isset($posttrans) && ('enable' === $posttrans || 'disable' === $posttrans)) {
+				$transparent = $posttrans;
+			} else {
+				$option_trans = \Kadence\kadence()->option('transparent_header_' . $trans_type, null);
+				if (true === $option_trans || is_null($option_trans) ) {
+					$transparent = 'disable';
+				}
+			}
+		} elseif (is_archive() || is_search() || is_home() || is_404()) {
+			if (is_home() && !is_front_page()) {
+				if (get_query_var('tribe_events_front_page')) {
+					$tribe_option_trans = \Kadence\kadence()->option('transparent_header_tribe_events_archive', true);
+					$transparent = $tribe_option_trans ? 'disable' : 'enable';
+					$transparent = apply_filters('kadence_tribe_events_archive_transparent', $transparent);
+				} else {
+					$post_id = get_option('page_for_posts');
+					$archivetrans = get_post_meta($post_id, '_kad_post_transparent', true);
+				}
+			} elseif (class_exists('woocommerce') && is_shop() && !is_search()) {
+				$post_id = wc_get_page_id('shop');
+				$archivetrans = get_post_meta($post_id, '_kad_post_transparent', true);
+			} elseif (is_post_type_archive('tribe_events')) {
+				$tribe_option_trans = \Kadence\kadence()->option('transparent_header_tribe_events_archive', true);
+				$transparent = $tribe_option_trans ? 'disable' : 'enable';
+				$transparent = apply_filters('kadence_tribe_events_archive_transparent', $transparent);
+			} elseif (is_404()) {
+				$transparent = 'disable';
+			}
+
+			if (isset($archivetrans) && ('enable' === $archivetrans || 'disable' === $archivetrans)) {
+				$transparent = $archivetrans;
+			} else {
+				$option_trans = \Kadence\kadence()->option('transparent_header_archive');
+				if (true === $option_trans) {
+					$transparent = 'disable';
+				}
+			}
+		}
+
+		// Keeping the  'enable' 'disable' strings for support of the filters.'
+		return isset( $transparent ) && (  $transparent === true  || $transparent === 'enable' );
 	}
 }
 
