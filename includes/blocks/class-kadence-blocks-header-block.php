@@ -45,7 +45,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	private static $seen_refs = array();
 
-	protected $response_transparent_settings = null;
+	protected $responsive_transparent_settings = null;
 
 	/**
 	 * Instance Control
@@ -382,8 +382,8 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	}
 
 	private function is_header_transparent( $header_attributes, $size = 'desktop' ) {
-		if( $this->response_transparent_settings !== null ) {
-			return $this->response_transparent_settings[ strtolower( $size ) ];
+		if( $this->responsive_transparent_settings !== null ) {
+			return $this->responsive_transparent_settings[ strtolower( $size ) ];
 		}
 
 		$css = Kadence_Blocks_CSS::get_instance();
@@ -407,9 +407,9 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-		$this->response_transparent_settings = $block_settings;
+		$this->responsive_transparent_settings = $block_settings;
 
-		return $this->response_transparent_settings;
+		return $this->responsive_transparent_settings;
 	}
 
 	private function check_theme_transparent_settings () {
