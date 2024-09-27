@@ -238,7 +238,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 				'';
 		}
 		self::$seen_refs[ $attributes['id'] ] = true;
-		
+
 
 		$header_attributes = $this->get_attributes_with_defaults_cpt( $attributes['id'], 'kadence_header', '_kad_header_' );
 		$header_attributes = json_decode( json_encode( $header_attributes ), true );
@@ -386,9 +386,6 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 			return $this->response_transparent_settings[ strtolower( $size ) ];
 		}
 
-		$inherit_theme_settings = ! empty( $header_attributes['inheritThemeTransparent'] );
-
-		// Get instance to access methods.
 		$css = Kadence_Blocks_CSS::get_instance();
 		$block_settings = [
 			'desktop' => $css->get_inherited_value( $header_attributes['isTransparent'], $header_attributes['isTransparentTablet'], $header_attributes['isTransparentMobile'], 'Desktop' ),
@@ -396,19 +393,17 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 			'mobile' => $css->get_inherited_value( $header_attributes['isTransparent'], $header_attributes['isTransparentTablet'], $header_attributes['isTransparentMobile'], 'Mobile' ),
 		];
 
-		if ( class_exists( 'Kadence\Theme' ) ) {
-			if ( $inherit_theme_settings ) {
-				$enabled_in_theme = $this->check_theme_transparent_settings();
-				$theme_enabled_desktop = \Kadence\kadence()->sub_option( 'transparent_header_device', 'desktop' );
-				$theme_enabled_mobile  = \Kadence\kadence()->sub_option( 'transparent_header_device', 'mobile' );
+		if ( class_exists( 'Kadence\Theme' ) && ! empty( $header_attributes['inheritThemeTransparent'] ) ) {
+			$enabled_in_theme = $this->check_theme_transparent_settings();
+			$theme_enabled_desktop = \Kadence\kadence()->sub_option( 'transparent_header_device', 'desktop' );
+			$theme_enabled_mobile  = \Kadence\kadence()->sub_option( 'transparent_header_device', 'mobile' );
 
-				if ( $enabled_in_theme ) {
-					$block_settings = [
-						'desktop' => $theme_enabled_desktop ? true : $block_settings['desktop'],
-						'tablet'  => $theme_enabled_desktop ? true : $block_settings['tablet'],
-						'mobile'  => $theme_enabled_mobile ? true : $block_settings['mobile']
-					];
-				}
+			if ( $enabled_in_theme ) {
+				$block_settings = [
+					'desktop' => $theme_enabled_desktop ? true : $block_settings['desktop'],
+					'tablet'  => $theme_enabled_desktop ? true : $block_settings['tablet'],
+					'mobile'  => $theme_enabled_mobile ? true : $block_settings['mobile']
+				];
 			}
 		}
 
