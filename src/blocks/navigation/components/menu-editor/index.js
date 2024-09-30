@@ -78,7 +78,14 @@ export default function MenuEditor({
 
 					<KadenceRadioButtons
 						label={__('Tablet Orientation', 'kadence-blocks')}
-						value={orientationTablet !== '' ? orientationTablet : 'horizontal'}
+						value={
+							orientationTablet !== ''
+								? orientationTablet
+								: orientation !== ''
+								? orientation
+								: 'horizontal'
+						}
+						// technically there should be a third option here, 'inherit', as the default. but that doesn't fit into the design well..
 						options={[
 							{ value: 'vertical', label: __('Vertical', 'kadence-blocks') },
 							{ value: 'horizontal', label: __('Horizontal', 'kadence-blocks') },

@@ -284,7 +284,11 @@ export function Edit(props) {
 								}}
 							/>
 						</KadencePanelBody>
-						<KadencePanelBody title={__('Display Settings', 'kadence-blocks')} initialOpen={true}>
+						<KadencePanelBody
+							title={__('Display Settings', 'kadence-blocks')}
+							panelName={'kb-off-canvas-display'}
+							initialOpen={true}
+						>
 							<KadenceRadioButtons
 								label={__('Slide in from', 'kadence-blocks')}
 								value={slideFrom}
@@ -393,7 +397,11 @@ export function Edit(props) {
 							/>
 						</KadencePanelBody>
 
-						<KadencePanelBody title={__('Close Trigger Settings', 'kadence-blocks')} initialOpen={false}>
+						<KadencePanelBody
+							title={__('Close Trigger Settings', 'kadence-blocks')}
+							panelName={'kb-off-canvas-close-trigger'}
+							initialOpen={false}
+						>
 							<KadenceIconPicker
 								value={closeIcon}
 								onChange={(value) => setAttributes({ closeIcon: value })}
@@ -469,7 +477,11 @@ export function Edit(props) {
 								allowEmpty={true}
 							/>
 						</KadencePanelBody>
-						<KadencePanelBody title={__('Close Trigger Styles', 'kadence-blocks')} initialOpen={false}>
+						<KadencePanelBody
+							title={__('Close Trigger Styles', 'kadence-blocks')}
+							panelName={'kb-off-canvas-close-trigger-style'}
+							initialOpen={false}
+						>
 							<HoverToggleControl
 								normal={
 									<>

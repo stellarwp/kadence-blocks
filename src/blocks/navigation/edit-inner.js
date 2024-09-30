@@ -79,11 +79,14 @@ export function EditInner(props) {
 	const { attributes, setAttributes, clientId, direct, id, isSelected, context } = props;
 	const { uniqueID, templateKey } = attributes;
 
-	const { previewDevice, childSelected } = useSelect(
+	const { previewDevice, childSelected, offCanvasParent } = useSelect(
 		(select) => {
 			return {
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 				childSelected: select('core/block-editor').hasSelectedInnerBlock(clientId, true),
+				offCanvasParent: select('core/block-editor')
+					.getBlockParentsByBlockName(clientId, 'kadence/off-canvas')
+					.slice(-1)[0],
 			};
 		},
 		[clientId]
@@ -730,6 +733,18 @@ export function EditInner(props) {
 				//otherwise it's a normal nav block and just needs the placeholder put in place
 				setNavPlaceholderBlocks([createBlock('kadence/navigation', {})]);
 			}
+		}
+	}, []);
+	useEffect(() => {
+		//if there's no orientation set and our parent is an off canvas block, then default the orientation to vertical
+		if (
+			meta &&
+			!metaAttributes['orientation'] &&
+			!metaAttributes['orientationTablet'] &&
+			!metaAttributes['orientationMobile'] &&
+			offCanvasParent
+		) {
+			setMetaAttribute('vertical', 'orientation');
 		}
 	}, []);
 
