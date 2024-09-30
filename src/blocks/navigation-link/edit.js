@@ -40,7 +40,7 @@ import {
 	AlignmentToolbar,
 } from '@wordpress/block-editor';
 import { isURL, prependHTTP, safeDecodeURI, addQueryArgs } from '@wordpress/url';
-import { useState, useEffect, useRef } from '@wordpress/element';
+import { useState, useEffect, useRef, useMemo } from '@wordpress/element';
 import { placeCaretAtHorizontalEdge, __unstableStripHTML as stripHTML } from '@wordpress/dom';
 import { decodeEntities } from '@wordpress/html-entities';
 import { store as coreStore } from '@wordpress/core-data';

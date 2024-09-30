@@ -67,11 +67,13 @@ export default function ChildContainer(props, size = 'Desktop') {
 		['wp-block-kadence-header-' + size.toLowerCase() + uniqueID]: uniqueID,
 	});
 
-	const innerBlocksProps = useInnerBlocksProps(
+	const active = previewDevice === size || (previewDevice == 'Mobile' && size == 'Tablet');
+
+	const { children, ...innerBlocksProps } = useInnerBlocksProps(
 		{
 			className: innerBlockClasses,
 			style: {
-				display: previewDevice === size || (previewDevice == 'Mobile' && size == 'Tablet') ? 'block' : 'none',
+				display: active ? 'block' : 'none',
 			},
 		},
 		{
@@ -89,7 +91,7 @@ export default function ChildContainer(props, size = 'Desktop') {
 					parentSlug={'kadence/header'}
 				/>
 			</InspectorControls>
-			<div {...innerBlocksProps} />
+			<div {...innerBlocksProps}>{active && children}</div>
 		</>
 	);
 }

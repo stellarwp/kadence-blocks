@@ -45,7 +45,7 @@ import { TextControl, RangeControl } from '@wordpress/components';
 /**
  * Internal dependencies
  */
-import { useEffect, useMemo, useState, useRef } from '@wordpress/element';
+import { useEffect, useState, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import BackendStyles from './components/backend-styles';
 
@@ -196,7 +196,7 @@ export function Edit(props) {
 
 	const innerNavClasses = classnames('kb-off-canvas-inner');
 
-	const innerBlocksProps = useInnerBlocksProps(
+	const { children, ...innerBlocksProps } = useInnerBlocksProps(
 		{
 			className: innerNavClasses,
 		},
@@ -637,7 +637,7 @@ export function Edit(props) {
 					</button>
 				)}
 				{/* <div className="kb-off-canvas-label">{__('Off Canvas Content', 'kadence-blocks')}</div> */}
-				<div {...innerBlocksProps} />
+				<div {...innerBlocksProps}>{active && children}</div>
 			</div>
 			<div
 				className={overlayClasses}
