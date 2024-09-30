@@ -98,9 +98,9 @@
 		}
 	};
 
-	const initOffCanvas = function () {
-		const triggerButtons = document.querySelectorAll('.wp-block-kadence-off-canvas-trigger');
-		const offCanvasArea = document.querySelector('.wp-block-kadence-off-canvas');
+	const initOffCanvas = function (element) {
+		const triggerButtons = element.querySelectorAll('.wp-block-kadence-off-canvas-trigger');
+		const offCanvasArea = element.querySelector('.wp-block-kadence-off-canvas');
 		const closeButton = offCanvasArea.querySelector('.kb-off-canvas-close');
 
 		if (triggerButtons.length > 0 && offCanvasArea && closeButton) {
@@ -108,6 +108,15 @@
 		}
 	};
 
+	const initOffHeaderCanvas = function () {
+		const triggerHeaders = document.querySelectorAll('.wp-block-kadence-header');
+		if (triggerHeaders.length > 0) {
+			for (let i = 0; i < triggerHeaders.length; i++) {
+				initOffCanvas(triggerHeaders[i]);
+			}
+		}
+	};
+
 	// Initialize immediately for already loaded DOM
-	initOffCanvas();
+	initOffHeaderCanvas();
 })();

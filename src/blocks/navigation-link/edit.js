@@ -238,6 +238,7 @@ export default function Edit(props) {
 		highlightSide,
 		highlightSideMobile,
 		highlightSideTablet,
+		highlightPosition,
 		labelBackground,
 		labelBackgroundHover,
 		labelBackgroundActive,
@@ -668,7 +669,6 @@ export default function Edit(props) {
 
 	const megaMenuWidthClass = 'kb-menu-mega-width-' + (megaMenuWidth ? megaMenuWidth : 'full');
 	const showSubMenusWithLogic = showSubMenus || isSelected || childSelected;
-
 	const blockProps = useBlockProps({
 		ref: useMergeRefs([setPopoverAnchor, listItemRef]),
 		className: classnames('wp-block-kadence-navigation-item', 'menu-item', {
@@ -680,6 +680,7 @@ export default function Edit(props) {
 			'menu-item--toggled-on': showSubMenusWithLogic,
 			'current-menu-item': activePreview,
 			'kadence-menu-mega-enabled': isMegaMenu,
+			'kb-nav-link-sub-click': hasChildren && dropdownClick,
 			[`${megaMenuWidthClass}`]: isMegaMenu,
 			'kb-menu-has-icon': mediaType == 'icon',
 			'kb-menu-has-image': mediaType == 'image',
@@ -985,6 +986,7 @@ export default function Edit(props) {
 	const classes = classnames('kb-nav-link-content', {
 		'wp-block-kadence-navigation-link__placeholder': !url || isInvalid || isDraft,
 		'has-highlight-label': hasHighlightLabel,
+		'highlight-with-title': hasHighlightLabel && highlightPosition === 'title',
 	});
 
 	const missingText = getMissingText(type);
@@ -1284,11 +1286,11 @@ export default function Edit(props) {
 									) : (
 										<>
 											{!isInvalid && !isDraft && !isLabelFieldFocused && (
-												<>
+												<div className="kb-nav-label-content">
 													<RichText
 														ref={ref}
 														identifier="label"
-														className="wp-block-navigation-item__label kb-nav-label-content"
+														className="wp-block-navigation-item__label"
 														value={hideLabel ? '' : label}
 														onChange={(labelValue) =>
 															setAttributes({
@@ -1315,7 +1317,33 @@ export default function Edit(props) {
 															}
 														}}
 													/>
-												</>
+													{hasHighlightLabel && 'title' === highlightPosition && (
+														<span className="link-highlight-label">
+															<span className="link-highlight-label-text">
+																{highlightLabel}
+															</span>
+															{undefined !== highlightIcon?.[0]?.icon &&
+																'' !== highlightIcon[0].icon && (
+																	<IconRender
+																		className={`kt-highlight-label-icon`}
+																		name={highlightIcon[0].icon}
+																		size={
+																			previewHighlightIconSize
+																				? previewHighlightIconSize
+																				: null
+																		}
+																		htmltag="span"
+																		strokeWidth={
+																			'fe' ===
+																			highlightIcon[0].icon.substring(0, 2)
+																				? previewHighlightIconWidth
+																				: undefined
+																		}
+																	/>
+																)}
+														</span>
+													)}
+												</div>
 											)}
 											{(isInvalid || isDraft || isLabelFieldFocused) && (
 												<div className="wp-block-navigation-link__placeholder-text">
@@ -1354,7 +1382,7 @@ export default function Edit(props) {
 							{mediaContent}
 							{description && <span className="kb-nav-label-description">{description}</span>}
 						</span>
-						{hasHighlightLabel && (
+						{hasHighlightLabel && 'title' !== highlightPosition && (
 							<span className="link-highlight-label">
 								<span className="link-highlight-label-text">{highlightLabel}</span>
 								{undefined !== highlightIcon?.[0]?.icon && '' !== highlightIcon[0].icon && (

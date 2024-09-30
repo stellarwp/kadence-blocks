@@ -24,6 +24,10 @@
 		z-index: 100;
 		//transition: top ease-in-out 0.05s;
 	}
+
+	.item-is-stuck {
+		background: white;
+	}
 }
 
 .wp-block-kadence-header {
@@ -109,4 +113,11 @@
 
 .kb-header-sticky-wrapper {
 	width: 100%;
+}
+
+.wp-block-kadence-header .wp-block-kadence-header-section,
+.wp-block-kadence-header .wp-block-kadence-header-column {
+	& > p {
+		margin-block-start: 0;
+	}
 }

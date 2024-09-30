@@ -120,10 +120,10 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		if ( 'contained' !== $layout ) {
-			$css->set_selector( '.wp-block-kadence-header-row' . $unique_id );
+			$css->set_selector( '.wp-block-kadence-header-row' . $unique_id .  ', .wp-block-kadence-header-row' . $unique_id . '.item-is-stuck.item-is-stuck');
 			$css->render_background( $bg, $css );
 			// Transparent overrides.
-			$css->set_selector( '.header-' . strtolower( $size ) . '-transparent .wp-block-kadence-header-row' . $unique_id );
+			$css->set_selector( '.header-' . strtolower( $size ) . '-transparent .wp-block-kadence-header-row' . $unique_id .  ', .header-' . strtolower( $size ) . '-transparent .wp-block-kadence-header-row' . $unique_id . '.item-is-stuck' );
 			$css->render_background( $bg_transparent, $css );
 		}
 		// Container.
