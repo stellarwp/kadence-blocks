@@ -1416,7 +1416,7 @@ export default function Edit(props) {
 					)}
 				</div>
 				<ul {...innerBlocksProps} ref={subMenuRef}>
-					{!isMegaMenuOnboarding && children}
+					{!isMegaMenuOnboarding && showSubMenusWithLogic && children}
 					{isMegaMenuOnboarding && (
 						<div className="kt-select-layout kb-mega-onboard-select-layout">
 							{megaMenuOnboardingStep == '' && (
