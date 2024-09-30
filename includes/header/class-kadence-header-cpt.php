@@ -1150,9 +1150,16 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'type'    => 'boolean',
 			),
 			array(
-				'key'     => '_kad_header_inheritThemeTransparent',
+				'key'     => '_kad_header_inheritPostTransparent',
 				'default' => true,
 				'type'    => 'boolean',
+			),
+			array(
+				'key'     => '_kad_header_disableTransparentOverrides',
+				'default' => true,
+				'type'    => 'array',
+				'properties' => array(),
+				'children_type' => 'string',
 			),
 			array(
 				'key' => '_kad_header_shadow',
