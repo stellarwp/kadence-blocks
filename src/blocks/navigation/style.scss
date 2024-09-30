@@ -5,6 +5,12 @@
 
 @import "../../assets/css/variables.scss";
 
+//this property get copied multiple places for specificity reasons
+$link-color-property: var(
+	--kb-nav-link-color-hover-lv,
+	var(--kb-nav-link-color-active-lv, var(--kb-nav-link-color, inherit))
+);
+
 @mixin parent-toggles-menus-styles {
 	.kb-link-wrap .kb-nav-dropdown-toggle-btn {
 		position: absolute;
@@ -933,7 +939,7 @@
 		transition: all 0.2s ease-in-out;
 		position: relative;
 		display: flex;
-		color: var(--kb-nav-link-color-hover-lv, var(--kb-nav-link-color-active-lv, var(--kb-nav-link-color, inherit)));
+		color: $link-color-property;
 		background: var(
 			--kb-nav-link-background-hover-lv,
 			var(--kb-nav-link-background-active-lv, var(--kb-nav-link-background, inherit))
@@ -1002,7 +1008,7 @@
 		margin-bottom: var(--kb-nav-link-margin-bottom);
 		margin-left: var(--kb-nav-link-margin-left);
 		//color copied here for specifity reasons
-		color: var(--kb-nav-link-color-hover-lv, var(--kb-nav-link-color-active-lv, var(--kb-nav-link-color, inherit)));
+		color: $link-color-property;
 		box-shadow: var(
 			--kb-nav-link-hover-box-shadow-lv,
 			var(--kb-nav-link-active-box-shadow-lv, var(--kb-nav-link-box-shadow))
@@ -1014,6 +1020,9 @@
 		}
 		&:hover,
 		&:focus {
+			//color copied here for specifity reasons in non-iframe editors
+			color: $link-color-property;
+
 			--kb-nav-link-color-hover-lv: var(--kb-nav-link-color-hover, inherit);
 			--kb-nav-link-background-hover-lv: var(--kb-nav-link-background-hover, inherit);
 			--kb-nav-link-hover-border-top-lv: var(--kb-nav-link-hover-border-top);
