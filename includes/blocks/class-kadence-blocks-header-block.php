@@ -410,7 +410,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 
 		$this->responsive_transparent_settings = $block_settings;
 
-		return $this->responsive_transparent_settings;
+		return $this->responsive_transparent_settings[ strtolower( $size ) ];
 	}
 
 	private function transparent_postmeta_setting( $attributes, $post_id = null ) {
