@@ -393,15 +393,14 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 			'mobile' => $css->get_inherited_value( $header_attributes['isTransparent'], $header_attributes['isTransparentTablet'], $header_attributes['isTransparentMobile'], 'Mobile' ),
 		];
 
-
-
-		if ( $this->transparent_enabled_in_postmeta( $header_attributes ) ) {
+		$transparent_postmeta_setting = $this->transparent_postmeta_setting( $header_attributes );
+		if ( $transparent_postmeta_setting === 'enable' ) {
 			$block_settings = [
 				'desktop' => true,
 				'tablet'  => true,
 				'mobile'  => true
 			];
-		} else if( ! $this->transparent_allowed_on_post_type( $header_attributes ) ){
+		} else if( $transparent_postmeta_setting === 'disable' || ! $this->transparent_allowed_on_post_type( $header_attributes ) ){
 			$block_settings = [
 				'desktop' => false,
 				'tablet'  => false,
@@ -414,15 +413,15 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		return $this->responsive_transparent_settings;
 	}
 
-	private function transparent_enabled_in_postmeta( $attributes, $post_id = null ) {
-		if ( class_exists( 'Kadence\Theme' ) && ! empty( $attributes['inheritPostTransparent'] ) ) {
+	private function transparent_postmeta_setting( $attributes, $post_id = null ) {
+		if ( class_exists( 'Kadence\Theme' ) && ! empty( $attributes['inheritPostTransparent'] ) && $post_id !== false ) {
 			$post_id = $post_id ?? get_the_ID();
 			$posttrans = get_post_meta( $post_id, '_kad_post_transparent', true );
 
-			return $posttrans === 'enable';
+			return ( $posttrans === 'enable' || $posttrans === 'disable' ) ? $posttrans : null;
 		}
 
-		return false;
+		return null;
 	}
 	private function transparent_allowed_on_post_type ( $attributes ) {
 		$transparent = 'enable';
@@ -445,11 +444,17 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 					$transparent = apply_filters('kadence_tribe_events_archive_transparent', 'enable');
 				} else if( !empty( $attributes['inheritPostTransparent'] ) ) {
 					$post_id = get_option('page_for_posts');
-					$archivetrans = $this->transparent_enabled_in_postmeta( $attributes, $post_id ) ? 'enable' : 'disable';
+					$transparent_postmeta_setting = $this->transparent_postmeta_setting( $attributes, $post_id );
+					if( $transparent_postmeta_setting === 'enable' || $transparent_postmeta_setting === 'disable' ) {
+						$archivetrans = $transparent_postmeta_setting;
+					}
 				}
 			} elseif (class_exists('woocommerce') && is_shop() && !is_search() && !empty( $attributes['inheritPostTransparent'] )) {
 				$post_id = wc_get_page_id('shop');
-				$archivetrans = $this->transparent_enabled_in_postmeta( $attributes, $post_id ) ? 'enable' : 'disable';
+				$transparent_postmeta_setting = $this->transparent_postmeta_setting( $attributes, $post_id );
+				if( $transparent_postmeta_setting === 'enable' || $transparent_postmeta_setting === 'disable' ) {
+					$archivetrans = $transparent_postmeta_setting;
+				}
 			} elseif (is_post_type_archive('tribe_events')) {
 //				$tribe_option_trans = \Kadence\kadence()->option('transparent_header_tribe_events_archive', true);
 //				$transparent = $tribe_option_trans ? 'disable' : 'enable';
