@@ -508,13 +508,8 @@ export default function BackendStyles(props) {
 		marginDropdownUnit
 	);
 	css.add_property(
-		'--kb-nav-top-link-padding-left',
-		css.render_half_size(previewNavigationHorizontalSpacing, spacingUnit),
-		previewNavigationHorizontalSpacing
-	);
-	css.add_property(
-		'--kb-nav-top-link-padding-right',
-		css.render_half_size(previewNavigationHorizontalSpacing, spacingUnit),
+		'--kb-nav-column-gap',
+		css.render_size(previewNavigationHorizontalSpacing, spacingUnit),
 		previewNavigationHorizontalSpacing
 	);
 
@@ -656,22 +651,8 @@ export default function BackendStyles(props) {
 	);
 
 	//additional dynamic logic, but still lands in a slot in the static stylesheet
-	if (
-		(previewOrientation == 'vertical' ||
-			previewStyle === 'standard' ||
-			previewStyle === 'underline' ||
-			previewStyle === '') &&
-		!isNaN(parseFloat(previewNavigationVerticalSpacing)) &&
-		isFinite(previewNavigationVerticalSpacing)
-	) {
-		css.add_property(
-			'--kb-nav-top-link-padding-top',
-			css.render_half_size(previewNavigationVerticalSpacing, spacingUnit)
-		);
-		css.add_property(
-			'--kb-nav-top-link-padding-bottom',
-			css.render_half_size(previewNavigationVerticalSpacing, spacingUnit)
-		);
+	if (!isNaN(parseFloat(previewNavigationVerticalSpacing)) && isFinite(previewNavigationVerticalSpacing)) {
+		css.add_property('--kb-nav-row-gap', css.render_size(previewNavigationVerticalSpacing, spacingUnit));
 	}
 	css.add_property(
 		'--kb-nav-top-link-description-padding-top',
@@ -768,7 +749,8 @@ export default function BackendStyles(props) {
 	if (previewOrientation != 'vertical') {
 		css.add_property('--kb-nav-dropdown-link-width', css.render_size(previewDropdownWidth, dropdownWidthUnit));
 		css.add_property('--kb-nav-top-not-last-link-border-right', dividerValue);
-
+		css.add_property('--kb-nav-top-not-last-link-border-bottom', 'var(--kb-nav-link-border-bottom)');
+		css.add_property('--kb-nav-dropdown-toggle-border-left', 'var(--kb-nav-link-border-left)');
 		if (dropdownShadow?.[0]?.enable) {
 			css.add_property('--kb-nav-dropdown-box-shadow', css.render_shadow(dropdownShadow[0]));
 		}
@@ -792,6 +774,7 @@ export default function BackendStyles(props) {
 	} else {
 		css.add_property('--kb-nav-top-not-last-link-border-bottom', dividerValue);
 		css.add_property('--kb-nav-dropdown-toggle-border-left', dividerValue);
+		css.add_property('--kb-nav-top-not-last-link-border-right', 'var(--kb-nav-link-border-right)');
 	}
 
 	//placement logic where an additional selector is needed

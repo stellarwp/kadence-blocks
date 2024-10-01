@@ -116,10 +116,6 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 
 		//non specific syles / variables
 		$css->set_selector( '.kb-nav-link-' . $unique_id );
-		$css->render_measure_output( $attributes, 'marginDropdown', '--kb-nav-dropdown-margin', ['unit_key' => 'marginDropdownUnit']);
-		$css->render_measure_output( $attributes, 'paddingDropdown', '--kb-nav-dropdown-padding', ['unit_key' => 'paddingDropdownUnit']);
-		$css->render_measure_output( $attributes, 'marginDropdownLink', '--kb-nav-dropdown-link-margin', ['unit_key' => 'marginDropdownLinkUnit']);
-		$css->render_measure_output( $attributes, 'paddingDropdownLink', '--kb-nav-dropdown-link-padding', ['unit_key' => 'paddingDropdownLinkUnit']);
 		if ( isset( $attributes['dropdownShadow'][0]['enable'] ) && $attributes['dropdownShadow'][0]['enable'] ) {
 			$css->add_property( '--kb-nav-dropdown-box-shadow', $css->render_shadow( $attributes['dropdownShadow'][0] ) );
 		}
@@ -148,6 +144,11 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 				'fourth_prop' => '--kb-nav-link-media-container-padding-left' 
 			) );
 		}
+		$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .sub-menu.sub-menu.sub-menu.sub-menu.sub-menu' );
+		$css->render_measure_output( $attributes, 'marginDropdown', '--kb-nav-dropdown-margin', ['unit_key' => 'marginDropdownUnit']);
+		$css->render_measure_output( $attributes, 'paddingDropdown', '--kb-nav-dropdown-padding', ['unit_key' => 'paddingDropdownUnit']);
+		$css->render_measure_output( $attributes, 'marginDropdownLink', '--kb-nav-dropdown-link-margin', ['unit_key' => 'marginDropdownLinkUnit']);
+		$css->render_measure_output( $attributes, 'paddingDropdownLink', '--kb-nav-dropdown-link-padding', ['unit_key' => 'paddingDropdownLinkUnit']);
 
 		//no bleed variables (extra specific to beat things like dropdown or top level styling)
 		$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .kb-link-wrap.kb-link-wrap.kb-link-wrap.kb-link-wrap' );

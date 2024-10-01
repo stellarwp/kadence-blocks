@@ -403,6 +403,12 @@ $link-color-property: var(
 		& > .menu {
 			display: grid;
 			grid-template-columns: var(--kb-nav-grid-columns, minmax(0, 1fr));
+			> .menu-item {
+				height: 100%;
+				> .kb-link-wrap {
+					height: 100%;
+				}
+			}
 		}
 	}
 }
