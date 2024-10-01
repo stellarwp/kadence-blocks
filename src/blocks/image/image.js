@@ -309,23 +309,23 @@ export default function Image({
 	const previewCaptionLineSpacing = getPreviewSize(
 		previewDevice,
 		captionStyles &&
-		undefined !== captionStyles[0] &&
-		Array.isArray(captionStyles[0].letterSpacing) &&
-		undefined !== captionStyles[0].letterSpacing[0]
+			undefined !== captionStyles[0] &&
+			Array.isArray(captionStyles[0].letterSpacing) &&
+			undefined !== captionStyles[0].letterSpacing[0]
 			? captionStyles[0].letterSpacing[0]
 			: undefined,
 		captionStyles &&
-		undefined !== captionStyles[0] &&
-		Array.isArray(captionStyles[0].letterSpacing) &&
-		undefined !== captionStyles[0].letterSpacing[1]
+			undefined !== captionStyles[0] &&
+			Array.isArray(captionStyles[0].letterSpacing) &&
+			undefined !== captionStyles[0].letterSpacing[1]
 			? captionStyles[0].letterSpacing[1]
 			: undefined,
 		captionStyles &&
-		undefined !== captionStyles[0] &&
-		Array.isArray(captionStyles[0].letterSpacing) &&
-		undefined !== captionStyles[0].letterSpacing[2]
+			undefined !== captionStyles[0] &&
+			Array.isArray(captionStyles[0].letterSpacing) &&
+			undefined !== captionStyles[0].letterSpacing[2]
 			? captionStyles[0].letterSpacing[2]
-			: undefined,
+			: undefined
 	);
 	const previewCaptionLineHeightUnit = captionStyles[0].lineType !== undefined ? captionStyles[0].lineType : 'px';
 	const previewCaptionLineHeight = getPreviewSize(
@@ -446,10 +446,10 @@ export default function Image({
 
 	useEffect(() => {
 		if (captionStyles[0].letterSpacing && typeof captionStyles[0].letterSpacing === 'number') {
-			let oldLetterSpacing = captionStyles[0].letterSpacing;
-			saveCaptionFont({letterSpacing:[oldLetterSpacing, "", ""]});
+			const oldLetterSpacing = captionStyles[0].letterSpacing;
+			saveCaptionFont({ letterSpacing: [oldLetterSpacing, '', ''] });
 		} else if (captionStyles[0].letterSpacing === undefined) {
-			saveCaptionFont({letterSpacing:["", "", ""]});
+			saveCaptionFont({ letterSpacing: ['', '', ''] });
 		}
 	});
 
@@ -1212,7 +1212,11 @@ export default function Image({
 										onLineHeight={(value) => saveCaptionFont({ lineHeight: value })}
 										lineHeightType={captionStyles[0].lineType}
 										onLineHeightType={(value) => saveCaptionFont({ lineType: value })}
-										reLetterSpacing={[captionStyles[0].letterSpacing[0], captionStyles[0].letterSpacing[1], captionStyles[0].letterSpacing[2]]}
+										reLetterSpacing={[
+											captionStyles[0].letterSpacing[0],
+											captionStyles[0].letterSpacing[1],
+											captionStyles[0].letterSpacing[2],
+										]}
 										onLetterSpacing={(value) => saveCaptionFont({ letterSpacing: value })}
 										textTransform={captionStyles[0].textTransform}
 										onTextTransform={(value) => saveCaptionFont({ textTransform: value })}
