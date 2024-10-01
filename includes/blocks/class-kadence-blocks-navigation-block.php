@@ -245,9 +245,12 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 
 		if ( $sized_attributes['orientation'] != 'vertical' ) {
 			$css->add_property( '--kb-nav-top-not-last-link-border-right', $css->render_border( $sized_attributes['transparentDivider'], 'bottom' ) );
+			$css->add_property( '--kb-nav-dropdown-toggle-border-left', 'var(--kb-nav-link-border-left)' );
+			$css->add_property( '--kb-nav-top-not-last-link-border-bottom', 'var(--kb-nav-link-border-bottom)' );
 		} else {
 			$css->add_property( '--kb-nav-link-wrap-border-bottom', $css->render_border( $sized_attributes['transparentDivider'], 'bottom' ) );
 			$css->add_property( '--kb-nav-dropdown-toggle-border-left', $css->render_border( $sized_attributes['transparentDivider'], 'bottom' ) );
+			$css->add_property( '--kb-nav-top-not-last-link-border-right', 'var(--kb-nav-link-border-right)' );
 		}
 
 		//sticky styles
@@ -263,9 +266,12 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 
 		if ( $sized_attributes['orientation'] != 'vertical' ) {
 			$css->add_property( '--kb-nav-top-not-last-link-border-right', $css->render_border( $sized_attributes['stickyDivider'], 'bottom' ) );
+			$css->add_property( '--kb-nav-dropdown-toggle-border-left', 'var(--kb-nav-link-border-left)' );
+			$css->add_property( '--kb-nav-top-not-last-link-border-bottom', 'var(--kb-nav-link-border-bottom)' );
 		} else {
 			$css->add_property( '--kb-nav-link-wrap-border-bottom', $css->render_border( $sized_attributes['stickyDivider'], 'bottom' ) );
 			$css->add_property( '--kb-nav-dropdown-toggle-border-left', $css->render_border( $sized_attributes['stickyDivider'], 'bottom' ) );
+			$css->add_property( '--kb-nav-top-not-last-link-border-right', 'var(--kb-nav-link-border-right)' );
 		}
 
 		//not last submenu items and mega menu nav links

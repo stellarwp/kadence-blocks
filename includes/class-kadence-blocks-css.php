@@ -1897,7 +1897,7 @@ class Kadence_Blocks_CSS {
 
 		$border_side = $border[0][ $side ];
 
-		if ( ! isset( $border_side[2] ) || empty( $border_side[2] ) ) {
+		if ( ! isset( $border_side[2] ) || ( isset( $border_side[2] ) && empty( $border_side[2] ) && ! is_numeric($border_side[2]) ) ) {
 			return false;
 		}
 
@@ -2174,6 +2174,9 @@ class Kadence_Blocks_CSS {
 
 				$border_args = [
 					'renderAsVars' => $args['renderAsVars'],
+					'desktop_key' => $border_base . $state,
+					'tablet_key'  => $border_base . $state . 'Tablet',
+					'mobile_key'  => $border_base . $state . 'Mobile',
 					'varBase' => $property_prefix . $property_addition
 				];
 
