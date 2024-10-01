@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from '@wordpress/element';
+import { useRef, useState, useEffect, useMemo } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import { useEditorElement, capitalizeFirstLetter, blockExists } from '@kadence/helpers';
 import { __ } from '@wordpress/i18n';
@@ -104,6 +104,14 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 	const editorLeft = editorElement?.getBoundingClientRect().left;
 	const editorFooterHeight = previewDevice === 'Desktop' ? '25px' : '0';
 
+	const editorStyles = useMemo(
+		() => ({
+			width: editorWidth + 'px',
+			left: editorLeft + 'px',
+		}),
+		[editorWidth, editorLeft]
+	);
+
 	if (!hasTrigger && tab === 'off-canvas') {
 		updateTab('Desktop', desktopBlocks);
 	}
@@ -123,13 +131,7 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 			)}
 			<div ref={ref}>
 				{!isVisible && (isSelected || childSelected) && (
-					<div
-						class={'kb-header-visual-builder-teaser'}
-						style={{
-							width: editorWidth + 'px',
-							left: editorLeft + 'px',
-						}}
-					>
+					<div class={'kb-header-visual-builder-teaser'} style={editorStyles}>
 						<Button isPrimary onClick={() => setIsVisible(true)}>
 							{__('Open Visual Builder', 'kadence-blocks')}
 						</Button>
@@ -138,10 +140,7 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 				{isVisible && (
 					<div
 						class={'kb-header-visual-builder-modal kb-header-visual-builder-modal-' + modalPosition}
-						style={{
-							width: editorWidth + 'px',
-							left: editorLeft + 'px',
-						}}
+						style={editorStyles}
 					>
 						<div class={'tabs'}>
 							<Button
