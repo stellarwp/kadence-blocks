@@ -278,6 +278,9 @@ export default function BackendStyles(props) {
 		mediaBackgroundGradient,
 		mediaBackgroundGradientHover,
 		mediaBackgroundGradientActive,
+		dropdownHorizontalAlignment,
+		dropdownHorizontalAlignmentTablet,
+		dropdownHorizontalAlignmentMobile,
 	} = attributes;
 
 	const editorElement = useEditorElement(currentRef, []);
@@ -605,7 +608,12 @@ export default function BackendStyles(props) {
 		megaMenuCustomWidthTablet,
 		megaMenuCustomWidthMobile
 	);
-
+	const previewDropdownHorizontalAlignment = getPreviewSize(
+		previewDevice,
+		dropdownHorizontalAlignment,
+		dropdownHorizontalAlignmentTablet,
+		dropdownHorizontalAlignmentMobile
+	);
 	const css = new KadenceBlocksCSS();
 
 	let imageRatioPadding = isNaN(mediaImage[0].height)
@@ -754,6 +762,22 @@ export default function BackendStyles(props) {
 		'--kb-nav-link-dropdown-description-color-active-ancestor',
 		css.render_color(previewDropdownDescriptionColorActive)
 	);
+	if (previewDropdownHorizontalAlignment == 'center') {
+		css.add_property('--kb-nav-dropdown-show-left', '50%');
+		css.add_property('--kb-nav-dropdown-show-right', 'unset');
+		css.add_property('--kb-nav-dropdown-show-transform-x', '-50%');
+		css.add_property('--kb-nav-dropdown-hide-transform-x', '-50%');
+	} else if (previewDropdownHorizontalAlignment == 'right') {
+		css.add_property('--kb-nav-dropdown-show-right', '0px');
+		css.add_property('--kb-nav-dropdown-show-left', 'unset');
+		css.add_property('--kb-nav-dropdown-show-transform-x', '0px');
+		css.add_property('--kb-nav-dropdown-hide-transform-x', '0px');
+	} else if (previewDropdownHorizontalAlignment == 'left') {
+		css.add_property('--kb-nav-dropdown-show-left', '0px');
+		css.add_property('--kb-nav-dropdown-show-right', 'unset');
+		css.add_property('--kb-nav-dropdown-show-transform-x', '0px');
+		css.add_property('--kb-nav-dropdown-hide-transform-x', '0px');
+	}
 
 	//placement logic where an additional selector is needed
 	css.set_selector(
@@ -1130,19 +1154,6 @@ export default function BackendStyles(props) {
 				'--kb-nav-dropdown-width',
 				css.render_size(previewMegaMenuCustomWidth, megaMenuCustomWidthUnit)
 			);
-			css.set_selector(
-				`.wp-block-kadence-navigation .navigation[class*="header-navigation-dropdown-animation-fade"] .menu-container ul.menu .kb-nav-link-${uniqueID} > ul.sub-menu`
-			);
-			css.add_property('--kb-nav-dropdown-margin-left', '-50%');
-			css.add_property('--kb-nav-dropdown-show-left', '50%');
-
-			css.set_selector(
-				`.wp-block-kadence-navigation .navigation.navigation-dropdown-animation-none .menu-container ul.menu .kb-nav-link-${uniqueID} > ul.sub-menu`
-			);
-			css.add_property('--kb-nav-dropdown-transform', 'translate(-50%, 0)');
-			css.add_property('--kb-nav-dropdown-show-left', '50%');
-			// css.set_selector( '.header-navigation[class*="header-navigation-dropdown-animation-fade"] #menu-item-' . $item->ID . '.kadence-menu-mega-enabled > .sub-menu' );
-			// css.add_property( 'margin-left', '-' . ( $data['mega_menu_custom_width'] ? floor( $data['mega_menu_custom_width'] / 2 ) : '400' ) . 'px' );
 		} else if ((previewMegaMenuWidth === 'full' || previewMegaMenuWidth === '') && currentRef?.current) {
 			//first sub menu only, no bleed
 			//extra specificty to beat nav level styling

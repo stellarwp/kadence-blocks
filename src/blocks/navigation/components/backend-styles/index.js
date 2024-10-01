@@ -775,10 +775,19 @@ export default function BackendStyles(props) {
 
 		if (previewDropdownHorizontalAlignment == 'center') {
 			css.add_property('--kb-nav-dropdown-show-left', '50%');
+			css.add_property('--kb-nav-dropdown-show-right', 'unset');
 			css.add_property('--kb-nav-dropdown-show-transform-x', '-50%');
 			css.add_property('--kb-nav-dropdown-hide-transform-x', '-50%');
 		} else if (previewDropdownHorizontalAlignment == 'right') {
 			css.add_property('--kb-nav-dropdown-show-right', '0px');
+			css.add_property('--kb-nav-dropdown-show-left', 'unset');
+			css.add_property('--kb-nav-dropdown-show-transform-x', '0px');
+			css.add_property('--kb-nav-dropdown-hide-transform-x', '0px');
+		} else if (previewDropdownHorizontalAlignment == 'left') {
+			css.add_property('--kb-nav-dropdown-show-left', '0px');
+			css.add_property('--kb-nav-dropdown-show-right', 'unset');
+			css.add_property('--kb-nav-dropdown-show-transform-x', '0px');
+			css.add_property('--kb-nav-dropdown-hide-transform-x', '0px');
 		}
 	} else {
 		css.add_property('--kb-nav-top-not-last-link-border-bottom', dividerValue);

@@ -148,8 +148,6 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		//no added specificty needed for these variables
 		//these variable will slot into selectors found in the static stylesheet.
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id );
-		$css->add_property( '--kb-nav-top-link-padding-left', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) );
-		$css->add_property( '--kb-nav-top-link-padding-right', $css->render_half_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) );
 		$css->add_property( '--kb-nav-link-underline-width', 'calc( 100% - ' . $css->render_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) . ' )', $navigation_horizontal_spacing );
 		$css->add_property( '--kb-nav-top-link-color-active-ancestor', $css->render_color( $sized_attributes['linkColorActive']), $sized_attributes['parentActive'] );
 		$css->add_property( '--kb-nav-top-link-background-active-ancestor', $css->render_color( $sized_attributes['backgroundActive']), $sized_attributes['parentActive'] );
@@ -192,17 +190,12 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$css->add_property( '--kb-nav-dropdown-link-description-padding-top', $css->render_size( $sized_attributes['dropdownDescriptionSpacing'], $sized_attributes['dropdownDescriptionSpacingUnit'] ?? 'px' ) );
 		
 		//additional dynamic logic, but still lands in a slot in the static stylesheet
-		if (
-			( $sized_attributes_inherit['orientation'] == 'vertical' ||
-			$sized_attributes_inherit['style'] === 'standard' ||
-			$sized_attributes_inherit['style'] === 'underline' ||
-			$sized_attributes_inherit['style'] === '' ) &&
-			is_numeric( $navigation_vertical_spacing )
-		) {
-			$css->add_property( '--kb-nav-link-padding-top', $css->render_half_size( $navigation_vertical_spacing, $attributes['spacingUnit'] ) );
-			$css->add_property( '--kb-nav-link-padding-bottom', $css->render_half_size( $navigation_vertical_spacing, $attributes['spacingUnit'] ) );
+		if ( isset( $navigation_vertical_spacing ) && is_numeric( $navigation_vertical_spacing ) ) {
+			$css->add_property( '--kb-nav-row-gap', $css->render_size( $navigation_vertical_spacing, $attributes['spacingUnit'] ) );
 		}
-
+		if ( isset( $navigation_vertical_spacing ) && is_numeric( $navigation_vertical_spacing ) ) {
+			$css->add_property( '--kb-nav-column-gap', $css->render_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) );
+		}
 		if ( $sized_attributes['orientation'] != 'vertical' ) {
 			if ( ! empty( $sized_attributes['horizontalGrid'] ) ) {
 				$css->add_property( '--kb-nav-grid-columns', 'repeat(' . $sized_attributes['horizontalGrid'] . ', 1fr)');
