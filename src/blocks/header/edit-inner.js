@@ -70,18 +70,7 @@ import metadata from './block.json';
 const ANCHOR_REGEX = /[\s#]/g;
 
 export function EditInner(props) {
-	const {
-		attributes,
-		setAttributes,
-		clientId,
-		context,
-		direct,
-		id,
-		isSelected,
-		headerRef,
-		justCompletedOnboarding,
-		formData,
-	} = props;
+	const { attributes, setAttributes, clientId, context, direct, id, isSelected, justCompletedOnboarding } = props;
 	const { setHeaderVisualBuilderOpenId, setHeaderVisualBuilderSelectedId } = useDispatch('kadenceblocks/data');
 
 	const { previewDevice, showVisualBuilder, visualBuilderClientId } = useSelect(
