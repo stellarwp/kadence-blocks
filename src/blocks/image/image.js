@@ -1281,6 +1281,7 @@ export default function Image({
 									step={0.01}
 									min={0}
 									max={1}
+									reset={true}
 								/>
 								{'gradient' === overlayType && (
 									<GradientControl
