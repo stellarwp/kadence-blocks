@@ -194,10 +194,18 @@ export default function BackendStyles(props) {
 		dropdownBorderRadiusTablet,
 		dropdownBorderRadiusMobile,
 		dropdownBorderRadiusUnit,
+		horizontalGrid,
+		horizontalGridTablet,
+		horizontalGridMobile,
 	} = metaAttributes;
 
 	const css = new KadenceBlocksCSS();
-
+	const previewHorizontalGrid = getPreviewSize(
+		previewDevice,
+		horizontalGrid,
+		horizontalGridTablet,
+		horizontalGridMobile
+	);
 	const navigationHorizontalSpacing = spacing[1];
 	const navigationHorizontalSpacingTablet = spacingTablet[1];
 	const navigationHorizontalSpacingMobile = spacingMobile[1];
@@ -582,7 +590,9 @@ export default function BackendStyles(props) {
 		'--kb-nav-dropdown-border-bottom-left-radius',
 		getSpacingOptionOutput(previewDropdownBorderBottomLeftRadius, dropdownBorderRadiusUnit)
 	);
-
+	if (previewHorizontalGrid && parseFloat(previewHorizontalGrid)) {
+		css.add_property('--kb-nav-grid-columns', `repeat(${previewHorizontalGrid}, 1fr)`);
+	}
 	css.render_measure_output(
 		paddingDropdownLink,
 		tabletPaddingDropdownLink,

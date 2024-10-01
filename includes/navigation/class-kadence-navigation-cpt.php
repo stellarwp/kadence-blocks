@@ -504,19 +504,34 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'default' => 'em',
 			),
 			array(
-				'key'     => '_kad_navigation_stretch',
-				'type' => 'boolean',
-				'default' => false,
+				'key'     => '_kad_navigation_horizontalLayout',
+				'type' => 'string',
+				'default' => 'standard',
 			),
 			array(
-				'key'     => '_kad_navigation_stretchTablet',
-				'type' => 'boolean',
-				'default' => false,
+				'key'     => '_kad_navigation_horizontalLayoutTablet',
+				'type' => 'string',
+				'default' => '',
 			),
 			array(
-				'key'     => '_kad_navigation_stretchMobile',
-				'type' => 'boolean',
-				'default' => false,
+				'key'     => '_kad_navigation_horizontalLayoutMobile',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_horizontalGrid',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_horizontalGridTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_horizontalGridMobile',
+				'type' => 'string',
+				'default' => '',
 			),
 			array(
 				'key'     => '_kad_navigation_fillStretch',

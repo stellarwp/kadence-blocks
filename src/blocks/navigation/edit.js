@@ -71,30 +71,33 @@ export function Edit(props) {
 		orientation: meta?._kad_navigation_orientation,
 		orientationTablet: meta?._kad_navigation_orientationTablet,
 		orientationMobile: meta?._kad_navigation_orientationMobile,
-		stretch: meta?._kad_navigation_stretch,
-		stretchTablet: meta?._kad_navigation_stretchTablet,
-		stretchMobile: meta?._kad_navigation_stretchMobile,
 		fillStretch: meta?._kad_navigation_fillStretch,
 		fillStretchTablet: meta?._kad_navigation_fillStretchTablet,
 		fillStretchMobile: meta?._kad_navigation_fillStretchMobile,
+		horizontalLayout: meta?._kad_navigation_horizontalLayout,
+		horizontalLayoutTablet: meta?._kad_navigation_horizontalLayoutTablet,
+		horizontalLayoutMobile: meta?._kad_navigation_horizontalLayoutMobile,
+		horizontalGrid: meta?._kad_navigation_horizontalGrid,
+		horizontalGridTablet: meta?._kad_navigation_horizontalGridTablet,
+		horizontalGridMobile: meta?._kad_navigation_horizontalGridMobile,
 	};
 
 	const {
 		orientation,
 		orientationTablet,
 		orientationMobile,
-		stretch,
-		stretchTablet,
-		stretchMobile,
 		fillStretch,
 		fillStretchTablet,
 		fillStretchMobile,
+		horizontalLayout,
+		horizontalLayoutTablet,
+		horizontalLayoutMobile,
 	} = metaAttributes;
 	const inTemplatePreviewMode = !id && templateKey;
 
 	//some workarounds in here because we can't set meta attributes on no-post templated navs
 	//this allows them to be vertical or horizontal
-	const previewOrientation = inTemplatePreviewMode
+	const previewOrientationDesktop = inTemplatePreviewMode
 		? templateKey.includes('vertical')
 			? 'vertical'
 			: 'horizontal'
@@ -109,7 +112,6 @@ export function Edit(props) {
 			? 'vertical'
 			: 'horizontal'
 		: orientationMobile;
-
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, parentData, previewDevice, isPreviewMode, getStash } = useSelect(
 		(select) => {
@@ -149,16 +151,25 @@ export function Edit(props) {
 			window.wp.data.dispatch('core/block-editor').setTemplateValidity(true);
 		}
 	}, []);
-
+	const previewHorizontalLayout = getPreviewSize(
+		previewDevice,
+		horizontalLayout,
+		horizontalLayoutTablet,
+		horizontalLayoutMobile
+	);
+	const previewFillStretch = getPreviewSize(previewDevice, fillStretch, fillStretchTablet, fillStretchMobile);
+	const previewOrientation = getPreviewSize(
+		previewDevice,
+		previewOrientationDesktop ? previewOrientationDesktop : 'horizontal',
+		previewOrientationTablet,
+		previewOrientationMobile
+	);
 	const blockClasses = classnames({
 		[`wp-block-kadence-navigation${uniqueID}`]: uniqueID,
-		[`navigation-desktop-layout-stretch-${stretch}`]: !previewDevice || previewDevice == 'Desktop',
-		[`navigation-tablet-layout-stretch-${stretchTablet}`]: previewDevice == 'Tablet',
-		[`navigation-mobile-layout-stretch-${stretchMobile}`]: previewDevice == 'Mobile',
-		[`navigation-desktop-layout-fill-stretch-${fillStretch}`]: !previewDevice || previewDevice == 'Desktop',
-		[`navigation-tablet-layout-fill-stretch-${fillStretchTablet}`]: previewDevice == 'Tablet',
-		[`navigation-mobile-layout-fill-stretch-${fillStretchMobile}`]: previewDevice == 'Mobile',
-		[`navigation-desktop-orientation-${previewOrientation ? previewOrientation : 'horizontal'}`]:
+		[`kb-navigation-horizontal-layout-${previewHorizontalLayout}`]: previewHorizontalLayout,
+		[`kb-navigation-orientation-${previewOrientation}`]: previewOrientation,
+		['kb-navigation-layout-stretch-fill']: previewFillStretch,
+		[`navigation-desktop-orientation-${previewOrientationDesktop ? previewOrientationDesktop : 'horizontal'}`]:
 			!previewDevice || previewDevice == 'Desktop',
 		[`navigation-tablet-orientation-${previewOrientationTablet ? previewOrientationTablet : 'horizontal'}`]:
 			previewDevice == 'Tablet',

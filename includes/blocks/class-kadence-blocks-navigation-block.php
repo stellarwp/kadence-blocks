@@ -204,6 +204,9 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		if ( $sized_attributes['orientation'] != 'vertical' ) {
+			if ( ! empty( $sized_attributes['horizontalGrid'] ) ) {
+				$css->add_property( '--kb-nav-grid-columns', 'repeat(' . $sized_attributes['horizontalGrid'] . ', 1fr)');
+			}
 			$css->add_property( '--kb-nav-dropdown-link-width', $css->render_size( $sized_attributes['dropdownWidth'], $sized_attributes['dropdownWidthUnit'] ) );
 			$css->add_property( '--kb-nav-top-not-last-link-border-right', $css->render_border( $sized_attributes['divider'], 'bottom' ) );
 
@@ -332,9 +335,10 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		// Inherit values.
 		// Just getting a css class for access to methods.
 		$css = Kadence_Blocks_CSS::get_instance();
-		$stretch = $css->get_inherited_value( $nav_attributes['stretch'], $nav_attributes['stretchTablet'], $nav_attributes['stretchMobile'], 'Desktop' );
-		$stretch_tablet = $css->get_inherited_value( $nav_attributes['stretch'], $nav_attributes['stretchTablet'], $nav_attributes['stretchMobile'], 'Tablet' );
-		$stretch_mobile = $css->get_inherited_value( $nav_attributes['stretch'], $nav_attributes['stretchTablet'], $nav_attributes['stretchMobile'], 'Mobile' );
+		$horizontal_layout = $css->get_inherited_value( $nav_attributes['horizontalLayout'], $nav_attributes['horizontalLayoutTablet'], $nav_attributes['horizontalLayoutMobile'], 'Desktop' );
+		$horizontal_layout_tablet = $css->get_inherited_value( $nav_attributes['horizontalLayout'], $nav_attributes['horizontalLayoutTablet'], $nav_attributes['horizontalLayoutMobile'], 'Tablet' );
+		$horizontal_layout_mobile = $css->get_inherited_value( $nav_attributes['horizontalLayout'], $nav_attributes['horizontalLayoutTablet'], $nav_attributes['horizontalLayoutMobile'], 'Mobile' );
+
 		$fill_stretch = $css->get_inherited_value( $nav_attributes['fillStretch'], $nav_attributes['fillStretchTablet'], $nav_attributes['fillStretchMobile'], 'Desktop' );
 		$fill_stretch_tablet = $css->get_inherited_value( $nav_attributes['fillStretch'], $nav_attributes['fillStretchTablet'], $nav_attributes['fillStretchMobile'], 'Tablet' );
 		$fill_stretch_mobile = $css->get_inherited_value( $nav_attributes['fillStretch'], $nav_attributes['fillStretchTablet'], $nav_attributes['fillStretchMobile'], 'Mobile' );
@@ -363,12 +367,12 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		// Wrapper Attributes.
 		$wrapper_classes = array();
 		$wrapper_classes[] = 'wp-block-kadence-navigation' . $unique_id;
-		$wrapper_classes[] = 'navigation-desktop-layout-stretch-' . ( $stretch ? 'true' : 'false' );
-		$wrapper_classes[] = 'navigation-tablet-layout-stretch-' . ( $stretch_tablet ? 'true' : 'false' );
-		$wrapper_classes[] = 'navigation-mobile-layout-stretch-' . ( $stretch_mobile ? 'true' : 'false' );
+		$wrapper_classes[] = 'kb-nav-desktop-horizontal-layout-' . ( $horizontal_layout );
+		$wrapper_classes[] = 'kb-nav-tablet-horizontal-layout-' . ( $horizontal_layout_tablet );
+		$wrapper_classes[] = 'kb-nav-mobile-horizontal-layout-' . ( $horizontal_layout_mobile );
 		$wrapper_classes[] = 'navigation-desktop-layout-fill-stretch-' . ( $fill_stretch ? 'true' : 'false' );
-		$wrapper_classes[] = 'navigation-tablet-layout-fill-stretch-' . ( $fill_stretch ? 'true' : 'false' );
-		$wrapper_classes[] = 'navigation-mobile-layout-fill-stretch-' . ( $fill_stretch ? 'true' : 'false' );
+		$wrapper_classes[] = 'navigation-tablet-layout-fill-stretch-' . ( $fill_stretch_tablet ? 'true' : 'false' );
+		$wrapper_classes[] = 'navigation-mobile-layout-fill-stretch-' . ( $fill_stretch_mobile ? 'true' : 'false' );
 		$wrapper_classes[] = 'navigation-desktop-orientation-' . ( $orientation ? $orientation : 'horizontal' );
 		$wrapper_classes[] = 'navigation-tablet-orientation-' . ( $orientation_tablet ? $orientation_tablet : 'horizontal' );
 		$wrapper_classes[] = 'navigation-mobile-orientation-' . ( $orientation_mobile ? $orientation_mobile : 'horizontal' );

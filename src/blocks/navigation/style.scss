@@ -405,9 +405,18 @@ $link-color-property: var(
 		padding-right: calc(var(--kb-nav-link-padding-right, 0.5em));
 	}
 }
+@mixin layout-grid-styles {
+	//only apply grid to top level menu items
+	> .navigation > .menu-container {
+		& > .menu {
+			display: grid;
+			grid-template-columns: var(--kb-nav-grid-columns, minmax(0, 1fr));
+		}
+	}
+}
 
 @mixin layout-stretch-styles {
-	flex-grow: 1;
+	flex-grow: 10;
 
 	> .navigation {
 		flex-grow: 1;
@@ -419,16 +428,6 @@ $link-color-property: var(
 		& > .menu {
 			flex-grow: 1;
 			justify-content: space-between;
-
-			& > .menu-item {
-				margin: 0;
-				flex: 1 1 auto;
-				& > .kb-link-wrap > .kb-nav-link-content {
-					width: fit-content;
-					margin-left: auto;
-					margin-right: auto;
-				}
-			}
 		}
 	}
 }
@@ -439,11 +438,12 @@ $link-color-property: var(
 		& > .menu {
 			display: grid;
 			grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-
 			& > .menu-item {
 				text-align: center;
 				& > .kb-link-wrap > .kb-nav-link-content {
-					width: initial;
+					width: 100%;
+					text-align: center;
+					justify-content: center;
 				}
 			}
 		}
@@ -610,42 +610,49 @@ $link-color-property: var(
 	//In the editor we just look for these classes as they will come and go as the preview device changes.
 	//In the frontend, they will all be present, so must each be wrapped in a media query
 	//Desktop stretch
-	&.navigation-desktop-layout-stretch-true.navigation-desktop-orientation-horizontal {
+	&.kb-nav-desktop-horizontal-layout-stretch.navigation-desktop-orientation-horizontal {
 		@media (min-width: $laptop-plus-query) {
 			@include layout-stretch-styles();
+			&.navigation-desktop-layout-fill-stretch-true {
+				@include layout-fill-stretch-styles();
+			}
 		}
 	}
 	//Tablet stretch
-	&.navigation-tablet-layout-stretch-true.navigation-tablet-orientation-horizontal {
+	&.kb-nav-tablet-horizontal-layout-stretch.navigation-tablet-orientation-horizontal {
 		@media (min-width: $before-tablet-plus-query) and (max-width: $tablet-minus-query) {
 			@include layout-stretch-styles();
+			&.navigation-tablet-layout-fill-stretch-true {
+				@include layout-fill-stretch-styles();
+			}
 		}
 	}
 	//Mobile stretch
-	&.navigation-mobile-layout-stretch-true.navigation-modbile-orientation-horizontal {
+	&.kb-nav-mobile-horizontal-layout-stretch.navigation-modbile-orientation-horizontal {
 		@media (max-width: $phone-minus-query) {
 			@include layout-stretch-styles();
+			&.navigation-mobile-layout-fill-stretch-true {
+				@include layout-fill-stretch-styles();
+			}
 		}
 	}
 
-	//In the editor we just look for these classes as they will come and go as the preview device changes.
-	//In the frontend, they will all be present, so must each be wrapped in a media query
-	//Desktop fill-stretch
-	&.navigation-desktop-layout-stretch-true.navigation-desktop-layout-fill-stretch-true.navigation-desktop-orientation-horizontal {
+	// Desktop layout grid
+	&.kb-nav-desktop-horizontal-layout-grid.navigation-desktop-orientation-horizontal {
 		@media (min-width: $laptop-plus-query) {
-			@include layout-fill-stretch-styles();
+			@include layout-grid-styles();
 		}
 	}
-	//Tablet fill-stretch
-	&.navigation-tablet-layout-stretch-true.navigation-tablet-layout-fill-stretch-true.navigation-tablet-orientation-horizontal {
+	// Tablet layout grid
+	&.kb-nav-tablet-horizontal-layout-grid.navigation-tablet-orientation-horizontal {
 		@media (min-width: $before-tablet-plus-query) and (max-width: $tablet-minus-query) {
-			@include layout-fill-stretch-styles();
+			@include layout-grid-styles();
 		}
 	}
-	//Mobile fill-stretch
-	&.navigation-mobile-layout-stretch-true.navigation-mobile-layout-fill-stretch-true.navigation-mobile-orientation-horizontal {
+	// Mobile layout grid
+	&.kb-nav-mobile-horizontal-layout-grid.navigation-mobile-orientation-horizontal {
 		@media (max-width: $phone-minus-query) {
-			@include layout-fill-stretch-styles();
+			@include layout-grid-styles();
 		}
 	}
 
@@ -1230,7 +1237,7 @@ $link-color-property: var(
 		display: flex;
 		flex-wrap: nowrap;
 		align-items: center;
-
+		height: fit-content;
 		padding-top: var(--kb-nav-link-highlight-padding-top, 0.3em);
 		padding-right: var(--kb-nav-link-highlight-padding-right, 0.3em);
 		padding-bottom: var(--kb-nav-link-highlight-padding-bottom, 0.3em);
@@ -1312,6 +1319,7 @@ $link-color-property: var(
 			display: flex;
 			gap: 5px;
 			flex-wrap: nowrap;
+			align-items: center;
 		}
 	}
 

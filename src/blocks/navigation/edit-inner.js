@@ -152,12 +152,15 @@ export function EditInner(props) {
 		spacingTablet: meta?._kad_navigation_spacingTablet,
 		spacingMobile: meta?._kad_navigation_spacingMobile,
 		spacingUnit: meta?._kad_navigation_spacingUnit,
-		stretch: meta?._kad_navigation_stretch,
-		stretchTablet: meta?._kad_navigation_stretchTablet,
-		stretchMobile: meta?._kad_navigation_stretchMobile,
 		fillStretch: meta?._kad_navigation_fillStretch,
 		fillStretchTablet: meta?._kad_navigation_fillStretchTablet,
 		fillStretchMobile: meta?._kad_navigation_fillStretchMobile,
+		horizontalLayout: meta?._kad_navigation_horizontalLayout,
+		horizontalLayoutTablet: meta?._kad_navigation_horizontalLayoutTablet,
+		horizontalLayoutMobile: meta?._kad_navigation_horizontalLayoutMobile,
+		horizontalGrid: meta?._kad_navigation_horizontalGrid,
+		horizontalGridTablet: meta?._kad_navigation_horizontalGridTablet,
+		horizontalGridMobile: meta?._kad_navigation_horizontalGridMobile,
 		parentActive: meta?._kad_navigation_parentActive,
 		parentActiveTablet: meta?._kad_navigation_parentActiveTablet,
 		parentActiveMobile: meta?._kad_navigation_parentActiveMobile,
@@ -470,9 +473,12 @@ export function EditInner(props) {
 		spacingTablet,
 		spacingMobile,
 		spacingUnit,
-		stretch,
-		stretchTablet,
-		stretchMobile,
+		horizontalLayout,
+		horizontalLayoutTablet,
+		horizontalLayoutMobile,
+		horizontalGrid,
+		horizontalGridTablet,
+		horizontalGridMobile,
 		fillStretch,
 		fillStretchTablet,
 		fillStretchMobile,
@@ -618,7 +624,12 @@ export function EditInner(props) {
 			? 'vertical'
 			: 'horizontal'
 		: getPreviewSize(previewDevice, orientation, orientationTablet, orientationMobile);
-
+	const previewHorizontalLayout = getPreviewSize(
+		previewDevice,
+		horizontalLayout,
+		horizontalLayoutTablet,
+		horizontalLayoutMobile
+	);
 	const setMetaAttribute = (value, key) => {
 		setMeta({ ...meta, ['_kad_navigation_' + key]: value });
 	};
@@ -874,20 +885,13 @@ export function EditInner(props) {
 						onChange={(value) => setMetaAttribute(value, 'parentTogglesMenus' + size)}
 					/>
 				)}
-				{orientationValue !== 'vertical' && (
+				{/* {orientationValue !== 'vertical' && (
 					<ToggleControl
 						label={__('Stretch Menu', 'kadence-blocks')}
 						checked={stretchValue}
 						onChange={(value) => setMetaAttribute(value, 'stretch' + size)}
 					/>
-				)}
-				{orientationValue !== 'vertical' && stretchValue && (
-					<ToggleControl
-						label={__('Fill and Center Menu Items?', 'kadence-blocks')}
-						checked={fillStretchValue}
-						onChange={(value) => setMetaAttribute(value, 'fillStretch' + size)}
-					/>
-				)}
+				)} */}
 				<ToggleControl
 					label={__('Make Parent of Current Menu item Active', 'kadence-blocks')}
 					checked={parentActiveValue}
@@ -1347,8 +1351,80 @@ export function EditInner(props) {
 									}
 								/>
 							)}
+						</KadencePanelBody>
+						<KadencePanelBody
+							panelName={'kb-navigation-layout'}
+							title={__('Layout Options', 'kadence-blocks')}
+						>
+							{previewOrientation !== 'vertical' && (
+								<ResponsiveSelectControl
+									label={__('Horizontal Layout', 'kadence-blocks')}
+									value={horizontalLayout}
+									tabletValue={horizontalLayoutTablet}
+									mobileValue={horizontalLayoutMobile}
+									options={[
+										{ value: 'standard', label: __('Standard', 'kadence-blocks') },
+										{ value: 'stretch', label: __('Stretch', 'kadence-blocks') },
+										{ value: 'grid', label: __('Grid', 'kadence-blocks') },
+									]}
+									tabletOptions={[
+										{ value: '', label: __('Inherit', 'kadence-blocks') },
+										{ value: 'standard', label: __('Standard', 'kadence-blocks') },
+										{ value: 'stretch', label: __('Stretch', 'kadence-blocks') },
+										{ value: 'grid', label: __('Grid', 'kadence-blocks') },
+									]}
+									onChange={(value) => setMetaAttribute(value, 'horizontalLayout')}
+									onChangeTablet={(value) => setMetaAttribute(value, 'horizontalLayoutTablet')}
+									onChangeMobile={(value) => setMetaAttribute(value, 'horizontalLayoutMobile')}
+								/>
+							)}
+							{previewOrientation !== 'vertical' && previewHorizontalLayout === 'grid' && (
+								<ResponsiveRangeControls
+									label={__('Horizontal Grid Columns', 'kadence-blocks')}
+									value={horizontalGrid ? parseFloat(horizontalGrid) : ''}
+									valueTablet={horizontalGridTablet ? parseFloat(horizontalGridTablet) : ''}
+									valueMobile={horizontalGridMobile ? parseFloat(horizontalGridMobile) : ''}
+									onChange={(value) => setMetaAttribute(String(value ?? ''), 'horizontalGrid')}
+									onChangeTablet={(value) =>
+										setMetaAttribute(String(value ?? ''), 'horizontalGridTablet')
+									}
+									onChangeMobile={(value) =>
+										setMetaAttribute(String(value ?? ''), 'horizontalGridMobile')
+									}
+									min={1}
+									max={12}
+									step={1}
+									showUnit={false}
+								/>
+							)}
+							{previewOrientation !== 'vertical' && previewHorizontalLayout === 'stretch' && (
+								<SmallResponsiveControl
+									label={__('Fill and Center Menu Items?', 'kadence-blocks')}
+									desktopChildren={
+										<ToggleControl
+											label={''}
+											checked={fillStretch}
+											onChange={(value) => setMetaAttribute(value, 'fillStretch')}
+										/>
+									}
+									tabletChildren={
+										<ToggleControl
+											label={''}
+											checked={fillStretchTablet}
+											onChange={(value) => setMetaAttribute(value, 'fillStretchTablet')}
+										/>
+									}
+									mobileChildren={
+										<ToggleControl
+											label={''}
+											checked={fillStretchMobile}
+											onChange={(value) => setMetaAttribute(value, 'fillStretchMobile')}
+										/>
+									}
+								></SmallResponsiveControl>
+							)}
 							<SmallResponsiveControl
-								label={'Layout Options'}
+								label={__('Other Options', 'kadence-blocks')}
 								desktopChildren={generalToggleControls()}
 								tabletChildren={generalToggleControls('Tablet')}
 								mobileChildren={generalToggleControls('Mobile')}
