@@ -426,6 +426,7 @@ export function Edit(props) {
 
 							<TextControl
 								label={__('Link URL', 'kadence-blocks')}
+								help={__('Links set on the Site Title or Site Tagline are stripped.', 'kadence-blocks')}
 								value={link}
 								placeholder={linkToHomepage ? siteUrl : ''}
 								onChange={(value) =>
