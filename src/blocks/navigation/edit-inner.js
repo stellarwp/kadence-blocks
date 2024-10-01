@@ -750,9 +750,9 @@ export function EditInner(props) {
 		//if there's no orientation set and our parent is an off canvas block, then default the orientation to vertical
 		if (
 			meta &&
-			!metaAttributes['orientation'] &&
-			!metaAttributes['orientationTablet'] &&
-			!metaAttributes['orientationMobile'] &&
+			!metaAttributes.orientation &&
+			!metaAttributes.orientationTablet &&
+			!metaAttributes.orientationMobile &&
 			offCanvasParent
 		) {
 			setMetaAttribute('vertical', 'orientation');

@@ -168,7 +168,7 @@ export function Edit(props) {
 		[`wp-block-kadence-navigation${uniqueID}`]: uniqueID,
 		[`kb-navigation-horizontal-layout-${previewHorizontalLayout}`]: previewHorizontalLayout,
 		[`kb-navigation-orientation-${previewOrientation}`]: previewOrientation,
-		['kb-navigation-layout-stretch-fill']: previewFillStretch,
+		'kb-navigation-layout-stretch-fill': previewFillStretch,
 		[`navigation-desktop-orientation-${previewOrientationDesktop ? previewOrientationDesktop : 'horizontal'}`]:
 			!previewDevice || previewDevice == 'Desktop',
 		[`navigation-tablet-orientation-${previewOrientationTablet ? previewOrientationTablet : 'horizontal'}`]:
