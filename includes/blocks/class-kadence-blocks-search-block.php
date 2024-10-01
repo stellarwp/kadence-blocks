@@ -107,13 +107,33 @@ class Kadence_Blocks_Search_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-icon svg' );
 		$css->add_property( 'stroke', $css->render_color( $attributes['inputIconColor'] ) );
 
-		$css->set_selector( '.kb-search' . $unique_id . ':hover .kb-search-icon svg' );
+		if( !empty($attributes['displayStyle'] ) && $attributes['displayStyle'] === 'modal' ) {
+			$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-input-wrapper:hover .kb-search-icon svg' );
+		} else {
+			$css->set_selector( '.kb-search' . $unique_id . ':hover .kb-search-icon svg' );
+		}
 		$css->add_property( 'stroke', $css->render_color( $attributes['inputIconHoverColor'] ) );
 
 		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-close-btn svg' );
 		$css->add_property( 'stroke', $css->render_color( $attributes['closeIconColor'] ) );
 
-		$css->set_selector( '.kb-search' . $unique_id . ':hover .kb-search-close-btn svg' );
+		// The closeIconSize is a range control, so we need to render it as a range.
+		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-close-btn' );
+		if( !empty( $attributes['closeIconSize'][0] )) {
+			$css->add_property( 'font-size', $attributes['closeIconSize'][0]. 'px' );
+		}
+		if( !empty( $attributes['closeIconSize'][1] )) {
+			$css->set_media_state('tablet');
+			$css->add_property( 'font-size', $attributes['closeIconSize'][1]. 'px' );
+			$css->set_media_state('desktop');
+		}
+		if( !empty( $attributes['closeIconSize'][2] )) {
+			$css->set_media_state('mobile');
+			$css->add_property( 'font-size', $attributes['closeIconSize'][2]. 'px' );
+			$css->set_media_state('desktop');
+		}
+
+		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-close-btn:hover svg' );
 		$css->add_property( 'stroke', $css->render_color( $attributes['closeIconHoverColor'] ) );
 
 		$css->set_selector( '.kb-search.kb-search' . $unique_id . ' form, .kb-search.kb-search' . $unique_id . ' .kb-search-modal-content form form' );
