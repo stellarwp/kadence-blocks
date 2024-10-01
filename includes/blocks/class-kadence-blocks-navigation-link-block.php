@@ -394,19 +394,24 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 				//first sub menu only, no bleed
 				$css->set_selector( '.kb-nav-link-' . $unique_id . ' > .sub-menu.sub-menu.sub-menu.sub-menu.sub-menu' );
 				$css->add_property( '--kb-nav-dropdown-width', $css->render_size( $sized_attributes['megaMenuCustomWidth'], $sized_attributes['megaMenuCustomWidthUnit'] ) );
-				$css->set_selector(
-					'.wp-block-kadence-navigation .navigation[class*="header-navigation-dropdown-animation-fade"] .menu-container ul.menu .kb-nav-link-' . $unique_id . ' > ul.sub-menu'
-				);
-				$css->add_property( '--kb-nav-dropdown-margin-left', '-50%' );
-				$css->add_property( '--kb-nav-dropdown-show-left', '50%' );
-				
-				$css->set_selector(
-					'.wp-block-kadence-navigation .navigation.navigation-dropdown-animation-none .menu-container ul.menu .kb-nav-link-' . $unique_id . ' > ul.sub-menu'
-				);
-				$css->add_property( '--kb-nav-dropdown-transform', 'translate(-50%, 0)' );
-				$css->add_property( '--kb-nav-dropdown-show-left', '50%' );
-				// $css->set_selector( '.header-navigation[class*="header-navigation-dropdown-animation-fade"] #menu-item-' . $item->ID . '.kadence-menu-mega-enabled > .sub-menu' );
-				// $css->add_property( 'margin-left', '-' . ( $data['mega_menu_custom_width'] ? floor( $data['mega_menu_custom_width'] / 2 ) : '400' ) . 'px' );
+				if ( ! empty( $sized_attributes['dropdownHorizontalAlignment'] ) ) {
+					if ( $sized_attributes['dropdownHorizontalAlignment'] == 'center') {
+						$css->add_property( '--kb-nav-dropdown-show-left', '50%' );
+						$css->add_property( '--kb-nav-dropdown-show-right', 'unset' );
+						$css->add_property( '--kb-nav-dropdown-show-transform-x', '-50%' );
+						$css->add_property( '--kb-nav-dropdown-hide-transform-x', '-50%' );
+					} else if ( $sized_attributes['dropdownHorizontalAlignment'] == 'right' ) {
+						$css->add_property( '--kb-nav-dropdown-show-right', '0px' );
+						$css->add_property( '--kb-nav-dropdown-show-left', 'unset' );
+						$css->add_property( '--kb-nav-dropdown-show-transform-x', '0px' );
+						$css->add_property( '--kb-nav-dropdown-hide-transform-x', '0px' );
+					} else if ( $sized_attributes['dropdownHorizontalAlignment'] == 'left' ) {
+						$css->add_property( '--kb-nav-dropdown-show-left', '0px' );
+						$css->add_property( '--kb-nav-dropdown-show-right', 'unset' );
+						$css->add_property( '--kb-nav-dropdown-show-transform-x', '0px' );
+						$css->add_property( '--kb-nav-dropdown-hide-transform-x', '0px' );
+					}
+				}
 			} else if ($sized_attributes['megaMenuWidth'] === 'full' || $sized_attributes['megaMenuWidth'] === '') {
 				//this is handled by a seperate js file
 			} else if ($sized_attributes['megaMenuWidth'] === 'container' || $sized_attributes['megaMenuWidth'] === 'content' ) {		

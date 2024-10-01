@@ -603,6 +603,18 @@
 			"type": "string",
 			"default": "px"
 		},
+		"dropdownHorizontalAlignment": {
+			"type": "string",
+			"default": ""
+		},
+		"dropdownHorizontalAlignmentTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"dropdownHorizontalAlignmentMobile": {
+			"type": "string",
+			"default": ""
+		},
 		"dropdownDivider": {
 			"type": "array",
 			"default": [

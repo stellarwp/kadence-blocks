@@ -222,26 +222,26 @@ $link-color-property: var(
 			}
 		}
 	}
-	.kb-menu-mega-width-custom > .sub-menu {
-		--kb-nav-dropdown-show-transform-y: 0;
-		--kb-nav-dropdown-show-transform-x: -50%;
-		--kb-nav-dropdown-hide-transform-x: -50%;
-		--kb-nav-dropdown-show-left: 50%;
-		&.sub-menu-right-edge {
-			--kb-nav-dropdown-show-left: auto;
-			--kb-nav-dropdown-show-right: 0;
-			--kb-nav-dropdown-show-transform-y: 0;
-			--kb-nav-dropdown-show-transform-x: 0;
-			--kb-nav-dropdown-hide-transform-x: 0;
-		}
-		&.sub-menu-left-edge {
-			--kb-nav-dropdown-show-left: 0;
-			--kb-nav-dropdown-show-right: auto;
-			--kb-nav-dropdown-show-transform-y: 0;
-			--kb-nav-dropdown-show-transform-x: 0;
-			--kb-nav-dropdown-hide-transform-x: 0;
-		}
-	}
+	// .kb-menu-mega-width-custom > .sub-menu {
+	// 	--kb-nav-dropdown-show-transform-y: 0;
+	// 	--kb-nav-dropdown-show-transform-x: -50%;
+	// 	--kb-nav-dropdown-hide-transform-x: -50%;
+	// 	--kb-nav-dropdown-show-left: 50%;
+	// 	&.sub-menu-right-edge {
+	// 		--kb-nav-dropdown-show-left: auto;
+	// 		--kb-nav-dropdown-show-right: 0;
+	// 		--kb-nav-dropdown-show-transform-y: 0;
+	// 		--kb-nav-dropdown-show-transform-x: 0;
+	// 		--kb-nav-dropdown-hide-transform-x: 0;
+	// 	}
+	// 	&.sub-menu-left-edge {
+	// 		--kb-nav-dropdown-show-left: 0;
+	// 		--kb-nav-dropdown-show-right: auto;
+	// 		--kb-nav-dropdown-show-transform-y: 0;
+	// 		--kb-nav-dropdown-show-transform-x: 0;
+	// 		--kb-nav-dropdown-hide-transform-x: 0;
+	// 	}
+	// }
 	// Handle Reveal Animation for horizontal navs, hover and triggered via arrow.
 	.menu-item:not(.kb-nav-link-sub-click):hover > .sub-menu,
 	.menu-item.menu-item--toggled-on > .sub-menu {
@@ -406,8 +406,15 @@ $link-color-property: var(
 	}
 }
 @mixin layout-grid-styles {
+	flex-grow: 10;
+
+	> .navigation {
+		flex-grow: 1;
+	}
 	//only apply grid to top level menu items
 	> .navigation > .menu-container {
+		flex-grow: 1;
+		display: block;
 		& > .menu {
 			display: grid;
 			grid-template-columns: var(--kb-nav-grid-columns, minmax(0, 1fr));
@@ -696,7 +703,8 @@ $link-color-property: var(
 		border-bottom-left-radius: var(--kb-nav-dropdown-border-bottom-left-radius);
 
 		width: var(--kb-nav-dropdown-width);
-		left: var(--kb-nav-dropdown-width);
+		left: var(--kb-nav-dropdown-hide-left);
+		right: var(--kb-nav-dropdown-hide-right);
 		transform: var(
 			--kb-nav-dropdown-transform,
 			translate(var(--kb-nav-dropdown-hide-transform-x, 0), var(--kb-nav-dropdown-hide-transform-y, 0))
