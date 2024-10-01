@@ -95,11 +95,13 @@ class Kadence_Blocks_Header_Column_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return string Returns the block output.
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
+		if( !empty( $block_instance->context['kadence/headerRowLayoutConfig'] ) && $block_instance->context['kadence/headerRowLayoutConfig'] === 'single' && !empty( $attributes['location'] ) && $attributes['location'] !== 'left' ) {
+			$content = '';
+		}
+
 		if ( ! empty( $attributes['location'] ) && ! in_array( $attributes['location'], ['tablet-center', 'tablet-left', 'tablet-right', 'center-left', 'center', 'center-right' ] ) ) {
 			return $content;
 		}
-
-		$html = '';
 
 		$classes = [ 'wp-block-kadence-header-column' ];
 
