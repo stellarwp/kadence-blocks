@@ -468,6 +468,15 @@ export function EditInner(props) {
 		}
 	);
 
+	const contextValue = useMemo(
+		() => ({
+			'kadence/headerPostId': id,
+			'kadence/headerIsSticky': previewIsSticky,
+			'kadence/headerIsTransparent': previewIsTransparent,
+		}),
+		[id, previewIsSticky, previewIsTransparent]
+	);
+
 	if (typeof pagenow !== 'undefined' && ('widgets' === pagenow || 'customize' === pagenow)) {
 		const editPostLink = addQueryArgs('post.php', {
 			post: id,
@@ -1353,13 +1362,7 @@ export function EditInner(props) {
 					help={__('Separate multiple classes with spaces.')}
 				/>
 			</InspectorAdvancedControls>
-			<BlockContextProvider
-				value={{
-					'kadence/headerPostId': id,
-					'kadence/headerIsSticky': previewIsSticky,
-					'kadence/headerIsTransparent': previewIsTransparent,
-				}}
-			>
+			<BlockContextProvider value={contextValue}>
 				<Fragment {...innerBlocksProps} />
 			</BlockContextProvider>
 			<span className="placeholder-ref" ref={setComponentRef} />
