@@ -58,10 +58,6 @@ $fixed_height: 290px;
 		bottom: 0;
 	}
 
-	.visual-container__is-dragging .visual-column-wrapper {
-		z-index: unset;
-	}
-
 	.block-editor-iframe__body & {
 		bottom: 0;
 	}

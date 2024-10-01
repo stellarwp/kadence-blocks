@@ -1,6 +1,5 @@
 import { useMemo, useState } from '@wordpress/element';
 import { get } from 'lodash';
-import classnames from 'classnames';
 import { DragOverlay } from '@dnd-kit/core';
 
 import SelectBlockButton from './selectBlock';
@@ -36,20 +35,15 @@ export default function OffCanvas({ blocks, topLevelBlocks }) {
 	const innerBlocks = useMemo(() => get(blocks, ['innerBlocks'], []), [blocks]);
 	const clientId = get(topLevelBlocks, [2, 'clientId'], '');
 
-	const classNames = classnames({
-		'visual-off-canvas-container': true,
-		'visual-container__is-dragging': activeBlockData !== null,
-	});
-
 	return (
-		<div className={classNames}>
+		<div className={'visual-off-canvas-container'}>
 			<DragDropContext setActiveBlockData={setActiveBlockData}>
 				<OffCanvasRow blocks={innerBlocks} offCanvasClientId={clientId} />
 				{/* This created the element that is visually moved when dragging */}
 				<DragOverlay>
-					{activeBlockData ? (
+					{activeBlockData !== null && (
 						<Block block={{ ...activeBlockData.data.current, clientId: '' }} isPreview={true} />
-					) : null}
+					)}
 				</DragOverlay>
 			</DragDropContext>
 		</div>

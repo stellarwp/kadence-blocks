@@ -1,6 +1,5 @@
 import { useMemo, useState } from '@wordpress/element';
 import { get } from 'lodash';
-import classnames from 'classnames';
 import { DragOverlay } from '@dnd-kit/core';
 
 import SelectBlockButton from './selectBlock';
@@ -9,6 +8,8 @@ import Block from './block';
 import ColumnBlocks from './columnBlocks';
 import DragDropContext from './dragDropContext';
 import { ROW_TO_KEY } from './constants';
+
+const rowPositions = ['top', 'middle', 'bottom'];
 
 const TabletRow = ({ position, blocks }) => {
 	const thisRow = get(blocks, [ROW_TO_KEY[position]], []);
@@ -42,26 +43,20 @@ const TabletRow = ({ position, blocks }) => {
 };
 
 export default function Tablet({ blocks }) {
-	const rowPositions = ['top', 'middle', 'bottom'];
 	const innerBlocks = useMemo(() => get(blocks, ['innerBlocks'], []), [blocks]);
 	const [activeBlockData, setActiveBlockData] = useState(null);
 
-	const classNames = classnames({
-		'visual-tablet-container': true,
-		'visual-container__is-dragging': activeBlockData !== null,
-	});
-
 	return (
-		<div className={classNames}>
+		<div className={'visual-desktop-container'}>
 			<DragDropContext setActiveBlockData={setActiveBlockData}>
 				{rowPositions.map((position) => (
 					<TabletRow key={position} position={position} blocks={innerBlocks} />
 				))}
 				{/* This created the element that is visually moved when dragging */}
 				<DragOverlay>
-					{activeBlockData ? (
+					{activeBlockData !== null && (
 						<Block block={{ ...activeBlockData.data.current, clientId: '' }} isPreview={true} />
-					) : null}
+					)}
 				</DragOverlay>
 			</DragDropContext>
 		</div>
