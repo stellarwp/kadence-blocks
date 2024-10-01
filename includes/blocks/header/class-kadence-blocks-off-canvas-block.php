@@ -203,7 +203,7 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		// Overlay.
-		$css->set_selector( '.kb-off-canvas-overlay' . $unique_id );
+		$css->set_selector( '.wp-block-kadence-off-canvas .kb-off-canvas-overlay' . $unique_id );
 		if ( ! empty( $sized_attributes['pageBackgroundColor'] ) ) {
 			$css->add_property( 'background-color', $css->render_color( $sized_attributes['pageBackgroundColor'] ) );
 		}
