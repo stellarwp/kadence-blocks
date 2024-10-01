@@ -212,18 +212,19 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 
 			if ( $sized_attributes['dropdownHorizontalAlignment'] == 'center') {
 				$css->add_property( '--kb-nav-dropdown-show-left', '50%' );
+				$css->add_property( '--kb-nav-dropdown-show-right', 'unset' );
 				$css->add_property( '--kb-nav-dropdown-show-transform-x', '-50%' );
 				$css->add_property( '--kb-nav-dropdown-hide-transform-x', '-50%' );
 			} else if ( $sized_attributes['dropdownHorizontalAlignment'] == 'right' ) {
 				$css->add_property( '--kb-nav-dropdown-show-right', '0px' );
 				$css->add_property( '--kb-nav-dropdown-show-left', 'unset' );
-				$css->add_property( '--kb-nav-dropdown-show-transform-x', '0' );
-				$css->add_property( '--kb-nav-dropdown-hide-transform-x', '0' );
+				$css->add_property( '--kb-nav-dropdown-show-transform-x', '0px' );
+				$css->add_property( '--kb-nav-dropdown-hide-transform-x', '0px' );
 			} else if ( $sized_attributes['dropdownHorizontalAlignment'] == 'left' ) {
 				$css->add_property( '--kb-nav-dropdown-show-left', '0px' );
 				$css->add_property( '--kb-nav-dropdown-show-right', 'unset' );
-				$css->add_property( '--kb-nav-dropdown-show-transform-x', '0' );
-				$css->add_property( '--kb-nav-dropdown-hide-transform-x', '0' );
+				$css->add_property( '--kb-nav-dropdown-show-transform-x', '0px' );
+				$css->add_property( '--kb-nav-dropdown-hide-transform-x', '0px' );
 			}
 		} else {
 			$css->add_property( '--kb-nav-top-not-last-link-border-bottom', $css->render_border( $sized_attributes['divider'], 'bottom' ) );
