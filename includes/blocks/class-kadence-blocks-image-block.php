@@ -286,7 +286,17 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'line-height', $caption_font['lineHeight'][0] . ( ! isset( $caption_font['lineType'] ) ? 'px' : $caption_font['lineType'] ) );
 			}
 			if ( isset( $caption_font['letterSpacing'] ) && ! empty( $caption_font['letterSpacing'] ) ) {
-				$css->add_property( 'letter-spacing', $caption_font['letterSpacing'] . 'px' );
+				if ( !is_array($caption_font['letterSpacing']) ) {
+					$css->add_property( 'letter-spacing', $caption_font['letterSpacing'] . 'px' );
+				} else {
+					$css->add_property( 'letter-spacing', $caption_font['letterSpacing'][0] . 'px' );
+					$css->set_media_state('tablet');
+					$css->add_property( 'letter-spacing', $caption_font['letterSpacing'][1] . 'px' );
+					$css->set_media_state('mobile');
+					$css->add_property( 'letter-spacing', $caption_font['letterSpacing'][2] . 'px' );
+					$css->set_media_state('desktop');
+				}
+
 			}
 			if ( isset( $caption_font['textTransform'] ) && ! empty( $caption_font['textTransform'] ) ) {
 				$css->add_property( 'text-transform', $caption_font['textTransform'] );
