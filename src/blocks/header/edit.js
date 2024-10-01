@@ -40,8 +40,7 @@ import { buildTemplateFromSelection } from './helpers';
 import { HEADER_INNERBLOCK_DEFAULTS } from './constants';
 
 export function Edit(props) {
-	const { attributes, setAttributes, isSelected, clientId } = props;
-
+	const { attributes, setAttributes, isSelected, clientId, context } = props;
 	const { id, uniqueID } = attributes;
 
 	const [meta, setMeta] = useHeaderProp('meta', id);
@@ -219,7 +218,11 @@ export function Edit(props) {
 				{id > 0 && !isEmpty(post) && post.status !== 'trash' && (
 					<EntityProvider kind="postType" type="kadence_header" id={id}>
 						<EditInner
-							{...props}
+							attributes={attributes}
+							setAttributes={setAttributes}
+							clientId={clientId}
+							context={context}
+							isSelected={isSelected}
 							direct={false}
 							id={id}
 							justCompletedOnboarding={justCompletedOnboarding}
@@ -247,7 +250,11 @@ export function Edit(props) {
 					)}
 				<div {...blockProps}>
 					<EditInner
-						{...props}
+						attributes={attributes}
+						setAttributes={setAttributes}
+						clientId={clientId}
+						context={context}
+						isSelected={isSelected}
 						direct={true}
 						id={postId}
 						justCompletedOnboarding={justCompletedOnboarding}
