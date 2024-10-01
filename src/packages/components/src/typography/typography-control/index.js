@@ -689,6 +689,7 @@ class TypographyControls extends Component {
 									min={ -5 }
 									max={ 25 }
 									step={ 0.1 }
+									reset={true}
 								/>
 							) }
 						</>

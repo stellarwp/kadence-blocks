@@ -111,7 +111,7 @@ export default function ResponsiveMeasureRangeControl( {
 			if ( objectSameFill( tabletValue, newValue ) ) {
 				onChangeTablet( newValue );
 			}
-		} else {	
+		} else {
 			const newValue = convertValueToFromCustom( value );
 			if ( objectSameFill( value, newValue ) ) {
 				onChange( newValue );
@@ -332,7 +332,7 @@ export default function ResponsiveMeasureRangeControl( {
 					{ label && (
 						<div className="kadence-component__header__title kadence-radio-range__title">
 							<label className="components-base-control__label">{ label }</label>
-							{ reset && (
+							{ reset === true && (realControl !== 'linked' || (realControl === 'linked' && realIsCustomControl === true)) && (
 								<div className='title-reset-wrap'>
 									<Button
 										className="is-reset is-single"
