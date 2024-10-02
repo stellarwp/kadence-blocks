@@ -120,7 +120,14 @@ class Kadence_Blocks_Header_CPT_Controller {
 	padding:8px;
 	margin: 0;
 }
-.post-type-kadence_header .is-root-container > .wp-block {max-width: none;} .post-type-kadence_header .editor-styles-wrapper .is-root-container > .wp-block {max-width: none;}
+	.post-type-kadence_header .is-root-container {
+		padding: 0 !important;
+	}
+.post-type-kadence_header .is-root-container > .wp-block {max-width: none;} .post-type-kadence_header .is-root-container > .wp-block.wp-block-kadence-header.wp-block-kadence-header.wp-block-kadence-header.wp-block-kadence-header.wp-block-kadence-header.wp-block-kadence-header:not(.specificity) {
+    max-width: none !important;
+    margin-left: unset !important;
+    margin-right: unset !important;
+}.post-type-kadence_header .editor-styles-wrapper .is-root-container > .wp-block {max-width: none;}
 .post-type-kadence_header .editor-styles-wrapper .has-global-padding {
 	padding: 0;
 }
