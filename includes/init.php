@@ -130,7 +130,7 @@ function kadence_blocks_add_global_gutenberg_inline_styles() {
 		$css .= '.wp-block-kadence-rowlayout > .kb-theme-content-width {
 			max-width:var(--wp--style--global--content-size);
 		}';
-		$css .= '.kb-header-container { --global-content-width: var(--wp--style--global--content-size) }';
+		$css .= '.kb-header-container { --global-content-width: var(--wp--style--global--wide-size, var(--wp--style--global--content-size)) }';
 	}
 	$css .= ':root {
 		--global-kb-spacing-xxs: 0.5rem;
