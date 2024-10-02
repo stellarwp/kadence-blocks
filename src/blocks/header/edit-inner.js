@@ -52,7 +52,7 @@ import {
 	SelectPostFromPostType,
 	CopyPasteAttributes,
 } from '@kadence/components';
-import { getPreviewSize, mouseOverVisualizer, arrayStringToInt, useElementWidth } from '@kadence/helpers';
+import { getPreviewSize, mouseOverVisualizer, arrayStringToInt } from '@kadence/helpers';
 
 import { BackendStyles, PopoverTutorial } from './components';
 import { HEADER_ALLOWED_BLOCKS } from './constants';
@@ -1149,9 +1149,9 @@ export function EditInner(props) {
 						<KadencePanelBody panelName={'kb-header-padding'}>
 							<ResponsiveMeasureRangeControl
 								label={__('Padding', 'kadence-blocks')}
-								value={padding}
-								tabletValue={tabletPadding}
-								mobileValue={mobilePadding}
+								value={arrayStringToInt(padding)}
+								tabletValue={arrayStringToInt(tabletPadding)}
+								mobileValue={arrayStringToInt(mobilePadding)}
 								onChange={(value) => {
 									setMetaAttribute(value.map(String), 'padding');
 								}}
@@ -1178,9 +1178,9 @@ export function EditInner(props) {
 							/>
 							<ResponsiveMeasureRangeControl
 								label={__('Margin', 'kadence-blocks')}
-								value={margin}
-								tabletValue={tabletMargin}
-								mobileValue={mobileMargin}
+								value={arrayStringToInt(margin)}
+								tabletValue={arrayStringToInt(tabletMargin)}
+								mobileValue={arrayStringToInt(mobileMargin)}
 								onChange={(value) => {
 									setMetaAttribute(value.map(String), 'margin');
 								}}

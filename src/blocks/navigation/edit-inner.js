@@ -36,7 +36,7 @@ import {
 	KadenceWebfontLoader,
 	KadenceSubPanelBody,
 } from '@kadence/components';
-import { getPreviewSize, mouseOverVisualizer, showSettings } from '@kadence/helpers';
+import { getPreviewSize, mouseOverVisualizer, showSettings, arrayStringToInt } from '@kadence/helpers';
 
 import {
 	InspectorControls,
@@ -2251,9 +2251,9 @@ export function EditInner(props) {
 						<KadencePanelBody panelName={'kb-navigation-padding'}>
 							<ResponsiveMeasureRangeControl
 								label={__('Padding', 'kadence-blocks')}
-								value={padding}
-								tabletValue={tabletPadding}
-								mobileValue={mobilePadding}
+								value={arrayStringToInt(padding)}
+								tabletValue={arrayStringToInt(tabletPadding)}
+								mobileValue={arrayStringToInt(mobilePadding)}
 								onChange={(value) => {
 									setMetaAttribute(value.map(String), 'padding');
 								}}
@@ -2280,9 +2280,9 @@ export function EditInner(props) {
 							/>
 							<ResponsiveMeasureRangeControl
 								label={__('Margin', 'kadence-blocks')}
-								value={margin}
-								tabletValue={tabletMargin}
-								mobileValue={mobileMargin}
+								value={arrayStringToInt(margin)}
+								tabletValue={arrayStringToInt(tabletMargin)}
+								mobileValue={arrayStringToInt(mobileMargin)}
 								onChange={(value) => {
 									setMetaAttribute(value.map(String), 'margin');
 								}}
@@ -2309,9 +2309,9 @@ export function EditInner(props) {
 							/>
 							<ResponsiveMeasureRangeControl
 								label={__('Nav Link Padding', 'kadence-blocks')}
-								value={paddingLink}
-								tabletValue={tabletPaddingLink}
-								mobileValue={mobilePaddingLink}
+								value={arrayStringToInt(paddingLink)}
+								tabletValue={arrayStringToInt(tabletPaddingLink)}
+								mobileValue={arrayStringToInt(mobilePaddingLink)}
 								onChange={(value) => {
 									setMetaAttribute(value.map(String), 'paddingLink');
 								}}
@@ -2336,9 +2336,9 @@ export function EditInner(props) {
 							/>
 							<ResponsiveMeasureRangeControl
 								label={__('Nav Link Margin', 'kadence-blocks')}
-								value={marginLink}
-								tabletValue={tabletMarginLink}
-								mobileValue={mobileMarginLink}
+								value={arrayStringToInt(marginLink)}
+								tabletValue={arrayStringToInt(tabletMarginLink)}
+								mobileValue={arrayStringToInt(mobileMarginLink)}
 								onChange={(value) => {
 									setMetaAttribute(value.map(String), 'marginLink');
 								}}
