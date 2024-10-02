@@ -54,6 +54,9 @@ $admin-bar-height-mobile: 46px;
 		padding-right: var(--kb-nav-canvas-padding-right, var(--global-kb-spacing-md, 2rem));
 		padding-bottom: var(--kb-nav-canvas-padding-bottom, var(--global-kb-spacing-md, 2rem));
 		padding-left: var(--kb-nav-canvas-padding-left, var(--global-kb-spacing-md, 2rem));
+		> .wp-block-kadence-column {
+			min-height: unset;
+		}
 	}
 	&.show-off-canvas {
 		display: block;
