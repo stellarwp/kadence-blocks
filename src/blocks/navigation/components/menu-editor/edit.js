@@ -8,7 +8,7 @@ import { PREVENT_BLOCK_DELETE } from './constants';
 import { moreHorizontal, edit, trash, plus } from '@wordpress/icons';
 import { memo } from 'react';
 
-import { DndContext } from '@dnd-kit/core';
+import { DndContext, useSensor, useSensors, PointerSensor, DragOverlay } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 
 const DragHandle = memo((props) => (
@@ -19,7 +19,7 @@ const DragHandle = memo((props) => (
 	</div>
 ));
 
-function BlockItem({ thisBlock, activeBlock, toggleCollapse, collapsed }) {
+function BlockItem({ thisBlock, activeBlock, toggleCollapse, collapsed, isOver, dropZone, isPreview = false }) {
 	const forceOpenInEditor = get(thisBlock, ['attributes', 'forceOpenInEditor'], false);
 	const [isEditing, setIsEditing] = useState(forceOpenInEditor);
 	const parentProps = {};
@@ -45,13 +45,13 @@ function BlockItem({ thisBlock, activeBlock, toggleCollapse, collapsed }) {
 		labelOrTitle = get(blockMeta, ['title'], '');
 	}
 
-	const depth = () => {
+	const depth = useMemo(() => {
 		if (thisBlock.depth === 0) {
 			return 0;
 		}
 
 		return thisBlock.depth * 20 + 30;
-	};
+	}, [thisBlock.depth]);
 
 	const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
 		id: thisBlock.clientId,
@@ -61,34 +61,55 @@ function BlockItem({ thisBlock, activeBlock, toggleCollapse, collapsed }) {
 		},
 	});
 
-	const style = transform
-		? {
-				backgroundColor: activeBlock ? 'rgba(0, 0, 0, 0.1)' : 'transparent',
-				transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-				marginLeft: depth() + 'px',
-		  }
-		: {
-				marginLeft: depth() + 'px',
-		  };
+	const style = useMemo(() => {
+		const styles = {
+			marginLeft: depth + 'px',
+			transition,
+			position: 'relative',
+			zIndex: activeBlock ? 1 : 'auto',
+		};
+
+		if (isPreview && transform) {
+			styles.transform = `translate3d(${transform.x}px, ${transform.y}px, 0)`;
+		}
+
+		return styles;
+	}, [depth, transition, activeBlock]);
+
+	const menuBlockStyle = useMemo(() => {
+		if (isPreview) {
+			return {
+				background: '#eee',
+				opacity: 0.8,
+				position: 'relative',
+				top: '-10px',
+				left: '-10px',
+			};
+		}
+
+		return {
+			opacity: activeBlock ? 0.5 : 1,
+		};
+	}, [activeBlock]);
 
 	parentProps.ref = setNodeRef;
 	parentProps.style = style;
 	const dragHandleProps = { ...listeners, ...attributes };
 
 	const isPostType =
-		thisBlock.attributes.kind === 'post-type' ||
-		thisBlock.attributes.type === 'post' ||
-		thisBlock.attributes.type === 'page';
+		thisBlock?.attributes?.kind === 'post-type' ||
+		thisBlock?.attributes?.type === 'post' ||
+		thisBlock?.attributes?.type === 'page';
 	const hasSyncedLink =
 		isPostType &&
-		thisBlock.attributes.kind === 'post-type' &&
-		thisBlock.attributes.id &&
-		!thisBlock.attributes.disableLink;
+		thisBlock?.attributes?.kind === 'post-type' &&
+		thisBlock?.attributes?.id &&
+		!thisBlock?.attributes?.disableLink;
 
 	return (
 		<div {...parentProps}>
-			<div className={`menu-block ${!hasChildren ? 'no-children' : ''}`}>
-				<DragHandle {...dragHandleProps} />
+			<div className={`menu-block ${!hasChildren ? 'no-children' : ''}`} style={menuBlockStyle}>
+				{thisBlock.name === 'kadence/navigation-link' && <DragHandle {...dragHandleProps} />}
 
 				{/* Expand all for the time being */}
 				{hasChildren && (
@@ -122,7 +143,35 @@ function BlockItem({ thisBlock, activeBlock, toggleCollapse, collapsed }) {
 					]}
 				/>
 			</div>
-			{isEditing && thisBlock.name == 'kadence/navigation-link' && (
+			{isOver && (
+				<>
+					{dropZone === 'before' && (
+						<div
+							style={{
+								position: 'absolute',
+								left: 0,
+								right: 0,
+								height: '2px',
+								backgroundColor: 'rgba(0, 120, 260, 0.8)',
+								top: '-1px',
+							}}
+						/>
+					)}
+					{dropZone === 'child' && (
+						<div
+							style={{
+								position: 'absolute',
+								right: 0,
+								left: `${depth + 75}px`,
+								height: '2px',
+								backgroundColor: 'rgba(0, 120, 260, 0.8)',
+								bottom: '-1px',
+							}}
+						/>
+					)}
+				</>
+			)}
+			{isEditing && thisBlock.name === 'kadence/navigation-link' && (
 				<div
 					key={thisBlock.clientId}
 					style={{
@@ -196,9 +245,20 @@ const deleteBlock = (clientId) => {
 export default function MenuEdit({ blocks }) {
 	const [collapsed, setCollapsed] = useState([]);
 	const [activeBlock, setActiveBlock] = useState(null);
+	const [activeBlockLabel, setActiveBlockLabel] = useState(null);
+	const [dropTarget, setDropTarget] = useState(null);
+
+	const sensors = useSensors(
+		useSensor(PointerSensor, {
+			activationConstraint: {
+				distance: 8,
+			},
+		})
+	);
 
 	function handleDragStart({ active }) {
 		setActiveBlock(active.id);
+		setActiveBlockLabel(active.data.current.attributes.label);
 	}
 
 	const getIndex = (clientId) => {
@@ -206,42 +266,84 @@ export default function MenuEdit({ blocks }) {
 	};
 
 	function handleDragOver({ active, over }) {
-		if (over && active) {
-			let destinationClientId = over.id;
-			const currentClientID = active.id;
+		if (over) {
+			const activeId = active.id;
+			const overId = over.id;
+			const overBlock = wp.data.select('core/block-editor').getBlock(overId);
 
-			const parentClientID = wp.data.select('core/block-editor').getBlockRootClientId(currentClientID);
-			const destinationParentClientID = wp.data
-				.select('core/block-editor')
-				.getBlockRootClientId(destinationClientId);
-			const newIndex = getIndex(destinationClientId);
-			const currentIndex = getIndex(currentClientID);
-			const destName = wp.data.select('core/block-editor').getBlockName(destinationClientId);
-			const parentName = wp.data.select('core/block-editor').getBlockName(parentClientID);
+			let dropZone = 'before';
 
-			// We're moving within the same parent
-			if (parentClientID === destinationParentClientID) {
-				destinationClientId = parentClientID;
+			// Calculate the horizontal distance from the left edge of the over item
+			const horizontalDistance = active.rect.current.translated.left - over.rect.left;
+
+			// Determine if we're dropping as a child based on horizontal position
+			if (
+				overBlock.name === 'kadence/navigation-link' &&
+				horizontalDistance > 80 &&
+				activeId !== overId &&
+				!isParentOf(activeId, overId)
+			) {
+				dropZone = 'child';
 			}
 
-			// Sorting into same position, no action needed.
-			if (destinationClientId === parentClientID && newIndex === currentIndex) {
-				return;
-			}
-
-			// clientID, fromRootClientId, toRootClientId, newIndex
-			wp.data
-				.dispatch('core/block-editor')
-				.moveBlockToPosition(currentClientID, parentClientID, destinationClientId, newIndex);
+			setDropTarget({ id: overId, dropZone });
+		} else {
+			setDropTarget(null);
 		}
 	}
 
-	function handleDragEnd({ active, over }) {
-		setActiveBlock(null);
+	function isParentOf(potentialParentId, childId) {
+		let currentParentId = wp.data.select('core/block-editor').getBlockRootClientId(childId);
+		while (currentParentId) {
+			if (currentParentId === potentialParentId) {
+				return true;
+			}
+			currentParentId = wp.data.select('core/block-editor').getBlockRootClientId(currentParentId);
+		}
+		return false;
 	}
 
-	function handleDragCancel() {
+	function handleDragEnd({ active, over }) {
+		if (over && active.id !== over.id) {
+			const activeId = active.id;
+			const overId = over.id;
+
+			const activeBlock = wp.data.select('core/block-editor').getBlock(activeId);
+			const overBlock = wp.data.select('core/block-editor').getBlock(overId);
+
+			const activeParentId = wp.data.select('core/block-editor').getBlockRootClientId(activeId);
+			const overParentId = wp.data.select('core/block-editor').getBlockRootClientId(overId);
+
+			const newIndex = wp.data.select('core/block-editor').getBlockIndex(overId);
+
+			if (dropTarget.dropZone === 'child') {
+				// Moving as a child
+				wp.data.dispatch('core/block-editor').moveBlockToPosition(activeId, activeParentId, overId, 0);
+			} else if (!overParentId && activeParentId) {
+				// Moving from a nested position to the root
+				wp.data.dispatch('core/block-editor').moveBlockToPosition(activeId, activeParentId, '', newIndex);
+			} else {
+				// Moving to a new position at the same level
+				wp.data
+					.dispatch('core/block-editor')
+					.moveBlockToPosition(activeId, activeParentId, overParentId, newIndex);
+			}
+
+			// Update the block's attributes if necessary
+			if (dropTarget.dropZone === 'child' && activeBlock.name === 'kadence/navigation-link') {
+				wp.data.dispatch('core/block-editor').updateBlockAttributes(activeId, {
+					parentId: overId,
+				});
+			} else if (!overParentId && activeParentId && activeBlock.name === 'kadence/navigation-link') {
+				wp.data.dispatch('core/block-editor').updateBlockAttributes(activeId, {
+					parentId: '',
+				});
+			}
+		}
+
 		setActiveBlock(null);
+		setActiveBlockLabel(null);
+		setDropTarget(null);
 	}
 
 	function hideCollapsedItems(array, idsToCollapse) {
@@ -303,11 +405,15 @@ export default function MenuEdit({ blocks }) {
 	};
 
 	const flattenedItems = useMemo(() => {
-		// Foreach block in blocks, add a property called children
-		// This will be an array of all the innerBlocks
 		const flat = flattenBlocks(blocks);
-		return hideCollapsedItems(flat, collapsed);
-	}, [blocks, collapsed]);
+
+		let collapsedAndActive = collapsed;
+		if (activeBlock) {
+			collapsedAndActive = [...collapsed, activeBlock];
+		}
+
+		return hideCollapsedItems(flat, collapsedAndActive);
+	}, [blocks, collapsed, activeBlock]);
 
 	const sortedIds = useMemo(() => flattenedItems.map(({ id }) => id), [flattenedItems]);
 
@@ -317,9 +423,9 @@ export default function MenuEdit({ blocks }) {
 				<p>{__('Insert links to get started.', 'kadence-blocks')}</p>
 			) : (
 				<DndContext
-					// collisionDetection={closestCenter}
+					sensors={sensors}
 					onDragStart={handleDragStart}
-					onDragOver={debounce(handleDragOver, 50)}
+					onDragMove={handleDragOver}
 					onDragEnd={handleDragEnd}
 				>
 					<SortableContext items={sortedIds} strategy={verticalListSortingStrategy}>
@@ -330,9 +436,28 @@ export default function MenuEdit({ blocks }) {
 								thisBlock={block}
 								toggleCollapse={toggleCollapse}
 								collapsed={collapsed.includes(block.clientId)}
+								isOver={dropTarget && dropTarget.id === block.clientId}
+								dropZone={dropTarget && dropTarget.id === block.clientId ? dropTarget.dropZone : null}
 							/>
 						))}
 					</SortableContext>
+					<DragOverlay>
+						<BlockItem
+							activeBlock={true}
+							key={activeBlock}
+							isPreview={true}
+							thisBlock={{
+								clientId: activeBlock,
+								depth: 0,
+								name: 'kadence/navigation-link',
+								attributes: { label: activeBlockLabel ? activeBlockLabel : 'Kadence Link' },
+							}}
+							toggleCollapse={toggleCollapse}
+							collapsed={collapsed.includes(activeBlock)}
+							isOver={false}
+							dropZone={false}
+						/>
+					</DragOverlay>
 				</DndContext>
 			)}
 		</div>
