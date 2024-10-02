@@ -59,19 +59,13 @@ export default function SelectOrCreatePlaceholder({
 			options,
 		},
 		{
-			label: __('WordPress Menus', 'kadence-blocks'),
+			label: __('Import WordPress Menu', 'kadence-blocks'),
 			options: menuOptions,
 		},
 	];
 
 	const groupedOptionsHTML = groupedOptions.map((group, index) => (
 		<>
-			{index === 0 ||
-				(index > 0 && group.options?.length !== 0 && (
-					<option value="0" disabled>
-						{__('Make selection…', 'kadence-blocks')}
-					</option>
-				))}
 			{group.options?.length && (
 				<optgroup label={group.label}>
 					{group.options.map((options) => (
@@ -151,6 +145,9 @@ export default function SelectOrCreatePlaceholder({
 		>
 			<form className="kb-select-or-create-placeholder__actions">
 				<SelectControl label={label} value={selected} onChange={setSelected} hideLabelFromVision>
+					<option value="0" disabled>
+						{__('Make selection…', 'kadence-blocks')}
+					</option>
 					{groupedOptionsHTML}
 				</SelectControl>
 				<Button
