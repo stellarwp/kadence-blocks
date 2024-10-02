@@ -7,8 +7,7 @@ import { createBlock } from '@wordpress/blocks';
 
 const postMeta = {
 	_kad_navigation_orientation: 'horizontal',
-	_kad_navigation_stretch: '1',
-	_kad_navigation_fillStretch: '1',
+	_kad_navigation_stretchFill: 'fill',
 	_kad_navigation_collapseSubMenus: '1',
 	_kad_navigation_collapseSubMenusTablet: '1',
 	_kad_navigation_collapseSubMenusMobile: '1',

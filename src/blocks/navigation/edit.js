@@ -71,9 +71,9 @@ export function Edit(props) {
 		orientation: meta?._kad_navigation_orientation,
 		orientationTablet: meta?._kad_navigation_orientationTablet,
 		orientationMobile: meta?._kad_navigation_orientationMobile,
-		fillStretch: meta?._kad_navigation_fillStretch,
-		fillStretchTablet: meta?._kad_navigation_fillStretchTablet,
-		fillStretchMobile: meta?._kad_navigation_fillStretchMobile,
+		stretchFill: meta?._kad_navigation_stretchFill,
+		stretchFillTablet: meta?._kad_navigation_stretchFillTablet,
+		stretchFillMobile: meta?._kad_navigation_stretchFillMobile,
 		horizontalLayout: meta?._kad_navigation_horizontalLayout,
 		horizontalLayoutTablet: meta?._kad_navigation_horizontalLayoutTablet,
 		horizontalLayoutMobile: meta?._kad_navigation_horizontalLayoutMobile,
@@ -86,9 +86,9 @@ export function Edit(props) {
 		orientation,
 		orientationTablet,
 		orientationMobile,
-		fillStretch,
-		fillStretchTablet,
-		fillStretchMobile,
+		stretchFill,
+		stretchFillTablet,
+		stretchFillMobile,
 		horizontalLayout,
 		horizontalLayoutTablet,
 		horizontalLayoutMobile,
@@ -157,7 +157,7 @@ export function Edit(props) {
 		horizontalLayoutTablet,
 		horizontalLayoutMobile
 	);
-	const previewFillStretch = getPreviewSize(previewDevice, fillStretch, fillStretchTablet, fillStretchMobile);
+	const previewStretchFill = getPreviewSize(previewDevice, stretchFill, stretchFillTablet, stretchFillMobile);
 	const previewOrientation = getPreviewSize(
 		previewDevice,
 		previewOrientationDesktop ? previewOrientationDesktop : 'horizontal',
@@ -168,7 +168,7 @@ export function Edit(props) {
 		[`wp-block-kadence-navigation${uniqueID}`]: uniqueID,
 		[`kb-navigation-horizontal-layout-${previewHorizontalLayout}`]: previewHorizontalLayout,
 		[`kb-navigation-orientation-${previewOrientation}`]: previewOrientation,
-		'kb-navigation-layout-stretch-fill': previewFillStretch,
+		'kb-navigation-layout-stretch-fill': 'fill' === previewStretchFill,
 		[`navigation-desktop-orientation-${previewOrientationDesktop ? previewOrientationDesktop : 'horizontal'}`]:
 			!previewDevice || previewDevice == 'Desktop',
 		[`navigation-tablet-orientation-${previewOrientationTablet ? previewOrientationTablet : 'horizontal'}`]:

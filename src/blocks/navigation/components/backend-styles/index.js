@@ -49,7 +49,7 @@ export default function BackendStyles(props) {
 		spacingMobile,
 		spacingUnit,
 		stretch,
-		fillStretch,
+		stretchFill,
 		parentActive,
 		parentActiveTablet,
 		parentActiveMobile,
@@ -510,12 +510,6 @@ export default function BackendStyles(props) {
 	css.add_property(
 		'--kb-nav-column-gap',
 		css.render_size(previewNavigationHorizontalSpacing, spacingUnit),
-		previewNavigationHorizontalSpacing
-	);
-
-	css.add_property(
-		'--kb-nav-link-underline-width',
-		'calc( 100% - ' + css.render_size(previewNavigationHorizontalSpacing, spacingUnit) + ' )',
 		previewNavigationHorizontalSpacing
 	);
 	css.add_property(

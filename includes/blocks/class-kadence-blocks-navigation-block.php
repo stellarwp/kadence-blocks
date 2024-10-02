@@ -140,15 +140,14 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 	public function sized_dynamic_styles( $css, $attributes, $unique_id, $size = 'Desktop' ) {
 		$sized_attributes = $css->get_sized_attributes_auto( $attributes, $size, false );
 		$sized_attributes_inherit = $css->get_sized_attributes_auto( $attributes, $size );
-		$navigation_horizontal_spacing = $sized_attributes['spacing'][1];
-		$navigation_vertical_spacing = $sized_attributes['spacing'][0];
+		$navigation_horizontal_spacing = isset( $sized_attributes['spacing'][1] ) ? $sized_attributes['spacing'][1] : '';
+		$navigation_vertical_spacing = isset( $sized_attributes['spacing'][0] ) ? $sized_attributes['spacing'][0] : '';
 
 		$css->set_media_state( strtolower( $size ) );
 
 		//no added specificty needed for these variables
 		//these variable will slot into selectors found in the static stylesheet.
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id );
-		$css->add_property( '--kb-nav-link-underline-width', 'calc( 100% - ' . $css->render_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) . ' )', $navigation_horizontal_spacing );
 		$css->add_property( '--kb-nav-top-link-color-active-ancestor', $css->render_color( $sized_attributes['linkColorActive']), $sized_attributes['parentActive'] );
 		$css->add_property( '--kb-nav-top-link-background-active-ancestor', $css->render_color( $sized_attributes['backgroundActive']), $sized_attributes['parentActive'] );
 		$css->add_property( '--kb-nav-dropdown-link-color', $css->render_color( $sized_attributes['linkColorDropdown'] ));		
@@ -193,7 +192,7 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $navigation_vertical_spacing ) && is_numeric( $navigation_vertical_spacing ) ) {
 			$css->add_property( '--kb-nav-row-gap', $css->render_size( $navigation_vertical_spacing, $attributes['spacingUnit'] ) );
 		}
-		if ( isset( $navigation_vertical_spacing ) && is_numeric( $navigation_vertical_spacing ) ) {
+		if ( isset( $navigation_horizontal_spacing ) && is_numeric( $navigation_horizontal_spacing ) ) {
 			$css->add_property( '--kb-nav-column-gap', $css->render_size( $navigation_horizontal_spacing, $attributes['spacingUnit'] ) );
 		}
 		if ( $sized_attributes['orientation'] != 'vertical' ) {
@@ -350,9 +349,9 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$horizontal_layout_tablet = $css->get_inherited_value( $nav_attributes['horizontalLayout'], $nav_attributes['horizontalLayoutTablet'], $nav_attributes['horizontalLayoutMobile'], 'Tablet' );
 		$horizontal_layout_mobile = $css->get_inherited_value( $nav_attributes['horizontalLayout'], $nav_attributes['horizontalLayoutTablet'], $nav_attributes['horizontalLayoutMobile'], 'Mobile' );
 
-		$fill_stretch = $css->get_inherited_value( $nav_attributes['fillStretch'], $nav_attributes['fillStretchTablet'], $nav_attributes['fillStretchMobile'], 'Desktop' );
-		$fill_stretch_tablet = $css->get_inherited_value( $nav_attributes['fillStretch'], $nav_attributes['fillStretchTablet'], $nav_attributes['fillStretchMobile'], 'Tablet' );
-		$fill_stretch_mobile = $css->get_inherited_value( $nav_attributes['fillStretch'], $nav_attributes['fillStretchTablet'], $nav_attributes['fillStretchMobile'], 'Mobile' );
+		$fill_stretch = $css->get_inherited_value( $nav_attributes['stretchFill'], $nav_attributes['stretchFillTablet'], $nav_attributes['stretchFillMobile'], 'Desktop' );
+		$fill_stretch_tablet = $css->get_inherited_value( $nav_attributes['stretchFill'], $nav_attributes['stretchFillTablet'], $nav_attributes['stretchFillMobile'], 'Tablet' );
+		$fill_stretch_mobile = $css->get_inherited_value( $nav_attributes['stretchFill'], $nav_attributes['stretchFillTablet'], $nav_attributes['stretchFillMobile'], 'Mobile' );
 		$orientation = $css->get_inherited_value( $nav_attributes['orientation'], $nav_attributes['orientationTablet'], $nav_attributes['orientationMobile'], 'Desktop' );
 		$orientation_tablet = $css->get_inherited_value( $nav_attributes['orientation'], $nav_attributes['orientationTablet'], $nav_attributes['orientationMobile'], 'Tablet' );
 		$orientation_mobile = $css->get_inherited_value( $nav_attributes['orientation'], $nav_attributes['orientationTablet'], $nav_attributes['orientationMobile'], 'Mobile' );
@@ -381,9 +380,9 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$wrapper_classes[] = 'kb-nav-desktop-horizontal-layout-' . ( $horizontal_layout );
 		$wrapper_classes[] = 'kb-nav-tablet-horizontal-layout-' . ( $horizontal_layout_tablet );
 		$wrapper_classes[] = 'kb-nav-mobile-horizontal-layout-' . ( $horizontal_layout_mobile );
-		$wrapper_classes[] = 'navigation-desktop-layout-fill-stretch-' . ( $fill_stretch ? 'true' : 'false' );
-		$wrapper_classes[] = 'navigation-tablet-layout-fill-stretch-' . ( $fill_stretch_tablet ? 'true' : 'false' );
-		$wrapper_classes[] = 'navigation-mobile-layout-fill-stretch-' . ( $fill_stretch_mobile ? 'true' : 'false' );
+		$wrapper_classes[] = 'navigation-desktop-layout-fill-stretch-' . ( 'fill' === $fill_stretch ? 'true' : 'false' );
+		$wrapper_classes[] = 'navigation-tablet-layout-fill-stretch-' . ( 'fill' === $fill_stretch_tablet ? 'true' : 'false' );
+		$wrapper_classes[] = 'navigation-mobile-layout-fill-stretch-' . ( 'fill' === $fill_stretch_mobile ? 'true' : 'false' );
 		$wrapper_classes[] = 'navigation-desktop-orientation-' . ( $orientation ? $orientation : 'horizontal' );
 		$wrapper_classes[] = 'navigation-tablet-orientation-' . ( $orientation_tablet ? $orientation_tablet : 'horizontal' );
 		$wrapper_classes[] = 'navigation-mobile-orientation-' . ( $orientation_mobile ? $orientation_mobile : 'horizontal' );

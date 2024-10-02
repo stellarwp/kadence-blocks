@@ -152,9 +152,9 @@ export function EditInner(props) {
 		spacingTablet: meta?._kad_navigation_spacingTablet,
 		spacingMobile: meta?._kad_navigation_spacingMobile,
 		spacingUnit: meta?._kad_navigation_spacingUnit,
-		fillStretch: meta?._kad_navigation_fillStretch,
-		fillStretchTablet: meta?._kad_navigation_fillStretchTablet,
-		fillStretchMobile: meta?._kad_navigation_fillStretchMobile,
+		stretchFill: meta?._kad_navigation_stretchFill,
+		stretchFillTablet: meta?._kad_navigation_stretchFillTablet,
+		stretchFillMobile: meta?._kad_navigation_stretchFillMobile,
 		horizontalLayout: meta?._kad_navigation_horizontalLayout,
 		horizontalLayoutTablet: meta?._kad_navigation_horizontalLayoutTablet,
 		horizontalLayoutMobile: meta?._kad_navigation_horizontalLayoutMobile,
@@ -479,9 +479,9 @@ export function EditInner(props) {
 		horizontalGrid,
 		horizontalGridTablet,
 		horizontalGridMobile,
-		fillStretch,
-		fillStretchTablet,
-		fillStretchMobile,
+		stretchFill,
+		stretchFillTablet,
+		stretchFillMobile,
 		parentActive,
 		parentActiveTablet,
 		parentActiveMobile,
@@ -864,8 +864,6 @@ export function EditInner(props) {
 	const generalToggleControls = (size = '') => {
 		const collapseSubMenusValue = metaAttributes['collapseSubMenus' + size];
 		const parentTogglesMenusValue = metaAttributes['parentTogglesMenus' + size];
-		const stretchValue = metaAttributes['stretch' + size];
-		const fillStretchValue = metaAttributes['fillStretch' + size];
 		const parentActiveValue = metaAttributes['parentActive' + size];
 		const orientationValue = metaAttributes['orientation' + size];
 
@@ -1398,30 +1396,24 @@ export function EditInner(props) {
 								/>
 							)}
 							{previewOrientation !== 'vertical' && previewHorizontalLayout === 'stretch' && (
-								<SmallResponsiveControl
+								<ResponsiveSelectControl
 									label={__('Fill and Center Menu Items?', 'kadence-blocks')}
-									desktopChildren={
-										<ToggleControl
-											label={''}
-											checked={fillStretch}
-											onChange={(value) => setMetaAttribute(value, 'fillStretch')}
-										/>
-									}
-									tabletChildren={
-										<ToggleControl
-											label={''}
-											checked={fillStretchTablet}
-											onChange={(value) => setMetaAttribute(value, 'fillStretchTablet')}
-										/>
-									}
-									mobileChildren={
-										<ToggleControl
-											label={''}
-											checked={fillStretchMobile}
-											onChange={(value) => setMetaAttribute(value, 'fillStretchMobile')}
-										/>
-									}
-								></SmallResponsiveControl>
+									value={stretchFill}
+									tabletValue={stretchFillTablet}
+									mobileValue={stretchFillMobile}
+									options={[
+										{ value: 'standard', label: __('Standard', 'kadence-blocks') },
+										{ value: 'fill', label: __('Fill and Center', 'kadence-blocks') },
+									]}
+									tabletOptions={[
+										{ value: '', label: __('Inherit', 'kadence-blocks') },
+										{ value: 'standard', label: __('Standard', 'kadence-blocks') },
+										{ value: 'fill', label: __('Fill and Center', 'kadence-blocks') },
+									]}
+									onChange={(value) => setMetaAttribute(value, 'stretchFill')}
+									onChangeTablet={(value) => setMetaAttribute(value, 'stretchFillTablet')}
+									onChangeMobile={(value) => setMetaAttribute(value, 'stretchFillMobile')}
+								/>
 							)}
 							<SmallResponsiveControl
 								label={__('Other Options', 'kadence-blocks')}
