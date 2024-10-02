@@ -1254,8 +1254,13 @@ export function EditInner(props) {
 								tabletValue={orientationTablet}
 								mobileValue={orientationMobile}
 								options={[
-									{ value: 'horizontal', label: __('Horizontal') },
-									{ value: 'vertical', label: __('Vertical') },
+									{ value: 'horizontal', label: __('Horizontal', 'kadence-blocks') },
+									{ value: 'vertical', label: __('Vertical', 'kadence-blocks') },
+								]}
+								tabletOptions={[
+									{ value: '', label: __('Inherit', 'kadence-blocks') },
+									{ value: 'horizontal', label: __('Horizontal', 'kadence-blocks') },
+									{ value: 'vertical', label: __('Vertical', 'kadence-blocks') },
 								]}
 								onChange={(value) => setMetaAttribute(value, 'orientation')}
 								onChangeTablet={(value) => setMetaAttribute(value, 'orientationTablet')}
