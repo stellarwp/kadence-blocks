@@ -39,8 +39,8 @@ import {
 	BlockSettingsMenuControls,
 	AlignmentToolbar,
 } from '@wordpress/block-editor';
-import { isURL, prependHTTP, safeDecodeURI, addQueryArgs } from '@wordpress/url';
-import { useState, useEffect, useRef, useMemo } from '@wordpress/element';
+import { isURL, prependHTTP, addQueryArgs } from '@wordpress/url';
+import { useState, useEffect, useRef } from '@wordpress/element';
 import { placeCaretAtHorizontalEdge, __unstableStripHTML as stripHTML } from '@wordpress/dom';
 import { decodeEntities } from '@wordpress/html-entities';
 import { store as coreStore } from '@wordpress/core-data';
@@ -450,7 +450,7 @@ export default function Edit(props) {
 	}, [type, id, kind]);
 
 	//hasChildren is a proxy for isSubmenu
-	const { isAtMaxNesting, isSubMenuChild, isTopLevelLink, isParentOfSelectedBlock, hasChildren, inMegaMenu } =
+	const { isAtMaxNesting, isTopLevelLink, isParentOfSelectedBlock, hasChildren, inMegaMenu, parentBlocks } =
 		useSelect(
 			(select) => {
 				const {
@@ -466,18 +466,25 @@ export default function Edit(props) {
 					'kadence/navigation-link',
 					'core/navigation-submenu',
 				]);
+				const parentBlocks = getBlockParentsByBlockName(clientId, 'kadence/navigation');
 
 				return {
 					isAtMaxNesting: navLinkParents.length >= maxNestingLevel,
-					isSubMenuChild: navLinkParents.length > 0,
 					isTopLevelLink: rootBlockName === 'core/navigation' || rootBlockName === 'kadence/navigation',
 					isParentOfSelectedBlock: hasSelectedInnerBlock(clientId, true),
 					hasChildren: !!getBlockCount(clientId),
-					inMegaMenu: getBlockParentsByBlockName(clientId, 'kadence/navigation').length !== 1,
+					inMegaMenu: parentBlocks.length !== 1,
+					parentBlocks,
 				};
 			},
 			[clientId]
 		);
+
+	const { openNavBuilderClientId } = useSelect((select) => {
+		return {
+			openNavBuilderClientId: select('kadenceblocks/data').getStash('open-navigation-builder'),
+		};
+	}, []);
 
 	const isMegaMenuOnboarding = isMegaMenu && !hasChildren;
 	const megaMenuColumnOptions = [
@@ -669,6 +676,8 @@ export default function Edit(props) {
 
 	const megaMenuWidthClass = 'kb-menu-mega-width-' + (megaMenuWidth ? megaMenuWidth : 'full');
 	const showSubMenusWithLogic = showSubMenus || isSelected || childSelected;
+	const immediateParentBlock = parentBlocks?.[parentBlocks.length - 1];
+	const navBuilderisOpen = immediateParentBlock === openNavBuilderClientId;
 	const blockProps = useBlockProps({
 		ref: useMergeRefs([setPopoverAnchor, listItemRef]),
 		className: classnames('wp-block-kadence-navigation-item', 'menu-item', {
@@ -1416,7 +1425,7 @@ export default function Edit(props) {
 					)}
 				</div>
 				<ul {...innerBlocksProps} ref={subMenuRef}>
-					{!isMegaMenuOnboarding && showSubMenusWithLogic && children}
+					{!isMegaMenuOnboarding && (showSubMenusWithLogic || navBuilderisOpen) && children}
 					{isMegaMenuOnboarding && (
 						<div className="kt-select-layout kb-mega-onboard-select-layout">
 							{megaMenuOnboardingStep == '' && (

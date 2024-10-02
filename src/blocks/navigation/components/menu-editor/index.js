@@ -3,8 +3,8 @@
  */
 import { __ } from '@wordpress/i18n';
 
-import { useState } from '@wordpress/element';
-import { useSelect } from '@wordpress/data';
+import { useEffect, useState } from '@wordpress/element';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { PostSelectorCheckbox, KadenceRadioButtons } from '@kadence/components';
 import { createBlock } from '@wordpress/blocks';
 import { TextControl, Button } from '@wordpress/components';
@@ -36,6 +36,11 @@ export default function MenuEditor({
 		},
 		[clientId]
 	);
+
+	const { addStash } = useDispatch('kadenceblocks/data');
+	useEffect(() => {
+		addStash('open-navigation-builder', clientId);
+	}, [clientId]);
 
 	const onSelect = (posts) => {
 		const navItems = [];
