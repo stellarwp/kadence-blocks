@@ -256,7 +256,7 @@ export function Edit(props) {
 			innerBlocks.find((block) => block.name === 'core/site-logo') ||
 			createBlock('core/site-logo', {
 				isLink: false,
-				width: 75,
+				width: 120,
 				style: {
 					spacing: {
 						margin: {
