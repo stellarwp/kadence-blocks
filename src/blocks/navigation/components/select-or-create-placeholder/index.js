@@ -37,7 +37,7 @@ export default function SelectOrCreatePlaceholder({
 
 	const options = [
 		...(posts || []).map((post) => ({
-			label: stripTags(post.title.rendered),
+			label: stripTags(post.title.raw),
 			value: post.id,
 			type: 'kadence_navigation',
 		})),
