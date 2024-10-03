@@ -66,6 +66,11 @@ export default function BackendStyles(props) {
 	if (previewMaxWidth != 0 && previewMaxWidth) {
 		css.add_property('max-width', previewMaxWidth + maxWidthUnit);
 	}
+	if ('contained' === layout) {
+		css.set_selector(`.wp-block-kadence-header-row${uniqueID} .kadence-header-row-inner`);
+	} else {
+		css.set_selector(`.wp-block-kadence-header-row${uniqueID}`);
+	}
 	css.add_property('border-top', css.render_border(border, borderTablet, borderMobile, previewDevice, 'top', false));
 	css.add_property(
 		'border-right',
@@ -87,11 +92,6 @@ export default function BackendStyles(props) {
 		'border-radius',
 		borderRadiusUnit
 	);
-	if ('contained' === layout) {
-		css.set_selector(`.wp-block-kadence-header-row${uniqueID} .kadence-header-row-inner`);
-	} else {
-		css.set_selector(`.wp-block-kadence-header-row${uniqueID}`);
-	}
 	if ('normal' === background?.type && background?.image) {
 		css.add_property('background-image', background.image);
 		css.add_property('background-size', background.size);

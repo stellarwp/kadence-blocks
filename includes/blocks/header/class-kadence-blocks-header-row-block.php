@@ -122,6 +122,16 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 		if ( 'contained' !== $layout ) {
 			$css->set_selector( '.wp-block-kadence-header-row' . $unique_id .  ', .wp-block-kadence-header-row' . $unique_id . '.item-is-stuck.item-is-stuck');
 			$css->render_background( $bg, $css );
+			$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array(
+				'desktop_key' => 'borderRadius',
+				'tablet_key'  => 'borderRadiusTablet',
+				'mobile_key'  => 'borderRadiusMobile',
+			) );
+			$css->render_border_styles( $attributes, 'border', false, array(
+				'desktop_key' => 'border',
+				'tablet_key'  => 'borderTablet',
+				'mobile_key'  => 'borderMobile',
+			) );
 			// Transparent overrides.
 			$css->set_selector( '.header-' . strtolower( $size ) . '-transparent .wp-block-kadence-header-row' . $unique_id .  ', .header-' . strtolower( $size ) . '-transparent .wp-block-kadence-header-row' . $unique_id . '.item-is-stuck' );
 			$css->render_background( $bg_transparent, $css );
@@ -130,6 +140,16 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .kadence-header-row-inner' );
 		if ( 'contained' === $layout ) {
 			$css->render_background( $bg, $css );
+			$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array(
+				'desktop_key' => 'borderRadius',
+				'tablet_key'  => 'borderRadiusTablet',
+				'mobile_key'  => 'borderRadiusMobile',
+			) );
+			$css->render_border_styles( $attributes, 'border', false, array(
+				'desktop_key' => 'border',
+				'tablet_key'  => 'borderTablet',
+				'mobile_key'  => 'borderMobile',
+			) );
 			$css->set_selector( '.header-' . strtolower( $size ) . '-transparent .wp-block-kadence-header-row' . $unique_id . ' .kadence-header-row-inner' );
 			$css->render_background( $bg_transparent, $css );
 			$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .kadence-header-row-inner' );
@@ -143,16 +163,6 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 			'desktop_key' => 'margin',
 			'tablet_key'  => 'marginTablet',
 			'mobile_key'  => 'marginMobile',
-		) );
-		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array(
-			'desktop_key' => 'borderRadius',
-			'tablet_key'  => 'borderRadiusTablet',
-			'mobile_key'  => 'borderRadiusMobile',
-		) );
-		$css->render_border_styles( $attributes, 'border', false, array(
-			'desktop_key' => 'border',
-			'tablet_key'  => 'borderTablet',
-			'mobile_key'  => 'borderMobile',
 		) );
 
 		// Pass down to sections.
