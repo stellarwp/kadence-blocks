@@ -1,8 +1,8 @@
 /**
  * Internal dependencies
  */
-import HelpTab from './help';
-import BlocksList from './settings';
+// import HelpTab from './help';
+// import BlocksList from './settings';
 import ProBlocksList from './pro-settings';
 import Notices from './notices';
 
@@ -54,9 +54,7 @@ class KadenceDashboard extends Component {
 								<Panel className="dashboard-section tab-section">
 									<PanelBody opened={true}>
 										<div className="dashboard-modules-wrapper">
-											<div className="dashboard-customizer-settings">
-												<BlocksList />
-											</div>
+											<div className="dashboard-customizer-settings">{/*<BlocksList />*/}</div>
 											<div className="dashboard-pro-settings">
 												<ProBlocksList />
 											</div>
@@ -68,9 +66,7 @@ class KadenceDashboard extends Component {
 						case 'help':
 							return (
 								<Panel className="help-section tab-section">
-									<PanelBody opened={true}>
-										<HelpTab />
-									</PanelBody>
+									<PanelBody opened={true}>{/*<HelpTab />*/}</PanelBody>
 								</Panel>
 							);
 						case 'changelog':

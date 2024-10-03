@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.3
 Tested up to: 6.6
-Stable tag: 3.2.54
+Stable tag: 3.3.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -173,6 +173,14 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 3.3.0 =
+Release Date: October 3rd 2024
+* Add: Advanced Header block.
+* Add: Advanced Navigation block.
+* Add: Off canvas block.
+* Add: Site Identity block.
+* Add: Site Search block.
 
 = 3.2.54 =
 Release Date: September 25th 2024

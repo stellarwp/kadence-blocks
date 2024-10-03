@@ -4,7 +4,7 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
- .kadence-inner-column-inner.kb-section-only-appender {
+.kadence-inner-column-inner.kb-section-only-appender {
 	// padding: 1.2em;
 	.block-list-appender.wp-block {
 		.block-editor-button-block-appender {
@@ -17,8 +17,9 @@
 // New horizontal column.
 .wp-block-kadence-column {
 	margin-top: 0px;
-    margin-bottom: 0px;
+	margin-bottom: 0px;
 	width: 100%;
+
 	.kadence-inner-column-inner:where(.section-is-flex) {
 		display: flex;
 		flex-direction: column;
@@ -44,7 +45,7 @@
 			text-align: right;
 		}
 		> .kb-image-is-ratio-size {
-			flex-grow:1;
+			flex-grow: 1;
 		}
 	}
 }
@@ -56,7 +57,7 @@
 	justify-content: flex-start;
 	flex-direction: column;
 	margin-bottom: auto;
-    margin-top: 0;
+	margin-top: 0;
 	> .wp-block {
 		margin-left: unset;
 		margin-right: unset;
@@ -67,7 +68,7 @@
 	justify-content: center;
 	flex-direction: column;
 	margin-bottom: auto;
-    margin-top: auto;
+	margin-top: auto;
 	> .wp-block {
 		margin-left: unset;
 		margin-right: unset;
@@ -78,17 +79,18 @@
 	justify-content: flex-end;
 	flex-direction: column;
 	margin-bottom: 0;
-    margin-top: auto;
+	margin-top: auto;
 	> .wp-block {
 		margin-left: unset;
 		margin-right: unset;
 	}
 }
-.wp-block-kadence-column > .kadence-inner-column-direction-horizontal, .wp-block-kadence-column > .kadence-inner-column-direction-horizontal-reverse {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-	gap:10px;
+.wp-block-kadence-column > .kadence-inner-column-direction-horizontal,
+.wp-block-kadence-column > .kadence-inner-column-direction-horizontal-reverse {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 10px;
 	> .wp-block {
 		margin-left: unset;
 		margin-right: unset;
@@ -98,12 +100,12 @@
 	> .block-editor-block-list__block[data-type="core/embed"] {
 		flex: 1;
 	}
-	>.wp-block-kadence-column {
+	> .wp-block-kadence-column {
 		flex: 1;
 		min-width: 0;
 		max-width: none;
 	}
-	 // Makes svg images work in flex area.
+	// Makes svg images work in flex area.
 	> .wp-block-kadence-image.image-is-svg {
 		width: auto;
 	}
@@ -126,29 +128,31 @@
 	&.kadence-inner-column-vertical-align-middle {
 		align-items: center;
 		margin-bottom: auto;
-    	margin-top: auto;
+		margin-top: auto;
 	}
 	&.kadence-inner-column-vertical-align-bottom {
 		align-items: flex-end;
 	}
 }
-.wp-block-kadence-column > .section-is-flex > :where(.wp-block)[data-align=left], .wp-block-kadence-column > .section-is-flex > :where(.wp-block)[data-align=right] {
+.wp-block-kadence-column > .section-is-flex > :where(.wp-block)[data-align="left"],
+.wp-block-kadence-column > .section-is-flex > :where(.wp-block)[data-align="right"] {
 	height: auto;
 }
-.wp-block-kadence-column > .kadence-inner-column-direction-vertical:where(.section-is-flex), .wp-block-kadence-column > .kadence-inner-column-direction-vertical-reverse {
+.wp-block-kadence-column > .kadence-inner-column-direction-vertical:where(.section-is-flex),
+.wp-block-kadence-column > .kadence-inner-column-direction-vertical-reverse {
 	display: flex;
 	align-items: stretch;
-    flex-wrap: nowrap;
-	gap:0;
+	flex-wrap: nowrap;
+	gap: 0;
 	> .wp-block {
 		margin-left: unset;
 		margin-right: unset;
 	}
-	>.wp-block-kadence-column {
+	> .wp-block-kadence-column {
 		min-width: 0;
 		max-width: none;
 	}
-	 // Makes svg images work in flex area.
+	// Makes svg images work in flex area.
 	> .wp-block-kadence-image.image-is-svg {
 		width: auto;
 	}
@@ -171,26 +175,27 @@
 	&.kadence-inner-column-vertical-align-middle {
 		justify-content: center;
 		margin-bottom: auto;
-    	margin-top: auto;
+		margin-top: auto;
 	}
 	&.kadence-inner-column-vertical-align-bottom {
 		justify-content: flex-end;
 	}
 }
-.wp-block-kadence-rowlayout .innerblocks-wrap > .kadence-section-sticky > .kadence-inner-column-inner, .wp-block-kadence-rowlayout .kadence-inner-column-inner > .kadence-section-sticky {
-    position: sticky;
-    top:0;
+.wp-block-kadence-rowlayout .innerblocks-wrap > .kadence-section-sticky > .kadence-inner-column-inner,
+.wp-block-kadence-rowlayout .kadence-inner-column-inner > .kadence-section-sticky {
+	position: sticky;
+	top: 0;
 }
 .kadence-inner-column-inner:before {
-	content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-	transition: all .3s ease-in-out;
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	transition: all 0.3s ease-in-out;
 }
 .wp-block-kadence-column.kb-has-max-width > .kadence-inner-column-inner {
-    margin-left:auto;
-    margin-right:auto;
+	margin-left: auto;
+	margin-right: auto;
 }

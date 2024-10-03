@@ -1,23 +1,9 @@
 /**
  * WordPress dependencies
  */
- import { __ } from '@wordpress/i18n';
- import {
-	useState,
-	useRef,
-	useEffect,
-	useMemo,
- } from '@wordpress/element';
- import {
-	Panel,
-	ToggleControl,
-	Button,
-} from '@wordpress/components';
-import {
-	useBlockDisplayInformation,
-	store as blockEditorStore,
-	BlockIcon,
-} from '@wordpress/block-editor';
+import { __ } from '@wordpress/i18n';
+import { Button } from '@wordpress/components';
+import { useBlockDisplayInformation, store as blockEditorStore, BlockIcon } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
 /**
  * Import Css
@@ -35,47 +21,36 @@ import './editor.scss';
  * @returns {JSX.Element|null}
  * @constructor
  */
-export default function SelectParentBlock( { clientId, label = null, parentSlug = null } ) {
+export default function SelectParentBlock({ clientId, label = null, parentSlug = null }) {
+	const { selectBlock } = useDispatch(blockEditorStore);
+	const { firstParentClientId } = useSelect((select) => {
+		const { getBlockParents, getBlockParentsByBlockName } = select(blockEditorStore);
 
-	const { selectBlock } = useDispatch( blockEditorStore );
-	const { firstParentClientId } = useSelect(
-		( select ) => {
-			const {
-				getBlockParents,
-				getBlockParentsByBlockName
-			} = select( blockEditorStore );
+		let parentClientId, parents;
 
-			let parentClientId, parents;
+		if (parentSlug !== null) {
+			parents = getBlockParentsByBlockName(clientId, parentSlug);
+		} else {
+			parents = getBlockParents(clientId);
+		}
+		parentClientId = parents[parents.length - 1];
 
-			if( parentSlug !== null ){
-				parents = getBlockParentsByBlockName(clientId, parentSlug);
-				parentClientId = parents[0];
-			} else {
-				parents = getBlockParents( clientId  );
-				parentClientId = parents[ parents.length - 1 ];
-			}
-
-			return {
-				firstParentClientId: parentClientId,
-			};
-		},
-		[]
-	);
-	if ( firstParentClientId === undefined ) {
+		return {
+			firstParentClientId: parentClientId,
+		};
+	}, []);
+	if (firstParentClientId === undefined) {
 		return null;
 	}
-	const blockInformation = useBlockDisplayInformation( firstParentClientId );
+	const blockInformation = useBlockDisplayInformation(firstParentClientId);
 	return (
-		<div
-			className="kadence-blocks-block-parent-selector"
-			key={ firstParentClientId }
-		>
+		<div className="kadence-blocks-block-parent-selector" key={firstParentClientId}>
 			<Button
 				className="kadence-blocks-block-parent-selector__button"
-				onClick={ () => selectBlock( firstParentClientId ) }
-				icon={ <BlockIcon icon={ blockInformation?.icon } /> }
+				onClick={() => selectBlock(firstParentClientId)}
+				icon={<BlockIcon icon={blockInformation?.icon} />}
 			>
-				{ label ? label : __( 'View Parent Block Settings', 'kadence-blocks' ) }
+				{label ? label : __('View Parent Block Settings', 'kadence-blocks')}
 			</Button>
 		</div>
 	);

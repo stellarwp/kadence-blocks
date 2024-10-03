@@ -1,0 +1,124 @@
+$admin-bar-height: 32px;
+$admin-bar-height-mobile: 46px;
+
+/* The off canvas area */
+.wp-block-kadence-off-canvas {
+	position: fixed;
+	display: none;
+	top: 0;
+	bottom: 0;
+	left: -99999rem;
+	right: 99999rem;
+	transition: opacity 0.25s ease-in, left 0s 0.25s, right 0s 0.25s;
+	z-index: 100000;
+	.kb-off-canvas-inner-wrap {
+		background-color: white;
+		max-width: 100vw;
+		transform: translateX(-100%);
+		width: 100%;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		opacity: 0;
+		position: fixed;
+		overflow: auto;
+		transition: transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1), opacity 0.25s cubic-bezier(0.77, 0.2, 0.05, 1),
+			-webkit-transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1);
+	}
+	&.open-right {
+		.kb-off-canvas-inner-wrap {
+			transform: translateX(100%);
+			right: 0;
+			left: auto;
+		}
+	}
+	.kb-off-canvas-overlay {
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		background-color: rgba(0, 0, 0, 0.5); /* Adjust opacity here */
+		opacity: 0;
+		transition: opacity 0.2s ease-in-out;
+	}
+
+	.kb-off-canvas-inner {
+		width: auto;
+		max-width: 100vw;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		box-sizing: border-box;
+		padding-top: var(--kb-nav-canvas-padding-top, var(--global-kb-spacing-md, 2rem));
+		padding-right: var(--kb-nav-canvas-padding-right, var(--global-kb-spacing-md, 2rem));
+		padding-bottom: var(--kb-nav-canvas-padding-bottom, var(--global-kb-spacing-md, 2rem));
+		padding-left: var(--kb-nav-canvas-padding-left, var(--global-kb-spacing-md, 2rem));
+		> .wp-block-kadence-column {
+			min-height: unset;
+		}
+	}
+	&.show-off-canvas {
+		display: block;
+	}
+	&.active {
+		left: 0;
+		opacity: 1;
+		right: 0;
+		transition: opacity 0.25s ease-out;
+		.kb-off-canvas-inner-wrap {
+			opacity: 1;
+			transform: translateX(0%);
+		}
+		.kb-off-canvas-overlay {
+			opacity: 1;
+			cursor: pointer;
+		}
+	}
+
+	.kb-off-canvas-close {
+		margin: 0;
+		padding: 0.5rem;
+		color: currentColor;
+		border-radius: 0;
+		border: 0;
+		background: transparent;
+		cursor: pointer;
+		z-index: 100000;
+		display: inline-flex;
+		align-items: center;
+		-webkit-appearance: none;
+		position: absolute;
+		top: 5px;
+		right: 5px;
+		box-shadow: none;
+		&:hover,
+		&:focus {
+			color: currentColor;
+			background: none;
+			box-shadow: none;
+		}
+	}
+}
+
+//admin bar top adjustment
+body.admin-bar .wp-block-kadence-off-canvas,
+body.admin-bar .kb-off-canvas-overlay,
+body.admin-bar .kb-off-canvas-inner-wrap {
+	top: $admin-bar-height-mobile;
+
+	@media screen and (min-width: 783px) {
+		top: $admin-bar-height;
+	}
+}
+
+body.kb-modal-open {
+	overflow: hidden;
+}
+
+.kb-scrollbar-fixer {
+	margin-right: var(--kb-scrollbar-offset, unset);
+	.item-is-fixed {
+		right: var(--kb-scrollbar-offset, 0);
+	}
+}

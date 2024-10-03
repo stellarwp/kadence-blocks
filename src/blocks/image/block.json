@@ -11,7 +11,10 @@
 		"imageCrop",
 		"kadence/dynamicSource",
 		"kadence/repeaterRowData",
-		"kadence/repeaterRow"
+		"kadence/repeaterRow",
+		"kadence/headerPostId",
+		"kadence/headerIsSticky",
+		"kadence/headerIsTransparent"
 	],
 	"description": "Image block with greater controls and advanced features",
 	"keywords": ["img", "image", "photo", "kb"],
@@ -331,6 +334,48 @@
 			"default": ""
 		},
 		"overlayBlendMode": {
+			"type": "string"
+		},
+		"urlSticky": {
+			"type": "string"
+		},
+		"altSticky": {
+			"type": "string"
+		},
+		"titleSticky": {
+			"type": "string"
+		},
+		"idSticky": {
+			"type": "number"
+		},
+		"widthSticky": {
+			"type": "number"
+		},
+		"heightSticky": {
+			"type": "number"
+		},
+		"sizeSlugSticky": {
+			"type": "string"
+		},
+		"urlTransparent": {
+			"type": "string"
+		},
+		"altTransparent": {
+			"type": "string"
+		},
+		"titleTransparent": {
+			"type": "string"
+		},
+		"idTransparent": {
+			"type": "number"
+		},
+		"widthTransparent": {
+			"type": "number"
+		},
+		"heightTransparent": {
+			"type": "number"
+		},
+		"sizeSlugTransparent": {
 			"type": "string"
 		},
 		"imagePosition": {

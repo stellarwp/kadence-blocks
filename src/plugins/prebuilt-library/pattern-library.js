@@ -1376,7 +1376,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 							{!isError && isImporting && (
 								<div className="preparing-importing-images">
 									<Spinner />
-									<h2>{__('Preparing Content...', 'kadence-blocks')}</h2>
+									<h2>{__('Preparing Content…', 'kadence-blocks')}</h2>
 								</div>
 							)}
 							{isError && isErrorType === 'general' && (
@@ -1456,7 +1456,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 							{!isError && isImporting && (
 								<div className="preparing-importing-images">
 									<Spinner />
-									<h2>{__('Preparing Content...', 'kadence-blocks')}</h2>
+									<h2>{__('Preparing Content…', 'kadence-blocks')}</h2>
 								</div>
 							)}
 							{isError && isErrorType === 'general' && (

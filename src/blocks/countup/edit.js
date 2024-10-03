@@ -416,7 +416,7 @@ function KadenceCounterUp(props) {
 							className={'kb-count-up-title'}
 							value={title}
 							onChange={(content) => setAttributes({ title: content })}
-							placeholder={__('Type Here...', 'kadence-blocks')}
+							placeholder={__('Type Here…', 'kadence-blocks')}
 							style={{
 								display: 'block',
 								fontWeight: titleFont[0].weight,

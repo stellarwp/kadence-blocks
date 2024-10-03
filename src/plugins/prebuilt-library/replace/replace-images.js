@@ -25,7 +25,7 @@ export default function replaceImages(content, images, categories, context, vari
 	const aRoll = images.data?.[0]?.images;
 	const bRoll = images.data?.[1]?.images || images.data?.[0]?.images;
 	let pRoll = images.data?.[2]?.images;
-	if (!pRoll && categories?.[0] == 'team' && teamCollection?.data?.[0]?.images) {
+	if (!pRoll && categories?.[0] === 'team' && teamCollection?.data?.[0]?.images) {
 		pRoll = teamCollection?.data?.[0]?.images;
 	}
 	if (!pRoll) {

@@ -27,7 +27,7 @@ class BoxShadowControl extends Component {
 	}
 	render() {
 		return (
-			<div className="kt-box-shadow-container">
+			<div className="components-base-control kt-box-shadow-container">
 				{ this.props.label && (
 					<div className="kt-box-shadow-label">
 						<h2 className="kt-beside-color-label">{ this.props.label }</h2>
