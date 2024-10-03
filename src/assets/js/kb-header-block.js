@@ -412,6 +412,9 @@ class KBHeader {
 
 		//set the container anchor height to create a sized placeholder for the header (but only if we're not also transparent)
 		var elHeight = this.stickyWrapper.offsetHeight;
+		var elWidth = this.placeholderWrapper.offsetWidth;
+		var elOffsetLeft = this.getOffset(this.placeholderWrapper).left;
+
 		if (!this['transparent' + this.activeSizeCased()]) {
 			this.placeholderWrapper.style.height = elHeight + 'px';
 		}
@@ -440,8 +443,8 @@ class KBHeader {
 			offsetTop = this.getOffset(wrapper).top + proOffset;
 		}
 
-		const topPosThatSticksToTop = currScrollTop - this.anchorOffset + offsetTop;
-		const topPosThatSticksAboveTop = currScrollTop - this.anchorOffset + offsetTop - elHeight;
+		const topPosThatSticksToTop = offsetTop;
+		const topPosThatSticksAboveTop = offsetTop - elHeight;
 		const currentBottomPosition = this.currentTopPosition + elHeight;
 
 		var parent = this.stickyWrapper.parentNode;
@@ -500,8 +503,18 @@ class KBHeader {
 			}
 		}
 
-		//set the position to absolute
-		this.stickyWrapper.style.position = 'absolute';
+		//set the position to fixed
+		if (this.isSticking) {
+			this.stickyWrapper.style.position = 'fixed';
+			this.stickyWrapper.style.width = elWidth + 'px';
+			this.stickyWrapper.style.left = elOffsetLeft + 'px';
+			this.stickyWrapper.style.top = offsetTop + 'px';
+		} else {
+			this.stickyWrapper.style.position = 'initial';
+			this.stickyWrapper.style.width = 'initial';
+			this.stickyWrapper.style.left = 'initial';
+			this.stickyWrapper.style.top = 'initial';
+		}
 
 		// Run the revealing / hidding processing or the sticky process
 		if (this.revealScrollUp) {
@@ -510,20 +523,20 @@ class KBHeader {
 			var totalOffset = Math.floor(this.anchorOffset + elHeight);
 			if (currScrollTop <= this.anchorOffset - offsetTop) {
 				//above the initial header area, ignore the header
-				this.stickyWrapper.style.top = 0;
+				//this.stickyWrapper.style.top = 0;
 				this.currentTopPosition = 0;
 				this.setStickyChanged(false);
 			} else if (currScrollTop <= totalOffset) {
 				//scrolling in the initial header area
 				if (isScrollingDown) {
 					//ignore the header if scrolling down
-					this.stickyWrapper.style.top = 0;
+					//this.stickyWrapper.style.top = 0;
 					this.currentTopPosition = 0;
 					this.setStickyChanged(false);
 				} else {
 					//keep sticking if scrolling up
 					this.stickyWrapper.classList.remove('item-hidden-above');
-					this.stickyWrapper.style.top = topPosThatSticksToTop + 'px';
+					//this.stickyWrapper.style.top = topPosThatSticksToTop + 'px';
 					this.currentTopPosition = topPosThatSticksToTop;
 					this.setStickyChanged(true);
 				}
@@ -540,7 +553,7 @@ class KBHeader {
 				} else {
 					//scrolling up, keep the header top at scroll position
 					this.stickyWrapper.classList.remove('item-hidden-above');
-					this.stickyWrapper.style.top = topPosThatSticksToTop + 'px';
+					//this.stickyWrapper.style.top = topPosThatSticksToTop + 'px';
 					this.currentTopPosition = topPosThatSticksToTop;
 				}
 				this.setStickyChanged(true);
@@ -550,12 +563,12 @@ class KBHeader {
 			var totalOffset = Math.floor(this.anchorOffset - offsetTop);
 			if (currScrollTop <= totalOffset) {
 				//above the header anchor, ignore
-				this.stickyWrapper.style.top = 0;
+				// this.stickyWrapper.style.top = 0;
 				this.currentTopPosition = 0;
 				this.setStickyChanged(false);
 			} else {
 				//below the header anchor, match it's top to the scroll position
-				this.stickyWrapper.style.top = topPosThatSticksToTop + 'px';
+				// this.stickyWrapper.style.top = topPosThatSticksToTop + 'px';
 				this.currentTopPosition = topPosThatSticksToTop;
 				this.setStickyChanged(true);
 			}
