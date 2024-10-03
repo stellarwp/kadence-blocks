@@ -446,7 +446,10 @@ class KBHeader {
 		var megaMenus = this.stickyWrapper.querySelectorAll('.kadence-menu-mega-enabled > .kb-nav-sub-menu');
 		if (megaMenus.length) {
 			var megaOffset = this.getOffset(megaMenus[0]).top;
-			this.stickyWrapper.style.setProperty('--kb-sticky-mega-overflow-header-offset', (megaOffset - currScrollTop) + 'px');
+			this.stickyWrapper.style.setProperty(
+				'--kb-sticky-mega-overflow-header-offset',
+				megaOffset - currScrollTop + 'px'
+			);
 		}
 
 		const topPosThatSticksToTop = offsetTop;
