@@ -174,6 +174,14 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.3.0 =
+Release Date: October 3rd 2024
+* Add: Advanced Header block.
+* Add: Advanced Navigation block.
+* Add: Off canvas block.
+* Add: Site Identity block.
+* Add: Site Search block.
+
 = 3.2.54 =
 Release Date: September 25th 2024
 * Add: Support 4 columns in posts block.
