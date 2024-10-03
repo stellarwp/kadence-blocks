@@ -155,4 +155,6 @@ const kadenceHeaderTemplatePartNotice = createHigherOrderComponent((BlockEdit) =
 	};
 }, 'withTemplatePartNotice');
 
-addFilter('editor.BlockEdit', 'my-plugin/with-template-part-notice', kadenceHeaderTemplatePartNotice);
+if (!window.wpWidgets) {
+	addFilter('editor.BlockEdit', 'kadence-blocks/with-template-part-notice', kadenceHeaderTemplatePartNotice);
+}
