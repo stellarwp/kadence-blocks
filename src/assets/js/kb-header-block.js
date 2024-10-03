@@ -443,6 +443,12 @@ class KBHeader {
 			offsetTop = this.getOffset(wrapper).top + proOffset;
 		}
 
+		var megaMenus = this.stickyWrapper.querySelectorAll('.kadence-menu-mega-enabled > .kb-nav-sub-menu');
+		if (megaMenus.length) {
+			var megaOffset = this.getOffset(megaMenus[0]).top;
+			this.stickyWrapper.style.setProperty('--kb-sticky-mega-overflow-header-offset', ( megaOffset - currScrollTop )+ 'px' );
+		}
+
 		const topPosThatSticksToTop = offsetTop;
 		const topPosThatSticksAboveTop = offsetTop - elHeight;
 		const currentBottomPosition = this.currentTopPosition + elHeight;
