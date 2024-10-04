@@ -5,9 +5,10 @@
  */
 import { useEffect } from '@wordpress/element';
 
-import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps, useInnerBlocksProps, store as blockEditorStore } from '@wordpress/block-editor';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { getUniqueId, getPostOrFseId } from '@kadence/helpers';
+
 
 /**
  * Build the spacer edit
@@ -54,19 +55,27 @@ function KadenceTab(props) {
 			addUniqueID(uniqueID, clientId);
 		}
 	}, []);
-
-	const hasChildBlocks = wp.data.select('core/block-editor').getBlockOrder(clientId).length > 0;
-
+	const hasChildBlocks = useSelect(
+		( select ) =>
+			select( blockEditorStore ).getBlocks( clientId ).length > 0,
+		[ clientId ]
+	);
 	const blockProps = useBlockProps({
 		className: `kt-tab-inner-content kt-inner-tab-${id} kt-inner-tab${uniqueID}`,
 	});
+	const innerBlocksProps = useInnerBlocksProps(
+		{
+			className: 'kt-tab-inner-content-inner',
+		},
+		{
+			templateLock: false,
+			renderAppender: hasChildBlocks ? undefined : InnerBlocks.ButtonBlockAppender,
+		}
+	);
 
 	return (
 		<div {...blockProps} data-tab={id}>
-			<InnerBlocks
-				templateLock={false}
-				renderAppender={hasChildBlocks ? undefined : () => <InnerBlocks.ButtonBlockAppender />}
-			/>
+			<div {...innerBlocksProps}/>
 		</div>
 	);
 }
