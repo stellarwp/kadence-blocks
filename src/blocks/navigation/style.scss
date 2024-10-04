@@ -1528,5 +1528,5 @@ $link-color-property: var(
 // dealing with a sticky header that has a mega menu which is larger than the viewport.
 .kb-header-sticky-wrapper .kadence-menu-mega-enabled > ul.kb-nav-sub-menu.mega-menu > .kb-row-layout-wrap .kt-row-column-wrap {
     max-height: calc( 98vh - var( --kb-sticky-mega-overflow-header-offset, 0px ));
-    overflow-y:scroll;
+    overflow-y:auto;
 }
