@@ -909,7 +909,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			}
 		}
 		// Regex to find wp:kadence/image blocks with id and src.
-		$pattern = '/<!-- wp:kadence\/image .*?"id":(\d+),.*?"uniqueID":"[^"]+".*?-->(.*?)<img src="([^"]+)".*?<!-- \/wp:kadence\/image -->/s';
+		$pattern = '/<!-- wp:kadence\/image\b[^>]*?(?:"id":(\d+)),.*?"uniqueID":"[^"]+".*?-->(.*?)<img src="([^"]+)".*?<!-- \/wp:kadence\/image -->/s';
+
 		// Use preg_match_all to find all matches
 		if ( preg_match_all( $pattern, $content, $block_matches, PREG_SET_ORDER ) ) {
 			foreach ( $block_matches as $block_match ) {
