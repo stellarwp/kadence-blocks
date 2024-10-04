@@ -175,7 +175,8 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.3.1 =
-Release Date: October 7th 2024
+Release Date: October 4th 2024
+* Fix: Issue with adding items to tabs block in the editor.
 * Fix: Issue with scroll bars showing on mega menus incorrectly.
 
 = 3.3.0 =
