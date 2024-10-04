@@ -3,7 +3,7 @@
 	"apiVersion": 3,
 	"name": "kadence/header",
 	"title": "Header (Adv)",
-	"category": "theme",
+	"category": "kadence-blocks",
 	"description": "A collection of blocks that allow visitors to get around your site.",
 	"supports": {
 		"html": false,

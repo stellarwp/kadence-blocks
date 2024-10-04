@@ -4,7 +4,7 @@
 	"name": "kadence/header-column",
 	"parent": ["kadence/header"],
 	"title": "Header Column",
-	"category": "design",
+	"category": "kadence-blocks",
 	"description": "Kadence header column",
 	"supports": {
 		"inserter": true

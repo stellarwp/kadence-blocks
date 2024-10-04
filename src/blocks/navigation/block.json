@@ -3,7 +3,7 @@
 	"apiVersion": 3,
 	"name": "kadence/navigation",
 	"title": "Navigation (Adv)",
-	"category": "theme",
+	"category": "kadence-blocks",
 	"description": "An advanced navigation block.",
 	"keywords": ["menu", "navigation", "links"],
 	"textdomain": "default",
