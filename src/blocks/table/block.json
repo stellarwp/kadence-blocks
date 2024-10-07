@@ -1,0 +1,24 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "kadence/table",
+	"title": "Table (Adv)",
+	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
+	"attributes": {
+		"uniqueID": {
+			"type": "string"
+		},
+		"rows": {
+			"type": "number",
+			"default": 2
+		},
+		"columns": {
+			"type": "number",
+			"default": 2
+		}
+	},
+	"supports": {
+		"kbMetadata": true
+	}
+}

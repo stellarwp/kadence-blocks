@@ -1,0 +1,18 @@
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+@import "style";
+
+.wp-block-kadence-table {
+	table, th, td {
+		border: 1px solid;
+		border-collapse: collapse;
+	}
+
+	.wp-block {
+		margin: 0 !important;
+	}
+}
