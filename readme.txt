@@ -174,6 +174,12 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.3.2 =
+Release Date: October TBD 2024
+* Add: Adv Header dynamic transparency options.
+* Fix: Some accordion block styles not applying unless title color was set.
+* Fix: Compatability issue with block addon plugin.
+
 = 3.3.1 =
 Release Date: October 4th 2024
 * Fix: Issue with adding items to tabs block in the editor.
