@@ -196,6 +196,8 @@ export function EditInner(props) {
 		revealScrollUp: meta?._kad_header_revealScrollUp,
 		shadow: meta?._kad_header_shadow,
 		headerTag: meta?._kad_header_headerTag,
+		inheritPostTransparent: meta?._kad_header_inheritPostTransparent,
+		disableTransparentOverrides: meta?._kad_header_disableTransparentOverrides,
 	};
 
 	const {
@@ -281,6 +283,8 @@ export function EditInner(props) {
 		revealScrollUp,
 		shadow,
 		headerTag,
+		inheritPostTransparent,
+		disableTransparentOverrides,
 	} = metaAttributes;
 
 	const setMetaAttribute = (value, key) => {
@@ -297,8 +301,6 @@ export function EditInner(props) {
 	);
 
 	let [blocks, onInput, onChange] = useEntityBlockEditor('postType', 'kadence_header', id);
-
-	// console.log(blocks);
 
 	const emptyHeader = useMemo(() => {
 		return [createBlock('kadence/header', {})];
@@ -597,6 +599,7 @@ export function EditInner(props) {
 								onChangeTablet={(value) => setMetaAttribute(value, 'isTransparentTablet')}
 								onChangeMobile={(value) => setMetaAttribute(value, 'isTransparentMobile')}
 							/>
+
 							{/* {previewIsTransparent === '1' && (
 								<ToggleControl
 									label={__('Auto spacing under', 'kadence-blocks')}
@@ -663,21 +666,73 @@ export function EditInner(props) {
 								</>
 							)}
 						</KadencePanelBody>
+
+						{(isTransparent || isTransparentMobile || isTransparentTablet) && (
+							<KadencePanelBody
+								title={__('Conditional Transparent Settings', 'kadence-blocks')}
+								initialOpen={false}
+								panelName={'kb-header-transparent-settings'}
+							>
+								{/* Disable transparent on Search & Archive */}
+								<ToggleControl
+									label={__('Disable Transparent on Search & Archive', 'kadence-blocks')}
+									checked={disableTransparentOverrides.includes('searchAndArchive')}
+									onChange={(value) => {
+										const newVal = disableTransparentOverrides.includes('searchAndArchive')
+											? disableTransparentOverrides.filter((item) => item !== 'searchAndArchive')
+											: [...disableTransparentOverrides, 'searchAndArchive'];
+										setMetaAttribute(newVal, 'disableTransparentOverrides');
+									}}
+								/>
+
+								{/*Loop through each post type and add a toggle control for each one*/}
+								{kadence_blocks_params?.postTypes.map((postType) => (
+									<ToggleControl
+										label={__('Disable Transparent on', 'kadence-blocks') + ' ' + postType.label}
+										checked={disableTransparentOverrides.includes(postType.value)}
+										onChange={(value) => {
+											const newVal = disableTransparentOverrides.includes(postType.value)
+												? disableTransparentOverrides.filter((item) => item !== postType.value)
+												: [...disableTransparentOverrides, postType.value];
+											setMetaAttribute(newVal, 'disableTransparentOverrides');
+										}}
+									/>
+								))}
+
+								{kadence_blocks_params?.isKadenceT && (
+									<>
+										<div
+											className="kt-sidebar-settings-spacer"
+											style={{ marginBottom: '20px' }}
+										></div>
+
+										<ToggleControl
+											label={__('Inherit post settings', 'kadence-blocks')}
+											help={__(
+												'Inherit the settings from the post or page for transparent header.',
+												'kadence-blocks'
+											)}
+											checked={inheritPostTransparent}
+											onChange={(value) => setMetaAttribute(value, 'inheritPostTransparent')}
+										/>
+									</>
+								)}
+							</KadencePanelBody>
+						)}
 					</>
 				)}
 
 				{activeTab === 'style' && (
 					<>
-						{previewIsTransparent !== '1' && (
-							<KadencePanelBody
-								title={__('Background Settings', 'kadence-blocks')}
-								initialOpen={true}
-								panelName={'kb-header-bg-settings'}
-							>
-								{backgroundStyleControls()}
-							</KadencePanelBody>
-						)}
-						{previewIsTransparent === '1' && (
+						<KadencePanelBody
+							title={__('Background Settings', 'kadence-blocks')}
+							initialOpen={true}
+							panelName={'kb-header-bg-settings'}
+						>
+							{backgroundStyleControls()}
+						</KadencePanelBody>
+						{(previewIsTransparent === '1' ||
+							(kadence_blocks_params?.isKadenceT && inheritPostTransparent)) && (
 							<KadencePanelBody
 								title={__('Transparent Background Settings', 'kadence-blocks')}
 								initialOpen={false}
