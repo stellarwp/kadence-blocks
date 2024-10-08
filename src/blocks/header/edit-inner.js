@@ -667,7 +667,7 @@ export function EditInner(props) {
 							)}
 						</KadencePanelBody>
 
-						{(isTransparent || isTransparentMobile || isTransparentTablet) && (
+						{(isTransparent === '1' || isTransparentMobile === '1' || isTransparentTablet === '1') && (
 							<KadencePanelBody
 								title={__('Conditional Transparent Settings', 'kadence-blocks')}
 								initialOpen={false}
