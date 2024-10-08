@@ -9,7 +9,6 @@ import { InnerBlocks, useBlockProps, useInnerBlocksProps, store as blockEditorSt
 import { useDispatch, useSelect } from '@wordpress/data';
 import { getUniqueId, getPostOrFseId } from '@kadence/helpers';
 
-
 /**
  * Build the spacer edit
  */
@@ -55,11 +54,7 @@ function KadenceTab(props) {
 			addUniqueID(uniqueID, clientId);
 		}
 	}, []);
-	const hasChildBlocks = useSelect(
-		( select ) =>
-			select( blockEditorStore ).getBlocks( clientId ).length > 0,
-		[ clientId ]
-	);
+	const hasChildBlocks = useSelect((select) => select(blockEditorStore).getBlocks(clientId).length > 0, [clientId]);
 	const blockProps = useBlockProps({
 		className: `kt-tab-inner-content kt-inner-tab-${id} kt-inner-tab${uniqueID}`,
 	});
@@ -75,7 +70,7 @@ function KadenceTab(props) {
 
 	return (
 		<div {...blockProps} data-tab={id}>
-			<div {...innerBlocksProps}/>
+			<div {...innerBlocksProps} />
 		</div>
 	);
 }
