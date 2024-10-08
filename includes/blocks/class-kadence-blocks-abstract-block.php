@@ -388,6 +388,7 @@ class Kadence_Blocks_Abstract_Block {
 		foreach ($attributes as $key => $value) {
 			if (isset($merged_attributes[$key]) && is_array($merged_attributes[$key]) &&
 			    count($merged_attributes[$key]) == 1 && isset($merged_attributes[$key][0]) &&
+			    is_array($merged_attributes[$key][0]) &&
 			    is_array($value) && count($value) == 1 && isset($value[0])) {
 				// Handle attributes that are an array with a single object
 				$merged_attributes[$key][0] = array_merge($merged_attributes[$key][0], $value[0]);
