@@ -285,16 +285,11 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $caption_font['lineHeight'] ) && is_array( $caption_font['lineHeight'] ) && ! empty( $caption_font['lineHeight'][0] ) ) {
 				$css->add_property( 'line-height', $caption_font['lineHeight'][0] . ( ! isset( $caption_font['lineType'] ) ? 'px' : $caption_font['lineType'] ) );
 			}
-			if ( isset( $caption_font['letterSpacing'] ) && ! empty( $caption_font['letterSpacing'] ) ) {
+			if ( ! empty( $caption_font['letterSpacing'] ) ) {
 				if ( !is_array($caption_font['letterSpacing']) ) {
 					$css->add_property( 'letter-spacing', $caption_font['letterSpacing'] . 'px' );
 				} else {
-					$css->add_property( 'letter-spacing', $caption_font['letterSpacing'][0] . 'px' );
-					$css->set_media_state('tablet');
-					$css->add_property( 'letter-spacing', $caption_font['letterSpacing'][1] . 'px' );
-					$css->set_media_state('mobile');
-					$css->add_property( 'letter-spacing', $caption_font['letterSpacing'][2] . 'px' );
-					$css->set_media_state('desktop');
+					$css->render_responsive_range($caption_font, 'letterSpacing', 'letter-spacing', 'px');
 				}
 
 			}
