@@ -103,6 +103,10 @@ export default function KadenceButtonEdit(props) {
 		color,
 		background,
 		backgroundType,
+		textBackgroundType,
+		textGradient,
+		textBackgroundHoverType,
+		textGradientHover,
 		gradient,
 		colorHover,
 		backgroundHover,
@@ -841,14 +845,39 @@ export default function KadenceButtonEdit(props) {
 											<HoverToggleControl
 												hover={
 													<>
-														<PopColorControl
-															label={__('Color Hover', 'kadence-blocks')}
-															value={colorHover ? colorHover : ''}
-															default={''}
-															onChange={(value) => setAttributes({ colorHover: value })}
-														/>
 														<BackgroundTypeControl
-															label={__('Hover Type', 'kadence-blocks')}
+															label={__('Text Type Hover', 'kadence-blocks')}
+															type={
+																textBackgroundHoverType
+																	? textBackgroundHoverType
+																	: 'normal'
+															}
+															onChange={(value) =>
+																setAttributes({ textBackgroundHoverType: value })
+															}
+															allowedTypes={['normal', 'gradient']}
+														/>
+														{'gradient' === textBackgroundHoverType && (
+															<GradientControl
+																value={textGradientHover}
+																onChange={(value) =>
+																	setAttributes({ textGradientHover: value })
+																}
+																gradients={[]}
+															/>
+														)}
+														{'normal' === textBackgroundHoverType && (
+															<PopColorControl
+																label={__('Color Hover', 'kadence-blocks')}
+																value={colorHover ? colorHover : ''}
+																default={''}
+																onChange={(value) =>
+																	setAttributes({ colorHover: value })
+																}
+															/>
+														)}
+														<BackgroundTypeControl
+															label={__('Background Hover Type', 'kadence-blocks')}
 															type={backgroundHoverType ? backgroundHoverType : 'normal'}
 															onChange={(value) =>
 																setAttributes({ backgroundHoverType: value })
@@ -1015,14 +1044,33 @@ export default function KadenceButtonEdit(props) {
 												}
 												normal={
 													<>
-														<PopColorControl
-															label={__('Color', 'kadence-blocks')}
-															value={color ? color : ''}
-															default={''}
-															onChange={(value) => setAttributes({ color: value })}
-														/>
 														<BackgroundTypeControl
-															label={__('Type', 'kadence-blocks')}
+															label={__('Text Type', 'kadence-blocks')}
+															type={textBackgroundType ? textBackgroundType : 'normal'}
+															onChange={(value) =>
+																setAttributes({ textBackgroundType: value })
+															}
+															allowedTypes={['normal', 'gradient']}
+														/>
+														{'gradient' === textBackgroundType && (
+															<GradientControl
+																value={textGradient}
+																onChange={(value) =>
+																	setAttributes({ textGradient: value })
+																}
+																gradients={[]}
+															/>
+														)}
+														{'normal' === textBackgroundType && (
+															<PopColorControl
+																label={__('Color', 'kadence-blocks')}
+																value={color ? color : ''}
+																default={''}
+																onChange={(value) => setAttributes({ color: value })}
+															/>
+														)}
+														<BackgroundTypeControl
+															label={__('Background Type', 'kadence-blocks')}
 															type={backgroundType ? backgroundType : 'normal'}
 															onChange={(value) =>
 																setAttributes({ backgroundType: value })
