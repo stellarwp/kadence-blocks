@@ -36,6 +36,7 @@ import {
 	IconRender,
 	DynamicTextControl,
 	DynamicInlineReplaceControl,
+	GradientControl,
 } from '@kadence/components';
 
 import { dynamicIcon } from '@kadence/icons';
@@ -232,6 +233,8 @@ function KadenceAdvancedHeading(props) {
 		iconTooltipPlacement,
 		iconTooltipDash,
 		iconTooltip,
+		textGradient,
+		enableTextGradient,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('style');
@@ -853,7 +856,11 @@ function KadenceAdvancedHeading(props) {
 				gap: icon ? '0.25em' : undefined,
 				justifyContent: icon && previewJustifyAlign ? previewJustifyAlign : undefined,
 				textAlign: previewAlign ? previewAlign : undefined,
-				backgroundColor: background && backgroundIgnoreClass ? KadenceColorOutput(background) : undefined,
+				backgroundColor:
+					!enableTextGradient && background && backgroundIgnoreClass
+						? KadenceColorOutput(background)
+						: undefined,
+				backgroundImage: enableTextGradient ? textGradient : undefined,
 				paddingTop:
 					'' !== previewPaddingTop ? getSpacingOptionOutput(previewPaddingTop, paddingType) : undefined,
 				paddingRight:
@@ -870,7 +877,7 @@ function KadenceAdvancedHeading(props) {
 				marginLeft:
 					'' !== previewMarginLeft ? getSpacingOptionOutput(previewMarginLeft, marginType) : undefined,
 				lineHeight: previewLineHeight ? previewLineHeight + (fontHeightType ? fontHeightType : '') : undefined,
-				color: color ? KadenceColorOutput(color) : undefined,
+				// color: color ? KadenceColorOutput(color) : undefined,
 				fontSize: previewFontSize
 					? getFontSizeOptionOutput(previewFontSize, sizeType ? sizeType : 'px')
 					: undefined,
@@ -1129,6 +1136,11 @@ function KadenceAdvancedHeading(props) {
 					`.kt-adv-heading${uniqueID} a:hover, #block-${clientId} a.kb-advanced-heading-link:hover, #block-${clientId} a.kb-advanced-heading-link:hover > .kadence-advancedheading-text {
 							color: ${KadenceColorOutput(linkHoverColor)}!important;
 						}`}
+				{enableTextGradient &&
+					`.kt-adv-heading${uniqueID}.kadence-advancedheading-text, .kt-adv-heading${uniqueID} .kadence-advancedheading-text {
+						-webkit-background-clip: text;
+						-webkit-text-fill-color: transparent;
+				}`}
 				{iconColorHover &&
 					`#block-${clientId} .kadence-advancedheading-text:hover > .kb-advanced-heading-svg-icon {
 							color: ${KadenceColorOutput(iconColorHover)}!important;
@@ -1400,22 +1412,42 @@ function KadenceAdvancedHeading(props) {
 						<>
 							<KadencePanelBody panelName={'kb-adv-heading-style'}>
 								{showSettings('colorSettings', 'kadence/advancedheading') && (
-									<ColorGroup>
-										<PopColorControl
-											label={__('Color', 'kadence-blocks')}
-											value={color ? color : ''}
-											default={''}
-											onChange={(value) => setAttributes({ color: value })}
-											onClassChange={(value) => setAttributes({ colorClass: value })}
+									<>
+										{!enableTextGradient && (
+											<ColorGroup>
+												<PopColorControl
+													label={__('Color', 'kadence-blocks')}
+													value={color ? color : ''}
+													default={''}
+													onChange={(value) => setAttributes({ color: value })}
+													onClassChange={(value) => setAttributes({ colorClass: value })}
+												/>
+												<PopColorControl
+													label={__('Background Color', 'kadence-blocks')}
+													value={background ? background : ''}
+													default={''}
+													onChange={(value) => setAttributes({ background: value })}
+													onClassChange={(value) =>
+														setAttributes({ backgroundColorClass: value })
+													}
+												/>
+											</ColorGroup>
+										)}
+										<ToggleControl
+											style={{ marginTop: '10px' }}
+											label={__('Enable Text Gradient', 'kadence-blocks')}
+											checked={enableTextGradient}
+											onChange={(value) => setAttributes({ enableTextGradient: value })}
 										/>
-										<PopColorControl
-											label={__('Background Color', 'kadence-blocks')}
-											value={background ? background : ''}
-											default={''}
-											onChange={(value) => setAttributes({ background: value })}
-											onClassChange={(value) => setAttributes({ backgroundColorClass: value })}
-										/>
-									</ColorGroup>
+
+										{enableTextGradient && (
+											<GradientControl
+												value={textGradient}
+												onChange={(value) => setAttributes({ textGradient: value })}
+												gradients={[]}
+											/>
+										)}
+									</>
 								)}
 								{showSettings('sizeSettings', 'kadence/advancedheading') && (
 									<>

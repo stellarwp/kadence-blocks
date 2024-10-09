@@ -147,7 +147,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( 'letter-spacing', $attributes['mobileLetterSpacing'] . ( ! isset( $attributes['letterSpacingType'] ) ? 'px' : $attributes['letterSpacingType'] ) );
 			$css->set_media_state('desktop');
 		}
-		if ( isset( $attributes['color'] ) && ! empty( $attributes['color'] ) ) {
+		if ( ! empty( $attributes['color'] ) && empty( $attributes['enableTextGradient'] ) ) {
 			if ( class_exists( 'Kadence\Theme' ) ) {
 				if ( isset( $attributes['colorClass'] ) && empty( $attributes['colorClass'] ) || ! isset( $attributes['colorClass'] ) ) {
 					$css->add_property( 'color', $css->render_color( $attributes['color'] ) );
@@ -158,7 +158,12 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 				$css->add_property( 'color', $css->render_color( $attributes['color'] ) );
 			}
 		}
-		if ( isset( $attributes['background'] ) && ! empty( $attributes['background'] ) ) {
+		if( !empty( $attributes['textGradient'] ) && ! empty( $attributes['enableTextGradient'] ) ) {
+			$css->add_property( 'background-image', $attributes['textGradient'] );
+			$css->add_property( '-webkit-background-clip', 'text' );
+			$css->add_property( '-webkit-text-fill-color', 'transparent' );
+		}
+		if ( ! empty( $attributes['background'] ) && empty( $attributes['enableTextGradient'] ) ) {
 			if ( class_exists( 'Kadence\Theme' ) ) {
 				if ( isset( $attributes['backgroundColorClass'] ) && empty( $attributes['backgroundColorClass'] ) || ! isset( $attributes['backgroundColorClass'] ) ) {
 					$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
