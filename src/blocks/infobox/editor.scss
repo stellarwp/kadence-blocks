@@ -139,10 +139,10 @@
 	flex-grow: 1;
 	align-items: center;
 }
-.kt-info-halign-right.learn-more-has-align .kt-infobox-textcontent {
+.kt-info-halign-right.learn-more-has-align .kt-infobox-textcontent, body.rtl .kt-info-halign-left.learn-more-has-align .kt-infobox-textcontent {
 	align-items: flex-end;
 }
-.kt-info-halign-left.learn-more-has-align .kt-infobox-textcontent {
+.kt-info-halign-left.learn-more-has-align .kt-infobox-textcontent, body.rtl .kt-info-halign-right.learn-more-has-align .kt-infobox-textcontent  {
 	align-items: flex-start;
 }
 .learn-more-has-align .kt-infobox-textcontent .kt-blocks-info-box-learnmore-wrap {
