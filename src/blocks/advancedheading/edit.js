@@ -860,7 +860,7 @@ function KadenceAdvancedHeading(props) {
 					!enableTextGradient && background && backgroundIgnoreClass
 						? KadenceColorOutput(background)
 						: undefined,
-				backgroundImage: enableTextGradient ? textGradient : undefined,
+				backgroundImage: enableTextGradient && textGradient !== '' ? textGradient : undefined,
 				paddingTop:
 					'' !== previewPaddingTop ? getSpacingOptionOutput(previewPaddingTop, paddingType) : undefined,
 				paddingRight:
