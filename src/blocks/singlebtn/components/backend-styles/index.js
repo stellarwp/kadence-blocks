@@ -902,8 +902,7 @@ export default function BackendStyles(props) {
 		css.add_property('color', css.render_color(colorHover));
 	}
 
-	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}.kb-btn-global-outline`);
-
+	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}`);
 	css.add_property('background', btnbg);
 	css.add_property(
 		'width',
