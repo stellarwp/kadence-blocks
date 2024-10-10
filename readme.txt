@@ -176,6 +176,8 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 = 3.3.2 =
 Release Date: October TBD 2024
+* Add: Gradient text to advanced text block.
+* Add: Gradient text to advanced button block.
 * Add: Adv Header dynamic transparency options.
 * Fix: Some accordion block styles not applying unless title color was set.
 * Fix: Compatability issue with block addon plugin.
