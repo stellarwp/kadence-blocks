@@ -133,8 +133,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		if ( $sized_attributes['shadow'] && isset( $sized_attributes['shadow'][0] ) && $sized_attributes['shadow'][0]['enable'] ) {
 			$css->add_property( 'box-shadow', $css->render_shadow( $sized_attributes['shadow'][0] ) );
 		}
-
-		if ( $this->is_header_transparent( $attributes, $size ) ) {
+		if ( ! $this->is_header_transparent( $attributes, $size ) ) {
 			$css->render_background( $bg, $css );
 		}
 
