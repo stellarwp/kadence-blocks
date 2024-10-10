@@ -516,6 +516,14 @@
 		"iconTooltipDash": {
 			"type": "boolean",
 			"default": false
+		},
+		"enableTextGradient": {
+			"type": "boolean",
+			"default": false
+		},
+		"textGradient": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"usesContext": ["postId", "queryId", "kadence/dynamicSource", "kadence/repeaterRowData", "kadence/repeaterRow"],
