@@ -851,7 +851,7 @@ function KadenceAdvancedHeading(props) {
 			className={classes}
 			data-alt-title={altTitle ? altTitle : undefined}
 			style={{
-				display: icon ? 'flex' : undefined,
+				display: icon ? 'flex' : enableTextGradient ? 'inline-block' : undefined,
 				alignItems: icon ? iconVerticalAlign : undefined,
 				gap: icon ? '0.25em' : undefined,
 				justifyContent: icon && previewJustifyAlign ? previewJustifyAlign : undefined,
@@ -877,7 +877,7 @@ function KadenceAdvancedHeading(props) {
 				marginLeft:
 					'' !== previewMarginLeft ? getSpacingOptionOutput(previewMarginLeft, marginType) : undefined,
 				lineHeight: previewLineHeight ? previewLineHeight + (fontHeightType ? fontHeightType : '') : undefined,
-				// color: color ? KadenceColorOutput(color) : undefined,
+				color: color && !enableTextGradient ? KadenceColorOutput(color) : undefined,
 				fontSize: previewFontSize
 					? getFontSizeOptionOutput(previewFontSize, sizeType ? sizeType : 'px')
 					: undefined,

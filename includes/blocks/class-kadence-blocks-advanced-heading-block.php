@@ -159,9 +159,12 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			}
 		}
 		if( !empty( $attributes['textGradient'] ) && ! empty( $attributes['enableTextGradient'] ) ) {
+			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ', .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] .kb-adv-text-inner' );
 			$css->add_property( 'background-image', $attributes['textGradient'] );
 			$css->add_property( '-webkit-background-clip', 'text' );
 			$css->add_property( '-webkit-text-fill-color', 'transparent' );
+			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ', .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
+
 		}
 		if ( ! empty( $attributes['background'] ) && empty( $attributes['enableTextGradient'] ) ) {
 			if ( class_exists( 'Kadence\Theme' ) ) {
@@ -386,7 +389,11 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		if ( strpos( $content, 'kb-tooltips') !== false || ( ! empty( $attributes['icon'] ) && ! empty( $attributes['iconTooltip'] ) ) ) {
 			$this->enqueue_script( 'kadence-blocks-tippy' );
 		}
-		if ( ! empty( $attributes['icon'] ) ) {
+
+		$should_wrap_content = ! empty( $attributes['icon'] ) ||
+		                       ( ! empty( $attributes['enableTextGradient'] ) && strpos( $content, 'kt-typed-text' ) === false );
+
+		if ( $should_wrap_content ) {
 			$tag_name     = $this->get_html_tag( $attributes, 'htmlTag', 'h2', $this->allowed_html_tags, 'level' );
 			$text_content = $this->get_inner_content( $content, $tag_name );
 			// Start empty.
@@ -394,7 +401,10 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$reveal_animation = ( ! empty( $attributes['kadenceAnimation'] ) && ( 'reveal-left' === $attributes['kadenceAnimation'] || 'reveal-right' === $attributes['kadenceAnimation'] || 'reveal-up' === $attributes['kadenceAnimation'] || 'reveal-down' === $attributes['kadenceAnimation'] ) ? true : false );
 			$wrapper = $reveal_animation ? true : false;
 			$icon_side = ! empty( $attributes['iconSide'] ) ? $attributes['iconSide'] : 'left';
-			$classes = array( 'kt-adv-heading' . $unique_id, 'wp-block-kadence-advancedheading', 'kt-adv-heading-has-icon' );
+			$classes = array( 'kt-adv-heading' . $unique_id, 'wp-block-kadence-advancedheading' );
+			if ( ! empty( $attributes['icon'] ) ) {
+				$classes[] = 'kt-adv-heading-has-icon';
+			}
 			if ( ! empty( $attributes['link'] ) && ! empty( $attributes['linkStyle'] ) ) {
 				$classes[] = 'hls-' . $attributes['linkStyle'];
 			}
@@ -424,11 +434,13 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$inner_content_attributes = implode( ' ', $inner_content_attributes );
 			$icon_left = '';
 			$icon_right = '';
-			if ( 'left' === $icon_side ) {
-				$icon_left = $this->get_icon( $attributes );
-			}
-			if ( 'right' === $icon_side ) {
-				$icon_right = $this->get_icon( $attributes );
+			if ( ! empty( $attributes['icon'] ) ) {
+				if ( 'left' === $icon_side ) {
+					$icon_left = $this->get_icon( $attributes );
+				}
+				if ( 'right' === $icon_side ) {
+					$icon_right = $this->get_icon( $attributes );
+				}
 			}
 			$content = sprintf( '<%1$s %2$s>%3$s<span class="kb-adv-text-inner">%4$s</span>%5$s</%1$s>', $tag_name, $inner_content_attributes, $icon_left, $text_content, $icon_right );
 			if ( ! empty( $attributes['link'] ) ) {
