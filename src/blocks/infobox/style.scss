@@ -303,3 +303,9 @@
 		left: 0;
 	}
 }
+body.rtl .kt-info-halign-right .kt-infobox-textcontent {
+	align-items:flex-start;
+}
+body.rtl .kt-info-halign-left .kt-infobox-textcontent {
+	align-items: flex-end;
+}
