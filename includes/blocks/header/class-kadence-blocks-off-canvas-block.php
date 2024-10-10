@@ -141,7 +141,7 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 		) );
 
 		// Close icon container hover.
-		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close:hover, .wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close:focus' );
+		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close:hover, .wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close:focus-visible' );
 		$css->render_border_styles(
 			$attributes,
 			'closeIconBorderHover',
@@ -219,7 +219,7 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		// Close Icon container hover.
-		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close:hover, .wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close:focus' );
+		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close:hover, .wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-close:focus-visible' );
 		if ( ! empty( $sized_attributes['closeIconBackgroundColorHover'] ) ) {
 			$css->add_property( 'background-color', $css->render_color( $sized_attributes['closeIconBackgroundColorHover'] ) );
 		}

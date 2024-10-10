@@ -93,8 +93,8 @@ $admin-bar-height-mobile: 46px;
 		right: 5px;
 		box-shadow: none;
 		&:hover,
-		&:focus {
-			color: currentColor;
+		&:focus-visible {
+			color: initial;
 			background: none;
 			box-shadow: none;
 		}
