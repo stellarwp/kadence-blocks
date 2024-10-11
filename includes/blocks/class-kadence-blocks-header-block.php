@@ -404,8 +404,8 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		if ( $transparent_postmeta_setting === 'enable' ) {
 			$block_settings = [
 				'desktop' => true,
-				'tablet'  => true,
-				'mobile'  => true,
+				'tablet'  => $block_settings['tablet'],
+				'mobile'  => $block_settings['mobile'],
 			];
 		} elseif ( $transparent_postmeta_setting === 'disable' || ! $this->transparent_allowed_on_post_type( $header_attributes ) ) {
 			$block_settings = [
@@ -450,12 +450,12 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 
 		$disabled_post_types = array_fill_keys( $attributes['disableTransparentOverrides'], true );
 
-		if (is_singular() || is_front_page()) {
+		if ( is_singular() || is_front_page() ) {
 			$post_type = is_front_page() ? 'page' : get_post_type();
 			if ( !empty( $disabled_post_types[ $post_type ] ) ) {
 				$transparent = 'disable';
 			}
-		} elseif (is_archive() || is_search() || is_home() || is_404()) {
+		} elseif( is_archive() || is_search() || is_home() || is_404() ) {
 			if ( is_home() && ! is_front_page() ) {
 				if ( get_query_var( 'tribe_events_front_page' ) ) {
 //					$tribe_option_trans = \Kadence\kadence()->option('transparent_header_tribe_events_archive', true);
