@@ -408,26 +408,24 @@ class Kadence_Blocks_Abstract_Block {
 	 * @param string $meta_prefix Meta prefix.
 	 * @return array
 	 */
-	public function get_attributes_with_defaults_cpt($post_id, $cpt_name, $meta_prefix) {
-		if (!empty($this->attributes_with_defaults[$post_id])) {
-			return $this->attributes_with_defaults[$post_id];
+	public function get_attributes_with_defaults_cpt( $post_id, $cpt_name, $meta_prefix ) {
+		if ( ! empty( $this->attributes_with_defaults[ $post_id ] ) ) {
+			return $this->attributes_with_defaults[ $post_id ];
 		}
 
-		$default_attributes = $this->get_cpt_default_attributes($cpt_name, $meta_prefix);
-		$post_meta = get_post_meta($post_id);
-		$attributes = [];
-
-		if (is_array($post_meta)) {
-			foreach ($post_meta as $meta_key => $meta_value) {
-				if (strpos($meta_key, $meta_prefix) === 0 && isset($meta_value[0])) {
-					$attributes[str_replace($meta_prefix, '', $meta_key)] = maybe_unserialize($meta_value[0]);
+		$default_attributes = $this->get_cpt_default_attributes( $cpt_name, $meta_prefix );
+		$post_meta          = get_post_meta( $post_id );
+		$attributes         = [];
+		if ( ! empty( $post_meta ) && is_array( $post_meta ) ) {
+			foreach ( $post_meta as $meta_key => $meta_value ) {
+				if ( strpos( $meta_key, $meta_prefix ) === 0 && isset( $meta_value[0] ) ) {
+					$attributes[ str_replace( $meta_prefix, '', $meta_key ) ] = maybe_unserialize( $meta_value[0] );
 				}
 			}
 		}
+		$merged_attributes = $this->merge_attributes_with_defaults( $attributes, $default_attributes );
 
-		$merged_attributes = $this->merge_attributes_with_defaults($attributes, $default_attributes);
-
-		$this->attributes_with_defaults[$post_id] = $merged_attributes;
+		$this->attributes_with_defaults[ $post_id ] = $merged_attributes;
 		return $merged_attributes;
 	}
 
@@ -439,23 +437,23 @@ class Kadence_Blocks_Abstract_Block {
 	 * @param string $meta_prefix Meta prefix.
 	 * @return array
 	 */
-	protected function get_cpt_default_attributes($cpt_name, $meta_prefix) {
+	protected function get_cpt_default_attributes( $cpt_name, $meta_prefix ) {
 		$cache_key = $cpt_name . '_' . $meta_prefix;
 
-		if (!isset($this->default_attributes_cache[$cache_key])) {
-			$meta_keys = get_registered_meta_keys('post', $cpt_name);
+		if ( ! isset( $this->default_attributes_cache[ $cache_key ] ) ) {
+			$meta_keys = get_registered_meta_keys( 'post', $cpt_name );
 			$default_attributes = [];
 
-			foreach ($meta_keys as $key => $value) {
-				if (str_starts_with($key, $meta_prefix) && array_key_exists('default', $value)) {
-					$attr_name = str_replace($meta_prefix, '', $key);
-					$default_attributes[$attr_name] = $value['default'];
+			foreach ( $meta_keys as $key => $value ) {
+				if ( str_starts_with( $key, $meta_prefix ) && array_key_exists( 'default', $value ) ) {
+					$attr_name = str_replace( $meta_prefix, '', $key );
+					$default_attributes[ $attr_name ] = $value['default'];
 				}
 			}
 
-			$this->default_attributes_cache[$cache_key] = $default_attributes;
+			$this->default_attributes_cache[ $cache_key ] = $default_attributes;
 		}
 
-		return $this->default_attributes_cache[$cache_key];
+		return $this->default_attributes_cache[ $cache_key ];
 	}
 }

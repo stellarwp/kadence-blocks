@@ -1163,10 +1163,10 @@ class Kadence_Blocks_Header_CPT_Controller {
 			),
 			array(
 				'key'     => '_kad_header_disableTransparentOverrides',
-				'default' => true,
 				'type'    => 'array',
 				'properties' => array(),
 				'children_type' => 'string',
+				'default' => array(),
 			),
 			array(
 				'key' => '_kad_header_shadow',
@@ -1241,7 +1241,7 @@ class Kadence_Blocks_Header_CPT_Controller {
 					'single'        => true,
 					'auth_callback' => array( $this, 'meta_auth_callback' ),
 					'type'          => $meta['type'],
-					'default'       => $meta['default'],
+					'default'       => isset( $meta['default'] ) ? $meta['default'] : '',
 					'show_in_rest'  => $show_in_rest,
 				)
 			);
