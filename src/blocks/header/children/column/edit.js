@@ -65,7 +65,6 @@ export function Edit(props) {
 			addUniqueID(uniqueId, clientId);
 		}
 	}, []);
-
 	const hasChildBlocks = wp.data.select('core/block-editor').getBlockOrder(clientId).length > 0;
 
 	const innerBlocksClasses = classnames({
@@ -73,7 +72,7 @@ export function Edit(props) {
 		[`wp-block-kadence-header-column-${location}`]: location,
 		[`wp-block-kadence-header-column${uniqueID}`]: uniqueID,
 		'no-content': !hasChildBlocks,
-		'no-content-column-center': !hasChildBlocks && ('center' === location || 'tablet-center' === location),
+		'no-content-column-center': !hasChildBlocks && ('center' === location || 'tablet-center' === location ),
 	});
 	const innerBlocksProps = useInnerBlocksProps(
 		{

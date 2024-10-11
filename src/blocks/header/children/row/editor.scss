@@ -8,7 +8,10 @@
 		margin: 0 auto;
 	}
 	.kadence-header-row-inner:has(> div.no-content-column-center) {
-		grid-template-columns: auto auto auto;
+		grid-template-columns: auto auto;
+	}
+	.kadence-header-row-inner > .no-content-column-center {
+		display: none;
 	}
 	.wp-block-kadence-header-column,
 	.wp-block-kadence-header-section {
