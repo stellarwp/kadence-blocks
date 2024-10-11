@@ -337,7 +337,7 @@ const fetchCustomSvgs = async ( cacheBust = false ) => {
 
 	const urlParams = new URLSearchParams( params );
 
-	const response = await fetch( `/wp-json/wp/v2/kadence_custom_svg?${ urlParams.toString() }`, {
+	const response = await fetch( kadence_blocks_params.rest_url + `wp/v2/kadence_custom_svg?${ urlParams.toString() }`, {
 		method: 'GET',
 	} );
 
