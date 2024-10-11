@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.3
 Tested up to: 6.6
-Stable tag: 3.3.1
+Stable tag: 3.3.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -180,7 +180,9 @@ Release Date: October TBD 2024
 * Add: Gradient text to advanced button block.
 * Add: Adv Header dynamic transparency options.
 * Fix: Some accordion block styles not applying unless title color was set.
-* Fix: Compatability issue with block addon plugin.
+* Fix: Compatibility issue with block addon plugin.
+* Fix: Issue with transparent and sticky headers.
+* Fix: Issue with headers background not correctly applying at times.
 
 = 3.3.1 =
 Release Date: October 4th 2024
