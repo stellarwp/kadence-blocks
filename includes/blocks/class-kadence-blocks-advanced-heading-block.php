@@ -163,6 +163,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( 'background-image', $attributes['textGradient'] );
 			$css->add_property( '-webkit-background-clip', 'text' );
 			$css->add_property( '-webkit-text-fill-color', 'transparent' );
+			$css->add_property( 'display', 'block' );
 			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ', .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
 
 		}
