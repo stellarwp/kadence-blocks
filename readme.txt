@@ -183,6 +183,7 @@ Release Date: October TBD 2024
 * Fix: Compatibility issue with block addon plugin.
 * Fix: Issue with transparent and sticky headers.
 * Fix: Issue with headers background not correctly applying at times.
+* Fix: Issue with accordion hover/focus and active styles.
 
 = 3.3.1 =
 Release Date: October 4th 2024
