@@ -15,6 +15,7 @@ jobs:
         strategy:
             matrix:
                 wordpress:
+                    - nightly
                     - latest
                     - '6.5.5'
                     - '6.4.5'
