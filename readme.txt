@@ -186,6 +186,7 @@ Release Date: October TBD 2024
 * Fix: Issue with accordion hover/focus and active styles.
 * Fix: Search block text color and placeholder color not applying.
 * Fix: Off canvas close button padding & margin units.
+* Fix: PHP 8.3 deprecation when using restrict content pro.
 
 = 3.3.1 =
 Release Date: October 4th 2024

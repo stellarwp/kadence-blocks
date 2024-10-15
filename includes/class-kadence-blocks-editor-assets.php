@@ -229,7 +229,7 @@ class Editor_Assets {
 		} elseif ( current_user_can( apply_filters( 'kadence_blocks_contributor_role', 'edit_posts' ) ) ) {
 			$userrole = 'contributor';
 		}
-		$access_levels = false;
+		$access_levels = [];
 		$level_ids = false;
 		if ( function_exists( 'rcp_get_access_levels' ) ) {
 			foreach ( rcp_get_access_levels() as $key => $access_level_label ) {
@@ -362,7 +362,7 @@ class Editor_Assets {
 				'rest_url' => get_rest_url(),
 				'wp_version' => get_bloginfo( 'version' ),
 				'rcp_levels' => $level_ids,
-				'rcp_access' => $access_levels,
+				'rcp_access' => !empty( $access_levels ) ? $access_levels : false,
 				'svgMaskPath' => KADENCE_BLOCKS_URL . 'includes/assets/images/masks/',
 				'wp_max_upload_size' => wp_max_upload_size(),
 				'get_allowed_mime_types' => get_allowed_mime_types(),
