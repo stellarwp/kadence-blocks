@@ -122,12 +122,14 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 				'desktop_key' => 'closeIconPadding',
 				'tablet_key'  => 'closeIconPaddingTablet',
 				'mobile_key'  => 'closeIconPaddingMobile',
+				'unit_key'    => 'closeIconPaddingUnit',
 			]
 		);
 		$css->render_measure_output( $attributes, 'closeIconMargin', 'margin', array(
 			'desktop_key' => 'closeIconMargin',
 			'tablet_key'  => 'closeIconMarginTablet',
 			'mobile_key'  => 'closeIconMarginMobile',
+			'unit_key'    => 'closeIconMarginUnit',
 		) );
 		$css->render_measure_output( $attributes, 'closeIconBorderRadius', 'border-radius', array(
 			'desktop_key' => 'closeIconBorderRadius',
