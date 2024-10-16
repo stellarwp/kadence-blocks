@@ -539,6 +539,7 @@ function ControlPoints( {
 									min={0}
 									step={1}
 									max={100}
+									style={{ paddingBottom: '10px' }}
 								/>
 							) }
 							{ ! disableRemove && controlPoints.length > 2 && (
