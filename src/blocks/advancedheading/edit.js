@@ -235,6 +235,8 @@ function KadenceAdvancedHeading(props) {
 		iconTooltip,
 		textGradient,
 		enableTextGradient,
+		enableMarkGradient,
+		markGradient,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('style');
@@ -1054,8 +1056,11 @@ function KadenceAdvancedHeading(props) {
 		<div {...blockProps}>
 			<style>
 				{`.kt-adv-heading${uniqueID} mark.kt-highlight, .kt-adv-heading${uniqueID} .rich-text:focus mark.kt-highlight[data-rich-text-format-boundary] {
-						color: ${KadenceColorOutput(markColor)};
-						background: ${markBG ? markBGString : 'transparent'};
+						color: ${!enableMarkGradient ? KadenceColorOutput(markColor) : undefined};
+						background: ${markBG && !enableMarkGradient ? markBGString : 'transparent'};
+						background-image: ${enableMarkGradient ? markGradient : 'none'};
+						-webkit-background-clip: ${enableMarkGradient ? 'text' : undefined};
+						-webkit-text-fill-color: ${enableMarkGradient ? 'transparent' : undefined};
 						font-weight: ${markFontWeight ? markFontWeight : 'inherit'};
 						font-style: ${markFontStyle ? markFontStyle : 'inherit'};
 						font-size: ${previewMarkSize ? getFontSizeOptionOutput(previewMarkSize, markSizeType) : 'inherit'};
@@ -1871,23 +1876,41 @@ function KadenceAdvancedHeading(props) {
 									initialOpen={false}
 									panelName={'kb-adv-heading-highlight-settings'}
 								>
-									<PopColorControl
-										label={__('Color', 'kadence-blocks')}
-										value={markColor ? markColor : ''}
-										default={''}
-										onChange={(value) => setAttributes({ markColor: value })}
+									{!enableMarkGradient && (
+										<>
+											<PopColorControl
+												label={__('Color', 'kadence-blocks')}
+												value={markColor ? markColor : ''}
+												default={''}
+												onChange={(value) => setAttributes({ markColor: value })}
+											/>
+											<PopColorControl
+												label={__('Background', 'kadence-blocks')}
+												value={markBG ? markBG : ''}
+												default={''}
+												onChange={(value) => setAttributes({ markBG: value })}
+												opacityValue={markBGOpacity}
+												onOpacityChange={(value) => setAttributes({ markBGOpacity: value })}
+												onArrayChange={(color, opacity) =>
+													setAttributes({ markBG: color, markBGOpacity: opacity })
+												}
+											/>
+										</>
+									)}
+
+									<ToggleControl
+										style={{ marginTop: '10px' }}
+										label={__('Enable Text Gradient', 'kadence-blocks')}
+										checked={enableMarkGradient}
+										onChange={(value) => setAttributes({ enableMarkGradient: value })}
 									/>
-									<PopColorControl
-										label={__('Background', 'kadence-blocks')}
-										value={markBG ? markBG : ''}
-										default={''}
-										onChange={(value) => setAttributes({ markBG: value })}
-										opacityValue={markBGOpacity}
-										onOpacityChange={(value) => setAttributes({ markBGOpacity: value })}
-										onArrayChange={(color, opacity) =>
-											setAttributes({ markBG: color, markBGOpacity: opacity })
-										}
-									/>
+									{enableMarkGradient && (
+										<GradientControl
+											value={markGradient}
+											onChange={(value) => setAttributes({ markGradient: value })}
+											gradients={[]}
+										/>
+									)}
 									<ResponsiveBorderControl
 										label={__('Border', 'kadence-blocks')}
 										value={markBorderStyles}

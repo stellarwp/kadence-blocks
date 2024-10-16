@@ -205,6 +205,14 @@
 			"type": "string",
 			"default": "normal"
 		},
+		"enableMarkGradient": {
+			"type": "boolean",
+			"default": false
+		},
+		"markGradient": {
+			"type": "string",
+			"default": "#f76a0c"
+		},
 		"markColor": {
 			"type": "string",
 			"default": "#f76a0c"

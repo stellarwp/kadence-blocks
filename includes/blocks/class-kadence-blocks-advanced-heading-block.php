@@ -294,13 +294,17 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		if ( ! empty( $attributes['markFontStyle'] ) ) {
 			$css->add_property( 'font-style', $attributes['markFontStyle'] );
 		}
-		if ( ! empty( $attributes['markColor'] ) ) {
+		if ( ! empty( $attributes['markColor'] ) && empty( $attributes['enableMarkGradient'] ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['markColor'] ) );
+		} else if ( !empty( $attributes['markGradient'] ) && ! empty( $attributes['enableMarkGradient'] ) ) {
+			$css->add_property( 'background-image', $attributes['markGradient'] );
+			$css->add_property( '-webkit-background-clip', 'text' );
+			$css->add_property( '-webkit-text-fill-color', 'transparent' );
 		}
 		if ( ! empty( $attributes['markTextTransform'] ) ) {
 			$css->add_property( 'text-transform', $attributes['markTextTransform'] );
 		}
-		if ( ! empty( $attributes['markBG'] ) ) {
+		if ( ! empty( $attributes['markBG'] ) && empty( $attributes['enableMarkGradient'] ) ) {
 			$alpha = ( isset( $attributes['markBGOpacity'] ) && ! empty( $attributes['markBGOpacity'] ) ? $attributes['markBGOpacity'] : 1 );
 			$css->add_property( 'background', $css->render_color( $attributes['markBG'], $alpha ) );
 		}
