@@ -80,6 +80,18 @@ class Kadence_Blocks_Abstract_Block {
 		'search',
 		'identity'
 	];
+	/**
+	 * Allow us to enable merged defaults on blocks individually.
+	 * Considered setting this as a property within each block, but it's easier to see an exhaustive list here.
+	 * Eventually all blocks will be supported.
+	 *
+	 * @var array
+	 */
+	protected $is_cpt_block = [
+		'navigation',
+		'header',
+		'advanced-form',
+	];
 
 	/**
 	 * Class Constructor.
@@ -155,19 +167,26 @@ class Kadence_Blocks_Abstract_Block {
 	public function output_head_data( $block ) {
 		if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 			$attributes = $block['attrs'];
-			if ( isset( $attributes['uniqueID'] ) ) {
-				if( in_array( $this->block_name, $this->supports_merged_defaults ) ) {
-					$attributes = $this->get_attributes_with_defaults( $attributes['uniqueID'], $attributes );
+			if ( in_array( $this->block_name, $this->is_cpt_block ) ) {
+				$unique_id = ! empty( $attributes['id'] ) ? strval( $attributes['id'] ) . '-unique' : '';
+				if ( empty( $unique_id ) ) {
+					$unique_id = ! empty( $attributes['uniqueID'] ) ? $attributes['uniqueID'] : '';
+				}
+			} else {
+				$unique_id = ! empty( $attributes['uniqueID'] ) ? $attributes['uniqueID'] : '';
+			}
+			if ( ! empty( $unique_id ) ) {
+				$unique_id = str_replace( '/', '-', $unique_id );
+				if ( in_array( $this->block_name, $this->supports_merged_defaults ) ) {
+					$attributes = $this->get_attributes_with_defaults( $unique_id, $attributes );
 				}
 				// Check and enqueue stylesheets and scripts if needed.
 				$this->render_scripts( $attributes, false );
 
-				$unique_id = $attributes['uniqueID'];
 				$css_class = Kadence_Blocks_CSS::get_instance();
 				if ( ! $css_class->has_styles( 'kb-' . $this->block_name . $unique_id ) && apply_filters( 'kadence_blocks_render_head_css', true, $this->block_name, $attributes ) ) {
 					// Filter attributes for easier dynamic css.
 					$attributes = apply_filters( 'kadence_blocks_' . $this->block_name . '_render_block_attributes', $attributes );
-					$unique_id  = str_replace( '/', '-', $unique_id );
 					$this->build_css( $attributes, $css_class, $unique_id, $unique_id );
 				}
 			}
@@ -203,14 +222,21 @@ class Kadence_Blocks_Abstract_Block {
 	 */
 	public function render_css( $attributes, $content, $block_instance ) {
 		$this->render_scripts( $attributes, true );
-		if ( isset( $attributes['uniqueID'] ) ) {
-			$unique_id = $attributes['uniqueID'];
+		if ( in_array( $this->block_name, $this->is_cpt_block ) ) {
+			$unique_id = ! empty( $attributes['id'] ) ? strval( $attributes['id'] ) . '-unique' : '';
+			if ( empty( $unique_id ) ) {
+				$unique_id = ! empty( $attributes['uniqueID'] ) ? $attributes['uniqueID'] : '';
+			}
+		} else {
+			$unique_id = ! empty( $attributes['uniqueID'] ) ? $attributes['uniqueID'] : '';
+		}
+		if ( ! empty( $unique_id ) ) {
 			$unique_id = str_replace( '/', '-', $unique_id );
-			$unique_style_id = apply_filters( 'kadence_blocks_build_render_unique_id', $attributes['uniqueID'], $this->block_name, $attributes );
+			$unique_style_id = apply_filters( 'kadence_blocks_build_render_unique_id', $unique_id, $this->block_name, $attributes );
 			$css_class = Kadence_Blocks_CSS::get_instance();
 
-			if( in_array( $this->block_name, $this->supports_merged_defaults ) ) {
-				$attributes = $this->get_attributes_with_defaults( $attributes['uniqueID'], $attributes, false );
+			if ( in_array( $this->block_name, $this->supports_merged_defaults ) ) {
+				$attributes = $this->get_attributes_with_defaults( $unique_id, $attributes, false );
 			}
 
 			// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
@@ -336,15 +362,15 @@ class Kadence_Blocks_Abstract_Block {
 	 * @param string $block_name The name of the block.
 	 * @return array
 	 */
-	public function get_attributes_with_defaults($unique_id, $attributes, $cache = true ) {
-		if (!empty($this->attributes_with_defaults[$unique_id])) {
-			return $this->attributes_with_defaults[$unique_id];
+	public function get_attributes_with_defaults( $unique_id, $attributes, $cache = true ) {
+		if ( ! empty( $this->attributes_with_defaults[ $unique_id ] ) ) {
+			return $this->attributes_with_defaults[ $unique_id ];
 		}
 
 		$default_attributes = $this->get_block_default_attributes();
-		$merged_attributes = $this->merge_attributes_with_defaults($attributes, $default_attributes);
+		$merged_attributes  = $this->merge_attributes_with_defaults( $attributes, $default_attributes );
 
-		if( $cache ) {
+		if ( $cache ) {
 			$this->attributes_with_defaults[ $unique_id ] = $merged_attributes;
 		}
 		return $merged_attributes;
@@ -357,22 +383,22 @@ class Kadence_Blocks_Abstract_Block {
 	 */
 	protected function get_block_default_attributes() {
 		$block_name = 'kadence/' . $this->block_name;
-		if (!isset($this->default_attributes_cache[$block_name])) {
-			$registry = WP_Block_Type_Registry::get_instance()->get_registered($block_name);
+		if ( ! isset( $this->default_attributes_cache[ $block_name ] ) ) {
+			$registry = WP_Block_Type_Registry::get_instance()->get_registered( $block_name );
 			$default_attributes = [];
 
-			if ($registry && property_exists($registry, 'attributes') && !empty($registry->attributes)) {
-				foreach ($registry->attributes as $key => $value) {
-					if (isset($value['default'])) {
+			if ( $registry && property_exists( $registry, 'attributes' ) && ! empty( $registry->attributes ) ) {
+				foreach ( $registry->attributes as $key => $value ) {
+					if ( isset( $value['default'] ) ) {
 						$default_attributes[$key] = $value['default'];
 					}
 				}
 			}
 
-			$this->default_attributes_cache[$block_name] = $default_attributes;
+			$this->default_attributes_cache[ $block_name ] = $default_attributes;
 		}
 
-		return $this->default_attributes_cache[$block_name];
+		return $this->default_attributes_cache[ $block_name ];
 	}
 
 	/**
