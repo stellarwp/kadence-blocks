@@ -61,6 +61,10 @@ final class Image_Downloader_Provider extends Provider {
 			                ->needs( '$level' )
 			                ->give( LogLevel::fromName( $log_level ) );
 
+			$this->container->when( ErrorLogHandler::class )
+			                ->needs( '$level' )
+			                ->give( LogLevel::fromName( $log_level ) );
+
 			$this->container->bind( LoggerInterface::class, function () {
 				$logger  = new Logger( 'kadence' );
 				$handler = $this->container->get( ErrorLogHandler::class );
