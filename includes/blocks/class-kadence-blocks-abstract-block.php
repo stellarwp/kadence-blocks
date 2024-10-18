@@ -223,7 +223,7 @@ class Kadence_Blocks_Abstract_Block {
 	public function render_css( $attributes, $content, $block_instance ) {
 		$this->render_scripts( $attributes, true );
 		if ( in_array( $this->block_name, $this->is_cpt_block ) ) {
-			$unique_id = ! empty( $attributes['id'] ) ? strval( $attributes['id'] ) . '-unique' : '';
+			$unique_id = ! empty( $attributes['id'] ) ? strval( $attributes['id'] ) . '-cpt-id' : '';
 			if ( empty( $unique_id ) ) {
 				$unique_id = ! empty( $attributes['uniqueID'] ) ? $attributes['uniqueID'] : '';
 			}
