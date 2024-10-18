@@ -107,6 +107,7 @@ export default function SelectOrCreatePlaceholder({
 	}
 
 	if (typeof pagenow !== 'undefined' && ('widgets' === pagenow || 'customize' === pagenow)) {
+		options.unshift({ label: placeholder, value: '' });
 		return (
 			<Placeholder
 				className="kb-select-or-create-placeholder"
