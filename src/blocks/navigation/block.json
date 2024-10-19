@@ -6,7 +6,7 @@
 	"category": "kadence-blocks",
 	"description": "An advanced navigation block.",
 	"keywords": ["menu", "navigation", "links"],
-	"textdomain": "default",
+	"textdomain": "kadence-blocks",
 	"attributes": {
 		"uniqueID": {
 			"type": "string"
