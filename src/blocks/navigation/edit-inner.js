@@ -2001,18 +2001,18 @@ export function EditInner(props) {
 							</KadenceSubPanelBody>
 							<KadenceSubPanelBody title={__('Sub Menu Descriptions', 'kadence-blocks')}>
 								{/* <ResponsiveSelectControl
-									label={__('Align', 'kadence-blocks-pro')}
+									label={__('Align', 'kadence-blocks')}
 									value={dropdownDescriptionPositioning}
 									tabletValue={dropdownDescriptionPositioningTablet}
 									mobileValue={dropdownDescriptionPositioningMobile}
 									options={[
-										{ value: 'normal', label: __('Align with Title', 'kadence-blocks-pro') },
-										{ value: 'icon', label: __('Align with Icon', 'kadence-blocks-pro') },
+										{ value: 'normal', label: __('Align with Title', 'kadence-blocks') },
+										{ value: 'icon', label: __('Align with Icon', 'kadence-blocks') },
 									]}
 									tabletOptions={[
-										{ value: '', label: __('Inherit', 'kadence-blocks-pro') },
-										{ value: 'normal', label: __('Align with Title', 'kadence-blocks-pro') },
-										{ value: 'icon', label: __('Align with Icon', 'kadence-blocks-pro') },
+										{ value: '', label: __('Inherit', 'kadence-blocks') },
+										{ value: 'normal', label: __('Align with Title', 'kadence-blocks') },
+										{ value: 'icon', label: __('Align with Icon', 'kadence-blocks') },
 									]}
 									onChange={(value) => setAttributes({ dropdownDescriptionPositioning: value })}
 									onChangeTablet={(value) =>
@@ -2149,18 +2149,18 @@ export function EditInner(props) {
 							initialOpen={false}
 						>
 							{/* <ResponsiveSelectControl
-								label={__('Align', 'kadence-blocks-pro')}
+								label={__('Align', 'kadence-blocks')}
 								value={descriptionPositioning}
 								tabletValue={descriptionPositioningTablet}
 								mobileValue={descriptionPositioningMobile}
 								options={[
-									{ value: 'normal', label: __('Align with Title', 'kadence-blocks-pro') },
-									{ value: 'icon', label: __('Align with Icon', 'kadence-blocks-pro') },
+									{ value: 'normal', label: __('Align with Title', 'kadence-blocks') },
+									{ value: 'icon', label: __('Align with Icon', 'kadence-blocks') },
 								]}
 								tabletOptions={[
-									{ value: '', label: __('Inherit', 'kadence-blocks-pro') },
-									{ value: 'normal', label: __('Align with Title', 'kadence-blocks-pro') },
-									{ value: 'icon', label: __('Align with Icon', 'kadence-blocks-pro') },
+									{ value: '', label: __('Inherit', 'kadence-blocks') },
+									{ value: 'normal', label: __('Align with Title', 'kadence-blocks') },
+									{ value: 'icon', label: __('Align with Icon', 'kadence-blocks') },
 								]}
 								onChange={(value) => setAttributes({ descriptionPositioning: value })}
 								onChangeTablet={(value) => setAttributes({ descriptionPositioningTablet: value })}
