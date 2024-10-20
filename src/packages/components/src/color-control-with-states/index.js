@@ -46,7 +46,7 @@ export default function ColorControlWithStates({
 	const hoverComponents = (
 		<>
 			<PopColorControl
-				label={colorLabel + __(' Hover', 'kadence-blocks-pro')}
+				label={colorLabel + __(' Hover', 'kadence-blocks')}
 				value={colorValueHover}
 				default={''}
 				onChange={(value) => setAttributes({ [colorBase + suffix + 'Hover' + size]: value })}
@@ -54,7 +54,7 @@ export default function ColorControlWithStates({
 			/>
 			{includeBackground && (
 				<PopColorControl
-					label={backgroundLabel + __(' Hover', 'kadence-blocks-pro')}
+					label={backgroundLabel + __(' Hover', 'kadence-blocks')}
 					value={backgroundValueHover}
 					default={''}
 					onChange={(value) => setAttributes({ [backgroundBase + suffix + 'Hover' + size]: value })}
@@ -67,7 +67,7 @@ export default function ColorControlWithStates({
 	const activeComponents = includeActive ? (
 		<>
 			<PopColorControl
-				label={colorLabel + __(' Active', 'kadence-blocks-pro')}
+				label={colorLabel + __(' Active', 'kadence-blocks')}
 				value={colorValueActive}
 				default={''}
 				onChange={(value) => setAttributes({ [colorBase + suffix + 'Active' + size]: value })}
@@ -75,7 +75,7 @@ export default function ColorControlWithStates({
 			/>
 			{includeBackground && (
 				<PopColorControl
-					label={backgroundLabel + __(' Active', 'kadence-blocks-pro')}
+					label={backgroundLabel + __(' Active', 'kadence-blocks')}
 					value={backgroundValueActive}
 					default={''}
 					onChange={(value) => setAttributes({ [backgroundBase + suffix + 'Active' + size]: value })}
