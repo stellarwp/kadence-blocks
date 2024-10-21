@@ -129,13 +129,13 @@ function BlockItem({ thisBlock, activeBlock, toggleCollapse, collapsed, isOver, 
 					label={__('Options', 'kadence-blocks')}
 					controls={[
 						{
-							title: 'Edit',
+							title: __('Edit', 'kadence-blocks'),
 							icon: edit,
 							isDisabled: thisBlock.name !== 'kadence/navigation-link',
 							onClick: () => setIsEditing(!isEditing),
 						},
 						{
-							title: 'Delete',
+							title: __('Delete', 'kadence-blocks'),
 							icon: trash,
 							isDisabled: PREVENT_BLOCK_DELETE.includes(thisBlock.name),
 							onClick: () => deleteBlock(thisBlock.clientId),
