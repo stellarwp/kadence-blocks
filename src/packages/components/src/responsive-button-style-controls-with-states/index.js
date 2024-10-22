@@ -160,6 +160,7 @@ export default function ResponsiveButtonStyleControlsWithStates({
 
 			{borderBase && (
 				<ResponsiveBorderControl
+					key={'normalborderbase'}
 					label={borderLabel}
 					value={borderValue}
 					tabletValue={borderValueTablet}
@@ -329,6 +330,7 @@ export default function ResponsiveButtonStyleControlsWithStates({
 			)}
 			{borderBase && (
 				<ResponsiveBorderControl
+					key={'hoverborderbase'}
 					label={borderLabel}
 					value={borderValueHover}
 					tabletValue={borderValueHoverTablet}
@@ -508,6 +510,7 @@ export default function ResponsiveButtonStyleControlsWithStates({
 			)}
 			{borderBase && (
 				<ResponsiveBorderControl
+					key={'activeborderbase'}
 					label={borderLabel}
 					value={borderValueActive}
 					tabletValue={borderValueActiveTablet}
