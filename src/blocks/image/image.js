@@ -1909,6 +1909,13 @@ export default function Image({
 				onError={() => onImageError()}
 				onLoad={(event) => {
 					setNaturalSize(pick(event.target, ['naturalWidth', 'naturalHeight']));
+
+					//fix issue where chrome can fallback to 150 width/height when none are specified on some image types like svg imgs
+					const { naturalWidth, naturalHeight } = pick(event.target, ['naturalWidth', 'naturalHeight']);
+					const { width, height } = pick(event.target, ['width', 'height']);
+					if (naturalWidth == 150 && naturalHeight == 150 && width != 150 && height != 150) {
+						setNaturalSize({ naturalWidth: 0, naturalHeight: 0 });
+					}
 				}}
 				className={`kb-img ${tooltipDash && tooltip ? ' kb-image-tooltip-border' : ''}`}
 			/>
