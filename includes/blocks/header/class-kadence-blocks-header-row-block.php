@@ -204,12 +204,14 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		$css->set_selector('.wp-block-kadence-header-row' . $unique_id . ' .kadence-header-row-inner');
-		if ($sized_attributes['sectionPriority'] == 'center') {
-			$css->add_property('grid-template-columns', 'auto minmax(0, 1fr) auto');
-		} else if ($sized_attributes['sectionPriority'] == 'left') {
-			$css->add_property('grid-template-columns', '1fr minmax(0, auto) auto');
-		} else if ($sized_attributes['sectionPriority'] == 'right') {
-			$css->add_property('grid-template-columns', 'auto minmax(0, auto) 1fr');
+		if ($sized_attributes['layoutConfig'] !== 'single') {
+			if ($sized_attributes['sectionPriority'] == 'center') {
+				$css->add_property('grid-template-columns', 'auto minmax(0, 1fr) auto');
+			} else if ($sized_attributes['sectionPriority'] == 'left') {
+				$css->add_property('grid-template-columns', '1fr minmax(0, auto) auto');
+			} else if ($sized_attributes['sectionPriority'] == 'right') {
+				$css->add_property('grid-template-columns', 'auto minmax(0, auto) 1fr');
+			}
 		}
 	}
 

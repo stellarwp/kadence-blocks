@@ -384,22 +384,23 @@ export function Edit(props) {
 										}
 										type={'vertical'}
 									/>
-
-									<ResponsiveSelectControl
-										label={__('Section Priority', 'kadence-blocks')}
-										value={sectionPriority}
-										tabletValue={sectionPriorityTablet}
-										mobileValue={sectionPriorityMobile}
-										options={[
-											{ value: '', label: __('Default', 'kadence-blocks') },
-											{ value: 'center', label: __('Center', 'kadence-blocks') },
-											{ value: 'left', label: __('Left', 'kadence-blocks') },
-											{ value: 'right', label: __('Right', 'kadence-blocks') },
-										]}
-										onChange={(value) => setAttributes({ sectionPriority: value })}
-										onChangeTablet={(value) => setAttributes({ sectionPriorityTablet: value })}
-										onChangeMobile={(value) => setAttributes({ sectionPriorityMobile: value })}
-									/>
+									{layoutConfig !== 'single' && (
+										<ResponsiveSelectControl
+											label={__('Section Priority', 'kadence-blocks')}
+											value={sectionPriority}
+											tabletValue={sectionPriorityTablet}
+											mobileValue={sectionPriorityMobile}
+											options={[
+												{ value: '', label: __('Default', 'kadence-blocks') },
+												{ value: 'center', label: __('Center', 'kadence-blocks') },
+												{ value: 'left', label: __('Left', 'kadence-blocks') },
+												{ value: 'right', label: __('Right', 'kadence-blocks') },
+											]}
+											onChange={(value) => setAttributes({ sectionPriority: value })}
+											onChangeTablet={(value) => setAttributes({ sectionPriorityTablet: value })}
+											onChangeMobile={(value) => setAttributes({ sectionPriorityMobile: value })}
+										/>
+									)}
 								</KadencePanelBody>
 							</>
 						)}

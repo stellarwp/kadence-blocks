@@ -46,6 +46,7 @@ export default function BackendStyles(props) {
 		vAlignTablet,
 		vAlignMobile,
 		layout,
+		layoutConfig,
 		sectionPriority,
 		sectionPriorityTablet,
 		sectionPriorityMobile,
@@ -69,12 +70,14 @@ export default function BackendStyles(props) {
 	css.set_selector(`.wp-block-kadence-header-row.wp-block-kadence-header-row${uniqueID} .kadence-header-row-inner`);
 	css.render_measure_output(padding, paddingTablet, paddingMobile, previewDevice, 'padding', paddingUnit);
 	css.render_measure_output(margin, marginTablet, marginMobile, previewDevice, 'margin', marginUnit);
-	if (previewSectionPriority == 'center') {
-		css.add_property('grid-template-columns', 'auto minmax(0, 1fr) auto');
-	} else if (previewSectionPriority == 'left') {
-		css.add_property('grid-template-columns', '1fr minmax(0, auto) auto');
-	} else if (previewSectionPriority == 'right') {
-		css.add_property('grid-template-columns', 'auto minmax(0, auto) 1fr');
+	if (layoutConfig !== 'single') {
+		if (previewSectionPriority == 'center') {
+			css.add_property('grid-template-columns', 'auto minmax(0, 1fr) auto');
+		} else if (previewSectionPriority == 'left') {
+			css.add_property('grid-template-columns', '1fr minmax(0, auto) auto');
+		} else if (previewSectionPriority == 'right') {
+			css.add_property('grid-template-columns', 'auto minmax(0, auto) 1fr');
+		}
 	}
 	if (previewMinHeight != 0 && previewMinHeight) {
 		css.add_property('min-height', previewMinHeight + minHeightUnit);
