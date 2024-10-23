@@ -174,6 +174,16 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.3.3 =
+Release Date: October TBD 2024
+* Add: Section Priority option to header rows. This allows you to control how gridding of sections are prioritized.
+* Fix: Advanced image block not showing SVGs in editor.
+* Fix: Block settings visibility not working for section block.
+* Fix: Advanced form text fields now allowing "0" in required field.
+* Fix: Kadence legacy form freezing in reusable patterns.
+* Fix: Infobox on RTL sites when "Set height 100%" is enabled.
+* Fix: Ability to add nav to footer through widgets.
+
 = 3.3.2 =
 Release Date: October 16th 2024
 * Add: Gradient text to advanced text block.
