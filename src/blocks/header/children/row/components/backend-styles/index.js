@@ -46,6 +46,9 @@ export default function BackendStyles(props) {
 		vAlignTablet,
 		vAlignMobile,
 		layout,
+		sectionPriority,
+		sectionPriorityTablet,
+		sectionPriorityMobile,
 		kadenceBlockCSS,
 	} = attributes;
 
@@ -54,12 +57,25 @@ export default function BackendStyles(props) {
 	const previewItemGap = getPreviewSize(previewDevice, itemGap, itemGapTablet, itemGapMobile);
 
 	const previewVAlign = getPreviewSize(previewDevice, vAlign, vAlignTablet, vAlignMobile);
+	const previewSectionPriority = getPreviewSize(
+		previewDevice,
+		sectionPriority,
+		sectionPriorityTablet,
+		sectionPriorityMobile
+	);
 
 	const css = new KadenceBlocksCSS();
 	//container
 	css.set_selector(`.wp-block-kadence-header-row.wp-block-kadence-header-row${uniqueID} .kadence-header-row-inner`);
 	css.render_measure_output(padding, paddingTablet, paddingMobile, previewDevice, 'padding', paddingUnit);
 	css.render_measure_output(margin, marginTablet, marginMobile, previewDevice, 'margin', marginUnit);
+	if (previewSectionPriority == 'center') {
+		css.add_property('grid-template-columns', 'auto minmax(0, 1fr) auto');
+	} else if (previewSectionPriority == 'left') {
+		css.add_property('grid-template-columns', '1fr minmax(0, auto) auto');
+	} else if (previewSectionPriority == 'right') {
+		css.add_property('grid-template-columns', 'auto minmax(0, auto) 1fr');
+	}
 	if (previewMinHeight != 0 && previewMinHeight) {
 		css.add_property('min-height', previewMinHeight + minHeightUnit);
 	}
@@ -134,6 +150,11 @@ export default function BackendStyles(props) {
 	} else if (previewVAlign == 'bottom') {
 		css.add_property('align-items', 'flex-end');
 	}
+
+	css.set_selector(
+		`.wp-block-kadence-header-row${uniqueID} .wp-block-kadence-header-section, .wp-block-kadence-header-row${uniqueID} .wp-block-kadence-header-column`
+	);
+	css.add_property('gap', getGapSizeOptionOutput(previewItemGap, itemGapUnit));
 
 	const cssOutput = css.css_output();
 

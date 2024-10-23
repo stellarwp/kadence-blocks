@@ -34,6 +34,7 @@ import {
 	KadencePanelBody,
 	ResponsiveAlignControls,
 	ResponsiveGapSizeControl,
+	ResponsiveSelectControl,
 } from '@kadence/components';
 
 /**
@@ -84,6 +85,9 @@ export function Edit(props) {
 		vAlign,
 		vAlignTablet,
 		vAlignMobile,
+		sectionPriority,
+		sectionPriorityTablet,
+		sectionPriorityMobile,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
@@ -379,6 +383,22 @@ export function Edit(props) {
 											setAttributes({ vAlignMobile: nextAlign ? nextAlign : '' })
 										}
 										type={'vertical'}
+									/>
+
+									<ResponsiveSelectControl
+										label={__('Section Priority', 'kadence-blocks')}
+										value={sectionPriority}
+										tabletValue={sectionPriorityTablet}
+										mobileValue={sectionPriorityMobile}
+										options={[
+											{ value: '', label: __('Default', 'kadence-blocks') },
+											{ value: 'center', label: __('Center', 'kadence-blocks') },
+											{ value: 'left', label: __('Left', 'kadence-blocks') },
+											{ value: 'right', label: __('Right', 'kadence-blocks') },
+										]}
+										onChange={(value) => setAttributes({ sectionPriority: value })}
+										onChangeTablet={(value) => setAttributes({ sectionPriorityTablet: value })}
+										onChangeMobile={(value) => setAttributes({ sectionPriorityMobile: value })}
 									/>
 								</KadencePanelBody>
 							</>
