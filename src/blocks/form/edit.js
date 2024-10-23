@@ -191,7 +191,7 @@ function KadenceForm(props) {
 		setBlockDefaults('kadence/form', attributes);
 
 		const postOrFseId = getPostOrFseId(props, parentData);
-		if (postOrFseId !== postID) {
+		if (postOrFseId.toString() !== postOrFseId.toString()) {
 			setAttributes({
 				postID: postOrFseId.toString(),
 			});
