@@ -1198,8 +1198,10 @@ function StyleControls({ clientId, attributes, setAttributes, isSelected, contex
 					)}
 					{undefined !== backgroundVideoType && 'local' !== backgroundVideoType && (
 						<div class="components-base-control">
-							Warning: Embedded videos are not ideal for background content. Consider self hosting
-							instead.
+							{__(
+								'Warning: Embedded videos are not ideal for background content. Consider self hosting instead.',
+								'kadence-blocks'
+							)}
 						</div>
 					)}
 					{'youtube' === backgroundVideoType && (
