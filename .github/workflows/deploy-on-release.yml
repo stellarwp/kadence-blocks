@@ -51,41 +51,12 @@ jobs:
       - name: Configure Composer token
         run: composer config -g github-oauth.github.com ${{ secrets.COMPOSER_TOKEN }}
 
-      - name: Send Slack notification
-        uses: slackapi/slack-github-action@v1.24.0
-        with:
-          # For posting a rich message using Block Kit
-          payload: |
-            {
-              "text": "*🚀 ${{ github.event.repository.name }} version ${{ github.event.release.tag_name }} deployed!*",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*🚀 ${{ github.event.repository.name }} version ${{ github.event.release.tag_name }} deployed!*",
-                  }
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*<${{ github.event.release.html_url }}|View Release on GitHub>*"
-                  }
-                }
-              ]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-
-
-      #      - name: Build
-#        run: |
-#          composer install --no-dev --no-scripts
-#          composer run strauss-release
-#          npm install --legacy-peer-deps
-#          npm run build
+      - name: Build
+        run: |
+          composer install --no-dev --no-scripts
+          composer run strauss-release
+          npm install --legacy-peer-deps
+          npm run build
 
       - name: WordPress Plugin Deploy
 
@@ -133,3 +104,30 @@ jobs:
           # Provide the file type.
           asset_content_type: application/zip
 
+      - name: Send Slack notification
+        uses: slackapi/slack-github-action@v1.27.0
+        with:
+          # For posting a rich message using Block Kit
+          payload: |
+            {
+              "text": "*🚀 ${{ github.event.repository.name }} version ${{ github.event.release.tag_name }} deployed!*",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*🚀 ${{ github.event.repository.name }} version ${{ github.event.release.tag_name }} deployed!*",
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*<${{ github.event.release.html_url }}|View Release on GitHub>*"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
