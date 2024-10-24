@@ -34,6 +34,9 @@ jobs:
     # Github does offer other platforms if you need them: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idruns-on
     runs-on: ubuntu-latest
 
+    env:
+      COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.COMPOSER_TOKEN }}"}}'
+
     # Every job has a specific set of steps that it goes through to do its "work".
     #
     # Each step has a two key elements:
