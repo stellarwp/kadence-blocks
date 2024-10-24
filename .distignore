@@ -24,3 +24,4 @@ codeception.dist.yml
 .prettierignore
 phpcs.xml.dist
 phpcs.xml
+codeception.slic.yml
