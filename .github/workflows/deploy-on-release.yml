@@ -54,7 +54,7 @@ jobs:
       - name: Build
         run: |
           composer install --no-dev --no-scripts
-          composer run-script post-install-cmd
+          composer run strauss-release
           npm install --legacy-peer-deps
           npm run build
 
