@@ -48,9 +48,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Configure Composer token
+        run: composer config -g github-oauth.github.com ${{ secrets.COMPOSER_TOKEN }}
+
       - name: Build
         run: |
-          composer config -g github-oauth.github.com ${{ secrets.COMPOSER_TOKEN }}
           composer install --no-dev
           npm install --legacy-peer-deps
           npm run build
