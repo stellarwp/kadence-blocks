@@ -13,7 +13,7 @@ on:
   release:
 
     # run only when a new release is published, but not when it's classified as a pre-release.
-    types: [released]
+    types: [ released ]
 
 # A list of jobs involved in this workflow.
 jobs:
@@ -103,3 +103,50 @@ jobs:
 
           # Provide the file type.
           asset_content_type: application/zip
+
+      - name: Send Slack notification
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+            # For posting a rich message using Block Kit
+          payload: |
+              {
+                "text": "🚀 New Plugin Release Deployed!",
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "🚀 New Plugin Release Deployed!"
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Plugin:*\n${{ github.event.repository.name }}"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Version:*\n${{ github.event.release.tag_name }}"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "text": {
+                      "type": "mrkdwn",
+                      "text": "*Release Notes:*\n${{ github.event.release.body }}"
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "text": {
+                      "type": "mrkdwn",
+                      "text": "<${{ github.event.release.html_url }}|View Release on GitHub>"
+                    }
+                  }
+                ]
+              }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
