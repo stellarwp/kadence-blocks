@@ -879,7 +879,7 @@ function KadenceAdvancedHeading(props) {
 				marginLeft:
 					'' !== previewMarginLeft ? getSpacingOptionOutput(previewMarginLeft, marginType) : undefined,
 				lineHeight: previewLineHeight ? previewLineHeight + (fontHeightType ? fontHeightType : '') : undefined,
-				color: color && !enableTextGradient ? KadenceColorOutput(color) : undefined,
+				color: color && (!enableTextGradient || textGradient !== '') ? KadenceColorOutput(color) : undefined,
 				fontSize: previewFontSize
 					? getFontSizeOptionOutput(previewFontSize, sizeType ? sizeType : 'px')
 					: undefined,
@@ -1142,6 +1142,7 @@ function KadenceAdvancedHeading(props) {
 							color: ${KadenceColorOutput(linkHoverColor)}!important;
 						}`}
 				{enableTextGradient &&
+					textGradient !== '' &&
 					`.kt-adv-heading${uniqueID}.kadence-advancedheading-text, .kt-adv-heading${uniqueID} .kadence-advancedheading-text {
 						-webkit-background-clip: text;
 						-webkit-text-fill-color: transparent;
