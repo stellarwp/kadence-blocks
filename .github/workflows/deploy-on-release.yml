@@ -51,12 +51,12 @@ jobs:
       - name: Configure Composer token
         run: composer config -g github-oauth.github.com ${{ secrets.COMPOSER_TOKEN }}
 
-      - name: Build
-        run: |
-          composer install --no-dev --no-scripts
-          composer run strauss-release
-          npm install --legacy-peer-deps
-          npm run build
+#      - name: Build
+#        run: |
+#          composer install --no-dev --no-scripts
+#          composer run strauss-release
+#          npm install --legacy-peer-deps
+#          npm run build
 
       - name: WordPress Plugin Deploy
 
@@ -109,44 +109,36 @@ jobs:
         with:
             # For posting a rich message using Block Kit
           payload: |
+            {
+            "blocks": [
               {
-                "text": "🚀 New Plugin Release Deployed!",
-                "blocks": [
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*🚀 New Plugin Release Deployed!*"
+                }
+              },
+              {
+                "type": "section",
+                "fields": [
                   {
-                    "type": "header",
-                    "text": {
-                      "type": "plain_text",
-                      "text": "🚀 New Plugin Release Deployed!"
-                    }
+                    "type": "mrkdwn",
+                    "text": "*Plugin:* ${{ github.event.repository.name }}"
                   },
                   {
-                    "type": "section",
-                    "fields": [
-                      {
-                        "type": "mrkdwn",
-                        "text": "*Plugin:*\n${{ github.event.repository.name }}"
-                      },
-                      {
-                        "type": "mrkdwn",
-                        "text": "*Version:*\n${{ github.event.release.tag_name }}"
-                      }
-                    ]
-                  },
-                  {
-                    "type": "section",
-                    "text": {
-                      "type": "mrkdwn",
-                      "text": "*Release Notes:*\n${{ github.event.release.body }}"
-                    }
-                  },
-                  {
-                    "type": "section",
-                    "text": {
-                      "type": "mrkdwn",
-                      "text": "<${{ github.event.release.html_url }}|View Release on GitHub>"
-                    }
+                    "type": "mrkdwn",
+                    "text": "*Version:* ${{ github.event.release.tag_name }}"
                   }
                 ]
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*<${{ github.event.release.html_url }}|View Release on GitHub>*"
+                }
               }
+            ]
+            }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
