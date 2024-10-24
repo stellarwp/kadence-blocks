@@ -4,7 +4,8 @@ on:
 #    pull_request:
     push:
         paths-ignore:
-            - '**/readme.txt'
+          - '**/readme.txt'
+          - '.github/**'
 jobs:
     test:
         runs-on: ubuntu-latest
