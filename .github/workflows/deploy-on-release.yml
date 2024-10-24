@@ -108,7 +108,10 @@ jobs:
         uses: slackapi/slack-github-action@v1.27.0
         with:
           # For posting a rich message using Block Kit
-          payload: '{"text": "🚀 ${{ github.event.repository.name }} version ${{ github.event.release.tag_name }} deployed!\n\nRelease Notes:\n${{ github.event.release.body }}\n\nView on GitHub: ${{ github.event.release.html_url }}"}'
+          payload: |
+            {
+              "text": "🚀 ${{ github.event.repository.name }} version ${{ github.event.release.tag_name }} deployed!\n\nRelease Notes:\n${{ env.RELEASE_NOTES }}\n\nView on GitHub: ${{ github.event.release.html_url }}"
+            }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
