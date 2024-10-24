@@ -999,6 +999,10 @@ $link-color-property: var(
 			--kb-nav-link-highlight-color-hover-lv: var(--kb-nav-link-highlight-color-hover);
 			--kb-nav-link-highlight-background-hover-lv: var(--kb-nav-link-highlight-background-hover);
 			--kb-nav-link-description-color-hover-lv: var(--kb-nav-link-description-color-hover);
+			--kb-nav-link-hover-border-top-lv: var(--kb-nav-link-hover-border-top);
+			--kb-nav-link-hover-border-right-lv: var(--kb-nav-link-hover-border-right);
+			--kb-nav-link-hover-border-bottom-lv: var(--kb-nav-link-hover-border-bottom);
+			--kb-nav-link-hover-border-left-lv: var(--kb-nav-link-hover-border-left);
 		}
 	}
 
@@ -1030,13 +1034,6 @@ $link-color-property: var(
 		&:focus {
 			//color copied here for specifity reasons in non-iframe editors
 			color: $link-color-property;
-
-			--kb-nav-link-color-hover-lv: var(--kb-nav-link-color-hover, inherit);
-			--kb-nav-link-background-hover-lv: var(--kb-nav-link-background-hover, inherit);
-			--kb-nav-link-hover-border-top-lv: var(--kb-nav-link-hover-border-top);
-			--kb-nav-link-hover-border-right-lv: var(--kb-nav-link-hover-border-right);
-			--kb-nav-link-hover-border-bottom-lv: var(--kb-nav-link-hover-border-bottom);
-			--kb-nav-link-hover-border-left-lv: var(--kb-nav-link-hover-border-left);
 			--kb-nav-link-hover-border-top-left-radius-lv: var(--kb-nav-link-hover-border-top-left-radius);
 			--kb-nav-link-hover-border-top-right-radius-lv: var(--kb-nav-link-hover-border-top-right-radius);
 			--kb-nav-link-hover-border-bottom-right-radius-lv: var(--kb-nav-link-hover-border-bottom-right-radius);
