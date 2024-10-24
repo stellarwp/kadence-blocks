@@ -51,7 +51,47 @@ jobs:
       - name: Configure Composer token
         run: composer config -g github-oauth.github.com ${{ secrets.COMPOSER_TOKEN }}
 
-#      - name: Build
+      - name: Send Slack notification
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          # For posting a rich message using Block Kit
+          payload: |
+            {
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*🚀 New Plugin Release Deployed!*"
+                }
+              },
+              {
+                "type": "section",
+                "fields": [
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Plugin:* ${{ github.event.repository.name }}"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Version:* ${{ github.event.release.tag_name }}"
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*<${{ github.event.release.html_url }}|View Release on GitHub>*"
+                }
+              }
+            ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+
+      #      - name: Build
 #        run: |
 #          composer install --no-dev --no-scripts
 #          composer run strauss-release
@@ -104,41 +144,3 @@ jobs:
           # Provide the file type.
           asset_content_type: application/zip
 
-      - name: Send Slack notification
-        uses: slackapi/slack-github-action@v1.24.0
-        with:
-            # For posting a rich message using Block Kit
-          payload: |
-            {
-            "blocks": [
-              {
-                "type": "section",
-                "text": {
-                  "type": "mrkdwn",
-                  "text": "*🚀 New Plugin Release Deployed!*"
-                }
-              },
-              {
-                "type": "section",
-                "fields": [
-                  {
-                    "type": "mrkdwn",
-                    "text": "*Plugin:* ${{ github.event.repository.name }}"
-                  },
-                  {
-                    "type": "mrkdwn",
-                    "text": "*Version:* ${{ github.event.release.tag_name }}"
-                  }
-                ]
-              },
-              {
-                "type": "section",
-                "text": {
-                  "type": "mrkdwn",
-                  "text": "*<${{ github.event.release.html_url }}|View Release on GitHub>*"
-                }
-              }
-            ]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
