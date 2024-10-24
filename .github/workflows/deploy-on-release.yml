@@ -51,12 +51,12 @@ jobs:
       - name: Configure Composer token
         run: composer config -g github-oauth.github.com ${{ secrets.COMPOSER_TOKEN }}
 
-#      - name: Build
-#        run: |
-#          composer install --no-dev --no-scripts
-#          composer run strauss-release
-#          npm install --legacy-peer-deps
-#          npm run build
+      - name: Build
+        run: |
+          composer install --no-dev --no-scripts
+          composer run strauss-release
+          npm install --legacy-peer-deps
+          npm run build
 
       - name: WordPress Plugin Deploy
 
@@ -84,25 +84,25 @@ jobs:
 
       # After the deploy, we also want to create a zip and upload it to the release on Github. We don't want
       # users to have to go to the repository to find our plugin :).
-#      - name: Upload release asset
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          # Note, this is an exception to action secrets: GH_TOKEN is always available and provides access to
-#          # the current repository this action runs in.
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#
-#        with:
-#          # Get the URL for uploading assets to the current release.
-#          upload_url: ${{ github.event.release.upload_url }}
-#
-#          # Provide the path to the file generated in the previous step using the output.
-#          asset_path: ${{ steps.deploy.outputs.zip-path }}
-#
-#          # Provide what the file should be named when attached to the release (plugin-name.zip)
-#          asset_name: ${{ github.event.repository.name }}.zip
-#
-#          # Provide the file type.
-#          asset_content_type: application/zip
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1
+        env:
+          # Note, this is an exception to action secrets: GH_TOKEN is always available and provides access to
+          # the current repository this action runs in.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        with:
+          # Get the URL for uploading assets to the current release.
+          upload_url: ${{ github.event.release.upload_url }}
+
+          # Provide the path to the file generated in the previous step using the output.
+          asset_path: ${{ steps.deploy.outputs.zip-path }}
+
+          # Provide what the file should be named when attached to the release (plugin-name.zip)
+          asset_name: ${{ github.event.repository.name }}.zip
+
+          # Provide the file type.
+          asset_content_type: application/zip
 
       - name: Send Slack notification
         uses: slackapi/slack-github-action@v1.27.0
