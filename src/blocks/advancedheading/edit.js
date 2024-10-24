@@ -853,7 +853,7 @@ function KadenceAdvancedHeading(props) {
 			className={classes}
 			data-alt-title={altTitle ? altTitle : undefined}
 			style={{
-				display: icon ? 'flex' : enableTextGradient ? 'inline-block' : undefined,
+				display: icon ? 'flex' : undefined,
 				alignItems: icon ? iconVerticalAlign : undefined,
 				gap: icon ? '0.25em' : undefined,
 				justifyContent: icon && previewJustifyAlign ? previewJustifyAlign : undefined,
