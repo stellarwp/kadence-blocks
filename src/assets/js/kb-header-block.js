@@ -228,7 +228,7 @@ class KBHeader {
 			this.createAndSetPlaceholderAndStickyWrappers('desktop');
 		}
 		if (this.stickyTablet || this.stickyMobile) {
-			//this.createAndSetPlaceholderAndStickyWrappers('tablet');
+			this.createAndSetPlaceholderAndStickyWrappers('tablet');
 		}
 
 		if (this.placeholderWrapper && this.stickyWrapper) {
@@ -630,8 +630,8 @@ class KBHeader {
 	}
 
 	activeSizeCased(size) {
-		const sizeTouse = size ? size : this.activeSize;
-		return sizeTouse === 'desktop' ? '' : sizeTouse.charAt(0).toUpperCase() + sizeTouse.slice(1);
+		const sizeToUse = size ? size : this.activeSize;
+		return sizeToUse === 'desktop' ? '' : sizeToUse.charAt(0).toUpperCase() + sizeToUse.slice(1);
 	}
 
 	setStickyChanged(isSticking) {
