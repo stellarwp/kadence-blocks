@@ -1061,6 +1061,7 @@ function KadenceAdvancedHeading(props) {
 						background-image: ${enableMarkGradient ? markGradient : 'none'};
 						-webkit-background-clip: ${enableMarkGradient ? 'text' : undefined};
 						-webkit-text-fill-color: ${enableMarkGradient ? 'transparent' : undefined};
+						-webkit-box-decoration-break: ${enableMarkGradient ? 'clone' : undefined};
 						font-weight: ${markFontWeight ? markFontWeight : 'inherit'};
 						font-style: ${markFontStyle ? markFontStyle : 'inherit'};
 						font-size: ${previewMarkSize ? getFontSizeOptionOutput(previewMarkSize, markSizeType) : 'inherit'};
@@ -1146,6 +1147,7 @@ function KadenceAdvancedHeading(props) {
 					`.kt-adv-heading${uniqueID}.kadence-advancedheading-text, .kt-adv-heading${uniqueID} .kadence-advancedheading-text {
 						-webkit-background-clip: text;
 						-webkit-text-fill-color: transparent;
+						-webkit-box-decoration-break: clone;
 				}`}
 				{iconColorHover &&
 					`#block-${clientId} .kadence-advancedheading-text:hover > .kb-advanced-heading-svg-icon {
