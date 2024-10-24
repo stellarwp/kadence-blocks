@@ -53,7 +53,8 @@ jobs:
 
       - name: Build
         run: |
-          composer install --no-dev
+          composer install --no-dev --no-scripts
+          composer run-script post-install-cmd
           npm install --legacy-peer-deps
           npm run build
 
