@@ -172,6 +172,7 @@ export default function ResponsiveButtonStyleControlsWithStates({
 			)}
 			{borderRadiusBase && (
 				<ResponsiveMeasurementControls
+					key={'normalborderradiusbase'}
 					label={borderRadiusLabel}
 					value={borderRadiusValue}
 					tabletValue={borderRadiusValueTablet}
@@ -342,6 +343,7 @@ export default function ResponsiveButtonStyleControlsWithStates({
 			)}
 			{borderRadiusBase && (
 				<ResponsiveMeasurementControls
+					key={'hoverborderradiusbase'}
 					label={borderRadiusLabel}
 					value={borderRadiusValueHover}
 					tabletValue={borderRadiusValueHoverTablet}
@@ -522,6 +524,7 @@ export default function ResponsiveButtonStyleControlsWithStates({
 			)}
 			{borderRadiusBase && (
 				<ResponsiveMeasurementControls
+					key={'activeborderradiusbase'}
 					label={borderRadiusLabel}
 					value={borderRadiusValueActive}
 					tabletValue={borderRadiusValueActiveTablet}

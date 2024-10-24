@@ -976,21 +976,18 @@ $link-color-property: var(
 			--kb-nav-link-hover-border-left-lv,
 			var(--kb-nav-link-active-border-left-lv, var(--kb-nav-link-border-left))
 		);
-		border-top-left-radius: var(
-			--kb-nav-link-hover-border-top-left-radius-lv,
-			var(--kb-nav-link-active-border-top-left-radius-lv, var(--kb-nav-link-border-top-left-radius))
-		);
-		border-top-right-radius: var(
-			--kb-nav-link-hover-border-top-right-radius-lv,
-			var(--kb-nav-link-active-border-top-right-radius-lv, var(--kb-nav-link-border-top-right-radius))
-		);
-		border-bottom-right-radius: var(
-			--kb-nav-link-hover-border-bottom-right-radius-lv,
-			var(--kb-nav-link-active-bottom-right-left-radius-lv, var(--kb-nav-link-border-bottom-right-radius))
-		);
-		border-bottom-left-radius: var(
-			--kb-nav-link-hover-border-bottom-left-radius-lv,
-			var(--kb-nav-link-active-bottom-top-left-radius-lv, var(--kb-nav-link-border-bottom-left-radius))
+		border-radius: var(
+				--kb-nav-link-hover-border-top-left-radius-lv,
+				var(--kb-nav-link-active-border-top-left-radius-lv, var(--kb-nav-link-border-top-left-radius))
+		) var(
+				--kb-nav-link-hover-border-top-right-radius-lv,
+				var(--kb-nav-link-active-border-top-right-radius-lv, var(--kb-nav-link-border-top-right-radius))
+		) var(
+				--kb-nav-link-hover-border-bottom-right-radius-lv,
+				var(--kb-nav-link-active-border-bottom-right-radius-lv, var(--kb-nav-link-border-bottom-right-radius))
+		) var(
+				--kb-nav-link-hover-border-bottom-left-radius-lv,
+				var(--kb-nav-link-active-border-bottom-left-radius-lv, var(--kb-nav-link-border-bottom-left-radius))
 		);
 
 		&:hover {
@@ -1003,6 +1000,10 @@ $link-color-property: var(
 			--kb-nav-link-hover-border-right-lv: var(--kb-nav-link-hover-border-right);
 			--kb-nav-link-hover-border-bottom-lv: var(--kb-nav-link-hover-border-bottom);
 			--kb-nav-link-hover-border-left-lv: var(--kb-nav-link-hover-border-left);
+			--kb-nav-link-hover-border-top-left-radius-lv: var(--kb-nav-link-hover-border-top-left-radius);
+			--kb-nav-link-hover-border-top-right-radius-lv: var(--kb-nav-link-hover-border-top-right-radius);
+			--kb-nav-link-hover-border-bottom-right-radius-lv: var(--kb-nav-link-hover-border-bottom-right-radius);
+			--kb-nav-link-hover-border-bottom-left-radius-lv: var(--kb-nav-link-hover-border-bottom-left-radius);
 		}
 	}
 
