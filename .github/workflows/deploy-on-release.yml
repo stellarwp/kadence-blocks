@@ -57,20 +57,13 @@ jobs:
           # For posting a rich message using Block Kit
           payload: |
             {
-              "text": "*🚀 New Plugin Version Deployed!*",
+              "text": "*🚀 ${{ github.event.repository.name }} version ${{ github.event.release.tag_name }} deployed!*",
               "blocks": [
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*Plugin:* ${{ github.event.repository.name }}"
-                  }
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*Version:* ${{ github.event.release.tag_name }}"
+                    "text": "*🚀 ${{ github.event.repository.name }} version ${{ github.event.release.tag_name }} deployed!*",
                   }
                 },
                 {
