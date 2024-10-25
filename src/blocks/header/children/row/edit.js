@@ -305,13 +305,21 @@ export function Edit(props) {
 										label={__('Layout Config', 'kadence-blocks')}
 										value={layoutConfig}
 										options={[
-											{ value: '', label: __('Header Row', 'kadence-blocks') },
+											{ value: '', label: __('Default', 'kadence-blocks') },
 											{ value: 'single', label: __('Single Container', 'kadence-blocks') },
 										]}
 										hideLabel={false}
 										onChange={(value) => {
 											setAttributes({ layoutConfig: value });
 										}}
+										help={
+											'single' === layoutConfig
+												? __(
+														'The Default layout shows 5 containers per row. Switching to Single Container hides containers 2-5, but your content remains saved and will reappear when you switch back to the Default view.',
+														'kadence-blocks'
+												  )
+												: ''
+										}
 									/>
 									<KadenceRadioButtons
 										label={__('Layout Width', 'kadence-blocks')}
