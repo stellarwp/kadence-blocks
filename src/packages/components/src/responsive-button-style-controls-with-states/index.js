@@ -192,6 +192,7 @@ export default function ResponsiveButtonStyleControlsWithStates({
 			)}
 			{shadowBase && (
 				<BoxShadowControl
+					key={'shadowbase'}
 					label={shadowLabel}
 					enable={
 						undefined !== shadowValue && undefined !== shadowValue[0] && undefined !== shadowValue[0].enable
@@ -363,6 +364,7 @@ export default function ResponsiveButtonStyleControlsWithStates({
 			)}
 			{shadowBase && (
 				<BoxShadowControl
+					key={'hovershadowbase'}
 					label={shadowLabel}
 					enable={
 						undefined !== shadowValueHover &&
@@ -544,6 +546,7 @@ export default function ResponsiveButtonStyleControlsWithStates({
 			)}
 			{shadowBase && (
 				<BoxShadowControl
+					key={'activeshadowbase'}
 					label={shadowLabel}
 					enable={
 						undefined !== shadowValueActive &&
