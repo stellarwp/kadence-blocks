@@ -63,7 +63,12 @@ class Kadence_Blocks_Prebuilt_Library {
 	 * @var string
 	 */
 	private $url = '';
-
+	/**
+	 * API email for kadence
+	 *
+	 * @var string
+	 */
+	private $key = '';
 	/**
 	 * Base URL.
 	 *
