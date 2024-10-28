@@ -160,6 +160,7 @@ export default function ResponsiveButtonStyleControlsWithStates({
 
 			{borderBase && (
 				<ResponsiveBorderControl
+					key={'normalborderbase'}
 					label={borderLabel}
 					value={borderValue}
 					tabletValue={borderValueTablet}
@@ -171,6 +172,7 @@ export default function ResponsiveButtonStyleControlsWithStates({
 			)}
 			{borderRadiusBase && (
 				<ResponsiveMeasurementControls
+					key={'normalborderradiusbase'}
 					label={borderRadiusLabel}
 					value={borderRadiusValue}
 					tabletValue={borderRadiusValueTablet}
@@ -190,6 +192,7 @@ export default function ResponsiveButtonStyleControlsWithStates({
 			)}
 			{shadowBase && (
 				<BoxShadowControl
+					key={'shadowbase'}
 					label={shadowLabel}
 					enable={
 						undefined !== shadowValue && undefined !== shadowValue[0] && undefined !== shadowValue[0].enable
@@ -329,6 +332,7 @@ export default function ResponsiveButtonStyleControlsWithStates({
 			)}
 			{borderBase && (
 				<ResponsiveBorderControl
+					key={'hoverborderbase'}
 					label={borderLabel}
 					value={borderValueHover}
 					tabletValue={borderValueHoverTablet}
@@ -340,6 +344,7 @@ export default function ResponsiveButtonStyleControlsWithStates({
 			)}
 			{borderRadiusBase && (
 				<ResponsiveMeasurementControls
+					key={'hoverborderradiusbase'}
 					label={borderRadiusLabel}
 					value={borderRadiusValueHover}
 					tabletValue={borderRadiusValueHoverTablet}
@@ -359,6 +364,7 @@ export default function ResponsiveButtonStyleControlsWithStates({
 			)}
 			{shadowBase && (
 				<BoxShadowControl
+					key={'hovershadowbase'}
 					label={shadowLabel}
 					enable={
 						undefined !== shadowValueHover &&
@@ -508,6 +514,7 @@ export default function ResponsiveButtonStyleControlsWithStates({
 			)}
 			{borderBase && (
 				<ResponsiveBorderControl
+					key={'activeborderbase'}
 					label={borderLabel}
 					value={borderValueActive}
 					tabletValue={borderValueActiveTablet}
@@ -519,6 +526,7 @@ export default function ResponsiveButtonStyleControlsWithStates({
 			)}
 			{borderRadiusBase && (
 				<ResponsiveMeasurementControls
+					key={'activeborderradiusbase'}
 					label={borderRadiusLabel}
 					value={borderRadiusValueActive}
 					tabletValue={borderRadiusValueActiveTablet}
@@ -538,6 +546,7 @@ export default function ResponsiveButtonStyleControlsWithStates({
 			)}
 			{shadowBase && (
 				<BoxShadowControl
+					key={'activeshadowbase'}
 					label={shadowLabel}
 					enable={
 						undefined !== shadowValueActive &&
