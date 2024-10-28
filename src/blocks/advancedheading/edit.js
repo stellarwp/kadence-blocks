@@ -1059,8 +1059,9 @@ function KadenceAdvancedHeading(props) {
 						color: ${!enableMarkGradient ? KadenceColorOutput(markColor) : undefined};
 						background: ${markBG && !enableMarkGradient ? markBGString : 'transparent'};
 						background-image: ${enableMarkGradient ? markGradient : 'none'};
-						-webkit-background-clip: ${enableMarkGradient ? 'text' : undefined};
-						-webkit-text-fill-color: ${enableMarkGradient ? 'transparent' : undefined};
+						-webkit-background-clip: ${enableMarkGradient ? 'text' : enableTextGradient ? 'initial !important' : undefined};
+						background-clip: ${enableMarkGradient ? 'text' : enableTextGradient ? 'initial !important' : undefined};
+						-webkit-text-fill-color: ${enableMarkGradient ? 'transparent' : enableTextGradient ? 'initial !important' : undefined};
 						-webkit-box-decoration-break: ${enableMarkGradient ? 'clone' : undefined};
 						font-weight: ${markFontWeight ? markFontWeight : 'inherit'};
 						font-style: ${markFontStyle ? markFontStyle : 'inherit'};
@@ -1146,6 +1147,7 @@ function KadenceAdvancedHeading(props) {
 					textGradient !== '' &&
 					`.kt-adv-heading${uniqueID}.kadence-advancedheading-text, .kt-adv-heading${uniqueID} .kadence-advancedheading-text {
 						-webkit-background-clip: text;
+						background-clip: text;
 						-webkit-text-fill-color: transparent;
 						-webkit-box-decoration-break: clone;
 				}`}
