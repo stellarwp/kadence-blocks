@@ -388,7 +388,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( '--kb-nav-link-description-color-active', $css->render_color( $sized_attributes['descriptionColorActive'] ) );
 			$css->add_property( '--kb-nav-link-description-color-active-ancestor', $css->render_color( $sized_attributes['descriptionColorActive'] ) );
 		}
-		$css->add_property( '--kb-nav-link-title-wrap-text-align', ( isset( $sized_attributes['align'] ) && $sized_attributes['align'] ) ? $sized_attributes['align'] : 'left' );
+		$css->add_property( '--kb-nav-link-align', ( isset( $sized_attributes['align'] ) && $sized_attributes['align'] ) ? $sized_attributes['align'] : 'left' );
 
 		//placement logic where an additional selector is needed
 		// Mega menu width styles.

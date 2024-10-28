@@ -1022,6 +1022,8 @@ $link-color-property: var(
 			var(--kb-nav-link-active-box-shadow-lv, var(--kb-nav-link-box-shadow))
 		);
 		gap: var(--kb-nav-link-gap);
+		text-align: var(--kb-nav-link-align);
+		justify-content: var(--kb-nav-link-align);
 
 		&:not([href]) {
 			cursor: default;
@@ -1375,7 +1377,7 @@ $link-color-property: var(
 		grid-template-columns: var(--kb-nav-link-title-wrap-grid-template-columns);
 		flex-direction: var(--kb-nav-link-title-wrap-flex-direction);
 		display: var(--kb-nav-link-title-wrap-display, flex);
-		text-align: var(--kb-nav-link-title-wrap-text-align);
+		text-align: var(--kb-nav-link-align);
 		flex-wrap: nowrap;
 		align-items: center;
 	}
