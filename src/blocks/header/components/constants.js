@@ -337,7 +337,7 @@ export const POPOVER_TUTORIAL_OPTIONS_CONTENT = {
 	'add-logo': {
 		title: __('Logo Image', 'kadence-blocks'),
 		content: __(
-			"This header came with a placeholder logo. You can replace it with your website's logo.",
+			'This header automatically displays your site logo. You can update it directly in the block settings.',
 			'kadence-blocks'
 		),
 	},

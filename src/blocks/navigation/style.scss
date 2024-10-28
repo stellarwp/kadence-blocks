@@ -1032,6 +1032,8 @@ $link-color-property: var(
 		//color copied here for specifity reasons
 		color: $link-color-property;
 		gap: var(--kb-nav-link-gap);
+		text-align: var(--kb-nav-link-align);
+		justify-content: var(--kb-nav-link-align);
 
 		&:not([href]) {
 			cursor: default;
@@ -1373,7 +1375,7 @@ $link-color-property: var(
 		grid-template-columns: var(--kb-nav-link-title-wrap-grid-template-columns);
 		flex-direction: var(--kb-nav-link-title-wrap-flex-direction);
 		display: var(--kb-nav-link-title-wrap-display, flex);
-		text-align: var(--kb-nav-link-title-wrap-text-align);
+		text-align: var(--kb-nav-link-align);
 		flex-wrap: nowrap;
 		align-items: center;
 	}
@@ -1406,6 +1408,7 @@ $link-color-property: var(
 		display: flex;
 		align-self: flex-start;
 		max-width: 150px;
+		overflow: auto;
 
 		padding-top: var(--kb-nav-link-media-container-padding-top, 0.3em);
 		padding-right: var(--kb-nav-link-media-container-padding-right, 0.3em);
@@ -1523,8 +1526,13 @@ $link-color-property: var(
 		font-size: var(--kb-nav-link-highlight-icon-font-size);
 	}
 }
+
 // dealing with a sticky header that has a mega menu which is larger than the viewport.
-.kb-header-sticky-wrapper .kadence-menu-mega-enabled > ul.kb-nav-sub-menu.mega-menu > .kb-row-layout-wrap .kt-row-column-wrap {
-    max-height: calc( 98vh - var( --kb-sticky-mega-overflow-header-offset, 0px ));
-    overflow-y:auto;
+.kb-header-sticky-wrapper
+	.kadence-menu-mega-enabled
+	> ul.kb-nav-sub-menu.mega-menu
+	> .kb-row-layout-wrap
+	.kt-row-column-wrap {
+	max-height: calc(98vh - var(--kb-sticky-mega-overflow-header-offset, 0px));
+	overflow-y: auto;
 }

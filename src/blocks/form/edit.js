@@ -168,6 +168,11 @@ function KadenceForm(props) {
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		(select) => {
+			const abTestBlock = select('core/block-editor').getBlockAttributes(
+				select('core/block-editor')
+					.getBlockParentsByBlockName(clientId, 'kadence-insights/ab-test')
+					.slice(-1)[0]
+			);
 			return {
 				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
 				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
@@ -177,9 +182,13 @@ function KadenceForm(props) {
 						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
 					),
 					postId: select('core/editor')?.getCurrentPostId() ? select('core/editor')?.getCurrentPostId() : '',
-					reusableParent: select('core/block-editor').getBlockAttributes(
-						select('core/block-editor').getBlockParentsByBlockName(clientId, 'core/block').slice(-1)[0]
-					),
+					reusableParent: abTestBlock
+						? abTestBlock
+						: select('core/block-editor').getBlockAttributes(
+								select('core/block-editor')
+									.getBlockParentsByBlockName(clientId, 'core/block')
+									.slice(-1)[0]
+						  ),
 					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
 				},
 			};
@@ -189,9 +198,8 @@ function KadenceForm(props) {
 
 	useEffect(() => {
 		setBlockDefaults('kadence/form', attributes);
-
 		const postOrFseId = getPostOrFseId(props, parentData);
-		if (postOrFseId !== postID) {
+		if (postID.toString() !== postOrFseId.toString()) {
 			setAttributes({
 				postID: postOrFseId.toString(),
 			});

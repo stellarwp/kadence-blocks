@@ -1514,10 +1514,10 @@ function RowLayoutEditContainer(props) {
 						'Desktop' === previewDevice && (
 							<>
 								{breakoutRight
-									? `@media (min-width: 1290px) {.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(2) > .kadence-inner-column-inner { margin-right: calc( ( ( ( var( --global-kb-editor-full-width ) - ( var( --kb-global-content-width ) - ( ${paddingRightBreakout} *2 ) ) ) /2 ) *-1) ) !important; }}@media (max-width: 1289px) {.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(2) > .kadence-inner-column-inner { margin-right: calc( ${paddingRightBreakout} * -1 ) !important; }}`
+									? `@media (min-width: 1290px) {.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(2) > .kadence-inner-column-inner { margin-inline-end: calc( ( ( ( var( --global-kb-editor-full-width ) - ( var( --kb-global-content-width ) - ( ${paddingRightBreakout} *2 ) ) ) /2 ) *-1) ) !important; }}@media (max-width: 1289px) {.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(2) > .kadence-inner-column-inner { margin-inline-end: calc( ${paddingRightBreakout} * -1 ) !important; }}`
 									: ''}
 								{breakoutLeft
-									? `@media (min-width: 1290px) {.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(1) > .kadence-inner-column-inner { margin-left: calc( ( ( ( var( --global-kb-editor-full-width ) - ( var( --kb-global-content-width ) - ( ${paddingLeftBreakout} *2 ) ) ) /2 ) *-1) ) !important; }}@media (max-width: 1289px) {.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(1) > .kadence-inner-column-inner { margin-left: calc( ${paddingRightBreakout} * -1 ) !important; }}`
+									? `@media (min-width: 1290px) {.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(1) > .kadence-inner-column-inner { margin-inline-start: calc( ( ( ( var( --global-kb-editor-full-width ) - ( var( --kb-global-content-width ) - ( ${paddingLeftBreakout} *2 ) ) ) /2 ) *-1) ) !important; }}@media (max-width: 1289px) {.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(1) > .kadence-inner-column-inner { margin-inline-start: calc( ${paddingRightBreakout} * -1 ) !important; }}`
 									: ''}
 							</>
 						)}
@@ -1530,10 +1530,10 @@ function RowLayoutEditContainer(props) {
 						'Tablet' === previewDevice && (
 							<>
 								{breakoutRight
-									? `.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(2) > .kadence-inner-column-inner { margin-right: calc( ${paddingRightBreakout} *-1 ) !important; }`
+									? `.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(2) > .kadence-inner-column-inner { margin-inline-end: calc( ${paddingRightBreakout} *-1 ) !important; }`
 									: ''}
 								{breakoutLeft
-									? `.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(1) > .kadence-inner-column-inner { margin-left: calc( ${paddingLeftBreakout} *-1 ) !important; }`
+									? `.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(1) > .kadence-inner-column-inner { margin-inline-start: calc( ${paddingLeftBreakout} *-1 ) !important; }`
 									: ''}
 							</>
 						)}

@@ -361,12 +361,14 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 				$css->add_property( '--kb-nav-link-title-wrap-flex-direction', 'column' );
 				$css->add_property( '--kb-nav-link-media-container-justify-content', 'center' );
 				$css->add_property('--kb-nav-link-media-container-align-self', 'center');
+				$css->add_property( '--kb-nav-link-media-container-margin-bottom', $css->render_size( $media_style_margin[0], 'px' ) );
 			} else if ( $sized_attributes['mediaAlign'] == 'bottom' ) {
 				$css->add_property( '--kb-nav-link-title-wrap-display', 'flex' );
 				$css->add_property( '--kb-nav-link-media-container-order', '1' );
 				$css->add_property( '--kb-nav-link-title-wrap-flex-direction', 'column' );
 				$css->add_property( '--kb-nav-link-media-container-justify-content', 'center' );
 				$css->add_property('--kb-nav-link-media-container-align-self', 'center');
+				$css->add_property( '--kb-nav-link-media-container-margin-top', $css->render_size( $media_style_margin[0], 'px' ) );
 			} else {
 				$css->add_property( '--kb-nav-link-media-container-margin-left', $css->render_size( $media_style_margin[0], 'px' ) );
 			}
@@ -386,7 +388,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( '--kb-nav-link-description-color-active', $css->render_color( $sized_attributes['descriptionColorActive'] ) );
 			$css->add_property( '--kb-nav-link-description-color-active-ancestor', $css->render_color( $sized_attributes['descriptionColorActive'] ) );
 		}
-		$css->add_property( '--kb-nav-link-title-wrap-text-align', ( isset( $sized_attributes['align'] ) && $sized_attributes['align'] ) ? $sized_attributes['align'] : 'left' );
+		$css->add_property( '--kb-nav-link-align', ( isset( $sized_attributes['align'] ) && $sized_attributes['align'] ) ? $sized_attributes['align'] : 'left' );
 
 		//placement logic where an additional selector is needed
 		// Mega menu width styles.

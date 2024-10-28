@@ -56,7 +56,8 @@
 		"codeception/util-universalframework": "^1.0",
 		"lucatume/wp-browser": "<3.5",
 		"phpcompatibility/phpcompatibility-wp": "^2.1",
-		"stellarwp/coding-standards": "^2.0"
+		"stellarwp/coding-standards": "^2.0",
+		"sabberworm/php-css-parser": "^8.4"
 	},
 	"autoload": {
 		"psr-4": {

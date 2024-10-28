@@ -853,7 +853,7 @@ function KadenceAdvancedHeading(props) {
 			className={classes}
 			data-alt-title={altTitle ? altTitle : undefined}
 			style={{
-				display: icon ? 'flex' : enableTextGradient ? 'inline-block' : undefined,
+				display: icon ? 'flex' : undefined,
 				alignItems: icon ? iconVerticalAlign : undefined,
 				gap: icon ? '0.25em' : undefined,
 				justifyContent: icon && previewJustifyAlign ? previewJustifyAlign : undefined,
@@ -879,7 +879,7 @@ function KadenceAdvancedHeading(props) {
 				marginLeft:
 					'' !== previewMarginLeft ? getSpacingOptionOutput(previewMarginLeft, marginType) : undefined,
 				lineHeight: previewLineHeight ? previewLineHeight + (fontHeightType ? fontHeightType : '') : undefined,
-				color: color && !enableTextGradient ? KadenceColorOutput(color) : undefined,
+				color: color && (!enableTextGradient || textGradient !== '') ? KadenceColorOutput(color) : undefined,
 				fontSize: previewFontSize
 					? getFontSizeOptionOutput(previewFontSize, sizeType ? sizeType : 'px')
 					: undefined,
@@ -1059,8 +1059,10 @@ function KadenceAdvancedHeading(props) {
 						color: ${!enableMarkGradient ? KadenceColorOutput(markColor) : undefined};
 						background: ${markBG && !enableMarkGradient ? markBGString : 'transparent'};
 						background-image: ${enableMarkGradient ? markGradient : 'none'};
-						-webkit-background-clip: ${enableMarkGradient ? 'text' : undefined};
-						-webkit-text-fill-color: ${enableMarkGradient ? 'transparent' : undefined};
+						-webkit-background-clip: ${enableMarkGradient ? 'text' : enableTextGradient ? 'initial !important' : undefined};
+						background-clip: ${enableMarkGradient ? 'text' : enableTextGradient ? 'initial !important' : undefined};
+						-webkit-text-fill-color: ${enableMarkGradient ? 'transparent' : enableTextGradient ? 'initial !important' : undefined};
+						-webkit-box-decoration-break: ${enableMarkGradient ? 'clone' : undefined};
 						font-weight: ${markFontWeight ? markFontWeight : 'inherit'};
 						font-style: ${markFontStyle ? markFontStyle : 'inherit'};
 						font-size: ${previewMarkSize ? getFontSizeOptionOutput(previewMarkSize, markSizeType) : 'inherit'};
@@ -1142,9 +1144,12 @@ function KadenceAdvancedHeading(props) {
 							color: ${KadenceColorOutput(linkHoverColor)}!important;
 						}`}
 				{enableTextGradient &&
+					textGradient !== '' &&
 					`.kt-adv-heading${uniqueID}.kadence-advancedheading-text, .kt-adv-heading${uniqueID} .kadence-advancedheading-text {
 						-webkit-background-clip: text;
+						background-clip: text;
 						-webkit-text-fill-color: transparent;
+						-webkit-box-decoration-break: clone;
 				}`}
 				{iconColorHover &&
 					`#block-${clientId} .kadence-advancedheading-text:hover > .kb-advanced-heading-svg-icon {

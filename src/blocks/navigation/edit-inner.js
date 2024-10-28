@@ -1431,26 +1431,28 @@ export function EditInner(props) {
 				)}
 				{activeTab === 'style' && (
 					<>
-						<KadencePanelBody panelName={'kb-navigation-style'}>
-							<ResponsiveSelectControl
-								label={__('Style', 'kadence-blocks')}
-								value={style}
-								tabletValue={styleTablet}
-								mobileValue={styleMobile}
-								options={[
-									{ value: 'standard', label: __('Standard', 'kadence-blocks') },
-									{ value: 'fullheight', label: __('Full Height', 'kadence-blocks') },
-									{ value: 'underline', label: __('Underline', 'kadence-blocks') },
-									{
-										value: 'underline-fullheight',
-										label: __('Full Height Underline', 'kadence-blocks'),
-									},
-								]}
-								onChange={(value) => setMetaAttribute(value, 'style')}
-								onChangeTablet={(value) => setMetaAttribute(value, 'styleTablet')}
-								onChangeMobile={(value) => setMetaAttribute(value, 'styleMobile')}
-							/>
-						</KadencePanelBody>
+						{previewOrientation != 'vertical' && (
+							<KadencePanelBody panelName={'kb-navigation-style'}>
+								<ResponsiveSelectControl
+									label={__('Style', 'kadence-blocks')}
+									value={style}
+									tabletValue={styleTablet}
+									mobileValue={styleMobile}
+									options={[
+										{ value: 'standard', label: __('Standard', 'kadence-blocks') },
+										{ value: 'fullheight', label: __('Full Height', 'kadence-blocks') },
+										{ value: 'underline', label: __('Underline', 'kadence-blocks') },
+										{
+											value: 'underline-fullheight',
+											label: __('Full Height Underline', 'kadence-blocks'),
+										},
+									]}
+									onChange={(value) => setMetaAttribute(value, 'style')}
+									onChangeTablet={(value) => setMetaAttribute(value, 'styleTablet')}
+									onChangeMobile={(value) => setMetaAttribute(value, 'styleMobile')}
+								/>
+							</KadencePanelBody>
+						)}
 						<KadencePanelBody
 							title={__('Navigation Item Styles', 'kadence-blocks')}
 							initialOpen={false}
@@ -2001,18 +2003,18 @@ export function EditInner(props) {
 							</KadenceSubPanelBody>
 							<KadenceSubPanelBody title={__('Sub Menu Descriptions', 'kadence-blocks')}>
 								{/* <ResponsiveSelectControl
-									label={__('Align', 'kadence-blocks-pro')}
+									label={__('Align', 'kadence-blocks')}
 									value={dropdownDescriptionPositioning}
 									tabletValue={dropdownDescriptionPositioningTablet}
 									mobileValue={dropdownDescriptionPositioningMobile}
 									options={[
-										{ value: 'normal', label: __('Align with Title', 'kadence-blocks-pro') },
-										{ value: 'icon', label: __('Align with Icon', 'kadence-blocks-pro') },
+										{ value: 'normal', label: __('Align with Title', 'kadence-blocks') },
+										{ value: 'icon', label: __('Align with Icon', 'kadence-blocks') },
 									]}
 									tabletOptions={[
-										{ value: '', label: __('Inherit', 'kadence-blocks-pro') },
-										{ value: 'normal', label: __('Align with Title', 'kadence-blocks-pro') },
-										{ value: 'icon', label: __('Align with Icon', 'kadence-blocks-pro') },
+										{ value: '', label: __('Inherit', 'kadence-blocks') },
+										{ value: 'normal', label: __('Align with Title', 'kadence-blocks') },
+										{ value: 'icon', label: __('Align with Icon', 'kadence-blocks') },
 									]}
 									onChange={(value) => setAttributes({ dropdownDescriptionPositioning: value })}
 									onChangeTablet={(value) =>
@@ -2149,18 +2151,18 @@ export function EditInner(props) {
 							initialOpen={false}
 						>
 							{/* <ResponsiveSelectControl
-								label={__('Align', 'kadence-blocks-pro')}
+								label={__('Align', 'kadence-blocks')}
 								value={descriptionPositioning}
 								tabletValue={descriptionPositioningTablet}
 								mobileValue={descriptionPositioningMobile}
 								options={[
-									{ value: 'normal', label: __('Align with Title', 'kadence-blocks-pro') },
-									{ value: 'icon', label: __('Align with Icon', 'kadence-blocks-pro') },
+									{ value: 'normal', label: __('Align with Title', 'kadence-blocks') },
+									{ value: 'icon', label: __('Align with Icon', 'kadence-blocks') },
 								]}
 								tabletOptions={[
-									{ value: '', label: __('Inherit', 'kadence-blocks-pro') },
-									{ value: 'normal', label: __('Align with Title', 'kadence-blocks-pro') },
-									{ value: 'icon', label: __('Align with Icon', 'kadence-blocks-pro') },
+									{ value: '', label: __('Inherit', 'kadence-blocks') },
+									{ value: 'normal', label: __('Align with Title', 'kadence-blocks') },
+									{ value: 'icon', label: __('Align with Icon', 'kadence-blocks') },
 								]}
 								onChange={(value) => setAttributes({ descriptionPositioning: value })}
 								onChangeTablet={(value) => setAttributes({ descriptionPositioningTablet: value })}

@@ -211,7 +211,7 @@
 		},
 		"markGradient": {
 			"type": "string",
-			"default": "#f76a0c"
+			"default": ""
 		},
 		"markColor": {
 			"type": "string",
