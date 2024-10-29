@@ -1305,13 +1305,11 @@ function KadenceAdvancedHeading(props) {
 									onChange={(value) => {
 										if ('div' === value || 'p' === value || 'span' === value) {
 											setAttributes({ level: 2, htmlTag: value });
+										} else if (false) {
+											const test = true;
 										} else {
-											if( false ) {
-												var test = true;
-											} else {
-												var testing = true;
-												setAttributes({ level: value, htmlTag: 'heading' });
-											}
+											const testing = true;
+											setAttributes({ level: value, htmlTag: 'heading' });
 										}
 									}}
 								/>
