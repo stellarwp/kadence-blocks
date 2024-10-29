@@ -192,6 +192,8 @@ Release Date: October 29th 2024
 * Fix: Navigation link media spacing when positioned top or bottom.
 * Fix: Display of single row container on the frontend for mobile.
 * Fix: Improvements to display of gradient text when text spans multiple lines.
+* Fix: Border radius units in search block.
+* Fix: Improved performance when rendering custom SVGs.
 
 = 3.3.2 =
 Release Date: October 16th 2024
