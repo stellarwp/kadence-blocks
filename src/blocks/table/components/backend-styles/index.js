@@ -22,6 +22,11 @@ export default function BackendStyles(props) {
 		// marginUnit,
 		dataTypography,
 		headerTypography,
+		evenOddBackground,
+		backgroundColorEven,
+		backgroundColorOdd,
+		backgroundHoverColorEven,
+		backgroundHoverColorOdd,
 	} = attributes;
 
 	const css = new KadenceBlocksCSS();
@@ -88,6 +93,26 @@ export default function BackendStyles(props) {
 
 	css.set_selector(`.wp-block-kadence-table${uniqueID} th`);
 	css.render_font(headerTypography ? headerTypography : [], previewDevice);
+
+	if (evenOddBackground) {
+		css.set_selector(`.wp-block-kadence-table${uniqueID} tr:nth-child(even)`);
+		css.add_property('background-color', KadenceColorOutput(backgroundColorEven));
+
+		css.set_selector(`.wp-block-kadence-table${uniqueID} tr:nth-child(odd)`);
+		css.add_property('background-color', KadenceColorOutput(backgroundColorOdd));
+
+		css.set_selector(`.wp-block-kadence-table${uniqueID} tr:nth-child(odd):hover`);
+		css.add_property('background-color', KadenceColorOutput(backgroundHoverColorOdd));
+
+		css.set_selector(`.wp-block-kadence-table${uniqueID} tr:nth-child(even):hover`);
+		css.add_property('background-color', KadenceColorOutput(backgroundHoverColorEven));
+	} else {
+		css.set_selector(`.wp-block-kadence-table${uniqueID} tr`);
+		css.add_property('background-color', KadenceColorOutput(backgroundColorEven));
+
+		css.set_selector(`.wp-block-kadence-table${uniqueID} tr:hover`);
+		css.add_property('background-color', KadenceColorOutput(backgroundHoverColorEven));
+	}
 
 	// css.add_property('color', KadenceColorOutput(dataTypography.color));
 	// css.add_property('font-size', getFontSizeOptionOutput(previewFontSize, dataTypography.sizeType));

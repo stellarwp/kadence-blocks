@@ -88,6 +88,26 @@
 					"paddingType": "px"
 				}
 			]
+		},
+		"evenOddBackground": {
+			"type": "boolean",
+			"default": false
+		},
+		"backgroundColorEven": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundColorOdd": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundHoverColorEven": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundHoverColorOdd": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"supports": {

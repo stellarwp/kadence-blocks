@@ -29,6 +29,8 @@ import {
 	SpacingVisualizer,
 	CopyPasteAttributes,
 	TypographyControls,
+	HoverToggleControl,
+	PopColorControl,
 } from '@kadence/components';
 
 import {
@@ -44,7 +46,18 @@ import BackendStyles from './components/backend-styles';
 export function Edit(props) {
 	const { attributes, setAttributes, className, clientId } = props;
 
-	const { uniqueID, rows, columns, dataTypography, headerTypography } = attributes;
+	const {
+		uniqueID,
+		rows,
+		columns,
+		dataTypography,
+		headerTypography,
+		evenOddBackground,
+		backgroundColorEven,
+		backgroundColorOdd,
+		backgroundHoverColorEven,
+		backgroundHoverColorOdd,
+	} = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
@@ -219,7 +232,11 @@ export function Edit(props) {
 
 				{activeTab === 'style' && (
 					<>
-						<KadencePanelBody title={__('Cell Typography', 'kadence-blocks')} initialOpen={true}>
+						<KadencePanelBody
+							title={__('Cell Typography', 'kadence-blocks')}
+							panelName={'table-cell-typography'}
+							initialOpen={true}
+						>
 							<TypographyControls
 								fontGroup={'heading'}
 								fontSize={dataTypography[0].size}
@@ -257,7 +274,11 @@ export function Edit(props) {
 								onFontSubset={(value) => saveDataTypography({ subset: value })}
 							/>
 						</KadencePanelBody>
-						<KadencePanelBody title={__('Header Typography', 'kadence-blocks')} initialOpen={true}>
+						<KadencePanelBody
+							title={__('Header Typography', 'kadence-blocks')}
+							panelName={'table-header-typography'}
+							initialOpen={false}
+						>
 							<TypographyControls
 								fontGroup={'heading'}
 								fontSize={headerTypography[0].size}
@@ -293,6 +314,58 @@ export function Edit(props) {
 								onFontStyle={(value) => saveHeaderTypography({ style: value })}
 								fontSubset={headerTypography[0].subset}
 								onFontSubset={(value) => saveHeaderTypography({ subset: value })}
+							/>
+						</KadencePanelBody>
+						<KadencePanelBody
+							title={__('Row Backgrounds', 'kadence-blocks')}
+							panelName={'table-row-background'}
+							initialOpen={false}
+						>
+							<ToggleControl
+								label={__('Even/Odd Backgrounds', 'kadence-blocks')}
+								checked={evenOddBackground}
+								onChange={(value) => setAttributes({ evenOddBackground: value })}
+							/>
+
+							<HoverToggleControl
+								hover={
+									<>
+										<PopColorControl
+											label={__('Hover Background Color', 'kadence-blocks')}
+											value={backgroundHoverColorEven ? backgroundHoverColorEven : ''}
+											default={''}
+											onChange={(value) => setAttributes({ backgroundHoverColorEven: value })}
+										/>
+
+										{evenOddBackground && (
+											<PopColorControl
+												label={__('Hover Odd Background Color', 'kadence-blocks')}
+												value={backgroundHoverColorOdd ? backgroundHoverColorOdd : ''}
+												default={''}
+												onChange={(value) => setAttributes({ backgroundHoverColorOdd: value })}
+											/>
+										)}
+									</>
+								}
+								normal={
+									<>
+										<PopColorControl
+											label={__('Background Color', 'kadence-blocks')}
+											value={backgroundColorEven ? backgroundColorEven : ''}
+											default={''}
+											onChange={(value) => setAttributes({ backgroundColorEven: value })}
+										/>
+
+										{evenOddBackground && (
+											<PopColorControl
+												label={__('Odd Background Color', 'kadence-blocks')}
+												value={backgroundColorOdd ? backgroundColorOdd : ''}
+												default={''}
+												onChange={(value) => setAttributes({ backgroundColorOdd: value })}
+											/>
+										)}
+									</>
+								}
 							/>
 						</KadencePanelBody>
 					</>
