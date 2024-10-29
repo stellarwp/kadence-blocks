@@ -9,6 +9,10 @@
 	"attributes": {
 		"uniqueID": {
 			"type": "string"
+		},
+		"isHeader": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"supports": {

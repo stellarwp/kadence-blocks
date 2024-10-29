@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect } from '@wordpress/element';
+import React, { useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useBlockProps, BlockControls, InnerBlocks } from '@wordpress/block-editor';
+import { useBlockProps, BlockControls, InnerBlocks, useInnerBlocksProps } from '@wordpress/block-editor';
 import metadata from './block.json';
 
 import {
@@ -25,6 +25,7 @@ import {
 	ResponsiveMeasureRangeControl,
 	SpacingVisualizer,
 	CopyPasteAttributes,
+	SelectParentBlock,
 } from '@kadence/components';
 
 import {
@@ -109,10 +110,22 @@ export function Edit(props) {
 		}
 	}, [columns]);
 
-	// const ALLOWED_BLOCKS = ['kadence/table-data'];
+	const innerBlocksProps = useInnerBlocksProps(
+		{
+			className: '',
+			style: {},
+		},
+		{
+			allowedBlocks: ['kadence/table-data'],
+			templateLock: true,
+			renderAppender: false,
+			templateInsertUpdatesSelection: true,
+		}
+	);
 
 	return (
-		<div {...blockProps}>
+		<>
+			{/*<div {...blockProps}>*/}
 			<BlockControls>
 				<CopyPasteAttributes
 					attributes={attributes}
@@ -123,6 +136,11 @@ export function Edit(props) {
 				/>
 			</BlockControls>
 			<KadenceInspectorControls blockSlug={'kadence/table-row'}>
+				<SelectParentBlock
+					label={__('View Table Settings', 'kadence-blocks')}
+					clientId={clientId}
+					parentSlug={'kadence/table'}
+				/>
 				<InspectorControlTabs
 					panelName={'table-row'}
 					setActiveTab={setActiveTab}
@@ -145,11 +163,8 @@ export function Edit(props) {
 
 				{activeTab === 'advanced' && <>KadenceBlockDefaults</>}
 			</KadenceInspectorControls>
-			<tr>
-				{/*allowedBlocks={ALLOWED_BLOCKS}*/}
-				<InnerBlocks renderAppender={false} />
-			</tr>
-		</div>
+			<tr {...innerBlocksProps} />
+		</>
 	);
 }
 

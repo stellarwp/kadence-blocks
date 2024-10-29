@@ -1,4 +1,5 @@
 import { registerBlockType } from '@wordpress/blocks';
+import { InnerBlocks } from '@wordpress/block-editor';
 
 /**
  * Internal dependencies
@@ -25,6 +26,8 @@ registerBlockType('kadence/table', {
 		src: spacerIcon,
 	},
 	edit,
-	save: () => null,
+	save: () => {
+		return <InnerBlocks.Content />;
+	},
 	example: {},
 });

@@ -1,19 +1,29 @@
 import { __ } from '@wordpress/i18n';
-import { useEffect } from '@wordpress/element';
+import React, { useEffect, useState } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useBlockProps, InnerBlocks } from '@wordpress/block-editor';
+import { BlockControls, useBlockProps, InnerBlocks } from '@wordpress/block-editor';
 import metadata from './block.json';
 
-import { KadenceBlockDefaults, CopyPasteAttributes } from '@kadence/components';
+import {
+	KadenceBlockDefaults,
+	CopyPasteAttributes,
+	KadenceInspectorControls,
+	KadencePanelBody,
+	InspectorControlTabs,
+	SelectParentBlock,
+} from '@kadence/components';
 import { setBlockDefaults, getUniqueId, getPostOrFseId } from '@kadence/helpers';
 
 import classnames from 'classnames';
+import { ToggleControl } from '@wordpress/components';
 
 const DEFAULT_BLOCK = [['core/paragraph', {}]];
 export function Edit(props) {
 	const { attributes, setAttributes, className, clientId } = props;
 
-	const { uniqueID } = attributes;
+	const { uniqueID, isHeader } = attributes;
+
+	const [activeTab, setActiveTab] = useState('general');
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, parentData } = useSelect(
@@ -55,11 +65,47 @@ export function Edit(props) {
 		}
 	}, []);
 
+	const Tag = isHeader ? 'th' : 'td';
+
 	return (
-		<td {...blockProps}>
-			{/*renderAppender={() => <InnerBlocks.ButtonBlockAppender />}*/}
+		<Tag {...blockProps}>
+			<BlockControls>
+				<KadenceBlockDefaults
+					attributes={attributes}
+					setAttributes={setAttributes}
+					blockName={'kadence/table-data'}
+				/>
+				<CopyPasteAttributes
+					attributes={attributes}
+					setAttributes={setAttributes}
+					blockName={'kadence/table-data'}
+				/>
+			</BlockControls>
+			<KadenceInspectorControls blockSlug={'kadence/table-data'}>
+				<SelectParentBlock
+					label={__('View Row Settings', 'kadence-blocks')}
+					clientId={clientId}
+					parentSlug={'kadence/table-row'}
+				/>
+				<InspectorControlTabs
+					panelName={'table-data'}
+					setActiveTab={(value) => setActiveTab(value)}
+					activeTab={activeTab}
+				/>
+
+				{activeTab === 'general' && (
+					<KadencePanelBody title={__('General', 'kadence-blocks')} initialOpen={true}>
+						<ToggleControl
+							label={__('Table Header', 'kadence-blocks')}
+							checked={isHeader}
+							onChange={(value) => setAttributes({ isHeader: value })}
+							help={__('Switches to th tag and applies header typography styles.', 'kadence-blocks')}
+						/>
+					</KadencePanelBody>
+				)}
+			</KadenceInspectorControls>
 			<InnerBlocks template={DEFAULT_BLOCK} renderAppender={false} />
-		</td>
+		</Tag>
 	);
 }
 

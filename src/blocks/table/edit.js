@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useBlockProps, BlockControls, InnerBlocks } from '@wordpress/block-editor';
+import { useBlockProps, BlockControls, InnerBlocks, useInnerBlocksProps } from '@wordpress/block-editor';
 import classnames from 'classnames';
 import metadata from './block.json';
 import './editor.scss';
@@ -140,6 +140,23 @@ export function Edit(props) {
 		setAttributes({ rows: newRows, columns: newColumns });
 	};
 
+	const innerBlocksProps = useInnerBlocksProps(
+		{
+			className: '',
+			style: {},
+		},
+		{
+			allowedBlocks: ['kadence/table-row'],
+			templateLock: false,
+			template: [
+				['kadence/table-row', { columns: 2 }],
+				['kadence/table-row', { columns: 2 }],
+			],
+			renderAppender: false,
+			templateInsertUpdatesSelection: true,
+		}
+	);
+
 	return (
 		<div {...blockProps}>
 			<BlockControls>
@@ -202,14 +219,7 @@ export function Edit(props) {
 					</>
 				)}
 			</KadenceInspectorControls>
-			<table>
-				<InnerBlocks
-					template={[
-						['kadence/table-row', { columns: 2 }],
-						['kadence/table-row', { columns: 2 }],
-					]}
-				/>
-			</table>
+			<table {...innerBlocksProps} />
 		</div>
 	);
 }
