@@ -71,7 +71,6 @@ jobs:
         # Steps can also provide arguments, so this configures 10up's action to also generate a zip file.
         with:
           generate-zip: true
-          dry-run: true
 
         # Steps can also set environment variables which can be configured in the Github settings for the
         # repository. Here, we are using action secrets SVN_USERNAME, SVN_PASSWORD, and PLUGIN_SLUG which
