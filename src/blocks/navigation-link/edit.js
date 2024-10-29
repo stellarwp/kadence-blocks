@@ -8,7 +8,7 @@ import classnames from 'classnames';
  */
 import { createBlock } from '@wordpress/blocks';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { applyFilters } from '@wordpress/hooks';
+import { applyFilters, hasFilter } from '@wordpress/hooks';
 import {
 	PanelBody,
 	TextControl,
@@ -1185,47 +1185,47 @@ export default function Edit(props) {
 							/>
 						</KadencePanelBody>
 
-						<KadencePanelBody
-							panelName={'navigation-link-submenu-setttings'}
-							title={__('Submenu Settings', 'kadence-blocks')}
-							initialOpen={false}
-						>
-							{isTopLevelLink && hasChildren && (
-								// <ToggleControl
-								// 	label={__('Show dropdown with click only', 'kadence-blocks')}
-								// 	checked={dropdownClick}
-								// 	onChange={(value) => setAttributes({ dropdownClick: value })}
-								// />
-
-								<KadenceRadioButtons
-									label={__('Open dropdown on', 'kadence-blocks')}
-									value={dropdownClick}
-									className={'kb-letter-case'}
-									options={[
-										{
-											value: false,
-											label: __('Hover', 'kadence-blocks'),
-											tooltip: __('Hover to open', 'kadence-blocks'),
-										},
-										{
-											value: true,
-											label: __('Click', 'kadence-blocks'),
-											tooltip: __('Click to Open', 'kadence-blocks'),
-										},
-									]}
-									onChange={(value) => setAttributes({ dropdownClick: value })}
-								/>
-							)}
-							{applyFilters(
-								'kadence.megaMenuControlsNavigationLink',
-								megaMenuControls,
-								props,
-								doMegaMenuEnable,
-								isTopLevelLink,
-								previewDevice,
-								inMegaMenu
-							)}
-						</KadencePanelBody>
+						{/* only show this section if there will actually be something inside it */}
+						{((hasFilter('kadence.megaMenuControlsNavigationLink', 'kadence/navigationlinkpro') &&
+							isTopLevelLink &&
+							!inMegaMenu) ||
+							(isTopLevelLink && hasChildren)) && (
+							<KadencePanelBody
+								panelName={'navigation-link-submenu-setttings'}
+								title={__('Sub Menu Settings', 'kadence-blocks')}
+								initialOpen={false}
+							>
+								{isTopLevelLink && hasChildren && (
+									<KadenceRadioButtons
+										label={__('Open dropdown on', 'kadence-blocks')}
+										value={dropdownClick}
+										className={'kb-letter-case'}
+										options={[
+											{
+												value: false,
+												label: __('Hover', 'kadence-blocks'),
+												tooltip: __('Hover to open', 'kadence-blocks'),
+											},
+											{
+												value: true,
+												label: __('Click', 'kadence-blocks'),
+												tooltip: __('Click to Open', 'kadence-blocks'),
+											},
+										]}
+										onChange={(value) => setAttributes({ dropdownClick: value })}
+									/>
+								)}
+								{applyFilters(
+									'kadence.megaMenuControlsNavigationLink',
+									megaMenuControls,
+									props,
+									doMegaMenuEnable,
+									isTopLevelLink,
+									previewDevice,
+									inMegaMenu
+								)}
+							</KadencePanelBody>
+						)}
 					</>
 				)}
 
