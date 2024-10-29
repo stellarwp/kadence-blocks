@@ -85,7 +85,8 @@ export default function KadenceIconPicker({
 		setDeleteId( null );
 	};
 
-	const addCallback = () => {
+	const addCallback = ( postId ) => {
+		onChange('kb-custom-' + postId.toString() );
 		getCustomSvgs( true );
 	};
 
