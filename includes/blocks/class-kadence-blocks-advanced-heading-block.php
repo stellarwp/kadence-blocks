@@ -162,6 +162,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ', .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] .kb-adv-text-inner' );
 			$css->add_property( 'background-image', $attributes['textGradient'] );
 			$css->add_property( '-webkit-box-decoration-break', 'clone' );
+			$css->add_property( 'background-clip', 'text' );
 			$css->add_property( '-webkit-background-clip', 'text' );
 			$css->add_property( '-webkit-text-fill-color', 'transparent' );
 			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ', .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
@@ -294,12 +295,18 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		if ( ! empty( $attributes['markFontStyle'] ) ) {
 			$css->add_property( 'font-style', $attributes['markFontStyle'] );
 		}
+		if( !empty( $attributes['textGradient'] ) && ! empty( $attributes['enableTextGradient'] ) ) {
+			$css->add_property( '-webkit-text-fill-color', 'initial !important' );
+			$css->add_property( '-webkit-background-clip', 'initial !important' );
+			$css->add_property( 'background-clip', 'initial !important' );
+		}
 		if ( ! empty( $attributes['markColor'] ) && empty( $attributes['enableMarkGradient'] ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['markColor'] ) );
 		} else if ( !empty( $attributes['markGradient'] ) && ! empty( $attributes['enableMarkGradient'] ) ) {
 			$css->add_property( 'background-image', $attributes['markGradient'] );
 			$css->add_property( '-webkit-box-decoration-break', 'clone' );
 			$css->add_property( '-webkit-background-clip', 'text' );
+			$css->add_property( 'background-clip', 'text' );
 			$css->add_property( '-webkit-text-fill-color', 'transparent' );
 		}
 		if ( ! empty( $attributes['markTextTransform'] ) ) {

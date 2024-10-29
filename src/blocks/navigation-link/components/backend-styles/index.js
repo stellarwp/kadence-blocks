@@ -1140,7 +1140,7 @@ export default function BackendStyles(props) {
 	}
 
 	//link and description text alignment
-	css.add_property('--kb-nav-link-title-wrap-text-align', align != '' ? align : 'left');
+	css.add_property('--kb-nav-link-align', align != '' ? align : 'left');
 
 	//placement logic where an additional selector is needed
 	css.set_selector(

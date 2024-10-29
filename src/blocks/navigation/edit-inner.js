@@ -1431,26 +1431,28 @@ export function EditInner(props) {
 				)}
 				{activeTab === 'style' && (
 					<>
-						<KadencePanelBody panelName={'kb-navigation-style'}>
-							<ResponsiveSelectControl
-								label={__('Style', 'kadence-blocks')}
-								value={style}
-								tabletValue={styleTablet}
-								mobileValue={styleMobile}
-								options={[
-									{ value: 'standard', label: __('Standard', 'kadence-blocks') },
-									{ value: 'fullheight', label: __('Full Height', 'kadence-blocks') },
-									{ value: 'underline', label: __('Underline', 'kadence-blocks') },
-									{
-										value: 'underline-fullheight',
-										label: __('Full Height Underline', 'kadence-blocks'),
-									},
-								]}
-								onChange={(value) => setMetaAttribute(value, 'style')}
-								onChangeTablet={(value) => setMetaAttribute(value, 'styleTablet')}
-								onChangeMobile={(value) => setMetaAttribute(value, 'styleMobile')}
-							/>
-						</KadencePanelBody>
+						{previewOrientation != 'vertical' && (
+							<KadencePanelBody panelName={'kb-navigation-style'}>
+								<ResponsiveSelectControl
+									label={__('Style', 'kadence-blocks')}
+									value={style}
+									tabletValue={styleTablet}
+									mobileValue={styleMobile}
+									options={[
+										{ value: 'standard', label: __('Standard', 'kadence-blocks') },
+										{ value: 'fullheight', label: __('Full Height', 'kadence-blocks') },
+										{ value: 'underline', label: __('Underline', 'kadence-blocks') },
+										{
+											value: 'underline-fullheight',
+											label: __('Full Height Underline', 'kadence-blocks'),
+										},
+									]}
+									onChange={(value) => setMetaAttribute(value, 'style')}
+									onChangeTablet={(value) => setMetaAttribute(value, 'styleTablet')}
+									onChangeMobile={(value) => setMetaAttribute(value, 'styleMobile')}
+								/>
+							</KadencePanelBody>
+						)}
 						<KadencePanelBody
 							title={__('Navigation Item Styles', 'kadence-blocks')}
 							initialOpen={false}

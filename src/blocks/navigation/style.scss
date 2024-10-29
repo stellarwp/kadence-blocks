@@ -838,6 +838,7 @@ $link-color-property: var(
 				--kb-nav-link-media-container-active-border-bottom-left-radius
 			);
 			--kb-nav-link-description-color-active-lv: var(--kb-nav-link-description-color-active);
+			--kb-nav-link-active-box-shadow-lv: var(--kb-nav-top-link-box-shadow-active);
 		}
 		&.current-menu-ancestor > .kb-link-wrap.kb-link-wrap.kb-link-wrap {
 			--kb-nav-link-color-active-lv: var(--kb-nav-link-color-active-ancestor, var(--kb-nav-link-color-active));
@@ -977,20 +978,24 @@ $link-color-property: var(
 			var(--kb-nav-link-active-border-left-lv, var(--kb-nav-link-border-left))
 		);
 		border-top-left-radius: var(
-			--kb-nav-link-hover-border-top-left-radius-lv,
-			var(--kb-nav-link-active-border-top-left-radius-lv, var(--kb-nav-link-border-top-left-radius))
+				--kb-nav-link-hover-border-top-left-radius-lv,
+				var(--kb-nav-link-active-border-top-left-radius-lv, var(--kb-nav-link-border-top-left-radius))
 		);
 		border-top-right-radius: var(
-			--kb-nav-link-hover-border-top-right-radius-lv,
-			var(--kb-nav-link-active-border-top-right-radius-lv, var(--kb-nav-link-border-top-right-radius))
+				--kb-nav-link-hover-border-top-right-radius-lv,
+				var(--kb-nav-link-active-border-top-right-radius-lv, var(--kb-nav-link-border-top-right-radius))
 		);
 		border-bottom-right-radius: var(
-			--kb-nav-link-hover-border-bottom-right-radius-lv,
-			var(--kb-nav-link-active-bottom-right-left-radius-lv, var(--kb-nav-link-border-bottom-right-radius))
+				--kb-nav-link-hover-border-bottom-right-radius-lv,
+				var(--kb-nav-link-active-border-bottom-right-radius-lv, var(--kb-nav-link-border-bottom-right-radius))
 		);
 		border-bottom-left-radius: var(
-			--kb-nav-link-hover-border-bottom-left-radius-lv,
-			var(--kb-nav-link-active-bottom-top-left-radius-lv, var(--kb-nav-link-border-bottom-left-radius))
+				--kb-nav-link-hover-border-bottom-left-radius-lv,
+				var(--kb-nav-link-active-border-bottom-left-radius-lv, var(--kb-nav-link-border-bottom-left-radius))
+		);
+		box-shadow: var(
+				--kb-nav-link-hover-box-shadow-lv,
+				var(--kb-nav-link-active-box-shadow-lv, var(--kb-nav-link-box-shadow))
 		);
 
 		&:hover {
@@ -999,6 +1004,15 @@ $link-color-property: var(
 			--kb-nav-link-highlight-color-hover-lv: var(--kb-nav-link-highlight-color-hover);
 			--kb-nav-link-highlight-background-hover-lv: var(--kb-nav-link-highlight-background-hover);
 			--kb-nav-link-description-color-hover-lv: var(--kb-nav-link-description-color-hover);
+			--kb-nav-link-hover-border-top-lv: var(--kb-nav-link-hover-border-top);
+			--kb-nav-link-hover-border-right-lv: var(--kb-nav-link-hover-border-right);
+			--kb-nav-link-hover-border-bottom-lv: var(--kb-nav-link-hover-border-bottom);
+			--kb-nav-link-hover-border-left-lv: var(--kb-nav-link-hover-border-left);
+			--kb-nav-link-hover-border-top-left-radius-lv: var(--kb-nav-link-hover-border-top-left-radius);
+			--kb-nav-link-hover-border-top-right-radius-lv: var(--kb-nav-link-hover-border-top-right-radius);
+			--kb-nav-link-hover-border-bottom-right-radius-lv: var(--kb-nav-link-hover-border-bottom-right-radius);
+			--kb-nav-link-hover-border-bottom-left-radius-lv: var(--kb-nav-link-hover-border-bottom-left-radius);
+			--kb-nav-link-hover-box-shadow-lv: var(--kb-nav-link-box-shadow-hover);
 		}
 	}
 
@@ -1017,11 +1031,9 @@ $link-color-property: var(
 		margin-left: var(--kb-nav-link-margin-left);
 		//color copied here for specifity reasons
 		color: $link-color-property;
-		box-shadow: var(
-			--kb-nav-link-hover-box-shadow-lv,
-			var(--kb-nav-link-active-box-shadow-lv, var(--kb-nav-link-box-shadow))
-		);
 		gap: var(--kb-nav-link-gap);
+		text-align: var(--kb-nav-link-align);
+		justify-content: var(--kb-nav-link-align);
 
 		&:not([href]) {
 			cursor: default;
@@ -1030,18 +1042,6 @@ $link-color-property: var(
 		&:focus {
 			//color copied here for specifity reasons in non-iframe editors
 			color: $link-color-property;
-
-			--kb-nav-link-color-hover-lv: var(--kb-nav-link-color-hover, inherit);
-			--kb-nav-link-background-hover-lv: var(--kb-nav-link-background-hover, inherit);
-			--kb-nav-link-hover-border-top-lv: var(--kb-nav-link-hover-border-top);
-			--kb-nav-link-hover-border-right-lv: var(--kb-nav-link-hover-border-right);
-			--kb-nav-link-hover-border-bottom-lv: var(--kb-nav-link-hover-border-bottom);
-			--kb-nav-link-hover-border-left-lv: var(--kb-nav-link-hover-border-left);
-			--kb-nav-link-hover-border-top-left-radius-lv: var(--kb-nav-link-hover-border-top-left-radius);
-			--kb-nav-link-hover-border-top-right-radius-lv: var(--kb-nav-link-hover-border-top-right-radius);
-			--kb-nav-link-hover-border-bottom-right-radius-lv: var(--kb-nav-link-hover-border-bottom-right-radius);
-			--kb-nav-link-hover-border-bottom-left-radius-lv: var(--kb-nav-link-hover-border-bottom-left-radius);
-			--kb-nav-link-box-shadow-hover-lv: var(--kb-nav-link-box-shadow-hover);
 			--kb-nav-link-highlight-color-hover-lv: var(--kb-nav-link-highlight-color-hover);
 			--kb-nav-link-highlight-background-hover-lv: var(--kb-nav-link-highlight-background-hover);
 			--kb-nav-link-media-container-background-hover-lv: var(--kb-nav-link-media-container-background-hover);
@@ -1375,7 +1375,7 @@ $link-color-property: var(
 		grid-template-columns: var(--kb-nav-link-title-wrap-grid-template-columns);
 		flex-direction: var(--kb-nav-link-title-wrap-flex-direction);
 		display: var(--kb-nav-link-title-wrap-display, flex);
-		text-align: var(--kb-nav-link-title-wrap-text-align);
+		text-align: var(--kb-nav-link-align);
 		flex-wrap: nowrap;
 		align-items: center;
 	}
