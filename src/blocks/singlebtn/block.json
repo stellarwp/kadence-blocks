@@ -113,6 +113,22 @@
 			"type": "string",
 			"default": "normal"
 		},
+		"textGradient": {
+			"type": "string",
+			"default": ""
+		},
+		"textBackgroundType": {
+			"type": "string",
+			"default": "normal"
+		},
+		"textGradientHover": {
+			"type": "string",
+			"default": ""
+		},
+		"textBackgroundHoverType": {
+			"type": "string",
+			"default": "normal"
+		},
 		"colorHover": {
 			"type": "string",
 			"default": ""

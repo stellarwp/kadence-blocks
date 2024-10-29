@@ -34,6 +34,7 @@ import {
 	KadencePanelBody,
 	ResponsiveAlignControls,
 	ResponsiveGapSizeControl,
+	ResponsiveSelectControl,
 } from '@kadence/components';
 
 /**
@@ -84,6 +85,9 @@ export function Edit(props) {
 		vAlign,
 		vAlignTablet,
 		vAlignMobile,
+		sectionPriority,
+		sectionPriorityTablet,
+		sectionPriorityMobile,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
@@ -301,13 +305,21 @@ export function Edit(props) {
 										label={__('Layout Config', 'kadence-blocks')}
 										value={layoutConfig}
 										options={[
-											{ value: '', label: __('Header Row', 'kadence-blocks') },
+											{ value: '', label: __('Default', 'kadence-blocks') },
 											{ value: 'single', label: __('Single Container', 'kadence-blocks') },
 										]}
 										hideLabel={false}
 										onChange={(value) => {
 											setAttributes({ layoutConfig: value });
 										}}
+										help={
+											'single' === layoutConfig
+												? __(
+														'The Default layout shows 5 containers per row. Switching to Single Container hides containers 2-5, but your content remains saved and will reappear when you switch back to the Default view.',
+														'kadence-blocks'
+												  )
+												: ''
+										}
 									/>
 									<KadenceRadioButtons
 										label={__('Layout Width', 'kadence-blocks')}
@@ -380,6 +392,23 @@ export function Edit(props) {
 										}
 										type={'vertical'}
 									/>
+									{layoutConfig !== 'single' && (
+										<ResponsiveSelectControl
+											label={__('Section Priority', 'kadence-blocks')}
+											value={sectionPriority}
+											tabletValue={sectionPriorityTablet}
+											mobileValue={sectionPriorityMobile}
+											options={[
+												{ value: '', label: __('Default', 'kadence-blocks') },
+												{ value: 'center', label: __('Center', 'kadence-blocks') },
+												{ value: 'left', label: __('Left', 'kadence-blocks') },
+												{ value: 'right', label: __('Right', 'kadence-blocks') },
+											]}
+											onChange={(value) => setAttributes({ sectionPriority: value })}
+											onChangeTablet={(value) => setAttributes({ sectionPriorityTablet: value })}
+											onChangeMobile={(value) => setAttributes({ sectionPriorityMobile: value })}
+										/>
+									)}
 								</KadencePanelBody>
 							</>
 						)}

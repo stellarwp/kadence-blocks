@@ -24,3 +24,10 @@ codeception.dist.yml
 .prettierignore
 phpcs.xml.dist
 phpcs.xml
+codeception.slic.yml
+.puprc
+.editorconfig
+.git-blame-ignore-revs
+.gitattributes
+.gitmodules
+.wordpress-org/

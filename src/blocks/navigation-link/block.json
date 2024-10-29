@@ -7,7 +7,7 @@
 	"ancestor": ["kadence/navigation", "core/navigation"],
 	"allowedBlocks": ["kadence/navigation-link", "core/navigation-link", "kadence/rowlayout", "core/page-list"],
 	"description": "Add a page, link, or another item to your navigation.",
-	"textdomain": "default",
+	"textdomain": "kadence-blocks",
 	"attributes": {
 		"uniqueID": {
 			"type": "string"

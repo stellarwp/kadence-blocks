@@ -11,7 +11,6 @@
 				console.log('No search block found');
 				return;
 			}
-			console.log(window.kadenceSearchBlock.cache);
 
 			for (let n = 0; n < window.kadenceSearchBlock.cache.length; n++) {
 				// Initialize listener (backward support)

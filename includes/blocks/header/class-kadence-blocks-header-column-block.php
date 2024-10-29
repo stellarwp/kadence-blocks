@@ -95,7 +95,7 @@ class Kadence_Blocks_Header_Column_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return string Returns the block output.
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		if( !empty( $block_instance->context['kadence/headerRowLayoutConfig'] ) && $block_instance->context['kadence/headerRowLayoutConfig'] === 'single' && !empty( $attributes['location'] ) && $attributes['location'] !== 'left' ) {
+		if( !empty( $block_instance->context['kadence/headerRowLayoutConfig'] ) && $block_instance->context['kadence/headerRowLayoutConfig'] === 'single' && !empty( $attributes['location'] ) && $attributes['location'] !== 'left' && $attributes['location'] !== 'tablet-left' ) {
 			$content = '';
 		}
 

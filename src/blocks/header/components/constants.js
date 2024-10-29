@@ -329,7 +329,7 @@ export const POPOVER_TUTORIAL_OPTIONS_CONTENT = {
 				'The Header (adv) Block has many options to customize and extend your header. Keep reading to learn more or close this to get started. You can always read the ',
 				'kadence-blocks'
 			) +
-			'<a tabindex="-1" target="_blank" href="www.kadencewp.com/help-center/docs/kadence-blocks/form-block/">' +
+			'<a tabindex="-1" target="_blank" href="https://www.kadencewp.com/help-center/docs/kadence-blocks/the-kadence-header-adv-block/">' +
 			__('documentation', 'kadence-blocks') +
 			'</a>' +
 			__(' later.', 'kadence-blocks'),
@@ -337,7 +337,7 @@ export const POPOVER_TUTORIAL_OPTIONS_CONTENT = {
 	'add-logo': {
 		title: __('Logo Image', 'kadence-blocks'),
 		content: __(
-			"This header came with a placeholder logo. You can replace it with your website's logo.",
+			'This header automatically displays your site logo. You can update it directly in the block settings.',
 			'kadence-blocks'
 		),
 	},

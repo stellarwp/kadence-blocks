@@ -90,15 +90,19 @@ class Kadence_Blocks_Search_Block extends Kadence_Blocks_Abstract_Block {
 		// Input Styles.
 		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-input[type="text"]' );
 		$css->render_typography( $attributes, 'inputTypography' );
-		$css->render_measure_range( $attributes, 'inputBorderRadius', 'border-radius' );
+		$css->render_measure_range( $attributes, 'inputBorderRadius', 'border-radius', $attributes['inputBorderRadiusUnit'] );
 		$css->render_measure_output( $attributes, 'inputPadding', 'padding' );
 		$css->render_border_styles( $attributes, 'inputBorderStyles' );
+		$css->add_property('color', $css->render_color( $attributes['inputColor'] ) );
 
 		if ( $attributes['inputBackgroundType'] === 'gradient' ) {
 			$css->add_property( 'background', $attributes['inputGradient'] );
 		} else {
 			$css->add_property( 'background', $css->render_color( $attributes['inputBackgroundColor'] ) );
 		}
+
+		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-input[type="text"]::placeholder' );
+		$css->add_property('color', $css->render_color( $attributes['inputPlaceholderColor'] ) );
 
 		$css->set_selector( '.kb-search' . $unique_id . ' .kb-search-input-wrapper' );
 		$css->render_measure_output( $attributes, 'inputMargin', 'margin' );

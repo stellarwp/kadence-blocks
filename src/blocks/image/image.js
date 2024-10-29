@@ -320,7 +320,27 @@ export default function Image({
 		undefined !== captionStyles[0].size[1] ? captionStyles[0].size[1] : 'inherit',
 		undefined !== captionStyles[0].size[2] ? captionStyles[0].size[2] : 'inherit'
 	);
-
+	const previewCaptionLineSpacing = getPreviewSize(
+		previewDevice,
+		captionStyles &&
+			undefined !== captionStyles[0] &&
+			Array.isArray(captionStyles[0].letterSpacing) &&
+			undefined !== captionStyles[0].letterSpacing[0]
+			? captionStyles[0].letterSpacing[0]
+			: undefined,
+		captionStyles &&
+			undefined !== captionStyles[0] &&
+			Array.isArray(captionStyles[0].letterSpacing) &&
+			undefined !== captionStyles[0].letterSpacing[1]
+			? captionStyles[0].letterSpacing[1]
+			: undefined,
+		captionStyles &&
+			undefined !== captionStyles[0] &&
+			Array.isArray(captionStyles[0].letterSpacing) &&
+			undefined !== captionStyles[0].letterSpacing[2]
+			? captionStyles[0].letterSpacing[2]
+			: undefined
+	);
 	const previewCaptionLineHeightUnit = captionStyles[0].lineType !== undefined ? captionStyles[0].lineType : 'px';
 	const previewCaptionLineHeight = getPreviewSize(
 		previewDevice,
@@ -455,6 +475,15 @@ export default function Image({
 			setStateShowCaption(true);
 		}
 	}, [caption, prevCaption]);
+
+	useEffect(() => {
+		if (captionStyles[0].letterSpacing && typeof captionStyles[0].letterSpacing === 'number') {
+			const oldLetterSpacing = captionStyles[0].letterSpacing;
+			saveCaptionFont({ letterSpacing: [oldLetterSpacing, '', ''] });
+		} else if (captionStyles[0].letterSpacing === undefined) {
+			saveCaptionFont({ letterSpacing: ['', '', ''] });
+		}
+	});
 
 	// Focus the caption when we click to add one.
 	const captionRef = useCallback(
@@ -1462,7 +1491,11 @@ export default function Image({
 										onLineHeight={(value) => saveCaptionFont({ lineHeight: value })}
 										lineHeightType={captionStyles[0].lineType}
 										onLineHeightType={(value) => saveCaptionFont({ lineType: value })}
-										letterSpacing={captionStyles[0].letterSpacing}
+										reLetterSpacing={[
+											captionStyles[0].letterSpacing[0],
+											captionStyles[0].letterSpacing[1],
+											captionStyles[0].letterSpacing[2],
+										]}
 										onLetterSpacing={(value) => saveCaptionFont({ letterSpacing: value })}
 										textTransform={captionStyles[0].textTransform}
 										onTextTransform={(value) => saveCaptionFont({ textTransform: value })}
@@ -1876,6 +1909,13 @@ export default function Image({
 				onError={() => onImageError()}
 				onLoad={(event) => {
 					setNaturalSize(pick(event.target, ['naturalWidth', 'naturalHeight']));
+
+					//fix issue where chrome can fallback to 150 width/height when none are specified on some image types like svg imgs
+					const { naturalWidth, naturalHeight } = pick(event.target, ['naturalWidth', 'naturalHeight']);
+					const { width, height } = pick(event.target, ['width', 'height']);
+					if (naturalWidth == 150 && naturalHeight == 150 && width != 150 && height != 150) {
+						setNaturalSize({ naturalWidth: 0, naturalHeight: 0 });
+					}
 				}}
 				className={`kb-img ${tooltipDash && tooltip ? ' kb-image-tooltip-border' : ''}`}
 			/>
@@ -2123,12 +2163,7 @@ export default function Image({
 							undefined !== captionStyles[0].textTransform
 								? captionStyles[0].textTransform
 								: undefined,
-						letterSpacing:
-							captionStyles &&
-							undefined !== captionStyles[0] &&
-							undefined !== captionStyles[0].letterSpacing
-								? captionStyles[0].letterSpacing
-								: undefined,
+						letterSpacing: previewCaptionLineSpacing,
 						lineHeight: previewCaptionLineHeight,
 						fontSize: getFontSizeOptionOutput(previewCaptionFontSize, previewCaptionFontSizeUnit),
 					}}

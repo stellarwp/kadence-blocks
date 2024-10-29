@@ -198,6 +198,18 @@
 		"vAlignMobile": {
 			"type": "string",
 			"default": ""
+		},
+		"sectionPriority": {
+			"type": "string",
+			"default": ""
+		},
+		"sectionPriorityTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"sectionPriorityMobile": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"providesContext": {

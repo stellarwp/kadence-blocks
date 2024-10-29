@@ -2717,12 +2717,31 @@
 (function () {
 	'use strict';
 	window.kadenceTippy = {
-		strip_tags(input, allowed) {
-			allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
-			const tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
-				commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
-			return input.replace(commentsAndPhpTags, '').replace(tags, function ($0, $1) {
-				return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
+		strip_tags(input) {
+			const allowedTags = ['br', 'b', 'i', 'u', 'p', 'ol', 'ul', 'li', 'strong', 'small'];
+			const allowedAttributes = ['id', 'class'];
+			input = input.replace(/<!--[\s\S]*?-->/g, '');
+
+			// Handle allowed tags and their allowed attributes
+			const sanitized = input.replace(/<([a-z][a-z0-9]*)\b[^>]*>/gi, (match, tag) => {
+				if (allowedTags.includes(tag.toLowerCase())) {
+					// Extract allowed attributes
+					const attributes = match.match(/([a-z0-9-]+)="([^"]*)"/gi) || [];
+					const allowedAttributesString = attributes
+						.filter((attr) => allowedAttributes.some((allowed) => attr.startsWith(allowed + '=')))
+						.join(' ');
+
+					return `<${tag.toLowerCase()}${allowedAttributesString ? ' ' + allowedAttributesString : ''}>`;
+				}
+				return '';
+			});
+
+			// Remove any remaining disallowed tags
+			return sanitized.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, (match, tag) => {
+				if (allowedTags.includes(tag.toLowerCase())) {
+					return match;
+				}
+				return '';
 			});
 		},
 		/**
@@ -2740,11 +2759,10 @@
 				tippy('[data-kb-tooltip-content]', {
 					allowHTML: true,
 					interactive: true,
-					content: (reference) =>
-						window.kadenceTippy.strip_tags(
-							reference.getAttribute('data-kb-tooltip-content'),
-							'<br><b><i><u><p><ol><ul><li><strong><small>'
-						),
+					content: (reference) => {
+						const content = reference.getAttribute('data-kb-tooltip-content');
+						return window.kadenceTippy.strip_tags(content);
+					},
 				});
 				const idElements = document.querySelectorAll('[data-tooltip-id]:not([href])');
 
@@ -2758,10 +2776,7 @@
 					content: (reference) => {
 						const id = reference.getAttribute('data-tooltip-id');
 						const toolContent = document.getElementById(id);
-						return window.kadenceTippy.strip_tags(
-							toolContent.innerHTML,
-							'<br><b><i><u><p><ol><ul><li><strong><small>'
-						);
+						return toolContent ? window.kadenceTippy.strip_tags(toolContent.innerHTML) : '';
 					},
 				});
 			}

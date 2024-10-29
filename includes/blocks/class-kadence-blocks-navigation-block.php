@@ -386,6 +386,9 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		$wrapper_classes[] = 'navigation-desktop-orientation-' . ( $orientation ? $orientation : 'horizontal' );
 		$wrapper_classes[] = 'navigation-tablet-orientation-' . ( $orientation_tablet ? $orientation_tablet : 'horizontal' );
 		$wrapper_classes[] = 'navigation-mobile-orientation-' . ( $orientation_mobile ? $orientation_mobile : 'horizontal' );
+		if ( ! empty( $nav_attributes['className'] ) ) {
+			$wrapper_classes[] = $nav_attributes['className'];
+		}
 
 		$name = ! empty( $attributes['name'] ) ? $attributes['name'] : '';
 

@@ -233,7 +233,7 @@
 					"sizeType": "px",
 					"lineHeight": ["", "", ""],
 					"lineType": "px",
-					"letterSpacing": "",
+					"letterSpacing": ["", "", ""],
 					"textTransform": "",
 					"family": "",
 					"google": false,

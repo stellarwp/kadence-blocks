@@ -101,8 +101,15 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button' );
 		$bg_type = ! empty( $attributes['backgroundType'] ) ? $attributes['backgroundType'] : 'normal';
 		$bg_hover_type = ! empty( $attributes['backgroundHoverType'] ) ? $attributes['backgroundHoverType'] : 'normal';
-		if ( ! empty( $attributes['color'] ) ) {
+
+		if ( ! empty( $attributes['color'] ) && ( empty( $attributes['textBackgroundType'] ) || $attributes['textBackgroundType'] === 'normal' ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['color'] ) );
+		} else if( !empty( $attributes['textBackgroundType'] ) && $attributes['textBackgroundType'] === 'gradient' ) {
+			$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button .kt-btn-inner-text' );
+			$css->add_property( 'background', $attributes['textGradient'] );
+			$css->add_property( '-webkit-background-clip', 'text' );
+			$css->add_property( '-webkit-text-fill-color', 'transparent' );
+			$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button' );
 		}
 		if ( 'normal' === $bg_type && ! empty( $attributes['background'] ) ) {
 			$css->add_property( 'background', $css->render_color( $attributes['background'] ) . ( 'gradient' === $bg_hover_type ? ' !important' : '' ) );
@@ -140,9 +147,16 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		// Hover-Focus.
 		$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:hover, .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:focus' );
-		if ( ! empty( $attributes['colorHover'] ) ) {
+		if ( ! empty( $attributes['colorHover'] ) && ( empty( $attributes['textBackgroundHoverType'] ) || $attributes['textBackgroundHoverType'] === 'normal' ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['colorHover'] ) );
+		} else if( !empty( $attributes['textBackgroundHoverType'] ) && $attributes['textBackgroundHoverType'] === 'gradient' ) {
+			$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:hover .kt-btn-inner-text, .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:focus .kt-btn-inner-text' );
+			$css->add_property( 'background', $attributes['textGradientHover'] );
+			$css->add_property( '-webkit-background-clip', 'text' );
+			$css->add_property( '-webkit-text-fill-color', 'transparent' );
+			$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:hover, .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:focus' );
 		}
+
 		if ( 'gradient' !== $bg_type && 'normal' === $bg_hover_type && ! empty( $attributes['backgroundHover'] ) ) {
 			$css->add_property( 'background', $css->render_color( $attributes['backgroundHover'] ) );
 		}

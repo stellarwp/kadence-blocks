@@ -39,13 +39,17 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 	protected $has_script = true;
 
 	/**
-	 * Instance of this class
+	 * Reference to the ids so we don't render inside of a render.
 	 *
-	 * @var null
+	 * @var array
 	 */
-	private static $seen_refs = array();
-
-	protected $header_attributes = array();
+	private static $seen_refs = [];
+	/**
+	 * Array of responsive transparent settings.
+	 *
+	 * @var array
+	 */
+	protected $responsive_transparent_settings = [];
 
 	/**
 	 * Instance Control
@@ -133,8 +137,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		if ( $sized_attributes['shadow'] && isset( $sized_attributes['shadow'][0] ) && $sized_attributes['shadow'][0]['enable'] ) {
 			$css->add_property( 'box-shadow', $css->render_shadow( $sized_attributes['shadow'][0] ) );
 		}
-
-		if ( $sized_attributes['isTransparent'] != '1' ) {
+		if ( ! $this->is_header_transparent( $attributes, $unique_id, $size ) ) {
 			$css->render_background( $bg, $css );
 		}
 
@@ -152,7 +155,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 
 		//transparent normal
 		$css->set_selector( '.wp-block-kadence-header' . $unique_id . '.header-' . strtolower( $size ) . '-transparent .kb-header-container' );
-		if ( $sized_attributes['isTransparent'] == '1' ) {
+		if ( $this->is_header_transparent( $attributes, $unique_id, $size ) ) {
 			$css->render_background( $bg_transparent, $css );
 			$css->add_property( 'background-color', $css->render_color( ! empty( $bg_transparent['color'] ) ? $bg_transparent['color'] : '') );
 			$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['borderTransparent'], 'bottom' ) );
@@ -238,7 +241,7 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 				'';
 		}
 		self::$seen_refs[ $attributes['id'] ] = true;
-		
+
 
 		$header_attributes = $this->get_attributes_with_defaults_cpt( $attributes['id'], 'kadence_header', '_kad_header_' );
 		$header_attributes = json_decode( json_encode( $header_attributes ), true );
@@ -263,34 +266,9 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$is_sticky = $css->get_inherited_value( $header_attributes['isSticky'], $header_attributes['isStickyTablet'], $header_attributes['isStickyMobile'], 'Desktop' );
 		$is_sticky_tablet = $css->get_inherited_value( $header_attributes['isSticky'], $header_attributes['isStickyTablet'], $header_attributes['isStickyMobile'], 'Tablet' );
 		$is_sticky_mobile = $css->get_inherited_value( $header_attributes['isSticky'], $header_attributes['isStickyTablet'], $header_attributes['isStickyMobile'], 'Mobile' );
-		$is_transparent = $css->get_inherited_value( $header_attributes['isTransparent'], $header_attributes['isTransparentTablet'], $header_attributes['isTransparentMobile'], 'Desktop' );
-		$is_transparent_tablet = $css->get_inherited_value( $header_attributes['isTransparent'], $header_attributes['isTransparentTablet'], $header_attributes['isTransparentMobile'], 'Tablet' );
-		$is_transparent_mobile = $css->get_inherited_value( $header_attributes['isTransparent'], $header_attributes['isTransparentTablet'], $header_attributes['isTransparentMobile'], 'Mobile' );
-
-		$style =
-			$is_sticky && $is_transparent
-				? 'sticky-transparent'
-				: ( $is_sticky
-				? 'sticky '
-				: ( $is_transparent
-				? 'transparent'
-				: 'standard' ) );
-		$style_tablet =
-			$is_sticky_tablet && $is_transparent_tablet
-				? 'sticky-transparent'
-				: ( $is_sticky_tablet
-				? 'sticky '
-				: ( $is_transparent_tablet
-				? 'transparent'
-				: 'standard' ) );
-		$style_mobile =
-		$is_sticky_mobile && $is_transparent_mobile
-				? 'sticky-transparent'
-				: ( $is_sticky_mobile
-				? 'sticky '
-				: ( $is_transparent_mobile
-				? 'transparent'
-				: 'standard' ) );
+		$is_transparent        = $this->is_header_transparent( $header_attributes, $unique_id, 'desktop' );
+		$is_transparent_tablet = $this->is_header_transparent( $header_attributes, $unique_id, 'tablet' );
+		$is_transparent_mobile = $this->is_header_transparent( $header_attributes, $unique_id, 'mobile' );
 
 		$wrapper_classes = array( 'wp-block-kadence-header' . $unique_id );
 		if ( $is_sticky ) {
@@ -403,6 +381,118 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 				'scrollOffset' => apply_filters( 'kadence_scroll_to_id_additional_offset', 0 ),
 			),
 		);
+	}
+	/**
+	 * Check if the header is transparent.
+	 *
+	 * @param array  $header_attributes The block attributes.
+	 * @param string $size The size.
+	 * @return bool
+	 */
+	private function is_header_transparent( $header_attributes, $unique_id = 'id', $size = 'desktop' ) {
+		if ( ! empty( $this->responsive_transparent_settings[ $unique_id ] ) && isset( $this->responsive_transparent_settings[ $unique_id ][ strtolower( $size ) ] ) ) {
+			return $this->responsive_transparent_settings[ $unique_id ][ strtolower( $size ) ];
+		}
+		$css = Kadence_Blocks_CSS::get_instance();
+		$block_settings = [
+			'desktop' => $css->get_inherited_value( $header_attributes['isTransparent'], $header_attributes['isTransparentTablet'], $header_attributes['isTransparentMobile'], 'Desktop' ),
+			'tablet' => $css->get_inherited_value( $header_attributes['isTransparent'], $header_attributes['isTransparentTablet'], $header_attributes['isTransparentMobile'], 'Tablet' ),
+			'mobile' => $css->get_inherited_value( $header_attributes['isTransparent'], $header_attributes['isTransparentTablet'], $header_attributes['isTransparentMobile'], 'Mobile' ),
+		];
+
+		$transparent_postmeta_setting = $this->transparent_postmeta_setting( $header_attributes );
+		if ( $transparent_postmeta_setting === 'enable' ) {
+			$block_settings = [
+				'desktop' => true,
+				'tablet'  => $block_settings['tablet'],
+				'mobile'  => $block_settings['mobile'],
+			];
+		} elseif ( $transparent_postmeta_setting === 'disable' || ! $this->transparent_allowed_on_post_type( $header_attributes ) ) {
+			$block_settings = [
+				'desktop' => false,
+				'tablet'  => false,
+				'mobile'  => false,
+			];
+		}
+
+		$this->responsive_transparent_settings = $block_settings;
+		return $this->responsive_transparent_settings[ strtolower( $size ) ];
+	}
+	/**
+	 * Check if the transparent header is allowed on the current post type.
+	 *
+	 * @param array $attributes The block attributes.
+	 * @param int   $post_id The post ID.
+	 * @return string/null
+	 */
+	private function transparent_postmeta_setting( $attributes, $post_id = null ) {
+		if ( class_exists( 'Kadence\Theme' ) && ! empty( $attributes['inheritPostTransparent'] ) && $post_id !== false ) {
+			$post_id = $post_id ?? get_the_ID();
+			$posttrans = get_post_meta( $post_id, '_kad_post_transparent', true );
+
+			return ( $posttrans === 'enable' || $posttrans === 'disable' ) ? $posttrans : null;
+		}
+
+		return null;
+	}
+	/**
+	 * Check if the transparent header is allowed on the current post type.
+	 *
+	 * @param array $attributes The block attributes.
+	 * @return bool
+	 */
+	private function transparent_allowed_on_post_type( $attributes ) {
+		$transparent = 'enable';
+		if ( empty( $attributes['disableTransparentOverrides'] ) || ! is_array( $attributes['disableTransparentOverrides'] ) ) {
+			// return true if no post types are disabled.
+			return true;
+		}
+
+		$disabled_post_types = array_fill_keys( $attributes['disableTransparentOverrides'], true );
+
+		if ( is_singular() || is_front_page() ) {
+			$post_type = is_front_page() ? 'page' : get_post_type();
+			if ( !empty( $disabled_post_types[ $post_type ] ) ) {
+				$transparent = 'disable';
+			}
+		} elseif( is_archive() || is_search() || is_home() || is_404() ) {
+			if ( is_home() && ! is_front_page() ) {
+				if ( get_query_var( 'tribe_events_front_page' ) ) {
+//					$tribe_option_trans = \Kadence\kadence()->option('transparent_header_tribe_events_archive', true);
+//					$transparent = $tribe_option_trans ? 'disable' : 'enable';
+					$transparent = apply_filters('kadence_tribe_events_archive_transparent', 'enable');
+				} else if( !empty( $attributes['inheritPostTransparent'] ) ) {
+					$post_id = get_option('page_for_posts');
+					$transparent_postmeta_setting = $this->transparent_postmeta_setting( $attributes, $post_id );
+					if( $transparent_postmeta_setting === 'enable' || $transparent_postmeta_setting === 'disable' ) {
+						$archivetrans = $transparent_postmeta_setting;
+					}
+				}
+			} elseif (class_exists('woocommerce') && is_shop() && !is_search() && !empty( $attributes['inheritPostTransparent'] )) {
+				$post_id = wc_get_page_id('shop');
+				$transparent_postmeta_setting = $this->transparent_postmeta_setting( $attributes, $post_id );
+				if( $transparent_postmeta_setting === 'enable' || $transparent_postmeta_setting === 'disable' ) {
+					$archivetrans = $transparent_postmeta_setting;
+				}
+			} elseif (is_post_type_archive('tribe_events')) {
+//				$tribe_option_trans = \Kadence\kadence()->option('transparent_header_tribe_events_archive', true);
+//				$transparent = $tribe_option_trans ? 'disable' : 'enable';
+				$transparent = apply_filters('kadence_tribe_events_archive_transparent', 'enable');
+			} elseif (is_404()) {
+				$transparent = 'disable';
+			}
+
+			if (isset($archivetrans) && ( ( 'enable' === $archivetrans  && class_exists( 'Kadence\Theme' ) )|| 'disable' === $archivetrans)) {
+				$transparent = $archivetrans;
+			} else {
+				if ( !empty( $disabled_post_types['searchAndArchive'] ) ) {
+					$transparent = 'disable';
+				}
+			}
+		}
+
+		// Keeping support of  enable/disable strings for backwards compatability with the filters.
+		return isset( $transparent ) && ( $transparent === true || $transparent === 'enable' );
 	}
 }
 

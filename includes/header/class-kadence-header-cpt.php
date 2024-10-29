@@ -57,7 +57,7 @@ class Kadence_Blocks_Header_CPT_Controller {
 			'kb-header-visual-builder',
 			KADENCE_BLOCKS_URL . 'dist/header-visual-builder.js',
 			array('kadence-components', 'kadence-helpers', 'kadence-icons', 'lodash', 'react', 'react-dom', 'wp-api-fetch', 'wp-block-editor', 'wp-blocks', 'wp-components', 'wp-core-data', 'wp-data', 'wp-element', 'wp-i18n', 'wp-primitives', 'wp-url'),
-			rand(0,time())
+			KADENCE_BLOCKS_VERSION
 		);
 	}
 	/**
@@ -1157,6 +1157,18 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'type'    => 'boolean',
 			),
 			array(
+				'key'     => '_kad_header_inheritPostTransparent',
+				'default' => true,
+				'type'    => 'boolean',
+			),
+			array(
+				'key'     => '_kad_header_disableTransparentOverrides',
+				'type'    => 'array',
+				'properties' => array(),
+				'children_type' => 'string',
+				'default' => array(),
+			),
+			array(
 				'key' => '_kad_header_shadow',
 				'type' => 'array',
 				'children_type' => 'object',
@@ -1229,7 +1241,7 @@ class Kadence_Blocks_Header_CPT_Controller {
 					'single'        => true,
 					'auth_callback' => array( $this, 'meta_auth_callback' ),
 					'type'          => $meta['type'],
-					'default'       => $meta['default'],
+					'default'       => isset( $meta['default'] ) ? $meta['default'] : '',
 					'show_in_rest'  => $show_in_rest,
 				)
 			);

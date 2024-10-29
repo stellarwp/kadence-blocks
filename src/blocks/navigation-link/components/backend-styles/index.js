@@ -1102,12 +1102,20 @@ export default function BackendStyles(props) {
 			css.add_property('--kb-nav-link-title-wrap-flex-direction', 'column');
 			css.add_property('--kb-nav-link-media-container-justify-content', 'center');
 			css.add_property('--kb-nav-link-media-container-align-self', 'center');
+			css.add_property(
+				'--kb-nav-link-media-container-margin-bottom',
+				css.render_size(previewMediaStyleMargin[0], 'px')
+			);
 		} else if (previewMediaAlign === 'bottom') {
 			css.add_property('--kb-nav-link-title-wrap-display', 'flex');
 			css.add_property('--kb-nav-link-media-container-order', '1');
 			css.add_property('--kb-nav-link-title-wrap-flex-direction', 'column');
 			css.add_property('--kb-nav-link-media-container-justify-content', 'center');
 			css.add_property('--kb-nav-link-media-container-align-self', 'center');
+			css.add_property(
+				'--kb-nav-link-media-container-margin-top',
+				css.render_size(previewMediaStyleMargin[0], 'px')
+			);
 		} else {
 			css.add_property(
 				'--kb-nav-link-media-container-margin-left',
@@ -1132,7 +1140,7 @@ export default function BackendStyles(props) {
 	}
 
 	//link and description text alignment
-	css.add_property('--kb-nav-link-title-wrap-text-align', align != '' ? align : 'left');
+	css.add_property('--kb-nav-link-align', align != '' ? align : 'left');
 
 	//placement logic where an additional selector is needed
 	css.set_selector(

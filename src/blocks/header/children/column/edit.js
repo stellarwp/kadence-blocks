@@ -65,7 +65,6 @@ export function Edit(props) {
 			addUniqueID(uniqueId, clientId);
 		}
 	}, []);
-
 	const hasChildBlocks = wp.data.select('core/block-editor').getBlockOrder(clientId).length > 0;
 
 	const innerBlocksClasses = classnames({

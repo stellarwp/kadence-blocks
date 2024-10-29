@@ -32,6 +32,7 @@ import {
 	BackgroundTypeControl,
 	GradientControl,
 	BoxShadowControl,
+	SelectChildBlock,
 } from '@kadence/components';
 import {
 	setBlockDefaults,
@@ -298,6 +299,12 @@ export function Edit(props) {
 				)}
 			</BlockControls>
 			<KadenceInspectorControls blockSlug={'kadence/search'}>
+				<SelectChildBlock
+					clientId={clientId}
+					label={__('View Button Settings', 'kadence-blocks')}
+					childSlug={'kadence/singlebtn'}
+				/>
+
 				<InspectorControlTabs panelName={'kadence-search'} setActiveTab={setActiveTab} activeTab={activeTab} />
 
 				{activeTab === 'general' && (

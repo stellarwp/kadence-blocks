@@ -10,6 +10,10 @@ export default function getPostOrWidgetId( props, postId, reusableParent, fallba
 	if( has(reusableParent, 'ref') ){
 		return reusableParent.ref;
 	}
+	// AB testing block ID
+	if( has(reusableParent, 'id') ){
+		return reusableParent.id;
+	}
 
 	// Post ID
 	if ( postId ) {

@@ -114,6 +114,7 @@ export { default as KadenceIconPicker } from './icon-picker';
 export { default as TaxonomySelect } from './taxonomy-select';
 
 export { default as SelectParentBlock } from './select-parent-block';
+export { default as SelectChildBlock } from './select-child-block';
 export { default as ObfuscateTextControl } from './obfuscate-text-control';
 
 export { default as PostSelectorCheckbox } from './post-selector-checkbox';

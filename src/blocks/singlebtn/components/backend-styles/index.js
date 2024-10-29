@@ -32,6 +32,10 @@ export default function BackendStyles(props) {
 		background,
 		backgroundType,
 		gradient,
+		textBackgroundType,
+		textGradient,
+		textBackgroundHoverType,
+		textGradientHover,
 		colorHover,
 		backgroundHover,
 		backgroundHoverType,
@@ -58,6 +62,7 @@ export default function BackendStyles(props) {
 		shadow,
 		displayHoverShadow,
 		shadowHover,
+		iconColor,
 		iconColorHover,
 		colorTransparent,
 		colorTransparentHover,
@@ -878,7 +883,26 @@ export default function BackendStyles(props) {
 					)
 			: undefined
 	);
-	css.add_property('color', css.render_color(color));
+
+	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID} .kt-button-text`);
+	if (textBackgroundType === 'gradient') {
+		css.add_property('background', textGradient);
+		css.add_property('-webkit-background-clip', 'text');
+		css.add_property('-webkit-text-fill-color', 'transparent');
+	} else {
+		css.add_property('color', css.render_color(color));
+	}
+
+	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}:hover .kt-button-text`);
+	if (textBackgroundHoverType === 'gradient') {
+		css.add_property('background', textGradientHover);
+		css.add_property('-webkit-background-clip', 'text');
+		css.add_property('-webkit-text-fill-color', 'transparent');
+	} else {
+		css.add_property('color', css.render_color(colorHover));
+	}
+
+	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}`);
 	css.add_property('background', btnbg);
 	css.add_property(
 		'width',
@@ -1150,8 +1174,12 @@ export default function BackendStyles(props) {
 	}
 
 	//icon styles
-	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}:hover .kt-btn-svg-icon`);
+	if (iconColor) {
+		css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID} .kt-btn-svg-icon`);
+		css.add_property('color', css.render_color(iconColor));
+	}
 	if (iconColorHover) {
+		css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}:hover .kt-btn-svg-icon`);
 		css.add_property('color', css.render_color(iconColorHover));
 	}
 	//pseudo stlyes
