@@ -61,6 +61,11 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
+		$css->set_selector( '.kb-table-block' . esc_attr( $unique_id ) );
+		$css->render_typography( $attributes, 'dataTypography' );
+
+		$css->set_selector( '.kb-table-block' . esc_attr( $unique_id ) . ' th' );
+		$css->render_typography( $attributes, 'headerTypography' );
 
 		return $css->css_output();
 	}
@@ -77,7 +82,7 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		return sprintf(
-			'<table class="kb-table-wrap kb-table-id-%1$s">%2$s</table>',
+			'<table class="kb-table-block kb-table-block%1$s">%2$s</table>',
 			esc_attr( $unique_id ),
 			$content
 		);

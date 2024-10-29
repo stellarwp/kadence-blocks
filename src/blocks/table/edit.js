@@ -28,6 +28,7 @@ import {
 	ResponsiveMeasureRangeControl,
 	SpacingVisualizer,
 	CopyPasteAttributes,
+	TypographyControls,
 } from '@kadence/components';
 
 import {
@@ -38,11 +39,12 @@ import {
 	getPostOrFseId,
 	getPreviewSize,
 } from '@kadence/helpers';
+import BackendStyles from './components/backend-styles';
 
 export function Edit(props) {
 	const { attributes, setAttributes, className, clientId } = props;
 
-	const { uniqueID, rows, columns } = attributes;
+	const { uniqueID, rows, columns, dataTypography, headerTypography } = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
@@ -157,6 +159,18 @@ export function Edit(props) {
 		}
 	);
 
+	const saveDataTypography = (value) => {
+		setAttributes({
+			dataTypography: [{ ...dataTypography[0], ...value }, ...dataTypography.slice(1)],
+		});
+	};
+
+	const saveHeaderTypography = (value) => {
+		setAttributes({
+			headerTypography: [{ ...headerTypography[0], ...value }, ...headerTypography.slice(1)],
+		});
+	};
+
 	return (
 		<div {...blockProps}>
 			<BlockControls>
@@ -169,12 +183,7 @@ export function Edit(props) {
 				/>
 			</BlockControls>
 			<KadenceInspectorControls blockSlug={'kadence/lottie'}>
-				<InspectorControlTabs
-					panelName={'lottie'}
-					setActiveTab={setActiveTab}
-					allowedTabs={['general', 'advanced']}
-					activeTab={activeTab}
-				/>
+				<InspectorControlTabs panelName={'lottie'} setActiveTab={setActiveTab} activeTab={activeTab} />
 
 				{activeTab === 'general' && (
 					<>
@@ -208,6 +217,87 @@ export function Edit(props) {
 					</>
 				)}
 
+				{activeTab === 'style' && (
+					<>
+						<KadencePanelBody title={__('Cell Typography', 'kadence-blocks')} initialOpen={true}>
+							<TypographyControls
+								fontGroup={'heading'}
+								fontSize={dataTypography[0].size}
+								onFontSize={(value) => saveDataTypography({ size: value })}
+								fontSizeType={dataTypography[0].sizeType}
+								onFontSizeType={(value) => saveDataTypography({ sizeType: value })}
+								lineHeight={dataTypography[0].lineHeight}
+								onLineHeight={(value) => saveDataTypography({ lineHeight: value })}
+								lineHeightType={dataTypography[0].lineType}
+								onLineHeightType={(value) => saveDataTypography({ lineType: value })}
+								letterSpacing={dataTypography[0].letterSpacing}
+								onLetterSpacing={(value) => saveDataTypography({ letterSpacing: value })}
+								textTransform={dataTypography[0].textTransform}
+								onTextTransform={(value) => saveDataTypography({ textTransform: value })}
+								fontFamily={dataTypography[0].family}
+								onFontFamily={(value) => saveDataTypography({ family: value })}
+								onFontChange={(select) => {
+									saveDataTypography({
+										family: select.value,
+										google: select.google,
+									});
+								}}
+								onFontArrayChange={(values) => saveDataTypography(values)}
+								googleFont={dataTypography[0].google}
+								onGoogleFont={(value) => saveDataTypography({ google: value })}
+								loadGoogleFont={dataTypography[0].loadGoogle}
+								onLoadGoogleFont={(value) => saveDataTypography({ loadGoogle: value })}
+								fontVariant={dataTypography[0].variant}
+								onFontVariant={(value) => saveDataTypography({ variant: value })}
+								fontWeight={dataTypography[0].weight}
+								onFontWeight={(value) => saveDataTypography({ weight: value })}
+								fontStyle={dataTypography[0].style}
+								onFontStyle={(value) => saveDataTypography({ style: value })}
+								fontSubset={dataTypography[0].subset}
+								onFontSubset={(value) => saveDataTypography({ subset: value })}
+							/>
+						</KadencePanelBody>
+						<KadencePanelBody title={__('Header Typography', 'kadence-blocks')} initialOpen={true}>
+							<TypographyControls
+								fontGroup={'heading'}
+								fontSize={headerTypography[0].size}
+								onFontSize={(value) => saveHeaderTypography({ size: value })}
+								fontSizeType={headerTypography[0].sizeType}
+								onFontSizeType={(value) => saveHeaderTypography({ sizeType: value })}
+								lineHeight={headerTypography[0].lineHeight}
+								onLineHeight={(value) => saveHeaderTypography({ lineHeight: value })}
+								lineHeightType={headerTypography[0].lineType}
+								onLineHeightType={(value) => saveHeaderTypography({ lineType: value })}
+								letterSpacing={headerTypography[0].letterSpacing}
+								onLetterSpacing={(value) => saveHeaderTypography({ letterSpacing: value })}
+								textTransform={headerTypography[0].textTransform}
+								onTextTransform={(value) => saveHeaderTypography({ textTransform: value })}
+								fontFamily={headerTypography[0].family}
+								onFontFamily={(value) => saveHeaderTypography({ family: value })}
+								onFontChange={(select) => {
+									saveHeaderTypography({
+										family: select.value,
+										google: select.google,
+									});
+								}}
+								onFontArrayChange={(values) => saveHeaderTypography(values)}
+								googleFont={headerTypography[0].google}
+								onGoogleFont={(value) => saveHeaderTypography({ google: value })}
+								loadGoogleFont={headerTypography[0].loadGoogle}
+								onLoadGoogleFont={(value) => saveHeaderTypography({ loadGoogle: value })}
+								fontVariant={headerTypography[0].variant}
+								onFontVariant={(value) => saveHeaderTypography({ variant: value })}
+								fontWeight={headerTypography[0].weight}
+								onFontWeight={(value) => saveHeaderTypography({ weight: value })}
+								fontStyle={headerTypography[0].style}
+								onFontStyle={(value) => saveHeaderTypography({ style: value })}
+								fontSubset={headerTypography[0].subset}
+								onFontSubset={(value) => saveHeaderTypography({ subset: value })}
+							/>
+						</KadencePanelBody>
+					</>
+				)}
+
 				{activeTab === 'advanced' && (
 					<>
 						<KadenceBlockDefaults
@@ -219,6 +309,7 @@ export function Edit(props) {
 					</>
 				)}
 			</KadenceInspectorControls>
+			<BackendStyles attributes={attributes} previewDevice={previewDevice} />
 			<table {...innerBlocksProps} />
 		</div>
 	);
