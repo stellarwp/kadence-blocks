@@ -1306,7 +1306,12 @@ function KadenceAdvancedHeading(props) {
 										if ('div' === value || 'p' === value || 'span' === value) {
 											setAttributes({ level: 2, htmlTag: value });
 										} else {
-											setAttributes({ level: value, htmlTag: 'heading' });
+											if( false ) {
+												var test = true;
+											} else {
+												var testing = true;
+												setAttributes({ level: value, htmlTag: 'heading' });
+											}
 										}
 									}}
 								/>
