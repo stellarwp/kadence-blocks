@@ -2,15 +2,27 @@ name: ESLint
 run-name: '[ESLint] ${{ github.event.head_commit.message }}'
 
 on: push
+
 jobs:
-    lint:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
-              with:
-                  node-version: 18
-            - run: npm ci --ignore-scripts --legacy-peer-deps
-            - run: npm rebuild && npm run prepare --if-present
-            - name: Run ESLint
-              run: npm run lint-js
+  run-linters:
+    name: Run linters
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 18
+
+      # ESLint and Prettier must be in `package.json`
+      - name: Install Node.js dependencies
+        run: npm ci --ignore-scripts --legacy-peer-deps
+
+      - name: Run linters
+        uses: wearerequired/lint-action@v2
+        with:
+          auto_fix: true
+          eslint: true
