@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.3
 Tested up to: 6.6
-Stable tag: 3.3.2
+Stable tag: 3.3.3
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -175,7 +175,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.3.3 =
-Release Date: October TBD 2024
+Release Date: October 29th 2024
 * Add: Section Priority option to header rows. This allows you to control how gridding of sections are prioritized.
 * Fix: Advanced image block not showing SVGs in editor.
 * Fix: Block settings visibility not working for section block.
@@ -183,6 +183,15 @@ Release Date: October TBD 2024
 * Fix: Kadence legacy form freezing in reusable patterns.
 * Fix: Infobox on RTL sites when "Set height 100%" is enabled.
 * Fix: Ability to add nav to footer through widgets.
+* Fix: Text alignment when using vertical orientation in navigation block.
+* Fix: Improvements to the single container experience
+* Fix: Navigation link hover border settings not applying.
+* Fix: Navigation block style options not applying on vertical layout.
+* Fix: Border radius not work as expected on navigation link media items.
+* Fix: Display of sticky header on mobile and tablet.
+* Fix: Navigation link media spacing when positioned top or bottom.
+* Fix: Display of single row container on the frontend for mobile.
+* Fix: Improvements to display of gradient text when text spans multiple lines.
 
 = 3.3.2 =
 Release Date: October 16th 2024
