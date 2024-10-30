@@ -25,6 +25,7 @@ import {
 	ResponsiveMeasureRangeControl,
 	SpacingVisualizer,
 	CopyPasteAttributes,
+	PopColorControl,
 	SelectParentBlock,
 } from '@kadence/components';
 
@@ -38,11 +39,12 @@ import {
 } from '@kadence/helpers';
 
 import classnames from 'classnames';
+import BackendStyles from './backend-styles';
 
 export function Edit(props) {
 	const { attributes, setAttributes, className, clientId } = props;
 
-	const { uniqueID, columns } = attributes;
+	const { uniqueID, columns, backgroundColor, backgroundHoverColor } = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
@@ -72,10 +74,16 @@ export function Edit(props) {
 
 	const nonTransAttrs = [];
 
-	const classes = classnames(className, 'kb-table-row');
-	const blockProps = useBlockProps({
-		className: classes,
-	});
+	// const classes = classnames(
+	// 	{
+	// 		'kb-table-row': true,
+	// 		[`kb-table-row${uniqueID}`]: uniqueID,
+	// 	},
+	// 	className
+	// );
+	// const blockProps = useBlockProps({
+	// 	className: classes,
+	// });
 
 	useEffect(() => {
 		setBlockDefaults('kadence/table-row', attributes);
@@ -110,9 +118,15 @@ export function Edit(props) {
 		}
 	}, [columns]);
 
-	const innerBlocksProps = useInnerBlocksProps(
+	const { children, ...innerBlocksProps } = useInnerBlocksProps(
 		{
-			className: '',
+			className: classnames(
+				{
+					'kb-table-row': true,
+					[`kb-table-row${uniqueID}`]: uniqueID,
+				},
+				className
+			),
 			style: {},
 		},
 		{
@@ -124,7 +138,7 @@ export function Edit(props) {
 	);
 
 	return (
-		<>
+		<tr {...innerBlocksProps}>
 			{/*<div {...blockProps}>*/}
 			<BlockControls>
 				<CopyPasteAttributes
@@ -141,12 +155,7 @@ export function Edit(props) {
 					clientId={clientId}
 					parentSlug={'kadence/table'}
 				/>
-				<InspectorControlTabs
-					panelName={'table-row'}
-					setActiveTab={setActiveTab}
-					allowedTabs={['general', 'advanced']}
-					activeTab={activeTab}
-				/>
+				<InspectorControlTabs panelName={'table-row'} setActiveTab={setActiveTab} activeTab={activeTab} />
 
 				{activeTab === 'general' && (
 					<>
@@ -161,10 +170,35 @@ export function Edit(props) {
 					</>
 				)}
 
+				{activeTab === 'style' && (
+					<>
+						<KadencePanelBody
+							title={__('Row Style', 'kadence-blocks')}
+							initialOpen={false}
+							panelName={'table-row-style'}
+						>
+							<PopColorControl
+								label={__('Row Background', 'kadence-blocks')}
+								value={backgroundColor ? backgroundColor : ''}
+								default={''}
+								onChange={(value) => setAttributes({ backgroundColor: value })}
+							/>
+
+							<PopColorControl
+								label={__('Row Hover Background', 'kadence-blocks')}
+								value={backgroundHoverColor ? backgroundHoverColor : ''}
+								default={''}
+								onChange={(value) => setAttributes({ backgroundHoverColor: value })}
+							/>
+						</KadencePanelBody>
+					</>
+				)}
+
 				{activeTab === 'advanced' && <>KadenceBlockDefaults</>}
 			</KadenceInspectorControls>
-			<tr {...innerBlocksProps} />
-		</>
+			{children}
+			<BackendStyles attributes={attributes} previewDevice={previewDevice} />
+		</tr>
 	);
 }
 

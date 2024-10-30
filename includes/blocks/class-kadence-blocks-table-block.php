@@ -61,30 +61,54 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
-		$css->set_selector( '.wp-block-kadence-table' . esc_attr( $unique_id ) );
+		$css->set_selector( '.kb-table' . esc_attr( $unique_id ) );
 		$css->render_typography( $attributes, 'dataTypography' );
 
-		$css->set_selector( '.wp-block-kadence-table' . esc_attr( $unique_id ) . ' th' );
+		$css->set_selector( '.kb-table' . esc_attr( $unique_id ) . ' th' );
 		$css->render_typography( $attributes, 'headerTypography' );
 
 		if ( !empty( $attributes['evenOddBackground'] ) ) {
-			$css->set_selector( '.wp-block-kadence-table' . esc_attr( $unique_id ) . ' tr:nth-child(even)' );
-			$css->add_property( 'background-color', $css->render_color( $attributes['backgroundColorEven'] ) );
+			$css->set_selector( '.kb-table' . esc_attr( $unique_id ) . ' tr:nth-child(even)' );
+			$css->add_property( 'background-color', $css->render_color( $attributes['backgroundColorEven'] ?? 'undefined' ) );
 
-			$css->set_selector( '.wp-block-kadence-table' . esc_attr( $unique_id ) . ' tr:nth-child(odd)' );
-			$css->add_property( 'background-color', $css->render_color( $attributes['backgroundColorOdd'] ) );
+			$css->set_selector( '.kb-table' . esc_attr( $unique_id ) . ' tr:nth-child(odd)' );
+			$css->add_property( 'background-color', $css->render_color( $attributes['backgroundColorOdd'] ?? 'undefined' ) );
 
-			$css->set_selector( '.wp-block-kadence-table' . esc_attr( $unique_id ) . ' tr:nth-child(odd):hover' );
-			$css->add_property( 'background-color', $css->render_color( $attributes['backgroundHoverColorOdd'] ) );
+			$css->set_selector( '.kb-table' . esc_attr( $unique_id ) . ' tr:nth-child(odd):hover' );
+			$css->add_property( 'background-color', $css->render_color( $attributes['backgroundHoverColorOdd'] ?? 'undefined' ) );
 
-			$css->set_selector( '.wp-block-kadence-table' . esc_attr( $unique_id ) . ' tr:nth-child(even):hover' );
-			$css->add_property( 'background-color', $css->render_color( $attributes['backgroundHoverColorEven'] ) );
+			$css->set_selector( '.kb-table' . esc_attr( $unique_id ) . ' tr:nth-child(even):hover' );
+			$css->add_property( 'background-color', $css->render_color( $attributes['backgroundHoverColorEven'] ?? 'undefined' ) );
 		} else {
-			$css->set_selector( '.wp-block-kadence-table' . esc_attr( $unique_id ) . ' tr' );
-			$css->add_property( 'background-color', $css->render_color( $attributes['backgroundColorEven'] ) );
 
-			$css->set_selector( '.wp-block-kadence-table' . esc_attr( $unique_id ) . ' tr:hover' );
-			$css->add_property( 'background-color', $css->render_color( $attributes['backgroundHoverColorEven'] ) );
+			if( !empty( $attributes['backgroundColorEven'] ) ) {
+				$css->set_selector( '.kb-table' . esc_attr( $unique_id ) . ' tr' );
+				$css->add_property( 'background-color', $css->render_color( $attributes['backgroundColorEven'] ) );
+			}
+
+			if( !empty( $attributes['backgroundHoverColorEven'] ) ) {
+				$css->set_selector( '.kb-table' . esc_attr( $unique_id ) . ' tr:hover' );
+				$css->add_property( 'background-color', $css->render_color( $attributes['backgroundHoverColorEven'] ) );
+			}
+		}
+
+		if( !empty( $attributes['columnBackgrounds'] ) ) {
+			foreach( $attributes['columnBackgrounds'] as $index => $background ) {
+				if ( $background ) {
+					$css->set_selector( '.kb-table' . esc_attr( $unique_id ) . ' td:nth-child(' . ( $index + 1 ) . ')' );
+					$css->add_property( 'background-color', $css->render_color( $background ) );
+				}
+			}
+
+		}
+
+		if( !empty( $attributes['columnBackgroundsHover'] ) ) {
+			foreach( $attributes['columnBackgroundsHover'] as $index => $background ) {
+				if ( $background ) {
+					$css->set_selector( '.kb-table' . esc_attr( $unique_id ) . ' td:nth-child(' . ( $index + 1 ) . '):hover' );
+					$css->add_property( 'background-color', $css->render_color( $background ) );
+				}
+			}
 		}
 
 		return $css->css_output();
@@ -102,7 +126,7 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		return sprintf(
-			'<table class="wp-block-kadence-table wp-block-kadence-table%1$s">%2$s</table>',
+			'<table class="kb-table kb-table%1$s">%2$s</table>',
 			esc_attr( $unique_id ),
 			$content
 		);

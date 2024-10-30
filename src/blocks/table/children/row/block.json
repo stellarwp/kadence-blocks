@@ -13,6 +13,14 @@
 		"columns": {
 			"type": "number",
 			"default": 2
+		},
+		"backgroundColor": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundHoverColor": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"supports": {

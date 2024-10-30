@@ -74,6 +74,11 @@ class Kadence_Blocks_Table_Row_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
+		$css->set_selector( '.wp-block-kadence-table .kb-table-row' . $unique_id );
+		$css->add_property( 'background-color', $css->render_color( $attributes['backgroundColor'] ) );
+
+		$css->set_selector( '.wp-block-kadence-table .kb-table-row' . $unique_id . ':hover' );
+		$css->add_property( 'background-color', $css->render_color( $attributes['backgroundHoverColor'] ) );
 
 		return $css->css_output();
 	}
@@ -90,7 +95,7 @@ class Kadence_Blocks_Table_Row_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
 		return sprintf(
-			'<tr class="kb-table-wrap kb-table-id-%1$s">%2$s</tr>',
+			'<tr class="kb-table-row kb-table-row%1$s">%2$s</tr>',
 			esc_attr( $unique_id ),
 			$content
 		);

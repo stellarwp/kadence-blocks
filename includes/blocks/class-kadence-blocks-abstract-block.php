@@ -78,7 +78,8 @@ class Kadence_Blocks_Abstract_Block {
 		'off-canvas',
 		'header-column',
 		'search',
-		'identity'
+		'identity',
+		'table',
 	];
 	/**
 	 * Allow us to enable merged defaults on blocks individually.

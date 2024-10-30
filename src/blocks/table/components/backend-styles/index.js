@@ -27,6 +27,8 @@ export default function BackendStyles(props) {
 		backgroundColorOdd,
 		backgroundHoverColorEven,
 		backgroundHoverColorOdd,
+		columnBackgrounds,
+		columnBackgroundsHover,
 	} = attributes;
 
 	const css = new KadenceBlocksCSS();
@@ -88,30 +90,48 @@ export default function BackendStyles(props) {
 	// 	undefined !== width?.[2] ? width[2] : ''
 	// );
 
-	css.set_selector(`.wp-block-kadence-table${uniqueID}`);
+	css.set_selector(`.kb-table${uniqueID}`);
 	css.render_font(dataTypography ? dataTypography : [], previewDevice);
 
-	css.set_selector(`.wp-block-kadence-table${uniqueID} th`);
+	css.set_selector(`.kb-table${uniqueID} th`);
 	css.render_font(headerTypography ? headerTypography : [], previewDevice);
 
 	if (evenOddBackground) {
-		css.set_selector(`.wp-block-kadence-table${uniqueID} tr:nth-child(even)`);
+		css.set_selector(`.kb-table${uniqueID} tr:nth-child(even)`);
 		css.add_property('background-color', KadenceColorOutput(backgroundColorEven));
 
-		css.set_selector(`.wp-block-kadence-table${uniqueID} tr:nth-child(odd)`);
+		css.set_selector(`.kb-table${uniqueID} tr:nth-child(odd)`);
 		css.add_property('background-color', KadenceColorOutput(backgroundColorOdd));
 
-		css.set_selector(`.wp-block-kadence-table${uniqueID} tr:nth-child(odd):hover`);
+		css.set_selector(`.kb-table${uniqueID} tr:nth-child(odd):hover`);
 		css.add_property('background-color', KadenceColorOutput(backgroundHoverColorOdd));
 
-		css.set_selector(`.wp-block-kadence-table${uniqueID} tr:nth-child(even):hover`);
+		css.set_selector(`.kb-table${uniqueID} tr:nth-child(even):hover`);
 		css.add_property('background-color', KadenceColorOutput(backgroundHoverColorEven));
 	} else {
-		css.set_selector(`.wp-block-kadence-table${uniqueID} tr`);
+		css.set_selector(`.kb-table${uniqueID} tr`);
 		css.add_property('background-color', KadenceColorOutput(backgroundColorEven));
 
-		css.set_selector(`.wp-block-kadence-table${uniqueID} tr:hover`);
+		css.set_selector(`.kb-table${uniqueID} tr:hover`);
 		css.add_property('background-color', KadenceColorOutput(backgroundHoverColorEven));
+	}
+
+	if (columnBackgrounds) {
+		columnBackgrounds.forEach((background, index) => {
+			if (background) {
+				css.set_selector(`.kb-table${uniqueID} td:nth-child(${index + 1})`);
+				css.add_property('background-color', KadenceColorOutput(background));
+			}
+		});
+	}
+
+	if (columnBackgroundsHover) {
+		columnBackgroundsHover.forEach((background, index) => {
+			if (background) {
+				css.set_selector(`.kb-table${uniqueID} td:nth-child(${index + 1}):hover`);
+				css.add_property('background-color', KadenceColorOutput(background));
+			}
+		});
 	}
 
 	// css.add_property('color', KadenceColorOutput(dataTypography.color));

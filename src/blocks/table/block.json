@@ -108,6 +108,14 @@
 		"backgroundHoverColorOdd": {
 			"type": "string",
 			"default": ""
+		},
+		"columnBackgrounds": {
+			"type": "array",
+			"default": []
+		},
+		"columnBackgroundsHover": {
+			"type": "array",
+			"default": []
 		}
 	},
 	"supports": {

@@ -70,11 +70,6 @@ export function Edit(props) {
 	return (
 		<Tag {...blockProps}>
 			<BlockControls>
-				<KadenceBlockDefaults
-					attributes={attributes}
-					setAttributes={setAttributes}
-					blockName={'kadence/table-data'}
-				/>
 				<CopyPasteAttributes
 					attributes={attributes}
 					setAttributes={setAttributes}
@@ -102,6 +97,13 @@ export function Edit(props) {
 							help={__('Switches to th tag and applies header typography styles.', 'kadence-blocks')}
 						/>
 					</KadencePanelBody>
+				)}
+				{activeTab === 'advanced' && (
+					<KadenceBlockDefaults
+						blockSlug={'kadence/table-data'}
+						attributes={attributes}
+						setAttributes={setAttributes}
+					/>
 				)}
 			</KadenceInspectorControls>
 			<InnerBlocks template={DEFAULT_BLOCK} renderAppender={false} />

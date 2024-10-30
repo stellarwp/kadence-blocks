@@ -57,6 +57,8 @@ export function Edit(props) {
 		backgroundColorOdd,
 		backgroundHoverColorEven,
 		backgroundHoverColorOdd,
+		columnBackgrounds,
+		columnBackgroundsHover,
 	} = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
@@ -89,8 +91,8 @@ export function Edit(props) {
 
 	const classes = classnames(
 		{
-			'wp-block-kadence-table': true,
-			[`wp-block-kadence-table${uniqueID}`]: uniqueID,
+			'kb-table': true,
+			[`kb-table${uniqueID}`]: uniqueID,
 		},
 		className
 	);
@@ -116,8 +118,25 @@ export function Edit(props) {
 		}
 	}, []);
 
+	const updateColumnBackground = (index, color, isHover = false) => {
+		const arrayToUpdate = isHover ? [...columnBackgroundsHover] : [...columnBackgrounds];
+		if (color === '') {
+			delete arrayToUpdate[index];
+			arrayToUpdate.length = arrayToUpdate.length || index + 1;
+		} else {
+			arrayToUpdate[index] = color;
+		}
+		setAttributes({
+			[isHover ? 'columnBackgroundsHover' : 'columnBackgrounds']: arrayToUpdate,
+		});
+	};
+
+	const getColumnBackground = (index, isHover = false) => {
+		const array = isHover ? columnBackgroundsHover : columnBackgrounds;
+		return array && array[index] ? array[index] : '';
+	};
+
 	const updateRowsColumns = (newRows, newColumns) => {
-		console.log(newRows, newColumns);
 		const currentBlocks = wp.data.select('core/block-editor').getBlocks(clientId);
 
 		let newRowBlocks = [...currentBlocks];
@@ -162,7 +181,7 @@ export function Edit(props) {
 		},
 		{
 			allowedBlocks: ['kadence/table-row'],
-			templateLock: false,
+			templateLock: true,
 			template: [
 				['kadence/table-row', { columns: 2 }],
 				['kadence/table-row', { columns: 2 }],
@@ -367,6 +386,42 @@ export function Edit(props) {
 									</>
 								}
 							/>
+						</KadencePanelBody>
+
+						<KadencePanelBody
+							title={__('Column Backgrounds', 'kadence-blocks')}
+							panelName={'column-bgs'}
+							initialOpen={false}
+						>
+							{Array.from({ length: columns }).map((_, index) => (
+								<KadencePanelBody
+									key={index}
+									title={__(`Column ${index + 1} Background`, 'kadence-blocks')}
+									panelName={'column-bg-' + index}
+									initialOpen={false}
+								>
+									<HoverToggleControl
+										hover={
+											<PopColorControl
+												key={index + 'hover'}
+												label={__('Hover Background Color', 'kadence-blocks')}
+												value={getColumnBackground(index, true)}
+												default={''}
+												onChange={(value) => updateColumnBackground(index, value, true)}
+											/>
+										}
+										normal={
+											<PopColorControl
+												key={index + 'normal'}
+												label={__('Background Color', 'kadence-blocks')}
+												value={getColumnBackground(index)}
+												default={''}
+												onChange={(value) => updateColumnBackground(index, value)}
+											/>
+										}
+									/>
+								</KadencePanelBody>
+							))}
 						</KadencePanelBody>
 					</>
 				)}
