@@ -38,6 +38,9 @@ class Kadence_Blocks_Table_Row_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	protected $has_script = false;
 
+	protected $has_style = false;
+
+
 	/**
 	 * Instance Control
 	 */
@@ -74,10 +77,10 @@ class Kadence_Blocks_Table_Row_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
-		$css->set_selector( '.wp-block-kadence-table .kb-table-row' . $unique_id );
+		$css->set_selector( '.kb-table .kb-table-row' . $unique_id );
 		$css->add_property( 'background-color', $css->render_color( $attributes['backgroundColor'] ) );
 
-		$css->set_selector( '.wp-block-kadence-table .kb-table-row' . $unique_id . ':hover' );
+		$css->set_selector( '.kb-table .kb-table-row' . $unique_id . ':hover' );
 		$css->add_property( 'background-color', $css->render_color( $attributes['backgroundHoverColor'] ) );
 
 		return $css->css_output();

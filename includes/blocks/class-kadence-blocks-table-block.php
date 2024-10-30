@@ -39,6 +39,14 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 	protected $has_script = true;
 
 	/**
+	 * Block determines in scripts need to be loaded for block.
+	 *
+	 * @var string
+	 */
+	protected $has_style = true;
+
+
+	/**
 	 * Instance Control
 	 */
 	public static function get_instance() {
@@ -110,6 +118,14 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 				}
 			}
 		}
+
+		// Render borders for the table
+		if( !empty( $attributes['borderOnRowOnly'])) {
+			$css->set_selector( '.kb-table' . esc_attr( $unique_id ) . ' tr' );
+		} else {
+			$css->set_selector( '.kb-table' . esc_attr( $unique_id ) . ' td, .kb-table' . esc_attr( $unique_id ) . ' th' );
+		}
+		$css->render_border_styles( $attributes, 'borderStyle' );
 
 		return $css->css_output();
 	}

@@ -27,6 +27,7 @@ import {
 	CopyPasteAttributes,
 	PopColorControl,
 	SelectParentBlock,
+	ResponsiveRangeControls,
 } from '@kadence/components';
 
 import {
@@ -44,7 +45,16 @@ import BackendStyles from './backend-styles';
 export function Edit(props) {
 	const { attributes, setAttributes, className, clientId } = props;
 
-	const { uniqueID, columns, backgroundColor, backgroundHoverColor } = attributes;
+	const {
+		uniqueID,
+		columns,
+		backgroundColor,
+		backgroundHoverColor,
+		minHeight,
+		tabletMinHeight,
+		mobileMinHeight,
+		minHeightUnit,
+	} = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
@@ -68,7 +78,7 @@ export function Edit(props) {
 		[clientId]
 	);
 
-	const [activeTab, setActiveTab] = useState('general');
+	const [activeTab, setActiveTab] = useState('style');
 	const { getBlocks } = useSelect((select) => select('core/block-editor'));
 	const { replaceInnerBlocks } = useDispatch('core/block-editor');
 
@@ -155,20 +165,25 @@ export function Edit(props) {
 					clientId={clientId}
 					parentSlug={'kadence/table'}
 				/>
-				<InspectorControlTabs panelName={'table-row'} setActiveTab={setActiveTab} activeTab={activeTab} />
+				<InspectorControlTabs
+					panelName={'table-row'}
+					allowedTabs={['style', 'advanced']}
+					setActiveTab={setActiveTab}
+					activeTab={activeTab}
+				/>
 
-				{activeTab === 'general' && (
-					<>
-						<KadencePanelBody
-							title={__('Row Settings', 'kadence-blocks')}
-							initialOpen={true}
-							panelName={'rowSettings'}
-							blockSlug={'kadence/table-row'}
-						>
-							Settings
-						</KadencePanelBody>
-					</>
-				)}
+				{/*{activeTab === 'general' && (*/}
+				{/*	<>*/}
+				{/*		<KadencePanelBody*/}
+				{/*			title={__('Row Settings', 'kadence-blocks')}*/}
+				{/*			initialOpen={true}*/}
+				{/*			panelName={'rowSettings'}*/}
+				{/*			blockSlug={'kadence/table-row'}*/}
+				{/*		>*/}
+				{/*			Settings*/}
+				{/*		</KadencePanelBody>*/}
+				{/*	</>*/}
+				{/*)}*/}
 
 				{activeTab === 'style' && (
 					<>
@@ -189,6 +204,38 @@ export function Edit(props) {
 								value={backgroundHoverColor ? backgroundHoverColor : ''}
 								default={''}
 								onChange={(value) => setAttributes({ backgroundHoverColor: value })}
+							/>
+						</KadencePanelBody>
+
+						<KadencePanelBody
+							title={__('Row Height', 'kadence-blocks')}
+							initialOpen={false}
+							panelName={'table-row-height'}
+						>
+							<ResponsiveRangeControls
+								label={__('Height', 'kadence-blocks')}
+								value={minHeight}
+								onChange={(value) => setAttributes({ minHeight: value })}
+								tabletValue={tabletMinHeight}
+								onChangeTablet={(value) => setAttributes({ tabletMinHeight: value })}
+								mobileValue={mobileMinHeight}
+								onChangeMobile={(value) => setAttributes({ mobileMinHeight: value })}
+								min={0}
+								max={minHeightUnit === 'px' ? 600 : 100}
+								step={1}
+								unit={minHeightUnit}
+								onUnit={(value) => {
+									setAttributes({ minHeightUnit: value });
+								}}
+								units={['px', 'em', 'vh']}
+								reset={() =>
+									setAttributes({
+										minHeight: null,
+										tabletMinHeight: null,
+										mobileMinHeight: null,
+									})
+								}
+								showUnit={true}
 							/>
 						</KadencePanelBody>
 					</>

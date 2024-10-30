@@ -106,7 +106,7 @@ export function Edit(props) {
 					/>
 				)}
 			</KadenceInspectorControls>
-			<InnerBlocks template={DEFAULT_BLOCK} renderAppender={false} />
+			<InnerBlocks template={DEFAULT_BLOCK} renderAppender={false} templateLock={false} />
 		</Tag>
 	);
 }

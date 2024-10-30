@@ -21,6 +21,22 @@
 		"backgroundHoverColor": {
 			"type": "string",
 			"default": ""
+		},
+		"minHeight": {
+			"type": "number",
+			"default": ""
+		},
+		"minHeightTablet": {
+			"type": "number",
+			"default": ""
+		},
+		"minHeightMobile": {
+			"type": "number",
+			"default": ""
+		},
+		"minHeightUnit": {
+			"type": "string",
+			"default": "px"
 		}
 	},
 	"supports": {

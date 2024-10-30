@@ -31,6 +31,8 @@ import {
 	TypographyControls,
 	HoverToggleControl,
 	PopColorControl,
+	ResponsiveMeasurementControls,
+	ResponsiveBorderControl,
 } from '@kadence/components';
 
 import {
@@ -59,6 +61,10 @@ export function Edit(props) {
 		backgroundHoverColorOdd,
 		columnBackgrounds,
 		columnBackgroundsHover,
+		borderStyle,
+		tabletBorderStyle,
+		mobileBorderStyle,
+		borderOnRowOnly,
 	} = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
@@ -91,8 +97,8 @@ export function Edit(props) {
 
 	const classes = classnames(
 		{
-			'kb-table': true,
-			[`kb-table${uniqueID}`]: uniqueID,
+			'kb-table-container': true,
+			[`kb-table-container${uniqueID}`]: uniqueID,
 		},
 		className
 	);
@@ -176,7 +182,13 @@ export function Edit(props) {
 
 	const innerBlocksProps = useInnerBlocksProps(
 		{
-			className: '',
+			className: classnames(
+				{
+					'kb-table': true,
+					[`kb-table${uniqueID}`]: uniqueID,
+				},
+				className
+			),
 			style: {},
 		},
 		{
@@ -251,6 +263,27 @@ export function Edit(props) {
 
 				{activeTab === 'style' && (
 					<>
+						<KadencePanelBody
+							title={__('Borders', 'kadence-blocks')}
+							panelName={'table-borders'}
+							initialOpen={true}
+						>
+							<ResponsiveBorderControl
+								label={__('Border', 'kadence-blocks')}
+								value={borderStyle}
+								tabletValue={tabletBorderStyle}
+								mobileValue={mobileBorderStyle}
+								onChange={(value) => setAttributes({ borderStyle: value })}
+								onChangeTablet={(value) => setAttributes({ tabletBorderStyle: value })}
+								onChangeMobile={(value) => setAttributes({ mobileBorderStyle: value })}
+							/>
+
+							<ToggleControl
+								label={__('Only apply to rows', 'kadence-blocks')}
+								checked={borderOnRowOnly}
+								onChange={(value) => setAttributes({ borderOnRowOnly: value })}
+							/>
+						</KadencePanelBody>
 						<KadencePanelBody
 							title={__('Cell Typography', 'kadence-blocks')}
 							panelName={'table-cell-typography'}

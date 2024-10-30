@@ -116,10 +116,8 @@ class TableTest extends KadenceBlocksUnit {
 		];
 
 		$css_output = $this->block->build_css($attributes, $this->css, $unique_id, $unique_id);
-		$css_helper = new CSSTestHelper($css_output);
 
 		$this->assertEmpty($css_output);
-
 	}
 
 	public function testNoColumnHoverBackgroundCss() {
@@ -130,10 +128,8 @@ class TableTest extends KadenceBlocksUnit {
 		];
 
 		$css_output = $this->block->build_css($attributes, $this->css, $unique_id, $unique_id);
-		$css_helper = new CSSTestHelper($css_output);
 
 		$this->assertEmpty($css_output);
-
 	}
 
 	public function testColumndBackgroundCss() {

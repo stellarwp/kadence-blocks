@@ -4,7 +4,7 @@ import {
 	getPreviewSize,
 	getSpacingOptionOutput,
 	KadenceColorOutput,
-	useElementHeight,
+	getBorderStyle,
 } from '@kadence/helpers';
 
 export default function BackendStyles(props) {
@@ -29,6 +29,10 @@ export default function BackendStyles(props) {
 		backgroundHoverColorOdd,
 		columnBackgrounds,
 		columnBackgroundsHover,
+		borderStyle,
+		tabletBorderStyle,
+		mobileBorderStyle,
+		borderOnRowOnly,
 	} = attributes;
 
 	const css = new KadenceBlocksCSS();
@@ -133,6 +137,28 @@ export default function BackendStyles(props) {
 			}
 		});
 	}
+
+	if (borderOnRowOnly) {
+		css.set_selector(`.kb-table${uniqueID} tr`);
+	} else {
+		css.set_selector(`.kb-table${uniqueID} th, .kb-table${uniqueID} td`);
+	}
+	css.add_property(
+		'border-top',
+		getBorderStyle(previewDevice, 'top', borderStyle, tabletBorderStyle, mobileBorderStyle)
+	);
+	css.add_property(
+		'border-right',
+		getBorderStyle(previewDevice, 'right', borderStyle, tabletBorderStyle, mobileBorderStyle)
+	);
+	css.add_property(
+		'border-bottom',
+		getBorderStyle(previewDevice, 'bottom', borderStyle, tabletBorderStyle, mobileBorderStyle)
+	);
+	css.add_property(
+		'border-left',
+		getBorderStyle(previewDevice, 'left', borderStyle, tabletBorderStyle, mobileBorderStyle)
+	);
 
 	// css.add_property('color', KadenceColorOutput(dataTypography.color));
 	// css.add_property('font-size', getFontSizeOptionOutput(previewFontSize, dataTypography.sizeType));

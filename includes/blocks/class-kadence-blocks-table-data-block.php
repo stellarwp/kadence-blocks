@@ -38,6 +38,9 @@ class Kadence_Blocks_Table_Data_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	protected $has_script = false;
 
+	protected $has_style = false;
+
+
 	/**
 	 * Instance Control
 	 */
