@@ -1064,7 +1064,17 @@ function KadenceAdvancedHeading(props) {
 						-webkit-background-clip: ${enableMarkGradient ? 'text' : enableTextGradient ? 'initial !important' : undefined};
 						background-clip: ${enableMarkGradient ? 'text' : enableTextGradient ? 'initial !important' : undefined};
 						-webkit-text-fill-color: ${enableMarkGradient ? 'transparent' : enableTextGradient ? 'initial !important' : undefined};
-						-webkit-box-decoration-break: ${ enableMarkGradient || enableMarkBackgroundGradient || markBG || previewMarkBorderTopStyle || previewMarkBorderRightStyle || previewMarkBorderBottomStyle || previewMarkBorderLeftStyle  ? 'clone' : undefined };
+						-webkit-box-decoration-break: ${
+							enableMarkGradient ||
+							enableMarkBackgroundGradient ||
+							markBG ||
+							previewMarkBorderTopStyle ||
+							previewMarkBorderRightStyle ||
+							previewMarkBorderBottomStyle ||
+							previewMarkBorderLeftStyle
+								? 'clone'
+								: undefined
+						};
 						font-weight: ${markFontWeight ? markFontWeight : 'inherit'};
 						font-style: ${markFontStyle ? markFontStyle : 'inherit'};
 						font-size: ${previewMarkSize ? getFontSizeOptionOutput(previewMarkSize, markSizeType) : 'inherit'};
@@ -1885,13 +1895,13 @@ function KadenceAdvancedHeading(props) {
 								>
 									{!enableMarkGradient && (
 										// <>
-											<PopColorControl
-												label={__('Color', 'kadence-blocks')}
-												value={markColor ? markColor : ''}
-												default={''}
-												onChange={(value) => setAttributes({ markColor: value })}
-											/>
-										)}
+										<PopColorControl
+											label={__('Color', 'kadence-blocks')}
+											value={markColor ? markColor : ''}
+											default={''}
+											onChange={(value) => setAttributes({ markColor: value })}
+										/>
+									)}
 									{!enableMarkBackgroundGradient && (
 										<ToggleControl
 											style={{ marginTop: '10px' }}
@@ -1910,17 +1920,17 @@ function KadenceAdvancedHeading(props) {
 									)}
 
 									{!enableMarkGradient && !enableMarkBackgroundGradient && (
-											<PopColorControl
-												label={__('Background', 'kadence-blocks')}
-												value={markBG ? markBG : ''}
-												default={''}
-												onChange={(value) => setAttributes({ markBG: value })}
-												opacityValue={markBGOpacity}
-												onOpacityChange={(value) => setAttributes({ markBGOpacity: value })}
-												onArrayChange={(color, opacity) =>
-													setAttributes({ markBG: color, markBGOpacity: opacity })
-												}
-											/>
+										<PopColorControl
+											label={__('Background', 'kadence-blocks')}
+											value={markBG ? markBG : ''}
+											default={''}
+											onChange={(value) => setAttributes({ markBG: value })}
+											opacityValue={markBGOpacity}
+											onOpacityChange={(value) => setAttributes({ markBGOpacity: value })}
+											onArrayChange={(color, opacity) =>
+												setAttributes({ markBG: color, markBGOpacity: opacity })
+											}
+										/>
 										// </>
 									)}
 									{!enableMarkGradient && (
