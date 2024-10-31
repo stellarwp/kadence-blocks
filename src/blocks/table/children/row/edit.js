@@ -167,29 +167,16 @@ export function Edit(props) {
 				/>
 				<InspectorControlTabs
 					panelName={'table-row'}
-					allowedTabs={['style', 'advanced']}
+					allowedTabs={['general', 'advanced']}
 					setActiveTab={setActiveTab}
 					activeTab={activeTab}
 				/>
 
-				{/*{activeTab === 'general' && (*/}
-				{/*	<>*/}
-				{/*		<KadencePanelBody*/}
-				{/*			title={__('Row Settings', 'kadence-blocks')}*/}
-				{/*			initialOpen={true}*/}
-				{/*			panelName={'rowSettings'}*/}
-				{/*			blockSlug={'kadence/table-row'}*/}
-				{/*		>*/}
-				{/*			Settings*/}
-				{/*		</KadencePanelBody>*/}
-				{/*	</>*/}
-				{/*)}*/}
-
-				{activeTab === 'style' && (
+				{activeTab === 'general' && (
 					<>
 						<KadencePanelBody
 							title={__('Row Style', 'kadence-blocks')}
-							initialOpen={false}
+							initialOpen={true}
 							panelName={'table-row-style'}
 						>
 							<PopColorControl
@@ -209,7 +196,7 @@ export function Edit(props) {
 
 						<KadencePanelBody
 							title={__('Row Height', 'kadence-blocks')}
-							initialOpen={false}
+							initialOpen={true}
 							panelName={'table-row-height'}
 						>
 							<ResponsiveRangeControls
