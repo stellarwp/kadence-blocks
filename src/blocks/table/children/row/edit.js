@@ -141,7 +141,8 @@ export function Edit(props) {
 		},
 		{
 			allowedBlocks: ['kadence/table-data'],
-			templateLock: true,
+			orientation: 'vertical',
+			templateLock: 'all',
 			renderAppender: false,
 			templateInsertUpdatesSelection: true,
 		}

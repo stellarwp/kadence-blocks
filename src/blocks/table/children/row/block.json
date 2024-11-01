@@ -4,6 +4,7 @@
 	"name": "kadence/table-row",
 	"title": "Table (Adv)",
 	"parent": [ "kadence/table" ],
+	"allowedBlocks": [ "kadence/table-data" ],
 	"category": "kadence-blocks",
 	"textdomain": "kadence-blocks",
 	"attributes": {
