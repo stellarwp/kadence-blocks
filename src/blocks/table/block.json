@@ -158,6 +158,9 @@
 			"default": false
 		}
 	},
+	"providesContext": {
+		"kadence/table-columns": "columns"
+	},
 	"supports": {
 		"kbMetadata": true
 	}

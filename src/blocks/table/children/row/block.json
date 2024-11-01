@@ -11,10 +11,6 @@
 		"uniqueID": {
 			"type": "string"
 		},
-		"columns": {
-			"type": "number",
-			"default": 2
-		},
 		"backgroundColor": {
 			"type": "string",
 			"default": ""
@@ -40,6 +36,7 @@
 			"default": "px"
 		}
 	},
+	"usesContext": [ "kadence/table-columns" ],
 	"supports": {
 		"kbMetadata": true
 	}

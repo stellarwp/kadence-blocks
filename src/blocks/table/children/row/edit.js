@@ -43,11 +43,10 @@ import classnames from 'classnames';
 import BackendStyles from './backend-styles';
 
 export function Edit(props) {
-	const { attributes, setAttributes, className, clientId } = props;
+	const { attributes, setAttributes, className, clientId, context } = props;
 
 	const {
 		uniqueID,
-		columns,
 		backgroundColor,
 		backgroundHoverColor,
 		minHeight,
@@ -56,6 +55,7 @@ export function Edit(props) {
 		minHeightUnit,
 	} = attributes;
 
+	const columns = context['kadence/table-columns'];
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
 	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		(select) => {
