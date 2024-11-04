@@ -42,6 +42,7 @@ jobs:
         with:
             name: ${{ env.PLUGIN_SLUG }}
             path: ${{ env.PLUGIN_SLUG }}.zip
+            retention-days: 2
 
       - name: Upload plugin
         run: |
