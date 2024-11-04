@@ -1,0 +1,78 @@
+name: Ghost Inspector
+
+on:
+  workflow_dispatch:
+
+env:
+  PLUGIN_SLUG: kadence-blocks
+  WP_URL: ${{ secrets.WP_URL }}
+  GI_API_KEY: ${{ secrets.GHOST_INSPECTOR_API_KEY }}
+  GI_SUITE_ID: ${{ secrets.GHOST_INSPECTOR_SUITE_ID }}
+  WP_API_KEY: ${{ secrets.WP_PLUGIN_API_KEY }}
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Composer
+        run: composer config -g github-oauth.github.com ${{ secrets.COMPOSER_TOKEN }}
+
+      - name: Build plugin
+        run: |
+          composer install --no-dev --no-scripts
+          composer run strauss-release
+          npm install --legacy-peer-deps
+          npm run build
+
+      - name: Create plugin archive
+        run: |
+          mkdir -p /tmp/${{ env.PLUGIN_SLUG }}
+
+          rsync -av --exclude='/.git' --exclude='/.github' --exclude='/bin' --exclude='/gulp' --exclude='/src' --exclude='/node_modules' --exclude='/tests' --exclude='/.wordpress-org' . /tmp/${{ env.PLUGIN_SLUG }}/
+          cd /tmp
+          zip -r ${{ env.PLUGIN_SLUG }}.zip ${{ env.PLUGIN_SLUG }}
+          mv ${{ env.PLUGIN_SLUG }}.zip $GITHUB_WORKSPACE/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+            name: ${{ env.PLUGIN_SLUG }}
+            path: ${{ env.PLUGIN_SLUG }}.zip
+            retention-days: 2
+
+      - name: Upload plugin
+        run: |
+          # Upload plugin using the working format
+          UPLOAD_RESPONSE=$(curl -X POST \
+            -H "X-API-Key: ${{ env.WP_API_KEY }}" \
+            -F "plugin_zip=@${{ env.PLUGIN_SLUG }}.zip;type=application/zip" \
+            -s \
+            "${{ env.WP_URL }}/wp-json/plugin-upload/v1/upload")
+
+          echo "Upload response: $UPLOAD_RESPONSE"
+
+          # Check if the request was successful using grep like the shell script
+          if echo "$UPLOAD_RESPONSE" | grep -q '"success":true'; then
+            echo "Plugin uploaded successfully!"
+            PLUGIN_DIR=$(echo "$UPLOAD_RESPONSE" | grep -o '"plugin_directory":"[^"]*"' | cut -d'"' -f4)
+            echo "Installed in directory: $PLUGIN_DIR"
+          else
+            echo "Failed to upload plugin"
+            echo "$UPLOAD_RESPONSE" | grep -o '"message":"[^"]*"' | cut -d'"' -f4
+            exit 1
+          fi
+
+      - name: Run Ghost Inspector tests
+        run: |
+          RESPONSE=$(curl -s "https://api.ghostinspector.com/v1/suites/${{ env.GI_SUITE_ID }}/execute/?apiKey=${{ env.GI_API_KEY }}")
+          echo "Ghost Inspector response: $RESPONSE"
+
+          # Check if the tests were triggered successfully
+          if ! echo "$RESPONSE" | jq -e '.code == "SUCCESS"' > /dev/null; then
+            echo "Failed to trigger Ghost Inspector tests"
+            exit 1
+          fi
