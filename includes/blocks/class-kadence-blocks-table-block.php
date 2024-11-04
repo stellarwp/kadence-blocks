@@ -69,33 +69,33 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
-		$css->set_selector( '.kb-table' . esc_attr( $unique_id ) );
+		$css->set_selector( '.kb-table-wrap .kb-table' . esc_attr( $unique_id ) );
 		$css->render_typography( $attributes, 'dataTypography' );
 
-		$css->set_selector( '.kb-table' . esc_attr( $unique_id ) . ' th' );
+		$css->set_selector( '.kb-table-wrap .kb-table' . esc_attr( $unique_id ) . ' th' );
 		$css->render_typography( $attributes, 'headerTypography' );
 
 		if ( !empty( $attributes['evenOddBackground'] ) ) {
-			$css->set_selector( '.kb-table' . esc_attr( $unique_id ) . ' tr:nth-child(even)' );
+			$css->set_selector( '.kb-table-wrap .kb-table' . esc_attr( $unique_id ) . ' tr:nth-child(even)' );
 			$css->add_property( 'background-color', $css->render_color( $attributes['backgroundColorEven'] ?? 'undefined' ) );
 
-			$css->set_selector( '.kb-table' . esc_attr( $unique_id ) . ' tr:nth-child(odd)' );
+			$css->set_selector( '.kb-table-wrap .kb-table' . esc_attr( $unique_id ) . ' tr:nth-child(odd)' );
 			$css->add_property( 'background-color', $css->render_color( $attributes['backgroundColorOdd'] ?? 'undefined' ) );
 
-			$css->set_selector( '.kb-table' . esc_attr( $unique_id ) . ' tr:nth-child(odd):hover' );
+			$css->set_selector( '.kb-table-wrap .kb-table' . esc_attr( $unique_id ) . ' tr:nth-child(odd):hover' );
 			$css->add_property( 'background-color', $css->render_color( $attributes['backgroundHoverColorOdd'] ?? 'undefined' ) );
 
-			$css->set_selector( '.kb-table' . esc_attr( $unique_id ) . ' tr:nth-child(even):hover' );
+			$css->set_selector( '.kb-table-wrap .kb-table' . esc_attr( $unique_id ) . ' tr:nth-child(even):hover' );
 			$css->add_property( 'background-color', $css->render_color( $attributes['backgroundHoverColorEven'] ?? 'undefined' ) );
 		} else {
 
 			if( !empty( $attributes['backgroundColorEven'] ) ) {
-				$css->set_selector( '.kb-table' . esc_attr( $unique_id ) . ' tr' );
+				$css->set_selector( '.kb-table-wrap .kb-table' . esc_attr( $unique_id ) . ' tr' );
 				$css->add_property( 'background-color', $css->render_color( $attributes['backgroundColorEven'] ) );
 			}
 
 			if( !empty( $attributes['backgroundHoverColorEven'] ) ) {
-				$css->set_selector( '.kb-table' . esc_attr( $unique_id ) . ' tr:hover' );
+				$css->set_selector( '.kb-table-wrap .kb-table' . esc_attr( $unique_id ) . ' tr:hover' );
 				$css->add_property( 'background-color', $css->render_color( $attributes['backgroundHoverColorEven'] ) );
 			}
 		}
@@ -103,7 +103,7 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 		if( !empty( $attributes['columnBackgrounds'] ) ) {
 			foreach( $attributes['columnBackgrounds'] as $index => $background ) {
 				if ( $background ) {
-					$css->set_selector( '.kb-table' . esc_attr( $unique_id ) . ' td:nth-child(' . ( $index + 1 ) . ')' );
+					$css->set_selector( '.kb-table-wrap .kb-table' . esc_attr( $unique_id ) . ' td:nth-child(' . ( $index + 1 ) . ')' );
 					$css->add_property( 'background-color', $css->render_color( $background ) );
 				}
 			}
@@ -113,7 +113,7 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 		if( !empty( $attributes['columnBackgroundsHover'] ) ) {
 			foreach( $attributes['columnBackgroundsHover'] as $index => $background ) {
 				if ( $background ) {
-					$css->set_selector( '.kb-table' . esc_attr( $unique_id ) . ' td:nth-child(' . ( $index + 1 ) . '):hover' );
+					$css->set_selector( '.kb-table-wrap .kb-table' . esc_attr( $unique_id ) . ' td:nth-child(' . ( $index + 1 ) . '):hover' );
 					$css->add_property( 'background-color', $css->render_color( $background ) );
 				}
 			}
@@ -121,9 +121,9 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 
 		// Render borders for the table
 		if( !empty( $attributes['borderOnRowOnly'])) {
-			$css->set_selector( '.kb-table' . esc_attr( $unique_id ) . ' tr' );
+			$css->set_selector( '.kb-table-wrap .kb-table' . esc_attr( $unique_id ) . ' tr' );
 		} else {
-			$css->set_selector( '.kb-table' . esc_attr( $unique_id ) . ' td, .kb-table' . esc_attr( $unique_id ) . ' th' );
+			$css->set_selector( '.kb-table-wrap .kb-table' . esc_attr( $unique_id ) . ' td, .kb-table' . esc_attr( $unique_id ) . ' th' );
 		}
 		$css->render_border_styles( $attributes, 'borderStyle' );
 
@@ -141,8 +141,24 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
+
+
+		$wrapper_classes = [
+			'kb-table-wrap',
+			'kb-table-wrap' . esc_attr( $unique_id ),
+		];
+
+		if(! empty( $attributes['className'] )) {
+			$wrapper_classes[] = esc_attr( $attributes['className'] );
+		}
+
+		$wrapper_attributes = get_block_wrapper_attributes( [
+			'class' => implode( ' ', $wrapper_classes ),
+		] );
+
 		return sprintf(
-			'<table class="kb-table kb-table%1$s">%2$s</table>',
+			'<div %1$s><table class="kb-table kb-table%2$s">%3$s</table></div>',
+			$wrapper_attributes,
 			esc_attr( $unique_id ),
 			$content
 		);
