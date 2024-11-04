@@ -1883,8 +1883,9 @@ function KadenceAdvancedHeading(props) {
 									initialOpen={false}
 									panelName={'kb-adv-heading-highlight-settings'}
 								>
+									<>
 									{!enableMarkGradient && (
-										// <>
+
 											<PopColorControl
 												label={__('Color', 'kadence-blocks')}
 												value={markColor ? markColor : ''}
@@ -1896,6 +1897,7 @@ function KadenceAdvancedHeading(props) {
 										<ToggleControl
 											style={{ marginTop: '10px' }}
 											label={__('Enable Text Gradient', 'kadence-blocks')}
+											help={__('Enabling Text Gradient disables Background Color and Gradient.', 'kadence-blocks')}
 											checked={enableMarkGradient}
 											onChange={(value) => setAttributes({ enableMarkGradient: value })}
 										/>
@@ -1921,12 +1923,13 @@ function KadenceAdvancedHeading(props) {
 													setAttributes({ markBG: color, markBGOpacity: opacity })
 												}
 											/>
-										// </>
 									)}
+									</>
 									{!enableMarkGradient && (
 										<ToggleControl
 											style={{ marginTop: '10px' }}
 											label={__('Enable Background Gradient', 'kadence-blocks')}
+											help={__('Enabling Background Gradient disables Text Gradient.', 'kadence-blocks')}
 											checked={enableMarkBackgroundGradient}
 											onChange={(value) => setAttributes({ enableMarkBackgroundGradient: value })}
 										/>
