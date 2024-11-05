@@ -1334,7 +1334,7 @@ export default function GalleryEdit(props) {
 										/>
 									</BaseControl>
 								)}
-								{ids && undefined !== ids[0] && imagesDynamic.length > 1 && !dynamicSource && (
+								{ids && undefined !== ids[0] && imagesDynamic && imagesDynamic.length > 1 && !dynamicSource && (
 									<BaseControl __nextHasNoMarginBottom>
 										<Button
 											className="reverse-order"
