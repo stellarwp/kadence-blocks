@@ -33,6 +33,7 @@ import {
 	PopColorControl,
 	ResponsiveMeasurementControls,
 	ResponsiveBorderControl,
+	ResponsiveRangeControls,
 } from '@kadence/components';
 
 import {
@@ -65,6 +66,12 @@ export function Edit(props) {
 		tabletBorderStyle,
 		mobileBorderStyle,
 		borderOnRowOnly,
+		stickyFirstRow,
+		stickyFirstColumn,
+		maxWidth,
+		maxWidthUnit,
+		maxHeight,
+		maxHeightUnit,
 	} = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
@@ -253,11 +260,113 @@ export function Edit(props) {
 							/>
 						</KadencePanelBody>
 						<KadencePanelBody
-							title={__('Source File', 'kadence-blocks')}
-							initialOpen={true}
-							panelName={'sourceFile'}
-							blockSlug={'kadence/lottie'}
-						></KadencePanelBody>
+							title={__('Sticky Settings', 'kadence-blocks')}
+							panelName={'sticky-settings'}
+							initialOpen={false}
+						>
+							<ToggleControl
+								label={__('Sticky first row', 'kadence-blocks')}
+								checked={stickyFirstRow}
+								onChange={(value) => setAttributes({ stickyFirstRow: value })}
+								help={__('Max height must be set for this to apply.', 'kadence-blocks')}
+							/>
+
+							<ToggleControl
+								label={__('Sticky first column', 'kadence-blocks')}
+								checked={stickyFirstColumn}
+								onChange={(value) => setAttributes({ stickyFirstColumn: value })}
+								help={__('Max width must be set for this to apply.', 'kadence-blocks')}
+							/>
+						</KadencePanelBody>
+						<KadencePanelBody
+							title={__('Sizing', 'kadnece-blocks')}
+							panelName={'sizing'}
+							initialOpen={false}
+						>
+							<ResponsiveRangeControls
+								label={__('Max Width', 'kadence-blocks')}
+								value={undefined !== maxWidth && undefined !== maxWidth[0] ? maxWidth[0] : ''}
+								onChange={(value) => {
+									setAttributes({
+										maxWidth: [
+											value,
+											undefined !== maxWidth && undefined !== maxWidth[1] ? maxWidth[1] : '',
+											undefined !== maxWidth && undefined !== maxWidth[2] ? maxWidth[2] : '',
+										],
+									});
+								}}
+								tabletValue={undefined !== maxWidth && undefined !== maxWidth[1] ? maxWidth[1] : ''}
+								onChangeTablet={(value) => {
+									setAttributes({
+										maxWidth: [
+											undefined !== maxWidth && undefined !== maxWidth[0] ? maxWidth[0] : '',
+											value,
+											undefined !== maxWidth && undefined !== maxWidth[2] ? maxWidth[2] : '',
+										],
+									});
+								}}
+								mobileValue={undefined !== maxWidth && undefined !== maxWidth[2] ? maxWidth[2] : ''}
+								onChangeMobile={(value) => {
+									setAttributes({
+										maxWidth: [
+											undefined !== maxWidth && undefined !== maxWidth[0] ? maxWidth[0] : '',
+											undefined !== maxWidth && undefined !== maxWidth[1] ? maxWidth[1] : '',
+											value,
+										],
+									});
+								}}
+								min={0}
+								max={maxWidthUnit === 'px' ? 2000 : 100}
+								step={1}
+								unit={maxWidthUnit ? maxWidthUnit : '%'}
+								onUnit={(value) => {
+									setAttributes({ maxWidthUnit: value });
+								}}
+								units={['px', '%', 'vw']}
+							/>
+
+							<ResponsiveRangeControls
+								label={__('Max Height', 'kadence-blocks')}
+								value={undefined !== maxHeight && undefined !== maxHeight[0] ? maxHeight[0] : ''}
+								onChange={(value) => {
+									setAttributes({
+										maxHeight: [
+											value,
+											undefined !== maxHeight && undefined !== maxHeight[1] ? maxHeight[1] : '',
+											undefined !== maxHeight && undefined !== maxHeight[2] ? maxHeight[2] : '',
+										],
+									});
+								}}
+								tabletValue={undefined !== maxHeight && undefined !== maxHeight[1] ? maxHeight[1] : ''}
+								onChangeTablet={(value) => {
+									setAttributes({
+										maxHeight: [
+											undefined !== maxHeight && undefined !== maxHeight[0] ? maxHeight[0] : '',
+											value,
+											undefined !== maxHeight && undefined !== maxHeight[2] ? maxHeight[2] : '',
+										],
+									});
+								}}
+								mobileValue={undefined !== maxHeight && undefined !== maxHeight[2] ? maxHeight[2] : ''}
+								onChangeMobile={(value) => {
+									setAttributes({
+										maxHeight: [
+											undefined !== maxHeight && undefined !== maxHeight[0] ? maxHeight[0] : '',
+											undefined !== maxHeight && undefined !== maxHeight[1] ? maxHeight[1] : '',
+											value,
+										],
+									});
+								}}
+								min={0}
+								max={maxHeightUnit === 'px' ? 2000 : 100}
+								step={1}
+								unit={maxHeightUnit ? maxHeightUnit : '%'}
+								onUnit={(value) => {
+									setAttributes({ maxHeightUnit: value });
+								}}
+								units={['px', '%', 'vw']}
+							/>
+						</KadencePanelBody>
 					</>
 				)}
 

@@ -12,14 +12,8 @@ export default function BackendStyles(props) {
 
 	const {
 		uniqueID,
-		// padding,
-		// tabletPadding,
-		// mobilePadding,
-		// paddingUnit,
-		// margin,
-		// tabletMargin,
-		// mobileMargin,
-		// marginUnit,
+		rows,
+		columns,
 		dataTypography,
 		headerTypography,
 		evenOddBackground,
@@ -33,8 +27,13 @@ export default function BackendStyles(props) {
 		tabletBorderStyle,
 		mobileBorderStyle,
 		borderOnRowOnly,
+		stickyFirstRow,
+		stickyFirstColumn,
+		maxWidth,
+		maxWidthUnit,
+		maxHeight,
+		maxHeightUnit,
 	} = attributes;
-
 	const css = new KadenceBlocksCSS();
 
 	// const previewMarginTop = getPreviewSize(
@@ -176,6 +175,22 @@ export default function BackendStyles(props) {
 	// css.add_property('padding-right', getSpacingOptionOutput(previewPaddingRight, paddingUnit));
 	// css.add_property('padding-bottom', getSpacingOptionOutput(previewPaddingBottom, paddingUnit));
 	// css.add_property('padding-left', getSpacingOptionOutput(previewPaddingLeft, paddingUnit));
+
+	if (stickyFirstRow) {
+		css.set_selector(`.kb-table${uniqueID}:first-child`);
+		css.add_property('position', 'sticky');
+		css.add_property('top', '0');
+		css.add_property('z-index', '1');
+	}
+
+	if (stickyFirstColumn) {
+		css.set_selector(`.kb-table${uniqueID} td:first-child, .kb-table${uniqueID} th:first-child`);
+		css.add_property('position', 'sticky');
+		css.add_property('left', '0');
+	}
+
+	css.set_selector(`.kb-table-container${uniqueID}`);
+	css.add_property('position', 'sticky');
 
 	const cssOutput = css.css_output();
 
