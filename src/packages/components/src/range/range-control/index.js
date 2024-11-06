@@ -18,6 +18,7 @@ export default function RangeControl({
 	label,
 	onChange,
 	value = '',
+	defaultValue = '',
 	className = '',
 	step = 1,
 	max = 100,
@@ -30,21 +31,31 @@ export default function RangeControl({
 	lockUnits = false,
 	units = ['px', 'em', 'rem'],
 	reset,
+ 	initialPosition = undefined,
 }) {
+	const onReset = () => {
+		onChange( defaultValue );
+	};
 	return [
 		onChange && (
 			<div className={`components-base-control kadence-range-control${className ? ' ' + className : ''}`}>
 				<div className="kadence-title-bar">
+					{label && <span className="kadence-control-title">{label}</span>}
 					{reset && (
 						<Button
 							className="is-reset is-single"
 							isSmall
-							disabled={isEqual('', value) ? true : false}
+							disabled={isEqual(value, defaultValue)}
 							icon={undo}
-							onClick={() => reset()}
+							onClick={() => {
+								if (typeof reset === 'function') {
+									reset();
+								} else {
+									onReset();
+								}
+							}}
 						></Button>
 					)}
-					{label && <span className="kadence-control-title">{label}</span>}
 				</div>
 				<div className={'kadence-controls-content'}>
 					<div className={'kadence-range-control-inner'}>
@@ -58,6 +69,7 @@ export default function RangeControl({
 							step={step}
 							help={help}
 							allowReset={true}
+							initialPosition={initialPosition}
 						/>
 					</div>
 					{(onUnit || showUnit) && (

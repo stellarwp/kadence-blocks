@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "kadence/header-container-tablet",
+	"parent": ["kadence/header"],
+	"title": "Tablet Header",
+	"category": "design",
+	"description": "Kadence tablet container",
+	"supports": {
+		"inserter": true
+	},
+	"textdomain": "kadence-blocks",
+	"attributes": {
+		"uniqueID": {
+			"type": "string",
+			"default": "default-uniqueID"
+		}
+	}
+}

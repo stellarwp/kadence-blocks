@@ -1,0 +1,118 @@
+/**
+ * Custom Properties
+ */
+
+$global-font-color: #333;
+$global-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell,
+	"Helvetica Neue", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+$global-font-size: 20;
+$global-font-line-height: 1.4;
+
+$color-gray-100: #f7fafc;
+$color-gray-200: #edf2f7;
+$color-gray-300: #e2e8f0;
+$color-gray-400: #cbd5e0;
+$color-gray-500: #a0aec0;
+$color-gray-600: #718096;
+$color-gray-700: #4a5568;
+$color-gray-800: #2d3748;
+$color-gray-900: #1a202c;
+
+$content-width: 1000px;
+$dropdown-symbol-width: 0.7em;
+
+$color-quote-border: #000;
+$color-quote-citation: #6c7781;
+
+$green: #7ad03a !default;
+$red: #a00 !default;
+$orange: #ffba00 !default;
+$blue: #2ea2cc !default;
+
+$secondary: desaturate(lighten(#3182ce, 40%), 21%) !default; // Secondary buttons
+$secondarytext: desaturate(darken($secondary, 60%), 21%) !default; // Text on secondary color bg
+
+$font-size-small: calc(16 / 20 * 1rem);
+$font-size-regular: calc(20 / 16 * 1rem);
+$font-size-large: calc(36 / 20 * 1rem);
+$font-size-larger: calc(48 / 20 * 1rem);
+
+$landscape-phone-minus-query: 540px;
+$landscape-phone-plus-query: 576px;
+$phone-minus-query: 719px;
+$before-tablet-plus-query: 720px;
+$before-tablet-query: 767px;
+$tablet-plus-query: 768px;
+$tablet-minus-query: 1024px;
+$laptop-plus-query: 1025px;
+$desktop-plus-query: 1200px;
+
+// Social Colors.
+$facebook: #3b5998;
+$facebook_group: #3b5998;
+$twitter: #1da1f2;
+$google: #db4437;
+$dribbble: #ea4c89;
+$youtube: #ff3333;
+$linkedin: #4875b4;
+$flickr: #fe0883;
+$tumblr: #32506d;
+$vimeo: #4ebbff;
+$blogger: #ff6600;
+$rss: #ff6200;
+$picasa: #05a136;
+$github: #4078c0;
+$deviantart: #43534d;
+$yahoo: #f52815;
+$pinterest: #c92228;
+$instagram: #405de6;
+$stumbleupon: #f74425;
+$xing: #006567;
+$soundcloud: #ff7700;
+$yelp: #c41200;
+$snapchat: #fffc00;
+$vk: #45668e;
+$viadeo: #f4982b;
+$periscope: #3aa4c6;
+$behance: #1769ff;
+$reddit: #ff4500;
+$medium: #181818;
+$wordpress: #00749c;
+$patreon: #052d49;
+$email: #181818;
+$phone: #181818;
+$whatsapp: #28cf54;
+$google_reviews: #db4437;
+$telegram: #0088cc;
+$trip_advisor: #00af87;
+$imdb: #f5c518;
+$anchor: #5000b9;
+
+$color-black: #000000;
+$color-white: #ffffff;
+
+$color-primary: #0073e6;
+$color-primary-dark: #005ab3;
+$color-primary-light: #4da6ff;
+
+$color-secondary: $color-black;
+$color-secondary-dark: $color-gray-800;
+$color-secondary-light: $color-gray-600;
+
+$color-info: #0500ff;
+$color-info-dark: #020129;
+$color-info-light: #add7fa;
+
+$color-success: #1b8f6d;
+$color-success-dark: #0f5741;
+$color-success-light: #bfe3be;
+
+$color-warning: #b35f00;
+$color-warning-dark: #b53200;
+$color-warning-light: #ffdaca;
+
+$color-error: #df3416;
+$color-error-dark: #aa0000;
+$color-error-light: #ff9492;
+
+$color-disabled: $color-gray-500;

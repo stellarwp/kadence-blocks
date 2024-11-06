@@ -1,3 +1,16 @@
+@import "../../assets/css/variables.scss";
+
+@mixin header-transparent-styles {
+	.wp-block-kadence-image.has-transparent-img {
+		.kb-img {
+			display: none;
+		}
+		.kb-img-transparent {
+			display: initial;
+		}
+	}
+}
+
 .wp-block-kadence-image:not(:last-child) {
 	margin-bottom: 1em;
 }
@@ -12,6 +25,9 @@
 		max-width: 100%;
 		border: 0 solid currentColor;
 		box-sizing: border-box;
+	}
+	.kb-img-transparent {
+		display: none;
 	}
 
 	.aligncenter {
@@ -43,9 +59,9 @@
 		position: relative;
 		/*rtl:ignore*/
 		margin-left: 0;
-		margin-right: var( --global-md-spacing, 1em );
+		margin-right: var(--global-md-spacing, 1em);
 		margin-top: 0.3em;
-		margin-bottom: var( --global-md-spacing, 1em );
+		margin-bottom: var(--global-md-spacing, 1em);
 	}
 
 	.alignright {
@@ -54,9 +70,9 @@
 		position: relative;
 		/*rtl:ignore*/
 		margin-right: 0;
-		margin-left: var( --global-md-spacing, 1em );
+		margin-left: var(--global-md-spacing, 1em);
 		margin-top: 0.3em;
-		margin-bottom: var( --global-md-spacing, 1em );
+		margin-bottom: var(--global-md-spacing, 1em);
 	}
 
 	.aligncenter {
@@ -114,24 +130,24 @@
 	// Supply caption styles to images, even if the theme hasn't opted in.
 	// Reason being: the new markup, <figcaptions>, are not likely to be styled in the majority of existing themes,
 	// so we supply the styles so as to not appear broken or unstyled in those themes.
-  	// Removing margins on figcaption to match editor preview
+	// Removing margins on figcaption to match editor preview
 	//figcaption {
 	//  margin-top: 0.5em;
 	//  margin-bottom: 1em;
 	//}
-
 }
 .single-content .wp-block-kadence-image {
-	.alignleft, .alignright {
-		margin-bottom: var( --global-md-spacing, 1em );
+	.alignleft,
+	.alignright {
+		margin-bottom: var(--global-md-spacing, 1em);
 	}
 }
-  /* Image filters */
+/* Image filters */
 .kb-filter-earlybird {
 	img::before {
 		background: radial-gradient(circle, #d0ba8e 20%, #360309 85%, #1d0210 100%);
 		mix-blend-mode: overlay;
-		content: '';
+		content: "";
 		position: absolute;
 		left: 0;
 		right: 0;
@@ -141,87 +157,108 @@
 	}
 
 	img {
-		filter: contrast(.9) sepia(.2);
+		filter: contrast(0.9) sepia(0.2);
 	}
 }
 
 .kb-filter-vintage {
-
 	img:after {
-	  content: "";
-	  position: absolute;
-	  left: 0;
-	  right: 0;
-	  top: 0;
-	  bottom: 0;
-	  box-shadow: inset 0 0 100px rgba(0, 0, 20, 0.4), inset 0 5px 15px rgba(0, 0, 0, 0.1);
-	  background: linear-gradient(to bottom, rgba(255, 145, 0, 0.2) 0%, rgba(255, 230, 48, 0.2) 60%), linear-gradient(20deg, rgba(255, 0, 0, 0.2) 0%, rgba(255, 0, 0, 0) 35%);
+		content: "";
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		box-shadow: inset 0 0 100px rgba(0, 0, 20, 0.4), inset 0 5px 15px rgba(0, 0, 0, 0.1);
+		background: linear-gradient(to bottom, rgba(255, 145, 0, 0.2) 0%, rgba(255, 230, 48, 0.2) 60%),
+			linear-gradient(20deg, rgba(255, 0, 0, 0.2) 0%, rgba(255, 0, 0, 0) 35%);
 	}
 
 	img {
-	  filter: sepia(0.2) brightness(1.1) contrast(1.3);
+		filter: sepia(0.2) brightness(1.1) contrast(1.3);
 	}
-  }
+}
 
 .kb-filter-grayscale img {
 	filter: grayscale(1);
-  }
+}
 
 .kb-filter-sepia img {
 	filter: sepia(0.5);
-  }
+}
 
 .kb-filter-saturation img {
 	filter: saturate(1.6);
-  }
+}
 
 .kb-filter-toaster {
 	img::after {
-	  background: radial-gradient(circle, #804e0f, #3b003b);
-	  mix-blend-mode: screen;
-	  content: "";
-	  position: absolute;
-	  left: 0;
-	  right: 0;
-	  top: 0;
-	  bottom: 0;
+		background: radial-gradient(circle, #804e0f, #3b003b);
+		mix-blend-mode: screen;
+		content: "";
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
 	}
 
 	img {
-	  filter: contrast(1.5) brightness(0.9);
+		filter: contrast(1.5) brightness(0.9);
 	}
-  }
+}
 
 .kb-filter-mayfair {
 	img::after {
-	  background: radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.8), rgba(255, 200, 200, 0.6), #111 60%);
-	  mix-blend-mode: overlay;
-	  opacity: 0.4;
-	  content: "";
-	  position: absolute;
-	  left: 0;
-	  right: 0;
-	  top: 0;
-	  bottom: 0;
+		background: radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.8), rgba(255, 200, 200, 0.6), #111 60%);
+		mix-blend-mode: overlay;
+		opacity: 0.4;
+		content: "";
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
 	}
 
 	img {
-	  filter: contrast(1.1) saturate(1.1);
+		filter: contrast(1.1) saturate(1.1);
 	}
-  }
+}
 
 .wp-block-kadence-image figure {
 	margin: 0;
 }
 .kb-image-has-overlay {
-    position: relative;
+	position: relative;
 }
 .kb-image-has-overlay:after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    z-index: 9;
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	z-index: 9;
+}
+
+//In the editor we just look for these classes as they will come and go as the preview device changes.
+//In the frontend, they will all be present, so must each be wrapped in a media query
+//Desktop transparent styles
+.header-desktop-transparent {
+	@media (min-width: $laptop-plus-query) {
+		@include header-transparent-styles();
+	}
+}
+//Tablet transparent styles
+.header-tablet-transparent {
+	@media (min-width: $before-tablet-plus-query) and (max-width: $tablet-minus-query) {
+		@include header-transparent-styles();
+	}
+}
+//Mobile transparent styles
+.header-mobile-transparent {
+	@media (max-width: $phone-minus-query) {
+		@include header-transparent-styles();
+	}
 }

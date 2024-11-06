@@ -31,7 +31,12 @@ class Kadence_Blocks_Svg_Render {
 	 * @var null
 	 */
 	private static $all_icons = null;
-	
+
+	/*
+	 * Cache rendered SVG elements
+	 */
+	private static $cached_render = [];
+
 	/**
 	 * Instance Control
 	 */
@@ -85,14 +90,13 @@ class Kadence_Blocks_Svg_Render {
 						}
 					}
 					$type = substr( $args['name'] , 0, 2 );
-					$type_fas = ( 'fas' === substr( $args['name'] , 0, 3 ) ? true : false );
 					$line_icon = ( ! empty( $type ) && 'fe' == $type ? true : false );
 					$fill = ( $line_icon ? 'none' : 'currentColor' );
 					$stroke_width = false;
 					if ( $line_icon ) {
 						$stroke_width = ( ! empty( $args['stroke'] ) ? $args['stroke'] : 2 );
 					}
-					$hidden = ( empty( $args['title'] ) ? true : false );
+					$hidden = empty( $args['title'] );
 					$extras = '';
 					if ( ! empty( $args['tooltip-id'] ) ) {
 						$extras = 'data-tooltip-id="' . esc_attr( $args['tooltip-id'] ) . '"';
@@ -135,6 +139,11 @@ class Kadence_Blocks_Svg_Render {
 			$name = 'fa_facebook-n';
 		}
 
+		$key = md5( $name . $fill . $stroke_width . $title . $hidden . $extras );
+		if( !empty( self::$cached_render[$key] ) ) {
+			return self::$cached_render[$key];
+		}
+
 		// Custom SVGs
 		$is_custom_svg = strpos($name, 'kb-custom-') === 0;
 		if ( $is_custom_svg && !isset(  self::$all_icons[ $name ] ) ) {
@@ -167,6 +176,8 @@ class Kadence_Blocks_Svg_Render {
 			$svg .= '</svg>';
 
 		}
+
+		self::$cached_render[$key] = $svg;
 
 		if ( $echo ) {
 			echo $svg;

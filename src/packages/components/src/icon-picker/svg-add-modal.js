@@ -52,7 +52,7 @@ export default function SvgAddModal( { isOpen, setIsOpen, callback } ) {
 						createSuccessNotice( __( 'SVG Saved.', 'kadence-blocks' ), {
 							type: 'snackbar',
 						} );
-						callback();
+						callback( response.value );
 						setIsOpen( false );
 					} else if ( has( response, 'error' ) && has( response, 'message' ) ) {
 						setError( response.message );

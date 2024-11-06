@@ -36,8 +36,6 @@ import {
 	getPostOrFseId,
 } from '@kadence/helpers';
 
-/* global wp */
-
 /**
  * Import Css
  */
@@ -149,6 +147,7 @@ export function ImageEdit(props) {
 		paddingMobile,
 		paddingUnit,
 		inQueryBlock,
+		urlTransparent,
 	} = attributes;
 
 	const debouncedSetDynamicState = debounce(setDynamicState, 200);
@@ -478,7 +477,12 @@ export function ImageEdit(props) {
 	const isExternal = isExternalImage(id, url);
 	const src = isExternal ? url : undefined;
 	const mediaPreview = !!url && (
-		<img alt={__('Edit image')} title={__('Edit image')} className={'edit-image-preview'} src={url} />
+		<img
+			alt={__('Edit image', 'kadence-blocks')}
+			title={__('Edit image', 'kadence-blocks')}
+			className={'edit-image-preview'}
+			src={url}
+		/>
 	);
 	const previewMarginTop = getPreviewSize(
 		previewDevice,
@@ -539,6 +543,7 @@ export function ImageEdit(props) {
 		'image-is-svg': url && url.endsWith('.svg'),
 		[`kadence-image${uniqueID}`]: uniqueID,
 		'kb-image-max-width-set': imgMaxWidth,
+		'has-transparent-img': urlTransparent,
 	});
 
 	// const blockProps = useBlockProps( {
@@ -548,7 +553,7 @@ export function ImageEdit(props) {
 	const blockProps = useBlockProps({
 		ref,
 		className: classes,
-		['data-align']: 'center' === align ? align : undefined,
+		'data-align': 'center' === align ? align : undefined,
 	});
 
 	return (

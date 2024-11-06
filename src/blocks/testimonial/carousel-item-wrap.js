@@ -13,6 +13,11 @@ export default function TestimonialItemWrap(props) {
 	const columns = context['kadence/testimonials-columns'];
 	const gap = context['kadence/testimonials-gap'];
 	const gapUnit = context['kadence/testimonials-gap-unit'];
+
+	if (layout && layout !== 'carousel') {
+		return props.children;
+	}
+
 	const previewColumns = getPreviewSize(
 		previewDevice,
 		undefined !== columns?.[0] ? columns[0] : 3,
@@ -26,9 +31,7 @@ export default function TestimonialItemWrap(props) {
 		undefined !== gap?.[2] ? gap[2] : ''
 	);
 	const gapSize = getGapSizeOptionOutput(previewGap, gapUnit ? gapUnit : 'px');
-	if (layout && layout !== 'carousel') {
-		return props.children;
-	}
+
 	return (
 		<SplideSlide
 			style={{

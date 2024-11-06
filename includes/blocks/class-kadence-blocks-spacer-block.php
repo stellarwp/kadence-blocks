@@ -61,9 +61,11 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
-		if ( ! empty( $attributes['spacerHeight'] ) ) {
-			$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-block-spacer' );
-			$css->add_property( 'height', $attributes['spacerHeight'] . ( isset( $attributes['spacerHeightUnits'] ) ? $attributes['spacerHeightUnits'] : 'px' ) );
+		$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-block-spacer' );
+		$units = ! empty( $attributes['spacerHeightUnits'] ) ? $attributes['spacerHeightUnits'] : 'px';
+		if ( ! empty( $attributes['spacerHeight'] ) || $units !== 'px' ) {
+			$height = ( ! empty( $attributes['spacerHeight'] ) ? $attributes['spacerHeight'] : '60' );
+			$css->add_property( 'height', $height . $units );
 		}
 		if ( ! empty( $attributes['tabletSpacerHeight'] ) ) {
 			$css->set_media_state( 'tablet' );
@@ -110,7 +112,7 @@ class Kadence_Blocks_Spacer_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-divider' );
 			if ( isset( $attributes['dividerHeight'] ) && ! empty( $attributes['dividerHeight'] ) ) {
 				$css->add_property( 'border-top-width', $attributes['dividerHeight'] . 'px' );
-				// Adding this prevents a blur when browsers are rendering. 
+				// Adding this prevents a blur when browsers are rendering.
 				if( ! empty( $attributes['dividerHeight'] ) && intval( absint( $attributes['dividerHeight'] ) % 2 ) != 0 ){
 					$css->add_property( 'height', '1px' );
 				}

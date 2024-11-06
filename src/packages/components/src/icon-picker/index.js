@@ -55,7 +55,7 @@ export default function KadenceIconPicker({
 		if ( force || ( hasPro && isSupportedProVersion && customSvgs === false && !isLoading ) ) {
 			try {
 				setIsLoading( true );
-				const response = await fetchCustomSvgs();
+				const response = await fetchCustomSvgs( force );
 
 				if( response.length > 0 ) {
 					const svgIds = response.map( svg => svg.id.toString() );
@@ -85,7 +85,8 @@ export default function KadenceIconPicker({
 		setDeleteId( null );
 	};
 
-	const addCallback = () => {
+	const addCallback = ( postId ) => {
+		onChange('kb-custom-' + postId.toString() );
 		getCustomSvgs( true );
 	};
 
@@ -326,17 +327,23 @@ export default function KadenceIconPicker({
 	)
 }
 
-const fetchCustomSvgs = async () => {
-	const params = new URLSearchParams({
-		per_page: 100
-	});
+const fetchCustomSvgs = async ( cacheBust = false ) => {
+	const params = {
+		per_page: 100,
+	};
 
-	const response = await fetch(`/wp-json/wp/v2/kadence_custom_svg?${params.toString()}`, {
-		method: 'GET'
-	});
+	if ( cacheBust ) {
+		params.cache_bust = new Date().getTime();
+	}
 
-	if (!response.ok) {
-		throw new Error('Network response was not ok');
+	const urlParams = new URLSearchParams( params );
+
+	const response = await fetch( kadence_blocks_params.rest_url + `wp/v2/kadence_custom_svg?${ urlParams.toString() }`, {
+		method: 'GET',
+	} );
+
+	if ( ! response.ok ) {
+		throw new Error( 'Network response was not ok' );
 	}
 
 	return response.json();

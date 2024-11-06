@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.3
 Tested up to: 6.6
-Stable tag: 3.2.50
+Stable tag: 3.3.3
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -173,6 +173,99 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 3.3.3 =
+Release Date: October 29th 2024
+* Add: Section Priority option to header rows. This allows you to control how gridding of sections are prioritized.
+* Fix: Advanced image block not showing SVGs in editor.
+* Fix: Block settings visibility not working for section block.
+* Fix: Advanced form text fields now allowing "0" in required field.
+* Fix: Kadence legacy form freezing in reusable patterns.
+* Fix: Infobox on RTL sites when "Set height 100%" is enabled.
+* Fix: Ability to add nav to footer through widgets.
+* Fix: Text alignment when using vertical orientation in navigation block.
+* Fix: Improvements to the single container experience
+* Fix: Navigation link hover border settings not applying.
+* Fix: Navigation block style options not applying on vertical layout.
+* Fix: Border radius not work as expected on navigation link media items.
+* Fix: Display of sticky header on mobile and tablet.
+* Fix: Navigation link media spacing when positioned top or bottom.
+* Fix: Display of single row container on the frontend for mobile.
+* Fix: Improvements to display of gradient text when text spans multiple lines.
+* Fix: Border radius units in search block.
+* Fix: Improved performance when rendering custom SVGs.
+
+= 3.3.2 =
+Release Date: October 16th 2024
+* Add: Gradient text to advanced text block.
+* Add: Gradient text to advanced button block.
+* Add: Adv Header dynamic transparency options.
+* Fix: Some accordion block styles not applying unless title color was set.
+* Fix: Compatibility issue with block addon plugin.
+* Fix: Issue with transparent and sticky headers.
+* Fix: Issue with headers background not correctly applying at times.
+* Fix: Issue with accordion hover/focus and active styles.
+* Fix: Search block text color and placeholder color not applying.
+* Fix: Off canvas close button padding & margin units.
+* Fix: PHP 8.3 deprecation when using restrict content pro.
+
+= 3.3.1 =
+Release Date: October 4th 2024
+* Fix: Issue with adding items to tabs block in the editor.
+* Fix: Issue with scroll bars showing on mega menus incorrectly.
+
+= 3.3.0 =
+Release Date: October 3rd 2024
+* Add: Advanced Header block.
+* Add: Advanced Navigation block.
+* Add: Off canvas block.
+* Add: Site Identity block.
+* Add: Site Search block.
+
+= 3.2.54 =
+Release Date: September 25th 2024
+* Add: Support 4 columns in posts block.
+* Update: Add reset option to many settings in row layout.
+* Fix: Adv text highlight setting also applying to core highlight.
+* Fix: Tabs block in accordion mode interfering with slider block.
+* Fix: Adjustment to wpml config to allow translation of adv text block.
+* Fix: Issue with responsive vertical alignment in section block.
+* Fix: PHP warning for undefined array key.
+
+= 3.2.53 =
+Release Date: September 9th 2024
+* Add: ID to from tag in advanced form block for targeting with custom scripts.
+* Fix: Show more block inside query loop.
+* Fix: Countdown repeater not working.
+* Fix: Issue with progress block label position.
+* Fix: Accordion pane spacing issue on front end.
+* Fix: Infobox text alignment in some layouts.
+* Fix: Warning about multiple submit buttons when two advanced forms are on the same page.
+* Fix: Advanced image editor style not matching frontend when inside section.
+* Fix: Advanced image caption not loading google font.
+* Fix: Issues with progress bar label position.
+* Fix: Table of contents line being getting overridden in some situations.
+* Fix: Advanced galleries not showing when inside a section with an alignment set.
+* Fix: Issue with repeating countdown not working.
+* Fix: Escape HTML in countdown block labels.
+
+= 3.2.52 =
+Release Date: August 23rd 2024
+* Fix: Row layout responsive preview in editor when using break left or break right.
+
+= 3.2.51 =
+Release Date: August 22nd 2024
+* Update: Improve accessibility for progress bar block.
+* Update: Improve accessibility for buttons with video popup.
+* Fix: Using Dynamic content in Google Maps block
+* Fix: Carousel not looping in Advanced Gallery block.
+* Fix: Tabs block columns not updating in editor when viewed in Tablet or Mobile.
+* Fix: Prevent invalid HTML with multiple wrapped links in Icon List items.
+* Fix: Caption background color in Advanced Gallery block.
+* Fix: Rendering custom SVGs with group tags.
+* Fix: Issue with row layout break left and break right not showing in the editor.
+* Fix: Spacer height when using vh with default height value.
+* Fix: Border radius with overlay colors on Advanced Image block.
 
 = 3.2.50 =
 Release Date: July 25th 2024

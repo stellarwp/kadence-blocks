@@ -106,6 +106,7 @@ import { blockDefault, brush, settings, plusCircle } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 
 const ALLOWED_BLOCKS = ['kadence/column'];
+
 /**
  * Build the row edit
  */
@@ -797,6 +798,13 @@ function RowLayoutEditContainer(props) {
 		undefined !== bottomSepWidthTab ? bottomSepWidthTab : '',
 		undefined !== bottomSepWidthMobile ? bottomSepWidthMobile : ''
 	);
+	const paddingRightBreakout =
+		'' !== previewPaddingRight
+			? getSpacingOptionOutput(previewPaddingRight, paddingUnit ? paddingUnit : 'px')
+			: paddingSidesTheme;
+	const paddingLeftBreakout = previewPaddingLeft
+		? getSpacingOptionOutput(previewPaddingLeft, paddingUnit ? paddingUnit : 'px')
+		: paddingSidesTheme;
 	const previewLayout = getPreviewSize(
 		previewDevice,
 		!colLayout ? 'equal' : colLayout,
@@ -1181,7 +1189,13 @@ function RowLayoutEditContainer(props) {
 										<ResponsiveMeasureRangeControl
 											label={__('Padding', 'kadence-blocks')}
 											value={
-												undefined !== padding && undefined !== padding[0]
+												hasBG &&
+												undefined !== padding &&
+												undefined !== padding[0] &&
+												padding[1] === '' &&
+												padding[3] === ''
+													? [padding[0], 'sm', padding[2], 'sm']
+													: undefined !== padding && undefined !== padding[0]
 													? padding
 													: ['sm', '', 'sm', '']
 											}
@@ -1300,6 +1314,7 @@ function RowLayoutEditContainer(props) {
 													setAttributes({ minHeightUnit: value });
 												}}
 												units={['px', 'vw', 'vh']}
+												reset={true}
 											/>
 											<ToggleControl
 												label={__('Inner Column Height 100%', 'kadence-blocks')}
@@ -1316,6 +1331,7 @@ function RowLayoutEditContainer(props) {
 												}}
 												min={-200}
 												max={2000}
+												reset={true}
 											/>
 										</KadencePanelBody>
 										<KadencePanelBody
@@ -1489,6 +1505,38 @@ function RowLayoutEditContainer(props) {
 								textColor
 						  )}; }`
 						: ''}
+					{columns &&
+						columns === 2 &&
+						inheritMaxWidth &&
+						(breakoutLeft || breakoutRight) &&
+						'row' !== previewLayout &&
+						'full' === align &&
+						'Desktop' === previewDevice && (
+							<>
+								{breakoutRight
+									? `@media (min-width: 1290px) {.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(2) > .kadence-inner-column-inner { margin-inline-end: calc( ( ( ( var( --global-kb-editor-full-width ) - ( var( --kb-global-content-width ) - ( ${paddingRightBreakout} *2 ) ) ) /2 ) *-1) ) !important; }}@media (max-width: 1289px) {.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(2) > .kadence-inner-column-inner { margin-inline-end: calc( ${paddingRightBreakout} * -1 ) !important; }}`
+									: ''}
+								{breakoutLeft
+									? `@media (min-width: 1290px) {.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(1) > .kadence-inner-column-inner { margin-inline-start: calc( ( ( ( var( --global-kb-editor-full-width ) - ( var( --kb-global-content-width ) - ( ${paddingLeftBreakout} *2 ) ) ) /2 ) *-1) ) !important; }}@media (max-width: 1289px) {.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(1) > .kadence-inner-column-inner { margin-inline-start: calc( ${paddingRightBreakout} * -1 ) !important; }}`
+									: ''}
+							</>
+						)}
+					{columns &&
+						columns === 2 &&
+						inheritMaxWidth &&
+						(breakoutLeft || breakoutRight) &&
+						'row' !== previewLayout &&
+						'full' === align &&
+						'Tablet' === previewDevice && (
+							<>
+								{breakoutRight
+									? `.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(2) > .kadence-inner-column-inner { margin-inline-end: calc( ${paddingRightBreakout} *-1 ) !important; }`
+									: ''}
+								{breakoutLeft
+									? `.wp-block-kadence-rowlayout.kb-row-id-${uniqueID} > .innerblocks-wrap.kb-grid-columns-2.kt-layout-inner-wrap-id${uniqueID} > .wp-block-kadence-column:nth-child(1) > .kadence-inner-column-inner { margin-inline-start: calc( ${paddingLeftBreakout} *-1 ) !important; }`
+									: ''}
+							</>
+						)}
 					{linkColor
 						? `.kb-row-id-${uniqueID} a:not(.use-for-specificity) { color: ${KadenceColorOutput(
 								linkColor
@@ -1757,6 +1805,7 @@ function RowLayoutEditContainer(props) {
 		</>
 	);
 }
+
 const RowLayoutEditContainerWrapper = withDispatch((dispatch, ownProps, registry) => ({
 	/**
 	 * Update all child Column blocks with a new vertical alignment setting

@@ -35,7 +35,7 @@
 		height: 1em;
 	}
 }
-.kt-blocks-accordion-header:focus {
+.kt-blocks-accordion-header:focus-visible {
 	box-shadow: none;
 	text-shadow: none;
 }
@@ -271,14 +271,14 @@
 		right: 4px;
 	}
 }
-.kt-accordion-header-wrap {
-	margin-top: 8px;
-}
-.kt-accordion-inner-wrap .wp-block-kadence-pane:first-child > .kt-accordion-header-wrap {
+.kt-accordion-inner-wrap .wp-block-kadence-pane > .kt-accordion-header-wrap {
 	margin-top: 0px;
 }
 .kt-accordion-inner-wrap {
 	column-gap: var(--global-kb-gap-md, 2rem);
+	display: flex;
+	flex-direction: column;
+	row-gap: 8px;
 }
 .kt-accordion-panel-inner {
 	padding: 20px;

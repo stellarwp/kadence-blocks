@@ -794,7 +794,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'margin-left', $learn_more_styles['margin'][3] . $learn_more_margin_unit );
 			}
 			if ( isset( $learn_more_styles['colorHover'] ) || isset( $learn_more_styles['colorHover'] ) || isset( $learn_more_styles['borderHover'] ) ) {
-				$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore' );
+				$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore,' . $base_selector . ' .kt-blocks-info-box-link-wrap .kt-blocks-info-box-learnmore:focus' );
 				if ( isset( $learn_more_styles['colorHover'] ) && ! empty( $learn_more_styles['colorHover'] ) ) {
 					$css->add_property( 'color', $css->render_color( $learn_more_styles['colorHover'] ) );
 				}

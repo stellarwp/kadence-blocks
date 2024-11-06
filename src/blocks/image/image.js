@@ -96,6 +96,7 @@ import {
 	GradientControl,
 	BackgroundTypeControl,
 	KadenceFocalPicker,
+	KadenceWebfontLoader,
 } from '@kadence/components';
 
 export default function Image({
@@ -179,6 +180,20 @@ export default function Image({
 		overlayOpacity,
 		overlayBlendMode,
 		globalAlt,
+		urlSticky,
+		idSticky,
+		altSticky,
+		titleSticky,
+		widthSticky,
+		heightSticky,
+		sizeSlugSticky,
+		urlTransparent,
+		idTransparent,
+		altTransparent,
+		titleTransparent,
+		widthTransparent,
+		heightTransparent,
+		sizeSlugTransparent,
 		imagePosition,
 		tooltip,
 		tooltipPlacement,
@@ -305,7 +320,27 @@ export default function Image({
 		undefined !== captionStyles[0].size[1] ? captionStyles[0].size[1] : 'inherit',
 		undefined !== captionStyles[0].size[2] ? captionStyles[0].size[2] : 'inherit'
 	);
-
+	const previewCaptionLineSpacing = getPreviewSize(
+		previewDevice,
+		captionStyles &&
+			undefined !== captionStyles[0] &&
+			Array.isArray(captionStyles[0].letterSpacing) &&
+			undefined !== captionStyles[0].letterSpacing[0]
+			? captionStyles[0].letterSpacing[0]
+			: undefined,
+		captionStyles &&
+			undefined !== captionStyles[0] &&
+			Array.isArray(captionStyles[0].letterSpacing) &&
+			undefined !== captionStyles[0].letterSpacing[1]
+			? captionStyles[0].letterSpacing[1]
+			: undefined,
+		captionStyles &&
+			undefined !== captionStyles[0] &&
+			Array.isArray(captionStyles[0].letterSpacing) &&
+			undefined !== captionStyles[0].letterSpacing[2]
+			? captionStyles[0].letterSpacing[2]
+			: undefined
+	);
 	const previewCaptionLineHeightUnit = captionStyles[0].lineType !== undefined ? captionStyles[0].lineType : 'px';
 	const previewCaptionLineHeight = getPreviewSize(
 		previewDevice,
@@ -368,6 +403,24 @@ export default function Image({
 		},
 		[id, isSelected]
 	);
+	const { imageSticky } = useSelect(
+		(select) => {
+			const { getMedia } = select(coreStore);
+			return {
+				image: idSticky && isSelected ? getMedia(idSticky, { context: 'view' }) : null,
+			};
+		},
+		[idSticky, isSelected]
+	);
+	const { imageTransparent } = useSelect(
+		(select) => {
+			const { getMedia } = select(coreStore);
+			return {
+				image: idTransparent && isSelected ? getMedia(idTransparent, { context: 'view' }) : null,
+			};
+		},
+		[idTransparent, isSelected]
+	);
 	const { replaceBlocks, toggleSelection } = useDispatch(blockEditorStore);
 	const { createErrorNotice, createSuccessNotice } = useDispatch(noticesStore);
 
@@ -422,6 +475,15 @@ export default function Image({
 			setStateShowCaption(true);
 		}
 	}, [caption, prevCaption]);
+
+	useEffect(() => {
+		if (captionStyles[0].letterSpacing && typeof captionStyles[0].letterSpacing === 'number') {
+			const oldLetterSpacing = captionStyles[0].letterSpacing;
+			saveCaptionFont({ letterSpacing: [oldLetterSpacing, '', ''] });
+		} else if (captionStyles[0].letterSpacing === undefined) {
+			saveCaptionFont({ letterSpacing: ['', '', ''] });
+		}
+	});
 
 	// Focus the caption when we click to add one.
 	const captionRef = useCallback(
@@ -496,6 +558,75 @@ export default function Image({
 			imgMaxWidthMobile: undefined,
 		});
 	}
+
+	function onUpdateSelectImageSticky(mediaUpdate) {
+		setAttributes({
+			urlSticky: mediaUpdate.url,
+			idSticky: mediaUpdate.id ? mediaUpdate.id : undefined,
+			altSticky: mediaUpdate?.alt ? mediaUpdate.alt : undefined,
+			widthSticky: undefined,
+			heightSticky: undefined,
+			sizeSlugSticky: undefined,
+		});
+		if (mediaUpdate?.alt && imageSticky?.alt_text) {
+			imageSticky.alt_text = mediaUpdate.alt;
+		}
+	}
+	function clearImageSticky() {
+		setAttributes({
+			urlSticky: undefined,
+			idSticky: undefined,
+			widthSticky: undefined,
+			heightSticky: undefined,
+			sizeSlugSticky: undefined,
+		});
+	}
+	function changeImageStickySize(imgData) {
+		setAttributes({
+			urlSticky: imgData.value,
+			widthSticky: undefined,
+			heightSticky: undefined,
+			sizeSlugSticky: imgData.slug,
+			imgMaxWidthSticky: undefined,
+			imgMaxWidthStickyTablet: undefined,
+			imgMaxWidthStickyMobile: undefined,
+		});
+	}
+
+	function onUpdateSelectImageTransparent(mediaUpdate) {
+		setAttributes({
+			urlTransparent: mediaUpdate.url,
+			idTransparent: mediaUpdate.id ? mediaUpdate.id : undefined,
+			altTransparent: mediaUpdate?.alt ? mediaUpdate.alt : undefined,
+			widthTransparent: undefined,
+			heightTransparent: undefined,
+			sizeSlugTransparent: undefined,
+		});
+		if (mediaUpdate?.alt && imageTransparent?.alt_text) {
+			imageTransparent.alt_text = mediaUpdate.alt;
+		}
+	}
+	function clearImageTransparent() {
+		setAttributes({
+			urlTransparent: undefined,
+			idTransparent: undefined,
+			widthTransparent: undefined,
+			heightTransparent: undefined,
+			sizeSlugTransparent: undefined,
+		});
+	}
+	function changeImageTransparentSize(imgData) {
+		setAttributes({
+			urlTransparent: imgData.value,
+			widthTransparent: undefined,
+			heightTransparent: undefined,
+			sizeSlugTransparent: imgData.slug,
+			imgMaxWidthTransparent: undefined,
+			imgMaxWidthTransparentTablet: undefined,
+			imgMaxWidthTransparentMobile: undefined,
+		});
+	}
+
 	function uploadExternal() {
 		mediaUpload({
 			filesList: [externalBlob],
@@ -549,6 +680,8 @@ export default function Image({
 	const nonTransAttrs = ['url', 'id', 'caption', 'alt'];
 	const previewOverlay = overlayType === 'gradient' ? overlayGradient : KadenceColorOutput(overlay);
 
+	// console.log(2, urlSticky, url);
+
 	const controls = (
 		<>
 			<BlockControls group="block">
@@ -563,7 +696,11 @@ export default function Image({
 						}}
 						icon={captionIcon}
 						isPressed={stateShowCaption}
-						label={stateShowCaption ? __('Remove caption') : __('Add caption')}
+						label={
+							stateShowCaption
+								? __('Remove caption', 'kadence-blocks')
+								: __('Add caption', 'kadence-blocks')
+						}
 					/>
 				)}
 				{!isEditingImage && !isDynamic && !isDynamicLink && (
@@ -592,7 +729,13 @@ export default function Image({
 						context={context}
 					/>
 				)}
-				{allowCrop && <ToolbarButton onClick={() => setIsEditingImage(true)} icon={crop} label={__('Crop')} />}
+				{allowCrop && (
+					<ToolbarButton
+						onClick={() => setIsEditingImage(true)}
+						icon={crop}
+						label={__('Crop', 'kadence-blocks')}
+					/>
+				)}
 				{externalBlob && !isDynamic && (
 					<ToolbarButton
 						onClick={uploadExternal}
@@ -805,6 +948,182 @@ export default function Image({
 								}
 							/>
 						</KadencePanelBody>
+						{context?.['kadence/headerIsSticky'] == '1' && (
+							<KadencePanelBody
+								title={__('Sticky Image settings', 'kadence-blocks')}
+								initialOpen={true}
+								panelName={'kb-image-sticky-settings'}
+							>
+								<KadenceImageControl
+									label={__('Image', 'kadence-blocks')}
+									hasImage={urlSticky ? true : false}
+									imageURL={urlSticky ? urlSticky : ''}
+									imageID={idSticky}
+									onRemoveImage={clearImageSticky}
+									onSaveImage={onUpdateSelectImageSticky}
+									disableMediaButtons={urlSticky ? true : false}
+									dynamicAttribute="urlSticky"
+									isSelected={isSelected}
+									attributes={attributes}
+									setAttributes={setAttributes}
+									name={'kadence/image'}
+									clientId={clientId}
+									context={context}
+								/>
+								{idSticky && (
+									<KadenceImageSizeControl
+										label={__('Image File Size', 'kadence-blocks')}
+										id={idSticky}
+										url={urlSticky}
+										fullSelection={true}
+										selectByValue={true}
+										onChange={changeImageStickySize}
+									/>
+								)}
+								{(!globalAlt || !imageSticky) && (
+									<TextareaControl
+										label={__('Alt text (alternative text)', 'kadence-blocks')}
+										value={altSticky}
+										onChange={(value) => setAttributes({ altSticky: value })}
+										help={
+											<>
+												<ExternalLink href="https://www.w3.org/WAI/tutorials/images/decision-tree">
+													{__('Describe the purpose of the image', 'kadence-blocks')}
+												</ExternalLink>
+												{__('Leave empty if the image is purely decorative.', 'kadence-blocks')}
+											</>
+										}
+									/>
+								)}
+								{globalAlt && imageSticky && (
+									<div className="components-base-control">
+										<TextareaControl
+											label={__('Alt text (alternative text)', 'kadence-blocks')}
+											value={imageSticky?.alt_text ? imageSticky.alt_text : ''}
+											onChange={(value) => console.log(value)}
+											disabled={true}
+											className={'mb-0'}
+										/>
+										<MediaUpload
+											onSelect={onUpdateSelectImageSticky}
+											type="image"
+											value={idSticky ? idSticky : ''}
+											render={({ open }) => (
+												<Button
+													text={__('Edit Image Alt Text', 'kadence-blocks')}
+													variant={'link'}
+													onClick={open}
+												/>
+											)}
+										/>
+									</div>
+								)}
+								<TextControl
+									label={__('Title attribute', 'kadence-blocks')}
+									value={titleSticky || ''}
+									onChange={(value) => setAttributes({ titleSticky: value })}
+									help={
+										<>
+											{__('Describe the role of this image on the page.', 'kadence-blocks')}
+											<ExternalLink href="https://www.w3.org/TR/html52/dom.html#the-title-attribute">
+												{__(
+													'(Note: many devices and browsers do not display this text.)',
+													'kadence-blocks'
+												)}
+											</ExternalLink>
+										</>
+									}
+								/>
+							</KadencePanelBody>
+						)}
+						{context?.['kadence/headerIsTransparent'] == '1' && (
+							<KadencePanelBody
+								title={__('Transparent Image settings', 'kadence-blocks')}
+								initialOpen={true}
+								panelName={'kb-image-transparent-settings'}
+							>
+								<KadenceImageControl
+									label={__('Image', 'kadence-blocks')}
+									hasImage={urlTransparent ? true : false}
+									imageURL={urlTransparent ? urlTransparent : ''}
+									imageID={idTransparent}
+									onRemoveImage={clearImageTransparent}
+									onSaveImage={onUpdateSelectImageTransparent}
+									disableMediaButtons={urlTransparent ? true : false}
+									dynamicAttribute="urlTransparent"
+									isSelected={isSelected}
+									attributes={attributes}
+									setAttributes={setAttributes}
+									name={'kadence/image'}
+									clientId={clientId}
+									context={context}
+								/>
+								{idTransparent && (
+									<KadenceImageSizeControl
+										label={__('Image File Size', 'kadence-blocks')}
+										id={idTransparent}
+										url={urlTransparent}
+										fullSelection={true}
+										selectByValue={true}
+										onChange={changeImageTransparentSize}
+									/>
+								)}
+								{(!globalAlt || !imageTransparent) && (
+									<TextareaControl
+										label={__('Alt text (alternative text)', 'kadence-blocks')}
+										value={altTransparent}
+										onChange={(value) => setAttributes({ altTransparent: value })}
+										help={
+											<>
+												<ExternalLink href="https://www.w3.org/WAI/tutorials/images/decision-tree">
+													{__('Describe the purpose of the image', 'kadence-blocks')}
+												</ExternalLink>
+												{__('Leave empty if the image is purely decorative.', 'kadence-blocks')}
+											</>
+										}
+									/>
+								)}
+								{globalAlt && imageTransparent && (
+									<div className="components-base-control">
+										<TextareaControl
+											label={__('Alt text (alternative text)', 'kadence-blocks')}
+											value={imageTransparent?.alt_text ? imageTransparent.alt_text : ''}
+											onChange={(value) => console.log(value)}
+											disabled={true}
+											className={'mb-0'}
+										/>
+										<MediaUpload
+											onSelect={onUpdateSelectImageTransparent}
+											type="image"
+											value={idTransparent ? idTransparent : ''}
+											render={({ open }) => (
+												<Button
+													text={__('Edit Image Alt Text', 'kadence-blocks')}
+													variant={'link'}
+													onClick={open}
+												/>
+											)}
+										/>
+									</div>
+								)}
+								<TextControl
+									label={__('Title attribute', 'kadence-blocks')}
+									value={titleTransparent || ''}
+									onChange={(value) => setAttributes({ titleTransparent: value })}
+									help={
+										<>
+											{__('Describe the role of this image on the page.', 'kadence-blocks')}
+											<ExternalLink href="https://www.w3.org/TR/html52/dom.html#the-title-attribute">
+												{__(
+													'(Note: many devices and browsers do not display this text.)',
+													'kadence-blocks'
+												)}
+											</ExternalLink>
+										</>
+									}
+								/>
+							</KadencePanelBody>
+						)}
 						<KadencePanelBody
 							title={__('Link Settings', 'kadence-blocks')}
 							initialOpen={false}
@@ -1172,7 +1491,11 @@ export default function Image({
 										onLineHeight={(value) => saveCaptionFont({ lineHeight: value })}
 										lineHeightType={captionStyles[0].lineType}
 										onLineHeightType={(value) => saveCaptionFont({ lineType: value })}
-										letterSpacing={captionStyles[0].letterSpacing}
+										reLetterSpacing={[
+											captionStyles[0].letterSpacing[0],
+											captionStyles[0].letterSpacing[1],
+											captionStyles[0].letterSpacing[2],
+										]}
 										onLetterSpacing={(value) => saveCaptionFont({ letterSpacing: value })}
 										textTransform={captionStyles[0].textTransform}
 										onTextTransform={(value) => saveCaptionFont({ textTransform: value })}
@@ -1270,6 +1593,7 @@ export default function Image({
 									step={0.01}
 									min={0}
 									max={1}
+									reset={true}
 								/>
 								{'gradient' === overlayType && (
 									<GradientControl
@@ -1289,7 +1613,7 @@ export default function Image({
 									</>
 								)}
 								<SelectControl
-									label={__('Blend Mode')}
+									label={__('Blend Mode', 'kadence-blocks')}
 									value={overlayBlendMode ? overlayBlendMode : 'none'}
 									options={BLEND_OPTIONS}
 									onChange={(value) => setAttributes({ overlayBlendMode: value })}
@@ -1444,11 +1768,11 @@ export default function Image({
 	} else if (filename) {
 		defaultedAlt = sprintf(
 			/* translators: %s: file name */
-			__('This image has an empty alt attribute; its file name is %s'),
+			__('This image has an empty alt attribute; its file name is %s', 'kadence-blocks'),
 			filename
 		);
 	} else {
-		defaultedAlt = __('This image has an empty alt attribute');
+		defaultedAlt = __('This image has an empty alt attribute', 'kadence-blocks');
 	}
 	let hasMask = false;
 	let theMaskRepeat = 'no-repeat';
@@ -1585,6 +1909,13 @@ export default function Image({
 				onError={() => onImageError()}
 				onLoad={(event) => {
 					setNaturalSize(pick(event.target, ['naturalWidth', 'naturalHeight']));
+
+					//fix issue where chrome can fallback to 150 width/height when none are specified on some image types like svg imgs
+					const { naturalWidth, naturalHeight } = pick(event.target, ['naturalWidth', 'naturalHeight']);
+					const { width, height } = pick(event.target, ['width', 'height']);
+					if (naturalWidth == 150 && naturalHeight == 150 && width != 150 && height != 150) {
+						setNaturalSize({ naturalWidth: 0, naturalHeight: 0 });
+					}
 				}}
 				className={`kb-img ${tooltipDash && tooltip ? ' kb-image-tooltip-border' : ''}`}
 			/>
@@ -1780,6 +2111,18 @@ export default function Image({
 				{previewOverlay
 					? `.kadence-image${uniqueID} .kb-image-has-overlay:after { background:${previewOverlay}; }`
 					: ''}
+				{previewOverlay && previewRadiusTop
+					? `.kadence-image${uniqueID} .kb-image-has-overlay:after { border-top-left-radius:${previewRadiusTop}${borderRadiusUnit}; }`
+					: ''}
+				{previewOverlay && previewRadiusRight
+					? `.kadence-image${uniqueID} .kb-image-has-overlay:after { border-top-right-radius:${previewRadiusRight}${borderRadiusUnit}; }`
+					: ''}
+				{previewOverlay && previewRadiusBottom
+					? `.kadence-image${uniqueID} .kb-image-has-overlay:after { border-bottom-right-radius:${previewRadiusBottom}${borderRadiusUnit}; }`
+					: ''}
+				{previewOverlay && previewRadiusLeft
+					? `.kadence-image${uniqueID} .kb-image-has-overlay:after { border-bottom-left-radius:${previewRadiusLeft}${borderRadiusUnit}; }`
+					: ''}
 				{previewMaxWidth
 					? `.kadence-inner-column-inner:where(.section-is-flex) > .kadence-image${uniqueID} { max-width: ${previewMaxWidth}px; }`
 					: ''}
@@ -1820,17 +2163,24 @@ export default function Image({
 							undefined !== captionStyles[0].textTransform
 								? captionStyles[0].textTransform
 								: undefined,
-						letterSpacing:
-							captionStyles &&
-							undefined !== captionStyles[0] &&
-							undefined !== captionStyles[0].letterSpacing
-								? captionStyles[0].letterSpacing
-								: undefined,
+						letterSpacing: previewCaptionLineSpacing,
 						lineHeight: previewCaptionLineHeight,
 						fontSize: getFontSizeOptionOutput(previewCaptionFontSize, previewCaptionFontSizeUnit),
 					}}
 					inlineToolbar
 					__unstableOnSplitAtEnd={() => insertBlocksAfter(createBlock('core/paragraph'))}
+				/>
+			)}
+			{captionStyles[0].google && captionStyles[0].family && (
+				<KadenceWebfontLoader
+					typography={[
+						{
+							family: captionStyles[0].family,
+							variant: captionStyles[0].variant ? captionStyles[0].variant : '',
+						},
+					]}
+					clientId={clientId}
+					id={'advancedImage'}
 				/>
 			)}
 		</>

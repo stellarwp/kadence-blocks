@@ -147,7 +147,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( 'letter-spacing', $attributes['mobileLetterSpacing'] . ( ! isset( $attributes['letterSpacingType'] ) ? 'px' : $attributes['letterSpacingType'] ) );
 			$css->set_media_state('desktop');
 		}
-		if ( isset( $attributes['color'] ) && ! empty( $attributes['color'] ) ) {
+		if ( ! empty( $attributes['color'] ) && empty( $attributes['enableTextGradient'] ) ) {
 			if ( class_exists( 'Kadence\Theme' ) ) {
 				if ( isset( $attributes['colorClass'] ) && empty( $attributes['colorClass'] ) || ! isset( $attributes['colorClass'] ) ) {
 					$css->add_property( 'color', $css->render_color( $attributes['color'] ) );
@@ -158,7 +158,17 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 				$css->add_property( 'color', $css->render_color( $attributes['color'] ) );
 			}
 		}
-		if ( isset( $attributes['background'] ) && ! empty( $attributes['background'] ) ) {
+		if( !empty( $attributes['textGradient'] ) && ! empty( $attributes['enableTextGradient'] ) ) {
+			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ', .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] .kb-adv-text-inner' );
+			$css->add_property( 'background-image', $attributes['textGradient'] );
+			$css->add_property( '-webkit-box-decoration-break', 'clone' );
+			$css->add_property( 'background-clip', 'text' );
+			$css->add_property( '-webkit-background-clip', 'text' );
+			$css->add_property( '-webkit-text-fill-color', 'transparent' );
+			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ', .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
+
+		}
+		if ( ! empty( $attributes['background'] ) && empty( $attributes['enableTextGradient'] ) ) {
 			if ( class_exists( 'Kadence\Theme' ) ) {
 				if ( isset( $attributes['backgroundColorClass'] ) && empty( $attributes['backgroundColorClass'] ) || ! isset( $attributes['backgroundColorClass'] ) ) {
 					$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
@@ -263,7 +273,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		}
 
 		// Highlight.
-		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ' mark, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );
+		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ' mark.kt-highlight, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark.kt-highlight' );
 		if ( isset( $attributes['markLetterSpacing'] ) && ! empty( $attributes['markLetterSpacing'] ) ) {
 			$css->add_property( 'letter-spacing', $attributes['markLetterSpacing'] . ( ! isset( $attributes['markLetterSpacingType'] ) ? 'px' : $attributes['markLetterSpacingType'] ) );
 		}
@@ -285,13 +295,24 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		if ( ! empty( $attributes['markFontStyle'] ) ) {
 			$css->add_property( 'font-style', $attributes['markFontStyle'] );
 		}
-		if ( ! empty( $attributes['markColor'] ) ) {
+		if( !empty( $attributes['textGradient'] ) && ! empty( $attributes['enableTextGradient'] ) ) {
+			$css->add_property( '-webkit-text-fill-color', 'initial !important' );
+			$css->add_property( '-webkit-background-clip', 'initial !important' );
+			$css->add_property( 'background-clip', 'initial !important' );
+		}
+		if ( ! empty( $attributes['markColor'] ) && empty( $attributes['enableMarkGradient'] ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['markColor'] ) );
+		} else if ( !empty( $attributes['markGradient'] ) && ! empty( $attributes['enableMarkGradient'] ) ) {
+			$css->add_property( 'background-image', $attributes['markGradient'] );
+			$css->add_property( '-webkit-box-decoration-break', 'clone' );
+			$css->add_property( '-webkit-background-clip', 'text' );
+			$css->add_property( 'background-clip', 'text' );
+			$css->add_property( '-webkit-text-fill-color', 'transparent' );
 		}
 		if ( ! empty( $attributes['markTextTransform'] ) ) {
 			$css->add_property( 'text-transform', $attributes['markTextTransform'] );
 		}
-		if ( ! empty( $attributes['markBG'] ) ) {
+		if ( ! empty( $attributes['markBG'] ) && empty( $attributes['enableMarkGradient'] ) ) {
 			$alpha = ( isset( $attributes['markBGOpacity'] ) && ! empty( $attributes['markBGOpacity'] ) ? $attributes['markBGOpacity'] : 1 );
 			$css->add_property( 'background', $css->render_color( $attributes['markBG'], $alpha ) );
 		}
@@ -348,7 +369,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		}
 		// Tablet.
 		$css->set_media_state( 'tablet' );
-		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ' mark, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );
+		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ' mark.kt-highlight, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark.kt-highlight' );
 		if ( ! empty( $attributes['markSize'][1] ) ) {
 			$css->add_property( 'font-size', $css->get_font_size( $attributes['markSize'][1], ( ! isset( $attributes['markSizeType'] ) ? 'px' : $attributes['markSizeType'] ) ) );
 		}
@@ -381,7 +402,11 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		if ( strpos( $content, 'kb-tooltips') !== false || ( ! empty( $attributes['icon'] ) && ! empty( $attributes['iconTooltip'] ) ) ) {
 			$this->enqueue_script( 'kadence-blocks-tippy' );
 		}
-		if ( ! empty( $attributes['icon'] ) ) {
+
+		$should_wrap_content = ! empty( $attributes['icon'] ) ||
+		                       ( ! empty( $attributes['enableTextGradient'] ) && strpos( $content, 'kt-typed-text' ) === false );
+
+		if ( $should_wrap_content ) {
 			$tag_name     = $this->get_html_tag( $attributes, 'htmlTag', 'h2', $this->allowed_html_tags, 'level' );
 			$text_content = $this->get_inner_content( $content, $tag_name );
 			// Start empty.
@@ -389,7 +414,10 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$reveal_animation = ( ! empty( $attributes['kadenceAnimation'] ) && ( 'reveal-left' === $attributes['kadenceAnimation'] || 'reveal-right' === $attributes['kadenceAnimation'] || 'reveal-up' === $attributes['kadenceAnimation'] || 'reveal-down' === $attributes['kadenceAnimation'] ) ? true : false );
 			$wrapper = $reveal_animation ? true : false;
 			$icon_side = ! empty( $attributes['iconSide'] ) ? $attributes['iconSide'] : 'left';
-			$classes = array( 'kt-adv-heading' . $unique_id, 'wp-block-kadence-advancedheading', 'kt-adv-heading-has-icon' );
+			$classes = array( 'kt-adv-heading' . $unique_id, 'wp-block-kadence-advancedheading' );
+			if ( ! empty( $attributes['icon'] ) ) {
+				$classes[] = 'kt-adv-heading-has-icon';
+			}
 			if ( ! empty( $attributes['link'] ) && ! empty( $attributes['linkStyle'] ) ) {
 				$classes[] = 'hls-' . $attributes['linkStyle'];
 			}
@@ -419,11 +447,13 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$inner_content_attributes = implode( ' ', $inner_content_attributes );
 			$icon_left = '';
 			$icon_right = '';
-			if ( 'left' === $icon_side ) {
-				$icon_left = $this->get_icon( $attributes );
-			}
-			if ( 'right' === $icon_side ) {
-				$icon_right = $this->get_icon( $attributes );
+			if ( ! empty( $attributes['icon'] ) ) {
+				if ( 'left' === $icon_side ) {
+					$icon_left = $this->get_icon( $attributes );
+				}
+				if ( 'right' === $icon_side ) {
+					$icon_right = $this->get_icon( $attributes );
+				}
 			}
 			$content = sprintf( '<%1$s %2$s>%3$s<span class="kb-adv-text-inner">%4$s</span>%5$s</%1$s>', $tag_name, $inner_content_attributes, $icon_left, $text_content, $icon_right );
 			if ( ! empty( $attributes['link'] ) ) {

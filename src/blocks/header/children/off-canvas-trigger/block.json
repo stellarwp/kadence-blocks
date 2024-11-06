@@ -1,0 +1,209 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "kadence/off-canvas-trigger",
+	"ancestor": ["kadence/header"],
+	"category": "design",
+	"description": "Off Canvas trigger",
+	"textdomain": "kadence-blocks",
+	"attributes": {
+		"uniqueID": {
+			"type": "string"
+		},
+		"icon": {
+			"type": "string",
+			"default": "fe_menu"
+		},
+		"iconSize": {
+			"type": "number",
+			"default": 25
+		},
+		"lineWidth": {
+			"type": "number",
+			"default": 2
+		},
+		"iconSizeTablet": {
+			"type": "number",
+			"default": ""
+		},
+		"iconSizeMobile": {
+			"type": "number",
+			"default": ""
+		},
+		"iconColor": {
+			"type": "string",
+			"default": ""
+		},
+		"iconColorTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"iconColorMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"iconColorHover": {
+			"type": "string",
+			"default": ""
+		},
+		"iconColorHoverTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"iconColorHoverMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"iconBackgroundColor": {
+			"type": "string",
+			"default": ""
+		},
+		"iconBackgroundColorTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"iconBackgroundColorMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"iconBackgroundColorHover": {
+			"type": "string",
+			"default": ""
+		},
+		"iconBackgroundColorHoverTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"iconBackgroundColorHoverMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"label": {
+			"type": "string",
+			"default": ""
+		},
+		"padding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"paddingTablet": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"paddingMobile": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"paddingUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"margin": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"marginTablet": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"marginMobile": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"marginUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"border": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"borderTablet": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"borderMobile": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"borderHover": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"borderHoverTablet": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"borderHoverMobile": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"borderRadius": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"borderRadiusTablet": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"borderRadiusMobile": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"borderRadiusUnit": {
+			"type": "string",
+			"default": "px"
+		}
+	},
+	"supports": {
+		"className": true
+	}
+}

@@ -37,7 +37,7 @@ import metadata from './block.json';
 import { __ } from '@wordpress/i18n';
 
 import { useBlockProps, BlockControls } from '@wordpress/block-editor';
-import { useEffect, useState, useRef } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import {
 	TextControl,
 	TextareaControl,
@@ -58,7 +58,6 @@ function KadenceSingleIcon(props) {
 		size,
 		width,
 		title,
-		text,
 		hColor,
 		hBackground,
 		tabletSize,
@@ -67,18 +66,9 @@ function KadenceSingleIcon(props) {
 		background,
 		border,
 		borderRadius,
-		padding,
 		borderWidth,
 		style,
 		linkTitle,
-		level,
-		tabletPadding,
-		mobilePadding,
-		paddingUnit,
-		tabletMargin,
-		mobileMargin,
-		margin,
-		marginUnit,
 		mobileSize,
 		uniqueID,
 		tooltip,
@@ -86,30 +76,6 @@ function KadenceSingleIcon(props) {
 		tooltipDash,
 	} = attributes;
 
-	const icons = {
-		icon,
-		link,
-		target,
-		title,
-		size,
-		width,
-		text,
-		color,
-		background,
-		hColor,
-		hBackground,
-		hBorder,
-		border,
-		borderRadius,
-		linkTitle,
-		padding,
-		tabletSize,
-		borderWidth,
-		tabletMargin,
-		mobileSize,
-		style,
-		level,
-	};
 	const nonTransAttrs = ['icon', 'link', 'target'];
 
 	const [activeTab, setActiveTab] = useState('general');
@@ -288,7 +254,7 @@ function KadenceSingleIcon(props) {
 							/>
 							{icon && 'fe' === icon.substring(0, 2) && (
 								<RangeControl
-									label={__('Line Width')}
+									label={__('Line Width', 'kadence-blocks')}
 									value={width}
 									onChange={(value) => {
 										setAttributes({ width: value });

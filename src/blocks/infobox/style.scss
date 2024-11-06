@@ -101,6 +101,9 @@
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
+	.kt-infobox-textcontent {
+		flex-grow: 1;
+	}
 }
 .wp-block-kadence-infobox .kt-blocks-info-box-media-align-right {
 	display: flex;
@@ -299,4 +302,10 @@
 		top: 0;
 		left: 0;
 	}
+}
+body.rtl .kt-info-halign-right .kt-infobox-textcontent {
+	align-items:flex-start;
+}
+body.rtl .kt-info-halign-left .kt-infobox-textcontent {
+	align-items: flex-end;
 }

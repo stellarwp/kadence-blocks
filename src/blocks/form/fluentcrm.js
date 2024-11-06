@@ -3,8 +3,6 @@
  *
  */
 
-/* global kadence_blocks_params */
-
 /**
  * Imports
  */
@@ -153,7 +151,7 @@ class FluentCRMControls extends Component {
 									options={list}
 									isMulti={true}
 									maxMenuHeight={200}
-									placeholder={__('Select List')}
+									placeholder={__('Select List', 'kadence-blocks')}
 								/>
 								{!this.props.settings[0].lists && <div style={{ height: '100px' }}></div>}
 								{undefined !== this.props.settings &&
@@ -196,7 +194,7 @@ class FluentCRMControls extends Component {
 														options={listTags}
 														isMulti={true}
 														maxMenuHeight={200}
-														placeholder={__('Select Tags')}
+														placeholder={__('Select Tags', 'kadence-blocks')}
 													/>
 												</>
 											)}
@@ -232,7 +230,7 @@ class FluentCRMControls extends Component {
 																		</p>
 																	</div>
 																	<SelectControl
-																		label={__('Select Field:')}
+																		label={__('Select Field:', 'kadence-blocks')}
 																		options={listFields}
 																		value={
 																			undefined !== this.props.settings[0].map &&

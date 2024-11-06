@@ -315,7 +315,7 @@ function KadenceSpacerDivider(props) {
 												mobileValue={mobileDividerWidth ? mobileDividerWidth : ''}
 												onChangeMobile={(value) => setAttributes({ mobileDividerWidth: value })}
 												min={0}
-												max={dividerWidthUnits == 'px' ? 3000 : 100}
+												max={dividerWidthUnits === 'px' ? 3000 : 100}
 												step={1}
 												unit={dividerWidthUnits}
 												onUnit={(value) => setAttributes({ dividerWidthUnits: value })}

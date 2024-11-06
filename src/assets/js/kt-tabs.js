@@ -197,6 +197,8 @@
 				});
 			}
 
+			window.KBTabs.setAriaAttributesForTabs(tabWrap, clickedTabId);
+
 			const resizeEvent = new Event('resize');
 			window.dispatchEvent(resizeEvent);
 			const tabEvent = new Event('kadence-tabs-open');

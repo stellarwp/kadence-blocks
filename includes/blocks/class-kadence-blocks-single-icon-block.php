@@ -58,7 +58,7 @@ class Kadence_Blocks_Single_Icon_Block extends Kadence_Blocks_Abstract_Block {
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 		if ( isset( $attributes ) && is_array( $attributes ) ) {
-			$css->set_selector( '.kt-svg-item-' . $unique_id . ' .kb-svg-icon-wrap' );
+			$css->set_selector( '.kt-svg-item-' . $unique_id . ' .kb-svg-icon-wrap, .kt-svg-style-stacked.kt-svg-item-' . $unique_id . ' .kb-svg-icon-wrap' );
 			$css->render_color_output( $attributes, 'color', 'color' );
 
 			// Match icon default size if not set.

@@ -1,0 +1,197 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "kadence/identity",
+	"title": "Site identity",
+	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
+	"attributes": {
+		"uniqueID": {
+			"type": "string"
+		},
+		"align": {
+			"type": "string"
+		},
+		"showSiteTitle": {
+			"type": "boolean",
+			"default": true
+		},
+		"linkToHomepage": {
+			"type": "boolean",
+			"default": true
+		},
+		"textVerticalAlign": {
+			"type": "string",
+			"default": "center"
+		},
+		"link": {
+			"type": "string",
+			"default": ""
+		},
+		"showSiteTagline": {
+			"type": "boolean",
+			"default": false
+		},
+		"layout": {
+			"type": "string",
+			"default": "logo-left"
+		},
+		"padding": {
+			"type": "array",
+			"default": [
+				"",
+				"",
+				"",
+				""
+			]
+		},
+		"tabletPadding": {
+			"type": "array",
+			"default": [
+				"",
+				"",
+				"",
+				""
+			]
+		},
+		"mobilePadding": {
+			"type": "array",
+			"default": [
+				"",
+				"",
+				"",
+				""
+			]
+		},
+		"paddingType": {
+			"type": "string",
+			"default": "px"
+		},
+		"margin": {
+			"type": "array",
+			"default": [
+				"",
+				"",
+				"",
+				""
+			]
+		},
+		"tabletMargin": {
+			"type": "array",
+			"default": [
+				"",
+				"",
+				"",
+				""
+			]
+		},
+		"mobileMargin": {
+			"type": "array",
+			"default": [
+				"",
+				"",
+				"",
+				""
+			]
+		},
+		"marginType": {
+			"type": "string",
+			"default": "px"
+		},
+		"titleTypography": {
+			"type": "array",
+			"default": [
+				{
+					"size": [
+						"",
+						"",
+						""
+					],
+					"sizeType": "px",
+					"lineHeight": [
+						"",
+						"",
+						""
+					],
+					"lineType": "px",
+					"letterSpacing": [
+						"",
+						"",
+						""
+					],
+					"letterType": "px",
+					"textTransform": "",
+					"family": "",
+					"google": false,
+					"style": "",
+					"weight": "",
+					"variant": "",
+					"subset": "",
+					"loadGoogle": true
+				}
+			]
+		},
+		"taglineTypography": {
+			"type": "array",
+			"default": [
+				{
+					"size": [
+						"",
+						"",
+						""
+					],
+					"sizeType": "px",
+					"lineHeight": [
+						"",
+						"",
+						""
+					],
+					"lineType": "px",
+					"letterSpacing": [
+						"",
+						"",
+						""
+					],
+					"letterType": "px",
+					"textTransform": "",
+					"family": "",
+					"google": false,
+					"style": "",
+					"weight": "",
+					"variant": "",
+					"subset": "",
+					"loadGoogle": true
+				}
+			]
+		},
+		"urlTransparent":  {
+			"type": "string",
+			"default": ""
+		},
+		"idTransparent": {
+			"type": "number"
+		},
+		"sizeSlugTransparent": {
+			"type": "string"
+		},
+		"urlSticky":  {
+			"type": "string",
+			"default": ""
+		},
+		"idSticky": {
+			"type": "number"
+		},
+		"sizeSlugSticky": {
+			"type": "string"
+		}
+	},
+	"usesContext": [
+		"kadence/headerPostId",
+		"kadence/headerIsSticky",
+		"kadence/headerIsTransparent"
+	],
+	"supports": {
+		"anchor": true,
+		"kbMetadata": true
+	}
+}

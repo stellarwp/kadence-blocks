@@ -1,0 +1,1537 @@
+/**
+ * Frontend only CSS.
+ * Styles for both the navigation and nav link block
+ */
+
+@import "../../assets/css/variables.scss";
+
+//this property get copied multiple places for specificity reasons
+$link-color-property: var(
+	--kb-nav-link-color-hover-lv,
+	var(--kb-nav-link-color-active-lv, var(--kb-nav-link-color, inherit))
+);
+
+@mixin parent-toggles-menus-styles {
+	.kb-link-wrap .kb-nav-dropdown-toggle-btn {
+		position: absolute;
+		left: 0;
+		z-index: 10;
+		top: 0;
+		bottom: 0;
+		justify-content: flex-end;
+		width: 100%;
+	}
+}
+
+@mixin uncollapse-sub-menus {
+	.menu .sub-menu {
+		@include show-sub-menu();
+	}
+	.kb-link-wrap .kb-nav-dropdown-toggle-btn {
+		display: none;
+	}
+}
+
+@mixin hide-sub-menu {
+	opacity: 0;
+	visibility: hidden;
+	clip: rect(1px, 1px, 1px, 1px);
+	height: 1px;
+	overflow: hidden;
+}
+
+@mixin show-sub-menu {
+	opacity: 1;
+	visibility: visible;
+	clip: auto;
+	height: auto;
+	overflow: visible;
+
+	left: var(--kb-nav-dropdown-show-left);
+	right: var(--kb-nav-dropdown-show-right);
+	transform: translate(var(--kb-nav-dropdown-show-transform-x, 0), var(--kb-nav-dropdown-show-transform-y, 0));
+	border-bottom: var(--kb-nav-dropdown-border-bottom);
+	border-top: var(--kb-nav-dropdown-border-top);
+	border-left: var(--kb-nav-dropdown-border-left);
+	border-right: var(--kb-nav-dropdown-border-right);
+	border-top-left-radius: var(--kb-nav-dropdown-border-top-left-radius);
+	border-top-right-radius: var(--kb-nav-dropdown-border-top-right-radius);
+	border-bottom-right-radius: var(--kb-nav-dropdown-border-bottom-right-radius);
+	border-bottom-left-radius: var(--kb-nav-dropdown-border-bottom-left-radius);
+	padding: var(--kb-nav-dropdown-padding-top, 0) var(--kb-nav-dropdown-padding-right, 0)
+		var(--kb-nav-dropdown-padding-bottom, 0) var(--kb-nav-dropdown-padding-left, 0);
+	margin: var(--kb-nav-dropdown-margin-top, 0) var(--kb-nav-dropdown-margin-right, 0)
+		var(--kb-nav-dropdown-margin-bottom, 0) var(--kb-nav-dropdown-margin-left, 0);
+}
+
+@mixin navigation-fade-up-styles {
+	--kb-nav-dropdown-hide-transform-y: 10px;
+	--kb-nav-dropdown-transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+@mixin navigation-fade-down-styles {
+	--kb-nav-dropdown-hide-transform-y: -10px;
+	--kb-nav-dropdown-transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+@mixin navigation-fade-styles {
+	--kb-nav-dropdown-transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+@mixin horizontal-navigation-base-styles {
+	//In the editor we just look for these classes as they will come and go as the preview device changes.
+	//In the frontend, they will all be present, so must each be wrapped in a media query
+	//Desktop fade up style
+	.navigation-desktop-dropdown-animation-fade-up {
+		.sub-menu {
+			@media (min-width: $laptop-plus-query) {
+				@include navigation-fade-up-styles();
+			}
+		}
+	}
+	//Tablet fade up style
+	.navigation-tablet-dropdown-animation-fade-up {
+		.sub-menu {
+			@media (min-width: $before-tablet-plus-query) and (max-width: $tablet-minus-query) {
+				@include navigation-fade-up-styles();
+			}
+		}
+	}
+	//Mobile fade up style
+	.navigation-mobile-dropdown-animation-fade-up {
+		.sub-menu {
+			@media (max-width: $phone-minus-query) {
+				@include navigation-fade-up-styles();
+			}
+		}
+	}
+	//Desktop fade down style
+	.navigation-desktop-dropdown-animation-fade-down {
+		.sub-menu {
+			@media (min-width: $laptop-plus-query) {
+				@include navigation-fade-down-styles();
+			}
+		}
+	}
+	//Tablet fade down style
+	.navigation-tablet-dropdown-animation-fade-down {
+		.sub-menu {
+			@media (min-width: $before-tablet-plus-query) and (max-width: $tablet-minus-query) {
+				@include navigation-fade-down-styles();
+			}
+		}
+	}
+	//Mobile fade down style
+	.navigation-mobile-dropdown-animation-fade-down {
+		.sub-menu {
+			@media (max-width: $phone-minus-query) {
+				@include navigation-fade-down-styles();
+			}
+		}
+	}
+
+	//Desktop fade style
+	.navigation-desktop-dropdown-animation-fade {
+		.sub-menu {
+			@media (min-width: $laptop-plus-query) {
+				@include navigation-fade-styles();
+			}
+		}
+	}
+	//Tablet fade style
+	.navigation-tablet-dropdown-animation-fade {
+		.sub-menu {
+			@media (min-width: $before-tablet-plus-query) and (max-width: $tablet-minus-query) {
+				@include navigation-fade-styles();
+			}
+		}
+	}
+	//Mobile fade style
+	.navigation-mobile-dropdown-animation-fade {
+		.sub-menu {
+			@media (max-width: $phone-minus-query) {
+				@include navigation-fade-styles();
+			}
+		}
+	}
+
+	//horizontal submenus
+	.sub-menu {
+		position: absolute;
+		top: 100%;
+		flex-direction: column;
+		background: var(--kb-nav-dropdown-background, #fff);
+		margin-left: 0;
+		z-index: 1000;
+		box-shadow: var(--kb-nav-dropdown-box-shadow, 0 2px 13px 0 rgba(0, 0, 0, 0.1));
+
+		&.sub-menu-right-edge {
+			--kb-nav-dropdown-show-left: auto;
+			--kb-nav-dropdown-show-right: 0;
+			--kb-nav-dropdown-show-transform-y: 0;
+			--kb-nav-dropdown-show-transform-x: 0;
+			--kb-nav-dropdown-hide-transform-x: 0;
+		}
+		&.sub-menu-left-edge {
+			--kb-nav-dropdown-show-left: 0;
+			--kb-nav-dropdown-show-right: auto;
+			--kb-nav-dropdown-show-transform-y: 0;
+			--kb-nav-dropdown-show-transform-x: 0;
+			--kb-nav-dropdown-hide-transform-x: 0;
+		}
+
+		//third level nav
+		.sub-menu {
+			top: 0;
+			--kb-nav-dropdown-show-left: 100%;
+			--kb-nav-dropdown-show-right: auto;
+			--kb-nav-dropdown-show-transform-x: 0;
+			--kb-nav-dropdown-show-transform-y: 0;
+			--kb-nav-dropdown-hide-transform-x: 0;
+			min-height: 100%;
+
+			&.sub-menu-right-edge {
+				--kb-nav-dropdown-show-left: auto;
+				--kb-nav-dropdown-show-right: 100%;
+			}
+			&.sub-menu-left-edge {
+				--kb-nav-dropdown-show-left: 100%;
+				--kb-nav-dropdown-show-right: auto;
+			}
+		}
+
+		//sub menu menu items
+		& > li {
+			& > .kb-link-wrap .kb-nav-arrow-svg {
+				transform: rotate(270deg);
+			}
+
+			// Hide divider for last item.
+			&:last-child {
+				border-bottom: 0;
+			}
+		}
+
+		//horizontal sub menu toggles
+		.kb-nav-dropdown-toggle-btn {
+			width: calc(var(--kb-nav-drop-icon-width, 1.6em) + var(--kb-nav-link-padding-right, 0.5em));
+			margin-inline-end: calc(
+				(var(--kb-nav-drop-icon-width, 1.6em) + var(--kb-nav-link-padding-right, 0.5em)) * -1
+			);
+
+			&:focus {
+				z-index: 10;
+			}
+		}
+	}
+	// Handle Reveal Animation for horizontal navs, hover and triggered via arrow.
+	.menu-item:not(.kb-nav-link-sub-click):hover > .sub-menu,
+	.menu-item.menu-item--toggled-on > .sub-menu {
+		@include show-sub-menu();
+	}
+
+	.kb-nav-item-title-wrap {
+		position: relative;
+		text-align: left;
+	}
+
+	/**
+	 * "focus-within" is an alternative to focus class for
+	 * supporting browsers (all but IE/Edge) for no-JS context
+	 * (e.g. AMP) See https://caniuse.com/#feat=css-focus-within
+	 *
+	 * This selector needs to stay separated, otherwise submenus
+	 * will not be displayed with IE/Edge.
+	 */
+	.menu-item:not(.menu-item--has-toggle):focus-within > ul {
+		display: block;
+	}
+	// This makes the dropdowns work a little better on a touch device.
+	@media (hover: none) {
+		.menu-item--has-toggle {
+			.kb-nav-dropdown-toggle-btn {
+				pointer-events: all;
+			}
+		}
+	}
+}
+
+@mixin vertical-navigation-base-styles {
+	//In the editor we just look for these classes as they will come and go as the preview device changes.
+	//In the frontend, they will all be present, so must each be wrapped in a media query
+	//Desktop parent toggle sub menus
+	.navigation-desktop-parent-toggles-menus-true {
+		@media (min-width: $laptop-plus-query) {
+			@include parent-toggles-menus-styles();
+		}
+	}
+	//Tablet parent toggle sub menus
+	.navigation-tablet-parent-toggles-menus-true {
+		@media (min-width: $before-tablet-plus-query) and (max-width: $tablet-minus-query) {
+			@include parent-toggles-menus-styles();
+		}
+	}
+	//Mobiel parent toggle sub menus
+	.navigation-mobile-parent-toggles-menus-true {
+		@media (max-width: $phone-minus-query) {
+			@include parent-toggles-menus-styles();
+		}
+	}
+
+	//navs that indicate all sub menus should not be collapsed should be shown
+	//In the editor we just look for these classes as they will come and go as the preview device changes.
+	//In the frontend, they will all be present, so must each be wrapped in a media query
+	//Desktop collapse sub menus
+	.navigation-desktop-collapse-sub-menus-false {
+		@media (min-width: $laptop-plus-query) {
+			@include uncollapse-sub-menus();
+		}
+	}
+	//Tablet collapse sub menus
+	.navigation-tablet-collapse-sub-menus-false {
+		@media (min-width: $before-tablet-plus-query) and (max-width: $tablet-minus-query) {
+			@include uncollapse-sub-menus();
+		}
+	}
+	//Mobile collapse sub menus
+	.navigation-mobile-collapse-sub-menus-false {
+		@media (max-width: $phone-minus-query) {
+			@include uncollapse-sub-menus();
+		}
+	}
+
+	.navigation {
+		width: 100%;
+		display: block;
+	}
+
+	.menu-container {
+		display: block;
+		.menu {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			.menu-item {
+				display: list-item;
+				width: 100%;
+				//margin: initial;
+				.sub-menu.sub-menu {
+					// Have to use important here because the javascript can add inline styles that would override
+					--kb-nav-dropdown-width: auto !important;
+					--kb-nav-dropdown-show-left: 0 !important;
+					--kb-nav-dropdown-hide-transform-x: 0 !important;
+					--kb-nav-dropdown-show-transform-x: 0 !important;
+					--kb-nav-dropdown-margin-top: 0 !important;
+					--kb-nav-dropdown-margin-bottom: 0 !important;
+				}
+			}
+		}
+	}
+
+	//all menus
+	ul {
+		display: block;
+		list-style: none;
+	}
+
+	//sub menus
+	.sub-menu {
+		--kb-nav-dropdown-margin-left: 1em;
+		box-shadow: none;
+		.menu-item > .kb-link-wrap > a {
+			width: 100%;
+		}
+	}
+
+	//if we get this deep stop indenting
+	ul .sub-menu .sub-menu .sub-menu .sub-menu ul {
+		--kb-nav-dropdown-margin-left: 0;
+	}
+
+	.kb-nav-link-content {
+		display: block;
+		width: 100%;
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.kb-link-wrap {
+		display: flex;
+		position: relative;
+	}
+
+	// Dropdown Toggle Styles for vertical
+	.kb-nav-dropdown-toggle-btn {
+		background: transparent;
+		color: inherit;
+		padding: 0.5em 0.7em;
+		margin: 0;
+		display: flex;
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+		line-height: normal;
+		align-items: center;
+		bottom: auto;
+		pointer-events: all;
+		width: auto;
+		cursor: pointer;
+		right: 0px;
+
+		svg {
+			height: auto;
+			display: block;
+		}
+	}
+	.kb-nav-dropdown-toggle-btn[aria-expanded="true"] svg {
+		transform: rotate(180deg);
+	}
+
+	//vertical link padding on the right no longer needs to account for the drop down icon
+	.menu-item-has-children > .kb-link-wrap > a {
+		padding-right: calc(var(--kb-nav-link-padding-right, 0.5em));
+	}
+}
+@mixin layout-grid-styles {
+	flex-grow: 10;
+
+	> .navigation {
+		flex-grow: 1;
+	}
+	//only apply grid to top level menu items
+	> .navigation > .menu-container {
+		flex-grow: 1;
+		display: block;
+		& > .menu {
+			display: grid;
+			grid-template-columns: var(--kb-nav-grid-columns, minmax(0, 1fr));
+			> .menu-item {
+				height: 100%;
+				> .kb-link-wrap {
+					height: 100%;
+				}
+			}
+		}
+	}
+}
+
+@mixin layout-stretch-styles {
+	flex-grow: 10;
+
+	> .navigation {
+		flex-grow: 1;
+	}
+
+	//only apply stretching to top level menu items
+	> .navigation > .menu-container {
+		flex-grow: 1;
+		& > .menu {
+			flex-grow: 1;
+			justify-content: space-between;
+		}
+	}
+}
+
+@mixin layout-fill-stretch-styles {
+	//only apply stretching to top level menu items
+	> .navigation > .menu-container {
+		& > .menu {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+			& > .menu-item {
+				text-align: center;
+				& > .kb-link-wrap > .kb-nav-link-content {
+					width: 100%;
+					text-align: center;
+					justify-content: center;
+				}
+			}
+		}
+	}
+}
+
+@mixin navigation-underline-styles {
+	//only apply underline to top level menu items
+	> .menu-container {
+		> .menu > .menu-item {
+			> .kb-link-wrap > .kb-nav-link-content {
+				position: relative;
+				&:after {
+					content: "";
+					width: var(--kb-nav-link-underline-width, 100%);
+					position: absolute;
+					bottom: 0px;
+					height: 2px;
+					right: 50%;
+					background: currentColor;
+					transform: var(--kb-nav-link-underline-transform, scale(0, 0) translate(-50%, 0));
+					transition: transform 0.2s ease-in-out, color 0s ease-in-out;
+				}
+			}
+			&:hover > .kb-link-wrap > .kb-nav-link-content:after {
+				transform: scale(1, 1) translate(50%, 0);
+			}
+			&.current-menu-item,
+			&.menu-item--toggled-on {
+				> .kb-link-wrap > a:after {
+					transform: scale(1, 1) translate(50%, 0);
+				}
+			}
+		}
+	}
+}
+
+@mixin navigation-full-height-styles {
+	height: 100%;
+	align-items: center;
+
+	//only apply full height to top level menu items
+	> .menu-container {
+		height: 100%;
+		align-items: center;
+
+		> .menu {
+			height: 100%;
+			align-items: center;
+
+			> .menu-item {
+				height: 100%;
+				align-items: center;
+
+				> .kb-link-wrap {
+					height: 100%;
+
+					> .kb-nav-link-content {
+						display: flex;
+						height: 100%;
+						align-items: center;
+					}
+				}
+			}
+		}
+	}
+}
+
+.wp-block-kadence-navigation {
+	max-width: 100%;
+	box-sizing: border-box;
+	height: var(--kb-nav-height);
+	* {
+		box-sizing: border-box;
+	}
+
+	//In the editor we just look for these classes as they will come and go as the preview device changes.
+	//In the frontend, they will all be present, so must each be wrapped in a media query
+	//Desktop full-height-menu
+	&.navigation-desktop-orientation-horizontal .navigation-desktop-style-underline-fullheight,
+	&.navigation-desktop-orientation-horizontal .navigation-desktop-style-fullheight {
+		@media (min-width: $laptop-plus-query) {
+			@include navigation-full-height-styles();
+		}
+	}
+	//Tablet full-height-menu
+	&.navigation-tablet-orientation-horizontal .navigation-tablet-style-underline-fullheight,
+	&.navigation-tablet-orientation-horizontal .navigation-tablet-style-fullheight {
+		@media (min-width: $before-tablet-plus-query) and (max-width: $tablet-minus-query) {
+			@include navigation-full-height-styles();
+		}
+	}
+	//Mobile full-height-menu
+	&.navigation-mobile-orientation-horizontal .navigation-mobile-style-underline-fullheight,
+	&.navigation-mobile-orientation-horizontal .navigation-mobile-style-fullheight {
+		@media (max-width: $phone-minus-query) {
+			@include navigation-full-height-styles();
+		}
+	}
+
+	//In the editor we just look for these classes as they will come and go as the preview device changes.
+	//In the frontend, they will all be present, so must each be wrapped in a media query
+	//Desktop underline menu
+	&.navigation-desktop-orientation-horizontal .navigation[class*="navigation-desktop-style-underline"] {
+		@media (min-width: $laptop-plus-query) {
+			@include navigation-underline-styles();
+		}
+	}
+	//Tablet underline menu
+	&.navigation-tablet-orientation-horizontal .navigation[class*="navigation-tablet-style-underline"] {
+		@media (min-width: $before-tablet-plus-query) and (max-width: $tablet-minus-query) {
+			@include navigation-underline-styles();
+		}
+	}
+	//Mobile underline menu
+	&.navigation-mobile-orientation-horizontal .navigation[class*="navigation-mobile-style-underline"] {
+		@media (max-width: $phone-minus-query) {
+			@include navigation-underline-styles();
+		}
+	}
+
+	//In the editor we just look for these classes as they will come and go as the preview device changes.
+	//In the frontend, they will all be present, so must each be wrapped in a media query
+	//Desktop horizontal menu
+	&.navigation-desktop-orientation-horizontal {
+		@media (min-width: $laptop-plus-query) {
+			@include horizontal-navigation-base-styles;
+		}
+	}
+	//Tablet horizontal menu
+	&.navigation-tablet-orientation-horizontal {
+		@media (min-width: $before-tablet-plus-query) and (max-width: $tablet-minus-query) {
+			@include horizontal-navigation-base-styles;
+		}
+	}
+	//Mobile horizontal menu
+	&.navigation-mobile-orientation-horizontal {
+		@media (max-width: $phone-minus-query) {
+			@include horizontal-navigation-base-styles;
+		}
+	}
+
+	//In the editor we just look for these classes as they will come and go as the preview device changes.
+	//In the frontend, they will all be present, so must each be wrapped in a media query
+	//Desktop vertical menu
+	&.navigation-desktop-orientation-vertical {
+		@media (min-width: $laptop-plus-query) {
+			@include vertical-navigation-base-styles;
+		}
+	}
+	//Tablet vertical menu
+	&.navigation-tablet-orientation-vertical {
+		@media (min-width: $before-tablet-plus-query) and (max-width: $tablet-minus-query) {
+			@include vertical-navigation-base-styles;
+		}
+	}
+	//Mobile vertical menu
+	&.navigation-mobile-orientation-vertical {
+		@media (max-width: $phone-minus-query) {
+			@include vertical-navigation-base-styles;
+		}
+	}
+
+	//In the editor we just look for these classes as they will come and go as the preview device changes.
+	//In the frontend, they will all be present, so must each be wrapped in a media query
+	//Desktop stretch
+	&.kb-nav-desktop-horizontal-layout-stretch.navigation-desktop-orientation-horizontal {
+		@media (min-width: $laptop-plus-query) {
+			@include layout-stretch-styles();
+			&.navigation-desktop-layout-fill-stretch-true {
+				@include layout-fill-stretch-styles();
+			}
+		}
+	}
+	//Tablet stretch
+	&.kb-nav-tablet-horizontal-layout-stretch.navigation-tablet-orientation-horizontal {
+		@media (min-width: $before-tablet-plus-query) and (max-width: $tablet-minus-query) {
+			@include layout-stretch-styles();
+			&.navigation-tablet-layout-fill-stretch-true {
+				@include layout-fill-stretch-styles();
+			}
+		}
+	}
+	//Mobile stretch
+	&.kb-nav-mobile-horizontal-layout-stretch.navigation-modbile-orientation-horizontal {
+		@media (max-width: $phone-minus-query) {
+			@include layout-stretch-styles();
+			&.navigation-mobile-layout-fill-stretch-true {
+				@include layout-fill-stretch-styles();
+			}
+		}
+	}
+
+	// Desktop layout grid
+	&.kb-nav-desktop-horizontal-layout-grid.navigation-desktop-orientation-horizontal {
+		@media (min-width: $laptop-plus-query) {
+			@include layout-grid-styles();
+		}
+	}
+	// Tablet layout grid
+	&.kb-nav-tablet-horizontal-layout-grid.navigation-tablet-orientation-horizontal {
+		@media (min-width: $before-tablet-plus-query) and (max-width: $tablet-minus-query) {
+			@include layout-grid-styles();
+		}
+	}
+	// Mobile layout grid
+	&.kb-nav-mobile-horizontal-layout-grid.navigation-mobile-orientation-horizontal {
+		@media (max-width: $phone-minus-query) {
+			@include layout-grid-styles();
+		}
+	}
+
+	/*--------------------------------------------------------------
+	 ## Header navigation menus. Base styles for menus, menu items, and their links
+	--------------------------------------------------------------*/
+	.navigation,
+	.menu-container {
+		display: flex;
+	}
+
+	.menu {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+		list-style: none;
+		position: relative;
+
+		padding: var(--kb-nav-padding-top, 0) var(--kb-nav-padding-right, 0) var(--kb-nav-padding-bottom, 0)
+			var(--kb-nav-padding-left, 0);
+		margin: var(--kb-nav-margin-top, 0) var(--kb-nav-margin-right, 0) var(--kb-nav-margin-bottom, 0)
+			var(--kb-nav-margin-left, 0);
+		row-gap: var(--kb-nav-row-gap, 0);
+		column-gap: var(--kb-nav-column-gap, 0);
+
+		//show a sub menu when this menu is toggled or gains focus if no js.
+		.menu-item--toggled-on > .sub-menu,
+		li:not(.menu-item--has-toggle):focus > .sub-menu {
+			@include show-sub-menu();
+		}
+	}
+
+	.sub-menu {
+		display: block;
+		list-style: none;
+		padding: 0;
+		transition: var(--kb-nav-dropdown-transition);
+		background: var(--kb-nav-dropdown-background);
+		border-top-left-radius: var(--kb-nav-dropdown-border-top-left-radius);
+		border-top-right-radius: var(--kb-nav-dropdown-border-top-right-radius);
+		border-bottom-right-radius: var(--kb-nav-dropdown-border-bottom-right-radius);
+		border-bottom-left-radius: var(--kb-nav-dropdown-border-bottom-left-radius);
+
+		width: var(--kb-nav-dropdown-width);
+		left: var(--kb-nav-dropdown-hide-left);
+		right: var(--kb-nav-dropdown-hide-right);
+		transform: var(
+			--kb-nav-dropdown-transform,
+			translate(var(--kb-nav-dropdown-hide-transform-x, 0), var(--kb-nav-dropdown-hide-transform-y, 0))
+		);
+		margin-top: var(--kb-nav-dropdown-margin-top, 0);
+		margin-right: var(--kb-nav-dropdown-margin-right, 0);
+		margin-bottom: var(--kb-nav-dropdown-margin-bottom, 0);
+		margin-left: var(--kb-nav-dropdown-margin-left, 0);
+
+		//sub menus are hidden by default
+		@include hide-sub-menu();
+
+		//small fix for media in sub menus
+		.link-media-container {
+			justify-content: flex-start;
+		}
+
+		//only submenu nav links, don't bleed
+		& > .menu-item > .kb-link-wrap {
+			--kb-nav-link-color: var(--kb-nav-dropdown-link-color);
+			--kb-nav-link-color-hover: var(--kb-nav-dropdown-link-color-hover);
+			--kb-nav-link-color-active: var(--kb-nav-dropdown-link-color-active);
+			--kb-nav-link-color-active-ancestor: var(--kb-nav-dropdown-link-color-active-ancestor);
+			--kb-nav-link-background-hover: var(--kb-nav-dropdown-link-background-hover);
+			--kb-nav-link-background-active: var(--kb-nav-dropdown-link-background-active);
+			--kb-nav-link-padding-top: var(--kb-nav-dropdown-link-padding-top);
+			--kb-nav-link-padding-bottom: var(--kb-nav-dropdown-link-padding-bottom);
+			--kb-nav-link-padding-left: var(--kb-nav-dropdown-link-padding-left);
+			--kb-nav-link-padding-right: var(--kb-nav-dropdown-link-padding-right);
+			--kb-nav-link-border-top: var(--kb-nav-dropdown-link-border-top);
+			--kb-nav-link-border-right: var(--kb-nav-dropdown-link-border-right);
+			--kb-nav-link-border-bottom: var(--kb-nav-dropdown-link-border-bottom);
+			--kb-nav-link-border-left: var(--kb-nav-dropdown-link-border-left);
+			--kb-nav-link-hover-border-top: var(--kb-nav-dropdown-link-hover-border-top);
+			--kb-nav-link-hover-border-right: var(--kb-nav-dropdown-link-hover-border-right);
+			--kb-nav-link-hover-border-bottom: var(--kb-nav-dropdown-link-hover-border-bottom);
+			--kb-nav-link-hover-border-left: var(--kb-nav-dropdown-link-hover-border-left);
+			--kb-nav-link-active-border-top: var(--kb-nav-dropdown-link-active-border-top);
+			--kb-nav-link-active-border-right: var(--kb-nav-dropdown-link-active-border-right);
+			--kb-nav-link-active-border-bottom: var(--kb-nav-dropdown-link-active-border-bottom);
+			--kb-nav-link-active-border-left: var(--kb-nav-dropdown-link-active-border-left);
+			--kb-nav-link-active-ancestor-border-top: var(--kb-nav-dropdown-link-active-ancestor-border-top);
+			--kb-nav-link-active-ancestor-border-right: var(--kb-nav-dropdown-link-active-ancestor-border-right);
+			--kb-nav-link-active-ancestor-border-bottom: var(--kb-nav-dropdown-link-active-ancestor-border-bottom);
+			--kb-nav-link-active-ancestor-border-left: var(--kb-nav-dropdown-link-active-ancestor-border-left);
+			--kb-nav-link-border-top-left-radius: var(--kb-nav-dropdown-link-border-top-left-radius);
+			--kb-nav-link-border-top-right-radius: var(--kb-nav-dropdown-link-border-top-right-radius);
+			--kb-nav-link-border-bottom-right-radius: var(--kb-nav-dropdown-link-border-bottom-right-radius);
+			--kb-nav-link-border-bottom-left-radius: var(--kb-nav-dropdown-link-border-bottom-left-radius);
+			--kb-nav-link-hover-border-top-left-radius: var(--kb-nav-dropdown-link-hover-border-top-left-radius);
+			--kb-nav-link-hover-border-top-right-radius: var(--kb-nav-dropdown-link-hover-border-top-right-radius);
+			--kb-nav-link-hover-border-bottom-right-radius: var(
+				--kb-nav-dropdown-link-hover-border-bottom-right-radius
+			);
+			--kb-nav-link-hover-border-bottom-left-radius: var(--kb-nav-dropdown-link-hover-border-bottom-left-radius);
+			--kb-nav-link-active-border-top-left-radius: var(--kb-nav-dropdown-link-active-border-top-left-radius);
+			--kb-nav-link-active-border-top-right-radius: var(--kb-nav-dropdown-link-active-border-top-right-radius);
+			--kb-nav-link-active-border-bottom-right-radius: var(
+				--kb-nav-dropdown-link-active-border-bottom-right-radius
+			);
+			--kb-nav-link-active-border-bottom-left-radius: var(
+				--kb-nav-dropdown-link-active-border-bottom-left-radius
+			);
+			--kb-nav-link-active-ancestor-border-top-left-radius: var(
+				--kb-nav-dropdown-link-active-ancestor-border-top-left-radius
+			);
+			--kb-nav-link-active-ancestor-border-top-right-radius: var(
+				--kb-nav-dropdown-link-active-ancestor-border-top-right-radius
+			);
+			--kb-nav-link-active-ancestor-border-bottom-right-radius: var(
+				--kb-nav-dropdown-link-active-ancestor-border-bottom-right-radius
+			);
+			--kb-nav-link-active-ancestor-border-bottom-left-radius: var(
+				--kb-nav-dropdown-link-active-ancestor-border-bottom-left-radius
+			);
+			--kb-nav-link-box-shadow: var(--kb-nav-dropdown-link-box-shadow);
+			--kb-nav-link-box-shadow-hover: var(--kb-nav-dropdown-link-box-shadow-hover);
+			--kb-nav-link-box-shadow-active: var(--kb-nav-dropdown-link-box-shadow-active);
+			--kb-nav-link-box-shadow-active-ancestor: var(--kb-nav-dropdown-link-box-shadow-active-ancestor);
+
+			--kb-nav-link-description-color: var(--kb-nav-dropdown-link-description-color);
+			--kb-nav-link-description-color-hover: var(--kb-nav-dropdown-link-description-color-hover);
+			--kb-nav-link-description-color-active: var(--kb-nav-dropdown-link-description-color-active);
+			--kb-nav-link-description-color-active-ancestor: var(
+				--kb-nav-dropdown-link-description-color-active-ancestor
+			);
+			--kb-nav-link-description-padding-top: var(--kb-nav-dropdown-link-description-padding-top);
+			--kb-nav-link-description-padding-right: var(--kb-nav-dropdown-link-description-padding-right);
+			--kb-nav-link-description-padding-bottom: var(--kb-nav-dropdown-link-description-padding-bottom);
+			--kb-nav-link-description-padding-left: var(--kb-nav-dropdown-link-description-padding-left);
+
+			& > .kb-nav-link-content {
+				width: var(--kb-nav-dropdown-link-width, 200px);
+			}
+		}
+	}
+
+	//menu item wrapper
+	.menu-item {
+		position: var(--kb-nav-link-position);
+		border-bottom: var(--kb-nav-menu-item-border-bottom);
+
+		//active nav links (extra specificty to hack correct ordering against direct styling)
+		&.current-menu-item > .kb-link-wrap.kb-link-wrap.kb-link-wrap {
+			--kb-nav-link-color-active-lv: var(--kb-nav-link-color-active);
+			--kb-nav-link-background-active-lv: var(--kb-nav-link-background-active);
+			--kb-nav-link-active-border-top-lv: var(--kb-nav-link-active-border-top);
+			--kb-nav-link-active-border-right-lv: var(--kb-nav-link-active-border-right);
+			--kb-nav-link-active-border-bottom-lv: var(--kb-nav-link-active-border-bottom);
+			--kb-nav-link-active-border-left-lv: var(--kb-nav-link-active-border-left);
+			--kb-nav-link-active-border-top-left-radius-lv: var(--kb-nav-link-active-border-top-left-radius);
+			--kb-nav-link-active-border-top-right-radius-lv: var(--kb-nav-link-active-border-top-right-radius);
+			--kb-nav-link-active-border-bottom-right-radius-lv: var(--kb-nav-link-active-border-bottom-right-radius);
+			--kb-nav-link-active-border-bottom-left-radius-lv: var(--kb-nav-link-active-border-bottom-left-radius);
+			--kb-nav-link-active-box-shadow-lv: var(--kb-nav-link-box-shadow-active);
+			--kb-nav-link-highlight-color-active-lv: var(--kb-nav-link-highlight-color-active);
+			--kb-nav-link-highlight-background-active-lv: var(--kb-nav-link-highlight-background-active);
+			--kb-nav-link-media-container-background-active-lv: var(--kb-nav-link-media-container-background-active);
+			--kb-nav-link-media-container-color-active-lv: var(--kb-nav-link-media-container-color-active);
+			--kb-nav-link-media-container-active-border-top-lv: var(--kb-nav-link-media-container-active-border-top);
+			--kb-nav-link-media-container-active-border-right-lv: var(
+				--kb-nav-link-media-container-active-border-right
+			);
+			--kb-nav-link-media-container-active-border-bottom-lv: var(
+				--kb-nav-link-media-container-active-border-bottom
+			);
+			--kb-nav-link-media-container-active-border-left-lv: var(--kb-nav-link-media-container-active-border-left);
+			--kb-nav-link-media-container-active-border-top-left-radius-lv: var(
+				--kb-nav-link-media-container-active-border-top-left-radius
+			);
+			--kb-nav-link-media-container-active-border-top-right-radius-lv: var(
+				--kb-nav-link-media-container-active-border-top-right-radius
+			);
+			--kb-nav-link-media-container-active-border-bottom-right-radius-lv: var(
+				--kb-nav-link-media-container-active-border-bottom-right-radius
+			);
+			--kb-nav-link-media-container-active-border-bottom-left-radius-lv: var(
+				--kb-nav-link-media-container-active-border-bottom-left-radius
+			);
+			--kb-nav-link-description-color-active-lv: var(--kb-nav-link-description-color-active);
+		}
+		&.current-menu-ancestor > .kb-link-wrap.kb-link-wrap.kb-link-wrap {
+			--kb-nav-link-color-active-lv: var(--kb-nav-link-color-active-ancestor, var(--kb-nav-link-color-active));
+			--kb-nav-link-background-active-lv: var(
+				--kb-nav-link-background-active-ancestor,
+				var(--kb-nav-link-background-active)
+			);
+			--kb-nav-link-active-border-top-lv: var(
+				--kb-nav-link-active-ancestor-border-top,
+				var(--kb-nav-link-active-border-top)
+			);
+			--kb-nav-link-active-border-right-lv: var(
+				--kb-nav-link-active-ancestor-border-right,
+				var(--kb-nav-link-active-border-right)
+			);
+			--kb-nav-link-active-border-bottom-lv: var(
+				--kb-nav-link-active-ancestor-border-bottom,
+				var(--kb-nav-link-active-border-bottom)
+			);
+			--kb-nav-link-active-border-left-lv: var(
+				--kb-nav-link-active-ancestor-border-left,
+				var(--kb-nav-link-active-border-left)
+			);
+			--kb-nav-link-active-border-top-left-radius-lv: var(
+				--kb-nav-link-active-ancestor-border-top-left-radius,
+				var(--kb-nav-link-active-border-to-left-radiusp)
+			);
+			--kb-nav-link-active-border-top-right-radius-lv: var(
+				--kb-nav-link-active-ancestor-border-top-right-radius,
+				var(--kb-nav-link-active-border-top-right-radius)
+			);
+			--kb-nav-link-active-border-bottom-right-radius-lv: var(
+				--kb-nav-link-active-ancestor-border-bottom-right-radius,
+				var(--kb-nav-link-active-border-bottom-right-radius)
+			);
+			--kb-nav-link-active-border-bottom-left-radius-lv: var(
+				--kb-nav-link-active-ancestor-border-bottom-left-radius,
+				var(--kb-nav-link-active-border-bottom-left-radius)
+			);
+			--kb-nav-link-active-box-shadow-lv: var(
+				--kb-nav-link-box-shadow-active-ancestor,
+				var(--kb-nav-link-box-shadow-active)
+			);
+			--kb-nav-link-highlight-color-active-lv: var(--kb-nav-link-highlight-color-active-ancestor);
+			--kb-nav-link-highlight-background-active-lv: var(--kb-nav-link-highlight-background-active-ancestor);
+			--kb-nav-link-media-container-background-active-lv: var(
+				--kb-nav-link-media-container-background-active-ancestor
+			);
+			--kb-nav-link-media-container-color-active-lv: var(--kb-nav-link-media-container-color-active-ancestor);
+			--kb-nav-link-media-container-active-border-top-lv: var(
+				--kb-nav-link-media-container-active-ancestor-border-top,
+				var(--kb-nav-link-media-container-active-border-top)
+			);
+			--kb-nav-link-media-container-active-border-right-lv: var(
+				--kb-nav-link-media-container-active-ancestor-border-right,
+				var(--kb-nav-link-media-container-active-border-right)
+			);
+			--kb-nav-link-media-container-active-border-bottom-lv: var(
+				--kb-nav-link-media-container-active-ancestor-border-bottom,
+				var(--kb-nav-link-media-container-active-border-bottom)
+			);
+			--kb-nav-link-media-container-active-border-left-lv: var(
+				--kb-nav-link-media-container-active-ancestor-border-left,
+				var(--kb-nav-link-media-container-active-border-left)
+			);
+			--kb-nav-link-media-container-active-border-top-left-radius-lv: var(
+				--kb-nav-link-media-container-active-ancestor-border-top-left-radius,
+				var(--kb-nav-link-media-container-active-border-to-left-radiusp)
+			);
+			--kb-nav-link-media-container-active-border-top-right-radius-lv: var(
+				--kb-nav-link-media-container-active-ancestor-border-top-right-radius,
+				var(--kb-nav-link-media-container-active-border-top-right-radius)
+			);
+			--kb-nav-link-media-container-active-border-bottom-right-radius-lv: var(
+				--kb-nav-link-media-container-active-ancestor-border-bottom-right-radius,
+				var(--kb-nav-link-media-container-active-border-bottom-right-radius)
+			);
+			--kb-nav-link-media-container-active-border-bottom-left-radius-lv: var(
+				--kb-nav-link-media-container-active-ancestor-border-bottom-left-radius,
+				var(--kb-nav-link-media-container-active-border-bottom-left-radius)
+			);
+			--kb-nav-link-description-color-active-lv: var(--kb-nav-link-description-color-active-ancestor);
+		}
+	}
+
+	// Mega Menu adjustments
+	.menu-item.kadence-menu-mega-enabled {
+		> ul {
+			a {
+				width: 100%;
+			}
+
+			//nav items sitting alone in a mega menu container
+			> .menu-item {
+				border-bottom: 0;
+				> .kb-link-wrap > a {
+					border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+				}
+				&:not(.menu-item-has-children):last-child > .kb-link-wrap > a {
+					border-bottom: 0;
+				}
+			}
+		}
+	}
+
+	.kb-link-wrap {
+		transition: all 0.2s ease-in-out;
+		position: relative;
+		display: flex;
+		color: $link-color-property;
+		background: var(
+			--kb-nav-link-background-hover-lv,
+			var(--kb-nav-link-background-active-lv, var(--kb-nav-link-background, inherit))
+		);
+
+		//top and bottom are a bit different because they determine the "divider" styles which come from a different setting
+		border-right: var(
+			--kb-nav-link-wrap-border-right,
+			var(
+				--kb-nav-link-hover-border-right-lv,
+				var(--kb-nav-link-active-border-right-lv, var(--kb-nav-link-border-right))
+			)
+		);
+		border-bottom: var(
+			--kb-nav-link-wrap-border-bottom,
+			var(
+				--kb-nav-link-hover-border-bottom-lv,
+				var(--kb-nav-link-active-border-bottom-lv, var(--kb-nav-link-border-bottom))
+			)
+		);
+		border-top: var(
+			--kb-nav-link-hover-border-top-lv,
+			var(--kb-nav-link-active-border-top-lv, var(--kb-nav-link-border-top))
+		);
+		border-left: var(
+			--kb-nav-link-hover-border-left-lv,
+			var(--kb-nav-link-active-border-left-lv, var(--kb-nav-link-border-left))
+		);
+		border-top-left-radius: var(
+			--kb-nav-link-hover-border-top-left-radius-lv,
+			var(--kb-nav-link-active-border-top-left-radius-lv, var(--kb-nav-link-border-top-left-radius))
+		);
+		border-top-right-radius: var(
+			--kb-nav-link-hover-border-top-right-radius-lv,
+			var(--kb-nav-link-active-border-top-right-radius-lv, var(--kb-nav-link-border-top-right-radius))
+		);
+		border-bottom-right-radius: var(
+			--kb-nav-link-hover-border-bottom-right-radius-lv,
+			var(--kb-nav-link-active-border-bottom-right-radius-lv, var(--kb-nav-link-border-bottom-right-radius))
+		);
+		border-bottom-left-radius: var(
+			--kb-nav-link-hover-border-bottom-left-radius-lv,
+			var(--kb-nav-link-active-border-bottom-left-radius-lv, var(--kb-nav-link-border-bottom-left-radius))
+		);
+		box-shadow: var(
+			--kb-nav-link-hover-box-shadow-lv,
+			var(--kb-nav-link-active-box-shadow-lv, var(--kb-nav-link-box-shadow))
+		);
+
+		&:hover {
+			--kb-nav-link-color-hover-lv: var(--kb-nav-link-color-hover, inherit);
+			--kb-nav-link-background-hover-lv: var(--kb-nav-link-background-hover, inherit);
+			--kb-nav-link-highlight-color-hover-lv: var(--kb-nav-link-highlight-color-hover);
+			--kb-nav-link-highlight-background-hover-lv: var(--kb-nav-link-highlight-background-hover);
+			--kb-nav-link-description-color-hover-lv: var(--kb-nav-link-description-color-hover);
+			--kb-nav-link-hover-border-top-lv: var(--kb-nav-link-hover-border-top);
+			--kb-nav-link-hover-border-right-lv: var(--kb-nav-link-hover-border-right);
+			--kb-nav-link-hover-border-bottom-lv: var(--kb-nav-link-hover-border-bottom);
+			--kb-nav-link-hover-border-left-lv: var(--kb-nav-link-hover-border-left);
+			--kb-nav-link-hover-border-top-left-radius-lv: var(--kb-nav-link-hover-border-top-left-radius);
+			--kb-nav-link-hover-border-top-right-radius-lv: var(--kb-nav-link-hover-border-top-right-radius);
+			--kb-nav-link-hover-border-bottom-right-radius-lv: var(--kb-nav-link-hover-border-bottom-right-radius);
+			--kb-nav-link-hover-border-bottom-left-radius-lv: var(--kb-nav-link-hover-border-bottom-left-radius);
+			--kb-nav-link-hover-box-shadow-lv: var(--kb-nav-link-box-shadow-hover);
+		}
+	}
+
+	.kb-nav-link-content {
+		display: block;
+		text-decoration: none;
+		transition: all 0.2s ease-in-out;
+		transform: translate(0, 0);
+		padding-top: var(--kb-nav-link-padding-top, 0.6em);
+		padding-right: var(--kb-nav-link-padding-right, 0.5em);
+		padding-bottom: var(--kb-nav-link-padding-bottom, 0.6em);
+		padding-left: var(--kb-nav-link-padding-left, 0.5em);
+		margin-top: var(--kb-nav-link-margin-top);
+		margin-right: var(--kb-nav-link-margin-right);
+		margin-bottom: var(--kb-nav-link-margin-bottom);
+		margin-left: var(--kb-nav-link-margin-left);
+		//color copied here for specifity reasons
+		color: $link-color-property;
+		gap: var(--kb-nav-link-gap);
+		text-align: var(--kb-nav-link-align);
+		justify-content: var(--kb-nav-link-align);
+
+		&:not([href]) {
+			cursor: default;
+		}
+		&:hover,
+		&:focus {
+			//color copied here for specifity reasons in non-iframe editors
+			color: $link-color-property;
+			--kb-nav-link-highlight-color-hover-lv: var(--kb-nav-link-highlight-color-hover);
+			--kb-nav-link-highlight-background-hover-lv: var(--kb-nav-link-highlight-background-hover);
+			--kb-nav-link-media-container-background-hover-lv: var(--kb-nav-link-media-container-background-hover);
+			--kb-nav-link-media-container-color-hover-lv: var(--kb-nav-link-media-container-color-hover);
+			--kb-nav-link-media-container-hover-border-top-lv: var(--kb-nav-link-media-container-hover-border-top);
+			--kb-nav-link-media-container-hover-border-right-lv: var(--kb-nav-link-media-container-hover-border-right);
+			--kb-nav-link-media-container-hover-border-bottom-lv: var(
+				--kb-nav-link-media-container-hover-border-bottom
+			);
+			--kb-nav-link-media-container-hover-border-left-lv: var(--kb-nav-link-media-container-hover-border-left);
+			--kb-nav-link-media-container-hover-border-top-left-radius-lv: var(
+				--kb-nav-link-media-container-hover-border-top-left-radius
+			);
+			--kb-nav-link-media-container-hover-border-top-right-radius-lv: var(
+				--kb-nav-link-media-container-hover-border-top-right-radius
+			);
+			--kb-nav-link-media-container-hover-border-bottom-right-radius-lv: var(
+				--kb-nav-link-media-container-hover-border-bottom-right-radius
+			);
+			--kb-nav-link-media-container-hover-border-bottom-left-radius-lv: var(
+				--kb-nav-link-media-container-hover-border-bottom-left-radius
+			);
+			--kb-nav-link-description-color-hover-lv: var(--kb-nav-link-description-color-hover);
+		}
+
+		&.has-highlight-label {
+			--kb-nav-link-gap: var(--kb-nav-link-highlight-text-gap);
+		}
+	}
+
+	// Dropdown Toggle Styles
+	.kb-nav-dropdown-toggle-btn {
+		position: relative;
+		overflow: hidden;
+		padding: 0;
+		margin: 0;
+		margin-inline-end: calc(var(--kb-nav-drop-icon-width, 1.6em) * -1);
+		inset-inline-end: calc(calc(var(--kb-nav-drop-icon-width, 1.6em) + var(--kb-nav-link-padding-right, 0.5em)));
+		border: 0;
+		border-left: var(--kb-nav-dropdown-toggle-border-left);
+		width: var(--kb-nav-drop-icon-width, 1.6em);
+		height: auto;
+		border-radius: 0;
+		box-shadow: none;
+		background: transparent;
+		color: inherit;
+		left: auto;
+		font-size: inherit;
+		display: inline-flex;
+		justify-content: center;
+		pointer-events: none;
+
+		svg {
+			pointer-events: none;
+		}
+	}
+
+	//link padding on the right added to make space for the dropdown toggle
+	.menu-item-has-children > .kb-link-wrap > a {
+		padding-right: calc(var(--kb-nav-link-padding-right, 0.5em) + var(--kb-nav-drop-icon-width, 1.6em));
+	}
+
+	//top level nav links only
+	.menu-container > .menu > .menu-item {
+		& > .kb-link-wrap {
+			--kb-nav-link-color: var(--kb-nav-top-link-color);
+			--kb-nav-link-color-hover: var(--kb-nav-top-link-color-hover);
+			--kb-nav-link-color-active: var(--kb-nav-top-link-color-active);
+			--kb-nav-link-color-active-ancestor: var(--kb-nav-top-link-color-active-ancestor);
+			--kb-nav-link-background: var(--kb-nav-top-link-background);
+			--kb-nav-link-background-hover: var(--kb-nav-top-link-background-hover);
+			--kb-nav-link-background-active: var(--kb-nav-top-link-background-active);
+			--kb-nav-link-background-active-ancestor: var(--kb-nav-top-link-background-active-ancestor);
+			--kb-nav-link-margin-top: var(--kb-nav-top-link-margin-top);
+			--kb-nav-link-margin-right: var(--kb-nav-top-link-margin-right);
+			--kb-nav-link-margin-bottom: var(--kb-nav-top-link-margin-bottom);
+			--kb-nav-link-margin-left: var(--kb-nav-top-link-margin-left);
+			--kb-nav-link-padding-top: var(--kb-nav-top-link-padding-top);
+			--kb-nav-link-padding-right: var(--kb-nav-top-link-padding-right);
+			--kb-nav-link-padding-bottom: var(--kb-nav-top-link-padding-bottom);
+			--kb-nav-link-padding-left: var(--kb-nav-top-link-padding-left);
+			--kb-nav-link-border-top: var(--kb-nav-top-link-border-top);
+			--kb-nav-link-border-right: var(--kb-nav-top-link-border-right);
+			--kb-nav-link-border-bottom: var(--kb-nav-top-link-border-bottom);
+			--kb-nav-link-border-left: var(--kb-nav-top-link-border-left);
+			--kb-nav-link-hover-border-top: var(--kb-nav-top-link-hover-border-top);
+			--kb-nav-link-hover-border-right: var(--kb-nav-top-link-hover-border-right);
+			--kb-nav-link-hover-border-bottom: var(--kb-nav-top-link-hover-border-bottom);
+			--kb-nav-link-hover-border-left: var(--kb-nav-top-link-hover-border-left);
+			--kb-nav-link-active-border-top: var(--kb-nav-top-link-active-border-top);
+			--kb-nav-link-active-border-right: var(--kb-nav-top-link-active-border-right);
+			--kb-nav-link-active-border-bottom: var(--kb-nav-top-link-active-border-bottom);
+			--kb-nav-link-active-border-left: var(--kb-nav-top-link-active-border-left);
+			--kb-nav-link-active-ancestor-border-top: var(--kb-nav-top-link-active-ancestor-border-top);
+			--kb-nav-link-active-ancestor-border-right: var(--kb-nav-top-link-active-ancestor-border-right);
+			--kb-nav-link-active-ancestor-border-bottom: var(--kb-nav-top-link-active-ancestor-border-bottom);
+			--kb-nav-link-active-ancestor-border-left: var(--kb-nav-top-link-active-ancestor-border-left);
+			--kb-nav-link-border-top-left-radius: var(--kb-nav-top-link-border-top-left-radius);
+			--kb-nav-link-border-top-right-radius: var(--kb-nav-top-link-border-top-right-radius);
+			--kb-nav-link-border-bottom-right-radius: var(--kb-nav-top-link-border-bottom-right-radius);
+			--kb-nav-link-border-bottom-left-radius: var(--kb-nav-top-link-border-bottom-left-radius);
+			--kb-nav-link-hover-border-top-left-radius: var(--kb-nav-top-link-hover-border-top-left-radius);
+			--kb-nav-link-hover-border-top-right-radius: var(--kb-nav-top-link-hover-border-top-right-radius);
+			--kb-nav-link-hover-border-bottom-right-radius: var(--kb-nav-top-link-hover-border-bottom-right-radius);
+			--kb-nav-link-hover-border-bottom-left-radius: var(--kb-nav-top-link-hover-border-bottom-left-radius);
+			--kb-nav-link-active-border-top-left-radius: var(--kb-nav-top-link-active-border-top-left-radius);
+			--kb-nav-link-active-border-top-right-radius: var(--kb-nav-top-link-active-border-top-right-radius);
+			--kb-nav-link-active-border-bottom-right-radius: var(--kb-nav-top-link-active-border-bottom-right-radius);
+			--kb-nav-link-active-border-bottom-left-radius: var(--kb-nav-top-link-active-border-bottom-left-radius);
+			--kb-nav-link-active-ancestor-border-top-left-radius: var(
+				--kb-nav-top-link-active-ancestor-border-top-left-radius
+			);
+			--kb-nav-link-active-ancestor-border-top-right-radius: var(
+				--kb-nav-top-link-active-ancestor-border-top-right-radius
+			);
+			--kb-nav-link-active-ancestor-border-bottom-right-radius: var(
+				--kb-nav-top-link-active-ancestor-border-bottom-right-radius
+			);
+			--kb-nav-link-active-ancestor-border-bottom-left-radius: var(
+				--kb-nav-top-link-active-ancestor-border-bottom-left-radius
+			);
+			--kb-nav-link-box-shadow: var(--kb-nav-top-link-box-shadow);
+			--kb-nav-link-box-shadow-hover: var(--kb-nav-top-link-box-shadow-hover);
+			--kb-nav-link-box-shadow-active: var(--kb-nav-top-link-box-shadow-active);
+			--kb-nav-link-box-shadow-active-ancestor: var(--kb-nav-top-link-box-shadow-active-ancestor);
+			--kb-nav-link-description-color: var(--kb-nav-top-link-description-color);
+			--kb-nav-link-description-color-hover: var(--kb-nav-top-link-description-color-hover);
+			--kb-nav-link-description-color-active: var(--kb-nav-top-link-description-color-active);
+			--kb-nav-link-description-color-active-ancestor: var(--kb-nav-top-link-description-color-active-ancestor);
+			--kb-nav-link-description-padding-top: var(--kb-nav-top-link-description-padding-top);
+			--kb-nav-link-description-padding-right: var(--kb-nav-top-link-description-padding-right);
+			--kb-nav-link-description-padding-bottom: var(--kb-nav-top-link-description-padding-bottom);
+			--kb-nav-link-description-padding-left: var(--kb-nav-top-link-description-padding-left);
+
+			& > .kb-nav-link-content {
+				display: flex;
+				align-items: center;
+			}
+		}
+		//not last top links
+		&:not(:last-of-type) > .kb-link-wrap {
+			--kb-nav-link-wrap-border-right: var(--kb-nav-top-not-last-link-border-right);
+			--kb-nav-link-wrap-border-bottom: var(--kb-nav-top-not-last-link-border-bottom);
+		}
+	}
+
+	/*
+	 * rtl fixes
+	 * TODO test these styles
+	 */
+	.rtl {
+		.sub-menu .kb-nav-dropdown-toggle-btn {
+			left: 0;
+			right: auto;
+		}
+		ul ul {
+			.kb-nav-dropdown-toggle-btn .kb-nav-arrow-svg {
+				transform: rotate(-270deg);
+			}
+			.sub-menu {
+				--kb-nav-dropdown-show-left: auto;
+				--kb-nav-dropdown-show-right: 100%;
+			}
+		}
+		.menu-container > .menu-item .kb-nav-dropdown-toggle-btn {
+			right: auto;
+			left: calc(1.4em / 2);
+		}
+	}
+
+	/*--------------------------------------------------------------
+	 ## Misc features
+	 --------------------------------------------------------------*/
+	.kb-nav-label-description {
+		display: block;
+		font-size: 0.8em;
+		text-transform: none;
+		letter-spacing: normal;
+	}
+	.kb-nav-label-content {
+		display: block;
+	}
+}
+
+/*--------------------------------------------------------------
+ ## Navigation Link item styles. (pulled in from their separated file for performance)
+--------------------------------------------------------------*/
+.wp-block-kadence-navigation-link {
+	.link-highlight-label {
+		transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out;
+		font-size: 0.7em;
+		//margin-left: 0.2em;
+		line-height: normal;
+		display: flex;
+		flex-wrap: nowrap;
+		align-items: center;
+		height: fit-content;
+		padding-top: var(--kb-nav-link-highlight-padding-top, 0.3em);
+		padding-right: var(--kb-nav-link-highlight-padding-right, 0.3em);
+		padding-bottom: var(--kb-nav-link-highlight-padding-bottom, 0.3em);
+		padding-left: var(--kb-nav-link-highlight-padding-left, 0.3em);
+		color: var(
+			--kb-nav-link-highlight-color-hover-lv,
+			var(
+				--kb-nav-link-highlight-color-active-lv,
+				var(--kb-nav-link-highlight-color, var(--global-palette9, #ffffff))
+			)
+		);
+		background: var(
+			--kb-nav-link-highlight-background-hover-lv,
+			var(
+				--kb-nav-link-highlight-background-active-lv,
+				var(--kb-nav-link-highlight-background, var(--global-palette1, #2f2ffc))
+			)
+		);
+		border-top: var(
+			--kb-nav-link-highlight-hover-border-top-lv,
+			var(--kb-nav-link-highlight-active-border-top-lv, var(--kb-nav-link-highlight-border-top))
+		);
+		border-right: var(
+			--kb-nav-link-highlight-hover-border-right-lv,
+			var(--kb-nav-link-highlight-active-border-right-lv, var(--kb-nav-link-highlight-border-right))
+		);
+		border-bottom: var(
+			--kb-nav-link-highlight-hover-border-bottom-lv,
+			var(--kb-nav-link-highlight-active-border-bottom-lv, var(--kb-nav-link-highlight-border-bottom))
+		);
+		border-left: var(
+			--kb-nav-link-highlight-hover-border-left-lv,
+			var(--kb-nav-link-highlight-active-border-left-lv, var(--kb-nav-link-highlight-border-left))
+		);
+		border-top-left-radius: var(
+			--kb-nav-link-highlight-hover-border-top-left-radius-lv,
+			var(
+				--kb-nav-link-highlight-active-border-top-left-radius-lv,
+				var(--kb-nav-link-highlight-border-top-left-radius, 2px)
+			)
+		);
+		border-top-right-radius: var(
+			--kb-nav-link-highlight-hover-border-top-right-radius-lv,
+			var(
+				--kb-nav-link-highlight-active-border-top-right-radius-lv,
+				var(--kb-nav-link-highlight-border-top-right-radius, 2px)
+			)
+		);
+		border-bottom-right-radius: var(
+			--kb-nav-link-highlight-hover-border-bottom-right-radius-lv,
+			var(
+				--kb-nav-link-highlight-active-border-bottom-right-radius-lv,
+				var(--kb-nav-link-highlight-border-bottom-right-radius, 2px)
+			)
+		);
+		border-bottom-left-radius: var(
+			--kb-nav-link-highlight-hover-border-bottom-left-radius-lv,
+			var(
+				--kb-nav-link-highlight-active-border-bottom-left-radius-lv,
+				var(--kb-nav-link-highlight-border-bottom-left-radius, 2px)
+			)
+		);
+		gap: var(--kb-nav-link-highlight-gap, 0.5em);
+		order: var(--kb-nav-link-highlight-order);
+
+		.kt-svg-icon {
+			padding-left: 5px;
+			svg {
+				width: 1em;
+				height: 1em;
+			}
+		}
+	}
+	.kb-link-wrap .kb-nav-link-content.has-highlight-label {
+		display: flex;
+		gap: 5px;
+		flex-wrap: nowrap;
+		&.highlight-with-title .kb-nav-label-content {
+			display: flex;
+			gap: 5px;
+			flex-wrap: nowrap;
+			align-items: center;
+		}
+	}
+
+	.sub-menu {
+		.kb-nav-link-content {
+			flex-wrap: wrap;
+		}
+	}
+	.kb-nav-arrow-svg,
+	.kadence-svg-icon {
+		top: 0.125em;
+		position: relative;
+		width: 1em;
+		height: 1em;
+		align-self: center;
+	}
+	.kb-nav-dropdown-toggle {
+		display: block;
+		background: transparent;
+		position: absolute;
+		right: 0;
+		top: 50%;
+		font-size: inherit;
+		width: 0.9em;
+		height: 0.9em;
+		font-size: 0.9em;
+		display: inline-flex;
+		line-height: inherit;
+		margin: 0;
+		padding: 0;
+		border: none;
+		border-radius: 0;
+		transform: translateY(-50%);
+		overflow: visible;
+		transition: opacity 0.2s ease;
+	}
+
+	.kb-nav-label-description {
+		color: var(
+			--kb-nav-link-description-color-hover-lv,
+			var(--kb-nav-link-description-color-active-lv, var(--kb-nav-link-description-color, inherit))
+		);
+		padding-top: var(--kb-nav-link-description-padding-top);
+		padding-right: var(--kb-nav-link-description-padding-right);
+		padding-bottom: var(--kb-nav-link-description-padding-bottom);
+		padding-left: var(--kb-nav-link-description-padding-left);
+		grid-row: var(--kb-nav-link-description-grid-row);
+		grid-column: var(--kb-nav-link-description-grid-column);
+	}
+
+	.kb-nav-item-title-wrap {
+		grid-template-columns: var(--kb-nav-link-title-wrap-grid-template-columns);
+		flex-direction: var(--kb-nav-link-title-wrap-flex-direction);
+		display: var(--kb-nav-link-title-wrap-display, flex);
+		text-align: var(--kb-nav-link-align);
+		flex-wrap: nowrap;
+		align-items: center;
+	}
+
+	.kb-menu-has-description {
+		&.kb-menu-has-media {
+			.kb-nav-item-title-wrap {
+				--kb-nav-link-title-wrap-grid-template-columns: var(
+					--kb-nav-link-title-wrap-has-media-grid-template-columns
+				);
+			}
+		}
+
+		&.kb-menu-has-icon {
+			.kb-nav-item-title-wrap {
+				--kb-nav-link-title-wrap-grid-template-columns: var(
+					--kb-nav-link-title-wrap-has-media-grid-template-columns,
+					1fr auto
+				);
+			}
+		}
+	}
+
+	&.menu-item-has-children,
+	&.kadence-menu-mega-enabled {
+		--kb-nav-link-position: var(--kb-nav-link-has-children-position, relative);
+	}
+
+	.link-media-container {
+		display: flex;
+		align-self: flex-start;
+		max-width: 150px;
+		overflow: auto;
+
+		padding-top: var(--kb-nav-link-media-container-padding-top, 0.3em);
+		padding-right: var(--kb-nav-link-media-container-padding-right, 0.3em);
+		padding-bottom: var(--kb-nav-link-media-container-padding-bottom, 0.3em);
+		padding-left: var(--kb-nav-link-media-container-padding-left, 0.3em);
+		margin-top: var(--kb-nav-link-media-container-margin-top);
+		margin-right: var(--kb-nav-link-media-container-margin-right);
+		margin-bottom: var(--kb-nav-link-media-container-margin-bottom);
+		margin-left: var(--kb-nav-link-media-container-margin-left);
+		color: var(
+			--kb-nav-link-media-container-color-hover-lv,
+			var(--kb-nav-link-media-container-color-active-lv, var(--kb-nav-link-media-container-color))
+		);
+		background: var(
+			--kb-nav-link-media-container-background-hover-lv,
+			var(--kb-nav-link-media-container-background-active-lv, var(--kb-nav-link-media-container-background))
+		);
+		border-top: var(
+			--kb-nav-link-media-container-hover-border-top-lv,
+			var(--kb-nav-link-media-container-active-border-top-lv, var(--kb-nav-link-media-container-border-top))
+		);
+		border-right: var(
+			--kb-nav-link-media-container-hover-border-right-lv,
+			var(--kb-nav-link-media-container-active-border-right-lv, var(--kb-nav-link-media-container-border-right))
+		);
+		border-bottom: var(
+			--kb-nav-link-media-container-hover-border-bottom-lv,
+			var(--kb-nav-link-media-container-active-border-bottom-lv, var(--kb-nav-link-media-container-border-bottom))
+		);
+		border-left: var(
+			--kb-nav-link-media-container-hover-border-left-lv,
+			var(--kb-nav-link-media-container-active-border-left-lv, var(--kb-nav-link-media-container-border-left))
+		);
+		border-top-left-radius: var(
+			--kb-nav-link-media-container-hover-border-top-left-radius-lv,
+			var(
+				--kb-nav-link-media-container-active-border-top-left-radius-lv,
+				var(--kb-nav-link-media-container-border-top-left-radius)
+			)
+		);
+		border-top-right-radius: var(
+			--kb-nav-link-media-container-hover-border-top-right-radius-lv,
+			var(
+				--kb-nav-link-media-container-active-border-top-right-radius-lv,
+				var(--kb-nav-link-media-container-border-top-right-radius)
+			)
+		);
+		border-bottom-right-radius: var(
+			--kb-nav-link-media-container-hover-border-bottom-right-radius-lv,
+			var(
+				--kb-nav-link-media-container-active-border-bottom-right-radius-lv,
+				var(--kb-nav-link-media-container-border-bottom-right-radius)
+			)
+		);
+		border-bottom-left-radius: var(
+			--kb-nav-link-media-container-hover-border-bottom-left-radius-lv,
+			var(
+				--kb-nav-link-media-container-active-border-bottom-left-radius-lv,
+				var(--kb-nav-link-media-container-border-bottom-left-radius)
+			)
+		);
+		order: var(--kb-nav-link-media-container-order);
+		justify-content: var(--kb-nav-link-media-container-justify-content);
+		align-self: var(--kb-nav-link-media-container-align-self);
+	}
+	.kadence-navigation-link-image-inner-intrinsic-container {
+		max-width: var(--kb-nav-link-media-max-width);
+	}
+	.kadence-navigation-link-image-intrinsic {
+		padding-bottom: var(--kb-nav-link-media-intrinsic-padding-bottom);
+		height: var(--kb-nav-link-media-intrinsic-height);
+		width: var(--kb-nav-link-media-intrinsic-width);
+
+		&.kb-navigation-link-image-ratio {
+			max-width: 100%;
+			position: relative;
+			overflow: hidden;
+
+			.kadence-navigation-link-image-inner-intrinsic {
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				right: 0px;
+				bottom: 0px;
+				& > img {
+					position: absolute;
+					flex: 1;
+					height: 100%;
+					object-fit: cover;
+					width: 100%;
+					top: 0px;
+					left: 0px;
+				}
+			}
+		}
+	}
+
+	.link-svg-icon {
+		display: inline-flex;
+		justify-content: center;
+		align-items: center;
+
+		svg {
+			width: 1em;
+			height: 1em;
+		}
+	}
+
+	.link-media-icon-wrap {
+		font-size: var(--kb-nav-link-icon-font-size);
+		height: var(--kb-nav-link-icon-height);
+	}
+
+	.link-highlight-icon-wrap {
+		font-size: var(--kb-nav-link-highlight-icon-font-size);
+	}
+}
+
+// dealing with a sticky header that has a mega menu which is larger than the viewport.
+.kb-header-sticky-wrapper
+	.kadence-menu-mega-enabled
+	> ul.kb-nav-sub-menu.mega-menu
+	> .kb-row-layout-wrap
+	.kt-row-column-wrap {
+	max-height: calc(98vh - var(--kb-sticky-mega-overflow-header-offset, 0px));
+	overflow-y: auto;
+}

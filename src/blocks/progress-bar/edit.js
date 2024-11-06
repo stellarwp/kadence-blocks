@@ -111,6 +111,7 @@ export function Edit(props) {
 		maskIterations,
 		maskSvg,
 		maskUrl,
+		ariaLabel,
 	} = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
@@ -532,6 +533,10 @@ export function Edit(props) {
 			wrapperLayoutStyles.left = '50%';
 		}
 
+		if (barType === 'line' && labelPosition === 'inside' && previewAlign === 'right') {
+			wrapperLayoutStyles.width = '100%';
+		}
+
 		if (
 			(barType === 'line' || barType === 'line-mask') &&
 			labelPosition === 'inside' &&
@@ -668,6 +673,9 @@ export function Edit(props) {
 													if ('' !== numberSuffix) {
 														attributeUpdates.numberSuffix = '';
 													}
+												}
+												if (labelPosition === 'inside') {
+													attributeUpdates.labelPosition = 'bottom';
 												}
 												if ('' == label) {
 													attributeUpdates.displayLabel = false;
@@ -893,6 +901,16 @@ export function Edit(props) {
 								max={1000}
 								step={decimal === 'two' ? 0.01 : decimal === 'one' ? 0.1 : 1}
 							/>
+							<TextControl
+								label={__('Aria Label', 'kadence-blocks')}
+								value={ariaLabel}
+								onChange={(value) => setAttributes({ ariaLabel: value })}
+								help={__(
+									'Describe the purpose of this progress bar for screen readers, leave blank if label describes and the bar is purely decorative.',
+									'kadence-blocks'
+								)}
+								className={'kb-textbox-style'}
+							/>
 						</KadencePanelBody>
 
 						<KadencePanelBody
@@ -907,7 +925,7 @@ export function Edit(props) {
 							/>
 
 							{displayPercent && (
-								<Fragment>
+								<>
 									<TextControl
 										label={__('Number Prefix', 'kadence-blocks')}
 										value={numberPrefix}
@@ -931,7 +949,7 @@ export function Edit(props) {
 											onChange={(value) => setAttributes({ numberIsRelative: value })}
 										/>
 									)}
-								</Fragment>
+								</>
 							)}
 						</KadencePanelBody>
 
@@ -982,7 +1000,11 @@ export function Edit(props) {
 								value={labelPosition}
 								options={[
 									{ value: 'above', label: __('Above', 'kadence-blocks') },
-									{ value: 'inside', label: __('Inside', 'kadence-blocks') },
+									{
+										value: 'inside',
+										label: __('Inside', 'kadence-blocks'),
+										isDisabled: barType === 'line-mask',
+									},
 									{ value: 'below', label: __('Below', 'kadence-blocks') },
 								]}
 								className={'kb-letter-case'}
@@ -1000,18 +1022,24 @@ export function Edit(props) {
 								onChangeMobile={( nextAlign ) => setAttributes( { mhAlign: ( nextAlign ? nextAlign : '' ) } )}
 								type={'justify'}
 							/> ) : null} */}
-							<ResponsiveAlignControls
-								label={__('Text Alignment', 'kadence-blocks')}
-								value={hAlign ? hAlign : ''}
-								mobileValue={mhAlign ? mhAlign : ''}
-								tabletValue={thAlign ? thAlign : ''}
-								onChange={(nextAlign) =>
-									setAttributes({ hAlign: nextAlign ? nextAlign : 'space-between' })
-								}
-								onChangeTablet={(nextAlign) => setAttributes({ thAlign: nextAlign ? nextAlign : '' })}
-								onChangeMobile={(nextAlign) => setAttributes({ mhAlign: nextAlign ? nextAlign : '' })}
-								type={'justify'}
-							/>
+							{!((barType === 'circle' || barType === 'semicircle') && labelPosition === 'inside') && (
+								<ResponsiveAlignControls
+									label={__('Text Alignment', 'kadence-blocks')}
+									value={hAlign ? hAlign : ''}
+									mobileValue={mhAlign ? mhAlign : ''}
+									tabletValue={thAlign ? thAlign : ''}
+									onChange={(nextAlign) =>
+										setAttributes({ hAlign: nextAlign ? nextAlign : 'space-between' })
+									}
+									onChangeTablet={(nextAlign) =>
+										setAttributes({ thAlign: nextAlign ? nextAlign : '' })
+									}
+									onChangeMobile={(nextAlign) =>
+										setAttributes({ mhAlign: nextAlign ? nextAlign : '' })
+									}
+									type={'justify'}
+								/>
+							)}
 
 							{displayLabel && displayPercent ? (
 								<SelectControl

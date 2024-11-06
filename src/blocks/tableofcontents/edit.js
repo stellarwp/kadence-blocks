@@ -1159,9 +1159,9 @@ function KadenceTableOfContents(props) {
 								label={__('List Link Style', 'kadence-blocks')}
 								value={linkStyle}
 								options={[
-									{ value: 'underline', label: __('Underline') },
-									{ value: 'underline_hover', label: __('Underline on Hover') },
-									{ value: 'plain', label: __('No underline') },
+									{ value: 'underline', label: __('Underline', 'kadence-blocks') },
+									{ value: 'underline_hover', label: __('Underline on Hover', 'kadence-blocks') },
+									{ value: 'plain', label: __('No underline', 'kadence-blocks') },
 								]}
 								onChange={(value) => setAttributes({ linkStyle: value })}
 							/>

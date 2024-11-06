@@ -101,7 +101,7 @@ export function Edit(props) {
 	 * Also skip if using Embed API as we don't need Lat/Lng for that
 	 */
 	useEffect(() => {
-		if (apiType === 'javascript') {
+		if (apiType === 'javascript' && !attributes?.kadenceDynamic?.location?.enable) {
 			const timeOutId = setTimeout(() => locationChange(location), 600);
 			return () => clearTimeout(timeOutId);
 		}
@@ -519,7 +519,7 @@ export function Edit(props) {
 
 								<br />
 
-								<h2 style={{ marginBottom: '0px' }}>Required Permissions</h2>
+								<h2 style={{ marginBottom: '0px' }}>{__('Required Permissions', 'kadence-blocks')}</h2>
 								<ul style={{ marginTop: '5px' }}>
 									{apiType === 'javascript' ? (
 										<>
@@ -539,7 +539,7 @@ export function Edit(props) {
 									onChange={(value) => setCustomGoogleApiKey(value)}
 								/>
 								<Button isPrimary onClick={setGoogleApiKey} disabled={'' === customGoogleApiKey}>
-									Save
+									{__('Save', 'kadence-blocks')}
 								</Button>
 
 								{'' !== customGoogleApiKey && (
@@ -550,7 +550,7 @@ export function Edit(props) {
 											onClick={removeGoogleApiKey}
 											disabled={'' === customGoogleApiKey}
 										>
-											Remove
+											{__('Remove', 'kadence-blocks')}
 										</Button>
 										<br />
 										<br />

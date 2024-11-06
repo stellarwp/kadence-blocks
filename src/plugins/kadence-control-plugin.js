@@ -483,7 +483,7 @@ function KadenceConfig() {
 								<div className="kt-blocks-control-row">
 									<KadenceVisibilitySettings
 										blockName={__('Section', 'kadence-blocks')}
-										blockSlug={'container'}
+										blockSlug={'column'}
 										icon={BlockIcons.blockColumnIcon}
 										options={[
 											{

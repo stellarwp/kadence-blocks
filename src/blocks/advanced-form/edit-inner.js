@@ -3,11 +3,6 @@
  */
 
 /**
- * Import Css
- */
-import './editor.scss';
-
-/**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
@@ -29,6 +24,7 @@ import {
 	PopColorControl,
 	ResponsiveRangeControls,
 	GradientControl,
+	SelectPostFromPostType,
 } from '@kadence/components';
 import {
 	getPreviewSize,
@@ -36,6 +32,7 @@ import {
 	getSpacingOptionOutput,
 	mouseOverVisualizer,
 	arrayStringToInt,
+	allowOneBlockOfType,
 } from '@kadence/helpers';
 
 import {
@@ -79,7 +76,6 @@ import {
 	getFormFields,
 	dedupeFormFieldUniqueIds,
 	FieldBlockAppender,
-	SelectForm,
 } from './components';
 
 /**
@@ -298,6 +294,12 @@ export function EditInner(props) {
 	const formInnerBlocks = useMemo(() => {
 		return get(blocks, [0, 'innerBlocks'], []);
 	}, [blocks]);
+
+	const filterDuplicateBlocks = allowOneBlockOfType();
+	useEffect(() => {
+		filterDuplicateBlocks(formInnerBlocks, 'kadence/advanced-form-submit', __('submit button', 'kadence-blocks'));
+		filterDuplicateBlocks(formInnerBlocks, 'kadence/advanced-form-captcha', __('captcha', 'kadence-blocks'));
+	}, [formInnerBlocks]);
 
 	const newBlock = useMemo(() => {
 		return get(blocks, [0], {});
@@ -549,7 +551,7 @@ export function EditInner(props) {
 					updatedMeta._kad_form_fieldBorderStyle = borderStyle;
 					updatedMeta._kad_form_fieldBorderRadius = [0, 0, 0, 0];
 				}
-				setMeta({ ...meta, updatedMeta });
+				setMeta({ ...meta, ...updatedMeta });
 				await wp.data.dispatch('core').saveEditedEntityRecord('postType', 'kadence_form', id);
 			}
 		} catch (error) {
@@ -634,7 +636,7 @@ export function EditInner(props) {
 						panelName={'kb-advanced-form-selected-switch'}
 						title={__('Selected Form', 'kadence-blocks')}
 					>
-						<SelectForm
+						<SelectPostFromPostType
 							postType="kadence_form"
 							label={__('Selected Form', 'kadence-blocks')}
 							hideLabelFromVision={true}
@@ -678,7 +680,7 @@ export function EditInner(props) {
 							title={__('Form', 'kadence-blocks')}
 						>
 							{!direct && (
-								<SelectForm
+								<SelectPostFromPostType
 									postType="kadence_form"
 									label={__('Selected Form', 'kadence-blocks')}
 									hideLabelFromVision={true}
@@ -1109,20 +1111,23 @@ export function EditInner(props) {
 				<TextControl
 					__nextHasNoMarginBottom
 					className="html-anchor-control"
-					label={__('HTML anchor')}
+					label={__('HTML anchor', 'kadence-blocks')}
 					help={
 						<>
 							{__(
-								'Enter a word or two — without spaces — to make a unique web address just for this block, called an “anchor.” Then, you’ll be able to link directly to this section of your page.'
+								'Enter a word or two — without spaces — to make a unique web address just for this block, called an “anchor.” Then, you’ll be able to link directly to this section of your page.',
+								'kadence-blocks'
 							)}
 
-							<ExternalLink href={__('https://wordpress.org/documentation/article/page-jumps/')}>
-								{__('Learn more about anchors')}
+							<ExternalLink
+								href={__('https://wordpress.org/documentation/article/page-jumps/', 'kadence-blocks')}
+							>
+								{__('Learn more about anchors', 'kadence-blocks')}
 							</ExternalLink>
 						</>
 					}
 					value={anchor}
-					placeholder={__('Add an anchor')}
+					placeholder={__('Add an anchor', 'kadence-blocks')}
 					onChange={(nextValue) => {
 						nextValue = nextValue.replace(ANCHOR_REGEX, '-');
 						setMetaAttribute(nextValue, 'anchor');
@@ -1134,12 +1139,12 @@ export function EditInner(props) {
 				<TextControl
 					__nextHasNoMarginBottom
 					autoComplete="off"
-					label={__('Additional CSS class(es)')}
+					label={__('Additional CSS class(es)', 'kadence-blocks')}
 					value={className}
 					onChange={(nextValue) => {
 						setMetaAttribute(nextValue !== '' ? nextValue : undefined, 'className');
 					}}
-					help={__('Separate multiple classes with spaces.')}
+					help={__('Separate multiple classes with spaces.', 'kadence-blocks')}
 				/>
 			</InspectorAdvancedControls>
 			<BackendStyles

@@ -57,7 +57,7 @@ function KadenceTabsSave({ attributes }) {
 		const backupAnchor = `tab-${
 			titles[index] && titles[index].text
 				? stripStringRender(titles[index].text.toString())
-				: stripStringRender(__('Tab') + (1 + index))
+				: stripStringRender(__('Tab', 'kadence-blocks') + (1 + index))
 		}`;
 		return (
 			<li
@@ -89,11 +89,11 @@ function KadenceTabsSave({ attributes }) {
 							'' === titles[index].subText)) && (
 						<RichText.Content
 							tagName="span"
-							// Translators: %d is the tab number.
 							value={
 								titles[index] && titles[index].text
 									? titles[index].text
-									: sprintf(__('Tab %d'), 1 + index)
+									: // Translators: %d is the tab number.
+									  sprintf(__('Tab %d', 'kadence-blocks'), 1 + index)
 							}
 							className={'kt-title-text'}
 						/>
@@ -105,11 +105,11 @@ function KadenceTabsSave({ attributes }) {
 							<div className="kb-tab-titles-wrap">
 								<RichText.Content
 									tagName="span"
-									// Translators: %d is the tab number.
 									value={
 										titles[index] && titles[index].text
 											? titles[index].text
-											: sprintf(__('Tab %d'), 1 + index)
+											: // Translators: %d is the tab number.
+											  sprintf(__('Tab %d', 'kadence-blocks'), 1 + index)
 									}
 									className={'kt-title-text'}
 								/>

@@ -1231,7 +1231,11 @@
 					{
 						key: 'stripTags',
 						value: function e(input) {
-							var allowed = ((('<a><br><b><i><u><p><ol><ul><li><strong><small>') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
+							var allowed = (
+								('<a><br><b><i><u><p><ol><ul><li><strong><small>' + '')
+									.toLowerCase()
+									.match(/<[a-z][a-z0-9]*>/g) || []
+							).join('');
 							const tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
 								commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
 							return input.replace(commentsAndPhpTags, '').replace(tags, function ($0, $1) {
@@ -1326,7 +1330,7 @@
 								var p = t.querySelector('.glightbox-desc');
 								p && (o.description = p.innerHTML);
 							}
-							if ( o.description ) {
+							if (o.description) {
 								o.description = this.stripTags(o.description);
 							}
 							return this.setSize(o, i, t), (this.slideConfig = o), o;
@@ -1580,7 +1584,7 @@
 			closeButton: !0,
 			startAt: null,
 			autoplayVideos: !0,
-			autofocusVideos: !0,
+			autofocusVideos: false,
 			descPosition: 'bottom',
 			width: '900px',
 			height: '506px',
@@ -1864,11 +1868,11 @@
 														return;
 													}
 													if ('Left' == i.direction) {
-														if (t.index == t.elements.length - 1) return q(f);
+														if (t.index == t.elements.length - 1 && !t.loop()) return q(f);
 														t.nextSlide();
 													}
 													if ('Right' == i.direction) {
-														if (0 == t.index) return q(f);
+														if (0 == t.index && !t.loop()) return q(f);
 														t.prevSlide();
 													}
 												}
@@ -1876,7 +1880,7 @@
 										});
 									t.events.touch = D;
 								})(this),
-							this.settings.keyboardNavigation &&
+							this.settings.keyboardNavigation && ! this.settings.autofocusVideos &&
 								(function e(t) {
 									if (t.events.hasOwnProperty('keyboard')) return !1;
 									t.events.keyboard = a('keydown', {
@@ -1902,6 +1906,44 @@
 												}
 												var c = P(l.getAttribute('data-taborder'));
 												d(l, 'focused'), c && (c.focus(), h(c, 'focused'));
+											}
+											39 == s && t.nextSlide(), 37 == s && t.prevSlide(), 27 == s && t.close();
+										},
+									});
+								})(this);
+							this.settings.keyboardNavigation && this.settings.autofocusVideos &&
+								(function e(t) {
+									if (t.events.hasOwnProperty('keyboard')) return !1;
+									t.events.keyboard = a('keydown', {
+										onElement: window,
+										withCallback: function e(i, n) {
+											var s = (i = i || window.event).keyCode;
+											if (9 == s) {
+												const focusableElementsString =
+													'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]):not(.disabled):not(hidden):not([data-plyr=airplay]):not([data-plyr=captions]):not([data-plyr=pip])';
+												let offCanvasArea = document.querySelector('.glightbox-container');
+												let focusableElements = offCanvasArea.querySelectorAll(focusableElementsString);
+												focusableElements = Array.prototype.slice.call(focusableElements);
+												let firstFocusableElement = focusableElements[0];
+												let lastFocusableElement = focusableElements[focusableElements.length - 1];
+												if (i.shiftKey) {
+													if (document.activeElement === firstFocusableElement) {
+														i.preventDefault();
+														lastFocusableElement.focus();
+													}
+												} else {
+													if (document.activeElement === lastFocusableElement) {
+														i.preventDefault();
+														firstFocusableElement.focus();
+													}
+												}
+												if ( i.target.hasAttribute('data-plyr') && i.target.getAttribute('data-plyr') === 'fullscreen' ) {
+													// Move to large play button.
+													let largePlayButton = document.querySelector('button.plyr__control.plyr__control--overlaid:not(.plyr__control--pressed)');
+													if ( largePlayButton ) {
+														largePlayButton.focus();
+													}
+												}
 											}
 											39 == s && t.nextSlide(), 37 == s && t.prevSlide(), 27 == s && t.close();
 										},

@@ -139,6 +139,7 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 		$overlay_type = ! empty( $attributes['overlayType'] ) ? $attributes['overlayType'] : 'normal';
 		$css->set_selector( '.kb-image' . $unique_id . ' .kb-image-has-overlay:after' );
 		$opacity = isset( $attributes['overlayOpacity'] ) ? $attributes['overlayOpacity'] : 0.3;
+
 		if ( $css->is_number( $opacity ) ) {
 			$css->add_property( 'opacity', $opacity );
 		}
@@ -157,8 +158,12 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 				}
 				break;
 		}
-		$css->set_selector( '.kb-image' . $unique_id . ' img.kb-img, .kb-image' . $unique_id . ' .kb-img img' );
 
+		// Border Radius.
+		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array( 'unit_key' => 'borderRadiusUnit' ) );
+
+		$css->set_media_state( 'desktop' );
+		$css->set_selector( '.kb-image' . $unique_id . ' img.kb-img, .kb-image' . $unique_id . ' .kb-img img' );
 		// Support borders saved pre 3.0
 		if ( !empty( $attributes['borderColor'] ) ) {
 			$css->add_property( 'border-style', 'solid' );
@@ -280,13 +285,23 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 			if ( isset( $caption_font['lineHeight'] ) && is_array( $caption_font['lineHeight'] ) && ! empty( $caption_font['lineHeight'][0] ) ) {
 				$css->add_property( 'line-height', $caption_font['lineHeight'][0] . ( ! isset( $caption_font['lineType'] ) ? 'px' : $caption_font['lineType'] ) );
 			}
-			if ( isset( $caption_font['letterSpacing'] ) && ! empty( $caption_font['letterSpacing'] ) ) {
-				$css->add_property( 'letter-spacing', $caption_font['letterSpacing'] . 'px' );
+			if ( ! empty( $caption_font['letterSpacing'] ) ) {
+				if ( !is_array($caption_font['letterSpacing']) ) {
+					$css->add_property( 'letter-spacing', $caption_font['letterSpacing'] . 'px' );
+				} else {
+					$css->render_responsive_range($caption_font, 'letterSpacing', 'letter-spacing', 'px');
+				}
+
 			}
 			if ( isset( $caption_font['textTransform'] ) && ! empty( $caption_font['textTransform'] ) ) {
 				$css->add_property( 'text-transform', $caption_font['textTransform'] );
 			}
-			if ( isset( $caption_font['family'] ) && ! empty( $caption_font['family'] ) ) {
+			if ( isset( $caption_font['google']) && ! empty($caption_font['google'] ) ) {
+				$google = $caption_font['google'] ? true : false;
+				$google = $google && ( isset( $caption_font['loadGoogle'] ) && $caption_font['loadGoogle'] || ! isset( $caption_font['loadGoogle'] ) ) ? true : false;
+				$variant = ! empty( $caption_font['variant'] ) ? $caption_font['variant'] : null;
+				$css->add_property( 'font-family', $css->render_font_family( $caption_font['family'], $google, $variant ) );
+			} elseif ( isset( $caption_font['family'] ) && ! empty( $caption_font['family'] ) ) {
 				$css->add_property( 'font-family', $caption_font['family'] );
 			}
 			if ( isset( $caption_font['style'] ) && ! empty( $caption_font['style'] ) ) {
@@ -321,6 +336,7 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 
 		return $css->css_output();
 	}
+
 	/**
 	 * Build HTML for dynamic blocks
 	 *
@@ -343,8 +359,13 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 		if ( strpos( $content, 'kb-tooltip-hidden-content') !== false ) {
 			$this->enqueue_script( 'kadence-blocks-tippy' );
 		}
+
+		if( !empty( $attributes['urlSticky']) ) {
+			$this->enqueue_script('kadence-blocks-header-sticky-image');
+		}
 		return $content;
 	}
+
 	/**
 	 * Registers scripts and styles.
 	 */
@@ -357,6 +378,7 @@ class Kadence_Blocks_Image_Block extends Kadence_Blocks_Abstract_Block {
 		if ( apply_filters( 'kadence_blocks_check_if_rest', false ) && kadence_blocks_is_rest() ) {
 			return;
 		}
+		wp_register_script( 'kadence-blocks-header-sticky-image', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-header-sticky-image.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-popper', KADENCE_BLOCKS_URL . 'includes/assets/js/popper.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-tippy', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-tippy.min.js', array( 'kadence-blocks-popper' ), KADENCE_BLOCKS_VERSION, true );
 	}

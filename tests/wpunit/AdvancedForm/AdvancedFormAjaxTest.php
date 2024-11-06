@@ -142,6 +142,64 @@ class AdvancedFormAjaxTest extends WPTestCase {
 		$mockedForm->process_fields( $fields );
 	}
 
+	public function testAllowZeroAsValidInput() {
+		$mockedForm = $this->getMockBuilder(KB_Ajax_Advanced_Form::class)
+		                   ->onlyMethods(['process_bail'])
+		                   ->getMock();
+
+		$fields = [
+			[
+				'inputName' => 'field1',
+				'uniqueID'  => 1,
+				'type'      => 'text',
+				'required'  => true,
+			],
+		];
+		$_POST = [
+			'field1' => '0',  // Submit "0" as the value
+		];
+
+		// We expect process_bail to never be called since "0" should be considered valid input
+		$mockedForm->expects($this->never())
+		           ->method('process_bail');
+
+		$processed_fields = $mockedForm->process_fields($fields);
+
+		// Verify the processed field contains the "0" value
+		$this->assertIsArray($processed_fields);
+		$this->assertCount(1, $processed_fields);
+		$this->assertEquals('0', $processed_fields[0]['value']);
+	}
+
+	public function testAllowZeroAsValidNumberInput() {
+		$mockedForm = $this->getMockBuilder(KB_Ajax_Advanced_Form::class)
+		                   ->onlyMethods(['process_bail'])
+		                   ->getMock();
+
+		$fields = [
+			[
+				'inputName' => 'field1',
+				'uniqueID'  => 1,
+				'type'      => 'number',
+				'required'  => true,
+			],
+		];
+		$_POST = [
+			'field1' => '0',  // Submit "0" as the value
+		];
+
+		// We expect process_bail to never be called since "0" is a valid number
+		$mockedForm->expects($this->never())
+		           ->method('process_bail');
+
+		$processed_fields = $mockedForm->process_fields($fields);
+
+		// Verify the processed field contains the "0" value
+		$this->assertIsArray($processed_fields);
+		$this->assertCount(1, $processed_fields);
+		$this->assertEquals('0', $processed_fields[0]['value']);
+	}
+
 	protected function setUp(): void {
 		parent::setUp();
 

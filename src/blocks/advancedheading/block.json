@@ -205,6 +205,14 @@
 			"type": "string",
 			"default": "normal"
 		},
+		"enableMarkGradient": {
+			"type": "boolean",
+			"default": false
+		},
+		"markGradient": {
+			"type": "string",
+			"default": ""
+		},
 		"markColor": {
 			"type": "string",
 			"default": "#f76a0c"
@@ -516,6 +524,14 @@
 		"iconTooltipDash": {
 			"type": "boolean",
 			"default": false
+		},
+		"enableTextGradient": {
+			"type": "boolean",
+			"default": false
+		},
+		"textGradient": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"usesContext": ["postId", "queryId", "kadence/dynamicSource", "kadence/repeaterRowData", "kadence/repeaterRow"],

@@ -354,6 +354,13 @@ export default function GalleryEdit(props) {
 		undefined !== carouselHeight[2] ? carouselHeight[2] : ''
 	);
 
+	const previewImageRadius = getPreviewSize(
+		previewDevice,
+		undefined !== imageRadius ? imageRadius : '',
+		undefined !== tabletImageRadius ? tabletImageRadius : '',
+		undefined !== mobileImageRadius ? mobileImageRadius : ''
+	);
+
 	const blockProps = useBlockProps({
 		className: `kb-gallery-container`,
 	});
@@ -790,7 +797,7 @@ export default function GalleryEdit(props) {
 									wrap={true}
 									hideLabel={true}
 									label={
-										__('Gallery Type:') +
+										__('Gallery Type:', 'kadence-blocks') +
 										' ' +
 										(undefined !== typeLabel && undefined !== typeLabel[0] && typeLabel[0].label
 											? typeLabel[0].label
@@ -1081,7 +1088,7 @@ export default function GalleryEdit(props) {
 										)}
 										{thumbnailControl && thumbnailControl === 'individual' && (
 											<>
-												<h4>{__('Columns')}</h4>
+												<h4>{__('Columns', 'kadence-blocks')}</h4>
 												<RangeControl
 													label={__('Screen Above 1500px', 'kadence-blocks')}
 													value={thumbnailColumns[0]}
@@ -1327,21 +1334,27 @@ export default function GalleryEdit(props) {
 										/>
 									</BaseControl>
 								)}
-								{ids && undefined !== ids[0] && imagesDynamic.length > 1 && !dynamicSource && (
-									<BaseControl __nextHasNoMarginBottom>
-										<Button
-											className="reverse-order"
-											variant="secondary"
-											text={__('Reverse Image Order', 'kadence-blocks')}
-											icon={previous}
-											onClick={() => {
-												// Trigger an update.
-												const tempImages = JSON.parse(JSON.stringify(imagesDynamic.reverse()));
-												setAttributes({ imagesDynamic: tempImages });
-											}}
-										/>
-									</BaseControl>
-								)}
+								{ids &&
+									undefined !== ids[0] &&
+									imagesDynamic &&
+									imagesDynamic.length > 1 &&
+									!dynamicSource && (
+										<BaseControl __nextHasNoMarginBottom>
+											<Button
+												className="reverse-order"
+												variant="secondary"
+												text={__('Reverse Image Order', 'kadence-blocks')}
+												icon={previous}
+												onClick={() => {
+													// Trigger an update.
+													const tempImages = JSON.parse(
+														JSON.stringify(imagesDynamic.reverse())
+													);
+													setAttributes({ imagesDynamic: tempImages });
+												}}
+											/>
+										</BaseControl>
+									)}
 							</KadencePanelBody>
 							{type &&
 								(type === 'carousel' ||
@@ -1400,11 +1413,11 @@ export default function GalleryEdit(props) {
 														label={__('Slides to Scroll', 'kadence-blocks')}
 														options={[
 															{
-																label: __('One'),
+																label: __('One', 'kadence-blocks'),
 																value: '1',
 															},
 															{
-																label: __('All'),
+																label: __('All', 'kadence-blocks'),
 																value: 'all',
 															},
 														]}
@@ -1743,12 +1756,12 @@ export default function GalleryEdit(props) {
 											tabs={[
 												{
 													name: 'normal',
-													title: __('Normal'),
+													title: __('Normal', 'kadence-blocks'),
 													className: 'kt-normal-tab',
 												},
 												{
 													name: 'hover',
-													title: __('Hover'),
+													title: __('Hover', 'kadence-blocks'),
 													className: 'kt-hover-tab',
 												},
 											]}
@@ -2055,16 +2068,20 @@ export default function GalleryEdit(props) {
 			}; }
 					.kb-gallery-id-${uniqueID} .kadence-blocks-gallery-item .kb-gal-image-radius {
 						${
-							imageRadius && undefined !== imageRadius[0] && '' !== imageRadius[0]
+							previewImageRadius
 								? 'border-radius:' +
-								  imageRadius[0] +
-								  'px ' +
-								  imageRadius[1] +
-								  'px ' +
-								  imageRadius[2] +
-								  'px ' +
-								  imageRadius[3] +
-								  'px;'
+								  previewImageRadius[0] +
+								  imageRadiusUnit +
+								  ' ' +
+								  previewImageRadius[1] +
+								  imageRadiusUnit +
+								  ' ' +
+								  previewImageRadius[2] +
+								  imageRadiusUnit +
+								  ' ' +
+								  previewImageRadius[3] +
+								  imageRadiusUnit +
+								  ';'
 								: ''
 						}
 					}

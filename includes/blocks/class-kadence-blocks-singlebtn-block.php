@@ -81,8 +81,13 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param string $unique_style_id the blocks alternate ID for queries.
 	 */
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
-
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
+
+		$sizes = array( 'Desktop', 'Tablet', 'Mobile' );
+		foreach ( $sizes as $size ) {
+			$this->sized_dynamic_styles( $css, $attributes, $unique_id, $size );
+		}
+		$css->set_media_state( 'desktop' );
 
 		$width_type = ! empty( $attributes['widthType'] ) ? $attributes['widthType'] : 'auto';
 		if ( 'fixed' === $width_type ) {
@@ -92,11 +97,19 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( 'ul.menu .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button' );
 			$css->add_property( 'width', 'initial' );
 		}
+		//standard styles
 		$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button' );
 		$bg_type = ! empty( $attributes['backgroundType'] ) ? $attributes['backgroundType'] : 'normal';
 		$bg_hover_type = ! empty( $attributes['backgroundHoverType'] ) ? $attributes['backgroundHoverType'] : 'normal';
-		if ( ! empty( $attributes['color'] ) ) {
+
+		if ( ! empty( $attributes['color'] ) && ( empty( $attributes['textBackgroundType'] ) || $attributes['textBackgroundType'] === 'normal' ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['color'] ) );
+		} else if( !empty( $attributes['textBackgroundType'] ) && $attributes['textBackgroundType'] === 'gradient' ) {
+			$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button .kt-btn-inner-text' );
+			$css->add_property( 'background', $attributes['textGradient'] );
+			$css->add_property( '-webkit-background-clip', 'text' );
+			$css->add_property( '-webkit-text-fill-color', 'transparent' );
+			$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button' );
 		}
 		if ( 'normal' === $bg_type && ! empty( $attributes['background'] ) ) {
 			$css->add_property( 'background', $css->render_color( $attributes['background'] ) . ( 'gradient' === $bg_hover_type ? ' !important' : '' ) );
@@ -120,23 +133,30 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:not(.specificity):not(.extra-specificity)' );
 			$css->add_property( 'text-decoration', $attributes['textUnderline'] );
 		}
-		// Icon.
+		// Icon styles.
 		$css->set_selector( '.kb-btn' . $unique_id . '.kb-button .kb-svg-icon-wrap' );
 		if ( ! empty( $attributes['iconColor'] ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['iconColor'] ) );
 		}
 		$css->render_measure_output( $attributes, 'iconPadding', 'padding', array( 'unit_key' => 'iconPaddingUnit' ) );
 		$css->render_responsive_range( $attributes, 'iconSize', 'font-size', 'iconSizeUnit' );
-		// Icon Hover.
-		$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover .kb-svg-icon-wrap' );
+		// Icon Hover-Focus.
+		$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover .kb-svg-icon-wrap, .kb-btn' . $unique_id . '.kb-button:focus .kb-svg-icon-wrap' );
 		if ( ! empty( $attributes['iconColorHover'] ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['iconColorHover'] ) );
 		}
-		// Hover.
-		$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:hover' );
-		if ( ! empty( $attributes['colorHover'] ) ) {
+		// Hover-Focus.
+		$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:hover, .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:focus' );
+		if ( ! empty( $attributes['colorHover'] ) && ( empty( $attributes['textBackgroundHoverType'] ) || $attributes['textBackgroundHoverType'] === 'normal' ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['colorHover'] ) );
+		} else if( !empty( $attributes['textBackgroundHoverType'] ) && $attributes['textBackgroundHoverType'] === 'gradient' ) {
+			$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:hover .kt-btn-inner-text, .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:focus .kt-btn-inner-text' );
+			$css->add_property( 'background', $attributes['textGradientHover'] );
+			$css->add_property( '-webkit-background-clip', 'text' );
+			$css->add_property( '-webkit-text-fill-color', 'transparent' );
+			$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:hover, .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:focus' );
 		}
+
 		if ( 'gradient' !== $bg_type && 'normal' === $bg_hover_type && ! empty( $attributes['backgroundHover'] ) ) {
 			$css->add_property( 'background', $css->render_color( $attributes['backgroundHover'] ) );
 		}
@@ -208,6 +228,111 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_media_state( 'desktop' );
 		return $css->css_output();
 	}
+
+
+	/**
+	 * Build up the dynamic styles for a size.
+	 *
+	 * @param string $size The size.
+	 * @return array
+	 */
+	public function sized_dynamic_styles( $css, $attributes, $unique_id, $size = 'Desktop' ) {
+		$sized_attributes = $css->get_sized_attributes_auto( $attributes, $size, false );
+		$sized_attributes_inherit = $css->get_sized_attributes_auto( $attributes, $size );
+
+		$css->set_media_state( strtolower( $size ) );
+
+		//standard transparent styles
+		$css->set_selector( '.header-' . strtolower( $size ) . '-transparent .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button' );
+		$bg_type_transparent = ! empty( $attributes['backgroundTransparentType'] ) ? $attributes['backgroundTransparentType'] : 'normal';
+		$bg_hover_type_transparent = ! empty( $attributes['backgroundTransparentHoverType'] ) ? $attributes['backgroundTransparentHoverType'] : 'normal';
+		if ( ! empty( $attributes['colorTransparent'] ) ) {
+			$css->add_property( 'color', $css->render_color( $attributes['colorTransparent'] ) );
+		}
+		if ( 'normal' === $bg_type_transparent && ! empty( $attributes['backgroundTransparent'] ) ) {
+			$css->add_property( 'background', $css->render_color( $attributes['backgroundTransparent'] ) . ( 'gradient' === $bg_hover_type_transparent ? ' !important' : '' ) );
+		}
+		if ( 'gradient' === $bg_type_transparent && ! empty( $attributes['gradientTransparent'] ) ) {
+			$css->add_property( 'background', $attributes['gradientTransparent'] . ' !important' );
+		}
+		$css->render_measure_output( $attributes, 'borderTransparentRadius', 'border-radius', array( 'unit_key' => 'borderTransparentRadiusUnit' ) );
+		$css->render_border_styles( $attributes, 'borderTransparentStyle', true );
+		if ( isset( $attributes['displayShadowTransparent'] ) && true === $attributes['displayShadowTransparent'] ) {
+			if ( isset( $attributes['shadowTransparent'] ) && is_array( $attributes['shadowTransparent'] ) && isset( $attributes['shadowTransparent'][0] ) && is_array( $attributes['shadowTransparent'][0] ) ) {
+				$css->add_property( 'box-shadow', ( isset( $attributes['shadowTransparent'][0]['inset'] ) && true === $attributes['shadowTransparent'][0]['inset'] ? 'inset ' : '' ) . ( isset( $attributes['shadowTransparent'][0]['hOffset'] ) && is_numeric( $attributes['shadowTransparent'][0]['hOffset'] ) ? $attributes['shadowTransparent'][0]['hOffset'] : '0' ) . 'px ' . ( isset( $attributes['shadowTransparent'][0]['vOffset'] ) && is_numeric( $attributes['shadowTransparent'][0]['vOffset'] ) ? $attributes['shadowTransparent'][0]['vOffset'] : '0' ) . 'px ' . ( isset( $attributes['shadowTransparent'][0]['blur'] ) && is_numeric( $attributes['shadowTransparent'][0]['blur'] ) ? $attributes['shadowTransparent'][0]['blur'] : '14' ) . 'px ' . ( isset( $attributes['shadowTransparent'][0]['spread'] ) && is_numeric( $attributes['shadowTransparent'][0]['spread'] ) ? $attributes['shadowTransparent'][0]['spread'] : '0' ) . 'px ' . $css->render_color( ( isset( $attributes['shadowTransparent'][0]['color'] ) && ! empty( $attributes['shadowTransparent'][0]['color'] ) ? $attributes['shadowTransparent'][0]['color'] : '#000000' ), ( isset( $attributes['shadowTransparent'][0]['opacity'] ) && is_numeric( $attributes['shadowTransparent'][0]['opacity'] ) ? $attributes['shadowTransparent'][0]['opacity'] : 0.2 ) ) );
+			} else {
+				$css->add_property( 'box-shadow', '1px 1px 2px 0px rgba(0, 0, 0, 0.2)' );
+			}
+		}
+
+		//hover transparent styles
+		$css->set_selector( '.header-' . strtolower( $size ) . '-transparent .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:hover' );
+		if ( ! empty( $attributes['colorTransparentHover'] ) ) {
+			$css->add_property( 'color', $css->render_color( $attributes['colorTransparentHover'] ) );
+		}
+		if ( 'gradient' !== $bg_type_transparent && 'normal' === $bg_hover_type_transparent && ! empty( $attributes['backgroundTransparentHover'] ) ) {
+			$css->add_property( 'background', $css->render_color( $attributes['backgroundTransparentHover'] ) );
+		}
+		$css->render_measure_output( $attributes, 'borderTransparentHoverRadius', 'border-radius' );
+		$css->render_border_styles( $attributes, 'borderTransparentHoverStyle', true );
+		if ( isset( $attributes['displayHoverShadowTransparent'] ) && true === $attributes['displayHoverShadowTransparent'] ) {
+			if ( ( 'gradient' === $bg_type_transparent || 'gradient' === $bg_hover_type_transparent ) && isset( $attributes['shadowTransparentHover'][0]['inset'] ) && true === $attributes['shadowTransparentHover'][0]['inset'] ) {
+				$css->add_property( 'box-shadow', '0px 0px 0px 0px rgba(0, 0, 0, 0)' );
+				$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
+			}
+			if ( isset( $attributes['shadowTransparentHover'] ) && is_array( $attributes['shadowTransparentHover'] ) && isset( $attributes['shadowTransparentHover'][0] ) && is_array( $attributes['shadowTransparentHover'][0] ) ) {
+				$css->add_property( 'box-shadow', ( isset( $attributes['shadowTransparentHover'][0]['inset'] ) && true === $attributes['shadowTransparentHover'][0]['inset'] ? 'inset ' : '' ) . ( isset( $attributes['shadowTransparentHover'][0]['hOffset'] ) && is_numeric( $attributes['shadowTransparentHover'][0]['hOffset'] ) ? $attributes['shadowTransparentHover'][0]['hOffset'] : '0' ) . 'px ' . ( isset( $attributes['shadowTransparentHover'][0]['vOffset'] ) && is_numeric( $attributes['shadowTransparentHover'][0]['vOffset'] ) ? $attributes['shadowTransparentHover'][0]['vOffset'] : '0' ) . 'px ' . ( isset( $attributes['shadowTransparentHover'][0]['blur'] ) && is_numeric( $attributes['shadowTransparentHover'][0]['blur'] ) ? $attributes['shadowTransparentHover'][0]['blur'] : '14' ) . 'px ' . ( isset( $attributes['shadowTransparentHover'][0]['spread'] ) && is_numeric( $attributes['shadowTransparentHover'][0]['spread'] ) ? $attributes['shadowTransparentHover'][0]['spread'] : '0' ) . 'px ' . $css->render_color( ( isset( $attributes['shadowTransparentHover'][0]['color'] ) && ! empty( $attributes['shadowTransparentHover'][0]['color'] ) ? $attributes['shadowTransparentHover'][0]['color'] : '#000000' ), ( isset( $attributes['shadowTransparentHover'][0]['opacity'] ) && is_numeric( $attributes['shadowTransparentHover'][0]['opacity'] ) ? $attributes['shadowTransparentHover'][0]['opacity'] : 0.2 ) ) );
+			} else {
+				$css->add_property( 'box-shadow', '2px 2px 3px 0px rgba(0, 0, 0, 0.4)' );
+			}
+		}
+
+		//standard sticky styles
+		$css->set_selector( '.item-is-stuck .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button' );
+		$bg_type_sticky = ! empty( $attributes['backgroundStickyType'] ) ? $attributes['backgroundStickyType'] : 'normal';
+		$bg_hover_type_sticky = ! empty( $attributes['backgroundStickyHoverType'] ) ? $attributes['backgroundStickyHoverType'] : 'normal';
+		if ( ! empty( $attributes['colorSticky'] ) ) {
+			$css->add_property( 'color', $css->render_color( $attributes['colorSticky'] ) );
+		}
+		if ( 'normal' === $bg_type_sticky && ! empty( $attributes['backgroundSticky'] ) ) {
+			$css->add_property( 'background', $css->render_color( $attributes['backgroundSticky'] ) . ( 'gradient' === $bg_hover_type_sticky ? ' !important' : '' ) );
+		}
+		if ( 'gradient' === $bg_type_sticky && ! empty( $attributes['gradientSticky'] ) ) {
+			$css->add_property( 'background', $attributes['gradientSticky'] . ' !important' );
+		}
+		$css->render_measure_output( $attributes, 'borderStickyRadius', 'border-radius', array( 'unit_key' => 'borderStickyRadiusUnit' ) );
+		$css->render_border_styles( $attributes, 'borderStickyStyle', true );
+		if ( isset( $attributes['displayShadowSticky'] ) && true === $attributes['displayShadowSticky'] ) {
+			if ( isset( $attributes['shadowSticky'] ) && is_array( $attributes['shadowSticky'] ) && isset( $attributes['shadowSticky'][0] ) && is_array( $attributes['shadowSticky'][0] ) ) {
+				$css->add_property( 'box-shadow', ( isset( $attributes['shadowSticky'][0]['inset'] ) && true === $attributes['shadowSticky'][0]['inset'] ? 'inset ' : '' ) . ( isset( $attributes['shadowSticky'][0]['hOffset'] ) && is_numeric( $attributes['shadowSticky'][0]['hOffset'] ) ? $attributes['shadowSticky'][0]['hOffset'] : '0' ) . 'px ' . ( isset( $attributes['shadowSticky'][0]['vOffset'] ) && is_numeric( $attributes['shadowSticky'][0]['vOffset'] ) ? $attributes['shadowSticky'][0]['vOffset'] : '0' ) . 'px ' . ( isset( $attributes['shadowSticky'][0]['blur'] ) && is_numeric( $attributes['shadowSticky'][0]['blur'] ) ? $attributes['shadowSticky'][0]['blur'] : '14' ) . 'px ' . ( isset( $attributes['shadowSticky'][0]['spread'] ) && is_numeric( $attributes['shadowSticky'][0]['spread'] ) ? $attributes['shadowSticky'][0]['spread'] : '0' ) . 'px ' . $css->render_color( ( isset( $attributes['shadowSticky'][0]['color'] ) && ! empty( $attributes['shadowSticky'][0]['color'] ) ? $attributes['shadowSticky'][0]['color'] : '#000000' ), ( isset( $attributes['shadowSticky'][0]['opacity'] ) && is_numeric( $attributes['shadowSticky'][0]['opacity'] ) ? $attributes['shadowSticky'][0]['opacity'] : 0.2 ) ) );
+			} else {
+				$css->add_property( 'box-shadow', '1px 1px 2px 0px rgba(0, 0, 0, 0.2)' );
+			}
+		}
+
+		//hover sticky styles
+		$css->set_selector( '.item-is-stuck .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:hover' );
+		if ( ! empty( $attributes['colorStickyHover'] ) ) {
+			$css->add_property( 'color', $css->render_color( $attributes['colorStickyHover'] ) );
+		}
+		if ( 'gradient' !== $bg_type_sticky && 'normal' === $bg_hover_type_sticky && ! empty( $attributes['backgroundStickyHover'] ) ) {
+			$css->add_property( 'background', $css->render_color( $attributes['backgroundStickyHover'] ) );
+		}
+		$css->render_measure_output( $attributes, 'borderStickyHoverRadius', 'border-radius' );
+		$css->render_border_styles( $attributes, 'borderStickyHoverStyle', true );
+		if ( isset( $attributes['displayHoverShadowSticky'] ) && true === $attributes['displayHoverShadowSticky'] ) {
+			if ( ( 'gradient' === $bg_type_sticky || 'gradient' === $bg_hover_type_sticky ) && isset( $attributes['shadowStickyHover'][0]['inset'] ) && true === $attributes['shadowStickyHover'][0]['inset'] ) {
+				$css->add_property( 'box-shadow', '0px 0px 0px 0px rgba(0, 0, 0, 0)' );
+				$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover::before' );
+			}
+			if ( isset( $attributes['shadowStickyHover'] ) && is_array( $attributes['shadowStickyHover'] ) && isset( $attributes['shadowStickyHover'][0] ) && is_array( $attributes['shadowStickyHover'][0] ) ) {
+				$css->add_property( 'box-shadow', ( isset( $attributes['shadowStickyHover'][0]['inset'] ) && true === $attributes['shadowStickyHover'][0]['inset'] ? 'inset ' : '' ) . ( isset( $attributes['shadowStickyHover'][0]['hOffset'] ) && is_numeric( $attributes['shadowStickyHover'][0]['hOffset'] ) ? $attributes['shadowStickyHover'][0]['hOffset'] : '0' ) . 'px ' . ( isset( $attributes['shadowStickyHover'][0]['vOffset'] ) && is_numeric( $attributes['shadowStickyHover'][0]['vOffset'] ) ? $attributes['shadowStickyHover'][0]['vOffset'] : '0' ) . 'px ' . ( isset( $attributes['shadowStickyHover'][0]['blur'] ) && is_numeric( $attributes['shadowStickyHover'][0]['blur'] ) ? $attributes['shadowStickyHover'][0]['blur'] : '14' ) . 'px ' . ( isset( $attributes['shadowStickyHover'][0]['spread'] ) && is_numeric( $attributes['shadowStickyHover'][0]['spread'] ) ? $attributes['shadowStickyHover'][0]['spread'] : '0' ) . 'px ' . $css->render_color( ( isset( $attributes['shadowStickyHover'][0]['color'] ) && ! empty( $attributes['shadowStickyHover'][0]['color'] ) ? $attributes['shadowStickyHover'][0]['color'] : '#000000' ), ( isset( $attributes['shadowStickyHover'][0]['opacity'] ) && is_numeric( $attributes['shadowStickyHover'][0]['opacity'] ) ? $attributes['shadowStickyHover'][0]['opacity'] : 0.2 ) ) );
+			} else {
+				$css->add_property( 'box-shadow', '2px 2px 3px 0px rgba(0, 0, 0, 0.4)' );
+			}
+		}
+	}
+
 	/**
 	 * Build HTML for dynamic blocks
 	 *
@@ -262,6 +387,9 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			if ( ! empty( $rel_add ) ) {
 				$wrapper_args['rel'] = $rel_add;
 			}
+		}
+		if( !empty( $attributes['isSubmit'] ) ) {
+			$wrapper_args['type'] = 'submit';
 		}
 		if ( ! empty( $attributes['tooltip'] ) ) {
 			$wrapper_args['data-kb-tooltip-content'] = esc_attr( $attributes['tooltip'] );

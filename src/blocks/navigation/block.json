@@ -1,0 +1,35 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "kadence/navigation",
+	"title": "Navigation (Adv)",
+	"category": "kadence-blocks",
+	"description": "An advanced navigation block.",
+	"keywords": ["menu", "navigation", "links"],
+	"textdomain": "kadence-blocks",
+	"attributes": {
+		"uniqueID": {
+			"type": "string"
+		},
+		"id": {
+			"type": "integer",
+			"default": 0
+		},
+		"templateKey": {
+			"type": "string",
+			"default": ""
+		},
+		"makePost": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"supports": {
+		"align": ["wide", "full"],
+		"reusable": false,
+		"ariaLabel": true,
+		"html": false,
+		"customClassName": false
+	},
+	"usesContext": ["kadence/headerPostId", "kadence/headerIsSticky", "kadence/headerIsTransparent"]
+}

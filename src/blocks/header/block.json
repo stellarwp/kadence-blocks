@@ -1,0 +1,26 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "kadence/header",
+	"title": "Header (Adv)",
+	"category": "kadence-blocks",
+	"description": "A collection of blocks that allow visitors to get around your site.",
+	"supports": {
+		"html": false,
+		"customClassName": false,
+		"reusable": false,
+		"lock": false,
+		"kbMetadata": true
+	},
+	"textdomain": "kadence-blocks",
+	"keywords": ["header", "footer", "navigation"],
+	"attributes": {
+		"uniqueID": {
+			"type": "string"
+		},
+		"id": {
+			"type": "integer",
+			"default": 0
+		}
+	}
+}

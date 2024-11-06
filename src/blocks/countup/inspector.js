@@ -154,7 +154,7 @@ function Inspector({
 			{activeTab === 'general' && (
 				<>
 					<KadencePanelBody
-						title={__('Count Up Settings')}
+						title={__('Count Up Settings', 'kadence-blocks')}
 						initialOpen={true}
 						panelName={'kb-inspector-countup-settings'}
 					>
@@ -294,7 +294,7 @@ function Inspector({
 										})
 									}
 								/>
-								<h2 className="kt-heading-size-title">{__('Min Height')}</h2>
+								<h2 className="kt-heading-size-title">{__('Min Height', 'kadence-blocks')}</h2>
 								<TabPanel
 									className="kt-size-tabs"
 									activeClass="active-tab"
@@ -546,7 +546,7 @@ function Inspector({
 								})
 							}
 						/>
-						<h2 className="kt-heading-size-title">{__('Min Height')}</h2>
+						<h2 className="kt-heading-size-title">{__('Min Height', 'kadence-blocks')}</h2>
 						<TabPanel
 							className="kt-size-tabs"
 							activeClass="active-tab"
