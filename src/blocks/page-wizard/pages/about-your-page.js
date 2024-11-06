@@ -168,7 +168,7 @@ export function AboutYourPage() {
 								<label htmlFor="pageContext">{__('Page Context', 'kadence-blocks')}</label>
 								<TextareaProgress
 									label={''}
-									placeholder={__('My new page is about...', 'kadence-blocks')}
+									placeholder={__('My new page is about…', 'kadence-blocks')}
 									value={pageContext}
 									onChange={(value) => {
 										dispatch({ type: 'SET_PAGE_CONTEXT', payload: value });
