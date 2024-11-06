@@ -6,7 +6,7 @@ import { InnerBlocks } from '@wordpress/block-editor';
  */
 import edit from './edit';
 import metadata from './block.json';
-import { spacerIcon } from '@kadence/icons';
+import { tableRowBlockIcon } from '@kadence/icons';
 import { __, _x } from '@wordpress/i18n';
 
 /**
@@ -20,7 +20,7 @@ registerBlockType('kadence/table-row', {
 	description: _x('Display tables on your site', 'block description', 'kadence-blocks'),
 	keywords: [__('table', 'kadence-blocks'), __('structure', 'kadence-blocks'), 'KB'],
 	icon: {
-		src: spacerIcon,
+		src: tableRowBlockIcon,
 	},
 	edit,
 	save: () => {
