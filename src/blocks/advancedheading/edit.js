@@ -1064,17 +1064,8 @@ function KadenceAdvancedHeading(props) {
 						-webkit-background-clip: ${enableMarkGradient ? 'text' : enableTextGradient ? 'initial !important' : undefined};
 						background-clip: ${enableMarkGradient ? 'text' : enableTextGradient ? 'initial !important' : undefined};
 						-webkit-text-fill-color: ${enableMarkGradient ? 'transparent' : enableTextGradient ? 'initial !important' : undefined};
-						-webkit-box-decoration-break: ${
-							enableMarkGradient ||
-							enableMarkBackgroundGradient ||
-							markBG ||
-							previewMarkBorderTopStyle ||
-							previewMarkBorderRightStyle ||
-							previewMarkBorderBottomStyle ||
-							previewMarkBorderLeftStyle
-								? 'clone'
-								: undefined
-						};
+						-webkit-box-decoration-break: clone;
+						box-decoration-break: clone;
 						font-weight: ${markFontWeight ? markFontWeight : 'inherit'};
 						font-style: ${markFontStyle ? markFontStyle : 'inherit'};
 						font-size: ${previewMarkSize ? getFontSizeOptionOutput(previewMarkSize, markSizeType) : 'inherit'};

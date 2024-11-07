@@ -304,14 +304,12 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( 'color', $css->render_color( $attributes['markColor'] ) );
 		} else if ( !empty( $attributes['markGradient'] ) && ! empty( $attributes['enableMarkGradient'] ) ) {
 			$css->add_property( 'background-image', $attributes['markGradient'] );
-			$css->add_property( '-webkit-box-decoration-break', 'clone' );
 			$css->add_property( '-webkit-background-clip', 'text' );
 			$css->add_property( 'background-clip', 'text' );
 			$css->add_property( '-webkit-text-fill-color', 'transparent' );
 		}
 		if ( ! empty($attributes['enableMarkBackgroundGradient']) && ! empty($attributes['markBackgroundGradient']) ) {
 			$css->add_property( 'background-image', $attributes['markBackgroundGradient'] );
-			$css->add_property( '-webkit-box-decoration-break', 'clone' );
 		}
 		if ( ! empty( $attributes['markTextTransform'] ) ) {
 			$css->add_property( 'text-transform', $attributes['markTextTransform'] );
@@ -333,6 +331,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		$css->render_border_styles( $attributes, 'markBorderStyles' );
 		$css->render_border_radius( $attributes, 'markBorderRadius', ( ! empty( $attributes['markBorderRadiusUnit'] ) ? $attributes['markBorderRadiusUnit'] : 'px' ) );
 		$css->add_property( '-webkit-box-decoration-break', 'clone' );
+		$css->add_property( 'box-decoration-break', 'clone' );
 		$css->set_media_state( 'tablet' );
 		$css->render_border_radius( $attributes, 'tabletMarkBorderRadius', ( ! empty( $attributes['markBorderRadiusUnit'] ) ? $attributes['markBorderRadiusUnit'] : 'px' ) );
 		$css->set_media_state( 'desktop' );
