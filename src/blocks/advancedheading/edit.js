@@ -1885,8 +1885,7 @@ function KadenceAdvancedHeading(props) {
 									panelName={'kb-adv-heading-highlight-settings'}
 								>
 									<>
-									{!enableMarkGradient && (
-
+										{!enableMarkGradient && (
 											<PopColorControl
 												label={__('Color', 'kadence-blocks')}
 												value={markColor ? markColor : ''}
@@ -1894,43 +1893,49 @@ function KadenceAdvancedHeading(props) {
 												onChange={(value) => setAttributes({ markColor: value })}
 											/>
 										)}
-									{!enableMarkBackgroundGradient && (
-										<ToggleControl
-											style={{ marginTop: '10px' }}
-											label={__('Enable Text Gradient', 'kadence-blocks')}
-											help={__('Enabling Text Gradient disables Background Color and Gradient.', 'kadence-blocks')}
-											checked={enableMarkGradient}
-											onChange={(value) => setAttributes({ enableMarkGradient: value })}
-										/>
-									)}
+										{!enableMarkBackgroundGradient && (
+											<ToggleControl
+												style={{ marginTop: '10px' }}
+												label={__('Enable Text Gradient', 'kadence-blocks')}
+												help={__(
+													'Enabling Text Gradient disables Background Color and Gradient.',
+													'kadence-blocks'
+												)}
+												checked={enableMarkGradient}
+												onChange={(value) => setAttributes({ enableMarkGradient: value })}
+											/>
+										)}
 
-									{enableMarkGradient && (
-										<GradientControl
-											value={markGradient}
-											onChange={(value) => setAttributes({ markGradient: value })}
-											gradients={[]}
-										/>
-									)}
+										{enableMarkGradient && (
+											<GradientControl
+												value={markGradient}
+												onChange={(value) => setAttributes({ markGradient: value })}
+												gradients={[]}
+											/>
+										)}
 
-									{!enableMarkGradient && !enableMarkBackgroundGradient && (
-										<PopColorControl
-											label={__('Background', 'kadence-blocks')}
-											value={markBG ? markBG : ''}
-											default={''}
-											onChange={(value) => setAttributes({ markBG: value })}
-											opacityValue={markBGOpacity}
-											onOpacityChange={(value) => setAttributes({ markBGOpacity: value })}
-											onArrayChange={(color, opacity) =>
-												setAttributes({ markBG: color, markBGOpacity: opacity })
-											}
-										/>
-									)}
+										{!enableMarkGradient && !enableMarkBackgroundGradient && (
+											<PopColorControl
+												label={__('Background', 'kadence-blocks')}
+												value={markBG ? markBG : ''}
+												default={''}
+												onChange={(value) => setAttributes({ markBG: value })}
+												opacityValue={markBGOpacity}
+												onOpacityChange={(value) => setAttributes({ markBGOpacity: value })}
+												onArrayChange={(color, opacity) =>
+													setAttributes({ markBG: color, markBGOpacity: opacity })
+												}
+											/>
+										)}
 									</>
 									{!enableMarkGradient && (
 										<ToggleControl
 											style={{ marginTop: '10px' }}
 											label={__('Enable Background Gradient', 'kadence-blocks')}
-											help={__('Enabling Background Gradient disables Text Gradient.', 'kadence-blocks')}
+											help={__(
+												'Enabling Background Gradient disables Text Gradient.',
+												'kadence-blocks'
+											)}
 											checked={enableMarkBackgroundGradient}
 											onChange={(value) => setAttributes({ enableMarkBackgroundGradient: value })}
 										/>
