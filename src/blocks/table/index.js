@@ -5,6 +5,7 @@ import { InnerBlocks } from '@wordpress/block-editor';
  * Internal dependencies
  */
 import edit from './edit';
+import transforms from './transforms';
 import metadata from './block.json';
 import { tableBlockIcon } from '@kadence/icons';
 import { __, _x } from '@wordpress/i18n';
@@ -26,6 +27,7 @@ registerBlockType('kadence/table', {
 		src: tableBlockIcon,
 	},
 	edit,
+	transforms,
 	save: () => {
 		return <InnerBlocks.Content />;
 	},
