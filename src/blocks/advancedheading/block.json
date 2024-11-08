@@ -307,6 +307,10 @@
 		"mobileAlign": {
 			"type": "string"
 		},
+		"enableTextShadow": {
+			"type": "boolean",
+			"default": false
+		},
 		"textShadow": {
 			"type": "array",
 			"default": [

@@ -36,15 +36,8 @@ const ShadowControl = ( {
 		{ label && (
 			<div className="kt-box-shadow-label">
 				<h2 className="kt-beside-color-label">{ label }</h2>
-				{ onEnableChange && (
-					<ToggleControl
-						checked={ enable }
-						onChange={ value => onEnableChange( value ) }
-					/>
-				) }
 			</div>
 		) }
-		{ enable && (
 			<div className="kt-inner-sub-section">
 				<div className="kt-inner-sub-section-row">
 					<div className="kt-box-color-settings kt-box-shadow-subset">
@@ -105,7 +98,6 @@ const ShadowControl = ( {
 					</div>
 				</div>
 			</div>
-		) }
 	</div>
 );
 export default ShadowControl;
