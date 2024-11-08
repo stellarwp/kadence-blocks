@@ -9,13 +9,13 @@
 	"attributes": {
 		"uniqueID": {
 			"type": "string"
-		},
-		"isHeader": {
-			"type": "boolean",
-			"default": false
 		}
 	},
 	"supports": {
 		"kbMetadata": true
-	}
+	},
+	"usesContext": [
+		"kadence/table/thisRowIsHeader",
+		"kadence/table/isFirstColumnHeader"
+	]
 }

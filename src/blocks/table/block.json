@@ -9,13 +9,8 @@
 		"uniqueID": {
 			"type": "string"
 		},
-		"rows": {
-			"type": "number",
-			"default": 2
-		},
 		"columns": {
-			"type": "number",
-			"default": 2
+			"type": "number"
 		},
 		"dataTypography": {
 			"type": "array",
@@ -180,10 +175,60 @@
 		"maxWidthUnit": {
 			"type": "string",
 			"default": "%"
+		},
+		"cellPadding": {
+			"type": "array",
+			"default": ["xxs", "xs", "xxs", "xs"]
+		},
+		"tabletCellPadding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"mobileCellPadding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"cellPaddingType": {
+			"type": "string",
+			"default": "px"
+		},
+		"headerAlign": {
+			"type": "string",
+			"default": "center"
+		},
+		"headerAlignTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"headerAlignMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"textAlign": {
+			"type": "string",
+			"default": "left"
+		},
+		"textAlignTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"textAlignMobile": {
+			"type": "string",
+			"default": ""
+		},
+		"isFirstRowHeader": {
+			"type": "boolean",
+			"default": false
+		},
+		"isFirstColumnHeader": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"providesContext": {
-		"kadence/table-columns": "columns"
+		"kadence/table/columns": "columns",
+		"kadence/table/isFirstRowHeader": "isFirstRowHeader",
+		"kadence/table/isFirstColumnHeader": "isFirstColumnHeader"
 	},
 	"supports": {
 		"kbMetadata": true

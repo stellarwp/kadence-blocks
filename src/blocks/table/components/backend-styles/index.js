@@ -33,6 +33,16 @@ export default function BackendStyles(props) {
 		maxWidthUnit,
 		maxHeight,
 		maxHeightUnit,
+		cellPadding,
+		tabletCellPadding,
+		mobileCellPadding,
+		cellPaddingType,
+		textAlign,
+		textAlignTablet,
+		textAlignMobile,
+		headerAlign,
+		headerAlignTablet,
+		headerAlignMobile,
 	} = attributes;
 	const css = new KadenceBlocksCSS();
 
@@ -61,31 +71,6 @@ export default function BackendStyles(props) {
 	// 	undefined !== mobileMargin ? mobileMargin[3] : ''
 	// );
 	//
-	// const previewPaddingTop = getPreviewSize(
-	// 	previewDevice,
-	// 	undefined !== padding ? padding[0] : '',
-	// 	undefined !== tabletPadding ? tabletPadding[0] : '',
-	// 	undefined !== mobilePadding ? mobilePadding[0] : ''
-	// );
-	// const previewPaddingRight = getPreviewSize(
-	// 	previewDevice,
-	// 	undefined !== padding ? padding[1] : '',
-	// 	undefined !== tabletPadding ? tabletPadding[1] : '',
-	// 	undefined !== mobilePadding ? mobilePadding[1] : ''
-	// );
-	// const previewPaddingBottom = getPreviewSize(
-	// 	previewDevice,
-	// 	undefined !== padding ? padding[2] : '',
-	// 	undefined !== tabletPadding ? tabletPadding[2] : '',
-	// 	undefined !== mobilePadding ? mobilePadding[2] : ''
-	// );
-	// const previewPaddingLeft = getPreviewSize(
-	// 	previewDevice,
-	// 	undefined !== padding ? padding[3] : '',
-	// 	undefined !== tabletPadding ? tabletPadding[3] : '',
-	// 	undefined !== mobilePadding ? mobilePadding[3] : ''
-	// );
-
 	// const previewWidth = getPreviewSize(
 	// 	previewDevice,
 	// 	undefined !== width?.[0] ? width[0] : '',
@@ -93,11 +78,34 @@ export default function BackendStyles(props) {
 	// 	undefined !== width?.[2] ? width[2] : ''
 	// );
 
+	const previewHeaderAlign = getPreviewSize(previewDevice, headerAlign, headerAlignTablet, headerAlignMobile);
+	const previewTextAlign = getPreviewSize(previewDevice, textAlign, textAlignTablet, textAlignMobile);
+
 	css.set_selector(`.kb-table${uniqueID}`);
 	css.render_font(dataTypography ? dataTypography : [], previewDevice);
 
 	css.set_selector(`.kb-table${uniqueID} th`);
 	css.render_font(headerTypography ? headerTypography : [], previewDevice);
+	css.add_property('text-align', previewHeaderAlign);
+	css.render_measure_output(
+		cellPadding,
+		tabletCellPadding,
+		mobileCellPadding,
+		previewDevice,
+		'padding',
+		cellPaddingType
+	);
+
+	css.set_selector(`.kb-table${uniqueID} td`);
+	css.add_property('text-align', previewTextAlign);
+	css.render_measure_output(
+		cellPadding,
+		tabletCellPadding,
+		mobileCellPadding,
+		previewDevice,
+		'padding',
+		cellPaddingType
+	);
 
 	if (evenOddBackground) {
 		css.set_selector(`.kb-table${uniqueID} tr:nth-child(even)`);

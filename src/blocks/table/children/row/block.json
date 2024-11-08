@@ -36,7 +36,10 @@
 			"default": "px"
 		}
 	},
-	"usesContext": [ "kadence/table-columns" ],
+	"usesContext": [
+		"kadence/table/columns",
+		"kadence/table/isFirstRowHeader"
+	],
 	"supports": {
 		"kbMetadata": true
 	}

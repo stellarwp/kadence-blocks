@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect } from '@wordpress/element';
-import { useSelect, useDispatch } from '@wordpress/data';
+import React, { useState, useEffect } from '@wordpress/element';
+import { useSelect, useDispatch, dispatch, select } from '@wordpress/data';
 import { useBlockProps, BlockControls, InnerBlocks, useInnerBlocksProps } from '@wordpress/block-editor';
 import classnames from 'classnames';
 import metadata from './block.json';
@@ -34,6 +34,7 @@ import {
 	ResponsiveMeasurementControls,
 	ResponsiveBorderControl,
 	ResponsiveRangeControls,
+	ResponsiveAlignControls,
 } from '@kadence/components';
 
 import {
@@ -72,6 +73,18 @@ export function Edit(props) {
 		maxWidthUnit,
 		maxHeight,
 		maxHeightUnit,
+		cellPadding,
+		mobileCellPadding,
+		tabletCelladding,
+		cellPaddingType,
+		textAlign,
+		textAlignTablet,
+		textAlignMobile,
+		headerAlign,
+		headerAlignTablet,
+		headerAlignMobile,
+		isFirstRowHeader,
+		isFirstColumnHeader,
 	} = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
@@ -99,6 +112,8 @@ export function Edit(props) {
 	const { replaceInnerBlocks } = useDispatch('core/block-editor');
 
 	const [activeTab, setActiveTab] = useState('general');
+	const [placeholderRows, setPlaceholderRows] = useState(2);
+	const [placeholderColumns, setPlaceholderColumns] = useState(2);
 
 	const nonTransAttrs = [];
 
@@ -116,9 +131,9 @@ export function Edit(props) {
 	useEffect(() => {
 		setBlockDefaults('kadence/table', attributes);
 
-		if (uniqueID === undefined) {
-			updateRowsColumns(rows, columns);
-		}
+		// if (uniqueID === undefined) {
+		// 	updateRowsColumns(rows);
+		// }
 
 		const postOrFseId = getPostOrFseId(props, parentData);
 		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
@@ -149,44 +164,6 @@ export function Edit(props) {
 		return array && array[index] ? array[index] : '';
 	};
 
-	const updateRowsColumns = (newRows, newColumns) => {
-		const currentBlocks = wp.data.select('core/block-editor').getBlocks(clientId);
-
-		let newRowBlocks = [...currentBlocks];
-
-		if (newRows > rows && newRows !== 0) {
-			const additionalRows = Array(Math.max(1, newRows - currentBlocks.length))
-				.fill()
-				.map(() => {
-					return createBlock(
-						'kadence/table-row',
-						{ columns: newColumns },
-						Array(newColumns)
-							.fill()
-							.map(() => createBlock('kadence/table-data', {}))
-					);
-				});
-			newRowBlocks = [...newRowBlocks, ...additionalRows];
-		} else if (newRows < rows && newRows !== 0) {
-			newRowBlocks = newRowBlocks.slice(0, newRows);
-		}
-
-		if (newColumns !== columns) {
-			newRowBlocks = newRowBlocks.map((rowBlock) => {
-				if (rowBlock.attributes.columns === newColumns) {
-					return rowBlock;
-				}
-				return {
-					...rowBlock,
-					attributes: { ...rowBlock.attributes, columns: newColumns },
-				};
-			});
-		}
-
-		replaceInnerBlocks(clientId, newRowBlocks, false);
-		setAttributes({ rows: newRows, columns: newColumns });
-	};
-
 	const innerBlocksProps = useInnerBlocksProps(
 		{
 			className: classnames(
@@ -200,15 +177,120 @@ export function Edit(props) {
 		},
 		{
 			allowedBlocks: ['kadence/table-row'],
-			templateLock: true,
-			template: [
-				['kadence/table-row', { columns: 2 }],
-				['kadence/table-row', { columns: 2 }],
-			],
 			renderAppender: false,
-			templateInsertUpdatesSelection: true,
+			templateInsertUpdatesSelection: false,
 		}
 	);
+
+	const createTableRow = () => {
+		return createBlock('kadence/table-row', {});
+	};
+
+	const handleInsertRowAbove = (index) => {
+		const { insertBlock } = dispatch('core/block-editor');
+		const newRow = createTableRow();
+		const blocks = select('core/block-editor').getBlocks(clientId);
+		insertBlock(newRow, index, clientId, false);
+		setAttributes({ rows: rows + 1 });
+	};
+
+	const handleInsertRowBelow = (index) => {
+		const { insertBlock } = dispatch('core/block-editor');
+		const newRow = createTableRow();
+		const blocks = select('core/block-editor').getBlocks(clientId);
+		insertBlock(newRow, index + 1, clientId, false);
+		setAttributes({ rows: rows + 1 });
+	};
+
+	const handleDeleteRow = (index) => {
+		const { removeBlock } = dispatch('core/block-editor');
+		const blocks = select('core/block-editor').getBlocks(clientId);
+		if (blocks.length > 1) {
+			// Prevent deleting last row
+			removeBlock(blocks[index].clientId);
+			setAttributes({ rows: rows - 1 });
+		}
+	};
+
+	// Handle column manipulation
+	const handleInsertColumnLeft = (index) => {
+		const { replaceBlock } = dispatch('core/block-editor');
+		const blocks = select('core/block-editor').getBlocks(clientId);
+
+		blocks.forEach((row) => {
+			const newCells = [...row.innerBlocks];
+			const newCell = createBlock('kadence/table-data', {});
+			newCells.splice(index, 0, newCell);
+
+			const newRow = createBlock('kadence/table-row', { ...row.attributes, columns: columns + 1 }, newCells);
+
+			replaceBlock(row.clientId, newRow);
+		});
+
+		setAttributes({ columns: columns + 1 });
+	};
+
+	const handleInsertColumnRight = (index) => {
+		handleInsertColumnLeft(index + 1);
+	};
+
+	const handleDeleteColumn = (index) => {
+		if (columns <= 1) return; // Prevent deleting last column
+
+		const { replaceBlock } = dispatch('core/block-editor');
+		const blocks = select('core/block-editor').getBlocks(clientId);
+
+		blocks.forEach((row) => {
+			const newCells = [...row.innerBlocks];
+			newCells.splice(index, 1);
+
+			const newRow = createBlock('kadence/table-row', { ...row.attributes, columns: columns - 1 }, newCells);
+
+			replaceBlock(row.clientId, newRow);
+		});
+
+		setAttributes({ columns: columns - 1 });
+	};
+
+	// Initialize table structure
+	useEffect(() => {
+		if (uniqueID) {
+			const blocks = select('core/block-editor').getBlocks(clientId);
+
+			if (blocks.length === 0) {
+				const initialBlocks = Array(rows)
+					.fill(null)
+					.map(() => createTableRow());
+
+				replaceInnerBlocks(clientId, initialBlocks, false);
+			}
+		}
+	}, [uniqueID]);
+
+	const createTable = () => {
+		setAttributes({
+			columns: placeholderColumns,
+		});
+		updateRowsColumns(placeholderRows);
+	};
+
+	const updateRowsColumns = (newRows) => {
+		const blocks = select('core/block-editor').getBlocks(clientId);
+		let newBlocks = [...blocks];
+
+		// Handle rows
+		if (newRows > rows) {
+			const additionalRows = Array(newRows - rows)
+				.fill(null)
+				.map(() => createTableRow());
+			newBlocks = [...newBlocks, ...additionalRows];
+		} else if (newRows < rows) {
+			newBlocks = newBlocks.slice(0, newRows);
+		}
+
+		replaceInnerBlocks(clientId, newBlocks, false);
+		setAttributes({ rows: newRows });
+	};
 
 	const saveDataTypography = (value) => {
 		setAttributes({
@@ -221,6 +303,38 @@ export function Edit(props) {
 			headerTypography: [{ ...headerTypography[0], ...value }, ...headerTypography.slice(1)],
 		});
 	};
+
+	if (undefined === columns) {
+		return (
+			<div
+				className={'placeholder'}
+				style={{ backgroundColor: '#FFF', border: '2px solid #000', padding: '20px' }}
+			>
+				<h4 style={{ marginTop: '0', marginBottom: '15px' }}>{__('Table layout', 'kadence-blocks')}</h4>
+				<div style={{ maxWidth: '350px' }}>
+					<RangeControl
+						label={__('Columns', 'kadence-blocks')}
+						value={placeholderColumns}
+						onChange={(value) => setPlaceholderColumns(value)}
+						min={2}
+						max={100}
+					/>
+
+					<RangeControl
+						label={__('Rows', 'kadence-blocks')}
+						value={placeholderRows}
+						onChange={(value) => setPlaceholderRows(value)}
+						min={2}
+						max={100}
+					/>
+
+					<Button isPrimary style={{ marginTop: '10px' }} onClick={() => createTable()}>
+						{__('Create Table', 'kadence-blocks')}
+					</Button>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div {...blockProps}>
@@ -238,25 +352,35 @@ export function Edit(props) {
 
 				{activeTab === 'general' && (
 					<>
-						<KadencePanelBody
-							title={__('Table Structure', 'kadence-blocks')}
-							initialOpen={true}
-							panelName={'tableStructure'}
-							blockSlug={'kadence/table'}
-						>
-							<NumberControl
-								label={__('Number of Rows', 'kadence-blocks')}
-								value={rows}
-								onChange={(newRows) => updateRowsColumns(newRows, columns)}
-								min={1}
-								max={50}
-							/>
+						<KadencePanelBody initialOpen={true} panelName={'tableStructure'} blockSlug={'kadence/table'}>
+							<Button onClick={() => handleInsertRowBelow(9999)} isSecondary>
+								Add Row
+							</Button>
 							<NumberControl
 								label={__('Number of Columns', 'kadence-blocks')}
 								value={columns}
-								onChange={(newColumns) => updateRowsColumns(rows, newColumns)}
+								onChange={(value) => setAttributes({ columns: value })}
 								min={1}
 								max={20}
+							/>
+						</KadencePanelBody>
+						<KadencePanelBody
+							title={__('Headers', 'kadence-blocks')}
+							initialOpen={false}
+							panelName={'table-headers'}
+						>
+							<ToggleControl
+								label={__('First row is header', 'kadence-blocks')}
+								checked={isFirstRowHeader}
+								onChange={(value) => setAttributes({ isFirstRowHeader: value })}
+								help={__('Switches to th tag and applies header typography styles.', 'kadence-blocks')}
+							/>
+
+							<ToggleControl
+								label={__('First column is header', 'kadence-blocks')}
+								checked={isFirstColumnHeader}
+								onChange={(value) => setAttributes({ isFirstColumnHeader: value })}
+								help={__('Switches to th tag and applies header typography styles.', 'kadence-blocks')}
 							/>
 						</KadencePanelBody>
 						<KadencePanelBody
@@ -394,10 +518,40 @@ export function Edit(props) {
 							/>
 						</KadencePanelBody>
 						<KadencePanelBody
+							title={__('Cell Padding', 'kadence-blocks')}
+							panelName={'table-cell-padding'}
+							initialOpen={true}
+						>
+							<ResponsiveMeasureRangeControl
+								label={__('Padding', 'kadence-blocks')}
+								value={cellPadding}
+								tabletValue={tabletCelladding}
+								mobileValue={mobileCellPadding}
+								onChange={(value) => setAttributes({ cellPadding: value })}
+								onChangeTablet={(value) => setAttributes({ tabletCelladding: value })}
+								onChangeMobile={(value) => setAttributes({ mobileCellPadding: value })}
+								min={cellPaddingType === 'em' || cellPaddingType === 'rem' ? -25 : -999}
+								max={cellPaddingType === 'em' || cellPaddingType === 'rem' ? 25 : 999}
+								step={cellPaddingType === 'em' || cellPaddingType === 'rem' ? 0.1 : 1}
+								unit={cellPaddingType}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setAttributes({ cellPaddingType: value })}
+							/>
+						</KadencePanelBody>
+						<KadencePanelBody
 							title={__('Cell Typography', 'kadence-blocks')}
 							panelName={'table-cell-typography'}
 							initialOpen={true}
 						>
+							<ResponsiveAlignControls
+								label={__('Text Alignment', 'kadence-blocks')}
+								value={textAlign}
+								mobileValue={textAlignMobile}
+								tabletValue={textAlignTablet}
+								onChange={(nextAlign) => setAttributes({ textAlign: nextAlign })}
+								onChangeTablet={(nextAlign) => setAttributes({ textAlignMobile: nextAlign })}
+								onChangeMobile={(nextAlign) => setAttributes({ textAlignTablet: nextAlign })}
+							/>
 							<TypographyControls
 								fontGroup={'heading'}
 								fontSize={dataTypography[0].size}
@@ -440,6 +594,15 @@ export function Edit(props) {
 							panelName={'table-header-typography'}
 							initialOpen={false}
 						>
+							<ResponsiveAlignControls
+								label={__('Text Alignment', 'kadence-blocks')}
+								value={headerAlign}
+								mobileValue={headerAlignMobile}
+								tabletValue={headerAlignTablet}
+								onChange={(nextAlign) => setAttributes({ headerAlign: nextAlign })}
+								onChangeTablet={(nextAlign) => setAttributes({ headerAlignMobile: nextAlign })}
+								onChangeMobile={(nextAlign) => setAttributes({ headerAlignTablet: nextAlign })}
+							/>
 							<TypographyControls
 								fontGroup={'heading'}
 								fontSize={headerTypography[0].size}

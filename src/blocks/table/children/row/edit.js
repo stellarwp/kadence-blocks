@@ -1,43 +1,31 @@
 import { __ } from '@wordpress/i18n';
-import React, { useState, useEffect } from '@wordpress/element';
+import React, { useState, useEffect, useMemo } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useBlockProps, BlockControls, InnerBlocks, useInnerBlocksProps } from '@wordpress/block-editor';
+import {
+	useBlockProps,
+	BlockControls,
+	BlockContextProvider,
+	useInnerBlocksProps,
+	InnerBlocks,
+} from '@wordpress/block-editor';
 import metadata from './block.json';
+import { flow } from 'lodash';
+import { ToolbarDropdownMenu, MenuGroup, MenuItem } from '@wordpress/components';
+import { createBlock } from '@wordpress/blocks';
+
+import { plus } from '@wordpress/icons';
 
 import {
-	RangeControl,
-	ToggleControl,
-	TextControl,
-	Modal,
-	SelectControl,
-	FormFileUpload,
-	Button,
-	Notice,
-	__experimentalNumberControl as NumberControl,
-} from '@wordpress/components';
-
-import {
-	KadenceSelectPosts,
 	KadencePanelBody,
 	InspectorControlTabs,
 	KadenceInspectorControls,
-	KadenceBlockDefaults,
-	ResponsiveMeasureRangeControl,
-	SpacingVisualizer,
 	CopyPasteAttributes,
 	PopColorControl,
 	SelectParentBlock,
 	ResponsiveRangeControls,
 } from '@kadence/components';
 
-import {
-	setBlockDefaults,
-	mouseOverVisualizer,
-	getSpacingOptionOutput,
-	getUniqueId,
-	getPostOrFseId,
-	getPreviewSize,
-} from '@kadence/helpers';
+import { setBlockDefaults, getUniqueId, getPostOrFseId } from '@kadence/helpers';
 
 import classnames from 'classnames';
 import BackendStyles from './backend-styles';
@@ -55,14 +43,19 @@ export function Edit(props) {
 		minHeightUnit,
 	} = attributes;
 
-	const columns = context['kadence/table-columns'];
+	const columns = context['kadence/table/columns'];
+	const isFirstRowHeader = context['kadence/table/isFirstRowHeader'];
+
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
+	const { insertBlock } = useDispatch('core/block-editor');
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData, index, parentClientId } = useSelect(
 		(select) => {
 			return {
 				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
 				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
+				parentClientId: select('core/block-editor').getBlockParents(clientId)[0],
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
+				index: select('core/block-editor').getBlockIndex(clientId),
 				parentData: {
 					rootBlock: select('core/block-editor').getBlock(
 						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
@@ -78,22 +71,59 @@ export function Edit(props) {
 		[clientId]
 	);
 
+	const addRow = (position) => {
+		let insertIndex;
+
+		switch (position) {
+			case 'before':
+				insertIndex = index;
+				break;
+			case 'after':
+				insertIndex = index + 1;
+				break;
+			case 'top':
+				insertIndex = 0;
+				break;
+			case 'bottom':
+				insertIndex = undefined;
+				break;
+			default:
+				return;
+		}
+
+		const newRow = createBlock('kadence/table-row', {});
+		insertBlock(newRow, insertIndex, parentClientId, false);
+	};
+
+	const rowControls = [
+		{
+			title: __('Add Row Before', 'kadence-blocks'),
+			onClick: () => addRow('before'),
+		},
+		{
+			title: __('Add Row After', 'kadence-blocks'),
+			onClick: () => addRow('after'),
+		},
+		{
+			title: __('Add Row at Top', 'kadence-blocks'),
+			onClick: () => addRow('top'),
+		},
+		{
+			title: __('Add Row at Bottom', 'kadence-blocks'),
+			onClick: () => addRow('bottom'),
+		},
+	];
+
 	const [activeTab, setActiveTab] = useState('style');
 	const { getBlocks } = useSelect((select) => select('core/block-editor'));
 	const { replaceInnerBlocks } = useDispatch('core/block-editor');
+	const thisRowIsHeader = useMemo(() => {
+		return index === 0 && isFirstRowHeader
+			? { 'kadence/table/thisRowIsHeader': true }
+			: { 'kadence/table/thisRowIsHeader': false };
+	}, [index, isFirstRowHeader]);
 
 	const nonTransAttrs = [];
-
-	// const classes = classnames(
-	// 	{
-	// 		'kb-table-row': true,
-	// 		[`kb-table-row${uniqueID}`]: uniqueID,
-	// 	},
-	// 	className
-	// );
-	// const blockProps = useBlockProps({
-	// 	className: classes,
-	// });
 
 	useEffect(() => {
 		setBlockDefaults('kadence/table-row', attributes);
@@ -113,12 +143,11 @@ export function Edit(props) {
 		const innerBlocks = getBlocks(clientId);
 
 		if (innerBlocks.length < columns) {
-			// Add new blocks
 			const newBlocks = [
 				...innerBlocks,
 				...Array(Math.max(1, columns - innerBlocks.length))
 					.fill(null)
-					.map(() => wp.blocks.createBlock('kadence/table-data', {})),
+					.map(() => createBlock('kadence/table-data', {})),
 			];
 			replaceInnerBlocks(clientId, newBlocks, false);
 		} else if (innerBlocks.length > columns) {
@@ -128,30 +157,43 @@ export function Edit(props) {
 		}
 	}, [columns]);
 
+	const blockProps = useBlockProps({
+		className: classnames(
+			{
+				'kb-table-row': true,
+				[`kb-table-row${uniqueID}`]: uniqueID,
+			},
+			className
+		),
+	});
+
 	const { children, ...innerBlocksProps } = useInnerBlocksProps(
 		{
-			className: classnames(
-				{
-					'kb-table-row': true,
-					[`kb-table-row${uniqueID}`]: uniqueID,
-				},
-				className
-			),
-			style: {},
+			className: '',
 		},
 		{
 			allowedBlocks: ['kadence/table-data'],
-			orientation: 'vertical',
-			templateLock: 'all',
 			renderAppender: false,
 			templateInsertUpdatesSelection: true,
 		}
 	);
 
 	return (
-		<tr {...innerBlocksProps}>
-			{/*<div {...blockProps}>*/}
+		<tr {...blockProps}>
 			<BlockControls>
+				<ToolbarDropdownMenu icon={plus} label={__('Add Row', 'kadence-blocks')}>
+					{({ onClose }) => (
+						<>
+							<MenuGroup>
+								{rowControls.map((control) => (
+									<MenuItem key={control.title} onClick={flow(onClose, control.onClick)}>
+										{control.title}
+									</MenuItem>
+								))}
+							</MenuGroup>
+						</>
+					)}
+				</ToolbarDropdownMenu>
 				<CopyPasteAttributes
 					attributes={attributes}
 					excludedAttrs={nonTransAttrs}
@@ -231,7 +273,7 @@ export function Edit(props) {
 
 				{activeTab === 'advanced' && <>KadenceBlockDefaults</>}
 			</KadenceInspectorControls>
-			{children}
+			<BlockContextProvider value={thisRowIsHeader}>{children}</BlockContextProvider>
 			<BackendStyles attributes={attributes} previewDevice={previewDevice} />
 		</tr>
 	);
