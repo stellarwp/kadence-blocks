@@ -11,6 +11,9 @@
 		"uniqueID": {
 			"type": "string"
 		},
+		"row": {
+			"type": "number"
+		},
 		"backgroundColor": {
 			"type": "string",
 			"default": ""
@@ -40,6 +43,10 @@
 		"kadence/table/columns",
 		"kadence/table/isFirstRowHeader"
 	],
+	"providesContext": {
+		"kadence/table/parentRow": "row",
+		"kadence/table/isFirstRowHeader": "kadence/table/isFirstRowHeader"
+	},
 	"supports": {
 		"kbMetadata": true
 	}

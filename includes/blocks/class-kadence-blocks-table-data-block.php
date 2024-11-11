@@ -91,7 +91,7 @@ class Kadence_Blocks_Table_Data_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		$tag = ! empty( $attributes['isHeader'] ) ? 'th' : 'td';
+		$tag = $this->is_this_block_header( $attributes, $block_instance->context ) ? 'th' : 'td';
 
 		return sprintf(
 			'<%s class="kb-table-wrap kb-table-id-%2$s">%3$s</%s>',
@@ -100,6 +100,17 @@ class Kadence_Blocks_Table_Data_Block extends Kadence_Blocks_Abstract_Block {
 			$content,
 			$tag
 		);
+	}
+
+	private function is_this_block_header( $attributes, $context ) {
+		$isFirstRowHeader = ! empty( $context['kadence/table/isFirstRowHeader'] );
+		$isFirstColumnHeader = ! empty( $context['kadence/table/isFirstColumnHeader'] );
+
+		$column = $attributes['column'] ?? -1;
+		$row = $context['kadence/table/parentRow'] ?? -1;
+
+		return ( $column === 0 && $isFirstColumnHeader ) || ( $row === 0 && $isFirstRowHeader );
+
 	}
 
 }

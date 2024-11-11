@@ -5,10 +5,15 @@
 	"title": "Table Data",
 	"category": "kadence-blocks",
 	"textdomain": "kadence-blocks",
-	"parent": [ "kadence/table-row" ],
+	"parent": [
+		"kadence/table-row"
+	],
 	"attributes": {
 		"uniqueID": {
 			"type": "string"
+		},
+		"column": {
+			"type": "number"
 		}
 	},
 	"supports": {
@@ -16,6 +21,8 @@
 	},
 	"usesContext": [
 		"kadence/table/thisRowIsHeader",
-		"kadence/table/isFirstColumnHeader"
+		"kadence/table/isFirstColumnHeader",
+		"kadence/table/parentRow",
+		"kadence/table/isFirstRowHeader"
 	]
 }

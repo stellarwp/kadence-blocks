@@ -6,13 +6,11 @@
  */
 @import "style";
 
-.kb-table {
-	//table, th, td {
-	//	border: 1px solid;
-	//	border-collapse: collapse;
-	//}
-	//
-	//.wp-block {
-	//	margin: 0 !important;
-	//}
+.kb-table-container {
+
+	[data-type="core/paragraph"],
+	[data-type="core/paragraph"] > .wp-block {
+		margin-bottom: 0 !important;
+		margin-top: 0 !important;
+	}
 }

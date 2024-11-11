@@ -80,9 +80,22 @@ export default function BackendStyles(props) {
 
 	const previewHeaderAlign = getPreviewSize(previewDevice, headerAlign, headerAlignTablet, headerAlignMobile);
 	const previewTextAlign = getPreviewSize(previewDevice, textAlign, textAlignTablet, textAlignMobile);
+	const previewMaxHeight = getPreviewSize(previewDevice, maxHeight?.[0], maxHeight?.[1], maxHeight?.[2]);
+	const previewMaxWidth = getPreviewSize(previewDevice, maxWidth?.[0], maxWidth?.[1], maxWidth?.[2]);
 
 	css.set_selector(`.kb-table${uniqueID}`);
 	css.render_font(dataTypography ? dataTypography : [], previewDevice);
+
+	css.set_selector(`.kb-table-container${uniqueID}`);
+	if (maxHeight) {
+		css.add_property('max-height', getSpacingOptionOutput(previewMaxHeight, maxHeightUnit) + ' !important');
+		css.add_property('overflow-y', 'auto');
+	}
+
+	if (maxWidth) {
+		css.add_property('max-width', getSpacingOptionOutput(previewMaxWidth, maxWidthUnit) + ' !important');
+		css.add_property('overflow-x', 'auto');
+	}
 
 	css.set_selector(`.kb-table${uniqueID} th`);
 	css.render_font(headerTypography ? headerTypography : [], previewDevice);
@@ -167,38 +180,21 @@ export default function BackendStyles(props) {
 		getBorderStyle(previewDevice, 'left', borderStyle, tabletBorderStyle, mobileBorderStyle)
 	);
 
-	// css.add_property('color', KadenceColorOutput(dataTypography.color));
-	// css.add_property('font-size', getFontSizeOptionOutput(previewFontSize, dataTypography.sizeType));
-	// css.add_property('letter-spacing', getSpacingOptionOutput(previewLetterSpacing, dataTypography.letterType));
-	// css.add_property('text-transform', dataTypography.textTransform);
-	// css.add_property('font-family', dataTypography.family);
-	// css.add_property('font-style', dataTypography.style);
-	// css.add_property('font-weight', dataTypography.weight);
-	// css.add_property('line-height', getSpacingOptionOutput(previewLineHeight, dataTypography.lineType));
-	// css.add_property('margin-top', getSpacingOptionOutput(previewMarginTop, marginUnit));
-	// css.add_property('margin-right', getSpacingOptionOutput(previewMarginRight, marginUnit));
-	// css.add_property('margin-bottom', getSpacingOptionOutput(previewMarginBottom, marginUnit));
-	// css.add_property('margin-left', getSpacingOptionOutput(previewMarginLeft, marginUnit));
-	// css.add_property('padding-top', getSpacingOptionOutput(previewPaddingTop, paddingUnit));
-	// css.add_property('padding-right', getSpacingOptionOutput(previewPaddingRight, paddingUnit));
-	// css.add_property('padding-bottom', getSpacingOptionOutput(previewPaddingBottom, paddingUnit));
-	// css.add_property('padding-left', getSpacingOptionOutput(previewPaddingLeft, paddingUnit));
-
 	if (stickyFirstRow) {
-		css.set_selector(`.kb-table${uniqueID}:first-child`);
-		css.add_property('position', 'sticky');
+		css.set_selector(`.kb-table${uniqueID} tr:first-child`);
+		css.add_property('position', 'sticky !important');
 		css.add_property('top', '0');
 		css.add_property('z-index', '1');
 	}
 
 	if (stickyFirstColumn) {
 		css.set_selector(`.kb-table${uniqueID} td:first-child, .kb-table${uniqueID} th:first-child`);
-		css.add_property('position', 'sticky');
+		css.add_property('position', 'sticky !important');
 		css.add_property('left', '0');
 	}
 
-	css.set_selector(`.kb-table-container${uniqueID}`);
-	css.add_property('position', 'sticky');
+	// css.set_selector(`.kb-table-container${uniqueID}`);
+	// css.add_property('position', 'sticky');
 
 	const cssOutput = css.css_output();
 

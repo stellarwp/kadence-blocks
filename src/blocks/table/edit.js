@@ -15,6 +15,7 @@ import {
 	SelectControl,
 	FormFileUpload,
 	Button,
+	ButtonGroup,
 	Notice,
 	__experimentalNumberControl as NumberControl,
 } from '@wordpress/components';
@@ -131,10 +132,6 @@ export function Edit(props) {
 	useEffect(() => {
 		setBlockDefaults('kadence/table', attributes);
 
-		// if (uniqueID === undefined) {
-		// 	updateRowsColumns(rows);
-		// }
-
 		const postOrFseId = getPostOrFseId(props, parentData);
 		const uniqueId = getUniqueId(uniqueID, clientId, isUniqueID, isUniqueBlock, postOrFseId);
 		if (uniqueId !== uniqueID) {
@@ -202,17 +199,15 @@ export function Edit(props) {
 		setAttributes({ rows: rows + 1 });
 	};
 
-	const handleDeleteRow = (index) => {
+	const handleDeleteLastRow = () => {
 		const { removeBlock } = dispatch('core/block-editor');
 		const blocks = select('core/block-editor').getBlocks(clientId);
 		if (blocks.length > 1) {
 			// Prevent deleting last row
-			removeBlock(blocks[index].clientId);
-			setAttributes({ rows: rows - 1 });
+			removeBlock(blocks[blocks.length - 1].clientId, false);
 		}
 	};
 
-	// Handle column manipulation
 	const handleInsertColumnLeft = (index) => {
 		const { replaceBlock } = dispatch('core/block-editor');
 		const blocks = select('core/block-editor').getBlocks(clientId);
@@ -229,43 +224,6 @@ export function Edit(props) {
 
 		setAttributes({ columns: columns + 1 });
 	};
-
-	const handleInsertColumnRight = (index) => {
-		handleInsertColumnLeft(index + 1);
-	};
-
-	const handleDeleteColumn = (index) => {
-		if (columns <= 1) return; // Prevent deleting last column
-
-		const { replaceBlock } = dispatch('core/block-editor');
-		const blocks = select('core/block-editor').getBlocks(clientId);
-
-		blocks.forEach((row) => {
-			const newCells = [...row.innerBlocks];
-			newCells.splice(index, 1);
-
-			const newRow = createBlock('kadence/table-row', { ...row.attributes, columns: columns - 1 }, newCells);
-
-			replaceBlock(row.clientId, newRow);
-		});
-
-		setAttributes({ columns: columns - 1 });
-	};
-
-	// Initialize table structure
-	useEffect(() => {
-		if (uniqueID) {
-			const blocks = select('core/block-editor').getBlocks(clientId);
-
-			if (blocks.length === 0) {
-				const initialBlocks = Array(rows)
-					.fill(null)
-					.map(() => createTableRow());
-
-				replaceInnerBlocks(clientId, initialBlocks, false);
-			}
-		}
-	}, [uniqueID]);
 
 	const createTable = () => {
 		setAttributes({
@@ -317,7 +275,7 @@ export function Edit(props) {
 						value={placeholderColumns}
 						onChange={(value) => setPlaceholderColumns(value)}
 						min={2}
-						max={100}
+						max={15}
 					/>
 
 					<RangeControl
@@ -353,15 +311,21 @@ export function Edit(props) {
 				{activeTab === 'general' && (
 					<>
 						<KadencePanelBody initialOpen={true} panelName={'tableStructure'} blockSlug={'kadence/table'}>
-							<Button onClick={() => handleInsertRowBelow(9999)} isSecondary>
-								Add Row
-							</Button>
+							<ButtonGroup>
+								<Button onClick={() => handleInsertRowBelow(9999)} isSecondary>
+									{__('Add Row', 'kadence-blocks')}
+								</Button>
+								<Button onClick={() => handleDeleteLastRow()} isSecondary>
+									{__('Delete Row', 'kadence-blocks')}
+								</Button>
+							</ButtonGroup>
 							<NumberControl
 								label={__('Number of Columns', 'kadence-blocks')}
 								value={columns}
 								onChange={(value) => setAttributes({ columns: value })}
 								min={1}
 								max={20}
+								style={{ marginTop: '15px' }}
 							/>
 						</KadencePanelBody>
 						<KadencePanelBody
@@ -409,6 +373,7 @@ export function Edit(props) {
 						>
 							<ResponsiveRangeControls
 								label={__('Max Width', 'kadence-blocks')}
+								reset={true}
 								value={undefined !== maxWidth && undefined !== maxWidth[0] ? maxWidth[0] : ''}
 								onChange={(value) => {
 									setAttributes({
@@ -451,6 +416,7 @@ export function Edit(props) {
 
 							<ResponsiveRangeControls
 								label={__('Max Height', 'kadence-blocks')}
+								reset={true}
 								value={undefined !== maxHeight && undefined !== maxHeight[0] ? maxHeight[0] : ''}
 								onChange={(value) => {
 									setAttributes({
@@ -484,7 +450,7 @@ export function Edit(props) {
 								min={0}
 								max={maxHeightUnit === 'px' ? 2000 : 100}
 								step={1}
-								unit={maxHeightUnit ? maxHeightUnit : '%'}
+								unit={maxHeightUnit ? maxHeightUnit : 'px'}
 								onUnit={(value) => {
 									setAttributes({ maxHeightUnit: value });
 								}}

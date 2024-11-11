@@ -10,7 +10,7 @@
 			"type": "string"
 		},
 		"columns": {
-			"type": "number"
+			"type": "string"
 		},
 		"dataTypography": {
 			"type": "array",
@@ -166,7 +166,7 @@
 		},
 		"maxHeightUnit": {
 			"type": "string",
-			"default": "%"
+			"default": "px"
 		},
 		"maxWidth": {
 			"type": "array",
@@ -178,7 +178,7 @@
 		},
 		"cellPadding": {
 			"type": "array",
-			"default": ["xxs", "xs", "xxs", "xs"]
+			"default": ["xxs", "xxs", "xxs", "xxs"]
 		},
 		"tabletCellPadding": {
 			"type": "array",

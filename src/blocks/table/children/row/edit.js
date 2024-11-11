@@ -41,6 +41,7 @@ export function Edit(props) {
 		tabletMinHeight,
 		mobileMinHeight,
 		minHeightUnit,
+		row,
 	} = attributes;
 
 	const columns = context['kadence/table/columns'];
@@ -70,6 +71,12 @@ export function Edit(props) {
 		},
 		[clientId]
 	);
+
+	useEffect(() => {
+		if (index !== row) {
+			setAttributes({ row: index });
+		}
+	}, [index]);
 
 	const addRow = (position) => {
 		let insertIndex;

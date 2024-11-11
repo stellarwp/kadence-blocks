@@ -23,7 +23,7 @@ const DEFAULT_BLOCK = [['core/paragraph', {}]];
 export function Edit(props) {
 	const { attributes, setAttributes, className, clientId, context } = props;
 
-	const { uniqueID } = attributes;
+	const { uniqueID, column } = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
 
@@ -69,6 +69,12 @@ export function Edit(props) {
 		},
 		[clientId]
 	);
+
+	useEffect(() => {
+		if (columnPosition !== column) {
+			setAttributes({ column: columnPosition });
+		}
+	}, [columnPosition]);
 
 	const classes = classnames(className, 'kb-table-data');
 	const blockProps = useBlockProps({
