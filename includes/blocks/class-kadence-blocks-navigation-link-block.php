@@ -708,7 +708,10 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 	 * @return boolean
 	 */
 	public function is_current( $attributes ) {
-		return ! empty( $attributes['id'] ) && get_queried_object_id() === (int) $attributes['id'] && ! empty( get_queried_object()->post_type );
+		global $wp;
+		
+		$link_matches = untrailingslashit( $attributes['url'] ) ===untrailingslashit( home_url( $wp->request ) );
+		return ( ! empty( $attributes['id'] ) && get_queried_object_id() === (int) $attributes['id'] && ! empty( get_queried_object()->post_type ) ) || $link_matches;
 	}
 
 	/**
