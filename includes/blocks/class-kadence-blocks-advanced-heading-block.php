@@ -162,7 +162,6 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . ', .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] .kb-adv-text-inner' );
 			$css->add_property( 'background-image', $attributes['textGradient'] );
 			$css->add_property( 'background-clip', 'text' );
-//			$css->add_property( 'display', 'inline-block' );
 			$css->add_property( '-webkit-box-decoration-break', 'clone' );
 			$css->add_property( 'box-decoration-break', 'clone' );
 			$css->add_property( '-webkit-background-clip', 'text' );
