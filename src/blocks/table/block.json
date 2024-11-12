@@ -10,7 +10,7 @@
 			"type": "string"
 		},
 		"columns": {
-			"type": "string"
+			"type": "number"
 		},
 		"dataTypography": {
 			"type": "array",
@@ -221,6 +221,14 @@
 			"default": false
 		},
 		"isFirstColumnHeader": {
+			"type": "boolean",
+			"default": false
+		},
+		"columnSettings": {
+			"type": "array",
+			"default": []
+		},
+		"useFixedWidths": {
 			"type": "boolean",
 			"default": false
 		}

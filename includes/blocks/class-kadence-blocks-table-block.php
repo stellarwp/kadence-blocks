@@ -86,6 +86,28 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property('overflow-x', 'auto');
 		}
 
+		if ( ! empty( $attributes['useFixedWidths'] ) && ! empty( $attributes['columnSettings'] ) && is_array( $attributes['columnSettings'] ) ) {
+			$has_fixed_columns = false;
+
+			foreach ( $attributes['columnSettings'] as $index => $settings ) {
+				if ( ! empty( $settings['useFixed'] ) && isset( $settings['width'] ) && '' !== $settings['width'] ) {
+					$has_fixed_columns = true;
+					$width_unit = ! empty( $settings['unit'] ) ? $settings['unit'] : '%';
+
+					$css->set_selector( '.kb-table' . esc_attr( $unique_id ) . ' td:nth-child(' . ( $index + 1 ) . '), ' .
+						'.kb-table' . esc_attr( $unique_id ) . ' th:nth-child(' . ( $index + 1 ) . ')' );
+					$css->add_property( 'width', $settings['width'] . $width_unit );
+				}
+			}
+
+			// Only set table-layout fixed if we have any fixed width columns.
+			if ( $has_fixed_columns ) {
+				$css->set_selector( '.kb-table' . esc_attr( $unique_id ) );
+				$css->add_property( 'table-layout', 'fixed' );
+				$css->add_property( 'width', '100%' );
+			}
+		}
+
 		if( !empty( $attributes['stickyFirstRow']) ) {
 			$css->set_selector( '.kb-table-container .kb-table' . esc_attr( $unique_id ) . ' tr:first-child');
 			$css->add_property( 'position', 'sticky');

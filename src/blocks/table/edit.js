@@ -18,6 +18,7 @@ import {
 	ButtonGroup,
 	Notice,
 	__experimentalNumberControl as NumberControl,
+	ResizableBox,
 } from '@wordpress/components';
 
 import {
@@ -47,6 +48,9 @@ import {
 	getPreviewSize,
 } from '@kadence/helpers';
 import BackendStyles from './components/backend-styles';
+
+const DEFAULT_PERCENT_WIDTH = 30;
+const DEFAULT_PIXEL_WIDTH = 150;
 
 export function Edit(props) {
 	const { attributes, setAttributes, className, clientId } = props;
@@ -113,8 +117,9 @@ export function Edit(props) {
 	const { replaceInnerBlocks } = useDispatch('core/block-editor');
 
 	const [activeTab, setActiveTab] = useState('general');
-	const [placeholderRows, setPlaceholderRows] = useState(2);
+	const [placeholderRows, setPlaceholderRows] = useState(4);
 	const [placeholderColumns, setPlaceholderColumns] = useState(2);
+	const [isResizing, setIsResizing] = useState(false);
 
 	const nonTransAttrs = [];
 
@@ -183,20 +188,11 @@ export function Edit(props) {
 		return createBlock('kadence/table-row', {});
 	};
 
-	const handleInsertRowAbove = (index) => {
-		const { insertBlock } = dispatch('core/block-editor');
-		const newRow = createTableRow();
-		const blocks = select('core/block-editor').getBlocks(clientId);
-		insertBlock(newRow, index, clientId, false);
-		setAttributes({ rows: rows + 1 });
-	};
-
 	const handleInsertRowBelow = (index) => {
 		const { insertBlock } = dispatch('core/block-editor');
 		const newRow = createTableRow();
 		const blocks = select('core/block-editor').getBlocks(clientId);
 		insertBlock(newRow, index + 1, clientId, false);
-		setAttributes({ rows: rows + 1 });
 	};
 
 	const handleDeleteLastRow = () => {
@@ -208,46 +204,57 @@ export function Edit(props) {
 		}
 	};
 
-	const handleInsertColumnLeft = (index) => {
-		const { replaceBlock } = dispatch('core/block-editor');
-		const blocks = select('core/block-editor').getBlocks(clientId);
-
-		blocks.forEach((row) => {
-			const newCells = [...row.innerBlocks];
-			const newCell = createBlock('kadence/table-data', {});
-			newCells.splice(index, 0, newCell);
-
-			const newRow = createBlock('kadence/table-row', { ...row.attributes, columns: columns + 1 }, newCells);
-
-			replaceBlock(row.clientId, newRow);
-		});
-
-		setAttributes({ columns: columns + 1 });
-	};
-
 	const createTable = () => {
 		setAttributes({
-			columns: placeholderColumns,
+			columns: parseInt(placeholderColumns),
 		});
 		updateRowsColumns(placeholderRows);
+	};
+
+	const getColumnDefaults = () => ({
+		useFixed: false,
+		width: DEFAULT_PERCENT_WIDTH,
+		unit: '%',
+	});
+
+	const getColumnSetting = (index) => {
+		const settings = attributes.columnSettings || [];
+		return settings[index] || getColumnDefaults();
+	};
+
+	const updateColumnSetting = (index, updates) => {
+		const newSettings = [...(attributes.columnSettings || [])];
+		const currentSetting = getColumnSetting(index);
+
+		// Handle unit changes with smart defaults
+		if (updates.unit && updates.unit !== currentSetting.unit) {
+			if (updates.unit === '%') {
+				// Converting from px to %
+				updates.width = DEFAULT_PERCENT_WIDTH;
+			} else {
+				// Converting from % to px
+				updates.width = DEFAULT_PIXEL_WIDTH;
+			}
+		}
+
+		newSettings[index] = {
+			...currentSetting,
+			...updates,
+		};
+
+		setAttributes({ columnSettings: newSettings });
 	};
 
 	const updateRowsColumns = (newRows) => {
 		const blocks = select('core/block-editor').getBlocks(clientId);
 		let newBlocks = [...blocks];
 
-		// Handle rows
-		if (newRows > rows) {
-			const additionalRows = Array(newRows - rows)
-				.fill(null)
-				.map(() => createTableRow());
-			newBlocks = [...newBlocks, ...additionalRows];
-		} else if (newRows < rows) {
-			newBlocks = newBlocks.slice(0, newRows);
-		}
+		const additionalRows = Array(newRows)
+			.fill(null)
+			.map(() => createTableRow());
+		newBlocks = [...newBlocks, ...additionalRows];
 
 		replaceInnerBlocks(clientId, newBlocks, false);
-		setAttributes({ rows: newRows });
 	};
 
 	const saveDataTypography = (value) => {
@@ -310,6 +317,89 @@ export function Edit(props) {
 
 				{activeTab === 'general' && (
 					<>
+						<KadencePanelBody
+							title={__('Column Widths', 'kadence-blocks')}
+							initialOpen={false}
+							panelName={'kb-table-column-widths'}
+						>
+							<ToggleControl
+								label={__('Enable Column Width Controls', 'kadence-blocks')}
+								checked={attributes.useFixedWidths}
+								onChange={(value) => setAttributes({ useFixedWidths: value })}
+							/>
+
+							{attributes.useFixedWidths && (
+								<div className="kb-table-column-controls">
+									{Array.from({ length: attributes.columns }).map((_, index) => {
+										const columnSetting = getColumnSetting(index);
+										return (
+											<div
+												key={index}
+												className="kb-table-column-control"
+												style={{
+													marginBottom: '24px',
+													borderBottom: '1px solid #e0e0e0',
+													paddingBottom: '16px',
+												}}
+											>
+												<h3 style={{ margin: '0 0 8px' }}>
+													{sprintf(__('Column %d', 'kadence-blocks'), index + 1)}
+												</h3>
+
+												<ToggleControl
+													label={__('Set Fixed Width', 'kadence-blocks')}
+													checked={columnSetting.useFixed}
+													onChange={(value) =>
+														updateColumnSetting(index, { useFixed: value })
+													}
+												/>
+
+												{columnSetting.useFixed && (
+													<>
+														<div
+															style={{
+																display: 'flex',
+																gap: '8px',
+																alignItems: 'flex-start',
+																marginTop: '8px',
+															}}
+														>
+															<div style={{ flex: 1 }}>
+																<RangeControl
+																	value={
+																		parseFloat(columnSetting.width) ||
+																		(columnSetting.unit === '%'
+																			? DEFAULT_PERCENT_WIDTH
+																			: DEFAULT_PIXEL_WIDTH)
+																	}
+																	onChange={(value) =>
+																		updateColumnSetting(index, { width: value })
+																	}
+																	min={columnSetting.unit === '%' ? 1 : 20}
+																	max={columnSetting.unit === '%' ? 100 : 1000}
+																	step={1}
+																/>
+															</div>
+															<SelectControl
+																value={columnSetting.unit}
+																options={[
+																	{ label: '%', value: '%' },
+																	{ label: 'px', value: 'px' },
+																]}
+																onChange={(value) =>
+																	updateColumnSetting(index, { unit: value })
+																}
+																style={{ minWidth: '70px' }}
+															/>
+														</div>
+													</>
+												)}
+											</div>
+										);
+									})}
+								</div>
+							)}
+						</KadencePanelBody>
 						<KadencePanelBody initialOpen={true} panelName={'tableStructure'} blockSlug={'kadence/table'}>
 							<ButtonGroup>
 								<Button onClick={() => handleInsertRowBelow(9999)} isSecondary>
@@ -322,7 +412,7 @@ export function Edit(props) {
 							<NumberControl
 								label={__('Number of Columns', 'kadence-blocks')}
 								value={columns}
-								onChange={(value) => setAttributes({ columns: value })}
+								onChange={(value) => setAttributes({ columns: parseInt(value) })}
 								min={1}
 								max={20}
 								style={{ marginTop: '15px' }}
@@ -709,6 +799,108 @@ export function Edit(props) {
 				)}
 			</KadenceInspectorControls>
 			<BackendStyles attributes={attributes} previewDevice={previewDevice} />
+			{attributes.useFixedWidths && (
+				<div className="kb-table-width-controls">
+					<div className="kb-table-width-resizers" style={{ display: 'flex', marginBottom: '20px' }}>
+						{Array.from({ length: attributes.columns }).map((_, index) => {
+							const columnSetting = getColumnSetting(index);
+
+							if (!columnSetting.useFixed) {
+								return (
+									<div
+										key={index}
+										style={{
+											flex: 1,
+											height: '30px',
+											backgroundColor: '#f0f0f0',
+											display: 'flex',
+											alignItems: 'center',
+											justifyContent: 'center',
+											fontSize: '12px',
+											margin: '0 1px',
+										}}
+									>
+										{__('Auto', 'kadence-blocks')}
+									</div>
+								);
+							}
+
+							return (
+								<ResizableBox
+									key={index}
+									size={{
+										width: `${columnSetting.width || DEFAULT_PERCENT_WIDTH}${columnSetting.unit}`,
+										height: 30,
+									}}
+									minWidth={columnSetting.unit === '%' ? '1%' : '20'}
+									maxWidth={columnSetting.unit === '%' ? '100%' : '1000'}
+									enable={{
+										top: false,
+										right: true,
+										bottom: false,
+										left: false,
+										topRight: false,
+										bottomRight: false,
+										bottomLeft: false,
+										topLeft: false,
+									}}
+									onResizeStart={() => {
+										setIsResizing(true);
+										// Ensure we have a valid initial width
+										if (!columnSetting.width) {
+											updateColumnSetting(index, {
+												width:
+													columnSetting.unit === '%'
+														? DEFAULT_PERCENT_WIDTH
+														: DEFAULT_PIXEL_WIDTH,
+											});
+										}
+									}}
+									onResizeStop={(event, direction, elt, delta) => {
+										setIsResizing(false);
+										const currentWidth =
+											parseFloat(columnSetting.width) ||
+											(columnSetting.unit === '%' ? DEFAULT_PERCENT_WIDTH : DEFAULT_PIXEL_WIDTH);
+
+										const newWidth =
+											columnSetting.unit === '%'
+												? currentWidth + (delta.width / elt.parentElement.offsetWidth) * 100
+												: currentWidth + delta.width;
+
+										updateColumnSetting(index, {
+											width: Math.round(
+												Math.max(
+													columnSetting.unit === '%' ? 1 : 20,
+													Math.min(columnSetting.unit === '%' ? 100 : 1000, newWidth)
+												)
+											),
+										});
+									}}
+									showHandle={!isResizing}
+								>
+									<div
+										style={{
+											height: '100%',
+											backgroundColor: '#e0e0e0',
+											display: 'flex',
+											alignItems: 'center',
+											justifyContent: 'center',
+											fontSize: '12px',
+										}}
+									>
+										{`${Math.round(
+											columnSetting.width ||
+												(columnSetting.unit === '%'
+													? DEFAULT_PERCENT_WIDTH
+													: DEFAULT_PIXEL_WIDTH)
+										)}${columnSetting.unit}`}
+									</div>
+								</ResizableBox>
+							);
+						})}
+					</div>
+				</div>
+			)}
 			<table {...innerBlocksProps} />
 		</div>
 	);

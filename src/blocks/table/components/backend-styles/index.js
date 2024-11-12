@@ -43,41 +43,12 @@ export default function BackendStyles(props) {
 		headerAlign,
 		headerAlignTablet,
 		headerAlignMobile,
+		useFixedWidths,
+		columnSettings,
 	} = attributes;
 	const css = new KadenceBlocksCSS();
 
-	// const previewMarginTop = getPreviewSize(
-	// 	previewDevice,
-	// 	undefined !== margin ? margin[0] : '',
-	// 	undefined !== tabletMargin ? tabletMargin[0] : '',
-	// 	undefined !== mobileMargin ? mobileMargin[0] : ''
-	// );
-	// const previewMarginRight = getPreviewSize(
-	// 	previewDevice,
-	// 	undefined !== margin ? margin[1] : '',
-	// 	undefined !== tabletMargin ? tabletMargin[1] : '',
-	// 	undefined !== mobileMargin ? mobileMargin[1] : ''
-	// );
-	// const previewMarginBottom = getPreviewSize(
-	// 	previewDevice,
-	// 	undefined !== margin ? margin[2] : '',
-	// 	undefined !== tabletMargin ? tabletMargin[2] : '',
-	// 	undefined !== mobileMargin ? mobileMargin[2] : ''
-	// );
-	// const previewMarginLeft = getPreviewSize(
-	// 	previewDevice,
-	// 	undefined !== margin ? margin[3] : '',
-	// 	undefined !== tabletMargin ? tabletMargin[3] : '',
-	// 	undefined !== mobileMargin ? mobileMargin[3] : ''
-	// );
-	//
-	// const previewWidth = getPreviewSize(
-	// 	previewDevice,
-	// 	undefined !== width?.[0] ? width[0] : '',
-	// 	undefined !== width?.[1] ? width[1] : '',
-	// 	undefined !== width?.[2] ? width[2] : ''
-	// );
-
+	// Get preview sizes
 	const previewHeaderAlign = getPreviewSize(previewDevice, headerAlign, headerAlignTablet, headerAlignMobile);
 	const previewTextAlign = getPreviewSize(previewDevice, textAlign, textAlignTablet, textAlignMobile);
 	const previewMaxHeight = getPreviewSize(previewDevice, maxHeight?.[0], maxHeight?.[1], maxHeight?.[2]);
@@ -95,6 +66,26 @@ export default function BackendStyles(props) {
 	if (maxWidth) {
 		css.add_property('max-width', getSpacingOptionOutput(previewMaxWidth, maxWidthUnit) + ' !important');
 		css.add_property('overflow-x', 'auto');
+	}
+
+	// Add column width styles
+	if (useFixedWidths && Array.isArray(columnSettings)) {
+		let hasFixedColumns = false;
+
+		columnSettings.forEach((settings, index) => {
+			if (settings?.useFixed && settings?.width) {
+				hasFixedColumns = true;
+				css.set_selector(`.kb-table${uniqueID} td:nth-child(${index + 1}), .kb-table${uniqueID} th:nth-child(${index + 1})`);
+				css.add_property('width', `${settings.width}${settings.unit}`);
+			}
+		});
+
+		// Only apply fixed layout if we have any fixed columns
+		if (hasFixedColumns) {
+			css.set_selector(`.kb-table${uniqueID}`);
+			css.add_property('table-layout', 'fixed');
+			css.add_property('width', '100%');
+		}
 	}
 
 	css.set_selector(`.kb-table${uniqueID} th`);
@@ -192,9 +183,6 @@ export default function BackendStyles(props) {
 		css.add_property('position', 'sticky !important');
 		css.add_property('left', '0');
 	}
-
-	// css.set_selector(`.kb-table-container${uniqueID}`);
-	// css.add_property('position', 'sticky');
 
 	const cssOutput = css.css_output();
 
