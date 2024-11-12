@@ -1167,8 +1167,7 @@ function KadenceAdvancedHeading(props) {
 						-webkit-box-decoration-break: clone;
 						box-decoration-break: clone;
 						display: inline;
-					}`
-				}
+					}`}
 			</style>
 			<BlockControls>
 				<ToolbarGroup group="tag">
