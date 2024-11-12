@@ -75,7 +75,9 @@ export default function BackendStyles(props) {
 		columnSettings.forEach((settings, index) => {
 			if (settings?.useFixed && settings?.width) {
 				hasFixedColumns = true;
-				css.set_selector(`.kb-table${uniqueID} td:nth-child(${index + 1}), .kb-table${uniqueID} th:nth-child(${index + 1})`);
+				css.set_selector(
+					`.kb-table${uniqueID} td:nth-child(${index + 1}), .kb-table${uniqueID} th:nth-child(${index + 1})`
+				);
 				css.add_property('width', `${settings.width}${settings.unit}`);
 			}
 		});
