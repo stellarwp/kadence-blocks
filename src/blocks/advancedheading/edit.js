@@ -1158,6 +1158,17 @@ function KadenceAdvancedHeading(props) {
 					`#block-${clientId} .kadence-advancedheading-text:hover > .kb-advanced-heading-svg-icon {
 							color: ${KadenceColorOutput(iconColorHover)}!important;
 						}`}
+				{enableTextGradient &&
+					`.kt-adv-heading${uniqueID} > span#adv-heading${uniqueID} {
+						background-image: ${textGradient};
+						-webkit-background-clip: text;
+						background-clip: text;
+						-webkit-text-fill-color: transparent;
+						-webkit-box-decoration-break: clone;
+						box-decoration-break: clone;
+						display: inline;
+					}`
+				}
 			</style>
 			<BlockControls>
 				<ToolbarGroup group="tag">
