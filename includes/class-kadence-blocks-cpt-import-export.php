@@ -157,15 +157,18 @@ class Kadence_Blocks_Cpt_Import_Export
 				gap: 10px;
 				align-items: center;
 			}
-			/* Clear float after the buttons but before the import form */
 			.kadence-import-form:before {
 				content: "";
 				display: table;
 				clear: both;
 			}
-			/* Ensure search box stays on the right */
 			.search-box {
 				float: right;
+			}
+			@media screen and (max-width: 782px) {
+				.kadence-import-export-buttons {
+					display: none;
+				}
 			}
 		</style>
 		<?php

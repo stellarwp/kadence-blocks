@@ -39,6 +39,9 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 		if( is_admin() && class_exists( 'Kadence_Blocks_Duplicate_Post' ) ) {
 			new Kadence_Blocks_Duplicate_Post( $this->post_type );
 		}
+		if( is_admin() && class_exists( 'Kadence_Blocks_Cpt_Import_Export' ) ) {
+			new Kadence_Blocks_Cpt_Import_Export( $this->post_type );
+		}
 	}
 	/**
 	 * Renders the navigation single template on the front end.
