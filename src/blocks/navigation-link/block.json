@@ -1362,6 +1362,14 @@
 			"type": "string",
 			"default": ""
 		},
+		"alignTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"alignMobile": {
+			"type": "string",
+			"default": ""
+		},
 		"border": {
 			"type": "array",
 			"default": [

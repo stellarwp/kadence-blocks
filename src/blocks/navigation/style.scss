@@ -1376,7 +1376,8 @@ $link-color-property: var(
 		display: var(--kb-nav-link-title-wrap-display, flex);
 		text-align: var(--kb-nav-link-align);
 		flex-wrap: nowrap;
-		align-items: center;
+		align-items: var(--kb-nav-link-flex-align, center);
+		justify-items: var(--kb-nav-link-flex-justify, start);
 	}
 
 	.kb-menu-has-description {
