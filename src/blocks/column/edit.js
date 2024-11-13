@@ -76,7 +76,7 @@ import {
 	useInnerBlocksProps,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
-import { ToggleControl, SelectControl, ToolbarGroup } from '@wordpress/components';
+import { ToggleControl, SelectControl, ToolbarGroup, ExternalLink } from '@wordpress/components';
 const FORM_ALLOWED_BLOCKS = [
 	'core/paragraph',
 	'kadence/advancedheading',
@@ -100,6 +100,7 @@ const FORM_ALLOWED_BLOCKS = [
 	'kadence/advanced-form-captcha',
 ];
 import { BLEND_OPTIONS } from '../rowlayout/constants';
+import { applyFilters } from '@wordpress/hooks';
 /**
  * Build the section edit.
  */
@@ -238,6 +239,8 @@ function SectionEdit(props) {
 		gutterVariable,
 		kbVersion,
 		flexGrow,
+		kbProEnabled,
+		enableBackgroundFilter,
 	} = attributes;
 	const [activeTab, setActiveTab] = useState('general');
 	const [dynamicBackgroundImg, setDynamicBackgroundImg] = useState('');
@@ -1179,6 +1182,28 @@ function SectionEdit(props) {
 		: previewDirection === 'horizontal' || previewDirection === 'horizontal-reverse'
 		? 'middle'
 		: 'top';
+
+	const styleControlsBackgroundFilter = (
+		<KadencePanelBody
+			title={__('Background Filter', 'kadence-blocks')}
+			initialOpen={false}
+			panelName={'background-filter-settings'}
+			proTag={true}
+		>
+			<div className="kb-pro-notice">
+				<h2>{__('Background Filter', 'kadence-blocks')} </h2>
+				<p>{__('Add a background filter with Kadence Blocks Pro!', 'kadence-blocks')} {' '}
+				</p>
+				<ExternalLink
+					href={
+						'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=navigation-link'
+					}
+				>
+					{__('Upgrade to Pro', 'kadence-blocks')}
+				</ExternalLink>
+			</div>
+		</KadencePanelBody>
+	);
 	return (
 		<div {...blockProps}>
 			<style>
@@ -2689,13 +2714,13 @@ function SectionEdit(props) {
 												<BackgroundTypeControl
 													label={__('Hover Type', 'kadence-blocks')}
 													type={backgroundHoverType ? backgroundHoverType : 'normal'}
-													onChange={(value) => setAttributes({ backgroundHoverType: value })}
+													onChange={(value) => setAttributes({backgroundHoverType: value})}
 													allowedTypes={['normal', 'gradient']}
 												/>
 												{'gradient' === backgroundHoverType && (
 													<GradientControl
 														value={gradientHover}
-														onChange={(value) => setAttributes({ gradientHover: value })}
+														onChange={(value) => setAttributes({gradientHover: value})}
 														gradients={[]}
 													/>
 												)}
@@ -2706,7 +2731,7 @@ function SectionEdit(props) {
 															value={backgroundHover ? backgroundHover : ''}
 															default={''}
 															onChange={(value) =>
-																setAttributes({ backgroundHover: value })
+																setAttributes({backgroundHover: value})
 															}
 														/>
 														<KadenceBackgroundControl
@@ -2777,16 +2802,16 @@ function SectionEdit(props) {
 																}
 															}}
 															onSavePosition={(value) =>
-																saveHoverBackgroundImage({ bgImgPosition: value })
+																saveHoverBackgroundImage({bgImgPosition: value})
 															}
 															onSaveSize={(value) =>
-																saveHoverBackgroundImage({ bgImgSize: value })
+																saveHoverBackgroundImage({bgImgSize: value})
 															}
 															onSaveRepeat={(value) =>
-																saveHoverBackgroundImage({ bgImgRepeat: value })
+																saveHoverBackgroundImage({bgImgRepeat: value})
 															}
 															onSaveAttachment={(value) =>
-																saveHoverBackgroundImage({ bgImgAttachment: value })
+																saveHoverBackgroundImage({bgImgAttachment: value})
 															}
 															disableMediaButtons={
 																backgroundImgHover &&
@@ -2812,13 +2837,13 @@ function SectionEdit(props) {
 												<BackgroundTypeControl
 													label={__('Type', 'kadence-blocks')}
 													type={backgroundType ? backgroundType : 'normal'}
-													onChange={(value) => setAttributes({ backgroundType: value })}
+													onChange={(value) => setAttributes({backgroundType: value})}
 													allowedTypes={['normal', 'gradient']}
 												/>
 												{'gradient' === backgroundType && (
 													<GradientControl
 														value={gradient}
-														onChange={(value) => setAttributes({ gradient: value })}
+														onChange={(value) => setAttributes({gradient: value})}
 														gradients={[]}
 													/>
 												)}
@@ -2829,9 +2854,9 @@ function SectionEdit(props) {
 															value={background ? background : ''}
 															default={''}
 															opacityValue={backgroundOpacity}
-															onChange={(value) => setAttributes({ background: value })}
+															onChange={(value) => setAttributes({background: value})}
 															onOpacityChange={(value) =>
-																setAttributes({ backgroundOpacity: value })
+																setAttributes({backgroundOpacity: value})
 															}
 														/>
 														<KadenceBackgroundControl
@@ -2902,16 +2927,16 @@ function SectionEdit(props) {
 																}
 															}}
 															onSavePosition={(value) =>
-																saveBackgroundImage({ bgImgPosition: value })
+																saveBackgroundImage({bgImgPosition: value})
 															}
 															onSaveSize={(value) =>
-																saveBackgroundImage({ bgImgSize: value })
+																saveBackgroundImage({bgImgSize: value})
 															}
 															onSaveRepeat={(value) =>
-																saveBackgroundImage({ bgImgRepeat: value })
+																saveBackgroundImage({bgImgRepeat: value})
 															}
 															onSaveAttachment={(value) =>
-																saveBackgroundImage({ bgImgAttachment: value })
+																saveBackgroundImage({bgImgAttachment: value})
 															}
 															disableMediaButtons={
 																backgroundImg &&
@@ -2934,6 +2959,18 @@ function SectionEdit(props) {
 										}
 									/>
 								</KadencePanelBody>
+
+								<>
+									{applyFilters(
+										'kadence.styleControlsBackgroundFilter',
+										styleControlsBackgroundFilter,
+										props,
+										// hasChildren,
+										// setActivePreview,
+										// activePreview
+									)}
+								</>
+
 								<KadencePanelBody
 									title={__('Background Overlay', 'kadence-blocks')}
 									initialOpen={false}
@@ -2945,7 +2982,7 @@ function SectionEdit(props) {
 												<BackgroundTypeControl
 													label={__('Hover Type', 'kadence-blocks')}
 													type={overlayHoverType ? overlayHoverType : 'normal'}
-													onChange={(value) => setAttributes({ overlayHoverType: value })}
+													onChange={(value) => setAttributes({overlayHoverType: value})}
 													allowedTypes={['normal', 'gradient']}
 												/>
 												<RangeControl
@@ -2965,7 +3002,7 @@ function SectionEdit(props) {
 													<GradientControl
 														value={overlayGradientHover}
 														onChange={(value) =>
-															setAttributes({ overlayGradientHover: value })
+															setAttributes({overlayGradientHover: value})
 														}
 														gradients={[]}
 													/>
@@ -2976,7 +3013,7 @@ function SectionEdit(props) {
 															label={__('Background Color', 'kadence-blocks')}
 															value={overlayHover ? overlayHover : ''}
 															default={''}
-															onChange={(value) => setAttributes({ overlayHover: value })}
+															onChange={(value) => setAttributes({overlayHover: value})}
 														/>
 														<KadenceBackgroundControl
 															label={__('Background Image', 'kadence-blocks')}
@@ -3046,16 +3083,16 @@ function SectionEdit(props) {
 																}
 															}}
 															onSavePosition={(value) =>
-																saveHoverOverlayImage({ bgImgPosition: value })
+																saveHoverOverlayImage({bgImgPosition: value})
 															}
 															onSaveSize={(value) =>
-																saveHoverOverlayImage({ bgImgSize: value })
+																saveHoverOverlayImage({bgImgSize: value})
 															}
 															onSaveRepeat={(value) =>
-																saveHoverOverlayImage({ bgImgRepeat: value })
+																saveHoverOverlayImage({bgImgRepeat: value})
 															}
 															onSaveAttachment={(value) =>
-																saveHoverOverlayImage({ bgImgAttachment: value })
+																saveHoverOverlayImage({bgImgAttachment: value})
 															}
 															disableMediaButtons={
 																overlayImgHover &&
@@ -3079,7 +3116,7 @@ function SectionEdit(props) {
 															}
 															options={BLEND_OPTIONS}
 															onChange={(value) =>
-																setAttributes({ hoverOverlayBlendMode: value })
+																setAttributes({hoverOverlayBlendMode: value})
 															}
 														/>
 														<p>
@@ -3097,7 +3134,7 @@ function SectionEdit(props) {
 												<BackgroundTypeControl
 													label={__('Type', 'kadence-blocks')}
 													type={overlayType ? overlayType : 'normal'}
-													onChange={(value) => setAttributes({ overlayType: value })}
+													onChange={(value) => setAttributes({overlayType: value})}
 													allowedTypes={['normal', 'gradient']}
 												/>
 												<RangeControl
@@ -3117,7 +3154,7 @@ function SectionEdit(props) {
 												{'gradient' === overlayType && (
 													<GradientControl
 														value={overlayGradient}
-														onChange={(value) => setAttributes({ overlayGradient: value })}
+														onChange={(value) => setAttributes({overlayGradient: value})}
 														gradients={[]}
 													/>
 												)}
@@ -3127,7 +3164,7 @@ function SectionEdit(props) {
 															label={__('Background Color', 'kadence-blocks')}
 															value={overlay ? overlay : ''}
 															default={''}
-															onChange={(value) => setAttributes({ overlay: value })}
+															onChange={(value) => setAttributes({overlay: value})}
 														/>
 														<KadenceBackgroundControl
 															label={__('Background Image', 'kadence-blocks')}
@@ -3187,16 +3224,16 @@ function SectionEdit(props) {
 																}
 															}}
 															onSavePosition={(value) =>
-																saveOverlayImage({ bgImgPosition: value })
+																saveOverlayImage({bgImgPosition: value})
 															}
 															onSaveSize={(value) =>
-																saveOverlayImage({ bgImgSize: value })
+																saveOverlayImage({bgImgSize: value})
 															}
 															onSaveRepeat={(value) =>
-																saveOverlayImage({ bgImgRepeat: value })
+																saveOverlayImage({bgImgRepeat: value})
 															}
 															onSaveAttachment={(value) =>
-																saveOverlayImage({ bgImgAttachment: value })
+																saveOverlayImage({bgImgAttachment: value})
 															}
 															disableMediaButtons={
 																overlayImg && overlayImg[0] && overlayImg[0].bgImg
@@ -3216,7 +3253,7 @@ function SectionEdit(props) {
 															value={overlayBlendMode ? overlayBlendMode : 'none'}
 															options={BLEND_OPTIONS}
 															onChange={(value) =>
-																setAttributes({ overlayBlendMode: value })
+																setAttributes({overlayBlendMode: value})
 															}
 														/>
 														<p>
@@ -3244,12 +3281,12 @@ function SectionEdit(props) {
 													value={borderHoverStyle}
 													tabletValue={tabletBorderHoverStyle}
 													mobileValue={mobileBorderHoverStyle}
-													onChange={(value) => setAttributes({ borderHoverStyle: value })}
+													onChange={(value) => setAttributes({borderHoverStyle: value})}
 													onChangeTablet={(value) =>
-														setAttributes({ tabletBorderHoverStyle: value })
+														setAttributes({tabletBorderHoverStyle: value})
 													}
 													onChangeMobile={(value) =>
-														setAttributes({ mobileBorderHoverStyle: value })
+														setAttributes({mobileBorderHoverStyle: value})
 													}
 												/>
 												<ResponsiveMeasurementControls
@@ -3257,16 +3294,16 @@ function SectionEdit(props) {
 													value={borderHoverRadius}
 													tabletValue={tabletBorderHoverRadius}
 													mobileValue={mobileBorderHoverRadius}
-													onChange={(value) => setAttributes({ borderHoverRadius: value })}
+													onChange={(value) => setAttributes({borderHoverRadius: value})}
 													onChangeTablet={(value) =>
-														setAttributes({ tabletBorderHoverRadius: value })
+														setAttributes({tabletBorderHoverRadius: value})
 													}
 													onChangeMobile={(value) =>
-														setAttributes({ mobileBorderHoverRadius: value })
+														setAttributes({mobileBorderHoverRadius: value})
 													}
 													unit={borderHoverRadiusUnit}
 													units={['px', 'em', 'rem', '%']}
-													onUnit={(value) => setAttributes({ borderHoverRadiusUnit: value })}
+													onUnit={(value) => setAttributes({borderHoverRadiusUnit: value})}
 													max={
 														borderHoverRadiusUnit === 'em' ||
 														borderHoverRadiusUnit === 'rem'
@@ -3297,7 +3334,7 @@ function SectionEdit(props) {
 													}
 													colorDefault={'#000000'}
 													onArrayChange={(color, opacity) => {
-														saveShadowHover({ color, opacity });
+														saveShadowHover({color, opacity});
 													}}
 													opacity={
 														undefined !== shadowHover &&
@@ -3347,25 +3384,25 @@ function SectionEdit(props) {
 														});
 													}}
 													onColorChange={(value) => {
-														saveShadowHover({ color: value });
+														saveShadowHover({color: value});
 													}}
 													onOpacityChange={(value) => {
-														saveShadowHover({ opacity: value });
+														saveShadowHover({opacity: value});
 													}}
 													onHOffsetChange={(value) => {
-														saveShadowHover({ hOffset: value });
+														saveShadowHover({hOffset: value});
 													}}
 													onVOffsetChange={(value) => {
-														saveShadowHover({ vOffset: value });
+														saveShadowHover({vOffset: value});
 													}}
 													onBlurChange={(value) => {
-														saveShadowHover({ blur: value });
+														saveShadowHover({blur: value});
 													}}
 													onSpreadChange={(value) => {
-														saveShadowHover({ spread: value });
+														saveShadowHover({spread: value});
 													}}
 													onInsetChange={(value) => {
-														saveShadowHover({ inset: value });
+														saveShadowHover({inset: value});
 													}}
 												/>
 											</>
@@ -3377,12 +3414,12 @@ function SectionEdit(props) {
 													value={borderStyle ? JSON.parse(JSON.stringify(borderStyle)) : ''}
 													tabletValue={tabletBorderStyle}
 													mobileValue={mobileBorderStyle}
-													onChange={(value) => setAttributes({ borderStyle: value })}
+													onChange={(value) => setAttributes({borderStyle: value})}
 													onChangeTablet={(value) =>
-														setAttributes({ tabletBorderStyle: value })
+														setAttributes({tabletBorderStyle: value})
 													}
 													onChangeMobile={(value) =>
-														setAttributes({ mobileBorderStyle: value })
+														setAttributes({mobileBorderStyle: value})
 													}
 												/>
 												<ResponsiveMeasurementControls
@@ -3390,16 +3427,16 @@ function SectionEdit(props) {
 													value={borderRadius}
 													tabletValue={tabletBorderRadius}
 													mobileValue={mobileBorderRadius}
-													onChange={(value) => setAttributes({ borderRadius: value })}
+													onChange={(value) => setAttributes({borderRadius: value})}
 													onChangeTablet={(value) =>
-														setAttributes({ tabletBorderRadius: value })
+														setAttributes({tabletBorderRadius: value})
 													}
 													onChangeMobile={(value) =>
-														setAttributes({ mobileBorderRadius: value })
+														setAttributes({mobileBorderRadius: value})
 													}
 													unit={borderRadiusUnit}
 													units={['px', 'em', 'rem', '%']}
-													onUnit={(value) => setAttributes({ borderRadiusUnit: value })}
+													onUnit={(value) => setAttributes({borderRadiusUnit: value})}
 													max={
 														borderRadiusUnit === 'em' || borderRadiusUnit === 'rem'
 															? 24
@@ -3426,7 +3463,7 @@ function SectionEdit(props) {
 													}
 													colorDefault={'#000000'}
 													onArrayChange={(color, opacity) => {
-														saveShadow({ color, opacity });
+														saveShadow({color, opacity});
 													}}
 													opacity={
 														undefined !== shadow &&
@@ -3476,25 +3513,25 @@ function SectionEdit(props) {
 														});
 													}}
 													onColorChange={(value) => {
-														saveShadow({ color: value });
+														saveShadow({color: value});
 													}}
 													onOpacityChange={(value) => {
-														saveShadow({ opacity: value });
+														saveShadow({opacity: value});
 													}}
 													onHOffsetChange={(value) => {
-														saveShadow({ hOffset: value });
+														saveShadow({hOffset: value});
 													}}
 													onVOffsetChange={(value) => {
-														saveShadow({ vOffset: value });
+														saveShadow({vOffset: value});
 													}}
 													onBlurChange={(value) => {
-														saveShadow({ blur: value });
+														saveShadow({blur: value});
 													}}
 													onSpreadChange={(value) => {
-														saveShadow({ spread: value });
+														saveShadow({spread: value});
 													}}
 													onInsetChange={(value) => {
-														saveShadow({ inset: value });
+														saveShadow({inset: value});
 													}}
 												/>
 											</>
@@ -3515,20 +3552,20 @@ function SectionEdit(props) {
 														label={__('Text Color', 'kadence-blocks')}
 														value={textColorHover ? textColorHover : ''}
 														default={''}
-														onChange={(value) => setAttributes({ textColorHover: value })}
+														onChange={(value) => setAttributes({textColorHover: value})}
 													/>
 													<PopColorControl
 														label={__('Text Link Color', 'kadence-blocks')}
 														value={linkColorHover ? linkColorHover : ''}
 														default={''}
-														onChange={(value) => setAttributes({ linkColorHover: value })}
+														onChange={(value) => setAttributes({linkColorHover: value})}
 													/>
 													<PopColorControl
 														label={__('Text Link Hover Color', 'kadence-blocks')}
 														value={linkHoverColorHover ? linkHoverColorHover : ''}
 														default={''}
 														onChange={(value) =>
-															setAttributes({ linkHoverColorHover: value })
+															setAttributes({linkHoverColorHover: value})
 														}
 													/>
 												</ColorGroup>
@@ -3539,19 +3576,19 @@ function SectionEdit(props) {
 														label={__('Text Color', 'kadence-blocks')}
 														value={textColor ? textColor : ''}
 														default={''}
-														onChange={(value) => setAttributes({ textColor: value })}
+														onChange={(value) => setAttributes({textColor: value})}
 													/>
 													<PopColorControl
 														label={__('Text Link Color', 'kadence-blocks')}
 														value={linkColor ? linkColor : ''}
 														default={''}
-														onChange={(value) => setAttributes({ linkColor: value })}
+														onChange={(value) => setAttributes({linkColor: value})}
 													/>
 													<PopColorControl
 														label={__('Text Link Hover Color', 'kadence-blocks')}
 														value={linkHoverColor ? linkHoverColor : ''}
 														default={''}
-														onChange={(value) => setAttributes({ linkHoverColor: value })}
+														onChange={(value) => setAttributes({linkHoverColor: value})}
 													/>
 												</ColorGroup>
 											}
