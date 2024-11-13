@@ -1,0 +1,17 @@
+name: InstaWP WordPress Testing
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-wp-for-testing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: instawp/wordpress-testing-automation@latest
+        with:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          INSTAWP_TOKEN: ${{secrets.INSTAWP_TOKEN}}
+          EXPIRY_HOURS: 1
+          INSTAWP_TEMPLATE_SLUG: github-action-template
+          REPO_ID: 15662
+          ARTIFACT_URL: https://downloads.wordpress.org/plugin/kadence-blocks.3.3.4.zip
