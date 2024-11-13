@@ -1,7 +1,8 @@
 name: InstaWP WordPress Testing
 
 on:
-  workflow_dispatch:
+  pull_request:
+    types: [opened, edited]
 
 jobs:
   create-wp-for-testing:
