@@ -909,18 +909,10 @@
 	let hasInitializedKadenceAccordion = false;
 	window.KadenceBlocksAccordion = {
 		/**
-		 * Initiate anchor scroll.
+		 * Scroll to an Element.
 		 */
-		scroll(element, to, duration) {
-			if (duration <= 0) return;
-			const difference = to - element.scrollTop;
-			const perTick = (difference / duration) * 10;
-
-			setTimeout(function () {
-				element.scrollTop = element.scrollTop + perTick;
-				if (element.scrollTop === to) return;
-				scrollTo(element, to, duration - 10);
-			}, 10);
+		scrollToElement(element) {
+			window.scrollBy({ top: Math.floor(element.getBoundingClientRect().top), left: 0, behavior: 'smooth' });
 		},
 		/**
 		 * Initiate anchor trigger.
@@ -948,14 +940,13 @@
 								}, 50);
 							} else {
 								child.dispatchEvent(new Event('startOpen'));
-								// child.click();
+
+								//guess at how long the animations will take and then scroll to the final position
+								setTimeout(() => {
+									window.KadenceBlocksAccordion.scrollToElement(element);
+								}, 600);
 							}
 						}
-						// if ( e.type && e.type === 'initialized' ) {
-						//   window.setTimeout(function() {
-						//     window.KadenceBlocksAccordion.scroll( document.body, document.getElementById( id ).offsetTop, 600 );
-						//   }, 350 );
-						// }
 					}
 				}
 			}
