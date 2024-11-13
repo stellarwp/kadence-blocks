@@ -97,6 +97,16 @@
 			const doc = new DOMParser().parseFromString(wrappedHtml, 'text/html');
 			return doc.body.textContent || '';
 		},
+		createSafeElement(type, className, content) {
+			const element = document.createElement(type);
+			if (className) {
+				element.className = className;
+			}
+			if (content !== undefined) {
+				element.textContent = content;
+			}
+			return element;
+		},
 		updateTimerInterval(element, id, parent) {
 			const currentTimeStamp = new Date();
 			const userTimezoneOffset = -1 * (new Date().getTimezoneOffset() / 60);
@@ -136,9 +146,6 @@
 								);
 								window.kadenceCountdown.cache[id].cookie = window.kadenceCountdown.cache[id].evergreen;
 							}
-						} else {
-							// If fail
-							//console.log(this.response);
 						}
 					};
 					window.kadenceCountdown.cache[id].request.onerror = function () {
@@ -211,10 +218,6 @@
 					request.onload = function () {
 						if (this.status >= 200 && this.status < 400) {
 							// If successful
-							//console.log(this.response);
-						} else {
-							// If fail
-							//console.log(this.response);
 						}
 					};
 					request.onerror = function () {
@@ -245,6 +248,7 @@
 				const futureTimeStamp = window.kadenceCountdown.getRepeaterTimeStamp(id);
 				total = Math.floor(futureTimeStamp - currentTimeStamp.getTime());
 			}
+
 			// Check if completed.
 			if (total && total < 0) {
 				if ('redirect' === window.kadenceCountdown.timers[id].action) {
@@ -272,33 +276,29 @@
 					}
 				} else {
 					if (window.kadenceCountdown.timers[id].timer) {
-						var enableDividers = window.kadenceCountdown.timers[id].dividers;
-						var timeNumbers = window.kadenceCountdown.timers[id].stopWatch;
-						var units = window.kadenceCountdown.timers[id].units;
-						var labels = {};
-						labels.days = window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].daysLabel);
-						labels.hours = window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].hoursLabel);
-						labels.minutes = window.kadenceCountdown.stripHtml(
-							window.kadenceCountdown.timers[id].minutesLabel
-						);
-						labels.seconds = window.kadenceCountdown.stripHtml(
-							window.kadenceCountdown.timers[id].secondsLabel
-						);
-						var parts = {};
+						const enableDividers = window.kadenceCountdown.timers[id].dividers;
+						const timeNumbers = window.kadenceCountdown.timers[id].stopWatch;
+						const units = window.kadenceCountdown.timers[id].units;
+						const labels = {
+							days: window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].daysLabel),
+							hours: window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].hoursLabel),
+							minutes: window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].minutesLabel),
+							seconds: window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].secondsLabel),
+						};
+						const parts = {};
+
 						if (
 							undefined !== units &&
 							undefined !== units[0] &&
 							undefined !== units[0].days &&
 							!units[0].days
 						) {
-							//Do nothing.
 							if (
 								undefined !== units &&
 								undefined !== units[0] &&
 								undefined !== units[0].hours &&
 								!units[0].hours
 							) {
-								//Do nothing.
 								if (
 									undefined !== units &&
 									undefined !== units[0] &&
@@ -321,35 +321,72 @@
 							parts.minutes = 0;
 							parts.seconds = 0;
 						}
-						var preText = window.kadenceCountdown.timers[id].preLabel
-							? `<div class="kb-countdown-item kb-pre-timer"><span class="kb-pre-timer-inner">${window.kadenceCountdown.stripHtml(
-									window.kadenceCountdown.timers[id].preLabel
-							  )}</span></div>`
-							: '';
-						var postText = window.kadenceCountdown.timers[id].postLabel
-							? `<div class="kb-countdown-item kb-post-timer"><span class="kb-post-timer-inner">${window.kadenceCountdown.stripHtml(
-									window.kadenceCountdown.timers[id].postLabel
-							  )}</span></div>`
-							: '';
-						var remaining = Object.keys(parts)
-							.map((part) => {
-								if ('seconds' !== part && enableDividers) {
-									return `<div class="kb-countdown-item kb-countdown-date-item kb-countdown-date-item-${part}"><span class="kb-countdown-number">${window.kadenceCountdown.calculateNumberDesign(
-										window.kadenceCountdown.stripHtml(parts[part]),
-										timeNumbers
-									)}</span><span class="kb-countdown-label">${window.kadenceCountdown.stripHtml(
-										labels[part]
-									)}</span></div><div class="kb-countdown-item kb-countdown-date-item kb-countdown-divider-item kb-countdown-divider-item-${part}"><span class="kb-countdown-number">:</span><span class="kb-countdown-label">&nbsp;</span></div>`;
-								}
-								return `<div class="kb-countdown-item kb-countdown-date-item kb-countdown-date-item-${part}"><span class="kb-countdown-number">${window.kadenceCountdown.calculateNumberDesign(
-									window.kadenceCountdown.stripHtml(parts[part]),
-									timeNumbers
-								)}</span><span class="kb-countdown-label">${window.kadenceCountdown.stripHtml(
-									labels[part]
-								)}</span></div>`;
-							})
-							.join(' ');
-						element.innerHTML = preText + remaining + postText;
+
+						// Clear existing content
+						element.innerHTML = '';
+
+						// Add pre-label if exists
+						if (window.kadenceCountdown.timers[id].preLabel) {
+							const preTimer = this.createSafeElement('div', 'kb-countdown-item kb-pre-timer');
+							const preInner = this.createSafeElement(
+								'span',
+								'kb-pre-timer-inner',
+								this.stripHtml(window.kadenceCountdown.timers[id].preLabel)
+							);
+							preTimer.appendChild(preInner);
+							element.appendChild(preTimer);
+						}
+
+						// Add timer parts
+						Object.keys(parts).forEach((part) => {
+							const itemContainer = this.createSafeElement(
+								'div',
+								`kb-countdown-item kb-countdown-date-item kb-countdown-date-item-${part}`
+							);
+
+							const numberSpan = this.createSafeElement(
+								'span',
+								'kb-countdown-number',
+								this.calculateNumberDesign(this.stripHtml(parts[part].toString()), timeNumbers)
+							);
+							itemContainer.appendChild(numberSpan);
+
+							const labelSpan = this.createSafeElement(
+								'span',
+								'kb-countdown-label',
+								this.stripHtml(labels[part])
+							);
+							itemContainer.appendChild(labelSpan);
+
+							element.appendChild(itemContainer);
+
+							// Add dividers if needed
+							if ('seconds' !== part && enableDividers) {
+								const dividerContainer = this.createSafeElement(
+									'div',
+									`kb-countdown-item kb-countdown-date-item kb-countdown-divider-item kb-countdown-divider-item-${part}`
+								);
+
+								const dividerNumber = this.createSafeElement('span', 'kb-countdown-number', ':');
+								const dividerLabel = this.createSafeElement('span', 'kb-countdown-label', ' ');
+
+								dividerContainer.appendChild(dividerNumber);
+								dividerContainer.appendChild(dividerLabel);
+								element.appendChild(dividerContainer);
+							}
+						});
+
+						// Add post label if exists
+						if (window.kadenceCountdown.timers[id].postLabel) {
+							const postTimer = this.createSafeElement('div', 'kb-countdown-item kb-post-timer');
+							const postInner = this.createSafeElement(
+								'span',
+								'kb-post-timer-inner',
+								this.stripHtml(window.kadenceCountdown.timers[id].postLabel)
+							);
+							postTimer.appendChild(postInner);
+							element.appendChild(postTimer);
+						}
 					}
 					parent.style.opacity = 1;
 					if (window.kadenceCountdown.timers[id].revealOnLoad) {
@@ -361,21 +398,24 @@
 				}
 				return;
 			}
+
 			if ((total || 0 === total) && window.kadenceCountdown.timers[id].timer) {
-				var enableDividers = window.kadenceCountdown.timers[id].dividers;
-				var timeNumbers = window.kadenceCountdown.timers[id].stopWatch;
-				var units = window.kadenceCountdown.timers[id].units;
-				var labels = {};
-				labels.days = window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].daysLabel);
-				labels.hours = window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].hoursLabel);
-				labels.minutes = window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].minutesLabel);
-				labels.seconds = window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].secondsLabel);
+				const enableDividers = window.kadenceCountdown.timers[id].dividers;
+				const timeNumbers = window.kadenceCountdown.timers[id].stopWatch;
+				const units = window.kadenceCountdown.timers[id].units;
+				const labels = {
+					days: window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].daysLabel),
+					hours: window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].hoursLabel),
+					minutes: window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].minutesLabel),
+					seconds: window.kadenceCountdown.stripHtml(window.kadenceCountdown.timers[id].secondsLabel),
+				};
+
 				let calculateHours = Math.floor((total / (1000 * 60 * 60)) % 24);
 				let calculateMinutes = Math.floor((total / 1000 / 60) % 60);
 				let calculateSeconds = Math.floor((total / 1000) % 60);
-				var parts = {};
+				const parts = {};
+
 				if (undefined !== units && undefined !== units[0] && undefined !== units[0].days && !units[0].days) {
-					//Do nothing.
 					calculateHours = Math.floor(total / (1000 * 60 * 60));
 					if (
 						undefined !== units &&
@@ -383,7 +423,6 @@
 						undefined !== units[0].hours &&
 						!units[0].hours
 					) {
-						//Do nothing.
 						calculateMinutes = Math.floor(total / 1000 / 60);
 						if (
 							undefined !== units &&
@@ -391,7 +430,6 @@
 							undefined !== units[0].minutes &&
 							!units[0].minutes
 						) {
-							//Do nothing.
 							calculateSeconds = Math.floor(total / 1000);
 							parts.seconds = calculateSeconds;
 						} else {
@@ -409,34 +447,75 @@
 					parts.minutes = calculateMinutes;
 					parts.seconds = calculateSeconds;
 				}
-				var preText = window.kadenceCountdown.timers[id].preLabel
-					? `<div class="kb-countdown-item kb-pre-timer"><span class="kb-pre-timer-inner">${window.kadenceCountdown.stripHtml(
-							window.kadenceCountdown.timers[id].preLabel
-					  )}</span></div>`
-					: '';
-				var postText = window.kadenceCountdown.timers[id].postLabel
-					? `<div class="kb-countdown-item kb-post-timer"><span class="kb-post-timer-inner">${window.kadenceCountdown.stripHtml(
-							window.kadenceCountdown.timers[id].postLabel
-					  )}</span></div>`
-					: '';
-				var remaining = Object.keys(parts)
-					.map((part) => {
-						if ('seconds' !== part && enableDividers) {
-							return `<div class="kb-countdown-item kb-countdown-date-item kb-countdown-date-item-${part}"><span class="kb-countdown-number">${window.kadenceCountdown.calculateNumberDesign(
-								window.kadenceCountdown.stripHtml(parts[part]),
-								timeNumbers
-							)}</span><span class="kb-countdown-label">${
-								labels[part]
-							}</span></div><div class="kb-countdown-item kb-countdown-date-item kb-countdown-divider-item kb-countdown-divider-item-${part}"><span class="kb-countdown-number">:</span><span class="kb-countdown-label">&nbsp;</span></div>`;
-						}
-						return `<div class="kb-countdown-item kb-countdown-date-item kb-countdown-date-item-${part}"><span class="kb-countdown-number">${window.kadenceCountdown.calculateNumberDesign(
-							window.kadenceCountdown.stripHtml(parts[part]),
-							timeNumbers
-						)}</span><span class="kb-countdown-label">${labels[part]}</span></div>`;
-					})
-					.join(' ');
-				element.innerHTML = preText + remaining + postText;
+
+				// Clear existing content
+				element.innerHTML = '';
+
+				// Add pre-label if exists
+				// Add pre-label if exists
+				if (window.kadenceCountdown.timers[id].preLabel) {
+					const preTimer = this.createSafeElement('div', 'kb-countdown-item kb-pre-timer');
+					const preInner = this.createSafeElement(
+						'span',
+						'kb-pre-timer-inner',
+						this.stripHtml(window.kadenceCountdown.timers[id].preLabel)
+					);
+					preTimer.appendChild(preInner);
+					element.appendChild(preTimer);
+				}
+
+				// Add timer parts
+				Object.keys(parts).forEach((part) => {
+					const itemContainer = this.createSafeElement(
+						'div',
+						`kb-countdown-item kb-countdown-date-item kb-countdown-date-item-${part}`
+					);
+
+					const numberSpan = this.createSafeElement(
+						'span',
+						'kb-countdown-number',
+						this.calculateNumberDesign(this.stripHtml(parts[part].toString()), timeNumbers)
+					);
+					itemContainer.appendChild(numberSpan);
+
+					const labelSpan = this.createSafeElement(
+						'span',
+						'kb-countdown-label',
+						this.stripHtml(labels[part])
+					);
+					itemContainer.appendChild(labelSpan);
+
+					element.appendChild(itemContainer);
+
+					// Add dividers if needed
+					if ('seconds' !== part && enableDividers) {
+						const dividerContainer = this.createSafeElement(
+							'div',
+							`kb-countdown-item kb-countdown-date-item kb-countdown-divider-item kb-countdown-divider-item-${part}`
+						);
+
+						const dividerNumber = this.createSafeElement('span', 'kb-countdown-number', ':');
+						const dividerLabel = this.createSafeElement('span', 'kb-countdown-label', ' ');
+
+						dividerContainer.appendChild(dividerNumber);
+						dividerContainer.appendChild(dividerLabel);
+						element.appendChild(dividerContainer);
+					}
+				});
+
+				// Add post label if exists
+				if (window.kadenceCountdown.timers[id].postLabel) {
+					const postTimer = this.createSafeElement('div', 'kb-countdown-item kb-post-timer');
+					const postInner = this.createSafeElement(
+						'span',
+						'kb-post-timer-inner',
+						this.stripHtml(window.kadenceCountdown.timers[id].postLabel)
+					);
+					postTimer.appendChild(postInner);
+					element.appendChild(postTimer);
+				}
 			}
+
 			if ((total || 0 === total) && !window.kadenceCountdown.cache[id].revealed) {
 				window.kadenceCountdown.cache[id].revealed = true;
 				parent.style.opacity = 1;

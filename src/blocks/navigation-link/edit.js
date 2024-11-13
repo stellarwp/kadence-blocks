@@ -329,6 +329,8 @@ export default function Edit(props) {
 		iconSideTablet,
 		iconSideMobile,
 		align,
+		alignTablet,
+		alignMobile,
 		dropdownShadow,
 		kadenceDynamic,
 		dropdownClick,
@@ -1059,12 +1061,6 @@ export default function Edit(props) {
 					doMegaMenuEnable,
 					previewDevice
 				)}
-				<AlignmentToolbar
-					value={align}
-					onChange={(nextAlign) => {
-						setAttributes({ align: nextAlign });
-					}}
-				/>
 			</BlockControls>
 			{isSelected && (
 				<BlockSettingsMenuControls>
@@ -1111,11 +1107,49 @@ export default function Edit(props) {
 				{activeTab === 'general' && (
 					<>
 						<KadencePanelBody panelName={'navigation-link-general'}>
+							<ResponsiveAlignControls
+								label={__('Alignment', 'kadence-blocks')}
+								value={align ? align : ''}
+								tabletValue={alignTablet ? alignTablet : ''}
+								mobileValue={alignMobile ? alignMobile : ''}
+								onChange={(nextAlign) => setAttributes({ align: nextAlign ? nextAlign : '' })}
+								onChangeTablet={(nextAlign) =>
+									setAttributes({ alignTablet: nextAlign ? nextAlign : '' })
+								}
+								onChangeMobile={(nextAlign) =>
+									setAttributes({ alignMobile: nextAlign ? nextAlign : '' })
+								}
+							/>
 							<TextControl
 								__nextHasNoMarginBottom
 								value={label ? stripHTML(label) : ''}
 								onChange={(labelValue) => {
 									setAttributes({ label: labelValue });
+								}}
+								label={__('Label')}
+								autoComplete="off"
+								onFocus={() => setIsLabelFieldFocused(true)}
+								onBlur={() => setIsLabelFieldFocused(false)}
+							/>
+							<ToggleControl
+								label={__('Hide Label', 'kadence-blocks')}
+								checked={hideLabel}
+								onChange={(value) => setAttributes({ hideLabel: value })}
+							/>
+							<TextControl
+								__nextHasNoMarginBottom
+								value={url ? url : ''}
+								onChange={(value) => {
+									setAttributes({ url: value });
+								}}
+								label={__('URL')}
+								autoComplete="off"
+								disabled={hasSyncedLink}
+							/>
+							<Button
+								variant="link"
+								onClick={() => {
+									setAttributes({ type: '', kind: 'custom' });
 								}}
 								label={__('Label')}
 								autoComplete="off"

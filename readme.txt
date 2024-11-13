@@ -3,8 +3,8 @@ Contributors: britner, oakesjosh, woodardmc
 Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.3
-Tested up to: 6.6
-Stable tag: 3.3.3
+Tested up to: 6.7
+Stable tag: 3.3.4
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -174,6 +174,13 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.3.4 =
+Release Date: November 12th 2024
+* Add: Add background gradient to advanced highlight.
+* Fix: Post grid not displaying all selected posts.
+* Fix: Active color not working for imported WordPress navigation menus.
+* Fix: Submit button on advanced form not using proper unit for border radius.
+
 = 3.3.3 =
 Release Date: October 29th 2024
 * Add: Section Priority option to header rows. This allows you to control how gridding of sections are prioritized.
@@ -192,6 +199,8 @@ Release Date: October 29th 2024
 * Fix: Navigation link media spacing when positioned top or bottom.
 * Fix: Display of single row container on the frontend for mobile.
 * Fix: Improvements to display of gradient text when text spans multiple lines.
+* Fix: Border radius units in search block.
+* Fix: Improved performance when rendering custom SVGs.
 
 = 3.3.2 =
 Release Date: October 16th 2024

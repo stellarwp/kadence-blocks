@@ -283,7 +283,7 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param boolean $inline true or false based on when called.
 	 */
 	public function render_scripts( $attributes, $inline = false ) {
-		if ( ! class_exists( 'Kadence\Theme' ) || add_filter( 'kadence_blocks_post_block_style_force_output', '__return_false' ) ) {
+		if ( ! class_exists( 'Kadence\Theme' ) || apply_filters( 'kadence_blocks_post_block_style_force_output', false ) ) {
 			if ( ! wp_style_is( 'kadence-blocks-' . $this->block_name, 'enqueued' ) ) {
 				$this->enqueue_style( 'kadence-blocks-' . $this->block_name );
 				if ( $inline ) {

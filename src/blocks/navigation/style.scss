@@ -812,7 +812,7 @@ $link-color-property: var(
 			--kb-nav-link-active-border-top-right-radius-lv: var(--kb-nav-link-active-border-top-right-radius);
 			--kb-nav-link-active-border-bottom-right-radius-lv: var(--kb-nav-link-active-border-bottom-right-radius);
 			--kb-nav-link-active-border-bottom-left-radius-lv: var(--kb-nav-link-active-border-bottom-left-radius);
-			--kb-nav-link-box-shadow-active-lv: var(--kb-nav-link-box-shadow-active);
+			--kb-nav-link-active-box-shadow-lv: var(--kb-nav-link-box-shadow-active);
 			--kb-nav-link-highlight-color-active-lv: var(--kb-nav-link-highlight-color-active);
 			--kb-nav-link-highlight-background-active-lv: var(--kb-nav-link-highlight-background-active);
 			--kb-nav-link-media-container-background-active-lv: var(--kb-nav-link-media-container-background-active);
@@ -838,7 +838,6 @@ $link-color-property: var(
 				--kb-nav-link-media-container-active-border-bottom-left-radius
 			);
 			--kb-nav-link-description-color-active-lv: var(--kb-nav-link-description-color-active);
-			--kb-nav-link-active-box-shadow-lv: var(--kb-nav-top-link-box-shadow-active);
 		}
 		&.current-menu-ancestor > .kb-link-wrap.kb-link-wrap.kb-link-wrap {
 			--kb-nav-link-color-active-lv: var(--kb-nav-link-color-active-ancestor, var(--kb-nav-link-color-active));
@@ -846,39 +845,39 @@ $link-color-property: var(
 				--kb-nav-link-background-active-ancestor,
 				var(--kb-nav-link-background-active)
 			);
-			--kb-nav-link-border-top-active-lv: var(
+			--kb-nav-link-active-border-top-lv: var(
 				--kb-nav-link-active-ancestor-border-top,
 				var(--kb-nav-link-active-border-top)
 			);
-			--kb-nav-link-border-right-active-lv: var(
+			--kb-nav-link-active-border-right-lv: var(
 				--kb-nav-link-active-ancestor-border-right,
 				var(--kb-nav-link-active-border-right)
 			);
-			--kb-nav-link-border-bottom-active-lv: var(
+			--kb-nav-link-active-border-bottom-lv: var(
 				--kb-nav-link-active-ancestor-border-bottom,
 				var(--kb-nav-link-active-border-bottom)
 			);
-			--kb-nav-link-border-left-active-lv: var(
+			--kb-nav-link-active-border-left-lv: var(
 				--kb-nav-link-active-ancestor-border-left,
 				var(--kb-nav-link-active-border-left)
 			);
-			--kb-nav-link-border-top-left-radius-active-lv: var(
+			--kb-nav-link-active-border-top-left-radius-lv: var(
 				--kb-nav-link-active-ancestor-border-top-left-radius,
 				var(--kb-nav-link-active-border-to-left-radiusp)
 			);
-			--kb-nav-link-border-top-right-radius-active-lv: var(
+			--kb-nav-link-active-border-top-right-radius-lv: var(
 				--kb-nav-link-active-ancestor-border-top-right-radius,
 				var(--kb-nav-link-active-border-top-right-radius)
 			);
-			--kb-nav-link-border-bottom-right-radius-active-lv: var(
+			--kb-nav-link-active-border-bottom-right-radius-lv: var(
 				--kb-nav-link-active-ancestor-border-bottom-right-radius,
 				var(--kb-nav-link-active-border-bottom-right-radius)
 			);
-			--kb-nav-link-border-bottom-left-radius-active-lv: var(
+			--kb-nav-link-active-border-bottom-left-radius-lv: var(
 				--kb-nav-link-active-ancestor-border-bottom-left-radius,
 				var(--kb-nav-link-active-border-bottom-left-radius)
 			);
-			--kb-nav-link-box-shadow-active-lv: var(
+			--kb-nav-link-active-box-shadow-lv: var(
 				--kb-nav-link-box-shadow-active-ancestor,
 				var(--kb-nav-link-box-shadow-active)
 			);
@@ -978,24 +977,24 @@ $link-color-property: var(
 			var(--kb-nav-link-active-border-left-lv, var(--kb-nav-link-border-left))
 		);
 		border-top-left-radius: var(
-				--kb-nav-link-hover-border-top-left-radius-lv,
-				var(--kb-nav-link-active-border-top-left-radius-lv, var(--kb-nav-link-border-top-left-radius))
+			--kb-nav-link-hover-border-top-left-radius-lv,
+			var(--kb-nav-link-active-border-top-left-radius-lv, var(--kb-nav-link-border-top-left-radius))
 		);
 		border-top-right-radius: var(
-				--kb-nav-link-hover-border-top-right-radius-lv,
-				var(--kb-nav-link-active-border-top-right-radius-lv, var(--kb-nav-link-border-top-right-radius))
+			--kb-nav-link-hover-border-top-right-radius-lv,
+			var(--kb-nav-link-active-border-top-right-radius-lv, var(--kb-nav-link-border-top-right-radius))
 		);
 		border-bottom-right-radius: var(
-				--kb-nav-link-hover-border-bottom-right-radius-lv,
-				var(--kb-nav-link-active-border-bottom-right-radius-lv, var(--kb-nav-link-border-bottom-right-radius))
+			--kb-nav-link-hover-border-bottom-right-radius-lv,
+			var(--kb-nav-link-active-border-bottom-right-radius-lv, var(--kb-nav-link-border-bottom-right-radius))
 		);
 		border-bottom-left-radius: var(
-				--kb-nav-link-hover-border-bottom-left-radius-lv,
-				var(--kb-nav-link-active-border-bottom-left-radius-lv, var(--kb-nav-link-border-bottom-left-radius))
+			--kb-nav-link-hover-border-bottom-left-radius-lv,
+			var(--kb-nav-link-active-border-bottom-left-radius-lv, var(--kb-nav-link-border-bottom-left-radius))
 		);
 		box-shadow: var(
-				--kb-nav-link-hover-box-shadow-lv,
-				var(--kb-nav-link-active-box-shadow-lv, var(--kb-nav-link-box-shadow))
+			--kb-nav-link-hover-box-shadow-lv,
+			var(--kb-nav-link-active-box-shadow-lv, var(--kb-nav-link-box-shadow))
 		);
 
 		&:hover {
@@ -1377,7 +1376,8 @@ $link-color-property: var(
 		display: var(--kb-nav-link-title-wrap-display, flex);
 		text-align: var(--kb-nav-link-align);
 		flex-wrap: nowrap;
-		align-items: center;
+		align-items: var(--kb-nav-link-flex-align, center);
+		justify-items: var(--kb-nav-link-flex-justify, start);
 	}
 
 	.kb-menu-has-description {

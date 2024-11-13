@@ -385,10 +385,10 @@ class Kadence_Blocks_CSS {
 			$media_query            = array();
 			$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
 			$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
-			$media_query['tabletPro']  = apply_filters( 'kadence_tablet_pro_media_query', '(max-width: 1024px), only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape) and (hover: none)' );
+			$media_query['tabletPro']  = apply_filters( 'kadence_tablet_pro_media_query', '(max-width: 1024px), only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (-webkit-min-device-pixel-ratio: 2) and (hover: none)' );
 			$media_query['desktop'] = apply_filters( 'kadence_desktop_media_query', '(min-width: 1025px)' );
 			$media_query['mobileReverse'] = apply_filters( 'kadence_mobile_reverse_media_query', '(min-width: 768px)' );
-			$media_query['tabletOnlyPro']    = apply_filters( 'kadence_tablet_only_pro_media_query', '(min-width: 768px) and (max-width: 1024px), only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape) and (hover: none)' );
+			$media_query['tabletOnlyPro']    = apply_filters( 'kadence_tablet_only_pro_media_query', '(min-width: 768px) and (max-width: 1024px), only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (-webkit-min-device-pixel-ratio: 2) and (hover: none)' );
 			$media_query['tabletOnly']    = apply_filters( 'kadence_tablet_only_media_query', '(min-width: 768px) and (max-width: 1024px)' );
 			$this->media_queries    = $media_query;
 		}
