@@ -40,7 +40,7 @@ export function Edit(props) {
 		minHeight,
 		tabletMinHeight,
 		mobileMinHeight,
-		minHeightUnit,
+		minHeightType,
 		row,
 	} = attributes;
 
@@ -174,7 +174,7 @@ export function Edit(props) {
 		),
 	});
 
-	const { children, ...innerBlocksProps } = useInnerBlocksProps(
+	const { children, innerBlocksProps } = useInnerBlocksProps(
 		{
 			className: '',
 		},
@@ -182,6 +182,8 @@ export function Edit(props) {
 			allowedBlocks: ['kadence/table-data'],
 			renderAppender: false,
 			templateInsertUpdatesSelection: true,
+			templateLock: 'insert',
+			orientation: 'horizontal',
 		}
 	);
 
@@ -217,7 +219,7 @@ export function Edit(props) {
 				/>
 				<InspectorControlTabs
 					panelName={'table-row'}
-					allowedTabs={['general', 'advanced']}
+					allowedTabs={['general']}
 					setActiveTab={setActiveTab}
 					activeTab={activeTab}
 				/>
@@ -258,11 +260,11 @@ export function Edit(props) {
 								mobileValue={mobileMinHeight}
 								onChangeMobile={(value) => setAttributes({ mobileMinHeight: value })}
 								min={0}
-								max={minHeightUnit === 'px' ? 600 : 100}
+								max={minHeightType === 'px' ? 600 : 100}
 								step={1}
-								unit={minHeightUnit}
+								unit={minHeightType}
 								onUnit={(value) => {
-									setAttributes({ minHeightUnit: value });
+									setAttributes({ minHeightType: value });
 								}}
 								units={['px', 'em', 'vh']}
 								reset={() =>
@@ -277,8 +279,6 @@ export function Edit(props) {
 						</KadencePanelBody>
 					</>
 				)}
-
-				{activeTab === 'advanced' && <>KadenceBlockDefaults</>}
 			</KadenceInspectorControls>
 			<BlockContextProvider value={thisRowIsHeader}>{children}</BlockContextProvider>
 			<BackendStyles attributes={attributes} previewDevice={previewDevice} />

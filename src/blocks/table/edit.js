@@ -1,4 +1,4 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import React, { useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch, dispatch, select } from '@wordpress/data';
 import { useBlockProps, BlockControls, InnerBlocks, useInnerBlocksProps } from '@wordpress/block-editor';
@@ -53,7 +53,7 @@ const DEFAULT_PERCENT_WIDTH = 30;
 const DEFAULT_PIXEL_WIDTH = 150;
 
 export function Edit(props) {
-	const { attributes, setAttributes, className, clientId } = props;
+	const { attributes, setAttributes, className, isSelected, clientId } = props;
 
 	const {
 		uniqueID,
@@ -80,7 +80,7 @@ export function Edit(props) {
 		maxHeightUnit,
 		cellPadding,
 		mobileCellPadding,
-		tabletCelladding,
+		tabletCellPadding,
 		cellPaddingType,
 		textAlign,
 		textAlignTablet,
@@ -90,6 +90,20 @@ export function Edit(props) {
 		headerAlignMobile,
 		isFirstRowHeader,
 		isFirstColumnHeader,
+		columnSettings,
+		overflowXScroll,
+		rowMinHeight,
+		tabletRowMinHeight,
+		mobileRowMinHeight,
+		rowMinHeightType,
+		padding,
+		tabletPadding,
+		mobilePadding,
+		paddingType,
+		margin,
+		tabletMargin,
+		mobileMargin,
+		marginType,
 	} = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
@@ -212,35 +226,49 @@ export function Edit(props) {
 	};
 
 	const getColumnDefaults = () => ({
-		useFixed: false,
+		useAuto: true,
 		width: DEFAULT_PERCENT_WIDTH,
 		unit: '%',
 	});
 
 	const getColumnSetting = (index) => {
-		const settings = attributes.columnSettings || [];
+		const settings = columnSettings || [];
 		return settings[index] || getColumnDefaults();
 	};
 
 	const updateColumnSetting = (index, updates) => {
-		const newSettings = [...(attributes.columnSettings || [])];
+		const newSettings = [...(columnSettings || [])];
 		const currentSetting = getColumnSetting(index);
 
-		// Handle unit changes with smart defaults
+		// If we're changing units, update all columns
 		if (updates.unit && updates.unit !== currentSetting.unit) {
-			if (updates.unit === '%') {
-				// Converting from px to %
-				updates.width = DEFAULT_PERCENT_WIDTH;
-			} else {
-				// Converting from % to px
-				updates.width = DEFAULT_PIXEL_WIDTH;
-			}
-		}
+			const defaultWidth = updates.unit === '%' ? DEFAULT_PERCENT_WIDTH : DEFAULT_PIXEL_WIDTH;
 
-		newSettings[index] = {
-			...currentSetting,
-			...updates,
-		};
+			newSettings.forEach((setting, idx) => {
+				if (setting) {
+					newSettings[idx] = {
+						...setting,
+						unit: updates.unit,
+						width: defaultWidth,
+					};
+				}
+			});
+
+			for (let i = 0; i < columns; i++) {
+				if (!newSettings[i]) {
+					newSettings[i] = {
+						...getColumnDefaults(),
+						unit: updates.unit,
+						width: defaultWidth,
+					};
+				}
+			}
+		} else {
+			newSettings[index] = {
+				...currentSetting,
+				...updates,
+			};
+		}
 
 		setAttributes({ columnSettings: newSettings });
 	};
@@ -317,89 +345,6 @@ export function Edit(props) {
 
 				{activeTab === 'general' && (
 					<>
-						<KadencePanelBody
-							title={__('Column Widths', 'kadence-blocks')}
-							initialOpen={false}
-							panelName={'kb-table-column-widths'}
-						>
-							<ToggleControl
-								label={__('Enable Column Width Controls', 'kadence-blocks')}
-								checked={attributes.useFixedWidths}
-								onChange={(value) => setAttributes({ useFixedWidths: value })}
-							/>
-
-							{attributes.useFixedWidths && (
-								<div className="kb-table-column-controls">
-									{Array.from({ length: attributes.columns }).map((_, index) => {
-										const columnSetting = getColumnSetting(index);
-										return (
-											<div
-												key={index}
-												className="kb-table-column-control"
-												style={{
-													marginBottom: '24px',
-													borderBottom: '1px solid #e0e0e0',
-													paddingBottom: '16px',
-												}}
-											>
-												<h3 style={{ margin: '0 0 8px' }}>
-													{sprintf(__('Column %d', 'kadence-blocks'), index + 1)}
-												</h3>
-
-												<ToggleControl
-													label={__('Set Fixed Width', 'kadence-blocks')}
-													checked={columnSetting.useFixed}
-													onChange={(value) =>
-														updateColumnSetting(index, { useFixed: value })
-													}
-												/>
-
-												{columnSetting.useFixed && (
-													<>
-														<div
-															style={{
-																display: 'flex',
-																gap: '8px',
-																alignItems: 'flex-start',
-																marginTop: '8px',
-															}}
-														>
-															<div style={{ flex: 1 }}>
-																<RangeControl
-																	value={
-																		parseFloat(columnSetting.width) ||
-																		(columnSetting.unit === '%'
-																			? DEFAULT_PERCENT_WIDTH
-																			: DEFAULT_PIXEL_WIDTH)
-																	}
-																	onChange={(value) =>
-																		updateColumnSetting(index, { width: value })
-																	}
-																	min={columnSetting.unit === '%' ? 1 : 20}
-																	max={columnSetting.unit === '%' ? 100 : 1000}
-																	step={1}
-																/>
-															</div>
-															<SelectControl
-																value={columnSetting.unit}
-																options={[
-																	{ label: '%', value: '%' },
-																	{ label: 'px', value: 'px' },
-																]}
-																onChange={(value) =>
-																	updateColumnSetting(index, { unit: value })
-																}
-																style={{ minWidth: '70px' }}
-															/>
-														</div>
-													</>
-												)}
-											</div>
-										);
-									})}
-								</div>
-							)}
-						</KadencePanelBody>
 						<KadencePanelBody initialOpen={true} panelName={'tableStructure'} blockSlug={'kadence/table'}>
 							<ButtonGroup>
 								<Button onClick={() => handleInsertRowBelow(9999)} isSecondary>
@@ -410,7 +355,7 @@ export function Edit(props) {
 								</Button>
 							</ButtonGroup>
 							<NumberControl
-								label={__('Number of Columns', 'kadence-blocks')}
+								label={__('Columns', 'kadence-blocks')}
 								value={columns}
 								onChange={(value) => setAttributes({ columns: parseInt(value) })}
 								min={1}
@@ -438,6 +383,79 @@ export function Edit(props) {
 							/>
 						</KadencePanelBody>
 						<KadencePanelBody
+							title={__('Column Widths', 'kadence-blocks')}
+							initialOpen={false}
+							panelName={'kb-table-column-widths'}
+						>
+							<div className="kb-table-column-controls">
+								{Array.from({ length: columns }).map((_, index) => {
+									const columnSetting = getColumnSetting(index);
+									return (
+										<div
+											key={index}
+											className="kb-table-column-control"
+											style={{
+												marginBottom: '24px',
+												borderBottom: '1px solid #e0e0e0',
+												paddingBottom: '16px',
+											}}
+										>
+											<h3 style={{ margin: '0 0 8px' }}>
+												{sprintf(__('Column %d', 'kadence-blocks'), index + 1)}
+											</h3>
+
+											<ToggleControl
+												label={__('Use auto width', 'kadence-blocks')}
+												checked={columnSetting.useAuto}
+												onChange={(value) => updateColumnSetting(index, { useAuto: value })}
+											/>
+
+											{!columnSetting.useAuto && (
+												<>
+													<div
+														style={{
+															display: 'flex',
+															gap: '8px',
+															alignItems: 'flex-start',
+															marginTop: '8px',
+														}}
+													>
+														<div style={{ flex: 1 }}>
+															<RangeControl
+																value={
+																	parseFloat(columnSetting.width) ||
+																	(columnSetting.unit === '%'
+																		? DEFAULT_PERCENT_WIDTH
+																		: DEFAULT_PIXEL_WIDTH)
+																}
+																onChange={(value) =>
+																	updateColumnSetting(index, { width: value })
+																}
+																min={columnSetting.unit === '%' ? 1 : 20}
+																max={columnSetting.unit === '%' ? 100 : 1000}
+																step={1}
+															/>
+														</div>
+														<SelectControl
+															value={columnSetting.unit}
+															options={[
+																{ label: '%', value: '%' },
+																{ label: 'px', value: 'px' },
+															]}
+															onChange={(value) =>
+																updateColumnSetting(index, { unit: value })
+															}
+															style={{ minWidth: '70px' }}
+														/>
+													</div>
+												</>
+											)}
+										</div>
+									);
+								})}
+							</div>
+						</KadencePanelBody>
+						<KadencePanelBody
 							title={__('Sticky Settings', 'kadence-blocks')}
 							panelName={'sticky-settings'}
 							initialOpen={false}
@@ -457,8 +475,8 @@ export function Edit(props) {
 							/>
 						</KadencePanelBody>
 						<KadencePanelBody
-							title={__('Sizing', 'kadnece-blocks')}
-							panelName={'sizing'}
+							title={__('Table Sizing', 'kadnece-blocks')}
+							panelName={'table-sizing'}
 							initialOpen={false}
 						>
 							<ResponsiveRangeControls
@@ -546,6 +564,12 @@ export function Edit(props) {
 								}}
 								units={['px', '%', 'vw']}
 							/>
+
+							<ToggleControl
+								label={__('Overflow-x scroll', 'kadence-blocks')}
+								checked={overflowXScroll}
+								onChange={(value) => setAttributes({ overflowXScroll: value })}
+							/>
 						</KadencePanelBody>
 					</>
 				)}
@@ -576,15 +600,15 @@ export function Edit(props) {
 						<KadencePanelBody
 							title={__('Cell Padding', 'kadence-blocks')}
 							panelName={'table-cell-padding'}
-							initialOpen={true}
+							initialOpen={false}
 						>
 							<ResponsiveMeasureRangeControl
 								label={__('Padding', 'kadence-blocks')}
 								value={cellPadding}
-								tabletValue={tabletCelladding}
+								tabletValue={tabletCellPadding}
 								mobileValue={mobileCellPadding}
 								onChange={(value) => setAttributes({ cellPadding: value })}
-								onChangeTablet={(value) => setAttributes({ tabletCelladding: value })}
+								onChangeTablet={(value) => setAttributes({ tabletCellPadding: value })}
 								onChangeMobile={(value) => setAttributes({ mobileCellPadding: value })}
 								min={cellPaddingType === 'em' || cellPaddingType === 'rem' ? -25 : -999}
 								max={cellPaddingType === 'em' || cellPaddingType === 'rem' ? 25 : 999}
@@ -597,7 +621,7 @@ export function Edit(props) {
 						<KadencePanelBody
 							title={__('Cell Typography', 'kadence-blocks')}
 							panelName={'table-cell-typography'}
-							initialOpen={true}
+							initialOpen={false}
 						>
 							<ResponsiveAlignControls
 								label={__('Text Alignment', 'kadence-blocks')}
@@ -784,28 +808,99 @@ export function Edit(props) {
 								</KadencePanelBody>
 							))}
 						</KadencePanelBody>
+						<KadencePanelBody
+							title={__('Row Height', 'kadence-blocks')}
+							initialOpen={false}
+							panelName={'table-row-height'}
+						>
+							<ResponsiveRangeControls
+								label={__('Height', 'kadence-blocks')}
+								value={rowMinHeight}
+								onChange={(value) => setAttributes({ rowMinHeight: value })}
+								tabletValue={tabletRowMinHeight}
+								onChangeTablet={(value) => setAttributes({ tabletRowMinHeight: value })}
+								mobileValue={mobileRowMinHeight}
+								onChangeMobile={(value) => setAttributes({ mobileRowMinHeight: value })}
+								min={0}
+								max={rowMinHeightType === 'px' ? 600 : 100}
+								step={1}
+								unit={rowMinHeightType}
+								onUnit={(value) => {
+									setAttributes({ rowMinHeightType: value });
+								}}
+								units={['px', 'em', 'vh']}
+								reset={() =>
+									setAttributes({
+										rowMinHeight: null,
+										tabletRowMinHeight: null,
+										mobileRowMinHeight: null,
+									})
+								}
+								showUnit={true}
+							/>
+						</KadencePanelBody>
 					</>
 				)}
 
 				{activeTab === 'advanced' && (
 					<>
-						<KadenceBlockDefaults
-							attributes={attributes}
-							defaultAttributes={metadata.attributes}
-							blockSlug={metadata.name}
-							excludedAttrs={nonTransAttrs}
-						/>
+						<KadencePanelBody initialOpen={true}>
+							<ResponsiveMeasureRangeControl
+								label={__('Padding', 'kadence-blocks')}
+								value={padding}
+								tabletValue={tabletPadding}
+								mobileValue={mobilePadding}
+								onChange={(value) => setAttributes({ padding: value })}
+								onChangeTablet={(value) => setAttributes({ tabletPadding: value })}
+								onChangeMobile={(value) => setAttributes({ mobilePadding: value })}
+								min={0}
+								max={
+									paddingType === 'em' || paddingType === 'rem'
+										? 25
+										: paddingType === 'px'
+										? 400
+										: 100
+								}
+								step={paddingType === 'em' || paddingType === 'rem' ? 0.1 : 1}
+								unit={paddingType}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setAttributes({ paddingType: value })}
+							/>
+
+							<ResponsiveMeasureRangeControl
+								label={__('Margin', 'kadence-blocks')}
+								value={margin}
+								tabletValue={tabletMargin}
+								mobileValue={mobileMargin}
+								onChange={(value) => setAttributes({ margin: value })}
+								onChangeTablet={(value) => setAttributes({ tabletMargin: value })}
+								onChangeMobile={(value) => setAttributes({ mobileMargin: value })}
+								min={0}
+								max={marginType === 'em' || marginType === 'rem' ? 25 : marginType === 'px' ? 400 : 100}
+								step={marginType === 'em' || marginType === 'rem' ? 0.1 : 1}
+								unit={marginType}
+								units={['px', 'em', 'rem', '%']}
+								onUnit={(value) => setAttributes({ marginType: value })}
+							/>
+
+							<KadenceBlockDefaults
+								attributes={attributes}
+								defaultAttributes={metadata.attributes}
+								blockSlug={metadata.name}
+								excludedAttrs={nonTransAttrs}
+							/>
+						</KadencePanelBody>
 					</>
 				)}
 			</KadenceInspectorControls>
 			<BackendStyles attributes={attributes} previewDevice={previewDevice} />
-			{attributes.useFixedWidths && (
+			{isSelected && (
 				<div className="kb-table-width-controls">
 					<div className="kb-table-width-resizers" style={{ display: 'flex', marginBottom: '20px' }}>
-						{Array.from({ length: attributes.columns }).map((_, index) => {
+						{Array.from({ length: columns }).map((_, index) => {
 							const columnSetting = getColumnSetting(index);
 
-							if (!columnSetting.useFixed) {
+							if (columnSetting.useAuto) {
 								return (
 									<div
 										key={index}

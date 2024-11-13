@@ -34,7 +34,7 @@
 			"type": "number",
 			"default": ""
 		},
-		"minHeightUnit": {
+		"minHeightType": {
 			"type": "string",
 			"default": "px"
 		}

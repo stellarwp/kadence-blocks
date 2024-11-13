@@ -10,19 +10,19 @@ import {
 export default function BackendStyles(props) {
 	const { attributes, previewDevice } = props;
 
-	const { uniqueID, backgroundColor, minHeight, tabletMinHeight, mobileMinHeight, minHeightUnit } = attributes;
+	const { uniqueID, backgroundColor, minHeight, tabletMinHeight, mobileMinHeight, minHeightType } = attributes;
 
 	const previewMinHeight = getPreviewSize(previewDevice, minHeight, tabletMinHeight, mobileMinHeight);
 
 	const css = new KadenceBlocksCSS();
 
-	css.set_selector(`.kb-table .kb-table-row${uniqueID}`);
+	css.set_selector(`.kb-table-container .kb-table tr.kb-table-row${uniqueID}`);
 	if (backgroundColor !== '') {
 		css.add_property('background-color', KadenceColorOutput(backgroundColor));
 	}
 
 	if (previewMinHeight) {
-		css.add_property('height', previewMinHeight + minHeightUnit);
+		css.add_property('height', previewMinHeight + minHeightType);
 	}
 
 	const cssOutput = css.css_output();

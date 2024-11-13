@@ -71,6 +71,8 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_selector( '.kb-table-container' . esc_attr( $unique_id ) );
 		$css->render_typography( $attributes, 'dataTypography' );
+		$css->render_measure_output( $attributes, 'padding', 'padding' );
+		$css->render_measure_output( $attributes, 'margin', 'margin' );
 
 		$max_width_unit = !empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px';
 		$css->render_responsive_range( $attributes, 'maxWidth', 'max-width', $max_width_unit );
@@ -86,11 +88,11 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property('overflow-x', 'auto');
 		}
 
-		if ( ! empty( $attributes['useFixedWidths'] ) && ! empty( $attributes['columnSettings'] ) && is_array( $attributes['columnSettings'] ) ) {
+		if ( ! empty( $attributes['columnSettings'] ) && is_array( $attributes['columnSettings'] ) ) {
 			$has_fixed_columns = false;
 
 			foreach ( $attributes['columnSettings'] as $index => $settings ) {
-				if ( ! empty( $settings['useFixed'] ) && isset( $settings['width'] ) && '' !== $settings['width'] ) {
+				if ( ( empty( $settings['useAuto'] ) || !$settings['useAuto'] ) && isset( $settings['width'] ) && '' !== $settings['width'] ) {
 					$has_fixed_columns = true;
 					$width_unit = ! empty( $settings['unit'] ) ? $settings['unit'] : '%';
 
@@ -106,6 +108,14 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'table-layout', 'fixed' );
 				$css->add_property( 'width', '100%' );
 			}
+		}
+
+		$css->set_selector( '.kb-table' . esc_attr( $unique_id ) . ' tr' );
+		$css->render_responsive_size( $attributes, [ 'rowMinHeight', 'tabletRowMinHeight', 'mobileRowMinHeight' ], 'height' );
+
+		if( !empty( $attributes['overflowXScroll'] ) ){
+			$css->set_selector( '.kb-table-container .kb-table' . esc_attr( $unique_id ));
+			$css->add_property( 'overflow-x', 'scroll');
 		}
 
 		if( !empty( $attributes['stickyFirstRow']) ) {

@@ -43,8 +43,20 @@ export default function BackendStyles(props) {
 		headerAlign,
 		headerAlignTablet,
 		headerAlignMobile,
-		useFixedWidths,
 		columnSettings,
+		overflowXScroll,
+		rowMinHeight,
+		tabletRowMinHeight,
+		mobileRowMinHeight,
+		rowMinHeightType,
+		padding,
+		tabletPadding,
+		mobilePadding,
+		paddingType,
+		margin,
+		tabletMargin,
+		mobileMargin,
+		marginType,
 	} = attributes;
 	const css = new KadenceBlocksCSS();
 
@@ -53,11 +65,14 @@ export default function BackendStyles(props) {
 	const previewTextAlign = getPreviewSize(previewDevice, textAlign, textAlignTablet, textAlignMobile);
 	const previewMaxHeight = getPreviewSize(previewDevice, maxHeight?.[0], maxHeight?.[1], maxHeight?.[2]);
 	const previewMaxWidth = getPreviewSize(previewDevice, maxWidth?.[0], maxWidth?.[1], maxWidth?.[2]);
+	const previewRowMinHeight = getPreviewSize(previewDevice, rowMinHeight, tabletRowMinHeight, mobileRowMinHeight);
 
 	css.set_selector(`.kb-table${uniqueID}`);
 	css.render_font(dataTypography ? dataTypography : [], previewDevice);
 
 	css.set_selector(`.kb-table-container${uniqueID}`);
+	css.render_measure_output(padding, tabletPadding, mobilePadding, previewDevice, 'padding', paddingType);
+	css.render_measure_output(margin, tabletMargin, mobileMargin, previewDevice, 'margin', marginType);
 	if (maxHeight) {
 		css.add_property('max-height', getSpacingOptionOutput(previewMaxHeight, maxHeightUnit) + ' !important');
 		css.add_property('overflow-y', 'auto');
@@ -69,11 +84,11 @@ export default function BackendStyles(props) {
 	}
 
 	// Add column width styles
-	if (useFixedWidths && Array.isArray(columnSettings)) {
+	if (Array.isArray(columnSettings)) {
 		let hasFixedColumns = false;
 
 		columnSettings.forEach((settings, index) => {
-			if (settings?.useFixed && settings?.width) {
+			if (!settings?.useAuto && settings?.width) {
 				hasFixedColumns = true;
 				css.set_selector(
 					`.kb-table${uniqueID} td:nth-child(${index + 1}), .kb-table${uniqueID} th:nth-child(${index + 1})`
@@ -88,6 +103,11 @@ export default function BackendStyles(props) {
 			css.add_property('table-layout', 'fixed');
 			css.add_property('width', '100%');
 		}
+	}
+
+	if (overflowXScroll) {
+		css.set_selector(`.kb-table${uniqueID}`);
+		css.add_property('overflow-x', 'auto');
 	}
 
 	css.set_selector(`.kb-table${uniqueID} th`);
@@ -149,6 +169,11 @@ export default function BackendStyles(props) {
 				css.add_property('background-color', KadenceColorOutput(background));
 			}
 		});
+	}
+
+	if (previewRowMinHeight) {
+		css.set_selector(`.kb-table${uniqueID} tr`);
+		css.add_property('height', getSpacingOptionOutput(previewRowMinHeight, rowMinHeightType));
 	}
 
 	if (borderOnRowOnly) {

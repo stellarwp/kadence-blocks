@@ -237,22 +237,12 @@ export function Edit(props) {
 				/>
 				<InspectorControlTabs
 					panelName={'table-data'}
+					allowedTabs={['general']}
 					setActiveTab={(value) => setActiveTab(value)}
 					activeTab={activeTab}
 				/>
 
-				{activeTab === 'general' && (
-					<KadencePanelBody title={__('General', 'kadence-blocks')} initialOpen={true}>
-						General settings
-					</KadencePanelBody>
-				)}
-				{activeTab === 'advanced' && (
-					<KadenceBlockDefaults
-						blockSlug={'kadence/table-data'}
-						attributes={attributes}
-						setAttributes={setAttributes}
-					/>
-				)}
+				{activeTab === 'general' && <KadencePanelBody initialOpen={true}>&nbsp;</KadencePanelBody>}
 			</KadenceInspectorControls>
 			<InnerBlocks template={DEFAULT_BLOCK} renderAppender={false} templateLock={false} />
 		</Tag>
