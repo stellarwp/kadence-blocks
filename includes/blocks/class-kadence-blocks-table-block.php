@@ -69,6 +69,12 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
+		// Render pro styles
+		if( class_exists( 'Kadence_Blocks_Pro' ) && class_exists( 'Kadence_Blocks_Pro_Table_Block' ) ) {
+			$pro_table = new Kadence_Blocks_Pro_Table_Block();
+			$pro_table->build_css( $attributes, $css, $unique_id, $unique_style_id );
+		}
+
 		$css->set_selector( '.kb-table-container' . esc_attr( $unique_id ) );
 		$css->render_typography( $attributes, 'dataTypography' );
 		$css->render_measure_output( $attributes, 'padding', 'padding' );
@@ -117,20 +123,6 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.kb-table-container .kb-table' . esc_attr( $unique_id ));
 			$css->add_property( 'overflow-x', 'scroll');
 		}
-
-		if( !empty( $attributes['stickyFirstRow']) ) {
-			$css->set_selector( '.kb-table-container .kb-table' . esc_attr( $unique_id ) . ' tr:first-child');
-			$css->add_property( 'position', 'sticky');
-			$css->add_property( 'top', '0');
-			$css->add_property( 'z-index', '1');
-		}
-
-		if( !empty( $attributes['stickyFirstColumn']) ) {
-			$css->set_selector( '.kb-table-container .kb-table' . esc_attr( $unique_id ) . ' td:first-child, .kb-table' . esc_attr( $unique_id ) . ' th:first-child');
-			$css->add_property( 'position', 'sticky');
-			$css->add_property( 'left', '0');
-		}
-
 
 		$css->set_selector( '.kb-table-container .kb-table' . esc_attr( $unique_id ) . ' th' );
 		$css->render_typography( $attributes, 'headerTypography' );

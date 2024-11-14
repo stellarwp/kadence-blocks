@@ -152,14 +152,6 @@
 			"type": "boolean",
 			"default": false
 		},
-		"stickyFirstRow": {
-			"type": "boolean",
-			"default": false
-		},
-		"stickyFirstColumn": {
-			"type": "boolean",
-			"default": false
-		},
 		"maxHeight": {
 			"type": "array",
 			"default": ["", "", ""]

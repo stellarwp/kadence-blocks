@@ -10,44 +10,32 @@ import { createBlock } from '@wordpress/blocks';
 import {
 	RangeControl,
 	ToggleControl,
-	TextControl,
-	Modal,
 	SelectControl,
-	FormFileUpload,
 	Button,
 	ButtonGroup,
-	Notice,
 	__experimentalNumberControl as NumberControl,
 	ResizableBox,
+	ExternalLink,
 } from '@wordpress/components';
 
 import {
-	KadenceSelectPosts,
 	KadencePanelBody,
 	InspectorControlTabs,
 	KadenceInspectorControls,
 	KadenceBlockDefaults,
 	ResponsiveMeasureRangeControl,
-	SpacingVisualizer,
 	CopyPasteAttributes,
 	TypographyControls,
 	HoverToggleControl,
 	PopColorControl,
-	ResponsiveMeasurementControls,
 	ResponsiveBorderControl,
 	ResponsiveRangeControls,
 	ResponsiveAlignControls,
 } from '@kadence/components';
 
-import {
-	setBlockDefaults,
-	mouseOverVisualizer,
-	getSpacingOptionOutput,
-	getUniqueId,
-	getPostOrFseId,
-	getPreviewSize,
-} from '@kadence/helpers';
+import { setBlockDefaults, getUniqueId, getPostOrFseId } from '@kadence/helpers';
 import BackendStyles from './components/backend-styles';
+import { applyFilters } from '@wordpress/hooks';
 
 const DEFAULT_PERCENT_WIDTH = 30;
 const DEFAULT_PIXEL_WIDTH = 150;
@@ -297,6 +285,34 @@ export function Edit(props) {
 		});
 	};
 
+	const StickyUpsell = (
+		<>
+			<KadencePanelBody
+				title={__('Sticky Settings', 'kadence-blocks')}
+				initialOpen={false}
+				panelName={'table-sticky-upsell'}
+				proTag={true}
+			>
+				<div className="kb-pro-notice">
+					<h2>{__('Sticky Rows & Columns Styles', 'kadence-blocks')} </h2>
+					<p>
+						{__(
+							'Custmize your table with sticky rows and columns. This feature is available in the Pro version of Kadence Blocks.',
+							'kadence-blocks'
+						)}{' '}
+					</p>
+					<ExternalLink
+						href={
+							'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=table'
+						}
+					>
+						{__('Upgrade to Pro', 'kadence-blocks')}
+					</ExternalLink>
+				</div>
+			</KadencePanelBody>
+		</>
+	);
+
 	if (undefined === columns) {
 		return (
 			<div
@@ -455,25 +471,9 @@ export function Edit(props) {
 								})}
 							</div>
 						</KadencePanelBody>
-						<KadencePanelBody
-							title={__('Sticky Settings', 'kadence-blocks')}
-							panelName={'sticky-settings'}
-							initialOpen={false}
-						>
-							<ToggleControl
-								label={__('Sticky first row', 'kadence-blocks')}
-								checked={stickyFirstRow}
-								onChange={(value) => setAttributes({ stickyFirstRow: value })}
-								help={__('Max height must be set for this to apply.', 'kadence-blocks')}
-							/>
 
-							<ToggleControl
-								label={__('Sticky first column', 'kadence-blocks')}
-								checked={stickyFirstColumn}
-								onChange={(value) => setAttributes({ stickyFirstColumn: value })}
-								help={__('Max width must be set for this to apply.', 'kadence-blocks')}
-							/>
-						</KadencePanelBody>
+						{applyFilters('kadence.tableBlockStickySettings', StickyUpsell, props)}
+
 						<KadencePanelBody
 							title={__('Table Sizing', 'kadnece-blocks')}
 							panelName={'table-sizing'}
