@@ -47,7 +47,11 @@ export default [
 								{icon && 'left' === iconSide && (
 									<IconSpanTag extraClass={`kt-btn-side-${iconSide}`} name={icon} />
 								)}
-								<RichText.Content className={'kt-blocks-accordion-title'} tagName={'span'} value={title} />
+								<RichText.Content
+									className={'kt-blocks-accordion-title'}
+									tagName={'span'}
+									value={title}
+								/>
 								{icon && 'right' === iconSide && (
 									<IconSpanTag extraClass={`kt-btn-side-${iconSide}`} name={icon} />
 								)}
