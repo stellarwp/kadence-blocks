@@ -201,7 +201,7 @@ class Kadence_Blocks_Cpt_Import_Export
 	public function add_import_export_buttons() {
 		global $pagenow, $typenow;
 
-		if ('edit.php' === $pagenow && $this->slug === $typenow) {
+		if ('edit.php' === $pagenow && $this->slug === $typenow && current_user_can('edit_posts') ) {
 			add_action('admin_notices', array($this, 'render_import_export_buttons'));
 		}
 	}
