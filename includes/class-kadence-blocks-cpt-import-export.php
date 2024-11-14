@@ -58,16 +58,14 @@ class Kadence_Blocks_Cpt_Import_Export
 		if (!empty($slug)) {
 			$this->slug = $slug;
 			add_action('admin_menu', array($this, 'add_import_export_buttons'), 20);
-			add_action('admin_post_kadence_export_posts', array($this, 'handle_export'));
-			add_action('admin_post_kadence_import_posts', array($this, 'handle_import'));
+			add_action('admin_post_kadence_export_posts-' . $slug, array($this, 'handle_export'));
+			add_action('admin_post_kadence_import_posts-' . $slug, array($this, 'handle_import'));
 			add_action('admin_notices', array($this, 'display_import_notices'));
 
 			add_action('admin_enqueue_scripts', array($this, 'enqueue_scripts'));
 			add_action('admin_footer', array($this, 'add_import_modal_styles'));
 			add_filter('bulk_actions-edit-' . $slug, array($this, 'register_bulk_export_action'));
 			add_filter('handle_bulk_actions-edit-' . $slug, array($this, 'handle_bulk_export'), 10, 3);
-
-
 
 		}
 	}
@@ -216,7 +214,7 @@ class Kadence_Blocks_Cpt_Import_Export
 		<div class="kadence-import-export-buttons">
 			<form method="post" action="<?php echo admin_url('admin-post.php'); ?>" style="display: inline-block; margin-right: 10px;">
 				<?php wp_nonce_field('kadence_export_posts_nonce', 'kadence_export_nonce'); ?>
-				<input type="hidden" name="action" value="kadence_export_posts">
+				<input type="hidden" name="action" value="kadence_export_posts-<?php echo esc_attr($this->slug); ?>">
 				<input type="hidden" name="post_type" value="<?php echo esc_attr($this->slug); ?>">
 				<input type="submit" class="button button-secondary" value="<?php esc_attr_e('Export All', 'kadence-blocks'); ?>">
 			</form>
@@ -228,7 +226,7 @@ class Kadence_Blocks_Cpt_Import_Export
 			<div class="kadence-import-form">
 				<form method="post" action="<?php echo admin_url('admin-post.php'); ?>" enctype="multipart/form-data">
 					<?php wp_nonce_field('kadence_import_posts_nonce', 'kadence_import_nonce'); ?>
-					<input type="hidden" name="action" value="kadence_import_posts">
+					<input type="hidden" name="action" value="kadence_import_posts-<?php echo esc_attr($this->slug); ?>">
 					<input type="hidden" name="post_type" value="<?php echo esc_attr($this->slug); ?>">
 					<input type="file" name="import_file" accept=".zip" required>
 					<input type="submit" class="button button-primary" value="<?php esc_attr_e('Upload & Import', 'kadence-blocks'); ?>">
