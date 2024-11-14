@@ -62,6 +62,7 @@ registerBlockType('kadence/pane', {
 							hideLabel ? 'hide' : 'show'
 						}`}
 						aria-label={ariaLabel ? ariaLabel : undefined}
+						type='button'
 					>
 						<span className="kt-blocks-accordion-title-wrap">
 							{icon && 'left' === iconSide && (
