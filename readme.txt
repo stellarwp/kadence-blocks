@@ -174,7 +174,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
-= 3.3.4 =
+= 3.3.5 =
 Release Date: tba
 * Add: Filters to customize faq schema output for accordion blocks. kadence_blocks_faq_schema, kadence_blocks_faq_schema_allowed_tags, kadence_blocks_faq_schema_question, kadence_blocks_faq_schema_answer
 
