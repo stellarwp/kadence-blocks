@@ -175,6 +175,10 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.3.4 =
+Release Date: tba
+* Add: Filters to customize faq schema output for accordion blocks. kadence_blocks_faq_schema, kadence_blocks_faq_schema_allowed_tags, kadence_blocks_faq_schema_question, kadence_blocks_faq_schema_answer
+
+= 3.3.4 =
 Release Date: November 12th 2024
 * Add: Add background gradient to advanced highlight.
 * Fix: Post grid not displaying all selected posts.
