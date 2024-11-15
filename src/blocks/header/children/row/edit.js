@@ -276,10 +276,6 @@ export function Edit(props) {
 		);
 	};
 
-	const NoInnerBlocksInspectorControls = () => (
-		<KadencePanelBody>{__('Add blocks to customize this row.', 'kadence-blocks')}</KadencePanelBody>
-	);
-
 	return (
 		<div {...blockProps}>
 			<BackendStyles {...props} previewDevice={previewDevice} />
@@ -289,266 +285,266 @@ export function Edit(props) {
 					clientId={clientId}
 					parentSlug={'kadence/header'}
 				/>
+				{!hasInsertedChildBlocks && (
+					<KadencePanelBody>
+						{__('Alert: This row has no content. Add blocks to display this row.', 'kadence-blocks')}
+					</KadencePanelBody>
+				)}
+				<>
+					<InspectorControlTabs
+						panelName={'header-row'}
+						setActiveTab={(value) => setActiveTab(value)}
+						activeTab={activeTab}
+					/>
 
-				{hasInsertedChildBlocks ? (
-					<>
-						<InspectorControlTabs
-							panelName={'header-row'}
-							setActiveTab={(value) => setActiveTab(value)}
-							activeTab={activeTab}
-						/>
-
-						{activeTab === 'general' && (
-							<>
-								<KadencePanelBody>
-									<KadenceRadioButtons
-										label={__('Layout Config', 'kadence-blocks')}
-										value={layoutConfig}
+					{activeTab === 'general' && (
+						<>
+							<KadencePanelBody>
+								<KadenceRadioButtons
+									label={__('Layout Config', 'kadence-blocks')}
+									value={layoutConfig}
+									options={[
+										{ value: '', label: __('Default', 'kadence-blocks') },
+										{ value: 'single', label: __('Single Container', 'kadence-blocks') },
+									]}
+									hideLabel={false}
+									onChange={(value) => {
+										setAttributes({ layoutConfig: value });
+									}}
+									help={
+										'single' === layoutConfig
+											? __(
+													'The Default layout shows 5 containers per row. Switching to Single Container hides containers 2-5, but your content remains saved and will reappear when you switch back to the Default view.',
+													'kadence-blocks'
+											  )
+											: ''
+									}
+								/>
+								<KadenceRadioButtons
+									label={__('Layout Width', 'kadence-blocks')}
+									value={layout}
+									options={[
+										{ value: '', label: __('Standard', 'kadence-blocks') },
+										{ value: 'fullwidth', label: __('Full Width', 'kadence-blocks') },
+										{ value: 'contained', label: __('Contained', 'kadence-blocks') },
+									]}
+									hideLabel={false}
+									onChange={(value) => {
+										setAttributes({ layout: value });
+									}}
+								/>
+								<ResponsiveRangeControls
+									label={__('Min Height', 'kadence-blocks')}
+									value={minHeight}
+									onChange={(value) => setAttributes({ minHeight: value })}
+									tabletValue={minHeightTablet}
+									onChangeTablet={(value) => setAttributes({ minHeightTablet: value })}
+									mobileValue={minHeightMobile}
+									onChangeMobile={(value) => setAttributes({ minHeightMobile: value })}
+									min={0}
+									max={minHeightUnit === 'px' ? 600 : 100}
+									step={1}
+									unit={minHeightUnit}
+									onUnit={(value) => {
+										setAttributes({ minHeightUnit: value });
+									}}
+									units={['px', 'em', 'vh']}
+									reset={() =>
+										setAttributes({
+											minHeight: null,
+											minHeightTablet: null,
+											minHeightMobile: null,
+										})
+									}
+									showUnit={true}
+								/>
+								<ResponsiveGapSizeControl
+									label={__('Item Gap', 'kadence-blocks')}
+									value={itemGap}
+									onChange={(value) => setAttributes({ itemGap: String(value) })}
+									tabletValue={itemGapTablet}
+									onChangeTablet={(value) => setAttributes({ itemGapTablet: String(value) })}
+									mobileValue={itemGapMobile}
+									onChangeMobile={(value) => setAttributes({ itemGapMobile: String(value) })}
+									min={0}
+									max={itemGapUnit === 'px' ? 200 : 12}
+									step={itemGapUnit === 'px' ? 1 : 0.1}
+									unit={itemGapUnit}
+									onUnit={(value) => {
+										setAttributes({ itemGapUnit: value });
+									}}
+									units={['px', 'em', 'rem']}
+								/>
+								<ResponsiveAlignControls
+									label={__('Vertical Alignment', 'kadence-blocks')}
+									value={vAlign ? vAlign : ''}
+									tabletValue={vAlignTablet ? vAlignTablet : ''}
+									mobileValue={vAlignMobile ? vAlignMobile : ''}
+									onChange={(nextAlign) =>
+										setAttributes({ vAlign: nextAlign ? nextAlign : 'center' })
+									}
+									onChangeTablet={(nextAlign) =>
+										setAttributes({ vAlignTablet: nextAlign ? nextAlign : '' })
+									}
+									onChangeMobile={(nextAlign) =>
+										setAttributes({ vAlignMobile: nextAlign ? nextAlign : '' })
+									}
+									type={'vertical'}
+								/>
+								{layoutConfig !== 'single' && (
+									<ResponsiveSelectControl
+										label={__('Section Priority', 'kadence-blocks')}
+										value={sectionPriority}
+										tabletValue={sectionPriorityTablet}
+										mobileValue={sectionPriorityMobile}
 										options={[
 											{ value: '', label: __('Default', 'kadence-blocks') },
-											{ value: 'single', label: __('Single Container', 'kadence-blocks') },
+											{ value: 'center', label: __('Center', 'kadence-blocks') },
+											{ value: 'left', label: __('Left', 'kadence-blocks') },
+											{ value: 'right', label: __('Right', 'kadence-blocks') },
 										]}
-										hideLabel={false}
-										onChange={(value) => {
-											setAttributes({ layoutConfig: value });
-										}}
-										help={
-											'single' === layoutConfig
-												? __(
-														'The Default layout shows 5 containers per row. Switching to Single Container hides containers 2-5, but your content remains saved and will reappear when you switch back to the Default view.',
-														'kadence-blocks'
-												  )
-												: ''
-										}
+										onChange={(value) => setAttributes({ sectionPriority: value })}
+										onChangeTablet={(value) => setAttributes({ sectionPriorityTablet: value })}
+										onChangeMobile={(value) => setAttributes({ sectionPriorityMobile: value })}
 									/>
-									<KadenceRadioButtons
-										label={__('Layout Width', 'kadence-blocks')}
-										value={layout}
-										options={[
-											{ value: '', label: __('Standard', 'kadence-blocks') },
-											{ value: 'fullwidth', label: __('Full Width', 'kadence-blocks') },
-											{ value: 'contained', label: __('Contained', 'kadence-blocks') },
-										]}
-										hideLabel={false}
-										onChange={(value) => {
-											setAttributes({ layout: value });
-										}}
-									/>
-									<ResponsiveRangeControls
-										label={__('Min Height', 'kadence-blocks')}
-										value={minHeight}
-										onChange={(value) => setAttributes({ minHeight: value })}
-										tabletValue={minHeightTablet}
-										onChangeTablet={(value) => setAttributes({ minHeightTablet: value })}
-										mobileValue={minHeightMobile}
-										onChangeMobile={(value) => setAttributes({ minHeightMobile: value })}
-										min={0}
-										max={minHeightUnit === 'px' ? 600 : 100}
-										step={1}
-										unit={minHeightUnit}
-										onUnit={(value) => {
-											setAttributes({ minHeightUnit: value });
-										}}
-										units={['px', 'em', 'vh']}
-										reset={() =>
-											setAttributes({
-												minHeight: null,
-												minHeightTablet: null,
-												minHeightMobile: null,
-											})
-										}
-										showUnit={true}
-									/>
-									<ResponsiveGapSizeControl
-										label={__('Item Gap', 'kadence-blocks')}
-										value={itemGap}
-										onChange={(value) => setAttributes({ itemGap: String(value) })}
-										tabletValue={itemGapTablet}
-										onChangeTablet={(value) => setAttributes({ itemGapTablet: String(value) })}
-										mobileValue={itemGapMobile}
-										onChangeMobile={(value) => setAttributes({ itemGapMobile: String(value) })}
-										min={0}
-										max={itemGapUnit === 'px' ? 200 : 12}
-										step={itemGapUnit === 'px' ? 1 : 0.1}
-										unit={itemGapUnit}
-										onUnit={(value) => {
-											setAttributes({ itemGapUnit: value });
-										}}
-										units={['px', 'em', 'rem']}
-									/>
-									<ResponsiveAlignControls
-										label={__('Vertical Alignment', 'kadence-blocks')}
-										value={vAlign ? vAlign : ''}
-										tabletValue={vAlignTablet ? vAlignTablet : ''}
-										mobileValue={vAlignMobile ? vAlignMobile : ''}
-										onChange={(nextAlign) =>
-											setAttributes({ vAlign: nextAlign ? nextAlign : 'center' })
-										}
-										onChangeTablet={(nextAlign) =>
-											setAttributes({ vAlignTablet: nextAlign ? nextAlign : '' })
-										}
-										onChangeMobile={(nextAlign) =>
-											setAttributes({ vAlignMobile: nextAlign ? nextAlign : '' })
-										}
-										type={'vertical'}
-									/>
-									{layoutConfig !== 'single' && (
-										<ResponsiveSelectControl
-											label={__('Section Priority', 'kadence-blocks')}
-											value={sectionPriority}
-											tabletValue={sectionPriorityTablet}
-											mobileValue={sectionPriorityMobile}
-											options={[
-												{ value: '', label: __('Default', 'kadence-blocks') },
-												{ value: 'center', label: __('Center', 'kadence-blocks') },
-												{ value: 'left', label: __('Left', 'kadence-blocks') },
-												{ value: 'right', label: __('Right', 'kadence-blocks') },
-											]}
-											onChange={(value) => setAttributes({ sectionPriority: value })}
-											onChangeTablet={(value) => setAttributes({ sectionPriorityTablet: value })}
-											onChangeMobile={(value) => setAttributes({ sectionPriorityMobile: value })}
-										/>
-									)}
-								</KadencePanelBody>
-							</>
-						)}
-						{activeTab === 'style' && (
-							<>
-								<KadencePanelBody
-									title={__('Background Settings', 'kadence-blocks')}
-									initialOpen={true}
-									panelName={'kb-header-row-bg-settings'}
-								>
-									{backgroundStyleControls()}
-								</KadencePanelBody>
-								{context?.['kadence/headerIsTransparent'] == '1' && (
-									<KadencePanelBody
-										title={__('Transparent Background Settings', 'kadence-blocks')}
-										initialOpen={false}
-										panelName={'kb-header-bg-transparent-settings'}
-									>
-										{backgroundStyleControls('', 'Transparent')}
-									</KadencePanelBody>
 								)}
+							</KadencePanelBody>
+						</>
+					)}
+					{activeTab === 'style' && (
+						<>
+							<KadencePanelBody
+								title={__('Background Settings', 'kadence-blocks')}
+								initialOpen={true}
+								panelName={'kb-header-row-bg-settings'}
+							>
+								{backgroundStyleControls()}
+							</KadencePanelBody>
+							{context?.['kadence/headerIsTransparent'] == '1' && (
 								<KadencePanelBody
-									title={__('Border Settings', 'kadence-blocks')}
+									title={__('Transparent Background Settings', 'kadence-blocks')}
 									initialOpen={false}
-									panelName={'kb-header-row-border-settings'}
+									panelName={'kb-header-bg-transparent-settings'}
 								>
-									<ResponsiveBorderControl
-										label={__('Border', 'kadence-blocks')}
-										value={border}
-										tabletValue={borderTablet}
-										mobileValue={borderMobile}
-										onChange={(value) => setAttributes({ border: value })}
-										onChangeTablet={(value) => setAttributes({ borderTablet: value })}
-										onChangeMobile={(value) => setAttributes({ borderMobile: value })}
-									/>
+									{backgroundStyleControls('', 'Transparent')}
+								</KadencePanelBody>
+							)}
+							<KadencePanelBody
+								title={__('Border Settings', 'kadence-blocks')}
+								initialOpen={false}
+								panelName={'kb-header-row-border-settings'}
+							>
+								<ResponsiveBorderControl
+									label={__('Border', 'kadence-blocks')}
+									value={border}
+									tabletValue={borderTablet}
+									mobileValue={borderMobile}
+									onChange={(value) => setAttributes({ border: value })}
+									onChangeTablet={(value) => setAttributes({ borderTablet: value })}
+									onChangeMobile={(value) => setAttributes({ borderMobile: value })}
+								/>
 
-									<ResponsiveMeasurementControls
-										label={__('Border Radius', 'kadence-blocks')}
-										value={borderRadius}
-										tabletValue={borderRadiusTablet}
-										mobileValue={borderRadiusMobile}
-										onChange={(value) => setAttributes({ borderRadius: value })}
-										onChangeTablet={(value) => setAttributes({ borderRadiusTablet: value })}
-										onChangeMobile={(value) => setAttributes({ borderRadiusMobile: value })}
-										min={0}
-										max={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 100}
-										step={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1}
-										unit={borderRadiusUnit}
-										units={['px', 'em', 'rem', '%']}
-										onUnit={(value) => setAttributes({ borderRadiusUnit: value })}
-										isBorderRadius={true}
-										allowEmpty={true}
-									/>
-								</KadencePanelBody>
-							</>
-						)}
-						{activeTab === 'advanced' && (
-							<>
-								<KadencePanelBody panelName={'kb-header-row-padding'}>
-									<ResponsiveMeasureRangeControl
-										label={__('Padding', 'kadence-blocks')}
-										value={padding}
-										tabletValue={paddingTablet}
-										mobileValue={paddingMobile}
-										onChange={(value) => setAttributes({ padding: value })}
-										onChangeTablet={(value) => setAttributes({ paddingTablet: value })}
-										onChangeMobile={(value) => setAttributes({ paddingMobile: value })}
-										min={0}
-										max={
-											paddingUnit === 'em' || paddingUnit === 'rem'
-												? 25
-												: paddingUnit === 'px'
-												? 400
-												: 100
-										}
-										step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
-										unit={paddingUnit}
-										units={['px', 'em', 'rem', '%']}
-										onUnit={(value) => setAttributes({ paddingUnit: value })}
-										ghostDefault={['', 'sm', '', 'sm']}
-									/>
-									<ResponsiveMeasureRangeControl
-										label={__('Margin', 'kadence-blocks')}
-										value={margin}
-										tabletValue={marginTablet}
-										mobileValue={marginMobile}
-										onChange={(value) => setAttributes({ margin: value })}
-										onChangeTablet={(value) => setAttributes({ marginTablet: value })}
-										onChangeMobile={(value) => setAttributes({ marginMobile: value })}
-										min={0}
-										max={
-											marginUnit === 'em' || marginUnit === 'rem'
-												? 25
-												: marginUnit === 'px'
-												? 400
-												: 100
-										}
-										step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
-										unit={marginUnit}
-										units={['px', 'em', 'rem', '%']}
-										onUnit={(value) => setAttributes({ marginUnit: value })}
-									/>
-								</KadencePanelBody>
-								<KadencePanelBody
-									panelName={'kb-header-row-max-width'}
-									title={__('Container Width', 'kadence-blocks')}
-									initialOpen={false}
-								>
-									<ResponsiveRangeControls
-										label={__('Max Width', 'kadence-blocks')}
-										value={maxWidth}
-										onChange={(value) => setAttributes({ maxWidth: value })}
-										tabletValue={maxWidthTablet}
-										onChangeTablet={(value) => setAttributes({ maxWidthTablet: value })}
-										mobileValue={maxWidthMobile}
-										onChangeMobile={(value) => setAttributes({ maxWidthMobile: value })}
-										min={0}
-										max={maxWidthUnit === 'px' ? 600 : 100}
-										step={1}
-										unit={maxWidthUnit}
-										onUnit={(value) => {
-											setAttributes({ maxWidthUnit: value });
-										}}
-										reset={() =>
-											setAttributes({
-												maxWidth: null,
-												maxWidthTablet: null,
-												maxWidthMobile: null,
-											})
-										}
-										units={['px', 'em', 'vw', '%']}
-										showUnit={true}
-									/>
-								</KadencePanelBody>
-							</>
-						)}
-					</>
-				) : (
-					<NoInnerBlocksInspectorControls />
-				)}
+								<ResponsiveMeasurementControls
+									label={__('Border Radius', 'kadence-blocks')}
+									value={borderRadius}
+									tabletValue={borderRadiusTablet}
+									mobileValue={borderRadiusMobile}
+									onChange={(value) => setAttributes({ borderRadius: value })}
+									onChangeTablet={(value) => setAttributes({ borderRadiusTablet: value })}
+									onChangeMobile={(value) => setAttributes({ borderRadiusMobile: value })}
+									min={0}
+									max={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 100}
+									step={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1}
+									unit={borderRadiusUnit}
+									units={['px', 'em', 'rem', '%']}
+									onUnit={(value) => setAttributes({ borderRadiusUnit: value })}
+									isBorderRadius={true}
+									allowEmpty={true}
+								/>
+							</KadencePanelBody>
+						</>
+					)}
+					{activeTab === 'advanced' && (
+						<>
+							<KadencePanelBody panelName={'kb-header-row-padding'}>
+								<ResponsiveMeasureRangeControl
+									label={__('Padding', 'kadence-blocks')}
+									value={padding}
+									tabletValue={paddingTablet}
+									mobileValue={paddingMobile}
+									onChange={(value) => setAttributes({ padding: value })}
+									onChangeTablet={(value) => setAttributes({ paddingTablet: value })}
+									onChangeMobile={(value) => setAttributes({ paddingMobile: value })}
+									min={0}
+									max={
+										paddingUnit === 'em' || paddingUnit === 'rem'
+											? 25
+											: paddingUnit === 'px'
+											? 400
+											: 100
+									}
+									step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
+									unit={paddingUnit}
+									units={['px', 'em', 'rem', '%']}
+									onUnit={(value) => setAttributes({ paddingUnit: value })}
+									ghostDefault={['', 'sm', '', 'sm']}
+								/>
+								<ResponsiveMeasureRangeControl
+									label={__('Margin', 'kadence-blocks')}
+									value={margin}
+									tabletValue={marginTablet}
+									mobileValue={marginMobile}
+									onChange={(value) => setAttributes({ margin: value })}
+									onChangeTablet={(value) => setAttributes({ marginTablet: value })}
+									onChangeMobile={(value) => setAttributes({ marginMobile: value })}
+									min={0}
+									max={
+										marginUnit === 'em' || marginUnit === 'rem'
+											? 25
+											: marginUnit === 'px'
+											? 400
+											: 100
+									}
+									step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
+									unit={marginUnit}
+									units={['px', 'em', 'rem', '%']}
+									onUnit={(value) => setAttributes({ marginUnit: value })}
+								/>
+							</KadencePanelBody>
+							<KadencePanelBody
+								panelName={'kb-header-row-max-width'}
+								title={__('Container Width', 'kadence-blocks')}
+								initialOpen={false}
+							>
+								<ResponsiveRangeControls
+									label={__('Max Width', 'kadence-blocks')}
+									value={maxWidth}
+									onChange={(value) => setAttributes({ maxWidth: value })}
+									tabletValue={maxWidthTablet}
+									onChangeTablet={(value) => setAttributes({ maxWidthTablet: value })}
+									mobileValue={maxWidthMobile}
+									onChangeMobile={(value) => setAttributes({ maxWidthMobile: value })}
+									min={0}
+									max={maxWidthUnit === 'px' ? 600 : 100}
+									step={1}
+									unit={maxWidthUnit}
+									onUnit={(value) => {
+										setAttributes({ maxWidthUnit: value });
+									}}
+									reset={() =>
+										setAttributes({
+											maxWidth: null,
+											maxWidthTablet: null,
+											maxWidthMobile: null,
+										})
+									}
+									units={['px', 'em', 'vw', '%']}
+									showUnit={true}
+								/>
+							</KadencePanelBody>
+						</>
+					)}
+				</>
 			</InspectorControls>
 			<div {...innerBlocksProps} />
 		</div>
