@@ -627,6 +627,18 @@
 			"type": "array",
 			"default": ["", "", ""]
 		},
+		"backdropFilterType": {
+			"type": "string",
+			"default": ""
+		},
+		"backdropFilterSize": {
+			"type": "number",
+			"default": 1
+		},
+		"backdropFilterString": {
+			"type": "string",
+			"default": ""
+		},
 		"kbVersion": {
 			"type": "number",
 			"default": ""

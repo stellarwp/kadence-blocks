@@ -239,8 +239,9 @@ function SectionEdit(props) {
 		gutterVariable,
 		kbVersion,
 		flexGrow,
-		kbProEnabled,
-		enableBackgroundFilter,
+		backdropFilterType,
+		backdropFilterSize,
+		backdropFilterString,
 	} = attributes;
 	const [activeTab, setActiveTab] = useState('general');
 	const [dynamicBackgroundImg, setDynamicBackgroundImg] = useState('');
@@ -1183,16 +1184,16 @@ function SectionEdit(props) {
 		? 'middle'
 		: 'top';
 
-	const styleControlsBackgroundFilter = (
+	const styleControlsBackdropFilter = (
 		<KadencePanelBody
-			title={__('Background Filter', 'kadence-blocks')}
+			title={__('Backdrop Filter', 'kadence-blocks')}
 			initialOpen={false}
-			panelName={'background-filter-settings'}
+			panelName={'backdrop-filter-settings'}
 			proTag={true}
 		>
 			<div className="kb-pro-notice">
-				<h2>{__('Background Filter', 'kadence-blocks')} </h2>
-				<p>{__('Add a background filter with Kadence Blocks Pro!', 'kadence-blocks')} {' '}
+				<h2>{__('Backdrop Filter', 'kadence-blocks')} </h2>
+				<p>{__('Add a backdrop filter with Kadence Blocks Pro!', 'kadence-blocks')} {' '}
 				</p>
 				<ExternalLink
 					href={
@@ -2962,12 +2963,9 @@ function SectionEdit(props) {
 
 								<>
 									{applyFilters(
-										'kadence.styleControlsBackgroundFilter',
-										styleControlsBackgroundFilter,
+										'kadence.styleControlsBackdropFilter',
+										styleControlsBackdropFilter,
 										props,
-										// hasChildren,
-										// setActivePreview,
-										// activePreview
 									)}
 								</>
 
@@ -3702,6 +3700,8 @@ function SectionEdit(props) {
 									undefined !== shadow[0].opacity ? shadow[0].opacity : 1
 							  )
 							: undefined,
+					'-webkit-backdrop-filter': backdropFilterString,
+					'backdrop-filter': backdropFilterString
 				}}
 				{...innerBlocksProps}
 			></div>
