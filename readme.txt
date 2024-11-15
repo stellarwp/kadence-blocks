@@ -177,6 +177,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 = 3.3.5 =
 Release Date: tba
 * Add: Filters to customize faq schema output for accordion blocks. kadence_blocks_faq_schema, kadence_blocks_faq_schema_allowed_tags, kadence_blocks_faq_schema_question, kadence_blocks_faq_schema_answer
+* Add: Responsive controls for Header Off Canvas block width type and slide direction.
 
 = 3.3.4 =
 Release Date: November 12th 2024

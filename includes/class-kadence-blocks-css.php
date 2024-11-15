@@ -2765,7 +2765,7 @@ class Kadence_Blocks_CSS {
 	public function empty_but_check_array( $value ) {
 		$has_value = false;
 		if ( ! is_array( $value ) ) {
-			return isset( $value ) && $value !== '';
+			return ! ( isset( $value ) && $value !== '' );
 		}
 
 		foreach ( $value as $array_value ) {

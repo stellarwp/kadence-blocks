@@ -18,9 +18,25 @@
 			"type": "string",
 			"default": "left"
 		},
+		"slideFromTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"slideFromMobile": {
+			"type": "string",
+			"default": ""
+		},
 		"widthType": {
 			"type": "string",
 			"default": "partial"
+		},
+		"widthTypeTablet": {
+			"type": "string",
+			"default": ""
+		},
+		"widthTypeMobile": {
+			"type": "string",
+			"default": ""
 		},
 		"maxWidth": {
 			"type": "number",
