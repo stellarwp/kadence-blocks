@@ -34,6 +34,7 @@ export { default as ResponsiveMeasureRangeControl } from './measurement-range-co
 export { default as SpacingVisualizer } from './visualizer/spacing';
 export { default as KadenceFocalPicker } from './focal-picker';
 export { default as KadenceRadioButtons } from './common/radio-buttons';
+export { default as ResponsiveKadenceRadioButtons } from './responsive-radio-buttons';
 export { default as KadenceMediaPlaceholder } from './common/media-placeholder';
 export { default as ImageSizeControl } from './common/image-size-controls';
 export { default as VerticalAlignmentIcon } from './common/vertical-align-icon';

@@ -89,9 +89,6 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 
 		// container.
 		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-inner-wrap' );
-		if( !empty( $attributes['widthType'] ) && $attributes['widthType'] === 'full') {
-			$css->add_property( 'width', '100%' );
-		}
 		$css->render_border_styles( $attributes, 'border', false, array(
 			'desktop_key' => 'border',
 			'tablet_key'  => 'borderTablet',
@@ -172,20 +169,25 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 
 		// Container.
 		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-inner-wrap' );
-		if ( empty( $attributes['widthType'] ) || $attributes['widthType'] !== 'full' ) {
+		if ( empty( $sized_attributes_inherit['widthType'] ) || $sized_attributes_inherit['widthType'] !== 'full' ) {
 			$max_width_unit = ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px';
 			if ( ! empty( $sized_attributes['maxWidth']) ) {
 				$css->add_property( 'max-width', $sized_attributes['maxWidth'] . $max_width_unit );
 			}
+		} else {
+			$css->add_property( 'max-width', 'initial' );
+			$css->add_property( 'width', '100%' );
 		}
+
 		if ( ! empty( $sized_attributes['backgroundColor'] ) ) {
 			$css->add_property( 'background-color', $css->render_color( $sized_attributes['backgroundColor'] ) );
 		}
 
 		// Inner container.
 		$css->set_selector( '.wp-block-kadence-off-canvas' . $unique_id . ' .kb-off-canvas-inner' );
-		$max_width_unit = ! empty( $sized_attributes['containerMaxWidthUnit'] ) ? $sized_attributes['containerMaxWidthUnit'] : 'px';
+
 		if ( ! empty( $sized_attributes['containerMaxWidth'] ) ) {
+			$max_width_unit = ! empty( $sized_attributes['containerMaxWidthUnit'] ) ? $sized_attributes['containerMaxWidthUnit'] : 'px';
 			$css->add_property( 'max-width', $sized_attributes['containerMaxWidth'] . $max_width_unit );
 		}
 
@@ -248,6 +250,7 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 		$html    = '';
 		$overlay = '';
 		$icon    = '';
+		$css = Kadence_Blocks_CSS::get_instance();
 
 		if ( ! empty( $attributes['closeIcon'] ) ) {
 			$close_icon         = $attributes['closeIcon'];
@@ -264,18 +267,26 @@ class Kadence_Blocks_Off_Canvas_Block extends Kadence_Blocks_Abstract_Block {
 			$icon    = '<button aria-label="' . esc_attr( $label ) . '" aria-expanded="false" class="kb-off-canvas-close">' . Kadence_Blocks_Svg_Render::render( $close_icon, $fill, $stroke_width, $title, $hidden ) . '</button>';
 		}
 
-		$open_side = ! empty( $attributes['slideFrom'] ) ? $attributes['slideFrom'] : 'left';
+		$open_side = $css->get_inherited_value( $attributes['slideFrom'], $attributes['slideFromTablet'], $attributes['slideFromMobile'], 'Desktop' );
+		$open_side_tablet = $css->get_inherited_value( $attributes['slideFrom'], $attributes['slideFromTablet'], $attributes['slideFromMobile'], 'Tablet' );
+		$open_side_mobile = $css->get_inherited_value( $attributes['slideFrom'], $attributes['slideFromTablet'], $attributes['slideFromMobile'], 'Mobile' );
 		$classes   = array(
 			'wp-block-kadence-off-canvas',
 			'wp-block-kadence-off-canvas' . $unique_id,
 			'open-' . $open_side,
+			'open-tablet-' . $open_side_tablet,
+			'open-mobile-' . $open_side_mobile,
 		);
 
 		$overlay_classes = array(
 			'kb-off-canvas-overlay',
 			'kb-off-canvas-overlay' . $unique_id,
 		);
-		if ( empty( $attributes['widthType'] ) || $attributes['widthType'] === 'partial' ) {
+
+		$width_type = $css->get_inherited_value( $attributes['widthType'], $attributes['widthTypeTablet'], $attributes['widthTypeMobile'], 'Desktop' );
+		$width_type_tablet = $css->get_inherited_value( $attributes['widthType'], $attributes['widthTypeTablet'], $attributes['widthTypeMobile'], 'Tablet' );
+		$width_type_mobile = $css->get_inherited_value( $attributes['widthType'], $attributes['widthTypeTablet'], $attributes['widthTypeMobile'], 'Mobile' );
+		if ( ( ! $width_type || $width_type === 'partial' ) || ( ! $width_type_tablet || $width_type_tablet === 'partial' ) || ( ! $width_type_mobile || $width_type_mobile === 'partial' ) ) {
 			$overlay = '<div data-unique-id="' . esc_attr( $unique_id ) . '" class="' . esc_attr( implode( ' ', $overlay_classes ) ) . '"></div>';
 		}
 

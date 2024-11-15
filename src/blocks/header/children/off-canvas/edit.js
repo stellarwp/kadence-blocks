@@ -28,6 +28,7 @@ import { getUniqueId, getPostOrFseId, useEditorElement, getPreviewSize } from '@
 import {
 	SelectParentBlock,
 	KadenceRadioButtons,
+	ResponsiveKadenceRadioButtons,
 	KadencePanelBody,
 	PopColorControl,
 	InspectorControlTabs,
@@ -56,6 +57,8 @@ export function Edit(props) {
 	const {
 		uniqueID,
 		slideFrom,
+		slideFromTablet,
+		slideFromMobile,
 		backgroundColor,
 		backgroundColorTablet,
 		backgroundColorMobile,
@@ -67,6 +70,8 @@ export function Edit(props) {
 		paddingMobile,
 		paddingUnit,
 		widthType,
+		widthTypeTablet,
+		widthTypeMobile,
 		maxWidth,
 		maxWidthTablet,
 		maxWidthMobile,
@@ -183,9 +188,11 @@ export function Edit(props) {
 
 	const editorElement = useEditorElement(ref, [selfOrChildSelected, showOffCanvas]);
 	const previewCloseIconSize = getPreviewSize(previewDevice, closeIconSize, closeIconSizeTablet, closeIconSizeMobile);
+	const previewSlideFrom = getPreviewSize(previewDevice, slideFrom, slideFromTablet, slideFromMobile);
+	const previewWidthType = getPreviewSize(previewDevice, widthType, widthTypeTablet, widthTypeMobile);
 	const active = selfOrChildSelected() || showOffCanvas;
 
-	const classes = classnames('wp-block-kadence-off-canvas', `off-canvas-side-${slideFrom}`, {
+	const classes = classnames('wp-block-kadence-off-canvas', `off-canvas-side-${previewSlideFrom}`, {
 		active,
 		[`wp-block-kadence-off-canvas${uniqueID}`]: uniqueID,
 	});
@@ -222,7 +229,7 @@ export function Edit(props) {
 					onChange={(value) => setAttributes({ ['backgroundColor' + suffix + size]: value })}
 					key={'normal'}
 				/>
-				{widthType === 'partial' && (
+				{previewWidthType === 'partial' && (
 					<PopColorControl
 						label={__('Page Background', 'kadence-blocks')}
 						value={pageBackgroundColorValue}
@@ -289,33 +296,47 @@ export function Edit(props) {
 							panelName={'kb-off-canvas-display'}
 							initialOpen={true}
 						>
-							<KadenceRadioButtons
+							<ResponsiveKadenceRadioButtons
 								label={__('Slide in from', 'kadence-blocks')}
 								value={slideFrom}
+								tabletValue={slideFromTablet}
+								mobileValue={slideFromMobile}
 								options={[
 									{ value: 'left', label: __('Left', 'kadence-blocks') },
 									{ value: 'right', label: __('Right', 'kadence-blocks') },
 								]}
-								hideLabel={false}
 								onChange={(value) => {
 									setAttributes({ slideFrom: value });
 								}}
+								onChangeTablet={(value) => {
+									setAttributes({ slideFromTablet: value });
+								}}
+								onChangeMobile={(value) => {
+									setAttributes({ slideFromMobile: value });
+								}}
 							/>
 
-							<KadenceRadioButtons
+							<ResponsiveKadenceRadioButtons
 								label={__('Content Width', 'kadence-blocks')}
 								value={widthType}
+								tabletValue={widthTypeTablet}
+								mobileValue={widthTypeMobile}
 								options={[
 									{ value: 'partial', label: __('Partial', 'kadence-blocks') },
 									{ value: 'full', label: __('Full', 'kadence-blocks') },
 								]}
-								hideLabel={false}
 								onChange={(value) => {
 									setAttributes({ widthType: value });
 								}}
+								onChangeTablet={(value) => {
+									setAttributes({ widthTypeTablet: value });
+								}}
+								onChangeMobile={(value) => {
+									setAttributes({ widthTypeMobile: value });
+								}}
 							/>
 
-							{widthType === 'partial' && (
+							{previewWidthType === 'partial' && (
 								<>
 									<ResponsiveRangeControls
 										label={__('Max Width', 'kadence-blocks')}
