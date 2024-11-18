@@ -114,6 +114,17 @@ export default function MenuEditor({
 							onSelect={onSelect}
 						/>
 					))}
+
+					<PostSelectorCheckbox
+						key={'categories'}
+						forceOpen={sidebarTab === 'categories'}
+						useForceState={true}
+						onPanelBodyToggle={() => setSidebarTab(sidebarTab === 'categories' ? null : 'categories')}
+						postType={'categories'}
+						title={'Categories'}
+						onSelect={onSelectCategory}
+					/>
+
 				</div>
 				<div className={'add-menu'}></div>
 			</div>
