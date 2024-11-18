@@ -2073,6 +2073,36 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 					'inset'    => array( 'type' => 'boolean' ),
 				),
 			),
+			array(
+				'key'     => '_kad_navigation_linkHorizontalAlignment',
+				'default' => '',
+				'type'    => 'string',
+			),
+			array(
+				'key'     => '_kad_navigation_linkHorizontalAlignmentTablet',
+				'default' => '',
+				'type'    => 'string',
+			),
+			array(
+				'key'     => '_kad_navigation_linkHorizontalAlignmentMobile',
+				'default' => '',
+				'type'    => 'string',
+			),
+			array(
+				'key'     => '_kad_navigation_dropdownLinkHorizontalAlignment',
+				'default' => '',
+				'type'    => 'string',
+			),
+			array(
+				'key'     => '_kad_navigation_dropdownLinkHorizontalAlignmentTablet',
+				'default' => '',
+				'type'    => 'string',
+			),
+			array(
+				'key'     => '_kad_navigation_dropdownLinkHorizontalAlignmentMobile',
+				'default' => '',
+				'type'    => 'string',
+			),
 		);
 
 		foreach ( $register_meta as $meta ) {

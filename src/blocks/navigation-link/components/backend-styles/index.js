@@ -1087,6 +1087,17 @@ export default function BackendStyles(props) {
 		css.render_color(previewDescriptionColorActive)
 	);
 
+	//link, description, and media alignment
+	if (previewAlign) {
+		css.add_property('--kb-nav-link-align', previewAlign);
+		const previewFlexAlign = previewAlign == 'right' ? 'end' : previewAlign == 'center' ? 'center' : 'start';
+		css.add_property('--kb-nav-link-flex-justify', previewFlexAlign);
+		css.add_property('--kb-nav-link-media-container-align-self', previewFlexAlign);
+		if (previewMediaAlign == 'top' || previewMediaAlign == 'bottom') {
+			css.add_property('--kb-nav-link-flex-align', previewFlexAlign);
+		}
+	}
+
 	//media styles
 	if (mediaType && 'none' !== mediaType) {
 		css.add_property('--kb-nav-link-icon-font-size', css.render_size(previewMediaIconSize, 'px'));
@@ -1140,17 +1151,6 @@ export default function BackendStyles(props) {
 				'--kb-nav-link-media-intrinsic-width',
 				isNaN(mediaImage[0].width) ? undefined : mediaImage[0].width + 'px'
 			);
-		}
-	}
-
-	//link, description, and media alignment
-	css.add_property('--kb-nav-link-align', previewAlign != '' ? previewAlign : 'left');
-	if (previewAlign) {
-		const previewFlexAlign = previewAlign == 'right' ? 'end' : previewAlign == 'center' ? 'center' : 'start';
-		css.add_property('--kb-nav-link-flex-justify', previewFlexAlign);
-		css.add_property('--kb-nav-link-media-container-align-self', previewFlexAlign);
-		if (previewMediaAlign == 'top' || previewMediaAlign == 'bottom') {
-			css.add_property('--kb-nav-link-flex-align', previewFlexAlign);
 		}
 	}
 

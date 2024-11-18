@@ -230,7 +230,6 @@ $link-color-property: var(
 
 	.kb-nav-item-title-wrap {
 		position: relative;
-		text-align: left;
 	}
 
 	/**
@@ -789,6 +788,9 @@ $link-color-property: var(
 			--kb-nav-link-description-padding-bottom: var(--kb-nav-dropdown-link-description-padding-bottom);
 			--kb-nav-link-description-padding-left: var(--kb-nav-dropdown-link-description-padding-left);
 
+			--kb-nav-link-align: var(--kb-nav-dropdown-link-align);
+			--kb-nav-link-flex-justify: var(--kb-nav-dropdown-link-flex-justify);
+
 			& > .kb-nav-link-content {
 				width: var(--kb-nav-dropdown-link-width, 200px);
 			}
@@ -1031,8 +1033,8 @@ $link-color-property: var(
 		//color copied here for specifity reasons
 		color: $link-color-property;
 		gap: var(--kb-nav-link-gap);
-		text-align: var(--kb-nav-link-align);
-		justify-content: var(--kb-nav-link-align);
+		text-align: var(--kb-nav-link-align, left);
+		justify-content: var(--kb-nav-link-align, left);
 
 		&:not([href]) {
 			cursor: default;
@@ -1174,6 +1176,9 @@ $link-color-property: var(
 			--kb-nav-link-description-padding-right: var(--kb-nav-top-link-description-padding-right);
 			--kb-nav-link-description-padding-bottom: var(--kb-nav-top-link-description-padding-bottom);
 			--kb-nav-link-description-padding-left: var(--kb-nav-top-link-description-padding-left);
+
+			--kb-nav-link-align: var(--kb-nav-top-link-align);
+			--kb-nav-link-flex-justify: var(--kb-nav-top-link-flex-justify);
 
 			& > .kb-nav-link-content {
 				display: flex;
@@ -1374,10 +1379,11 @@ $link-color-property: var(
 		grid-template-columns: var(--kb-nav-link-title-wrap-grid-template-columns);
 		flex-direction: var(--kb-nav-link-title-wrap-flex-direction);
 		display: var(--kb-nav-link-title-wrap-display, flex);
-		text-align: var(--kb-nav-link-align);
 		flex-wrap: nowrap;
+		text-align: var(--kb-nav-link-align, left);
 		align-items: var(--kb-nav-link-flex-align, center);
 		justify-items: var(--kb-nav-link-flex-justify, start);
+		justify-content: var(--kb-nav-link-flex-justify, start);
 	}
 
 	.kb-menu-has-description {
