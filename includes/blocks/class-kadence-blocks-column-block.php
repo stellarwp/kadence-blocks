@@ -607,6 +607,13 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 			if ( ( 'horizontal' === $desktop_direction || 'horizontal-reverse' === $desktop_direction ) ) {
 				$css->add_property( 'flex-wrap', 'nowrap' );
 			}
+			if ( ! empty( $attributes['justifyContent'] ) && $attributes['justifyContent'][1] === 'center' ) {
+				$css->add_property( 'margin-left', 'auto' );
+				$css->add_property( 'margin-right', 'auto' );
+			}
+			if ( ! empty( $attributes['justifyContent'] ) && $attributes['justifyContent'][1] === 'flex-end' ) {
+				$css->add_property( 'margin-left', 'auto' );
+			}
 			if ( ( 'horizontal' === $desktop_direction || 'horizontal-reverse' === $desktop_direction ) ) {
 				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *' );
 				$css->add_property( 'flex', 'unset' );
