@@ -86,14 +86,35 @@ export default function BackendStyles(props) {
 	// Add column width styles
 	if (Array.isArray(columnSettings)) {
 		let hasFixedColumns = false;
+		let totalFixedWidth = 0;
+		let fixedUnit = '';
 
-		columnSettings.forEach((settings, index) => {
+		// Calculate total fixed width and determine if we have fixed columns
+		columnSettings.forEach((settings) => {
 			if (!settings?.useAuto && settings?.width) {
 				hasFixedColumns = true;
-				css.set_selector(
-					`.kb-table${uniqueID} td:nth-child(${index + 1}), .kb-table${uniqueID} th:nth-child(${index + 1})`
-				);
+				if (!fixedUnit) {
+					fixedUnit = settings.unit;
+				}
+				if (settings.unit === fixedUnit) {
+					totalFixedWidth += parseFloat(settings.width);
+				}
+			}
+		});
+
+		// Apply widths
+		columnSettings.forEach((settings, index) => {
+			if (!settings?.useAuto && settings?.width) {
+				css.set_selector(`.kb-table${uniqueID} tr > *:nth-child(${index + 1})`);
 				css.add_property('width', `${settings.width}${settings.unit}`);
+			} else if (settings?.useAuto && hasFixedColumns) {
+				// For auto columns, distribute remaining space evenly
+				const autoColumns = columnSettings.filter((s) => s?.useAuto).length;
+				if (fixedUnit === '%' && autoColumns > 0) {
+					const remainingWidth = (100 - totalFixedWidth) / autoColumns;
+					css.set_selector(`.kb-table${uniqueID} tr > *:nth-child(${index + 1})`);
+					css.add_property('width', `${remainingWidth}%`);
+				}
 			}
 		});
 
