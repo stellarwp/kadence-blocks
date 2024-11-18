@@ -3699,8 +3699,8 @@ function SectionEdit(props) {
 									undefined !== shadow[0].opacity ? shadow[0].opacity : 1
 							  )
 							: undefined,
-					'-webkit-backdrop-filter': backdropFilterString,
-					'backdrop-filter': backdropFilterString,
+					'-webkit-backdrop-filter': backdropFilterString !== undefined ? backdropFilterString : undefined,
+					'backdrop-filter': backdropFilterString !== undefined ? backdropFilterString : undefined,
 				}}
 				{...innerBlocksProps}
 			></div>
