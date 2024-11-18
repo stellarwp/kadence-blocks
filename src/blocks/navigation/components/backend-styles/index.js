@@ -197,6 +197,12 @@ export default function BackendStyles(props) {
 		horizontalGrid,
 		horizontalGridTablet,
 		horizontalGridMobile,
+		dropdownLinkHorizontalAlignment,
+		dropdownLinkHorizontalAlignmentTablet,
+		dropdownLinkHorizontalAlignmentMobile,
+		linkHorizontalAlignment,
+		linkHorizontalAlignmentTablet,
+		linkHorizontalAlignmentMobile,
 	} = metaAttributes;
 
 	const css = new KadenceBlocksCSS();
@@ -463,6 +469,18 @@ export default function BackendStyles(props) {
 		dropdownHorizontalAlignment,
 		dropdownHorizontalAlignmentTablet,
 		dropdownHorizontalAlignmentMobile
+	);
+	const previewDropdownLinkHorizontalAlignment = getPreviewSize(
+		previewDevice,
+		dropdownLinkHorizontalAlignment,
+		dropdownLinkHorizontalAlignmentTablet,
+		dropdownLinkHorizontalAlignmentMobile
+	);
+	const previewLinkHorizontalAlignment = getPreviewSize(
+		previewDevice,
+		linkHorizontalAlignment,
+		linkHorizontalAlignmentTablet,
+		linkHorizontalAlignmentMobile
 	);
 	//need to caclulate this outside of conditionals because it uses a hook underneath.
 	const dividerValue = css.render_border(divider, dividerTablet, dividerMobile, previewDevice, 'bottom');
@@ -769,6 +787,32 @@ export default function BackendStyles(props) {
 		css.add_property('--kb-nav-top-not-last-link-border-bottom', dividerValue);
 		css.add_property('--kb-nav-dropdown-toggle-border-left', dividerValue);
 		css.add_property('--kb-nav-top-not-last-link-border-right', 'var(--kb-nav-link-border-right)');
+	}
+
+	//link, description, and media alignment
+	if (previewLinkHorizontalAlignment) {
+		css.add_property('--kb-nav-top-link-align', previewLinkHorizontalAlignment);
+		const previewLinkFlexAlign =
+			previewLinkHorizontalAlignment == 'right'
+				? 'end'
+				: previewLinkHorizontalAlignment == 'center'
+				? 'center'
+				: 'start';
+		css.add_property('--kb-nav-top-link-flex-justify', previewLinkFlexAlign);
+		css.add_property('--kb-nav-top-link-media-container-align-self', previewLinkFlexAlign);
+	}
+
+	//dropdown link, description, and media alignment
+	if (previewDropdownLinkHorizontalAlignment) {
+		css.add_property('--kb-nav-dropdown-link-align', previewDropdownLinkHorizontalAlignment);
+		const previewDropdownLinkFlexAlign =
+			previewDropdownLinkHorizontalAlignment == 'right'
+				? 'end'
+				: previewDropdownLinkHorizontalAlignment == 'center'
+				? 'center'
+				: 'start';
+		css.add_property('--kb-nav-dropdown-link-flex-justify', previewDropdownLinkFlexAlign);
+		css.add_property('--kb-nav-dropdown-link-media-container-align-self', previewDropdownLinkFlexAlign);
 	}
 
 	//placement logic where an additional selector is needed

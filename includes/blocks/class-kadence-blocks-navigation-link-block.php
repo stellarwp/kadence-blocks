@@ -390,9 +390,8 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		}
 
 		//link, description, and media alignment
-		$css->add_property( '--kb-nav-link-align', $sized_attributes['align'] ? $sized_attributes['align'] : 'left' );
 		if ($sized_attributes['align']) {
-			$css->add_property('--kb-nav-link-align', $sized_attributes['align'] != '' ? $sized_attributes['align'] : 'left');
+			$css->add_property( '--kb-nav-link-align', $sized_attributes['align'] );
 			$sized_flex_align = $sized_attributes['align'] == 'right' ? 'end' : ( $sized_attributes['align'] == 'center' ? 'center' : 'start' );
 			$css->add_property('--kb-nav-link-flex-justify', $sized_flex_align);
 			$css->add_property('--kb-nav-link-media-container-align-self', $sized_flex_align);
