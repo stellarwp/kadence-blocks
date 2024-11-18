@@ -124,7 +124,6 @@ export default function MenuEditor({
 						title={'Categories'}
 						onSelect={onSelectCategory}
 					/>
-
 				</div>
 				<div className={'add-menu'}></div>
 			</div>
