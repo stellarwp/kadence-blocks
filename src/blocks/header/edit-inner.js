@@ -333,10 +333,10 @@ export function EditInner(props) {
 	useEffect(() => {
 		setMetaAttribute(getStyleString(backdropFilterType, backdropFilterSize), 'pro_backdropFilterString');
 	}, [backdropFilterType, backdropFilterSize]); // Add dependencies
-	const getStyleString = ( backdropFilterType, backdropFilterSize ) => {
-		const unit = backdropFilterType === 'blur' ? 'px' : backdropFilterType === 'hue-rotate' ? 'deg' : '%'
+	const getStyleString = (backdropFilterType, backdropFilterSize) => {
+		const unit = backdropFilterType === 'blur' ? 'px' : backdropFilterType === 'hue-rotate' ? 'deg' : '%';
 		return backdropFilterType !== 'none' ? backdropFilterType + `(${backdropFilterSize}${unit ? unit : ''})` : '';
-	}
+	};
 
 	const backgroundStyleControls = (size = '', suffix = '') => {
 		//previously had hover settings in here but didn't end up neededing them for the header container.
@@ -459,8 +459,7 @@ export function EditInner(props) {
 		>
 			<div className="kb-pro-notice">
 				<h2>{__('Backdrop Filter', 'kadence-blocks')} </h2>
-				<p>{__('Add a backdrop filter with Kadence Blocks Pro!', 'kadence-blocks')} {' '}
-				</p>
+				<p>{__('Add a backdrop filter with Kadence Blocks Pro!', 'kadence-blocks')} </p>
 				<ExternalLink
 					href={
 						'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=navigation-link'

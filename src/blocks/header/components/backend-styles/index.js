@@ -92,7 +92,7 @@ export default function BackendStyles(props) {
 		isTransparentMobile,
 		autoTransparentSpacing,
 		shadow,
-		backdropFilterString
+		backdropFilterString,
 	} = metaAttributes;
 
 	const css = new KadenceBlocksCSS();
