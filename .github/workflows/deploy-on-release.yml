@@ -109,7 +109,7 @@ jobs:
           # For posting a rich message using Block Kit
           payload: |
             {
-              "text": "@kadencewp-team 🚀 ${{ github.event.repository.name }} version ${{ github.event.release.tag_name }} has been released!\n\nView on GitHub: ${{ github.event.release.html_url }}"
+              "text": "<!subteam^kadencewp-team> 🚀 ${{ github.event.repository.name }} version ${{ github.event.release.tag_name }} has been released!\n\nView on GitHub: ${{ github.event.release.html_url }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
