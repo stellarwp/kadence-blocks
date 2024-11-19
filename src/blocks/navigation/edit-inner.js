@@ -1417,7 +1417,7 @@ export function EditInner(props) {
 							)}
 							{previewOrientation !== 'vertical' && previewHorizontalLayout === 'stretch' && (
 								<ResponsiveSelectControl
-									label={__('Fill and Center Menu Items?', 'kadence-blocks')}
+									label={__('Stretch Behavior', 'kadence-blocks')}
 									value={stretchFill}
 									tabletValue={stretchFillTablet}
 									mobileValue={stretchFillMobile}
