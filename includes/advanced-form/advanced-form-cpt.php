@@ -54,6 +54,10 @@ class Kadence_Blocks_Form_CPT_Controller {
 				new Kadence_Blocks_Duplicate_Post( self::SLUG );
 			}
 		}
+
+		if( is_admin() && class_exists( 'Kadence_Blocks_Cpt_Import_Export' ) ) {
+			new Kadence_Blocks_Cpt_Import_Export( self::SLUG );
+		}
 	}
 	/**
 	 * Filters the block area post type columns in the admin list table.
