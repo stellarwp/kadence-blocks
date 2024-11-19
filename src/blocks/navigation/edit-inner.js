@@ -1423,16 +1423,20 @@ export function EditInner(props) {
 									mobileValue={stretchFillMobile}
 									options={[
 										{ value: 'standard', label: __('Standard', 'kadence-blocks') },
-										{ value: 'fill', label: __('Fill and Center Default', 'kadence-blocks') },
+										{ value: 'fill', label: __('Fill and Center', 'kadence-blocks') },
 									]}
 									tabletOptions={[
 										{ value: '', label: __('Inherit', 'kadence-blocks') },
 										{ value: 'standard', label: __('Standard', 'kadence-blocks') },
-										{ value: 'fill', label: __('Fill and Center Default', 'kadence-blocks') },
+										{ value: 'fill', label: __('Fill and Center', 'kadence-blocks') },
 									]}
 									onChange={(value) => setMetaAttribute(value, 'stretchFill')}
 									onChangeTablet={(value) => setMetaAttribute(value, 'stretchFillTablet')}
 									onChangeMobile={(value) => setMetaAttribute(value, 'stretchFillMobile')}
+									help={__(
+										'Standard adds space between navigation links to fill the available space. Fill and Center adjusts the text area with additional spacing and centers the text; text alignment can be updated in the Style tab.',
+										'kadence-blocks'
+									)}
 								/>
 							)}
 							<SmallResponsiveControl

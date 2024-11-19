@@ -174,6 +174,10 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.3.6 =
+Release Date: tba
+* Adjust: Naming and support text for navigation stretch option.
+
 = 3.3.5 =
 Release Date: November 19th 2024
 * Add: Filters to customize faq schema output for accordion blocks. kadence_blocks_faq_schema, kadence_blocks_faq_schema_allowed_tags, kadence_blocks_faq_schema_question, kadence_blocks_faq_schema_answer
