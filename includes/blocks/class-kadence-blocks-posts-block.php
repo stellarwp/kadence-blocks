@@ -166,6 +166,18 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			$classes[] = 'grid-lg-col-2';
 			$classes[] = 'item-image-style-above';
+		} elseif ( 4 === $columns ) {
+			if ( isset( $attributes['tabletColumns'] ) && ! empty( $attributes['tabletColumns'] ) && 1 === $attributes['tabletColumns'] ) {
+				$classes[] = 'grid-sm-col-1';
+			} elseif ( isset( $attributes['tabletColumns'] ) && ! empty( $attributes['tabletColumns'] ) && 3 === $attributes['tabletColumns'] ) {
+				$classes[] = 'grid-sm-col-3';
+			} elseif ( isset( $attributes['tabletColumns'] ) && ! empty( $attributes['tabletColumns'] ) && 4 === $attributes['tabletColumns'] ) {
+				$classes[] = 'grid-sm-col-4';
+			} else {
+				$classes[] = 'grid-sm-col-2';
+			}
+			$classes[] = 'grid-lg-col-4';
+			$classes[] = 'item-image-style-above';
 		} else {
 			if ( isset( $attributes['tabletColumns'] ) && ! empty( $attributes['tabletColumns'] ) && 1 === $attributes['tabletColumns'] ) {
 				$classes[] = 'grid-sm-col-1';
@@ -271,7 +283,7 @@ class Kadence_Blocks_Posts_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param boolean $inline true or false based on when called.
 	 */
 	public function render_scripts( $attributes, $inline = false ) {
-		if ( ! class_exists( 'Kadence\Theme' ) || add_filter( 'kadence_blocks_post_block_style_force_output', '__return_false' ) ) {
+		if ( ! class_exists( 'Kadence\Theme' ) || apply_filters( 'kadence_blocks_post_block_style_force_output', false ) ) {
 			if ( ! wp_style_is( 'kadence-blocks-' . $this->block_name, 'enqueued' ) ) {
 				$this->enqueue_style( 'kadence-blocks-' . $this->block_name );
 				if ( $inline ) {

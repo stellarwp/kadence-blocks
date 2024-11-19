@@ -333,3 +333,9 @@
 .wp-block-kadence-rowlayout .kb-blocks-bg-slider .splide-arrow {
 	z-index: 1000;
 }
+
+//fix for nav blcoks inside a row layout, default them to a very high z-index for their submenus
+//weird :where selector to manage specificity to not override the z-index control
+:where(.kb-row-layout-wrap:has(.wp-block-kadence-navigation)) {
+	z-index: 1000;
+}

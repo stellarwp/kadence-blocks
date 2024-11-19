@@ -1334,21 +1334,27 @@ export default function GalleryEdit(props) {
 										/>
 									</BaseControl>
 								)}
-								{ids && undefined !== ids[0] && imagesDynamic.length > 1 && !dynamicSource && (
-									<BaseControl __nextHasNoMarginBottom>
-										<Button
-											className="reverse-order"
-											variant="secondary"
-											text={__('Reverse Image Order', 'kadence-blocks')}
-											icon={previous}
-											onClick={() => {
-												// Trigger an update.
-												const tempImages = JSON.parse(JSON.stringify(imagesDynamic.reverse()));
-												setAttributes({ imagesDynamic: tempImages });
-											}}
-										/>
-									</BaseControl>
-								)}
+								{ids &&
+									undefined !== ids[0] &&
+									imagesDynamic &&
+									imagesDynamic.length > 1 &&
+									!dynamicSource && (
+										<BaseControl __nextHasNoMarginBottom>
+											<Button
+												className="reverse-order"
+												variant="secondary"
+												text={__('Reverse Image Order', 'kadence-blocks')}
+												icon={previous}
+												onClick={() => {
+													// Trigger an update.
+													const tempImages = JSON.parse(
+														JSON.stringify(imagesDynamic.reverse())
+													);
+													setAttributes({ imagesDynamic: tempImages });
+												}}
+											/>
+										</BaseControl>
+									)}
 							</KadencePanelBody>
 							{type &&
 								(type === 'carousel' ||

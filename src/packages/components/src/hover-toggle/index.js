@@ -5,8 +5,8 @@
 /**
  * WordPress dependencies
  */
- import { useState } from '@wordpress/element';
- 
+import { useState } from '@wordpress/element';
+
 /**
  * Import Css
  */
@@ -14,29 +14,24 @@ import './editor.scss';
 /**
  * Internal block libraries
  */
- import { __ } from '@wordpress/i18n';
-import {
-	Button,
-	TabPanel,
-} from '@wordpress/components';
-import {isRTL} from '@kadence/helpers';
+import { __ } from '@wordpress/i18n';
+import { Button, TabPanel } from '@wordpress/components';
+import { isRTL } from '@kadence/helpers';
 /**
  * Import Icons
  */
-import {
-	hoverToggle,
-	click
-} from '@kadence/icons';
+import { hoverToggle, click } from '@kadence/icons';
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.
  */
-export default function HoverToggleControl( {
-	label = __( 'Hover Styles', 'kadence-blocks' ),
-	activeLabel = __( 'Active Styles', 'kadence-blocks' ),
+export default function HoverToggleControl({
+	label = __('Hover Styles', 'kadence-blocks'),
+	activeLabel = __('Active Styles', 'kadence-blocks'),
 	initial = 'normal',
-	hoverTab = __( 'Hover', 'kadence-blocks' ),
-	normalTab = __( 'Normal', 'kadence-blocks' ),
+	hoverTab = __('Hover', 'kadence-blocks'),
+	normalTab = __('Normal', 'kadence-blocks'),
+	activeTab = __('Active', 'kadence-blocks'),
 	active,
 	hover,
 	normal,
@@ -44,89 +39,111 @@ export default function HoverToggleControl( {
 	icon = hoverToggle,
 	activeIcon = click,
 	tabUI = true,
-} ) {
-	const [ isHover, setIsHover ] = useState( initial === 'hover' ? true : false );
-	const [ isActive, setIsActive ] = useState( initial === 'active' ? true : false );
+	setActivePreview,
+	activePreview,
+}) {
+	const [isHover, setIsHover] = useState(initial === 'hover' ? true : false);
+	const [isActive, setIsActive] = useState(initial === 'active' ? true : false);
 
-	if ( tabUI ) {
+	var tabs = [
+		{
+			name: 'normal',
+			title: normalTab,
+			className: 'kt-normal-tab',
+		},
+	];
+	if (hover) {
+		tabs.push({
+			name: 'hover',
+			title: hoverTab,
+			className: 'kt-hover-tab',
+		});
+	}
+	if (active) {
+		tabs.push({
+			name: 'active',
+			title: activeTab,
+			className: 'kt-active-tab',
+		});
+	}
+
+	if (tabUI) {
 		return [
-			<div className={ `components-base-control kb-hover-toggle-control-tab-ui kb-hover-toggle-control${ className ? ' ' + className : '' }` }>
-				<TabPanel
-					className="kt-inspect-tabs kt-hover-tabs"
-					activeClass="active-tab"
-					tabs={[
-						{
-							name     : 'normal',
-							title    : normalTab,
-							className: 'kt-normal-tab',
-						},
-						{
-							name     : 'hover',
-							title    : hoverTab,
-							className: 'kt-hover-tab',
-						},
-					]}>
-					{ ( tab ) => {
-
-						if ( tab.name ) {
-							if ( 'hover' === tab.name ) {
-								return(
-									<>{ hover }</>
+			<div
+				className={`components-base-control kb-hover-toggle-control-tab-ui kb-hover-toggle-control${
+					className ? ' ' + className : ''
+				}`}
+			>
+				<TabPanel className="kt-inspect-tabs kt-hover-tabs" activeClass="active-tab" tabs={tabs}>
+					{(tab) => {
+						if (tab.name) {
+							if ('hover' === tab.name) {
+								return <>{hover}</>;
+							} else if ('active' === tab.name) {
+								return (
+									<>
+										{setActivePreview && (
+											<Button
+												className={'kb-hover-toggle-active-preview'}
+												isPressed={activePreview}
+												text={
+													activePreview
+														? __('Hide Active State', 'kadence-blocks')
+														: __('Preview Active State', 'kadence-blocks')
+												}
+												onClick={() => {
+													setActivePreview(!activePreview);
+												}}
+												variant="secondary"
+											></Button>
+										)}
+										{active}
+									</>
 								);
 							} else {
-								return(
-									<>{ normal }</>
-								);
+								return <>{normal}</>;
 							}
 						}
-					} }
+					}}
 				</TabPanel>
-			</div>
+			</div>,
 		];
 	}
 	return [
-		<div className={ `components-base-control kb-hover-toggle-control${ className ? ' ' + className : '' }` }>
-			<div className={ 'kb-hover-toggle-control-toggle' }>
-				{ hover && (
+		<div className={`components-base-control kb-hover-toggle-control${className ? ' ' + className : ''}`}>
+			<div className={'kb-hover-toggle-control-toggle'}>
+				{hover && (
 					<Button
 						className={'kb-hover-toggle-btn ' + (isRTL ? 'is-rtl' : '')}
 						isPrimary={isHover}
-						icon={ icon }
+						icon={icon}
 						aria-pressed={isHover}
-						label={ label }
-						onClick={ () => {
-							setIsActive( false );
-							setIsHover( !isHover );
-						} }
-					>
-					</Button>
+						label={label}
+						onClick={() => {
+							setIsActive(false);
+							setIsHover(!isHover);
+						}}
+					></Button>
 				)}
-				{ active && (
+				{active && (
 					<Button
 						className={'kb-active-toggle-btn ' + (isRTL ? 'is-rtl' : '')}
 						isPrimary={isActive}
-						icon={ activeIcon }
+						icon={activeIcon}
 						aria-pressed={isActive}
-						label={ activeLabel }
-						onClick={ () => {
-							setIsHover( false );
-							setIsActive( !isActive );
-						} }
-					>
-					</Button>
+						label={activeLabel}
+						onClick={() => {
+							setIsHover(false);
+							setIsActive(!isActive);
+						}}
+					></Button>
 				)}
 			</div>
-			<div className={ 'kb-hover-toggle-area' }>
-				{ isHover && (
-					<div className='kb-hover-control-wrap'>{ hover }</div>
-				)}
-				{ isActive && (
-					<div className='kb-active-control-wrap'>{ active }</div>
-				)}
-				{ !isHover && !isActive && (
-					<>{ normal }</>
-				)}
+			<div className={'kb-hover-toggle-area'}>
+				{isHover && <div className="kb-hover-control-wrap">{hover}</div>}
+				{isActive && <div className="kb-active-control-wrap">{active}</div>}
+				{!isHover && !isActive && <>{normal}</>}
 			</div>
-		</div>
+		</div>,
 	];
 }

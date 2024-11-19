@@ -207,12 +207,13 @@ class Kadence_Blocks_Frontend {
 	 * @param array $block the blocks object.
 	 */
 	public function render_pane_scheme_head( $block ) {
+		$allowed_tags = apply_filters( 'kadence_blocks_faq_schema_allowed_tags', '<a><strong><br><h2><h3><h4><h5><ul><li><ol><p>', $block );
 		if ( ! is_null( self::$faq_schema ) ) {
 			if ( is_array( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) ) {
 				$answer = '';
 				foreach ( $block['innerBlocks'] as $inner_key => $inner_block ) {
 					if ( ! empty( $inner_block['innerHTML'] ) ) {
-						$inner_html = trim( strip_tags( $inner_block['innerHTML'], '<a><strong><br><h2><h3><h4><h5><ul><li><ol><p>' ) );
+						$inner_html = trim( strip_tags( $inner_block['innerHTML'], $allowed_tags ) );
 						if ( ! empty( $inner_html ) ) {
 							$answer .= $inner_html;
 						}
@@ -220,7 +221,7 @@ class Kadence_Blocks_Frontend {
 					if ( isset( $inner_block['innerBlocks'] ) && is_array( $inner_block['innerBlocks'] ) && ! empty ( $inner_block['innerBlocks'] ) ) {
 						foreach ( $inner_block['innerBlocks'] as $again_inner_key => $again_inner_block ) {
 							if ( ! empty( $again_inner_block['innerHTML'] ) ) {
-								$inner_html = trim( strip_tags( $again_inner_block['innerHTML'], '<a><strong><br><h2><h3><h4><h5><ul><li><ol><p>' ) );
+								$inner_html = trim( strip_tags( $again_inner_block['innerHTML'], $allowed_tags ) );
 								if ( ! empty( $inner_html ) ) {
 									$answer .= $inner_html;
 								}
@@ -228,7 +229,7 @@ class Kadence_Blocks_Frontend {
 							if ( isset( $again_inner_block['innerBlocks'] ) && is_array( $again_inner_block['innerBlocks'] ) && ! empty ( $again_inner_block['innerBlocks'] ) ) {
 								foreach ( $again_inner_block['innerBlocks'] as $again_again_inner_key => $again_again_inner_block ) {
 									if ( ! empty( $again_again_inner_block['innerHTML'] ) ) {
-										$inner_html = trim( strip_tags( $again_again_inner_block['innerHTML'], '<a><strong><br><h2><h3><h4><h5><ul><li><ol><p>' ) );
+										$inner_html = trim( strip_tags( $again_again_inner_block['innerHTML'], $allowed_tags ) );
 										if ( ! empty( $inner_html ) ) {
 											$answer .= $inner_html;
 										}
@@ -240,6 +241,10 @@ class Kadence_Blocks_Frontend {
 				}
 				preg_match( '/<span class="kt-blocks-accordion-title">(.*?)<\/span>/s', $block['innerHTML'], $match );
 				$question = ( $match && isset( $match[1] ) && ! empty( $match[1] ) ? $match[1] : '' );
+
+				$question = apply_filters( 'kadence_blocks_faq_schema_question', $question, $block );
+				$answer = apply_filters( 'kadence_blocks_faq_schema_answer', $answer, $block );
+
 				if ( strpos( self::$faq_schema, '}]}</script>' ) !== false ) {
 					$schema = ',';
 				} else {
@@ -308,7 +313,7 @@ class Kadence_Blocks_Frontend {
 		if ( ! $print_faq_schema ) {
 			return;
 		}
-		echo self::$faq_schema;
+		echo apply_filters( 'kadence_blocks_faq_schema', self::$faq_schema );
 	}
 
 	/**
@@ -445,6 +450,30 @@ class Kadence_Blocks_Frontend {
 							}
 						}
 					}
+					if ( 'kadence/header' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							if ( isset( $blockattr['id'] ) ) {
+								$header_block = get_post( $blockattr['id'] );
+								if ( $header_block && 'kadence_header' === $header_block->post_type ) {
+									$header_data_block = parse_blocks( $header_block->post_content );
+									$this->blocks_cycle_through( $header_data_block, $kadence_blocks );
+								}
+							}
+						}
+					}
+					if ( 'kadence/navigation' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							if ( isset( $blockattr['id'] ) ) {
+								$navigation_block = get_post( $blockattr['id'] );
+								if ( $navigation_block && 'kadence_navigation' === $navigation_block->post_type ) {
+									$navigation_data_block = parse_blocks( $navigation_block->post_content );
+									$this->blocks_cycle_through( $navigation_data_block, $kadence_blocks );
+								}
+							}
+						}
+					}
 					if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
 						$this->blocks_cycle_through( $block['innerBlocks'], $kadence_blocks );
 					}
@@ -498,6 +527,30 @@ class Kadence_Blocks_Frontend {
 							if ( $form_block && 'kadence_form' === $form_block->post_type ) {
 								$form_data_block = parse_blocks( $form_block->post_content );
 								$this->blocks_cycle_through( $form_data_block, $kadence_blocks );
+							}
+						}
+					}
+				}
+				if ( 'kadence/header' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						if ( isset( $blockattr['id'] ) ) {
+							$header_block = get_post( $blockattr['id'] );
+							if ( $header_block && 'kadence_header' === $header_block->post_type ) {
+								$header_data_block = parse_blocks( $header_block->post_content );
+								$this->blocks_cycle_through( $header_data_block, $kadence_blocks );
+							}
+						}
+					}
+				}
+				if ( 'kadence/navigation' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						if ( isset( $blockattr['id'] ) ) {
+							$navigation_block = get_post( $blockattr['id'] );
+							if ( $navigation_block && 'kadence_navigation' === $navigation_block->post_type ) {
+								$navigation_data_block = parse_blocks( $navigation_block->post_content );
+								$this->blocks_cycle_through( $navigation_data_block, $kadence_blocks );
 							}
 						}
 					}

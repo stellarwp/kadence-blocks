@@ -3,11 +3,6 @@
  */
 
 /**
- * Import Css
- */
-import './editor.scss';
-
-/**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
@@ -29,6 +24,7 @@ import {
 	PopColorControl,
 	ResponsiveRangeControls,
 	GradientControl,
+	SelectPostFromPostType,
 } from '@kadence/components';
 import {
 	getPreviewSize,
@@ -80,7 +76,6 @@ import {
 	getFormFields,
 	dedupeFormFieldUniqueIds,
 	FieldBlockAppender,
-	SelectForm,
 } from './components';
 
 /**
@@ -556,7 +551,7 @@ export function EditInner(props) {
 					updatedMeta._kad_form_fieldBorderStyle = borderStyle;
 					updatedMeta._kad_form_fieldBorderRadius = [0, 0, 0, 0];
 				}
-				setMeta({ ...meta, updatedMeta });
+				setMeta({ ...meta, ...updatedMeta });
 				await wp.data.dispatch('core').saveEditedEntityRecord('postType', 'kadence_form', id);
 			}
 		} catch (error) {
@@ -641,7 +636,7 @@ export function EditInner(props) {
 						panelName={'kb-advanced-form-selected-switch'}
 						title={__('Selected Form', 'kadence-blocks')}
 					>
-						<SelectForm
+						<SelectPostFromPostType
 							postType="kadence_form"
 							label={__('Selected Form', 'kadence-blocks')}
 							hideLabelFromVision={true}
@@ -685,7 +680,7 @@ export function EditInner(props) {
 							title={__('Form', 'kadence-blocks')}
 						>
 							{!direct && (
-								<SelectForm
+								<SelectPostFromPostType
 									postType="kadence_form"
 									label={__('Selected Form', 'kadence-blocks')}
 									hideLabelFromVision={true}

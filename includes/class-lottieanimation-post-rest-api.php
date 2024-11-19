@@ -45,7 +45,7 @@ class Kadence_LottieAnimation_post_REST_Controller extends WP_REST_Controller {
 	 * @return true|WP_Error True if the request has search access, WP_Error object otherwise.
 	 */
 	public function create_animation_permission_check( $request ) {
-		return current_user_can( 'edit_posts' );
+		return current_user_can( 'publish_posts' );
 	}
 
 	/**

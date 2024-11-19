@@ -1,11 +1,13 @@
 {
 	"build": [
+		"rm -rf vendor",
 		"@composer install --no-dev --no-scripts",
 		"@composer run strauss-release",
 		"npm install --legacy-peer-deps",
 		"npm run build"
 	],
 	"build_dev": [
+		"rm -rf vendor",
 		"@composer install --no-dev --no-scripts",
 		"@composer run strauss-release",
 		"npm install --legacy-peer-deps",

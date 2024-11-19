@@ -15,7 +15,7 @@ export default function SearchForm(props) {
 		<div className="kb-pexels-search">
 			<InputControl
 				label={__('Search', 'kadence-blocks')}
-				placeholder={__('Search Images...', 'kadence-blocks')}
+				placeholder={__('Search Images…', 'kadence-blocks')}
 				hideLabelFromVision={true}
 				value={search}
 				onKeyDown={(event) => {

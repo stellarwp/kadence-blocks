@@ -10,20 +10,16 @@ import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { map, isEqual } from 'lodash';
 import { undo } from '@wordpress/icons';
-import { capitalizeFirstLetter } from '@kadence/helpers'
+import { capitalizeFirstLetter } from '@kadence/helpers';
 import RangeControl from '../range-control';
 
-import {
-	Dashicon,
-	Button,
-	ButtonGroup,
-} from '@wordpress/components';
+import { Dashicon, Button, ButtonGroup } from '@wordpress/components';
 
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.
  */
-export default function ResponsiveRangeControls( {
+export default function ResponsiveRangeControls({
 	label,
 	onChange,
 	onChangeTablet,
@@ -41,24 +37,23 @@ export default function ResponsiveRangeControls( {
 	onUnit,
 	allowResponsiveUnitChange = false,
 	showUnit = false,
-	units = [ 'px', 'em', 'rem' ],
+	units = ['px', 'em', 'rem'],
 	allowEmpty = true,
 	className = '',
+	initialPosition = undefined,
 	reset,
-} ) {
-	const [ deviceType, setDeviceType ] = useState( 'Desktop' );
-	const theDevice = useSelect( ( select ) => {
-		return select( 'kadenceblocks/data' ).getPreviewDeviceType();
-	}, [] );
-	if ( theDevice !== deviceType ) {
-		setDeviceType( theDevice );
+}) {
+	const [deviceType, setDeviceType] = useState('Desktop');
+	const theDevice = useSelect((select) => {
+		return select('kadenceblocks/data').getPreviewDeviceType();
+	}, []);
+	if (theDevice !== deviceType) {
+		setDeviceType(theDevice);
 	}
-	const {
-		setPreviewDeviceType,
-	} = useDispatch( 'kadenceblocks/data' );
-	const customSetPreviewDeviceType = ( device ) => {
-		setPreviewDeviceType( capitalizeFirstLetter( device ) );
-		setDeviceType( capitalizeFirstLetter( device ) );
+	const { setPreviewDeviceType } = useDispatch('kadenceblocks/data');
+	const customSetPreviewDeviceType = (device) => {
+		setPreviewDeviceType(capitalizeFirstLetter(device));
+		setDeviceType(capitalizeFirstLetter(device));
 	};
 	const onReset = () => {
 		if ( deviceType === 'Tablet' ) {
@@ -92,53 +87,60 @@ export default function ResponsiveRangeControls( {
 	const output = {};
 	output.Mobile = (
 		<RangeControl
-			value={ ( undefined !== mobileValue ? mobileValue : '' ) }
-			onChange={ ( size ) => onChangeMobile( size ) }
-			min={ min }
-			max={ max }
-			step={ step }
-			unit={ unit }
-			onUnit={ onUnit }
-			showUnit={ showUnit }
-			units={ units }
-			lockUnits={ allowResponsiveUnitChange ? false : true }
+			value={undefined !== mobileValue ? mobileValue : ''}
+			onChange={(size) => onChangeMobile(size)}
+			min={min}
+			max={max}
+			step={step}
+			unit={unit}
+			onUnit={onUnit}
+			showUnit={showUnit}
+			units={units}
+			lockUnits={allowResponsiveUnitChange ? false : true}
+			initialPosition={initialPosition}
 		/>
 	);
 	output.Tablet = (
 		<RangeControl
-			value={ ( undefined !== tabletValue ? tabletValue : '' ) }
-			onChange={ ( size ) => onChangeTablet( size ) }
-			min={ min }
-			max={ max }
-			step={ step }
-			unit={ unit }
-			onUnit={ onUnit }
-			showUnit={ showUnit }
-			units={ units }
-			lockUnits={ allowResponsiveUnitChange ? false : true }
+			value={undefined !== tabletValue ? tabletValue : ''}
+			onChange={(size) => onChangeTablet(size)}
+			min={min}
+			max={max}
+			step={step}
+			unit={unit}
+			onUnit={onUnit}
+			showUnit={showUnit}
+			units={units}
+			lockUnits={allowResponsiveUnitChange ? false : true}
+			initialPosition={initialPosition}
 		/>
 	);
 	output.Desktop = (
 		<RangeControl
-			value={ ( undefined !== value ? value : '' ) }
-			onChange={ ( size ) => onChange( size ) }
-			min={ min }
-			max={ max }
-			step={ step }
-			unit={ unit }
-			onUnit={ onUnit }
-			showUnit={ showUnit }
-			units={ units }
+			value={undefined !== value ? value : ''}
+			onChange={(size) => onChange(size)}
+			min={min}
+			max={max}
+			step={step}
+			unit={unit}
+			onUnit={onUnit}
+			showUnit={showUnit}
+			units={units}
+			initialPosition={initialPosition}
 		/>
 	);
 	return [
 		onChange && onChangeTablet && onChangeMobile && (
-			<div className={ `components-base-control kb-responsive-range-control${ '' !== className ? ' ' + className : '' }` }>
+			<div
+				className={`components-base-control kb-responsive-range-control${
+					'' !== className ? ' ' + className : ''
+				}`}
+			>
 				<div className="kadence-title-bar">
-					{ label && (
+					{label && (
 						<span className="kadence-control-title">
-							{ label }
-							{ reset && (
+							{label}
+							{reset && (
 								<Button
 									className="is-reset is-single"
 									isSmall
@@ -152,24 +154,24 @@ export default function ResponsiveRangeControls( {
 										}
 									}}
 								></Button>
-							) }
+							)}
 						</span>
-					) }
-					<ButtonGroup className="kb-measure-responsive-options" aria-label={ __( 'Device', 'kadence-blocks' ) }>
-						{ map( devices, ( { name, key, title, itemClass } ) => (
+					)}
+					<ButtonGroup className="kb-measure-responsive-options" aria-label={__('Device', 'kadence-blocks')}>
+						{map(devices, ({ name, key, title, itemClass }) => (
 							<Button
-								key={ key }
-								className={ `kb-responsive-btn ${ itemClass }${ name === deviceType ? ' is-active' : '' }` }
+								key={key}
+								className={`kb-responsive-btn ${itemClass}${name === deviceType ? ' is-active' : ''}`}
 								isSmall
-								aria-pressed={ deviceType === name }
-								onClick={ () => customSetPreviewDeviceType( name ) }
+								aria-pressed={deviceType === name}
+								onClick={() => customSetPreviewDeviceType(name)}
 							>
-								{ title }
+								{title}
 							</Button>
-						) ) }
+						))}
 					</ButtonGroup>
 				</div>
-				{ ( output[ deviceType ] ? output[ deviceType ] : output.Desktop ) }
+				{output[deviceType] ? output[deviceType] : output.Desktop}
 			</div>
 		),
 	];

@@ -142,7 +142,9 @@ class Kadence_Blocks_Submit_Block extends Kadence_Blocks_Advanced_Form_Input_Blo
 			$css->add_property( 'background', $attributes['gradient'] . ' !important' );
 		}
 		$css->render_typography( $attributes, 'typography' );
-		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius' );
+		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array(
+			'unit_key'=>'borderRadiusUnit'
+		) );
 		$css->render_border_styles( $attributes, 'borderStyle', true );
 		$css->render_measure_output( $attributes, 'padding', 'padding', [ 'unit_key' => 'paddingUnit' ] );
 		$css->render_measure_output( $attributes, 'margin', 'margin', [ 'unit_key' => 'marginUnit' ] );

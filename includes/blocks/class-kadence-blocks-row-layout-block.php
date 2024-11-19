@@ -550,12 +550,14 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		if ( ! empty( $attributes['tabletLayout'] ) || $column1_tablet ) {
 			//use tablet layout. Potentially with custom widths
+			$layout  = ( ! empty( $attributes['colLayout'] ) ? $attributes['colLayout'] : 'equal' );
+			$tabletLayout  = ( ! empty( $attributes['tabletLayout'] ) && $attributes['tabletLayout'] !== 'inherit' ? $attributes['tabletLayout'] : $layout );
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( $inner_selector );
-			$grid_layout = $this->get_template_columns( $css, $columns, $attributes['tabletLayout'], $inner_selector, $css->render_row_gap_property( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'tablet', 'customGutter', 'gutterType' ), $column1_tablet, $column2_tablet, $column3_tablet, $column4_tablet, $column5_tablet, $column6_tablet );
+			$grid_layout = $this->get_template_columns( $css, $columns, $tabletLayout, $inner_selector, $css->render_row_gap_property( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'tablet', 'customGutter', 'gutterType' ), $column1_tablet, $column2_tablet, $column3_tablet, $column4_tablet, $column5_tablet, $column6_tablet );
 			$css->add_property( 'grid-template-columns', $grid_layout );
 			//tablet ordering
-			if ( ! empty( $attributes['collapseOrder'] ) && 'left-to-right' !== $attributes['collapseOrder'] && in_array( $attributes['tabletLayout'], $collapse_layouts ) ) {
+			if ( ! empty( $attributes['collapseOrder'] ) && 'left-to-right' !== $attributes['collapseOrder'] && in_array( $tabletLayout, $collapse_layouts ) ) {
 				foreach ( range( 1, $columns ) as $item_count ) {
 					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . $item_count . ')' );
 					$css->add_property( 'order', ( $columns - $item_count + 1 ) );
@@ -674,11 +676,11 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			if ( ( isset( $attributes['breakoutLeft'] ) && true === $attributes['breakoutLeft'] ) ) {
 				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(1)' );
-				$css->add_property( 'margin-left', 'calc( ' . $padding_left . ' *-1 )' );
+				$css->add_property( 'margin-inline-start', 'calc( ' . $padding_left . ' *-1 )' );
 			}
 			if ( ( isset( $attributes['breakoutRight'] ) && true === $attributes['breakoutRight'] ) ) {
 				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(2)' );
-				$css->add_property( 'margin-right', 'calc( ' . $padding_right . ' *-1 )' );
+				$css->add_property( 'margin-inline-end', 'calc( ' . $padding_right . ' *-1 )' );
 			}
 			$css->set_media_state( 'desktop' );
 			if ( apply_filters( 'kadence_blocks_css_output_media_queries', true ) ) {
@@ -686,43 +688,43 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 					$css->start_media_query( '(min-width:' . absint( $content_width ) . 'px)' );
 					if ( ( isset( $attributes['breakoutLeft'] ) && true === $attributes['breakoutLeft'] ) ) {
 						$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(1):not(.specificity)' );
-						$css->add_property( 'margin-left', 'var(--breakout-negative-margin-left)' );
+						$css->add_property( 'margin-inline-start', 'var(--breakout-negative-margin-left)' );
 					}
 					if ( ( isset( $attributes['breakoutRight'] ) && true === $attributes['breakoutRight'] ) ) {
 						$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(2):not(.specificity)' );
-						$css->add_property( 'margin-right', 'var(--breakout-negative-margin-right)' );
+						$css->add_property( 'margin-inline-end', 'var(--breakout-negative-margin-right)' );
 					}
 					$css->stop_media_query();
 				} else {
 					$css->set_media_state( 'desktopOnly' );
 					if ( ( isset( $attributes['breakoutLeft'] ) && true === $attributes['breakoutLeft'] ) ) {
 						$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(1)' );
-						$css->add_property( 'margin-left', 'var(--breakout-negative-margin-left)' );
+						$css->add_property( 'margin-inline-start', 'var(--breakout-negative-margin-left)' );
 					}
 					if ( ( isset( $attributes['breakoutRight'] ) && true === $attributes['breakoutRight'] ) ) {
 						$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(2)' );
-						$css->add_property( 'margin-right', 'var(--breakout-negative-margin-right)' );
+						$css->add_property( 'margin-inline-end', 'var(--breakout-negative-margin-right)' );
 					}
 					$css->set_media_state( 'desktop' );
 				}
 			} else {
 				if ( ( isset( $attributes['breakoutLeft'] ) && true === $attributes['breakoutLeft'] ) ) {
 					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(1):not(.specificity)' );
-					$css->add_property( 'margin-left', 'var(--breakout-negative-margin-left, calc( ' . $padding_left . ' *-1 ) )' );
+					$css->add_property( 'margin-inline-start', 'var(--breakout-negative-margin-left, calc( ' . $padding_left . ' *-1 ) )' );
 				}
 				if ( ( isset( $attributes['breakoutRight'] ) && true === $attributes['breakoutRight'] ) ) {
 					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(2):not(.specificity)' );
-					$css->add_property( 'margin-right', 'var(--breakout-negative-margin-right, calc( ' . $padding_right . ' *-1 ))' );
+					$css->add_property( 'margin-inline-end', 'var(--breakout-negative-margin-right, calc( ' . $padding_right . ' *-1 ))' );
 				}
 			}
 			$css->set_media_state( 'tabletOnly' );
 			if ( ( isset( $attributes['breakoutLeft'] ) && true === $attributes['breakoutLeft'] ) ) {
 				$css->set_selector( $inner_selector . ':not(.kt-tab-layout-row) > .wp-block-kadence-column:nth-child(1)' );
-				$css->add_property( 'margin-left', 'calc( ' . $padding_left . ' *-1 )' );
+				$css->add_property( 'margin-inline-start', 'calc( ' . $padding_left . ' *-1 )' );
 			}
 			if ( ( isset( $attributes['breakoutRight'] ) && true === $attributes['breakoutRight'] ) ) {
 				$css->set_selector( $inner_selector . ':not(.kt-tab-layout-row) > .wp-block-kadence-column:nth-child(2)' );
-				$css->add_property( 'margin-right', 'calc( ' . $padding_right . ' *-1 )' );
+				$css->add_property( 'margin-inline-end', 'calc( ' . $padding_right . ' *-1 )' );
 			}
 			$css->set_media_state( 'desktop' );
 		}

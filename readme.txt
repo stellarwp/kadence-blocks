@@ -3,8 +3,8 @@ Contributors: britner, oakesjosh, woodardmc
 Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.3
-Tested up to: 6.6
-Stable tag: 3.2.54
+Tested up to: 6.7
+Stable tag: 3.3.5
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -174,13 +174,85 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.3.5 =
+Release Date: November 19th 2024
+* Add: Filters to customize faq schema output for accordion blocks. kadence_blocks_faq_schema, kadence_blocks_faq_schema_allowed_tags, kadence_blocks_faq_schema_question, kadence_blocks_faq_schema_answer
+* Add: Responsive controls for Header Off Canvas block width type and slide direction.
+* Add: Off canvas display settings are now responsive.
+* Add: Responsive Navigation alignment settings.
+* Fix: Accordion scrolling to end of content when opened in some situations.
+* Fix: Off canvas content alignment not working to the right.
+* Fix: Navigation link alignment issues.
+* Fix: Smooth scrolling to accordion ID.
+* Fix: Maximum numeric value is shown on load for progress bar. If the user doesn't have JS enabled, they'll see the intended value on the page. This can be disabled in settings.
+
+= 3.3.4 =
+Release Date: November 12th 2024
+* Add: Ability to import & export advanced headers.
+* Add: Ability to import & export advanced forms.
+* Add: Ability to import & export advanced navigations.
+* Add: Add background gradient to advanced highlight.
+* Fix: Post grid not displaying all selected posts.
+* Fix: Active color not working for imported WordPress navigation menus.
+* Fix: Submit button on advanced form not using proper unit for border radius.
+
+= 3.3.3 =
+Release Date: October 29th 2024
+* Add: Section Priority option to header rows. This allows you to control how gridding of sections are prioritized.
+* Fix: Advanced image block not showing SVGs in editor.
+* Fix: Block settings visibility not working for section block.
+* Fix: Advanced form text fields now allowing "0" in required field.
+* Fix: Kadence legacy form freezing in reusable patterns.
+* Fix: Infobox on RTL sites when "Set height 100%" is enabled.
+* Fix: Ability to add nav to footer through widgets.
+* Fix: Text alignment when using vertical orientation in navigation block.
+* Fix: Improvements to the single container experience
+* Fix: Navigation link hover border settings not applying.
+* Fix: Navigation block style options not applying on vertical layout.
+* Fix: Border radius not work as expected on navigation link media items.
+* Fix: Display of sticky header on mobile and tablet.
+* Fix: Navigation link media spacing when positioned top or bottom.
+* Fix: Display of single row container on the frontend for mobile.
+* Fix: Improvements to display of gradient text when text spans multiple lines.
+* Fix: Border radius units in search block.
+* Fix: Improved performance when rendering custom SVGs.
+
+= 3.3.2 =
+Release Date: October 16th 2024
+* Add: Gradient text to advanced text block.
+* Add: Gradient text to advanced button block.
+* Add: Adv Header dynamic transparency options.
+* Fix: Some accordion block styles not applying unless title color was set.
+* Fix: Compatibility issue with block addon plugin.
+* Fix: Issue with transparent and sticky headers.
+* Fix: Issue with headers background not correctly applying at times.
+* Fix: Issue with accordion hover/focus and active styles.
+* Fix: Search block text color and placeholder color not applying.
+* Fix: Off canvas close button padding & margin units.
+* Fix: PHP 8.3 deprecation when using restrict content pro.
+
+= 3.3.1 =
+Release Date: October 4th 2024
+* Fix: Issue with adding items to tabs block in the editor.
+* Fix: Issue with scroll bars showing on mega menus incorrectly.
+
+= 3.3.0 =
+Release Date: October 3rd 2024
+* Add: Advanced Header block.
+* Add: Advanced Navigation block.
+* Add: Off canvas block.
+* Add: Site Identity block.
+* Add: Site Search block.
+
 = 3.2.54 =
-Release Date: September TBD 2024
+Release Date: September 25th 2024
+* Add: Support 4 columns in posts block.
 * Update: Add reset option to many settings in row layout.
 * Fix: Adv text highlight setting also applying to core highlight.
 * Fix: Tabs block in accordion mode interfering with slider block.
 * Fix: Adjustment to wpml config to allow translation of adv text block.
 * Fix: Issue with responsive vertical alignment in section block.
+* Fix: PHP warning for undefined array key.
 
 = 3.2.53 =
 Release Date: September 9th 2024

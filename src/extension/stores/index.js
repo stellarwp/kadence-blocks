@@ -4,6 +4,7 @@ import { get } from 'lodash';
 const DEFAULT_STATE = {
 	previewDevice: 'Desktop',
 	uniqueIDs: {},
+	stashes: {},
 	uniquePanes: {},
 	webFonts: {},
 	imagePickerQuery: '',
@@ -26,6 +27,30 @@ const actions = {
 			};
 		}
 	},
+	*setHeaderVisualBuilderOpenId(clientId = null) {
+		return {
+			type: 'SET_OPEN_HEADER_VISUAL_BUILDER_ID',
+			clientId,
+		};
+	},
+	*setHeaderVisualBuilderSelectedId(clientId = null) {
+		return {
+			type: 'SET_SELECTED_HEADER_VISUAL_BUILDER_ID',
+			clientId,
+		};
+	},
+	*setHeaderVisualBuilderOpenPosition(position = 'bottom') {
+		return {
+			type: 'SET_OPEN_HEADER_VISUAL_BUILDER_POSITION',
+			position,
+		};
+	},
+	*setOffCanvasOpenId(clientId = null) {
+		return {
+			type: 'SET_OPEN_OFF_CANVAS_ID',
+			clientId,
+		};
+	},
 	*toggleEditorPanelOpened(panelName, defaultValue) {
 		return {
 			type: 'TOGGLE_EDITOR_PANEL_OPENED',
@@ -45,6 +70,15 @@ const actions = {
 			type: 'ADD_UNIQUE_ID',
 			uniqueID,
 			clientID,
+		};
+	},
+	//Stash an object on a key.
+	//Usually used to store something and associate it with a block using the block's uniqueID as a key
+	addStash(key, stashContents) {
+		return {
+			type: 'ADD_STASH',
+			key,
+			stashContents,
 		};
 	},
 	addUniquePane(uniqueID, clientID, rootID) {
@@ -119,12 +153,13 @@ const controls = {
 };
 
 const getPreviewDeviceType = createRegistrySelector((select) => (state) => {
-	const coreEditor = select('core/editor');
+	const editor = select('core/editor');
 
-	if (coreEditor && coreEditor?.getDeviceType) {
-		return select('core/editor').getDeviceType();
+	if (editor && editor?.getDeviceType) {
+		return editor.getDeviceType();
 	}
 
+	//some backups for older versions or other unusual cases.
 	const editPost = select('core/edit-post');
 
 	if (editPost) {
@@ -143,6 +178,38 @@ const getPreviewDeviceType = createRegistrySelector((select) => (state) => {
 const store = createReduxStore('kadenceblocks/data', {
 	reducer(state = DEFAULT_STATE, action) {
 		switch (action.type) {
+			case 'SET_OPEN_HEADER_VISUAL_BUILDER_ID':
+				return {
+					...state,
+					headerVisualBuilder: {
+						...state.headerVisualBuilder,
+						open: action.clientId,
+					},
+				};
+			case 'SET_SELECTED_HEADER_VISUAL_BUILDER_ID':
+				return {
+					...state,
+					headerVisualBuilder: {
+						...state.headerVisualBuilder,
+						selected: action.clientId,
+					},
+				};
+			case 'SET_OPEN_HEADER_VISUAL_BUILDER_POSITION':
+				return {
+					...state,
+					headerVisualBuilder: {
+						...state.headerVisualBuilder,
+						position: action.position,
+					},
+				};
+			case 'SET_OPEN_OFF_CANVAS_ID':
+				return {
+					...state,
+					offCanvas: {
+						...state.offCanvas,
+						open: action.clientId,
+					},
+				};
 			case 'TOGGLE_EDITOR_PANEL_OPENED':
 				const { panelName, defaultValue } = action;
 				const isOpen =
@@ -178,6 +245,13 @@ const store = createReduxStore('kadenceblocks/data', {
 				return {
 					...state,
 					uniqueIDs: updatedIDs,
+				};
+			case 'ADD_STASH':
+				const updatedStashes = state.stashes;
+				Object.assign(updatedStashes, { [action.key]: action.stashContents });
+				return {
+					...state,
+					stashes: updatedStashes,
 				};
 			case 'ADD_UNIQUE_PANE':
 				const uniquePanes = state.uniquePanes;
@@ -240,6 +314,18 @@ const store = createReduxStore('kadenceblocks/data', {
 			const { uniqueIDs } = state;
 			return uniqueIDs;
 		},
+		getStashes(state) {
+			const { stashes } = state;
+			return stashes;
+		},
+		getStash(state, key) {
+			const { stashes } = state;
+			let stash = null;
+			if (stashes.hasOwnProperty(key)) {
+				stash = stashes[key];
+			}
+			return stash;
+		},
 		isUniqueID(state, uniqueID) {
 			const { uniqueIDs } = state;
 			let isUniqueID = true;
@@ -291,6 +377,18 @@ const store = createReduxStore('kadenceblocks/data', {
 				}
 			}
 			return isUniqueFont;
+		},
+		getOpenHeaderVisualBuilderId(state) {
+			return get(state, ['headerVisualBuilder', 'open'], null);
+		},
+		getSelectedHeaderVisualBuilderId(state) {
+			return get(state, ['headerVisualBuilder', 'selected'], null);
+		},
+		getOpenHeaderVisualBuilderPosition(state) {
+			return get(state, ['headerVisualBuilder', 'position'], 'bottom');
+		},
+		getOpenOffCanvasId(state) {
+			return get(state, ['offCanvas', 'open'], null);
 		},
 		isEditorPanelOpened(state, panelName, defaultValue) {
 			const panels = get(state, ['editorPanels'], {});

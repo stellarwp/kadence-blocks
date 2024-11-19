@@ -1425,6 +1425,7 @@ function KadenceTabs(props) {
 							const newtabs = titles;
 							// Translators: %d is the tab number.
 							newtabs.push({
+								// translators: %d: Tab number
 								text: sprintf(__('Tab %d', 'kadence-blocks'), tabCount + 1),
 								icon: titles[0].icon,
 								iconSide: titles[0].iconSide,

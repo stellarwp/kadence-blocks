@@ -110,6 +110,7 @@
 				<key name="*">
 					<key name="alt" />
 					<key name="caption" />
+					<key name="customLink" />
 				</key>
 			</key>
 		</gutenberg-block>

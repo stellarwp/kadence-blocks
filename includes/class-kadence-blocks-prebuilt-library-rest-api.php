@@ -909,7 +909,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			}
 		}
 		// Regex to find wp:kadence/image blocks with id and src.
-		$pattern = '/<!-- wp:kadence\/image .*?"id":(\d+),.*?"uniqueID":"[^"]+".*?-->(.*?)<img src="([^"]+)".*?<!-- \/wp:kadence\/image -->/s';
+		$pattern = '/<!-- wp:kadence\/image\b[^>]*?(?:"id":(\d+)),.*?"uniqueID":"[^"]+".*?-->(.*?)<img src="([^"]+)".*?<!-- \/wp:kadence\/image -->/s';
+
 		// Use preg_match_all to find all matches
 		if ( preg_match_all( $pattern, $content, $block_matches, PREG_SET_ORDER ) ) {
 			foreach ( $block_matches as $block_match ) {
@@ -1188,8 +1189,8 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		// Access via remote.
 		$response = $this->get_remote_library_contents( $library, $library_url, $key );
 
-		if ( 'error' === $response ) {
-			return rest_ensure_response( 'error' );
+		if ( is_wp_error( $response ) ) {
+			return rest_ensure_response( $response );
 		}
 
 		$this->block_library_cache->cache( $identifier, $response );
@@ -1825,15 +1826,19 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			)
 		);
 		// Early exit if there was an error.
-		if ( is_wp_error( $response ) || $this->is_response_code_error( $response ) ) {
-			return 'error';
+		if ( is_wp_error( $response ) ) {
+			return $response;
+		}
+		if ( $this->is_response_code_error( $response ) ) {
+			$response_code = wp_remote_retrieve_response_code( $response );
+			return new WP_Error( 'error', sprintf( esc_html__( 'Response Code Error: %s', 'kadence-blocks' ), $response_code ), array( 'status' => 400 ) );
 		}
 
 		// Get the CSS from our response.
 		$contents = wp_remote_retrieve_body( $response );
 		// Early exit if there was an error.
 		if ( is_wp_error( $contents ) ) {
-			return 'error';
+			return $contents;
 		}
 
 		return $contents;

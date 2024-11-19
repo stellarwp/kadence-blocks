@@ -1,0 +1,246 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "kadence/search",
+	"title": "Search (Adv)",
+	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
+	"attributes": {
+		"uniqueID": {
+			"type": "string"
+		},
+		"displayStyle": {
+			"type": "string",
+			"default": "standard"
+		},
+		"showButton": {
+			"type": "boolean",
+			"default": false
+		},
+		"searchProductsOnly": {
+			"type": "boolean",
+			"default": false
+		},
+		"buttonSide": {
+			"type": "string",
+			"default": "right"
+		},
+		"modalBackgroundColor": {
+			"type": "string",
+			"default": ""
+		},
+		"modalBackgroundType": {
+			"type": "string",
+			"default": "normal"
+		},
+		"modalGradientActive": {
+			"type": "string",
+			"default": ""
+		},
+		"inputPlaceholder": {
+			"type": "string",
+			"default": ""
+		},
+		"inputColor": {
+			"type": "string",
+			"default": ""
+		},
+		"inputBackgroundType": {
+			"type": "string",
+			"default": "normal"
+		},
+		"inputBackgroundColor": {
+			"type": "string",
+			"default": ""
+		},
+		"inputFocusBackgroundType": {
+			"type": "string",
+			"default": "normal"
+		},
+		"inputFocusBackgroundColor": {
+			"type": "string",
+			"default": ""
+		},
+		"inputFocusGradientActive": {
+			"type": "boolean",
+			"default": false
+		},
+		"inputBoxShadow": {
+			"type": "array",
+			"default": [false, "#000000", 0.4, 2, 2, 3, 0, false]
+		},
+		"inputFocusBoxShadowActive": {
+			"type": "array",
+			"default": [false, "#000000", 0.4, 2, 2, 3, 0, false]
+		},
+		"inputPlaceholderColor": {
+			"type": "string",
+			"default": ""
+		},
+		"inputFocusBorderColor": {
+			"type": "string",
+			"default": ""
+		},
+		"inputBorderRadius": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"tabletInputBorderRadius": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"mobileInputBorderRadius": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"inputBorderRadiusUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"inputPadding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"tabletInputPadding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"mobileInputPadding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"inputPaddingType": {
+			"type": "string",
+			"default": "px"
+		},
+		"inputMargin": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"tabletInputMargin": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"mobileInputMargin": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"inputMarginType": {
+			"type": "string",
+			"default": "px"
+		},
+		"inputBorderStyles": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["#dee2e6", "", 1],
+					"right": ["#dee2e6", "", 1],
+					"bottom": ["#dee2e6", "", 1],
+					"left": ["#dee2e6", "", 1],
+					"unit": "px"
+				}
+			]
+		},
+		"tabletInputBorderStyles": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"mobileInputBorderStyles": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"inputTypography": {
+			"type": "array",
+			"default": [
+				{
+					"size": [ "", "", "" ],
+					"sizeType": "px",
+					"lineHeight": [ "", "", "" ],
+					"lineType": "",
+					"letterSpacing": [ "", "", "" ],
+					"letterType": "px",
+					"textTransform": "",
+					"family": "",
+					"google": "",
+					"style": "",
+					"weight": "",
+					"variant": "",
+					"subset": "",
+					"loadGoogle": true
+				}
+			]
+		},
+		"inputMaxWidth": {
+			"type": "array",
+			"default": ["", "", ""]
+		},
+		"inputMaxWidthType": {
+			"type": "string",
+			"default": "px"
+		},
+		"inputMinWidth": {
+			"type": "array",
+			"default": ["", "", ""]
+		},
+		"inputMinWidthType": {
+			"type": "string",
+			"default": "px"
+		},
+		"inputIcon": {
+			"type": "string",
+			"default": "fe_search"
+		},
+		"inputIconLineWidth": {
+			"type": "number",
+			"default": 2
+		},
+		"inputIconColor": {
+			"type": "string",
+			"default": ""
+		},
+		"inputIconHoverColor": {
+			"type": "string",
+			"default": ""
+		},
+		"closeIcon": {
+			"type": "string",
+			"default": "fe_x"
+		},
+		"closeIconSize": {
+			"type": "array",
+			"default": [ 50, "", ""]
+		},
+		"closeIconLineWidth": {
+			"type": "number",
+			"default": 2
+		},
+		"closeIconColor": {
+			"type": "string",
+			"default": ""
+		},
+		"closeIconHoverColor": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"kbMetadata": true
+	}
+}

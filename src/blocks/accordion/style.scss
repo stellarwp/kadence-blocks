@@ -35,7 +35,7 @@
 		height: 1em;
 	}
 }
-.kt-blocks-accordion-header:focus {
+.kt-blocks-accordion-header:focus-visible {
 	box-shadow: none;
 	text-shadow: none;
 }
@@ -277,8 +277,8 @@
 .kt-accordion-inner-wrap {
 	column-gap: var(--global-kb-gap-md, 2rem);
 	display: flex;
-    flex-direction: column;
-    row-gap: 8px;
+	flex-direction: column;
+	row-gap: 8px;
 }
 .kt-accordion-panel-inner {
 	padding: 20px;

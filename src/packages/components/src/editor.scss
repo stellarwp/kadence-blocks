@@ -2,80 +2,83 @@ svg {
 	--kadence-color: #0058b0;
 	--kadence-color-white: #fff;
 }
-.block-editor-list-view-leaf.is-selected .block-editor-list-view-block-contents svg, .components-button.is-pressed .block-editor-block-icon svg {
+.block-editor-list-view-leaf.is-selected .block-editor-list-view-block-contents svg,
+.components-button.is-pressed .block-editor-block-icon svg, .components-button.is-primary svg {
 	--kadence-color: currentColor;
 	--kadence-color-white: var(--wp-admin-theme-color);
 }
 // Kadence Custom CSS
 .components-modal__frame.kadence-css-modal {
-    width: 80%;
-    max-width: 1200px;
-    height: 80%;
-    max-height: 800px;
+	width: 80%;
+	max-width: 1200px;
+	height: 80%;
+	max-height: 800px;
 }
 
 .components-modal__frame.kadence-css-modal .components-button.is-secondary {
-    position: absolute;
-    bottom: 20px;
-    right: 32px;
+	position: absolute;
+	bottom: 20px;
+	right: 32px;
 }
 .components-modal__frame.kadence-css-modal .components-modal__content {
 	padding-bottom: 50px;
 }
 .components-button.kadence-css-modal-open.has-text.has-icon {
-    box-shadow: none !important;
+	box-shadow: none !important;
 }
 // Kadence Range CSS
 .kadence-range-control-inner {
-    box-sizing: border-box;
-    align-items: flex-start;
-    display: flex;
-    -webkit-box-pack: start;
-    justify-content: flex-start;
-    padding: 0px;
-    position: relative;
-    width: 100%;
+	box-sizing: border-box;
+	align-items: flex-start;
+	display: flex;
+	-webkit-box-pack: start;
+	justify-content: flex-start;
+	padding: 0px;
+	position: relative;
+	width: 100%;
 }
 .kadence-controls-content .kadence-range-control-inner .components-base-control {
-    margin-bottom: 0;
+	margin-bottom: 0;
 }
 
-.kadence-range-control-inner .components-range-control.kadence-range-control-range {
-    flex-grow: 1;
-    margin-bottom: 0;
+.kadence-range-control-inner div.components-range-control.kadence-range-control-range {
+	flex-grow: 1;
+	margin-bottom: 0;
 }
-.kadence-range-control-inner .components-flex.components-input-control.components-number-control.components-range-control__number {
-    display: flex;
+.kadence-range-control-inner
+	.components-flex.components-input-control.components-number-control.components-range-control__number {
+	display: flex;
 }
-.kadence-range-control-inner .components-base-control.kt-range-number-input{
+.kadence-range-control-inner .components-base-control.kt-range-number-input {
 	margin-left: 16px;
 	margin-bottom: 0;
 	flex: 0 1 65px;
 }
 // link.
 .kb-side-link-control .components-base-control__label {
-    margin-bottom: 6px;
-    display: block;
+	margin-bottom: 6px;
+	display: block;
 }
 .kb-letter-case .kadence-radio-container-control.components-button-group .components-button {
 	height: 32px;
-	text-transform:none;
+	text-transform: none;
 }
-.kadence-two-column-group .components-base-control > .kadence-component__header, .kadence-font-size-control.components-base-control > .kadence-component__header {
-    font-size: 11px;
-    font-weight: 500;
-    text-transform: uppercase;
+.kadence-two-column-group .components-base-control > .kadence-component__header,
+.kadence-font-size-control.components-base-control > .kadence-component__header {
+	font-size: 11px;
+	font-weight: 500;
+	text-transform: uppercase;
 }
 // Copy Paste Styles
 .kb-copy-paste-styles__popover .components-menu-item__button svg {
-    width: 16px;
-    height: 16px;
+	width: 16px;
+	height: 16px;
 }
 // Vertical Align
 .components-toolbar-group.kb-vertical-align .components-button svg {
-    width: 18px;
-    height: 18px;
-    min-width: 0;
+	width: 18px;
+	height: 18px;
+	min-width: 0;
 }
 
 /// Old size type, needs to be updated to new radio component.
@@ -84,19 +87,19 @@ svg {
 	display: flex;
 }
 .kt-btn-size-settings-container {
-    display: flex;
+	display: flex;
 	align-items: center;
 	margin: 20px 0;
 }
 .kt-btn-size-settings-container .kt-beside-btn-group {
-    flex-grow: 1;
-    margin: 0;
+	flex-grow: 1;
+	margin: 0;
 }
 .kt-button-size-type-options .dashicon {
-    width: 14px;
-    height: 14px;
-    font-size: 14px;
+	width: 14px;
+	height: 14px;
+	font-size: 14px;
 }
 .kt-btn-size-settings-container .components-button-group .components-button.is-primary svg {
-    fill: white;
+	fill: white;
 }

@@ -27,7 +27,6 @@ require_once KADENCE_BLOCKS_PATH . 'includes/blocks/form/class-kadence-blocks-ca
 require_once KADENCE_BLOCKS_PATH . 'includes/blocks/form/class-kadence-blocks-accept-block.php';
 require_once KADENCE_BLOCKS_PATH . 'includes/blocks/form/class-kadence-blocks-submit-block.php';
 require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/advanced-form-rest-api.php';
-require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/advanced-form-duplicate.php';
 require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/advanced-form-cpt.php';
 require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/advanced-form-ajax.php';
 require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/advanced-form-submit-actions.php';

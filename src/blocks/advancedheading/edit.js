@@ -37,6 +37,7 @@ import {
 	IconRender,
 	DynamicTextControl,
 	DynamicInlineReplaceControl,
+	GradientControl,
 } from '@kadence/components';
 
 import { dynamicIcon } from '@kadence/icons';
@@ -236,12 +237,19 @@ function KadenceAdvancedHeading(props) {
 		iconTooltipPlacement,
 		iconTooltipDash,
 		iconTooltip,
+		textGradient,
+		enableTextGradient,
+		enableMarkGradient,
+		enableMarkBackgroundGradient,
+		markGradient,
+		markBackgroundGradient,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('style');
 	const [contentRef, setContentRef] = useState();
+
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData, allowedFormats } = useSelect(
 		(select) => {
 			return {
 				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
@@ -257,6 +265,7 @@ function KadenceAdvancedHeading(props) {
 					),
 					editedPostId: select('core/edit-site') ? select('core/edit-site').getEditedPostId() : false,
 				},
+				allowedFormats: select('core/rich-text').getFormatTypes(),
 			};
 		},
 		[clientId]
@@ -442,10 +451,15 @@ function KadenceAdvancedHeading(props) {
 		],
 		'kadence/advancedheading'
 	);
-	richTextFormatsBase = !kadenceDynamic?.content?.shouldReplace
-		? [...['kadence/insert-dynamic'], ...richTextFormatsBase]
-		: richTextFormatsBase;
-	const richTextFormats = link || kadenceDynamic?.content?.shouldReplace ? richTextFormatsBase : undefined;
+
+	let richTextFormats = allowedFormats.map((format) => format.name);
+	if (link || kadenceDynamic?.content?.shouldReplace) {
+		richTextFormatsBase = !kadenceDynamic?.content?.shouldReplace
+			? [...['kadence/insert-dynamic'], ...richTextFormatsBase]
+			: richTextFormatsBase;
+		richTextFormats = richTextFormatsBase;
+	}
+
 	const renderTypography = typography && !typography.includes(',') ? "'" + typography + "'" : typography;
 	const markBGString = markBG ? KadenceColorOutput(markBG, markBGOpacity) : '';
 	const markBorderString = markBorder ? KadenceColorOutput(markBorder, markBorderOpacity) : '';
@@ -882,7 +896,7 @@ function KadenceAdvancedHeading(props) {
 
 	const classes = classnames({
 		[`kt-adv-heading${uniqueID}`]: uniqueID,
-		['kadence-advancedheading-text']: true,
+		'kadence-advancedheading-text': true,
 		'kb-content-is-dynamic': isDynamicReplaced,
 		[textColorClass]: textColorClass,
 		'has-text-color': textColorClass,
@@ -951,7 +965,11 @@ function KadenceAdvancedHeading(props) {
 				gap: icon ? '0.25em' : undefined,
 				justifyContent: icon && previewJustifyAlign ? previewJustifyAlign : undefined,
 				textAlign: previewAlign ? previewAlign : undefined,
-				backgroundColor: background && backgroundIgnoreClass ? KadenceColorOutput(background) : undefined,
+				backgroundColor:
+					!enableTextGradient && background && backgroundIgnoreClass
+						? KadenceColorOutput(background)
+						: undefined,
+				backgroundImage: enableTextGradient && textGradient !== '' ? textGradient : undefined,
 				paddingTop:
 					'' !== previewPaddingTop ? getSpacingOptionOutput(previewPaddingTop, paddingType) : undefined,
 				paddingRight:
@@ -968,7 +986,7 @@ function KadenceAdvancedHeading(props) {
 				marginLeft:
 					'' !== previewMarginLeft ? getSpacingOptionOutput(previewMarginLeft, marginType) : undefined,
 				lineHeight: previewLineHeight ? previewLineHeight + (fontHeightType ? fontHeightType : '') : undefined,
-				color: color ? KadenceColorOutput(color) : undefined,
+				color: color && (!enableTextGradient || textGradient !== '') ? KadenceColorOutput(color) : undefined,
 				fontSize: previewFontSize
 					? getFontSizeOptionOutput(previewFontSize, sizeType ? sizeType : 'px')
 					: undefined,
@@ -989,7 +1007,7 @@ function KadenceAdvancedHeading(props) {
 					id={'adv-heading' + uniqueID}
 					tagName="span"
 					className={'kb-adv-heading-inner'}
-					allowedFormats={richTextFormats ? richTextFormats : undefined}
+					allowedFormats={richTextFormats}
 					value={content}
 					onChange={(value) => setAttributes({ content: value })}
 					onMerge={mergeBlocks}
@@ -1147,8 +1165,14 @@ function KadenceAdvancedHeading(props) {
 		<div {...blockProps}>
 			<style>
 				{`.kt-adv-heading${uniqueID} mark.kt-highlight, .kt-adv-heading${uniqueID} .rich-text:focus mark.kt-highlight[data-rich-text-format-boundary] {
-						color: ${KadenceColorOutput(markColor)};
-						background: ${markBG ? markBGString : 'transparent'};
+						color: ${!enableMarkGradient ? KadenceColorOutput(markColor) : undefined};
+						background: ${markBG && !enableMarkGradient ? markBGString : 'transparent'};
+						background-image: ${enableMarkGradient ? markGradient : enableMarkBackgroundGradient ? markBackgroundGradient : 'none'};
+						-webkit-background-clip: ${enableMarkGradient ? 'text' : enableTextGradient ? 'initial !important' : undefined};
+						background-clip: ${enableMarkGradient ? 'text' : enableTextGradient ? 'initial !important' : undefined};
+						-webkit-text-fill-color: ${enableMarkGradient ? 'transparent' : enableTextGradient ? 'initial !important' : undefined};
+						-webkit-box-decoration-break: clone;
+						box-decoration-break: clone;
 						font-weight: ${markFontWeight ? markFontWeight : 'inherit'};
 						font-style: ${markFontStyle ? markFontStyle : 'inherit'};
 						font-size: ${previewMarkSize ? getFontSizeOptionOutput(previewMarkSize, markSizeType) : 'inherit'};
@@ -1229,10 +1253,28 @@ function KadenceAdvancedHeading(props) {
 					`.kt-adv-heading${uniqueID} a:hover, #block-${clientId} a.kb-advanced-heading-link:hover, #block-${clientId} a.kb-advanced-heading-link:hover > .kadence-advancedheading-text {
 							color: ${KadenceColorOutput(linkHoverColor)}!important;
 						}`}
+				{enableTextGradient &&
+					textGradient !== '' &&
+					`.kt-adv-heading${uniqueID}.kadence-advancedheading-text, .kt-adv-heading${uniqueID} .kadence-advancedheading-text {
+						-webkit-background-clip: text;
+						background-clip: text;
+						-webkit-text-fill-color: transparent;
+						-webkit-box-decoration-break: clone;
+				}`}
 				{iconColorHover &&
 					`#block-${clientId} .kadence-advancedheading-text:hover > .kb-advanced-heading-svg-icon {
 							color: ${KadenceColorOutput(iconColorHover)}!important;
 						}`}
+				{enableTextGradient &&
+					`.kt-adv-heading${uniqueID} > span#adv-heading${uniqueID} {
+						background-image: ${textGradient};
+						-webkit-background-clip: text;
+						background-clip: text;
+						-webkit-text-fill-color: transparent;
+						-webkit-box-decoration-break: clone;
+						box-decoration-break: clone;
+						display: inline;
+					}`}
 			</style>
 			<BlockControls>
 				<ToolbarGroup group="tag">
@@ -1500,22 +1542,42 @@ function KadenceAdvancedHeading(props) {
 						<>
 							<KadencePanelBody panelName={'kb-adv-heading-style'}>
 								{showSettings('colorSettings', 'kadence/advancedheading') && (
-									<ColorGroup>
-										<PopColorControl
-											label={__('Color', 'kadence-blocks')}
-											value={color ? color : ''}
-											default={''}
-											onChange={(value) => setAttributes({ color: value })}
-											onClassChange={(value) => setAttributes({ colorClass: value })}
+									<>
+										{!enableTextGradient && (
+											<ColorGroup>
+												<PopColorControl
+													label={__('Color', 'kadence-blocks')}
+													value={color ? color : ''}
+													default={''}
+													onChange={(value) => setAttributes({ color: value })}
+													onClassChange={(value) => setAttributes({ colorClass: value })}
+												/>
+												<PopColorControl
+													label={__('Background Color', 'kadence-blocks')}
+													value={background ? background : ''}
+													default={''}
+													onChange={(value) => setAttributes({ background: value })}
+													onClassChange={(value) =>
+														setAttributes({ backgroundColorClass: value })
+													}
+												/>
+											</ColorGroup>
+										)}
+										<ToggleControl
+											style={{ marginTop: '10px' }}
+											label={__('Enable Text Gradient', 'kadence-blocks')}
+											checked={enableTextGradient}
+											onChange={(value) => setAttributes({ enableTextGradient: value })}
 										/>
-										<PopColorControl
-											label={__('Background Color', 'kadence-blocks')}
-											value={background ? background : ''}
-											default={''}
-											onChange={(value) => setAttributes({ background: value })}
-											onClassChange={(value) => setAttributes({ backgroundColorClass: value })}
-										/>
-									</ColorGroup>
+
+										{enableTextGradient && (
+											<GradientControl
+												value={textGradient}
+												onChange={(value) => setAttributes({ textGradient: value })}
+												gradients={[]}
+											/>
+										)}
+									</>
 								)}
 								{showSettings('sizeSettings', 'kadence/advancedheading') && (
 									<>
@@ -1830,6 +1892,7 @@ function KadenceAdvancedHeading(props) {
 											setAttributes({ iconSizeUnit: value });
 										}}
 										units={['px', 'em', 'rem']}
+										reset={true}
 									/>
 									<PopColorControl
 										label={__('Icon Color', 'kadence-blocks')}
@@ -1919,23 +1982,69 @@ function KadenceAdvancedHeading(props) {
 									initialOpen={false}
 									panelName={'kb-adv-heading-highlight-settings'}
 								>
-									<PopColorControl
-										label={__('Color', 'kadence-blocks')}
-										value={markColor ? markColor : ''}
-										default={''}
-										onChange={(value) => setAttributes({ markColor: value })}
-									/>
-									<PopColorControl
-										label={__('Background', 'kadence-blocks')}
-										value={markBG ? markBG : ''}
-										default={''}
-										onChange={(value) => setAttributes({ markBG: value })}
-										opacityValue={markBGOpacity}
-										onOpacityChange={(value) => setAttributes({ markBGOpacity: value })}
-										onArrayChange={(color, opacity) =>
-											setAttributes({ markBG: color, markBGOpacity: opacity })
-										}
-									/>
+									<>
+										{!enableMarkGradient && (
+											<PopColorControl
+												label={__('Color', 'kadence-blocks')}
+												value={markColor ? markColor : ''}
+												default={''}
+												onChange={(value) => setAttributes({ markColor: value })}
+											/>
+										)}
+										{!enableMarkBackgroundGradient && (
+											<ToggleControl
+												style={{ marginTop: '10px' }}
+												label={__('Enable Text Gradient', 'kadence-blocks')}
+												help={__(
+													'Enabling Text Gradient disables Background Color and Gradient.',
+													'kadence-blocks'
+												)}
+												checked={enableMarkGradient}
+												onChange={(value) => setAttributes({ enableMarkGradient: value })}
+											/>
+										)}
+
+										{enableMarkGradient && (
+											<GradientControl
+												value={markGradient}
+												onChange={(value) => setAttributes({ markGradient: value })}
+												gradients={[]}
+											/>
+										)}
+
+										{!enableMarkGradient && !enableMarkBackgroundGradient && (
+											<PopColorControl
+												label={__('Background', 'kadence-blocks')}
+												value={markBG ? markBG : ''}
+												default={''}
+												onChange={(value) => setAttributes({ markBG: value })}
+												opacityValue={markBGOpacity}
+												onOpacityChange={(value) => setAttributes({ markBGOpacity: value })}
+												onArrayChange={(color, opacity) =>
+													setAttributes({ markBG: color, markBGOpacity: opacity })
+												}
+											/>
+										)}
+									</>
+									{!enableMarkGradient && (
+										<ToggleControl
+											style={{ marginTop: '10px' }}
+											label={__('Enable Background Gradient', 'kadence-blocks')}
+											help={__(
+												'Enabling Background Gradient disables Text Gradient.',
+												'kadence-blocks'
+											)}
+											checked={enableMarkBackgroundGradient}
+											onChange={(value) => setAttributes({ enableMarkBackgroundGradient: value })}
+										/>
+									)}
+									{enableMarkBackgroundGradient && (
+										<GradientControl
+											value={markBackgroundGradient}
+											onChange={(value) => setAttributes({ markBackgroundGradient: value })}
+											gradients={[]}
+										/>
+									)}
 									<ResponsiveBorderControl
 										label={__('Border', 'kadence-blocks')}
 										value={markBorderStyles}

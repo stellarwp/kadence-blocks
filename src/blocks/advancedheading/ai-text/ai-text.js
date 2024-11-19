@@ -431,8 +431,8 @@ export const AIText = {
 												}
 												placeholder={
 													hasContent || aiSuggestion
-														? __('Ask Kadence AI to edit...', 'kadence-blocks')
-														: __('Ask Kadence AI to generate...', 'kadence-blocks')
+														? __('Ask Kadence AI to edit…', 'kadence-blocks')
+														: __('Ask Kadence AI to generate…', 'kadence-blocks')
 												}
 												value={prompt}
 												rows={dynamicRows}

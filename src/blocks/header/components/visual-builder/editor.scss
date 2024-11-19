@@ -1,0 +1,328 @@
+$height_bottom_bar: 25px;
+$height_top_bar: 90px;
+$full_screen_height_top_bar: 60px;
+$height_top_bars_mobile: 155px;
+$sidebar_width: 280px;
+$fixed_height: 290px;
+
+.kb-header-visual-builder-teaser {
+	background: #f0f0f1;
+	border-top: 1px solid #a0aec1;
+
+	margin: 0;
+	padding: 10px;
+	position: fixed;
+	width: 100%;
+	bottom: $height_bottom_bar;
+	z-index: 9999;
+	box-sizing: border-box;
+
+	justify-content: flex-end;
+	display: flex;
+
+	.block-editor-iframe__body & {
+		bottom: 0;
+	}
+}
+
+// Top of 0 in iFrame
+//.block-editor-iframe__body .kb-header-visual-builder-modal.kb-header-visual-builder-modal-top {
+//	top: 0;
+//}
+
+.is-fullscreen-mode .kb-header-visual-builder-modal.kb-header-visual-builder-modal-top {
+	top: $full_screen_height_top_bar;
+}
+
+.kb-header-visual-builder-modal {
+	background: #f0f0f1;
+	border-top: 1px solid #a0aec1;
+
+	margin: 0;
+	padding: 10px;
+	position: fixed;
+	width: 100%;
+	height: $fixed_height;
+	bottom: $height_bottom_bar;
+	left: 0;
+	z-index: 99999;
+	display: block;
+	box-sizing: border-box;
+
+	@media (min-width: 782px) {
+		height: $fixed_height;
+	}
+
+	&.kb-header-visual-builder-modal-top {
+		top: $height_top_bar;
+		bottom: 0;
+	}
+
+	.block-editor-iframe__body & {
+		bottom: 0;
+	}
+
+	.tabs {
+		border-bottom: 2px solid #a0aec1;
+		gap: 3px;
+		display: flex;
+		flex-direction: row;
+		.components-button {
+			font-size: 13px;
+		}
+		.kb-device-tab {
+			border: 0;
+			border-bottom: 2px solid transparent;
+			margin-bottom: -2px;
+			font-size: 13px;
+			border-top-left-radius: 3px;
+			border-top-right-radius: 3px;
+			&.is-pressed {
+				color: var(--wp-components-color-foreground-inverted, #fff);
+				background: var(--wp-admin-theme-color, #007cba);
+				border-bottom: 2px solid var(--wp-admin-theme-color, #007cba);
+			}
+		}
+	}
+
+	.modal-settings {
+		position: absolute;
+		top: 5px;
+		right: 10px;
+		display: flex;
+		flex-direction: row;
+		gap: 10px;
+		.kb-header-visual-builder-modal-close {
+			height: 32px;
+		}
+	}
+
+	.kb-header-visual-builder-modal-close {
+		border: 0;
+		background: transparent;
+		cursor: pointer;
+		padding: 0;
+		z-index: 99999;
+		display: inline-flex;
+		justify-content: center;
+		align-items: center;
+		color: #444444;
+		box-shadow: inset 0 0 0 1px #a0aec1;
+		&:hover {
+			box-shadow: inset 0 0 0 1px var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
+		}
+		&:focus {
+			outline: none;
+		}
+	}
+
+	// Row styles
+	.visual-row-wrapper {
+		display: flex !important;
+		padding-top: 10px;
+		align-items: center;
+
+		.visual-desktop-row,
+		.visual-tablet-row,
+		.visual-off-canvas-row {
+			display: flex !important;
+			background-color: #fff;
+			border: 1px dashed #a0aec1;
+			width: 100%;
+			overflow-x: auto;
+		}
+		.kb-single-column-header {
+			.visual-section-wrapper-center,
+			.visual-section-wrapper-right {
+				display: none !important;
+			}
+		}
+
+		.visual-off-canvas-row {
+			max-width: 500px;
+		}
+		.visual-section-wrapper-off-canvas {
+			flex-direction: column;
+			max-height: 200px;
+			padding-top: 5px;
+			min-height: 225px;
+
+			.visual-inner-block {
+				margin: 5px 10px;
+			}
+		}
+
+		.visual-section-wrapper {
+			flex: 1 1 0%;
+			display: flex !important;
+			position: relative;
+
+			.block-editor-inserter {
+				position: unset;
+			}
+		}
+
+		.visual-column-wrapper {
+			display: flex !important;
+			flex: 1;
+			min-height: 62px;
+			align-items: center;
+			padding: 6px 10px;
+			box-sizing: border-box;
+
+			&.visual-column-wrapper-empty-center {
+				display: none !important;
+			}
+		}
+
+		.visual-section-wrapper-center {
+			display: flex !important;
+			position: relative;
+			min-width: 120px;
+		}
+
+		.add-item {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			background: transparent;
+			transition: all 0.2s ease-in-out;
+			color: transparent !important;
+			height: 100%;
+
+			&:hover {
+				color: #444 !important;
+				background: rgba(0, 124, 186, 0.05) !important;
+				box-shadow: none !important;
+				border: 0 !important;
+			}
+		}
+		.add-item-left {
+			right: 0;
+
+			&.add-item-has-mid-columns {
+				right: 50%;
+				justify-content: end;
+				padding-right: 30px;
+			}
+		}
+
+		.add-item-center-left {
+			left: 50%;
+		}
+		.add-item-center-right {
+			right: 50%;
+		}
+		.add-item-right {
+			left: 0;
+
+			&.add-item-has-mid-columns {
+				left: 50%;
+				justify-content: start;
+				padding-left: 30px;
+			}
+		}
+
+		.visual-section-wrapper-center {
+			flex: initial;
+			border-left: 1px dashed #a0aec1;
+			border-right: 1px dashed #a0aec1;
+		}
+		.visual-column-wrapper-left {
+		}
+		.visual-column-wrapper-center-left {
+			flex-grow: 1;
+			justify-content: flex-end !important;
+			//border-left: 1px dashed #a0aec1;
+		}
+		.visual-column-wrapper-center-right {
+			flex-grow: 1;
+			justify-content: flex-start !important;
+		}
+		.visual-column-wrapper-center {
+			justify-content: center;
+			flex: auto;
+		}
+		.visual-column-wrapper-right {
+			justify-content: flex-end !important;
+		}
+	}
+	// end row styles
+
+	.settings-icon {
+		font-size: 24px; /* Example size, adjust as needed */
+		margin-right: 10px; /* Space between the icon and the row content */
+	}
+
+	.visual-inner-block {
+		background: #f0f0f1;
+		padding: 3px 6px;
+		border-radius: 3px;
+		font-size: 13px;
+		z-index: 1;
+		margin: 0 5px;
+
+		&__controls {
+			display: flex;
+			justify-content: space-between;
+		}
+
+		&__name {
+			overflow: hidden;
+			text-wrap: nowrap;
+			text-overflow: ellipsis;
+			max-width: 115px;
+			padding-left: 5px;
+		}
+
+		&__meta {
+			display: flex;
+			align-items: center;
+		}
+
+		&__preview {
+			box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.25);
+		}
+
+		button {
+			padding: 0 !important;
+			min-width: unset;
+			height: 20px;
+		}
+
+		.drag-handle svg {
+			pointer-events: none;
+			transform: rotate(90deg);
+		}
+	}
+	.visual-row-wrapper .components-button.block-select {
+		height: auto;
+		padding-top: 0;
+		padding-bottom: 0;
+		align-self: stretch;
+		&.is-pressed {
+			color: var(--wp-components-color-foreground-inverted, #fff);
+			background: var(--wp-admin-theme-color, #007cba);
+		}
+	}
+}
+
+.block-editor-iframe__body .is-mobile-preview {
+	.kb-header-visual-builder-modal {
+		.modal-settings {
+			button.components-button {
+				min-width: 24px;
+				justify-content: center;
+				padding: 0;
+				font-size: 0px;
+			}
+		}
+	}
+}
+
+//Something in the block editor transforms top level block wrappers after adding blocks, this prevents that and keeps appropriate modal display
+//.wp-block-kadence-header div {
+//	transform: none !important;
+//}

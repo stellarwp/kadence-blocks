@@ -112,15 +112,25 @@ function kadence_blocks_add_global_gutenberg_inline_styles() {
 	}
 	$css .= '}';
 	if ( isset( $content_width ) ) {
-		$css .= '.editor-styles-wrapper{ --kb-global-content-width:' . absint( $content_width ) . 'px;}';
-		$css .= '.wp-block-kadence-rowlayout > .kb-theme-content-width {
-			max-width:' . esc_attr( $content_width ) . 'px;
-		}';
+		if ( class_exists( 'Kadence\Theme' ) ) {
+			$css .= '.kb-header-container { --global-content-width:' . \Kadence\kadence()->sub_option( 'content_width', 'size' ) . \Kadence\kadence()->sub_option( 'content_width', 'unit' ) . ';}';
+			$css .= '.editor-styles-wrapper{ --kb-global-content-width:' . \Kadence\kadence()->sub_option( 'content_width', 'size' ) . \Kadence\kadence()->sub_option( 'content_width', 'unit' ) . ';}';
+			$css .= '.wp-block-kadence-rowlayout > .kb-theme-content-width {
+				max-width:' . \Kadence\kadence()->sub_option( 'content_width', 'size' ) . \Kadence\kadence()->sub_option( 'content_width', 'unit' ) . ';
+			}';
+		} else {
+			$css .= '.kb-header-container { --global-content-width: ' . absint( $content_width ) . 'px;}';
+			$css .= '.editor-styles-wrapper{ --kb-global-content-width:' . absint( $content_width ) . 'px;}';
+			$css .= '.wp-block-kadence-rowlayout > .kb-theme-content-width {
+				max-width:' . esc_attr( $content_width ) . 'px;
+			}';
+		}
 	} else {
 		$css .= '.editor-styles-wrapper{ --kb-global-content-width:var(--wp--style--global--content-size);}';
 		$css .= '.wp-block-kadence-rowlayout > .kb-theme-content-width {
 			max-width:var(--wp--style--global--content-size);
 		}';
+		$css .= '.kb-header-container { --global-content-width: var(--wp--style--global--wide-size, var(--wp--style--global--content-size)) }';
 	}
 	$css .= ':root {
 		--global-kb-spacing-xxs: 0.5rem;
@@ -525,7 +535,6 @@ function kadence_blocks_register_api_endpoints() {
 	$lottieanimation_controller_get->register_routes();
 	$lottieanimation_controller_upload = new Kadence_LottieAnimation_post_REST_Controller();
 	$lottieanimation_controller_upload->register_routes();
-
 	$design_library_controller_upload = new Kadence_Blocks_Prebuilt_Library_REST_Controller();
 	$design_library_controller_upload->register_routes();
 	$image_picker_controller_upload = new Kadence_Blocks_Image_Picker_REST_Controller();
@@ -568,6 +577,16 @@ function kadence_blocks_register_lottie_custom_post_type() {
 
 add_action( 'init', 'kadence_blocks_register_lottie_custom_post_type' );
 
+/* Sashicons are not enqueue by default when iFraming in block editor
+   https://github.com/WordPress/gutenberg/issues/53528
+*/
+add_action('enqueue_block_assets', function (): void {
+	if( is_admin() ) {
+		wp_enqueue_style( 'dashicons' );
+	}
+});
+
+
 /**
  * Filter core to remove loading = lazy if class is present.
  */
@@ -594,7 +613,7 @@ function kadence_blocks_events_custom_excerpt_stop_style_output( $enabled, $name
 }
 /**
  * Filter to remove block rendering when events builds their custom excerpts.
- * 
+ *
  * @param bool $remove_blocks Whether to remove blocks or not.
  * @param WP_Post $post The post object.
  */

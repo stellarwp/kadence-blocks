@@ -4,7 +4,6 @@ export { default as verifyUniqueFieldName } from './verify-unique-field-name';
 export { default as getUniqueFieldId } from './get-unique-field-id';
 
 export { default as SelectOrCreatePlaceholder } from './select-or-create-placeholder';
-export { default as SelectForm } from './select-form';
 export { default as FormTitle } from './form-title';
 export { default as FieldName } from './field-name';
 export { default as MessageOptions } from './messages';

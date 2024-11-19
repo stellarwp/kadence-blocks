@@ -112,6 +112,7 @@ export function Edit(props) {
 		maskSvg,
 		maskUrl,
 		ariaLabel,
+		showMaxProgressOnPageLoad,
 	} = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
@@ -1228,50 +1229,65 @@ export function Edit(props) {
 				)}
 
 				{activeTab === 'advanced' && (
-					<KadencePanelBody>
-						<ResponsiveMeasureRangeControl
-							label={__('Margin', 'kadence-blocks')}
-							value={margin}
-							tabletValue={tabletMargin}
-							mobileValue={mobileMargin}
-							onChange={(value) => {
-								setAttributes({ margin: value });
-							}}
-							onChangeTablet={(value) => setAttributes({ tabletMargin: value })}
-							onChangeMobile={(value) => setAttributes({ mobileMargin: value })}
-							min={marginType === 'em' || marginType === 'rem' ? -12 : -999}
-							max={marginType === 'em' || marginType === 'rem' ? 24 : 999}
-							step={marginType === 'em' || marginType === 'rem' ? 0.1 : 1}
-							unit={marginType}
-							units={['px', 'em', 'rem', '%', 'vh']}
-							onUnit={(value) => setAttributes({ marginType: value })}
-							// onMouseOver={ marginMouseOver.onMouseOver }
-							// onMouseOut={ marginMouseOver.onMouseOut }
-							allowAuto={true}
-						/>
-						<ResponsiveRangeControls
-							label={__('Max Width', 'kadence-blocks')}
-							value={containerMaxWidth}
-							onChange={(value) => setAttributes({ containerMaxWidth: value })}
-							tabletValue={tabletContainerMaxWidth ? tabletContainerMaxWidth : ''}
-							onChangeTablet={(value) => setAttributes({ tabletContainerMaxWidth: value })}
-							mobileValue={mobileContainerMaxWidth ? mobileContainerMaxWidth : ''}
-							onChangeMobile={(value) => setAttributes({ mobileContainerMaxWidth: value })}
-							min={0}
-							max={containerMaxWidthUnits === 'px' ? 3000 : 100}
-							step={1}
-							unit={containerMaxWidthUnits}
-							onUnit={(value) => setAttributes({ containerMaxWidthUnits: value })}
-							reset={() =>
-								setAttributes({
-									containerMaxWidth: 0,
-									tabletContainerMaxWidth: '',
-									mobileContainerMaxWidth: '',
-								})
-							}
-							units={['px', 'vh', '%']}
-						/>
-					</KadencePanelBody>
+					<>
+						<KadencePanelBody>
+							<ResponsiveMeasureRangeControl
+								label={__('Margin', 'kadence-blocks')}
+								value={margin}
+								tabletValue={tabletMargin}
+								mobileValue={mobileMargin}
+								onChange={(value) => {
+									setAttributes({ margin: value });
+								}}
+								onChangeTablet={(value) => setAttributes({ tabletMargin: value })}
+								onChangeMobile={(value) => setAttributes({ mobileMargin: value })}
+								min={marginType === 'em' || marginType === 'rem' ? -12 : -999}
+								max={marginType === 'em' || marginType === 'rem' ? 24 : 999}
+								step={marginType === 'em' || marginType === 'rem' ? 0.1 : 1}
+								unit={marginType}
+								units={['px', 'em', 'rem', '%', 'vh']}
+								onUnit={(value) => setAttributes({ marginType: value })}
+								// onMouseOver={ marginMouseOver.onMouseOver }
+								// onMouseOut={ marginMouseOver.onMouseOut }
+								allowAuto={true}
+							/>
+							<ResponsiveRangeControls
+								label={__('Max Width', 'kadence-blocks')}
+								value={containerMaxWidth}
+								onChange={(value) => setAttributes({ containerMaxWidth: value })}
+								tabletValue={tabletContainerMaxWidth ? tabletContainerMaxWidth : ''}
+								onChangeTablet={(value) => setAttributes({ tabletContainerMaxWidth: value })}
+								mobileValue={mobileContainerMaxWidth ? mobileContainerMaxWidth : ''}
+								onChangeMobile={(value) => setAttributes({ mobileContainerMaxWidth: value })}
+								min={0}
+								max={containerMaxWidthUnits === 'px' ? 3000 : 100}
+								step={1}
+								unit={containerMaxWidthUnits}
+								onUnit={(value) => setAttributes({ containerMaxWidthUnits: value })}
+								reset={() =>
+									setAttributes({
+										containerMaxWidth: 0,
+										tabletContainerMaxWidth: '',
+										mobileContainerMaxWidth: '',
+									})
+								}
+								units={['px', 'vh', '%']}
+							/>
+						</KadencePanelBody>
+						{displayPercent && (
+							<KadencePanelBody initialOpen={true} panelName={'kb-progress-preload-settings'}>
+								<ToggleControl
+									label={__('Show max progress on page load', 'kadence-blocks')}
+									help={__(
+										'The max progress value will be shown prior to the progress bar javascript executing or if javascript is disabled.',
+										'kadence-blocks'
+									)}
+									checked={showMaxProgressOnPageLoad}
+									onChange={(value) => setAttributes({ showMaxProgressOnPageLoad: value })}
+								/>
+							</KadencePanelBody>
+						)}
+					</>
 				)}
 			</InspectorControls>
 			<style>{maskStyles}</style>

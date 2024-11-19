@@ -845,7 +845,7 @@ function KadenceAdvancedButton(props) {
 						)}
 						{/* { applyFilters( 'kadence.dynamicContent', <RichText
 								tagName="div"
-								placeholder={ __( 'Button...', 'kadence-blocks' ) }
+								placeholder={ __( 'Button…', 'kadence-blocks' ) }
 								value={ btns[ index ].text }
 								unstableOnFocus={ () => {
 									if ( 1 === index ) {
@@ -869,7 +869,7 @@ function KadenceAdvancedButton(props) {
 							/>, attributes, 'btns:' + index + ':text' ) } */}
 						<RichText
 							tagName="div"
-							placeholder={__('Button...', 'kadence-blocks')}
+							placeholder={__('Button…', 'kadence-blocks')}
 							value={btns[index].text}
 							unstableOnFocus={() => {
 								if (1 === index) {

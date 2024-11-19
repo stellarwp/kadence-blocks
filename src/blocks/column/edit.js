@@ -76,7 +76,7 @@ import {
 	useInnerBlocksProps,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
-import { ToggleControl, SelectControl, ToolbarGroup } from '@wordpress/components';
+import { ToggleControl, SelectControl, ToolbarGroup, ExternalLink } from '@wordpress/components';
 const FORM_ALLOWED_BLOCKS = [
 	'core/paragraph',
 	'kadence/advancedheading',
@@ -100,6 +100,7 @@ const FORM_ALLOWED_BLOCKS = [
 	'kadence/advanced-form-captcha',
 ];
 import { BLEND_OPTIONS } from '../rowlayout/constants';
+import { applyFilters } from '@wordpress/hooks';
 /**
  * Build the section edit.
  */
@@ -238,6 +239,9 @@ function SectionEdit(props) {
 		gutterVariable,
 		kbVersion,
 		flexGrow,
+		backdropFilterType,
+		backdropFilterSize,
+		backdropFilterString,
 	} = attributes;
 	const [activeTab, setActiveTab] = useState('general');
 	const [dynamicBackgroundImg, setDynamicBackgroundImg] = useState('');
@@ -1179,6 +1183,27 @@ function SectionEdit(props) {
 		: previewDirection === 'horizontal' || previewDirection === 'horizontal-reverse'
 		? 'middle'
 		: 'top';
+
+	const styleControlsBackdropFilter = (
+		<KadencePanelBody
+			title={__('Backdrop Filter', 'kadence-blocks')}
+			initialOpen={false}
+			panelName={'backdrop-filter-settings'}
+			proTag={true}
+		>
+			<div className="kb-pro-notice">
+				<h2>{__('Backdrop Filter', 'kadence-blocks')} </h2>
+				<p>{__('Add a backdrop filter with Kadence Blocks Pro!', 'kadence-blocks')} </p>
+				<ExternalLink
+					href={
+						'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=navigation-link'
+					}
+				>
+					{__('Upgrade to Pro', 'kadence-blocks')}
+				</ExternalLink>
+			</div>
+		</KadencePanelBody>
+	);
 	return (
 		<div {...blockProps}>
 			<style>
@@ -1868,6 +1893,8 @@ function SectionEdit(props) {
 														setAttributes({ gutterUnit: value });
 													}}
 													units={['px', 'em', 'rem', '%', 'vh']}
+													defaultValue={'sm'}
+													reset={true}
 												/>
 												<ResponsiveRadioRangeControls
 													label={__('Vertical Gap', 'kadence-blocks')}
@@ -1956,12 +1983,8 @@ function SectionEdit(props) {
 														setAttributes({ rowGapUnit: value });
 													}}
 													units={['px', 'em', 'rem', '%', 'vh']}
-													reset={() => {
-														setAttributes({
-															rowGapVariable: ['', '', ''],
-															rowGap: ['', '', ''],
-														});
-													}}
+													defaultValue={metadata.attributes.rowGapVariable.default[0]}
+													reset={true}
 												/>
 												<SmallResponsiveControl
 													label={__('Wrap Content', 'kadence-blocks')}
@@ -2192,12 +2215,8 @@ function SectionEdit(props) {
 														setAttributes({ rowGapUnit: value });
 													}}
 													units={['px', 'em', 'rem', '%', 'vh']}
-													reset={() => {
-														setAttributes({
-															rowGapVariable: ['', '', ''],
-															rowGap: ['', '', ''],
-														});
-													}}
+													defaultValue={metadata.attributes.rowGapVariable.default[0]}
+													reset={true}
 												/>
 											</>
 										)}
@@ -2481,12 +2500,7 @@ function SectionEdit(props) {
 												setAttributes({ heightUnit: value });
 											}}
 											units={['px', 'vw', 'vh']}
-											reset={() => {
-												setAttributes({
-													heightUnit: 'px',
-													height: ['', '', ''],
-												});
-											}}
+											reset={true}
 										/>
 										<ResponsiveRangeControls
 											label={__('Flex Grow', 'kadence-blocks')}
@@ -2542,11 +2556,7 @@ function SectionEdit(props) {
 											max={200}
 											step={1}
 											showUnits={false}
-											reset={() => {
-												setAttributes({
-													flexGrow: ['', '', ''],
-												});
-											}}
+											reset={true}
 										/>
 										<RangeControl
 											label={__('Z Index Control', 'kadence-blocks')}
@@ -2558,6 +2568,7 @@ function SectionEdit(props) {
 											}}
 											min={-200}
 											max={200}
+											reset={true}
 										/>
 										{inRowBlock && (
 											<RangeControl
@@ -2570,6 +2581,7 @@ function SectionEdit(props) {
 												}}
 												min={-10}
 												max={10}
+												reset={true}
 											/>
 										)}
 									</KadencePanelBody>
@@ -2653,6 +2665,8 @@ function SectionEdit(props) {
 												setAttributes({ stickyOffsetUnit: value });
 											}}
 											units={['px', 'rem', 'vh']}
+											defaultValue={1}
+											reset={true}
 										/>
 									)}
 								</KadencePanelBody>
@@ -2945,6 +2959,15 @@ function SectionEdit(props) {
 										}
 									/>
 								</KadencePanelBody>
+
+								<>
+									{applyFilters(
+										'kadence.styleControlsBackdropFilter',
+										styleControlsBackdropFilter,
+										props
+									)}
+								</>
+
 								<KadencePanelBody
 									title={__('Background Overlay', 'kadence-blocks')}
 									initialOpen={false}
@@ -2970,6 +2993,7 @@ function SectionEdit(props) {
 													step={0.01}
 													min={0}
 													max={1}
+													reset={true}
 												/>
 												{'gradient' === overlayHoverType && (
 													<GradientControl
@@ -3113,6 +3137,7 @@ function SectionEdit(props) {
 												<RangeControl
 													label={__('Overlay Opacity', 'kadence-blocks')}
 													value={overlayOpacity}
+													defaultValue={metadata.attributes.overlayOpacity.default}
 													onChange={(value) => {
 														setAttributes({
 															overlayOpacity: value,
@@ -3121,6 +3146,7 @@ function SectionEdit(props) {
 													step={0.01}
 													min={0}
 													max={1}
+													reset={true}
 												/>
 												{'gradient' === overlayType && (
 													<GradientControl
@@ -3673,6 +3699,8 @@ function SectionEdit(props) {
 									undefined !== shadow[0].opacity ? shadow[0].opacity : 1
 							  )
 							: undefined,
+					'-webkit-backdrop-filter': backdropFilterString !== undefined ? backdropFilterString : undefined,
+					'backdrop-filter': backdropFilterString !== undefined ? backdropFilterString : undefined,
 				}}
 				{...innerBlocksProps}
 			></div>

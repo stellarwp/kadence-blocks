@@ -50,9 +50,13 @@ class Kadence_Blocks_Form_CPT_Controller {
 				10,
 				2
 			);
-			if ( class_exists( 'Kadence_Blocks_Duplicate_Form' ) ) {
-				new Kadence_Blocks_Duplicate_Form( self::SLUG );
+			if ( class_exists( 'Kadence_Blocks_Duplicate_Post' ) ) {
+				new Kadence_Blocks_Duplicate_Post( self::SLUG );
 			}
+		}
+
+		if( is_admin() && class_exists( 'Kadence_Blocks_Cpt_Import_Export' ) ) {
+			new Kadence_Blocks_Cpt_Import_Export( self::SLUG );
 		}
 	}
 	/**

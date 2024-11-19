@@ -1,0 +1,98 @@
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+
+.wp-block-kadence-off-canvas {
+	//initially hidden
+	display: none;
+	z-index: 1001;
+
+	background-color: white;
+	border: none;
+	max-height: 100%;
+	overflow-y: auto;
+	min-width: 250px;
+
+	margin: 0;
+	padding: 0;
+
+	.kb-off-canvas-inner {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		box-sizing: border-box;
+		padding-top: var(--kb-nav-canvas-padding-top, var(--global-kb-spacing-md, 2rem));
+		padding-right: var(--kb-nav-canvas-padding-right, var(--global-kb-spacing-md, 2rem));
+		padding-bottom: var(--kb-nav-canvas-padding-bottom, var(--global-kb-spacing-md, 2rem));
+		padding-left: var(--kb-nav-canvas-padding-left, var(--global-kb-spacing-md, 2rem));
+		> .wp-block-kadence-column {
+			min-height: unset;
+		}
+		.kt-close-position-inside {
+			position: relative;
+		}
+
+		//fix for blocks centering themselves in the flex container
+		.wp-block {
+			margin-left: initial;
+			margin-right: initial;
+		}
+	}
+
+	&.active {
+		display: block;
+
+		& + .kb-off-canvas-overlay {
+			display: block;
+		}
+	}
+
+	.kb-off-canvas-label {
+		bottom: 100%;
+		font-size: 10px;
+		line-height: 20px;
+		background-color: lightgray;
+		width: 100%;
+	}
+
+	& + .kb-off-canvas-overlay {
+		//initially hidden
+		display: none;
+
+		position: fixed;
+		z-index: 1000;
+	}
+
+	.kb-off-canvas-close {
+		margin: 0;
+		padding: 0.5rem;
+		color: currentColor;
+		border-radius: 0;
+		border: 0;
+		background: transparent;
+		cursor: pointer;
+		z-index: 100000;
+		display: inline-flex;
+		align-items: center;
+		-webkit-appearance: none;
+		position: absolute;
+		top: 5px;
+		right: 5px;
+		box-shadow: none;
+		&:hover,
+		&:focus {
+			color: currentColor;
+			background: none;
+			box-shadow: none;
+		}
+	}
+}
+
+//this needed to be in a more specific selector for the block editor
+.block-editor-block-list__layout .wp-block-kadence-off-canvas {
+	position: fixed;
+}

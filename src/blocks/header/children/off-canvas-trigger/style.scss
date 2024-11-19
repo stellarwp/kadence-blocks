@@ -1,0 +1,21 @@
+.wp-block-kadence-off-canvas-trigger {
+	margin: 0;
+	padding: var(--global-kb-spacing-xxs, 0.5rem);
+	color: currentColor;
+	background: none;
+	border: none;
+	border-radius: 0;
+	cursor: pointer;
+	display: flex;
+	overflow: auto;
+	box-shadow: none;
+	&:hover,
+	&:focus {
+		color: currentColor;
+		background: none;
+		box-shadow: none;
+	}
+	svg {
+		pointer-events: none;
+	}
+}

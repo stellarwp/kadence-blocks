@@ -7,23 +7,42 @@ import { withSelect, withDispatch } from '@wordpress/data'
 import { showSettings } from '@kadence/helpers';
 import { get } from 'lodash';
 
-function KadencePanelBody ({
-		children,
-		title,
-		initialOpen = true,
-		isOpened,
-		toggleOpened,
-		className = '',
-		icon = '',
-		buttonProps = {},
-		blockSlug = false,
-		index = false,
-		panelName
-	}) {
+const proSvg = <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" style={ { paddingTop: '1px' } }>
+	<rect width="20" height="16" fill="#0073e6" rx="3" ry="3"></rect>
+	<text
+		x="50%"
+		y="57%"
+		fontSize="9"
+		textAnchor="middle"
+		color={"#fff"}
+	>
+		Pro
+	</text>
+</svg>;
+
+function KadencePanelBody( {
+							   children,
+							   title,
+							   initialOpen = true,
+							   isOpened,
+							   toggleOpened,
+							   className = '',
+							   icon = '',
+							   buttonProps = {},
+							   blockSlug = false,
+							   index = false,
+							   proTag = false,
+							   panelName,
+						   } ) {
 
 	/* If the block slug is set, check the panel name against the allowed settings for the user */
 	if( blockSlug !== false && !showSettings( panelName, blockSlug ) ) {
 		return null;
+	}
+
+	if( proTag ) {
+		buttonProps.icon = proSvg;
+		buttonProps.iconPosition = 'right';
 	}
 
 	return (
@@ -62,5 +81,3 @@ export default compose([
 		}
 	})
 ])(KadencePanelBody)
-
-

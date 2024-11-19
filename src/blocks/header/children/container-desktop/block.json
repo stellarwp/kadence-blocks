@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "kadence/header-container-desktop",
+	"parent": ["kadence/header"],
+	"title": "Desktop Header",
+	"category": "design",
+	"description": "Kadence header desktop",
+	"supports": {
+		"inserter": true
+	},
+	"textdomain": "kadence-blocks",
+	"attributes": {
+		"uniqueID": {
+			"type": "string",
+			"default": "default-uniqueID"
+		}
+	}
+}

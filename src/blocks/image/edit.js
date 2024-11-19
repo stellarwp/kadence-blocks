@@ -36,8 +36,6 @@ import {
 	getPostOrFseId,
 } from '@kadence/helpers';
 
-/* global wp */
-
 /**
  * Import Css
  */
@@ -149,6 +147,7 @@ export function ImageEdit(props) {
 		paddingMobile,
 		paddingUnit,
 		inQueryBlock,
+		urlTransparent,
 	} = attributes;
 
 	const debouncedSetDynamicState = debounce(setDynamicState, 200);
@@ -544,6 +543,7 @@ export function ImageEdit(props) {
 		'image-is-svg': url && url.endsWith('.svg'),
 		[`kadence-image${uniqueID}`]: uniqueID,
 		'kb-image-max-width-set': imgMaxWidth,
+		'has-transparent-img': urlTransparent,
 	});
 
 	// const blockProps = useBlockProps( {
@@ -553,7 +553,7 @@ export function ImageEdit(props) {
 	const blockProps = useBlockProps({
 		ref,
 		className: classes,
-		['data-align']: 'center' === align ? align : undefined,
+		'data-align': 'center' === align ? align : undefined,
 	});
 
 	return (

@@ -1,0 +1,191 @@
+@import "../../assets/css/variables.scss";
+
+.wp-block[data-align="center"] .wp-block-kadence-header-desktop {
+	margin: 0 auto;
+}
+.wp-block[data-align="left"] .wp-block-kadence-header-desktop {
+	margin-right: auto;
+}
+.wp-block[data-align="right"] .wp-block-kadence-header-desktop {
+	margin-left: auto;
+}
+
+@mixin header-transparent-styles {
+	background-color: transparent;
+	position: absolute;
+	left: 0px;
+	right: 0px;
+	z-index: 100;
+}
+
+.kb-header-transparent-placeholder {
+	position: relative;
+}
+
+.wp-block-kadence-header-desktop {
+	// Override a style we set elsewhere
+	p {
+		margin-bottom: unset;
+	}
+}
+.wp-block-kadence-header-tablet {
+	.wp-block-kadence-header-column-right {
+		flex-grow: 1;
+		justify-content: flex-end !important;
+	}
+}
+
+.wp-block-kadence-header {
+	margin: 0;
+
+	//In the editor we just look for these classes as they will come and go as the preview device changes.
+	//In the frontend, they will all be present, so must each be wrapped in a media query
+	//Desktop transparent styles
+	&.header-desktop-transparent {
+		@include header-transparent-styles();
+	}
+	//Tablet transparent styles
+	&.header-tablet-transparent {
+		@include header-transparent-styles();
+	}
+	//Mobile transparent styles
+	&.header-mobile-transparent {
+		@include header-transparent-styles();
+	}
+
+	.wp-block-kadence-image:not(:last-child) {
+		margin-bottom: 0;
+	}
+
+	//just a div that the same size as the header for ref purposes
+	.placeholder-ref {
+		position: absolute;
+		height: 100%;
+		width: 100%;
+		top: 0;
+		pointer-events: none;
+		z-index: -1;
+	}
+
+	//fix for columns in editor setting a base 100% width
+	//only needed during initial selection
+	// BR I don't think this is needed anymore.
+	// .wp-block-kadence-column:not(:has(.kb-section-only-appender)) {
+	// 	width: initial;
+	// }
+}
+
+/** Onboarding Flow **/
+.kt-select-starter-style-forms {
+	border: none;
+	padding: 0px 0;
+	.kt-select-starter-style-forms-title {
+		font-size: 16px;
+		font-weight: 500;
+	}
+	.kt-inital-form-style-btn {
+		height: auto;
+		width: 320px;
+		min-width: 230px;
+		background: white;
+		-webkit-box-shadow: none;
+		box-shadow: none;
+		border: 2px solid #f2f2f2;
+		padding: 10px 2px 2px;
+		margin-right: 15px;
+		margin-bottom: 5px;
+		.template-select {
+			opacity: 0;
+			text-transform: uppercase;
+			transition: opacity 0.2s ease-in-out;
+			background: #efefef;
+			border-radius: 3px;
+			text-transform: uppercase;
+			flex: 1;
+			width: 100%;
+			text-align: center;
+			justify-content: center;
+			font-size: 90%;
+			line-height: 1.6;
+		}
+	}
+	.kt-init-forms-btn-group {
+		position: relative;
+	}
+	.kt-inital-form-style-btn svg {
+		width: 100%;
+	}
+	.kt-init-forms-btn-group:not(.style-only) .kt-inital-form-style-btn:first-child {
+		width: auto;
+		text-align: right;
+		display: block;
+		position: absolute;
+		border: 0;
+		padding: 2px;
+		cursor: pointer;
+		opacity: 0.5;
+		margin: 0;
+		right: 0;
+		bottom: calc(100% + 5px);
+		min-width: 0;
+	}
+	.kt-init-forms-btn-group:not(.style-only) .kt-inital-form-style-btn:first-child:hover {
+		text-decoration: underline;
+		border: none;
+	}
+	.kt-init-forms-btn-group {
+		gap: 1.5em;
+		margin: 5px 0;
+		width: 100%;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
+		.kt-inital-form-style-btn {
+			width: auto;
+			margin: 0;
+		}
+	}
+	.kt-inital-form-style-btn {
+		color: #1e1e1e;
+		font-size: 16px;
+		flex-direction: column;
+		gap: 5px;
+
+		&.is-pressed {
+			border: 2px solid var(--wp-admin-theme-color);
+		}
+
+		&:hover {
+			color: #1e1e1e;
+			border: 2px solid #aaa;
+			background: none;
+			.template-select {
+				opacity: 1;
+			}
+		}
+	}
+}
+
+.block-editor-iframe__body {
+	min-height: max(var(--kb-editor-height-oc, 0px), var(--kb-editor-height-nv, 0px) + var(--kb-editor-height-hd, 0px));
+}
+
+.kb-header-container {
+	//this fixes bleeding margins in header rows and rows with backgrounds bleeding out of headers with border radiuses
+	//but it also breaks the sub menus being able to break out from the header.
+	//overflow: auto;
+}
+
+.wp-block-kadence-header :where(.wp-block) {
+	margin-bottom: 0px;
+	margin-top: 0px;
+}
+
+//section blocks in the editor do not have the same styles applied as they do on the frontend. This causes issues with spacing in the editor when in header top level of header columns.
+//instead of aligning the section block overall, which would cause breaking changes for existing users.
+//I'm just aligning it a bit here as a fix.
+.wp-block-kadence-header .wp-block-kadence-header-section > .wp-block-kadence-column,
+.wp-block-kadence-header .wp-block-kadence-header-column > .wp-block-kadence-column {
+	display: flex;
+	flex-direction: column;
+	width: initial;
+}

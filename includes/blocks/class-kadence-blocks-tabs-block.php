@@ -398,6 +398,7 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 					( isset( $attributes['mobileISize'] ) ? $attributes['mobileISize'] : '' ),
 				),
 			);
+
 			$css->render_responsive_range( $iconSizes,'size', 'font-size' );
 		}
 

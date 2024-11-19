@@ -3,7 +3,6 @@
  * @param {string} string the word string.
  * @returns {string} with var if needed.
  */
-/* global kadence_blocks_params */
 import hexToRGBA from '../hex-to-rgba';
 
 // eslint-disable-next-line camelcase

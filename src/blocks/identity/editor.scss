@@ -1,0 +1,34 @@
+// Placeholder
+@import "./style";
+
+.editor-styles-wrapper .kb-identity .wp-block-kadence-image {
+	margin-bottom: unset;
+}
+
+.editor-styles-wrapper .wp-block.kb-identity {
+	margin-left: 0;
+	margin-right: 0;
+
+	.kb-adv-text {
+		margin-left: 0;
+		margin-right: 0;
+	}
+}
+
+.kb-identity .wp-block-group {
+	margin: 0;
+}
+
+// Hide link styling in editor because we strip it out on front end so there isn't nested links
+.kb-identity .wp-block-site-title a {
+	color: inherit;
+	text-decoration: inherit;
+}
+.kb-identity .wp-block-site-logo {
+	margin-top: unset;
+	margin-bottom: unset;
+}
+
+.editor-styles-wrapper .kb-identity p {
+	margin-bottom: unset;
+}

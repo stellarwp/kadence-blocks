@@ -1,5 +1,3 @@
-/* global kadence_blocks_params */
-
 import { Component, Fragment, useEffect, useState } from '@wordpress/element';
 import { ToggleControl, Button, Tooltip, Modal, Dashicon } from '@wordpress/components';
 
