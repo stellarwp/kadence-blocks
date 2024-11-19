@@ -2,14 +2,14 @@
 	"build": [
 		"@composer install --no-dev --no-scripts",
 		"@composer run strauss-release",
-		"npm install --legacy-peer-deps",
-		"npm run build"
+		"bun install --frozen-lockfile",
+		"bun run build"
 	],
 	"build_dev": [
 		"@composer install --no-dev --no-scripts",
 		"@composer run strauss-release",
-		"npm install --legacy-peer-deps",
-		"npm run build"
+		"bun install --frozen-lockfile",
+		"bun run build"
 	],
 	"checks": {
 		"version-conflict": {

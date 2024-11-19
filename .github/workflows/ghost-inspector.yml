@@ -21,12 +21,16 @@ jobs:
       - name: Setup Composer
         run: composer config -g github-oauth.github.com ${{ secrets.COMPOSER_TOKEN }}
 
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
       - name: Build plugin
         run: |
           composer install --no-dev --no-scripts
           composer run strauss-release
-          npm install --legacy-peer-deps
-          npm run build
+          bun install --frozen-lockfile,
+          bun run build
 
       - name: Create plugin archive
         run: |

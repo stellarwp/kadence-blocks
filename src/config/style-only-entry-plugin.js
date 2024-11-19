@@ -26,11 +26,16 @@ StyleOnlyEntryPlugin.prototype.isFileStyle = function (file) {
 
 StyleOnlyEntryPlugin.prototype.apply = function (compiler) {
 	compiler.hooks.emit.tap('style-only-entry-plugin', (compilation) => {
+		const chunkGraph = compilation.chunkGraph;
+
 		for (const chunk of compilation.chunks) {
-			if (chunk.entryModule && this.isFileStyle(chunk.entryModule.userRequest)) {
-				for (const file of chunk.files) {
-					if (!this.isFileStyle(file)) {
-						delete compilation.assets[file];
+			const entryModules = chunkGraph.getChunkEntryModulesIterable(chunk);
+			for (const entryModule of entryModules) {
+				if (this.isFileStyle(entryModule.userRequest)) {
+					for (const file of chunk.files) {
+						if (!this.isFileStyle(file)) {
+							delete compilation.assets[file];
+						}
 					}
 				}
 			}
