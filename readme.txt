@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.3
 Tested up to: 6.7
-Stable tag: 3.3.4
+Stable tag: 3.3.5
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -175,9 +175,15 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.3.5 =
-Release Date: tba
+Release Date: November 19th 2024
 * Add: Filters to customize faq schema output for accordion blocks. kadence_blocks_faq_schema, kadence_blocks_faq_schema_allowed_tags, kadence_blocks_faq_schema_question, kadence_blocks_faq_schema_answer
 * Add: Responsive controls for Header Off Canvas block width type and slide direction.
+* Add: Off canvas display settings are responsive.
+* Fix: Accordion scrolling to end of content when opened in some situations.
+* Fix: Off canvas content alignment not working to the right.
+* Fix: Navigation link alignment options.
+* Fix: Smooth scrolling to accordion ID.
+* Fix: Maximum numeric value is shown on load for progress bar. If the user doesn't have JS enabled, they'll see the intended value on the page. This can be disabled in settings.
 
 = 3.3.4 =
 Release Date: November 12th 2024
