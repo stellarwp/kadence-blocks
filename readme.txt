@@ -187,6 +187,9 @@ Release Date: November 19th 2024
 
 = 3.3.4 =
 Release Date: November 12th 2024
+* Add: Ability to import & export advanced headers.
+* Add: Ability to import & export advanced forms.
+* Add: Ability to import & export advanced navigations.
 * Add: Add background gradient to advanced highlight.
 * Fix: Post grid not displaying all selected posts.
 * Fix: Active color not working for imported WordPress navigation menus.
