@@ -439,8 +439,8 @@ $link-color-property: var(
 				text-align: center;
 				& > .kb-link-wrap > .kb-nav-link-content {
 					width: 100%;
-					text-align: center;
-					justify-content: center;
+					text-align: var(--kb-nav-link-align, center);
+					justify-content: var(--kb-nav-link-align, center);
 				}
 			}
 		}
