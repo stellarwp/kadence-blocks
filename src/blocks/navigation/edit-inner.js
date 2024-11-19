@@ -643,6 +643,8 @@ export function EditInner(props) {
 		horizontalLayoutTablet,
 		horizontalLayoutMobile
 	);
+	const previewStretchFill = getPreviewSize(previewDevice, stretchFill, stretchFillTablet, stretchFillMobile);
+
 	const setMetaAttribute = (value, key) => {
 		setMeta({ ...meta, ['_kad_navigation_' + key]: value });
 	};
@@ -1421,12 +1423,12 @@ export function EditInner(props) {
 									mobileValue={stretchFillMobile}
 									options={[
 										{ value: 'standard', label: __('Standard', 'kadence-blocks') },
-										{ value: 'fill', label: __('Fill and Center', 'kadence-blocks') },
+										{ value: 'fill', label: __('Fill and Center Default', 'kadence-blocks') },
 									]}
 									tabletOptions={[
 										{ value: '', label: __('Inherit', 'kadence-blocks') },
 										{ value: 'standard', label: __('Standard', 'kadence-blocks') },
-										{ value: 'fill', label: __('Fill and Center', 'kadence-blocks') },
+										{ value: 'fill', label: __('Fill and Center Default', 'kadence-blocks') },
 									]}
 									onChange={(value) => setMetaAttribute(value, 'stretchFill')}
 									onChangeTablet={(value) => setMetaAttribute(value, 'stretchFillTablet')}
@@ -1483,16 +1485,18 @@ export function EditInner(props) {
 								setMetaAttribute={setMetaAttribute}
 								attributes={metaAttributes}
 							/>
-
-							<ResponsiveAlignControls
-								label={__('Alignment', 'kadence-blocks')}
-								value={linkHorizontalAlignment ? linkHorizontalAlignment : ''}
-								tabletValue={linkHorizontalAlignmentTablet ? linkHorizontalAlignmentTablet : ''}
-								mobileValue={linkHorizontalAlignmentMobile ? linkHorizontalAlignmentMobile : ''}
-								onChange={(value) => setMetaAttribute(value, 'linkHorizontalAlignment')}
-								onChangeTablet={(value) => setMetaAttribute(value, 'linkHorizontalAlignmentTablet')}
-								onChangeMobile={(value) => setMetaAttribute(value, 'linkHorizontalAlignmentMobile')}
-							/>
+							{(previewOrientation == 'vertical' ||
+								(previewHorizontalLayout === 'stretch' && previewStretchFill == 'fill')) && (
+								<ResponsiveAlignControls
+									label={__('Alignment', 'kadence-blocks')}
+									value={linkHorizontalAlignment ? linkHorizontalAlignment : ''}
+									tabletValue={linkHorizontalAlignmentTablet ? linkHorizontalAlignmentTablet : ''}
+									mobileValue={linkHorizontalAlignmentMobile ? linkHorizontalAlignmentMobile : ''}
+									onChange={(value) => setMetaAttribute(value, 'linkHorizontalAlignment')}
+									onChangeTablet={(value) => setMetaAttribute(value, 'linkHorizontalAlignmentTablet')}
+									onChangeMobile={(value) => setMetaAttribute(value, 'linkHorizontalAlignmentMobile')}
+								/>
+							)}
 						</KadencePanelBody>
 						{context?.['kadence/headerIsTransparent'] == '1' && (
 							<KadencePanelBody
