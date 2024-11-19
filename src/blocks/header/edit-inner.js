@@ -330,14 +330,6 @@ export function EditInner(props) {
 		return get(blocks, [0], {});
 	}, [blocks]);
 
-	useEffect(() => {
-		setMetaAttribute(getStyleString(backdropFilterType, backdropFilterSize), 'pro_backdropFilterString');
-	}, [backdropFilterType, backdropFilterSize]); // Add dependencies
-	const getStyleString = (backdropFilterType, backdropFilterSize) => {
-		const unit = backdropFilterType === 'blur' ? 'px' : backdropFilterType === 'hue-rotate' ? 'deg' : '%';
-		return backdropFilterType !== 'none' ? backdropFilterType + `(${backdropFilterSize}${unit ? unit : ''})` : '';
-	};
-
 	const backgroundStyleControls = (size = '', suffix = '') => {
 		//previously had hover settings in here but didn't end up neededing them for the header container.
 		const backgroundValue = metaAttributes['background' + suffix + size];
@@ -790,7 +782,8 @@ export function EditInner(props) {
 								'kadence.headerBackdropFilter',
 								headerBackdropFilter,
 								metaAttributes,
-								setMetaAttribute
+								meta,
+								setMeta
 							)}
 						</>
 
