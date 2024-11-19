@@ -2126,7 +2126,7 @@ export function EditInner(props) {
 									<KadencePanelBody
 										title={__('Typography Settings', 'kadence-blocks')}
 										initialOpen={false}
-										panelName={'kb-nav-desc-font'}
+										panelName={'kb-nav-sub-desc-font'}
 									>
 										<TypographyControls
 											fontSize={dropdownDescriptionTypography?.[0]?.size}
