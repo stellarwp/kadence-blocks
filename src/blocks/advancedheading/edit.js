@@ -552,7 +552,9 @@ function KadenceAdvancedHeading(props) {
 			: textShadow[0].color,
 		undefined !== textShadowMobile && undefined !== textShadowMobile[0] && undefined !== textShadowMobile[0].color
 			? textShadowMobile[0].color
-			: textShadowTablet[0].color ? textShadowTablet[0].color : textShadow[0].color
+			: textShadowTablet[0].color
+			? textShadowTablet[0].color
+			: textShadow[0].color
 	);
 	const previewHOffset = getPreviewSize(
 		previewDevice,
@@ -1776,13 +1778,12 @@ function KadenceAdvancedHeading(props) {
 								initialOpen={false}
 								panelName={'kb-adv-heading-text-shadow'}
 							>
-
 								<ToggleControl
-									label={"Enable Text Shadow"}
-									checked={ enableTextShadow }
-									onChange={ (value) => {
-										setAttributes({enableTextShadow: value });
-									} }
+									label={'Enable Text Shadow'}
+									checked={enableTextShadow}
+									onChange={(value) => {
+										setAttributes({ enableTextShadow: value });
+									}}
 								/>
 								{enableTextShadow === true && (
 									<ResponsiveShadowControl
@@ -1810,7 +1811,6 @@ function KadenceAdvancedHeading(props) {
 										}}
 									/>
 								)}
-
 							</KadencePanelBody>
 							{showSettings('iconSettings', 'kadence/advancedheading') && (
 								<KadencePanelBody
