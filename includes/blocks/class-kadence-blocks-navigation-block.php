@@ -226,6 +226,22 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( '--kb-nav-top-not-last-link-border-right', 'var(--kb-nav-link-border-right)' );
 		}
 
+		//link, description, and media alignment
+		if ($sized_attributes['linkHorizontalAlignment']) {
+			$css->add_property('--kb-nav-top-link-align', $sized_attributes['linkHorizontalAlignment']);
+			$link_flex_align = $sized_attributes['linkHorizontalAlignment'] == 'right' ? 'end' : ( $sized_attributes['linkHorizontalAlignment'] == 'center' ? 'center' : 'start' );
+			$css->add_property('--kb-nav-top-link-flex-justify', $link_flex_align);
+			$css->add_property('--kb-nav-top-link-media-container-align-self', $link_flex_align);
+		}
+
+		//dropdown link, description, and media alignment
+		if ($sized_attributes['dropdownLinkHorizontalAlignment']) {
+			$css->add_property('--kb-nav-dropdown-link-align', $sized_attributes['dropdownLinkHorizontalAlignment']);
+			$link_flex_align = $sized_attributes['dropdownLinkHorizontalAlignment'] == 'right' ? 'end' : ( $sized_attributes['dropdownLinkHorizontalAlignment'] == 'center' ? 'center' : 'start' );
+			$css->add_property('--kb-nav-dropdown-link-flex-justify', $link_flex_align);
+			$css->add_property('--kb-nav-dropdown-link-media-container-align-self', $link_flex_align);
+		}
+
 		if ( str_contains( $sized_attributes['style'], 'fullheight' ) ) {
 			$css->add_property( '--kb-nav-height', '100%' );
 		}

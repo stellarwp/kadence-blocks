@@ -459,6 +459,12 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				}
 				break;
 		}
+		// Backdrop Filter (pro)
+		if ( ! empty( $attributes['backdropFilterType'] ) && $attributes['backdropFilterType'] !== 'none' ) {
+			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col');
+			$css->add_property( '-webkit-backdrop-filter', $attributes['backdropFilterString'] );
+			$css->add_property( 'backdrop-filter', $attributes['backdropFilterString'] );
+		}
 		// Overlay.
 		$overlay_type = ! empty( $attributes['overlayType'] ) ? $attributes['overlayType'] : 'normal';
 		$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col:before' );

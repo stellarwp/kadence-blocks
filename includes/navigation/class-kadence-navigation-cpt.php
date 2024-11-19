@@ -39,6 +39,9 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 		if( is_admin() && class_exists( 'Kadence_Blocks_Duplicate_Post' ) ) {
 			new Kadence_Blocks_Duplicate_Post( $this->post_type );
 		}
+		if( is_admin() && class_exists( 'Kadence_Blocks_Cpt_Import_Export' ) ) {
+			new Kadence_Blocks_Cpt_Import_Export( $this->post_type );
+		}
 	}
 	/**
 	 * Renders the navigation single template on the front end.
@@ -2072,6 +2075,36 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 					'vOffset'  => array( 'type' => 'number' ),
 					'inset'    => array( 'type' => 'boolean' ),
 				),
+			),
+			array(
+				'key'     => '_kad_navigation_linkHorizontalAlignment',
+				'default' => '',
+				'type'    => 'string',
+			),
+			array(
+				'key'     => '_kad_navigation_linkHorizontalAlignmentTablet',
+				'default' => '',
+				'type'    => 'string',
+			),
+			array(
+				'key'     => '_kad_navigation_linkHorizontalAlignmentMobile',
+				'default' => '',
+				'type'    => 'string',
+			),
+			array(
+				'key'     => '_kad_navigation_dropdownLinkHorizontalAlignment',
+				'default' => '',
+				'type'    => 'string',
+			),
+			array(
+				'key'     => '_kad_navigation_dropdownLinkHorizontalAlignmentTablet',
+				'default' => '',
+				'type'    => 'string',
+			),
+			array(
+				'key'     => '_kad_navigation_dropdownLinkHorizontalAlignmentMobile',
+				'default' => '',
+				'type'    => 'string',
 			),
 		);
 

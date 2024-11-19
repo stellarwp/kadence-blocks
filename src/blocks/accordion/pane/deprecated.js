@@ -5,7 +5,7 @@
 /**
  * Import Icons
  */
-import { IconRender } from '@kadence/components';
+import { IconRender, IconSpanTag } from '@kadence/components';
 
 import attributes from './attributes';
 

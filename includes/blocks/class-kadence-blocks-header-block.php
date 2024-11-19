@@ -85,11 +85,16 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		$css->set_media_state( 'desktop' );
 
-		// Normal state styles.
+		// Normal state styles.-cpt-id .kb-header-container
 		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' .kb-header-container' );
 		$css->render_measure_output( $header_attributes, 'margin', 'margin', [ 'unit_key' => 'marginUnit' ] );
 		$css->render_measure_output( $header_attributes, 'padding', 'padding', [ 'unit_key' => 'paddingUnit' ] );
 		$css->render_typography( $header_attributes );
+
+		if ( ! empty( $header_attributes['pro_backdropFilterString'] ) && class_exists( 'Kadence_Blocks_Pro' ) ) {
+			$css->add_property( 'backdrop-filter', $header_attributes['pro_backdropFilterString'] );
+			$css->add_property( '-webkit-backdrop-filter', $header_attributes['pro_backdropFilterString'] );
+		}
 
 		return $css->css_output();
 	}

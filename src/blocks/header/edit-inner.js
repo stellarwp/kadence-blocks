@@ -12,6 +12,7 @@ import { createBlock } from '@wordpress/blocks';
 import { get } from 'lodash';
 import { addQueryArgs } from '@wordpress/url';
 import { useEntityBlockEditor, useEntityProp } from '@wordpress/core-data';
+import { applyFilters } from '@wordpress/hooks';
 import {
 	InspectorControls,
 	useInnerBlocksProps,
@@ -198,6 +199,9 @@ export function EditInner(props) {
 		headerTag: meta?._kad_header_headerTag,
 		inheritPostTransparent: meta?._kad_header_inheritPostTransparent,
 		disableTransparentOverrides: meta?._kad_header_disableTransparentOverrides,
+		backdropFilterType: meta?._kad_header_pro_backdropFilterType,
+		backdropFilterSize: meta?._kad_header_pro_backdropFilterSize,
+		backdropFilterString: meta?._kad_header_pro_backdropFilterString,
 	};
 
 	const {
@@ -285,6 +289,8 @@ export function EditInner(props) {
 		headerTag,
 		inheritPostTransparent,
 		disableTransparentOverrides,
+		backdropFilterType,
+		backdropFilterSize,
 	} = metaAttributes;
 
 	const setMetaAttribute = (value, key) => {
@@ -435,6 +441,27 @@ export function EditInner(props) {
 			</>
 		);
 	};
+
+	const headerBackdropFilter = (
+		<KadencePanelBody
+			title={__('Backdrop Filter', 'kadence-blocks')}
+			initialOpen={false}
+			panelName={'backdrop-filter-settings'}
+			proTag={true}
+		>
+			<div className="kb-pro-notice">
+				<h2>{__('Backdrop Filter', 'kadence-blocks')} </h2>
+				<p>{__('Add a backdrop filter with Kadence Blocks Pro!', 'kadence-blocks')} </p>
+				<ExternalLink
+					href={
+						'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=navigation-link'
+					}
+				>
+					{__('Upgrade to Pro', 'kadence-blocks')}
+				</ExternalLink>
+			</div>
+		</KadencePanelBody>
+	);
 
 	const saveShadow = (value) => {
 		const newUpdate = shadow.map((item, index) => {
@@ -750,6 +777,16 @@ export function EditInner(props) {
 								{backgroundStyleControls('', 'Sticky')}
 							</KadencePanelBody>
 						)}
+						<>
+							{applyFilters(
+								'kadence.headerBackdropFilter',
+								headerBackdropFilter,
+								metaAttributes,
+								meta,
+								setMeta
+							)}
+						</>
+
 						<KadencePanelBody
 							title={__('Border Settings', 'kadence-blocks')}
 							initialOpen={false}
