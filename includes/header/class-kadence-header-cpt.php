@@ -1200,6 +1200,21 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'default' => '',
 				'type'    => 'string',
 			),
+			array(
+				'key'     => '_kad_header_pro_backdropFilterType',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_header_pro_backdropFilterSize',
+				'type' => 'number',
+				'default' => 1,
+			),
+			array(
+				'key'     => '_kad_header_pro_backdropFilterString',
+				'type' => 'string',
+				'default' => '',
+			),
 		);
 
 		foreach ( $register_meta as $meta ) {
