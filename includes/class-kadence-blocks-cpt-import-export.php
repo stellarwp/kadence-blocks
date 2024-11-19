@@ -76,7 +76,7 @@ class Kadence_Blocks_Cpt_Import_Export
 			return $redirect_to;
 		}
 
-		if (!current_user_can('edit_posts')) {
+		if (!current_user_can('manage_options')) {
 			wp_die(__('You do not have sufficient permissions to export content.', 'kadence-blocks'));
 		}
 
@@ -201,7 +201,7 @@ class Kadence_Blocks_Cpt_Import_Export
 	public function add_import_export_buttons() {
 		global $pagenow, $typenow;
 
-		if ('edit.php' === $pagenow && $this->slug === $typenow && current_user_can('edit_posts') ) {
+		if ('edit.php' === $pagenow && $this->slug === $typenow && current_user_can('manage_options') ) {
 			add_action('admin_notices', array($this, 'render_import_export_buttons'));
 		}
 	}
@@ -240,7 +240,7 @@ class Kadence_Blocks_Cpt_Import_Export
 	 * Export to zip and download.
 	 */
 	public function handle_export( $post_ids = array(), $check_referrer = true ) {
-		if (!current_user_can('edit_posts')) {
+		if (!current_user_can('manage_options')) {
 			$this->redirect_with_error( __('You do not have sufficient permissions to export content.', 'kadence-blocks') );
 		}
 
@@ -339,7 +339,7 @@ class Kadence_Blocks_Cpt_Import_Export
 	}
 
 	public function handle_import() {
-		if (!current_user_can('publish_posts')) {
+		if (!current_user_can('manage_options')) {
 			$this->redirect_with_error( __('You do not have sufficient permissions to import content.', 'kadence-blocks' ) );
 			return;
 		}
@@ -367,6 +367,11 @@ class Kadence_Blocks_Cpt_Import_Export
 
 		$zip = new ZipArchive();
 		if ($zip->open($file['tmp_name']) === TRUE) {
+			if ($zip->numFiles > 5) {
+				$this->redirect_with_error( __('Invalid data in import file.', 'kadence-blocks' ) );
+				return;
+			}
+
 			$zip->extractTo($temp_dir);
 			$zip->close();
 
