@@ -36,7 +36,7 @@
 		"progressbar.js": "^1.1.1",
 		"prop-types": "^15.6.2",
 		"re-resizable": "^4.7.1",
-		"react-ace": "^9.4.0",
+		"react-ace": "^10.0.0",
 		"react-color": "^2.18.0",
 		"react-countdown": "^2.3.1",
 		"react-countup": "^6.1.0",
