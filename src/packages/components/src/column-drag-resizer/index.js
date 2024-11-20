@@ -7,15 +7,74 @@ import { debounce, throttle } from 'lodash';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
+import { useState, useEffect, useRef } from '@wordpress/element';
 import { getPreviewGutterSize, getGutterTotal } from './utils';
-import ContainerDimensions from 'react-container-dimensions';
 import { getPreviewSize } from '@kadence/helpers';
 
 /**
  * Import Css
  */
 import './editor.scss';
+
+const ContainerDimensions = ({ children }) => {
+	const [dimensions, setDimensions] = useState(null);
+	const parentRef = useRef(null);
+
+	useEffect(() => {
+		if (!parentRef.current?.parentElement) return;
+
+		const getDimensions = (element) => {
+			const { top, right, bottom, left, width, height } = element.getBoundingClientRect();
+			return { top, right, bottom, left, width, height };
+		};
+
+		const updateDimensions = () => {
+			if (parentRef.current?.parentElement) {
+				setDimensions(getDimensions(parentRef.current.parentElement));
+			}
+		};
+
+		// Initial dimensions
+		updateDimensions();
+
+		// Set up ResizeObserver
+		const resizeObserver = new ResizeObserver(() => {
+			updateDimensions();
+		});
+
+		resizeObserver.observe(parentRef.current.parentElement);
+
+		// Cleanup
+		return () => {
+			if (parentRef.current?.parentElement) {
+				resizeObserver.unobserve(parentRef.current.parentElement);
+			}
+			resizeObserver.disconnect();
+		};
+	}, []);
+
+	if (!dimensions) {
+		return <div ref={parentRef} />;
+	}
+
+	if (typeof children === 'function') {
+		const renderedChildren = children(dimensions);
+		return renderedChildren ? <div ref={parentRef}>{renderedChildren}</div> : null;
+	}
+
+	return React.cloneElement(children, {
+		...dimensions,
+		ref: (node) => {
+			parentRef.current = node;
+			const { ref } = children;
+			if (typeof ref === 'function') {
+				ref(node);
+			} else if (ref) {
+				ref.current = node;
+			}
+		},
+	});
+};
 
 export default function ColumnDragResizer(props) {
 	//columns a number of columns
