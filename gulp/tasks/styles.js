@@ -1,6 +1,5 @@
 const { src, dest, parallel } = require('gulp');
 const sass = require('gulp-sass')(require('sass'));
-const path = require('path');
 const rename = require('gulp-rename');
 const cleancss = require('gulp-clean-css');
 const config = require('../config');
