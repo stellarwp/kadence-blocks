@@ -35,7 +35,6 @@
 		"memize": "^1.0.5",
 		"progressbar.js": "^1.1.1",
 		"prop-types": "^15.6.2",
-		"re-resizable": "^4.7.1",
 		"react-ace": "^10.0.0",
 		"react-color": "^2.18.0",
 		"react-countdown": "^2.3.1",
@@ -49,7 +48,6 @@
 		"react-select": "^5.8.3",
 		"react-shadow": "^20.4.0",
 		"react-slidy": "^4.3.3",
-		"react-transition-group": "^2.4.0",
 		"react-turnstile": "^1.1.0",
 		"remove-accents": "^0.4.4",
 		"typed.js": "^2.0.12"
@@ -62,7 +60,6 @@
 		"@wordpress/prettier-config": "^2.25.13",
 		"@wordpress/scripts": "^26.18.0",
 		"concurrently": "^8.2.0",
-		"eslint-import-resolver-webpack": "^0.13.8",
 		"gulp": "^5.0.0",
 		"gulp-babel-minify": "^0.5.2",
 		"gulp-clean-css": "^4.3.0",
