@@ -3,12 +3,19 @@ const jsTasks = require('./js');
 const stylesTasks = require('./styles');
 
 function miscStyles() {
-	stylesTasks.miscStyles();
-	watch(['src/assets/css/*.scss'], stylesTasks.miscStyles);
-}
-function miscJs() {
-	jsTasks.miscJs();
-	watch(['src/assets/js/*.js', 'src/assets/js/vendor/*.js'], jsTasks.miscJs);
+	return stylesTasks.miscStyles();
 }
 
-exports.watch = parallel(miscStyles, miscJs);
+function watchStyles() {
+	watch(['src/assets/css/*.scss'], miscStyles);
+}
+
+function miscJs() {
+	return jsTasks.miscJs();
+}
+
+function watchJs() {
+	watch(['src/assets/js/*.js', 'src/assets/js/vendor/*.js'], miscJs);
+}
+
+exports.watch = parallel(parallel(miscStyles, watchStyles), parallel(miscJs, watchJs));
