@@ -62,7 +62,6 @@
 		"@wordpress/prettier-config": "^2.25.13",
 		"@wordpress/scripts": "^26.18.0",
 		"concurrently": "^8.2.0",
-		"del": "^6.0.0",
 		"eslint-import-resolver-webpack": "^0.13.8",
 		"eslint-plugin-prettier": "^3.4.1",
 		"gulp": "^5.0.0",

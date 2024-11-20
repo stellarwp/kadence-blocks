@@ -1,9 +1,13 @@
 const { src, dest } = require('gulp');
-const del = require('del');
+const { rm } = require('fs/promises');
 const config = require('../config');
 
-function clean() {
-	return del([config.dirs.dist + '/js/**', config.dirs.dist + '/css/**'], { force: true });
+async function clean() {
+	await Promise.all([
+		rm(config.dirs.dist + '/js', { recursive: true, force: true }),
+		rm(config.dirs.dist + '/css', { recursive: true, force: true }),
+	]);
+	return Promise.resolve();
 }
 
 exports.clean = clean;
