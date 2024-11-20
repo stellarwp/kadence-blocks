@@ -1569,7 +1569,7 @@ function KadenceInfoBox(props) {
 						mediaIcon[0].hoverColor
 				  )} !important; }`
 				: ''}
-			{mediaStyle[0].borderRadius
+			{mediaStyle[0].borderRadius && mediaStyle[0].padding.some(number => number > 0)
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .kadence-info-box-image-intrisic img, .kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .block-editor-media-placeholder { border-radius: ${mediaStyle[0].borderRadius}px !important; }`
 				: ''}
 			{titleHoverColor
