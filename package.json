@@ -63,14 +63,12 @@
 		"@wordpress/scripts": "^26.18.0",
 		"concurrently": "^8.2.0",
 		"eslint-import-resolver-webpack": "^0.13.8",
-		"eslint-plugin-prettier": "^3.4.1",
 		"gulp": "^5.0.0",
 		"gulp-babel-minify": "^0.5.2",
 		"gulp-clean-css": "^4.3.0",
 		"gulp-minify": "^3.1.0",
 		"gulp-rename": "^2.0.0",
 		"gulp-sass": "^5.1.0",
-		"install": "^0.13.0",
 		"prettier": "^2.8.8"
 	},
 	"postcss": {}
