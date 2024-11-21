@@ -174,6 +174,10 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.3.8 =
+Release Date: tba
+* Fix: Issue with table of contents script dependency timing.
+
 = 3.3.7 =
 Release Date: November 21st 2024
 * Fix: Issue with advanced gallery captions.
