@@ -175,7 +175,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.3.7 =
-Release Date: November 21th 2024
+Release Date: November 21st 2024
 * Fix: Issue with advanced gallery captions.
 
 = 3.3.6 =
