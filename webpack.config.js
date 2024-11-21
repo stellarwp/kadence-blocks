@@ -9,8 +9,34 @@ function camelCaseDash(string) {
 	return string.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
 }
 
+// https://github.com/WordPress/gutenberg/issues/65585#issuecomment-2392660458
+const sassLoaderOptions = {
+	sourceMap: process.env.NODE_ENV !== 'production',
+	api: 'modern',
+};
+
+const updateSassLoader = (rules) => {
+	rules.forEach((rule) => {
+		if (rule.use && Array.isArray(rule.use)) {
+			rule.use.forEach((loader) => {
+				if (loader.loader && loader.loader.includes('sass-loader')) {
+					loader.options = {
+						...loader.options,
+						...sassLoaderOptions,
+					};
+				}
+			});
+		}
+	});
+	return rules;
+};
+
 module.exports = {
 	...defaultConfig,
+	module: {
+		...defaultConfig.module,
+		rules: updateSassLoader(defaultConfig.module.rules),
+	},
 	entry: {
 		icons: './src/packages/icons/src/index.js',
 		components: './src/packages/components/src/index.js',
