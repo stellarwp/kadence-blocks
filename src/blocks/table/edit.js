@@ -315,10 +315,7 @@ export function Edit(props) {
 
 	if (undefined === columns) {
 		return (
-			<div
-				className={'placeholder'}
-				style={{ backgroundColor: '#FFF', border: '2px solid #000', padding: '20px' }}
-			>
+			<div {...blockProps} style={{ backgroundColor: '#FFF', border: '2px solid #000', padding: '20px' }}>
 				<h4 style={{ marginTop: '0', marginBottom: '15px' }}>{__('Table layout', 'kadence-blocks')}</h4>
 				<div style={{ maxWidth: '350px' }}>
 					<RangeControl
