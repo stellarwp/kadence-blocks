@@ -1,33 +1,17 @@
 const { src, dest, parallel } = require('gulp');
-const sass = require('sass');
-const through2 = require('through2');
+const sass = require('gulp-sass')(require('sass'));
 const rename = require('gulp-rename');
 const cleancss = require('gulp-clean-css');
-const path = require('path');
 const config = require('../config');
 
+/**
+ * Create gulp pipeline for scss/css files.
+ *
+ * @param {*} sources
+ * @returns
+ */
 function stylesPipe(sources) {
-	return src(sources)
-		.pipe(
-			through2.obj(function (file, _, callback) {
-				if (file.isBuffer()) {
-					try {
-						// Using the modern Sass API
-						const result = sass.compile(file.path, {
-							sourceMap: config.sass.sourceMap,
-							style: config.sass.outputStyle,
-						});
-						file.contents = Buffer.from(result.css);
-						file.extname = '.css';
-						this.push(file);
-					} catch (err) {
-						this.emit('error', err);
-					}
-				}
-				callback();
-			})
-		)
-		.pipe(cleancss(config.cleancss));
+	return src(sources).pipe(sass(config.sass)).pipe(cleancss(config.cleancss));
 }
 
 function miscStyles() {
@@ -41,5 +25,6 @@ function miscStyles() {
 }
 
 exports.miscStyles = miscStyles;
+
 exports.buildStyles = parallel(miscStyles);
 exports.styles = parallel(miscStyles);
