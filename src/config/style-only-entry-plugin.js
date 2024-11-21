@@ -26,12 +26,22 @@ StyleOnlyEntryPlugin.prototype.isFileStyle = function (file) {
 
 StyleOnlyEntryPlugin.prototype.apply = function (compiler) {
 	compiler.hooks.emit.tap('style-only-entry-plugin', (compilation) => {
+		const { chunkGraph } = compilation;
+
 		for (const chunk of compilation.chunks) {
-			if (chunk.entryModule && this.isFileStyle(chunk.entryModule.userRequest)) {
-				for (const file of chunk.files) {
-					if (!this.isFileStyle(file)) {
-						delete compilation.assets[file];
+			// Get the entry modules using the new ChunkGraph API
+			const entryModules = chunkGraph.getChunkEntryModulesIterable(chunk);
+
+			for (const entryModule of entryModules) {
+				// Check if any entry module is a style file
+				if (this.isFileStyle(entryModule.resource)) {
+					// Remove non-style assets from the chunk
+					for (const file of chunk.files) {
+						if (!this.isFileStyle(file)) {
+							delete compilation.assets[file];
+						}
 					}
+					break; // Exit after first style entry module is found
 				}
 			}
 		}
