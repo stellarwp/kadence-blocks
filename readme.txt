@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.3
 Tested up to: 6.7
-Stable tag: 3.3.5
+Stable tag: 3.3.6
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -175,8 +175,10 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.3.6 =
-Release Date: tba
+Release Date: November 20th 2024
 * Adjust: Naming and support text for navigation stretch option.
+* Add: Allow links in advanced gallery lightbox captions.
+* Fix: Editor error when modifying accordion panes.
 
 = 3.3.5 =
 Release Date: November 19th 2024
