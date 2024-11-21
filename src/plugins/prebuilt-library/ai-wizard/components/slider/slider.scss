@@ -1,4 +1,4 @@
-@import '../../scss/variables.scss';
+@use '../../scss/variables.scss' as *;
 
 $react-slidy-c-background: transparent !default;
 $react-slidy-c-nav-background: rgba(255, 255, 255, 0.8) !default;
@@ -58,7 +58,7 @@ $react-slidy-mh: 50px !default;
 
     &:hover {
 	    background: rgba(255,255,255, 1);
-    
+
     	.dashicon {
     		color: #000000;
     	}
@@ -168,7 +168,7 @@ $react-slidy-mh: 50px !default;
 
       &:hover {
 	      background: rgba(0, 0, 0, 1);
-      
+
     	  .dashicon {
     	    color: #FFFFFF;
     	  }

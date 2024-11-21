@@ -1,4 +1,4 @@
-@import '../../scss/mixins.scss';
+@use '../../scss/mixins.scss' as *;
 
 .stellarwp.components-base-control {
 	.components-textarea-control__input {

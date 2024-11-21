@@ -2,7 +2,7 @@
  * Frontend only CSS.
  */
 
-@import "../../assets/css/variables.scss";
+@use "../../assets/css/variables.scss" as *;
 
 @mixin header-transparent-styles {
 	position: relative;

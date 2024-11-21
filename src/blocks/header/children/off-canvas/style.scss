@@ -1,4 +1,4 @@
-@import "../../../../assets/css/variables.scss";
+@use "../../../../assets/css/variables.scss" as *;
 
 $admin-bar-height: 32px;
 $admin-bar-height-mobile: 46px;

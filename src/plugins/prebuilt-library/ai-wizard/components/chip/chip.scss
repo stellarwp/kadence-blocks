@@ -1,5 +1,5 @@
 @use 'sass:color';
-@import '../../scss/variables.scss';
+@use '../../scss/variables.scss' as *;
 
 .stellarwp.chip {
 	display: inline-flex;

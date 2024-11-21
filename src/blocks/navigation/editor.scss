@@ -3,9 +3,8 @@
  * Styles for both the navigation and nav link block
  */
 
-@import "../../assets/css/variables.scss";
-
-@import "./style.scss";
+@use "../../assets/css/variables.scss" as *;
+@use "./style.scss" as *;
 
 .wp-block-kadence-navigation {
 	//make sure margin top/bottom default to 0

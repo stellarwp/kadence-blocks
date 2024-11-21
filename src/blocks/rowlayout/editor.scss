@@ -4,7 +4,7 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
-@import "./splide.scss";
+@use "./splide.scss" as *;
 .wp-block-kadence-rowlayout .kb-blocks-bg-slider {
 	.splide .splide__pagination {
 		bottom: 10px;

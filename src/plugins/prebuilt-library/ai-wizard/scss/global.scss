@@ -1,5 +1,6 @@
-@import './variables.scss';
-@import './typography.scss';
+@use './variables.scss' as *;
+@use './typography.scss' as *;
+@use './mixins' as mixins;
 
 /* ---------------------------------------------- *
  * Form Styles
@@ -8,7 +9,7 @@
 // Form Labels
 .stellarwp.components-base-control {
 	.components-base-control__label {
-		@include input_label;
+		@include mixins.input_label;
 	}
 
 	.components-base-control__help {

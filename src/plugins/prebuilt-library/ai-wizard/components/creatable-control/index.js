@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { Creatable } from 'react-select';
+import Creatable from 'react-select';
 import classnames from 'classnames';
 
 /**

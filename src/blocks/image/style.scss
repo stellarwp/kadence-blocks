@@ -1,4 +1,4 @@
-@import "../../assets/css/variables.scss";
+@use "../../assets/css/variables.scss" as *;
 
 @mixin header-transparent-styles {
 	.wp-block-kadence-image.has-transparent-img {

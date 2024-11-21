@@ -1,4 +1,5 @@
-@import "../../scss/mixins.scss";
+@use "../../scss/mixins.scss" as *;
+@use '../../scss/variables' as vars;
 
 .stellarwp-textarea-progress {
 	@include input_base;
@@ -8,7 +9,7 @@
 		background-color: #f0f1f9;
 
 		.stellarwp.components-base-control .components-textarea-control__input {
-			color: $color-black;
+			color: vars.$color-black;
 			background-color: #f0f1f9;
 		}
 	}
@@ -37,14 +38,14 @@
 
 	&__actions {
 		padding-top: 8px;
-		border-top: 1px solid $color-gray-300;
+		border-top: 1px solid vars.$color-gray-300;
 		margin: 16px;
 		max-width: calc(100% - 32px);
 	}
 
 	&__undo-button {
 		&.is-link {
-			color: $color-black;
+			color: vars.$color-black;
 		}
 	}
 

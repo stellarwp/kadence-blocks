@@ -1,4 +1,4 @@
-@import '../../scss/variables.scss';
+@use '../../scss/variables.scss' as *;
 
 .stellarwp.components-modal__frame.components-guide {
 	max-width: 95%;
@@ -143,14 +143,14 @@
 				opacity: 1;
 				color: $color-disabled !important;
 			}
-			
+
 			.stellarwp.step-count {
 				background: $color-disabled;
 			}
 
 			&.is-complete {
 				color: $color-black;
-				
+
 				.stellarwp.step-count {
 					background: $color-black;
 				}
@@ -158,7 +158,7 @@
 
 			&.is-current {
 				color: $color-primary;
-				
+
 				.stellarwp.step-count {
 					background: $color-primary;
 				}

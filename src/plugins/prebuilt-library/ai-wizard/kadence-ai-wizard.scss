@@ -1,6 +1,6 @@
-@import "./scss/variables.scss";
-@import "./scss/mixins";
-@import "./scss/global.scss";
+@use "./scss/variables.scss" as *;
+@use "./scss/mixins" as *;
+@use "./scss/global.scss" as *;
 
 .stellarwp.components-modal__frame.components-guide {
 	/* About Your Site Page Style Overrides */

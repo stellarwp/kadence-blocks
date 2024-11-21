@@ -1,4 +1,4 @@
-@import '../../scss/variables.scss';
+@use '../../scss/variables.scss' as *;
 
 div.stellarwp-tone__control {
   min-height: 80px;
