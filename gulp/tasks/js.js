@@ -1,68 +1,65 @@
-// js.js
-const { src, dest, parallel } = require('gulp');
+const { src, dest, parallel, series } = require('gulp');
 const rename = require('gulp-rename');
 const minify = require('gulp-babel-minify');
-const sass = require('sass');
-const through2 = require('through2');
 const config = require('../config');
 
-// Process JavaScript files
+// Process JS files
 function processFiles() {
-	return src(['src/assets/js/*.js'])
-		.pipe(
-			rename((path) => {
-				path.extname = '.min.js';
-			})
-		)
-		.pipe(minify(config.minify))
-		.pipe(dest(config.dirs.dist + '/js'));
+	return new Promise((resolve, reject) => {
+		const stream = src(['src/assets/js/*.js'])
+			.pipe(
+				rename(function (path) {
+					return {
+						dirname: path.dirname,
+						basename: path.basename,
+						extname: '.min.js',
+					};
+				})
+			)
+			.pipe(minify(config.minify))
+			.pipe(dest(config.dirs.dist + '/js'));
+
+		stream.on('end', resolve);
+		stream.on('error', reject);
+	});
 }
 
-// Process vendor JavaScript files
+// Copy vendor files
 function copyVendorFiles() {
-	return src(['src/assets/js/vendor/*.js'])
-		.pipe(
-			rename((path) => {
-				if (!path.basename.endsWith('.min')) {
-					path.extname = '.min.js';
-				}
-			})
-		)
-		.pipe(minify(config.minify))
-		.pipe(dest(config.dirs.dist + '/js'));
-}
-
-// Process SCSS files with modern Sass API
-function styles() {
-	return src('src/assets/scss/**/*.scss')
-		.pipe(
-			through2.obj(function (file, _, callback) {
-				if (file.isBuffer()) {
-					try {
-						// Using the modern Sass API
-						const result = sass.compile(file.path, {
-							style: 'compressed',
-						});
-						file.contents = Buffer.from(result.css);
-						file.extname = '.css';
-						this.push(file);
-					} catch (err) {
-						this.emit('error', err);
+	return new Promise((resolve, reject) => {
+		const stream = src(['src/assets/js/vendor/*.js'])
+			.pipe(
+				rename(function (path) {
+					if (path.basename.endsWith('.min')) {
+						return path;
 					}
-				}
-				callback();
-			})
-		)
-		.pipe(dest(config.dirs.dist + '/css'));
+
+					return {
+						dirname: path.dirname,
+						basename: path.basename,
+						extname: '.min.js',
+					};
+				})
+			)
+			.pipe(minify(config.minify))
+			.pipe(dest(config.dirs.dist + '/js'));
+
+		stream.on('end', resolve);
+		stream.on('error', reject);
+	});
 }
 
-// Parallel tasks for JavaScript
-function miscJs() {
-	return parallel(processFiles, copyVendorFiles)();
+// Combined JS task
+function miscJs(cb) {
+	return parallel(processFiles, copyVendorFiles)(cb);
 }
 
+// Export tasks
+exports.processFiles = processFiles;
+exports.copyVendorFiles = copyVendorFiles;
 exports.miscJs = miscJs;
-exports.styles = styles;
-exports.buildJs = parallel(miscJs);
-exports.js = parallel(miscJs);
-exports.default = parallel(styles, miscJs);
+exports.buildJs = miscJs;
+exports.js = miscJs;
+
+// Default task
+exports.default = series(miscJs);

@@ -132,6 +132,20 @@ function kadence_blocks_init(): void {
 	require_once KADENCE_BLOCKS_PATH . 'includes/settings/class-kadence-blocks-site-health.php';
 
 	/**
+	 * Register the block metadata manifest.
+	 * Introduced in WP 6.7 to improve performance of block registration.
+	 */
+	if (
+		function_exists('wp_register_block_metadata_collection')
+		&& file_exists(KADENCE_BLOCKS_PATH . 'dist/blocks/blocks-manifest.php')
+	) {
+		wp_register_block_metadata_collection(
+			KADENCE_BLOCKS_PATH . 'dist/blocks/',
+			KADENCE_BLOCKS_PATH . 'dist/blocks/manifest.php'
+		);
+	}
+
+	/**
 	 * Telemetry.
 	 */
 	Config::set_container( $container );
