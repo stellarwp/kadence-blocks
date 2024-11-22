@@ -1,0 +1,9 @@
+[submodule "src/packages/helpers"]
+	path = src/packages/helpers
+	url = https://github.com/stellarwp/kadence-helpers/
+[submodule "src/packages/icons"]
+	path = src/packages/icons
+	url = https://github.com/stellarwp/kadence-icons/
+[submodule "src/packages/components"]
+	path = src/packages/components
+	url = https://github.com/stellarwp/kadence-components/
