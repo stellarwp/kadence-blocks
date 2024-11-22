@@ -2364,6 +2364,7 @@ function SectionEdit(props) {
 											setAttributes={setAttributes}
 											name={'kadence/column'}
 											clientId={clientId}
+											context={context}
 										/>
 									</KadencePanelBody>
 								)}
