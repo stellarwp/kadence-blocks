@@ -12,7 +12,7 @@
 		},
 		"paneCount": {
 			"type": "number",
-			"default": 50
+			"default": 2
 		},
 		"showPresets": {
 			"type": "boolean",
