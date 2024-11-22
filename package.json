@@ -2,6 +2,9 @@
 	"name": "kadence-blocks",
 	"version": "1.1.0",
 	"private": true,
+	"workspaces": [
+		"src/packages/*"
+	],
 	"scripts": {
 		"packages-update": "wp-scripts packages-update",
 		"start-wp": "wp-scripts start",

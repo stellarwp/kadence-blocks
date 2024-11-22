@@ -1,13 +1,6 @@
 const defaultConfig = require('@wordpress/scripts/config/webpack.config');
 const DependencyExtractionWebpackPlugin = require('@wordpress/dependency-extraction-webpack-plugin');
 const StyleOnlyEntryPlugin = require('./src/config/style-only-entry-plugin');
-const EXTERNAL_NAME = 'kadence';
-const HANDLE_NAME = 'kadence';
-const PROJECT_NAMESPACE = '@kadence/';
-
-function camelCaseDash(string) {
-	return string.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
-}
 
 // https://github.com/WordPress/gutenberg/issues/65585#issuecomment-2392660458
 const sassLoaderOptions = {
@@ -94,15 +87,6 @@ module.exports = {
 			requestToExternal(request) {
 				if (request.endsWith('.css')) {
 					return false;
-				}
-
-				if (request.startsWith(PROJECT_NAMESPACE)) {
-					return [EXTERNAL_NAME, camelCaseDash(request.substring(PROJECT_NAMESPACE.length))];
-				}
-			},
-			requestToHandle(request) {
-				if (request.startsWith(PROJECT_NAMESPACE)) {
-					return `${HANDLE_NAME}-${request.substring(PROJECT_NAMESPACE.length)}`;
 				}
 			},
 		}),
