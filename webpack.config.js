@@ -1,6 +1,7 @@
 const defaultConfig = require('@wordpress/scripts/config/webpack.config');
 const DependencyExtractionWebpackPlugin = require('@wordpress/dependency-extraction-webpack-plugin');
 const StyleOnlyEntryPlugin = require('./src/config/style-only-entry-plugin');
+const path = require('path');
 
 // https://github.com/WordPress/gutenberg/issues/65585#issuecomment-2392660458
 const sassLoaderOptions = {
@@ -26,6 +27,13 @@ const updateSassLoader = (rules) => {
 
 module.exports = {
 	...defaultConfig,
+	resolve: {
+		...defaultConfig.resolve,
+		alias: {
+			...defaultConfig.resolve?.alias,
+			'@emotion/react': path.resolve('./node_modules/@emotion/react'),
+		},
+	},
 	module: {
 		...defaultConfig.module,
 		rules: updateSassLoader(defaultConfig.module.rules),
