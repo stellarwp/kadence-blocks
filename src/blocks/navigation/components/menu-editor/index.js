@@ -64,6 +64,27 @@ export default function MenuEditor({
 		}
 	};
 
+	const onSelectCategory = (posts) => {
+		const navItems = [];
+
+		posts.forEach((post) => {
+			navItems.push(
+				createBlock('kadence/navigation-link', {
+					label: post.name,
+					url: post.link,
+					id: post.id,
+					type: post.type,
+					kind: 'post-type',
+					uniqueID: Math.random().toString(36).substr(2, 9),
+				})
+			);
+		});
+
+		if (navItems.length !== 0) {
+			updateBlocksCallback(navItems);
+		}
+	};
+
 	return (
 		<div className="kb-menu-visual-editor">
 			<div className="left-column">

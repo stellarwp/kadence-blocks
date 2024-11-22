@@ -92,9 +92,7 @@ export default function PostSelectorCheckbox( { postType = 'posts', title = '', 
 
 		if( type === 'search' ) {
 			args.search = query;
-		} else if( postType === 'categories' ){
-
-		} else {
+		} else if( postType !== 'categories' ) {
 			args.orderby = tab === 'all' ? 'title' : 'date';
 			args.order = tab === 'all' ? 'asc' : 'desc';
 		}
