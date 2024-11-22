@@ -47,6 +47,8 @@ jobs:
       # the job is executed for. In our case here, the commit that the release is attached to.
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          submodules: 'true'
 
       - name: Configure Composer token
         run: composer config -g github-oauth.github.com ${{ secrets.COMPOSER_TOKEN }}

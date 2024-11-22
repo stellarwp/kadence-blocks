@@ -36,6 +36,7 @@ jobs:
             - name: Checkout slic
               uses: actions/checkout@v4
               with:
+                  submodules: 'true'
                   repository: stellarwp/slic
                   ref: 1.7.2
                   path: slic
