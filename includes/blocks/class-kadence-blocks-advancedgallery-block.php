@@ -766,15 +766,17 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		$output .= '<div class="kadence-blocks-gallery-item-inner">';
 		$output .= '<figure class="' . esc_attr( implode( ' ', $fig_classes ) ). '" ' . ( ! empty( $padding_bottom ) && 'below' === $caption_style ? 'style="max-width:' . $image['width'] . 'px;"' : '' ) . '">';
 		if ( ! empty( $href ) ) {
-			$caption = wp_kses(html_entity_decode($caption, ENT_QUOTES, 'UTF-8'), array(
-				'a' => array(
-					'href' => true,
-					'target' => array('_blank', '_self'),
-					'rel' => true,
-				)
-			));
-
-			$output .= '<a href="' . esc_url( $href ) . '"' . ( $link_to === 'media' && $lightbox === 'magnific' && $lightbox_cap && ! empty( $caption ) && is_string( $caption ) ? ' data-description="' . esc_attr( $caption ) . '"' : '' ) . '' . ( $link_to === 'media' && $lightbox === 'magnific' && ! empty( $image_alt ) && is_string( $image_alt ) ? ' data-alt="' . esc_attr( $image_alt ) . '"' : '' ) . ' class="kb-gallery-item-link" ' . ( ( $link_to === 'custom' && '_blank' === $link_target ) || ( $link_to === 'media' && $lightbox === 'new_tab' ) ? 'target="_blank"' : '' ) . ' ' . ( ( $link_to === 'custom' && ! empty( $rel_attr ) ) || ( $link_to === 'media' && ! empty( $rel_attr ) ) ? 'rel="' . esc_attr( $rel_attr ) . '"' : '' ) . '>';
+			$safe_caption = '';
+			if( $link_to === 'media' && $lightbox === 'magnific' && $lightbox_cap && ! empty( $caption ) && is_string( $caption ) ) {
+				$safe_caption = wp_kses(html_entity_decode($caption, ENT_QUOTES, 'UTF-8'), array(
+					'a' => array(
+						'href' => true,
+						'target' => array('_blank', '_self'),
+						'rel' => true,
+					)
+				));
+			}
+			$output .= '<a href="' . esc_url( $href ) . '"' . ( !empty( $safe_caption ) ? ' data-description="' . esc_attr( $safe_caption ) . '"' : '' ) . '' . ( $link_to === 'media' && $lightbox === 'magnific' && ! empty( $image_alt ) && is_string( $image_alt ) ? ' data-alt="' . esc_attr( $image_alt ) . '"' : '' ) . ' class="kb-gallery-item-link" ' . ( ( $link_to === 'custom' && '_blank' === $link_target ) || ( $link_to === 'media' && $lightbox === 'new_tab' ) ? 'target="_blank"' : '' ) . ' ' . ( ( $link_to === 'custom' && ! empty( $rel_attr ) ) || ( $link_to === 'media' && ! empty( $rel_attr ) ) ? 'rel="' . esc_attr( $rel_attr ) . '"' : '' ) . '>';
 		}
 		$output .= '<div class="kb-gal-image-radius"' . ( ! empty( $padding_bottom ) ? ' style="max-width:' . esc_attr( $image['width'] ) . 'px;"' : '' ) . '>';
 		$output .= $img;
