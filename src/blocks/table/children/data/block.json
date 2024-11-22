@@ -14,6 +14,22 @@
 		},
 		"column": {
 			"type": "number"
+		},
+		"padding": {
+			"type": "array",
+			"default": ["xxs", "xxs", "xxs", "xxs"]
+		},
+		"tabletPadding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"mobilePadding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"paddingType": {
+			"type": "string",
+			"default": "px"
 		}
 	},
 	"supports": {

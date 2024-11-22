@@ -95,11 +95,12 @@ export function Edit(props) {
 	} = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
-	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData, childSelected } = useSelect(
 		(select) => {
 			return {
 				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
 				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
+				childSelected: select('core/block-editor').hasSelectedInnerBlock(clientId, true),
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 				parentData: {
 					rootBlock: select('core/block-editor').getBlock(
@@ -629,6 +630,12 @@ export function Edit(props) {
 								onChangeTablet={(nextAlign) => setAttributes({ textAlignMobile: nextAlign })}
 								onChangeMobile={(nextAlign) => setAttributes({ textAlignTablet: nextAlign })}
 							/>
+							<PopColorControl
+								label={__('Text Color', 'kadence-blocks')}
+								value={dataTypography[0].color}
+								default={''}
+								onChange={(value) => saveDataTypography({ color: value })}
+							/>
 							<TypographyControls
 								fontGroup={'heading'}
 								fontSize={dataTypography[0].size}
@@ -679,6 +686,12 @@ export function Edit(props) {
 								onChange={(nextAlign) => setAttributes({ headerAlign: nextAlign })}
 								onChangeTablet={(nextAlign) => setAttributes({ headerAlignMobile: nextAlign })}
 								onChangeMobile={(nextAlign) => setAttributes({ headerAlignTablet: nextAlign })}
+							/>
+							<PopColorControl
+								label={__('Header Color', 'kadence-blocks')}
+								value={headerTypography[0].color}
+								default={''}
+								onChange={(value) => saveHeaderTypography({ color: value })}
 							/>
 							<TypographyControls
 								fontGroup={'heading'}
@@ -891,7 +904,7 @@ export function Edit(props) {
 				)}
 			</KadenceInspectorControls>
 			<BackendStyles attributes={attributes} previewDevice={previewDevice} />
-			{isSelected && (
+			{(isSelected || childSelected) && (
 				<div className="kb-table-width-controls">
 					<div className="kb-table-width-resizers" style={{ display: 'flex', marginBottom: '20px' }}>
 						{Array.from({ length: columns }).map((_, index) => {

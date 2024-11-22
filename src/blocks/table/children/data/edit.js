@@ -3,15 +3,15 @@ import React, { useEffect, useState } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { BlockControls, useBlockProps, InnerBlocks } from '@wordpress/block-editor';
 import metadata from './block.json';
-import { plus, columns } from '@wordpress/icons';
-
+import { plus } from '@wordpress/icons';
+import BackendStyles from './backend-styles';
 import {
-	KadenceBlockDefaults,
 	CopyPasteAttributes,
 	KadenceInspectorControls,
 	KadencePanelBody,
 	InspectorControlTabs,
 	SelectParentBlock,
+	ResponsiveMeasureRangeControl,
 } from '@kadence/components';
 import { setBlockDefaults, getUniqueId, getPostOrFseId } from '@kadence/helpers';
 import { createBlock } from '@wordpress/blocks';
@@ -23,8 +23,9 @@ const DEFAULT_BLOCK = [['core/paragraph', {}]];
 export function Edit(props) {
 	const { attributes, setAttributes, className, clientId, context } = props;
 
-	const { uniqueID, column } = attributes;
+	const { uniqueID, column, padding, tabletPadding, mobilePadding, paddingType } = attributes;
 
+	console.log(padding);
 	const [activeTab, setActiveTab] = useState('general');
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
@@ -40,6 +41,8 @@ export function Edit(props) {
 		parentColumns,
 		columnPosition,
 		siblingRows,
+		hasInnerBlocks,
+		previewDevice,
 	} = useSelect(
 		(select) => {
 			const blockParents = select('core/block-editor').getBlockParents(clientId);
@@ -55,6 +58,8 @@ export function Edit(props) {
 				currentRowClientId: rowId,
 				columnPosition: rowBlocks.indexOf(clientId),
 				siblingRows: select('core/block-editor').getBlocks(tableClientId),
+				hasInnerBlocks: select('core/block-editor').getBlocks(clientId).length > 0,
+				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 				parentData: {
 					rootBlock: select('core/block-editor').getBlock(
 						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
@@ -76,7 +81,19 @@ export function Edit(props) {
 		}
 	}, [columnPosition]);
 
-	const classes = classnames(className, 'kb-table-data');
+	useEffect(() => {
+		if (!hasInnerBlocks) {
+			const paragraph = createBlock('core/paragraph');
+			replaceInnerBlocks(clientId, [paragraph], false);
+		}
+	}, [hasInnerBlocks]);
+
+	const classes = classnames({
+		className: true,
+		[`kb-table-data${uniqueID}`]: uniqueID,
+		[`kb-table-data`]: true,
+	});
+
 	const blockProps = useBlockProps({
 		className: classes,
 	});
@@ -194,8 +211,9 @@ export function Edit(props) {
 
 	return (
 		<Tag {...blockProps}>
+			<BackendStyles attributes={attributes} previewDevice={previewDevice} />
 			<BlockControls>
-				<ToolbarDropdownMenu icon={plus} label={__('Add Row', 'kadence-blocks')}>
+				<ToolbarDropdownMenu icon={plus} label={__('Add Row or Column', 'kadence-blocks')}>
 					{({ onClose }) => (
 						<>
 							<MenuGroup>
@@ -205,13 +223,6 @@ export function Edit(props) {
 									</MenuItem>
 								))}
 							</MenuGroup>
-						</>
-					)}
-				</ToolbarDropdownMenu>
-
-				<ToolbarDropdownMenu icon={columns} label={__('Add Column', 'kadence-blocks')}>
-					{({ onClose }) => (
-						<>
 							<MenuGroup>
 								{columnControls.map((control) => (
 									<MenuItem key={control.title} onClick={flow(onClose, control.onClick)}>
@@ -222,7 +233,6 @@ export function Edit(props) {
 						</>
 					)}
 				</ToolbarDropdownMenu>
-
 				<CopyPasteAttributes
 					attributes={attributes}
 					setAttributes={setAttributes}
@@ -242,7 +252,25 @@ export function Edit(props) {
 					activeTab={activeTab}
 				/>
 
-				{activeTab === 'general' && <KadencePanelBody initialOpen={true}>&nbsp;</KadencePanelBody>}
+				{activeTab === 'general' && (
+					<KadencePanelBody initialOpen={true}>
+						<ResponsiveMeasureRangeControl
+							label={__('Padding', 'kadence-blocks')}
+							value={padding}
+							tabletValue={tabletPadding}
+							mobileValue={mobilePadding}
+							onChange={(value) => setAttributes({ padding: value })}
+							onChangeTablet={(value) => setAttributes({ tabletPadding: value })}
+							onChangeMobile={(value) => setAttributes({ mobilePadding: value })}
+							min={paddingType === 'em' || paddingType === 'rem' ? -25 : -999}
+							max={paddingType === 'em' || paddingType === 'rem' ? 25 : 999}
+							step={paddingType === 'em' || paddingType === 'rem' ? 0.1 : 1}
+							unit={paddingType}
+							units={['px', 'em', 'rem', '%']}
+							onUnit={(value) => setAttributes({ paddingType: value })}
+						/>
+					</KadencePanelBody>
+				)}
 			</KadenceInspectorControls>
 			<InnerBlocks template={DEFAULT_BLOCK} renderAppender={false} templateLock={false} />
 		</Tag>

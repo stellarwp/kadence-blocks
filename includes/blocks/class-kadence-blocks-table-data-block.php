@@ -76,6 +76,8 @@ class Kadence_Blocks_Table_Data_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
+		$css->set_selector( '.kb-table-data' . $unique_id );
+		$css->render_measure_output( $attributes, 'padding', 'padding' );
 
 		return $css->css_output();
 	}
@@ -94,7 +96,7 @@ class Kadence_Blocks_Table_Data_Block extends Kadence_Blocks_Abstract_Block {
 		$tag = $this->is_this_block_header( $attributes, $block_instance->context ) ? 'th' : 'td';
 
 		return sprintf(
-			'<%s class="kb-table-wrap kb-table-id-%2$s">%3$s</%s>',
+			'<%s class="kb-table-data kb-table-data%2$s">%3$s</%s>',
 			$tag,
 			esc_attr( $unique_id ),
 			$content,
