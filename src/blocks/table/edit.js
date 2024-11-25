@@ -151,6 +151,15 @@ export function Edit(props) {
 		}
 	}, []);
 
+	const rowCount = select('core/block-editor').getBlocks(clientId);
+
+	const adjustRows = (newRows) => {
+		if (newRows > rowCount.length) {
+			handleInsertRowBelow(9999);
+		} else {
+			handleDeleteLastRow();
+		}
+	};
 	const updateColumnBackground = (index, color, isHover = false) => {
 		const arrayToUpdate = isHover ? [...columnBackgroundsHover] : [...columnBackgrounds];
 		if (color === '') {
@@ -194,7 +203,6 @@ export function Edit(props) {
 	const handleInsertRowBelow = (index) => {
 		const { insertBlock } = dispatch('core/block-editor');
 		const newRow = createTableRow();
-		const blocks = select('core/block-editor').getBlocks(clientId);
 		insertBlock(newRow, index + 1, clientId, false);
 	};
 
@@ -360,14 +368,14 @@ export function Edit(props) {
 				{activeTab === 'general' && (
 					<>
 						<KadencePanelBody initialOpen={true} panelName={'tableStructure'} blockSlug={'kadence/table'}>
-							<ButtonGroup>
-								<Button onClick={() => handleInsertRowBelow(9999)} isSecondary>
-									{__('Add Row', 'kadence-blocks')}
-								</Button>
-								<Button onClick={() => handleDeleteLastRow()} isSecondary>
-									{__('Delete Row', 'kadence-blocks')}
-								</Button>
-							</ButtonGroup>
+							<NumberControl
+								label={__('Rows', 'kadence-blocks')}
+								value={rowCount.length}
+								onChange={(value) => adjustRows(parseInt(value))}
+								min={1}
+								max={200}
+								style={{ marginTop: '15px' }}
+							/>
 							<NumberControl
 								label={__('Columns', 'kadence-blocks')}
 								value={columns}
