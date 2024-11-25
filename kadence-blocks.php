@@ -141,7 +141,7 @@ function kadence_blocks_init(): void {
 	) {
 		wp_register_block_metadata_collection(
 			KADENCE_BLOCKS_PATH . 'dist/blocks/',
-			KADENCE_BLOCKS_PATH . 'dist/blocks/manifest.php'
+			KADENCE_BLOCKS_PATH . 'dist/blocks/blocks-manifest.php'
 		);
 	}
 
