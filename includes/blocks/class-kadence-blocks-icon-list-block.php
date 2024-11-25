@@ -176,7 +176,7 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		if( !empty( $attributes['linkUnderline']) && ( $attributes['linkUnderline'] === 'always' || $attributes['linkUnderline'] === 'none' ) ) {
-			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' .wp-block-kadence-listitem>a' );
+			$css->set_selector( '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' .wp-block-kadence-listitem a' );
 			$css->add_property( 'text-decoration', $attributes['linkUnderline'] === 'always' ? 'underline' : 'none' );
 		}
 		if( !empty( $attributes['linkUnderline']) && $attributes['linkUnderline'] === 'hover' ) {
