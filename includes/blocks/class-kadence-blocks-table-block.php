@@ -80,11 +80,8 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 		$css->render_measure_output( $attributes, 'padding', 'padding' );
 		$css->render_measure_output( $attributes, 'margin', 'margin' );
 
-		$max_width_unit = !empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px';
-		$css->render_responsive_range( $attributes, 'maxWidth', 'max-width', $max_width_unit );
-
-		$max_height_unit = !empty( $attributes['maxHeighUnit'] ) ? $attributes['maxHeighUnit'] : 'px';
-		$css->render_responsive_range( $attributes, 'maxHeight', 'max-height', $max_height_unit );
+		$css->render_responsive_range( $attributes, 'maxWidth', 'max-width', 'maxWidthUnit' );
+		$css->render_responsive_range( $attributes, 'maxHeight', 'max-height', 'maxHeighUnit' );
 
 		if ( !empty( $attributes['maxHeighUnit'][0] ) ) {
 			$css->add_property('overflow-y', 'auto');
