@@ -131,6 +131,11 @@ export default function BackendStyles(props) {
 		css.add_property('overflow-x', 'auto');
 	}
 
+	if (headerTypography[0].color) {
+		css.set_selector(`.kb-table${uniqueID} th .kadence-advancedheading-text`);
+		css.add_property('color', KadenceColorOutput(headerTypography[0].color));
+	}
+
 	css.set_selector(`.kb-table${uniqueID} th`);
 	css.render_font(headerTypography ? headerTypography : [], previewDevice);
 	css.add_property('text-align', previewHeaderAlign);
