@@ -48,6 +48,9 @@ class Kadence_Blocks_Header_CPT_Controller {
 		if( is_admin() && class_exists( 'Kadence_Blocks_Duplicate_Post' ) ) {
 			new Kadence_Blocks_Duplicate_Post( $this->post_type );
 		}
+		if( is_admin() && class_exists( 'Kadence_Blocks_Cpt_Import_Export' ) ) {
+			new Kadence_Blocks_Cpt_Import_Export( $this->post_type );
+		}
 	}
 	/**
 	 * Enqueue Script for Meta options
@@ -1199,6 +1202,21 @@ class Kadence_Blocks_Header_CPT_Controller {
 				'key'     => '_kad_header_headerTag',
 				'default' => '',
 				'type'    => 'string',
+			),
+			array(
+				'key'     => '_kad_header_pro_backdropFilterType',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_header_pro_backdropFilterSize',
+				'type' => 'number',
+				'default' => 1,
+			),
+			array(
+				'key'     => '_kad_header_pro_backdropFilterString',
+				'type' => 'string',
+				'default' => '',
 			),
 		);
 

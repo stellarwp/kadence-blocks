@@ -36,5 +36,23 @@ class AdvancedGalleryTest extends KadenceBlocksUnit {
 		$this->block = new Kadence_Blocks_Advancedgallery_Block();
 	}
 
+	// Make sure captions that are arrays do not throw an error.
+	public function test_render_gallery_images_with_array_caption()
+	{
+		$image = [
+			'url' => 'http://example.com/image.jpg',
+			'lightUrl' => 'http://example.com/image.jpg',
+			'caption' => [ 'should', 'not', 'fail']
+		];
+		$attributes = [
+			'linkTo' => 'media',
+			'lightbox' => 'magnific',
+			'lightboxCaption' => true,
+		];
 
+		$response = $this->block->render_gallery_images( $image, $attributes );
+
+		$this->assertIsString( $response );
+		$this->assertNotEmpty( $response );
+	}
 }

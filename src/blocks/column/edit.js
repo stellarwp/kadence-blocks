@@ -76,7 +76,7 @@ import {
 	useInnerBlocksProps,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
-import { ToggleControl, SelectControl, ToolbarGroup } from '@wordpress/components';
+import { ToggleControl, SelectControl, ToolbarGroup, ExternalLink } from '@wordpress/components';
 const FORM_ALLOWED_BLOCKS = [
 	'core/paragraph',
 	'kadence/advancedheading',
@@ -100,6 +100,7 @@ const FORM_ALLOWED_BLOCKS = [
 	'kadence/advanced-form-captcha',
 ];
 import { BLEND_OPTIONS } from '../rowlayout/constants';
+import { applyFilters } from '@wordpress/hooks';
 /**
  * Build the section edit.
  */
@@ -238,6 +239,9 @@ function SectionEdit(props) {
 		gutterVariable,
 		kbVersion,
 		flexGrow,
+		backdropFilterType,
+		backdropFilterSize,
+		backdropFilterString,
 	} = attributes;
 	const [activeTab, setActiveTab] = useState('general');
 	const [dynamicBackgroundImg, setDynamicBackgroundImg] = useState('');
@@ -1179,6 +1183,27 @@ function SectionEdit(props) {
 		: previewDirection === 'horizontal' || previewDirection === 'horizontal-reverse'
 		? 'middle'
 		: 'top';
+
+	const styleControlsBackdropFilter = (
+		<KadencePanelBody
+			title={__('Backdrop Filter', 'kadence-blocks')}
+			initialOpen={false}
+			panelName={'backdrop-filter-settings'}
+			proTag={true}
+		>
+			<div className="kb-pro-notice">
+				<h2>{__('Backdrop Filter', 'kadence-blocks')} </h2>
+				<p>{__('Add a backdrop filter with Kadence Blocks Pro!', 'kadence-blocks')} </p>
+				<ExternalLink
+					href={
+						'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=navigation-link'
+					}
+				>
+					{__('Upgrade to Pro', 'kadence-blocks')}
+				</ExternalLink>
+			</div>
+		</KadencePanelBody>
+	);
 	return (
 		<div {...blockProps}>
 			<style>
@@ -2339,6 +2364,7 @@ function SectionEdit(props) {
 											setAttributes={setAttributes}
 											name={'kadence/column'}
 											clientId={clientId}
+											context={context}
 										/>
 									</KadencePanelBody>
 								)}
@@ -2934,6 +2960,15 @@ function SectionEdit(props) {
 										}
 									/>
 								</KadencePanelBody>
+
+								<>
+									{applyFilters(
+										'kadence.styleControlsBackdropFilter',
+										styleControlsBackdropFilter,
+										props
+									)}
+								</>
+
 								<KadencePanelBody
 									title={__('Background Overlay', 'kadence-blocks')}
 									initialOpen={false}
@@ -3665,6 +3700,8 @@ function SectionEdit(props) {
 									undefined !== shadow[0].opacity ? shadow[0].opacity : 1
 							  )
 							: undefined,
+					'-webkit-backdrop-filter': backdropFilterString !== undefined ? backdropFilterString : undefined,
+					'backdrop-filter': backdropFilterString !== undefined ? backdropFilterString : undefined,
 				}}
 				{...innerBlocksProps}
 			></div>

@@ -11,6 +11,7 @@ export default function BackendStyles(props) {
 	const { attributes, isSelected, previewDevice, metaAttributes, currentRef } = props;
 
 	const { uniqueID } = attributes;
+	const hasPro = !!(kadence_blocks_params.pro && kadence_blocks_params.pro === 'true');
 
 	const {
 		padding,
@@ -92,6 +93,7 @@ export default function BackendStyles(props) {
 		isTransparentMobile,
 		autoTransparentSpacing,
 		shadow,
+		backdropFilterString,
 	} = metaAttributes;
 
 	const css = new KadenceBlocksCSS();
@@ -634,6 +636,12 @@ export default function BackendStyles(props) {
 	}
 	if (shadow?.[0]?.enable) {
 		css.add_property('box-shadow', css.render_shadow(shadow[0]));
+	}
+
+	//backdrop filter
+	if (hasPro) {
+		css.add_property('-webkit-backdrop-filter', backdropFilterString);
+		css.add_property('backdrop-filter', backdropFilterString);
 	}
 
 	css.set_selector(`.wp-block-kadence-header${uniqueID} .kb-header-container:hover`);

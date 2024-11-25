@@ -422,7 +422,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 
 		$prefix   = isset( $attributes['numberPrefix'] ) ? $attributes['numberPrefix'] : '';
 		$suffix   = isset( $attributes['numberSuffix'] ) ? $attributes['numberSuffix'] : '';
-		$starting = 0;
+		$starting = !empty( $attributes['progressMax'] ) && !empty( $attributes['showMaxProgressOnPageLoad'] ) ? $attributes['progressMax'] : 0;
 
 		$position = isset( $attributes['labelPosition'] ) ? $attributes['labelPosition'] : 'above';
 

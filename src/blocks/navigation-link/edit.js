@@ -8,7 +8,7 @@ import classnames from 'classnames';
  */
 import { createBlock } from '@wordpress/blocks';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { applyFilters } from '@wordpress/hooks';
+import { applyFilters, hasFilter } from '@wordpress/hooks';
 import {
 	PanelBody,
 	TextControl,
@@ -329,6 +329,8 @@ export default function Edit(props) {
 		iconSideTablet,
 		iconSideMobile,
 		align,
+		alignTablet,
+		alignMobile,
 		dropdownShadow,
 		kadenceDynamic,
 		dropdownClick,
@@ -1059,12 +1061,6 @@ export default function Edit(props) {
 					doMegaMenuEnable,
 					previewDevice
 				)}
-				<AlignmentToolbar
-					value={align}
-					onChange={(nextAlign) => {
-						setAttributes({ align: nextAlign });
-					}}
-				/>
 			</BlockControls>
 			{isSelected && (
 				<BlockSettingsMenuControls>
@@ -1109,96 +1105,162 @@ export default function Edit(props) {
 					activeTab={activeTab}
 				/>
 				{activeTab === 'general' && (
-					<KadencePanelBody panelName={'navigation-link-general'}>
-						<TextControl
-							__nextHasNoMarginBottom
-							value={label ? stripHTML(label) : ''}
-							onChange={(labelValue) => {
-								setAttributes({ label: labelValue });
-							}}
-							label={__('Label')}
-							autoComplete="off"
-							onFocus={() => setIsLabelFieldFocused(true)}
-							onBlur={() => setIsLabelFieldFocused(false)}
-						/>
-						<ToggleControl
-							label={__('Hide Label', 'kadence-blocks')}
-							checked={hideLabel}
-							onChange={(value) => setAttributes({ hideLabel: value })}
-						/>
-						<TextControl
-							__nextHasNoMarginBottom
-							value={url ? url : ''}
-							onChange={(value) => {
-								setAttributes({ url: value });
-							}}
-							label={__('URL')}
-							autoComplete="off"
-							disabled={hasSyncedLink}
-						/>
-						{hasSyncedLink && (
+					<>
+						<KadencePanelBody panelName={'navigation-link-general'}>
+							<ResponsiveAlignControls
+								label={__('Alignment', 'kadence-blocks')}
+								value={align ? align : ''}
+								tabletValue={alignTablet ? alignTablet : ''}
+								mobileValue={alignMobile ? alignMobile : ''}
+								onChange={(nextAlign) => setAttributes({ align: nextAlign ? nextAlign : '' })}
+								onChangeTablet={(nextAlign) =>
+									setAttributes({ alignTablet: nextAlign ? nextAlign : '' })
+								}
+								onChangeMobile={(nextAlign) =>
+									setAttributes({ alignMobile: nextAlign ? nextAlign : '' })
+								}
+							/>
+							<TextControl
+								__nextHasNoMarginBottom
+								value={label ? stripHTML(label) : ''}
+								onChange={(labelValue) => {
+									setAttributes({ label: labelValue });
+								}}
+								label={__('Label')}
+								autoComplete="off"
+								onFocus={() => setIsLabelFieldFocused(true)}
+								onBlur={() => setIsLabelFieldFocused(false)}
+							/>
+							<ToggleControl
+								label={__('Hide Label', 'kadence-blocks')}
+								checked={hideLabel}
+								onChange={(value) => setAttributes({ hideLabel: value })}
+							/>
+							<TextControl
+								__nextHasNoMarginBottom
+								value={url ? url : ''}
+								onChange={(value) => {
+									setAttributes({ url: value });
+								}}
+								label={__('URL')}
+								autoComplete="off"
+								disabled={hasSyncedLink}
+							/>
 							<Button
 								variant="link"
 								onClick={() => {
 									setAttributes({ type: '', kind: 'custom' });
 								}}
-								className={'components-base-control kb-nav-link-edit-link-button'}
-							>
-								{__('Edit URL', 'kadence-blocks')}
-							</Button>
-						)}
-						<ToggleControl
-							label={__('Disable Link', 'kadence-blocks')}
-							checked={disableLink}
-							onChange={(value) => setAttributes({ disableLink: value })}
-						/>
-
-						{applyFilters(
-							'kadence.megaMenuControlsNavigationLink',
-							megaMenuControls,
-							props,
-							doMegaMenuEnable,
-							isTopLevelLink,
-							previewDevice,
-							inMegaMenu
-						)}
-						{isTopLevelLink && hasChildren && (
-							<ToggleControl
-								label={__('Show dropdown with click only', 'kadence-blocks')}
-								checked={dropdownClick}
-								onChange={(value) => setAttributes({ dropdownClick: value })}
+								label={__('Label')}
+								autoComplete="off"
+								onFocus={() => setIsLabelFieldFocused(true)}
+								onBlur={() => setIsLabelFieldFocused(false)}
 							/>
+							<ToggleControl
+								label={__('Hide Label', 'kadence-blocks')}
+								checked={hideLabel}
+								onChange={(value) => setAttributes({ hideLabel: value })}
+							/>
+							<TextControl
+								__nextHasNoMarginBottom
+								value={url ? url : ''}
+								onChange={(value) => {
+									setAttributes({ url: value });
+								}}
+								label={__('URL')}
+								autoComplete="off"
+								disabled={hasSyncedLink}
+							/>
+							{hasSyncedLink && (
+								<Button
+									variant="link"
+									onClick={() => {
+										setAttributes({ type: '', kind: 'custom' });
+									}}
+									className={'components-base-control kb-nav-link-edit-link-button'}
+								>
+									{__('Edit URL', 'kadence-blocks')}
+								</Button>
+							)}
+							<ToggleControl
+								label={__('Disable Link', 'kadence-blocks')}
+								checked={disableLink}
+								onChange={(value) => setAttributes({ disableLink: value })}
+							/>
+
+							<TextareaControl
+								__nextHasNoMarginBottom
+								value={description || ''}
+								onChange={(descriptionValue) => {
+									setAttributes({ description: descriptionValue });
+								}}
+								label={__('Description', 'kadence-blocks')}
+								help={__('Supporting text for this item.', 'kadence-blocks')}
+							/>
+							<TextControl
+								__nextHasNoMarginBottom
+								value={title || ''}
+								onChange={(titleValue) => {
+									setAttributes({ title: titleValue });
+								}}
+								label={__('Title attribute')}
+								autoComplete="off"
+								help={__('Additional information to help clarify the purpose of the link.')}
+							/>
+							<TextControl
+								__nextHasNoMarginBottom
+								value={rel || ''}
+								onChange={(relValue) => {
+									setAttributes({ rel: relValue });
+								}}
+								label={__('Rel attribute')}
+								autoComplete="off"
+								help={__('The relationship of the linked URL as space-separated link types.')}
+							/>
+						</KadencePanelBody>
+
+						{/* only show this section if there will actually be something inside it */}
+						{((hasFilter('kadence.megaMenuControlsNavigationLink', 'kadence/navigationlinkpro') &&
+							isTopLevelLink &&
+							!inMegaMenu) ||
+							(isTopLevelLink && hasChildren)) && (
+							<KadencePanelBody
+								panelName={'navigation-link-submenu-setttings'}
+								title={__('Sub Menu Settings', 'kadence-blocks')}
+								initialOpen={false}
+							>
+								{isTopLevelLink && hasChildren && (
+									<KadenceRadioButtons
+										label={__('Open dropdown on', 'kadence-blocks')}
+										value={dropdownClick}
+										className={'kb-letter-case'}
+										options={[
+											{
+												value: false,
+												label: __('Hover', 'kadence-blocks'),
+												tooltip: __('Hover to open', 'kadence-blocks'),
+											},
+											{
+												value: true,
+												label: __('Click', 'kadence-blocks'),
+												tooltip: __('Click to Open', 'kadence-blocks'),
+											},
+										]}
+										onChange={(value) => setAttributes({ dropdownClick: value })}
+									/>
+								)}
+								{applyFilters(
+									'kadence.megaMenuControlsNavigationLink',
+									megaMenuControls,
+									props,
+									doMegaMenuEnable,
+									isTopLevelLink,
+									previewDevice,
+									inMegaMenu
+								)}
+							</KadencePanelBody>
 						)}
-						<TextareaControl
-							__nextHasNoMarginBottom
-							value={description || ''}
-							onChange={(descriptionValue) => {
-								setAttributes({ description: descriptionValue });
-							}}
-							label={__('Description', 'kadence-blocks')}
-							help={__('Supporting text for this item.', 'kadence-blocks')}
-						/>
-						<TextControl
-							__nextHasNoMarginBottom
-							value={title || ''}
-							onChange={(titleValue) => {
-								setAttributes({ title: titleValue });
-							}}
-							label={__('Title attribute')}
-							autoComplete="off"
-							help={__('Additional information to help clarify the purpose of the link.')}
-						/>
-						<TextControl
-							__nextHasNoMarginBottom
-							value={rel || ''}
-							onChange={(relValue) => {
-								setAttributes({ rel: relValue });
-							}}
-							label={__('Rel attribute')}
-							autoComplete="off"
-							help={__('The relationship of the linked URL as space-separated link types.')}
-						/>
-					</KadencePanelBody>
+					</>
 				)}
 
 				{activeTab === 'style' && (

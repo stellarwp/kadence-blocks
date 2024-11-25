@@ -7,6 +7,8 @@ export default function BackendStyles(props) {
 	const {
 		uniqueID,
 		slideFrom,
+		slideFromTablet,
+		slideFromMobile,
 		backgroundColor,
 		backgroundColorTablet,
 		backgroundColorMobile,
@@ -18,6 +20,8 @@ export default function BackendStyles(props) {
 		paddingMobile,
 		paddingUnit,
 		widthType,
+		widthTypeTablet,
+		widthTypeMobile,
 		maxWidth,
 		maxWidthTablet,
 		maxWidthMobile,
@@ -138,12 +142,14 @@ export default function BackendStyles(props) {
 		closeIconBackgroundColorHoverTablet,
 		closeIconBackgroundColorHoverMobile
 	);
+	const previewSlideFrom = getPreviewSize(previewDevice, slideFrom, slideFromTablet, slideFromMobile);
+	const previewWidthType = getPreviewSize(previewDevice, widthType, widthTypeTablet, widthTypeMobile);
 
 	const css = new KadenceBlocksCSS();
 
 	//content area
 	css.set_selector(`.wp-block-kadence-off-canvas${uniqueID}`);
-	if (slideFrom == 'right') {
+	if (previewSlideFrom == 'right') {
 		css.add_property('right', editorRight + 'px');
 	} else {
 		css.add_property('left', editorLeft + 'px');
@@ -152,7 +158,7 @@ export default function BackendStyles(props) {
 	css.add_property('top', editorTop + 'px');
 	css.add_property('background', KadenceColorOutput(previewBackgroundColor));
 
-	if (widthType == 'full') {
+	if (previewWidthType == 'full') {
 		css.add_property('width', editorWidth + 'px');
 	} else if (previewMaxWidth) {
 		css.add_property('max-width', previewMaxWidth + maxWidthUnit);

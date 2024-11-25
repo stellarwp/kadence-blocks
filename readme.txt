@@ -3,8 +3,8 @@ Contributors: britner, oakesjosh, woodardmc
 Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.3
-Tested up to: 6.6
-Stable tag: 3.3.3
+Tested up to: 6.7
+Stable tag: 3.3.7
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -173,6 +173,43 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 3.3.8 =
+Release Date: tba
+* Fix: Issue with table of contents script dependency timing.
+
+= 3.3.7 =
+Release Date: November 21st 2024
+* Fix: Issue with advanced gallery captions.
+
+= 3.3.6 =
+Release Date: November 20th 2024
+* Add: Allow links in advanced gallery lightbox captions.
+* Add: WPML support for advanced form input fields.
+* Adjust: Naming and support text for navigation stretch option.
+* Fix: Editor error when modifying accordion panes.
+
+= 3.3.5 =
+Release Date: November 19th 2024
+* Add: Filters to customize faq schema output for accordion blocks. kadence_blocks_faq_schema, kadence_blocks_faq_schema_allowed_tags, kadence_blocks_faq_schema_question, kadence_blocks_faq_schema_answer
+* Add: Responsive controls for Header Off Canvas block width type and slide direction.
+* Add: Off canvas display settings are now responsive.
+* Add: Responsive Navigation alignment settings.
+* Fix: Accordion scrolling to end of content when opened in some situations.
+* Fix: Off canvas content alignment not working to the right.
+* Fix: Navigation link alignment issues.
+* Fix: Smooth scrolling to accordion ID.
+* Fix: Maximum numeric value is shown on load for progress bar. If the user doesn't have JS enabled, they'll see the intended value on the page. This can be disabled in settings.
+
+= 3.3.4 =
+Release Date: November 12th 2024
+* Add: Ability to import & export advanced headers.
+* Add: Ability to import & export advanced forms.
+* Add: Ability to import & export advanced navigations.
+* Add: Add background gradient to advanced highlight.
+* Fix: Post grid not displaying all selected posts.
+* Fix: Active color not working for imported WordPress navigation menus.
+* Fix: Submit button on advanced form not using proper unit for border radius.
 
 = 3.3.3 =
 Release Date: October 29th 2024

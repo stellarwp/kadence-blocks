@@ -35,6 +35,7 @@ import {
 	ResponsiveButtonStyleControlsWithStates,
 	KadenceWebfontLoader,
 	KadenceSubPanelBody,
+	ResponsiveAlignControls,
 } from '@kadence/components';
 import { getPreviewSize, mouseOverVisualizer, showSettings, arrayStringToInt } from '@kadence/helpers';
 
@@ -422,6 +423,12 @@ export function EditInner(props) {
 		dropdownDescriptionPositioning: meta?._kad_navigation_dropdownDescriptionPositioning,
 		dropdownDescriptionPositioningTablet: meta?._kad_navigation_dropdownDescriptionPositioningTablet,
 		dropdownDescriptionPositioningMobile: meta?._kad_navigation_dropdownDescriptionPositioningMobile,
+		dropdownLinkHorizontalAlignment: meta?._kad_navigation_dropdownLinkHorizontalAlignment,
+		dropdownLinkHorizontalAlignmentTablet: meta?._kad_navigation_dropdownLinkHorizontalAlignmentTablet,
+		dropdownLinkHorizontalAlignmentMobile: meta?._kad_navigation_dropdownLinkHorizontalAlignmentMobile,
+		linkHorizontalAlignment: meta?._kad_navigation_linkHorizontalAlignment,
+		linkHorizontalAlignmentTablet: meta?._kad_navigation_linkHorizontalAlignmentTablet,
+		linkHorizontalAlignmentMobile: meta?._kad_navigation_linkHorizontalAlignmentMobile,
 	};
 
 	const {
@@ -615,6 +622,12 @@ export function EditInner(props) {
 		dropdownDescriptionPositioning,
 		dropdownDescriptionPositioningTablet,
 		dropdownDescriptionPositioningMobile,
+		dropdownLinkHorizontalAlignment,
+		dropdownLinkHorizontalAlignmentTablet,
+		dropdownLinkHorizontalAlignmentMobile,
+		linkHorizontalAlignment,
+		linkHorizontalAlignmentTablet,
+		linkHorizontalAlignmentMobile,
 	} = metaAttributes;
 
 	const inTemplatePreviewMode = !id && templateKey;
@@ -630,6 +643,8 @@ export function EditInner(props) {
 		horizontalLayoutTablet,
 		horizontalLayoutMobile
 	);
+	const previewStretchFill = getPreviewSize(previewDevice, stretchFill, stretchFillTablet, stretchFillMobile);
+
 	const setMetaAttribute = (value, key) => {
 		setMeta({ ...meta, ['_kad_navigation_' + key]: value });
 	};
@@ -1402,7 +1417,7 @@ export function EditInner(props) {
 							)}
 							{previewOrientation !== 'vertical' && previewHorizontalLayout === 'stretch' && (
 								<ResponsiveSelectControl
-									label={__('Fill and Center Menu Items?', 'kadence-blocks')}
+									label={__('Stretch Behavior', 'kadence-blocks')}
 									value={stretchFill}
 									tabletValue={stretchFillTablet}
 									mobileValue={stretchFillMobile}
@@ -1418,6 +1433,10 @@ export function EditInner(props) {
 									onChange={(value) => setMetaAttribute(value, 'stretchFill')}
 									onChangeTablet={(value) => setMetaAttribute(value, 'stretchFillTablet')}
 									onChangeMobile={(value) => setMetaAttribute(value, 'stretchFillMobile')}
+									help={__(
+										'Standard adds space between navigation links to fill the available space. Fill and Center adjusts the text area with additional spacing and centers the text; text alignment can be updated in the Style tab.',
+										'kadence-blocks'
+									)}
 								/>
 							)}
 							<SmallResponsiveControl
@@ -1470,6 +1489,18 @@ export function EditInner(props) {
 								setMetaAttribute={setMetaAttribute}
 								attributes={metaAttributes}
 							/>
+							{(previewOrientation == 'vertical' ||
+								(previewHorizontalLayout === 'stretch' && previewStretchFill == 'fill')) && (
+								<ResponsiveAlignControls
+									label={__('Alignment', 'kadence-blocks')}
+									value={linkHorizontalAlignment ? linkHorizontalAlignment : ''}
+									tabletValue={linkHorizontalAlignmentTablet ? linkHorizontalAlignmentTablet : ''}
+									mobileValue={linkHorizontalAlignmentMobile ? linkHorizontalAlignmentMobile : ''}
+									onChange={(value) => setMetaAttribute(value, 'linkHorizontalAlignment')}
+									onChangeTablet={(value) => setMetaAttribute(value, 'linkHorizontalAlignmentTablet')}
+									onChangeMobile={(value) => setMetaAttribute(value, 'linkHorizontalAlignmentMobile')}
+								/>
+							)}
 						</KadencePanelBody>
 						{context?.['kadence/headerIsTransparent'] == '1' && (
 							<KadencePanelBody
@@ -1949,6 +1980,27 @@ export function EditInner(props) {
 									units={['px', 'em', 'rem', '%']}
 									onUnit={(value) => setMetaAttribute(value, 'marginDropdownLinkUnit')}
 								/>
+								<ResponsiveAlignControls
+									label={__('Alignment', 'kadence-blocks')}
+									value={dropdownLinkHorizontalAlignment ? dropdownLinkHorizontalAlignment : ''}
+									tabletValue={
+										dropdownLinkHorizontalAlignmentTablet
+											? dropdownLinkHorizontalAlignmentTablet
+											: ''
+									}
+									mobileValue={
+										dropdownLinkHorizontalAlignmentMobile
+											? dropdownLinkHorizontalAlignmentMobile
+											: ''
+									}
+									onChange={(value) => setMetaAttribute(value, 'dropdownLinkHorizontalAlignment')}
+									onChangeTablet={(value) =>
+										setMetaAttribute(value, 'dropdownLinkHorizontalAlignmentTablet')
+									}
+									onChangeMobile={(value) =>
+										setMetaAttribute(value, 'dropdownLinkHorizontalAlignmentMobile')
+									}
+								/>
 								{showSettings('fontSettings', 'kadence/navigation') && (
 									<KadencePanelBody
 										title={__('Typography Settings', 'kadence-blocks')}
@@ -2078,7 +2130,7 @@ export function EditInner(props) {
 									<KadencePanelBody
 										title={__('Typography Settings', 'kadence-blocks')}
 										initialOpen={false}
-										panelName={'kb-nav-desc-font'}
+										panelName={'kb-nav-sub-desc-font'}
 									>
 										<TypographyControls
 											fontSize={dropdownDescriptionTypography?.[0]?.size}

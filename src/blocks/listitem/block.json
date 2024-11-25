@@ -106,7 +106,13 @@
 			"default": true
 		}
 	},
-	"usesContext": ["kadence/listIcon", "kadence/listIconWidth"],
+	"usesContext": [
+		"kadence/listIcon",
+		"kadence/listIconWidth",
+		"kadence/dynamicSource",
+		"kadence/repeaterRowData",
+		"kadence/repeaterRow"
+	],
 	"supports": {
 		"ktdynamic": true,
 		"html": false,

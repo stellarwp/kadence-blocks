@@ -202,6 +202,8 @@ export default function BackendStyles(props) {
 		dropdownDescriptionPositioningMobile,
 		isMegaMenu,
 		align,
+		alignTablet,
+		alignMobile,
 		border,
 		borderHover,
 		borderActive,
@@ -289,6 +291,7 @@ export default function BackendStyles(props) {
 
 	const isFEIcon = 'fe' === mediaIcon[0].icon.substring(0, 2);
 
+	const previewAlign = getPreviewSize(previewDevice, align, alignTablet, alignMobile);
 	const previewBackgroundActive = getPreviewSize(
 		previewDevice,
 		backgroundActive,
@@ -1084,6 +1087,17 @@ export default function BackendStyles(props) {
 		css.render_color(previewDescriptionColorActive)
 	);
 
+	//link, description, and media alignment
+	if (previewAlign) {
+		css.add_property('--kb-nav-link-align', previewAlign);
+		const previewFlexAlign = previewAlign == 'right' ? 'end' : previewAlign == 'center' ? 'center' : 'start';
+		css.add_property('--kb-nav-link-flex-justify', previewFlexAlign);
+		css.add_property('--kb-nav-link-media-container-align-self', previewFlexAlign);
+		if (previewMediaAlign == 'top' || previewMediaAlign == 'bottom') {
+			css.add_property('--kb-nav-link-flex-align', previewFlexAlign);
+		}
+	}
+
 	//media styles
 	if (mediaType && 'none' !== mediaType) {
 		css.add_property('--kb-nav-link-icon-font-size', css.render_size(previewMediaIconSize, 'px'));
@@ -1107,6 +1121,7 @@ export default function BackendStyles(props) {
 				css.render_size(previewMediaStyleMargin[0], 'px')
 			);
 		} else if (previewMediaAlign === 'bottom') {
+			//add here
 			css.add_property('--kb-nav-link-title-wrap-display', 'flex');
 			css.add_property('--kb-nav-link-media-container-order', '1');
 			css.add_property('--kb-nav-link-title-wrap-flex-direction', 'column');
@@ -1138,9 +1153,6 @@ export default function BackendStyles(props) {
 			);
 		}
 	}
-
-	//link and description text alignment
-	css.add_property('--kb-nav-link-align', align != '' ? align : 'left');
 
 	//placement logic where an additional selector is needed
 	css.set_selector(

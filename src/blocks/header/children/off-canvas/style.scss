@@ -1,6 +1,15 @@
+@import "../../../../assets/css/variables.scss";
+
 $admin-bar-height: 32px;
 $admin-bar-height-mobile: 46px;
 
+@mixin open-right-styles {
+	.kb-off-canvas-inner-wrap {
+		transform: translateX(100%);
+		right: 0;
+		left: auto;
+	}
+}
 /* The off canvas area */
 .wp-block-kadence-off-canvas {
 	position: fixed;
@@ -26,10 +35,18 @@ $admin-bar-height-mobile: 46px;
 			-webkit-transform 0.3s cubic-bezier(0.77, 0.2, 0.05, 1);
 	}
 	&.open-right {
-		.kb-off-canvas-inner-wrap {
-			transform: translateX(100%);
-			right: 0;
-			left: auto;
+		@media (min-width: $laptop-plus-query) {
+			@include open-right-styles();
+		}
+	}
+	&.open-tablet-right {
+		@media (min-width: $before-tablet-plus-query) and (max-width: $tablet-minus-query) {
+			@include open-right-styles();
+		}
+	}
+	&.open-tablet-right {
+		@media (max-width: $phone-minus-query) {
+			@include open-right-styles();
 		}
 	}
 	.kb-off-canvas-overlay {

@@ -388,7 +388,17 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( '--kb-nav-link-description-color-active', $css->render_color( $sized_attributes['descriptionColorActive'] ) );
 			$css->add_property( '--kb-nav-link-description-color-active-ancestor', $css->render_color( $sized_attributes['descriptionColorActive'] ) );
 		}
-		$css->add_property( '--kb-nav-link-align', ( isset( $sized_attributes['align'] ) && $sized_attributes['align'] ) ? $sized_attributes['align'] : 'left' );
+
+		//link, description, and media alignment
+		if ($sized_attributes['align']) {
+			$css->add_property( '--kb-nav-link-align', $sized_attributes['align'] );
+			$sized_flex_align = $sized_attributes['align'] == 'right' ? 'end' : ( $sized_attributes['align'] == 'center' ? 'center' : 'start' );
+			$css->add_property('--kb-nav-link-flex-justify', $sized_flex_align);
+			$css->add_property('--kb-nav-link-media-container-align-self', $sized_flex_align);
+			if ($sized_attributes['mediaAlign'] == 'top' || $sized_attributes['mediaAlign']) {
+				$css->add_property('--kb-nav-link-flex-align', $sized_flex_align);
+			}
+		}
 
 		//placement logic where an additional selector is needed
 		// Mega menu width styles.
@@ -708,7 +718,10 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 	 * @return boolean
 	 */
 	public function is_current( $attributes ) {
-		return ! empty( $attributes['id'] ) && get_queried_object_id() === (int) $attributes['id'] && ! empty( get_queried_object()->post_type );
+		global $wp;
+
+		$link_matches = untrailingslashit( $attributes['url'] ) ===untrailingslashit( home_url( $wp->request ) );
+		return ( ! empty( $attributes['id'] ) && get_queried_object_id() === (int) $attributes['id'] && ! empty( get_queried_object()->post_type ) ) || $link_matches;
 	}
 
 	/**
