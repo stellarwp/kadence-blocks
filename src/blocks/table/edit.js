@@ -1,3 +1,4 @@
+import { flow } from 'lodash';
 import { __, sprintf } from '@wordpress/i18n';
 import React, { useState, useEffect } from '@wordpress/element';
 import { useSelect, useDispatch, dispatch, select } from '@wordpress/data';
@@ -12,10 +13,12 @@ import {
 	ToggleControl,
 	SelectControl,
 	Button,
-	ButtonGroup,
 	__experimentalNumberControl as NumberControl,
 	ResizableBox,
 	ExternalLink,
+	ToolbarDropdownMenu,
+	MenuGroup,
+	MenuItem,
 } from '@wordpress/components';
 
 import {
@@ -36,6 +39,7 @@ import {
 import { setBlockDefaults, getUniqueId, getPostOrFseId } from '@kadence/helpers';
 import BackendStyles from './components/backend-styles';
 import { applyFilters } from '@wordpress/hooks';
+import { plus } from '@wordpress/icons';
 
 const DEFAULT_PERCENT_WIDTH = 30;
 const DEFAULT_PIXEL_WIDTH = 150;
@@ -95,6 +99,7 @@ export function Edit(props) {
 	} = attributes;
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
+	const { insertBlock } = useDispatch('core/block-editor');
 	const { isUniqueID, isUniqueBlock, previewDevice, parentData, childSelected } = useSelect(
 		(select) => {
 			return {
@@ -150,6 +155,35 @@ export function Edit(props) {
 			addUniqueID(uniqueID, clientId);
 		}
 	}, []);
+
+	const addRow = (position) => {
+		let insertIndex;
+
+		switch (position) {
+			case 'top':
+				insertIndex = 0;
+				break;
+			case 'bottom':
+				insertIndex = undefined;
+				break;
+			default:
+				return;
+		}
+
+		const newRow = createBlock('kadence/table-row', {});
+		insertBlock(newRow, insertIndex, clientId, false);
+	};
+
+	const rowControls = [
+		{
+			title: __('Add Row at Top', 'kadence-blocks'),
+			onClick: () => addRow('top'),
+		},
+		{
+			title: __('Add Row at Bottom', 'kadence-blocks'),
+			onClick: () => addRow('bottom'),
+		},
+	];
 
 	const rowCount = select('core/block-editor').getBlocks(clientId);
 
@@ -354,6 +388,19 @@ export function Edit(props) {
 	return (
 		<div {...blockProps}>
 			<BlockControls>
+				<ToolbarDropdownMenu icon={plus} label={__('Add Row', 'kadence-blocks')}>
+					{({ onClose }) => (
+						<>
+							<MenuGroup>
+								{rowControls.map((control) => (
+									<MenuItem key={control.title} onClick={flow(onClose, control.onClick)}>
+										{control.title}
+									</MenuItem>
+								))}
+							</MenuGroup>
+						</>
+					)}
+				</ToolbarDropdownMenu>
 				<CopyPasteAttributes
 					attributes={attributes}
 					excludedAttrs={nonTransAttrs}
@@ -914,7 +961,7 @@ export function Edit(props) {
 			<BackendStyles attributes={attributes} previewDevice={previewDevice} />
 			{(isSelected || childSelected) && (
 				<div className="kb-table-width-controls">
-					<div className="kb-table-width-resizers" style={{ display: 'flex', marginBottom: '20px' }}>
+					<div className="kb-table-width-resizers" style={{ display: 'flex' }}>
 						{Array.from({ length: columns }).map((_, index) => {
 							const columnSetting = getColumnSetting(index);
 

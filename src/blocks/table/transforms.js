@@ -48,8 +48,6 @@ const transforms = {
 				const { head, body, foot } = attributes[0];
 				const innerBlocks = [];
 
-				console.log(attributes);
-
 				if (head && head.length > 0) {
 					head.forEach((row) => {
 						innerBlocks.push(createKadenceRow(row));

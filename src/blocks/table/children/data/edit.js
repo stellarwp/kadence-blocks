@@ -25,7 +25,6 @@ export function Edit(props) {
 
 	const { uniqueID, column, padding, tabletPadding, mobilePadding, paddingType } = attributes;
 
-	console.log(padding);
 	const [activeTab, setActiveTab] = useState('general');
 
 	const { addUniqueID } = useDispatch('kadenceblocks/data');
