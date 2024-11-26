@@ -57,21 +57,38 @@
 				path2.setAttribute('stroke-width', item.stokeWidths[0]);
 			}
 		},
-		triggerAnimation(element, index, item) {
-			if (kadenceProgressBars.cache[item.simple_id][index]) {
-				const prefix = kadenceProgressBars.stripHtml(item.prefix);
-				const suffix = kadenceProgressBars.stripHtml(item.suffix);
-				kadenceProgressBars.cache[item.simple_id][index].animate(item.progress_real / item.progress_max, {
-					duration: item.duration * 1000,
-					step(state, bar) {
-						let value = 0;
-						const elementAbove = element.querySelector('.kb-current-progress-above');
-						const elementInside = element.querySelector('.kb-current-progress-inside');
-						const elementBelow = element.querySelector('.kb-current-progress-below');
-						if (item.is_relative) {
-							value = Math.round(bar.value() * 100);
-						} else {
-							value = Math.round(bar.value() * item.progress_max);
+		triggerAnimation( element, index, item ) {
+			if ( kadenceProgressBars.cache[item.simple_id][index] ) {
+				const prefix = item?.prefix ? kadenceProgressBars.stripHtml(item.prefix) : '';
+				const suffix = item?.suffix ? kadenceProgressBars.stripHtml(item.suffix) : '';
+				kadenceProgressBars.cache[item.simple_id][index].animate(
+					( item.progress_real / item.progress_max ),
+					{
+						duration: ( item.duration * 1000 ),
+						step: function(state, bar) {
+							let value = 0;
+							let elementAbove = element.querySelector('.kb-current-progress-above');
+							let elementInside = element.querySelector('.kb-current-progress-inside');
+							let elementBelow = element.querySelector('.kb-current-progress-below');
+							if( item.is_relative ) {
+								value = Math.round(bar.value() * 100 );
+							} else {
+								value = Math.round(bar.value() * item.progress_max );
+							}
+							if ( item.decimal === 'one' ) {
+								value = Math.round( bar.value() * 10) / 10;
+								value = value.toFixed(1);
+							} else if( item.decimal === 'two' ) {
+								value = Math.round( bar.value() * 100) / 100;
+								value = value.toFixed(2);
+							}	
+							if( elementAbove ){
+								elementAbove.innerHTML = prefix + value + suffix;
+							} else if ( elementInside ){
+								elementInside.innerHTML = prefix + value + suffix;
+							} else if ( elementBelow ){
+								elementBelow.innerHTML = prefix + value + suffix;
+							}
 						}
 						if (item.decimal === 'one') {
 							value = Math.round(bar.value() * 10) / 10;
@@ -100,6 +117,7 @@
 			} else {
 				initialStroke = item.stokeWidths?.[0] ? item.stokeWidths[0] : 2;
 			}
+			const progressElement = element.querySelector('.kb-progress-bar');
 			const args = {
 				color: item.progressColor,
 				trailColor: item.barBackground,
@@ -112,13 +130,13 @@
 			}
 			switch (item.type) {
 				case 'circle':
-					kadenceProgressBars.cache[item.simple_id][index] = new ProgressBar.Circle(element, args);
+					kadenceProgressBars.cache[item.simple_id][index] = new ProgressBar.Circle( progressElement, args );
 					break;
 				case 'line':
-					kadenceProgressBars.cache[item.simple_id][index] = new ProgressBar.Line(element, args);
+					kadenceProgressBars.cache[item.simple_id][index] = new ProgressBar.Line( progressElement, args );
 					break;
 				case 'semicircle':
-					kadenceProgressBars.cache[item.simple_id][index] = new ProgressBar.SemiCircle(element, args);
+					kadenceProgressBars.cache[item.simple_id][index] = new ProgressBar.SemiCircle( progressElement, args );
 					break;
 			}
 			if (item.delay) {
@@ -136,9 +154,9 @@
 				kadenceProgressBars.triggerAnimation(element, index, item);
 			}
 		},
-		initSingleBar(item) {
-			const barContainers = document.querySelectorAll('.kb-progress-bar-' + item.unique_id);
-			if (!barContainers?.length) {
+		initSingleBar( item ) {
+			const barContainers = document.querySelectorAll(".kb-progress-bar-container" + item.unique_id );
+			if (! barContainers?.length) {
 				return;
 			}
 			for (let n = 0; n < barContainers.length; n++) {
