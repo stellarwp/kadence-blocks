@@ -68,18 +68,25 @@
 						const elementAbove = element.querySelector('.kb-current-progress-above');
 						const elementInside = element.querySelector('.kb-current-progress-inside');
 						const elementBelow = element.querySelector('.kb-current-progress-below');
+
+						//get current raw progress value
 						if (item.is_relative) {
-							value = Math.round(bar.value() * 100);
+							value = bar.value() * 100;
 						} else {
-							value = Math.round(bar.value() * item.progress_max);
+							value = bar.value() * item.progress_max;
 						}
+
+						//format the value according to decimal points indicated in settings
 						if (item.decimal === 'one') {
-							value = Math.round(bar.value() * 10) / 10;
+							value = Math.round(value * 10) / 10;
 							value = value.toFixed(1);
 						} else if (item.decimal === 'two') {
-							value = Math.round(bar.value() * 100) / 100;
+							value = Math.round(value * 100) / 100;
 							value = value.toFixed(2);
+						} else {
+							value = Math.round(value);
 						}
+
 						if (elementAbove) {
 							elementAbove.innerHTML = prefix + value + suffix;
 						} else if (elementInside) {
