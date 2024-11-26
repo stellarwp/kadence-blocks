@@ -90,22 +90,8 @@
 								elementBelow.innerHTML = prefix + value + suffix;
 							}
 						}
-						if (item.decimal === 'one') {
-							value = Math.round(bar.value() * 10) / 10;
-							value = value.toFixed(1);
-						} else if (item.decimal === 'two') {
-							value = Math.round(bar.value() * 100) / 100;
-							value = value.toFixed(2);
-						}
-						if (elementAbove) {
-							elementAbove.innerHTML = prefix + value + suffix;
-						} else if (elementInside) {
-							elementInside.innerHTML = prefix + value + suffix;
-						} else if (elementBelow) {
-							elementBelow.innerHTML = prefix + value + suffix;
-						}
 					},
-				});
+				);
 			}
 		},
 		initSingleBarElement(element, index, item) {
