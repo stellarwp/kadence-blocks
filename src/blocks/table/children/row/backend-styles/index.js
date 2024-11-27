@@ -24,7 +24,9 @@ export default function BackendStyles(props) {
 
 	const css = new KadenceBlocksCSS();
 
-	css.set_selector(`.kb-table-container .kb-table tr.kb-table-row${uniqueID}`);
+	css.set_selector(
+		`.kb-table-container .kb-table tr.kb-table-row${uniqueID}, .kb-table-container .kb-table tr.kb-table-row${uniqueID} th, .kb-table-container .kb-table tr.kb-table-row${uniqueID} td`
+	);
 	if (previewMinHeight) {
 		css.add_property('height', previewMinHeight + minHeightType);
 	}
@@ -32,7 +34,9 @@ export default function BackendStyles(props) {
 		css.add_property('background-color', KadenceColorOutput(backgroundColor));
 	}
 
-	css.set_selector(`.kb-table-container .kb-table tr.kb-table-row${uniqueID}:hover`);
+	css.set_selector(
+		`.kb-table-container .kb-table tr.kb-table-row${uniqueID}:hover, .kb-table-container .kb-table tr.kb-table-row${uniqueID}:hover th, .kb-table-container .kb-table tr.kb-table-row${uniqueID}:hover td`
+	);
 	if (backgroundHoverColor !== '') {
 		css.add_property('background-color', KadenceColorOutput(backgroundHoverColor));
 	}

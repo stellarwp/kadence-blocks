@@ -132,7 +132,7 @@ export default function BackendStyles(props) {
 	}
 
 	if (headerTypography[0].color) {
-		css.set_selector(`.kb-table${uniqueID} th .kadence-advancedheading-text`);
+		css.set_selector(`.kb-table${uniqueID} th`);
 		css.add_property('color', KadenceColorOutput(headerTypography[0].color));
 	}
 
@@ -182,7 +182,9 @@ export default function BackendStyles(props) {
 	if (columnBackgrounds) {
 		columnBackgrounds.forEach((background, index) => {
 			if (background) {
-				css.set_selector(`.kb-table${uniqueID} td:nth-child(${index + 1})`);
+				css.set_selector(
+					`.kb-table${uniqueID} td:nth-child(${index + 1}), .kb-table${uniqueID} th:nth-child(${index + 1})`
+				);
 				css.add_property('background-color', KadenceColorOutput(background));
 			}
 		});
@@ -191,7 +193,11 @@ export default function BackendStyles(props) {
 	if (columnBackgroundsHover) {
 		columnBackgroundsHover.forEach((background, index) => {
 			if (background) {
-				css.set_selector(`.kb-table${uniqueID} td:nth-child(${index + 1}):hover`);
+				css.set_selector(
+					`.kb-table${uniqueID} td:nth-child(${index + 1}):hover, .kb-table${uniqueID} th:nth-child(${
+						index + 1
+					}):hover`
+				);
 				css.add_property('background-color', KadenceColorOutput(background));
 			}
 		});
