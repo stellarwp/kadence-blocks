@@ -176,6 +176,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 = 3.3.8 =
 Release Date: tba
+* Update: Close mega menu when clicking outside of dropdown.
 * Fix: Issue with table of contents script dependency timing.
 
 = 3.3.7 =
