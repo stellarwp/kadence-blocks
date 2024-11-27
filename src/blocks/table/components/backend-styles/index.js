@@ -160,16 +160,16 @@ export default function BackendStyles(props) {
 	);
 
 	if (evenOddBackground) {
-		css.set_selector(`.kb-table${uniqueID} tr:nth-child(even)`);
+		css.set_selector(`.kb-table${uniqueID} tr:nth-of-type(even)`);
 		css.add_property('background-color', KadenceColorOutput(backgroundColorEven));
 
-		css.set_selector(`.kb-table${uniqueID} tr:nth-child(odd)`);
+		css.set_selector(`.kb-table${uniqueID} tr:nth-of-type(odd)`);
 		css.add_property('background-color', KadenceColorOutput(backgroundColorOdd));
 
-		css.set_selector(`.kb-table${uniqueID} tr:nth-child(odd):hover`);
+		css.set_selector(`.kb-table${uniqueID} tr:nth-of-type(odd):hover`);
 		css.add_property('background-color', KadenceColorOutput(backgroundHoverColorOdd));
 
-		css.set_selector(`.kb-table${uniqueID} tr:nth-child(even):hover`);
+		css.set_selector(`.kb-table${uniqueID} tr:nth-of-type(even):hover`);
 		css.add_property('background-color', KadenceColorOutput(backgroundHoverColorEven));
 	} else {
 		css.set_selector(`.kb-table${uniqueID} tr`);
@@ -183,7 +183,9 @@ export default function BackendStyles(props) {
 		columnBackgrounds.forEach((background, index) => {
 			if (background) {
 				css.set_selector(
-					`.kb-table${uniqueID} td:nth-child(${index + 1}), .kb-table${uniqueID} th:nth-child(${index + 1})`
+					`.kb-table${uniqueID} td:nth-of-type(${index + 1}), .kb-table${uniqueID} th:nth-of-type(${
+						index + 1
+					})`
 				);
 				css.add_property('background-color', KadenceColorOutput(background));
 			}
@@ -194,7 +196,7 @@ export default function BackendStyles(props) {
 		columnBackgroundsHover.forEach((background, index) => {
 			if (background) {
 				css.set_selector(
-					`.kb-table${uniqueID} td:nth-child(${index + 1}):hover, .kb-table${uniqueID} th:nth-child(${
+					`.kb-table${uniqueID} td:nth-of-type(${index + 1}):hover, .kb-table${uniqueID} th:nth-of-type(${
 						index + 1
 					}):hover`
 				);
