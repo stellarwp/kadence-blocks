@@ -140,6 +140,24 @@
 		}
 	};
 	/**
+	 * Close all open submenus when clicking outside.
+	 * @return {void}
+	 */
+	const handleClickOutsideSubmenus = function () {
+		document.addEventListener('click', function (e) {
+			// Find all open submenus.
+			const openSubmenus = document.querySelectorAll('.menu-item--toggled-on');
+
+			// Close any open submenus if the click is outside them.
+			openSubmenus.forEach((submenu) => {
+				// Check if the click is outside the submenu and its parent menu item.
+				if (!submenu.contains(e.target)) {
+					toggleSubMenu(submenu, false);
+				}
+			});
+		});
+	};
+	/**
 	 * Initiate the script to process each
 	 * navigation tab with submenu support.
 	 */
@@ -418,6 +436,7 @@
 			}, 200);
 		});
 		trackOrientation(navigationBlocks);
+		handleClickOutsideSubmenus();
 	};
 
 	// Initialize immediately for already loaded DOM
