@@ -118,10 +118,13 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'max-width', $attributes['maxWidthMobile'] . ( ! empty( $attributes['maxWidthUnit'] ) ? $attributes['maxWidthUnit'] : 'px' ) );
 			$css->set_media_state( 'desktop' );
 		}
-
+		// Background Variables.
+		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id );
+		$css->render_background( $bg, $css, '--kb-header-row-bg' );
+		$css->render_background( $bg, $css, '--kb-stuck-header-bg' );
+		$css->render_background( $bg_transparent, $css, '--kb-transparent-header-row-bg' );
 		if ( 'contained' !== $layout ) {
 			$css->set_selector( '.wp-block-kadence-header-row' . $unique_id .  ', .wp-block-kadence-header-row' . $unique_id . '.item-is-stuck.item-is-stuck');
-			$css->render_background( $bg, $css );
 			$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array(
 				'desktop_key' => 'borderRadius',
 				'tablet_key'  => 'borderRadiusTablet',
@@ -132,14 +135,10 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 				'tablet_key'  => 'borderTablet',
 				'mobile_key'  => 'borderMobile',
 			) );
-			// Transparent overrides.
-			$css->set_selector( '.header-' . strtolower( $size ) . '-transparent .wp-block-kadence-header-row' . $unique_id .  ', .header-' . strtolower( $size ) . '-transparent .wp-block-kadence-header-row' . $unique_id . '.item-is-stuck' );
-			$css->render_background( $bg_transparent, $css );
 		}
 		// Container.
-		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .kadence-header-row-inner' );
 		if ( 'contained' === $layout ) {
-			$css->render_background( $bg, $css );
+			$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .kadence-header-row-inner' );
 			$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array(
 				'desktop_key' => 'borderRadius',
 				'tablet_key'  => 'borderRadiusTablet',
@@ -150,10 +149,8 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 				'tablet_key'  => 'borderTablet',
 				'mobile_key'  => 'borderMobile',
 			) );
-			$css->set_selector( '.header-' . strtolower( $size ) . '-transparent .wp-block-kadence-header-row' . $unique_id . ' .kadence-header-row-inner' );
-			$css->render_background( $bg_transparent, $css );
-			$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .kadence-header-row-inner' );
 		}
+		$css->set_selector( '.wp-block-kadence-header-row' . $unique_id . ' .kadence-header-row-inner' );
 		$css->render_measure_output( $attributes, 'padding', 'padding', array(
 			'desktop_key' => 'padding',
 			'tablet_key'  => 'paddingTablet',
