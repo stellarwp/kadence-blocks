@@ -398,16 +398,13 @@ export function EditInner(props) {
 								}
 							}}
 							onSavePosition={(value) => {
-								setMetaAttribute({ ...backgroundValue, position: value }, 'background' + suffix + size)
+								setMetaAttribute({ ...backgroundValue, position: value }, 'background' + suffix + size);
 							}}
 							onSaveSize={(value) => {
-								setMetaAttribute({ ...backgroundValue, size: value }, 'background' + suffix + size)
+								setMetaAttribute({ ...backgroundValue, size: value }, 'background' + suffix + size);
 							}}
 							onSaveRepeat={(value) =>
-								setMetaAttribute(
-									{ ...backgroundValue, repeat: value },
-									'background' + suffix + size
-								)
+								setMetaAttribute({ ...backgroundValue, repeat: value }, 'background' + suffix + size)
 							}
 							onSaveAttachment={(value) =>
 								setMetaAttribute(
@@ -1414,7 +1411,8 @@ export function EditInner(props) {
 					help={
 						<>
 							{__(
-								'Enter a word or two — without spaces — to make a unique web address just for this block, called an “anchor.” Then, you’ll be able to link directly to this section of your page.', 'kadence-blocks'
+								'Enter a word or two — without spaces — to make a unique web address just for this block, called an “anchor.” Then, you’ll be able to link directly to this section of your page.',
+								'kadence-blocks'
 							)}
 
 							<ExternalLink href={__('https://wordpress.org/documentation/article/page-jumps/')}>

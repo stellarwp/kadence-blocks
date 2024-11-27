@@ -330,24 +330,24 @@ export default function BackendStyles(props) {
 	if (previewIsTransparent !== '1') {
 		if ('normal' === background?.type && background?.image) {
 			css.add_property('background-image', background.image);
-			if ( background?.size ) {
+			if (background?.size) {
 				css.add_property('background-size', background.size);
-			} else if ( background?.imageSize ) {
+			} else if (background?.imageSize) {
 				css.add_property('background-size', background.imageSize);
 			}
-			if ( background?.repeat ) {
+			if (background?.repeat) {
 				css.add_property('background-repeat', background.repeat);
-			} else if ( background?.imageRepeat ) {
+			} else if (background?.imageRepeat) {
 				css.add_property('background-repeat', background.imageRepeat);
 			}
-			if ( background?.attachment ) {
+			if (background?.attachment) {
 				css.add_property('background-attachment', background.attachment);
-			} else if ( background?.imageAttachment ) {
+			} else if (background?.imageAttachment) {
 				css.add_property('background-attachment', background.imageAttachment);
 			}
-			if ( background?.position ) {
+			if (background?.position) {
 				css.add_property('background-position', background.position);
-			} else if ( background?.imagePosition ) {
+			} else if (background?.imagePosition) {
 				css.add_property('background-position', background.imagePosition);
 			}
 		}
@@ -382,24 +382,24 @@ export default function BackendStyles(props) {
 	if (previewIsTransparent === '1') {
 		if ('normal' === backgroundTransparent?.type && backgroundTransparent?.image) {
 			css.add_property('background-image', backgroundTransparent.image);
-			if ( backgroundTransparent?.size ) {
+			if (backgroundTransparent?.size) {
 				css.add_property('background-size', backgroundTransparent.size);
-			} else if ( backgroundTransparent?.imageSize ) {
+			} else if (backgroundTransparent?.imageSize) {
 				css.add_property('background-size', backgroundTransparent.imageSize);
 			}
-			if ( backgroundTransparent?.repeat ) {
+			if (backgroundTransparent?.repeat) {
 				css.add_property('background-repeat', backgroundTransparent.repeat);
-			} else if ( backgroundTransparent?.imageRepeat ) {
+			} else if (backgroundTransparent?.imageRepeat) {
 				css.add_property('background-repeat', backgroundTransparent.imageRepeat);
 			}
-			if ( backgroundTransparent?.attachment ) {
+			if (backgroundTransparent?.attachment) {
 				css.add_property('background-attachment', backgroundTransparent.attachment);
-			} else if ( backgroundTransparent?.imageAttachment ) {
+			} else if (backgroundTransparent?.imageAttachment) {
 				css.add_property('background-attachment', backgroundTransparent.imageAttachment);
 			}
-			if ( backgroundTransparent?.position ) {
+			if (backgroundTransparent?.position) {
 				css.add_property('background-position', backgroundTransparent.position);
-			} else if ( backgroundTransparent?.imagePosition ) {
+			} else if (backgroundTransparent?.imagePosition) {
 				css.add_property('background-position', backgroundTransparent.imagePosition);
 			}
 		}
@@ -442,24 +442,24 @@ export default function BackendStyles(props) {
 	if (previewIsSticky === '1') {
 		if ('normal' === backgroundSticky?.type && backgroundSticky?.image) {
 			css.add_property('background-image', backgroundSticky.image);
-			if ( backgroundSticky?.size ) {
+			if (backgroundSticky?.size) {
 				css.add_property('background-size', backgroundSticky.size);
-			} else if ( backgroundSticky?.imageSize ) {
+			} else if (backgroundSticky?.imageSize) {
 				css.add_property('background-size', backgroundSticky.imageSize);
 			}
-			if ( backgroundSticky?.repeat ) {
+			if (backgroundSticky?.repeat) {
 				css.add_property('background-repeat', backgroundSticky.repeat);
-			} else if ( backgroundSticky?.imageRepeat ) {
+			} else if (backgroundSticky?.imageRepeat) {
 				css.add_property('background-repeat', backgroundSticky.imageRepeat);
 			}
-			if ( backgroundSticky?.attachment ) {
+			if (backgroundSticky?.attachment) {
 				css.add_property('background-attachment', backgroundSticky.attachment);
-			} else if ( backgroundSticky?.imageAttachment ) {
+			} else if (backgroundSticky?.imageAttachment) {
 				css.add_property('background-attachment', backgroundSticky.imageAttachment);
 			}
-			if ( backgroundSticky?.position ) {
+			if (backgroundSticky?.position) {
 				css.add_property('background-position', backgroundSticky.position);
-			} else if ( backgroundSticky?.imagePosition ) {
+			} else if (backgroundSticky?.imagePosition) {
 				css.add_property('background-position', backgroundSticky.imagePosition);
 			}
 		}
