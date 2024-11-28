@@ -5,7 +5,7 @@
  */
 (function () {
 	const focusableElementsString =
-			'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex="0"], [contenteditable]';
+		'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex="0"], [contenteditable]';
 	/**
 	 * Get element's offset.
 	 */
@@ -195,8 +195,8 @@
 				// 9 is tab KeyMap
 				if (9 === e.keyCode) {
 					var focusSelector =
-					'ul.toggle-show > li > .kb-link-wrap > a, ul.toggle-show > li > .kb-link-wrap > .kb-nav-dropdown-toggle-btn';
-					if ( submenus[i].parentNode.classList.contains('kadence-menu-mega-enabled') ) {
+						'ul.toggle-show > li > .kb-link-wrap > a, ul.toggle-show > li > .kb-link-wrap > .kb-nav-dropdown-toggle-btn';
+					if (submenus[i].parentNode.classList.contains('kadence-menu-mega-enabled')) {
 						focusSelector = focusableElementsString;
 					}
 					var visibleFocusableElements = Array.from(submenus[i].querySelectorAll(focusSelector));
@@ -206,7 +206,9 @@
 							toggleSubMenu(submenus[i].parentNode, false);
 						}
 						// Means we're tabbing out of the end of the submenu.
-					} else if (document.activeElement === visibleFocusableElements[visibleFocusableElements.length - 1]) {
+					} else if (
+						document.activeElement === visibleFocusableElements[visibleFocusableElements.length - 1]
+					) {
 						toggleSubMenu(submenus[i].parentNode, false);
 						// Move the focus back to the toggle.
 						setTimeout(function () {
