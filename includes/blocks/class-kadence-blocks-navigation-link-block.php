@@ -237,6 +237,12 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$css->set_selector( '.wp-block-kadence-navigation .navigation .menu-container ul .kb-nav-link-' . $unique_id . ' .sub-menu .kb-nav-label-description' );
 		$css->render_typography( $attributes, 'dropdownDescriptionTypography' );
 
+		// navigation highlight icon size
+		if ( ! empty($attributes['highlightIcon']) ) {
+			$css->set_selector('.kb-nav-link-' . $unique_id . ' .link-highlight-label .link-highlight-icon-wrap svg' );
+			$css->add_property('height', $attributes['highlightIcon'][0]['size'] . 'px');
+			$css->add_property('width', $attributes['highlightIcon'][0]['size'] . 'px');
+		}
 		return $css->css_output();
 	}
 
