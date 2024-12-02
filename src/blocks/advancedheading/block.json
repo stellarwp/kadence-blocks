@@ -344,10 +344,10 @@
 			"default": [
 				{
 					"enable": false,
-					"color": "rgba(0, 0, 0, 0.2)",
-					"blur": 1,
-					"hOffset": 1,
-					"vOffset": 1
+					"color": "",
+					"blur": "",
+					"hOffset": "",
+					"vOffset": ""
 				}
 			]
 		},
@@ -356,10 +356,10 @@
 			"default": [
 				{
 					"enable": false,
-					"color": "rgba(0, 0, 0, 0.2)",
-					"blur": 1,
-					"hOffset": 1,
-					"vOffset": 1
+					"color": "",
+					"blur": "",
+					"hOffset": "",
+					"vOffset": ""
 				}
 			]
 		},

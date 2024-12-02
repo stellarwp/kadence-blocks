@@ -368,6 +368,11 @@ function KadenceAdvancedHeading(props) {
 			setAttributes({ tabletMarkBorderStyles: tempBorderStyle });
 			setAttributes({ mobileMarkBorderStyles: tempBorderStyle });
 		}
+
+		// update enableTextShadow if textShadow[0].enable is true for previous unresponsive setting
+		if (!enableTextShadow && textShadow[0].enable) {
+			setAttributes({ enableTextShadow: true });
+		}
 	}, []);
 
 	let newItems;
