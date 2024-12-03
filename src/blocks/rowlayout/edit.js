@@ -725,7 +725,7 @@ function RowLayoutEditContainer(props) {
 	const hasBG = bgColor || bgImg || gradient || overlay || overlayGradient || overlayBgImg ? 'kt-row-has-bg' : '';
 	const isKadenceT = typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.isKadenceT ? true : false;
 	const paddingSidesTheme = isKadenceT && true === inheritMaxWidth ? 'var(--global-content-edge-padding)' : '0px';
-	const paddingSidesDefault = hasBG && !(isKadenceT && true === inheritMaxWidth) ? 'sm' : '';
+	const paddingSidesDefault = hasBG && !(isKadenceT && true === inheritMaxWidth) ? '' : '';
 	const previewPaddingTop = getPreviewSize(
 		previewDevice,
 		undefined !== padding?.[0] ? padding[0] : '',
@@ -977,7 +977,7 @@ function RowLayoutEditContainer(props) {
 						  ('' !== previewPaddingBottom
 								? getSpacingOptionOutput(previewPaddingBottom, paddingUnit ? paddingUnit : 'px')
 								: '0px') +
-						  ')'
+						  '))'
 						: undefined,
 				paddingLeft:
 					'' !== previewPaddingLeft
@@ -1194,7 +1194,7 @@ function RowLayoutEditContainer(props) {
 												undefined !== padding[0] &&
 												padding[1] === '' &&
 												padding[3] === ''
-													? [padding[0], 'sm', padding[2], 'sm']
+													? [padding[0], '', padding[2], '']
 													: undefined !== padding && undefined !== padding[0]
 													? padding
 													: ['sm', '', 'sm', '']

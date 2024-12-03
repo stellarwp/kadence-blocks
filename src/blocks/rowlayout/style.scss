@@ -29,16 +29,6 @@
 	margin-left: auto;
 	margin-right: auto;
 }
-.kt-row-has-bg > .kt-row-column-wrap {
-	padding-left: var(--global-content-edge-padding, 15px);
-	padding-right: var(--global-content-edge-padding, 15px);
-}
-
-.alignfull > .kt-row-layout-inner > .kt-row-column-wrap,
-.alignfull > .kt-row-column-wrap {
-	padding-left: var(--global-content-edge-padding, 15px);
-	padding-right: var(--global-content-edge-padding, 15px);
-}
 .kt-inner-column-height-full:not(.kt-row-layout-row) {
 	grid-auto-rows: minmax(0, 1fr);
 
