@@ -358,7 +358,7 @@ export function Edit(props) {
 
 	if (undefined === columns) {
 		return (
-			<div {...blockProps} style={{ backgroundColor: '#FFF', border: '2px solid #000', padding: '20px' }}>
+			<div {...blockProps} style={{ backgroundColor: '#FFF', border: '0.5px solid #000', padding: '20px' }}>
 				<h4 style={{ marginTop: '0', marginBottom: '15px' }}>{__('Table layout', 'kadence-blocks')}</h4>
 				<div style={{ maxWidth: '350px' }}>
 					<RangeControl
@@ -533,49 +533,6 @@ export function Edit(props) {
 							initialOpen={false}
 						>
 							<ResponsiveRangeControls
-								label={__('Max Width', 'kadence-blocks')}
-								reset={true}
-								value={undefined !== maxWidth && undefined !== maxWidth[0] ? maxWidth[0] : ''}
-								onChange={(value) => {
-									setAttributes({
-										maxWidth: [
-											value,
-											undefined !== maxWidth && undefined !== maxWidth[1] ? maxWidth[1] : '',
-											undefined !== maxWidth && undefined !== maxWidth[2] ? maxWidth[2] : '',
-										],
-									});
-								}}
-								tabletValue={undefined !== maxWidth && undefined !== maxWidth[1] ? maxWidth[1] : ''}
-								onChangeTablet={(value) => {
-									setAttributes({
-										maxWidth: [
-											undefined !== maxWidth && undefined !== maxWidth[0] ? maxWidth[0] : '',
-											value,
-											undefined !== maxWidth && undefined !== maxWidth[2] ? maxWidth[2] : '',
-										],
-									});
-								}}
-								mobileValue={undefined !== maxWidth && undefined !== maxWidth[2] ? maxWidth[2] : ''}
-								onChangeMobile={(value) => {
-									setAttributes({
-										maxWidth: [
-											undefined !== maxWidth && undefined !== maxWidth[0] ? maxWidth[0] : '',
-											undefined !== maxWidth && undefined !== maxWidth[1] ? maxWidth[1] : '',
-											value,
-										],
-									});
-								}}
-								min={0}
-								max={maxWidthUnit === 'px' ? 2000 : 100}
-								step={1}
-								unit={maxWidthUnit ? maxWidthUnit : '%'}
-								onUnit={(value) => {
-									setAttributes({ maxWidthUnit: value });
-								}}
-								units={['px', '%', 'vw']}
-							/>
-
-							<ResponsiveRangeControls
 								label={__('Max Height', 'kadence-blocks')}
 								reset={true}
 								value={undefined !== maxHeight && undefined !== maxHeight[0] ? maxHeight[0] : ''}
@@ -614,6 +571,49 @@ export function Edit(props) {
 								unit={maxHeightUnit ? maxHeightUnit : 'px'}
 								onUnit={(value) => {
 									setAttributes({ maxHeightUnit: value });
+								}}
+								units={['px', '%', 'vw']}
+							/>
+
+							<ResponsiveRangeControls
+								label={__('Max Width', 'kadence-blocks')}
+								reset={true}
+								value={undefined !== maxWidth && undefined !== maxWidth[0] ? maxWidth[0] : ''}
+								onChange={(value) => {
+									setAttributes({
+										maxWidth: [
+											value,
+											undefined !== maxWidth && undefined !== maxWidth[1] ? maxWidth[1] : '',
+											undefined !== maxWidth && undefined !== maxWidth[2] ? maxWidth[2] : '',
+										],
+									});
+								}}
+								tabletValue={undefined !== maxWidth && undefined !== maxWidth[1] ? maxWidth[1] : ''}
+								onChangeTablet={(value) => {
+									setAttributes({
+										maxWidth: [
+											undefined !== maxWidth && undefined !== maxWidth[0] ? maxWidth[0] : '',
+											value,
+											undefined !== maxWidth && undefined !== maxWidth[2] ? maxWidth[2] : '',
+										],
+									});
+								}}
+								mobileValue={undefined !== maxWidth && undefined !== maxWidth[2] ? maxWidth[2] : ''}
+								onChangeMobile={(value) => {
+									setAttributes({
+										maxWidth: [
+											undefined !== maxWidth && undefined !== maxWidth[0] ? maxWidth[0] : '',
+											undefined !== maxWidth && undefined !== maxWidth[1] ? maxWidth[1] : '',
+											value,
+										],
+									});
+								}}
+								min={0}
+								max={maxWidthUnit === 'px' ? 2000 : 100}
+								step={1}
+								unit={maxWidthUnit ? maxWidthUnit : '%'}
+								onUnit={(value) => {
+									setAttributes({ maxWidthUnit: value });
 								}}
 								units={['px', '%', 'vw']}
 							/>
