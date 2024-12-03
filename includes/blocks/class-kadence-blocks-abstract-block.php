@@ -147,6 +147,19 @@ class Kadence_Blocks_Abstract_Block {
 	}
 
 	/**
+	 * Render styles in the footer.
+	 *
+	 * @param string $name the stylesheet name.
+	 */
+	public function render_styles_footer( $name, $css ) {
+		if ( ! is_admin() && ! wp_style_is( $name, 'done' ) && ! is_feed() ) {
+			wp_register_style( $name, false, array(), false );
+			wp_add_inline_style( $name, $css );
+			wp_enqueue_style( $name );
+		}
+	}
+
+	/**
 	 * Check if block should render inline.
 	 *
 	 * @param string $name the blocks name.
@@ -247,18 +260,29 @@ class Kadence_Blocks_Abstract_Block {
 			if ( ! $css_class->has_styles( 'kb-' . $this->block_name . $unique_style_id ) && ! is_feed() && apply_filters( 'kadence_blocks_render_inline_css', true, $this->block_name, $unique_id ) ) {
 				$css        = $this->build_css( $attributes, $css_class, $unique_id, $unique_style_id );
 				if ( ! empty( $css ) && ! wp_is_block_theme() ) {
-					$content = '<style>' . $css . '</style>' . $content;
+					$this->do_inline_styles( $content, $unique_style_id, $css );
 				}
 			} elseif ( ! wp_is_block_theme() && ! $css_class->has_header_styles( 'kb-' . $this->block_name . $unique_style_id ) && ! is_feed() && apply_filters( 'kadence_blocks_render_inline_css', true, $this->block_name, $unique_id ) ) {
 				// Some plugins run render block without outputing the content, this makes it so css can be rebuilt.
 				$css        = $this->build_css( $attributes, $css_class, $unique_id, $unique_style_id );
 				if ( ! empty( $css ) ) {
-					$content = '<style>' . $css . '</style>' . $content;
+					$this->do_inline_styles( $content, $unique_style_id, $css );
 				}
 			}
 		}
 
 		return $content;
+	}
+
+	/**
+	 * Potentially prepend inline style to the content, unless it needs to get moved off to the footer.
+	 */
+	public function do_inline_styles( &$content, $unique_style_id, $css ) {
+		if ( apply_filters( 'kadence_blocks_render_styles_footer', $this->block_name == 'data' || $this->block_name == 'slide' ) ) {
+			$this->render_styles_footer( 'kb-' . $this->block_name . $unique_style_id, $css );
+		} else {
+			$content = '<style>' . $css . '</style>' . $content;
+		}
 	}
 
 	/**
