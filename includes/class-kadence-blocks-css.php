@@ -2392,7 +2392,7 @@ class Kadence_Blocks_CSS {
 	 * @param array  $background an array of background settings.
 	 * @param object $css an object of css output.
 	 */
-	public function render_background( $background, $css ) {
+	public function render_background( $background, $css, $property = 'normal' ) {
 		if ( empty( $background ) ) {
 			return false;
 		}
@@ -2401,20 +2401,37 @@ class Kadence_Blocks_CSS {
 		}
 		$type              = ( isset( $background['type'] ) && ! empty( $background['type'] ) ? $background['type'] : 'normal' );
 		if ( 'normal' === $type ) {
-			if ( ! empty( $background['color'] ) ) {
-				$css->add_property( 'background-color', $this->render_color( $background['color'] ) );
-			}
-			$image_url = ( ! empty( $background['image'] ) ? 'url("' .  $background['image'] . '")' : '' );
-			if ( ! empty( $image_url ) ) {
-				$css->add_property( 'background-image', $image_url );
-				$css->add_property( 'background-size', ( ! empty( $background['size'] ) ? $background['size'] : 'cover' ) );
-				$css->add_property( 'background-position', ( ! empty( $background['position'] ) ? $background['position'] : 'center center' ) );
-				$css->add_property( 'background-attachment', ( ! empty( $background['attachment'] ) ? $background['attachment'] : 'scroll' ) );
-				$css->add_property( 'background-repeat', ( ! empty( $background['repeat'] ) ? $background['repeat'] : 'no-repeat' ) );
-
+			if ( $property !== 'normal' ) {
+				$background_color =  ( ! empty( $background['color'] ) ? $background['color'] : '' );
+				$image_url = ( ! empty( $background['image'] ) ? 'url("' .  $background['image'] . '")' : '' );
+				if ( ! empty( $image_url ) ) {
+					$background_size     = ( ! empty( $background['size'] ) ? $background['size'] : '' );
+					$background_position = ( ! empty( $background['position'] ) ? $background['position'] : 'center center' );
+					$background_attachment = ( ! empty( $background['attachment'] ) ? $background['attachment'] : 'scroll' );
+					$background_repeat = ( ! empty( $background['repeat'] ) ? $background['repeat'] : 'no-repeat' );
+					$css->add_property( $property, ( ! empty( $background_color ) ? $this->render_color( $background_color ) . ' ' : '' ) . $image_url . ' ' . $background_repeat . ' ' . $background_position .  ( ! empty( $background_size ) ? ' / ' . $background_size : '' ) . ' ' . $background_attachment );
+				} else {
+					$css->add_property( $property, $this->render_color( $background_color ) );
+				}
+			} else {
+				if ( ! empty( $background['color'] ) ) {
+					$css->add_property( 'background-color', $this->render_color( $background['color'] ) );
+				}
+				$image_url = ( ! empty( $background['image'] ) ? 'url("' .  $background['image'] . '")' : '' );
+				if ( ! empty( $image_url ) ) {
+					$css->add_property( 'background-image', $image_url );
+					$css->add_property( 'background-size', ( ! empty( $background['size'] ) ? $background['size'] : 'cover' ) );
+					$css->add_property( 'background-position', ( ! empty( $background['position'] ) ? $background['position'] : 'center center' ) );
+					$css->add_property( 'background-attachment', ( ! empty( $background['attachment'] ) ? $background['attachment'] : 'scroll' ) );
+					$css->add_property( 'background-repeat', ( ! empty( $background['repeat'] ) ? $background['repeat'] : 'no-repeat' ) );
+				}
 			}
 		} elseif ( 'gradient' === $type && isset( $background['gradient'] ) && ! empty( $background['gradient'] ) ) {
-			$css->add_property( 'background', $this->render_gradient( $background['gradient'] ) );
+			if ( $property !== 'normal' ) {
+				$css->add_property( $property, $this->render_gradient( $background['gradient'] ) );
+			} else {
+				$css->add_property( 'background', $this->render_gradient( $background['gradient'] ) );
+			}
 		}
 	}
 
