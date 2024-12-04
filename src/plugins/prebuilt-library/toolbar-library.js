@@ -20,12 +20,12 @@ import { kadenceBlocksIcon } from '@kadence/icons';
 function ToolbarLibrary() {
 	const { getSelectedBlock, getBlockIndex, getBlockHierarchyRootClientId } = useSelect(blockEditorStore);
 	const { replaceBlocks, insertBlocks } = useDispatch(blockEditorStore);
-	const [kadenceIcon, setKadenceIcon] = useState(applyFilters('kadence.blocks_icon', kadenceBlocksIcon));
+	const kadenceIcon = applyFilters('kadence.blocks_icon', kadenceBlocksIcon);
+
 	const LibraryButton = () => (
 		<ToolbarButton
 			className="kb-toolbar-prebuilt-button"
 			icon={kadenceIcon}
-			// isPrimary
 			onClick={() => {
 				const selectedBlock = getSelectedBlock();
 				if (selectedBlock && isUnmodifiedDefaultBlock(selectedBlock)) {
@@ -72,17 +72,27 @@ function ToolbarLibrary() {
 		selector.appendChild(patternButton);
 		render(<LibraryButton />, patternButton);
 	};
+
 	if (showSettings('show', 'kadence/designlibrary') && kadence_blocks_params.showDesignLibrary) {
-		// Watch for the toolbar to be visible and the design library button to be missing.
-		const unsubscribe = subscribe(() => {
-			const editToolbar = document.querySelector('.edit-post-header-toolbar');
-			if (!editToolbar) {
-				return;
+		const targetNode = document.querySelector('.block-editor__container');
+		const config = { childList: true, subtree: true };
+
+		const callback = function (mutationsList, observer) {
+			for (const mutation of mutationsList) {
+				if (mutation.type === 'childList') {
+					const editToolbar = document.querySelector('.edit-post-header-toolbar');
+					if (editToolbar && !editToolbar.querySelector('.kadence-toolbar-design-library')) {
+						renderButton(editToolbar);
+						observer.disconnect();
+					}
+				}
 			}
-			if (!editToolbar.querySelector('.kadence-toolbar-design-library')) {
-				renderButton(editToolbar);
-			}
-		});
+		};
+
+		const observer = new MutationObserver(callback);
+		if (targetNode) {
+			observer.observe(targetNode, config);
+		}
 	}
 
 	return null;
