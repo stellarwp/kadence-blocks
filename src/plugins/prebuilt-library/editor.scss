@@ -575,6 +575,10 @@ h2.kb-template-name {
 	display: flex;
 	align-items: center;
 	height: 50px;
+	gap: 4px;
+	.components-base-control {
+		margin-bottom: 0;
+	}
 }
 .kb-connection-info {
 	margin-top: 20px;
