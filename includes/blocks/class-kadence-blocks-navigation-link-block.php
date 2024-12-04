@@ -238,7 +238,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$css->render_typography( $attributes, 'dropdownDescriptionTypography' );
 
 		// navigation highlight icon size
-		if ( ! empty($attributes['highlightIcon']) ) {
+		if ( ! empty( $attributes['highlightIcon'] ) && !empty( $attributes['highlightIcon'][0]['size'] ) ) {
 			$css->set_selector('.kb-nav-link-' . $unique_id . ' .link-highlight-label .link-highlight-icon-wrap svg' );
 			$css->add_property('height', $attributes['highlightIcon'][0]['size'] . 'px');
 			$css->add_property('width', $attributes['highlightIcon'][0]['size'] . 'px');
