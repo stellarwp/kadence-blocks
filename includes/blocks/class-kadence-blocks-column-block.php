@@ -624,6 +624,10 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > .wp-block-kadence-infobox' );
 				$css->add_property( 'width', 'auto' );
 			}
+			if ( ( 'horizontal' === $desktop_direction || 'horizontal-reverse' === $desktop_direction ) && ! empty( $attributes['direction'][1] ) ) {
+				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > .wp-block-kadence-infobox' );
+				$css->add_property( 'align-self', 'unset' );
+			}
 		} elseif ( 'horizontal' === $tablet_direction || 'horizontal-reverse' === $tablet_direction ) {
 			if ( ! empty( $attributes['flexBasis'][1] ) ) {
 				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *' );
@@ -740,6 +744,11 @@ class Kadence_Blocks_Column_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'max-width', '100%' );
 				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > .wp-block-kadence-infobox' );
 				$css->add_property( 'width', 'auto' );
+				$css->add_property( 'align-self', 'unset' );
+			}
+			if ( ( 'horizontal' === $tablet_direction || 'horizontal-reverse' === $tablet_direction ) && ! empty( $attributes['direction'][2] ) ) {
+				$css->set_selector( '.wp-block-kadence-column.kb-section-dir-horizontal.kadence-column' . $unique_id . ' > .kt-inside-inner-col > .wp-block-kadence-infobox' );
+				$css->add_property( 'align-self', 'unset' );
 			}
 		} elseif ( 'horizontal' === $mobile_direction || 'horizontal-reverse' === $mobile_direction ) {
 
