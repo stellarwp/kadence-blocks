@@ -40,7 +40,7 @@ class TableTest extends KadenceBlocksUnit {
 
 		$this->assertTrue(
 			$css_helper->assertCSSPropertiesEqual(
-				'.kb-table'.$unique_id.' tr',
+				'.kb-table-container .kb-table'.$unique_id.' tr',
 				[
 					'background-color' => 'red'
 				]
@@ -49,7 +49,7 @@ class TableTest extends KadenceBlocksUnit {
 
 		$this->assertTrue(
 			$css_helper->assertCSSPropertiesEqual(
-				'.kb-table'.$unique_id.' tr:hover',
+				'.kb-table-container .kb-table'.$unique_id.' tr:hover',
 				[
 					'background-color' => 'blue'
 				]
@@ -73,7 +73,7 @@ class TableTest extends KadenceBlocksUnit {
 
 		$this->assertTrue(
 			$css_helper->assertCSSPropertiesEqual(
-				'.kb-table'.$unique_id.' tr:nth-child(even)',
+				'.kb-table-container .kb-table'.$unique_id.' tr:nth-of-type(even)',
 				[
 					'background-color' => '#111'
 				]
@@ -82,7 +82,7 @@ class TableTest extends KadenceBlocksUnit {
 
 		$this->assertTrue(
 			$css_helper->assertCSSPropertiesEqual(
-				'.kb-table'.$unique_id.' tr:nth-child(even):hover',
+				'.kb-table-container .kb-table'.$unique_id.' tr:nth-of-type(even):hover',
 				[
 					'background-color' => '#222'
 				]
@@ -91,7 +91,7 @@ class TableTest extends KadenceBlocksUnit {
 
 		$this->assertTrue(
 			$css_helper->assertCSSPropertiesEqual(
-				'.kb-table'.$unique_id.' tr:nth-child(odd)',
+				'.kb-table-container .kb-table'.$unique_id.' tr:nth-of-type(odd)',
 				[
 					'background-color' => '#333'
 				]
@@ -100,7 +100,7 @@ class TableTest extends KadenceBlocksUnit {
 
 		$this->assertTrue(
 			$css_helper->assertCSSPropertiesEqual(
-				'.kb-table'.$unique_id.' tr:nth-child(odd):hover',
+				'.kb-table-container .kb-table'.$unique_id.' tr:nth-of-type(odd):hover',
 				[
 					'background-color' => '#444'
 				]
@@ -143,12 +143,12 @@ class TableTest extends KadenceBlocksUnit {
 		$css_helper = new CSSTestHelper($css_output);
 
 
-		$this->assertStringNotContainsString( 'td:nth-child(1)', $css_output );
-		$this->assertStringNotContainsString( 'td:nth-child(4)', $css_output );
+		$this->assertStringNotContainsString( 'td:nth-of-type(1)', $css_output );
+		$this->assertStringNotContainsString( 'td:nth-of-type(4)', $css_output );
 
 		$this->assertTrue(
 			$css_helper->assertCSSPropertiesEqual(
-				'.kb-table'.$unique_id.' td:nth-child(2)',
+				'.kb-table-container .kb-table'.$unique_id.' td:nth-of-type(2), .kb-table-container .kb-table'.$unique_id.' th:nth-of-type(2)',
 				[
 					'background-color' => '#fff'
 				]
@@ -157,7 +157,7 @@ class TableTest extends KadenceBlocksUnit {
 
 		$this->assertTrue(
 			$css_helper->assertCSSPropertiesEqual(
-				'.kb-table'.$unique_id.' td:nth-child(3)',
+				'.kb-table-container .kb-table'.$unique_id.' td:nth-of-type(3), .kb-table-container .kb-table'.$unique_id.' th:nth-of-type(3)',
 				[
 					'background-color' => '#444'
 				]
@@ -166,7 +166,7 @@ class TableTest extends KadenceBlocksUnit {
 
 		$this->assertTrue(
 			$css_helper->assertCSSPropertiesEqual(
-				'.kb-table'.$unique_id.' td:nth-child(5)',
+				'.kb-table-container .kb-table'.$unique_id.' td:nth-of-type(5), .kb-table-container .kb-table'.$unique_id.' th:nth-of-type(5)',
 				[
 					'background-color' => 'red'
 				]
@@ -190,7 +190,7 @@ class TableTest extends KadenceBlocksUnit {
 
 		$this->assertTrue(
 			$css_helper->assertCSSPropertiesEqual(
-				'.kb-table'.$unique_id.' td:nth-child(2):hover',
+				'.kb-table-container .kb-table'.$unique_id.' td:nth-of-type(2):hover, .kb-table-container .kb-table'.$unique_id.' th:nth-of-type(2):hover',
 				[
 					'background-color' => '#111'
 				]
@@ -199,7 +199,7 @@ class TableTest extends KadenceBlocksUnit {
 
 		$this->assertTrue(
 			$css_helper->assertCSSPropertiesEqual(
-				'.kb-table'.$unique_id.' td:nth-child(3):hover',
+				'.kb-table-container .kb-table'.$unique_id.' td:nth-of-type(3):hover, .kb-table-container .kb-table'.$unique_id.' th:nth-of-type(3):hover',
 				[
 					'background-color' => '#333'
 				]
@@ -208,7 +208,7 @@ class TableTest extends KadenceBlocksUnit {
 
 		$this->assertTrue(
 			$css_helper->assertCSSPropertiesEqual(
-				'.kb-table'.$unique_id.' td:nth-child(5):hover',
+				'.kb-table-container .kb-table'.$unique_id.' td:nth-of-type(5):hover, .kb-table-container .kb-table'.$unique_id.' th:nth-of-type(5):hover',
 				[
 					'background-color' => 'blue'
 				]
