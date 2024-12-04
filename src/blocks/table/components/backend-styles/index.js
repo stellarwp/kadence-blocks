@@ -251,13 +251,14 @@ export default function BackendStyles(props) {
 		css.set_selector(`.kb-table${uniqueID} tr:first-child`);
 		css.add_property('position', 'sticky !important');
 		css.add_property('top', '0');
-		css.add_property('z-index', '1');
+		css.add_property('z-index', '1001');
 	}
 
 	if (stickyFirstColumn) {
 		css.set_selector(`.kb-table${uniqueID} td:first-child, .kb-table${uniqueID} th:first-child`);
 		css.add_property('position', 'sticky !important');
 		css.add_property('left', '0');
+		css.add_property('z-index', '1000');
 	}
 
 	const cssOutput = css.css_output();
