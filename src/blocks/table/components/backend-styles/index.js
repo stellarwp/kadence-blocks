@@ -152,6 +152,7 @@ export default function BackendStyles(props) {
 	css.set_selector(`.kb-table${uniqueID} th`);
 	css.render_font(headerTypography ? headerTypography : [], previewDevice);
 	css.add_property('text-align', previewHeaderAlign);
+	css.set_selector(`.kb-table${uniqueID} tr th`);
 	css.render_measure_output(
 		cellPadding,
 		tabletCellPadding,
@@ -163,6 +164,7 @@ export default function BackendStyles(props) {
 
 	css.set_selector(`.kb-table${uniqueID} td`);
 	css.add_property('text-align', previewTextAlign);
+	css.set_selector(`.kb-table${uniqueID} tr td`);
 	css.render_measure_output(
 		cellPadding,
 		tabletCellPadding,
