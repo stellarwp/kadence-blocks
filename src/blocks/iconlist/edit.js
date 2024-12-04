@@ -66,7 +66,6 @@ import {
 import { useEffect, useState, Fragment, Platform, forwardRef } from '@wordpress/element';
 
 import {
-	// RangeControl,
 	ButtonGroup,
 	Tooltip,
 	Button,
