@@ -193,6 +193,7 @@
 		"kadence/listIcon": "icon",
 		"kadence/listIconWidth": "width"
 	},
+	"usesContext": ["kadence/dynamicSource", "kadence/repeaterRowData", "kadence/repeaterRow"],
 	"supports": {
 		"ktdynamic": true,
 		"kbMetadata": true

@@ -12,16 +12,29 @@ export default function ResponsiveSelectControl({
 	options,
 	tabletOptions = options,
 	mobileOptions = tabletOptions,
+	help,
 }) {
 	return (
 		<SmallResponsiveControl
 			label={label}
-			desktopChildren={<SelectControl value={value} options={options} onChange={(value) => onChange(value)} />}
+			desktopChildren={
+				<SelectControl value={value} options={options} onChange={(value) => onChange(value)} help={help} />
+			}
 			tabletChildren={
-				<SelectControl value={tabletValue} options={tabletOptions} onChange={(value) => onChangeTablet(value)} />
+				<SelectControl
+					value={tabletValue}
+					options={tabletOptions}
+					onChange={(value) => onChangeTablet(value)}
+					help={help}
+				/>
 			}
 			mobileChildren={
-				<SelectControl value={mobileValue} options={mobileOptions} onChange={(value) => onChangeMobile(value)} />
+				<SelectControl
+					value={mobileValue}
+					options={mobileOptions}
+					onChange={(value) => onChangeMobile(value)}
+					help={help}
+				/>
 			}
 		></SmallResponsiveControl>
 	);

@@ -555,7 +555,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			return;
 		}
 		wp_register_style( 'kadence-blocks-' . $this->block_name, false );
-		$heading_css = '.wp-block-kadence-advancedheading mark{background:transparent;border-style:solid;border-width:0}.wp-block-kadence-advancedheading mark.kt-highlight{color:#f76a0c;}.kb-adv-heading-icon{display: inline-flex;justify-content: center;align-items: center;}';
+		$heading_css = '.wp-block-kadence-advancedheading mark{background:transparent;border-style:solid;border-width:0}.wp-block-kadence-advancedheading mark.kt-highlight{color:#f76a0c;}.kb-adv-heading-icon{display: inline-flex;justify-content: center;align-items: center;} .is-layout-constrained > .kb-advanced-heading-link {display: block;}';
 		// Short term fix for an issue with heading wrapping.
 		if ( class_exists( '\Kadence\Theme' ) ) {
 			$heading_css .= '.single-content .kadence-advanced-heading-wrapper h1, .single-content .kadence-advanced-heading-wrapper h2, .single-content .kadence-advanced-heading-wrapper h3, .single-content .kadence-advanced-heading-wrapper h4, .single-content .kadence-advanced-heading-wrapper h5, .single-content .kadence-advanced-heading-wrapper h6 {margin: 1.5em 0 .5em;}.single-content .kadence-advanced-heading-wrapper+* { margin-top:0;}';

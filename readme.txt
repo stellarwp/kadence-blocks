@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.3
 Tested up to: 6.7
-Stable tag: 3.3.5
+Stable tag: 3.4.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -173,6 +173,25 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 3.4.0 =
+Release Date: December TBD 2024
+* Update: Close mega menu when clicking outside of dropdown.
+* Update: Improve tabbing through navigation with submenus.
+* Fix: Issue with table of contents script dependency timing.
+* Fix: Border radius on thumbnail in advanced gallery.
+* Fix: Icon list border display when not no width is provided
+
+= 3.3.7 =
+Release Date: November 21st 2024
+* Fix: Issue with advanced gallery captions.
+
+= 3.3.6 =
+Release Date: November 20th 2024
+* Add: Allow links in advanced gallery lightbox captions.
+* Add: WPML support for advanced form input fields.
+* Adjust: Naming and support text for navigation stretch option.
+* Fix: Editor error when modifying accordion panes.
 
 = 3.3.5 =
 Release Date: November 19th 2024

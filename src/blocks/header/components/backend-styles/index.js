@@ -26,58 +26,31 @@ export default function BackendStyles(props) {
 		borderTablet,
 		borderMobile,
 		borderUnit,
-		borderHover,
-		borderHoverTablet,
-		borderHoverMobile,
-		borderHoverUnit,
 		borderRadius,
 		borderRadiusTablet,
 		borderRadiusMobile,
 		borderRadiusUnit,
-		borderRadiusHover,
-		borderRadiusHoverTablet,
-		borderRadiusHoverMobile,
-		borderRadiusHoverUnit,
 		borderTransparent,
 		borderTransparentTablet,
 		borderTransparentMobile,
 		borderTransparentUnit,
-		borderTransparentHover,
-		borderTransparentHoverTablet,
-		borderTransparentHoverMobile,
-		borderTransparentHoverUnit,
 		borderRadiusTransparent,
 		borderRadiusTransparentTablet,
 		borderRadiusTransparentMobile,
 		borderRadiusTransparentUnit,
-		borderRadiusTransparentHover,
-		borderRadiusTransparentHoverTablet,
-		borderRadiusTransparentHoverMobile,
-		borderRadiusTransparentHoverUnit,
 		borderSticky,
 		borderStickyTablet,
 		borderStickyMobile,
 		borderStickyUnit,
-		borderStickyHover,
-		borderStickyHoverTablet,
-		borderStickyHoverMobile,
-		borderStickyHoverUnit,
 		borderRadiusSticky,
 		borderRadiusStickyTablet,
 		borderRadiusStickyMobile,
 		borderRadiusStickyUnit,
-		borderRadiusStickyHover,
-		borderRadiusStickyHoverTablet,
-		borderRadiusStickyHoverMobile,
-		borderRadiusStickyHoverUnit,
 		className,
 		anchor,
 		background,
-		backgroundHover,
 		backgroundTransparent,
-		backgroundTransparentHover,
 		backgroundSticky,
-		backgroundStickyHover,
 		typography,
 		linkColor,
 		linkHoverColor,
@@ -172,63 +145,11 @@ export default function BackendStyles(props) {
 		undefined !== borderRadiusTablet ? borderRadiusTablet[3] : '',
 		undefined !== borderRadiusMobile ? borderRadiusMobile[3] : ''
 	);
-	const previewborderHoverTopLeftRadius = getPreviewSize(
-		previewDevice,
-		undefined !== borderRadiusHover ? borderRadiusHover[0] : '',
-		undefined !== borderRadiusHoverTablet ? borderRadiusHoverTablet[0] : '',
-		undefined !== borderRadiusHoverMobile ? borderRadiusHoverMobile[0] : ''
-	);
-	const previewborderHoverTopRightRadius = getPreviewSize(
-		previewDevice,
-		undefined !== borderRadiusHover ? borderRadiusHover[1] : '',
-		undefined !== borderRadiusHoverTablet ? borderRadiusHoverTablet[1] : '',
-		undefined !== borderRadiusHoverMobile ? borderRadiusHoverMobile[1] : ''
-	);
-	const previewborderHoverBottomRightRadius = getPreviewSize(
-		previewDevice,
-		undefined !== borderRadiusHover ? borderRadiusHover[2] : '',
-		undefined !== borderRadiusHoverTablet ? borderRadiusHoverTablet[2] : '',
-		undefined !== borderRadiusHoverMobile ? borderRadiusHoverMobile[2] : ''
-	);
-	const previewborderHoverBottomLeftRadius = getPreviewSize(
-		previewDevice,
-		undefined !== borderRadiusHover ? borderRadiusHover[3] : '',
-		undefined !== borderRadiusHoverTablet ? borderRadiusHoverTablet[3] : '',
-		undefined !== borderRadiusHoverMobile ? borderRadiusHoverMobile[3] : ''
-	);
 
 	const previewBorderTop = css.render_border(border, borderTablet, borderMobile, previewDevice, 'top');
 	const previewBorderLeft = css.render_border(border, borderTablet, borderMobile, previewDevice, 'left');
 	const previewBorderRight = css.render_border(border, borderTablet, borderMobile, previewDevice, 'right');
 	const previewBorderBottom = css.render_border(border, borderTablet, borderMobile, previewDevice, 'bottom');
-	const previewBorderHoverTop = css.render_border(
-		borderHover,
-		borderHoverTablet,
-		borderHoverMobile,
-		previewDevice,
-		'top'
-	);
-	const previewBorderHoverLeft = css.render_border(
-		borderHover,
-		borderHoverTablet,
-		borderHoverMobile,
-		previewDevice,
-		'left'
-	);
-	const previewBorderHoverRight = css.render_border(
-		borderHover,
-		borderHoverTablet,
-		borderHoverMobile,
-		previewDevice,
-		'right'
-	);
-	const previewBorderHoverBottom = css.render_border(
-		borderHover,
-		borderHoverTablet,
-		borderHoverMobile,
-		previewDevice,
-		'bottom'
-	);
 
 	const previewBorderTopLeftRadiusTransparent = getPreviewSize(
 		previewDevice,
@@ -253,30 +174,6 @@ export default function BackendStyles(props) {
 		undefined !== borderRadiusTransparent ? borderRadiusTransparent[3] : '',
 		undefined !== borderRadiusTransparentTablet ? borderRadiusTransparentTablet[3] : '',
 		undefined !== borderRadiusTransparentMobile ? borderRadiusTransparentMobile[3] : ''
-	);
-	const previewborderHoverTopLeftRadiusTransparent = getPreviewSize(
-		previewDevice,
-		undefined !== borderRadiusTransparentHover ? borderRadiusTransparentHover[0] : '',
-		undefined !== borderRadiusTransparentHoverTablet ? borderRadiusTransparentHoverTablet[0] : '',
-		undefined !== borderRadiusTransparentHoverMobile ? borderRadiusTransparentHoverMobile[0] : ''
-	);
-	const previewborderHoverTopRightRadiusTransparent = getPreviewSize(
-		previewDevice,
-		undefined !== borderRadiusTransparentHover ? borderRadiusTransparentHover[1] : '',
-		undefined !== borderRadiusTransparentHoverTablet ? borderRadiusTransparentHoverTablet[1] : '',
-		undefined !== borderRadiusTransparentHoverMobile ? borderRadiusTransparentHoverMobile[1] : ''
-	);
-	const previewborderHoverBottomRightRadiusTransparent = getPreviewSize(
-		previewDevice,
-		undefined !== borderRadiusTransparentHover ? borderRadiusTransparentHover[2] : '',
-		undefined !== borderRadiusTransparentHoverTablet ? borderRadiusTransparentHoverTablet[2] : '',
-		undefined !== borderRadiusTransparentHoverMobile ? borderRadiusTransparentHoverMobile[2] : ''
-	);
-	const previewborderHoverBottomLeftRadiusTransparent = getPreviewSize(
-		previewDevice,
-		undefined !== borderRadiusTransparentHover ? borderRadiusTransparentHover[3] : '',
-		undefined !== borderRadiusTransparentHoverTablet ? borderRadiusTransparentHoverTablet[3] : '',
-		undefined !== borderRadiusTransparentHoverMobile ? borderRadiusTransparentHoverMobile[3] : ''
 	);
 	const previewBorderTransparentTop = css.render_border(
 		borderTransparent,
@@ -306,34 +203,6 @@ export default function BackendStyles(props) {
 		previewDevice,
 		'bottom'
 	);
-	const previewBorderTransparentHoverTop = css.render_border(
-		borderTransparentHover,
-		borderTransparentHoverTablet,
-		borderTransparentHoverMobile,
-		previewDevice,
-		'top'
-	);
-	const previewBorderTransparentHoverLeft = css.render_border(
-		borderTransparentHover,
-		borderTransparentHoverTablet,
-		borderTransparentHoverMobile,
-		previewDevice,
-		'left'
-	);
-	const previewBorderTransparentHoverRight = css.render_border(
-		borderTransparentHover,
-		borderTransparentHoverTablet,
-		borderTransparentHoverMobile,
-		previewDevice,
-		'right'
-	);
-	const previewBorderTransparentHoverBottom = css.render_border(
-		borderTransparentHover,
-		borderTransparentHoverTablet,
-		borderTransparentHoverMobile,
-		previewDevice,
-		'bottom'
-	);
 	const previewBorderTopLeftRadiusSticky = getPreviewSize(
 		previewDevice,
 		undefined !== borderRadiusSticky ? borderRadiusSticky[0] : '',
@@ -357,30 +226,6 @@ export default function BackendStyles(props) {
 		undefined !== borderRadiusSticky ? borderRadiusSticky[3] : '',
 		undefined !== borderRadiusStickyTablet ? borderRadiusStickyTablet[3] : '',
 		undefined !== borderRadiusStickyMobile ? borderRadiusStickyMobile[3] : ''
-	);
-	const previewborderHoverTopLeftRadiusSticky = getPreviewSize(
-		previewDevice,
-		undefined !== borderRadiusStickyHover ? borderRadiusStickyHover[0] : '',
-		undefined !== borderRadiusStickyHoverTablet ? borderRadiusStickyHoverTablet[0] : '',
-		undefined !== borderRadiusStickyHoverMobile ? borderRadiusStickyHoverMobile[0] : ''
-	);
-	const previewborderHoverTopRightRadiusSticky = getPreviewSize(
-		previewDevice,
-		undefined !== borderRadiusStickyHover ? borderRadiusStickyHover[1] : '',
-		undefined !== borderRadiusStickyHoverTablet ? borderRadiusStickyHoverTablet[1] : '',
-		undefined !== borderRadiusStickyHoverMobile ? borderRadiusStickyHoverMobile[1] : ''
-	);
-	const previewborderHoverBottomRightRadiusSticky = getPreviewSize(
-		previewDevice,
-		undefined !== borderRadiusStickyHover ? borderRadiusStickyHover[2] : '',
-		undefined !== borderRadiusStickyHoverTablet ? borderRadiusStickyHoverTablet[2] : '',
-		undefined !== borderRadiusStickyHoverMobile ? borderRadiusStickyHoverMobile[2] : ''
-	);
-	const previewborderHoverBottomLeftRadiusSticky = getPreviewSize(
-		previewDevice,
-		undefined !== borderRadiusStickyHover ? borderRadiusStickyHover[3] : '',
-		undefined !== borderRadiusStickyHoverTablet ? borderRadiusStickyHoverTablet[3] : '',
-		undefined !== borderRadiusStickyHoverMobile ? borderRadiusStickyHoverMobile[3] : ''
 	);
 	const previewBorderStickyTop = css.render_border(
 		borderSticky,
@@ -407,34 +252,6 @@ export default function BackendStyles(props) {
 		borderSticky,
 		borderStickyTablet,
 		borderStickyMobile,
-		previewDevice,
-		'bottom'
-	);
-	const previewBorderStickyHoverTop = css.render_border(
-		borderStickyHover,
-		borderStickyHoverTablet,
-		borderStickyHoverMobile,
-		previewDevice,
-		'top'
-	);
-	const previewBorderStickyHoverLeft = css.render_border(
-		borderStickyHover,
-		borderStickyHoverTablet,
-		borderStickyHoverMobile,
-		previewDevice,
-		'left'
-	);
-	const previewBorderStickyHoverRight = css.render_border(
-		borderStickyHover,
-		borderStickyHoverTablet,
-		borderStickyHoverMobile,
-		previewDevice,
-		'right'
-	);
-	const previewBorderStickyHoverBottom = css.render_border(
-		borderStickyHover,
-		borderStickyHoverTablet,
-		borderStickyHoverMobile,
 		previewDevice,
 		'bottom'
 	);
@@ -513,10 +330,26 @@ export default function BackendStyles(props) {
 	if (previewIsTransparent !== '1') {
 		if ('normal' === background?.type && background?.image) {
 			css.add_property('background-image', background.image);
-			css.add_property('background-size', background.imageSize);
-			css.add_property('background-repeat', background.imageRepeat);
-			css.add_property('background-attachment', background.imageAttachment);
-			css.add_property('background-position', background.imagePosition);
+			if (background?.size) {
+				css.add_property('background-size', background.size);
+			} else if (background?.imageSize) {
+				css.add_property('background-size', background.imageSize);
+			}
+			if (background?.repeat) {
+				css.add_property('background-repeat', background.repeat);
+			} else if (background?.imageRepeat) {
+				css.add_property('background-repeat', background.imageRepeat);
+			}
+			if (background?.attachment) {
+				css.add_property('background-attachment', background.attachment);
+			} else if (background?.imageAttachment) {
+				css.add_property('background-attachment', background.imageAttachment);
+			}
+			if (background?.position) {
+				css.add_property('background-position', background.position);
+			} else if (background?.imagePosition) {
+				css.add_property('background-position', background.imagePosition);
+			}
 		}
 		if ('normal' === background?.type && background?.color) {
 			css.add_property('background-color', KadenceColorOutput(background.color));
@@ -549,10 +382,26 @@ export default function BackendStyles(props) {
 	if (previewIsTransparent === '1') {
 		if ('normal' === backgroundTransparent?.type && backgroundTransparent?.image) {
 			css.add_property('background-image', backgroundTransparent.image);
-			css.add_property('background-size', backgroundTransparent.imageSize);
-			css.add_property('background-repeat', backgroundTransparent.imageRepeat);
-			css.add_property('background-attachment', backgroundTransparent.imageAttachment);
-			css.add_property('background-position', backgroundTransparent.imagePosition);
+			if (backgroundTransparent?.size) {
+				css.add_property('background-size', backgroundTransparent.size);
+			} else if (backgroundTransparent?.imageSize) {
+				css.add_property('background-size', backgroundTransparent.imageSize);
+			}
+			if (backgroundTransparent?.repeat) {
+				css.add_property('background-repeat', backgroundTransparent.repeat);
+			} else if (backgroundTransparent?.imageRepeat) {
+				css.add_property('background-repeat', backgroundTransparent.imageRepeat);
+			}
+			if (backgroundTransparent?.attachment) {
+				css.add_property('background-attachment', backgroundTransparent.attachment);
+			} else if (backgroundTransparent?.imageAttachment) {
+				css.add_property('background-attachment', backgroundTransparent.imageAttachment);
+			}
+			if (backgroundTransparent?.position) {
+				css.add_property('background-position', backgroundTransparent.position);
+			} else if (backgroundTransparent?.imagePosition) {
+				css.add_property('background-position', backgroundTransparent.imagePosition);
+			}
 		}
 		if ('normal' === backgroundTransparent?.type && backgroundTransparent?.color) {
 			css.add_property('background-color', KadenceColorOutput(backgroundTransparent.color));
@@ -593,10 +442,26 @@ export default function BackendStyles(props) {
 	if (previewIsSticky === '1') {
 		if ('normal' === backgroundSticky?.type && backgroundSticky?.image) {
 			css.add_property('background-image', backgroundSticky.image);
-			css.add_property('background-size', backgroundSticky.imageSize);
-			css.add_property('background-repeat', backgroundSticky.imageRepeat);
-			css.add_property('background-attachment', backgroundSticky.imageAttachment);
-			css.add_property('background-position', backgroundSticky.imagePosition);
+			if (backgroundSticky?.size) {
+				css.add_property('background-size', backgroundSticky.size);
+			} else if (backgroundSticky?.imageSize) {
+				css.add_property('background-size', backgroundSticky.imageSize);
+			}
+			if (backgroundSticky?.repeat) {
+				css.add_property('background-repeat', backgroundSticky.repeat);
+			} else if (backgroundSticky?.imageRepeat) {
+				css.add_property('background-repeat', backgroundSticky.imageRepeat);
+			}
+			if (backgroundSticky?.attachment) {
+				css.add_property('background-attachment', backgroundSticky.attachment);
+			} else if (backgroundSticky?.imageAttachment) {
+				css.add_property('background-attachment', backgroundSticky.imageAttachment);
+			}
+			if (backgroundSticky?.position) {
+				css.add_property('background-position', backgroundSticky.position);
+			} else if (backgroundSticky?.imagePosition) {
+				css.add_property('background-position', backgroundSticky.imagePosition);
+			}
 		}
 		if ('normal' === backgroundSticky?.type && backgroundSticky?.color) {
 			css.add_property('background-color', KadenceColorOutput(backgroundSticky.color));
@@ -642,127 +507,6 @@ export default function BackendStyles(props) {
 	if (hasPro) {
 		css.add_property('-webkit-backdrop-filter', backdropFilterString);
 		css.add_property('backdrop-filter', backdropFilterString);
-	}
-
-	css.set_selector(`.wp-block-kadence-header${uniqueID} .kb-header-container:hover`);
-
-	if (previewIsTransparent !== '1') {
-		if ('normal' === backgroundHover?.type && backgroundHover?.image) {
-			css.add_property('background-image', backgroundHover.image);
-			css.add_property('background-size', backgroundHover.imageSize);
-			css.add_property('background-repeat', backgroundHover.imageRepeat);
-			css.add_property('background-attachment', backgroundHover.imageAttachment);
-			css.add_property('background-position', backgroundHover.imagePosition);
-		}
-
-		if ('normal' === backgroundHover?.type && backgroundHover?.color) {
-			css.add_property('background-color', backgroundHover.color);
-		}
-
-		if ('gradient' === backgroundHover?.type && backgroundHover?.gradient) {
-			css.add_property('background', backgroundHover.gradient);
-		}
-
-		css.add_property('border-top', previewBorderHoverTop);
-		css.add_property('border-right', previewBorderHoverRight);
-		css.add_property('border-bottom', previewBorderHoverBottom);
-		css.add_property('border-left', previewBorderHoverLeft);
-		css.add_property(
-			'border-top-left-radius',
-			getSpacingOptionOutput(previewborderHoverTopLeftRadius, borderRadiusHoverUnit)
-		);
-		css.add_property(
-			'border-top-right-radius',
-			getSpacingOptionOutput(previewborderHoverTopRightRadius, borderRadiusHoverUnit)
-		);
-		css.add_property(
-			'border-bottom-right-radius',
-			getSpacingOptionOutput(previewborderHoverBottomRightRadius, borderRadiusHoverUnit)
-		);
-		css.add_property(
-			'border-bottom-left-radius',
-			getSpacingOptionOutput(previewborderHoverBottomLeftRadius, borderRadiusHoverUnit)
-		);
-	}
-
-	if (previewIsTransparent === '1') {
-		if ('normal' === backgroundTransparentHover?.type && backgroundTransparentHover?.image) {
-			css.add_property('background-image', backgroundTransparentHover.image);
-			css.add_property('background-size', backgroundTransparentHover.imageSize);
-			css.add_property('background-repeat', backgroundTransparentHover.imageRepeat);
-			css.add_property('background-attachment', backgroundTransparentHover.imageAttachment);
-			css.add_property('background-position', backgroundTransparentHover.imagePosition);
-		}
-
-		if ('normal' === backgroundTransparentHover?.type && backgroundTransparentHover?.color) {
-			css.add_property('background-color', backgroundTransparentHover.color);
-		}
-
-		if ('gradient' === backgroundTransparentHover?.type && backgroundTransparentHover?.gradient) {
-			css.add_property('background', backgroundTransparentHover.gradient);
-		}
-
-		css.add_property('border-top', previewBorderTransparentHoverTop);
-		css.add_property('border-right', previewBorderTransparentHoverRight);
-		css.add_property('border-bottom', previewBorderTransparentHoverBottom);
-		css.add_property('border-left', previewBorderTransparentHoverLeft);
-
-		css.add_property(
-			'border-top-left-radius',
-			getSpacingOptionOutput(previewborderHoverTopLeftRadiusTransparent, borderRadiusTransparentHoverUnit)
-		);
-		css.add_property(
-			'border-top-right-radius',
-			getSpacingOptionOutput(previewborderHoverTopRightRadiusTransparent, borderRadiusTransparentHoverUnit)
-		);
-		css.add_property(
-			'border-bottom-right-radius',
-			getSpacingOptionOutput(previewborderHoverBottomRightRadiusTransparent, borderRadiusTransparentHoverUnit)
-		);
-		css.add_property(
-			'border-bottom-left-radius',
-			getSpacingOptionOutput(previewborderHoverBottomLeftRadiusTransparent, borderRadiusTransparentHoverUnit)
-		);
-	}
-
-	if (previewIsSticky === '1') {
-		if ('normal' === backgroundStickyHover?.type && backgroundStickyHover?.image) {
-			css.add_property('background-image', backgroundStickyHover.image);
-			css.add_property('background-size', backgroundStickyHover.imageSize);
-			css.add_property('background-repeat', backgroundStickyHover.imageRepeat);
-			css.add_property('background-attachment', backgroundStickyHover.imageAttachment);
-			css.add_property('background-position', backgroundStickyHover.imagePosition);
-		}
-
-		if ('normal' === backgroundStickyHover?.type && backgroundStickyHover?.color) {
-			css.add_property('background-color', backgroundStickyHover.color);
-		}
-
-		if ('gradient' === backgroundStickyHover?.type && backgroundStickyHover?.gradient) {
-			css.add_property('background', backgroundStickyHover.gradient);
-		}
-
-		css.add_property('border-top', previewBorderStickyHoverTop);
-		css.add_property('border-right', previewBorderStickyHoverRight);
-		css.add_property('border-bottom', previewBorderStickyHoverBottom);
-		css.add_property('border-left', previewBorderStickyHoverLeft);
-
-		css.add_property(
-			'border-top-left-radius',
-			getSpacingOptionOutput(previewborderHoverTopLeftRadiusSticky, borderRadiusStickyHoverUnit)
-		);
-		css.add_property(
-			'border-top-right-radius',
-			getSpacingOptionOutput(previewborderHoverTopRightRadiusSticky, borderRadiusStickyHoverUnit)
-		);
-		css.add_property(
-			'border-bottom-right-radius',
-			getSpacingOptionOutput(previewborderHoverBottomRightRadiusSticky, borderRadiusStickyHoverUnit)
-		);
-		css.add_property(
-			'border-bottom-left-radius',
-			getSpacingOptionOutput(previewborderHoverBottomLeftRadiusSticky, borderRadiusStickyHoverUnit)
-		);
 	}
 
 	css.set_selector(`wp-block-kadence-header${uniqueID} a`);

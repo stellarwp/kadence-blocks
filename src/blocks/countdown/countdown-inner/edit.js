@@ -63,7 +63,7 @@ function KadenceCountdownInner(props) {
 		<div {...blockProps}>
 			<InnerBlocks
 				templateLock={false}
-				renderAppender={hasChildBlocks ? undefined : () => <InnerBlocks.ButtonBlockAppender />}
+				renderAppender={hasChildBlocks ? undefined : InnerBlocks.ButtonBlockAppender}
 			/>
 		</div>
 	);

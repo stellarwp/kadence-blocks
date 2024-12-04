@@ -140,5 +140,5 @@
 		"reusable": false,
 		"kbMetadata": true
 	},
-	"usesContext": ["postId", "queryId"]
+	"usesContext": ["postId", "queryId", "kadence/dynamicSource", "kadence/repeaterRowData", "kadence/repeaterRow"]
 }

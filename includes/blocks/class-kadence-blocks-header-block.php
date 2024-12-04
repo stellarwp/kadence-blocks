@@ -110,11 +110,8 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 		$sized_attributes_inherit = $css->get_sized_attributes_auto( $attributes, $size );
 
 		$bg = $sized_attributes['background'];
-		// $hover_bg = $sized_attributes['backgroundHover'];
 		$bg_transparent = $sized_attributes['backgroundTransparent'];
-		// $hover_bg_transparent = $sized_attributes['backgroundTransparentHover'];
 		$bg_sticky = $sized_attributes['backgroundSticky'];
-		// $hover_bg_sticky = $sized_attributes['backgroundStickyHover'];
 		$border = $sized_attributes['border'];
 		$typography = $sized_attributes['typography'];
 		$min_height = $css->get_inherited_value($sized_attributes['height'][0], $sized_attributes['height'][1], $sized_attributes['height'][2], $size);
@@ -146,23 +143,13 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 			$css->render_background( $bg, $css );
 		}
 
-		// //hover styles
-		// $css->set_selector( '.wp-block-kadence-header' . $unique_id . ' .kb-header-container:hover' );
-		// $css->add_property( 'border-bottom', $css->render_border( $sized_attributes['borderHover'], 'bottom' ) );
-		// $css->add_property( 'border-top', $css->render_border( $sized_attributes['borderHover'], 'top' ) );
-		// $css->add_property( 'border-left', $css->render_border( $sized_attributes['borderHover'], 'left' ) );
-		// $css->add_property( 'border-right', $css->render_border( $sized_attributes['borderHover'], 'right' ) );
-		// $css->render_measure_range( $sized_attributes, ( 'Desktop' === $size ? 'borderRadiusHover' : 'borderRadiusHover' . $size ), 'border-radius', '', ['unit_key' => 'borderRadiusHoverUnit']);
-
-		// if ( $sized_attributes['isTransparent'] != '1' ) {
-		// 	$css->render_background( $hover_bg, $css );
-		// }
-
 		//transparent normal
+		$css->set_selector( '.wp-block-kadence-header' . $unique_id . '.header-' . strtolower( $size ) . '-transparent' );
+		if ( $this->is_header_transparent( $attributes, $unique_id, $size ) ) {
+			$css->render_background( $bg_transparent, $css, '--kb-transparent-header-bg' );
+		}
 		$css->set_selector( '.wp-block-kadence-header' . $unique_id . '.header-' . strtolower( $size ) . '-transparent .kb-header-container' );
 		if ( $this->is_header_transparent( $attributes, $unique_id, $size ) ) {
-			$css->render_background( $bg_transparent, $css );
-			$css->add_property( 'background-color', $css->render_color( ! empty( $bg_transparent['color'] ) ? $bg_transparent['color'] : '') );
 			$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['borderTransparent'], 'bottom' ) );
 			$css->add_property( 'border-top', $css->render_border( $sized_attributes['borderTransparent'], 'top' ) );
 			$css->add_property( 'border-left', $css->render_border( $sized_attributes['borderTransparent'], 'left' ) );
@@ -174,20 +161,13 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-		// //transparent hover
-		// $css->set_selector( '.wp-block-kadence-header' . $unique_id . '.header-' . strtolower( $size ) . '-transparent .kb-header-container:hover' );
-		// if ( $sized_attributes['isTransparent'] == '1' ) {
-		// 	$css->render_background( $hover_bg_transparent, $css );
-		// 	$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['borderTransparentHover'], 'bottom' ) );
-		// 	$css->add_property( 'border-top', $css->render_border( $sized_attributes['borderTransparentHover'], 'top' ) );
-		// 	$css->add_property( 'border-left', $css->render_border( $sized_attributes['borderTransparentHover'], 'left' ) );
-		// 	$css->add_property( 'border-right', $css->render_border( $sized_attributes['borderTransparentHover'], 'right' ) );
-		// }
-
-		//sticky normal
+		// Sticky normal
+		$css->set_selector( '.wp-block-kadence-header' . $unique_id );
+		if ( $sized_attributes['isSticky'] == '1' ) {
+			$css->render_background( $bg_sticky, $css, '--kb-stuck-header-bg' );
+		}
 		$css->set_selector( '.wp-block-kadence-header' . $unique_id . ' .kb-header-container.item-is-stuck' );
 		if ( $sized_attributes['isSticky'] == '1' ) {
-			$css->render_background( $bg_sticky, $css );
 			$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['borderSticky'], 'bottom' ) );
 			$css->add_property( 'border-top', $css->render_border( $sized_attributes['borderSticky'], 'top' ) );
 			$css->add_property( 'border-left', $css->render_border( $sized_attributes['borderSticky'], 'left' ) );
@@ -199,15 +179,6 @@ class Kadence_Blocks_Header_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-		// //sticky hover
-		// $css->set_selector( '.wp-block-kadence-header' . $unique_id . ' .kb-header-container.item-is-stuck:hover' );
-		// if ( $sized_attributes['isSticky'] == '1' ) {
-		// 	$css->render_background( $hover_bg_sticky, $css );
-		// 	$css->add_property( 'border-bottom', $css->render_border( $sized_attributes['borderStickyHover'], 'bottom' ) );
-		// 	$css->add_property( 'border-top', $css->render_border( $sized_attributes['borderStickyHover'], 'top' ) );
-		// 	$css->add_property( 'border-left', $css->render_border( $sized_attributes['borderStickyHover'], 'left' ) );
-		// 	$css->add_property( 'border-right', $css->render_border( $sized_attributes['borderStickyHover'], 'right' ) );
-		// }
 	}
 
 	/**

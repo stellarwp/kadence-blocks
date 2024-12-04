@@ -92,7 +92,7 @@ export default function PostSelectorCheckbox( { postType = 'posts', title = '', 
 
 		if( type === 'search' ) {
 			args.search = query;
-		} else {
+		} else if( postType !== 'categories' ) {
 			args.orderby = tab === 'all' ? 'title' : 'date';
 			args.order = tab === 'all' ? 'asc' : 'desc';
 		}
@@ -166,7 +166,7 @@ export default function PostSelectorCheckbox( { postType = 'posts', title = '', 
 				{postsToRender.map( ( post ) => (
 					<div key={post.id}>
 						<CheckboxControl
-							label={ decodeEntities( post.title.rendered ) }
+							label={ decodeEntities( postType === 'categories' ? post?.name : post?.title?.rendered ) }
 							checked={selectedPosts.some( ( p ) => p.id === post.id )}
 							onChange={() => handleCheckboxChange( post )}
 						/>
