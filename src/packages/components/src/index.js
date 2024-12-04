@@ -106,6 +106,8 @@ export { default as MeasurementSingleControl } from './measurement/single-input-
 /* Color */
 export { default as AdvancedColorControlPalette } from './color/advanced-color-control-palette';
 export { default as BorderColorControls } from './color/border-color-control';
+export { default as ShadowControl } from './shadow/shadow-control';
+export { default as ResponsiveShadowControl } from './shadow/responsive-shadow-control';
 
 /* Block Defaults */
 export { default as KadenceBlockDefaults } from './block-defaults';

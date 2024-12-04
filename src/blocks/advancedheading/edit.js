@@ -10,6 +10,7 @@ import classnames from 'classnames';
 import {
 	PopColorControl,
 	TextShadowControl,
+	ResponsiveShadowControl,
 	TypographyControls,
 	InlineTypographyControls,
 	ResponsiveMeasurementControls,
@@ -119,7 +120,10 @@ function KadenceAdvancedHeading(props) {
 		content,
 		color,
 		colorClass,
+		enableTextShadow,
 		textShadow,
+		textShadowTablet,
+		textShadowMobile,
 		mobileAlign,
 		tabletAlign,
 		size,
@@ -364,19 +368,73 @@ function KadenceAdvancedHeading(props) {
 			setAttributes({ tabletMarkBorderStyles: tempBorderStyle });
 			setAttributes({ mobileMarkBorderStyles: tempBorderStyle });
 		}
+
+		// update enableTextShadow if textShadow[0].enable is true for previous unresponsive setting
+		if (!enableTextShadow && textShadow[0].enable) {
+			setAttributes({ enableTextShadow: true });
+		}
 	}, []);
 
+	let newItems;
 	const saveShadow = (value) => {
-		const newItems = textShadow.map((item, thisIndex) => {
-			if (0 === thisIndex) {
-				item = { ...item, ...value };
+		if (value.enable === 'reset') {
+			const resetItems = [
+				{
+					type: 'array',
+					default: [
+						{
+							enable: false,
+							color: 'rgba(0, 0, 0, 0.2)',
+							blur: 1,
+							hOffset: 1,
+							vOffset: 1,
+						},
+					],
+					enable: false,
+				},
+			];
+			switch (previewDevice) {
+				case 'Desktop':
+					setAttributes({ textShadow: resetItems });
+					break;
+				case 'Tablet':
+					setAttributes({ textShadowTablet: resetItems });
+					break;
+				case 'Mobile':
+					setAttributes({ textShadowMobile: resetItems });
+					break;
 			}
-
-			return item;
-		});
-		setAttributes({
-			textShadow: newItems,
-		});
+		} else if (previewDevice === 'Desktop') {
+			newItems = textShadow.map((item, thisIndex) => {
+				if (0 === thisIndex) {
+					item = { ...item, ...value };
+				}
+				return item;
+			});
+			setAttributes({
+				textShadow: newItems,
+			});
+		} else if (previewDevice === 'Tablet') {
+			newItems = textShadowTablet.map((item, thisIndex) => {
+				if (0 === thisIndex) {
+					item = { ...item, ...value };
+				}
+				return item;
+			});
+			setAttributes({
+				textShadowTablet: newItems,
+			});
+		} else if (previewDevice === 'Mobile') {
+			newItems = textShadowMobile.map((item, thisIndex) => {
+				if (0 === thisIndex) {
+					item = { ...item, ...value };
+				}
+				return item;
+			});
+			setAttributes({
+				textShadowMobile: newItems,
+			});
+		}
 	};
 
 	const isDynamicReplaced =
@@ -488,6 +546,60 @@ function KadenceAdvancedHeading(props) {
 		undefined !== align ? align : '',
 		undefined !== tabletAlign ? tabletAlign : '',
 		undefined !== mobileAlign ? mobileAlign : ''
+	);
+	const previewColorTextShadow = getPreviewSize(
+		previewDevice,
+		undefined !== textShadow && undefined !== textShadow[0] && undefined !== textShadow[0].color
+			? textShadow[0].color
+			: 'rgba(0, 0, 0, 0.2)',
+		undefined !== textShadowTablet && undefined !== textShadowTablet[0] && undefined !== textShadowTablet[0].color
+			? textShadowTablet[0].color
+			: textShadow[0].color,
+		undefined !== textShadowMobile && undefined !== textShadowMobile[0] && undefined !== textShadowMobile[0].color
+			? textShadowMobile[0].color
+			: textShadowTablet[0].color
+			? textShadowTablet[0].color
+			: textShadow[0].color
+	);
+	const previewHOffset = getPreviewSize(
+		previewDevice,
+		undefined !== textShadow && undefined !== textShadow[0] && undefined !== textShadow[0].hOffset
+			? textShadow[0].hOffset
+			: 1,
+		undefined !== textShadowTablet && undefined !== textShadowTablet[0] && undefined !== textShadowTablet[0].hOffset
+			? textShadowTablet[0].hOffset
+			: '',
+		undefined !== textShadowMobile && undefined !== textShadowMobile[0] && undefined !== textShadowMobile[0].hOffset
+			? textShadowMobile[0].hOffset
+			: ''
+	);
+	const previewVOffset = getPreviewSize(
+		previewDevice,
+		undefined !== textShadow && undefined !== textShadow[0] && undefined !== textShadow[0].vOffset
+			? textShadow[0].vOffset
+			: 1,
+
+		undefined !== textShadowTablet && undefined !== textShadowTablet[0] && undefined !== textShadowTablet[0].vOffset
+			? textShadowTablet[0].vOffset
+			: '',
+
+		undefined !== textShadowMobile && undefined !== textShadowMobile[0] && undefined !== textShadowMobile[0].vOffset
+			? textShadowMobile[0].vOffset
+			: ''
+	);
+	const previewBlur = getPreviewSize(
+		previewDevice,
+		undefined !== textShadow && undefined !== textShadow[0] && undefined !== textShadow[0].blur
+			? textShadow[0].blur
+			: 1,
+
+		undefined !== textShadowTablet && undefined !== textShadowTablet[0] && undefined !== textShadowTablet[0].blur
+			? textShadowTablet[0].blur
+			: '',
+
+		undefined !== textShadowMobile && undefined !== textShadowMobile[0] && undefined !== textShadowMobile[0].blur
+			? textShadowMobile[0].blur
+			: ''
 	);
 	let previewJustifyAlign = previewAlign;
 	switch (previewAlign) {
@@ -925,21 +1037,23 @@ function KadenceAdvancedHeading(props) {
 							: undefined,
 						textTransform: textTransform ? textTransform : undefined,
 						fontFamily: typography ? renderTypography : '',
-						textShadow:
-							undefined !== textShadow &&
-							undefined !== textShadow[0] &&
-							undefined !== textShadow[0].enable &&
-							textShadow[0].enable
-								? (undefined !== textShadow[0].hOffset ? textShadow[0].hOffset : 1) +
-								  'px ' +
-								  (undefined !== textShadow[0].vOffset ? textShadow[0].vOffset : 1) +
-								  'px ' +
-								  (undefined !== textShadow[0].blur ? textShadow[0].blur : 1) +
-								  'px ' +
-								  (undefined !== textShadow[0].color
-										? KadenceColorOutput(textShadow[0].color)
-										: 'rgba(0,0,0,0.2)')
-								: undefined,
+						textShadow: enableTextShadow
+							? `${previewHOffset}px ${previewVOffset}px ${previewBlur}px ${KadenceColorOutput(
+									previewColorTextShadow
+							  )}`
+							: textShadow[0].enable && previewDevice === 'Tablet'
+							? `${textShadow[0].hOffset}px ${textShadow[0].vOffset}px ${
+									textShadow[0].blur
+							  }px ${KadenceColorOutput(textShadow[0].color)}`
+							: textShadowTablet[0].enable && previewDevice === 'Mobile'
+							? `${textShadowTablet[0].hOffset}px ${textShadowTablet[0].vOffset}px ${
+									textShadowTablet[0].blur
+							  }px ${KadenceColorOutput(textShadowTablet[0].color)}`
+							: textShadow[0].enable && previewDevice === 'Mobile'
+							? `${textShadow[0].hOffset}px ${textShadow[0].vOffset}px ${
+									textShadow[0].blur
+							  }px ${KadenceColorOutput(textShadow[0].color)}`
+							: undefined,
 					}}
 					placeholder={__('Write something…', 'kadence-blocks')}
 				/>
@@ -1669,60 +1783,39 @@ function KadenceAdvancedHeading(props) {
 								initialOpen={false}
 								panelName={'kb-adv-heading-text-shadow'}
 							>
-								<TextShadowControl
-									label={__('Text Shadow', 'kadence-blocks')}
-									enable={
-										undefined !== textShadow &&
-										undefined !== textShadow[0] &&
-										undefined !== textShadow[0].enable
-											? textShadow[0].enable
-											: false
-									}
-									color={
-										undefined !== textShadow &&
-										undefined !== textShadow[0] &&
-										undefined !== textShadow[0].color
-											? textShadow[0].color
-											: 'rgba(0, 0, 0, 0.2)'
-									}
-									colorDefault={'rgba(0, 0, 0, 0.2)'}
-									hOffset={
-										undefined !== textShadow &&
-										undefined !== textShadow[0] &&
-										undefined !== textShadow[0].hOffset
-											? textShadow[0].hOffset
-											: 1
-									}
-									vOffset={
-										undefined !== textShadow &&
-										undefined !== textShadow[0] &&
-										undefined !== textShadow[0].vOffset
-											? textShadow[0].vOffset
-											: 1
-									}
-									blur={
-										undefined !== textShadow &&
-										undefined !== textShadow[0] &&
-										undefined !== textShadow[0].blur
-											? textShadow[0].blur
-											: 1
-									}
-									onEnableChange={(value) => {
-										saveShadow({ enable: value });
-									}}
-									onColorChange={(value) => {
-										saveShadow({ color: value });
-									}}
-									onHOffsetChange={(value) => {
-										saveShadow({ hOffset: value });
-									}}
-									onVOffsetChange={(value) => {
-										saveShadow({ vOffset: value });
-									}}
-									onBlurChange={(value) => {
-										saveShadow({ blur: value });
+								<ToggleControl
+									label={'Enable Text Shadow'}
+									checked={enableTextShadow}
+									onChange={(value) => {
+										setAttributes({ enableTextShadow: value });
 									}}
 								/>
+								{enableTextShadow === true && (
+									<ResponsiveShadowControl
+										label={__('Text Shadow', 'kadence-blocks')}
+										enable={enableTextShadow}
+										color={previewColorTextShadow}
+										colorDefault={'rgba(0, 0, 0, 0.2)'}
+										hOffset={previewHOffset}
+										vOffset={previewVOffset}
+										blur={previewBlur}
+										onEnableChange={(value) => {
+											saveShadow({ enable: value });
+										}}
+										onColorChange={(value) => {
+											saveShadow({ color: value });
+										}}
+										onHOffsetChange={(value) => {
+											saveShadow({ hOffset: value });
+										}}
+										onVOffsetChange={(value) => {
+											saveShadow({ vOffset: value });
+										}}
+										onBlurChange={(value) => {
+											saveShadow({ blur: value });
+										}}
+									/>
+								)}
 							</KadencePanelBody>
 							{showSettings('iconSettings', 'kadence/advancedheading') && (
 								<KadencePanelBody
