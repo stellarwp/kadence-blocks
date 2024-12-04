@@ -66,10 +66,12 @@
 	border-bottom-width: 0px;
 }
 .kt-svg-icon-list-style-stacked .kt-svg-icon-list-single {
-	border: 0px solid transparent;
+	border-style: solid;
+	border-width: 0px;
 }
 .kb-icon-list-style-stacked .kt-svg-icon-list-single {
-	border: 0px solid transparent;
+	border-style: solid;
+	border-width: 0px;
 }
 /* Remove padding from innerblocks */
 .kt-svg-icon-list-container .block-editor-block-list__layout .wp-block {
