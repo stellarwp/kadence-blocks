@@ -179,6 +179,7 @@ Release Date: December TBD 2024
 * Update: Close mega menu when clicking outside of dropdown.
 * Fix: Issue with table of contents script dependency timing.
 * Fix: Border radius on thumbnail in advanced gallery.
+* Fix: Icon list border display when not no width is provided
 
 = 3.3.7 =
 Release Date: November 21st 2024
