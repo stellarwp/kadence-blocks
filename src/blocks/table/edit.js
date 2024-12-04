@@ -36,7 +36,7 @@ import {
 	ResponsiveAlignControls,
 } from '@kadence/components';
 
-import { setBlockDefaults, getUniqueId, getPostOrFseId } from '@kadence/helpers';
+import { setBlockDefaults, getUniqueId, getPostOrFseId, getPreviewSize } from '@kadence/helpers';
 import BackendStyles from './components/backend-styles';
 import { applyFilters } from '@wordpress/hooks';
 import { plus } from '@wordpress/icons';
@@ -272,25 +272,26 @@ export function Edit(props) {
 		const currentSetting = getColumnSetting(index);
 
 		// If we're changing units, update all columns
-		if (updates.unit && updates.unit !== currentSetting.unit) {
-			const defaultWidth = updates.unit === '%' ? DEFAULT_PERCENT_WIDTH : DEFAULT_PIXEL_WIDTH;
-
+		if (updates.unit || updates.unitTablet || updates.unitMobile) {
 			newSettings.forEach((setting, idx) => {
 				if (setting) {
 					newSettings[idx] = {
 						...setting,
-						unit: updates.unit,
-						width: defaultWidth,
+						...(updates.unit && { unit: updates.unit }),
+						...(updates.unitTablet && { unitTablet: updates.unitTablet }),
+						...(updates.unitMobile && { unitMobile: updates.unitMobile }),
 					};
 				}
 			});
 
+			// Fill in missing columns
 			for (let i = 0; i < columns; i++) {
 				if (!newSettings[i]) {
 					newSettings[i] = {
 						...getColumnDefaults(),
-						unit: updates.unit,
-						width: defaultWidth,
+						...(updates.unit && { unit: updates.unit }),
+						...(updates.unitTablet && { unitTablet: updates.unitTablet }),
+						...(updates.unitMobile && { unitMobile: updates.unitMobile }),
 					};
 				}
 			}
@@ -327,6 +328,12 @@ export function Edit(props) {
 			headerTypography: [{ ...headerTypography[0], ...value }, ...headerTypography.slice(1)],
 		});
 	};
+	const previewColumnSettingUnit = getPreviewSize(
+		previewDevice,
+		columnSettings?.[0]?.unit,
+		columnSettings?.[0]?.unitTablet,
+		columnSettings?.[0]?.unitMobile
+	);
 
 	const StickyUpsell = (
 		<>
@@ -490,32 +497,69 @@ export function Edit(props) {
 														}}
 													>
 														<div style={{ flex: 1 }}>
-															<RangeControl
+															<ResponsiveRangeControls
+																label={__('Max Width', 'kadence-blocks')}
 																value={
 																	parseFloat(columnSetting.width) ||
-																	(columnSetting.unit === '%'
+																	(previewColumnSettingUnit === '%'
 																		? DEFAULT_PERCENT_WIDTH
 																		: DEFAULT_PIXEL_WIDTH)
 																}
-																onChange={(value) =>
-																	updateColumnSetting(index, { width: value })
+																onChange={(value) => {
+																	value = value ? value : '';
+																	updateColumnSetting(index, { width: value });
+																}}
+																tabletValue={
+																	parseFloat(columnSetting.widthTablet) ||
+																	(previewColumnSettingUnit === '%'
+																		? DEFAULT_PERCENT_WIDTH
+																		: DEFAULT_PIXEL_WIDTH)
 																}
-																min={columnSetting.unit === '%' ? 1 : 20}
-																max={columnSetting.unit === '%' ? 100 : 1000}
+																onChangeTablet={(value) => {
+																	value = value ? value : '';
+																	updateColumnSetting(index, { widthTablet: value });
+																}}
+																mobileValue={
+																	parseFloat(columnSetting.widthMobile) ||
+																	(previewColumnSettingUnit === '%'
+																		? DEFAULT_PERCENT_WIDTH
+																		: DEFAULT_PIXEL_WIDTH)
+																}
+																onChangeMobile={(value) => {
+																	value = value ? value : '';
+																	updateColumnSetting(index, { widthMobile: value });
+																}}
+																min={0}
+																max={previewColumnSettingUnit === 'px' ? 2000 : 100}
 																step={1}
+																reset={() =>
+																	updateColumnSetting(index, {
+																		width: '',
+																		widthTablet: '',
+																		widthMobile: '',
+																	})
+																}
+																unit={
+																	previewColumnSettingUnit
+																		? previewColumnSettingUnit
+																		: '%'
+																}
+																allowResponsiveUnitChange={true}
+																onUnit={(value) => {
+																	const device =
+																		'Desktop' === previewDevice
+																			? ''
+																			: previewDevice;
+																	console.log('Setting unit to: ', {
+																		['unit' + device]: value,
+																	});
+																	updateColumnSetting(index, {
+																		['unit' + device]: value,
+																	});
+																}}
+																units={['px', '%']}
 															/>
 														</div>
-														<SelectControl
-															value={columnSetting.unit}
-															options={[
-																{ label: '%', value: '%' },
-																{ label: 'px', value: 'px' },
-															]}
-															onChange={(value) =>
-																updateColumnSetting(index, { unit: value })
-															}
-															style={{ minWidth: '70px' }}
-														/>
 													</div>
 												</>
 											)}
@@ -985,15 +1029,25 @@ export function Edit(props) {
 								);
 							}
 
+							const previewColumnWidth = getPreviewSize(
+								previewDevice,
+								columnSetting.width,
+								columnSetting.widthTablet,
+								columnSetting.widthMobile,
+								true
+							);
+
 							return (
 								<ResizableBox
 									key={index}
 									size={{
-										width: `${columnSetting.width || DEFAULT_PERCENT_WIDTH}${columnSetting.unit}`,
+										width: `${
+											previewColumnWidth || DEFAULT_PERCENT_WIDTH
+										}${previewColumnSettingUnit}`,
 										height: 30,
 									}}
-									minWidth={columnSetting.unit === '%' ? '1%' : '20'}
-									maxWidth={columnSetting.unit === '%' ? '100%' : '1000'}
+									minWidth={previewColumnSettingUnit === '%' ? '1%' : '20'}
+									maxWidth={previewColumnSettingUnit === '%' ? '100%' : '1000'}
 									enable={{
 										top: false,
 										right: true,
@@ -1007,10 +1061,10 @@ export function Edit(props) {
 									onResizeStart={() => {
 										setIsResizing(true);
 										// Ensure we have a valid initial width
-										if (!columnSetting.width) {
+										if (!previewColumnWidth) {
 											updateColumnSetting(index, {
 												width:
-													columnSetting.unit === '%'
+													previewColumnSettingUnit === '%'
 														? DEFAULT_PERCENT_WIDTH
 														: DEFAULT_PIXEL_WIDTH,
 											});
@@ -1019,19 +1073,21 @@ export function Edit(props) {
 									onResizeStop={(event, direction, elt, delta) => {
 										setIsResizing(false);
 										const currentWidth =
-											parseFloat(columnSetting.width) ||
-											(columnSetting.unit === '%' ? DEFAULT_PERCENT_WIDTH : DEFAULT_PIXEL_WIDTH);
+											parseFloat(previewColumnWidth) ||
+											(previewColumnSettingUnit === '%'
+												? DEFAULT_PERCENT_WIDTH
+												: DEFAULT_PIXEL_WIDTH);
 
 										const newWidth =
-											columnSetting.unit === '%'
+											previewColumnSettingUnit === '%'
 												? currentWidth + (delta.width / elt.parentElement.offsetWidth) * 100
 												: currentWidth + delta.width;
 
 										updateColumnSetting(index, {
 											width: Math.round(
 												Math.max(
-													columnSetting.unit === '%' ? 1 : 20,
-													Math.min(columnSetting.unit === '%' ? 100 : 1000, newWidth)
+													previewColumnSettingUnit === '%' ? 1 : 20,
+													Math.min(previewColumnSettingUnit === '%' ? 100 : 1000, newWidth)
 												)
 											),
 										});
@@ -1049,11 +1105,11 @@ export function Edit(props) {
 										}}
 									>
 										{`${Math.round(
-											columnSetting.width ||
-												(columnSetting.unit === '%'
+											previewColumnWidth ||
+												(previewColumnSettingUnit === '%'
 													? DEFAULT_PERCENT_WIDTH
 													: DEFAULT_PIXEL_WIDTH)
-										)}${columnSetting.unit}`}
+										)}${previewColumnSettingUnit}`}
 									</div>
 								</ResizableBox>
 							);

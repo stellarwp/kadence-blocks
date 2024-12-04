@@ -95,13 +95,33 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 			$has_fixed_columns = false;
 
 			foreach ( $attributes['columnSettings'] as $index => $settings ) {
-				if ( ( empty( $settings['useAuto'] ) || !$settings['useAuto'] ) && isset( $settings['width'] ) && '' !== $settings['width'] ) {
+				if ( ( empty( $settings['useAuto'] ) || !$settings['useAuto'] ) ) {
 					$has_fixed_columns = true;
 					$width_unit = ! empty( $settings['unit'] ) ? $settings['unit'] : '%';
 
-					$css->set_selector( '.kb-table' . esc_attr( $unique_id ) . ' td:nth-of-type(' . ( $index + 1 ) . '), ' .
-						'.kb-table' . esc_attr( $unique_id ) . ' th:nth-of-type(' . ( $index + 1 ) . ')' );
-					$css->add_property( 'width', $settings['width'] . $width_unit );
+					if( isset( $settings['width'] ) && '' !== $settings['width'] ) {
+						$css->set_selector('.kb-table' . esc_attr($unique_id) . ' td:nth-of-type(' . ($index + 1) . '), ' .
+							'.kb-table' . esc_attr($unique_id) . ' th:nth-of-type(' . ($index + 1) . ')');
+						$css->add_property('width', $settings['width'] . $width_unit);
+					}
+
+					if( isset( $settings['widthTablet'] ) && '' !== $settings['widthTablet'] ) {
+						if( ! empty( $settings['unitTablet'] ) ) {
+							$width_unit = $settings['unitTablet'];
+						}
+						$css->set_media_state( 'tablet' );
+						$css->add_property('width', $settings['widthTablet'] . $width_unit);
+						$css->set_media_state( 'desktop' );
+					}
+
+					if( isset( $settings['widthMobile'] ) && '' !== $settings['widthMobile'] ) {
+						if( ! empty( $settings['unitMobile'] ) ) {
+							$width_unit = $settings['unitMobile'];
+						}
+						$css->set_media_state( 'mobile' );
+						$css->add_property('width', $settings['widthMobile'] . $width_unit);
+						$css->set_media_state( 'desktop' );
+					}
 				}
 			}
 

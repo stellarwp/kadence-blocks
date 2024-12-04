@@ -66,6 +66,12 @@ export default function BackendStyles(props) {
 	const previewMaxHeight = getPreviewSize(previewDevice, maxHeight?.[0], maxHeight?.[1], maxHeight?.[2]);
 	const previewMaxWidth = getPreviewSize(previewDevice, maxWidth?.[0], maxWidth?.[1], maxWidth?.[2]);
 	const previewRowMinHeight = getPreviewSize(previewDevice, rowMinHeight, tabletRowMinHeight, mobileRowMinHeight);
+	const previewColumnSettingUnit = getPreviewSize(
+		previewDevice,
+		columnSettings?.[0]?.unit,
+		columnSettings?.[0]?.unitTablet,
+		columnSettings?.[0]?.unitMobile
+	);
 
 	css.set_selector(`.kb-table${uniqueID}`);
 	css.render_font(dataTypography ? dataTypography : [], previewDevice);
@@ -94,9 +100,9 @@ export default function BackendStyles(props) {
 			if (!settings?.useAuto && settings?.width) {
 				hasFixedColumns = true;
 				if (!fixedUnit) {
-					fixedUnit = settings.unit;
+					fixedUnit = previewColumnSettingUnit;
 				}
-				if (settings.unit === fixedUnit) {
+				if (previewColumnSettingUnit === fixedUnit) {
 					totalFixedWidth += parseFloat(settings.width);
 				}
 			}
@@ -104,9 +110,16 @@ export default function BackendStyles(props) {
 
 		// Apply widths
 		columnSettings.forEach((settings, index) => {
-			if (!settings?.useAuto && settings?.width) {
+			if (!settings?.useAuto) {
+				const previewWidth = getPreviewSize(
+					previewDevice,
+					settings.width,
+					settings.widthTablet,
+					settings.widthMobile,
+					true
+				);
 				css.set_selector(`.kb-table${uniqueID} tr > *:nth-child(${index + 1})`);
-				css.add_property('width', `${settings.width}${settings.unit}`);
+				css.add_property('width', `${previewWidth}${previewColumnSettingUnit}`);
 			} else if (settings?.useAuto && hasFixedColumns) {
 				// For auto columns, distribute remaining space evenly
 				const autoColumns = columnSettings.filter((s) => s?.useAuto).length;
