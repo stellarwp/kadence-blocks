@@ -868,6 +868,7 @@ export default function KadenceButtonEdit(props) {
 														)}
 														{'normal' === textBackgroundHoverType && (
 															<PopColorControl
+																key={'btncolorhover'}
 																label={__('Color Hover', 'kadence-blocks')}
 																value={colorHover ? colorHover : ''}
 																default={''}
@@ -895,6 +896,7 @@ export default function KadenceButtonEdit(props) {
 														)}
 														{'normal' === backgroundHoverType && (
 															<PopColorControl
+																key={'btnbghover'}
 																label={__('Background Color', 'kadence-blocks')}
 																value={backgroundHover ? backgroundHover : ''}
 																default={''}
@@ -1063,6 +1065,7 @@ export default function KadenceButtonEdit(props) {
 														)}
 														{'normal' === textBackgroundType && (
 															<PopColorControl
+																key={'btncolor'}
 																label={__('Color', 'kadence-blocks')}
 																value={color ? color : ''}
 																default={''}
@@ -1086,6 +1089,7 @@ export default function KadenceButtonEdit(props) {
 														)}
 														{'normal' === backgroundType && (
 															<PopColorControl
+																key={'btnbg'}
 																label={__('Background Color', 'kadence-blocks')}
 																value={background ? background : ''}
 																default={''}

@@ -136,6 +136,7 @@ class Editor_Assets {
 			'search',
 			'show-more',
 			'spacer',
+			'table',
 			'tableofcontents',
 			'tabs',
 			'testimonials',

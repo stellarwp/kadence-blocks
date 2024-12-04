@@ -98,6 +98,10 @@ export default (data, cssClass, previewDevice, withClass = true) => {
 		if (undefined !== data[0].family && '' !== data[0].family) {
 			outputCSS = outputCSS + 'font-family:' + data[0].family + ';';
 		}
+
+		if (undefined !== data[0].color && '' !== data[0].color) {
+			outputCSS = outputCSS + 'color:' + data[0].color + ';';
+		}
 	}
 	if (!outputCSS) {
 		return '';

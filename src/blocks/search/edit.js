@@ -597,6 +597,7 @@ export function Edit(props) {
 										/>
 										{'gradient' !== inputFocusBackgroundType && (
 											<PopColorControl
+												key={'ifbhover'}
 												label={__('Input Focus Background', 'kadence-blocks')}
 												value={inputFocusBackgroundColor}
 												default={''}
@@ -607,6 +608,7 @@ export function Edit(props) {
 										)}
 										{'gradient' === inputFocusBackgroundType && (
 											<GradientControl
+												key={'ifghover'}
 												value={inputFocusGradientActive}
 												onChange={(value) => setAttributes({ inputFocusGradientActive: value })}
 												gradients={[]}
@@ -700,6 +702,7 @@ export function Edit(props) {
 										/>
 										{'gradient' !== inputBackgroundType && (
 											<PopColorControl
+												key={'ifbnormal'}
 												label={__('Input Background', 'kadence-blocks')}
 												value={inputBackgroundColor}
 												default={''}
@@ -710,6 +713,7 @@ export function Edit(props) {
 										)}
 										{'gradient' === inputBackgroundType && (
 											<GradientControl
+												key={'ifgnormal'}
 												value={inputGradient}
 												onChange={(value) => setAttributes({ inputGradient: value })}
 												gradients={[]}

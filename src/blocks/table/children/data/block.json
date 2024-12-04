@@ -1,0 +1,44 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "kadence/table-data",
+	"title": "Table Data",
+	"category": "kadence-blocks",
+	"textdomain": "kadence-blocks",
+	"parent": [
+		"kadence/table-row"
+	],
+	"attributes": {
+		"uniqueID": {
+			"type": "string"
+		},
+		"column": {
+			"type": "number"
+		},
+		"padding": {
+			"type": "array",
+			"default": ["xxs", "xxs", "xxs", "xxs"]
+		},
+		"tabletPadding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"mobilePadding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"paddingType": {
+			"type": "string",
+			"default": "px"
+		}
+	},
+	"supports": {
+		"kbMetadata": true
+	},
+	"usesContext": [
+		"kadence/table/thisRowIsHeader",
+		"kadence/table/isFirstColumnHeader",
+		"kadence/table/parentRow",
+		"kadence/table/isFirstRowHeader"
+	]
+}

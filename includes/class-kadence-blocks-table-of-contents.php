@@ -863,8 +863,11 @@ class Kadence_Blocks_Table_Of_Contents {
 				if ( kadence_blocks_is_not_amp() ) {
 					if ( isset( $attributes['enableScrollSpy'] ) && $attributes['enableScrollSpy'] ) {
 						wp_enqueue_script( 'kadence-blocks-gumshoe' );
+						//need to laod this script with the gumshoe dependency if scrollspy is enabled
+						wp_enqueue_script( 'kadence-blocks-table-of-contents', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-table-of-contents.min.js', array('kadence-blocks-gumshoe') , KADENCE_BLOCKS_VERSION, true );
+					} else {
+						wp_enqueue_script( 'kadence-blocks-table-of-contents' );
 					}
-					wp_enqueue_script( 'kadence-blocks-table-of-contents' );
 				}
 				if ( ! doing_filter( 'the_content' ) ) {
 					if ( ! wp_style_is( 'kadence-blocks-table-of-contents', 'done' ) ) {

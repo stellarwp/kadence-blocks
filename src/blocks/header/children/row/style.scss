@@ -1,6 +1,12 @@
 .wp-block-kadence-header-row {
 	margin-top: 0;
 	margin-bottom: 0;
+	&:not(.kb-header-row-layout-contained) {
+		background: var(--kb-header-row-bg, transparent );
+	}
+	&.kb-header-row-layout-contained .kadence-header-row-inner {
+		background: var(--kb-header-row-bg, transparent );
+	}
 	.kadence-header-row-inner {
 		padding: 0 var(--global-content-edge-padding, 15px);
 		display: grid;

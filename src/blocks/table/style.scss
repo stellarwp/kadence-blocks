@@ -1,0 +1,16 @@
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+.kb-table {
+
+	border-collapse: collapse;
+
+	td, th, tr {
+		border-collapse: collapse;
+		padding: 0;
+	}
+
+}

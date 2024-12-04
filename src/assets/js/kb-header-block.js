@@ -414,8 +414,10 @@ class KBHeader {
 		var elHeight = this.stickyWrapper.offsetHeight;
 		var elWidth = this.placeholderWrapper.offsetWidth;
 		var elOffsetLeft = this.getOffset(this.placeholderWrapper).left;
-
 		if (!this['transparent' + this.activeSizeCased()]) {
+			this.placeholderWrapper.style.height = elHeight + 'px';
+		}
+		if ('' !== this['stickySection' + this.activeSizeCased()] && this['transparent' + this.activeSizeCased()]) {
 			this.placeholderWrapper.style.height = elHeight + 'px';
 		}
 
@@ -478,7 +480,9 @@ class KBHeader {
 				// 		var totalOffsetDelay = Math.floor(this.activeOffsetTop - offsetTop);
 				// 	}
 				// }
-				const shrinkLogos = this.activeHeaderContainer.querySelectorAll('.kb-img');
+				const shrinkLogos = this.activeHeaderContainer.querySelectorAll(
+					'.kb-img, .wp-block-kadence-identity img'
+				);
 				const shrinkHeader = this.activeHeaderContainer.querySelector(
 					'.wp-block-kadence-header-row-center .kadence-header-row-inner'
 				);
@@ -506,7 +510,9 @@ class KBHeader {
 					//in shrinking state, reduce logos
 					for (let i = 0; i < shrinkLogos.length; i++) {
 						const shrinkLogo = shrinkLogos[i];
-						shrinkLogo.style.maxHeight = shrinkingHeight + 'px';
+						if (!shrinkLogo.closest('.mega-menu')) {
+							shrinkLogo.style.maxHeight = shrinkingHeight + 'px';
+						}
 					}
 				}
 			}
