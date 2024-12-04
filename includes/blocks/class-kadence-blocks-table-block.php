@@ -177,7 +177,7 @@ class Kadence_Blocks_Table_Block extends Kadence_Blocks_Abstract_Block {
 		if( !empty( $attributes['columnBackgrounds'] ) ) {
 			foreach( $attributes['columnBackgrounds'] as $index => $background ) {
 				if ( $background ) {
-					$css->set_selector( '.kb-table-container .kb-table' . $unique_id . ' td:nth-of-type(' . ( $index + 1 ) . ')' );
+					$css->set_selector( '.kb-table-container .kb-table' . esc_attr( $unique_id ) . ' td:nth-of-type(' . ( $index + 1 ) . ')' );
 					$css->add_property( 'background-color', $css->render_color( $background ) );
 				}
 			}
