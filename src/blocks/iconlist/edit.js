@@ -38,6 +38,7 @@ import {
 	ResponsiveMeasureRangeControl,
 	SpacingVisualizer,
 	CopyPasteAttributes,
+	RangeControl,
 } from '@kadence/components';
 
 /**
@@ -65,7 +66,6 @@ import {
 import { useEffect, useState, Fragment, Platform, forwardRef } from '@wordpress/element';
 
 import {
-	RangeControl,
 	ButtonGroup,
 	Tooltip,
 	Button,
@@ -448,6 +448,7 @@ function KadenceIconLists(props) {
 											}}
 											min={0}
 											max={60}
+											reset={true}
 										/>
 										<div className="kt-btn-size-settings-container">
 											<h2 className="kt-beside-btn-group">
@@ -540,6 +541,7 @@ function KadenceIconLists(props) {
 										step={0.5}
 										min={0.5}
 										max={4}
+										reset={true}
 									/>
 								)}
 								<PopColorControl
@@ -587,6 +589,7 @@ function KadenceIconLists(props) {
 											}}
 											min={0}
 											max={20}
+											reset={true}
 										/>
 									</>
 								)}
@@ -599,6 +602,7 @@ function KadenceIconLists(props) {
 										}}
 										min={0}
 										max={50}
+										reset={true}
 									/>
 								)}
 								{style === 'stacked' && (
@@ -610,6 +614,7 @@ function KadenceIconLists(props) {
 										}}
 										min={0}
 										max={180}
+										reset={true}
 									/>
 								)}
 							</KadencePanelBody>

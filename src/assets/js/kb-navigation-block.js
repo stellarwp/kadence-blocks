@@ -4,6 +4,8 @@
  * Handles accessibility and mobile toggles for navigation.
  */
 (function () {
+	const focusableElementsString =
+		'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex="0"], [contenteditable]';
 	/**
 	 * Get element's offset.
 	 */
@@ -23,36 +25,6 @@
 			left: null,
 			right: null,
 		};
-	};
-	/**
-	 * Returns true if element is the
-	 * first focusable element in the container.
-	 * @param {Object} container
-	 * @param {Object} element
-	 * @param {string} focusSelector
-	 * @return {boolean} whether or not the element is the first focusable element in the container
-	 */
-	const isfirstFocusableElement = function (container, element, focusSelector) {
-		var focusableElements = container.querySelectorAll(focusSelector);
-		if (0 < focusableElements.length) {
-			return element === focusableElements[0];
-		}
-		return false;
-	};
-	/**
-	 * Returns true if element is the
-	 * last focusable element in the container.
-	 * @param {Object} container
-	 * @param {Object} element
-	 * @param {string} focusSelector
-	 * @return {boolean} whether or not the element is the last focusable element in the container
-	 */
-	const islastFocusableElement = function (container, element, focusSelector) {
-		var focusableElements = container.querySelectorAll(focusSelector);
-		if (0 < focusableElements.length) {
-			return element === focusableElements[focusableElements.length - 1];
-		}
-		return false;
 	};
 	/**
 	 * Toggle submenus open and closed, and tell screen readers what's going on.
@@ -78,8 +50,10 @@
 		 */
 		if (parentMenuItemToggled) {
 			// Toggle "off" the submenu.
-			parentMenuItem.classList.remove('menu-item--toggled-on');
-			subMenu.classList.remove('toggle-show');
+			setTimeout(function () {
+				parentMenuItem.classList.remove('menu-item--toggled-on');
+				subMenu.classList.remove('toggle-show');
+			}, 5);
 
 			// Make sure all children are closed.
 			var subMenuItemsToggled = parentMenuItem.querySelectorAll('.menu-item--toggled-on');
@@ -138,6 +112,24 @@
 				}
 			});
 		}
+	};
+	/**
+	 * Close all open submenus when clicking outside.
+	 * @return {void}
+	 */
+	const handleClickOutsideSubmenus = function () {
+		document.addEventListener('click', function (e) {
+			// Find all open submenus.
+			const openSubmenus = document.querySelectorAll('.menu-item--toggled-on');
+
+			// Close any open submenus if the click is outside them.
+			openSubmenus.forEach((submenu) => {
+				// Check if the click is outside the submenu and its parent menu item.
+				if (!submenu.contains(e.target)) {
+					toggleSubMenu(submenu, false);
+				}
+			});
+		});
 	};
 	/**
 	 * Initiate the script to process each
@@ -200,25 +192,35 @@
 				if (nav.classList.contains('is-vertical')) {
 					return;
 				}
-				// These specific selectors help us only select items that are visible.
-				var focusSelector =
-					'ul.toggle-show > li > .kb-link-wrap > a, ul.toggle-show > li > .kb-link-wrap > .kb-nav-dropdown-toggle-btn';
-
 				// 9 is tab KeyMap
 				if (9 === e.keyCode) {
+					var focusSelector =
+						'ul.toggle-show > li > .kb-link-wrap > a, ul.toggle-show > li > .kb-link-wrap > .kb-nav-dropdown-toggle-btn';
+					if (submenus[i].parentNode.classList.contains('kadence-menu-mega-enabled')) {
+						focusSelector = focusableElementsString;
+					}
+					var visibleFocusableElements = Array.from(submenus[i].querySelectorAll(focusSelector));
 					if (e.shiftKey) {
 						// Means we're tabbing out of the beginning of the submenu.
-						if (isfirstFocusableElement(submenus[i], document.activeElement, focusSelector)) {
+						if (document.activeElement === visibleFocusableElements[0]) {
 							toggleSubMenu(submenus[i].parentNode, false);
 						}
 						// Means we're tabbing out of the end of the submenu.
-					} else if (islastFocusableElement(submenus[i], document.activeElement, focusSelector)) {
+					} else if (
+						document.activeElement === visibleFocusableElements[visibleFocusableElements.length - 1]
+					) {
 						toggleSubMenu(submenus[i].parentNode, false);
+						// Move the focus back to the toggle.
+						setTimeout(function () {
+							submenus[i].parentNode.querySelector('.kb-nav-dropdown-toggle-btn').focus();
+						}, 5);
 					}
 				}
 				// 27 is keymap for esc key.
 				if (e.keyCode === 27) {
 					toggleSubMenu(submenus[i].parentNode, false);
+					// Move the focus back to the toggle.
+					submenus[i].parentNode.querySelector('.kb-nav-dropdown-toggle-btn').focus();
 				}
 			});
 
@@ -418,6 +420,7 @@
 			}, 200);
 		});
 		trackOrientation(navigationBlocks);
+		handleClickOutsideSubmenus();
 	};
 
 	// Initialize immediately for already loaded DOM

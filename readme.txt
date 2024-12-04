@@ -175,8 +175,12 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.3.8 =
-Release Date: tba
+Release Date: December TBD 2024
+* Update: Close mega menu when clicking outside of dropdown.
+* Update: Improve tabbing through navigation with submenus.
 * Fix: Issue with table of contents script dependency timing.
+* Fix: Border radius on thumbnail in advanced gallery.
+* Fix: Icon list border display when not no width is provided
 
 = 3.3.7 =
 Release Date: November 21st 2024
