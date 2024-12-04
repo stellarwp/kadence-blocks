@@ -167,6 +167,8 @@ class Kadence_Blocks_Iconlist_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			if( isset( $attributes['borderWidth'] ) ) {
 				$css->add_property( 'border-width',  $attributes['borderWidth'] . 'px' );
+			} else {
+				$css->add_property( 'border-width',  '0px' );
 			}
 			$css->add_property( 'border-style',  'solid' );
 

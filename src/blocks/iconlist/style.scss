@@ -103,7 +103,8 @@
 	justify-content: center;
 }
 .kt-svg-icon-list-style-stacked .kt-svg-icon-list-single {
-	border: 0px solid transparent;
+	border-style: solid;
+	border-width: 0;
 }
 .kt-svg-icon-list-columns-2 ul.kt-svg-icon-list {
 	grid-template-columns: repeat(2, minmax(0, 1fr));
