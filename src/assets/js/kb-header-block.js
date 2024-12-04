@@ -414,8 +414,10 @@ class KBHeader {
 		var elHeight = this.stickyWrapper.offsetHeight;
 		var elWidth = this.placeholderWrapper.offsetWidth;
 		var elOffsetLeft = this.getOffset(this.placeholderWrapper).left;
-
 		if (!this['transparent' + this.activeSizeCased()]) {
+			this.placeholderWrapper.style.height = elHeight + 'px';
+		}
+		if ('' !== this['stickySection' + this.activeSizeCased()] && this['transparent' + this.activeSizeCased()]) {
 			this.placeholderWrapper.style.height = elHeight + 'px';
 		}
 
