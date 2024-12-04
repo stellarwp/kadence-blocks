@@ -6,7 +6,7 @@ export default function BackendStyles(props) {
 	const { uniqueID, padding, tabletPadding, mobilePadding, paddingType } = attributes;
 	const css = new KadenceBlocksCSS();
 
-	css.set_selector(`th.kb-table-data${uniqueID}, td.kb-table-data${uniqueID}`);
+	css.set_selector(`tr th.kb-table-data${uniqueID}, tr td.kb-table-data${uniqueID}`);
 	css.render_measure_output(padding, tabletPadding, mobilePadding, previewDevice, 'padding', paddingType);
 
 	const cssOutput = css.css_output();

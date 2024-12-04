@@ -76,7 +76,7 @@ class Kadence_Blocks_Table_Data_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
-		$css->set_selector( '.kb-table-data' . $unique_id );
+		$css->set_selector( '.kb-table-container tr td.kb-table-data' . $unique_id . ', .kb-table-container tr th.kb-table-data' . $unique_id );
 		$css->render_measure_output( $attributes, 'padding', 'padding' );
 
 		return $css->css_output();

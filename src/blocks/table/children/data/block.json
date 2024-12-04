@@ -17,7 +17,7 @@
 		},
 		"padding": {
 			"type": "array",
-			"default": ["xxs", "xxs", "xxs", "xxs"]
+			"default": ["", "", "", ""]
 		},
 		"tabletPadding": {
 			"type": "array",
