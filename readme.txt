@@ -175,14 +175,24 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.4.0 =
-Release Date: December TBD 2024
+Release Date: December 5th 2024
+* Add: New Advanced Table block.
 * Update: Close mega menu when clicking outside of dropdown.
 * Update: Improve tabbing through navigation with submenus.
+* Update: Post categories as option in Advanced Navigation builder.
 * Fix: Issue with table of contents script dependency timing.
 * Fix: Issue with sticky header sections when transparent is active.
 * Fix: Border radius on thumbnail in advanced gallery.
 * Fix: Icon list border display when not no width is provided.
 * Fix: Navigation link icon size not applying.
+* Fix: Icon list link styling of none not applying.
+* Fix: Advanced text link wrap on some themes.
+* Fix: Advanced search input background color not applying.
+* Fix: WPML improvements with advanced text block.
+* Fix: Row layouts with advanced navigation links overlapping sticky header.
+* Fix: Issue with adding inner blocks to countdown block.
+* Fix: Shrink middle row option was shrinking images in mega menu.
+* Fix: Shrink middle row tablet and mobile height not saving.
 
 = 3.3.7 =
 Release Date: November 21st 2024
