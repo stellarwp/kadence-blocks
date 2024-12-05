@@ -58,6 +58,7 @@ const eslintConfig = {
 		Masonry: 'readable',
 		IntersectionObserver: 'readable',
 		getComputedStyle: 'readable',
+		ScrollMagic: 'readable',
 	},
 	rules: {
 		'@wordpress/i18n-text-domain': [
