@@ -175,7 +175,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.4.0 =
-Release Date: December TBD 2024
+Release Date: December 5th 2024
 * Update: Close mega menu when clicking outside of dropdown.
 * Update: Improve tabbing through navigation with submenus.
 * Fix: Issue with table of contents script dependency timing.
