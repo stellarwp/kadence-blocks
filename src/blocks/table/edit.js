@@ -477,7 +477,11 @@ export function Edit(props) {
 											}}
 										>
 											<h3 style={{ margin: '0 0 8px' }}>
-												{sprintf(__('Column %d', 'kadence-blocks'), index + 1)}
+												{sprintf(
+													// Translators: %d is the column number.
+													__('Column %d', 'kadence-blocks'),
+													index + 1
+												)}
 											</h3>
 
 											<ToggleControl
@@ -572,7 +576,7 @@ export function Edit(props) {
 						{applyFilters('kadence.tableBlockStickySettings', StickyUpsell, props)}
 
 						<KadencePanelBody
-							title={__('Table Sizing', 'kadnece-blocks')}
+							title={__('Table Sizing', 'kadence-blocks')}
 							panelName={'table-sizing'}
 							initialOpen={false}
 						>
@@ -890,7 +894,8 @@ export function Edit(props) {
 							{Array.from({ length: columns }).map((_, index) => (
 								<KadencePanelBody
 									key={index}
-									title={__(`Column ${index + 1} Background`, 'kadence-blocks')}
+									// Translators: %d is the column number
+									title={sprintf(__('Column %d Background', 'kadence-blocks'), index + 1)}
 									panelName={'column-bg-' + index}
 									initialOpen={false}
 								>
