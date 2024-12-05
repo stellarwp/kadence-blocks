@@ -190,7 +190,7 @@ Release Date: December 5th 2024
 * Fix: Advanced search input background color not applying.
 * Fix: WPML improvements with advanced text block.
 * Fix: Row layouts with advanced navigation links overlapping sticky header.
-* Fix: Issue with adding innerblocks to countdown block.
+* Fix: Issue with adding inner blocks to countdown block.
 * Fix: Shrink middle row option was shrinking images in mega menu.
 * Fix: Shrink middle row tablet and mobile height not saving.
 
