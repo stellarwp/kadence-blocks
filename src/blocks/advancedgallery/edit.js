@@ -3,8 +3,7 @@
  */
 import classnames from 'classnames';
 import { every, filter, forEach, debounce, map } from 'lodash';
-//import Masonry from 'react-masonry-component';
-import Masonry from 'react-masonry-css';
+import { Masonry } from 'react-masonry';
 
 /**
  * Kadence Components.
@@ -2108,7 +2107,8 @@ export default function GalleryEdit(props) {
 		[`kb-gallery-id-${uniqueID}`]: uniqueID,
 		[`kb-gallery-caption-style-${captionStyle}`]: captionStyle,
 		[`kb-gallery-filter-${imageFilter}`]: imageFilter,
-		[`kb-gallery-preview-columns-${previewColumns}`]: (type === 'grid' || type === 'carousel') && previewColumns,
+		[`kb-gallery-preview-columns-${previewColumns}`]:
+			(type === 'grid' || type === 'masonry' || type === 'carousel') && previewColumns,
 	});
 	const renderGalleryImages = (img, index, thumbnail = false) => {
 		const ariaLabel = sprintf(
@@ -2351,13 +2351,7 @@ export default function GalleryEdit(props) {
 				</div>
 			)}
 			{type && type === 'masonry' && (
-				<Masonry
-					style={spacingSettings}
-					breakpointCols={{
-						default: previewColumns,
-					}}
-					className={galleryClassNames}
-				>
+				<Masonry style={spacingSettings} className={galleryClassNames}>
 					{theImages.map((img, index) => {
 						return (
 							<div className="kadence-blocks-gallery-item" key={img.id || img.url}>
