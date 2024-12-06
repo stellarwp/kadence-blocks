@@ -52,17 +52,17 @@
 					decimalPlaces: decimalSpaces,
 				};
 				window.kadenceCountUp.cache[n] = new countUp.CountUp(el, end, KbCounterOptions);
-				window.kadenceCountUp.accessabilityModifications(el, end);
+				window.kadenceCountUp.accessabilityModifications(el, end, prefix, suffix);
 				// Initialize listener
 				window.kadenceCountUp.listenerCache[n] = window.kadenceCountUp.listener(n);
 				document.addEventListener('scroll', window.kadenceCountUp.listenerCache[n], { passive: true });
 				window.kadenceCountUp.startCountUp(n);
 			}
 		},
-		accessabilityModifications(el, end) {
+		accessabilityModifications(el, end, prefix, suffix) {
 			const div = document.createElement('div');
 			div.classList.add('screen-reader-text');
-			div.innerHTML = end;
+			div.innerHTML = prefix + end + suffix;
 			el.before(div);
 			el.setAttribute('aria-hidden', 'true');
 		},
