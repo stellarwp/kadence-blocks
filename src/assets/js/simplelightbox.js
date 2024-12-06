@@ -116,7 +116,19 @@
 			if (elements) {
 				elements.forEach(function (element, index) {
 					self.items.push(element.getAttribute(options.urlAttribute));
-					self.captions.push(element.getAttribute(options.captionAttribute));
+
+					//look for a caption in various spots
+					var caption = element.getAttribute(options.captionAttribute);
+					if (!caption) {
+						//try to find the title attribute on the underlying image
+						caption = element.querySelector('img')?.getAttribute(options.captionAttribute);
+
+						if (!caption) {
+							//try to find an attached fig caption
+							caption = element.parentElement?.querySelector('figcaption')?.textContent;
+						}
+					}
+					self.captions.push(caption);
 
 					if (options.bindToItems) {
 						self.addEvent(
