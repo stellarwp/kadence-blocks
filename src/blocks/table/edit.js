@@ -372,7 +372,7 @@ export function Edit(props) {
 						label={__('Columns', 'kadence-blocks')}
 						value={placeholderColumns}
 						onChange={(value) => setPlaceholderColumns(value)}
-						min={2}
+						min={1}
 						max={15}
 					/>
 
@@ -380,7 +380,7 @@ export function Edit(props) {
 						label={__('Rows', 'kadence-blocks')}
 						value={placeholderRows}
 						onChange={(value) => setPlaceholderRows(value)}
-						min={2}
+						min={1}
 						max={100}
 					/>
 
