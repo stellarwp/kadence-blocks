@@ -68,9 +68,9 @@ export default function BackendStyles(props) {
 	const previewRowMinHeight = getPreviewSize(previewDevice, rowMinHeight, tabletRowMinHeight, mobileRowMinHeight);
 	const previewColumnSettingUnit = getPreviewSize(
 		previewDevice,
-		columnSettings?.[0]?.unit,
-		columnSettings?.[0]?.unitTablet,
-		columnSettings?.[0]?.unitMobile
+		columnSettings?.find((setting) => setting?.unit)?.unit,
+		columnSettings?.find((setting) => setting?.unitTablet)?.unitTablet,
+		columnSettings?.find((setting) => setting?.unitMobile)?.unitMobile
 	);
 
 	css.set_selector(`.kb-table${uniqueID}`);
@@ -113,9 +113,9 @@ export default function BackendStyles(props) {
 			if (!settings?.useAuto) {
 				const previewWidth = getPreviewSize(
 					previewDevice,
-					settings.width,
-					settings.widthTablet,
-					settings.widthMobile,
+					settings?.width,
+					settings?.widthTablet,
+					settings?.widthMobile,
 					true
 				);
 				css.set_selector(`.kb-table${uniqueID} tr > *:nth-child(${index + 1})`);

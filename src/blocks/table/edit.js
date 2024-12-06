@@ -330,9 +330,9 @@ export function Edit(props) {
 	};
 	const previewColumnSettingUnit = getPreviewSize(
 		previewDevice,
-		columnSettings?.[0]?.unit,
-		columnSettings?.[0]?.unitTablet,
-		columnSettings?.[0]?.unitMobile
+		columnSettings?.find((setting) => setting?.unit)?.unit,
+		columnSettings?.find((setting) => setting?.unitTablet)?.unitTablet,
+		columnSettings?.find((setting) => setting?.unitMobile)?.unitMobile
 	);
 
 	const StickyUpsell = (
