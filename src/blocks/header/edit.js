@@ -162,7 +162,7 @@ export function Edit(props) {
 					<>
 						<Placeholder
 							className="kb-select-or-create-placeholder"
-							label={__('Kadence Heading', 'kadence-blocks')}
+							label={__('Kadence Header', 'kadence-blocks')}
 							icon={headerBlockIcon}
 						>
 							<Spinner />
@@ -190,7 +190,7 @@ export function Edit(props) {
 					<>
 						<Placeholder
 							className="kb-select-or-create-placeholder"
-							label={__('Kadence Heading', 'kadence-blocks')}
+							label={__('Kadence Header', 'kadence-blocks')}
 							icon={headerBlockIcon}
 						>
 							{__('The selected header is in the trash.', 'kadence-blocks')}
