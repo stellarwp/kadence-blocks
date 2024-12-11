@@ -4,6 +4,7 @@
 		<gutenberg-block type="kadence/singlebtn" translate="1">
 			<key name="link" type="link" />
 			<key name="text" />
+			<xpath type="link">//a/@href</xpath>
 		</gutenberg-block>
 		<gutenberg-block type="kadence/icon" translate="0"/>
 		<gutenberg-block type="kadence/single-icon" translate="1">
