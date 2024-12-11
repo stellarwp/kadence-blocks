@@ -280,6 +280,20 @@
 					prev: 'splide__arrow--prev slick-prev',
 					next: 'splide__arrow--next slick-next',
 				},
+				i18n: {
+					prev: kb_splide?.i18n?.prev,
+					next: kb_splide?.i18n?.next,
+					first: kb_splide?.i18n?.first,
+					last: kb_splide?.i18n?.last,
+					slideX: kb_splide?.i18n?.slideX,
+					pageX: kb_splide?.i18n?.pageX,
+					play: kb_splide?.i18n?.play,
+					pause: kb_splide?.i18n?.pause,
+					carousel: kb_splide?.i18n?.carousel,
+					slide: kb_splide?.i18n?.slide,
+					select: kb_splide?.i18n?.select,
+					slideLabel: kb_splide?.i18n?.slideLabel,
+				},
 			};
 
 			if (splideOpts.perPage === 1 || scrollIsOne) {
