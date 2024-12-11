@@ -174,6 +174,10 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.4.1 =
+Release Date: tba
+* Fix: Issue with simple lightbox captions on some blocks.
+
 = 3.4.0 =
 Release Date: December 5th 2024
 * Add: New Advanced Table block.

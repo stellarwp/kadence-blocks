@@ -1,8 +1,8 @@
 /**
  * Front End Styles
  */
- .entry-content:not(.single-content) .kb-table-of-content-nav {
-    margin-bottom: 30px;
+.entry-content:not(.single-content) .kb-table-of-content-nav {
+	margin-bottom: 30px;
 }
 .kb-table-of-content-nav {
 	.kb-table-of-contents-title {
@@ -17,14 +17,14 @@
 		&:after {
 			clear: both;
 			display: table;
-			content: '';
+			content: "";
 		}
 		.kb-table-of-content-list {
 			margin: var(--global-kb-spacing-sm, 1.5rem) 0 0 0;
 			padding-left: 1.75em;
 			list-style: disc;
-			.kb-table-of-contents__entry{
-				color:inherit;
+			.kb-table-of-contents__entry {
+				color: inherit;
 			}
 			li:last-child {
 				margin-bottom: 0px;
@@ -118,12 +118,14 @@
 		border-radius: 0;
 		color: inherit;
 		border: 0;
-		box-shadow:none !important;
+		box-shadow: none !important;
 	}
 }
 // Basic
-.kb-toggle-icon-style-basic, .kb-toggle-icon-style-basiccircle {
-	.kb-table-of-contents-icon-trigger:after, .kb-table-of-contents-icon-trigger:before {
+.kb-toggle-icon-style-basic,
+.kb-toggle-icon-style-basiccircle {
+	.kb-table-of-contents-icon-trigger:after,
+	.kb-table-of-contents-icon-trigger:before {
 		content: "";
 		height: 4px;
 		position: absolute;
@@ -143,7 +145,8 @@
 	}
 }
 .kb-toc-toggle-active {
-	.kb-toggle-icon-style-basic, .kb-toggle-icon-style-basiccircle {
+	.kb-toggle-icon-style-basic,
+	.kb-toggle-icon-style-basiccircle {
 		.kb-table-of-contents-icon-trigger:before {
 			transform: rotate(0deg);
 		}
@@ -157,7 +160,8 @@
 	.kb-table-of-contents-icon-trigger {
 		border-radius: 50%;
 		background-color: currentColor;
-		&:after, &:before {
+		&:after,
+		&:before {
 			background-color: #fff;
 			width: 16px;
 			left: 4px;
@@ -166,8 +170,10 @@
 	}
 }
 // x close
-.kb-toggle-icon-style-xclose, .kb-toggle-icon-style-xclosecircle {
-	.kb-table-of-contents-icon-trigger:after, .kb-table-of-contents-icon-trigger:before {
+.kb-toggle-icon-style-xclose,
+.kb-toggle-icon-style-xclosecircle {
+	.kb-table-of-contents-icon-trigger:after,
+	.kb-table-of-contents-icon-trigger:before {
 		content: "";
 		background-color: currentColor;
 		height: 4px;
@@ -187,7 +193,8 @@
 	}
 }
 .kb-toc-toggle-active {
-	.kb-toggle-icon-style-xclose, .kb-toggle-icon-style-xclosecircle {
+	.kb-toggle-icon-style-xclose,
+	.kb-toggle-icon-style-xclosecircle {
 		.kb-table-of-contents-icon-trigger:before {
 			transform: rotate(45deg);
 		}
@@ -202,7 +209,8 @@
 		border-radius: 50%;
 		background-color: currentColor;
 	}
-	.kb-table-of-contents-icon-trigger:after, .kb-table-of-contents-icon-trigger:before {
+	.kb-table-of-contents-icon-trigger:after,
+	.kb-table-of-contents-icon-trigger:before {
 		background-color: #fff;
 		width: 16px;
 		left: 4px;
@@ -211,7 +219,8 @@
 }
 // Arrows
 .kb-toc-toggle-active {
-	.kb-toggle-icon-style-arrow, .kb-toggle-icon-style-arrowcircle {
+	.kb-toggle-icon-style-arrow,
+	.kb-toggle-icon-style-arrowcircle {
 		.kb-table-of-contents-icon-trigger:before {
 			transform: rotate(-45deg);
 		}
@@ -220,8 +229,10 @@
 		}
 	}
 }
-.kb-toggle-icon-style-arrow, .kb-toggle-icon-style-arrowcircle {
-	.kb-table-of-contents-icon-trigger:after, .kb-table-of-contents-icon-trigger:before {
+.kb-toggle-icon-style-arrow,
+.kb-toggle-icon-style-arrowcircle {
+	.kb-table-of-contents-icon-trigger:after,
+	.kb-table-of-contents-icon-trigger:before {
 		content: "";
 		background-color: currentColor;
 		height: 2px;
@@ -247,7 +258,8 @@
 		background-color: currentColor;
 		border-radius: 50%;
 	}
-	.kb-table-of-contents-icon-trigger:after, .kb-table-of-contents-icon-trigger:before {
+	.kb-table-of-contents-icon-trigger:after,
+	.kb-table-of-contents-icon-trigger:before {
 		width: 10px;
 		background-color: #fff;
 	}
@@ -259,27 +271,28 @@
 	}
 }
 .kb-table-of-content-nav.kb-toc-toggle-hidden .kb-table-of-content-wrap .kb-table-of-content-list {
-    height: 0 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    overflow: hidden;
+	height: 0 !important;
+	padding: 0 !important;
+	margin: 0 !important;
+	overflow: hidden;
+	visibility: hidden;
 }
 .kb-table-of-contents-title-wrap .kb-table-of-contents-title-btn.kb-table-of-contents-toggle {
-    box-shadow: none;
-    background: transparent;
-    color: inherit;
-    text-transform: inherit;
-    display: flex;
-    align-content: space-between;
-    align-items: center;
-    width: 100%;
-    border-style: solid;
-    border-width: 0;
-    padding: 0;
-    margin: 0;
-    text-align: inherit;
-    border-radius: 0;
-    font-size: inherit;
-    letter-spacing: inherit;
-    font-family: inherit;
+	box-shadow: none;
+	background: transparent;
+	color: inherit;
+	text-transform: inherit;
+	display: flex;
+	align-content: space-between;
+	align-items: center;
+	width: 100%;
+	border-style: solid;
+	border-width: 0;
+	padding: 0;
+	margin: 0;
+	text-align: inherit;
+	border-radius: 0;
+	font-size: inherit;
+	letter-spacing: inherit;
+	font-family: inherit;
 }
