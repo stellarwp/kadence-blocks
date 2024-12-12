@@ -315,7 +315,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 	 * A reset helper for the template columns
 	 */
 	public function reset_grid_colum_for_template_columns( $css, $inner_selector ) {
-		$css->set_selector( $inner_selector . ' > *:not(.added-for-specificity):not(.added-for-specificity)' );
+		$css->set_selector( $inner_selector . ' > div:not(.added-for-specificity)' );
 		$css->add_property( 'grid-column', 'initial' );
 		$css->set_selector( $inner_selector );
 	}
