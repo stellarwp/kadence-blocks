@@ -3,8 +3,8 @@ Contributors: britner, oakesjosh, woodardmc
 Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.4
-Tested up to: 6.7
-Stable tag: 3.4.0
+Tested up to: 6.7.1
+Stable tag: 3.4.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -175,8 +175,16 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.4.1 =
-Release Date: tba
+Release Date: December 12th 2024
+* Update: allowing splide slider options to be translated.
+* Update: TOC items readable/clickable when collapsed.
 * Fix: Issue with simple lightbox captions on some blocks.
+* Fix: Issue with row layout coulmns on tablet / mobile.
+* Fix: Issue with advanced galley shadows.
+* Fix: Issue with image captions in lighboxes.
+* Fix: Issue with tabs block accordion layouts not opening in some cases.
+* Fix: Count up block screen reader issue.
+* Fix: Issue with tons of connections causing overflow.
 
 = 3.4.0 =
 Release Date: December 5th 2024
