@@ -429,6 +429,11 @@ export function EditInner(props) {
 		linkHorizontalAlignment: meta?._kad_navigation_linkHorizontalAlignment,
 		linkHorizontalAlignmentTablet: meta?._kad_navigation_linkHorizontalAlignmentTablet,
 		linkHorizontalAlignmentMobile: meta?._kad_navigation_linkHorizontalAlignmentMobile,
+		enableScrollSpy: meta?._kad_navigation_enableScrollSpy,
+		scrollSpyOffsetManual: meta?._kad_navigation_scrollSpyOffsetManual,
+		scrollSpyOffset: meta?._kad_navigation_scrollSpyOffset,
+		scrollSpyOffsetTablet: meta?._kad_navigation_scrollSpyOffsetTablet,
+		scrollSpyOffsetMobile: meta?._kad_navigation_scrollSpyOffsetMobile,
 	};
 
 	const {
@@ -628,6 +633,11 @@ export function EditInner(props) {
 		linkHorizontalAlignment,
 		linkHorizontalAlignmentTablet,
 		linkHorizontalAlignmentMobile,
+		enableScrollSpy,
+		scrollSpyOffsetManual,
+		scrollSpyOffset,
+		scrollSpyOffsetTablet,
+		scrollSpyOffsetMobile,
 	} = metaAttributes;
 
 	const inTemplatePreviewMode = !id && templateKey;
@@ -1445,6 +1455,45 @@ export function EditInner(props) {
 								tabletChildren={generalToggleControls('Tablet')}
 								mobileChildren={generalToggleControls('Mobile')}
 							></SmallResponsiveControl>
+
+							<ToggleControl
+								label={__('Enable Activating Links when scrolling in active area.', 'kadence-blocks')}
+								checked={enableScrollSpy}
+								onChange={(value) => setMetaAttribute(value, 'enableScrollSpy')}
+							/>
+							{enableScrollSpy && (
+								<ToggleControl
+									label={__('Manually Set Activation Offset', 'kadence-blocks')}
+									checked={scrollSpyOffsetManual}
+									onChange={(value) => setMetaAttribute(value, 'scrollSpyOffsetManual')}
+								/>
+							)}
+							{enableScrollSpy && scrollSpyOffsetManual && (
+								<ResponsiveRangeControls
+									label={__('Activation Offset', 'kadence-blocks')}
+									help={__(
+										'Controls how far below the navigation link the anchor should be when the navigation link will be marked active.',
+										'kadence-blocks'
+									)}
+									value={scrollSpyOffset ? parseFloat(scrollSpyOffset) : ''}
+									valueTablet={scrollSpyOffsetTablet ? parseFloat(scrollSpyOffsetTablet) : ''}
+									valueMobile={scrollSpyOffsetMobile ? parseFloat(scrollSpyOffsetMobile) : ''}
+									onChange={(value) => setMetaAttribute(value.toString(), 'scrollSpyOffset')}
+									onChangeTablet={(value) =>
+										setMetaAttribute(value.toString(), 'scrollSpyOffsetTablet')
+									}
+									onChangeMobile={(value) =>
+										setMetaAttribute(value.toString(), 'scrollSpyOffsetMobile')
+									}
+									min={0}
+									max={1000}
+									step={1}
+									reset={() => setMetaAttribute('', 'scrollSpyOffset')}
+									unit={'px'}
+									units={['px']}
+									showUnit={true}
+								/>
+							)}
 						</KadencePanelBody>
 					</>
 				)}

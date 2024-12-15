@@ -412,6 +412,8 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 			array(
 				'class'      => implode( ' ', $wrapper_classes ),
 				'aria-label' => $name,
+				'data-scroll-spy' => $nav_attributes['enableScrollSpy'],
+				'data-scroll-spy-offset' => $nav_attributes['scrollSpyOffsetManual'] ? $nav_attributes['scrollSpyOffset'] : false,
 			)
 		);
 
@@ -453,6 +455,14 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 				'class' => implode( ' ', $menu_classes ),
 			)
 		);
+
+		if ( $nav_attributes['enableScrollSpy'] ) {
+			wp_enqueue_script( 'kadence-blocks-gumshoe', KADENCE_BLOCKS_URL . 'includes/assets/js/gumshoe.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+			//need to load this script with the gumshoe dependency if scrollspy is enabled
+			wp_dequeue_script( 'kadence-blocks-' . $this->block_name );
+			wp_deregister_script( 'kadence-blocks-' . $this->block_name );
+			wp_enqueue_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/kb-navigation-block.min.js', array('kadence-blocks-gumshoe'), KADENCE_BLOCKS_VERSION, true );
+		}
 
 		return sprintf(
 			'<div %1$s><nav %2$s><div class="menu-container"><ul %3$s>%4$s</ul></div></nav></div>',
