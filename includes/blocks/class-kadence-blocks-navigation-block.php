@@ -408,14 +408,18 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 
 		$name = ! empty( $attributes['name'] ) ? $attributes['name'] : '';
 
-		$wrapper_attributes = get_block_wrapper_attributes(
-			array(
-				'class'      => implode( ' ', $wrapper_classes ),
-				'aria-label' => $name,
-				'data-scroll-spy' => $nav_attributes['enableScrollSpy'],
-				'data-scroll-spy-offset' => $nav_attributes['scrollSpyOffsetManual'] ? $nav_attributes['scrollSpyOffset'] : false,
-			)
+		$wrapper_attribute_items = array(
+			'class'      => implode( ' ', $wrapper_classes ),
+			'aria-label' => $name,
+			'data-scroll-spy' => $nav_attributes['enableScrollSpy'],
 		);
+
+		if ( $nav_attributes['enableScrollSpy'] ) {
+			$wrapper_attribute_items['data-scroll-spy-offset'] = $nav_attributes['scrollSpyOffsetManual'] ? $nav_attributes['scrollSpyOffset'] : false;
+			$wrapper_attribute_items['data-scroll-spy-id'] = uniqid(); 
+		}
+
+		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_attribute_items );
 
 		// Navigation Attributes.
 		$navigation_classes = array();

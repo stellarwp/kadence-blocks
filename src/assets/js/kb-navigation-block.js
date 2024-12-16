@@ -459,8 +459,9 @@
 					//here, we'll assume we're in a header block and look for the containing row height
 					var offsetTarget = scrollSpyTarget.closest('.wp-block-kadence-header-row');
 				}
+				const scrollSpyId = scrollSpyTarget.dataset?.scrollSpyId;
 				// Initialize Gumshoe
-				new Gumshoe('.' + scrollSpyTarget.classList[0] + ' .kb-navigation a', {
+				new Gumshoe('.wp-block-kadence-navigation[data-scroll-spy-id="' + scrollSpyId + '"] .kb-navigation a', {
 					nested: true,
 					nestedClass: 'current-menu-ancestor',
 					navClass: 'current-menu-item',
