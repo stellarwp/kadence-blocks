@@ -913,8 +913,6 @@ export default function BackendStyles(props) {
 			? previewFixedWidth + (undefined !== widthUnit ? widthUnit : 'px')
 			: undefined
 	);
-	css.set_selector(`.kb-single-btn-${uniqueID} .tooltip-ref-wrap`);
-	css.add_property('width', '100%');
 
 	//hover styles
 	css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}:hover`);
