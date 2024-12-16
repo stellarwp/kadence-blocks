@@ -466,9 +466,11 @@
 					navClass: 'current-menu-item',
 					offset: offsetManual
 						? offsetManual
-						: function () {
+						: offsetTarget
+						? function () {
 								return offsetTarget?.getBoundingClientRect().height;
-						  },
+						  }
+						: 0,
 				});
 			});
 		}
