@@ -423,9 +423,33 @@
 		handleClickOutsideSubmenus();
 	};
 
+	const updateActiveAnchors = function () {
+		const menuItems = document.querySelectorAll('.menu-item');
+		menuItems.forEach(function (menuItem) {
+			const menuItemLink = menuItem.querySelector('a');
+
+			if (menuItemLink?.href && menuItemLink.href.includes('#')) {
+				if (window.location.href == menuItemLink.href) {
+					menuItem.classList.add('current-menu-item');
+				} else {
+					menuItem.classList.remove('current-menu-item');
+				}
+			}
+		});
+	};
+	const initActiveAnchors = function () {
+		if (window.location.hash != '') {
+			updateActiveAnchors();
+		}
+		window.onhashchange = function () {
+			updateActiveAnchors();
+		};
+	};
+
 	// Initialize immediately for already loaded DOM
 	initNavigation();
 	initFullSubMenuSize();
 	initContentSubMenuSize();
 	initMobileToggleSub();
+	initActiveAnchors();
 })();

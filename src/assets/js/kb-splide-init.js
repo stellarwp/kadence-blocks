@@ -1,3 +1,5 @@
+/* global kb_splide */
+
 (function () {
 	'use strict';
 	var kadenceBlocksSplide = {

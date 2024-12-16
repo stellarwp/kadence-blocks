@@ -286,7 +286,9 @@ export default function KadenceButtonEdit(props) {
 
 		setAttributes({ inQueryBlock: getInQueryBlock(context, inQueryBlock) });
 
-		doAction('kadence.triggerDynamicUpdate', 'link', 'link', props);
+		if (!inQueryBlock) {
+			doAction('kadence.triggerDynamicUpdate', 'link', 'link', props);
+		}
 	}, []);
 
 	const [activeTab, setActiveTab] = useState('general');

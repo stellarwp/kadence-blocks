@@ -174,10 +174,16 @@
 				tabWrap.classList.remove('kt-active-tab-' + clickedTabId);
 				accTitle.classList.replace('kt-tab-title-active', 'kt-tab-title-inactive');
 				tabContent.style.display = 'none';
+				tabContent.setAttribute('tabindex', '1');
+				thisElem.setAttribute('aria-selected', 'false');
+				window.KBTabs.setAriaAttributesForTabs(tabWrap, clickedTabId, false, noAllowMultipleOpen);
 			} else {
 				tabWrap.classList.add('kt-active-tab-' + clickedTabId);
 				accTitle.classList.replace('kt-tab-title-inactive', 'kt-tab-title-active');
 				tabContent.style.display = 'block';
+				tabContent.setAttribute('tabindex', '0');
+				thisElem.setAttribute('aria-selected', 'true');
+				window.KBTabs.setAriaAttributesForTabs(tabWrap, clickedTabId, true, noAllowMultipleOpen);
 			}
 
 			//if the appropriate setting is active, close all other accordions in this accordion
@@ -192,12 +198,12 @@
 
 					if (otherTabId != clickedTabId) {
 						otherAccTitle.classList.replace('kt-tab-title-active', 'kt-tab-title-inactive');
+						otherAccTitle.setAttribute('tabindex', '-1');
+						otherElem.setAttribute('aria-selected', 'false');
 						otherTabContent.style.display = 'none';
 					}
 				});
 			}
-
-			window.KBTabs.setAriaAttributesForTabs(tabWrap, clickedTabId);
 
 			const resizeEvent = new Event('resize');
 			window.dispatchEvent(resizeEvent);
@@ -235,41 +241,30 @@
 				newActiveAnchor.focus();
 			}
 
-			window.KBTabs.setAriaAttributesForTabs(wrapper, tabNumber);
+			window.KBTabs.setAriaAttributesForTabs(wrapper, tabNumber, true, true);
 
 			const resizeEvent = new Event('resize');
 			window.dispatchEvent(resizeEvent);
 			const tabEvent = new Event('kadence-tabs-open');
 			window.dispatchEvent(tabEvent);
 		},
-		setAriaAttributesForTabs(wrapper, tabNumber) {
-			wrapper
-				.querySelectorAll(
-					':scope > .kt-tabs-content-wrap > .kt-tab-inner-content:not(.kt-inner-tab-' + tabNumber + ')'
-				)
-				.forEach((subElem) => subElem.setAttribute('aria-hidden', 'true'));
-			wrapper
-				.querySelector(':scope > .kt-tabs-content-wrap > .kt-inner-tab-' + tabNumber)
-				.setAttribute('aria-hidden', 'false');
-			// Accordion tabs
-			wrapper
-				.querySelectorAll(
-					':scope > .kt-tabs-content-wrap > .kt-tabs-accordion-title:not(.kt-tabs-accordion-title-' +
-						tabNumber +
-						')'
-				)
-				.forEach((tab) => {
-					tab.classList.replace('kt-tab-title-active', 'kt-tab-title-inactive');
-					tab.setAttribute('tabindex', '-1');
-					tab.setAttribute('aria-selected', 'false');
-				});
-			const activeAccordionTab = wrapper.querySelector(
-				':scope >.kt-tabs-content-wrap > .kt-tabs-accordion-title.kt-tabs-accordion-title-' + tabNumber
-			);
-			if (activeAccordionTab) {
-				activeAccordionTab.classList.replace('kt-tab-title-inactive', 'kt-tab-title-active');
-				activeAccordionTab.setAttribute('tabindex', '0');
-				activeAccordionTab.setAttribute('aria-selected', 'true');
+		setAriaAttributesForTabs(wrapper, tabNumber, active = true, noAllowMultipleOpen = false) {
+			if (noAllowMultipleOpen) {
+				wrapper
+					.querySelectorAll(
+						':scope > .kt-tabs-content-wrap > .kt-tab-inner-content:not(.kt-inner-tab-' + tabNumber + ')'
+					)
+					.forEach((subElem) => subElem.setAttribute('aria-hidden', 'true'));
+			}
+
+			if (active) {
+				wrapper
+					.querySelector(':scope > .kt-tabs-content-wrap > .kt-inner-tab-' + tabNumber)
+					.setAttribute('aria-hidden', 'false');
+			} else {
+				wrapper
+					.querySelector(':scope > .kt-tabs-content-wrap > .kt-inner-tab-' + tabNumber)
+					.setAttribute('aria-hidden', 'true');
 			}
 		},
 

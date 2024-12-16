@@ -57,6 +57,7 @@ export default function BackendStyles(props) {
 		tabletMargin,
 		mobileMargin,
 		marginType,
+		isFirstColumnHeader,
 	} = attributes;
 	const css = new KadenceBlocksCSS();
 
@@ -197,11 +198,13 @@ export default function BackendStyles(props) {
 	if (columnBackgrounds) {
 		columnBackgrounds.forEach((background, index) => {
 			if (background) {
-				css.set_selector(
-					`.kb-table${uniqueID} td:nth-of-type(${index + 1}), .kb-table${uniqueID} th:nth-of-type(${
-						index + 1
-					})`
-				);
+				if (isFirstColumnHeader) {
+					css.set_selector(`.kb-table${uniqueID} td:nth-of-type(${index})`);
+				} else {
+					css.set_selector(`.kb-table${uniqueID} td:nth-of-type(${index + 1})`);
+				}
+				css.add_property('background-color', KadenceColorOutput(background));
+				css.set_selector(`.kb-table${uniqueID} th:nth-of-type(${index + 1})`);
 				css.add_property('background-color', KadenceColorOutput(background));
 			}
 		});

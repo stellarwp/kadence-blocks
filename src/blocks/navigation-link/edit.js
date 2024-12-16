@@ -1156,21 +1156,6 @@ export default function Edit(props) {
 								onFocus={() => setIsLabelFieldFocused(true)}
 								onBlur={() => setIsLabelFieldFocused(false)}
 							/>
-							<ToggleControl
-								label={__('Hide Label', 'kadence-blocks')}
-								checked={hideLabel}
-								onChange={(value) => setAttributes({ hideLabel: value })}
-							/>
-							<TextControl
-								__nextHasNoMarginBottom
-								value={url ? url : ''}
-								onChange={(value) => {
-									setAttributes({ url: value });
-								}}
-								label={__('URL')}
-								autoComplete="off"
-								disabled={hasSyncedLink}
-							/>
 							{hasSyncedLink && (
 								<Button
 									variant="link"
