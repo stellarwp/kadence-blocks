@@ -67,8 +67,6 @@ class Kadence_Blocks_Tableofcontents_Block extends Kadence_Blocks_Abstract_Block
 
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 		// Container.
-		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ':not(.this-class-is-for-specificity):not(.class-is-for-specificity)' );
-
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-content-wrap' );
 		$css->render_measure_output( $attributes, 'containerMargin', 'margin', array(
 			'tablet_key'  => 'containerTabletMargin',
