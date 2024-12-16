@@ -35,6 +35,7 @@ import {
 	URLInputControl,
 	WebfontLoader,
 	BoxShadowControl,
+	ResponsiveShadowControl,
 	KadenceImageControl,
 	KadenceMediaPlaceholder,
 	ImageSizeControl,
@@ -146,6 +147,8 @@ function KadenceInfoBox(props) {
 		learnMoreStyles,
 		displayShadow,
 		shadow,
+		tabletShadow,
+		mobileShadow,
 		shadowHover,
 		containerHoverBackgroundOpacity,
 		containerBackgroundOpacity,
@@ -678,6 +681,107 @@ function KadenceInfoBox(props) {
 		'' !== mediaAlignTablet ? mediaAlignTablet : '',
 		'' !== mediaAlignMobile ? mediaAlignMobile : ''
 	);
+
+	// Box Shadow
+	const previewHOffset = getPreviewSize(
+		previewDevice,
+		undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].hOffset
+			? shadow[0].hOffset
+			: 1,
+		undefined !== tabletShadow && undefined !== tabletShadow[0] && undefined !== tabletShadow[0].hOffset
+			? tabletShadow[0].hOffset
+			: '',
+		undefined !== mobileShadow && undefined !== mobileShadow[0] && undefined !== mobileShadow[0].hOffset
+			? mobileShadow[0].hOffset
+			: ''
+	);
+	const previewVOffset = getPreviewSize(
+		previewDevice,
+		undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].vOffset
+			? shadow[0].vOffset
+			: 1,
+
+		undefined !== tabletShadow && undefined !== tabletShadow[0] && undefined !== tabletShadow[0].vOffset
+			? tabletShadow[0].vOffset
+			: '',
+
+		undefined !== mobileShadow && undefined !== mobileShadow[0] && undefined !== mobileShadow[0].vOffset
+			? mobileShadow[0].vOffset
+			: ''
+	);
+	const previewBlur = getPreviewSize(
+		previewDevice,
+		undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].blur
+			? shadow[0].blur
+			: 1,
+
+		undefined !== tabletShadow && undefined !== tabletShadow[0] && undefined !== tabletShadow[0].blur
+			? tabletShadow[0].blur
+			: '',
+
+		undefined !== mobileShadow && undefined !== mobileShadow[0] && undefined !== mobileShadow[0].blur
+			? mobileShadow[0].blur
+			: ''
+	);
+	const previewSpread = getPreviewSize(
+		previewDevice,
+		undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].spread
+			? shadow[0].spread
+			: 1,
+
+		undefined !== tabletShadow && undefined !== tabletShadow[0] && undefined !== tabletShadow[0].spread
+			? tabletShadow[0].spread
+			: '',
+
+		undefined !== mobileShadow && undefined !== mobileShadow[0] && undefined !== mobileShadow[0].spread
+			? mobileShadow[0].spread
+			: ''
+	);
+	const previewInset = getPreviewSize(
+		previewDevice,
+		undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].inset
+			? shadow[0].inset
+			: false,
+
+		undefined !== tabletShadow && undefined !== tabletShadow[0] && undefined !== tabletShadow[0].inset
+			? tabletShadow[0].inset
+			: shadow[0].inset,
+
+		undefined !== mobileShadow && undefined !== mobileShadow[0] && undefined !== mobileShadow[0].inset
+			? mobileShadow[0].inset
+			: undefined !== tabletShadow && undefined !== tabletShadow[0] && undefined !== tabletShadow[0].inset
+			  ? tabletShadow[0].inset
+			  : shadow[0].inset,
+	);
+	const previewShadow = getPreviewSize(
+		previewDevice,
+		undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].color
+			? shadow[0].color
+			: '#000000',
+		undefined !== tabletShadow && undefined !== tabletShadow[0] && undefined !== tabletShadow[0].color
+			? tabletShadow[0].color
+			: shadow[0].color,
+		undefined !== mobileShadow && undefined !== mobileShadow[0] && undefined !== mobileShadow[0].color
+			? mobileShadow[0].color
+			: tabletShadow[0].color
+				? tabletShadow[0].color
+				: shadow[0].color
+	);
+	const previewOpacity = getPreviewSize(
+		previewDevice,
+		undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].opacity
+			? shadow[0].opacity
+			: '0',
+		undefined !== tabletShadow && undefined !== tabletShadow[0] && undefined !== tabletShadow[0].opacity
+			? tabletShadow[0].opacity
+			: shadow[0].opacity,
+		undefined !== mobileShadow && undefined !== mobileShadow[0] && undefined !== mobileShadow[0].opacity
+			? mobileShadow[0].opacity
+			: tabletShadow[0].opacity
+				? tabletShadow[0].opacity
+				: shadow[0].opacity
+	);
+
 
 	const marginMin = containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? -25 : -999;
 	const marginMax = containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 25 : 999;
@@ -1470,15 +1574,61 @@ function KadenceInfoBox(props) {
 		});
 	};
 	const saveShadow = (value) => {
-		const newUpdate = shadow.map((item, index) => {
-			if (0 === index) {
-				item = { ...item, ...value };
+		let newItems;
+		if (value.enable === 'reset') {
+			const resetItems = [
+				{
+					color: '',
+					opacity: '',
+					blur: '',
+					inset: '',
+					spread: '',
+					hOffset: '',
+					vOffset: '',
+				},
+			];
+			switch (previewDevice) {
+				case 'Desktop':
+					setAttributes({ shadow: resetItems });
+					break;
+				case 'Tablet':
+					setAttributes({ tabletShadow: resetItems });
+					break;
+				case 'Mobile':
+					setAttributes({ mobileShadow: resetItems });
+					break;
 			}
-			return item;
-		});
-		setAttributes({
-			shadow: newUpdate,
-		});
+		} else if (previewDevice === 'Desktop') {
+			newItems = shadow.map((item, thisIndex) => {
+				if (0 === thisIndex) {
+					item = { ...item, ...value };
+				}
+				return item;
+			});
+			setAttributes({
+				shadow: newItems,
+			});
+		} else if (previewDevice === 'Tablet') {
+			newItems = tabletShadow.map((item, thisIndex) => {
+				if (0 === thisIndex) {
+					item = { ...item, ...value };
+				}
+				return item;
+			});
+			setAttributes({
+				tabletShadow: newItems,
+			});
+		} else if (previewDevice === 'Mobile') {
+			newItems = mobileShadow.map((item, thisIndex) => {
+				if (0 === thisIndex) {
+					item = { ...item, ...value };
+				}
+				return item;
+			});
+			setAttributes({
+				mobileShadow: newItems,
+			});
+		}
 	};
 	const saveHoverShadow = (value) => {
 		const newUpdate = shadowHover.map((item, index) => {
@@ -2198,66 +2348,30 @@ function KadenceInfoBox(props) {
 														allowEmpty={true}
 													/>
 													{showSettings('shadowSettings', 'kadence/infobox') && (
-														<BoxShadowControl
+														<ToggleControl
+															checked={ displayShadow }
+															onChange={ value => setAttributes( { displayShadow: value } ) }
+															label={__('Enable Box Shadow', 'kadence-blocks')}
+														/>
+													)}
+													{showSettings('shadowSettings', 'kadence/infobox') && displayShadow && (
+														<ResponsiveShadowControl
 															label={__('Box Shadow', 'kadence-blocks')}
 															enable={undefined !== displayShadow ? displayShadow : false}
-															color={
-																undefined !== shadow &&
-																undefined !== shadow[0] &&
-																undefined !== shadow[0].color
-																	? shadow[0].color
-																	: '#000000'
-															}
+															shadowType={'box'}
+															color={ previewShadow }
 															colorDefault={'#000000'}
 															onArrayChange={(color, opacity) => {
 																saveShadow({ color, opacity });
 															}}
-															opacity={
-																undefined !== shadow &&
-																undefined !== shadow[0] &&
-																undefined !== shadow[0].opacity
-																	? shadow[0].opacity
-																	: 0.2
-															}
-															hOffset={
-																undefined !== shadow &&
-																undefined !== shadow[0] &&
-																undefined !== shadow[0].hOffset
-																	? shadow[0].hOffset
-																	: 0
-															}
-															vOffset={
-																undefined !== shadow &&
-																undefined !== shadow[0] &&
-																undefined !== shadow[0].vOffset
-																	? shadow[0].vOffset
-																	: 0
-															}
-															blur={
-																undefined !== shadow &&
-																undefined !== shadow[0] &&
-																undefined !== shadow[0].blur
-																	? shadow[0].blur
-																	: 14
-															}
-															spread={
-																undefined !== shadow &&
-																undefined !== shadow[0] &&
-																undefined !== shadow[0].spread
-																	? shadow[0].spread
-																	: 0
-															}
-															inset={
-																undefined !== shadow &&
-																undefined !== shadow[0] &&
-																undefined !== shadow[0].inset
-																	? shadow[0].inset
-																	: false
-															}
+															opacity={previewOpacity}
+															hOffset={previewHOffset}
+															vOffset={previewVOffset}
+															blur={previewBlur}
+															spread={previewSpread}
+															inset={previewInset}
 															onEnableChange={(value) => {
-																setAttributes({
-																	displayShadow: value,
-																});
+																saveShadow({ enable: value });
 															}}
 															onColorChange={(value) => {
 																saveShadow({ color: value });
@@ -2280,6 +2394,7 @@ function KadenceInfoBox(props) {
 															onInsetChange={(value) => {
 																saveShadow({ inset: value });
 															}}
+															reset={true}
 														/>
 													)}
 												</>
@@ -3761,15 +3876,9 @@ function KadenceInfoBox(props) {
 				className={`kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${previewMediaAlign} ${isSelectedClass} kt-info-halign-${previewhAlign} kb-info-box-vertical-media-align-${mediaVAlign} ${learnMoreHasAlign}`}
 				style={{
 					boxShadow: displayShadow
-						? shadow[0].hOffset +
-						  'px ' +
-						  shadow[0].vOffset +
-						  'px ' +
-						  shadow[0].blur +
-						  'px ' +
-						  shadow[0].spread +
-						  'px ' +
-						  KadenceColorOutput(shadow[0].color, shadow[0].opacity)
+						? `${previewInset ? 'inset' : ''} ${previewHOffset}px ${previewVOffset}px ${previewBlur}px ${KadenceColorOutput(
+							previewShadow, previewOpacity
+						)}`
 						: undefined,
 					background: containerBackground ? KadenceColorOutput(containerBackground) : undefined,
 					borderTop: previewBorderTopStyle ? previewBorderTopStyle : undefined,
