@@ -445,6 +445,37 @@
 			updateActiveAnchors();
 		};
 	};
+	const initScrollSpy = function () {
+		if (typeof Gumshoe == 'function') {
+			var scrollSpyTargets = document.querySelectorAll('.wp-block-kadence-navigation[data-scroll-spy="1"]');
+			if (!scrollSpyTargets.length) {
+				return;
+			}
+			scrollSpyTargets.forEach(function (scrollSpyTarget) {
+				var offsetManual = parseInt(scrollSpyTarget.getAttribute('data-scroll-spy-offset'));
+				var offsetTarget = null;
+				if (!offsetManual) {
+					//if the offset isn't set manually, attempt to automatically set one
+					//here, we'll assume we're in a header block and look for the containing row height
+					var offsetTarget = scrollSpyTarget.closest('.wp-block-kadence-header-row');
+				}
+				const scrollSpyId = scrollSpyTarget.dataset?.scrollSpyId;
+				// Initialize Gumshoe
+				new Gumshoe('.wp-block-kadence-navigation[data-scroll-spy-id="' + scrollSpyId + '"] .kb-navigation a', {
+					nested: true,
+					nestedClass: 'current-menu-ancestor',
+					navClass: 'current-menu-item',
+					offset: offsetManual
+						? offsetManual
+						: offsetTarget
+						? function () {
+								return offsetTarget?.getBoundingClientRect().height;
+						  }
+						: 0,
+				});
+			});
+		}
+	};
 
 	// Initialize immediately for already loaded DOM
 	initNavigation();
@@ -452,4 +483,5 @@
 	initContentSubMenuSize();
 	initMobileToggleSub();
 	initActiveAnchors();
+	initScrollSpy();
 })();
