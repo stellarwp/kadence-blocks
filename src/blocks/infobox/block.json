@@ -373,7 +373,38 @@
 					"spread": 0,
 					"blur": 14,
 					"hOffset": 0,
-					"vOffset": 0
+					"vOffset": 0,
+					"inset": false
+				}
+			]
+		},
+		"tabletShadowHover": {
+			"type": "array",
+			"default": [
+				{
+
+					"color": "",
+					"opacity": "",
+					"spread": "",
+					"blur": "",
+					"hOffset": "",
+					"vOffset": "",
+					"inset": ""
+				}
+			]
+		},
+		"mobileShadowHover": {
+			"type": "array",
+			"default": [
+				{
+
+					"color": "",
+					"opacity": "",
+					"spread": "",
+					"blur": "",
+					"hOffset": "",
+					"vOffset": "",
+					"inset": ""
 				}
 			]
 		},

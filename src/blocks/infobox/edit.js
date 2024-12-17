@@ -150,6 +150,8 @@ function KadenceInfoBox(props) {
 		tabletShadow,
 		mobileShadow,
 		shadowHover,
+		tabletShadowHover,
+		mobileShadowHover,
 		containerHoverBackgroundOpacity,
 		containerBackgroundOpacity,
 		containerHoverBorderOpacity,
@@ -685,7 +687,7 @@ function KadenceInfoBox(props) {
 	// Box Shadow
 	const previewHOffset = getPreviewSize(
 		previewDevice,
-		undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].hOffset ? shadow[0].hOffset : 1,
+		undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].hOffset ? shadow[0].hOffset : 0,
 		undefined !== tabletShadow && undefined !== tabletShadow[0] && undefined !== tabletShadow[0].hOffset
 			? tabletShadow[0].hOffset
 			: '',
@@ -695,7 +697,7 @@ function KadenceInfoBox(props) {
 	);
 	const previewVOffset = getPreviewSize(
 		previewDevice,
-		undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].vOffset ? shadow[0].vOffset : 1,
+		undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].vOffset ? shadow[0].vOffset : 0,
 
 		undefined !== tabletShadow && undefined !== tabletShadow[0] && undefined !== tabletShadow[0].vOffset
 			? tabletShadow[0].vOffset
@@ -707,7 +709,7 @@ function KadenceInfoBox(props) {
 	);
 	const previewBlur = getPreviewSize(
 		previewDevice,
-		undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].blur ? shadow[0].blur : 1,
+		undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].blur ? shadow[0].blur : 0,
 
 		undefined !== tabletShadow && undefined !== tabletShadow[0] && undefined !== tabletShadow[0].blur
 			? tabletShadow[0].blur
@@ -719,7 +721,7 @@ function KadenceInfoBox(props) {
 	);
 	const previewSpread = getPreviewSize(
 		previewDevice,
-		undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].spread ? shadow[0].spread : 1,
+		undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].spread ? shadow[0].spread : 0,
 
 		undefined !== tabletShadow && undefined !== tabletShadow[0] && undefined !== tabletShadow[0].spread
 			? tabletShadow[0].spread
@@ -757,7 +759,7 @@ function KadenceInfoBox(props) {
 	);
 	const previewOpacity = getPreviewSize(
 		previewDevice,
-		undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].opacity ? shadow[0].opacity : '0',
+		undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].opacity ? shadow[0].opacity : 0,
 		undefined !== tabletShadow && undefined !== tabletShadow[0] && undefined !== tabletShadow[0].opacity
 			? tabletShadow[0].opacity
 			: shadow[0].opacity,
@@ -766,6 +768,92 @@ function KadenceInfoBox(props) {
 			: tabletShadow[0].opacity
 			? tabletShadow[0].opacity
 			: shadow[0].opacity
+	);
+
+	// Hover Box Shadow
+	const previewHOffsetHover = getPreviewSize(
+		previewDevice,
+		undefined !== shadowHover && undefined !== shadowHover[0] && undefined !== shadowHover[0].hOffset ? shadowHover[0].hOffset : 0,
+		undefined !== tabletShadowHover && undefined !== tabletShadowHover[0] && undefined !== tabletShadowHover[0].hOffset
+			? tabletShadowHover[0].hOffset
+			: '',
+		undefined !== mobileShadowHover && undefined !== mobileShadowHover[0] && undefined !== mobileShadowHover[0].hOffset
+			? mobileShadowHover[0].hOffset
+			: ''
+	);
+	const previewVOffsetHover = getPreviewSize(
+		previewDevice,
+		undefined !== shadowHover && undefined !== shadowHover[0] && undefined !== shadowHover[0].vOffset ? shadowHover[0].vOffset : 0,
+
+		undefined !== tabletShadowHover && undefined !== tabletShadowHover[0] && undefined !== tabletShadowHover[0].vOffset
+			? tabletShadowHover[0].vOffset
+			: '',
+
+		undefined !== mobileShadowHover && undefined !== mobileShadowHover[0] && undefined !== mobileShadowHover[0].vOffset
+			? mobileShadowHover[0].vOffset
+			: ''
+	);
+	const previewBlurHover = getPreviewSize(
+		previewDevice,
+		undefined !== shadowHover && undefined !== shadowHover[0] && undefined !== shadowHover[0].blur ? shadowHover[0].blur : 14,
+
+		undefined !== tabletShadowHover && undefined !== tabletShadowHover[0] && undefined !== tabletShadowHover[0].blur
+			? tabletShadowHover[0].blur
+			: '',
+
+		undefined !== mobileShadowHover && undefined !== mobileShadowHover[0] && undefined !== mobileShadowHover[0].blur
+			? mobileShadowHover[0].blur
+			: ''
+	);
+	const previewSpreadHover = getPreviewSize(
+		previewDevice,
+		undefined !== shadowHover && undefined !== shadowHover[0] && undefined !== shadowHover[0].spread ? shadowHover[0].spread : 0,
+
+		undefined !== tabletShadowHover && undefined !== tabletShadowHover[0] && undefined !== tabletShadowHover[0].spread
+			? tabletShadowHover[0].spread
+			: '',
+
+		undefined !== mobileShadowHover && undefined !== mobileShadowHover[0] && undefined !== mobileShadowHover[0].spread
+			? mobileShadowHover[0].spread
+			: ''
+	);
+	const previewInsetHover = getPreviewSize(
+		previewDevice,
+		undefined !== shadowHover && undefined !== shadowHover[0] && undefined !== shadowHover[0].inset ? shadowHover[0].inset : false,
+
+		undefined !== tabletShadowHover && undefined !== tabletShadowHover[0] && undefined !== tabletShadowHover[0].inset
+			? tabletShadowHover[0].inset
+			: shadowHover[0].inset,
+
+		undefined !== mobileShadowHover && undefined !== mobileShadowHover[0] && undefined !== mobileShadowHover[0].inset
+			? mobileShadowHover[0].inset
+			: undefined !== tabletShadowHover && undefined !== tabletShadowHover[0] && undefined !== tabletShadowHover[0].inset
+				? tabletShadowHover[0].inset
+				: shadowHover[0].inset
+	);
+	const previewShadowHover = getPreviewSize(
+		previewDevice,
+		undefined !== shadowHover && undefined !== shadowHover[0] && undefined !== shadowHover[0].color ? shadowHover[0].color : '#000000',
+		undefined !== tabletShadowHover && undefined !== tabletShadowHover[0] && undefined !== tabletShadowHover[0].color
+			? tabletShadowHover[0].color
+			: shadowHover[0].color,
+		undefined !== mobileShadowHover && undefined !== mobileShadowHover[0] && undefined !== mobileShadowHover[0].color
+			? mobileShadowHover[0].color
+			: tabletShadowHover[0].color
+				? tabletShadowHover[0].color
+				: shadowHover[0].color
+	);
+	const previewOpacityHover = getPreviewSize(
+		previewDevice,
+		undefined !== shadowHover && undefined !== shadowHover[0] && undefined !== shadowHover[0].opacity ? shadowHover[0].opacity : 0.2,
+		undefined !== tabletShadowHover && undefined !== tabletShadowHover[0] && undefined !== tabletShadowHover[0].opacity
+			? tabletShadowHover[0].opacity
+			: shadowHover[0].opacity,
+		undefined !== mobileShadowHover && undefined !== mobileShadowHover[0] && undefined !== mobileShadowHover[0].opacity
+			? mobileShadowHover[0].opacity
+			: tabletShadowHover[0].opacity
+				? tabletShadowHover[0].opacity
+				: shadowHover[0].opacity
 	);
 
 	const marginMin = containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? -25 : -999;
@@ -1561,6 +1649,17 @@ function KadenceInfoBox(props) {
 	const saveShadow = (value) => {
 		let newItems;
 		if (value.enable === 'reset') {
+			const resetDesktop = [
+				{
+					"color": "#000000",
+					"opacity": 0,
+					"spread": 0,
+					"blur": 0,
+					"hOffset": 0,
+					"vOffset": 0,
+					"inset" : false
+				},
+			];
 			const resetItems = [
 				{
 					color: '',
@@ -1574,7 +1673,7 @@ function KadenceInfoBox(props) {
 			];
 			switch (previewDevice) {
 				case 'Desktop':
-					setAttributes({ shadow: resetItems });
+					setAttributes({ shadow: resetDesktop });
 					break;
 				case 'Tablet':
 					setAttributes({ tabletShadow: resetItems });
@@ -1616,15 +1715,72 @@ function KadenceInfoBox(props) {
 		}
 	};
 	const saveHoverShadow = (value) => {
-		const newUpdate = shadowHover.map((item, index) => {
-			if (0 === index) {
-				item = { ...item, ...value };
+		let newItems;
+		if (value.enable === 'reset') {
+			const resetDesktop = [
+				{
+					"color": "#000000",
+					"opacity": 0.2,
+					"spread": 0,
+					"blur": 14,
+					"hOffset": 0,
+					"vOffset": 0,
+					"inset" : false
+				},
+			];
+			const resetItems = [
+				{
+					color: '',
+					opacity: '',
+					blur: '',
+					inset: '',
+					spread: '',
+					hOffset: '',
+					vOffset: '',
+				},
+			];
+			switch (previewDevice) {
+				case 'Desktop':
+					setAttributes({ shadowHover: resetDesktop });
+					break;
+				case 'Tablet':
+					setAttributes({ tabletShadowHover: resetItems });
+					break;
+				case 'Mobile':
+					setAttributes({ mobileShadowHover: resetItems });
+					break;
 			}
-			return item;
-		});
-		setAttributes({
-			shadowHover: newUpdate,
-		});
+		} else if (previewDevice === 'Desktop') {
+			newItems = shadowHover.map((item, thisIndex) => {
+				if (0 === thisIndex) {
+					item = { ...item, ...value };
+				}
+				return item;
+			});
+			setAttributes({
+				shadowHover: newItems,
+			});
+		} else if (previewDevice === 'Tablet') {
+			newItems = tabletShadowHover.map((item, thisIndex) => {
+				if (0 === thisIndex) {
+					item = { ...item, ...value };
+				}
+				return item;
+			});
+			setAttributes({
+				tabletShadowHover: newItems,
+			});
+		} else if (previewDevice === 'Mobile') {
+			newItems = mobileShadowHover.map((item, thisIndex) => {
+				if (0 === thisIndex) {
+					item = { ...item, ...value };
+				}
+				return item;
+			});
+			setAttributes({
+				mobileShadowHover: newItems,
+			});
+		}
 	};
 	const onPaste = (attributesToPaste) => {
 		if (attributesToPaste) {
@@ -1770,18 +1926,12 @@ function KadenceInfoBox(props) {
 				  )} !important; }`
 				: ''}
 			{displayShadow
-				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { box-shadow: ${
-						shadowHover[0].hOffset +
-						'px ' +
-						shadowHover[0].vOffset +
-						'px ' +
-						shadowHover[0].blur +
-						'px ' +
-						shadowHover[0].spread +
-						'px ' +
-						KadenceColorOutput(shadowHover[0].color, shadowHover[0].opacity)
-				  } !important; }`
-				: ''}
+				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover { box-shadow:
+					${previewInsetHover ? 'inset' : ''} ${previewHOffsetHover}px ${previewVOffsetHover}px ${previewBlurHover}px ${KadenceColorOutput(
+						previewShadowHover,
+						previewOpacityHover
+					)} !important; }`
+				: undefined}
 			{mediaStyle[0].hoverBackground
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { background: ${KadenceColorOutput(
 						mediaStyle[0].hoverBackground
@@ -2194,66 +2344,33 @@ function KadenceInfoBox(props) {
 														allowEmpty={true}
 													/>
 													{showSettings('shadowSettings', 'kadence/infobox') && (
-														<BoxShadowControl
+														<ToggleControl
+															checked={displayShadow}
+															onChange={(value) =>
+																setAttributes({ displayShadow: value })
+															}
+															label={__('Enable Box Shadow', 'kadence-blocks')}
+														/>
+													)}
+													{showSettings('shadowSettings', 'kadence/infobox') && displayShadow && (
+														<ResponsiveShadowControl
+															key={'hoverShadowControl'}
 															label={__('Box Shadow', 'kadence-blocks')}
 															enable={undefined !== displayShadow ? displayShadow : false}
-															color={
-																undefined !== shadowHover &&
-																undefined !== shadowHover[0] &&
-																undefined !== shadowHover[0].color
-																	? shadowHover[0].color
-																	: '#000000'
-															}
+															shadowType={'box'}
+															color={previewShadowHover}
 															colorDefault={'#000000'}
 															onArrayChange={(color, opacity) => {
 																saveHoverShadow({ color, opacity });
 															}}
-															opacity={
-																undefined !== shadowHover &&
-																undefined !== shadowHover[0] &&
-																undefined !== shadowHover[0].opacity
-																	? shadowHover[0].opacity
-																	: 0.2
-															}
-															hOffset={
-																undefined !== shadowHover &&
-																undefined !== shadowHover[0] &&
-																undefined !== shadowHover[0].hOffset
-																	? shadowHover[0].hOffset
-																	: 0
-															}
-															vOffset={
-																undefined !== shadowHover &&
-																undefined !== shadowHover[0] &&
-																undefined !== shadowHover[0].vOffset
-																	? shadowHover[0].vOffset
-																	: 0
-															}
-															blur={
-																undefined !== shadowHover &&
-																undefined !== shadowHover[0] &&
-																undefined !== shadowHover[0].blur
-																	? shadowHover[0].blur
-																	: 14
-															}
-															spread={
-																undefined !== shadowHover &&
-																undefined !== shadowHover[0] &&
-																undefined !== shadowHover[0].spread
-																	? shadowHover[0].spread
-																	: 0
-															}
-															inset={
-																undefined !== shadowHover &&
-																undefined !== shadowHover[0] &&
-																undefined !== shadowHover[0].inset
-																	? shadowHover[0].inset
-																	: false
-															}
+															opacity={previewOpacityHover}
+															hOffset={previewHOffsetHover}
+															vOffset={previewVOffsetHover}
+															blur={previewBlurHover}
+															spread={previewSpreadHover}
+															inset={previewInsetHover}
 															onEnableChange={(value) => {
-																setAttributes({
-																	displayShadow: value,
-																});
+																saveHoverShadow({ enable: value });
 															}}
 															onColorChange={(value) => {
 																saveHoverShadow({ color: value });
@@ -2276,6 +2393,7 @@ function KadenceInfoBox(props) {
 															onInsetChange={(value) => {
 																saveHoverShadow({ inset: value });
 															}}
+															reset={true}
 														/>
 													)}
 												</>
@@ -2344,6 +2462,7 @@ function KadenceInfoBox(props) {
 													{showSettings('shadowSettings', 'kadence/infobox') &&
 														displayShadow && (
 															<ResponsiveShadowControl
+																key={'shadowControl'}
 																label={__('Box Shadow', 'kadence-blocks')}
 																enable={
 																	undefined !== displayShadow ? displayShadow : false
