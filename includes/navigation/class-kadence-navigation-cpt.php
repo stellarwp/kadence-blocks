@@ -2112,9 +2112,9 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'default' => false,
 			),
 			array(
-				'key'     => '_kad_navigation_scrollSpyOffsetManual',
-				'type' => 'boolean',
-				'default' => false,
+				'key'     => 'scrollSpyOffsetManual',
+				'type' => 'string',
+				'default' => '',
 			),
 			array(
 				'key'     => '_kad_navigation_scrollSpyOffset',

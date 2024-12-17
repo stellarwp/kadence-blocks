@@ -57,6 +57,7 @@ import {
 	Placeholder,
 	MenuItem,
 	Modal,
+	SelectControl,
 } from '@wordpress/components';
 
 import { MenuEditor } from './components';
@@ -1457,20 +1458,24 @@ export function EditInner(props) {
 							></SmallResponsiveControl>
 
 							<ToggleControl
-								label={__('Enable Activating Links when scrolling in active area.', 'kadence-blocks')}
+								label={__('Activate anchor links on scroll.', 'kadence-blocks')}
 								checked={enableScrollSpy}
 								onChange={(value) => setMetaAttribute(value, 'enableScrollSpy')}
 							/>
 							{enableScrollSpy && (
-								<ToggleControl
-									label={__('Manually Set Activation Offset', 'kadence-blocks')}
+								<SelectControl
+									label={__('Activation Offset', 'kadence-blocks')}
 									checked={scrollSpyOffsetManual}
+									options={[
+										{ value: '', label: __('Auto', 'kadence-blocks') },
+										{ value: 'manual', label: __('Manual', 'kadence-blocks') },
+									]}
 									onChange={(value) => setMetaAttribute(value, 'scrollSpyOffsetManual')}
 								/>
 							)}
 							{enableScrollSpy && scrollSpyOffsetManual && (
 								<ResponsiveRangeControls
-									label={__('Activation Offset', 'kadence-blocks')}
+									label={__('Activation Offset Amount', 'kadence-blocks')}
 									help={__(
 										'Controls how far below the navigation link the anchor should be when the navigation link will be marked active.',
 										'kadence-blocks'
