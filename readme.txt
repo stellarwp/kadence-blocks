@@ -175,8 +175,13 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.4.2 =
-Release Date: tba
+Release Date: December 17th 2024
 * Add: Features for activating nav links with hash anchor links on the page
+* Update: Mansonry display for advanced gallery block in the editor.
+* Fix: Issue with table of contents max width and margins.
+* Fix: Button block not centering with fixed width.
+* Fix: Issue with duplicating query loop card blocks with certain contents.
+* Fix: Lottie animation upload.
 
 = 3.4.1 =
 Release Date: December 12th 2024
