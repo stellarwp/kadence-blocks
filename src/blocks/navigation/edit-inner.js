@@ -1465,7 +1465,7 @@ export function EditInner(props) {
 							{enableScrollSpy && (
 								<SelectControl
 									label={__('Activation Offset', 'kadence-blocks')}
-									checked={scrollSpyOffsetManual}
+									value={scrollSpyOffsetManual}
 									options={[
 										{ value: '', label: __('Auto', 'kadence-blocks') },
 										{ value: 'manual', label: __('Manual', 'kadence-blocks') },
