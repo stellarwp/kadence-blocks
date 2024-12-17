@@ -259,7 +259,7 @@
 .kt-button:hover::before {
 	opacity: 1;
 }
-.kt-btn-width-type-fixed .kt-button {
+.kt-btn-width-type-fixed .kt-button, .kt-btn-width-type-fixed .tooltip-ref-wrap {
 	width: 100%;
 }
 .editor-styles-wrapper .wp-block-kadence-advancedbtn .kt-button.kt-btn-size-small {
