@@ -415,7 +415,7 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		);
 
 		if ( $nav_attributes['enableScrollSpy'] ) {
-			$wrapper_attribute_items['data-scroll-spy-offset'] = $nav_attributes['scrollSpyOffsetManual'] ? $nav_attributes['scrollSpyOffset'] : false;
+			$wrapper_attribute_items['data-scroll-spy-offset'] = isset( $nav_attributes['scrollSpyOffsetManual'] ) && $nav_attributes['scrollSpyOffsetManual'] ? $nav_attributes['scrollSpyOffset'] : false;
 			$wrapper_attribute_items['data-scroll-spy-id'] = uniqid(); 
 		}
 
