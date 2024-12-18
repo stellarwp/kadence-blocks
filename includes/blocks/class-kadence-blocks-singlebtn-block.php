@@ -369,7 +369,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			$wrapper_args['aria-label'] = $attributes['label'];
 		}
 		if ( ! empty( $attributes['link'] ) ) {
-			$wrapper_args['href'] = do_shortcode( $attributes['link'] );
+			$wrapper_args['href'] = esc_url( do_shortcode( $attributes['link'] ) );
 			$rel_add = '';
 			if ( isset( $attributes['download'] ) && $attributes['download'] ) {
 				$wrapper_args['download'] = '';
