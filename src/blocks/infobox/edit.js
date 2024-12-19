@@ -3751,7 +3751,9 @@ function KadenceInfoBox(props) {
 												unit={'px'}
 												units={['px']}
 												showUnit={true}
-												reset={() => {setAttributes({textMinHeight: [0,0,0]})}}
+												reset={() => {
+													setAttributes({ textMinHeight: [0, 0, 0] });
+												}}
 											/>
 										</Fragment>
 									)}
