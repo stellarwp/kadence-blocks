@@ -9,7 +9,7 @@ import {
 
 export default function BackendStyles(props) {
 	const { attributes, previewDevice } = props;
-	const hasPro = window?.kadenceHomeParams?.pro && kadenceHomeParams.pro === 'true' ? true : false;
+	const hasPro = kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false;
 
 	const {
 		uniqueID,
