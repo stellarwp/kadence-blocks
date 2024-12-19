@@ -685,6 +685,7 @@ class TypographyControls extends Component {
 								<RangeControl
 									label={ __( 'Letter Spacing', 'kadence-blocks' ) }
 									value={ ( undefined !== letterSpacing ? letterSpacing : '' ) }
+									defaultValue={0}
 									onChange={ ( value ) => onLetterSpacing( value ) }
 									min={ -5 }
 									max={ 25 }
@@ -706,6 +707,7 @@ class TypographyControls extends Component {
 								max={ 100 }
 								step={ 1 }
 								allowEmpty={ false }
+								reset={() => onPadding([0,0,0,0])}
 							/>
 						</>
 					) }
@@ -721,6 +723,7 @@ class TypographyControls extends Component {
 								max={ 100 }
 								step={ 1 }
 								allowEmpty={ false }
+								reset={() => onMargin([0,0,0,0])}
 							/>
 						</>
 					) }

@@ -2212,10 +2212,12 @@ function KadenceInfoBox(props) {
 									<RangeControl
 										label={__('Icon Size', 'kadence-blocks')}
 										value={mediaIcon[0].size}
+										defaultValue={50}
 										onChange={(value) => saveMediaIcon({ size: value })}
 										min={5}
 										max={250}
 										step={1}
+										reset={true}
 									/>
 								</div>
 							</>
@@ -2828,6 +2830,7 @@ function KadenceInfoBox(props) {
 												min={0}
 												max={40}
 												step={1}
+												reset={() => saveMediaStyle({ borderWidth: [0, 0, 0, 0] })}
 											/>
 											<RangeControl
 												label={__('Image Border Radius (px)', 'kadence-blocks')}
@@ -2836,6 +2839,7 @@ function KadenceInfoBox(props) {
 												step={1}
 												min={0}
 												max={200}
+												reset={() => saveMediaStyle({ borderRadius: 0 })}
 											/>
 											<TabPanel
 												className="kt-inspect-tabs kt-hover-tabs"
@@ -2994,6 +2998,7 @@ function KadenceInfoBox(props) {
 											<ResponsiveRangeControls
 												label={__('Icon Size', 'kadence-blocks')}
 												value={mediaIcon[0].size}
+												defaultValue={50}
 												mobileValue={mediaIcon[0].mobileSize ? mediaIcon[0].mobileSize : ''}
 												tabletValue={mediaIcon[0].tabletSize ? mediaIcon[0].tabletSize : ''}
 												onChange={(value) => saveMediaIcon({ size: value })}
@@ -3002,15 +3007,18 @@ function KadenceInfoBox(props) {
 												min={5}
 												max={250}
 												step={1}
+												reset={true}
 											/>
 											{mediaIcon[0].icon && 'fe' === mediaIcon[0].icon.substring(0, 2) && (
 												<RangeControl
 													label={__('Icon Line Width', 'kadence-blocks')}
 													value={mediaIcon[0].width}
+													defaultValue={2}
 													onChange={(value) => saveMediaIcon({ width: value })}
 													step={0.5}
 													min={0.5}
 													max={4}
+													reset={true}
 												/>
 											)}
 											<MeasurementControls
@@ -3022,14 +3030,17 @@ function KadenceInfoBox(props) {
 												min={0}
 												max={40}
 												step={1}
+												reset={() => saveMediaStyle({ borderWidth: [0, 0, 0, 0] })}
 											/>
 											<RangeControl
 												label={__('Icon Border Radius (px)', 'kadence-blocks')}
 												value={mediaStyle[0].borderRadius}
+												defaultValue={0}
 												onChange={(value) => saveMediaStyle({ borderRadius: value })}
 												step={1}
 												min={0}
 												max={200}
+												reset={true}
 											/>
 											<SelectControl
 												label={__('Icon Hover Animation', 'kadence-blocks')}
@@ -3196,6 +3207,7 @@ function KadenceInfoBox(props) {
 												min={5}
 												max={250}
 												step={1}
+												reset={true}
 											/>
 											<TypographyControls
 												fontGroup={'body'}
@@ -3238,6 +3250,7 @@ function KadenceInfoBox(props) {
 												min={0}
 												max={40}
 												step={1}
+												reset={() => saveMediaStyle({ borderWidth: [0, 0, 0, 0] })}
 											/>
 											<RangeControl
 												label={__('Number Border Radius (px)', 'kadence-blocks')}
@@ -3246,6 +3259,7 @@ function KadenceInfoBox(props) {
 												step={1}
 												min={0}
 												max={200}
+												reset={() => saveMediaStyle({ borderRadius: [0, 15, 0, 15] })}
 											/>
 											<SelectControl
 												label={__('Number Hover Animation', 'kadence-blocks')}
@@ -3399,6 +3413,7 @@ function KadenceInfoBox(props) {
 										min={0}
 										max={100}
 										step={1}
+										reset={() => saveMediaStyle({ padding: [10, 10, 10, 10] })}
 									/>
 									<MeasurementControls
 										label={__('Media Margin', 'kadence-blocks')}
@@ -3409,6 +3424,7 @@ function KadenceInfoBox(props) {
 										min={-200}
 										max={200}
 										step={1}
+										reset={() => saveMediaStyle({ margin: [0, 15, 0, 15] })}
 									/>
 								</KadencePanelBody>
 							)}
@@ -3735,6 +3751,7 @@ function KadenceInfoBox(props) {
 												unit={'px'}
 												units={['px']}
 												showUnit={true}
+												reset={() => {setAttributes({textMinHeight: [0,0,0]})}}
 											/>
 										</Fragment>
 									)}
