@@ -493,7 +493,10 @@ export function EditInner(props) {
 									...newBlock,
 									innerBlocks: [
 										createBlock('core/paragraph', {}),
-										createBlock('kadence/advanced-form-submit', { text: 'Submit' }),
+										createBlock('kadence/advanced-form-submit', {
+											text: 'Submit',
+											uniqueID: '1_default',
+										}),
 									],
 								},
 							],
