@@ -44,4 +44,10 @@ class WpunitTester extends \Codeception\Actor
 	public function is_cpt_registered( $cpt_name ): bool {
 		return get_post_type_object( $cpt_name ) !== null;
 	}
+
+	public function block_supports_anchor( $block_name ) {
+		$block_registry = \WP_Block_Type_Registry::get_instance();
+		$block = $block_registry->get_registered( $block_name );
+		return $block->supports['anchor'] ?? false;
+	}
 }
