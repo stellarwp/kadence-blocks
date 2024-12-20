@@ -662,7 +662,6 @@ export function EditInner(props) {
 										checked={shrinkMain}
 										onChange={(value) => setMetaAttribute(value, 'shrinkMain')}
 									/>
-									{console.log(1, shrinkMainHeight, shrinkMainHeightTablet, shrinkMainHeightMobile)}
 									{shrinkMain &&
 										(previewStickySection.includes('main') || previewStickySection === '') && (
 											<ResponsiveRangeControls
