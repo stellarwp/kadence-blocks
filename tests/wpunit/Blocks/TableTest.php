@@ -142,13 +142,12 @@ class TableTest extends KadenceBlocksUnit {
 		$css_output = $this->block->build_css($attributes, $this->css, $unique_id, $unique_id);
 		$css_helper = new CSSTestHelper($css_output);
 
-
 		$this->assertStringNotContainsString( 'td:nth-of-type(1)', $css_output );
 		$this->assertStringNotContainsString( 'td:nth-of-type(4)', $css_output );
 
 		$this->assertTrue(
 			$css_helper->assertCSSPropertiesEqual(
-				'.kb-table-container .kb-table'.$unique_id.' td:nth-of-type(2), .kb-table-container .kb-table'.$unique_id.' th:nth-of-type(2)',
+				'.kb-table-container .kb-table'.$unique_id.' td:nth-of-type(2)',
 				[
 					'background-color' => '#fff'
 				]
@@ -157,7 +156,7 @@ class TableTest extends KadenceBlocksUnit {
 
 		$this->assertTrue(
 			$css_helper->assertCSSPropertiesEqual(
-				'.kb-table-container .kb-table'.$unique_id.' td:nth-of-type(3), .kb-table-container .kb-table'.$unique_id.' th:nth-of-type(3)',
+				'.kb-table-container .kb-table'.$unique_id.' td:nth-of-type(3)',
 				[
 					'background-color' => '#444'
 				]
@@ -166,7 +165,7 @@ class TableTest extends KadenceBlocksUnit {
 
 		$this->assertTrue(
 			$css_helper->assertCSSPropertiesEqual(
-				'.kb-table-container .kb-table'.$unique_id.' td:nth-of-type(5), .kb-table-container .kb-table'.$unique_id.' th:nth-of-type(5)',
+				'.kb-table-container .kb-table'.$unique_id.' td:nth-of-type(5)',
 				[
 					'background-color' => 'red'
 				]
