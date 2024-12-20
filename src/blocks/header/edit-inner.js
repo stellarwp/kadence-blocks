@@ -413,7 +413,6 @@ export function EditInner(props) {
 								)
 							}
 							disableMediaButtons={backgroundValue?.image ? true : false}
-							dynamicAttribute={'background' + suffix + size + ':image'}
 							isSelected={isSelected}
 							attributes={attributes}
 							setAttributes={setAttributes}

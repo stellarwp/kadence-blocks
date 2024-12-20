@@ -10,7 +10,8 @@
 		"customClassName": false,
 		"reusable": false,
 		"lock": false,
-		"kbMetadata": true
+		"kbMetadata": true,
+		"ktdynamic": true
 	},
 	"textdomain": "kadence-blocks",
 	"keywords": ["header", "footer", "navigation"],
