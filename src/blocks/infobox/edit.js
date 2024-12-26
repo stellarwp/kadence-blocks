@@ -3773,54 +3773,70 @@ function KadenceInfoBox(props) {
 									/>
 									{displayLearnMore && (
 										<>
-											<ColorGroup>
-												<PopColorControl
-													label={__('Text Color', 'kadence-blocks')}
-													value={learnMoreStyles[0].color ? learnMoreStyles[0].color : ''}
-													default={''}
-													onChange={(value) => saveLearnMoreStyles({ color: value })}
-													swatchLabel2={__('Hover', 'kadence-blocks')}
-													value2={
-														learnMoreStyles[0].colorHover
-															? learnMoreStyles[0].colorHover
-															: ''
-													}
-													default2={''}
-													onChange2={(value) => saveLearnMoreStyles({ colorHover: value })}
-												/>
-												<PopColorControl
-													label={__('Background', 'kadence-blocks')}
-													value={
-														learnMoreStyles[0].background
-															? learnMoreStyles[0].background
-															: ''
-													}
-													default={''}
-													onChange={(value) => saveLearnMoreStyles({ background: value })}
-													value2={
-														learnMoreStyles[0].backgroundHover
-															? learnMoreStyles[0].backgroundHover
-															: ''
-													}
-													default2={''}
-													onChange2={(value) =>
-														saveLearnMoreStyles({ backgroundHover: value })
-													}
-												/>
-												<PopColorControl
-													label={__('Border Color', 'kadence-blocks')}
-													value={learnMoreStyles[0].border ? learnMoreStyles[0].border : ''}
-													default={''}
-													onChange={(value) => saveLearnMoreStyles({ border: value })}
-													value2={
-														learnMoreStyles[0].borderHover
-															? learnMoreStyles[0].borderHover
-															: ''
-													}
-													default2={''}
-													onChange2={(value) => saveLearnMoreStyles({ borderHover: value })}
-												/>
-											</ColorGroup>
+											<HoverToggleControl
+												hover={
+													<ColorGroup>
+														<PopColorControl
+															key={'learnMoreColorHover'}
+															label={__('Text Color', 'kadence-blocks')}
+															value={learnMoreStyles[0].colorHover ? learnMoreStyles[0].colorHover : ''}
+															default={''}
+															onChange={(value) =>
+																saveLearnMoreStyles({ colorHover: value })
+															}
+														/>
+														<PopColorControl
+															key={'learnMoreBackgroundHover'}
+															label={__('Background', 'kadence-blocks')}
+															value={learnMoreStyles[0].backgroundHover ? learnMoreStyles[0].backgroundHover : ''}
+															default={''}
+															onChange={(value) =>
+																saveLearnMoreStyles({ backgroundHover: value })
+															}
+														/>
+														<PopColorControl
+															key={'learnMoreBorderHover'}
+															label={__('Border Color', 'kadence-blocks')}
+															value={learnMoreStyles[0].borderHover ? learnMoreStyles[0].borderHover : ''}
+															default={''}
+															onChange={(value) =>
+																saveLearnMoreStyles({ borderHover: value })
+															}
+														/>
+													</ColorGroup>
+												}
+												normal={
+													<ColorGroup>
+														<PopColorControl
+															key={'learnMoreColor'}
+															label={__('Text Color', 'kadence-blocks')}
+															value={learnMoreStyles[0].color ? learnMoreStyles[0].color : ''}
+															default={''}
+															onChange={(value) =>
+																saveLearnMoreStyles({ color: value })
+															}
+														/>
+														<PopColorControl
+															key={'learnMoreBackground'}
+															label={__('Background', 'kadence-blocks')}
+															value={learnMoreStyles[0].background ? learnMoreStyles[0].background : ''}
+															default={''}
+															onChange={(value) =>
+																saveLearnMoreStyles({ background: value })
+															}
+														/>
+														<PopColorControl
+															key={'learnMoreBorder'}
+															label={__('Border Color', 'kadence-blocks')}
+															value={learnMoreStyles[0].border ? learnMoreStyles[0].border : ''}
+															default={''}
+															onChange={(value) =>
+																saveLearnMoreStyles({ border: value })
+															}
+														/>
+													</ColorGroup>
+												}
+											/>
 											<MeasurementControls
 												label={__('Learn More Border Width (px)', 'kadence-blocks')}
 												measurement={learnMoreStyles[0].borderWidth}
