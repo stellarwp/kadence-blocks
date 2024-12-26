@@ -3779,7 +3779,11 @@ function KadenceInfoBox(props) {
 														<PopColorControl
 															key={'learnMoreColorHover'}
 															label={__('Text Color', 'kadence-blocks')}
-															value={learnMoreStyles[0].colorHover ? learnMoreStyles[0].colorHover : ''}
+															value={
+																learnMoreStyles[0].colorHover
+																	? learnMoreStyles[0].colorHover
+																	: ''
+															}
 															default={''}
 															onChange={(value) =>
 																saveLearnMoreStyles({ colorHover: value })
@@ -3788,7 +3792,11 @@ function KadenceInfoBox(props) {
 														<PopColorControl
 															key={'learnMoreBackgroundHover'}
 															label={__('Background', 'kadence-blocks')}
-															value={learnMoreStyles[0].backgroundHover ? learnMoreStyles[0].backgroundHover : ''}
+															value={
+																learnMoreStyles[0].backgroundHover
+																	? learnMoreStyles[0].backgroundHover
+																	: ''
+															}
 															default={''}
 															onChange={(value) =>
 																saveLearnMoreStyles({ backgroundHover: value })
@@ -3797,7 +3805,11 @@ function KadenceInfoBox(props) {
 														<PopColorControl
 															key={'learnMoreBorderHover'}
 															label={__('Border Color', 'kadence-blocks')}
-															value={learnMoreStyles[0].borderHover ? learnMoreStyles[0].borderHover : ''}
+															value={
+																learnMoreStyles[0].borderHover
+																	? learnMoreStyles[0].borderHover
+																	: ''
+															}
 															default={''}
 															onChange={(value) =>
 																saveLearnMoreStyles({ borderHover: value })
@@ -3810,16 +3822,20 @@ function KadenceInfoBox(props) {
 														<PopColorControl
 															key={'learnMoreColor'}
 															label={__('Text Color', 'kadence-blocks')}
-															value={learnMoreStyles[0].color ? learnMoreStyles[0].color : ''}
-															default={''}
-															onChange={(value) =>
-																saveLearnMoreStyles({ color: value })
+															value={
+																learnMoreStyles[0].color ? learnMoreStyles[0].color : ''
 															}
+															default={''}
+															onChange={(value) => saveLearnMoreStyles({ color: value })}
 														/>
 														<PopColorControl
 															key={'learnMoreBackground'}
 															label={__('Background', 'kadence-blocks')}
-															value={learnMoreStyles[0].background ? learnMoreStyles[0].background : ''}
+															value={
+																learnMoreStyles[0].background
+																	? learnMoreStyles[0].background
+																	: ''
+															}
 															default={''}
 															onChange={(value) =>
 																saveLearnMoreStyles({ background: value })
@@ -3828,11 +3844,13 @@ function KadenceInfoBox(props) {
 														<PopColorControl
 															key={'learnMoreBorder'}
 															label={__('Border Color', 'kadence-blocks')}
-															value={learnMoreStyles[0].border ? learnMoreStyles[0].border : ''}
-															default={''}
-															onChange={(value) =>
-																saveLearnMoreStyles({ border: value })
+															value={
+																learnMoreStyles[0].border
+																	? learnMoreStyles[0].border
+																	: ''
 															}
+															default={''}
+															onChange={(value) => saveLearnMoreStyles({ border: value })}
 														/>
 													</ColorGroup>
 												}
