@@ -303,18 +303,18 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		if ( ! empty( $media_icon['size'] ) ) {
 			$css->set_selector( $base_selector . ' .kadence-info-box-icon-container .kt-info-svg-icon, ' . $base_selector . ' .kt-info-svg-icon-flip, ' . $base_selector . ' .kt-blocks-info-box-number' );
-			$css->add_property( 'font-size', $media_icon['size'] . 'px' );
+			$css->add_property( 'font-size', $media_icon['size'] . ( isset($media_icon['unit']) ? $media_icon['unit'] : 'px') );
 		}
 		if ( isset( $media_icon['tabletSize'] ) && is_numeric( $media_icon['tabletSize'] ) ) {
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( $base_selector . ' .kadence-info-box-icon-container .kt-info-svg-icon, ' . $base_selector . ' .kt-info-svg-icon-flip, ' . $base_selector . ' .kt-blocks-info-box-number' );
-			$css->add_property( 'font-size', $media_icon['tabletSize'] . 'px' );
+			$css->add_property( 'font-size', $media_icon['tabletSize'] . ( isset($media_icon['unit']) ? $media_icon['unit'] : 'px') );
 			$css->set_media_state( 'desktop' );
 		}
 		if ( isset( $media_icon['mobileSize'] ) && is_numeric( $media_icon['mobileSize'] ) ) {
 			$css->set_media_state( 'mobile' );
 			$css->set_selector( $base_selector . ' .kadence-info-box-icon-container .kt-info-svg-icon, ' . $base_selector . ' .kt-info-svg-icon-flip, ' . $base_selector . ' .kt-blocks-info-box-number' );
-			$css->add_property( 'font-size', $media_icon['mobileSize'] . 'px' );
+			$css->add_property( 'font-size', $media_icon['mobileSize'] . ( isset($media_icon['unit']) ? $media_icon['unit'] : 'px') );
 			$css->set_media_state( 'desktop' );
 		}
 		if ( ( isset( $media_number['family'] ) && ! empty( $media_number['family'] ) ) || ( isset( $media_number['style'] ) && ! empty( $media_number['style'] ) ) || ( isset( $media_number['weight'] ) && ! empty( $media_number['weight'] ) ) ) {
@@ -360,45 +360,45 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		if ( isset( $media_style['padding'] ) && is_array( $media_style['padding'] ) ) {
 			if ( isset( $media_style['padding'][0] ) && is_numeric( $media_style['padding'][0] ) ) {
-				$css->add_property( 'padding-top', $media_style['padding'][0] . 'px' );
+				$css->add_property( 'padding-top', $media_style['padding'][0] . (isset($media_style['paddingUnit']) ? $media_style['paddingUnit'] : 'px') );
 			}
 			if ( isset( $media_style['padding'][1] ) && is_numeric( $media_style['padding'][1] ) ) {
-				$css->add_property( 'padding-right', $media_style['padding'][1] . 'px' );
+				$css->add_property( 'padding-right', $media_style['padding'][1] . (isset($media_style['paddingUnit']) ? $media_style['paddingUnit'] : 'px') );
 			}
 			if ( isset( $media_style['padding'][2] ) && is_numeric( $media_style['padding'][2] ) ) {
-				$css->add_property( 'padding-bottom', $media_style['padding'][2] . 'px' );
+				$css->add_property( 'padding-bottom', $media_style['padding'][2] . (isset($media_style['paddingUnit']) ? $media_style['paddingUnit'] : 'px') );
 			}
 			if ( isset( $media_style['padding'][3] ) && is_numeric( $media_style['padding'][3] ) ) {
-				$css->add_property( 'padding-left', $media_style['padding'][3] . 'px' );
+				$css->add_property( 'padding-left', $media_style['padding'][3] . (isset($media_style['paddingUnit']) ? $media_style['paddingUnit'] : 'px') );
 			}
 		}
 		if ( isset( $media_style['margin'] ) && is_array( $media_style['margin'] ) && isset( $attributes['mediaAlign'] ) && 'top' !== $attributes['mediaAlign'] ) {
 			if ( isset( $media_style['margin'][0] ) && is_numeric( $media_style['margin'][0] ) ) {
-				$css->add_property( 'margin-top', $media_style['margin'][0] . 'px' );
+				$css->add_property( 'margin-top', $media_style['margin'][0] . (isset($media_style['marginUnit']) ? $media_style['marginUnit'] : 'px') );
 			}
 			if ( isset( $media_style['margin'][1] ) && is_numeric( $media_style['margin'][1] ) ) {
-				$css->add_property( 'margin-right', $media_style['margin'][1] . 'px' );
+				$css->add_property( 'margin-right', $media_style['margin'][1] . (isset($media_style['marginUnit']) ? $media_style['marginUnit'] : 'px') );
 			}
 			if ( isset( $media_style['margin'][2] ) && is_numeric( $media_style['margin'][2] ) ) {
-				$css->add_property( 'margin-bottom', $media_style['margin'][2] . 'px' );
+				$css->add_property( 'margin-bottom', $media_style['margin'][2] . (isset($media_style['marginUnit']) ? $media_style['marginUnit'] : 'px') );
 			}
 			if ( isset( $media_style['margin'][3] ) && is_numeric( $media_style['margin'][3] ) ) {
-				$css->add_property( 'margin-left', $media_style['margin'][3] . 'px' );
+				$css->add_property( 'margin-left', $media_style['margin'][3] . (isset($media_style['marginUnit']) ? $media_style['marginUnit'] : 'px') );
 			}
 		}
 		if ( isset( $media_style['margin'] ) && is_array( $media_style['margin'] ) && ( ! isset( $attributes['mediaAlign'] ) || 'top' === $attributes['mediaAlign'] ) ) {
 			$css->set_selector( $base_selector . ' .kt-blocks-info-box-media-container' );
 			if ( isset( $media_style['margin'][0] ) && is_numeric( $media_style['margin'][0] ) ) {
-				$css->add_property( 'margin-top', $media_style['margin'][0] . 'px' );
+				$css->add_property( 'margin-top', $media_style['margin'][0] . (isset($media_style['marginUnit']) ? $media_style['marginUnit'] : 'px') );
 			}
 			if ( isset( $media_style['margin'][1] ) && is_numeric( $media_style['margin'][1] ) ) {
-				$css->add_property( 'margin-right', $media_style['margin'][1] . 'px' );
+				$css->add_property( 'margin-right', $media_style['margin'][1] . (isset($media_style['marginUnit']) ? $media_style['marginUnit'] : 'px') );
 			}
 			if ( isset( $media_style['margin'][2] ) && is_numeric( $media_style['margin'][2] ) ) {
-				$css->add_property( 'margin-bottom', $media_style['margin'][2] . 'px' );
+				$css->add_property( 'margin-bottom', $media_style['margin'][2] . (isset($media_style['marginUnit']) ? $media_style['marginUnit'] : 'px') );
 			}
 			if ( isset( $media_style['margin'][3] ) && is_numeric( $media_style['margin'][3] ) ) {
-				$css->add_property( 'margin-left', $media_style['margin'][3] . 'px' );
+				$css->add_property( 'margin-left', $media_style['margin'][3] . (isset($media_style['marginUnit']) ? $media_style['marginUnit'] : 'px') );
 			}
 		}
 		if ( isset( $media_style['borderRadius'] ) && ! empty( $media_style['borderRadius'] ) && isset( $media_style['padding'] ) && is_array( $media_style['padding'] ) && ! empty( array_filter( $media_style['padding'], fn($value) => $value > 0 ) ) ) {
@@ -537,18 +537,18 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $attributes['titleMinHeight'] ) && is_array( $attributes['titleMinHeight'] ) && isset( $attributes['titleMinHeight'][0] ) ) {
 			if ( is_numeric( $attributes['titleMinHeight'][0] ) ) {
 				$css->set_selector( $base_selector . ' ' . $titleTag . '.kt-blocks-info-box-title' );
-				$css->add_property( 'min-height', $attributes['titleMinHeight'][0] . 'px' );
+				$css->add_property( 'min-height', $attributes['titleMinHeight'][0] . (isset($attributes['titleMinHeightUnit']) ? $attributes['titleMinHeightUnit'] : 'px') );
 			}
 			if ( isset( $attributes['titleMinHeight'][1] ) && is_numeric( $attributes['titleMinHeight'][1] ) ) {
 				$css->set_media_state( 'tablet' );
 				$css->set_selector( $base_selector . ' ' . $titleTag . '.kt-blocks-info-box-title' );
-				$css->add_property( 'min-height', $attributes['titleMinHeight'][1] . 'px' );
+				$css->add_property( 'min-height', $attributes['titleMinHeight'][1] . (isset($attributes['titleMinHeightUnit']) ? $attributes['titleMinHeightUnit'] : 'px') );
 				$css->set_media_state( 'desktop' );
 			}
 			if ( isset( $attributes['titleMinHeight'][2] ) && is_numeric( $attributes['titleMinHeight'][2] ) ) {
 				$css->set_media_state( 'mobile' );
 				$css->set_selector( $base_selector . ' ' . $titleTag . '.kt-blocks-info-box-title' );
-				$css->add_property( 'min-height', $attributes['titleMinHeight'][2] . 'px' );
+				$css->add_property( 'min-height', $attributes['titleMinHeight'][2] . (isset($attributes['titleMinHeightUnit']) ? $attributes['titleMinHeightUnit'] : 'px') );
 				$css->set_media_state( 'desktop' );
 			}
 		}
@@ -711,18 +711,18 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 		if ( isset( $attributes['textMinHeight'] ) && is_array( $attributes['textMinHeight'] ) && isset( $attributes['textMinHeight'][0] ) ) {
 			if ( is_numeric( $attributes['textMinHeight'][0] ) ) {
 				$css->set_selector( $base_selector . ' .kt-blocks-info-box-text' );
-				$css->add_property( 'min-height', $attributes['textMinHeight'][0] . 'px' );
+				$css->add_property( 'min-height', $attributes['textMinHeight'][0] . (isset($attributes['textMinHeightUnit']) ? $attributes['textMinHeightUnit'] : 'px') );
 			}
 			if ( isset( $attributes['textMinHeight'][1] ) && is_numeric( $attributes['textMinHeight'][1] ) ) {
 				$css->set_media_state( 'tablet' );
 				$css->set_selector( $base_selector . ' .kt-blocks-info-box-text' );
-				$css->add_property( 'min-height', $attributes['textMinHeight'][1] . 'px' );
+				$css->add_property( 'min-height', $attributes['textMinHeight'][1] . (isset($attributes['textMinHeightUnit']) ? $attributes['textMinHeightUnit'] : 'px') );
 				$css->set_media_state( 'desktop' );
 			}
 			if ( isset( $attributes['textMinHeight'][2] ) && is_numeric( $attributes['textMinHeight'][2] ) ) {
 				$css->set_media_state( 'mobile' );
 				$css->set_selector( $base_selector . ' .kt-blocks-info-box-text' );
-				$css->add_property( 'min-height', $attributes['textMinHeight'][2] . 'px' );
+				$css->add_property( 'min-height', $attributes['textMinHeight'][2] . (isset($attributes['textMinHeightUnit']) ? $attributes['textMinHeightUnit'] : 'px') );
 				$css->set_media_state( 'desktop' );
 			}
 		}
