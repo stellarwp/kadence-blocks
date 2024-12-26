@@ -3148,7 +3148,7 @@ function KadenceInfoBox(props) {
 										onChange={(value) => saveMediaStyle({ margin: value })}
 										onControl={(value) => setMediaMarginControl(value)}
 										min={['em', 'rem'].includes(mediaStyle[0].marginUnit) ? -12 : -200}
-										max={['em', 'rem'].includes(mediaStyle[0].marginUnit) ? 12 :200}
+										max={['em', 'rem'].includes(mediaStyle[0].marginUnit) ? 12 : 200}
 										step={1}
 										onUnit={(value) => saveMediaStyle({ marginUnit: value })}
 										units={['px', 'em', 'rem']}
@@ -3300,7 +3300,7 @@ function KadenceInfoBox(props) {
 												units={['px', 'em', 'rem']}
 												showUnit={true}
 												onUnit={(value) => {
-													setAttributes({titleMinHeightUnit: value})
+													setAttributes({ titleMinHeightUnit: value });
 												}}
 												reset={() => {
 													//empty value does not re-render component. Need to pass 0.
@@ -3484,9 +3484,8 @@ function KadenceInfoBox(props) {
 												units={['px', 'em', 'rem']}
 												showUnit={true}
 												onUnit={(value) => {
-													setAttributes({textMinHeightUnit: value})
+													setAttributes({ textMinHeightUnit: value });
 												}}
-
 											/>
 										</Fragment>
 									)}
@@ -4041,7 +4040,8 @@ function KadenceInfoBox(props) {
 											color: mediaIcon[0].color
 												? KadenceColorOutput(mediaIcon[0].color)
 												: undefined,
-											fontSize: mediaIcon[0].size + (mediaIcon[0].unit ? mediaIcon[0].unit : 'px'),
+											fontSize:
+												mediaIcon[0].size + (mediaIcon[0].unit ? mediaIcon[0].unit : 'px'),
 											fontFamily: mediaNumber[0].family ? mediaNumber[0].family : undefined,
 										}}
 									>
