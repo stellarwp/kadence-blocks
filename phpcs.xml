@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ruleset name="Solid Performance Coding Standards">
+<ruleset name="Kadence WP Coding Standards">
 
 	<rule ref="WordPress-VIP-Go"/>
 
