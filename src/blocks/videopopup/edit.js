@@ -15,11 +15,11 @@ import metadata from './block.json';
  */
 import {
 	radiusLinkedIcon,
-	// radiusIndividualIcon,
-	// topLeftIcon,
-	// topRightIcon,
-	// bottomRightIcon,
-	// bottomLeftIcon,
+	radiusIndividualIcon,
+	topLeftIcon,
+	topRightIcon,
+	bottomRightIcon,
+	bottomLeftIcon,
 } from '@kadence/icons';
 
 import {
@@ -73,13 +73,12 @@ import {
 	Button,
 	TextControl,
 	Popover,
-	TabPanel,
-	ButtonGroup,
 	RangeControl,
 	ToolbarGroup,
 	ToolbarButton,
 	SelectControl,
 	ToggleControl,
+	ExternalLink,
 } from '@wordpress/components';
 
 import { useDispatch, useSelect } from '@wordpress/data';
@@ -129,8 +128,6 @@ function KadenceVideoPopup(props) {
 		inQueryBlock,
 		isVimeoPrivate,
 	} = attributes;
-	const [iconRadiusControl, setIconRadiusControl] = useState('linked');
-	const [iconBorderControl, setIconBorderControl] = useState('linked');
 	const [isURLInputVisible, setIsURLInputVisible] = useState(false);
 	const [localSrc, setLocalSrc] = useState('');
 	const [activeTab, setActiveTab] = useState('general');
@@ -235,30 +232,6 @@ function KadenceVideoPopup(props) {
 	const blockProps = useBlockProps({
 		className: containerClasses,
 	});
-	const bgType = [
-		{ key: 'solid', name: __('Solid', 'kadence-blocks') },
-		{ key: 'gradient', name: __('Gradient', 'kadence-blocks') },
-	];
-	const gradTypes = [
-		{ key: 'linear', name: __('Linear', 'kadence-blocks') },
-		{ key: 'radial', name: __('Radial', 'kadence-blocks') },
-	];
-	const icoNames = [
-		'fe_play',
-		'fe_playCircle',
-		'fe_video',
-		'fe_youtube',
-		'ic_play',
-		'fas_play',
-		'fas_play-circle',
-		'fas_caret-square-right',
-		'fas_caret-right',
-		'fas_video',
-		'fa_youtube',
-		'fa_youtube-square',
-		'fa_vimeo',
-		'fa_vimeo-v',
-	];
 	const renderStyle = (
 		<style>
 			{`.kadence-video-popup${uniqueID} .kadence-video-intrinsic:hover .kadence-video-overlay {
@@ -305,8 +278,6 @@ function KadenceVideoPopup(props) {
 				: ''}
 		</style>
 	);
-
-	const renderSVG = (svg) => <GenIcon name={svg} icon={allIcons[svg]} />;
 	const onSelectMedia = (video) => {
 		saveMedia({
 			id: video.id,
@@ -396,39 +367,6 @@ function KadenceVideoPopup(props) {
 			padding: newUpdate,
 		});
 	};
-	const saveShadowHover = (value) => {
-		const newUpdate = shadowHover.map((item, index) => {
-			if (0 === index) {
-				item = { ...item, ...value };
-			}
-			return item;
-		});
-		setAttributes({
-			shadowHover: newUpdate,
-		});
-	};
-	const saveShadow = (value) => {
-		const newUpdate = shadow.map((item, index) => {
-			if (0 === index) {
-				item = { ...item, ...value };
-			}
-			return item;
-		});
-		setAttributes({
-			shadow: newUpdate,
-		});
-	};
-	const savePlayBtn = (value) => {
-		const newUpdate = playBtn.map((item, index) => {
-			if (0 === index) {
-				item = { ...item, ...value };
-			}
-			return item;
-		});
-		setAttributes({
-			playBtn: newUpdate,
-		});
-	};
 	const saveBackground = (value) => {
 		const newUpdate = background.map((item, index) => {
 			if (0 === index) {
@@ -438,17 +376,6 @@ function KadenceVideoPopup(props) {
 		});
 		setAttributes({
 			background: newUpdate,
-		});
-	};
-	const saveBackgroundOverlay = (value) => {
-		const newUpdate = backgroundOverlay.map((item, index) => {
-			if (0 === index) {
-				item = { ...item, ...value };
-			}
-			return item;
-		});
-		setAttributes({
-			backgroundOverlay: newUpdate,
 		});
 	};
 	const updatePopupDefaults = () => {
@@ -675,6 +602,108 @@ function KadenceVideoPopup(props) {
 	);
 
 	const previewPosterImg = dynamicPosterImg && dynamicPosterImg[0].img ? dynamicPosterImg[0].img : background[0].img;
+
+	const videoPopupProStyleControls = (
+		<>
+			<KadencePanelBody
+				title={__('Pop Animation', 'kadence-blocks')}
+				initialOpen={false}
+				panelName={'kb-video-pop-animation'}
+				proTag={true}
+			>
+				<div className="kb-pro-notice">
+					<h2>{__('Pop Animation', 'kadence-blocks')} </h2>
+					<p>
+						{__(
+							'Add an appealing animation when the video opens with Kadence Blocks Pro!',
+							'kadence-blocks'
+						)}{' '}
+					</p>
+					<ExternalLink
+						href={
+							'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=navigation-link'
+						}
+					>
+						{__('Upgrade to Pro', 'kadence-blocks')}
+					</ExternalLink>
+				</div>
+			</KadencePanelBody>
+			<KadencePanelBody
+				title={__('Play Icon', 'kadence-blocks')}
+				initialOpen={false}
+				panelName={'kb-video-play-icon'}
+				proTag={true}
+			>
+				<div className="kb-pro-notice">
+					<h2>{__('Play Icon', 'kadence-blocks')} </h2>
+					<p>
+						{__('Customize the play icon shape color and more with Kadence Blocks Pro!', 'kadence-blocks')}{' '}
+					</p>
+					<ExternalLink
+						href={
+							'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=navigation-link'
+						}
+					>
+						{__('Upgrade to Pro', 'kadence-blocks')}
+					</ExternalLink>
+				</div>
+			</KadencePanelBody>
+			<KadencePanelBody
+				title={__('Image Overlay Settings', 'kadence-blocks')}
+				initialOpen={false}
+				panelName={'kb-video-image-overlay'}
+				proTag={true}
+			>
+				<div className="kb-pro-notice">
+					<h2>{__('Image Overlay', 'kadence-blocks')} </h2>
+					<p>{__('Add an overlay to the poster image with Kadence Blocks Pro!', 'kadence-blocks')} </p>
+					<ExternalLink
+						href={
+							'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=navigation-link'
+						}
+					>
+						{__('Upgrade to Pro', 'kadence-blocks')}
+					</ExternalLink>
+				</div>
+			</KadencePanelBody>
+			<KadencePanelBody
+				title={__('Border Settings', 'kadence-blocks')}
+				initialOpen={false}
+				panelName={'kb-video-border'}
+				proTag={true}
+			>
+				<div className="kb-pro-notice">
+					<h2>{__('Border', 'kadence-blocks')} </h2>
+					<p>{__('Adjust and customize the video border with Kadence Blocks Pro!', 'kadence-blocks')} </p>
+					<ExternalLink
+						href={
+							'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=navigation-link'
+						}
+					>
+						{__('Upgrade to Pro', 'kadence-blocks')}
+					</ExternalLink>
+				</div>
+			</KadencePanelBody>
+			<KadencePanelBody
+				title={__('Shadow', 'kadence-blocks')}
+				initialOpen={false}
+				panelName={'kb-video-shadow'}
+				proTag={true}
+			>
+				<div className="kb-pro-notice">
+					<h2>{__('Shadow', 'kadence-blocks')} </h2>
+					<p>{__('Adjust and customize the video shadow with Kadence Blocks Pro!', 'kadence-blocks')} </p>
+					<ExternalLink
+						href={
+							'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=navigation-link'
+						}
+					>
+						{__('Upgrade to Pro', 'kadence-blocks')}
+					</ExternalLink>
+				</div>
+			</KadencePanelBody>
+		</>
+	);
 
 	const nonTransAttrs = ['background', 'type', 'media', 'url'];
 
@@ -1051,710 +1080,8 @@ function KadenceVideoPopup(props) {
 								colorDefault={'#ffffff'}
 								onColorChange={(value) => savePopup({ closeColor: value })}
 							/>
-							<SelectControl
-								label={__('Pop Animation', 'kadence-blocks')}
-								value={
-									undefined !== popup && undefined !== popup[0] && popup[0].animation
-										? popup[0].animation
-										: 'none'
-								}
-								options={[
-									{ value: 'none', label: __('None', 'kadence-blocks') },
-									{ value: 'zoom', label: __('Zoom', 'kadence-blocks') },
-									{ value: 'zoom-out', label: __('Zoom Out', 'kadence-blocks') },
-									{ value: 'fade-right', label: __('Fade Right', 'kadence-blocks') },
-									{ value: 'fade-left', label: __('Fade Left', 'kadence-blocks') },
-									{ value: '3d-unfold', label: __('3d Unfold', 'kadence-blocks') },
-								]}
-								onChange={(value) => savePopup({ animation: value })}
-							/>
 						</KadencePanelBody>
-						<KadencePanelBody
-							title={__('Play Icon', 'kadence-blocks')}
-							initialOpen={false}
-							panelName={'kb-video-play-icon'}
-						>
-							<KadenceIconPicker
-								icons={icoNames}
-								value={playBtn[0].icon ? playBtn[0].icon : 'fas_play'}
-								onChange={(value) => savePlayBtn({ icon: value })}
-								showSearch={false}
-								renderFunc={renderSVG}
-							/>
-							<SelectControl
-								label={__('Icon Style', 'kadence-blocks')}
-								value={playBtn[0].style}
-								options={[
-									{ value: 'default', label: __('Default') },
-									{ value: 'stacked', label: __('Stacked') },
-								]}
-								onChange={(value) => {
-									savePlayBtn({ style: value });
-								}}
-							/>
-							<RangeControl
-								label={__('Icon Size', 'kadence-blocks')}
-								value={playBtn[0].size}
-								onChange={(value) => savePlayBtn({ size: value })}
-								min={5}
-								max={250}
-								allowReset={true}
-							/>
-							{playBtn[0].icon && 'fe' === playBtn[0].icon.substring(0, 2) && (
-								<RangeControl
-									label={__('Line Width', 'kadence-blocks')}
-									value={playBtn[0].width}
-									onChange={(value) => {
-										savePlayBtn({ width: value });
-									}}
-									step={0.5}
-									min={0.5}
-									max={4}
-								/>
-							)}
-							<TabPanel
-								className="kt-inspect-tabs kt-hover-tabs"
-								activeClass="active-tab"
-								tabs={[
-									{
-										name: 'normal',
-										title: __('Normal', 'kadence-blocks'),
-										className: 'kt-normal-tab',
-									},
-									{
-										name: 'hover',
-										title: __('Hover', 'kadence-blocks'),
-										className: 'kt-hover-tab',
-									},
-								]}
-							>
-								{(tab) => {
-									let tabout;
-									if (tab.name) {
-										if ('hover' === tab.name) {
-											tabout = (
-												<Fragment>
-													<PopColorControl
-														label={__('Icon Hover Color', 'kadence-blocks')}
-														colorValue={playBtn[0].colorHover ? playBtn[0].colorHover : ''}
-														colorDefault={''}
-														opacityValue={
-															undefined !== playBtn[0].opacityHover
-																? playBtn[0].opacityHover
-																: 1
-														}
-														onColorChange={(value) => savePlayBtn({ colorHover: value })}
-														onOpacityChange={(value) =>
-															savePlayBtn({ opacityHover: value })
-														}
-													/>
-													{playBtn[0].style !== 'default' && (
-														<Fragment>
-															<PopColorControl
-																label={__('Icon Hover Background', 'kadence-blocks')}
-																colorValue={
-																	playBtn[0].backgroundHover
-																		? playBtn[0].backgroundHover
-																		: ''
-																}
-																colorDefault={''}
-																opacityValue={
-																	undefined !== playBtn[0].backgroundOpacityHover
-																		? playBtn[0].backgroundOpacityHover
-																		: 1
-																}
-																onColorChange={(value) =>
-																	savePlayBtn({ backgroundHover: value })
-																}
-																onOpacityChange={(value) =>
-																	savePlayBtn({ backgroundOpacityHover: value })
-																}
-															/>
-															<PopColorControl
-																label={__('Icon Hover Border Color', 'kadence-blocks')}
-																colorValue={
-																	playBtn[0].borderHover ? playBtn[0].borderHover : ''
-																}
-																colorDefault={''}
-																opacityValue={
-																	undefined !== playBtn[0].borderOpacityHover
-																		? playBtn[0].borderOpacityHover
-																		: 1
-																}
-																onColorChange={(value) =>
-																	savePlayBtn({ borderHover: value })
-																}
-																onOpacityChange={(value) =>
-																	savePlayBtn({ borderOpacityHover: value })
-																}
-															/>
-														</Fragment>
-													)}
-												</Fragment>
-											);
-										} else {
-											tabout = (
-												<Fragment>
-													<PopColorControl
-														label={__('Icon Color', 'kadence-blocks')}
-														colorValue={playBtn[0].color ? playBtn[0].color : '#ffffff'}
-														colorDefault={'#ffffff'}
-														opacityValue={
-															undefined !== playBtn[0].opacity ? playBtn[0].opacity : 1
-														}
-														onColorChange={(value) => savePlayBtn({ color: value })}
-														onOpacityChange={(value) => savePlayBtn({ opacity: value })}
-													/>
-													{playBtn[0].style !== 'default' && (
-														<Fragment>
-															<PopColorControl
-																label={__('Icon Background', 'kadence-blocks')}
-																colorValue={
-																	playBtn[0].background
-																		? playBtn[0].background
-																		: '#000000'
-																}
-																colorDefault={'#000000'}
-																opacityValue={
-																	undefined !== playBtn[0].backgroundOpacity
-																		? playBtn[0].backgroundOpacity
-																		: 0.7
-																}
-																onColorChange={(value) =>
-																	savePlayBtn({ background: value })
-																}
-																onOpacityChange={(value) =>
-																	savePlayBtn({ backgroundOpacity: value })
-																}
-															/>
-															<PopColorControl
-																label={__('Icon Border Color', 'kadence-blocks')}
-																colorValue={playBtn[0].border ? playBtn[0].border : ''}
-																colorDefault={''}
-																opacityValue={
-																	undefined !== playBtn[0].borderOpacity
-																		? playBtn[0].borderOpacity
-																		: 1
-																}
-																onColorChange={(value) =>
-																	savePlayBtn({ border: value })
-																}
-																onOpacityChange={(value) =>
-																	savePlayBtn({ borderOpacity: value })
-																}
-															/>
-														</Fragment>
-													)}
-												</Fragment>
-											);
-										}
-									}
-									return <div>{tabout}</div>;
-								}}
-							</TabPanel>
-							{playBtn[0].style !== 'default' && (
-								<Fragment>
-									<MeasurementControls
-										label={__('Border Width', 'kadence-blocks')}
-										measurement={playBtn[0].borderWidth}
-										control={iconBorderControl}
-										onChange={(value) => savePlayBtn({ borderWidth: value })}
-										onControl={(value) => setIconBorderControl(value)}
-										min={0}
-										max={40}
-										step={1}
-									/>
-									<MeasurementControls
-										label={__('Border Radius (%)', 'kadence-blocks')}
-										measurement={playBtn[0].borderRadius}
-										control={iconRadiusControl}
-										onChange={(value) => savePlayBtn({ borderRadius: value })}
-										onControl={(value) => setIconRadiusControl(value)}
-										min={0}
-										max={50}
-										step={1}
-										controlTypes={[
-											{
-												key: 'linked',
-												name: __('Linked', 'kadence-blocks'),
-												icon: radiusLinkedIcon,
-											},
-											{
-												key: 'individual',
-												name: __('Individual', 'kadence-blocks'),
-												icon: radiusIndividualIcon,
-											},
-										]}
-										firstIcon={topLeftIcon}
-										secondIcon={topRightIcon}
-										thirdIcon={bottomRightIcon}
-										fourthIcon={bottomLeftIcon}
-									/>
-									<RangeControl
-										label={__('Padding (px)', 'kadence-blocks')}
-										value={playBtn[0].padding}
-										onChange={(value) => {
-											savePlayBtn({ padding: value });
-										}}
-										min={0}
-										max={180}
-										allowReset={true}
-									/>
-								</Fragment>
-							)}
-							<TextControl
-								label={__('Title for Icon', 'kadence-blocks')}
-								value={playBtn[0].title}
-								onChange={(value) => {
-									savePlayBtn({ title: value });
-								}}
-							/>
-						</KadencePanelBody>
-						<KadencePanelBody
-							title={__('Image Overlay Settings', 'kadence-blocks')}
-							initialOpen={false}
-							panelName={'kb-video-image-overlay'}
-						>
-							<TabPanel
-								className="kt-inspect-tabs kt-hover-tabs"
-								activeClass="active-tab"
-								tabs={[
-									{
-										name: 'normal',
-										title: __('Normal', 'kadence-blocks'),
-										className: 'kt-normal-tab',
-									},
-									{
-										name: 'hover',
-										title: __('Hover', 'kadence-blocks'),
-										className: 'kt-hover-tab',
-									},
-								]}
-							>
-								{(tab) => {
-									let tabout;
-									if (tab.name) {
-										if ('hover' === tab.name) {
-											tabout = (
-												<div className="kt-inner-sub-section">
-													<RangeControl
-														label={__('Hover Opacity', 'kadence-blocks')}
-														value={
-															undefined !== backgroundOverlay[0].opacityHover
-																? backgroundOverlay[0].opacityHover
-																: 0.5
-														}
-														onChange={(value) =>
-															saveBackgroundOverlay({ opacityHover: value })
-														}
-														min={0}
-														max={1}
-														step={0.01}
-													/>
-												</div>
-											);
-										} else {
-											tabout = (
-												<div className="kt-inner-sub-section">
-													<RangeControl
-														label={__('Overlay Opacity', 'kadence-blocks')}
-														value={
-															undefined !== backgroundOverlay[0].opacity
-																? backgroundOverlay[0].opacity
-																: 0.3
-														}
-														onChange={(value) => saveBackgroundOverlay({ opacity: value })}
-														min={0}
-														max={1}
-														step={0.01}
-													/>
-												</div>
-											);
-										}
-									}
-									return <div>{tabout}</div>;
-								}}
-							</TabPanel>
-							<div className="kt-btn-size-settings-container">
-								<h2 className="kt-beside-btn-group">{__('Overlay Type', 'kadence-blocks')}</h2>
-								<ButtonGroup
-									className="kt-button-size-type-options"
-									aria-label={__('Overlay Type', 'kadence-blocks')}
-								>
-									{map(bgType, ({ name, key }) => (
-										<Button
-											key={key}
-											className="kt-btn-size-btn"
-											isSmall
-											isPrimary={
-												(undefined !== backgroundOverlay[0].type
-													? backgroundOverlay[0].type
-													: 'solid') === key
-											}
-											aria-pressed={
-												(undefined !== backgroundOverlay[0].type
-													? backgroundOverlay[0].type
-													: 'solid') === key
-											}
-											onClick={() => saveBackgroundOverlay({ type: key })}
-										>
-											{name}
-										</Button>
-									))}
-								</ButtonGroup>
-							</div>
-							{'gradient' !== backgroundOverlay[0].type && (
-								<div className="kt-inner-sub-section">
-									<PopColorControl
-										label={__('Overlay Fill', 'kadence-blocks')}
-										colorValue={backgroundOverlay[0].fill ? backgroundOverlay[0].fill : '#000000'}
-										colorDefault={'#000000'}
-										opacityValue={
-											undefined !== backgroundOverlay[0].fillOpacity
-												? backgroundOverlay[0].fillOpacity
-												: 1
-										}
-										onColorChange={(value) => saveBackgroundOverlay({ fill: value })}
-										onOpacityChange={(value) => saveBackgroundOverlay({ fillOpacity: value })}
-									/>
-								</div>
-							)}
-							{'gradient' === backgroundOverlay[0].type && (
-								<div className="kt-inner-sub-section">
-									<PopColorControl
-										label={__('Gradient Color 1', 'kadence-blocks')}
-										colorValue={backgroundOverlay[0].fill ? backgroundOverlay[0].fill : '#000000'}
-										colorDefault={'#000000'}
-										opacityValue={
-											undefined !== backgroundOverlay[0].fillOpacity
-												? backgroundOverlay[0].fillOpacity
-												: 1
-										}
-										onColorChange={(value) => saveBackgroundOverlay({ fill: value })}
-										onOpacityChange={(value) => saveBackgroundOverlay({ fillOpacity: value })}
-									/>
-									<RangeControl
-										label={__('Location', 'kadence-blocks')}
-										value={backgroundOverlay[0].gradLoc ? backgroundOverlay[0].gradLoc : 0}
-										onChange={(value) => saveBackgroundOverlay({ gradLoc: value })}
-										min={0}
-										max={100}
-									/>
-									<PopColorControl
-										label={__('Gradient Color 2', 'kadence-blocks')}
-										colorValue={
-											backgroundOverlay[0].secondFill ? backgroundOverlay[0].secondFill : ''
-										}
-										colorDefault={''}
-										opacityValue={
-											undefined !== backgroundOverlay[0].secondFillOpacity
-												? backgroundOverlay[0].secondFillOpacity
-												: 1
-										}
-										onColorChange={(value) => saveBackgroundOverlay({ secondFill: value })}
-										onOpacityChange={(value) => saveBackgroundOverlay({ secondFillOpacity: value })}
-									/>
-									<RangeControl
-										label={__('Location', 'kadence-blocks')}
-										value={
-											backgroundOverlay[0].gradLocSecond
-												? backgroundOverlay[0].gradLocSecond
-												: 100
-										}
-										onChange={(value) => saveBackgroundOverlay({ gradLocSecond: value })}
-										min={0}
-										max={100}
-									/>
-									<div className="kt-btn-size-settings-container">
-										<h2 className="kt-beside-btn-group">{__('Gradient Type', 'kadence-blocks')}</h2>
-										<ButtonGroup
-											className="kt-button-size-type-options"
-											aria-label={__('Gradient Type', 'kadence-blocks')}
-										>
-											{map(gradTypes, ({ name, key }) => (
-												<Button
-													key={key}
-													className="kt-btn-size-btn"
-													isSmall
-													isPrimary={
-														(backgroundOverlay[0].gradType
-															? backgroundOverlay[0].gradType
-															: 'linear') === key
-													}
-													aria-pressed={
-														(backgroundOverlay[0].gradType
-															? backgroundOverlay[0].gradType
-															: 'linear') === key
-													}
-													onClick={() => saveBackgroundOverlay({ gradType: key })}
-												>
-													{name}
-												</Button>
-											))}
-										</ButtonGroup>
-									</div>
-									{'radial' !== backgroundOverlay[0].gradType && (
-										<RangeControl
-											label={__('Gradient Angle', 'kadence-blocks')}
-											value={
-												backgroundOverlay[0].gradAngle ? backgroundOverlay[0].gradAngle : 180
-											}
-											onChange={(value) => saveBackgroundOverlay({ gradAngle: value })}
-											min={0}
-											max={360}
-										/>
-									)}
-									{'radial' === backgroundOverlay[0].gradType && (
-										<SelectControl
-											label={__('Gradient Position', 'kadence-blocks')}
-											value={
-												backgroundOverlay[0].gradPosition
-													? backgroundOverlay[0].gradPosition
-													: 'center center'
-											}
-											options={[
-												{
-													value: 'center top',
-													label: __('Center Top', 'kadence-blocks'),
-												},
-												{
-													value: 'center center',
-													label: __('Center Center', 'kadence-blocks'),
-												},
-												{
-													value: 'center bottom',
-													label: __('Center Bottom', 'kadence-blocks'),
-												},
-												{ value: 'left top', label: __('Left Top', 'kadence-blocks') },
-												{
-													value: 'left center',
-													label: __('Left Center', 'kadence-blocks'),
-												},
-												{
-													value: 'left bottom',
-													label: __('Left Bottom', 'kadence-blocks'),
-												},
-												{ value: 'right top', label: __('Right Top', 'kadence-blocks') },
-												{
-													value: 'right center',
-													label: __('Right Center', 'kadence-blocks'),
-												},
-												{
-													value: 'right bottom',
-													label: __('Right Bottom', 'kadence-blocks'),
-												},
-											]}
-											onChange={(value) => saveBackgroundOverlay({ gradPosition: value })}
-										/>
-									)}
-								</div>
-							)}
-							<SelectControl
-								label={__('Blend Mode')}
-								value={backgroundOverlay[0].blendMode ? backgroundOverlay[0].blendMode : 'normal'}
-								options={[
-									{ value: 'normal', label: __('Normal', 'kadence-blocks') },
-									{ value: 'multiply', label: __('Multiply', 'kadence-blocks') },
-									{ value: 'screen', label: __('Screen', 'kadence-blocks') },
-									{ value: 'overlay', label: __('Overlay', 'kadence-blocks') },
-									{ value: 'darken', label: __('Darken', 'kadence-blocks') },
-									{ value: 'lighten', label: __('Lighten', 'kadence-blocks') },
-									{ value: 'color-dodge', label: __('Color Dodge', 'kadence-blocks') },
-									{ value: 'color-burn', label: __('Color Burn', 'kadence-blocks') },
-									{ value: 'difference', label: __('Difference', 'kadence-blocks') },
-									{ value: 'exclusion', label: __('Exclusion', 'kadence-blocks') },
-									{ value: 'hue', label: __('Hue', 'kadence-blocks') },
-									{ value: 'saturation', label: __('Saturation', 'kadence-blocks') },
-									{ value: 'color', label: __('Color', 'kadence-blocks') },
-									{ value: 'luminosity', label: __('Luminosity', 'kadence-blocks') },
-								]}
-								onChange={(value) => saveBackgroundOverlay({ blendMode: value })}
-							/>
-						</KadencePanelBody>
-						<KadencePanelBody
-							title={__('Border Settings', 'kadence-blocks')}
-							initialOpen={false}
-							panelName={'kb-video-border'}
-						>
-							<ResponsiveBorderControl
-								label={__('Border', 'kadence-blocks')}
-								value={borderStyle}
-								tabletValue={tabletBorderStyle}
-								mobileValue={mobileBorderStyle}
-								onChange={(value) => setAttributes({ borderStyle: value })}
-								onChangeTablet={(value) => setAttributes({ tabletBorderStyle: value })}
-								onChangeMobile={(value) => setAttributes({ mobileBorderStyle: value })}
-							/>
-							<ResponsiveMeasurementControls
-								label={__('Border Radius', 'kadence-blocks')}
-								value={borderRadius}
-								tabletValue={tabletBorderRadius}
-								mobileValue={mobileBorderRadius}
-								onChange={(value) => setAttributes({ borderRadius: value })}
-								onChangeTablet={(value) => setAttributes({ tabletBorderRadius: value })}
-								onChangeMobile={(value) => setAttributes({ mobileBorderRadius: value })}
-								min={0}
-								max={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 24 : 200}
-								step={borderRadiusUnit === 'em' || borderRadiusUnit === 'rem' ? 0.1 : 1}
-								unit={borderRadiusUnit ? borderRadiusUnit : 'px'}
-								units={['px', 'em', 'rem', '%']}
-								onUnit={(value) => setAttributes({ borderRadiusUnit: value })}
-								isBorderRadius={true}
-								allowEmpty={true}
-								control="linked"
-							/>
-						</KadencePanelBody>
-						<KadencePanelBody
-							title={__('Shadow', 'kadence-blocks')}
-							initialOpen={false}
-							panelName={'kb-video-shadow'}
-						>
-							<TabPanel
-								className="kt-inspect-tabs kt-hover-tabs"
-								activeClass="active-tab"
-								tabs={[
-									{
-										name: 'normal',
-										title: __('Normal', 'kadence-blocks'),
-										className: 'kt-normal-tab',
-									},
-									{
-										name: 'hover',
-										title: __('Hover', 'kadence-blocks'),
-										className: 'kt-hover-tab',
-									},
-								]}
-							>
-								{(tab) => {
-									let tabout;
-									if (tab.name) {
-										if ('hover' === tab.name) {
-											tabout = (
-												<BoxShadowControl
-													label={__('Hover Box Shadow', 'kadence-blocks')}
-													enable={displayShadow ? displayShadow : false}
-													color={
-														undefined !== shadowHover && undefined !== shadowHover[0].color
-															? shadowHover[0].color
-															: '#000000'
-													}
-													colorDefault={'#000000'}
-													opacity={
-														undefined !== shadowHover &&
-														undefined !== shadowHover[0].opacity
-															? shadowHover[0].opacity
-															: 0.2
-													}
-													hOffset={
-														undefined !== shadowHover &&
-														undefined !== shadowHover[0].hOffset
-															? shadowHover[0].hOffset
-															: 1
-													}
-													vOffset={
-														undefined !== shadowHover &&
-														undefined !== shadowHover[0].vOffset
-															? shadowHover[0].vOffset
-															: 1
-													}
-													blur={
-														undefined !== shadowHover && undefined !== shadowHover[0].blur
-															? shadowHover[0].blur
-															: 2
-													}
-													spread={
-														undefined !== shadowHover && undefined !== shadowHover[0].spread
-															? shadowHover[0].spread
-															: 0
-													}
-													onEnableChange={(value) => {
-														setAttributes({ displayShadow: value });
-													}}
-													onColorChange={(value) => {
-														saveShadowHover({ color: value });
-													}}
-													onOpacityChange={(value) => {
-														saveShadowHover({ opacity: value });
-													}}
-													onHOffsetChange={(value) => {
-														saveShadowHover({ hOffset: value });
-													}}
-													onVOffsetChange={(value) => {
-														saveShadowHover({ vOffset: value });
-													}}
-													onBlurChange={(value) => {
-														saveShadowHover({ blur: value });
-													}}
-													onSpreadChange={(value) => {
-														saveShadowHover({ spread: value });
-													}}
-												/>
-											);
-										} else {
-											tabout = (
-												<BoxShadowControl
-													label={__('Box Shadow', 'kadence-blocks')}
-													enable={displayShadow ? displayShadow : false}
-													color={
-														undefined !== shadow && undefined !== shadow[0].color
-															? shadow[0].color
-															: '#000000'
-													}
-													colorDefault={'#000000'}
-													opacity={
-														undefined !== shadow && undefined !== shadow[0].opacity
-															? shadow[0].opacity
-															: 0.2
-													}
-													hOffset={
-														undefined !== shadow && undefined !== shadow[0].hOffset
-															? shadow[0].hOffset
-															: 1
-													}
-													vOffset={
-														undefined !== shadow && undefined !== shadow[0].vOffset
-															? shadow[0].vOffset
-															: 1
-													}
-													blur={
-														undefined !== shadow && undefined !== shadow[0].blur
-															? shadow[0].blur
-															: 2
-													}
-													spread={
-														undefined !== shadow && undefined !== shadow[0].spread
-															? shadow[0].spread
-															: 0
-													}
-													onEnableChange={(value) => {
-														setAttributes({ displayShadow: value });
-													}}
-													onColorChange={(value) => {
-														saveShadow({ color: value });
-													}}
-													onOpacityChange={(value) => {
-														saveShadow({ opacity: value });
-													}}
-													onHOffsetChange={(value) => {
-														saveShadow({ hOffset: value });
-													}}
-													onVOffsetChange={(value) => {
-														saveShadow({ vOffset: value });
-													}}
-													onBlurChange={(value) => {
-														saveShadow({ blur: value });
-													}}
-													onSpreadChange={(value) => {
-														saveShadow({ spread: value });
-													}}
-												/>
-											);
-										}
-									}
-									return <div>{tabout}</div>;
-								}}
-							</TabPanel>
-						</KadencePanelBody>
+						{applyFilters('kadence.videoPopupProStyleControls', videoPopupProStyleControls, props)}
 					</>
 				)}
 				{activeTab === 'advanced' && (

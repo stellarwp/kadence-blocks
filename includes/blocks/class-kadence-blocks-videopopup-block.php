@@ -332,9 +332,10 @@ class Kadence_Blocks_Videopopup_Block extends Kadence_Blocks_Abstract_Block {
 	}
 
 	/**
-	 * Registers scripts and styles.
+	 * Returns if this block should register or not.
 	 */
 	public function should_register() {
+		//this block was moved to here from pro after this version
 		if ( ! defined( 'KBP_VERSION' ) || ( defined( 'KBP_VERSION' ) && version_compare( KBP_VERSION, '2.6.0', '>' ) ) ) {
 			return true;
 		}

@@ -146,6 +146,7 @@ class Editor_Assets {
 			'navigation-link',
 		);
 
+		//for blocks moved from pro to free
 		if ( ! defined( 'KBP_VERSION' ) || ( defined( 'KBP_VERSION' ) && version_compare( KBP_VERSION, '2.6.0', '>' ) ) ) {
 			$blocks[] = 'videopopup';
 		}
