@@ -4,7 +4,7 @@
  * Gets video lighbox working for video popup.
  */
 
-( function () {
+(function () {
 	'use strict';
 	var kadenceBlocksProVideoLightbox = {
 		cache: [],
@@ -14,41 +14,39 @@
 		 * Initiate the script to process all
 		 */
 		initAll() {
-			const allowedEffects = [ 'zoom', 'fade', 'none' ];
+			const allowedEffects = ['zoom', 'fade', 'none'];
 
-			kadenceBlocksProVideoLightbox.cache = document.querySelectorAll( '.kadence-video-popup-link' );
-			for ( let i = 0; i < kadenceBlocksProVideoLightbox.cache.length; i++ ) {
-				var effect = allowedEffects[ 0 ];
-				var attrEffect = kadenceBlocksProVideoLightbox.cache[ i ].getAttribute( 'data-effect' );
-				if ( allowedEffects.includes( attrEffect ) ) {
+			kadenceBlocksProVideoLightbox.cache = document.querySelectorAll('.kadence-video-popup-link');
+			for (let i = 0; i < kadenceBlocksProVideoLightbox.cache.length; i++) {
+				var effect = allowedEffects[0];
+				var attrEffect = kadenceBlocksProVideoLightbox.cache[i].getAttribute('data-effect');
+				if (allowedEffects.includes(attrEffect)) {
 					effect = attrEffect;
-				} else if ( 'fade-right' == attrEffect || 'fade-left' == attrEffect ) {
+				} else if ('fade-right' == attrEffect || 'fade-left' == attrEffect) {
 					effect = 'fade';
 				}
 
 				const isLocalMedia =
-					kadenceBlocksProVideoLightbox.cache[ i ].classList.contains( 'kadence-video-type-local' );
-				const popupId = kadenceBlocksProVideoLightbox.cache[ i ].getAttribute( 'data-popup-id' );
-				const popupClassWithId = kadenceBlocksProVideoLightbox.cache[ i ].getAttribute( 'data-popup-class' );
+					kadenceBlocksProVideoLightbox.cache[i].classList.contains('kadence-video-type-local');
+				const popupId = kadenceBlocksProVideoLightbox.cache[i].getAttribute('data-popup-id');
+				const popupClassWithId = kadenceBlocksProVideoLightbox.cache[i].getAttribute('data-popup-class');
 				const popupAuto =
-					kadenceBlocksProVideoLightbox.cache[ i ].getAttribute( 'data-popup-auto' ) === 'true'
-						? true
-						: false;
+					kadenceBlocksProVideoLightbox.cache[i].getAttribute('data-popup-auto') === 'true' ? true : false;
 				const youtubeCookies =
-					kadenceBlocksProVideoLightbox.cache[ i ].getAttribute( 'data-youtube-cookies' ) === 'true'
+					kadenceBlocksProVideoLightbox.cache[i].getAttribute('data-youtube-cookies') === 'true'
 						? true
 						: false;
 
-				if ( isLocalMedia ) {
-					kadenceBlocksProVideoLightbox.wrapper[ i ] = document.getElementById( popupId );
-					kadenceBlocksProVideoLightbox.cache[ i ].addEventListener( 'click', function ( event ) {
+				if (isLocalMedia) {
+					kadenceBlocksProVideoLightbox.wrapper[i] = document.getElementById(popupId);
+					kadenceBlocksProVideoLightbox.cache[i].addEventListener('click', function (event) {
 						event.preventDefault();
-						kadenceBlocksProVideoLightbox.trigger[ i ] = GLightbox( {
+						kadenceBlocksProVideoLightbox.trigger[i] = GLightbox({
 							elements: [
 								{
-									href: kadenceBlocksProVideoLightbox.wrapper[ i ]
-										.querySelector( '.kadence-local-video-popup' )
-										.getAttribute( 'src' ),
+									href: kadenceBlocksProVideoLightbox.wrapper[i]
+										.querySelector('.kadence-local-video-popup')
+										.getAttribute('src'),
 									type: 'video',
 									source: 'local',
 								},
@@ -67,11 +65,11 @@
 									hideControls: true,
 								},
 							},
-						} );
-						kadenceBlocksProVideoLightbox.trigger[ i ].open();
-					} );
+						});
+						kadenceBlocksProVideoLightbox.trigger[i].open();
+					});
 				} else {
-					const lightbox = GLightbox( {
+					const lightbox = GLightbox({
 						selector: '.kadence-video-popup-link[data-popup-class="' + popupClassWithId + '"]',
 						touchNavigation: true,
 						skin: 'kadence-dark',
@@ -93,49 +91,49 @@
 								},
 							},
 						},
-					} );
-					lightbox.on( 'slide_before_load', ( data ) => {
-						const ligthboxBody = document.getElementById( 'glightbox-body' );
-						if ( popupClassWithId && ligthboxBody ) {
+					});
+					lightbox.on('slide_before_load', (data) => {
+						const ligthboxBody = document.getElementById('glightbox-body');
+						if (popupClassWithId && ligthboxBody) {
 							ligthboxBody.classList = '';
-							ligthboxBody.classList.add( 'glightbox-container' );
-							ligthboxBody.classList.add( 'glightbox-kadence-dark' );
-							ligthboxBody.classList.add( popupClassWithId );
+							ligthboxBody.classList.add('glightbox-container');
+							ligthboxBody.classList.add('glightbox-kadence-dark');
+							ligthboxBody.classList.add(popupClassWithId);
 						}
-					} );
+					});
 
-					lightbox.on( 'slide_after_load', ( data ) => {
+					lightbox.on('slide_after_load', (data) => {
 						// Check for hash in Vimeo URL (unlisted video)
 						const regex = /^(.*vimeo.com\/|.*video\/)?(\d+)(\?.*&*h=|\/)+([\d,a-f]+)/;
-						const found = data.slideConfig.href.match( regex );
-						if ( found ) {
+						const found = data.slideConfig.href.match(regex);
+						if (found) {
 							// If hash is found, append it to the iframe src
-							const iframe = data.slideNode.querySelector( 'iframe' );
-							iframe.src = iframe.src + '&h=' + found[ found.length - 1 ];
+							const iframe = data.slideNode.querySelector('iframe');
+							iframe.src = iframe.src + '&h=' + found[found.length - 1];
 						}
-					} );
+					});
 				}
 			}
 		},
 		// Initiate the menus when the DOM loads.
 		init() {
-			if ( typeof GLightbox == 'function' ) {
+			if (typeof GLightbox == 'function') {
 				kadenceBlocksProVideoLightbox.initAll();
 			} else {
-				var initLoadDelay = setInterval( function () {
-					if ( typeof GLightbox == 'function' ) {
+				var initLoadDelay = setInterval(function () {
+					if (typeof GLightbox == 'function') {
 						kadenceBlocksProVideoLightbox.initAll();
-						clearInterval( initLoadDelay );
+						clearInterval(initLoadDelay);
 					}
-				}, 200 );
+				}, 200);
 			}
 		},
 	};
-	if ( 'loading' === document.readyState ) {
+	if ('loading' === document.readyState) {
 		// The DOM has not yet been loaded.
-		document.addEventListener( 'DOMContentLoaded', kadenceBlocksProVideoLightbox.init );
+		document.addEventListener('DOMContentLoaded', kadenceBlocksProVideoLightbox.init);
 	} else {
 		// The DOM has already been loaded.
 		kadenceBlocksProVideoLightbox.init();
 	}
-} )();
+})();
