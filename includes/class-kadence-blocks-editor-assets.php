@@ -145,6 +145,11 @@ class Editor_Assets {
 			'navigation',
 			'navigation-link',
 		);
+
+		if ( ! defined( 'KBP_VERSION' ) || ( defined( 'KBP_VERSION' ) && version_compare( KBP_VERSION, '2.6.0', '>' ) ) ) {
+			$blocks[] = 'videopopup';
+		}
+
 		foreach ( $blocks as $block ) {
 			$meta   = kadence_blocks_get_asset_file( sprintf( 'dist/blocks-%s', $block ) );
 			$handle = sprintf( 'kadence-blocks-%s', $block );

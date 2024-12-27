@@ -81,6 +81,7 @@ class Kadence_Blocks_Abstract_Block {
 		'identity',
 		'table',
 	];
+	
 	/**
 	 * Allow us to enable merged defaults on blocks individually.
 	 * Considered setting this as a property within each block, but it's easier to see an exhaustive list here.
@@ -106,14 +107,16 @@ class Kadence_Blocks_Abstract_Block {
 	 * On init startup register the block.
 	 */
 	public function on_init() {
-		register_block_type(
-			KADENCE_BLOCKS_PATH . 'dist/blocks/' . $this->block_name . '/block.json',
-			array(
-				'render_callback' => array( $this, 'render_css' ),
-				'editor_script'   => 'kadence-blocks-' . $this->block_name,
-				'editor_style'    => 'kadence-blocks-' . $this->block_name,
-			)
-		);
+		if ( $this->should_register() ) {
+			register_block_type(
+				KADENCE_BLOCKS_PATH . 'dist/blocks/' . $this->block_name . '/block.json',
+				array(
+					'render_callback' => array( $this, 'render_css' ),
+					'editor_script'   => 'kadence-blocks-' . $this->block_name,
+					'editor_style'    => 'kadence-blocks-' . $this->block_name,
+				)
+			);
+		}
 	}
 
 	/**
@@ -122,8 +125,10 @@ class Kadence_Blocks_Abstract_Block {
 	 * @param array $block_class_array the blocks that are registered to be rendered.
 	 */
 	public function add_block_to_post_generate_css( $block_class_array ) {
-		if ( ! isset( $block_class_array[ $this->namespace . '/' . $this->block_name ] ) ) {
-			$block_class_array[ $this->namespace . '/' . $this->block_name ] = 'Kadence_Blocks_' . str_replace( ' ', '_', ucwords( str_replace( '-', ' ', $this->block_name ) ) ) . '_Block';
+		if ( $this->should_register() ) {
+			if ( ! isset( $block_class_array[ $this->namespace . '/' . $this->block_name ] ) ) {
+				$block_class_array[ $this->namespace . '/' . $this->block_name ] = 'Kadence_Blocks_' . str_replace( ' ', '_', ucwords( str_replace( '-', ' ', $this->block_name ) ) ) . '_Block';
+			}
 		}
 
 		return $block_class_array;
@@ -506,5 +511,14 @@ class Kadence_Blocks_Abstract_Block {
 		}
 
 		return $this->default_attributes_cache[ $cache_key ];
+	}
+
+	/**
+	 * Retuurn if this block should register itself. (can override for things like blocks in two plugins)
+	 * 
+	 * @return boolean
+	 */
+	public function should_register() {
+		return true;
 	}
 }
