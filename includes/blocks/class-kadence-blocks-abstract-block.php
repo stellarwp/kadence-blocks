@@ -521,4 +521,13 @@ class Kadence_Blocks_Abstract_Block {
 	public function should_register() {
 		return true;
 	}
+
+	/**
+	 * Get the current blocks pro version. Useful for mocking in tests that rely the on KBP_VERSION constant.
+	 *
+	 * @return string|null
+	 */
+	protected function get_pro_version() {
+		return defined('KBP_VERSION') ? KBP_VERSION : null;
+	}
 }

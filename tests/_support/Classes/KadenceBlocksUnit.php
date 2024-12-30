@@ -33,7 +33,7 @@ abstract class KadenceBlocksUnit extends KadenceBlocksTestCase
 	public function testCustomAchorRendered()
 	{
 		// Exclude non-dynamic blocks.
-		$exclude = ['testimonial', 'testimonials', 'tabs', 'spacer', 'rowlayout', 'image', 'form', 'countdown', 'column', 'advancedgallery', 'advancedbtn', 'navigation-link', 'singlebtn', 'accordion'];
+		$exclude = ['testimonial', 'testimonials', 'tabs', 'spacer', 'rowlayout', 'image', 'form', 'countdown', 'column', 'advancedgallery', 'advancedbtn', 'navigation-link', 'singlebtn', 'accordion', 'videopopup'];
 
 		if (!empty($this->block_name) && !in_array($this->block_name, $exclude) && $this->tester->block_supports_anchor('kadence/' . $this->block_name) ) {
 			$uniqueID = '123_abcd';

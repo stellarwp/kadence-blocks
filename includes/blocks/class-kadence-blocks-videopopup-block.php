@@ -336,7 +336,7 @@ class Kadence_Blocks_Videopopup_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	public function should_register() {
 		//this block was moved to here from pro after this version
-		if ( ! defined( 'KBP_VERSION' ) || ( defined( 'KBP_VERSION' ) && version_compare( KBP_VERSION, '2.6.0', '>' ) ) ) {
+		if ( $this->get_pro_version() === null || ( version_compare( $this->get_pro_version(), '2.6.0', '>' ) ) ) {
 			return true;
 		}
 		return false;
