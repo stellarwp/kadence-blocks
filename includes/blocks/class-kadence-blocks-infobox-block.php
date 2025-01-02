@@ -301,20 +301,22 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 				$css->add_property( 'fill', $media_icon['hoverColor'] );
 			}
 		}
+		// Media icon unit
+		$media_icon_unit = isset( $media_icon['unit'] ) ? $media_icon['unit'] : 'px' ;
 		if ( ! empty( $media_icon['size'] ) ) {
 			$css->set_selector( $base_selector . ' .kadence-info-box-icon-container .kt-info-svg-icon, ' . $base_selector . ' .kt-info-svg-icon-flip, ' . $base_selector . ' .kt-blocks-info-box-number' );
-			$css->add_property( 'font-size', $media_icon['size'] . ( isset($media_icon['unit']) ? $media_icon['unit'] : 'px') );
+			$css->add_property( 'font-size', $media_icon['size'] . $media_icon_unit );
 		}
 		if ( isset( $media_icon['tabletSize'] ) && is_numeric( $media_icon['tabletSize'] ) ) {
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( $base_selector . ' .kadence-info-box-icon-container .kt-info-svg-icon, ' . $base_selector . ' .kt-info-svg-icon-flip, ' . $base_selector . ' .kt-blocks-info-box-number' );
-			$css->add_property( 'font-size', $media_icon['tabletSize'] . ( isset($media_icon['unit']) ? $media_icon['unit'] : 'px') );
+			$css->add_property( 'font-size', $media_icon['tabletSize'] . $media_icon_unit );
 			$css->set_media_state( 'desktop' );
 		}
 		if ( isset( $media_icon['mobileSize'] ) && is_numeric( $media_icon['mobileSize'] ) ) {
 			$css->set_media_state( 'mobile' );
 			$css->set_selector( $base_selector . ' .kadence-info-box-icon-container .kt-info-svg-icon, ' . $base_selector . ' .kt-info-svg-icon-flip, ' . $base_selector . ' .kt-blocks-info-box-number' );
-			$css->add_property( 'font-size', $media_icon['mobileSize'] . ( isset($media_icon['unit']) ? $media_icon['unit'] : 'px') );
+			$css->add_property( 'font-size', $media_icon['mobileSize'] . $media_icon_unit );
 			$css->set_media_state( 'desktop' );
 		}
 		if ( ( isset( $media_number['family'] ) && ! empty( $media_number['family'] ) ) || ( isset( $media_number['style'] ) && ! empty( $media_number['style'] ) ) || ( isset( $media_number['weight'] ) && ! empty( $media_number['weight'] ) ) ) {

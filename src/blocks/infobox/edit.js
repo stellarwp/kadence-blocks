@@ -3983,11 +3983,11 @@ function KadenceInfoBox(props) {
 								<div
 									className={`kadence-info-box-icon-container kt-info-icon-animate-${mediaIcon[0].hoverAnimation}`}
 								>
-									<div className={'kadence-info-box-icon-inner-container'}>
+									<div className={'kadence-info-box-icon-inner-container'} style={{fontSize: previewMediaIconSize + mediaIcon[0].unit}}>
 										<IconRender
 											className={`kt-info-svg-icon kt-info-svg-icon-${mediaIcon[0].icon}`}
 											name={mediaIcon[0].icon}
-											size={previewMediaIconSize}
+											size={'1em'}
 											unit={mediaIcon[0].unit ? mediaIcon[0].unit : ''}
 											htmltag="span"
 											strokeWidth={
@@ -4006,7 +4006,7 @@ function KadenceInfoBox(props) {
 											<IconRender
 												className={`kt-info-svg-icon-flip kt-info-svg-icon-${mediaIcon[0].flipIcon}`}
 												name={mediaIcon[0].flipIcon}
-												size={previewMediaIconSize}
+												size={'1em'}
 												htmltag="span"
 												strokeWidth={
 													'fe' === mediaIcon[0].flipIcon.substring(0, 2)
