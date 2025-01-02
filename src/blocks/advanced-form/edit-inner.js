@@ -726,7 +726,10 @@ export function EditInner(props) {
 									placeholder={__('name@example.com', 'kadence-blocks')}
 									value={undefined !== email.emailTo ? email.emailTo : ''}
 									onChange={(value) => setMetaAttribute({ ...email, emailTo: value }, 'email')}
-									help={__('Seperate with comma for more then one email address.', 'kadence-blocks')}
+									help={__(
+										'Separate with a comma for more than one email address.',
+										'kadence-blocks'
+									)}
 								/>
 								<TextControl
 									label={__('Email Subject', 'kadence-blocks')}
