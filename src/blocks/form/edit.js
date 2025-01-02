@@ -2555,7 +2555,7 @@ function KadenceForm(props) {
 								/>
 								<ToggleControl
 									label={__('Send as HTML email?', 'kadence-blocks')}
-									help={__('If off plain text is used.', 'kadence-blocks')}
+									help={__('If off, plain text is used.', 'kadence-blocks')}
 									checked={undefined !== email[0].html ? email[0].html : true}
 									onChange={(value) => saveEmail({ html: value })}
 								/>

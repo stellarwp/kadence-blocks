@@ -769,7 +769,7 @@ export function EditInner(props) {
 								/>
 								<ToggleControl
 									label={__('Send as HTML email?', 'kadence-blocks')}
-									help={__('If off plain text is used.', 'kadence-blocks')}
+									help={__('If off, plain text is used.', 'kadence-blocks')}
 									checked={undefined !== email.html ? email.html : true}
 									onChange={(value) => setMetaAttribute({ ...email, html: value }, 'email')}
 								/>
