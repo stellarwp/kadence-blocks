@@ -3983,7 +3983,10 @@ function KadenceInfoBox(props) {
 								<div
 									className={`kadence-info-box-icon-container kt-info-icon-animate-${mediaIcon[0].hoverAnimation}`}
 								>
-									<div className={'kadence-info-box-icon-inner-container'} style={{fontSize: previewMediaIconSize + mediaIcon[0].unit}}>
+									<div
+										className={'kadence-info-box-icon-inner-container'}
+										style={{ fontSize: previewMediaIconSize + mediaIcon[0].unit }}
+									>
 										<IconRender
 											className={`kt-info-svg-icon kt-info-svg-icon-${mediaIcon[0].icon}`}
 											name={mediaIcon[0].icon}
