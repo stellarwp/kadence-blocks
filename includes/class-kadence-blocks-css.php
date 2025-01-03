@@ -1372,10 +1372,9 @@ class Kadence_Blocks_CSS {
 		$this->set_media_state( 'desktop' );
 	}
 	/**
-	 * Generates the shadow output.
+	 * Generates the gutter gap output.
 	 *
-	 * @param array  $shadow an array of shadow settings.
-	 * @return string
+
 	 */
 	public function render_row_gap_property( $attributes, $name = array( 'gap', 'tabletGap', 'mobileGap' ), $device = 'desktop', $custom = '', $unit_name = 'gapUnit' ) {
 		if ( empty( $attributes ) || empty( $name ) ) {
@@ -1385,6 +1384,21 @@ class Kadence_Blocks_CSS {
 			return '';
 		}
 		$unit = ! empty( $attributes[ $unit_name ] ) ? $attributes[ $unit_name ] : 'px';
+		// inherit tablet and mobile values
+		if ( is_array( $name ) && ! empty( $attributes[ $name[0] ] ) ) {
+			if ( empty( $attributes[ $name[1] ] ) ) {
+				$attributes[ $name[1] ] = $attributes[ $name[0] ];
+			}
+			if ( empty( $attributes[ $name[2] ] ) ) {
+				$attributes[ $name[2] ] = $attributes[ $name[1] ];
+			}
+			if ( $attributes[ $name[1] ] === 'custom' && empty( $attributes[ $custom ][1] ) ) {
+				$attributes[ $custom ][1] = $attributes[ $custom ][0];
+			}
+			if ( $attributes[ $name[2] ] === 'custom' && empty( $attributes[ $custom ][2] ) ) {
+				$attributes[ $custom ][2] = $attributes[ $custom ][1];
+			}
+		}
 		switch ( $device ) {
 			case 'tablet':
 				if ( ! empty( $attributes[ $name[1] ] ) ) {

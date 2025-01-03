@@ -566,15 +566,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			}
 			$css->set_media_state( 'desktop' );
 		}
-		// Update $attributes if there are custom gaps that need to be inherited.
-		if ( ! empty( $attributes['columnGutter'] ) ) {
-			if ( empty( $attributes['tabletGutter'] ) ) {
-				$attributes['tabletGutter'] = $attributes['columnGutter'];
-			}
-			if ( empty( $attributes['mobileGutter'] ) ) {
-				$attributes['mobileGutter'] = $attributes['tabletGutter'];
-			}
-		}
+
 		//Tablet layout
 		if ( empty( $attributes['tabletLayout'] ) && ! empty( $css->render_row_gap_property( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'tablet', 'customGutter', 'gutterType' ) ) ) {
 			//no tablet layout, but we have a tablet guttter width, so render the inherited column layout from desktop, potentially with custom widths.
