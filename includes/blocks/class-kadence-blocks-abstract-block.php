@@ -255,13 +255,13 @@ class Kadence_Blocks_Abstract_Block {
 			$css_class = Kadence_Blocks_CSS::get_instance();
 
 			if ( in_array( $this->block_name, $this->supports_merged_defaults ) ) {
-				$attributes = $this->get_attributes_with_defaults( $unique_id, $attributes, false );
+				$attributes = $this->get_attributes_with_defaults( $unique_id . get_locale(), $attributes, false );
 			}
 
 			// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 			$attributes = apply_filters( 'kadence_blocks_' . str_replace( '-', '_', $this->block_name ) . '_render_block_attributes', $attributes, $block_instance );
 
-			$content   = $this->build_html( $attributes, $unique_id, $content, $block_instance );
+			$content = $this->build_html( $attributes, $unique_id, $content, $block_instance );
 			if ( ! $css_class->has_styles( 'kb-' . $this->block_name . $unique_style_id ) && ! is_feed() && apply_filters( 'kadence_blocks_render_inline_css', true, $this->block_name, $unique_id ) ) {
 				$css        = $this->build_css( $attributes, $css_class, $unique_id, $unique_style_id );
 				if ( ! empty( $css ) && ! wp_is_block_theme() ) {
@@ -387,21 +387,21 @@ class Kadence_Blocks_Abstract_Block {
 	/**
 	 * Get this blocks attributes merged with defaults from the registration.
 	 *
-	 * @param string $unique_id The unique id.
+	 * @param string $cache_key The cache key (usually unique id).
 	 * @param array $attributes The block's attributes.
 	 * @param string $block_name The name of the block.
 	 * @return array
 	 */
-	public function get_attributes_with_defaults( $unique_id, $attributes, $cache = true ) {
-		if ( ! empty( $this->attributes_with_defaults[ $unique_id ] ) ) {
-			return $this->attributes_with_defaults[ $unique_id ];
+	public function get_attributes_with_defaults( $cache_key, $attributes, $cache = true ) {
+		if ( ! empty( $this->attributes_with_defaults[ $cache_key ] ) ) {
+			return $this->attributes_with_defaults[ $cache_key ];
 		}
 
 		$default_attributes = $this->get_block_default_attributes();
 		$merged_attributes  = $this->merge_attributes_with_defaults( $attributes, $default_attributes );
 
 		if ( $cache ) {
-			$this->attributes_with_defaults[ $unique_id ] = $merged_attributes;
+			$this->attributes_with_defaults[ $cache_key ] = $merged_attributes;
 		}
 		return $merged_attributes;
 	}

@@ -8,7 +8,6 @@ import PopColorControl from '../../pop-color-control';
  */
 import { __ } from '@wordpress/i18n';
 import {Component, useState} from '@wordpress/element';
-import { ToggleControl } from '@wordpress/components';
 import { map, isEqual } from 'lodash';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { default as ShadowControl } from '../shadow-control';
@@ -31,15 +30,23 @@ export default function ResponsiveShadowControl ( {
 	enable = true,
 	color,
 	colorDefault,
+	opacity,
 	blur,
+	spread,
+	inset,
 	hOffset,
 	vOffset,
 	onColorChange,
+    onOpacityChange,
 	onBlurChange,
 	onHOffsetChange,
 	onVOffsetChange,
 	onEnableChange,
+	onSpreadChange,
+	onInsetChange,
 	className = '',
+	shadowType,
+	onArrayChange,
 	reset = true,
 } ) {
 	const [ deviceType, setDeviceType ] = useState( 'Desktop' );
@@ -84,52 +91,76 @@ export default function ResponsiveShadowControl ( {
 	output.Mobile = (
 		<ShadowControl
 			key={'mobile-text-shadow-control'}
-			label={__('Text Shadow', 'kadence-blocks')}
+			label={__('Shadow', 'kadence-blocks')}
 			enable={ enable }
 			color={ color }
 			colorDefault={ colorDefault }
+			opacity={ opacity }
 			hOffset={ hOffset }
 			vOffset={ vOffset }
 			blur={ blur }
+			spread={ spread }
 			onEnableChange={ onEnableChange }
 			onColorChange={ onColorChange }
+			onOpacityChange={ onOpacityChange }
 			onHOffsetChange={ onHOffsetChange }
 			onVOffsetChange={ onVOffsetChange }
 			onBlurChange={ onBlurChange }
+			onSpreadChange={ onSpreadChange }
+			shadowType={ shadowType }
+			inset={ inset }
+			onInsetChange={ onInsetChange }
+			onArrayChange={ onArrayChange }
 		/>
 	);
 	output.Tablet = (
 		<ShadowControl
 			key={'tablet-text-shadow-control'}
-			label={__('Text Shadow', 'kadence-blocks')}
+			label={__('Shadow', 'kadence-blocks')}
 			enable={ enable }
 			color={ color }
 			colorDefault={ colorDefault }
+			opacity={ opacity }
 			hOffset={ hOffset }
 			vOffset={ vOffset }
 			blur={ blur }
+			spread={ spread }
 			onEnableChange={ onEnableChange }
 			onColorChange={ onColorChange }
+			onOpacityChange={ onOpacityChange }
 			onHOffsetChange={ onHOffsetChange }
 			onVOffsetChange={ onVOffsetChange }
 			onBlurChange={ onBlurChange }
+			onSpreadChange={ onSpreadChange }
+			shadowType={ shadowType }
+			inset={ inset }
+			onInsetChange={ onInsetChange }
+			onArrayChange={ onArrayChange }
 		/>
 	);
 	output.Desktop = (
 		<ShadowControl
 			key={'desktop-text-shadow-control'}
-			label={__('Text Shadow', 'kadence-blocks')}
+			label={__('Shadow', 'kadence-blocks')}
 			enable={ enable }
 			color={ color }
+			opacity={ opacity }
 			colorDefault={ colorDefault }
 			hOffset={ hOffset }
 			vOffset={ vOffset }
 			blur={ blur }
+			spread={ spread }
 			onEnableChange={ onEnableChange }
 			onColorChange={ onColorChange }
+			onOpacityChange={ onOpacityChange }
 			onHOffsetChange={ onHOffsetChange }
 			onVOffsetChange={ onVOffsetChange }
 			onBlurChange={ onBlurChange }
+			onSpreadChange={ onSpreadChange }
+			shadowType={ shadowType }
+			inset={ inset }
+			onInsetChange={ onInsetChange }
+			onArrayChange={ onArrayChange }
 		/>
 	);
 
