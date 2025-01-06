@@ -152,7 +152,9 @@ function KadenceInfoBox(props) {
 		containerHoverBorderOpacity,
 		containerBorderOpacity,
 		textMinHeight,
+		textMinHeightUnit,
 		titleMinHeight,
+		titleMinHeightUnit,
 		maxWidthUnit,
 		maxWidthTabletUnit,
 		maxWidthMobileUnit,
@@ -2730,9 +2732,13 @@ function KadenceInfoBox(props) {
 												onChange={(value) => saveMediaIcon({ size: value })}
 												onChangeTablet={(value) => saveMediaIcon({ tabletSize: value })}
 												onChangeMobile={(value) => saveMediaIcon({ mobileSize: value })}
-												min={5}
-												max={250}
+												min={['em', 'rem'].includes(mediaIcon[0].unit) ? 1 : 5}
+												max={['em', 'rem'].includes(mediaIcon[0].unit) ? 12 : 250}
 												step={1}
+												showUnit={true}
+												onUnit={(value) => saveMediaIcon({ unit: value })}
+												units={['px', 'em', 'rem']}
+												unit={mediaIcon[0].unit ? mediaIcon[0].unit : 'px'}
 											/>
 											{mediaIcon[0].icon && 'fe' === mediaIcon[0].icon.substring(0, 2) && (
 												<RangeControl
@@ -3128,8 +3134,12 @@ function KadenceInfoBox(props) {
 										onChange={(value) => saveMediaStyle({ padding: value })}
 										onControl={(value) => setMediaPaddingControl(value)}
 										min={0}
-										max={100}
+										max={['em', 'rem'].includes(mediaStyle[0].paddingUnit) ? 12 : 100}
 										step={1}
+										onUnit={(value) => saveMediaStyle({ paddingUnit: value })}
+										units={['px', 'em', 'rem']}
+										unit={mediaStyle[0].paddingUnit ? mediaStyle[0].paddingUnit : 'px'}
+										showUnit={true}
 									/>
 									<MeasurementControls
 										label={__('Media Margin', 'kadence-blocks')}
@@ -3137,9 +3147,13 @@ function KadenceInfoBox(props) {
 										control={mediaMarginControl}
 										onChange={(value) => saveMediaStyle({ margin: value })}
 										onControl={(value) => setMediaMarginControl(value)}
-										min={-200}
-										max={200}
+										min={['em', 'rem'].includes(mediaStyle[0].marginUnit) ? -12 : -200}
+										max={['em', 'rem'].includes(mediaStyle[0].marginUnit) ? 12 : 200}
 										step={1}
+										onUnit={(value) => saveMediaStyle({ marginUnit: value })}
+										units={['px', 'em', 'rem']}
+										unit={mediaStyle[0].marginUnit ? mediaStyle[0].marginUnit : 'px'}
+										showUnit={true}
 									/>
 								</KadencePanelBody>
 							)}
@@ -3281,10 +3295,13 @@ function KadenceInfoBox(props) {
 												}
 												step={1}
 												min={0}
-												max={600}
-												unit={'px'}
-												units={['px']}
+												max={['em', 'rem'].includes(titleMinHeightUnit) ? 12 : 600}
+												unit={titleMinHeightUnit ? titleMinHeightUnit : 'px'}
+												units={['px', 'em', 'rem']}
 												showUnit={true}
+												onUnit={(value) => {
+													setAttributes({ titleMinHeightUnit: value });
+												}}
 												reset={() => {
 													//empty value does not re-render component. Need to pass 0.
 													setAttributes({
@@ -3462,10 +3479,13 @@ function KadenceInfoBox(props) {
 												}
 												step={1}
 												min={0}
-												max={600}
-												unit={'px'}
-												units={['px']}
+												max={['em', 'rem'].includes(textMinHeightUnit) ? 12 : 600}
+												unit={titleMinHeightUnit ? textMinHeightUnit : 'px'}
+												units={['px', 'em', 'rem']}
 												showUnit={true}
+												onUnit={(value) => {
+													setAttributes({ textMinHeightUnit: value });
+												}}
 											/>
 										</Fragment>
 									)}
@@ -3830,13 +3850,13 @@ function KadenceInfoBox(props) {
 						style={{
 							margin: mediaStyle[0].margin
 								? mediaStyle[0].margin[0] +
-								  'px ' +
+								  (mediaStyle[0].marginUnit ? mediaStyle[0].marginUnit + ' ' : 'px ') +
 								  mediaStyle[0].margin[1] +
-								  'px ' +
+								  (mediaStyle[0].marginUnit ? mediaStyle[0].marginUnit + ' ' : 'px ') +
 								  mediaStyle[0].margin[2] +
-								  'px ' +
+								  (mediaStyle[0].marginUnit ? mediaStyle[0].marginUnit + ' ' : 'px ') +
 								  mediaStyle[0].margin[3] +
-								  'px'
+								  (mediaStyle[0].marginUnit ? mediaStyle[0].marginUnit : 'px')
 								: '',
 						}}
 					>
@@ -3862,13 +3882,13 @@ function KadenceInfoBox(props) {
 									: '',
 								padding: mediaStyle[0].padding
 									? mediaStyle[0].padding[0] +
-									  'px ' +
+									  (mediaStyle[0].paddingUnit ? mediaStyle[0].paddingUnit + ' ' : 'px ') +
 									  mediaStyle[0].padding[1] +
-									  'px ' +
+									  (mediaStyle[0].paddingUnit ? mediaStyle[0].paddingUnit + ' ' : 'px ') +
 									  mediaStyle[0].padding[2] +
-									  'px ' +
+									  (mediaStyle[0].paddingUnit ? mediaStyle[0].paddingUnit + ' ' : 'px ') +
 									  mediaStyle[0].padding[3] +
-									  'px'
+									  (mediaStyle[0].paddingUnit ? mediaStyle[0].paddingUnit : 'px')
 									: '',
 							}}
 						>
@@ -3963,11 +3983,15 @@ function KadenceInfoBox(props) {
 								<div
 									className={`kadence-info-box-icon-container kt-info-icon-animate-${mediaIcon[0].hoverAnimation}`}
 								>
-									<div className={'kadence-info-box-icon-inner-container'}>
+									<div
+										className={'kadence-info-box-icon-inner-container'}
+										style={{ fontSize: previewMediaIconSize + mediaIcon[0].unit }}
+									>
 										<IconRender
 											className={`kt-info-svg-icon kt-info-svg-icon-${mediaIcon[0].icon}`}
 											name={mediaIcon[0].icon}
-											size={previewMediaIconSize}
+											size={'1em'}
+											unit={mediaIcon[0].unit ? mediaIcon[0].unit : ''}
 											htmltag="span"
 											strokeWidth={
 												'fe' === mediaIcon[0].icon.substring(0, 2)
@@ -3985,7 +4009,7 @@ function KadenceInfoBox(props) {
 											<IconRender
 												className={`kt-info-svg-icon-flip kt-info-svg-icon-${mediaIcon[0].flipIcon}`}
 												name={mediaIcon[0].flipIcon}
-												size={previewMediaIconSize}
+												size={'1em'}
 												htmltag="span"
 												strokeWidth={
 													'fe' === mediaIcon[0].flipIcon.substring(0, 2)
@@ -4019,7 +4043,8 @@ function KadenceInfoBox(props) {
 											color: mediaIcon[0].color
 												? KadenceColorOutput(mediaIcon[0].color)
 												: undefined,
-											fontSize: mediaIcon[0].size + 'px',
+											fontSize:
+												mediaIcon[0].size + (mediaIcon[0].unit ? mediaIcon[0].unit : 'px'),
 											fontFamily: mediaNumber[0].family ? mediaNumber[0].family : undefined,
 										}}
 									>
@@ -4107,7 +4132,7 @@ function KadenceInfoBox(props) {
 									  titleFont[0].margin[3] +
 									  'px'
 									: '',
-								minHeight: previewTitleMinHeight + 'px',
+								minHeight: previewTitleMinHeight + (titleMinHeightUnit ? titleMinHeightUnit : 'px'),
 							}}
 							keepPlaceholderOnFocus
 						/>
@@ -4173,7 +4198,7 @@ function KadenceInfoBox(props) {
 										  textSpacing[0].margin[3] +
 										  'px'
 										: '',
-								minHeight: previewTextMinHeight + 'px',
+								minHeight: previewTextMinHeight + (textMinHeightUnit ? textMinHeightUnit : 'px'),
 							}}
 							keepPlaceholderOnFocus
 						/>
