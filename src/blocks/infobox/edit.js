@@ -3770,7 +3770,7 @@ function KadenceInfoBox(props) {
 												showUnit={true}
 												reset={() => {
 													setAttributes({ textMinHeight: [0, 0, 0] });
-                        }}
+												}}
 												onUnit={(value) => {
 													setAttributes({ textMinHeightUnit: value });
 												}}
