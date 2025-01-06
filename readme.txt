@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.4
 Tested up to: 6.7.1
-Stable tag: 3.4.1
+Stable tag: 3.4.3
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -173,6 +173,19 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 3.4.3 =
+Release Date: December 23rd 2024
+* Fix: Possible issue with accordion showing broken in editor.
+
+= 3.4.2 =
+Release Date: December 17th 2024
+* Add: Features for activating nav links with hash anchor links on the page
+* Update: Mansonry display for advanced gallery block in the editor.
+* Fix: Issue with table of contents max width and margins.
+* Fix: Button block not centering with fixed width.
+* Fix: Issue with duplicating query loop card blocks with certain contents.
+* Fix: Lottie animation upload.
 
 = 3.4.1 =
 Release Date: December 12th 2024

@@ -247,6 +247,7 @@ class KBHeader {
 				this.activeOffsetTop = this.getOffset(this.placeholderWrapper).top;
 			}
 			window.addEventListener('resize', this.updateSticky.bind(this), false);
+			window.addEventListener('hashchange', this.updateSticky.bind(this), false);
 			window.addEventListener('scroll', this.updateSticky.bind(this), false);
 			window.addEventListener('load', this.updateSticky.bind(this), false);
 			window.addEventListener('orientationchange', this.updateSticky.bind(this));

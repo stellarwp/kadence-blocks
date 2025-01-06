@@ -413,7 +413,6 @@ export function EditInner(props) {
 								)
 							}
 							disableMediaButtons={backgroundValue?.image ? true : false}
-							dynamicAttribute={'background' + suffix + size + ':image'}
 							isSelected={isSelected}
 							attributes={attributes}
 							setAttributes={setAttributes}
@@ -662,7 +661,6 @@ export function EditInner(props) {
 										checked={shrinkMain}
 										onChange={(value) => setMetaAttribute(value, 'shrinkMain')}
 									/>
-									{console.log(1, shrinkMainHeight, shrinkMainHeightTablet, shrinkMainHeightMobile)}
 									{shrinkMain &&
 										(previewStickySection.includes('main') || previewStickySection === '') && (
 											<ResponsiveRangeControls

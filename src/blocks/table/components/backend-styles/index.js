@@ -9,6 +9,7 @@ import {
 
 export default function BackendStyles(props) {
 	const { attributes, previewDevice } = props;
+	const hasPro = kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false;
 
 	const {
 		uniqueID,
@@ -250,14 +251,14 @@ export default function BackendStyles(props) {
 		getBorderStyle(previewDevice, 'left', borderStyle, tabletBorderStyle, mobileBorderStyle)
 	);
 
-	if (stickyFirstRow) {
+	if (hasPro && stickyFirstRow) {
 		css.set_selector(`.kb-table${uniqueID} tr:first-child`);
 		css.add_property('position', 'sticky !important');
 		css.add_property('top', '0');
 		css.add_property('z-index', '1001');
 	}
 
-	if (stickyFirstColumn) {
+	if (hasPro && stickyFirstColumn) {
 		css.set_selector(`.kb-table${uniqueID} td:first-child, .kb-table${uniqueID} th:first-child`);
 		css.add_property('position', 'sticky !important');
 		css.add_property('left', '0');

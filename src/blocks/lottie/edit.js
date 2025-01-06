@@ -260,7 +260,11 @@ export function Edit(props) {
 					{__('Upload a Lottie file', 'kadence-blocks')}
 				</Button>
 				{isOpen && (
-					<Modal title={__('Upload Lottie JSON file', 'kadence-blocks')} onRequestClose={closeModal}>
+					<Modal
+						title={__('Upload Lottie JSON file', 'kadence-blocks')}
+						onRequestClose={closeModal}
+						shouldCloseOnClickOutside={false}
+					>
 						{lottieJsonError !== false ? (
 							<Notice status="error" onRemove={() => setLottieJsonError(false)}>
 								<p>{lottieJsonError}</p>

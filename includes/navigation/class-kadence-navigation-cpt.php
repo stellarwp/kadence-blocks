@@ -2106,6 +2106,31 @@ class Kadence_Blocks_Navigation_CPT_Controller {
 				'default' => '',
 				'type'    => 'string',
 			),
+			array(
+				'key'     => '_kad_navigation_enableScrollSpy',
+				'type' => 'boolean',
+				'default' => false,
+			),
+			array(
+				'key'     => '_kad_navigation_scrollSpyOffsetManual',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_scrollSpyOffset',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_scrollSpyOffsetTablet',
+				'type' => 'string',
+				'default' => '',
+			),
+			array(
+				'key'     => '_kad_navigation_scrollSpyOffsetMobile',
+				'type' => 'string',
+				'default' => '',
+			),
 		);
 
 		foreach ( $register_meta as $meta ) {
