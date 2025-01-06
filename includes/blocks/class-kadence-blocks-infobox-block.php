@@ -835,20 +835,77 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_media_state( 'desktop' );
 		}
 		if ( isset( $attributes['displayShadow'] ) && ! empty( $attributes['displayShadow'] ) && true === $attributes['displayShadow'] ) {
+			$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap' );
 			if ( isset( $attributes['shadow'] ) && is_array( $attributes['shadow'] ) && is_array( $attributes['shadow'][0] ) ) {
+				if ( ! isset( $attributes['shadow'][0]['inset'] )  ) {
+					$attributes['shadow'][0]['inset'] = false;
+				}
 				$shadow = $attributes['shadow'][0];
-				$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap' );
-				$css->add_property( 'box-shadow', $shadow['hOffset'] . 'px ' . $shadow['vOffset'] . 'px ' . $shadow['blur'] . 'px ' . $shadow['spread'] . 'px ' . $css->render_color( ( isset( $shadow['color'] ) ? $shadow['color'] : '' ), $shadow['opacity'] ) );
+				$css->add_property( 'box-shadow', $css->render_shadow( $shadow ) );
 			}
+			if ( isset( $attributes['tabletShadow'] ) && is_array( $attributes['tabletShadow'] ) && is_array( $attributes['tabletShadow'][0] ) ) {
+				$css->set_media_state( 'tablet' );
+				$shadow = $attributes['tabletShadow'][0];
+				foreach ($shadow as $key => $value) {
+					if ($value === '') {
+						$shadow[$key] = $attributes['shadow'][0][$key] ?? '';
+					} else {
+						$shadow[$key] = $value;
+					}
+				}
+				$css->add_property( 'box-shadow', $css->render_shadow( $shadow ) );
+			}
+			if ( isset( $attributes['mobileShadow'] ) && is_array( $attributes['mobileShadow'] ) && is_array( $attributes['mobileShadow'][0] ) ) {
+				$css->set_media_state( 'mobile' );
+				$shadow = $attributes['mobileShadow'][0];
+				foreach ($shadow as $key => $value) {
+					if ($value === '') {
+						$shadow[$key] = isset($attributes['tabletShadow'][0][$key]) && $attributes['tabletShadow'][0][$key] !== '' ? $attributes['tabletShadow'][0][$key] : $attributes['shadow'][0][$key];
+					} else {
+						$shadow[$key] = $value;
+					}
+				}
+				$css->add_property( 'box-shadow', $css->render_shadow( $shadow ) );
+			}
+
+			$css->set_media_state( 'desktop' );
 			if ( isset( $attributes['shadowHover'] ) && is_array( $attributes['shadowHover'] ) && is_array( $attributes['shadowHover'][0] ) ) {
-				$shadow_hover = $attributes['shadowHover'][0];
 				$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap:hover' );
-				$color = ( !empty( $shadow_hover['color'] ) ? $shadow_hover['color'] : '#000000' );
-				$css->add_property( 'box-shadow', $shadow_hover['hOffset'] . 'px ' . $shadow_hover['vOffset'] . 'px ' . $shadow_hover['blur'] . 'px ' . $shadow_hover['spread'] . 'px ' . $css->render_color( $color, $shadow_hover['opacity'] ) );
+				if ( ! isset( $attributes['shadowHover'][0]['inset'] ) ) {
+					$attributes['shadowHover'][0]['inset'] = false;
+				}
+				$shadow_hover = $attributes['shadowHover'][0];
+				$css->add_property( 'box-shadow', $css->render_shadow( $shadow_hover ) );
 			} else {
 				$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap:hover' );
 				$css->add_property( 'box-shadow', '0px 0px 14px 0px rgba(0,0,0,0.2)' );
 			}
+
+			if ( isset( $attributes['tabletShadowHover'] ) && is_array( $attributes['tabletShadowHover'] ) && is_array( $attributes['tabletShadowHover'][0] ) ) {
+				$css->set_media_state( 'tablet' );
+				$shadow_hover = $attributes['tabletShadowHover'][0];
+				foreach ($shadow_hover as $key => $value) {
+					if ($value === '') {
+						$shadow_hover[$key] = $attributes['shadowHover'][0][$key] ?? '';
+					} else {
+						$shadow_hover[$key] = $value;
+					}
+				}
+				$css->add_property( 'box-shadow', $css->render_shadow( $shadow_hover ) );
+			}
+			if ( isset( $attributes['mobileShadowHover'] ) && is_array( $attributes['mobileShadowHover'] ) && is_array( $attributes['mobileShadowHover'][0] ) ) {
+				$css->set_media_state( 'mobile' );
+				$shadow_hover = $attributes['mobileShadowHover'][0];
+				foreach ($shadow_hover as $key => $value) {
+					if ($value === '') {
+						$shadow_hover[$key] = isset($attributes['tabletShadowHover'][0][$key]) && $attributes['tabletShadowHover'][0][$key] !== '' ? $attributes['tabletShadowHover'][0][$key] : $attributes['shadowHover'][0][$key];
+					} else {
+						$shadow_hover[$key] = $value;
+					}
+				}
+				$css->add_property( 'box-shadow', $css->render_shadow( $shadow_hover ) );
+			}
+
 		}
 
 		return $css->css_output();
