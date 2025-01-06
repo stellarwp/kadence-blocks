@@ -133,15 +133,15 @@ class Kadence_Blocks_Videopopup_Block extends Kadence_Blocks_Abstract_Block {
 			if ( ( isset( $popup['background'] ) && ! empty( $popup['background'] ) ) || isset( $popup['backgroundOpacity'] ) && ! empty( $popup['backgroundOpacity'] ) ) {
 				$css->set_selector('.glightbox-kadence-dark.kadence-popup-' . $unique_id . ' .goverlay');
 				if ( isset( $popup['background'] ) && ! empty( $popup['background'] ) ) {
-					$css->add_property('background', $css->render_color( $popup['background'] ), '');
+					$css->add_property('background', $css->render_color( $popup['background'] ) );
 				}
 				if ( isset( $popup['backgroundOpacity'] ) && ! empty( $popup['backgroundOpacity'] ) ) {
-					$css->add_property('opacity', $popup['backgroundOpacity'], '');
+					$css->add_property('opacity', $popup['backgroundOpacity'] );
 				}
 
 				$css->set_selector( '.glightbox-container.kadence-popup-' . $unique_id . ' .gclose, .glightbox-container.kadence-popup-' . $unique_id . ' .gnext, .glightbox-container.kadence-popup-' . $unique_id . ' .gprev' );
 				if ( isset( $popup['closeBackground'] ) && ! empty( $popup['closeBackground'] ) ) {
-					$css->add_property( 'background', $css->render_color( $popup['closeBackground'] ), '' );
+					$css->add_property( 'background', $css->render_color( $popup['closeBackground'] ) );
 				}
 			}
 			if ( isset( $popup['closeColor'] ) && ! empty( $popup['closeColor'] ) ) {
