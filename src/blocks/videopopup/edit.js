@@ -72,7 +72,6 @@ import { MediaUpload, InspectorControls, BlockControls, useBlockProps } from '@w
 import {
 	Button,
 	TextControl,
-	Popover,
 	RangeControl,
 	ToolbarGroup,
 	ToolbarButton,
@@ -219,14 +218,6 @@ function KadenceVideoPopup(props) {
 	const marginMouseOver = mouseOverVisualizer();
 	const paddingMouseOver = mouseOverVisualizer();
 
-	const openURLInput = () => {
-		setIsURLInputVisible(true);
-	};
-
-	const closeURLInput = () => {
-		setIsURLInputVisible(false);
-	};
-
 	const theIcon = playBtn[0].icon ? playBtn[0].icon : 'fas_play';
 	const containerClasses = className + ' kadence-video-popup' + uniqueID;
 	const blockProps = useBlockProps({
@@ -287,16 +278,6 @@ function KadenceVideoPopup(props) {
 			height: video.height,
 			subtype: video.subtype,
 		});
-	};
-	const onChangeLocalSrc = (event) => {
-		setLocalSrc(event.target.value);
-	};
-	const onSubmitLocalSrc = (event) => {
-		event.preventDefault();
-		if (localSrc) {
-			saveMedia({ url: localSrc });
-			closeURLInput();
-		}
 	};
 	const onSelectPoster = (img) => {
 		saveBackground({
@@ -705,6 +686,18 @@ function KadenceVideoPopup(props) {
 		</>
 	);
 
+	const videoTypeOptions = applyFilters(
+		'kadence.videoPopupProVideoTypeOptions',
+		[
+			{
+				value: 'external',
+				label: __('YouTube/Vimeo/VideoPress', 'kadence-blocks'),
+			},
+			{ value: 'local', label: __('Self Hosted (pro)', 'kadence-blocks'), disabled: true },
+		],
+		props
+	);
+
 	const nonTransAttrs = ['background', 'type', 'media', 'url'];
 
 	return (
@@ -768,13 +761,7 @@ function KadenceVideoPopup(props) {
 							<SelectControl
 								label={__('Video Type', 'kadence-blocks')}
 								value={type}
-								options={[
-									{
-										value: 'external',
-										label: __('YouTube/Vimeo/VideoPress', 'kadence-blocks'),
-									},
-									{ value: 'local', label: __('Self Hosted', 'kadence-blocks') },
-								]}
+								options={videoTypeOptions}
 								onChange={(value) => setAttributes({ type: value, isVimeoPrivate: false })}
 							/>
 							{'local' !== type && (
@@ -817,145 +804,14 @@ function KadenceVideoPopup(props) {
 									/>
 								</Fragment>
 							)}
-							{'local' === type && (
-								<Fragment>
-									{'' === media[0].id && '' === media[0].url && (
-										<div className="kb-vide-edit-settings-container">
-											<MediaUpload
-												onSelect={onSelectMedia}
-												type="video"
-												value={media[0].id}
-												allowedTypes={['video']}
-												render={({ open }) => (
-													<Button
-														className={
-															'components-button components-icon-button kt-cta-upload-btn'
-														}
-														onClick={open}
-														icon={video}
-														isDefault={true}
-													>
-														{__('Select Video', 'kadence-blocks')}
-													</Button>
-												)}
-											/>
-											<div className="editor-media-placeholder__url-input-container block-editor-media-placeholder__url-input-container">
-												<Button
-													className="editor-media-placeholder__button block-editor-media-placeholder__button kt-cta-upload-btn"
-													onClick={openURLInput}
-													isDefault={true}
-													isToggled={isURLInputVisible}
-												>
-													{__('Insert from URL', 'kadence-blocks')}
-												</Button>
-												{isURLInputVisible && (
-													<Popover
-														onClose={() => closeURLInput()}
-														className="editor-url-popover block-editor-url-popover"
-													>
-														<div className="editor-url-popover__row block-editor-url-popover__row">
-															<form
-																className="editor-media-placeholder__url-input-form block-editor-media-placeholder__url-input-form"
-																onSubmit={(value) => onSubmitLocalSrc(value)}
-															>
-																<input
-																	className="editor-media-placeholder__url-input-field block-editor-media-placeholder__url-input-field"
-																	type="url"
-																	aria-label={__('URL', 'kadence-blocks')}
-																	placeholder={__(
-																		'Paste or type URL',
-																		'kadence-blocks'
-																	)}
-																	onChange={(value) => onChangeLocalSrc(value)}
-																	value={localSrc}
-																/>
-																<Button
-																	className="editor-media-placeholder__url-input-submit-button block-editor-media-placeholder__url-input-submit-button"
-																	icon={keyboardReturn}
-																	label={__('Apply', 'kadence-blocks')}
-																	type="submit"
-																/>
-															</form>
-														</div>
-													</Popover>
-												)}
-											</div>
-										</div>
-									)}
-									{'' !== media[0].id && (
-										<div className="kb-vide-edit-settings-container">
-											<MediaUpload
-												onSelect={onSelectMedia}
-												type="video"
-												value={media[0].id}
-												allowedTypes={['video']}
-												render={({ open }) => (
-													<Button
-														className={
-															'components-button components-icon-button kt-cta-upload-btn'
-														}
-														icon={video}
-														onClick={open}
-													>
-														{__('Edit Video', 'kadence-blocks')}
-													</Button>
-												)}
-											/>
-											<Button
-												label={__('Clear', 'kadence-blocks')}
-												className="kb-clear-video-btn"
-												icon={closeSmall}
-												onClick={clearMedia}
-											/>
-										</div>
-									)}
-									{'' === media[0].id && '' !== media[0].url && (
-										<div className="editor-media-placeholder__url-input-container block-editor-media-placeholder__url-input-container kb-vide-edit-settings-container">
-											<Button
-												className="editor-media-placeholder__button block-editor-media-placeholder__button kt-cta-upload-btn"
-												onClick={openURLInput}
-												isToggled={isURLInputVisible}
-												isDefault={true}
-											>
-												{__('Edit Video URL', 'kadence-blocks')}
-											</Button>
-											{isURLInputVisible && (
-												<Popover
-													onClose={() => closeURLInput()}
-													className="editor-url-popover block-editor-url-popover"
-												>
-													<div className="editor-url-popover__row block-editor-url-popover__row">
-														<form
-															className="editor-media-placeholder__url-input-form block-editor-media-placeholder__url-input-form"
-															onSubmit={(value) => onSubmitLocalSrc(value)}
-														>
-															<input
-																className="editor-media-placeholder__url-input-field block-editor-media-placeholder__url-input-field"
-																type="url"
-																aria-label={__('URL', 'kadence-blocks')}
-																placeholder={__('Paste or type URL', 'kadence-blocks')}
-																onChange={(value) => onChangeLocalSrc(value)}
-																value={'' === localSrc ? media[0].url : localSrc}
-															/>
-															<Button
-																className="editor-media-placeholder__url-input-submit-button block-editor-media-placeholder__url-input-submit-button"
-																icon={keyboardReturn}
-																label={__('Apply', 'kadence-blocks')}
-																type="submit"
-															/>
-														</form>
-													</div>
-												</Popover>
-											)}
-											<Button
-												label={__('Clear', 'kadence-blocks')}
-												className="kb-clear-video-btn"
-												icon={closeSmall}
-												onClick={clearMedia}
-											/>
-										</div>
-									)}
-								</Fragment>
+							{applyFilters(
+								'kadence.videoPopupProLocalVideoControls',
+								'',
+								props,
+								isURLInputVisible,
+								setIsURLInputVisible,
+								localSrc,
+								setLocalSrc
 							)}
 							<ToggleControl
 								label={__('Auto play video (if able)', 'kadence-blocks')}
