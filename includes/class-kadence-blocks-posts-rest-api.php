@@ -202,6 +202,11 @@ class Kadence_Blocks_Post_Rest_Controller extends WP_REST_Controller {
 			$query_args['orderby']             = 'post__in';
 			$query_args['posts_per_page']      = -1;
 			$query_args['ignore_sticky_posts'] = 1;
+		} else if ( 'individual-ordered' === $query_type ) {
+			$query_args['post__in']            = $request->get_param( self::PROP_INCLUDE );
+			$query_args['orderby']             = $request->get_param( self::PROP_ORDER_BY );
+			$query_args['posts_per_page']      = -1;
+			$query_args['ignore_sticky_posts'] = 1;
 		} else {
 			$query_args['posts_per_page']      = $request->get_param( self::PROP_PER_PAGE );
 			$query_args['tax_query']           = array();
