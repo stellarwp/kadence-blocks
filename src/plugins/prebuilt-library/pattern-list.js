@@ -765,6 +765,18 @@ function PatternList({
 				`.single-iframe-content {--global-content-edge-padding: 3rem;padding:0px !important;}`
 			);
 		}
+		tempStyles = tempStyles.concat(`.pattern-shadow-wrap .single-iframe-content {
+			--wp--preset--color--theme-palette-1: var(--global-palette1);
+			--wp--preset--color--theme-palette-2: var(--global-palette2);
+			--wp--preset--color--theme-palette-3: var(--global-palette3);
+			--wp--preset--color--theme-palette-4: var(--global-palette4);
+			--wp--preset--color--theme-palette-5: var(--global-palette5);
+			--wp--preset--color--theme-palette-6: var(--global-palette6);
+			--wp--preset--color--theme-palette-7: var(--global-palette7);
+			--wp--preset--color--theme-palette-8: var(--global-palette8);
+			--wp--preset--color--theme-palette-9: var(--global-palette9);
+		}`);
+
 		if (!kadence_blocks_params.isKadenceT) {
 			const colorClasses = `.single-iframe-content .has-theme-palette-1-color { color: var(--global-palette1); }
 			.single-iframe-content .has-theme-palette-2-color { color: var(--global-palette2); }
