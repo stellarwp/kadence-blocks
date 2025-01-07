@@ -181,6 +181,17 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			}
 		}
 		if ( (isset($attributes['enableTextShadow']) && !empty($attributes['enableTextShadow']) || (isset($attributes['textShadow']) && !empty($attributes['textShadow'][0]['enable'])) ) ) {
+			// Sets a default textShadow attribute, which may be empty if desktop default values aren't changed but mobile/tablet are.
+			if ( empty( $attributes['textShadow'] ) ) {
+				$attributes['textShadow'] = [
+					[
+						'hOffset' => 1,
+						'vOffset' => 1,
+						'blur'    => 1,
+						'color'   => 'rgba(0,0,0,0.2)',
+					],
+				];
+			}
 			if ( isset( $attributes['textShadow'] ) && is_array( $attributes['textShadow'] ) && isset( $attributes['textShadow'][0] ) && is_array( $attributes['textShadow'][0] ) && ((isset( $attributes['enableTextShadow'] ) && $attributes['enableTextShadow']) || (isset( $attributes['textShadow'][0]['enable'] ) && $attributes['textShadow'][0]['enable']) ) ) {
 				$css->add_property( 'text-shadow', ( isset( $attributes['textShadow'][0]['hOffset'] ) ? $attributes['textShadow'][0]['hOffset'] : 1 ) . 'px ' . ( isset( $attributes['textShadow'][0]['vOffset'] ) ? $attributes['textShadow'][0]['vOffset'] : 1 ) . 'px ' . ( isset( $attributes['textShadow'][0]['blur'] ) ? $attributes['textShadow'][0]['blur'] : 1 ) . 'px ' . ( isset( $attributes['textShadow'][0]['color'] ) ? $css->render_color( $attributes['textShadow'][0]['color'] ) : 'rgba(0,0,0,0.2)' ) );
 			}

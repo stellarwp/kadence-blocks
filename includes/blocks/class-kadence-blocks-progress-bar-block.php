@@ -282,7 +282,7 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		$inside_label = $this->get_label( $attributes, 'inside' );
 
 		$static_content = '';
-		if ( apply_filters( 'kadence-progress-bar-static', false, $attributes, $block_instance ) ) {
+		if ( apply_filters( 'kadence-blocks-progress-bar-static', false, $attributes, $block_instance ) ) {
 			$static_content = $this->get_content_svg( $progress_bar_script_args );
 		} else {
 			self::$progress_bars[ $unique_id ] = $progress_bar_script_args;
