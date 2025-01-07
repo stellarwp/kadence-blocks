@@ -175,8 +175,10 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.4.4 =
-Release Date: tba
+Release Date: 7th January
 * Add: Video Popup block, migrated from Kadence Blocks Pro.
+* Update: Resets and Controls for Info Box block.
+* Fix: Text (adv) block responsive shadow colors
 
 = 3.4.3 =
 Release Date: December 23rd 2024
