@@ -150,6 +150,7 @@
 	if ('loading' === document.readyState) {
 		// The DOM has not yet been loaded.
 		document.addEventListener('DOMContentLoaded', kadenceBlocksProVideoLightbox.init);
+		document.addEventListener('kb-query-loaded', kadenceBlocksProVideoLightbox.init);
 	} else {
 		// The DOM has already been loaded.
 		kadenceBlocksProVideoLightbox.init();
