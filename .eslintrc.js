@@ -59,6 +59,9 @@ const eslintConfig = {
 		IntersectionObserver: 'readable',
 		getComputedStyle: 'readable',
 		ScrollMagic: 'readable',
+		kadence_pro_video_pop: 'readable',
+		kadence_blocks_params_ico: 'readable',
+		kadence_blocks_params_fa: 'readable',
 	},
 	rules: {
 		'@wordpress/i18n-text-domain': [

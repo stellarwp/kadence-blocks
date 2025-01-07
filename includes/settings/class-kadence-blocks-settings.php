@@ -1455,6 +1455,17 @@ class Kadence_Blocks_Settings {
 				'desc'  => __( 'Create confidence in your brand or product by showing off beautiful unique testimonials, add as a carousel or a grid.', 'kadence-blocks' ),
 			),
 		);
+
+		//for blocks moved from pro to free
+		if ( ! defined( 'KBP_VERSION' ) || ( defined( 'KBP_VERSION' ) && version_compare( KBP_VERSION, '2.6.0', '>' ) ) ) {
+			$blocks['kadence/videopopup'] = array(
+				'slug'  => 'kadence/videopopup',
+				'name'  => __( 'Video Popup', 'kadence-blocks' ),
+				'desc'  => __( 'Beautifully display a thumbnail with overlay and hover effect that links to a video popup on click. Works with local or external videos!', 'kadence-blocks' ),
+				'image' => KADENCE_BLOCKS_URL . 'includes/settings/img/block-video-pop.jpg',
+			);
+		}
+
 		return apply_filters( 'kadence_blocks_enable_disable_array', $blocks );
 	}
 	/**
