@@ -175,7 +175,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.4.4 =
-Release Date: 7th January
+Release Date: 7th January 2025
 * Add: Video Popup block, migrated from Kadence Blocks Pro.
 * Update: Resets and Controls for Info Box block.
 * Update: Header, Navigation, and Navigation Link Block WPML Translation support.
