@@ -229,6 +229,10 @@
 .wp-block-kadence-image figure {
 	margin: 0;
 }
+.wp-block-kadence-image figure.image-is-svg {
+	min-width: 20px;
+	min-height: 20px;
+}
 .kb-image-has-overlay {
 	position: relative;
 }

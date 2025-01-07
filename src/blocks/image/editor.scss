@@ -182,7 +182,10 @@ figure.wp-block-kadence-image:not(.wp-block) {
 		}
 	}
 }
-
+.wp-block-kadence-image.image-is-svg {
+	min-width: 20px;
+	min-height: 20px;
+}
 // This is necessary for the editor resize handles to accurately work on a non-floated, non-resized, small image.
 .wp-block-kadence-image .components-resizable-box__container {
 	display: inline-block;
