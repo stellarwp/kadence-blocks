@@ -178,6 +178,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 Release Date: 7th January
 * Add: Video Popup block, migrated from Kadence Blocks Pro.
 * Update: Resets and Controls for Info Box block.
+* Update: Header, Navigation, and Navigation Link Block WPML Translation support.
 * Fix: Text (adv) block responsive shadow colors
 
 = 3.4.3 =
