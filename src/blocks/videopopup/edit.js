@@ -426,7 +426,7 @@ function KadenceVideoPopup(props) {
 			setAttributes({ borderWidth: [2, 2, 2, 2] });
 		}
 
-		let tempPopupAnimation =
+		const tempPopupAnimation =
 			undefined !== popup && undefined !== popup[0] && popup[0].animation ? popup[0].animation : 'none';
 		if ('fade-left' == tempPopupAnimation || 'fade-right' == tempPopupAnimation) {
 			savePopup({ animation: 'fade' });
