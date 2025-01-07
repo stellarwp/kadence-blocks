@@ -14,7 +14,7 @@
 		 * Initiate the script to process all
 		 */
 		initAll() {
-			const allowedEffects = ['zoom', 'fade', 'none'];
+			const allowedEffects = ['zoom', 'zoomBack', 'fade', 'slide', 'slideBack', 'flip', 'none'];
 
 			kadenceBlocksProVideoLightbox.cache = document.querySelectorAll('.kadence-video-popup-link');
 			for (let i = 0; i < kadenceBlocksProVideoLightbox.cache.length; i++) {
@@ -24,6 +24,14 @@
 					effect = attrEffect;
 				} else if ('fade-right' == attrEffect || 'fade-left' == attrEffect) {
 					effect = 'fade';
+				} else if ('slide-right' == attrEffect) {
+					effect = 'slideBack';
+				} else if ('slide-left' == attrEffect) {
+					effect = 'slide';
+				} else if ('zoom-out' == attrEffect) {
+					effect = 'zoomBack';
+				} else if ('3d-unfold' == attrEffect) {
+					effect = 'flip';
 				}
 
 				const isLocalMedia =
@@ -38,6 +46,7 @@
 						: false;
 
 				if (isLocalMedia) {
+					console.log(1, effect);
 					kadenceBlocksProVideoLightbox.wrapper[i] = document.getElementById(popupId);
 					kadenceBlocksProVideoLightbox.cache[i].addEventListener('click', function (event) {
 						event.preventDefault();
@@ -65,10 +74,15 @@
 									hideControls: true,
 								},
 							},
+							cssEfects: {
+								flip: { in: 'flipIn', out: 'flipOut' },
+								zoomBack: { in: 'zoomBackIn', out: 'zoomBackOut' },
+							},
 						});
 						kadenceBlocksProVideoLightbox.trigger[i].open();
 					});
 				} else {
+					console.log(2, effect);
 					const lightbox = GLightbox({
 						selector: '.kadence-video-popup-link[data-popup-class="' + popupClassWithId + '"]',
 						touchNavigation: true,
@@ -90,6 +104,10 @@
 									dnt: youtubeCookies,
 								},
 							},
+						},
+						cssEfects: {
+							flip: { in: 'flipIn', out: 'flipOut' },
+							zoomBack: { in: 'zoomBackIn', out: 'zoomBackOut' },
 						},
 					});
 					lightbox.on('slide_before_load', (data) => {

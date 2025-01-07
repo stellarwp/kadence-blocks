@@ -410,7 +410,7 @@ function KadenceVideoPopup(props) {
 			tempBorderStyle[0].bottom[2] = borderWidth?.[2] || '';
 			tempBorderStyle[0].left[2] = borderWidth?.[3] || '';
 			updateBorderStyle = true;
-		} else if (2 !== borderWidth) {
+		} else if (2 !== borderWidth && !borderWidth?.[0]) {
 			tempBorderStyle[0].top[2] = borderWidth;
 			tempBorderStyle[0].right[2] = borderWidth;
 			tempBorderStyle[0].bottom[2] = borderWidth;
@@ -424,6 +424,14 @@ function KadenceVideoPopup(props) {
 			setAttributes({ borderColor: '#ffffff' });
 			setAttributes({ borderOpacity: 0.8 });
 			setAttributes({ borderWidth: [2, 2, 2, 2] });
+		}
+
+		let tempPopupAnimation =
+			undefined !== popup && undefined !== popup[0] && popup[0].animation ? popup[0].animation : 'none';
+		if ('fade-left' == tempPopupAnimation || 'fade-right' == tempPopupAnimation) {
+			savePopup({ animation: 'fade' });
+		} else if ('3d-unfold' == tempPopupAnimation) {
+			savePopup({ animation: 'flip' });
 		}
 	};
 	const savePopup = (value) => {
