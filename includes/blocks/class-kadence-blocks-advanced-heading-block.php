@@ -181,6 +181,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			}
 		}
 		if ( (isset($attributes['enableTextShadow']) && !empty($attributes['enableTextShadow']) || (isset($attributes['textShadow']) && !empty($attributes['textShadow'][0]['enable'])) ) ) {
+			// Sets a default textShadow attribute, which may be empty if desktop default values aren't changed but mobile/tablet are.
 			if ( empty( $attributes['textShadow'] ) ) {
 				$attributes['textShadow'] = [
 					[
