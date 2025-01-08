@@ -735,41 +735,21 @@ function KadenceInfoBox(props) {
 	);
 	const previewInset = getPreviewSize(
 		previewDevice,
-		undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].inset ? shadow[0].inset : false,
-
-		undefined !== tabletShadow && undefined !== tabletShadow[0] && undefined !== tabletShadow[0].inset
-			? tabletShadow[0].inset
-			: shadow[0].inset,
-
-		undefined !== mobileShadow && undefined !== mobileShadow[0] && undefined !== mobileShadow[0].inset
-			? mobileShadow[0].inset
-			: undefined !== tabletShadow && undefined !== tabletShadow[0] && undefined !== tabletShadow[0].inset
-			? tabletShadow[0].inset
-			: shadow[0].inset
+		undefined !== shadow?.[0]?.inset ? shadow[0].inset : false,
+		undefined !== tabletShadow?.[0]?.inset ? tabletShadow[0].inset : '',
+		undefined !== mobileShadow?.[0]?.inset ? mobileShadow[0].inset : ''
 	);
 	const previewShadow = getPreviewSize(
 		previewDevice,
-		undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].color ? shadow[0].color : '#000000',
-		undefined !== tabletShadow && undefined !== tabletShadow[0] && undefined !== tabletShadow[0].color
-			? tabletShadow[0].color
-			: shadow[0].color,
-		undefined !== mobileShadow && undefined !== mobileShadow[0] && undefined !== mobileShadow[0].color
-			? mobileShadow[0].color
-			: tabletShadow[0].color
-			? tabletShadow[0].color
-			: shadow[0].color
+		undefined !== shadow?.[0]?.color ? shadow[0].color : '#000000',
+		undefined !== tabletShadow?.[0]?.color ? tabletShadow[0].color : '',
+		undefined !== mobileShadow?.[0]?.color ? mobileShadow[0].color : ''
 	);
 	const previewOpacity = getPreviewSize(
 		previewDevice,
-		undefined !== shadow && undefined !== shadow[0] && undefined !== shadow[0].opacity ? shadow[0].opacity : 0,
-		undefined !== tabletShadow && undefined !== tabletShadow[0] && undefined !== tabletShadow[0].opacity
-			? tabletShadow[0].opacity
-			: shadow[0].opacity,
-		undefined !== mobileShadow && undefined !== mobileShadow[0] && undefined !== mobileShadow[0].opacity
-			? mobileShadow[0].opacity
-			: tabletShadow[0].opacity
-			? tabletShadow[0].opacity
-			: shadow[0].opacity
+		undefined !== shadow?.[0]?.opacity ? shadow[0].opacity : 0,
+		undefined !== tabletShadow?.[0]?.opacity ? tabletShadow[0].opacity : '',
+		undefined !== mobileShadow?.[0]?.opacity ? mobileShadow[0].opacity : ''
 	);
 
 	// Hover Box Shadow
@@ -823,79 +803,27 @@ function KadenceInfoBox(props) {
 	);
 	const previewSpreadHover = getPreviewSize(
 		previewDevice,
-		undefined !== shadowHover && undefined !== shadowHover[0] && undefined !== shadowHover[0].spread
-			? shadowHover[0].spread
-			: 0,
-
-		undefined !== tabletShadowHover &&
-			undefined !== tabletShadowHover[0] &&
-			undefined !== tabletShadowHover[0].spread
-			? tabletShadowHover[0].spread
-			: '',
-
-		undefined !== mobileShadowHover &&
-			undefined !== mobileShadowHover[0] &&
-			undefined !== mobileShadowHover[0].spread
-			? mobileShadowHover[0].spread
-			: ''
+		undefined !== shadowHover?.[0]?.spread ? shadowHover[0].spread : 0,
+		undefined !== tabletShadowHover?.[0]?.spread ? tabletShadowHover[0].spread : '',
+		undefined !== mobileShadowHover?.[0]?.spread ? mobileShadowHover[0].spread : ''
 	);
 	const previewInsetHover = getPreviewSize(
 		previewDevice,
-		undefined !== shadowHover && undefined !== shadowHover[0] && undefined !== shadowHover[0].inset
-			? shadowHover[0].inset
-			: false,
-
-		undefined !== tabletShadowHover &&
-			undefined !== tabletShadowHover[0] &&
-			undefined !== tabletShadowHover[0].inset
-			? tabletShadowHover[0].inset
-			: shadowHover[0].inset,
-
-		undefined !== mobileShadowHover &&
-			undefined !== mobileShadowHover[0] &&
-			undefined !== mobileShadowHover[0].inset
-			? mobileShadowHover[0].inset
-			: undefined !== tabletShadowHover &&
-			  undefined !== tabletShadowHover[0] &&
-			  undefined !== tabletShadowHover[0].inset
-			? tabletShadowHover[0].inset
-			: shadowHover[0].inset
+		undefined !== shadowHover?.[0]?.inset ? shadowHover[0].inset : false,
+		undefined !== tabletShadowHover?.[0]?.inset ? tabletShadowHover[0].inset : '',
+		undefined !== mobileShadowHover?.[0]?.inset ? mobileShadowHover[0].inset : ''
 	);
 	const previewShadowHover = getPreviewSize(
 		previewDevice,
-		undefined !== shadowHover && undefined !== shadowHover[0] && undefined !== shadowHover[0].color
-			? shadowHover[0].color
-			: '#000000',
-		undefined !== tabletShadowHover &&
-			undefined !== tabletShadowHover[0] &&
-			undefined !== tabletShadowHover[0].color
-			? tabletShadowHover[0].color
-			: shadowHover[0].color,
-		undefined !== mobileShadowHover &&
-			undefined !== mobileShadowHover[0] &&
-			undefined !== mobileShadowHover[0].color
-			? mobileShadowHover[0].color
-			: tabletShadowHover[0].color
-			? tabletShadowHover[0].color
-			: shadowHover[0].color
+		undefined !== shadowHover?.[0]?.color ? shadowHover[0].color : '#000000',
+		undefined !== tabletShadowHover?.[0]?.color ? tabletShadowHover[0].color : '',
+		undefined !== mobileShadowHover?.[0]?.color ? mobileShadowHover[0].color : ''
 	);
 	const previewOpacityHover = getPreviewSize(
 		previewDevice,
-		undefined !== shadowHover && undefined !== shadowHover[0] && undefined !== shadowHover[0].opacity
-			? shadowHover[0].opacity
-			: 0.2,
-		undefined !== tabletShadowHover &&
-			undefined !== tabletShadowHover[0] &&
-			undefined !== tabletShadowHover[0].opacity
-			? tabletShadowHover[0].opacity
-			: shadowHover[0].opacity,
-		undefined !== mobileShadowHover &&
-			undefined !== mobileShadowHover[0] &&
-			undefined !== mobileShadowHover[0].opacity
-			? mobileShadowHover[0].opacity
-			: tabletShadowHover[0].opacity
-			? tabletShadowHover[0].opacity
-			: shadowHover[0].opacity
+		undefined !== shadowHover?.[0]?.opacity ? shadowHover[0].opacity : 0.2,
+		undefined !== tabletShadowHover?.[0]?.opacity ? tabletShadowHover[0].opacity : '',
+		undefined !== mobileShadowHover?.[0]?.opacity ? mobileShadowHover[0].opacity : ''
 	);
 
 	const marginMin = containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? -25 : -999;
