@@ -1011,18 +1011,6 @@ function KadenceAdvancedHeading(props) {
 							? `${previewHOffset}px ${previewVOffset}px ${previewBlur}px ${KadenceColorOutput(
 									previewColorTextShadow
 							  )}`
-							: textShadow[0].enable && previewDevice === 'Tablet'
-							? `${textShadow[0].hOffset}px ${textShadow[0].vOffset}px ${
-									textShadow[0].blur
-							  }px ${KadenceColorOutput(textShadow[0].color)}`
-							: textShadowTablet[0].enable && previewDevice === 'Mobile'
-							? `${textShadowTablet[0].hOffset}px ${textShadowTablet[0].vOffset}px ${
-									textShadowTablet[0].blur
-							  }px ${KadenceColorOutput(textShadowTablet[0].color)}`
-							: textShadow[0].enable && previewDevice === 'Mobile'
-							? `${textShadow[0].hOffset}px ${textShadow[0].vOffset}px ${
-									textShadow[0].blur
-							  }px ${KadenceColorOutput(textShadow[0].color)}`
 							: undefined,
 					}}
 					placeholder={__('Write something…', 'kadence-blocks')}
