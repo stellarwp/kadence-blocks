@@ -549,57 +549,27 @@ function KadenceAdvancedHeading(props) {
 	);
 	const previewColorTextShadow = getPreviewSize(
 		previewDevice,
-		undefined !== textShadow && undefined !== textShadow[0] && undefined !== textShadow[0].color
-			? textShadow[0].color
-			: 'rgba(0, 0, 0, 0.2)',
-		undefined !== textShadowTablet && undefined !== textShadowTablet[0] && undefined !== textShadowTablet[0].color
-			? textShadowTablet[0].color
-			: textShadow[0].color,
-		undefined !== textShadowMobile && undefined !== textShadowMobile[0] && undefined !== textShadowMobile[0].color
-			? textShadowMobile[0].color
-			: textShadowTablet[0].color
-			? textShadowTablet[0].color
-			: textShadow[0].color
+		undefined !== textShadow?.[0]?.color ? textShadow[0].color : 'rgba(0, 0, 0, 0.2)',
+		undefined !== textShadowTablet?.[0]?.color ? textShadowTablet[0].color : '',
+		undefined !== textShadowMobile?.[0]?.color ? textShadowMobile[0].color : ''
 	);
 	const previewHOffset = getPreviewSize(
 		previewDevice,
-		undefined !== textShadow && undefined !== textShadow[0] && undefined !== textShadow[0].hOffset
-			? textShadow[0].hOffset
-			: 1,
-		undefined !== textShadowTablet && undefined !== textShadowTablet[0] && undefined !== textShadowTablet[0].hOffset
-			? textShadowTablet[0].hOffset
-			: '',
-		undefined !== textShadowMobile && undefined !== textShadowMobile[0] && undefined !== textShadowMobile[0].hOffset
-			? textShadowMobile[0].hOffset
-			: ''
+		undefined !== textShadow?.[0]?.hOffset ? textShadow[0].hOffset : 1,
+		undefined !== textShadowTablet?.[0]?.hOffset ? textShadowTablet[0].hOffset : '',
+		undefined !== textShadowMobile?.[0]?.hOffset ? textShadowMobile[0].hOffset : ''
 	);
 	const previewVOffset = getPreviewSize(
 		previewDevice,
-		undefined !== textShadow && undefined !== textShadow[0] && undefined !== textShadow[0].vOffset
-			? textShadow[0].vOffset
-			: 1,
-
-		undefined !== textShadowTablet && undefined !== textShadowTablet[0] && undefined !== textShadowTablet[0].vOffset
-			? textShadowTablet[0].vOffset
-			: '',
-
-		undefined !== textShadowMobile && undefined !== textShadowMobile[0] && undefined !== textShadowMobile[0].vOffset
-			? textShadowMobile[0].vOffset
-			: ''
+		undefined !== textShadow?.[0]?.vOffset ? textShadow[0].vOffset : 1,
+		undefined !== textShadowTablet?.[0]?.vOffset ? textShadowTablet[0].vOffset : '',
+		undefined !== textShadowMobile?.[0]?.vOffset ? textShadowMobile[0].vOffset : ''
 	);
 	const previewBlur = getPreviewSize(
 		previewDevice,
-		undefined !== textShadow && undefined !== textShadow[0] && undefined !== textShadow[0].blur
-			? textShadow[0].blur
-			: 1,
-
-		undefined !== textShadowTablet && undefined !== textShadowTablet[0] && undefined !== textShadowTablet[0].blur
-			? textShadowTablet[0].blur
-			: '',
-
-		undefined !== textShadowMobile && undefined !== textShadowMobile[0] && undefined !== textShadowMobile[0].blur
-			? textShadowMobile[0].blur
-			: ''
+		undefined !== textShadow?.[0]?.blur ? textShadow[0].blur : 1,
+		undefined !== textShadowTablet?.[0]?.blur ? textShadowTablet[0].blur : '',
+		undefined !== textShadowMobile?.[0]?.blur ? textShadowMobile[0].blur : ''
 	);
 	let previewJustifyAlign = previewAlign;
 	switch (previewAlign) {
