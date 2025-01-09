@@ -2962,9 +2962,16 @@ function KadenceInfoBox(props) {
 												onChange={(value) => saveMediaStyle({ borderWidth: value })}
 												onControl={(value) => setMediaBorderControl(value)}
 												min={0}
-												max={mediaStyle[0].borderWidthUnit === 'px' || typeof mediaStyle[0].borderWidthUnit  === 'undefined' ? 40 : 12}
+												max={
+													mediaStyle[0].borderWidthUnit === 'px' ||
+													typeof mediaStyle[0].borderWidthUnit === 'undefined'
+														? 40
+														: 12
+												}
 												step={1}
-												reset={() => saveMediaStyle({ borderWidth: [0, 0, 0, 0], borderWidthUnit: 'px' })}
+												reset={() =>
+													saveMediaStyle({ borderWidth: [0, 0, 0, 0], borderWidthUnit: 'px' })
+												}
 												showUnit={true}
 												unit={mediaStyle[0].borderWidthUnit ?? 'px'}
 												onUnit={(value) => saveMediaStyle({ borderWidthUnit: value })}
@@ -2976,8 +2983,15 @@ function KadenceInfoBox(props) {
 												onChange={(value) => saveMediaStyle({ borderRadius: value })}
 												step={1}
 												min={0}
-												max={mediaStyle[0].borderRadiusUnit === "px" || typeof mediaStyle[0].borderRadiusUnit === 'undefined' ? 200 : 12}
-												reset={() => saveMediaStyle({ borderRadius: 0, borderRadiusUnit: 'px' })}
+												max={
+													mediaStyle[0].borderRadiusUnit === 'px' ||
+													typeof mediaStyle[0].borderRadiusUnit === 'undefined'
+														? 200
+														: 12
+												}
+												reset={() =>
+													saveMediaStyle({ borderRadius: 0, borderRadiusUnit: 'px' })
+												}
 												showUnit={true}
 												unit={mediaStyle[0].borderRadiusUnit ?? 'px'}
 												onUnit={(value) => saveMediaStyle({ borderRadiusUnit: value })}
@@ -4125,11 +4139,14 @@ function KadenceInfoBox(props) {
 								borderRadius: mediaStyle[0].borderRadius + (mediaStyle[0].borderRadiusUnit ?? 'px'),
 								borderWidth: mediaStyle[0].borderWidth
 									? mediaStyle[0].borderWidth[0] +
-									  (mediaStyle[0].borderWidthUnit ?? 'px') + ' ' +
+									  (mediaStyle[0].borderWidthUnit ?? 'px') +
+									  ' ' +
 									  mediaStyle[0].borderWidth[1] +
-									  (mediaStyle[0].borderWidthUnit ?? 'px') + ' ' +
+									  (mediaStyle[0].borderWidthUnit ?? 'px') +
+									  ' ' +
 									  mediaStyle[0].borderWidth[2] +
-									  (mediaStyle[0].borderWidthUnit ?? 'px') + ' ' +
+									  (mediaStyle[0].borderWidthUnit ?? 'px') +
+									  ' ' +
 									  mediaStyle[0].borderWidth[3] +
 									  (mediaStyle[0].borderWidthUnit ?? 'px')
 									: '',
