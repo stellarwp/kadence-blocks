@@ -608,7 +608,8 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 							if (
 								('all' === getActiveCat || Object.keys(itemCategories).includes(getActiveCat)) &&
 								(!search ||
-									(keywords && keywords.some((x) => x.toLowerCase().includes(search.toLowerCase()))))
+									(keywords && keywords.some((x) => x.toLowerCase().includes(search.toLowerCase()))) ||
+									(name && name.toLowerCase().includes(search.toLowerCase())))
 							) {
 								return (
 									<div className="kb-css-masonry-inner" key={index}>
