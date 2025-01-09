@@ -1366,7 +1366,15 @@ function KadenceAdvancedHeading(props) {
 					excludedAttrs={nonTransAttrs}
 					defaultAttributes={metadata.attributes}
 					blockSlug={metadata.name}
-					onPaste={(attributesToPaste) => setAttributes(attributesToPaste)}
+					onPaste={(attributesToPaste) => {
+						if (attributesToPaste.hasOwnProperty('__internalWidgetId')) {
+							let widgetEditorAttributesToPaste = attributesToPaste;
+							delete widgetEditorAttributesToPaste.__internalWidgetId;
+							setAttributes(widgetEditorAttributesToPaste);
+						} else {
+							setAttributes(attributesToPaste);
+						}
+					}}
 				/>
 				{Boolean(kadenceDynamic?.content?.shouldReplace) && (
 					<DynamicTextControl dynamicAttribute={'content'} {...props} />
