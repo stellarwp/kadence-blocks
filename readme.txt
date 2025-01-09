@@ -176,9 +176,9 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 = 3.4.5 =
 Release Date: 9th January 2025
-* Add: Product categories as option in navigation builder.
+* Add: Product categories as option in Navigation Builder.
 * Fix: Video Popup when filtering in query loops.
-* Fix: Importing advanced heading and infobox from template libraries.
+* Fix: Importing Advanced Heading and Info Box from template libraries.
 
 = 3.4.4 =
 Release Date: 7th January 2025
