@@ -1368,7 +1368,7 @@ function KadenceAdvancedHeading(props) {
 					blockSlug={metadata.name}
 					onPaste={(attributesToPaste) => {
 						if (attributesToPaste.hasOwnProperty('__internalWidgetId')) {
-							let widgetEditorAttributesToPaste = attributesToPaste;
+							const widgetEditorAttributesToPaste = attributesToPaste;
 							delete widgetEditorAttributesToPaste.__internalWidgetId;
 							setAttributes(widgetEditorAttributesToPaste);
 						} else {
