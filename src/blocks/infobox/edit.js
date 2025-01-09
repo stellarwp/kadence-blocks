@@ -2949,7 +2949,7 @@ function KadenceInfoBox(props) {
 													value={mediaIcon[0].width}
 													defaultValue={2}
 													onChange={(value) => saveMediaIcon({ width: value })}
-													step={0.5}
+													step={0.1}
 													min={0.5}
 													max={4}
 													reset={true}
@@ -2962,19 +2962,25 @@ function KadenceInfoBox(props) {
 												onChange={(value) => saveMediaStyle({ borderWidth: value })}
 												onControl={(value) => setMediaBorderControl(value)}
 												min={0}
-												max={40}
+												max={mediaStyle[0].borderWidthUnit === 'px' || typeof mediaStyle[0].borderWidthUnit  === 'undefined' ? 40 : 12}
 												step={1}
-												reset={() => saveMediaStyle({ borderWidth: [0, 0, 0, 0] })}
+												reset={() => saveMediaStyle({ borderWidth: [0, 0, 0, 0], borderWidthUnit: 'px' })}
+												showUnit={true}
+												unit={mediaStyle[0].borderWidthUnit ?? 'px'}
+												onUnit={(value) => saveMediaStyle({ borderWidthUnit: value })}
 											/>
 											<RangeControl
-												label={__('Icon Border Radius (px)', 'kadence-blocks')}
+												label={__('Icon Border Radius', 'kadence-blocks')}
 												value={mediaStyle[0].borderRadius}
 												defaultValue={0}
 												onChange={(value) => saveMediaStyle({ borderRadius: value })}
 												step={1}
 												min={0}
-												max={200}
-												reset={true}
+												max={mediaStyle[0].borderRadiusUnit === "px" || typeof mediaStyle[0].borderRadiusUnit === 'undefined' ? 200 : 12}
+												reset={() => saveMediaStyle({ borderRadius: 0, borderRadiusUnit: 'px' })}
+												showUnit={true}
+												unit={mediaStyle[0].borderRadiusUnit ?? 'px'}
+												onUnit={(value) => saveMediaStyle({ borderRadiusUnit: value })}
 											/>
 											<SelectControl
 												label={__('Icon Hover Animation', 'kadence-blocks')}
@@ -4116,16 +4122,16 @@ function KadenceInfoBox(props) {
 							style={{
 								borderColor: KadenceColorOutput(mediaStyle[0].border),
 								backgroundColor: KadenceColorOutput(mediaStyle[0].background),
-								borderRadius: mediaStyle[0].borderRadius + 'px',
+								borderRadius: mediaStyle[0].borderRadius + (mediaStyle[0].borderRadiusUnit ?? 'px'),
 								borderWidth: mediaStyle[0].borderWidth
 									? mediaStyle[0].borderWidth[0] +
-									  'px ' +
+									  (mediaStyle[0].borderWidthUnit ?? 'px') + ' ' +
 									  mediaStyle[0].borderWidth[1] +
-									  'px ' +
+									  (mediaStyle[0].borderWidthUnit ?? 'px') + ' ' +
 									  mediaStyle[0].borderWidth[2] +
-									  'px ' +
+									  (mediaStyle[0].borderWidthUnit ?? 'px') + ' ' +
 									  mediaStyle[0].borderWidth[3] +
-									  'px'
+									  (mediaStyle[0].borderWidthUnit ?? 'px')
 									: '',
 								padding: mediaStyle[0].padding
 									? mediaStyle[0].padding[0] +
