@@ -747,6 +747,17 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
+		if( ( !isset( $attributes['honeyPot']) || isset( $attributes['honeyPot'] ) && $attributes['honeyPot'] ) ) {
+			$css->set_selector( '.kb-form input.kadence-blocks-field.verify' );
+			$css->add_property( 'opacity', '0.0' );
+			$css->add_property( 'position', 'absolute' );
+			$css->add_property( 'top', '0.0' );
+			$css->add_property( 'left', '0.0' );
+			$css->add_property( 'width', '0.0' );
+			$css->add_property( 'height', '0.0' );
+			$css->add_property( 'z-index', '-1' );
+		}
+
 		return $css->css_output();
 	}
 	/**
