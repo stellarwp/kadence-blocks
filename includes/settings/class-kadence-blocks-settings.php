@@ -1198,8 +1198,10 @@ class Kadence_Blocks_Settings {
 			<div class="kadence_blocks_dash_head_container">
 				<h2 class="notices" style="display:none;"></h2>
 				<div class="kadence_blocks_dash_wrap">
+					<?php do_action( 'kadence_blocks_admin_before_home' ); ?>
 					<div class="kadence_blocks_home_main">
 					</div>
+					<?php do_action( 'kadence_blocks_admin_after_home' ); ?>
 				</div>
 			</div>
 		</div>

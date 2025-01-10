@@ -32,6 +32,10 @@
 			"type": "string",
 			"default": ""
 		},
+		"target": {
+			"type": "string",
+			"default": ""
+		},
 		"id": {
 			"type": "number"
 		},

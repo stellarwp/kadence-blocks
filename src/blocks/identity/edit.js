@@ -18,7 +18,8 @@ import {
 } from '@kadence/components';
 import { setBlockDefaults, getUniqueId, getPostOrFseId } from '@kadence/helpers';
 import { useBlockProps, BlockControls, useInnerBlocksProps, BlockAlignmentControl } from '@wordpress/block-editor';
-import { createBlock } from '@wordpress/blocks';
+import { createBlock, unregisterBlockType } from '@wordpress/blocks';
+
 import classnames from 'classnames';
 import { ToggleControl, TextControl, SelectControl } from '@wordpress/components';
 import './editor.scss';
@@ -79,15 +80,6 @@ export function Edit(props) {
 		return select(coreDataStore).getEntityRecord('root', 'site');
 	}, []);
 
-	const newTaglineBlock = createBlock('core/site-tagline', {
-		level: 0,
-	});
-
-	const newTitleBlock = createBlock('core/site-title', {
-		level: 0,
-		isLink: false,
-	});
-
 	const siteUrl = siteData?.url ? siteData.url : '';
 
 	useEffect(() => {
@@ -102,28 +94,6 @@ export function Edit(props) {
 			addUniqueID(uniqueID, clientId);
 		}
 	}, []);
-
-	useEffect(() => {
-		if (['logo-right-stacked', 'logo-left-stacked'].includes(layout) && !showSiteTagline) {
-			if (layout === 'logo-right-stacked') {
-				setAttributes({ layout: 'logo-right' });
-			} else {
-				setAttributes({ layout: 'logo-left' });
-			}
-		}
-
-		if (layout !== 'logo-only' && !showSiteTitle && !showSiteTagline) {
-			setAttributes({ layout: 'logo-only' });
-		} else if (layout === 'logo-only' && (showSiteTitle || showSiteTagline)) {
-			setAttributes({ layout: showSiteTagline ? 'logo-left-stacked' : 'logo-left' });
-		} else if (showSiteTagline && layout === 'logo-right') {
-			setAttributes({ layout: 'logo-right-stacked' });
-		} else if (showSiteTagline && layout === 'logo-left') {
-			setAttributes({ layout: 'logo-left-stacked' });
-		}
-
-		updateInnerBlocks();
-	}, [showSiteTitle, showSiteTagline, layout]);
 
 	const iconSize = 125;
 	const allItemsLayoutOptions = [
@@ -247,7 +217,40 @@ export function Edit(props) {
 			sizeSlugTransparent: imgData.slug,
 		});
 	}
+	const layoutOptions = useMemo(() => {
+		if (showSiteTitle && showSiteTagline) {
+			return allItemsLayoutOptions;
+		} else if (showSiteTitle) {
+			return logoAndTitleLayoutOptions;
+		}
+		return [{ value: 'logo-only', label: __('Logo only', 'kadence-blocks'), icon: Icons.logo }];
+	}, [showSiteTitle, showSiteTagline]);
 
+	const blockProps = useBlockProps({
+		className: classnames({
+			className: true,
+			[`align${align}`]: align,
+			'kb-identity': true,
+			[`kb-identity${uniqueID}`]: true,
+		}),
+	});
+
+	if (typeof pagenow !== 'undefined' && ('widgets' === pagenow || 'customize' === pagenow)) {
+		return (
+			<div {...blockProps}>
+				<p>{__('The site identity block is not supported in the widget area.')}</p>
+			</div>
+		);
+	}
+
+	const newTaglineBlock = createBlock('core/site-tagline', {
+		level: 0,
+	});
+
+	const newTitleBlock = createBlock('core/site-title', {
+		level: 0,
+		isLink: false,
+	});
 	const updateInnerBlocks = () => {
 		const addBlock = (name, defaultBlock) => findBlockByName(innerBlocks, name) || defaultBlock;
 
@@ -293,23 +296,27 @@ export function Edit(props) {
 		replaceInnerBlocks(clientId, newInnerBlocks, false);
 	};
 
-	const layoutOptions = useMemo(() => {
-		if (showSiteTitle && showSiteTagline) {
-			return allItemsLayoutOptions;
-		} else if (showSiteTitle) {
-			return logoAndTitleLayoutOptions;
+	useEffect(() => {
+		if (['logo-right-stacked', 'logo-left-stacked'].includes(layout) && !showSiteTagline) {
+			if (layout === 'logo-right-stacked') {
+				setAttributes({ layout: 'logo-right' });
+			} else {
+				setAttributes({ layout: 'logo-left' });
+			}
 		}
-		return [{ value: 'logo-only', label: __('Logo only', 'kadence-blocks'), icon: Icons.logo }];
-	}, [showSiteTitle, showSiteTagline]);
 
-	const blockProps = useBlockProps({
-		className: classnames({
-			className: true,
-			[`align${align}`]: align,
-			'kb-identity': true,
-			[`kb-identity${uniqueID}`]: true,
-		}),
-	});
+		if (layout !== 'logo-only' && !showSiteTitle && !showSiteTagline) {
+			setAttributes({ layout: 'logo-only' });
+		} else if (layout === 'logo-only' && (showSiteTitle || showSiteTagline)) {
+			setAttributes({ layout: showSiteTagline ? 'logo-left-stacked' : 'logo-left' });
+		} else if (showSiteTagline && layout === 'logo-right') {
+			setAttributes({ layout: 'logo-right-stacked' });
+		} else if (showSiteTagline && layout === 'logo-left') {
+			setAttributes({ layout: 'logo-left-stacked' });
+		}
+
+		updateInnerBlocks();
+	}, [showSiteTitle, showSiteTagline, layout]);
 
 	const innerBlocksProps = useInnerBlocksProps(
 		{},
