@@ -673,6 +673,7 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 			}
 			$highlight_label = '<span class="link-highlight-label"><span class="link-highlight-label-text">' . $attributes['highlightLabel'] . '</span>' . $hl_icon . '</span>';
 		}
+		
 		$title_html = ! empty( $media ) || ! empty( $attributes['description'] ) ? '<span class="kb-nav-item-title-wrap">' : '';
 		if ( $has_highlight_label && $highlight_with_title ) {
 			$title .= $highlight_label;
@@ -680,22 +681,36 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		$title_html .= ! empty( $attributes['description'] ) || ! empty( $media ) || ( $has_highlight_label && $highlight_with_title ) ? '<span class="kb-nav-label-content">' . $title . '</span>' : $title;
 		$title_html .= $media;
 		$title_html .= ! empty( $attributes['description'] ) ? '<span class="kb-nav-label-description">' . $attributes['description'] . '</span>' : '';
-
 		// $title_html .= $has_children ? '<span class="kb-nav-dropdown-toggle">' . $down_arrow_icon . '</span>' : '';
 		$title_html .= ! empty( $media ) || ! empty( $attributes['description'] ) ? '</span>' : '';
 		if ( ! $highlight_with_title ) {
 			$title_html .= $highlight_label;
 		}
+
 		$link_class = implode( ' ', $link_classes );
-		$link_url   = ( ! empty( $attributes['disableLink'] ) && true === $attributes['disableLink'] ) || ( $has_children && isset( $attributes['dropdownClick'] ) && true === $attributes['dropdownClick'] ) ? '' : ' href="' . esc_url( $url ) . '"';
+
+		$link_url = ( ! empty( $attributes['disableLink'] ) && true === $attributes['disableLink'] ) || ( $has_children && isset( $attributes['dropdownClick'] ) && true === $attributes['dropdownClick'] ) ? '' : ' href="' . esc_url( $url ) . '"';
 		if ( ! empty( $attributes['name'] ) ) {
 			$link_url .= ' aria-label="' . esc_attr( $attributes['name'] ) . '"';
 		}
+
+		$link_target = '';
+		if ( $attributes['target'] ) {
+			$link_target .= 'target="' . esc_attr( $attributes['target'] ) . '"';
+		}
+
+		$link_rel = '';
+		if ( $attributes['rel'] ) {
+			$link_rel .= 'rel="' . esc_attr( $attributes['rel'] ) . '"';
+		}
+
 		return sprintf(
-			'<li %1$s><div class="kb-link-wrap"><a class="%2$s"%3$s>%4$s</a>%5$s</div>%6$s</li>',
+			'<li %1$s><div class="kb-link-wrap"><a class="%2$s"%3$s %4$s %5$s>%6$s</a>%7$s</div>%8$s</li>',
 			$wrapper_attributes,
 			$link_class,
 			$link_url,
+			$link_target,
+			$link_rel,
 			$title_html,
 			$sub_menu_btn,
 			$sub_menu_content,
