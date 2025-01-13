@@ -1000,6 +1000,13 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			);
 			// Early exit if there was an error.
 			if ( is_wp_error( $response ) || $this->is_response_code_error( $response ) ) {
+				$contents = wp_remote_retrieve_body( $response );
+				if ( ! empty( $contents ) ) {
+					$contents = json_decode( $contents, true );
+				}
+				if ( ! empty( $contents['code'] ) && $contents['code'] === 'invalid_access' ) {
+					return rest_ensure_response( new WP_Error( 'invalid_access', __( 'Invalid Request, Incorrect Access Key', 'kadence-blocks' ), [ 'status' => 401 ] ) );
+				}
 				return rest_ensure_response( 'error' );
 			}
 			// Get the CSS from our response.

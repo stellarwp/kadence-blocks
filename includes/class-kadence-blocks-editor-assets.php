@@ -335,6 +335,7 @@ class Editor_Assets {
 				'isAIDisabled'   => kadence_blocks_is_ai_disabled(),
 				'homeLink'       => admin_url( 'admin.php?page=kadence-blocks-home' ),
 				'pro'            => ( class_exists( 'Kadence_Blocks_Pro' ) ? 'true' : 'false' ),
+				'creativeKit'    => ( class_exists( 'KadenceWP\CreativeKit' ) ? 'true' : 'false' ),
 				'colors'         => get_option( 'kadence_blocks_colors' ),
 				'global'         => get_option( 'kadence_blocks_global' ),
 				'globalSettings' => get_option( 'kadence_blocks_settings' ),

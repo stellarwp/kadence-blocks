@@ -39,7 +39,6 @@ export const AIText = {
 		const isAIDisabled = window?.kadence_blocks_params?.isAIDisabled ? true : false;
 		const data_key = window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '';
 		const activateLink = window?.kadence_blocks_params?.homeLink ? kadence_blocks_params.homeLink : '';
-		const hasPro = kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false;
 		const selectedBlock = useSelect((select) => {
 			return select('core/block-editor').getSelectedBlock();
 		}, []);

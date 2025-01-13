@@ -58,7 +58,6 @@ function ProOnlyHeader({ launchWizard }) {
 	const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
 	const data_key = window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '';
 	const activateLink = window?.kadence_blocks_params?.homeLink ? kadence_blocks_params.homeLink : '';
-	const hasPro = kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false;
 	return (
 		<div className="kb-patterns-banner-generate-notice">
 			<Icon className="kadence-generate-icons" icon={aiIcon} />
@@ -78,27 +77,15 @@ function ProOnlyHeader({ launchWizard }) {
 			)}
 			{isAuthorized && !data_key && (
 				<>
-					{hasPro && (
-						<Button
-							className="kadence-generate-copy-button"
-							iconPosition="right"
-							icon={aiIcon}
-							text={__('Activate Kadence Blocks Pro Required', 'kadence-blocks')}
-							disabled={activateLink ? false : true}
-							href={activateLink ? activateLink : ''}
-						/>
-					)}
-					{!hasPro && (
-						<Button
-							className="kadence-generate-copy-button"
-							iconPosition="right"
-							icon={aiIcon}
-							text={__('Activate Kadence AI', 'kadence-blocks')}
-							target={activateLink ? '_blank' : ''}
-							disabled={activateLink ? false : true}
-							href={activateLink ? activateLink : ''}
-						/>
-					)}
+					<Button
+						className="kadence-generate-copy-button"
+						iconPosition="right"
+						icon={aiIcon}
+						text={__('Activate Kadence AI', 'kadence-blocks')}
+						target={activateLink ? '_blank' : ''}
+						disabled={activateLink ? false : true}
+						href={activateLink ? activateLink : ''}
+					/>
 				</>
 			)}
 			{isAuthorized && data_key && (
@@ -237,7 +224,6 @@ function PageList({
 }) {
 	const debouncedSpeak = useDebounce(speak, 500);
 	const [rootScroll, setRootScroll] = useState();
-	const hasPro = window?.kadence_blocks_params?.pro && kadence_blocks_params.pro === 'true' ? true : false;
 	const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
 	const isAIDisabled = window?.kadence_blocks_params?.isAIDisabled ? true : false;
 	const data_key = window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '';
@@ -275,6 +261,8 @@ function PageList({
 		};
 	}, []);
 	const thePages = useMemo(() => {
+		const hasPremiumAccess =
+			'true' !== kadence_blocks_params.pro || 'true' !== kadence_blocks_params.creativeKit ? true : false;
 		const allPatterns = [];
 		let variation = 0;
 		Object.keys(pages).map(function (key, index) {
@@ -309,7 +297,7 @@ function PageList({
 			}
 			temp.rows = pages[key].rows;
 			temp.pro = pages[key].pro;
-			temp.locked = pages[key].pro && 'true' !== kadence_blocks_params.pro ? true : false;
+			temp.locked = pages[key].pro && !hasPremiumAccess ? true : false;
 			temp.proRender = false;
 			temp.viewportWidth = 1200;
 			variation++;

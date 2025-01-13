@@ -519,7 +519,11 @@ export function getAsyncData() {
 			return response;
 		} catch (error) {
 			const message = error?.message ? error.message : error;
+			const code = error?.code ? error.code : error;
 			console.log(`ERROR: ${message}`);
+			if ('invalid_access' === code) {
+				return 'invalid_access';
+			}
 			return 'failed';
 		}
 	}

@@ -179,6 +179,8 @@ class SingleTemplateLibrary extends Component {
 		}
 		const control = this;
 		const libraryItems = this.state.items;
+		const hasPremiumAccess =
+			'true' !== kadence_blocks_params.pro || 'true' !== kadence_blocks_params.creativeKit ? true : false;
 		return (
 			<div className={`kt-prebuilt-content${this.state.sidebar ? ' kb-prebuilt-has-sidebar' : ''}`}>
 				<div className="kt-prebuilt-header kb-library-header">
@@ -245,7 +247,7 @@ class SingleTemplateLibrary extends Component {
 											__('Add %s', 'kadence-blocks'),
 											name
 										)}
-										isDisabled={undefined !== pro && pro && 'true' !== kadence_blocks_params.pro}
+										isDisabled={undefined !== pro && pro && !hasPremiumAccess}
 										onClick={() => (!locked ? control.onInsertContent(content) : '')}
 									>
 										<div
