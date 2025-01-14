@@ -144,12 +144,12 @@ class Kadence_Blocks_AI_Events {
 		$site_url     = get_original_domain();
 		$site_name    = get_bloginfo( 'name' );
 		$license_data = kadence_blocks_get_current_license_data();
-
+		$product_slug = ( ! empty( $license_data['product'] ) ? $license_data['product'] : 'kadence-blocks' );
 		$defaults = [
 			'domain'          => $site_url,
 			'key'             => ! empty( $license_data['key'] ) ? $license_data['key'] : '',
 			'site_name'       => sanitize_title( $site_name ),
-			'product_slug'    => apply_filters( 'kadence-blocks-auth-slug', 'kadence-blocks' ),
+			'product_slug'    => apply_filters( 'kadence-blocks-auth-slug', $product_slug ),
 			'product_version' => KADENCE_BLOCKS_VERSION,
 		];
 
