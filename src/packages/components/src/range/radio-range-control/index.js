@@ -123,7 +123,7 @@ export default function RadioRangeControl( {
 								step={ step }
 								help={ help }
 								allowReset={ true }
-								initialPosition={ sizeValue === 0 ? 0 : "" }
+								initialPosition={ value.size === 0 ? 0 : "" }
 							/>
 						</div>
 						{ ( onUnit || showUnit ) && (
