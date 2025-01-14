@@ -40,7 +40,7 @@ export default function CopyPasteAttributes ( {
     preventMultiple = [],
     onPaste,
 } ) {
-	
+
     const storageKey = blockSlug + '-style';
 	const currentCopiedStyles = JSON.parse( localStorage.getItem( storageKey ) );
 
@@ -54,6 +54,9 @@ export default function CopyPasteAttributes ( {
 		const pasteItem = JSON.parse( localStorage.getItem( storageKey ) );
 
 		if ( pasteItem ) {
+			if (pasteItem.hasOwnProperty('__internalWidgetId')) {
+				delete pasteItem.__internalWidgetId;
+			}
 			onPaste( pasteItem );
 		}
 	};
