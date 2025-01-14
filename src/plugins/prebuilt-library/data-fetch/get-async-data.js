@@ -503,18 +503,27 @@ export function getAsyncData() {
 	 */
 	async function getPattern(library, type, item_id, style, library_url = null, key = null) {
 		try {
+			const args = {
+				library,
+				key: key ? key : library,
+				pattern_id: item_id ? item_id : '',
+				pattern_type: type ? type : '',
+				pattern_style: style ? style : '',
+			};
+			if (library_url) {
+				args.library_url = library_url;
+			}
+			if (data_key) {
+				args.api_key = data_key;
+			}
+			if (data_email) {
+				args.api_email = data_email;
+			}
+			if (product_id) {
+				args.product_id = product_id;
+			}
 			const response = await apiFetch({
-				path: addQueryArgs('/kb-design-library/v1/get_pattern_content', {
-					library,
-					library_url: library_url ? library_url : '',
-					key: key ? key : library,
-					pattern_id: item_id ? item_id : '',
-					pattern_type: type ? type : '',
-					pattern_style: style ? style : '',
-					api_key: data_key,
-					api_email: data_email,
-					product_id,
-				}),
+				path: addQueryArgs('/kb-design-library/v1/get_pattern_content', args),
 			});
 			return response;
 		} catch (error) {
