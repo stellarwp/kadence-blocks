@@ -7,7 +7,7 @@ export default function getTransferableAttributes( attributes, defaultAttributes
     let attributesToTransfer = {};
     
     //some attributes should never be transferred to a new block
-	const alwaysExclude = [ 'uniqueID', 'inQueryBlock', 'anchor', 'noCustomDefaults', 'metadata' ];
+	const alwaysExclude = [ 'uniqueID', 'inQueryBlock', 'anchor', 'noCustomDefaults', 'metadata', '__internalWidgetId' ];
     const allExcludedAttrs = alwaysExclude.concat(excludedAttrs);
     attributesToTransfer = omit(attributes, allExcludedAttrs);
     
