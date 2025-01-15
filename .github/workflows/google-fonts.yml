@@ -1,0 +1,49 @@
+name: Update Google Fonts
+on:
+  schedule:
+    - cron: '0 0 1 * *'  # Run monthly
+  workflow_dispatch:      # Allow manual trigger
+
+jobs:
+  update-fonts:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install --no-save @octokit/rest axios --legacy-peer-deps
+
+      - name: Update fonts data
+        env:
+          GOOGLE_FONTS_API_KEY: ${{ secrets.GOOGLE_FONTS_API_KEY }}
+        run: node .github/scripts/update-fonts.js
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet ./includes/gfonts-array.php && git diff --quiet ./includes/gfonts-names-array.php; then
+            echo "changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Get current date
+        id: date
+        run: echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        if: steps.check_changes.outputs.changes == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: 'chore: update Google Fonts list'
+          title: 'Update Google Fonts List'
+          body: 'Updates the Google Fonts variants list with latest font data.'
+          branch: 'update/google-fonts-${{ steps.date.outputs.date }}'
+          delete-branch: true
