@@ -1831,7 +1831,9 @@ function KadenceInfoBox(props) {
 				  )} !important; }`
 				: ''}
 			{mediaStyle[0].borderRadius && mediaStyle[0].padding.some((number) => number > 0)
-				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .kadence-info-box-image-intrisic img, .kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .block-editor-media-placeholder { border-radius: ${mediaStyle[0].borderRadius}${mediaStyle[0].borderRadiusUnit ?? 'px'} !important; }`
+				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .kadence-info-box-image-intrisic img, .kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .block-editor-media-placeholder { border-radius: ${
+						mediaStyle[0].borderRadius
+				  }${mediaStyle[0].borderRadiusUnit ?? 'px'} !important; }`
 				: ''}
 			{titleHoverColor
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-title { color: ${KadenceColorOutput(
@@ -2765,7 +2767,9 @@ function KadenceInfoBox(props) {
 														: 12
 												}
 												step={1}
-												reset={() => saveMediaStyle({ borderWidth: [0, 0, 0, 0], borderWidthUnit: 'px' })}
+												reset={() =>
+													saveMediaStyle({ borderWidth: [0, 0, 0, 0], borderWidthUnit: 'px' })
+												}
 												showUnit={true}
 												unit={mediaStyle[0].borderWidthUnit ?? 'px'}
 												onUnit={(value) => saveMediaStyle({ borderWidthUnit: value })}
@@ -2782,7 +2786,9 @@ function KadenceInfoBox(props) {
 														? 200
 														: 12
 												}
-												reset={() => saveMediaStyle({ borderRadius: 0, borderRadiusUnit: 'px' })}
+												reset={() =>
+													saveMediaStyle({ borderRadius: 0, borderRadiusUnit: 'px' })
+												}
 												showUnit={true}
 												unit={mediaStyle[0].borderRadiusUnit ?? 'px'}
 												onUnit={(value) => saveMediaStyle({ borderRadiusUnit: value })}
