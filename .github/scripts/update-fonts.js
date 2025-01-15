@@ -15,9 +15,38 @@ function generateFontsArrayContent(fonts) {
            */\n\nreturn array(`;
 
 	fonts.items.forEach((font, index) => {
-		content += `'${font.family}' => array('v' => array(`;
+		content += `'${font.family}' => array(`;
+
+		// Variants
+		content += `'v' => array(`;
 		content += font.variants.map((v) => `'${v}'`).join(',');
-		content += `), 'c' => array('${font.category}'))`;
+		content += `),`;
+
+		// Subsets (scripts)
+		content += `'s' => array(`;
+		content += font.subsets.map((s) => `'${s}'`).join(',');
+		content += `),`;
+
+		// Weights - Extract unique weights from variants
+		const weights = font.variants
+			.map((v) => v.replace('italic', ''))
+			.filter((v) => v !== '')
+			.filter((v, i, arr) => arr.indexOf(v) === i);
+		content += `'w' => array(`;
+		content += weights.length ? weights.map((w) => `'${w}'`).join(',') : `'regular'`;
+		content += `),`;
+
+		// Styles - Check if font has italic variants
+		const styles = ['normal'];
+		if (font.variants.some((v) => v.includes('italic'))) {
+			styles.push('italic');
+		}
+		content += `'i' => array(`;
+		content += styles.map((s) => `'${s}'`).join(',');
+		content += `)`;
+
+		// Close font entry
+		content += `)`;
 		content += index === fonts.items.length - 1 ? '' : ',';
 	});
 
@@ -59,7 +88,7 @@ async function main() {
 			fs.writeFile('./includes/gfonts-names-array.php', fontNamesContent),
 		]);
 
-		console.log('Successfully updated ./includes/gfonts-array.php');
+		console.log('Successfully updated ./includes/gfonts-array.php and ./includes/gfonts-names-array.php');
 	} catch (error) {
 		console.error('Error:', error);
 		process.exit(1);
