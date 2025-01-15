@@ -1831,7 +1831,7 @@ function KadenceInfoBox(props) {
 				  )} !important; }`
 				: ''}
 			{mediaStyle[0].borderRadius && mediaStyle[0].padding.some((number) => number > 0)
-				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .kadence-info-box-image-intrisic img, .kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .block-editor-media-placeholder { border-radius: ${mediaStyle[0].borderRadius}px !important; }`
+				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .kadence-info-box-image-intrisic img, .kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .block-editor-media-placeholder { border-radius: ${mediaStyle[0].borderRadius}${mediaStyle[0].borderRadiusUnit ?? 'px'} !important; }`
 				: ''}
 			{titleHoverColor
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-title { color: ${KadenceColorOutput(
@@ -2758,9 +2758,17 @@ function KadenceInfoBox(props) {
 												onChange={(value) => saveMediaStyle({ borderWidth: value })}
 												onControl={(value) => setMediaBorderControl(value)}
 												min={0}
-												max={40}
+												max={
+													mediaStyle[0].borderWidthUnit === 'px' ||
+													typeof mediaStyle[0].borderWidthUnit === 'undefined'
+														? 40
+														: 12
+												}
 												step={1}
-												reset={() => saveMediaStyle({ borderWidth: [0, 0, 0, 0] })}
+												reset={() => saveMediaStyle({ borderWidth: [0, 0, 0, 0], borderWidthUnit: 'px' })}
+												showUnit={true}
+												unit={mediaStyle[0].borderWidthUnit ?? 'px'}
+												onUnit={(value) => saveMediaStyle({ borderWidthUnit: value })}
 											/>
 											<RangeControl
 												label={__('Image Border Radius (px)', 'kadence-blocks')}
@@ -2768,8 +2776,16 @@ function KadenceInfoBox(props) {
 												onChange={(value) => saveMediaStyle({ borderRadius: value })}
 												step={1}
 												min={0}
-												max={200}
-												reset={() => saveMediaStyle({ borderRadius: 0 })}
+												max={
+													mediaStyle[0].borderRadiusUnit === 'px' ||
+													typeof mediaStyle[0].borderRadiusUnit === 'undefined'
+														? 200
+														: 12
+												}
+												reset={() => saveMediaStyle({ borderRadius: 0, borderRadiusUnit: 'px' })}
+												showUnit={true}
+												unit={mediaStyle[0].borderRadiusUnit ?? 'px'}
+												onUnit={(value) => saveMediaStyle({ borderRadiusUnit: value })}
 											/>
 											<TabPanel
 												className="kt-inspect-tabs kt-hover-tabs"
