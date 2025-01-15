@@ -174,6 +174,13 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.4.6 =
+Release Date: TBD January 2025
+* Add: Option to open advanced nav links in new tab.
+* Add: Search by pattern name in 3rd party pattern libraries.
+* Fix: Issue when copy & pasting block styles on widget page.
+* Fix: Form block honeypot field showing in customizer.
+
 = 3.4.5 =
 Release Date: 9th January 2025
 * Add: Product categories as option in Navigation Builder.
