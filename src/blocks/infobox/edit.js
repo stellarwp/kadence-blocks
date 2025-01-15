@@ -2775,7 +2775,7 @@ function KadenceInfoBox(props) {
 												onUnit={(value) => saveMediaStyle({ borderWidthUnit: value })}
 											/>
 											<RangeControl
-												label={__('Image Border Radius (px)', 'kadence-blocks')}
+												label={__('Image Border Radius', 'kadence-blocks')}
 												value={mediaStyle[0].borderRadius}
 												onChange={(value) => saveMediaStyle({ borderRadius: value })}
 												step={1}
@@ -3180,10 +3180,14 @@ function KadenceInfoBox(props) {
 												onChange={(value) => saveMediaIcon({ size: value })}
 												onChangeTablet={(value) => saveMediaIcon({ tabletSize: value })}
 												onChangeMobile={(value) => saveMediaIcon({ mobileSize: value })}
-												min={5}
-												max={250}
+												min={['em', 'rem'].includes(mediaIcon[0].unit) ? 1 : 5}
+												max={['em', 'rem'].includes(mediaIcon[0].unit) ? 12 : 250}
 												step={1}
 												reset={true}
+												showUnit={true}
+												onUnit={(value) => saveMediaIcon({ unit: value })}
+												units={['px', 'em', 'rem']}
+												unit={mediaIcon[0].unit ? mediaIcon[0].unit : 'px'}
 											/>
 											<TypographyControls
 												fontGroup={'body'}
@@ -3224,18 +3228,34 @@ function KadenceInfoBox(props) {
 												onChange={(value) => saveMediaStyle({ borderWidth: value })}
 												onControl={(value) => setMediaBorderControl(value)}
 												min={0}
-												max={40}
+												max={
+													mediaStyle[0].borderWidthUnit === 'px' ||
+													typeof mediaStyle[0].borderWidthUnit === 'undefined'
+														? 40
+														: 12
+												}
 												step={1}
-												reset={() => saveMediaStyle({ borderWidth: [0, 0, 0, 0] })}
+												reset={() => saveMediaStyle({ borderWidth: [0, 0, 0, 0], borderWidthUnit: 'px' })}
+												showUnit={true}
+												unit={mediaStyle[0].borderWidthUnit ?? 'px'}
+												onUnit={(value) => saveMediaStyle({ borderWidthUnit: value })}
 											/>
 											<RangeControl
-												label={__('Number Border Radius (px)', 'kadence-blocks')}
+												label={__('Number Border Radius', 'kadence-blocks')}
 												value={mediaStyle[0].borderRadius}
 												onChange={(value) => saveMediaStyle({ borderRadius: value })}
 												step={1}
 												min={0}
-												max={200}
-												reset={() => saveMediaStyle({ borderRadius: [0, 15, 0, 15] })}
+												max={
+													mediaStyle[0].borderRadiusUnit === 'px' ||
+													typeof mediaStyle[0].borderRadiusUnit === 'undefined'
+														? 200
+														: 12
+												}
+												reset={() => saveMediaStyle({ borderRadius: [0, 15, 0, 15], borderRadiusUnit: 'px' })}
+												showUnit={true}
+												unit={mediaStyle[0].borderRadiusUnit ?? 'px'}
+												onUnit={(value) => saveMediaStyle({ borderRadiusUnit: value })}
 											/>
 											<SelectControl
 												label={__('Number Hover Animation', 'kadence-blocks')}

@@ -344,7 +344,8 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'border-color', $css->render_color( $media_style['border'] ) );
 		}
 		if ( isset( $media_style['borderRadius'] ) && ! empty( $media_style['borderRadius'] ) ) {
-			$css->add_property( 'border-radius', $media_style['borderRadius'] . ( isset( $media_style['borderRadiusUnit'] )  ? $media_style['borderRadiusUnit'] : 'px' ) );
+//			$css->add_property( 'border-radius', $media_style['borderRadius'] . ( isset( $media_style['borderRadiusUnit'] )  ? $media_style['borderRadiusUnit'] : 'px' ) );
+			$css->render_border_radius( $attributes, 'borderRadius', ( isset( $media_style['borderRadiusUnit'] ) ? $media_style['borderRadiusUnit'] : 'px' ) );
 		}
 		if ( isset( $media_style['borderWidth'] ) && is_array( $media_style['borderWidth'] ) ) {
 			$border_width_unit = isset( $media_style['borderWidthUnit'] ) ? $media_style['borderWidthUnit'] : 'px';
@@ -408,7 +409,8 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		if ( isset( $media_style['borderRadius'] ) && ! empty( $media_style['borderRadius'] ) && isset( $media_style['padding'] ) && is_array( $media_style['padding'] ) && ! empty( array_filter( $media_style['padding'], fn($value) => $value > 0 ) ) ) {
 			$css->set_selector( $base_selector . ' .kt-blocks-info-box-media .kadence-info-box-image-intrisic img' );
-			$css->add_property( 'border-radius', $media_style['borderRadius'] . (isset( $media_style['borderRadiusUnit'] ) ? $media_style['borderRadiusUnit'] : 'px') );
+//			$css->add_property( 'border-radius', $media_style['borderRadius'] . (isset( $media_style['borderRadiusUnit'] ) ? $media_style['borderRadiusUnit'] : 'px') );
+			$css->render_border_radius( $attributes, 'borderRadius', ( isset( $media_style['borderRadiusUnit'] ) ? $media_style['borderRadiusUnit'] : 'px' ) );
 		}
 		$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media' );
 		if ( isset( $media_icon['hoverColor'] ) && ! empty( $media_icon['hoverColor'] ) ) {

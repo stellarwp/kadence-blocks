@@ -135,7 +135,7 @@ function Save({ attributes, className }) {
 			}`}
 		>
 			<div className={'kadence-info-box-number-inner-container'}>
-				<RichText.Content className="kt-blocks-info-box-number" tagName={'div'} value={number ? number : ''} />
+				<RichText.Content className="kt-blocks-info-box-number" tagName={'div'} value={number.text ? number.text : ''} />
 			</div>
 		</div>
 	);
