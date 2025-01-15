@@ -3235,7 +3235,9 @@ function KadenceInfoBox(props) {
 														: 12
 												}
 												step={1}
-												reset={() => saveMediaStyle({ borderWidth: [0, 0, 0, 0], borderWidthUnit: 'px' })}
+												reset={() =>
+													saveMediaStyle({ borderWidth: [0, 0, 0, 0], borderWidthUnit: 'px' })
+												}
 												showUnit={true}
 												unit={mediaStyle[0].borderWidthUnit ?? 'px'}
 												onUnit={(value) => saveMediaStyle({ borderWidthUnit: value })}
@@ -3252,7 +3254,12 @@ function KadenceInfoBox(props) {
 														? 200
 														: 12
 												}
-												reset={() => saveMediaStyle({ borderRadius: [0, 15, 0, 15], borderRadiusUnit: 'px' })}
+												reset={() =>
+													saveMediaStyle({
+														borderRadius: [0, 15, 0, 15],
+														borderRadiusUnit: 'px',
+													})
+												}
 												showUnit={true}
 												unit={mediaStyle[0].borderRadiusUnit ?? 'px'}
 												onUnit={(value) => saveMediaStyle({ borderRadiusUnit: value })}
