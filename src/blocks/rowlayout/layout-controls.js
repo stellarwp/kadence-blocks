@@ -454,11 +454,7 @@ function LayoutControls({
 										onChange={(value, size) => {
 											setAttributes({
 												columnGutter: value,
-												customGutter: [
-													size,
-													customGutter[1] ?? '',
-													customGutter[2] ?? '',
-												],
+												customGutter: [size, customGutter[1] ?? '', customGutter[2] ?? ''],
 											});
 										}}
 										tabletValue={{
@@ -471,11 +467,7 @@ function LayoutControls({
 										onChangeTablet={(value, size) => {
 											setAttributes({
 												tabletGutter: value,
-												customGutter: [
-													customGutter[0] ?? '',
-													size,
-													customGutter[2] ?? '',
-												],
+												customGutter: [customGutter[0] ?? '', size, customGutter[2] ?? ''],
 											});
 										}}
 										mobileValue={{
@@ -488,11 +480,7 @@ function LayoutControls({
 										onChangeMobile={(value, size) => {
 											setAttributes({
 												mobileGutter: value,
-												customGutter: [
-													customGutter[0] ?? '',
-													customGutter[1] ?? '',
-													size,
-												],
+												customGutter: [customGutter[0] ?? '', customGutter[1] ?? '', size],
 											});
 										}}
 										min={0}
@@ -525,11 +513,7 @@ function LayoutControls({
 								onChange={(value, size) => {
 									setAttributes({
 										collapseGutter: value,
-										customRowGutter: [
-											size,
-											customRowGutter[1] ?? '',
-											customRowGutter[2] ?? '',
-										],
+										customRowGutter: [size, customRowGutter[1] ?? '', customRowGutter[2] ?? ''],
 									});
 								}}
 								tabletValue={{
@@ -542,11 +526,7 @@ function LayoutControls({
 								onChangeTablet={(value, size) => {
 									setAttributes({
 										tabletRowGutter: value,
-										customRowGutter: [
-											customRowGutter[0] ?? '',
-											size,
-											customRowGutter[2] ?? '',
-										],
+										customRowGutter: [customRowGutter[0] ?? '', size, customRowGutter[2] ?? ''],
 									});
 								}}
 								mobileValue={{
@@ -559,11 +539,7 @@ function LayoutControls({
 								onChangeMobile={(value, size) => {
 									setAttributes({
 										mobileRowGutter: value,
-										customRowGutter: [
-											customRowGutter[0] ?? '',
-											customRowGutter[1] ?? '',
-											size,
-										],
+										customRowGutter: [customRowGutter[0] ?? '', customRowGutter[1] ?? '', size],
 									});
 								}}
 								min={0}
