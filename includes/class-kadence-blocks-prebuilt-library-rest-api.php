@@ -1005,7 +1005,6 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 			}
 			// Get the response.
 			$api_url  = add_query_arg( $args, $library_url );
-			error_log( 'api_url: ' . $api_url );
 			$response = wp_safe_remote_get(
 				$api_url,
 				[
@@ -2049,9 +2048,11 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 	 * @return string Returns the remote URL contents.
 	 */
 	public function get_remote_remaining_credits() {
+		$product_slug = ( ! empty( $this->product_slug ) && $this->product_slug === 'kadence-blocks-pro' ? 'kadence-blocks-pro' : 'kadence-blocks' );
 		$args = [
-			'site' => get_license_domain(),
-			'key'  => $this->api_key,
+			'site'        => get_license_domain(),
+			'key'         => $this->api_key,
+			'plugin_slug' => apply_filters( 'kadence-blocks-auth-slug', $product_slug ),
 		];
 		if ( ! empty( $this->api_email ) ) {
 			// Send in case we need to verify with old api.
@@ -2542,7 +2543,7 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		$site_url     = get_original_domain();
 		$site_name    = get_bloginfo( 'name' );
 		$license_data = kadence_blocks_get_current_license_data();
-		$product_slug = ( ! empty( $license_data['product'] ) ? $license_data['product'] : 'kadence-blocks' );
+		$product_slug = ( ! empty( $license_data['product'] ) && $license_data['product'] === 'kadence-blocks-pro' ? 'kadence-blocks-pro' : 'kadence-blocks' );
 		$defaults     = [
 			'domain'          => $site_url,
 			'key'             => ! empty( $license_data['key'] ) ? $license_data['key'] : '',

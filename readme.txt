@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.4
 Tested up to: 6.7.1
-Stable tag: 3.4.5
+Stable tag: 3.4.6
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -173,6 +173,14 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 3.4.6 =
+Release Date: 16th January 2025
+* Add: Support for Kadence Creative Kit
+* Add: Option to open advanced nav links in new tab.
+* Add: Search by pattern name in 3rd party pattern libraries.
+* Fix: Issue when copy & pasting block styles on widget page.
+* Fix: Form block honeypot field showing in customizer.
 
 = 3.4.5 =
 Release Date: 9th January 2025

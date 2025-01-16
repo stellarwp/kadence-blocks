@@ -78,6 +78,7 @@ class SingleTemplateLibrary extends Component {
 			kadence_blocks_params.proData && kadence_blocks_params.proData.api_email
 				? kadence_blocks_params.proData.api_email
 				: '';
+		const data_product = kadence_blocks_params?.proData?.product ? kadence_blocks_params.proData.product : '';
 		if (!data_key) {
 			data_key =
 				kadence_blocks_params.proData && kadence_blocks_params.proData.ithemes_key
@@ -93,6 +94,7 @@ class SingleTemplateLibrary extends Component {
 		data.append('api_key', data_key);
 		data.append('api_email', data_email);
 		data.append('package', this.props.selectedSlug);
+		data.append('product_slug', data_product);
 		data.append('url', this.props.selectedURL);
 		data.append('is_template', 'is_template');
 		data.append('key', 'kadence-blocks');
@@ -130,6 +132,7 @@ class SingleTemplateLibrary extends Component {
 			kadence_blocks_params.proData && kadence_blocks_params.proData.api_email
 				? kadence_blocks_params.proData.api_email
 				: '';
+		const data_product = kadence_blocks_params?.proData?.product ? kadence_blocks_params.proData.product : '';
 		if (!data_key) {
 			data_key =
 				kadence_blocks_params.proData && kadence_blocks_params.proData.ithemes_key
@@ -144,6 +147,7 @@ class SingleTemplateLibrary extends Component {
 		data.append('security', kadence_blocks_params.ajax_nonce);
 		data.append('api_key', data_key);
 		data.append('api_email', data_email);
+		data.append('product_slug', data_product);
 		data.append('package', this.props.selectedSlug);
 		data.append('url', this.props.selectedURL);
 		data.append('is_template', 'is_template');
@@ -266,16 +270,16 @@ class SingleTemplateLibrary extends Component {
 									</Button>
 									{undefined !== pro && pro && (
 										<Fragment>
-											<span className="kb-pro-template">{__('Pro', 'kadence-blocks')}</span>
+											<span className="kb-pro-template">{__('Premium', 'kadence-blocks')}</span>
 											{locked && (
 												<div className="kt-popover-pro-notice">
-													<h2>{__('Kadence Blocks Pro required for this item')} </h2>
+													<h2>{__('Kadence Premium Designs required for this item')} </h2>
 													<ExternalLink
 														href={
-															'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=design-library'
+															'https://www.kadencewp.com/pricing/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=design-library'
 														}
 													>
-														{__('Upgrade to Pro', 'kadence-blocks')}
+														{__('Upgrade to Get Access', 'kadence-blocks')}
 													</ExternalLink>
 												</div>
 											)}

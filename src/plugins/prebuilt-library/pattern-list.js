@@ -438,6 +438,7 @@ function PatternList({
 	const data_key = window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '';
 	async function onSelectBlockPattern(pattern) {
 		setImporting(true);
+		// eslint-disable-next-line @wordpress/no-unused-vars-before-return
 		const allContext = getAllContext();
 		const patternSend = {
 			id: pattern.id,
