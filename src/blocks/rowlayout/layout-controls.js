@@ -456,8 +456,8 @@ function LayoutControls({
 												columnGutter: value,
 												customGutter: [
 													size,
-													customGutter[1] ? customGutter[1] : '',
-													customGutter[2] ? customGutter[2] : '',
+													customGutter[1] ?? '',
+													customGutter[2] ?? '',
 												],
 											});
 										}}
@@ -472,9 +472,9 @@ function LayoutControls({
 											setAttributes({
 												tabletGutter: value,
 												customGutter: [
-													customGutter[0] ? customGutter[0] : '',
+													customGutter[0] ?? '',
 													size,
-													customGutter[2] ? customGutter[2] : '',
+													customGutter[2] ?? '',
 												],
 											});
 										}}
@@ -489,8 +489,8 @@ function LayoutControls({
 											setAttributes({
 												mobileGutter: value,
 												customGutter: [
-													customGutter[0] ? customGutter[0] : '',
-													customGutter[1] ? customGutter[1] : '',
+													customGutter[0] ?? '',
+													customGutter[1] ?? '',
 													size,
 												],
 											});
@@ -527,8 +527,8 @@ function LayoutControls({
 										collapseGutter: value,
 										customRowGutter: [
 											size,
-											customRowGutter[1] ? customRowGutter[1] : '',
-											customRowGutter[2] ? customRowGutter[2] : '',
+											customRowGutter[1] ?? '',
+											customRowGutter[2] ?? '',
 										],
 									});
 								}}
@@ -543,9 +543,9 @@ function LayoutControls({
 									setAttributes({
 										tabletRowGutter: value,
 										customRowGutter: [
-											customRowGutter[0] ? customRowGutter[0] : '',
+											customRowGutter[0] ?? '',
 											size,
-											customRowGutter[2] ? customRowGutter[2] : '',
+											customRowGutter[2] ?? '',
 										],
 									});
 								}}
@@ -560,8 +560,8 @@ function LayoutControls({
 									setAttributes({
 										mobileRowGutter: value,
 										customRowGutter: [
-											customRowGutter[0] ? customRowGutter[0] : '',
-											customRowGutter[1] ? customRowGutter[1] : '',
+											customRowGutter[0] ?? '',
+											customRowGutter[1] ?? '',
 											size,
 										],
 									});
