@@ -176,6 +176,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 = 3.4.6 =
 Release Date: 16th January 2025
+* Add: Support for Kadence Creative Kit
 * Add: Option to open advanced nav links in new tab.
 * Add: Search by pattern name in 3rd party pattern libraries.
 * Fix: Issue when copy & pasting block styles on widget page.
