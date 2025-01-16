@@ -78,9 +78,7 @@ class SingleTemplateLibrary extends Component {
 			kadence_blocks_params.proData && kadence_blocks_params.proData.api_email
 				? kadence_blocks_params.proData.api_email
 				: '';
-		let data_product = kadence_blocks_params?.proData?.product_slug
-			? kadence_blocks_params.proData.product_slug
-			: '';
+		let data_product = kadence_blocks_params?.proData?.product ? kadence_blocks_params.proData.product : '';
 		if (!data_key) {
 			data_key =
 				kadence_blocks_params.proData && kadence_blocks_params.proData.ithemes_key
@@ -112,7 +110,6 @@ class SingleTemplateLibrary extends Component {
 			.done(function (response, status, stately) {
 				if (response) {
 					const o = SafeParseJSON(response, false);
-					console.log(o);
 					if (o) {
 						control.setState({ items: o, errorItems: false, isLoading: false });
 					} else {
@@ -135,9 +132,7 @@ class SingleTemplateLibrary extends Component {
 			kadence_blocks_params.proData && kadence_blocks_params.proData.api_email
 				? kadence_blocks_params.proData.api_email
 				: '';
-		let data_product = kadence_blocks_params?.proData?.product_slug
-			? kadence_blocks_params.proData.product_slug
-			: '';
+		let data_product = kadence_blocks_params?.proData?.product ? kadence_blocks_params.proData.product : '';
 		if (!data_key) {
 			data_key =
 				kadence_blocks_params.proData && kadence_blocks_params.proData.ithemes_key

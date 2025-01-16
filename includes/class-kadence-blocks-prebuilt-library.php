@@ -401,11 +401,19 @@ class Kadence_Blocks_Prebuilt_Library {
 			'site' => $site_url,
 		];
 		if ( 'templates' === $this->package || 'section' === $this->package || 'pages' === $this->package || $this->is_template ) {
-			$args['api_email']    = $this->api_email;
-			$args['api_key']      = $this->api_key;
-			$args['product_id']   = $this->product_id;
-			$args['product_slug'] = $this->product_id;
-			$args['site_url']     = $site_url;
+			if ( ! empty( $this->api_email ) ) {
+				$args['api_email'] = $this->api_email;
+			}
+			if ( ! empty( $this->api_key ) ) {
+				$args['api_key'] = $this->api_key;
+			}
+			if ( ! empty( $this->product_id ) ) {
+				$args['product_id'] = $this->product_id;
+			}
+			if ( ! empty( $this->product_slug ) ) {
+				$args['product_slug'] = $this->product_slug;
+			}
+			$args['site_url'] = $site_url;
 			if ( 'iThemes' === $this->api_email ) {
 				if ( is_callable( 'network_home_url' ) ) {
 					$site_url = network_home_url( '', 'http' );
@@ -571,6 +579,7 @@ class Kadence_Blocks_Prebuilt_Library {
 		$this->api_key                  = empty( $_POST['api_key'] ) ? '' : sanitize_text_field( $_POST['api_key'] );
 		$this->api_email                = empty( $_POST['api_email'] ) ? '' : sanitize_text_field( $_POST['api_email'] );
 		$this->product_id               = empty( $_POST['product_id'] ) ? '' : sanitize_text_field( $_POST['product_id'] );
+		$this->product_slug             = empty( $_POST['product_slug'] ) ? '' : sanitize_text_field( $_POST['product_slug'] );
 		$this->package                  = empty( $_POST['package'] ) ? 'section' : sanitize_text_field( $_POST['package'] );
 		$this->url                      = empty( $_POST['url'] ) ? $this->remote_url : rtrim( sanitize_text_field( $_POST['url'] ), '/' ) . '/wp-json/kadence-cloud/v1/get/';
 		$this->key                      = isset( $_POST['key'] ) && ! empty( $_POST['key'] ) ? sanitize_text_field( $_POST['key'] ) : 'section';

@@ -156,7 +156,7 @@ function kadence_blocks_get_current_license_key() {
 	if ( ! empty( $blocks_pro_key ) ) {
 		return $blocks_pro_key;
 	}
-	$creative_kit_key = class_exists( 'KadenceWP\CreativeKit' ) ? get_license_key( 'kadence-creative-kit' ) : '';
+	$creative_kit_key = class_exists( 'KadenceWP\CreativeKit\Core' ) ? get_license_key( 'kadence-creative-kit' ) : '';
 	if ( ! empty( $creative_kit_key ) ) {
 		return $creative_kit_key;
 	}
