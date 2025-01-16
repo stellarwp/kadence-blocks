@@ -360,6 +360,7 @@ function CloudSections({ importContent, clientId, reload = false, onReload, tab,
 					setIsError(true);
 				}
 			} else {
+				console.log('error, library content incorrect', response);
 				if (subTab === 'pages') {
 					setPages('error');
 				} else {
