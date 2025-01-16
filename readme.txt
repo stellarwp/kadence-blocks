@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.4
 Tested up to: 6.7.1
-Stable tag: 3.4.5
+Stable tag: 3.4.6
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -175,7 +175,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.4.6 =
-Release Date: TBD January 2025
+Release Date: 16th January 2025
 * Add: Option to open advanced nav links in new tab.
 * Add: Search by pattern name in 3rd party pattern libraries.
 * Fix: Issue when copy & pasting block styles on widget page.
