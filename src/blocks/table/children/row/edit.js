@@ -174,7 +174,7 @@ export function Edit(props) {
 		),
 	});
 
-	const { children, innerBlocksProps } = useInnerBlocksProps(
+	const { children } = useInnerBlocksProps(
 		{
 			className: '',
 		},
