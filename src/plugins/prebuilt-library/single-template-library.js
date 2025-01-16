@@ -78,7 +78,7 @@ class SingleTemplateLibrary extends Component {
 			kadence_blocks_params.proData && kadence_blocks_params.proData.api_email
 				? kadence_blocks_params.proData.api_email
 				: '';
-		let data_product = kadence_blocks_params?.proData?.product ? kadence_blocks_params.proData.product : '';
+		const data_product = kadence_blocks_params?.proData?.product ? kadence_blocks_params.proData.product : '';
 		if (!data_key) {
 			data_key =
 				kadence_blocks_params.proData && kadence_blocks_params.proData.ithemes_key
@@ -132,7 +132,7 @@ class SingleTemplateLibrary extends Component {
 			kadence_blocks_params.proData && kadence_blocks_params.proData.api_email
 				? kadence_blocks_params.proData.api_email
 				: '';
-		let data_product = kadence_blocks_params?.proData?.product ? kadence_blocks_params.proData.product : '';
+		const data_product = kadence_blocks_params?.proData?.product ? kadence_blocks_params.proData.product : '';
 		if (!data_key) {
 			data_key =
 				kadence_blocks_params.proData && kadence_blocks_params.proData.ithemes_key
