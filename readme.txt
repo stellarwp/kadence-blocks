@@ -175,9 +175,9 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.4.7 =
-Release Date: 17th January 2025
+Release Date: TBD January 2025
+* Update: Available google fonts.
 * Fix: Improve table block performance in editor.
-* Fix: PHP Warning
 
 = 3.4.6 =
 Release Date: 16th January 2025
