@@ -3,24 +3,28 @@ name: WordPress.org Plugin Check
 on:
   workflow_dispatch:
 
-steps:
-  - name: Checkout
-    uses: actions/checkout@v3
+jobs:
+  plugin-check:
+    runs-on: ubuntu-latest
 
-  - name: Install dependencies
-    run: |
-      composer install --no-dev --no-scripts
-      composer run strauss-release
-      npm install --legacy-peer-deps
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-  - name: Build plugin
-    run: npm run build
+      - name: Install dependencies
+        run: |
+          composer install --no-dev --no-scripts
+          composer run strauss-release
+          npm install --legacy-peer-deps
 
-  - name: Run plugin check
-    uses: wordpress/plugin-check-action@v1
-    with:
-      build-dir: './'
-      exclude-directories: 'vendor,src'
-      categories: |
-        performance
-        accessibility
+      - name: Build plugin
+        run: npm run build
+
+      - name: Run plugin check
+        uses: wordpress/plugin-check-action@v1
+        with:
+          build-dir: './'
+          exclude-directories: 'vendor,src'
+          categories: |
+            performance
+            accessibility
