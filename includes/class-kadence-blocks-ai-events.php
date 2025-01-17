@@ -11,7 +11,7 @@ use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_authorization_token;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_original_domain;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
-
+use function kadence_blocks_get_current_license_data;
 /**
  * Class responsible for sending events AI Events to Stellar Prophecy WP AI.
  */
@@ -60,11 +60,11 @@ class Kadence_Blocks_AI_Events {
 		register_rest_route(
 			'kb-design-library/v1',
 			'/handle_event',
-			array(
-				array(
+			[
+				[
 					'methods'             => WP_REST_Server::CREATABLE,
-					'callback'            => array( $this, 'handle_event_endpoint' ),
-					'permission_callback' => array( $this, 'verify_user_can_edit' ),
+					'callback'            => [ $this, 'handle_event_endpoint' ],
+					'permission_callback' => [ $this, 'verify_user_can_edit' ],
 					'args'                => [
 						self::PROP_EVENT_LABEL => [
 							'description'       => __( 'The Event Label', 'kadence-blocks' ),
@@ -76,8 +76,8 @@ class Kadence_Blocks_AI_Events {
 							'type'        => 'object',
 						],
 					],
-				)
-			)
+				],
+			]
 		);
 	}
 
@@ -118,18 +118,20 @@ class Kadence_Blocks_AI_Events {
 
 		wp_remote_post(
 			$url,
-			array(
+			[
 				'timeout'  => 20,
 				'blocking' => false,
-				'headers'  => array(
+				'headers'  => [
 					'X-Prophecy-Token' => $this->get_prophecy_token_header(),
 					'Content-Type'     => 'application/json',
+				],
+				'body'     => wp_json_encode(
+					[
+						'name'    => $name,
+						'context' => $context,
+					] 
 				),
-				'body'     => wp_json_encode( [
-					'name'    => $name,
-					'context' => $context,
-				] ),
-			)
+			]
 		);
 	}
 
@@ -145,7 +147,7 @@ class Kadence_Blocks_AI_Events {
 		$site_name    = get_bloginfo( 'name' );
 		$license_data = kadence_blocks_get_current_license_data();
 		$product_slug = ( ! empty( $license_data['product'] ) ? $license_data['product'] : 'kadence-blocks' );
-		$defaults = [
+		$defaults     = [
 			'domain'          => $site_url,
 			'key'             => ! empty( $license_data['key'] ) ? $license_data['key'] : '',
 			'site_name'       => sanitize_title( $site_name ),
@@ -169,8 +171,8 @@ class Kadence_Blocks_AI_Events {
 		$event_label = $request->get_param( self::PROP_EVENT_LABEL );
 		$event_data  = $request->get_param( self::PROP_EVENT_DATA );
 
-		$event       = '';
-		$context     = array();
+		$event   = '';
+		$context = [];
 
 		switch ( $event_label ) {
 			case 'ai_wizard_started':
@@ -178,7 +180,7 @@ class Kadence_Blocks_AI_Events {
 				break;
 
 			case 'ai_wizard_update':
-				$event = 'AI Wizard Update';
+				$event   = 'AI Wizard Update';
 				$context = [
 					'organization_type' => $event_data['entityType'] ?? '',
 					'location_type'     => $event_data['locationType'] ?? '',
@@ -193,7 +195,7 @@ class Kadence_Blocks_AI_Events {
 				];
 				break;
 			case 'ai_wizard_complete':
-				$event = 'AI Wizard Complete';
+				$event   = 'AI Wizard Complete';
 				$context = [
 					'organization_type' => $event_data['entityType'] ?? '',
 					'location_type'     => $event_data['locationType'] ?? '',
@@ -208,7 +210,7 @@ class Kadence_Blocks_AI_Events {
 				];
 				break;
 			case 'pattern_added_to_page':
-				$event = 'Pattern Added to Page';
+				$event   = 'Pattern Added to Page';
 				$context = [
 					'pattern_id'         => $event_data['id'] ?? '',
 					'pattern_slug'       => $event_data['slug'] ?? '',
@@ -251,15 +253,15 @@ class Kadence_Blocks_AI_Events {
 			return new WP_REST_Response( [ 'message' => 'Event handled.' ], 200 );
 		}
 
-		return new WP_REST_Response( array( 'message' => 'Event not handled.' ), 500 );
+		return new WP_REST_Response( [ 'message' => 'Event not handled.' ], 500 );
 	}
 
 	/**
 	 * Get the collection name of custom made collections, otherwise return the prepared collection name.
 	 *
-	 * @param  array<array{label?: string, value: string}>  $collections  An array of custom collections.
-	 * @param  string                                        $id_or_name   The ID of a custom collection, or the name
-	 *                                                                     of a prepared collection.
+	 * @param  array<array{label?: string, value: string}> $collections  An array of custom collections.
+	 * @param  string                                      $id_or_name   The ID of a custom collection, or the name
+	 *                                                                   of a prepared collection.
 	 *
 	 * @return array
 	 */
