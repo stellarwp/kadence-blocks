@@ -253,3 +253,8 @@
 #end-resizable-editor-section {
     display: none;
 }
+
+// sub-menu list style to match frontend
+ul.kb-table-of-contents-list-sub {
+	list-style-type: disc;
+}
