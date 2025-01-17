@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import React, { useEffect, useMemo, useState, memo } from '@wordpress/element';
+import React, { useEffect, useState } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { BlockControls, useBlockProps, InnerBlocks } from '@wordpress/block-editor';
 import metadata from './block.json';
@@ -18,7 +18,6 @@ import { createBlock } from '@wordpress/blocks';
 import { flow } from 'lodash';
 import classnames from 'classnames';
 import { ToolbarDropdownMenu, MenuGroup, MenuItem } from '@wordpress/components';
-import { TableControlsDropdown } from './table-controls';
 
 const DEFAULT_BLOCK = [['core/paragraph', {}]];
 export function Edit(props) {
@@ -88,15 +87,11 @@ export function Edit(props) {
 		}
 	}, [hasInnerBlocks]);
 
-	const classes = useMemo(
-		() =>
-			classnames({
-				className: true,
-				[`kb-table-data${uniqueID}`]: uniqueID,
-				'kb-table-data': true,
-			}),
-		[uniqueID]
-	);
+	const classes = classnames({
+		className: true,
+		[`kb-table-data${uniqueID}`]: uniqueID,
+		[`kb-table-data`]: true,
+	});
 
 	const blockProps = useBlockProps({
 		className: classes,
@@ -171,16 +166,72 @@ export function Edit(props) {
 		});
 	};
 
-	const Tag =
-		(index === 0 && context['kadence/table/isFirstColumnHeader']) || context['kadence/table/thisRowIsHeader']
-			? 'th'
-			: 'td';
+	const rowControls = [
+		{
+			title: __('Add Row Before', 'kadence-blocks'),
+			onClick: () => addRow('before'),
+		},
+		{
+			title: __('Add Row After', 'kadence-blocks'),
+			onClick: () => addRow('after'),
+		},
+		{
+			title: __('Add Row at Top', 'kadence-blocks'),
+			onClick: () => addRow('top'),
+		},
+		{
+			title: __('Add Row at Bottom', 'kadence-blocks'),
+			onClick: () => addRow('bottom'),
+		},
+	];
+
+	const columnControls = [
+		{
+			title: __('Add Column Before', 'kadence-blocks'),
+			onClick: () => addColumn('before'),
+		},
+		{
+			title: __('Add Column After', 'kadence-blocks'),
+			onClick: () => addColumn('after'),
+		},
+		{
+			title: __('Add Column at Start', 'kadence-blocks'),
+			onClick: () => addColumn('start'),
+		},
+		{
+			title: __('Add Column at End', 'kadence-blocks'),
+			onClick: () => addColumn('end'),
+		},
+	];
+
+	const thisRowIsHeader = context['kadence/table/thisRowIsHeader'];
+	const firstColumnIsHeader = context['kadence/table/isFirstColumnHeader'];
+	const Tag = (index === 0 && firstColumnIsHeader) || thisRowIsHeader ? 'th' : 'td';
 
 	return (
 		<Tag {...blockProps}>
 			<BackendStyles attributes={attributes} previewDevice={previewDevice} />
 			<BlockControls>
-				<TableControlsDropdown onAddRow={addRow} onAddColumn={addColumn} />
+				<ToolbarDropdownMenu icon={plus} label={__('Add Row or Column', 'kadence-blocks')}>
+					{({ onClose }) => (
+						<>
+							<MenuGroup>
+								{rowControls.map((control) => (
+									<MenuItem key={control.title} onClick={flow(onClose, control.onClick)}>
+										{control.title}
+									</MenuItem>
+								))}
+							</MenuGroup>
+							<MenuGroup>
+								{columnControls.map((control) => (
+									<MenuItem key={control.title} onClick={flow(onClose, control.onClick)}>
+										{control.title}
+									</MenuItem>
+								))}
+							</MenuGroup>
+						</>
+					)}
+				</ToolbarDropdownMenu>
 				<CopyPasteAttributes
 					attributes={attributes}
 					setAttributes={setAttributes}

@@ -1,7 +1,8 @@
 import { KadenceBlocksCSS } from '@kadence/helpers';
-import { memo } from '@wordpress/element';
 
-function BackendStyles({ attributes, previewDevice }) {
+export default function BackendStyles(props) {
+	const { attributes, previewDevice } = props;
+
 	const { uniqueID, padding, tabletPadding, mobilePadding, paddingType } = attributes;
 	const css = new KadenceBlocksCSS();
 
@@ -10,11 +11,5 @@ function BackendStyles({ attributes, previewDevice }) {
 
 	const cssOutput = css.css_output();
 
-	if (cssOutput === '') {
-		return null;
-	}
-
 	return <style>{`${cssOutput}`}</style>;
 }
-
-export default memo(BackendStyles);

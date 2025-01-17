@@ -1,7 +1,13 @@
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect, useMemo, useCallback } from '@wordpress/element';
+import React, { useState, useEffect, useMemo } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useBlockProps, BlockControls, BlockContextProvider, useInnerBlocksProps } from '@wordpress/block-editor';
+import {
+	useBlockProps,
+	BlockControls,
+	BlockContextProvider,
+	useInnerBlocksProps,
+	InnerBlocks,
+} from '@wordpress/block-editor';
 import metadata from './block.json';
 import { flow } from 'lodash';
 import { ToolbarDropdownMenu, MenuGroup, MenuItem } from '@wordpress/components';
@@ -23,34 +29,6 @@ import { setBlockDefaults, getUniqueId, getPostOrFseId } from '@kadence/helpers'
 
 import classnames from 'classnames';
 import BackendStyles from './backend-styles';
-
-const createRowControls = (addRow) => [
-	{
-		title: __('Add Row Before', 'kadence-blocks'),
-		onClick: () => addRow('before'),
-	},
-	{
-		title: __('Add Row After', 'kadence-blocks'),
-		onClick: () => addRow('after'),
-	},
-	{
-		title: __('Add Row at Top', 'kadence-blocks'),
-		onClick: () => addRow('top'),
-	},
-	{
-		title: __('Add Row at Bottom', 'kadence-blocks'),
-		onClick: () => addRow('bottom'),
-	},
-];
-
-const innerBlockProps = {};
-const innerBlockPropOptions = {
-	allowedBlocks: ['kadence/table-data'],
-	renderAppender: false,
-	templateInsertUpdatesSelection: true,
-	templateLock: 'insert',
-	orientation: 'horizontal',
-};
 
 export function Edit(props) {
 	const { attributes, setAttributes, className, clientId, context } = props;
@@ -100,34 +78,57 @@ export function Edit(props) {
 		}
 	}, [index]);
 
-	const addRow = useCallback(
-		(position) => {
-			const insertIndex = {
-				before: index,
-				after: index + 1,
-				top: 0,
-				bottom: undefined,
-			}[position];
+	const addRow = (position) => {
+		let insertIndex;
 
-			if (insertIndex !== undefined) {
-				const newRow = createBlock('kadence/table-row', {});
-				insertBlock(newRow, insertIndex, parentClientId, false);
-			}
+		switch (position) {
+			case 'before':
+				insertIndex = index;
+				break;
+			case 'after':
+				insertIndex = index + 1;
+				break;
+			case 'top':
+				insertIndex = 0;
+				break;
+			case 'bottom':
+				insertIndex = undefined;
+				break;
+			default:
+				return;
+		}
+
+		const newRow = createBlock('kadence/table-row', {});
+		insertBlock(newRow, insertIndex, parentClientId, false);
+	};
+
+	const rowControls = [
+		{
+			title: __('Add Row Before', 'kadence-blocks'),
+			onClick: () => addRow('before'),
 		},
-		[index, parentClientId, insertBlock]
-	);
-
-	const rowControls = useMemo(() => createRowControls(addRow), [addRow]);
+		{
+			title: __('Add Row After', 'kadence-blocks'),
+			onClick: () => addRow('after'),
+		},
+		{
+			title: __('Add Row at Top', 'kadence-blocks'),
+			onClick: () => addRow('top'),
+		},
+		{
+			title: __('Add Row at Bottom', 'kadence-blocks'),
+			onClick: () => addRow('bottom'),
+		},
+	];
 
 	const [activeTab, setActiveTab] = useState('style');
 	const { getBlocks } = useSelect((select) => select('core/block-editor'));
 	const { replaceInnerBlocks } = useDispatch('core/block-editor');
-	const thisRowIsHeader = useMemo(
-		() => ({
-			'kadence/table/thisRowIsHeader': index === 0 && isFirstRowHeader,
-		}),
-		[index, isFirstRowHeader]
-	);
+	const thisRowIsHeader = useMemo(() => {
+		return index === 0 && isFirstRowHeader
+			? { 'kadence/table/thisRowIsHeader': true }
+			: { 'kadence/table/thisRowIsHeader': false };
+	}, [index, isFirstRowHeader]);
 
 	const nonTransAttrs = [];
 
@@ -163,20 +164,28 @@ export function Edit(props) {
 		}
 	}, [columns]);
 
-	const classNames = useMemo(
-		() =>
-			classnames({
+	const blockProps = useBlockProps({
+		className: classnames(
+			{
 				'kb-table-row': true,
 				[`kb-table-row${uniqueID}`]: uniqueID,
-			}),
-		[uniqueID]
-	);
-
-	const blockProps = useBlockProps({
-		className: classNames,
+			},
+			className
+		),
 	});
 
-	const { children } = useInnerBlocksProps(innerBlockProps, innerBlockPropOptions);
+	const { children, innerBlocksProps } = useInnerBlocksProps(
+		{
+			className: '',
+		},
+		{
+			allowedBlocks: ['kadence/table-data'],
+			renderAppender: false,
+			templateInsertUpdatesSelection: true,
+			templateLock: 'insert',
+			orientation: 'horizontal',
+		}
+	);
 
 	return (
 		<tr {...blockProps}>
