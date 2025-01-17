@@ -11,7 +11,7 @@ use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_authorization_token;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_license_domain;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\get_original_domain;
 use function KadenceWP\KadenceBlocks\StellarWP\Uplink\is_authorized;
-use function kadence_blocks_get_current_license_data;
+
 /**
  * Class responsible for sending events AI Events to Stellar Prophecy WP AI.
  */
