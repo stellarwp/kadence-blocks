@@ -1,13 +1,7 @@
-import {
-	KadenceBlocksCSS,
-	getFontSizeOptionOutput,
-	getPreviewSize,
-	getSpacingOptionOutput,
-	KadenceColorOutput,
-	useElementHeight,
-} from '@kadence/helpers';
+import { KadenceBlocksCSS, getPreviewSize, KadenceColorOutput } from '@kadence/helpers';
+import { memo } from '@wordpress/element';
 
-export default function BackendStyles(props) {
+function BackendStyles(props) {
 	const { attributes, previewDevice } = props;
 
 	const {
@@ -39,5 +33,11 @@ export default function BackendStyles(props) {
 
 	const cssOutput = css.css_output();
 
+	if (cssOutput === '') {
+		return null;
+	}
+
 	return <style>{`${cssOutput}`}</style>;
 }
+
+export default memo(BackendStyles);
