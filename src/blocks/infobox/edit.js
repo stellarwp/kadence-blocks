@@ -2761,8 +2761,8 @@ function KadenceInfoBox(props) {
 												onControl={(value) => setMediaBorderControl(value)}
 												min={0}
 												max={
-													mediaStyle[0].borderWidthUnit === 'px' ||
-													typeof mediaStyle[0].borderWidthUnit === 'undefined'
+													mediaStyle[0]?.borderWidthUnit === 'px' ||
+													mediaStyle[0]?.borderWidthUnit === 'undefined'
 														? 40
 														: 12
 												}
@@ -2781,8 +2781,8 @@ function KadenceInfoBox(props) {
 												step={1}
 												min={0}
 												max={
-													mediaStyle[0].borderRadiusUnit === 'px' ||
-													typeof mediaStyle[0].borderRadiusUnit === 'undefined'
+													mediaStyle[0]?.borderRadiusUnit === 'px' ||
+													mediaStyle[0]?.borderRadiusUnit === 'undefined'
 														? 200
 														: 12
 												}
@@ -2985,8 +2985,8 @@ function KadenceInfoBox(props) {
 												onControl={(value) => setMediaBorderControl(value)}
 												min={0}
 												max={
-													mediaStyle[0].borderWidthUnit === 'px' ||
-													typeof mediaStyle[0].borderWidthUnit === 'undefined'
+													mediaStyle[0]?.borderWidthUnit === 'px' ||
+													mediaStyle[0]?.borderWidthUnit === 'undefined'
 														? 40
 														: 12
 												}
@@ -3006,8 +3006,8 @@ function KadenceInfoBox(props) {
 												step={1}
 												min={0}
 												max={
-													mediaStyle[0].borderRadiusUnit === 'px' ||
-													typeof mediaStyle[0].borderRadiusUnit === 'undefined'
+													mediaStyle[0]?.borderRadiusUnit === 'px' ||
+													mediaStyle[0]?.borderRadiusUnit === 'undefined'
 														? 200
 														: 12
 												}
@@ -3229,8 +3229,8 @@ function KadenceInfoBox(props) {
 												onControl={(value) => setMediaBorderControl(value)}
 												min={0}
 												max={
-													mediaStyle[0].borderWidthUnit === 'px' ||
-													typeof mediaStyle[0].borderWidthUnit === 'undefined'
+													mediaStyle[0]?.borderWidthUnit === 'px' ||
+													mediaStyle[0]?.borderWidthUnit === 'undefined'
 														? 40
 														: 12
 												}
@@ -3249,8 +3249,8 @@ function KadenceInfoBox(props) {
 												step={1}
 												min={0}
 												max={
-													mediaStyle[0].borderRadiusUnit === 'px' ||
-													typeof mediaStyle[0].borderRadiusUnit === 'undefined'
+													mediaStyle[0]?.borderRadiusUnit === 'px' ||
+													mediaStyle[0]?.borderRadiusUnit === 'undefined'
 														? 200
 														: 12
 												}
