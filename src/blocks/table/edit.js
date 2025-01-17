@@ -1,6 +1,6 @@
 import { flow } from 'lodash';
 import { __, sprintf } from '@wordpress/i18n';
-import React, { useState, useEffect } from '@wordpress/element';
+import React, { useState, useEffect, useMemo } from '@wordpress/element';
 import { useSelect, useDispatch, dispatch, select } from '@wordpress/data';
 import { useBlockProps, BlockControls, InnerBlocks, useInnerBlocksProps } from '@wordpress/block-editor';
 import classnames from 'classnames';
@@ -43,6 +43,13 @@ import { plus } from '@wordpress/icons';
 
 const DEFAULT_PERCENT_WIDTH = 30;
 const DEFAULT_PIXEL_WIDTH = 150;
+
+const getColumnDefaults = () => ({
+	useAuto: true,
+	width: DEFAULT_PERCENT_WIDTH,
+	unit: '%',
+});
+const createTableRow = () => createBlock('kadence/table-row', {});
 
 export function Edit(props) {
 	const { attributes, setAttributes, className, isSelected, clientId } = props;
@@ -131,13 +138,18 @@ export function Edit(props) {
 
 	const nonTransAttrs = [];
 
-	const classes = classnames(
-		{
-			'kb-table-container': true,
-			[`kb-table-container${uniqueID}`]: uniqueID,
-		},
-		className
+	const classes = useMemo(
+		() =>
+			classnames(
+				{
+					'kb-table-container': true,
+					[`kb-table-container${uniqueID}`]: uniqueID,
+				},
+				className
+			),
+		[uniqueID, className]
 	);
+
 	const blockProps = useBlockProps({
 		className: classes,
 	});
@@ -212,15 +224,21 @@ export function Edit(props) {
 		return array && array[index] ? array[index] : '';
 	};
 
-	const innerBlocksProps = useInnerBlocksProps(
-		{
-			className: classnames(
+	const innerBlockClassName = useMemo(
+		() =>
+			classnames(
 				{
 					'kb-table': true,
 					[`kb-table${uniqueID}`]: uniqueID,
 				},
 				className
 			),
+		[uniqueID, className]
+	);
+
+	const innerBlocksProps = useInnerBlocksProps(
+		{
+			className: innerBlockClassName,
 			style: {},
 		},
 		{
@@ -229,10 +247,6 @@ export function Edit(props) {
 			templateInsertUpdatesSelection: false,
 		}
 	);
-
-	const createTableRow = () => {
-		return createBlock('kadence/table-row', {});
-	};
 
 	const handleInsertRowBelow = (index) => {
 		const { insertBlock } = dispatch('core/block-editor');
@@ -255,12 +269,6 @@ export function Edit(props) {
 		});
 		updateRowsColumns(placeholderRows);
 	};
-
-	const getColumnDefaults = () => ({
-		useAuto: true,
-		width: DEFAULT_PERCENT_WIDTH,
-		unit: '%',
-	});
 
 	const getColumnSetting = (index) => {
 		const settings = columnSettings || [];
