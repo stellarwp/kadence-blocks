@@ -12,7 +12,9 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          submodules: 'true'
 
       - name: Install dependencies
         run: |
@@ -27,7 +29,7 @@ jobs:
         uses: wordpress/plugin-check-action@v1
         with:
           build-dir: './'
-          exclude-directories: 'vendor,src'
+          exclude-directories: 'vendor,src,node_modules'
           categories: |
             performance
             accessibility
