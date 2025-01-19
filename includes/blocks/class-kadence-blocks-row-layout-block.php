@@ -1525,6 +1525,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 					'modestbranding' => 1,
 					'playsinline' => 1,
 					'rel' => 0,
+					'background' => 1,
 				)
 			);
 
