@@ -1831,7 +1831,9 @@ function KadenceInfoBox(props) {
 				  )} !important; }`
 				: ''}
 			{mediaStyle[0].borderRadius && mediaStyle[0].padding.some((number) => number > 0)
-				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .kadence-info-box-image-intrisic img, .kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .block-editor-media-placeholder { border-radius: ${mediaStyle[0].borderRadius}px !important; }`
+				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .kadence-info-box-image-intrisic img, .kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .block-editor-media-placeholder { border-radius: ${
+						mediaStyle[0].borderRadius
+				  }${mediaStyle[0].borderRadiusUnit ?? 'px'} !important; }`
 				: ''}
 			{titleHoverColor
 				? `.kb-info-box-wrap${uniqueID} .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-title { color: ${KadenceColorOutput(
@@ -2758,18 +2760,38 @@ function KadenceInfoBox(props) {
 												onChange={(value) => saveMediaStyle({ borderWidth: value })}
 												onControl={(value) => setMediaBorderControl(value)}
 												min={0}
-												max={40}
+												max={
+													mediaStyle[0]?.borderWidthUnit === 'px' ||
+													mediaStyle[0]?.borderWidthUnit === 'undefined'
+														? 40
+														: 12
+												}
 												step={1}
-												reset={() => saveMediaStyle({ borderWidth: [0, 0, 0, 0] })}
+												reset={() =>
+													saveMediaStyle({ borderWidth: [0, 0, 0, 0], borderWidthUnit: 'px' })
+												}
+												showUnit={true}
+												unit={mediaStyle[0].borderWidthUnit ?? 'px'}
+												onUnit={(value) => saveMediaStyle({ borderWidthUnit: value })}
 											/>
 											<RangeControl
-												label={__('Image Border Radius (px)', 'kadence-blocks')}
+												label={__('Image Border Radius', 'kadence-blocks')}
 												value={mediaStyle[0].borderRadius}
 												onChange={(value) => saveMediaStyle({ borderRadius: value })}
 												step={1}
 												min={0}
-												max={200}
-												reset={() => saveMediaStyle({ borderRadius: 0 })}
+												max={
+													mediaStyle[0]?.borderRadiusUnit === 'px' ||
+													mediaStyle[0]?.borderRadiusUnit === 'undefined'
+														? 200
+														: 12
+												}
+												reset={() =>
+													saveMediaStyle({ borderRadius: 0, borderRadiusUnit: 'px' })
+												}
+												showUnit={true}
+												unit={mediaStyle[0].borderRadiusUnit ?? 'px'}
+												onUnit={(value) => saveMediaStyle({ borderRadiusUnit: value })}
 											/>
 											<TabPanel
 												className="kt-inspect-tabs kt-hover-tabs"
@@ -2949,7 +2971,7 @@ function KadenceInfoBox(props) {
 													value={mediaIcon[0].width}
 													defaultValue={2}
 													onChange={(value) => saveMediaIcon({ width: value })}
-													step={0.5}
+													step={0.1}
 													min={0.5}
 													max={4}
 													reset={true}
@@ -2962,19 +2984,39 @@ function KadenceInfoBox(props) {
 												onChange={(value) => saveMediaStyle({ borderWidth: value })}
 												onControl={(value) => setMediaBorderControl(value)}
 												min={0}
-												max={40}
+												max={
+													mediaStyle[0]?.borderWidthUnit === 'px' ||
+													mediaStyle[0]?.borderWidthUnit === 'undefined'
+														? 40
+														: 12
+												}
 												step={1}
-												reset={() => saveMediaStyle({ borderWidth: [0, 0, 0, 0] })}
+												reset={() =>
+													saveMediaStyle({ borderWidth: [0, 0, 0, 0], borderWidthUnit: 'px' })
+												}
+												showUnit={true}
+												unit={mediaStyle[0].borderWidthUnit ?? 'px'}
+												onUnit={(value) => saveMediaStyle({ borderWidthUnit: value })}
 											/>
 											<RangeControl
-												label={__('Icon Border Radius (px)', 'kadence-blocks')}
+												label={__('Icon Border Radius', 'kadence-blocks')}
 												value={mediaStyle[0].borderRadius}
 												defaultValue={0}
 												onChange={(value) => saveMediaStyle({ borderRadius: value })}
 												step={1}
 												min={0}
-												max={200}
-												reset={true}
+												max={
+													mediaStyle[0]?.borderRadiusUnit === 'px' ||
+													mediaStyle[0]?.borderRadiusUnit === 'undefined'
+														? 200
+														: 12
+												}
+												reset={() =>
+													saveMediaStyle({ borderRadius: 0, borderRadiusUnit: 'px' })
+												}
+												showUnit={true}
+												unit={mediaStyle[0].borderRadiusUnit ?? 'px'}
+												onUnit={(value) => saveMediaStyle({ borderRadiusUnit: value })}
 											/>
 											<SelectControl
 												label={__('Icon Hover Animation', 'kadence-blocks')}
@@ -3138,10 +3180,14 @@ function KadenceInfoBox(props) {
 												onChange={(value) => saveMediaIcon({ size: value })}
 												onChangeTablet={(value) => saveMediaIcon({ tabletSize: value })}
 												onChangeMobile={(value) => saveMediaIcon({ mobileSize: value })}
-												min={5}
-												max={250}
+												min={['em', 'rem'].includes(mediaIcon[0].unit) ? 1 : 5}
+												max={['em', 'rem'].includes(mediaIcon[0].unit) ? 12 : 250}
 												step={1}
 												reset={true}
+												showUnit={true}
+												onUnit={(value) => saveMediaIcon({ unit: value })}
+												units={['px', 'em', 'rem']}
+												unit={mediaIcon[0].unit ? mediaIcon[0].unit : 'px'}
 											/>
 											<TypographyControls
 												fontGroup={'body'}
@@ -3182,18 +3228,41 @@ function KadenceInfoBox(props) {
 												onChange={(value) => saveMediaStyle({ borderWidth: value })}
 												onControl={(value) => setMediaBorderControl(value)}
 												min={0}
-												max={40}
+												max={
+													mediaStyle[0]?.borderWidthUnit === 'px' ||
+													mediaStyle[0]?.borderWidthUnit === 'undefined'
+														? 40
+														: 12
+												}
 												step={1}
-												reset={() => saveMediaStyle({ borderWidth: [0, 0, 0, 0] })}
+												reset={() =>
+													saveMediaStyle({ borderWidth: [0, 0, 0, 0], borderWidthUnit: 'px' })
+												}
+												showUnit={true}
+												unit={mediaStyle[0].borderWidthUnit ?? 'px'}
+												onUnit={(value) => saveMediaStyle({ borderWidthUnit: value })}
 											/>
 											<RangeControl
-												label={__('Number Border Radius (px)', 'kadence-blocks')}
+												label={__('Number Border Radius', 'kadence-blocks')}
 												value={mediaStyle[0].borderRadius}
 												onChange={(value) => saveMediaStyle({ borderRadius: value })}
 												step={1}
 												min={0}
-												max={200}
-												reset={() => saveMediaStyle({ borderRadius: [0, 15, 0, 15] })}
+												max={
+													mediaStyle[0]?.borderRadiusUnit === 'px' ||
+													mediaStyle[0]?.borderRadiusUnit === 'undefined'
+														? 200
+														: 12
+												}
+												reset={() =>
+													saveMediaStyle({
+														borderRadius: [0, 15, 0, 15],
+														borderRadiusUnit: 'px',
+													})
+												}
+												showUnit={true}
+												unit={mediaStyle[0].borderRadiusUnit ?? 'px'}
+												onUnit={(value) => saveMediaStyle({ borderRadiusUnit: value })}
 											/>
 											<SelectControl
 												label={__('Number Hover Animation', 'kadence-blocks')}
@@ -4116,16 +4185,19 @@ function KadenceInfoBox(props) {
 							style={{
 								borderColor: KadenceColorOutput(mediaStyle[0].border),
 								backgroundColor: KadenceColorOutput(mediaStyle[0].background),
-								borderRadius: mediaStyle[0].borderRadius + 'px',
+								borderRadius: mediaStyle[0].borderRadius + (mediaStyle[0].borderRadiusUnit ?? 'px'),
 								borderWidth: mediaStyle[0].borderWidth
 									? mediaStyle[0].borderWidth[0] +
-									  'px ' +
+									  (mediaStyle[0].borderWidthUnit ?? 'px') +
+									  ' ' +
 									  mediaStyle[0].borderWidth[1] +
-									  'px ' +
+									  (mediaStyle[0].borderWidthUnit ?? 'px') +
+									  ' ' +
 									  mediaStyle[0].borderWidth[2] +
-									  'px ' +
+									  (mediaStyle[0].borderWidthUnit ?? 'px') +
+									  ' ' +
 									  mediaStyle[0].borderWidth[3] +
-									  'px'
+									  (mediaStyle[0].borderWidthUnit ?? 'px')
 									: '',
 								padding: mediaStyle[0].padding
 									? mediaStyle[0].padding[0] +

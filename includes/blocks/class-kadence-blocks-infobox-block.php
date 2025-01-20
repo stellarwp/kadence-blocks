@@ -344,20 +344,21 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'border-color', $css->render_color( $media_style['border'] ) );
 		}
 		if ( isset( $media_style['borderRadius'] ) && ! empty( $media_style['borderRadius'] ) ) {
-			$css->add_property( 'border-radius', $media_style['borderRadius'] . 'px' );
+			$css->add_property( 'border-radius', $media_style['borderRadius'] . ( isset( $media_style['borderRadiusUnit'] )  ? $media_style['borderRadiusUnit'] : 'px' ) );
 		}
 		if ( isset( $media_style['borderWidth'] ) && is_array( $media_style['borderWidth'] ) ) {
+			$border_width_unit = isset( $media_style['borderWidthUnit'] ) ? $media_style['borderWidthUnit'] : 'px';
 			if ( isset( $media_style['borderWidth'][0] ) && is_numeric( $media_style['borderWidth'][0] ) ) {
-				$css->add_property( 'border-top-width', $media_style['borderWidth'][0] . 'px' );
+				$css->add_property( 'border-top-width', $media_style['borderWidth'][0] . $border_width_unit );
 			}
 			if ( isset( $media_style['borderWidth'][1] ) && is_numeric( $media_style['borderWidth'][1] ) ) {
-				$css->add_property( 'border-right-width', $media_style['borderWidth'][1] . 'px' );
+				$css->add_property( 'border-right-width', $media_style['borderWidth'][1] . $border_width_unit );
 			}
 			if ( isset( $media_style['borderWidth'][2] ) && is_numeric( $media_style['borderWidth'][2] ) ) {
-				$css->add_property( 'border-bottom-width', $media_style['borderWidth'][2] . 'px' );
+				$css->add_property( 'border-bottom-width', $media_style['borderWidth'][2] . $border_width_unit );
 			}
 			if ( isset( $media_style['borderWidth'][3] ) && is_numeric( $media_style['borderWidth'][3] ) ) {
-				$css->add_property( 'border-left-width', $media_style['borderWidth'][3] . 'px' );
+				$css->add_property( 'border-left-width', $media_style['borderWidth'][3] . $border_width_unit );
 			}
 		}
 		$padding_unit = isset( $media_style['paddingUnit'] ) ? $media_style['paddingUnit'] : 'px';
@@ -407,7 +408,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		if ( isset( $media_style['borderRadius'] ) && ! empty( $media_style['borderRadius'] ) && isset( $media_style['padding'] ) && is_array( $media_style['padding'] ) && ! empty( array_filter( $media_style['padding'], fn($value) => $value > 0 ) ) ) {
 			$css->set_selector( $base_selector . ' .kt-blocks-info-box-media .kadence-info-box-image-intrisic img' );
-			$css->add_property( 'border-radius', $media_style['borderRadius'] . 'px' );
+			$css->add_property( 'border-radius', $media_style['borderRadius'] . (isset( $media_style['borderRadiusUnit'] ) ? $media_style['borderRadiusUnit'] : 'px') );
 		}
 		$css->set_selector( $base_selector . ' .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media' );
 		if ( isset( $media_icon['hoverColor'] ) && ! empty( $media_icon['hoverColor'] ) ) {
