@@ -695,12 +695,12 @@ class Kadence_Blocks_Navigation_Link_Block extends Kadence_Blocks_Abstract_Block
 		}
 
 		$link_target = '';
-		if ( $attributes['target'] ) {
+		if ( !empty( $attributes['target'] ) ) {
 			$link_target .= 'target="' . esc_attr( $attributes['target'] ) . '"';
 		}
 
 		$link_rel = '';
-		if ( $attributes['rel'] ) {
+		if ( !empty( $attributes['rel'] ) ) {
 			$link_rel .= 'rel="' . esc_attr( $attributes['rel'] ) . '"';
 		}
 
