@@ -243,9 +243,6 @@ class Kadence_Blocks_Progress_Bar_Block extends Kadence_Blocks_Abstract_Block {
 		$progress_args = [
 			'class' => 'kb-progress-bar kb-progress-bar-' . esc_attr( $unique_id ),
 		];
-		if ( ! empty( $attributes['label'] ) && ( ! isset( $attributes['displayLabel'] ) || ( isset( $attributes['displayLabel'] ) && $attributes['displayLabel'] !== false ) ) ) {
-			$progress_args['aria-labelledby'] = 'kt-progress-label' . esc_attr( $unique_id );
-		}
 		$mask = ! empty( $attributes['maskSvg'] ) ? $attributes['maskSvg'] : 'star';
 		if ( ! empty( $attributes['ariaLabel'] ) ) {
 			$progress_args['aria-label'] = $attributes['ariaLabel'];
