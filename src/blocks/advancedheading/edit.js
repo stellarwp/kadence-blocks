@@ -124,9 +124,7 @@ function KadenceAdvancedHeading(props) {
 		textShadow,
 		textShadowTablet,
 		textShadowMobile,
-		enableTextOrientation,
 		textOrientation,
-		textWritingMode,
 		mobileAlign,
 		tabletAlign,
 		size,
@@ -1015,8 +1013,8 @@ function KadenceAdvancedHeading(props) {
 									previewColorTextShadow
 							  )}`
 							: undefined,
-						writingMode: enableTextOrientation ? textWritingMode : 'horizontal-tb',
-						textOrientation: enableTextOrientation ? textOrientation : 'mixed',
+						writingMode: textOrientation === 'horizontal' ? '' : textOrientation === 'stacked' || textOrientation === 'sideways-down' ? 'vertical-lr' : textOrientation === 'sideways-up'? 'sideways-lr' : '',
+						textOrientation: textOrientation === 'horizontal' || textOrientation === 'sideways-down' ? '' : textOrientation === 'stacked' ? 'upright' : '',
 					}}
 					placeholder={__('Write something…', 'kadence-blocks')}
 				/>
@@ -1785,39 +1783,35 @@ function KadenceAdvancedHeading(props) {
 								initialOpen={false}
 								panelName={'kb-adv-heading-text-orientation'}
 							>
-								<ToggleControl
-									label={'Enable Vertical Text'}
-									checked={enableTextOrientation}
-									onChange={(value) => {
-										setAttributes({ enableTextOrientation: value });
-									}}
+								<KadenceRadioButtons
+									label={__('Orientation', 'kadence-blocks')}
+									value={textOrientation}
+									className={'kb-letter-case'}
+									options={[
+										{
+											value: 'horizontal',
+											label: __('Horizontal', 'kadence-blocks'),
+											tooltip: __('Horizontal', 'kadence-blocks'),
+										},
+										{
+											value: 'stacked',
+											label: __('Stacked Vertically', 'kadence-blocks'),
+											tooltip: __('Stacked Vertically', 'kadence-blocks'),
+										},
+										{
+											value: 'sideways-up',
+											label: __('Sideways Up', 'kadence-blocks'),
+											tooltip: __('Sideways Up', 'kadence-blocks'),
+										},
+										{
+											value: 'sideways-down',
+											label: __('Sideways Down', 'kadence-blocks'),
+											tooltip: __('Sideways Down', 'kadence-blocks'),
+										},
+									]}
+									allowClear={true}
+									onChange={(value) => setAttributes({ textOrientation: value })}
 								/>
-								{enableTextOrientation === true && (
-									<>
-										<SelectControl
-											label={__('Writing Mode', 'kadence-blocks')}
-											value={textWritingMode}
-											options={[
-												{ value: 'vertical-lr', label: __('Vertical-LR', 'kadence-blocks') },
-												// { value: 'vertical-lr', label: __('Vertical-LR', 'kadence-blocks') },
-												{ value: 'vertical-rl', label: __('Vertical-RL', 'kadence-blocks') },
-												{ value: 'sideways-lr', label: __('Sideways-LR', 'kadence-blocks') },
-												{ value: 'sideways-rl', label: __('Sideways-RL', 'kadence-blocks') },
-											]}
-											onChange={(value) => setAttributes({ textWritingMode: value })}
-										/>
-										<SelectControl
-											label={__('Text Orientation', 'kadence-blocks')}
-											value={textOrientation}
-											options={[
-												{ value: '', label: __('Mixed', 'kadence-blocks') },
-												{ value: 'upright', label: __('Upright', 'kadence-blocks') },
-												{ value: 'sideways', label: __('Sideways', 'kadence-blocks') },
-											]}
-											onChange={(value) => setAttributes({ textOrientation: value })}
-										/>
-									</>
-								)}
 							</KadencePanelBody>
 							{showSettings('iconSettings', 'kadence/advancedheading') && (
 								<KadencePanelBody

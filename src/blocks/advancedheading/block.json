@@ -327,16 +327,9 @@
 			"type": "boolean",
 			"default": false
 		},
-		"enableTextOrientation": {
-			"type": "boolean",
-			"default": false
-		},
 		"textOrientation": {
-			"type": "string"
-		},
-		"textWritingMode": {
 			"type": "string",
-			"default": "vertical-lr"
+			"default": "horizontal"
 		},
 		"textShadow": {
 			"type": "array",
