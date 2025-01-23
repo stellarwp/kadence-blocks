@@ -1013,8 +1013,20 @@ function KadenceAdvancedHeading(props) {
 									previewColorTextShadow
 							  )}`
 							: undefined,
-						writingMode: textOrientation === 'horizontal' ? '' : textOrientation === 'stacked' || textOrientation === 'sideways-down' ? 'vertical-lr' : textOrientation === 'sideways-up'? 'sideways-lr' : '',
-						textOrientation: textOrientation === 'horizontal' || textOrientation === 'sideways-down' ? '' : textOrientation === 'stacked' ? 'upright' : '',
+						writingMode:
+							textOrientation === 'horizontal'
+								? ''
+								: textOrientation === 'stacked' || textOrientation === 'sideways-down'
+								? 'vertical-lr'
+								: textOrientation === 'sideways-up'
+								? 'sideways-lr'
+								: '',
+						textOrientation:
+							textOrientation === 'horizontal' || textOrientation === 'sideways-down'
+								? ''
+								: textOrientation === 'stacked'
+								? 'upright'
+								: '',
 					}}
 					placeholder={__('Write something…', 'kadence-blocks')}
 				/>
