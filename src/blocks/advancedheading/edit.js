@@ -64,10 +64,6 @@ import './formats/markformat';
 import './formats/typed-text';
 import './formats/tooltips';
 import AIText from './ai-text/ai-text.js';
-// import { ReactComponent as HorizontalIcon } from './icons/horizontal.svg';
-// import { ReactComponent as StackedIcon } from './icons/stacked-vertically.svg';
-// import { ReactComponent as SidewaysDownIcon } from './icons/sideways-down.svg';
-// import { ReactComponent as SidewaysUpIcon } from './icons/sideways-up.svg';
 
 import Typed from 'typed.js';
 
@@ -1145,25 +1141,15 @@ function KadenceAdvancedHeading(props) {
 		}
 	}, [isSelected]);
 
-	// const horizontalIcon = (
-	// 	<svg id="b" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 141.73 139.79">
-	// 		<g id="c"><path d="M85.44,97.69h-41.05l-5.7,19.31H1.78L45.75,0h39.44l43.96,117h-37.86l-5.85-19.31ZM77.94,72.39l-12.91-42.06-12.78,42.06h25.69Z" style={{ fill:'#000', strokeWidth:'0px' }}/>
-	// 			<polygon points="141.73 131.23 132.91 122.67 132.91 128.26 0 128.26 0 134.2 132.91 134.2 132.91 139.79 141.73 131.23" style={{ fill:'#000', strokeWidth:'0px' }}/>
-	// 		</g>
-	// 	</svg>
-	// );
 	const horizontalIcon = (
 		<div style={{ height: '24px', width: '24px' }}>
-			{/*<HorizontalIcon />*/}
 			<svg id="b" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 141.73 139.79">
 				<g id="c">
 					<path
 						d="M85.44,97.69h-41.05l-5.7,19.31H1.78L45.75,0h39.44l43.96,117h-37.86l-5.85-19.31ZM77.94,72.39l-12.91-42.06-12.78,42.06h25.69Z"
-						style={{ fill: '#000', strokeWidth: '0px' }}
 					/>
 					<polygon
 						points="141.73 131.23 132.91 122.67 132.91 128.26 0 128.26 0 134.2 132.91 134.2 132.91 139.79 141.73 131.23"
-						style={{ fill: '#000', strokeWidth: '0px' }}
 					/>
 				</g>
 			</svg>
@@ -1171,16 +1157,13 @@ function KadenceAdvancedHeading(props) {
 	);
 	const stackedIcon = (
 		<div style={{ height: '24px', width: '24px' }}>
-			{/*<StackedIcon />*/}
 			<svg id="b" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 149.84 133.3">
 				<g id="c">
 					<path
 						d="M106.13,97.69h-41.05l-5.7,19.31H22.46L66.44,0h39.44l43.96,117h-37.86l-5.85-19.31ZM98.63,72.39l-12.91-42.06-12.78,42.06h25.69Z"
-						style={{ fill: '#000', strokeWidth: '0px' }}
 					/>
 					<polygon
 						points="8.56 133.3 17.11 125 11.53 125 11.53 0 5.59 0 5.59 125 0 125 8.56 133.3"
-						style={{ fill: '#000', strokeWidth: '0px' }}
 					/>
 				</g>
 			</svg>
@@ -1188,16 +1171,13 @@ function KadenceAdvancedHeading(props) {
 	);
 	const sidewaysDownIcon = (
 		<div style={{ height: '24px', width: '24px' }}>
-			{/*<SidewaysDownIcon />*/}
 			<svg id="b" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 139.79 141.73">
 				<g id="c">
 					<path
 						d="M42.1,90.84v-41.05l-19.31-5.7V7.18l117,43.97v39.44l-117,43.96v-37.86l19.31-5.85ZM67.4,83.34l42.06-12.91-42.06-12.78v25.69Z"
-						style={{ fill: '#000', strokeWidth: '0px' }}
 					/>
 					<polygon
 						points="8.56 141.73 17.11 132.91 11.53 132.91 11.53 0 5.59 0 5.59 132.91 0 132.91 8.56 141.73"
-						style={{ fill: '#000', strokeWidth: '0px' }}
 					/>
 				</g>
 			</svg>
@@ -1205,16 +1185,13 @@ function KadenceAdvancedHeading(props) {
 	);
 	const sidewaysUpIcon = (
 		<div style={{ height: '24px', width: '24px' }}>
-			{/*<SidewaysUpIcon />*/}
 			<svg id="b" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 139.79 141.73">
 				<g id="c">
 					<path
 						d="M97.69,50.89v41.05s19.31,5.7,19.31,5.7v36.91S0,90.58,0,90.58v-39.44S117,7.18,117,7.18v37.86s-19.31,5.85-19.31,5.85ZM72.39,58.39l-42.06,12.91,42.06,12.78v-25.69Z"
-						style={{ fill: '#000', strokeWidth: '0px' }}
 					/>
 					<polygon
 						points="131.23 0 122.67 8.83 128.26 8.83 128.26 141.73 134.2 141.73 134.2 8.83 139.79 8.83 131.23 0"
-						style={{ fill: '#000', strokeWidth: '0px' }}
 					/>
 				</g>
 			</svg>
