@@ -38,9 +38,16 @@ import {
 	DynamicTextControl,
 	DynamicInlineReplaceControl,
 	GradientControl,
+	ResponsiveKadenceRadioButtons,
 } from '@kadence/components';
 
-import { dynamicIcon } from '@kadence/icons';
+import {
+	dynamicIcon,
+	horizontalTextOrientationIcon,
+	stackedTextOrientationIcon,
+	sidewaysDownTextOrientationIcon,
+	sidewaysUpTextOrientationIcon,
+} from '@kadence/icons';
 
 import {
 	KadenceColorOutput,
@@ -125,6 +132,8 @@ function KadenceAdvancedHeading(props) {
 		textShadowTablet,
 		textShadowMobile,
 		textOrientation,
+		tabletTextOrientation,
+		mobileTextOrientation,
 		mobileAlign,
 		tabletAlign,
 		size,
@@ -762,6 +771,12 @@ function KadenceAdvancedHeading(props) {
 		undefined !== tabletMarkBorderRadius ? tabletMarkBorderRadius[3] : '',
 		undefined !== mobileMarkBorderRadius ? mobileMarkBorderRadius[3] : ''
 	);
+	const previewTextOrientation = getPreviewSize(
+		previewDevice,
+		undefined !== textOrientation ? textOrientation : '',
+		undefined !== tabletTextOrientation ? tabletTextOrientation : '',
+		undefined !== mobileTextOrientation? mobileTextOrientation : ''
+	);
 	const markBorderRadiusUnitPreview = undefined !== markBorderRadiusUnit ? markBorderRadiusUnit : 'px';
 	let backgroundIgnoreClass = backgroundColorClass ? false : true;
 	if (!backgroundIgnoreClass && !kadence_blocks_params.isKadenceT && background && background.startsWith('palette')) {
@@ -1014,17 +1029,13 @@ function KadenceAdvancedHeading(props) {
 							  )}`
 							: undefined,
 						writingMode:
-							textOrientation === 'horizontal'
-								? ''
-								: textOrientation === 'stacked' || textOrientation === 'sideways-down'
+							previewTextOrientation === 'stacked' || previewTextOrientation === 'sideways-down'
 								? 'vertical-lr'
-								: textOrientation === 'sideways-up'
+								: previewTextOrientation === 'sideways-up'
 								? 'sideways-lr'
 								: '',
 						textOrientation:
-							textOrientation === 'horizontal' || textOrientation === 'sideways-down'
-								? ''
-								: textOrientation === 'stacked'
+							previewTextOrientation === 'stacked'
 								? 'upright'
 								: '',
 					}}
@@ -1836,34 +1847,37 @@ function KadenceAdvancedHeading(props) {
 								initialOpen={false}
 								panelName={'kb-adv-heading-text-orientation'}
 							>
-								<KadenceRadioButtons
+								<ResponsiveKadenceRadioButtons
 									label={__('Orientation', 'kadence-blocks')}
-									value={textOrientation}
-									className={'kb-letter-case'}
+									value={previewTextOrientation}
+									tabletValue={previewTextOrientation}
+									mobileValue={previewTextOrientation}
+									className={'kb-text-orientation'}
 									options={[
 										{
 											value: 'horizontal',
 											tooltip: __('Horizontal', 'kadence-blocks'),
-											icon: horizontalIcon,
+											icon: horizontalTextOrientationIcon,
 										},
 										{
 											value: 'stacked',
 											tooltip: __('Stacked Vertically', 'kadence-blocks'),
-											icon: stackedIcon,
+											icon: stackedTextOrientationIcon,
 										},
 										{
 											value: 'sideways-down',
 											tooltip: __('Sideways Down', 'kadence-blocks'),
-											icon: sidewaysDownIcon,
+											icon: sidewaysDownTextOrientationIcon,
 										},
 										{
 											value: 'sideways-up',
 											tooltip: __('Sideways Up', 'kadence-blocks'),
-											icon: sidewaysUpIcon,
+											icon: sidewaysUpTextOrientationIcon,
 										},
 									]}
-									allowClear={true}
 									onChange={(value) => setAttributes({ textOrientation: value })}
+									onChangeTablet={(value) => setAttributes({ tabletTextOrientation: value })}
+									onChangeMobile={(value) => setAttributes({ mobileTextOrientation: value })}
 								/>
 							</KadencePanelBody>
 							{showSettings('iconSettings', 'kadence/advancedheading') && (
