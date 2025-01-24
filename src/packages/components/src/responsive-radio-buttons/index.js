@@ -37,6 +37,7 @@ export default function ResponsiveKadenceRadioButtons({
 			desktopChildren={
 				<KadenceRadioButtons
 					// className={'kadence-row-layout-radio-btns kb-acccordion-column-layout'}
+					className={className}
 					value={value}
 					options={options}
 					onChange={onChange}
@@ -49,6 +50,7 @@ export default function ResponsiveKadenceRadioButtons({
 			tabletChildren={
 				<KadenceRadioButtons
 					// className={'kadence-row-layout-radio-btns kb-acccordion-column-layout'}
+					className={className}
 					value={tabletValue}
 					options={tabletOptions}
 					onChange={onChangeTablet}
@@ -61,6 +63,7 @@ export default function ResponsiveKadenceRadioButtons({
 			mobileChildren={
 				<KadenceRadioButtons
 					// className={'kadence-row-layout-radio-btns kb-acccordion-column-layout'}
+					className={className}
 					value={mobileValue}
 					options={mobileOptions}
 					onChange={onChangeMobile}

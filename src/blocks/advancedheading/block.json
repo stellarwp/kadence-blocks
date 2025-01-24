@@ -327,6 +327,16 @@
 			"type": "boolean",
 			"default": false
 		},
+		"textOrientation": {
+			"type": "string"
+		},
+		"tabletTextOrientation": {
+			"type": "string"
+		},
+		"mobileTextOrientation": {
+			"type": "string"
+		},
+
 		"textShadow": {
 			"type": "array",
 			"default": [

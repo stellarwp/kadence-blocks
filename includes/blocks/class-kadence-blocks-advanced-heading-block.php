@@ -204,7 +204,62 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 				$css->add_property( 'text-shadow', ( isset( $attributes['textShadowMobile'][0]['hOffset'] ) && ! empty( $attributes['textShadowMobile'][0]['hOffset'] ) ? $attributes['textShadowMobile'][0]['hOffset'] : ( isset( $attributes['textShadowTablet'][0]['hOffset'] ) && ! empty( $attributes['textShadowTablet'][0]['hOffset'] ) ? $attributes['textShadowTablet'][0]['hOffset'] : $attributes['textShadow'][0]['hOffset']) ) . 'px ' . (  isset( $attributes['textShadowMobile'][0]['vOffset'] ) && ! empty( $attributes['textShadowMobile'][0]['vOffset'] ) ? $attributes['textShadowMobile'][0]['vOffset'] : (isset( $attributes['textShadowTablet'][0]['vOffset'] ) && ! empty( $attributes['textShadowTablet'][0]['vOffset'] ) ? $attributes['textShadowTablet'][0]['vOffset'] : $attributes['textShadow'][0]['vOffset']) ) . 'px ' . ( isset( $attributes['textShadowMobile'][0]['blur'] ) && ! empty( $attributes['textShadowMobile'][0]['blur'] ) ? $attributes['textShadowMobile'][0]['blur'] : (isset( $attributes['textShadowTablet'][0]['blur'] ) && ! empty( $attributes['textShadowTablet'][0]['blur'] ) ? $attributes['textShadowTablet'][0]['blur']  : $attributes['textShadow'][0]['blur']) ) . 'px ' . (isset($attributes['textShadowMobile'][0]['color']) && ! empty($attributes['textShadowMobile'][0]['color']) ? $css->render_color($attributes['textShadowMobile'][0]['color']) : (isset($attributes['textShadowTablet'][0]['color']) && !empty($attributes['textShadowTablet'][0]['color']) ? $css->render_color($attributes['textShadowTablet'][0]['color']) : $css->render_color($attributes['textShadow'][0]['color']))) );
 			}
 		}
-
+		if ( isset($attributes['textOrientation']) ) {
+			switch ( $attributes['textOrientation'] ) {
+				case 'horizontal':
+					$css->add_property( 'writing-mode', 'horizontal-tb' );
+					$css->add_property( 'text-orientation', 'mixed' );
+					break;
+				case 'stacked':
+					$css->add_property( 'writing-mode', 'vertical-lr' );
+					$css->add_property( 'text-orientation', 'upright' );
+					break;
+				case 'sideways-down':
+					$css->add_property( 'writing-mode', 'vertical-lr' );
+					break;
+				case 'sideways-up':
+					$css->add_property( 'writing-mode', 'sideways-lr' );
+					break;
+			}
+		}
+		if ( isset($attributes['tabletTextOrientation']) ) {
+			$css->set_media_state('tablet');
+			switch ( $attributes['tabletTextOrientation'] ) {
+				case 'horizontal':
+					$css->add_property( 'writing-mode', 'horizontal-tb' );
+					$css->add_property( 'text-orientation', 'mixed' );
+					break;
+				case 'stacked':
+					$css->add_property( 'writing-mode', 'vertical-lr' );
+					$css->add_property( 'text-orientation', 'upright' );
+					break;
+				case 'sideways-down':
+					$css->add_property( 'writing-mode', 'vertical-lr' );
+					break;
+				case 'sideways-up':
+					$css->add_property( 'writing-mode', 'sideways-lr' );
+					break;
+			}
+		}
+		if ( isset($attributes['mobileTextOrientation']) ) {
+			$css->set_media_state('mobile');
+			switch ( $attributes['mobileTextOrientation'] ) {
+				case 'horizontal':
+					$css->add_property( 'writing-mode', 'horizontal-tb' );
+					$css->add_property( 'text-orientation', 'mixed' );
+					break;
+				case 'stacked':
+					$css->add_property( 'writing-mode', 'vertical-lr' );
+					$css->add_property( 'text-orientation', 'upright' );
+					break;
+				case 'sideways-down':
+					$css->add_property( 'writing-mode', 'vertical-lr' );
+					break;
+				case 'sideways-up':
+					$css->add_property( 'writing-mode', 'sideways-lr' );
+					break;
+			}
+		}
 
 		$css->set_media_state( 'tablet' );
 		// Old size first.
