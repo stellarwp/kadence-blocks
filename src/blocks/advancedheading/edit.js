@@ -775,7 +775,7 @@ function KadenceAdvancedHeading(props) {
 		previewDevice,
 		undefined !== textOrientation ? textOrientation : '',
 		undefined !== tabletTextOrientation ? tabletTextOrientation : '',
-		undefined !== mobileTextOrientation? mobileTextOrientation : ''
+		undefined !== mobileTextOrientation ? mobileTextOrientation : ''
 	);
 	const markBorderRadiusUnitPreview = undefined !== markBorderRadiusUnit ? markBorderRadiusUnit : 'px';
 	let backgroundIgnoreClass = backgroundColorClass ? false : true;
@@ -1034,10 +1034,7 @@ function KadenceAdvancedHeading(props) {
 								: previewTextOrientation === 'sideways-up'
 								? 'sideways-lr'
 								: '',
-						textOrientation:
-							previewTextOrientation === 'stacked'
-								? 'upright'
-								: '',
+						textOrientation: previewTextOrientation === 'stacked' ? 'upright' : '',
 					}}
 					placeholder={__('Write something…', 'kadence-blocks')}
 				/>
