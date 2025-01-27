@@ -258,3 +258,10 @@ export { default as headerSectionBlockIcon } from './block-icons/header-section'
 export { default as headerRowBlockIcon } from './block-icons/header-row';
 export { default as headerColumnBlockIcon } from './block-icons/header-column';
 export { default as searchBlockIcon } from './block-icons/search';
+
+// Text Orientation
+export { default as horizontalTextOrientationIcon } from './text-orientation/horizontal';
+export { default as stackedTextOrientationIcon } from './text-orientation/stacked-vertical';
+export { default as sidewaysDownTextOrientationIcon } from './text-orientation/sideways-down';
+export { default as sidewaysUpTextOrientationIcon } from './text-orientation/sideways-up';
+

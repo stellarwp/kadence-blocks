@@ -38,9 +38,16 @@ import {
 	DynamicTextControl,
 	DynamicInlineReplaceControl,
 	GradientControl,
+	ResponsiveKadenceRadioButtons,
 } from '@kadence/components';
 
-import { dynamicIcon } from '@kadence/icons';
+import {
+	dynamicIcon,
+	horizontalTextOrientationIcon,
+	stackedTextOrientationIcon,
+	sidewaysDownTextOrientationIcon,
+	sidewaysUpTextOrientationIcon,
+} from '@kadence/icons';
 
 import {
 	KadenceColorOutput,
@@ -124,6 +131,9 @@ function KadenceAdvancedHeading(props) {
 		textShadow,
 		textShadowTablet,
 		textShadowMobile,
+		textOrientation,
+		tabletTextOrientation,
+		mobileTextOrientation,
 		mobileAlign,
 		tabletAlign,
 		size,
@@ -761,6 +771,12 @@ function KadenceAdvancedHeading(props) {
 		undefined !== tabletMarkBorderRadius ? tabletMarkBorderRadius[3] : '',
 		undefined !== mobileMarkBorderRadius ? mobileMarkBorderRadius[3] : ''
 	);
+	const previewTextOrientation = getPreviewSize(
+		previewDevice,
+		undefined !== textOrientation ? textOrientation : '',
+		undefined !== tabletTextOrientation ? tabletTextOrientation : '',
+		undefined !== mobileTextOrientation ? mobileTextOrientation : ''
+	);
 	const markBorderRadiusUnitPreview = undefined !== markBorderRadiusUnit ? markBorderRadiusUnit : 'px';
 	let backgroundIgnoreClass = backgroundColorClass ? false : true;
 	if (!backgroundIgnoreClass && !kadence_blocks_params.isKadenceT && background && background.startsWith('palette')) {
@@ -1012,6 +1028,13 @@ function KadenceAdvancedHeading(props) {
 									previewColorTextShadow
 							  )}`
 							: undefined,
+						writingMode:
+							previewTextOrientation === 'stacked' || previewTextOrientation === 'sideways-down'
+								? 'vertical-lr'
+								: previewTextOrientation === 'sideways-up'
+								? 'sideways-lr'
+								: '',
+						textOrientation: previewTextOrientation === 'stacked' ? 'upright' : '',
 					}}
 					placeholder={__('Write something…', 'kadence-blocks')}
 				/>
@@ -1125,7 +1148,6 @@ function KadenceAdvancedHeading(props) {
 			};
 		}
 	}, [isSelected]);
-
 	return (
 		<div {...blockProps}>
 			<style>
@@ -1774,6 +1796,44 @@ function KadenceAdvancedHeading(props) {
 										}}
 									/>
 								)}
+							</KadencePanelBody>
+							<KadencePanelBody
+								title={__('Text Orientation', 'kadence-blocks')}
+								initialOpen={false}
+								panelName={'kb-adv-heading-text-orientation'}
+							>
+								<ResponsiveKadenceRadioButtons
+									label={__('Orientation', 'kadence-blocks')}
+									value={previewTextOrientation}
+									tabletValue={previewTextOrientation}
+									mobileValue={previewTextOrientation}
+									className={'kb-text-orientation'}
+									options={[
+										{
+											value: 'horizontal',
+											tooltip: __('Horizontal', 'kadence-blocks'),
+											icon: horizontalTextOrientationIcon,
+										},
+										{
+											value: 'stacked',
+											tooltip: __('Stacked Vertically', 'kadence-blocks'),
+											icon: stackedTextOrientationIcon,
+										},
+										{
+											value: 'sideways-down',
+											tooltip: __('Sideways Down', 'kadence-blocks'),
+											icon: sidewaysDownTextOrientationIcon,
+										},
+										{
+											value: 'sideways-up',
+											tooltip: __('Sideways Up', 'kadence-blocks'),
+											icon: sidewaysUpTextOrientationIcon,
+										},
+									]}
+									onChange={(value) => setAttributes({ textOrientation: value })}
+									onChangeTablet={(value) => setAttributes({ tabletTextOrientation: value })}
+									onChangeMobile={(value) => setAttributes({ mobileTextOrientation: value })}
+								/>
 							</KadencePanelBody>
 							{showSettings('iconSettings', 'kadence/advancedheading') && (
 								<KadencePanelBody
