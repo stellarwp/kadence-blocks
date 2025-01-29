@@ -157,6 +157,11 @@
 			<key name="errorMessage" />
 			<key name="requiredMessage" />
 			<key name="helpText" />
+			<key name="options">
+				<key name="*">
+					<key name="label" />
+				</key>
+			</key>
 		</gutenberg-block>
 		<gutenberg-block type="kadence/advanced-form-select" translate="1">
 			<key name="label" />
@@ -169,6 +174,7 @@
 		</gutenberg-block>
 		<gutenberg-block type="kadence/advanced-form-submit" translate="1">
 			<key name="label" />
+			<key name="text" />
 		</gutenberg-block>
 		<gutenberg-block type="kadence/advanced-form-telephone" translate="1">
 			<key name="label" />
@@ -308,9 +314,17 @@
 		<custom-field action="translate">_kad_form_maxwidthunit</custom-field>
 		<custom-field action="translate">_kad_form_maxwidth</custom-field>
 		<custom-field action="translate">_kad_form_importid</custom-field>
-
+		<custom-field action="copy">_kad_form_tabletFieldBorderStyle</custom-field>
+		<custom-field action="copy">_kad_form_mobileFieldBorderStyle</custom-field>
+		<custom-field action="copy">_kad_form_inputFont</custom-field>
+		<custom-field action="copy">_kad_form_style</custom-field>
+		<custom-field action="copy">_kad_form_fieldBorderRadius</custom-field>
+		<custom-field action="copy">_kad_form_tabletFieldBorderRadius</custom-field>
+		<custom-field action="copy">_kad_form_mobileFieldBorderRadius</custom-field>
+		<custom-field action="copy">_kad_form_fieldBorderRadiusUnit</custom-field>	
+		<custom-field action="copy">_kad_form_labelFont</custom-field>	
+		<custom-field action="copy">_kad_form_radioLabelFont</custom-field>			
 		<custom-field action="translate">_kad_navigation_description</custom-field>
-
 		<custom-field action="translate">_kad_header_description</custom-field>
 	</custom-fields>
 </wpml-config>
