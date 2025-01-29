@@ -34,10 +34,10 @@ function kadence_blocks_get_asset_file( $filepath ) {
 	$asset_path = KADENCE_BLOCKS_PATH . $filepath . '.asset.php';
 	return file_exists( $asset_path )
 		? include $asset_path
-		: array(
-			'dependencies' => array( 'lodash', 'react', 'react-dom', 'wp-block-editor', 'wp-blocks', 'wp-data', 'wp-element', 'wp-i18n', 'wp-polyfill', 'wp-primitives', 'wp-api' ),
+		: [
+			'dependencies' => [ 'lodash', 'react', 'react-dom', 'wp-block-editor', 'wp-blocks', 'wp-data', 'wp-element', 'wp-i18n', 'wp-polyfill', 'wp-primitives', 'wp-api' ],
 			'version'      => KADENCE_BLOCKS_VERSION,
-		);
+		];
 }
 
 /**
@@ -54,8 +54,8 @@ function kadence_blocks_is_rest() {
 		$wp_rewrite = new WP_Rewrite();
 	}
 	// (#4).
-	$rest_url = wp_parse_url( trailingslashit( rest_url( ) ) );
-	$current_url = wp_parse_url( add_query_arg( array() ) );
+	$rest_url    = wp_parse_url( trailingslashit( rest_url() ) );
+	$current_url = wp_parse_url( add_query_arg( [] ) );
 
 	if ( isset( $current_url['path'] ) && isset( $rest_url['path'] ) ) {
 		return strpos( $current_url['path'], $rest_url['path'], 0 ) === 0;
@@ -86,8 +86,7 @@ function kadence_blocks_hex2rgba( $hex, $alpha ) {
 		$g = hexdec( substr( $hex, 2, 2 ) );
 		$b = hexdec( substr( $hex, 4, 2 ) );
 	}
-	$rgba = 'rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $alpha . ')';
-	return $rgba;
+	return 'rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $alpha . ')';
 }
 
 /**
@@ -153,7 +152,30 @@ function kadence_blocks_wc_clean( $var ) {
  * Get the current license key for the plugin.
  */
 function kadence_blocks_get_current_license_key() {
-	return get_license_key( 'kadence-blocks-pro' ) ?: get_license_key( 'kadence-blocks' );
+	$blocks_pro_key = class_exists( 'Kadence_Blocks_Pro' ) ? get_license_key( 'kadence-blocks-pro' ) : '';
+	if ( ! empty( $blocks_pro_key ) ) {
+		return $blocks_pro_key;
+	}
+	$creative_kit_key = class_exists( 'KadenceWP\CreativeKit\Core' ) ? get_license_key( 'kadence-creative-kit' ) : '';
+	if ( ! empty( $creative_kit_key ) ) {
+		return $creative_kit_key;
+	}
+	return get_license_key( 'kadence-blocks' );
+}
+
+/**
+ * Get the current license key for the plugin.
+ */
+function kadence_blocks_get_current_product_slug() {
+	$blocks_pro_key = class_exists( 'Kadence_Blocks_Pro' ) ? get_license_key( 'kadence-blocks-pro' ) : '';
+	if ( ! empty( $blocks_pro_key ) ) {
+		return 'kadence-blocks-pro';
+	}
+	$creative_kit_key = class_exists( 'KadenceWP\CreativeKit\Core' ) ? get_license_key( 'kadence-creative-kit' ) : '';
+	if ( ! empty( $creative_kit_key ) ) {
+		return 'kadence-creative-kit';
+	}
+	return 'kadence-blocks';
 }
 
 /**
@@ -175,7 +197,7 @@ function kadence_blocks_get_current_license_email() {
 /**
  * Get the current license key for the plugin.
  *
- * @return array{key: string, email: string}
+ * @return array{key: string, email: string, product: string}
  */
 function kadence_blocks_get_current_license_data(): array {
 	static $cache;
@@ -184,10 +206,11 @@ function kadence_blocks_get_current_license_data(): array {
 		return $cache;
 	}
 
-	$license_data = array(
-		'key'   => kadence_blocks_get_current_license_key(),
-		'email' => kadence_blocks_get_current_license_email(),
-	);
+	$license_data = [
+		'key'     => kadence_blocks_get_current_license_key(),
+		'email'   => kadence_blocks_get_current_license_email(),
+		'product' => kadence_blocks_get_current_product_slug(),
+	];
 
 	return $cache = $license_data;
 }
@@ -221,9 +244,9 @@ function kadence_blocks_is_network_authorize_enabled() {
  * @return array
  */
 function kadence_blocks_get_deprecated_pro_license_data() {
-	$data = false;
-	$current_theme = wp_get_theme();
-	$current_theme_name = $current_theme->get( 'Name' );
+	$data                   = false;
+	$current_theme          = wp_get_theme();
+	$current_theme_name     = $current_theme->get( 'Name' );
 	$current_theme_template = $current_theme->get( 'Template' );
 	// Check for a classic theme license.
 	if ( 'Pinnacle Premium' == $current_theme_name || 'pinnacle_premium' == $current_theme_template || 'Ascend - Premium' == $current_theme_name || 'ascend_premium' == $current_theme_template || 'Virtue - Premium' == $current_theme_name || 'virtue_premium' == $current_theme_template ) {
@@ -238,15 +261,13 @@ function kadence_blocks_get_deprecated_pro_license_data() {
 			} elseif ( 'Virtue - Premium' == $current_theme_name || 'virtue_premium' == $current_theme_template ) {
 				$data['product_id'] = 'virtue_premium';
 			}
-			$data['api_key'] = $pro_data['kt_api_key'];
+			$data['api_key']   = $pro_data['kt_api_key'];
 			$data['api_email'] = $pro_data['activation_email'];
 		}
-	} else {
-		if ( is_multisite() && kadence_blocks_is_network_authorize_enabled() ) {
+	} elseif ( is_multisite() && kadence_blocks_is_network_authorize_enabled() ) {
 			$data = get_site_option( 'kt_api_manager_kadence_gutenberg_pro_data' );
-		} else {
-			$data = get_option( 'kt_api_manager_kadence_gutenberg_pro_data' );
-		}
+	} else {
+		$data = get_option( 'kt_api_manager_kadence_gutenberg_pro_data' );
 	}
 	return $data;
 }

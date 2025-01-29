@@ -58,7 +58,6 @@ function ProOnlyHeader({ launchWizard }) {
 	const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
 	const data_key = window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '';
 	const activateLink = window?.kadence_blocks_params?.homeLink ? kadence_blocks_params.homeLink : '';
-	const hasPro = kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false;
 	return (
 		<div className="kb-patterns-banner-generate-notice">
 			<Icon className="kadence-generate-icons" icon={aiIcon} />
@@ -78,27 +77,15 @@ function ProOnlyHeader({ launchWizard }) {
 			)}
 			{isAuthorized && !data_key && (
 				<>
-					{hasPro && (
-						<Button
-							className="kadence-generate-copy-button"
-							iconPosition="right"
-							icon={aiIcon}
-							text={__('Activate Kadence Blocks Pro Required', 'kadence-blocks')}
-							disabled={activateLink ? false : true}
-							href={activateLink ? activateLink : ''}
-						/>
-					)}
-					{!hasPro && (
-						<Button
-							className="kadence-generate-copy-button"
-							iconPosition="right"
-							icon={aiIcon}
-							text={__('Activate Kadence AI', 'kadence-blocks')}
-							target={activateLink ? '_blank' : ''}
-							disabled={activateLink ? false : true}
-							href={activateLink ? activateLink : ''}
-						/>
-					)}
+					<Button
+						className="kadence-generate-copy-button"
+						iconPosition="right"
+						icon={aiIcon}
+						text={__('Activate Kadence AI', 'kadence-blocks')}
+						target={activateLink ? '_blank' : ''}
+						disabled={activateLink ? false : true}
+						href={activateLink ? activateLink : ''}
+					/>
 				</>
 			)}
 			{isAuthorized && data_key && (
@@ -237,7 +224,6 @@ function PageList({
 }) {
 	const debouncedSpeak = useDebounce(speak, 500);
 	const [rootScroll, setRootScroll] = useState();
-	const hasPro = window?.kadence_blocks_params?.pro && kadence_blocks_params.pro === 'true' ? true : false;
 	const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
 	const isAIDisabled = window?.kadence_blocks_params?.isAIDisabled ? true : false;
 	const data_key = window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '';
@@ -275,6 +261,8 @@ function PageList({
 		};
 	}, []);
 	const thePages = useMemo(() => {
+		const hasPremiumAccess =
+			'true' !== kadence_blocks_params.pro || 'true' !== kadence_blocks_params.creativeKit ? true : false;
 		const allPatterns = [];
 		let variation = 0;
 		Object.keys(pages).map(function (key, index) {
@@ -309,7 +297,7 @@ function PageList({
 			}
 			temp.rows = pages[key].rows;
 			temp.pro = pages[key].pro;
-			temp.locked = pages[key].pro && 'true' !== kadence_blocks_params.pro ? true : false;
+			temp.locked = pages[key].pro && !hasPremiumAccess ? true : false;
 			temp.proRender = false;
 			temp.viewportWidth = 1200;
 			variation++;
@@ -453,8 +441,7 @@ function PageList({
 				--global-palette6:${kadence_blocks_params.global_colors['--global-palette6']};
 				--global-palette7:${kadence_blocks_params.global_colors['--global-palette7']};
 				--global-palette8:${kadence_blocks_params.global_colors['--global-palette8']};
-				--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']};
-			`;
+				--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']};`;
 			colorClasses = `.single-iframe-content .has-theme-palette-1-color { color: var(--global-palette1); }
 			.single-iframe-content .has-theme-palette-2-color { color: var(--global-palette2); }
 			.single-iframe-content .has-theme-palette-3-color { color: var(--global-palette3); }
@@ -483,7 +470,6 @@ function PageList({
 			.single-iframe-content .has-theme-palette8-background-color { background-color: var(--global-palette8); }
 			.single-iframe-content .has-theme-palette9-background-color { background-color: var(--global-palette9); }`;
 		}
-
 		const normalizeStyles = `--global-content-edge-padding: 3rem;padding:0px !important;--global-vw:1200px !important;`;
 		if ('dark' === selectedStyle) {
 			styleColors = `.single-iframe-content {--global-palette1:${kadence_blocks_params.global_colors['--global-palette1']};
@@ -495,6 +481,15 @@ function PageList({
 			--global-palette7:${kadence_blocks_params.global_colors['--global-palette3']};
 			--global-palette8:${kadence_blocks_params.global_colors['--global-palette3']};
 			--global-palette9:${kadence_blocks_params.global_colors['--global-palette4']};
+			--wp--preset--color--theme-palette-1: var(--global-palette1);
+			--wp--preset--color--theme-palette-2: var(--global-palette2);
+			--wp--preset--color--theme-palette-3: var(--global-palette3);
+			--wp--preset--color--theme-palette-4: var(--global-palette4);
+			--wp--preset--color--theme-palette-5: var(--global-palette5);
+			--wp--preset--color--theme-palette-6: var(--global-palette6);
+			--wp--preset--color--theme-palette-7: var(--global-palette7);
+			--wp--preset--color--theme-palette-8: var(--global-palette8);
+			--wp--preset--color--theme-palette-9: var(--global-palette9);
 			--global-content-edge-padding: 3rem;
 			padding:0px !important;}
 			.single-iframe-content .kb-blocks-highlight-page-section { --global-palette1:${kadence_blocks_params.global_colors['--global-palette1']};
@@ -506,6 +501,15 @@ function PageList({
 			--global-palette7:${kadence_blocks_params.global_colors['--global-palette7']};
 			--global-palette8:${kadence_blocks_params.global_colors['--global-palette8']};
 			--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']};
+			--wp--preset--color--theme-palette-1: var(--global-palette1);
+			--wp--preset--color--theme-palette-2: var(--global-palette2);
+			--wp--preset--color--theme-palette-3: var(--global-palette3);
+			--wp--preset--color--theme-palette-4: var(--global-palette4);
+			--wp--preset--color--theme-palette-5: var(--global-palette5);
+			--wp--preset--color--theme-palette-6: var(--global-palette6);
+			--wp--preset--color--theme-palette-7: var(--global-palette7);
+			--wp--preset--color--theme-palette-8: var(--global-palette8);
+			--wp--preset--color--theme-palette-9: var(--global-palette9);
 		}.kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']}} .kb-btn-custom-colors .kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette3']}} img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder"] {filter: invert(1);}img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/12/logo-placeholder"] {filter: invert(1);}.wp-block-kadence-tabs.kb-pattern-active-tab-highlight .kt-tabs-title-list li.kt-tab-title-active .kt-tab-title{ color:${kadence_blocks_params.global_colors['--global-palette9']} !important} .kb-pattern-light-color{--global-palette9:${kadence_blocks_params.global_colors['--global-palette9']}}.kb-divider-static.kb-row-layout-wrap.wp-block-kadence-rowlayout > .kt-row-layout-bottom-sep svg{fill:${kadence_blocks_params.global_colors['--global-palette4']}!important}.kb-divider-static.kb-row-layout-wrap.wp-block-kadence-rowlayout > .kt-row-layout-top-sep svg{fill:${kadence_blocks_params.global_colors['--global-palette4']}!important}.kb-divider-static.kb-divider-bottom-p8.kb-row-layout-wrap.wp-block-kadence-rowlayout > .kt-row-layout-bottom-sep svg{fill:${kadence_blocks_params.global_colors['--global-palette5']}!important}.kb-divider-static.kb-divider-top-p8.kb-row-layout-wrap.wp-block-kadence-rowlayout > .kt-row-layout-top-sep svg{fill:${kadence_blocks_params.global_colors['--global-palette5']}!important}`;
 		}
 		newStyles = [

@@ -546,22 +546,22 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! empty( $attributes['collapseOrder'] ) && 'left-to-right' !== $attributes['collapseOrder'] && in_array( $layout, $collapse_layouts ) ) {
 			$css->set_media_state( 'tablet' );
 			foreach ( range( 1, $columns ) as $item_count ) {
-				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . $item_count . ')' );
+				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . $item_count . ')' );
 				$css->add_property( 'order', ( $columns - $item_count + 1 ) );
 			}
 			// Row Two.
 			foreach ( range( 1, $columns ) as $item_count ) {
-				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns ) . ')' );
+				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . ( $item_count + $columns ) . ')' );
 				$css->add_property( 'order', ( $columns - $item_count + 11 ) );
 			}
 			// Row Three.
 			foreach ( range( 1, $columns ) as $item_count ) {
-				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns + $columns ) . ')' );
+				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . ( $item_count + $columns + $columns ) . ')' );
 				$css->add_property( 'order', ( $columns - $item_count + 21 ) );
 			}
 			// Row Four.
 			foreach ( range( 1, $columns ) as $item_count ) {
-				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns + $columns + $columns ) . ')' );
+				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . ( $item_count + $columns + $columns + $columns ) . ')' );
 				$css->add_property( 'order', ( $columns - $item_count + 31 ) );
 			}
 			$css->set_media_state( 'desktop' );
@@ -586,22 +586,22 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			//tablet ordering
 			if ( ! empty( $attributes['collapseOrder'] ) && 'left-to-right' !== $attributes['collapseOrder'] && in_array( $tabletLayout, $collapse_layouts ) ) {
 				foreach ( range( 1, $columns ) as $item_count ) {
-					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . $item_count . ')' );
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . $item_count . ')' );
 					$css->add_property( 'order', ( $columns - $item_count + 1 ) );
 				}
 				// Row Two.
 				foreach ( range( 1, $columns ) as $item_count ) {
-					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns ) . ')' );
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . ( $item_count + $columns ) . ')' );
 					$css->add_property( 'order', ( $columns - $item_count + 11 ) );
 				}
 				// Row Three.
 				foreach ( range( 1, $columns ) as $item_count ) {
-					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns + $columns ) . ')' );
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . ( $item_count + $columns + $columns ) . ')' );
 					$css->add_property( 'order', ( $columns - $item_count + 21 ) );
 				}
 				// Row Four.
 				foreach ( range( 1, $columns ) as $item_count ) {
-					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns + $columns + $columns ) . ')' );
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . ( $item_count + $columns + $columns + $columns ) . ')' );
 					$css->add_property( 'order', ( $columns - $item_count + 31 ) );
 				}
 			}
@@ -616,22 +616,22 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			//tablet collapse ordering
 			if ( ! empty( $attributes['collapseOrder'] ) && 'left-to-right' !== $attributes['collapseOrder'] && in_array( $collapse_tab_layout, $collapse_layouts ) ) {
 				foreach ( range( 1, $columns ) as $item_count ) {
-					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . $item_count . ')' );
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . $item_count . ')' );
 					$css->add_property( 'order', ( $columns - $item_count + 1 ) );
 				}
 				// Row Two.
 				foreach ( range( 1, $columns ) as $item_count ) {
-					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns ) . ')' );
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . ( $item_count + $columns ) . ')' );
 					$css->add_property( 'order', ( $columns - $item_count + 11 ) );
 				}
 				// Row Three.
 				foreach ( range( 1, $columns ) as $item_count ) {
-					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns + $columns ) . ')' );
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . ( $item_count + $columns + $columns ) . ')' );
 					$css->add_property( 'order', ( $columns - $item_count + 21 ) );
 				}
 				// Row Four.
 				foreach ( range( 1, $columns ) as $item_count ) {
-					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns + $columns + $columns ) . ')' );
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . ( $item_count + $columns + $columns + $columns ) . ')' );
 					$css->add_property( 'order', ( $columns - $item_count + 31 ) );
 				}
 			}
@@ -647,22 +647,22 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		//mobile ordering
 		if ( ! empty( $attributes['collapseOrder'] ) && 'left-to-right' !== $attributes['collapseOrder'] && in_array( $mobile_layout, $collapse_layouts ) ) {
 			foreach ( range( 1, $columns ) as $item_count ) {
-				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . $item_count . ')' );
+				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . $item_count . ')' );
 				$css->add_property( 'order', ( $columns - $item_count + 1 ) );
 			}
 			// Row Two.
 			foreach ( range( 1, $columns ) as $item_count ) {
-				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns ) . ')' );
+				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . ( $item_count + $columns ) . ')' );
 				$css->add_property( 'order', ( $columns - $item_count + 11 ) );
 			}
 			// Row Three.
 			foreach ( range( 1, $columns ) as $item_count ) {
-				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns + $columns ) . ')' );
+				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . ( $item_count + $columns + $columns ) . ')' );
 				$css->add_property( 'order', ( $columns - $item_count + 21 ) );
 			}
 			// Row Four.
 			foreach ( range( 1, $columns ) as $item_count ) {
-				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(' . ( $item_count + $columns + $columns + $columns ) . ')' );
+				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(' . ( $item_count + $columns + $columns + $columns ) . ')' );
 				$css->add_property( 'order', ( $columns - $item_count + 31 ) );
 			}
 		}
@@ -702,11 +702,11 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				$css->set_media_state( 'desktopOnly' );
 			}
 			if ( ( isset( $attributes['breakoutLeft'] ) && true === $attributes['breakoutLeft'] ) ) {
-				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(1)' );
+				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(1)' );
 				$css->add_property( 'margin-inline-start', 'calc( ' . $padding_left . ' *-1 )' );
 			}
 			if ( ( isset( $attributes['breakoutRight'] ) && true === $attributes['breakoutRight'] ) ) {
-				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(2)' );
+				$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(2)' );
 				$css->add_property( 'margin-inline-end', 'calc( ' . $padding_right . ' *-1 )' );
 			}
 			$css->set_media_state( 'desktop' );
@@ -714,43 +714,43 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 				if ( isset( $content_width ) && ! empty( $content_width ) ) {
 					$css->start_media_query( '(min-width:' . absint( $content_width ) . 'px)' );
 					if ( ( isset( $attributes['breakoutLeft'] ) && true === $attributes['breakoutLeft'] ) ) {
-						$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(1):not(.specificity)' );
+						$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(1):not(.specificity)' );
 						$css->add_property( 'margin-inline-start', 'var(--breakout-negative-margin-left)' );
 					}
 					if ( ( isset( $attributes['breakoutRight'] ) && true === $attributes['breakoutRight'] ) ) {
-						$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(2):not(.specificity)' );
+						$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(2):not(.specificity)' );
 						$css->add_property( 'margin-inline-end', 'var(--breakout-negative-margin-right)' );
 					}
 					$css->stop_media_query();
 				} else {
 					$css->set_media_state( 'desktopOnly' );
 					if ( ( isset( $attributes['breakoutLeft'] ) && true === $attributes['breakoutLeft'] ) ) {
-						$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(1)' );
+						$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(1)' );
 						$css->add_property( 'margin-inline-start', 'var(--breakout-negative-margin-left)' );
 					}
 					if ( ( isset( $attributes['breakoutRight'] ) && true === $attributes['breakoutRight'] ) ) {
-						$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(2)' );
+						$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(2)' );
 						$css->add_property( 'margin-inline-end', 'var(--breakout-negative-margin-right)' );
 					}
 					$css->set_media_state( 'desktop' );
 				}
 			} else {
 				if ( ( isset( $attributes['breakoutLeft'] ) && true === $attributes['breakoutLeft'] ) ) {
-					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(1):not(.specificity)' );
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(1):not(.specificity)' );
 					$css->add_property( 'margin-inline-start', 'var(--breakout-negative-margin-left, calc( ' . $padding_left . ' *-1 ) )' );
 				}
 				if ( ( isset( $attributes['breakoutRight'] ) && true === $attributes['breakoutRight'] ) ) {
-					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-child(2):not(.specificity)' );
+					$css->set_selector( $inner_selector . ' > .wp-block-kadence-column:nth-of-type(2):not(.specificity)' );
 					$css->add_property( 'margin-inline-end', 'var(--breakout-negative-margin-right, calc( ' . $padding_right . ' *-1 ))' );
 				}
 			}
 			$css->set_media_state( 'tabletOnly' );
 			if ( ( isset( $attributes['breakoutLeft'] ) && true === $attributes['breakoutLeft'] ) ) {
-				$css->set_selector( $inner_selector . ':not(.kt-tab-layout-row) > .wp-block-kadence-column:nth-child(1)' );
+				$css->set_selector( $inner_selector . ':not(.kt-tab-layout-row) > .wp-block-kadence-column:nth-of-type(1)' );
 				$css->add_property( 'margin-inline-start', 'calc( ' . $padding_left . ' *-1 )' );
 			}
 			if ( ( isset( $attributes['breakoutRight'] ) && true === $attributes['breakoutRight'] ) ) {
-				$css->set_selector( $inner_selector . ':not(.kt-tab-layout-row) > .wp-block-kadence-column:nth-child(2)' );
+				$css->set_selector( $inner_selector . ':not(.kt-tab-layout-row) > .wp-block-kadence-column:nth-of-type(2)' );
 				$css->add_property( 'margin-inline-end', 'calc( ' . $padding_right . ' *-1 )' );
 			}
 			$css->set_media_state( 'desktop' );
@@ -1525,6 +1525,7 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 					'modestbranding' => 1,
 					'playsinline' => 1,
 					'rel' => 0,
+					'background' => 1,
 				)
 			);
 

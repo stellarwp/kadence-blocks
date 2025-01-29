@@ -5,19 +5,23 @@
 
 .kb-progress-bar-container {
 	position: relative;
+	svg {
+		height: auto;
+		width: 100%;
+	}
 }
 
 .kb-progress-label-wrap {
 	display: flex;
 	flex-wrap: wrap;
-	gap:0.3em 0.5em;
+	gap: 0.3em 0.5em;
 }
 
 .kb-progress-bar-type-line .kt-progress-label-inside,
 .kb-progress-bar-type-line-mask .kt-progress-label-inside {
 	position: absolute;
 	top: 50%;
-	transform: translateY(-55%)
+	transform: translateY(-55%);
 }
 
 .kb-progress-bar-type-circle .kt-progress-label-inside {
@@ -38,7 +42,7 @@
 	.kb-progress-bar {
 		height: 80px;
 		max-width: 100%;
-		
+
 		& > svg {
 			height: 100%;
 		}

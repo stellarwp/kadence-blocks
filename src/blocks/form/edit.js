@@ -2512,7 +2512,10 @@ function KadenceForm(props) {
 									placeholder={__('name@example.com', 'kadence-blocks')}
 									value={undefined !== email[0].emailTo ? email[0].emailTo : ''}
 									onChange={(value) => saveEmail({ emailTo: value })}
-									help={__('Seperate with comma for more then one email address.', 'kadence-blocks')}
+									help={__(
+										'Separate with a comma for more than one email address.',
+										'kadence-blocks'
+									)}
 								/>
 								<TextControl
 									label={__('Email Subject', 'kadence-blocks')}
@@ -2552,7 +2555,7 @@ function KadenceForm(props) {
 								/>
 								<ToggleControl
 									label={__('Send as HTML email?', 'kadence-blocks')}
-									help={__('If off plain text is used.', 'kadence-blocks')}
+									help={__('If off, plain text is used.', 'kadence-blocks')}
 									checked={undefined !== email[0].html ? email[0].html : true}
 									onChange={(value) => saveEmail({ html: value })}
 								/>

@@ -226,9 +226,22 @@
 				</key>
 			</key>
 		</gutenberg-block>
+		<gutenberg-block type="kadence/navigation" translate="1">
+			<key name="id" type="post-ids" sub-type="kadence_navigation" />
+		</gutenberg-block>
+		<gutenberg-block type="kadence/navigation-link" translate="1">
+			<key name="label" />
+			<key name="description" />
+			<key name="title" />
+		</gutenberg-block>
+		<gutenberg-block type="kadence/header" translate="1">
+			<key name="id" type="post-ids" sub-type="kadence_header" />
+		</gutenberg-block>
 	</gutenberg-blocks>
 	<custom-types>
 		<custom-type translate="1">kadence_form</custom-type>
+		<custom-type translate="1">kadence_navigation</custom-type>
+		<custom-type translate="1">kadence_header</custom-type>
 	</custom-types>
 	<custom-fields>
 		<custom-field action="translate">_kad_form_fields</custom-field>
@@ -311,5 +324,7 @@
 		<custom-field action="copy">_kad_form_fieldBorderRadiusUnit</custom-field>	
 		<custom-field action="copy">_kad_form_labelFont</custom-field>	
 		<custom-field action="copy">_kad_form_radioLabelFont</custom-field>			
+		<custom-field action="translate">_kad_navigation_description</custom-field>
+		<custom-field action="translate">_kad_header_description</custom-field>
 	</custom-fields>
 </wpml-config>

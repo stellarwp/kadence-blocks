@@ -68,7 +68,7 @@ function AutoEmailOptions({ settings, save }) {
 			/>
 			<ToggleControl
 				label={__('Send as HTML email?', 'kadence-blocks')}
-				help={__('If off plain text is used.', 'kadence-blocks')}
+				help={__('If off, plain text is used.', 'kadence-blocks')}
 				checked={undefined !== settings && undefined !== settings.html ? settings.html : true}
 				onChange={(value) => save({ html: value })}
 			/>

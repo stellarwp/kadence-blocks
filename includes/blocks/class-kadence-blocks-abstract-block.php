@@ -81,6 +81,7 @@ class Kadence_Blocks_Abstract_Block {
 		'identity',
 		'table',
 	];
+	
 	/**
 	 * Allow us to enable merged defaults on blocks individually.
 	 * Considered setting this as a property within each block, but it's easier to see an exhaustive list here.
@@ -106,14 +107,16 @@ class Kadence_Blocks_Abstract_Block {
 	 * On init startup register the block.
 	 */
 	public function on_init() {
-		register_block_type(
-			KADENCE_BLOCKS_PATH . 'dist/blocks/' . $this->block_name . '/block.json',
-			array(
-				'render_callback' => array( $this, 'render_css' ),
-				'editor_script'   => 'kadence-blocks-' . $this->block_name,
-				'editor_style'    => 'kadence-blocks-' . $this->block_name,
-			)
-		);
+		if ( $this->should_register() ) {
+			register_block_type(
+				KADENCE_BLOCKS_PATH . 'dist/blocks/' . $this->block_name . '/block.json',
+				array(
+					'render_callback' => array( $this, 'render_css' ),
+					'editor_script'   => 'kadence-blocks-' . $this->block_name,
+					'editor_style'    => 'kadence-blocks-' . $this->block_name,
+				)
+			);
+		}
 	}
 
 	/**
@@ -122,8 +125,10 @@ class Kadence_Blocks_Abstract_Block {
 	 * @param array $block_class_array the blocks that are registered to be rendered.
 	 */
 	public function add_block_to_post_generate_css( $block_class_array ) {
-		if ( ! isset( $block_class_array[ $this->namespace . '/' . $this->block_name ] ) ) {
-			$block_class_array[ $this->namespace . '/' . $this->block_name ] = 'Kadence_Blocks_' . str_replace( ' ', '_', ucwords( str_replace( '-', ' ', $this->block_name ) ) ) . '_Block';
+		if ( $this->should_register() ) {
+			if ( ! isset( $block_class_array[ $this->namespace . '/' . $this->block_name ] ) ) {
+				$block_class_array[ $this->namespace . '/' . $this->block_name ] = 'Kadence_Blocks_' . str_replace( ' ', '_', ucwords( str_replace( '-', ' ', $this->block_name ) ) ) . '_Block';
+			}
 		}
 
 		return $block_class_array;
@@ -250,13 +255,13 @@ class Kadence_Blocks_Abstract_Block {
 			$css_class = Kadence_Blocks_CSS::get_instance();
 
 			if ( in_array( $this->block_name, $this->supports_merged_defaults ) ) {
-				$attributes = $this->get_attributes_with_defaults( $unique_id, $attributes, false );
+				$attributes = $this->get_attributes_with_defaults( $unique_id . get_locale(), $attributes, false );
 			}
 
 			// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 			$attributes = apply_filters( 'kadence_blocks_' . str_replace( '-', '_', $this->block_name ) . '_render_block_attributes', $attributes, $block_instance );
 
-			$content   = $this->build_html( $attributes, $unique_id, $content, $block_instance );
+			$content = $this->build_html( $attributes, $unique_id, $content, $block_instance );
 			if ( ! $css_class->has_styles( 'kb-' . $this->block_name . $unique_style_id ) && ! is_feed() && apply_filters( 'kadence_blocks_render_inline_css', true, $this->block_name, $unique_id ) ) {
 				$css        = $this->build_css( $attributes, $css_class, $unique_id, $unique_style_id );
 				if ( ! empty( $css ) && ! wp_is_block_theme() ) {
@@ -382,21 +387,21 @@ class Kadence_Blocks_Abstract_Block {
 	/**
 	 * Get this blocks attributes merged with defaults from the registration.
 	 *
-	 * @param string $unique_id The unique id.
+	 * @param string $cache_key The cache key (usually unique id).
 	 * @param array $attributes The block's attributes.
 	 * @param string $block_name The name of the block.
 	 * @return array
 	 */
-	public function get_attributes_with_defaults( $unique_id, $attributes, $cache = true ) {
-		if ( ! empty( $this->attributes_with_defaults[ $unique_id ] ) ) {
-			return $this->attributes_with_defaults[ $unique_id ];
+	public function get_attributes_with_defaults( $cache_key, $attributes, $cache = true ) {
+		if ( ! empty( $this->attributes_with_defaults[ $cache_key ] ) ) {
+			return $this->attributes_with_defaults[ $cache_key ];
 		}
 
 		$default_attributes = $this->get_block_default_attributes();
 		$merged_attributes  = $this->merge_attributes_with_defaults( $attributes, $default_attributes );
 
 		if ( $cache ) {
-			$this->attributes_with_defaults[ $unique_id ] = $merged_attributes;
+			$this->attributes_with_defaults[ $cache_key ] = $merged_attributes;
 		}
 		return $merged_attributes;
 	}
@@ -506,5 +511,23 @@ class Kadence_Blocks_Abstract_Block {
 		}
 
 		return $this->default_attributes_cache[ $cache_key ];
+	}
+
+	/**
+	 * Retuurn if this block should register itself. (can override for things like blocks in two plugins)
+	 * 
+	 * @return boolean
+	 */
+	public function should_register() {
+		return true;
+	}
+
+	/**
+	 * Get the current blocks pro version. Useful for mocking in tests that rely the on KBP_VERSION constant.
+	 *
+	 * @return string|null
+	 */
+	protected function get_pro_version() {
+		return defined('KBP_VERSION') ? KBP_VERSION : null;
 	}
 }

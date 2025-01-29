@@ -7,7 +7,10 @@
  * Import Externals
  */
 import PopColorControl from '../../pop-color-control';
-
+/**
+ * Import Css
+ */
+import './editor.scss';
 /**
  * Internal block libraries
  */
@@ -23,14 +26,22 @@ const ShadowControl = ( {
 	enable = true,
 	color,
 	colorDefault,
+	opacity,
 	blur,
+	spread,
 	hOffset,
 	vOffset,
+	inset,
 	onColorChange,
+	onOpacityChange,
 	onBlurChange,
 	onHOffsetChange,
 	onVOffsetChange,
-	onEnableChange
+	onEnableChange,
+	onSpreadChange,
+	onInsetChange,
+	shadowType,
+	onArrayChange
 } ) => (
 	<div className="kb-shadow-container components-base-control">
 		{ label && (
@@ -46,6 +57,9 @@ const ShadowControl = ( {
 							value={ ( color ? color : colorDefault ) }
 							default={ colorDefault }
 							onChange={ value => onColorChange( value ) }
+							opacityValue={ opacity }
+							onOpacityChange={ value => onOpacityChange( value ) }
+							onArrayChange={ onArrayChange ? ( color, opacity ) => onArrayChange( color, opacity ) : undefined }
 						/>
 					</div>
 					<div className="kt-box-x-settings kt-box-shadow-subset">
@@ -96,7 +110,34 @@ const ShadowControl = ( {
 							</div>
 						</div>
 					</div>
+					{ shadowType === 'box' && (
+						<div className="kt-box-spread-settings kt-box-shadow-subset">
+							<p className="kt-box-shadow-title">{__('Spread')}</p>
+							<div className="components-base-control kt-boxshadow-number-input">
+								<div className="components-base-control__field">
+									<input
+										value={(undefined !== spread ? spread : '')}
+										onChange={event => onSpreadChange(Number(event.target.value))}
+										min={-200}
+										max={200}
+										step={1}
+										type="number"
+										className="components-text-control__input"
+									/>
+								</div>
+							</div>
+						</div>
+					)}
 				</div>
+				{ shadowType === 'box' && onInsetChange && (
+					<div className="kt-box-inset-settings">
+						<ToggleControl
+							label={ __( 'Inset' ) }
+							checked={ inset }
+							onChange={ value => onInsetChange( value ) }
+						/>
+					</div>
+				) }
 			</div>
 	</div>
 );

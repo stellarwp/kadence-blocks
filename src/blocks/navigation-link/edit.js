@@ -203,7 +203,7 @@ export default function Edit(props) {
 		disableLink,
 		description,
 		rel,
-		title,
+		target,
 		kind,
 		isMegaMenu,
 		uniqueID,
@@ -1136,42 +1136,62 @@ export default function Edit(props) {
 								checked={hideLabel}
 								onChange={(value) => setAttributes({ hideLabel: value })}
 							/>
-							<TextControl
-								__nextHasNoMarginBottom
-								value={url ? url : ''}
-								onChange={(value) => {
-									setAttributes({ url: value });
-								}}
-								label={__('URL')}
-								autoComplete="off"
-								disabled={hasSyncedLink}
-							/>
-							<Button
-								variant="link"
-								onClick={() => {
-									setAttributes({ type: '', kind: 'custom' });
-								}}
-								label={__('Label')}
-								autoComplete="off"
-								onFocus={() => setIsLabelFieldFocused(true)}
-								onBlur={() => setIsLabelFieldFocused(false)}
-							/>
-							{hasSyncedLink && (
-								<Button
-									variant="link"
-									onClick={() => {
-										setAttributes({ type: '', kind: 'custom' });
-									}}
-									className={'components-base-control kb-nav-link-edit-link-button'}
-								>
-									{__('Edit URL', 'kadence-blocks')}
-								</Button>
-							)}
 							<ToggleControl
 								label={__('Disable Link', 'kadence-blocks')}
 								checked={disableLink}
 								onChange={(value) => setAttributes({ disableLink: value })}
 							/>
+
+							{!disableLink && (
+								<>
+									<ToggleControl
+										label={__('Open in new tab', 'kadence-blocks')}
+										checked={target == '_blank'}
+										onChange={(value) => setAttributes({ target: value ? '_blank' : '' })}
+									/>
+									<TextControl
+										__nextHasNoMarginBottom
+										value={url ? url : ''}
+										onChange={(value) => {
+											setAttributes({ url: value });
+										}}
+										label={__('URL')}
+										autoComplete="off"
+										disabled={hasSyncedLink}
+									/>
+									<Button
+										variant="link"
+										onClick={() => {
+											setAttributes({ type: '', kind: 'custom' });
+										}}
+										label={__('Label')}
+										autoComplete="off"
+										onFocus={() => setIsLabelFieldFocused(true)}
+										onBlur={() => setIsLabelFieldFocused(false)}
+									/>
+									{hasSyncedLink && (
+										<Button
+											variant="link"
+											onClick={() => {
+												setAttributes({ type: '', kind: 'custom' });
+											}}
+											className={'components-base-control kb-nav-link-edit-link-button'}
+										>
+											{__('Edit URL', 'kadence-blocks')}
+										</Button>
+									)}
+									<TextControl
+										__nextHasNoMarginBottom
+										value={rel || ''}
+										onChange={(relValue) => {
+											setAttributes({ rel: relValue });
+										}}
+										label={__('Rel attribute')}
+										autoComplete="off"
+										help={__('The relationship of the linked URL as space-separated link types.')}
+									/>
+								</>
+							)}
 
 							<TextareaControl
 								__nextHasNoMarginBottom
@@ -1181,26 +1201,6 @@ export default function Edit(props) {
 								}}
 								label={__('Description', 'kadence-blocks')}
 								help={__('Supporting text for this item.', 'kadence-blocks')}
-							/>
-							<TextControl
-								__nextHasNoMarginBottom
-								value={title || ''}
-								onChange={(titleValue) => {
-									setAttributes({ title: titleValue });
-								}}
-								label={__('Title attribute')}
-								autoComplete="off"
-								help={__('Additional information to help clarify the purpose of the link.')}
-							/>
-							<TextControl
-								__nextHasNoMarginBottom
-								value={rel || ''}
-								onChange={(relValue) => {
-									setAttributes({ rel: relValue });
-								}}
-								label={__('Rel attribute')}
-								autoComplete="off"
-								help={__('The relationship of the linked URL as space-separated link types.')}
 							/>
 						</KadencePanelBody>
 

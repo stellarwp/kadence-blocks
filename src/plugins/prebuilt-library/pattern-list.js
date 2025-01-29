@@ -111,7 +111,6 @@ function GenerateHeader({ context, contextLabel, contextState, generateContext }
 			setBtnDisabled(true);
 		}
 	}, [context, contextState]);
-	const hasPro = kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false;
 	const data_key =
 		kadence_blocks_params.proData && kadence_blocks_params.proData.api_key
 			? kadence_blocks_params.proData.api_key
@@ -151,27 +150,15 @@ function GenerateHeader({ context, contextLabel, contextState, generateContext }
 			)}
 			{isAuthorized && !data_key && !loading && (
 				<>
-					{hasPro && (
-						<Button
-							className="kadence-generate-copy-button"
-							iconPosition="right"
-							icon={aiIcon}
-							text={__('Activate Kadence Blocks Pro Required', 'kadence-blocks')}
-							disabled={activateLink ? false : true}
-							href={activateLink ? activateLink : ''}
-						/>
-					)}
-					{!hasPro && (
-						<Button
-							className="kadence-generate-copy-button"
-							iconPosition="right"
-							icon={aiIcon}
-							text={__('Activate Kadence AI', 'kadence-blocks')}
-							disabled={activateLink ? false : true}
-							target={activateLink ? '_blank' : ''}
-							href={activateLink ? activateLink : ''}
-						/>
-					)}
+					<Button
+						className="kadence-generate-copy-button"
+						iconPosition="right"
+						icon={aiIcon}
+						text={__('Activate Kadence AI', 'kadence-blocks')}
+						disabled={activateLink ? false : true}
+						target={activateLink ? '_blank' : ''}
+						href={activateLink ? activateLink : ''}
+					/>
 				</>
 			)}
 			{isAuthorized && data_key && !loading && (
@@ -243,6 +230,26 @@ function LoadingFailedHeader({ type }) {
 			{'reload' === type
 				? __('AI Content Failed to Load, Please reload this browser window.', 'kadence-blocks')
 				: __('AI Content Failed to Load.', 'kadence-blocks')}
+		</Heading>
+	);
+}
+function FailedHeader({ type }) {
+	if ('license' === type) {
+		return (
+			<Heading level={2} lineHeight={'48px'} className="kb-patterns-banner-notice failed-loading">
+				{__(
+					'Error importing because of license validation, please verify your license key is valid and activated.',
+					'kadence-blocks'
+				)}
+			</Heading>
+		);
+	}
+	return (
+		<Heading level={2} lineHeight={'48px'} className="kb-patterns-banner-notice failed-loading">
+			{__(
+				'Error importing, the requested content could not be fetched, try reloading your page.',
+				'kadence-blocks'
+			)}
 		</Heading>
 	);
 }
@@ -335,7 +342,6 @@ function ProOnlyHeader({ launchWizard }) {
 	const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
 	const data_key = window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '';
 	const activateLink = window?.kadence_blocks_params?.homeLink ? kadence_blocks_params.homeLink : '';
-	const hasPro = kadence_blocks_params.pro && kadence_blocks_params.pro === 'true' ? true : false;
 	// eslint-disable-next-line @wordpress/i18n-no-collapsible-whitespace
 	const launchWizardBody = __(
 		`Fill your library with thoughtful, relevant, and unique content. It
@@ -362,27 +368,15 @@ function ProOnlyHeader({ launchWizard }) {
 			)}
 			{isAuthorized && !data_key && (
 				<>
-					{hasPro && (
-						<Button
-							className="kadence-generate-copy-button"
-							iconPosition="right"
-							icon={aiIcon}
-							text={__('Activate Kadence Blocks Pro Required', 'kadence-blocks')}
-							disabled={activateLink ? false : true}
-							href={activateLink ? activateLink : ''}
-						/>
-					)}
-					{!hasPro && (
-						<Button
-							className="kadence-generate-copy-button"
-							iconPosition="right"
-							icon={aiIcon}
-							text={__('Activate Kadence AI', 'kadence-blocks')}
-							target={activateLink ? '_blank' : ''}
-							disabled={activateLink ? false : true}
-							href={activateLink ? activateLink : ''}
-						/>
-					)}
+					<Button
+						className="kadence-generate-copy-button"
+						iconPosition="right"
+						icon={aiIcon}
+						text={__('Activate Kadence AI', 'kadence-blocks')}
+						target={activateLink ? '_blank' : ''}
+						disabled={activateLink ? false : true}
+						href={activateLink ? activateLink : ''}
+					/>
 				</>
 			)}
 			{isAuthorized && data_key && (
@@ -423,8 +417,10 @@ function PatternList({
 	styles,
 }) {
 	const [failedAI, setFailedAI] = useState(false);
+	const [failed, setFailed] = useState(false);
 	const [importing, setImporting] = useState(false);
 	const [failedAIType, setFailedAIType] = useState('general');
+	const [failedType, setFailedType] = useState('general');
 	const [rootScroll, setRootScroll] = useState();
 	const [categoryFilter, setCategoryFilter] = useState([]);
 	const [styleFilter, setStyleFilter] = useState([]);
@@ -437,12 +433,12 @@ function PatternList({
 			getAllContext: () => select('kadence/library').getAllContext(),
 		};
 	}, []);
-	const hasPro = window?.kadence_blocks_params?.pro && kadence_blocks_params.pro === 'true' ? true : false;
 	const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
 	const isAIDisabled = window?.kadence_blocks_params?.isAIDisabled ? true : false;
 	const data_key = window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '';
 	async function onSelectBlockPattern(pattern) {
 		setImporting(true);
+		// eslint-disable-next-line @wordpress/no-unused-vars-before-return
 		const allContext = getAllContext();
 		const patternSend = {
 			id: pattern.id,
@@ -457,6 +453,12 @@ function PatternList({
 			patternSend?.style ? patternSend.style : 'light'
 		);
 		let newInfo = ''; // info.content;
+		if (response && 'invalid_access' === response) {
+			setFailed(true);
+			setFailedType('license');
+			setImporting(false);
+			return;
+		}
 		if (response) {
 			try {
 				const tempContent = JSON.parse(response);
@@ -507,9 +509,18 @@ function PatternList({
 	}
 	const thePatterns = useMemo(() => {
 		const allPatterns = [];
+		const hasPremiumAccess =
+			'true' !== kadence_blocks_params.pro || 'true' !== kadence_blocks_params.creativeKit ? true : false;
 		let variation = 0;
 		Object.keys(patterns).map(function (key, index) {
 			const temp = [];
+			if (
+				'true' !== kadence_blocks_params.pro &&
+				patterns[key]?.requiredPlugins &&
+				Object.keys(patterns[key].requiredPlugins).includes('blocks-pro')
+			) {
+				return;
+			}
 			if (variation === 11) {
 				variation = 0;
 			}
@@ -530,7 +541,7 @@ function PatternList({
 			}
 			temp.content = patterns[key]?.content || '';
 			temp.pro = patterns[key].pro;
-			temp.locked = patterns[key].pro && 'true' !== kadence_blocks_params.pro ? true : false;
+			temp.locked = patterns[key].pro && !hasPremiumAccess ? true : false;
 			temp.proRender = false;
 			temp.viewportWidth = 1200;
 			temp.variation = variation;
@@ -765,6 +776,18 @@ function PatternList({
 				`.single-iframe-content {--global-content-edge-padding: 3rem;padding:0px !important;}`
 			);
 		}
+		tempStyles = tempStyles.concat(`.pattern-shadow-wrap .single-iframe-content {
+			--wp--preset--color--theme-palette-1: var(--global-palette1);
+			--wp--preset--color--theme-palette-2: var(--global-palette2);
+			--wp--preset--color--theme-palette-3: var(--global-palette3);
+			--wp--preset--color--theme-palette-4: var(--global-palette4);
+			--wp--preset--color--theme-palette-5: var(--global-palette5);
+			--wp--preset--color--theme-palette-6: var(--global-palette6);
+			--wp--preset--color--theme-palette-7: var(--global-palette7);
+			--wp--preset--color--theme-palette-8: var(--global-palette8);
+			--wp--preset--color--theme-palette-9: var(--global-palette9);
+		}`);
+
 		if (!kadence_blocks_params.isKadenceT) {
 			const colorClasses = `.single-iframe-content .has-theme-palette-1-color { color: var(--global-palette1); }
 			.single-iframe-content .has-theme-palette-2-color { color: var(--global-palette2); }
@@ -883,6 +906,7 @@ function PatternList({
 					<LaunchWizard launchWizard={() => launchWizard()} />
 				)}
 				{contextTab === 'context' && failedAI && <LoadingFailedHeader type={failedAIType} />}
+				{contextTab !== 'context' && failed && <FailedHeader type={failedType} />}
 				{contextTab === 'context' &&
 					!aINeedsData &&
 					('processing' === getContextState(aiContext) || 'loading' === getContextState(aiContext)) && (

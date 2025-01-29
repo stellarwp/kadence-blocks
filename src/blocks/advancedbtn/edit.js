@@ -98,7 +98,7 @@ function KadenceButtons(props) {
 	const { removeBlock } = useDispatch('core/block-editor');
 	const { replaceInnerBlocks, insertBlock } = useDispatch(blockEditorStore);
 
-	const { isUniqueID, isUniqueBlock, previewDevice, childBlocks, parentData, thisBlock } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, childBlocks, parentData, thisBlock, isPreviewMode } = useSelect(
 		(select) => {
 			return {
 				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
@@ -106,6 +106,7 @@ function KadenceButtons(props) {
 				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 				childBlocks: select('core/block-editor').getBlockOrder(clientId),
 				thisBlock: select('core/block-editor').getBlock(clientId),
+				isPreviewMode: select('core/block-editor').getSettings().__unstableIsPreviewMode,
 				parentData: {
 					rootBlock: select('core/block-editor').getBlock(
 						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
@@ -153,7 +154,7 @@ function KadenceButtons(props) {
 				const migrateUpdate = migrateToInnerblocks(attributes);
 				setAttributes(migrateUpdate[0]);
 				replaceInnerBlocks(clientId, migrateUpdate[1]);
-			} else {
+			} else if (!isPreviewMode) {
 				// Delete if no inner blocks.
 				removeBlock(clientId, true);
 			}

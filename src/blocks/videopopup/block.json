@@ -1,0 +1,279 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"title": "Video Popup",
+	"name": "kadence/videopopup",
+	"category": "kadence-blocks",
+	"usesContext": [ "postId", "queryId", "kadence/dynamicSource", "kadence/repeaterRowData", "kadence/repeaterRow" ],
+	"description": "",
+	"attributes": {
+		"uniqueID": {
+			"type": "string",
+			"default": ""
+		},
+		"type": {
+			"type": "string",
+			"default": "iframe"
+		},
+		"url": {
+			"type": "string"
+		},
+		"media": {
+			"type": "array",
+			"default": [
+				{
+					"url": "",
+					"id": "",
+					"width": "",
+					"height": "",
+					"alt": "",
+					"subtype": ""
+				}
+			]
+		},
+		"autoPlay": {
+			"type": "boolean",
+			"default": true
+		},
+		"ratio": {
+			"type": "string"
+		},
+		"borderWidth": {
+			"type": "array",
+			"default": [ "", "", "", "" ]
+		},
+		"borderColor": {
+			"type": "string"
+		},
+		"borderOpacity": {
+			"type": "number"
+		},
+		"borderStyle": {
+			"type": "array",
+			"default": [
+				{
+					"top": [ "rgba(255,255,255,0.8)", "solid", "2" ],
+					"right": [ "rgba(255,255,255,0.8)", "solid", "2" ],
+					"bottom": [ "rgba(255,255,255,0.8)", "solid", "2" ],
+					"left": [ "rgba(255,255,255,0.8)", "solid", "2" ],
+					"unit": "px"
+				}
+			]
+		},
+		"tabletBorderStyle": {
+			"type": "array",
+			"default": [
+				{
+					"top": [ "", "", "" ],
+					"right": [ "", "", "" ],
+					"bottom": [ "", "", "" ],
+					"left": [ "", "", "" ],
+					"unit": "px"
+				}
+			]
+		},
+		"mobileBorderStyle": {
+			"type": "array",
+			"default": [
+				{
+					"top": [ "", "", "" ],
+					"right": [ "", "", "" ],
+					"bottom": [ "", "", "" ],
+					"left": [ "", "", "" ],
+					"unit": "px"
+				}
+			]
+		},
+		"borderRadius": {
+			"type": "array",
+			"default": [ "", "", "", "" ]
+		},
+		"tabletBorderRadius": {
+			"type": "array",
+			"default": [ "", "", "", "" ]
+		},
+		"mobileBorderRadius": {
+			"type": "array",
+			"default": [ "", "", "", "" ]
+		},
+		"borderRadiusUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"playBtn": {
+			"type": "array",
+			"default": [
+				{
+					"icon": "",
+					"size": "",
+					"width": 2,
+					"title": "Play",
+					"color": "#ffffff",
+					"opacity": 1,
+					"background": "#000000",
+					"backgroundOpacity": 0.7,
+					"border": "",
+					"borderOpacity": 1,
+					"borderRadius": [ "", "", "", "" ],
+					"borderWidth": [ "", "", "", "" ],
+					"padding": "",
+					"style": "default",
+					"animation": "none",
+					"colorHover": "",
+					"opacityHover": 1,
+					"backgroundHover": "",
+					"backgroundOpacityHover": 1,
+					"borderHover": "",
+					"borderOpacityHover": 1
+				}
+			]
+		},
+		"background": {
+			"type": "array",
+			"default": [
+				{
+					"color": "",
+					"colorOpacity": 1,
+					"img": "",
+					"imgID": "",
+					"imgAlt": "",
+					"imgWidth": "",
+					"imageHeight": "",
+					"bgSize": "cover",
+					"bgPosition": "center center",
+					"bgAttachment": "scroll",
+					"bgRepeat": "no-repeat"
+				}
+			]
+		},
+		"backgroundOverlay": {
+			"type": "array",
+			"default": [
+				{
+					"type": "solid",
+					"fill": "#000000",
+					"fillOpacity": 1,
+					"secondFill": "",
+					"secondFillOpacity": 1,
+					"gradLoc": 0,
+					"gradLocSecond": 100,
+					"gradType": "linear",
+					"gradAngle": 180,
+					"gradPosition": "center center",
+					"opacity": 0.3,
+					"opacityHover": 0.5,
+					"blendMode": "none"
+				}
+			]
+		},
+		"padding": {
+			"type": "array",
+			"default": [
+				{
+					"desk": [ "", "", "", "" ],
+					"tablet": [ "", "", "", "" ],
+					"mobile": [ "", "", "", "" ]
+				}
+			]
+		},
+		"paddingUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"margin": {
+			"type": "array",
+			"default": [
+				{
+					"desk": [ "", "", "", "" ],
+					"tablet": [ "", "", "", "" ],
+					"mobile": [ "", "", "", "" ]
+				}
+			]
+		},
+		"marginUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"displayShadow": {
+			"type": "boolean",
+			"default": false
+		},
+		"shadow": {
+			"type": "array",
+			"default": [
+				{
+					"color": "#000000",
+					"opacity": 0.2,
+					"spread": 0,
+					"blur": 14,
+					"hOffset": 4,
+					"vOffset": 2
+				}
+			]
+		},
+		"shadowHover": {
+			"type": "array",
+			"default": [
+				{
+					"color": "#000000",
+					"opacity": 0.2,
+					"spread": 0,
+					"blur": 14,
+					"hOffset": 4,
+					"vOffset": 2
+				}
+			]
+		},
+		"maxWidth": {
+			"type": "number"
+		},
+		"maxWidthUnit": {
+			"type": "string"
+		},
+		"popup": {
+			"type": "array",
+			"default": [
+				{
+					"background": "#000000",
+					"backgroundOpacity": 0.8,
+					"closeBackground": "",
+					"closeColor": "#ffffff",
+					"maxWidth": 900,
+					"maxWidthTablet": "",
+					"maxWidthMobile": "",
+					"maxWidthUnit": "px",
+					"animation": "none"
+				}
+			]
+		},
+		"ariaLabel": {
+			"type": "string"
+		},
+		"youtubeCookies": {
+			"type": "boolean",
+			"default": true
+		},
+		"anchor": {
+			"type": "string"
+		},
+		"inQueryBlock": {
+			"type": "boolean",
+			"default": false
+		},
+		"isVimeoPrivate": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"usesContext": [ "postId", "queryId", "kadence/dynamicSource", "kadence/repeaterRowData", "kadence/repeaterRow" ],
+	"supports": {
+		"anchor": true,
+		"ktanimate": true,
+		"ktanimateadd": true,
+		"ktanimatepreview": true,
+		"ktanimateswipe": true,
+		"ktdynamic": true,
+		"align": [ "wide", "full" ],
+		"kbMetadata": true
+	}
+}

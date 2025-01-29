@@ -348,12 +348,14 @@ button.components-button.kb-category-button {
 .kt-prebuilt-item .kb-pro-template {
 	position: absolute;
 	z-index: 10000;
-	top: 20px;
+	bottom: 38px;
 	right: 30px;
 	background: #c53030;
 	border-radius: 10px;
-	width: 40px;
+	width: auto;
+	padding-left: 6px;
 	line-height: 20px;
+	padding-right: 6px;
 	color: #fff;
 	text-transform: uppercase;
 	font-weight: bold;
@@ -1394,6 +1396,13 @@ h2.components-heading.kb-patterns-banner-notice.ai-failed-loading {
 	background: #fff4e5;
 	color: #e68400;
 	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+}
+h2.components-heading.kb-patterns-banner-notice.failed-loading {
+	background: #fff4e5;
+	color: #e68400;
 	left: 0;
 	right: 0;
 	top: 0;

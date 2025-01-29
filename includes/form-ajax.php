@@ -590,11 +590,6 @@ class KB_Ajax_Form {
 		if ( isset( $response['success'] ) && true === $response['success'] ) {
 			return $response['success'];
 		}
-		if ( isset( $response['error-codes'] ) && is_array( $response['error-codes'] ) ) {
-			if ( isset( $response['error-codes'][0] ) && $response['error-codes'][0] === 'timeout-or-duplicate' ) {
-				return true;
-			}
-		}
 		return false;
 	}
 	/**

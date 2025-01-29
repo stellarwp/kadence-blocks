@@ -38,9 +38,16 @@ import {
 	DynamicTextControl,
 	DynamicInlineReplaceControl,
 	GradientControl,
+	ResponsiveKadenceRadioButtons,
 } from '@kadence/components';
 
-import { dynamicIcon } from '@kadence/icons';
+import {
+	dynamicIcon,
+	horizontalTextOrientationIcon,
+	stackedTextOrientationIcon,
+	sidewaysDownTextOrientationIcon,
+	sidewaysUpTextOrientationIcon,
+} from '@kadence/icons';
 
 import {
 	KadenceColorOutput,
@@ -124,6 +131,9 @@ function KadenceAdvancedHeading(props) {
 		textShadow,
 		textShadowTablet,
 		textShadowMobile,
+		textOrientation,
+		tabletTextOrientation,
+		mobileTextOrientation,
 		mobileAlign,
 		tabletAlign,
 		size,
@@ -549,57 +559,27 @@ function KadenceAdvancedHeading(props) {
 	);
 	const previewColorTextShadow = getPreviewSize(
 		previewDevice,
-		undefined !== textShadow && undefined !== textShadow[0] && undefined !== textShadow[0].color
-			? textShadow[0].color
-			: 'rgba(0, 0, 0, 0.2)',
-		undefined !== textShadowTablet && undefined !== textShadowTablet[0] && undefined !== textShadowTablet[0].color
-			? textShadowTablet[0].color
-			: textShadow[0].color,
-		undefined !== textShadowMobile && undefined !== textShadowMobile[0] && undefined !== textShadowMobile[0].color
-			? textShadowMobile[0].color
-			: textShadowTablet[0].color
-			? textShadowTablet[0].color
-			: textShadow[0].color
+		undefined !== textShadow?.[0]?.color ? textShadow[0].color : 'rgba(0, 0, 0, 0.2)',
+		undefined !== textShadowTablet?.[0]?.color ? textShadowTablet[0].color : '',
+		undefined !== textShadowMobile?.[0]?.color ? textShadowMobile[0].color : ''
 	);
 	const previewHOffset = getPreviewSize(
 		previewDevice,
-		undefined !== textShadow && undefined !== textShadow[0] && undefined !== textShadow[0].hOffset
-			? textShadow[0].hOffset
-			: 1,
-		undefined !== textShadowTablet && undefined !== textShadowTablet[0] && undefined !== textShadowTablet[0].hOffset
-			? textShadowTablet[0].hOffset
-			: '',
-		undefined !== textShadowMobile && undefined !== textShadowMobile[0] && undefined !== textShadowMobile[0].hOffset
-			? textShadowMobile[0].hOffset
-			: ''
+		undefined !== textShadow?.[0]?.hOffset ? textShadow[0].hOffset : 1,
+		undefined !== textShadowTablet?.[0]?.hOffset ? textShadowTablet[0].hOffset : '',
+		undefined !== textShadowMobile?.[0]?.hOffset ? textShadowMobile[0].hOffset : ''
 	);
 	const previewVOffset = getPreviewSize(
 		previewDevice,
-		undefined !== textShadow && undefined !== textShadow[0] && undefined !== textShadow[0].vOffset
-			? textShadow[0].vOffset
-			: 1,
-
-		undefined !== textShadowTablet && undefined !== textShadowTablet[0] && undefined !== textShadowTablet[0].vOffset
-			? textShadowTablet[0].vOffset
-			: '',
-
-		undefined !== textShadowMobile && undefined !== textShadowMobile[0] && undefined !== textShadowMobile[0].vOffset
-			? textShadowMobile[0].vOffset
-			: ''
+		undefined !== textShadow?.[0]?.vOffset ? textShadow[0].vOffset : 1,
+		undefined !== textShadowTablet?.[0]?.vOffset ? textShadowTablet[0].vOffset : '',
+		undefined !== textShadowMobile?.[0]?.vOffset ? textShadowMobile[0].vOffset : ''
 	);
 	const previewBlur = getPreviewSize(
 		previewDevice,
-		undefined !== textShadow && undefined !== textShadow[0] && undefined !== textShadow[0].blur
-			? textShadow[0].blur
-			: 1,
-
-		undefined !== textShadowTablet && undefined !== textShadowTablet[0] && undefined !== textShadowTablet[0].blur
-			? textShadowTablet[0].blur
-			: '',
-
-		undefined !== textShadowMobile && undefined !== textShadowMobile[0] && undefined !== textShadowMobile[0].blur
-			? textShadowMobile[0].blur
-			: ''
+		undefined !== textShadow?.[0]?.blur ? textShadow[0].blur : 1,
+		undefined !== textShadowTablet?.[0]?.blur ? textShadowTablet[0].blur : '',
+		undefined !== textShadowMobile?.[0]?.blur ? textShadowMobile[0].blur : ''
 	);
 	let previewJustifyAlign = previewAlign;
 	switch (previewAlign) {
@@ -790,6 +770,12 @@ function KadenceAdvancedHeading(props) {
 		undefined !== markBorderRadius ? markBorderRadius[3] : '',
 		undefined !== tabletMarkBorderRadius ? tabletMarkBorderRadius[3] : '',
 		undefined !== mobileMarkBorderRadius ? mobileMarkBorderRadius[3] : ''
+	);
+	const previewTextOrientation = getPreviewSize(
+		previewDevice,
+		undefined !== textOrientation ? textOrientation : '',
+		undefined !== tabletTextOrientation ? tabletTextOrientation : '',
+		undefined !== mobileTextOrientation ? mobileTextOrientation : ''
 	);
 	const markBorderRadiusUnitPreview = undefined !== markBorderRadiusUnit ? markBorderRadiusUnit : 'px';
 	let backgroundIgnoreClass = backgroundColorClass ? false : true;
@@ -1041,19 +1027,14 @@ function KadenceAdvancedHeading(props) {
 							? `${previewHOffset}px ${previewVOffset}px ${previewBlur}px ${KadenceColorOutput(
 									previewColorTextShadow
 							  )}`
-							: textShadow[0].enable && previewDevice === 'Tablet'
-							? `${textShadow[0].hOffset}px ${textShadow[0].vOffset}px ${
-									textShadow[0].blur
-							  }px ${KadenceColorOutput(textShadow[0].color)}`
-							: textShadowTablet[0].enable && previewDevice === 'Mobile'
-							? `${textShadowTablet[0].hOffset}px ${textShadowTablet[0].vOffset}px ${
-									textShadowTablet[0].blur
-							  }px ${KadenceColorOutput(textShadowTablet[0].color)}`
-							: textShadow[0].enable && previewDevice === 'Mobile'
-							? `${textShadow[0].hOffset}px ${textShadow[0].vOffset}px ${
-									textShadow[0].blur
-							  }px ${KadenceColorOutput(textShadow[0].color)}`
 							: undefined,
+						writingMode:
+							previewTextOrientation === 'stacked' || previewTextOrientation === 'sideways-down'
+								? 'vertical-lr'
+								: previewTextOrientation === 'sideways-up'
+								? 'sideways-lr'
+								: '',
+						textOrientation: previewTextOrientation === 'stacked' ? 'upright' : '',
 					}}
 					placeholder={__('Write something…', 'kadence-blocks')}
 				/>
@@ -1167,7 +1148,6 @@ function KadenceAdvancedHeading(props) {
 			};
 		}
 	}, [isSelected]);
-
 	return (
 		<div {...blockProps}>
 			<style>
@@ -1816,6 +1796,44 @@ function KadenceAdvancedHeading(props) {
 										}}
 									/>
 								)}
+							</KadencePanelBody>
+							<KadencePanelBody
+								title={__('Text Orientation', 'kadence-blocks')}
+								initialOpen={false}
+								panelName={'kb-adv-heading-text-orientation'}
+							>
+								<ResponsiveKadenceRadioButtons
+									label={__('Orientation', 'kadence-blocks')}
+									value={previewTextOrientation}
+									tabletValue={previewTextOrientation}
+									mobileValue={previewTextOrientation}
+									className={'kb-text-orientation'}
+									options={[
+										{
+											value: 'horizontal',
+											tooltip: __('Horizontal', 'kadence-blocks'),
+											icon: horizontalTextOrientationIcon,
+										},
+										{
+											value: 'stacked',
+											tooltip: __('Stacked Vertically', 'kadence-blocks'),
+											icon: stackedTextOrientationIcon,
+										},
+										{
+											value: 'sideways-down',
+											tooltip: __('Sideways Down', 'kadence-blocks'),
+											icon: sidewaysDownTextOrientationIcon,
+										},
+										{
+											value: 'sideways-up',
+											tooltip: __('Sideways Up', 'kadence-blocks'),
+											icon: sidewaysUpTextOrientationIcon,
+										},
+									]}
+									onChange={(value) => setAttributes({ textOrientation: value })}
+									onChangeTablet={(value) => setAttributes({ tabletTextOrientation: value })}
+									onChangeMobile={(value) => setAttributes({ mobileTextOrientation: value })}
+								/>
 							</KadencePanelBody>
 							{showSettings('iconSettings', 'kadence/advancedheading') && (
 								<KadencePanelBody

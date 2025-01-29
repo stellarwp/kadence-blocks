@@ -293,7 +293,9 @@ class TemplatesLibrary extends Component {
 										</Button>
 										{undefined !== pro && pro && (
 											<Fragment>
-												<span className="kb-pro-template">{__('Pro', 'kadence-blocks')}</span>
+												<span className="kb-pro-template">
+													{__('Premium', 'kadence-blocks')}
+												</span>
 											</Fragment>
 										)}
 									</div>

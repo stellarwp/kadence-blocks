@@ -145,6 +145,18 @@ export default function MenuEditor({
 						title={'Categories'}
 						onSelect={onSelectCategory}
 					/>
+
+					{kadence_blocks_params.hasWoocommerce && (
+						<PostSelectorCheckbox
+							key={'product_cat'}
+							forceOpen={sidebarTab === 'product_cat'}
+							useForceState={true}
+							onPanelBodyToggle={() => setSidebarTab(sidebarTab === 'product_cat' ? null : 'product_cat')}
+							postType={'product_cat'}
+							title={'Product Categories'}
+							onSelect={onSelectCategory}
+						/>
+					)}
 				</div>
 				<div className={'add-menu'}></div>
 			</div>

@@ -40,22 +40,38 @@ export default function RangeControl({
 		onChange && (
 			<div className={`components-base-control kadence-range-control${className ? ' ' + className : ''}`}>
 				<div className="kadence-title-bar">
-					{label && <span className="kadence-control-title">{label}</span>}
-					{reset && (
-						<Button
-							className="is-reset is-single"
-							isSmall
-							disabled={isEqual(value, defaultValue)}
-							icon={undo}
-							onClick={() => {
-								if (typeof reset === 'function') {
-									reset();
-								} else {
-									onReset();
-								}
-							}}
-						></Button>
-					)}
+					{label && <span className="kadence-control-title">{label}
+						{reset && (
+							<Button
+								className="is-reset is-single"
+								isSmall
+								disabled={isEqual(value, defaultValue)}
+								icon={undo}
+								onClick={() => {
+									if (typeof reset === 'function') {
+										reset();
+									} else {
+										onReset();
+									}
+								}}
+							></Button>
+						)}
+					</span>}
+					{/*{reset && (*/}
+					{/*	<Button*/}
+					{/*		className="is-reset is-single"*/}
+					{/*		isSmall*/}
+					{/*		disabled={isEqual(value, defaultValue)}*/}
+					{/*		icon={undo}*/}
+					{/*		onClick={() => {*/}
+					{/*			if (typeof reset === 'function') {*/}
+					{/*				reset();*/}
+					{/*			} else {*/}
+					{/*				onReset();*/}
+					{/*			}*/}
+					{/*		}}*/}
+					{/*	></Button>*/}
+					{/*)}*/}
 				</div>
 				<div className={'kadence-controls-content'}>
 					<div className={'kadence-range-control-inner'}>

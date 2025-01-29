@@ -83,7 +83,9 @@ function KadenceBlockPattern({
 		return (
 			<div className="block-editor-block-patterns-list__item-title">
 				<span className="kb-pattern-inline-title" dangerouslySetInnerHTML={{ __html: pattern.title }}></span>
-				{undefined !== pro && pro && <span className="kb-pattern-pro-item">{__('Pro', 'kadence-blocks')}</span>}
+				{undefined !== pro && pro && (
+					<span className="kb-pattern-pro-item">{__('Premium', 'kadence-blocks')}</span>
+				)}
 			</div>
 		);
 	}
@@ -161,10 +163,10 @@ function KadenceBlockPattern({
 							<span className="kb-pattern-requires-active-pro-item">
 								<ExternalLink
 									href={
-										'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=patterns'
+										'https://www.kadencewp.com/pricing/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=patterns'
 									}
 								>
-									{__('Requires Kadence Blocks Pro', 'kadence-blocks')}
+									{__('Requires Kadence Premium Designs', 'kadence-blocks')}
 								</ExternalLink>
 							</span>
 						</div>

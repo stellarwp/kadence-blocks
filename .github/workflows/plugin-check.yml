@@ -1,0 +1,35 @@
+name: WordPress.org Plugin Check
+
+on:
+  workflow_dispatch:
+
+jobs:
+  plugin-check:
+    runs-on: ubuntu-latest
+
+    env:
+      COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.COMPOSER_TOKEN }}"}}'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+
+      - name: Install dependencies
+        run: |
+          composer install --no-dev --no-scripts
+          composer run strauss-release
+          npm install --legacy-peer-deps
+
+      - name: Build plugin
+        run: npm run build
+
+      - name: Run plugin check
+        uses: wordpress/plugin-check-action@v1
+        with:
+          build-dir: './'
+          exclude-directories: 'vendor,src,node_modules'
+          categories: |
+            performance
+            accessibility
