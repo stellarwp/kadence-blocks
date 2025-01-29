@@ -176,8 +176,14 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 = 3.4.7 =
 Release Date: TBD January 2025
+* Add: Vertical text options to Advanced Text block.
 * Update: Available google fonts.
 * Fix: Improve table block performance in editor.
+* Fix: Using advanced button inside a query loop when the card is sourced from a WooTemplate.
+* Fix: Aria labels on progress bar.
+* Fix: Using multiple Vimeo row layout background on the same page.
+* Fix: Navigation link dropdown arrow spacing on larger font sizes.
+* Fix: Table of contents bullet styles in the editor.
 
 = 3.4.6 =
 Release Date: 16th January 2025
