@@ -345,7 +345,7 @@
 		visitedMessages = new Set();
 	}
 	function warnWhen(condition, message) {
-		if (condition && !visitedMessages.has(message)) {
+		if (false && condition && !visitedMessages.has(message)) {
 			var _console;
 
 			visitedMessages.add(message);
