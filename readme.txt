@@ -175,7 +175,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.4.7 =
-Release Date: TBD January 2025
+Release Date: 30th January 2025
 * Add: Vertical text options to Advanced Text block.
 * Update: Available google fonts.
 * Fix: Improve table block performance in editor.
