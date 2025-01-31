@@ -25,7 +25,6 @@
 				if (openModalButton) {
 					const showModalButton = function (e) {
 						e.preventDefault();
-						console.log('showModalButton');
 						modalDiv.classList.add('active');
 						openModalButton.setAttribute('aria-hidden', 'true');
 						closeModalButton.removeAttribute('aria-hidden');
@@ -34,7 +33,6 @@
 					};
 					const hideModalButton = function (e) {
 						e.preventDefault();
-						console.log('hideModalButton');
 						modalDiv.classList.remove('active');
 						openModalButton.removeAttribute('aria-hidden');
 						closeModalButton.setAttribute('aria-hidden', 'true');
