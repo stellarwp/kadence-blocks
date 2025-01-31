@@ -6,9 +6,8 @@
 	window.kadenceSearchBlock = {
 		cache: {},
 		initSearch() {
-			window.kadenceSearchBlock.cache = document.querySelectorAll('.kb-search-form');
+			window.kadenceSearchBlock.cache = document.querySelectorAll('.kb-search-modal-container');
 			if (!window.kadenceSearchBlock.cache.length) {
-				console.log('No search block found');
 				return;
 			}
 
