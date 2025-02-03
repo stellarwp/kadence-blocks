@@ -890,6 +890,7 @@ export default function BackendStyles(props) {
 		css.add_property('-webkit-background-clip', 'text');
 		css.add_property('-webkit-text-fill-color', 'transparent');
 	} else {
+		css.set_selector(`.kb-single-btn-${uniqueID} .kt-button-${uniqueID}`);
 		css.add_property('color', css.render_color(color));
 	}
 
