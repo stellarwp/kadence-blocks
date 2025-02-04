@@ -103,6 +103,18 @@ class KB_Ajax_Advanced_Form {
 
 			$form_args = apply_filters( 'kadence_blocks_advanced_form_form_args', $form_args, $processed_fields, $post_id );
 
+			$submission_rejected = apply_filters( 'kadence_blocks_advanced_form_submission_reject', false, $form_args, $processed_fields, $post_id );
+			if ( $submission_rejected ) {
+				$rejection_message = apply_filters(
+					'kadence_blocks_advanced_form_submission_reject_message',
+					__( 'Submission rejected.', 'kadence-blocks' ),
+					$form_args,
+					$processed_fields,
+					$post_id
+				);
+				$this->process_bail( $rejection_message, $rejection_message );
+			}
+
 			do_action( 'kadence_blocks_advanced_form_submission', $form_args, $processed_fields, $post_id );
 
 			$submission_results = $this->after_submit_actions( $form_args, $processed_fields, $post_id );
