@@ -6,24 +6,32 @@ import { Icon } from '@wordpress/components';
 
 import { get } from 'lodash';
 import classnames from 'classnames';
+import { memo } from '@wordpress/element';
 
-function DragHandle(props) {
+const DragHandle = memo(function DragHandle(props) {
 	return (
 		<div className={'drag-handle'} style={{ cursor: 'grab', marginRight: '5px' }} {...props}>
 			<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
-				<path d="M13 8c.6 0 1-.4 1-1s-.4-1-1-1-1 .4-1 1 .4 1 1 1zM5 6c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1zm0 4c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1zm8 0c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1zM9 6c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1zm0 4c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1z"></path>
+				<path d="M13 8c.6 0 1-.4 1-1s-.4-1-1-1-1 .4-1-1 .4 1 1 1zM5 6c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1zm0 4c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1zm8 0c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1zM9 6c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1zm0 4c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1z"></path>
 			</svg>
 		</div>
 	);
-}
+});
 
 export default function Block({ block, isPreview = false }) {
 	const parentProps = {};
 	let dragHandleProps = {};
 
-	const blockMeta = useSelect((select) => {
-		return select('core/blocks').getBlockType(block.name);
-	}, []);
+	const blockMeta = useSelect(
+		(select) => {
+			const blockType = select('core/blocks').getBlockType(block.name);
+			return {
+				title: blockType?.title || '',
+				icon: blockType?.icon || {},
+			};
+		},
+		[block.name]
+	);
 
 	const displayTitle = () => {
 		const metadataTitle = get(block, ['attributes', 'metadata', 'name'], '');

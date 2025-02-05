@@ -124,14 +124,14 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 	return (
 		<>
 			{isVisible && (
-				<style>
+				<style key="modal-position-style">
 					{/* Prevent off canvas from being hidden by visual builder when moved to top*/}
 					{modalPosition === 'top' && <>{`.kb-off-canvas-inner { margin-top: 310px; }`}</>}
 				</style>
 			)}
 			<div ref={ref}>
 				{!isVisible && (isSelected || childSelected) && (
-					<div class={'kb-header-visual-builder-teaser'} style={editorStyles}>
+					<div className={'kb-header-visual-builder-teaser'} style={editorStyles}>
 						<Button isPrimary onClick={() => setIsVisible(true)}>
 							{__('Open Visual Builder', 'kadence-blocks')}
 						</Button>
@@ -139,10 +139,10 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 				)}
 				{isVisible && (
 					<div
-						class={'kb-header-visual-builder-modal kb-header-visual-builder-modal-' + modalPosition}
+						className={'kb-header-visual-builder-modal kb-header-visual-builder-modal-' + modalPosition}
 						style={editorStyles}
 					>
-						<div class={'tabs'}>
+						<div className={'tabs'}>
 							<Button
 								className="kb-device-tab"
 								isPressed={tab === 'Desktop'}
@@ -178,13 +178,13 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 							</div>
 						</div>
 
-						<div class={'content'}>
-							{tab === 'Desktop' && <Desktop blocks={desktopBlocks} />}
+						<div className={'content'}>
+							{tab === 'Desktop' && <Desktop blocks={desktopBlocks} key="desktop" />}
 
-							{tab === 'Tablet' && <Tablet blocks={tabletBlocks} />}
+							{tab === 'Tablet' && <Tablet blocks={tabletBlocks} key="tablet" />}
 
 							{tab === 'off-canvas' && (
-								<OffCanvas blocks={offCanvasBlocks} topLevelBlocks={topLevelBlocks} />
+								<OffCanvas blocks={offCanvasBlocks} topLevelBlocks={topLevelBlocks} key="off-canvas" />
 							)}
 						</div>
 					</div>
@@ -193,7 +193,7 @@ export default function VisualBuilder({ clientId, previewDevice, isSelected }) {
 
 			{/* hide the metaboxes area that currently take up the same space as the visual builder while the teaser or builder is active */}
 			{(isVisible || (!isVisible && (isSelected || childSelected))) && (
-				<style>
+				<style key="layout-style">
 					{'' +
 						'.edit-post-layout__metaboxes{display: none}' +
 						`.editor-styles-wrapper{ margin-${modalPosition}: ${

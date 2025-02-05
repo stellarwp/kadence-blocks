@@ -10,11 +10,12 @@ import DragDropContext from './dragDropContext';
 
 const OffCanvasRow = ({ blocks, offCanvasClientId }) => {
 	return (
-		<div className={'visual-row-wrapper'} key={'off-canvas'}>
+		<div className={'visual-row-wrapper'}>
 			<SelectBlockButton clientId={offCanvasClientId} />
 			<div className={`visual-off-canvas-row`}>
 				<div className={`visual-section-wrapper visual-section-wrapper-off-canvas`}>
 					<ColumnBlocks
+						key={`off-canvas-blocks-${offCanvasClientId}`}
 						blocks={blocks}
 						className={'off-canvas'}
 						clientId={offCanvasClientId}
@@ -25,7 +26,11 @@ const OffCanvasRow = ({ blocks, offCanvasClientId }) => {
 					{/*<AddBlockButton position={'off-canvas'} clientId={offCanvasClientId} />*/}
 				</div>
 			</div>
-			<AddBlockButton position={'off-canvas'} clientId={offCanvasClientId} />
+			<AddBlockButton
+				key={`off-canvas-add-${offCanvasClientId}`}
+				position={'off-canvas'}
+				clientId={offCanvasClientId}
+			/>
 		</div>
 	);
 };
@@ -42,7 +47,11 @@ export default function OffCanvas({ blocks, topLevelBlocks }) {
 				{/* This created the element that is visually moved when dragging */}
 				<DragOverlay>
 					{activeBlockData !== null && (
-						<Block block={{ ...activeBlockData.data.current, clientId: '' }} isPreview={true} />
+						<Block
+							key={`drag-overlay-${activeBlockData.data.current.clientId}`}
+							block={{ ...activeBlockData.data.current, clientId: '' }}
+							isPreview={true}
+						/>
 					)}
 				</DragOverlay>
 			</DragDropContext>

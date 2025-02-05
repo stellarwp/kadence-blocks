@@ -23,8 +23,12 @@ const TabletRow = ({ position, blocks }) => {
 				}`}
 			>
 				{['left', 'center', 'right'].map((align, index) => (
-					<div className={`visual-section-wrapper visual-section-wrapper-${align}`}>
+					<div
+						key={`${position}-${align}`}
+						className={`visual-section-wrapper visual-section-wrapper-${align}`}
+					>
 						<ColumnBlocks
+							key={`${position}-${align}-blocks`}
 							blocks={get(thisRow, ['innerBlocks', index, 'innerBlocks'], [])}
 							className={align}
 							clientId={get(thisRow, ['innerBlocks', index, 'clientId'], [])}
@@ -32,6 +36,7 @@ const TabletRow = ({ position, blocks }) => {
 							isTablet={true}
 						/>
 						<AddBlockButton
+							key={`${position}-${align}-add`}
 							position={align}
 							clientId={get(thisRow, ['innerBlocks', index, 'clientId'], [])}
 						/>
