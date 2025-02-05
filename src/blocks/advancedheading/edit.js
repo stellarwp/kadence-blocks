@@ -1844,7 +1844,7 @@ function KadenceAdvancedHeading(props) {
 									onChangeTablet={(value) => setAttributes({ tabletTextOrientation: value })}
 									onChangeMobile={(value) => setAttributes({ mobileTextOrientation: value })}
 								/>
-								{ textOrientation !== 'horizontal' && textOrientation !== '' && (
+								{textOrientation !== 'horizontal' && textOrientation !== '' && (
 									<ResponsiveRangeControls
 										reset={() => {
 											setAttributes({
@@ -1858,27 +1858,43 @@ function KadenceAdvancedHeading(props) {
 											setAttributes({
 												maxHeight: [
 													value,
-													undefined !== maxHeight && undefined !== maxHeight[1] ? maxHeight[1] : '',
-													undefined !== maxHeight && undefined !== maxHeight[2] ? maxHeight[2] : '',
+													undefined !== maxHeight && undefined !== maxHeight[1]
+														? maxHeight[1]
+														: '',
+													undefined !== maxHeight && undefined !== maxHeight[2]
+														? maxHeight[2]
+														: '',
 												],
 											});
 										}}
-										tabletValue={undefined !== maxHeight && undefined !== maxHeight[1] ? maxHeight[1] : ''}
+										tabletValue={
+											undefined !== maxHeight && undefined !== maxHeight[1] ? maxHeight[1] : ''
+										}
 										onChangeTablet={(value) => {
 											setAttributes({
 												maxHeight: [
-													undefined !== maxHeight && undefined !== maxHeight[0] ? maxHeight[0] : '',
+													undefined !== maxHeight && undefined !== maxHeight[0]
+														? maxHeight[0]
+														: '',
 													value,
-													undefined !== maxHeight && undefined !== maxHeight[2] ? maxHeight[2] : '',
+													undefined !== maxHeight && undefined !== maxHeight[2]
+														? maxHeight[2]
+														: '',
 												],
 											});
 										}}
-										mobileValue={undefined !== maxHeight && undefined !== maxHeight[2] ? maxHeight[2] : ''}
+										mobileValue={
+											undefined !== maxHeight && undefined !== maxHeight[2] ? maxHeight[2] : ''
+										}
 										onChangeMobile={(value) => {
 											setAttributes({
 												maxHeight: [
-													undefined !== maxHeight && undefined !== maxHeight[0] ? maxHeight[0] : '',
-													undefined !== maxHeight && undefined !== maxHeight[1] ? maxHeight[1] : '',
+													undefined !== maxHeight && undefined !== maxHeight[0]
+														? maxHeight[0]
+														: '',
+													undefined !== maxHeight && undefined !== maxHeight[1]
+														? maxHeight[1]
+														: '',
 													value,
 												],
 											});
