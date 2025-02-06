@@ -216,10 +216,15 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 					break;
 				case 'sideways-down':
 					$css->add_property( 'writing-mode', 'vertical-lr' );
+					$css->add_property( 'text-orientation', 'sideways' );
 					break;
 				case 'sideways-up':
 					$css->add_property( 'writing-mode', 'sideways-lr' );
+					$css->add_property( 'text-orientation', 'sideways' );
 					break;
+			}
+			if ( isset($attributes['maxHeight']) && is_array( $attributes['maxHeight'] ) && ! empty( $attributes['maxHeight'][0] ) && $attributes['textOrientation'] !== 'horizontal' ) {
+				$css->add_property( 'max-height', $attributes['maxHeight'][0] . ( ! isset( $attributes['maxHeightType'][0] ) ? 'px' : $attributes['maxHeightType'][0] ) );
 			}
 		}
 		if ( isset($attributes['tabletTextOrientation']) ) {
@@ -235,10 +240,15 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 					break;
 				case 'sideways-down':
 					$css->add_property( 'writing-mode', 'vertical-lr' );
+					$css->add_property( 'text-orientation', 'sideways' );
 					break;
 				case 'sideways-up':
 					$css->add_property( 'writing-mode', 'sideways-lr' );
+					$css->add_property( 'text-orientation', 'sideways' );
 					break;
+			}
+			if ( isset($attributes['maxHeight']) && is_array( $attributes['maxHeight'] ) && ! empty( $attributes['maxHeight'][1] ) && $attributes['tabletTextOrientation'] !== 'horizontal' ) {
+				$css->add_property('max-height', $attributes['maxHeight'][1] . (!isset($attributes['maxHeightType'][1]) ? 'px' : $attributes['maxHeightType'][1]));
 			}
 		}
 		if ( isset($attributes['mobileTextOrientation']) ) {
@@ -254,10 +264,15 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 					break;
 				case 'sideways-down':
 					$css->add_property( 'writing-mode', 'vertical-lr' );
+					$css->add_property( 'text-orientation', 'sideways' );
 					break;
 				case 'sideways-up':
 					$css->add_property( 'writing-mode', 'sideways-lr' );
+					$css->add_property( 'text-orientation', 'sideways' );
 					break;
+			}
+			if ( isset($attributes['maxHeight']) && is_array( $attributes['maxHeight'] ) && ! empty( $attributes['maxHeight'][2] ) && $attributes['mobileTextOrientation'] !== 'horizontal' ) {
+				$css->add_property('max-height', $attributes['maxHeight'][2] . (!isset($attributes['maxHeightType'][2]) ? 'px' : $attributes['maxHeightType'][2]));
 			}
 		}
 
