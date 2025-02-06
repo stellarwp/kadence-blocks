@@ -800,16 +800,16 @@
         },
         {
             "name": "stellarwp/telemetry",
-            "version": "2.3.2",
+            "version": "2.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/telemetry.git",
-                "reference": "a4bc84f1b9539ae5418e76caab31355191273a9c"
+                "reference": "cb302096350b047ab203367c8198bd0c5d1805cc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/telemetry/zipball/a4bc84f1b9539ae5418e76caab31355191273a9c",
-                "reference": "a4bc84f1b9539ae5418e76caab31355191273a9c",
+                "url": "https://api.github.com/repos/stellarwp/telemetry/zipball/cb302096350b047ab203367c8198bd0c5d1805cc",
+                "reference": "cb302096350b047ab203367c8198bd0c5d1805cc",
                 "shasum": ""
             },
             "require": {
@@ -843,9 +843,9 @@
             "description": "Telemetry library for StellarWP plugins.",
             "support": {
                 "issues": "https://github.com/stellarwp/telemetry/issues",
-                "source": "https://github.com/stellarwp/telemetry/tree/2.3.2"
+                "source": "https://github.com/stellarwp/telemetry/tree/2.3.3"
             },
-            "time": "2024-01-08T18:55:26+00:00"
+            "time": "2025-01-28T21:13:55+00:00"
         },
         {
             "name": "stellarwp/uplink",
