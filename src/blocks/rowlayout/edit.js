@@ -725,7 +725,7 @@ function RowLayoutEditContainer(props) {
 	const hasBG = bgColor || bgImg || gradient || overlay || overlayGradient || overlayBgImg ? 'kt-row-has-bg' : '';
 	const isKadenceT = typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.isKadenceT ? true : false;
 	const paddingSidesTheme = isKadenceT && true === inheritMaxWidth ? 'var(--global-content-edge-padding)' : '0px';
-	const paddingSidesDefault = hasBG && !(isKadenceT && true === inheritMaxWidth) ? 'sm' : '';
+	const paddingSidesDefault = hasBG && !(isKadenceT && true === inheritMaxWidth) ? '' : '';
 	const previewPaddingTop = getPreviewSize(
 		previewDevice,
 		undefined !== padding?.[0] ? padding[0] : '',
@@ -1186,39 +1186,52 @@ function RowLayoutEditContainer(props) {
 							<>
 								{showSettings('paddingMargin', 'kadence/rowlayout') && (
 									<KadencePanelBody panelName={'kb-row-padding'}>
-										<ResponsiveMeasureRangeControl
-											label={__('Padding', 'kadence-blocks')}
-											value={
-												hasBG &&
-												undefined !== padding &&
-												undefined !== padding[0] &&
-												padding[1] === '' &&
-												padding[3] === ''
-													? [padding[0], 'sm', padding[2], 'sm']
-													: undefined !== padding && undefined !== padding[0]
-													? padding
-													: ['sm', '', 'sm', '']
+										<div
+											className={
+												hasBG && padding[1] === '' && padding[3] !== ''
+													? 'padding-right-measure-range-control'
+													: hasBG && padding[1] !== '' && padding[3] === ''
+													? 'padding-left-measure-range-control'
+													: hasBG && padding[1] === '' && padding[3] === ''
+													? 'padding-right-measure-range-control padding-left-measure-range-control'
+													: ''
 											}
-											tabletValue={tabletPadding}
-											mobileValue={
-												undefined !== mobilePadding && undefined !== mobilePadding[0]
-													? mobilePadding
-													: ['', '', '', '']
-											}
-											onChange={(value) => setAttributes({ padding: value })}
-											onChangeTablet={(value) => setAttributes({ tabletPadding: value })}
-											onChangeMobile={(value) => setAttributes({ mobilePadding: value })}
-											min={0}
-											max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 999}
-											step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
-											deskDefault={['sm', '', 'sm', '']}
-											unit={paddingUnit}
-											options={SPACING_SIZES_MAP}
-											units={['px', 'em', 'rem', '%', 'vh', 'vw']}
-											onUnit={(value) => setAttributes({ paddingUnit: value })}
-											onMouseOver={paddingMouseOver.onMouseOver}
-											onMouseOut={paddingMouseOver.onMouseOut}
-										/>
+										>
+											<ResponsiveMeasureRangeControl
+												label={__('Padding', 'kadence-blocks')}
+												value={
+													hasBG &&
+													undefined !== padding &&
+													undefined !== padding[0] &&
+													padding[1] === '' &&
+													padding[3] === ''
+														? [padding[0], '', padding[2], '']
+														: undefined !== padding && undefined !== padding[0]
+														? padding
+														: ['sm', '', 'sm', '']
+												}
+												tabletValue={tabletPadding}
+												mobileValue={
+													undefined !== mobilePadding && undefined !== mobilePadding[0]
+														? mobilePadding
+														: ['', '', '', '']
+												}
+												onChange={(value) => setAttributes({ padding: value })}
+												onChangeTablet={(value) => setAttributes({ tabletPadding: value })}
+												onChangeMobile={(value) => setAttributes({ mobilePadding: value })}
+												min={0}
+												max={paddingUnit === 'em' || paddingUnit === 'rem' ? 25 : 999}
+												step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
+												deskDefault={['sm', '', 'sm', '']}
+												unit={paddingUnit}
+												options={SPACING_SIZES_MAP}
+												units={['px', 'em', 'rem', '%', 'vh', 'vw']}
+												onUnit={(value) => setAttributes({ paddingUnit: value })}
+												onMouseOver={paddingMouseOver.onMouseOver}
+												onMouseOut={paddingMouseOver.onMouseOut}
+											/>
+										</div>
+
 										<ResponsiveMeasureRangeControl
 											label={__('Margin', 'kadence-blocks')}
 											value={[
