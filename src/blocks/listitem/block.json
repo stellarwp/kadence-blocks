@@ -104,6 +104,181 @@
 		"tooltipDash": {
 			"type": "boolean",
 			"default": true
+		},
+		"markSize": {
+			"type": "array",
+			"default": ["", "", ""]
+		},
+		"markSizeType": {
+			"type": "string",
+			"default": "px"
+		},
+		"markLineHeight": {
+			"type": "array",
+			"default": ["", "", ""]
+		},
+		"markLineType": {
+			"type": "string",
+			"default": "px"
+		},
+		"markLetterSpacing": {
+			"type": "number"
+		},
+		"tabletMarkLetterSpacing": {
+			"type": "number"
+		},
+		"mobileMarkLetterSpacing": {
+			"type": "number"
+		},
+		"markLetterSpacingType": {
+			"type": "string",
+			"default": "px"
+		},
+		"markTypography": {
+			"type": "string",
+			"default": ""
+		},
+		"markGoogleFont": {
+			"type": "boolean",
+			"default": false
+		},
+		"markLoadGoogleFont": {
+			"type": "boolean",
+			"default": true
+		},
+		"markFontSubset": {
+			"type": "string",
+			"default": ""
+		},
+		"markFontVariant": {
+			"type": "string",
+			"default": ""
+		},
+		"markFontWeight": {
+			"type": "string",
+			"default": ""
+		},
+		"markFontStyle": {
+			"type": "string",
+			"default": "normal"
+		},
+		"enableMarkGradient": {
+			"type": "boolean",
+			"default": false
+		},
+		"enableMarkBackgroundGradient": {
+			"type": "boolean",
+			"default": false
+		},
+		"markGradient": {
+			"type": "string",
+			"default": ""
+		},
+		"markBackgroundGradient": {
+			"type": "string",
+			"default": ""
+		},
+		"markColor": {
+			"type": "string",
+			"default": "#f76a0c"
+		},
+		"markBG": {
+			"type": "string"
+		},
+		"markBGOpacity": {
+			"type": "number",
+			"default": 1
+		},
+		"markPadding": {
+			"type": "array",
+			"default": [0, 0, 0, 0]
+		},
+		"markTabPadding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"markMobilePadding": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"markPaddingControl": {
+			"type": "string",
+			"default": "linked"
+		},
+		"markPaddingType": {
+			"type": "string",
+			"default": "px"
+		},
+		"markBorder": {
+			"type": "string"
+		},
+		"markBorderStyles": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"tabletMarkBorderStyles": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"mobileMarkBorderStyles": {
+			"type": "array",
+			"default": [
+				{
+					"top": ["", "", ""],
+					"right": ["", "", ""],
+					"bottom": ["", "", ""],
+					"left": ["", "", ""],
+					"unit": "px"
+				}
+			]
+		},
+		"markBorderOpacity": {
+			"type": "number",
+			"default": 1
+		},
+		"markBorderWidth": {
+			"type": "number",
+			"default": 0
+		},
+		"markBorderStyle": {
+			"type": "string",
+			"default": "solid"
+		},
+		"markTextTransform": {
+			"type": "string",
+			"default": ""
+		},
+		"markBorderRadius": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"tabletMarkBorderRadius": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"mobileMarkBorderRadius": {
+			"type": "array",
+			"default": ["", "", "", ""]
+		},
+		"markBorderRadiusUnit": {
+			"type": "string",
+			"default": "px"
 		}
 	},
 	"usesContext": [
