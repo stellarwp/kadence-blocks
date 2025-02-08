@@ -17,7 +17,7 @@ const icon = (
 	</svg>
 );
 const name = 'kadence/mark';
-const allowedBlocks = ['kadence/advancedheading'];
+const allowedBlocks = ['kadence/advancedheading', 'kadence/listitem'];
 
 const kadenceMarkHighlight = {
 	title: __('Adv Highlight', 'kadence-blocks'),
