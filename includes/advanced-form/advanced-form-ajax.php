@@ -200,7 +200,7 @@ class KB_Ajax_Advanced_Form {
 	public function after_submit_actions( $form_args, $processed_fields, $post_id ) {
 
 		$submission_results = array( 'success' => true );
-		$actions = isset( $form_args['attributes']['actions'] ) ? $form_args['attributes']['actions'] : array( 'email' );
+		$actions = apply_filters( 'kadence_blocks_advanced_form_actions', isset( $form_args['attributes']['actions'] ) ? $form_args['attributes']['actions'] : array( 'email' ), $form_args, $processed_fields, $post_id );
 
 		$submit_actions = new Kadence_Blocks_Advanced_Form_Submit_Actions( $form_args, $processed_fields, $post_id );
 
