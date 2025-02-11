@@ -176,6 +176,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 = 3.4.9 =
 Release Date: TBD February 2025
+* Add: Allow uploading of design files in Advanced form. Ex: ai, ait, eps, psd
 * Add: Advanced form filter for submit actions.
 * Add: Advanced form filter submission filtering.
 * Fix: WPML translation for adv button links.
