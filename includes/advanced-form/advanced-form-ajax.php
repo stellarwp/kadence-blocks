@@ -553,6 +553,16 @@ class KB_Ajax_Advanced_Form {
 			),
 			'documents' => $document_type,
 			'document' => $document_type,
+			'design' => array( // New "design" category
+				'ai'    => 'application/postscript',                    // Adobe Illustrator
+				'ait'   => 'application/postscript',                    // Adobe Illustrator Template
+				'eps'   => 'application/postscript',                    // Encapsulated PostScript
+				'psd'   => 'image/vnd.adobe.photoshop',                 // Adobe Photoshop
+				'psb'   => 'image/vnd.adobe.photoshop',                 // Adobe Photoshop Large Document Format
+				'xcf'   => 'image/x-xcf',                               // GIMP File
+				'svg'   => 'image/svg+xml',                             // Scalable Vector Graphics
+				'svgz'  => 'image/svg+xml',                             // Gzipped Scalable Vector Graphics
+			),
 			'archive' => array(
 				'zip'  => 'application/zip',
 			),
