@@ -78,7 +78,7 @@
 		// Close modal on outside click.
 		document.addEventListener('click', function (event) {
 			var target = event.target;
-			var modal = document.querySelector('.kb-off-canvas-overlay');
+			var modal = offCanvasArea.querySelector('.kb-off-canvas-overlay');
 			if (target === modal) {
 				closeOffCanvas();
 			}
