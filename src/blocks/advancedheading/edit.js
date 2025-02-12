@@ -979,7 +979,8 @@ function KadenceAdvancedHeading(props) {
 				marginLeft:
 					'' !== previewMarginLeft ? getSpacingOptionOutput(previewMarginLeft, marginType) : undefined,
 				lineHeight: previewLineHeight ? previewLineHeight + (fontHeightType ? fontHeightType : '') : undefined,
-				color: color && (!enableTextGradient || textGradient !== '') ? KadenceColorOutput(color) : 'transparent',
+				color:
+					color && (!enableTextGradient || textGradient !== '') ? KadenceColorOutput(color) : 'transparent',
 				fontSize: previewFontSize
 					? getFontSizeOptionOutput(previewFontSize, sizeType ? sizeType : 'px')
 					: undefined,
