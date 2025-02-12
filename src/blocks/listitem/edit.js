@@ -31,6 +31,7 @@ import {
 	TypographyControls,
 	ResponsiveMeasureRangeControl,
 	GradientControl,
+	KadenceWebfontLoader,
 } from '@kadence/components';
 
 import { applyFilters } from '@wordpress/hooks';
@@ -817,6 +818,14 @@ function KadenceListItem(props) {
 					</>
 				)}
 			</InspectorControls>
+
+			{markGoogleFont && markTypography && (
+				<KadenceWebfontLoader
+					typography={[{ family: markTypography, variant: markFontVariant ? markFontVariant : '' }]}
+					clientId={clientId}
+					id={'advancedHeadingMark'}
+				/>
+			)}
 
 			<div
 				className={`kt-svg-icon-list-item-wrap-${uniqueID} kt-svg-icon-list-item-0 kt-svg-icon-list-level-${level}${
