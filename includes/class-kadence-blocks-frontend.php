@@ -212,36 +212,16 @@ class Kadence_Blocks_Frontend {
 		$allowed_tags = apply_filters( 'kadence_blocks_faq_schema_allowed_tags', '<a><strong><br><h2><h3><h4><h5><ul><li><ol><p>', $block );
 		if ( ! is_null( self::$faq_schema ) ) {
 			if ( is_array( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) ) {
+				//an accordion pane has it's "question" in the pane's innerhtml
+				//the "answer" is everything in innerblocks
+				//here we parse that out and build the question and answer
+				
 				$answer = '';
 				foreach ( $block['innerBlocks'] as $inner_key => $inner_block ) {
-					if ( ! empty( $inner_block['innerHTML'] ) ) {
-						$inner_html = trim( strip_tags( $inner_block['innerHTML'], $allowed_tags ) );
-						if ( ! empty( $inner_html ) ) {
-							$answer .= $inner_html;
-						}
-					}
-					if ( isset( $inner_block['innerBlocks'] ) && is_array( $inner_block['innerBlocks'] ) && ! empty ( $inner_block['innerBlocks'] ) ) {
-						foreach ( $inner_block['innerBlocks'] as $again_inner_key => $again_inner_block ) {
-							if ( ! empty( $again_inner_block['innerHTML'] ) ) {
-								$inner_html = trim( strip_tags( $again_inner_block['innerHTML'], $allowed_tags ) );
-								if ( ! empty( $inner_html ) ) {
-									$answer .= $inner_html;
-								}
-							}
-							if ( isset( $again_inner_block['innerBlocks'] ) && is_array( $again_inner_block['innerBlocks'] ) && ! empty ( $again_inner_block['innerBlocks'] ) ) {
-								foreach ( $again_inner_block['innerBlocks'] as $again_again_inner_key => $again_again_inner_block ) {
-									if ( ! empty( $again_again_inner_block['innerHTML'] ) ) {
-										$inner_html = trim( strip_tags( $again_again_inner_block['innerHTML'], $allowed_tags ) );
-										if ( ! empty( $inner_html ) ) {
-											$answer .= $inner_html;
-										}
-									}
-								}
-							}
-						}
-					}
+					$answer .= trim( strip_tags( render_block($inner_block), $allowed_tags ) );
 				}
-				preg_match( '/<span class="kt-blocks-accordion-title">(.*?)<\/span>/s', $block['innerHTML'], $match );
+
+				preg_match( '/<span class="kt-blocks-accordion-title">(.*?)<\/span>/s', do_blocks($block['innerHTML']), $match );
 				$question = ( $match && isset( $match[1] ) && ! empty( $match[1] ) ? $match[1] : '' );
 
 				$question = apply_filters( 'kadence_blocks_faq_schema_question', $question, $block );
