@@ -979,7 +979,7 @@ function KadenceAdvancedHeading(props) {
 				marginLeft:
 					'' !== previewMarginLeft ? getSpacingOptionOutput(previewMarginLeft, marginType) : undefined,
 				lineHeight: previewLineHeight ? previewLineHeight + (fontHeightType ? fontHeightType : '') : undefined,
-				color: color && (!enableTextGradient || textGradient !== '') ? KadenceColorOutput(color) : undefined,
+				color: color && (!enableTextGradient || textGradient !== '') ? KadenceColorOutput(color) : 'transparent',
 				fontSize: previewFontSize
 					? getFontSizeOptionOutput(previewFontSize, sizeType ? sizeType : 'px')
 					: undefined,
@@ -1152,7 +1152,7 @@ function KadenceAdvancedHeading(props) {
 		<div {...blockProps}>
 			<style>
 				{`.kt-adv-heading${uniqueID} mark.kt-highlight, .kt-adv-heading${uniqueID} .rich-text:focus mark.kt-highlight[data-rich-text-format-boundary] {
-						color: ${!enableMarkGradient ? KadenceColorOutput(markColor) : undefined};
+						color: ${!enableMarkGradient ? KadenceColorOutput(markColor) : 'transparent'};
 						background: ${markBG && !enableMarkGradient ? markBGString : 'transparent'};
 						background-image: ${enableMarkGradient ? markGradient : enableMarkBackgroundGradient ? markBackgroundGradient : 'none'};
 						-webkit-background-clip: ${enableMarkGradient ? 'text' : enableTextGradient ? 'initial !important' : undefined};

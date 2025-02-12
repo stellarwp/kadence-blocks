@@ -667,7 +667,7 @@ function KadenceListItem(props) {
 										<PopColorControl
 											label={__('Color', 'kadence-blocks')}
 											value={markColor ? markColor : ''}
-											default={'#f76a0c'}
+											default={''}
 											onChange={(value) => setAttributes({ markColor: value })}
 										/>
 									)}
@@ -836,7 +836,7 @@ function KadenceListItem(props) {
 					{`.kt-svg-icon-list-item-wrap-${uniqueID}.kt-svg-icon-list-item-0.kt-svg-icon-list-level-${level}${
 						style ? '.kt-svg-icon-list-style-' + style : ''
 					} mark.kt-highlight {
-						color: ${!enableMarkGradient ? KadenceColorOutput(markColor) : undefined};
+						color: ${!enableMarkGradient ? KadenceColorOutput(markColor) : 'transparent'};
 						background: ${markBG && !enableMarkGradient ? markBGString : 'transparent'};
 						background-image: ${enableMarkGradient ? markGradient : enableMarkBackgroundGradient ? markBackgroundGradient : 'none'};
 						-webkit-background-clip: ${enableMarkGradient ? 'text' : undefined};

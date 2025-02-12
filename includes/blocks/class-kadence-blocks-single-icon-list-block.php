@@ -94,7 +94,6 @@ class Kadence_Blocks_Listitem_Block extends Kadence_Blocks_Abstract_Block {
 		// Highlight.
 		$css->set_selector( '.kt-svg-icon-list-item-' . $unique_id . ' .kt-svg-icon-list-text mark.kt-highlight' );
 		// Defaults.
-		$css->add_property( 'color', $css->render_color( '#f76a0c' ) );
 		$css->add_property( 'background-color', 'unset' );
 
 		if ( isset( $attributes['markLetterSpacing'] ) && ! empty( $attributes['markLetterSpacing'] ) ) {
@@ -123,8 +122,8 @@ class Kadence_Blocks_Listitem_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( '-webkit-background-clip', 'initial !important' );
 			$css->add_property( 'background-clip', 'initial !important' );
 		}
-		if ( ! empty( $attributes['markColor'] ) && empty( $attributes['enableMarkGradient'] ) ) {
-			$css->add_property( 'color', $css->render_color( $attributes['markColor'] ) );
+		if ( empty( $attributes['enableMarkGradient'] ) ) {
+			$css->add_property( 'color', $css->render_color( $attributes['markColor'] ?? '#f76a0c' ) );
 		} else if ( !empty( $attributes['markGradient'] ) && ! empty( $attributes['enableMarkGradient'] ) ) {
 			$css->add_property( 'background-image', $attributes['markGradient'] );
 			$css->add_property( '-webkit-background-clip', 'text' );
