@@ -257,7 +257,7 @@ jobs:
         with:
           zip_name: ${{ env.ZIP_NAME }}
         secrets:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_KB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # ------------------------------------------------------------------------------
       # Send slack message.
