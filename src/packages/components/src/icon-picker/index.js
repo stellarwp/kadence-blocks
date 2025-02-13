@@ -285,6 +285,7 @@ export default function KadenceIconPicker({
 																		<Icon icon={closeSmall} size={20}/>
 																	</div> ) }
 																	<button
+																		title={ iconKey }
 																		className={'kadence-icon-picker-link'}
 																		key={results[ groupKey ].label + iconKey}
 																		onClick={() => {
@@ -299,6 +300,7 @@ export default function KadenceIconPicker({
 														} else {
 															return (
 																<button
+																	title={ iconKey }
 																	className={'kadence-icon-picker-link'}
 																	key={results[ groupKey ].label + iconKey}
 																	onClick={() => {
