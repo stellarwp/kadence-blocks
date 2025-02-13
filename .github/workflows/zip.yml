@@ -1,4 +1,4 @@
-name: Generate Zip
+name: Generate Zip Workflow
 on:
     pull_request:
     workflow_dispatch:
@@ -56,7 +56,7 @@ jobs:
                   echo "slack_thread=${{ env.JOB_SLACK_THREAD }}" >> $GITHUB_OUTPUT
 
     zip:
-        uses: stellarwp/github-actions/.github/workflows/zip.yml@main
+        uses: ./.github/workflows/stellar-zip.yml
         needs:
             - set_vars
         with:
@@ -73,95 +73,3 @@ jobs:
             S3_SECRET_ACCESS_KEY: ${{ secrets.ZIP_S3_SECRET_ACCESS_KEY }}
             S3_REGION: ${{ secrets.ZIP_S3_REGION }}
             S3_ENDPOINT: ${{ secrets.ZIP_S3_ENDPOINT }}
-
-    update_pr:
-        needs:
-          - zip
-        if: github.event_name == 'pull_request'
-        runs-on: ubuntu-latest
-        outputs:
-          ref: ${{ steps.set_var.outputs.ref }}
-          production: ${{ steps.set_var.outputs.production }}
-        steps:
-            - name: Checkout Branch
-              uses: actions/checkout@v4
-
-            - name: Setup PHP
-              uses: shivammathur/setup-php@v2
-              with:
-                php-version: '7.4'
-
-            - name: Install pup
-              run: composer -- pup
-            - name: Get version and zip name
-              id: get_zip_name
-              run: |
-                # Get version based on production flag
-                if [ "${{ env.JOB_PRODUCTION }}" = "yes" ]; then
-                  VERSION=$(composer -- pup get-version)
-                else
-                  VERSION=$(composer -- pup get-version --dev)
-                fi
-
-                # Get zip name using the version
-                # ZIP_NAME=https://evnt.is/test.zip?file=kadence-blocks.3.4.9.zip
-                ZIP_NAME=https://evnt.is/test.zip?file=$(composer -- pup zip-name $VERSION)
-
-                # Set outputs
-                echo "zip_name=$ZIP_NAME" >> $GITHUB_OUTPUT
-                echo "version=$VERSION" >> $GITHUB_OUTPUT
-
-            - name: Create WordPress Playground URL
-              id: create_playground_url
-              run: |
-                # Base64 encode the blueprint JSON
-
-                BLUEPRINT=$(echo '{
-                  "preferredVersions": {
-                    "php": "8.0",
-                    "wp": "latest"
-                  },
-                  "steps": [
-                    {
-                      "step": "installPlugin",
-                      "pluginData": {
-                        "resource": "url",
-                        "url": "${{ steps.get_zip_name.outputs.zip_name }}"
-                      },
-                      "options": {
-                        "activate": true
-                      }
-                    },
-                    {
-                      "step": "installTheme",
-                      "themeData": {
-                          "resource": "wordpress.org/themes",
-                          "slug": "kadence"
-                      },
-                      "options": {
-                          "activate": true
-                      }
-                    }
-                  ]
-                }' | base64 -w 0)
-
-                # Create the playground URL
-                PLAYGROUND_URL="https://playground.wordpress.net/#${BLUEPRINT}"
-
-                # Set output
-                echo "url=$PLAYGROUND_URL" >> $GITHUB_OUTPUT
-
-            - name: Add PR comment
-              uses: actions/github-script@v7
-              with:
-                script: |
-                  const zipName = '${{ steps.get_zip_name.outputs.zip_name }}';
-                  const playgroundUrl = '${{ steps.create_playground_url.outputs.url }}';
-                  await github.rest.issues.createComment({
-                    ...context.repo,
-                    issue_number: context.issue.number,
-                    body: `🎉 Build artifacts
-
-                    - Download zip: [${zipName}.zip](${zipName}.zip)
-                    - [Try it in WordPress Playground](${playgroundUrl})`
-                  });
