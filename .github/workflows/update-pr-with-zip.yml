@@ -4,9 +4,6 @@ on:
       zip_name:
         required: true
         type: string
-    secrets:
-      GITHUB_KB_TOKEN:
-        required: true
 
 jobs:
   update_pr:
@@ -55,7 +52,6 @@ jobs:
       - name: Add PR comment
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_KB_TOKEN }}
           script: |
             const zipUrl = 'https://evnt.is/test.zip?file=${{ inputs.zip_name }}.zip';
             const playgroundUrl = '${{ steps.create_playground_url.outputs.url }}';
