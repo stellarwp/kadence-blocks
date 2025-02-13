@@ -261,6 +261,10 @@ jobs:
               "php": "8.0",
               "wp": "latest"
             },
+            "landingPage": "/wp-admin/post-new.php",
+            "features": {
+              "networking": true
+            },
             "steps": [
               {
                 "step": "installPlugin",
