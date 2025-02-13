@@ -256,7 +256,8 @@ jobs:
         uses: ./.github/workflows/update-pr-with-zip.yml
         with:
           zip_name: ${{ env.ZIP_NAME }}
-        secrets: inherit
+        secrets:
+          GITHUB_KB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # ------------------------------------------------------------------------------
       # Send slack message.
