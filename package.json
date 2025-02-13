@@ -63,7 +63,7 @@
 		"@wordpress/eslint-plugin": "^14.7.0",
 		"@wordpress/i18n": "^4.34.0",
 		"@wordpress/prettier-config": "^2.25.13",
-		"@wordpress/scripts": "^26.18.0",
+		"@wordpress/scripts": "^30.7.0",
 		"babel-core": "^6.26.3",
 		"babel-eslint": "^10.1.0",
 		"babel-preset-env": "^1.7.0",
