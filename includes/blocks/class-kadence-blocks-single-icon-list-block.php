@@ -90,6 +90,102 @@ class Kadence_Blocks_Listitem_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! empty( $attributes['borderRadius'] ) && ! empty( $attributes['style'] ) && 'default' !== $attributes['style'] ) {
 			$css->add_property( 'border-radius', $attributes['borderRadius'] . '% !important'  );
 		}
+
+		// Highlight.
+		$css->set_selector( '.kt-svg-icon-list-item-' . $unique_id . ' .kt-svg-icon-list-text mark.kt-highlight' );
+		// Defaults.
+		$css->add_property( 'background-color', 'unset' );
+
+		if ( isset( $attributes['markLetterSpacing'] ) && ! empty( $attributes['markLetterSpacing'] ) ) {
+			$css->add_property( 'letter-spacing', $attributes['markLetterSpacing'] . ( ! isset( $attributes['markLetterSpacingType'] ) ? 'px' : $attributes['markLetterSpacingType'] ) );
+		}
+		if ( ! empty( $attributes['markSize'][0] ) ) {
+			$css->add_property( 'font-size', $css->get_font_size( $attributes['markSize'][0], ( ! isset( $attributes['markSizeType'] ) ? 'px' : $attributes['markSizeType'] ) ) );
+		}
+		if ( ! empty( $attributes['markLineHeight'][0] ) ) {
+			$css->add_property( 'line-height', $attributes['markLineHeight'][0] . ( ! isset( $attributes['markLineType'] ) ? 'px' : $attributes['markLineType'] ) );
+		}
+		if ( ! empty( $attributes['markTypography'] ) ) {
+			$google = isset( $attributes['markGoogleFont'] ) && $attributes['markGoogleFont'] ? true : false;
+			$google = $google && ( isset( $attributes['markLoadGoogleFont'] ) && $attributes['markLoadGoogleFont'] || ! isset( $attributes['markLoadGoogleFont'] ) ) ? true : false;
+			$variant = ! empty( $attributes['markFontVariant'] ) ? $attributes['markFontVariant'] : null;
+			$css->add_property( 'font-family', $css->render_font_family( $attributes['markTypography'], $google, $variant ) );
+		}
+		if ( ! empty( $attributes['markFontWeight'] ) ) {
+			$css->add_property( 'font-weight', $css->render_font_weight( $attributes['markFontWeight'] ) );
+		}
+		if ( ! empty( $attributes['markFontStyle'] ) ) {
+			$css->add_property( 'font-style', $attributes['markFontStyle'] );
+		}
+		if( !empty( $attributes['textGradient'] ) && ! empty( $attributes['enableTextGradient'] ) ) {
+			$css->add_property( '-webkit-text-fill-color', 'initial !important' );
+			$css->add_property( '-webkit-background-clip', 'initial !important' );
+			$css->add_property( 'background-clip', 'initial !important' );
+		}
+		if ( empty( $attributes['enableMarkGradient'] ) ) {
+			$css->add_property( 'color', $css->render_color( $attributes['markColor'] ?? '#f76a0c' ) );
+		} else if ( !empty( $attributes['markGradient'] ) && ! empty( $attributes['enableMarkGradient'] ) ) {
+			$css->add_property( 'background-image', $attributes['markGradient'] );
+			$css->add_property( '-webkit-background-clip', 'text' );
+			$css->add_property( 'background-clip', 'text' );
+			$css->add_property( '-webkit-text-fill-color', 'transparent' );
+		}
+		if ( ! empty($attributes['enableMarkBackgroundGradient']) && ! empty($attributes['markBackgroundGradient']) ) {
+			$css->add_property( 'background-image', $attributes['markBackgroundGradient'] );
+		}
+		if ( ! empty( $attributes['markTextTransform'] ) ) {
+			$css->add_property( 'text-transform', $attributes['markTextTransform'] );
+		}
+		if ( ! empty( $attributes['markBG'] ) && empty( $attributes['enableMarkGradient'] ) && empty( $attributes['enableMarkBackgroundGradient'] ) ) {
+			$alpha = ( isset( $attributes['markBGOpacity'] ) && ! empty( $attributes['markBGOpacity'] ) ? $attributes['markBGOpacity'] : 1 );
+			$css->add_property( 'background', $css->render_color( $attributes['markBG'], $alpha ) );
+		}
+		if ( ! empty( $attributes['markBorder'] ) ) {
+			$alpha = ( isset( $attributes['markBorderOpacity'] ) && ! empty( $attributes['markBorderOpacity'] ) ? $attributes['markBorderOpacity'] : 1 );
+			$css->add_property( 'border-color', $css->render_color( $attributes['markBorder'], $alpha ) );
+		}
+		if ( ! empty( $attributes['markBorderWidth'] ) ) {
+			$css->add_property( 'border-width', $attributes['markBorderWidth'] . 'px' );
+		}
+		if ( ! empty( $attributes['markBorderStyle'] ) && 'solid' !== $attributes['markBorderStyle'] ) {
+			$css->add_property( 'border-style', $attributes['markBorderStyle'] );
+		}
+		$css->render_border_styles( $attributes, 'markBorderStyles' );
+		$css->render_border_radius( $attributes, 'markBorderRadius', ( ! empty( $attributes['markBorderRadiusUnit'] ) ? $attributes['markBorderRadiusUnit'] : 'px' ) );
+		$css->add_property( '-webkit-box-decoration-break', 'clone' );
+		$css->add_property( 'box-decoration-break', 'clone' );
+		$css->set_media_state( 'tablet' );
+		$css->render_border_radius( $attributes, 'tabletMarkBorderRadius', ( ! empty( $attributes['markBorderRadiusUnit'] ) ? $attributes['markBorderRadiusUnit'] : 'px' ) );
+		$css->set_media_state( 'desktop' );
+
+		$css->set_media_state( 'mobile' );
+		$css->render_border_radius( $attributes, 'mobileMarkBorderRadius', ( ! empty( $attributes['markBorderRadiusUnit'] ) ? $attributes['markBorderRadiusUnit'] : 'px' ) );
+		$css->set_media_state( 'desktop' );
+		$mark_padding_args = array(
+			'desktop_key' => 'markPadding',
+			'tablet_key'  => 'markTabPadding',
+			'mobile_key'  => 'markMobilePadding',
+		);
+		$css->render_measure_output( $attributes, 'markPadding', 'padding', $mark_padding_args );
+
+		// Tablet.
+		$css->set_media_state( 'tablet' );
+		$css->set_selector( '.kt-svg-icon-list-item-' . $unique_id . ' .kt-svg-icon-list-text mark.kt-highlight' );
+		if ( ! empty( $attributes['markSize'][1] ) ) {
+			$css->add_property( 'font-size', $css->get_font_size( $attributes['markSize'][1], ( ! isset( $attributes['markSizeType'] ) ? 'px' : $attributes['markSizeType'] ) ) );
+		}
+		if ( ! empty( $attributes['markLineHeight'][1] ) ) {
+			$css->add_property( 'line-height', $attributes['markLineHeight'][1] . ( ! isset( $attributes['markLineType'] ) ? 'px' : $attributes['markLineType'] ) );
+		}
+		$css->set_media_state( 'mobile' );
+		if ( ! empty( $attributes['markSize'][2] ) ) {
+			$css->add_property( 'font-size', $css->get_font_size( $attributes['markSize'][2], ( ! isset( $attributes['markSizeType'] ) ? 'px' : $attributes['markSizeType'] ) ) );
+		}
+		if ( ! empty( $attributes['markLineHeight'][2] ) ) {
+			$css->add_property( 'line-height', $attributes['markLineHeight'][2] . ( ! isset( $attributes['markLineType'] ) ? 'px' : $attributes['markLineType'] ) );
+		}
+		$css->set_media_state( 'desktop' );
+
 		return $css->css_output();
 	}
 
