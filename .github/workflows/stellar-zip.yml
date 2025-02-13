@@ -285,6 +285,13 @@ jobs:
                 "options": {
                     "activate": true
                 }
+              },
+              {
+                "step": "defineWpConfigConsts",
+                "consts": {
+                    "WP_DEBUG": true,
+                    "WP_DEBUG_DISPLAY": true
+                }
               }
             ]
           }' | base64 -w 0)
