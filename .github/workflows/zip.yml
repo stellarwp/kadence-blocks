@@ -154,7 +154,6 @@ jobs:
             - name: Add PR comment
               uses: actions/github-script@v7
               with:
-                github-token: ${{ secrets.GH_BOT_TOKEN }}
                 script: |
                   const zipName = '${{ steps.get_zip_name.outputs.zip_name }}';
                   const playgroundUrl = '${{ steps.create_playground_url.outputs.url }}';
