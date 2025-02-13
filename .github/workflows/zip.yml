@@ -162,6 +162,6 @@ jobs:
                     issue_number: context.issue.number,
                     body: `🎉 Build artifacts
 
-                    - Download zip: \`${zipName}.zip\`
+                    - Download zip: [${zipName}.zip](${zipName}.zip)
                     - [Try it in WordPress Playground](${playgroundUrl})`
                   });
