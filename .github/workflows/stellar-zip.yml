@@ -315,7 +315,7 @@ jobs:
         if: github.event_name == 'pull_request'
         id: timestamp
         run: |
-          timestamp=$(TZ='America/Chicago' date '+%I:%M%20%p%20CST')
+          timestamp=$(TZ='America/Chicago' date '+%I:%M%20%p%20CST' | sed 's/  / /g')
           encoded_timestamp=$(echo "$timestamp" | sed 's/ /%20/g')
           badge_url="https://img.shields.io/badge/Built-${encoded_timestamp}-blue"
           echo "Generated badge URL: $badge_url" # Debug output
@@ -331,7 +331,7 @@ jobs:
           body: |
             🎉 Build complete
 
-            [![Build timestamp](${{ steps.timestamp.outputs.badge }})]
+            [Build timestamp](${{ steps.timestamp.outputs.badge }})
 
             - 💾 [Download zip](https://evnt.is/test.zip?file=${{ env.ZIP_NAME }}.zip)
             - 🛝 [Test in WordPress Playground](${{ steps.create_playground_url.outputs.url }})
