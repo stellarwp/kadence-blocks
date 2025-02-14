@@ -93,7 +93,7 @@ jobs:
         with:
           issue-number: ${{ github.event.pull_request.number }}
           comment-author: 'github-actions[bot]'
-          body-includes: 'Zip Build'
+          body-includes: 'Zip build'
 
       - name: Generate starting timestamp badge
         if: github.event_name == 'pull_request'
@@ -114,7 +114,7 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           edit-mode: replace
           body: |
-            🏗️ Zip Build Status
+            🏗️ Zip build in progress
 
             ![Build timestamp](${{ steps.timestamp_pre.outputs.badge }})
 
@@ -358,7 +358,7 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           edit-mode: replace
           body: |
-            🎉 Zip Build complete
+            🎉 Zip build complete
 
             ![Build timestamp](${{ steps.timestamp.outputs.badge }})
 
