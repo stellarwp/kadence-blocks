@@ -355,7 +355,7 @@ jobs:
           raw_time=$(TZ='America/Chicago' date '+%I:%M %p')
           clean_timestamp="${raw_time} CST"
           encoded_timestamp=$(echo "$clean_timestamp" | sed 's/ /%20/g')
-          badge_url="https://img.shields.io/badge/Built%20Completed-${encoded_timestamp}-green"
+          badge_url="https://img.shields.io/badge/Built%20Completed-${encoded_timestamp}-darkgreen"
           echo "Generated badge URL: $badge_url" # Debug output
           echo "badge=$badge_url" >> $GITHUB_OUTPUT
 
