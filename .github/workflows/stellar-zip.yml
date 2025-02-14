@@ -95,6 +95,17 @@ jobs:
           comment-author: 'github-actions[bot]'
           body-includes: 'Zip Build'
 
+      - name: Generate starting timestamp badge
+        if: github.event_name == 'pull_request'
+        id: timestamp_pre
+        run: |
+          raw_time=$(TZ='America/Chicago' date '+%I:%M %p')
+          clean_timestamp="${raw_time} CST"
+          encoded_timestamp=$(echo "$clean_timestamp" | sed 's/ /%20/g')
+          badge_url="https://img.shields.io/badge/Built%20Start-${encoded_timestamp}-blue"
+          echo "Generated badge URL: $badge_url" # Debug output
+          echo "badge=$badge_url" >> $GITHUB_OUTPUT
+
       - name: Create or update initial status comment
         if: github.event_name == 'pull_request'
         uses: peter-evans/create-or-update-comment@v4
@@ -105,7 +116,7 @@ jobs:
           body: |
             🏗️ Zip Build Status
 
-            ![Build Status](https://github.com/${{ github.repository }}/actions/workflows/stellar-zip.yml/badge.svg?branch=${{ github.head_ref || github.ref_name }})
+            ![Build timestamp](${{ steps.timestamp_pre.outputs.badge }})
 
             Please wait while the build completes...
 
@@ -335,7 +346,7 @@ jobs:
           raw_time=$(TZ='America/Chicago' date '+%I:%M %p')
           clean_timestamp="${raw_time} CST"
           encoded_timestamp=$(echo "$clean_timestamp" | sed 's/ /%20/g')
-          badge_url="https://img.shields.io/badge/Built-${encoded_timestamp}-blue"
+          badge_url="https://img.shields.io/badge/Built%20Completed-${encoded_timestamp}-green"
           echo "Generated badge URL: $badge_url" # Debug output
           echo "badge=$badge_url" >> $GITHUB_OUTPUT
 
