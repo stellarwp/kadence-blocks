@@ -105,7 +105,7 @@ jobs:
           body: |
             🏗️ Zip Build Status
 
-            ![Build Status](https://github.com/stellarwp/${{ github.repository }}/actions/workflows/${{ github.workflow }}/badge.svg?branch=${{ github.head_ref || github.ref_name }})
+            ![Build Status](https://github.com/${{ github.repository }}/actions/workflows/stellar-zip.yml/badge.svg?branch=${{ github.head_ref || github.ref_name }})
 
             Please wait while the build completes...
 
