@@ -328,15 +328,6 @@ jobs:
           # Set output
           echo "url=$PLAYGROUND_URL" >> $GITHUB_OUTPUT
 
-      - name: Find existing comment
-        if: github.event_name == 'pull_request'
-        uses: peter-evans/find-comment@v3
-        id: find_comment
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'github-actions[bot]'
-          body-includes: 'Zip Build'
-
       - name: Generate timestamp badge
         if: github.event_name == 'pull_request'
         id: timestamp
@@ -348,7 +339,7 @@ jobs:
           echo "Generated badge URL: $badge_url" # Debug output
           echo "badge=$badge_url" >> $GITHUB_OUTPUT
 
-      - name: Update or create PR comment
+      - name: Update PR comment
         if: github.event_name == 'pull_request'
         uses: peter-evans/create-or-update-comment@v4
         with:
