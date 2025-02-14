@@ -84,6 +84,32 @@ jobs:
           submodules: recursive
 
       # ------------------------------------------------------------------------------
+      # Create or update initial status comment
+      # ------------------------------------------------------------------------------
+      - name: Find existing comment
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/find-comment@v3
+        id: find_comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: 'Zip Build'
+
+      - name: Create or update initial status comment
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          edit-mode: replace
+          body: |
+            🏗️ Zip Build Status
+
+            [![Build Status](https://github.com/${{ github.repository }}/actions/workflows/${{ github.workflow }}/badge.svg?branch=${{ github.head_ref || github.ref_name }})](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+            Please wait while the build completes...
+
+      # ------------------------------------------------------------------------------
       # Setup Node.
       # ------------------------------------------------------------------------------
       - name: Check for .nvmrc file
@@ -309,7 +335,7 @@ jobs:
         with:
           issue-number: ${{ github.event.pull_request.number }}
           comment-author: 'github-actions[bot]'
-          body-includes: '🎉 Build complete'
+          body-includes: 'Zip Build'
 
       - name: Generate timestamp badge
         if: github.event_name == 'pull_request'
@@ -330,7 +356,7 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           edit-mode: replace
           body: |
-            🎉 Build complete
+            🎉 Zip Build complete
 
             ![Build timestamp](${{ steps.timestamp.outputs.badge }})
 
