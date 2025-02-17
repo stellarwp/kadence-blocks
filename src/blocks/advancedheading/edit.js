@@ -1044,7 +1044,7 @@ function KadenceAdvancedHeading(props) {
 								? 'sideways-lr'
 								: '',
 						textOrientation: previewTextOrientation === 'stacked' ? 'upright' : '',
-						maxHeight: previewMaxHeight,
+						maxHeight: textOrientation !== 'horizontal' && textOrientation !== '' ? previewMaxHeight : '',
 					}}
 					placeholder={__('Write something…', 'kadence-blocks')}
 				/>
