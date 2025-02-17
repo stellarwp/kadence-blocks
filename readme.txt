@@ -176,7 +176,10 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 = 3.4.10 =
 Release Date: TBD February 2025
-
+* Add: Support for Croatian language in Kadence AI.
+* Add: Support for Estonian language in Kadence AI.
+* Add: Support for Polish language in Kadence AI.
+* Add: Support for Slovak language in Kadence AI.
 
 = 3.4.9 =
 Release Date: 11th February 2025
