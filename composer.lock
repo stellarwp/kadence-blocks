@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8088f26b36c655e4fa1966970fa5d3bf",
+    "content-hash": "49f4b3c77b01751da1e08081afadeb8f",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -849,16 +849,16 @@
         },
         {
             "name": "stellarwp/uplink",
-            "version": "dev-bugfix/multisite-token-logic",
+            "version": "dev-fix/get-key-from-file",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellarwp/uplink.git",
-                "reference": "301a5d40a12c194ca5ac347aac0103a86a9ef7cf"
+                "reference": "addd780af8a60e8262025dd5ce4acf7a509403ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellarwp/uplink/zipball/301a5d40a12c194ca5ac347aac0103a86a9ef7cf",
-                "reference": "301a5d40a12c194ca5ac347aac0103a86a9ef7cf",
+                "url": "https://api.github.com/repos/stellarwp/uplink/zipball/addd780af8a60e8262025dd5ce4acf7a509403ab",
+                "reference": "addd780af8a60e8262025dd5ce4acf7a509403ab",
                 "shasum": ""
             },
             "require": {
@@ -909,9 +909,9 @@
             "description": "A library that integrates a WordPress product with the StellarWP Licensing system.",
             "support": {
                 "issues": "https://github.com/stellarwp/uplink/issues",
-                "source": "https://github.com/stellarwp/uplink/tree/bugfix/multisite-token-logic"
+                "source": "https://github.com/stellarwp/uplink/tree/fix/get-key-from-file"
             },
-            "time": "2024-12-04T16:28:02+00:00"
+            "time": "2025-02-10T19:15:24+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",

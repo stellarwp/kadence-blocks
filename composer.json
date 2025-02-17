@@ -42,7 +42,7 @@
 		"stellarwp/prophecy-image-downloader": "^1.5",
 		"stellarwp/prophecy-storage": "^1.1",
 		"stellarwp/telemetry": "^2.3",
-		"stellarwp/uplink": "dev-bugfix/multisite-token-logic",
+		"stellarwp/uplink": "dev-fix/get-key-from-file",
 		"symfony/translation-contracts": "^2.5"
 	},
 	"require-dev": {

@@ -19,7 +19,7 @@ import { Fragment, useEffect, useMemo, useState } from '@wordpress/element';
 import { TextControl, Button, Spinner, ToggleControl, SelectControl, ExternalLink } from '@wordpress/components';
 import { KadencePanelBody } from '@kadence/components';
 
-const HELP_URL = 'https://app.convertkit.com/account_settings/advanced_settings';
+const HELP_URL = 'https://app.kit.com/account_settings/developer_settings';
 
 /**
  * Build the Measure controls
@@ -204,7 +204,7 @@ function ConvertKitOptions({ formInnerBlocks, parentClientId, settings, save }) 
 
 	return (
 		<KadencePanelBody
-			title={__('ConvertKit Settings', 'kadence-blocks')}
+			title={__('Kit (ConvertKit) Settings', 'kadence-blocks')}
 			initialOpen={false}
 			panelName={'kb-convertkit'}
 		>

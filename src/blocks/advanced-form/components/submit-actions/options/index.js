@@ -24,8 +24,8 @@ export default function SubmitActionOptions({ setAttributes, selectedActions }) 
 		},
 		{
 			value: 'convertkit',
-			label: __('ConvertKit (Pro addon)', 'kadence-blocks'),
-			help: __('Add user to ConvertKit', 'kadence-blocks'),
+			label: __('Kit (ConvertKit) (Pro addon)', 'kadence-blocks'),
+			help: __('Add user to Kit', 'kadence-blocks'),
 			isDisabled: true,
 		},
 		{
