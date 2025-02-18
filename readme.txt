@@ -176,7 +176,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 = 3.4.10 =
 Release Date: TBD February 2025
-
+* Fix: Warning handled for CSS class
 
 = 3.4.9 =
 Release Date: 11th February 2025
