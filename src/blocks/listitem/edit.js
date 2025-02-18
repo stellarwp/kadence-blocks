@@ -5,7 +5,17 @@
 /**
  * Import Kadence Components
  */
-import { KadenceColorOutput, setBlockDefaults, getUniqueId, getPostOrFseId } from '@kadence/helpers';
+import {
+	KadenceColorOutput,
+	setBlockDefaults,
+	getUniqueId,
+	getPostOrFseId,
+	showSettings,
+	getFontSizeOptionOutput,
+	getSpacingOptionOutput,
+	getPreviewSize,
+	getBorderStyle,
+} from '@kadence/helpers';
 
 import {
 	PopColorControl,
@@ -16,6 +26,12 @@ import {
 	InspectorControlTabs,
 	SelectParentBlock,
 	Tooltip,
+	ResponsiveBorderControl,
+	ResponsiveMeasurementControls,
+	TypographyControls,
+	ResponsiveMeasureRangeControl,
+	GradientControl,
+	KadenceWebfontLoader,
 } from '@kadence/components';
 
 import { applyFilters } from '@wordpress/hooks';
@@ -85,6 +101,44 @@ function KadenceListItem(props) {
 		tooltip,
 		tooltipPlacement,
 		tooltipDash,
+		markSize,
+		markSizeType,
+		markLineHeight,
+		markLineType,
+		markLetterSpacing,
+		markTypography,
+		markGoogleFont,
+		markLoadGoogleFont,
+		markFontSubset,
+		markFontVariant,
+		markFontWeight,
+		markFontStyle,
+		markPadding,
+		markColor,
+		markBG,
+		markBGOpacity,
+		markBorder,
+		markBorderWidth,
+		markBorderOpacity,
+		markBorderStyle,
+		markTextTransform,
+		markMobilePadding,
+		markTabPadding,
+		markLetterSpacingType,
+		markPaddingType,
+		tabletMarkLetterSpacing,
+		mobileMarkLetterSpacing,
+		markBorderStyles,
+		tabletMarkBorderStyles,
+		mobileMarkBorderStyles,
+		markBorderRadius,
+		tabletMarkBorderRadius,
+		mobileMarkBorderRadius,
+		markBorderRadiusUnit,
+		enableMarkGradient,
+		enableMarkBackgroundGradient,
+		markGradient,
+		markBackgroundGradient,
 	} = attributes;
 	const displayIcon = icon ? icon : context['kadence/listIcon'];
 	const displayWidth = width ? width : context['kadence/listIconWidth'];
@@ -109,11 +163,12 @@ function KadenceListItem(props) {
 	richTextFormats = link ? richTextFormats : undefined;
 
 	const textRef = useRef(clientId);
-	const { isUniqueID, isUniqueBlock, parentData } = useSelect(
+	const { isUniqueID, isUniqueBlock, previewDevice, parentData } = useSelect(
 		(select) => {
 			return {
 				isUniqueID: (value) => select('kadenceblocks/data').isUniqueID(value),
 				isUniqueBlock: (value, clientId) => select('kadenceblocks/data').isUniqueBlock(value, clientId),
+				previewDevice: select('kadenceblocks/data').getPreviewDeviceType(),
 				parentData: {
 					rootBlock: select('core/block-editor').getBlock(
 						select('core/block-editor').getBlockHierarchyRootClientId(clientId)
@@ -157,6 +212,102 @@ function KadenceListItem(props) {
 	const iconOnlyTooltip = 'icon' === tooltipSelection ? true : false;
 	const textOnlyTooltip = 'text' === tooltipSelection ? true : false;
 	const WrapTag = link ? 'a' : 'span';
+	const markBGString = markBG ? KadenceColorOutput(markBG, markBGOpacity) : '';
+	const previewMarkSize = getPreviewSize(
+		previewDevice,
+		undefined !== markSize ? markSize[0] : '',
+		undefined !== markSize ? markSize[1] : '',
+		undefined !== markSize ? markSize[2] : ''
+	);
+	const previewMarkLineHeight = getPreviewSize(
+		previewDevice,
+		undefined !== markLineHeight ? markLineHeight[0] : '',
+		undefined !== markLineHeight ? markLineHeight[1] : '',
+		undefined !== markLineHeight ? markLineHeight[2] : ''
+	);
+	const previewMarkLetterSpacing = getPreviewSize(
+		previewDevice,
+		undefined !== markLetterSpacing ? markLetterSpacing : '',
+		undefined !== tabletMarkLetterSpacing ? tabletMarkLetterSpacing : '',
+		undefined !== mobileMarkLetterSpacing ? mobileMarkLetterSpacing : ''
+	);
+	const previewMarkBorderTopStyle = getBorderStyle(
+		previewDevice,
+		'top',
+		markBorderStyles,
+		tabletMarkBorderStyles,
+		mobileMarkBorderStyles
+	);
+	const previewMarkBorderRightStyle = getBorderStyle(
+		previewDevice,
+		'right',
+		markBorderStyles,
+		tabletMarkBorderStyles,
+		mobileMarkBorderStyles
+	);
+	const previewMarkBorderBottomStyle = getBorderStyle(
+		previewDevice,
+		'bottom',
+		markBorderStyles,
+		tabletMarkBorderStyles,
+		mobileMarkBorderStyles
+	);
+	const previewMarkBorderLeftStyle = getBorderStyle(
+		previewDevice,
+		'left',
+		markBorderStyles,
+		tabletMarkBorderStyles,
+		mobileMarkBorderStyles
+	);
+	const previewMarkPaddingTop = getPreviewSize(
+		previewDevice,
+		undefined !== markPadding ? markPadding[0] : 0,
+		undefined !== markTabPadding ? markTabPadding[0] : '',
+		undefined !== markMobilePadding ? markMobilePadding[0] : ''
+	);
+	const previewMarkPaddingRight = getPreviewSize(
+		previewDevice,
+		undefined !== markPadding ? markPadding[1] : 0,
+		undefined !== markTabPadding ? markTabPadding[1] : '',
+		undefined !== markMobilePadding ? markMobilePadding[1] : ''
+	);
+	const previewMarkPaddingBottom = getPreviewSize(
+		previewDevice,
+		undefined !== markPadding ? markPadding[2] : 0,
+		undefined !== markTabPadding ? markTabPadding[2] : '',
+		undefined !== markMobilePadding ? markMobilePadding[2] : ''
+	);
+	const previewMarkPaddingLeft = getPreviewSize(
+		previewDevice,
+		undefined !== markPadding ? markPadding[3] : 0,
+		undefined !== markTabPadding ? markTabPadding[3] : '',
+		undefined !== markMobilePadding ? markMobilePadding[3] : ''
+	);
+	const previewMarkBorderRadiusTop = getPreviewSize(
+		previewDevice,
+		undefined !== markBorderRadius ? markBorderRadius[0] : '',
+		undefined !== tabletMarkBorderRadius ? tabletMarkBorderRadius[0] : '',
+		undefined !== mobileMarkBorderRadius ? mobileMarkBorderRadius[0] : ''
+	);
+	const previewMarkBorderRadiusRight = getPreviewSize(
+		previewDevice,
+		undefined !== markBorderRadius ? markBorderRadius[1] : '',
+		undefined !== tabletMarkBorderRadius ? tabletMarkBorderRadius[1] : '',
+		undefined !== mobileMarkBorderRadius ? mobileMarkBorderRadius[1] : ''
+	);
+	const previewMarkBorderRadiusBottom = getPreviewSize(
+		previewDevice,
+		undefined !== markBorderRadius ? markBorderRadius[2] : '',
+		undefined !== tabletMarkBorderRadius ? tabletMarkBorderRadius[2] : '',
+		undefined !== mobileMarkBorderRadius ? mobileMarkBorderRadius[2] : ''
+	);
+	const previewMarkBorderRadiusLeft = getPreviewSize(
+		previewDevice,
+		undefined !== markBorderRadius ? markBorderRadius[3] : '',
+		undefined !== tabletMarkBorderRadius ? tabletMarkBorderRadius[3] : '',
+		undefined !== mobileMarkBorderRadius ? mobileMarkBorderRadius[3] : ''
+	);
+	const markBorderRadiusUnitPreview = undefined !== markBorderRadiusUnit ? markBorderRadiusUnit : 'px';
 	const listItemOutput = (
 		<>
 			{displayIcon && showIcon && (
@@ -407,110 +558,345 @@ function KadenceListItem(props) {
 					</KadencePanelBody>
 				)}
 				{activeTab === 'style' && (
-					<KadencePanelBody initialOpen={true} panelName={'kb-icon-item'}>
-						<RangeControl
-							label={__('Icon Size', 'kadence-blocks')}
-							value={size}
-							onChange={(value) => {
-								setAttributes({ size: value });
-							}}
-							min={0}
-							max={250}
-						/>
-						{displayIcon && 'fe' === displayIcon.substring(0, 2) && (
+					<>
+						<KadencePanelBody initialOpen={true} panelName={'kb-icon-item'}>
 							<RangeControl
-								label={__('Line Width', 'kadence-blocks')}
-								value={width}
+								label={__('Icon Size', 'kadence-blocks')}
+								value={size}
 								onChange={(value) => {
-									setAttributes({ width: value });
+									setAttributes({ size: value });
 								}}
-								step={0.5}
-								min={0.5}
-								max={4}
+								min={0}
+								max={250}
 							/>
-						)}
-						<PopColorControl
-							label={__('Icon Color', 'kadence-blocks')}
-							value={color ? color : ''}
-							default={''}
-							onChange={(value) => {
-								setAttributes({ color: value });
-							}}
-						/>
-						<SelectControl
-							label={__('Icon Style', 'kadence-blocks')}
-							value={style}
-							options={[
-								{ value: '', label: __('Inherit', 'kadence-blocks') },
-								{ value: 'default', label: __('Default', 'kadence-blocks') },
-								{ value: 'stacked', label: __('Stacked', 'kadence-blocks') },
-							]}
-							onChange={(value) => {
-								setAttributes({ style: value });
-							}}
-						/>
-						{style === 'stacked' && (
+							{displayIcon && 'fe' === displayIcon.substring(0, 2) && (
+								<RangeControl
+									label={__('Line Width', 'kadence-blocks')}
+									value={width}
+									onChange={(value) => {
+										setAttributes({ width: value });
+									}}
+									step={0.5}
+									min={0.5}
+									max={4}
+								/>
+							)}
 							<PopColorControl
-								label={__('Icon Background', 'kadence-blocks')}
-								value={background ? background : ''}
+								label={__('Icon Color', 'kadence-blocks')}
+								value={color ? color : ''}
 								default={''}
 								onChange={(value) => {
-									setAttributes({ background: value });
+									setAttributes({ color: value });
 								}}
 							/>
-						)}
-						{style === 'stacked' && (
-							<PopColorControl
-								label={__('Border Color', 'kadence-blocks')}
-								value={border ? border : ''}
-								default={''}
+							<SelectControl
+								label={__('Icon Style', 'kadence-blocks')}
+								value={style}
+								options={[
+									{ value: '', label: __('Inherit', 'kadence-blocks') },
+									{ value: 'default', label: __('Default', 'kadence-blocks') },
+									{ value: 'stacked', label: __('Stacked', 'kadence-blocks') },
+								]}
 								onChange={(value) => {
-									setAttributes({ border: value });
+									setAttributes({ style: value });
 								}}
 							/>
+							{style === 'stacked' && (
+								<PopColorControl
+									label={__('Icon Background', 'kadence-blocks')}
+									value={background ? background : ''}
+									default={''}
+									onChange={(value) => {
+										setAttributes({ background: value });
+									}}
+								/>
+							)}
+							{style === 'stacked' && (
+								<PopColorControl
+									label={__('Border Color', 'kadence-blocks')}
+									value={border ? border : ''}
+									default={''}
+									onChange={(value) => {
+										setAttributes({ border: value });
+									}}
+								/>
+							)}
+							{style === 'stacked' && (
+								<RangeControl
+									label={__('Border Size (px)', 'kadence-blocks')}
+									value={borderWidth}
+									onChange={(value) => {
+										setAttributes({ borderWidth: value });
+									}}
+									min={0}
+									max={20}
+								/>
+							)}
+							{style === 'stacked' && (
+								<RangeControl
+									label={__('Border Radius (%)', 'kadence-blocks')}
+									value={borderRadius}
+									onChange={(value) => {
+										setAttributes({ borderRadius: value });
+									}}
+									min={0}
+									max={50}
+								/>
+							)}
+							{style === 'stacked' && (
+								<RangeControl
+									label={__('Padding (px)', 'kadence-blocks')}
+									value={padding}
+									onChange={(value) => {
+										setAttributes({ padding: value });
+									}}
+									min={0}
+									max={180}
+								/>
+							)}
+						</KadencePanelBody>
+
+						{showSettings('highlightSettings', 'kadence/listitem') && (
+							<KadencePanelBody
+								title={__('Advanced Highlight Settings', 'kadence-blocks')}
+								initialOpen={false}
+								panelName={'kb-adv-heading-highlight-settings'}
+							>
+								<>
+									{!enableMarkGradient && (
+										<PopColorControl
+											label={__('Color', 'kadence-blocks')}
+											value={markColor ? markColor : ''}
+											default={''}
+											onChange={(value) => setAttributes({ markColor: value })}
+										/>
+									)}
+									{!enableMarkBackgroundGradient && (
+										<ToggleControl
+											style={{ marginTop: '10px' }}
+											label={__('Enable Text Gradient', 'kadence-blocks')}
+											help={__(
+												'Enabling Text Gradient disables Background Color and Gradient.',
+												'kadence-blocks'
+											)}
+											checked={enableMarkGradient}
+											onChange={(value) => setAttributes({ enableMarkGradient: value })}
+										/>
+									)}
+
+									{enableMarkGradient && (
+										<GradientControl
+											value={markGradient}
+											onChange={(value) => setAttributes({ markGradient: value })}
+											gradients={[]}
+										/>
+									)}
+
+									{!enableMarkGradient && !enableMarkBackgroundGradient && (
+										<PopColorControl
+											label={__('Background', 'kadence-blocks')}
+											value={markBG ? markBG : ''}
+											default={''}
+											onChange={(value) => setAttributes({ markBG: value })}
+											opacityValue={markBGOpacity}
+											onOpacityChange={(value) => setAttributes({ markBGOpacity: value })}
+											onArrayChange={(color, opacity) =>
+												setAttributes({ markBG: color, markBGOpacity: opacity })
+											}
+										/>
+									)}
+								</>
+								{!enableMarkGradient && (
+									<ToggleControl
+										style={{ marginTop: '10px' }}
+										label={__('Enable Background Gradient', 'kadence-blocks')}
+										help={__(
+											'Enabling Background Gradient disables Text Gradient.',
+											'kadence-blocks'
+										)}
+										checked={enableMarkBackgroundGradient}
+										onChange={(value) => setAttributes({ enableMarkBackgroundGradient: value })}
+									/>
+								)}
+								{enableMarkBackgroundGradient && (
+									<GradientControl
+										value={markBackgroundGradient}
+										onChange={(value) => setAttributes({ markBackgroundGradient: value })}
+										gradients={[]}
+									/>
+								)}
+								<ResponsiveBorderControl
+									label={__('Border', 'kadence-blocks')}
+									value={markBorderStyles}
+									tabletValue={tabletMarkBorderStyles}
+									mobileValue={mobileMarkBorderStyles}
+									onChange={(value) => setAttributes({ markBorderStyles: value })}
+									onChangeTablet={(value) => setAttributes({ tabletMarkBorderStyles: value })}
+									onChangeMobile={(value) => setAttributes({ mobileMarkBorderStyles: value })}
+								/>
+								<ResponsiveMeasurementControls
+									label={__('Border Radius', 'kadence-blocks')}
+									value={markBorderRadius}
+									tabletValue={tabletMarkBorderRadius}
+									mobileValue={mobileMarkBorderRadius}
+									onChange={(value) => setAttributes({ markBorderRadius: value })}
+									onChangeTablet={(value) => setAttributes({ tabletMarkBorderRadius: value })}
+									onChangeMobile={(value) => setAttributes({ mobileMarkBorderRadius: value })}
+									unit={markBorderRadiusUnit}
+									units={['px', 'em', 'rem', '%']}
+									onUnit={(value) => setAttributes({ markBorderRadiusUnit: value })}
+									max={markBorderRadiusUnit === 'em' || markBorderRadiusUnit === 'rem' ? 24 : 500}
+									step={markBorderRadiusUnit === 'em' || markBorderRadiusUnit === 'rem' ? 0.1 : 1}
+									min={0}
+									isBorderRadius={true}
+									allowEmpty={true}
+								/>
+								<TypographyControls
+									fontGroup={'heading'}
+									fontSize={markSize}
+									onFontSize={(value) => setAttributes({ markSize: value })}
+									fontSizeType={markSizeType}
+									onFontSizeType={(value) => setAttributes({ markSizeType: value })}
+									lineHeight={markLineHeight}
+									onLineHeight={(value) => setAttributes({ markLineHeight: value })}
+									lineHeightType={markLineType}
+									onLineHeightType={(value) => setAttributes({ markLineType: value })}
+									reLetterSpacing={[
+										markLetterSpacing,
+										tabletMarkLetterSpacing,
+										mobileMarkLetterSpacing,
+									]}
+									onLetterSpacing={(value) =>
+										setAttributes({
+											markLetterSpacing: value[0],
+											tabletMarkLetterSpacing: value[1],
+											mobileMarkLetterSpacing: value[2],
+										})
+									}
+									letterSpacingType={markLetterSpacingType}
+									onLetterSpacingType={(value) => setAttributes({ markLetterSpacingType: value })}
+									fontFamily={markTypography}
+									onFontFamily={(value) => setAttributes({ markTypography: value })}
+									onFontChange={(select) => {
+										setAttributes({
+											markTypography: select.value,
+											markGoogleFont: select.google,
+										});
+									}}
+									googleFont={markGoogleFont}
+									onGoogleFont={(value) => setAttributes({ markGoogleFont: value })}
+									loadGoogleFont={markLoadGoogleFont}
+									onLoadGoogleFont={(value) => setAttributes({ markLoadGoogleFont: value })}
+									fontVariant={markFontVariant}
+									onFontVariant={(value) => setAttributes({ markFontVariant: value })}
+									fontWeight={markFontWeight}
+									onFontWeight={(value) => setAttributes({ markFontWeight: value })}
+									fontStyle={markFontStyle}
+									onFontStyle={(value) => setAttributes({ markFontStyle: value })}
+									fontSubset={markFontSubset}
+									onFontSubset={(value) => setAttributes({ markFontSubset: value })}
+									textTransform={markTextTransform}
+									onTextTransform={(value) => setAttributes({ markTextTransform: value })}
+								/>
+								<ResponsiveMeasureRangeControl
+									label={__('Padding', 'kadence-blocks')}
+									value={markPadding}
+									tabletValue={markTabPadding}
+									mobileValue={markMobilePadding}
+									onChange={(value) => setAttributes({ markPadding: value })}
+									onChangeTablet={(value) => setAttributes({ markTabPadding: value })}
+									onChangeMobile={(value) => setAttributes({ markMobilePadding: value })}
+									min={0}
+									max={markPaddingType === 'em' || markPaddingType === 'rem' ? 12 : 999}
+									step={markPaddingType === 'em' || markPaddingType === 'rem' ? 0.1 : 1}
+									unit={markPaddingType}
+									units={['px', 'em', 'rem', '%']}
+									onUnit={(value) => setAttributes({ markPaddingType: value })}
+								/>
+							</KadencePanelBody>
 						)}
-						{style === 'stacked' && (
-							<RangeControl
-								label={__('Border Size (px)', 'kadence-blocks')}
-								value={borderWidth}
-								onChange={(value) => {
-									setAttributes({ borderWidth: value });
-								}}
-								min={0}
-								max={20}
-							/>
-						)}
-						{style === 'stacked' && (
-							<RangeControl
-								label={__('Border Radius (%)', 'kadence-blocks')}
-								value={borderRadius}
-								onChange={(value) => {
-									setAttributes({ borderRadius: value });
-								}}
-								min={0}
-								max={50}
-							/>
-						)}
-						{style === 'stacked' && (
-							<RangeControl
-								label={__('Padding (px)', 'kadence-blocks')}
-								value={padding}
-								onChange={(value) => {
-									setAttributes({ padding: value });
-								}}
-								min={0}
-								max={180}
-							/>
-						)}
-					</KadencePanelBody>
+					</>
 				)}
 			</InspectorControls>
 
+			{markGoogleFont && markTypography && (
+				<KadenceWebfontLoader
+					typography={[{ family: markTypography, variant: markFontVariant ? markFontVariant : '' }]}
+					clientId={clientId}
+					id={'advancedHeadingMark'}
+				/>
+			)}
+
 			<div
-				className={`kt-svg-icon-list-item-wrap kt-svg-icon-list-item-0 kt-svg-icon-list-level-${level}${
+				className={`kt-svg-icon-list-item-wrap-${uniqueID} kt-svg-icon-list-item-0 kt-svg-icon-list-level-${level}${
 					style ? ' kt-svg-icon-list-style-' + style : ''
 				}`}
 			>
+				<style>
+					{`.kt-svg-icon-list-item-wrap-${uniqueID}.kt-svg-icon-list-item-0.kt-svg-icon-list-level-${level}${
+						style ? '.kt-svg-icon-list-style-' + style : ''
+					} mark.kt-highlight {
+						color: ${!enableMarkGradient ? KadenceColorOutput(markColor) : 'transparent'};
+						background: ${markBG && !enableMarkGradient ? markBGString : 'transparent'};
+						background-image: ${enableMarkGradient ? markGradient : enableMarkBackgroundGradient ? markBackgroundGradient : 'none'};
+						-webkit-background-clip: ${enableMarkGradient ? 'text' : undefined};
+						background-clip: ${enableMarkGradient ? 'text' : undefined};
+						-webkit-text-fill-color: ${enableMarkGradient ? 'transparent' : undefined};
+						-webkit-box-decoration-break: clone;
+						box-decoration-break: clone;
+						font-weight: ${markFontWeight ? markFontWeight : 'inherit'};
+						font-style: ${markFontStyle ? markFontStyle : 'inherit'};
+						font-size: ${previewMarkSize ? getFontSizeOptionOutput(previewMarkSize, markSizeType) : 'inherit'};
+						line-height: ${previewMarkLineHeight ? previewMarkLineHeight + markLineType : 'inherit'};
+						letter-spacing: ${
+							previewMarkLetterSpacing
+								? previewMarkLetterSpacing + (markLetterSpacingType ? markLetterSpacingType : 'px')
+								: 'inherit'
+						};
+						text-transform: ${markTextTransform ? markTextTransform : 'inherit'};
+						font-family: ${markTypography ? markTypography : 'inherit'};
+						border-top: ${previewMarkBorderTopStyle ? previewMarkBorderTopStyle : 'inherit'};
+						border-right: ${previewMarkBorderRightStyle ? previewMarkBorderRightStyle : 'inherit'};
+						border-bottom: ${previewMarkBorderBottomStyle ? previewMarkBorderBottomStyle : 'inherit'};
+						border-left: ${previewMarkBorderLeftStyle ? previewMarkBorderLeftStyle : 'inherit'};
+						padding-top: ${previewMarkPaddingTop ? getSpacingOptionOutput(previewMarkPaddingTop, markPaddingType) : '0'};
+						padding-right: ${previewMarkPaddingRight ? getSpacingOptionOutput(previewMarkPaddingRight, markPaddingType) : '0'};
+						padding-bottom: ${previewMarkPaddingBottom ? getSpacingOptionOutput(previewMarkPaddingBottom, markPaddingType) : '0'};
+						padding-left: ${previewMarkPaddingLeft ? getSpacingOptionOutput(previewMarkPaddingLeft, markPaddingType) : '0'};
+						${
+							'' !== previewMarkBorderRadiusTop
+								? 'border-top-left-radius:' +
+								  previewMarkBorderRadiusTop +
+								  markBorderRadiusUnitPreview +
+								  ';'
+								: ''
+						}
+						${
+							'' !== previewMarkBorderRadiusRight
+								? 'border-top-right-radius:' +
+								  previewMarkBorderRadiusRight +
+								  markBorderRadiusUnitPreview +
+								  ';'
+								: ''
+						}
+						${
+							'' !== previewMarkBorderRadiusBottom
+								? 'border-bottom-right-radius:' +
+								  previewMarkBorderRadiusBottom +
+								  markBorderRadiusUnitPreview +
+								  ';'
+								: ''
+						}
+						${
+							'' !== previewMarkBorderRadiusLeft
+								? 'border-bottom-left-radius:' +
+								  previewMarkBorderRadiusLeft +
+								  markBorderRadiusUnitPreview +
+								  ';'
+								: ''
+						}
+					}`}
+				</style>
 				<Tooltip
 					TagName={WrapTag}
 					className={`kb-icon-list-tooltip-wrap${
