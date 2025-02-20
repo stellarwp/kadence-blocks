@@ -180,6 +180,8 @@ Release Date: TBD February 2025
 * Add: Support for Estonian language in Kadence AI.
 * Add: Support for Polish language in Kadence AI.
 * Add: Support for Slovak language in Kadence AI.
+* Fix: Warning handled for CSS class.
+* Fix: Gallery (Adv) arrow strings added to pot file.
 
 = 3.4.9 =
 Release Date: 11th February 2025
