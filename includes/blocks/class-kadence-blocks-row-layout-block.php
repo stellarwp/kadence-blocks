@@ -537,6 +537,9 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		$column5_mobile  = ( ! empty( $attributes['fifthColumnWidthMobile'] ) ? $attributes['fifthColumnWidthMobile'] : '' );
 		$column6_mobile  = ( ! empty( $attributes['sixthColumnWidthMobile'] ) ? $attributes['sixthColumnWidthMobile'] : '' );
 		$collapse_layouts = array( 'row', 'two-grid', 'three-grid', 'last-row', 'first-row' );
+		$has_custom_widths = $this->has_custom_widths( $columns, $column1, $column2, $column3, $column4, $column5, $column6 );
+		$has_custom_widths_tablet = $this->has_custom_widths( $columns, $column1_tablet, $column2_tablet, $column3_tablet, $column4_tablet, $column5_tablet, $column6_tablet );
+		$has_custom_widths_mobile = $this->has_custom_widths( $columns, $column1_mobile, $column2_mobile, $column3_mobile, $column4_mobile, $column5_mobile, $column6_mobile );
 
 		//base desktop layout.
 		$grid_layout = $this->get_template_columns( $css, $columns, $layout, $inner_selector, $css->render_row_gap_property( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'desktop', 'customGutter', 'gutterType' ), $column1, $column2, $column3, $column4, $column5, $column6 );
@@ -572,7 +575,13 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 			//no tablet layout, but we have a tablet guttter width, so render the inherited column layout from desktop, potentially with custom widths.
 			$css->set_media_state( 'tablet' );
 			$css->set_selector( $inner_selector );
-			$grid_layout = $this->get_template_columns( $css, $columns, $layout, $inner_selector, $css->render_row_gap_property( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'tablet', 'customGutter', 'gutterType' ), $column1_tablet, $column2_tablet, $column3_tablet, $column4_tablet, $column5_tablet, $column6_tablet );
+
+			//if no custom widths, need to use desktop widths
+			if ( $has_custom_widths_tablet ) {
+				$grid_layout = $this->get_template_columns( $css, $columns, $layout, $inner_selector, $css->render_row_gap_property( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'tablet', 'customGutter', 'gutterType' ), $column1_tablet, $column2_tablet, $column3_tablet, $column4_tablet, $column5_tablet, $column6_tablet );
+			} else {
+				$grid_layout = $this->get_template_columns( $css, $columns, $layout, $inner_selector, $css->render_row_gap_property( $attributes, array( 'columnGutter', 'tabletGutter', 'mobileGutter' ), 'tablet', 'customGutter', 'gutterType' ), $column1, $column2, $column3, $column4, $column5, $column6 );
+			}
 			$css->add_property( 'grid-template-columns', $grid_layout );
 		}
 		if ( ! empty( $attributes['tabletLayout'] ) || $column1_tablet ) {
@@ -1591,6 +1600,35 @@ class Kadence_Blocks_Rowlayout_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		return $output;
 	}
+
+	/**
+	 * Do we have any custom column width for the amount of rows in this block.
+	 *
+	 * @param mixed $columns The number of columns.
+	 * @param mixed $column1 The first column width.
+	 * @param mixed $column2 The second column width.
+	 * @param mixed $column3 The third column width.
+	 * @param mixed $column4 The fourth column width.
+	 * @param mixed $column5 The fifth column width.
+	 * @param mixed $column6 The sixth column width.
+	 */
+	public function has_custom_widths( $columns, $column1, $column2, $column3, $column4, $column5, $column6 ) {
+		switch( $columns ) {
+			case 1:
+				return !empty($column1);
+			case 2:
+				return !empty($column1) || !empty($column2);
+			case 3:
+				return !empty($column1) || !empty($column2) || !empty($column3);
+			case 4:
+				return !empty($column1) || !empty($column2) || !empty($column3) || !empty($column4);
+			case 5:
+				return !empty($column1) || !empty($column2) || !empty($column3) || !empty($column4) || !empty($column5);
+			case 6:
+				return !empty($column1) || !empty($column2) || !empty($column3) || !empty($column4) || !empty($column5) || !empty($column6);
+		}
+	}
+
 	/**
 	 * Build HTML for dynamic blocks
 	 *
