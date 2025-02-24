@@ -2,11 +2,14 @@ name: 'CI'
 on:
   workflow_dispatch:
   pull_request:
+    paths-ignore:
+      - '**/*.txt'
+      - '.github/**'
   push:
     branches:
       - master
     paths-ignore:
-      - '**/readme.txt'
+      - '**/*.txt'
       - '.github/**'
 jobs:
     test:

@@ -1,0 +1,393 @@
+name: Generate Zip
+
+on:
+  workflow_call:
+    secrets:
+      COMPOSER_TOKEN:
+        description: 'Composer token'
+        required: false
+      NODE_AUTH_TOKEN:
+        description: 'Node auth token'
+        required: false
+      GH_BOT_TOKEN:
+        description: 'GitHub Bot Token'
+        required: true
+      JENKINS_SECRET:
+        description: 'Jenkins token for packaging requests'
+        required: true
+      S3_BUCKET:
+        description: 'S3 bucket to place packaged zips'
+        required: true
+      S3_ACCESS_KEY_ID:
+        description: 'S3 access key ID'
+        required: true
+      S3_SECRET_ACCESS_KEY:
+        description: 'S3 Secret Access Key'
+        required: true
+      S3_REGION:
+        description: 'S3 Region'
+        required: true
+      S3_ENDPOINT:
+        description: 'S3 Endpoint'
+        required: true
+    inputs:
+      ref:
+        description: 'Git Commit Ref (branch, tag, or hash)'
+        default: 'main'
+        required: true
+        type: string
+      production:
+        description: 'Is this a production build?'
+        default: 'no'
+        required: false
+        type: string
+      php_version:
+        description: 'PHP version to use'
+        default: '7.4'
+        required: false
+        type: string
+      i18n:
+        description: 'Perform pup i18n steps'
+        default: 'yes'
+        required: false
+        type: string
+      check:
+        description: 'Perform pup check steps'
+        default: 'yes'
+        required: false
+        type: string
+      additional_commands:
+        description: 'Execute additional commands'
+        default: ''
+        required: false
+        type: string
+      slack_channel:
+        description: 'Slack channel ID to post to'
+        required: false
+        type: string
+      slack_thread:
+        description: 'Slack thread to post to'
+        required: false
+        type: string
+
+jobs:
+  generate-zip:
+    runs-on: ubuntu-latest
+    steps:
+      # ------------------------------------------------------------------------------
+      # Checkout the repo.
+      # ------------------------------------------------------------------------------
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+          token: ${{ secrets.GH_BOT_TOKEN }}
+          submodules: recursive
+
+      # ------------------------------------------------------------------------------
+      # Create or update initial status comment
+      # ------------------------------------------------------------------------------
+      - name: Find or create comment
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/find-comment@v3
+        id: find_comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: 'Zip build'
+
+      - name: Generate starting timestamp badge
+        if: github.event_name == 'pull_request'
+        id: timestamp_pre
+        run: |
+          raw_time=$(TZ='America/Chicago' date '+%I:%M %p')
+          clean_timestamp="${raw_time} CST"
+          encoded_timestamp=$(echo "$clean_timestamp" | sed 's/ /%20/g')
+          badge_url="https://img.shields.io/badge/Built%20Start-${encoded_timestamp}-blue"
+          echo "Generated badge URL: $badge_url" # Debug output
+          echo "badge=$badge_url" >> $GITHUB_OUTPUT
+
+      - name: Create or update initial status comment
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          edit-mode: replace
+          body: |
+            🏗️ Zip build in progress
+
+            ![Build timestamp](${{ steps.timestamp_pre.outputs.badge }})
+
+            Please wait while the build completes...
+
+      # ------------------------------------------------------------------------------
+      # Setup Node.
+      # ------------------------------------------------------------------------------
+      - name: Check for .nvmrc file
+        id: check-nvmrc
+        run: |
+          if [ -f .nvmrc ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - uses: actions/setup-node@v4
+        if: steps.check-nvmrc.outputs.exists == 'true'
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Set up authentication for NODE_AUTH_TOKEN if present
+        run: |
+          if [ -n "${{ secrets.NODE_AUTH_TOKEN }}" ]; then
+            echo "//npm.pkg.github.com/:_authToken=${{ secrets.NODE_AUTH_TOKEN }}" >> ~/.npmrc
+          fi
+
+      # ------------------------------------------------------------------------------
+      # Setup bun.
+      # ------------------------------------------------------------------------------
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # ------------------------------------------------------------------------------
+      # Setup PHP.
+      # ------------------------------------------------------------------------------
+      - name: Configure PHP environment
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ inputs.php_version }}
+          extensions: mbstring, intl
+          coverage: none
+
+      # ------------------------------------------------------------------------------
+      # Setup WordPress.
+      # ------------------------------------------------------------------------------
+      - name: Set up WP-CLI
+        run: |
+          wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+          chmod +x wp-cli.phar
+          sudo mv wp-cli.phar /usr/local/bin/wp
+
+      # ------------------------------------------------------------------------------
+      # Pup and filename setup.
+      # ------------------------------------------------------------------------------
+      - name: install pup
+        run: composer -- pup
+
+      - name: get version
+        if: ${{ inputs.production == 'yes' }}
+        run: echo "VERSION=$(composer -- pup get-version)" >> $GITHUB_ENV
+
+      - name: get dev version
+        if: ${{ inputs.production == 'no' }}
+        run: echo "VERSION=$(composer -- pup get-version --dev)" >> $GITHUB_ENV
+
+      - name: get zip name
+        run: echo "ZIP_NAME=$(composer -- pup zip-name ${{ env.VERSION }})" >> $GITHUB_ENV
+
+      # ------------------------------------------------------------------------------
+      # Try to find zip on s3 service.
+      # ------------------------------------------------------------------------------
+      - name: Check if zip already exists
+        uses: the-events-calendar/action-s3-utility@main
+        if: ${{ inputs.production == 'no' }}
+        id: s3_zip_exists
+        continue-on-error: true
+        env:
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+          S3_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY_ID }}
+          S3_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_ACCESS_KEY }}
+          S3_REGION: ${{ secrets.S3_REGION }}
+          S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}
+          COMMAND: exists
+          FILE: "${{ env.ZIP_NAME }}.zip"
+
+      # ------------------------------------------------------------------------------
+      # Prepare our cache directories.
+      # ------------------------------------------------------------------------------
+      - name: Get Composer Cache Directory
+        if: steps.s3_zip_exists.outcome != 'success'
+        id: get_composer_cache_dir
+        run: |
+          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      - uses: actions/cache@v4
+        if: steps.s3_zip_exists.outcome != 'success'
+        id: composer_cache
+        with:
+          path: ${{ steps.get_composer_cache_dir.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      # ------------------------------------------------------------------------------
+      # Build and zip.
+      # ------------------------------------------------------------------------------
+      - name: Determine if COMPOSER_TOKEN was provided
+        run: |
+          if [ -z "${{ secrets.COMPOSER_TOKEN }}" ]; then
+            echo "COMPOSER_TOKEN_AVAILABLE=false" >> $GITHUB_ENV
+          else
+            echo "COMPOSER_TOKEN_AVAILABLE=true" >> $GITHUB_ENV
+          fi
+
+      - name: pup build
+        if: steps.s3_zip_exists.outcome != 'success'
+        run: composer -- pup build
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+
+      - name: pup build with composer auth
+        if: steps.s3_zip_exists.outcome != 'success' && env.COMPOSER_TOKEN_AVAILABLE == 'true'
+        env:
+          COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.COMPOSER_TOKEN }}"}}'
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+        run: composer -- pup build
+
+      - name: pup check
+        if: steps.s3_zip_exists.outcome != 'success' && inputs.production == 'yes' && inputs.check == 'yes'
+        run: composer -- pup check
+
+      - name: Run additional_commands
+        if: steps.s3_zip_exists.outcome != 'success' && inputs.additional_commands != ''
+        run: ${{ inputs.additional_commands }}
+
+      - name: pup i18n
+        if: steps.s3_zip_exists.outcome != 'success' && inputs.i18n == 'yes'
+        run: composer -- pup i18n
+
+      - name: pup package
+        id: pup_package
+        if: steps.s3_zip_exists.outcome != 'success'
+        run:  composer -- pup package ${{ env.VERSION }}
+
+      - name: Create the zip_files folder
+        if: steps.s3_zip_exists.outcome != 'success'
+        run: |
+          mkdir zip_files
+          cp ${{ env.ZIP_NAME }}.zip zip_files
+      # ------------------------------------------------------------------------------
+      # Store zip on s3 service.
+      # ------------------------------------------------------------------------------
+      - name: Upload the zip to Wasabi
+        if: steps.s3_zip_exists.outcome != 'success'
+        uses: the-events-calendar/action-s3-utility@main
+        with:
+          args: --acl public-read --follow-symlinks
+        env:
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+          S3_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY_ID }}
+          S3_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_ACCESS_KEY }}
+          S3_REGION: ${{ secrets.S3_REGION }}
+          S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}
+          COMMAND: sync
+          SOURCE_DIR: zip_files
+
+      # ------------------------------------------------------------------------------
+      # Update PR with zip info
+      # ------------------------------------------------------------------------------
+      - name: Create WordPress Playground URL
+        if: github.event_name == 'pull_request'
+        id: create_playground_url
+        run: |
+          # Base64 encode the blueprint JSON
+          BLUEPRINT=$(echo '{
+            "preferredVersions": {
+              "php": "8.0",
+              "wp": "latest"
+            },
+            "landingPage": "/wp-admin/post-new.php",
+            "features": {
+              "networking": true
+            },
+            "steps": [
+              {
+                "step": "installPlugin",
+                "pluginData": {
+                  "resource": "url",
+                  "url": "https://evnt.is/test.zip?file=${{ env.ZIP_NAME }}.zip"
+                },
+                "options": {
+                  "activate": true
+                }
+              },
+              {
+                "step": "installTheme",
+                "themeData": {
+                    "resource": "wordpress.org/themes",
+                    "slug": "kadence"
+                },
+                "options": {
+                    "activate": true
+                }
+              },
+              {
+                "step": "defineWpConfigConsts",
+                "consts": {
+                    "WP_DEBUG": true,
+                    "WP_DEBUG_DISPLAY": true
+                }
+              }
+            ]
+          }' | base64 -w 0)
+
+          # Create the playground URL
+          PLAYGROUND_URL="https://playground.wordpress.net/#${BLUEPRINT}"
+
+          # Set output
+          echo "url=$PLAYGROUND_URL" >> $GITHUB_OUTPUT
+
+      - name: Find existing comment
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/find-comment@v3
+        id: find_comment_two
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: 'Zip build'
+
+      - name: Generate timestamp badge
+        if: github.event_name == 'pull_request'
+        id: timestamp
+        run: |
+          raw_time=$(TZ='America/Chicago' date '+%I:%M %p')
+          clean_timestamp="${raw_time} CST"
+          encoded_timestamp=$(echo "$clean_timestamp" | sed 's/ /%20/g')
+          badge_url="https://img.shields.io/badge/Built%20Completed-${encoded_timestamp}-darkgreen"
+          echo "Generated badge URL: $badge_url" # Debug output
+          echo "badge=$badge_url" >> $GITHUB_OUTPUT
+
+      - name: Update PR comment
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.find_comment_two.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          edit-mode: replace
+          body: |
+            🎉 Zip build complete
+
+            ![Build timestamp](${{ steps.timestamp.outputs.badge }})
+
+            - 💾 [Download zip](https://evnt.is/test.zip?file=${{ env.ZIP_NAME }}.zip)
+            - 🛝 [Test in WordPress Playground](${{ steps.create_playground_url.outputs.url }})
+
+
+      # ------------------------------------------------------------------------------
+      # Send slack message.
+      # ------------------------------------------------------------------------------
+      - name: Trigger Slack message
+        if: inputs.slack_channel && inputs.slack_thread
+        run: |
+          curl -X GET "https://utility.theeventscalendar.com/slack-message.php?channel=${{ inputs.slack_channel }}&thread=${{ inputs.slack_thread }}&file=${{ env.ZIP_NAME }}.zip&secret=${{ secrets.JENKINS_SECRET }}&url=https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+      # ------------------------------------------------------------------------------
+      # Upload the artifact if it is a workflow dispatch.
+      # ------------------------------------------------------------------------------
+      - name: Upload plugin artifact
+        if: steps.pup_package.outcome == 'success' && github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ZIP_NAME }}
+          path: .pup-zip
