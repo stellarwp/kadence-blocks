@@ -181,6 +181,7 @@ Release Date: TBD February 2025
 * Fix: Gallery (Adv) arrow strings added to pot file.
 * Fix: issue with row layout tablet column widths in certain setups.
 * Add: Advanced Highlight feature added to Icon List block.
+* Add: Max height to vertical text orientation in Advanced Text block.
 
 = 3.4.9 =
 Release Date: 11th February 2025
