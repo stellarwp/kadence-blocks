@@ -1393,7 +1393,7 @@ class Kadence_Blocks_CSS {
 				$attributes[ $name[2] ] = $attributes[ $name[1] ];
 			}
 			if ( $attributes[ $name[1] ] === 'custom' && empty( $attributes[ $custom ][1] ) ) {
-				$attributes[ $custom ][1] = $attributes[ $custom ][0];
+				$attributes[$custom][1] = isset($attributes[$custom][0]) ? $attributes[$custom][0] : '';
 			}
 			if ( $attributes[ $name[2] ] === 'custom' && empty( $attributes[ $custom ][2] ) ) {
 				$attributes[ $custom ][2] = $attributes[ $custom ][1];
