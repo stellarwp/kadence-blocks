@@ -179,6 +179,7 @@ Release Date: TBD February 2025
 * Update: FAQ Schema for accordions now processes dynamic content.
 * Fix: Warning handled for CSS class.
 * Fix: Gallery (Adv) arrow strings added to pot file.
+* Fix: issue with row layout tablet column widths in certain setups.
 
 = 3.4.9 =
 Release Date: 11th February 2025
