@@ -213,10 +213,10 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 		$media .= '<div class="kadence-testimonial-image-intrisic">';
 
 		if( $attributes['media'] === 'icon' && $attributes['icon']) {
-			$extras = ' height="'.$attributes['isize'].'" width="'.$attributes['isize'].'" style="color: ' . ( isset( $attributes['color'] ) ? $css_class->render_color( $attributes['color'] ) : 'undefined' ) . '"';
+			$extras = ' height="'.esc_attr($attributes['isize']).'" width="'.esc_attr($attributes['isize']).'" style="color: ' . ( isset( $attributes['color'] ) ? $css_class->render_color( $attributes['color'] ) : 'undefined' ) . '"';
 			$svg = Kadence_Blocks_Svg_Render::render( $attributes['icon'], $fill, $stroke_width, $attributes['ititle'], false, $extras);
 
-			$media .= '<div class="kt-svg-testimonial-icon kt-svg-testimonial-icon-'. $attributes['icon'] .'">';
+			$media .= '<div class="kt-svg-testimonial-icon kt-svg-testimonial-icon-'. esc_attr($attributes['icon']) .'">';
 			$media .= $svg;
 			$media .= '</div>';
 		}
