@@ -45,6 +45,9 @@ class Kadence_Blocks_Header_CPT_Controller {
 		add_action( 'enqueue_block_editor_assets', array( $this, 'script_enqueue' ) );
 		add_action( 'enqueue_block_assets', array( $this, 'title_styles_enqueue' ) );
 
+		// Add a post display state for the current header (if choosen in theme).
+		add_filter( 'display_post_states', array( $this, 'add_display_post_states' ), 10, 2 );
+
 		if( is_admin() && class_exists( 'Kadence_Blocks_Duplicate_Post' ) ) {
 			new Kadence_Blocks_Duplicate_Post( $this->post_type );
 		}
@@ -929,6 +932,25 @@ class Kadence_Blocks_Header_CPT_Controller {
 			);
 		}
 
+	}
+
+	/**
+	 * Add a post display state for special pages in the page list table.
+	 *
+	 * @param array   $post_states An array of post display states.
+	 * @param WP_Post $post        The current post object.
+	 */
+	public function add_display_post_states( $post_states, $post ) {
+		if ( class_exists( 'Kadence\Theme' ) ) {
+			if(Kadence\kadence()->option( 'blocks_header' )) {
+				$header_id = intval(Kadence\kadence()->option( 'blocks_header_id' ));
+				if ( $header_id === $post->ID ) {
+					$post_states['kb_post_for_header'] = __( 'Theme Header', 'kadence-blocks' );
+				}
+			}
+		}
+
+		return $post_states;
 	}
 }
 

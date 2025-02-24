@@ -561,8 +561,8 @@ div.kb-blocks-bg-video {
 }
 
 .kt-row-has-bg > .innerblocks-wrap {
-	padding-left: var(--global-kb-spacing-sm, 1.5rem);
-	padding-right: var(--global-kb-spacing-sm, 1.5rem);
+	padding-left: var(--global-content-edge-padding, 1.5rem);
+	padding-right: var(--global-content-edge-padding, 1.5rem);
 }
 .block-editor-block-list__block[data-align="full"] > .is-block-content > .wp-block-kadence-rowlayout {
 	padding-left: 46px;
@@ -1035,4 +1035,8 @@ div.kb-blocks-bg-video {
 			}
 		}
 	}
+}
+// adds a placeholder for padding-left and padding-right input boxes in certain cases.
+.padding-right-measure-range-control .kadence-single-measure-range-control.kb-measure-box-right span.kadence-spacing-btn-val:before, .padding-left-measure-range-control .kadence-single-measure-range-control.kb-measure-box-left span.kadence-spacing-btn-val:before  {
+	content: 'Global';
 }

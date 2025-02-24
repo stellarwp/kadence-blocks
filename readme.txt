@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.4
 Tested up to: 6.7.1
-Stable tag: 3.4.8
+Stable tag: 3.4.10
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -173,6 +173,23 @@ Please report security bugs found in the source code of the Kadence Blocks plugi
 Please report security bugs found in the Kadence Blocks plugin's source code through the Patchstack Vulnerability Disclosure Program https://patchstack.com/database/vdp/kadence-blocks. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 3.4.10 =
+Release Date: TBD February 2025
+* Update: FAQ Schema for accordions now processes dynamic content.
+* Fix: Warning handled for CSS class.
+* Fix: Gallery (Adv) arrow strings added to pot file.
+* Fix: issue with row layout tablet column widths in certain setups.
+* Add: Advanced Highlight feature added to Icon List block.
+
+= 3.4.9 =
+Release Date: 11th February 2025
+* Add: Allow uploading of design files in Advanced form. Ex: ai, ait, eps, psd
+* Add: Advanced form filter for submit actions.
+* Add: Advanced form filter submission filtering.
+* Fix: WPML translation for adv button links.
+* Fix: Advanced table column backgrounds.
+* Fix: Icon color not matching text color by default in Advanced button.
 
 = 3.4.8 =
 Release Date: 31st January 2025
