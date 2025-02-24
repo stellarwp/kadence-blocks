@@ -435,6 +435,14 @@
 			"type": "string",
 			"default": "px"
 		},
+		"maxHeight": {
+			"type": "array",
+			"default": ["", "", ""]
+		},
+		"maxHeightType": {
+			"type": "string",
+			"default": "px"
+		},
 		"icon": {
 			"type": "string",
 			"default": ""

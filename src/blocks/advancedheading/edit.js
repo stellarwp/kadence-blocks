@@ -218,6 +218,8 @@ function KadenceAdvancedHeading(props) {
 		mobileMarkBorderStyles,
 		maxWidthType,
 		maxWidth,
+		maxHeightType,
+		maxHeight,
 		beforeIcon,
 		afterIcon,
 		icon,
@@ -672,6 +674,13 @@ function KadenceAdvancedHeading(props) {
 		maxWidth && maxWidth[2] ? maxWidth[2] : ''
 	);
 
+	const previewMaxHeight = getPreviewSize(
+		previewDevice,
+		maxHeight && maxHeight[0] ? maxHeight[0] : '',
+		maxHeight && maxHeight[1] ? maxHeight[1] : '',
+		maxHeight && maxHeight[2] ? maxHeight[2] : ''
+	);
+
 	const previewMarkBorderTopStyle = getBorderStyle(
 		previewDevice,
 		'top',
@@ -1036,6 +1045,7 @@ function KadenceAdvancedHeading(props) {
 								? 'sideways-lr'
 								: '',
 						textOrientation: previewTextOrientation === 'stacked' ? 'upright' : '',
+						maxHeight: textOrientation !== 'horizontal' && textOrientation !== '' ? previewMaxHeight : '',
 					}}
 					placeholder={__('Write something…', 'kadence-blocks')}
 				/>
@@ -1835,6 +1845,71 @@ function KadenceAdvancedHeading(props) {
 									onChangeTablet={(value) => setAttributes({ tabletTextOrientation: value })}
 									onChangeMobile={(value) => setAttributes({ mobileTextOrientation: value })}
 								/>
+								{textOrientation !== 'horizontal' && textOrientation !== '' && (
+									<ResponsiveRangeControls
+										reset={() => {
+											setAttributes({
+												maxHeight: ['', '', ''],
+												maxHeightType: 'px',
+											});
+										}}
+										label={__('Max Height', 'kadence-blocks')}
+										value={previewMaxHeight}
+										onChange={(value) => {
+											setAttributes({
+												maxHeight: [
+													value,
+													undefined !== maxHeight && undefined !== maxHeight[1]
+														? maxHeight[1]
+														: '',
+													undefined !== maxHeight && undefined !== maxHeight[2]
+														? maxHeight[2]
+														: '',
+												],
+											});
+										}}
+										tabletValue={
+											undefined !== maxHeight && undefined !== maxHeight[1] ? maxHeight[1] : ''
+										}
+										onChangeTablet={(value) => {
+											setAttributes({
+												maxHeight: [
+													undefined !== maxHeight && undefined !== maxHeight[0]
+														? maxHeight[0]
+														: '',
+													value,
+													undefined !== maxHeight && undefined !== maxHeight[2]
+														? maxHeight[2]
+														: '',
+												],
+											});
+										}}
+										mobileValue={
+											undefined !== maxHeight && undefined !== maxHeight[2] ? maxHeight[2] : ''
+										}
+										onChangeMobile={(value) => {
+											setAttributes({
+												maxHeight: [
+													undefined !== maxHeight && undefined !== maxHeight[0]
+														? maxHeight[0]
+														: '',
+													undefined !== maxHeight && undefined !== maxHeight[1]
+														? maxHeight[1]
+														: '',
+													value,
+												],
+											});
+										}}
+										min={0}
+										max={maxHeightType === 'px' ? 2000 : 100}
+										step={1}
+										unit={maxHeightType ? maxHeightType : 'px'}
+										onUnit={(value) => {
+											setAttributes({ maxHeightType: value });
+										}}
+										units={['px', '%', 'vw']}
+									/>
+								)}
 							</KadencePanelBody>
 							{showSettings('iconSettings', 'kadence/advancedheading') && (
 								<KadencePanelBody
