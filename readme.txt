@@ -3,7 +3,7 @@ Contributors: britner, oakesjosh, woodardmc
 Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.4
-Tested up to: 6.7.1
+Tested up to: 6.7.2
 Stable tag: 3.4.10
 Requires PHP: 7.4
 License: GPLv2 or later
@@ -175,13 +175,14 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.4.10 =
-Release Date: TBD February 2025
-* Update: FAQ Schema for accordions now processes dynamic content.
-* Fix: Warning handled for CSS class.
-* Fix: Gallery (Adv) arrow strings added to pot file.
-* Fix: issue with row layout tablet column widths in certain setups.
+Release Date: 25th February 2025
 * Add: Advanced Highlight feature added to Icon List block.
 * Add: Max height to vertical text orientation in Advanced Text block.
+* Update: FAQ Schema for accordions now processes dynamic content.
+* Fix: PHP Warning for column block when using a custom gutter.
+* Fix: Gallery (Adv) arrow strings added to pot file.
+* Fix: Issue with row layout tablet column widths in certain setups.
+* Fix: Advanced header off canvas editor width not matching frontend.
 
 = 3.4.9 =
 Release Date: 11th February 2025
