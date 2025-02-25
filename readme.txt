@@ -176,7 +176,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 = 3.4.11 =
 Release Date: 25th February 2025
-* Fix: Issue with adanced text color in editor when no color is selected.
+* Fix: Issue with advanced text color in editor when no color is selected.
 
 = 3.4.10 =
 Release Date: 25th February 2025
