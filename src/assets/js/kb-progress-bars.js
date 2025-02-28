@@ -151,7 +151,9 @@
 			let barContainers;
 			if (onlyInQueryLoop) {
 				// Only select progress bars inside query cards when onlyInQueryLoop is true
-				barContainers = document.querySelectorAll('.wp-block-kadence-query-card .kb-progress-bar-container' + item.unique_id);
+				barContainers = document.querySelectorAll(
+					'.wp-block-kadence-query-card .kb-progress-bar-container' + item.unique_id
+				);
 			} else {
 				// Select all progress bars when onlyInQueryLoop is false
 				barContainers = document.querySelectorAll('.kb-progress-bar-container' + item.unique_id);
@@ -192,7 +194,7 @@
 	};
 	if ('loading' === document.readyState) {
 		// The DOM has not yet been loaded.
-		document.addEventListener('DOMContentLoaded', function() {
+		document.addEventListener('DOMContentLoaded', function () {
 			kadenceProgressBars.init(false);
 		});
 	} else {
@@ -200,8 +202,7 @@
 		kadenceProgressBars.init(false);
 	}
 	window.addEventListener('resize', kadenceProgressBars.windowResize, false);
-	document.addEventListener('kb-query-loaded', function() {
+	document.addEventListener('kb-query-loaded', function () {
 		kadenceProgressBars.init(true);
 	});
-
 })();
