@@ -147,8 +147,15 @@
 				kadenceProgressBars.triggerAnimation(element, index, item);
 			}
 		},
-		initSingleBar(item) {
-			const barContainers = document.querySelectorAll('.kb-progress-bar-container' + item.unique_id);
+		initSingleBar(item, onlyInQueryLoop = false) {
+			let barContainers;
+			if (onlyInQueryLoop) {
+				// Only select progress bars inside query cards when onlyInQueryLoop is true
+				barContainers = document.querySelectorAll('.wp-block-kadence-query-card .kb-progress-bar-container' + item.unique_id);
+			} else {
+				// Select all progress bars when onlyInQueryLoop is false
+				barContainers = document.querySelectorAll('.kb-progress-bar-container' + item.unique_id);
+			}
 			if (!barContainers?.length) {
 				return;
 			}
@@ -161,22 +168,22 @@
 			const doc = new DOMParser().parseFromString(wrappedHtml, 'text/html');
 			return doc.body.textContent || '';
 		},
-		initAll() {
+		initAll(onlyInQueryLoop = false) {
 			if (!kadenceProgressBars?.items) {
 				return;
 			}
 			Object.keys(kadenceProgressBars?.items).forEach(function (key) {
-				kadenceProgressBars.initSingleBar(kadenceProgressBars.items[key]);
+				kadenceProgressBars.initSingleBar(kadenceProgressBars.items[key], onlyInQueryLoop);
 			});
 		},
 		// Initiate the menus when the DOM loads.
-		init() {
+		init(onlyInQueryLoop = false) {
 			if (typeof ProgressBar !== 'undefined') {
-				kadenceProgressBars.initAll();
+				kadenceProgressBars.initAll(onlyInQueryLoop);
 			} else {
 				var initLoadDelay = setInterval(function () {
 					if (typeof ProgressBar !== 'undefined') {
-						kadenceProgressBars.initAll();
+						kadenceProgressBars.initAll(onlyInQueryLoop);
 						clearInterval(initLoadDelay);
 					}
 				}, 200);
@@ -185,10 +192,16 @@
 	};
 	if ('loading' === document.readyState) {
 		// The DOM has not yet been loaded.
-		document.addEventListener('DOMContentLoaded', kadenceProgressBars.init);
+		document.addEventListener('DOMContentLoaded', function() {
+			kadenceProgressBars.init(false);
+		});
 	} else {
 		// The DOM has already been loaded.
-		kadenceProgressBars.init();
+		kadenceProgressBars.init(false);
 	}
 	window.addEventListener('resize', kadenceProgressBars.windowResize, false);
+	document.addEventListener('kb-query-loaded', function() {
+		kadenceProgressBars.init(true);
+	});
+
 })();
