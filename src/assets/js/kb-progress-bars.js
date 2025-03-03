@@ -146,9 +146,12 @@
 			} else {
 				kadenceProgressBars.triggerAnimation(element, index, item);
 			}
+			// Remove the init class after initialization
+			element.classList.remove('kb-progress-bar-init');
 		},
 		initSingleBar(item) {
-			const barContainers = document.querySelectorAll('.kb-progress-bar-container' + item.unique_id);
+			// Only select containers that have the init class
+			const barContainers = document.querySelectorAll('.kb-progress-bar-container' + item.unique_id + '.kb-progress-bar-init');
 			if (!barContainers?.length) {
 				return;
 			}
@@ -190,5 +193,7 @@
 		// The DOM has already been loaded.
 		kadenceProgressBars.init();
 	}
+	// Add event listener for kb-query-loaded event
+	document.addEventListener('kb-query-loaded', kadenceProgressBars.init);
 	window.addEventListener('resize', kadenceProgressBars.windowResize, false);
 })();
