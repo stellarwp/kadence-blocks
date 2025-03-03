@@ -1980,9 +1980,9 @@ export function EditInner(props) {
 								/>
 								<ResponsiveMeasureRangeControl
 									label={__('Link Padding', 'kadence-blocks')}
-									value={paddingDropdownLink}
-									tabletValue={tabletPaddingDropdownLink}
-									mobileValue={mobilePaddingDropdownLink}
+									value={arrayStringToInt(paddingDropdownLink)}
+									tabletValue={arrayStringToInt(tabletPaddingDropdownLink)}
+									mobileValue={arrayStringToInt(mobilePaddingDropdownLink)}
 									onChange={(value) => {
 										setMetaAttribute(value.map(String), 'paddingDropdownLink');
 									}}
@@ -2009,9 +2009,9 @@ export function EditInner(props) {
 								/>
 								<ResponsiveMeasureRangeControl
 									label={__('Link Margin', 'kadence-blocks')}
-									value={marginDropdownLink}
-									tabletValue={tabletMarginDropdownLink}
-									mobileValue={mobileMarginDropdownLink}
+									value={arrayStringToInt(marginDropdownLink)}
+									tabletValue={arrayStringToInt(tabletMarginDropdownLink)}
+									mobileValue={arrayStringToInt(mobileMarginDropdownLink)}
 									onChange={(value) => {
 										setMetaAttribute(value.map(String), 'marginDropdownLink');
 									}}

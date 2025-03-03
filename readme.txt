@@ -177,6 +177,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 = 3.4.12 =
 Release Date: TBD March 2025
 * Fix: Progress bars not initializing insdie query loops.
+* Fix: Setting numeric padding & margin on Adv Navigation sub menu links.
 
 = 3.4.11 =
 Release Date: 25th February 2025
