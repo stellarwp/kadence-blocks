@@ -174,6 +174,10 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.4.12 =
+Release Date: TBD March 2025
+* Fix: Setting numeric padding & margin on Adv Navigation sub menu links.
+
 = 3.4.11 =
 Release Date: 25th February 2025
 * Fix: Issue with advanced text color in editor when no color is selected.
