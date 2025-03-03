@@ -1441,28 +1441,29 @@ function KadenceTabs(props) {
 						label={__('Add Tab', 'kadence-blocks')}
 						showTooltip={true}
 					/>
-					<ToolbarDropdownMenu
-						icon="menu"
-						label={__('Move Tabs', 'kadence-blocks')}
-					>
+					<ToolbarDropdownMenu icon="menu" label={__('Move Tabs', 'kadence-blocks')}>
 						{({ onClose }) => (
 							<MenuGroup>
 								{/* Move Item Back/Up */}
-								{ currentTab !== 1 && (
+								{currentTab !== 1 && (
 									<MenuItem
 										icon={'vtabs' === layout ? 'arrow-up' : 'arrow-left'}
-										onClick={ currentTab === 1 ? undefined : onMoveBack(currentTab -1) }
+										onClick={currentTab === 1 ? undefined : onMoveBack(currentTab - 1)}
 									>
-										{'vtabs' === layout ? __('Move Item Up', 'kadence-blocks') : __('Move Item Back', 'kadence-blocks')}
+										{'vtabs' === layout
+											? __('Move Item Up', 'kadence-blocks')
+											: __('Move Item Back', 'kadence-blocks')}
 									</MenuItem>
 								)}
 								{/* Move Item Forward/Down */}
 								{currentTab !== tabCount && (
 									<MenuItem
 										icon={'vtabs' === layout ? 'arrow-down' : 'arrow-right'}
-										onClick={ currentTab === tabCount ? undefined : onMoveForward(currentTab - 1) }
+										onClick={currentTab === tabCount ? undefined : onMoveForward(currentTab - 1)}
 									>
-										{'vtabs' === layout ? __('Move Item Down', 'kadence-blocks') : __('Move Item Forward', 'kadence-blocks')}
+										{'vtabs' === layout
+											? __('Move Item Down', 'kadence-blocks')
+											: __('Move Item Forward', 'kadence-blocks')}
 									</MenuItem>
 								)}
 								{/* Remove Item */}
