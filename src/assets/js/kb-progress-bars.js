@@ -151,7 +151,9 @@
 		},
 		initSingleBar(item) {
 			// Only select containers that have the init class
-			const barContainers = document.querySelectorAll('.kb-progress-bar-container' + item.unique_id + '.kb-progress-bar-init');
+			const barContainers = document.querySelectorAll(
+				'.kb-progress-bar-container' + item.unique_id + '.kb-progress-bar-init'
+			);
 			if (!barContainers?.length) {
 				return;
 			}
