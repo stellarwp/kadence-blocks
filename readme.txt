@@ -3,8 +3,8 @@ Contributors: britner, oakesjosh, woodardmc
 Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.4
-Tested up to: 6.7.1
-Stable tag: 3.4.10
+Tested up to: 6.7.2
+Stable tag: 3.4.11
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -174,14 +174,24 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 == Changelog ==
 
+= 3.4.12 =
+Release Date: TBD March 2025
+* Fix: Setting numeric padding & margin on Adv Navigation sub menu links.
+* Add: Support for Croatian, Estonian, Polish, and Slovak languages in Kadence AI.
+
+= 3.4.11 =
+Release Date: 25th February 2025
+* Fix: Issue with advanced text color in editor when no color is selected.
+
 = 3.4.10 =
-Release Date: TBD February 2025
-* Add: Support for Croatian language in Kadence AI.
-* Add: Support for Estonian language in Kadence AI.
-* Add: Support for Polish language in Kadence AI.
-* Add: Support for Slovak language in Kadence AI.
-* Fix: Warning handled for CSS class.
+Release Date: 25th February 2025
+* Add: Advanced Highlight feature added to Icon List block.
+* Add: Max height to vertical text orientation in Advanced Text block.
+* Update: FAQ Schema for accordions now processes dynamic content.
+* Fix: PHP Warning for column block when using a custom gutter.
 * Fix: Gallery (Adv) arrow strings added to pot file.
+* Fix: Issue with row layout tablet column widths in certain setups.
+* Fix: Advanced header off canvas editor width not matching frontend.
 
 = 3.4.9 =
 Release Date: 11th February 2025
