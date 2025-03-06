@@ -571,7 +571,7 @@ function KadenceAdvancedHeading(props) {
 		undefined !== textShadow?.[0]?.opacity ? textShadow[0].opacity : 0.2,
 		undefined !== textShadowTablet?.[0]?.opacity ? textShadowTablet[0].opacity : '',
 		undefined !== textShadowMobile?.[0]?.opacity ? textShadowMobile[0].opacity : ''
-	)
+	);
 	const previewHOffset = getPreviewSize(
 		previewDevice,
 		undefined !== textShadow?.[0]?.hOffset ? textShadow[0].hOffset : 1,
@@ -1041,7 +1041,8 @@ function KadenceAdvancedHeading(props) {
 						fontFamily: typography ? renderTypography : '',
 						textShadow: enableTextShadow
 							? `${previewHOffset}px ${previewVOffset}px ${previewBlur}px ${KadenceColorOutput(
-									previewColorTextShadow, previewTextShadowOpacity
+									previewColorTextShadow,
+									previewTextShadowOpacity
 							  )}`
 							: undefined,
 						writingMode:
