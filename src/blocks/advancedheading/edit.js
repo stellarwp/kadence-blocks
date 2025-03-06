@@ -396,7 +396,8 @@ function KadenceAdvancedHeading(props) {
 					default: [
 						{
 							enable: false,
-							color: 'rgba(0, 0, 0, 0.2)',
+							color: '#000000',
+							opacity: 0.2,
 							blur: 1,
 							hOffset: 1,
 							vOffset: 1,
@@ -561,10 +562,16 @@ function KadenceAdvancedHeading(props) {
 	);
 	const previewColorTextShadow = getPreviewSize(
 		previewDevice,
-		undefined !== textShadow?.[0]?.color ? textShadow[0].color : 'rgba(0, 0, 0, 0.2)',
+		undefined !== textShadow?.[0]?.color ? textShadow[0].color : '#000000',
 		undefined !== textShadowTablet?.[0]?.color ? textShadowTablet[0].color : '',
 		undefined !== textShadowMobile?.[0]?.color ? textShadowMobile[0].color : ''
 	);
+	const previewTextShadowOpacity = getPreviewSize(
+		previewDevice,
+		undefined !== textShadow?.[0]?.opacity ? textShadow[0].opacity : 0.2,
+		undefined !== textShadowTablet?.[0]?.opacity ? textShadowTablet[0].opacity : '',
+		undefined !== textShadowMobile?.[0]?.opacity ? textShadowMobile[0].opacity : ''
+	)
 	const previewHOffset = getPreviewSize(
 		previewDevice,
 		undefined !== textShadow?.[0]?.hOffset ? textShadow[0].hOffset : 1,
@@ -1034,7 +1041,7 @@ function KadenceAdvancedHeading(props) {
 						fontFamily: typography ? renderTypography : '',
 						textShadow: enableTextShadow
 							? `${previewHOffset}px ${previewVOffset}px ${previewBlur}px ${KadenceColorOutput(
-									previewColorTextShadow
+									previewColorTextShadow, previewTextShadowOpacity
 							  )}`
 							: undefined,
 						writingMode:
@@ -1785,7 +1792,11 @@ function KadenceAdvancedHeading(props) {
 										label={__('Text Shadow', 'kadence-blocks')}
 										enable={enableTextShadow}
 										color={previewColorTextShadow}
-										colorDefault={'rgba(0, 0, 0, 0.2)'}
+										colorDefault={'#000000'}
+										onArrayChange={(color, opacity) => {
+											saveShadow({ color, opacity });
+										}}
+										opacity={previewTextShadowOpacity}
 										hOffset={previewHOffset}
 										vOffset={previewVOffset}
 										blur={previewBlur}
@@ -1794,6 +1805,9 @@ function KadenceAdvancedHeading(props) {
 										}}
 										onColorChange={(value) => {
 											saveShadow({ color: value });
+										}}
+										onOpacityChange={(value) => {
+											saveShadow({ opacity: value });
 										}}
 										onHOffsetChange={(value) => {
 											saveShadow({ hOffset: value });

@@ -188,20 +188,77 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 						'hOffset' => 1,
 						'vOffset' => 1,
 						'blur'    => 1,
-						'color'   => 'rgba(0,0,0,0.2)',
+						'color'   => '#000000',
+						'opacity' => 0.2,
 					],
 				];
 			}
-			if ( isset( $attributes['textShadow'] ) && is_array( $attributes['textShadow'] ) && isset( $attributes['textShadow'][0] ) && is_array( $attributes['textShadow'][0] ) && ((isset( $attributes['enableTextShadow'] ) && $attributes['enableTextShadow']) || (isset( $attributes['textShadow'][0]['enable'] ) && $attributes['textShadow'][0]['enable']) ) ) {
-				$css->add_property('text-shadow',($attributes['textShadow'][0]['hOffset'] ?? 1) . 'px ' . ($attributes['textShadow'][0]['vOffset'] ?? 1) . 'px ' . ($attributes['textShadow'][0]['blur'] ?? 1) . 'px ' . ( isset( $attributes['textShadow'][0]['color'] ) ? $css->render_color( $attributes['textShadow'][0]['color'] ) : 'rgba(0,0,0,0.2)' ) );
+			if (
+				! empty( $attributes['textShadow'] ) &&
+				is_array( $attributes['textShadow'][0] ) &&
+				(
+					! empty( $attributes['enableTextShadow'] ) ||
+					! empty( $attributes['textShadow'][0]['enable'] )
+				)
+			) {
+				$textShadow = $attributes['textShadow'][0] ?? [];
+
+				$hOffset = $textShadow['hOffset'] ?? 1;
+				$vOffset = $textShadow['vOffset'] ?? 1;
+				$blur = $textShadow['blur'] ?? 1;
+				$color = $textShadow['color'] ?? null;
+				$opacity = $textShadow['opacity'] ?? 0.2;
+
+				$css->add_property(
+					'text-shadow',
+					"{$hOffset}px {$vOffset}px {$blur}px " . ($color ? $css->render_color($color, $opacity) : 'rgba(0,0,0,0.2)')
+				);
+
 			}
-			if ( isset( $attributes['textShadowTablet'] ) && is_array( $attributes['textShadowTablet'] ) && isset( $attributes['textShadowTablet'][0] ) && is_array( $attributes['textShadowTablet'][0] ) && ((isset( $attributes['enableTextShadow'] ) && $attributes['enableTextShadow']) || (isset( $attributes['textShadow'][0]['enable'] ) && $attributes['textShadow'][0]['enable']) ) ) {
+			if (
+				!empty($attributes['textShadowTablet']) &&
+				is_array($attributes['textShadowTablet'][0]) &&
+				(
+					!empty($attributes['enableTextShadow']) ||
+					!empty($attributes['textShadow'][0]['enable'])
+				)
+			) {
+				$textShadowTablet = $attributes['textShadowTablet'][0] ?? [];
+
+				$hOffset = $textShadowTablet['hOffset'] !== '' ? $textShadowTablet['hOffset'] : (isset($attributes['textShadow'][0]['hOffset']) && $attributes['textShadow'][0]['hOffset'] !== '' ? $attributes['textShadow'][0]['hOffset'] : 1);
+				$vOffset = $textShadowTablet['vOffset'] !== '' ? $textShadowTablet['vOffset'] : (isset($attributes['textShadow'][0]['vOffset']) && $attributes['textShadow'][0]['vOffset'] !== '' ? $attributes['textShadow'][0]['vOffset'] :1);
+				$blur    = $textShadowTablet['blur'] !== '' ? $textShadowTablet['blur'] : (isset($attributes['textShadow'][0]['blur']) && $attributes['textShadow'][0]['blur'] !== ''? $attributes['textShadow'][0]['blur'] : 1);
+				$color   = $textShadowTablet['color'] ?? $attributes['textShadow'][0]['color'] ?? null;
+				$opacity = $textShadowTablet['opacity'] !== '' ? $textShadowTablet['opacity'] : (isset($attributes['textShadow'][0]['opacity']) && $attributes['textShadow'][0]['opacity'] !== '' ? $attributes['textShadow'][0]['opacity'] : 0.2);
+
 				$css->set_media_state('tablet');
-				$css->add_property( 'text-shadow',( ! empty( $attributes['textShadowTablet'][0]['hOffset'] ) ? $attributes['textShadowTablet'][0]['hOffset'] : $attributes['textShadow'][0]['hOffset'] ) . 'px ' . ( ! empty( $attributes['textShadowTablet'][0]['vOffset'] ) ? $attributes['textShadowTablet'][0]['vOffset'] : $attributes['textShadow'][0]['vOffset'] ) . 'px ' . ( ! empty( $attributes['textShadowTablet'][0]['blur'] ) ? $attributes['textShadowTablet'][0]['blur'] : $attributes['textShadow'][0]['blur'] ) . 'px ' . ( ! empty( $attributes['textShadowTablet'][0]['color'] ) ? $css->render_color( $attributes['textShadowTablet'][0]['color'] ) : $css->render_color( $attributes['textShadow'][0]['color'] ) ) );
+				$css->add_property(
+					'text-shadow',
+					"{$hOffset}px {$vOffset}px {$blur}px " . ($color ? $css->render_color($color, $opacity) : 'rgba(0,0,0,0.2)')
+				);
 			}
-			if ( isset( $attributes['textShadowMobile'] ) && is_array( $attributes['textShadowMobile'] ) && isset( $attributes['textShadowMobile'][0] ) && is_array( $attributes['textShadowMobile'][0] ) && ((isset( $attributes['enableTextShadow'] ) && $attributes['enableTextShadow']) || (isset( $attributes['textShadow'][0]['enable'] ) && $attributes['textShadow'][0]['enable']) ) ) {
+
+			if (
+				!empty($attributes['textShadowMobile']) &&
+				is_array($attributes['textShadowMobile'][0]) &&
+				(
+					!empty($attributes['enableTextShadow']) ||
+					!empty($attributes['textShadow'][0]['enable'])
+				)
+			) {
+				$textShadowMobile = $attributes['textShadowMobile'][0] ?? [];
+
+				$hOffset = $textShadowMobile['hOffset'] !== '' ? $textShadowMobile['hOffset'] : (isset($attributes['textShadowTablet'][0]['hOffset']) && $attributes['textShadowTablet'][0]['hOffset'] !== '' ? $attributes['textShadowTablet'][0]['hOffset'] : 1);
+				$vOffset = $textShadowMobile['vOffset'] !== '' ? $textShadowMobile['vOffset'] : (isset($attributes['textShadowTablet'][0]['vOffset']) && $attributes['textShadowTablet'][0]['vOffset'] !== '' ? $attributes['textShadowTablet'][0]['vOffset'] :1);
+				$blur    = $textShadowMobile['blur'] !== '' ? $textShadowMobile['blur'] : (isset($attributes['textShadowTablet'][0]['blur']) && $attributes['textShadowTablet'][0]['blur'] !== ''? $attributes['textShadowTablet'][0]['blur'] : 1);
+				$color   = $textShadowMobile['color'] ?? $attributes['textShadowTablet'][0]['color'] ?? null;
+				$opacity = $textShadowMobile['opacity'] !== '' ? $textShadowMobile['opacity'] : (isset($attributes['textShadowTablet'][0]['opacity']) && $attributes['textShadowTablet'][0]['opacity'] !== '' ? $attributes['textShadowTablet'][0]['opacity'] : 0.2);
+
 				$css->set_media_state('mobile');
-				$css->add_property( 'text-shadow',( ! empty( $attributes['textShadowMobile'][0]['hOffset'] ) ? $attributes['textShadowMobile'][0]['hOffset'] : ( ! empty( $attributes['textShadowTablet'][0]['hOffset'] ) ? $attributes['textShadowTablet'][0]['hOffset'] : $attributes['textShadow'][0]['hOffset']) ) . 'px ' . (  ! empty( $attributes['textShadowMobile'][0]['vOffset'] ) ? $attributes['textShadowMobile'][0]['vOffset'] : ( ! empty( $attributes['textShadowTablet'][0]['vOffset'] ) ? $attributes['textShadowTablet'][0]['vOffset'] : $attributes['textShadow'][0]['vOffset']) ) . 'px ' . ( ! empty( $attributes['textShadowMobile'][0]['blur'] ) ? $attributes['textShadowMobile'][0]['blur'] : ( ! empty( $attributes['textShadowTablet'][0]['blur'] ) ? $attributes['textShadowTablet'][0]['blur'] : $attributes['textShadow'][0]['blur']) ) . 'px ' . ( ! empty( $attributes['textShadowMobile'][0]['color'] ) ? $css->render_color( $attributes['textShadowMobile'][0]['color']) : ( ! empty( $attributes['textShadowTablet'][0]['color'] ) ? $css->render_color( $attributes['textShadowTablet'][0]['color'] ) : $css->render_color( $attributes['textShadow'][0]['color'] ) ) ) );
+				$css->add_property(
+					'text-shadow',
+					"{$hOffset}px {$vOffset}px {$blur}px " . ($color ? $css->render_color($color, $opacity) : 'rgba(0,0,0,0.2)')
+				);
 			}
 		}
 
