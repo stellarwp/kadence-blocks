@@ -1460,7 +1460,9 @@ function KadenceTabs(props) {
 									{currentTab !== tabCount && (
 										<MenuItem
 											icon={'vtabs' === layout ? 'arrow-down' : 'arrow-right'}
-											onClick={currentTab === tabCount ? undefined : onMoveForward(currentTab - 1)}
+											onClick={
+												currentTab === tabCount ? undefined : onMoveForward(currentTab - 1)
+											}
 										>
 											{'vtabs' === layout
 												? __('Move Tab Down', 'kadence-blocks')
