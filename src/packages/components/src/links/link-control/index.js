@@ -181,7 +181,7 @@ class URLInputControl extends Component {
 						label={ __( 'Title', 'kadence-blocks' ) }
 						onChange={ onSetLinkTitle }
 						value={ linkTitle }
-						style={ url  && !linkTitle ? { backgroundColor: 'yellow' } : {} }
+						style={ url  && !linkTitle ? { backgroundColor: 'rgba(255, 255, 0, 0.5)' } : {} }
 						placeholder={ url  && !linkTitle ? __( 'Add a Title', 'kadence-blocks' ) : '' }
 					/>
 				) }
