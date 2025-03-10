@@ -1385,6 +1385,13 @@ class Kadence_Blocks_Settings {
 				'link'     => admin_url( 'edit.php?post_type=kadence_lottie' ),
 				'linkText' => __( 'Manage Lottie Animations', 'kadence-blocks' ),
 			],
+			'kadence/vector'          => [
+				'slug'     => 'kadence/vector', 
+				'name'     => __( 'Vector Graphics', 'kadence-blocks' ),
+				'desc'     => __( 'Add custom vector icons and SVGs to enhance your site design.', 'kadence-blocks' ),
+				'link'     => admin_url( 'edit.php?post_type=kadence_vector' ),
+				'linkText' => __( 'Manage Vector Graphics', 'kadence-blocks' ),
+			],
 			'kadence/header'          => [
 				'slug'     => 'kadence/header',
 				'name'     => __( 'Advanced Header', 'kadence-blocks' ),
