@@ -71,8 +71,6 @@ class Kadence_Blocks_Vector_Block extends Kadence_Blocks_Abstract_Block {
 
 		$css->render_measure_output( $attributes, 'margin', 'margin');
 		$css->render_measure_output( $attributes, 'padding', 'padding' );
-
-		// $width = ( !isset( $attributes['width'] ) || '0' === $attributes['width'] ) ? 'auto' : $attributes['width'] . 'px';
 		$css->render_responsive_range( $attributes, 'maxWidth', 'max-width' );
 		
 		// Center the SVG when alignment is not set
@@ -123,12 +121,11 @@ class Kadence_Blocks_Vector_Block extends Kadence_Blocks_Abstract_Block {
 			$content = '<div class="' . esc_attr( implode( ' ', $classes ) ) . '">';
 			
 			if ( ! empty( $attributes['id'] ) ) {
-				// Get the REST API URL for the vector
-				$rest_url = rest_url( 'kb-vector/v1/vectors/' . $attributes['id'] );
-				$content .= sprintf(
-					'<img src="%s" alt="" style="width: 100%%; height: auto;">',
-					esc_url( $rest_url )
-				);
+				// Get the SVG content directly and render it inline
+				$svg_content = $this->get_vector_svg( $attributes );
+				if ( ! empty( $svg_content ) ) {
+					$content .= $svg_content;
+				}
 			} else {
 				$content .= '';
 			}

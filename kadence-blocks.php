@@ -109,7 +109,6 @@ function kadence_blocks_init(): void {
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-fluentcrm-form-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-lottieanimation-get-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-lottieanimation-post-rest-api.php';
-	require_once KADENCE_BLOCKS_PATH . 'includes/class-vector-get-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-vector-post-rest-api.php';
 	// Advanced Form.
 	require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/advanced-form-init.php';

@@ -1,11 +1,11 @@
 /**
  * Editor styles for the vector block
  */
-
-.wp-block-kadence-vector {
-  position: relative;
-}
-
+ .wp-block[data-type="kadence/vector"] {
+		margin-bottom: 0;
+		margin-top: 0;
+ }
+ 
 .kb-vector-container {
 	margin: 0 auto;
 	min-width: 5px;
@@ -22,13 +22,6 @@
 
 .wp-block-kadence-vector[data-align="right"] .kb-vector-container {
   justify-content: flex-end;
-}
-
-// Vector image styles
-.kb-vector-container img {
-	width: 100%;
-	height: auto;
-	display: block;
 }
 
 .kb-vector-upload {

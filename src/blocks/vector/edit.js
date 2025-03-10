@@ -19,7 +19,14 @@ const { rest_url } = kadence_blocks_params;
 import { has } from 'lodash';
 
 const { apiFetch } = wp;
-import { TextareaControl, Modal, Button, Notice, TextControl } from '@wordpress/components';
+import {
+	TextareaControl,
+	Modal,
+	Button,
+	Notice,
+	TextControl,
+	Spinner
+} from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -98,7 +105,6 @@ export function Edit(props) {
 	const [isOpen, setOpen] = useState(false);
 	const [vectorError, setVectorError] = useState(false);
 	const [title, setTitle] = useState('');
-	const [newSvgContent, setNewSvgContent] = useState('');
 
 	const openModal = () => setOpen(true);
 	const closeModal = () => setOpen(false);
@@ -133,17 +139,17 @@ export function Edit(props) {
 			apiFetch({
 				path: `/wp/v2/kadence_vector/${id}`,
 				method: 'GET',
-			})
-				.then((response) => {
-					if (response && response.content && response.content.raw) {
-						setSvgContent(response.content.raw);
-					}
-					setIsLoading(false);
-				})
-				.catch((error) => {
-					console.error('Error fetching SVG content:', error);
-					setIsLoading(false);
-				});
+			}).then((response) => {
+				if (response && response.content && response.content.rendered) {
+					let cleanedSvg = response.content.rendered;
+					cleanedSvg = cleanedSvg.replace(/<p>|<\/p>|<br\s*\/?>/gi, '');
+					setSvgContent(cleanedSvg);
+				}
+				setIsLoading(false);
+			}).catch((error) => {
+				console.error('Error fetching SVG content:', error);
+				setIsLoading(false);
+			});
 		}
 	}, [id, rerenderKey]);
 
@@ -202,18 +208,20 @@ export function Edit(props) {
 
 				{activeTab === 'general' && (
 					<>
-						<KadencePanelBody initialOpen={true} panelName={'kb-vector-settings'}>
-							<h3>{__('Select SVG', 'kadence-blocks')}</h3>
+						<KadencePanelBody
+							initialOpen={true}
+							panelName={'kb-vector-settings'}
+						>
+							<h3>{__('Select Vector Graphic', 'kadence-blocks')}</h3>
+
 							<KadenceSelectPosts
-								placeholder={__('Select SVG', 'kadence-blocks')}
+								placeholder={__('Select Vector Graphic', 'kadence-blocks')}
 								restBase={'wp/v2/kadence_vector'}
 								key={`vector-select-${vectorCacheKey}`}
 								fieldId={'vector-select-src'}
 								value={id}
 								onChange={(value) => {
-									console.log('value');
-									console.log(value.value);
-									setAttributes({ id: value.value });
+									setAttributes({ id: value.value});
 									setRerenderKey(Math.random());
 								}}
 							/>
@@ -347,19 +355,14 @@ export function Edit(props) {
 					</>
 				)}
 			</KadenceInspectorControls>
-			<div className={containerClasses}>
-				{id && id > 0 ? (
-					isLoading ? (
-						<div className="kb-vector-loading">{__('Loading SVG…', 'kadence-blocks')}</div>
-					) : (
-						<div dangerouslySetInnerHTML={{ __html: svgContent }} />
-					)
-				) : (
-					<>
-						<div dangerouslySetInnerHTML={{ __html: defaultSVG }} />
-					</>
-				)}
-			</div>
+			{ isLoading && (
+				<div className={containerClasses}>
+					<Spinner />
+				</div>
+			) }
+			{ !isLoading && (
+				<div className={containerClasses} dangerouslySetInnerHTML={{ __html: id ? svgContent : defaultSVG }} />
+			) }
 			<BackendStyles {...props} previewDevice={previewDevice} />
 		</div>
 	);

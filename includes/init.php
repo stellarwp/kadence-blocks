@@ -535,8 +535,6 @@ function kadence_blocks_register_api_endpoints() {
 	$lottieanimation_controller_get->register_routes();
 	$lottieanimation_controller_upload = new Kadence_LottieAnimation_post_REST_Controller();
 	$lottieanimation_controller_upload->register_routes();
-	$vector_controller_get = new Kadence_Vector_get_REST_Controller();
-	$vector_controller_get->register_routes();
 	$vector_controller_upload = new Kadence_Vector_post_REST_Controller();
 	$vector_controller_upload->register_routes();
 	$design_library_controller_upload = new Kadence_Blocks_Prebuilt_Library_REST_Controller();
