@@ -11,10 +11,14 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 	const [inputValue, setInputValue] = useState("");
 	const [search, setSearch] = useState("");
 	const [results, setResults] = useState([]);
+	const [allIcons, setAllIcons] = useState([])
 	const [error, setError] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [selectedIndex, setSelectedIndex] = useState(0);
 	const { createSuccessNotice } = useDispatch( noticesStore );
+	const [currentPage, setCurrentPage] = useState(1);
+	const [hasMore, setHasMore] = useState(false);
+
 
 	const debouncedSetSearch = useCallback(
 		debounce(async (value) => {
@@ -35,8 +39,11 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 
 	const handleSearchSvg = async (searchTerm) => {
 		setResults([]);
+		setAllIcons([]);
 		setError(null);
 		setIsLoading(true);
+		setCurrentPage(1);
+		setSelectedIndex(0);
 
 		if (!searchTerm) {
 			setIsLoading(false);
@@ -51,6 +58,8 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 
 			// Successfully retrieved data
 			setResults(response);
+			setAllIcons(response.svgs.icons);
+			setHasMore(response.svgs.has_more);
 		} catch (error) {
 			if (error.code === "rest_forbidden") {
 				setError("Invalid or expired license. Please check your license key.");
@@ -58,8 +67,6 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 				setError("No results found for your search.");
 			} else if (error.code === "rest_server_error") {
 				setError("A server error occurred. Please try again later.");
-			} else {
-				setError("An unknown error occurred.");
 			}
 		} finally {
 			setIsLoading(false);
@@ -100,6 +107,30 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 		}
 	};
 
+	const loadMoreIcons = async () => {
+		if (!hasMore) return; // Do nothing if there's no more data to load
+
+		setError(null);
+		setIsLoading(true);
+
+		try {
+			const nextPage = currentPage + 1;
+			const response = await apiFetch({
+				path: addQueryArgs(`/kb-custom-svg/v1/search`, { search, page: nextPage }),
+				method: "GET",
+			});
+
+			setAllIcons((prevIcons) => [...prevIcons, ...response.svgs.icons]);
+			setResults(response);
+			setCurrentPage(nextPage);
+			setHasMore(response.svgs.has_more);
+		} catch (error) {
+			setError("Failed to load more icons, please try again.");
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
 
 	return (
 		<div className="svg-search-modal">
@@ -118,10 +149,10 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 			)}
 
 			{/* Show results */}
-			{!isLoading && results.svgs && results.svgs.icons.length > 0 && (
+			{!isLoading && allIcons.length > 0 && (
 				<>
 					<ul className="svg-search-modal__results">
-						{results.svgs.icons.map((result, index) => (
+						{allIcons.map((icon, index) => (
 							<li
 								key={index}
 								onClick={() => handleItemClick(index)}
@@ -129,16 +160,22 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 									border: selectedIndex === index ? "2px solid blue" : "2px solid transparent",
 								}}
 							>
-								<img src={result.url} alt={result.title} />
+								<img src={icon.url} alt={icon.title} />
 							</li>
 						))}
 					</ul>
 					<div className="footer">
-						<Button isSecondary={true} onClick={() => loadMoreIcons()}>
+						<Button
+							isSecondary={true}
+							onClick={loadMoreIcons}
+							disabled={!hasMore || isLoading}
+						>
 							{__("Load More", "kadence-blocks")}
 						</Button>
-
-						<Button isPrimary={true} onClick={() => handleAddSvg()}>
+						<Button
+							isPrimary={true}
+							onClick={() => handleAddSvg()}
+						>
 							{__("Add", "kadence-blocks")}
 						</Button>
 					</div>

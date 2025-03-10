@@ -71,7 +71,7 @@ export default function SvgAddModal( { isOpen, setIsOpen, callback } ) {
 		<>
 			{isOpen && (
 				<Modal
-					title={__( 'Add a custom icon ', 'kadence-blocks' )}
+					title={__( 'Add a Custom Icon ', 'kadence-blocks' )}
 					className={'upload-svg-modal'}
 					size={'medium'}
 					onRequestClose={() => setIsOpen( false )}
