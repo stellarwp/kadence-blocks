@@ -1,9 +1,4 @@
-import {
-	KadenceBlocksCSS,
-	getPreviewSize,
-	getSpacingOptionOutput,
-	KadenceColorOutput,
-} from '@kadence/helpers';
+import { KadenceBlocksCSS, getPreviewSize, getSpacingOptionOutput, KadenceColorOutput } from '@kadence/helpers';
 
 export default function BackendStyles(props) {
 	const { attributes, isSelected, previewDevice, clientId } = props;
@@ -75,13 +70,13 @@ export default function BackendStyles(props) {
 		undefined !== mobileMargin?.[3] ? mobileMargin[3] : ''
 	);
 
-    const previewMaxWidth = getPreviewSize(
+	const previewMaxWidth = getPreviewSize(
 		previewDevice,
 		undefined !== maxWidth?.[0] ? maxWidth[0] : '',
 		undefined !== maxWidth?.[1] ? maxWidth[1] : '',
 		undefined !== maxWidth?.[2] ? maxWidth[2] : ''
 	);
-    
+
 	// Vector container
 	css.set_selector(`.wp-block-kadence-vector.kb-vector-${uniqueID}`);
 	css.add_property('margin-top', getSpacingOptionOutput(previewMarginTop, marginUnit));
@@ -96,7 +91,7 @@ export default function BackendStyles(props) {
 	css.add_property('padding-bottom', getSpacingOptionOutput(previewPaddingBottom, paddingUnit));
 	css.add_property('padding-left', getSpacingOptionOutput(previewPaddingLeft, paddingUnit));
 	css.add_property('max-width', previewMaxWidth !== '' ? previewMaxWidth + (maxWidthUnit || 'px') : '100%');
-	
+
 	// Set justify-content based on alignment if it's not handled by the editor
 	if (align === 'left') {
 		css.add_property('justify-content', 'flex-start');
@@ -109,4 +104,4 @@ export default function BackendStyles(props) {
 	const cssOutput = css.css_output();
 
 	return <style>{`${cssOutput}`}</style>;
-} 
+}

@@ -23,4 +23,4 @@ registerBlockType('kadence/vector', {
 	icon: vectorBlockIcon,
 	edit,
 	save: () => null,
-}); 
+});
