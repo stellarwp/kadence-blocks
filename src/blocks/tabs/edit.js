@@ -1442,7 +1442,7 @@ function KadenceTabs(props) {
 						showTooltip={true}
 					/>
 					{tabCount > 1 && (
-						<ToolbarDropdownMenu icon="menu" label={__('Move Tabs', 'kadence-blocks')}>
+						<ToolbarDropdownMenu icon="move" label={__('Move Tabs', 'kadence-blocks')}>
 							{({ onClose }) => (
 								<MenuGroup>
 									{/* Move Tab Back/Up */}
