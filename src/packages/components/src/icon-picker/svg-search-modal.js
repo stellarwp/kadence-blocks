@@ -14,11 +14,12 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 	const [allIcons, setAllIcons] = useState([])
 	const [error, setError] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
+	const [isLoadingMore, setIsLoadingMore] = useState(false);
+	const [isAddingIcon, setIsAddingIcon] = useState(false);
 	const [selectedIndex, setSelectedIndex] = useState(0);
 	const { createSuccessNotice } = useDispatch( noticesStore );
 	const [currentPage, setCurrentPage] = useState(1);
 	const [hasMore, setHasMore] = useState(false);
-
 
 	const debouncedSetSearch = useCallback(
 		debounce(async (value) => {
@@ -56,51 +57,61 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 				method: "GET",
 			});
 
-			// Successfully retrieved data
-			setResults(response);
-			setAllIcons(response.svgs.icons);
-			setHasMore(response.svgs.has_more);
-		} catch (error) {
-			if (error.code === "rest_forbidden") {
-				setError("Invalid or expired license. Please check your license key.");
-			} else if (error.code === "rest_no_route") {
-				setError("No results found for your search.");
-			} else if (error.code === "rest_server_error") {
-				setError("A server error occurred. Please try again later.");
+			if (response.success) {
+				setResults(response);
+				setAllIcons(response.svgs.icons);
+				setHasMore(response.svgs.has_more);
+			} else {
+				setError(
+					`Error ${response.code}: ${response.message || "Unexpected error occurred."}`
+				);
 			}
+
+		} catch (error) {
+			setError(
+				`Error ${error.code || "unknown"}: ${error.message || "An unexpected error occurred."}`
+			);
 		} finally {
 			setIsLoading(false);
 		}
 	};
 
 	const handleAddSvg = async () => {
-		if (results.svgs && selectedIndex >= 0) {
-			const selectedSvgUrl = results.svgs.icons[selectedIndex].url;
-			setIsLoading(true);
+		if (allIcons && selectedIndex >= 0) {
+			const selectedIcon = allIcons[selectedIndex];
+
+			if (!selectedIcon || !selectedIcon.url) {
+				setError(__("Selected SVG is invalid. Please try again.", "kadence-blocks"));
+				return;
+			}
+
+			const selectedSvgUrl = selectedIcon.url;
+			setIsAddingIcon(true);
 
 			try {
-				// Fetch the raw SVG data using apiFetch
 				const response = await apiFetch({
 					path: '/kb-custom-svg/v1/search/add',
 					method: 'POST',
 					data: {
 						svgUrl: selectedSvgUrl,
-						title: results.svgs.icons[selectedIndex].title,
-						id: results.svgs.icons[selectedIndex].id,
-					}
-				}).then( ( response ) => {
-					if ( has( response, 'value' ) && has( response, 'label' ) ) {
-						createSuccessNotice( __( 'SVG Saved.', 'kadence-blocks' ), {
-							type: 'snackbar',
-						} );
-						callback( response.value );
-						setIsOpen( false );
-					}
+						title: selectedIcon.title || '',
+						id: selectedIcon.id || '',
+					},
 				});
+
+				if (response?.value && response?.label) {
+					createSuccessNotice(__('SVG Saved.', 'kadence-blocks'), {
+						type: 'snackbar',
+					});
+					callback(response.value);
+					setIsOpen(false);
+				} else {
+					throw new Error(__('Invalid response from the server.', 'kadence-blocks'));
+				}
 			} catch (error) {
 				setError(__('Failed to add the SVG. Please try again.', 'kadence-blocks'));
 			} finally {
-				setIsLoading(false);
+				setIsAddingIcon(false);
 			}
 		} else {
 			setError(__("No SVG selected", "kadence-blocks"));
@@ -108,10 +119,10 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 	};
 
 	const loadMoreIcons = async () => {
-		if (!hasMore) return; // Do nothing if there's no more data to load
+		if (!hasMore) return;
 
 		setError(null);
-		setIsLoading(true);
+		setIsLoadingMore(true);
 
 		try {
 			const nextPage = currentPage + 1;
@@ -120,17 +131,19 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 				method: "GET",
 			});
 
-			setAllIcons((prevIcons) => [...prevIcons, ...response.svgs.icons]);
-			setResults(response);
-			setCurrentPage(nextPage);
-			setHasMore(response.svgs.has_more);
+			if (response.svgs && response.svgs.icons) {
+				setAllIcons((prevIcons) => [...prevIcons, ...response.svgs.icons]);
+				setCurrentPage(nextPage);
+				setHasMore(response.svgs.has_more);
+			} else {
+				setError("No further results found.");
+			}
 		} catch (error) {
 			setError("Failed to load more icons, please try again.");
 		} finally {
-			setIsLoading(false);
+			setIsLoadingMore(false);
 		}
 	};
-
 
 	return (
 		<div className="svg-search-modal">
@@ -141,14 +154,11 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 				placeholder={__("Search Icons", "kadence-blocks")}
 				onChange={handleInputChange}
 			/>
-			{/* Show loading spinner */}
 			{isLoading && (
 				<div className="svg-search-modal__loading">
 					<Spinner className="wp-spinner" />
 				</div>
 			)}
-
-			{/* Show results */}
 			{!isLoading && allIcons.length > 0 && (
 				<>
 					<ul className="svg-search-modal__results">
@@ -157,7 +167,7 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 								key={index}
 								onClick={() => handleItemClick(index)}
 								style={{
-									border: selectedIndex === index ? "2px solid blue" : "2px solid transparent",
+									border: selectedIndex === index ? "2px solid var(--wp-components-color-accent, var(--wp-admin-theme-color, #007cba))" : "2px solid transparent",
 								}}
 							>
 								<img src={icon.url} alt={icon.title} />
@@ -168,12 +178,15 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 						<Button
 							isSecondary={true}
 							onClick={loadMoreIcons}
-							disabled={!hasMore || isLoading}
+							isBusy={isLoadingMore}
+							disabled={!hasMore || isAddingIcon}
 						>
 							{__("Load More", "kadence-blocks")}
 						</Button>
 						<Button
 							isPrimary={true}
+							isBusy={isAddingIcon}
+							disabled={isLoadingMore}
 							onClick={() => handleAddSvg()}
 						>
 							{__("Add", "kadence-blocks")}
@@ -181,22 +194,16 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 					</div>
 				</>
 			)}
-
-			{/* Show error message */}
 			{error && (
 				<p className="svg-search-modal__error" style={{ color: "red" }}>
 					{error}
 				</p>
 			)}
-
-			{/* Show 'No results' message */}
 			{!isLoading && !error && (!results || (results.svgs && results.svgs.icons.length === 0)) && (
 				<p className="svg-search-modal__no-results">
 					{__("No results found. Please try a different search.", "kadence-blocks")}
 				</p>
 			)}
-
-			{/* Show initial 'Start Search' message */}
 			{!isLoading && !results.svgs && !error && (
 				<p className="svg-search-modal__start-search">
 					{__("Start Search...", "kadence-blocks")}

@@ -329,16 +329,6 @@
 		height: 100px; /* Set height for the loading area */
 	}
 
-	/* Make the spinner larger */
-	.wp-spinner {
-		width: 50px; /* Adjust spinner width */
-		height: 50px; /* Adjust spinner height */
-		border: 4px solid #007cba; /* Make border thicker and change color */
-		border-top-color: #fff; /* Secondary color for the rotating effect */
-		border-radius: 50%; /* Keep it circular */
-		animation: spin 1s linear infinite; /* Standard spinning animation */
-	}
-
 	/* Spinner animation to rotate */
 	@keyframes spin {
 		from {
