@@ -237,6 +237,10 @@
 		"closeIconHoverColor": {
 			"type": "string",
 			"default": ""
+		},
+		"label": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"supports": {
