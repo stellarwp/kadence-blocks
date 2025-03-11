@@ -65,13 +65,11 @@ export function Edit(props) {
 		padding,
 		paddingTablet,
 		paddingMobile,
-		paddingType,
-		paddingUnit, // for backwards compatibility
+		paddingUnit,
 		margin,
 		marginTablet,
 		marginMobile,
-		marginUnit, // for backwards compatibility
-		marginType,
+		marginUnit,
 		minHeight,
 		minHeightTablet,
 		minHeightMobile,
@@ -132,20 +130,6 @@ export function Edit(props) {
 			addUniqueID(uniqueId, clientId);
 		}
 	}, []);
-
-	useEffect(() => {
-		// Ensure backward compatibility: Map old 'paddingUnit' to the new 'paddingType'
-		if (!attributes.paddingType && attributes.paddingUnit) {
-			setAttributes({ paddingType: attributes.paddingUnit });
-		}
-	}, [attributes.paddingUnit]);
-
-	useEffect(() => {
-		// Ensure backward compatibility: Map old 'paddingUnit' to the new 'paddingType'
-		if (!attributes.marginType && attributes.marginUnit) {
-			setAttributes({ marginType: attributes.marginUnit });
-		}
-	}, [attributes.marginUnit]);
 
 	const hasInsertedChildBlocks = useMemo(() => {
 		if (innerBlocks) {
@@ -492,16 +476,16 @@ export function Edit(props) {
 									onChangeMobile={(value) => setAttributes({ paddingMobile: value })}
 									min={0}
 									max={
-										paddingType === 'em' || paddingType === 'rem'
+										paddingUnit === 'em' || paddingUnit === 'rem'
 											? 25
-											: paddingType === 'px'
+											: paddingUnit === 'px'
 											? 400
 											: 100
 									}
-									step={paddingType === 'em' || paddingType === 'rem' ? 0.1 : 1}
-									unit={paddingType}
+									step={paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1}
+									unit={paddingUnit}
 									units={['px', 'em', 'rem', '%']}
-									onUnit={(value) => setAttributes({ paddingType: value })}
+									onUnit={(value) => setAttributes({ paddingUnit: value })}
 									ghostDefault={['', 'sm', '', 'sm']}
 								/>
 								<ResponsiveMeasureRangeControl
@@ -514,16 +498,16 @@ export function Edit(props) {
 									onChangeMobile={(value) => setAttributes({ marginMobile: value })}
 									min={0}
 									max={
-										marginType === 'em' || marginType === 'rem'
+										marginUnit === 'em' || marginUnit === 'rem'
 											? 25
-											: marginType === 'px'
+											: marginUnit === 'px'
 											? 400
 											: 100
 									}
-									step={marginType === 'em' || marginType === 'rem' ? 0.1 : 1}
-									unit={marginType}
+									step={marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1}
+									unit={marginUnit}
 									units={['px', 'em', 'rem', '%']}
-									onUnit={(value) => setAttributes({ marginType: value })}
+									onUnit={(value) => setAttributes({ marginUnit: value })}
 								/>
 							</KadencePanelBody>
 							<KadencePanelBody

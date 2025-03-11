@@ -123,10 +123,6 @@
 			"type": "string",
 			"default": "px"
 		},
-		"paddingType": {
-			"type": "string",
-			"default": "px"
-		},
 		"margin": {
 			"type": "array",
 			"default": ["", "", "", ""]
@@ -140,10 +136,6 @@
 			"default": ["", "", "", ""]
 		},
 		"marginUnit": {
-			"type": "string",
-			"default": "px"
-		},
-		"marginType": {
 			"type": "string",
 			"default": "px"
 		},
