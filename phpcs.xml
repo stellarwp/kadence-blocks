@@ -16,6 +16,7 @@
 		<exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
 		<exclude name="WordPress.PHP.YodaConditions.NotYoda"/>
 		<exclude name="WordPress.NamingConventions.ValidHookName.UseUnderscores"/>
+		<exclude name="WordPress.WP.CapitalPDangit"/>
 	</rule>
 
     <rule ref="Squiz.Commenting.FunctionComment">
