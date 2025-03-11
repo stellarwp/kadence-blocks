@@ -6,14 +6,16 @@ import apiFetch from '@wordpress/api-fetch';
 import { useDispatch } from '@wordpress/data';
 import { store as noticesStore } from '@wordpress/notices';
 import SvgSearchModal from './svg-search-modal';
+import { compareVersions } from '@kadence/helpers';
 
-export default function SvgAddModal( { isOpen, setIsOpen, callback } ) {
+export default function SvgAddModal( { isOpen, setIsOpen, callback, proVersion } ) {
 	const [ uploadView, setUploadView ] = useState( 'upload' );
 	const [ pastedSVG, setPastedSVG ] = useState( '' );
 	const [ error, setError ] = useState( '' );
 	const [ file, setFile ] = useState( null );
 	const [ title, setTitle ] = useState( '' );
 	const { createSuccessNotice } = useDispatch( noticesStore );
+	const supportsSearchTab = compareVersions(proVersion, '2.7.0') >= 0;
 
 	function parseAndUpload() {
 		const fileread = new FileReader();
@@ -85,11 +87,16 @@ export default function SvgAddModal( { isOpen, setIsOpen, callback } ) {
 								title: 'Upload',
 								className: 'tab-one',
 							},
-							{
-								name: 'search',
-								title: 'Search',
-								className: 'tab-two',
-							},
+							// Conditionally render the "Search" tab if supported
+							...(supportsSearchTab
+								? [
+									{
+										name: 'search',
+										title: 'Search',
+										className: 'tab-two',
+									},
+								]
+								: []),
 						] }
 					>
 						{ ( tab ) => (
@@ -220,7 +227,7 @@ export default function SvgAddModal( { isOpen, setIsOpen, callback } ) {
 
 									</>
 								)}
-								{ tab.name === 'search' && (
+								{ tab.name === 'search' && supportsSearchTab && (
 									<SvgSearchModal isOpen={isOpen} setIsOpen={setIsOpen} callback={callback}></SvgSearchModal>
 								)}
 							</div>
