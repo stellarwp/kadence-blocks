@@ -84,13 +84,15 @@ export default function BackendStyles(props) {
 	css.add_property('margin-bottom', getSpacingOptionOutput(previewMarginBottom, marginUnit));
 	css.add_property('margin-left', getSpacingOptionOutput(previewMarginLeft, marginUnit));
 
+	css.set_selector(`.wp-block-kadence-vector.kb-vector-${uniqueID} .kb-vector-container svg`);
+	css.add_property('max-width', previewMaxWidth !== '' ? previewMaxWidth + (maxWidthUnit || 'px') : '100%');
+	
 	// Vector inner container
 	css.set_selector(`.wp-block-kadence-vector.kb-vector-${uniqueID} .kb-vector-container`);
 	css.add_property('padding-top', getSpacingOptionOutput(previewPaddingTop, paddingUnit));
 	css.add_property('padding-right', getSpacingOptionOutput(previewPaddingRight, paddingUnit));
 	css.add_property('padding-bottom', getSpacingOptionOutput(previewPaddingBottom, paddingUnit));
 	css.add_property('padding-left', getSpacingOptionOutput(previewPaddingLeft, paddingUnit));
-	css.add_property('max-width', previewMaxWidth !== '' ? previewMaxWidth + (maxWidthUnit || 'px') : '100%');
 
 	// Set justify-content based on alignment if it's not handled by the editor
 	if (align === 'left') {

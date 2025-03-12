@@ -17,7 +17,7 @@
 		},
 		"maxWidth": {
 			"type": "array",
-			"default": ["", "", ""]
+			"default": ["150", "", ""]
 		},
 		"maxWidthUnit": {
 			"type": "string",

@@ -282,12 +282,12 @@ export function Edit(props) {
 									newMaxWidth[2] = value;
 									setAttributes({ maxWidth: newMaxWidth });
 								}}
-								min={5}
-								max={1500}
+								min={maxWidthUnit === 'px' ? 5 : 1}
+								max={maxWidthUnit === 'px' ? 1000 : 100}
 								step={1}
 								unit={maxWidthUnit || 'px'}
 								showUnit={true}
-								units={['px']}
+								units={['px', '%']}
 								onUnit={(value) => setAttributes({ maxWidthUnit: value })}
 								reset={() =>
 									setAttributes({
