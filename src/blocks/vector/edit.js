@@ -343,7 +343,6 @@ export function Edit(props) {
 								onUnit={(value) => setAttributes({ marginUnit: value })}
 								onMouseOver={marginMouseOver.onMouseOver}
 								onMouseOut={marginMouseOver.onMouseOut}
-								allowNegativeMarin={true}
 							/>
 						</KadencePanelBody>
 					</>
