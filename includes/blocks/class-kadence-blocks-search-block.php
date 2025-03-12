@@ -258,11 +258,12 @@ class Kadence_Blocks_Search_Block extends Kadence_Blocks_Abstract_Block {
 	private function build_input( $attributes ) {
 		$input = '<div class="kb-search-input-wrapper">';
 		$placeholder = ! empty( $attributes['inputPlaceholder'] ) ? $attributes['inputPlaceholder'] : '';
-
+		$aria_label = !empty($attributes['label']) ? sprintf( 'aria-label="%s"', esc_attr( $attributes['label'] ) ) : '';
 
 		$input .= sprintf(
-			'<input name="s" type="text" class="kb-search-input" placeholder="%s">',
-			esc_attr( $placeholder )
+			'<input name="s" type="text" class="kb-search-input" placeholder="%s" %s>',
+			esc_attr( $placeholder ),
+			$aria_label
 		);
 
 		if( !empty( $attributes['inputIcon'] ) ) {
