@@ -80,6 +80,9 @@ import {
 	TextControl,
 	ToolbarButton,
 	ToolbarGroup,
+	MenuGroup,
+	MenuItem,
+	ToolbarDropdownMenu,
 } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
 import { plusCircle } from '@wordpress/icons';
@@ -1111,8 +1114,8 @@ function KadenceTabs(props) {
 									className="kadence-blocks-tab-item__move-back"
 									label={
 										'vtabs' === layout
-											? __('Move Item Up', 'kadence-blocks')
-											: __('Move Item Back', 'kadence-blocks')
+											? __('Move Tab Up', 'kadence-blocks')
+											: __('Move Tab Back', 'kadence-blocks')
 									}
 									aria-disabled={index === 0}
 									disabled={index === 0}
@@ -1125,8 +1128,8 @@ function KadenceTabs(props) {
 									className="kadence-blocks-tab-item__move-forward"
 									label={
 										'vtabs' === layout
-											? __('Move Item Down', 'kadence-blocks')
-											: __('Move Item Forward', 'kadence-blocks')
+											? __('Move Tab Down', 'kadence-blocks')
+											: __('Move Tab Forward', 'kadence-blocks')
 									}
 									aria-disabled={index + 1 === tabCount}
 									disabled={index + 1 === tabCount}
@@ -1156,7 +1159,7 @@ function KadenceTabs(props) {
 										resetOrder();
 									}}
 									className="kadence-blocks-tab-item__remove"
-									label={__('Remove Item', 'kadence-blocks')}
+									label={__('Remove Tab', 'kadence-blocks')}
 									disabled={!currentTab === index + 1}
 								/>
 							)}
@@ -1438,6 +1441,67 @@ function KadenceTabs(props) {
 						label={__('Add Tab', 'kadence-blocks')}
 						showTooltip={true}
 					/>
+					{tabCount > 1 && (
+						<ToolbarDropdownMenu icon="move" label={__('Move Tabs', 'kadence-blocks')}>
+							{({ onClose }) => (
+								<MenuGroup>
+									{/* Move Tab Back/Up */}
+									{currentTab !== 1 && (
+										<MenuItem
+											icon={'vtabs' === layout ? 'arrow-up' : 'arrow-left'}
+											onClick={currentTab === 1 ? undefined : onMoveBack(currentTab - 1)}
+										>
+											{'vtabs' === layout
+												? __('Move Tab Up', 'kadence-blocks')
+												: __('Move Tab Back', 'kadence-blocks')}
+										</MenuItem>
+									)}
+									{/* Move Tab Forward/Down */}
+									{currentTab !== tabCount && (
+										<MenuItem
+											icon={'vtabs' === layout ? 'arrow-down' : 'arrow-right'}
+											onClick={
+												currentTab === tabCount ? undefined : onMoveForward(currentTab - 1)
+											}
+										>
+											{'vtabs' === layout
+												? __('Move Tab Down', 'kadence-blocks')
+												: __('Move Tab Forward', 'kadence-blocks')}
+										</MenuItem>
+									)}
+									{/* Remove Tab */}
+									{tabCount > 1 && (
+										<MenuItem
+											icon="no-alt"
+											onClick={() => {
+												const currentItems = filter(titles, (item, i) => currentTab !== i);
+												const newCount = tabCount - 1;
+												let newStartTab;
+												if (startTab === currentTab + 1) {
+													newStartTab = '';
+												} else if (startTab > currentTab + 1) {
+													newStartTab = startTab - 1;
+												} else {
+													newStartTab = startTab;
+												}
+												removeTab(currentTab);
+												setAttributes({
+													titles: currentItems,
+													tabCount: newCount,
+													currentTab: currentTab === 0 ? 1 : currentTab,
+													startTab: newStartTab,
+												});
+												resetOrder();
+												onClose();
+											}}
+										>
+											{__('Remove Tab', 'kadence-blocks')}
+										</MenuItem>
+									)}
+								</MenuGroup>
+							)}
+						</ToolbarDropdownMenu>
+					)}
 				</ToolbarGroup>
 			</BlockControls>
 			{showSettings('allSettings', 'kadence/tabs') && (
