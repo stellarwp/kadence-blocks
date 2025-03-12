@@ -167,6 +167,8 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 								key={index}
 								onClick={() => handleItemClick(index)}
 								style={{
+									width: '84px',
+									height: '88px',
 									border: selectedIndex === index ? "2px solid var(--wp-components-color-accent, var(--wp-admin-theme-color, #007cba))" : "2px solid transparent",
 								}}
 							>
