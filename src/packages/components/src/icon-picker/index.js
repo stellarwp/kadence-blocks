@@ -171,7 +171,7 @@ export default function KadenceIconPicker({
 
 	return (
 		<div className={'kadence-icon-picker'}>
-			<SvgAddModal isOpen={isOpen} setIsOpen={setIsOpen} callback={addCallback} />
+			<SvgAddModal isOpen={isOpen} setIsOpen={setIsOpen} callback={addCallback} proVersion={proVersion} />
 			<SvgDeleteModal isOpen={isDeleteOpen} setIsOpen={setIsDeleteOpen} id={deleteId} callback={deleteCallback}/>
 			<div className={`kadence-icon-picker-selection kadence-icon-picker-theme-${theme ? theme : 'default'}${className ? ' ' + className : ''}`}>
 				{label && (
