@@ -13,8 +13,6 @@ import { vectorBlockIcon } from '@kadence/icons';
  */
 import './style.scss';
 
-console.log('vector');
-
 registerBlockType('kadence/vector', {
 	...metadata,
 	title: _x('Vector Graphic', 'block title', 'kadence-blocks'),
