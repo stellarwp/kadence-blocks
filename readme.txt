@@ -180,6 +180,7 @@ Release Date: TBD March 2025
 * Fix: Aria label for Search (Adv) block.
 * Add: Search for icon feature for Icon block.
 * Add: Move Tabs menu added to Tabs block toolbar
+* Fix: Improve Link Title visibility on section overlay link.
 
 = 3.4.11 =
 Release Date: 25th February 2025
