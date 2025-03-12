@@ -168,6 +168,8 @@ export function Edit(props) {
 				setAttributes({ id: response.value });
 				setRerenderKey(Math.random());
 				setVectorCacheKey(Math.random());
+				setTitle('');
+				setSvgContent('');
 				closeModal();
 			} else if (has(response, 'error') && has(response, 'message')) {
 				setVectorError(response.message);
