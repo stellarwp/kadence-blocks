@@ -104,45 +104,23 @@ class Kadence_Blocks_Vector_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		if ( isset( $attributes['uniqueID'] ) ) {
-			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kb-vector' . esc_attr( $unique_id );
+		$classes = array(
+			'kb-vector-container',
+			'kb-vector-container' . esc_attr( $unique_id ),
+		);
 
-			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'vector', $unique_id ) ) {
-				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
-				$attributes = apply_filters( 'kadence_blocks_vector_render_block_attributes', $attributes );
-			}
-
-			$classes = array(
-				'kb-vector-container',
-				'kb-vector-container' . esc_attr( $unique_id ),
-			);
-
-			if ( ! empty( $attributes['align'] ) ) {
-				$classes[] = 'align' . $attributes['align'];
-			}
-
-			// Add custom CSS classes to class string.
-			if ( isset( $attributes['className'] ) ) {
-				$classes[] = $attributes['className'];
-			}
-
-			$content = '<div class="' . esc_attr( implode( ' ', $classes ) ) . '">';
-			
-			if ( ! empty( $attributes['id'] ) ) {
-				// Get the SVG content directly and render it inline
-				$svg_content = $this->get_vector_svg( $attributes );
-				if ( ! empty( $svg_content ) ) {
-					$content .= $svg_content;
-				}
-			} else {
-				$content .= $this->placeholder_svg;
-			}
-
-			$content .= '</div>';
+		if ( ! empty( $attributes['align'] ) ) {
+			$classes[] = 'align' . esc_attr( $attributes['align'] );
 		}
 
-		return $content;
+		// Add custom CSS classes to class string.
+		if ( isset( $attributes['className'] ) ) {
+			$classes[] = esc_attr( $attributes['className'] );
+		}
+
+		$svg = $this->get_vector_svg( $attributes );		
+
+		return sprintf( '<div class="kb-vector-container %1$s">%2$s</div>', implode( ' ', $classes ), $svg );
 	}
 
 	/**
@@ -151,8 +129,8 @@ class Kadence_Blocks_Vector_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param array $attributes Block attributes.
 	 * @return string
 	 */
-	public function get_vector_svg( $attributes ) {
-		$svg_content = '';
+	private function get_vector_svg( $attributes ) {
+		$svg_content = $this->placeholder_svg;
 
 		if ( isset( $attributes['id'] ) && ! empty( $attributes['id'] ) ) {
 			$post_id = $attributes['id'];
@@ -164,23 +142,6 @@ class Kadence_Blocks_Vector_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-		$svg_content = $this->sanitize_svg_content( $svg_content );
-
-		return $svg_content;
-	}
-
-	/**
-	 * Sanitize SVG content
-	 *
-	 * @param string $svg_content The SVG content.
-	 * @return string Sanitized SVG content.
-	 */
-	private function sanitize_svg_content( $svg_content ) {
-		// Simple sanitization - strip script tags and event handlers
-		$svg_content = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $svg_content);
-		$svg_content = preg_replace('/on\w+="[^"]*"/is', '', $svg_content);
-		$svg_content = preg_replace('/on\w+=\'[^\']*\'/is', '', $svg_content);
-		
 		return $svg_content;
 	}
 } 
