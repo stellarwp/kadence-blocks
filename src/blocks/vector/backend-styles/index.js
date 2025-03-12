@@ -86,7 +86,7 @@ export default function BackendStyles(props) {
 
 	css.set_selector(`.wp-block-kadence-vector.kb-vector-${uniqueID} .kb-vector-container svg`);
 	css.add_property('max-width', previewMaxWidth !== '' ? previewMaxWidth + (maxWidthUnit || 'px') : '100%');
-	
+
 	// Vector inner container
 	css.set_selector(`.wp-block-kadence-vector.kb-vector-${uniqueID} .kb-vector-container`);
 	css.add_property('padding-top', getSpacingOptionOutput(previewPaddingTop, paddingUnit));
