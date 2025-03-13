@@ -98,6 +98,7 @@ export function Edit(props) {
 	const [isOpen, setOpen] = useState(false);
 	const [vectorError, setVectorError] = useState(false);
 	const [title, setTitle] = useState('');
+	const [tmpSvgContent, setTmpSvgContent] = useState('');
 
 	const openModal = () => setOpen(true);
 	const closeModal = () => setOpen(false);
@@ -154,14 +155,14 @@ export function Edit(props) {
 			return;
 		}
 
-		if (!svgContent || !svgContent.includes('<svg')) {
+		if (!tmpSvgContent || !tmpSvgContent.includes('<svg')) {
 			setVectorError(__('Please enter valid SVG code', 'kadence-blocks'));
 			return;
 		}
 
 		apiFetch({
 			path: '/kb-vector/v1/vectors',
-			data: { vectorSVG: svgContent, title },
+			data: { vectorSVG: tmpSvgContent, title },
 			method: 'POST',
 		}).then((response) => {
 			if (has(response, 'value') && has(response, 'label')) {
@@ -169,7 +170,7 @@ export function Edit(props) {
 				setRerenderKey(Math.random());
 				setVectorCacheKey(Math.random());
 				setTitle('');
-				setSvgContent('');
+				setTmpSvgContent('');
 				closeModal();
 			} else if (has(response, 'error') && has(response, 'message')) {
 				setVectorError(response.message);
@@ -241,8 +242,8 @@ export function Edit(props) {
 										<TextareaControl
 											label={__('Code', 'kadence-blocks')}
 											help={__('Paste your vector graphic here', 'kadence-blocks')}
-											value={svgContent}
-											onChange={(value) => setSvgContent(value)}
+											value={tmpSvgContent}
+											onChange={(value) => setTmpSvgContent(value)}
 											rows={6}
 										/>
 
