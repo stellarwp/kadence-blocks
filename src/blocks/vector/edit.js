@@ -166,25 +166,27 @@ export function Edit(props) {
 			path: '/kb-vector/v1/vectors',
 			data: { vectorSVG: tmpSvgContent, title },
 			method: 'POST',
-		}).then((response) => {
-			setIsSaving(false);
-			if (has(response, 'value') && has(response, 'label')) {
-				setAttributes({ id: response.value });
-				setRerenderKey(Math.random());
-				setVectorCacheKey(Math.random());
-				setTitle('');
-				setTmpSvgContent('');
-				closeModal();
-			} else if (has(response, 'error') && has(response, 'message')) {
-				setVectorError(response.message);
-			} else {
+		})
+			.then((response) => {
+				setIsSaving(false);
+				if (has(response, 'value') && has(response, 'label')) {
+					setAttributes({ id: response.value });
+					setRerenderKey(Math.random());
+					setVectorCacheKey(Math.random());
+					setTitle('');
+					setTmpSvgContent('');
+					closeModal();
+				} else if (has(response, 'error') && has(response, 'message')) {
+					setVectorError(response.message);
+				} else {
+					setVectorError(__('An error occurred when saving your SVG', 'kadence-blocks'));
+				}
+			})
+			.catch((error) => {
+				setIsSaving(false);
 				setVectorError(__('An error occurred when saving your SVG', 'kadence-blocks'));
-			}
-		}).catch((error) => {
-			setIsSaving(false);
-			setVectorError(__('An error occurred when saving your SVG', 'kadence-blocks'));
-			console.error('Error saving vector:', error);
-		});
+				console.error('Error saving vector:', error);
+			});
 	};
 
 	const containerClasses = classnames({
@@ -255,13 +257,15 @@ export function Edit(props) {
 										/>
 
 										<div className="kb-vector-upload-actions">
-											<Button 
-												variant="primary" 
-												onClick={handleSave} 
+											<Button
+												variant="primary"
+												onClick={handleSave}
 												isBusy={isSaving}
 												disabled={isSaving}
 											>
-												{isSaving ? __('Saving...', 'kadence-blocks') : __('Save', 'kadence-blocks')}
+												{isSaving
+													? __('Saving…', 'kadence-blocks')
+													: __('Save', 'kadence-blocks')}
 											</Button>
 											<Button variant="secondary" onClick={closeModal} disabled={isSaving}>
 												{__('Cancel', 'kadence-blocks')}
