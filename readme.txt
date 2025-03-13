@@ -181,6 +181,7 @@ Release Date: TBD March 2025
 * Add: Search for icon feature for Icon block.
 * Add: Move Tabs menu added to Tabs block toolbar
 * Fix: Improve Link Title visibility on section overlay link.
+* Fix: Header block row padding/margin size units all now work.
 
 = 3.4.11 =
 Release Date: 25th February 2025
