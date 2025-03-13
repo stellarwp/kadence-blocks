@@ -69,6 +69,7 @@ export function Edit(props) {
 	const [vectorCacheKey, setVectorCacheKey] = useState(Math.random());
 	const [svgContent, setSvgContent] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
+	const [isSaving, setIsSaving] = useState(false);
 
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
@@ -160,11 +161,13 @@ export function Edit(props) {
 			return;
 		}
 
+		setIsSaving(true);
 		apiFetch({
 			path: '/kb-vector/v1/vectors',
 			data: { vectorSVG: tmpSvgContent, title },
 			method: 'POST',
 		}).then((response) => {
+			setIsSaving(false);
 			if (has(response, 'value') && has(response, 'label')) {
 				setAttributes({ id: response.value });
 				setRerenderKey(Math.random());
@@ -177,6 +180,10 @@ export function Edit(props) {
 			} else {
 				setVectorError(__('An error occurred when saving your SVG', 'kadence-blocks'));
 			}
+		}).catch((error) => {
+			setIsSaving(false);
+			setVectorError(__('An error occurred when saving your SVG', 'kadence-blocks'));
+			console.error('Error saving vector:', error);
 		});
 	};
 
@@ -248,10 +255,15 @@ export function Edit(props) {
 										/>
 
 										<div className="kb-vector-upload-actions">
-											<Button variant="primary" onClick={handleSave}>
-												{__('Save', 'kadence-blocks')}
+											<Button 
+												variant="primary" 
+												onClick={handleSave} 
+												isBusy={isSaving}
+												disabled={isSaving}
+											>
+												{isSaving ? __('Saving...', 'kadence-blocks') : __('Save', 'kadence-blocks')}
 											</Button>
-											<Button variant="secondary" onClick={closeModal}>
+											<Button variant="secondary" onClick={closeModal} disabled={isSaving}>
 												{__('Cancel', 'kadence-blocks')}
 											</Button>
 										</div>
