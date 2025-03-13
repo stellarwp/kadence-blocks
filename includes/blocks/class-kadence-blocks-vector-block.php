@@ -104,23 +104,23 @@ class Kadence_Blocks_Vector_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return mixed
 	 */
 	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-		$classes = array(
+		$classes = [
 			'kb-vector-container',
 			'kb-vector-container' . esc_attr( $unique_id ),
-		);
+		];
 
 		if ( ! empty( $attributes['align'] ) ) {
 			$classes[] = 'align' . esc_attr( $attributes['align'] );
 		}
 
-		// Add custom CSS classes to class string.
-		if ( isset( $attributes['className'] ) ) {
-			$classes[] = esc_attr( $attributes['className'] );
-		}
+		$wrapper_attributes = get_block_wrapper_attributes( [
+			'class' => implode( ' ', $classes ),
+			'id' => !empty( $attributes['anchor'] ) ? esc_attr( $attributes['anchor'] ) : '',
+		] );
 
 		$svg = $this->get_vector_svg( $attributes );		
 
-		return sprintf( '<div class="kb-vector-container %1$s">%2$s</div>', implode( ' ', $classes ), $svg );
+		return sprintf( '<div %1$s>%2$s</div>', $wrapper_attributes, $svg );
 	}
 
 	/**

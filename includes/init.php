@@ -586,8 +586,8 @@ function kadence_blocks_register_vector_custom_post_type() {
 	register_post_type(
 		'kadence_vector',
 		array(
-			'label'        => _x( 'Vector SVGs', 'Vector SVG' ),
-			'description'  => __( 'Vector SVGs imported in Kadence' ),
+			'label'        => _x( 'Vector SVGs', 'post type for kadence vector svg block', 'kadence-blocks' ),
+			'description'  => __( 'Vector SVGs imported in Kadence', 'kadence-blocks' ),
 			'public'       => false,
 			'show_ui'      => true,
 			'show_in_menu' => false,

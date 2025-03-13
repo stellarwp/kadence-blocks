@@ -54,6 +54,9 @@
 		"paddingUnit": {
 			"type": "string",
 			"default": "px"
+		},
+		"anchor": {
+			"type": "string"
 		}
 	},
 	"supports": {
