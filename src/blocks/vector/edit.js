@@ -306,7 +306,7 @@ export function Edit(props) {
 								onUnit={(value) => setAttributes({ maxWidthUnit: value })}
 								reset={() =>
 									setAttributes({
-										maxWidth: ['', '', ''],
+										maxWidth: ['150', '', ''],
 									})
 								}
 							/>
