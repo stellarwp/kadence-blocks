@@ -585,9 +585,7 @@ function KadenceAdvancedHeading(props) {
 	};
 	const previewTextShadowOpacity = getPreviewSize(
 		previewDevice,
-		undefined !== textShadow?.[0]?.opacity
-			? textShadow[0].opacity
-			: parseOpacityFromRGBA(textShadow?.[0]?.color),
+		undefined !== textShadow?.[0]?.opacity ? textShadow[0].opacity : parseOpacityFromRGBA(textShadow?.[0]?.color),
 		undefined !== textShadowTablet?.[0]?.opacity
 			? textShadowTablet[0].opacity
 			: parseOpacityFromRGBA(textShadowTablet?.[0]?.color, ''),
@@ -1064,10 +1062,10 @@ function KadenceAdvancedHeading(props) {
 						fontFamily: typography ? renderTypography : '',
 						textShadow: enableTextShadow
 							? `${previewHOffset}px ${previewVOffset}px ${previewBlur}px ${
-								isRGBA(previewColorTextShadow)
-									? KadenceColorOutput(previewColorTextShadow) // If rgba, use the color as is
-									: KadenceColorOutput(previewColorTextShadow, previewTextShadowOpacity) // Otherwise, apply opacity
-							}`
+									isRGBA(previewColorTextShadow)
+										? KadenceColorOutput(previewColorTextShadow) // If rgba, use the color as is
+										: KadenceColorOutput(previewColorTextShadow, previewTextShadowOpacity) // Otherwise, apply opacity
+							  }`
 							: undefined,
 
 						writingMode:
