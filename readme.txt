@@ -177,6 +177,10 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 = 3.4.12 =
 Release Date: TBD March 2025
 * Fix: Setting numeric padding & margin on Adv Navigation sub menu links.
+* Fix: Aria label for Search (Adv) block.
+* Add: Search for icon feature for Icon block.
+* Add: Move Tabs menu added to Tabs block toolbar
+* Fix: Improve Link Title visibility on section overlay link.
 
 = 3.4.11 =
 Release Date: 25th February 2025
