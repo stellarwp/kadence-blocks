@@ -113,6 +113,10 @@ export const ENTITY_TYPE = [
 ];
 export const LANG_TYPE = [
 	{
+		value: 'hr-HR',
+		label: __('Croatian (Croatia)', 'kadence-blocks'),
+	},
+	{
 		value: 'cs-CZ',
 		label: __('Czech', 'kadence-blocks'),
 	},
@@ -151,6 +155,10 @@ export const LANG_TYPE = [
 	{
 		value: 'en-US',
 		label: __('English (US)', 'kadence-blocks'),
+	},
+	{
+		value: 'et-EE',
+		label: __('Estonian (Estonia)', 'kadence-blocks'),
 	},
 	{
 		value: 'fi-FI',
@@ -199,6 +207,14 @@ export const LANG_TYPE = [
 	{
 		value: 'pt-PT',
 		label: __('Portuguese (Portugal)', 'kadence-blocks'),
+	},
+	{
+		value: 'pl-PL',
+		label: __('Polish (Poland)', 'kadence-blocks'),
+	},
+	{
+		value: 'sk-SK',
+		label: __('Slovak (Slovakia)', 'kadence-blocks'),
 	},
 	{
 		value: 'es-AR',
