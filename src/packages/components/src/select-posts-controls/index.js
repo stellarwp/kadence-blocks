@@ -95,7 +95,7 @@ class KadenceSelectPosts extends Component {
 					{ this.props.placeholder }
 				</label>
 				<Select
-					value={ this.props.value }
+					value={ typeof this.props.value === 'object' ? this.props.value : this.state.options.find(option => option.value === this.props.value) }
 					onChange={ value => this.handleChange( value ) }
 					id={ this.props.fieldId }
 					options={ this.state.options }

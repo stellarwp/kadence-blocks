@@ -111,6 +111,7 @@ class Editor_Assets {
 
 		$blocks = [
 			'accordion',
+			'advanced-form',
 			'advancedbtn',
 			'advancedgallery',
 			'advancedheading',
@@ -119,12 +120,15 @@ class Editor_Assets {
 			'countdown',
 			'form',
 			'googlemaps',
+			'header',
 			'icon',
 			'iconlist',
 			'image',
 			'infobox',
 			'lottie',
 			'identity',
+			'navigation',
+			'navigation-link',
 			'posts',
 			'rowlayout',
 			'progress-bar',
@@ -135,10 +139,7 @@ class Editor_Assets {
 			'tableofcontents',
 			'tabs',
 			'testimonials',
-			'advanced-form',
-			'header',
-			'navigation',
-			'navigation-link',
+			'vector',
 		];
 
 		// for blocks moved from pro to free

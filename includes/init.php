@@ -535,6 +535,8 @@ function kadence_blocks_register_api_endpoints() {
 	$lottieanimation_controller_get->register_routes();
 	$lottieanimation_controller_upload = new Kadence_LottieAnimation_post_REST_Controller();
 	$lottieanimation_controller_upload->register_routes();
+	$vector_controller_upload = new Kadence_Vector_post_REST_Controller();
+	$vector_controller_upload->register_routes();
 	$design_library_controller_upload = new Kadence_Blocks_Prebuilt_Library_REST_Controller();
 	$design_library_controller_upload->register_routes();
 	$image_picker_controller_upload = new Kadence_Blocks_Image_Picker_REST_Controller();
@@ -576,6 +578,41 @@ function kadence_blocks_register_lottie_custom_post_type() {
 }
 
 add_action( 'init', 'kadence_blocks_register_lottie_custom_post_type' );
+
+/**
+ * Register the vector post type.
+ */
+function kadence_blocks_register_vector_custom_post_type() {
+	register_post_type(
+		'kadence_vector',
+		array(
+			'label'        => _x( 'Vector SVGs', 'post type for kadence vector svg block', 'kadence-blocks' ),
+			'description'  => __( 'Vector SVGs imported in Kadence', 'kadence-blocks' ),
+			'public'       => false,
+			'show_ui'      => true,
+			'show_in_menu' => false,
+			'show_in_rest' => true,
+			'rewrite'      => false,
+			'capabilities' => array(
+				'read'                   => 'edit_theme_options',
+				'create_posts'           => 'edit_theme_options',
+				'edit_posts'             => 'edit_theme_options',
+				'edit_published_posts'   => 'edit_theme_options',
+				'delete_published_posts' => 'edit_theme_options',
+				'edit_others_posts'      => 'edit_theme_options',
+				'delete_others_posts'    => 'edit_theme_options',
+			),
+			'map_meta_cap' => true,
+			'supports'     => array(
+				'title',
+				'editor',
+				'revisions',
+			),
+		)
+	);
+}
+
+add_action( 'init', 'kadence_blocks_register_vector_custom_post_type' );
 
 /* Sashicons are not enqueue by default when iFraming in block editor
    https://github.com/WordPress/gutenberg/issues/53528

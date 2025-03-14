@@ -1,0 +1,23 @@
+/**
+ * Vector block styles for both editor and frontend
+ */
+.kb-vector-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+	
+	svg {
+		width: 100%;
+		height: auto;
+	}
+}
+
+// Alignment options
+.wp-block-kadence-vector.alignleft .kb-vector-container {
+    justify-content: flex-start;
+}
+
+.wp-block-kadence-vector.alignright .kb-vector-container {
+    justify-content: flex-end;
+} 
