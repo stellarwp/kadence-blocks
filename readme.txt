@@ -176,8 +176,14 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 = 3.4.12 =
 Release Date: TBD March 2025
-* Fix: Setting numeric padding & margin on Adv Navigation sub menu links.
+* Add: Search for icon feature for Icon block.
+* Add: Move Tabs menu added to Tabs block toolbar.
 * Add: Support for Croatian, Estonian, Polish, and Slovak languages in Kadence AI.
+* Fix: Progress bars not initializing insdie query loops.
+* Fix: Setting numeric padding & margin on Adv Navigation sub menu links.
+* Fix: Aria label for Search (Adv) block.
+* Fix: Improve Link Title visibility on section overlay link.
+* Fix: Header block row padding/margin size units all now work.
 
 = 3.4.11 =
 Release Date: 25th February 2025

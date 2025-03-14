@@ -1,0 +1,63 @@
+/**
+ * Editor styles for the vector block
+ */
+ .wp-block[data-type="kadence/vector"] {
+		margin-bottom: 0;
+		margin-top: 0;
+ }
+ 
+.kb-vector-container {
+	margin: 0 auto;
+	min-width: 5px;
+	min-height: 5px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	svg {
+		width: 100%;
+		height: auto;
+	}
+}
+
+// Editor-specific alignment styles
+.wp-block-kadence-vector[data-align="left"] .kb-vector-container {
+  justify-content: flex-start;
+}
+
+.wp-block-kadence-vector[data-align="right"] .kb-vector-container {
+  justify-content: flex-end;
+}
+
+.kb-vector-upload {
+	margin: 20px 0;
+	
+	.components-notice {
+		margin: 0 0 15px;
+	}
+}
+
+.kb-vector-upload-actions {
+	display: flex;
+	gap: 10px;
+	margin-top: 15px;
+}
+
+.kb-vector-add-new {
+	margin-top: 10px !important;
+	width: 100%;
+	justify-content: center;
+}
+
+.kb-svg-placeholder {
+	padding: 20px;
+	border: 1px dashed #ccc;
+	background-color: #f8f8f8;
+	text-align: center;
+	min-height: 100px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-style: italic;
+	color: #888;
+} 

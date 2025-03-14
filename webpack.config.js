@@ -46,6 +46,7 @@ module.exports = {
 		'blocks-testimonials': './src/blocks/testimonials/block.js',
 		'blocks-advanced-form': './src/blocks/advanced-form/index.js',
 		'blocks-progress-bar': './src/blocks/progress-bar/index.js',
+		'blocks-vector': './src/blocks/vector/block.js',
 		'blocks-table': './src/blocks/table/index.js',
 		'blocks-videopopup': './src/blocks/videopopup/block.js',
 		'plugin-kadence-control': './src/plugin.js',
