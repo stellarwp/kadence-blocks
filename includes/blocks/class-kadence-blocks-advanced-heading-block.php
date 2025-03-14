@@ -180,28 +180,119 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 				$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
 			}
 		}
-		if ( (isset($attributes['enableTextShadow']) && !empty($attributes['enableTextShadow']) || (isset($attributes['textShadow']) && !empty($attributes['textShadow'][0]['enable'])) ) ) {
-			// Sets a default textShadow attribute, which may be empty if desktop default values aren't changed but mobile/tablet are.
-			if ( empty( $attributes['textShadow'] ) ) {
+		if ((isset($attributes['enableTextShadow']) && !empty($attributes['enableTextShadow']))
+			|| (isset($attributes['textShadow']) && !empty($attributes['textShadow'][0]['enable']))) {
+
+			if (empty($attributes['textShadow'])) {
 				$attributes['textShadow'] = [
 					[
 						'hOffset' => 1,
 						'vOffset' => 1,
 						'blur'    => 1,
-						'color'   => 'rgba(0,0,0,0.2)',
+						'color'   => '#000000',
+						'opacity' => 0.2,
 					],
 				];
 			}
-			if ( isset( $attributes['textShadow'] ) && is_array( $attributes['textShadow'] ) && isset( $attributes['textShadow'][0] ) && is_array( $attributes['textShadow'][0] ) && ((isset( $attributes['enableTextShadow'] ) && $attributes['enableTextShadow']) || (isset( $attributes['textShadow'][0]['enable'] ) && $attributes['textShadow'][0]['enable']) ) ) {
-				$css->add_property('text-shadow',($attributes['textShadow'][0]['hOffset'] ?? 1) . 'px ' . ($attributes['textShadow'][0]['vOffset'] ?? 1) . 'px ' . ($attributes['textShadow'][0]['blur'] ?? 1) . 'px ' . ( isset( $attributes['textShadow'][0]['color'] ) ? $css->render_color( $attributes['textShadow'][0]['color'] ) : 'rgba(0,0,0,0.2)' ) );
+
+			if (!empty($attributes['textShadow']) &&
+				is_array($attributes['textShadow'][0]) &&
+				(!empty($attributes['enableTextShadow']) || !empty($attributes['textShadow'][0]['enable']))
+			) {
+				$textShadow = $attributes['textShadow'][0] ?? [];
+				$hOffset = $textShadow['hOffset'] ?? 1;
+				$vOffset = $textShadow['vOffset'] ?? 1;
+				$blur    = $textShadow['blur'] ?? 1;
+				$color   = $textShadow['color'] ?? null;
+				$opacity = $textShadow['opacity'] ?? 0.2;
+
+				$css->add_property(
+					'text-shadow',
+					"{$hOffset}px {$vOffset}px {$blur}px " .
+					($color ? ($this->is_rgba($color) ? $css->render_color($color) : $css->render_color($color, $opacity)) : 'rgba(0,0,0,0.2)')
+				);
 			}
-			if ( isset( $attributes['textShadowTablet'] ) && is_array( $attributes['textShadowTablet'] ) && isset( $attributes['textShadowTablet'][0] ) && is_array( $attributes['textShadowTablet'][0] ) && ((isset( $attributes['enableTextShadow'] ) && $attributes['enableTextShadow']) || (isset( $attributes['textShadow'][0]['enable'] ) && $attributes['textShadow'][0]['enable']) ) ) {
+
+			if (!empty($attributes['textShadowTablet']) && is_array($attributes['textShadowTablet'][0])) {
+				$textShadowTablet = $attributes['textShadowTablet'][0] ?? [];
+				$hOffset = $this->get_cascading_value(
+					null, // No mobile value is considered here for tablet logic
+					$textShadowTablet['hOffset'] ?? null,
+					$attributes['textShadow'][0]['hOffset'] ?? null,
+					1
+				);
+				$vOffset = $this->get_cascading_value(
+					null,
+					$textShadowTablet['vOffset'] ?? null,
+					$attributes['textShadow'][0]['vOffset'] ?? null,
+					1
+				);
+				$blur = $this->get_cascading_value(
+					null,
+					$textShadowTablet['blur'] ?? null,
+					$attributes['textShadow'][0]['blur'] ?? null,
+					1
+				);
+				$color = $this->get_cascading_value(
+					null,
+					$textShadowTablet['color'] ?? null,
+					$attributes['textShadow'][0]['color'] ?? null,
+					null // Default fallback value for color
+				);
+				$opacity = $this->get_cascading_value(
+					null,
+					$textShadowTablet['opacity'] ?? null,
+					$attributes['textShadow'][0]['opacity'] ?? null,
+					0.2
+				);
+
 				$css->set_media_state('tablet');
-				$css->add_property( 'text-shadow',( ! empty( $attributes['textShadowTablet'][0]['hOffset'] ) ? $attributes['textShadowTablet'][0]['hOffset'] : $attributes['textShadow'][0]['hOffset'] ) . 'px ' . ( ! empty( $attributes['textShadowTablet'][0]['vOffset'] ) ? $attributes['textShadowTablet'][0]['vOffset'] : $attributes['textShadow'][0]['vOffset'] ) . 'px ' . ( ! empty( $attributes['textShadowTablet'][0]['blur'] ) ? $attributes['textShadowTablet'][0]['blur'] : $attributes['textShadow'][0]['blur'] ) . 'px ' . ( ! empty( $attributes['textShadowTablet'][0]['color'] ) ? $css->render_color( $attributes['textShadowTablet'][0]['color'] ) : $css->render_color( $attributes['textShadow'][0]['color'] ) ) );
+				$css->add_property(
+					'text-shadow',
+					"{$hOffset}px {$vOffset}px {$blur}px " .
+					($color ? ($this->is_rgba($color) ? $css->render_color($color) : $css->render_color($color, $opacity)) : 'rgba(0,0,0,0.2)')
+				);
 			}
-			if ( isset( $attributes['textShadowMobile'] ) && is_array( $attributes['textShadowMobile'] ) && isset( $attributes['textShadowMobile'][0] ) && is_array( $attributes['textShadowMobile'][0] ) && ((isset( $attributes['enableTextShadow'] ) && $attributes['enableTextShadow']) || (isset( $attributes['textShadow'][0]['enable'] ) && $attributes['textShadow'][0]['enable']) ) ) {
+
+			if (!empty($attributes['textShadowMobile']) && is_array($attributes['textShadowMobile'][0])) {
+				$textShadowMobile = $attributes['textShadowMobile'][0] ?? [];
+				$hOffset = $this->get_cascading_value(
+					$textShadowMobile['hOffset'] ?? null,
+					$attributes['textShadowTablet'][0]['hOffset'] ?? null,
+					$attributes['textShadow'][0]['hOffset'] ?? null,
+					1
+				);
+				$vOffset = $this->get_cascading_value(
+					$textShadowMobile['vOffset'] ?? null,
+					$attributes['textShadowTablet'][0]['vOffset'] ?? null,
+					$attributes['textShadow'][0]['vOffset'] ?? null,
+					1
+				);
+				$blur = $this->get_cascading_value(
+					$textShadowMobile['blur'] ?? null,
+					$attributes['textShadowTablet'][0]['blur'] ?? null,
+					$attributes['textShadow'][0]['blur'] ?? null,
+					1
+				);
+				$color = $this->get_cascading_value(
+					$textShadowMobile['color'] ?? null,
+					$attributes['textShadowTablet'][0]['color'] ?? null,
+					$attributes['textShadow'][0]['color'] ?? null,
+					null
+				);
+				$opacity = $this->get_cascading_value(
+					$textShadowMobile['opacity'] ?? null,
+					$attributes['textShadowTablet'][0]['opacity'] ?? null,
+					$attributes['textShadow'][0]['opacity'] ?? null,
+					0.2
+				);
+
 				$css->set_media_state('mobile');
-				$css->add_property( 'text-shadow',( ! empty( $attributes['textShadowMobile'][0]['hOffset'] ) ? $attributes['textShadowMobile'][0]['hOffset'] : ( ! empty( $attributes['textShadowTablet'][0]['hOffset'] ) ? $attributes['textShadowTablet'][0]['hOffset'] : $attributes['textShadow'][0]['hOffset']) ) . 'px ' . (  ! empty( $attributes['textShadowMobile'][0]['vOffset'] ) ? $attributes['textShadowMobile'][0]['vOffset'] : ( ! empty( $attributes['textShadowTablet'][0]['vOffset'] ) ? $attributes['textShadowTablet'][0]['vOffset'] : $attributes['textShadow'][0]['vOffset']) ) . 'px ' . ( ! empty( $attributes['textShadowMobile'][0]['blur'] ) ? $attributes['textShadowMobile'][0]['blur'] : ( ! empty( $attributes['textShadowTablet'][0]['blur'] ) ? $attributes['textShadowTablet'][0]['blur'] : $attributes['textShadow'][0]['blur']) ) . 'px ' . ( ! empty( $attributes['textShadowMobile'][0]['color'] ) ? $css->render_color( $attributes['textShadowMobile'][0]['color']) : ( ! empty( $attributes['textShadowTablet'][0]['color'] ) ? $css->render_color( $attributes['textShadowTablet'][0]['color'] ) : $css->render_color( $attributes['textShadow'][0]['color'] ) ) ) );
+				$css->add_property(
+					'text-shadow',
+					"{$hOffset}px {$vOffset}px {$blur}px " .
+					($color ? ($this->is_rgba($color) ? $css->render_color($color) : $css->render_color($color, $opacity)) : 'rgba(0,0,0,0.2)')
+				);
 			}
 		}
 
@@ -692,6 +783,34 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		}
 	}
 
+	/**
+	 * Determines if a given color string is in RGBA format. This is needed for backwards compatibility.
+	 *
+	 * @param string $color The color string to evaluate.
+	 * @return int|false Returns 1 if the string matches the RGBA format, 0 if it does not, or false if an error occurred.
+	 */
+	function is_rgba($color) {
+		return preg_match('/rgba\(\s*\d+,\s*\d+,\s*\d+,\s*(\d*\.?\d+)\s*\)/', $color);
+	}
+
+	/**
+	 * Retrieve the cascading value based on device-specific settings.
+	 *
+	 * @param mixed $mobile The value specifically set for mobile devices.
+	 * @param mixed $tablet The value specifically set for tablet devices.
+	 * @param mixed $default The default value if mobile and tablet values are not provided.
+	 * @param mixed $fallback The fallback value if none of the other values are set.
+	 */
+	function get_cascading_value($mobile, $tablet, $default, $fallback) {
+		if (isset($mobile) && $mobile !== '') {
+			return $mobile;
+		} elseif (isset($tablet) && $tablet !== '') {
+			return $tablet;
+		} elseif (isset($default) && $default !== '') {
+			return $default;
+		}
+		return $fallback;
+	}
 
 }
 
