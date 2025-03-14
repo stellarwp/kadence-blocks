@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, editor, gutenberg blocks
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.4
 Tested up to: 6.7.2
-Stable tag: 3.4.11
+Stable tag: 3.4.12
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -175,7 +175,8 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 == Changelog ==
 
 = 3.4.12 =
-Release Date: TBD March 2025
+Release Date: 18th March 2025
+* Add: Vector Illustration Block.
 * Add: Search for icon feature for Icon block.
 * Add: Move Tabs menu added to Tabs block toolbar.
 * Add: Support for Croatian, Estonian, Polish, and Slovak languages in Kadence AI.
@@ -184,6 +185,8 @@ Release Date: TBD March 2025
 * Fix: Aria label for Search (Adv) block.
 * Fix: Improve Link Title visibility on section overlay link.
 * Fix: Header block row padding/margin size units all now work.
+* Fix: Lottie block showing 404 error in console for Safari
+* Fix: Info Box block with flip images not applying border radius
 
 = 3.4.11 =
 Release Date: 25th February 2025
