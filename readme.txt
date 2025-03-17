@@ -187,6 +187,7 @@ Release Date: 18th March 2025
 * Fix: Header block row padding/margin size units all now work.
 * Fix: Lottie block showing 404 error in console for Safari
 * Fix: Info Box block with flip images not applying border radius
+* Fix: Focus shadow on accordion buttons.
 
 = 3.4.11 =
 Release Date: 25th February 2025
