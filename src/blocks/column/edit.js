@@ -105,7 +105,7 @@ import { applyFilters } from '@wordpress/hooks';
  * Build the section edit.
  */
 function SectionEdit(props) {
-	const { attributes, setAttributes, isSelected, clientId, context, className } = props;
+	const { attributes, setAttributes, isSelected, clientId, context, className, wrapperProps } = props;
 	const {
 		id,
 		topPadding,
@@ -1118,7 +1118,7 @@ function SectionEdit(props) {
 		'kvs-lg-false': vsdesk !== 'undefined' && vsdesk,
 		'kvs-md-false': vstablet !== 'undefined' && vstablet,
 		'kvs-sm-false': vsmobile !== 'undefined' && vsmobile,
-	});
+	}, wrapperProps?.className);
 	const previewBackgroundImg = dynamicBackgroundImg ? dynamicBackgroundImg : backgroundImg;
 	const hasBackgroundImage =
 		previewBackgroundImg && previewBackgroundImg[0] && previewBackgroundImg[0].bgImg ? true : false;

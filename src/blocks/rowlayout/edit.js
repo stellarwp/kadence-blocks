@@ -121,6 +121,7 @@ function RowLayoutEditContainer(props) {
 		toggleSelection,
 		isSelected,
 		clientId,
+		wrapperProps,
 	} = props;
 	const {
 		uniqueID,
@@ -889,7 +890,7 @@ function RowLayoutEditContainer(props) {
 		'kt-inner-column-height-full': columnsInnerHeight,
 		'kvs-false': getPreviewSize(previewDevice, vsdesk, vstablet, vsmobile),
 		'kadence-has-rcp-display': rcpMembership && kadence_blocks_params && kadence_blocks_params.rcp_access,
-	});
+	}, wrapperProps?.className);
 	const startlayoutOptions = [
 		{ key: 'equal', col: 1, name: __('Row', 'kadence-blocks'), icon: rowIcon },
 		{ key: 'equal', col: 2, name: __('Two: Equal', 'kadence-blocks'), icon: twoColIcon },
