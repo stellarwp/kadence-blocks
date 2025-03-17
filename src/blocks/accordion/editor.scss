@@ -158,6 +158,14 @@ body.rtl .components-button-group.kt-size-type-options {
 		padding-left: 0.25em;
 	}
 }
+.kt-blocks-accordion-header:focus-visible {
+	box-shadow: none;
+	text-shadow: none;
+}
+.kt-blocks-accordion-header:focus {
+	box-shadow: none;
+	text-shadow: none;
+}
 .kt-accordion-panel-active {
 	.kt-blocks-accordion-header {
 		background-color: var(--global-palette5, #444444);

@@ -39,6 +39,10 @@
 	box-shadow: none;
 	text-shadow: none;
 }
+.kt-blocks-accordion-header:focus {
+	box-shadow: none;
+	text-shadow: none;
+}
 .kt-blocks-accordion-header:hover {
 	background-color: var(--global-palette7, #eeeeee);
 	color: var(--global-palette5, #444444);
