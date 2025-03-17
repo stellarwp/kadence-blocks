@@ -43,7 +43,9 @@ addFilter('blocks.registerBlockType', 'kadence/blockCSS', blockCSSAttribute);
  */
 const BlockCSSComponent = createHigherOrderComponent((BlockEdit) => {
 	return (props) => {
-		const { attributes: { kadenceBlockCSS } } = props;
+		const {
+			attributes: { kadenceBlockCSS },
+		} = props;
 		const isValidCSSRule = kadenceBlockCSS && /^\s*[^{]+\s*\{\s*[^\s}]+\s*[:;][^}]*\}$/.test(kadenceBlockCSS);
 		const wrapperProps = {
 			...props.wrapperProps,
