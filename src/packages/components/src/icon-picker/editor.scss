@@ -295,7 +295,6 @@
 
 	.svg-search-modal__input_row {
 		display: flex;
-		align-items: center;
 		gap: 10px;
 		width: 100%;
 	}
@@ -303,10 +302,15 @@
 	.svg-search-modal__input_row .components-base-control {
 		flex: 2;
 		min-width: 300px;
+
+		.components-text-control__input {
+			height: 35px;
+		}
 	}
 
 	.svg-search-modal__input_row .components-button {
 		flex-shrink: 0;
+		height: 35px;
 	}
 
 	.svg-search-modal__results {
