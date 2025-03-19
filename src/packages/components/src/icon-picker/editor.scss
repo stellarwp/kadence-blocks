@@ -301,12 +301,12 @@
 	}
 
 	.svg-search-modal__input_row .components-base-control {
-		width: 80%;
+		flex: 2;
+		min-width: 300px;
 	}
 
 	.svg-search-modal__input_row .components-button {
-		width: 10%;
-		min-width: 60px;
+		flex-shrink: 0;
 	}
 
 	.svg-search-modal__results {

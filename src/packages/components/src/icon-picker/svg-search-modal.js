@@ -143,18 +143,22 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 					value={inputValue}
 					placeholder={__("Search Icons", "kadence-blocks")}
 					onChange={handleInputChange}
+					onKeyDown={(event) => {
+						if (event.key === "Enter") {
+							performSearch();
+						}
+					}}
 				/>
 				<Button
 					isPrimary={true}
 					className="svg-search-modal__search-button"
 					onClick={performSearch}
 					isBusy={isLoading}
+					disabled={isLoading || inputValue.length === 0 || isLoadingMore || isAddingIcon}
 				>
 					{__("Search", "kadence-blocks")}
 				</Button>
 			</div>
-
-
 			{isLoading && (
 				<div className="svg-search-modal__loading">
 					<Spinner className="wp-spinner" />
