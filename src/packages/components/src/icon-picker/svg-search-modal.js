@@ -1,7 +1,6 @@
-import { useCallback, useState } from "@wordpress/element";
+import { useState } from "@wordpress/element";
 import { __ } from "@wordpress/i18n";
 import { Button, TextControl, Spinner } from "@wordpress/components"; // Import Spinner
-import { debounce, has } from "lodash";
 import apiFetch from "@wordpress/api-fetch";
 import { addQueryArgs } from "@wordpress/url";
 import { store as noticesStore } from '@wordpress/notices';
@@ -21,24 +20,11 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [hasMore, setHasMore] = useState(false);
 
-	const debouncedSetSearch = useCallback(
-		debounce(async (value) => {
-			setSearch(value);
-			await handleSearchSvg(value);
-		}, 300),
-		[]
-	);
-
 	const handleInputChange = (value) => {
 		setInputValue(value);
-		debouncedSetSearch(value);
 	};
 
-	const handleItemClick = (index) => {
-		setSelectedIndex(index);
-	};
-
-	const handleSearchSvg = async (searchTerm) => {
+	const performSearch = async () => {
 		setResults([]);
 		setAllIcons([]);
 		setError(null);
@@ -46,14 +32,14 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 		setCurrentPage(1);
 		setSelectedIndex(0);
 
-		if (!searchTerm) {
+		if (!inputValue) {
 			setIsLoading(false);
 			return;
 		}
 
 		try {
 			const response = await apiFetch({
-				path: addQueryArgs(`/kb-custom-svg/v1/search`, { search: searchTerm, page: 1 }),
+				path: addQueryArgs(`/kb-custom-svg/v1/search`, { search: inputValue, page: 1 }),
 				method: "GET",
 			});
 
@@ -66,7 +52,6 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 					`Error ${response.code}: ${response.message || "Unexpected error occurred."}`
 				);
 			}
-
 		} catch (error) {
 			setError(
 				`Error ${error.code || "unknown"}: ${error.message || "An unexpected error occurred."}`
@@ -74,6 +59,10 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 		} finally {
 			setIsLoading(false);
 		}
+	};
+
+	const handleItemClick = (index) => {
+		setSelectedIndex(index);
 	};
 
 	const handleAddSvg = async () => {
@@ -147,13 +136,25 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 
 	return (
 		<div className="svg-search-modal">
-			<TextControl
-				label={__("Search Icons", "kadence-blocks")}
-				hideLabelFromVision={true}
-				value={inputValue}
-				placeholder={__("Search Icons", "kadence-blocks")}
-				onChange={handleInputChange}
-			/>
+			<div className="svg-search-modal__input_row">
+				<TextControl
+					label={__("Search Icons", "kadence-blocks")}
+					hideLabelFromVision={true}
+					value={inputValue}
+					placeholder={__("Search Icons", "kadence-blocks")}
+					onChange={handleInputChange}
+				/>
+				<Button
+					isPrimary={true}
+					className="svg-search-modal__search-button"
+					onClick={performSearch}
+					isBusy={isLoading}
+				>
+					{__("Search", "kadence-blocks")}
+				</Button>
+			</div>
+
+
 			{isLoading && (
 				<div className="svg-search-modal__loading">
 					<Spinner className="wp-spinner" />

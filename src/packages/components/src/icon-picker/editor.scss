@@ -293,6 +293,22 @@
 .svg-search-modal {
 	min-height: 300px;
 
+	.svg-search-modal__input_row {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		width: 100%;
+	}
+
+	.svg-search-modal__input_row .components-base-control {
+		width: 80%;
+	}
+
+	.svg-search-modal__input_row .components-button {
+		width: 10%;
+		min-width: 60px;
+	}
+
 	.svg-search-modal__results {
 		display: grid;
 		grid-template-columns: repeat(5, 1fr);
