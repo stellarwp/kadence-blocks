@@ -8,7 +8,6 @@ import { useDispatch } from '@wordpress/data';
 
 export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 	const [inputValue, setInputValue] = useState("");
-	const [search, setSearch] = useState("");
 	const [results, setResults] = useState([]);
 	const [allIcons, setAllIcons] = useState([])
 	const [error, setError] = useState(null);
@@ -123,7 +122,7 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 		try {
 			const nextPage = currentPage + 1;
 			const response = await apiFetch({
-				path: addQueryArgs(`/kb-custom-svg/v1/search`, { search, page: nextPage }),
+				path: addQueryArgs(`/kb-custom-svg/v1/search`, { search: inputValue, page: nextPage }),
 				method: "GET",
 			});
 
