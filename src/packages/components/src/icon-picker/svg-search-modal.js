@@ -1,4 +1,4 @@
-import { useState } from "@wordpress/element";
+import { useState, useEffect, useRef } from "@wordpress/element";
 import { __ } from "@wordpress/i18n";
 import { Button, TextControl, Spinner } from "@wordpress/components"; // Import Spinner
 import apiFetch from "@wordpress/api-fetch";
@@ -19,6 +19,13 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 	const { createSuccessNotice } = useDispatch( noticesStore );
 	const [currentPage, setCurrentPage] = useState(1);
 	const [hasMore, setHasMore] = useState(false);
+	const searchInputRef = useRef(null);
+
+	useEffect(() => {
+		if (isOpen && searchInputRef.current) {
+			searchInputRef.current.focus();
+		}
+	}, [isOpen]);
 
 	const handleInputChange = (value) => {
 		setInputValue(value);
@@ -148,6 +155,7 @@ export default function SvgSearchModal( {isOpen, setIsOpen, callback} ) {
 							performSearch();
 						}
 					}}
+					ref={searchInputRef}
 				/>
 				<Button
 					isPrimary={true}
