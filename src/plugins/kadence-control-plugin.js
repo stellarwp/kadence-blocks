@@ -753,6 +753,14 @@ function KadenceConfig() {
 								theDefault={true}
 							/>
 						</PanelBody>
+						<PanelBody title={__('Custom CSS Indicator', 'kadence-blocks')} initialOpen={false}>
+							<KadenceSetting
+								slug={'enable_custom_css_indicator'}
+								label={__('Enable Custom CSS Indicator', 'kadence-blocks')}
+								type={'toggle'}
+								theDefault={true}
+							/>
+						</PanelBody>
 						{'undefined' !== typeof window.kadenceDynamicParams && (
 							<PanelBody title={__('Dynamic Content Settings', 'kadence-blocks')} initialOpen={false}>
 								<KadenceSetting

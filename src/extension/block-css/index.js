@@ -52,8 +52,13 @@ const BlockCSSComponent = createHigherOrderComponent((BlockEdit) => {
 			className: 'kadence-has-custom-css',
 		};
 
+		const globalSettings = kadence_blocks_params.globalSettings
+			? JSON.parse(kadence_blocks_params.globalSettings)
+			: {};
+		const showCSSIndicator = globalSettings['enable_custom_css_indicator'] !== undefined ? globalSettings['enable_custom_css_indicator'] : true;
+
 		if (!props.isSelected) {
-			return <BlockEdit {...props} {...(isValidCSSRule ? { wrapperProps } : {})} />;
+			return <BlockEdit {...props} {...(isValidCSSRule && showCSSIndicator ? { wrapperProps } : {})} />;
 		}
 		const { hasBlockCSS, openTab } = useSelect((select) => {
 			const hasSupport = select(blocksStore).hasBlockSupport(props.name, 'kbcss');
@@ -128,7 +133,7 @@ const BlockCSSComponent = createHigherOrderComponent((BlockEdit) => {
 			);
 			return (
 				<>
-					<BlockEdit {...props} {...(isValidCSSRule ? { wrapperProps } : {})} />
+					<BlockEdit {...props} {...(isValidCSSRule && showCSSIndicator ? { wrapperProps } : {})} />
 					<InspectorControls>
 						<PanelBody title={__('Custom CSS', 'kadence-blocks')} initialOpen={false}>
 							<>
@@ -196,7 +201,7 @@ const BlockCSSComponent = createHigherOrderComponent((BlockEdit) => {
 				</>
 			);
 		}
-		return <BlockEdit {...props} {...(isValidCSSRule ? { wrapperProps } : {})} />;
+		return <BlockEdit {...props} {...(isValidCSSRule && showCSSIndicator ? { wrapperProps } : {})} />;
 	};
 }, 'BlockCSSComponent');
 addFilter('editor.BlockEdit', 'kadence/blockCSSControls', BlockCSSComponent);
