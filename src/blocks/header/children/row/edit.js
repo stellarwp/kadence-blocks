@@ -46,7 +46,7 @@ import { __ } from '@wordpress/i18n';
 import BackendStyles from './components/backend-styles';
 
 export function Edit(props) {
-	const { attributes, setAttributes, clientId, context, isSelected } = props;
+	const { attributes, setAttributes, clientId, context, isSelected, wrapperProps } = props;
 
 	const {
 		uniqueID,
@@ -146,7 +146,7 @@ export function Edit(props) {
 		[`kb-header-row-layout-standard`]: !layout,
 		[`kb-header-row-layout-config-${layoutConfig}`]: layoutConfig,
 		'wp-block-kadence-header-row--force-hide': !hasInsertedChildBlocks,
-	});
+	}, wrapperProps?.className);
 	const blockProps = useBlockProps({
 		className: blockClasses,
 	});

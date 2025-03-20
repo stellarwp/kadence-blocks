@@ -43,26 +43,6 @@ addFilter('blocks.registerBlockType', 'kadence/blockCSS', blockCSSAttribute);
  */
 const BlockCSSComponent = createHigherOrderComponent((BlockEdit) => {
 	return (props) => {
-		const {
-			attributes: { kadenceBlockCSS },
-		} = props;
-		const isValidCSSRule = kadenceBlockCSS && /^\s*[^{]+\s*\{\s*[^\s}]+\s*[:;][^}]*\}$/.test(kadenceBlockCSS);
-		const wrapperProps = {
-			...props.wrapperProps,
-			className: 'kadence-has-custom-css',
-		};
-
-		const globalSettings = kadence_blocks_params.globalSettings
-			? JSON.parse(kadence_blocks_params.globalSettings)
-			: {};
-		const showCSSIndicator =
-			globalSettings.enable_custom_css_indicator !== undefined
-				? globalSettings.enable_custom_css_indicator
-				: false;
-
-		if (!props.isSelected) {
-			return <BlockEdit {...props} {...(isValidCSSRule && showCSSIndicator ? { wrapperProps } : {})} />;
-		}
 		const { hasBlockCSS, openTab } = useSelect((select) => {
 			const hasSupport = select(blocksStore).hasBlockSupport(props.name, 'kbcss');
 			let openTab = 'general';
@@ -81,6 +61,28 @@ const BlockCSSComponent = createHigherOrderComponent((BlockEdit) => {
 				openTab,
 			};
 		}, []);
+
+		if (hasBlockCSS) {
+			const {
+				attributes: { kadenceBlockCSS },
+			} = props;
+			const isValidCSSRule = kadenceBlockCSS && /^\s*[^{]+\s*\{\s*[^\s}]+\s*[:;][^}]*\}$/.test(kadenceBlockCSS);
+			const globalSettings = kadence_blocks_params.globalSettings
+				? JSON.parse(kadence_blocks_params.globalSettings)
+				: {};
+			const showCSSIndicator =
+				globalSettings.enable_custom_css_indicator !== undefined
+					? globalSettings.enable_custom_css_indicator
+					: false;
+
+			if (!props.isSelected && isValidCSSRule && showCSSIndicator) {
+				props.wrapperProps  = {
+					...props.wrapperProps,
+					className: 'kadence-has-custom-css'
+				};
+			}
+		}
+
 		const [isOpen, setOpen] = useState(false);
 		const openModal = () => setOpen(true);
 		const closeModal = () => setOpen(false);
@@ -136,7 +138,7 @@ const BlockCSSComponent = createHigherOrderComponent((BlockEdit) => {
 			);
 			return (
 				<>
-					<BlockEdit {...props} {...(isValidCSSRule && showCSSIndicator ? { wrapperProps } : {})} />
+					<BlockEdit {...props} />
 					<InspectorControls>
 						<PanelBody title={__('Custom CSS', 'kadence-blocks')} initialOpen={false}>
 							<>
@@ -204,7 +206,7 @@ const BlockCSSComponent = createHigherOrderComponent((BlockEdit) => {
 				</>
 			);
 		}
-		return <BlockEdit {...props} {...(isValidCSSRule && showCSSIndicator ? { wrapperProps } : {})} />;
+		return <BlockEdit {...props} />;
 	};
 }, 'BlockCSSComponent');
 addFilter('editor.BlockEdit', 'kadence/blockCSSControls', BlockCSSComponent);
