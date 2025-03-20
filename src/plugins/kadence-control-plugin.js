@@ -759,7 +759,10 @@ function KadenceConfig() {
 								label={__('Enable Custom CSS Indicator', 'kadence-blocks')}
 								type={'toggle'}
 								theDefault={false}
-								help={__( 'This will add a custom indicator to the block editor to indicate if the block has custom CSS. Requires a page refresh or block rerender.', 'kadence-blocks' )}
+								help={__(
+									'This will add a custom indicator to the block editor to indicate if the block has custom CSS. Requires a page refresh or block rerender.',
+									'kadence-blocks'
+								)}
 							/>
 						</PanelBody>
 						{'undefined' !== typeof window.kadenceDynamicParams && (

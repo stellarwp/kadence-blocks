@@ -76,9 +76,9 @@ const BlockCSSComponent = createHigherOrderComponent((BlockEdit) => {
 					: false;
 
 			if (!props.isSelected && isValidCSSRule && showCSSIndicator) {
-				props.wrapperProps  = {
+				props.wrapperProps = {
 					...props.wrapperProps,
-					className: 'kadence-has-custom-css'
+					className: 'kadence-has-custom-css',
 				};
 			}
 		}
