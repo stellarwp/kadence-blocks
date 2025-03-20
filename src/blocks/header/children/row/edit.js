@@ -46,7 +46,7 @@ import { __ } from '@wordpress/i18n';
 import BackendStyles from './components/backend-styles';
 
 export function Edit(props) {
-	const { attributes, setAttributes, clientId, context, isSelected } = props;
+	const { attributes, setAttributes, clientId, context, isSelected, wrapperProps } = props;
 
 	const {
 		uniqueID,
@@ -138,15 +138,18 @@ export function Edit(props) {
 
 		return true;
 	}, [innerBlocks]);
-	const blockClasses = classnames({
-		'wp-block-kadence-header-row': true,
-		[`wp-block-kadence-header-row-${location}`]: location,
-		[`wp-block-kadence-header-row${uniqueID}`]: uniqueID,
-		[`kb-header-row-layout-${layout}`]: layout,
-		[`kb-header-row-layout-standard`]: !layout,
-		[`kb-header-row-layout-config-${layoutConfig}`]: layoutConfig,
-		'wp-block-kadence-header-row--force-hide': !hasInsertedChildBlocks,
-	});
+	const blockClasses = classnames(
+		{
+			'wp-block-kadence-header-row': true,
+			[`wp-block-kadence-header-row-${location}`]: location,
+			[`wp-block-kadence-header-row${uniqueID}`]: uniqueID,
+			[`kb-header-row-layout-${layout}`]: layout,
+			[`kb-header-row-layout-standard`]: !layout,
+			[`kb-header-row-layout-config-${layoutConfig}`]: layoutConfig,
+			'wp-block-kadence-header-row--force-hide': !hasInsertedChildBlocks,
+		},
+		wrapperProps?.className
+	);
 	const blockProps = useBlockProps({
 		className: blockClasses,
 	});

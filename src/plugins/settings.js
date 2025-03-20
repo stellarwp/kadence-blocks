@@ -9,7 +9,7 @@ import { store as noticesStore } from '@wordpress/notices';
 import { __ } from '@wordpress/i18n';
 
 function KadenceSetting(props) {
-	const { slug, label, type, theDefault, successCallback } = props;
+	const { slug, label, type, theDefault, successCallback, help } = props;
 
 	const [isSaving, setIsSaving] = useState(false);
 	const [settings, setSettings] = useState(
@@ -46,6 +46,7 @@ function KadenceSetting(props) {
 						undefined !== settings?.[slug] && !theDefault === settings?.[slug] ? !theDefault : theDefault
 					}
 					onChange={(value) => saveConfig(slug, value)}
+					help={help}
 				/>
 			)}
 		</>
