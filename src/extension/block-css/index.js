@@ -55,7 +55,10 @@ const BlockCSSComponent = createHigherOrderComponent((BlockEdit) => {
 		const globalSettings = kadence_blocks_params.globalSettings
 			? JSON.parse(kadence_blocks_params.globalSettings)
 			: {};
-		const showCSSIndicator = globalSettings['enable_custom_css_indicator'] !== undefined ? globalSettings['enable_custom_css_indicator'] : true;
+		const showCSSIndicator =
+			globalSettings.enable_custom_css_indicator !== undefined
+				? globalSettings.enable_custom_css_indicator
+				: true;
 
 		if (!props.isSelected) {
 			return <BlockEdit {...props} {...(isValidCSSRule && showCSSIndicator ? { wrapperProps } : {})} />;
