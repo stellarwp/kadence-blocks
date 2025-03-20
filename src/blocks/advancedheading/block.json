@@ -342,7 +342,8 @@
 			"default": [
 				{
 					"enable": false,
-					"color": "rgba(0, 0, 0, 0.2)",
+					"color": "#000000",
+					"opacity": 0.2,
 					"blur": 1,
 					"hOffset": 1,
 					"vOffset": 1
@@ -355,6 +356,7 @@
 				{
 					"enable": false,
 					"color": "",
+					"opacity": "",
 					"blur": "",
 					"hOffset": "",
 					"vOffset": ""
@@ -367,6 +369,7 @@
 				{
 					"enable": false,
 					"color": "",
+					"opacity": "",
 					"blur": "",
 					"hOffset": "",
 					"vOffset": ""
