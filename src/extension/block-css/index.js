@@ -58,7 +58,7 @@ const BlockCSSComponent = createHigherOrderComponent((BlockEdit) => {
 		const showCSSIndicator =
 			globalSettings.enable_custom_css_indicator !== undefined
 				? globalSettings.enable_custom_css_indicator
-				: true;
+				: false;
 
 		if (!props.isSelected) {
 			return <BlockEdit {...props} {...(isValidCSSRule && showCSSIndicator ? { wrapperProps } : {})} />;

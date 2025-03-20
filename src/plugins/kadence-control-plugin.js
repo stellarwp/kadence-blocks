@@ -758,7 +758,7 @@ function KadenceConfig() {
 								slug={'enable_custom_css_indicator'}
 								label={__('Enable Custom CSS Indicator', 'kadence-blocks')}
 								type={'toggle'}
-								theDefault={true}
+								theDefault={false}
 							/>
 						</PanelBody>
 						{'undefined' !== typeof window.kadenceDynamicParams && (
