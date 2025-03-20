@@ -20,6 +20,14 @@ import {
 import {capitalizeFirstLetter} from '@kadence/helpers';
 import RangeControl from "../../range/range-control";
 import {undo} from "@wordpress/icons";
+import KadenceRadioButtons from "../../common/radio-buttons";
+import {
+	shadowPresetBottomOffsetGlow, shadowPresetInnerSolid,
+	shadowPresetNone, shadowPresetRightBottomSolid,
+	shadowPresetRightOffsetGlow,
+	shadowPresetSoftInnerGlow,
+	shadowPresetSoftOuterGlow, shadowPresetTopLeftSolid
+} from "../../../../icons/src";
 
 /**
  * Build the BoxShadow controls
@@ -47,6 +55,7 @@ export default function ResponsiveShadowControl ( {
 	className = '',
 	shadowType,
 	onArrayChange,
+	onApplyShadowPreset,
 	reset = true,
 } ) {
 	const [ deviceType, setDeviceType ] = useState( 'Desktop' );
@@ -111,6 +120,7 @@ export default function ResponsiveShadowControl ( {
 			inset={ inset }
 			onInsetChange={ onInsetChange }
 			onArrayChange={ onArrayChange }
+			onApplyShadowPreset={ onApplyShadowPreset }
 		/>
 	);
 	output.Tablet = (
@@ -136,6 +146,7 @@ export default function ResponsiveShadowControl ( {
 			inset={ inset }
 			onInsetChange={ onInsetChange }
 			onArrayChange={ onArrayChange }
+			onApplyShadowPreset={ onApplyShadowPreset }
 		/>
 	);
 	output.Desktop = (
@@ -161,8 +172,40 @@ export default function ResponsiveShadowControl ( {
 			inset={ inset }
 			onInsetChange={ onInsetChange }
 			onArrayChange={ onArrayChange }
+			onApplyShadowPreset={ onApplyShadowPreset }
 		/>
 	);
+
+	const presetOptions = [
+		{ value: 'none', label: __('None', 'kadence-blocks'), icon: shadowPresetNone },
+		{ value: 'soft-inner-glow', label: __('Soft Inner Glow', 'kadence-blocks'), icon: shadowPresetSoftInnerGlow },
+		{ value: 'soft-outer-glow', label: __('Soft Outer Glow', 'kadence-blocks'), icon: shadowPresetSoftOuterGlow },
+		{ value: 'right-offset-glow', label: __('Right Offset Glow', 'kadence-blocks'), icon: shadowPresetRightOffsetGlow },
+		{ value: 'bottom-offset-glow', label: __('Bottom Offset Glow', 'kadence-blocks'), icon: shadowPresetBottomOffsetGlow },
+		{ value: 'inner-solid', label: __('Inner Solid', 'kadence-blocks'), icon: shadowPresetInnerSolid },
+		{ value: 'right-bottom-solid', label: __('Right Bottom Solid', 'kadence-blocks'), icon: shadowPresetRightBottomSolid },
+		{ value: 'top-left-solid', label: __('Top Left Solid', 'kadence-blocks'), icon: shadowPresetTopLeftSolid },
+	];
+	const presetSettings = {
+		'none': {hOffset: 0, vOffset: 0, blur: 0, spread: 0, inset: false},
+		'soft-inner-glow': {hOffset: 0, vOffset: 0, blur: 60, spread: -15, inset: true},
+		'soft-outer-glow': {hOffset: 0, vOffset: 0, blur: 60, spread: 5, inset: false},
+		'right-offset-glow': {hOffset: 20, vOffset: 20, blur: 30, spread: 0, inset: false},
+		'bottom-offset-glow': {hOffset: 0, vOffset: 35, blur: 20, spread: -5, inset: false},
+		'inner-solid': {hOffset: 0, vOffset: 0, blur: 0, spread: 15, inset: true},
+		'right-bottom-solid': {hOffset: 15, vOffset: 15, blur: 0, spread: 0, inset: false},
+		'top-left-solid': {hOffset: -10, vOffset: -10, blur: 0, spread: 10, inset: false},
+	};
+
+	const applyPreset = (value) => {
+		onApplyShadowPreset({
+			hOffset: presetSettings[value].hOffset,
+			vOffset: presetSettings[value].vOffset,
+			blur: presetSettings[value].blur,
+			spread: presetSettings[value].spread,
+			inset: presetSettings[value].inset,
+		});
+	};
 
 	return [
 		onEnableChange && (
@@ -202,7 +245,23 @@ export default function ResponsiveShadowControl ( {
 						) ) }
 					</ButtonGroup>
 				</div>
-				{ ( output[ deviceType ] ? output[ deviceType ] : output.Desktop ) }
+				<div>
+					{ shadowType === 'box' && (
+						<KadenceRadioButtons
+							value={0}
+							options={presetOptions}
+							wrap={true}
+							hideLabel={true}
+							className={'kadence-box-shadow-radio-btns'}
+							onChange={(value) => {
+								applyPreset(value);
+							}}
+						/>
+					)}
+
+					{ ( output[ deviceType ] ? output[ deviceType ] : output.Desktop ) }
+				</div>
+
 			</div>
 		)
 	];
