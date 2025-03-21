@@ -11,6 +11,7 @@ import {Component, useState} from '@wordpress/element';
 import { map, isEqual } from 'lodash';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { default as ShadowControl } from '../shadow-control';
+import './editor.scss';
 
 import {
 	Dashicon,
@@ -22,11 +23,7 @@ import RangeControl from "../../range/range-control";
 import {undo} from "@wordpress/icons";
 import KadenceRadioButtons from "../../common/radio-buttons";
 import {
-	shadowPresetBottomOffsetGlow, shadowPresetInnerSolid,
-	shadowPresetNone, shadowPresetRightBottomSolid,
-	shadowPresetRightOffsetGlow,
-	shadowPresetSoftInnerGlow,
-	shadowPresetSoftOuterGlow, shadowPresetTopLeftSolid
+	shadowPresetNone,
 } from "../../../../icons/src";
 
 /**
@@ -178,13 +175,13 @@ export default function ResponsiveShadowControl ( {
 
 	const presetOptions = [
 		{ value: 'none', label: __('None', 'kadence-blocks'), icon: shadowPresetNone },
-		{ value: 'soft-inner-glow', label: __('Soft Inner Glow', 'kadence-blocks'), icon: shadowPresetSoftInnerGlow },
-		{ value: 'soft-outer-glow', label: __('Soft Outer Glow', 'kadence-blocks'), icon: shadowPresetSoftOuterGlow },
-		{ value: 'right-offset-glow', label: __('Right Offset Glow', 'kadence-blocks'), icon: shadowPresetRightOffsetGlow },
-		{ value: 'bottom-offset-glow', label: __('Bottom Offset Glow', 'kadence-blocks'), icon: shadowPresetBottomOffsetGlow },
-		{ value: 'inner-solid', label: __('Inner Solid', 'kadence-blocks'), icon: shadowPresetInnerSolid },
-		{ value: 'right-bottom-solid', label: __('Right Bottom Solid', 'kadence-blocks'), icon: shadowPresetRightBottomSolid },
-		{ value: 'top-left-solid', label: __('Top Left Solid', 'kadence-blocks'), icon: shadowPresetTopLeftSolid },
+		{ value: 'soft-inner-glow', label: __('Soft Inner Glow', 'kadence-blocks'), icon: 'soft-inner-glow' },
+		{ value: 'soft-outer-glow', label: __('Soft Outer Glow', 'kadence-blocks'), icon: 'soft-outer-glow' },
+		{ value: 'right-offset-glow', label: __('Right Offset Glow', 'kadence-blocks'), icon: 'right-offset-glow' },
+		{ value: 'bottom-offset-glow', label: __('Bottom Offset Glow', 'kadence-blocks'), icon: 'bottom-offset-glow' },
+		{ value: 'inner-solid', label: __('Inner Solid', 'kadence-blocks'), icon: 'inner-solid' },
+		{ value: 'right-bottom-solid', label: __('Right Bottom Solid', 'kadence-blocks'), icon: 'right-bottom-solid' },
+		{ value: 'top-left-solid', label: __('Top Left Solid', 'kadence-blocks'), icon: 'top-left-solid' },
 	];
 	const presetSettings = {
 		'none': {hOffset: 0, vOffset: 0, blur: 0, spread: 0, inset: false},

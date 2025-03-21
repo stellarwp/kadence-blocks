@@ -268,10 +268,3 @@ export { default as sidewaysUpTextOrientationIcon } from './text-orientation/sid
 
 // Shadow Presets
 export { default as shadowPresetNone } from './shadow-presets/no-shadow';
-export { default as shadowPresetSoftInnerGlow } from './shadow-presets/soft-inner-glow';
-export { default as shadowPresetSoftOuterGlow } from './shadow-presets/soft-outer-glow';
-export { default as shadowPresetBottomOffsetGlow } from './shadow-presets/bottom-offset-glow';
-export { default as shadowPresetInnerSolid } from './shadow-presets/inner-solid';
-export { default as shadowPresetRightBottomSolid } from './shadow-presets/right-bottom-solid';
-export { default as shadowPresetRightOffsetGlow } from './shadow-presets/right-offset-glow';
-export { default as shadowPresetTopLeftSolid } from './shadow-presets/top-left-solid';

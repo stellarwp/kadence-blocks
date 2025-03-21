@@ -1,37 +1,8 @@
 export default    <svg
 	xmlns="http://www.w3.org/2000/svg"
-	// xmlnsXlink="http://www.w3.org/1999/xlink"
-	// id="b"
 	viewBox="0 0 136 136"
 >
-	{/*<defs>*/}
-		{/*<filter*/}
-		{/*	id="e"*/}
-		{/*	width="140.16"*/}
-		{/*	height="140.16"*/}
-		{/*	x="-2.02"*/}
-		{/*	y="-2.04"*/}
-		{/*	colorInterpolationFilters="sRGB"*/}
-		{/*	filterUnits="userSpaceOnUse"*/}
-		{/*>*/}
-		{/*	<feColorMatrix*/}
-		{/*		result="cm"*/}
-		{/*		values="-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0"*/}
-		{/*	></feColorMatrix>*/}
-		{/*</filter>*/}
-		{/*<mask*/}
-		{/*	id="d"*/}
-		{/*	width="140.16"*/}
-		{/*	height="140.16"*/}
-		{/*	x="-2.02"*/}
-		{/*	y="-2.04"*/}
-		{/*	maskUnits="userSpaceOnUse"*/}
-		{/*>*/}
-
-		{/*</mask>*/}
-	{/*</defs>*/}
 	<g>
-
 		<path
 			fill="#929292"
 			strokeWidth="0"
