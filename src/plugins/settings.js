@@ -41,24 +41,26 @@ function KadenceSetting(props) {
 				const allBlocks = getBlocks();
 
 				// If block has uniqueId, trigger rerender without marking as changed
-				const processBlocks = (blocks) => {
+				const renrederBlocks = (blocks, namesToRerender) => {
 					blocks.forEach((block) => {
-						if (block.attributes && block.attributes.uniqueID) {
+						if (block.attributes && block.attributes.uniqueID && namesToRerender.includes(block.name)) {
 							const { updateBlockAttributes } = wp.data.dispatch('core/block-editor');
 							// Dont pass next change to undo stack
 							wp.data.dispatch('core/block-editor').__unstableMarkNextChangeAsNotPersistent();
 							updateBlockAttributes(block.clientId, {
-								'data-kb-rerender': Date.now(),
+								'kb-rerender': Date.now(),
 							});
 						}
 
 						if (block.innerBlocks && block.innerBlocks.length) {
-							processBlocks(block.innerBlocks);
+							renrederBlocks(block.innerBlocks, namesToRerender);
 						}
 					});
 				};
 
-				processBlocks(allBlocks);
+				if( key === 'enable_custom_css_indicator' && allBlocks.length > 0) {
+					renrederBlocks(allBlocks, ['kadence/column', 'kadence/header-row', 'kadence/rowlayout']);
+				}
 			});
 	};
 
