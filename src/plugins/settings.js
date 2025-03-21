@@ -58,7 +58,7 @@ function KadenceSetting(props) {
 					});
 				};
 
-				if( key === 'enable_custom_css_indicator' && allBlocks.length > 0) {
+				if (key === 'enable_custom_css_indicator' && allBlocks.length > 0) {
 					renrederBlocks(allBlocks, ['kadence/column', 'kadence/header-row', 'kadence/rowlayout']);
 				}
 			});
