@@ -33,6 +33,29 @@ function KadenceSetting(props) {
 			setSettings(config);
 			kadence_blocks_params.globalSettings = JSON.stringify(config);
 			successCallback && successCallback(key, value);
+		}).then(() => {
+			const { getBlocks } = wp.data.select('core/block-editor');
+			const allBlocks = getBlocks();
+			
+			// If block has uniqueId, trigger rerender without marking as changed
+			const processBlocks = (blocks) => {
+				blocks.forEach((block) => {
+					if (block.attributes && block.attributes.uniqueID) {
+						const { updateBlockAttributes } = wp.data.dispatch('core/block-editor');
+						// Dont pass next change to undo stack
+						wp.data.dispatch('core/block-editor').__unstableMarkNextChangeAsNotPersistent();
+						updateBlockAttributes(block.clientId, { 
+							'data-kb-rerender': Date.now()
+						});
+					}
+					
+					if (block.innerBlocks && block.innerBlocks.length) {
+						processBlocks(block.innerBlocks);
+					}
+				});
+			};
+			
+			processBlocks(allBlocks);
 		});
 	};
 
