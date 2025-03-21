@@ -2372,6 +2372,7 @@ function KadenceInfoBox(props) {
 																onInsetChange={(value) => {
 																	saveHoverShadow({ inset: value });
 																}}
+																onApplyShadowPreset={(value) => saveHoverShadow(value)}
 																reset={true}
 															/>
 														)}
@@ -2482,6 +2483,7 @@ function KadenceInfoBox(props) {
 																onInsetChange={(value) => {
 																	saveShadow({ inset: value });
 																}}
+																onApplyShadowPreset={(value) => saveShadow(value)}
 																reset={true}
 															/>
 														)}

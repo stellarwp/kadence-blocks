@@ -1,41 +1,3 @@
-.kt-box-shadow-label .components-base-control.components-toggle-control, .kt-box-shadow-label .components-toggle-control .components-base-control__field {
-    margin-bottom: 0 !important;
-}
-.kt-box-shadow-label h2.kt-beside-color-label {
-    flex-grow: 1;
-    margin: 12px 0;
-	font-weight: 400;
-}
-.kt-box-shadow-label {
-    display: flex;
-    align-items: center;
-}
-.kt-inner-sub-section-row {
-    display: flex;
-    margin-bottom: 10px;
-}
-.kt-inner-sub-section {
-    border: 1px solid var(--kb-border-color, #859CB6 );
-    border-top: 0;
-    padding: 25px 10px 10px 10px;
-    margin-bottom: 15px;
-    margin-top: -12px;
-}
-.kt-box-shadow-subset {
-    padding: 0 2px;
-    text-align: center;
-}
-.kt-box-shadow-subset .kt-box-shadow-title {
-    font-size:12px;
-}
-
-.kt-box-shadow-subset .kt-advanced-color-settings-container {
-    flex-direction: column-reverse;
-}
-.kt-box-shadow-subset input.components-text-control__input {
-    padding: 0 1px;
-	border: 1px solid var(--kb-border-color, #859CB6 );
-}
 
 .kadence-radio-container-control.components-button-group .components-button.has-icon.radio-no-label.radio-soft-inner-glow:before {
 	box-shadow: 0 0 5px 3px #a1afc1 inset;
@@ -67,8 +29,4 @@
 	color: white;
 	margin: 0 auto;
 	border: 1px solid gray;
-}
-
-.kadence-radio-container-control.components-button-group .components-button.has-icon.radio-no-label span {
-	display: none;
 }
