@@ -39,7 +39,7 @@ function KadenceSetting(props) {
 	const { setEnableCustomCssIndicator } = useDispatch('kadenceblocks/data');
 	const handleCustomCssIndicatorChange = (value) => {
 		setEnableCustomCssIndicator(value);
-	}
+	};
 
 	return (
 		<>
