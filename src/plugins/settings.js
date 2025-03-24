@@ -35,6 +35,11 @@ function KadenceSetting(props) {
 			successCallback && successCallback(key, value);
 		});
 	};
+	// Dispatch store action for custom CSS indicator
+	const { setEnableCustomCssIndicator } = useDispatch('kadenceblocks/data');
+	const handleCustomCssIndicatorChange = (value) => {
+		setEnableCustomCssIndicator(value);
+	}
 
 	return (
 		<>
@@ -45,7 +50,12 @@ function KadenceSetting(props) {
 					checked={
 						undefined !== settings?.[slug] && !theDefault === settings?.[slug] ? !theDefault : theDefault
 					}
-					onChange={(value) => saveConfig(slug, value)}
+					onChange={(value) => {
+						saveConfig(slug, value);
+						if (slug === 'enable_custom_css_indicator') {
+							handleCustomCssIndicatorChange(value);
+						}
+					}}
 					help={help}
 				/>
 			)}

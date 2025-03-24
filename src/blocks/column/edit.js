@@ -1109,6 +1109,9 @@ function SectionEdit(props) {
 	);
 	const previewMinHeightUnit = heightUnit ? heightUnit : 'px';
 	const previewStickyOffsetUnit = stickyOffsetUnit ? stickyOffsetUnit : 'px';
+	const isCustomCssIndicatorEnabled = useSelect((select) =>
+		select('kadenceblocks/data').getEnableCustomCssIndicator()
+	);
 	const classes = classnames(
 		{
 			[className]: className,
@@ -1120,7 +1123,7 @@ function SectionEdit(props) {
 			'kvs-md-false': vstablet !== 'undefined' && vstablet,
 			'kvs-sm-false': vsmobile !== 'undefined' && vsmobile,
 		},
-		wrapperProps?.className
+		isCustomCssIndicatorEnabled ? wrapperProps?.className : null
 	);
 	const previewBackgroundImg = dynamicBackgroundImg ? dynamicBackgroundImg : backgroundImg;
 	const hasBackgroundImage =

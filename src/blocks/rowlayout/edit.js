@@ -873,6 +873,9 @@ function RowLayoutEditContainer(props) {
 	const previewRowGutter = getPreviewSize(previewDevice, collapseGutter, tabletRowGutter, mobileRowGutter);
 	const rowGap = getPreviewGutterSize(previewDevice, previewRowGutter, customRowGutter, rowType);
 	const gapTotal = getGutterTotal(columnGap, columns);
+	const isCustomCssIndicatorEnabled = useSelect((select) =>
+		select('kadenceblocks/data').getEnableCustomCssIndicator()
+	);
 	const classes = classnames(
 		{
 			'kt-row-column-wrap': true,
@@ -892,7 +895,7 @@ function RowLayoutEditContainer(props) {
 			'kvs-false': getPreviewSize(previewDevice, vsdesk, vstablet, vsmobile),
 			'kadence-has-rcp-display': rcpMembership && kadence_blocks_params && kadence_blocks_params.rcp_access,
 		},
-		wrapperProps?.className
+		isCustomCssIndicatorEnabled ? wrapperProps?.className : null
 	);
 	const startlayoutOptions = [
 		{ key: 'equal', col: 1, name: __('Row', 'kadence-blocks'), icon: rowIcon },

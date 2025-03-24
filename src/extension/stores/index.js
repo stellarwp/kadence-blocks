@@ -1,4 +1,4 @@
-import { createReduxStore, register, createRegistrySelector, createRegistryControl } from '@wordpress/data';
+import { createReduxStore, register, createRegistrySelector, createRegistryControl, useSelect } from '@wordpress/data';
 import { get } from 'lodash';
 
 const DEFAULT_STATE = {
@@ -12,9 +12,16 @@ const DEFAULT_STATE = {
 	imagePickerMultiSelection: [],
 	imagePickerResults: {},
 	imagePickerDownloadedImages: [],
+	enableCustomCssIndicator: true,
 };
 
 const actions = {
+	setEnableCustomCssIndicator(value) {
+		return {
+			type: 'SET_ENABLE_CUSTOM_CSS_INDICATOR',
+			value,
+		};
+	},
 	*setPreviewDeviceType(deviceType) {
 		const setForCore = yield {
 			type: 'SET_PREVIEW_DEVICE_TYPE_FOR_CORE',
@@ -178,6 +185,11 @@ const getPreviewDeviceType = createRegistrySelector((select) => (state) => {
 const store = createReduxStore('kadenceblocks/data', {
 	reducer(state = DEFAULT_STATE, action) {
 		switch (action.type) {
+			case 'SET_ENABLE_CUSTOM_CSS_INDICATOR':
+				return {
+					...state,
+					enableCustomCssIndicator: action.value,
+				};
 			case 'SET_OPEN_HEADER_VISUAL_BUILDER_ID':
 				return {
 					...state,
@@ -310,6 +322,9 @@ const store = createReduxStore('kadenceblocks/data', {
 	controls,
 	selectors: {
 		getPreviewDeviceType,
+		getEnableCustomCssIndicator(state) {
+			return state.enableCustomCssIndicator;
+		},
 		getUniqueIDs(state) {
 			const { uniqueIDs } = state;
 			return uniqueIDs;

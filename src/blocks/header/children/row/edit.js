@@ -138,6 +138,9 @@ export function Edit(props) {
 
 		return true;
 	}, [innerBlocks]);
+	const isCustomCssIndicatorEnabled = useSelect((select) =>
+		select('kadenceblocks/data').getEnableCustomCssIndicator()
+	);
 	const blockClasses = classnames(
 		{
 			'wp-block-kadence-header-row': true,
@@ -148,7 +151,7 @@ export function Edit(props) {
 			[`kb-header-row-layout-config-${layoutConfig}`]: layoutConfig,
 			'wp-block-kadence-header-row--force-hide': !hasInsertedChildBlocks,
 		},
-		wrapperProps?.className
+		isCustomCssIndicatorEnabled ? wrapperProps?.className : null
 	);
 	const blockProps = useBlockProps({
 		className: blockClasses,
