@@ -188,10 +188,10 @@ export default function ResponsiveShadowControl ( {
 		'soft-inner-glow': {hOffset: 0, vOffset: 0, blur: 60, spread: -15, inset: true},
 		'soft-outer-glow': {hOffset: 0, vOffset: 0, blur: 60, spread: 5, inset: false},
 		'right-offset-glow': {hOffset: 20, vOffset: 20, blur: 30, spread: 0, inset: false},
-		'bottom-offset-glow': {hOffset: 0, vOffset: 35, blur: 20, spread: -5, inset: false},
+		'bottom-offset-glow': {hOffset: 0, vOffset: 35, blur: 30, spread: -5, inset: false},
 		'inner-solid': {hOffset: 0, vOffset: 0, blur: 0, spread: 15, inset: true},
 		'right-bottom-solid': {hOffset: 15, vOffset: 15, blur: 0, spread: 0, inset: false},
-		'top-left-solid': {hOffset: -10, vOffset: -10, blur: 0, spread: 10, inset: false},
+		'top-left-solid': {hOffset: -15, vOffset: -15, blur: 0, spread: 0, inset: false},
 	};
 
 	const applyPreset = (value) => {
