@@ -400,6 +400,22 @@
 				}
 			}
 		},
+		addAriaRequired(form) {
+			const inputs = form.querySelectorAll('input');
+
+			if (!inputs.length) {
+				return;
+			}
+
+			for (let i = 0; i < inputs.length; i++) {
+				const input = inputs[i];
+				const isRequired = input.dataset?.required;
+				const isHidden = input.getAttribute('type') == 'hidden';
+				if (isRequired && !isHidden) {
+					input.setAttribute('aria-required', 'true');
+				}
+			}
+		},
 		initForms() {
 			const forms = document.querySelectorAll('form.kb-form');
 			if (!forms.length) {
@@ -412,6 +428,7 @@
 			};
 			for (let n = 0; n < forms.length; n++) {
 				window.kadenceForm.verifySource(forms[n]);
+				window.kadenceForm.addAriaRequired(forms[n]);
 				forms[n].addEventListener('submit', click_function(forms[n]));
 			}
 		},
