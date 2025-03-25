@@ -875,27 +875,25 @@ function RowLayoutEditContainer(props) {
 	const rowGap = getPreviewGutterSize(previewDevice, previewRowGutter, customRowGutter, rowType);
 	const gapTotal = getGutterTotal(columnGap, columns);
 	const hasCustomCss = hasKadenceCustomCss(kadenceBlockCSS, kadence_blocks_params?.globalSettings);
-	const classes = classnames(
-		{
-			'kt-row-column-wrap': true,
-			[`align${align}`]: align,
-			[`kb-row-id-${uniqueID}`]: uniqueID,
-			[`kt-has-${columns}-columns`]: columns,
-			[`kt-row-layout-${previewColLayout}`]: previewColLayout,
-			[`kt-row-valign-${verticalAlignment}`]: verticalAlignment,
-			// [ `kt-tab-layout-${ tabLayoutClass }` ]: tabLayoutClass,
-			// [ `kt-mobile-layout-${ mobileLayoutClass }` ]: mobileLayoutClass,
-			[`current-tab-${currentTab}`]: currentTab,
-			[`kt-v-gutter-${collapseGutter}`]: collapseGutter,
-			[`kt-m-colapse-${collapseOrder}`]: previewDevice !== 'Desktop' ? collapseOrder : false,
-			[hasBG]: hasBG,
-			'has-border-radius': hasBorderRadius,
-			'kt-inner-column-height-full': columnsInnerHeight,
-			'kvs-false': getPreviewSize(previewDevice, vsdesk, vstablet, vsmobile),
-			'kadence-has-rcp-display': rcpMembership && kadence_blocks_params && kadence_blocks_params.rcp_access,
-			['kadence-has-custom-css']: hasCustomCss,
-		}
-	);
+	const classes = classnames({
+		'kt-row-column-wrap': true,
+		[`align${align}`]: align,
+		[`kb-row-id-${uniqueID}`]: uniqueID,
+		[`kt-has-${columns}-columns`]: columns,
+		[`kt-row-layout-${previewColLayout}`]: previewColLayout,
+		[`kt-row-valign-${verticalAlignment}`]: verticalAlignment,
+		// [ `kt-tab-layout-${ tabLayoutClass }` ]: tabLayoutClass,
+		// [ `kt-mobile-layout-${ mobileLayoutClass }` ]: mobileLayoutClass,
+		[`current-tab-${currentTab}`]: currentTab,
+		[`kt-v-gutter-${collapseGutter}`]: collapseGutter,
+		[`kt-m-colapse-${collapseOrder}`]: previewDevice !== 'Desktop' ? collapseOrder : false,
+		[hasBG]: hasBG,
+		'has-border-radius': hasBorderRadius,
+		'kt-inner-column-height-full': columnsInnerHeight,
+		'kvs-false': getPreviewSize(previewDevice, vsdesk, vstablet, vsmobile),
+		'kadence-has-rcp-display': rcpMembership && kadence_blocks_params && kadence_blocks_params.rcp_access,
+		'kadence-has-custom-css': hasCustomCss,
+	});
 	const startlayoutOptions = [
 		{ key: 'equal', col: 1, name: __('Row', 'kadence-blocks'), icon: rowIcon },
 		{ key: 'equal', col: 2, name: __('Two: Equal', 'kadence-blocks'), icon: twoColIcon },
