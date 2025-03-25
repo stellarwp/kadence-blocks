@@ -760,7 +760,7 @@ function KadenceConfig() {
 								type={'toggle'}
 								theDefault={false}
 								help={__(
-									'This will add a custom indicator to the block editor to indicate if the block has custom CSS. Requires a page refresh or block rerender.',
+									'This will add a custom indicator to the block editor to indicate if the block has custom CSS.',
 									'kadence-blocks'
 								)}
 							/>
