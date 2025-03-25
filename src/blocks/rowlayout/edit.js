@@ -122,7 +122,6 @@ function RowLayoutEditContainer(props) {
 		toggleSelection,
 		isSelected,
 		clientId,
-		wrapperProps,
 	} = props;
 	const {
 		uniqueID,

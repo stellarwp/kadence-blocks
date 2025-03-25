@@ -106,7 +106,7 @@ import { applyFilters } from '@wordpress/hooks';
  * Build the section edit.
  */
 function SectionEdit(props) {
-	const { attributes, setAttributes, isSelected, clientId, context, className, wrapperProps } = props;
+	const { attributes, setAttributes, isSelected, clientId, context, className } = props;
 	const {
 		id,
 		topPadding,

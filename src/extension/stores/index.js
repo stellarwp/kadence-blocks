@@ -1,4 +1,4 @@
-import { createReduxStore, register, createRegistrySelector, createRegistryControl, useSelect } from '@wordpress/data';
+import { createReduxStore, register, createRegistrySelector, createRegistryControl } from '@wordpress/data';
 import { get } from 'lodash';
 
 const DEFAULT_STATE = {
