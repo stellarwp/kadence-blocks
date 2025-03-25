@@ -874,7 +874,7 @@ function RowLayoutEditContainer(props) {
 	const previewRowGutter = getPreviewSize(previewDevice, collapseGutter, tabletRowGutter, mobileRowGutter);
 	const rowGap = getPreviewGutterSize(previewDevice, previewRowGutter, customRowGutter, rowType);
 	const gapTotal = getGutterTotal(columnGap, columns);
-	const hasCustomCss = hasKadenceCustomCss(kadenceBlockCSS, kadence_blocks_params?.globalSettings);
+	const hasCustomCss = hasKadenceCustomCss(kadenceBlockCSS);
 	const classes = classnames({
 		'kt-row-column-wrap': true,
 		[`align${align}`]: align,

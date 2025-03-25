@@ -1110,7 +1110,7 @@ function SectionEdit(props) {
 	);
 	const previewMinHeightUnit = heightUnit ? heightUnit : 'px';
 	const previewStickyOffsetUnit = stickyOffsetUnit ? stickyOffsetUnit : 'px';
-	const hasCustomCss = hasKadenceCustomCss(kadenceBlockCSS, kadence_blocks_params?.globalSettings);
+	const hasCustomCss = hasKadenceCustomCss(kadenceBlockCSS);
 	const classes = classnames({
 		[className]: className,
 		'kadence-column': true,

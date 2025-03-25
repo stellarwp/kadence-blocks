@@ -139,7 +139,7 @@ export function Edit(props) {
 
 		return true;
 	}, [innerBlocks]);
-	const hasCustomCss = hasKadenceCustomCss(kadenceBlockCSS, kadence_blocks_params?.globalSettings);
+	const hasCustomCss = hasKadenceCustomCss(kadenceBlockCSS);
 	const blockClasses = classnames({
 		'wp-block-kadence-header-row': true,
 		[`wp-block-kadence-header-row-${location}`]: location,
