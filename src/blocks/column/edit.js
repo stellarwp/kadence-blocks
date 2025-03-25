@@ -1111,19 +1111,17 @@ function SectionEdit(props) {
 	const previewMinHeightUnit = heightUnit ? heightUnit : 'px';
 	const previewStickyOffsetUnit = stickyOffsetUnit ? stickyOffsetUnit : 'px';
 	const hasCustomCss = hasKadenceCustomCss(kadenceBlockCSS, kadence_blocks_params?.globalSettings);
-	const classes = classnames(
-		{
-			[className]: className,
-			'kadence-column': true,
-			[`inner-column-${id}`]: id,
-			[`kadence-column-${uniqueID}`]: uniqueID,
-			[`kadence-section-sticky`]: sticky !== undefined ? sticky : false,
-			'kvs-lg-false': vsdesk !== 'undefined' && vsdesk,
-			'kvs-md-false': vstablet !== 'undefined' && vstablet,
-			'kvs-sm-false': vsmobile !== 'undefined' && vsmobile,
-			['kadence-has-custom-css']: hasCustomCss,
-		}
-	);
+	const classes = classnames({
+		[className]: className,
+		'kadence-column': true,
+		[`inner-column-${id}`]: id,
+		[`kadence-column-${uniqueID}`]: uniqueID,
+		[`kadence-section-sticky`]: sticky !== undefined ? sticky : false,
+		'kvs-lg-false': vsdesk !== 'undefined' && vsdesk,
+		'kvs-md-false': vstablet !== 'undefined' && vstablet,
+		'kvs-sm-false': vsmobile !== 'undefined' && vsmobile,
+		'kadence-has-custom-css': hasCustomCss,
+	});
 	const previewBackgroundImg = dynamicBackgroundImg ? dynamicBackgroundImg : backgroundImg;
 	const hasBackgroundImage =
 		previewBackgroundImg && previewBackgroundImg[0] && previewBackgroundImg[0].bgImg ? true : false;
