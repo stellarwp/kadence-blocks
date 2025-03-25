@@ -266,3 +266,5 @@ export { default as stackedTextOrientationIcon } from './text-orientation/stacke
 export { default as sidewaysDownTextOrientationIcon } from './text-orientation/sideways-down';
 export { default as sidewaysUpTextOrientationIcon } from './text-orientation/sideways-up';
 
+// Shadow Presets
+export { default as shadowPresetNone } from './shadow-presets/no-shadow';
