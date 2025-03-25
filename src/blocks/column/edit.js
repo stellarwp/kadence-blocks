@@ -53,6 +53,7 @@ import {
 	getInQueryBlock,
 	setDynamicState,
 	getPostOrFseId,
+	hasKadenceCustomCss,
 } from '@kadence/helpers';
 
 import './editor.scss';
@@ -1109,9 +1110,7 @@ function SectionEdit(props) {
 	);
 	const previewMinHeightUnit = heightUnit ? heightUnit : 'px';
 	const previewStickyOffsetUnit = stickyOffsetUnit ? stickyOffsetUnit : 'px';
-	const isCustomCssIndicatorEnabled = useSelect((select) =>
-		select('kadenceblocks/data').getEnableCustomCssIndicator()
-	);
+	const hasCustomCss = hasKadenceCustomCss(kadenceBlockCSS, kadence_blocks_params?.globalSettings);
 	const classes = classnames(
 		{
 			[className]: className,
@@ -1122,8 +1121,8 @@ function SectionEdit(props) {
 			'kvs-lg-false': vsdesk !== 'undefined' && vsdesk,
 			'kvs-md-false': vstablet !== 'undefined' && vstablet,
 			'kvs-sm-false': vsmobile !== 'undefined' && vsmobile,
-		},
-		isCustomCssIndicatorEnabled ? wrapperProps?.className : null
+			['kadence-has-custom-css']: hasCustomCss,
+		}
 	);
 	const previewBackgroundImg = dynamicBackgroundImg ? dynamicBackgroundImg : backgroundImg;
 	const hasBackgroundImage =

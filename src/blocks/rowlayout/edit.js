@@ -54,6 +54,7 @@ import {
 	getInQueryBlock,
 	setDynamicState,
 	getPostOrFseId,
+	hasKadenceCustomCss,
 } from '@kadence/helpers';
 
 /**
@@ -873,9 +874,7 @@ function RowLayoutEditContainer(props) {
 	const previewRowGutter = getPreviewSize(previewDevice, collapseGutter, tabletRowGutter, mobileRowGutter);
 	const rowGap = getPreviewGutterSize(previewDevice, previewRowGutter, customRowGutter, rowType);
 	const gapTotal = getGutterTotal(columnGap, columns);
-	const isCustomCssIndicatorEnabled = useSelect((select) =>
-		select('kadenceblocks/data').getEnableCustomCssIndicator()
-	);
+	const hasCustomCss = hasKadenceCustomCss(kadenceBlockCSS, kadence_blocks_params?.globalSettings);
 	const classes = classnames(
 		{
 			'kt-row-column-wrap': true,
@@ -894,8 +893,8 @@ function RowLayoutEditContainer(props) {
 			'kt-inner-column-height-full': columnsInnerHeight,
 			'kvs-false': getPreviewSize(previewDevice, vsdesk, vstablet, vsmobile),
 			'kadence-has-rcp-display': rcpMembership && kadence_blocks_params && kadence_blocks_params.rcp_access,
-		},
-		isCustomCssIndicatorEnabled ? wrapperProps?.className : null
+			['kadence-has-custom-css']: hasCustomCss,
+		}
 	);
 	const startlayoutOptions = [
 		{ key: 'equal', col: 1, name: __('Row', 'kadence-blocks'), icon: rowIcon },
