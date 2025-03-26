@@ -1502,6 +1502,65 @@ class Kadence_Blocks_CSS {
 
 		return $shadow_string;
 	}
+
+	/**
+	 * Generates the text shadow CSS property value.
+	 *
+	 * @param array $shadow An array containing the text shadow properties, including
+	 *                      'color', 'opacity', 'hOffset', 'vOffset', and 'blur'.
+	 * @return string|false The text shadow value as a string if valid, or false if the input is invalid.
+	 */
+	public function render_text_shadow($shadow ) {
+		if ( empty( $shadow ) ) {
+			return false;
+		}
+		if ( ! is_array( $shadow ) ) {
+			return false;
+		}
+		if ( ! isset( $shadow['color'] ) ) {
+			return false;
+		}
+		if ( ! isset( $shadow['opacity'] ) ) {
+			return false;
+		}
+		if ( ! isset( $shadow['hOffset'] ) ) {
+			return false;
+		}
+		if ( ! isset( $shadow['vOffset'] ) ) {
+			return false;
+		}
+		if ( ! isset( $shadow['blur'] ) ) {
+			return false;
+		}
+		if ( $this->is_rgba($shadow['color']) ) {
+			$shadow_string = ( ! empty( $shadow['hOffset'] ) ? $shadow['hOffset'] : '0' ) . 'px '
+				. ( ! empty( $shadow['vOffset'] ) ? $shadow['vOffset'] : '0' ) . 'px '
+				. ( ! empty( $shadow['blur'] ) ? $shadow['blur'] : '0' ) . 'px '
+				. ( ! empty( $shadow['color'] )
+					? $this->render_color( $shadow['color'] )
+					: $this->render_color( '#000000', $shadow['opacity'] )
+				);
+		} else {
+			$shadow_string = ( ! empty( $shadow['hOffset'] ) ? $shadow['hOffset'] : '0' ) . 'px '
+				. ( ! empty( $shadow['vOffset'] ) ? $shadow['vOffset'] : '0' ) . 'px '
+				. ( ! empty( $shadow['blur'] ) ? $shadow['blur'] : '0' ) . 'px '
+				. ( ! empty( $shadow['color'] )
+					? $this->render_color( $shadow['color'], $shadow['opacity'] )
+					: $this->render_color( '#000000', $shadow['opacity'] )
+				);
+		}
+
+		return $shadow_string;
+	}
+	/**
+	 * Determines if a given color string is in RGBA format. This is needed for backwards compatibility.
+	 *
+	 * @param string $color The color string to evaluate.
+	 * @return int|false Returns 1 if the string matches the RGBA format, 0 if it does not, or false if an error occurred.
+	 */
+	function is_rgba($color) {
+		return preg_match('/rgba\(\s*\d+,\s*\d+,\s*\d+,\s*(\d*\.?\d+)\s*\)/', $color);
+	}
 	/**
 	 * Generates the border radius color output.
 	 *
