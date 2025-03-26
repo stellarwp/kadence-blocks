@@ -176,8 +176,8 @@
 
 .upload-svg-modal {
 	.modal-body {
-		padding-left: 32px;
-		padding-right: 32px;
+		padding-left: 16px !important;
+		padding-right: 16px !important;
 	}
 
 	.security-notice {
@@ -277,3 +277,87 @@
 		display: block !important;
 	}
 }
+
+.components-modal__header {
+	padding-left: 16px;
+	padding-right: 16px;
+}
+.kb-icon-block__add-icon-modal-tabs .active-tab {
+	border-bottom: 2px solid #007cba;
+}
+.kb-icon-block__add-icon-modal-tabs .components-tab-panel__tabs {
+	border-bottom: 1px solid #ddd;
+	margin-bottom: 10px;
+}
+
+.svg-search-modal {
+	min-height: 300px;
+
+	.svg-search-modal__input_row {
+		display: flex;
+		gap: 10px;
+		width: 100%;
+	}
+
+	.svg-search-modal__input_row .components-base-control {
+		flex: 2;
+		min-width: 300px;
+
+		.components-text-control__input {
+			height: 35px;
+		}
+	}
+
+	.svg-search-modal__input_row .components-button {
+		flex-shrink: 0;
+		height: 35px;
+	}
+
+	.svg-search-modal__results {
+		display: grid;
+		grid-template-columns: repeat(5, 1fr);
+		grid-template-rows: repeat(4, auto);
+		gap: 10px;
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+
+		li {
+			justify-content: center;
+			align-items: center;
+			border-radius: 4px;
+			cursor: pointer;
+			display: inline-block;
+
+			img {
+				max-width: 100%;
+				height: auto;
+				padding: 25%;
+			}
+		}
+	}
+
+	.svg-search-modal__error {
+		color: red;
+	}
+
+	/* Center the spinner within the container */
+	.svg-search-modal__loading {
+		display: flex; /* Use Flexbox for centering */
+		justify-content: center; /* Horizontally center */
+		align-items: center; /* Vertically center */
+		height: 100px; /* Set height for the loading area */
+	}
+
+	/* Spinner animation to rotate */
+	@keyframes spin {
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+}
+

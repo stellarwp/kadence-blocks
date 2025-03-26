@@ -85,6 +85,7 @@ export { default as infoboxIcon } from './block-icons/infobox';
 export { default as lottieIcon } from './block-icons/lottie';
 export { default as tableOfContentsIcon } from './block-icons/table-of-contents/icon';
 export { default as logoBlockIcon } from './block-icons/logo';
+export { default as vectorBlockIcon } from './block-icons/vector';
 
 // Accordion Block
 export { default as accord1Icon } from './block-icons/accordion-block/accord-1';
@@ -265,3 +266,5 @@ export { default as stackedTextOrientationIcon } from './text-orientation/stacke
 export { default as sidewaysDownTextOrientationIcon } from './text-orientation/sideways-down';
 export { default as sidewaysUpTextOrientationIcon } from './text-orientation/sideways-up';
 
+// Shadow Presets
+export { default as shadowPresetNone } from './shadow-presets/no-shadow';

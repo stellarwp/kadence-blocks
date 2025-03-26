@@ -315,7 +315,7 @@ class Kadence_Blocks_Cpt_Import_Export
 
 				if ($parent_id !== null) {
 					if (!isset($this->relationship_map[$parent_id])) {
-						$this->relationship_map[$parent_id] = array();
+						$this->relationship_map[$parent_id] = [];
 					}
 					$this->relationship_map[$parent_id][] = $nested_id;
 				}

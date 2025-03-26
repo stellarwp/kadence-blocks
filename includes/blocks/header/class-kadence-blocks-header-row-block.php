@@ -155,11 +155,13 @@ class Kadence_Blocks_Header_Row_Block extends Kadence_Blocks_Abstract_Block {
 			'desktop_key' => 'padding',
 			'tablet_key'  => 'paddingTablet',
 			'mobile_key'  => 'paddingMobile',
+			'unit_key'    => 'paddingUnit'
 		) );
 		$css->render_measure_output( $attributes, 'margin', 'margin', array(
 			'desktop_key' => 'margin',
 			'tablet_key'  => 'marginTablet',
 			'mobile_key'  => 'marginMobile',
+			'unit_key'    => 'marginUnit'
 		) );
 
 		// Pass down to sections.

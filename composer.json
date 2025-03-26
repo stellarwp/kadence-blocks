@@ -36,6 +36,7 @@
 	],
 	"require": {
 		"composer/installers": "^2.0",
+		"enshrined/svg-sanitize": "^0.21.0",
 		"lucatume/di52": "^3.3",
 		"psr/container": "^1.0",
 		"stellarwp/container-contract": "^1.0",

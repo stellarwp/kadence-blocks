@@ -111,6 +111,7 @@ class Editor_Assets {
 
 		$blocks = [
 			'accordion',
+			'advanced-form',
 			'advancedbtn',
 			'advancedgallery',
 			'advancedheading',
@@ -119,12 +120,15 @@ class Editor_Assets {
 			'countdown',
 			'form',
 			'googlemaps',
+			'header',
 			'icon',
 			'iconlist',
 			'image',
 			'infobox',
 			'lottie',
 			'identity',
+			'navigation',
+			'navigation-link',
 			'posts',
 			'rowlayout',
 			'progress-bar',
@@ -135,10 +139,7 @@ class Editor_Assets {
 			'tableofcontents',
 			'tabs',
 			'testimonials',
-			'advanced-form',
-			'header',
-			'navigation',
-			'navigation-link',
+			'vector',
 		];
 
 		// for blocks moved from pro to free
@@ -232,7 +233,7 @@ class Editor_Assets {
 			$userrole = 'contributor';
 		}
 		$access_levels = [];
-		$level_ids     = false;
+		$level_ids     = [];
 		if ( function_exists( 'rcp_get_access_levels' ) ) {
 			foreach ( rcp_get_access_levels() as $key => $access_level_label ) {
 				$access_levels[] = [
@@ -247,6 +248,9 @@ class Editor_Assets {
 					'label' => esc_attr( $level->get_name() ),
 				];
 			}
+		}
+		if ( empty( $level_ids ) ) {
+			$level_ids = false;
 		}
 		if ( ! class_exists( 'Kadence\Theme' ) ) {
 			$global_colors = [

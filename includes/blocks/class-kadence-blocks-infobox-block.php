@@ -345,6 +345,7 @@ class Kadence_Blocks_Infobox_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		if ( isset( $media_style['borderRadius'] ) && ! empty( $media_style['borderRadius'] ) ) {
 			$css->add_property( 'border-radius', $media_style['borderRadius'] . ( isset( $media_style['borderRadiusUnit'] )  ? $media_style['borderRadiusUnit'] : 'px' ) );
+			$css->add_property( 'overflow', 'hidden' );
 		}
 		if ( isset( $media_style['borderWidth'] ) && is_array( $media_style['borderWidth'] ) ) {
 			$border_width_unit = isset( $media_style['borderWidthUnit'] ) ? $media_style['borderWidthUnit'] : 'px';

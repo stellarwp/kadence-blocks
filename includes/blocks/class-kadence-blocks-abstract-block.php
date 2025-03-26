@@ -80,6 +80,7 @@ class Kadence_Blocks_Abstract_Block {
 		'search',
 		'identity',
 		'table',
+		'vector',
 	];
 	
 	/**
