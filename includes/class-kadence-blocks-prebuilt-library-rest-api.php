@@ -1856,7 +1856,14 @@ class Kadence_Blocks_Prebuilt_Library_REST_Controller extends WP_REST_Controller
 		}
 		// Get the response.
 		$api_url  = add_query_arg( $args, $library_url );
-		$response = wp_safe_remote_get(
+		// $response = wp_safe_remote_get(
+		// 	$api_url,
+		// 	[
+		// 		'timeout' => 30,
+		// 	]
+		// );
+		// TEMP
+		$response = wp_remote_get(
 			$api_url,
 			[
 				'timeout' => 30,

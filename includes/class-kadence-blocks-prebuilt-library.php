@@ -544,7 +544,13 @@ class Kadence_Blocks_Prebuilt_Library {
 		];
 		// Get the response.
 		$api_url  = add_query_arg( $args, $this->url );
-		$response = wp_safe_remote_get(
+		// $response = wp_safe_remote_get(
+		// 	$api_url,
+		// 	[
+		// 		'timeout' => 20,
+		// 	]
+		// );
+		$response = wp_remote_get(
 			$api_url,
 			[
 				'timeout' => 20,
