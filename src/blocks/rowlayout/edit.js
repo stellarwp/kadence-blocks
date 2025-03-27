@@ -1433,7 +1433,7 @@ function RowLayoutEditContainer(props) {
 												</>
 											)}
 											<ToggleControl
-												label={__('Hide from Loggedout Users', 'kadence-blocks')}
+												label={__('Hide from Logged out Users', 'kadence-blocks')}
 												checked={undefined !== loggedOut ? loggedOut : false}
 												onChange={(value) => setAttributes({ loggedOut: value })}
 											/>
