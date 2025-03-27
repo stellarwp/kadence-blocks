@@ -177,6 +177,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 = 3.5.1 =
 Release Date: 3rd April 2025
 * Add: Box shadow presets.
+* Add: Custom CSS indicator.
 
 = 3.5.0 =
 Release Date: 18th March 2025
