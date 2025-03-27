@@ -178,6 +178,7 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 Release Date: 3rd April 2025
 * Add: Box shadow presets.
 * Add: Custom CSS indicator.
+* Update: Focus on Text (Adv) when is selected.
 
 = 3.5.0 =
 Release Date: 18th March 2025
