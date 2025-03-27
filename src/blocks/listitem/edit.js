@@ -828,7 +828,7 @@ function KadenceListItem(props) {
 			)}
 
 			<div
-				className={`kt-svg-icon-list-item-wrap-${uniqueID} kt-svg-icon-list-item-0 kt-svg-icon-list-level-${level}${
+				className={`kt-svg-icon-list-item-wrap kt-svg-icon-list-item-wrap-${uniqueID} kt-svg-icon-list-item-0 kt-svg-icon-list-level-${level}${
 					style ? ' kt-svg-icon-list-style-' + style : ''
 				}`}
 			>
