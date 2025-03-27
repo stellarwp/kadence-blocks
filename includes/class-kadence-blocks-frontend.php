@@ -218,7 +218,9 @@ class Kadence_Blocks_Frontend {
 				
 				$answer = '';
 				foreach ( $block['innerBlocks'] as $inner_key => $inner_block ) {
-					$answer .= trim( strip_tags( render_block($inner_block), $allowed_tags ) );
+					$block_content = render_block($inner_block);
+					$block_content = preg_replace('/<style\b[^>]*>(.*?)<\/style>/is', '', $block_content);
+					$answer .= trim( strip_tags( $block_content, $allowed_tags ) );
 				}
 
 				preg_match( '/<span class="kt-blocks-accordion-title">(.*?)<\/span>/s', do_blocks($block['innerHTML']), $match );
