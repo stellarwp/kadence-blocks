@@ -571,7 +571,7 @@ function PatternList({
 				setFailedAI(false);
 				return [];
 			} else if ('error' === getContextState(aiContext)) {
-				console.log('Error Generating AI Content');
+				console.log('Error Generating AI Content, perhaps licensing?');
 				setFailedAI(true);
 				setFailedAIType('license');
 			} else if ('credits' === getContextState(aiContext)) {
@@ -885,7 +885,8 @@ function PatternList({
 		<div ref={setRootScroll} className="block-editor-block-patterns-explorer__wrap">
 			<div
 				className={`block-editor-block-patterns-explorer__list${
-					contextTab === 'context' ? ' kb-ai-patterns-explorer' : ''
+					(contextTab === 'context' ? ' kb-ai-patterns-explorer' : '') +
+					(failedAI ? ' kb-ai-patterns-explorer-failed' : '')
 				}`}
 			>
 				{hasItems && (
@@ -922,7 +923,7 @@ function PatternList({
 							generateContext={(tempCon) => generateContext(tempCon)}
 						/>
 					)}
-				{contextTab === 'context' && !failedAI && !filterValue && (
+				{contextTab === 'context' && hasItems && !failedAI && !filterValue && (
 					<div className="kb-patterns-filter-wrapper">
 						<span className="kb-pattern-filter-label">Filter by:</span>
 						{categories.length > 0 && (
@@ -953,7 +954,7 @@ function PatternList({
 						rootScroll={rootScroll}
 					/>
 				)}
-				{!hasItems && !failedAI && (
+				{!hasItems && !failedAI && getContextState(aiContext) && (
 					<div className="kb-patterns-filter-wrapper">
 						{__('No patterns were found based on the selected filters.', 'kadence-blocks')}
 					</div>
