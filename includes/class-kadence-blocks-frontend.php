@@ -219,8 +219,15 @@ class Kadence_Blocks_Frontend {
 				$answer = '';
 				foreach ( $block['innerBlocks'] as $inner_key => $inner_block ) {
 					$block_content = render_block($inner_block);
-					$block_content = preg_replace('/<style\b[^>]*>(.*?)<\/style>/is', '', $block_content);
-					$answer .= trim( strip_tags( $block_content, $allowed_tags ) );
+					// Remove script and style tags
+					$block_content = preg_replace('@<(script|style)[^>]*?>.*?</\\1>@si', '', $block_content);
+
+					// Remove all other tags
+					$block_content = strip_tags( $block_content, $allowed_tags );
+
+					// Remove attributes from tags
+					$block_content = preg_replace('/<([a-z][a-z0-9]*)[^>]*>/i', '<$1>', $block_content);
+					$answer .= trim( $block_content );
 				}
 
 				preg_match( '/<span class="kt-blocks-accordion-title">(.*?)<\/span>/s', do_blocks($block['innerHTML']), $match );
