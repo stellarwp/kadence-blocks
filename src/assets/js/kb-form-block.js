@@ -401,7 +401,7 @@
 			}
 		},
 		addAriaRequired(form) {
-			const inputs = form.querySelectorAll('input');
+			const inputs = form.querySelectorAll('input, select, textarea');
 
 			if (!inputs.length) {
 				return;
