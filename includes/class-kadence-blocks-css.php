@@ -1589,41 +1589,37 @@ class Kadence_Blocks_CSS {
 				0.2
 			);
 		}
-		if ($textShadowTablet === null) {
-			$textShadowTablet = $textShadow;
-		}
-		if ($textShadowMobile === null) {
-			$textShadowMobile = $textShadowTablet;
-		}
 
 		$responsiveTextShadow = [$textShadow, $textShadowTablet, $textShadowMobile];
 
 		foreach ($responsiveTextShadow as $key => $textShadow) {
-			if ( $this->is_rgba($textShadow['color']) ) {
-				$shadow_string = ( ! empty( $textShadow['hOffset'] ) ? $textShadow['hOffset'] : '0' ) . 'px '
-					. ( ! empty( $textShadow['vOffset'] ) ? $textShadow['vOffset'] : '0' ) . 'px '
-					. ( ! empty( $textShadow['blur'] ) ? $textShadow['blur'] : '0' ) . 'px '
-					. ( ! empty( $textShadow['color'] )
-						? $this->render_color( $textShadow['color'] )
-						: $this->render_color( '#000000', $textShadow['opacity'] )
-					);
-			} else {
-				$shadow_string = ( ! empty( $textShadow['hOffset'] ) ? $textShadow['hOffset'] : '0' ) . 'px '
-					. ( ! empty( $textShadow['vOffset'] ) ? $textShadow['vOffset'] : '0' ) . 'px '
-					. ( ! empty( $textShadow['blur'] ) ? $textShadow['blur'] : '0' ) . 'px '
-					. ( ! empty( $textShadow['color'] )
-						? $this->render_color( $textShadow['color'], $textShadow['opacity'] )
-						: $this->render_color( '#000000', $textShadow['opacity'] )
-					);
-			}
+			if (!empty($textShadow)) {
+				if ( $this->is_rgba($textShadow['color']) ) {
+					$shadow_string = ( ! empty( $textShadow['hOffset'] ) ? $textShadow['hOffset'] : '0' ) . 'px '
+						. ( ! empty( $textShadow['vOffset'] ) ? $textShadow['vOffset'] : '0' ) . 'px '
+						. ( ! empty( $textShadow['blur'] ) ? $textShadow['blur'] : '0' ) . 'px '
+						. ( ! empty( $textShadow['color'] )
+							? $this->render_color( $textShadow['color'] )
+							: $this->render_color( '#000000', $textShadow['opacity'] )
+						);
+				} else {
+					$shadow_string = ( ! empty( $textShadow['hOffset'] ) ? $textShadow['hOffset'] : '0' ) . 'px '
+						. ( ! empty( $textShadow['vOffset'] ) ? $textShadow['vOffset'] : '0' ) . 'px '
+						. ( ! empty( $textShadow['blur'] ) ? $textShadow['blur'] : '0' ) . 'px '
+						. ( ! empty( $textShadow['color'] )
+							? $this->render_color( $textShadow['color'], $textShadow['opacity'] )
+							: $this->render_color( '#000000', $textShadow['opacity'] )
+						);
+				}
 
-			switch ($key) {
-				case 0: $this->set_media_state('desktop'); break;
-				case 1: $this->set_media_state('tablet'); break;
-				case 2: $this->set_media_state('mobile'); break;
-			}
+				switch ($key) {
+					case 0: $this->set_media_state('desktop'); break;
+					case 1: $this->set_media_state('tablet'); break;
+					case 2: $this->set_media_state('mobile'); break;
+				}
 
-			$this->add_property('text-shadow', $shadow_string);
+				$this->add_property('text-shadow', $shadow_string);
+			}
 		}
 	}
 	/**
