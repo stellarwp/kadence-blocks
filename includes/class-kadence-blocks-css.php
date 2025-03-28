@@ -1590,7 +1590,7 @@ class Kadence_Blocks_CSS {
 			);
 		}
 
-		$responsiveTextShadow = [$textShadow, $textShadowTablet, $textShadowMobile];
+		$responsiveTextShadow = [$textShadow, $textShadowTablet ?? null, $textShadowMobile ?? null];
 
 		foreach ($responsiveTextShadow as $key => $textShadow) {
 			if (!empty($textShadow)) {
