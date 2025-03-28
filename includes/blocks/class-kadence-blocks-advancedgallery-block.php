@@ -747,6 +747,10 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		$item_tag = ( ( 'carousel' === $type || 'slider' === $type || 'thumbslider' === $type || 'fluidcarousel' === $type ) ? 'div' : 'li' );
 		$fig_tag = ( empty( $href ) && 'below' === $caption_style ? 'figcaption' : 'div' );
 		$figcap = '<' . $fig_tag . ' class="kadence-blocks-gallery-item__caption">' . ( ! empty( $caption ) && is_string( $caption ) ? wp_kses_post( $caption ) : '' ) . '</' . $fig_tag . '>';
+		if( $link_to === 'media' && $lightbox === 'magnific' && ! empty( $figcap ) && is_string( $figcap ) ) {
+			$figcap = preg_replace('#<a.*?>(.*?)</a>#i', '\1', $figcap);
+		}
+
 		$image_classes = array( 'wp-image-' . $image_id );
 		if ( 'carousel' === $type || 'slider' === $type || 'thumbslider' === $type || 'fluidcarousel' === $type ) {
 			$image_classes[] = 'skip-lazy';
