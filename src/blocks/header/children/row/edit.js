@@ -18,7 +18,7 @@ import classnames from 'classnames';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useInnerBlocksProps, InspectorControls, useBlockProps } from '@wordpress/block-editor';
 
-import { getUniqueId, getPostOrFseId } from '@kadence/helpers';
+import { getUniqueId, getPostOrFseId, hasKadenceCustomCss } from '@kadence/helpers';
 import {
 	SelectParentBlock,
 	ResponsiveRangeControls,
@@ -88,6 +88,7 @@ export function Edit(props) {
 		sectionPriority,
 		sectionPriorityTablet,
 		sectionPriorityMobile,
+		kadenceBlockCSS,
 	} = attributes;
 
 	const [activeTab, setActiveTab] = useState('general');
@@ -138,6 +139,7 @@ export function Edit(props) {
 
 		return true;
 	}, [innerBlocks]);
+	const hasCustomCss = hasKadenceCustomCss(kadenceBlockCSS);
 	const blockClasses = classnames({
 		'wp-block-kadence-header-row': true,
 		[`wp-block-kadence-header-row-${location}`]: location,
@@ -146,6 +148,7 @@ export function Edit(props) {
 		[`kb-header-row-layout-standard`]: !layout,
 		[`kb-header-row-layout-config-${layoutConfig}`]: layoutConfig,
 		'wp-block-kadence-header-row--force-hide': !hasInsertedChildBlocks,
+		'kadence-has-custom-css': hasCustomCss,
 	});
 	const blockProps = useBlockProps({
 		className: blockClasses,
