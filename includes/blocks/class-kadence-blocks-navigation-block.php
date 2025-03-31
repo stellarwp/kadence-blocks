@@ -129,6 +129,8 @@ class Kadence_Blocks_Navigation_Block extends Kadence_Blocks_Abstract_Block {
 		//submenu link descriptions only, do not bleed
 		$css->set_selector( '.wp-block-kadence-navigation' . $unique_id . ' .sub-menu > .menu-item > .kb-link-wrap .kb-nav-label-description' );
 		$css->render_typography( $nav_attributes, 'dropdownDescriptionTypography' );
+		
+		return $css->css_output();
 	}
 
 	/**

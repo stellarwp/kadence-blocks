@@ -1078,6 +1078,7 @@ function KadenceAdvancedHeading(props) {
 						maxHeight: textOrientation !== 'horizontal' && textOrientation !== '' ? previewMaxHeight : '',
 					}}
 					placeholder={__('Write something…', 'kadence-blocks')}
+					isSelected={isSelected}
 				/>
 			)}
 			{isDynamicReplaced && (

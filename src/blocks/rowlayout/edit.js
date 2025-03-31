@@ -54,6 +54,7 @@ import {
 	getInQueryBlock,
 	setDynamicState,
 	getPostOrFseId,
+	hasKadenceCustomCss,
 } from '@kadence/helpers';
 
 /**
@@ -872,6 +873,7 @@ function RowLayoutEditContainer(props) {
 	const previewRowGutter = getPreviewSize(previewDevice, collapseGutter, tabletRowGutter, mobileRowGutter);
 	const rowGap = getPreviewGutterSize(previewDevice, previewRowGutter, customRowGutter, rowType);
 	const gapTotal = getGutterTotal(columnGap, columns);
+	const hasCustomCss = hasKadenceCustomCss(kadenceBlockCSS);
 	const classes = classnames({
 		'kt-row-column-wrap': true,
 		[`align${align}`]: align,
@@ -889,6 +891,7 @@ function RowLayoutEditContainer(props) {
 		'kt-inner-column-height-full': columnsInnerHeight,
 		'kvs-false': getPreviewSize(previewDevice, vsdesk, vstablet, vsmobile),
 		'kadence-has-rcp-display': rcpMembership && kadence_blocks_params && kadence_blocks_params.rcp_access,
+		'kadence-has-custom-css': hasCustomCss,
 	});
 	const startlayoutOptions = [
 		{ key: 'equal', col: 1, name: __('Row', 'kadence-blocks'), icon: rowIcon },
@@ -1430,7 +1433,7 @@ function RowLayoutEditContainer(props) {
 												</>
 											)}
 											<ToggleControl
-												label={__('Hide from Loggedout Users', 'kadence-blocks')}
+												label={__('Hide from Logged out Users', 'kadence-blocks')}
 												checked={undefined !== loggedOut ? loggedOut : false}
 												onChange={(value) => setAttributes({ loggedOut: value })}
 											/>

@@ -46,3 +46,5 @@ export { default as useElementHeight } from './use-element-height';
 export { default as KadenceBlocksCSS } from './css';
 export { blockExists } from './block-exists';
 export { allowOneBlockOfType } from './allow-one-block-of-type';
+
+export { default as hasKadenceCustomCss } from './has-kadence-custom-css';

@@ -506,7 +506,8 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 				case 'carousel':
 					$content .= '<div class="' . esc_attr( implode( ' ', $gallery_classes ) ) . '" data-image-filter="' . esc_attr( $image_filter ) . '" data-lightbox-caption="' . ( $lightbox_cap ? 'true' : 'false' ) . '">';
 					$content .= '<div class="kt-blocks-carousel kt-carousel-container-dotstyle-' . esc_attr( $dot_style ) . '">';
-					$content .= '<div class="kt-blocks-carousel-init kb-gallery-carousel kt-carousel-arrowstyle-' . esc_attr( $arrow_style ) . ' kt-carousel-dotstyle-' . esc_attr( $dot_style ) . '" data-columns-xxl="' . esc_attr( $columns_xxl ) . '" data-columns-xl="' . esc_attr( $columns_xl ) . '" data-columns-md="' . esc_attr( $columns_md ) . '" data-columns-sm="' . esc_attr( $columns_sm ) . '" data-columns-xs="' . esc_attr( $columns_xs ) . '" data-columns-ss="' . esc_attr( $columns_ss ) . '" data-slider-anim-speed="' . esc_attr( $trans_speed ) . '" data-slider-scroll="' . esc_attr( $slides_sc ) . '" data-slider-arrows="' . esc_attr( 'none' === $arrow_style ? 'false' : 'true' ) . '" data-slider-dots="' . esc_attr( 'none' === $dot_style ? 'false' : 'true' ) . '" data-slider-hover-pause="false" data-slider-auto="' . esc_attr( $autoplay ) . '" data-slider-speed="' . esc_attr( $auto_speed ) . '" data-slider-gap="' . esc_attr( $gap . $gap_unit ) . '" data-slider-gap-tablet="' . esc_attr( $tablet_gap . $gap_unit ) . '" data-slider-gap-mobile="' . esc_attr( $mobile_gap . $gap_unit ) . '">';
+					$content .= '<div class="kt-blocks-carousel-init kb-gallery-carousel kt-carousel-arrowstyle-' . esc_attr( $arrow_style ) . ' kt-carousel-dotstyle-' . esc_attr( $dot_style ) . '" data-columns-xxl="' . esc_attr( $columns_xxl ) . '" data-columns-xl="' . esc_attr( $columns_xl ) . '" data-columns-md="' . esc_attr( $columns_md ) . '" data-columns-sm="' . esc_attr( $columns_sm ) . '" data-columns-xs="' . esc_attr( $columns_xs ) . '" data-columns-ss="' . esc_attr( $columns_ss ) . '" data-slider-anim-speed="' . esc_attr( $trans_speed ) . '" data-slider-scroll="' . esc_attr( $slides_sc ) . '" data-slider-arrows="' . esc_attr( 'none' === $arrow_style ? 'false' : 'true' ) . '" data-slider-dots="' . esc_attr( 'none' === $dot_style ? 'false' : 'true' ) . '" data-slider-hover-pause="false" data-slider-auto="' . esc_attr( $autoplay ) . '" data-slider-speed="' . esc_attr( $auto_speed ) . '" data-slider-gap="' . esc_attr( $gap . $gap_unit ) . '" data-slider-gap-tablet="' . esc_attr( $tablet_gap . $gap_unit ) . '" data-slider-gap-mobile="' . esc_attr( $mobile_gap . $gap_unit ) . '" aria-label="' . esc_attr( __( 'Photo Gallery Carousel', 'kadence-blocks' ) ) . '">';
+
 					foreach ( $images as $key => $image ) {
 						$content .= '<div class="kb-slide-item kb-gallery-carousel-item">';
 						$content .= $this->render_gallery_images( $image, $attributes );
@@ -747,6 +748,13 @@ class Kadence_Blocks_Advancedgallery_Block extends Kadence_Blocks_Abstract_Block
 		$item_tag = ( ( 'carousel' === $type || 'slider' === $type || 'thumbslider' === $type || 'fluidcarousel' === $type ) ? 'div' : 'li' );
 		$fig_tag = ( empty( $href ) && 'below' === $caption_style ? 'figcaption' : 'div' );
 		$figcap = '<' . $fig_tag . ' class="kadence-blocks-gallery-item__caption">' . ( ! empty( $caption ) && is_string( $caption ) ? wp_kses_post( $caption ) : '' ) . '</' . $fig_tag . '>';
+
+		//links in the main gallery caption can mess with lightbox function, strip them out.
+		//they're okay in the lighbox though
+		if( $link_to === 'media' && $lightbox === 'magnific' && ! empty( $figcap ) && is_string( $figcap ) ) {
+			$figcap = preg_replace('#<a.*?>(.*?)</a>#i', '\1', $figcap);
+		}
+
 		$image_classes = array( 'wp-image-' . $image_id );
 		if ( 'carousel' === $type || 'slider' === $type || 'thumbslider' === $type || 'fluidcarousel' === $type ) {
 			$image_classes[] = 'skip-lazy';

@@ -154,8 +154,9 @@ class Kadence_Blocks_AI_Events {
 			'product_slug'    => apply_filters( 'kadence-blocks-auth-slug', $product_slug ),
 			'product_version' => KADENCE_BLOCKS_VERSION,
 		];
-
-
+		if ( ! empty( $license_data['env'] ) ) {
+			$defaults['env'] = $license_data['env'];
+		}
 		$parsed_args = wp_parse_args( $args, $defaults );
 
 		return base64_encode( json_encode( $parsed_args ) );

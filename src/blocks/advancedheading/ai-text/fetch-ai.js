@@ -35,6 +35,7 @@ export function getAIContentHelper() {
 				site_name: window?.kadence_blocks_params?.site_name ? window.kadence_blocks_params.site_name : '',
 				product_slug: window?.kadence_blocks_params?.pSlug ? window.kadence_blocks_params.pSlug : '',
 				product_version: window?.kadence_blocks_params?.pVersion ? window.kadence_blocks_params.pVersion : '',
+				env: window?.kadence_blocks_params?.env ? window.kadence_blocks_params.env : '',
 			};
 			const lang = window?.kadence_blocks_params?.aiLang ? window.kadence_blocks_params.aiLang : 'en-US';
 			const response = await fetch(`${API_URL}proxy/generate/content`, {
@@ -75,12 +76,20 @@ export function getAIContentHelper() {
 				site_name: window?.kadence_blocks_params?.site_name ? window.kadence_blocks_params.site_name : '',
 				product_slug: window?.kadence_blocks_params?.pSlug ? window.kadence_blocks_params.pSlug : '',
 				product_version: window?.kadence_blocks_params?.pVersion ? window.kadence_blocks_params.pVersion : '',
+				env: window?.kadence_blocks_params?.env ? window.kadence_blocks_params.env : '',
 			};
 			const body = {
 				text: content,
 				stream: true,
 			};
-			if (type === 'improve' || type === 'simplify' || type === 'spelling' || type === 'tone') {
+			if (
+				type === 'improve' ||
+				type === 'simplify' ||
+				type === 'lengthen' ||
+				type === 'spelling' ||
+				type === 'shorten' ||
+				type === 'tone'
+			) {
 				body.lang = window?.kadence_blocks_params?.aiLang ? window.kadence_blocks_params.aiLang : 'en-US';
 			}
 			const response = await fetch(`${API_URL}proxy/transform/${type}`, {
@@ -117,14 +126,15 @@ export function getAIContentHelper() {
 				site_name: window?.kadence_blocks_params?.site_name ? window.kadence_blocks_params.site_name : '',
 				product_slug: window?.kadence_blocks_params?.pSlug ? window.kadence_blocks_params.pSlug : '',
 				product_version: window?.kadence_blocks_params?.pVersion ? window.kadence_blocks_params.pVersion : '',
+				env: window?.kadence_blocks_params?.env ? window.kadence_blocks_params.env : '',
 			};
 			const body = {
 				text: content,
 				stream: true,
 			};
+			body.lang = window?.kadence_blocks_params?.aiLang ? window.kadence_blocks_params.aiLang : 'en-US';
 			if (type === 'tone') {
 				body.tone = prompt;
-				body.lang = window?.kadence_blocks_params?.aiLang ? window.kadence_blocks_params.aiLang : 'en-US';
 			} else {
 				body.prompt = prompt;
 			}
