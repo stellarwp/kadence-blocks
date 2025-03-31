@@ -176,9 +176,13 @@ Please report security bugs found in the Kadence Blocks plugin's source code thr
 
 = 3.5.1 =
 Release Date: 3rd April 2025
-* Add: Box shadow presets.
-* Add: Custom CSS indicator.
-* Update: Focus on Text (Adv) when is selected.
+* Add: Preset options for box shadow.
+* Add: Indicator on blocks in the editor that have custom CSS applied.
+* Fix: Focus in Text (Adv) input when is selected or inserted.
+* Fix: Captions in gallery lightbox when caption text contains a link.
+* Fix: Advanced navigation in footer not inheriting styles from settings.
+* Fix: Add aria-required to required fields in class form block.
+* Fix: FAQ schema on accordions containing CSS.
 
 = 3.5.0 =
 Release Date: 18th March 2025
