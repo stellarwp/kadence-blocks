@@ -1037,13 +1037,6 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 					</div>
 				</div>
 				<div className="kb-prebuilt-sidebar-body-wrap">
-					<div className="kb-library-sidebar-search">
-						<SearchControl
-							value={search}
-							placeholder={__('Search', 'kadence-blocks')}
-							onChange={(value) => setSearch(value)}
-						/>
-					</div>
 					<div className="kb-library-sidebar-bottom-wrap">
 						<div
 							className={`kb-library-sidebar-bottom ${
@@ -1418,6 +1411,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 						<PageList
 							pages={pages}
 							filterValue={search}
+							setSearch={setSearch}
 							selectedCategory={selectedPageCategory}
 							selectedStyle={selectedStyle}
 							selectedPageStyles={selectedPageStyles}
@@ -1522,6 +1516,8 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 							}}
 							categories={categoryListOptions}
 							styles={styleListOptions}
+							search={search}
+							setSearch={setSearch}
 						/>
 					)}
 				</>

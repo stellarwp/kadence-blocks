@@ -7,6 +7,7 @@ import {
 	Button,
 	Dropdown,
 	CheckboxControl,
+	ToggleControl,
 	TextControl,
 	SelectControl,
 	VisuallyHidden,
@@ -14,6 +15,7 @@ import {
 	Spinner,
 	Tooltip,
 	Icon,
+	SearchControl,
 	__experimentalHeading as Heading,
 } from '@wordpress/components';
 import { kadenceNewIcon, aiIcon, aiSettings } from '@kadence/icons';
@@ -338,6 +340,220 @@ function PatternFilterDropdown({ label, items, selectedItems }) {
 		/>
 	);
 }
+function PatternLayoutDropdown({ selectedItems }) {
+	const [layoutOptions, setLayoutOptions] = useState([
+		{ heading: __('Alignment', 'kadence-blocks'), options: [
+			{ value: 'media-top', label: __('Media top', 'kadence-blocks'), checked: false },
+			{ value: 'media-center', label: __('Media center', 'kadence-blocks'), checked: false },
+			{ value: 'media-bottom', label: __('Media bottom', 'kadence-blocks'), checked: false },
+			{ value: 'media-left', label: __('Media left', 'kadence-blocks'), checked: false },
+			{ value: 'media-right', label: __('Media right', 'kadence-blocks'), checked: false },
+			{ value: 'media-background', label: __('Media background', 'kadence-blocks'), checked: false },
+			{ value: 'no-media', label: __('No media', 'kadence-blocks'), checked: false },
+		]},
+		{ heading: __('Columns', 'kadence-blocks'), options: [
+			{ value: '1-column', label: __('1 column', 'kadence-blocks'), checked: false },
+			{ value: '2-columns', label: __('2 columns', 'kadence-blocks'), checked: false },
+			{ value: '3-columns', label: __('3 columns', 'kadence-blocks'), checked: false },
+			{ value: '4-columns', label: __('4 columns', 'kadence-blocks'), checked: false },
+			{ value: '5-columns', label: __('5+ columns', 'kadence-blocks'), checked: false },
+		]},
+		{ heading: __('Grid', 'kadence-blocks'), options: [
+			{ value: 'grid', label: __('Off-Grid', 'kadence-blocks'), checked: false, type: 'toggle' },
+		]},
+		{ heading: __('Bento', 'kadence-blocks'), options: [
+			{ value: 'bento', label: __('Bento', 'kadence-blocks'), checked: false, type: 'toggle' },
+		]},
+	]);
+	const [selectedLayoutsCount, setSelectedLayoutsCount] = useState(0);
+
+	useEffect(() => {
+		let count = 0;
+		let selectedValues = [];
+		layoutOptions.forEach(group => {
+			group.options.forEach(option => {
+				if (option.checked) {
+					count++;
+					selectedValues.push(option.value);
+				}
+			});
+		});
+		setSelectedLayoutsCount(count);
+
+		if (selectedItems) {
+			selectedItems(selectedValues);
+		}
+	}, [layoutOptions]);
+
+	const filterIcon = (
+		<svg width="10" height="7" viewBox="0 0 10 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path
+				d="M1.175 0.158203L5 3.97487L8.825 0.158203L10 1.3332L5 6.3332L0 1.3332L1.175 0.158203Z"
+				fill="#020129"
+			/>
+		</svg>
+	);
+
+	const clearFilter = () => {
+		setLayoutOptions(prevOptions =>
+			prevOptions.map(group => ({
+				...group,
+				options: group.options.map(option => ({ ...option, checked: false }))
+			}))
+		);
+	};
+
+	const updateSelection = (bool, groupIndex, optionIndex) => {
+		setLayoutOptions(prevOptions => {
+			// Create a deep copy to avoid modifying the previous state directly
+			let newOptions = JSON.parse(JSON.stringify(prevOptions));
+
+			// Determine the type of the clicked option
+			const clickedOptionType = newOptions[groupIndex].options[optionIndex]?.type;
+
+			// Update the clicked option's checked state
+			newOptions[groupIndex].options[optionIndex].checked = bool;
+
+			// If the clicked option is a toggle and it's being turned on (bool is true)
+			if (clickedOptionType === 'toggle' && bool) {
+				// Iterate through all options to uncheck other toggles
+				newOptions = newOptions.map((group, gIndex) => ({
+					...group,
+					options: group.options.map((option, oIndex) => {
+						// If it's a toggle and NOT the one that was just clicked
+						if (option.type === 'toggle' && !(gIndex === groupIndex && oIndex === optionIndex)) {
+							// Set its checked state to false
+							return { ...option, checked: false };
+						}
+						// Otherwise, keep the option as is
+						return option;
+					})
+				}));
+			}
+
+			// Return the updated options array to set the state
+			return newOptions;
+		});
+	};
+
+	return (
+		<Dropdown
+			variant="unstyled"
+			className="kb-patterns-filter-dropdown"
+			contentClassName="kb-patterns-filter-dropdown-content"
+			popoverProps={{ placement: 'bottom-start' }}
+			renderToggle={({ isOpen, onToggle }) => (
+				<Button onClick={onToggle} aria-expanded={isOpen} className="kb-toggle-button">
+					<div className="kb-toggle-button-wrapper">
+						<span>
+							{__('Layout', 'kadence-blocks')} {selectedLayoutsCount > 0 ? `(${selectedLayoutsCount})` : ''}
+						</span>
+						{filterIcon}
+					</div>
+				</Button>
+			)}
+			renderContent={() => (
+				<div>
+					<div className="kb-patterns-filter-dropdown-content-inner">
+						{layoutOptions.map((group, groupIndex) => (
+							<div key={group.heading} className="kb-pattern-filter-group">
+								<h4 className="kb-pattern-filter-group-heading">{group.heading}</h4>
+								{group.options.map((option, optionIndex) => (
+									option.value && (
+										<div className="kb-pattern-filter-item" key={option.value}>
+											{option.type === 'toggle' ? (
+												<ToggleControl
+													checked={option.checked}
+													id={option.value}
+													label={option.label}
+													onChange={(bool) => updateSelection(bool, groupIndex, optionIndex)}
+												/>
+											) : (
+												<CheckboxControl
+												checked={option.checked}
+												id={option.value}
+												label={option.label}
+												onChange={(bool) => updateSelection(bool, groupIndex, optionIndex)}
+											/>
+											)}
+										</div>
+									)
+								))}
+							</div>
+						))}
+					</div>
+					<div className="kb-pattern-filter-dropdown-content-clear" onClick={(_e) => clearFilter()}>
+						{__('Clear All', 'kadence-blocks')}
+					</div>
+				</div>
+			)}
+		/>
+	);
+}
+function PatternSortDropdown({ selectedItems }) {
+	const sortOptions = [
+		{ value: 'id_desc', label: __('Latest', 'kadence-blocks') },
+		{ value: 'name_asc', label: __('Pattern Name A-Z', 'kadence-blocks') },
+		{ value: 'name_desc', label: __('Pattern Name Z-A', 'kadence-blocks') },
+	];
+	// Default to 'Last Added'
+	const [selectedSort, setSelectedSort] = useState(sortOptions[0].value);
+
+	useEffect(() => {
+		if (selectedItems) {
+			selectedItems(selectedSort);
+		}
+	}, [selectedSort]);
+
+	const filterIcon = (
+		<svg width="10" height="7" viewBox="0 0 10 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path
+				d="M1.175 0.158203L5 3.97487L8.825 0.158203L10 1.3332L5 6.3332L0 1.3332L1.175 0.158203Z"
+				fill="#020129"
+			/>
+		</svg>
+	);
+
+	const getSelectedLabel = () => {
+		const selected = sortOptions.find(option => option.value === selectedSort);
+		return selected ? selected.label : '';
+	};
+
+	return (
+		<Dropdown
+			variant="unstyled"
+			className="kb-patterns-filter-dropdown kb-patterns-sort-dropdown"
+			contentClassName="kb-patterns-filter-dropdown-content kb-patterns-sort-dropdown-content"
+			popoverProps={{ placement: 'bottom-start' }}
+			renderToggle={({ isOpen, onToggle }) => (
+				<Button onClick={onToggle} aria-expanded={isOpen} className="kb-toggle-button">
+					<div className="kb-toggle-button-wrapper">
+						<span>{__('Sort By:', 'kadence-blocks')} {getSelectedLabel()}</span>
+						{filterIcon}
+					</div>
+				</Button>
+			)}
+			renderContent={() => (
+				<div>
+					<div className="kb-patterns-filter-dropdown-sort-inner">
+						{sortOptions.map((option, i) => (
+							<div className="kb-pattern-sort-item" key={option.value}>
+								<Button
+									isPressed={selectedSort === option.value}
+									variant={'tertiary'}
+									className={`kb-pattern-sort-item-label ${selectedSort === option.value ? 'is-active' : ''}`}
+									onClick={() => setSelectedSort(option.value)}
+								>
+									{option.label}
+								</Button>
+							</div>
+						))}
+					</div>
+				</div>
+			)}
+		/>
+	);
+}
 function ProOnlyHeader({ launchWizard }) {
 	const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
 	const data_key = window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '';
@@ -415,6 +631,8 @@ function PatternList({
 	categories,
 	userData,
 	styles,
+	search,
+	setSearch,
 }) {
 	const [failedAI, setFailedAI] = useState(false);
 	const [failed, setFailed] = useState(false);
@@ -424,6 +642,8 @@ function PatternList({
 	const [rootScroll, setRootScroll] = useState();
 	const [categoryFilter, setCategoryFilter] = useState([]);
 	const [styleFilter, setStyleFilter] = useState([]);
+	const [layoutFilter, setLayoutFilter] = useState([]);
+	const [sortBy, setSortBy] = useState('id_desc');
 	const debouncedSpeak = useDebounce(speak, 500);
 	const { getPattern } = getAsyncData();
 	const { getContextState, getContextContent, getAllContext } = useSelect((select) => {
@@ -545,6 +765,7 @@ function PatternList({
 			temp.proRender = false;
 			temp.viewportWidth = 1200;
 			temp.variation = variation;
+			temp.layout = patterns[key].layout;
 			variation++;
 			allPatterns.push(temp);
 		});
@@ -593,6 +814,11 @@ function PatternList({
 		if (!filterValue && contextTab === 'design' && selectedCategory && 'all' !== selectedCategory) {
 			allPatterns = allPatterns.filter((pattern) => pattern.categories?.includes(selectedCategory));
 		}
+		if (contextTab === 'design' && layoutFilter && layoutFilter.length > 0) {
+			allPatterns = allPatterns.filter((pattern) => {
+				return pattern.layout && Object.keys(pattern.layout).some(key => layoutFilter.includes(key));
+			});
+		}
 		if (contextTab === 'context' && contextTax) {
 			allPatterns = allPatterns.filter((pattern) => pattern.contexts?.includes(contextTax));
 			//allPatterns.reverse();
@@ -600,6 +826,7 @@ function PatternList({
 			allPatterns = allPatterns.sort((pattern) => (pattern?.hpcontexts?.includes(contextTax + '-hp') ? -1 : 1));
 		}
 
+		console.log('allPatterns', allPatterns);
 		if (
 			contextTab === 'context' &&
 			categoryFilter &&
@@ -680,6 +907,17 @@ function PatternList({
 				return item;
 			});
 		}
+
+		// Apply Sorting
+		if (sortBy === 'name_asc') {
+			allPatterns.sort((a, b) => a.name.localeCompare(b.name));
+		} else if (sortBy === 'name_desc') {
+			allPatterns.sort((a, b) => b.name.localeCompare(a.name));
+		} else {
+			// Default sort: id_desc (Last Added)
+			allPatterns.sort((a, b) => b.id - a.id);
+		}
+
 		return searchItems(allPatterns, filterValue);
 	}, [
 		filterValue,
@@ -693,6 +931,8 @@ function PatternList({
 		aINeedsData,
 		categoryFilter,
 		styleFilter,
+		layoutFilter,
+		sortBy,
 	]);
 
 	const updateCategoryFilter = (categoryList) => {
@@ -703,6 +943,10 @@ function PatternList({
 	const updateStyleFilter = (stylesList) => {
 		const selectedStyleValues = stylesList.map((style) => style.value);
 		setStyleFilter(selectedStyleValues);
+	};
+
+	const updateLayoutFilter = (layoutList) => {
+		setLayoutFilter(layoutList);
 	};
 
 	const hasHTml = useMemo(() => {
@@ -756,7 +1000,7 @@ function PatternList({
 			--global-palette8:${kadence_blocks_params.global_colors['--global-palette2']};
 			--global-palette9:${kadence_blocks_params.global_colors['--global-palette1']};
 			--global-content-edge-padding: 3rem;
-			padding:0px !important; }.kb-submit-field .kb-forms-submit, .kb-btns-outer-wrap .wp-block-button__link {color:${kadence_blocks_params.global_colors['--global-palette9']};background:${kadence_blocks_params.global_colors['--global-palette3']};} .kb-btns-outer-wrap .kb-button.kb-btn-global-outline {color:${kadence_blocks_params.global_colors['--global-palette9']};border-color:${kadence_blocks_params.global_colors['--global-palette3']};} .kb-btn-custom-colors .kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette1']}} img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder"] {filter: invert(1);}img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/12/logo-placeholder"] {filter: invert(1);}.block-editor-block-list__layout.is-root-container>.wp-block[data-align=full] {margin-left: 0 !important;margin-right: 0 !important;}.kb-divider-static.kb-row-layout-wrap.wp-block-kadence-rowlayout > .kt-row-layout-bottom-sep svg{fill:${kadence_blocks_params.global_colors['--global-palette9']}!important}.kb-divider-static.kb-row-layout-wrap.wp-block-kadence-rowlayout > .kt-row-layout-top-sep svg{fill:${kadence_blocks_params.global_colors['--global-palette9']}!important}`);
+			padding:0px !important; }.kb-submit-field .kb-forms-submit, .kb-btns-outer-wrap .wp-block-button__link {color:${kadence_blocks_params.global_colors['--global-palette9']};background:${kadence_blocks_params.global_colors['--global-palette3']};} .kb-btns-outer-wrap .kb-button.kb-btn-global-outline {color:${kadence_blocks_params.global_colors['--global-palette3']};border-color:${kadence_blocks_params.global_colors['--global-palette3']};} .kb-btn-custom-colors .kb-btns-outer-wrap {--global-palette9:${kadence_blocks_params.global_colors['--global-palette1']}} img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/02/Logo-ploaceholder"] {filter: invert(1);}img[src^="https://patterns.startertemplatecloud.com/wp-content/uploads/2023/12/logo-placeholder"] {filter: invert(1);}.block-editor-block-list__layout.is-root-container>.wp-block[data-align=full] {margin-left: 0 !important;margin-right: 0 !important;}.kb-divider-static.kb-row-layout-wrap.wp-block-kadence-rowlayout > .kt-row-layout-bottom-sep svg{fill:${kadence_blocks_params.global_colors['--global-palette9']}!important}.kb-divider-static.kb-row-layout-wrap.wp-block-kadence-rowlayout > .kt-row-layout-top-sep svg{fill:${kadence_blocks_params.global_colors['--global-palette9']}!important}`);
 		}
 		if ('sm' === selectedFontSize) {
 			tempStyles =
@@ -889,12 +1133,7 @@ function PatternList({
 					(failedAI ? ' kb-ai-patterns-explorer-failed' : '')
 				}`}
 			>
-				{hasItems && (
-					<PatternsListHeader
-						filterValue={filterValue}
-						filteredBlockPatternsLength={filteredBlockPatterns.length}
-					/>
-				)}
+				{/* Removed PatternsListHeader call */}
 				{/* { ! hasItems && ( selectedCategory && ( selectedCategory === 'posts-loop' || selectedCategory === 'featured-products' || selectedCategory === 'product-loop' ) ) && (
 					<BannerHeader
 						selectedCategory={ selectedCategory }
@@ -923,8 +1162,15 @@ function PatternList({
 							generateContext={(tempCon) => generateContext(tempCon)}
 						/>
 					)}
-				{contextTab === 'context' && hasItems && !failedAI && !filterValue && (
+				{/* Ensure filters/search show even when filterValue exists */}
+				{contextTab === 'context' && hasItems && !failedAI && (
 					<div className="kb-patterns-filter-wrapper">
+						<SearchControl
+							className="kb-pattern-search-control"
+							value={filterValue}
+							placeholder={__('Search Patterns', 'kadence-blocks')}
+							onChange={(value) => setSearch(value)}
+						/>
 						<span className="kb-pattern-filter-label">Filter by:</span>
 						{categories.length > 0 && (
 							<PatternFilterDropdown
@@ -937,6 +1183,53 @@ function PatternList({
 							/* Hold off until starter templates are ready */
 							// styles.length > 0 && <PatternFilterDropdown label="Styles" items={ styles } selectedItems={ updateStyleFilter } />
 						}
+						<PatternSortDropdown selectedItems={setSortBy} />
+						<span className="kb-patterns-count-message">
+							{ filterValue ? 
+								sprintf(
+									/* translators: %d: number of patterns. %s: block pattern search query */
+									_n('%1$d result for "%2$s"', '%1$d results for "%2$s"', filteredBlockPatterns.length),
+									filteredBlockPatterns.length,
+									filterValue
+								) :
+								sprintf(
+									/* translators: %d: number of patterns. */
+									_n('%d result', '%d results', filteredBlockPatterns.length),
+									filteredBlockPatterns.length
+								)
+							}
+						</span>
+					</div>
+				)}
+				{/* Ensure filters/search show even when filterValue exists */}
+				{ contextTab === 'design' && !failedAI && (
+					<div className="kb-patterns-filter-wrapper">
+						<SearchControl
+							className="kb-pattern-search-control"
+							value={filterValue}
+							placeholder={__('Search Patterns', 'kadence-blocks')}
+							onChange={(value) => setSearch(value)}
+						/>
+						<span className="kb-pattern-filter-label">Filter by:</span>
+						<PatternLayoutDropdown
+							selectedItems={updateLayoutFilter}
+						/>
+						<PatternSortDropdown selectedItems={setSortBy} />
+						<span className="kb-patterns-count-message">
+							{ filterValue ? 
+								sprintf(
+									/* translators: %d: number of patterns. %s: block pattern search query */
+									_n('%1$d result for "%2$s"', '%1$d results for "%2$s"', filteredBlockPatterns.length),
+									filteredBlockPatterns.length,
+									filterValue
+								) :
+								sprintf(
+									/* translators: %d: number of patterns. */
+									_n('%d result', '%d results', filteredBlockPatterns.length),
+									filteredBlockPatterns.length
+								)
+							}
+						</span>
 					</div>
 				)}
 				{hasItems && !failedAI && (
