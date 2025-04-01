@@ -14,13 +14,7 @@ const { localStorage } = window;
 /**
  * WordPress dependencies
  */
-import {
-	Button,
-	Spinner,
-	Icon,
-	SearchControl,
-	__experimentalHeading as Heading,
-} from '@wordpress/components';
+import { Button, Spinner, Icon, SearchControl, __experimentalHeading as Heading } from '@wordpress/components';
 import { useMemo, useEffect, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { useDebounce } from '@wordpress/compose';
@@ -265,7 +259,7 @@ function PageList({
 		return {
 			getAllContext: () => select('kadence/library').getAllContext(),
 			hasAllPageContext: () => select('kadence/library').hasAllPageContext(),
-			isContextRunning: ( value ) => select( 'kadence/library' ).isContextRunning( value ),
+			isContextRunning: (value) => select('kadence/library').isContextRunning(value),
 		};
 	}, []);
 	const thePages = useMemo(() => {
@@ -529,7 +523,7 @@ function PageList({
 	}, [selectedStyle]);
 	const hasItems = !!filteredBlockPatterns?.length;
 	const allPageContext = hasAllPageContext();
-	const allContextIsProcessing = isContextRunning( 'all' );
+	const allContextIsProcessing = isContextRunning('all');
 	if (isAIDisabled && contextTab === 'context') {
 		return (
 			<div className="kb-ai-dropdown-container-content-wrap activation-needed">
@@ -548,7 +542,9 @@ function PageList({
 				{contextTab === 'context' && (!isAuthorized || !data_key) && (
 					<ProOnlyHeader launchWizard={launchWizard} />
 				)}
-				{contextTab === 'context' && allContextIsProcessing && !allPageContext && <PageListNotice type={'processing'} />}
+				{contextTab === 'context' && allContextIsProcessing && !allPageContext && (
+					<PageListNotice type={'processing'} />
+				)}
 				{/* {contextTab === 'context' && allContextIsProcessing === 'loading' && <PageListNotice type={'loading'} />} */}
 
 				<div className="kb-patterns-filter-wrapper kb-page-list-search">
@@ -560,19 +556,22 @@ function PageList({
 					/>
 					{hasItems && (
 						<span className="kb-patterns-count-message">
-							{ filterValue ? 
-								sprintf(
-									/* translators: %d: number of pages. %s: block pattern search query */
-									_n('%1$d page found for "%2$s"', '%1$d pages for "%2$s"', filteredBlockPatterns.length),
-									filteredBlockPatterns.length,
-									filterValue
-								) :
-								sprintf(
-									/* translators: %d: number of pages. */
-									_n('%d page available', '%d pages', filteredBlockPatterns.length),
-									filteredBlockPatterns.length
-								)
-							}
+							{filterValue
+								? sprintf(
+										/* translators: %d: number of pages. %s: block pattern search query */
+										_n(
+											'%1$d page found for "%2$s"',
+											'%1$d pages for "%2$s"',
+											filteredBlockPatterns.length
+										),
+										filteredBlockPatterns.length,
+										filterValue
+								  )
+								: sprintf(
+										/* translators: %d: number of pages. */
+										_n('%d page available', '%d pages', filteredBlockPatterns.length),
+										filteredBlockPatterns.length
+								  )}
 						</span>
 					)}
 				</div>

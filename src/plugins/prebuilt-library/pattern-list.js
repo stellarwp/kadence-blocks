@@ -342,36 +342,44 @@ function PatternFilterDropdown({ label, items, selectedItems }) {
 }
 function PatternLayoutDropdown({ selectedItems }) {
 	const [layoutOptions, setLayoutOptions] = useState([
-		{ heading: __('Alignment', 'kadence-blocks'), options: [
-			{ value: 'media-top', label: __('Media top', 'kadence-blocks'), checked: false },
-			{ value: 'media-center', label: __('Media center', 'kadence-blocks'), checked: false },
-			{ value: 'media-bottom', label: __('Media bottom', 'kadence-blocks'), checked: false },
-			{ value: 'media-left', label: __('Media left', 'kadence-blocks'), checked: false },
-			{ value: 'media-right', label: __('Media right', 'kadence-blocks'), checked: false },
-			{ value: 'media-background', label: __('Media background', 'kadence-blocks'), checked: false },
-			{ value: 'no-media', label: __('No media', 'kadence-blocks'), checked: false },
-		]},
-		{ heading: __('Columns', 'kadence-blocks'), options: [
-			{ value: '1-column', label: __('1 column', 'kadence-blocks'), checked: false },
-			{ value: '2-columns', label: __('2 columns', 'kadence-blocks'), checked: false },
-			{ value: '3-columns', label: __('3 columns', 'kadence-blocks'), checked: false },
-			{ value: '4-columns', label: __('4 columns', 'kadence-blocks'), checked: false },
-			{ value: '5-columns', label: __('5+ columns', 'kadence-blocks'), checked: false },
-		]},
-		{ heading: __('Grid', 'kadence-blocks'), options: [
-			{ value: 'grid', label: __('Off-Grid', 'kadence-blocks'), checked: false, type: 'toggle' },
-		]},
-		{ heading: __('Bento', 'kadence-blocks'), options: [
-			{ value: 'bento', label: __('Bento', 'kadence-blocks'), checked: false, type: 'toggle' },
-		]},
+		{
+			heading: __('Alignment', 'kadence-blocks'),
+			options: [
+				{ value: 'media-top', label: __('Media top', 'kadence-blocks'), checked: false },
+				{ value: 'media-center', label: __('Media center', 'kadence-blocks'), checked: false },
+				{ value: 'media-bottom', label: __('Media bottom', 'kadence-blocks'), checked: false },
+				{ value: 'media-left', label: __('Media left', 'kadence-blocks'), checked: false },
+				{ value: 'media-right', label: __('Media right', 'kadence-blocks'), checked: false },
+				{ value: 'media-background', label: __('Media background', 'kadence-blocks'), checked: false },
+				{ value: 'no-media', label: __('No media', 'kadence-blocks'), checked: false },
+			],
+		},
+		{
+			heading: __('Columns', 'kadence-blocks'),
+			options: [
+				{ value: '1-column', label: __('1 column', 'kadence-blocks'), checked: false },
+				{ value: '2-columns', label: __('2 columns', 'kadence-blocks'), checked: false },
+				{ value: '3-columns', label: __('3 columns', 'kadence-blocks'), checked: false },
+				{ value: '4-columns', label: __('4 columns', 'kadence-blocks'), checked: false },
+				{ value: '5-columns', label: __('5+ columns', 'kadence-blocks'), checked: false },
+			],
+		},
+		{
+			heading: __('Grid', 'kadence-blocks'),
+			options: [{ value: 'grid', label: __('Off-Grid', 'kadence-blocks'), checked: false, type: 'toggle' }],
+		},
+		{
+			heading: __('Bento', 'kadence-blocks'),
+			options: [{ value: 'bento', label: __('Bento', 'kadence-blocks'), checked: false, type: 'toggle' }],
+		},
 	]);
 	const [selectedLayoutsCount, setSelectedLayoutsCount] = useState(0);
 
 	useEffect(() => {
 		let count = 0;
-		let selectedValues = [];
-		layoutOptions.forEach(group => {
-			group.options.forEach(option => {
+		const selectedValues = [];
+		layoutOptions.forEach((group) => {
+			group.options.forEach((option) => {
 				if (option.checked) {
 					count++;
 					selectedValues.push(option.value);
@@ -395,16 +403,16 @@ function PatternLayoutDropdown({ selectedItems }) {
 	);
 
 	const clearFilter = () => {
-		setLayoutOptions(prevOptions =>
-			prevOptions.map(group => ({
+		setLayoutOptions((prevOptions) =>
+			prevOptions.map((group) => ({
 				...group,
-				options: group.options.map(option => ({ ...option, checked: false }))
+				options: group.options.map((option) => ({ ...option, checked: false })),
 			}))
 		);
 	};
 
 	const updateSelection = (bool, groupIndex, optionIndex) => {
-		setLayoutOptions(prevOptions => {
+		setLayoutOptions((prevOptions) => {
 			// Create a deep copy to avoid modifying the previous state directly
 			let newOptions = JSON.parse(JSON.stringify(prevOptions));
 
@@ -427,7 +435,7 @@ function PatternLayoutDropdown({ selectedItems }) {
 						}
 						// Otherwise, keep the option as is
 						return option;
-					})
+					}),
 				}));
 			}
 
@@ -446,7 +454,8 @@ function PatternLayoutDropdown({ selectedItems }) {
 				<Button onClick={onToggle} aria-expanded={isOpen} className="kb-toggle-button">
 					<div className="kb-toggle-button-wrapper">
 						<span>
-							{__('Layout', 'kadence-blocks')} {selectedLayoutsCount > 0 ? `(${selectedLayoutsCount})` : ''}
+							{__('Layout', 'kadence-blocks')}{' '}
+							{selectedLayoutsCount > 0 ? `(${selectedLayoutsCount})` : ''}
 						</span>
 						{filterIcon}
 					</div>
@@ -458,27 +467,32 @@ function PatternLayoutDropdown({ selectedItems }) {
 						{layoutOptions.map((group, groupIndex) => (
 							<div key={group.heading} className="kb-pattern-filter-group">
 								<h4 className="kb-pattern-filter-group-heading">{group.heading}</h4>
-								{group.options.map((option, optionIndex) => (
-									option.value && (
-										<div className="kb-pattern-filter-item" key={option.value}>
-											{option.type === 'toggle' ? (
-												<ToggleControl
-													checked={option.checked}
-													id={option.value}
-													label={option.label}
-													onChange={(bool) => updateSelection(bool, groupIndex, optionIndex)}
-												/>
-											) : (
-												<CheckboxControl
-												checked={option.checked}
-												id={option.value}
-												label={option.label}
-												onChange={(bool) => updateSelection(bool, groupIndex, optionIndex)}
-											/>
-											)}
-										</div>
-									)
-								))}
+								{group.options.map(
+									(option, optionIndex) =>
+										option.value && (
+											<div className="kb-pattern-filter-item" key={option.value}>
+												{option.type === 'toggle' ? (
+													<ToggleControl
+														checked={option.checked}
+														id={option.value}
+														label={option.label}
+														onChange={(bool) =>
+															updateSelection(bool, groupIndex, optionIndex)
+														}
+													/>
+												) : (
+													<CheckboxControl
+														checked={option.checked}
+														id={option.value}
+														label={option.label}
+														onChange={(bool) =>
+															updateSelection(bool, groupIndex, optionIndex)
+														}
+													/>
+												)}
+											</div>
+										)
+								)}
 							</div>
 						))}
 					</div>
@@ -515,7 +529,7 @@ function PatternSortDropdown({ selectedItems }) {
 	);
 
 	const getSelectedLabel = () => {
-		const selected = sortOptions.find(option => option.value === selectedSort);
+		const selected = sortOptions.find((option) => option.value === selectedSort);
 		return selected ? selected.label : '';
 	};
 
@@ -528,7 +542,9 @@ function PatternSortDropdown({ selectedItems }) {
 			renderToggle={({ isOpen, onToggle }) => (
 				<Button onClick={onToggle} aria-expanded={isOpen} className="kb-toggle-button">
 					<div className="kb-toggle-button-wrapper">
-						<span>{__('Sort By:', 'kadence-blocks')} {getSelectedLabel()}</span>
+						<span>
+							{__('Sort By:', 'kadence-blocks')} {getSelectedLabel()}
+						</span>
 						{filterIcon}
 					</div>
 				</Button>
@@ -541,7 +557,9 @@ function PatternSortDropdown({ selectedItems }) {
 								<Button
 									isPressed={selectedSort === option.value}
 									variant={'tertiary'}
-									className={`kb-pattern-sort-item-label ${selectedSort === option.value ? 'is-active' : ''}`}
+									className={`kb-pattern-sort-item-label ${
+										selectedSort === option.value ? 'is-active' : ''
+									}`}
 									onClick={() => setSelectedSort(option.value)}
 								>
 									{option.label}
@@ -816,7 +834,7 @@ function PatternList({
 		}
 		if (contextTab === 'design' && layoutFilter && layoutFilter.length > 0) {
 			allPatterns = allPatterns.filter((pattern) => {
-				return pattern.layout && Object.keys(pattern.layout).some(key => layoutFilter.includes(key));
+				return pattern.layout && Object.keys(pattern.layout).some((key) => layoutFilter.includes(key));
 			});
 		}
 		if (contextTab === 'context' && contextTax) {
@@ -1185,24 +1203,27 @@ function PatternList({
 						}
 						<PatternSortDropdown selectedItems={setSortBy} />
 						<span className="kb-patterns-count-message">
-							{ filterValue ? 
-								sprintf(
-									/* translators: %d: number of patterns. %s: block pattern search query */
-									_n('%1$d result for "%2$s"', '%1$d results for "%2$s"', filteredBlockPatterns.length),
-									filteredBlockPatterns.length,
-									filterValue
-								) :
-								sprintf(
-									/* translators: %d: number of patterns. */
-									_n('%d result', '%d results', filteredBlockPatterns.length),
-									filteredBlockPatterns.length
-								)
-							}
+							{filterValue
+								? sprintf(
+										/* translators: %d: number of patterns. %s: block pattern search query */
+										_n(
+											'%1$d result for "%2$s"',
+											'%1$d results for "%2$s"',
+											filteredBlockPatterns.length
+										),
+										filteredBlockPatterns.length,
+										filterValue
+								  )
+								: sprintf(
+										/* translators: %d: number of patterns. */
+										_n('%d result', '%d results', filteredBlockPatterns.length),
+										filteredBlockPatterns.length
+								  )}
 						</span>
 					</div>
 				)}
 				{/* Ensure filters/search show even when filterValue exists */}
-				{ contextTab === 'design' && !failedAI && (
+				{contextTab === 'design' && !failedAI && (
 					<div className="kb-patterns-filter-wrapper">
 						<SearchControl
 							className="kb-pattern-search-control"
@@ -1211,24 +1232,25 @@ function PatternList({
 							onChange={(value) => setSearch(value)}
 						/>
 						<span className="kb-pattern-filter-label">Filter by:</span>
-						<PatternLayoutDropdown
-							selectedItems={updateLayoutFilter}
-						/>
+						<PatternLayoutDropdown selectedItems={updateLayoutFilter} />
 						<PatternSortDropdown selectedItems={setSortBy} />
 						<span className="kb-patterns-count-message">
-							{ filterValue ? 
-								sprintf(
-									/* translators: %d: number of patterns. %s: block pattern search query */
-									_n('%1$d result for "%2$s"', '%1$d results for "%2$s"', filteredBlockPatterns.length),
-									filteredBlockPatterns.length,
-									filterValue
-								) :
-								sprintf(
-									/* translators: %d: number of patterns. */
-									_n('%d result', '%d results', filteredBlockPatterns.length),
-									filteredBlockPatterns.length
-								)
-							}
+							{filterValue
+								? sprintf(
+										/* translators: %d: number of patterns. %s: block pattern search query */
+										_n(
+											'%1$d result for "%2$s"',
+											'%1$d results for "%2$s"',
+											filteredBlockPatterns.length
+										),
+										filteredBlockPatterns.length,
+										filterValue
+								  )
+								: sprintf(
+										/* translators: %d: number of patterns. */
+										_n('%d result', '%d results', filteredBlockPatterns.length),
+										filteredBlockPatterns.length
+								  )}
 						</span>
 					</div>
 				)}
