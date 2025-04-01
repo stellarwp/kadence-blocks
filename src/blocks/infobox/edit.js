@@ -2090,7 +2090,7 @@ function KadenceInfoBox(props) {
 		</>
 	);
 
-	const nonTransAttrs = ['link', 'linkTitle', 'title', 'contentText', 'mediaType'];
+	const nonTransAttrs = ['link', 'linkTitle', 'title', 'contentText', 'mediaType', 'learnMore'];
 
 	const blockProps = useBlockProps({
 		className: classnames(className, {
