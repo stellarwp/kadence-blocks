@@ -64,10 +64,10 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! empty( $attributes['target'] ) && 'video' === $attributes['target'] ) {
 			$this->enqueue_style( 'kadence-glightbox' );
 			$this->enqueue_script( 'kadence-blocks-glight-video-init' );
-			$gallery_translation_array = array(
-				'plyr_js'          => KADENCE_BLOCKS_URL . 'includes/assets/js/plyr.min.js',
-				'plyr_css'         => KADENCE_BLOCKS_URL . 'includes/assets/css/plyr.min.css',
-			);
+			$gallery_translation_array = [
+				'plyr_js'  => KADENCE_BLOCKS_URL . 'includes/assets/js/plyr.min.js',
+				'plyr_css' => KADENCE_BLOCKS_URL . 'includes/assets/css/plyr.min.css',
+			];
 			wp_localize_script( 'kadence-blocks-glight-video-init', 'kadence_video_pop', $gallery_translation_array );
 		}
 	}
@@ -75,7 +75,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	/**
 	 * Builds CSS for block.
 	 *
-	 * @param array $attributes the blocks attributes.
+	 * @param array  $attributes the blocks attributes.
 	 * @param string $css the css class for blocks.
 	 * @param string $unique_id the blocks attr ID.
 	 * @param string $unique_style_id the blocks alternate ID for queries.
@@ -83,7 +83,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	public function build_css( $attributes, $css, $unique_id, $unique_style_id ) {
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_style_id );
 
-		$sizes = array( 'Desktop', 'Tablet', 'Mobile' );
+		$sizes = [ 'Desktop', 'Tablet', 'Mobile' ];
 		foreach ( $sizes as $size ) {
 			$this->sized_dynamic_styles( $css, $attributes, $unique_id, $size );
 		}
@@ -97,14 +97,14 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( 'ul.menu .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button' );
 			$css->add_property( 'width', 'initial' );
 		}
-		//standard styles
+		// standard styles
 		$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button' );
-		$bg_type = ! empty( $attributes['backgroundType'] ) ? $attributes['backgroundType'] : 'normal';
+		$bg_type       = ! empty( $attributes['backgroundType'] ) ? $attributes['backgroundType'] : 'normal';
 		$bg_hover_type = ! empty( $attributes['backgroundHoverType'] ) ? $attributes['backgroundHoverType'] : 'normal';
 
 		if ( ! empty( $attributes['color'] ) && ( empty( $attributes['textBackgroundType'] ) || $attributes['textBackgroundType'] === 'normal' ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['color'] ) );
-		} else if( !empty( $attributes['textBackgroundType'] ) && $attributes['textBackgroundType'] === 'gradient' ) {
+		} elseif ( ! empty( $attributes['textBackgroundType'] ) && $attributes['textBackgroundType'] === 'gradient' ) {
 			$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button .kt-btn-inner-text' );
 			$css->add_property( 'background', $attributes['textGradient'] );
 			$css->add_property( '-webkit-background-clip', 'text' );
@@ -118,10 +118,10 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'background', $attributes['gradient'] . ' !important' );
 		}
 		$css->render_typography( $attributes, 'typography' );
-		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', array( 'unit_key' => 'borderRadiusUnit' ) );
+		$css->render_measure_output( $attributes, 'borderRadius', 'border-radius', [ 'unit_key' => 'borderRadiusUnit' ] );
 		$css->render_border_styles( $attributes, 'borderStyle', true );
-		$css->render_measure_output( $attributes, 'padding', 'padding', array( 'unit_key' => 'paddingUnit' ) );
-		$css->render_measure_output( $attributes, 'margin', 'margin', array( 'unit_key' => 'marginUnit' ) );
+		$css->render_measure_output( $attributes, 'padding', 'padding', [ 'unit_key' => 'paddingUnit' ] );
+		$css->render_measure_output( $attributes, 'margin', 'margin', [ 'unit_key' => 'marginUnit' ] );
 		if ( isset( $attributes['displayShadow'] ) && true === $attributes['displayShadow'] ) {
 			if ( isset( $attributes['shadow'] ) && is_array( $attributes['shadow'] ) && isset( $attributes['shadow'][0] ) && is_array( $attributes['shadow'][0] ) ) {
 				$css->add_property( 'box-shadow', ( isset( $attributes['shadow'][0]['inset'] ) && true === $attributes['shadow'][0]['inset'] ? 'inset ' : '' ) . ( isset( $attributes['shadow'][0]['hOffset'] ) && is_numeric( $attributes['shadow'][0]['hOffset'] ) ? $attributes['shadow'][0]['hOffset'] : '0' ) . 'px ' . ( isset( $attributes['shadow'][0]['vOffset'] ) && is_numeric( $attributes['shadow'][0]['vOffset'] ) ? $attributes['shadow'][0]['vOffset'] : '0' ) . 'px ' . ( isset( $attributes['shadow'][0]['blur'] ) && is_numeric( $attributes['shadow'][0]['blur'] ) ? $attributes['shadow'][0]['blur'] : '14' ) . 'px ' . ( isset( $attributes['shadow'][0]['spread'] ) && is_numeric( $attributes['shadow'][0]['spread'] ) ? $attributes['shadow'][0]['spread'] : '0' ) . 'px ' . $css->render_color( ( isset( $attributes['shadow'][0]['color'] ) && ! empty( $attributes['shadow'][0]['color'] ) ? $attributes['shadow'][0]['color'] : '#000000' ), ( isset( $attributes['shadow'][0]['opacity'] ) && is_numeric( $attributes['shadow'][0]['opacity'] ) ? $attributes['shadow'][0]['opacity'] : 0.2 ) ) );
@@ -138,7 +138,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! empty( $attributes['iconColor'] ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['iconColor'] ) );
 		}
-		$css->render_measure_output( $attributes, 'iconPadding', 'padding', array( 'unit_key' => 'iconPaddingUnit' ) );
+		$css->render_measure_output( $attributes, 'iconPadding', 'padding', [ 'unit_key' => 'iconPaddingUnit' ] );
 		$css->render_responsive_range( $attributes, 'iconSize', 'font-size', 'iconSizeUnit' );
 		// Icon Hover-Focus.
 		$css->set_selector( '.kb-btn' . $unique_id . '.kb-button:hover .kb-svg-icon-wrap, .kb-btn' . $unique_id . '.kb-button:focus .kb-svg-icon-wrap' );
@@ -149,7 +149,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:hover, .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:focus' );
 		if ( ! empty( $attributes['colorHover'] ) && ( empty( $attributes['textBackgroundHoverType'] ) || $attributes['textBackgroundHoverType'] === 'normal' ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['colorHover'] ) );
-		} else if( !empty( $attributes['textBackgroundHoverType'] ) && $attributes['textBackgroundHoverType'] === 'gradient' ) {
+		} elseif ( ! empty( $attributes['textBackgroundHoverType'] ) && $attributes['textBackgroundHoverType'] === 'gradient' ) {
 			$css->set_selector( '.wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:hover .kt-btn-inner-text, .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:focus .kt-btn-inner-text' );
 			$css->add_property( 'background', $attributes['textGradientHover'] );
 			$css->add_property( '-webkit-background-clip', 'text' );
@@ -237,14 +237,14 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * @return array
 	 */
 	public function sized_dynamic_styles( $css, $attributes, $unique_id, $size = 'Desktop' ) {
-		$sized_attributes = $css->get_sized_attributes_auto( $attributes, $size, false );
+		$sized_attributes         = $css->get_sized_attributes_auto( $attributes, $size, false );
 		$sized_attributes_inherit = $css->get_sized_attributes_auto( $attributes, $size );
 
 		$css->set_media_state( strtolower( $size ) );
 
-		//standard transparent styles
+		// standard transparent styles
 		$css->set_selector( '.header-' . strtolower( $size ) . '-transparent .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button' );
-		$bg_type_transparent = ! empty( $attributes['backgroundTransparentType'] ) ? $attributes['backgroundTransparentType'] : 'normal';
+		$bg_type_transparent       = ! empty( $attributes['backgroundTransparentType'] ) ? $attributes['backgroundTransparentType'] : 'normal';
 		$bg_hover_type_transparent = ! empty( $attributes['backgroundTransparentHoverType'] ) ? $attributes['backgroundTransparentHoverType'] : 'normal';
 		if ( ! empty( $attributes['colorTransparent'] ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['colorTransparent'] ) );
@@ -255,7 +255,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		if ( 'gradient' === $bg_type_transparent && ! empty( $attributes['gradientTransparent'] ) ) {
 			$css->add_property( 'background', $attributes['gradientTransparent'] . ' !important' );
 		}
-		$css->render_measure_output( $attributes, 'borderTransparentRadius', 'border-radius', array( 'unit_key' => 'borderTransparentRadiusUnit' ) );
+		$css->render_measure_output( $attributes, 'borderTransparentRadius', 'border-radius', [ 'unit_key' => 'borderTransparentRadiusUnit' ] );
 		$css->render_border_styles( $attributes, 'borderTransparentStyle', true );
 		if ( isset( $attributes['displayShadowTransparent'] ) && true === $attributes['displayShadowTransparent'] ) {
 			if ( isset( $attributes['shadowTransparent'] ) && is_array( $attributes['shadowTransparent'] ) && isset( $attributes['shadowTransparent'][0] ) && is_array( $attributes['shadowTransparent'][0] ) ) {
@@ -265,7 +265,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-		//hover transparent styles
+		// hover transparent styles
 		$css->set_selector( '.header-' . strtolower( $size ) . '-transparent .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:hover' );
 		if ( ! empty( $attributes['colorTransparentHover'] ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['colorTransparentHover'] ) );
@@ -287,9 +287,9 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-		//standard sticky styles
+		// standard sticky styles
 		$css->set_selector( '.item-is-stuck .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button' );
-		$bg_type_sticky = ! empty( $attributes['backgroundStickyType'] ) ? $attributes['backgroundStickyType'] : 'normal';
+		$bg_type_sticky       = ! empty( $attributes['backgroundStickyType'] ) ? $attributes['backgroundStickyType'] : 'normal';
 		$bg_hover_type_sticky = ! empty( $attributes['backgroundStickyHoverType'] ) ? $attributes['backgroundStickyHoverType'] : 'normal';
 		if ( ! empty( $attributes['colorSticky'] ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['colorSticky'] ) );
@@ -300,7 +300,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		if ( 'gradient' === $bg_type_sticky && ! empty( $attributes['gradientSticky'] ) ) {
 			$css->add_property( 'background', $attributes['gradientSticky'] . ' !important' );
 		}
-		$css->render_measure_output( $attributes, 'borderStickyRadius', 'border-radius', array( 'unit_key' => 'borderStickyRadiusUnit' ) );
+		$css->render_measure_output( $attributes, 'borderStickyRadius', 'border-radius', [ 'unit_key' => 'borderStickyRadiusUnit' ] );
 		$css->render_border_styles( $attributes, 'borderStickyStyle', true );
 		if ( isset( $attributes['displayShadowSticky'] ) && true === $attributes['displayShadowSticky'] ) {
 			if ( isset( $attributes['shadowSticky'] ) && is_array( $attributes['shadowSticky'] ) && isset( $attributes['shadowSticky'][0] ) && is_array( $attributes['shadowSticky'][0] ) ) {
@@ -310,7 +310,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-		//hover sticky styles
+		// hover sticky styles
 		$css->set_selector( '.item-is-stuck .wp-block-kadence-advancedbtn .kb-btn' . $unique_id . '.kb-button:hover' );
 		if ( ! empty( $attributes['colorStickyHover'] ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['colorStickyHover'] ) );
@@ -339,7 +339,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 	 * @param $attributes
 	 * @param $unique_id
 	 * @param $content
-	 * @param WP_Block $block_instance The instance of the WP_Block class that represents the block being rendered.
+	 * @param WP_Block   $block_instance The instance of the WP_Block class that represents the block being rendered.
 	 *
 	 * @return mixed
 	 */
@@ -347,7 +347,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! empty( $attributes['tooltip'] ) ) {
 			$this->enqueue_script( 'kadence-blocks-tippy' );
 		}
-		$classes = array( 'kb-button', 'kt-button', 'button', 'kb-btn' . $unique_id );
+		$classes   = [ 'kb-button', 'kt-button', 'button', 'kb-btn' . $unique_id ];
 		$classes[] = ! empty( $attributes['sizePreset'] ) ? 'kt-btn-size-' . $attributes['sizePreset'] : 'kt-btn-size-standard';
 		$classes[] = ! empty( $attributes['widthType'] ) ? 'kt-btn-width-type-' . $attributes['widthType'] : 'kt-btn-width-type-auto';
 		$classes[] = ! empty( $attributes['inheritStyles'] ) ? 'kb-btn-global-' . $attributes['inheritStyles'] : 'kb-btn-global-fill';
@@ -359,9 +359,9 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		if ( ! empty( $attributes['inheritStyles'] ) && 'inherit' === $attributes['inheritStyles'] ) {
 			$classes[] = 'wp-block-button__link';
 		}
-		$wrapper_args = array(
+		$wrapper_args = [
 			'class' => implode( ' ', $classes ),
-		);
+		];
 		if ( ! empty( $attributes['anchor'] ) ) {
 			$wrapper_args['id'] = $attributes['anchor'];
 		}
@@ -370,13 +370,13 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		}
 		if ( ! empty( $attributes['link'] ) ) {
 			$wrapper_args['href'] = esc_url( do_shortcode( $attributes['link'] ) );
-			$rel_add = '';
+			$rel_add              = '';
 			if ( isset( $attributes['download'] ) && $attributes['download'] ) {
 				$wrapper_args['download'] = '';
 			}
 			if ( ! empty( $attributes['target'] ) && '_blank' === $attributes['target'] ) {
 				$wrapper_args['target'] = '_blank';
-				$rel_add = 'noreferrer noopener';
+				$rel_add                = 'noreferrer noopener';
 			}
 			if ( isset( $attributes['noFollow'] ) && $attributes['noFollow'] ) {
 				$rel_add .= ' nofollow';
@@ -388,7 +388,7 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 				$wrapper_args['rel'] = $rel_add;
 			}
 		}
-		if( !empty( $attributes['isSubmit'] ) ) {
+		if ( ! empty( $attributes['isSubmit'] ) ) {
 			$wrapper_args['type'] = 'submit';
 		}
 		if ( ! empty( $attributes['tooltip'] ) ) {
@@ -397,10 +397,20 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 				$wrapper_args['data-tooltip-placement'] = esc_attr( $attributes['tooltipPlacement'] );
 			}
 		}
+		if ( ! empty( $attributes['link'] ) && apply_filters( 'kadence_blocks_button_auto_apply_role', true ) ) {
+			// check if the link is a download link.
+			if ( isset( $attributes['download'] ) && $attributes['download'] ) {
+				$wrapper_args['role'] = 'button';
+			} elseif ( strpos( $attributes['link'], '#' ) === 0 && empty( $wrapper_args['target'] ) ) {
+				$wrapper_args['role'] = 'button';
+			} elseif ( ! empty( $attributes['target'] ) && 'video' === $attributes['target'] ) {
+				$wrapper_args['role'] = 'button';
+			}
+		}
 		$wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 
-		$text       = ! empty( $attributes['text'] ) ? '<span class="kt-btn-inner-text">' . $attributes['text'] . '</span>' : '';
-		$svg_icon   = '';
+		$text     = ! empty( $attributes['text'] ) ? '<span class="kt-btn-inner-text">' . $attributes['text'] . '</span>' : '';
+		$svg_icon = '';
 		if ( ! empty( $attributes['icon'] ) ) {
 			$type         = substr( $attributes['icon'], 0, 2 );
 			$line_icon    = ( ! empty( $type ) && 'fe' == $type ? true : false );
@@ -419,20 +429,20 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		$html_tag   = ! empty( $attributes['link'] ) ? 'a' : 'span';
 
 		// Try to Detect if this is a show more button and make it a button.
-		if ( isset( $attributes['lock'] ) && $attributes['lock'] && isset( $attributes['lock']['remove'] ) && $attributes['lock']['remove'] && isset( $attributes['lock']['move'] ) && $attributes['lock']['move'] && empty( $attributes['link'] )) {
+		if ( isset( $attributes['lock'] ) && $attributes['lock'] && isset( $attributes['lock']['remove'] ) && $attributes['lock']['remove'] && isset( $attributes['lock']['move'] ) && $attributes['lock']['move'] && empty( $attributes['link'] ) ) {
 			$html_tag = 'button';
 		}
 
-		$content    = sprintf( '<%1$s %2$s>%3$s%4$s%5$s</%1$s>', $html_tag, $wrapper_attributes, $icon_left, $text, $icon_right );
+		$content = sprintf( '<%1$s %2$s>%3$s%4$s%5$s</%1$s>', $html_tag, $wrapper_attributes, $icon_left, $text, $icon_right );
 
 		/*  Wrap in div is AOS is enabled. AOS transitions will interfere with hover transitions. */
-		$aos_args = array();
+		$aos_args = [];
 		$aos_args = kadence_apply_aos_wrapper_args( $attributes, $aos_args );
 		if ( ! empty( $aos_args ) ) {
-			$aos_classes = array( 'kb-blocks-button-aos' );
-			$aos_classes[] = ! empty( $attributes['widthType'] ) ? 'kb-btn-width-type-' . $attributes['widthType'] : 'kb-btn-width-type-auto';
-			$aos_args['class'] = implode( ' ', $aos_classes );
-			$normalized_attributes = array();
+			$aos_classes           = [ 'kb-blocks-button-aos' ];
+			$aos_classes[]         = ! empty( $attributes['widthType'] ) ? 'kb-btn-width-type-' . $attributes['widthType'] : 'kb-btn-width-type-auto';
+			$aos_args['class']     = implode( ' ', $aos_classes );
+			$normalized_attributes = [];
 			foreach ( $aos_args as $key => $value ) {
 				$normalized_attributes[] = $key . '="' . esc_attr( $value ) . '"';
 			}
@@ -454,11 +464,11 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 		if ( apply_filters( 'kadence_blocks_check_if_rest', false ) && kadence_blocks_is_rest() ) {
 			return;
 		}
-		wp_register_style( 'kadence-glightbox', KADENCE_BLOCKS_URL . 'includes/assets/css/kb-glightbox.min.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_script( 'kadence-glightbox', KADENCE_BLOCKS_URL . 'includes/assets/js/glightbox.min.js', array(), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-glight-video-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-glight-video-init.min.js', array( 'kadence-glightbox' ), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-popper', KADENCE_BLOCKS_URL . 'includes/assets/js/popper.min.js', array(), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-tippy', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-tippy.min.js', array( 'kadence-blocks-popper' ), KADENCE_BLOCKS_VERSION, true );
+		wp_register_style( 'kadence-glightbox', KADENCE_BLOCKS_URL . 'includes/assets/css/kb-glightbox.min.css', [], KADENCE_BLOCKS_VERSION );
+		wp_register_script( 'kadence-glightbox', KADENCE_BLOCKS_URL . 'includes/assets/js/glightbox.min.js', [], KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-glight-video-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-glight-video-init.min.js', [ 'kadence-glightbox' ], KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-popper', KADENCE_BLOCKS_URL . 'includes/assets/js/popper.min.js', [], KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-tippy', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-tippy.min.js', [ 'kadence-blocks-popper' ], KADENCE_BLOCKS_VERSION, true );
 	}
 }
 
