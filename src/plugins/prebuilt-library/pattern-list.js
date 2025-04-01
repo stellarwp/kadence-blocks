@@ -342,7 +342,7 @@ function PatternFilterDropdown({ label, items, selectedItems }) {
 }
 function PatternLayoutDropdown({ selectedItems }) {
 	const [layoutOptions, setLayoutOptions] = useState([
-		{ heading: __('Alignment', 'kadence-blocks'), options: [
+		{ heading: __('Media Placement', 'kadence-blocks'), options: [
 			{ value: 'media-top', label: __('Media top', 'kadence-blocks'), checked: false },
 			{ value: 'media-center', label: __('Media center', 'kadence-blocks'), checked: false },
 			{ value: 'media-bottom', label: __('Media bottom', 'kadence-blocks'), checked: false },
@@ -358,11 +358,9 @@ function PatternLayoutDropdown({ selectedItems }) {
 			{ value: '4-columns', label: __('4 columns', 'kadence-blocks'), checked: false },
 			{ value: '5-columns', label: __('5+ columns', 'kadence-blocks'), checked: false },
 		]},
-		{ heading: __('Grid', 'kadence-blocks'), options: [
-			{ value: 'grid', label: __('Off-Grid', 'kadence-blocks'), checked: false, type: 'toggle' },
-		]},
-		{ heading: __('Bento', 'kadence-blocks'), options: [
-			{ value: 'bento', label: __('Bento', 'kadence-blocks'), checked: false, type: 'toggle' },
+		{ options: [
+			{ value: 'off-grid', label: __('Off-Grid', 'kadence-blocks'), checked: false, type: 'toggle' },
+			{ value: 'grid', label: __('Bento & Grid', 'kadence-blocks'), checked: false, type: 'toggle' },
 		]},
 	]);
 	const [selectedLayoutsCount, setSelectedLayoutsCount] = useState(0);
@@ -457,7 +455,9 @@ function PatternLayoutDropdown({ selectedItems }) {
 					<div className="kb-patterns-filter-dropdown-content-inner">
 						{layoutOptions.map((group, groupIndex) => (
 							<div key={group.heading} className="kb-pattern-filter-group">
-								<h4 className="kb-pattern-filter-group-heading">{group.heading}</h4>
+								{group.heading && (
+									<h4 className="kb-pattern-filter-group-heading">{group.heading}</h4>
+								)}
 								{group.options.map((option, optionIndex) => (
 									option.value && (
 										<div className="kb-pattern-filter-item" key={option.value}>
@@ -961,7 +961,7 @@ function PatternList({
 		const count = filteredBlockPatterns.length;
 		const resultsFoundMessage = sprintf(
 			/* translators: %d: number of results. */
-			_n('%d result found.', '%d results found.', count),
+			_n('%d pattern found.', '%d patterns found.', count),
 			count
 		);
 		debouncedSpeak(resultsFoundMessage);
@@ -1188,13 +1188,13 @@ function PatternList({
 							{ filterValue ? 
 								sprintf(
 									/* translators: %d: number of patterns. %s: block pattern search query */
-									_n('%1$d result for "%2$s"', '%1$d results for "%2$s"', filteredBlockPatterns.length),
+									_n('%1$d pattern for "%2$s"', '%1$d patterns for "%2$s"', filteredBlockPatterns.length),
 									filteredBlockPatterns.length,
 									filterValue
 								) :
 								sprintf(
 									/* translators: %d: number of patterns. */
-									_n('%d result', '%d results', filteredBlockPatterns.length),
+									_n('%d pattern', '%d patterns', filteredBlockPatterns.length),
 									filteredBlockPatterns.length
 								)
 							}
@@ -1219,13 +1219,13 @@ function PatternList({
 							{ filterValue ? 
 								sprintf(
 									/* translators: %d: number of patterns. %s: block pattern search query */
-									_n('%1$d result for "%2$s"', '%1$d results for "%2$s"', filteredBlockPatterns.length),
+									_n('%1$d pattern for "%2$s"', '%1$d patterns for "%2$s"', filteredBlockPatterns.length),
 									filteredBlockPatterns.length,
 									filterValue
 								) :
 								sprintf(
 									/* translators: %d: number of patterns. */
-									_n('%d result', '%d results', filteredBlockPatterns.length),
+									_n('%d pattern', '%d patterns', filteredBlockPatterns.length),
 									filteredBlockPatterns.length
 								)
 							}
