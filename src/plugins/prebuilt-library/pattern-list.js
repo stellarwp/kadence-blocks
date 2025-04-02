@@ -528,7 +528,7 @@ function PatternSortDropdown({ selectedItems }) {
 			renderToggle={({ isOpen, onToggle }) => (
 				<Button onClick={onToggle} aria-expanded={isOpen} className="kb-toggle-button">
 					<div className="kb-toggle-button-wrapper">
-						<span>{__('Sort By:', 'kadence-blocks')} {getSelectedLabel()}</span>
+						<span>{getSelectedLabel()}</span>
 						{filterIcon}
 					</div>
 				</Button>
@@ -1183,6 +1183,7 @@ function PatternList({
 							/* Hold off until starter templates are ready */
 							// styles.length > 0 && <PatternFilterDropdown label="Styles" items={ styles } selectedItems={ updateStyleFilter } />
 						}
+						<span className="kb-pattern-filter-label">Sort by:</span>
 						<PatternSortDropdown selectedItems={setSortBy} />
 						<span className="kb-patterns-count-message">
 							{ filterValue ? 
@@ -1214,6 +1215,7 @@ function PatternList({
 						<PatternLayoutDropdown
 							selectedItems={updateLayoutFilter}
 						/>
+						<span className="kb-pattern-filter-label">Sort by:</span>
 						<PatternSortDropdown selectedItems={setSortBy} />
 						<span className="kb-patterns-count-message">
 							{ filterValue ? 
