@@ -20,7 +20,7 @@ import {
 } from '@wordpress/components';
 import { kadenceNewIcon, aiIcon, aiSettings } from '@kadence/icons';
 import { tryParseJSON } from '@kadence/helpers';
-import { useMemo, useEffect, useState } from '@wordpress/element';
+import { useMemo, useEffect, useState, memo, useCallback } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { useDebounce } from '@wordpress/compose';
 import { speak } from '@wordpress/a11y';
@@ -83,7 +83,8 @@ function BannerHeader({ selectedCategory }) {
 		</Heading>
 	);
 }
-function LoadingHeader({ type }) {
+
+const LoadingHeader = memo(({ type }) => {
 	if ('error' === type) {
 		return (
 			<Heading
@@ -103,8 +104,9 @@ function LoadingHeader({ type }) {
 				: __('Loading AI Content.', 'kadence-blocks')}
 		</Heading>
 	);
-}
-function GenerateHeader({ context, contextLabel, contextState, generateContext }) {
+} );
+
+const GenerateHeader = memo(({ context, contextLabel, contextState, generateContext }) => {
 	const [loading, setLoading] = useState(false);
 	const [btnDisabled, setBtnDisabled] = useState(false);
 	useEffect(() => {
@@ -183,7 +185,8 @@ function GenerateHeader({ context, contextLabel, contextState, generateContext }
 			{loading && <Spinner />}
 		</div>
 	);
-}
+} );
+
 function LaunchWizard({ launchWizard }) {
 	const launchWizardHeadline = __('Supercharge your web design process with Kadence AI', 'kadence-blocks');
 	// eslint-disable-next-line @wordpress/i18n-no-collapsible-whitespace
@@ -490,6 +493,7 @@ function PatternLayoutDropdown({ selectedItems }) {
 		/>
 	);
 }
+
 function PatternSortDropdown({ selectedItems }) {
 	const sortOptions = [
 		{ value: 'id_desc', label: __('Latest', 'kadence-blocks') },
@@ -564,6 +568,20 @@ function ProOnlyHeader({ launchWizard }) {
 		only takes a few minutes to get started.`,
 		'kadence-blocks'
 	);
+
+	const clearFilter = () => {
+		setComponentOptions(componentOptions.map((component) => ({ ...component, checked: false })));
+	};
+
+	const updateSelection = (bool, index) => {
+		setComponentOptions(prevOptions => {
+			const cloned = [...prevOptions];
+			cloned[index] = { ...cloned[index], checked: bool };
+			return cloned;
+		});
+	};
+
+
 	return (
 		<div className="kb-patterns-banner-generate-notice">
 			<Icon className="kadence-generate-icons" icon={aiIcon} />
@@ -609,6 +627,7 @@ function ProOnlyHeader({ launchWizard }) {
 		</div>
 	);
 }
+
 function PatternList({
 	patterns,
 	filterValue,
@@ -657,7 +676,8 @@ function PatternList({
 	const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
 	const isAIDisabled = window?.kadence_blocks_params?.isAIDisabled ? true : false;
 	const data_key = window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '';
-	async function onSelectBlockPattern(pattern) {
+	
+	const onSelectBlockPattern = useCallback(async (pattern) => {
 		setImporting(true);
 		// eslint-disable-next-line @wordpress/no-unused-vars-before-return
 		const allContext = getAllContext();
@@ -727,7 +747,19 @@ function PatternList({
 		}
 		patternSend.content = newInfo;
 		onSelect(patternSend);
-	}
+	}, [
+		getAllContext,
+		getPattern,
+		imageCollection,
+		contextTab,
+		aiContext,
+		selectedStyle,
+		teamCollection,
+		userData,
+		onSelect,
+		contextLabel
+	]);
+	
 	const thePatterns = useMemo(() => {
 		const allPatterns = [];
 		const hasPremiumAccess =
@@ -789,6 +821,25 @@ function PatternList({
 		});
 		return Object.values(allComponents).sort((a, b) => a.label.localeCompare(b.label));
 	}, [thePatterns]);
+
+	const updateCategoryFilter = useCallback((categoryList) => {
+		const selectedCategoryValues = categoryList.map((category) => category.value);
+		setCategoryFilter(selectedCategoryValues);
+	}, []);
+
+	const updateStyleFilter = useCallback((stylesList) => {
+		const selectedStyleValues = stylesList.map((style) => style.value);
+		setStyleFilter(selectedStyleValues);
+	}, []);
+
+	const updateLayoutFilter = useCallback((layoutList) => {
+		setLayoutFilter(layoutList);
+	}, []);
+
+	const updateComponentFilter = useCallback((componentList) => {
+		const selectedComponentValues = componentList.map((component) => component.value);
+		setComponentFilter(selectedComponentValues);
+	}, []);
 
 	const filteredBlockPatterns = useMemo(() => {
 		let contextTax = 'contact-form' === aiContext ? 'contact' : aiContext;
@@ -875,7 +926,7 @@ function PatternList({
 
 		if (useImageReplace === 'all' && imageCollection) {
 			let variation = 0;
-			allPatterns = allPatterns.map((item, index) => {
+			allPatterns = allPatterns.map((item) => {
 				if (variation === 11) {
 					variation = 0;
 				}
@@ -913,7 +964,7 @@ function PatternList({
 		if (contextTab === 'context') {
 			const allContext = getAllContext();
 			let variation = 0;
-			allPatterns = allPatterns.map((item, index) => {
+			allPatterns = allPatterns.map((item) => {
 				if (variation === 11) {
 					variation = 0;
 				}
@@ -948,7 +999,6 @@ function PatternList({
 		thePatterns,
 		aiContext,
 		contextTab,
-		contextStatesRef,
 		imageCollection,
 		useImageReplace,
 		aINeedsData,
@@ -957,26 +1007,12 @@ function PatternList({
 		layoutFilter,
 		componentFilter,
 		sortBy,
+		getContextState,
+		getContextContent,
+		getAllContext,
+		userData,
+		teamCollection
 	]);
-
-	const updateCategoryFilter = (categoryList) => {
-		const selectedCategoryValues = categoryList.map((category) => category.value);
-		setCategoryFilter(selectedCategoryValues);
-	};
-
-	const updateStyleFilter = (stylesList) => {
-		const selectedStyleValues = stylesList.map((style) => style.value);
-		setStyleFilter(selectedStyleValues);
-	};
-
-	const updateLayoutFilter = (layoutList) => {
-		setLayoutFilter(layoutList);
-	};
-
-	const updateComponentFilter = (componentList) => {
-		const selectedComponentValues = componentList.map((component) => component.value);
-		setComponentFilter(selectedComponentValues);
-	};
 
 	const hasHTml = useMemo(() => {
 		return patterns[Object.keys(patterns)[0]]?.html ? true : false;
@@ -994,7 +1030,7 @@ function PatternList({
 			count
 		);
 		debouncedSpeak(resultsFoundMessage);
-	}, [filterValue, debouncedSpeak]);
+	}, [filterValue, debouncedSpeak, filteredBlockPatterns.length]);
 
 	// Define selected style.
 	const customStyles = useMemo(() => {
@@ -1041,6 +1077,7 @@ function PatternList({
 		const newStyles = [{ css: tempStyles }];
 		return newStyles;
 	}, [selectedStyle, selectedFontSize]);
+	
 	const customShadowStyles = useMemo(() => {
 		let tempStyles =
 			'.pattern-shadow-wrap .single-iframe-content {--global-content-width:1200px; --global-vw:1200px !important;}img{max-width:100%}svg { height: 1em; width: 1em;}';
@@ -1128,6 +1165,7 @@ function PatternList({
 		const newStyles = [{ css: tempStyles }];
 		return newStyles;
 	}, [selectedStyle, selectedFontSize]);
+	
 	const hasItems = !!filteredBlockPatterns?.length;
 	if (isAIDisabled && contextTab === 'context') {
 		return (
