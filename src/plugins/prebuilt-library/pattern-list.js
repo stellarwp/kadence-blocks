@@ -104,7 +104,7 @@ const LoadingHeader = memo(({ type }) => {
 				: __('Loading AI Content.', 'kadence-blocks')}
 		</Heading>
 	);
-} );
+});
 
 const GenerateHeader = memo(({ context, contextLabel, contextState, generateContext }) => {
 	const [loading, setLoading] = useState(false);
@@ -185,7 +185,7 @@ const GenerateHeader = memo(({ context, contextLabel, contextState, generateCont
 			{loading && <Spinner />}
 		</div>
 	);
-} );
+});
 
 function LaunchWizard({ launchWizard }) {
 	const launchWizardHeadline = __('Supercharge your web design process with Kadence AI', 'kadence-blocks');
@@ -345,26 +345,34 @@ function PatternFilterDropdown({ label, items, selectedItems }) {
 }
 function PatternLayoutDropdown({ selectedItems }) {
 	const [layoutOptions, setLayoutOptions] = useState([
-		{ heading: __('Media Placement', 'kadence-blocks'), options: [
-			{ value: 'media-top', label: __('Media top', 'kadence-blocks'), checked: false },
-			{ value: 'media-center', label: __('Media center', 'kadence-blocks'), checked: false },
-			{ value: 'media-bottom', label: __('Media bottom', 'kadence-blocks'), checked: false },
-			{ value: 'media-left', label: __('Media left', 'kadence-blocks'), checked: false },
-			{ value: 'media-right', label: __('Media right', 'kadence-blocks'), checked: false },
-			{ value: 'media-background', label: __('Media background', 'kadence-blocks'), checked: false },
-			{ value: 'no-media', label: __('No media', 'kadence-blocks'), checked: false },
-		]},
-		{ heading: __('Columns', 'kadence-blocks'), options: [
-			{ value: '1-column', label: __('1 column', 'kadence-blocks'), checked: false },
-			{ value: '2-columns', label: __('2 columns', 'kadence-blocks'), checked: false },
-			{ value: '3-columns', label: __('3 columns', 'kadence-blocks'), checked: false },
-			{ value: '4-columns', label: __('4 columns', 'kadence-blocks'), checked: false },
-			{ value: '5-columns', label: __('5+ columns', 'kadence-blocks'), checked: false },
-		]},
-		{ options: [
-			{ value: 'off-grid', label: __('Off-Grid', 'kadence-blocks'), checked: false, type: 'toggle' },
-			{ value: 'grid', label: __('Bento & Grid', 'kadence-blocks'), checked: false, type: 'toggle' },
-		]},
+		{
+			heading: __('Media Placement', 'kadence-blocks'),
+			options: [
+				{ value: 'media-top', label: __('Media top', 'kadence-blocks'), checked: false },
+				{ value: 'media-center', label: __('Media center', 'kadence-blocks'), checked: false },
+				{ value: 'media-bottom', label: __('Media bottom', 'kadence-blocks'), checked: false },
+				{ value: 'media-left', label: __('Media left', 'kadence-blocks'), checked: false },
+				{ value: 'media-right', label: __('Media right', 'kadence-blocks'), checked: false },
+				{ value: 'media-background', label: __('Media background', 'kadence-blocks'), checked: false },
+				{ value: 'no-media', label: __('No media', 'kadence-blocks'), checked: false },
+			],
+		},
+		{
+			heading: __('Columns', 'kadence-blocks'),
+			options: [
+				{ value: '1-column', label: __('1 column', 'kadence-blocks'), checked: false },
+				{ value: '2-columns', label: __('2 columns', 'kadence-blocks'), checked: false },
+				{ value: '3-columns', label: __('3 columns', 'kadence-blocks'), checked: false },
+				{ value: '4-columns', label: __('4 columns', 'kadence-blocks'), checked: false },
+				{ value: '5-columns', label: __('5+ columns', 'kadence-blocks'), checked: false },
+			],
+		},
+		{
+			options: [
+				{ value: 'off-grid', label: __('Off-Grid', 'kadence-blocks'), checked: false, type: 'toggle' },
+				{ value: 'grid', label: __('Bento & Grid', 'kadence-blocks'), checked: false, type: 'toggle' },
+			],
+		},
 	]);
 	const [selectedLayoutsCount, setSelectedLayoutsCount] = useState(0);
 
@@ -396,8 +404,8 @@ function PatternLayoutDropdown({ selectedItems }) {
 	);
 
 	const clearFilter = useCallback(() => {
-		setLayoutOptions(prevOptions =>
-			prevOptions.map(group => ({
+		setLayoutOptions((prevOptions) =>
+			prevOptions.map((group) => ({
 				...group,
 				options: group.options.map((option) => ({ ...option, checked: false })),
 			}))
@@ -405,7 +413,7 @@ function PatternLayoutDropdown({ selectedItems }) {
 	}, []);
 
 	const updateSelection = useCallback((bool, groupIndex, optionIndex) => {
-		setLayoutOptions(prevOptions => {
+		setLayoutOptions((prevOptions) => {
 			// Create a deep copy to avoid modifying the previous state directly
 			let newOptions = JSON.parse(JSON.stringify(prevOptions));
 
@@ -459,30 +467,33 @@ function PatternLayoutDropdown({ selectedItems }) {
 					<div className="kb-patterns-filter-dropdown-content-inner">
 						{layoutOptions.map((group, groupIndex) => (
 							<div key={group.heading} className="kb-pattern-filter-group">
-								{group.heading && (
-									<h4 className="kb-pattern-filter-group-heading">{group.heading}</h4>
+								{group.heading && <h4 className="kb-pattern-filter-group-heading">{group.heading}</h4>}
+								{group.options.map(
+									(option, optionIndex) =>
+										option.value && (
+											<div className="kb-pattern-filter-item" key={option.value}>
+												{option.type === 'toggle' ? (
+													<ToggleControl
+														checked={option.checked}
+														id={option.value}
+														label={option.label}
+														onChange={(bool) =>
+															updateSelection(bool, groupIndex, optionIndex)
+														}
+													/>
+												) : (
+													<CheckboxControl
+														checked={option.checked}
+														id={option.value}
+														label={option.label}
+														onChange={(bool) =>
+															updateSelection(bool, groupIndex, optionIndex)
+														}
+													/>
+												)}
+											</div>
+										)
 								)}
-								{group.options.map((option, optionIndex) => (
-									option.value && (
-										<div className="kb-pattern-filter-item" key={option.value}>
-											{option.type === 'toggle' ? (
-												<ToggleControl
-													checked={option.checked}
-													id={option.value}
-													label={option.label}
-													onChange={(bool) => updateSelection(bool, groupIndex, optionIndex)}
-												/>
-											) : (
-												<CheckboxControl
-												checked={option.checked}
-												id={option.value}
-												label={option.label}
-												onChange={(bool) => updateSelection(bool, groupIndex, optionIndex)}
-											/>
-											)}
-										</div>
-									)
-								))}
 							</div>
 						))}
 					</div>
@@ -520,7 +531,7 @@ function PatternSortDropdown({ selectedItems }) {
 	);
 
 	const getSelectedLabel = useCallback(() => {
-		const selected = sortOptions.find(option => option.value === selectedSort);
+		const selected = sortOptions.find((option) => option.value === selectedSort);
 		return selected ? selected.label : '';
 	}, [selectedSort]);
 
@@ -577,13 +588,12 @@ function ProOnlyHeader({ launchWizard }) {
 	};
 
 	const updateSelection = (bool, index) => {
-		setComponentOptions(prevOptions => {
+		setComponentOptions((prevOptions) => {
 			const cloned = [...prevOptions];
 			cloned[index] = { ...cloned[index], checked: bool };
 			return cloned;
 		});
 	};
-
 
 	return (
 		<div className="kb-patterns-banner-generate-notice">
@@ -679,90 +689,93 @@ function PatternList({
 	const isAuthorized = window?.kadence_blocks_params?.isAuthorized;
 	const isAIDisabled = window?.kadence_blocks_params?.isAIDisabled ? true : false;
 	const data_key = window?.kadence_blocks_params?.proData?.api_key ? kadence_blocks_params.proData.api_key : '';
-	
-	const onSelectBlockPattern = useCallback(async (pattern) => {
-		setImporting(true);
-		// eslint-disable-next-line @wordpress/no-unused-vars-before-return
-		const allContext = getAllContext();
-		const patternSend = {
-			id: pattern.id,
-			slug: pattern.slug,
-			type: 'pattern',
-			style: selectedStyle ? selectedStyle : 'light',
-		};
-		const response = await getPattern(
-			patternSend?.type === 'page' ? 'pages' : 'section',
-			patternSend?.type ? patternSend.type : 'patternSend',
-			patternSend?.id ? patternSend.id : '',
-			patternSend?.style ? patternSend.style : 'light'
-		);
-		let newInfo = ''; // info.content;
-		if (response && 'invalid_access' === response) {
-			setFailed(true);
-			setFailedType('license');
-			setImporting(false);
-			return;
-		}
-		if (response) {
-			try {
-				const tempContent = JSON.parse(response);
-				if (tempContent) {
-					newInfo = tempContent;
-				}
-			} catch (e) {}
-		}
-		if (!newInfo && pattern?.content) {
-			newInfo = pattern.content;
-		}
-		sendEvent('pattern_added_to_page', {
-			categories: pattern.categories,
-			id: pattern.id,
-			slug: pattern.slug,
-			name: pattern.name,
-			style: selectedStyle ? selectedStyle : 'light',
-			is_ai: contextTab === 'context',
-			// Only send context when using AI patterns.
-			context: contextTab === 'context' ? contextLabel : '',
-		});
 
-		newInfo = replaceImages(
-			newInfo,
+	const onSelectBlockPattern = useCallback(
+		async (pattern) => {
+			setImporting(true);
+			// eslint-disable-next-line @wordpress/no-unused-vars-before-return
+			const allContext = getAllContext();
+			const patternSend = {
+				id: pattern.id,
+				slug: pattern.slug,
+				type: 'pattern',
+				style: selectedStyle ? selectedStyle : 'light',
+			};
+			const response = await getPattern(
+				patternSend?.type === 'page' ? 'pages' : 'section',
+				patternSend?.type ? patternSend.type : 'patternSend',
+				patternSend?.id ? patternSend.id : '',
+				patternSend?.style ? patternSend.style : 'light'
+			);
+			let newInfo = ''; // info.content;
+			if (response && 'invalid_access' === response) {
+				setFailed(true);
+				setFailedType('license');
+				setImporting(false);
+				return;
+			}
+			if (response) {
+				try {
+					const tempContent = JSON.parse(response);
+					if (tempContent) {
+						newInfo = tempContent;
+					}
+				} catch (e) {}
+			}
+			if (!newInfo && pattern?.content) {
+				newInfo = pattern.content;
+			}
+			sendEvent('pattern_added_to_page', {
+				categories: pattern.categories,
+				id: pattern.id,
+				slug: pattern.slug,
+				name: pattern.name,
+				style: selectedStyle ? selectedStyle : 'light',
+				is_ai: contextTab === 'context',
+				// Only send context when using AI patterns.
+				context: contextTab === 'context' ? contextLabel : '',
+			});
+
+			newInfo = replaceImages(
+				newInfo,
+				imageCollection,
+				pattern.categories,
+				pattern.id,
+				pattern.variation,
+				teamCollection
+			);
+			if (contextTab === 'context') {
+				newInfo = replaceContent(newInfo, allContext, pattern.categories, aiContext, pattern.variation);
+			}
+			newInfo = wooContent(newInfo);
+			if (userData?.locationType && 'Online Only' !== userData?.locationType && userData?.locationInput) {
+				newInfo = replaceAddressContent(newInfo, userData.locationInput);
+			}
+			newInfo = deleteContent(newInfo);
+			if (!selectedStyle || 'light' === selectedStyle) {
+				// Perhaps do something later.
+			} else if ('dark' === selectedStyle) {
+				newInfo = replaceColors(newInfo, 'dark');
+			} else if ('highlight' === selectedStyle) {
+				newInfo = replaceColors(newInfo, 'highlight');
+			}
+			patternSend.content = newInfo;
+			onSelect(patternSend);
+		},
+		[
+			getAllContext,
+			getPattern,
 			imageCollection,
-			pattern.categories,
-			pattern.id,
-			pattern.variation,
-			teamCollection
-		);
-		if (contextTab === 'context') {
-			newInfo = replaceContent(newInfo, allContext, pattern.categories, aiContext, pattern.variation);
-		}
-		newInfo = wooContent(newInfo);
-		if (userData?.locationType && 'Online Only' !== userData?.locationType && userData?.locationInput) {
-			newInfo = replaceAddressContent(newInfo, userData.locationInput);
-		}
-		newInfo = deleteContent(newInfo);
-		if (!selectedStyle || 'light' === selectedStyle) {
-			// Perhaps do something later.
-		} else if ('dark' === selectedStyle) {
-			newInfo = replaceColors(newInfo, 'dark');
-		} else if ('highlight' === selectedStyle) {
-			newInfo = replaceColors(newInfo, 'highlight');
-		}
-		patternSend.content = newInfo;
-		onSelect(patternSend);
-	}, [
-		getAllContext,
-		getPattern,
-		imageCollection,
-		contextTab,
-		aiContext,
-		selectedStyle,
-		teamCollection,
-		userData,
-		onSelect,
-		contextLabel
-	]);
-	
+			contextTab,
+			aiContext,
+			selectedStyle,
+			teamCollection,
+			userData,
+			onSelect,
+			contextLabel,
+		]
+	);
+
 	const thePatterns = useMemo(() => {
 		const allPatterns = [];
 		const hasPremiumAccess =
@@ -811,13 +824,16 @@ function PatternList({
 
 	const uniqueComponentOptions = useMemo(() => {
 		const allComponents = {};
-		thePatterns.forEach(pattern => {
+		thePatterns.forEach((pattern) => {
 			if (pattern.component && typeof pattern.component === 'object') {
-				Object.keys(pattern.component).forEach(key => {
+				Object.keys(pattern.component).forEach((key) => {
 					if (!allComponents[key]) {
 						// Use the label provided in the component data if available, otherwise format the key.
-						const label = typeof pattern.component[key] === 'string' && pattern.component[key] ? pattern.component[key] : key.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-						allComponents[key] = { value: key, label: label, checked: false };
+						const label =
+							typeof pattern.component[key] === 'string' && pattern.component[key]
+								? pattern.component[key]
+								: key.replace(/[-_]/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
+						allComponents[key] = { value: key, label, checked: false };
 					}
 				});
 			}
@@ -888,13 +904,13 @@ function PatternList({
 		}
 		if (contextTab === 'design' && layoutFilter && layoutFilter.length > 0) {
 			allPatterns = allPatterns.filter((pattern) => {
-				return pattern.layout && Object.keys(pattern.layout).some(key => layoutFilter.includes(key));
+				return pattern.layout && Object.keys(pattern.layout).some((key) => layoutFilter.includes(key));
 			});
 		}
 		if (contextTab === 'design' && componentFilter && componentFilter.length > 0) {
 			allPatterns = allPatterns.filter((pattern) => {
 				// Check if the pattern has a component object and if any of its keys are in the componentFilter array
-				return pattern.component && Object.keys(pattern.component).some(key => componentFilter.includes(key));
+				return pattern.component && Object.keys(pattern.component).some((key) => componentFilter.includes(key));
 			});
 		}
 		if (contextTab === 'context' && contextTax) {
@@ -1014,7 +1030,7 @@ function PatternList({
 		getContextContent,
 		getAllContext,
 		userData,
-		teamCollection
+		teamCollection,
 	]);
 
 	const hasHTml = useMemo(() => {
@@ -1080,7 +1096,7 @@ function PatternList({
 		const newStyles = [{ css: tempStyles }];
 		return newStyles;
 	}, [selectedStyle, selectedFontSize]);
-	
+
 	const customShadowStyles = useMemo(() => {
 		let tempStyles =
 			'.pattern-shadow-wrap .single-iframe-content {--global-content-width:1200px; --global-vw:1200px !important;}img{max-width:100%}svg { height: 1em; width: 1em;}';
@@ -1168,7 +1184,7 @@ function PatternList({
 		const newStyles = [{ css: tempStyles }];
 		return newStyles;
 	}, [selectedStyle, selectedFontSize]);
-	
+
 	const hasItems = !!filteredBlockPatterns?.length;
 	if (isAIDisabled && contextTab === 'context') {
 		return (
@@ -1256,19 +1272,22 @@ function PatternList({
 						<span className="kb-pattern-filter-label">Sort by:</span>
 						<PatternSortDropdown selectedItems={setSortBy} />
 						<span className="kb-patterns-count-message">
-							{ filterValue ? 
-								sprintf(
-									/* translators: %d: number of patterns. %s: block pattern search query */
-									_n('%1$d pattern for "%2$s"', '%1$d patterns for "%2$s"', filteredBlockPatterns.length),
-									filteredBlockPatterns.length,
-									filterValue
-								) :
-								sprintf(
-									/* translators: %d: number of patterns. */
-									_n('%d pattern', '%d patterns', filteredBlockPatterns.length),
-									filteredBlockPatterns.length
-								)
-							}
+							{filterValue
+								? sprintf(
+										/* translators: %d: number of patterns. %s: block pattern search query */
+										_n(
+											'%1$d pattern for "%2$s"',
+											'%1$d patterns for "%2$s"',
+											filteredBlockPatterns.length
+										),
+										filteredBlockPatterns.length,
+										filterValue
+								  )
+								: sprintf(
+										/* translators: %d: number of patterns. */
+										_n('%d pattern', '%d patterns', filteredBlockPatterns.length),
+										filteredBlockPatterns.length
+								  )}
 						</span>
 					</div>
 				)}
@@ -1282,32 +1301,33 @@ function PatternList({
 							onChange={(value) => setSearch(value)}
 						/>
 						<span className="kb-pattern-filter-label">Filter by:</span>
-						<PatternLayoutDropdown
-							selectedItems={updateLayoutFilter}
-						/>
-						{ uniqueComponentOptions.length > 0 && (
+						<PatternLayoutDropdown selectedItems={updateLayoutFilter} />
+						{uniqueComponentOptions.length > 0 && (
 							<PatternComponentDropdown
 								label={__('Components', 'kadence-blocks')}
 								items={uniqueComponentOptions}
 								selectedItems={updateComponentFilter}
 							/>
-						) }
+						)}
 						<span className="kb-pattern-filter-label">Sort by:</span>
 						<PatternSortDropdown selectedItems={setSortBy} />
 						<span className="kb-patterns-count-message">
-							{ filterValue ? 
-								sprintf(
-									/* translators: %d: number of patterns. %s: block pattern search query */
-									_n('%1$d pattern for "%2$s"', '%1$d patterns for "%2$s"', filteredBlockPatterns.length),
-									filteredBlockPatterns.length,
-									filterValue
-								) :
-								sprintf(
-									/* translators: %d: number of patterns. */
-									_n('%d pattern', '%d patterns', filteredBlockPatterns.length),
-									filteredBlockPatterns.length
-								)
-							}
+							{filterValue
+								? sprintf(
+										/* translators: %d: number of patterns. %s: block pattern search query */
+										_n(
+											'%1$d pattern for "%2$s"',
+											'%1$d patterns for "%2$s"',
+											filteredBlockPatterns.length
+										),
+										filteredBlockPatterns.length,
+										filterValue
+								  )
+								: sprintf(
+										/* translators: %d: number of patterns. */
+										_n('%d pattern', '%d patterns', filteredBlockPatterns.length),
+										filteredBlockPatterns.length
+								  )}
 						</span>
 					</div>
 				)}
@@ -1342,10 +1362,10 @@ function PatternComponentDropdown({ label, items, selectedItems }) {
 
 	// Update internal state if items prop changes
 	useEffect(() => {
-		setComponentOptions(prevOptions => {
+		setComponentOptions((prevOptions) => {
 			// Preserve checked state when items update
-			const currentSelectedValues = new Set(prevOptions.filter(o => o.checked).map(o => o.value));
-			return items.map(item => ({
+			const currentSelectedValues = new Set(prevOptions.filter((o) => o.checked).map((o) => o.value));
+			return items.map((item) => ({
 				...item,
 				checked: currentSelectedValues.has(item.value),
 			}));
@@ -1377,13 +1397,12 @@ function PatternComponentDropdown({ label, items, selectedItems }) {
 	};
 
 	const updateSelection = (bool, index) => {
-		setComponentOptions(prevOptions => {
+		setComponentOptions((prevOptions) => {
 			const cloned = [...prevOptions];
 			cloned[index] = { ...cloned[index], checked: bool };
 			return cloned;
 		});
 	};
-
 
 	return (
 		<Dropdown
@@ -1419,12 +1438,10 @@ function PatternComponentDropdown({ label, items, selectedItems }) {
 									)
 							)
 						) : (
-							<div className="kb-pattern-filter-item">
-								{__('No components found', 'kadence-blocks')}
-							</div>
+							<div className="kb-pattern-filter-item">{__('No components found', 'kadence-blocks')}</div>
 						)}
 					</div>
-					{ componentOptions && componentOptions.length > 0 && (
+					{componentOptions && componentOptions.length > 0 && (
 						<div className="kb-pattern-filter-dropdown-content-clear" onClick={(_e) => clearFilter()}>
 							{__('Clear', 'kadence-blocks')}
 						</div>
