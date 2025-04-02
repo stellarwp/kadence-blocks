@@ -397,13 +397,12 @@ class Kadence_Blocks_Singlebtn_Block extends Kadence_Blocks_Abstract_Block {
 				$wrapper_args['data-tooltip-placement'] = esc_attr( $attributes['tooltipPlacement'] );
 			}
 		}
+		if ( isset( $attributes['buttonRole'] ) && $attributes['buttonRole'] ) {
+			$wrapper_args['role'] = 'button';
+		}
 		if ( ! empty( $attributes['link'] ) && apply_filters( 'kadence_blocks_button_auto_apply_role', true ) ) {
 			// check if the link is a download link.
-			if ( isset( $attributes['download'] ) && $attributes['download'] ) {
-				$wrapper_args['role'] = 'button';
-			} elseif ( strpos( $attributes['link'], '#' ) === 0 && empty( $wrapper_args['target'] ) ) {
-				$wrapper_args['role'] = 'button';
-			} elseif ( ! empty( $attributes['target'] ) && 'video' === $attributes['target'] ) {
+			if ( $attributes['link'] === '#' && empty( $wrapper_args['target'] ) ) {
 				$wrapper_args['role'] = 'button';
 			}
 		}
