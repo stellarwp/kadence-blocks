@@ -370,9 +370,9 @@ function PatternLayoutDropdown({ selectedItems }) {
 
 	useEffect(() => {
 		let count = 0;
-		let selectedValues = [];
-		layoutOptions.forEach(group => {
-			group.options.forEach(option => {
+		const selectedValues = [];
+		layoutOptions.forEach((group) => {
+			group.options.forEach((option) => {
 				if (option.checked) {
 					count++;
 					selectedValues.push(option.value);
@@ -399,7 +399,7 @@ function PatternLayoutDropdown({ selectedItems }) {
 		setLayoutOptions(prevOptions =>
 			prevOptions.map(group => ({
 				...group,
-				options: group.options.map(option => ({ ...option, checked: false }))
+				options: group.options.map((option) => ({ ...option, checked: false })),
 			}))
 		);
 	}, []);
@@ -428,7 +428,7 @@ function PatternLayoutDropdown({ selectedItems }) {
 						}
 						// Otherwise, keep the option as is
 						return option;
-					})
+					}),
 				}));
 			}
 
@@ -447,7 +447,8 @@ function PatternLayoutDropdown({ selectedItems }) {
 				<Button onClick={onToggle} aria-expanded={isOpen} className="kb-toggle-button">
 					<div className="kb-toggle-button-wrapper">
 						<span>
-							{__('Layout', 'kadence-blocks')} {selectedLayoutsCount > 0 ? `(${selectedLayoutsCount})` : ''}
+							{__('Layout', 'kadence-blocks')}{' '}
+							{selectedLayoutsCount > 0 ? `(${selectedLayoutsCount})` : ''}
 						</span>
 						{filterIcon}
 					</div>
@@ -545,7 +546,9 @@ function PatternSortDropdown({ selectedItems }) {
 								<Button
 									isPressed={selectedSort === option.value}
 									variant={'tertiary'}
-									className={`kb-pattern-sort-item-label ${selectedSort === option.value ? 'is-active' : ''}`}
+									className={`kb-pattern-sort-item-label ${
+										selectedSort === option.value ? 'is-active' : ''
+									}`}
 									onClick={() => setSelectedSort(option.value)}
 								>
 									{option.label}
@@ -1270,7 +1273,7 @@ function PatternList({
 					</div>
 				)}
 				{/* Ensure filters/search show even when filterValue exists */}
-				{ contextTab === 'design' && !failedAI && (
+				{contextTab === 'design' && !failedAI && (
 					<div className="kb-patterns-filter-wrapper">
 						<SearchControl
 							className="kb-pattern-search-control"
