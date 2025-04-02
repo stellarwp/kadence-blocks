@@ -282,9 +282,9 @@ function PatternFilterDropdown({ label, items, selectedItems }) {
 		</svg>
 	);
 
-	const clearFilter = () => {
+	const clearFilter = useCallback(() => {
 		setOptions(options.map((pattern) => ({ ...pattern, checked: false })));
-	};
+	}, [options]);
 
 	const updateSelection = (bool, index) => {
 		const cloned = [...options];
@@ -395,16 +395,16 @@ function PatternLayoutDropdown({ selectedItems }) {
 		</svg>
 	);
 
-	const clearFilter = () => {
+	const clearFilter = useCallback(() => {
 		setLayoutOptions(prevOptions =>
 			prevOptions.map(group => ({
 				...group,
 				options: group.options.map(option => ({ ...option, checked: false }))
 			}))
 		);
-	};
+	}, []);
 
-	const updateSelection = (bool, groupIndex, optionIndex) => {
+	const updateSelection = useCallback((bool, groupIndex, optionIndex) => {
 		setLayoutOptions(prevOptions => {
 			// Create a deep copy to avoid modifying the previous state directly
 			let newOptions = JSON.parse(JSON.stringify(prevOptions));
@@ -435,7 +435,7 @@ function PatternLayoutDropdown({ selectedItems }) {
 			// Return the updated options array to set the state
 			return newOptions;
 		});
-	};
+	}, []);
 
 	return (
 		<Dropdown
@@ -518,10 +518,10 @@ function PatternSortDropdown({ selectedItems }) {
 		</svg>
 	);
 
-	const getSelectedLabel = () => {
+	const getSelectedLabel = useCallback(() => {
 		const selected = sortOptions.find(option => option.value === selectedSort);
 		return selected ? selected.label : '';
-	};
+	}, [selectedSort]);
 
 	return (
 		<Dropdown
@@ -540,7 +540,7 @@ function PatternSortDropdown({ selectedItems }) {
 			renderContent={() => (
 				<div>
 					<div className="kb-patterns-filter-dropdown-sort-inner">
-						{sortOptions.map((option, i) => (
+						{sortOptions.map((option) => (
 							<div className="kb-pattern-sort-item" key={option.value}>
 								<Button
 									isPressed={selectedSort === option.value}
