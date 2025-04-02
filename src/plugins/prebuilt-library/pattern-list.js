@@ -643,6 +643,7 @@ function PatternList({
 	const [categoryFilter, setCategoryFilter] = useState([]);
 	const [styleFilter, setStyleFilter] = useState([]);
 	const [layoutFilter, setLayoutFilter] = useState([]);
+	const [componentFilter, setComponentFilter] = useState([]);
 	const [sortBy, setSortBy] = useState('id_desc');
 	const debouncedSpeak = useDebounce(speak, 500);
 	const { getPattern } = getAsyncData();
@@ -766,11 +767,28 @@ function PatternList({
 			temp.viewportWidth = 1200;
 			temp.variation = variation;
 			temp.layout = patterns[key].layout;
+			temp.component = patterns[key].component || {};
 			variation++;
 			allPatterns.push(temp);
 		});
 		return allPatterns;
 	}, [patterns]);
+
+	const uniqueComponentOptions = useMemo(() => {
+		const allComponents = {};
+		thePatterns.forEach(pattern => {
+			if (pattern.component && typeof pattern.component === 'object') {
+				Object.keys(pattern.component).forEach(key => {
+					if (!allComponents[key]) {
+						// Use the label provided in the component data if available, otherwise format the key.
+						const label = typeof pattern.component[key] === 'string' && pattern.component[key] ? pattern.component[key] : key.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+						allComponents[key] = { value: key, label: label, checked: false };
+					}
+				});
+			}
+		});
+		return Object.values(allComponents).sort((a, b) => a.label.localeCompare(b.label));
+	}, [thePatterns]);
 
 	const filteredBlockPatterns = useMemo(() => {
 		let contextTax = 'contact-form' === aiContext ? 'contact' : aiContext;
@@ -819,6 +837,12 @@ function PatternList({
 				return pattern.layout && Object.keys(pattern.layout).some(key => layoutFilter.includes(key));
 			});
 		}
+		if (contextTab === 'design' && componentFilter && componentFilter.length > 0) {
+			allPatterns = allPatterns.filter((pattern) => {
+				// Check if the pattern has a component object and if any of its keys are in the componentFilter array
+				return pattern.component && Object.keys(pattern.component).some(key => componentFilter.includes(key));
+			});
+		}
 		if (contextTab === 'context' && contextTax) {
 			allPatterns = allPatterns.filter((pattern) => pattern.contexts?.includes(contextTax));
 			//allPatterns.reverse();
@@ -826,7 +850,6 @@ function PatternList({
 			allPatterns = allPatterns.sort((pattern) => (pattern?.hpcontexts?.includes(contextTax + '-hp') ? -1 : 1));
 		}
 
-		console.log('allPatterns', allPatterns);
 		if (
 			contextTab === 'context' &&
 			categoryFilter &&
@@ -932,6 +955,7 @@ function PatternList({
 		categoryFilter,
 		styleFilter,
 		layoutFilter,
+		componentFilter,
 		sortBy,
 	]);
 
@@ -947,6 +971,11 @@ function PatternList({
 
 	const updateLayoutFilter = (layoutList) => {
 		setLayoutFilter(layoutList);
+	};
+
+	const updateComponentFilter = (componentList) => {
+		const selectedComponentValues = componentList.map((component) => component.value);
+		setComponentFilter(selectedComponentValues);
 	};
 
 	const hasHTml = useMemo(() => {
@@ -1215,6 +1244,13 @@ function PatternList({
 						<PatternLayoutDropdown
 							selectedItems={updateLayoutFilter}
 						/>
+						{ uniqueComponentOptions.length > 0 && (
+							<PatternComponentDropdown
+								label={__('Components', 'kadence-blocks')}
+								items={uniqueComponentOptions}
+								selectedItems={updateComponentFilter}
+							/>
+						) }
 						<span className="kb-pattern-filter-label">Sort by:</span>
 						<PatternSortDropdown selectedItems={setSortBy} />
 						<span className="kb-patterns-count-message">
@@ -1256,6 +1292,105 @@ function PatternList({
 				)}
 			</div>
 		</div>
+	);
+}
+
+function PatternComponentDropdown({ label, items, selectedItems }) {
+	const [componentOptions, setComponentOptions] = useState(items);
+	const [selectedComponents, setSelectedComponents] = useState([]);
+
+	// Update internal state if items prop changes
+	useEffect(() => {
+		setComponentOptions(prevOptions => {
+			// Preserve checked state when items update
+			const currentSelectedValues = new Set(prevOptions.filter(o => o.checked).map(o => o.value));
+			return items.map(item => ({
+				...item,
+				checked: currentSelectedValues.has(item.value),
+			}));
+		});
+	}, [items]);
+
+	useEffect(() => {
+		if (componentOptions && componentOptions.length) {
+			const temp = componentOptions.filter((component) => component.checked);
+			setSelectedComponents(temp);
+
+			if (selectedItems) {
+				selectedItems(temp);
+			}
+		}
+	}, [componentOptions, selectedItems]);
+
+	const filterIcon = (
+		<svg width="10" height="7" viewBox="0 0 10 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path
+				d="M1.175 0.158203L5 3.97487L8.825 0.158203L10 1.3332L5 6.3332L0 1.3332L1.175 0.158203Z"
+				fill="#020129"
+			/>
+		</svg>
+	);
+
+	const clearFilter = () => {
+		setComponentOptions(componentOptions.map((component) => ({ ...component, checked: false })));
+	};
+
+	const updateSelection = (bool, index) => {
+		setComponentOptions(prevOptions => {
+			const cloned = [...prevOptions];
+			cloned[index] = { ...cloned[index], checked: bool };
+			return cloned;
+		});
+	};
+
+
+	return (
+		<Dropdown
+			variant="unstyled"
+			className="kb-patterns-filter-dropdown"
+			contentClassName="kb-patterns-filter-dropdown-content"
+			popoverProps={{ placement: 'bottom-start' }}
+			renderToggle={({ isOpen, onToggle }) => (
+				<Button onClick={onToggle} aria-expanded={isOpen} className="kb-toggle-button">
+					<div className="kb-toggle-button-wrapper">
+						<span>
+							{label} {selectedComponents.length > 0 ? `(${selectedComponents.length})` : ''}
+						</span>
+						{filterIcon}
+					</div>
+				</Button>
+			)}
+			renderContent={() => (
+				<div>
+					<div className="kb-patterns-filter-dropdown-content-inner">
+						{componentOptions && componentOptions.length > 0 ? (
+							componentOptions.map(
+								(component, i) =>
+									component.value && (
+										<div className="kb-pattern-filter-item" key={component.value}>
+											<CheckboxControl
+												checked={component.checked}
+												id={component.value}
+												label={component.label}
+												onChange={(bool) => updateSelection(bool, i)}
+											/>
+										</div>
+									)
+							)
+						) : (
+							<div className="kb-pattern-filter-item">
+								{__('No components found', 'kadence-blocks')}
+							</div>
+						)}
+					</div>
+					{ componentOptions && componentOptions.length > 0 && (
+						<div className="kb-pattern-filter-dropdown-content-clear" onClick={(_e) => clearFilter()}>
+							{__('Clear', 'kadence-blocks')}
+						</div>
+					)}
+				</div>
+			)}
+		/>
 	);
 }
 
