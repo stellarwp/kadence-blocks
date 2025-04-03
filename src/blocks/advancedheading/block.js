@@ -74,10 +74,12 @@ registerBlockType('kadence/advancedheading', {
 
 					// Sanitize fragments to remove block comments or unnecessary markup
 					fragments = fragments
-						.map((fragment) => fragment
-							.replace(/<!--[\s\S]*?-->/g, '') // Remove Gutenberg block comments
-							.replace(/<[^>]*>/g, '')         // Remove any remaining HTML tags
-							.trim()                          // Trim whitespaces
+						.map(
+							(fragment) =>
+								fragment
+									.replace(/<!--[\s\S]*?-->/g, '') // Remove Gutenberg block comments
+									.replace(/<[^>]*>/g, '') // Remove any remaining HTML tags
+									.trim() // Trim whitespaces
 						)
 						.filter(Boolean); // Remove empty fragments
 

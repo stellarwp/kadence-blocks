@@ -336,13 +336,12 @@ function KadenceAdvancedHeading(props) {
 				if (regex.test(fragment)) {
 					// Parse the serialized block directly into Gutenberg blocks
 					return wp.blocks.parse(fragment)[0];
-				} else {
-					// Otherwise, treat as plain text and create a simple block
-					return createBlock('kadence/advancedheading', {
-						content: fragment,
-						htmlTag: 'p',
-					});
 				}
+				// Otherwise, treat as plain text and create a simple block
+				return createBlock('kadence/advancedheading', {
+					content: fragment,
+					htmlTag: 'p',
+				});
 			});
 
 			// Replace current block with the new blocks
