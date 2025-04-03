@@ -180,23 +180,29 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 				$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
 			}
 		}
-		if ((isset($attributes['enableTextShadow']) && !empty($attributes['enableTextShadow']))
-			|| (isset($attributes['textShadow']) && !empty($attributes['textShadow'][0]['enable']))) {
-
-			if (empty($attributes['textShadow'])) {
+		if ( (isset($attributes['enableTextShadow']) && !empty($attributes['enableTextShadow']) || (isset($attributes['textShadow']) && !empty($attributes['textShadow'][0]['enable'])) ) ) {
+			// Sets a default textShadow attribute, which may be empty if desktop default values aren't changed but mobile/tablet are.
+			if ( empty( $attributes['textShadow'] ) ) {
 				$attributes['textShadow'] = [
 					[
 						'hOffset' => 1,
 						'vOffset' => 1,
 						'blur'    => 1,
-						'color'   => '#000000',
-						'opacity' => 0.2,
+						'color'   => 'rgba(0,0,0,0.2)',
 					],
 				];
 			}
-
-			$css->render_text_shadow( $attributes ); // This should be all that is required.
-			$css->set_media_state('desktop');
+			if ( isset( $attributes['textShadow'] ) && is_array( $attributes['textShadow'] ) && isset( $attributes['textShadow'][0] ) && is_array( $attributes['textShadow'][0] ) && ((isset( $attributes['enableTextShadow'] ) && $attributes['enableTextShadow']) || (isset( $attributes['textShadow'][0]['enable'] ) && $attributes['textShadow'][0]['enable']) ) ) {
+				$css->add_property('text-shadow',($attributes['textShadow'][0]['hOffset'] ?? 1) . 'px ' . ($attributes['textShadow'][0]['vOffset'] ?? 1) . 'px ' . ($attributes['textShadow'][0]['blur'] ?? 1) . 'px ' . ( isset( $attributes['textShadow'][0]['color'] ) ? $css->render_color( $attributes['textShadow'][0]['color'] ) : 'rgba(0,0,0,0.2)' ) );
+			}
+			if ( isset( $attributes['textShadowTablet'] ) && is_array( $attributes['textShadowTablet'] ) && isset( $attributes['textShadowTablet'][0] ) && is_array( $attributes['textShadowTablet'][0] ) && ((isset( $attributes['enableTextShadow'] ) && $attributes['enableTextShadow']) || (isset( $attributes['textShadow'][0]['enable'] ) && $attributes['textShadow'][0]['enable']) ) ) {
+				$css->set_media_state('tablet');
+				$css->add_property( 'text-shadow',( ! empty( $attributes['textShadowTablet'][0]['hOffset'] ) ? $attributes['textShadowTablet'][0]['hOffset'] : $attributes['textShadow'][0]['hOffset'] ) . 'px ' . ( ! empty( $attributes['textShadowTablet'][0]['vOffset'] ) ? $attributes['textShadowTablet'][0]['vOffset'] : $attributes['textShadow'][0]['vOffset'] ) . 'px ' . ( ! empty( $attributes['textShadowTablet'][0]['blur'] ) ? $attributes['textShadowTablet'][0]['blur'] : $attributes['textShadow'][0]['blur'] ) . 'px ' . ( ! empty( $attributes['textShadowTablet'][0]['color'] ) ? $css->render_color( $attributes['textShadowTablet'][0]['color'] ) : $css->render_color( $attributes['textShadow'][0]['color'] ) ) );
+			}
+			if ( isset( $attributes['textShadowMobile'] ) && is_array( $attributes['textShadowMobile'] ) && isset( $attributes['textShadowMobile'][0] ) && is_array( $attributes['textShadowMobile'][0] ) && ((isset( $attributes['enableTextShadow'] ) && $attributes['enableTextShadow']) || (isset( $attributes['textShadow'][0]['enable'] ) && $attributes['textShadow'][0]['enable']) ) ) {
+				$css->set_media_state('mobile');
+				$css->add_property( 'text-shadow',( ! empty( $attributes['textShadowMobile'][0]['hOffset'] ) ? $attributes['textShadowMobile'][0]['hOffset'] : ( ! empty( $attributes['textShadowTablet'][0]['hOffset'] ) ? $attributes['textShadowTablet'][0]['hOffset'] : $attributes['textShadow'][0]['hOffset']) ) . 'px ' . (  ! empty( $attributes['textShadowMobile'][0]['vOffset'] ) ? $attributes['textShadowMobile'][0]['vOffset'] : ( ! empty( $attributes['textShadowTablet'][0]['vOffset'] ) ? $attributes['textShadowTablet'][0]['vOffset'] : $attributes['textShadow'][0]['vOffset']) ) . 'px ' . ( ! empty( $attributes['textShadowMobile'][0]['blur'] ) ? $attributes['textShadowMobile'][0]['blur'] : ( ! empty( $attributes['textShadowTablet'][0]['blur'] ) ? $attributes['textShadowTablet'][0]['blur'] : $attributes['textShadow'][0]['blur']) ) . 'px ' . ( ! empty( $attributes['textShadowMobile'][0]['color'] ) ? $css->render_color( $attributes['textShadowMobile'][0]['color']) : ( ! empty( $attributes['textShadowTablet'][0]['color'] ) ? $css->render_color( $attributes['textShadowTablet'][0]['color'] ) : $css->render_color( $attributes['textShadow'][0]['color'] ) ) ) );
+			}
 		}
 
 		if (isset($attributes['textOrientation'])) {
@@ -685,6 +691,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			);
 		}
 	}
+
 
 }
 

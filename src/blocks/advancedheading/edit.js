@@ -396,8 +396,7 @@ function KadenceAdvancedHeading(props) {
 					default: [
 						{
 							enable: false,
-							color: '#000000',
-							opacity: 0.2,
+							color: 'rgba(0, 0, 0, 0.2)',
 							blur: 1,
 							hOffset: 1,
 							vOffset: 1,
@@ -562,36 +561,9 @@ function KadenceAdvancedHeading(props) {
 	);
 	const previewColorTextShadow = getPreviewSize(
 		previewDevice,
-		undefined !== textShadow?.[0]?.color ? textShadow[0].color : '#000000',
+		undefined !== textShadow?.[0]?.color ? textShadow[0].color : 'rgba(0, 0, 0, 0.2)',
 		undefined !== textShadowTablet?.[0]?.color ? textShadowTablet[0].color : '',
 		undefined !== textShadowMobile?.[0]?.color ? textShadowMobile[0].color : ''
-	);
-	function isRGBA(color) {
-		const rgbaRegex = /rgba\(\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d*\.?\d+)\s*\)/;
-		return rgbaRegex.test(color);
-	}
-	const parseOpacityFromRGBA = (color, defaultOpacity = 0.2) => {
-		// Check if color is in rgba() format
-		const rgbaRegex = /rgba\(\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d*\.?\d+)\s*\)/;
-		const match = color?.match(rgbaRegex);
-
-		if (match && match[4]) {
-			// Extract and return the alpha value (opacity) from rgba
-			return parseFloat(match[4]);
-		}
-
-		// If not rgba or alpha is missing, return default opacity
-		return defaultOpacity;
-	};
-	const previewTextShadowOpacity = getPreviewSize(
-		previewDevice,
-		undefined !== textShadow?.[0]?.opacity ? textShadow[0].opacity : parseOpacityFromRGBA(textShadow?.[0]?.color),
-		undefined !== textShadowTablet?.[0]?.opacity
-			? textShadowTablet[0].opacity
-			: parseOpacityFromRGBA(textShadowTablet?.[0]?.color, ''),
-		undefined !== textShadowMobile?.[0]?.opacity
-			? textShadowMobile[0].opacity
-			: parseOpacityFromRGBA(textShadowMobile?.[0]?.color, '')
 	);
 	const previewHOffset = getPreviewSize(
 		previewDevice,
@@ -1061,13 +1033,10 @@ function KadenceAdvancedHeading(props) {
 						textTransform: textTransform ? textTransform : undefined,
 						fontFamily: typography ? renderTypography : '',
 						textShadow: enableTextShadow
-							? `${previewHOffset}px ${previewVOffset}px ${previewBlur}px ${
-									isRGBA(previewColorTextShadow)
-										? KadenceColorOutput(previewColorTextShadow) // If rgba, use the color as is
-										: KadenceColorOutput(previewColorTextShadow, previewTextShadowOpacity) // Otherwise, apply opacity
-							  }`
+							? `${previewHOffset}px ${previewVOffset}px ${previewBlur}px ${KadenceColorOutput(
+									previewColorTextShadow
+							  )}`
 							: undefined,
-
 						writingMode:
 							previewTextOrientation === 'stacked' || previewTextOrientation === 'sideways-down'
 								? 'vertical-lr'
@@ -1817,11 +1786,7 @@ function KadenceAdvancedHeading(props) {
 										label={__('Text Shadow', 'kadence-blocks')}
 										enable={enableTextShadow}
 										color={previewColorTextShadow}
-										colorDefault={'#000000'}
-										onArrayChange={(color, opacity) => {
-											saveShadow({ color, opacity });
-										}}
-										opacity={previewTextShadowOpacity}
+										colorDefault={'rgba(0, 0, 0, 0.2)'}
 										hOffset={previewHOffset}
 										vOffset={previewVOffset}
 										blur={previewBlur}
@@ -1830,9 +1795,6 @@ function KadenceAdvancedHeading(props) {
 										}}
 										onColorChange={(value) => {
 											saveShadow({ color: value });
-										}}
-										onOpacityChange={(value) => {
-											saveShadow({ opacity: value });
 										}}
 										onHOffsetChange={(value) => {
 											saveShadow({ hOffset: value });
