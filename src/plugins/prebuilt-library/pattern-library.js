@@ -309,9 +309,9 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 
 	// Define category groups based on the screenshot
 	const patternCategoryGroups = {
-		'CONTENT': ['accordion', 'cards', 'counter-stats', 'hero', 'page-title', 'table', 'testimonials'],
-		'MEDIA': ['gallery', 'image-text', 'logo-farm', 'video-text'],
-		'OTHER': ['header', 'footer', 'navigation']
+		CONTENT: ['accordion', 'cards', 'counter-stats', 'hero', 'page-title', 'table', 'testimonials'],
+		MEDIA: ['gallery', 'image-text', 'logo-farm', 'video-text'],
+		OTHER: ['header', 'footer', 'navigation'],
 	};
 	// Generate a flat list of all grouped category keys for filtering later
 	const groupedCategoryKeys = Object.values(patternCategoryGroups).flat();
@@ -332,20 +332,19 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 		setPageStyles(activePageStyles);
 	}, [filterChoices]);
 
-
 	const hasNewPatterns = useMemo(() => {
-		return Object.values(patterns).some(pattern => pattern.label?.new === 'New');
+		return Object.values(patterns).some((pattern) => pattern.label?.new === 'New');
 	}, [patterns]);
-	
+
 	// Create the final category list, adding "New" if applicable.
 	const sidebarCategoryListOptions = useMemo(() => {
-		if(!hasNewPatterns){
+		if (!hasNewPatterns) {
 			return categoryListOptions;
 		}
 
-		let options = [...categoryListOptions];
+		const options = [...categoryListOptions];
 		const newOption = { value: 'new', label: __('New', 'kadence-blocks') };
-		options.splice(1, 0, newOption);	
+		options.splice(1, 0, newOption);
 
 		return options;
 	}, [categoryListOptions, patterns]); // Depend on original list and patterns data
@@ -1145,7 +1144,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 											{!search && (
 												<>
 													{/* Render 'All' button */}
-													{categoryListOptions.find(cat => cat.value === 'all') && (
+													{categoryListOptions.find((cat) => cat.value === 'all') && (
 														<Button
 															key="all"
 															className={
@@ -1198,47 +1197,64 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 													<hr className="kb-sidebar-category-divider" />
 
 													{/* Render grouped categories */}
-													{Object.entries(patternCategoryGroups).map(([groupName, groupKeys]) => (
-														<div key={groupName} className="kb-category-group">
-															<h4 className="kb-category-group-heading">{groupName}</h4>
-															{categoryListOptions
-																.filter(cat => groupKeys.includes(cat.value))
-																.map((category, index) => (
-																	<Button
-																		key={`${category.value}-${index}`}
-																		className={
-																			'kb-category-button' +
-																			(selectedCategory === category.value ? ' is-pressed' : '')
-																		}
-																		aria-pressed={selectedCategory === category.value}
-																		onClick={() => {
-																			const tempActiveStorage = SafeParseJSON(
-																				localStorage.getItem('kadenceBlocksPrebuilt'),
-																				true
-																			);
-																			tempActiveStorage.kbCat = category.value;
-																			localStorage.setItem(
-																				'kadenceBlocksPrebuilt',
-																				JSON.stringify(tempActiveStorage)
-																			);
-																			setCategory(category.value);
-																		}}
-																	>
-																		{category.label}
-																	</Button>
-																))}
-														</div>
-													))}
+													{Object.entries(patternCategoryGroups).map(
+														([groupName, groupKeys]) => (
+															<div key={groupName} className="kb-category-group">
+																<h4 className="kb-category-group-heading">
+																	{groupName}
+																</h4>
+																{categoryListOptions
+																	.filter((cat) => groupKeys.includes(cat.value))
+																	.map((category, index) => (
+																		<Button
+																			key={`${category.value}-${index}`}
+																			className={
+																				'kb-category-button' +
+																				(selectedCategory === category.value
+																					? ' is-pressed'
+																					: '')
+																			}
+																			aria-pressed={
+																				selectedCategory === category.value
+																			}
+																			onClick={() => {
+																				const tempActiveStorage = SafeParseJSON(
+																					localStorage.getItem(
+																						'kadenceBlocksPrebuilt'
+																					),
+																					true
+																				);
+																				tempActiveStorage.kbCat =
+																					category.value;
+																				localStorage.setItem(
+																					'kadenceBlocksPrebuilt',
+																					JSON.stringify(tempActiveStorage)
+																				);
+																				setCategory(category.value);
+																			}}
+																		>
+																			{category.label}
+																		</Button>
+																	))}
+															</div>
+														)
+													)}
 
 													{/* Render any remaining categories not in defined groups (optional safeguard) */}
 													{categoryListOptions
-														.filter(cat => cat.value !== 'all' && !groupedCategoryKeys.includes(cat.value))
+														.filter(
+															(cat) =>
+																cat.value !== 'all' &&
+																!groupedCategoryKeys.includes(cat.value)
+														)
 														.map((category, index) => (
 															<Button
 																key={`${category.value}-other-${index}`}
 																className={
 																	'kb-category-button' +
-																	(selectedCategory === category.value ? ' is-pressed' : '')
+																	(selectedCategory === category.value
+																		? ' is-pressed'
+																		: '')
 																}
 																aria-pressed={selectedCategory === category.value}
 																onClick={() => {
@@ -1261,9 +1277,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 											)}
 										</>
 									) : (
-										<>
-											{/* Content for non-design context tab */}
-										</>
+										<>{/* Content for non-design context tab */}</>
 									)}
 								</>
 							)}
