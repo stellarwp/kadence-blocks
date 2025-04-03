@@ -306,6 +306,16 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 		});
 		setPageContextListOptions(tempPageContexts);
 	}, [pagesCategories]);
+
+	// Define category groups based on the screenshot
+	const patternCategoryGroups = {
+		'CONTENT': ['accordion', 'cards', 'counter-stats', 'hero', 'page-title', 'table', 'testimonials'],
+		'MEDIA': ['gallery', 'image-text', 'logo-farm', 'video-text'],
+		'OTHER': ['header', 'footer', 'navigation']
+	};
+	// Generate a flat list of all grouped category keys for filtering later
+	const groupedCategoryKeys = Object.values(patternCategoryGroups).flat();
+
 	useEffect(() => {
 		setContextListOptions(
 			Object.keys(contextOptions).map(function (key, index) {
@@ -321,6 +331,25 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 
 		setPageStyles(activePageStyles);
 	}, [filterChoices]);
+
+
+	const hasNewPatterns = useMemo(() => {
+		return Object.values(patterns).some(pattern => pattern.label?.new === 'New');
+	}, [patterns]);
+	
+	// Create the final category list, adding "New" if applicable.
+	const sidebarCategoryListOptions = useMemo(() => {
+		if(!hasNewPatterns){
+			return categoryListOptions;
+		}
+
+		let options = [...categoryListOptions];
+		const newOption = { value: 'new', label: __('New', 'kadence-blocks') };
+		options.splice(1, 0, newOption);	
+
+		return options;
+	}, [categoryListOptions, patterns]); // Depend on original list and patterns data
+
 	const {
 		getAIContentData,
 		getAIContentDataReload,
@@ -1051,7 +1080,7 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 										<>
 											{!search && (
 												<>
-													{pageCategoryListOptions.map((category, index) => (
+													{sidebarCategoryListOptions.map((category, index) => (
 														<Button
 															key={`${category.value}-${index}`}
 															className={
@@ -1115,138 +1144,125 @@ function PatternLibrary({ importContent, clientId, reload = false, onReload }) {
 										<>
 											{!search && (
 												<>
-													{categoryListOptions.map((category, index) => (
+													{/* Render 'All' button */}
+													{categoryListOptions.find(cat => cat.value === 'all') && (
 														<Button
-															key={`${category.value}-${index}`}
+															key="all"
 															className={
 																'kb-category-button' +
-																(selectedCategory === category.value
-																	? ' is-pressed'
-																	: '')
+																(selectedCategory === 'all' ? ' is-pressed' : '')
 															}
-															aria-pressed={selectedCategory === category.value}
+															aria-pressed={selectedCategory === 'all'}
 															onClick={() => {
 																const tempActiveStorage = SafeParseJSON(
 																	localStorage.getItem('kadenceBlocksPrebuilt'),
 																	true
 																);
-																tempActiveStorage.kbCat = category.value;
+																tempActiveStorage.kbCat = 'all';
 																localStorage.setItem(
 																	'kadenceBlocksPrebuilt',
 																	JSON.stringify(tempActiveStorage)
 																);
-																setCategory(category.value);
+																setCategory('all');
 															}}
 														>
-															{category.label}
+															{__('All', 'kadence-blocks')}
 														</Button>
+													)}
+													{/* Render 'New' button if applicable */}
+													{hasNewPatterns && (
+														<Button
+															key="new"
+															className={
+																'kb-category-button' +
+																(selectedCategory === 'new' ? ' is-pressed' : '')
+															}
+															aria-pressed={selectedCategory === 'new'}
+															onClick={() => {
+																const tempActiveStorage = SafeParseJSON(
+																	localStorage.getItem('kadenceBlocksPrebuilt'),
+																	true
+																);
+																tempActiveStorage.kbCat = 'new';
+																localStorage.setItem(
+																	'kadenceBlocksPrebuilt',
+																	JSON.stringify(tempActiveStorage)
+																);
+																setCategory('new');
+															}}
+														>
+															{__('New', 'kadence-blocks')}
+														</Button>
+													)}
+													{/* Divider */}
+													<hr className="kb-sidebar-category-divider" />
+
+													{/* Render grouped categories */}
+													{Object.entries(patternCategoryGroups).map(([groupName, groupKeys]) => (
+														<div key={groupName} className="kb-category-group">
+															<h4 className="kb-category-group-heading">{groupName}</h4>
+															{categoryListOptions
+																.filter(cat => groupKeys.includes(cat.value))
+																.map((category, index) => (
+																	<Button
+																		key={`${category.value}-${index}`}
+																		className={
+																			'kb-category-button' +
+																			(selectedCategory === category.value ? ' is-pressed' : '')
+																		}
+																		aria-pressed={selectedCategory === category.value}
+																		onClick={() => {
+																			const tempActiveStorage = SafeParseJSON(
+																				localStorage.getItem('kadenceBlocksPrebuilt'),
+																				true
+																			);
+																			tempActiveStorage.kbCat = category.value;
+																			localStorage.setItem(
+																				'kadenceBlocksPrebuilt',
+																				JSON.stringify(tempActiveStorage)
+																			);
+																			setCategory(category.value);
+																		}}
+																	>
+																		{category.label}
+																	</Button>
+																))}
+														</div>
 													))}
+
+													{/* Render any remaining categories not in defined groups (optional safeguard) */}
+													{categoryListOptions
+														.filter(cat => cat.value !== 'all' && !groupedCategoryKeys.includes(cat.value))
+														.map((category, index) => (
+															<Button
+																key={`${category.value}-other-${index}`}
+																className={
+																	'kb-category-button' +
+																	(selectedCategory === category.value ? ' is-pressed' : '')
+																}
+																aria-pressed={selectedCategory === category.value}
+																onClick={() => {
+																	const tempActiveStorage = SafeParseJSON(
+																		localStorage.getItem('kadenceBlocksPrebuilt'),
+																		true
+																	);
+																	tempActiveStorage.kbCat = category.value;
+																	localStorage.setItem(
+																		'kadenceBlocksPrebuilt',
+																		JSON.stringify(tempActiveStorage)
+																	);
+																	setCategory(category.value);
+																}}
+															>
+																{category.label}
+															</Button>
+														))}
 												</>
 											)}
 										</>
 									) : (
 										<>
-											{contextListOptions.map((contextCategory, index) => (
-												<div
-													key={`${contextCategory.value}-${index}`}
-													className={`context-category-wrap${
-														(!isAIDisabled &&
-															localContexts &&
-															localContexts.includes(contextCategory.value)) ||
-														(!isAIDisabled && isContextRunning(contextCategory.value))
-															? ' has-content'
-															: ''
-													}`}
-												>
-													<Button
-														className={`kb-category-button${
-															selectedContext === contextCategory.value
-																? ' is-pressed'
-																: ''
-														}`}
-														aria-pressed={selectedContext === contextCategory.value}
-														onClick={() => {
-															const tempActiveStorage = SafeParseJSON(
-																localStorage.getItem('kadenceBlocksPrebuilt'),
-																true
-															);
-															tempActiveStorage.context = contextCategory.value;
-															localStorage.setItem(
-																'kadenceBlocksPrebuilt',
-																JSON.stringify(tempActiveStorage)
-															);
-															setContext(contextCategory.value);
-														}}
-													>
-														{isContextRunning(contextCategory.value) ? <Spinner /> : ''}
-														{contextCategory.label}
-													</Button>
-													{!isAIDisabled && selectedContext === contextCategory.value && (
-														<>
-															<Button
-																className={
-																	'kb-reload-context-popover-toggle' +
-																	(isContextReloadVisible ? ' is-pressed' : '')
-																}
-																aria-pressed={isContextReloadVisible}
-																ref={setPopoverContextAnchor}
-																icon={update}
-																disabled={isContextReloadVisible}
-																onClick={debounce(toggleReloadVisible, 100)}
-															></Button>
-															{isContextReloadVisible && (
-																<Popover
-																	className="kb-library-extra-settings"
-																	placement="top-end"
-																	onClose={debounce(toggleReloadVisible, 100)}
-																	anchor={popoverContextAnchor}
-																>
-																	<p>
-																		{sprintf(
-																			/* translators: %s is the credit amount */
-																			__(
-																				'You can regenerate AI content for this context. This will use %s credits and your current ai text will be forever lost. Would you like to regenerate AI content for this context?',
-																				'kadence-blocks'
-																			),
-																			CONTEXT_PROMPTS?.[contextCategory.value]
-																				? CONTEXT_PROMPTS[contextCategory.value]
-																				: '1'
-																		)}
-																	</p>
-																	<div className="kt-remaining-credits">
-																		{currentCredits}{' '}
-																		{__('Credits Remaining', 'kadence-blocks')}
-																	</div>
-																	<Button
-																		variant="primary"
-																		icon={aiIcon}
-																		iconSize={16}
-																		disabled={isContextRunning(
-																			contextCategory.value
-																		)}
-																		iconPosition="right"
-																		text={sprintf(
-																			/* translators: %s is the credit amount */
-																			__(
-																				'Regenerate Content (%s Credits)',
-																				'kadence-blocks'
-																			),
-																			CONTEXT_PROMPTS?.[contextCategory.value]
-																				? CONTEXT_PROMPTS[contextCategory.value]
-																				: '1'
-																		)}
-																		className={'kb-reload-context-confirm'}
-																		onClick={() => {
-																			setIsContextReloadVisible(false);
-																			reloadAI(selectedContext);
-																		}}
-																	/>
-																</Popover>
-															)}
-														</>
-													)}
-												</div>
-											))}
+											{/* Content for non-design context tab */}
 										</>
 									)}
 								</>

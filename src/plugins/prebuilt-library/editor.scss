@@ -306,6 +306,13 @@ button.components-button.kb-grid-btns svg {
 	background: var(--kadence-ui-color, #0073e6);
 }
 
+.kb-category-group .kb-category-group-heading {
+	margin-bottom: 8px;
+	margin-top: 25px;
+	color: #333;
+	font-size: 14px;
+}
+
 button.components-button.kb-category-button {
 	width: 100%;
 	margin-bottom: 3px;
@@ -1604,13 +1611,10 @@ a.components-external-link.kadence-upgrade-to-pro-btn {
 	}
 }
 
-.kb-patterns-count-message {
+.kb-patterns-filter-wrapper-sort-by {
 	margin-left: auto;
 	padding-left: 10px;
-	color: var(--wp-admin-theme-color-dark-gray-300, #757575);
 }
-
-// Styles for Sort Dropdown Items
 .kb-patterns-filter-dropdown-sort-inner {
 	.kb-pattern-sort-item {
 		.kb-pattern-sort-item-label {

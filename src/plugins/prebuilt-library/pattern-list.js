@@ -816,6 +816,7 @@ function PatternList({
 			temp.variation = variation;
 			temp.layout = patterns[key].layout;
 			temp.component = patterns[key].component || {};
+			temp.labels = patterns[key]?.label || {};
 			variation++;
 			allPatterns.push(temp);
 		});
@@ -900,7 +901,12 @@ function PatternList({
 		let allPatterns = thePatterns;
 
 		if (!filterValue && contextTab === 'design' && selectedCategory && 'all' !== selectedCategory) {
-			allPatterns = allPatterns.filter((pattern) => pattern.categories?.includes(selectedCategory));
+			console.log('selectedCategory', selectedCategory);
+			if (selectedCategory === 'new') {
+				allPatterns = allPatterns.filter((pattern) => pattern.labels?.new);
+			} else {
+				allPatterns = allPatterns.filter((pattern) => pattern.categories?.includes(selectedCategory));
+			}
 		}
 		if (contextTab === 'design' && layoutFilter && layoutFilter.length > 0) {
 			allPatterns = allPatterns.filter((pattern) => {
@@ -1269,8 +1275,6 @@ function PatternList({
 							/* Hold off until starter templates are ready */
 							// styles.length > 0 && <PatternFilterDropdown label="Styles" items={ styles } selectedItems={ updateStyleFilter } />
 						}
-						<span className="kb-pattern-filter-label">Sort by:</span>
-						<PatternSortDropdown selectedItems={setSortBy} />
 						<span className="kb-patterns-count-message">
 							{filterValue
 								? sprintf(
@@ -1289,6 +1293,10 @@ function PatternList({
 										filteredBlockPatterns.length
 								  )}
 						</span>
+						<div className="kb-patterns-filter-wrapper-sort-by">
+							<span className="kb-pattern-filter-label">Sort by:</span>
+							<PatternSortDropdown selectedItems={setSortBy} />
+						</div>
 					</div>
 				)}
 				{/* Ensure filters/search show even when filterValue exists */}
@@ -1309,8 +1317,6 @@ function PatternList({
 								selectedItems={updateComponentFilter}
 							/>
 						)}
-						<span className="kb-pattern-filter-label">Sort by:</span>
-						<PatternSortDropdown selectedItems={setSortBy} />
 						<span className="kb-patterns-count-message">
 							{filterValue
 								? sprintf(
@@ -1329,6 +1335,10 @@ function PatternList({
 										filteredBlockPatterns.length
 								  )}
 						</span>
+						<div className="kb-patterns-filter-wrapper-sort-by">
+							<span className="kb-pattern-filter-label">Sort by:</span>
+							<PatternSortDropdown selectedItems={setSortBy} />
+						</div>
 					</div>
 				)}
 				{hasItems && !failedAI && (
