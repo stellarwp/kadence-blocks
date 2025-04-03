@@ -184,7 +184,7 @@ Release Date: 3rd April 2025
 * Fix: Add aria-required to required fields in classic form block.
 * Fix: FAQ schema on accordions containing CSS.
 * Fix: Add aria-label to Gallery carousels.
-* Fix: Text shadow opacity now updates correctly.
+* Fix: Updating text shadow opacity in advanced text block.
 
 = 3.5.0 =
 Release Date: 18th March 2025
