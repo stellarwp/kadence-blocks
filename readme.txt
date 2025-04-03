@@ -181,7 +181,7 @@ Release Date: 3rd April 2025
 * Fix: Focus in Text (Adv) input when is selected or inserted.
 * Fix: Captions in gallery lightbox when caption text contains a link.
 * Fix: Advanced navigation in footer not inheriting styles from settings.
-* Fix: Add aria-required to required fields in class form block.
+* Fix: Add aria-required to required fields in classic form block.
 * Fix: FAQ schema on accordions containing CSS.
 * Fix: Add aria-label to Gallery carousels.
 * Fix: Text shadow opacity now updates correctly.
