@@ -65,6 +65,30 @@ registerBlockType('kadence/advancedheading', {
 					});
 				},
 			},
+			{
+				type: 'raw',
+				selector: 'p,h1,h2,h3,h4,h5,h6,div,span',
+				transform: (node) => {
+					const tag = node.nodeName.toLowerCase();
+					let fragments = node.innerHTML.split(/<br\s*\/?>/i);
+
+					// Sanitize fragments to remove block comments or unnecessary markup
+					fragments = fragments
+						.map((fragment) => fragment
+							.replace(/<!--[\s\S]*?-->/g, '') // Remove Gutenberg block comments
+							.replace(/<[^>]*>/g, '')         // Remove any remaining HTML tags
+							.trim()                          // Trim whitespaces
+						)
+						.filter(Boolean); // Remove empty fragments
+
+					return fragments.map((fragment) =>
+						createBlock('kadence/advancedheading', {
+							content: fragment,
+							htmlTag: tag,
+						})
+					);
+				},
+			},
 		],
 		to: [
 			{

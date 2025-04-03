@@ -283,6 +283,74 @@ function KadenceAdvancedHeading(props) {
 		[clientId]
 	);
 
+	const { replaceBlocks } = useDispatch('core/block-editor');
+
+	const handlePaste = (event) => {
+		const pastedHTML = event.clipboardData.getData('text/html');
+		const pastedText = event.clipboardData.getData('text/plain');
+		let fragments = [];
+
+		// Regex to match complete serialized Text(Adv) blocks
+		// const serializedBlockRegex = /<!-- wp:kadence\/advancedheading[\s\S]*?-->[\s\S]*?<!-- \/wp:kadence\/advancedheading -->/g;
+		const serializedBlockRegex = /<!-- wp:[^ ]+[\s\S]*?-->[\s\S]*?<!-- \/wp:[^ ]+ -->/g;
+
+		if (pastedHTML) {
+			const tempDiv = document.createElement('div');
+			tempDiv.innerHTML = pastedHTML;
+
+			// Handle serialized block markup if found
+			const serializedBlocks = tempDiv.innerHTML.match(serializedBlockRegex);
+			if (serializedBlocks) {
+				fragments = serializedBlocks;
+			} else {
+				// Fallback: split by <br> tags for non-serialized pasted HTML
+				fragments = tempDiv.innerHTML
+					.split(/<br\s*\/?>/i)
+					.map((frag) => frag.trim())
+					.filter(Boolean);
+			}
+		} else if (pastedText) {
+			// Check if pasted text contains serialized Gutenberg block(s)
+			const serializedBlocks = pastedText.match(serializedBlockRegex);
+
+			if (serializedBlocks) {
+				// Treat each serialized block as a fragment
+				fragments = serializedBlocks;
+			} else {
+				// Fallback: split by newlines for plain text
+				fragments = pastedText
+					.split(/\n/)
+					.map((frag) => frag.trim())
+					.filter(Boolean);
+			}
+		}
+
+		// Process each fragment into proper Kadence Advanced Heading blocks
+		if (fragments.length > 0) {
+			const newBlocks = fragments.map((fragment) => {
+				// Create a new instance of the regex (to reset state)
+				// const regex = /<!-- wp:kadence\/advancedheading[\s\S]*?-->[\s\S]*?<!-- \/wp:kadence\/advancedheading -->/;
+				const regex = new RegExp(serializedBlockRegex);
+
+				// Check if the fragment matches a serialized block
+				if (regex.test(fragment)) {
+					// Parse the serialized block directly into Gutenberg blocks
+					return wp.blocks.parse(fragment)[0];
+				} else {
+					// Otherwise, treat as plain text and create a simple block
+					return createBlock('kadence/advancedheading', {
+						content: fragment,
+						htmlTag: 'p',
+					});
+				}
+			});
+
+			// Replace current block with the new blocks
+			replaceBlocks(clientId, newBlocks);
+			event.preventDefault(); // Prevent default paste behavior
+		}
+	};
+
 	const paddingMouseOver = mouseOverVisualizer();
 	const marginMouseOver = mouseOverVisualizer();
 	const config = get(kadence_blocks_params, 'globalSettings') ? JSON.parse(kadence_blocks_params.globalSettings) : {};
@@ -1079,6 +1147,7 @@ function KadenceAdvancedHeading(props) {
 					}}
 					placeholder={__('Write something…', 'kadence-blocks')}
 					isSelected={isSelected}
+					onPaste={handlePaste}
 				/>
 			)}
 			{isDynamicReplaced && (
