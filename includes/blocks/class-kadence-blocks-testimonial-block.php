@@ -254,17 +254,18 @@ class Kadence_Blocks_Testimonial_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 		// Figure out the Media size.
-		if ( ( 'card' === $style && $container_max_width > 500 ) || $media_styles[0]['width'] > 600 ) {
+		$media_width = ( ! empty( $media_styles[0]['width'] ) ) ? $media_styles[0]['width'] : 60;
+		if ( ( 'card' === $style && $container_max_width > 500 ) || $media_width > 600 ) {
 			$size = 'full';
 		} elseif ( 'card' === $style && $container_max_width <= 500 && $container_max_width > 100 ) {
 			$size = 'large';
 		} elseif ( 'card' === $style && $container_max_width <= 100 ) {
 			$size = 'medium';
-		} elseif ( $media_styles[0]['width'] <= 600 && $media_styles[0]['width'] > 100 ) {
+		} elseif ( $media_width <= 600 && $media_width > 100 ) {
 			$size = 'large';
-		} elseif ( $media_styles[0]['width'] <= 100 && $media_styles[0]['width'] > 75 ) {
+		} elseif ( $media_width <= 100 && $media_width > 75 ) {
 			$size = 'medium';
-		} elseif ( $media_styles[0]['width'] <= 75 ) {
+		} elseif ( $media_width <= 75 ) {
 			$size = 'thumbnail';
 		} else {
 			$size = 'full';
